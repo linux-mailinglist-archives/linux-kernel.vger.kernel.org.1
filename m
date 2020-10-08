@@ -2,152 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 016D0287AA8
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 19:10:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B78D9287AA0
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 19:09:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731694AbgJHRKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 13:10:35 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:16259 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730739AbgJHRKe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 13:10:34 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602177034; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=SUzsXiN/Zq3h2vTCY35MCXNwVadO6pN8K/R70OT/2Ko=; b=EKvitFj134pC2hyMPiW826axHgWqnv5aPZ8yyJlXtwtHlGFkWcH4XDhocnwlp/Iao9DuGASy
- uDTSjksxtYnHQJHzJHK+hTG36xGHRnQuwirmNQwXXqTr5b5yeyNPN7MTQW7lAWNT/IlS4PBg
- NumwG6W66jWwB3O+fMBUG5hUtzY=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5f7f47bebfed2afaa613173f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 08 Oct 2020 17:09:18
- GMT
-Sender: akhilpo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id F30F5C433CB; Thu,  8 Oct 2020 17:09:17 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from akhilpo-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8968FC433CB;
-        Thu,  8 Oct 2020 17:09:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8968FC433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-To:     freedreno@lists.freedesktop.org, robh@kernel.org,
-        robdclark@gmail.com
-Cc:     dri-devel@freedesktop.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jcrouse@codeaurora.org,
-        mka@chromium.org
-Subject: [PATCH 1/2] arm64: dts: qcom: sc7180: Add gpu cooling support
-Date:   Thu,  8 Oct 2020 22:39:06 +0530
-Message-Id: <1602176947-17385-1-git-send-email-akhilpo@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S1730624AbgJHRJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 13:09:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730147AbgJHRJ1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 13:09:27 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF451C061755
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 10:09:26 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id y16so5404249ljk.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 10:09:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z5wcuDA1gh/3Ps6l+NWlPcHbmyW5YaIQwLSEAvKTv+g=;
+        b=cZHvUXj5G6+H19Nj4m528LVZtsoSSR8DXg8s8jyXKZNl8yYlcGAb2i3EBmVhdsS3AF
+         W3RfTehbw6eYlGzzLmiYFkaUZwBpmdmMlDJneXc80kfm7LkKDSW9OkSK0jUhE0zjXx/x
+         +Nat7/Qr8ncJLNBYgRySy7Jc9Y8kWw+L70eL0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z5wcuDA1gh/3Ps6l+NWlPcHbmyW5YaIQwLSEAvKTv+g=;
+        b=nFjOWTeJcJG2C3pYMy0o8C9ZZ3TBNCcFTsTZS7dfJJf9FueooC7igogJCN3HEl5HnL
+         7/UVSMgQZpiq4pAuYLMXfZiYFn4DZhB43oBa/t1Y/fS9GR2Vz98tSOjs8nyddZ9BVf+2
+         Ld4e8xYE1vEWDPChfCp5L2GrUrJuYlcopTVxOCTQBPz+9OGVHg33zX/SvF42f8nJuJbf
+         xmOKFwWBCvfgg8Uh9IZdnPHBCKwWt0JvEK0U+wDU9yxxKgH5Hkpt9lckJfUYEmivMIzA
+         qswOBdWDbUFfFBzJR7goytt4hdg/XvD3ctyZl77dKXJsSa0vhJton2VH8WQ79xVGG6CC
+         Qdog==
+X-Gm-Message-State: AOAM533ezzHf1NVMY+yS9meC/offdh+PO1fedeIflkXDaNgwnww209uC
+        5SMOzg+C+mY81nrLJAZ+1jnzrIIAritWLQ==
+X-Google-Smtp-Source: ABdhPJx4BRhe268+XP5dIziWb/v0DuUuwvZjGGE2arV8Q5I1I3CR73LdH233rjCbvQHaqw1Nfj/+kA==
+X-Received: by 2002:a2e:97d6:: with SMTP id m22mr3465078ljj.328.1602176964421;
+        Thu, 08 Oct 2020 10:09:24 -0700 (PDT)
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
+        by smtp.gmail.com with ESMTPSA id j17sm1051449ljg.82.2020.10.08.10.09.22
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Oct 2020 10:09:23 -0700 (PDT)
+Received: by mail-lj1-f182.google.com with SMTP id 133so6577516ljj.0
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 10:09:22 -0700 (PDT)
+X-Received: by 2002:a2e:2202:: with SMTP id i2mr3411487lji.70.1602176962536;
+ Thu, 08 Oct 2020 10:09:22 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201008092541.398079-1-aneesh.kumar@linux.ibm.com>
+In-Reply-To: <20201008092541.398079-1-aneesh.kumar@linux.ibm.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 8 Oct 2020 10:09:06 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiRmi=uie1xV=p72CG8rhG8md_MWKtvPguxUtjbSPtVYA@mail.gmail.com>
+Message-ID: <CAHk-=wiRmi=uie1xV=p72CG8rhG8md_MWKtvPguxUtjbSPtVYA@mail.gmail.com>
+Subject: Re: [PATCH] mm: Avoid using set_pte_at when updating a present pte
+To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Leon Romanovsky <leonro@nvidia.com>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nick Piggin <npiggin@gmail.com>, Peter Xu <peterx@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add cooling-cells property and the cooling maps for the gpu tzones
-to support GPU cooling.
+Ahh, and I should learn to read all my emails before replying to some of them..
 
-Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 29 ++++++++++++++++++++++-------
- 1 file changed, 22 insertions(+), 7 deletions(-)
+On Thu, Oct 8, 2020 at 2:26 AM Aneesh Kumar K.V
+<aneesh.kumar@linux.ibm.com> wrote:
+>
+> This avoids the below warning
+> [..]
+ > WARNING: CPU: 0 PID: 30613 at arch/powerpc/mm/pgtable.c:185
+set_pte_at+0x2a8/0x3a0 arch/powerpc/mm/pgtable.c:185
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index d46b383..40d6a28 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -2,7 +2,7 @@
- /*
-  * SC7180 SoC device tree source
-  *
-- * Copyright (c) 2019, The Linux Foundation. All rights reserved.
-+ * Copyright (c) 2019-20, The Linux Foundation. All rights reserved.
-  */
- 
- #include <dt-bindings/clock/qcom,dispcc-sc7180.h>
-@@ -1885,6 +1885,7 @@
- 			iommus = <&adreno_smmu 0>;
- 			operating-points-v2 = <&gpu_opp_table>;
- 			qcom,gmu = <&gmu>;
-+			#cooling-cells = <2>;
- 
- 			interconnects = <&gem_noc MASTER_GFX3D &mc_virt SLAVE_EBI1>;
- 			interconnect-names = "gfx-mem";
-@@ -3825,16 +3826,16 @@
- 		};
- 
- 		gpuss0-thermal {
--			polling-delay-passive = <0>;
-+			polling-delay-passive = <100>;
- 			polling-delay = <0>;
- 
- 			thermal-sensors = <&tsens0 13>;
- 
- 			trips {
- 				gpuss0_alert0: trip-point0 {
--					temperature = <90000>;
-+					temperature = <95000>;
- 					hysteresis = <2000>;
--					type = "hot";
-+					type = "passive";
- 				};
- 
- 				gpuss0_crit: gpuss0_crit {
-@@ -3843,19 +3844,26 @@
- 					type = "critical";
- 				};
- 			};
-+
-+			cooling-maps {
-+				map0 {
-+					trip = <&gpuss0_alert0>;
-+					cooling-device = <&gpu THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+				};
-+			};
- 		};
- 
- 		gpuss1-thermal {
--			polling-delay-passive = <0>;
-+			polling-delay-passive = <100>;
- 			polling-delay = <0>;
- 
- 			thermal-sensors = <&tsens0 14>;
- 
- 			trips {
- 				gpuss1_alert0: trip-point0 {
--					temperature = <90000>;
-+					temperature = <95000>;
- 					hysteresis = <2000>;
--					type = "hot";
-+					type = "passive";
- 				};
- 
- 				gpuss1_crit: gpuss1_crit {
-@@ -3864,6 +3872,13 @@
- 					type = "critical";
- 				};
- 			};
-+
-+			cooling-maps {
-+				map0 {
-+					trip = <&gpuss0_alert0>;
-+					cooling-device = <&gpu THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+				};
-+			};
- 		};
- 
- 		aoss1-thermal {
--- 
-2.7.4
+.. and I assume this is what triggered the other patch too.
 
+Yes, with the ppc warning, we need to do _something_ about this, and
+at that point I think the "something" is to just avoid the pte
+wrpritect trick.
+
+               Linus
