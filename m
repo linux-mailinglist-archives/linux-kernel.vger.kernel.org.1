@@ -2,98 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9589C287B8C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 20:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D593F287B88
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 20:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728040AbgJHSS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 14:18:58 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:3586 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726597AbgJHSS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 14:18:57 -0400
-Received: from HKMAIL104.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7f580f0000>; Fri, 09 Oct 2020 02:18:55 +0800
-Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL104.nvidia.com
- (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 8 Oct
- 2020 18:18:55 +0000
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.47) by
- HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 8 Oct 2020 18:18:54 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=F6IGOyI2Ck030KxJHnD2CQgVHFGp7hFSbts07uinhrkqyB1uOnw3fB+SDhFYcRzQgvD1827EcSXm+AFObTMKAzRJZ4UlM/6mwK1DUYIf42pzG2wJ4Q4Yu7bYRZ3lWa9trgvX3XPi6rf22M6lmfTjP7uMksDTeetT5HtQkDFXIE9ybyB1aaHG0xQaHrLk/sSTpLhoc/ZYoCFonkARl61mipVR5TcBBq1hdmb5NqFEFgN/eaJxBV6MtfTo3415TDLEgmz4YuRE8aJEvpd96p5+mz4/mYQ/wXa19LmbHbBU2/DgFzyLKhgml7snH1gMYxD6Ei9p1QIaUZ8YYSPFKXRg9A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wQSAsqkr8udNSx+3K8Uy+PjzhSa2tthzXxDO1Oy7aU8=;
- b=VpQMCWJZzty/Qy2JxCV3EziLcre5g7hkJBHvjr61/3EIaHFJS4VpaFmNkq+rfqGqJZJ8k76w9PfcijtLuJQrCtcBle+SGSxhB42VKD5hU6nK6+RS06S6B8YaazJXIDZyTDCX4cikT3MisL/mZEFA8YkHBfoSUBQcQyz+pSLQquMC5jCssYP/OdSpSFt60JUiJwGjzqF/OIeMJKHARJv85a8yEudLvPqACrzx48gHo2PnuxWU11Olv4T+yHnEAN2hfYfq0XqB5M8q/1haORcLyP+gfrY3YuDlyMMpT0J2Q87Phbl/zjL2bQnET2Z7Mbk/hJ+kX6W7GOufuSg+7y5U1w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1146.namprd12.prod.outlook.com (2603:10b6:3:73::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.24; Thu, 8 Oct
- 2020 18:18:04 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3433.046; Thu, 8 Oct 2020
- 18:18:04 +0000
-Date:   Thu, 8 Oct 2020 15:18:02 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Colin King <colin.king@canonical.com>
-CC:     Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Ira Weiny <ira.weiny@intel.com>, <linux-rdma@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] IB/rdmavt: Fix sizeof mismatch
-Message-ID: <20201008181802.GB374464@nvidia.com>
-References: <20201008095204.82683-1-colin.king@canonical.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201008095204.82683-1-colin.king@canonical.com>
-X-ClientProxiedBy: BL0PR0102CA0049.prod.exchangelabs.com
- (2603:10b6:208:25::26) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1727737AbgJHSSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 14:18:18 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:50578 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725616AbgJHSSR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 14:18:17 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 098IIAaY059566;
+        Thu, 8 Oct 2020 13:18:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1602181090;
+        bh=OZ4CI6uU94nRKdZAQZi5RdPMEtud/Gsh2orNwUmssVI=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=gAp6umqLQU5C4uX3HgJyCWpgp44fO1M1k018erkc+OZM7Yc28HxljX7uaH3gtaVsQ
+         +gZEg/4CV9X5T60nc+QxSa7hQzdv1zMljVTNCOYufUOUtAZ9xVxmkqmulme9xmJ5tE
+         MpLzzG5suqewHZ/Z0xqyyrdL43hRRxZo2PS2e48k=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 098IIAuW101541
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 8 Oct 2020 13:18:10 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 8 Oct
+ 2020 13:18:10 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 8 Oct 2020 13:18:09 -0500
+Received: from [10.250.39.105] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 098II9xV015780;
+        Thu, 8 Oct 2020 13:18:09 -0500
+Subject: Re: [PATCH net-next 1/2] dt-bindings: dp83td510: Add binding for
+ DP83TD510 Ethernet PHY
+To:     Florian Fainelli <f.fainelli@gmail.com>, <davem@davemloft.net>,
+        <andrew@lunn.ch>, <hkallweit1@gmail.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20201008162347.5290-1-dmurphy@ti.com>
+ <20201008162347.5290-2-dmurphy@ti.com>
+ <b704d919-b665-04e7-39bf-fadd5bc35ecf@gmail.com>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <cb44ea1f-4c7a-98c6-6206-526169d8f24b@ti.com>
+Date:   Thu, 8 Oct 2020 13:18:09 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR0102CA0049.prod.exchangelabs.com (2603:10b6:208:25::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.23 via Frontend Transport; Thu, 8 Oct 2020 18:18:03 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kQaUM-001ZSV-Kp; Thu, 08 Oct 2020 15:18:02 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1602181135; bh=wQSAsqkr8udNSx+3K8Uy+PjzhSa2tthzXxDO1Oy7aU8=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=cUzTPRU6/IBg+rudA09StdOMjbM6lzDcT/vJ1lFhEAqEvSfH9NZxtS692o7v6SeJK
-         huUzpGuGLCaAoRRjEetHV/LcD5t7X+bMb9fWUZ6vzTmrKV2+YKZgNSwiOOCO9BDXlV
-         r7U/K5e1ooJ+YHSNM2Dg0eATOz4mBQaW4p3u7ylBzkGrT9uc3tvkyEdLGH9WsVz6YH
-         pq+Bu3AiCq5w7YpOtdTUW0XX1WNZwMGq4poWGlXrAA5QwPA0VcRswgQiIMJttCig8p
-         8eS2iZ+0Ik1U99fYvq32zTqNZtOh+H0Z5LbrJtZEeijbnhfnxWA3UrzW29Aq3Dp/Xw
-         LqDM8RmQWVEPA==
+In-Reply-To: <b704d919-b665-04e7-39bf-fadd5bc35ecf@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 10:52:04AM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> An incorrect sizeof is being used, struct rvt_ibport ** is not correct,
-> it should be struct rvt_ibport *. Note that since ** is the same size as
-> * this is not causing any issues.  Improve this fix by using
-> sizeof(*rdi->ports) as this allows us to not even reference the type
-> of the pointer.  Also remove line breaks as the entire statement can
-> fit on one line.
-> 
-> Addresses-Coverity: ("Sizeof not portable (SIZEOF_MISMATCH)")
-> Fixes: ff6acd69518e ("IB/rdmavt: Add device structure allocation")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> Reviewed-by: Ira Weiny <ira.weiny@intel.com>
-> Acked-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-> ---
->  drivers/infiniband/sw/rdmavt/vt.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
+Florian
 
-Applied to for-next, thanks
+Thanks for the review
 
-Jason
+On 10/8/20 12:11 PM, Florian Fainelli wrote:
+>
+>
+> On 10/8/2020 9:23 AM, Dan Murphy wrote:
+>> The DP83TD510 is a 10M single twisted pair Ethernet PHY
+>>
+>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+>> ---
+>>   .../devicetree/bindings/net/ti,dp83td510.yaml | 70 +++++++++++++++++++
+>>   1 file changed, 70 insertions(+)
+>>   create mode 100644 
+>> Documentation/devicetree/bindings/net/ti,dp83td510.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/net/ti,dp83td510.yaml 
+>> b/Documentation/devicetree/bindings/net/ti,dp83td510.yaml
+>> new file mode 100644
+>> index 000000000000..0f0eac77a11a
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/net/ti,dp83td510.yaml
+>> @@ -0,0 +1,70 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +# Copyright (C) 2020 Texas Instruments Incorporated
+>> +%YAML 1.2
+>> +---
+>> +$id: "http://devicetree.org/schemas/net/ti,dp83td510.yaml#"
+>> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+>> +
+>> +title: TI DP83TD510 ethernet PHY
+>> +
+>> +allOf:
+>> +  - $ref: "ethernet-controller.yaml#"
+>> +
+>> +maintainers:
+>> +  - Dan Murphy <dmurphy@ti.com>
+>> +
+>> +description: |
+>> +  The PHY is an twisted pair 10Mbps Ethernet PHY that support MII, 
+>> RMII and
+>> +  RGMII interfaces.
+>> +
+>> +  Specifications about the Ethernet PHY can be found at:
+>> +    http://www.ti.com/lit/ds/symlink/dp83td510e.pdf
+>> +
+>> +properties:
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  tx-fifo-depth:
+>> +    description: |
+>> +       Transmitt FIFO depth for RMII mode.  The PHY only exposes 4 
+>> nibble
+>> +       depths. The valid nibble depths are 4, 5, 6 and 8.
+>> +    default: 5
+>> +
+>> +  rx-internal-delay-ps:
+>> +    description: |
+>> +       Setting this property to a non-zero number sets the RX 
+>> internal delay
+>> +       for the PHY.  The internal delay for the PHY is fixed to 30ns 
+>> relative
+>> +       to receive data.
+>> +
+>> +  tx-internal-delay-ps:
+>> +    description: |
+>> +       Setting this property to a non-zero number sets the TX 
+>> internal delay
+>> +       for the PHY.  The internal delay for the PHY has a range of 
+>> -4 to 4ns
+>> +       relative to transmit data.
+>
+> Those two properties are already defined as part of 
+> Documentation/devicetree/bindings/net/ethernet-phy.yaml, so you can 
+> reference that binding, too.
+
+OK I referenced the ethernet-controller.yaml for the delay. I am 
+wondering if we should add rx/tx-fifo-depth to the ethernet-phy.yaml as 
+well. That way PHYs only have to reference ethernet-phy.yaml.
+
+Or maybe remove the internal-delay from the ethernet-phy.yaml and 
+reference the ethernet-controller.yaml in the ethernet-phy.yaml so we 
+don't have to maintain duplicate properties
+
+>
+>> +
+>> +  ti,master-slave-mode:
+>> +    $ref: /schemas/types.yaml#definitions/uint32
+>> +    default: 0
+>> +    description: |
+>> +      Force the PHY to be configured to a specific mode.
+>> +      Force Auto Negotiation - 0
+>> +      Force Master mode at 1v p2p - 1
+>> +      Force Master mode at 2.4v p2p - 2
+>> +      Force Slave mode at 1v p2p - 3
+>> +      Force Slave mode at 2.4v p2p - 4
+>
+> If you accept different values you should be indicating which values 
+> are supported with an enumeration.
+
+Ah yes forgot the min/max
+
