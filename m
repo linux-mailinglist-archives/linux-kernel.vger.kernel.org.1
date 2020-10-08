@@ -2,169 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0633A287B08
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 19:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 095F9287B11
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 19:34:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732111AbgJHRd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 13:33:56 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:24239 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729179AbgJHRdz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 13:33:55 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602178435; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=g41gw1keqpIWi6VHsKLyBux61Knjs9TSn2qndwM+vvM=;
- b=q77dxh+mVORfOhM7e/9wfPfLodTgrKupnQjgiToMlJIInPWnUhPUkbk5kKVtvyMyGxwCL5md
- cgNKV6upne8Nmf6kVWQJV6frWgaXai16ey/n9cvH2EwnwLsYHD+J0dTcgxfhoQ/0DGe78UXk
- eDTW9oCL2WFqJT+wlfnTO2tXMhM=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 5f7f4d78588858a30445e8b2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 08 Oct 2020 17:33:44
- GMT
-Sender: gokulsri=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B17A0C433F1; Thu,  8 Oct 2020 17:33:43 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: gokulsri)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5E0BAC433CB;
-        Thu,  8 Oct 2020 17:33:42 +0000 (UTC)
+        id S1732149AbgJHRek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 13:34:40 -0400
+Received: from outbound-smtp44.blacknight.com ([46.22.136.52]:47097 "EHLO
+        outbound-smtp44.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731283AbgJHRek (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 13:34:40 -0400
+Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
+        by outbound-smtp44.blacknight.com (Postfix) with ESMTPS id E4DF3F858E
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 18:34:37 +0100 (IST)
+Received: (qmail 21396 invoked from network); 8 Oct 2020 17:34:37 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 8 Oct 2020 17:34:37 -0000
+Date:   Thu, 8 Oct 2020 18:34:36 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Cc:     Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
+Subject: Re: ACPI _CST introduced performance regresions on Haswll
+Message-ID: <20201008173436.GQ3227@techsingularity.net>
+References: <20201006083639.GJ3227@techsingularity.net>
+ <c3566d2b-3da1-917b-2df6-f7dcfb33c8ed@intel.com>
+ <20201006190322.GL3227@techsingularity.net>
+ <25f31d3e-7a67-935f-93ba-32216a5084e2@intel.com>
+ <20201006211820.GN3227@techsingularity.net>
+ <2382d796-7c2f-665e-9169-5cdc437bf34c@intel.com>
+ <20201008090909.GP3227@techsingularity.net>
+ <dcf4266a-5769-8a6b-d8e1-e77553126861@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 08 Oct 2020 23:03:42 +0530
-From:   gokulsri@codeaurora.org
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     sboyd@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        sricharan@codeaurora.org
-Subject: Re: [PATCH v3 3/3] arm64: dts: Enabled MHI device over PCIe
-In-Reply-To: <20201008131115.GA23649@linux>
-References: <1602160344-19586-1-git-send-email-gokulsri@codeaurora.org>
- <1602160344-19586-4-git-send-email-gokulsri@codeaurora.org>
- <20201008131115.GA23649@linux>
-Message-ID: <7dd959fd2d9375d5529cf52e93aafda3@codeaurora.org>
-X-Sender: gokulsri@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <dcf4266a-5769-8a6b-d8e1-e77553126861@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-08 18:41, Manivannan Sadhasivam wrote:
-> Hi,
+On Thu, Oct 08, 2020 at 07:15:46PM +0200, Rafael J. Wysocki wrote:
+> > Force enabling C6
+> > 
+> > ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state0/disable:0
+> > ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state1/disable:0
+> > ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state2/disable:0
+> > ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state3/disable:1
+> > ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state4/disable:0
+> > ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state0/default_status:enabled
+> > ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state1/default_status:enabled
+> > ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state2/default_status:enabled
+> > ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state3/default_status:disabled
+> > ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state4/default_status:enabled
+> > 
+> > Note that as expected, C3 remains disabled when only C6 is forced (state3
+> > == c3, state4 == c6). While this particular workload does not appear to
+> > care as it does not remain idle for long, the exit latency difference
+> > between c3 and c6 is large so potentially a workload that idles for short
+> > durations that are somewhere between c1e and c3 exit latency might take
+> > a larger penalty exiting from c6 state if the deeper c-state is selected
+> > for idling.
+> > 
+> > ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state0/residency:0
+> > ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state1/residency:2
+> > ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state2/residency:20
+> > ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state3/residency:100
+> > ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state4/residency:400
+> > 
+>
+> If you are worried that C6 might be used instead of C3 in some cases, this
+> is not going to happen.
+>
+
+Ok, so it goes in the C1E direction instead. I lost track of how C-state
+is selected based on predictions about the future. It's changed a bit
+over time.
+ 
+> I all cases in which C3 would have been used had it not been disabled, C1E
+> will be used instead.
 > 
-> On Thu, Oct 08, 2020 at 06:02:24PM +0530, Gokul Sriram Palanisamy 
-> wrote:
->> Enabled MHI device support over PCIe and added memory
->> reservation required for MHI enabled QCN9000 PCIe card.
->> 
->> Signed-off-by: Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
->> ---
->>  arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi | 47 
->> ++++++++++++++++++++++++++++++
->>  1 file changed, 47 insertions(+)
->> 
->> diff --git a/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi 
->> b/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
->> index 0827055..e5c1ec0 100644
->> --- a/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
->> @@ -24,6 +24,22 @@
->>  		device_type = "memory";
->>  		reg = <0x0 0x40000000 0x0 0x20000000>;
->>  	};
->> +
->> +	reserved-memory {
->> +		#address-cells = <2>;
->> +		#size-cells = <2>;
->> +		ranges;
->> +
->> +		qcn9000_pcie0: memory@50f00000 {
->> +			no-map;
->> +			reg = <0x0 0x50f00000 0x0 0x03700000>;
->> +		};
->> +
->> +		qcn9000_pcie1: memory@54600000 {
->> +			no-map;
->> +			reg = <0x0 0x54600000 0x0 0x03700000>;
->> +		};
->> +	};
->>  };
->> 
->>  &blsp1_spi1 {
->> @@ -45,11 +61,42 @@
->>  &pcie0 {
->>  	status = "ok";
->>  	perst-gpio = <&tlmm 58 0x1>;
->> +
->> +	pcie0_rp: pcie0_rp {
->> +		reg = <0 0 0 0 0>;
->> +
->> +		status = "ok";
->> +		mhi_0: qcom,mhi@0 {
-> 
-> MHI doesn't support devicetree as of now so how is this supposed to 
-> work?
-> Have you tested this series with mainline?
-> 
-> Thanks,
-> Mani
+> Which BTW indicates that using C1E more often adds a lot of latency to the
+> workload (if C3 and C6 are both disabled, C1E is used in all cases in which
+> one of them would have been used).
+
+Which is weird. From the exit latency alone, I'd think it would be faster
+to use C1E instead of C3. It implies that using C1E instead of C3/C6 has
+some other side-effect on Haswell. At one point, there was plenty of advice
+on disabling C1E but very little concrete information on what impact it
+has exactly and why it might cause problems that other c-states avoid.
+
+> With C6 enabled, that state is used at
+> least sometimes (so C1E is used less often), but PC6 doesn't seem to be
+> really used - it looks like core C6 only is entered and which may be why C6
+> adds less latency than C1E (and analogously for C3).
 > 
 
-  Hi Mani,
-  This node entries will be consumed by ath11k driver and is not supposed 
-to be consumed by mhi driver.
-  And yes, it is tested on Mainline.
+At the moment, I'm happy with either solution but mostly because I can't
+tell what other trade-offs should be considered :/
 
-  Regards,
-  Gokul
-
->> +			reg = <0 0 0 0 0 >;
->> +
->> +			qrtr_instance_id = <0x20>;
->> +			base-addr = <0x50f00000>;
->> +			m3-dump-addr = <0x53c00000>;
->> +			etr-addr = <0x53d00000>;
->> +			qcom,caldb-addr = <0x53e00000>;
->> +		};
->> +	};
->>  };
->> 
->>  &pcie1 {
->>  	status = "ok";
->>  	perst-gpio = <&tlmm 61 0x1>;
->> +
->> +	pcie1_rp: pcie1_rp {
->> +		reg = <0 0 0 0 0>;
->> +
->> +		status = "ok";
->> +		mhi_1: qcom,mhi@1 {
->> +			reg = <0 0 0 0 0 >;
->> +
->> +			qrtr_instance_id = <0x21>;
->> +			base-addr = <0x54600000>;
->> +			m3-dump-addr = <0x57300000>;
->> +			etr-addr = <0x57400000>;
->> +			qcom,caldb-addr = <0x57500000>;
->> +			};
->> +		};
->> +	};
->>  };
->> 
->>  &qmp_pcie_phy0 {
->> --
->> 2.7.4
->> 
+-- 
+Mel Gorman
+SUSE Labs
