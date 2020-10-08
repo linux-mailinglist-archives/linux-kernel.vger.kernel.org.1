@@ -2,150 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCAF4287B10
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 19:34:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0633A287B08
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 19:34:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732140AbgJHRee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 13:34:34 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:51448 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731283AbgJHRed (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 13:34:33 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 098HO0GE159283;
-        Thu, 8 Oct 2020 17:34:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2020-01-29; bh=hqpugaLb9HTKxQQq/bPTvS8Ku6M1O2DR/Zz5E5a2OrE=;
- b=IDSyVZeFimRjNtzW26YNpD4HILYBcy56chG4XUbFcK486V460W5qHvMW0+1HC/8+ID9W
- BYR50s+Pb3MTRXHcrcoZSzN2O9k4k7E7iWrD+UsJsr8IfZmu0BHpS8c2I7Bt+stS/wwk
- i/7wmeHHTNVHb1y9Vbst1zAiGwhF+VRHwhgFChPdumIiRnwthBPU+P+MsBP8bQuVlm65
- xmtuImhNNq+hSV0Sm3jsvLImnT2BKfpka5BkwlX0EwoOSnBtJoRM1yDYGt7B/8YE3maz
- Y6IlsJquYNt3UImdMl84aagTTrDB7KZQGS6Vz9dDog7hiPSVIQgbsl88uStq74J8FHuG 3g== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 33ym34x4va-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 08 Oct 2020 17:34:26 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 098HOvar116310;
-        Thu, 8 Oct 2020 17:32:26 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 3410k1f09q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 08 Oct 2020 17:32:26 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 098HWOg0005911;
-        Thu, 8 Oct 2020 17:32:24 GMT
-Received: from localhost.localdomain (/98.229.125.203)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 08 Oct 2020 10:32:23 -0700
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-To:     Jessica Yu <jeyu@kernel.org>
-Cc:     Corentin Labbe <clabbe.montjoie@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Daniel Jordan <daniel.m.jordan@oracle.com>
-Subject: [PATCH] module: statically initialize init section freeing data
-Date:   Thu,  8 Oct 2020 13:32:20 -0400
-Message-Id: <20201008173220.923671-1-daniel.m.jordan@oracle.com>
-X-Mailer: git-send-email 2.28.0
+        id S1732111AbgJHRd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 13:33:56 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:24239 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729179AbgJHRdz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 13:33:55 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602178435; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=g41gw1keqpIWi6VHsKLyBux61Knjs9TSn2qndwM+vvM=;
+ b=q77dxh+mVORfOhM7e/9wfPfLodTgrKupnQjgiToMlJIInPWnUhPUkbk5kKVtvyMyGxwCL5md
+ cgNKV6upne8Nmf6kVWQJV6frWgaXai16ey/n9cvH2EwnwLsYHD+J0dTcgxfhoQ/0DGe78UXk
+ eDTW9oCL2WFqJT+wlfnTO2tXMhM=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5f7f4d78588858a30445e8b2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 08 Oct 2020 17:33:44
+ GMT
+Sender: gokulsri=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B17A0C433F1; Thu,  8 Oct 2020 17:33:43 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: gokulsri)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5E0BAC433CB;
+        Thu,  8 Oct 2020 17:33:42 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9768 signatures=668681
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 spamscore=0
- adultscore=0 bulkscore=0 malwarescore=0 suspectscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010080128
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9768 signatures=668681
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 priorityscore=1501
- mlxscore=0 mlxlogscore=999 clxscore=1011 bulkscore=0 spamscore=0
- malwarescore=0 phishscore=0 suspectscore=0 adultscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010080128
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 08 Oct 2020 23:03:42 +0530
+From:   gokulsri@codeaurora.org
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     sboyd@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        sricharan@codeaurora.org
+Subject: Re: [PATCH v3 3/3] arm64: dts: Enabled MHI device over PCIe
+In-Reply-To: <20201008131115.GA23649@linux>
+References: <1602160344-19586-1-git-send-email-gokulsri@codeaurora.org>
+ <1602160344-19586-4-git-send-email-gokulsri@codeaurora.org>
+ <20201008131115.GA23649@linux>
+Message-ID: <7dd959fd2d9375d5529cf52e93aafda3@codeaurora.org>
+X-Sender: gokulsri@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Corentin hit the following workqueue warning when running with
-CRYPTO_MANAGER_EXTRA_TESTS:
+On 2020-10-08 18:41, Manivannan Sadhasivam wrote:
+> Hi,
+> 
+> On Thu, Oct 08, 2020 at 06:02:24PM +0530, Gokul Sriram Palanisamy 
+> wrote:
+>> Enabled MHI device support over PCIe and added memory
+>> reservation required for MHI enabled QCN9000 PCIe card.
+>> 
+>> Signed-off-by: Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
+>> ---
+>>  arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi | 47 
+>> ++++++++++++++++++++++++++++++
+>>  1 file changed, 47 insertions(+)
+>> 
+>> diff --git a/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi 
+>> b/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
+>> index 0827055..e5c1ec0 100644
+>> --- a/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
+>> @@ -24,6 +24,22 @@
+>>  		device_type = "memory";
+>>  		reg = <0x0 0x40000000 0x0 0x20000000>;
+>>  	};
+>> +
+>> +	reserved-memory {
+>> +		#address-cells = <2>;
+>> +		#size-cells = <2>;
+>> +		ranges;
+>> +
+>> +		qcn9000_pcie0: memory@50f00000 {
+>> +			no-map;
+>> +			reg = <0x0 0x50f00000 0x0 0x03700000>;
+>> +		};
+>> +
+>> +		qcn9000_pcie1: memory@54600000 {
+>> +			no-map;
+>> +			reg = <0x0 0x54600000 0x0 0x03700000>;
+>> +		};
+>> +	};
+>>  };
+>> 
+>>  &blsp1_spi1 {
+>> @@ -45,11 +61,42 @@
+>>  &pcie0 {
+>>  	status = "ok";
+>>  	perst-gpio = <&tlmm 58 0x1>;
+>> +
+>> +	pcie0_rp: pcie0_rp {
+>> +		reg = <0 0 0 0 0>;
+>> +
+>> +		status = "ok";
+>> +		mhi_0: qcom,mhi@0 {
+> 
+> MHI doesn't support devicetree as of now so how is this supposed to 
+> work?
+> Have you tested this series with mainline?
+> 
+> Thanks,
+> Mani
+> 
 
-  WARNING: CPU: 2 PID: 147 at kernel/workqueue.c:1473 __queue_work+0x3b8/0x3d0
-  Modules linked in: ghash_generic
-  CPU: 2 PID: 147 Comm: modprobe Not tainted
-      5.6.0-rc1-next-20200214-00068-g166c9264f0b1-dirty #545
-  Hardware name: Pine H64 model A (DT)
-  pc : __queue_work+0x3b8/0x3d0
-  Call trace:
-   __queue_work+0x3b8/0x3d0
-   queue_work_on+0x6c/0x90
-   do_init_module+0x188/0x1f0
-   load_module+0x1d00/0x22b0
+  Hi Mani,
+  This node entries will be consumed by ath11k driver and is not supposed 
+to be consumed by mhi driver.
+  And yes, it is tested on Mainline.
 
-I wasn't able to reproduce on x86 or rpi 3b+.
+  Regards,
+  Gokul
 
-This is
-
-  WARN_ON(!list_empty(&work->entry))
-
-from __queue_work(), and it happens because the init_free_wq work item
-isn't initialized in time for a crypto test that requests the gcm
-module.  Some crypto tests were recently moved earlier in boot as
-explained in commit c4741b230597 ("crypto: run initcalls for generic
-implementations earlier"), which went into mainline less than two weeks
-before the Fixes commit.
-
-Avoid the warning by statically initializing init_free_wq and the
-corresponding llist.
-
-Link: https://lore.kernel.org/lkml/20200217204803.GA13479@Red/
-Fixes: 1a7b7d922081 ("modules: Use vmalloc special flag")
-Reported-by: Corentin Labbe <clabbe.montjoie@gmail.com>
-Tested-by: Corentin Labbe <clabbe.montjoie@gmail.com>
-Tested-on: sun50i-h6-pine-h64
-Tested-on: imx8mn-ddr4-evk
-Tested-on: sun50i-a64-bananapi-m64
-Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
----
- kernel/module.c | 13 +++----------
- 1 file changed, 3 insertions(+), 10 deletions(-)
-
-diff --git a/kernel/module.c b/kernel/module.c
-index 1c5cff34d9f2..8486123ffd7a 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -91,8 +91,9 @@ EXPORT_SYMBOL_GPL(module_mutex);
- static LIST_HEAD(modules);
- 
- /* Work queue for freeing init sections in success case */
--static struct work_struct init_free_wq;
--static struct llist_head init_free_list;
-+static void do_free_init(struct work_struct *w);
-+static DECLARE_WORK(init_free_wq, do_free_init);
-+static LLIST_HEAD(init_free_list);
- 
- #ifdef CONFIG_MODULES_TREE_LOOKUP
- 
-@@ -3579,14 +3580,6 @@ static void do_free_init(struct work_struct *w)
- 	}
- }
- 
--static int __init modules_wq_init(void)
--{
--	INIT_WORK(&init_free_wq, do_free_init);
--	init_llist_head(&init_free_list);
--	return 0;
--}
--module_init(modules_wq_init);
--
- /*
-  * This is where the real work happens.
-  *
-
-base-commit: c85fb28b6f999db9928b841f63f1beeb3074eeca
--- 
-2.28.0
-
+>> +			reg = <0 0 0 0 0 >;
+>> +
+>> +			qrtr_instance_id = <0x20>;
+>> +			base-addr = <0x50f00000>;
+>> +			m3-dump-addr = <0x53c00000>;
+>> +			etr-addr = <0x53d00000>;
+>> +			qcom,caldb-addr = <0x53e00000>;
+>> +		};
+>> +	};
+>>  };
+>> 
+>>  &pcie1 {
+>>  	status = "ok";
+>>  	perst-gpio = <&tlmm 61 0x1>;
+>> +
+>> +	pcie1_rp: pcie1_rp {
+>> +		reg = <0 0 0 0 0>;
+>> +
+>> +		status = "ok";
+>> +		mhi_1: qcom,mhi@1 {
+>> +			reg = <0 0 0 0 0 >;
+>> +
+>> +			qrtr_instance_id = <0x21>;
+>> +			base-addr = <0x54600000>;
+>> +			m3-dump-addr = <0x57300000>;
+>> +			etr-addr = <0x57400000>;
+>> +			qcom,caldb-addr = <0x57500000>;
+>> +			};
+>> +		};
+>> +	};
+>>  };
+>> 
+>>  &qmp_pcie_phy0 {
+>> --
+>> 2.7.4
+>> 
