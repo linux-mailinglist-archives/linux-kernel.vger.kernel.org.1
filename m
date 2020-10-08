@@ -2,69 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9338B2875D9
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1ED82875F4
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730465AbgJHORo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 10:17:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58136 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729840AbgJHORo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 10:17:44 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7183D206A1;
-        Thu,  8 Oct 2020 14:17:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602166663;
-        bh=MImyq1wxf3lrgX+9kVfU/J30BpQJG8VyoFD/jCQpp4Y=;
-        h=Date:From:To:Cc:Subject:From;
-        b=y10zNBEl2wXkYIoHHccmF/fAiQLyXYJCe1h6wXenprlpUAgwpqfrSWcRAWSxzmTLB
-         LDpASH5w/Ie6+4OlweIcnJe8/AnBaAviMAchas8i9qInXaj6N7m+iqvBDRQWZKFVLt
-         PI3TdEYU5rTuK5t2QoTedaG0pwQj0IRSKpGVpsqI=
-Date:   Thu, 8 Oct 2020 09:23:05 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] drm/amdgpu: Use struct_size() helper in kmalloc()
-Message-ID: <20201008142305.GA21249@embeddedor>
+        id S1730535AbgJHOY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 10:24:26 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:40073 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730419AbgJHOY0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 10:24:26 -0400
+Received: by mail-ot1-f67.google.com with SMTP id l4so5623271ota.7;
+        Thu, 08 Oct 2020 07:24:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cbwKFYHPbp5GTNdG4T4mKLQORc21DXouN8jvpsAfWQE=;
+        b=FgvH2f6QjvZIcmax70DpEToIcuSy63ovD5WMv2yVk6/dgBFjE5PazSEnY8qRGmcGzH
+         AHCB4VuXZ0J4XvfrN3HQAVbpsjxAzqltNKqI3zfjNzRbvnte9j0l4rDYdrTpgzVWWP7S
+         SRQrfu8JxWTqAMVo6idCAI4dXVwJYyAiBx/rIIbozQEH5+VHcx5VrbCeickZIuWkdvWE
+         RdVH+pTPCcokGwFJWP1eoGyL1VW/KWVPyrCAK1UxP5UI9WR9SwEmoQHZkx4dCpqPFw8O
+         sDQPlNf8bP+jBra/WOa4MgAW105h2ZpLhbEWj1N1Nrh8GVEL1E1f8cum68ffQOqBliBN
+         bLyw==
+X-Gm-Message-State: AOAM530yiwVoZuEw+zeMmLMEWsatKnTK+7p42uuzJ1xwTyuAlMkm2+yi
+        C6Q/3aLH4RBMDtEbEyNGstHl3g7JbTXr
+X-Google-Smtp-Source: ABdhPJx5CFACMyMhsVj5wqDOr7VXjzKJ25j6nM0arqd7ipXHZQY8NH6go4gbElQF585d0rhOybv0Hg==
+X-Received: by 2002:a9d:7c87:: with SMTP id q7mr5365330otn.140.1602167063432;
+        Thu, 08 Oct 2020 07:24:23 -0700 (PDT)
+Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.googlemail.com with ESMTPSA id r131sm4880609oig.50.2020.10.08.07.24.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Oct 2020 07:24:21 -0700 (PDT)
+From:   Rob Herring <robh@kernel.org>
+To:     devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH 1/2] dt-bindings: powerpc: Add a schema for the 'sleep' property
+Date:   Thu,  8 Oct 2020 09:24:19 -0500
+Message-Id: <20201008142420.2083861-1-robh@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make use of the new struct_size() helper instead of the offsetof() idiom.
+Document the PowerPC specific 'sleep' property as a schema. It is
+currently only documented in booting-without-of.rst which is getting
+removed.
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: linuxppc-dev@lists.ozlabs.org
+Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ .../devicetree/bindings/powerpc/sleep.yaml    | 47 +++++++++++++++++++
+ 1 file changed, 47 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/powerpc/sleep.yaml
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
-index 5da487b64a66..30192dce7775 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
-@@ -239,8 +239,7 @@ static int amdgpu_amdkfd_remove_eviction_fence(struct amdgpu_bo *bo,
- 	if (!old)
- 		return 0;
- 
--	new = kmalloc(offsetof(typeof(*new), shared[old->shared_max]),
--		      GFP_KERNEL);
-+	new = kmalloc(struct_size(new, shared, old->shared_max), GFP_KERNEL);
- 	if (!new)
- 		return -ENOMEM;
- 
+diff --git a/Documentation/devicetree/bindings/powerpc/sleep.yaml b/Documentation/devicetree/bindings/powerpc/sleep.yaml
+new file mode 100644
+index 000000000000..6494c7d08b93
+--- /dev/null
++++ b/Documentation/devicetree/bindings/powerpc/sleep.yaml
+@@ -0,0 +1,47 @@
++# SPDX-License-Identifier: GPL-2.0-only
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/powerpc/sleep.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: PowerPC sleep property
++
++maintainers:
++  - Rob Herring <robh@kernel.org>
++
++description: |
++  Devices on SOCs often have mechanisms for placing devices into low-power
++  states that are decoupled from the devices' own register blocks.  Sometimes,
++  this information is more complicated than a cell-index property can
++  reasonably describe.  Thus, each device controlled in such a manner
++  may contain a "sleep" property which describes these connections.
++
++  The sleep property consists of one or more sleep resources, each of
++  which consists of a phandle to a sleep controller, followed by a
++  controller-specific sleep specifier of zero or more cells.
++
++  The semantics of what type of low power modes are possible are defined
++  by the sleep controller.  Some examples of the types of low power modes
++  that may be supported are:
++
++   - Dynamic: The device may be disabled or enabled at any time.
++   - System Suspend: The device may request to be disabled or remain
++     awake during system suspend, but will not be disabled until then.
++   - Permanent: The device is disabled permanently (until the next hard
++     reset).
++
++  Some devices may share a clock domain with each other, such that they should
++  only be suspended when none of the devices are in use.  Where reasonable,
++  such nodes should be placed on a virtual bus, where the bus has the sleep
++  property.  If the clock domain is shared among devices that cannot be
++  reasonably grouped in this manner, then create a virtual sleep controller
++  (similar to an interrupt nexus, except that defining a standardized
++  sleep-map should wait until its necessity is demonstrated).
++
++select: true
++
++properties:
++  sleep:
++    $ref: /schemas/types.yaml#definitions/phandle-array
++
++additionalProperties: true
 -- 
-2.27.0
+2.25.1
 
