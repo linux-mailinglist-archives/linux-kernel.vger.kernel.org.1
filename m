@@ -2,91 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC352873CA
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 14:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53F6F2873CB
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 14:05:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727781AbgJHMFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 08:05:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34382 "EHLO
+        id S1728827AbgJHMFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 08:05:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725802AbgJHMFk (ORCPT
+        with ESMTP id S1725802AbgJHMFm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 08:05:40 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F1CC061755
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 05:05:40 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id n9so4097454pgf.9
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 05:05:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Etf+vW4HmfaB4VG6dN4XAjgwjVTof2+FMxhPyxbqIoM=;
-        b=j2jxTzW7MyBoY2yfrVH/62xdEj5wGHBaBOeiSGDIz1Km3yBkVdxPBsWoRVVhmGaeD+
-         rsu19YVLi9LSSbyK3kTpiKylfkd+dMAZ8ux/1xH0rqi/IsyD8Q5AjNQrZEoo3Jb5fKsK
-         zg772rCx0Tl52PHtNsw87WtpxLCKWbYd8hy/+0RlGo/HVvDcJyo4wiz9cCIoXISeB/7e
-         7Aq/yuf68nJ40atlj+5wUMp4SYZtGfJ19evYg8w3jTK23TeYtF0U9t8X1Jv7DNx7Ejjl
-         HAEuvCpwZyp9dehePEZG0hORClcyGqZVrC/2nUvwGaBREaYzI7OUcGiQlVZq/gCAei5B
-         bPVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Etf+vW4HmfaB4VG6dN4XAjgwjVTof2+FMxhPyxbqIoM=;
-        b=QX5Lgtr+esT5UfF0oemZcWitpZeHI8zthWCeWUZLKFoLKEppRQsJLghC6yt0u8Wjip
-         ajJmIDd1KwGMaze2OW3bessOe1fC172iZOjy0mK0yh/YhkOw3Vsg4J+ezEraGo6QHUu/
-         RBGzHmIeJN/snt19ZlJnYcqRnSVawFHWmuRDJZfgcWa6hcvrW0Ozl99KuXg7ZFLKBC+0
-         z0mXb3R2r+2IkEQeVCXwHyjwu+SejX0xbrztyVjIuvSO8dorBaVFlCY60g46z9aiYoCS
-         8oqVne46NePj7VjHvkL7jcimUbgeU9DHCYa1nlftNHXYdk8fzIagpfJnwYTe9UQzXek/
-         OL6w==
-X-Gm-Message-State: AOAM532rNfrSfjfZ2aHDYdyE1CgprefVY10kvvpih7c1KjIndrI/hIK6
-        NK9E0fLgfBrveIUOC6mN38Q=
-X-Google-Smtp-Source: ABdhPJwev8L0Z9W/0vMCM7DnsstD+rRxxYujE8DoU4KKKJ797jm34vvWUAs2QMdLMpB9ju0sIWTNzg==
-X-Received: by 2002:a17:90a:1bc3:: with SMTP id r3mr4579491pjr.196.1602158739555;
-        Thu, 08 Oct 2020 05:05:39 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id i4sm15978348pjg.2.2020.10.08.05.05.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 05:05:38 -0700 (PDT)
-Date:   Thu, 8 Oct 2020 21:05:35 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shreyas Joshi <shreyas.joshi@biamp.com>, rostedt@goodmis.org,
-        shreyasjoshi15@gmail.com, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] printk: handle blank console arguments passed in.
-Message-ID: <20201008120535.GA127397@jagdpanzerIV.localdomain>
-References: <24f7a6bc-c917-2bb7-0e86-9d729c18e812@roeck-us.net>
- <20201006134328.GD32369@alley>
- <20201006163514.GE32369@alley>
- <20201006171504.GA64770@jagdpanzerIV.localdomain>
- <20201007072853.GF32369@alley>
- <20201007123044.GA509@jagdpanzerIV.localdomain>
- <be66237b-e7b2-0321-c00c-cd6fba6e3b58@roeck-us.net>
- <20201007162942.GA440@jagdpanzerIV.localdomain>
- <20201008055238.GA554@jagdpanzerIV.localdomain>
- <20201008090155.GB16837@alley>
+        Thu, 8 Oct 2020 08:05:42 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EF5DC061755;
+        Thu,  8 Oct 2020 05:05:42 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602158740;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3bluUuuSdY5rIw0qPw0iXefBMzcHgh5padXn/NethWQ=;
+        b=ahCQTcNavbgKnh16xStsfQ1yj+WCAJBHSKIP+WQJoZmyG8djnGp28PZBa9MW4eQc/oJoY0
+        w1BpIFoBA8DP7UxfP2Zk7NbmvHj0dMVGzCftrN/CJHOnj5v+fc44rpEulY/+rUpa1DlZdx
+        RUiDPmrxC5IDEEVtOnkTQd1CzdL1S5xNL8VOtL5zfnFP9wlpXWuKwcG7AEdJWUkYA6PDpQ
+        R7SaGLRtUPIe46kNDa3lYhqEuADbhBpZqUq/Hu59qJUg+FkC/Nyt55nD5o3X7o7cnNngX7
+        LGgxP02kY4au6Gw/rn99zREd6wTadeDjPM/Hru/0b4Cz03qhuxB8lfN0G71McA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602158740;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3bluUuuSdY5rIw0qPw0iXefBMzcHgh5padXn/NethWQ=;
+        b=N2yNWQRbg8TeI6w0lMawa+kCV7nPp199l9z5IVkDlrK3R82Y+7ym1CvFAjX9VzYQ31143p
+        QOEUycH1XclGVsDQ==
+To:     David Woodhouse <dwmw2@infradead.org>, x86@kernel.org
+Cc:     kvm <kvm@vger.kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 5/5] x86/kvm: Add KVM_FEATURE_MSI_EXT_DEST_ID
+In-Reply-To: <20201007122046.1113577-5-dwmw2@infradead.org>
+References: <803bb6b2212e65c568c84ff6882c2aa8a0ee03d5.camel@infradead.org> <20201007122046.1113577-1-dwmw2@infradead.org> <20201007122046.1113577-5-dwmw2@infradead.org>
+Date:   Thu, 08 Oct 2020 14:05:40 +0200
+Message-ID: <87blhcx6qz.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201008090155.GB16837@alley>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/10/08 11:01), Petr Mladek wrote:
-> 
->   + it is yet another way to affect the amount of messages
->     on console. We already have console_loglevel, ignore_loglevel.
+On Wed, Oct 07 2020 at 13:20, David Woodhouse wrote:
+> From: David Woodhouse <dwmw@amazon.co.uk>
+>
+> This allows the host to indicate that IOAPIC and MSI emulation supports
+> 15-bit destination IDs, allowing up to 32768 CPUs without interrupt
+> remapping.
+>
+> cf. https://patchwork.kernel.org/patch/11816693/ for qemu
+>
+> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+> Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>  Documentation/virt/kvm/cpuid.rst     | 4 ++++
+>  arch/x86/include/uapi/asm/kvm_para.h | 1 +
+>  arch/x86/kernel/kvm.c                | 6 ++++++
+>  3 files changed, 11 insertions(+)
+>
+> diff --git a/Documentation/virt/kvm/cpuid.rst b/Documentation/virt/kvm/cpuid.rst
+> index a7dff9186bed..1726b5925d2b 100644
+> --- a/Documentation/virt/kvm/cpuid.rst
+> +++ b/Documentation/virt/kvm/cpuid.rst
+> @@ -92,6 +92,10 @@ KVM_FEATURE_ASYNC_PF_INT          14          guest checks this feature bit
+>                                                async pf acknowledgment msr
+>                                                0x4b564d07.
+>  
+> +KVM_FEATURE_MSI_EXT_DEST_ID       15          guest checks this feature bit
+> +                                              before using extended destination
+> +                                              ID bits in MSI address
+> bits 11-5.
 
-True. Yes, there are "alternative" ways of doing this, but what we
-have to face here is - console= has been used for a long time, and
-it does, sometimes, bad things that can kill the system. And we,
-probably, don't have that many options, we need to "fix" console=
-and make it safe, while preserving the behaviour that people are
-used to by now. console= is a buggy feature by now.
+Why MSI_EXT_DEST_ID? It's enabling that for MSI and IO/APIC. The
+underlying mechanism might be the same, but APIC_EXT_DEST_ID is more
+general and then you might also make the explanation of that bit match
+the changelog.
 
-	-ss
+Thanks,
+
+        tglx
