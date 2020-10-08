@@ -2,62 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DD22287D6A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 22:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D984D287D79
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 22:50:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730707AbgJHUsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 16:48:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58908 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728766AbgJHUsK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 16:48:10 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DB5602087D;
-        Thu,  8 Oct 2020 20:48:08 +0000 (UTC)
-Date:   Thu, 8 Oct 2020 16:48:07 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Colin King <colin.king@canonical.com>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kselftest@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: Re: [PATCH][V2] selftests/ftrace: check for do_sys_openat2 in
- user-memory test
-Message-ID: <20201008164807.62582e8c@gandalf.local.home>
-In-Reply-To: <20201002132501.88992-1-colin.king@canonical.com>
-References: <20201002132501.88992-1-colin.king@canonical.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1730787AbgJHUuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 16:50:13 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:54898 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726692AbgJHUuN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 16:50:13 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 098Ke1Qi152494;
+        Thu, 8 Oct 2020 20:49:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=9QPpECvTRhPLXtDdl1S5Iws60RZ3bVfVQJEgRwWMouY=;
+ b=lr4ilGRc8i4R0TO1OtZi392Hm+pUvuGtxxmhrzgEfRoaOlsXeyLUhYCvgt/l16+QMpMs
+ VN/RfYy8EO2s9TIJ/ReBmWxvMse5IKYtauD7DvXibtvZ2AcTs84Ix0PhBSqMt8LhvEbL
+ uO5PKSlo8f+Cc4kG3VsqYzPJj952f8ql4wBsTNJHC1/ojW1Bvi5HBDlrtlhMP7EbQW8I
+ sgu+R0mQ3Azm82DZ/7jFtl6KejvYGyENpIMfuORn0xrTyZ1JDBOBTWdZWLiW3++SwoYJ
+ W1DeMCykAg4Lh18mPIipPbwU36nyXu/yJVZo0MGqPKYZEpsAzrsl+CCoIKQ+xnESG1ma /g== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 3429jur6p0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 08 Oct 2020 20:49:38 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 098KjNN5132770;
+        Thu, 8 Oct 2020 20:49:38 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 3429kk0yrj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 08 Oct 2020 20:49:38 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 098KnL8r024666;
+        Thu, 8 Oct 2020 20:49:21 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 08 Oct 2020 13:49:20 -0700
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Tony Asleson <tasleson@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-ide@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
+        pmladek@suse.com, David Lehman <dlehman@redhat.com>,
+        sergey.senozhatsky@gmail.com, jbaron@akamai.com,
+        James.Bottomley@hansenpartnership.com,
+        linux-kernel@vger.kernel.org, rafael@kernel.org,
+        martin.petersen@oracle.com, kbusch@kernel.org, axboe@fb.com,
+        sagi@grimberg.me, akpm@linux-foundation.org, orson.zhai@unisoc.com,
+        viro@zeniv.linux.org.uk
+Subject: Re: [v5 01/12] struct device: Add function callback durable_name
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1tuv41m8u.fsf@ca-mkp.ca.oracle.com>
+References: <20200925161929.1136806-1-tasleson@redhat.com>
+        <20200925161929.1136806-2-tasleson@redhat.com>
+        <20200929175102.GA1613@infradead.org>
+        <20200929180415.GA1400445@kroah.com>
+        <20e220a6-4bde-2331-6e5e-24de39f9aa3b@redhat.com>
+        <20200930073859.GA1509708@kroah.com>
+        <c6b031b8-f617-0580-52a5-26532da4ee03@redhat.com>
+        <20201001114832.GC2368232@kroah.com>
+        <72be0597-a3e2-bf7b-90b2-799d10fdf56c@redhat.com>
+        <20201008044849.GA163423@kroah.com>
+Date:   Thu, 08 Oct 2020 16:49:17 -0400
+In-Reply-To: <20201008044849.GA163423@kroah.com> (Greg Kroah-Hartman's message
+        of "Thu, 8 Oct 2020 06:48:49 +0200")
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9768 signatures=668681
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 mlxlogscore=934
+ spamscore=0 adultscore=0 mlxscore=0 malwarescore=0 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010080147
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9768 signatures=668681
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=929 mlxscore=0
+ phishscore=0 bulkscore=0 suspectscore=1 lowpriorityscore=0 spamscore=0
+ clxscore=1011 malwarescore=0 priorityscore=1501 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010080146
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  2 Oct 2020 14:25:01 +0100
-Colin King <colin.king@canonical.com> wrote:
 
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> More recent libc implementations are now using openat/openat2 system
-> calls so also add do_sys_openat2 to the tracing so that the test
-> passes on these systems because do_sys_open may not be called.
-> 
-> Thanks to Masami Hiramatsu for the help on getting this fix to work
-> correctly.
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
+Greg,
+
+>> > What text is changing? The format of of the prefix of dev_*() is well
+>> > known and has been stable for 15+ years now, right?  What is difficult
+>> > in parsing it?
+>> 
+>> Many of the storage layer messages are using printk, not dev_printk.
 >
+> Ok, then stop right there.  Fix that up.  Don't try to route around the
+> standard way of displaying log messages by creating a totally different
+> way of doing things.
 
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Couldn't agree more!
 
-Shuah,
-
-Care to take this through your tree?
-
--- Steve
+-- 
+Martin K. Petersen	Oracle Linux Engineering
