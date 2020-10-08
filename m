@@ -2,120 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2127287328
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 13:11:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2C4528732A
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 13:11:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729775AbgJHLLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 07:11:13 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:17180 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729766AbgJHLLN (ORCPT
+        id S1729783AbgJHLLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 07:11:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729761AbgJHLLk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 07:11:13 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7ef3c40000>; Thu, 08 Oct 2020 04:11:00 -0700
-Received: from [10.24.37.103] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 8 Oct
- 2020 11:11:09 +0000
-Subject: Re: [Patch 2/2] cpufreq: tegra194: Fix unlisted boot freq warning
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-CC:     <rjw@rjwysocki.net>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <linux-pm@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <ksitaraman@nvidia.com>,
-        <bbasu@nvidia.com>, Sumit Gupta <sumitg@nvidia.com>
-References: <1600276277-7290-1-git-send-email-sumitg@nvidia.com>
- <1600276277-7290-3-git-send-email-sumitg@nvidia.com>
- <20201005045414.fmntm7ejad7zxcrv@vireshk-i7>
- <2c0daaa5-4aec-925d-c1e3-0f15fb93cc20@nvidia.com>
- <20201006053856.dth6ut22pvwpgfz5@vireshk-i7>
-From:   Sumit Gupta <sumitg@nvidia.com>
-Message-ID: <7e285f41-e1ae-e352-9d1b-efd4d20ddfa3@nvidia.com>
-Date:   Thu, 8 Oct 2020 16:41:06 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Thu, 8 Oct 2020 07:11:40 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFB0EC061755;
+        Thu,  8 Oct 2020 04:11:40 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id x16so4009612pgj.3;
+        Thu, 08 Oct 2020 04:11:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TNQsuuPlQCO96OIfCTfqNv2kF5InQ49REdeIqmc413s=;
+        b=i9dBIZeQHwJjZ3PbuyRRP/YORFumtZ7Uhto+wuf99+FdCd2vVq4gF9MTdFlbniasTZ
+         Ocx+7z/0wd88XpxDoZcFTVMTxZAobauR8L+s4xP8ITsY+Julup33HBh2aPuYv+TZGDHb
+         Tfd/+gIrHskVEm5Yv/kxsg4LzPlSgnjhxvWPx2K149MpN46LiOu3FuxvQwMMPcMpuXmZ
+         rW2F6500aIbk6A+JOogQgF0vRPZosmG9yWJ2HGjL+og2Npz+PdKNVNoAlQQY78XJ4rO7
+         /O8jS97/VadIOH1TkOavHUm0VeD1mySDH9PANmFW6Yf6v60n8jnW2An/62uittjVTH3N
+         jpEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TNQsuuPlQCO96OIfCTfqNv2kF5InQ49REdeIqmc413s=;
+        b=c6msajUw8OxuM3d4YMc/HtXo2kF6+ElzC5HCOxzk1gjNFo0Gv3ywLpADIY99MNEmIM
+         7jKos2YJWjUGDSPQWTyB9azgYU3UZwe35NBIgbSJnBJ4RPoWNhMo9CSnxYHYfbS1Kw6L
+         QbqGSs9qa49xUyAzXMPl2xJT21jFNDUYI6ePOkKzjyjnAk/7Rltw7ZnxdXIjP1S9JM8y
+         wlCbZCA46O9SvInd0nQRbFy9ntrjbl79pmetEQz4foxHdfhEak+tefdBXHGDyjskKY/T
+         FP3WU4lGf4aPBiRRLF5aMboGQKLVOkdMnz3X9QUccm0QHvBYkDElaGM83CK63XM1X+Q3
+         Jyeg==
+X-Gm-Message-State: AOAM533/3gY34USbc1PD2JLY/TmNWkpoh4iClpXZHSInW/KtQ6dAOsWm
+        SfwMiCGirEEx8oaSXEjTQtZRMY0nFd3G0w8j7+c=
+X-Google-Smtp-Source: ABdhPJx14bisq4nEXCBiAV2U9hGxJ+4wH2W2fk80Cdp6lh+SEgA0gPxfUKpdwiiQtnaohFiHBvWtOsIfR+EL4uW0DUI=
+X-Received: by 2002:a65:47c2:: with SMTP id f2mr6925900pgs.4.1602155500218;
+ Thu, 08 Oct 2020 04:11:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201006053856.dth6ut22pvwpgfz5@vireshk-i7>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1602155460; bh=hR+PWuPTBEUl+VVWHX31EggS7H8qb+R7ZpsXaE0Epu0=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=ao0j86RLttzZX8O9MHWgexWKwOryKCi+GkFEnZRe2QUANKDxB4j9iHQca2GuGIi2w
-         XJ/uDV6etWopwbRNTFnkne8hr1W9A4mlQS20PcAigOJgThI9o5ftRMSM6w4T8K1Z4e
-         oz2uaH3WfUK3GZwibveyhcH/qXoctjAj/SLyvlb/RtAiTT0fX1BUxVMs6dbC+Yhk6b
-         Z7+vBPqp8soOWkFvuGp46yYc/cDMrY7uiW4wMRrv0FsGS2muwRef2KaCtjpYelelwO
-         E9IsNr76dARDUVjgoxofjgW8EcUdj/WDdFh+rFELLxxILtMF6jPbmfegKgjTeH0uWt
-         VLcgWKh77tCPQ==
+References: <20201008020936.19894-1-muhammad.husaini.zulkifli@intel.com>
+ <20201008020936.19894-4-muhammad.husaini.zulkifli@intel.com>
+ <9deff9d8-b8da-7cc2-19f3-e5baab010d92@xilinx.com> <DM6PR11MB28769233CEC9023E3D9720F9B80B0@DM6PR11MB2876.namprd11.prod.outlook.com>
+In-Reply-To: <DM6PR11MB28769233CEC9023E3D9720F9B80B0@DM6PR11MB2876.namprd11.prod.outlook.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 8 Oct 2020 14:12:29 +0300
+Message-ID: <CAHp75VfRF75uCGD3uAuYBvKi1LZOtVDAfiOHKxDhKr=9LP+nEg@mail.gmail.com>
+Subject: Re: [PATCH v4 3/4] mmc: sdhci-of-arasan: Add structure device pointer
+ in probe
+To:     "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>
+Cc:     Michal Simek <michal.simek@xilinx.com>,
+        "Hunter, Adrian" <adrian.hunter@intel.com>,
+        "Shevchenko, Andriy" <andriy.shevchenko@intel.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Raja Subramanian, Lakshmi Bai" 
+        <lakshmi.bai.raja.subramanian@intel.com>,
+        "Wan Mohamad, Wan Ahmad Zainie" 
+        <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        "arnd@arndb.de" <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>
->>>> Warning coming during boot because the boot freq set by bootloader
->>>> gets filtered out due to big freq steps while creating freq_table.
->>>> Fixing this by setting closest ndiv value from freq_table.
->>>> Warning:
->>>>     cpufreq: cpufreq_online: CPU0: Running at unlisted freq
->>>>     cpufreq: cpufreq_online: CPU0: Unlisted initial frequency changed
->>>>
->>>> Also, added change in init to wait till current frequency becomes
->>>> equal or near to the previously requested frequency. This is done
->>>> because it takes some time to restore the previous frequency while
->>>> turning-on non-boot cores during exit from SC7(Suspend-to-RAM).
->>>
->>> So you are trying to figure if the frequency is listed in freq-table or not,
->>> otherwise setting the frequency to a value you think is appropriate. Right ?
->> During boot, want to set the frequency from freq_table which is closest to
->> the one set by bootloader.
-> 
-> Right.
-> 
->> During resume from suspend-to-idle, want to restore the frequency which was
->> set on non-boot cores before they were hotplug powered off.
-> 
-> Why exactly do you want to do that ? Rather you should provide
-> online/offline hooks for the cpufreq driver and do light-weight
-> suspend/resume as is done by cpufreq-dt.c as well.
-> 
-Thank you for pointer. Added online hook to avoid warning during 
-hot-plug-on for the non-boot CPU's while exiting from Suspend-to-RAM. Will
-send new version with the changes.
+On Thu, Oct 8, 2020 at 1:36 PM Zulkifli, Muhammad Husaini
+<muhammad.husaini.zulkifli@intel.com> wrote:
+> >From: Michal Simek <michal.simek@xilinx.com>
+> >Sent: Thursday, October 8, 2020 3:35 PM
+> >On 08. 10. 20 4:09, muhammad.husaini.zulkifli@intel.com wrote:
+> >> From: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
 
->>>
->>> This is what the cpufreq core already does when it printed these boot time
->>> messages. Do we really need to add this much code in here ?
->> We want to avoid the warning messages.
-> 
-> Hmm, okay.
-> 
->>>
->>> If you really don't want to see the warning, how about fixing it the way cpufreq
->>> core does ? i.e. with this call:
->>>
->>> ret = __cpufreq_driver_target(policy, policy->cur - 1, CPUFREQ_RELATION_L);
->>>
->> The cpufreq core change will help in bootup case but not during the case of
->> resume.
->> In this change, reading the previously stored value and restoring it will
->> also fix the warning message during resume.
-> 
-> You were getting the message during resume as well ? Why ? The
-> firmware is updating the frequency to a previous value ? If that is
-> so, you should just set the frequency again to some other value during
-> resume to fix it.
-Yes, it boots at a predefined frequency and then some time is taken to 
-restore the last frequency which software requested before entering 
-Suspend-to-RAM. We don't need to re-write the register again.
+...
 
-> 
-> --
-> viresh
-> 
+> >> @@ -1521,6 +1521,7 @@ static int sdhci_arasan_probe(struct
+> >platform_device *pdev)
+> >>      struct sdhci_pltfm_host *pltfm_host;
+> >>      struct sdhci_arasan_data *sdhci_arasan;
+> >>      struct device_node *np = pdev->dev.of_node;
+> >> +    struct device *dev = &pdev->dev;
+> >>      const struct sdhci_arasan_of_data *data;
+> >>
+> >>      match = of_match_node(sdhci_arasan_of_match, pdev->dev.of_node);
+> >>
+> >
+> >This is not what we discussed. You create new variable and you should just use it
+> >in that function.
+> >
+> >s/pdev->dev\./dev->/g
+>
+> For widely used in future, we plan to put it here and not specific to Keembay function only.
+> Any comment on this @Andy Shevchenko?
+
+I'm not sure what comment from me is needed. I'm on the same page with
+Michal, i.e. replace current users of &pdev->dev with a new temporary
+variable.
+
+-- 
+With Best Regards,
+Andy Shevchenko
