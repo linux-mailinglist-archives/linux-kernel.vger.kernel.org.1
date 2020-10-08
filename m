@@ -2,183 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66E3B287AFF
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 19:30:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D591287B0E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 19:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732088AbgJHRan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 13:30:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43302 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729377AbgJHRan (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 13:30:43 -0400
-Received: from sstabellini-ThinkPad-T480s (c-24-130-65-46.hsd1.ca.comcast.net [24.130.65.46])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6402222200;
-        Thu,  8 Oct 2020 17:30:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602178241;
-        bh=7ueGKOqJhqJU4X35iZZ5iwrpzJ9RJyWVf3WNj3wZ6og=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=mG7HHv90QHFOAyD/+NDvDDhgWHFoFKUHwrOoEmgtBWFMY/YSPkpVZxyu3QFBck3AE
-         2ofxuvpnrGA7qfo+MEdGBfcFVC1sOUy5/kJv0UEtH5Lyd+ZudJ2ECBghtii8yTSwxN
-         6VzQ6RZLQQKWBm9Q3wvxQQdxqUMr5nr9oXXLFMlQ=
-Date:   Thu, 8 Oct 2020 10:30:40 -0700 (PDT)
-From:   Stefano Stabellini <sstabellini@kernel.org>
-X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        Julien Grall <julien@xen.org>, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Alex_Benn=C3=A9e?= <alex.bennee@linaro.org>,
-        takahiro.akashi@linaro.org, jgross@suse.com,
-        boris.ostrovsky@oracle.com
-Subject: Re: [PATCH] arm/arm64: xen: Fix to convert percpu address to gfn
- correctly
-In-Reply-To: <20201008172806.1591ebb538946c5ee93d372a@kernel.org>
-Message-ID: <alpine.DEB.2.21.2010081030180.23978@sstabellini-ThinkPad-T480s>
-References: <160190516028.40160.9733543991325671759.stgit@devnote2> <b205ec9c-c307-2b67-c43a-cf2a67179484@xen.org> <alpine.DEB.2.21.2010051526550.10908@sstabellini-ThinkPad-T480s> <20201006114058.b93839b1b8f35a470874572b@kernel.org>
- <alpine.DEB.2.21.2010061040350.10908@sstabellini-ThinkPad-T480s> <20201008172806.1591ebb538946c5ee93d372a@kernel.org>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S1732131AbgJHReR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 13:34:17 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:11966 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731239AbgJHReP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 13:34:15 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 098HWvIg146981;
+        Thu, 8 Oct 2020 13:33:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=09MNPVb2/KqUtXvd9/dCZR1Z3CPKTq8w8DFTpsm+TYM=;
+ b=kzHX2l6mPoQWf1XhMI9u6mQgmFOQjoO+CH5pk6/4C3l9YHHjWX0eUlMI8AKNv9IcE/o0
+ j+i6lpGyyLPJlnS0eRaBUO+7OjAix24cpKzUbpNoGZqtUmLlyTBIYzvGDLKNbGW4ySqt
+ zPAHM1BdUtd198Naa39Hkd0OfGLXlPdAxRP5HPvwo4WWyj/MUNjmIT8gErtfkRXDFUUn
+ L0Mq6jeREG0+apyzhTMIxwz3/PFzSFMnysyZN4cbL0wbGpG6Gc9FruUFScE58vVd1f/v
+ gYpu4KyEe3I3mrkRFpKq2WPRzI3BRjk2Y1i274FikOmqtSoVsK4PrSUYn93wgbZiw6sA mg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3426tw8u6u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 08 Oct 2020 13:33:06 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 098HX5x3148011;
+        Thu, 8 Oct 2020 13:33:05 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3426tw8tm9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 08 Oct 2020 13:33:04 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 098HN7wc014873;
+        Thu, 8 Oct 2020 17:32:15 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06ams.nl.ibm.com with ESMTP id 33xgjh5jx2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 08 Oct 2020 17:32:15 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 098HWDXF27394474
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 8 Oct 2020 17:32:13 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0D4B111C054;
+        Thu,  8 Oct 2020 17:32:13 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0DD4011C050;
+        Thu,  8 Oct 2020 17:32:10 +0000 (GMT)
+Received: from [9.79.223.22] (unknown [9.79.223.22])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  8 Oct 2020 17:32:09 +0000 (GMT)
+Subject: Re: [RFC PATCH] mm: Fetch the dirty bit before we reset the pte
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nick Piggin <npiggin@gmail.com>, Peter Xu <peterx@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>
+References: <20201008092627.399131-1-aneesh.kumar@linux.ibm.com>
+ <CAHk-=whwY0WT046fqM-zdHu9vamUjgkvmd36gCd4qSaeYy98nA@mail.gmail.com>
+From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Message-ID: <2de084c8-9497-7877-56b3-bf1efc615e2e@linux.ibm.com>
+Date:   Thu, 8 Oct 2020 23:02:09 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <CAHk-=whwY0WT046fqM-zdHu9vamUjgkvmd36gCd4qSaeYy98nA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-08_11:2020-10-08,2020-10-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 clxscore=1015 mlxscore=0 priorityscore=1501 adultscore=0
+ impostorscore=0 spamscore=0 mlxlogscore=999 malwarescore=0 bulkscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2010080128
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 8 Oct 2020, Masami Hiramatsu wrote:
-> On Tue, 6 Oct 2020 10:56:52 -0700 (PDT)
-> Stefano Stabellini <sstabellini@kernel.org> wrote:
+On 10/8/20 10:32 PM, Linus Torvalds wrote:
+> On Thu, Oct 8, 2020 at 2:27 AM Aneesh Kumar K.V
+> <aneesh.kumar@linux.ibm.com> wrote:
+>>
+>> In copy_present_page, after we mark the pte non-writable, we should
+>> check for previous dirty bit updates and make sure we don't lose the dirty
+>> bit on reset.
 > 
-> > On Tue, 6 Oct 2020, Masami Hiramatsu wrote:
-> > > On Mon, 5 Oct 2020 18:13:22 -0700 (PDT)
-> > > Stefano Stabellini <sstabellini@kernel.org> wrote:
-> > > 
-> > > > On Mon, 5 Oct 2020, Julien Grall wrote:
-> > > > > Hi Masami,
-> > > > > 
-> > > > > On 05/10/2020 14:39, Masami Hiramatsu wrote:
-> > > > > > Use per_cpu_ptr_to_phys() instead of virt_to_phys() for per-cpu
-> > > > > > address conversion.
-> > > > > > 
-> > > > > > In xen_starting_cpu(), per-cpu xen_vcpu_info address is converted
-> > > > > > to gfn by virt_to_gfn() macro. However, since the virt_to_gfn(v)
-> > > > > > assumes the given virtual address is in contiguous kernel memory
-> > > > > > area, it can not convert the per-cpu memory if it is allocated on
-> > > > > > vmalloc area (depends on CONFIG_SMP).
-> > > > > 
-> > > > > Are you sure about this? I have a .config with CONFIG_SMP=y where the per-cpu
-> > > > > region for CPU0 is allocated outside of vmalloc area.
-> > > > > 
-> > > > > However, I was able to trigger the bug as soon as CONFIG_NUMA_BALANCING was
-> > > > > enabled.
-> > > > 
-> > > > I cannot reproduce the issue with defconfig, but I can with Masami's
-> > > > kconfig.
-> > > > 
-> > > > If I disable just CONFIG_NUMA_BALANCING from Masami's kconfig, the
-> > > > problem still appears.
-> > > > 
-> > > > If I disable CONFIG_NUMA from Masami's kconfig, it works, which is
-> > > > strange because CONFIG_NUMA is enabled in defconfig, and defconfig
-> > > > works.
-> > > 
-> > > Hmm, strange, because when I disabled CONFIG_NUMA_BALANCING, the issue
-> > > disappeared.
-> > > 
-> > > --- config-5.9.0-rc4+   2020-10-06 11:36:20.620107129 +0900
-> > > +++ config-5.9.0-rc4+.buggy     2020-10-05 21:04:40.369936461 +0900
-> > > @@ -131,7 +131,8 @@
-> > >  CONFIG_ARCH_SUPPORTS_NUMA_BALANCING=y
-> > >  CONFIG_CC_HAS_INT128=y
-> > >  CONFIG_ARCH_SUPPORTS_INT128=y
-> > > -# CONFIG_NUMA_BALANCING is not set
-> > > +CONFIG_NUMA_BALANCING=y
-> > > +CONFIG_NUMA_BALANCING_DEFAULT_ENABLED=y
-> > >  CONFIG_CGROUPS=y
-> > >  CONFIG_PAGE_COUNTER=y
-> > >  CONFIG_MEMCG=y
-> > > 
-> > > So buggy config just enabled NUMA_BALANCING (and default enabled)
-> > 
-> > Yeah but both NUMA and NUMA_BALANCING are enabled in defconfig which
-> > works fine...
+> No, we'll just remove that entirely.
 > 
-> Hmm, I found that the xen_vcpu_info was allocated on km if the Dom0 has
-> enough memory. On my environment, if Xen passed 2GB of RAM to Dom0, it
-> was allocated on kernel linear mapped address, but with 1GB of RAM, it
-> was on vmalloc area.
-> As far as I can see, it seems that the percpu allocates memory from
-> 2nd chunk if the default memory size is small.
+> Do you have a test-case that shows a problem? I have a patch that I
+> was going to delay until 5.10 because I didn't think it mattered in
+> practice..
 > 
-> I've built a kernel with patch [1] and boot the same kernel up with
-> different dom0_mem option with "trace_event=percpu:*" kernel cmdline.
-> Then got following logs.
-> 
-> Boot with 4GB:
->           <idle>-0     [000] ....     0.543208: percpu_create_chunk: base_addr=000000005d5ad71c
->  [...]
->          systemd-1     [000] ....     0.568931: percpu_alloc_percpu: reserved=0 is_atomic=0 size=48 align=8 base_addr=00000000fa92a086 off=32672 ptr=000000008da0b73d
->          systemd-1     [000] ....     0.568938: xen_guest_init: Xen: alloc xen_vcpu_info ffff800011003fa0 id=000000008da0b73d
->          systemd-1     [000] ....     0.586635: xen_starting_cpu: Xen: xen_vcpu_info ffff800011003fa0, vcpup ffff00092f4ebfa0 per_cpu_offset[0] ffff80091e4e8000
-> 
-> (NOTE: base_addr and ptr are encoded to the ids, not actual address
->  because of "%p" printk format)
-> 
-> In this log, we can see the xen_vcpu_info is allocated NOT on the
-> new chunk (this is the 2nd chunk). As you can see, the vcpup is in
-> the kernel linear address in this case, because it came from the
-> 1st kernel embedded chunk.
-> 
-> 
-> Boot with 1GB
->           <idle>-0     [000] ....     0.516221: percpu_create_chunk: base_addr=000000008456b989
-> [...]
->          systemd-1     [000] ....     0.541982: percpu_alloc_percpu: reserved=0 is_atomic=0 size=48 align=8 base_addr=000000008456b989 off=17920 ptr=00000000c247612d
->          systemd-1     [000] ....     0.541989: xen_guest_init: Xen: alloc xen_vcpu_info 7dff951f0600 id=00000000c247612d
->          systemd-1     [000] ....     0.559690: xen_starting_cpu: Xen: xen_vcpu_info 7dff951f0600, vcpup fffffdffbfcdc600 per_cpu_offset[0] ffff80002aaec000
-> 
-> On the other hand, when we boot the dom0 with 1GB memory, the xen_vcpu_info
-> is allocated on the new chunk (the id of base_addr is same).
-> Since the data of new chunk is allocated on vmalloc area, vcpup points
-> the vmalloc address.
-> 
-> So, the bug seems not to depend on the kconfig, but depends on where
-> the percpu memory is allocated from.
-> 
-> > [...]
-> > 
-> > > > The fix is fine for me. I tested it and it works. We need to remove the
-> > > > "Fixes:" line from the commit message. Ideally, replacing it with a
-> > > > reference to what is the source of the problem.
-> > > 
-> > > OK, as I said, it seems commit 9a9ab3cc00dc ("xen/arm: SMP support") has
-> > > introduced the per-cpu code. So note it instead of Fixes tag.
-> > 
-> > ...and commit 9a9ab3cc00dc was already present in 5.8 which also works
-> > fine with your kconfig. Something else changed in 5.9 causing this
-> > breakage as a side effect. Commit 9a9ab3cc00dc is there since 2013, I
-> > think it is OK -- this patch is fixing something else.
-> 
-> I think the commit 9a9ab3cc00dc theoletically wrong because it uses
-> __pa() on percpu address. But that is not guaranteed according to the
-> comment on per_cpu_ptr_to_phys() as below.
-> 
-> ----
->  * percpu allocator has special setup for the first chunk, which currently
->  * supports either embedding in linear address space or vmalloc mapping,
->  * and, from the second one, the backing allocator (currently either vm or
->  * km) provides translation.
->  *
->  * The addr can be translated simply without checking if it falls into the
->  * first chunk. But the current code reflects better how percpu allocator
->  * actually works, and the verification can discover both bugs in percpu
->  * allocator itself and per_cpu_ptr_to_phys() callers. So we keep current
->  * code.
-> ----
-> 
-> So we must use per_cpu_ptr_to_phys() instead of __pa() macro for percpu
-> address. That's why I pointed this will fix the commit 9a9ab3cc00dc.
 
-Thank you for the analysis. We are going to try to get the patch
-upstream as soon as we can.
+Unfortunately, I don't have a test case. That was observed by code 
+inspection while I was fixing syzkaller report.
+
+> The second part of this patch would be to add a sequence count
+> protection to fast-GUP pinning, so that GUP and fork() couldn't race,
+> but I haven't written that part.
+> 
+> Here's the first patch anyway. If you actually have a test-case where
+> this matters, I guess I need to apply it now..
+> 
+>                     Linus
+> 
+
+
+-aneesh
