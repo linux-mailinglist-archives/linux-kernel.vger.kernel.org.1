@@ -2,112 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B8762873EF
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 14:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 425982873E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 14:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729763AbgJHMT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 08:19:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729739AbgJHMT4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 08:19:56 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82631C061755;
-        Thu,  8 Oct 2020 05:19:54 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id e10so3864789pfj.1;
-        Thu, 08 Oct 2020 05:19:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=QK7x4WnMDD1w1AJigxZca0jvkUm/6wXO+3vn95iqnN0=;
-        b=ah5DZbSny0r8zD0poMrz7u2KbugGuHbiELrKWzDy7luR9o49V1lzS7Ippkm2TDz7GD
-         JvRELWTqlBeqQ02BgSm5dNckoFTqY5QrcbDMkPBr0E/wNgbO63Piu/9A8Xh3X3y3Y2Nz
-         pfqiPSjXxMDUnv+9AUcHbuGLRHR5sBA+RG6Cg66KNbJiVJQPAslnxhPI3mMDJSK54056
-         CUV/qNslf+7yEl1+Wjtxgv6lEcyeTJ9oi4nnw0kNEuBaxoXMMK+KP+6G5Yp3bYEcjK0F
-         d69386wwX9db+jCIr6pSByetkcpL0YWa45+phiPvoeJ10I0e+ItSydAsBX0WPHO7iRXQ
-         FTTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=QK7x4WnMDD1w1AJigxZca0jvkUm/6wXO+3vn95iqnN0=;
-        b=PGzMCyVSO9ErrXbC+9/+QekqDVHMc+R0J4+P8VDnZA0vVZCSbQCV1d3bDy1DeeKryu
-         Bb/RpQMpU75cqtFu95M78sVNhi9c3zo7SiKenhwuJAb7gA+WmqyhiuBanarWgPS9pVnM
-         /R/bri5V2ibXqZphYthGE2OpLpbpBX8cbwLq6NhFFBF16N1Kol/wKhwQ/L/BHs3lxYDh
-         sDqH2PybjaoXjK2KylclodD+A9pUjh3tABWAhLpMxiFK1vhMZc+QsTJ0nixu4wGE4Rba
-         F5PRK9V3HoAEZM6V7ksGJ4jDKC6oGE9amT1MjnVIJO3eL1SVayuaWcieFnT/pBypFQ6k
-         7cHA==
-X-Gm-Message-State: AOAM530ZcsG850wltHSUu6mLHG4YkrCZLkPsxCSwTng9Y54CiLCynNQW
-        Q5vxqdgo4cLHdAs+UcMbFPqxKWbHH6Ag
-X-Google-Smtp-Source: ABdhPJy+OvvEdPcMzlBntde+cxsU2+kLyABp3rjbzeAEnj8gMImZKC8vY6ovtHlmqMTewoBcOEnXuA==
-X-Received: by 2002:a17:90a:bc2:: with SMTP id x2mr3876963pjd.54.1602159594117;
-        Thu, 08 Oct 2020 05:19:54 -0700 (PDT)
-Received: from localhost.localdomain ([47.242.140.181])
-        by smtp.gmail.com with ESMTPSA id c7sm7233914pfj.84.2020.10.08.05.19.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 05:19:53 -0700 (PDT)
-From:   Pujin Shi <shipujin.t@gmail.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Ursula Braun <ubraun@linux.ibm.com>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hankinsea@gmail.com,
-        Pujin Shi <shipujin.t@gmail.com>
-Subject: [PATCH 2/2] net: smc: fix missing brace warning for old compilers
-Date:   Thu,  8 Oct 2020 20:19:29 +0800
-Message-Id: <20201008121929.1270-2-shipujin.t@gmail.com>
-X-Mailer: git-send-email 2.18.4
-In-Reply-To: <20201008121929.1270-1-shipujin.t@gmail.com>
-References: <20201008121929.1270-1-shipujin.t@gmail.com>
+        id S1729596AbgJHMTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 08:19:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54764 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725802AbgJHMTi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 08:19:38 -0400
+Received: from localhost (p54b3300d.dip0.t-ipconnect.de [84.179.48.13])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4F9B020B1F;
+        Thu,  8 Oct 2020 12:19:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602159577;
+        bh=fiqDhCMV8n0MQQAK3+HhaM5O8Q7sYp1IPV9oFOCkGkM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ddW8H0o0niAGS4BCnJQdIbJXPI9ZpVGFsLr4OEkhSVahL33fMwrO5tmcyCT/y8R4z
+         CdOk9YEfciDL2R7Ic02Tc88dTEIuFhklyFAaBDo2mkRD3RInpc4fVzEZYgBXrB1+6S
+         Hf76KAd/Qy9wRlM2sLMK2/s7CaqTmvQeRXiijqxU=
+Date:   Thu, 8 Oct 2020 14:19:32 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Caleb Connolly <caleb@connolly.tech>
+Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        Mukesh Savaliya <msavaliy@codeaurora.org>,
+        ~postmarketos/upstreaming@lists.sr.ht, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH 5/5] i2c: geni: sdm845: dont perform DMA for the
+ oneplus6
+Message-ID: <20201008121932.GA897@ninjato>
+References: <20201007174736.292968-1-caleb@connolly.tech>
+ <20201007174736.292968-6-caleb@connolly.tech>
+ <20201008100352.GF76290@ninjato>
+ <27ffa058-c800-4ce7-4db5-8896ad136abf@connolly.tech>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="NzB8fVQJ5HfG6fxh"
+Content-Disposition: inline
+In-Reply-To: <27ffa058-c800-4ce7-4db5-8896ad136abf@connolly.tech>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For older versions of gcc, the array = {0}; will cause warnings:
 
-net/smc/smc_llc.c: In function 'smc_llc_add_link_local':
-net/smc/smc_llc.c:1212:9: warning: missing braces around initializer [-Wmissing-braces]
-  struct smc_llc_msg_add_link add_llc = {0};
-         ^
-net/smc/smc_llc.c:1212:9: warning: (near initialization for 'add_llc.hd') [-Wmissing-braces]
-net/smc/smc_llc.c: In function 'smc_llc_srv_delete_link_local':
-net/smc/smc_llc.c:1245:9: warning: missing braces around initializer [-Wmissing-braces]
-  struct smc_llc_msg_del_link del_llc = {0};
-         ^
-net/smc/smc_llc.c:1245:9: warning: (near initialization for 'del_llc.hd') [-Wmissing-braces]
+--NzB8fVQJ5HfG6fxh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-2 warnings generated
+On Thu, Oct 08, 2020 at 10:46:05AM +0000, Caleb Connolly wrote:
+> On 2020-10-08 11:03, Wolfram Sang wrote:
+> > On Wed, Oct 07, 2020 at 05:49:35PM +0000, Caleb Connolly wrote:
+> >> The OnePlus 6/T has the same issues as the c630 causing a crash when D=
+MA
+> >> is used for i2c, so disable it.
+> >>
+> >> https://patchwork.kernel.org/patch/11133827/
+> >> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
+> > May I ask for a quick review here, so we can get this into 5.9 if
+> > qcom-geni maintainers agree this is good to go?
+>=20
+> Sorry it wasn't mentioned in my first message, this patch depends on the=
+=20
+> rest in the series found here:=20
+> https://lore.kernel.org/linux-arm-msm/20201007174736.292968-1-caleb@conno=
+lly.tech/#r
 
-Fixes: 4dadd151b265 ("net/smc: enqueue local LLC messages")
-Signed-off-by: Pujin Shi <shipujin.t@gmail.com>
----
- net/smc/smc_llc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Ah, so the device is not upstream yet and there is no hurry. Good to
+know. Thanks!
 
-diff --git a/net/smc/smc_llc.c b/net/smc/smc_llc.c
-index d09d9d2d0bfd..85df0ef60500 100644
---- a/net/smc/smc_llc.c
-+++ b/net/smc/smc_llc.c
-@@ -1209,7 +1209,7 @@ static void smc_llc_process_srv_add_link(struct smc_link_group *lgr)
- /* enqueue a local add_link req to trigger a new add_link flow */
- void smc_llc_add_link_local(struct smc_link *link)
- {
--	struct smc_llc_msg_add_link add_llc = {0};
-+	struct smc_llc_msg_add_link add_llc = {};
- 
- 	add_llc.hd.length = sizeof(add_llc);
- 	add_llc.hd.common.type = SMC_LLC_ADD_LINK;
-@@ -1242,7 +1242,7 @@ static void smc_llc_add_link_work(struct work_struct *work)
-  */
- void smc_llc_srv_delete_link_local(struct smc_link *link, u8 del_link_id)
- {
--	struct smc_llc_msg_del_link del_llc = {0};
-+	struct smc_llc_msg_del_link del_llc = {};
- 
- 	del_llc.hd.length = sizeof(del_llc);
- 	del_llc.hd.common.type = SMC_LLC_DELETE_LINK;
--- 
-2.18.1
 
+--NzB8fVQJ5HfG6fxh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9/A9AACgkQFA3kzBSg
+KbaAdRAAiLf1VXITCS45WVKXM7QITSNtCiswN+R+RFL3n18cgTEpjKOoN4fqqUPy
+ngVwYlcFd3/qszlZ1KDkUHm5TvTzxWB4cANL9BhnXhB7DfPgsONGix6CBBm0oBzm
+dUrl9Li/aZElj43tHXPsntDbqWhQQc8SMGZXl4p/gPdB6OqgQ81El+0h8M0rDPzp
+plErJXs2DryZ85hzXgvhyGfxmFpmqmzJAnhpEbCwX9H9+U/YYSBokYL5jK9cX6dK
+n9SCAslPphTszQutta3jN/XvR78kZgQFpPs77o0gm4w/DQc5BKVQ1GURy2p/CrJg
+taYqvxy1MsWbRj4KfkkgOGR23mflPHnk/+WXcRB/9L/JUmifo/PpAGlGiaQis6H+
+gxxqsqqhub51V8VE55mnkfEpfSGR2t+sTs5FgKQG4/wb+K0gUuXU2Qr219/P8UWB
+T5yC9NOew5tpFqJGDfw1aezkW+U/kHz7lG5bLOGwHQCTA6v4TgFaPamiqIPBcXT4
+qPyOzP9QSF8ETdqC3PCpTFllpHXn+/0r812DPvJTYww9TyE5dPEEG+B+OR/54/ZJ
+Pu++c1Kr0P1VPeT8Akh9ezA9ezQM2DX0eqmB9sGmREXlddPbJldOvniJ5uUT2rM1
+TZzwF+AN/yL8oDOPkD9BrkiBCmARZCFkp67w980dyofMtjhzatk=
+=2INH
+-----END PGP SIGNATURE-----
+
+--NzB8fVQJ5HfG6fxh--
