@@ -2,146 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF1ED28732F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 13:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A868D287338
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 13:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726719AbgJHLNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 07:13:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53079 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725944AbgJHLNj (ORCPT
+        id S1728627AbgJHLWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 07:22:38 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:49996 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725871AbgJHLWi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 07:13:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602155617;
+        Thu, 8 Oct 2020 07:22:38 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602156155;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=YBZn6nJCSKSkT+CI1BoIQTp+DUMyPcnk9FhFCR2fIho=;
-        b=OdALhx1eGsz0ophlnH1/A9lTYE7oAW01jo/voVD9x2YoRVXta7k8y7XpZjsQvsL0ClRzjA
-        jui13LA+gqix9UKw/nB5pS2ZRoKRuGK615CR8PXp0yaaMGZTxhJcM8xgq02ZKAxGhtxx55
-        PpRuxF5wt6j/fuxSuNSubCBlyIPrOrA=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-566-DgWZlSQXN1OwNY13iUgpVA-1; Thu, 08 Oct 2020 07:13:36 -0400
-X-MC-Unique: DgWZlSQXN1OwNY13iUgpVA-1
-Received: by mail-ed1-f72.google.com with SMTP id i22so2075275edu.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 04:13:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YBZn6nJCSKSkT+CI1BoIQTp+DUMyPcnk9FhFCR2fIho=;
-        b=gYRtEb4Ob2TsP+cJiCiV3FPR1UdDXauY8s1AebzW8+TH8J+PiUu6qUnKFM4pPZsLaE
-         UaR/nHKLWpT73IDVjJGH6WEY1kB+3U3tNHn3FO7IkvQCsBnBUlfemXkO6Mjr39hJEays
-         q6hiT4cVg5lkZ1A72H0KMSlO6RfxecJZUejPKx1pU5etS8zWQJdgTntajZ+wgVUQTrnB
-         OM5CdFno/vjRxnX0BQpgjzaUsfkB4WfNYU3gaJcLnm27qrXF3GrywuDX8CNRS2cDfCJ2
-         wr4fd8AAPSC52IaU1UDBWRNutn45dLqJBOre9yO8mc7nu/dYqrYno0Kd394e4ayxUNkN
-         vl+w==
-X-Gm-Message-State: AOAM5317xMjhfeevmvpVYa62wzw8vJAft6ukICt954r4WgafS+06elty
-        Tilif41Y6YA2kxZNP/sr/t/5pB1pLgcKXLqDEzlHK2+ClGWL6Gvw1h7Q+EuRf+pkW9RvsPWZ6re
-        QxuYXv45oTMbbFnSX5ORniG5t
-X-Received: by 2002:a17:906:c1c3:: with SMTP id bw3mr8032622ejb.516.1602155614909;
-        Thu, 08 Oct 2020 04:13:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwEgivjRQZ4xl3+6on1EF37giFgkAAQ1outiY+0shIhvn0v2U82j8Sh6TGq4UfML8q48DryFQ==
-X-Received: by 2002:a17:906:c1c3:: with SMTP id bw3mr8032602ejb.516.1602155614686;
-        Thu, 08 Oct 2020 04:13:34 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id g8sm3775588ejp.73.2020.10.08.04.13.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Oct 2020 04:13:34 -0700 (PDT)
-Subject: Re: [PATCH V8 1/5] PCI: Add defines for Designated Vendor-Specific
- Extended Capability
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     "David E. Box" <david.e.box@linux.intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>, dvhart@infradead.org,
-        andy@infradead.org, bhelgaas@google.com,
-        alexey.budankov@linux.intel.com,
-        Andy Shevchenko <andy.shevchenko@gmail.com>, rjw@rjwysocki.net,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-pci@vger.kernel.org
-References: <20201007005118.GA3230211@bjorn-Precision-5520>
- <dcaea6b4e1d5b4a452c304fadb034b7b1e1c40af.camel@linux.intel.com>
- <20201007065451.GB6148@dell>
- <e09f4c44-e3d0-e14b-297f-6981516ea3bf@redhat.com>
- <20201008072912.GE1763265@dell>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <da9f985a-c935-8a01-3308-daaaddb723f5@redhat.com>
-Date:   Thu, 8 Oct 2020 13:13:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=b6+lOlv1iwgaOYJSo0B4bAoDFZBDK2Xe5o6Luzef3Lk=;
+        b=BoHx8+F2Jc247mGCaTP9Bpi2UfNR1qiiNjRlYM1D7nivnl6P8yyna+zV6d9XWdZNKmWcUM
+        6s1r/DJqZYyRlwN66odfdx8a4zW1EoLkHs7cf3cWuRTzx7UIgLVGdp7jlMiMKba/j1yUvT
+        6CeEBD6rzbmRJrfZXQNbymhHyp6TNCnnJKoD8o/6fVU7m1vAs1SSNCSiXpCzBuqj4chIWQ
+        7sseCTxpIqnFxvdveCyx0WOsdWWdkDyRdWLG/RTJZ0eZpP8YX5ouiOYP1egkbGN5kZ2zsW
+        nqHSWt2DoWrXP7lVXUxbpsugFHbrgwxWuKe6WMiKEhR7IEzIK+T+x+Qw6ybPeQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602156155;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=b6+lOlv1iwgaOYJSo0B4bAoDFZBDK2Xe5o6Luzef3Lk=;
+        b=Q+enYPn5ITD2l0pill+t8nPwCu4NEfLJeB4vBS5U8ed363RD6htO77XrmpBcQnlWgPE0NI
+        0SziIb5gmmIWafDA==
+To:     Marc Zyngier <maz@kernel.org>, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Sowjanya Komatineni <skomatineni@nvidia.com>,
+        Venkat Reddy Talla <vreddytalla@nvidia.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v3 1/4] genirq/irqdomain: Allow partial trimming of irq_data hierarchy
+In-Reply-To: <20201007124544.1397322-2-maz@kernel.org>
+References: <20201007124544.1397322-1-maz@kernel.org> <20201007124544.1397322-2-maz@kernel.org>
+Date:   Thu, 08 Oct 2020 13:22:35 +0200
+Message-ID: <87d01t2c90.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201008072912.GE1763265@dell>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Oct 07 2020 at 13:45, Marc Zyngier wrote:
+> +/**
+> + * irq_domain_trim_hierarchy - Trim the uninitialized part of a irq hierarchy
+> + * @virq:	IRQ number to trim where the hierarchy is to be trimmed
+> + *
+> + * Drop the partial irq_data hierarchy from the level where the
+> + * irq_data->chip is NULL.
+> + *
+> + * Its only use is to be able to trim levels of hierarchy that do not
+> + * have any real meaning for this interrupt, and that the driver leaves
+> + * uninitialized in its .alloc() callback.
+> + */
+> +static void irq_domain_trim_hierarchy(unsigned int virq)
+> +{
+> +	struct irq_data *tail, *irq_data = irq_get_irq_data(virq);
+> +
+> +	/* It really needs to be a hierarchy, and not a single entry */
+> +	if (!irq_data->parent_data)
+> +		return;
+> +
+> +	/* Skip until we find a parent irq_data without a populated chip */
+> +	while (irq_data->parent_data && irq_data->parent_data->chip)
+> +		irq_data = irq_data->parent_data;
+> +
+> +	/* All levels populated */
+> +	if (!irq_data->parent_data)
+> +		return;
+> +
+> +	pr_info("IRQ%d: trimming hierarchy from %s\n",
+> +		virq, irq_data->parent_data->domain->name);
+> +
+> +	/* Sever the inner part of the hierarchy...  */
+> +	tail = irq_data->parent_data;
+> +	irq_data->parent_data = NULL;
+> +	__irq_domain_free_hierarchy(tail);
+> +}
 
-On 10/8/20 9:29 AM, Lee Jones wrote:
-> On Wed, 07 Oct 2020, Hans de Goede wrote:
-> 
->> Hi,
->>
->> On 10/7/20 8:54 AM, Lee Jones wrote:
->>> On Tue, 06 Oct 2020, David E. Box wrote:
->>>
->>>> On Tue, 2020-10-06 at 19:51 -0500, Bjorn Helgaas wrote:
->>>>> On Tue, Oct 06, 2020 at 03:45:54PM -0700, David E. Box wrote:
->>>>>> Hi Bjorn,
->>>>>>
->>>>>> This patch has been acked and unchanged for weeks. Is it possible
->>>>>> to
->>>>>> get this pulled into next? We have SIOV and CXL related work that
->>>>>> is
->>>>>> using these definitions. Thanks.
->>>>>
->>>>> I acked it because I expected you to merge it along with the rest of
->>>>> the series.
->>>>>
->>>>> I guess I could merge this patch via the PCI tree if you really want,
->>>>> but that ends up being a hassle because we have to worry about which
->>>>> order things get merged to Linus' tree.  Better if the whole series
->>>>> is
->>>>> merged via the same tree.
->>>>
->>>> Agreed. The hope is that this series is ready for the next merge window
->>>> but no ack yet on V8. And if the series does not make it I'd like this
->>>> patch to at least get in.
->>>
->>> If Bjorn is happy to take this patch so late in the release cycle then
->>> please go ahead.  The other patches are due for v5.11.
->>
->> I agree (that the other patches are for 5.11) talking about merging
->> this series patch 2 is a mfd patch and patches 3-5 are drivers/platform/x86
->> patches.
->>
->> Lee, FYI I'm taking over drivers/platform/x86 maintainership from Andy.
-> 
-> Congratulations, Hans.
-> 
->> I suggest that we merge the entire series through a single tree
->> (with acks or reviewed-by-s from the other maintainer)
->> either through the mfd tree or through the drivers/platform/x86
->> tree. Since most changes are in drivers/platform/x86 the latter
->> probably makes more sense, but either way works for me.
->> So how would you like to proceed with this series ?
-> 
-> I'm happy either way, but bear in mind that, due to the intrinsic
-> heterogeneous nature of MFD, I already have infrastructure to easily
-> apply (and send pull-requests for) cross-subsystem patch-sets.
+I like that way more than the previous version, but there are still
+quite some dangeroos waiting to bite.
 
-Ok, you applying the entire series to the mfd tree is fine with me.
+Just for robustness sake we should do the following:
 
-I'll try to review the entire series next week and then we'll see
-from there.
+ Let the alloc() callback which decides to break the hierarchy tell the
+ core code about it.  Conveying this through an error return might be
+ tedious, but the alloc() callback should call:
 
-Regards,
+static inline void irq_disconnect_hierarchy(struct irq_data *irqd)
+{
+    irqd->chip = ERR_PTR(-ENOTCONN);
+}
 
-Hans
+to signal that this is intenionally the end of the hierarchy.
 
+Then the above function would not only trim, but also sanity check the
+hierarchy.
+
+	trim = NULL;
+        
+        for (irqd = irq_data; irqd; irqd = irqd->parent_data) {
+                  if (!irqd->chip && !trim)
+                  	return -EINVAL;
+
+		  if (trim && irqd->chip)
+                  	return -EINVAL;
+                 
+                  if (IS_ERR(irqd->chip) {
+                  	if (PTR_ERR(irqd->chip) != -ENOTCONN)
+                        	return -EINVAL;
+                        trim = irqd;
+                  }
+        }
+
+        for (irqd = irq_data; trim && irqd; irqd = irqd->parent_data) {
+        	if (trim == irqd->parent_data) {
+                	irqd->parent_data = NULL;
+                        free_stuff(trim);
+                }
+        }
+
+	return 0;
+
+or some less convoluted variant of it :)
+
+That way we catch cases which do outright stupid crap and we let the
+allocation fail which needs to be handled at the outmost caller anyway
+instead of crashing later in the middle of the irq chip chain.
+
+Thanks,
+
+        tglx
