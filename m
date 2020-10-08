@@ -2,136 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9F63286FB5
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:41:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20D50287005
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:55:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728303AbgJHHk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 03:40:57 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:29358 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728040AbgJHHku (ORCPT
+        id S1728782AbgJHHyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 03:54:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728743AbgJHHyb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 03:40:50 -0400
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20201008074048epoutp03c176b5e9051eb354de312b4626310f93~79G6V833b2851528515epoutp031
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 07:40:48 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20201008074048epoutp03c176b5e9051eb354de312b4626310f93~79G6V833b2851528515epoutp031
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1602142848;
-        bh=tnVpPq5RduDpY/hro1ifqwIj0aBN5FZ2kF5JbnaqwLE=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=qbxZ4bkLr6DV4tiUUKscoaFmLTQZVHUH+qozo2oOQB3mUkl+56zCBqDUcXlj3iUb/
-         y6w8C1BrkFc2QfLvaWbFom7g3twEn+nHsWpNagcx1L4tggEYKQAt0B+yLWueWjQZJM
-         RzH0aJKzuWgHq393v0jGnuXPnCD9iWsWCoY0LX74=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20201008074047epcas1p27f32825fc2ab3d151a9e5897349a77ef~79G6Cja2b0879108791epcas1p26;
-        Thu,  8 Oct 2020 07:40:47 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.40.154]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4C6NRH5ZkMzMqYkb; Thu,  8 Oct
-        2020 07:40:43 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        4E.2C.09543.972CE7F5; Thu,  8 Oct 2020 16:40:41 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20201008074041epcas1p14111dc3070c66fce8d775e2fbae39f15~79GzypXgW1333513335epcas1p16;
-        Thu,  8 Oct 2020 07:40:41 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201008074041epsmtrp1134546067f4fa22f6debf47f9d99a476~79GzyAxK72784527845epsmtrp10;
-        Thu,  8 Oct 2020 07:40:41 +0000 (GMT)
-X-AuditID: b6c32a35-35dff70000002547-cd-5f7ec2790be4
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        4C.5D.08745.972CE7F5; Thu,  8 Oct 2020 16:40:41 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.113.221.102]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20201008074040epsmtip1579bd5b0901662e0c16af30e051e17c6~79GzgNg8y3068830688epsmtip1Q;
-        Thu,  8 Oct 2020 07:40:40 +0000 (GMT)
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-To:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     mka@chromium.org, rostedt@goodmis.org, mingo@redhat.com,
-        cw00.choi@samsung.com, chanwoo@kernel.org,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com
-Subject: [PATCH 0/3] PM / devfreq: Add devfreq_frequency tracepoint to track
- frequency change
-Date:   Thu,  8 Oct 2020 16:54:00 +0900
-Message-Id: <20201008075403.26181-1-cw00.choi@samsung.com>
+        Thu, 8 Oct 2020 03:54:31 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21092C0613D6;
+        Thu,  8 Oct 2020 00:54:31 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id r10so3572217pgb.10;
+        Thu, 08 Oct 2020 00:54:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :in-reply-to:references;
+        bh=+UEtOZ7eFEPFXRY1fIK0hRtr84aEIUrt41wmuOK+xgg=;
+        b=VzGnhu9w1XiqyxHi9u3p9HeKoHnmocTiTSFclG3q3f+eOp/0u1KUfPdyNNLCptI99d
+         BSmJkv5jSH/V5D6I6hYRuyqzL3vAV7xsYPeGngHm8mA5L3/9HJbfXQ4Xu3wwMD51hVh7
+         F2sPUz9+tY10aIyW6I/MhFspsw+f2+H8LCzQhkqekjSILXEe+2AVuHf2Fbt4x0RAVeSN
+         ybAYBeyLl01pH6U8NdVhnMlK9gNkc1BXBp/b0jRHRzxZAP4gSix8BiPqpKjdAaMgK2Fv
+         63VY8FpqtCqCnwLBIBtm2gAoqvXn0eEo4B1gcfbPKm+2XP3zBGEIn1pVjmdxQbYDboic
+         V+lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:in-reply-to:references;
+        bh=+UEtOZ7eFEPFXRY1fIK0hRtr84aEIUrt41wmuOK+xgg=;
+        b=dBaFKDi6IoiFMVz2ttS5CD0qwY4+LHFi7Za6iTh6V2DMzwMN1EDgN/5pCPkWkWeGf4
+         SWpguc+Pd3OUwIbZ3J+2NfxHJrs8pvfC5hWYL2aKt48/ZfPQ3+OyP+lQHiXaddPKtpR8
+         f4aElclsh+/8YCZlFjCc+rk0FiFrTMo5YSXYsH8z+w2YnoPeWZR9tLSQsLV0kdX/Dcyr
+         zQAGa6bDSZNhUcr1CddRtvnBudwtlRK272/hxoxdT5sAgHd5/4zMMNpkgE+VYUyxjFhf
+         GFEisf5A6FeXgYWtTVlt07XkyOR9nbrOO1z6QGfItNOBwc3Y10V9ar1IvUfeoOqMtdol
+         RlnA==
+X-Gm-Message-State: AOAM531bYDqkMfOyo33I8FqgBEGa35tBF3DkowqimxwXCd78d39+3uul
+        sRe3CBk+Z+kJkQRQJClf5/M=
+X-Google-Smtp-Source: ABdhPJzRNvFW9fEHPvYm2m5gg7LeIGTXsZtW9seA+qnH3C9IgNw3vgr0VPXAR6sFRlgs22r7ExeX6A==
+X-Received: by 2002:aa7:8e54:0:b029:142:2501:34d2 with SMTP id d20-20020aa78e540000b0290142250134d2mr6276079pfr.43.1602143669573;
+        Thu, 08 Oct 2020 00:54:29 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.61])
+        by smtp.gmail.com with ESMTPSA id k206sm6777106pfd.126.2020.10.08.00.54.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Oct 2020 00:54:29 -0700 (PDT)
+From:   yulei.kernel@gmail.com
+X-Google-Original-From: yuleixzhang@tencent.com
+To:     akpm@linux-foundation.org, naoya.horiguchi@nec.com,
+        viro@zeniv.linux.org.uk, pbonzini@redhat.com
+Cc:     linux-fsdevel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xiaoguangrong.eric@gmail.com,
+        kernellwp@gmail.com, lihaiwei.kernel@gmail.com,
+        Yulei Zhang <yuleixzhang@tencent.com>,
+        Xiao Guangrong <gloryxiao@tencent.com>
+Subject: [PATCH 10/35] dmemfs: introduce max_alloc_try_dpages parameter
+Date:   Thu,  8 Oct 2020 15:54:00 +0800
+Message-Id: <d616c23875137d79376f9b7f03afad48c8ac418c.1602093760.git.yuleixzhang@tencent.com>
 X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrIKsWRmVeSWpSXmKPExsWy7bCmgW7lobp4g45rehYTb1xhsbj+5Tmr
-        xdmmN+wWl3fNYbP43HuE0eLSgQVMFp83PGa0uN24gs1iX8cDJgdOj9kNF1k8WvbdYvfYtKqT
-        zeP9vqtsHn1bVjF6fN4kF8AWlW2TkZqYklqkkJqXnJ+SmZduq+QdHO8cb2pmYKhraGlhrqSQ
-        l5ibaqvk4hOg65aZA3SVkkJZYk4pUCggsbhYSd/Opii/tCRVISO/uMRWKbUgJafAskCvODG3
-        uDQvXS85P9fK0MDAyBSoMCE74+/6n8wFDzkrfqw/wN7AOIGji5GTQ0LAROLthWbmLkYuDiGB
-        HYwSRxb/ZodwPjFKdLy6wgLhfGaUWLR2FytMy5f7zVCJXYwSOzbsYIVwvjBKHNtxnxmkik1A
-        S2L/ixtsILaIgJXE6f8dYEuYBeYzSvy9+5MRJCEsEC9xrfkAWAOLgKrEz2cH2UFsXqCGpw3L
-        2SDWyUus3nAArFlC4BS7xKQtn5ghEi4S/2e8Z4SwhSVeHd/CDmFLSbzsb4OyqyVWnjzCBtHc
-        wSixZf8FqCeMJfYvnczUxcgBdJKmxPpd+hBhRYmdv+eCzWQW4JN497WHFaREQoBXoqNNCKJE
-        WeLyg7tMELakxOL2Tqg7PSS2td0EO01IIFZi0uVdjBMYZWchLFjAyLiKUSy1oDg3PbXYsMAQ
-        OZ42MYLTmpbpDsaJbz/oHWJk4mA8xCjBwawkwpvuXRMvxJuSWFmVWpQfX1Sak1p8iNEUGGAT
-        maVEk/OBiTWvJN7Q1MjY2NjCxNDM1NBQSZz34S2FeCGB9MSS1OzU1ILUIpg+Jg5OqQambGv7
-        zdwHn91d/a5OzrOhOOaK1MymQF9B5ocnolcoJ1gJT13sNyG8YeIk0yqT89I76o/oL78oPTd6
-        /iEFKQuh2Wm3Ww5FlJnqeJ239CvWuDiPb1NW8M78dr5bU+5tvSVcau9ywIyFTXrTb+njAuUR
-        q45tWqJ3zTrlZOnbD0+XxJ6ZIceZ/4Ote9aKaYb3m85w+Cv+tOJj9p4t1qN77csnh6RFQu9n
-        Xg1PE1WqM//EUen99e6/TVvuSfhaP1Zx4Et4veF866Ku8BlXCl7tF/d5Mql9/fZIAQ/ezOtx
-        +40YTwc47bL91Tnprj1jxM5dL58GFCxzS+10ylKv0p0p06k0d/vyzcEJnb6VffMSduxWYinO
-        SDTUYi4qTgQATNuNgvQDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuplluLIzCtJLcpLzFFi42LZdlhJTrfyUF28waJtbBYTb1xhsbj+5Tmr
-        xdmmN+wWl3fNYbP43HuE0eLSgQVMFp83PGa0uN24gs1iX8cDJgdOj9kNF1k8WvbdYvfYtKqT
-        zeP9vqtsHn1bVjF6fN4kF8AWxWWTkpqTWZZapG+XwJXxd/1P5oKHnBU/1h9gb2CcwNHFyMkh
-        IWAi8eV+M0sXIxeHkMAORol70/czQiQkJaZdPMrcxcgBZAtLHD5cDFHziVFi4fMGsBo2AS2J
-        /S9usIHYIgI2EncXX2MBsZkFljNKzG0VBLGFBWIlTk1dzgxiswioSvx8dpAdxOYVsJJ42rCc
-        DWKXvMTqDQeYJzDyLGBkWMUomVpQnJueW2xYYJSXWq5XnJhbXJqXrpecn7uJERxiWlo7GPes
-        +qB3iJGJg/EQowQHs5IIb7p3TbwQb0piZVVqUX58UWlOavEhRmkOFiVx3q+zFsYJCaQnlqRm
-        p6YWpBbBZJk4OKUamE5PvCprkfdQ6PeGhdOvdAlz5e5rX75ZIMbZ/5rLitRY/5mzux8kKoWL
-        P+GYsDleNnrHkivzV+tPjc5IqPWfqX3x4p51RYWP2yfMdmO6vLOi+MeJDffTGLfeufiZdbHH
-        5eO6xq80S556PDWsDW7dfOUU55m3TL82aOfd5JWNuCeqeIzT8eTqWUZvr8fZJXc63QiYOnPL
-        2t7knctaBV7Ez2JjOvj/wlt3E3km9V+hIhu3PGBpO7W/h0FMo/17y69i6TsTbOprPC+q5HKU
-        bzm7dzHT3rnunsbskx22cj2JcWD37r+/bvaEgz93Oh522yX67N2ZgPcHp6ptM1mZ0VFs98r1
-        UP4JH2tXXTmH+hmZr1KVWIozEg21mIuKEwER+n0MoAIAAA==
-X-CMS-MailID: 20201008074041epcas1p14111dc3070c66fce8d775e2fbae39f15
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201008074041epcas1p14111dc3070c66fce8d775e2fbae39f15
-References: <CGME20201008074041epcas1p14111dc3070c66fce8d775e2fbae39f15@epcas1p1.samsung.com>
+In-Reply-To: <cover.1602093760.git.yuleixzhang@tencent.com>
+References: <cover.1602093760.git.yuleixzhang@tencent.com>
+In-Reply-To: <cover.1602093760.git.yuleixzhang@tencent.com>
+References: <cover.1602093760.git.yuleixzhang@tencent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add devfreq_tracepoint to track the correct timing of frequency change
-with following information:
-- device name
-- current frequency
-- previous frequency
-- load when change frequency
-- tracepoint path : /sys/kernel/debug/tracing/events/devfreq_frequency
+From: Yulei Zhang <yuleixzhang@tencent.com>
 
-And add devfreq_update_target() function to unify the frequency change code
-on both devfreq core and devfreq passive governor because there are redundant
-duplicate code. Lastly, Use fixed indentation size to improve readability
-for 'devfreq_monitor' tracepoint.
+It specifies the dmem page number allocated at one time, then
+multiple radix entries can be created. That will relief the
+allocation pressure and make page fault more fast.
 
-Matthias already sent the patch[1]. Make patch3 by editing patch[1].
-[1]https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2108015.html
+However that could cause no dmem page mmapped to userspace
+even if there are some free dmem pages.
 
-Chanwoo Choi (2):
-  trace: events: devfreq: Use fixed indentation size to improve readability
-  PM / devfreq: Unify frequency change to devfreq_update_target func
+Set it to 1 to completely disable this behavior.
 
-Matthias Kaehlcke (1):
-  PM / devfreq: Add tracepoint for frequency changes
+Signed-off-by: Xiao Guangrong <gloryxiao@tencent.com>
+Signed-off-by: Yulei Zhang <yuleixzhang@tencent.com>
+---
+ fs/dmemfs/inode.c | 41 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 41 insertions(+)
 
- drivers/devfreq/devfreq.c          | 37 +++++++++++++++++++++-----
- drivers/devfreq/governor.h         |  1 +
- drivers/devfreq/governor_passive.c | 42 +++++++-----------------------
- include/trace/events/devfreq.h     | 30 ++++++++++++++++++++-
- 4 files changed, 70 insertions(+), 40 deletions(-)
-
+diff --git a/fs/dmemfs/inode.c b/fs/dmemfs/inode.c
+index 4dacbf7e6844..6932d73edab6 100644
+--- a/fs/dmemfs/inode.c
++++ b/fs/dmemfs/inode.c
+@@ -34,6 +34,8 @@ MODULE_LICENSE("GPL v2");
+ #define CREATE_TRACE_POINTS
+ #include "trace.h"
+ 
++static uint __read_mostly max_alloc_try_dpages = 1;
++
+ struct dmemfs_mount_opts {
+ 	unsigned long dpage_size;
+ };
+@@ -46,6 +48,44 @@ enum dmemfs_param {
+ 	Opt_dpagesize,
+ };
+ 
++static int
++max_alloc_try_dpages_set(const char *val, const struct kernel_param *kp)
++{
++	uint sval;
++	int ret;
++
++	ret = kstrtouint(val, 0, &sval);
++	if (ret)
++		return ret;
++
++	/* should be 1 at least */
++	if (!sval)
++		return -EINVAL;
++
++	max_alloc_try_dpages = sval;
++	return 0;
++}
++
++static struct kernel_param_ops alloc_max_try_dpages_ops = {
++	.set = max_alloc_try_dpages_set,
++	.get = param_get_uint,
++};
++
++/*
++ * it specifies the dmem page number allocated at one time, then
++ * multiple radix entries can be created. That will relief the
++ * allocation pressure and make page fault more fast.
++ *
++ * however that could cause no dmem page mmapped to userspace
++ * even if there are some free dmem pages
++ *
++ * set it to 1 to completely disable this behavior
++ */
++fs_param_cb(max_alloc_try_dpages, &alloc_max_try_dpages_ops,
++	    &max_alloc_try_dpages, 0644);
++__MODULE_PARM_TYPE(max_alloc_try_dpages, "uint");
++MODULE_PARM_DESC(max_alloc_try_dpages, "Set the dmem page number allocated at one time, should be 1 at least");
++
+ const struct fs_parameter_spec dmemfs_fs_parameters[] = {
+ 	fsparam_string("pagesize", Opt_dpagesize),
+ 	{}
+@@ -317,6 +357,7 @@ radix_get_create_entry(struct vm_area_struct *vma, unsigned long fault_addr,
+ 	}
+ 	rcu_read_unlock();
+ 
++	try_dpages = min(try_dpages, max_alloc_try_dpages);
+ 	/* entry does not exist, create it */
+ 	addr = dmem_alloc_pages_vma(vma, fault_addr, try_dpages, &dpages);
+ 	if (!addr) {
 -- 
-2.17.1
+2.28.0
 
