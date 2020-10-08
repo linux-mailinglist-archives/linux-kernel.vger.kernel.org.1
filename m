@@ -2,74 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DDB4286D35
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 05:38:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BD80286D3C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 05:40:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728021AbgJHDiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 23:38:11 -0400
-Received: from mail-il1-f206.google.com ([209.85.166.206]:47604 "EHLO
-        mail-il1-f206.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726400AbgJHDiL (ORCPT
+        id S1728054AbgJHDkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 23:40:51 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:33720 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726400AbgJHDku (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 23:38:11 -0400
-Received: by mail-il1-f206.google.com with SMTP id z14so3120244ilb.14
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 20:38:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=4IhbBH7ECghcPFerwikAMQpqWj6YlBpaCR+/1lLbfIE=;
-        b=SzNXD6w46RmLgPJLlHAeegXZ1zaFztq0IO7Qh7PkI58ODZ6NLUY5XFInWEhk50frry
-         +v6mdlBOCo/OzfOij+8WtNyu8dB/ippxC21Z6G3SkWmDD9n9EjjaBSuIAboAywnWNwPU
-         IobLpuiZduJcNjLyIdzNhw0MAebrwUycPl/aSsYnRX/6IGqlRwqnK08kXw2NVoq8Sxo7
-         zBZ35BKxvBZB2X90VxdGH2REMMl8OsZKxyXswdg7W0BzczpqYQw0gf12eaqHUoPvj5KF
-         ensFLIs+EqmUnIZBxqh1aLc6vg2pNxXgpp7N/VClL+ibJEFKOBcFOqOlx3drrOCz2rcf
-         tP0w==
-X-Gm-Message-State: AOAM531gZhv+UVTyPLlANaiSJguvXLg3YNBZXjJGfoZScc4/Qk+cUYuj
-        ufWqRFYsq8lHf+4Bt56n87gU/FQB/wUA2fSKchQzGXhnFgbb
-X-Google-Smtp-Source: ABdhPJynKSURyz8krzVv92HNweDLHB/5PqX1t0MirYXocBnDSftoIzE01f7AZnfI+TcgJdlhKPHkNqcCx/gg/MZ7dJ+aWSiS2SjA
+        Wed, 7 Oct 2020 23:40:50 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UBGOO3q_1602128447;
+Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UBGOO3q_1602128447)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 08 Oct 2020 11:40:48 +0800
+Date:   Thu, 8 Oct 2020 11:40:47 +0800
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+To:     tj@kernel.org, axboe@kernel.dk
+Cc:     baolin.wang7@gmail.com, linux-block@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] block: Remove redundant 'return' statement
+Message-ID: <20201008034047.GA96391@VM20190228-100.tbsite.net>
+Reply-To: Baolin Wang <baolin.wang@linux.alibaba.com>
+References: <633f73addfc154700b2f983bee6230f82de4c984.1601253090.git.baolin.wang@linux.alibaba.com>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:f30a:: with SMTP id m10mr2888088ioh.164.1602128289047;
- Wed, 07 Oct 2020 20:38:09 -0700 (PDT)
-Date:   Wed, 07 Oct 2020 20:38:09 -0700
-In-Reply-To: <0000000000009323e705ae870d48@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008dab1205b1208fe6@google.com>
-Subject: Re: KASAN: use-after-free Read in delete_partition
-From:   syzbot <syzbot+b8639c8dcb5ec4483d4f@syzkaller.appspotmail.com>
-To:     anant.thazhemadam@gmail.com, axboe@kernel.dk,
-        bgolaszewski@baylibre.com, dan.j.williams@intel.com,
-        dragonjetli@gmail.com, gregkh@linuxfoundation.org, hch@lst.de,
-        hl1998@protonmail.com, jack@suse.cz, jean-philippe@linaro.org,
-        johannes.thumshirn@wdc.com, jroedel@suse.de,
-        linux-block@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, rafael@kernel.org,
-        saravanak@google.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <633f73addfc154700b2f983bee6230f82de4c984.1601253090.git.baolin.wang@linux.alibaba.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+Hi,
 
-commit 08fc1ab6d748ab1a690fd483f41e2938984ce353
-Author: Christoph Hellwig <hch@lst.de>
-Date:   Tue Sep 1 09:59:41 2020 +0000
+On Mon, Sep 28, 2020 at 08:42:26AM +0800, Baolin Wang wrote:
+> Remove redundant 'return' statement for 'void' functions.
+> 
+> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 
-    block: fix locking in bdev_del_partition
+Gentle ping?
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1259b1e7900000
-start commit:   f75aef39 Linux 5.9-rc3
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3c5f6ce8d5b68299
-dashboard link: https://syzkaller.appspot.com/bug?extid=b8639c8dcb5ec4483d4f
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15c43c79900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=173dfa1e900000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: block: fix locking in bdev_del_partition
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> ---
+>  block/blk-iocost.c    | 2 +-
+>  block/blk-iolatency.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+> index ef9476f..e38c406 100644
+> --- a/block/blk-iocost.c
+> +++ b/block/blk-iocost.c
+> @@ -3343,7 +3343,7 @@ static int __init ioc_init(void)
+>  
+>  static void __exit ioc_exit(void)
+>  {
+> -	return blkcg_policy_unregister(&blkcg_policy_iocost);
+> +	blkcg_policy_unregister(&blkcg_policy_iocost);
+>  }
+>  
+>  module_init(ioc_init);
+> diff --git a/block/blk-iolatency.c b/block/blk-iolatency.c
+> index f90429c..81be009 100644
+> --- a/block/blk-iolatency.c
+> +++ b/block/blk-iolatency.c
+> @@ -1046,7 +1046,7 @@ static int __init iolatency_init(void)
+>  
+>  static void __exit iolatency_exit(void)
+>  {
+> -	return blkcg_policy_unregister(&blkcg_policy_iolatency);
+> +	blkcg_policy_unregister(&blkcg_policy_iolatency);
+>  }
+>  
+>  module_init(iolatency_init);
+> -- 
+> 1.8.3.1
