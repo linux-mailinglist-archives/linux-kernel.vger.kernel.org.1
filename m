@@ -2,197 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85F4828771E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 17:28:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BFC0287722
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 17:28:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731031AbgJHP2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 11:28:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37458 "EHLO
+        id S1731046AbgJHP2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 11:28:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731011AbgJHP2C (ORCPT
+        with ESMTP id S1730550AbgJHP2u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 11:28:02 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E08BC0613D7
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 08:28:01 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id g7so6509778iov.13
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 08:28:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=m8iZ8MjkSc6erbT/UXuLX8pK+PMOfNjl6qhqMPOTqMQ=;
-        b=TDVK74UH5Cx1P4TZPLEfge0uEYCsREV3Ep420h4PYroi4S1NxPWSCc2wbh1SY9LSZS
-         IYBZ3286+WCNciOgwdhueW3w+kS9HCqeVSGrIVXChmhhZlInS1bSMCzfLJjL0dGj3cBz
-         S7IeRN9S5w2rQMpK9q1KdpSful71GMMb0o4j/rFkBuL7GveYD4ocLy3UqvKgqBiGD27d
-         U0MeRhqcDmLYznPEU1hpmTDfiXDCah0+ZnPViog8jF1C6si9fJXK9d4yFHlIJcUHsL+A
-         RXlztD/bWiI4z+Gr2kd5v2uuXD7SdRxuDxzgNobOlpZIFhzsPH1Xf7oShdBTcJJoN91n
-         ZFcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=m8iZ8MjkSc6erbT/UXuLX8pK+PMOfNjl6qhqMPOTqMQ=;
-        b=hntZ1asC150t7Ygsez3Hr8kBeF/ay0okiJDCBGK+luko1dJp1N9f03U7wDkHCObhFM
-         y5u6iagZxWp29P9M4F7a0nrxmHay95uEvmSMKtr+GwCdRQmztvW1yfElVmG1v89niWHq
-         TsvQZ0mkEJi+ImyXCrE7Sxj2gKM7Y9xqo+Z0nH1QauQNM2hUbVEOeYrmeR8Nv/BAGtad
-         on4CbKNB8WqG77sQWUDldRZOSrjqfMlcTecw1XE/H87yfxoSum2NN9ajWvTSjtkn0iIJ
-         dXDKJBIUNilSa+oYhqLnS5E7446Iws3A2BTuD8jawrmbIj6PW0EPrcOz/BX9BRBx9RuF
-         VKjQ==
-X-Gm-Message-State: AOAM532yPa1z1oxHlSQt/Cs5iC8JXuECOP4qYtSeXbnb5hG52LBPCx2C
-        XujFOzPAbvkQtekzqnsN0MfzCj9CdwvBHg==
-X-Google-Smtp-Source: ABdhPJwVRB/C7li7I0p6fC6QrodonEwUPbNeUGqrvSEOZ4X7lkqXM8jleZiOqjeOZsb9uIZW7PQXfQ==
-X-Received: by 2002:a02:3213:: with SMTP id j19mr7167710jaa.135.1602170880139;
-        Thu, 08 Oct 2020 08:28:00 -0700 (PDT)
-Received: from p1.localdomain ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id l77sm2866260ill.4.2020.10.08.08.27.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 08:27:59 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org
-Cc:     peterz@infradead.org, oleg@redhat.com, tglx@linutronix.de,
-        Jens Axboe <axboe@kernel.dk>,
-        Roman Gershman <romger@amazon.com>
-Subject: [PATCH 4/4] task_work: use TIF_NOTIFY_SIGNAL if available
-Date:   Thu,  8 Oct 2020 09:27:52 -0600
-Message-Id: <20201008152752.218889-5-axboe@kernel.dk>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201008152752.218889-1-axboe@kernel.dk>
-References: <20201008152752.218889-1-axboe@kernel.dk>
+        Thu, 8 Oct 2020 11:28:50 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC42C061755
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 08:28:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=eMtKrlQQKRmARj/Su5+vTDP7DsJJNDxLBfECFqu9/4w=; b=QXd8my33emxXUIn4dhR9cR4u/q
+        XcySjEJJEYIOfrVZAQHZkzraIcVO23qAUCwZr8ku5G4bK94yW2Qtq8Vg+3pJqPV3PiQs20Rclz/JW
+        asDLwvS98y2rB6A14NFGwACZoDAsKVEwhN1FIRIY1wIw51PIlJPBlLa5nl2Z9wwWHXMEmTUI+gItz
+        D+LrLNLsEs2E6fiD4xwutEKArs7k6QpJKr5oaBWYxSkvbSnj11xQFaja7Ed9sx2OmTd728HEsXxFG
+        gy4lpQntcCC5XEuvn//sCjWJWZDPiehfuBEn5CZDFWJKzrokbK0niND7XKadD7oFdihsJy3RSnVQI
+        USTwUnCQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kQXqX-00007Q-8J; Thu, 08 Oct 2020 15:28:45 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 54998300B22;
+        Thu,  8 Oct 2020 17:28:44 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 439982B7801A1; Thu,  8 Oct 2020 17:28:44 +0200 (CEST)
+Date:   Thu, 8 Oct 2020 17:28:44 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Marcelo Tosatti <mtosatti@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Nitesh Narayan Lal <nitesh@redhat.com>
+Subject: Re: [patch 1/2] nohz: only wakeup a single target cpu when kicking a
+ task
+Message-ID: <20201008152844.GB2628@hirez.programming.kicks-ass.net>
+References: <20201007180151.623061463@redhat.com>
+ <20201007180229.724302019@redhat.com>
+ <20201008145940.GG6026@xz-x1>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201008145940.GG6026@xz-x1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the arch supports TIF_NOTIFY_SIGNAL, then use that for TWA_SIGNAL as
-it's more efficient than using the signal delivery method. This is
-especially true on threaded applications, where ->sighand is shared
-across threads, but it's also lighter weight on non-shared cases.
+On Thu, Oct 08, 2020 at 10:59:40AM -0400, Peter Xu wrote:
+> On Wed, Oct 07, 2020 at 03:01:52PM -0300, Marcelo Tosatti wrote:
+> > +static void tick_nohz_kick_task(struct task_struct *tsk)
+> > +{
+> > +	int cpu = task_cpu(tsk);
+> > +
+> > +	/*
+> > +	 * If the task concurrently migrates to another cpu,
+> > +	 * we guarantee it sees the new tick dependency upon
+> > +	 * schedule.
+> > +	 *
+> > +	 *
+> > +	 * set_task_cpu(p, cpu);
+> > +	 *   STORE p->cpu = @cpu
+> > +	 * __schedule() (switch to task 'p')
+> > +	 *   LOCK rq->lock
+> > +	 *   smp_mb__after_spin_lock()          STORE p->tick_dep_mask
+> > +	 *   tick_nohz_task_switch()            smp_mb() (atomic_fetch_or())
+> > +	 *      LOAD p->tick_dep_mask           LOAD p->cpu
+> > +	 */
+> > +
+> > +	preempt_disable();
+> 
+> Pure question: is preempt_disable() required here?  Same question to
+> tick_nohz_full_kick_all().
 
-io_uring is a heavy consumer of TWA_SIGNAL based task_work. On my test
-box, even just using 16 threads shows a nice improvement running an
-io_uring based echo server.
+I think it serializes against hotplug.
 
-stock kernel:
-0.01% <= 0.1 milliseconds
-95.86% <= 0.2 milliseconds
-98.27% <= 0.3 milliseconds
-99.71% <= 0.4 milliseconds
-100.00% <= 0.5 milliseconds
-100.00% <= 0.6 milliseconds
-100.00% <= 0.7 milliseconds
-100.00% <= 0.8 milliseconds
-100.00% <= 0.9 milliseconds
-100.00% <= 1.0 milliseconds
-100.00% <= 1.1 milliseconds
-100.00% <= 2 milliseconds
-100.00% <= 3 milliseconds
-100.00% <= 3 milliseconds
-1378930.00 requests per second
-~1600% CPU
-
-1.38M requests/second, and all 16 CPUs are maxed out.
-
-patched kernel:
-0.01% <= 0.1 milliseconds
-98.24% <= 0.2 milliseconds
-99.47% <= 0.3 milliseconds
-99.99% <= 0.4 milliseconds
-100.00% <= 0.5 milliseconds
-100.00% <= 0.6 milliseconds
-100.00% <= 0.7 milliseconds
-100.00% <= 0.8 milliseconds
-100.00% <= 0.9 milliseconds
-100.00% <= 1.2 milliseconds
-1666111.38 requests per second
-~1450% CPU
-
-1.67M requests/second, and we're no longer just hammering on the sighand
-lock. The original reporter states:
-
-"For 5.7.15 my benchmark achieves 1.6M qps and system cpu is at ~80%.
- for 5.7.16 or later it achieves only 1M qps and the system cpu is is
- at ~100%"
-
-with the only difference there being that TWA_SIGNAL is used
-unconditionally in 5.7.16, since we need it to be able to solve an
-inability to run task_work if the application is waiting in the kernel
-already on an event that needs task_work run to be satisfied. Also
-see commit 0ba9c9edcd15.
-
-Reported-by: Roman Gershman <romger@amazon.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
----
- kernel/task_work.c | 41 +++++++++++++++++++++++++++++------------
- 1 file changed, 29 insertions(+), 12 deletions(-)
-
-diff --git a/kernel/task_work.c b/kernel/task_work.c
-index 613b2d634af8..95604e57af46 100644
---- a/kernel/task_work.c
-+++ b/kernel/task_work.c
-@@ -5,6 +5,34 @@
- 
- static struct callback_head work_exited; /* all we need is ->next == NULL */
- 
-+/*
-+ * TWA_SIGNAL signaling - use TIF_NOTIFY_SIGNAL, if available, as it's faster
-+ * than TIF_SIGPENDING as there's no dependency on ->sighand. The latter is
-+ * shared for threads, and can cause contention on sighand->lock. Even for
-+ * the non-threaded case TIF_NOTIFY_SIGNAL is more efficient, as no locking
-+ * or IRQ disabling is involved for notification (or running) purposes.
-+ */
-+static void task_work_notify_signal(struct task_struct *task)
-+{
-+#ifdef TIF_NOTIFY_SIGNAL
-+	set_notify_signal(task);
-+#else
-+	unsigned long flags;
-+
-+	/*
-+	 * Only grab the sighand lock if we don't already have some
-+	 * task_work pending. This pairs with the smp_store_mb()
-+	 * in get_signal(), see comment there.
-+	 */
-+	if (!(READ_ONCE(task->jobctl) & JOBCTL_TASK_WORK) &&
-+	    lock_task_sighand(task, &flags)) {
-+		task->jobctl |= JOBCTL_TASK_WORK;
-+		signal_wake_up(task, 0);
-+		unlock_task_sighand(task, &flags);
-+	}
-+#endif
-+}
-+
- /**
-  * task_work_add - ask the @task to execute @work->func()
-  * @task: the task which should run the callback
-@@ -28,7 +56,6 @@ int
- task_work_add(struct task_struct *task, struct callback_head *work, int notify)
- {
- 	struct callback_head *head;
--	unsigned long flags;
- 
- 	do {
- 		head = READ_ONCE(task->task_works);
-@@ -42,17 +69,7 @@ task_work_add(struct task_struct *task, struct callback_head *work, int notify)
- 		set_notify_resume(task);
- 		break;
- 	case TWA_SIGNAL:
--		/*
--		 * Only grab the sighand lock if we don't already have some
--		 * task_work pending. This pairs with the smp_store_mb()
--		 * in get_signal(), see comment there.
--		 */
--		if (!(READ_ONCE(task->jobctl) & JOBCTL_TASK_WORK) &&
--		    lock_task_sighand(task, &flags)) {
--			task->jobctl |= JOBCTL_TASK_WORK;
--			signal_wake_up(task, 0);
--			unlock_task_sighand(task, &flags);
--		}
-+		task_work_notify_signal(task);
- 		break;
- 	}
- 
--- 
-2.28.0
-
+> 
+> > +	if (cpu_online(cpu))
+> > +		tick_nohz_full_kick_cpu(cpu);
+> > +	preempt_enable();
+> > +}
