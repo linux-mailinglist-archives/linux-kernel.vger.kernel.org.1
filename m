@@ -2,105 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEEBB286C3D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 02:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1EC9286C3F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 02:52:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727434AbgJHAt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 20:49:59 -0400
-Received: from mga02.intel.com ([134.134.136.20]:21171 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726371AbgJHAt7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 20:49:59 -0400
-IronPort-SDR: wgfVcC2ryUD7/IkKSTsM1YgQ8gknRTqKx5Hl5OE5qUsGgFnR/NyPIZCFVds1viMBTh3Sd5Hjex
- vVeJZDPONZng==
-X-IronPort-AV: E=McAfee;i="6000,8403,9767"; a="152126872"
-X-IronPort-AV: E=Sophos;i="5.77,348,1596524400"; 
-   d="scan'208";a="152126872"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 17:49:58 -0700
-IronPort-SDR: 0q2KiPmRhO0lC5TrrHYq2J66yICSdxdAgTLhWiqbaqBMCnnaSvSpuoqdFeBoliCjM/IcmarfON
- t5+3/siYkslg==
-X-IronPort-AV: E=Sophos;i="5.77,348,1596524400"; 
-   d="scan'208";a="461592760"
-Received: from rhweight-mobl2.amr.corp.intel.com (HELO [10.0.2.15]) ([10.251.1.22])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 17:49:57 -0700
-Subject: Re: [PATCH v2 1/6] mfd: intel-m10-bmc: support for MAX10 BMC Security
- Engine
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
-        yilun.xu@intel.com, hao.wu@intel.com, matthew.gerlach@intel.com
-References: <20201003012412.16831-1-russell.h.weight@intel.com>
- <20201003012412.16831-2-russell.h.weight@intel.com>
- <20201007070059.GB1763265@dell>
-From:   Russ Weight <russell.h.weight@intel.com>
-Message-ID: <c50c30b7-0693-3ff1-8d79-5d311d3831bd@intel.com>
-Date:   Wed, 7 Oct 2020 17:49:56 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201007070059.GB1763265@dell>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S1727655AbgJHAwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 20:52:40 -0400
+Received: from mail-eopbgr20087.outbound.protection.outlook.com ([40.107.2.87]:43726
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726323AbgJHAwk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 20:52:40 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RGocGGHBj6KTI7mtUTxk9pyDs9KFu05wDcdUn8d2DB8hLxxPvERHMbg6VOSf99EbB9guWvdeB65J/5X/AgeFq5EVmYw93dVVfKBnKQc+bFiz1aCbFNm3pp8jX9uhmJKnYs/Bc05mHRBPtdvJbByu11L+SfzL5j2iGkNikLt5XPCeFm4RGJHlT8ORkuGcdTyaIdPx3P8zldDEeQX+OEu18tDg0y/vErbCYoay+k41+6lW9KrE7VkCGDkO+7W7GrY+Ojd4eht7kqLxRVpVPcoVbbdnfU5GrSs+Tcf/hSuk57xO0TOL5P0284U1vy77AVVN9UIGMJZTnF+ON6Hyx99uug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rGv+rPvkTGNhfBYCbgpwoJ8mFdNBMcj2M9noLTx0UAQ=;
+ b=McnQVi/gLhlgSG2f8qrc+gbqrXOuNkPvT7oJv+udeHiB7xZM6qVpdyrN1k9R0VhvQBEhe8cnwbOgC529lt8TDPlwEInOMBJ9y/7o5IlDJJPHt+NNHIQlfeHMhBjklq0fnN8uXbaLS000hKNKaVzrjObDFPrVTW6XHLEZb6+iGIFi2VvyFyNXact/YUP2bzIj74DIrl/VV2tIDYzyIs35hEuvk4rqWmomFl1cdBzUIyPvwe/SiXERE+UDE/lpEvMZosj7TFshR7E0dgVYOPLPkTBEvSBP5XjZ2tlj15a4LeV791lB5gh7umuN31h51n8jYokwEjbahLywDEZpxCAYEg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rGv+rPvkTGNhfBYCbgpwoJ8mFdNBMcj2M9noLTx0UAQ=;
+ b=g5HKEdzFGXOAuAGS1W1dwsf6oBjicdPqWcuidyO5BdA/X4Fui6QvV59uxWh4YcEh9yH9KB5kPe7eBUSQ+pq+HjKb22javt08zROJ56ZdQaCNXSOYpz1e0NgVe0uV0BaWXAbg4RO+6S6cs+NPfj+PAkkwCPZ+CXNMqDgIFC/snOA=
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DBAPR04MB7350.eurprd04.prod.outlook.com (2603:10a6:10:1a9::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.21; Thu, 8 Oct
+ 2020 00:52:34 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::35c5:8c71:91f3:6bc6]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::35c5:8c71:91f3:6bc6%12]) with mapi id 15.20.3455.022; Thu, 8 Oct 2020
+ 00:52:34 +0000
+From:   Peng Fan <peng.fan@nxp.com>
+To:     "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
+        "o.rempel@pengutronix.de" <o.rempel@pengutronix.de>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+CC:     "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: RE: [PATCH V2 0/7] remoteproc: imx_rproc: support iMX8MQ/M
+Thread-Topic: [PATCH V2 0/7] remoteproc: imx_rproc: support iMX8MQ/M
+Thread-Index: AQHWlJWVukYQqBZsrEmEkGtIBsfyNqmM8R8Q
+Date:   Thu, 8 Oct 2020 00:52:34 +0000
+Message-ID: <DB6PR0402MB2760EA531095AADAA1B967D9880B0@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+References: <20200927064131.24101-1-peng.fan@nxp.com>
+In-Reply-To: <20200927064131.24101-1-peng.fan@nxp.com>
+Accept-Language: en-US
 Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [92.121.68.129]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 8705cbff-ce30-4011-b720-08d86b2471ff
+x-ms-traffictypediagnostic: DBAPR04MB7350:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DBAPR04MB73500B12B952A3AF9187A9BD880B0@DBAPR04MB7350.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: FNyZd+Lw45kXVc4IrsWnmKuN3QoT5lZykuUFQOMv12BH1ILGkK6UznZSlNvMGI1bwqCoDrfNY2Uf08ZVPBR/CnbBT6W4jwix+JuSNgiJ2eqmpj7p47TfkdrvDIIUQbsPmf7Y1AkzS9hKN16LsXvqd4g4BIFUlLAtpjkPSw5fx9DZqO4ZRGuC6IeDZTMnHY9E4yFPpBjmxXBqQRyOtEnxvmlh3Hpo+ewId008UtVEzJipiasxzqbiYVon8aG+QOqVoGD2HXdv2eotAEpaM++Hw3Kw0uAjzfTqlesNssdelOmjsAGfThxN0g7KRGpwJ364twn3isi+LXXul8R6TTUJc/7wFJ6eiyOGuZ59FOI3QVfYpp2inNq/8kzYa9pADLNC9gjHMvNDZ1pc4D7hGOd4kI83Le0TEu0CGcG5+0ewBacgsz9RcNVtqWjsD0xZBZOWstrVEiqrXxtkgfZyLjxoJQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(136003)(366004)(396003)(86362001)(316002)(8936002)(4326008)(33656002)(478600001)(966005)(9686003)(8676002)(110136005)(44832011)(7416002)(186003)(26005)(54906003)(83080400001)(5660300002)(7696005)(55016002)(6506007)(2906002)(66446008)(64756008)(66556008)(66476007)(66946007)(52536014)(76116006)(71200400001)(83380400001)(32563001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: A5ug0p8laqC19WlCL6TrxIfgFuGoXZ8/N8mN1z8AdmL1IUf43UrBEsaoMNc99jCnI0ROdB6xZ0JFj3VrwG01pBhs1ADPQ1Q9OTwQB714GqzDuiXaIt15DwKo1Pf8FQzmGP+WR4cdbEbRdaCYDO8oXMqKP630OsNGPBG1t5EpWGpDK3Epc9cyfyM94/B4BFWkDJF0oz0BnRU9BoD2m4p3O5T9m0Y10jmNM43H4n1VsUfixnBkhXik0Di77MLfDi+7KcDb15O57cg7YZYba3fzJPJP0urq6mIjrJdBcromqqBtLZrVj9azvKhd2iwcgKI5Ha2ScmpN8KlcUEZGxnAHIyOofNADtI/sDt4Oj3pHf884HIKpAsU0z43hJOiddyf1ply/8tnAs8alzvSmJ5eNnxo34MAVhesWEbPLD+sprgdgAcF1qIPiwQw1tcorTpSlJ4s/kP9ndwn5NDlk2OisIa6es3xFwPSdPk8IbMn/6WsuYUPv03pMSyz0rlCDmY1dgKPDrzgdhT7sB1yhS2BNNXGakq0gya0cBwzBV7piKbX6/4GeITY71GhSjVlwEFkX7skS9u+wrgrNxXQT5gI81LCLek4nYpXtGqlgKUxcftEPpeZLBPvZaskUvxjqsSq9RiYDrIj6e+tnkMJC1x27Og==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8705cbff-ce30-4011-b720-08d86b2471ff
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Oct 2020 00:52:34.6974
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vLQgzx+WgRe5erm/G5Xzq8J9fowHrVZfwMaN2LASjEdikPYuFbEUC4qpvUfvbixIk3IklOV1bqRtT4KpbpSGCg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR04MB7350
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Mathieu, Oleksij
 
+> Subject: [PATCH V2 0/7] remoteproc: imx_rproc: support iMX8MQ/M
 
-On 10/7/20 12:00 AM, Lee Jones wrote:
-> On Fri, 02 Oct 2020, Russ Weight wrote:
->
->> Add macros and definitions required by the MAX10 BMC
->> Security Engine driver.
->>
->> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
->> ---
->> v2:
->>   - These functions and macros were previously distributed among
->>     the patches that needed them. They are now grouped together
->>     in a single patch containing changes to the Intel MAX10 BMC
->>     driver.
->>   - Added DRBL_ prefix to some definitions
->>   - Some address definitions were moved here from the .c files that
->>     use them.
->> ---
->>  include/linux/mfd/intel-m10-bmc.h | 134 ++++++++++++++++++++++++++++++
->>  1 file changed, 134 insertions(+)
->>
->> diff --git a/include/linux/mfd/intel-m10-bmc.h b/include/linux/mfd/intel-m10-bmc.h
->> index c8ef2f1654a4..880f907302eb 100644
->> --- a/include/linux/mfd/intel-m10-bmc.h
->> +++ b/include/linux/mfd/intel-m10-bmc.h
->> @@ -13,6 +13,9 @@
->>   * m10bmc_raw_read - read m10bmc register per addr
->> + * m10bmc_raw_bulk_read - bulk read max10 registers per addr
->> + * m10bmc_raw_bulk_write - bulk write max10 registers per addr
->> + * m10bmc_raw_update_bits - update max10 register per addr
->>   * m10bmc_sys_read - read m10bmc system register per offset
->> + * m10bmc_sys_update_bits - update max10 system register per offset
->>   */
-> FWIW, I *hate* abstraction for the sake of abstraction.
->
-> Please just use the Regmap API in-place instead.
->
-I was following the discussion on the Max10 BMC driver to determine which way to go:
+Do you have time to give a look at this patchset?
 
-https://marc.info/?l=linux-kernel&m=159964043207829&w=2
+Thanks,
+Peng.
 
-My understanding was that the existing function wrappers were accepted because:
-
-(1) The functions are adding dev_err() calls that would have to be replicated
-for each call if we don't create a new function.
-(2) The _sys_ macros are adding a base address offset, which facilitates
-sharing code between multiple devices (although only the n3000 is supported with
-the current patches).
-
-Would you prefer that we handle these on a case by case basis? And only provide
-wrappers for the ones that have high usage?
-
-- Russ
+>=20
+> V2:
+>  Rebased on linux-next
+>  Dropped early boot feature to make patchset simple.
+>  Drop rsc-da
+>=20
+> V1:
+>  https://patchwork.kernel.org/cover/11682461/
+>=20
+> This patchset is to support i.MX8MQ/M coproc.
+> The early boot feature was dropped to make the patchset small in V2.
+>=20
+> Since i.MX specific TCM memory requirement, add elf platform hook.
+> Several patches have got reviewed by Oleksij and Mathieu in v1.
+>=20
+> Peng Fan (7):
+>   remoteproc: elf: support platform specific memory hook
+>   remoteproc: imx_rproc: add elf memory hooks
+>   remoteproc: imx_rproc: correct err message
+>   remoteproc: imx_rproc: use devm_ioremap
+>   remoteproc: imx_rproc: add i.MX specific parse fw hook
+>   remoteproc: imx_rproc: support i.MX8MQ/M
+>   remoteproc: imx_proc: enable virtio/mailbox
+>=20
+>  drivers/remoteproc/imx_rproc.c             | 273
+> ++++++++++++++++++++-
+>  drivers/remoteproc/remoteproc_elf_loader.c |  20 +-
+>  include/linux/remoteproc.h                 |   2 +
+>  3 files changed, 287 insertions(+), 8 deletions(-)
+>=20
+> --
+> 2.28.0
 
