@@ -2,286 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B14982877A1
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 17:39:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24EEA2877B6
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 17:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730985AbgJHPjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 11:39:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39246 "EHLO
+        id S1730939AbgJHPnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 11:43:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731054AbgJHPjA (ORCPT
+        with ESMTP id S1729833AbgJHPno (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 11:39:00 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B05EC0613D9
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 08:38:58 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id m17so6673387ioo.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 08:38:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+LOKZhg4DPQ11KpSsnFKVAXUnP77o4NaduQaIV97DDw=;
-        b=UKDMOf4e2XbX/AhKVdTEIA7k9g0MxCP9132HvYYwSVIXfuAUVKF7eWXtmm3PHevYot
-         SOBGQzExXq0/pmVOZe2xi7byRlBVVd7uOtNvPDqiGNG/1Qd9CZipOSFwytzZ+TH2Jy/T
-         9IwBk9s1kEzaHQgqscFw5NDiQwo16aBlJzanWnXSbgReBgzsVVpsw6KjoL+B7EafEeSX
-         HwIj/tCD5KMDPT7HLaA1rI2LSgGN2jNpq3IjvRU6rAdZ/pvanDrImYClK5CAS7YBDia2
-         Ix1lf1djSbS//KCuxIDko2M6q2EwxivJb4Ohiuxs7n+gj9FaPqDfTa8rrsB0kV59VVCo
-         oVew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+LOKZhg4DPQ11KpSsnFKVAXUnP77o4NaduQaIV97DDw=;
-        b=tsvwb3hpowNQ7OFbmhRH4eIZwcOQi2nhRRTYIf4dGTj6trno+q2BLubLqupm9CVcM9
-         hEBnMuMDDBWMJpN8JVZonAqx/R7Nf3u3/BA31oDlCNBAPKhzBD3jMp/poGumjm3A+/8S
-         C2sdHYsx2pMsyvRAbi9PoeO/Q5mmE9hoQJD0h8NqYfnaC3NlTjcLlTDqel/ojgcEnW8E
-         bDv5FmpE+IgVkvg8g+5PDVjaGopbcaXSr9H0WjI53Xu/1msUehDrGbe7u8FYiTNvKBxu
-         4okPemIEmVwJ/HE58w0TUPf22iC89SKPJYTvCCNCe/X3rKFQ+UDysF6L2sgxjOqzis5/
-         eZOQ==
-X-Gm-Message-State: AOAM53147AusvkRtwrYuZ8dZU0AnED8BBKSzHylKRBbAkkTVnmpXNtiV
-        77u1OJGbgNTpVDee22FpnGBv80Y+9siJd6GGNp7KwA==
-X-Google-Smtp-Source: ABdhPJwmnw/IsmdcpskxwZZliA3BcrFsUgsLWfxg8oKnEAfOW3iwegqgDiiyUXu+PG2zeSmQytOW9/o7MhbdAErZ9nU=
-X-Received: by 2002:a6b:fb0d:: with SMTP id h13mr1286820iog.151.1602171537307;
- Thu, 08 Oct 2020 08:38:57 -0700 (PDT)
+        Thu, 8 Oct 2020 11:43:44 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89F22C061755;
+        Thu,  8 Oct 2020 08:43:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=FjknbtecctPRg6UGd8CgS2F3TAJYIRTYsOwlNQaT3TI=; b=IwmwO/rXmuZjUGrgUEhwRzEaQf
+        NsCbD5Js7XLNi+EJgIYwF2AQEafsd+o8aNq+MPyDL4o516/9TCoiyiE+huoDPgaLqcjTEM2IYgGtw
+        7Pw6/5c3cxivhu8KBsC0WFaLd7DnlrBdk0Ida8e8KaaMRPX7wHkQ2SdhJmipqt6aZLNML7T6V1RIr
+        TrwXTqWXkuA7p2A4gYfOcLagcgAhLdfPKAlTT7f7NT5AptrvUDV070qmzpX0ZOTYoKT0STh+JOMTL
+        tfXIBvFcxWbVjpp4Pdv5Cm7HR3PCCLk0phC7L8mCoWWGauBULeS4pvpXtBqfariXUSQOvNFCiqFLl
+        T/k3GD7g==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kQY4z-0001CH-4a; Thu, 08 Oct 2020 15:43:41 +0000
+Date:   Thu, 8 Oct 2020 16:43:41 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jerome Glisse <jglisse@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Tejun Heo <tj@kernel.org>, Jan Kara <jack@suse.cz>,
+        Josef Bacik <jbacik@fb.com>
+Subject: Re: [PATCH 00/14] Small step toward KSM for file back page.
+Message-ID: <20201008154341.GJ20115@casper.infradead.org>
+References: <20201007010603.3452458-1-jglisse@redhat.com>
+ <20201007032013.GS20115@casper.infradead.org>
+ <20201007144835.GA3471400@redhat.com>
+ <20201007170558.GU20115@casper.infradead.org>
+ <20201007175419.GA3478056@redhat.com>
+ <20201007220916.GX20115@casper.infradead.org>
+ <20201008153028.GA3508856@redhat.com>
 MIME-Version: 1.0
-References: <20201001042927.2147800-1-andrew@aj.id.au>
-In-Reply-To: <20201001042927.2147800-1-andrew@aj.id.au>
-From:   Luka Oreskovic <luka.oreskovic@sartura.hr>
-Date:   Thu, 8 Oct 2020 17:38:47 +0200
-Message-ID: <CA+XBgLXqbdj8whr289z0dHV4NLO_rq8rJKs14JNfbVO8oJUbWA@mail.gmail.com>
-Subject: Re: [PATCH v2] ARM: kprobes: Avoid fortify_panic() when copying
- optprobe template
-To:     Andrew Jeffery <andrew@aj.id.au>
-Cc:     linux-arm-kernel@lists.infradead.org, linux@armlinux.org.uk,
-        mhiramat@kernel.org, labbott@redhat.com, keescook@chromium.org,
-        mathieu.desnoyers@efficios.com, linux-kernel@vger.kernel.org,
-        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201008153028.GA3508856@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 1, 2020 at 6:30 AM Andrew Jeffery <andrew@aj.id.au> wrote:
->
-> Setting both CONFIG_KPROBES=y and CONFIG_FORTIFY_SOURCE=y on ARM leads
-> to a panic in memcpy() when injecting a kprobe despite the fixes found
-> in commit e46daee53bb5 ("ARM: 8806/1: kprobes: Fix false positive with
-> FORTIFY_SOURCE") and commit 0ac569bf6a79 ("ARM: 8834/1: Fix: kprobes:
-> optimized kprobes illegal instruction").
->
-> arch/arm/include/asm/kprobes.h effectively declares
-> the target type of the optprobe_template_entry assembly label as a u32
-> which leads memcpy()'s __builtin_object_size() call to determine that
-> the pointed-to object is of size four. However, the symbol is used as a handle
-> for the optimised probe assembly template that is at least 96 bytes in size.
-> The symbol's use despite its type blows up the memcpy() in ARM's
-> arch_prepare_optimized_kprobe() with a false-positive fortify_panic() when it
-> should instead copy the optimised probe template into place:
->
-> ```
-> $ sudo perf probe -a aspeed_g6_pinctrl_probe
-> [  158.457252] detected buffer overflow in memcpy
-> [  158.458069] ------------[ cut here ]------------
-> [  158.458283] kernel BUG at lib/string.c:1153!
-> [  158.458436] Internal error: Oops - BUG: 0 [#1] SMP ARM
-> [  158.458768] Modules linked in:
-> [  158.459043] CPU: 1 PID: 99 Comm: perf Not tainted 5.9.0-rc7-00038-gc53ebf8167e9 #158
-> [  158.459296] Hardware name: Generic DT based system
-> [  158.459529] PC is at fortify_panic+0x18/0x20
-> [  158.459658] LR is at __irq_work_queue_local+0x3c/0x74
-> [  158.459831] pc : [<8047451c>]    lr : [<8020ecd4>]    psr: 60000013
-> [  158.460032] sp : be2d1d50  ip : be2d1c58  fp : be2d1d5c
-> [  158.460174] r10: 00000006  r9 : 00000000  r8 : 00000060
-> [  158.460348] r7 : 8011e434  r6 : b9e0b800  r5 : 7f000000  r4 : b9fe4f0c
-> [  158.460557] r3 : 80c04cc8  r2 : 00000000  r1 : be7c03cc  r0 : 00000022
-> [  158.460801] Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
-> [  158.461037] Control: 10c5387d  Table: b9cd806a  DAC: 00000051
-> [  158.461251] Process perf (pid: 99, stack limit = 0x81c71a69)
-> [  158.461472] Stack: (0xbe2d1d50 to 0xbe2d2000)
-> [  158.461757] 1d40:                                     be2d1d84 be2d1d60 8011e724 80474510
-> [  158.462104] 1d60: b9e0b800 b9fe4f0c 00000000 b9fe4f14 80c8ec80 be235000 be2d1d9c be2d1d88
-> [  158.462436] 1d80: 801cee44 8011e57c b9fe4f0c 00000000 be2d1dc4 be2d1da0 801d0ad0 801cedec
-> [  158.462742] 1da0: 00000000 00000000 b9fe4f00 ffffffea 00000000 be235000 be2d1de4 be2d1dc8
-> [  158.463087] 1dc0: 80204604 801d0738 00000000 00000000 b9fe4004 ffffffea be2d1e94 be2d1de8
-> [  158.463428] 1de0: 80205434 80204570 00385c00 00000000 00000000 00000000 be2d1e14 be2d1e08
-> [  158.463880] 1e00: 802ba014 b9fe4f00 b9e718c0 b9fe4f84 b9e71ec8 be2d1e24 00000000 00385c00
-> [  158.464365] 1e20: 00000000 626f7270 00000065 802b905c be2d1e94 0000002e 00000000 802b9914
-> [  158.464829] 1e40: be2d1e84 be2d1e50 802b9914 8028ff78 804629d0 b9e71ec0 0000002e b9e71ec0
-> [  158.465141] 1e60: be2d1ea8 80c04cc8 00000cc0 b9e713c4 00000002 80205834 80205834 0000002e
-> [  158.465488] 1e80: be235000 be235000 be2d1ea4 be2d1e98 80205854 80204e94 be2d1ecc be2d1ea8
-> [  158.465806] 1ea0: 801ee4a0 80205840 00000002 80c04cc8 00000000 0000002e 0000002e 00000000
-> [  158.466110] 1ec0: be2d1f0c be2d1ed0 801ee5c8 801ee428 00000000 be2d0000 006b1fd0 00000051
-> [  158.466398] 1ee0: 00000000 b9eedf00 0000002e 80204410 006b1fd0 be2d1f60 00000000 00000004
-> [  158.466763] 1f00: be2d1f24 be2d1f10 8020442c 801ee4c4 80205834 802c613c be2d1f5c be2d1f28
-> [  158.467102] 1f20: 802c60ac 8020441c be2d1fac be2d1f38 8010c764 802e9888 be2d1f5c b9eedf00
-> [  158.467447] 1f40: b9eedf00 006b1fd0 0000002e 00000000 be2d1f94 be2d1f60 802c634c 802c5fec
-> [  158.467812] 1f60: 00000000 00000000 00000000 80c04cc8 006b1fd0 00000003 76f7a610 00000004
-> [  158.468155] 1f80: 80100284 be2d0000 be2d1fa4 be2d1f98 802c63ec 802c62e8 00000000 be2d1fa8
-> [  158.468508] 1fa0: 80100080 802c63e0 006b1fd0 00000003 00000003 006b1fd0 0000002e 00000000
-> [  158.468858] 1fc0: 006b1fd0 00000003 76f7a610 00000004 006b1fb0 0026d348 00000017 7ef2738c
-> [  158.469202] 1fe0: 76f3431c 7ef272d8 0014ec50 76f34338 60000010 00000003 00000000 00000000
-> [  158.469461] Backtrace:
-> [  158.469683] [<80474504>] (fortify_panic) from [<8011e724>] (arch_prepare_optimized_kprobe+0x1b4/0x1f8)
-> [  158.470021] [<8011e570>] (arch_prepare_optimized_kprobe) from [<801cee44>] (alloc_aggr_kprobe+0x64/0x70)
-> [  158.470287]  r9:be235000 r8:80c8ec80 r7:b9fe4f14 r6:00000000 r5:b9fe4f0c r4:b9e0b800
-> [  158.470478] [<801cede0>] (alloc_aggr_kprobe) from [<801d0ad0>] (register_kprobe+0x3a4/0x5a0)
-> [  158.470685]  r5:00000000 r4:b9fe4f0c
-> [  158.470790] [<801d072c>] (register_kprobe) from [<80204604>] (__register_trace_kprobe+0xa0/0xa4)
-> [  158.471001]  r9:be235000 r8:00000000 r7:ffffffea r6:b9fe4f00 r5:00000000 r4:00000000
-> [  158.471188] [<80204564>] (__register_trace_kprobe) from [<80205434>] (trace_kprobe_create+0x5ac/0x9ac)
-> [  158.471408]  r7:ffffffea r6:b9fe4004 r5:00000000 r4:00000000
-> [  158.471553] [<80204e88>] (trace_kprobe_create) from [<80205854>] (create_or_delete_trace_kprobe+0x20/0x3c)
-> [  158.471766]  r10:be235000 r9:be235000 r8:0000002e r7:80205834 r6:80205834 r5:00000002
-> [  158.471949]  r4:b9e713c4
-> [  158.472027] [<80205834>] (create_or_delete_trace_kprobe) from [<801ee4a0>] (trace_run_command+0x84/0x9c)
-> [  158.472255] [<801ee41c>] (trace_run_command) from [<801ee5c8>] (trace_parse_run_command+0x110/0x1f8)
-> [  158.472471]  r6:00000000 r5:0000002e r4:0000002e
-> [  158.472594] [<801ee4b8>] (trace_parse_run_command) from [<8020442c>] (probes_write+0x1c/0x28)
-> [  158.472800]  r10:00000004 r9:00000000 r8:be2d1f60 r7:006b1fd0 r6:80204410 r5:0000002e
-> [  158.472968]  r4:b9eedf00
-> [  158.473046] [<80204410>] (probes_write) from [<802c60ac>] (vfs_write+0xcc/0x1e8)
-> [  158.473226] [<802c5fe0>] (vfs_write) from [<802c634c>] (ksys_write+0x70/0xf8)
-> [  158.473400]  r8:00000000 r7:0000002e r6:006b1fd0 r5:b9eedf00 r4:b9eedf00
-> [  158.473567] [<802c62dc>] (ksys_write) from [<802c63ec>] (sys_write+0x18/0x1c)
-> [  158.473745]  r9:be2d0000 r8:80100284 r7:00000004 r6:76f7a610 r5:00000003 r4:006b1fd0
-> [  158.473932] [<802c63d4>] (sys_write) from [<80100080>] (ret_fast_syscall+0x0/0x54)
-> [  158.474126] Exception stack(0xbe2d1fa8 to 0xbe2d1ff0)
-> [  158.474305] 1fa0:                   006b1fd0 00000003 00000003 006b1fd0 0000002e 00000000
-> [  158.474573] 1fc0: 006b1fd0 00000003 76f7a610 00000004 006b1fb0 0026d348 00000017 7ef2738c
-> [  158.474811] 1fe0: 76f3431c 7ef272d8 0014ec50 76f34338
-> [  158.475171] Code: e24cb004 e1a01000 e59f0004 ebf40dd3 (e7f001f2)
-> [  158.475847] ---[ end trace 55a5b31c08a29f00 ]---
-> [  158.476088] Kernel panic - not syncing: Fatal exception
-> [  158.476375] CPU0: stopping
-> [  158.476709] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G      D           5.9.0-rc7-00038-gc53ebf8167e9 #158
-> [  158.477176] Hardware name: Generic DT based system
-> [  158.477411] Backtrace:
-> [  158.477604] [<8010dd28>] (dump_backtrace) from [<8010dfd4>] (show_stack+0x20/0x24)
-> [  158.477990]  r7:00000000 r6:60000193 r5:00000000 r4:80c2f634
-> [  158.478323] [<8010dfb4>] (show_stack) from [<8046390c>] (dump_stack+0xcc/0xe8)
-> [  158.478686] [<80463840>] (dump_stack) from [<80110750>] (handle_IPI+0x334/0x3a0)
-> [  158.479063]  r7:00000000 r6:00000004 r5:80b65cc8 r4:80c78278
-> [  158.479352] [<8011041c>] (handle_IPI) from [<801013f8>] (gic_handle_irq+0x88/0x94)
-> [  158.479757]  r10:10c5387d r9:80c01ed8 r8:00000000 r7:c0802000 r6:80c0537c r5:000003ff
-> [  158.480146]  r4:c080200c r3:fffffff4
-> [  158.480364] [<80101370>] (gic_handle_irq) from [<80100b6c>] (__irq_svc+0x6c/0x90)
-> [  158.480748] Exception stack(0x80c01ed8 to 0x80c01f20)
-> [  158.481031] 1ec0:                                                       000128bc 00000000
-> [  158.481499] 1ee0: be7b8174 8011d3a0 80c00000 00000000 80c04cec 80c04d28 80c5d7c2 80a026d4
-> [  158.482091] 1f00: 10c5387d 80c01f34 80c01f38 80c01f28 80109554 80109558 60000013 ffffffff
-> [  158.482621]  r9:80c00000 r8:80c5d7c2 r7:80c01f0c r6:ffffffff r5:60000013 r4:80109558
-> [  158.482983] [<80109518>] (arch_cpu_idle) from [<80818780>] (default_idle_call+0x38/0x120)
-> [  158.483360] [<80818748>] (default_idle_call) from [<801585a8>] (do_idle+0xd4/0x158)
-> [  158.483945]  r5:00000000 r4:80c00000
-> [  158.484237] [<801584d4>] (do_idle) from [<801588f4>] (cpu_startup_entry+0x28/0x2c)
-> [  158.484784]  r9:80c78000 r8:00000000 r7:80c78000 r6:80c78040 r5:80c04cc0 r4:000000d6
-> [  158.485328] [<801588cc>] (cpu_startup_entry) from [<80810a78>] (rest_init+0x9c/0xbc)
-> [  158.485930] [<808109dc>] (rest_init) from [<80b00ae4>] (arch_call_rest_init+0x18/0x1c)
-> [  158.486503]  r5:80c04cc0 r4:00000001
-> [  158.486857] [<80b00acc>] (arch_call_rest_init) from [<80b00fcc>] (start_kernel+0x46c/0x548)
-> [  158.487589] [<80b00b60>] (start_kernel) from [<00000000>] (0x0)
-> ```
->
-> Fixes: e46daee53bb5 ("ARM: 8806/1: kprobes: Fix false positive with FORTIFY_SOURCE")
-> Fixes: 0ac569bf6a79 ("ARM: 8834/1: Fix: kprobes: optimized kprobes illegal instruction")
-> Cc: Luka Oreskovic <luka.oreskovic@sartura.hr>
-> Cc: Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
-> Suggested-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
-> ---
+On Thu, Oct 08, 2020 at 11:30:28AM -0400, Jerome Glisse wrote:
+> On Wed, Oct 07, 2020 at 11:09:16PM +0100, Matthew Wilcox wrote:
+> > So ... why don't you put a PageKsm page in the page cache?  That way you
+> > can share code with the current KSM implementation.  You'd need
+> > something like this:
+> 
+> I do just that but there is no need to change anything in page cache.
 
-Tested-by: Luka Oreskovic <luka.oreskovic@sartura.hr>
+That's clearly untrue.  If you just put a PageKsm page in the page
+cache today, here's what will happen on a truncate:
 
-> v1 was sent some time back, in May:
->
-> https://lore.kernel.org/linux-arm-kernel/20200517153959.293224-1-andrew@aj.id.au/
->
-> I've taken the patch that Kees' suggested in the replies and tested it.
-> ---
->  arch/arm/include/asm/kprobes.h    | 22 +++++++++++-----------
->  arch/arm/probes/kprobes/opt-arm.c | 18 +++++++++---------
->  2 files changed, 20 insertions(+), 20 deletions(-)
->
-> diff --git a/arch/arm/include/asm/kprobes.h b/arch/arm/include/asm/kprobes.h
-> index 213607a1f45c..e26a278d301a 100644
-> --- a/arch/arm/include/asm/kprobes.h
-> +++ b/arch/arm/include/asm/kprobes.h
-> @@ -44,20 +44,20 @@ int kprobe_exceptions_notify(struct notifier_block *self,
->                              unsigned long val, void *data);
->
->  /* optinsn template addresses */
-> -extern __visible kprobe_opcode_t optprobe_template_entry;
-> -extern __visible kprobe_opcode_t optprobe_template_val;
-> -extern __visible kprobe_opcode_t optprobe_template_call;
-> -extern __visible kprobe_opcode_t optprobe_template_end;
-> -extern __visible kprobe_opcode_t optprobe_template_sub_sp;
-> -extern __visible kprobe_opcode_t optprobe_template_add_sp;
-> -extern __visible kprobe_opcode_t optprobe_template_restore_begin;
-> -extern __visible kprobe_opcode_t optprobe_template_restore_orig_insn;
-> -extern __visible kprobe_opcode_t optprobe_template_restore_end;
-> +extern __visible kprobe_opcode_t optprobe_template_entry[];
-> +extern __visible kprobe_opcode_t optprobe_template_val[];
-> +extern __visible kprobe_opcode_t optprobe_template_call[];
-> +extern __visible kprobe_opcode_t optprobe_template_end[];
-> +extern __visible kprobe_opcode_t optprobe_template_sub_sp[];
-> +extern __visible kprobe_opcode_t optprobe_template_add_sp[];
-> +extern __visible kprobe_opcode_t optprobe_template_restore_begin[];
-> +extern __visible kprobe_opcode_t optprobe_template_restore_orig_insn[];
-> +extern __visible kprobe_opcode_t optprobe_template_restore_end[];
->
->  #define MAX_OPTIMIZED_LENGTH   4
->  #define MAX_OPTINSN_SIZE                               \
-> -       ((unsigned long)&optprobe_template_end -        \
-> -        (unsigned long)&optprobe_template_entry)
-> +       ((unsigned long)optprobe_template_end - \
-> +        (unsigned long)optprobe_template_entry)
->  #define RELATIVEJUMP_SIZE      4
->
->  struct arch_optimized_insn {
-> diff --git a/arch/arm/probes/kprobes/opt-arm.c b/arch/arm/probes/kprobes/opt-arm.c
-> index 7a449df0b359..c78180172120 100644
-> --- a/arch/arm/probes/kprobes/opt-arm.c
-> +++ b/arch/arm/probes/kprobes/opt-arm.c
-> @@ -85,21 +85,21 @@ asm (
->                         "optprobe_template_end:\n");
->
->  #define TMPL_VAL_IDX \
-> -       ((unsigned long *)&optprobe_template_val - (unsigned long *)&optprobe_template_entry)
-> +       ((unsigned long *)optprobe_template_val - (unsigned long *)optprobe_template_entry)
->  #define TMPL_CALL_IDX \
-> -       ((unsigned long *)&optprobe_template_call - (unsigned long *)&optprobe_template_entry)
-> +       ((unsigned long *)optprobe_template_call - (unsigned long *)optprobe_template_entry)
->  #define TMPL_END_IDX \
-> -       ((unsigned long *)&optprobe_template_end - (unsigned long *)&optprobe_template_entry)
-> +       ((unsigned long *)optprobe_template_end - (unsigned long *)optprobe_template_entry)
->  #define TMPL_ADD_SP \
-> -       ((unsigned long *)&optprobe_template_add_sp - (unsigned long *)&optprobe_template_entry)
-> +       ((unsigned long *)optprobe_template_add_sp - (unsigned long *)optprobe_template_entry)
->  #define TMPL_SUB_SP \
-> -       ((unsigned long *)&optprobe_template_sub_sp - (unsigned long *)&optprobe_template_entry)
-> +       ((unsigned long *)optprobe_template_sub_sp - (unsigned long *)optprobe_template_entry)
->  #define TMPL_RESTORE_BEGIN \
-> -       ((unsigned long *)&optprobe_template_restore_begin - (unsigned long *)&optprobe_template_entry)
-> +       ((unsigned long *)optprobe_template_restore_begin - (unsigned long *)optprobe_template_entry)
->  #define TMPL_RESTORE_ORIGN_INSN \
-> -       ((unsigned long *)&optprobe_template_restore_orig_insn - (unsigned long *)&optprobe_template_entry)
-> +       ((unsigned long *)optprobe_template_restore_orig_insn - (unsigned long *)optprobe_template_entry)
->  #define TMPL_RESTORE_END \
-> -       ((unsigned long *)&optprobe_template_restore_end - (unsigned long *)&optprobe_template_entry)
-> +       ((unsigned long *)optprobe_template_restore_end - (unsigned long *)optprobe_template_entry)
->
->  /*
->   * ARM can always optimize an instruction when using ARM ISA, except
-> @@ -234,7 +234,7 @@ int arch_prepare_optimized_kprobe(struct optimized_kprobe *op, struct kprobe *or
->         }
->
->         /* Copy arch-dep-instance from template. */
-> -       memcpy(code, (unsigned long *)&optprobe_template_entry,
-> +       memcpy(code, (unsigned long *)optprobe_template_entry,
->                         TMPL_END_IDX * sizeof(kprobe_opcode_t));
->
->         /* Adjust buffer according to instruction. */
-> --
-> 2.25.1
->
+void truncate_inode_pages_range(struct address_space *mapping,
+                                loff_t lstart, loff_t lend)
+{
+...
+                struct page *page = find_lock_page(mapping, start - 1);
+
+find_lock_page() does this:
+        return pagecache_get_page(mapping, offset, FGP_LOCK, 0);
+
+pagecache_get_page():
+
+repeat:
+        page = find_get_entry(mapping, index);
+...
+        if (fgp_flags & FGP_LOCK) {
+...
+                if (unlikely(compound_head(page)->mapping != mapping)) {
+                        unlock_page(page);
+                        put_page(page);
+                        goto repeat;
+
+so it's just going to spin.  There are plenty of other codepaths that
+would need to be checked.  If you haven't found them, that shows you
+don't understand the problem deeply enough yet.
+
+I believe we should solve this problem, but I don't think you're going
+about it the right way.
+
+> So flow is:
+> 
+>   Same as before:
+>     1 - write fault (address, vma)
+>     2 - regular write fault handler -> find page in page cache
+> 
+>   New to common page fault code:
+>     3 - ksm check in write fault common code (same as ksm today
+>         for anonymous page fault code path).
+>     4 - break ksm (address, vma) -> (file offset, mapping)
+>         4.a - use mapping and file offset to lookup the proper
+>               fs specific information that were save when the
+>               page was made ksm.
+>         4.b - allocate new page and initialize it with that
+>               information (and page content), update page cache
+>               and mappings ie all the pte who where pointing to
+>               the ksm for that mapping at that offset to now use
+>               the new page (like KSM for anonymous page today).
+
+But by putting that logic in the page fault path, you've missed
+the truncate path.  And maybe other places.  Putting the logic
+down in pagecache_get_page() means you _don't_ need to find
+all the places that call pagecache_get_page().
+
