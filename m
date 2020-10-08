@@ -2,99 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F7E12872B9
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 12:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08E8C2872BC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 12:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729567AbgJHKqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 06:46:14 -0400
-Received: from mail-40134.protonmail.ch ([185.70.40.134]:61503 "EHLO
-        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726760AbgJHKqL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 06:46:11 -0400
-X-Greylist: delayed 5141 seconds by postgrey-1.27 at vger.kernel.org; Thu, 08 Oct 2020 06:46:10 EDT
-Date:   Thu, 08 Oct 2020 10:46:05 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connolly.tech;
-        s=protonmail; t=1602153968;
-        bh=4NpRlPMJu+nTJ3BKK9VVYitJouPdmM13RaANueWkDgQ=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=M/b+CvGihVDhlxXveZ6bFw8LtfVyCrMfp5EQWimoFjBHy9QeS0/AVh9n4yQYnqkQr
-         kWaMjO9Xjlg3TnUtt+onWkCCp/wbn1PzQnRqMGSR+CZg0+8sezo6Z5tdRifOilEg4m
-         KAPVi5jBX6OFFiQg4M7GHSLU51+Nmk5/L7UJiQeQ=
-To:     Wolfram Sang <wsa@kernel.org>
-From:   Caleb Connolly <caleb@connolly.tech>
-Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        Mukesh Savaliya <msavaliy@codeaurora.org>,
-        ~postmarketos/upstreaming@lists.sr.ht, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Reply-To: Caleb Connolly <caleb@connolly.tech>
-Subject: Re: Re: [PATCH 5/5] i2c: geni: sdm845: dont perform DMA for the oneplus6
-Message-ID: <27ffa058-c800-4ce7-4db5-8896ad136abf@connolly.tech>
-In-Reply-To: <20201008100352.GF76290@ninjato>
-References: <20201007174736.292968-1-caleb@connolly.tech> <20201007174736.292968-6-caleb@connolly.tech> <20201008100352.GF76290@ninjato>
+        id S1729582AbgJHKqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 06:46:22 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:44800 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729571AbgJHKqV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 06:46:21 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602153981; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=5L5pKh2bQVuMrcN3xcSsrwheEy1mTGgJUbk2Z/atqUY=;
+ b=m4Sl/OHVieIMIUwtHyNca4qJTp/zFO9XHVgzaI7NJSAVmO0YOsnOqcv2EtBny0s8R/dC7Q+Z
+ 3NsZcOHEl6rM9TWGfspbH/jn3NYB8ex6OlkXzjLvapUZYY68JKcLOLnnj0FWTICVuA1CZR5n
+ RF0TXERSTqaIhz2C6VDfpqAD11c=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5f7eedf6d6d00c7a9e5e27c5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 08 Oct 2020 10:46:14
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 79150C433FF; Thu,  8 Oct 2020 10:46:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1DBA0C433CB;
+        Thu,  8 Oct 2020 10:46:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1DBA0C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH 1/2] ath11k: Fix memory leak on error path
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20201004100218.311653-2-alex.dewar90@gmail.com>
+References: <20201004100218.311653-2-alex.dewar90@gmail.com>
+To:     Alex Dewar <alex.dewar90@gmail.com>
+Cc:     unlisted-recipients:; (no To-header on input)
+        Alex Dewar <alex.dewar90@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, ath11k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Illegal-Object: Syntax error in Cc: address found on vger.kernel.org:
+        Cc:     unlisted-recipients:; (no To-header on input)Alex Dewar <alex.dewar90@gmail.com>
+                                                                     ^-missing end of address
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20201008104614.79150C433FF@smtp.codeaurora.org>
+Date:   Thu,  8 Oct 2020 10:46:14 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-08 11:03, Wolfram Sang wrote:
-> On Wed, Oct 07, 2020 at 05:49:35PM +0000, Caleb Connolly wrote:
->> The OnePlus 6/T has the same issues as the c630 causing a crash when DMA
->> is used for i2c, so disable it.
->>
->> https://patchwork.kernel.org/patch/11133827/
->> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
-> May I ask for a quick review here, so we can get this into 5.9 if
-> qcom-geni maintainers agree this is good to go?
+Alex Dewar <alex.dewar90@gmail.com> wrote:
 
-Sorry it wasn't mentioned in my first message, this patch depends on the=20
-rest in the series found here:=20
-https://lore.kernel.org/linux-arm-msm/20201007174736.292968-1-caleb@connoll=
-y.tech/#r
+> In ath11k_mac_setup_iface_combinations(), if memory cannot be assigned
+> for the variable limits, then the memory assigned to combinations will
+> be leaked. Fix this.
+> 
+> Addresses-Coverity-ID: 1497534 ("Resource leaks")
+> Fixes: 2626c269702e ("ath11k: add interface_modes to hw_params")
+> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
 
->> ---
->>   drivers/i2c/busses/i2c-qcom-geni.c | 6 ++++--
->>   1 file changed, 4 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c=
--qcom-geni.c
->> index dead5db3315a..50a0674a6553 100644
->> --- a/drivers/i2c/busses/i2c-qcom-geni.c
->> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
->> @@ -358,7 +358,8 @@ static int geni_i2c_rx_one_msg(struct geni_i2c_dev *=
-gi2c, struct i2c_msg *msg,
->>   =09struct geni_se *se =3D &gi2c->se;
->>   =09size_t len =3D msg->len;
->>  =20
->> -=09if (!of_machine_is_compatible("lenovo,yoga-c630"))
->> +=09if (!of_machine_is_compatible("lenovo,yoga-c630") &&
->> +=09    !of_machine_is_compatible("oneplus,oneplus6"))
->>   =09=09dma_buf =3D i2c_get_dma_safe_msg_buf(msg, 32);
->>  =20
->>   =09if (dma_buf)
->> @@ -400,7 +401,8 @@ static int geni_i2c_tx_one_msg(struct geni_i2c_dev *=
-gi2c, struct i2c_msg *msg,
->>   =09struct geni_se *se =3D &gi2c->se;
->>   =09size_t len =3D msg->len;
->>  =20
->> -=09if (!of_machine_is_compatible("lenovo,yoga-c630"))
->> +=09if (!of_machine_is_compatible("lenovo,yoga-c630") &&
->> +=09    !of_machine_is_compatible("oneplus,oneplus6"))
->>   =09=09dma_buf =3D i2c_get_dma_safe_msg_buf(msg, 32);
->>  =20
->>   =09if (dma_buf)
->> --=20
->> 2.28.0
->>
->>
+Patch applied to wireless-drivers-next.git, thanks.
 
+8431350eee2e ath11k: Fix memory leak on error path
+
+-- 
+https://patchwork.kernel.org/patch/11815579/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
