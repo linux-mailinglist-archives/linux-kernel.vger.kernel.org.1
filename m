@@ -2,140 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 819D4286FAB
+	by mail.lfdr.de (Postfix) with ESMTP id 11B80286FAA
 	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727898AbgJHHkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 03:40:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        id S1727800AbgJHHkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 03:40:19 -0400
+Received: from mail-il1-f208.google.com ([209.85.166.208]:46439 "EHLO
+        mail-il1-f208.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
         with ESMTP id S1727224AbgJHHkT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 8 Oct 2020 03:40:19 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E59AC061755
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 00:40:19 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id h9so3843507ybm.4
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 00:40:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7Rp3My2L/roRnIDEi9kisQtYgeX2FwvYUO7ZV7SrOvU=;
-        b=q5USTEPGaKtcH62zrMADCGgthfmfGu4Q0LxLhnuNjym9+D4SMw3X36j3KU7PUzr5Dl
-         O3SJ/s06qAC48u4lXvaYATZ9of9OC8WEoI/ZlA3aPa7c1M/57tckvnl0uaHIHe5Xr2xi
-         otnnoT8jMz+Jcjwqv/oBEMWHDvMowmhOOh+e12Fg2AUsu0gYGfWyU0zIy7TLanaRGLqM
-         7D8tix2Bp8rO+xDRzZ3Jy541nYCFqdZsX3CNKZR+CkLyWwIHhRAiAE7w9HIlGJTvQEfT
-         FNPcT1nKGBB2ie1x2KIjwAWWw9jrptHbuJOeQaGqo/n0tT+9ScOR7Zx3WNGnS5qhSeRT
-         srBQ==
+Received: by mail-il1-f208.google.com with SMTP id z8so3473921ilh.13
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 00:40:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7Rp3My2L/roRnIDEi9kisQtYgeX2FwvYUO7ZV7SrOvU=;
-        b=T0jFh4eUQnnLY1csuwvQz7D2Tcly6Te0lXZXr1fkixCHGloIRaQKrrwQXm/SAkNI5H
-         1ti3QkWd9mTYcJVpFmIIvzfsnCTrUpiKbdk/DedPHIPDOpXvcJrjLoMXpmyH2hhvpiJw
-         XOutaaB7xK3XpSqg3ZtR5/98kWnvNCYj0O2ei1CAhjKGFI9Mlub/i9PTGU0bXfhtzcql
-         Z/cQYeAkeKlRAPiF8xgGRcLXkRE3Pma6pUY2Tyg3l+6VoWdWwjJRMmxjKYTq3AwcRQhi
-         6c8gRDckzzQMUzQHWnaEk5oCwxRqalxqv+OLTbDVahAOQOPyBF5PXpZp9sf1kGFBLoGJ
-         +x4g==
-X-Gm-Message-State: AOAM533NCVMmLsKJEgp39GwLuAv7DHSq6H8Ukslau7VTQNe9L9gO9X9x
-        GjiBXEaImfGOBeGQ29NpU8ZCqJ8vu2/vyOUy4vIGkQ==
-X-Google-Smtp-Source: ABdhPJz8G0UzuxWD3kadRsINe7B0llIGw01vL0xbE8O4KhdvJJiDtB4CFJz7q0izUDi5LxJ7jREm6oqkxc9v//V3yp0=
-X-Received: by 2002:a25:840d:: with SMTP id u13mr9231276ybk.7.1602142818150;
- Thu, 08 Oct 2020 00:40:18 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=sY2IwiMHaNHjrlHF4HKmprZAKOkbqITB/BHAQtltvXw=;
+        b=PkDxNdV91kCpJ55btqPGeX37GruWw5iRF5lCpwPNnkZmRokCYPrIUshWfCbUb2Abx4
+         RZ1okqGfDESzwWOR2kAvpwLlaDVKUwD+8P9iIklqGq6ME8sAeNjxQUr3ZtZ3EtPgvDkg
+         PnzetD554BBp2ltOaqxwUaqg2vAwyJRtDshjqhsktcLVF2sutTG9/2OzH2yA1L2JjdZs
+         0uC7NYHcJMBTWXQb9Wq4jgBvdM3No6RdkaVTG4R7mvMy3CIamG5pgrtOe3pansjafFbf
+         Zpk1sdNKFY0Qqe7dIWvrweGLcV9hJU5GKs73ylCzhd6u/vWiKKuoqeMfpB7CkU+uiK/g
+         5CCw==
+X-Gm-Message-State: AOAM5335yY0AazGcns8eGIStU5bBzew2Js/6Bgb2c9W5OtCwQci7ZRzQ
+        Xd5+q/haoPgH46vYv3HGHKdZeWhiaVcUJvZ4w5EusMTPZklf
+X-Google-Smtp-Source: ABdhPJwu338smk3gnI3WmrD/qM6p1msBcGtR1Ta0xpsNG36bwiBcJaaXiNnNP6YdutsZLGdAJD1QSK7cyG98n9+UUaew2TcaV5Gs
 MIME-Version: 1.0
-References: <20201007184403.1902111-1-axelrasmussen@google.com> <20201007184403.1902111-3-axelrasmussen@google.com>
-In-Reply-To: <20201007184403.1902111-3-axelrasmussen@google.com>
-From:   Michel Lespinasse <walken@google.com>
-Date:   Thu, 8 Oct 2020 00:40:05 -0700
-Message-ID: <CANN689F4jcm_rx3t8hwD7-F-kwJpMJRsi50ab9eh039ZzVBOQg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] mmap_lock: add tracepoints around lock acquisition
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Jann Horn <jannh@google.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>
+X-Received: by 2002:a6b:b5c2:: with SMTP id e185mr4988645iof.106.1602142818040;
+ Thu, 08 Oct 2020 00:40:18 -0700 (PDT)
+Date:   Thu, 08 Oct 2020 00:40:18 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008c848805b123f174@google.com>
+Subject: WARNING in ieee80211_ibss_csa_beacon
+From:   syzbot <syzbot+b6c9fe29aefe68e4ad34@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 11:44 AM Axel Rasmussen <axelrasmussen@google.com> wrote:
-> The goal of these tracepoints is to be able to debug lock contention
-> issues. This lock is acquired on most (all?) mmap / munmap / page fault
-> operations, so a multi-threaded process which does a lot of these can
-> experience significant contention.
->
-> We trace just before we start acquisition, when the acquisition returns
-> (whether it succeeded or not), and when the lock is released (or
-> downgraded). The events are broken out by lock type (read / write).
->
-> The events are also broken out by memcg path. For container-based
-> workloads, users often think of several processes in a memcg as a single
-> logical "task", so collecting statistics at this level is useful.
->
-> The end goal is to get latency information. This isn't directly included
-> in the trace events. Instead, users are expected to compute the time
-> between "start locking" and "acquire returned", using e.g. synthetic
-> events or BPF. The benefit we get from this is simpler code.
->
-> Because we use tracepoint_enabled() to decide whether or not to trace,
-> this patch has effectively no overhead unless tracepoints are enabled at
-> runtime. If tracepoints are enabled, there is a performance impact, but
-> how much depends on exactly what e.g. the BPF program does.
->
-> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+Hello,
 
-Thanks for working on this.
+syzbot found the following issue on:
 
-I like that there is no overhead unless CONFIG_TRACING is set.
-However, I think the __mmap_lock_traced_lock and similar functions are
-the wrong level of abstraction, especially considering that we are
-considering to switch away from using rwsem as the underlying lock
-implementation. Would you consider something along the following lines
-instead for include/linux/mmap_lock.h ?
+HEAD commit:    c85fb28b Merge tag 'arm64-fixes' of git://git.kernel.org/p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15b2b400500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=de7f697da23057c7
+dashboard link: https://syzkaller.appspot.com/bug?extid=b6c9fe29aefe68e4ad34
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
 
-#ifdef CONFIG_TRACING
+Unfortunately, I don't have any reproducer for this issue yet.
 
-DECLARE_TRACEPOINT(...);
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b6c9fe29aefe68e4ad34@syzkaller.appspotmail.com
 
-void __mmap_lock_do_trace_start_locking(struct mm_struct *mm, bool write);
+WARNING: CPU: 1 PID: 11321 at net/mac80211/ibss.c:504 ieee80211_ibss_csa_beacon+0x4e9/0x5a0 net/mac80211/ibss.c:504
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 11321 Comm: kworker/u4:0 Not tainted 5.9.0-rc8-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: phy10 ieee80211_csa_finalize_work
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1d6/0x29e lib/dump_stack.c:118
+ panic+0x2c0/0x800 kernel/panic.c:231
+ __warn+0x227/0x250 kernel/panic.c:600
+ report_bug+0x1b1/0x2e0 lib/bug.c:198
+ handle_bug+0x42/0x80 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x16/0x40 arch/x86/kernel/traps.c:254
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+RIP: 0010:ieee80211_ibss_csa_beacon+0x4e9/0x5a0 net/mac80211/ibss.c:504
+Code: e8 fc 29 8b f9 b8 f4 ff ff ff eb 0a e8 f0 29 8b f9 b8 00 01 00 00 48 83 c4 30 5b 41 5c 41 5d 41 5e 41 5f 5d c3 e8 d7 29 8b f9 <0f> 0b b8 ea ff ff ff eb e3 e8 c9 29 8b f9 0f 0b e9 88 fb ff ff 48
+RSP: 0018:ffffc9000ab5fbf8 EFLAGS: 00010293
+RAX: ffffffff87e9d419 RBX: ffff88804cc20580 RCX: ffff888016268280
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffff88804cc23490 R08: dffffc0000000000 R09: fffffbfff16c82b4
+R10: fffffbfff16c82b4 R11: 0000000000000000 R12: ffff8880a21a18c0
+R13: ffff8880a21a18ba R14: ffff8880a21a0c00 R15: ffff8880a21a18e0
+ ieee80211_set_after_csa_beacon net/mac80211/cfg.c:3043 [inline]
+ __ieee80211_csa_finalize net/mac80211/cfg.c:3099 [inline]
+ ieee80211_csa_finalize+0x46f/0x960 net/mac80211/cfg.c:3122
+ ieee80211_csa_finalize_work+0xfb/0x140 net/mac80211/cfg.c:3147
+ process_one_work+0x789/0xfc0 kernel/workqueue.c:2269
+ worker_thread+0xaa4/0x1460 kernel/workqueue.c:2415
+ kthread+0x37e/0x3a0 drivers/block/aoe/aoecmd.c:1234
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
-static inline void mmap_lock_trace_start_locking(struct mm_struct *mm,
-bool write)
-{
-  if (tracepoint_enabled(mmap_lock_start_locking))
-    __mmap_lock_do_trace_start_locking(mm, write);
-}
 
-#else
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-static inline void mmap_lock_trace_start_locking(struct mm_struct *mm,
-bool write) {}
-
-#endif
-
-static inline void mmap_write_lock(struct mm_struct *mm)
-{
-  mmap_lock_trace_start_locking(mm, true);
-  down_write(&mm->mmap_lock);
-  mmap_lock_trace_acquire_returned(mm, true, true);
-}
-
-I think this is more straightforward, and also the
-mmap_lock_trace_start_locking and similar functions don't depend on
-the underlying lock implementation.
-
-The changes to the other files look fine to me.
-
--- 
-Michel "Walken" Lespinasse
-A program is never fully debugged until the last user dies.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
