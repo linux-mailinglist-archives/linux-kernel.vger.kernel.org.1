@@ -2,127 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE7332872AC
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 12:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 228E12872B1
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 12:45:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728876AbgJHKom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 06:44:42 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:32842 "EHLO z5.mailgun.us"
+        id S1729538AbgJHKpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 06:45:13 -0400
+Received: from foss.arm.com ([217.140.110.172]:50036 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725616AbgJHKol (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 06:44:41 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602153879; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=a/t2L4jF7mvgT6kUkGV7vP95J4L8otVQ9EHjcjSlyWk=;
- b=ZpbcImWSJxut+zu7CAzWCr4y36eN88AHaCKyUC6MBbbnRuo8NczYps/s184GpzvM8twGFSOm
- 9sKCsC0y+3TQuZz7f3fGkiNePbg01hCsZE7Pk4qMJMPf+kBe/HSf2b0P1SekUd7r99/1NOWD
- ghFpkLmsKR91UMubMiwi2HF4poM=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5f7eed9783370fa1c1d650fb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 08 Oct 2020 10:44:39
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 16D99C433CA; Thu,  8 Oct 2020 10:44:38 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 73C90C433CA;
-        Thu,  8 Oct 2020 10:44:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 73C90C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S1726766AbgJHKpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 06:45:12 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 21CCBD6E;
+        Thu,  8 Oct 2020 03:45:11 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.52.79])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1EBF83F70D;
+        Thu,  8 Oct 2020 03:45:03 -0700 (PDT)
+Date:   Thu, 8 Oct 2020 11:45:01 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Marco Elver <elver@google.com>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dmitriy Vyukov <dvyukov@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Kees Cook <keescook@chromium.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        SeongJae Park <sjpark@amazon.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: [PATCH v3 03/10] arm64, kfence: enable KFENCE for ARM64
+Message-ID: <20201008104501.GB72325@C02TD0UTHF1T.local>
+References: <20200921132611.1700350-1-elver@google.com>
+ <20200921132611.1700350-4-elver@google.com>
+ <20200921143059.GO2139@willie-the-truck>
+ <CAG_fn=WXknUnNmyniy_UE7daivSNmy0Da2KzNmX4wcmXC2Z_Mg@mail.gmail.com>
+ <20200929140226.GB53442@C02TD0UTHF1T.local>
+ <CAG_fn=VOR-3LgmLY-T2Fy6K_VYFgCHK0Hv+Y-atrvrVZ4mQE=Q@mail.gmail.com>
+ <20201001175716.GA89689@C02TD0UTHF1T.local>
+ <CANpmjNMFrMZybOebFwJ1GRXpt8v39AN016UDgPZzE8J3zKh9RA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH 01/29] iwlwifi: dvm: Demote non-compliant kernel-doc
- headers
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200910065431.657636-2-lee.jones@linaro.org>
-References: <20200910065431.657636-2-lee.jones@linaro.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Intel Linux Wireless <linuxwifi@intel.com>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20201008104439.16D99C433CA@smtp.codeaurora.org>
-Date:   Thu,  8 Oct 2020 10:44:38 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNMFrMZybOebFwJ1GRXpt8v39AN016UDgPZzE8J3zKh9RA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lee Jones <lee.jones@linaro.org> wrote:
-
-> None of these headers attempt to document any function parameters.
+On Thu, Oct 08, 2020 at 11:40:52AM +0200, Marco Elver wrote:
+> On Thu, 1 Oct 2020 at 19:58, Mark Rutland <mark.rutland@arm.com> wrote:
+> [...]
+> > > > If you need virt_to_page() to work, the address has to be part of the
+> > > > linear/direct map.
+> [...]
+> >
+> > What's the underlying requirement here? Is this a performance concern,
+> > codegen/codesize, or something else?
 > 
-> Fixes the following W=1 kernel build warning(s):
+> It used to be performance, since is_kfence_address() is used in the
+> fast path. However, with some further tweaks we just did to
+> is_kfence_address(), our benchmarks show a pointer load can be
+> tolerated.
+
+Great!
+
+I reckon that this is something we can optimize in futue if necessary
+(e.g. with some form of code-patching for immediate values), but it's
+good to have a starting point that works everywhere!
+
+[...]
+
+> > I'm not too worried about allocating this dynamically, but:
+> >
+> > * The arch code needs to set up the translation tables for this, as we
+> >   cannot safely change the mapping granularity live.
+> >
+> > * As above I'm fairly certain x86 needs to use a carevout from the
+> >   linear map to function correctly anyhow, so we should follow the same
+> >   approach for both arm64 and x86. That might be a static carevout that
+> >   we figure out the aliasing for, or something entirely dynamic.
 > 
->  drivers/net/wireless/intel/iwlwifi/dvm/main.c:388: warning: Function parameter or member 't' not described in 'iwl_bg_statistics_periodic'
->  drivers/net/wireless/intel/iwlwifi/dvm/main.c:545: warning: Function parameter or member 't' not described in 'iwl_bg_ucode_trace'
->  drivers/net/wireless/intel/iwlwifi/dvm/main.c:771: warning: Function parameter or member 'priv' not described in 'iwl_alive_start'
->  drivers/net/wireless/intel/iwlwifi/dvm/main.c:1692: warning: Function parameter or member 'priv' not described in 'iwl_print_event_log'
->  drivers/net/wireless/intel/iwlwifi/dvm/main.c:1692: warning: Function parameter or member 'start_idx' not described in 'iwl_print_event_log'
->  drivers/net/wireless/intel/iwlwifi/dvm/main.c:1692: warning: Function parameter or member 'num_events' not described in 'iwl_print_event_log'
->  drivers/net/wireless/intel/iwlwifi/dvm/main.c:1692: warning: Function parameter or member 'mode' not described in 'iwl_print_event_log'
->  drivers/net/wireless/intel/iwlwifi/dvm/main.c:1692: warning: Function parameter or member 'pos' not described in 'iwl_print_event_log'
->  drivers/net/wireless/intel/iwlwifi/dvm/main.c:1692: warning: Function parameter or member 'buf' not described in 'iwl_print_event_log'
->  drivers/net/wireless/intel/iwlwifi/dvm/main.c:1692: warning: Function parameter or member 'bufsz' not described in 'iwl_print_event_log'
->  drivers/net/wireless/intel/iwlwifi/dvm/main.c:1772: warning: Function parameter or member 'priv' not described in 'iwl_print_last_event_logs'
->  drivers/net/wireless/intel/iwlwifi/dvm/main.c:1772: warning: Function parameter or member 'capacity' not described in 'iwl_print_last_event_logs'
->  drivers/net/wireless/intel/iwlwifi/dvm/main.c:1772: warning: Function parameter or member 'num_wraps' not described in 'iwl_print_last_event_logs'
->  drivers/net/wireless/intel/iwlwifi/dvm/main.c:1772: warning: Function parameter or member 'next_entry' not described in 'iwl_print_last_event_logs'
->  drivers/net/wireless/intel/iwlwifi/dvm/main.c:1772: warning: Function parameter or member 'size' not described in 'iwl_print_last_event_logs'
->  drivers/net/wireless/intel/iwlwifi/dvm/main.c:1772: warning: Function parameter or member 'mode' not described in 'iwl_print_last_event_logs'
->  drivers/net/wireless/intel/iwlwifi/dvm/main.c:1772: warning: Function parameter or member 'pos' not described in 'iwl_print_last_event_logs'
->  drivers/net/wireless/intel/iwlwifi/dvm/main.c:1772: warning: Function parameter or member 'buf' not described in 'iwl_print_last_event_logs'
->  drivers/net/wireless/intel/iwlwifi/dvm/main.c:1772: warning: Function parameter or member 'bufsz' not described in 'iwl_print_last_event_logs'
+> We're going with dynamically allocating the pool (for both x86 and
+> arm64), since any benefits we used to measure from the static pool are
+> no longer measurable (after removing a branch from
+> is_kfence_address()). It should hopefully simplify a lot of things,
+> given all the caveats that you pointed out.
 > 
-> Cc: Johannes Berg <johannes.berg@intel.com>
-> Cc: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
-> Cc: Luca Coelho <luciano.coelho@intel.com>
-> Cc: Intel Linux Wireless <linuxwifi@intel.com>
-> Cc: Kalle Valo <kvalo@codeaurora.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: linux-wireless@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> For arm64, the only thing left then is to fix up the case if the
+> linear map is not forced to page granularity.
 
-14 patches applied to wireless-drivers-next.git, thanks.
+The simplest way to do this is to modify arm64's arch_add_memory() to
+force the entire linear map to be mapped at page granularity when KFENCE
+is enabled, something like:
 
-7cb391ffdf3c iwlwifi: dvm: Demote non-compliant kernel-doc headers
-b392eabc6abe iwlwifi: rs: Demote non-compliant kernel-doc headers
-229b5582deb5 iwlwifi: dvm: tx: Demote non-compliant kernel-doc headers
-c8a11a84671e iwlwifi: dvm: lib: Demote non-compliant kernel-doc headers
-7619ccceae49 iwlwifi: calib: Demote seemingly unintentional kerneldoc header
-8f7ed7bf1384 iwlwifi: dvm: sta: Demote a bunch of nonconformant kernel-doc headers
-707c528a8d51 iwlwifi: mvm: ops: Remove unused static struct 'iwl_mvm_debug_names'
-108285ec6851 iwlwifi: dvm: Demote a couple of nonconformant kernel-doc headers
-7b37b874fce3 iwlwifi: mvm: utils: Fix some doc-rot
-de00105cf0dc iwlwifi: dvm: scan: Demote a few nonconformant kernel-doc headers
-3a7d806926bb iwlwifi: dvm: rxon: Demote non-conformant kernel-doc headers
-91b4780fbae7 iwlwifi: mvm: tx: Demote misuse of kernel-doc headers
-6806fc7fcfb2 iwlwifi: dvm: devices: Fix function documentation formatting issues
-7d4ced86997f iwlwifi: iwl-drv: Provide descriptions debugfs dentries
+| diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+| index 936c4762dadff..f6eba0642a4a3 100644
+| --- a/arch/arm64/mm/mmu.c
+| +++ b/arch/arm64/mm/mmu.c
+| @@ -1454,7 +1454,8 @@ int arch_add_memory(int nid, u64 start, u64 size,
+|  {
+|         int ret, flags = 0;
+|  
+| -       if (rodata_full || debug_pagealloc_enabled())
+| +       if (rodata_full || debug_pagealloc_enabled() ||
+| +           IS_ENABLED(CONFIG_KFENCE))
+|                 flags = NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
+|  
+|         __create_pgd_mapping(swapper_pg_dir, start, __phys_to_virt(start),
 
--- 
-https://patchwork.kernel.org/patch/11766851/
+... and I given that RODATA_FULL_DEFAULT_ENABLED is the default, I
+suspect it's not worth trying to only for that for the KFENCE region
+unless someone complains.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Thanks,
+Mark.
