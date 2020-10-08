@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30EA3286E8A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 08:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACA07286E89
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 08:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728891AbgJHGQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 02:16:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36800 "EHLO
+        id S1728904AbgJHGQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 02:16:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728724AbgJHGQZ (ORCPT
+        with ESMTP id S1728726AbgJHGQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 8 Oct 2020 02:16:25 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8193C0613D8
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 23:16:19 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id b2so2827872plx.7
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 23:16:19 -0700 (PDT)
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F14EC0613DB
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 23:16:22 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id j10so4320321ybl.19
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 23:16:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=JGnbDdcxJxj3se75rgmrjhN39DHldDWoTPiiMZNtj7E=;
-        b=nAVkaEcnDmhVbSpWNYTTx5pXdK06HUScBVwcpxTI232E63s1kszyjkbCWJLMlXqJe3
-         0vPZZdSd4tde7l696itSjzsbv2L2VXb3yT5MYjlGAq3rGWBJn/G0EPEeb0NCnDU7XX+N
-         QjygauJUQFTf69p5AbYmSjtXBI47Pl1nSNPEGwTsnnl4XDznAG/z7b4fg1NL19IPUzjw
-         u5NSLAkKpgF0KwjNPLhUlfxYPZT8vDOMRSGGIiKbLeCgBmApuUuYH8mdFdcHArBrtGRR
-         a3dguMsZWwbthsBDveFuafcOxnEPbjmc43vFKrqP1JzcNEKIL1TbM+5LSwigAZjglsSu
-         KkcA==
+        bh=6JgTqSJgT9+U2Syccyfmiliq6LISdJLZP+XxLV6n+5o=;
+        b=A7j9tS/Xb9DrkemXROGwYAZIAH+oeggvQAtQS8NT4NivaYZZ6Gmv4It4sMocaubIfD
+         Jx9rzrubwyZJMbRss6U4D6JGmRjl361sqzabsDSWWzX3FsZMLxNJolMPCucrwNXWeQpQ
+         YBA689pJCngPpawU+lcAdLlxebL7Bi7xngIgjPf49duV4NrNVTwmyFmqpD0vCVbtsEFZ
+         v+iVPcpYicJLsD1e8iIRLMv+GfHALCKatJVOf7uPNAyv6KunbwBreFNPT8PaDtoRfTTF
+         yrv0rgVqQwvn0a2c77Vz2vO+hJDaI4p6gXRsu9HDLNPaEH8gTl4MILgk1yuVW/GWGq31
+         Ftmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=JGnbDdcxJxj3se75rgmrjhN39DHldDWoTPiiMZNtj7E=;
-        b=tTSjO3BC4SRWiqJLBq3N4wfMxZRKzFTfvD+YewfqftwXfe0uEyk1mJrjv9ziN5omPV
-         upOrO+PQMsOOO8dx7ANfOUQJhxlb+Xsg6UGRQGBnUsXvkYGLTm0V0hvMJaDeW3jzNR1H
-         Yqtyhi9iA1xi9cNvY/Ky8jR3xljP+pNekFLsJHs9+0R+5Hx4Rxgk9CyjnsK2e42SEYVL
-         aWEqQwuEpwgw8nQTrsu/72xpgJchRsz5QFFEWSeyfTkugRG0UUj5D4ThdqqcKRphavA2
-         s4FlB/KSDAKJSZqr7Hq+GufXLyA7cRAK3L1ACb57NmxUIC4Hfg6AJzn3KztCxcjttQPX
-         f13g==
-X-Gm-Message-State: AOAM53384sDm24j4nmrNd9LrKE4Z2wI9dI68Vwg83j9pt15bEDY7/TP8
-        xNH/aEMOfNJcdmJGKGSER34jXOt0S2s=
-X-Google-Smtp-Source: ABdhPJwwOAXPiSstHERTXmDe5W6qA8MIBrre2VpOrw4LQzT/B2TmkkuLJltxEt45kH3aGKmVuzaOyDLKN7Q=
+        bh=6JgTqSJgT9+U2Syccyfmiliq6LISdJLZP+XxLV6n+5o=;
+        b=RXDWmPU7vWKPplNgyVH17kmw5lMMWdiwU+Mq3b8icOW+2UB8eBT9BKLX1GwG8a/9kq
+         mh/61OXJe2aUykTxSDKNTRHX/Ix1IKaRohwQW76po7SW9sFxfwfsimhRBfIXQ0a99Tge
+         L1U+7SHL6kjAsFd4o6MePdRTWn+ybzw7F/hWOLtOOUuYYRsADPa7wtTdIDo46hgLr5kX
+         6G2dTjo4e/wgWn74F1aMvwh3V8WzAf/Wu3w+AWwQBsl8/NWo75+AuZjHk5w7y25/gqbP
+         yhkeUd0WVOLWc9eG2EHH4BrG8Bkxfc9liO7SW29NExO5axm+gE6T5RCOZqezw7S8oxPD
+         YhVg==
+X-Gm-Message-State: AOAM531PFUBMUYDsWcgMvDHQphVqmiyfs8vcH4gvO3P6WohLpojIzfFc
+        sst3u0YHc1ivOyvxgwtCgH6eS1YqWPQ=
+X-Google-Smtp-Source: ABdhPJzszkClNH2usU/jYbzUnTVxrHehknearvSOg97dOsiJLg5nDDh+HSoFqt1uJKk3pOloWFkeGejaaqk=
 Sender: "badhri via sendgmr" <badhri@badhri.mtv.corp.google.com>
 X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:1:f292:1cff:fee0:66cf])
- (user=badhri job=sendgmr) by 2002:a63:f04c:: with SMTP id s12mr6027108pgj.425.1602137779013;
- Wed, 07 Oct 2020 23:16:19 -0700 (PDT)
-Date:   Wed,  7 Oct 2020 23:15:49 -0700
+ (user=badhri job=sendgmr) by 2002:a25:2393:: with SMTP id j141mr9028667ybj.462.1602137781268;
+ Wed, 07 Oct 2020 23:16:21 -0700 (PDT)
+Date:   Wed,  7 Oct 2020 23:15:50 -0700
 In-Reply-To: <20201008061556.1402293-1-badhri@google.com>
-Message-Id: <20201008061556.1402293-9-badhri@google.com>
+Message-Id: <20201008061556.1402293-10-badhri@google.com>
 Mime-Version: 1.0
 References: <20201008061556.1402293-1-badhri@google.com>
 X-Mailer: git-send-email 2.28.0.806.g8561365e88-goog
-Subject: [PATCH v10 08/15] usb: typec: tcpci_maxim: Add support for Sink FRS
+Subject: [PATCH v10 09/15] usb: typec: tcpm: frs sourcing vbus callback
 From:   Badhri Jagan Sridharan <badhri@google.com>
 To:     Guenter Roeck <linux@roeck-us.net>,
         Heikki Krogerus <heikki.krogerus@linux.intel.com>,
@@ -72,129 +72,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Upon receiving ALERT_EXTENDED.TCPC_SINK_FAST_ROLE_SWAP signal
-tcpm to start Sink fast role swap signal.
-
-Inform when TCPM is sourcing vbus.
+During FRS hardware autonomously starts to source vbus. Provide
+callback to perform chip specific operations.
 
 Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 ---
-Changes since v1:
-- Changing patch version to v6 to fix version number confusion.
-
-Changes since v6:
-- rebase on usb-next
-- Added Reviewed-by: Heikki
-
-Changes since v7:
-- Rebase on usb-next
-
-Changes since v8:
-- None.
-
-Changes since v9:
-- None.
+Introduced in v9. No chages since then.
 ---
- drivers/usb/typec/tcpm/tcpci_maxim.c | 50 +++++++++++++++++++++++++---
- 1 file changed, 46 insertions(+), 4 deletions(-)
+ drivers/usb/typec/tcpm/tcpm.c | 9 +++++++++
+ include/linux/usb/tcpm.h      | 4 ++++
+ 2 files changed, 13 insertions(+)
 
-diff --git a/drivers/usb/typec/tcpm/tcpci_maxim.c b/drivers/usb/typec/tcpm/tcpci_maxim.c
-index 91337ddb4962..723d7dd38f75 100644
---- a/drivers/usb/typec/tcpm/tcpci_maxim.c
-+++ b/drivers/usb/typec/tcpm/tcpci_maxim.c
-@@ -106,13 +106,22 @@ static void max_tcpci_init_regs(struct max_tcpci_chip *chip)
- 		return;
- 	}
+diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+index 55535c4f66bf..02b7f623f584 100644
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -4090,7 +4090,16 @@ static void _tcpm_pd_vbus_on(struct tcpm_port *port)
+ 	case SRC_TRY_DEBOUNCE:
+ 		/* Do nothing, waiting for sink detection */
+ 		break;
++	case FR_SWAP_SEND:
++	case FR_SWAP_SEND_TIMEOUT:
++	case FR_SWAP_SNK_SRC_TRANSITION_TO_OFF:
++	case FR_SWAP_SNK_SRC_SOURCE_VBUS_APPLIED:
++		if (port->tcpc->frs_sourcing_vbus)
++			port->tcpc->frs_sourcing_vbus(port->tcpc);
++		break;
+ 	case FR_SWAP_SNK_SRC_NEW_SINK_READY:
++		if (port->tcpc->frs_sourcing_vbus)
++			port->tcpc->frs_sourcing_vbus(port->tcpc);
+ 		tcpm_set_state(port, FR_SWAP_SNK_SRC_SOURCE_VBUS_APPLIED, 0);
+ 		break;
  
-+	ret = max_tcpci_write8(chip, TCPC_ALERT_EXTENDED, 0xff);
-+	if (ret < 0) {
-+		dev_err(chip->dev, "Unable to clear TCPC_ALERT_EXTENDED ret:%d\n", ret);
-+		return;
-+	}
-+
- 	alert_mask = TCPC_ALERT_TX_SUCCESS | TCPC_ALERT_TX_DISCARDED | TCPC_ALERT_TX_FAILED |
- 		TCPC_ALERT_RX_HARD_RST | TCPC_ALERT_RX_STATUS | TCPC_ALERT_CC_STATUS |
--		TCPC_ALERT_VBUS_DISCNCT | TCPC_ALERT_RX_BUF_OVF | TCPC_ALERT_POWER_STATUS;
-+		TCPC_ALERT_VBUS_DISCNCT | TCPC_ALERT_RX_BUF_OVF | TCPC_ALERT_POWER_STATUS |
-+		/* Enable Extended alert for detecting Fast Role Swap Signal */
-+		TCPC_ALERT_EXTND;
+diff --git a/include/linux/usb/tcpm.h b/include/linux/usb/tcpm.h
+index 09762d26fa0c..7303f518ba49 100644
+--- a/include/linux/usb/tcpm.h
++++ b/include/linux/usb/tcpm.h
+@@ -83,6 +83,9 @@ enum tcpm_transmit_type {
+  *		Optional; Called to enable/disable PD 3.0 fast role swap.
+  *		Enabling frs is accessory dependent as not all PD3.0
+  *		accessories support fast role swap.
++ * @frs_sourcing_vbus:
++ *		Optional; Called to notify that vbus is now being sourced.
++ *		Low level drivers can perform chip specific operations, if any.
+  */
+ struct tcpc_dev {
+ 	struct fwnode_handle *fwnode;
+@@ -109,6 +112,7 @@ struct tcpc_dev {
+ 			   const struct pd_message *msg);
+ 	int (*set_bist_data)(struct tcpc_dev *dev, bool on);
+ 	int (*enable_frs)(struct tcpc_dev *dev, bool enable);
++	void (*frs_sourcing_vbus)(struct tcpc_dev *dev);
+ };
  
- 	ret = max_tcpci_write16(chip, TCPC_ALERT_MASK, alert_mask);
- 	if (ret < 0) {
--		dev_err(chip->dev, "Error writing to TCPC_ALERT_MASK ret:%d\n", ret);
-+		dev_err(chip->dev,
-+			"Error enabling TCPC_ALERT: TCPC_ALERT_MASK write failed ret:%d\n", ret);
- 		return;
- 	}
- 
-@@ -122,6 +131,10 @@ static void max_tcpci_init_regs(struct max_tcpci_chip *chip)
- 		dev_err(chip->dev, "Error writing to TCPC_POWER_CTRL ret:%d\n", ret);
- 		return;
- 	}
-+
-+	ret = max_tcpci_write8(chip, TCPC_ALERT_EXTENDED_MASK, TCPC_SINK_FAST_ROLE_SWAP);
-+	if (ret < 0)
-+		return;
- }
- 
- static void process_rx(struct max_tcpci_chip *chip, u16 status)
-@@ -225,10 +238,23 @@ static void process_power_status(struct max_tcpci_chip *chip)
- 	if (ret < 0)
- 		return;
- 
--	if (pwr_status == 0xff)
-+	if (pwr_status == 0xff) {
- 		max_tcpci_init_regs(chip);
--	else
-+	} else if (pwr_status & TCPC_POWER_STATUS_SOURCING_VBUS) {
-+		tcpm_sourcing_vbus(chip->port);
-+		/*
-+		 * Alawys re-enable boost here.
-+		 * In normal case, when say an headset is attached, TCPM would
-+		 * have instructed to TCPC to enable boost, so the call is a
-+		 * no-op.
-+		 * But for Fast Role Swap case, Boost turns on autonomously without
-+		 * AP intervention, but, needs AP to enable source mode explicitly
-+		 * for AP to regain control.
-+		 */
-+		max_tcpci_set_vbus(chip->tcpci, &chip->data, true, false);
-+	} else {
- 		tcpm_vbus_change(chip->port);
-+	}
- }
- 
- static void process_tx(struct max_tcpci_chip *chip, u16 status)
-@@ -249,6 +275,7 @@ static irqreturn_t _max_tcpci_irq(struct max_tcpci_chip *chip, u16 status)
- {
- 	u16 mask;
- 	int ret;
-+	u8 reg_status;
- 
- 	/*
- 	 * Clear alert status for everything except RX_STATUS, which shouldn't
-@@ -274,6 +301,21 @@ static irqreturn_t _max_tcpci_irq(struct max_tcpci_chip *chip, u16 status)
- 		}
- 	}
- 
-+	if (status & TCPC_ALERT_EXTND) {
-+		ret = max_tcpci_read8(chip, TCPC_ALERT_EXTENDED, &reg_status);
-+		if (ret < 0)
-+			return ret;
-+
-+		ret = max_tcpci_write8(chip, TCPC_ALERT_EXTENDED, reg_status);
-+		if (ret < 0)
-+			return ret;
-+
-+		if (reg_status & TCPC_SINK_FAST_ROLE_SWAP) {
-+			dev_info(chip->dev, "FRS Signal");
-+			tcpm_sink_frs(chip->port);
-+		}
-+	}
-+
- 	if (status & TCPC_ALERT_RX_STATUS)
- 		process_rx(chip, status);
- 
+ struct tcpm_port;
 -- 
 2.28.0.806.g8561365e88-goog
 
