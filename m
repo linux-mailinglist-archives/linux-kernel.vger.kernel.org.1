@@ -2,199 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5B2A287B01
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 19:30:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66E3B287AFF
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 19:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732102AbgJHRav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 13:30:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732092AbgJHRau (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 13:30:50 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5890BC061755
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 10:30:50 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id j22so1902553lfe.10
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 10:30:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0r6hs94To3WnkkAO44dD5WsBrttflbyFzF64gAf7oOc=;
-        b=e6YulghKmU2zbj8oKL6vbX/nL87I35BsKkEYWcuZH7T+d/AX9OaAN3D9jG63KOw2L4
-         ADpXCUvcjyw+baQIDFxhMRcPcdnFPVKVLKoHXnWEEw3krz9/seeOnSrf8moXkwtHbnjh
-         vldct/l7Bf3WG6cp0AqoGhKopct1dBy4/7QLI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0r6hs94To3WnkkAO44dD5WsBrttflbyFzF64gAf7oOc=;
-        b=Ks5bCmx4wHeLIXiehg9S8Zps2DLMdtWwSaxxg2rG1hbcw+lRhQZC/SOYvbej4ACpIU
-         eTJCNEktoWBEZQZv8cAdvRhxui3Rk3CJjSRqz9OfA8a9yYalfeAf7vJ208QHUs7sGJK9
-         ueOvtkCfueLQsR1Vnm+XRRAU6ROJtyGXdgoNFSH5X9X6vt9QbZPd+R/Igt8OQB6PO9Un
-         Ci5nThcz+OSNUjGJEDlWBwTqNoUQAn6/YHyKK+gAQyGClYQ9JENF7apujBb0/D5xbHay
-         cRzAW5mxzsDFRDDUdGR2PQuzHV2CTm+prGuQlen4SynFCKvESgXG+0NzM09JfH5vPgbP
-         yKLw==
-X-Gm-Message-State: AOAM531SSfVATYInwewXjmHLKmKTfy6auCs6vIkuIUg0sy9d3fuNdisR
-        cDLaMtWtxQFl0rxRU7YiT5XF9gBLouAdxA==
-X-Google-Smtp-Source: ABdhPJxo5mbs2u8BGqHM3GpAIWQB7NHqSqO+fYjegT5vr2LMdr+4rPN5LzUqZF4CXGN2OAT+TuSJ1g==
-X-Received: by 2002:a05:6512:5c1:: with SMTP id o1mr1572874lfo.286.1602178248424;
-        Thu, 08 Oct 2020 10:30:48 -0700 (PDT)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id n3sm970054lfq.274.2020.10.08.10.30.46
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Oct 2020 10:30:47 -0700 (PDT)
-Received: by mail-lf1-f44.google.com with SMTP id c141so809271lfg.5
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 10:30:46 -0700 (PDT)
-X-Received: by 2002:a19:2d5:: with SMTP id 204mr1648128lfc.352.1602178246305;
- Thu, 08 Oct 2020 10:30:46 -0700 (PDT)
+        id S1732088AbgJHRan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 13:30:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43302 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729377AbgJHRan (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 13:30:43 -0400
+Received: from sstabellini-ThinkPad-T480s (c-24-130-65-46.hsd1.ca.comcast.net [24.130.65.46])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6402222200;
+        Thu,  8 Oct 2020 17:30:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602178241;
+        bh=7ueGKOqJhqJU4X35iZZ5iwrpzJ9RJyWVf3WNj3wZ6og=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=mG7HHv90QHFOAyD/+NDvDDhgWHFoFKUHwrOoEmgtBWFMY/YSPkpVZxyu3QFBck3AE
+         2ofxuvpnrGA7qfo+MEdGBfcFVC1sOUy5/kJv0UEtH5Lyd+ZudJ2ECBghtii8yTSwxN
+         6VzQ6RZLQQKWBm9Q3wvxQQdxqUMr5nr9oXXLFMlQ=
+Date:   Thu, 8 Oct 2020 10:30:40 -0700 (PDT)
+From:   Stefano Stabellini <sstabellini@kernel.org>
+X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        Julien Grall <julien@xen.org>, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Alex_Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        takahiro.akashi@linaro.org, jgross@suse.com,
+        boris.ostrovsky@oracle.com
+Subject: Re: [PATCH] arm/arm64: xen: Fix to convert percpu address to gfn
+ correctly
+In-Reply-To: <20201008172806.1591ebb538946c5ee93d372a@kernel.org>
+Message-ID: <alpine.DEB.2.21.2010081030180.23978@sstabellini-ThinkPad-T480s>
+References: <160190516028.40160.9733543991325671759.stgit@devnote2> <b205ec9c-c307-2b67-c43a-cf2a67179484@xen.org> <alpine.DEB.2.21.2010051526550.10908@sstabellini-ThinkPad-T480s> <20201006114058.b93839b1b8f35a470874572b@kernel.org>
+ <alpine.DEB.2.21.2010061040350.10908@sstabellini-ThinkPad-T480s> <20201008172806.1591ebb538946c5ee93d372a@kernel.org>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-References: <20201008092627.399131-1-aneesh.kumar@linux.ibm.com> <CAHk-=whwY0WT046fqM-zdHu9vamUjgkvmd36gCd4qSaeYy98nA@mail.gmail.com>
-In-Reply-To: <CAHk-=whwY0WT046fqM-zdHu9vamUjgkvmd36gCd4qSaeYy98nA@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 8 Oct 2020 10:30:30 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whihCy1qxihM=vVDO0aPx0vFP3wTxizLwtbQSYCr1sZjw@mail.gmail.com>
-Message-ID: <CAHk-=whihCy1qxihM=vVDO0aPx0vFP3wTxizLwtbQSYCr1sZjw@mail.gmail.com>
-Subject: Re: [RFC PATCH] mm: Fetch the dirty bit before we reset the pte
-To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Leon Romanovsky <leonro@nvidia.com>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nick Piggin <npiggin@gmail.com>, Peter Xu <peterx@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>
-Content-Type: multipart/mixed; boundary="0000000000003d1e2b05b12c3107"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000003d1e2b05b12c3107
-Content-Type: text/plain; charset="UTF-8"
+On Thu, 8 Oct 2020, Masami Hiramatsu wrote:
+> On Tue, 6 Oct 2020 10:56:52 -0700 (PDT)
+> Stefano Stabellini <sstabellini@kernel.org> wrote:
+> 
+> > On Tue, 6 Oct 2020, Masami Hiramatsu wrote:
+> > > On Mon, 5 Oct 2020 18:13:22 -0700 (PDT)
+> > > Stefano Stabellini <sstabellini@kernel.org> wrote:
+> > > 
+> > > > On Mon, 5 Oct 2020, Julien Grall wrote:
+> > > > > Hi Masami,
+> > > > > 
+> > > > > On 05/10/2020 14:39, Masami Hiramatsu wrote:
+> > > > > > Use per_cpu_ptr_to_phys() instead of virt_to_phys() for per-cpu
+> > > > > > address conversion.
+> > > > > > 
+> > > > > > In xen_starting_cpu(), per-cpu xen_vcpu_info address is converted
+> > > > > > to gfn by virt_to_gfn() macro. However, since the virt_to_gfn(v)
+> > > > > > assumes the given virtual address is in contiguous kernel memory
+> > > > > > area, it can not convert the per-cpu memory if it is allocated on
+> > > > > > vmalloc area (depends on CONFIG_SMP).
+> > > > > 
+> > > > > Are you sure about this? I have a .config with CONFIG_SMP=y where the per-cpu
+> > > > > region for CPU0 is allocated outside of vmalloc area.
+> > > > > 
+> > > > > However, I was able to trigger the bug as soon as CONFIG_NUMA_BALANCING was
+> > > > > enabled.
+> > > > 
+> > > > I cannot reproduce the issue with defconfig, but I can with Masami's
+> > > > kconfig.
+> > > > 
+> > > > If I disable just CONFIG_NUMA_BALANCING from Masami's kconfig, the
+> > > > problem still appears.
+> > > > 
+> > > > If I disable CONFIG_NUMA from Masami's kconfig, it works, which is
+> > > > strange because CONFIG_NUMA is enabled in defconfig, and defconfig
+> > > > works.
+> > > 
+> > > Hmm, strange, because when I disabled CONFIG_NUMA_BALANCING, the issue
+> > > disappeared.
+> > > 
+> > > --- config-5.9.0-rc4+   2020-10-06 11:36:20.620107129 +0900
+> > > +++ config-5.9.0-rc4+.buggy     2020-10-05 21:04:40.369936461 +0900
+> > > @@ -131,7 +131,8 @@
+> > >  CONFIG_ARCH_SUPPORTS_NUMA_BALANCING=y
+> > >  CONFIG_CC_HAS_INT128=y
+> > >  CONFIG_ARCH_SUPPORTS_INT128=y
+> > > -# CONFIG_NUMA_BALANCING is not set
+> > > +CONFIG_NUMA_BALANCING=y
+> > > +CONFIG_NUMA_BALANCING_DEFAULT_ENABLED=y
+> > >  CONFIG_CGROUPS=y
+> > >  CONFIG_PAGE_COUNTER=y
+> > >  CONFIG_MEMCG=y
+> > > 
+> > > So buggy config just enabled NUMA_BALANCING (and default enabled)
+> > 
+> > Yeah but both NUMA and NUMA_BALANCING are enabled in defconfig which
+> > works fine...
+> 
+> Hmm, I found that the xen_vcpu_info was allocated on km if the Dom0 has
+> enough memory. On my environment, if Xen passed 2GB of RAM to Dom0, it
+> was allocated on kernel linear mapped address, but with 1GB of RAM, it
+> was on vmalloc area.
+> As far as I can see, it seems that the percpu allocates memory from
+> 2nd chunk if the default memory size is small.
+> 
+> I've built a kernel with patch [1] and boot the same kernel up with
+> different dom0_mem option with "trace_event=percpu:*" kernel cmdline.
+> Then got following logs.
+> 
+> Boot with 4GB:
+>           <idle>-0     [000] ....     0.543208: percpu_create_chunk: base_addr=000000005d5ad71c
+>  [...]
+>          systemd-1     [000] ....     0.568931: percpu_alloc_percpu: reserved=0 is_atomic=0 size=48 align=8 base_addr=00000000fa92a086 off=32672 ptr=000000008da0b73d
+>          systemd-1     [000] ....     0.568938: xen_guest_init: Xen: alloc xen_vcpu_info ffff800011003fa0 id=000000008da0b73d
+>          systemd-1     [000] ....     0.586635: xen_starting_cpu: Xen: xen_vcpu_info ffff800011003fa0, vcpup ffff00092f4ebfa0 per_cpu_offset[0] ffff80091e4e8000
+> 
+> (NOTE: base_addr and ptr are encoded to the ids, not actual address
+>  because of "%p" printk format)
+> 
+> In this log, we can see the xen_vcpu_info is allocated NOT on the
+> new chunk (this is the 2nd chunk). As you can see, the vcpup is in
+> the kernel linear address in this case, because it came from the
+> 1st kernel embedded chunk.
+> 
+> 
+> Boot with 1GB
+>           <idle>-0     [000] ....     0.516221: percpu_create_chunk: base_addr=000000008456b989
+> [...]
+>          systemd-1     [000] ....     0.541982: percpu_alloc_percpu: reserved=0 is_atomic=0 size=48 align=8 base_addr=000000008456b989 off=17920 ptr=00000000c247612d
+>          systemd-1     [000] ....     0.541989: xen_guest_init: Xen: alloc xen_vcpu_info 7dff951f0600 id=00000000c247612d
+>          systemd-1     [000] ....     0.559690: xen_starting_cpu: Xen: xen_vcpu_info 7dff951f0600, vcpup fffffdffbfcdc600 per_cpu_offset[0] ffff80002aaec000
+> 
+> On the other hand, when we boot the dom0 with 1GB memory, the xen_vcpu_info
+> is allocated on the new chunk (the id of base_addr is same).
+> Since the data of new chunk is allocated on vmalloc area, vcpup points
+> the vmalloc address.
+> 
+> So, the bug seems not to depend on the kconfig, but depends on where
+> the percpu memory is allocated from.
+> 
+> > [...]
+> > 
+> > > > The fix is fine for me. I tested it and it works. We need to remove the
+> > > > "Fixes:" line from the commit message. Ideally, replacing it with a
+> > > > reference to what is the source of the problem.
+> > > 
+> > > OK, as I said, it seems commit 9a9ab3cc00dc ("xen/arm: SMP support") has
+> > > introduced the per-cpu code. So note it instead of Fixes tag.
+> > 
+> > ...and commit 9a9ab3cc00dc was already present in 5.8 which also works
+> > fine with your kconfig. Something else changed in 5.9 causing this
+> > breakage as a side effect. Commit 9a9ab3cc00dc is there since 2013, I
+> > think it is OK -- this patch is fixing something else.
+> 
+> I think the commit 9a9ab3cc00dc theoletically wrong because it uses
+> __pa() on percpu address. But that is not guaranteed according to the
+> comment on per_cpu_ptr_to_phys() as below.
+> 
+> ----
+>  * percpu allocator has special setup for the first chunk, which currently
+>  * supports either embedding in linear address space or vmalloc mapping,
+>  * and, from the second one, the backing allocator (currently either vm or
+>  * km) provides translation.
+>  *
+>  * The addr can be translated simply without checking if it falls into the
+>  * first chunk. But the current code reflects better how percpu allocator
+>  * actually works, and the verification can discover both bugs in percpu
+>  * allocator itself and per_cpu_ptr_to_phys() callers. So we keep current
+>  * code.
+> ----
+> 
+> So we must use per_cpu_ptr_to_phys() instead of __pa() macro for percpu
+> address. That's why I pointed this will fix the commit 9a9ab3cc00dc.
 
-On Thu, Oct 8, 2020 at 10:02 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> Here's the first patch anyway. If you actually have a test-case where
-> this matters, I guess I need to apply it now..
-
-Actually, I removed the "__page_mapcount()" part of that patch, to
-keep it minimal and _only_ do remove the wrprotect trick.
-
-We can do the __page_mapcount() optimization and the mm sequence count
-for 5.10 (although so far nobody has actually written the seqcount
-patch - I think it would be a trivial few-liner, but I guess it won't
-make 5.10 at this point).
-
-So here's what I ended up with.
-
-                      Linus
-
---0000000000003d1e2b05b12c3107
-Content-Type: text/x-patch; charset="US-ASCII"; 
-	name="0001-mm-avoid-early-COW-write-protect-games-during-fork.patch"
-Content-Disposition: attachment; 
-	filename="0001-mm-avoid-early-COW-write-protect-games-during-fork.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_kg13jquu0>
-X-Attachment-Id: f_kg13jquu0
-
-RnJvbSBmM2M2NGVkYTNlNTA5N2VjMzE5OGNiMjcxZjVmNTA0ZDY1ZDY3MTMxIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBMaW51cyBUb3J2YWxkcyA8dG9ydmFsZHNAbGludXgtZm91bmRh
-dGlvbi5vcmc+CkRhdGU6IE1vbiwgMjggU2VwIDIwMjAgMTI6NTA6MDMgLTA3MDAKU3ViamVjdDog
-W1BBVENIXSBtbTogYXZvaWQgZWFybHkgQ09XIHdyaXRlIHByb3RlY3QgZ2FtZXMgZHVyaW5nIGZv
-cmsoKQoKSW4gY29tbWl0IDcwZTgwNmU0ZTY0NSAoIm1tOiBEbyBlYXJseSBjb3cgZm9yIHBpbm5l
-ZCBwYWdlcyBkdXJpbmcgZm9yaygpCmZvciBwdGVzIikgd2Ugd3JpdGUtcHJvdGVjdGVkIHRoZSBQ
-VEUgYmVmb3JlIGRvaW5nIHRoZSBwYWdlIHBpbm5pbmcKY2hlY2ssIGluIG9yZGVyIHRvIGF2b2lk
-IGEgcmFjZSB3aXRoIGNvbmN1cnJlbnQgZmFzdC1HVVAgcGlubmluZyAod2hpY2gKZG9lc24ndCB0
-YWtlIHRoZSBtbSBzZW1hcGhvcmUgb3IgdGhlIHBhZ2UgdGFibGUgbG9jaykuCgpUaGF0IHRyaWNr
-IGRvZXNuJ3QgYWN0dWFsbHkgd29yayAtIGl0IGRvZXNuJ3QgaGFuZGxlIG1lbW9yeSBvcmRlcmlu
-Zwpwcm9wZXJseSwgYW5kIGRvaW5nIHNvIHdvdWxkIGJlIHByb2hpYml0aXZlbHkgZXhwZW5zaXZl
-LgoKSXQgYWxzbyBpc24ndCByZWFsbHkgbmVlZGVkLiAgV2hpbGUgd2UncmUgbW92aW5nIGluIHRo
-ZSBkaXJlY3Rpb24gb2YKYWxsb3dpbmcgYW5kIHN1cHBvcnRpbmcgcGFnZSBwaW5uaW5nIHdpdGhv
-dXQgbWFya2luZyB0aGUgcGlubmVkIGFyZWEKd2l0aCBNQURWX0RPTlRGT1JLLCB0aGUgZmFjdCBp
-cyB0aGF0IHdlJ3ZlIG5ldmVyIHJlYWxseSBzdXBwb3J0ZWQgdGhpcwpraW5kIG9mIG9kZCAiY29u
-Y3VycmVudCBmb3JrKCkgYW5kIHBhZ2UgcGlubmluZyIsIGFuZCBkb2luZyB0aGUKc2VyaWFsaXph
-dGlvbiBvbiBhIHB0ZSBsZXZlbCBpcyBqdXN0IHdyb25nLgoKV2UgY2FuIGFkZCBzZXJpYWxpemF0
-aW9uIHdpdGggYSBwZXItbW0gc2VxdWVuY2UgY291bnRlciwgc28gd2Uga25vdyBob3cKdG8gc29s
-dmUgdGhhdCByYWNlIHByb3Blcmx5LCBidXQgd2UnbGwgZG8gdGhhdCBhdCBhIG1vcmUgYXBwcm9w
-cmlhdGUKdGltZS4gIFJpZ2h0IG5vdyB0aGlzIGp1c3QgcmVtb3ZlcyB0aGUgd3JpdGUgcHJvdGVj
-dCBnYW1lcy4KCkl0IGFsc28gdHVybnMgb3V0IHRoYXQgdGhlIHdyaXRlIHByb3RlY3QgZ2FtZXMg
-YWN0dWFsbHkgYnJlYWsgb24gUG93ZXIsCmFzIHJlcG9ydGVkIGJ5IEFuZWVzaCBLdW1hcjoKCiAi
-QXJjaGl0ZWN0dXJlIGxpa2UgcHBjNjQgZXhwZWN0cyBzZXRfcHRlX2F0IHRvIGJlIG5vdCB1c2Vk
-IGZvciB1cGRhdGluZwogIGEgdmFsaWQgcHRlLiBUaGlzIGlzIGZ1cnRoZXIgZXhwbGFpbmVkIGlu
-IGNvbW1pdCA1NmVlY2RiOTEyYjUgKCJtbToKICBVc2UgcHRlcC9wbWRwX3NldF9udW1hKCkgZm9y
-IHVwZGF0aW5nIF9QQUdFX05VTUEgYml0IikiCgphbmQgdGhlIGNvZGUgdHJpZ2dlcmVkIGEgd2Fy
-bmluZyB0aGVyZToKCiAgV0FSTklORzogQ1BVOiAwIFBJRDogMzA2MTMgYXQgYXJjaC9wb3dlcnBj
-L21tL3BndGFibGUuYzoxODUgc2V0X3B0ZV9hdCsweDJhOC8weDNhMCBhcmNoL3Bvd2VycGMvbW0v
-cGd0YWJsZS5jOjE4NQogIENhbGwgVHJhY2U6CiAgICBjb3B5X3ByZXNlbnRfcGFnZSBtbS9tZW1v
-cnkuYzo4NTcgW2lubGluZV0KICAgIGNvcHlfcHJlc2VudF9wdGUgbW0vbWVtb3J5LmM6ODk5IFtp
-bmxpbmVdCiAgICBjb3B5X3B0ZV9yYW5nZSBtbS9tZW1vcnkuYzoxMDE0IFtpbmxpbmVdCiAgICBj
-b3B5X3BtZF9yYW5nZSBtbS9tZW1vcnkuYzoxMDkyIFtpbmxpbmVdCiAgICBjb3B5X3B1ZF9yYW5n
-ZSBtbS9tZW1vcnkuYzoxMTI3IFtpbmxpbmVdCiAgICBjb3B5X3A0ZF9yYW5nZSBtbS9tZW1vcnku
-YzoxMTUwIFtpbmxpbmVdCiAgICBjb3B5X3BhZ2VfcmFuZ2UrMHgxZjZjLzB4MmNjMCBtbS9tZW1v
-cnkuYzoxMjEyCiAgICBkdXBfbW1hcCBrZXJuZWwvZm9yay5jOjU5MiBbaW5saW5lXQogICAgZHVw
-X21tKzB4NzdjLzB4YWIwIGtlcm5lbC9mb3JrLmM6MTM1NQogICAgY29weV9tbSBrZXJuZWwvZm9y
-ay5jOjE0MTEgW2lubGluZV0KICAgIGNvcHlfcHJvY2VzcysweDFmMDAvMHgyNzQwIGtlcm5lbC9m
-b3JrLmM6MjA3MAogICAgX2RvX2ZvcmsrMHhjNC8weDEwYjAga2VybmVsL2ZvcmsuYzoyNDI5CgpM
-aW5rOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9sa21sL0NBSGstPXdpV3IrZ08wUm80THZuSkJN
-czkwT2llUE55ckUzRStwSnZjOVB6ZEJTaGRtd0BtYWlsLmdtYWlsLmNvbS8KTGluazogaHR0cHM6
-Ly9sb3JlLmtlcm5lbC5vcmcvbGludXhwcGMtZGV2LzIwMjAxMDA4MDkyNTQxLjM5ODA3OS0xLWFu
-ZWVzaC5rdW1hckBsaW51eC5pYm0uY29tLwpSZXBvcnRlZC1ieTogQW5lZXNoIEt1bWFyIEsuViA8
-YW5lZXNoLmt1bWFyQGxpbnV4LmlibS5jb20+ClRlc3RlZC1ieTogTGVvbiBSb21hbm92c2t5IDxs
-ZW9ucm9AbnZpZGlhLmNvbT4KQ2M6IFBldGVyIFh1IDxwZXRlcnhAcmVkaGF0LmNvbT4KQ2M6IEph
-c29uIEd1bnRob3JwZSA8amdnQHppZXBlLmNhPgpDYzogSm9obiBIdWJiYXJkIDxqaHViYmFyZEBu
-dmlkaWEuY29tPgpDYzogQW5kcmV3IE1vcnRvbiA8YWtwbUBsaW51eC1mb3VuZGF0aW9uLm9yZz4K
-Q2M6IEphbiBLYXJhIDxqYWNrQHN1c2UuY3o+CkNjOiBNaWNoYWwgSG9ja28gPG1ob2Nrb0BzdXNl
-LmNvbT4KQ2M6IEtpcmlsbCBTaHV0ZW1vdiA8a2lyaWxsQHNodXRlbW92Lm5hbWU+CkNjOiBIdWdo
-IERpY2tpbnMgPGh1Z2hkQGdvb2dsZS5jb20+ClNpZ25lZC1vZmYtYnk6IExpbnVzIFRvcnZhbGRz
-IDx0b3J2YWxkc0BsaW51eC1mb3VuZGF0aW9uLm9yZz4KLS0tCiBtbS9tZW1vcnkuYyB8IDQxICsr
-KystLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwg
-NCBpbnNlcnRpb25zKCspLCAzNyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9tbS9tZW1vcnku
-YyBiL21tL21lbW9yeS5jCmluZGV4IGZjZmM0Y2EzNmViYS4uZWVhZTU5MGU1MjZhIDEwMDY0NAot
-LS0gYS9tbS9tZW1vcnkuYworKysgYi9tbS9tZW1vcnkuYwpAQCAtODA2LDggKzgwNiw2IEBAIGNv
-cHlfcHJlc2VudF9wYWdlKHN0cnVjdCBtbV9zdHJ1Y3QgKmRzdF9tbSwgc3RydWN0IG1tX3N0cnVj
-dCAqc3JjX21tLAogCQlyZXR1cm4gMTsKIAogCS8qCi0JICogVGhlIHRyaWNrIHN0YXJ0cy4KLQkg
-KgogCSAqIFdoYXQgd2Ugd2FudCB0byBkbyBpcyB0byBjaGVjayB3aGV0aGVyIHRoaXMgcGFnZSBt
-YXkKIAkgKiBoYXZlIGJlZW4gcGlubmVkIGJ5IHRoZSBwYXJlbnQgcHJvY2Vzcy4gIElmIHNvLAog
-CSAqIGluc3RlYWQgb2Ygd3Jwcm90ZWN0IHRoZSBwdGUgb24gYm90aCBzaWRlcywgd2UgY29weQpA
-QCAtODE1LDQ3ICs4MTMsMTYgQEAgY29weV9wcmVzZW50X3BhZ2Uoc3RydWN0IG1tX3N0cnVjdCAq
-ZHN0X21tLCBzdHJ1Y3QgbW1fc3RydWN0ICpzcmNfbW0sCiAJICogdGhlIHBpbm5lZCBwYWdlIHdv
-bid0IGJlIHJhbmRvbWx5IHJlcGxhY2VkIGluIHRoZQogCSAqIGZ1dHVyZS4KIAkgKgotCSAqIFRv
-IGFjaGlldmUgdGhpcywgd2UgZG8gdGhlIGZvbGxvd2luZzoKLQkgKgotCSAqIDEuIFdyaXRlLXBy
-b3RlY3QgdGhlIHB0ZSBpZiBpdCdzIHdyaXRhYmxlLiAgVGhpcyBpcwotCSAqICAgIHRvIHByb3Rl
-Y3QgY29uY3VycmVudCB3cml0ZSBmYXN0LWd1cCB3aXRoCi0JICogICAgRk9MTF9QSU4sIHNvIHRo
-YXQgd2UnbGwgZmFpbCB0aGUgZmFzdC1ndXAgd2l0aAotCSAqICAgIHRoZSB3cml0ZSBiaXQgcmVt
-b3ZlZC4KLQkgKgotCSAqIDIuIENoZWNrIHBhZ2VfbWF5YmVfZG1hX3Bpbm5lZCgpIHRvIHNlZSB3
-aGV0aGVyIHRoaXMKLQkgKiAgICBwYWdlIG1heSBoYXZlIGJlZW4gcGlubmVkLgotCSAqCi0JICog
-VGhlIG9yZGVyIG9mIHRoZXNlIHN0ZXBzIGlzIGltcG9ydGFudCB0byBzZXJpYWxpemUKLQkgKiBh
-Z2FpbnN0IHRoZSBmYXN0LWd1cCBjb2RlIChndXBfcHRlX3JhbmdlKCkpIG9uIHRoZQotCSAqIHB0
-ZSBjaGVjayBhbmQgdHJ5X2dyYWJfY29tcG91bmRfaGVhZCgpLCBzbyB0aGF0Ci0JICogd2UnbGwg
-bWFrZSBzdXJlIGVpdGhlciB3ZSdsbCBjYXB0dXJlIHRoYXQgZmFzdC1ndXAKLQkgKiBzbyB3ZSds
-bCBjb3B5IHRoZSBwaW5uZWQgcGFnZSBoZXJlLCBvciB3ZSdsbCBmYWlsCi0JICogdGhhdCBmYXN0
-LWd1cC4KLQkgKgotCSAqIE5PVEUhIEV2ZW4gaWYgd2UgZG9uJ3QgZW5kIHVwIGNvcHlpbmcgdGhl
-IHBhZ2UsCi0JICogd2Ugd29uJ3QgdW5kbyB0aGlzIHdycHJvdGVjdCgpLCBiZWNhdXNlIHRoZSBu
-b3JtYWwKLQkgKiByZWZlcmVuY2UgY29weSB3aWxsIG5lZWQgaXQgYW55d2F5LgotCSAqLwotCWlm
-IChwdGVfd3JpdGUocHRlKSkKLQkJcHRlcF9zZXRfd3Jwcm90ZWN0KHNyY19tbSwgYWRkciwgc3Jj
-X3B0ZSk7Ci0KLQkvKgotCSAqIFRoZXNlIGFyZSB0aGUgIm5vcm1hbGx5IHdlIGNhbiBqdXN0IGNv
-cHkgYnkgcmVmZXJlbmNlIgotCSAqIGNoZWNrcy4KKwkgKiBUaGUgcGFnZSBwaW5uaW5nIGNoZWNr
-cyBhcmUganVzdCAiaGFzIHRoaXMgbW0gZXZlcgorCSAqIHNlZW4gcGlubmluZyIsIGFsb25nIHdp
-dGggdGhlIChpbmV4YWN0KSBjaGVjayBvZgorCSAqIHRoZSBwYWdlIGNvdW50LiBUaGF0IG1pZ2h0
-IGdpdmUgZmFsc2UgcG9zaXRpdmVzIGZvcgorCSAqIGZvciBwaW5uaW5nLCBidXQgaXQgd2lsbCB3
-b3JrIGNvcnJlY3RseS4KIAkgKi8KIAlpZiAobGlrZWx5KCFhdG9taWNfcmVhZCgmc3JjX21tLT5o
-YXNfcGlubmVkKSkpCiAJCXJldHVybiAxOwogCWlmIChsaWtlbHkoIXBhZ2VfbWF5YmVfZG1hX3Bp
-bm5lZChwYWdlKSkpCiAJCXJldHVybiAxOwogCi0JLyoKLQkgKiBVaGh1aC4gSXQgbG9va3MgbGlr
-ZSB0aGUgcGFnZSBtaWdodCBiZSBhIHBpbm5lZCBwYWdlLAotCSAqIGFuZCB3ZSBhY3R1YWxseSBu
-ZWVkIHRvIGNvcHkgaXQuIE5vdyB3ZSBjYW4gc2V0IHRoZQotCSAqIHNvdXJjZSBwdGUgYmFjayB0
-byBiZWluZyB3cml0YWJsZS4KLQkgKi8KLQlpZiAocHRlX3dyaXRlKHB0ZSkpCi0JCXNldF9wdGVf
-YXQoc3JjX21tLCBhZGRyLCBzcmNfcHRlLCBwdGUpOwotCiAJbmV3X3BhZ2UgPSAqcHJlYWxsb2M7
-CiAJaWYgKCFuZXdfcGFnZSkKIAkJcmV0dXJuIC1FQUdBSU47Ci0tIAoyLjI4LjAuMjE4LmdjMTJl
-ZjNkMzQ5Cgo=
---0000000000003d1e2b05b12c3107--
+Thank you for the analysis. We are going to try to get the patch
+upstream as soon as we can.
