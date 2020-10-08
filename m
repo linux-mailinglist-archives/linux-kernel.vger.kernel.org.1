@@ -2,83 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C182286F9C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:37:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCC57286FA2
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:39:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727505AbgJHHhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 03:37:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49234 "EHLO
+        id S1727313AbgJHHjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 03:39:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727424AbgJHHhF (ORCPT
+        with ESMTP id S1725899AbgJHHjJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 03:37:05 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8388C061755
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 00:37:04 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id g9so3541662pgh.8
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 00:37:04 -0700 (PDT)
+        Thu, 8 Oct 2020 03:39:09 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 700EBC061755
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 00:39:08 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id v12so5437692wmh.3
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 00:39:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=IMu0Crr/pj4B3MUHg7Vj9+8fc+3Dft22w+G6926fIp0=;
-        b=RKnE6q1+BJC9ZB79GG4ediRJDy7pAysrMIcFGVFdPAl3QYh8pierxr0lxRSWGEr2y3
-         2Ex4K1rjpsU3YFTGJ+9c5mbd0oIosvDnfGk998fsUlgH4cZ/AfcAfoemguDmWoEhP8JS
-         BcSx68wAKamnEaKtKKzcI/yAPGvh6U5GQ4Ges=
+        bh=acT3mJ3SgCskMXGei75f2QgPPdiS23kx6LiqTgcMbyI=;
+        b=i5CzYo7dzSmpMLz4rtu2Pkeh1wioILnCpnEabEsBViz7tWcc2f48rPuXmkfOu4+Rwz
+         otLbJQ6Y6l7Rbh7U2IMQueo6eVKPyLujdFZKaP3krJTZrz+xToNJtIlE3SP75WOnrQlU
+         MMJsaYYif+YYgsJlyM9vlQSKbpwdB/n52VJBvnyVk62Sk70xvfMj5D0AEU7DGgBzwMx3
+         1gPiNFlzJNB7EvFG8zwD0+za37BmhXBPLbV19Z95vDN9UiWHO0TjUFrN4IefJLeFBQ/F
+         aUIkAookidELNTC1LR3SLqlNfn1l6Kupn/qq8sPaSWZi1srvCeRYbySJZciFLwiFT7cw
+         hDUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=IMu0Crr/pj4B3MUHg7Vj9+8fc+3Dft22w+G6926fIp0=;
-        b=q6dUgZCzuhAlIGlU7WWRJ0iaXpLOj5EQymgAbfbkGNBHD0ItIyAO+EkEfuHVvBhPy3
-         TLG+xG9m17NrFPOMLgDNuGcZzDl+mOxOhlJtvLbF+5SQE6mnyNDZeMtpHQ5/D3n/804n
-         PS3SNqZ7yDVTICugDzMOihx5e+iufmI1akJcYyMRgiJdtM9++R4Cf+5f9MDgAlvlWrZo
-         syWAEsRLE9pfsMv0I+WD4m7amZ8XRnQErrKeEgnWvIJWa4WSK2ysNXlm2UNIryAbozTU
-         TaJuW8EYy8upNYm0qTG19flyMIizaSZwvDJc1npluJK5xKxyOYqaCaIAPeoXtxkYTPS5
-         hyGw==
-X-Gm-Message-State: AOAM533HVPxy9uIgLd8EGJGEa1rG8lOL+f3CEOfZLw4pEAbpME4VmxW5
-        yhrUTJ+LHqr/ksm5VQOA2yimOQ==
-X-Google-Smtp-Source: ABdhPJz2J+5oYtHsMOH5qZrhRO70+NsuJrhz2jDD4jfE/NiNvFD01kVdJsw0r4+mt/BlPO+ns/mZLA==
-X-Received: by 2002:a63:e47:: with SMTP id 7mr6234736pgo.13.1602142624574;
-        Thu, 08 Oct 2020 00:37:04 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id g4sm6176638pgg.75.2020.10.08.00.37.03
+        bh=acT3mJ3SgCskMXGei75f2QgPPdiS23kx6LiqTgcMbyI=;
+        b=eNExlxB9ozabqYW3mkxkfF7IhubkdB6VhjHKiCzHP+4yzpN1hjxojoZlHGPNH/sC8f
+         hCyp/1vV9AGFh8DM05x6HOEd/byAFKmhYGlg7TRdrRHO6KbbkLSMJCSq2OqBYZSyMjW1
+         3TiunVbL1z7XaVvYby5Ruf/qDcAJnA1pVDoUV9ajuP01h18siCXjdk0yRK2bgSLKzRye
+         o+MOCNLguGtOJ9pDdL+3k/KpW3IML9EtZ09XSOidBee8rEN8ig/5BaV1hoQbI6+FiCKv
+         NktXEBPNsxJHveDAzbHMcuEuUVetmdJNX0phzzolZYJVCt8WLSFNah1M7qiyxyfE4/gx
+         Rivg==
+X-Gm-Message-State: AOAM5322KVRYBlZue1OUPuRCiIoGPqfcBufCYilvH3azo1BIrPvFF8+f
+        CU18nx9C8TAp8VHeaQm0qPveJw==
+X-Google-Smtp-Source: ABdhPJwjHpTJ7/ur9Z19VLp3xZ8ALp/j4Fp7NgchaRmjLtruqhs8jAB14QOUHbXX4R1qL5vuo4t8lg==
+X-Received: by 2002:a7b:c7d5:: with SMTP id z21mr2929815wmk.73.1602142747144;
+        Thu, 08 Oct 2020 00:39:07 -0700 (PDT)
+Received: from localhost ([85.163.43.78])
+        by smtp.gmail.com with ESMTPSA id h76sm5708531wme.10.2020.10.08.00.39.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 00:37:03 -0700 (PDT)
-Date:   Thu, 8 Oct 2020 00:37:02 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>, gregkh@linuxfoundation.org,
-        rafael@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 04/11] drivers/base/devcoredump: convert devcd_count
- to counter_atomic32
-Message-ID: <202010080036.A3BEFB0BE@keescook>
-References: <cover.1602011710.git.skhan@linuxfoundation.org>
- <462fd514dfe2afbb8faa1dea4cdb4b0e75d8e8da.1602011710.git.skhan@linuxfoundation.org>
- <202010071114.EE9A2A47C@keescook>
- <cb86761a-5531-cbb2-3987-0897771949b8@linuxfoundation.org>
- <f27149d6b9b781ccf9c2fa041082c134abccd925.camel@sipsolutions.net>
- <202010071334.8298F3FA7@keescook>
- <1545e7c77675c9a0574a7582ee5f0c969c01419e.camel@sipsolutions.net>
+        Thu, 08 Oct 2020 00:39:06 -0700 (PDT)
+Date:   Thu, 8 Oct 2020 09:39:05 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Moshe Shemesh <moshe@mellanox.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@nvidia.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2 03/16] devlink: Add devlink reload limit
+ option
+Message-ID: <20201008073905.GF3064@nanopsycho>
+References: <1602050457-21700-1-git-send-email-moshe@mellanox.com>
+ <1602050457-21700-4-git-send-email-moshe@mellanox.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1545e7c77675c9a0574a7582ee5f0c969c01419e.camel@sipsolutions.net>
+In-Reply-To: <1602050457-21700-4-git-send-email-moshe@mellanox.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 08:42:22AM +0200, Johannes Berg wrote:
->  1) each value that we derive from this ever-incrementing (modulo 2^32)
->     variable only get used for a limited amount of time (max. 5 minutes)
+Wed, Oct 07, 2020 at 08:00:44AM CEST, moshe@mellanox.com wrote:
+>Add reload limit to demand restrictions on reload actions.
+>Reload limits supported:
+>no_reset: No reset allowed, no down time allowed, no link flap and no
+>          configuration is lost.
+>
+>By default reload limit is unspecified and so no constraints on reload
+>actions are required.
+>
+>Some combinations of action and limit are invalid. For example, driver
+>can not reinitialize its entities without any downtime.
+>
+>The no_reset reload limit will have usecase in this patchset to
+>implement restricted fw_activate on mlx5.
+>
+>Have the uapi parameter of reload limit ready for future support of
+>multiselection.
+>
+>Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
 
-Ah! That's what I misunderstood, the resulting value is only used for 5
-minutes. Got it; thanks!
-
-> IOW, I disagree with you, and think that counter_atomic_32 is more
-> appropriate here than refcount_t.
-
-I agree now! :)
-
--- 
-Kees Cook
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
