@@ -2,131 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 031CA287596
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:02:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A9F6287599
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:04:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730390AbgJHOC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 10:02:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52452 "EHLO
+        id S1730396AbgJHOEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 10:04:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729992AbgJHOCY (ORCPT
+        with ESMTP id S1729840AbgJHOEN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 10:02:24 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 607A5C061755
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 07:02:24 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id t77so6397997oie.4
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 07:02:24 -0700 (PDT)
+        Thu, 8 Oct 2020 10:04:13 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01B41C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 07:04:13 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id g29so4390174pgl.2
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 07:04:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yenzkprhIaKxWbr2VJ0f4x7nZ8oedYumsvtw0Q63bhc=;
-        b=T/F+9ugs9rwmmfHmsaWXgPVU+ZLZGE7aRbGo6abeIkJ2KlStetQV5E3qMEneK1KC5g
-         aa/PUFFCgJ+HfO2PctHrEeUPIE9FkviDtYwHjalO75CiSYhhkqK2cHBK0PNraeB2KTT1
-         XUwmePtJrsHx9PaegeUiHttSPqq/IlFZBVR1o=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=jt37dXS34L6OrrLOkGsUD7pu7UmGQsU7qWnxBPvScNc=;
+        b=u5Kc3RiL7HbklSB31pqCBDXIEkTsQpsWvA6e5v7U9sRzjoUYY0KAEeTTkRmhRwCCsb
+         I7ZnCPz9zk6owa7G8GuKAScYd19dmTzoPHy2jyFCPBNnVB0u7FdBDmddOMBOENeofEuD
+         cp2FA3bI8tLekVzetP7V0KVUd3GYeEbhlbvnAMSQMc5JTAmqBRu42q9toOgwmAi3CxKy
+         D8uURsODhhIt3JEnoG85MAD/Pe01QmxRAorPnBwb24eROvgiGVH8hLfeb9nkJhcbDoMG
+         oNiBGIyY2grEh5KyeKmlblj2o6U1K398S9HaUMiRXjd//fzChEEfEhnj55d/JjMFrxcb
+         mcwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yenzkprhIaKxWbr2VJ0f4x7nZ8oedYumsvtw0Q63bhc=;
-        b=pDxdPfC2iuLturrXcOGAnOKoKFtDx42JbbvLCO3xEIffZg6yusBx5GksSeFz57VnIQ
-         R2H5CaiEE21zPTnp+1ilfptqSL+h3OtghueYm3s+FkHwPxkOxv2RVVVcw92iDjHnkSxw
-         EsbA4viWEAGW7kgO6QM9keBWhSI3jjK3zj0sXXcqmm/a6JKFxSvKvihF1AmLPKzJoLG9
-         gBxNWmvZaG4EQHRQwO0A1SXS2eFK/j0L5220ZCjwBEcr1Ub8JXN2na8Pnv9/kYZ5EbZB
-         ky1460sR4nLFU+smvAboaRvdJOI/q5VbKE8qzbjn4P1HhpzpR3BKZRHN54KByKqfyCFG
-         dFbQ==
-X-Gm-Message-State: AOAM530mRAGQQFZ3XW72JfGYtg6qeZyvxmo7ls4neEthm3P9N+GIzma4
-        4bk/c2Vy35NfekHFyK5r8UQGlXpIz2bXHQ==
-X-Google-Smtp-Source: ABdhPJwseDVZv/YAM/hwM3829lc6Xt7yyybG4gAlk+NfQjUAp2ay0i3bIybvA/5CqcKyLC6M4Rce/w==
-X-Received: by 2002:aca:4752:: with SMTP id u79mr4903495oia.0.1602165743125;
-        Thu, 08 Oct 2020 07:02:23 -0700 (PDT)
-Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com. [209.85.161.46])
-        by smtp.gmail.com with ESMTPSA id 65sm4117621otj.75.2020.10.08.07.02.21
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Oct 2020 07:02:22 -0700 (PDT)
-Received: by mail-oo1-f46.google.com with SMTP id f19so1223193oot.4
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 07:02:21 -0700 (PDT)
-X-Received: by 2002:a4a:da53:: with SMTP id f19mr5590822oou.38.1602165741077;
- Thu, 08 Oct 2020 07:02:21 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=jt37dXS34L6OrrLOkGsUD7pu7UmGQsU7qWnxBPvScNc=;
+        b=erRyBZc2nVCrnB/YVu9tYt7O8dme7xB8m75j1K2ap/rpsN+yRya/cbj9nrnW9R8SLm
+         0CwlQo5LQmd0YZzRHkp9B1p/6zV9+tJVEKfOWoHoEozmZsaSNbZiIlACac/wAezGXPq4
+         PTw0TzA3kW/xaC8fgrOizw6MJme29k3CfvpgJtN/xdvp27aKg6DQgvdD5swG2bJEvHIT
+         F42AZLcnqT/Ynx8coTH4slOETqgcZ5sBm14tpTdEzChowRFakGU6Hk3BXZe8ip6VDOG9
+         s5mByiotIN3P9gwfNZKQrD4NryQBFM3+lJ5SoauW7t5kMQSL+9A8ZRrb8rki0uM9jOnY
+         WlsA==
+X-Gm-Message-State: AOAM531XDfTdjNHi61bjrJuOU+V/c4onrHq9/fTXbdsH1om4X7vTsPfz
+        K1ZXj+0L1z97HtwXOUCsGCDx
+X-Google-Smtp-Source: ABdhPJxdhQfznR1avOqOyogF/FWuIhGM4D//p1p96Y2UYcJ8OQgm3oT5tKUnLsJ40lYXuzj0w2HuFA==
+X-Received: by 2002:a17:90a:c17:: with SMTP id 23mr8473272pjs.127.1602165852330;
+        Thu, 08 Oct 2020 07:04:12 -0700 (PDT)
+Received: from linux ([103.59.133.81])
+        by smtp.gmail.com with ESMTPSA id b6sm7289227pjq.42.2020.10.08.07.04.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 08 Oct 2020 07:04:08 -0700 (PDT)
+Date:   Thu, 8 Oct 2020 19:34:03 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     dmaengine@vger.kernel.org, Allen Pais <allen.lkml@gmail.com>,
+        Romain Perier <romain.perier@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>
+Subject: Re: [PATCH 5/5] dmaengine: owl-dma: fix kernel-doc style for enum
+Message-ID: <20201008140403.GB23649@linux>
+References: <20201007083113.567559-1-vkoul@kernel.org>
+ <20201007083113.567559-6-vkoul@kernel.org>
 MIME-Version: 1.0
-References: <20201004122234.802044-1-acourbot@chromium.org>
- <c3e1c20a-7729-9f48-ce66-41e67f195fc7@xs4all.nl> <cda40a8e-4dd2-5fd7-c5ff-8b048475164b@xs4all.nl>
-In-Reply-To: <cda40a8e-4dd2-5fd7-c5ff-8b048475164b@xs4all.nl>
-From:   Alexandre Courbot <acourbot@chromium.org>
-Date:   Thu, 8 Oct 2020 23:02:08 +0900
-X-Gmail-Original-Message-ID: <CAPBb6MX8rFZU=9Pd5o0mqQ6pf+1oQYzk=D0WiR93_S3FUG7jJw@mail.gmail.com>
-Message-ID: <CAPBb6MX8rFZU=9Pd5o0mqQ6pf+1oQYzk=D0WiR93_S3FUG7jJw@mail.gmail.com>
-Subject: Re: [PATCH v2] media: mtk-vcodec: fix builds when remoteproc is disabled
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201007083113.567559-6-vkoul@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans, thanks for taking the time to look at this!
+On Wed, Oct 07, 2020 at 02:01:13PM +0530, Vinod Koul wrote:
+> Driver doesn't use keyword enum for enum owl_dmadesc_offsets resulting
+> in warning:
+> 
+> drivers/dma/owl-dma.c:139: warning: cannot understand function prototype:
+> 'enum owl_dmadesc_offsets '
+> 
+> So add the keyword to fix it and also add documentation for missing
+> OWL_DMADESC_SIZE
+> 
 
-On Thu, Oct 8, 2020 at 10:12 PM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
->
-> On 08/10/2020 15:07, Hans Verkuil wrote:
-> > Hi Alexandre,
-> >
-> > On 04/10/2020 14:22, Alexandre Courbot wrote:
-> >> The addition of MT8183 support added a dependency on the SCP remoteproc
-> >> module. However the initial patch used the "select" Kconfig directive,
-> >> which may result in the SCP module to not be compiled if remoteproc was
-> >> disabled. In such a case, mtk-vcodec would try to link against
-> >> non-existent SCP symbols. "select" was clearly misused here as explained
-> >> in kconfig-language.txt.
-> >>
-> >> Replace this by a "depends" directive on at least one of the VPU and
-> >> SCP modules, to allow the driver to be compiled as long as one of these
-> >> is enabled, and adapt the code to support this new scenario.
-> >>
-> >> Also adapt the Kconfig text to explain the extra requirements for MT8173
-> >> and MT8183.
-> >>
-> >> Reported-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> >> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
-> >> Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-> >> ---
-> >>  drivers/media/platform/Kconfig                | 10 +--
-> >>  .../media/platform/mtk-vcodec/mtk_vcodec_fw.c | 72 ++++++++++++-------
-> >>  2 files changed, 54 insertions(+), 28 deletions(-)
-> >>
-> >> diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
-> >> index a3cb104956d5..98eb62e49ec2 100644
-> >> --- a/drivers/media/platform/Kconfig
-> >> +++ b/drivers/media/platform/Kconfig
-> >> @@ -253,14 +253,16 @@ config VIDEO_MEDIATEK_VCODEC
-> >>      depends on MTK_IOMMU || COMPILE_TEST
-> >>      depends on VIDEO_DEV && VIDEO_V4L2
-> >>      depends on ARCH_MEDIATEK || COMPILE_TEST
-> >> +    depends on VIDEO_MEDIATEK_VPU || MTK_SCP
-> >
-> > Close, but no cigar.
-> >
-> > If VIDEO_MEDIATEK_VPU=y and MTK_SCP=m, then VIDEO_MEDIATEK_VCODEC can be configured
-> > to y, and then it won't be able to find the scp_ functions.
-> >
-> > To be honest, I'm not sure how to solve this.
->
-> Found it. Add this:
->
->         depends on MTK_SCP || !MTK_SCP
->         depends on VIDEO_MEDIATEK_VPU || !VIDEO_MEDIATEK_VPU
->
-> Ugly as hell, but it appears to be the correct incantation for this.
+Do we really need to document the max value? Does it produce any warning?
 
-But doesn't it mean that the driver can be compiled if !MTK_SCP and
-!VIDEO_MEDIATEK_VPU? That's the one case we want to avoid.
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
+Thanks,
+Mani
+
+> ---
+>  drivers/dma/owl-dma.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/dma/owl-dma.c b/drivers/dma/owl-dma.c
+> index 331c8d8b10a3..9fede32641e9 100644
+> --- a/drivers/dma/owl-dma.c
+> +++ b/drivers/dma/owl-dma.c
+> @@ -124,7 +124,7 @@
+>  #define FCNT_VAL				0x1
+>  
+>  /**
+> - * owl_dmadesc_offsets - Describe DMA descriptor, hardware link
+> + * enum owl_dmadesc_offsets - Describe DMA descriptor, hardware link
+>   * list for dma transfer
+>   * @OWL_DMADESC_NEXT_LLI: physical address of the next link list
+>   * @OWL_DMADESC_SADDR: source physical address
+> @@ -135,6 +135,7 @@
+>   * @OWL_DMADESC_CTRLA: dma_mode and linklist ctrl config
+>   * @OWL_DMADESC_CTRLB: interrupt config
+>   * @OWL_DMADESC_CONST_NUM: data for constant fill
+> + * @OWL_DMADESC_SIZE: max size of this enum
+>   */
+>  enum owl_dmadesc_offsets {
+>  	OWL_DMADESC_NEXT_LLI = 0,
+> -- 
+> 2.26.2
+> 
