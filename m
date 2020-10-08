@@ -2,105 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52B6B286D43
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 05:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 528C0286D46
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 05:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728054AbgJHDrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 23:47:41 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:55518 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727437AbgJHDrl (ORCPT
+        id S1728108AbgJHDtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 23:49:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726400AbgJHDtK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 23:47:41 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0983UM7k099323;
-        Thu, 8 Oct 2020 03:47:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=eP3vPWwy+ViuyUKhs7Cc5erqErxWZvAnKpG0nxxsl0k=;
- b=zheSDPZZOSShqojlkFnxUDu9FCR3HxWUnNoW5oQTrmiMxRE5bainBJpSXc2hwy8iqd2m
- 6crJr5Rkvg/ofn/MjIOldOLiyc5pTGb0GVN3soMxpZvfdKXm+MeTKjYFW25x2xxjiB7S
- 2XFmUmKTT/LgVcAoeKpytgMU9JNZiUD0WQAUtvmFLjcWhE1+0ibvYLuS1qx4dBRpn0TG
- esl9h7Uv32vfXDwg0KIhntSQ5ruplXEhjt0mUMDTtDkRRZq8wit0viJrjcw0pSKgkJG8
- kZx7nohrH5NIQkVOnHmvG1x0rc6LTfpfbt566Gf2oaat3UxEPmxJxTtk03RsdPj2uP1i Nw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 33xetb5fk8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 08 Oct 2020 03:47:34 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0983jLFX180956;
-        Thu, 8 Oct 2020 03:47:34 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 33y2vqbdyn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 08 Oct 2020 03:47:34 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0983lVQ1026976;
-        Thu, 8 Oct 2020 03:47:31 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 07 Oct 2020 20:47:31 -0700
-To:     Bean Huo <huobean@gmail.com>
-Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com, bvanassche@acm.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bean Huo <beanhuo@micron.com>
-Subject: Re: [PATCH] scsi: sd: Use UNMAP in case the device doesn't support
- WRITE_SAME
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq14kn5wgqf.fsf@ca-mkp.ca.oracle.com>
-References: <20201007104220.8772-1-huobean@gmail.com>
-Date:   Wed, 07 Oct 2020 23:47:28 -0400
-In-Reply-To: <20201007104220.8772-1-huobean@gmail.com> (Bean Huo's message of
-        "Wed, 7 Oct 2020 12:42:20 +0200")
+        Wed, 7 Oct 2020 23:49:10 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E3DFC061755;
+        Wed,  7 Oct 2020 20:49:09 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id cv1so2412264qvb.2;
+        Wed, 07 Oct 2020 20:49:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FVJncJVhajMM+zp4d3/XAEaHEfJTdN0+V5FUwMuQ9sU=;
+        b=RyOc7pV/OYTjY/fogETjGmoiNnDrS8W9E6YXApXC7XW1ZA+UoOpLwWOiBlZwgSBovC
+         yqmlWZrxBs6HsqiXY13rc44ydIhvzWz5qeIZKMTjaB8RNP6HGDQuE8MUo3IGrNsS1ibU
+         n0VY0hQ67h/ujanJb4gRNMZXxC6bck/3vD+7c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FVJncJVhajMM+zp4d3/XAEaHEfJTdN0+V5FUwMuQ9sU=;
+        b=FhUQVNq9UleeN9iO2YcolESBF7cyLqJekUWApaISDTwDB8LkVd3haXoLscYZHEJZG7
+         f2WdnCq4hBAWrzU6XB97/vZkgTssKRFs0t2JRrCCwS39Ts5/0lcu3jJE/NG2u1sUR90X
+         /4dKZm+lmtA5cVMoCXMMALZ/76qn3YLGbT9DRsxQOMo6cB3B9EM2iRwr/m8sXZ0QNboS
+         BlVZ0PteQfOjhft1yFTaxogs9qCcRoDEej0c5CLswSTRgvxPvlDVqtxzLdjBOzqeWHWZ
+         AYWMQpi6+xma0pD3cVtHvHB1YkZaP2+H2EUi//dMi97dVMa+9Wc9ArSN6dTnbqL/inZG
+         6kkg==
+X-Gm-Message-State: AOAM533RTXP/1/JaVsMXu7OkZNP/k2HkOLudVL7nDKgiI517mgseYReD
+        +XlGj7qyItYiwO+9aT+09rH/VlBwcaIjNVL24Dk=
+X-Google-Smtp-Source: ABdhPJwNd4oKjFNRb0MZYBt/9Q30e+i/OvwE7T9wT8behFer7cuyDRNaFzUGTsGGoEoyO3yTC97LaH6FD/+8+FMfMu0=
+X-Received: by 2002:a0c:90f1:: with SMTP id p104mr6340263qvp.16.1602128948654;
+ Wed, 07 Oct 2020 20:49:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
- malwarescore=0 suspectscore=1 spamscore=0 phishscore=0 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010080030
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxscore=0
- clxscore=1015 priorityscore=1501 adultscore=0 mlxlogscore=999 phishscore=0
- impostorscore=0 malwarescore=0 suspectscore=1 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010080029
+References: <20201008015106.3198-1-billy_tsai@aspeedtech.com> <20201008015106.3198-3-billy_tsai@aspeedtech.com>
+In-Reply-To: <20201008015106.3198-3-billy_tsai@aspeedtech.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Thu, 8 Oct 2020 03:48:56 +0000
+Message-ID: <CACPK8XeKdmvVB_CTND7mSRvtTRz8i+Zw1=E06OP-=r3=pnh9gw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] Arm: dts: aspeed-g6: Add sgpio node and pinctrl setting
+To:     Billy Tsai <billy_tsai@aspeedtech.com>,
+        Jeremy Kerr <jk@ozlabs.org>, Andrew Jeffery <andrew@aj.id.au>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 8 Oct 2020 at 01:51, Billy Tsai <billy_tsai@aspeedtech.com> wrote:
+>
+> This patch is used to add sgpiom and sgpios nodes and add pinctrl setting
+> for sgpiom1
 
-Bean,
+The code looks good Billy.
 
-> There exists a storage device that supports READ_CAPACITY, but doesn't
-> support WRITE_SAME. The problem is that WRITE SAME heuristics doesn't work
-> for this kind of storage device since its block limits VPD page doesn't
-> contain the LBP information. Currently we set its provisioning_mode
-> "writesame_16" and didn't check "no_write_same".
+Please split the change in two: device tree changes (arch/arm/dts) in
+one, and pinctrl in the second, as they go through different
+maintainers.
 
-There is something odd with what your device is reporting.
+You also need to update the device tree bindings in Documentation with
+the new compatible strings:
 
-We support WRITE SAME on a bunch of devices that predate the Logical
-Block Provisioning VPD page and the various Block Limits parameters
-being introduced to the spec. Consequently we set the provisioning mode
-to "writesame_16" if the device reports LBPME=1 in READ CAPACITY(16) and
-nothing relevant is reported in the VPD pages. That is by design.
+ Documentation/devicetree/bindings/gpio/sgpio-aspeed.txt
 
-> If we didn't manually change this default provisioning_mode to "unmap"
-> through sysfs, provisioning_mode will be set to "disabled" after the
-> first WRITE_SAME command with the following error occurs:
+That should go in it's own patch too.
 
-If your device supports UNMAP it *must* report it in the Logical Block
-Provisioning VPD by setting LBPU=1 and report MAXIMUM UNMAP LBA COUNT
-and MAXIMUM UNMAP BLOCK DESCRIPTOR COUNT in the Block Limits VPD.
+> --- a/arch/arm/boot/dts/aspeed-g6.dtsi
+> +++ b/arch/arm/boot/dts/aspeed-g6.dtsi
+> @@ -366,6 +366,58 @@
+>                                 #interrupt-cells = <2>;
+>                         };
+>
+> +                       sgpiom0: sgpiom@1e780500 {
+> +                               #gpio-cells = <2>;
+> +                               gpio-controller;
+> +                               compatible = "aspeed,ast2600-sgpiom";
 
-Also, "no_write_same" disables attempting to use WRITE SAME to zero
-block ranges. That's orthogonal to the logic controlling which command
-to use for performing an unmap operation. An unfortunate choice of
-naming which can be attributed to the SCSI protocol using the WRITE SAME
-command for two completely different operations.
+This is interesting. I didn't realise the sgpio driver we have in the
+mainline kernel tree (drivers/gpio/gpio-aspeed-sgpio.c) is for the
+sgpio master device. It might be best to update the naming of the
+ast2400/ast2500 compatible in the future.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+> +                               reg = <0x1e780500 0x100>;
+> +                               interrupts = <GIC_SPI 51 IRQ_TYPE_LEVEL_HIGH>;
+> +                               ngpios = <128>;
+> +                               clocks = <&syscon ASPEED_CLK_APB2>;
+> +                               interrupt-controller;
+> +                               bus-frequency = <12000000>;
+> +
+> +                               pinctrl-names = "default";
+> +                               pinctrl-0 = <&pinctrl_sgpm1_default>;
+> +                               status = "disabled";
+> +                       };
+
+>                         gpio1: gpio@1e780800 {
+>                                 #gpio-cells = <2>;
+>                                 gpio-controller;
+> @@ -377,6 +429,7 @@
+>                                 clocks = <&syscon ASPEED_CLK_APB1>;
+>                                 interrupt-controller;
+>                                 #interrupt-cells = <2>;
+> +                               status = "disabled";
+
+This should be in a different patch set, as it will break all of the
+systems that expect GPIO to be enabled (which is all of them).
+
+Considering all of them expect this gpio bank to be enabled, should we
+leave it enabled here?
+
+
+>                         };
+>
+>                         rtc: rtc@1e781000 {
+> diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c b/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
+> index 34803a6c7664..b673a44ffa3b 100644
+> --- a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
+> +++ b/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
+> @@ -46,8 +46,10 @@
+>  #define SCU620         0x620 /* Disable GPIO Internal Pull-Down #4 */
+>  #define SCU634         0x634 /* Disable GPIO Internal Pull-Down #5 */
+>  #define SCU638         0x638 /* Disable GPIO Internal Pull-Down #6 */
+> +#define SCU690         0x690 /* Multi-function Pin Control #24 */
+>  #define SCU694         0x694 /* Multi-function Pin Control #25 */
+>  #define SCU69C         0x69C /* Multi-function Pin Control #27 */
+> +#define SCU6D0         0x6D0 /* Multi-function Pin Control #28 */
+>  #define SCUC20         0xC20 /* PCIE configuration Setting Control */
+>
+>  #define ASPEED_G6_NR_PINS 256
+> @@ -81,13 +83,21 @@ FUNC_GROUP_DECL(I2C12, L26, K24);
+>  #define K26 4
+>  SIG_EXPR_LIST_DECL_SESG(K26, MACLINK1, MACLINK1, SIG_DESC_SET(SCU410, 4));
+>  SIG_EXPR_LIST_DECL_SESG(K26, SCL13, I2C13, SIG_DESC_SET(SCU4B0, 4));
+> -PIN_DECL_2(K26, GPIOA4, MACLINK1, SCL13);
+> +/*SGPM2 is A1 Only */
+> +SIG_EXPR_LIST_DECL_SESG(K26, SGPM2CLK, SGPM2, SIG_DESC_SET(SCU6D0, 4),
+> +                         SIG_DESC_CLEAR(SCU410, 4), SIG_DESC_CLEAR(SCU4B0, 4),
+> +                         SIG_DESC_CLEAR(SCU690, 4));
+> +PIN_DECL_3(K26, GPIOA4, SGPM2CLK, MACLINK1, SCL13);
+>  FUNC_GROUP_DECL(MACLINK1, K26);
+>
+>  #define L24 5
+>  SIG_EXPR_LIST_DECL_SESG(L24, MACLINK2, MACLINK2, SIG_DESC_SET(SCU410, 5));
+>  SIG_EXPR_LIST_DECL_SESG(L24, SDA13, I2C13, SIG_DESC_SET(SCU4B0, 5));
+> -PIN_DECL_2(L24, GPIOA5, MACLINK2, SDA13);
+> +/*SGPM2 is A1 Only */
+> +SIG_EXPR_LIST_DECL_SESG(L24, SGPM2LD, SGPM2, SIG_DESC_SET(SCU6D0, 5),
+> +                         SIG_DESC_CLEAR(SCU410, 5), SIG_DESC_CLEAR(SCU4B0, 5),
+> +                         SIG_DESC_CLEAR(SCU690, 5));
+> +PIN_DECL_3(L24, GPIOA5, SGPM2LD, MACLINK2, SDA13);
+>  FUNC_GROUP_DECL(MACLINK2, L24);
+>
+>  FUNC_GROUP_DECL(I2C13, K26, L24);
+> @@ -95,16 +105,26 @@ FUNC_GROUP_DECL(I2C13, K26, L24);
+>  #define L23 6
+>  SIG_EXPR_LIST_DECL_SESG(L23, MACLINK3, MACLINK3, SIG_DESC_SET(SCU410, 6));
+>  SIG_EXPR_LIST_DECL_SESG(L23, SCL14, I2C14, SIG_DESC_SET(SCU4B0, 6));
+> -PIN_DECL_2(L23, GPIOA6, MACLINK3, SCL14);
+> +/*SGPM2 is A1 Only */
+> +SIG_EXPR_LIST_DECL_SESG(L23, SGPM2O, SGPM2, SIG_DESC_SET(SCU6D0, 6),
+> +                         SIG_DESC_CLEAR(SCU410, 6), SIG_DESC_CLEAR(SCU4B0, 6),
+> +                         SIG_DESC_CLEAR(SCU690, 6));
+> +PIN_DECL_3(L23, GPIOA6, SGPM2O, MACLINK3, SCL14);
+>  FUNC_GROUP_DECL(MACLINK3, L23);
+>
+>  #define K25 7
+>  SIG_EXPR_LIST_DECL_SESG(K25, MACLINK4, MACLINK4, SIG_DESC_SET(SCU410, 7));
+>  SIG_EXPR_LIST_DECL_SESG(K25, SDA14, I2C14, SIG_DESC_SET(SCU4B0, 7));
+> -PIN_DECL_2(K25, GPIOA7, MACLINK4, SDA14);
+> +/*SGPM2 is A1 Only */
+> +SIG_EXPR_LIST_DECL_SESG(K25, SGPM2I, SGPM2, SIG_DESC_SET(SCU6D0, 7),
+> +                         SIG_DESC_CLEAR(SCU410, 7), SIG_DESC_CLEAR(SCU4B0, 7),
+> +                         SIG_DESC_CLEAR(SCU690, 7));
+> +PIN_DECL_3(K25, GPIOA7, SGPM2I, MACLINK4, SDA14);
+>  FUNC_GROUP_DECL(MACLINK4, K25);
+>
+>  FUNC_GROUP_DECL(I2C14, L23, K25);
+> +/*SGPM2 is A1 Only */
+> +FUNC_GROUP_DECL(SGPM2, K26, L24, L23, K25);
+>
+>  #define J26 8
+>  SIG_EXPR_LIST_DECL_SESG(J26, SALT1, SALT1, SIG_DESC_SET(SCU410, 8));
+> @@ -2060,6 +2080,7 @@ static const struct aspeed_pin_group aspeed_g6_groups[] = {
+>         ASPEED_PINCTRL_GROUP(EMMCG4),
+>         ASPEED_PINCTRL_GROUP(EMMCG8),
+>         ASPEED_PINCTRL_GROUP(SGPM1),
+> +       ASPEED_PINCTRL_GROUP(SGPM2),
+>         ASPEED_PINCTRL_GROUP(SGPS1),
+>         ASPEED_PINCTRL_GROUP(SIOONCTRL),
+>         ASPEED_PINCTRL_GROUP(SIOPBI),
+> @@ -2276,6 +2297,7 @@ static const struct aspeed_pin_function aspeed_g6_functions[] = {
+>         ASPEED_PINCTRL_FUNC(SD1),
+>         ASPEED_PINCTRL_FUNC(SD2),
+>         ASPEED_PINCTRL_FUNC(SGPM1),
+> +       ASPEED_PINCTRL_FUNC(SGPM2),
+>         ASPEED_PINCTRL_FUNC(SGPS1),
+>         ASPEED_PINCTRL_FUNC(SIOONCTRL),
+>         ASPEED_PINCTRL_FUNC(SIOPBI),
+> --
+> 2.17.1
+>
