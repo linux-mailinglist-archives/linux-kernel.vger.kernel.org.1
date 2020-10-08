@@ -2,82 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFE31287E8B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 00:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A10BD287E9D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 00:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729743AbgJHWNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 18:13:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57534 "EHLO mail.kernel.org"
+        id S1730112AbgJHWV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 18:21:26 -0400
+Received: from mga04.intel.com ([192.55.52.120]:11306 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725852AbgJHWNT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 18:13:19 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2FC8A22241;
-        Thu,  8 Oct 2020 22:13:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602195199;
-        bh=QwC/kxxkaru98nLEFoJk/4mhtYf+gyr8z3Rnw7Q/3Q8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=PsCHVunq6rzcCfkb6KsoAbgWbosMsjvZIUnlSgnXksbycIEKwOU0aBvtgicRJMZsz
-         2/NZwBxKr75b48N/nUFfsKkilDl0c9+2B/yNDUurNIwu/TKrhmGMe0biIg3EOwacva
-         RUfKfSXB5m6uclm4GlssXSIZvPQubV9ImgvrFWBU=
-Date:   Thu, 8 Oct 2020 17:18:42 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] drm/i915/display: Use fallthrough pseudo-keyword
-Message-ID: <20201008221842.GA9463@embeddedor>
+        id S1726031AbgJHWV0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 18:21:26 -0400
+IronPort-SDR: oe9V1NIPeRqY0z4S33dLjOEpfizLCeoCAsG79v7nmQymPfx6cK8E3yamXuFVp1+94SvnX84pG+
+ lJE/achg6/iw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="162775910"
+X-IronPort-AV: E=Sophos;i="5.77,352,1596524400"; 
+   d="scan'208";a="162775910"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 15:21:25 -0700
+IronPort-SDR: yRTPBmTpKWxolwIePt76m5R1tdTBmNr6kA6/noo907/JuT3///CFhXIZSaDErGlKxV+YU1kHJK
+ 6NFEnyTKivIg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,352,1596524400"; 
+   d="scan'208";a="354651196"
+Received: from lkp-server02.sh.intel.com (HELO b5ae2f167493) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 08 Oct 2020 15:21:24 -0700
+Received: from kbuild by b5ae2f167493 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kQeHr-0002Mi-ER; Thu, 08 Oct 2020 22:21:23 +0000
+Date:   Fri, 09 Oct 2020 06:21:09 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:ras/core] BUILD SUCCESS
+ b3149ffcdb31a8eb854cc442a389ae0b539bf28a
+Message-ID: <5f7f90d5.fmyKL3UUBAxeMyQn%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to enable -Wimplicit-fallthrough for Clang[1], replace the
-existing /* fall through */ comments with the new pseudo-keyword
-macro fallthrough[2].
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  ras/core
+branch HEAD: b3149ffcdb31a8eb854cc442a389ae0b539bf28a  x86/mce: Allow for copy_mc_fragile symbol checksum to be generated
 
-[1] https://git.kernel.org/linus/e2079e93f562c7f7a030eb7642017ee5eabaaa10
-[2] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+elapsed time: 722m
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+configs tested: 172
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+mips                         bigsur_defconfig
+powerpc                       eiger_defconfig
+mips                       rbtx49xx_defconfig
+arm                           tegra_defconfig
+powerpc                        icon_defconfig
+powerpc                  mpc885_ads_defconfig
+mips                      bmips_stb_defconfig
+arm                      footbridge_defconfig
+mips                     loongson1c_defconfig
+arm                            xcep_defconfig
+xtensa                  audio_kc705_defconfig
+powerpc                mpc7448_hpc2_defconfig
+arm                      integrator_defconfig
+mips                malta_qemu_32r6_defconfig
+arm                        magician_defconfig
+powerpc                     tqm8540_defconfig
+sh                         ap325rxa_defconfig
+powerpc                 xes_mpc85xx_defconfig
+m68k                        m5307c3_defconfig
+arm                             mxs_defconfig
+h8300                               defconfig
+nios2                               defconfig
+xtensa                generic_kc705_defconfig
+sh                   secureedge5410_defconfig
+sh                        apsh4ad0a_defconfig
+arm                       multi_v4t_defconfig
+m68k                           sun3_defconfig
+arm                          pxa3xx_defconfig
+x86_64                           alldefconfig
+powerpc                      ppc6xx_defconfig
+arm                     am200epdkit_defconfig
+arm                         nhk8815_defconfig
+sh                               j2_defconfig
+powerpc                     rainier_defconfig
+m68k                       bvme6000_defconfig
+arm                       spear13xx_defconfig
+arm                          lpd270_defconfig
+m68k                             allmodconfig
+arm                             ezx_defconfig
+arm                  colibri_pxa300_defconfig
+powerpc                       maple_defconfig
+sh                          rsk7203_defconfig
+sh                          urquell_defconfig
+powerpc               mpc834x_itxgp_defconfig
+powerpc                         ps3_defconfig
+sh                 kfr2r09-romimage_defconfig
+arm                           h3600_defconfig
+arm                          exynos_defconfig
+powerpc                     mpc512x_defconfig
+arm                       omap2plus_defconfig
+m68k                         apollo_defconfig
+powerpc                          g5_defconfig
+mips                          ath25_defconfig
+i386                             alldefconfig
+powerpc                 mpc834x_itx_defconfig
+powerpc                     powernv_defconfig
+powerpc                      mgcoge_defconfig
+sh                         apsh4a3a_defconfig
+mips                           mtx1_defconfig
+arm                            mmp2_defconfig
+sh                           sh2007_defconfig
+arm                          ixp4xx_defconfig
+mips                        nlm_xlp_defconfig
+arm                             pxa_defconfig
+mips                          malta_defconfig
+c6x                              allyesconfig
+powerpc                      pmac32_defconfig
+s390                          debug_defconfig
+s390                             alldefconfig
+c6x                        evmc6474_defconfig
+arm                            qcom_defconfig
+arm                             rpc_defconfig
+c6x                              alldefconfig
+sh                        sh7757lcr_defconfig
+nds32                             allnoconfig
+arm                         s3c6400_defconfig
+m68k                        mvme16x_defconfig
+h8300                       h8s-sim_defconfig
+m68k                       m5249evb_defconfig
+xtensa                    smp_lx200_defconfig
+arm                        keystone_defconfig
+powerpc                    ge_imp3a_defconfig
+arm                         axm55xx_defconfig
+powerpc                      ep88xc_defconfig
+powerpc                        warp_defconfig
+powerpc                    gamecube_defconfig
+powerpc                 mpc832x_rdb_defconfig
+arm                       aspeed_g5_defconfig
+mips                     cu1000-neo_defconfig
+sh                           se7619_defconfig
+mips                           ip28_defconfig
+arm                        shmobile_defconfig
+powerpc                      arches_defconfig
+powerpc                     ksi8560_defconfig
+powerpc                     ppa8548_defconfig
+sh                          r7780mp_defconfig
+sh                              ul2_defconfig
+microblaze                          defconfig
+mips                           ip22_defconfig
+arm                     davinci_all_defconfig
+powerpc                          allyesconfig
+mips                  decstation_64_defconfig
+powerpc                     kmeter1_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allyesconfig
+arc                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20201008
+x86_64               randconfig-a003-20201008
+x86_64               randconfig-a005-20201008
+x86_64               randconfig-a001-20201008
+x86_64               randconfig-a002-20201008
+x86_64               randconfig-a006-20201008
+i386                 randconfig-a006-20201008
+i386                 randconfig-a005-20201008
+i386                 randconfig-a001-20201008
+i386                 randconfig-a004-20201008
+i386                 randconfig-a002-20201008
+i386                 randconfig-a003-20201008
+i386                 randconfig-a015-20201008
+i386                 randconfig-a013-20201008
+i386                 randconfig-a014-20201008
+i386                 randconfig-a016-20201008
+i386                 randconfig-a011-20201008
+i386                 randconfig-a012-20201008
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a012-20201008
+x86_64               randconfig-a015-20201008
+x86_64               randconfig-a013-20201008
+x86_64               randconfig-a014-20201008
+x86_64               randconfig-a011-20201008
+x86_64               randconfig-a016-20201008
+
 ---
- drivers/gpu/drm/i915/display/intel_ddi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/i915/display/intel_ddi.c b/drivers/gpu/drm/i915/display/intel_ddi.c
-index 4d06178cd76c..2941051ac3e1 100644
---- a/drivers/gpu/drm/i915/display/intel_ddi.c
-+++ b/drivers/gpu/drm/i915/display/intel_ddi.c
-@@ -1090,7 +1090,7 @@ ehl_get_combo_buf_trans(struct intel_encoder *encoder, int type, int rate,
- 				return icl_combo_phy_ddi_translations_edp_hbr2;
- 			}
- 		}
--		/* fall through */
-+		fallthrough;
- 	default:
- 		/* All combo DP and eDP ports that do not support low_vswing */
- 		*n_entries = ARRAY_SIZE(ehl_combo_phy_ddi_translations_dp);
-@@ -1126,7 +1126,7 @@ tgl_get_combo_buf_trans(struct intel_encoder *encoder, int type, int rate,
- 			*n_entries = ARRAY_SIZE(icl_combo_phy_ddi_translations_edp_hbr2);
- 			return icl_combo_phy_ddi_translations_edp_hbr2;
- 		}
--		/* fall through */
-+		fallthrough;
- 	default:
- 		/* All combo DP and eDP ports that do not support low_vswing */
- 		if (rate > 270000) {
--- 
-2.27.0
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
