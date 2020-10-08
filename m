@@ -2,133 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36870287482
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 14:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51469287484
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 14:48:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730126AbgJHMrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 08:47:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33260 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729869AbgJHMrY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 08:47:24 -0400
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EA69B2083B;
-        Thu,  8 Oct 2020 12:47:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602161243;
-        bh=euznez8g2lNiMUcU12nOD+uysphnv3GB3UYCsmyBzZQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=n5HWs/s6pr4pqch41EhZWUfgPYhpDt7iH/f65wToyLVwvcRc0AXlh4kycBYakzZ2D
-         MyL2+dPvzYhLbQPu2DOira0y9fZR4Ot+EkoIj0SYNRfxpEF63uyY4VOI8UWVVsZrC6
-         muovn52cLMI8CqdagV5fAlngz3Ep4U2jMNS06lWc=
-Received: by mail-oi1-f170.google.com with SMTP id c13so6125991oiy.6;
-        Thu, 08 Oct 2020 05:47:22 -0700 (PDT)
-X-Gm-Message-State: AOAM533JRSb2BRgwjOhQVPDbbaC+CZzzwli5h/1DidrPVAqhGFXQAWWd
-        6M+bo5kCMyV1ZFcw+cTmTpV1+7l48F6Y8ZDOLw==
-X-Google-Smtp-Source: ABdhPJz9uUArDgzQ0KTvCl2mNkGHA+ISn1qwzawVRqnnT3olrVHCvXxi/3AC66jaHc5LwP1s2uxVSvpQOd4ntUNIhHg=
-X-Received: by 2002:a54:4f89:: with SMTP id g9mr5030077oiy.106.1602161242218;
- Thu, 08 Oct 2020 05:47:22 -0700 (PDT)
+        id S1730130AbgJHMst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 08:48:49 -0400
+Received: from smtprelay0207.hostedemail.com ([216.40.44.207]:53024 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729769AbgJHMst (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 08:48:49 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 3AD37182CF66A;
+        Thu,  8 Oct 2020 12:48:48 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:969:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3870:3871:3874:4321:5007:10004:10400:10848:11026:11232:11658:11914:12296:12297:12740:12760:12895:13019:13069:13311:13357:13439:14181:14659:14721:21067:21080:21627:30034:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: knee22_4611952271d8
+X-Filterd-Recvd-Size: 1565
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf16.hostedemail.com (Postfix) with ESMTPA;
+        Thu,  8 Oct 2020 12:48:47 +0000 (UTC)
+Message-ID: <b6cd81b936671a8868fe98536d7c80771bdfd61c.camel@perches.com>
+Subject: Re: checkpatch.pl: REPEATED_WORD: massive false positive in
+ MAINTAINERS
+From:   Joe Perches <joe@perches.com>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 08 Oct 2020 05:48:46 -0700
+In-Reply-To: <alpine.DEB.2.21.2010081247510.19461@felia>
+References: <alpine.DEB.2.21.2010081247510.19461@felia>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-References: <20201007180540.322257-1-kholk11@gmail.com> <20201007180540.322257-4-kholk11@gmail.com>
-In-Reply-To: <20201007180540.322257-4-kholk11@gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 8 Oct 2020 07:47:11 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLwWPqyd74bkD2-dG9oKh8AQVD3UB1Wm7SeRvqygCsp9w@mail.gmail.com>
-Message-ID: <CAL_JsqLwWPqyd74bkD2-dG9oKh8AQVD3UB1Wm7SeRvqygCsp9w@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] dt-bindings: touchscreen: Add binding for Novatek
- NT36xxx series driver
-To:     AngeloGioacchino Del Regno <kholk11@gmail.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Henrik Rydberg <rydberg@bitmath.org>, priv.luk@gmail.com,
-        Linux Input <linux-input@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        marijns95@gmail.com, Konrad Dybcio <konradybcio@gmail.com>,
-        Martin Botka <martin.botka1@gmail.com>,
-        phone-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 1:05 PM <kholk11@gmail.com> wrote:
->
-> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+On Thu, 2020-10-08 at 13:50 +0200, Lukas Bulwahn wrote:
+> Dear Joe, dear Dwaipayan,
+> 
+> while maintaining MAINTAINERS, I noticed that the REPEATED_WORD check, 
+> which in general is a great addition to checkpatch.pl, generates a massive
+> number of warnings due to one specific pattern in the MAINTAINERS file:
 
-Please send to DT list so checks run and it's in my review queue.
+I didn't actually check if there were many
+new false positives, but
+clearly that's one.
 
->
-> Add binding for the Novatek NT36xxx series touchscreen driver.
->
-> Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> ---
->  .../input/touchscreen/novatek,nt36xxx.yaml    | 56 +++++++++++++++++++
->  1 file changed, 56 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml
->
-> diff --git a/Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml b/Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml
-> new file mode 100644
-> index 000000000000..9f350f4e6d6a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml
-> @@ -0,0 +1,56 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/input/touchscreen/novatek,nt36xxx.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Novatek NT36xxx series touchscreen controller Bindings
-> +
-> +maintainers:
-> +  - TBD
-> +
-> +allOf:
-> +  - $ref: touchscreen.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - novatek,nt36xxx
-> +
-> +  reg:
-> +    enum: [ 0x62 ]
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  reset-gpio:
-> +    maxItems: 1
-> +
-> +  vdd-supply:
-> +    description: Power supply regulator for VDD pin
-> +
-> +  vio-reg-name:
-> +    description: Power supply regulator on VDD-IO pin
-> +
-> +additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +
-> +examples:
-> +  - |
-> +    i2c {
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +      nt36xxx@62 {
-> +        compatible = "novatek,nt36xxx";
-> +        reg = <0x62>;
-> +        interrupt-parent = <&tlmm>;
-> +        interrupts = <45 IRQ_TYPE_EDGE_RISING>;
-> +        reset-gpio = <&tlmm 102 GPIO_ACTIVE_HIGH>;
-> +      };
-> +    };
-> +
-> +...
-> --
-> 2.28.0
->
+Maybe exclude the MAINTAINERS file?
+
+-		if ($rawline =~ /^\+/ || $in_commit_log) {
++		if (($rawline =~ /^\+/ || $in_commit_log) && $realfile ne "MAINTAINERS") {
+
+Maybe add git to the check for "long long"?
+
+-				next if ($first eq 'long');
++				next if ($first =~ /^(?:long|git)$/);
+
+
+
