@@ -2,192 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B89A286DC7
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 06:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE61286DCF
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 06:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728021AbgJHEmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 00:42:06 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:54795 "EHLO ozlabs.org"
+        id S1728268AbgJHEsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 00:48:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726216AbgJHEmG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 00:42:06 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1726216AbgJHEsH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 00:48:07 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C6JT704d9z9sSn;
-        Thu,  8 Oct 2020 15:42:02 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1602132123;
-        bh=pHYkEo5SeRirjcFywD0/VFWBVXGBUKoWYC8gzAs94js=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lStlENq4mXKEVZeDOqjX0Z5iLfOQnVCkiRHTUd+8Gkb+Z+yKtn4O5XZx/JiOulu0l
-         keppNe8cEdtxYgMkWVJW9t4qZAk7unVcqWOFKmG+woO+bF1Te2i4xkrtoGZPUALPKJ
-         Gex8O3NqIVdWSH5FbksfQj8EGzpNOsio5pTk+KtdCnRFsFgqWNxdVWoMopCBockJwI
-         0FB39Zd0jB5xEYXOq1ZSgYau9AWdJTsOc1wwG/6QA78FLGZxQx5Lf+599uz9IwjqAn
-         lupkr43pRjOSu+JUP6lo0L+AdTW/AGaeCBRq3BJ/cEDLEAvQjaV0E2RRhhQr51APdF
-         WL6ue6avSnv/Q==
-Date:   Thu, 8 Oct 2020 15:42:02 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the drm-misc tree
-Message-ID: <20201008154202.175fbec7@canb.auug.org.au>
-In-Reply-To: <20201008140903.12a411b8@canb.auug.org.au>
-References: <20201008140903.12a411b8@canb.auug.org.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id AC2E820789;
+        Thu,  8 Oct 2020 04:48:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602132485;
+        bh=l0qrHjPVsW78fE4iMqd/aK426rQMlUvVabMpWWXIv5g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ABpoieSTLK2pGJRb7l8G+YYhkXZSdwzaOO/m7N+bSzrNFB4q+2EV+X0dRaOM4KHvd
+         lHvfyyomiEY6Rc4IP3GqgBefL4UfaSAJ++GoZhbeQ96L4yo/sgkCfwO/j9RRJpm5U1
+         SIK+0EYkm1skyFjC7mAvrEH0SyCMpX9GcNjisLow=
+Date:   Thu, 8 Oct 2020 06:48:49 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Tony Asleson <tasleson@redhat.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, linux-scsi@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-ide@vger.kernel.org,
+        Hannes Reinecke <hare@suse.de>, pmladek@suse.com,
+        David Lehman <dlehman@redhat.com>,
+        sergey.senozhatsky@gmail.com, jbaron@akamai.com,
+        James.Bottomley@hansenpartnership.com,
+        linux-kernel@vger.kernel.org, rafael@kernel.org,
+        martin.petersen@oracle.com, kbusch@kernel.org, axboe@fb.com,
+        sagi@grimberg.me, akpm@linux-foundation.org, orson.zhai@unisoc.com,
+        viro@zeniv.linux.org.uk
+Subject: Re: [v5 01/12] struct device: Add function callback durable_name
+Message-ID: <20201008044849.GA163423@kroah.com>
+References: <20200925161929.1136806-1-tasleson@redhat.com>
+ <20200925161929.1136806-2-tasleson@redhat.com>
+ <20200929175102.GA1613@infradead.org>
+ <20200929180415.GA1400445@kroah.com>
+ <20e220a6-4bde-2331-6e5e-24de39f9aa3b@redhat.com>
+ <20200930073859.GA1509708@kroah.com>
+ <c6b031b8-f617-0580-52a5-26532da4ee03@redhat.com>
+ <20201001114832.GC2368232@kroah.com>
+ <72be0597-a3e2-bf7b-90b2-799d10fdf56c@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/a.aVf6N/5DzCJgymDWQC_K+";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <72be0597-a3e2-bf7b-90b2-799d10fdf56c@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/a.aVf6N/5DzCJgymDWQC_K+
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Oct 07, 2020 at 03:10:17PM -0500, Tony Asleson wrote:
+> On 10/1/20 6:48 AM, Greg Kroah-Hartman wrote:
+> > On Wed, Sep 30, 2020 at 09:35:52AM -0500, Tony Asleson wrote:
+> >> On 9/30/20 2:38 AM, Greg Kroah-Hartman wrote:
+> >>> On Tue, Sep 29, 2020 at 05:04:32PM -0500, Tony Asleson wrote:
+> >>>> I'm trying to figure out a way to positively identify which storage
+> >>>> device an error belongs to over time.
+> >>>
+> >>> "over time" is not the kernel's responsibility.
+> >>>
+> >>> This comes up every 5 years or so. The kernel provides you, at runtime,
+> >>> a mapping between a hardware device and a "logical" device.  It can
+> >>> provide information to userspace about this mapping, but once that
+> >>> device goes away, the kernel is free to reuse that logical device again.
+> >>>
+> >>> If you want to track what logical devices match up to what physical
+> >>> device, then do it in userspace, by parsing the log files.
+> >>
+> >> I don't understand why people think it's acceptable to ask user space to
+> >> parse text that is subject to change.
+> > 
+> > What text is changing? The format of of the prefix of dev_*() is well
+> > known and has been stable for 15+ years now, right?  What is difficult
+> > in parsing it?
+> 
+> Many of the storage layer messages are using printk, not dev_printk.
 
-Hi all,
+Ok, then stop right there.  Fix that up.  Don't try to route around the
+standard way of displaying log messages by creating a totally different
+way of doing things.
 
-On Thu, 8 Oct 2020 14:09:03 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->
-> After merging the drm-misc tree, today's linux-next build (x86_64
-> allmodconfig) failed like this:
+Just use the dev_*() calls, and all will be fine.  Kernel log messages
+are not "ABI" in that they have to be preserved in any specific way, so
+adding a prefix to them as dev_*() does, will be fine.
 
-In file included from include/linux/clk.h:13,
-                 from drivers/gpu/drm/ingenic/ingenic-drm-drv.c:10:
-drivers/gpu/drm/ingenic/ingenic-drm-drv.c: In function 'ingenic_drm_update_=
-palette':
-drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:35: error: 'struct ingenic_dr=
-m' has no member named 'dma_hwdescs'; did you mean 'dma_hwdesc_f0'?
-  448 |  for (i =3D 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); i++) {
-      |                                   ^~~~~~~~~~~
-include/linux/kernel.h:47:33: note: in definition of macro 'ARRAY_SIZE'
-   47 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_be=
-_array(arr))
-      |                                 ^~~
-drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:35: error: 'struct ingenic_dr=
-m' has no member named 'dma_hwdescs'; did you mean 'dma_hwdesc_f0'?
-  448 |  for (i =3D 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); i++) {
-      |                                   ^~~~~~~~~~~
-include/linux/kernel.h:47:48: note: in definition of macro 'ARRAY_SIZE'
-   47 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_be=
-_array(arr))
-      |                                                ^~~
-In file included from include/linux/bits.h:22,
-                 from include/linux/bitops.h:5,
-                 from drivers/gpu/drm/ingenic/ingenic-drm.h:10,
-                 from drivers/gpu/drm/ingenic/ingenic-drm-drv.c:7:
-drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:35: error: 'struct ingenic_dr=
-m' has no member named 'dma_hwdescs'; did you mean 'dma_hwdesc_f0'?
-  448 |  for (i =3D 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); i++) {
-      |                                   ^~~~~~~~~~~
-include/linux/build_bug.h:16:62: note: in definition of macro 'BUILD_BUG_ON=
-_ZERO'
-   16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); }=
-)))
-      |                                                              ^
-include/linux/compiler.h:224:46: note: in expansion of macro '__same_type'
-  224 | #define __must_be_array(a) BUILD_BUG_ON_ZERO(__same_type((a), &(a)[=
-0]))
-      |                                              ^~~~~~~~~~~
-include/linux/kernel.h:47:59: note: in expansion of macro '__must_be_array'
-   47 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_be=
-_array(arr))
-      |                                                           ^~~~~~~~~=
-~~~~~~
-drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:18: note: in expansion of mac=
-ro 'ARRAY_SIZE'
-  448 |  for (i =3D 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); i++) {
-      |                  ^~~~~~~~~~
-drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:35: error: 'struct ingenic_dr=
-m' has no member named 'dma_hwdescs'; did you mean 'dma_hwdesc_f0'?
-  448 |  for (i =3D 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); i++) {
-      |                                   ^~~~~~~~~~~
-include/linux/build_bug.h:16:62: note: in definition of macro 'BUILD_BUG_ON=
-_ZERO'
-   16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); }=
-)))
-      |                                                              ^
-include/linux/compiler.h:224:46: note: in expansion of macro '__same_type'
-  224 | #define __must_be_array(a) BUILD_BUG_ON_ZERO(__same_type((a), &(a)[=
-0]))
-      |                                              ^~~~~~~~~~~
-include/linux/kernel.h:47:59: note: in expansion of macro '__must_be_array'
-   47 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_be=
-_array(arr))
-      |                                                           ^~~~~~~~~=
-~~~~~~
-drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:18: note: in expansion of mac=
-ro 'ARRAY_SIZE'
-  448 |  for (i =3D 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); i++) {
-      |                  ^~~~~~~~~~
-include/linux/build_bug.h:16:51: error: bit-field '<anonymous>' width not a=
-n integer constant
-   16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); }=
-)))
-      |                                                   ^
-include/linux/compiler.h:224:28: note: in expansion of macro 'BUILD_BUG_ON_=
-ZERO'
-  224 | #define __must_be_array(a) BUILD_BUG_ON_ZERO(__same_type((a), &(a)[=
-0]))
-      |                            ^~~~~~~~~~~~~~~~~
-include/linux/kernel.h:47:59: note: in expansion of macro '__must_be_array'
-   47 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_be=
-_array(arr))
-      |                                                           ^~~~~~~~~=
-~~~~~~
-drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:18: note: in expansion of mac=
-ro 'ARRAY_SIZE'
-  448 |  for (i =3D 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); i++) {
-      |                  ^~~~~~~~~~
-drivers/gpu/drm/ingenic/ingenic-drm-drv.c:453:9: error: 'struct ingenic_drm=
-' has no member named 'dma_hwdescs'; did you mean 'dma_hwdesc_f0'?
-  453 |   priv->dma_hwdescs->palette[i] =3D color;
-      |         ^~~~~~~~~~~
-      |         dma_hwdesc_f0
-drivers/gpu/drm/ingenic/ingenic-drm-drv.c: In function 'ingenic_drm_plane_a=
-tomic_update':
-drivers/gpu/drm/ingenic/ingenic-drm-drv.c:467:3: error: 'crtc_state' undecl=
-ared (first use in this function); did you mean 'ctx_state'?
-  467 |   crtc_state =3D state->crtc->state;
-      |   ^~~~~~~~~~
-      |   ctx_state
-drivers/gpu/drm/ingenic/ingenic-drm-drv.c:467:3: note: each undeclared iden=
-tifier is reported only once for each function it appears in
-At top level:
-drivers/gpu/drm/ingenic/ingenic-drm-drv.c:443:13: warning: 'ingenic_drm_upd=
-ate_palette' defined but not used [-Wunused-function]
-  443 | static void ingenic_drm_update_palette(struct ingenic_drm *priv,
-      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~
+thanks,
 
-> I noticed that the ingenic driver revert I had been waiting for appeared
-> in hte drm-misc tree, so I removed the BROKEN dependency for it, but it
-> produced the above errors, so I have marked it BROKEN again.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/a.aVf6N/5DzCJgymDWQC_K+
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9+mJoACgkQAVBC80lX
-0Gy25AgAiwrgmtejusGdnGlqjti1mzozlFgjX4CgYtoX62Je6t343vPbuiQhTKLn
-7oSTXILrf2nRdP6YApgoErv/rHhiXQRJUURHEtYcVWQFrWXjmnRVDx4ceQ1z4emZ
-YWhTbPqz5qhB9acuq31DvJgb1mOPSFvbrSzWRXL+8Mwf+jtO/U0p2PiZrtgbbIFL
-CTWOQjyFy3VnWi6HQFVq5u1rE1wIVnbpWsFz64Tc82KTBOWtYS2YDG6H1HO97W+P
-mLDbRRGozMeygumNFaVe5hL6URzxhIyHecAt/kW2W2FYhYw/j5oeflUAlNCWm9u9
-uo+yDtwaMyCE7y0phreINjzxC5nS2Q==
-=jXm8
------END PGP SIGNATURE-----
-
---Sig_/a.aVf6N/5DzCJgymDWQC_K+--
+greg k-h
