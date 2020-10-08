@@ -2,86 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 959A6287220
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 12:00:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D5C287224
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 12:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729347AbgJHKAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 06:00:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46090 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728996AbgJHKAh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 06:00:37 -0400
-Received: from localhost (p54b33b8c.dip0.t-ipconnect.de [84.179.59.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 53D0D21531;
-        Thu,  8 Oct 2020 10:00:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602151236;
-        bh=kwRH1QK6Fs+DfNVNyrY7CHL9LahyFMQ7dMN4dzS0ecQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oU00eeBDHXCALTjkcCwhe7LCaivJgZAa6wuICr8wK6iElAoA9Drel1UEUEvAhOBym
-         wgR31pnIfRWN4TXYmH060fD1Q5UqPnCV2vCOHjok6PA0QrVh5A4Kr0s72qDC7/rc16
-         x+qFEgrSZkjDtaZMO80hkJkx4l7+HznO3UsfiWF0=
-Date:   Thu, 8 Oct 2020 12:00:34 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Jerome Brunet <jbrunet@baylibre.com>
-Cc:     Kevin Hilman <khilman@baylibre.com>,
-        Nicolas Belin <nbelin@baylibre.com>, linux-i2c@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] i2c: meson: fixup rate calculation with filter delay
-Message-ID: <20201008100034.GE76290@ninjato>
-References: <20201007080751.1259442-1-jbrunet@baylibre.com>
- <20201007080751.1259442-4-jbrunet@baylibre.com>
+        id S1729363AbgJHKBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 06:01:39 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:32820 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725916AbgJHKBj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 06:01:39 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 098A1aCH116484;
+        Thu, 8 Oct 2020 05:01:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1602151296;
+        bh=q3MUyFjvN7mBX7FMCNBzHIOy27ICQpde7XSIoKizfFA=;
+        h=From:To:CC:Subject:Date;
+        b=gCaPcTV6P+9BK2VMk0sgSF3wIwQrLPu6YWEIffv9DTvLkfO0ygOLoxpcXKHea3tcB
+         NmxIFHp1qRmBRRFs3FoapODz74roc/HqiftTkuu/RU/JPSWGbdxvaAE3P6anmxezl3
+         KrUnZZvFRcvWOh+v9hvZW4B2sEA5PyWt06HdOnX0=
+Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 098A1aAh051533
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 8 Oct 2020 05:01:36 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 8 Oct
+ 2020 05:01:36 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 8 Oct 2020 05:01:36 -0500
+Received: from a0230074-Latitude-E7470.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 098A1UUS111551;
+        Thu, 8 Oct 2020 05:01:32 -0500
+From:   Faiz Abbas <faiz_abbas@ti.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-mmc@vger.kernel.org>
+CC:     <ulf.hansson@linaro.org>, <adrian.hunter@intel.com>,
+        <faiz_abbas@ti.com>
+Subject: [PATCH] mmc: sdhci_am654: Fix module autoload
+Date:   Thu, 8 Oct 2020 15:31:29 +0530
+Message-ID: <20201008100129.13917-1-faiz_abbas@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="gMR3gsNFwZpnI/Ts"
-Content-Disposition: inline
-In-Reply-To: <20201007080751.1259442-4-jbrunet@baylibre.com>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add a MODULE_DEVICE_TABLE() entry so that the driver is autoloaded
+when built as a module.
 
---gMR3gsNFwZpnI/Ts
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+---
+ drivers/mmc/host/sdhci_am654.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-On Wed, Oct 07, 2020 at 10:07:51AM +0200, Jerome Brunet wrote:
-> From: Nicolas Belin <nbelin@baylibre.com>
->=20
-> Apparently, 15 cycles of the peripheral clock are used by the controller
-> for sampling and filtering. Because this was not known before, the rate
-> calculation is slightly off.
->=20
-> Clean up and fix the calculation taking this filtering delay into account.
->=20
-> Fixes: 30021e3707a7 ("i2c: add support for Amlogic Meson I2C controller")
-> Signed-off-by: Nicolas Belin <nbelin@baylibre.com>
-> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+diff --git a/drivers/mmc/host/sdhci_am654.c b/drivers/mmc/host/sdhci_am654.c
+index 2bce962bf7e4..a64ea143d185 100644
+--- a/drivers/mmc/host/sdhci_am654.c
++++ b/drivers/mmc/host/sdhci_am654.c
+@@ -739,6 +739,7 @@ static const struct of_device_id sdhci_am654_of_match[] = {
+ 	},
+ 	{ /* sentinel */ }
+ };
++MODULE_DEVICE_TABLE(of, sdhci_am654_of_match);
+ 
+ static int sdhci_am654_probe(struct platform_device *pdev)
+ {
+-- 
+2.17.1
 
-Applied to for-current, thanks!
-
-
---gMR3gsNFwZpnI/Ts
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9+40IACgkQFA3kzBSg
-KbbICg//RfLRRrULQyOC6wMvX6Ywzuc2+08+lufGhqC7qTce94CDoF/k+KCYp/CO
-r5VXowQjRhiDFxeEHJ5s3aM32vjqb+/pKrhEXunqfAtJl5xhbVkbEeBbnAPp7LaO
-p6vSGleKxintQsCIkJXZD3HZJlzw+8CPBPV30HW7lO9VefwnyiV+LO7DUWM09Zfx
-C5FtjGK34YQNmGuTkLYwDuelHTj0l/jR0mwRGInESnKODvVBMCTK4uTgQVM4jRJb
-RF/rRQSJV4IkFiNyyk2LFK3phTUnSgeG8RIl0B5u3hkrf1WwDoUAayPSXh0qaKF9
-qdpXkUa5twjEOasJLIqorTPTyNNJp0kOFK61CaeISz6S5mNtibrpGggHb9iEfGX8
-wGNzcUKLbDTma80XJ1A/1RZ/buOfl8RzAPngG2xxMlxWDLZrFIIkQFcDSeE5P2vL
-sLtW6gI8IWAdP8igtdmASm+dvHS4onXBgbc5j8m6xavVTIL5spVXuL79NN0y2ZI1
-zPryRpRfMR6bRZSKY97OXYR2g6OHFLbrayz5HfNnk63lZj6K38mHNuZ9IPj1nuPI
-aM/hCFtwW5d0j51ZYu2a2hKYbjux19bUz2BSFSM/9g8kfMOZaPXS30e0jbI76E0F
-fsbBIGFsRAUlHO41anqbity6+xI9FE7MxovWMdD3JNJ7qNqj5l0=
-=fgLn
------END PGP SIGNATURE-----
-
---gMR3gsNFwZpnI/Ts--
