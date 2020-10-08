@@ -2,97 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7891E287454
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 14:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B525228745A
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 14:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730043AbgJHMfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 08:35:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729722AbgJHMfu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 08:35:50 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28572C061755
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 05:35:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rbMMA5ddCtH0CeBWsyrtswzbqS4bo1z2oWqSBhMisi0=; b=j/kzKFAGLZk0It+frHihiWN1Rr
-        1oGGcXt+WT/HFHQkVVT3UCYsUBa/qZxviKPzdgZq7AKsYrYimFYhM7kGO1T8Zc4/9VDQA98BR4Bu5
-        L+3B7tqYP/OkIVsmIzVvDu4Ve8eNyqGJUdQ1+tHH60UgZjQskgwGSZl9sFDYduIWqAHO21HKa8gYP
-        dZnWOajWWoSQWIh/MF8Kpaoh+Ry5wg0lvC0NN+S+jk18kJ6r8dyKGp1EsTXn/VDg0JjzKF5el5Z6E
-        S1S4dDYMuuQJv0ErTstv2FKhH26oCBnQJrrZID+zX6cTnDiXlyv24JtxMS0FnC1s8HveclssI+J7S
-        03bK8ocw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kQV98-0002m6-Pa; Thu, 08 Oct 2020 12:35:46 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6BD62301A42;
-        Thu,  8 Oct 2020 14:35:44 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 58EC02B262237; Thu,  8 Oct 2020 14:35:44 +0200 (CEST)
-Date:   Thu, 8 Oct 2020 14:35:44 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Marcelo Tosatti <mtosatti@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Oleg Nesterov <oleg@redhat.com>
-Subject: Re: [patch 2/2] nohz: change signal tick dependency to wakeup CPUs
- of member tasks
-Message-ID: <20201008123544.GX2628@hirez.programming.kicks-ass.net>
-References: <20201007180151.623061463@redhat.com>
- <20201007180229.765691166@redhat.com>
+        id S1730052AbgJHMhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 08:37:48 -0400
+Received: from m12-18.163.com ([220.181.12.18]:53810 "EHLO m12-18.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729722AbgJHMhr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 08:37:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=ATb6q
+        WOfEKLFdKGw4EMPraAGyHQzt5jzPCpiih1DgBg=; b=gxnbotfAQSEMd/ieajH4H
+        PFKkfezRW5aIlIuA4hgFkJYDQsxW8f2Xb0IwYwx/u8S11Cg++TzF488RmdZ2fioM
+        dhjC3XoG8V+v9oflV5uPClP9sBFBBPQzzQj4dqXyeqgxzOtLv2eAY/Y9w/6e6BXs
+        betR0Ggb4YxFSbgWN7uoRs=
+Received: from localhost (unknown [101.228.30.83])
+        by smtp14 (Coremail) with SMTP id EsCowABXQL72B39fLfDSSA--.59064S2;
+        Thu, 08 Oct 2020 20:37:10 +0800 (CST)
+Date:   Thu, 8 Oct 2020 20:37:10 +0800
+From:   Hui Su <sh_def@163.com>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, juri.lelli@redhat.com
+Subject: Re: [PATCH] sched,fair: use list_for_each_entry() in
+ print_cfs_stats()
+Message-ID: <20201008123710.GB7424@rlk>
+References: <20200925191019.GA174025@rlk>
+ <7afdceb2-b727-4f89-75e3-e08bf06d78d9@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201007180229.765691166@redhat.com>
+In-Reply-To: <7afdceb2-b727-4f89-75e3-e08bf06d78d9@arm.com>
+X-CM-TRANSID: EsCowABXQL72B39fLfDSSA--.59064S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxZF4xKF48urW7uFyfXF1kKrg_yoW5Jw4kpr
+        Z0yay7Kr4vgw15ua45CrZ5uFy3Xry7G3y7XF4Uta40kw1UG3s0qFn7tw13uFyYvrZ5G34r
+        tr4qvryakF1j9r7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UyuWJUUUUU=
+X-Originating-IP: [101.228.30.83]
+X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbiJha3X1v2efbulAAAsA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 03:01:53PM -0300, Marcelo Tosatti wrote:
-> Rather than waking up all nohz_full CPUs on the system, only wakeup 
-> the target CPUs of member threads of the signal.
+On Tue, Sep 29, 2020 at 11:56:42AM +0200, Dietmar Eggemann wrote:
+> On 25/09/2020 21:10, Hui Su wrote:
+> > Macro for_each_leaf_cfs_rq_safe() use list_for_each_entry_safe(),
+> > which can against removal of list entry, but we only
+> > print the cfs_rq data and won't remove the list entry in
+> > print_cfs_stats().
+> > 
+> > Thus, add macro for_each_leaf_cfs_rq() based on
+> > list_for_each_entry(), and use for_each_leaf_cfs_rq() in
+> > print_cfs_stats().
+> > 
+> > Signed-off-by: Hui Su <sh_def@163.com>
+> > ---
+> >  kernel/sched/fair.c | 11 ++++++++---
+> >  1 file changed, 8 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index 1a68a0536add..d40dfb4349b0 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -391,11 +391,16 @@ static inline void assert_list_leaf_cfs_rq(struct rq *rq)
+> >  	SCHED_WARN_ON(rq->tmp_alone_branch != &rq->leaf_cfs_rq_list);
+> >  }
+> >  
+> > -/* Iterate thr' all leaf cfs_rq's on a runqueue */
+> > +/* Iterate thr' all leaf cfs_rq's on a runqueue safely */
+> >  #define for_each_leaf_cfs_rq_safe(rq, cfs_rq, pos)			\
+> >  	list_for_each_entry_safe(cfs_rq, pos, &rq->leaf_cfs_rq_list,	\
+> >  				 leaf_cfs_rq_list)
+> >  
+> > +/* Iterate thr' all leaf cfs_rq's on a runqueue */
+> > +#define for_each_leaf_cfs_rq(rq, cfs_rq)			\
+> > +	list_for_each_entry(cfs_rq, &rq->leaf_cfs_rq_list,	\
+> > +				 leaf_cfs_rq_list)
+> > +
+> >  /* Do the two (enqueued) entities belong to the same group ? */
+> >  static inline struct cfs_rq *
+> >  is_same_group(struct sched_entity *se, struct sched_entity *pse)
+> > @@ -11185,10 +11190,10 @@ const struct sched_class fair_sched_class
+> >  #ifdef CONFIG_SCHED_DEBUG
+> >  void print_cfs_stats(struct seq_file *m, int cpu)
+> >  {
+> > -	struct cfs_rq *cfs_rq, *pos;
+> > +	struct cfs_rq *cfs_rq;
+> >  
+> >  	rcu_read_lock();
+> > -	for_each_leaf_cfs_rq_safe(cpu_rq(cpu), cfs_rq, pos)
+> > +	for_each_leaf_cfs_rq(cpu_rq(cpu), cfs_rq)
+> >  		print_cfs_rq(m, cpu, cfs_rq);
+> >  	rcu_read_unlock();
+> >  }
 > 
-> Reduces interruptions to nohz_full CPUs.
+> IMHO, for_each_leaf_cfs_rq_safe() was introduced in commit a9e7f6544b9c
+> ("sched/fair: Fix O(nr_cgroups) in load balance path") and reintroduced
+> again by commit 039ae8bcf7a5 ("sched/fair: Fix O(nr_cgroups) in the load
+> balancing path") to prevent races between tasks running
+> print_cfs_stats() and today's  __update_blocked_fair() ->
+> list_del_leaf_cfs_rq(cfs_rq).
 > 
-> Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
-> 
-> Index: linux-2.6/kernel/time/tick-sched.c
-> ===================================================================
-> --- linux-2.6.orig/kernel/time/tick-sched.c
-> +++ linux-2.6/kernel/time/tick-sched.c
-> @@ -398,7 +398,15 @@ EXPORT_SYMBOL_GPL(tick_nohz_dep_clear_ta
->   */
->  void tick_nohz_dep_set_signal(struct signal_struct *sig, enum tick_dep_bits bit)
->  {
-> -	tick_nohz_dep_set_all(&sig->tick_dep_mask, bit);
-> +	int prev;
-> +
-> +	prev = atomic_fetch_or(BIT(bit), &sig->tick_dep_mask);
-> +	if (!prev) {
-> +		rcu_read_lock();
-> +		for_each_thread(sig, t)
-> +			tick_nohz_kick_task(t);
-> +		rcu_read_unlock();
-> +	}
->  }
+> Your patch doesn't compile w/ !CONFIG_FAIR_GROUP_SCHED.
 
-AFAICT, and this makes perfect sense, this function is only ever used
-while holding sighand->siglock, which makes the RCU read lock
-superfluous.
-
-Would it make sense to change the signal_struct argument to task_struct,
-such that we can write:
-
-	lockdep_assert_held(&p->sighand->siglock);
-	for_each_thread(p->signal, t)
-		tick_nohz_kick_task(t);
-
-?
+Thanks for your explanation, please ignore this change.
 
