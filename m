@@ -2,176 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40FF1287AC2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 19:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B99287AC9
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 19:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731857AbgJHRPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 13:15:51 -0400
-Received: from mga14.intel.com ([192.55.52.115]:34491 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730261AbgJHRPu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 13:15:50 -0400
-IronPort-SDR: PRXVjiQOfO9NbECaA7l5aOwm6grg87XUThOwniSvIJS7avgz3btmJlBb41HTuS5miFZwQQbfYD
- fp7JhdBgZEUA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="164584976"
-X-IronPort-AV: E=Sophos;i="5.77,351,1596524400"; 
-   d="scan'208";a="164584976"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 10:15:49 -0700
-IronPort-SDR: NrFpWhw4HCbPGKlNDxf6uWO/Aa3k5DKKLvRG//d+1tFRb2d4sfiXsHFYbP1F5c9Rtb868qWqvq
- UIAOUxqEbK0w==
-X-IronPort-AV: E=Sophos;i="5.77,351,1596524400"; 
-   d="scan'208";a="355452759"
-Received: from rjwysock-mobl1.ger.corp.intel.com (HELO [10.249.148.62]) ([10.249.148.62])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 10:15:48 -0700
-Subject: Re: ACPI _CST introduced performance regresions on Haswll
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
-References: <20201006083639.GJ3227@techsingularity.net>
- <c3566d2b-3da1-917b-2df6-f7dcfb33c8ed@intel.com>
- <20201006190322.GL3227@techsingularity.net>
- <25f31d3e-7a67-935f-93ba-32216a5084e2@intel.com>
- <20201006211820.GN3227@techsingularity.net>
- <2382d796-7c2f-665e-9169-5cdc437bf34c@intel.com>
- <20201008090909.GP3227@techsingularity.net>
-From:   "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Organization: Intel Technology Poland Sp. z o. o., KRS 101882, ul. Slowackiego
- 173, 80-298 Gdansk
-Message-ID: <dcf4266a-5769-8a6b-d8e1-e77553126861@intel.com>
-Date:   Thu, 8 Oct 2020 19:15:46 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S1731906AbgJHRQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 13:16:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730763AbgJHRQb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 13:16:31 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F5EDC0613D3
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 10:16:31 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id w141so7105093oia.2
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 10:16:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=cJwmJXmW0n/BmBUTL74IPviQIG2habiKD0MU6pN8zhU=;
+        b=MVbqu90hJmyrd+sPPkFw6E75unJ8rLwKVenxZgPlZQ0sDsjzqGtKeUBv82TcScacos
+         yekx36c3FkXtWDgWxhXXmugd3dPf2By3cV1JwiAspr3dL9gnVzSAVLnXNq7o/V7irYdI
+         7mZVqNu2dmuv8QMF1QlWFB/Rs/OIshbHRXrbM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=cJwmJXmW0n/BmBUTL74IPviQIG2habiKD0MU6pN8zhU=;
+        b=GHZ1bcG31vU1R4JFUturOcgL2z1iVXIVSAYpYq6/zh8TaanzgGm0BdVVjhrUsmwbem
+         YtMsgikr7g8LU1rW/icGI+i4rpSdbCzK6ZzFA+ZDcEES00eLgB4E2D93+yXSPC7mn4Jm
+         8UDX4U4TU44OdzZEExmiBSaZnN46lCnCiSWfm3hk0wSxA5rWVsVXTKUcM6nOLNEZtn2O
+         KWWWQJv1epbbZYt7GEXO3cn9ob3wO1OfHNv4rJlu1KIGazdSFw9Kv1jrhpMgB4fUrPs9
+         Xy5PTBnJVxqxpYSHwjYtX1WgyKO4tZSBbHfYqAx8CbvPdzQGwCeQZiOWo8uVZ8w0PNsi
+         jpiQ==
+X-Gm-Message-State: AOAM532ci5mDxw2uF9vhx/a2bQkmsV4fVmgTTPm6o85wMM2r319Klz02
+        YuZaUXikN6Yi6JhGGHMdEBH1Cw9WxYQN7Rw4sQy8ZQ==
+X-Google-Smtp-Source: ABdhPJzf3e2p0tuIJ1xApDWpklSlKGyjhh7bQmds7tEcm9rrUTBDyTXsYZhQ+pIZOdsswK//Z2G6wQ7JuLDsqNpcK5Y=
+X-Received: by 2002:a05:6808:206:: with SMTP id l6mr5847034oie.128.1602177390724;
+ Thu, 08 Oct 2020 10:16:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201008090909.GP3227@techsingularity.net>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20201007164426.1812530-1-daniel.vetter@ffwll.ch>
+ <20201007164426.1812530-9-daniel.vetter@ffwll.ch> <20201008184440.4c3bebed@thinkpad>
+In-Reply-To: <20201008184440.4c3bebed@thinkpad>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Thu, 8 Oct 2020 19:16:19 +0200
+Message-ID: <CAKMK7uFFLB0gXcRt48Da30S+Mt8R+bhx=BGwcTg-b-MMVjcFGw@mail.gmail.com>
+Subject: Re: [PATCH 08/13] s390/pci: Remove races against pte updates
+To:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Niklas Schnelle <schnelle@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/8/2020 11:09 AM, Mel Gorman wrote:
-> On Wed, Oct 07, 2020 at 05:45:30PM +0200, Rafael J. Wysocki wrote:
->>> pre-cst is just before your patch
->>> enable-cst is your patch that was bisected
->>> enable-cst-no-hsx-acpi is your patch with use_acpi disabled
->>> 5.9-rc8-vanilla is what it sounds like
->>> 5.9-rc8-no-hsx-acpi disables use_acpi
->>>
->>> The enable-cst-no-hsx-acpi result indicates that use_acpi was the issue for
->>> Haswell (at least these machines). Looking just at 5.9-rc8-vanillaa might
->>> have been misleading because its performance is not far off the baseline
->>> due to unrelated changes that mostly offset the performance penalty.
->>>
->>> The key question is -- how appropriate would it be to disable acpi for
->>> Haswell? Would that be generally safe or could it hide other surprises?
->>>
->> It should be safe, but let's try to do something more fine-grained.
->>
->> There is the CPUIDLE_FLAG_ALWAYS_ENABLE flag that is set for C1E.  Can you
->> please try to set it for C6 in hsw_cstates instead of clearing use_acpi in
->> idle_cpu_hsx and retest?
->>
-> Performance-wise, always enabling C6 helps but it may be specific to
-> this workload. Looking across all tested kernels I get;
+On Thu, Oct 8, 2020 at 6:44 PM Gerald Schaefer
+<gerald.schaefer@linux.ibm.com> wrote:
 >
-> netperf-udp
->                                        5.5.0              5.5.0-rc2              5.5.0-rc2              5.9.0-rc8              5.9.0-rc8              5.9.0-rc8
->                                      vanilla                pre-cst             enable-cst                vanilla           disable-acpi              enable-c6
-> Hmean     send-64         196.31 (   0.00%)      208.56 *   6.24%*      181.15 *  -7.72%*      199.84 *   1.80%*      235.09 *  19.76%*      234.79 *  19.60%*
-> Hmean     send-128        391.75 (   0.00%)      408.13 *   4.18%*      359.92 *  -8.12%*      396.81 (   1.29%)      469.44 *  19.83%*      465.55 *  18.84%*
-> Hmean     send-256        776.38 (   0.00%)      798.39 *   2.84%*      707.31 *  -8.90%*      781.63 (   0.68%)      917.19 *  18.14%*      905.06 *  16.57%*
-> Hmean     send-1024      3019.64 (   0.00%)     3099.00 *   2.63%*     2756.32 *  -8.72%*     3017.06 (  -0.09%)     3509.84 *  16.23%*     3532.85 *  17.00%*
-> Hmean     send-2048      5790.31 (   0.00%)     6209.53 *   7.24%*     5394.42 *  -6.84%*     5846.11 (   0.96%)     6861.93 *  18.51%*     6852.08 *  18.34%*
-> Hmean     send-3312      8909.98 (   0.00%)     9483.92 *   6.44%*     8332.35 *  -6.48%*     9047.52 *   1.54%*    10677.93 *  19.84%*    10509.41 *  17.95%*
-> Hmean     send-4096     10517.63 (   0.00%)    11044.19 *   5.01%*     9851.70 *  -6.33%*    10914.24 *   3.77%*    12719.58 *  20.94%*    12731.06 *  21.04%*
-> Hmean     send-8192     17355.48 (   0.00%)    18344.50 *   5.70%*    15844.38 *  -8.71%*    17690.46 (   1.93%)    20777.97 *  19.72%*    20220.24 *  16.51%*
-> Hmean     send-16384    28585.78 (   0.00%)    28950.90 (   1.28%)    25946.88 *  -9.23%*    26643.69 *  -6.79%*    30891.89 *   8.07%*    30701.46 *   7.40%*
+> On Wed,  7 Oct 2020 18:44:21 +0200
+> Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
 >
-> The difference between always using ACPI and force enabling C6 is
-> negligible in this case but more on that later
+> > Way back it was a reasonable assumptions that iomem mappings never
+> > change the pfn range they point at. But this has changed:
+> >
+> > - gpu drivers dynamically manage their memory nowadays, invalidating
+> > ptes with unmap_mapping_range when buffers get moved
+> >
+> > - contiguous dma allocations have moved from dedicated carvetouts to
+> > cma regions. This means if we miss the unmap the pfn might contain
+> > pagecache or anon memory (well anything allocated with GFP_MOVEABLE)
+> >
+> > - even /dev/mem now invalidates mappings when the kernel requests that
+> > iomem region when CONFIG_IO_STRICT_DEVMEM is set, see 3234ac664a87
+> > ("/dev/mem: Revoke mappings when a driver claims the region")
+> >
+> > Accessing pfns obtained from ptes without holding all the locks is
+> > therefore no longer a good idea. Fix this.
+> >
+> > Since zpci_memcpy_from|toio seems to not do anything nefarious with
+> > locks we just need to open code get_pfn and follow_pfn and make sure
+> > we drop the locks only after we've done. The write function also needs
+> > the copy_from_user move, since we can't take userspace faults while
+> > holding the mmap sem.
+> >
+> > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> > Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> > Cc: Dan Williams <dan.j.williams@intel.com>
+> > Cc: Kees Cook <keescook@chromium.org>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: John Hubbard <jhubbard@nvidia.com>
+> > Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
+> > Cc: Jan Kara <jack@suse.cz>
+> > Cc: Dan Williams <dan.j.williams@intel.com>
+> > Cc: linux-mm@kvack.org
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > Cc: linux-samsung-soc@vger.kernel.org
+> > Cc: linux-media@vger.kernel.org
+> > Cc: Niklas Schnelle <schnelle@linux.ibm.com>
+> > Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+> > Cc: linux-s390@vger.kernel.org
+> > ---
+> >  arch/s390/pci/pci_mmio.c | 98 +++++++++++++++++++++++-----------------
+> >  1 file changed, 57 insertions(+), 41 deletions(-)
 >
-> netperf-udp
->                                    5.9.0-rc8              5.9.0-rc8
->                                 disable-acpi              enable-c6
-> Hmean     send-64         235.09 (   0.00%)      234.79 (  -0.13%)
-> Hmean     send-128        469.44 (   0.00%)      465.55 (  -0.83%)
-> Hmean     send-256        917.19 (   0.00%)      905.06 (  -1.32%)
-> Hmean     send-1024      3509.84 (   0.00%)     3532.85 (   0.66%)
-> Hmean     send-2048      6861.93 (   0.00%)     6852.08 (  -0.14%)
-> Hmean     send-3312     10677.93 (   0.00%)    10509.41 *  -1.58%*
-> Hmean     send-4096     12719.58 (   0.00%)    12731.06 (   0.09%)
-> Hmean     send-8192     20777.97 (   0.00%)    20220.24 *  -2.68%*
-> Hmean     send-16384    30891.89 (   0.00%)    30701.46 (  -0.62%)
+> Looks good, thanks. Also survived some basic function test. Only some
+> minor nitpick, see below.
 >
-> The default status and enabled states differ.
+> Reviewed-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
 >
-> For 5.9-rc8 vanilla, the default and disabled status for cstates are
+> >
+> > diff --git a/arch/s390/pci/pci_mmio.c b/arch/s390/pci/pci_mmio.c
+> > index 401cf670a243..4d194cb09372 100644
+> > --- a/arch/s390/pci/pci_mmio.c
+> > +++ b/arch/s390/pci/pci_mmio.c
+> > @@ -119,33 +119,15 @@ static inline int __memcpy_toio_inuser(void __iom=
+em *dst,
+> >       return rc;
+> >  }
+> >
+> > -static long get_pfn(unsigned long user_addr, unsigned long access,
+> > -                 unsigned long *pfn)
+> > -{
+> > -     struct vm_area_struct *vma;
+> > -     long ret;
+> > -
+> > -     mmap_read_lock(current->mm);
+> > -     ret =3D -EINVAL;
+> > -     vma =3D find_vma(current->mm, user_addr);
+> > -     if (!vma)
+> > -             goto out;
+> > -     ret =3D -EACCES;
+> > -     if (!(vma->vm_flags & access))
+> > -             goto out;
+> > -     ret =3D follow_pfn(vma, user_addr, pfn);
+> > -out:
+> > -     mmap_read_unlock(current->mm);
+> > -     return ret;
+> > -}
+> > -
+> >  SYSCALL_DEFINE3(s390_pci_mmio_write, unsigned long, mmio_addr,
+> >               const void __user *, user_buffer, size_t, length)
+> >  {
+> >       u8 local_buf[64];
+> >       void __iomem *io_addr;
+> >       void *buf;
+> > -     unsigned long pfn;
+> > +     struct vm_area_struct *vma;
+> > +     pte_t *ptep;
+> > +     spinlock_t *ptl;
+> >       long ret;
+> >
+> >       if (!zpci_is_enabled())
+> > @@ -158,7 +140,7 @@ SYSCALL_DEFINE3(s390_pci_mmio_write, unsigned long,=
+ mmio_addr,
+> >        * We only support write access to MIO capable devices if we are =
+on
+> >        * a MIO enabled system. Otherwise we would have to check for eve=
+ry
+> >        * address if it is a special ZPCI_ADDR and would have to do
+> > -      * a get_pfn() which we don't need for MIO capable devices.  Curr=
+ently
+> > +      * a pfn lookup which we don't need for MIO capable devices.  Cur=
+rently
+> >        * ISM devices are the only devices without MIO support and there=
+ is no
+> >        * known need for accessing these from userspace.
+> >        */
+> > @@ -176,21 +158,37 @@ SYSCALL_DEFINE3(s390_pci_mmio_write, unsigned lon=
+g, mmio_addr,
+> >       } else
+> >               buf =3D local_buf;
+> >
+> > -     ret =3D get_pfn(mmio_addr, VM_WRITE, &pfn);
+> > +     ret =3D -EFAULT;
+> > +     if (copy_from_user(buf, user_buffer, length))
+> > +             goto out_free;
+> > +
+> > +     mmap_read_lock(current->mm);
+> > +     ret =3D -EINVAL;
+> > +     vma =3D find_vma(current->mm, mmio_addr);
+> > +     if (!vma)
+> > +             goto out_unlock_mmap;
+> > +     ret =3D -EACCES;
+> > +     if (!(vma->vm_flags & VM_WRITE))
+> > +             goto out_unlock_mmap;
+> > +     if (!(vma->vm_flags & (VM_IO | VM_PFNMAP)))
+> > +             goto out_unlock_mmap;
 >
-> ./5.9.0-rc8-vanilla/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state0/disable:0
-> ./5.9.0-rc8-vanilla/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state1/disable:0
-> ./5.9.0-rc8-vanilla/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state2/disable:0
-> ./5.9.0-rc8-vanilla/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state3/disable:1
-> ./5.9.0-rc8-vanilla/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state4/disable:1
-> ./5.9.0-rc8-vanilla/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state0/default_status:enabled
-> ./5.9.0-rc8-vanilla/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state1/default_status:enabled
-> ./5.9.0-rc8-vanilla/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state2/default_status:enabled
-> ./5.9.0-rc8-vanilla/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state3/default_status:disabled
-> ./5.9.0-rc8-vanilla/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state4/default_status:disabled
->
-> For use_acpi == false, all c-states are enabled
->
-> ./5.9.0-rc8-disable-acpi/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state0/disable:0
-> ./5.9.0-rc8-disable-acpi/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state1/disable:0
-> ./5.9.0-rc8-disable-acpi/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state2/disable:0
-> ./5.9.0-rc8-disable-acpi/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state3/disable:0
-> ./5.9.0-rc8-disable-acpi/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state4/disable:0
-> ./5.9.0-rc8-disable-acpi/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state0/default_status:enabled
-> ./5.9.0-rc8-disable-acpi/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state1/default_status:enabled
-> ./5.9.0-rc8-disable-acpi/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state2/default_status:enabled
-> ./5.9.0-rc8-disable-acpi/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state3/default_status:enabled
-> ./5.9.0-rc8-disable-acpi/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state4/default_status:enabled
->
-> Force enabling C6
->
-> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state0/disable:0
-> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state1/disable:0
-> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state2/disable:0
-> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state3/disable:1
-> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state4/disable:0
-> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state0/default_status:enabled
-> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state1/default_status:enabled
-> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state2/default_status:enabled
-> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state3/default_status:disabled
-> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state4/default_status:enabled
->
-> Note that as expected, C3 remains disabled when only C6 is forced (state3
-> == c3, state4 == c6). While this particular workload does not appear to
-> care as it does not remain idle for long, the exit latency difference
-> between c3 and c6 is large so potentially a workload that idles for short
-> durations that are somewhere between c1e and c3 exit latency might take
-> a larger penalty exiting from c6 state if the deeper c-state is selected
-> for idling.
->
-> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state0/residency:0
-> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state1/residency:2
-> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state2/residency:20
-> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state3/residency:100
-> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state4/residency:400
->
-If you are worried that C6 might be used instead of C3 in some cases, 
-this is not going to happen.
+> That check for VM_IO | VM_PFNMAP was previously hidden inside follow_pfn(=
+),
+> and that would have returned -EINVAL in this case. With your change, we
+> now return -EACCES. Not sure how important that is, but it feels wrong.
+> Maybe move the VM_IO | VM_PFNMAP check up, before the ret =3D -EACCES?
 
-I all cases in which C3 would have been used had it not been disabled, 
-C1E will be used instead.
+I tried to keep the errno unchanged, but fumbled this. Will fix in the
+next round, thanks a lot for reviewing and testing.
 
-Which BTW indicates that using C1E more often adds a lot of latency to 
-the workload (if C3 and C6 are both disabled, C1E is used in all cases 
-in which one of them would have been used). With C6 enabled, that state 
-is used at least sometimes (so C1E is used less often), but PC6 doesn't 
-seem to be really used - it looks like core C6 only is entered and which 
-may be why C6 adds less latency than C1E (and analogously for C3).
+For merging I think this one here would be best through the s390 tree,
+since it can be merged without any of the others in here.
+
+Thanks, Daniel
+
+>
+> [...]
+> > @@ -306,22 +306,38 @@ SYSCALL_DEFINE3(s390_pci_mmio_read, unsigned long=
+, mmio_addr,
+> >               buf =3D local_buf;
+> >       }
+> >
+> > -     ret =3D get_pfn(mmio_addr, VM_READ, &pfn);
+> > +     mmap_read_lock(current->mm);
+> > +     ret =3D -EINVAL;
+> > +     vma =3D find_vma(current->mm, mmio_addr);
+> > +     if (!vma)
+> > +             goto out_unlock_mmap;
+> > +     ret =3D -EACCES;
+> > +     if (!(vma->vm_flags & VM_WRITE))
+> > +             goto out_unlock_mmap;
+> > +     if (!(vma->vm_flags & (VM_IO | VM_PFNMAP)))
+> > +             goto out_unlock_mmap;
+>
+> Same here with VM_IO | VM_PFNMAP and -EINVAL.
 
 
+
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
