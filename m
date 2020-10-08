@@ -2,168 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FAFE2872A3
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 12:39:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B09C2872A6
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 12:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729500AbgJHKjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 06:39:43 -0400
-Received: from mga01.intel.com ([192.55.52.88]:25895 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725908AbgJHKjm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 06:39:42 -0400
-IronPort-SDR: uONqQCEem6G2pVh3azNspY+LJ5tNV+hzbgnEqi35dOlPuuTMyBQGiq18gtfbqpzFC3iqLg10zS
- 3U7cCOI4U63A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9767"; a="182741419"
-X-IronPort-AV: E=Sophos;i="5.77,350,1596524400"; 
-   d="scan'208";a="182741419"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 03:39:41 -0700
-IronPort-SDR: R3v1qjzguYKaW8esviNDB6gj+vJFhvU7gYFJ4G1nmp+86mrhabHDWq8aOMEIvYpI0kc3LHw3Az
- Q0rHPGDQUFYA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,350,1596524400"; 
-   d="scan'208";a="312168414"
-Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
-  by orsmga003.jf.intel.com with ESMTP; 08 Oct 2020 03:39:40 -0700
-Received: from fmsmsx609.amr.corp.intel.com (10.18.126.89) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 8 Oct 2020 03:39:40 -0700
-Received: from fmsmsx605.amr.corp.intel.com (10.18.126.85) by
- fmsmsx609.amr.corp.intel.com (10.18.126.89) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 8 Oct 2020 03:39:40 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Thu, 8 Oct 2020 03:39:40 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.172)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Thu, 8 Oct 2020 03:39:39 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XgyzC5r+zVfrqWZRegBzYtpMoNBn1l1G7cUNdSROyE/yzIsg2/YIXdk+JqFOgtG4VhGpfpp+4PLW29xY4hheK3NVURv5bE7TfJOM3EGALDFZz2qIWgInvzBeG3QGYzorvxJPgeTbt1C6dwag7IZneDxxsCpUbNQbn4eKEcYTtTnjwyMEL78AdY/PExDpWCDUIqCU1ex/ypsq5nVbOPaJpK0yW6B5bFc4bVYuXRU6VW6pPtPhYPHUws9wVdurEW59yWOt+AnRVDGbRKxAlRhBVtVmRyQtZVp072T8ASSgmZGaH0OqC8IgG4HZkaibxYhzkvlbG5Yfv26Y48hy70/GlQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Lv+cXW1R2ylUdaPZIEgCw1rlQKcQ2f44rsOuPIrRt9I=;
- b=hKzNI7SVXh73O0xxt0udw2XpWZ3dsL7lauHRVPSouuJHq5J6l7Yrszr7SaqTRfQO2BJH+Pjlobqhjd4/HfJ4SCnOlB1Gyvwy4lxKJDdBRBCQfuf1NzNvr84kb5/IunJVDhLrzZFRSYDCdm/TbSnjnY53zdlvUEiFC+yOqUrY/UZzkTFvlKSwsMauXrcdzqQssBM6e8IleK/432+/qYE5IUVBk4hoaOZF8rWQMWrhZRHQuz/1X8++nTtmUcOeypAMApTyrvBpJ5Nj/uu1NKoheRxLLru2shR2BQNJmIhj/b9s6qu+AZPxoOqORJOfX+zFEh4f5JKRiwhe0FI3FV3G8w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Lv+cXW1R2ylUdaPZIEgCw1rlQKcQ2f44rsOuPIrRt9I=;
- b=Dt2o/r5ZahvSNcuFwxW9wMHxl2c/lyISTlwZPnOrHY8IgRvyWAaOCqfoQGdjlrpzLWXOzmvBNGh9HUEc+j+Xq7mv0VxYdE+b2sSmtvHmze64ClgB9PPE7SNXW3ikjtVHhiwDIQYKuFMJHzBMCklJC4JAqd/N8KGE8a5otqfw1f4=
-Received: from DM6PR11MB2876.namprd11.prod.outlook.com (2603:10b6:5:c1::16) by
- DM6PR11MB4610.namprd11.prod.outlook.com (2603:10b6:5:2ab::19) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3455.22; Thu, 8 Oct 2020 10:39:37 +0000
-Received: from DM6PR11MB2876.namprd11.prod.outlook.com
- ([fe80::c85a:d98e:fbf3:9f8c]) by DM6PR11MB2876.namprd11.prod.outlook.com
- ([fe80::c85a:d98e:fbf3:9f8c%5]) with mapi id 15.20.3433.045; Thu, 8 Oct 2020
- 10:39:37 +0000
-From:   "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     "Hunter, Adrian" <adrian.hunter@intel.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        "Shevchenko, Andriy" <andriy.shevchenko@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Raja Subramanian, Lakshmi Bai" 
-        <lakshmi.bai.raja.subramanian@intel.com>,
-        "Wan Mohamad, Wan Ahmad Zainie" 
-        <wan.ahmad.zainie.wan.mohamad@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: RE: [PATCH v4 1/4] firmware: keembay: Add support for Arm Trusted
- Firmware Service call
-Thread-Topic: [PATCH v4 1/4] firmware: keembay: Add support for Arm Trusted
- Firmware Service call
-Thread-Index: AQHWnRiLN25HboG/ekeLrjyiLBrMxamNZMeAgAAe2PA=
-Date:   Thu, 8 Oct 2020 10:39:37 +0000
-Message-ID: <DM6PR11MB2876DAA8003FD42C814A16FBB80B0@DM6PR11MB2876.namprd11.prod.outlook.com>
-References: <20201008020936.19894-1-muhammad.husaini.zulkifli@intel.com>
- <20201008020936.19894-2-muhammad.husaini.zulkifli@intel.com>
- <CAHp75VeBTKc9HnqVV-RAoQVa=1dfTH68Mido=18JFaRxVtUZ2A@mail.gmail.com>
-In-Reply-To: <CAHp75VeBTKc9HnqVV-RAoQVa=1dfTH68Mido=18JFaRxVtUZ2A@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [42.189.177.181]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ef3739d5-2c35-46be-546f-08d86b767463
-x-ms-traffictypediagnostic: DM6PR11MB4610:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR11MB4610FF268D318BF7FC953659B80B0@DM6PR11MB4610.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: lVkTEb6JvdClZAe4PGp6auJo2Ed54IWJafIkoJXoZqD0K6ERK3UT/kpDnm9GUe8gihcDSdpiq3Q4cEwrhFFFCwhu/brUkkpyp6QZc3lkMePIFeZ/l7RjtwqZeFEkV7NkkAPzRw2PWVb+Npxs2ICfK86lvb9WS2zjnFJwN7+yNbH/h7v25wS+2ZWk72FNY+Dt1FztOrd/nDXEc0Mkn2Qjywzv8apJYQ1t9k7/pSGni3ezkb+PvZDZOVa5X7dXBDgm8zh7IpDdOb498o0/5TzDKHexYxU7NLY8+pZFc0t1ROluX/IZZYKfErFOg3kHGqOVWFhnVtnVqbZ2ZYKxCwlKCg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB2876.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(136003)(396003)(346002)(366004)(6916009)(64756008)(66446008)(71200400001)(6506007)(66476007)(66556008)(26005)(186003)(76116006)(66946007)(55016002)(9686003)(478600001)(7696005)(54906003)(316002)(2906002)(83380400001)(52536014)(86362001)(4326008)(5660300002)(8676002)(8936002)(33656002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: 5HiU4Kb0B2XFOUuXEdA3gdG/fWZErIwQInjkWouty4SfS+CUPy2sgws666O/qXsL//lOe3AAZbrh3bzvu9QrxbBjiUJDKH+g2lTho7LZv32/sEyTbvZkHncMVtMsXeBAwoz0Ub5NnOjAaK8Tw3AvILuj1cSHuzBKh89ZnqlPMmdxSLNqAULiLqTMI//SwewRqbQTmlZV3cKIecLCtDNfV8b5HSW4XjD53EaXiOwwCXWT6ML9Fc/OWdW1CimGMuvJ5U/vPYLkRA6uAc5xwQoVHGaUuWqhR3evDL627jgoPvRZcQTYWLL2yBMv7EYqVMAHaUiw0G57WMj3tzi+IjPv2/PwnYmme/g1TrbArMqnMpV1pXGo0YzERLNYeqnrkhGOsVLkKi7eJJ8YIxHAdQCxjc/d0c2RCWj/gws7fqSlCM88bM9bOszBgeOnnREOMBjWD4n7FowEN3yrWDGdhmNr+vcS4HKKGa7duTk6Ten6c6Sxvp3Z3YQHpIoYwnZika1KJp1y0bhI0rsSK5331NuDHc7KkzSVRQzYEkDGR4dNW0sr8EGwHDiVms0kIMZXRjvAR8n5xb3HDy4rFdE1+MyXimG4SjT+/64QMQIBu3gvk3Nr+FX9PTAwvD+awpqFaIZ7xJe+ZXFQ9q2YXGgFQjhwkA==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1729529AbgJHKj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 06:39:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20776 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729469AbgJHKj4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 06:39:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602153594;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Eon6VS2P0JpFGHeFdcdnTZVEjhXAkVQ0s1V/PIChN9w=;
+        b=gYq77iqg0xUKmm1jbYahEvqdM5+sx8r0S5wD/Y2M0G/6klYX/j/2bzekjPtqY/OiAVD3lM
+        ggZXspuER+LLqs+tsUWjtRJNHH3iK60GPCAA0DdOoSOFMMaY0Q3VaDLdM2DeNRjb4I0b0g
+        W66o5iCIuqyEsNYTURTvuLdPDm3OKKY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-496-0hw275z_P7K4Bmq4oWZ1BQ-1; Thu, 08 Oct 2020 06:39:52 -0400
+X-MC-Unique: 0hw275z_P7K4Bmq4oWZ1BQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C318F81EE67;
+        Thu,  8 Oct 2020 10:39:51 +0000 (UTC)
+Received: from starship (unknown [10.35.206.84])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 82F6660BFA;
+        Thu,  8 Oct 2020 10:39:49 +0000 (UTC)
+Message-ID: <fe491158e791fbe4381ee7fbe5aa050b4e78060e.camel@redhat.com>
+Subject: Re: [PATCH] KVM: SVM: Use a separate vmcb for the nested L2 guest
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Cathy Avery <cavery@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     vkuznets@redhat.com, wei.huang2@amd.com
+Date:   Thu, 08 Oct 2020 13:39:48 +0300
+In-Reply-To: <0007205290de75f04f5f2a92b891815438fd2f2f.camel@redhat.com>
+References: <20200917192306.2080-1-cavery@redhat.com>
+         <587d1da1a037dd3ab7844c5cacc50bfda5ce6021.camel@redhat.com>
+         <aaaadb29-6299-5537-47a9-072ca34ba512@redhat.com>
+         <0007205290de75f04f5f2a92b891815438fd2f2f.camel@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB2876.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ef3739d5-2c35-46be-546f-08d86b767463
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Oct 2020 10:39:37.3536
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: bAZlycyIXkoNSdZT5HQ6nKeiFs4SwfYKOdikc4+CkHIOZxHVk3MprX4QD3uLBYzqYyC5fUvhZJ01MqDkk2TFrMEOzRU4xZX1kGUgk3rwtOKpUBvGQEK186XimdsFuluS
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4610
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQW5keSwNCg0KVGhhbmtzIGZvciB0aGUgZmVlZGJhY2suDQoNCj4tLS0tLU9yaWdpbmFsIE1l
-c3NhZ2UtLS0tLQ0KPkZyb206IEFuZHkgU2hldmNoZW5rbyA8YW5keS5zaGV2Y2hlbmtvQGdtYWls
-LmNvbT4NCj5TZW50OiBUaHVyc2RheSwgT2N0b2JlciA4LCAyMDIwIDQ6NDYgUE0NCj5UbzogWnVs
-a2lmbGksIE11aGFtbWFkIEh1c2FpbmkgPG11aGFtbWFkLmh1c2FpbmkuenVsa2lmbGlAaW50ZWwu
-Y29tPg0KPkNjOiBIdW50ZXIsIEFkcmlhbiA8YWRyaWFuLmh1bnRlckBpbnRlbC5jb20+OyBNaWNo
-YWwgU2ltZWsNCj48bWljaGFsLnNpbWVrQHhpbGlueC5jb20+OyBTaGV2Y2hlbmtvLCBBbmRyaXkN
-Cj48YW5kcml5LnNoZXZjaGVua29AaW50ZWwuY29tPjsgVWxmIEhhbnNzb24gPHVsZi5oYW5zc29u
-QGxpbmFyby5vcmc+OyBsaW51eC0NCj5tbWMgPGxpbnV4LW1tY0B2Z2VyLmtlcm5lbC5vcmc+OyBs
-aW51eC1hcm0gTWFpbGluZyBMaXN0IDxsaW51eC1hcm0tDQo+a2VybmVsQGxpc3RzLmluZnJhZGVh
-ZC5vcmc+OyBMaW51eCBLZXJuZWwgTWFpbGluZyBMaXN0IDxsaW51eC0NCj5rZXJuZWxAdmdlci5r
-ZXJuZWwub3JnPjsgUmFqYSBTdWJyYW1hbmlhbiwgTGFrc2htaSBCYWkNCj48bGFrc2htaS5iYWku
-cmFqYS5zdWJyYW1hbmlhbkBpbnRlbC5jb20+OyBXYW4gTW9oYW1hZCwgV2FuIEFobWFkIFphaW5p
-ZQ0KPjx3YW4uYWhtYWQuemFpbmllLndhbi5tb2hhbWFkQGludGVsLmNvbT47IEFybmQgQmVyZ21h
-bm4NCj48YXJuZEBhcm5kYi5kZT4NCj5TdWJqZWN0OiBSZTogW1BBVENIIHY0IDEvNF0gZmlybXdh
-cmU6IGtlZW1iYXk6IEFkZCBzdXBwb3J0IGZvciBBcm0gVHJ1c3RlZA0KPkZpcm13YXJlIFNlcnZp
-Y2UgY2FsbA0KPg0KPk9uIFRodSwgT2N0IDgsIDIwMjAgYXQgNTo0OCBBTSA8bXVoYW1tYWQuaHVz
-YWluaS56dWxraWZsaUBpbnRlbC5jb20+IHdyb3RlOg0KPj4NCj4+IEZyb206IE11aGFtbWFkIEh1
-c2FpbmkgWnVsa2lmbGkgPG11aGFtbWFkLmh1c2FpbmkuenVsa2lmbGlAaW50ZWwuY29tPg0KPj4N
-Cj4+IEFkZCBoZWFkZXIgZmlsZSB0byBoYW5kbGUgQVBJIGZ1bmN0aW9uIGZvciBkZXZpY2UgZHJp
-dmVyIHRvDQo+PiBjb21tdW5pY2F0ZSB3aXRoIEFybSBUcnVzdGVkIEZpcm13YXJlLg0KPg0KPkFy
-bSAtPiBBUk0gPw0KSSB3aWxsIHJlbmFtZSBiYXNlZCBvbiBTdWRlZXAncyBtZW50aW9uZWQgaW4g
-bGF0ZXN0IHRocmVhZA0KPg0KPi4uLg0KPg0KPj4gIC4uLi9saW51eC9maXJtd2FyZS9pbnRlbC9r
-ZWVtYmF5X2Zpcm13YXJlLmggICB8IDQ3ICsrKysrKysrKysrKysrKysrKysNCj4NCj5QbGVhc2Us
-IGRyb3AgZHVwIG9mICdmaXJtd2FyZScgaW4gdGhlIGZpbGVuYW1lLg0KTm90ZWQuIFdpbGwgY2hh
-bmdlIHRvIGtlZW1iYXkuaA0KPg0KPi4uLg0KPg0KPj4gKy8qDQo+PiArICogIEludGVsIEtlZW1i
-YXkgU09DIEZpcm13YXJlIEFQSSBMYXllcg0KPj4gKyAqDQo+DQo+PiArICogIENvcHlyaWdodCAo
-QykgMjAyMC0yMDIxLCBJbnRlbCBDb3Jwb3JhdGlvbg0KPg0KPkhlbGxvIGZyb20gdGhlIGZ1dHVy
-ZT8NCj4NCldpbGwgZWRpdCB0byBDb3B5cmlnaHQgKEMpIDIwMjAsIEludGVsIENvcnBvcmF0aW9u
-DQo+PiArICoNCj4+ICsgKiAgTXVoYW1tYWQgSHVzYWluaSBadWxraWZsaSA8TXVoYW1tYWQuSHVz
-YWluaS5adWxraWZsaUBpbnRlbC5jb20+DQo+DQo+QXV0aG9yOiAuLi4NCj4NCj4+ICsgKi8NCj4N
-Cj4uLi4NCj4NCj4+ICsvKg0KPj4gKyAqIFRoaXMgZmlsZSBkZWZpbmVzIEFQSSBmdW5jdGlvbiB0
-aGF0IGNhbiBiZSBjYWxsZWQgYnkgZGV2aWNlIGRyaXZlcg0KPj4gK2luIG9yZGVyIHRvDQo+DQo+
-YW4gQVBJDQo+YnkgYSBkZXZpY2UNCk5vdGVkIPCfmIoNCj4NCj4+ICsgKiBjb21tdW5pY2F0ZSB3
-aXRoIEFybSBUcnVzdGVkIEZpcm13YXJlLg0KPg0KPkFybSAtPiBBUk0gPw0KSSB3aWxsIHJlbmFt
-ZSBiYXNlZCBvbiBTdWRlZXAncyBtZW50aW9uZWQgaW4gbGF0ZXN0IHRocmVhZA0KPg0KPj4gKyAq
-Lw0KPg0KPi0tDQo+V2l0aCBCZXN0IFJlZ2FyZHMsDQo+QW5keSBTaGV2Y2hlbmtvDQo=
+On Thu, 2020-10-08 at 13:23 +0300, Maxim Levitsky wrote:
+> On Thu, 2020-10-08 at 07:52 +0200, Paolo Bonzini wrote:
+> > On 08/10/20 00:14, Maxim Levitsky wrote:
+> > > > +	if (svm->vmcb01->control.asid == 0)
+> > > > +		svm->vmcb01->control.asid = svm->nested.vmcb02->control.asid;
+> > > 
+> > > I think that the above should be done always. The asid field is currently host
+> > > controlled only (that is L2 value is ignored, selective ASID tlb flush is not
+> > > advertized to the guest and lnvlpga is emulated as invlpg). 
+> > 
+> > Yes, in fact I suggested that ASID should be in svm->asid and moved to
+> > svm->vmcb->asid in svm_vcpu_run.  Then there's no need to special case
+> > it in nested code.
+> This makes lot of sense!
+> > This should be a patch coming before this one.
+> > 
+> > > 1. Something wrong with memory types - like guest is using UC memory for everything.
+> > >     I can't completely rule that out yet
+> > 
+> > You can print g_pat and see if it is all zeroes.
+> I don't even need to print it. I know that it is never set anywhere, unless guest writes it,
+> but now that I look at it, we set it to a default value and there is no code to set it to
+> default value for vmcb02. This is it. now my fedora guest boots just fine!
+> 
+> I played a lot with g_pat, and yet this didn't occur to me . I was that close :-(
+> I knew that it has to be something with memory types, but it never occured to me
+> that guest just doesn't write IA32_PAT and uses our value which we set in init_vmcb
+> 
+> 
+> > In general I think it's better to be explicit with vmcb01 vs. vmcb02,
+> > like Cathy did, but I can see it's a matter of personal preference to
+> > some extent.
+> I also think so in general, but in the code that is outside 'is_guest_mode'
+> IMHO it is better to refer to vmcb01 as vmcb, although now that I think of
+> it, its not wrong to do so either.
+> 
+> 
+> My windows hyper-v guest doesn't boot though and I know why.
+> 
+> As we know the vmcb save area has extra state which vmrun/vmexit don't touch.
+> Now suppose a nested hypervisor wants to enter a nested guest.
+> 
+> It will do vmload, which will load the extra state from the nested vmcb (vmcb12
+> or as I woudl say the vmcb that nested hypervisor thinks that it is using),
+> to the CPU. This can cause some vmexits I think, but this doesn't matter much.
+> 
+> Now the nested hypervisor does vmrun. The extra state of L2 guest is in CPU registers,
+> and it is untouched. We do vmsave on vmcb01 to preserve that state, but later
+> when we do vmload on vmcb02 prior to vmenter on it, which loads stale state from it.
+> The same issue happens the other way around on nested vmexit.
+> 
+> I fixed this by doing nested_svm_vmloadsave, but that should be probably be 
+> optimized with dirty bits. Now though I guess the goal it to make
+> it work first.
+> 
+> With this fixed HyperV boots fine, and even passes the 'works' test of booting
+> the windows 10 with hyperv enabled nested itself and starting the vm inside,
+> which makes that VM L3 (in addition to windows itself that runs as L3 in relation to hyper-v)
+> 
+> https://i.imgur.com/sRYqtVV.png
+> 
+> In summary this is the diff of fixes (just pasted to email, probably mangled):
+> 
+> 
+> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+> index 0a06e62010d8c..7293ba23b3cbc 100644
+> --- a/arch/x86/kvm/svm/nested.c
+> +++ b/arch/x86/kvm/svm/nested.c
+> @@ -436,6 +436,9 @@ int enter_svm_guest_mode(struct vcpu_svm *svm, u64 vmcb_gpa,
+>         WARN_ON(svm->vmcb == svm->nested.vmcb02);
+>  
+>         svm->nested.vmcb02->control = svm->vmcb01->control;
+> +
+> +       nested_svm_vmloadsave(svm->vmcb01, svm->nested.vmcb02);
+> +
+>         svm->vmcb = svm->nested.vmcb02;
+>         svm->vmcb_pa = svm->nested.vmcb02_pa;
+>         load_nested_vmcb_control(svm, &nested_vmcb->control);
+> @@ -622,6 +625,7 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
+>         if (svm->vmcb01->control.asid == 0)
+>                 svm->vmcb01->control.asid = svm->nested.vmcb02->control.asid;
+>  
+> +       nested_svm_vmloadsave(svm->nested.vmcb02, svm->vmcb01);
+>         svm->vmcb = svm->vmcb01;
+>         svm->vmcb_pa = svm->nested.vmcb01_pa;
+>  
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index b66239b26885d..ee9f87fe611f2 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -1097,6 +1097,7 @@ static void init_vmcb(struct vcpu_svm *svm)
+>                 clr_cr_intercept(svm, INTERCEPT_CR3_READ);
+>                 clr_cr_intercept(svm, INTERCEPT_CR3_WRITE);
+>                 save->g_pat = svm->vcpu.arch.pat;
+> +               svm->nested.vmcb02->save.g_pat = svm->vcpu.arch.pat;
+>                 save->cr3 = 0;
+>                 save->cr4 = 0;
+>         }
+> 
+> 
+> 
+> Best regards,
+> 	Maxim Levitsky
+> 
+> > Paolo
+> > 
+> 
+> 
+And another thing I spotted before I forget.
+
+If we setup a tlb flush in ctl.tlb_ctl of vmcb01, just prior to nested vmentry
+then this field will be copied to vmcb02 but on next vmexit we clear it in current
+(that is vmcb02) and that change will not propogate to vmcb01.
+
+I am not sure if this is a theorerical issue or not. We probably should apply the same treatment to
+it as what Paulo suggested to do with asid - 
+set it just prior to vmentry if tlb flush is needed, and clear it afterwards as we do.
+
+Best regards,
+	Maxim Levitsky
+
