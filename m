@@ -2,134 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 211BC287531
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 15:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD34728751D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 15:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730208AbgJHNUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 09:20:24 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:56861 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729885AbgJHNUY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 09:20:24 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id A4098CC1;
-        Thu,  8 Oct 2020 09:20:22 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Thu, 08 Oct 2020 09:20:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=+heDfJakzKF+R2u0q1lN7twC7gD
-        CHgtByTX1mOeLU5Q=; b=FTHJ9hoLeLwdWCd9lHDqKhQe6kynAYEnPxEmOKlHPCB
-        rBk1kIKHMFa3vYPD54fnHb4k+uhc2hwYWOqFwQIX3/RASeAa3ntf3VhaQVhfci5V
-        rUa2M6+ysjWfWnUY9obF5WeB8cD2cReuf1mvT/p8F7Gn0fnLs5EH8HGepGb9T1t3
-        /ufZVuiaSyI9F04lBx1/QFBaMwUyQORv4Gt41GMhAHFN5frwN014Gr0ReRzDwJ0R
-        ++ixgjsrf3/RJxW5vVlPNPbBcfO1lVxIObCKsDDVIbepwSsyrN+Bq2Mp6XdOc0Dt
-        rsFJyPQC3pV1C3kTrrG6gZIXJrxcrT5ihHQiS+ntCeg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=+heDfJ
-        akzKF+R2u0q1lN7twC7gDCHgtByTX1mOeLU5Q=; b=Tx9WRZH2LxOnH9hOCzITms
-        nIGrPyiwDYWv6MWYPQe1rX+zvFnnRC7yWg8tfC17Tld3ItMN1OB0aC5dbKkEENsm
-        Ud9l3oXjiZalmRw6TH+20vAhbfGbRVJ37Qp1Hxy1uz5t7RDNIHobKSXe00vW/sAp
-        dYyWUdrPP5n9JCoXxiLXj1IREerHgiA9p1zj1SmsKeIoBnZUfk7OgCTzlcIX6JGV
-        DTt51YO5kBIZJZDCyFatGrc+95AA4xdvXfCxWPTCravXg3gfT00kYW9A1ejLc2OT
-        5ny/zY7pYvAoX6AkmruQoigzGpWU79dcYLuw5ZcjXLoQmdhNDygU8Ij02si8eLKA
-        ==
-X-ME-Sender: <xms:ExJ_X-AaO918uQgO33-7hBRByqlJJXcsr_GczFAQWl-H1QT6IPDvnw>
-    <xme:ExJ_X4jNxZrCQ5QqMj1FGe3gU5bLZ_qbdYcJ5yoyZogdTaBxjd8AgXPTgaoQL6Mlr
-    AUpPiHF6Y1cxGCpxYE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrgeelgdefiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:ExJ_XxkLof05unpkecc-iI6Rar3DWBXvZrgMsqn_pJTKU2XgCe0ibQ>
-    <xmx:ExJ_X8ybedtCL3e3owJleY4mOq-2v9foLyahXn7BVweo3px_9XRNvg>
-    <xmx:ExJ_XzRiFHnYuHsLry0Tfs5MMb7BNcuqHSE8QFWTWpoILS5rN4TqfA>
-    <xmx:FhJ_X0IDFH9GNF_2su3-BNN0O_VDTcu3c8PfhLx6ooR8INWYVYZ3Gw>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 073E83280063;
-        Thu,  8 Oct 2020 09:20:18 -0400 (EDT)
-Date:   Thu, 8 Oct 2020 15:20:17 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Chen-Yu Tsai <wens@csie.org>, Olof Johansson <olof@lixom.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Yangtao Li <frank@allwinnertech.com>
-Subject: Re: linux-next: manual merge of the sunxi tree with the arm-soc tree
-Message-ID: <20201008132017.ju5ih5prn4aifeml@gilmour.lan>
-References: <20201006145637.57d20ba1@canb.auug.org.au>
+        id S1730086AbgJHNPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 09:15:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42322 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725874AbgJHNPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 09:15:15 -0400
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A848520578;
+        Thu,  8 Oct 2020 13:15:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602162914;
+        bh=UWoDqHo+eFm+eSQ5OGgFYUjO6Z7d50msPdjJxQyta2U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ug5I0Ytyqwx21KzKcI1lwgbskPJV9lRdMWFNxDBMkUzgIpc6O116yMh595eB4NqaW
+         qYSjnz2AYeX27cEJLjiJC7mNDjgO10c+b9f4mLSVqwvTyxNvHjtaoOiHGw1LX9R3Sq
+         pXc8OjlgAx6C5b7blalo7EMPtg3k5MxPXIHGJlu4=
+Date:   Thu, 8 Oct 2020 08:20:36 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 00/14] drm/amd/pm: Replace one-element arrays with
+ flexible-array members
+Message-ID: <20201008132036.GB6588@embeddedor>
+References: <cover.1602020074.git.gustavoars@kernel.org>
+ <d71c8436-334c-45d9-d464-9798e75f2a73@amd.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="nar4feg742sntlic"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201006145637.57d20ba1@canb.auug.org.au>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d71c8436-334c-45d9-d464-9798e75f2a73@amd.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 08, 2020 at 09:19:47AM +0200, Christian König wrote:
+> Am 07.10.20 um 18:01 schrieb Gustavo A. R. Silva:
+> > Hi all,
+> > 
+> > This series aims to replace one-element arrays with flexible-array
+> > members.
+> > 
+> > There is a regular need in the kernel to provide a way to declare having
+> > a dynamically sized set of trailing elements in a structure. Kernel code
+> > should always use “flexible array members”[1] for these cases. The older
+> > style of one-element or zero-length arrays should no longer be used[2].
+> > 
+> > Refactor the code according to the use of flexible-array members, instead
+> > of one-element arrays, and use the struct_size() helper to calculate the
+> > size for the dynamic memory allocation.
+> > 
+> > Also, save some heap space in the process. More on this on each individual
+> > patch.
+> 
+> Ah! Nice to see that finally be documented and cleaned up.
+> 
+> Feel free to add an Acked-by: Christian König <christian.koenig@amd.com>
+> 
+> I also know about a case where we don't use struct_size in the DMA-buf code.
+> 
+> I'm the maintainer of that stuff as well, so be prepared to get patches
+> thrown at you to clean that up as well.
 
---nar4feg742sntlic
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+No problem. Feel free to send all of those my way. :)
 
-Hi Stephen,
+Thanks
+--
+Gustavo
 
-On Tue, Oct 06, 2020 at 02:56:37PM +1100, Stephen Rothwell wrote:
-> Hi all,
->=20
-> Today's linux-next merge of the sunxi tree got a conflict in:
->=20
->   arch/arm64/boot/dts/allwinner/sun50i-a100.dtsi
->=20
-> between commit:
->=20
->   0dea1794f3b4 ("arm64: allwinner: A100: add the basical Allwinner A100 D=
-TSI file")
->=20
-> from the arm-soc tree and commit:
->=20
->   7e66a778cb8b ("arm64: allwinner: A100: add the basical Allwinner A100 D=
-TSI file")
->=20
-> from the sunxi tree.
->=20
-> These are 2 versions of the same patch.  For now I am just using the
-> version in the arm-soc tree ... please sort this out.
->=20
-> I fixed it up (see above) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
-
-The branch in arm-soc has a build breakage (that doesn't happen in
-linux-next since the clk tree has the commit to fix it) so I sent a new
-PR
-
-Once that PR is in arm-soc, I guess that merge issue will go away
-
-maxime
-
---nar4feg742sntlic
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX38SEQAKCRDj7w1vZxhR
-xVH2AP9J/UDmbsh8i7nc+j+/V4LS37nq/ODXBfuJ2roRxTBSNQEAjXoQ9IxrzTUR
-EmNB3t5eIApr1TCyADosIA54XVBWPgk=
-=Mq81
------END PGP SIGNATURE-----
-
---nar4feg742sntlic--
+> 
+> Thanks,
+> Christian.
+> 
+> > 
+> > This series also addresses multiple of the following sorts of warnings:
+> > 
+> > drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/smu8_hwmgr.c:1515:37:
+> > warning: array subscript 1 is above array bounds of ‘const struct
+> > phm_clock_voltage_dependency_record[1]’ [-Warray-bounds]
+> > 
+> > which, in this case, they are false positives, but nervertheless should be
+> > fixed in order to enable -Warray-bounds[3][4].
+> > 
+> > [1] https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFlexible_array_member&amp;data=02%7C01%7Cchristian.koenig%40amd.com%7C5312862a3b8c41838ef508d86ad969c1%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637376829947099179&amp;sdata=5LEWyR8pYSxmHsqhHiYiOS%2BPPk%2Fm5suOc6H7f5cIBL4%3D&amp;reserved=0
+> > [2] https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fwww.kernel.org%2Fdoc%2Fhtml%2Fv5.9-rc1%2Fprocess%2Fdeprecated.html%23zero-length-and-one-element-arrays&amp;data=02%7C01%7Cchristian.koenig%40amd.com%7C5312862a3b8c41838ef508d86ad969c1%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637376829947099179&amp;sdata=wOqxnNkA9FnOI%2BfB3dHn9RU7cqPJ62qqGCK9gsd2i%2Bo%3D&amp;reserved=0
+> > [3] https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgit.kernel.org%2Flinus%2F44720996e2d79e47d508b0abe99b931a726a3197&amp;data=02%7C01%7Cchristian.koenig%40amd.com%7C5312862a3b8c41838ef508d86ad969c1%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637376829947099179&amp;sdata=x%2BSJeOrQA11HXoTaZEdyLyNWL9rC4GngDyoDMRBUn4M%3D&amp;reserved=0
+> > [4] https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgithub.com%2FKSPP%2Flinux%2Fissues%2F109&amp;data=02%7C01%7Cchristian.koenig%40amd.com%7C5312862a3b8c41838ef508d86ad969c1%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637376829947099179&amp;sdata=48155uVo7AboCdSZfsTP10i2rHfBJctG%2F432lD%2BpfHo%3D&amp;reserved=0
+> > 
+> > Gustavo A. R. Silva (14):
+> >    drm/amd/pm: Replace one-element array with flexible-array member
+> >    drm/amd/pm: Replace one-element array with flexible-array member in
+> >      struct vi_dpm_table
+> >    drm/amd/pm: Replace one-element array with flexible-array in struct
+> >      phm_clock_array
+> >    drm/amd/pm: Replace one-element array with flexible-array in struct
+> >      phm_uvd_clock_voltage_dependency_table
+> >    drm/amd/pm: Replace one-element array with flexible-array in struct
+> >      phm_acp_clock_voltage_dependency_table
+> >    drm/amd/pm: Replace one-element array with flexible-array in struct
+> >      phm_phase_shedding_limits_table
+> >    drm/amd/pm: Replace one-element array with flexible-array in struct
+> >      phm_vce_clock_voltage_dependency_table
+> >    drm/amd/pm: Replace one-element array with flexible-array in struct
+> >      phm_cac_leakage_table
+> >    drm/amd/pm: Replace one-element array with flexible-array in struct
+> >      phm_samu_clock_voltage_dependency_table
+> >    drm/amd/pm: Replace one-element array with flexible-array in struct
+> >      phm_ppt_v1_clock_voltage_dependency_table
+> >    drm/amd/pm: Replace one-element array with flexible-array in struct
+> >      phm_ppt_v1_mm_clock_voltage_dependency_table
+> >    drm/amd/pm: Replace one-element array with flexible-array in struct
+> >      phm_ppt_v1_voltage_lookup_table
+> >    drm/amd/pm: Replace one-element array with flexible-array in struct
+> >      phm_ppt_v1_pcie_table
+> >    drm/amd/pm: Replace one-element array with flexible-array in struct
+> >      ATOM_Vega10_GFXCLK_Dependency_Table
+> > 
+> >   drivers/gpu/drm/amd/pm/inc/hwmgr.h            | 20 ++---
+> >   .../drm/amd/pm/powerplay/hwmgr/hwmgr_ppt.h    |  8 +-
+> >   .../powerplay/hwmgr/process_pptables_v1_0.c   | 85 +++++++-----------
+> >   .../amd/pm/powerplay/hwmgr/processpptables.c  | 85 +++++++-----------
+> >   .../drm/amd/pm/powerplay/hwmgr/smu8_hwmgr.c   |  2 +-
+> >   .../drm/amd/pm/powerplay/hwmgr/smu_helper.c   |  5 +-
+> >   .../amd/pm/powerplay/hwmgr/vega10_pptable.h   |  2 +-
+> >   .../powerplay/hwmgr/vega10_processpptables.c  | 88 ++++++-------------
+> >   8 files changed, 107 insertions(+), 188 deletions(-)
+> > 
+> 
