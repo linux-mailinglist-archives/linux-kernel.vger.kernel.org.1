@@ -2,84 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82CC9287E5E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 23:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D574287E82
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 00:05:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729474AbgJHV7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 17:59:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53136 "EHLO mail.kernel.org"
+        id S1730010AbgJHWFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 18:05:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725852AbgJHV7A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 17:59:00 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        id S1725852AbgJHWFN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 18:05:13 -0400
+Received: from earth.universe (unknown [185.213.155.232])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B325B22241;
-        Thu,  8 Oct 2020 21:58:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B725F22241;
+        Thu,  8 Oct 2020 22:05:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602194339;
-        bh=R9f9hIsAqruRmlzMHSQOyKh4EzOF5BOtu/7A43VKfig=;
-        h=Date:From:To:Cc:Subject:From;
-        b=0us3m4MalVN2FlI9J0jRQ2NX/BWhtd1DU278R44GCOBNahHxliUWUHa1v+WVovGv0
-         MRJd1TpXGhZeaqADZ9io1jWrGx0mXLBTr7gojGgyQ2bClYEPGn8CKT61qbn6a+vtDf
-         MPdbRkKkiKLNCHVXJ26/pTPuq5IXS2Cy8IFBlgTs=
-Date:   Thu, 8 Oct 2020 17:04:22 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] ray_cs: Use fallthrough pseudo-keyword
-Message-ID: <20201008220422.GA6926@embeddedor>
+        s=default; t=1602194712;
+        bh=Ub0FJIlAo5i4CLixH/BsEDOdlU+yS2Vzjj9uJnIkiGU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kw1xhyLBPmsbeaP72r1zdtnUGMcGY9H7m5jtCaQ3R6wy1zhiSYwVuz+uQhsF7tBlP
+         UMa2RsZOSwPmtcV9vh0U3MS7IKEmeTJGq5V/z5N3PpVKc7GWbY9UeVq8h9vIfihfiU
+         r8/Y9QdIUP/kkR8jay4+BoFwZcmsZDO+I+7Y2ri0=
+Received: by earth.universe (Postfix, from userid 1000)
+        id 641EF3C0C87; Fri,  9 Oct 2020 00:05:10 +0200 (CEST)
+Date:   Fri, 9 Oct 2020 00:05:10 +0200
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Lars Povlsen <lars.povlsen@microchip.com>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 0/3] power: Add reset support for Microchip Sparx5 SoC
+Message-ID: <20201008220510.vhxmduowdnxtswrh@earth.universe>
+References: <20201006200316.2261245-1-lars.povlsen@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="rzpdf624ixjvlnac"
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201006200316.2261245-1-lars.povlsen@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to enable -Wimplicit-fallthrough for Clang[1], replace the
-existing /* fall through */ comments with the new pseudo-keyword
-macro fallthrough[2].
 
-[1] https://git.kernel.org/linus/e2079e93f562c7f7a030eb7642017ee5eabaaa10
-[2] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+--rzpdf624ixjvlnac
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/net/wireless/ray_cs.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Hi,
 
-diff --git a/drivers/net/wireless/ray_cs.c b/drivers/net/wireless/ray_cs.c
-index bf3fbd14eda3..590bd974d94f 100644
---- a/drivers/net/wireless/ray_cs.c
-+++ b/drivers/net/wireless/ray_cs.c
-@@ -877,10 +877,10 @@ static int ray_hw_xmit(unsigned char *data, int len, struct net_device *dev,
- 	switch (ccsindex = get_free_tx_ccs(local)) {
- 	case ECCSBUSY:
- 		pr_debug("ray_hw_xmit tx_ccs table busy\n");
--		/* fall through */
-+		fallthrough;
- 	case ECCSFULL:
- 		pr_debug("ray_hw_xmit No free tx ccs\n");
--		/* fall through */
-+		fallthrough;
- 	case ECARDGONE:
- 		netif_stop_queue(dev);
- 		return XMIT_NO_CCS;
-@@ -1272,7 +1272,7 @@ static int ray_set_mode(struct net_device *dev, struct iw_request_info *info,
- 	switch (wrqu->mode) {
- 	case IW_MODE_ADHOC:
- 		card_mode = 0;
--		/* Fall through */
-+		fallthrough;
- 	case IW_MODE_INFRA:
- 		local->sparm.b5.a_network_type = card_mode;
- 		break;
--- 
-2.27.0
+On Tue, Oct 06, 2020 at 10:03:13PM +0200, Lars Povlsen wrote:
+> This adds reset support for the Sparx5 SoC, using the ocelot reset
+> driver.
+>=20
+> Changes in v2:
+> - Dropped the parts for resetting the switch core upon load time -
+>   controlled by the 'microchip,reset-switch-core' DT property.
+>=20
+> Lars Povlsen (3):
+>   dt-bindings: reset: ocelot: Add Sparx5 support
+>   power: reset: ocelot: Add support for Sparx5
+>   arm64: dts: sparx5: Add reset support
+>=20
+>  .../bindings/power/reset/ocelot-reset.txt     |  7 ++-
+>  MAINTAINERS                                   |  1 +
+>  arch/arm64/boot/dts/microchip/sparx5.dtsi     | 10 ++++
+>  drivers/power/reset/Kconfig                   |  3 +-
+>  drivers/power/reset/ocelot-reset.c            | 55 +++++++++++++++----
+>  5 files changed, 60 insertions(+), 16 deletions(-)
 
+Thanks, I queued the first two patches.
+
+-- Sebastian
+
+--rzpdf624ixjvlnac
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl9/jRYACgkQ2O7X88g7
++pozfQ//bStTlNdFsYlO8C/KeUrAiSn+0v67w9SdW5uqw0EqTd7TNVFC0DTON9W2
+h2aSfoQnpBhG4z0OL6daLnpV++e2ys06q89Udt6Y6kC1HJgqmdc93MljR6ah11AY
+nvthpSJrBYqWchU28nAL7eDl4Kxz6erFrzuisa8fldyaHr6+/DB00i+bPEzBTZde
+YcbJol7Zk0apTv15xHKlu24XZCKg0//EsKTZSW2qWH+t8daiJuEP+gj6VGRCgMay
+m10XxGgkbJjMsW9Ye4VWxHAY6HWZa89WP7a6slOIAwlAdEKJz2E0FxTqXOW6S441
+XadQ8F7DcE0D+gh+MiQiMUQr/Ujnm1XWH+xXTm1gEefTNsZc23gqL6AFo8ZlhtG9
+SaeSAyPQesm5gHNAwN2m10ovNpiAMOyN2TyLx3NMFyQ9jK2z9n+eM431EApCAhV8
+jLPnvjCiLdLFsiUZ0RZkynH3g+LRKwJmgJdip279HbzDVbFNq120yavsXXUyOo1L
+DSBTtXgBpZe1zu3Nz528XcqDKa0WhQ9809iFGoJLc2CSEgT1eju+OtL4emHNwcl/
+r0QEVHl48qJbSZ5SZB54cuusFSDLB5Qj1yIiVmA8gAMQXuGM5F9CNquN1pGaZga/
+w5xGzjjYzQBAT5ckojJkn2aC6uw3l/RtZ+mjAXf/xyu8xfDJK+I=
+=5WTZ
+-----END PGP SIGNATURE-----
+
+--rzpdf624ixjvlnac--
