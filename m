@@ -2,134 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64CE8287415
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 14:27:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F57287427
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 14:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729974AbgJHM1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 08:27:18 -0400
-Received: from mail-eopbgr70138.outbound.protection.outlook.com ([40.107.7.138]:59779
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729962AbgJHM1O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 08:27:14 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QEClyS21qHYvr+WiTjSKtELnJFD7solx2dpBN5Q0MY2tN0qd59Hvy/ptGxFdMvlhuaudubOeZlinZn1WVN24BXmL1m5Ncobf7ntG6Q4YPcbZLNUkZNMDfYORi0ZeJ/QuCufY5rp4rZMl4gJsXXM+UP/Gm3AeOfgCK5JJhly6vmK3+/pGBME0X7se2I/9G0cwPihlyxLlx9lVNpm9fe1RDVbrr1OsPBBhpHGGKIAAPYSnCdd3BbD0DJkIgDiDXHADl0bTE9swaqyZKFJTGFtuBi2xXE1IAdDma3D4Xj0n360/GIB4OvtpoKf21q/i9fLEsqAeOGzz/Uwwd8EjiqKuAw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eeuCNWQN9zksOYRDjokWNtTDANbB0ABqJMbNXINb4b8=;
- b=n0H4aEJ237xKYH48Cf3c4EpcsZoIe/U6s1+xtHpI0bZTtMjWarjvn39hRcZP/XqOdIE6gDZMqHhxtvZ+uFTDOZdDYa9Wp+kcfqmLyRmwT4Wd62JfhqePdh5JfaztYedkJ/C9B9aJO2dki9+bnhTNUSCQvpDNNJk1BdiwqvDmL0WutpecYs8xkyKDh6GrJo0g4Vnx7JBN6NF6tZRoBcn/Upcym8ZRpiBDkvAPU5tmAHabYY6v2zdjnOgaOinYHR43VRu0cJbcqPloWKfiUQ9y8uVc69pzXB7ybC6VJAtAK7SE/+vBcMdLbRFEJdml1DIv2lVS8ikJQEVWIywZLlDGpw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
- dkim=pass header.d=nokia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
- s=selector1-nokia-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eeuCNWQN9zksOYRDjokWNtTDANbB0ABqJMbNXINb4b8=;
- b=EpjWpUPD0BYT7plnQ7ZGlv0/ElD8/Lnreu7mxhSeHWOCJKRPJYmE9rA17XalcWn8SRq/cjYXe0ofx6Xc/9JMv82ILGB+CEfEI1xgAKH7jKp3JmxD8ZYwcTNzFXPhLdmuiypME4L/iZHZ8BW/YMYQ8uJWmVd9RLAOjcV9DOE8/rE=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=nokia.com;
-Received: from HE1PR07MB3450.eurprd07.prod.outlook.com (2603:10a6:7:2c::17) by
- HE1PR0701MB2890.eurprd07.prod.outlook.com (2603:10a6:3:4c::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3477.11; Thu, 8 Oct 2020 12:27:07 +0000
-Received: from HE1PR07MB3450.eurprd07.prod.outlook.com
- ([fe80::eca3:4085:434:e74]) by HE1PR07MB3450.eurprd07.prod.outlook.com
- ([fe80::eca3:4085:434:e74%6]) with mapi id 15.20.3455.023; Thu, 8 Oct 2020
- 12:27:07 +0000
-From:   Tommi Rantala <tommi.t.rantala@nokia.com>
-To:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <shuah@kernel.org>
-Cc:     Tommi Rantala <tommi.t.rantala@nokia.com>,
-        Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 13/13] selftests: binderfs: use SKIP instead of XFAIL
-Date:   Thu,  8 Oct 2020 15:26:33 +0300
-Message-Id: <20201008122633.687877-14-tommi.t.rantala@nokia.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201008122633.687877-1-tommi.t.rantala@nokia.com>
-References: <20201008122633.687877-1-tommi.t.rantala@nokia.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [131.228.2.17]
-X-ClientProxiedBy: HE1PR08CA0076.eurprd08.prod.outlook.com
- (2603:10a6:7:2a::47) To HE1PR07MB3450.eurprd07.prod.outlook.com
- (2603:10a6:7:2c::17)
+        id S1729878AbgJHM3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 08:29:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725802AbgJHM3C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 08:29:02 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00228C061755;
+        Thu,  8 Oct 2020 05:29:01 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id y198so6751112qka.0;
+        Thu, 08 Oct 2020 05:29:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=L+T+Mlm/JCxCYUqi0t2sTT67u00gxB27VW90eip5Nu4=;
+        b=GWZH4Wsc2aHIRWPhTfI/wUW1Cvrdnj7YM0r+U76Azji2t1Q7bjTZ8EBdQEZps/R8EA
+         ak/CwZurudp06MPVVduv2rKZzDw1sosX6CPZHd+gqkVcSi3gIMaUb+/yF/6Z5qU2vo//
+         MCsjt1+d6bQLCFMXcs9wf9bCJJAi1UkxqjSsj+DD8ppuX2C8BwcCoDmCXYUZMooodgg5
+         xKUUOZZYiqygUgjxAeHAzJZkoxLa0etoSJHbSVtyJxe+DcJo5fvgYgwzCSw4j93b1KDw
+         ilYKaxchkMZMP4paXNLq+yefqbXz/vTQ1QXK9V6QV++9U8gyG3kbYrVLMs0YOZ/7PR/A
+         sC9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=L+T+Mlm/JCxCYUqi0t2sTT67u00gxB27VW90eip5Nu4=;
+        b=avZpE+PFKQWwbAIG/i5mkz61kKizybC/6itbdJSBQQUpyS1soCfc3BrcZmMqSu3Iqt
+         gfDVSiJOGKznene6dIaDmjf9McFyKmS4NtGmJGUU+y51MWXY8qF3zlwM9+lJIfKjGxfg
+         joqVFqxH5uW5xGdKx4Cq7Kbs7AQ353H+peonIXuPJS8KNPMTW6oc06qg2M75M6DHzx1s
+         ccqHT9RFQ5jTQNhI/K2LHZLmAGgu45eitaIX019RSZyH9Pgm4anbsT60HiiZez37fbs4
+         UlYbS4NUyevzQqFVnYNPotPrTQpNXF24HV79lzcuZHusZaGHgn6SAd/YvPBcLaZvCTCJ
+         DJow==
+X-Gm-Message-State: AOAM533AHXXhzdkqwMjYKlAX441sSUwVoEABC9OWcHWyRPPFXwKS8nOz
+        vOjzOQNJWkvL1oflsF0Kfdg=
+X-Google-Smtp-Source: ABdhPJwUp1exFR9P/8N0SjYBSQyJ3/neiSlBncodafR8VBncaGZtGzbfV8NnSx5b2OLKgJHopawzIw==
+X-Received: by 2002:a05:620a:99d:: with SMTP id x29mr1825111qkx.415.1602160141227;
+        Thu, 08 Oct 2020 05:29:01 -0700 (PDT)
+Received: from shinobu (072-189-064-225.res.spectrum.com. [72.189.64.225])
+        by smtp.gmail.com with ESMTPSA id 184sm27349qkl.34.2020.10.08.05.28.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Oct 2020 05:29:00 -0700 (PDT)
+Date:   Thu, 8 Oct 2020 08:28:45 -0400
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     jic23@kernel.org, kamel.bouhara@bootlin.com, gwendal@chromium.org,
+        alexandre.belloni@bootlin.com, david@lechnology.com,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
+        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com
+Subject: Re: [PATCH v5 4/5] docs: counter: Document character device interface
+Message-ID: <20201008122845.GA3314@shinobu>
+References: <cover.1601170670.git.vilhelm.gray@gmail.com>
+ <54190f9875b81b6aa5483a7710b084053a44abb8.1601170670.git.vilhelm.gray@gmail.com>
+ <20201008080909.GA31561@amd>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from trfedora.emea.nsn-net.net (131.228.2.17) by HE1PR08CA0076.eurprd08.prod.outlook.com (2603:10a6:7:2a::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.21 via Frontend Transport; Thu, 8 Oct 2020 12:27:06 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: b90c13dc-fc07-4eab-258b-08d86b85782a
-X-MS-TrafficTypeDiagnostic: HE1PR0701MB2890:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <HE1PR0701MB2890CE0CC0D2E96C14E1E061B40B0@HE1PR0701MB2890.eurprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GXaRemM/R4aTqW46R6H225rmUmQcV1Js1nGjQJh3Q5m4p51Y+OCrN7dIoctzSLnaMN9+7sCpxlthkF7DNoZ1qJMOPzmRUrJCAhJe6LwR+ie0uIKhUxQaHZ3XnbDvUNvbwEzl8eAPYSgQT8u/O/hYKhf98XNLjL7gcKUMPmTOmeqVu0fJpCWTP877UtOAxwtDqiRYXCeTWGCSrpAX5vO3Hc5fM8f9PWzvM0Rto7o11vyqLr24dx58JP/g6pt6rsQwLYfdWNkLw/So4ZlIUopa+uj2Yr6EelsdnOfSm5U26/08C91eTRCXFSjoSHWdrM6a
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR07MB3450.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(396003)(39860400002)(136003)(376002)(4326008)(5660300002)(83380400001)(8676002)(478600001)(16526019)(186003)(26005)(6506007)(86362001)(52116002)(1076003)(103116003)(6512007)(6916009)(2906002)(66946007)(66476007)(66556008)(8936002)(6486002)(36756003)(316002)(2616005)(956004)(54906003)(6666004);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: pJR6CCu3bXEBaPOLgIHNglil0qVumvtd4OxxCZWBppNf5SOy4uEfvQi2huAJnOmh/S2TuetEpmJWwFEyZoGlCL6kEGC6/Rh60j3+D+LsTQhz5NujHTdBHuU9PFdwVXbi0V60HFzqtaC63yW6pq7f5PnKZ7JqP5P45mj6WVOphYPYjd5BPa1P+QkrQqZwXyNi0/GQwNCRpqAOa0oZ/hLenJL0r7gJ8Gj5ZuuLmVH2sge8a5Ogz+aqQVo6nRKM4cLPySnUwkijkI2f3di4pTmKOf/Nj5M7Z/Cxt+iCelwU2vjkf4y92TNbqD+DbfhG1iv95IpsfcxtzbD4VPldOPQ/uy3qMZsg40PZPWvyyyXiJXUhgRDWfkCGn9T6VEXH34SaT9pq7prCkPF/+/yK8yT4R5uvfmlIcET52JY1133+KEQSXOQfaAFIgsa7W7tEKbsx2OBBVjAdgxd2Yo5xELX7hgIpyxPMRqgceY5fKbgYR6doQK00a2q1rXldaXMx97G47BRlmqOkfdgHt+xvv3gxFyc8QrzToE6e0QGlVURCPX1M+5qLQ7Q8/7pBuz9zQApayW5wzseTZJjcoNFbd/T0oUE4sQIJQh+C5SMiutEgELiGZPxkY2/MgGEkHZg0dsmEagRbiJ5g67JjRu1+tq7iMg==
-X-OriginatorOrg: nokia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b90c13dc-fc07-4eab-258b-08d86b85782a
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR07MB3450.eurprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Oct 2020 12:27:06.8712
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7ATaAHrAw4PxS8Y87Fvfkya6cxB7pxAnPvuxk5HbdecClvBmklG8UHc0r6YtTmAsJqdaevw63RRDNSyOI6ep5YtAVnl4Hbn+x7iSYzOu1aI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0701MB2890
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="/04w6evG8XlLl3ft"
+Content-Disposition: inline
+In-Reply-To: <20201008080909.GA31561@amd>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-XFAIL is gone since 9847d24af95c ("selftests/harness: Refactor XFAIL
-into SKIP"), use SKIP instead.
 
-Fixes: 9847d24af95c ("selftests/harness: Refactor XFAIL into SKIP")
-Signed-off-by: Tommi Rantala <tommi.t.rantala@nokia.com>
----
- .../selftests/filesystems/binderfs/binderfs_test.c        | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+--/04w6evG8XlLl3ft
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/tools/testing/selftests/filesystems/binderfs/binderfs_test.c b/tools/testing/selftests/filesystems/binderfs/binderfs_test.c
-index 1d27f52c61e6..477cbb042f5b 100644
---- a/tools/testing/selftests/filesystems/binderfs/binderfs_test.c
-+++ b/tools/testing/selftests/filesystems/binderfs/binderfs_test.c
-@@ -74,7 +74,7 @@ static int __do_binderfs_test(struct __test_metadata *_metadata)
- 	ret = mount(NULL, binderfs_mntpt, "binder", 0, 0);
- 	EXPECT_EQ(ret, 0) {
- 		if (errno == ENODEV)
--			XFAIL(goto out, "binderfs missing");
-+			SKIP(goto out, "binderfs missing");
- 		TH_LOG("%s - Failed to mount binderfs", strerror(errno));
- 		goto rmdir;
- 	}
-@@ -475,10 +475,10 @@ TEST(binderfs_stress)
- TEST(binderfs_test_privileged)
- {
- 	if (geteuid() != 0)
--		XFAIL(return, "Tests are not run as root. Skipping privileged tests");
-+		SKIP(return, "Tests are not run as root. Skipping privileged tests");
- 
- 	if (__do_binderfs_test(_metadata))
--		XFAIL(return, "The Android binderfs filesystem is not available");
-+		SKIP(return, "The Android binderfs filesystem is not available");
- }
- 
- TEST(binderfs_test_unprivileged)
-@@ -511,7 +511,7 @@ TEST(binderfs_test_unprivileged)
- 	ret = wait_for_pid(pid);
- 	if (ret) {
- 		if (ret == 2)
--			XFAIL(return, "The Android binderfs filesystem is not available");
-+			SKIP(return, "The Android binderfs filesystem is not available");
- 		ASSERT_EQ(ret, 0) {
- 			TH_LOG("wait_for_pid() failed");
- 		}
--- 
-2.26.2
+On Thu, Oct 08, 2020 at 10:09:09AM +0200, Pavel Machek wrote:
+> Hi!
+>=20
+> > +        int main(void)
+> > +        {
+> > +                struct pollfd pfd =3D { .events =3D POLLIN };
+> > +                struct counter_event event_data[2];
+> > +
+> > +                pfd.fd =3D open("/dev/counter0", O_RDWR);
+> > +
+> > +                ioctl(pfd.fd, COUNTER_SET_WATCH_IOCTL, watches);
+> > +                ioctl(pfd.fd, COUNTER_SET_WATCH_IOCTL, watches + 1);
+> > +                ioctl(pfd.fd, COUNTER_LOAD_WATCHES_IOCTL);
+> > +
+> > +                for (;;) {
+> > +                        poll(&pfd, 1, -1);
+>=20
+> Why do poll, when you are doing blocking read?
+>=20
+> > +                        read(pfd.fd, event_data,  sizeof(event_data));
+>=20
+> Does your new chrdev always guarantee returning complete buffer?
+>=20
+> If so, should it behave like that?
+>=20
+> Best regards,
+> 									Pavel
+> --=20
+> (english) http://www.livejournal.com/~pavelmachek
+> (cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/b=
+log.html
 
+I suppose you're right: a poll() should be redundant now with this
+version of the character device implementation because buffers will
+always return complete; so a blocking read() should achieve the same
+behavior that a poll() with read() would.
+
+I'll give some more time for additional feedback to come in for this
+version of the patchset, and then likely remove support for poll() in
+the v6 submission.
+
+William Breathitt Gray
+
+--/04w6evG8XlLl3ft
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAl9/BfMACgkQhvpINdm7
+VJLlWxAA6P8iWbbwKdj7bkiAQIaSMh8Os/F1sO6AcUBqYxmMS2284jYpB1PWYm86
+WMOfpjzE1TL+qc8Zl0/McZydw2huS5HvhRq4++PM/W+5Ohv/uajZiQyoC5jlmBIF
+7u4ewc+X37t0T7SSdtdOPM6+em8Qdq/8ghPEgEWGHfBe/ls/eTcD4I1IZikpHyft
+PM776AufGoc8A/IIaLYtO5UEI1dNXmyRrK+GOZJft+lRtMZWTjd5j6nK+vfiCaw9
+hS2dJofatgyjZBxvqD6t8D+PRhyebaeKyAaK0TQPtu9P+61cZcVcCJ6iKV7Ugh/T
+41kYb7opP8j9gxv9HoJbBbYtTTB5yGGO8fRBQ1vO2pLXNXuaEE9v/w+LyagKi/Kh
+j+crZFgPJIpvYcm6vi7Vr5KP+jl8Rbm1i4UjoAv4a07RR+D7H3c+v9jFAQDezB48
+dIww19g41Yig28jQ7Un5n4drOxPbc4lIYJDYYncsHlJea6/I2K8eM8pTakOSiv9j
+aBQSoG+PaDfQnsM462KMpgiNn25Nz/WLz2dbJP6phwRJGr5auPue8EbxW5m1Cu5y
+KhX7B1QALpZWo76BFYcst6GMD/dz1T5XeGGCkGZvS/8RiIfRVMLefBc9DY0QPxJz
+QPrc+N2DCihZhAKPQRtptqgh36cm37FZV0jAE3YGJH4AZOxEFjM=
+=kkTp
+-----END PGP SIGNATURE-----
+
+--/04w6evG8XlLl3ft--
