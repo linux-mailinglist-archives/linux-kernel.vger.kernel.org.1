@@ -2,105 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB9D5286C0B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 02:21:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4584E286C0D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 02:26:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727253AbgJHAVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 20:21:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56582 "EHLO mail.kernel.org"
+        id S1727253AbgJHA00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 20:26:26 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:48936 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726129AbgJHAVJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 20:21:09 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4C1B02076B;
-        Thu,  8 Oct 2020 00:21:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602116468;
-        bh=GE1GIK+aJj6I39ugfiGVlewjavshzVGd/3dwngROgH8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=DSAHV7feF8WfikLQKnhlPtnCfIcWk0gbBCSTyAxHfQkx8OE+aAecCl7tdjHGdge5M
-         D6/VGBTzBdQY8rATuT72l9Myqt0ytabwNpnNSp2XrU6HfL0BeeHxQVXZybDFyK0ctX
-         oLI4S/clE9MrMVd/zHLfIP+7xyY/pLLiFVFMDdRQ=
-Date:   Thu, 8 Oct 2020 09:21:05 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Tom Zanussi <zanussi@kernel.org>
-Cc:     rostedt@goodmis.org, axelrasmussen@google.com, mhiramat@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 6/7] selftests/ftrace: Add test case for synthetic
- event dynamic strings
-Message-Id: <20201008092105.ee97e88f31e1629cec2957ef@kernel.org>
-In-Reply-To: <74445afb005046d76d59fb06696a2ceaa164dec9.1601848695.git.zanussi@kernel.org>
-References: <cover.1601848695.git.zanussi@kernel.org>
-        <74445afb005046d76d59fb06696a2ceaa164dec9.1601848695.git.zanussi@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726129AbgJHA0Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 20:26:25 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kQJlF-000cLX-2X; Thu, 08 Oct 2020 02:26:21 +0200
+Date:   Thu, 8 Oct 2020 02:26:21 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Vivek Unune <npcomplete13@gmail.com>
+Cc:     devicetree@vger.kernel.org, Hauke Mehrtens <hauke@hauke-m.de>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/3] ARM: dts: BCM5301X: Linksys EA9500 make use of
+ pinctrl
+Message-ID: <20201008002621.GF112961@lunn.ch>
+References: <cover.1601655904.git.npcomplete13@gmail.com>
+ <6687de05226dd055ee362933d4841a12b038792d.1601655904.git.npcomplete13@gmail.com>
+ <20201007210134.GD112961@lunn.ch>
+ <20201007214633.GA1972@ubuntu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201007214633.GA1972@ubuntu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun,  4 Oct 2020 17:14:08 -0500
-Tom Zanussi <zanussi@kernel.org> wrote:
-
-> Add a selftest that defines and traces a synthetic event that uses a
-> dynamic string event field.
+On Wed, Oct 07, 2020 at 05:46:33PM -0400, Vivek Unune wrote:
+> On Wed, Oct 07, 2020 at 11:01:34PM +0200, Andrew Lunn wrote:
+> > On Wed, Oct 07, 2020 at 03:01:50PM -0400, Vivek Unune wrote:
+> > > Forgo the use of mmioreg mdio mux infavor of the pinctrl
+> > 
+> > Hi Vivek
+> > 
+> > Could you add some more details please. I don't know this
+> > hardware. I'm assuming there are two MDIO busses, external as talked
+> > about in the comments, and an internal one? And for this hardware you
+> > only need one of them? But i don't see what pinmux has to do with
+> > this?
+> Hi Andrew,
 > 
-> Signed-off-by: Tom Zanussi <zanussi@kernel.org>
-
-This looks good to me.
-
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-
-Thank you!
-> ---
->  .../trigger-synthetic-event-dynstring.tc      | 31 +++++++++++++++++++
->  1 file changed, 31 insertions(+)
->  create mode 100644 tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic-event-dynstring.tc
+> There are indeed two mdio busses. To access the external bus, 9th bit
+> of the mdio register has to be set. And to enable mii function,
+> one has to set the registers 6 & 7 which is part of the pin controller.
+> Earlier the pin controller was not defined and I resorted to use a
+> combination of memory mapped io mux to change desired bits.
 > 
-> diff --git a/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic-event-dynstring.tc b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic-event-dynstring.tc
-> new file mode 100644
-> index 000000000000..3d65c856eca3
-> --- /dev/null
-> +++ b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic-event-dynstring.tc
-> @@ -0,0 +1,31 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0
-> +# description: event trigger - test inter-event histogram trigger trace action with dynamic string param
-> +# requires: set_event synthetic_events events/sched/sched_process_exec/hist "char name[]' >> synthetic_events":README
-> +
-> +fail() { #msg
-> +    echo $1
-> +    exit_fail
-> +}
-> +
-> +echo "Test create synthetic event"
-> +
-> +echo 'ping_test_latency u64 lat; char filename[]' > synthetic_events
-> +if [ ! -d events/synthetic/ping_test_latency ]; then
-> +    fail "Failed to create ping_test_latency synthetic event"
-> +fi
-> +
-> +echo "Test create histogram for synthetic event using trace action and dynamic strings"
-> +echo "Test histogram dynamic string variables,simple expression support and trace action"
-> +
-> +echo 'hist:key=pid:filenamevar=filename:ts0=common_timestamp.usecs' > events/sched/sched_process_exec/trigger
-> +echo 'hist:key=pid:lat=common_timestamp.usecs-$ts0:onmatch(sched.sched_process_exec).ping_test_latency($lat,$filenamevar) if comm == "ping"' > events/sched/sched_process_exit/trigger
-> +echo 'hist:keys=filename,lat:sort=filename,lat' > events/synthetic/ping_test_latency/trigger
-> +
-> +ping $LOCALHOST -c 5
-> +
-> +if ! grep -q "ping" events/synthetic/ping_test_latency/hist; then
-> +    fail "Failed to create dynamic string trace action inter-event histogram"
-> +fi
-> +
-> +exit 0
-> -- 
-> 2.17.1
-> 
+> Now that we have a pin controller - which is resposnsible for other 
+> functionality such as pwm, i2c, uart2, it makes sense to have a consistent
+> device tree
 
+What makes it confusing is that you make multiple changes at once. It
+would be easier to follow if you added the pinmux and removed the
+mmioreg mux, and move the switch into the mdio-bus-mux node. Then in a
+second patch rearrange the mdio-bus-mux. Small simple steps, with good
+commit messages are much easier to follow and say, Yes, this is
+correct.
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+	Andrew
