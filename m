@@ -2,152 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45D712872D8
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 12:53:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A90492872DB
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 12:54:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729652AbgJHKxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 06:53:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726029AbgJHKxf (ORCPT
+        id S1729636AbgJHKyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 06:54:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57944 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726029AbgJHKyL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 06:53:35 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B68F6C061755
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 03:53:34 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id l15so6484073wmh.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 03:53:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=wotskCcQ8Bfd9kB9LqYWsitlA9BI8lFl5qjTxF+AmRI=;
-        b=VAwrMdmAi7DTJSt1xSvEQ0AJyG7DCnU4ribw1JuLI5Yfceu8pIReZthIiESDilbSqp
-         Vf0gdeiQrdlQqRxJ+hrGg8mM0bB+Z8OeLcHhv6jQQASN1Hb+PGzWK/eCe911vrLR+RIT
-         HR0E4bih7yH4P5AZakfzTTENk/LpQQOO8lOQjPi5/JDvrNUeDKH3Tv+bccT4lNEtj58q
-         rBFCc+TFBdD/PrDzo9+hDERhvKMiGuEJz5qJtyoN9c2dYkapPO6DL3d8WsjB5z+iYITT
-         GNMLBj0jUIFfS/xijL5b9InSd3vxqPALTuYL/NOVnAu1uwwzHLSL3M7vDtMKCWAwD/D5
-         0WQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wotskCcQ8Bfd9kB9LqYWsitlA9BI8lFl5qjTxF+AmRI=;
-        b=LPcpsNSAwe0RcZohZTl95PGDq+co5Dh752QjWMGb3ARg98LD+VEBgQDa5eUrmWVqsj
-         uU0khvTCe0O6gAQFZaojQliMBmwSNv1PQ/p1NJFlPNz1sBrAJ/9KBexzjiwWKEr2d8dR
-         aMnqYb0gYwo+qmVaOtsOx6GNUd8VLqh4id0Q6o++35bOZlLFlgBBOaNOyn7ErZrAJ7Rm
-         WX2/FdvvSegSF3eCjzKuVWuIzMkncx4Jr3fPEY44QAFZNLumm/AiEAY6GM3tHWjcUA6O
-         Y1F2bhokm09Nd6NGqTssim02ssyFS6S9J4Ql2918mklzNLaQ/90vOL4zjS8HnqjH+lGW
-         wHsg==
-X-Gm-Message-State: AOAM5338F0zVb9N9KM8XtPDpUeb1YDA4jlrVtvxK1bNcdsJj34tXEQkr
-        o5nzbqZkHfIpk7QNoaHGmjE=
-X-Google-Smtp-Source: ABdhPJznG7dHOrS1DRUjCidZScs64soiMYfjbGBAooA1olh4Aec3dFavbraorso1hCwwx5JyQ+GOzQ==
-X-Received: by 2002:a1c:bcd5:: with SMTP id m204mr7878483wmf.26.1602154413420;
-        Thu, 08 Oct 2020 03:53:33 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.119.110])
-        by smtp.gmail.com with ESMTPSA id c16sm7139623wrx.31.2020.10.08.03.53.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Oct 2020 03:53:32 -0700 (PDT)
-Subject: Re: [PATCH 4/4] soc: mediatek: mmsys: Use an array for setting the
- routing registers
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, CK Hu <ck.hu@mediatek.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-References: <20201006193320.405529-1-enric.balletbo@collabora.com>
- <20201006193320.405529-5-enric.balletbo@collabora.com>
- <CAAOTY__X8L2sK0s3rkq2LDaMNoQrZKfzn=aJ791fK=UwnJMAyQ@mail.gmail.com>
- <580ecdf4-a686-f14c-a230-7f87f0c8cde5@collabora.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <d46f09a9-22bf-da68-5629-f080f7804b92@gmail.com>
-Date:   Thu, 8 Oct 2020 12:53:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Thu, 8 Oct 2020 06:54:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602154449;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=f8QBV41rmQgiRf1XN5VQfdRosA8a5M4RouzGU9oT7BI=;
+        b=RYaeYYaD5G0N7owDMFi/TDKJi2lmKOmrOVRfwL5DpmAnJjPDPTSB8L4Tl11QiuRsB6WlaB
+        VARO/HP2sGOf3zUfoY4d4IUyqeU5P+ZKF6YxbnjZr5QXX50A1+n13bmDqJrnMs8qWM6K09
+        twOZNkKBeJ6PuZftzUpegijth89EdFU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-298-mWV7QnvbNCGYnkkqVy2Z3A-1; Thu, 08 Oct 2020 06:54:07 -0400
+X-MC-Unique: mWV7QnvbNCGYnkkqVy2Z3A-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F2CA6804018;
+        Thu,  8 Oct 2020 10:54:05 +0000 (UTC)
+Received: from starship (unknown [10.35.206.84])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 751ED6EF5F;
+        Thu,  8 Oct 2020 10:54:01 +0000 (UTC)
+Message-ID: <51d447be4a6f430ed5cc60242457394aceb004e9.camel@redhat.com>
+Subject: Re: [PATCH] KVM: SVM: Use a separate vmcb for the nested L2 guest
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Cathy Avery <cavery@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     vkuznets@redhat.com, wei.huang2@amd.com
+Date:   Thu, 08 Oct 2020 13:54:00 +0300
+In-Reply-To: <fe491158e791fbe4381ee7fbe5aa050b4e78060e.camel@redhat.com>
+References: <20200917192306.2080-1-cavery@redhat.com>
+         <587d1da1a037dd3ab7844c5cacc50bfda5ce6021.camel@redhat.com>
+         <aaaadb29-6299-5537-47a9-072ca34ba512@redhat.com>
+         <0007205290de75f04f5f2a92b891815438fd2f2f.camel@redhat.com>
+         <fe491158e791fbe4381ee7fbe5aa050b4e78060e.camel@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <580ecdf4-a686-f14c-a230-7f87f0c8cde5@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 08/10/2020 09:49, Enric Balletbo i Serra wrote:
-> Hi Chun-Kuang,
+On Thu, 2020-10-08 at 13:39 +0300, Maxim Levitsky wrote:
+> On Thu, 2020-10-08 at 13:23 +0300, Maxim Levitsky wrote:
+> > On Thu, 2020-10-08 at 07:52 +0200, Paolo Bonzini wrote:
+> > > On 08/10/20 00:14, Maxim Levitsky wrote:
+> > > > > +	if (svm->vmcb01->control.asid == 0)
+> > > > > +		svm->vmcb01->control.asid = svm->nested.vmcb02->control.asid;
+> > > > 
+> > > > I think that the above should be done always. The asid field is currently host
+> > > > controlled only (that is L2 value is ignored, selective ASID tlb flush is not
+> > > > advertized to the guest and lnvlpga is emulated as invlpg). 
+> > > 
+> > > Yes, in fact I suggested that ASID should be in svm->asid and moved to
+> > > svm->vmcb->asid in svm_vcpu_run.  Then there's no need to special case
+> > > it in nested code.
+> > This makes lot of sense!
+> > > This should be a patch coming before this one.
+> > > 
+> > > > 1. Something wrong with memory types - like guest is using UC memory for everything.
+> > > >     I can't completely rule that out yet
+> > > 
+> > > You can print g_pat and see if it is all zeroes.
+> > I don't even need to print it. I know that it is never set anywhere, unless guest writes it,
+> > but now that I look at it, we set it to a default value and there is no code to set it to
+> > default value for vmcb02. This is it. now my fedora guest boots just fine!
+> > 
+> > I played a lot with g_pat, and yet this didn't occur to me . I was that close :-(
+> > I knew that it has to be something with memory types, but it never occured to me
+> > that guest just doesn't write IA32_PAT and uses our value which we set in init_vmcb
+> > 
+> > 
+> > > In general I think it's better to be explicit with vmcb01 vs. vmcb02,
+> > > like Cathy did, but I can see it's a matter of personal preference to
+> > > some extent.
+> > I also think so in general, but in the code that is outside 'is_guest_mode'
+> > IMHO it is better to refer to vmcb01 as vmcb, although now that I think of
+> > it, its not wrong to do so either.
+> > 
+> > 
+> > My windows hyper-v guest doesn't boot though and I know why.
+> > 
+> > As we know the vmcb save area has extra state which vmrun/vmexit don't touch.
+> > Now suppose a nested hypervisor wants to enter a nested guest.
+> > 
+> > It will do vmload, which will load the extra state from the nested vmcb (vmcb12
+> > or as I woudl say the vmcb that nested hypervisor thinks that it is using),
+> > to the CPU. This can cause some vmexits I think, but this doesn't matter much.
+> > 
+> > Now the nested hypervisor does vmrun. The extra state of L2 guest is in CPU registers,
+> > and it is untouched. We do vmsave on vmcb01 to preserve that state, but later
+> > when we do vmload on vmcb02 prior to vmenter on it, which loads stale state from it.
+> > The same issue happens the other way around on nested vmexit.
+> > 
+> > I fixed this by doing nested_svm_vmloadsave, but that should be probably be 
+> > optimized with dirty bits. Now though I guess the goal it to make
+> > it work first.
+> > 
+> > With this fixed HyperV boots fine, and even passes the 'works' test of booting
+> > the windows 10 with hyperv enabled nested itself and starting the vm inside,
+> > which makes that VM L3 (in addition to windows itself that runs as L3 in relation to hyper-v)
+> > 
+> > https://i.imgur.com/sRYqtVV.png
+> > 
+> > In summary this is the diff of fixes (just pasted to email, probably mangled):
+> > 
+> > 
+> > diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+> > index 0a06e62010d8c..7293ba23b3cbc 100644
+> > --- a/arch/x86/kvm/svm/nested.c
+> > +++ b/arch/x86/kvm/svm/nested.c
+> > @@ -436,6 +436,9 @@ int enter_svm_guest_mode(struct vcpu_svm *svm, u64 vmcb_gpa,
+> >         WARN_ON(svm->vmcb == svm->nested.vmcb02);
+> >  
+> >         svm->nested.vmcb02->control = svm->vmcb01->control;
+> > +
+> > +       nested_svm_vmloadsave(svm->vmcb01, svm->nested.vmcb02);
+> > +
+> >         svm->vmcb = svm->nested.vmcb02;
+> >         svm->vmcb_pa = svm->nested.vmcb02_pa;
+> >         load_nested_vmcb_control(svm, &nested_vmcb->control);
+> > @@ -622,6 +625,7 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
+> >         if (svm->vmcb01->control.asid == 0)
+> >                 svm->vmcb01->control.asid = svm->nested.vmcb02->control.asid;
+> >  
+> > +       nested_svm_vmloadsave(svm->nested.vmcb02, svm->vmcb01);
+> >         svm->vmcb = svm->vmcb01;
+> >         svm->vmcb_pa = svm->nested.vmcb01_pa;
+> >  
+> > diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> > index b66239b26885d..ee9f87fe611f2 100644
+> > --- a/arch/x86/kvm/svm/svm.c
+> > +++ b/arch/x86/kvm/svm/svm.c
+> > @@ -1097,6 +1097,7 @@ static void init_vmcb(struct vcpu_svm *svm)
+> >                 clr_cr_intercept(svm, INTERCEPT_CR3_READ);
+> >                 clr_cr_intercept(svm, INTERCEPT_CR3_WRITE);
+> >                 save->g_pat = svm->vcpu.arch.pat;
+> > +               svm->nested.vmcb02->save.g_pat = svm->vcpu.arch.pat;
+> >                 save->cr3 = 0;
+> >                 save->cr4 = 0;
+> >         }
+> > 
+> > 
+> > 
+> > Best regards,
+> > 	Maxim Levitsky
+> > 
+> > > Paolo
+> > > 
+> And another thing I spotted before I forget.
 > 
-> On 8/10/20 2:01, Chun-Kuang Hu wrote:
->> Hi, Enric:
->>
->> Enric Balletbo i Serra <enric.balletbo@collabora.com> 於 2020年10月7日 週三 上午3:33寫道：
->>>
->>> From: CK Hu <ck.hu@mediatek.com>
->>>
->>> Actually, setting the registers for routing, use multiple 'if-else' for different
->>> routes, but this code would be more and more complicated while we
->>> support more and more SoCs. Change that and use a table per SoC so the
->>> code will be more portable and clear.
->>>
->>> Signed-off-by: CK Hu <ck.hu@mediatek.com>
->>> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
->>> ---
->>>
->>>   drivers/soc/mediatek/mtk-mmsys.c | 393 +++++++++++++++++--------------
->>>   1 file changed, 210 insertions(+), 183 deletions(-)
->>>
->>
->> [snip]
->>
->>>
->>>   static const struct mtk_mmsys_driver_data mt2701_mmsys_driver_data = {
->>> @@ -93,10 +115,6 @@ static const struct mtk_mmsys_driver_data mt6797_mmsys_driver_data = {
->>>          .clk_driver = "clk-mt6797-mm",
->>>   };
->>>
->>> -static const struct mtk_mmsys_driver_data mt8173_mmsys_driver_data = {
->>> -       .clk_driver = "clk-mt8173-mm",
->>> -};
->>> -
->>>   static const struct mtk_mmsys_driver_data mt8183_mmsys_driver_data = {
->>>          .clk_driver = "clk-mt8183-mm",
->>>   };
->>> @@ -106,180 +124,192 @@ struct mtk_mmsys {
->>>          const struct mtk_mmsys_driver_data *data;
->>>   };
->>>
->>
->> [snip]
->>
->>> +static const struct mtk_mmsys_driver_data mt8173_mmsys_driver_data = {
->>> +       .clk_driver = "clk-mt8173-mm",
->>> +       .routes = mt8173_mmsys_routing_table,
->>> +       .num_routes = ARRAY_SIZE(mt8173_mmsys_routing_table),
->>> +};
->>>
->>
->> I remove my Reviewed-by tag. You does not set routes for mt2701 and
->> mt2712, but these two SoC need that. Maybe now they use the same table
->> as mt8173.
->>
+> If we setup a tlb flush in ctl.tlb_ctl of vmcb01, just prior to nested vmentry
+> then this field will be copied to vmcb02 but on next vmexit we clear it in current
+> (that is vmcb02) and that change will not propogate to vmcb01.
 > 
-> I did that on purpose as explained in the cover letter, and asked for someone
-> with the hardware to provide me a working routing table. But, if you think the
-> same routing should work on those devices I'm fine to use the same for all the
-> current devices. I don't have that hardware, so anyway, will need to test.
+> I am not sure if this is a theorerical issue or not. We probably should apply the same treatment to
+> it as what Paulo suggested to do with asid - 
+> set it just prior to vmentry if tlb flush is needed, and clear it afterwards as we do.
+
+And yet another thing to note is that we curently ignore L2's g_pat. However it _seems_ that we practically
+ignore L1 PAT as well in regard to shadowing NPT mmu. I am not 100% sure about this.
+I'll dig that area eventually.
+
+Best regards,
+	Maxim Levitsky
+
 > 
+> Best regards,
+> 	Maxim Levitsky
 
-But you could deduce the routes needed by having a look into the components in 
-mtk_drm_drv.c, correct?
-Well see my other email, but defining them twice sounds like not a good approach 
-to me.
 
-Regards,
-Matthias
