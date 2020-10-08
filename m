@@ -2,246 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 239142875E4
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:21:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DA022875E7
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:21:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730536AbgJHOVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 10:21:05 -0400
-Received: from foss.arm.com ([217.140.110.172]:60076 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729992AbgJHOVE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 10:21:04 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 87C1A1063;
-        Thu,  8 Oct 2020 07:21:03 -0700 (PDT)
-Received: from [10.57.48.204] (unknown [10.57.48.204])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7D7FB3F70D;
-        Thu,  8 Oct 2020 07:21:00 -0700 (PDT)
-Subject: Re: [PATCH v2 3/3] dt-bindings: thermal: update sustainable-power
- with abstract scale
-To:     Doug Anderson <dianders@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        id S1730547AbgJHOVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 10:21:30 -0400
+Received: from mail-bn8nam11on2047.outbound.protection.outlook.com ([40.107.236.47]:27648
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730538AbgJHOV3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 10:21:29 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=G5WdZY7i5HSBiqM3qf8jWfhCS9fqygNrf8Q2XQZSFX7w82x+5EEDowjaoxdnw3CPmTN8To6gplNdFLB3IT0DwHwqKFOSNvXOGawtvsaQ5+1UOO1b438G3nJE8KgJ1Ly5TZWPasKoJesFMRr9Wq35Z8dA7MFZLmhkaiPgL0zhsHiikqTxhXyZKCdt0OpyDDvIh4ertKp34mSRprAoJXLtk7kqjvTKcb7vLYPSaKdy5tmi+RwV6MOEs99GTZxTJHCJg6FmV81EnfwSTSi/d3hFrju4fOJc34XEgMYfaNsOrTvxkt0EitO3QZwJrLZx7beQSWh/QYk7LK1g6D/ewAhaXQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1h7kOShZfdK37JtQLl92/Rq1EaQKgAW1lb2njM95GlA=;
+ b=avddfCaWBNT+LuetSfE1e/kdLO3dKOM+n9/ZX7SOx2w8owtQW9sUQBbo8E99yqIGoLUFwWoISu2A851krbPd6A8o36MrA1tfVu0Y7CFslzT6Z6mC3dri6R978MbA/b/9Q3SwL5awYKg1o5tOuoOfgnRkoFnjSwzGKDjF7n6jx2RjI19q+BPfGmSDjhIYg5914QDwbyCSN2o26h4BOrJ2T/994/k/SNtMaPP+yN+NOr1P4wRcS3B+ROGNBOFPgU/vNwgcHB2gisY2Aaz/D50X2JkK4XreeiJma5S4YswVx6EQHXuefwNisw5263VoV7Aco4EGxn9FbzRpJWd+OylfJg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
+ dkim=pass header.d=xilinx.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1h7kOShZfdK37JtQLl92/Rq1EaQKgAW1lb2njM95GlA=;
+ b=pR6kr663GZ/x3ffFaQutvHZlLeymy9lsuytgK5a8nAkKB/hjMnxuvoReoIliv8YChckfCY4Jir/6dF02MV7jQe1cG26OJvcz2ztbaYbwDoVyhMaCOkpEFQi2b4zccODHs9O5UvvStqj8lWYCkGJDRZ8AbotilTfuER7K/R3CD4I=
+Received: from BYAPR02MB4407.namprd02.prod.outlook.com (2603:10b6:a03:55::31)
+ by BY5PR02MB6533.namprd02.prod.outlook.com (2603:10b6:a03:1d5::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.24; Thu, 8 Oct
+ 2020 14:21:25 +0000
+Received: from BYAPR02MB4407.namprd02.prod.outlook.com
+ ([fe80::113d:722:5f93:d29e]) by BYAPR02MB4407.namprd02.prod.outlook.com
+ ([fe80::113d:722:5f93:d29e%6]) with mapi id 15.20.3433.046; Thu, 8 Oct 2020
+ 14:21:25 +0000
+From:   Ben Levinsky <BLEVINSK@xilinx.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Stefano Stabellini <stefanos@xilinx.com>,
+        "Ed T. Mooring" <emooring@xilinx.com>
+CC:     "Ed T. Mooring" <emooring@xilinx.com>,
+        "sunnyliangjy@gmail.com" <sunnyliangjy@gmail.com>,
+        Punit Agrawal <punit1.agrawal@toshiba.co.jp>,
+        Michal Simek <michals@xilinx.com>,
+        "michael.auchter@ni.com" <michael.auchter@ni.com>,
         "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Amit Kucheria <amitk@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Dietmar.Eggemann@arm.com, Quentin Perret <qperret@google.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-References: <20201002114426.31277-1-lukasz.luba@arm.com>
- <20201002114426.31277-4-lukasz.luba@arm.com>
- <CAD=FV=UbNP5-G1z95F37Fmv8=n0JPSSwnPQO_K==WpAc4vAHWQ@mail.gmail.com>
- <e9b6fc5a-45d3-168d-db38-6c068da26f6b@arm.com>
- <CAD=FV=Xkg1zpsMW5rERbibnjrgY6opZi8Z9DUFkWebb7NHtU5w@mail.gmail.com>
- <bc5d21c1-ea84-9132-2e52-ae84fbb0515a@arm.com>
- <CAD=FV=VfA8AB3BZk8Ykkhigv9eGijzu4zuA6KdXk0K5UG0yCCQ@mail.gmail.com>
- <CAL_JsqJ37TVk4=E1DyZuhfH1jZ7wyauGLucSH7XW9wkeT3PSgg@mail.gmail.com>
- <CAD=FV=Vy641h5KNLKipC1n=tgjp7a3HGHw0odY9fNpwdqorrAg@mail.gmail.com>
- <CAL_JsqJ=brfbLiTm9D+p2N0Az-gcStbYj=RS2EaG50dHo0-5WA@mail.gmail.com>
- <CAD=FV=XF_kqr0=vBqHVT4RWB8NWx0kHoFnap-smxtv_m+GQvSg@mail.gmail.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <45fae8cd-0635-41dc-c744-3c9833bf6492@arm.com>
-Date:   Thu, 8 Oct 2020 15:20:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-MIME-Version: 1.0
-In-Reply-To: <CAD=FV=XF_kqr0=vBqHVT4RWB8NWx0kHoFnap-smxtv_m+GQvSg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        <devicetree@vger.kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: RE: [PATCH v18 4/5] dt-bindings: remoteproc: Add documentation for
+ ZynqMP R5 rproc bindings
+Thread-Topic: [PATCH v18 4/5] dt-bindings: remoteproc: Add documentation for
+ ZynqMP R5 rproc bindings
+Thread-Index: AQHWmzGGFAANaYM31kabNhvSxn7sOqmNqRwAgAAZLiA=
+Date:   Thu, 8 Oct 2020 14:21:25 +0000
+Message-ID: <BYAPR02MB4407F9D8A60519D00F317D27B50B0@BYAPR02MB4407.namprd02.prod.outlook.com>
+References: <20201005160614.3749-1-ben.levinsky@xilinx.com>
+ <20201005160614.3749-5-ben.levinsky@xilinx.com>
+ <CACRpkdb1x=U28VWZGDJh6gJSzaqeNxx0m+WtnUQZJKGvXjvXYQ@mail.gmail.com>
+In-Reply-To: <CACRpkdb1x=U28VWZGDJh6gJSzaqeNxx0m+WtnUQZJKGvXjvXYQ@mail.gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Mentions: stefano.stabellini@xilinx.com
+X-MS-Has-Attach: 
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-TNEF-Correlator: 
+authentication-results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=xilinx.com;
+x-originating-ip: [149.199.62.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: e15022cd-778a-4aeb-d15e-08d86b957069
+x-ms-traffictypediagnostic: BY5PR02MB6533:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR02MB6533ED620AFEB23EB75FEDB2B50B0@BY5PR02MB6533.namprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: nR7C0aXT9To7m2bodINnzVi8h33YPT8uRYkmH6wDv9Fgbg12XAhbP9wmlJLZPqKRTX0xb9bG5dh4buyFqobL4L5vdGKsBkV6o6N97LT3rbQTZ9aiEzfAo3D7iR3N5dDwj4vEBmYN2ZPm4x7mQN+7RWgVuUL2tvnoq9Vv8QeP3XPFYS9nKAHkp8zBEslhxwB17xdLb0Tl8imWN05Z8YycgX1OBxJraZ2gZWlBRYmvzS+GU5lTow7wTaShoHc1rRoRyQZgQ4WE+5o5F/zfdDtHjyLlDvZRUloc3yKYyw8AYBJttOxDE/HIeQs8a/Lu7KByP9QURsarYliGeEpL0fwbvvf0c7Yg+hOYb4c5TWvMe+ZCkSBLKGQSKhEO6K14M/aFzwsl/Jy6v7C80Ds9M589Hg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR02MB4407.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(396003)(376002)(346002)(136003)(8936002)(4326008)(54906003)(316002)(6636002)(9686003)(86362001)(2906002)(110136005)(66476007)(66556008)(64756008)(66446008)(66946007)(76116006)(8676002)(52536014)(33656002)(5660300002)(55016002)(71200400001)(186003)(966005)(7416002)(83080400001)(83380400001)(478600001)(6506007)(53546011)(26005)(7696005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: 0ctw8E+FDJ5427Tyrvjrf3Skn4zO0/gpFeT7Xrhk4E1zGweIg3bID0ilzDkwou1daVxg1nsCazALGNLBtCbZLA+0kxbNs09RixSwKFX/rR7s40FSGMhnsUKFxNL1cPYcwUBnE38eHxrje7Ii18x/pC23K83pHQqJyB/dwihD41b/D61QYJKo485DCmRw0hjKK466EkV5RRDYj+XpqnuvTAMh8Py4119o4Mk0/RP353H+IT5cXKuxAMLL3FPilIZpsnn4XLqzHsyuGIXKYYMBwxuSqPCSDH2Fv4o2PqkVCObeEY9qlA8KSfnRVB3eR/DyCLitKnybRBXqPXvvF2BiYkER0AF1eXR5I9T7+xBW3JBbKeHDicSXhLpKwtTosTZ1BJislNBh9rHehIqRRmiGskoEJlMrDV8CjotMRohgL6/GlSC6ix1vX5VZp9SSfe/HAghvAZg1cGI1200LqgchVnf2driTocDrk87JuxfoI7UONRlmDhuyOR1Fv/C83sCiSfHN8uaU9J7Xiiwtf+7tXndPSeU2547aZLgGH+gCWpSnSjXF60838F2iN1r/w3AkK62dzthk4NTN8icu/0PBOGG0oR/CuGhHt8puQWipABSAjTsSioFXXzAEWolwc7v7wP1zGgAOo1LMoBP06DHO2A==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR02MB4407.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e15022cd-778a-4aeb-d15e-08d86b957069
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Oct 2020 14:21:25.1568
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: tOHplayHvPe4XMR2nTMExHVdQIBnFs9ACBjEH09MzYvRcjZRTHkEzYa1FVFIQMCk8ieccEWyY+i3vDzvUUGFzg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR02MB6533
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/7/20 10:40 PM, Doug Anderson wrote:
-> Hi,
-> 
-> On Wed, Oct 7, 2020 at 6:26 AM Rob Herring <robh+dt@kernel.org> wrote:
->>
->> On Tue, Oct 6, 2020 at 8:17 PM Doug Anderson <dianders@chromium.org> wrote:
->>>
->>> Hi,
->>>
->>> On Tue, Oct 6, 2020 at 3:24 PM Rob Herring <robh+dt@kernel.org> wrote:
->>>>
->>>> On Fri, Oct 2, 2020 at 12:39 PM Doug Anderson <dianders@chromium.org> wrote:
->>>>>
->>>>> Hi,
->>>>>
->>>>> On Fri, Oct 2, 2020 at 9:40 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
->>>>>>
->>>>>> On 10/2/20 4:47 PM, Doug Anderson wrote:
->>>>>>> Hi,
->>>>>>>
->>>>>>> On Fri, Oct 2, 2020 at 8:13 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
->>>>>>>>
->>>>>>>> Hi Doug,
->>>>>>>>
->>>>>>>> On 10/2/20 3:31 PM, Doug Anderson wrote:
->>>>>>>>> Hi,
->>>>>>>>>
->>>>>>>>> On Fri, Oct 2, 2020 at 4:45 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
->>>>>>>>>>
->>>>>>>>>> Update the documentation for the binding 'sustainable-power' and allow
->>>>>>>>>> to provide values in an abstract scale. It is required when the cooling
->>>>>>>>>> devices use an abstract scale for their power values.
->>>>>>>>>>
->>>>>>>>>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->>>>>>>>>> ---
->>>>>>>>>>     .../devicetree/bindings/thermal/thermal-zones.yaml  | 13 +++++++++----
->>>>>>>>>>     1 file changed, 9 insertions(+), 4 deletions(-)
->>>>>>>>>>
->>>>>>>>>> diff --git a/Documentation/devicetree/bindings/thermal/thermal-zones.yaml b/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
->>>>>>>>>> index 3ec9cc87ec50..4d8f2e37d1e6 100644
->>>>>>>>>> --- a/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
->>>>>>>>>> +++ b/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
->>>>>>>>>> @@ -99,10 +99,15 @@ patternProperties:
->>>>>>>>>>           sustainable-power:
->>>>>>>>>>             $ref: /schemas/types.yaml#/definitions/uint32
->>>>>>>>>>             description:
->>>>>>>>>> -          An estimate of the sustainable power (in mW) that this thermal zone
->>>>>>>>>> -          can dissipate at the desired control temperature. For reference, the
->>>>>>>>>> -          sustainable power of a 4-inch phone is typically 2000mW, while on a
->>>>>>>>>> -          10-inch tablet is around 4500mW.
->>>>>>>>>> +          An estimate of the sustainable power (in mW or in an abstract scale)
->>>>>>>>>> +         that this thermal zone can dissipate at the desired control
->>>>>>>>>> +         temperature. For reference, the sustainable power of a 4-inch phone
->>>>>>>>>> +         is typically 2000mW, while on a 10-inch tablet is around 4500mW.
->>>>>>>>>> +
->>>>>>>>>> +         It is possible to express the sustainable power in an abstract
->>>>>>>>>> +         scale. This is the case when the related cooling devices use also
->>>>>>>>>> +         abstract scale to express their power usage. The scale must be
->>>>>>>>>> +         consistent.
->>>>>>>>>
->>>>>>>>> Two thoughts:
->>>>>>>>>
->>>>>>>>> 1. If we're going to allow "sustainable-power" to be in abstract
->>>>>>>>> scale, why not allow "dynamic-power-coefficient" to be in abstract
->>>>>>>>> scale too?  I assume that the whole reason against that originally was
->>>>>>>>> the idea of device tree purity, but if we're allowing the abstract
->>>>>>>>> scale here then there seems no reason not to allow it for
->>>>>>>>> "dynamic-power-coefficient".
->>>>>>>>
->>>>>>>> With this binding it's a bit more tricky.
->>>>>>>> I also have to discuss a few things internally. This requirement of
->>>>>>>> uW/MHz/V^2 makes the code easier also for potential drivers
->>>>>>>> like GPU (which are going to register the devfreq cooling with EM).
->>>>>>>>
->>>>>>>> Let me think about it, but for now I would just update these bits.
->>>>>>>> These are required to proper IPA operation, the dyn.-pow.-coef. is a
->>>>>>>> nice to have and possible next step.
->>>>>>>
->>>>>>> I guess the problem is that Rajendra is currently planning to remove
->>>>>>> all the "dynamic-power-coefficient" values from device tree right now
->>>>>>> and move them to the source code because the numbers we currently have
->>>>>>> in the device tree _are_ in abstract scale and thus violate the
->>>>>>> bindings.  Moving this to source code won't help us get to more real
->>>>>>> power numbers (since it'll still be abstract scale), it'll just be
->>>>>>> pure churn.  If we're OK with the abstract scale in general then we
->>>>>>> should allow it everywhere and not add churn for no reason.
->>>>>>
->>>>>> IIUC he is still going to use the Energy Model, but with different
->>>>>> registration function. We have such a driver: scmi-cpufreq.c, which
->>>>>> uses em_dev_register_perf_domain(). He can still use EM, EAS, IPA
->>>>>> not violating anything.
->>>>>
->>>>> Right.  He's going to take the exact same "abstract scale" numbers
->>>>> that he has today and take them out of device tree and put them in the
->>>>> cpufreq driver.  Doing so magically makes it so that he's not
->>>>> violating anything since "abstract scale" is not currently allowed in
->>>>> device tree but is allowed in the cpufreq driver.  I'm not saying that
->>>>> he's doing anything wrong, I'm just saying that it's pointless churn.
->>>>> If we're OK with "abstract scale" in one place in the device tree we
->>>>> should be OK with it everywhere in the device tree.  Then Rajendra
->>>>> wouldn't need his patch at all and he could leave his numbers in the
->>>>> device tree.
->>>>>
->>>>>
->>>>>> The real problem that we want to address is with sustainable-power in
->>>>>> IPA. It is used in power budget calculation and if the devices operate
->>>>>> in abstract scale, then there is an issue.
->>>>>> There are two options to get that value:
->>>>>> 1. from DT, which can have optimized value, stored by OEM engineer
->>>>>> 2. from IPA estimation code, which just calculates it as a sum of
->>>>>> minimum OPP power for each cooling device.
->>>>>>
->>>>>> The 2nd option might not be the best for a platform, so vendor/OEM
->>>>>> engineer might want to provide a better value in DT -> 1st option.
->>>>>> This is currently against the binding description and I have to fix it.
->>>>>
->>>>> Right, things are already broken today because a SoC vendor could
->>>>> (without violating any rules) provide their SoC core
->>>>> "dynamic-power-coefficient" in "abstract scale" in code and there
->>>>> would be no way to for a board to (without violating DT bindings)
->>>>> specify a "sustainable-power".  ...so, in that sense, your patch does
->>>>> provide a benefit even if we don't make any changes to the rules for
->>>>> "sustainable-power".  All I'm saying is that if these new rules for
->>>>> allowing an abstract scale for "sustainable-power" in the device tree
->>>>> are OK that it should _also_ be OK to add new rules to allow an
->>>>> abstract scale for "dynamic-power-coefficient".
->>>>
->>>> Didn't we beat this one to death with "dynamic-power-coefficient"?
->>>
->>> We did?  Where / when?
->>
->> https://lore.kernel.org/r/1448288921-30307-1-git-send-email-juri.lelli@arm.com/
-> 
-> Thanks for the reference.
-> 
-> 
->>> I'm not sure I was involved, but right now
->>> both "sustainable-power" and "dynamic-power-coefficient" are still
->>> defined in the device tree to be in real units, not abstract scale.
->>> Are you saying that we beat it to death and decided that it needed to
->>> be in real units, or we beat it to death and decided that abstract
->>> scale was OK and we just didn't put it in the bindings?
->>
->> The former.
-> 
-> OK.  So I suppose this is a NAK to Lukasz's patch.  It also means that:
-
-I also consider this as a NAK for this patch 3/3, but other two can go.
-It will be also NAK for dt-binding change adding 'abstract scale'
-description to "dynamic-power-coefficient", so I won't post it.
-
-> 
-> * The power numbers that landed in the sc7180 devicetree violate
-> what's documented in the bindings.
-> 
-> * While Rajendra can fix this by moving the numbers out of devicetree
-> and into code, it doesn't really help us because there will be no way
-> to allow boards to specify their "sustainable-power" in code.
-> 
-> * Anyone who is using the "abstract scale" provided by firmware or by
-> code is in the same boat.  There's no way for a board to specify
-> "sustainable-power" that will match this "abstract scale" without
-> violating the devicetree bindings.
-> 
-> Obviously the easiest way to fix this is to just move everyone off of
-> "abstract scale".
-> 
-> If someone else has other bright ideas I'm all ears.
-
-To summarize, we allow abstract scale to be in EM, EAS and IPA.
-For EM/EAS it is possible have this via
-em_dev_register_perf_domain()
-IPA would also get these devices with abstract scale, but the DT
-"sustainable-power" would not be aligned, so might be not set in DT.
-For that, what would help:
-- IPA internal code for sustainable power estimation
-- thermal sysfs interface for IPA 'sustainable_power'
-
-In this case I think patch 1/3 and 2/3 can go into upstream.
-This one (patch 3/3) can be dropped.
-
-Thank you Rob and Doug for this discussion.
-
-Regards,
-Lukasz
-
+SGkgTGludXMsIA0KDQpUaGFua3MgZm9yIHRoZSByZXZpZXcNCg0KUGxlYXNlIHNlZSBteSBjb21t
+ZW50cyBpbmxpbmUNCg0KPiANCj4gSGkgQmVuLA0KPiANCj4gdGhhbmtzIGZvciB5b3VyIHBhdGNo
+ISBJIG5vdGljZWQgdGhpcyB0b2RheSAgYW5kIHBheSBzb21lIGludGVyZXN0DQo+IGJlY2F1c2Ug
+aW4gdGhlIHBhc3QgSSB1c2VkIHdpdGggaW1wbGVtZW50aW5nIHRoZSBzdXBwb3J0IGZvcg0KPiBU
+Q00gbWVtb3J5IG9uIEFSTTMyLg0KPiANCj4gT24gTW9uLCBPY3QgNSwgMjAyMCBhdCA2OjA2IFBN
+IEJlbiBMZXZpbnNreSA8YmVuLmxldmluc2t5QHhpbGlueC5jb20+DQo+IHdyb3RlOg0KPiANCj4g
+PiBBZGQgYmluZGluZyBmb3IgWnlucU1QIFI1IE9wZW5BTVAuDQo+ID4NCj4gPiBSZXByZXNlbnQg
+dGhlIFJQVSBkb21haW4gcmVzb3VyY2VzIGluIG9uZSBkZXZpY2Ugbm9kZS4gRWFjaCBSUFUNCj4g
+PiBwcm9jZXNzb3IgaXMgYSBzdWJub2RlIG9mIHRoZSB0b3AgUlBVIGRvbWFpbiBub2RlLg0KPiA+
+DQo+ID4gU2lnbmVkLW9mZi1ieTogSmFzb24gV3UgPGoud3VAeGlsaW54LmNvbT4NCj4gPiBTaWdu
+ZWQtb2ZmLWJ5OiBXZW5keSBMaWFuZyA8amxpYW5nQHhpbGlueC5jb20+DQo+ID4gU2lnbmVkLW9m
+Zi1ieTogTWljaGFsIFNpbWVrIDxtaWNoYWwuc2ltZWtAeGlsaW54LmNvbT4NCj4gPiBTaWduZWQt
+b2ZmLWJ5OiBCZW4gTGV2aW5za3kgPGJlbi5sZXZpbnNreUB4aWxpbnguY29tPg0KPiAoLi4uKQ0K
+PiANCj4gPiArdGl0bGU6IFhpbGlueCBSNSByZW1vdGUgcHJvY2Vzc29yIGNvbnRyb2xsZXIgYmlu
+ZGluZ3MNCj4gPiArDQo+ID4gK2Rlc2NyaXB0aW9uOg0KPiA+ICsgIFRoaXMgZG9jdW1lbnQgZGVm
+aW5lcyB0aGUgYmluZGluZyBmb3IgdGhlIHJlbW90ZXByb2MgY29tcG9uZW50IHRoYXQNCj4gbG9h
+ZHMgYW5kDQo+ID4gKyAgYm9vdHMgZmlybXdhcmVzIG9uIHRoZSBYaWxpbnggWnlucW1wIGFuZCBW
+ZXJzYWwgZmFtaWx5IGNoaXBzZXQuDQo+IA0KPiAuLi4gZmlybXdhcmVzIGZvciB0aGUgb24tYm9h
+cmQgQ29ydGV4IFI1IG9mIHRoZSBaeW5xbXAgLi4gKGV0YykNCj4gDQpXaWxsIGZpeA0KPiA+ICsN
+Cj4gPiArICBOb3RlIHRoYXQgdGhlIExpbnV4IGhhcyBnbG9iYWwgYWRkcmVzc2luZyB2aWV3IG9m
+IHRoZSBSNS1yZWxhdGVkIG1lbW9yeQ0KPiAoVENNKQ0KPiA+ICsgIHNvIHRoZSBhYnNvbHV0ZSBh
+ZGRyZXNzIHJhbmdlcyBhcmUgcHJvdmlkZWQgaW4gVENNIHJlZydzLg0KPiANCj4gUGxlYXNlIGRv
+IG5vdCByZWZlciB0byBMaW51eCBpbiBiaW5kaW5ncywgdGhleSBhcmUgYWxzbyBmb3Igb3RoZXIN
+Cj4gb3BlcmF0aW5nIHN5c3RlbXMuDQo+IA0KPiBJc24ndCB0aGF0IHNwZWxsZWQgb3V0ICJUaWdo
+dGx5IENvdXBsZWQgTWVtb3J5IiAocGxlYXNlIGV4cGFuZCB0aGUgYWNyb255bSkuDQo+IA0KPiBJ
+IGhhZCBhIGhhcmQgdGltZSB0byBwYXJzZSB0aGlzIGRlc2NyaXB0aW9uLCBkbyB5b3UgbWVhbjoN
+Cj4gDQo+ICJUaGUgVGlnaHRseSBDb3VwbGVkIE1lbW9yeSAoYW4gb24tY2hpcCBTUkFNKSB1c2Vk
+IGJ5IHRoZSBDb3J0ZXggUjUNCj4gaXMgZG91YmxlLXBvcnRlZCBhbmQgdmlzaWJsZSBpbiBib3Ro
+IHRoZSBwaHlzaWNhbCBtZW1vcnkgc3BhY2Ugb2YgdGhlDQo+IENvcnRleCBBNSBhbmQgdGhlIG1l
+bW9yeSBzcGFjZSBvZiB0aGUgbWFpbiBaeW5xTVAgcHJvY2Vzc29yDQo+IGNsdXN0ZXIuIFRoaXMg
+aXMgdmlzaWJsZSBpbiB0aGUgYWRkcmVzcyBzcGFjZSBvZiB0aGUgWnlucU1QIHByb2Nlc3Nvcg0K
+PiBhdCB0aGUgYWRkcmVzcyBpbmRpY2F0ZWQgaGVyZS4iDQo+IA0KPiBUaGF0IHdvdWxkIG1ha2Ug
+c2Vuc2UsIGJ1dCBwbGVhc2UgY29uZmlybS91cGRhdGUuDQo+IA0KDQpZZXMgdGhlIFRDTSBhZGRy
+ZXNzIHNwYWNlIGFzIG5vdGVkIGluIHRoZSBUQ00gZGV2aWNlIHRyZWUgbm9kZXMgKGUuZy4gMHhm
+ZmUwMDAwMCkgaXMgdmlzaWJsZSBhdCB0aGF0IGFkZHJlc3Mgb24gdGhlIEE1MyBjbHVzdGVyLiAg
+V2lsbCBmaXgNCg0KPiA+ICsgIG1lbW9yeS1yZWdpb246DQo+ID4gKyAgICBkZXNjcmlwdGlvbjoN
+Cj4gPiArICAgICAgY29sbGVjdGlvbiBvZiBtZW1vcnkgY2FydmVvdXRzIHVzZWQgZm9yIGVsZi1s
+b2FkaW5nIGFuZCBpbnRlci1wcm9jZXNzb3INCj4gPiArICAgICAgY29tbXVuaWNhdGlvbi4gZWFj
+aCBjYXJ2ZW91dCBpbiB0aGlzIGNhc2Ugc2hvdWxkIGJlIGluIEREUiwgbm90DQo+ID4gKyAgICAg
+IGNoaXAtc3BlY2lmaWMgbWVtb3J5LiBJbiBYaWxpbnggY2FzZSwgdGhpcyBpcyBUQ00sIE9DTSwg
+QlJBTSwgZXRjLg0KPiA+ICsgICAgJHJlZjogL3NjaGVtYXMvdHlwZXMueWFtbCMvZGVmaW5pdGlv
+bnMvcGhhbmRsZS1hcnJheQ0KPiANCj4gVGhpcyBpcyBuaWNlLCB5b3UncmUgcmV1c2luZyB0aGUg
+aW5mcmFzdHJ1Y3R1cmUgd2UgYWxyZWFkeQ0KPiBoYXZlIGZvciB0aGVzZSBjYXJ2ZW91dHMsIGdv
+b2QgZGVzaWduIQ0KPiANCj4gPiArICBtZXRhLW1lbW9yeS1yZWdpb25zOg0KPiA+ICsgICAgZGVz
+Y3JpcHRpb246DQo+ID4gKyAgICAgIGNvbGxlY3Rpb24gb2YgbWVtb3JpZXMgdGhhdCBhcmUgbm90
+IHByZXNlbnQgaW4gdGhlIHRvcCBsZXZlbCBtZW1vcnkNCj4gPiArICAgICAgbm9kZXMnIG1hcHBp
+bmcuIEZvciBleGFtcGxlLCBSNXMnIFRDTSBiYW5rcy4gVGhlc2UgYmFua3MgYXJlIG5lZWRlZA0K
+PiA+ICsgICAgICBmb3IgUjUgZmlybXdhcmUgbWV0YSBkYXRhIHN1Y2ggYXMgdGhlIFI1IGZpcm13
+YXJlJ3MgaGVhcCBhbmQgc3RhY2suDQo+ID4gKyAgICAgIFRvIGJlIG1vcmUgcHJlY2lzZSwgdGhp
+cyBpcyBvbi1jaGlwIHJlc2VydmVkIFNSQU0gcmVnaW9ucywgZS5nLiBUQ00sDQo+ID4gKyAgICAg
+IEJSQU0sIE9DTSwgZXRjLg0KPiA+ICsgICAgJHJlZjogL3NjaGVtYXMvdHlwZXMueWFtbCMvZGVm
+aW5pdGlvbnMvcGhhbmRsZS1hcnJheQ0KPiANCj4gSXMgdGhpcyBpbiB0aGUgbWVtb3J5IHNwYWNl
+IG9mIHRoZSBtYWluIENQVSBjbHVzdGVyPw0KPiANCj4gSXQgc3VyZSBsb29rcyBsaWtlIHRoYXQu
+DQo+IA0KDQpZZXMgdGhpcyBpcyBpbiB0aGUgbWVtb3J5IHNwYWNlIG9mIHRoZSBBNTMgY2x1c3Rl
+cg0KDQpXaWxsIGZpeCB0byBjb21tZW50IGFzIHN1Y2guIFRoYW5rIHlvdQ0KDQo+ID4gKyAgICAg
+LyoNCj4gPiArICAgICAgKiBCZWxvdyBub2RlcyBhcmUgcmVxdWlyZWQgaWYgdXNpbmcgVENNIHRv
+IGxvYWQgUjUgZmlybXdhcmUNCj4gPiArICAgICAgKiBpZiBub3QsIHRoZW4gZWl0aGVyIGRvIG5v
+dCBwcm92aWRlIG5vZGVzIGFyZSBsYWJlbCBhcyBkaXNhYmxlZCBpbg0KPiA+ICsgICAgICAqIHN0
+YXR1cyBwcm9wZXJ0eQ0KPiA+ICsgICAgICAqLw0KPiA+ICsgICAgIHRjbTBhOiB0Y21fMGFAZmZl
+MDAwMDAgew0KPiA+ICsgICAgICAgICByZWcgPSA8MHhmZmUwMDAwMCAweDEwMDAwPjsNCj4gPiAr
+ICAgICAgICAgcG5vZGUtaWQgPSA8MHhmPjsNCj4gPiArICAgICAgICAgbm8tbWFwOw0KPiA+ICsg
+ICAgICAgICBzdGF0dXMgPSAib2theSI7DQo+ID4gKyAgICAgICAgIHBoYW5kbGUgPSA8MHg0MD47
+DQo+ID4gKyAgICAgfTsNCj4gPiArICAgICB0Y20wYjogdGNtXzFhQGZmZTIwMDAwIHsNCj4gPiAr
+ICAgICAgICAgcmVnID0gPDB4ZmZlMjAwMDAgMHgxMDAwMD47DQo+ID4gKyAgICAgICAgIHBub2Rl
+LWlkID0gPDB4MTA+Ow0KPiA+ICsgICAgICAgICBuby1tYXA7DQo+ID4gKyAgICAgICAgIHN0YXR1
+cyA9ICJva2F5IjsNCj4gPiArICAgICAgICAgcGhhbmRsZSA9IDwweDQxPjsNCj4gPiArICAgICB9
+Ow0KPiANCj4gQWxsIHJpZ2h0IHNvIHRoaXMgbG9va3Mgc3VzcGljaW91cyB0byBtZS4gUGxlYXNl
+IGV4cGxhaW4NCj4gd2hhdCB3ZSBhcmUgc2VlaW5nIGluIHRob3NlIHJlZyBlbnRyaWVzPyBJcyB0
+aGlzIHRoZSBhZGRyZXNzDQo+IHNlZW4gYnkgdGhlIG1haW4gQ1BVIGNsdXN0ZXI/DQo+IA0KPiBE
+b2VzIGl0IG1lYW4gdGhhdCB0aGUgbWFpbiBDUFUgc2VlIHRoZSBtZW1vcnkgb2YgdGhlDQo+IFI1
+IGFzICJzb21lIGtpbmQgb2YgVENNIiBhbmQgdGhhdCBUQ00gaXMgcGh5c2ljYWxseQ0KPiBtYXBw
+ZWQgYXQgMHhmZmUwMDAwMCAoSVRDTSkgYW5kIDB4ZmZlMjAwMDAgKERUQ00pPw0KPiANCj4gSWYg
+dGhlIGZpcnN0IGlzIElUQ00gYW5kIHRoZSBzZWNvbmQgRFRDTSB0aGF0IGlzIHByZXR0eQ0KPiBp
+bXBvcnRhbnQgdG8gcG9pbnQgb3V0LCBzaW5jZSB0aGlzIHJlZmxlY3RzIHRoZSBoYXJ2YXJkDQo+
+IGFyY2hpdGVjdHVyZSBwcm9wZXJ0aWVzIG9mIHRoZXNlIHR3byBtZW1vcnkgYXJlYXMuDQo+IA0K
+PiBUaGUgcGhhbmRsZSA9IHRoaW5nIEkgZG8gbm90IHVuZGVyc3RhbmQgYXQgYWxsLCBidXQNCj4g
+bWF5YmUgdGhlcmUgaXMgZ2VuZXJpYyBkb2N1bWVudGF0aW9uIGZvciBpdCB0aGF0DQo+IEkndmUg
+bWlzc2VkPw0KPiANCj4gTGFzdCB0aW1lIEkgY2hlY2tlZCAod2hpY2ggd2FzIG9uIHRoZSBBUk0z
+MikgdGhlIHBoeXNpY2FsDQo+IGFkZHJlc3Mgb2YgdGhlIElUQ00gYW5kIERUQ00gY291bGQgYmUg
+Y2hhbmdlZCBhdA0KPiBydW50aW1lIHdpdGggQ1AxNSBpbnN0cnVjdGlvbnMuIEkgbWlnaHQgYmUg
+d3JvbmcNCj4gYWJvdXQgdGhpcywgYnV0IGlmIHRoYXQgKG9yIHNvbWV0aGluZyBzaW1pbGFyKSBp
+cyBzdGlsbCB0aGUgY2FzZQ0KPiB5b3UgY2FuJ3QganVzdCBzYXkgaGFyZGNvZGUgdGhlc2UgYWRk
+cmVzc2VzIGhlcmUsIHRoZQ0KPiBDUFUgY2FuIG1vdmUgdGhhdCBwaHlzaWNhbCBhZGRyZXNzIHNv
+bWV3aGVyZSBlbHNlLg0KPiBTZWUgdGhlIGNvZGUgaW4NCj4gYXJjaC9hcm0va2VybmVsL3RjbS5j
+DQo+IA0KPiBJdCBhcHBlYXJzIHRoZSBBUk02NCBMaW51eCBrZXJuZWwgZG9lcyBub3QgaGF2ZSBh
+bnkNCj4gVENNIGhhbmRsaW5nIHRvZGF5LCBidXQgdGhhdCBjb3VsZCBjaGFuZ2UuDQo+IA0KPiBT
+byBpcyB0aGlzIGp1c3QgcmVndWxhciBBUk0gVENNIG1lbW9yeSAoYXMgc2VlbiBieQ0KPiB0aGUg
+bWFpbiBBUk02NCBjbHVzdGVyKT8NCj4gDQo+IElmIHRoaXMgaXMgdGhlIGNhc2UsIHlvdSBzaG91
+bGQgcHJvYmFibHkgYWRkIGJhY2sgdGhlDQo+IGNvbXBhdGlibGUgc3RyaW5nLCBhZGQgYSBzZXBh
+cmF0ZSBkZXZpY2UgdHJlZSBiaW5kaW5nDQo+IGZvciBUQ00gbWVtb3JpZXMgYWxvbmcgdGhlIGxp
+bmVzIG9mDQo+IGNvbXBhdGlibGUgPSAiYXJtLGl0Y20iOw0KPiBjb21wYXRpYmxlID0gImFybSxk
+dGNtIjsNCj4gVGhlIHJlZyBhZGRyZXNzIHNob3VsZCB0aGVuIGlkZWFsbHkgYmUgaW50ZXJwcmV0
+ZWQgYnkNCj4gdGhlIEFSTTY0IGtlcm5lbCBhbmQgYXNzaWduZWQgdG8gdGhlIEkvRFRDTS4NCj4g
+DQo+IEknbSBwYWdpbmcgQ2F0YWxpbiBvbiB0aGlzIGJlY2F1c2UgSSBkbyBub3Qga25vdyBpZg0K
+PiBBUk02NCByZWFsbHkgaGFzIFtJfERdVENNIG9yIGlmIHRoaXMgaXMgc29tZSBpbnZlbnRpb24N
+Cj4gb2YgWGlsaW54J3MuDQo+IA0KPiBZb3VycywNCj4gTGludXMgV2FsbGVpag0KDQpBcyB5b3Ug
+c2FpZCwgdGhpcyBpcyAganVzdCByZWd1bGFyIEFSTSBUQ00gbWVtb3J5IChhcyBzZWVuIGJ5IHRo
+ZSBtYWluIEFSTTY0IGNsdXN0ZXIpLiBZZXMgSSBjYW4gYWRkIGJhY2sgdGhlIGNvbXBhdGlibGUg
+c3RyaW5nLCB0aG91Z2ggbWF5YmUganVzdCAidGNtIiBvciAieGxueCx0Y20iIHRob3VnaCB0aGVy
+ZSBpcyBhbHNvIHRjbSBjb21wYXQgc3RyaW5nIGZvciB0aGUgVEkgcmVtb3RlcHJvYyBkcml2ZXIg
+bGF0ZXIgbGlzdGVkIGJlbG93DQoNClNvIEkgdGhpbmsgSSBhbnN3ZXJlZCB0aGlzIGFib3ZlLCBi
+dXQgdGhlIEFQVSAoYTUzIGNsdXN0ZXIpIHNlZXMgdGhlIFRDTSBiYW5rcyAocmVmZXJyZWQgdG8g
+b24gWnlucSBVbHRyYVNjYWxlKykgYXQgVENNIGJhbmtzIDBBIGFuZCAwQiBhcyAweGZmZTAwMDAw
+IGFuZCAweGZmZTIwMDAwIHJlc3BlY3RpdmVseSBhbmQgVENNIGJhbmtzIDFBIGFuZCAxQiBhdCAw
+eGZmZTkwMDAwIGFuZCAweGZmZWIwMDAwLiBBbHNvIGl0IGlzIHNpbWlsYXIgdG8gdGhlIFRJIGsz
+IFI1IFJlbW90ZXByb2MgZHJpdmVyIGJpbmRpbmcgZm9yIHJlZmVyZW5jZToNCi0gaHR0cHM6Ly9w
+YXRjaHdvcmsua2VybmVsLm9yZy9jb3Zlci8xMTc2Mzc4My8gDQoNClRoZSBwaGFuZGxlIGFycmF5
+IGhlcmUgaXMgdG8gc2VydmUgYXMgYSBsYXRlciBmb3IgdGhlc2Ugbm9kZXMgc28gdGhhdCBsYXRl
+ciBvbiwgaW4gdGhlIFJlbW90ZXByb2MgUjUgZHJpdmVyLCB0aGVzZSBjYW4gYmUgcmVmZXJlbmNl
+ZCB0byBnZXQgc29tZSBpbmZvcm1hdGlvbiB2aWEgdGhlIHBub2RlLWlkIHByb3BlcnR5Lg0KDQpU
+aGUgcmVhc29uIHdlIGhhdmUgdGhlIGNvbXBhdGlibGUsIHJlZywgZXRjLiBpcyBmb3IgU3lzdGVt
+IERUIGVmZm9ydCArIEBTdGVmYW5vIFN0YWJlbGxpbmkgDQoNClRoYXQgYmVpbmcgc2FpZCwgd2Ug
+Y2FuIGNoYW5nZSB0aGlzIGFyb3VuZCB0byBjb3VwbGUgdGhlIFRDTSBiYW5rIG5vZGVzIGludG8g
+dGhlIFI1IGFzIHdlIGhhdmUgSW4gb3VyIHByZXNlbnQsIGludGVybmFsIGltcGxlbWVudGF0aW9u
+IGF0IA0KLSBodHRwczovL2dpdGh1Yi5jb20vWGlsaW54L2xpbnV4LXhsbngvYmxvYi9tYXN0ZXIv
+RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3JlbW90ZXByb2MveGlsaW54JTJDenlu
+cW1wLXI1LXJlbW90ZXByb2MudHh0IA0KLSBodHRwczovL2dpdGh1Yi5jb20vWGlsaW54L2xpbnV4
+LXhsbngvYmxvYi9tYXN0ZXIvZHJpdmVycy9yZW1vdGVwcm9jL3p5bnFtcF9yNV9yZW1vdGVwcm9j
+LmMgDQp0aGUgVENNIG5vZGVzIGFyZSBjb3VwbGVkIGluIHRoZSBSNSBidXQgYWZ0ZXIgc29tZSBw
+cmV2aW91cyByZXZpZXcgb24gdGhpcyBsaXN0LCBpdCB3YXMgbW92ZWQgdG8gaGF2ZSB0aGUgVENN
+IG5vZGVzIGRlY291cGxlZCBmcm9tIHRoZSBSNSBub2RlDQoNCkkgYW0gbm90IHN1cmUgd2hhdCB5
+b3UgbWVhbiBvbiB0aGUgQXJtNjQgaGFuZGxpbmcgb2YgVENNIG1lbW9yeS4gVmlhIHRoZSBhcmNo
+aXRlY3R1cmUgb2YgdGhlIFNvQyBodHRwczovL3d3dy54aWxpbnguY29tL3N1cHBvcnQvZG9jdW1l
+bnRhdGlvbi91c2VyX2d1aWRlcy91ZzEwODUtenlucS11bHRyYXNjYWxlLXRybS5wZGYgSSBrbm93
+IHRoYXQgdGhlIEE1MyBjbHVzdGVyIGNhbiBzZWUgdGhlIGFic29sdXRlIGFkZHJlc3NlcyBvZiB0
+aGUgUjUgY2x1c3RlciBzbyB0aGUgdHJhbnNsYXRpb24gaXMgKkkgdGhpbmsqIGRvbmUgYXMgeW91
+IGRlc2NyaWJlIHdpdGggdGhlIENQMTUgaW5zdHJ1Y3Rpb25zIHlvdSBsaXN0ZWQuDQoNCg0K
