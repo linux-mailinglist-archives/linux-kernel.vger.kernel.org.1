@@ -2,272 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A01352874ED
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 15:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EEBB2874FB
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 15:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730338AbgJHNH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 09:07:58 -0400
-Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:36695 "EHLO
-        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730121AbgJHNH5 (ORCPT
+        id S1730282AbgJHNLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 09:11:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730199AbgJHNLX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 09:07:57 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id QVe6kWWEw4gEjQVe9k6pF4; Thu, 08 Oct 2020 15:07:54 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1602162474; bh=w4lZo+OIfJJ4C+6hWn+NzS9p5dpa5waywhAGLmyOLFc=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=g+WyN7gUaeJCsIwNev2SAbyX1qWi2qK4C0nO0UBz46csjd73NFeLdgYpSfPrY3qah
-         UnE34ora/7NnS9iysk5juwphN3pmeppVwy74TROf2ZMp539wBADijV2/xkiHjMYbv7
-         CQjM2zd/Y5knomfDCiOx/ve0DTzRjUYCYvPO+wCFj4SKOlB9OS5PBPyV7qnbSkGURE
-         hav77aWK33gpDWrIIAGaeLlnhn9+iYQHpypHNLUPkb1OlmIEvsMl6qsULBp8cXVUkr
-         N2tfeh3W42Olefmdxr2xS4omQtHaOt0SyUysO4lvHz41QwwiHw7CbDMRZF/bfsb8Kb
-         a1zAHXdnRVm/Q==
-Subject: Re: [PATCH v2] media: mtk-vcodec: fix builds when remoteproc is
- disabled
-To:     Alexandre Courbot <acourbot@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Tomasz Figa <tfiga@chromium.org>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        Randy Dunlap <rdunlap@infradead.org>
-References: <20201004122234.802044-1-acourbot@chromium.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <c3e1c20a-7729-9f48-ce66-41e67f195fc7@xs4all.nl>
-Date:   Thu, 8 Oct 2020 15:07:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Thu, 8 Oct 2020 09:11:23 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E735C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 06:11:23 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id m15so2739168pls.8
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 06:11:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=+X3GicCGteIVfq38xRLbLcBNEFwVSzCj2w5B89w+FP0=;
+        b=HPznq537pnPyKKYjqGIm/j+ZJAmAv/hU2gaJCn+IHBU8kf+m1z14EnWRZ2+tK+H/WE
+         YD5ZdG9OZSkyZfXW30I6L/rXq88fnEIVPCVzwuybChJLg6/v87xTKyrX0/s0zn7OyfiK
+         +kgZ6EAM5EFYezG3ypYCVFRhft9TaQgxLhjviTfS+t+z9zrHG+9JxL/87E26Qd9xL7cp
+         TpfA1MQKJwIEWmtCj4sCVXe1sM5VAO3HIQdJJSbnKfWGm0Z7Ra2C0CWYYj8wcc3lURUw
+         6VUc9stwzq4d065rc38eoK5eNBcyQkYh/2RT9Ikqj0wHCj1XJ81gkn6MjY0S4YBf8kMz
+         5UmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=+X3GicCGteIVfq38xRLbLcBNEFwVSzCj2w5B89w+FP0=;
+        b=FmvlTAoSnILXhLc5m26dtFshirowFlOwLvtmMHlg7AIev55LZq/AVGuujTU/+kvDRc
+         icjHXtQ8TfVeGaC3Ng4ouWblvsANXlZYk3p3LdmU/8aM+Aw4fdB9WIMqZS2gjBHb1ipj
+         91q05KFMSyP+o+yj6RYg3NYB7Ef8ZNfq6r9NN7Sy4AIk3eeDrBnPhjJovQayssrJTKz7
+         RBQLn4zFMUeX7O88fDAXP2GrFas7mGhsWmb6iSb28rzva9Cbxu1buP7Aw1fP+b11uu3t
+         4JI1Jge40UyoQEZ/8l0ZHwQY4VAO509OJFZV2bK2sBhNpW8D2WbzhKjkjI8gqHhpRPfg
+         bn7Q==
+X-Gm-Message-State: AOAM532i4+OwbqapjtPbrZIaeJr/DGpfsLcxWrHEmbpbCwohpoalmgzD
+        z9Q6u3MbsiEzGm0Ji14jVZDC
+X-Google-Smtp-Source: ABdhPJwiDCGyLL+78bsP966t1KvBta0k97o+q8h4M+K+xaM7g5TqVZYh6Vx3+ddHUQTQSgL3Dib/Tw==
+X-Received: by 2002:a17:902:8543:b029:d3:9c44:7230 with SMTP id d3-20020a1709028543b02900d39c447230mr7401907plo.10.1602162682651;
+        Thu, 08 Oct 2020 06:11:22 -0700 (PDT)
+Received: from linux ([103.59.133.81])
+        by smtp.gmail.com with ESMTPSA id c4sm7164293pjq.7.2020.10.08.06.11.19
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 08 Oct 2020 06:11:21 -0700 (PDT)
+Date:   Thu, 8 Oct 2020 18:41:15 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
+Cc:     sboyd@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        sricharan@codeaurora.org
+Subject: Re: [PATCH v3 3/3] arm64: dts: Enabled MHI device over PCIe
+Message-ID: <20201008131115.GA23649@linux>
+References: <1602160344-19586-1-git-send-email-gokulsri@codeaurora.org>
+ <1602160344-19586-4-git-send-email-gokulsri@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20201004122234.802044-1-acourbot@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfDUrj7hYwz6VSgr8gCZ9x7tZiAV3CR70X4wNevoMDsWQe2H3XhsQN35W4uudS/v7G2+gBxnntLa5FGbHiLGr5WaJNFb50BQQS28kjhH1KoJ7MZajnXr9
- n/l30ekCJIdHdOsOxtLRXxkhbVBKuXhpsNfGA0K4+TU79PZdo46xukfn3JmtgScRz8bcx7VOcTig7Nh33FFGMv0OD47WHbBZ7TJ+9DhelogjOGwU6WiKyTz5
- frgGRHFENTmToml6NCPT7P5CBAheDbJZGLKWAJZbR/skkSaOsGgu9+XvCKXCthx4c2I8tQdknA6ayqzdO2zwO+awt1zX1D4e5FkKv5Dwtmsv4kR+QW0U3ksd
- oGu+sZ85WDPnxjIEmExrrpyVom7rOcHJpgq7iVV/L5MnXbAfv1K66Pop5GYQdEjnuCrfh4meT8y30pwRv+92YsJQor08vhLnU8YurnxffCfK0g+LEjEXeVIT
- BknetglM3v6n8quuTSSGO240MQ4178Wn7HXIGA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1602160344-19586-4-git-send-email-gokulsri@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexandre,
+Hi,
 
-On 04/10/2020 14:22, Alexandre Courbot wrote:
-> The addition of MT8183 support added a dependency on the SCP remoteproc
-> module. However the initial patch used the "select" Kconfig directive,
-> which may result in the SCP module to not be compiled if remoteproc was
-> disabled. In such a case, mtk-vcodec would try to link against
-> non-existent SCP symbols. "select" was clearly misused here as explained
-> in kconfig-language.txt.
+On Thu, Oct 08, 2020 at 06:02:24PM +0530, Gokul Sriram Palanisamy wrote:
+> Enabled MHI device support over PCIe and added memory
+> reservation required for MHI enabled QCN9000 PCIe card.
 > 
-> Replace this by a "depends" directive on at least one of the VPU and
-> SCP modules, to allow the driver to be compiled as long as one of these
-> is enabled, and adapt the code to support this new scenario.
-> 
-> Also adapt the Kconfig text to explain the extra requirements for MT8173
-> and MT8183.
-> 
-> Reported-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
-> Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+> Signed-off-by: Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
 > ---
->  drivers/media/platform/Kconfig                | 10 +--
->  .../media/platform/mtk-vcodec/mtk_vcodec_fw.c | 72 ++++++++++++-------
->  2 files changed, 54 insertions(+), 28 deletions(-)
+>  arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi | 47 ++++++++++++++++++++++++++++++
+>  1 file changed, 47 insertions(+)
 > 
-> diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
-> index a3cb104956d5..98eb62e49ec2 100644
-> --- a/drivers/media/platform/Kconfig
-> +++ b/drivers/media/platform/Kconfig
-> @@ -253,14 +253,16 @@ config VIDEO_MEDIATEK_VCODEC
->  	depends on MTK_IOMMU || COMPILE_TEST
->  	depends on VIDEO_DEV && VIDEO_V4L2
->  	depends on ARCH_MEDIATEK || COMPILE_TEST
-> +	depends on VIDEO_MEDIATEK_VPU || MTK_SCP
-
-Close, but no cigar.
-
-If VIDEO_MEDIATEK_VPU=y and MTK_SCP=m, then VIDEO_MEDIATEK_VCODEC can be configured
-to y, and then it won't be able to find the scp_ functions.
-
-To be honest, I'm not sure how to solve this.
-
-Regards,
-
-	Hans
-
->  	select VIDEOBUF2_DMA_CONTIG
->  	select V4L2_MEM2MEM_DEV
-> -	select VIDEO_MEDIATEK_VPU
-> -	select MTK_SCP
->  	help
->  	    Mediatek video codec driver provides HW capability to
-> -	    encode and decode in a range of video formats
-> -	    This driver rely on VPU driver to communicate with VPU.
-> +	    encode and decode in a range of video formats on MT8173
-> +	    and MT8183.
+> diff --git a/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi b/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
+> index 0827055..e5c1ec0 100644
+> --- a/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
+> @@ -24,6 +24,22 @@
+>  		device_type = "memory";
+>  		reg = <0x0 0x40000000 0x0 0x20000000>;
+>  	};
 > +
-> +	    Note that support for MT8173 requires VIDEO_MEDIATEK_VPU to
-> +	    also be selected. Support for MT8183 depends on MTK_SCP.
->  
->  	    To compile this driver as modules, choose M here: the
->  	    modules will be called mtk-vcodec-dec and mtk-vcodec-enc.
-> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw.c
-> index 6c2a2568d844..23a80027a8fb 100644
-> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw.c
-> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw.c
-> @@ -13,6 +13,7 @@ struct mtk_vcodec_fw_ops {
->  			    mtk_vcodec_ipi_handler handler, const char *name, void *priv);
->  	int (*ipi_send)(struct mtk_vcodec_fw *fw, int id, void *buf,
->  			unsigned int len, unsigned int wait);
-> +	void (*release)(struct mtk_vcodec_fw *fw);
+> +	reserved-memory {
+> +		#address-cells = <2>;
+> +		#size-cells = <2>;
+> +		ranges;
+> +
+> +		qcn9000_pcie0: memory@50f00000 {
+> +			no-map;
+> +			reg = <0x0 0x50f00000 0x0 0x03700000>;
+> +		};
+> +
+> +		qcn9000_pcie1: memory@54600000 {
+> +			no-map;
+> +			reg = <0x0 0x54600000 0x0 0x03700000>;
+> +		};
+> +	};
 >  };
 >  
->  struct mtk_vcodec_fw {
-> @@ -22,6 +23,8 @@ struct mtk_vcodec_fw {
->  	struct mtk_scp *scp;
+>  &blsp1_spi1 {
+> @@ -45,11 +61,42 @@
+>  &pcie0 {
+>  	status = "ok";
+>  	perst-gpio = <&tlmm 58 0x1>;
+> +
+> +	pcie0_rp: pcie0_rp {
+> +		reg = <0 0 0 0 0>;
+> +
+> +		status = "ok";
+> +		mhi_0: qcom,mhi@0 {
+
+MHI doesn't support devicetree as of now so how is this supposed to work?
+Have you tested this series with mainline?
+
+Thanks,
+Mani
+
+> +			reg = <0 0 0 0 0 >;
+> +
+> +			qrtr_instance_id = <0x20>;
+> +			base-addr = <0x50f00000>;
+> +			m3-dump-addr = <0x53c00000>;
+> +			etr-addr = <0x53d00000>;
+> +			qcom,caldb-addr = <0x53e00000>;
+> +		};
+> +	};
 >  };
 >  
-> +#if IS_ENABLED(CONFIG_VIDEO_MEDIATEK_VPU)
+>  &pcie1 {
+>  	status = "ok";
+>  	perst-gpio = <&tlmm 61 0x1>;
 > +
->  static int mtk_vcodec_vpu_load_firmware(struct mtk_vcodec_fw *fw)
->  {
->  	return vpu_load_firmware(fw->pdev);
-> @@ -64,6 +67,27 @@ static int mtk_vcodec_vpu_ipi_send(struct mtk_vcodec_fw *fw, int id, void *buf,
->  	return vpu_ipi_send(fw->pdev, id, buf, len);
->  }
->  
-> +static void mtk_vcodec_vpu_release(struct mtk_vcodec_fw *fw)
-> +{
-> +	put_device(&fw->pdev->dev);
-> +}
+> +	pcie1_rp: pcie1_rp {
+> +		reg = <0 0 0 0 0>;
 > +
-> +static void mtk_vcodec_vpu_reset_handler(void *priv)
-> +{
-> +	struct mtk_vcodec_dev *dev = priv;
-> +	struct mtk_vcodec_ctx *ctx;
+> +		status = "ok";
+> +		mhi_1: qcom,mhi@1 {
+> +			reg = <0 0 0 0 0 >;
 > +
-> +	mtk_v4l2_err("Watchdog timeout!!");
-> +
-> +	mutex_lock(&dev->dev_mutex);
-> +	list_for_each_entry(ctx, &dev->ctx_list, list) {
-> +		ctx->state = MTK_STATE_ABORT;
-> +		mtk_v4l2_debug(0, "[%d] Change to state MTK_STATE_ABORT",
-> +			       ctx->id);
-> +	}
-> +	mutex_unlock(&dev->dev_mutex);
-> +}
-> +
->  static const struct mtk_vcodec_fw_ops mtk_vcodec_vpu_msg = {
->  	.load_firmware = mtk_vcodec_vpu_load_firmware,
->  	.get_vdec_capa = mtk_vcodec_vpu_get_vdec_capa,
-> @@ -71,8 +95,13 @@ static const struct mtk_vcodec_fw_ops mtk_vcodec_vpu_msg = {
->  	.map_dm_addr = mtk_vcodec_vpu_map_dm_addr,
->  	.ipi_register = mtk_vcodec_vpu_set_ipi_register,
->  	.ipi_send = mtk_vcodec_vpu_ipi_send,
-> +	.release = mtk_vcodec_vpu_release,
+> +			qrtr_instance_id = <0x21>;
+> +			base-addr = <0x54600000>;
+> +			m3-dump-addr = <0x57300000>;
+> +			etr-addr = <0x57400000>;
+> +			qcom,caldb-addr = <0x57500000>;
+> +			};
+> +		};
+> +	};
 >  };
 >  
-> +#endif  /* IS_ENABLED(CONFIG_VIDEO_MEDIATEK_VPU) */
-> +
-> +#if IS_ENABLED(CONFIG_MTK_SCP)
-> +
->  static int mtk_vcodec_scp_load_firmware(struct mtk_vcodec_fw *fw)
->  {
->  	return rproc_boot(scp_get_rproc(fw->scp));
-> @@ -107,6 +136,11 @@ static int mtk_vcodec_scp_ipi_send(struct mtk_vcodec_fw *fw, int id, void *buf,
->  	return scp_ipi_send(fw->scp, id, buf, len, wait);
->  }
->  
-> +static void mtk_vcodec_scp_release(struct mtk_vcodec_fw *fw)
-> +{
-> +	scp_put(fw->scp);
-> +}
-> +
->  static const struct mtk_vcodec_fw_ops mtk_vcodec_rproc_msg = {
->  	.load_firmware = mtk_vcodec_scp_load_firmware,
->  	.get_vdec_capa = mtk_vcodec_scp_get_vdec_capa,
-> @@ -114,23 +148,10 @@ static const struct mtk_vcodec_fw_ops mtk_vcodec_rproc_msg = {
->  	.map_dm_addr = mtk_vcodec_vpu_scp_dm_addr,
->  	.ipi_register = mtk_vcodec_scp_set_ipi_register,
->  	.ipi_send = mtk_vcodec_scp_ipi_send,
-> +	.release = mtk_vcodec_scp_release,
->  };
->  
-> -static void mtk_vcodec_reset_handler(void *priv)
-> -{
-> -	struct mtk_vcodec_dev *dev = priv;
-> -	struct mtk_vcodec_ctx *ctx;
-> -
-> -	mtk_v4l2_err("Watchdog timeout!!");
-> -
-> -	mutex_lock(&dev->dev_mutex);
-> -	list_for_each_entry(ctx, &dev->ctx_list, list) {
-> -		ctx->state = MTK_STATE_ABORT;
-> -		mtk_v4l2_debug(0, "[%d] Change to state MTK_STATE_ABORT",
-> -			       ctx->id);
-> -	}
-> -	mutex_unlock(&dev->dev_mutex);
-> -}
-> +#endif  /* IS_ENABLED(CONFIG_MTK_SCP) */
->  
->  struct mtk_vcodec_fw *mtk_vcodec_fw_select(struct mtk_vcodec_dev *dev,
->  					   enum mtk_vcodec_fw_type type,
-> @@ -143,16 +164,22 @@ struct mtk_vcodec_fw *mtk_vcodec_fw_select(struct mtk_vcodec_dev *dev,
->  
->  	switch (type) {
->  	case VPU:
-> +#if IS_ENABLED(CONFIG_VIDEO_MEDIATEK_VPU)
->  		ops = &mtk_vcodec_vpu_msg;
->  		fw_pdev = vpu_get_plat_device(dev->plat_dev);
->  		if (!fw_pdev) {
->  			mtk_v4l2_err("firmware device is not ready");
->  			return ERR_PTR(-EINVAL);
->  		}
-> -		vpu_wdt_reg_handler(fw_pdev, mtk_vcodec_reset_handler,
-> +		vpu_wdt_reg_handler(fw_pdev, mtk_vcodec_vpu_reset_handler,
->  				    dev, rst_id);
->  		break;
-> +#else
-> +		mtk_v4l2_err("no VPU support in this kernel");
-> +		return ERR_PTR(-ENODEV);
-> +#endif
->  	case SCP:
-> +#if IS_ENABLED(CONFIG_MTK_SCP)
->  		ops = &mtk_vcodec_rproc_msg;
->  		scp = scp_get(dev->plat_dev);
->  		if (!scp) {
-> @@ -160,6 +187,10 @@ struct mtk_vcodec_fw *mtk_vcodec_fw_select(struct mtk_vcodec_dev *dev,
->  			return ERR_PTR(-EPROBE_DEFER);
->  		}
->  		break;
-> +#else
-> +		mtk_v4l2_err("no SCP support in this kernel");
-> +		return ERR_PTR(-ENODEV);
-> +#endif
->  	default:
->  		mtk_v4l2_err("invalid vcodec fw type");
->  		return ERR_PTR(-EINVAL);
-> @@ -180,14 +211,7 @@ EXPORT_SYMBOL_GPL(mtk_vcodec_fw_select);
->  
->  void mtk_vcodec_fw_release(struct mtk_vcodec_fw *fw)
->  {
-> -	switch (fw->type) {
-> -	case VPU:
-> -		put_device(&fw->pdev->dev);
-> -		break;
-> -	case SCP:
-> -		scp_put(fw->scp);
-> -		break;
-> -	}
-> +	fw->ops->release(fw);
->  }
->  EXPORT_SYMBOL_GPL(mtk_vcodec_fw_release);
->  
+>  &qmp_pcie_phy0 {
+> -- 
+> 2.7.4
 > 
-
