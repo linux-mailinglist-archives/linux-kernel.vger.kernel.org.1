@@ -2,94 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94813287B93
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 20:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1C18287BAC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 20:27:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728243AbgJHSVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 14:21:36 -0400
-Received: from foss.arm.com ([217.140.110.172]:42906 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725616AbgJHSVg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 14:21:36 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 91CC4D6E;
-        Thu,  8 Oct 2020 11:21:35 -0700 (PDT)
-Received: from [10.37.12.22] (unknown [10.37.12.22])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2D4F63F802;
-        Thu,  8 Oct 2020 11:21:31 -0700 (PDT)
-Subject: Re: [PATCH v4 29/39] arm64: mte: Switch GCR_EL1 in kernel entry and
- exit
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1601593784.git.andreyknvl@google.com>
- <1f2681fdff1aa1096df949cb8634a9be6bf4acc4.1601593784.git.andreyknvl@google.com>
- <20201002140652.GG7034@gaia>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <1b2327ee-5f30-e412-7359-32a7a38b4c8d@arm.com>
-Date:   Thu, 8 Oct 2020 19:24:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201002140652.GG7034@gaia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1728464AbgJHS1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 14:27:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725874AbgJHS1a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 14:27:30 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D676C061755
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 11:27:29 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id b193so4135368pga.6
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 11:27:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=qKVACZ37gbwD3Vrxyl3CjxzaTSwtlD53B6L2JTDGMHU=;
+        b=Fn3tdWFMiAEW6EWkMQETL2Z/9ovncZzYcTjnB9JoCeEf7x1B9bMmnIOCwW3XnMo/o4
+         YQeTr5MDPPN84mG1hI3NPWaazecbGiVAwwZLCRIgs3mT0WGrPwubyYYacBm1GGS86bpQ
+         IHafEAhVmAhip4kz7k/3tNbEF3rbrwROgrtWA/jcN8TtwvXtGzMK7Yza10XFYwi9tpvk
+         TvXDSVe+2K4oSxX/msRb8qFm5mOxq1VSisZ36LN0PkBsF3nfwig7RbUnyIBnIjRAZhLV
+         O1WWPnx3vUzTCAx8JGZsrffLbF3FwA3l0cG9b4jIdhNN90FIxds4sl7n2ZcNqFBuWyVB
+         MYeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=qKVACZ37gbwD3Vrxyl3CjxzaTSwtlD53B6L2JTDGMHU=;
+        b=hBl8oUxL4zWrURwnt+DAOj1FSfvR/pH4qZexhLXFKhmJbFGIvR1rq9dpnm5m8+7e6I
+         U7yKvz0FckNEWyTF0e9aqLpd5nr7BZ/XEHE191bpT8R+nU1dISZj5wERne92gTunaLGE
+         1uS4M0gAnx99s8aJ9JGNdy0DLhdwnLEBAzUZigEFVNhoiC1JypklWenzG3oIeZOd4dGy
+         6HHWKnbStKDLMpEjrKMXCi4fUIVh7G19EpcLqxU2M2hLweZ1wxgV2QJMhJqJcs1XoO7d
+         /yEdJCEEXoRJXAJAQtvWzJIZF8ksfP0OG46tx28lwL529fM2kb4aw1JpcylckkpqSNAA
+         JFkg==
+X-Gm-Message-State: AOAM530CucXkbRLMk/yzf73YfHe4ZzQKqce+/vVzPMNj0Nyxb8APUkaS
+        0OmFCCmGfFJY1ws0xa1fSen8PXFM9QlPbshz
+X-Google-Smtp-Source: ABdhPJy2Y5k/y/cg1OlJGlvvVyWrIFFOlPnUf6VwIHjw6IqMTLEmhNLGn0jaX89EwMyGxkqZNQgX9A==
+X-Received: by 2002:a62:7f81:0:b029:152:6197:f1f2 with SMTP id a123-20020a627f810000b02901526197f1f2mr8452244pfd.49.1602181648003;
+        Thu, 08 Oct 2020 11:27:28 -0700 (PDT)
+Received: from localhost.localdomain ([150.129.237.234])
+        by smtp.googlemail.com with ESMTPSA id z8sm8212640pfk.49.2020.10.08.11.27.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Oct 2020 11:27:27 -0700 (PDT)
+From:   Harshal Chaudhari <harshalchau04@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     arnd@arndb.de, sudipm.mukherjee@gmail.com,
+        linux-kernel@vger.kernel.org, harshalchau04@gmail.com
+Subject: [PATCH] char: ppdev: check if ioctl argument is present and valid
+Date:   Thu,  8 Oct 2020 23:57:13 +0530
+Message-Id: <20201008182713.2764-1-harshalchau04@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Catalin,
+Checking the argument passed to the ioctl is valid
+or not. if not then return -EINVAL.
 
-On 10/2/20 3:06 PM, Catalin Marinas wrote:
-> On Fri, Oct 02, 2020 at 01:10:30AM +0200, Andrey Konovalov wrote:
->> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
->> index 7c67ac6f08df..d1847f29f59b 100644
->> --- a/arch/arm64/kernel/mte.c
->> +++ b/arch/arm64/kernel/mte.c
->> @@ -23,6 +23,8 @@
->>  #include <asm/ptrace.h>
->>  #include <asm/sysreg.h>
->>  
->> +u64 gcr_kernel_excl __ro_after_init;
->> +
->>  static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap)
->>  {
->>  	pte_t old_pte = READ_ONCE(*ptep);
->> @@ -120,6 +122,13 @@ void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
->>  	return ptr;
->>  }
->>  
->> +void mte_init_tags(u64 max_tag)
->> +{
->> +	u64 incl = GENMASK(max_tag & MTE_TAG_MAX, 0);
-> 
-> Nitpick: it's not obvious that MTE_TAG_MAX is a mask, so better write
-> this as GENMASK(min(max_tag, MTE_TAG_MAX), 0).
-> 
+Signed-off-by: Harshal Chaudhari <harshalchau04@gmail.com>
+---
+ drivers/char/ppdev.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-The two things do not seem equivalent because the format of the tags in KASAN is
-0xFF and in MTE is 0xF, hence if extract the minimum whatever is the tag passed
-by KASAN it will always be MTE_TAG_MAX.
-
-To make it cleaner I propose: GENMASK(FIELD_GET(MTE_TAG_MAX, max_tag), 0);
-
-> Otherwise it looks fine.
-> 
-> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-> 
-
+diff --git a/drivers/char/ppdev.c b/drivers/char/ppdev.c
+index 38b46c7d1737..001392980202 100644
+--- a/drivers/char/ppdev.c
++++ b/drivers/char/ppdev.c
+@@ -354,7 +354,7 @@ static int pp_do_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 	unsigned int minor = iminor(file_inode(file));
+ 	struct pp_struct *pp = file->private_data;
+ 	struct parport *port;
+-	void __user *argp = (void __user *)arg;
++	void __user *argp = NULL;
+ 	struct ieee1284_info *info;
+ 	unsigned char reg;
+ 	unsigned char mask;
+@@ -364,6 +364,16 @@ static int pp_do_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 	struct timespec64 ts;
+ 	int ret;
+ 
++	if (_IOC_TYPE(cmd) != PP_IOCTL)
++		return -ENOTTY;
++
++	/* check if ioctl argument is present and valid */
++	if (_IOC_DIR(cmd) != _IOC_NONE) {
++		argp = (void __user *)arg;
++		if (!argp)
++			return -EINVAL;
++	}
++
+ 	/* First handle the cases that don't take arguments. */
+ 	switch (cmd) {
+ 	case PPCLAIM:
 -- 
-Regards,
-Vincenzo
+2.17.1
+
