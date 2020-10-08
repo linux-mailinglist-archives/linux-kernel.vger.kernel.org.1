@@ -2,166 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85A2E286F4B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:23:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 924C7286F50
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727050AbgJHHX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 03:23:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47098 "EHLO
+        id S1727109AbgJHHYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 03:24:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725874AbgJHHX1 (ORCPT
+        with ESMTP id S1726761AbgJHHYD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 03:23:27 -0400
-Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF33AC0613D4
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 00:23:26 -0700 (PDT)
-Received: by mail-oo1-xc43.google.com with SMTP id w7so1253413oow.7
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 00:23:26 -0700 (PDT)
+        Thu, 8 Oct 2020 03:24:03 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B93FBC061755
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 00:24:01 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id z22so6085743wmi.0
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 00:24:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ui8WkZ8ZsqWNVKFISnxizxdl1xBQtE0ojtcqIbBf85o=;
-        b=OLHQfD6clKQWUqpmaAK9RMlR/tsEUgzWlL24nlPViG1Rk9p8LHmyCmM7/5WLHXKEvu
-         lI/irRP+aq5gBsvKA49uJgztAy930tPikm27PGApe4JTRXsGR0g3qvfoDhdKCEoe0v+J
-         hUX2iSsNsi3+8JirFm0OBhWG4fOImFFw/17nk=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=51bhbv7Q6y4/rGYHYq4fR0iaqpAhvfl/QOeD7oDUgoY=;
+        b=Sz4LrZs5sa3octu3Z1A9s+T5d/i+MGIkvGmGM1rxCnwKGbOcznbtt/HDXrMEVDfsqa
+         RslLmR8ukkTsWqHOlEReH3W5wtfyxJSAYdd7uz3y0RiR+T++OVv071N3AFA/xB26+qZN
+         EnSTjmvZ6TACHOBMcXRD8raf3tsJdzVrp0KYJPpFrs/8w+KAG8MwsxkkU53RUk6WzSic
+         wtbU9z8F3TuhPjMwzBE9YtYf46BUWPZQw4mQX+Rk9uns/YLCYagsHREzg6PLUWxizgMg
+         SDfv+tlw8RTTJ3JkFuZ5aUE5ldEyM/XHr8r185QBx+pH6wb7tMC9vs57UHu8q9zsFHTN
+         OIoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ui8WkZ8ZsqWNVKFISnxizxdl1xBQtE0ojtcqIbBf85o=;
-        b=LPq8pX2vXK1fy5Fl633yagsi7GTaUD0h1Jm8Hj4jT/ZZb2YmlAihzH60MFb0uBQ0bz
-         B5wV079gK0QJ+Kouv3D1PDozZTPbl94Eyx3l0+Tvxa4A8NDvDMmJaSlZM9kYg1HvY7gr
-         SON5OVWUVoT8G03bH07cR7+sgVKK6O/AlPsDdn2SX9hD7K0lnr6N8ARSuA8bHNxuAie3
-         5RETmNyzNEpJDgsGF/zwMrGntF4x3r5hDPuij9rQfdcmwcfOOv1l65g5zoowFAQra72/
-         BZEka2VNfrr2raa7m/28u+PhTZdaNIoHS77bQ751Uvo0xgnqQOXW4jUGDBmppF92Ouj4
-         dMbw==
-X-Gm-Message-State: AOAM533u6uP9Emit5x3RgnGwr3hKsM8HcBHgjcjkobeB/DaF+5LW5X+j
-        uK5RH7F8y1kioe/eGEmGEPGIwP71DQnNWHXqfI4fQA==
-X-Google-Smtp-Source: ABdhPJy3F0IZWGCXcT7DTnuCU2t5bEV1GI8WhdMxAAqDMxgLl6e5j0szfklCmFBV9PnPK7/VfntIN7R+bRVO1DC8GEg=
-X-Received: by 2002:a4a:c011:: with SMTP id v17mr4481557oop.89.1602141806038;
- Thu, 08 Oct 2020 00:23:26 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=51bhbv7Q6y4/rGYHYq4fR0iaqpAhvfl/QOeD7oDUgoY=;
+        b=L1RKCEmOPKYbIbA+D+LmY0wFmXBFoi3zfPHtCEIr05DmpnbvX7zwccyAuBONBeoXR+
+         sTLgd5hpaozfxKAYITw1qpNiyc3WomCK5oQvdZMnCWfup7D8jX5klvJ9rHOuGTwE3R+m
+         JhouZdC8YhMpLHRyDoi560y6jg8Ez93HxKl0W1qjEiCovBrMXrpRdM4XoOh1zXBbNmAE
+         1dYIP2CrIWzTJNCqSnkH10f7f3MUJTC+Juc5MPtw0u/c+B9UZY4KqowZq8DE8U7e+77I
+         Lb7ZGBwPUu50QQUSweKMiAaEDOEO3C3EGRyZAwW8F/ifjtmgvMs2pES5L5BuEJQBlBST
+         sWMw==
+X-Gm-Message-State: AOAM533MpFUgjwHuUbQgcGyZJCvTxDduYxLfsih6Qae8G43iEGVZWRUw
+        6TUVWoqCV9P6jAA9OzQfZSruuw==
+X-Google-Smtp-Source: ABdhPJx2zS+4ltiDHMYeaoKp07Jhp4uEQ4HL8oiyNbsAbmYlk1jLvA611SMEj/Hfn3iMJn7GnhL40w==
+X-Received: by 2002:a1c:6a06:: with SMTP id f6mr6817704wmc.184.1602141840369;
+        Thu, 08 Oct 2020 00:24:00 -0700 (PDT)
+Received: from dell ([91.110.221.232])
+        by smtp.gmail.com with ESMTPSA id o6sm5984050wrm.69.2020.10.08.00.23.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Oct 2020 00:23:59 -0700 (PDT)
+Date:   Thu, 8 Oct 2020 08:23:57 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Russ Weight <russell.h.weight@intel.com>
+Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
+        yilun.xu@intel.com, hao.wu@intel.com, matthew.gerlach@intel.com
+Subject: Re: [PATCH v2 1/6] mfd: intel-m10-bmc: support for MAX10 BMC
+ Security Engine
+Message-ID: <20201008072357.GD1763265@dell>
+References: <20201003012412.16831-1-russell.h.weight@intel.com>
+ <20201003012412.16831-2-russell.h.weight@intel.com>
+ <20201007070059.GB1763265@dell>
+ <c50c30b7-0693-3ff1-8d79-5d311d3831bd@intel.com>
 MIME-Version: 1.0
-References: <20201007164426.1812530-1-daniel.vetter@ffwll.ch>
- <20201007164426.1812530-8-daniel.vetter@ffwll.ch> <852a74ec-339b-4c7f-9e29-b9736111849a@nvidia.com>
-In-Reply-To: <852a74ec-339b-4c7f-9e29-b9736111849a@nvidia.com>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Thu, 8 Oct 2020 09:23:14 +0200
-Message-ID: <CAKMK7uEa1+f+34qeLo9F3-SvYpOKtGmQ+8sDtbEBmFeXkCx9mw@mail.gmail.com>
-Subject: Re: [PATCH 07/13] mm: close race in generic_access_phys
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>, linux-s390@vger.kernel.org,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Rik van Riel <riel@redhat.com>,
-        Benjamin Herrensmidt <benh@kernel.crashing.org>,
-        Dave Airlie <airlied@linux.ie>,
-        Hugh Dickins <hugh@veritas.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c50c30b7-0693-3ff1-8d79-5d311d3831bd@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 8, 2020 at 2:44 AM John Hubbard <jhubbard@nvidia.com> wrote:
->
-> On 10/7/20 9:44 AM, Daniel Vetter wrote:
-> > Way back it was a reasonable assumptions that iomem mappings never
-> > change the pfn range they point at. But this has changed:
+On Wed, 07 Oct 2020, Russ Weight wrote:
+> On 10/7/20 12:00 AM, Lee Jones wrote:
+> > On Fri, 02 Oct 2020, Russ Weight wrote:
 > >
-> > - gpu drivers dynamically manage their memory nowadays, invalidating
-> >    ptes with unmap_mapping_range when buffers get moved
+> >> Add macros and definitions required by the MAX10 BMC
+> >> Security Engine driver.
+> >>
+> >> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> >> ---
+> >> v2:
+> >>   - These functions and macros were previously distributed among
+> >>     the patches that needed them. They are now grouped together
+> >>     in a single patch containing changes to the Intel MAX10 BMC
+> >>     driver.
+> >>   - Added DRBL_ prefix to some definitions
+> >>   - Some address definitions were moved here from the .c files that
+> >>     use them.
+> >> ---
+> >>  include/linux/mfd/intel-m10-bmc.h | 134 ++++++++++++++++++++++++++++++
+> >>  1 file changed, 134 insertions(+)
+> >>
+> >> diff --git a/include/linux/mfd/intel-m10-bmc.h b/include/linux/mfd/intel-m10-bmc.h
+> >> index c8ef2f1654a4..880f907302eb 100644
+> >> --- a/include/linux/mfd/intel-m10-bmc.h
+> >> +++ b/include/linux/mfd/intel-m10-bmc.h
+> >> @@ -13,6 +13,9 @@
+> >>   * m10bmc_raw_read - read m10bmc register per addr
+> >> + * m10bmc_raw_bulk_read - bulk read max10 registers per addr
+> >> + * m10bmc_raw_bulk_write - bulk write max10 registers per addr
+> >> + * m10bmc_raw_update_bits - update max10 register per addr
+> >>   * m10bmc_sys_read - read m10bmc system register per offset
+> >> + * m10bmc_sys_update_bits - update max10 system register per offset
+> >>   */
+> > FWIW, I *hate* abstraction for the sake of abstraction.
 > >
-> > - contiguous dma allocations have moved from dedicated carvetouts to
->
-> s/carvetouts/carveouts/
->
-> >    cma regions. This means if we miss the unmap the pfn might contain
-> >    pagecache or anon memory (well anything allocated with GFP_MOVEABLE)
+> > Please just use the Regmap API in-place instead.
 > >
-> > - even /dev/mem now invalidates mappings when the kernel requests that
-> >    iomem region when CONFIG_IO_STRICT_DEVMEM is set, see 3234ac664a87
-> >    ("/dev/mem: Revoke mappings when a driver claims the region")
->
-> Thanks for putting these references into the log, it's very helpful.
-> ...
-> > diff --git a/mm/memory.c b/mm/memory.c
-> > index fcfc4ca36eba..8d467e23b44e 100644
-> > --- a/mm/memory.c
-> > +++ b/mm/memory.c
-> > @@ -4873,28 +4873,68 @@ int follow_phys(struct vm_area_struct *vma,
-> >       return ret;
-> >   }
-> >
-> > +/**
-> > + * generic_access_phys - generic implementation for iomem mmap access
-> > + * @vma: the vma to access
-> > + * @addr: userspace addres, not relative offset within @vma
-> > + * @buf: buffer to read/write
-> > + * @len: length of transfer
-> > + * @write: set to FOLL_WRITE when writing, otherwise reading
-> > + *
-> > + * This is a generic implementation for &vm_operations_struct.access for an
-> > + * iomem mapping. This callback is used by access_process_vm() when the @vma is
-> > + * not page based.
-> > + */
-> >   int generic_access_phys(struct vm_area_struct *vma, unsigned long addr,
-> >                       void *buf, int len, int write)
-> >   {
-> >       resource_size_t phys_addr;
-> >       unsigned long prot = 0;
-> >       void __iomem *maddr;
-> > +     pte_t *ptep, pte;
-> > +     spinlock_t *ptl;
-> >       int offset = addr & (PAGE_SIZE-1);
-> > +     int ret = -EINVAL;
-> > +
-> > +     if (!(vma->vm_flags & (VM_IO | VM_PFNMAP)))
-> > +             return -EINVAL;
-> > +
-> > +retry:
-> > +     if (follow_pte(vma->vm_mm, addr, &ptep, &ptl))
-> > +             return -EINVAL;
-> > +     pte = *ptep;
-> > +     pte_unmap_unlock(ptep, ptl);
-> >
-> > -     if (follow_phys(vma, addr, write, &prot, &phys_addr))
-> > +     prot = pgprot_val(pte_pgprot(pte));
-> > +     phys_addr = (resource_size_t)pte_pfn(pte) << PAGE_SHIFT;
-> > +
-> > +     if ((write & FOLL_WRITE) && !pte_write(pte))
-> >               return -EINVAL;
-> >
-> >       maddr = ioremap_prot(phys_addr, PAGE_ALIGN(len + offset), prot);
-> >       if (!maddr)
-> >               return -ENOMEM;
-> >
-> > +     if (follow_pte(vma->vm_mm, addr, &ptep, &ptl))
-> > +             goto out_unmap;
-> > +
-> > +     if (pte_same(pte, *ptep)) {
->
->
-> The ioremap area is something I'm sorta new to, so a newbie question:
-> is it possible for the same pte to already be there, ever? If so, we
-> be stuck in an infinite loop here.  I'm sure that's not the case, but
-> it's not yet obvious to me why it's impossible. Resource reservations
-> maybe?
+> I was following the discussion on the Max10 BMC driver to determine which way to go:
+> 
+> https://marc.info/?l=linux-kernel&m=159964043207829&w=2
+> 
+> My understanding was that the existing function wrappers were accepted because:
+> 
+> (1) The functions are adding dev_err() calls that would have to be replicated
+> for each call if we don't create a new function.
+> (2) The _sys_ macros are adding a base address offset, which facilitates
+> sharing code between multiple devices (although only the n3000 is supported with
+> the current patches).
+> 
+> Would you prefer that we handle these on a case by case basis? And only provide
+> wrappers for the ones that have high usage?
 
-It's just buggy, it should be !pte_same. And I need to figure out how
-to test this I guess.
--Daniel
+Yes please.  As I said in the link above, avoid them it at all
+possible.  If you and every other user needs to place an error message
+after every single call, consider moving the error message into the
+API itself.
+
+There are 10's if not 100's of different API calls where users
+normally place error messages following them.  To abstract them all
+for each platform would be insane.
+
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
