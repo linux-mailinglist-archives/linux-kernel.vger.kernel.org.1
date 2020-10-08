@@ -2,54 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0E34286E4F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 07:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7B01286E53
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 07:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728409AbgJHFwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 01:52:19 -0400
-Received: from smtprelay0103.hostedemail.com ([216.40.44.103]:33388 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726245AbgJHFwT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 01:52:19 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 0F3F6127F;
-        Thu,  8 Oct 2020 05:52:18 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1568:1593:1594:1711:1714:1730:1747:1777:1792:2393:2553:2559:2562:2828:2903:3138:3139:3140:3141:3142:3622:3865:3867:3868:3870:3871:3872:3874:4250:4321:5007:10004:10400:10848:11026:11232:11658:11914:12296:12297:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21627:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: toe57_3515d0f271d5
-X-Filterd-Recvd-Size: 1362
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf09.hostedemail.com (Postfix) with ESMTPA;
-        Thu,  8 Oct 2020 05:52:16 +0000 (UTC)
-Message-ID: <2279bdda913b31bdea68c23a9889e056c3947201.camel@perches.com>
-Subject: Re: [PATCH-next 0/4] RDMA: sprintf to sysfs_emit conversions
-From:   Joe Perches <joe@perches.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 07 Oct 2020 22:52:15 -0700
-In-Reply-To: <20201008054128.GD13580@unreal>
-References: <cover.1602122879.git.joe@perches.com>
-         <20201008054128.GD13580@unreal>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        id S1728536AbgJHFwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 01:52:46 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:41248 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726245AbgJHFwp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 01:52:45 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kQOqz-0006af-PP; Thu, 08 Oct 2020 16:52:38 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 08 Oct 2020 16:52:38 +1100
+Date:   Thu, 8 Oct 2020 16:52:38 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>
+Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>
+Subject: Re: [v2 PATCH] crypto: sun4i-ss - Fix sparse endianness markers
+Message-ID: <20201008055238.GA9813@gondor.apana.org.au>
+References: <202009061621.J89kO43Q%lkp@intel.com>
+ <20200907062400.GA15841@gondor.apana.org.au>
+ <20200907160029.GC11894@Red>
+ <20200908050036.GA19817@gondor.apana.org.au>
+ <20200910122248.GA22506@Red>
+ <20200911041354.GA5275@gondor.apana.org.au>
+ <20200914104058.GA14265@Red>
+ <20200924030859.GA8223@gondor.apana.org.au>
+ <20200924132738.GA24386@Red>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924132738.GA24386@Red>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-10-08 at 08:41 +0300, Leon Romanovsky wrote:
-> On Wed, Oct 07, 2020 at 07:36:23PM -0700, Joe Perches wrote:
-> > A recent commit added a sysfs_emit and sysfs_emit_at to allow various
-> > sysfs show functions to ensure that the PAGE_SIZE buffer argument is
-> > never overrun and always NUL terminated.
-> 
-> Unfortunately but the sysfs_emit commit is not in rdma-next tree yet.
+On Thu, Sep 24, 2020 at 03:27:38PM +0200, Corentin Labbe wrote:
+>
+> This is an example on next-20200923+BigEndian
+> alg: ahash: sha1 test failed (wrong result) on test vector \"random: psize=194 ksize=0\", cfg=\"random: inplace may_sleep use_finup src_divs=[98.25%@+1124, <flush>1.75%@+5] iv_offset=18\"
 
-Likely it'll still apply fairly well when the sysfs_emit commit is...
+Hmm, the only way I can see this happening is if it was triggered
+by tcrypt.  Were you using tcrypt by any chance?
 
+Ccing Eric in case he has any insight.
 
+> === DUMP /proc/crypto ===
+> name         : sha1
+> driver       : sha1-sun4i-ss
+> module       : kernel
+> priority     : 300
+> refcnt       : 1
+> selftest     : passed
+> internal     : no
+> type         : ahash
+> async        : no
+> blocksize    : 64
+> digestsize   : 20
+
+...
+
+> name         : sha1
+> driver       : sha1-generic
+> module       : kernel
+> priority     : 100
+> refcnt       : 1
+> selftest     : passed
+> internal     : no
+> type         : shash
+> blocksize    : 64
+> digestsize   : 20
+
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
