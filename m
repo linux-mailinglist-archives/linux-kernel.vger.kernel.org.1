@@ -2,150 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E96442879C9
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 18:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E56FA2879CC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 18:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730772AbgJHQOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 12:14:42 -0400
-Received: from mga05.intel.com ([192.55.52.43]:19148 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725922AbgJHQOm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 12:14:42 -0400
-IronPort-SDR: rU7RkC4xof2EG9H+16MzopLnFxRQmcOlCOygZcq3eFwvkuMo39iBxvcLM4UdhihuPvRePSvdL6
- bj8ZbvZzwIiQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="250057524"
-X-IronPort-AV: E=Sophos;i="5.77,351,1596524400"; 
-   d="scan'208";a="250057524"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 09:14:42 -0700
-IronPort-SDR: oUgCTqKl77SUSPg/XciwHSeH5vxX2HDQiwhyfHNMzlXWNe2Sc5YFg7oEyb5fGYGf+llTXRmD2X
- 1EsKm3vKzP4g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,351,1596524400"; 
-   d="scan'208";a="388843881"
-Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
-  by orsmga001.jf.intel.com with ESMTP; 08 Oct 2020 09:14:41 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 8 Oct 2020 09:14:41 -0700
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 8 Oct 2020 09:14:40 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Thu, 8 Oct 2020 09:14:40 -0700
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (104.47.37.57) by
- edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Thu, 8 Oct 2020 09:14:37 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=i34XDh5OgjPkZ3Lcd/C8uy5q8mqRn2bf9IXLLutWSZuB/18r5NIKZ+BADaeGJ2MWL5u/Bu4TdD49XlzgO0RvWrXSn7+yTnhUkE3oUjEwjqG3uquv4v+0JkO+a8Kz4LYgBMlY9wDHmwH5YTMqC7JFhEetxe2rGdlnfG3du2uP0tA5c8gnKWRq0kEWTk6u+9cUCYMXeDUsWeB3kvk63OilkwzKDinXm1l4QqCOXUocwQ1MbYl4/FwGTQOAtBD4c0wFubKBLTQWn92ODC+CQdFLlWGKV0OOfis8nYgP9VrUUSu2QpgWOp0odbUeRM6NBaqook3EGEDgLFZVvWV7hxmscg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mUHDesTl1SnG1fkY1eM/A5OnH6JCzLpstV6NNKa/YEU=;
- b=WTMQoa0nziw+TjDkN0aJiwIWjSrDuHF+lNbythCr5EVDb3vWhhms/nOmh6a2Fc7IxcftL6/0TPmOIFoHCScB3Sp2vIjaMyqtXl4Nyl80hBkBURp8QlzfwB6aXNA9SWGRTh+2fZAzzfbCIQ0JFjyPvSYW7wiKbScQwVEMifUe5EIeqC9Zh//7XOJtlYwRUh3w9vtxr19/JYYarGRHqNWMf8LWKC4DKfB8shedLT10uX/J3Oo2ae/q0JerDpwa4E93A+qeY7/pR/ifEBMMi7yYah1EnG11FK2dy8Pg7vdhmYYf4wsms/7chKL7j+qmLo/Nut2PJw1/B3QomEpT2linzA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mUHDesTl1SnG1fkY1eM/A5OnH6JCzLpstV6NNKa/YEU=;
- b=wmVzWPYczXOPCP/6FN5yQxw2flj/zlnXCBs3EJ2/AMUyFV4kbs9AgSGTQER9f4M0cbcfHablgoJ0BQtju13ujwKoz+A1OqiJKWKVVdPNz01Xe6UFxuM346q41FinmqLuS/T5zZEqX+0FcweNEUUu2AXqhA1aeKRLYc3G/4DUiMs=
-Received: from SN6PR11MB3136.namprd11.prod.outlook.com (2603:10b6:805:da::30)
- by SA2PR11MB5082.namprd11.prod.outlook.com (2603:10b6:806:115::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.23; Thu, 8 Oct
- 2020 16:14:36 +0000
-Received: from SN6PR11MB3136.namprd11.prod.outlook.com
- ([fe80::a5be:6abd:8ad0:37db]) by SN6PR11MB3136.namprd11.prod.outlook.com
- ([fe80::a5be:6abd:8ad0:37db%6]) with mapi id 15.20.3455.023; Thu, 8 Oct 2020
- 16:14:36 +0000
-From:   "Voon, Weifeng" <weifeng.voon@intel.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        "Andrew Lunn" <andrew@lunn.ch>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
-        "Seow, Chen Yong" <chen.yong.seow@intel.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        "Wong, Vee Khee" <vee.khee.wong@intel.com>
-Subject: RE: [PATCH v1 net-next] net: stmmac: Enable EEE HW LPI timer with
- auto SW/HW switching
-Thread-Topic: [PATCH v1 net-next] net: stmmac: Enable EEE HW LPI timer with
- auto SW/HW switching
-Thread-Index: AQHWnY2zojJcsTCzn0OHgYdrcYf+OKmN4HQA
-Date:   Thu, 8 Oct 2020 16:14:36 +0000
-Message-ID: <SN6PR11MB313657B3D8D271DA75351B1C880B0@SN6PR11MB3136.namprd11.prod.outlook.com>
-References: <20201008161123.9317-1-weifeng.voon@intel.com>
-In-Reply-To: <20201008161123.9317-1-weifeng.voon@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: davemloft.net; dkim=none (message not signed)
- header.d=none;davemloft.net; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [161.142.255.178]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f3b7d38b-9652-4c5a-89dc-08d86ba54027
-x-ms-traffictypediagnostic: SA2PR11MB5082:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SA2PR11MB508241176D2757AFEA0D0D61880B0@SA2PR11MB5082.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: m2xAanlJeEpm6E2uMsodaXriog0F0hfYKK+f7KNBkNZ7eP2LK3JGOnO73OuaJOxlD+K1czf5/+BpT4utQCANgaybXPgkB+VDJgjMOEdAiUGe6/icxSwrjcDpxFvwU+mWX0EgUepvxv67BsvWglCNlxe6nITMBHKJhKy6T3XYjffH+Y/fbTVhuRkhBXBYKrR5wFuWwe37i12/ngtdA/6E/jJm4kKyZw9xtdxWmhYlGmr3vegGQmI/oQQeYftQQgEHz7WuoemOiV7eAKS+3jq50V1Oaia3HmLviHK3BGdzDSfvKfHbVU7L0igkH3HwOIEZ
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB3136.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(346002)(376002)(366004)(39860400002)(52536014)(2906002)(66446008)(4326008)(7696005)(186003)(71200400001)(64756008)(66556008)(66946007)(5660300002)(316002)(9686003)(66476007)(4744005)(76116006)(26005)(54906003)(86362001)(55016002)(8936002)(33656002)(8676002)(478600001)(110136005)(6506007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: vrVVzT0/TVZX3f6DoDGnHFniUh78LJRMGvY6d+u4SfvSNr605vxo0URrTvD/Ktns9AXv831IdojIYULiDeWq6gpMOl2x9m7xzzl8beQDnaF3U7LhzC82PqqHxYRTKp+vHBy5fVTgxyAx+zvm5T59nz35Fl5TyTvtVcwZYSxYVw2twCXezP19tfL4DOjcNGtxt7pS7nsZUikTxjhsF1/UjXxn/xz8HXgxihJl0w4Ankv4/n0zKy6HuDIBXv4NdHIkFa3k7KgeroBDFpcNjFm62QfcFWVQqVDgi6f7wtkinu7P4+ad0KYVz89N1zfXInd43CVnDEjm7w4QyvJRbZl0Qh5kI+PeN1/GLcpPXtlyPce7VpBrIcdrFcFjUts4QuDBIMbNdeFZKPSNBKw4y5GXyZ5uyL+o8qsHMkB/bkdm7xnh8gsQdOBwfgdvT70dH3qSn53TN4xNBGxzgzArpvjQcw6i6+gxE0bDMPp9Gjrm2xnpt5JVtvkF7S8EUEmEZCuI8L9vKHAtvciGrYjvXiOAH9DAM8CAFNilzmvSIGUjAfkL/D1NypqeR8h1SZeADVkwCiJm6pfUS6zq6/2b6BqHOXDymmpWwTU65u7CfMidIFeJvvmWnA+NHhs39KFvbCE89J80Ni+Wwi7FdKBXhxROdw==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1730767AbgJHQO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 12:14:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728356AbgJHQO6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 12:14:58 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD32CC061755
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 09:14:57 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id j2so7254176wrx.7
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 09:14:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zXsct4aKUk5X9x91oDjSC7XjSSOkkDL4HLgLLcBeuwk=;
+        b=ZOE66C1eXbIHfFLdjfwJbbm0fEF4D4SI45c0DVg/6dGD0B0R3EM3tEToOdAs7Jugnf
+         3TTNgwpiWetXKWTn1RxwJFrgPIbWxNmQODK9aFEP0j+JneESDiSh2AN2hEAPXvg5wWzd
+         i0z8G/ou/4LiLSYy904rlvvuqHiinMyYNT7XQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=zXsct4aKUk5X9x91oDjSC7XjSSOkkDL4HLgLLcBeuwk=;
+        b=YPolFqJ7xUzL4Bwv7U8NcP9r/JTeATzwOmX8vfHERiGUtZrYmyp75HcKvXxCL2/843
+         //4tx5Y0GK99aks2rVowvlhp53WeTy64eB4eS2gpv+bNXOgU8xjrUQYV8s+CItaZCWPc
+         HDJ+xVrlnnNPkaQIAl2TOHjnLQ3qszYOyIGgy1lHhBbIIPICC8pb3JyLQwZmVGlZxGOy
+         YcSpGrnXN/Ss81oqsIUHDn1ytdk+r4G4H4eTYCh8KRLHSXeL1nZrLz8L6ZCObROdFMZY
+         H91VDOaCn1CLLCVZMckdd1IQdanDxO+N4M8SkXJ43nzTshANkSwrJ8LPTTq+RyRIdN8n
+         NQmg==
+X-Gm-Message-State: AOAM533+WgQBj06eK8Pfb1EJ4xUsdC3VJaSgc6Nwho24PSHjD6B2SEl5
+        7N1HiTAm36IuHkHp+f48JvabDg==
+X-Google-Smtp-Source: ABdhPJyvR2Wn8XzkW+mXGG92a58Zke6WRoDiWZI9CSZaD8/g3MWjYLRUK8RxxoqKy41YVhWvv7PJUQ==
+X-Received: by 2002:a05:6000:1084:: with SMTP id y4mr9700595wrw.138.1602173696347;
+        Thu, 08 Oct 2020 09:14:56 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id f14sm8609336wrt.53.2020.10.08.09.14.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Oct 2020 09:14:55 -0700 (PDT)
+Date:   Thu, 8 Oct 2020 18:14:53 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Matteo Franchin <matteo.franchin@arm.com>
+Cc:     dri-devel@lists.freedesktop.org, maarten.lankhorst@linux.intel.com,
+        mripard@kernel.org, tzimmermann@suse.de, airlied@linux.ie,
+        daniel@ffwll.ch, brian.starkey@arm.com, liviu.dudau@arm.com,
+        linux-kernel@vger.kernel.org, nd@arm.com
+Subject: Re: [PATCH v2] drm/fourcc: Add AXBXGXRX106106106106 format
+Message-ID: <20201008161453.GI438822@phenom.ffwll.local>
+Mail-Followup-To: Matteo Franchin <matteo.franchin@arm.com>,
+        dri-devel@lists.freedesktop.org, maarten.lankhorst@linux.intel.com,
+        mripard@kernel.org, tzimmermann@suse.de, airlied@linux.ie,
+        brian.starkey@arm.com, liviu.dudau@arm.com,
+        linux-kernel@vger.kernel.org, nd@arm.com
+References: <20201008143350.5306-1-matteo.franchin@arm.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB3136.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f3b7d38b-9652-4c5a-89dc-08d86ba54027
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Oct 2020 16:14:36.1494
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 8hcR1ttP/WnfX7WcYadgj3jA3VMnvEphocIWmYI8dDP3hz+Mou++mzmWNfk7hMeoIdA3O8e5ClYADPi4kkexXA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5082
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201008143350.5306-1-matteo.franchin@arm.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Subject: [PATCH v1 net-next] net: stmmac: Enable EEE HW LPI timer with au=
-to
-> SW/HW switching
->=20
-> From: "Vineetha G. Jaya Kumaran" <vineetha.g.jaya.kumaran@intel.com>
->=20
-> This patch enables the HW LPI Timer which controls the automatic entry an=
-d
-> exit of the LPI state.
-> The EEE LPI timer value is configured through ethtool. The driver will au=
-to
-> select the LPI HW timer if the value in the HW timer supported range.
-> Else, the driver will fallback to SW timer.
->=20
-> Signed-off-by: Vineetha G. Jaya Kumaran <vineetha.g.jaya.kumaran@intel.co=
-m>
-> Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
+On Thu, Oct 08, 2020 at 03:33:50PM +0100, Matteo Franchin wrote:
+> Add ABGR format with 10-bit components packed in 64-bit per pixel.
+> This format can be used to handle
+> VK_FORMAT_R10X6G10X6B10X6A10X6_UNORM_4PACK16 on little-endian
+> architectures.
+> 
+> Signed-off-by: Matteo Franchin <matteo.franchin@arm.com>
 
-Please help to review and comment. Thanks.=20
-Weifeng
+Ok so 0xff and 0xfb for a true 16bit format have a slight difference,
+whereas for this truncated format they're both max brightness. So yeah
+there's a difference and I guess we need to add this.
 
+Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+
+> ---
+>  drivers/gpu/drm/drm_fourcc.c  | 1 +
+>  include/uapi/drm/drm_fourcc.h | 6 ++++++
+>  2 files changed, 7 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/drm_fourcc.c b/drivers/gpu/drm/drm_fourcc.c
+> index 722c7ebe4e88..03262472059c 100644
+> --- a/drivers/gpu/drm/drm_fourcc.c
+> +++ b/drivers/gpu/drm/drm_fourcc.c
+> @@ -202,6 +202,7 @@ const struct drm_format_info *__drm_format_info(u32 format)
+>  		{ .format = DRM_FORMAT_XBGR16161616F,	.depth = 0,  .num_planes = 1, .cpp = { 8, 0, 0 }, .hsub = 1, .vsub = 1 },
+>  		{ .format = DRM_FORMAT_ARGB16161616F,	.depth = 0,  .num_planes = 1, .cpp = { 8, 0, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
+>  		{ .format = DRM_FORMAT_ABGR16161616F,	.depth = 0,  .num_planes = 1, .cpp = { 8, 0, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
+> +		{ .format = DRM_FORMAT_AXBXGXRX106106106106, .depth = 0, .num_planes = 1, .cpp = { 8, 0, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
+>  		{ .format = DRM_FORMAT_RGB888_A8,	.depth = 32, .num_planes = 2, .cpp = { 3, 1, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
+>  		{ .format = DRM_FORMAT_BGR888_A8,	.depth = 32, .num_planes = 2, .cpp = { 3, 1, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
+>  		{ .format = DRM_FORMAT_XRGB8888_A8,	.depth = 32, .num_planes = 2, .cpp = { 4, 1, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
+> diff --git a/include/uapi/drm/drm_fourcc.h b/include/uapi/drm/drm_fourcc.h
+> index 82f327801267..9374d9558493 100644
+> --- a/include/uapi/drm/drm_fourcc.h
+> +++ b/include/uapi/drm/drm_fourcc.h
+> @@ -155,6 +155,12 @@ extern "C" {
+>  #define DRM_FORMAT_ARGB16161616F fourcc_code('A', 'R', '4', 'H') /* [63:0] A:R:G:B 16:16:16:16 little endian */
+>  #define DRM_FORMAT_ABGR16161616F fourcc_code('A', 'B', '4', 'H') /* [63:0] A:B:G:R 16:16:16:16 little endian */
+>  
+> +/*
+> + * RGBA format with 10-bit components packed in 64-bit per pixel, with 6 bits
+> + * of unused padding per component:
+> + */
+> +#define DRM_FORMAT_AXBXGXRX106106106106 fourcc_code('A', 'B', '1', '0') /* [63:0] A:x:B:x:G:x:R:x 10:6:10:6:10:6:10:6 little endian */
+> +
+>  /* packed YCbCr */
+>  #define DRM_FORMAT_YUYV		fourcc_code('Y', 'U', 'Y', 'V') /* [31:0] Cr0:Y1:Cb0:Y0 8:8:8:8 little endian */
+>  #define DRM_FORMAT_YVYU		fourcc_code('Y', 'V', 'Y', 'U') /* [31:0] Cb0:Y1:Cr0:Y0 8:8:8:8 little endian */
+> -- 
+> 2.17.1
+> 
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
