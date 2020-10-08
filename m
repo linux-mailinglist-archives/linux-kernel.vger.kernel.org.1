@@ -2,182 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 870B6287126
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 11:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42BF928712A
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 11:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728282AbgJHJBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 05:01:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:32886 "EHLO mx2.suse.de"
+        id S1728464AbgJHJB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 05:01:57 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33286 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725802AbgJHJBh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 05:01:37 -0400
+        id S1726053AbgJHJB5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 05:01:57 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1602147715;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AzJEdvC+G7NnMzyULtk00YOH5Sxb+JafFdEJYX2lY7Y=;
+        b=kOkwM9wA1Bsn8lGGr7eqceZu2K9P0znL4DhCXJ4k5Wxy5ff+HKIAc3zjQWFCpeXTh4TG4h
+        qVRVDig54AxLJbFjSorbxWUo+YEmOEKAQ2Vcmutjo+JhI9I/Hv57U2sa9ysvoW0wSlPS8l
+        I7iSrZbIswmBwteHdX9kOm6mqSQ1DQ8=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3232EAC3C;
-        Thu,  8 Oct 2020 09:01:36 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id BD5DA1E1305; Thu,  8 Oct 2020 11:01:35 +0200 (CEST)
-Date:   Thu, 8 Oct 2020 11:01:35 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ralph Campbell <rcampbell@nvidia.com>
-Cc:     linux-mm@kvack.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Theodore Ts'o <tytso@mit.edu>, Christoph Hellwig <hch@lst.de>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v2] ext4/xfs: add page refcount helper
-Message-ID: <20201008090135.GA3486@quack2.suse.cz>
-References: <20201007214925.11181-1-rcampbell@nvidia.com>
+        by mx2.suse.de (Postfix) with ESMTP id AAF32AF4E;
+        Thu,  8 Oct 2020 09:01:55 +0000 (UTC)
+Date:   Thu, 8 Oct 2020 11:01:55 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Shreyas Joshi <shreyas.joshi@biamp.com>, rostedt@goodmis.org,
+        shreyasjoshi15@gmail.com, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] printk: handle blank console arguments passed in.
+Message-ID: <20201008090155.GB16837@alley>
+References: <20201006095226.GB32369@alley>
+ <24f7a6bc-c917-2bb7-0e86-9d729c18e812@roeck-us.net>
+ <20201006134328.GD32369@alley>
+ <20201006163514.GE32369@alley>
+ <20201006171504.GA64770@jagdpanzerIV.localdomain>
+ <20201007072853.GF32369@alley>
+ <20201007123044.GA509@jagdpanzerIV.localdomain>
+ <be66237b-e7b2-0321-c00c-cd6fba6e3b58@roeck-us.net>
+ <20201007162942.GA440@jagdpanzerIV.localdomain>
+ <20201008055238.GA554@jagdpanzerIV.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201007214925.11181-1-rcampbell@nvidia.com>
+In-Reply-To: <20201008055238.GA554@jagdpanzerIV.localdomain>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 07-10-20 14:49:25, Ralph Campbell wrote:
-> There are several places where ZONE_DEVICE struct pages assume a reference
-> count == 1 means the page is idle and free. Instead of open coding this,
-> add helper functions to hide this detail.
+On Thu 2020-10-08 14:52:38, Sergey Senozhatsky wrote:
+> On (20/10/08 01:29), Sergey Senozhatsky wrote:
+> > On (20/10/07 08:57), Guenter Roeck wrote:
+> > > On 10/7/20 5:30 AM, Sergey Senozhatsky wrote:
+> > 
+> > [..]
+> > 
+> > > I can see to options: Link /dev/console to /dev/null if there is no console,
+> > > or do something like
+> > > 
+> > > 	if (IS_ERR(file)) {
+> > >                 pr_warn("Warning: unable to open an initial console.\n");
+> > >                 file = filp_open("/dev/null", O_RDWR, 0);
+> > > 		if (IS_ERR(file))
+> > >                 	return;
+> > >         }
+> > 
+> > As far as I can tell, /dev/null does not exist yet on this stage
+> > (at least not in my system). But generally the idea looks interesting.
 > 
-> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Acked-by: Darrick J. Wong <darrick.wong@oracle.com>
-> Acked-by: Theodore Ts'o <tytso@mit.edu> # for fs/ext4/inode.c
-
-The patch looks good to me. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
+> Hmm. How about this. console= is undocumented and unspecified - it
+> may work sometimes or it may kill the system (and theoretically even
+> corrupt some files, depending on what fd 1 and fd 2 point to). So
+> maybe we can document console= and handle it in printk, rather than
+> somewhere deep in init/main.c
+> 
+> IOW add one more flag (yeah, I know) and set it when console_setup()
+> sees console= boot param. The idea is allow console registration,
+> but all consoles should be disabled (cleared CON_ENABLED bit). This
+> would be easier to document, at least.
+> 
+> Schematically:
+> 
 > ---
-> 
-> Changes in v2:
-> I strongly resisted the idea of extending this patch but after Jan
-> Kara's comment about there being more places that could be cleaned
-> up, I felt compelled to make this one tensy wensy change to add
-> a dax_wakeup_page() to match the dax_wait_page().
-> I kept the Reviewed/Acked-bys since I don't think this substantially
-> changes the patch.
-> 
->  fs/dax.c            |  4 ++--
->  fs/ext4/inode.c     |  5 +----
->  fs/xfs/xfs_file.c   |  4 +---
->  include/linux/dax.h | 15 +++++++++++++++
->  mm/memremap.c       |  3 ++-
->  5 files changed, 21 insertions(+), 10 deletions(-)
-> 
-> diff --git a/fs/dax.c b/fs/dax.c
-> index 5b47834f2e1b..85c63f735909 100644
-> --- a/fs/dax.c
-> +++ b/fs/dax.c
-> @@ -358,7 +358,7 @@ static void dax_disassociate_entry(void *entry, struct address_space *mapping,
->  	for_each_mapped_pfn(entry, pfn) {
->  		struct page *page = pfn_to_page(pfn);
+> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> index 929e86a01148..b71ff9d87693 100644
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -281,6 +281,7 @@ static struct console_cmdline console_cmdline[MAX_CMDLINECONSOLES];
 >  
-> -		WARN_ON_ONCE(trunc && page_ref_count(page) > 1);
-> +		WARN_ON_ONCE(trunc && !dax_layout_is_idle_page(page));
->  		WARN_ON_ONCE(page->mapping && page->mapping != mapping);
->  		page->mapping = NULL;
->  		page->index = 0;
-> @@ -372,7 +372,7 @@ static struct page *dax_busy_page(void *entry)
->  	for_each_mapped_pfn(entry, pfn) {
->  		struct page *page = pfn_to_page(pfn);
+>  static int preferred_console = -1;
+>  static bool has_preferred_console;
+> +static bool mute_consoles = false;
+>  int console_set_on_cmdline;
+>  EXPORT_SYMBOL(console_set_on_cmdline);
 >  
-> -		if (page_ref_count(page) > 1)
-> +		if (!dax_layout_is_idle_page(page))
->  			return page;
->  	}
->  	return NULL;
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 771ed8b1fadb..132620cbfa13 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -3937,10 +3937,7 @@ int ext4_break_layouts(struct inode *inode)
->  		if (!page)
->  			return 0;
+> @@ -2141,6 +2142,9 @@ static int __add_preferred_console(char *name, int idx, char *options,
+>  	struct console_cmdline *c;
+>  	int i;
 >  
-> -		error = ___wait_var_event(&page->_refcount,
-> -				atomic_read(&page->_refcount) == 1,
-> -				TASK_INTERRUPTIBLE, 0, 0,
-> -				ext4_wait_dax_page(ei));
-> +		error = dax_wait_page(ei, page, ext4_wait_dax_page);
->  	} while (error == 0);
->  
->  	return error;
-> diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-> index 3d1b95124744..a5304aaeaa3a 100644
-> --- a/fs/xfs/xfs_file.c
-> +++ b/fs/xfs/xfs_file.c
-> @@ -749,9 +749,7 @@ xfs_break_dax_layouts(
->  		return 0;
->  
->  	*retry = true;
-> -	return ___wait_var_event(&page->_refcount,
-> -			atomic_read(&page->_refcount) == 1, TASK_INTERRUPTIBLE,
-> -			0, 0, xfs_wait_dax_page(inode));
-> +	return dax_wait_page(inode, page, xfs_wait_dax_page);
->  }
->  
->  int
-> diff --git a/include/linux/dax.h b/include/linux/dax.h
-> index b52f084aa643..e2da78e87338 100644
-> --- a/include/linux/dax.h
-> +++ b/include/linux/dax.h
-> @@ -243,6 +243,21 @@ static inline bool dax_mapping(struct address_space *mapping)
->  	return mapping->host && IS_DAX(mapping->host);
->  }
->  
-> +static inline bool dax_layout_is_idle_page(struct page *page)
-> +{
-> +	return page_ref_count(page) == 1;
-> +}
+> +	if (mute_consoles)
+> +		return;
 > +
-> +static inline void dax_wakeup_page(struct page *page)
-> +{
-> +	wake_up_var(&page->_refcount);
-> +}
-> +
-> +#define dax_wait_page(_inode, _page, _wait_cb)				\
-> +	___wait_var_event(&(_page)->_refcount,				\
-> +		dax_layout_is_idle_page(_page),				\
-> +		TASK_INTERRUPTIBLE, 0, 0, _wait_cb(_inode))
-> +
->  #ifdef CONFIG_DEV_DAX_HMEM_DEVICES
->  void hmem_register_device(int target_nid, struct resource *r);
->  #else
-> diff --git a/mm/memremap.c b/mm/memremap.c
-> index 2bb276680837..504a10ff2edf 100644
-> --- a/mm/memremap.c
-> +++ b/mm/memremap.c
-> @@ -12,6 +12,7 @@
->  #include <linux/types.h>
->  #include <linux/wait_bit.h>
->  #include <linux/xarray.h>
-> +#include <linux/dax.h>
->  
->  static DEFINE_XARRAY(pgmap_array);
->  
-> @@ -508,7 +509,7 @@ void free_devmap_managed_page(struct page *page)
->  {
->  	/* notify page idle for dax */
->  	if (!is_device_private_page(page)) {
-> -		wake_up_var(&page->_refcount);
-> +		dax_wakeup_page(page);
->  		return;
->  	}
->  
-> -- 
-> 2.20.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>  	/*
+>  	 *	See if this tty is not yet registered, and
+>  	 *	if we have a slot free.
+
+Interesting idea. Well, it looks like yet another mess:
+
+  + it would show the consoles in /proc/consoles
+    even thought they will be basically unusable
+
+  + it is yet another way to affect the amount of messages
+    on console. We already have console_loglevel, ignore_loglevel.
+
+  + this effect is far from obvious when using console=""
+
+
+IMHO, we should try to understand why it actually crashes first.
+It might help to solve the problem some cleaner way.
+
+Thanks a lot for digging into it.
+
+Best Regards,
+Petr
