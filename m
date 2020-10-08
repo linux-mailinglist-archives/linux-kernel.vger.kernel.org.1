@@ -2,252 +2,418 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A87286E3B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 07:43:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B9D286E48
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 07:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728237AbgJHFns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 01:43:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726245AbgJHFns (ORCPT
+        id S1728512AbgJHFoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 01:44:14 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:13872 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728403AbgJHFoM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 01:43:48 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F43C0613D2
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 22:43:46 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id i2so4412463ljg.4
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 22:43:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=wirenboard-ru.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=i71PJY1rLSI4eOg+PhEakUm+s6386zJP+9T/6pzaOEg=;
-        b=D/9bfveKRY7NtJ/Ol+qzWXBZbPrDmL2RSVxXB8Qw4GxvPhKfFD8a5/LhM6xoJKyV92
-         l2pPteRoF8F19iNbLlZM4/qkeNMHVvBjuo4cD+h1uLBh9K70mHdV98y3rYpe7FeRFt4Z
-         CmlSb6hJHUsXc/qfwmBaWurD3lyzgAmZ0azE7bvUoJxobCOr4kWK9KRhThfQxTXZvD7c
-         D1YjP2b7qSKCa4Qh+P6L1LRmRgYPZRD8VI6WZFi5nRTxJ7rcUJmFOm6x3qUc0ePwxS13
-         RY4fbXNhbVpM8NrXRPC6j3PggJjM+dWfKnoy7B7mDZ2K+J4wR7kuC+uxdFyh3LfjhfPh
-         ILYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=i71PJY1rLSI4eOg+PhEakUm+s6386zJP+9T/6pzaOEg=;
-        b=sOsQev0onWgUv/zkd9iXLhZWQRhvhI/2o+oV9GI9WRMC/XVwArx4e4bIhvoWDmCqaw
-         daOT1qYQOj6649y2xuMA9wMn0C37PoGHuPk8FcJryJTJL5XDLpS8Lv2LXXNnkv7CiR39
-         phmhQzXFbbqbkPM1uu2XmXVoZWWHdGQ+gCJA5UflSTfSfhUOGCIwbppg8+tW6FpyLBzG
-         UUlxtmI5WfK0+TWSlFkoIHruvFHHBTmQdyrKw34bOgnaKIIF/giwXAGNIF4r0U92/4C9
-         +O8ggEiwob+BfseWUa/PcW8aMmsL8bI8WKGO65EcLE+j9e6ZENmzbW9ZZicaWMlHH/xx
-         RrFA==
-X-Gm-Message-State: AOAM531aLt1HfJeZ6pZCoUM4aiODqC9YqOaGB3CnDSZ3WHHFL3GWwpHa
-        WShaJqhzdzVhcOK9zNvIIJWFOg==
-X-Google-Smtp-Source: ABdhPJxA9d+S0OjpGIJz2cGmcZ/RB2TADS7auylQiOH9np9UxomCUyJaZ2ljT+CNDWrHr/EFqNRfmg==
-X-Received: by 2002:a2e:9b02:: with SMTP id u2mr2707129lji.303.1602135823116;
-        Wed, 07 Oct 2020 22:43:43 -0700 (PDT)
-Received: from localhost.localdomain (128-70-36-207.broadband.corbina.ru. [128.70.36.207])
-        by smtp.googlemail.com with ESMTPSA id x14sm738816ljm.126.2020.10.07.22.43.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 22:43:42 -0700 (PDT)
-From:   Ivan Zaentsev <ivan.zaentsev@wirenboard.ru>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Akira Shimahara <akira215corp@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Evgeniy Polyakov <zbr@ioremap.net>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Evgeny Boger <boger@wirenboard.com>,
-        Ivan Zaentsev <ivan.zaentsev@wirenboard.ru>
-Subject: [PATCH] docs: w1: w1_therm: Fix broken xref, mistakes, clarify text
-Date:   Thu,  8 Oct 2020 08:42:59 +0300
-Message-Id: <20201008054259.5461-1-ivan.zaentsev@wirenboard.ru>
-X-Mailer: git-send-email 2.25.1
+        Thu, 8 Oct 2020 01:44:12 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f7ea6f10002>; Wed, 07 Oct 2020 22:43:13 -0700
+Received: from [10.25.74.27] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 8 Oct
+ 2020 05:43:50 +0000
+Subject: Re: [PATCH v2 5/5] PCI: dwc: Move dw_pcie_msi_init() from each users
+ to designware host
+To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Richard Zhu <hongxing.zhu@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "Yue Wang" <yue.wang@Amlogic.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        "Neil Armstrong" <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Jesper Nilsson <jesper.nilsson@axis.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>,
+        Pratyush Anand <pratyush.anand@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        "Kunihiko Hayashi" <hayashi.kunihiko@socionext.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>
+CC:     "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>,
+        "linux-amlogic@lists.infradead.org" 
+        <linux-amlogic@lists.infradead.org>,
+        "linux-arm-kernel@axis.com" <linux-arm-kernel@axis.com>,
+        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+References: <20200924190421.549cb8fc@xhacker.debian>
+ <20200924190742.76939458@xhacker.debian>
+From:   Vidya Sagar <vidyas@nvidia.com>
+Message-ID: <2972e253-1d4f-1475-594b-024103959415@nvidia.com>
+Date:   Thu, 8 Oct 2020 11:13:47 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200924190742.76939458@xhacker.debian>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1602135793; bh=iZvy76pdbc5FJCBH+eg53TT5F3QDakC6nEIqBGQ5ke8=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=ofe9x4DPu8JLtZyOBkrJptBE1YLWfDKJp/FT2TrySrEETKgd0we+ph0bHRQvhl1iJ
+         QjbQmuCCngb/xcuFOPjnj2HXcQWNwHasWeKb+89PYHo/Kb0h/F8Xb+c2snOORSS8el
+         M6zZhwJjr2PreNU8bEJo0EhOLIqtGVw0godmsv/gQu4rhg8CuHj3NmpUvUM0oIMpgP
+         mLqjHeotbcZ184hurTiRD3t6z7Br8JEBJ9RuXc8xfMA5WyYUjUJx+zEBNobM7+QT/w
+         atquyuI7LiuX19EJ6iWr+71VjsIVMJDNuPAcGIbuh7lo33vo1spfgWKBSFuBV3sKaE
+         K/wVQXs9EmBbw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sysfs attribute names are mixed with the same normal text terms.
-Use ReST to distinguish.
 
-Fix typos and mistakes.
 
-Signed-off-by: Ivan Zaentsev <ivan.zaentsev@wirenboard.ru>
----
- .../ABI/testing/sysfs-driver-w1_therm         |  6 +-
- Documentation/w1/slaves/w1_therm.rst          | 83 +++++++++----------
- 2 files changed, 43 insertions(+), 46 deletions(-)
+On 9/24/2020 4:37 PM, Jisheng Zhang wrote:
+> External email: Use caution opening links or attachments
+> 
+> 
+> Currently, dw_pcie_msi_init() allocates and maps page for msi, then
+> program the PCIE_MSI_ADDR_LO and PCIE_MSI_ADDR_HI. The Root Complex
+> may lose power during suspend-to-RAM, so when we resume, we want to
+> redo the latter but not the former. If designware based driver (for
+> example, pcie-tegra194.c) calls dw_pcie_msi_init() in resume path, the
+> previous msi page will be leaked. From another side, except
+> pci-dra7xx.c we can move the dw_pcie_msi_init() from each users to
+> designware host, I.E move the msi page allocation and mapping to
+> dw_pcie_host_init() and move the PCIE_MSI_ADDR_* programming to
+> dw_pcie_setup_rc(). After this moving, we solve the msi page leakage
+> as well.
+> 
+> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+> ---
+>   drivers/pci/controller/dwc/pci-dra7xx.c       |  1 +
+>   drivers/pci/controller/dwc/pci-exynos.c       |  2 --
+>   drivers/pci/controller/dwc/pci-imx6.c         |  3 ---
+>   drivers/pci/controller/dwc/pci-meson.c        |  8 -------
+>   drivers/pci/controller/dwc/pcie-artpec6.c     | 10 --------
+>   .../pci/controller/dwc/pcie-designware-host.c | 24 ++++++++++++-------
+>   .../pci/controller/dwc/pcie-designware-plat.c |  3 ---
+>   drivers/pci/controller/dwc/pcie-designware.h  |  5 ++++
+>   drivers/pci/controller/dwc/pcie-histb.c       |  3 ---
+>   drivers/pci/controller/dwc/pcie-kirin.c       |  3 ---
+>   drivers/pci/controller/dwc/pcie-qcom.c        |  3 ---
+>   drivers/pci/controller/dwc/pcie-spear13xx.c   |  1 -
+>   drivers/pci/controller/dwc/pcie-tegra194.c    |  2 --
+>   drivers/pci/controller/dwc/pcie-uniphier.c    |  9 +------
+>   14 files changed, 22 insertions(+), 55 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-dra7xx.c b/drivers/pci/controller/dwc/pci-dra7xx.c
+> index dc387724cf08..d8b74389e353 100644
+> --- a/drivers/pci/controller/dwc/pci-dra7xx.c
+> +++ b/drivers/pci/controller/dwc/pci-dra7xx.c
+> @@ -210,6 +210,7 @@ static int dra7xx_pcie_host_init(struct pcie_port *pp)
+>          dra7xx_pcie_establish_link(pci);
+>          dw_pcie_wait_for_link(pci);
+>          dw_pcie_msi_init(pp);
+> +       dw_pcie_msi_config(pp);
+>          dra7xx_pcie_enable_interrupts(dra7xx);
+> 
+>          return 0;
+> diff --git a/drivers/pci/controller/dwc/pci-exynos.c b/drivers/pci/controller/dwc/pci-exynos.c
+> index 8d82c43ae299..9cca0ce79777 100644
+> --- a/drivers/pci/controller/dwc/pci-exynos.c
+> +++ b/drivers/pci/controller/dwc/pci-exynos.c
+> @@ -298,8 +298,6 @@ static void exynos_pcie_msi_init(struct exynos_pcie *ep)
+>          struct pcie_port *pp = &pci->pp;
+>          u32 val;
+> 
+> -       dw_pcie_msi_init(pp);
+> -
+>          /* enable MSI interrupt */
+>          val = exynos_pcie_readl(ep->mem_res->elbi_base, PCIE_IRQ_EN_LEVEL);
+>          val |= IRQ_MSI_ENABLE;
+> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+> index 5fef2613b223..dba6e351e3df 100644
+> --- a/drivers/pci/controller/dwc/pci-imx6.c
+> +++ b/drivers/pci/controller/dwc/pci-imx6.c
+> @@ -848,9 +848,6 @@ static int imx6_pcie_host_init(struct pcie_port *pp)
+>          dw_pcie_setup_rc(pp);
+>          imx6_pcie_establish_link(imx6_pcie);
+> 
+> -       if (IS_ENABLED(CONFIG_PCI_MSI))
+> -               dw_pcie_msi_init(pp);
+> -
+>          return 0;
+>   }
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-meson.c b/drivers/pci/controller/dwc/pci-meson.c
+> index 4f183b96afbb..cd0d9dd8dd61 100644
+> --- a/drivers/pci/controller/dwc/pci-meson.c
+> +++ b/drivers/pci/controller/dwc/pci-meson.c
+> @@ -377,12 +377,6 @@ static int meson_pcie_establish_link(struct meson_pcie *mp)
+>          return dw_pcie_wait_for_link(pci);
+>   }
+> 
+> -static void meson_pcie_enable_interrupts(struct meson_pcie *mp)
+> -{
+> -       if (IS_ENABLED(CONFIG_PCI_MSI))
+> -               dw_pcie_msi_init(&mp->pci.pp);
+> -}
+> -
+>   static int meson_pcie_rd_own_conf(struct pcie_port *pp, int where, int size,
+>                                    u32 *val)
+>   {
+> @@ -467,8 +461,6 @@ static int meson_pcie_host_init(struct pcie_port *pp)
+>          if (ret)
+>                  return ret;
+> 
+> -       meson_pcie_enable_interrupts(mp);
+> -
+>          return 0;
+>   }
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-artpec6.c b/drivers/pci/controller/dwc/pcie-artpec6.c
+> index 97d50bb50f06..af1e6bb28e7a 100644
+> --- a/drivers/pci/controller/dwc/pcie-artpec6.c
+> +++ b/drivers/pci/controller/dwc/pcie-artpec6.c
+> @@ -346,15 +346,6 @@ static void artpec6_pcie_deassert_core_reset(struct artpec6_pcie *artpec6_pcie)
+>          usleep_range(100, 200);
+>   }
+> 
+> -static void artpec6_pcie_enable_interrupts(struct artpec6_pcie *artpec6_pcie)
+> -{
+> -       struct dw_pcie *pci = artpec6_pcie->pci;
+> -       struct pcie_port *pp = &pci->pp;
+> -
+> -       if (IS_ENABLED(CONFIG_PCI_MSI))
+> -               dw_pcie_msi_init(pp);
+> -}
+> -
+>   static int artpec6_pcie_host_init(struct pcie_port *pp)
+>   {
+>          struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> @@ -368,7 +359,6 @@ static int artpec6_pcie_host_init(struct pcie_port *pp)
+>          dw_pcie_setup_rc(pp);
+>          artpec6_pcie_establish_link(pci);
+>          dw_pcie_wait_for_link(pci);
+> -       artpec6_pcie_enable_interrupts(artpec6_pcie);
+> 
+>          return 0;
+>   }
+> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+> index 7a8adf597803..6603d7c36f2e 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+> @@ -296,11 +296,23 @@ void dw_pcie_msi_deinit(struct pcie_port *pp)
+>          }
+>   }
+> 
+> +void dw_pcie_msi_config(struct pcie_port *pp)
+> +{
+> +       if (pp->msi_page) {
+> +               u64 msi_target = (u64)pp->msi_data;
+> +
+> +               /* Program the msi_data */
+> +               dw_pcie_wr_own_conf(pp, PCIE_MSI_ADDR_LO, 4,
+> +                                   lower_32_bits(msi_target));
+> +               dw_pcie_wr_own_conf(pp, PCIE_MSI_ADDR_HI, 4,
+> +                                   upper_32_bits(msi_target));
+> +       }
+> +}
+> +
+>   void dw_pcie_msi_init(struct pcie_port *pp)
+>   {
+>          struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+>          struct device *dev = pci->dev;
+> -       u64 msi_target;
+> 
+>          pp->msi_page = alloc_page(GFP_KERNEL);
+I'm not sure if it can be addressed in the same patch, but I think it is 
+required to call dma_set_coherent_mask() with 32-bit mask before calling 
+dma_map_single() as there are endpoint devices which are only 32-bit MSI 
+capable and it is required to restrict the MSI target address to always 
+be in 32-bit domain so that both kinds of endpoints (only 32-bit capable 
+and 64-bit capable) can work with this 32-bit MSI target.
 
-diff --git a/Documentation/ABI/testing/sysfs-driver-w1_therm b/Documentation/ABI/testing/sysfs-driver-w1_therm
-index 9f05bcdcd762..8873bbb075cb 100644
---- a/Documentation/ABI/testing/sysfs-driver-w1_therm
-+++ b/Documentation/ABI/testing/sysfs-driver-w1_therm
-@@ -146,7 +146,7 @@ Date:		July 2020
- Contact:	Ivan Zaentsev <ivan.zaentsev@wirenboard.ru>
- Description:
- 		(RW) Control optional driver settings.
--		Bit masks to read/write (logical OR):
-+		Bit masks to read/write (bitwise OR):
- 
-                 1: Enable check for conversion success. If byte 6 of
-                    scratchpad memory is 0xC after conversion, and
-@@ -157,7 +157,7 @@ Description:
-                    after the conversion start and wait for 1's. In parasite
-                    power mode this feature is not available.
- 
--		*read*:  Currently selected features, bitwise OR.
--		*write*: Select features, bitwise OR.
-+		*read*:  Currently selected features.
-+		*write*: Select features.
- 
- Users:		An application using the w1_term device
-diff --git a/Documentation/w1/slaves/w1_therm.rst b/Documentation/w1/slaves/w1_therm.rst
-index 00376501a5ef..e39202e2b000 100644
---- a/Documentation/w1/slaves/w1_therm.rst
-+++ b/Documentation/w1/slaves/w1_therm.rst
-@@ -27,75 +27,72 @@ W1_THERM_DS1825		0x3B
- W1_THERM_DS28EA00	0x42
- ====================	====
- 
--Support is provided through the sysfs w1_slave file. Each open and
--read sequence will initiate a temperature conversion then provide two
-+Support is provided through the sysfs entry ``w1_slave``. Each open and
-+read sequence will initiate a temperature conversion, then provide two
- lines of ASCII output. The first line contains the nine hex bytes
- read along with a calculated crc value and YES or NO if it matched.
- If the crc matched the returned values are retained. The second line
- displays the retained values along with a temperature in millidegrees
- Centigrade after t=.
- 
--Alternatively, temperature can be read using temperature sysfs, it
--return only temperature in millidegrees Centigrade.
-+Alternatively, temperature can be read using ``temperature`` sysfs, it
-+returns only the temperature in millidegrees Centigrade.
- 
--A bulk read of all devices on the bus could be done writing 'trigger'
--in the therm_bulk_read sysfs entry at w1_bus_master level. This will
--sent the convert command on all devices on the bus, and if parasite
--powered devices are detected on the bus (and strong pullup is enable
-+A bulk read of all devices on the bus could be done writing ``trigger``
-+to ``therm_bulk_read`` entry at w1_bus_master level. This will
-+send the convert command to all devices on the bus, and if parasite
-+powered devices are detected on the bus (and strong pullup is enabled
- in the module), it will drive the line high during the longer conversion
- time required by parasited powered device on the line. Reading
--therm_bulk_read will return 0 if no bulk conversion pending,
-+``therm_bulk_read`` will return 0 if no bulk conversion pending,
- -1 if at least one sensor still in conversion, 1 if conversion is complete
- but at least one sensor value has not been read yet. Result temperature is
--then accessed by reading the temperature sysfs entry of each device, which
-+then accessed by reading the ``temperature`` entry of each device, which
- may return empty if conversion is still in progress. Note that if a bulk
- read is sent but one sensor is not read immediately, the next access to
--temperature on this device will return the temperature measured at the
-+``temperature`` on this device will return the temperature measured at the
- time of issue of the bulk read command (not the current temperature).
- 
- A strong pullup will be applied during the conversion if required.
- 
--``conv_time`` sysfs entry is used to get current conversion time (read), and
-+``conv_time`` is used to get current conversion time (read), and
- adjust it (write). A temperature conversion time depends on the device type and
- it's current resolution. Default conversion time is set by the driver according
- to the device datasheet. A conversion time for many original device clones
- deviate from datasheet specs. There are three options: 1) manually set the
- correct conversion time by writing a value in milliseconds to ``conv_time``; 2)
- auto measure and set a conversion time by writing ``1`` to
--``conv_time``; 3) use ``features`` entry to enable poll for conversion
-+``conv_time``; 3) use ``features`` to enable poll for conversion
- completion. Options 2, 3 can't be used in parasite power mode. To get back to
- the default conversion time write ``0`` to ``conv_time``.
- 
--Writing a value between 9 and 12 to the sysfs w1_slave file will change the
--precision of the sensor for the next readings. This value is in (volatile)
--SRAM, so it is reset when the sensor gets power-cycled.
-+Writing a resolution value (in bits) to ``w1_slave`` will change the
-+precision of the sensor for the next readings. Allowed resolutions are defined by
-+the sensor. Resolution is reset when the sensor gets power-cycled.
- 
--To store the current precision configuration into EEPROM, the value 0
--has to be written to the sysfs w1_slave file. Since the EEPROM has a limited
--amount of writes (>50k), this command should be used wisely.
-+To store the current resolution in EEPROM, write ``0`` to ``w1_slave``.
-+Since the EEPROM has a limited amount of writes (>50k), this command should be
-+used wisely.
- 
--Alternatively, resolution can be set or read (value from 9 to 12) using the
--dedicated resolution sysfs entry on each device. This sysfs entry is not present
--for devices not supporting this feature.
-+Alternatively, resolution can be read or written using the dedicated
-+``resolution`` entry on each device, if supported by the sensor.
- 
--Some non-genuine DS18B20 chips are
--fixed in 12-bit mode only, so the actual resolution is read back from the chip
--and verified by the driver.
-+Some non-genuine DS18B20 chips are fixed in 12-bit mode only, so the actual
-+resolution is read back from the chip and verified.
- 
- Note: Changing the resolution reverts the conversion time to default.
- 
--The write-only sysfs entry eeprom is an alternative for EEPROM operations:
--  * 'save': will save device RAM to EEPROM
--  * 'restore': will restore EEPROM data in device RAM.
-+The write-only sysfs entry ``eeprom`` is an alternative for EEPROM operations.
-+Write ``save`` to save device RAM to EEPROM. Write ``restore`` to restore EEPROM
-+data in device RAM.
- 
--ext_power syfs entry allow tho check the power status of each device.
--  * '0': device parasite powered
--  * '1': device externally powered
-+``ext_power`` entry allows checking the power state of each device. Reads
-+``0`` if the device is parasite powered, ``1`` if the device is externally powered.
- 
--sysfs alarms allow read or write TH and TL (Temperature High an Low) alarms.
-+Sysfs ``alarms`` allow read or write TH and TL (Temperature High an Low) alarms.
- Values shall be space separated and in the device range (typical -55 degC
- to 125 degC). Values are integer as they are store in a 8bit register in
--the device. Lowest value is automatically put to TL.Once set, alarms could
-+the device. Lowest value is automatically put to TL. Once set, alarms could
- be search at master level.
- 
- The module parameter strong_pullup can be set to 0 to disable the
-@@ -119,24 +116,24 @@ The DS28EA00 provides an additional two pins for implementing a sequence
- detection algorithm.  This feature allows you to determine the physical
- location of the chip in the 1-wire bus without needing pre-existing
- knowledge of the bus ordering.  Support is provided through the sysfs
--w1_seq file.  The file will contain a single line with an integer value
-+``w1_seq``. The file will contain a single line with an integer value
- representing the device index in the bus starting at 0.
- 
- ``features`` sysfs entry controls optional driver settings per device.
--Insufficient power in parasite mode, line noise and insufficient conversion time
--may lead to conversion failure. Original DS18B20 and some clones allow for
-+Insufficient power in parasite mode, line noise and insufficient conversion
-+time may lead to conversion failure. Original DS18B20 and some clones allow for
- detection of invalid conversion. Write bit mask ``1`` to ``features`` to enable
- checking the conversion success. If byte 6 of scratchpad memory is 0xC after
- conversion and temperature reads 85.00 (powerup value) or 127.94 (insufficient
- power), the driver returns a conversion error. Bit mask ``2`` enables poll for
- conversion completion (normal power only) by generating read cycles on the bus
- after conversion starts. In parasite power mode this feature is not available.
--Feature bit masks may be combined (OR). See accompanying sysfs documentation:
--:ref:`Documentation/w1/slaves/w1_therm.rst <w1_therm>`
-+Feature bit masks may be combined (OR). More details in
-+Documentation/ABI/testing/sysfs-driver-w1_therm
- 
- GX20MH01 device shares family number 0x28 with DS18*20. The device is generally
--compatible with DS18B20. Added are lowest 2^-5, 2^-6 temperature bits in Config
--register; R2 bit in Config register enabling 13 and 14 bit resolutions. The
--device is powered up in 14-bit resolution mode. The conversion times specified
--in the datasheet are too low and have to be increased. The device supports
--driver features ``1`` and ``2``.
-+compatible with DS18B20. Added are lowest 2\ :sup:`-5`, 2\ :sup:`-6` temperature
-+bits in Config register; R2 bit in Config register enabling 13 and 14 bit
-+resolutions. The device is powered up in 14-bit resolution mode. The conversion
-+times specified in the datasheet are too low and have to be increased. The
-+device supports driver features ``1`` and ``2``.
--- 
-2.25.1
-
+>          if (!pp->msi_page) {
+> @@ -314,15 +326,7 @@ void dw_pcie_msi_init(struct pcie_port *pp)
+>                  dev_err(dev, "Failed to map MSI data\n");
+>                  __free_page(pp->msi_page);
+>                  pp->msi_page = NULL;
+> -               return;
+>          }
+> -       msi_target = (u64)pp->msi_data;
+> -
+> -       /* Program the msi_data */
+> -       dw_pcie_wr_own_conf(pp, PCIE_MSI_ADDR_LO, 4,
+> -                           lower_32_bits(msi_target));
+> -       dw_pcie_wr_own_conf(pp, PCIE_MSI_ADDR_HI, 4,
+> -                           upper_32_bits(msi_target));
+>   }
+>   EXPORT_SYMBOL_GPL(dw_pcie_msi_init);
+> 
+> @@ -449,6 +453,7 @@ int dw_pcie_host_init(struct pcie_port *pp)
+>                                  irq_set_chained_handler_and_data(pp->msi_irq,
+>                                                              dw_chained_msi_isr,
+>                                                              pp);
+> +                       dw_pcie_msi_init(pp);
+>                  } else {
+>                          ret = pp->ops->msi_host_init(pp);
+>                          if (ret < 0)
+> @@ -654,6 +659,7 @@ void dw_pcie_setup_rc(struct pcie_port *pp)
+>                                              (ctrl * MSI_REG_CTRL_BLOCK_SIZE),
+>                                              4, ~0);
+>                  }
+> +               dw_pcie_msi_config(pp);
+>          }
+> 
+>          /* Setup RC BARs */
+> diff --git a/drivers/pci/controller/dwc/pcie-designware-plat.c b/drivers/pci/controller/dwc/pcie-designware-plat.c
+> index 712456f6ce36..9ccf69a3dcf4 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware-plat.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware-plat.c
+> @@ -40,9 +40,6 @@ static int dw_plat_pcie_host_init(struct pcie_port *pp)
+>          dw_pcie_setup_rc(pp);
+>          dw_pcie_wait_for_link(pci);
+> 
+> -       if (IS_ENABLED(CONFIG_PCI_MSI))
+> -               dw_pcie_msi_init(pp);
+> -
+>          return 0;
+>   }
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
+> index 43b8061e1bec..40d22fe33afe 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware.h
+> +++ b/drivers/pci/controller/dwc/pcie-designware.h
+> @@ -372,6 +372,7 @@ static inline void dw_pcie_dbi_ro_wr_dis(struct dw_pcie *pci)
+>   irqreturn_t dw_handle_msi_irq(struct pcie_port *pp);
+>   void dw_pcie_msi_init(struct pcie_port *pp);
+>   void dw_pcie_msi_deinit(struct pcie_port *pp);
+> +void dw_pcie_msi_config(struct pcie_port *pp);
+>   void dw_pcie_setup_rc(struct pcie_port *pp);
+>   int dw_pcie_host_init(struct pcie_port *pp);
+>   void dw_pcie_host_deinit(struct pcie_port *pp);
+> @@ -390,6 +391,10 @@ static inline void dw_pcie_msi_deinit(struct pcie_port *pp)
+>   {
+>   }
+> 
+> +static inline void dw_pcie_msi_config(struct pcie_port *pp)
+> +{
+> +}
+> +
+>   static inline void dw_pcie_setup_rc(struct pcie_port *pp)
+>   {
+>   }
+> diff --git a/drivers/pci/controller/dwc/pcie-histb.c b/drivers/pci/controller/dwc/pcie-histb.c
+> index 2a2835746077..fbf53e897ca7 100644
+> --- a/drivers/pci/controller/dwc/pcie-histb.c
+> +++ b/drivers/pci/controller/dwc/pcie-histb.c
+> @@ -196,9 +196,6 @@ static int histb_pcie_host_init(struct pcie_port *pp)
+>   {
+>          histb_pcie_establish_link(pp);
+> 
+> -       if (IS_ENABLED(CONFIG_PCI_MSI))
+> -               dw_pcie_msi_init(pp);
+> -
+>          return 0;
+>   }
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/controller/dwc/pcie-kirin.c
+> index e496f51e0152..d7246995daf0 100644
+> --- a/drivers/pci/controller/dwc/pcie-kirin.c
+> +++ b/drivers/pci/controller/dwc/pcie-kirin.c
+> @@ -425,9 +425,6 @@ static int kirin_pcie_host_init(struct pcie_port *pp)
+>   {
+>          kirin_pcie_establish_link(pp);
+> 
+> -       if (IS_ENABLED(CONFIG_PCI_MSI))
+> -               dw_pcie_msi_init(pp);
+> -
+>          return 0;
+>   }
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> index 3aac77a295ba..2abbb850fb56 100644
+> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> @@ -1281,9 +1281,6 @@ static int qcom_pcie_host_init(struct pcie_port *pp)
+> 
+>          dw_pcie_setup_rc(pp);
+> 
+> -       if (IS_ENABLED(CONFIG_PCI_MSI))
+> -               dw_pcie_msi_init(pp);
+> -
+>          qcom_ep_reset_deassert(pcie);
+> 
+>          ret = qcom_pcie_establish_link(pcie);
+> diff --git a/drivers/pci/controller/dwc/pcie-spear13xx.c b/drivers/pci/controller/dwc/pcie-spear13xx.c
+> index 62846562da0b..760e27de0082 100644
+> --- a/drivers/pci/controller/dwc/pcie-spear13xx.c
+> +++ b/drivers/pci/controller/dwc/pcie-spear13xx.c
+> @@ -157,7 +157,6 @@ static void spear13xx_pcie_enable_interrupts(struct spear13xx_pcie *spear13xx_pc
+> 
+>          /* Enable MSI interrupt */
+>          if (IS_ENABLED(CONFIG_PCI_MSI)) {
+> -               dw_pcie_msi_init(pp);
+>                  writel(readl(&app_reg->int_mask) |
+>                                  MSI_CTRL_INT, &app_reg->int_mask);
+>          }
+> diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
+> index 70498689d0c0..b51fe136d345 100644
+> --- a/drivers/pci/controller/dwc/pcie-tegra194.c
+> +++ b/drivers/pci/controller/dwc/pcie-tegra194.c
+> @@ -783,8 +783,6 @@ static void tegra_pcie_enable_msi_interrupts(struct pcie_port *pp)
+>          struct tegra_pcie_dw *pcie = to_tegra_pcie(pci);
+>          u32 val;
+> 
+> -       dw_pcie_msi_init(pp);
+> -
+>          /* Enable MSI interrupt generation */
+>          val = appl_readl(pcie, APPL_INTR_EN_L0_0);
+>          val |= APPL_INTR_EN_L0_0_SYS_MSI_INTR_EN;
+> diff --git a/drivers/pci/controller/dwc/pcie-uniphier.c b/drivers/pci/controller/dwc/pcie-uniphier.c
+> index 3a7f403b57b8..d7b465b669f4 100644
+> --- a/drivers/pci/controller/dwc/pcie-uniphier.c
+> +++ b/drivers/pci/controller/dwc/pcie-uniphier.c
+> @@ -318,14 +318,7 @@ static int uniphier_pcie_host_init(struct pcie_port *pp)
+>          uniphier_pcie_irq_enable(priv);
+> 
+>          dw_pcie_setup_rc(pp);
+> -       ret = uniphier_pcie_establish_link(pci);
+> -       if (ret)
+> -               return ret;
+> -
+> -       if (IS_ENABLED(CONFIG_PCI_MSI))
+> -               dw_pcie_msi_init(pp);
+> -
+> -       return 0;
+> +       return uniphier_pcie_establish_link(pci);
+>   }
+> 
+>   static const struct dw_pcie_host_ops uniphier_pcie_host_ops = {
+> --
+> 2.28.0
+> 
