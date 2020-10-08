@@ -2,146 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D00B2870C7
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 10:35:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9265B2870D9
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 10:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726301AbgJHIfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 04:35:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725890AbgJHIfy (ORCPT
+        id S1726597AbgJHIkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 04:40:13 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:44644 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725616AbgJHIkM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 04:35:54 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD85C061755
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 01:35:54 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id x1so4985056eds.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 01:35:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jJ+2+sl7v16ZFQwrrbmFXcTV3fSlDqvjbzZU8FH7J0k=;
-        b=YbQ4JKBcC915g3FwIkD4kMLjfA+HVo2VeyW7+RDRzBMyT6+pZrez6yFdxS1JVF+MCw
-         I9fi5xpJkCMQ1MZFTgUNhIEalXi4O0KwTMs6M55IBSfgwcTCW7bCzjzwadX5IHs01Ys+
-         QUkVJA+YFpvasOLS9njwPhCahsqEDmCIU3hjqiJOLg6eOuSAtlQRKOhBK1ipMWiljZWh
-         bYsA4n/IJXJ6UoXazYhMMo1uHPy0DHAjqas/E118aED/AKQSL4ZqYOLHJELydII57n0C
-         lMedTQeMsrYtUwkqt58wwsiqUj0n2XZJEoEzBMy4uQlfr4hZt8lgFUBScrlQH+fPt2h/
-         k/2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jJ+2+sl7v16ZFQwrrbmFXcTV3fSlDqvjbzZU8FH7J0k=;
-        b=TfxSFevybSUMegUbthsNZYrz0xLIWQc6e/ku6HDs0L0dqcxY4BeRqBYV7WltrdS3bf
-         ANk8htvtTV0jgfZqIzmn5ZyO7UkHS4zl+0WGQgXbzNRLUu+1sl6shIAZEOUpyjG11uTW
-         1XF/EVoXDqFTcbPLMbu2ziSQNXtlOTVC0VW71/TqI7Nzw495P8VBo2wjPsuU2Vh9PMao
-         nicatMYSKdmtgBriWpzE0hFAeWNq2+rOHy9/kCPVVB5qu41yHH5By9c6weNCuOkkwCLf
-         UbFnUUMsUq13cSJUhLu7DGHQGQMXoAvbeyTpwPHHd1Hy6KX3jraB70a6HnrPi8zFSJyZ
-         7Byw==
-X-Gm-Message-State: AOAM533u5dDYYrBcOyvRV0K2iiLKXa3occ1ayK7FCkN/4BxiNDKJrV3N
-        3MSbNaj0Nd4QiR/HdMz//riYThyPoAhSw6rGSUhx5g==
-X-Google-Smtp-Source: ABdhPJzrgg4QxWXsEzPYzTcGzHWRGJzutSHzxf7MyS7jl8fXaPnvZsxbr7tbXLGs65s2GKo7inPQ7k7YwejU0k9swws=
-X-Received: by 2002:a50:9ea6:: with SMTP id a35mr8193746edf.52.1602146152651;
- Thu, 08 Oct 2020 01:35:52 -0700 (PDT)
+        Thu, 8 Oct 2020 04:40:12 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0988e51J002050;
+        Thu, 8 Oct 2020 03:40:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1602146405;
+        bh=dQEa+ivtnjEX/aljR1OGdMNesYRRtMHm/avYLoxmHf4=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=HvxFFy5ZHLb28ODKd2axhg0KiSbDmAQDdGXwykWmmEKvpXEapQy2oX4rOVclcePHS
+         klxj/f8ULwdW7aUjflDjUYaqLuVJreYqc5e3SJQRyfrvP9QmhnL/T6Jxv97Og5qGhV
+         Volg3fLdIxwS4JLWcgptgzURNqsqLruzPnGyMJJA=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0988e4ig105458
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 8 Oct 2020 03:40:04 -0500
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 8 Oct
+ 2020 03:40:04 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 8 Oct 2020 03:40:04 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0988e1Hf009269;
+        Thu, 8 Oct 2020 03:40:02 -0500
+Subject: Re: [PATCH 09/18] dt-bindings: dma: ti: Add document for K3 BCDMA
+To:     Rob Herring <robh@kernel.org>
+CC:     <vkoul@kernel.org>, <nm@ti.com>, <ssantosh@kernel.org>,
+        <vigneshr@ti.com>, <dan.j.williams@intel.com>, <t-kristo@ti.com>,
+        <lokeshvutla@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <dmaengine@vger.kernel.org>
+References: <20200930091412.8020-1-peter.ujfalusi@ti.com>
+ <20200930091412.8020-10-peter.ujfalusi@ti.com>
+ <20201006192909.GA2679155@bogus>
+ <bc054ef7-dcd7-dde2-13f8-4900a33b1377@ti.com> <20201007154635.GA273523@bogus>
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+Message-ID: <d5746fca-bbdd-0fd1-cbcb-21b6269c39ac@ti.com>
+Date:   Thu, 8 Oct 2020 11:40:22 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-References: <20201007164426.1812530-1-daniel.vetter@ffwll.ch>
- <20201007164426.1812530-11-daniel.vetter@ffwll.ch> <CAPcyv4hBL68A7CZa+YnooufDH2tevoxrx32DTJMQ6OHRnec7QQ@mail.gmail.com>
- <20201007232448.GC5177@ziepe.ca> <CAPcyv4jA9fe40r_2SfrCtOaeE85V88TA3NNQZOmQMNj=MdsPyw@mail.gmail.com>
- <CAKMK7uHg48-fTR1L78p7q5vxD=Kgr_fBEj1pDLaYeuvTGSSFig@mail.gmail.com>
-In-Reply-To: <CAKMK7uHg48-fTR1L78p7q5vxD=Kgr_fBEj1pDLaYeuvTGSSFig@mail.gmail.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 8 Oct 2020 01:35:41 -0700
-Message-ID: <CAPcyv4gK82tpNWqwF-CFGPWU99WU-Sd84Y79zuQxMfZh1efoMQ@mail.gmail.com>
-Subject: Re: [PATCH 10/13] PCI: revoke mappings like devmem
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "Linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>, Bjorn Helgaas <bhelgaas@google.com>,
-        Linux PCI <linux-pci@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201007154635.GA273523@bogus>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 8, 2020 at 1:13 AM Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
->
-> On Thu, Oct 8, 2020 at 9:50 AM Dan Williams <dan.j.williams@intel.com> wrote:
-> >
-> > On Wed, Oct 7, 2020 at 4:25 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > >
-> > > On Wed, Oct 07, 2020 at 12:33:06PM -0700, Dan Williams wrote:
-> > > > On Wed, Oct 7, 2020 at 11:11 AM Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
-> > > > >
-> > > > > Since 3234ac664a87 ("/dev/mem: Revoke mappings when a driver claims
-> > > > > the region") /dev/kmem zaps ptes when the kernel requests exclusive
-> > > > > acccess to an iomem region. And with CONFIG_IO_STRICT_DEVMEM, this is
-> > > > > the default for all driver uses.
-> > > > >
-> > > > > Except there's two more ways to access pci bars: sysfs and proc mmap
-> > > > > support. Let's plug that hole.
-> > > >
-> > > > Ooh, yes, lets.
-> > > >
-> > > > >
-> > > > > For revoke_devmem() to work we need to link our vma into the same
-> > > > > address_space, with consistent vma->vm_pgoff. ->pgoff is already
-> > > > > adjusted, because that's how (io_)remap_pfn_range works, but for the
-> > > > > mapping we need to adjust vma->vm_file->f_mapping. Usually that's done
-> > > > > at ->open time, but that's a bit tricky here with all the entry points
-> > > > > and arch code. So instead create a fake file and adjust vma->vm_file.
-> > > >
-> > > > I don't think you want to share the devmem inode for this, this should
-> > > > be based off the sysfs inode which I believe there is already only one
-> > > > instance per resource. In contrast /dev/mem can have multiple inodes
-> > > > because anyone can just mknod a new character device file, the same
-> > > > problem does not exist for sysfs.
-> > >
-> > > The inode does not come from the filesystem char/mem.c creates a
-> > > singular anon inode in devmem_init_inode()
-> >
-> > That's not quite right, An inode does come from the filesystem I just
-> > arranged for that inode's i_mapping to be set to a common instance.
-> >
-> > > Seems OK to use this more widely, but it feels a bit weird to live in
-> > > char/memory.c.
-> >
-> > Sure, now that more users have arrived it should move somewhere common.
-> >
-> > > This is what got me thinking maybe this needs to be a bit bigger
-> > > generic infrastructure - eg enter this scheme from fops mmap and
-> > > everything else is in mm/user_iomem.c
-> >
-> > It still requires every file that can map physical memory to have its
-> > ->open fop do
-> >
-> >        inode->i_mapping = devmem_inode->i_mapping;
-> >        filp->f_mapping = inode->i_mapping;
-> >
-> > I don't see how you can centralize that part.
->
-> btw, why are you setting inode->i_mapping? The inode is already
-> published, changing that looks risky. And I don't think it's needed,
-> vma_link() only looks at filp->f_mapping, and in our drm_open() we
-> only set that one.
 
-I think you're right it is unnecessary for devmem, but I don't think
-it's dangerous to do it from the very first open before anything is
-using the address space. It's copy-paste from what all the other
-"shared address space" implementers do. For example, block-devices in
-bd_acquire(). However, the rationale for block_devices to do it is so
-that page cache pages can be associated with the address space in the
-absence of an f_mapping. Without filesystem page writeback to
-coordinate I don't see any devmem code paths that would operate on the
-inode->i_mapping.
+
+On 07/10/2020 18.46, Rob Herring wrote:
+> On Wed, Oct 07, 2020 at 12:09:06PM +0300, Peter Ujfalusi wrote:
+>>
+>>
+>> On 06/10/2020 22.29, Rob Herring wrote:
+>>> On Wed, Sep 30, 2020 at 12:14:03PM +0300, Peter Ujfalusi wrote:
+>>>> New binding document for
+>>>> Texas Instruments K3 Block Copy DMA (BCDMA).
+>>>>
+>>>> BCDMA is introduced as part of AM64.
+>>>>
+>>
+>> ...
+>>
+>>>
+>>>> +  ti,sci:
+>>>> +    description: phandle to TI-SCI compatible System controller node
+>>>> +    allOf:
+>>>> +      - $ref: /schemas/types.yaml#/definitions/phandle
+>>>> +
+>>>> +  ti,sci-dev-id:
+>>>> +    description: TI-SCI device id of BCDMA
+>>>> +    allOf:
+>>>> +      - $ref: /schemas/types.yaml#/definitions/uint32
+>>>
+>>> We have a common definition for these.
+>>
+>> Yes, in arm/keystone/ti,k3-sci-common.yaml, but I could not get to use
+>> that as reference.
+>>
+>> I can not list it under the topmost allOf and drop the ti,sci and
+>> ti,sci-dev-id like this:
+>>
+>> allOf:
+>>   - $ref: /schemas/dma/dma-controller.yaml#
+>>   - $ref: /schemas/arm/keystone/ti,k3-sci-common.yaml#
+>>
+>> It results:
+>>   CHKDT   Documentation/devicetree/bindings/processed-schema-examples.json
+>>   DTEX    Documentation/devicetree/bindings/dma/ti/k3-bcdma.example.dts
+>>   SCHEMA  Documentation/devicetree/bindings/processed-schema-examples.json
+>>   DTC     Documentation/devicetree/bindings/dma/ti/k3-bcdma.example.dt.yaml
+>>   CHECK   Documentation/devicetree/bindings/dma/ti/k3-bcdma.example.dt.yaml
+>> Documentation/devicetree/bindings/dma/ti/k3-bcdma.example.dt.yaml:
+>> dma-controller@485c0100: 'ti,sci', 'ti,sci-dev-id' do not match any of
+>> the regexes: 'pinctrl-[0-9]+'
+>>         From schema: Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
+>>
+>> If I remove the "additionalProperties: false" from the schema file, then
+>> it compiles fine.
+> 
+> Yeah, you have to do 'unevaluatedProperties: false' which doesn't 
+> actually do anything yet, but can 'see' into $ref's.
+
+I see, but even if I add the unevaluatedProperties: false I will have
+the same error as long as I have additionalProperties: false
+
+If I remove the additionalProperties then it makes no difference if I
+have the unevaluatedProperties: false or I don't.
+
+> 
+>>>> +  ti,asel:
+>>>> +    description: ASEL value for non slave channels
+>>>> +    allOf:
+>>>
+>>> You no longer need 'allOf' here.
+>>
+>> OK, I changed it in all instances.
+>>
+>>>
+>>>> +      - $ref: /schemas/types.yaml#/definitions/uint32
+>>>> +
+>>>> +  ti,sci-rm-range-bchan:
+>>>> +    description: |
+>>>> +      Array of BCDMA block-copy channel resource subtypes for resource
+>>>> +      allocation for this host
+>>>> +    allOf:
+>>>> +      - $ref: /schemas/types.yaml#/definitions/uint32-array
+>>>> +    minItems: 1
+>>>> +    # Should be enough
+>>>> +    maxItems: 255
+>>>
+>>> Are there constraints for the individual elements?
+>>
+>> In practice the subtype ID is 6bits number.
+>> Should I add limits to individual elements?
+> 
+> Yes:
+> 
+> items:
+>   maximum: 0x3f
+
+Right, I can just omit the minimum.
+
+It would be nice if I could use definitions for these ranges to avoid
+duplicated lines by adding
+
+definitions:
+  ti,rm-range:
+    $ref: /schemas/types.yaml#/definitions/uint32-array
+    minItems: 1
+    # Should be enough
+    maxItems: 255
+    items:
+      minimum: 0
+      maximum: 0x3f
+
+to schemas/arm/keystone/ti,k3-sci-common.yaml
+
+and only have:
+
+  ti,sci-rm-range-bchan:
+    $ref:
+/schemas/arm/keystone/ti,k3-sci-common.yaml#/definitions/ti,rm-range
+    description: |
+      Array of BCDMA block-copy channel resource subtypes for resource
+      allocation for this host
+
+
+but it results:
+Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml:
+properties:ti,sci-rm-range-bchan: {'$ref':
+'/schemas/arm/keystone/ti,k3-sci-common.yaml#/definitions/ti,rm-range',
+'description': 'Array of BCDMA block-copy channel resource subtypes for
+resource\nallocation for this host\n'} is not valid under any of the
+given schemas (Possible causes of the failure):
+        Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml:
+properties:ti,sci-rm-range-bchan: 'not' is a required property
+        Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml:
+properties:ti,sci-rm-range-bchan:$ref:
+'/schemas/arm/keystone/ti,k3-sci-common.yaml#/definitions/ti,rm-range'
+does not match 'types.yaml#[/]{0,1}definitions/.*'
+
+  SCHEMA  Documentation/devicetree/bindings/processed-schema-examples.json
+Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml: ignoring, error
+in schema: properties: ti,sci-rm-range-bchan
+warning: no schema found in file:
+Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
+
+So, obviously I'm looking at it from a wrong angle. It is not urgent, I
+can spend time to figure out later and switch all cases where the RM
+ranges are used.
+
+> 
+>>
+>>>> +
+>>>> +  ti,sci-rm-range-tchan:
+>>>> +    description: |
+>>>> +      Array of BCDMA split tx channel resource subtypes for resource allocation
+>>>> +      for this host
+>>>> +    allOf:
+>>>> +      - $ref: /schemas/types.yaml#/definitions/uint32-array
+>>>> +    minItems: 1
+>>>> +    # Should be enough
+>>>> +    maxItems: 255
+>>>> +
+>>>> +  ti,sci-rm-range-rchan:
+>>>> +    description: |
+>>>> +      Array of BCDMA split rx channel resource subtypes for resource allocation
+>>>> +      for this host
+>>>> +    allOf:
+>>>> +      - $ref: /schemas/types.yaml#/definitions/uint32-array
+>>>> +    minItems: 1
+>>>> +    # Should be enough
+>>>> +    maxItems: 255
+>>>> +
+>>>> +required:
+>>>> +  - compatible
+>>>> +  - "#address-cells"
+>>>> +  - "#size-cells"
+>>>> +  - "#dma-cells"
+>>>> +  - reg
+>>>> +  - reg-names
+>>>> +  - msi-parent
+>>>> +  - ti,sci
+>>>> +  - ti,sci-dev-id
+>>>> +  - ti,sci-rm-range-bchan
+>>>> +  - ti,sci-rm-range-tchan
+>>>> +  - ti,sci-rm-range-rchan
+>>>> +
+>>>> +additionalProperties: false
+>>>> +
+>>>> +examples:
+>>>> +  - |+
+>>>> +    cbass_main {
+>>>> +        #address-cells = <2>;
+>>>> +        #size-cells = <2>;
+>>>> +
+>>>> +        main_dmss {
+>>>> +            compatible = "simple-mfd";
+>>>
+>>> IMO, if it is memory-mapped, then you should be using 'simple-bus'.
+>>
+>> We had the same discussion when I introduced the k3-udma binding and we
+>> have concluded on the simple-mfd as DMSS is not a bus, but contains
+>> different peripherals.
+> 
+> Ok.
+> 
+> Rob
+> 
+
+- Péter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
