@@ -2,112 +2,641 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 851D2287240
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 12:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFC06287243
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 12:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729384AbgJHKKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 06:10:17 -0400
-Received: from mail-eopbgr770042.outbound.protection.outlook.com ([40.107.77.42]:36439
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729210AbgJHKKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 06:10:16 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IvE7jiih6RwUSBcVVp6QONibC5Kz0CygJ4115Z9gGduRgev6nIjyv3zq+cElVK17c1nk1//tWEZ0LvBjwlLna2Lnv9Qx29d+nP712epypzqrZkA3grlyVcRjWdA8q+NJNBjfPaovlSyV92SUflxGD7KAvfV0RWu211Lh+stU2GVxcCchHcN8XskkKZ1fRkYsKHwEnqaLIXVqWwWRfkR7QZkHA7wHm53r9Hhm6oI72IVXj6yD9+Py2+ZMJnFNs11ZoiNQDyBLxCzOKLXPtQ9y0smLzYPzBvrMB5MDQyCjD/wzd8Mt0heFuIx3Op+hRaZ/PgTWejtrhDSrIyTJ+0Y92g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JHuDbxcBKbSN2JwfUv4ERQtFnj7CdeJuUE6EyFDYPaw=;
- b=f7zU/t1LU7y15kgmfn8eGFkopZkZffhjoeU2vgBrgKjcr1+t2Ub9zaa5e0Qn5ZOLYGfBxsZ22L+58Z6USCPYtQsG/tTcfZqGwohhsju+wMNNA7rfbmu6aMrX75uV6Al6PpVwuxxnsnnZY1SEpqD61/RHTnRBxpEAsaZajgkTUEFY33+OPKMcLSz1lbf8ZvglDw4wgAaXxUTR3RXr9rGfJ/zgz81uzRa39LiGjAj0agg6ta9mzl6mUEBy4wWxDSHjnm4lnN1y6dhH1BR3eWLyf6i/xEs6uTa0E6lA7ONtfo6XNrqHtae7WGIUjAZnBQd2z7bo3NSoqBlXeq4ASd5Vgw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=silabs.com; dmarc=pass action=none header.from=silabs.com;
- dkim=pass header.d=silabs.com; arc=none
+        id S1729389AbgJHKKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 06:10:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729210AbgJHKKj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 06:10:39 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C92C061755
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 03:10:39 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id qp15so7289359ejb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 03:10:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=silabs.onmicrosoft.com; s=selector2-silabs-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JHuDbxcBKbSN2JwfUv4ERQtFnj7CdeJuUE6EyFDYPaw=;
- b=pWTTTCrpaAg1MVd0ds5eGluzMR/ej+JD090CYNvO/nO4dq+n7+MfLCHA0QmqTo6NGpt5XVgHd7Ek5IRJuMnpZK/J5l0GYWeSMsp0ze7h4bGYQTreskP/e7TTwjBrguVNrzX3/ggxREj+KbiqKHFZYd9RJLCiS++saSmSDd3O0zs=
-Authentication-Results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=silabs.com;
-Received: from SN6PR11MB2718.namprd11.prod.outlook.com (2603:10b6:805:63::18)
- by SN6PR11MB3501.namprd11.prod.outlook.com (2603:10b6:805:d4::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.38; Thu, 8 Oct
- 2020 10:10:14 +0000
-Received: from SN6PR11MB2718.namprd11.prod.outlook.com
- ([fe80::4f5:fbe5:44a7:cb8a]) by SN6PR11MB2718.namprd11.prod.outlook.com
- ([fe80::4f5:fbe5:44a7:cb8a%5]) with mapi id 15.20.3455.024; Thu, 8 Oct 2020
- 10:10:14 +0000
-From:   =?ISO-8859-1?Q?J=E9r=F4me?= Pouiller <jerome.pouiller@silabs.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kalle Valo <kvalo@codeaurora.org>
-Cc:     devel@driverdev.osuosl.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 0/7] wfx: move out from the staging area
-Date:   Thu, 08 Oct 2020 12:10:08 +0200
-Message-ID: <16184307.3FagCOgvEJ@pc-42>
-Organization: Silicon Labs
-In-Reply-To: <87ft6p2n0h.fsf@codeaurora.org>
-References: <20201007101943.749898-1-Jerome.Pouiller@silabs.com> <20201007105513.GA1078344@kroah.com> <87ft6p2n0h.fsf@codeaurora.org>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-Originating-IP: [82.67.86.106]
-X-ClientProxiedBy: DM5PR12CA0021.namprd12.prod.outlook.com (2603:10b6:4:1::31)
- To SN6PR11MB2718.namprd11.prod.outlook.com (2603:10b6:805:63::18)
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KrdqVBSILfVT3uJ4NpzU+Sd6XGXt6+UPuphlFV1jXNM=;
+        b=yipYmAx+VotXxYbkZxkG9129zfWc52vZaZgSIf2C2PMxWR/kchPN+i5M1lwSjypiMu
+         IrdxfDsLKuX1pGa9v78jiJ68xBHEBXFv/iBfkxz8YTHHSH/5IDs/1D+8DbbxS/Wqbblq
+         E7umVGJUgcddq3PdJMNc0JDyLAkNj1xRzN39KtP7BF7YRmGb5Kjjs8clNWStZbyoUc24
+         /jJNMv/eNluG4CBW3PUF1vvW6rPh65BPySjtfAC75SlURnhQ19QH+g1s/cOXkrtG/mPD
+         +x1U+Rc1BXi1cyxptAaJyq/ObiTl5C0Hx4Oo+s9fYi1fAxz/yGy/jqUcDar925LAx5wO
+         OUOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KrdqVBSILfVT3uJ4NpzU+Sd6XGXt6+UPuphlFV1jXNM=;
+        b=Yyut359ca24lgsxNisdCdfNWvnAYEUlN1ut7nyRhU5zB7yjADkWk2854617fDcZihs
+         eZcU5kPnz97c6Tq++IWJd7Fq+m7w4KWtmCh8Uj3FBx+Rj/nKA+rYUrhDRaka4ouzTHYy
+         8WbN9j8B6j6QtOfYkjwgYCAZ7P1T8s1mM0KjoZnSwxrf3wrzBvQuucXY5uQRcZ70xZ+v
+         +rkzmmenSd02n9hU4mVKlGajmSchubQVaeIGoNZdS3twU5T0ItKMOgGufzSZ/zF/GdXe
+         CgqimmwUuB+xz6MDWCOLH5BDgXyW6EWJoTZ89pYWKLSpcVagAQZ2PVe2yMG3C6Pl3i/l
+         rjHQ==
+X-Gm-Message-State: AOAM530Ct7ZxrsGz74DLNVdbes/hS4sNQNC5Wivx5zWrkZxhIkrOYdYL
+        7gf27jGU3yVzZ0tzhBmk0iPUWvLks5e46gLYUmipcg==
+X-Google-Smtp-Source: ABdhPJwYjmJrRsqrj9JwgSfivdUiIqmbjCZjLPrlyAEBxmK5Fh/UmsyuMXsgcvgwa9yxuYlclJx67TQR/CVIi8ShybA=
+X-Received: by 2002:a17:906:4dc7:: with SMTP id f7mr7771805ejw.73.1602151837752;
+ Thu, 08 Oct 2020 03:10:37 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pc-42.localnet (82.67.86.106) by DM5PR12CA0021.namprd12.prod.outlook.com (2603:10b6:4:1::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.23 via Frontend Transport; Thu, 8 Oct 2020 10:10:12 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 93758fa3-c108-42d1-0eb0-08d86b725901
-X-MS-TrafficTypeDiagnostic: SN6PR11MB3501:
-X-Microsoft-Antispam-PRVS: <SN6PR11MB350112AAF3B70E8B296B9B2E930B0@SN6PR11MB3501.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +DBOgOi+gRZdl1zPV/L10tNQO4TglbBWds7yhddwWr0PyG5zHzuS/zolJ0DfU8mzrQRKY67LiojLACfQs7ZD1eSWybFe5EG/dnwv+rKjhLqbRz+IWDwb5G0TD42rTRQ/bwx6wiCK6i/IcF5vx7aWBI3vvsHWaUk0Txldod47NJPTO7jiIAMMwSaf/AUdr2tiy4OX/4Ivk3hIh82/uUAI0HhVQ726/1tXcn8Qzn6lFQoB7SisqpdGIcTnLOYvgDRvimcjzjumfQPn7ZxkPwx1aY78AWkeYZu+HrcqJqf9YYitgYf+21xBxFOsTpSSlHM7wBfjVuE9xcKF6z2zAMHwwmEJ+aL5NjvRpcBK9fPKIooKxKO2Zrmzv248y/bjntvs28RSAqbEp53N3qYc+0urecDzxQyykxutbkWdjh4Y7S1yzZYINXoP6GZyjiFSpUcgD6TOSWvgxudoTUdBh+4gNg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB2718.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(346002)(136003)(39850400004)(396003)(110136005)(66556008)(36916002)(6666004)(66946007)(52116002)(16526019)(6512007)(26005)(6486002)(9686003)(316002)(8676002)(186003)(8936002)(2906002)(66476007)(6506007)(966005)(478600001)(83080400001)(4326008)(33716001)(5660300002)(86362001)(956004)(39026012);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 7WMdYVTuxY/Sl6Amc7C8R71zhvvTa0edPImB+ZMnhQ72cq3ct4wnkRYBlHvKiuC93Czz5FGwAARymD5Lxx2SxvwkXQkz/WL2E6g0ZcvzeUU7jZvM9RHDoagqgdlbYMqpGgACXoQ8wFLw4Y6z73U0/p1szJlmhjdKZURinflRJy1jGiITPwd75ILStuh9a0rIsLgUjow8ufCe4HxBy6rwPAwm7Mq5knNZKrQeR3mWFg7InFUuQK7WgqTIA7ZNcN+gKHmclqxbL6YKPsOtpiQCdedqIwKXcyfZfcUxoYKdlnFB9QDGX0MDLUuOGc8KB9kO/0YUQPY2mVggBlwkiBSFdxr2Alml8oQYdir6oIC1kJ8oVWComYLT1xsAdOtePsyalGvWruBXWhuQHVTabLGZsZHrrbRvnkAen7XFOeuKm3dvWPmNNgpIvUqCQuDmp3Bya70ZpRb0Lwp2P5U0xMqrveLE4TiZa9vLITTfsFOy33IY6j8K7h72IN5NaRyp98W+dsXPq/jCLBN/LYCurUzCRNtQIwwroaA8aT0WkXYCaR9K3IC681N5Qp82qNYH76O7fDmD32YwOQ16EpKhLxhCvjyNB8kze1arvK0fuR7Arcl1TFerzpchc8rKWfjKK7hKCmtRW9vlhiwpSr1LheD8GA==
-X-OriginatorOrg: silabs.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 93758fa3-c108-42d1-0eb0-08d86b725901
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB2718.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Oct 2020 10:10:13.8989
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 54dbd822-5231-4b20-944d-6f4abcd541fb
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: T2YJwHPXi2nmysDUsvzj2rMB9TyeTHqRVgitrUzV/8k6rtDzwhQbp91cBu3HEBRxOM6Kd8E5SIZg66c3gX777A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB3501
+References: <20201005222623.1123-1-cristian.marussi@arm.com> <20201005222623.1123-2-cristian.marussi@arm.com>
+In-Reply-To: <20201005222623.1123-2-cristian.marussi@arm.com>
+From:   Etienne Carriere <etienne.carriere@linaro.org>
+Date:   Thu, 8 Oct 2020 12:10:25 +0200
+Message-ID: <CAN5uoS9CVCwSQS_=R0JQ4j5bibW2pRF83oz5dhCV3aVjqzVdMQ@mail.gmail.com>
+Subject: Re: [PATCH 1/4] firmware: arm_scmi: Add Voltage Domain Support
+To:     Cristian Marussi <cristian.marussi@arm.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Sudeep Holla <sudeep.holla@arm.com>, lukasz.luba@arm.com,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Jonathan.Cameron@huawei.com, broonie@kernel.org,
+        Rob Herring <robh@kernel.org>, satyakim@qti.qualcomm.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 8 October 2020 09:30:06 CEST Kalle Valo wrote:
-[...]
-> Yes, the driver needs to be reviewed in linux-wireless list. I recommend
-> submitting the whole driver in a patchset with one file per patch, which
-> seems to be the easiest way to review a full driver. The final move will
-> be in just one commit moving the driver, just like patch 7 does here. As
-> an example see how wilc1000 review was done.
+Hello Christian,
 
-I see. I suppose it is still a bit complicated to review? Maybe I could
-try to make things easier.
+I faced an issue with this change, see below.
 
-For my submission to staging/ I had taken time to split the driver in an
-understandable series of patches[1]. I think it was easier to review than
-just sending files one by one. I could do the same thing for the
-submission to linux-wireless. It would ask me a bit of work but, since I
-already have a template, it is conceivable.
+On Tue, 6 Oct 2020 at 00:26, Cristian Marussi <cristian.marussi@arm.com> wrote:
+>
+> Add SCMI Voltage Domain protocol support.
+>
+> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> ---
+>  drivers/firmware/arm_scmi/Makefile  |   2 +-
+>  drivers/firmware/arm_scmi/common.h  |   1 +
+>  drivers/firmware/arm_scmi/driver.c  |   2 +
+>  drivers/firmware/arm_scmi/voltage.c | 378 ++++++++++++++++++++++++++++
+>  include/linux/scmi_protocol.h       |  64 +++++
+>  5 files changed, 446 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/firmware/arm_scmi/voltage.c
+>
+> diff --git a/drivers/firmware/arm_scmi/Makefile b/drivers/firmware/arm_scmi/Makefile
+> index bc0d54f8e861..6a2ef63306d6 100644
+> --- a/drivers/firmware/arm_scmi/Makefile
+> +++ b/drivers/firmware/arm_scmi/Makefile
+> @@ -4,7 +4,7 @@ scmi-driver-y = driver.o notify.o
+>  scmi-transport-y = shmem.o
+>  scmi-transport-$(CONFIG_MAILBOX) += mailbox.o
+>  scmi-transport-$(CONFIG_HAVE_ARM_SMCCC_DISCOVERY) += smc.o
+> -scmi-protocols-y = base.o clock.o perf.o power.o reset.o sensors.o system.o
+> +scmi-protocols-y = base.o clock.o perf.o power.o reset.o sensors.o system.o voltage.o
+>  scmi-module-objs := $(scmi-bus-y) $(scmi-driver-y) $(scmi-protocols-y) \
+>                     $(scmi-transport-y)
+>  obj-$(CONFIG_ARM_SCMI_PROTOCOL) += scmi-module.o
+> diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
+> index 37fb583f1bf5..eaa4d0e1174f 100644
+> --- a/drivers/firmware/arm_scmi/common.h
+> +++ b/drivers/firmware/arm_scmi/common.h
+> @@ -167,6 +167,7 @@ DECLARE_SCMI_REGISTER_UNREGISTER(perf);
+>  DECLARE_SCMI_REGISTER_UNREGISTER(power);
+>  DECLARE_SCMI_REGISTER_UNREGISTER(reset);
+>  DECLARE_SCMI_REGISTER_UNREGISTER(sensors);
+> +DECLARE_SCMI_REGISTER_UNREGISTER(voltage);
+>  DECLARE_SCMI_REGISTER_UNREGISTER(system);
+>
+>  #define DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(id, name) \
+> diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+> index c5dea87edf8f..d7f50bf5f958 100644
+> --- a/drivers/firmware/arm_scmi/driver.c
+> +++ b/drivers/firmware/arm_scmi/driver.c
+> @@ -938,6 +938,7 @@ static int __init scmi_driver_init(void)
+>         scmi_power_register();
+>         scmi_reset_register();
+>         scmi_sensors_register();
+> +       scmi_voltage_register();
+>         scmi_system_register();
+>
+>         return platform_driver_register(&scmi_driver);
+> @@ -953,6 +954,7 @@ static void __exit scmi_driver_exit(void)
+>         scmi_power_unregister();
+>         scmi_reset_unregister();
+>         scmi_sensors_unregister();
+> +       scmi_voltage_unregister();
+>         scmi_system_unregister();
+>
+>         platform_driver_unregister(&scmi_driver);
+> diff --git a/drivers/firmware/arm_scmi/voltage.c b/drivers/firmware/arm_scmi/voltage.c
+> new file mode 100644
+> index 000000000000..94221d979b80
+> --- /dev/null
+> +++ b/drivers/firmware/arm_scmi/voltage.c
+> @@ -0,0 +1,378 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * System Control and Management Interface (SCMI) Voltage Protocol
+> + *
+> + * Copyright (C) 2020 ARM Ltd.
+> + */
+> +
+> +#include <linux/scmi_protocol.h>
+> +
+> +#include "common.h"
+> +
+> +#define VOLTAGE_DOMS_NUM_MASK          GENMASK(15, 0)
+> +#define REMAINING_LEVELS_MASK          GENMASK(31, 16)
+> +#define RETURNED_LEVELS_MASK           GENMASK(11, 0)
+> +
+> +enum scmi_voltage_protocol_cmd {
+> +       VOLTAGE_DOMAIN_ATTRIBUTES = 0x3,
+> +       VOLTAGE_DESCRIBE_LEVELS = 0x4,
+> +       VOLTAGE_CONFIG_SET = 0x5,
+> +       VOLTAGE_CONFIG_GET = 0x6,
+> +       VOLTAGE_LEVEL_SET = 0x7,
+> +       VOLTAGE_LEVEL_GET = 0x8,
+> +};
+> +
+> +struct scmi_msg_resp_protocol_attributes {
+> +       __le32 attr;
+> +#define NUM_VOLTAGE_DOMAINS(x) (u16)(FIELD_GET(VOLTAGE_DOMS_NUM_MASK, (x)))
+> +};
+> +
+> +struct scmi_msg_resp_domain_attributes {
+> +       __le32 attr;
+> +       u8 name[SCMI_MAX_STR_SIZE];
+> +};
+> +
+> +struct scmi_msg_cmd_describe_levels {
+> +       __le32 domain_id;
+> +       __le32 level_index;
+> +};
+> +
+> +struct scmi_msg_resp_describe_levels {
+> +       __le32 flags;
+> +#define NUM_REMAINING_LEVELS(f)        (u16)(FIELD_GET(REMAINING_LEVELS_MASK, (f)))
+> +#define NUM_RETURNED_LEVELS(f) (u16)(FIELD_GET(RETURNED_LEVELS_MASK, (f)))
+> +#define SUPPORTS_SEGMENTED_LEVELS(f)   ((f) & BIT(12))
+> +       __le32 voltage[];
+> +};
+> +
+> +struct scmi_msg_cmd_config_set {
+> +       __le32 domain_id;
+> +       __le32 config;
+> +};
+> +
+> +struct scmi_msg_cmd_level_set {
+> +       __le32 domain_id;
+> +       __le32 flags;
+> +       __le32 voltage_level;
+> +};
+> +
+> +struct voltage_info {
+> +       u32 version;
+> +       u16 num_domains;
+> +       struct scmi_voltage_info **domains;
+> +};
+> +
+> +static int scmi_protocol_attributes_get(const struct scmi_handle *handle,
+> +                                       struct voltage_info *vinfo)
+> +{
+> +       int ret;
+> +       struct scmi_xfer *t;
+> +       struct scmi_msg_resp_protocol_attributes *resp;
+> +
+> +       ret = scmi_xfer_get_init(handle, PROTOCOL_ATTRIBUTES,
+> +                                SCMI_PROTOCOL_VOLTAGE, 0, sizeof(*resp), &t);
+> +       if (ret)
+> +               return ret;
+> +
+> +       resp = t->rx.buf;
+> +       ret = scmi_do_xfer(handle, t);
+> +       if (!ret)
+> +               vinfo->num_domains =
+> +                       NUM_VOLTAGE_DOMAINS(le32_to_cpu(resp->attr));
+> +
+> +       scmi_xfer_put(handle, t);
+> +       return ret;
+> +}
+> +
+> +static inline int scmi_init_voltage_levels(struct device *dev,
+> +                                          struct scmi_voltage_info *v,
+> +                                          u32 flags, u32 num_levels)
+> +{
+> +       bool segmented;
+> +
+> +       segmented = SUPPORTS_SEGMENTED_LEVELS(flags);
+> +       /* segmented levels array's entries must be multiple-of-3 */
+> +       if (!num_levels || (segmented && num_levels % 3))
+> +               return -EINVAL;
+> +
+> +       v->levels_uv = devm_kcalloc(dev, num_levels, sizeof(u32), GFP_KERNEL);
+> +       if (!v->levels_uv)
+> +               return -ENOMEM;
+> +
+> +       v->num_levels = num_levels;
+> +       v->segmented = segmented;
+> +
+> +       return 0;
+> +}
+> +
+> +static int scmi_voltage_descriptors_get(const struct scmi_handle *handle,
+> +                                       struct voltage_info *vinfo)
+> +{
+> +       int ret, dom;
+> +       struct scmi_xfer *td, *tl;
+> +       struct device *dev = handle->dev;
+> +       struct scmi_msg_resp_domain_attributes *resp_dom;
+> +       struct scmi_msg_resp_describe_levels *resp_levels;
+> +
+> +       ret = scmi_xfer_get_init(handle, VOLTAGE_DOMAIN_ATTRIBUTES,
+> +                                SCMI_PROTOCOL_VOLTAGE, sizeof(__le32),
+> +                                sizeof(*resp_dom), &td);
+> +       if (ret)
+> +               return ret;
+> +       resp_dom = td->rx.buf;
+> +
+> +       ret = scmi_xfer_get_init(handle, VOLTAGE_DESCRIBE_LEVELS,
+> +                                SCMI_PROTOCOL_VOLTAGE, sizeof(__le64), 0, &tl);
+> +       if (ret)
+> +               goto outd;
+> +       resp_levels = tl->rx.buf;
+> +
+> +       for (dom = 0; dom < vinfo->num_domains; dom++) {
+> +               u32 desc_index = 0;
+> +               u16 num_returned = 0, num_remaining = 0;
+> +               struct scmi_msg_cmd_describe_levels *cmd;
+> +               struct scmi_voltage_info *v;
+> +
+> +               /* Retrieve domain attributes at first ... */
+> +               put_unaligned_le32(dom, td->tx.buf);
+> +               ret = scmi_do_xfer(handle, td);
+> +               if (ret)
+> +                       continue;
+> +
+> +               v = devm_kzalloc(dev, sizeof(*v), GFP_KERNEL);
+> +               if (!v) {
+> +                       ret = -ENOMEM;
+> +                       break;
+> +               }
+> +
+> +               v->id = dom;
+> +               v->attributes = le32_to_cpu(resp_dom->attr);
+> +               strlcpy(v->name, resp_dom->name, SCMI_MAX_STR_SIZE);
+> +
+> +               cmd = tl->tx.buf;
+> +               cmd->domain_id = cpu_to_le32(v->id);
+> +               /* ...then retrieve domain levels descriptions */
+> +               do {
+> +                       u32 flags;
+> +                       int cnt;
+> +
 
-Do you think it is worth it, or it would be an unnecessary effort?
+Here domain_id must be reloaded in the message payload.
 
-[1] https://lore.kernel.org/driverdev-devel/20190919142527.31797-1-Jerome.P=
-ouiller@silabs.com/
-     or commits a7a91ca5a23d^..40115bbc40e2
++               cmd->domain_id = cpu_to_le32(v->id);
 
---=20
-J=E9r=F4me Pouiller
+When the SCMI shared memory is used as a unique buffer for
+tx and rx messages, cmd refers to the memory storing previous
+message sent on the SCMI channel.
+In the loop we're in, the previous response has scratched
+previous outgoing message including domain_id value hence
+the full message sent to the SCMI server should be reloaded
+before scmi_do_xfer() is called.
 
+Regards,
+etienne
 
+> +                       cmd->level_index = desc_index;
+> +                       ret = scmi_do_xfer(handle, tl);
+> +                       if (ret)
+> +                               break;
+> +
+> +                       flags = le32_to_cpu(resp_levels->flags);
+> +                       num_returned = NUM_RETURNED_LEVELS(flags);
+> +                       num_remaining = NUM_REMAINING_LEVELS(flags);
+> +
+> +                       /* Allocate space for num_levels if not already done */
+> +                       if (!v->num_levels) {
+> +                               ret = scmi_init_voltage_levels(dev, v, flags,
+> +                                                              num_returned +
+> +                                                              num_remaining);
+> +                               if (ret)
+> +                                       break;
+> +                       }
+> +
+> +                       if (desc_index + num_returned > v->num_levels) {
+> +                               dev_err(handle->dev,
+> +                                       "No. of voltage levels can't exceed %d",
+> +                                       v->num_levels);
+> +                               ret = -EINVAL;
+> +                               break;
+> +                       }
+> +
+> +                       for (cnt = 0; cnt < num_returned; cnt++) {
+> +                               s32 val;
+> +
+> +                               val =
+> +                                   (s32)le32_to_cpu(resp_levels->voltage[cnt]);
+> +                               v->levels_uv[desc_index + cnt] = val;
+> +                               if (!v->negative_volts_allowed && val < 0)
+> +                                       v->negative_volts_allowed = true;
+> +                       }
+> +
+> +                       desc_index += num_returned;
+> +                       /* check both to avoid infinite loop due to buggy fw */
+> +               } while (num_returned && num_remaining);
+> +
+> +               /*
+> +                * Bail out on memory errors, just skip domain on any
+> +                * other error.
+> +                */
+> +               if (!ret)
+> +                       vinfo->domains[dom] = v;
+> +               else if (ret == -ENOMEM)
+> +                       break;
+> +       }
+> +
+> +       scmi_xfer_put(handle, tl);
+> +outd:
+> +       scmi_xfer_put(handle, td);
+> +
+> +       return ret;
+> +}
+> +
+> +static inline int __scmi_voltage_get_u32(const struct scmi_handle *handle,
+> +                                        u8 cmd_id, u32 domain_id, u32 *value)
+> +{
+> +       int ret;
+> +       struct scmi_xfer *t;
+> +       struct voltage_info *vinfo = handle->voltage_priv;
+> +
+> +       if (domain_id >= vinfo->num_domains)
+> +               return -EINVAL;
+> +
+> +       ret = scmi_xfer_get_init(handle, cmd_id,
+> +                                SCMI_PROTOCOL_VOLTAGE,
+> +                                sizeof(__le32), 0, &t);
+> +       if (ret)
+> +               return ret;
+> +
+> +       put_unaligned_le32(domain_id, t->tx.buf);
+> +       ret = scmi_do_xfer(handle, t);
+> +       if (!ret)
+> +               *value = get_unaligned_le32(t->rx.buf);
+> +
+> +       scmi_xfer_put(handle, t);
+> +       return ret;
+> +}
+> +
+> +static int scmi_voltage_config_set(const struct scmi_handle *handle,
+> +                                  u32 domain_id, u32 config)
+> +{
+> +       int ret;
+> +       struct scmi_xfer *t;
+> +       struct voltage_info *vinfo = handle->voltage_priv;
+> +       struct scmi_msg_cmd_config_set *cmd;
+> +
+> +       if (domain_id >= vinfo->num_domains)
+> +               return -EINVAL;
+> +
+> +       ret = scmi_xfer_get_init(handle, VOLTAGE_CONFIG_SET,
+> +                                SCMI_PROTOCOL_VOLTAGE,
+> +                                sizeof(*cmd), 0, &t);
+> +       if (ret)
+> +               return ret;
+> +
+> +       cmd = t->tx.buf;
+> +       cmd->domain_id = cpu_to_le32(domain_id);
+> +       cmd->config = cpu_to_le32(config & GENMASK(3, 0));
+> +
+> +       ret = scmi_do_xfer(handle, t);
+> +
+> +       scmi_xfer_put(handle, t);
+> +       return ret;
+> +}
+> +
+> +static int scmi_voltage_config_get(const struct scmi_handle *handle,
+> +                                  u32 domain_id, u32 *config)
+> +{
+> +       return __scmi_voltage_get_u32(handle, VOLTAGE_CONFIG_GET,
+> +                                     domain_id, config);
+> +}
+> +
+> +static int scmi_voltage_level_set(const struct scmi_handle *handle,
+> +                                 u32 domain_id, u32 flags, s32 volt_uV)
+> +{
+> +       int ret;
+> +       struct scmi_xfer *t;
+> +       struct voltage_info *vinfo = handle->voltage_priv;
+> +       struct scmi_msg_cmd_level_set *cmd;
+> +
+> +       if (domain_id >= vinfo->num_domains)
+> +               return -EINVAL;
+> +
+> +       ret = scmi_xfer_get_init(handle, VOLTAGE_LEVEL_SET,
+> +                                SCMI_PROTOCOL_VOLTAGE,
+> +                                sizeof(*cmd), 0, &t);
+> +       if (ret)
+> +               return ret;
+> +
+> +       cmd = t->tx.buf;
+> +       cmd->domain_id = cpu_to_le32(domain_id);
+> +       cmd->flags = cpu_to_le32(flags);
+> +       cmd->voltage_level = cpu_to_le32(volt_uV);
+> +
+> +       ret = scmi_do_xfer(handle, t);
+> +
+> +       scmi_xfer_put(handle, t);
+> +       return ret;
+> +}
+> +
+> +static int scmi_voltage_level_get(const struct scmi_handle *handle,
+> +                                 u32 domain_id, s32 *volt_uV)
+> +{
+> +       return __scmi_voltage_get_u32(handle, VOLTAGE_LEVEL_GET,
+> +                                     domain_id, (u32 *)volt_uV);
+> +}
+> +
+> +static const struct scmi_voltage_info *
+> +scmi_voltage_info_get(const struct scmi_handle *handle, u32 domain_id)
+> +{
+> +       struct voltage_info *vinfo = handle->voltage_priv;
+> +
+> +       if (domain_id >= vinfo->num_domains)
+> +               return NULL;
+> +
+> +       return vinfo->domains[domain_id];
+> +}
+> +
+> +static int scmi_voltage_domains_num_get(const struct scmi_handle *handle)
+> +{
+> +       struct voltage_info *vinfo = handle->voltage_priv;
+> +
+> +       return vinfo->num_domains;
+> +}
+> +
+> +static struct scmi_voltage_ops voltage_ops = {
+> +       .num_domains_get = scmi_voltage_domains_num_get,
+> +       .info_get = scmi_voltage_info_get,
+> +       .config_set = scmi_voltage_config_set,
+> +       .config_get = scmi_voltage_config_get,
+> +       .level_set = scmi_voltage_level_set,
+> +       .level_get = scmi_voltage_level_get,
+> +};
+> +
+> +static int scmi_voltage_protocol_init(struct scmi_handle *handle)
+> +{
+> +       int ret;
+> +       u32 version;
+> +       struct voltage_info *vinfo;
+> +
+> +       ret = scmi_version_get(handle, SCMI_PROTOCOL_VOLTAGE, &version);
+> +       if (ret)
+> +               return ret;
+> +
+> +       dev_dbg(handle->dev, "Voltage Version %d.%d\n",
+> +               PROTOCOL_REV_MAJOR(version), PROTOCOL_REV_MINOR(version));
+> +
+> +       vinfo = devm_kzalloc(handle->dev, sizeof(*vinfo), GFP_KERNEL);
+> +       if (!vinfo)
+> +               return -ENOMEM;
+> +       vinfo->version = version;
+> +
+> +       ret = scmi_protocol_attributes_get(handle, vinfo);
+> +       if (ret)
+> +               return ret;
+> +
+> +       if (vinfo->num_domains) {
+> +               vinfo->domains = devm_kcalloc(handle->dev, vinfo->num_domains,
+> +                                             sizeof(vinfo->domains),
+> +                                             GFP_KERNEL);
+> +               if (!vinfo->domains)
+> +                       return -ENOMEM;
+> +               ret = scmi_voltage_descriptors_get(handle, vinfo);
+> +               if (ret)
+> +                       return ret;
+> +       } else {
+> +               dev_warn(handle->dev, "No Voltage domains found.\n");
+> +       }
+> +
+> +       handle->voltage_ops = &voltage_ops;
+> +       handle->voltage_priv = vinfo;
+> +
+> +       return 0;
+> +}
+> +
+> +DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(SCMI_PROTOCOL_VOLTAGE, voltage)
+> diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
+> index 9cd312a1ff92..032ad9bb2a53 100644
+> --- a/include/linux/scmi_protocol.h
+> +++ b/include/linux/scmi_protocol.h
+> @@ -209,6 +209,64 @@ struct scmi_reset_ops {
+>         int (*deassert)(const struct scmi_handle *handle, u32 domain);
+>  };
+>
+> +/**
+> + * struct scmi_voltage_info - describe one available SCMI Voltage Domain
+> + *
+> + * @id: the domain ID as advertised by the platform
+> + * @segmented: defines the layout of the entries of array @levels_uv.
+> + *            - when True the entries are to be interpreted as triplets,
+> + *              each defining a segment representing a range of equally
+> + *              space voltages: <lowest_volts>, <highest_volt>, <step_uV>
+> + *            - when False the entries simply represent a single discrete
+> + *              supported voltage level
+> + * @negative_volts_allowed: True if any of the entries of @levels_uv represent
+> + *                         a negative voltage.
+> + * @attributes: represents Voltage Domain advertised attributes
+> + * @name: name assigned to the Voltage Domain by platform
+> + * @num_levels: number of total entries in @levels_uv.
+> + * @levels_uv: array of entries describing the available voltage levels for
+> + *            this domain.
+> + */
+> +struct scmi_voltage_info {
+> +       u32 id;
+> +       bool segmented;
+> +#define SCMI_VOLTAGE_SEGMENT_LOW       0
+> +#define SCMI_VOLTAGE_SEGMENT_HIGH      1
+> +#define SCMI_VOLTAGE_SEGMENT_STEP      2
+> +       bool negative_volts_allowed;
+> +       u32 attributes;
+> +       char name[SCMI_MAX_STR_SIZE];
+> +       u16 num_levels;
+> +       s32 *levels_uv;
+> +};
+> +
+> +/**
+> + * struct scmi_voltage_ops - represents the various operations provided
+> + * by SCMI Voltage Protocol
+> + *
+> + * @num_domains_get: get the count of voltage domains provided by SCMI
+> + * @info_get: get the information of the specified domain
+> + * @config_set: set the config for the specified domain
+> + * @config_get: get the config of the specified domain
+> + * @level_set: set the voltage level for the specified domain
+> + * @level_get: get the voltage level of the specified domain
+> + */
+> +struct scmi_voltage_ops {
+> +       int (*num_domains_get)(const struct scmi_handle *handle);
+> +       const struct scmi_voltage_info *(*info_get)
+> +               (const struct scmi_handle *handle, u32 domain_id);
+> +       int (*config_set)(const struct scmi_handle *handle, u32 domain_id,
+> +                         u32 config);
+> +#define        SCMI_VOLTAGE_ARCH_STATE_OFF             0x0
+> +#define        SCMI_VOLTAGE_ARCH_STATE_ON              0x7
+> +       int (*config_get)(const struct scmi_handle *handle, u32 domain_id,
+> +                         u32 *config);
+> +       int (*level_set)(const struct scmi_handle *handle, u32 domain_id,
+> +                        u32 flags, s32 volt_uV);
+> +       int (*level_get)(const struct scmi_handle *handle, u32 domain_id,
+> +                        s32 *volt_uV);
+> +};
+> +
+>  /**
+>   * struct scmi_notify_ops  - represents notifications' operations provided by
+>   * SCMI core
+> @@ -262,6 +320,7 @@ struct scmi_notify_ops {
+>   * @clk_ops: pointer to set of clock protocol operations
+>   * @sensor_ops: pointer to set of sensor protocol operations
+>   * @reset_ops: pointer to set of reset protocol operations
+> + * @voltage_ops: pointer to set of voltage protocol operations
+>   * @notify_ops: pointer to set of notifications related operations
+>   * @perf_priv: pointer to private data structure specific to performance
+>   *     protocol(for internal use only)
+> @@ -273,6 +332,8 @@ struct scmi_notify_ops {
+>   *     protocol(for internal use only)
+>   * @reset_priv: pointer to private data structure specific to reset
+>   *     protocol(for internal use only)
+> + * @voltage_priv: pointer to private data structure specific to voltage
+> + *     protocol(for internal use only)
+>   * @notify_priv: pointer to private data structure specific to notifications
+>   *     (for internal use only)
+>   */
+> @@ -284,6 +345,7 @@ struct scmi_handle {
+>         const struct scmi_power_ops *power_ops;
+>         const struct scmi_sensor_ops *sensor_ops;
+>         const struct scmi_reset_ops *reset_ops;
+> +       const struct scmi_voltage_ops *voltage_ops;
+>         const struct scmi_notify_ops *notify_ops;
+>         /* for protocol internal use */
+>         void *perf_priv;
+> @@ -291,6 +353,7 @@ struct scmi_handle {
+>         void *power_priv;
+>         void *sensor_priv;
+>         void *reset_priv;
+> +       void *voltage_priv;
+>         void *notify_priv;
+>         void *system_priv;
+>  };
+> @@ -303,6 +366,7 @@ enum scmi_std_protocol {
+>         SCMI_PROTOCOL_CLOCK = 0x14,
+>         SCMI_PROTOCOL_SENSOR = 0x15,
+>         SCMI_PROTOCOL_RESET = 0x16,
+> +       SCMI_PROTOCOL_VOLTAGE = 0x17,
+>  };
+>
+>  enum scmi_system_events {
+> --
+> 2.17.1
+>
