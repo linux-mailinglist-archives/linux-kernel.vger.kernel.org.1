@@ -2,80 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3568D287CE5
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 22:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 182E3287CF2
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 22:17:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729982AbgJHUMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 16:12:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53418 "EHLO
+        id S1730150AbgJHURt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 16:17:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729915AbgJHUMK (ORCPT
+        with ESMTP id S1730129AbgJHURr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 16:12:10 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 837B1C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 13:12:10 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id w21so4892505pfc.7
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 13:12:10 -0700 (PDT)
+        Thu, 8 Oct 2020 16:17:47 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50EABC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 13:17:46 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id i2so5271379pgh.7
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 13:17:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WreWDI35pT37NfCuOvWMpspZ2aPXJW/j5j611lagGSs=;
-        b=PZxUJluzIt1QggeTdkNp9OGJgg8XkikVmQtKopRptoci+IiyqJqGf+kVkFCc7cjq69
-         ivlpz04pLJ09uusSJJ4LJMyd47n6LwU643lka2EaG7jq9Mau6Ss7URcohb2Qqly0mG0f
-         trPTzA+vrmzueVq5pWh5d68dBmr+kkEQMWCG0=
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mRwM0Y2OSmF79xkRQZ5J4gQg+TTvbMu62ytl+MfGImc=;
+        b=QOy5ZK8e3qud9rKw05d4GoufSl8XLBo3nVC/mO3hDSOsxpbOKgSxHun1Ex6wZi3uKc
+         /vdhBp2L4h6sOGB5a7WsUl21i14MPN9zTH37awglL3Ll+pPKW975GYVVhDabcfvUxKnv
+         m2u/PIyaXtflkjUyfmoSnlvFoHABpdlBkWdyUyjkBu3nYi0YpfSZVYwi5KHmr3Y3by4W
+         nFThAW4i8SgcSXARV4ohcmjigGlziujSSLN7IupPU5os7/hTT9CjUpGAutEmWeByU9+4
+         bH0kGa0vloSwz0rVB+cX9q5het88DHcIvy8UNghSim/JmJnfeRzhfdlfxFQSGXa0NyFg
+         mi5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WreWDI35pT37NfCuOvWMpspZ2aPXJW/j5j611lagGSs=;
-        b=DKYHXIhCR54sC61JmIGwl46sYFE/spex/OIsQG1sCqzxuM9FOYmx6U1psUicLzpANA
-         Qke2ZpdWtR2qE6POhIJb9sOG8/gqby4Vm/sF82S+7XC8YSCKo+HLppoejP2vINbxFvN2
-         9alT4fNIJaVdoQY7KPBC0P3CPFEvyxQ9Y531K0SWNz9iPJKZS/6P0b5CPAEIwbFt+wKO
-         UyeB/BWcNveydr143p5faWJNxgVbh7CcrqCyTGw9w8dvRo4thbWwRx+u/ZWCq+7W7UdZ
-         NCh/pp/RDHxwRZviMLwDROcp7NdVQspn08bv5J7EpXYcfvBaU4jTvHaTE1VijhV19a2X
-         3iJA==
-X-Gm-Message-State: AOAM531IiCY8RlXMVAM/RlLibJk9GOFpwImXdp8YvJhTnzrH+HQ0+bR8
-        gQPi0mG5z1X27YoFfUEbzvD9Mw==
-X-Google-Smtp-Source: ABdhPJyGUn2XdCtbtFwE9c2ZDlXiVEtoo5s37rhpZqEX+8F+LyM3E7vOPmMHic1rOVByTegnMFuwvg==
-X-Received: by 2002:a62:e104:0:b029:152:4f37:99da with SMTP id q4-20020a62e1040000b02901524f3799damr8922475pfh.17.1602187930094;
-        Thu, 08 Oct 2020 13:12:10 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id j12sm8341727pjd.36.2020.10.08.13.12.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 13:12:09 -0700 (PDT)
-Date:   Thu, 8 Oct 2020 13:12:08 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Tommi Rantala <tommi.t.rantala@nokia.com>
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <shuah@kernel.org>,
-        Christian Brauner <christian@brauner.io>
-Subject: Re: [PATCH 02/13] selftests: pidfd: fix compilation errors due to
- wait.h
-Message-ID: <202010081312.ACFDD219@keescook>
-References: <20201008122633.687877-1-tommi.t.rantala@nokia.com>
- <20201008122633.687877-3-tommi.t.rantala@nokia.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mRwM0Y2OSmF79xkRQZ5J4gQg+TTvbMu62ytl+MfGImc=;
+        b=eXAU/MFnIM0HH2K9zck7+X5GEzSzmcvcNV1XmOthByYLvqyT6OJdi45510hDFnhDkQ
+         U/TaIY0EZgWIbARnmz3EJjxUues/JuRbGylbvQOV0nb5A5l0cQ4pg0G7BcKza5UJBq4B
+         i/E/XQz0P9jTvpQy/076zPIsUfi+NHv+qCienkDEiABNuO9I/Ke2Iakhnp2JSfs+9KIr
+         L4pJ4SwjsC8V/MnwQZYHZumKCYu1DAqX/GylqT99eUwg9wxh95J+xi6tdGppkJkZYxRP
+         6u+pTy2mC0vzq+4EP4nhlHfPpBvn3lgTViAfhHkGCLGZyLQljYddFlw6y1yGLW/jEBiL
+         eO/A==
+X-Gm-Message-State: AOAM530ik/xRDeLACpnHmItZhIYeGMELyiA5VSEB5CI/m7oCKZsQHzFG
+        OA+VBHmnG4uXZ4bX3HDNY+265g==
+X-Google-Smtp-Source: ABdhPJyrEiJ103CqNMkdVeceuGn0jLX1sSjQCz00oPZplp/Qz9p0AFVypMlc6kEdUNyQiGypFdHH3Q==
+X-Received: by 2002:a65:67d4:: with SMTP id b20mr493567pgs.245.1602188265462;
+        Thu, 08 Oct 2020 13:17:45 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id y4sm8963325pjc.53.2020.10.08.13.17.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Oct 2020 13:17:44 -0700 (PDT)
+Subject: Re: [ Regressions ] linux next 20201008: blk_update_request: I/O
+ error, dev sda, sector 0 op 0x1:(WRITE) flags 0x800 phys_seg 0 prio class 0
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Christoph Hellwig <hch@lst.de>, dm-devel@redhat.com,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        drbd-dev@lists.linbit.com,
+        "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
+        <linux-ide@vger.kernel.org>, linux-raid@vger.kernel.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        lkft-triage@lists.linaro.org
+Cc:     Song Liu <song@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        martin.petersen@oracle.com, Hannes Reinecke <hare@suse.de>
+References: <CA+G9fYtwisRJtN4ht=ApeWc1jWssDok-7y2wee6Z0kzMP-atKg@mail.gmail.com>
+ <CA+G9fYseTYRWoHUNZ=j4mjFs9dDJ-KOD8hDy+RnyDPx75HcVWw@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <24c8ee4d-d5f7-e49f-cd0c-7cf50a5fd885@kernel.dk>
+Date:   Thu, 8 Oct 2020 14:17:41 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201008122633.687877-3-tommi.t.rantala@nokia.com>
+In-Reply-To: <CA+G9fYseTYRWoHUNZ=j4mjFs9dDJ-KOD8hDy+RnyDPx75HcVWw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 03:26:22PM +0300, Tommi Rantala wrote:
-> Drop unneeded <linux/wait.h> header inclusion to fix pidfd compilation
-> errors seen in Fedora 32:
+On 10/8/20 2:05 PM, Naresh Kamboju wrote:
+> On Thu, 8 Oct 2020 at 23:41, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+>>
+>> There are two major regressions noticed on linux next tag 20201008.
+>> I will bisect this problem and get back to you.
 > 
-> In file included from pidfd_open_test.c:9:
-> ../../../../usr/include/linux/wait.h:17:16: error: expected identifier before numeric constant
->    17 | #define P_ALL  0
->       |                ^
-> 
-> Signed-off-by: Tommi Rantala <tommi.t.rantala@nokia.com>
+> Reverting scsi: patch set on  linux next tag 20201008 fixed reported problems.
+> git revert --no-edit 653eb7c99d84..ed7fb2d018fd
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Just for everyones edification, that would be these 9 patches from the
+SCSI tree:
+
+Christoph Hellwig (9):
+      scsi: core: Don't export scsi_device_from_queue()
+      scsi: core: Remove scsi_init_cmd_errh
+      scsi: core: Move command size detection out of the fast path
+      scsi: core: Use rq_dma_dir in scsi_setup_cmnd()
+      scsi: core: Rename scsi_prep_state_check() to scsi_device_state_check()
+      scsi: core: Rename scsi_mq_prep_fn() to scsi_prepare_cmd()
+      scsi: core: Clean up allocation and freeing of sgtables
+      scsi: core: Remove scsi_setup_cmnd() and scsi_setup_fs_cmnd()
+      scsi: core: Only start the request just before dispatching
 
 -- 
-Kees Cook
+Jens Axboe
+
