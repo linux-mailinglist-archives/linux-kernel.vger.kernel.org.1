@@ -2,145 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEA52287C57
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 21:18:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65380287C1F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 21:12:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728790AbgJHTSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 15:18:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48122 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725874AbgJHTSU (ORCPT
+        id S1729571AbgJHTMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 15:12:41 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:43797 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725887AbgJHTMk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 15:18:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602184699;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=OcZS5FlPZvMeBO/kURU+SArFk5dBZ8JD4IGHErhHSyc=;
-        b=fivuwW5KlYld+mEKPKEFV5bXiDAEmPLNKw+WvZ2jHgmbQNWAQ6WsFNmo7JiuJk2FGGXH1D
-        a3YMpYxN6s1agiHGoaigYwcNOjZTEHWAMAwuA3CU+jIMo6ViOO6MD6fJ8d1luAejaQcIyu
-        hjHiOIX7GX3YZniahk8hY+6jEVgL4zY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-406-OvrW8t3zOE-Xm4NrISwybw-1; Thu, 08 Oct 2020 15:18:17 -0400
-X-MC-Unique: OvrW8t3zOE-Xm4NrISwybw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 48C2A1084D70;
-        Thu,  8 Oct 2020 19:18:16 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-7.gru2.redhat.com [10.97.112.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4439510013C1;
-        Thu,  8 Oct 2020 19:18:09 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id 6DE6D4168BB6; Thu,  8 Oct 2020 16:17:42 -0300 (-03)
-Message-ID: <20201008191446.048306320@redhat.com>
-User-Agent: quilt/0.66
-Date:   Thu, 08 Oct 2020 16:11:31 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Subject: [patch 2/2] nohz: change signal tick dependency to wakeup CPUs of member tasks
-References: <20201008191129.152030255@redhat.com>
+        Thu, 8 Oct 2020 15:12:40 -0400
+Received: from localhost (unknown [67.5.25.97])
+        (Authenticated sender: josh@joshtriplett.org)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 4603110000B;
+        Thu,  8 Oct 2020 19:12:34 +0000 (UTC)
+Date:   Thu, 8 Oct 2020 12:12:31 -0700
+From:   Josh Triplett <josh@joshtriplett.org>
+To:     Andreas Dilger <adilger@dilger.ca>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Jan Kara <jack@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+Subject: Re: ext4 regression in v5.9-rc2 from e7bfb5c9bb3d on ro fs with
+ overlapped bitmaps
+Message-ID: <20201008191231.GA44285@localhost>
+References: <20201005173639.GA2311765@magnolia>
+ <20201006003216.GB6553@localhost>
+ <20201006025110.GJ49559@magnolia>
+ <20201006031834.GA5797@mit.edu>
+ <20201006050306.GA8098@localhost>
+ <20201006133533.GC5797@mit.edu>
+ <20201007080304.GB1112@localhost>
+ <20201007143211.GA235506@mit.edu>
+ <20201007201424.GB15049@localhost>
+ <F9799E9E-6AC8-4C66-B6C6-31CDFA8F55A6@dilger.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <F9799E9E-6AC8-4C66-B6C6-31CDFA8F55A6@dilger.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rather than waking up all nohz_full CPUs on the system, only wakeup 
-the target CPUs of member threads of the signal.
+On Wed, Oct 07, 2020 at 08:57:12PM -0600, Andreas Dilger wrote:
+> On Oct 7, 2020, at 2:14 PM, Josh Triplett <josh@joshtriplett.org> wrote:
+> > If those aren't the right way to express that, I could potentially
+> > adapt. I had a similar such conversation on linux-ext4 already (about
+> > inline data with 128-bit inodes), which led to me choosing to abandon
+> > 128-byte inodes rather than try to get ext4 to support what I wanted
+> > with them, because I didn't want to be disruptive to ext4 for a niche
+> > use case. In the particular case that motivated this thread, what I was
+> > doing already worked in previous kernels, and it seemed reasonable to
+> > ask for it to continue to work in new kernels, while preserving the
+> > newly added checks in the new kernels.
+> 
+> This was discussed in the "Inline data with 128-byte inodes?" thread
+> back in May.  While Jan was not necessarily in favour of this, I was
+> actually OK with improving the ext4 code to handle this case better,
+> since it would (at minimum) clean up ext4 to make a clear separation
+> of how it is detecting data in the i_block[] array and the system.data
+> xattr, and I don't think it added any complexity to the code.
+> 
+> I even posted a WIP patch to that effect, but didn't get a response back:
+> https://marc.info/?l=linux-ext4&m=158863275019187
 
-Reduces interruptions to nohz_full CPUs.
+My apologies, I thought I responded to that. It looks promising to me,
+though I wouldn't have the bandwidth to take it to completion anytime
+soon.
 
-Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
+> I *do* think that inline_data is an under-appreciated feature that I
+> would be happy to see some improvements with.  I don't think that small
+> files are a niche use case, and if we can clean up the inline_data code
+> to work with 128-byte inodes I'm not against that, even though I'm not
+> going to use that combination of features myself.
 
-Index: linux-2.6/kernel/time/tick-sched.c
-===================================================================
---- linux-2.6.orig/kernel/time/tick-sched.c
-+++ linux-2.6/kernel/time/tick-sched.c
-@@ -396,9 +396,17 @@ EXPORT_SYMBOL_GPL(tick_nohz_dep_clear_ta
-  * Set a per-taskgroup tick dependency. Posix CPU timers need this in order to elapse
-  * per process timers.
-  */
--void tick_nohz_dep_set_signal(struct signal_struct *sig, enum tick_dep_bits bit)
-+void tick_nohz_dep_set_signal(struct task_struct *tsk, enum tick_dep_bits bit)
- {
--	tick_nohz_dep_set_all(&sig->tick_dep_mask, bit);
-+	int prev;
-+	struct task_struct *p;
-+
-+	prev = atomic_fetch_or(BIT(bit), &tsk->signal->tick_dep_mask);
-+	if (!prev) {
-+		lockdep_assert_held(&tsk->sighand->siglock);
-+		for_each_thread(tsk, p)
-+			tick_nohz_kick_task(p);
-+	}
- }
- 
- void tick_nohz_dep_clear_signal(struct signal_struct *sig, enum tick_dep_bits bit)
-Index: linux-2.6/include/linux/tick.h
-===================================================================
---- linux-2.6.orig/include/linux/tick.h
-+++ linux-2.6/include/linux/tick.h
-@@ -207,7 +207,7 @@ extern void tick_nohz_dep_set_task(struc
- 				   enum tick_dep_bits bit);
- extern void tick_nohz_dep_clear_task(struct task_struct *tsk,
- 				     enum tick_dep_bits bit);
--extern void tick_nohz_dep_set_signal(struct signal_struct *signal,
-+extern void tick_nohz_dep_set_signal(struct task_struct *tsk,
- 				     enum tick_dep_bits bit);
- extern void tick_nohz_dep_clear_signal(struct signal_struct *signal,
- 				       enum tick_dep_bits bit);
-@@ -252,11 +252,11 @@ static inline void tick_dep_clear_task(s
- 	if (tick_nohz_full_enabled())
- 		tick_nohz_dep_clear_task(tsk, bit);
- }
--static inline void tick_dep_set_signal(struct signal_struct *signal,
-+static inline void tick_dep_set_signal(struct task_struct *tsk,
- 				       enum tick_dep_bits bit)
- {
- 	if (tick_nohz_full_enabled())
--		tick_nohz_dep_set_signal(signal, bit);
-+		tick_nohz_dep_set_signal(tsk, bit);
- }
- static inline void tick_dep_clear_signal(struct signal_struct *signal,
- 					 enum tick_dep_bits bit)
-@@ -284,7 +284,7 @@ static inline void tick_dep_set_task(str
- 				     enum tick_dep_bits bit) { }
- static inline void tick_dep_clear_task(struct task_struct *tsk,
- 				       enum tick_dep_bits bit) { }
--static inline void tick_dep_set_signal(struct signal_struct *signal,
-+static inline void tick_dep_set_signal(struct task_struct *tsk,
- 				       enum tick_dep_bits bit) { }
- static inline void tick_dep_clear_signal(struct signal_struct *signal,
- 					 enum tick_dep_bits bit) { }
-Index: linux-2.6/kernel/time/posix-cpu-timers.c
-===================================================================
---- linux-2.6.orig/kernel/time/posix-cpu-timers.c
-+++ linux-2.6/kernel/time/posix-cpu-timers.c
-@@ -523,7 +523,7 @@ static void arm_timer(struct k_itimer *t
- 	if (CPUCLOCK_PERTHREAD(timer->it_clock))
- 		tick_dep_set_task(p, TICK_DEP_BIT_POSIX_TIMER);
- 	else
--		tick_dep_set_signal(p->signal, TICK_DEP_BIT_POSIX_TIMER);
-+		tick_dep_set_signal(p, TICK_DEP_BIT_POSIX_TIMER);
- }
- 
- /*
-@@ -1358,7 +1358,7 @@ void set_process_cpu_timer(struct task_s
- 	if (*newval < *nextevt)
- 		*nextevt = *newval;
- 
--	tick_dep_set_signal(tsk->signal, TICK_DEP_BIT_POSIX_TIMER);
-+	tick_dep_set_signal(tsk, TICK_DEP_BIT_POSIX_TIMER);
- }
- 
- static int do_cpu_nanosleep(const clockid_t which_clock, int flags,
-
-
+I'd love to see that happen. At the time, it seemed like too large of a
+change to block on, which is why I ended up deciding to switch to
+256-byte inodes.
