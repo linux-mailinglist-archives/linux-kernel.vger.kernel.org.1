@@ -2,89 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02985287078
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 10:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C41A287080
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 10:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728541AbgJHIJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 04:09:14 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:59738 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728004AbgJHIJO (ORCPT
+        id S1728599AbgJHIKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 04:10:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728083AbgJHIKG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 04:09:14 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 7D1C01C0BA3; Thu,  8 Oct 2020 10:09:11 +0200 (CEST)
-Date:   Thu, 8 Oct 2020 10:09:09 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     jic23@kernel.org, kamel.bouhara@bootlin.com, gwendal@chromium.org,
-        alexandre.belloni@bootlin.com, david@lechnology.com,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
-        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com
-Subject: Re: [PATCH v5 4/5] docs: counter: Document character device interface
-Message-ID: <20201008080909.GA31561@amd>
-References: <cover.1601170670.git.vilhelm.gray@gmail.com>
- <54190f9875b81b6aa5483a7710b084053a44abb8.1601170670.git.vilhelm.gray@gmail.com>
+        Thu, 8 Oct 2020 04:10:06 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7ECCC061755
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 01:10:05 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id i12so4751140ota.5
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 01:10:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wCjCa64MStwiq1yR7OaeNvk7N1NN2BleqQckjLbhNYU=;
+        b=C53LylVZwMO0g2+JAqtSBtMgpBv+ulmsaRO6I2h41YCH/cKnnJ2tt3EfS3lZw6Rhw0
+         MUO4icylwPq5djGkpDWWyO5lhz5aT49NTtxjLsnsfxd1PvP6W6t98VP0roBxwIJCy+Bl
+         vpajr9+5TXFrcHadQv/pRUWTQ9v7fI3MyQ+kM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wCjCa64MStwiq1yR7OaeNvk7N1NN2BleqQckjLbhNYU=;
+        b=JmZ/XseQ1PQ4OBW1SoTL7VW082k783HMK6zg4aEJqLo9vU4fsqz0V+HuTufx9LDxHp
+         bLk2ZCQXjhp1gM10SXKyGP9ALktO7PZisDDipG9e5gzKsUbcGUjUKzG2jVfQyKFU8nJx
+         FdykHx/pSQyj71u+iIRGkez/l/Bbf31n5rXti1o5M2SXRDDgcgkjOqar1aGLHQfeXT5m
+         TKd9XxJeBsU7nrIHtBw0buvbB8exoq+Rf26E1dZjserC3NuKh8rqZKeYdNV+Q9c1cyXu
+         MZFJ/D07E8g6TjhHH4vZ3/skeS0vVuN5MGbwS528pOEmAunuC7m/CXLMQ+gEUEftOx6b
+         pyDQ==
+X-Gm-Message-State: AOAM533T2tm1mlQsFjkNbuiZUfhBSUZ4gQF7Rwo0e7fgsrSU/DN0LhtU
+        59RIxMB+Ezoojyn29UoMy8KX8HufMPF6Pe/A3eQ1sQ==
+X-Google-Smtp-Source: ABdhPJz2Aux80kUsEM7YHCXCuraur5IrUAmiithdZ9pp1HS0einrpaKxMEfTYuxGd6kEaO0zfYuPyPuQ741ZEEETeSg=
+X-Received: by 2002:a05:6830:1e56:: with SMTP id e22mr4190355otj.303.1602144605250;
+ Thu, 08 Oct 2020 01:10:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="5mCyUwZo2JvN/JJP"
-Content-Disposition: inline
-In-Reply-To: <54190f9875b81b6aa5483a7710b084053a44abb8.1601170670.git.vilhelm.gray@gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <20201007164426.1812530-1-daniel.vetter@ffwll.ch>
+ <20201007164426.1812530-11-daniel.vetter@ffwll.ch> <CAPcyv4hBL68A7CZa+YnooufDH2tevoxrx32DTJMQ6OHRnec7QQ@mail.gmail.com>
+ <CAKMK7uFoxiPdjO-yhd-mKqumnTpjcENEReb1sOYhOwRRCL0wpQ@mail.gmail.com>
+ <CAPcyv4jGxsB5so8mKqYrsn2CEc7nO2yPvzZZ_mvM_-R=BZfKHg@mail.gmail.com> <CAPcyv4iN1q0LUVTO6igMKPe-8hnR5ULF+mBnWy6bdXfY2M6YmA@mail.gmail.com>
+In-Reply-To: <CAPcyv4iN1q0LUVTO6igMKPe-8hnR5ULF+mBnWy6bdXfY2M6YmA@mail.gmail.com>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Thu, 8 Oct 2020 10:09:54 +0200
+Message-ID: <CAKMK7uEETcQrPBC=4URQZtD73nA9MvQpBx-TOv95bdwzNOOA2g@mail.gmail.com>
+Subject: Re: [PATCH 10/13] PCI: revoke mappings like devmem
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "Linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>, Bjorn Helgaas <bhelgaas@google.com>,
+        Linux PCI <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 8, 2020 at 12:29 AM Dan Williams <dan.j.williams@intel.com> wrote:
+>
+> On Wed, Oct 7, 2020 at 3:23 PM Dan Williams <dan.j.williams@intel.com> wrote:
+> >
+> > On Wed, Oct 7, 2020 at 12:49 PM Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
+> > >
+> > > On Wed, Oct 7, 2020 at 9:33 PM Dan Williams <dan.j.williams@intel.com> wrote:
+> > > >
+> > > > On Wed, Oct 7, 2020 at 11:11 AM Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
+> > > > >
+> > > > > Since 3234ac664a87 ("/dev/mem: Revoke mappings when a driver claims
+> > > > > the region") /dev/kmem zaps ptes when the kernel requests exclusive
+> > > > > acccess to an iomem region. And with CONFIG_IO_STRICT_DEVMEM, this is
+> > > > > the default for all driver uses.
+> > > > >
+> > > > > Except there's two more ways to access pci bars: sysfs and proc mmap
+> > > > > support. Let's plug that hole.
+> > > >
+> > > > Ooh, yes, lets.
+> > > >
+> > > > > For revoke_devmem() to work we need to link our vma into the same
+> > > > > address_space, with consistent vma->vm_pgoff. ->pgoff is already
+> > > > > adjusted, because that's how (io_)remap_pfn_range works, but for the
+> > > > > mapping we need to adjust vma->vm_file->f_mapping. Usually that's done
+> > > > > at ->open time, but that's a bit tricky here with all the entry points
+> > > > > and arch code. So instead create a fake file and adjust vma->vm_file.
+> > > >
+> > > > I don't think you want to share the devmem inode for this, this should
+> > > > be based off the sysfs inode which I believe there is already only one
+> > > > instance per resource. In contrast /dev/mem can have multiple inodes
+> > > > because anyone can just mknod a new character device file, the same
+> > > > problem does not exist for sysfs.
+> > >
+> > > But then I need to find the right one, plus I also need to find the
+> > > right one for the procfs side. That gets messy, and I already have no
+> > > idea how to really test this. Shared address_space is the same trick
+> > > we're using in drm (where we have multiple things all pointing to the
+> > > same underlying resources, through different files), and it gets the
+> > > job done. So that's why I figured the shared address_space is the
+> > > cleaner solution since then unmap_mapping_range takes care of
+> > > iterating over all vma for us. I guess I could reimplement that logic
+> > > with our own locking and everything in revoke_devmem, but feels a bit
+> > > silly. But it would also solve the problem of having mutliple
+> > > different mknod of /dev/kmem with different address_space behind them.
+> > > Also because of how remap_pfn_range works, all these vma do use the
+> > > same pgoff already anyway.
+> >
+> > True, remap_pfn_range() makes sure that ->pgoff is an absolute
+> > physical address offset for all use cases. So you might be able to
+> > just point proc_bus_pci_open() at the shared devmem address space. For
+> > sysfs it's messier. I think you would need to somehow get the inode
+> > from kernfs_fop_open() to adjust its address space, but only if the
+> > bin_file will ultimately be used for PCI memory.
 
---5mCyUwZo2JvN/JJP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Just read the code  a bit more, and for proc it's impossible. There's
+only a single file, and before you mmap it you have to call a few
+ioctl to select the right pci resource on that device you want to
+mmap. Which includes legacy ioport stuff, and at least for now those
+don't get revoked (maybe they should, but I'm looking at iomem here
+now). Setting the mapping too early in ->open means that on
+architectures which can do ioport as mmaps (not many, but powerpc is
+among them) we'd shoot down these mmaps too.
 
-Hi!
+Looking at the code there's the generic implementation, which consults
+pci_iobar_pfn. And the only other implementation for sparc looks
+similar, they separate iomem vs ioport through different pfn. So I
+think this should indeed work.
 
-> +        int main(void)
-> +        {
-> +                struct pollfd pfd =3D { .events =3D POLLIN };
-> +                struct counter_event event_data[2];
-> +
-> +                pfd.fd =3D open("/dev/counter0", O_RDWR);
-> +
-> +                ioctl(pfd.fd, COUNTER_SET_WATCH_IOCTL, watches);
-> +                ioctl(pfd.fd, COUNTER_SET_WATCH_IOCTL, watches + 1);
-> +                ioctl(pfd.fd, COUNTER_LOAD_WATCHES_IOCTL);
-> +
-> +                for (;;) {
-> +                        poll(&pfd, 1, -1);
+> To me this seems like a new sysfs_create_bin_file() flavor that
+> registers the file with the common devmem address_space.
 
-Why do poll, when you are doing blocking read?
+Hm I think we could just add a i_mapping member to bin_attributes and
+let the normal open code set that up for us. That should work.
+mmapable binary sysfs file is already a similar special case.
+-Daniel
 
-> +                        read(pfd.fd, event_data,  sizeof(event_data));
 
-Does your new chrdev always guarantee returning complete buffer?
 
-If so, should it behave like that?
 
-Best regards,
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---5mCyUwZo2JvN/JJP
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl9+ySUACgkQMOfwapXb+vKILgCdGWcMSFTNlT8BzJiXCxl8XH94
-G+kAn1mYy8F8mA++sLAit6PznfuXTwgX
-=pq8O
------END PGP SIGNATURE-----
-
---5mCyUwZo2JvN/JJP--
+--
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
