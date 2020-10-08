@@ -2,107 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 182E3287CF2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 22:17:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30933287CF9
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 22:21:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730150AbgJHURt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 16:17:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54282 "EHLO
+        id S1730176AbgJHUU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 16:20:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730129AbgJHURr (ORCPT
+        with ESMTP id S1728779AbgJHUU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 16:17:47 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50EABC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 13:17:46 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id i2so5271379pgh.7
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 13:17:46 -0700 (PDT)
+        Thu, 8 Oct 2020 16:20:59 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39CAAC0613D2;
+        Thu,  8 Oct 2020 13:20:59 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id m17so7791554ioo.1;
+        Thu, 08 Oct 2020 13:20:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mRwM0Y2OSmF79xkRQZ5J4gQg+TTvbMu62ytl+MfGImc=;
-        b=QOy5ZK8e3qud9rKw05d4GoufSl8XLBo3nVC/mO3hDSOsxpbOKgSxHun1Ex6wZi3uKc
-         /vdhBp2L4h6sOGB5a7WsUl21i14MPN9zTH37awglL3Ll+pPKW975GYVVhDabcfvUxKnv
-         m2u/PIyaXtflkjUyfmoSnlvFoHABpdlBkWdyUyjkBu3nYi0YpfSZVYwi5KHmr3Y3by4W
-         nFThAW4i8SgcSXARV4ohcmjigGlziujSSLN7IupPU5os7/hTT9CjUpGAutEmWeByU9+4
-         bH0kGa0vloSwz0rVB+cX9q5het88DHcIvy8UNghSim/JmJnfeRzhfdlfxFQSGXa0NyFg
-         mi5A==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CB6W9WzO7W1bZwpkRkybp5FcJ0TGq96Jgxj94UreKCM=;
+        b=tdsRl6KXos7ZO36a7xzlcrsj80EGfWjJaGhhsY3foy0dQRb1vcQm0fLLB61F2OE29G
+         ZSUSoNDGCoqWig0uxhQmTtBoqaqhtKZhgIEPaQz95yGeVFT/kOFHnN5EWe69Tl8AgfxU
+         DLaw7r3h8YEaZwE0fDqsgKYL1Olm/5RPVGyOgioqkjcYgemgtWhxU0mtMMX9xr0MgTd6
+         B0QxypLvyQVpT+ar0TT8G++ZZ2uUNI0CTaVMJ1U+kRSSe/JDPvI9VRXK1nDLv0yqXnbQ
+         u8305h2Ua8TGMgaGax2QX3tGPd585mwz71ivAL7BLxSNuyFoqzSEnce9W+0KBg4Bxz7p
+         A6qA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mRwM0Y2OSmF79xkRQZ5J4gQg+TTvbMu62ytl+MfGImc=;
-        b=eXAU/MFnIM0HH2K9zck7+X5GEzSzmcvcNV1XmOthByYLvqyT6OJdi45510hDFnhDkQ
-         U/TaIY0EZgWIbARnmz3EJjxUues/JuRbGylbvQOV0nb5A5l0cQ4pg0G7BcKza5UJBq4B
-         i/E/XQz0P9jTvpQy/076zPIsUfi+NHv+qCienkDEiABNuO9I/Ke2Iakhnp2JSfs+9KIr
-         L4pJ4SwjsC8V/MnwQZYHZumKCYu1DAqX/GylqT99eUwg9wxh95J+xi6tdGppkJkZYxRP
-         6u+pTy2mC0vzq+4EP4nhlHfPpBvn3lgTViAfhHkGCLGZyLQljYddFlw6y1yGLW/jEBiL
-         eO/A==
-X-Gm-Message-State: AOAM530ik/xRDeLACpnHmItZhIYeGMELyiA5VSEB5CI/m7oCKZsQHzFG
-        OA+VBHmnG4uXZ4bX3HDNY+265g==
-X-Google-Smtp-Source: ABdhPJyrEiJ103CqNMkdVeceuGn0jLX1sSjQCz00oPZplp/Qz9p0AFVypMlc6kEdUNyQiGypFdHH3Q==
-X-Received: by 2002:a65:67d4:: with SMTP id b20mr493567pgs.245.1602188265462;
-        Thu, 08 Oct 2020 13:17:45 -0700 (PDT)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id y4sm8963325pjc.53.2020.10.08.13.17.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Oct 2020 13:17:44 -0700 (PDT)
-Subject: Re: [ Regressions ] linux next 20201008: blk_update_request: I/O
- error, dev sda, sector 0 op 0x1:(WRITE) flags 0x800 phys_seg 0 prio class 0
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Christoph Hellwig <hch@lst.de>, dm-devel@redhat.com,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        drbd-dev@lists.linbit.com,
-        "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
-        <linux-ide@vger.kernel.org>, linux-raid@vger.kernel.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        lkft-triage@lists.linaro.org
-Cc:     Song Liu <song@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        martin.petersen@oracle.com, Hannes Reinecke <hare@suse.de>
-References: <CA+G9fYtwisRJtN4ht=ApeWc1jWssDok-7y2wee6Z0kzMP-atKg@mail.gmail.com>
- <CA+G9fYseTYRWoHUNZ=j4mjFs9dDJ-KOD8hDy+RnyDPx75HcVWw@mail.gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <24c8ee4d-d5f7-e49f-cd0c-7cf50a5fd885@kernel.dk>
-Date:   Thu, 8 Oct 2020 14:17:41 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CB6W9WzO7W1bZwpkRkybp5FcJ0TGq96Jgxj94UreKCM=;
+        b=i5uLri2Hzwn3gjkTZkqSmjr0X8EDXyOjh5qdfVeKsgO6gZHBHi5qhxnOAzGowH1bqb
+         ALSJMDUa4UPvF9FnhytmpEstMSNA8eqUG1AvKbdcXXRP8g1Kdfl3692WM7vDQ3gujTqo
+         BPSGYvqhP/CfFOXRJK1L65wyBZrh8+hlZ8Vwqifujr5g1fGQrjv4VI0L4Yr+eZqaJhjf
+         95ncCLUfQcoJacaHrWhFWeRh+rjh1CgHXSQz3UVi//VP7pqCRyL7IgrZaePbmnu2Ca8S
+         SXGhrZh745a6ffqCtP9NXhfPTcu4uM/2Otchnnr4L07ZyLMNxUE8Oq1lMymoH0twteBR
+         ncsA==
+X-Gm-Message-State: AOAM5321lTEvBjmfXqENAXT6PlsJkUlg0Zd/IhV15zXw49uKWchPfH14
+        MSHST4KuKD7kFLrRRZhoy5r449oWMUnVEDB/RHU=
+X-Google-Smtp-Source: ABdhPJw/MzJ8hHIL1wI1ZtwXSGDbIpwzG2ersyQHW/4pjitnRNz7OIW63QNnm7qihfj/d/D0NshhLX3TqGXYYOl84+s=
+X-Received: by 2002:a05:6602:18f:: with SMTP id m15mr7125778ioo.48.1602188458584;
+ Thu, 08 Oct 2020 13:20:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CA+G9fYseTYRWoHUNZ=j4mjFs9dDJ-KOD8hDy+RnyDPx75HcVWw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1601655904.git.npcomplete13@gmail.com> <cd64e0ccae3e5785c80ad4d73af533a40fc15876.1601655904.git.npcomplete13@gmail.com>
+ <20201007210327.GE112961@lunn.ch> <20201007220718.GB1972@ubuntu>
+ <20201008003241.GG112961@lunn.ch> <9c6e4da5-033e-6b30-4525-9f3a7b4ba01f@gmail.com>
+In-Reply-To: <9c6e4da5-033e-6b30-4525-9f3a7b4ba01f@gmail.com>
+From:   Vivek Unune <npcomplete13@gmail.com>
+Date:   Thu, 8 Oct 2020 16:20:47 -0400
+Message-ID: <CAChtp75Yo2crLwUCWWNgya-JmDiXvOt+JRwWojQQNazgDaphLw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] ARM: dts: BCM5301X: Linksys EA9500 add port 5 and
+ port 7
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>, devicetree@vger.kernel.org,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/8/20 2:05 PM, Naresh Kamboju wrote:
-> On Thu, 8 Oct 2020 at 23:41, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->>
->> There are two major regressions noticed on linux next tag 20201008.
->> I will bisect this problem and get back to you.
-> 
-> Reverting scsi: patch set on  linux next tag 20201008 fixed reported problems.
-> git revert --no-edit 653eb7c99d84..ed7fb2d018fd
+Thanks Florian, I'll do that!
 
-Just for everyones edification, that would be these 9 patches from the
-SCSI tree:
-
-Christoph Hellwig (9):
-      scsi: core: Don't export scsi_device_from_queue()
-      scsi: core: Remove scsi_init_cmd_errh
-      scsi: core: Move command size detection out of the fast path
-      scsi: core: Use rq_dma_dir in scsi_setup_cmnd()
-      scsi: core: Rename scsi_prep_state_check() to scsi_device_state_check()
-      scsi: core: Rename scsi_mq_prep_fn() to scsi_prepare_cmd()
-      scsi: core: Clean up allocation and freeing of sgtables
-      scsi: core: Remove scsi_setup_cmnd() and scsi_setup_fs_cmnd()
-      scsi: core: Only start the request just before dispatching
-
--- 
-Jens Axboe
-
+On Thu, Oct 8, 2020 at 10:58 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
+>
+>
+>
+> On 10/7/2020 5:32 PM, Andrew Lunn wrote:
+> >> This router is currently not enabled in Openwrt
+> >
+> > You have to be careful here. Not everything runs OpenWRT. You cannot
+> > break backwards compatibility in mainline, simple as that. You need to
+> > ensure that mainline does not see a change in the CPU port.
+>
+> I don't think this is breaking anything, in premise all 3 CPU interfaces
+> are completely interchangeable, with the notable fact that port 8
+> happens to have the flow accelerator block available for re-circulation
+> of packets if we wanted to support a NATP offload at some point in the
+> future.
+>
+> Vivek, maybe you can add ports 5 and 7 in the Device Tree and mark them
+> as disabled for now.
+> --
+> Florian
