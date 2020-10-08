@@ -2,86 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B983286D12
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 05:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 284BA286D10
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 05:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728267AbgJHDOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 23:14:50 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:58502 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726009AbgJHDOu (ORCPT
+        id S1727857AbgJHDOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 23:14:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726009AbgJHDOI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 23:14:50 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0983E0NO165781;
-        Thu, 8 Oct 2020 03:14:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=iG8bFON8QypxaJ6dwgl1a7kKVGtwb2SD52jllewelG8=;
- b=pt/zjM/VbQzUE+IKz4UzyADVA+qYy1AlvLizqDfRQdXB89kHCj1xKNd4dYGYBvjaIm/b
- bszCVy4kE2yJmd1BESMgvXq7iG3iwzJxl+eGe8PVVTpplTivKwOhOqZ70pvQrllzC7gO
- wyfP5BdoQfm42Q+GN6TlajfCdNgK2IOouWyDoaEULmsIx3QbI93/aVo/YgPLUImpCgD1
- K+DVfukL0AXdZe8xnC7K2FxMYYrHciAyhzaPc1d5gcrfJQzRVqAha6nbs4Y/QD6gBOMF
- iyiafi9asKV3MfoSrsyJHf0AgPykP+2PZFMOTqjNwpIju13hE11FBw32IHzA7maL1YkC pg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 33ym34tbqb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 08 Oct 2020 03:14:38 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09835LDt098343;
-        Thu, 8 Oct 2020 03:12:38 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 33y2vqagaw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 08 Oct 2020 03:12:38 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0983CZVd003579;
-        Thu, 8 Oct 2020 03:12:35 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 07 Oct 2020 20:12:34 -0700
-To:     Colin King <colin.king@canonical.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: sym53c8xx_2: fix sizeof mismatch
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1a6wxwgva.fsf@ca-mkp.ca.oracle.com>
-References: <20201006110252.536641-1-colin.king@canonical.com>
-Date:   Wed, 07 Oct 2020 23:12:32 -0400
-In-Reply-To: <20201006110252.536641-1-colin.king@canonical.com> (Colin King's
-        message of "Tue, 6 Oct 2020 12:02:52 +0100")
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
- malwarescore=0 suspectscore=1 spamscore=0 phishscore=0 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010080027
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 priorityscore=1501
- mlxscore=0 mlxlogscore=999 clxscore=1015 bulkscore=0 spamscore=0
- malwarescore=0 phishscore=0 suspectscore=1 adultscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010080028
+        Wed, 7 Oct 2020 23:14:08 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BA8BC061755
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 20:14:08 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id g10so2797641pfc.8
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 20:14:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=EuG4K/XgsWE7fSCLSMhN/E2Bz00xDoJMv8ow9PGXGZw=;
+        b=uC/9jTjXuRc1LMrueDNkrbZ5O3AN7FuWn6f23ip2GmClZz2jakQytrCBDjjRW4BL61
+         I9/qmO4Ws7WYXP32ekb95jWWM6ms+BmmY+RGa0+m57LEQ9bn2596eNptVCcFM/afA5pu
+         3hxvqzlYfO7R1STip7wODiY1fGX+VnrrzJRo2IQIlOp8AlO50IVEMdcWAi7JZie2qXcZ
+         D3lBezVDMDFaBMku30HsN3CQ7hEZEYmK4Uusyajo6yxNZKuwZmSln1j29SnBAXTD28+2
+         LMq9qpaMUIK4oIv78kdzXrP01r0mBZuWKmyocn25gQl23XaZcmGWIxu88/LUDb0coA21
+         x99Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=EuG4K/XgsWE7fSCLSMhN/E2Bz00xDoJMv8ow9PGXGZw=;
+        b=NgyM7TXXbW3Q3Mb0YuRTNu07KI8KbUbMv6J+vF/Mw0/h9L7uFmwVeASyUVmdBees29
+         iNz2enujYRDUNFNnGyZQPGABLI4WmmQ31Xjc9VUXgZOV9jXAIbdzrLDOX47CGR7YYWXZ
+         PLuCSmWjUJbhcddy9B/wxFxe6jjP9QAYtE1LBa+K9HxI/J+BOKfIRZ0iPLD7xlv78OwQ
+         svHUsT2uYSHxxyKXYWDVJmeR8AA1CZ9X82leuVX8V1gP8V1569k9lXJN9d/eRx7MPL57
+         r5WTo2l53hGoHlKuiF5cJoqhR6g9eTsvZUjcqyQWFm/976l/F1E0eweAn9CwkflawDJh
+         +qJw==
+X-Gm-Message-State: AOAM532uQO1kifT8LWR7kL1GNcvuE1hbsPC0ApETD3Uxuzdoo6gzEa5K
+        8DLvHUnkVfqYt7s78DKykvc=
+X-Google-Smtp-Source: ABdhPJyAQp45h8wLuFHKqernjek2ghg5Qgg2CCpucKOFa2rfw9HxPQ8Ed/VXTXSgb8reoHmtfYrXrw==
+X-Received: by 2002:a62:1a4c:0:b029:152:706d:dabb with SMTP id a73-20020a621a4c0000b0290152706ddabbmr5540710pfa.40.1602126847521;
+        Wed, 07 Oct 2020 20:14:07 -0700 (PDT)
+Received: from localhost.localdomain ([154.223.142.197])
+        by smtp.gmail.com with ESMTPSA id n125sm4924313pfn.185.2020.10.07.20.14.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 07 Oct 2020 20:14:06 -0700 (PDT)
+From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
+To:     naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
+        davem@davemloft.net, mhiramat@kernel.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Subject: [PATCH V2] kprobes: Correct a typo in function kprobes_module_callback
+Date:   Thu,  8 Oct 2020 03:13:57 +0000
+Message-Id: <1602126837-32346-1-git-send-email-zhouzhouyi@gmail.com>
+X-Mailer: git-send-email 1.7.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+There is a tiny typo in comment of function kprobes_module_callback.
 
-Colin,
+Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+---
+ kernel/kprobes.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-> An incorrect sizeof is being used, struct sym_ccb ** is not correct,
-> it should be struct sym_ccb *. Note that since ** is the same size as
-> * this is not causing any issues.  Improve this fix by using the idiom
-> sizeof(*np->ccbh) as this allows one to not even reference the type of
-> the pointer.
-
-Applied to 5.10/scsi-staging, thanks!
-
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index e995541..9d2042b 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -2432,7 +2432,7 @@ static int kprobes_module_callback(struct notifier_block *nb,
+ 			     within_module_core((unsigned long)p->addr, mod))) {
+ 				/*
+ 				 * The vaddr this probe is installed will soon
+-				 * be vfreed buy not synced to disk. Hence,
++				 * be vfreed but not synced to disk. Hence,
+ 				 * disarming the breakpoint isn't needed.
+ 				 *
+ 				 * Note, this will also move any optimized probes
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+1.7.1
+
