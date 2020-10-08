@@ -2,116 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 558462873F4
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 14:23:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF5C22873FF
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 14:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729793AbgJHMXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 08:23:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58702 "EHLO mx2.suse.de"
+        id S1729845AbgJHMZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 08:25:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729722AbgJHMXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 08:23:12 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1602159790;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TtXgBFrg0rFqKIY1cOlrbxSoEXaREYSY+5dIWTCP/uM=;
-        b=T+nFtKLTGTJrJBoydciXFCQzl450l+Ulqo4gBD9IFFKY4UF184At1sa+KdiPJi6sct3ZDq
-        iYaRmD2G1RICLXNumJD3jdjbkiH8z2tfORxxZ4nefA0qvJ4Ir9aXWzHObcHsDSjbK1t1Fa
-        aEakux03USysNhD4nyySam+UyYWgP3A=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A5E92AEF8;
-        Thu,  8 Oct 2020 12:23:10 +0000 (UTC)
-Date:   Thu, 8 Oct 2020 14:23:09 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Subject: Re: [PATCH v2 3/7] mm, page_alloc: remove setup_pageset()
-Message-ID: <20201008122309.GB4967@dhcp22.suse.cz>
-References: <20201008114201.18824-1-vbabka@suse.cz>
- <20201008114201.18824-4-vbabka@suse.cz>
+        id S1729665AbgJHMZO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 08:25:14 -0400
+Received: from coco.lan (ip5f5ad5d8.dynamic.kabel-deutschland.de [95.90.213.216])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5FAAA20659;
+        Thu,  8 Oct 2020 12:25:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602159914;
+        bh=3KpYhHQ85TqDmljH+UC/i0KAIqnhq3Y7TnXDFqhugvg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=M3xmhMwIGTnSJtAgbMZJJA0Ks9kTC3Q85NEpwt6QPquV5V9aN3dyW5+NP6T3ZUFNV
+         o/sot55fZZ4EJWUVjOOEoTyBK1soBcimn+hqXeLu1zMtDO43ZKyuIEcSe00QhKGtsw
+         CQMlEg5A69Aks0YmaTRMqAUyqFRmBICXcbKCK1Gw=
+Date:   Thu, 8 Oct 2020 14:25:05 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     "=?UTF-8?B?TsOtY29sYXM=?= F. R. A. Prado" <nfraprado@protonmail.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lkcamp@lists.libreplanetbr.org,
+        andrealmeid@collabora.com
+Subject: Re: [PATCH] docs: Make automarkup ready for Sphinx 3.1+
+Message-ID: <20201008142505.0cf36409@coco.lan>
+In-Reply-To: <20201008113127.GA20115@casper.infradead.org>
+References: <C674RBXSO9XN.1LXXU71QQNTF1@ArchWay>
+        <20201008024706.GZ20115@casper.infradead.org>
+        <20201008080306.25e89901@coco.lan>
+        <20201008113127.GA20115@casper.infradead.org>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201008114201.18824-4-vbabka@suse.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 08-10-20 13:41:57, Vlastimil Babka wrote:
-> We initialize boot-time pagesets with setup_pageset(), which sets high and
-> batch values that effectively disable pcplists.
-> 
-> We can remove this wrapper if we just set these values for all pagesets in
-> pageset_init(). Non-boot pagesets then subsequently update them to the proper
-> values.
-> 
-> No functional change.
-> 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> Reviewed-by: David Hildenbrand <david@redhat.com>
+Em Thu, 8 Oct 2020 12:31:27 +0100
+Matthew Wilcox <willy@infradead.org> escreveu:
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+> On Thu, Oct 08, 2020 at 08:03:06AM +0200, Mauro Carvalho Chehab wrote:
+> > Em Thu, 8 Oct 2020 03:47:06 +0100
+> > Matthew Wilcox <willy@infradead.org> escreveu:
+> >  =20
+> > > On Thu, Oct 08, 2020 at 02:15:24AM +0000, N=C3=ADcolas F. R. A. Prado=
+ wrote: =20
+> > > > > I have a feature request ... could you automarkup NULL as being
+> > > > > :c:macro?
+> > > > > Or maybe just anything matching \<[[:upper:]_[:digit:]]*\>
+> > > > > (i may have my regex syntax confused ... a word composed of any
+> > > > > arrangement of upper-case, digits and underscores.)   =20
+> > > >=20
+> > > > I think what you are suggesting are two separate things.
+> > > >=20
+> > > > For NULL, what you're interested in is that it appears in a monospa=
+ced font, as
+> > > > if written ``NULL``, right? As I don't think a cross-reference to "=
+the NULL
+> > > > macro definition" would make much sense.
+> > > >=20
+> > > > While "anything containing only upper-case, digits and underscores"=
+ would
+> > > > actually be for cross-referencing to the definition of the macro sy=
+mbol in
+> > > > question, right?   =20
+> > >=20
+> > > Well, maybe!  What I'd really like is to remove all the markup from
+> > > xarray.rst.  Jon managed to get rid of most of it with the (), but
+> > > there's still markup on:
+> > >=20
+> > > LONG_MAX
+> > > NULL
+> > > -EBUSY
+> > > true
+> > > XA_MARK_[012]
+> > > XA_FLAGS_*
+> > > ENOMEM
+> > > EINVAL
+> > >=20
+> > > I'm not sure there's much that automarkup can do about ``true``, but =
+all
+> > > the others fit the all-caps-and-underscore-and-digits pattern.
+> > >=20
+> > > I don't know how much we want errnos to link to anything in particula=
+r.
+> > > So maybe split these into 'well-known' (eg defined by ANSI C or POSIX)
+> > > definitions and things which are local macros:
+> > >=20
+> > > LONG_MAX
+> > > NULL
+> > > -EBUSY
+> > > ENOMEM
+> > > EINVAL =20
+> >=20
+> > Yeah, a nice improvement would be to auto-markup error codes and NULL as
+> > literal blocks.
+> >  =20
+> > >=20
+> > > vs
+> > >=20
+> > > XA_MARK_[012] =20
+> >  =20
+> > > XA_FLAGS_* =20
+> >=20
+> > Actually, things that end with an * (but doesn't start with an *)
+> > are good candidates for being literals - although extra care should
+> > be taken on such case, as parsing those automatically will likely hit
+> > lots of false-positives. =20
+>=20
+> I do apologise.  I was trying to be concise in email.  In the actual
+> text file, I currently have:
+>=20
+> ``XA_FLAGS_ALLOC``
+> ``XA_FLAGS_ALLOC1``
+> ``XA_FLAGS_LOCK_IRQ``
+> ``XA_FLAGS_LOCK_BH``
+> ``XA_FLAGS_TRACK_FREE``
 
-Btw. where do we initialize pcp->count? I thought that pcp allocator
-zeroes out the allocated memory but alloc_percpu is GFP_KERNEL like.
+Ah, OK!
 
-> ---
->  mm/page_alloc.c | 17 ++++++++++-------
->  1 file changed, 10 insertions(+), 7 deletions(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 463f40b12aca..f827b42a2475 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -5899,7 +5899,7 @@ static void build_zonelists(pg_data_t *pgdat)
->   * not check if the processor is online before following the pageset pointer.
->   * Other parts of the kernel may not check if the zone is available.
->   */
-> -static void setup_pageset(struct per_cpu_pageset *p);
-> +static void pageset_init(struct per_cpu_pageset *p);
->  static DEFINE_PER_CPU(struct per_cpu_pageset, boot_pageset);
->  static DEFINE_PER_CPU(struct per_cpu_nodestat, boot_nodestats);
->  
-> @@ -5967,7 +5967,7 @@ build_all_zonelists_init(void)
->  	 * (a chicken-egg dilemma).
->  	 */
->  	for_each_possible_cpu(cpu)
-> -		setup_pageset(&per_cpu(boot_pageset, cpu));
-> +		pageset_init(&per_cpu(boot_pageset, cpu));
->  
->  	mminit_verify_zonelist();
->  	cpuset_init_current_mems_allowed();
-> @@ -6286,12 +6286,15 @@ static void pageset_init(struct per_cpu_pageset *p)
->  	pcp = &p->pcp;
->  	for (migratetype = 0; migratetype < MIGRATE_PCPTYPES; migratetype++)
->  		INIT_LIST_HEAD(&pcp->lists[migratetype]);
-> -}
->  
-> -static void setup_pageset(struct per_cpu_pageset *p)
-> -{
-> -	pageset_init(p);
-> -	pageset_update(&p->pcp, 0, 1);
-> +	/*
-> +	 * Set batch and high values safe for a boot pageset. A true percpu
-> +	 * pageset's initialization will update them subsequently. Here we don't
-> +	 * need to be as careful as pageset_update() as nobody can access the
-> +	 * pageset yet.
-> +	 */
-> +	pcp->high = 0;
-> +	pcp->batch = 1;
->  }
->  
->  /*
-> -- 
-> 2.28.0
+>=20
+> > > I'm willing to add more inline kernel-doc to get this to work better.=
+ =20
+> >=20
+> > Why? inline kernel-doc should be evaluated just like normal blocks.
+> >=20
+> > Right now, kernel-doc handles constants like NULL and XA_FLAGS_* using
+> > two ways:
+> >=20
+> > 	%FOO
+> > or
+> > 	``FOO``
+> >=20
+> > The regex for those are:
+> >=20
+> > 	my $type_constant =3D '\b``([^\`]+)``\b';
+> > 	my $type_constant2 =3D '\%([-_\w]+)'; =20
+>=20
+> Right, but that's in kernel-doc ... in a .rst file, I believe we have
+> to use the ``SYMBOL`` syntax.
 
--- 
-Michal Hocko
-SUSE Labs
+As you mentioned that you're "willing to add more inline kernel-doc",
+I assumed that you were talking about kernel-doc markups at the C files.
+
+Yeah, inside a .rst file, this should be ``SYMBOL``.
+
+As you suggested, the automarkup.py could help with replacing some
+of those.
+
+-
+
+Just my two cents: a documentation writer hat, it sounds weird to me to=20
+mix ``SYMBOL`` (with markup) with NULL (without explicit markup) at the
+same file.
+
+Thanks,
+Mauro
