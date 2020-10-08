@@ -2,91 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B57928763A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:39:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3307D287645
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730693AbgJHOiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 10:38:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58060 "EHLO
+        id S1730701AbgJHOke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 10:40:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730646AbgJHOir (ORCPT
+        with ESMTP id S1729770AbgJHOkd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 10:38:47 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9301EC0613D3
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 07:38:46 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id e18so6873906wrw.9
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 07:38:46 -0700 (PDT)
+        Thu, 8 Oct 2020 10:40:33 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA938C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 07:40:33 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id k6so6428755ior.2
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 07:40:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=WgNDcH66XgUR5xvlin4vgOc3vaLahNaQFK4he5fif9k=;
-        b=VBCYDrWwfKpjCC9cjowky2P9uUdpZLV3HYyKQwXB4FUs2ZGzR30L3E84ciUkr8vZxI
-         iCURge4wpInCm+QH7mEvl8g4Ob5YmewXbBYqfOT6te+pO/gQkRzs0ek0U0ETdf6bxjqx
-         SppH/aQ8oKZRQtaCSg/OGoav0prhqqoeSMDBs/wU1nvDjWWrqS3NZYsOHKuXFInLdQ6/
-         FpTq6fSWZ94QjZXirNCmccnp+i7eLR9WX5V2CmJ4xvZYss4rBlCb9T9mYB6jDM1S5KZW
-         NG7iWSdr7VRpgSPC+2e3l1wMXBKPnRcm5f21b0LGLKRTkwxJmNtFfMAnvBWuOvtELFcY
-         0z5g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OrarTPaiL7rQzQ6WaV9Vzo7o6PowYGEC+IvlSkhfyxw=;
+        b=O9lHoaLrMAK3vOFNIsTiAx6cZ90MKULCkFhsAnj2eqrPqmFz4WJty/1Xkx9zNqIb1i
+         NWcc+FHknFMRr2cOBpQOIiMeJm+AOVRv7zmN63BhpmJFxqksfdN62IVLnX2xzhOVPj1A
+         GZ1bEFwovvV+DgsINyrATjQ2aSUgx2N4KNh+7AX9Kp9/eSplQeB1pDMrkXJ/Qna/CIaE
+         k5/lgSQoMpBk3OSltWIMa6k3een1c6EVUg/WfSYHbjEzEBZYiEXsZ8NU37FoDcDsmfae
+         F1YQ+qoiN5XYv+SAyLhfT5TvJ80eCQuiVTxXNqwMXBtOCEZW5yOyxT27Qr8kt12GJUpT
+         tMug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=WgNDcH66XgUR5xvlin4vgOc3vaLahNaQFK4he5fif9k=;
-        b=aif777hBxFZxNe6z7uJPIWR/eP3CpXuat2te5Sb40SmZ13T7lhTlzUQJlssl+yWboz
-         MX0QQQAgmK64eGZULs6dx54T/Qar/pL0YsPn46FaDRfkxiENAtAvLgHJkysgDq66nUxk
-         V/n43zdI4rn2eNzfMDAcwOn/YLwMuxzwUoJDOyAKzVot3XzmNp35v3MXtuSflG3WjUfV
-         /er15ntqusjmT0lPbLXBzfG8CBhlQfko+/5uC0lRulABaWx8IGvtmXejIpmAKxhiEwKI
-         Or5PtG9PRk1Vstv3tcx28ykmYayDkD0eHmxWEPeZQb0xC59LY3iZ2RO/dcPwwDbrfK1f
-         gJqA==
-X-Gm-Message-State: AOAM5322pabL7pFingwFhw9HlvsM3KJCBcv8RAK5BHzyYveduK9eCaSF
-        EBLvaT919pCVkUqwH3O+NA4QMrKbhJDsmb/hD5M=
-X-Google-Smtp-Source: ABdhPJxEGhaFlmgD1zG31MpnbwTI/UoqOHHNEJ4n2LgcKuln/yIhIQHMUndaHQL2u6qpfD9P/cmTQg==
-X-Received: by 2002:a5d:480b:: with SMTP id l11mr9783275wrq.225.1602167925062;
-        Thu, 08 Oct 2020 07:38:45 -0700 (PDT)
-Received: from lmecxl0524.lme.st.com ([2a04:cec0:11c8:908d:6533:9100:d943:8b22])
-        by smtp.gmail.com with ESMTPSA id y14sm6926942wma.48.2020.10.08.07.38.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 07:38:44 -0700 (PDT)
-From:   Etienne Carriere <etienne.carriere@linaro.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Souvik Chakravarty <Souvik.Chakravarty@arm.com>,
-        Etienne Carriere <etienne.carriere@linaro.org>
-Subject: [PATCH 5/5] firmware: arm_scmi: fix ARCH_COLD_RESET
-Date:   Thu,  8 Oct 2020 16:37:22 +0200
-Message-Id: <20201008143722.21888-5-etienne.carriere@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201008143722.21888-1-etienne.carriere@linaro.org>
-References: <20201008143722.21888-1-etienne.carriere@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OrarTPaiL7rQzQ6WaV9Vzo7o6PowYGEC+IvlSkhfyxw=;
+        b=dbkM85DpO3p+sUSQDWydB9fkJ0Ez5fUDyZMRQWXrIDWEuFg0KNQYA8PxoWqbFzPecn
+         x6PjI/OU3ARuVrIV7BsWdvpOnH1jDpARS2Pxl6WFef9JI5+gwZ8oKllodX2K4OjIt/yE
+         YRYGd70jJ6m7OuW2FryC+I358CPhHwof3L+ErUqED7qdVoBzd9/cjer1jHkUES4aiftA
+         MxEQNSaotr8Nv07sCYDlM6B6tbEvdhkKLDpkHQX+68jsqsKJ96XIPy7XopeMWOTA8Aqj
+         t3l26RJ8g7Ic8cBDgQZIYBKegIvXn1zO4J4yXxDeGZc8tSHccedoeDoXn+5Grwq0VErI
+         vd0g==
+X-Gm-Message-State: AOAM5327I1m0q/Qpw4FdIDDGDaKGC5mwuhzKdmv14AYhKDqAo0++HB9k
+        QPXxK+UB/XDyoueXvuGYDCDjsitlA2Nr++rTQYcniQ==
+X-Google-Smtp-Source: ABdhPJxNOOckiO18DkXVMnX9YaryLbjZZ/gNbT8isUPNLeELzwXey5GFv8x/+B1pxgGdacdCVveNP4BEwkpzAaLulqY=
+X-Received: by 2002:a5d:80cc:: with SMTP id h12mr965908ior.73.1602168033069;
+ Thu, 08 Oct 2020 07:40:33 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200927064131.24101-1-peng.fan@nxp.com> <DB6PR0402MB2760EA531095AADAA1B967D9880B0@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+In-Reply-To: <DB6PR0402MB2760EA531095AADAA1B967D9880B0@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+Date:   Thu, 8 Oct 2020 08:40:22 -0600
+Message-ID: <CANLsYkxXZdFdLYRY6kEj4Fa_LsR4TVfCxqtX=2_N7OEsgjgEXg@mail.gmail.com>
+Subject: Re: [PATCH V2 0/7] remoteproc: imx_rproc: support iMX8MQ/M
+To:     Peng Fan <peng.fan@nxp.com>
+Cc:     "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "o.rempel@pengutronix.de" <o.rempel@pengutronix.de>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix ARCH_COLD_RESET according to SCMI specification.
+On Wed, 7 Oct 2020 at 18:52, Peng Fan <peng.fan@nxp.com> wrote:
+>
+> Mathieu, Oleksij
+>
+> > Subject: [PATCH V2 0/7] remoteproc: imx_rproc: support iMX8MQ/M
+>
+> Do you have time to give a look at this patchset?
 
-Signed-off-by: Etienne Carriere <etienne.carriere@linaro.org>
----
- drivers/firmware/arm_scmi/reset.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+I will review your patchset after you have reviewed mine[1].
 
-diff --git a/drivers/firmware/arm_scmi/reset.c b/drivers/firmware/arm_scmi/reset.c
-index f063cfe17e02..a981a22cfe89 100644
---- a/drivers/firmware/arm_scmi/reset.c
-+++ b/drivers/firmware/arm_scmi/reset.c
-@@ -36,9 +36,7 @@ struct scmi_msg_reset_domain_reset {
- #define EXPLICIT_RESET_ASSERT	BIT(1)
- #define ASYNCHRONOUS_RESET	BIT(2)
- 	__le32 reset_state;
--#define ARCH_RESET_TYPE		BIT(31)
--#define COLD_RESET_STATE	BIT(0)
--#define ARCH_COLD_RESET		(ARCH_RESET_TYPE | COLD_RESET_STATE)
-+#define ARCH_COLD_RESET		0
- };
- 
- struct scmi_msg_reset_notify {
--- 
-2.17.1
+[1]. https://patchwork.kernel.org/project/linux-remoteproc/list/?series=339079
 
+>
+> Thanks,
+> Peng.
+>
+> >
+> > V2:
+> >  Rebased on linux-next
+> >  Dropped early boot feature to make patchset simple.
+> >  Drop rsc-da
+> >
+> > V1:
+> >  https://patchwork.kernel.org/cover/11682461/
+> >
+> > This patchset is to support i.MX8MQ/M coproc.
+> > The early boot feature was dropped to make the patchset small in V2.
+> >
+> > Since i.MX specific TCM memory requirement, add elf platform hook.
+> > Several patches have got reviewed by Oleksij and Mathieu in v1.
+> >
+> > Peng Fan (7):
+> >   remoteproc: elf: support platform specific memory hook
+> >   remoteproc: imx_rproc: add elf memory hooks
+> >   remoteproc: imx_rproc: correct err message
+> >   remoteproc: imx_rproc: use devm_ioremap
+> >   remoteproc: imx_rproc: add i.MX specific parse fw hook
+> >   remoteproc: imx_rproc: support i.MX8MQ/M
+> >   remoteproc: imx_proc: enable virtio/mailbox
+> >
+> >  drivers/remoteproc/imx_rproc.c             | 273
+> > ++++++++++++++++++++-
+> >  drivers/remoteproc/remoteproc_elf_loader.c |  20 +-
+> >  include/linux/remoteproc.h                 |   2 +
+> >  3 files changed, 287 insertions(+), 8 deletions(-)
+> >
+> > --
+> > 2.28.0
+>
