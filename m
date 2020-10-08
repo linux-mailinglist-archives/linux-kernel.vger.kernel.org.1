@@ -2,62 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38605287453
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 14:35:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 049ED287450
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 14:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730074AbgJHMfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 08:35:25 -0400
-Received: from m12-18.163.com ([220.181.12.18]:44019 "EHLO m12-18.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729769AbgJHMfZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 08:35:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=7snQg
-        UUJSF5tKYLwhoTXmX+RnS13E0l5FHg91pRGEt8=; b=TBwxSNoIp21YXiaIJENv0
-        MP5W7XPDKS3g7j6aUCxBY1VvRFNFo2nLYIeyER1o0tOtZWOgC2MNeVYZjMdU2xy0
-        I6jCGPN9DpkmWlG0VmB9pBcz9nnbhMGZd1gYdCCqsJc/xWCClQxXr8XdmKluD5zr
-        JsAcTktXCGtnTkD2ZLomW0=
-Received: from localhost (unknown [101.228.30.83])
-        by smtp14 (Coremail) with SMTP id EsCowACnL6cdB39fzHnSSA--.1218S2;
-        Thu, 08 Oct 2020 20:33:34 +0800 (CST)
-Date:   Thu, 8 Oct 2020 20:33:33 +0800
-From:   Hui Su <sh_def@163.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH] mm: fix some comments in page_alloc.c and mempolicy.c
-Message-ID: <20201008123333.GA7424@rlk>
-References: <20200925160650.GA42847@rlk>
- <10c1b339-b352-7643-7adf-d82c941c7d2c@redhat.com>
- <11c9c699aaa873847b4d14dfa5e2435b94c08569.camel@perches.com>
+        id S1730065AbgJHMel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 08:34:41 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:44951 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729931AbgJHMek (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 08:34:40 -0400
+Received: from localhost.localdomain ([192.30.34.233]) by
+ mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1Mc06b-1kviHD2F9r-00dUgU; Thu, 08 Oct 2020 14:34:37 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] m68k: avoid xchg() warning
+Date:   Thu,  8 Oct 2020 14:34:04 +0200
+Message-Id: <20201008123429.1133896-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <11c9c699aaa873847b4d14dfa5e2435b94c08569.camel@perches.com>
-X-CM-TRANSID: EsCowACnL6cdB39fzHnSSA--.1218S2
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxU2qg4UUUUU
-X-Originating-IP: [101.228.30.83]
-X-CM-SenderInfo: xvkbvvri6rljoofrz/xtbBywq3X1PAPK5HEgAAs9
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:I+9wR8oh7607EOHEdvNpIMSS6YsdYkrjnvM8U1fKs03vgNed7Sd
+ ETQk6e3YUOZqq1DGvZiyk38v/6qe7oF5eD8BkHzo2ie4GRM3ioP1C7mCFsITvD2HwoUyocZ
+ e2lVd7u5vP7YHQ6GM04Vmudw91EzW8iJ+UnlxLVDpg5K1QEeqPqYtetRL2r/dRi/tFE/DZW
+ u5N5o8K/cFYf2d42h/J+w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:WIq8Vn22CvA=:R72ll13MwBmZy71UmvPEXk
+ /onrvpLxj7arDjjfhgZloR8fqEzN3vHRcSWCsfnUvGlA/+NpTnVUJTzSejQkSOcCc+CzVuT/E
+ 6X6Z2r+7cDphDDzk997c+uOtlyK1blyem8c+99wkMniSPph0QUhTpUAT6N8HASrDiRQ9XK83/
+ TV/Y+wct7d6wXUps+xpdenAEucQrlO+t4phqRl/htKIuUWsCt18TkLZbv+nsX0pn87GmPcUIE
+ j7oFQLmjhq7/Y6kvsbfFPUGQN+8djJb9xT23uUApIY56wPtsGD8xm1XiIZE3FNsSR3XXe2pck
+ II7PxFLOPE6fFLXZnZRWnUeym6qQ3rKNLq44kqhVfPaEM1Md3ocS3JMIFy03s+wlKy+YJGZRZ
+ XjLv/OmenJ7pzNnY0tw8VZGUtC8cXr6RwtOmPR87uX47JbtaNcX7Elp7ZiIw2bLx8sUH0cCWF
+ MrpiwzfCBPOubzkh/AY3674R/8ycwZbdHhJsvW8N953F3TTXQVvsW4BZfOxzmZBdiNhFeLjmV
+ 1RdBN7kJ6fshrZTSFQlW8xtJ/krazKGmcuv5Vslxw24t6C79rrrwkkK2U7vW9kdDRDS9S70a5
+ zxHDjRgxrFs+D6xQZjLXtqSVSFCIT4Q1tUDw/egVgw6v0Amry+dUjvcwJNkdlrTuvcSGzLIjp
+ 1j9u5IBwfS+WZW041tY9dOHEBtbHGYN8JkF6j0/XUQKMsrgcIUpcyJbgrjq7ASTOSh4YMdko3
+ Dub+Cc6nJhjutJdUmlG/UoNG5oW90aQwpCxL9EjgfC0PT3h82ZdNovkGbZQ6RHrRgimATaidB
+ ft+t13Juj5Qe89g4jcJ/E8u0SutMgeyunTmM5H4xdlXrLAIYNBZmU9ZX1V4XTCjX8ezPhDS
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 09:17:29AM -0700, Joe Perches wrote:
-> On Thu, 2020-10-01 at 14:27 +0200, David Hildenbrand wrote:
-> > On 25.09.20 18:06, Hui Su wrote:
-> > > 1. the cpuset.c has been moved from kernel/cpuset.c to
-> > > kernel/cgroup/cpuset.c long time ago, but the comment is stale,
-> > > so we update it.
-> []
-> > > diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> []
-> > > @@ -1,5 +1,5 @@
-> > >  /*
-> > > - *  kernel/cpuset.c
-> > > + *  kernel/cgroup/cpuset.c
-> 
-> It's probably better to remove this altogether instead.
+gcc warns about the value of xchg()/cmpxchg() being unused
+in some cases:
 
-Please ignore this change, thanks.
+net/core/filter.c: In function 'bpf_clear_redirect_map':
+arch/m68k/include/asm/cmpxchg.h:137:3: warning: value computed is not used [-Wunused-value]
+  106 | #define cmpxchg(ptr, o, n) cmpxchg_local((ptr), (o), (n))
+net/core/filter.c:3595:4: note: in expansion of macro 'cmpxchg'
+ 3595 |    cmpxchg(&ri->map, map, NULL);
+
+Shut up that warning like we do on other architectures, by
+turning the macro into a statement expression.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/m68k/include/asm/cmpxchg.h | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/arch/m68k/include/asm/cmpxchg.h b/arch/m68k/include/asm/cmpxchg.h
+index 3a3bdcfcd375..a4aa82021d3b 100644
+--- a/arch/m68k/include/asm/cmpxchg.h
++++ b/arch/m68k/include/asm/cmpxchg.h
+@@ -76,7 +76,7 @@ static inline unsigned long __xchg(unsigned long x, volatile void * ptr, int siz
+ }
+ #endif
+ 
+-#define xchg(ptr,x) ((__typeof__(*(ptr)))__xchg((unsigned long)(x),(ptr),sizeof(*(ptr))))
++#define xchg(ptr,x) ({(__typeof__(*(ptr)))__xchg((unsigned long)(x),(ptr),sizeof(*(ptr)));})
+ 
+ #include <asm-generic/cmpxchg-local.h>
+ 
+@@ -119,11 +119,11 @@ static inline unsigned long __cmpxchg(volatile void *p, unsigned long old,
+ }
+ 
+ #define cmpxchg(ptr, o, n)						    \
+-	((__typeof__(*(ptr)))__cmpxchg((ptr), (unsigned long)(o),	    \
+-			(unsigned long)(n), sizeof(*(ptr))))
++	({(__typeof__(*(ptr)))__cmpxchg((ptr), (unsigned long)(o),	    \
++			(unsigned long)(n), sizeof(*(ptr)));})
+ #define cmpxchg_local(ptr, o, n)					    \
+-	((__typeof__(*(ptr)))__cmpxchg((ptr), (unsigned long)(o),	    \
+-			(unsigned long)(n), sizeof(*(ptr))))
++	({(__typeof__(*(ptr)))__cmpxchg((ptr), (unsigned long)(o),	    \
++			(unsigned long)(n), sizeof(*(ptr)));})
+ 
+ #define cmpxchg64(ptr, o, n)	cmpxchg64_local((ptr), (o), (n))
+ 
+-- 
+2.27.0
 
