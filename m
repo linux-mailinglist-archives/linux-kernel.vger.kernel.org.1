@@ -2,111 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0AE82875B4
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABBF32875C0
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:11:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730509AbgJHOJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 10:09:30 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:42135 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1730494AbgJHOJ2 (ORCPT
+        id S1730476AbgJHOL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 10:11:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730306AbgJHOL2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 10:09:28 -0400
-Received: (qmail 496113 invoked by uid 1000); 8 Oct 2020 10:09:27 -0400
-Date:   Thu, 8 Oct 2020 10:09:27 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Doug Anderson <dianders@chromium.org>,
-        Rob Herring <robh@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Peter Chen <peter.chen@nxp.com>
-Subject: Re: [PATCH v4 1/2] dt-bindings: usb: Add binding for discrete
- onboard USB hubs
-Message-ID: <20201008140927.GB495091@rowland.harvard.edu>
-References: <20201006171524.GB423499@rowland.harvard.edu>
- <20201006192536.GB191572@google.com>
- <20201007010023.GA438733@rowland.harvard.edu>
- <20201007160336.GA620323@google.com>
- <20201007163838.GA457977@rowland.harvard.edu>
- <20201007172847.GB620323@google.com>
- <20201007192542.GA468921@rowland.harvard.edu>
- <20201007194229.GC620323@google.com>
- <20201007201732.GE468921@rowland.harvard.edu>
- <20201007214226.GA669360@google.com>
+        Thu, 8 Oct 2020 10:11:28 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21DBCC0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 07:11:28 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id y14so4361036pgf.12
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 07:11:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Ewlqa4YGSRfej2ERDe7UUyzDvvxiKmyd107uBj/fY5E=;
+        b=fHZRsibpdKUAzFgiJ+a+61FvDU3WoCH3bGSUk3qiYz0kURPizsunM6p8R7GUL7N2Z5
+         Z1IbeUaNncYLyzmQm85Y2SvDxd6EcEBGZGkeFHeTvuU/JApv3QR1KMOgvBmOOLjEVjzT
+         mIQLjCfDdvf3MWKvWGtc+3IYgNa3YedAXEMZK3iWG99Q4InZsDfaeyLz2eYURaUlHEPE
+         Q3UCHreRRqjz2uCMj85ywTh62UEF8TzvoLdM7KQv4It/ue4KLyWIEeX1FDu2D50qWMFT
+         jg6zB9wq+DfsSgliYF2hTe+nEOchDkxflvyJJ+CXh/deob+gYbGMugCOut1sh/SeXqHG
+         mXxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Ewlqa4YGSRfej2ERDe7UUyzDvvxiKmyd107uBj/fY5E=;
+        b=gZc/i9XoGcjBDLiqwlEllXlUDFCoE/1DtgOucITNKaTkFeuEGrawzCFZHONAwbekMY
+         F5PgrepZjXYSJ1PgJovvv/ojp8Iv6H2RuAtZfLsEerAaLPpOUq7IgABBMKf2SFMQORi8
+         iLN0IIfcQfylZEthoAn4fx/iM4R7L21CiH8TTO1iVJwiZAp9V6YXfvgu6MmKLG09On55
+         H0oXYgzfxqR3IHD3p4VZ4ceZl+X/9yRQpVtJKpXLsY0QYmcuoIokFC4y2eOrMED216pM
+         YQ5i7qHPxlHgr8nGEoacB3V/zzxcniLfossx/QE1vPfjB8WZ1fy5QtvblN7QcMNIyYms
+         Cbqg==
+X-Gm-Message-State: AOAM533HME23WSgRnLkBZa4kbAFew6gDcU9vR4yK2i5yxgimIM/s100B
+        PDvLh6U6+iESAnzzP8owQyrwm84du2KJtKU=
+X-Google-Smtp-Source: ABdhPJy4b+RQNJCpBuKbqjGp0tS7Nqdx2Rvy8z0BUnRmK36T+BC0SofKw5b+zS0nWNSVkmuVuHUCfg==
+X-Received: by 2002:a63:65c7:: with SMTP id z190mr7520953pgb.444.1602166287414;
+        Thu, 08 Oct 2020 07:11:27 -0700 (PDT)
+Received: from linux ([103.59.133.81])
+        by smtp.gmail.com with ESMTPSA id w23sm7225236pjh.49.2020.10.08.07.11.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 08 Oct 2020 07:11:26 -0700 (PDT)
+Date:   Thu, 8 Oct 2020 19:41:20 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bjorn.andersson@linaro.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: cpufreq: cpufreq-qcom-hw: Convert to YAML
+ bindings
+Message-ID: <20201008141120.GC23649@linux>
+References: <20201006095047.30242-1-manivannan.sadhasivam@linaro.org>
+ <20201007155352.GA285247@bogus>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201007214226.GA669360@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201007155352.GA285247@bogus>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 02:42:26PM -0700, Matthias Kaehlcke wrote:
-> On Wed, Oct 07, 2020 at 04:17:32PM -0400, Alan Stern wrote:
-> > The peering relation goes both ways, so it should be included in the 
-> > hub_2_0 description too.  Given that, the driver could check hub_2_0's 
-> > peer's DT description for the appropriate resources.
-> 
-> That mitigates the issue somewhat, however we still have to convince Rob that
-> both references are needed.
-
-Strictly speaking, the peering relation applies to ports, not
-devices.  The representation in DT doesn't have to be symmetrical; as
-long as the kernel understands it, the kernel can set up its own
-internal symmetrical respresentation.
-
-> > > All this mess can be avoided by having a single instance in control of the
-> > > resources which is guaranteed to suspend after the USB devices.
+On Wed, Oct 07, 2020 at 10:53:52AM -0500, Rob Herring wrote:
+> On Tue, Oct 06, 2020 at 03:20:47PM +0530, Manivannan Sadhasivam wrote:
+> > Convert Qualcomm cpufreq devicetree binding to YAML.
 > > 
-> > Yes.  At the cost of registering, adding a driver for, and making users 
-> > aware of a fictitious platform device.
+> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > ---
+> >  .../bindings/cpufreq/cpufreq-qcom-hw.txt      | 172 --------------
+> >  .../bindings/cpufreq/cpufreq-qcom-hw.yaml     | 212 ++++++++++++++++++
+> >  2 files changed, 212 insertions(+), 172 deletions(-)
+> >  delete mode 100644 Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt
+> >  create mode 100644 Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml
 > 
-> Registration is trivial and the driver code will be needed anyway, I'm
-> pretty convinced that a separate platform driver will be simpler than
-> plumbing things into the hub driver, with the additional checks of who is
-> suspended or not, etc. If other resources like resets are involved there
-> could be further possible race conditions at probe time. Another issue is
-> the sysfs attribute. We said to attach it to the primary hub. What happens
-> when the primary hub goes away? I guess we could force unbinding the peers
-> as we did in the driver under discussion to avoid confusion/inconsistencies,
-> but it's another tradeoff.
-> 
-> My view of the pros and cons of extending the hub driver vs. having a platform
-> driver:
-> 
-> - pros
->   - sysfs attribute is attached to a USB hub device
->   - no need to register a platform device (trivial)
->   - potentially more USB awareness (not clear if needed)
-> 
-> - cons
->   - possible races involving resources between peer hubs during initialization
->   - increased complexity from keeping track of peers, checking suspend order
->     and avoiding races
->   - peers are forced to unbind when primary goes away
->   - need DT links to peers for all USB hubs, not only in the primary
->   - pollution of the generic hub code with device specific stuff instead
->     of keeping it in a self contained driver
->   - sysfs attribute is attached to only one of the hubs, which is better than
->     having it on both, but not necessarily better than attaching it to the
->     platform device with the 'control logic'
-> 
-> So yes, there are tradeoffs, IMO balance isn't as clear as your comment
-> suggests.
+> > diff --git a/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml b/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml
+> > new file mode 100644
+> > index 000000000000..a11c69a29b5d
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml
+> > @@ -0,0 +1,212 @@
 
-Well, I guess I'm okay with either approach.
+[...]
 
-One more thing to keep in mind, though: With the platform device,
-there should be symlinks from the hubs' sysfs directories to the
-platform device (and possibly symlinks going the other way as well).
+> > +
+> > +  '#freq-domain-cells':
+> > +    const: 1
+> > +
+> > +  qcom,freq-domain:
+> > +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> > +    maxItems: 1
+> > +    description:
+> > +      Devices supporting freq-domain must set their "qcom,freq-domain"
+> > +      property with phandle to a cpufreq_hw followed by the Domain ID(0/1)
+> > +      in the CPU DT node.
+> 
+> This doesn't belong here as it goes in cpu nodes. You're going to need 
+> to define a QCom cpu schema that defines this.
+> 
 
-Alan Stern
+Okay. It was there in the original binding so I just kept it. Will remove it
+in next iteration.
+
+Thanks,
+Mani
+
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - reg-names
+> > +  - clocks
+> > +  - clock-names
+> > +  - '#freq-domain-cells'
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/clock/qcom,gcc-sdm845.h>
+> > +    #include <dt-bindings/clock/qcom,rpmh.h>
+> > +
+> > +    // Example 1: Dual-cluster, Quad-core per cluster. CPUs within a cluster
+> > +    // switch DCVS state together.
+> > +    cpus {
+> > +      #address-cells = <2>;
+> > +      #size-cells = <0>;
+> > +
+> > +      CPU0: cpu@0 {
+> > +        device_type = "cpu";
+> > +        compatible = "qcom,kryo385";
+> > +        reg = <0x0 0x0>;
+> > +        enable-method = "psci";
+> > +        next-level-cache = <&L2_0>;
+> > +        qcom,freq-domain = <&cpufreq_hw 0>;
+> > +        L2_0: l2-cache {
+> > +          compatible = "cache";
+> > +          next-level-cache = <&L3_0>;
+> > +          L3_0: l3-cache {
+> > +            compatible = "cache";
+> > +          };
+> > +        };
+> > +      };
+> > +
+> > +      CPU1: cpu@100 {
+> > +        device_type = "cpu";
+> > +        compatible = "qcom,kryo385";
+> > +        reg = <0x0 0x100>;
+> > +        enable-method = "psci";
+> > +        next-level-cache = <&L2_100>;
+> > +        qcom,freq-domain = <&cpufreq_hw 0>;
+> > +        L2_100: l2-cache {
+> > +          compatible = "cache";
+> > +          next-level-cache = <&L3_0>;
+> > +        };
+> > +      };
+> > +
+> > +      CPU2: cpu@200 {
+> > +        device_type = "cpu";
+> > +        compatible = "qcom,kryo385";
+> > +        reg = <0x0 0x200>;
+> > +        enable-method = "psci";
+> > +        next-level-cache = <&L2_200>;
+> > +        qcom,freq-domain = <&cpufreq_hw 0>;
+> > +        L2_200: l2-cache {
+> > +          compatible = "cache";
+> > +          next-level-cache = <&L3_0>;
+> > +        };
+> > +      };
+> > +
+> > +      CPU3: cpu@300 {
+> > +        device_type = "cpu";
+> > +        compatible = "qcom,kryo385";
+> > +        reg = <0x0 0x300>;
+> > +        enable-method = "psci";
+> > +        next-level-cache = <&L2_300>;
+> > +        qcom,freq-domain = <&cpufreq_hw 0>;
+> > +        L2_300: l2-cache {
+> > +          compatible = "cache";
+> > +          next-level-cache = <&L3_0>;
+> > +        };
+> > +      };
+> > +
+> > +      CPU4: cpu@400 {
+> > +        device_type = "cpu";
+> > +        compatible = "qcom,kryo385";
+> > +        reg = <0x0 0x400>;
+> > +        enable-method = "psci";
+> > +        next-level-cache = <&L2_400>;
+> > +        qcom,freq-domain = <&cpufreq_hw 1>;
+> > +        L2_400: l2-cache {
+> > +          compatible = "cache";
+> > +          next-level-cache = <&L3_0>;
+> > +        };
+> > +      };
+> > +
+> > +      CPU5: cpu@500 {
+> > +        device_type = "cpu";
+> > +        compatible = "qcom,kryo385";
+> > +        reg = <0x0 0x500>;
+> > +        enable-method = "psci";
+> > +        next-level-cache = <&L2_500>;
+> > +        qcom,freq-domain = <&cpufreq_hw 1>;
+> > +        L2_500: l2-cache {
+> > +          compatible = "cache";
+> > +          next-level-cache = <&L3_0>;
+> > +        };
+> > +      };
+> > +
+> > +      CPU6: cpu@600 {
+> > +        device_type = "cpu";
+> > +        compatible = "qcom,kryo385";
+> > +        reg = <0x0 0x600>;
+> > +        enable-method = "psci";
+> > +        next-level-cache = <&L2_600>;
+> > +        qcom,freq-domain = <&cpufreq_hw 1>;
+> > +        L2_600: l2-cache {
+> > +          compatible = "cache";
+> > +          next-level-cache = <&L3_0>;
+> > +        };
+> > +      };
+> > +
+> > +      CPU7: cpu@700 {
+> > +        device_type = "cpu";
+> > +        compatible = "qcom,kryo385";
+> > +        reg = <0x0 0x700>;
+> > +        enable-method = "psci";
+> > +        next-level-cache = <&L2_700>;
+> > +        qcom,freq-domain = <&cpufreq_hw 1>;
+> > +        L2_700: l2-cache {
+> > +          compatible = "cache";
+> > +          next-level-cache = <&L3_0>;
+> > +        };
+> > +      };
+> > +    };
+> > +
+> > +    soc {
+> > +      #address-cells = <1>;
+> > +      #size-cells = <1>;
+> > +
+> > +      cpufreq@17d43000 {
+> > +        compatible = "qcom,cpufreq-hw";
+> > +        reg = <0x17d43000 0x1400>, <0x17d45800 0x1400>;
+> > +        reg-names = "freq-domain0", "freq-domain1";
+> > +
+> > +        clocks = <&rpmhcc RPMH_CXO_CLK>, <&gcc GPLL0>;
+> > +        clock-names = "xo", "alternate";
+> > +
+> > +        #freq-domain-cells = <1>;
+> > +      };
+> > +    };
+> > +...
+> > -- 
+> > 2.17.1
+> > 
