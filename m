@@ -2,77 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA28928755D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 15:45:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 960E828755C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 15:45:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730375AbgJHNpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 09:45:32 -0400
-Received: from foss.arm.com ([217.140.110.172]:58414 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728969AbgJHNpb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 09:45:31 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 27D561063;
-        Thu,  8 Oct 2020 06:45:31 -0700 (PDT)
-Received: from [192.168.2.22] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 607283F71F;
-        Thu,  8 Oct 2020 06:45:29 -0700 (PDT)
-From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
-Subject: Re: [PATCH v2 02/14] perf arm-spe: Fix a typo in comment
-To:     Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Wei Li <liwei391@huawei.com>,
-        James Clark <james.clark@arm.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        linux-kernel@vger.kernel.org, Al Grant <Al.Grant@arm.com>
-References: <20200929133917.9224-1-leo.yan@linaro.org>
- <20200929133917.9224-3-leo.yan@linaro.org>
-Organization: ARM Ltd.
-Message-ID: <fd6e0c74-630e-18ac-c575-7a713c01b361@arm.com>
-Date:   Thu, 8 Oct 2020 14:44:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1730333AbgJHNpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 09:45:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728969AbgJHNpB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 09:45:01 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43AC2C061755
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 06:45:01 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id 140so5275696qko.2
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 06:45:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hTx5wxbwW2y1aqwu6D/P4lkFjUf8iqV76vNFf1Ytp58=;
+        b=TuR3rgRh1QHA8p4nESYsGWXEq7xJZ1IkCA919YQ28SWsZO0Yx/v3sOr2tS0Fiwv+UT
+         ppQcFGpUv1nKi6RwuGPaq04K8v2kPbodyR/aozzOxoyDxnuo0Enapaj4B4pb72TUqRxi
+         ujmJpWb5vxTXG4eZDp1A6mEH8U5QwcMtvcgXkrieVYD6KgLK/30ltIUly99ficeeDVFG
+         Iif72Bfg8P/sdpznOXBnmqOYo0MUATO+KLyOjnuW0m4DOLdSWEl+cCDKqo4V8XmEOqiL
+         5GIk4iaq33fRYaAwuqCcMHuQTpS1Ra/ZMueZuuTL3PgFEC+WQr+iJEckKDALeXkgILX7
+         1iZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=hTx5wxbwW2y1aqwu6D/P4lkFjUf8iqV76vNFf1Ytp58=;
+        b=nZXqNg82JiIgxsUZAhd1TP7155arwsbPdKnXZecurHQqcOkuq6/f0nsn+jOF106pvb
+         vCK1EAALR1ubL9Di688MBZCWuJ9omnZOP0olqJxh2PmyD+cVG6y8Bcx7xuIVYlPvR85w
+         OwTaxeHI70X67hHwG7W0ZM7suJCxTEKailyb93w+RsaVLbgedjNkXX7dcYYWs2hxzw3Q
+         /kyUxhed3ZfQMMg4XBMN2gJsIk7ONFEOZHJKvOa5utO+15bxqeySa5wT4bSsccezhRBW
+         C7r5jzFf1qaMqacIvXY9sTV2t2zFN5+2XfBIN+3vZgy9ueMXP5XsFgfX7/4XZH2fYP1O
+         2xew==
+X-Gm-Message-State: AOAM5303u59+faPVwAaKkaJAcucdcirLgABNLRZ4AnP5u6vP8Nq0DU/x
+        BHCH3rp7SnpajT9Dy2eSjRtoV/rrgh7bpg==
+X-Google-Smtp-Source: ABdhPJz5gVl5NgCwvFXoCSmNb7juWGwW7oR2EFiI+lsrz3zhdiyaIeOxq7bPyA540CeolHKPt5Y7JQ==
+X-Received: by 2002:a37:a251:: with SMTP id l78mr7765239qke.291.1602164700449;
+        Thu, 08 Oct 2020 06:45:00 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id d142sm3892800qke.125.2020.10.08.06.44.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Oct 2020 06:44:59 -0700 (PDT)
+Sender: Arvind Sankar <niveditas98@gmail.com>
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Thu, 8 Oct 2020 09:44:58 -0400
+To:     Joerg Roedel <jroedel@suse.de>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] x86/boot: Initialize boot_params in startup code
+Message-ID: <20201008134458.GA2429573@rani.riverdale.lan>
+References: <20201007195351.776555-1-nivedita@alum.mit.edu>
+ <20201007195351.776555-2-nivedita@alum.mit.edu>
+ <20201008090420.GD3209@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <20200929133917.9224-3-leo.yan@linaro.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20201008090420.GD3209@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/09/2020 14:39, Leo Yan wrote:
-> Fix a typo: s/iff/if.
+On Thu, Oct 08, 2020 at 11:04:20AM +0200, Joerg Roedel wrote:
+> On Wed, Oct 07, 2020 at 03:53:47PM -0400, Arvind Sankar wrote:
+> > Save the boot_params pointer passed in by the bootloader in
+> > startup_32/64. This avoids having to initialize it in two different
+> > places in C code, and having to preserve SI through the early assembly
+> > code.
+> > 
+> > Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
 > 
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-
-Reviewed-by: Andre Przywara <andre.przywara@arm.com>
-
-Cheers,
-Andre
-
-> ---
->  tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Nice cleanup!
 > 
-> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> index 46ddb53a6457..7c7b5eb09fba 100644
-> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> @@ -142,7 +142,7 @@ static int arm_spe_get_events(const unsigned char *buf, size_t len,
->  
->  	/* we use index to identify Events with a less number of
->  	 * comparisons in arm_spe_pkt_desc(): E.g., the LLC-ACCESS,
-> -	 * LLC-REFILL, and REMOTE-ACCESS events are identified iff
-> +	 * LLC-REFILL, and REMOTE-ACCESS events are identified if
->  	 * index > 1.
->  	 */
->  	packet->index = ret - 1;
+> >  /*
+> >   * Jump to the extracted kernel.
+> >   */
+> > -	xorl	%ebx, %ebx
+> > +	movl	boot_params@GOTOFF(%ebx), %esi
+> >  	jmp	*%eax
+> >  SYM_FUNC_END(.Lrelocated)
+> >  
+> > @@ -209,6 +208,8 @@ SYM_DATA_START_LOCAL(gdt)
+> >  	.quad	0x00cf92000000ffff	/* __KERNEL_DS */
+> >  SYM_DATA_END_LABEL(gdt, SYM_L_LOCAL, gdt_end)
+> >  
+> > +SYM_DATA(boot_params, .long 0)
+> > +
+> 
+> You should add a comment here that boot_params needs to be in the .data
+> section because in .bss it would get zeroed out again later. Same
+> applies to the 64bit version of this.
+> 
+> With that changed:
+> 
+> Reviewed-by: Joerg Roedel <jroedel@suse.de>
 > 
 
+Ok.
