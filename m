@@ -2,119 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA80287CBF
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 22:01:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFAAC287CCF
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 22:05:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729805AbgJHUBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 16:01:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31377 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726293AbgJHUBB (ORCPT
+        id S1729935AbgJHUFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 16:05:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729860AbgJHUFU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 16:01:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602187259;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=N7ZjK4P1j2h8bXH0yXST1ACz87+diWlu/RJO8+yMMIg=;
-        b=QGBbzFWFFuENGZejdGWF1t8W0SauljiH5+Rtd5fk3cqYtARLD1c1k4XFI674IhiNibDsPY
-        HWItUrN7e2D2hQQAriPIJCzFP+IqU0wOxTJKfDWfO1J+uuJkADZ0GyFfUjeXaD2/jyBqbf
-        OI08x7FM7bQiCe2mGiOHezFbCd3tNXI=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-574-dER57tdZMoGOypVCmhLV5w-1; Thu, 08 Oct 2020 16:00:58 -0400
-X-MC-Unique: dER57tdZMoGOypVCmhLV5w-1
-Received: by mail-wr1-f69.google.com with SMTP id e13so4258935wrj.8
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 13:00:57 -0700 (PDT)
+        Thu, 8 Oct 2020 16:05:20 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 150BAC0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 13:05:19 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id i2so5245382pgh.7
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 13:05:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=kRozOJcU/8V0BnQ/n2Fog1pXhHDXJtLHefk6yYZwAN8=;
+        b=bBDNCeAgq1I7erOfy25vjMcgnkKPvmMlPtfxklCapNKDiUnlbOFdutmLvIAdlyM7K5
+         d/YzuPSsYdWgiIVw6M81k6GKubvBuUtqHWcxNneMwH8+3t5VdU89+kxsRx/0JWrl0X1v
+         FfQIAC/NDJ752DsDg3F6aKUoHwGy1jHzB0Jgw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=N7ZjK4P1j2h8bXH0yXST1ACz87+diWlu/RJO8+yMMIg=;
-        b=Z1MTiJDAyXVtgN2fOUZI+525micfhBM9rE61+Stqk6UpfQNd7iPJPL1rO1WM04W1aC
-         BVvOCv3vSevKexbEx4VN5U6bdZjlapPVp3P4uNaMzErYAgwON/dE3UQa4psGTQAiM7jG
-         DP+B7helizk79/l/+kn0Rh+BMeq6JPitvTBj1ejGof14Ebb4O25PwIQVJCHvZ2/KcG4V
-         5Eh6SEcl8Fy2jRnlfCKijUmABxRFpDbN17kjyJndjjkjLkNO32JspnS5VrYNMZs7f5NF
-         JXcbFXxICnHHOqIvZur4bMkoPlRBY0vldgUVxBrNhX6UwPVk6VD1kOTY0UqLeFVbLXgC
-         gv6Q==
-X-Gm-Message-State: AOAM530njddAsvaNLVmZ5m+/U06QnWRU4UQpb4I96rStKYsUWp7iKTr2
-        vNnCQCcHM/DOYqg0FQ3Y5xEoOwEuJ1FDs3EkHy267Q3K2VTMrjr6/64dK+h41d0aGQBGYZn2jVq
-        C5sxpicBpV/FbU7KVOqsKr1/Y
-X-Received: by 2002:adf:8562:: with SMTP id 89mr10925396wrh.214.1602187256875;
-        Thu, 08 Oct 2020 13:00:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxWrfSGm9ixOxCPW8QdF5CAdI6tKiof9TUB2EwQFmEeCUUsDhhAjPVtVpxFRSxH/O9OPV7uVw==
-X-Received: by 2002:adf:8562:: with SMTP id 89mr10925375wrh.214.1602187256545;
-        Thu, 08 Oct 2020 13:00:56 -0700 (PDT)
-Received: from redhat.com (bzq-79-179-71-128.red.bezeqint.net. [79.179.71.128])
-        by smtp.gmail.com with ESMTPSA id w11sm8493631wrs.26.2020.10.08.13.00.53
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=kRozOJcU/8V0BnQ/n2Fog1pXhHDXJtLHefk6yYZwAN8=;
+        b=YPFaau65BAx7oIaRKtqkfPPpKpqoHBP/Y/XwHirqgOwUkuU6slET34j3PIvmAQlA0z
+         aUdl181E3W2qljwbu37xGEtRoUUNQHNDidmp/BZymA1PO1Eo/+T0eA7rTeh969FF/quj
+         6AlZm5Uj7OCIGe1iHK+qIGWVaCMyvvXerKy1vkofRouDWjxC1/vJsQ465tOp43GUZJ+I
+         EvWK/Rgx2GhwhKYOFFGnJZLueiW0PjjeXQM4vIDrv92WBXxXeTdCSB2PdZsy8SGStgSj
+         1vegrnt4SM7bRJezhCqmhPo691+00eMUghwo4b4p9kpc7QevL3UtsbIe2kFWawj2oogf
+         t8tw==
+X-Gm-Message-State: AOAM531mTUgnHtmyGlWJe6EsscvOpvvHwDkRoxJCmJuyWF4Ur8HnXOje
+        QpxY5gEgGvUQ6FV/yh06/haSJw==
+X-Google-Smtp-Source: ABdhPJzAJp9mz1b2kvn/8cvjH2bFw3wc5OktyHnOltsWM0NhPa5ahuymaawPuutDX6+tJ4KwBfd8tA==
+X-Received: by 2002:a63:584e:: with SMTP id i14mr451658pgm.329.1602187518509;
+        Thu, 08 Oct 2020 13:05:18 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id j19sm8237222pfe.108.2020.10.08.13.05.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 13:00:55 -0700 (PDT)
-Date:   Thu, 8 Oct 2020 16:00:51 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     netdev@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Rusty Russell <rusty@rustcorp.com.au>, stable@vger.kernel.org,
-        Jason Wang <jasowang@redhat.com>
-Subject: Re: [PATCH] vringh: fix __vringh_iov() when riov and wiov are
- different
-Message-ID: <20201008160035-mutt-send-email-mst@kernel.org>
-References: <20201008161311.114398-1-sgarzare@redhat.com>
+        Thu, 08 Oct 2020 13:05:16 -0700 (PDT)
+Date:   Thu, 8 Oct 2020 13:05:15 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Tommi Rantala <tommi.t.rantala@nokia.com>
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <shuah@kernel.org>
+Subject: Re: [PATCH 01/13] selftests: filter kselftest headers from command
+ in lib.mk
+Message-ID: <202010081305.32C244AB5@keescook>
+References: <20201008122633.687877-1-tommi.t.rantala@nokia.com>
+ <20201008122633.687877-2-tommi.t.rantala@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201008161311.114398-1-sgarzare@redhat.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201008122633.687877-2-tommi.t.rantala@nokia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 06:13:11PM +0200, Stefano Garzarella wrote:
-> If riov and wiov are both defined and they point to different
-> objects, only riov is initialized. If the wiov is not initialized
-> by the caller, the function fails returning -EINVAL and printing
-> "Readable desc 0x... after writable" error message.
+On Thu, Oct 08, 2020 at 03:26:21PM +0300, Tommi Rantala wrote:
+> Commit 1056d3d2c97e ("selftests: enforce local header dependency in
+> lib.mk") added header dependency to the rule, but as the rule uses $^,
+> the headers are added to the compiler command line.
 > 
-> Let's replace the 'else if' clause with 'if' to initialize both
-> riov and wiov if they are not NULL.
+> This can cause unexpected precompiled header files being generated when
+> compilation fails:
 > 
-> As checkpatch pointed out, we also avoid crashing the kernel
-> when riov and wiov are both NULL, replacing BUG() with WARN_ON()
-> and returning -EINVAL.
+>   $ echo { >> openat2_test.c
 > 
-> Fixes: f87d0fbb5798 ("vringh: host-side implementation of virtio rings.")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+>   $ make
+>   gcc -Wall -O2 -g -fsanitize=address -fsanitize=undefined  openat2_test.c
+>     tools/testing/selftests/kselftest_harness.h tools/testing/selftests/kselftest.h helpers.c
+>     -o tools/testing/selftests/openat2/openat2_test
+>   openat2_test.c:313:1: error: expected identifier or ‘(’ before ‘{’ token
+>     313 | {
+>         | ^
+>   make: *** [../lib.mk:140: tools/testing/selftests/openat2/openat2_test] Error 1
+> 
+>   $ file openat2_test*
+>   openat2_test:   GCC precompiled header (version 014) for C
+>   openat2_test.c: C source, ASCII text
+> 
+> Fix it by filtering out the headers, so that we'll only pass the actual
+> *.c files in the compiler command line.
+> 
+> Fixes: 1056d3d2c97e ("selftests: enforce local header dependency in lib.mk")
+> Signed-off-by: Tommi Rantala <tommi.t.rantala@nokia.com>
 
-Can you add more detail please? when does this trigger?
+Ah yes, thanks!
 
-> ---
->  drivers/vhost/vringh.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
-> index e059a9a47cdf..8bd8b403f087 100644
-> --- a/drivers/vhost/vringh.c
-> +++ b/drivers/vhost/vringh.c
-> @@ -284,13 +284,14 @@ __vringh_iov(struct vringh *vrh, u16 i,
->  	desc_max = vrh->vring.num;
->  	up_next = -1;
->  
-> +	/* You must want something! */
-> +	if (WARN_ON(!riov && !wiov))
-> +		return -EINVAL;
-> +
->  	if (riov)
->  		riov->i = riov->used = 0;
-> -	else if (wiov)
-> +	if (wiov)
->  		wiov->i = wiov->used = 0;
-> -	else
-> -		/* You must want something! */
-> -		BUG();
->  
->  	for (;;) {
->  		void *addr;
-> -- 
-> 2.26.2
+Acked-by: Kees Cook <keescook@chromium.org>
 
+
+-- 
+Kees Cook
