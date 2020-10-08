@@ -2,86 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC2C28736E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 13:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 839B5287371
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 13:36:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729434AbgJHLgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 07:36:20 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:60966 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725917AbgJHLgT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 07:36:19 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 098BaANq067425;
-        Thu, 8 Oct 2020 06:36:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1602156970;
-        bh=bG660JxRSNwbc+hdLLw+VtFmo8ptClkHW+piSLh8Hfs=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=fFByA/3pp809nHfA7E2ko/kDFXwZhl2L/lN529VWsDJ9K4vrUKWlpUuCoo2UEydyN
-         2LrySbIfX3CWOzKFJuKMVgOEkPI5wUB/dILQnBd3YmHef9K7nIEVcci/zeiNDgCqv3
-         TyuJ+u0e3ovxttv5xDa0uO86qEvF4vqSdCiFs6Os=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 098BaAIn113032
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 8 Oct 2020 06:36:10 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 8 Oct
- 2020 06:36:10 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 8 Oct 2020 06:36:10 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 098Ba9RB011843;
-        Thu, 8 Oct 2020 06:36:10 -0500
-Date:   Thu, 8 Oct 2020 06:36:09 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Tero Kristo <t-kristo@ti.com>
-CC:     Faiz Abbas <faiz_abbas@ti.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <will@kernel.org>,
-        <catalin.marinas@arm.com>
-Subject: Re: [PATCH 0/2] Enable GPIO and I2C configs for TI's J721e platform
-Message-ID: <20201008113609.il72lxqpb236umoe@tableware>
-References: <20201002164535.9920-1-faiz_abbas@ti.com>
- <68cadd9b-63b1-caaf-080c-e2f346f4a908@ti.com>
- <ce66e552-a816-9e67-5e94-d9a20bbc2bc7@ti.com>
- <f8877ca8-fe32-29e5-cb0c-2ce0af3eb73a@ti.com>
- <0b46dc95-6778-7f01-395a-8d4eaf33b0f7@ti.com>
- <51978593-fe09-3740-ef90-deac8ef3d2f2@ti.com>
- <142b9d12-ea65-320f-aef9-583389aabb3e@ti.com>
- <83e519f3-b8e4-6fe7-2e0b-de7a5484f2b6@ti.com>
+        id S1729842AbgJHLg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 07:36:26 -0400
+Received: from foss.arm.com ([217.140.110.172]:52390 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725917AbgJHLgW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 07:36:22 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E1982D6E;
+        Thu,  8 Oct 2020 04:36:21 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 911463F71F;
+        Thu,  8 Oct 2020 04:36:20 -0700 (PDT)
+Date:   Thu, 8 Oct 2020 12:36:14 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        linux-omap@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 0/2] PCI: dwc: fix two MSI issues
+Message-ID: <20201008113614.GA1226@e121166-lin.cambridge.arm.com>
+References: <20200930091205.792d6c7c@xhacker.debian>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <83e519f3-b8e4-6fe7-2e0b-de7a5484f2b6@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20200930091205.792d6c7c@xhacker.debian>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14:06-20201008, Tero Kristo wrote:
-> On 08/10/2020 12:40, Faiz Abbas wrote:
-[...]
-> > Thats right. The EPROBE_DEFERs will happen if my patches enabling UHS modes here are merged. I need to repost them for v5.11-rc1:
-> > https://lore.kernel.org/linux-arm-kernel/20201001190541.6364-1-faiz_abbas@ti.com/
+On Wed, Sep 30, 2020 at 09:12:05AM +0800, Jisheng Zhang wrote:
+> Fix two MSI issues. One to skip PCIE_MSI_INTR0* programming if MSI is
+> disabled, another to use an address in the driver data for MSI address,
+> to fix the MSI page leakage during suspend/resume.
 > 
-> Ok I think that would be good enough reason to enable these by default as
-> the MMC as boot media won't work anymore without them, and carrying the DTS
-> patches would be just silly.
+> Since v4:
+>   - fix pci-dra7xx.c
 > 
-> Acked-by: Tero Kristo <t-kristo@ti.com>
+> Since v3:
+>   - add Acked-by tag
+>   - change patch2 commit msg to make it clear
+>   - map the MSI msg with dma_map_single_attrs() for some platforms
+>     which either has seperate addrs for dma and phy or has mem access
+>     limitation for the PCIe.
+> 
+> Since v2:
+>   - add Acked-by tag
+>   - use an address in the driver data for MSI address. Thank Ard and Rob
+>     for pointing out this correct direction.
+>   - Since the MSI page has gone, the leak issue doesn't exist anymore,
+>     remove unnecessary patches.
+>   - Remove dw_pcie_free_msi rename and the last patch. They could be
+>     targeted to next. So will send out patches in a separate series.
+> 
+> Since v1:
+>   - add proper error handling patches.
+>   - solve the msi page leakage by moving dw_pcie_msi_init() from each
+>     users to designware host
+> 
+> 
+> Jisheng Zhang (2):
+>   PCI: dwc: Skip PCIE_MSI_INTR0* programming if MSI is disabled
+>   PCI: dwc: Fix MSI page leakage in suspend/resume
+> 
+>  drivers/pci/controller/dwc/pci-dra7xx.c       | 18 +++++++++-
+>  .../pci/controller/dwc/pcie-designware-host.c | 34 +++++++++----------
+>  drivers/pci/controller/dwc/pcie-designware.h  |  2 +-
+>  3 files changed, 35 insertions(+), 19 deletions(-)
 
+Hi,
 
-I still think we could squash the patches and explain in the commit message the
-rationale for adding these in.
+can you rebase this series against my pci/dwc branch please ?
 
-"Enable support for devices compatible with TI's davinci gpio
-controllers." Does'nt quite explain the severity of the patches.
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+Thanks,
+Lorenzo
