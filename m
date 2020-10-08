@@ -2,320 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34515287DB0
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 23:12:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B76287DB2
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 23:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729411AbgJHVMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 17:12:46 -0400
-Received: from mga03.intel.com ([134.134.136.65]:49086 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728464AbgJHVMp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 17:12:45 -0400
-IronPort-SDR: 0LE1nrfN6JjMhGGunR+3y6wn8U/hYF9NVcgomc2RxoMxXWKJP662bOLH2/M70kT27SKWu1Kg23
- ln9KgKxUUQAw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="165468906"
-X-IronPort-AV: E=Sophos;i="5.77,352,1596524400"; 
-   d="scan'208";a="165468906"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 14:12:45 -0700
-IronPort-SDR: gBn21N3WEdKSbYfTUBnqRtEUF+853MllERZLsWVzfW7uRneN90hh1huaY0au3Bk9l9djmjq/Cc
- usH/JolP6LgQ==
-X-IronPort-AV: E=Sophos;i="5.77,352,1596524400"; 
-   d="scan'208";a="461944349"
-Received: from rhweight-mobl2.amr.corp.intel.com (HELO [10.0.2.15]) ([10.254.33.152])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 14:12:43 -0700
-Subject: Re: [PATCH v2 2/6] fpga: m10bmc-sec: create max10 bmc security engine
-To:     Tom Rix <trix@redhat.com>, mdf@kernel.org, lee.jones@linaro.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
-        matthew.gerlach@intel.com
-References: <20201003012412.16831-1-russell.h.weight@intel.com>
- <20201003012412.16831-3-russell.h.weight@intel.com>
- <31f6a8a2-86f1-a9b5-d32e-9172bb89ddd4@redhat.com>
-From:   Russ Weight <russell.h.weight@intel.com>
-Message-ID: <0a57d0b6-a48f-1127-c255-09d156dff864@intel.com>
-Date:   Thu, 8 Oct 2020 14:12:42 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729198AbgJHVOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 17:14:21 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:45552 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727181AbgJHVOV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 17:14:21 -0400
+Received: by mail-io1-f70.google.com with SMTP id c5so4684432iok.12
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 14:14:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=vzf609RP+iBVorRyXP7G3xytLVq/dULkfZhJLD/Vp+Y=;
+        b=HVrhMsjPyvEvERPPWW4i9Kh98hm+BeH2i+63rw/JFoRbnrlqgu+kHoUduBQdOy6w00
+         2NZLSmDlIxyRoLiBFY9pciefyQaxvDtjin42Qg1m6/YNIFzwYcEJt0pyVPYrTB7GgCtv
+         GWtuGPmdrtZHtebPAPBGy2bvoz6wek6as4arBxM//g0uxvkgf4p9JBM2QWGnpTRqtHxj
+         9vA9QBFNLc2whvB+9a9jfGIqn+wNnRGZHghz60gwDoh37tR8f3ykrsvBC6Ln1Q/sIyx6
+         TNfj6ZBXTv7UnVuMBddock8scCzkqelvE29trIJB8Re9PbhO/b93/aLH3ggT2xhDj/po
+         Wyrg==
+X-Gm-Message-State: AOAM532kFvZSAB2eH9f4S+KkUzHHLWcPGtKK+4HtRO85zV6CpITpMbrW
+        0fYWg/1sS10f+Zq8s4mIyvrhPL7IFeSYEdqIwLWWQ14dTsyD
+X-Google-Smtp-Source: ABdhPJy39gmzrOCLLQZ7G6Nm64vOvORQcQxIJgEoxmBH4G4VN+5AfQplmJ+gOBnuEg3nM822IUhovQI4FhIpjGY+evNvoAGowBUu
 MIME-Version: 1.0
-In-Reply-To: <31f6a8a2-86f1-a9b5-d32e-9172bb89ddd4@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-Received: by 2002:a05:6602:2ac8:: with SMTP id m8mr4903877iov.46.1602191660106;
+ Thu, 08 Oct 2020 14:14:20 -0700 (PDT)
+Date:   Thu, 08 Oct 2020 14:14:20 -0700
+In-Reply-To: <00000000000045ac4605b12a1720@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c35f0805b12f5099@google.com>
+Subject: Re: inconsistent lock state in xa_destroy
+From:   syzbot <syzbot+cdcbdc0bd42e559b52b9@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
+        willy@infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+syzbot has found a reproducer for the following issue on:
 
+HEAD commit:    e4fb79c7 Add linux-next specific files for 20201008
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=17dda29f900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=568d41fe4341ed0f
+dashboard link: https://syzkaller.appspot.com/bug?extid=cdcbdc0bd42e559b52b9
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14860568500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16367de7900000
 
-On 10/6/20 10:31 AM, Tom Rix wrote:
-> On 10/2/20 6:24 PM, Russ Weight wrote:
->> Create a platform driver that can be invoked as a sub
->> driver for the Intel MAX10 BMC in order to support
->> secure updates. This sub-driver will invoke an
->> instance of the Intel FPGA Security Manager class driver
->> in order to expose sysfs interfaces for managing and
->> monitoring secure updates to FPGA and BMC images.
->>
->> This patch creates the MAX10 BMC Security Engine driver and
->> provides support for displaying the current root entry hashes
->> for the FPGA static region, the FPGA PR region, and the MAX10
->> BMC.
->>
->> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
->> ---
->> v2:
->>   - Added drivers/fpga/intel-m10-bmc-secure.c file to MAINTAINERS.
->>   - Switched to GENMASK(31, 16) for a couple of mask definitions.
->>   - Moved MAX10 BMC address and function definitions to a separate
->>     patch.
->>   - Replaced small function-creation macros with explicit function
->>     declarations.
->>   - Removed ifpga_sec_mgr_init() and ifpga_sec_mgr_uinit() functions.
->>   - Adapted to changes in the Intel FPGA Security Manager by splitting
->>     the single call to ifpga_sec_mgr_register() into two function
->>     calls: devm_ifpga_sec_mgr_create() and ifpga_sec_mgr_register().
->> ---
->>  MAINTAINERS                         |   1 +
->>  drivers/fpga/Kconfig                |  11 ++
->>  drivers/fpga/Makefile               |   3 +
->>  drivers/fpga/intel-m10-bmc-secure.c | 165 ++++++++++++++++++++++++++++
->>  4 files changed, 180 insertions(+)
->>  create mode 100644 drivers/fpga/intel-m10-bmc-secure.c
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index 0bb5ef309dec..c359d0214980 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -6898,6 +6898,7 @@ S:	Maintained
->>  F:	Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
->>  F:	Documentation/fpga/ifpga-sec-mgr.rst
->>  F:	drivers/fpga/ifpga-sec-mgr.c
->> +F:	drivers/fpga/intel-m10-bmc-secure.c
->>  F:	include/linux/fpga/ifpga-sec-mgr.h
->>  
->>  FPU EMULATOR
->> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
->> index c534cc80f398..2380d36b08c7 100644
->> --- a/drivers/fpga/Kconfig
->> +++ b/drivers/fpga/Kconfig
->> @@ -235,4 +235,15 @@ config IFPGA_SEC_MGR
->>  	  region and for the BMC. Select this option to enable
->>  	  updates for secure FPGA devices.
->>  
->> +config IFPGA_M10_BMC_SECURE
->> +        tristate "Intel MAX10 BMC security engine"
->> +	depends on MFD_INTEL_M10_BMC && IFPGA_SEC_MGR
->> +        help
->> +          Secure update support for the Intel MAX10 board management
->> +	  controller.
->> +
->> +	  This is a subdriver of the Intel MAX10 board management controller
->> +	  (BMC) and provides support for secure updates for the BMC image,
->> +	  the FPGA image, the Root Entry Hashes, etc.
->> +
->>  endif # FPGA
->> diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
->> index 6f706590e209..8e702689cdda 100644
->> --- a/drivers/fpga/Makefile
->> +++ b/drivers/fpga/Makefile
->> @@ -24,6 +24,9 @@ obj-$(CONFIG_ALTERA_PR_IP_CORE_PLAT)    += altera-pr-ip-core-plat.o
->>  # Intel FPGA Security Manager Framework
->>  obj-$(CONFIG_IFPGA_SEC_MGR)		+= ifpga-sec-mgr.o
->>  
->> +# Intel Security Manager Drivers
->> +obj-$(CONFIG_IFPGA_M10_BMC_SECURE)	+= intel-m10-bmc-secure.o
->> +
->>  # FPGA Bridge Drivers
->>  obj-$(CONFIG_FPGA_BRIDGE)		+= fpga-bridge.o
->>  obj-$(CONFIG_SOCFPGA_FPGA_BRIDGE)	+= altera-hps2fpga.o altera-fpga2sdram.o
->> diff --git a/drivers/fpga/intel-m10-bmc-secure.c b/drivers/fpga/intel-m10-bmc-secure.c
->> new file mode 100644
->> index 000000000000..df8ebda9a9cb
->> --- /dev/null
->> +++ b/drivers/fpga/intel-m10-bmc-secure.c
->> @@ -0,0 +1,165 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Intel Max10 Board Management Controller Security Engine Driver
->> + *
->> + * Copyright (C) 2019-2020 Intel Corporation. All rights reserved.
->> + *
->> + */
->> +#include <linux/bitfield.h>
->> +#include <linux/device.h>
->> +#include <linux/fpga/ifpga-sec-mgr.h>
->> +#include <linux/mfd/intel-m10-bmc.h>
->> +#include <linux/module.h>
->> +#include <linux/platform_device.h>
->> +#include <linux/vmalloc.h>
->> +
->> +struct m10bmc_sec {
->> +	struct device *dev;
->> +	struct intel_m10bmc *m10bmc;
->> +	struct ifpga_sec_mgr *imgr;
->> +};
->> +
->> +#define REH_SHA256_SIZE		32
->> +#define REH_SHA384_SIZE		48
->> +#define REH_MAGIC		GENMASK(15, 0)
->> +#define REH_SHA_NUM_BYTES	GENMASK(31, 16)
->> +
->> +static int m10bmc_reh_size(struct ifpga_sec_mgr *imgr,
->> +			   u32 exp_magic, u32 prog_addr)
->> +{
->> +	struct m10bmc_sec *sec = imgr->priv;
->> +	int sha_num_bytes, ret;
->> +	u32 magic;
->> +
->> +	ret = m10bmc_raw_read(sec->m10bmc, prog_addr, &magic);
->> +	if (ret)
->> +		return ret;
->> +
->> +	dev_dbg(sec->dev, "%s magic 0x%08x\n", __func__, magic);
->> +
->> +	/*
->> +	 * If no magic number, then no REH is programmed, so
->> +	 * the REH size is zero.
->> +	 */
->> +	if (FIELD_GET(REH_MAGIC, magic) != exp_magic)
->> +		return 0;
->> +
->> +	sha_num_bytes = FIELD_GET(REH_SHA_NUM_BYTES, magic) / 8;
->> +	if (sha_num_bytes != REH_SHA256_SIZE &&
->> +	    sha_num_bytes != REH_SHA384_SIZE)   {
->> +		dev_err(sec->dev, "%s bad sha num bytes %d\n", __func__,
->> +			sha_num_bytes);
->> +		return -EINVAL;
->> +	}
->> +
->> +	return sha_num_bytes;
->> +}
->> +
->> +static int m10bmc_bmc_reh_size(struct ifpga_sec_mgr *imgr)
-> For naming consistency, the _reh_ vs _root_entry_hash_
->
-> pick one.
->
-> If you pick _reh_ put a comment at the top since reh isn't a familiar acronym (at least to me)
-OK - I'll go with reh and put a comment at the beginning of the REH support.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+cdcbdc0bd42e559b52b9@syzkaller.appspotmail.com
 
->
->> +{
->> +	return m10bmc_reh_size(imgr, BMC_PROG_MAGIC, BMC_PROG_ADDR);
->> +}
->> +
->> +static int m10bmc_sr_reh_size(struct ifpga_sec_mgr *imgr)
->> +{
->> +	return m10bmc_reh_size(imgr, SR_PROG_MAGIC, SR_PROG_ADDR);
->> +}
->> +
->> +static int m10bmc_pr_reh_size(struct ifpga_sec_mgr *imgr)
->> +{
->> +	return m10bmc_reh_size(imgr, PR_PROG_MAGIC, PR_PROG_ADDR);
->> +}
->> +
->> +static int m10bmc_root_entry_hash(struct ifpga_sec_mgr *imgr,
->> +				  u32 hash_addr, u8 *hash,
->> +				  unsigned int size)
->> +{
->> +	struct m10bmc_sec *sec = imgr->priv;
->> +	unsigned int stride = regmap_get_reg_stride(sec->m10bmc->regmap);
->> +	int ret;
->> +
->> +	ret = m10bmc_raw_bulk_read(sec->m10bmc, hash_addr,
->> +				   hash, size / stride);
->> +	if (ret)
->> +		dev_err(sec->dev, "bulk_read of 0x%x failed %d",
->> +			hash_addr, ret);
->> +
->> +	return ret;
->> +}
->> +
->> +static int m10bmc_bmc_root_entry_hash(struct ifpga_sec_mgr *imgr,
->> +				      u8 *hash, unsigned int size)
->> +{
->> +	return m10bmc_root_entry_hash(imgr, BMC_REH_ADDR, hash, size);
->> +}
->> +
->> +static int m10bmc_sr_root_entry_hash(struct ifpga_sec_mgr *imgr,
->> +				     u8 *hash, unsigned int size)
->> +{
->> +	return m10bmc_root_entry_hash(imgr, SR_REH_ADDR, hash, size);
->> +}
->> +
->> +static int m10bmc_pr_root_entry_hash(struct ifpga_sec_mgr *imgr,
->> +				     u8 *hash, unsigned int size)
->> +{
->> +	return m10bmc_root_entry_hash(imgr, PR_REH_ADDR, hash, size);
->> +}
->> +
->> +static const struct ifpga_sec_mgr_ops m10bmc_iops = {
->> +	.bmc_root_entry_hash = m10bmc_bmc_root_entry_hash,
->> +	.sr_root_entry_hash = m10bmc_sr_root_entry_hash,
->> +	.pr_root_entry_hash = m10bmc_pr_root_entry_hash,
->> +	.bmc_reh_size = m10bmc_bmc_reh_size,
->> +	.sr_reh_size = m10bmc_sr_reh_size,
->> +	.pr_reh_size = m10bmc_pr_reh_size,
->> +};
->> +
->> +static int m10bmc_secure_probe(struct platform_device *pdev)
->> +{
->> +	struct ifpga_sec_mgr *imgr;
->> +	struct m10bmc_sec *sec;
->> +	int ret;
->> +
->> +	sec = devm_kzalloc(&pdev->dev, sizeof(*sec), GFP_KERNEL);
->> +	if (!sec)
->> +		return -ENOMEM;
->> +
->> +	sec->dev = &pdev->dev;
->> +	sec->m10bmc = dev_get_drvdata(pdev->dev.parent);
->> +	dev_set_drvdata(&pdev->dev, sec);
->> +
->> +	imgr = devm_ifpga_sec_mgr_create(sec->dev, "Max10 BMC Security Manager",
->> +					 &m10bmc_iops, sec);
->> +	if (!imgr) {
->> +		dev_err(sec->dev,
->> +			"Security manager failed to start: %d\n", ret);
->> +		return -ENOMEM;
->> +	}
->> +
->> +	sec->imgr = imgr;
->> +
->> +	return ifpga_sec_mgr_register(imgr);
->> +}
->> +
->> +static int m10bmc_secure_remove(struct platform_device *pdev)
->> +{
->> +	struct m10bmc_sec *sec = dev_get_drvdata(&pdev->dev);
->> +
->> +	ifpga_sec_mgr_unregister(sec->imgr);
->> +
->> +	return 0;
->> +}
->> +
->> +static struct platform_driver intel_m10bmc_secure_driver = {
->> +	.probe = m10bmc_secure_probe,
->> +	.remove = m10bmc_secure_remove,
->> +	.driver = {
->> +		.name = "n3000bmc-secure",
->> +	},
->> +};
->> +module_platform_driver(intel_m10bmc_secure_driver);
->> +
->> +MODULE_ALIAS("platform:n3000bmc-secure");
->> +MODULE_AUTHOR("Intel Corporation");
->> +MODULE_DESCRIPTION("Intel MAX10 BMC secure engine");
-> Maybe "... secure update"
-Yeah - that sounds better.
+================================
+WARNING: inconsistent lock state
+5.9.0-rc8-next-20201008-syzkaller #0 Not tainted
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+swapper/0/0 [HC0[0]:SC1[1]:HE0:SE0] takes:
+ffff888025f65018 (&xa->xa_lock#7){+.?.}-{2:2}, at: xa_destroy+0xaa/0x350 lib/xarray.c:2205
+{SOFTIRQ-ON-W} state was registered at:
+  lock_acquire+0x1f2/0xaa0 kernel/locking/lockdep.c:5419
+  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+  spin_lock include/linux/spinlock.h:354 [inline]
+  io_uring_add_task_file fs/io_uring.c:8607 [inline]
+  io_uring_add_task_file+0x207/0x430 fs/io_uring.c:8590
+  io_uring_get_fd fs/io_uring.c:9116 [inline]
+  io_uring_create fs/io_uring.c:9280 [inline]
+  io_uring_setup+0x2727/0x3660 fs/io_uring.c:9314
+  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+irq event stamp: 120141
+hardirqs last  enabled at (120140): [<ffffffff8847f0df>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (120140): [<ffffffff8847f0df>] _raw_spin_unlock_irqrestore+0x6f/0x90 kernel/locking/spinlock.c:191
+hardirqs last disabled at (120141): [<ffffffff8847f6c9>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (120141): [<ffffffff8847f6c9>] _raw_spin_lock_irqsave+0xa9/0xd0 kernel/locking/spinlock.c:159
+softirqs last  enabled at (119956): [<ffffffff814731af>] irq_enter_rcu+0xcf/0xf0 kernel/softirq.c:360
+softirqs last disabled at (119957): [<ffffffff88600f2f>] asm_call_irq_on_stack+0xf/0x20
 
-Thanks,
-- Russ
->
-> Tom
->
->> +MODULE_LICENSE("GPL v2");
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&xa->xa_lock#7);
+  <Interrupt>
+    lock(&xa->xa_lock#7);
+
+ *** DEADLOCK ***
+
+1 lock held by swapper/0/0:
+ #0: ffffffff8a554c80 (rcu_callback){....}-{0:0}, at: rcu_do_batch kernel/rcu/tree.c:2474 [inline]
+ #0: ffffffff8a554c80 (rcu_callback){....}-{0:0}, at: rcu_core+0x5d8/0x1240 kernel/rcu/tree.c:2718
+
+stack backtrace:
+CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.9.0-rc8-next-20201008-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fb lib/dump_stack.c:118
+ print_usage_bug kernel/locking/lockdep.c:3715 [inline]
+ valid_state kernel/locking/lockdep.c:3726 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3929 [inline]
+ mark_lock.cold+0x32/0x74 kernel/locking/lockdep.c:4396
+ mark_usage kernel/locking/lockdep.c:4281 [inline]
+ __lock_acquire+0x118a/0x56d0 kernel/locking/lockdep.c:4771
+ lock_acquire+0x1f2/0xaa0 kernel/locking/lockdep.c:5419
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0x94/0xd0 kernel/locking/spinlock.c:159
+ xa_destroy+0xaa/0x350 lib/xarray.c:2205
+ __io_uring_free+0x60/0xc0 fs/io_uring.c:7693
+ io_uring_free include/linux/io_uring.h:40 [inline]
+ __put_task_struct+0xff/0x3f0 kernel/fork.c:732
+ put_task_struct include/linux/sched/task.h:111 [inline]
+ delayed_put_task_struct+0x1f6/0x340 kernel/exit.c:172
+ rcu_do_batch kernel/rcu/tree.c:2484 [inline]
+ rcu_core+0x645/0x1240 kernel/rcu/tree.c:2718
+ __do_softirq+0x203/0xab6 kernel/softirq.c:298
+ asm_call_irq_on_stack+0xf/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0x9b/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu kernel/softirq.c:423 [inline]
+ irq_exit_rcu+0x235/0x280 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x51/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:native_safe_halt+0xe/0x10 arch/x86/include/asm/irqflags.h:61
+Code: 89 ef e8 b5 62 6f f9 e9 86 fe ff ff 48 89 df e8 a8 62 6f f9 e9 7b ff ff ff cc cc cc e9 07 00 00 00 0f 00 2d 54 08 61 00 fb f4 <c3> 90 e9 07 00 00 00 0f 00 2d 44 08 61 00 f4 c3 cc cc 55 53 e8 09
+RSP: 0018:ffffffff8a207d48 EFLAGS: 00000293
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 1ffffffff176a7c1
+RDX: ffffffff8a29ce40 RSI: ffffffff8847e5c3 RDI: 0000000000000000
+RBP: ffff888012d2e064 R08: 0000000000000001 R09: 0000000000000001
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
+R13: ffff888012d2e000 R14: ffff888012d2e064 R15: ffff8881339b2004
+ arch_safe_halt arch/x86/include/asm/paravirt.h:150 [inline]
+ acpi_safe_halt drivers/acpi/processor_idle.c:111 [inline]
+ acpi_idle_do_entry+0x1e8/0x330 drivers/acpi/processor_idle.c:517
+ acpi_idle_enter+0x35a/0x550 drivers/acpi/processor_idle.c:648
+ cpuidle_enter_state+0x1ab/0xdb0 drivers/cpuidle/cpuidle.c:237
+ cpuidle_enter+0x4a/0xa0 drivers/cpuidle/cpuidle.c:351
+ call_cpuidle kernel/sched/idle.c:132 [inline]
+ cpuidle_idle_call kernel/sched/idle.c:213 [inline]
+ do_idle+0x48e/0x730 kernel/sched/idle.c:273
+ cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:369
+ start_kernel+0x490/0x4b1 init/main.c:1049
+ secondary_startup_64_no_verify+0xa6/0xab
 
