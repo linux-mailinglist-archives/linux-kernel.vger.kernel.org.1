@@ -2,139 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF2DE2870F2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 10:49:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F592870F4
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 10:50:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728649AbgJHItZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 04:49:25 -0400
-Received: from mail-io1-f79.google.com ([209.85.166.79]:37786 "EHLO
-        mail-io1-f79.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728550AbgJHItV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 04:49:21 -0400
-Received: by mail-io1-f79.google.com with SMTP id e21so3249012ioe.4
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 01:49:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=f+10NVtEqPkPrqlOFKfyrYJbYbqdgRkPJ4VeacWpwfI=;
-        b=X2T0SnZGBy1X9wbPkYzEN8KJ5e5YWO2zG6CVOZwzSNHmyoYQ4HQcD2UvXvcgFawiVt
-         HC8qHHbNtsIpC2oQ+XEFSBtcfH22MZFo0CFwkCrELsFEuxydKzTovndZcq4XRQ6Coh9W
-         YWbxwaP4PUCG+vQEde4CunagWAeaCG2hj1Y2AJMOzeFSyo2QwH5RjHYrFk3usLF5O+VL
-         ms/O79x+gjUQIpxj2gYgat0STM6EtfJrt5RA05s78xgJJOn5MvvzKJVSNQ0h46nDaUKN
-         CqtXn9YpkdyitBx99DwOhBdwgBBgKI4EYODpm5kEB1gINsYvIvfnfQPVJJ6pWTEUJ/ns
-         qkkQ==
-X-Gm-Message-State: AOAM532IXrj9kFSGDdYFxFWSgbH9EhxmqAnKZuRyKBPSJAAdAheqa3mp
-        OvuhCNiFqf1CSYgsjfCD8ByJWw4mjEy1INfZ3+3nuoOOX9cy
-X-Google-Smtp-Source: ABdhPJyk3UNlTM4c+hpJnJvAXopHFksNs4HcyTugRqEXzxYMgCfQ55719frlg/+O2BwutZoIwmH5Ad/dm63Tgp991ON8aQh1+mwi
+        id S1728926AbgJHIuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 04:50:03 -0400
+Received: from foss.arm.com ([217.140.110.172]:44536 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728550AbgJHIuD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 04:50:03 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5B2171042;
+        Thu,  8 Oct 2020 01:50:02 -0700 (PDT)
+Received: from bogus (unknown [10.57.53.233])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C6E673F70D;
+        Thu,  8 Oct 2020 01:50:00 -0700 (PDT)
+Date:   Thu, 8 Oct 2020 09:49:54 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Jassi Brar <jassisinghbrar@gmail.com>
+Cc:     Jassi Brar <jaswinder.singh@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        ALKML <linux-arm-kernel@lists.infradead.org>,
+        DTML <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh@kernel.org>, Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH 4/4] mailbox: arm_mhu: Add ARM MHU doorbell driver
+Message-ID: <20201008084954.f45lospaagookbwp@bogus>
+References: <20200928114445.19689-1-sudeep.holla@arm.com>
+ <20200928114445.19689-5-sudeep.holla@arm.com>
+ <CABb+yY11d8uS34yfE6-c_NP6n5pmxvmjs67aOKEAduhUpnU3Uw@mail.gmail.com>
+ <20201007114034.rkiujybiknaedy7m@bogus>
+ <CABb+yY12hntCgydcTza4qBggi0aqCrt7=aZ+sJoiqEFkm11xtQ@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:664:: with SMTP id l4mr6155140ilt.81.1602146959303;
- Thu, 08 Oct 2020 01:49:19 -0700 (PDT)
-Date:   Thu, 08 Oct 2020 01:49:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000632b7e05b124e8b6@google.com>
-Subject: KMSAN: uninit-value in ieee80211_sta_tx_notify
-From:   syzbot <syzbot+beae481026cb095addca@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, glider@google.com, johannes@sipsolutions.net,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABb+yY12hntCgydcTza4qBggi0aqCrt7=aZ+sJoiqEFkm11xtQ@mail.gmail.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Oct 07, 2020 at 10:43:19AM -0500, Jassi Brar wrote:
+> On Wed, Oct 7, 2020 at 6:40 AM Sudeep Holla <sudeep.holla@arm.com> wrote:
+> >
+> > On Fri, Oct 02, 2020 at 02:42:37PM -0500, Jassi Brar wrote:
+> > > On Mon, Sep 28, 2020 at 6:45 AM Sudeep Holla <sudeep.holla@arm.com> wrote:
+> > >
+> > > > +
+> > > > +static void mhu_db_shutdown(struct mbox_chan *chan)
+> > > > +{
+> > > > +       struct mhu_db_channel *chan_info = chan->con_priv;
+> > > > +       struct mbox_controller *mbox = &chan_info->mhu->mbox;
+> > > > +       int i;
+> > > > +
+> > > > +       for (i = 0; i < mbox->num_chans; i++)
+> > > > +               if (chan == &mbox->chans[i])
+> > > > +                       break;
+> > > > +
+> > > > +       if (mbox->num_chans == i) {
+> > > > +               dev_warn(mbox->dev, "Request to free non-existent channel\n");
+> > > > +               return;
+> > > > +       }
+> > > > +
+> > > > +       /* Reset channel */
+> > > > +       mhu_db_mbox_clear_irq(chan);
+> > > > +       chan->con_priv = NULL;
+> > > >
+> > > request->free->request will fail because of this NULL assignment.
+> > > Maybe add a 'taken' flag in mhu_db_channel, which should also be
+> > > checked before calling mbox_chan_received_data because the data may
+> > > arrive for a now relinquished channel.
+> > >
+> >
+> > Good point, but the new 'taken' flag will have the same race as con_priv.
+> > We need a lock here and can we use chan->lock or do you prefer this
+> > driver maintains it own for this purpose.
+> >
+> I meant the con_priv is allocated in mhu_db_mbox_xlate and simply
+> assigning it NULL leaks memory, if not a crash by some other path. At
+> least free it before.
+>
 
-syzbot found the following issue on:
+Ah right, sorry got confused. Too much reliance on devm_* apis and I didn't
+realise it was not in probe but in xlate which is mbox_startup path. Fixed
+now, will post v2 with both issues addressed.
 
-HEAD commit:    5edb1df2 kmsan: drop the _nosanitize string functions
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=1279b1c0500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4991d22eb136035c
-dashboard link: https://syzkaller.appspot.com/bug?extid=beae481026cb095addca
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-userspace arch: i386
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+beae481026cb095addca@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: uninit-value in ieee80211_ac_from_tid net/mac80211/ieee80211_i.h:2034 [inline]
-BUG: KMSAN: uninit-value in ieee80211_sta_tx_wmm_ac_notify net/mac80211/mlme.c:2490 [inline]
-BUG: KMSAN: uninit-value in ieee80211_sta_tx_notify+0x4be/0xda0 net/mac80211/mlme.c:2522
-CPU: 1 PID: 8613 Comm: kworker/u4:1 Not tainted 5.9.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: phy18 ieee80211_beacon_connection_loss_work
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x21c/0x280 lib/dump_stack.c:118
- kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:122
- __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:201
- ieee80211_ac_from_tid net/mac80211/ieee80211_i.h:2034 [inline]
- ieee80211_sta_tx_wmm_ac_notify net/mac80211/mlme.c:2490 [inline]
- ieee80211_sta_tx_notify+0x4be/0xda0 net/mac80211/mlme.c:2522
- __ieee80211_tx_status+0x2d3b/0x4450 net/mac80211/status.c:1013
- ieee80211_tx_status+0x223/0x270 net/mac80211/status.c:1129
- ieee80211_tasklet_handler+0x34e/0x3c0 net/mac80211/main.c:239
- tasklet_action_common+0x416/0x6a0 kernel/softirq.c:562
- tasklet_action+0x30/0x40 kernel/softirq.c:580
- __do_softirq+0x2ea/0x7f5 kernel/softirq.c:299
- asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:706
- </IRQ>
- __run_on_irqstack arch/x86/include/asm/irq_stack.h:23 [inline]
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:50 [inline]
- do_softirq_own_stack+0x7c/0xa0 arch/x86/kernel/irq_64.c:77
- do_softirq kernel/softirq.c:344 [inline]
- __local_bh_enable_ip+0x184/0x1d0 kernel/softirq.c:196
- local_bh_enable+0x36/0x40 include/linux/bottom_half.h:32
- __ieee80211_tx_skb_tid_band+0x28e/0x390 net/mac80211/tx.c:5352
- ieee80211_tx_skb_tid net/mac80211/ieee80211_i.h:2003 [inline]
- ieee80211_tx_skb net/mac80211/ieee80211_i.h:2012 [inline]
- ieee80211_send_nullfunc+0x59a/0x6d0 net/mac80211/mlme.c:1095
- ieee80211_mgd_probe_ap_send+0x897/0xb40 net/mac80211/mlme.c:2593
- ieee80211_mgd_probe_ap+0x6b3/0x760 net/mac80211/mlme.c:2669
- ieee80211_beacon_connection_loss_work+0x156/0x270 net/mac80211/mlme.c:2788
- process_one_work+0x1688/0x2140 kernel/workqueue.c:2269
- worker_thread+0x10bc/0x2730 kernel/workqueue.c:2415
- kthread+0x551/0x590 kernel/kthread.c:293
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-Uninit was created at:
- kmsan_save_stack_with_flags+0x3c/0x90 mm/kmsan/kmsan.c:143
- kmsan_internal_alloc_meta_for_pages mm/kmsan/kmsan_shadow.c:268 [inline]
- kmsan_alloc_page+0xc5/0x1a0 mm/kmsan/kmsan_shadow.c:292
- __alloc_pages_nodemask+0xf34/0x1120 mm/page_alloc.c:4927
- __alloc_pages include/linux/gfp.h:509 [inline]
- __alloc_pages_node include/linux/gfp.h:522 [inline]
- alloc_pages_node include/linux/gfp.h:536 [inline]
- __page_frag_cache_refill mm/page_alloc.c:5002 [inline]
- page_frag_alloc+0x35b/0x880 mm/page_alloc.c:5032
- __netdev_alloc_skb+0xc3d/0xc90 net/core/skbuff.c:456
- netdev_alloc_skb include/linux/skbuff.h:2821 [inline]
- dev_alloc_skb include/linux/skbuff.h:2834 [inline]
- __ieee80211_beacon_get+0x37e3/0x4df0 net/mac80211/tx.c:4819
- ieee80211_beacon_get_tim+0x109/0x800 net/mac80211/tx.c:4933
- ieee80211_beacon_get include/net/mac80211.h:4845 [inline]
- mac80211_hwsim_beacon_tx+0x1c3/0xb80 drivers/net/wireless/mac80211_hwsim.c:1676
- __iterate_interfaces net/mac80211/util.c:737 [inline]
- ieee80211_iterate_active_interfaces_atomic+0x40a/0x610 net/mac80211/util.c:773
- mac80211_hwsim_beacon+0x11d/0x2e0 drivers/net/wireless/mac80211_hwsim.c:1717
- __run_hrtimer+0x7cd/0xf00 kernel/time/hrtimer.c:1524
- __hrtimer_run_queues kernel/time/hrtimer.c:1588 [inline]
- hrtimer_run_softirq+0x3bf/0x690 kernel/time/hrtimer.c:1605
- __do_softirq+0x2ea/0x7f5 kernel/softirq.c:299
-=====================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+--
+Regards,
+Sudeep
