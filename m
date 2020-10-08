@@ -2,141 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C465C287B63
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 20:11:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D76AE287B6D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 20:15:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731317AbgJHSLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 14:11:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34872 "EHLO
+        id S1726109AbgJHSPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 14:15:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731277AbgJHSLp (ORCPT
+        with ESMTP id S1725857AbgJHSPU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 14:11:45 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C52FC0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 11:11:45 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id o17so1678709ioh.9
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 11:11:45 -0700 (PDT)
+        Thu, 8 Oct 2020 14:15:20 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5928AC061755;
+        Thu,  8 Oct 2020 11:15:20 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id n6so7342423wrm.13;
+        Thu, 08 Oct 2020 11:15:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=CSoXq+8L+uC2Fsay1hVylBa3yjr5bnHuLLVYJzuZ4aI=;
-        b=pT5vKGMPtJ8Uu1GPdNg182aAorfrqDbkZNvk9nq43R+BMkMwkl8RCmSJClcMtqi1D8
-         1sLlRVSNdcKtaJBFjjabLfw/1JIGfpFfe3Y/dQ8ptZ3ONr59BWTSz++BzaoAWcNwUdzK
-         Y7THOwqhyOFuEyaTnDXUrN3zWGDUKvYtcbj9vdWSMJLlrcLad9evL4yGR/qiKWcLHPJW
-         5aaXo/0Y9jtxJjRKtwHwxGsJTXAGQ2GpD574EMRJtmFwWJedx9N1PDJE3P86Q7LFF5/L
-         2oJO7nZ1VUdnaer8JJDMixfNSrfiy6AUFTkag3CCXKS3DxHw5r/4xz2VXu0E0Ri2NLtl
-         dIQw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2YLvCUXrjTOYrDRqLi+QFImHhWm8A6K5Fu1cSArDLzE=;
+        b=B6Z38E9aod5VJnr/QNztjoxZ9InxeEyVa/kHdYYVUhgMDxSaBVA2vtmK82uTZPNJoO
+         BxC/cmY0GoBOoJxuBMznYOuo9wtXnyr3dpJEBhpQNENPZQt8gXvW1y+JOjoeDnyOjuYQ
+         ha++7sPlZucAe+ose7gsJkTo+eO7hKMmdHdFArQV8blpdLxeq+Agk1RDNoIsKjHmf9jH
+         PgVwWwwzddfFLCwYBQpBJSuGSRLsVxM3ow26gzYW62nA7dKB2WlDDBfbM2pwUIR1fvpO
+         Of0QCDTwClNgXb/tfMbOU2gtmwCJRNXhtL7PdbaM5BHG2pk6M8ut9O+vt/q6Ats8gCNa
+         lfMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=CSoXq+8L+uC2Fsay1hVylBa3yjr5bnHuLLVYJzuZ4aI=;
-        b=d87AuC6kbA+OY6H5DpwuXOmJYHwqz8w49jnTFqG6/dXcZeTEkKzLj00RmjtbmEYwU5
-         WVbVl3nDU2tcxRGOxVK+kfMFOw6D3avZEnzQdKC86Jhd7fUiODx44/hXHzNTdlmwG9RN
-         45pttJnGrK+gKGtfWHYbE3RXGCF5SfNrUN/wuuaGiqqCLPirHh1SDq9Tdp4F/y07sNlP
-         31CAgaqplmxA/9Tqa3FesyZdpzSh4JJNqBtsSkAcGky2Nj9DEWVXAL77P1YyyS+slVjT
-         2oI+RTG7vN0bj+6SeyPzuDIq26z5JTFoqFpbT+OK4sngP4otxj7LO+f8qDI7nHA2NSdl
-         4Egw==
-X-Gm-Message-State: AOAM5329vU1HKle/Er85UcsBjppzIBNdCP2K2MkK+aTOYx9Odut1CtU0
-        cOTeoY68LfDDhBoxupYCZMh8E2K7+xzQKcRdf0NKtA==
-X-Google-Smtp-Source: ABdhPJzVlut/DlArUd8JRiXjai5dHk1kcamlui+SCoUrieIyqKit4kOehyULHhdcXTviwgnXEt638LyGUxQgcYISjOA=
-X-Received: by 2002:a6b:b208:: with SMTP id b8mr6973090iof.36.1602180703879;
- Thu, 08 Oct 2020 11:11:43 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2YLvCUXrjTOYrDRqLi+QFImHhWm8A6K5Fu1cSArDLzE=;
+        b=bPoGuM5aZNs+kS0h7YxAD6thfVZwEn3Qdungs/oKK8w4eE+7JW3KVtYQbGOdvhcnr9
+         GwnUkyII6VdY63CxoVFWsjaMKFNDJ8SjceejlD63Awtgw8RByzH5UxaD/WUDGqDdY2oS
+         HZf/kBoSEO7qGOwpEj6HnQEu7NF0QXg5eRF1uiQqDxzaljwBglcoZXGMHbJ9QEZFfAr2
+         BxY8ekx+VOy5lQhiBrJAY9pTVqW0gaVNbTFR8M3DwYNmnRw/WUWLlGr3Jsv8UmOwhFi6
+         IH7KON3/zj8rb67i5if3hPIsq7xANzfdMZwdfiV0WoeF92IrZavAPFXOA0l98DEFcTzk
+         UKJA==
+X-Gm-Message-State: AOAM530nplwz2YayvYtrJ12FPpvEptmt8TaD8QASkjD5bDH5muZkugGF
+        6K6fwAmrPIfrbj8bNp6Frvo=
+X-Google-Smtp-Source: ABdhPJwYvXjwC+cGjl56lVK4C0zZKgmreBD+2mRJfMdykOxZo+HZVX2Tmi0Zz3UbQEmBOmz/VGaLZg==
+X-Received: by 2002:adf:ec86:: with SMTP id z6mr10924969wrn.109.1602180918751;
+        Thu, 08 Oct 2020 11:15:18 -0700 (PDT)
+Received: from IcarusMOD.eternityproject.eu ([2.237.20.237])
+        by smtp.gmail.com with ESMTPSA id e7sm8897285wrm.6.2020.10.08.11.15.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Oct 2020 11:15:17 -0700 (PDT)
+From:   kholk11@gmail.com
+To:     dmitry.torokhov@gmail.com
+Cc:     robh+dt@kernel.org, rydberg@bitmath.org, priv.luk@gmail.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kholk11@gmail.com, marijns95@gmail.com, konradybcio@gmail.com,
+        martin.botka1@gmail.com, phone-devel@vger.kernel.org,
+        devicetree@vger.kernel.org, krzk@kernel.org
+Subject: [PATCH v4 0/3] Add Novatek NT36xxx touchscreen driver
+Date:   Thu,  8 Oct 2020 20:15:11 +0200
+Message-Id: <20201008181514.668548-1-kholk11@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 8 Oct 2020 23:41:32 +0530
-Message-ID: <CA+G9fYtwisRJtN4ht=ApeWc1jWssDok-7y2wee6Z0kzMP-atKg@mail.gmail.com>
-Subject: [ Regressions ] linux next 20201008: blk_update_request: I/O error,
- dev sda, sector 0 op 0x1:(WRITE) flags 0x800 phys_seg 0 prio class 0
-To:     dm-devel@redhat.com, open list <linux-kernel@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        drbd-dev@lists.linbit.com,
-        "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
-        <linux-ide@vger.kernel.org>, linux-raid@vger.kernel.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        lkft-triage@lists.linaro.org
-Cc:     Christoph Hellwig <hch@lst.de>, Song Liu <song@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Jens Axboe <axboe@kernel.dk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are two major regressions noticed on linux next tag 20201008.
-I will bisect this problem and get back to you.
+From: AngeloGioacchino Del Regno <kholk11@gmail.com>
 
-1) qemu_i386 and qemu_x86 boot failed due to mount rootfs failing [1].
+This patch series adds support for the Novatek NT36xxx Series' In-Cell
+touchscreen (integrated into the DriverIC).
 
-        Starting Remount Root and Kernel File Systems...
-[    1.750740] ata1.00: WARNING: zero len r/w req
-[    1.751423] ata1.00: WARNING: zero len r/w req
-[    1.752361] ata1.00: WARNING: zero len r/w req
-[    1.753400] ata1.00: WARNING: zero len r/w req
-[    1.754447] ata1.00: WARNING: zero len r/w req
-[    1.755529] ata1.00: WARNING: zero len r/w req
-[    1.756630] sd 0:0:0:0: [sda] tag#0 FAILED Result:
-hostbyte=DID_ERROR driverbyte=DRIVER_OK cmd_age=0s
-[    1.758622] sd 0:0:0:0: [sda] tag#0 CDB: Synchronize Cache(10) 35
-00 00 00 00 00 00 00 00 00
-[    1.760576] blk_update_request: I/O error, dev sda, sector 0 op
-0x1:(WRITE) flags 0x800 phys_seg 1 prio class 0
-[    1.761534] Buffer I/O error on dev sda, logical block 0, lost sync
-page write
-[    1.764158] EXT4-fs (sda): I/O error while writing superblock
+This patch series has been tested against the following devices:
+ - Sony Xperia 10        (SDM630 Ganges Kirin)
+ - Sony Xperia 10 Plus   (SDM636 Ganges Mermaid)
 
+Changes in v2:
+- Fixed sparse warnings from lkp kernel test robot
 
-2) the devices boot pass but mkfs failed on x86_64, i386, arm64
-Juno-r2 devices [2].
+Changes in v3 (as requested by Dmitry Torokhov):
+- Using shorthand u16/u32 (sorry for the overlook!)
+- Now using more input and touchscreen APIs
+- Fixed useless workqueue involvements
+- Removed useless locking
+- Switched reads and writes to use regmap
+- Moved header contents to nt36xxx.c
+- Fixed reset gpio handling
+- Other cleanups
+- P.S.: Thanks, Dmitry!
 
-mkfs -t ext4 /dev/disk/by-id/ata-TOSHIBA_MG03ACA100_37O9KGL0F
-[   72.159789] ata3.00: WARNING: zero len r/w req
-[   72.164287] ata3.00: WARNING: zero len r/w req
-[   72.168774] ata3.00: WARNING: zero len r/w req
-[   72.168777] ata3.00: WARNING: zero len r/w req
-[   72.168779] ata3.00: WARNING: zero len r/w req
-[   72.168781] ata3.00: WARNING: zero len r/w req
-[   72.168786] sd 2:0:0:0: [sda] tag#5 FAILED Result:
-hostbyte=DID_ERROR driverbyte=DRIVER_OK cmd_age=0s
-[   72.168788] sd 2:0:0:0: [sda] tag#5 CDB: Synchronize Cache(10) 35
-00 00 00 00 00 00 00 00 00
-[   72.168791] blk_update_request: I/O error, dev sda, sector 0 op
-0x1:(WRITE) flags 0x800 phys_seg 0 prio class 0
+Changes in v4:
+- Fixed regmap read length for CRC_ERR_FLAG final check
+- Fixed YAML binding, as requested by Krzysztof Kozlowski
 
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+AngeloGioacchino Del Regno (3):
+  dt-bindings: Add vendor prefix for Novatek Microelectronics Corp.
+  Input: Add Novatek NT36xxx touchscreen driver
+  dt-bindings: touchscreen: Add binding for Novatek NT36xxx series
+    driver
 
-metadata:
-  git branch: master
-  git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-  git commit: e4fb79c771fbe2e6fcb3cffa87d5823a9bbf3f10
-  git describe: next-20201008
-  make_kernelversion: 5.9.0-rc8
-  kernel-config:
-https://builds.tuxbuild.com/pOW-FELX2VUycejkuyiKZg/kernel.config
-
-
-steps to reproduce:
---------------------------
-1) qemu boot command:
-
-/usr/bin/qemu-system-x86_64 -cpu host -enable-kvm -nographic -net
-nic,model=virtio,macaddr=DE:AD:BE:EF:66:06 -net tap -m 1024 -monitor
-none -kernel bzImage --append "root=/dev/sda  rootwait
-console=ttyS0,115200" -hda
-rpb-console-image-lkft-intel-corei7-64-20200723162342-41.rootfs.ext4
--m 4096 -smp 4 -nographic
-
-2) boot x86_64 with linux next 20201008 tag kernel and attach SDD drive.
-
-mkfs -t ext4 /dev/<drive-partition>
-
-Full log links,
-[1 ]https://lkft.validation.linaro.org/scheduler/job/1823906#L688
-[2] https://lkft.validation.linaro.org/scheduler/job/1823938#L2065
-
+ .../input/touchscreen/novatek,nt36xxx.yaml    |  59 ++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ drivers/input/touchscreen/Kconfig             |  12 +
+ drivers/input/touchscreen/Makefile            |   1 +
+ drivers/input/touchscreen/nt36xxx.c           | 816 ++++++++++++++++++
+ 5 files changed, 890 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml
+ create mode 100644 drivers/input/touchscreen/nt36xxx.c
 
 -- 
-Linaro LKFT
-https://lkft.linaro.org
+2.28.0
+
