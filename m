@@ -2,61 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70763286EF2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:02:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6719F286F05
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:12:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728312AbgJHHCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 03:02:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58404 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726013AbgJHHCz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 03:02:55 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5094D217BA;
-        Thu,  8 Oct 2020 07:02:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602140575;
-        bh=90eHIIizkxdX1x4dde+tKCctVxWb1ysxQGsCoDqGFEE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EG1DURmPoDW3HqTOWlEO++tVoLmuM8qyuJz/px4S7rDO2kr2GRpw7lQCbGKN/sn+l
-         GFxZs+GvgNxgKHmSbkM3s3iejknBR12hsJHHQyi8X7lAa05SN5br4DA6vz6NGL/2Ci
-         lDE+twm3JI31a50k0QXgrkoFb0Y9X9PAvH8fQazA=
-Date:   Thu, 8 Oct 2020 10:02:51 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH-next 0/4] RDMA: sprintf to sysfs_emit conversions
-Message-ID: <20201008070251.GH13580@unreal>
-References: <cover.1602122879.git.joe@perches.com>
- <20201008054128.GD13580@unreal>
- <2279bdda913b31bdea68c23a9889e056c3947201.camel@perches.com>
+        id S1725969AbgJHHMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 03:12:31 -0400
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.216]:36269 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725852AbgJHHMb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 03:12:31 -0400
+X-RZG-AUTH: ":P2EQZWCpfu+qG7CngxMFH1J+3q8wa/QXkBR9MXjAuzBW/OdlBZQ4AHSS3G5Jjw=="
+X-RZG-CLASS-ID: mo00
+Received: from sender
+        by smtp.strato.de (RZmta 47.2.1 DYNA|AUTH)
+        with ESMTPSA id e003b5w987CLP0s
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256 bits))
+        (Client did not present a certificate);
+        Thu, 8 Oct 2020 09:12:21 +0200 (CEST)
+From:   Olaf Hering <olaf@aepfle.de>
+To:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Olaf Hering <olaf@aepfle.de>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>
+Subject: [PATCH v1] hv_balloon: disable warning when floor reached
+Date:   Thu,  8 Oct 2020 09:12:15 +0200
+Message-Id: <20201008071216.16554-1-olaf@aepfle.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2279bdda913b31bdea68c23a9889e056c3947201.camel@perches.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 10:52:15PM -0700, Joe Perches wrote:
-> On Thu, 2020-10-08 at 08:41 +0300, Leon Romanovsky wrote:
-> > On Wed, Oct 07, 2020 at 07:36:23PM -0700, Joe Perches wrote:
-> > > A recent commit added a sysfs_emit and sysfs_emit_at to allow various
-> > > sysfs show functions to ensure that the PAGE_SIZE buffer argument is
-> > > never overrun and always NUL terminated.
-> >
-> > Unfortunately but the sysfs_emit commit is not in rdma-next tree yet.
->
-> Likely it'll still apply fairly well when the sysfs_emit commit is...
+It is not an error if a the host requests to balloon down, but the VM
+refuses to do so. Without this change a warning is logged in dmesg
+every five minutes.
 
-Of course, we just can't take it yet and test it in automatic way like
-we are doing now.
+Fixes commit b3bb97b8a49f3
 
-Thanks
+Signed-off-by: Olaf Hering <olaf@aepfle.de>
+---
+ drivers/hv/hv_balloon.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->
->
+diff --git a/drivers/hv/hv_balloon.c b/drivers/hv/hv_balloon.c
+index 32e3bc0aa665..0f50295d0214 100644
+--- a/drivers/hv/hv_balloon.c
++++ b/drivers/hv/hv_balloon.c
+@@ -1275,7 +1275,7 @@ static void balloon_up(struct work_struct *dummy)
+ 
+ 	/* Refuse to balloon below the floor. */
+ 	if (avail_pages < num_pages || avail_pages - num_pages < floor) {
+-		pr_warn("Balloon request will be partially fulfilled. %s\n",
++		pr_info("Balloon request will be partially fulfilled. %s\n",
+ 			avail_pages < num_pages ? "Not enough memory." :
+ 			"Balloon floor reached.");
+ 
