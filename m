@@ -2,68 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 948412875F0
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3BB2287611
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730571AbgJHOWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 10:22:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58902 "EHLO mail.kernel.org"
+        id S1730599AbgJHOaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 10:30:07 -0400
+Received: from mga14.intel.com ([192.55.52.115]:16260 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730419AbgJHOWo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 10:22:44 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ECE0421927;
-        Thu,  8 Oct 2020 14:22:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602166963;
-        bh=KDEJPtg4GCj2nUViE9QbImj5+H801SK8UcvbqYFPt40=;
-        h=Date:From:To:Cc:Subject:From;
-        b=dkw+U/5aTdErQuwkXw9TFCiWbgAD/NX5FqdoJsBFlEluC7gfjtVrIOjMq6mHIFPzf
-         KtDX5n+udZeXL0qWJ5tK2YK/ywZxXXqPH/no09LonORk7a1XSEnkWD4xKAK5gWPv4l
-         2bcL386ptRLMvNw0nvN+WOtplqVGCVoOQcF73RmQ=
-Date:   Thu, 8 Oct 2020 09:28:06 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Sunil Goutham <sgoutham@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] net: thunderx: Use struct_size() helper in kmalloc()
-Message-ID: <20201008142806.GA22162@embeddedor>
+        id S1730495AbgJHOaG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 10:30:06 -0400
+IronPort-SDR: cwfdjPGY/H/gAzQXtxhIwLgbF6z1TeKiE90ucDAKLQm28LKX4yuykGnVnUnmvseEznO20GcGDr
+ cR1ly0yOUCLw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9767"; a="164553792"
+X-IronPort-AV: E=Sophos;i="5.77,351,1596524400"; 
+   d="scan'208";a="164553792"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 07:30:06 -0700
+IronPort-SDR: Yr2fgb3qmG3am1wyf1/+TrUwPaM9uY+whJW9lYSIZfcDJwRaFwWBvRVK08bXjTirA/ceAXLWyV
+ Hu09Wp2ItsTQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,351,1596524400"; 
+   d="scan'208";a="461830548"
+Received: from lkp-server02.sh.intel.com (HELO b5ae2f167493) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 08 Oct 2020 07:30:04 -0700
+Received: from kbuild by b5ae2f167493 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kQWvj-00026M-Tw; Thu, 08 Oct 2020 14:30:03 +0000
+Date:   Thu, 08 Oct 2020 22:29:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2020.10.04a] BUILD SUCCESS
+ 41f50faafa0bddb73d7485c718b8dc4f2dff9908
+Message-ID: <5f7f225b.ShQ6mbLGpvrsYSPY%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make use of the new struct_size() helper instead of the offsetof() idiom.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.10.04a
+branch HEAD: 41f50faafa0bddb73d7485c718b8dc4f2dff9908  rcu/tree: nocb: Avoid raising softirq for offloaded ready-to-execute CBs
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+elapsed time: 721m
+
+configs tested: 93
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+mips                         bigsur_defconfig
+powerpc                       eiger_defconfig
+mips                       rbtx49xx_defconfig
+arm                           tegra_defconfig
+powerpc                        icon_defconfig
+mips                malta_qemu_32r6_defconfig
+arm                        magician_defconfig
+powerpc                     tqm8540_defconfig
+arm                         at91_dt_defconfig
+sh                            shmin_defconfig
+powerpc                     skiroot_defconfig
+arc                          axs103_defconfig
+s390                       zfcpdump_defconfig
+powerpc                       ebony_defconfig
+arm                           h5000_defconfig
+arm                        clps711x_defconfig
+arm                          ep93xx_defconfig
+h8300                               defconfig
+sh                              ul2_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20201008
+i386                 randconfig-a005-20201008
+i386                 randconfig-a001-20201008
+i386                 randconfig-a004-20201008
+i386                 randconfig-a002-20201008
+i386                 randconfig-a003-20201008
+x86_64               randconfig-a004-20201008
+x86_64               randconfig-a003-20201008
+x86_64               randconfig-a005-20201008
+x86_64               randconfig-a001-20201008
+x86_64               randconfig-a002-20201008
+x86_64               randconfig-a006-20201008
+i386                 randconfig-a015-20201008
+i386                 randconfig-a013-20201008
+i386                 randconfig-a014-20201008
+i386                 randconfig-a016-20201008
+i386                 randconfig-a011-20201008
+i386                 randconfig-a012-20201008
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a012-20201008
+x86_64               randconfig-a015-20201008
+x86_64               randconfig-a013-20201008
+x86_64               randconfig-a014-20201008
+x86_64               randconfig-a011-20201008
+x86_64               randconfig-a016-20201008
+
 ---
- drivers/net/ethernet/cavium/thunder/nicvf_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/cavium/thunder/nicvf_main.c b/drivers/net/ethernet/cavium/thunder/nicvf_main.c
-index 0a94c396173b..f3b7b443f964 100644
---- a/drivers/net/ethernet/cavium/thunder/nicvf_main.c
-+++ b/drivers/net/ethernet/cavium/thunder/nicvf_main.c
-@@ -2065,8 +2065,8 @@ static void nicvf_set_rx_mode(struct net_device *netdev)
- 			mode |= BGX_XCAST_MCAST_FILTER;
- 			/* here we need to copy mc addrs */
- 			if (netdev_mc_count(netdev)) {
--				mc_list = kmalloc(offsetof(typeof(*mc_list),
--							   mc[netdev_mc_count(netdev)]),
-+				mc_list = kmalloc(struct_size(mc_list, mc,
-+							      netdev_mc_count(netdev)),
- 						  GFP_ATOMIC);
- 				if (unlikely(!mc_list))
- 					return;
--- 
-2.27.0
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
