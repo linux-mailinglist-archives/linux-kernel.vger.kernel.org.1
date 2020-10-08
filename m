@@ -2,148 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1567286F5E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:28:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF1EB286F62
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726434AbgJHH2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 03:28:47 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:46216 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725853AbgJHH2r (ORCPT
+        id S1726627AbgJHH3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 03:29:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725849AbgJHH3R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 03:28:47 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0987SeVj054570;
-        Thu, 8 Oct 2020 02:28:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1602142120;
-        bh=TnlrlKbewMkVZuA382S9y6byleO5jRxK/7J4sbxqipQ=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=tIXBDULiwhffEZxq71QSDpDd20w0CcneZ4O/LHeerz4P2VJ8GNZy1hEKrF5w3AyX6
-         7E3HX0O9fDHK4MqFp7NZBfYiGibSG8vjVRO3/SH9j2zGaWYLba1QSrS85xCFVJe/dY
-         0nHCc/t9q81EFink7taPtxjOdDNEQqS3d7iZSSzY=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0987SeHE072284
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 8 Oct 2020 02:28:40 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 8 Oct
- 2020 02:28:40 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 8 Oct 2020 02:28:40 -0500
-Received: from [192.168.2.14] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0987SNh1004528;
-        Thu, 8 Oct 2020 02:28:23 -0500
-Subject: Re: [PATCH 1/2] usb: cdns3: Rids of duplicate error message
-To:     Pawel Laszczak <pawell@cadence.com>,
-        "balbi@kernel.org" <balbi@kernel.org>
-CC:     "peter.chen@nxp.com" <peter.chen@nxp.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Rahul Kumar <kurahul@cadence.com>
-References: <20201007033531.22526-1-pawell@cadence.com>
- <94ff37e9-8a32-b61b-5ede-1b71b6a3d4ab@ti.com>
- <DM6PR07MB55292BB3A7BC0A46EE2F5124DD0B0@DM6PR07MB5529.namprd07.prod.outlook.com>
-From:   Roger Quadros <rogerq@ti.com>
-Message-ID: <6f551b23-befa-29f1-0e42-c2a97633a733@ti.com>
-Date:   Thu, 8 Oct 2020 10:28:22 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 8 Oct 2020 03:29:17 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5718C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 00:29:16 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id d4so5297462wmd.5
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 00:29:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=83OQc7yj1ycxNTqltziVLrghBwISxh6MY5DYj2Gusr8=;
+        b=PyZni2Zig8mPvwxEQBVJ4I67bKxcD4vwVJR47XIlRlSXEuOUq4n7MVlTpfNC0GWLDH
+         l4T6OetvE+jrEHdNqux3z2DndvxLy6QNO7lAMKBKHqYds/8Jqrlp46ktC+THd1G3FbPa
+         +JphX/earyN9jx2cjoo7ywgYLcju/BZOHSAP+PUQLRWZROopETRrIckziHxV0vfdzQSP
+         i2ARfAOYhLWpEHsiYf0+Ace0FQsVF7JVIfNtfnRuxDCArmnIerEuaUc9JtLm7DHSB0F5
+         ubxE0k94gwYz8Y8702i1x9AUVudi1Sbw2p7VOrK060w6EHqch1a7hnkwNLGK6J6IPLVf
+         4S8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=83OQc7yj1ycxNTqltziVLrghBwISxh6MY5DYj2Gusr8=;
+        b=Y1g+5HvE39S1SP4w/98ytjoKNZxmp4rLLkBnb4JjLtJ5tSFYomXp+tzVfS+5s7FVps
+         3/UTfLA+jzxRuSCKe8mheAez4da82lNqA94JoQ0DisZ18Y0c0xZJ82bmr1GNoLLoJkXx
+         sQUVHIufuW2EJkzrTSiy86lr68bAZOXjqYJXPf8HQ1pn/I7NLrvoib4ue2TohNgnT+Fu
+         1K4tk5Oa7a3+177J0HlsxdfII+KxTKeCDXSQ4NBNRLILDTd4gXTyovR0fQgjq72BeoIb
+         7y8AlJLbl+//gmObr6tUva7CpSEu9JTlv17QYXR6NeFc18DbesrnBRoMTV23Tpgg/SKZ
+         1uMA==
+X-Gm-Message-State: AOAM530DpEubYXutG+w3R5nZ//bEz6mCyCgtYKYfPP40PX/6ojjvlJr9
+        pob2eUScGZtvV3NDueDq5maAhg==
+X-Google-Smtp-Source: ABdhPJyuC3XwwRXUfeZuE1phg/rUbjcM5TrrxmGrK81G52/bQqiA/CR6+U3wLYGb34QTxTgS95ZQkw==
+X-Received: by 2002:a1c:28a:: with SMTP id 132mr7184593wmc.9.1602142155147;
+        Thu, 08 Oct 2020 00:29:15 -0700 (PDT)
+Received: from dell ([91.110.221.232])
+        by smtp.gmail.com with ESMTPSA id 1sm6266201wre.61.2020.10.08.00.29.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Oct 2020 00:29:14 -0700 (PDT)
+Date:   Thu, 8 Oct 2020 08:29:12 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "David E. Box" <david.e.box@linux.intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>, dvhart@infradead.org,
+        andy@infradead.org, bhelgaas@google.com,
+        alexey.budankov@linux.intel.com,
+        Andy Shevchenko <andy.shevchenko@gmail.com>, rjw@rjwysocki.net,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH V8 1/5] PCI: Add defines for Designated Vendor-Specific
+ Extended Capability
+Message-ID: <20201008072912.GE1763265@dell>
+References: <20201007005118.GA3230211@bjorn-Precision-5520>
+ <dcaea6b4e1d5b4a452c304fadb034b7b1e1c40af.camel@linux.intel.com>
+ <20201007065451.GB6148@dell>
+ <e09f4c44-e3d0-e14b-297f-6981516ea3bf@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <DM6PR07MB55292BB3A7BC0A46EE2F5124DD0B0@DM6PR07MB5529.namprd07.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e09f4c44-e3d0-e14b-297f-6981516ea3bf@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 07 Oct 2020, Hans de Goede wrote:
 
+> Hi,
+> 
+> On 10/7/20 8:54 AM, Lee Jones wrote:
+> > On Tue, 06 Oct 2020, David E. Box wrote:
+> > 
+> > > On Tue, 2020-10-06 at 19:51 -0500, Bjorn Helgaas wrote:
+> > > > On Tue, Oct 06, 2020 at 03:45:54PM -0700, David E. Box wrote:
+> > > > > Hi Bjorn,
+> > > > > 
+> > > > > This patch has been acked and unchanged for weeks. Is it possible
+> > > > > to
+> > > > > get this pulled into next? We have SIOV and CXL related work that
+> > > > > is
+> > > > > using these definitions. Thanks.
+> > > > 
+> > > > I acked it because I expected you to merge it along with the rest of
+> > > > the series.
+> > > > 
+> > > > I guess I could merge this patch via the PCI tree if you really want,
+> > > > but that ends up being a hassle because we have to worry about which
+> > > > order things get merged to Linus' tree.  Better if the whole series
+> > > > is
+> > > > merged via the same tree.
+> > > 
+> > > Agreed. The hope is that this series is ready for the next merge window
+> > > but no ack yet on V8. And if the series does not make it I'd like this
+> > > patch to at least get in.
+> > 
+> > If Bjorn is happy to take this patch so late in the release cycle then
+> > please go ahead.  The other patches are due for v5.11.
+> 
+> I agree (that the other patches are for 5.11) talking about merging
+> this series patch 2 is a mfd patch and patches 3-5 are drivers/platform/x86
+> patches.
+> 
+> Lee, FYI I'm taking over drivers/platform/x86 maintainership from Andy.
 
-On 08/10/2020 07:18, Pawel Laszczak wrote:
-> Hi Roger,
-> 
->>
->> On 07/10/2020 06:35, Pawel Laszczak wrote:
->>> On failure, the platform_get_irq_byname prints an error message
->>> so, patch removes error message related to this function from
->>> core.c file.
->>>
->>> A change was suggested during reviewing CDNSP driver by Chunfeng Yun.
->>>
->>> Signed-off-by: Pawel Laszczak <pawell@cadence.com>
->>> ---
->>>    drivers/usb/cdns3/core.c | 7 +------
->>>    1 file changed, 1 insertion(+), 6 deletions(-)
->>>
->>> diff --git a/drivers/usb/cdns3/core.c b/drivers/usb/cdns3/core.c
->>> index a0f73d4711ae..4fd3c742d9d5 100644
->>> --- a/drivers/usb/cdns3/core.c
->>> +++ b/drivers/usb/cdns3/core.c
->>> @@ -469,9 +469,6 @@ static int cdns3_probe(struct platform_device *pdev)
->>>    	if (cdns->dev_irq == -EPROBE_DEFER)
->>
->> if (cdns->dev_irq < 0 && cdns->dev_irq == -EPROBE_DEFER)
-> 
-> It's the same - cdns->dev_irq == -EPROBE_DEFER < 0
-> 
-> 
->>>    		return cdns->dev_irq;
->>>
->>> -	if (cdns->dev_irq < 0)
->>> -		dev_err(dev, "couldn't get peripheral irq\n");
->>> -
->>>    	regs = devm_platform_ioremap_resource_byname(pdev, "dev");
->>>    	if (IS_ERR(regs))
->>>    		return PTR_ERR(regs);
->>> @@ -481,10 +478,8 @@ static int cdns3_probe(struct platform_device *pdev)
->>>    	if (cdns->otg_irq == -EPROBE_DEFER)
->>
->> if (cdns->otg_irq < 0 && cdns->otg_irq == -EPROBE_DEFER)
-> 
-> It should be:
-> if (cdns->dev_irq < 0 || cdns->dev_irq == -EPROBE_DEFER)
-> or event
-> if (cdns->dev_irq < 0)
-> 
-> Am I right ?
+Congratulations, Hans.
 
-Yeah, at both places just
+> I suggest that we merge the entire series through a single tree
+> (with acks or reviewed-by-s from the other maintainer)
+> either through the mfd tree or through the drivers/platform/x86
+> tree. Since most changes are in drivers/platform/x86 the latter
+> probably makes more sense, but either way works for me.
+> So how would you like to proceed with this series ?
 
-	if (cdns->dev_irq < 0)
-		return cdns->dev_irq;
+I'm happy either way, but bear in mind that, due to the intrinsic
+heterogeneous nature of MFD, I already have infrastructure to easily
+apply (and send pull-requests for) cross-subsystem patch-sets.
 
-should be enough.
-
-cheers,
--roger
-
-> 
->>
->>>    		return cdns->otg_irq;
->>>
->>> -	if (cdns->otg_irq < 0) {
->>> -		dev_err(dev, "couldn't get otg irq\n");
->>> +	if (cdns->otg_irq < 0)
->>
->> you can then get rid of this if {}.
->>
->>>    		return cdns->otg_irq;
->>> -	}
->>>
->>>    	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "otg");
->>>    	if (!res) {
->>>
-> 
-> Cheers,
-> Pawell
-> 
+If however, you decide that you'd really like to take the set, that's
+also fine but I will require a pull-request from an immutable branch.
 
 -- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
