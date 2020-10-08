@@ -2,85 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 804FF2870B6
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 10:30:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D00B2870C7
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 10:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728800AbgJHIan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 04:30:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57786 "EHLO
+        id S1726301AbgJHIfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 04:35:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728363AbgJHIam (ORCPT
+        with ESMTP id S1725890AbgJHIfy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 04:30:42 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 092A4C061755
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 01:30:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=cMmuoGSKgeD19xItCxRdhXtN+onzhgSlKtje6kSCEb8=; b=D+EEMj8FHV7ddNQuQolpI9MAF
-        QnL44h2cIYtDfI65qxZegR3gQJArHvuUU1z5PyG23NR0GkAN2SawrQ9DPa3ioUcQgyMQYkJZGOI/s
-        hJ2+yhRoLot8ipCdk/HKmCe3HyNYaCMX06/ycHZKyfoAQdlnYmA4fGonOudF2uEdMWW8sal4C7Bvq
-        yG12VUERMMeD8xQH1Jn4K5LbrGu0Xzm/8NvxdCUfXOiJNZQrABZnJTg4ayZ8vpwnw55awYoxf/a2k
-        g/NDzOr+2TAHZNNCL6LVQPoyiDuxmAV+OWqbqQ0A8cmYkKF1IGqOXZPExCTGsl9NbMI/s2TKwdyqy
-        XCLvRJMtA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43404)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kQRJb-0006BR-Qy; Thu, 08 Oct 2020 09:30:19 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kQRJX-0001W9-PW; Thu, 08 Oct 2020 09:30:15 +0100
-Date:   Thu, 8 Oct 2020 09:30:15 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Maninder Singh <maninder1.s@samsung.com>
-Cc:     ndesaulniers@google.com, caij2003@gmail.com, tglx@linutronix.de,
-        bigeasy@linutronix.de, maz@kernel.org, valentin.schneider@arm.com,
-        vincent.whitchurch@axis.com, nhuck@google.com,
-        akpm@linux-foundation.org, 0x7f454c46@gmail.com, will@kernel.org,
-        a.sahrawat@samsung.com, v.narang@samsung.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] IRQ stack support for ARM
-Message-ID: <20201008083015.GK1551@shell.armlinux.org.uk>
-References: <CGME20201008071628epcas5p24d196a6023a47a3b0bfa7b7f231ec811@epcas5p2.samsung.com>
- <1602141333-17822-1-git-send-email-maninder1.s@samsung.com>
+        Thu, 8 Oct 2020 04:35:54 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD85C061755
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 01:35:54 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id x1so4985056eds.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 01:35:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jJ+2+sl7v16ZFQwrrbmFXcTV3fSlDqvjbzZU8FH7J0k=;
+        b=YbQ4JKBcC915g3FwIkD4kMLjfA+HVo2VeyW7+RDRzBMyT6+pZrez6yFdxS1JVF+MCw
+         I9fi5xpJkCMQ1MZFTgUNhIEalXi4O0KwTMs6M55IBSfgwcTCW7bCzjzwadX5IHs01Ys+
+         QUkVJA+YFpvasOLS9njwPhCahsqEDmCIU3hjqiJOLg6eOuSAtlQRKOhBK1ipMWiljZWh
+         bYsA4n/IJXJ6UoXazYhMMo1uHPy0DHAjqas/E118aED/AKQSL4ZqYOLHJELydII57n0C
+         lMedTQeMsrYtUwkqt58wwsiqUj0n2XZJEoEzBMy4uQlfr4hZt8lgFUBScrlQH+fPt2h/
+         k/2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jJ+2+sl7v16ZFQwrrbmFXcTV3fSlDqvjbzZU8FH7J0k=;
+        b=TfxSFevybSUMegUbthsNZYrz0xLIWQc6e/ku6HDs0L0dqcxY4BeRqBYV7WltrdS3bf
+         ANk8htvtTV0jgfZqIzmn5ZyO7UkHS4zl+0WGQgXbzNRLUu+1sl6shIAZEOUpyjG11uTW
+         1XF/EVoXDqFTcbPLMbu2ziSQNXtlOTVC0VW71/TqI7Nzw495P8VBo2wjPsuU2Vh9PMao
+         nicatMYSKdmtgBriWpzE0hFAeWNq2+rOHy9/kCPVVB5qu41yHH5By9c6weNCuOkkwCLf
+         UbFnUUMsUq13cSJUhLu7DGHQGQMXoAvbeyTpwPHHd1Hy6KX3jraB70a6HnrPi8zFSJyZ
+         7Byw==
+X-Gm-Message-State: AOAM533u5dDYYrBcOyvRV0K2iiLKXa3occ1ayK7FCkN/4BxiNDKJrV3N
+        3MSbNaj0Nd4QiR/HdMz//riYThyPoAhSw6rGSUhx5g==
+X-Google-Smtp-Source: ABdhPJzrgg4QxWXsEzPYzTcGzHWRGJzutSHzxf7MyS7jl8fXaPnvZsxbr7tbXLGs65s2GKo7inPQ7k7YwejU0k9swws=
+X-Received: by 2002:a50:9ea6:: with SMTP id a35mr8193746edf.52.1602146152651;
+ Thu, 08 Oct 2020 01:35:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1602141333-17822-1-git-send-email-maninder1.s@samsung.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+References: <20201007164426.1812530-1-daniel.vetter@ffwll.ch>
+ <20201007164426.1812530-11-daniel.vetter@ffwll.ch> <CAPcyv4hBL68A7CZa+YnooufDH2tevoxrx32DTJMQ6OHRnec7QQ@mail.gmail.com>
+ <20201007232448.GC5177@ziepe.ca> <CAPcyv4jA9fe40r_2SfrCtOaeE85V88TA3NNQZOmQMNj=MdsPyw@mail.gmail.com>
+ <CAKMK7uHg48-fTR1L78p7q5vxD=Kgr_fBEj1pDLaYeuvTGSSFig@mail.gmail.com>
+In-Reply-To: <CAKMK7uHg48-fTR1L78p7q5vxD=Kgr_fBEj1pDLaYeuvTGSSFig@mail.gmail.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 8 Oct 2020 01:35:41 -0700
+Message-ID: <CAPcyv4gK82tpNWqwF-CFGPWU99WU-Sd84Y79zuQxMfZh1efoMQ@mail.gmail.com>
+Subject: Re: [PATCH 10/13] PCI: revoke mappings like devmem
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "Linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>, Bjorn Helgaas <bhelgaas@google.com>,
+        Linux PCI <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 12:45:30PM +0530, Maninder Singh wrote:
-> Observed Stack Overflow on 8KB kernel stack on ARM specially 
-> incase on network interrupts, which results in undeterministic behaviour. 
-> So there is need for per cpu dedicated IRQ stack for ARM.
-> 
-> As ARm does not have extra co-processor register
-> to save thread info pointer, IRQ stack will be at some
-> performance cost, so code is under CONFIG_IRQ_STACK.
-> 
-> and we don't have much knowledge and set up for CLANG
-> and ARM_UNWIND, so dependency added for both cases.
-> 
-> Tested patch set with QEMU for latest kernel
-> and 4.1 kernel for ARM target with same patch set.
+On Thu, Oct 8, 2020 at 1:13 AM Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
+>
+> On Thu, Oct 8, 2020 at 9:50 AM Dan Williams <dan.j.williams@intel.com> wrote:
+> >
+> > On Wed, Oct 7, 2020 at 4:25 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > >
+> > > On Wed, Oct 07, 2020 at 12:33:06PM -0700, Dan Williams wrote:
+> > > > On Wed, Oct 7, 2020 at 11:11 AM Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
+> > > > >
+> > > > > Since 3234ac664a87 ("/dev/mem: Revoke mappings when a driver claims
+> > > > > the region") /dev/kmem zaps ptes when the kernel requests exclusive
+> > > > > acccess to an iomem region. And with CONFIG_IO_STRICT_DEVMEM, this is
+> > > > > the default for all driver uses.
+> > > > >
+> > > > > Except there's two more ways to access pci bars: sysfs and proc mmap
+> > > > > support. Let's plug that hole.
+> > > >
+> > > > Ooh, yes, lets.
+> > > >
+> > > > >
+> > > > > For revoke_devmem() to work we need to link our vma into the same
+> > > > > address_space, with consistent vma->vm_pgoff. ->pgoff is already
+> > > > > adjusted, because that's how (io_)remap_pfn_range works, but for the
+> > > > > mapping we need to adjust vma->vm_file->f_mapping. Usually that's done
+> > > > > at ->open time, but that's a bit tricky here with all the entry points
+> > > > > and arch code. So instead create a fake file and adjust vma->vm_file.
+> > > >
+> > > > I don't think you want to share the devmem inode for this, this should
+> > > > be based off the sysfs inode which I believe there is already only one
+> > > > instance per resource. In contrast /dev/mem can have multiple inodes
+> > > > because anyone can just mknod a new character device file, the same
+> > > > problem does not exist for sysfs.
+> > >
+> > > The inode does not come from the filesystem char/mem.c creates a
+> > > singular anon inode in devmem_init_inode()
+> >
+> > That's not quite right, An inode does come from the filesystem I just
+> > arranged for that inode's i_mapping to be set to a common instance.
+> >
+> > > Seems OK to use this more widely, but it feels a bit weird to live in
+> > > char/memory.c.
+> >
+> > Sure, now that more users have arrived it should move somewhere common.
+> >
+> > > This is what got me thinking maybe this needs to be a bit bigger
+> > > generic infrastructure - eg enter this scheme from fops mmap and
+> > > everything else is in mm/user_iomem.c
+> >
+> > It still requires every file that can map physical memory to have its
+> > ->open fop do
+> >
+> >        inode->i_mapping = devmem_inode->i_mapping;
+> >        filp->f_mapping = inode->i_mapping;
+> >
+> > I don't see how you can centralize that part.
+>
+> btw, why are you setting inode->i_mapping? The inode is already
+> published, changing that looks risky. And I don't think it's needed,
+> vma_link() only looks at filp->f_mapping, and in our drm_open() we
+> only set that one.
 
-You need to investigate and show where and why this is happening. My
-guess is you have a network driver that uses a lot of kernel stack
-space, which itself would be a bug.
-
-Note that there are compiler versions out there that mis-optimise and
-eat stack space - the kernel build should be warning if a function
-uses a large amount of stack.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+I think you're right it is unnecessary for devmem, but I don't think
+it's dangerous to do it from the very first open before anything is
+using the address space. It's copy-paste from what all the other
+"shared address space" implementers do. For example, block-devices in
+bd_acquire(). However, the rationale for block_devices to do it is so
+that page cache pages can be associated with the address space in the
+absence of an f_mapping. Without filesystem page writeback to
+coordinate I don't see any devmem code paths that would operate on the
+inode->i_mapping.
