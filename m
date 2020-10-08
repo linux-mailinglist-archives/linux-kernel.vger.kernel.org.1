@@ -2,148 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB5D287D1A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 22:28:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 748E1287D23
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 22:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730410AbgJHU2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 16:28:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26490 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730391AbgJHU2u (ORCPT
+        id S1730420AbgJHUas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 16:30:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725979AbgJHUar (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 16:28:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602188928;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=caF6a1MKbmv3Qw+xnDNzTfS/1KBH8aRkP9njZDRX0Fs=;
-        b=AdsPdPHbjzAXIpTQnUCZRc9zuMqrkWegCrkJIkLEyRfAvGItWNuCxlmS235x4a1DgcXRdX
-        iCFBlgKnNzmP7cs+gFO6EZhdp1LaqoMK2ko+tuzDvQbepyxDBlL9U3piVhaFvEEQgm9rm7
-        P92viIvIvZom3KwPPBjPcqCZkLvAwZ8=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-161-xZndvBRwOvSCuPJD-yh9pw-1; Thu, 08 Oct 2020 16:28:45 -0400
-X-MC-Unique: xZndvBRwOvSCuPJD-yh9pw-1
-Received: by mail-wm1-f71.google.com with SMTP id z7so3525501wmi.3
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 13:28:44 -0700 (PDT)
+        Thu, 8 Oct 2020 16:30:47 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A5EAC0613D2;
+        Thu,  8 Oct 2020 13:30:47 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id 13so7751781wmf.0;
+        Thu, 08 Oct 2020 13:30:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FTbqlGFvhgZ6bH2B5iw3WBigT5tQeWMYA6WjQ/SSBmc=;
+        b=tpE5I38J1MAKh2K1b6ATm7O7RJLI/T/Oe7m4EkK4C87f21i9ENQCiPW9wu/dihkjPV
+         a69So7t5zrTzH7xQMyCMMd/L7F0ykz/WA2dMJVpyEeog3aYTH0GCOQbAa7ibO7iB1nLy
+         MEOU4eiMsDoytEOju1TU8dwME6Pl6fvpN4RwboK0VHMeFoYsfaFXLj9DiQf4QE+mGr4n
+         y9eGV76KzR6pkKbocHdJJHoK+AxccDmwZBaVYwMQl668J+VhZMJCuMBlSwVWQ0Hk1pMh
+         +KPNOMEhfopZ/ChX4ayRE0me1qv7s7iypWfh/pOvu3FK9cTxqzBxhF+n8r55YSYfrvY1
+         2Q+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=caF6a1MKbmv3Qw+xnDNzTfS/1KBH8aRkP9njZDRX0Fs=;
-        b=B4KoYsKo/GCsQXRRcD/JPaRhfbnwkVp5VVjaWgm/eqHxyzNCuOEyUUtYkPBzelQzv4
-         fnOyc6AnWRDOCMlJ81G/pYAa80h8JUitOpMfgGcCUao4+JaqHlqM5hu7nsU9hdfQB0SL
-         Am/+wM7kXKdAfJXftrR8qYmB5k3VSZ1Q4MV6NPdV3RLpDJMXSmZ8Y2S4uZXuMNTf1fhW
-         cLMERHNusLdCxLMWEgs3yrvTDp7XYTmTIDVmy+P2MDbefjwvohbKGjXsHF9d5ruSqyea
-         ene8F7AaEdoRkMWHpCk4qS1Ha1AMrELU/ow/3da7i3hqBf7EVPpHPteEc2CKX4Ue3V/h
-         mKYA==
-X-Gm-Message-State: AOAM530VkcVdlMZ7iAxvMStbPNKIc+r12+21m16ZgMklrUjkwg1ztT+v
-        9yAgQ/KN/XfdbQ5cMGOyN2AjpTTPjpDDOLd0UxOoXqxSMpat+JTDI9e8whZEm/MPudAv839KCEO
-        +PrAow9OYVG7bPTsE1076Df94
-X-Received: by 2002:adf:9124:: with SMTP id j33mr11087553wrj.272.1602188923789;
-        Thu, 08 Oct 2020 13:28:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzh5A/5Z709VFadlr4JMrgafEqB5aQH7y0RpPTVbx0qmRWUq9A9IgbF5HNIuV7k7UKGbJOfFw==
-X-Received: by 2002:adf:9124:: with SMTP id j33mr11087542wrj.272.1602188923600;
-        Thu, 08 Oct 2020 13:28:43 -0700 (PDT)
-Received: from redhat.com (bzq-79-179-71-128.red.bezeqint.net. [79.179.71.128])
-        by smtp.gmail.com with ESMTPSA id w11sm8605695wrn.27.2020.10.08.13.28.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 13:28:42 -0700 (PDT)
-Date:   Thu, 8 Oct 2020 16:28:40 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     netdev@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Rusty Russell <rusty@rustcorp.com.au>, stable@vger.kernel.org,
-        Jason Wang <jasowang@redhat.com>
-Subject: Re: [PATCH] vringh: fix __vringh_iov() when riov and wiov are
- different
-Message-ID: <20201008162813-mutt-send-email-mst@kernel.org>
-References: <20201008161311.114398-1-sgarzare@redhat.com>
- <20201008160035-mutt-send-email-mst@kernel.org>
- <20201008202436.r33jqbbttqynfvhe@steredhat>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FTbqlGFvhgZ6bH2B5iw3WBigT5tQeWMYA6WjQ/SSBmc=;
+        b=NJRCQhysXfoCUp9jPv0KVTi/lRgYDPIHqO01GgbPTSW24OgVo0B16nWfSbwb7I1rHn
+         44HAnkEJz7FsSElkaxvUf2sCh8qm71N5aHKR7/vchrn2d78Ax46PEKYy+4+kjEAXGFZz
+         J2CD1eSlj9kTYvRPUrat9Y25KYT3BtIfnBTFAST3ao023dTfehRWxLbMi1N+XF0cXFTk
+         QnwENpf8u1xAxytlrkwfs8VNLx3qmvunK/gduPSv8HSnqhsVS5r/iYoGRKIQgQJvGgvt
+         loJmdJmVztO/lkuJvmfoPTbdAwI874+FFmHw8T5KkMBVrLWbUZEdI321UGMMhN9V7VmU
+         ExIw==
+X-Gm-Message-State: AOAM5306vuovzP+X2Wl4uNgTrKIigcSTIRoapSCxRaIL0bUbefKmi+cc
+        TnOKJIdzYlNFC1CrMDnrKuMHfFz+0tI+vlD8uPo=
+X-Google-Smtp-Source: ABdhPJwXiPFomUDsqa24JmwvN1oUSiMK/NTuoyM4K9e35X66nNBFb066ZiPJ8D6Rx6A1GBT8GxS/j4Mhsl13P6kSkWI=
+X-Received: by 2002:a7b:cb17:: with SMTP id u23mr10247720wmj.166.1602189045971;
+ Thu, 08 Oct 2020 13:30:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201008202436.r33jqbbttqynfvhe@steredhat>
+References: <20201008181514.668548-1-kholk11@gmail.com> <20201008181514.668548-4-kholk11@gmail.com>
+ <CAJKOXPdZ_zo0bPwQd=_dKHhA2KWHgsH4KTH=+cX8hNxSVrqrig@mail.gmail.com>
+In-Reply-To: <CAJKOXPdZ_zo0bPwQd=_dKHhA2KWHgsH4KTH=+cX8hNxSVrqrig@mail.gmail.com>
+From:   AngeloGioacchino Del Regno <kholk11@gmail.com>
+Date:   Thu, 8 Oct 2020 22:30:35 +0200
+Message-ID: <CAK7fi1ZJN=AbkusWqDEbAkZ=AgKEPCvWH43hBpX0-EUDJWOC5g@mail.gmail.com>
+Subject: Re: [PATCH v4 3/3] dt-bindings: touchscreen: Add binding for Novatek
+ NT36xxx series driver
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     dmitry.torokhov@gmail.com, Rob Herring <robh+dt@kernel.org>,
+        rydberg@bitmath.org, priv.luk@gmail.com,
+        linux-input@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        marijns95@gmail.com, konradybcio@gmail.com,
+        martin.botka1@gmail.com, phone-devel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 10:24:36PM +0200, Stefano Garzarella wrote:
-> On Thu, Oct 08, 2020 at 04:00:51PM -0400, Michael S. Tsirkin wrote:
-> > On Thu, Oct 08, 2020 at 06:13:11PM +0200, Stefano Garzarella wrote:
-> > > If riov and wiov are both defined and they point to different
-> > > objects, only riov is initialized. If the wiov is not initialized
-> > > by the caller, the function fails returning -EINVAL and printing
-> > > "Readable desc 0x... after writable" error message.
-> > > 
-> > > Let's replace the 'else if' clause with 'if' to initialize both
-> > > riov and wiov if they are not NULL.
-> > > 
-> > > As checkpatch pointed out, we also avoid crashing the kernel
-> > > when riov and wiov are both NULL, replacing BUG() with WARN_ON()
-> > > and returning -EINVAL.
-> > > 
-> > > Fixes: f87d0fbb5798 ("vringh: host-side implementation of virtio rings.")
-> > > Cc: stable@vger.kernel.org
-> > > Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-> > 
-> > Can you add more detail please? when does this trigger?
-> 
-> I'm developing vdpa_sim_blk and I'm using vringh_getdesc_iotlb()
-> to get readable and writable buffers.
-> 
-> With virtio-blk devices a descriptors has both readable and writable
-> buffers (eg. virtio_blk_outhdr in the readable buffer and status as last byte
-> of writable buffer).
-> So, I'm calling vringh_getdesc_iotlb() one time to get both type of buffer
-> and put them in 2 iovecs:
-> 
-> 	ret = vringh_getdesc_iotlb(&vq->vring, &vq->riov, &vq->wiov,
-> 				   &vq->head, GFP_ATOMIC);
-> 
-> With this patch applied it works well, without the function fails
-> returning -EINVAL and printing "Readable desc 0x... after writable".
-> 
-> Am I using vringh_getdesc_iotlb() in the wrong way?
-> 
-> Thanks,
-> Stefano
-> 
+Il giorno gio 8 ott 2020 alle ore 20:21 Krzysztof Kozlowski
+<krzk@kernel.org> ha scritto:
+>
+> On Thu, 8 Oct 2020 at 20:15, <kholk11@gmail.com> wrote:
+> >
+> > From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> >
+> > Add binding for the Novatek NT36xxx series touchscreen driver.
+> >
+> > Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> > ---
+> >  .../input/touchscreen/novatek,nt36xxx.yaml    | 59 +++++++++++++++++++
+> >  1 file changed, 59 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml b/Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml
+> > new file mode 100644
+> > index 000000000000..e747cacae036
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml
+> > @@ -0,0 +1,59 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/input/touchscreen/novatek,nt36xxx.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Novatek NT36xxx series touchscreen controller Bindings
+> > +
+> > +maintainers:
+> > +  - Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> > +
+> > +allOf:
+> > +  - $ref: touchscreen.yaml#
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: novatek,nt36xxx
+>
+> Thanks for the changes, they look good except this part here which I
+> missed before. The compatible should not contain wildcards. If all
+> devices are really compatible, just add here one const, e.g. "const:
+> novatek,nt36525". If they are different, you could add multiple
+> compatibles in enum.
+>
+> Best regards,
+> Krzysztof
 
+They are all managed the same way, but the page addresses are
+changing between all of them... the driver is reading the chip ID
+while the TS MCU is in "boot mode", then checking in a ID table
+if the chip is supported and finally assigning a page address table.
+This is done for the entire NT36*** series.
 
-I think it's ok, this info just needs to be in the commit log ...
+If wildcards are not permitted, perhaps I can change it to something
+like "novatek,nt36" or "novatek,nt36-ts"... as then specifying the
+specific IC model into the DT means that I would have to logically
+change the driver itself to also crosscheck a DT-specified model
+with whatever gets recognized by reading the chip (which then would
+be a triple check of what's going on, imo overcomplicating the logic).
 
-> > > ---
-> > >  drivers/vhost/vringh.c | 9 +++++----
-> > >  1 file changed, 5 insertions(+), 4 deletions(-)
-> > > 
-> > > diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
-> > > index e059a9a47cdf..8bd8b403f087 100644
-> > > --- a/drivers/vhost/vringh.c
-> > > +++ b/drivers/vhost/vringh.c
-> > > @@ -284,13 +284,14 @@ __vringh_iov(struct vringh *vrh, u16 i,
-> > >  	desc_max = vrh->vring.num;
-> > >  	up_next = -1;
-> > >  
-> > > +	/* You must want something! */
-> > > +	if (WARN_ON(!riov && !wiov))
-> > > +		return -EINVAL;
-> > > +
-> > >  	if (riov)
-> > >  		riov->i = riov->used = 0;
-> > > -	else if (wiov)
-> > > +	if (wiov)
-> > >  		wiov->i = wiov->used = 0;
-> > > -	else
-> > > -		/* You must want something! */
-> > > -		BUG();
-> > >  
-> > >  	for (;;) {
-> > >  		void *addr;
-> > > -- 
-> > > 2.26.2
-> > 
-
+What would you propose, at this point?
