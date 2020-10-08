@@ -2,134 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F0CD287237
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 12:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 571A028723E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 12:10:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729345AbgJHKF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 06:05:29 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53932 "EHLO mx2.suse.de"
+        id S1729356AbgJHKKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 06:10:05 -0400
+Received: from mga02.intel.com ([134.134.136.20]:16099 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725849AbgJHKF3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 06:05:29 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 983DBAD20;
-        Thu,  8 Oct 2020 10:05:26 +0000 (UTC)
-Message-ID: <12f33d487eabd626db4c07ded5a1447795eed355.camel@suse.de>
-Subject: Re: [PATCH 1/4] of/fdt: Update zone_dma_bits when running in bcm2711
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        will@kernel.org, Frank Rowand <frowand.list@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        iommu@lists.linux-foundation.org,
-        linux-rpi-kernel@lists.infradead.org, robin.murphy@arm.com,
-        hch@lst.de, linux-arm-kernel@lists.infradead.org
-Date:   Thu, 08 Oct 2020 12:05:25 +0200
-In-Reply-To: <20201002115541.GC7034@gaia>
-References: <20201001161740.29064-1-nsaenzjulienne@suse.de>
-         <20201001161740.29064-2-nsaenzjulienne@suse.de>
-         <20201001171500.GN21544@gaia> <20201001172320.GQ21544@gaia>
-         <b47232e2173e9e5ddf8f5be4c7b5a2f897f34eb7.camel@suse.de>
-         <20201002115541.GC7034@gaia>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-UgRFrRCNh36xLg4FQaLM"
-User-Agent: Evolution 3.36.5 
+        id S1729210AbgJHKKF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 06:10:05 -0400
+IronPort-SDR: tsV/jE4TZ6pYvp1DWoX7Kdp0X4VKNuIrQ2F38Pr8REv7X/8Fq4sWGt29Nd3PRq8FJEZGmsYG4A
+ FfC+c5SN4QrA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9767"; a="152227980"
+X-IronPort-AV: E=Sophos;i="5.77,350,1596524400"; 
+   d="scan'208";a="152227980"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 03:10:03 -0700
+IronPort-SDR: I4MOMjdh2fQROgjgA1FsfZCwc80vfTzukfE9vNk8yu3tvUFYlSl6KIaJqM8awCgqjKwyuwhrnb
+ Vne6fwT8jZ+Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,350,1596524400"; 
+   d="scan'208";a="349444877"
+Received: from lkp-server02.sh.intel.com (HELO b5ae2f167493) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 08 Oct 2020 03:10:02 -0700
+Received: from kbuild by b5ae2f167493 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kQSs5-00022j-Vm; Thu, 08 Oct 2020 10:10:01 +0000
+Date:   Thu, 08 Oct 2020 18:09:55 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/pasid] BUILD SUCCESS
+ 7f5933f81bd85a0bf6a87d65c7327ea048a75e54
+Message-ID: <5f7ee573.wheX8AuiDs5ebOD+%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/pasid
+branch HEAD: 7f5933f81bd85a0bf6a87d65c7327ea048a75e54  x86/asm: Add an enqcmds() wrapper for the ENQCMDS instruction
 
---=-UgRFrRCNh36xLg4FQaLM
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+elapsed time: 722m
 
-Hi Catalin, sorry for the late reply.
+configs tested: 125
+configs skipped: 2
 
-On Fri, 2020-10-02 at 12:55 +0100, Catalin Marinas wrote:
-> On Thu, Oct 01, 2020 at 07:31:19PM +0200, Nicolas Saenz Julienne wrote:
-> > On Thu, 2020-10-01 at 18:23 +0100, Catalin Marinas wrote:
-> > > On Thu, Oct 01, 2020 at 06:15:01PM +0100, Catalin Marinas wrote:
-> > > > On Thu, Oct 01, 2020 at 06:17:37PM +0200, Nicolas Saenz Julienne wr=
-ote:
-> > > > > diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-> > > > > index 4602e467ca8b..cd0d115ef329 100644
-> > > > > --- a/drivers/of/fdt.c
-> > > > > +++ b/drivers/of/fdt.c
-> > > > > @@ -25,6 +25,7 @@
-> > > > >  #include <linux/serial_core.h>
-> > > > >  #include <linux/sysfs.h>
-> > > > >  #include <linux/random.h>
-> > > > > +#include <linux/dma-direct.h>	/* for zone_dma_bits */
-> > > > > =20
-> > > > >  #include <asm/setup.h>  /* for COMMAND_LINE_SIZE */
-> > > > >  #include <asm/page.h>
-> > > > > @@ -1198,6 +1199,14 @@ void __init early_init_dt_scan_nodes(void)
-> > > > >  	of_scan_flat_dt(early_init_dt_scan_memory, NULL);
-> > > > >  }
-> > > > > =20
-> > > > > +void __init early_init_dt_update_zone_dma_bits(void)
-> > > > > +{
-> > > > > +	unsigned long dt_root =3D of_get_flat_dt_root();
-> > > > > +
-> > > > > +	if (of_flat_dt_is_compatible(dt_root, "brcm,bcm2711"))
-> > > > > +		zone_dma_bits =3D 30;
-> > > > > +}
-> > > >=20
-> > > > I think we could keep this entirely in the arm64 setup_machine_fdt(=
-) and
-> > > > not pollute the core code with RPi4-specific code.
-> > >=20
-> > > Actually, even better, could we not move the check to
-> > > arm64_memblock_init() when we initialise zone_dma_bits?
-> >=20
-> > I did it this way as I vaguely remembered Rob saying he wanted to centr=
-alise
-> > all early boot fdt code in one place. But I'll be happy to move it ther=
-e.
->=20
-> I can see Rob replied and I'm fine if that's his preference. However,
-> what I don't particularly like is that in the arm64 code, if
-> zone_dma_bits =3D=3D 24, we set it to 32 assuming that it wasn't touched =
-by
-> the early_init_dt_update_zone_dma_bits(). What if at some point we'll
-> get a platform that actually needs 24 here (I truly hope not, but just
-> the principle of relying on magic values)?
->=20
-> So rather than guessing, I'd prefer if the arch code can override
-> ZONE_DMA_BITS_DEFAULT. Then, in arm64, we'll just set it to 32 and no
-> need to explicitly touch the zone_dma_bits variable.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Yes, sonds like the way to go. TBH I wasn't happy with that solution either=
-,
-but couldn't think of a nicer alternative.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+mips                         bigsur_defconfig
+powerpc                       eiger_defconfig
+mips                       rbtx49xx_defconfig
+arm                           tegra_defconfig
+powerpc                        icon_defconfig
+mips                malta_qemu_32r6_defconfig
+arm                        magician_defconfig
+powerpc                     tqm8540_defconfig
+arm                       omap2plus_defconfig
+m68k                         apollo_defconfig
+powerpc                          g5_defconfig
+mips                          ath25_defconfig
+arm                             pxa_defconfig
+mips                           mtx1_defconfig
+mips                          malta_defconfig
+c6x                              allyesconfig
+powerpc                      pmac32_defconfig
+powerpc                  mpc885_ads_defconfig
+arm                            qcom_defconfig
+arm                             rpc_defconfig
+c6x                              alldefconfig
+arm                      integrator_defconfig
+sh                        sh7757lcr_defconfig
+h8300                       h8s-sim_defconfig
+m68k                       m5249evb_defconfig
+xtensa                    smp_lx200_defconfig
+arm                        keystone_defconfig
+mips                      pic32mzda_defconfig
+mips                          rb532_defconfig
+arm                         mv78xx0_defconfig
+arm                         assabet_defconfig
+powerpc                     tqm8548_defconfig
+arm                       aspeed_g4_defconfig
+arm                         hackkit_defconfig
+powerpc                      pcm030_defconfig
+arm                          gemini_defconfig
+ia64                        generic_defconfig
+arm                          tango4_defconfig
+s390                       zfcpdump_defconfig
+powerpc                       ebony_defconfig
+arm                           h5000_defconfig
+arm                        clps711x_defconfig
+arm                          ep93xx_defconfig
+h8300                               defconfig
+sh                              ul2_defconfig
+nds32                             allnoconfig
+powerpc                      cm5200_defconfig
+sh                   sh7770_generic_defconfig
+arm                           spitz_defconfig
+arm                          iop32x_defconfig
+sh                          r7780mp_defconfig
+microblaze                          defconfig
+mips                           ip22_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20201008
+x86_64               randconfig-a003-20201008
+x86_64               randconfig-a005-20201008
+x86_64               randconfig-a001-20201008
+x86_64               randconfig-a002-20201008
+x86_64               randconfig-a006-20201008
+i386                 randconfig-a006-20201008
+i386                 randconfig-a005-20201008
+i386                 randconfig-a001-20201008
+i386                 randconfig-a004-20201008
+i386                 randconfig-a002-20201008
+i386                 randconfig-a003-20201008
+i386                 randconfig-a015-20201008
+i386                 randconfig-a013-20201008
+i386                 randconfig-a014-20201008
+i386                 randconfig-a016-20201008
+i386                 randconfig-a011-20201008
+i386                 randconfig-a012-20201008
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-Sadly I just realised that the series is incomplete, we have RPi4 users tha=
-t
-want to boot unsing ACPI, and this series would break things for them. I'll
-have a word with them to see what we can do for their use-case.
+clang tested configs:
+x86_64               randconfig-a012-20201008
+x86_64               randconfig-a015-20201008
+x86_64               randconfig-a013-20201008
+x86_64               randconfig-a014-20201008
+x86_64               randconfig-a011-20201008
+x86_64               randconfig-a016-20201008
 
-Regards,
-Nicolas
-
-
---=-UgRFrRCNh36xLg4FQaLM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl9+5GUACgkQlfZmHno8
-x/6e8wf9EJ0i1Wi9BCOQEMRii/Avn31umkWy/c6brw125hfV8Jcwwn6RlD9oTrD6
-57UaLxdLJjFjZcCHmPhOG7zcMwfsP/Ft5hmeS6ECAgOl3bL6jDRpnrQ80+gEO3U2
-rJ0sgrVHJp+ZC0Yf1HedSnj0EpgjbQFc3iPJHEW19XVLbZ61cu8keEKDZevaHONm
-BssWhdVqPaNW8Z9LuT04V4y+JXxLCjflB88QQD+UA5BbdLLRPn2DGZKErUwyyF8O
-U68UbaCmHEPIddLXLdHde657lQS0pT99yCJzyGA8S9k3XbNLcPK304WYZj1Qib8Z
-DI2imsq4V1HT3TAyebIj++LJgx/Uyg==
-=Sv3m
------END PGP SIGNATURE-----
-
---=-UgRFrRCNh36xLg4FQaLM--
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
