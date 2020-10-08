@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3238C287263
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 12:19:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96CB128726A
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 12:19:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729480AbgJHKTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 06:19:16 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14751 "EHLO huawei.com"
+        id S1729517AbgJHKTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 06:19:24 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14752 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729428AbgJHKTN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 06:19:13 -0400
+        id S1729459AbgJHKTP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 06:19:15 -0400
 Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 63E3C7345297BDC8FA46;
+        by Forcepoint Email with ESMTP id 6C6E325AF3E8FF15C4A9;
         Thu,  8 Oct 2020 18:19:10 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.58) by
  DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 8 Oct 2020 18:18:59 +0800
+ 14.3.487.0; Thu, 8 Oct 2020 18:19:00 +0800
 From:   John Garry <john.garry@huawei.com>
 To:     <acme@kernel.org>, <will@kernel.org>, <mark.rutland@arm.com>,
         <jolsa@redhat.com>, <irogers@google.com>, <leo.yan@linaro.org>,
@@ -27,9 +27,9 @@ CC:     <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>, <qiangqing.zhang@nxp.com>,
         <zhangshaokun@hisilicon.com>, <james.clark@arm.com>,
         <linux-imx@nxp.com>, John Garry <john.garry@huawei.com>
-Subject: [PATCH RFC v4 06/13] perf vendor events arm64: Add hip09 SMMUv3 PMCG events
-Date:   Thu, 8 Oct 2020 18:15:14 +0800
-Message-ID: <1602152121-240367-7-git-send-email-john.garry@huawei.com>
+Subject: [PATCH RFC v4 07/13] perf vendor events arm64: Add hip09 uncore events
+Date:   Thu, 8 Oct 2020 18:15:15 +0800
+Message-ID: <1602152121-240367-8-git-send-email-john.garry@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1602152121-240367-1-git-send-email-john.garry@huawei.com>
 References: <1602152121-240367-1-git-send-email-john.garry@huawei.com>
@@ -41,64 +41,282 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the SMMUv3 PMCG (Performance Monitor Event Group) events for hip09
-platform.
-
-This contains a mix of architected and IMP def events
+Add uncore events for DDRC, HHA, and L3C. We use "Compat" property to
+match to specific implementations of the PMUs.
 
 Signed-off-by: John Garry <john.garry@huawei.com>
 ---
- .../hisilicon/hip09/sys/smmu-v3-pmcg.json     | 42 +++++++++++++++++++
- 1 file changed, 42 insertions(+)
- create mode 100644 tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/smmu-v3-pmcg.json
+ .../hisilicon/hip09/sys/uncore-ddrc.json      |  58 ++++++++++
+ .../arm64/hisilicon/hip09/sys/uncore-hha.json |  82 ++++++++++++++
+ .../arm64/hisilicon/hip09/sys/uncore-l3c.json | 106 ++++++++++++++++++
+ 3 files changed, 246 insertions(+)
+ create mode 100644 tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-ddrc.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-hha.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-l3c.json
 
-diff --git a/tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/smmu-v3-pmcg.json b/tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/smmu-v3-pmcg.json
+diff --git a/tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-ddrc.json b/tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-ddrc.json
 new file mode 100644
-index 000000000000..8abafbb2dcb4
+index 000000000000..a91c97813ae0
 --- /dev/null
-+++ b/tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/smmu-v3-pmcg.json
-@@ -0,0 +1,42 @@
++++ b/tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-ddrc.json
+@@ -0,0 +1,58 @@
 +[
 +   {
-+	    "ArchStdEvent": "smmuv3_pmcg.CYCLES"
-+	    "Compat": "0x00030736"
++	    "EventCode": "0x00",
++	    "EventName": "uncore_hisi_ddrc.cycles",
++	    "BriefDescription": "DDRC total clock cycles",
++	    "PublicDescription": "DDRC total clock cycles",
++	    "Unit": "hisi_sccl,ddrc"
++	    "Compat": "0x00000030"
 +   },
 +   {
-+	    "ArchStdEvent": "smmuv3_pmcg.TRANSACTION"
-+	    "Compat": "0x00030736"
++	    "EventCode": "0x01",
++	    "EventName": "uncore_hisi_ddrc.act_cmd",
++	    "BriefDescription": "DDRC active commands",
++	    "PublicDescription": "DDRC active commands",
++	    "Unit": "hisi_sccl,ddrc"
++	    "Compat": "0x00000030"
 +   },
 +   {
-+	    "ArchStdEvent": "smmuv3_pmcg.TLB_MISS"
-+	    "Compat": "0x00030736"
++	    "EventCode": "0x03",
++	    "EventName": "uncore_hisi_ddrc.rw_cmd",
++	    "BriefDescription": "DDRC read and write commands",
++	    "PublicDescription": "DDRC read and write commands",
++	    "Unit": "hisi_sccl,ddrc"
++	    "Compat": "0x00000030"
++   }
++   {
++	    "EventCode": "0x04",
++	    "EventName": "uncore_hisi_ddrc.refresh_cmd",
++	    "BriefDescription": "DDRC total refresh commands",
++	    "PublicDescription": "DDRC total refresh commands",
++	    "Unit": "hisi_sccl,ddrc"
++	    "Compat": "0x00000030"
 +   },
 +   {
-+	    "ArchStdEvent": "smmuv3_pmcg.CONFIG_CACHE_MISS"
-+	    "Compat": "0x00030736"
++	    "EventCode": "0x05",
++	    "EventName": "uncore_hisi_ddrc.preall_cmd",
++	    "BriefDescription": "DDRC precharge-all commands",
++	    "PublicDescription": "DDRC precharge-all commands",
++	    "Unit": "hisi_sccl,ddrc"
++	    "Compat": "0x00000030"
 +   },
 +   {
-+	    "ArchStdEvent": "smmuv3_pmcg.TRANS_TABLE_WALK_ACCESS"
-+	    "Compat": "0x00030736"
++	    "EventCode": "0x41",
++	    "EventName": "uncore_hisi_ddrc.read_cmd",
++	    "BriefDescription": "DDRC read commands",
++	    "PublicDescription": "DDRC read commands",
++	    "Unit": "hisi_sccl,ddrc"
++	    "Compat": "0x00000030"
 +   },
 +   {
-+	    "ArchStdEvent": "smmuv3_pmcg.CONFIG_STRUCT_ACCESS"
-+	    "Compat": "0x00030736"
++	    "EventCode": "0x44",
++	    "EventName": "uncore_hisi_ddrc.write_cmd",
++	    "BriefDescription": "DDRC write commands",
++	    "PublicDescription": "DDRC write commands",
++	    "Unit": "hisi_sccl,ddrc"
++	    "Compat": "0x00000030"
++   }
++]
+diff --git a/tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-hha.json b/tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-hha.json
+new file mode 100644
+index 000000000000..5a39f1083ee6
+--- /dev/null
++++ b/tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-hha.json
+@@ -0,0 +1,82 @@
++[
++   {
++	    "EventCode": "0x00",
++	    "EventName": "uncore_hisi_hha.rx_ops_num",
++	    "BriefDescription": "The number of all operations received by the HHA",
++	    "PublicDescription": "The number of all operations received by the HHA",
++	    "Unit": "hisi_sccl,hha"
++	    "Compat": "0x00000030"
 +   },
 +   {
-+	    "ArchStdEvent": "smmuv3_pmcg.PCIE_ATS_TRANS_RQ"
-+	    "Compat": "0x00030736"
++	    "EventCode": "0x01",
++	    "EventName": "uncore_hisi_hha.rx_outer",
++	    "BriefDescription": "The number of all operations received by the HHA from another socket",
++	    "PublicDescription": "The number of all operations received by the HHA from another socket",
++	    "Unit": "hisi_sccl,hha"
++	    "Compat": "0x00000030"
 +   },
 +   {
-+	    "ArchStdEvent": "smmuv3_pmcg.PCIE_ATS_TRANS_PASSED"
-+	    "Compat": "0x00030736"
++	    "EventCode": "0x02",
++	    "EventName": "uncore_hisi_hha.rx_sccl",
++	    "BriefDescription": "The number of all operations received by the HHA from another SCCL in this socket",
++	    "PublicDescription": "The number of all operations received by the HHA from another SCCL in this socket",
++	    "Unit": "hisi_sccl,hha"
++	    "Compat": "0x00000030"
 +   },
 +   {
-+	    "EventCode": "0x8a",
-+	    "EventName": "smmuv3_pmcg.L1_TLB",
-+	    "BriefDescription": "SMMUv3 PMCG L1 TABLE transation",
-+	    "PublicDescription": "SMMUv3 PMCG L1 TABLE transation",
-+	    "Unit": "smmuv3_pmcg",
-+	    "Compat": "0x00030736"
++	    "EventCode": "0x03",
++	    "EventName": "uncore_hisi_hha.rx_ccix",
++	    "BriefDescription": "Count of the number of operations that HHA has received from CCIX",
++	    "PublicDescription": "Count of the number of operations that HHA has received from CCIX",
++	    "Unit": "hisi_sccl,hha"
++	    "Compat": "0x00000030"
 +   },
++   {
++	    "EventCode": "0x1c",
++	    "EventName": "uncore_hisi_hha.rd_ddr_64b",
++	    "BriefDescription": "The number of read operations sent by HHA to DDRC which size is 64 bytes",
++	    "PublicDescription": "The number of read operations sent by HHA to DDRC which size is 64bytes",
++	    "Unit": "hisi_sccl,hha"
++	    "Compat": "0x00000030"
++   },
++   {
++	    "EventCode": "0x1d",
++	    "EventName": "uncore_hisi_hha.wr_ddr_64b",
++	    "BriefDescription": "The number of write operations sent by HHA to DDRC which size is 64 bytes",
++	    "PublicDescription": "The number of write operations sent by HHA to DDRC which size is 64 bytes",
++	    "Unit": "hisi_sccl,hha"
++	    "Compat": "0x00000030"
++   },
++   {
++	    "EventCode": "0x1e",
++	    "EventName": "uncore_hisi_hha.rd_ddr_128b",
++	    "BriefDescription": "The number of read operations sent by HHA to DDRC which size is 128 bytes",
++	    "PublicDescription": "The number of read operations sent by HHA to DDRC which size is 128 bytes",
++	    "Unit": "hisi_sccl,hha"
++	    "Compat": "0x00000030"
++   },
++   {
++	    "EventCode": "0x1f",
++	    "EventName": "uncore_hisi_hha.wr_ddr_128b",
++	    "BriefDescription": "The number of write operations sent by HHA to DDRC which size is 128 bytes",
++	    "PublicDescription": "The number of write operations sent by HHA to DDRC which size is 128 bytes",
++	    "Unit": "hisi_sccl,hha"
++	    "Compat": "0x00000030"
++   },
++   {
++	    "EventCode": "0x20",
++	    "EventName": "uncore_hisi_hha.spill_num",
++	    "BriefDescription": "Count of the number of spill operations that the HHA has sent",
++	    "PublicDescription": "Count of the number of spill operations that the HHA has sent",
++	    "Unit": "hisi_sccl,hha"
++	    "Compat": "0x00000030"
++   },
++   {
++	    "EventCode": "0x21",
++	    "EventName": "uncore_hisi_hha.spill_success",
++	    "BriefDescription": "Count of the number of successful spill operations that the HHA has sent",
++	    "PublicDescription": "Count of the number of successful spill operations that the HHA has sent",
++	    "Unit": "hisi_sccl,hha"
++	    "Compat": "0x00000030"
++   }
++]
+diff --git a/tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-l3c.json b/tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-l3c.json
+new file mode 100644
+index 000000000000..3ae7948982ca
+--- /dev/null
++++ b/tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-l3c.json
+@@ -0,0 +1,106 @@
++[
++   {
++	    "EventCode": "0x00",
++	    "EventName": "uncore_hisi_l3c.rd_cpipe",
++	    "BriefDescription": "Total read accesses",
++	    "PublicDescription": "Total read accesses",
++	    "Unit": "hisi_sccl,l3c"
++	    "Compat": "0x00000030"
++   },
++   {
++	    "EventCode": "0x01",
++	    "EventName": "uncore_hisi_l3c.wr_cpipe",
++	    "BriefDescription": "Total write accesses",
++	    "PublicDescription": "Total write accesses",
++	    "Unit": "hisi_sccl,l3c"
++	    "Compat": "0x00000030"
++   },
++   {
++	    "EventCode": "0x02",
++	    "EventName": "uncore_hisi_l3c.rd_hit_cpipe",
++	    "BriefDescription": "Total read hits",
++	    "PublicDescription": "Total read hits",
++	    "Unit": "hisi_sccl,l3c"
++	    "Compat": "0x00000030"
++   },
++   {
++	    "EventCode": "0x03",
++	    "EventName": "uncore_hisi_l3c.wr_hit_cpipe",
++	    "BriefDescription": "Total write hits",
++	    "PublicDescription": "Total write hits",
++	    "Unit": "hisi_sccl,l3c"
++	    "Compat": "0x00000030"
++   },
++   {
++	    "EventCode": "0x04",
++	    "EventName": "uncore_hisi_l3c.victim_num",
++	    "BriefDescription": "l3c precharge commands",
++	    "PublicDescription": "l3c precharge commands",
++	    "Unit": "hisi_sccl,l3c"
++	    "Compat": "0x00000030"
++   },
++   {
++	    "EventCode": "0x20",
++	    "EventName": "uncore_hisi_l3c.rd_spipe",
++	    "BriefDescription": "Count of the number of read lines that come from this cluster of CPU core in spipe",
++	    "PublicDescription": "Count of the number of read lines that come from this cluster of CPU core in spipe",
++	    "Unit": "hisi_sccl,l3c"
++	    "Compat": "0x00000030"
++   },
++   {
++	    "EventCode": "0x21",
++	    "EventName": "uncore_hisi_l3c.wr_spipe",
++	    "BriefDescription": "Count of the number of write lines that come from this cluster of CPU core in spipe",
++	    "PublicDescription": "Count of the number of write lines that come from this cluster of CPU core in spipe",
++	    "Unit": "hisi_sccl,l3c"
++	    "Compat": "0x00000030"
++   },
++   {
++	    "EventCode": "0x22",
++	    "EventName": "uncore_hisi_l3c.rd_hit_spipe",
++	    "BriefDescription": "Count of the number of read lines that hits in spipe of this L3C",
++	    "PublicDescription": "Count of the number of read lines that hits in spipe of this L3C",
++	    "Unit": "hisi_sccl,l3c"
++	    "Compat": "0x00000030"
++   },
++   {
++	    "EventCode": "0x23",
++	    "EventName": "uncore_hisi_l3c.wr_hit_spipe",
++	    "BriefDescription": "Count of the number of write lines that hits in spipe of this L3C",
++	    "PublicDescription": "Count of the number of write lines that hits in spipe of this L3C",
++	    "Unit": "hisi_sccl,l3c"
++	    "Compat": "0x00000030"
++   },
++   {
++	    "EventCode": "0x29",
++	    "EventName": "uncore_hisi_l3c.back_invalid",
++	    "BriefDescription": "Count of the number of L3C back invalid operations",
++	    "PublicDescription": "Count of the number of L3C back invalid operations",
++	    "Unit": "hisi_sccl,l3c"
++	    "Compat": "0x00000030"
++   },
++   {
++	    "EventCode": "0x40",
++	    "EventName": "uncore_hisi_l3c.retry_cpu",
++	    "BriefDescription": "Count of the number of retry that L3C suppresses the CPU operations",
++	    "PublicDescription": "Count of the number of retry that L3C suppresses the CPU operations",
++	    "Unit": "hisi_sccl,l3c"
++	    "Compat": "0x00000030"
++   },
++   {
++	    "EventCode": "0x41",
++	    "EventName": "uncore_hisi_l3c.retry_ring",
++	    "BriefDescription": "Count of the number of retry that L3C suppresses the ring operations",
++	    "PublicDescription": "Count of the number of retry that L3C suppresses the ring operations",
++	    "Unit": "hisi_sccl,l3c"
++	    "Compat": "0x00000030"
++   },
++   {
++	    "EventCode": "0x42",
++	    "EventName": "uncore_hisi_l3c.prefetch_drop",
++	    "BriefDescription": "Count of the number of prefetch drops from this L3C",
++	    "PublicDescription": "Count of the number of prefetch drops from this L3C",
++	    "Unit": "hisi_sccl,l3c"
++	    "Compat": "0x00000030"
++   }
 +]
 -- 
 2.26.2
