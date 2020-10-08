@@ -2,146 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3145B2875CF
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A1052875DD
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730499AbgJHOO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 10:14:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54310 "EHLO
+        id S1730513AbgJHORs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 10:17:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729840AbgJHOOZ (ORCPT
+        with ESMTP id S1729840AbgJHORr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 10:14:25 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B21C061755
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 07:14:23 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id q5so6686105wmq.0
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 07:14:23 -0700 (PDT)
+        Thu, 8 Oct 2020 10:17:47 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52120C061755
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 07:17:45 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id l11so6653989wmh.2
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 07:17:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=SKpxYdUurmpOS5BkncePHyl2hsG1ycnDl5RK5GsXoXc=;
-        b=fUX+sAvAlhLn8s9pMBv+CAJuKweXXzPXeQaXLLKXLzS93kfhlCTgAvIlGdaRzQ60Ej
-         9iQX+6UZwIrYj21RORZgWLqnIxjjHHTZso4kF+xYv3yiS3nKviqo+RBzttefQD3uGI0n
-         ypnYadZqRu/XN5JvDkbxL51lo817XHh2ps7SE=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=zJluAbiLYKXPtNojcpa58wSPE+smR+xHU3IRj+ib1Us=;
+        b=UrL9DY8cY2lFuaXOufBSi5ViWUeBe5S6uSGJAnAp2WdUeOoKaPy2qaS+rANexdnV9K
+         lYZ/Px77JgA5SG+qvaIim88I+J9flXuyZdXrqZFEC5Cd7kkFqMD+P9MUYejn2sBjqr+j
+         JK2yyQTsTM1xSHH2ha8OWEbcXsuHHPJ9rFBT75vwDQw+gkcsaPUn82cIAZFYDFLKE1Ye
+         xJM8Slmp1x2rJQtlsdcGzPPxMD5Nkjyk5EEFFKyi3AdypLEYV7ZqKlyMeP5yTUg3H7Af
+         ESXMsRjSpPoCBjKieiaJd+2r4tQy+AB7gT6bdKxJZzewPRSrM98TRz3af4UGw/yMAyMK
+         vsgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mail-followup-to
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=SKpxYdUurmpOS5BkncePHyl2hsG1ycnDl5RK5GsXoXc=;
-        b=cVM4PFCmFGtHPig3qH8bLWxWFEm0wi483n3n+CMm6kMWmSC9BE+sG2X46SVpXucO6P
-         qagmjzCvKnt0lbevr86KWSL+rUEEaywTMF8hm5XeAhyZIZiEjSxW2MtY8Qb9KKpSiKIr
-         kBZo7HH7LQOczlM/HgAAr6s95A79Ofh1aoEbQ4Zg6E986hzySsdGpPYeueXoR8UIjEMN
-         O0abDgJzInGMFp/JLQx8FrzR7a6QPQtzK/ut7QGlviUI4s/uIu3H3G/vr6EG33UWgY6Y
-         EPY1q7QfDgIYXkK8yr2obg/qfC0lY1zazKCzrldkzwFkdNo1133VIWn5vrJRAMwW9X8r
-         vyqg==
-X-Gm-Message-State: AOAM531Hz4RddjwZaN3rhWwfLZpVIWPjeUZzg4z/cJ8QdVByqDw/So/F
-        PCzDPIFfbxvPc47TW1TK7x/aNg==
-X-Google-Smtp-Source: ABdhPJyZe4Z21U8phi7d2Xe/UNgxW53htdWoW10px59ECyLFlG/URS67GHq0loHUzd4W89hC8MwYlg==
-X-Received: by 2002:a1c:bd43:: with SMTP id n64mr8613712wmf.113.1602166462550;
-        Thu, 08 Oct 2020 07:14:22 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id x81sm7251502wmb.11.2020.10.08.07.14.20
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=zJluAbiLYKXPtNojcpa58wSPE+smR+xHU3IRj+ib1Us=;
+        b=QF3tSvOd/kcg6G7iVM4xjUe1QPG6mHLqWpctpYhMcXHjI5STBZhALX/8iqCQGFJvhT
+         /VMIfdvTR64MG2HCU6VgPBgE1+X2wFN/i3pFRuMLQUYtzUq+S5MgIy4YkKYywcv2INNh
+         1XIgLrlB+gGxBi8ww2wDwS00YV/zK9qTrgJuVfQYuHCaBn6RNueDVDtROs6CdoNO/o3E
+         M+BZE9ijXZsnFdRq28ketvO9vB6tkOr6CEIFT3mN9sWEl5Ouugvp+YknOHC4YtASHm+6
+         dMrYzR0bRi+T7DF3W//+S/VPGOChWfdYvGQHkVJegaTyFkrRDzH4JYjz11pR7J+5F/Kd
+         eETw==
+X-Gm-Message-State: AOAM5318YyHN+Ri8jxi7LLAaowIKIbimvTCa0qW4Iiv/dQHKKOuM1toy
+        h7ycVVHjS++1ImC3xC5WV+k=
+X-Google-Smtp-Source: ABdhPJxGaBAS7vhNVhl+YJzxwfGh3//smoQmnJlWI+XeaKkDm79BSomvewfKz4GXArhthgaSSFLcIQ==
+X-Received: by 2002:a7b:cb47:: with SMTP id v7mr9215680wmj.150.1602166663999;
+        Thu, 08 Oct 2020 07:17:43 -0700 (PDT)
+Received: from localhost.localdomain ([87.200.95.144])
+        by smtp.gmail.com with ESMTPSA id 4sm7985982wrn.48.2020.10.08.07.17.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 07:14:21 -0700 (PDT)
-Date:   Thu, 8 Oct 2020 16:14:19 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
-        chris@chris-wilson.co.uk, airlied@redhat.com,
-        akpm@linux-foundation.org, sumit.semwal@linaro.org
-Subject: Re: [PATCH 2/4] drm/prime: document that use the page array is
- deprecated
-Message-ID: <20201008141419.GH438822@phenom.ffwll.local>
-Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, chris@chris-wilson.co.uk,
-        airlied@redhat.com, akpm@linux-foundation.org,
-        sumit.semwal@linaro.org
-References: <20201008112342.9394-1-christian.koenig@amd.com>
- <20201008112342.9394-2-christian.koenig@amd.com>
- <20201008140914.GF438822@phenom.ffwll.local>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201008140914.GF438822@phenom.ffwll.local>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+        Thu, 08 Oct 2020 07:17:42 -0700 (PDT)
+From:   Christian Hewitt <christianshewitt@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Steven Price <steven.price@arm.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     Christian Hewitt <christianshewitt@gmail.com>
+Subject: [PATCH] drm/panfrost: increase readl_relaxed_poll_timeout values
+Date:   Thu,  8 Oct 2020 14:17:38 +0000
+Message-Id: <20201008141738.13560-1-christianshewitt@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 04:09:14PM +0200, Daniel Vetter wrote:
-> On Thu, Oct 08, 2020 at 01:23:40PM +0200, Christian König wrote:
-> > We have reoccurring requests on this so better document that
-> > this approach doesn't work and dma_buf_mmap() needs to be used instead.
-> > 
-> > Signed-off-by: Christian König <christian.koenig@amd.com>
-> > ---
-> >  drivers/gpu/drm/drm_prime.c | 7 ++++++-
-> >  1 file changed, 6 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
-> > index 4910c446db83..16fa2bfc271e 100644
-> > --- a/drivers/gpu/drm/drm_prime.c
-> > +++ b/drivers/gpu/drm/drm_prime.c
-> > @@ -956,7 +956,7 @@ EXPORT_SYMBOL(drm_gem_prime_import);
-> >  /**
-> >   * drm_prime_sg_to_page_addr_arrays - convert an sg table into a page array
-> >   * @sgt: scatter-gather table to convert
-> > - * @pages: optional array of page pointers to store the page array in
-> > + * @pages: deprecated array of page pointers to store the page array in
-> >   * @addrs: optional array to store the dma bus address of each page
-> >   * @max_entries: size of both the passed-in arrays
-> >   *
-> > @@ -965,6 +965,11 @@ EXPORT_SYMBOL(drm_gem_prime_import);
-> >   *
-> >   * Drivers can use this in their &drm_driver.gem_prime_import_sg_table
-> >   * implementation.
-> > + *
-> > + * Specifying the pages array is deprecated and strongly discouraged for new
-> > + * drivers. The pages array is only useful for page faults and those can
-> > + * corrupt fields in the struct page if they are not handled by the exporting
-> > + * driver.
-> >   */
-> 
-> I'd make this a _lot_ stronger: Aside from amdgpu and radeon all drivers
-> using this only need it for the pages array. Imo just open-code the sg
-> table walking loop in amdgpu/radeon (it's really not much code), and then
-> drop the dma_addr_t parameter from this function here (it's set to NULL by
-> everyone else).
-> 
-> And then deprecate this entire function here with a big warning that a)
-> dma_buf_map_attachment is allowed to leave the struct page pointers NULL
-> and b) this breaks mmap, users must call dma_buf_mmap instead.
-> 
-> Also maybe make it an uppercase DEPRECATED or something like that :-)
+Amlogic SoC devices report the following errors frequently causing excessive
+dmesg log spam and early log rotataion, although the errors appear to be
+harmless as everything works fine:
 
-OK I just realized I missed nouveau. That would be 3 places where we need
-to stuff the dma_addr_t list into something ttm can take. Still feels
-better than this half-deprecated function kludge ...
--Daniel
+[    7.202702] panfrost ffe40000.gpu: error powering up gpu L2
+[    7.203760] panfrost ffe40000.gpu: error powering up gpu shader
 
-> -Daniel
-> 
-> >  int drm_prime_sg_to_page_addr_arrays(struct sg_table *sgt, struct page **pages,
-> >  				     dma_addr_t *addrs, int max_entries)
-> > -- 
-> > 2.17.1
-> > 
-> 
-> -- 
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+ARM staff have advised increasing the timeout values to eliminate the errors
+in most normal scenarios, and testing with several different G31/G52 devices
+shows 20000 to be a reliable value.
 
+Fixes: f3ba91228e8e ("drm/panfrost: Add initial panfrost driver")
+Suggested-by: Steven Price <steven.price@arm.com>
+Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+---
+ drivers/gpu/drm/panfrost/panfrost_gpu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+index e1b2a3376624..2aae636f1cf5 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
++++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+@@ -325,13 +325,13 @@ void panfrost_gpu_power_on(struct panfrost_device *pfdev)
+ 	/* Just turn on everything for now */
+ 	gpu_write(pfdev, L2_PWRON_LO, pfdev->features.l2_present);
+ 	ret = readl_relaxed_poll_timeout(pfdev->iomem + L2_READY_LO,
+-		val, val == pfdev->features.l2_present, 100, 1000);
++		val, val == pfdev->features.l2_present, 100, 20000);
+ 	if (ret)
+ 		dev_err(pfdev->dev, "error powering up gpu L2");
+ 
+ 	gpu_write(pfdev, SHADER_PWRON_LO, pfdev->features.shader_present);
+ 	ret = readl_relaxed_poll_timeout(pfdev->iomem + SHADER_READY_LO,
+-		val, val == pfdev->features.shader_present, 100, 1000);
++		val, val == pfdev->features.shader_present, 100, 20000);
+ 	if (ret)
+ 		dev_err(pfdev->dev, "error powering up gpu shader");
+ 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.17.1
+
