@@ -2,119 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93EF428722E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 12:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F0CD287237
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 12:05:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729307AbgJHKD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 06:03:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46954 "EHLO mail.kernel.org"
+        id S1729345AbgJHKF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 06:05:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53932 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725849AbgJHKD5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 06:03:57 -0400
-Received: from localhost (p54b33b8c.dip0.t-ipconnect.de [84.179.59.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 00FF92083B;
-        Thu,  8 Oct 2020 10:03:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602151436;
-        bh=cdx3nCLpwJjLLgckZ3J66TCOhumn8exh5A11TediQhs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=G5K2Fi1n0Kl0+dUovATek37ODj2KnR0h2c2fFi4WVm6rVQrDubjKbxI6hZBNAzJp8
-         fVCIP+vT2ACSJ43Y7C2YKuXDluDrz1XM3q4HbhN9a7V6mfez3Bt6EzsgddxjAyvVCC
-         G01kWYXwaaU1nMlcuMUZ2dnzKgzv/c0FHx04+nnU=
-Date:   Thu, 8 Oct 2020 12:03:52 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Caleb Connolly <caleb@connolly.tech>
-Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        Mukesh Savaliya <msavaliy@codeaurora.org>,
-        ~postmarketos/upstreaming@lists.sr.ht, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/5] i2c: geni: sdm845: dont perform DMA for the oneplus6
-Message-ID: <20201008100352.GF76290@ninjato>
-References: <20201007174736.292968-1-caleb@connolly.tech>
- <20201007174736.292968-6-caleb@connolly.tech>
+        id S1725849AbgJHKF3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 06:05:29 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 983DBAD20;
+        Thu,  8 Oct 2020 10:05:26 +0000 (UTC)
+Message-ID: <12f33d487eabd626db4c07ded5a1447795eed355.camel@suse.de>
+Subject: Re: [PATCH 1/4] of/fdt: Update zone_dma_bits when running in bcm2711
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        will@kernel.org, Frank Rowand <frowand.list@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        iommu@lists.linux-foundation.org,
+        linux-rpi-kernel@lists.infradead.org, robin.murphy@arm.com,
+        hch@lst.de, linux-arm-kernel@lists.infradead.org
+Date:   Thu, 08 Oct 2020 12:05:25 +0200
+In-Reply-To: <20201002115541.GC7034@gaia>
+References: <20201001161740.29064-1-nsaenzjulienne@suse.de>
+         <20201001161740.29064-2-nsaenzjulienne@suse.de>
+         <20201001171500.GN21544@gaia> <20201001172320.GQ21544@gaia>
+         <b47232e2173e9e5ddf8f5be4c7b5a2f897f34eb7.camel@suse.de>
+         <20201002115541.GC7034@gaia>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-UgRFrRCNh36xLg4FQaLM"
+User-Agent: Evolution 3.36.5 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jkO+KyKz7TfD21mV"
-Content-Disposition: inline
-In-Reply-To: <20201007174736.292968-6-caleb@connolly.tech>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---jkO+KyKz7TfD21mV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--=-UgRFrRCNh36xLg4FQaLM
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 07, 2020 at 05:49:35PM +0000, Caleb Connolly wrote:
-> The OnePlus 6/T has the same issues as the c630 causing a crash when DMA
-> is used for i2c, so disable it.
->=20
-> https://patchwork.kernel.org/patch/11133827/
-> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
+Hi Catalin, sorry for the late reply.
 
-May I ask for a quick review here, so we can get this into 5.9 if
-qcom-geni maintainers agree this is good to go?
+On Fri, 2020-10-02 at 12:55 +0100, Catalin Marinas wrote:
+> On Thu, Oct 01, 2020 at 07:31:19PM +0200, Nicolas Saenz Julienne wrote:
+> > On Thu, 2020-10-01 at 18:23 +0100, Catalin Marinas wrote:
+> > > On Thu, Oct 01, 2020 at 06:15:01PM +0100, Catalin Marinas wrote:
+> > > > On Thu, Oct 01, 2020 at 06:17:37PM +0200, Nicolas Saenz Julienne wr=
+ote:
+> > > > > diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+> > > > > index 4602e467ca8b..cd0d115ef329 100644
+> > > > > --- a/drivers/of/fdt.c
+> > > > > +++ b/drivers/of/fdt.c
+> > > > > @@ -25,6 +25,7 @@
+> > > > >  #include <linux/serial_core.h>
+> > > > >  #include <linux/sysfs.h>
+> > > > >  #include <linux/random.h>
+> > > > > +#include <linux/dma-direct.h>	/* for zone_dma_bits */
+> > > > > =20
+> > > > >  #include <asm/setup.h>  /* for COMMAND_LINE_SIZE */
+> > > > >  #include <asm/page.h>
+> > > > > @@ -1198,6 +1199,14 @@ void __init early_init_dt_scan_nodes(void)
+> > > > >  	of_scan_flat_dt(early_init_dt_scan_memory, NULL);
+> > > > >  }
+> > > > > =20
+> > > > > +void __init early_init_dt_update_zone_dma_bits(void)
+> > > > > +{
+> > > > > +	unsigned long dt_root =3D of_get_flat_dt_root();
+> > > > > +
+> > > > > +	if (of_flat_dt_is_compatible(dt_root, "brcm,bcm2711"))
+> > > > > +		zone_dma_bits =3D 30;
+> > > > > +}
+> > > >=20
+> > > > I think we could keep this entirely in the arm64 setup_machine_fdt(=
+) and
+> > > > not pollute the core code with RPi4-specific code.
+> > >=20
+> > > Actually, even better, could we not move the check to
+> > > arm64_memblock_init() when we initialise zone_dma_bits?
+> >=20
+> > I did it this way as I vaguely remembered Rob saying he wanted to centr=
+alise
+> > all early boot fdt code in one place. But I'll be happy to move it ther=
+e.
+>=20
+> I can see Rob replied and I'm fine if that's his preference. However,
+> what I don't particularly like is that in the arm64 code, if
+> zone_dma_bits =3D=3D 24, we set it to 32 assuming that it wasn't touched =
+by
+> the early_init_dt_update_zone_dma_bits(). What if at some point we'll
+> get a platform that actually needs 24 here (I truly hope not, but just
+> the principle of relying on magic values)?
+>=20
+> So rather than guessing, I'd prefer if the arch code can override
+> ZONE_DMA_BITS_DEFAULT. Then, in arm64, we'll just set it to 32 and no
+> need to explicitly touch the zone_dma_bits variable.
 
-> ---
->  drivers/i2c/busses/i2c-qcom-geni.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-=
-qcom-geni.c
-> index dead5db3315a..50a0674a6553 100644
-> --- a/drivers/i2c/busses/i2c-qcom-geni.c
-> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
-> @@ -358,7 +358,8 @@ static int geni_i2c_rx_one_msg(struct geni_i2c_dev *g=
-i2c, struct i2c_msg *msg,
->  	struct geni_se *se =3D &gi2c->se;
->  	size_t len =3D msg->len;
-> =20
-> -	if (!of_machine_is_compatible("lenovo,yoga-c630"))
-> +	if (!of_machine_is_compatible("lenovo,yoga-c630") &&
-> +	    !of_machine_is_compatible("oneplus,oneplus6"))
->  		dma_buf =3D i2c_get_dma_safe_msg_buf(msg, 32);
-> =20
->  	if (dma_buf)
-> @@ -400,7 +401,8 @@ static int geni_i2c_tx_one_msg(struct geni_i2c_dev *g=
-i2c, struct i2c_msg *msg,
->  	struct geni_se *se =3D &gi2c->se;
->  	size_t len =3D msg->len;
-> =20
-> -	if (!of_machine_is_compatible("lenovo,yoga-c630"))
-> +	if (!of_machine_is_compatible("lenovo,yoga-c630") &&
-> +	    !of_machine_is_compatible("oneplus,oneplus6"))
->  		dma_buf =3D i2c_get_dma_safe_msg_buf(msg, 32);
-> =20
->  	if (dma_buf)
-> --=20
-> 2.28.0
->=20
->=20
+Yes, sonds like the way to go. TBH I wasn't happy with that solution either=
+,
+but couldn't think of a nicer alternative.
 
---jkO+KyKz7TfD21mV
+Sadly I just realised that the series is incomplete, we have RPi4 users tha=
+t
+want to boot unsing ACPI, and this series would break things for them. I'll
+have a word with them to see what we can do for their use-case.
+
+Regards,
+Nicolas
+
+
+--=-UgRFrRCNh36xLg4FQaLM
 Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9+5AgACgkQFA3kzBSg
-KbY62xAAinAZbtUf2a8QgpWfrTKmq+EJ5myL9+QoHclmuiErksuj61QUTbV57rpf
-yu2KCO95QUl+NKcVO+dgyR/kp4vzOnNzmF17a6EP2Iowi3k9WB4/x8riPjeMvQU7
-+bvcMQCrVp9fU4RYjHkMAbmQaJ8z6BciN/uliZCQ0WM1U+gCOh6UmFhuAr1p7HHF
-wvbHv90Sus2xwKPP21cDr3aEzu6eYEcUS3D3jXL9wgpvwp0VvQiYel8zoTgnVfmW
-gjKG+e3CkY3wBsga+vF4rIUBK5RzuqDzwPB+2qgCU02ZTyYOlB0LVoOpk5ntuYEw
-6AP1m0hluyUGhZXN59s4o16iyzQk/ZTQcTAg0/irocvzOCXiKQFp6WjjExRG1KfL
-0ybOfumn7TmXUEF5j5m/b4N2SjGY0PioibeQ3n2wGDJ7bTD7638l4bfza7NTw7uY
-ufFFgPxQA5ojnx33x5vC1HCFcnVmF3kXzH+UIHXnOp2qHEr2gIT18HwOX4WMM+he
-nFpsrnHgTs+qkAkOjxe1p47NTtHn+T51YA0VuquAhpVaD7j3nxa2JgJL5kMP4W2K
-hWXgqOrWP2kkur83cMUZ3K754RFDpk3OcFjg+np0qEg9ujAgYB8Flu+7BGfxr3hc
-OaGRPdvS/ana/bksc+deR1hBhmyjrxBbFKbBj86mL9xRkw8BESM=
-=wLDT
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl9+5GUACgkQlfZmHno8
+x/6e8wf9EJ0i1Wi9BCOQEMRii/Avn31umkWy/c6brw125hfV8Jcwwn6RlD9oTrD6
+57UaLxdLJjFjZcCHmPhOG7zcMwfsP/Ft5hmeS6ECAgOl3bL6jDRpnrQ80+gEO3U2
+rJ0sgrVHJp+ZC0Yf1HedSnj0EpgjbQFc3iPJHEW19XVLbZ61cu8keEKDZevaHONm
+BssWhdVqPaNW8Z9LuT04V4y+JXxLCjflB88QQD+UA5BbdLLRPn2DGZKErUwyyF8O
+U68UbaCmHEPIddLXLdHde657lQS0pT99yCJzyGA8S9k3XbNLcPK304WYZj1Qib8Z
+DI2imsq4V1HT3TAyebIj++LJgx/Uyg==
+=Sv3m
 -----END PGP SIGNATURE-----
 
---jkO+KyKz7TfD21mV--
+--=-UgRFrRCNh36xLg4FQaLM--
+
