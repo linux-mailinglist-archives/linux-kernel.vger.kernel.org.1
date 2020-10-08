@@ -2,138 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 924C7286F50
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8124286F54
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:25:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727109AbgJHHYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 03:24:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47190 "EHLO
+        id S1726418AbgJHHZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 03:25:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726761AbgJHHYD (ORCPT
+        with ESMTP id S1725874AbgJHHZT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 03:24:03 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B93FBC061755
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 00:24:01 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id z22so6085743wmi.0
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 00:24:01 -0700 (PDT)
+        Thu, 8 Oct 2020 03:25:19 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AE20C061755;
+        Thu,  8 Oct 2020 00:25:18 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id lw21so6609660ejb.6;
+        Thu, 08 Oct 2020 00:25:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=51bhbv7Q6y4/rGYHYq4fR0iaqpAhvfl/QOeD7oDUgoY=;
-        b=Sz4LrZs5sa3octu3Z1A9s+T5d/i+MGIkvGmGM1rxCnwKGbOcznbtt/HDXrMEVDfsqa
-         RslLmR8ukkTsWqHOlEReH3W5wtfyxJSAYdd7uz3y0RiR+T++OVv071N3AFA/xB26+qZN
-         EnSTjmvZ6TACHOBMcXRD8raf3tsJdzVrp0KYJPpFrs/8w+KAG8MwsxkkU53RUk6WzSic
-         wtbU9z8F3TuhPjMwzBE9YtYf46BUWPZQw4mQX+Rk9uns/YLCYagsHREzg6PLUWxizgMg
-         SDfv+tlw8RTTJ3JkFuZ5aUE5ldEyM/XHr8r185QBx+pH6wb7tMC9vs57UHu8q9zsFHTN
-         OIoA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ggIWyfuMBk6RIEocE2/Vctf1qOpbGaLGNz2DDI1RKQw=;
+        b=uHE8Wbup0CIM3eJ/kouB5+KRgrfXOTnZ9ec9Im6DRs/o1QWIDqyOd2d/Cs0w/QFI/t
+         mjA7k0MmdF24npFMSz4AKBeSbwNxVthW6C/Tj+21pp3VO+Iz6cXMdZqRstOcSeiPIt8+
+         J8oPUSTCsmA5oCl/371oa6L8yQIeakvdE2IWUzLe/wd+WicX5btT/XxeS6K6Jt9tgD9p
+         6E0raPiWjDAt8Dmun2jb+br2wnFGFfeVYPN8dhPzOOCPNOjCxgz8P0N4TGH6JO/f/Pzb
+         /mOvLohinPNup/4JymI/wN56YHrkFwM6ijcDEkTgpezY9skOZjRtQOCo/KGGeJH2dYMb
+         Llww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=51bhbv7Q6y4/rGYHYq4fR0iaqpAhvfl/QOeD7oDUgoY=;
-        b=L1RKCEmOPKYbIbA+D+LmY0wFmXBFoi3zfPHtCEIr05DmpnbvX7zwccyAuBONBeoXR+
-         sTLgd5hpaozfxKAYITw1qpNiyc3WomCK5oQvdZMnCWfup7D8jX5klvJ9rHOuGTwE3R+m
-         JhouZdC8YhMpLHRyDoi560y6jg8Ez93HxKl0W1qjEiCovBrMXrpRdM4XoOh1zXBbNmAE
-         1dYIP2CrIWzTJNCqSnkH10f7f3MUJTC+Juc5MPtw0u/c+B9UZY4KqowZq8DE8U7e+77I
-         Lb7ZGBwPUu50QQUSweKMiAaEDOEO3C3EGRyZAwW8F/ifjtmgvMs2pES5L5BuEJQBlBST
-         sWMw==
-X-Gm-Message-State: AOAM533MpFUgjwHuUbQgcGyZJCvTxDduYxLfsih6Qae8G43iEGVZWRUw
-        6TUVWoqCV9P6jAA9OzQfZSruuw==
-X-Google-Smtp-Source: ABdhPJx2zS+4ltiDHMYeaoKp07Jhp4uEQ4HL8oiyNbsAbmYlk1jLvA611SMEj/Hfn3iMJn7GnhL40w==
-X-Received: by 2002:a1c:6a06:: with SMTP id f6mr6817704wmc.184.1602141840369;
-        Thu, 08 Oct 2020 00:24:00 -0700 (PDT)
-Received: from dell ([91.110.221.232])
-        by smtp.gmail.com with ESMTPSA id o6sm5984050wrm.69.2020.10.08.00.23.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 00:23:59 -0700 (PDT)
-Date:   Thu, 8 Oct 2020 08:23:57 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Russ Weight <russell.h.weight@intel.com>
-Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
-        yilun.xu@intel.com, hao.wu@intel.com, matthew.gerlach@intel.com
-Subject: Re: [PATCH v2 1/6] mfd: intel-m10-bmc: support for MAX10 BMC
- Security Engine
-Message-ID: <20201008072357.GD1763265@dell>
-References: <20201003012412.16831-1-russell.h.weight@intel.com>
- <20201003012412.16831-2-russell.h.weight@intel.com>
- <20201007070059.GB1763265@dell>
- <c50c30b7-0693-3ff1-8d79-5d311d3831bd@intel.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ggIWyfuMBk6RIEocE2/Vctf1qOpbGaLGNz2DDI1RKQw=;
+        b=fiTYpYvY5i7U4exT8A78rERozLIUabC9Q3ZLJlt/gfFCz0gYWMG/KQBmzFpUO2GB2P
+         79Uq8dBenCj0LxMUWWnJl8l5etovxZv6MUbbDH21hcm8b4AqEfnbygv2VorcQAmM8wcn
+         JLPWfKcU7zl2LrRKwmWvcIHwvzMGP3C0yGTLS5n2XPDsauKMzAa0A5EWJlDz4t7SakSD
+         1KLLVg2kEX3cO+aGTgU36UPs1h/1CNxXq8kC44VsWu1TSkW2K8fEP+NNlo8L3Df0k+gE
+         SsRsWyeOMHd4Qg8LxXJxXhQdJEtWgln0U1Zf8FlJti4llW8n9UjpsjeuXXNK+rYpA/dz
+         4epQ==
+X-Gm-Message-State: AOAM531oFfZVe5SpLCGr/I93Hj/iCrJBQ7S5bNiMb4TqvPWxqB26Dmmi
+        BirRSTFhoScEBuq+8lpRpyI=
+X-Google-Smtp-Source: ABdhPJyAgdoQHy9wC8IC8bDBnduHRYPjKutskcLbTeVUUhKov84Xic82qWyFgjQOprNIMpxV3JPDDQ==
+X-Received: by 2002:a17:906:1957:: with SMTP id b23mr7210605eje.312.1602141916960;
+        Thu, 08 Oct 2020 00:25:16 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.119.110])
+        by smtp.gmail.com with ESMTPSA id p17sm3370228edw.10.2020.10.08.00.25.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Oct 2020 00:25:16 -0700 (PDT)
+Subject: Re: [PATCH v10 3/3] clk: mediatek: add UART0 clock support
+To:     Stephen Boyd <sboyd@kernel.org>,
+        Hanks Chen <hanks.chen@mediatek.com>,
+        Michael Turquette <mturquette@baylibre.com>
+Cc:     devicetree@vger.kernel.org, CC Hwang <cc.hwang@mediatek.com>,
+        Andy Teng <andy.teng@mediatek.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        YueHaibing <yuehaibing@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-mediatek@lists.infradead.org,
+        Loda Chou <loda.chou@mediatek.com>,
+        mtk01761 <wendell.lin@mediatek.com>,
+        linux-arm-kernel@lists.infradead.org
+References: <1596115816-11758-1-git-send-email-hanks.chen@mediatek.com>
+ <1596115816-11758-4-git-send-email-hanks.chen@mediatek.com>
+ <1599546314.24690.3.camel@mtkswgap22> <1601719607.774.1.camel@mtkswgap22>
+ <160212240863.310579.5253840355657757088@swboyd.mtv.corp.google.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <2a00b4d0-35ab-d1e6-0b8b-d4e0672e7118@gmail.com>
+Date:   Thu, 8 Oct 2020 09:25:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c50c30b7-0693-3ff1-8d79-5d311d3831bd@intel.com>
+In-Reply-To: <160212240863.310579.5253840355657757088@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 07 Oct 2020, Russ Weight wrote:
-> On 10/7/20 12:00 AM, Lee Jones wrote:
-> > On Fri, 02 Oct 2020, Russ Weight wrote:
-> >
-> >> Add macros and definitions required by the MAX10 BMC
-> >> Security Engine driver.
-> >>
-> >> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> >> ---
-> >> v2:
-> >>   - These functions and macros were previously distributed among
-> >>     the patches that needed them. They are now grouped together
-> >>     in a single patch containing changes to the Intel MAX10 BMC
-> >>     driver.
-> >>   - Added DRBL_ prefix to some definitions
-> >>   - Some address definitions were moved here from the .c files that
-> >>     use them.
-> >> ---
-> >>  include/linux/mfd/intel-m10-bmc.h | 134 ++++++++++++++++++++++++++++++
-> >>  1 file changed, 134 insertions(+)
-> >>
-> >> diff --git a/include/linux/mfd/intel-m10-bmc.h b/include/linux/mfd/intel-m10-bmc.h
-> >> index c8ef2f1654a4..880f907302eb 100644
-> >> --- a/include/linux/mfd/intel-m10-bmc.h
-> >> +++ b/include/linux/mfd/intel-m10-bmc.h
-> >> @@ -13,6 +13,9 @@
-> >>   * m10bmc_raw_read - read m10bmc register per addr
-> >> + * m10bmc_raw_bulk_read - bulk read max10 registers per addr
-> >> + * m10bmc_raw_bulk_write - bulk write max10 registers per addr
-> >> + * m10bmc_raw_update_bits - update max10 register per addr
-> >>   * m10bmc_sys_read - read m10bmc system register per offset
-> >> + * m10bmc_sys_update_bits - update max10 system register per offset
-> >>   */
-> > FWIW, I *hate* abstraction for the sake of abstraction.
-> >
-> > Please just use the Regmap API in-place instead.
-> >
-> I was following the discussion on the Max10 BMC driver to determine which way to go:
-> 
-> https://marc.info/?l=linux-kernel&m=159964043207829&w=2
-> 
-> My understanding was that the existing function wrappers were accepted because:
-> 
-> (1) The functions are adding dev_err() calls that would have to be replicated
-> for each call if we don't create a new function.
-> (2) The _sys_ macros are adding a base address offset, which facilitates
-> sharing code between multiple devices (although only the n3000 is supported with
-> the current patches).
-> 
-> Would you prefer that we handle these on a case by case basis? And only provide
-> wrappers for the ones that have high usage?
+Hi Stephen,
 
-Yes please.  As I said in the link above, avoid them it at all
-possible.  If you and every other user needs to place an error message
-after every single call, consider moving the error message into the
-API itself.
+On 08/10/2020 04:00, Stephen Boyd wrote:
+> Quoting Hanks Chen (2020-10-03 03:06:47)
+>> Hi Michael & Stephen,
+>>
+>> Please kindly let me know your comments about this patch.
+>> Thanks
+>>
+> 
+> What's the base for this patch? I tried applying to v5.9-rc1 and it
+> didn't work.
+> 
 
-There are 10's if not 100's of different API calls where users
-normally place error messages following them.  To abstract them all
-for each platform would be insane.
+Can you please double check. The file the patch touches didn't get touched since 
+v5.5-rc1. I tried to apply it and it didn't give me any error. I paste my way of 
+applying patches just in case:
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+b4.sh am -l -o /tmp -n patch -P 3 
+1596115816-11758-4-git-send-email-hanks.chen@mediatek.com && git am -3 -s 
+/tmp/patch.mbx
+
+Regards,
+Matthias
