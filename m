@@ -2,156 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DFA9287D3E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 22:33:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A38E287D40
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 22:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726301AbgJHUdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 16:33:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49590 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725917AbgJHUdn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 16:33:43 -0400
-Received: from tzanussi-mobl (c-73-209-127-30.hsd1.il.comcast.net [73.209.127.30])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CA21721D43;
-        Thu,  8 Oct 2020 20:33:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602189223;
-        bh=Wa6+SwmoUyDZWGsqat8x+/bUGRdpJ/vaeMrsIpQd+qc=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=W7nmOE5qmQ6BUwgCKLNVpo5GHa9Tqmz9mlBcvfeP6+955vReHDngk43dFXq1OEllS
-         XOLUfvj1NeuDPQPCRnlX2Ezi1/6MAoy3jnhcCdkHnur3iPkqiqlYJotwlKVqka35X8
-         5TKGvfqP5kb/0gwuZ1Kp6mrJGrnoB8HXs132yM2I=
-Message-ID: <dce75e64b996c9d676376440a9acf087395eec99.camel@kernel.org>
-Subject: Re: [PATCH v4 4/7] tracing: Add support for dynamic strings to
- synthetic events
-From:   Tom Zanussi <zanussi@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     rostedt@goodmis.org, axelrasmussen@google.com,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 08 Oct 2020 15:33:41 -0500
-In-Reply-To: <20201008182207.7526e70da842a01e373dd8cd@kernel.org>
-References: <cover.1601848695.git.zanussi@kernel.org>
-         <3ed35b6d0e390f5b94cb4a9ba1cc18f5982ab277.1601848695.git.zanussi@kernel.org>
-         <20201008182207.7526e70da842a01e373dd8cd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
+        id S1730547AbgJHUe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 16:34:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725917AbgJHUe1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 16:34:27 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E5A4C0613D2;
+        Thu,  8 Oct 2020 13:34:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=p+sWvwr5fj3pIZ69PzilhbvvjIg6DA9KEI2Chppr5F4=; b=bbnVi60TUED7FdFwXGm/6JNPKU
+        IOEkniGGLwDwcUwfAWG2L/C0kH6MDFl2XNbtMO16r/cTZMxx2xjKTJpKg9/Xh0TU5UOvLlx/8o8/R
+        EJTO/Hz2jeRC1Nl7Kv7bZa/cv/AO0kRX6AnGzrw/nFvLbRVMxh0CS4mje/auiqQSLCNtaZZNxFmYx
+        svPDfWytLKSQskS6r4KvBsM6nBHLk8VUNkNoNHfqlqiafeiQ6W7tSasegcd52nB7fMsysKopaCiln
+        o8GyaF0Ujr9b+7sHjkp98rSuv19gpCvCRUptueg/EG8YCBvbAJFs28kr3pTWyRz1BDMqPlkIweEjm
+        phJU3bhA==;
+Received: from [2601:1c0:6280:3f0::2c9a]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kQccC-0001ZY-49; Thu, 08 Oct 2020 20:34:16 +0000
+Subject: Re: [PATCH 02/35] mm: support direct memory reservation
+To:     yulei.kernel@gmail.com, akpm@linux-foundation.org,
+        naoya.horiguchi@nec.com, viro@zeniv.linux.org.uk,
+        pbonzini@redhat.com
+Cc:     linux-fsdevel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xiaoguangrong.eric@gmail.com,
+        kernellwp@gmail.com, lihaiwei.kernel@gmail.com,
+        Yulei Zhang <yuleixzhang@tencent.com>,
+        Xiao Guangrong <gloryxiao@tencent.com>
+References: <cover.1602093760.git.yuleixzhang@tencent.com>
+ <2fbc347a5f52591fc9da8d708fef0be238eb06a5.1602093760.git.yuleixzhang@tencent.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <b1703e32-052a-e56b-a4d3-ddd361953f6d@infradead.org>
+Date:   Thu, 8 Oct 2020 13:34:10 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <2fbc347a5f52591fc9da8d708fef0be238eb06a5.1602093760.git.yuleixzhang@tencent.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Masami,
+On 10/8/20 12:53 AM, yulei.kernel@gmail.com wrote:
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index a1068742a6df..da15d4fc49db 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -980,6 +980,44 @@
+>  			The filter can be disabled or changed to another
+>  			driver later using sysfs.
+>  
+> +	dmem=[!]size[KMG]
+> +			[KNL, NUMA] When CONFIG_DMEM is set, this means
+> +			the size of memory reserved for dmemfs on each numa
 
-On Thu, 2020-10-08 at 18:22 +0900, Masami Hiramatsu wrote:
-> Hi Tom,
-> 
-> On Sun,  4 Oct 2020 17:14:06 -0500
-> Tom Zanussi <zanussi@kernel.org> wrote:
-> 
-> > Currently, sythetic events only support static string fields such
-> > as:
-> > 
-> >   # echo 'test_latency u64 lat; char somename[32]' >
-> > /sys/kernel/debug/tracing/synthetic_events
-> > 
-> > Which is fine, but wastes a lot of space in the event.
-> > 
-> > It also prevents the most commonly-defined strings in the existing
-> > trace events e.g. those defined using __string(), from being passed
-> > to
-> > synthetic events via the trace() action.
-> > 
-> > With this change, synthetic events with dynamic fields can be
-> > defined:
-> > 
-> >   # echo 'test_latency u64 lat; char somename[]' >
-> > /sys/kernel/debug/tracing/synthetic_events
-> > 
-> > And the trace() action can be used to generate events using either
-> > dynamic or static strings:
-> > 
-> >   # echo 'hist:keys=name:lat=common_timestamp.usecs-
-> > $ts0:onmatch(sys.event).test_latency($lat,name)' >
-> > /sys/kernel/debug/tracing/events
-> > 
-> > The synthetic event dynamic strings are implemented in the same way
-> > as
-> > the existing __data_loc strings and appear as such in the format
-> > file.
-> > 
-> > [ <rostedt@goodmis.org>: added __set_synth_event_print_fmt()
-> > changes:
-> > 
-> >   I added the following to make it work with trace-cmd. Dynamic
-> > strings
-> >   must have __get_str() for events in the print_fmt otherwise it
-> > can't be
-> >   parsed correctly. ]
-> 
-> I confirmed this works, but have some questions;
-> - It seems no error message when we failed to define with wrong
-> syntax
+			                                               NUMA
 
-Yes, I need to add an error message for this (as well as others in this
-file).
+> +			memory node and 'size' must be aligned to the default
+> +			alignment that is the size of memory section which is
+> +			128M on default on x86_64. If set '!', such amount of
 
-> 
-> /sys/kernel/debug/tracing # echo 'myevent char name []' >>
-> synthetic_events 
-> sh: write error: Invalid argument
-> /sys/kernel/debug/tracing # cat error_log 
-> /sys/kernel/debug/tracing #
-> 
-> - what we write and what we see in synthetic_events are different
-> 
-> /sys/kernel/debug/tracing # echo 'myevent char name[]' >>
-> synthetic_events 
-> /sys/kernel/debug/tracing # cat synthetic_events 
-> myevent	__data_loc char[] name
-> 
-> - And it is not able to re-define with that syntax
-> 
-> /sys/kernel/debug/tracing # echo > synthetic_events 
-> /sys/kernel/debug/tracing # echo 'myevent __data_loc char[] name' >>
-> synthetic_events 
-> sh: write error: Invalid argument
-> /sys/kernel/debug/tracing # 
-> 
+			     by default
 
-Yes, only the format needs to have the __data_loc, but the event
-description shouldn't.
+> +			memory on each node will be owned by kernel and dmemfs
+> +			own the rest of memory on each node.
 
-> - It seems to accept wrong name for variables
-> 
-> /sys/kernel/debug/tracing # echo 'myevent char name]' >>
-> synthetic_events 
-> /sys/kernel/debug/tracing # echo 'myevent2 char name;[]' >>
-> synthetic_events 
-> /sys/kernel/debug/tracing # cat synthetic_events 
-> myevent	char name]
-> myevent2	__data_loc char[] name;
-> 
+			owns
 
-Yes, I think all these other errors boil down to allowing illegal
-names.  Applying your is_good_name() function for probe events to these
-fields should get rid of them.
+> +			Example: Reserve 4G memory on each node for dmemfs
+> +				dmem = 4G
 
-> Some of those issues are not introduced from this series. I think
-> we'd better fix those before introducing this series so that
-> we can backport it to stable kernels.
-> 
+IIRC, you don't want spaces in this example.
+Or did you check? Does the kernel's command line parser accept & ignore spaces like these?
 
-I should have patches addressing all of these shortly, tomorrow at the
-latest.
 
-Thanks,
+> +
+> +	dmem=[!]size[KMG]:align[KMG]
+> +			[KNL, NUMA] Ditto. 'align' should be power of two and
+> +			it's not smaller than the default alignment. Also
 
-Tom
+	drop "it's"
 
-> Thank you,
-> 
-> 
+> +			'size' must be aligned to 'align'.
+> +			Example: Bad dmem parameter because 'size' misaligned
+> +				dmem=0x40200000:1G
+> +
+> +	dmem=size[KMG]@addr[KMG]
+> +			[KNL] When CONFIG_DMEM is set, this marks specific
+> +			memory as reserved for dmemfs. Region of memory will be
+> +			used by dmemfs, from addr to addr + size. Reserving a
+> +			certain memory region for kernel is illegal so '!' is
+> +			forbidden. Should not assign 'addr' to 0 because kernel
+> +			will occupy fixed memory region begin at 0 address.
 
+			                                beginning
+
+> +			Ditto, 'size' and 'addr' must be aligned to default
+> +			alignment.
+> +			Example: Exclude memory from 5G-6G for dmemfs.
+> +				dmem=1G@5G
+> +
+> +	dmem=size[KMG]@addr[KMG]:align[KMG]
+> +			[KNL] Ditto. 'align' should be power of two and it's
+
+		Drop "it's"
+
+> +			not smaller than the default alignment. Also 'size'
+> +			and 'addr' must be aligned to 'align'. Specially,
+> +			'@addr' and ':align' could occur in any order.
+> +			Example: Exclude memory from 5G-6G for dmemfs.
+> +				dmem=1G:1G@5G
+> +
+>  	driver_async_probe=  [KNL]
+>  			List of driver names to be probed asynchronously.
+>  			Format: <driver_name1>,<driver_name2>...
+
+
+-- 
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
