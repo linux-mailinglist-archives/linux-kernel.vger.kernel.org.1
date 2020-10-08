@@ -2,109 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B824287B5F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 20:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C465C287B63
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 20:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731254AbgJHSL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 14:11:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34826 "EHLO
+        id S1731317AbgJHSLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 14:11:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729316AbgJHSL3 (ORCPT
+        with ESMTP id S1731277AbgJHSLp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 14:11:29 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07705C061755;
-        Thu,  8 Oct 2020 11:11:29 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id i2so6773270ljg.4;
-        Thu, 08 Oct 2020 11:11:28 -0700 (PDT)
+        Thu, 8 Oct 2020 14:11:45 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C52FC0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 11:11:45 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id o17so1678709ioh.9
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 11:11:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=G3mrHFgsl4yRBSpBY2KK+yE6uxmlc+TxwEDQsNmv4cc=;
-        b=PhCVwNEQPJOov0cSmL537oCIOTrYgAe4jM+pmEbETQZDP2DHFu8p2t5cROBpiAGJPg
-         Yo/yGIIYiuK5Gtnh6JkTAjANM6mZjLgyZ1Qp/nzVsOgDBbjDhk9epotbdyztKO7s3jH/
-         HpXV4FGK4pTp6il0zGS8nLgpfztWn/mesNVDAAACvfXeOyvVRavwGju/AEaCeBb/3xUE
-         C70X92MMFGQevzm3dK1C0anSPhkJGHLY4p2K5DVHhfXGBXPmEbtFJI3toCeeiak7RXlF
-         uuUhGpj1uXd/SPuPz14ehDlle7QxEkf8FrxrHIgpo+wzqRw837ePeNEuFL7RN/5+ZHvw
-         p6bA==
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=CSoXq+8L+uC2Fsay1hVylBa3yjr5bnHuLLVYJzuZ4aI=;
+        b=pT5vKGMPtJ8Uu1GPdNg182aAorfrqDbkZNvk9nq43R+BMkMwkl8RCmSJClcMtqi1D8
+         1sLlRVSNdcKtaJBFjjabLfw/1JIGfpFfe3Y/dQ8ptZ3ONr59BWTSz++BzaoAWcNwUdzK
+         Y7THOwqhyOFuEyaTnDXUrN3zWGDUKvYtcbj9vdWSMJLlrcLad9evL4yGR/qiKWcLHPJW
+         5aaXo/0Y9jtxJjRKtwHwxGsJTXAGQ2GpD574EMRJtmFwWJedx9N1PDJE3P86Q7LFF5/L
+         2oJO7nZ1VUdnaer8JJDMixfNSrfiy6AUFTkag3CCXKS3DxHw5r/4xz2VXu0E0Ri2NLtl
+         dIQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=G3mrHFgsl4yRBSpBY2KK+yE6uxmlc+TxwEDQsNmv4cc=;
-        b=b2oeQeTMnf3KR/xcMNPY+OIX0LlrueJs1AHusDTrTggAzbibiZ3AGGO7pqqCE3gU4P
-         wCTitMW5tbSJ2AdIp07K8pvFty3D7OAtTTY7ZmxFD/3UK8/Ac15nhVTDjGB2mG5JX177
-         1PLR09Ldz/Ekub0YjCF8cgZYgeb660iLR0HVhyxmgBfJmIqRTx8C6ac7+FHr9payns8l
-         V5bR46RZOuJZSP08bvd2WNpTghJqhDc5TIEN0biZARY2hQ+UyrtnF/waQWK8EkyEbQQF
-         xgaCXDTLT+I843AhOsZe0agDgKJKa2cgojMKhaC2+Dg5s+V6urEZXpQAc6vQHz2+68vo
-         Q7NA==
-X-Gm-Message-State: AOAM5327KFTASqXwsDpeNl+NY0F3HVUma83AEEQdW2dcNqde+I1oAXfo
-        rPYgj4SPjiJ7grn8vGpOnvMrfJVL6k8=
-X-Google-Smtp-Source: ABdhPJz1UBLxdWzx8/hYgAzppJLKkNeg+nW+R08uBrpCVJSk6ut97gWc1kHPX8suMHfg7491c84EEg==
-X-Received: by 2002:a2e:82c8:: with SMTP id n8mr3998729ljh.62.1602180687184;
-        Thu, 08 Oct 2020 11:11:27 -0700 (PDT)
-Received: from [192.168.1.112] (88-114-211-119.elisa-laajakaista.fi. [88.114.211.119])
-        by smtp.gmail.com with ESMTPSA id e19sm992864lfd.200.2020.10.08.11.11.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Oct 2020 11:11:26 -0700 (PDT)
-Subject: Re: [PATCH RESEND v2] mm: Optional full ASLR for mmap() and mremap()
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-hardening@vger.kernel.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20201008165408.38228-1-toiwoton@gmail.com>
- <20201008170728.GK20115@casper.infradead.org>
-From:   Topi Miettinen <toiwoton@gmail.com>
-Message-ID: <1d08abd1-4343-59e7-108a-68af5f7778c0@gmail.com>
-Date:   Thu, 8 Oct 2020 21:11:22 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=CSoXq+8L+uC2Fsay1hVylBa3yjr5bnHuLLVYJzuZ4aI=;
+        b=d87AuC6kbA+OY6H5DpwuXOmJYHwqz8w49jnTFqG6/dXcZeTEkKzLj00RmjtbmEYwU5
+         WVbVl3nDU2tcxRGOxVK+kfMFOw6D3avZEnzQdKC86Jhd7fUiODx44/hXHzNTdlmwG9RN
+         45pttJnGrK+gKGtfWHYbE3RXGCF5SfNrUN/wuuaGiqqCLPirHh1SDq9Tdp4F/y07sNlP
+         31CAgaqplmxA/9Tqa3FesyZdpzSh4JJNqBtsSkAcGky2Nj9DEWVXAL77P1YyyS+slVjT
+         2oI+RTG7vN0bj+6SeyPzuDIq26z5JTFoqFpbT+OK4sngP4otxj7LO+f8qDI7nHA2NSdl
+         4Egw==
+X-Gm-Message-State: AOAM5329vU1HKle/Er85UcsBjppzIBNdCP2K2MkK+aTOYx9Odut1CtU0
+        cOTeoY68LfDDhBoxupYCZMh8E2K7+xzQKcRdf0NKtA==
+X-Google-Smtp-Source: ABdhPJzVlut/DlArUd8JRiXjai5dHk1kcamlui+SCoUrieIyqKit4kOehyULHhdcXTviwgnXEt638LyGUxQgcYISjOA=
+X-Received: by 2002:a6b:b208:: with SMTP id b8mr6973090iof.36.1602180703879;
+ Thu, 08 Oct 2020 11:11:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201008170728.GK20115@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 8 Oct 2020 23:41:32 +0530
+Message-ID: <CA+G9fYtwisRJtN4ht=ApeWc1jWssDok-7y2wee6Z0kzMP-atKg@mail.gmail.com>
+Subject: [ Regressions ] linux next 20201008: blk_update_request: I/O error,
+ dev sda, sector 0 op 0x1:(WRITE) flags 0x800 phys_seg 0 prio class 0
+To:     dm-devel@redhat.com, open list <linux-kernel@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        drbd-dev@lists.linbit.com,
+        "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
+        <linux-ide@vger.kernel.org>, linux-raid@vger.kernel.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        lkft-triage@lists.linaro.org
+Cc:     Christoph Hellwig <hch@lst.de>, Song Liu <song@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Jens Axboe <axboe@kernel.dk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8.10.2020 20.07, Matthew Wilcox wrote:
-> On Thu, Oct 08, 2020 at 07:54:08PM +0300, Topi Miettinen wrote:
->> +3   Additionally enable full randomization of memory mappings created
->> +    with mmap(NULL, ...). With 2, the base of the VMA used for such
->> +    mappings is random, but the mappings are created in predictable
->> +    places within the VMA and in sequential order. With 3, new VMAs
->> +    are created to fully randomize the mappings. Also mremap(...,
->> +    MREMAP_MAYMOVE) will move the mappings even if not necessary.
->> +
->> +    On 32 bit systems this may cause problems due to increased VM
->> +    fragmentation if the address space gets crowded.
-> 
-> On all systems, it will reduce performance and increase memory usage due
-> to less efficient use of page tables and inability to merge adjacent VMAs
-> with compatible attributes.
+There are two major regressions noticed on linux next tag 20201008.
+I will bisect this problem and get back to you.
 
-Right, I'll update the description.
+1) qemu_i386 and qemu_x86 boot failed due to mount rootfs failing [1].
 
->> +	if ((flags & MREMAP_MAYMOVE) && randomize_va_space >= 3) {
->> +		/*
->> +		 * Caller is happy with a different address, so let's
->> +		 * move even if not necessary!
->> +		 */
->> +		new_addr = arch_mmap_rnd();
->> +
->> +		ret = mremap_to(addr, old_len, new_addr, new_len,
->> +				&locked, flags, &uf, &uf_unmap_early,
->> +				&uf_unmap);
->> +		goto out;
->> +	}
->> +
->> +
-> 
-> Overly enthusiastic newline
-> 
+        Starting Remount Root and Kernel File Systems...
+[    1.750740] ata1.00: WARNING: zero len r/w req
+[    1.751423] ata1.00: WARNING: zero len r/w req
+[    1.752361] ata1.00: WARNING: zero len r/w req
+[    1.753400] ata1.00: WARNING: zero len r/w req
+[    1.754447] ata1.00: WARNING: zero len r/w req
+[    1.755529] ata1.00: WARNING: zero len r/w req
+[    1.756630] sd 0:0:0:0: [sda] tag#0 FAILED Result:
+hostbyte=DID_ERROR driverbyte=DRIVER_OK cmd_age=0s
+[    1.758622] sd 0:0:0:0: [sda] tag#0 CDB: Synchronize Cache(10) 35
+00 00 00 00 00 00 00 00 00
+[    1.760576] blk_update_request: I/O error, dev sda, sector 0 op
+0x1:(WRITE) flags 0x800 phys_seg 1 prio class 0
+[    1.761534] Buffer I/O error on dev sda, logical block 0, lost sync
+page write
+[    1.764158] EXT4-fs (sda): I/O error while writing superblock
 
-Will remove.
 
--Topi
+2) the devices boot pass but mkfs failed on x86_64, i386, arm64
+Juno-r2 devices [2].
+
+mkfs -t ext4 /dev/disk/by-id/ata-TOSHIBA_MG03ACA100_37O9KGL0F
+[   72.159789] ata3.00: WARNING: zero len r/w req
+[   72.164287] ata3.00: WARNING: zero len r/w req
+[   72.168774] ata3.00: WARNING: zero len r/w req
+[   72.168777] ata3.00: WARNING: zero len r/w req
+[   72.168779] ata3.00: WARNING: zero len r/w req
+[   72.168781] ata3.00: WARNING: zero len r/w req
+[   72.168786] sd 2:0:0:0: [sda] tag#5 FAILED Result:
+hostbyte=DID_ERROR driverbyte=DRIVER_OK cmd_age=0s
+[   72.168788] sd 2:0:0:0: [sda] tag#5 CDB: Synchronize Cache(10) 35
+00 00 00 00 00 00 00 00 00
+[   72.168791] blk_update_request: I/O error, dev sda, sector 0 op
+0x1:(WRITE) flags 0x800 phys_seg 0 prio class 0
+
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+
+metadata:
+  git branch: master
+  git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+  git commit: e4fb79c771fbe2e6fcb3cffa87d5823a9bbf3f10
+  git describe: next-20201008
+  make_kernelversion: 5.9.0-rc8
+  kernel-config:
+https://builds.tuxbuild.com/pOW-FELX2VUycejkuyiKZg/kernel.config
+
+
+steps to reproduce:
+--------------------------
+1) qemu boot command:
+
+/usr/bin/qemu-system-x86_64 -cpu host -enable-kvm -nographic -net
+nic,model=virtio,macaddr=DE:AD:BE:EF:66:06 -net tap -m 1024 -monitor
+none -kernel bzImage --append "root=/dev/sda  rootwait
+console=ttyS0,115200" -hda
+rpb-console-image-lkft-intel-corei7-64-20200723162342-41.rootfs.ext4
+-m 4096 -smp 4 -nographic
+
+2) boot x86_64 with linux next 20201008 tag kernel and attach SDD drive.
+
+mkfs -t ext4 /dev/<drive-partition>
+
+Full log links,
+[1 ]https://lkft.validation.linaro.org/scheduler/job/1823906#L688
+[2] https://lkft.validation.linaro.org/scheduler/job/1823938#L2065
+
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
