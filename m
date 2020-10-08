@@ -2,265 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D9CC287302
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 13:01:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFACA28730A
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 13:02:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729733AbgJHLAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 07:00:32 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:55052 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726555AbgJHLA0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 07:00:26 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 098B0DL9124157;
-        Thu, 8 Oct 2020 11:00:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=pj1XfLnhrDsQrvUSb3kVB7Bjt2ZsQhIi1K4cKWj8pAY=;
- b=eCd7k2SspEtEt6Xmgou7wZhOi6q00/Qq4PfaqeeDtoFmiSNEM8Jk56BFyNAo9DqCGHP0
- yFsz+Z9UQk4/UmeA3V+EtpMBY9Blt4Yeo2JXPNaju9WFFfDsyIbD5nZnmAC5xEKyzKRr
- iQxrpKgEdzakpWpYNDA2Og8B53HfjZ7tKCqNCPw2oKSmtVJziyzb3Mkb6WbUKL593WIQ
- eO1FX/md0H1JTMTF7BFsJ3R+mCKnjDhr/7um1X4iYcKLydvim0nsY5hoFfPLsf39GZIc
- C4K14P0L9q0RAKzxdOSbQjuggSXxDM89K2qxXz9ou4gefj3eHT2mUA4mlQu+KlsQAwzR SQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 33xhxn6x23-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 08 Oct 2020 11:00:20 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 098AuEZW188488;
-        Thu, 8 Oct 2020 11:00:20 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 33y380yvjj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 08 Oct 2020 11:00:20 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 098B0J32023495;
-        Thu, 8 Oct 2020 11:00:19 GMT
-Received: from ltp.sg.oracle.com (/10.191.35.225)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 08 Oct 2020 04:00:19 -0700
-From:   Anand Jain <anand.jain@oracle.com>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     wqu@suse.com, fdmanana@suse.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org
-Subject: [PATCH stable-5.4 6/6] btrfs: allow btrfs_truncate_block() to fallback to nocow for data space reservation
-Date:   Thu,  8 Oct 2020 18:59:54 +0800
-Message-Id: <9df7b36688030028271fe5d4265512328534f9b6.1599750901.git.anand.jain@oracle.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1599750901.git.anand.jain@oracle.com>
-References: <cover.1599750901.git.anand.jain@oracle.com>
+        id S1728887AbgJHLCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 07:02:17 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:48477 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725890AbgJHLCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 07:02:13 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602154933; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
+ To: From: Sender; bh=eJBexxd8ncXOiQfY+iAAWapiGqaBRPOkeIcaQjW/Sdw=; b=YWrjF8eSkGmjZXbnNp0Q7beglqF3IQsNz+GyWTHUXqiiU/8lJcWxSGTbuoMsBCad4ju96qwW
+ qPRl/3jQrDJlCSpt2Cx1IiuZoX6Nx14EO3SUkMxLmkoIUwTWRAE4L7H5Q69f1v+24ZXcZdPU
+ aOSrfe3SJPVN99twW13grR0hlYw=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5f7ef170856d9308b50ff985 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 08 Oct 2020 11:01:04
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0C905C433F1; Thu,  8 Oct 2020 11:01:04 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C6B91C433CA;
+        Thu,  8 Oct 2020 11:01:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C6B91C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     =?utf-8?B?SsOpcsO0bWU=?= Pouiller <jerome.pouiller@silabs.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 0/7] wfx: move out from the staging area
+References: <20201007101943.749898-1-Jerome.Pouiller@silabs.com>
+        <20201007105513.GA1078344@kroah.com> <87ft6p2n0h.fsf@codeaurora.org>
+        <16184307.3FagCOgvEJ@pc-42>
+Date:   Thu, 08 Oct 2020 14:00:59 +0300
+In-Reply-To: <16184307.3FagCOgvEJ@pc-42> (=?utf-8?B?IkrDqXLDtG1l?=
+ Pouiller"'s message of "Thu,
+        08 Oct 2020 12:10:08 +0200")
+Message-ID: <87tuv50yok.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 spamscore=0
- mlxscore=0 malwarescore=0 suspectscore=2 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010080081
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 bulkscore=0
- impostorscore=0 lowpriorityscore=0 suspectscore=2 phishscore=0
- mlxlogscore=999 adultscore=0 clxscore=1015 spamscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010080081
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com> writes:
 
-commit 6d4572a9d71d5fc2affee0258d8582d39859188c upstream.
+> On Thursday 8 October 2020 09:30:06 CEST Kalle Valo wrote:
+> [...]
+>> Yes, the driver needs to be reviewed in linux-wireless list. I recommend
+>> submitting the whole driver in a patchset with one file per patch, which
+>> seems to be the easiest way to review a full driver. The final move will
+>> be in just one commit moving the driver, just like patch 7 does here. As
+>> an example see how wilc1000 review was done.
+>
+> I see. I suppose it is still a bit complicated to review? Maybe I could
+> try to make things easier.
+>
+> For my submission to staging/ I had taken time to split the driver in an
+> understandable series of patches[1]. I think it was easier to review than
+> just sending files one by one. I could do the same thing for the
+> submission to linux-wireless. It would ask me a bit of work but, since I
+> already have a template, it is conceivable.
+>
+> Do you think it is worth it, or it would be an unnecessary effort?
+>
+> [1]
+> https://lore.kernel.org/driverdev-devel/20190919142527.31797-1-Jerome.Pou=
+iller@silabs.com/
+>      or commits a7a91ca5a23d^..40115bbc40e2
 
-[BUG]
-When the data space is exhausted, even if the inode has NOCOW attribute,
-we will still refuse to truncate unaligned range due to ENOSPC.
+I don't know how others think, but I prefer to review new drivers "one
+file per patch" style as I get to see the big picture easily. And
+besides, splitting the driver like that would be a huge job for you. I
+don't think it's worth your time in this case. And making changes in the
+driver during review process becomes even more complex.
 
-The following script can reproduce it pretty easily:
-  #!/bin/bash
+--=20
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-  dev=/dev/test/test
-  mnt=/mnt/btrfs
-
-  umount $dev &> /dev/null
-  umount $mnt &> /dev/null
-
-  mkfs.btrfs -f $dev -b 1G
-  mount -o nospace_cache $dev $mnt
-  touch $mnt/foobar
-  chattr +C $mnt/foobar
-
-  xfs_io -f -c "pwrite -b 4k 0 4k" $mnt/foobar > /dev/null
-  xfs_io -f -c "pwrite -b 4k 0 1G" $mnt/padding &> /dev/null
-  sync
-
-  xfs_io -c "fpunch 0 2k" $mnt/foobar
-  umount $mnt
-
-Currently this will fail at the fpunch part.
-
-[CAUSE]
-Because btrfs_truncate_block() always reserves space without checking
-the NOCOW attribute.
-
-Since the writeback path follows NOCOW bit, we only need to bother the
-space reservation code in btrfs_truncate_block().
-
-[FIX]
-Make btrfs_truncate_block() follow btrfs_buffered_write() to try to
-reserve data space first, and fall back to NOCOW check only when we
-don't have enough space.
-
-Such always-try-reserve is an optimization introduced in
-btrfs_buffered_write(), to avoid expensive btrfs_check_can_nocow() call.
-
-This patch will export check_can_nocow() as btrfs_check_can_nocow(), and
-use it in btrfs_truncate_block() to fix the problem.
-
-Reported-by: Martin Doucha <martin.doucha@suse.com>
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
- Conflicts:
-	fs/btrfs/ctree.h
-	fs/btrfs/file.c
-	fs/btrfs/inode.c
----
- fs/btrfs/ctree.h |  2 ++
- fs/btrfs/file.c  |  9 +++++----
- fs/btrfs/inode.c | 44 +++++++++++++++++++++++++++++++++++++-------
- 3 files changed, 44 insertions(+), 11 deletions(-)
-
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 9a690c10afaa..23b4f38e2392 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -2956,6 +2956,8 @@ int btrfs_fdatawrite_range(struct inode *inode, loff_t start, loff_t end);
- loff_t btrfs_remap_file_range(struct file *file_in, loff_t pos_in,
- 			      struct file *file_out, loff_t pos_out,
- 			      loff_t len, unsigned int remap_flags);
-+int btrfs_check_can_nocow(struct btrfs_inode *inode, loff_t pos,
-+			  size_t *write_bytes);
- 
- /* tree-defrag.c */
- int btrfs_defrag_leaves(struct btrfs_trans_handle *trans,
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 4d0e1f9452a5..4126513e2429 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -1546,8 +1546,8 @@ lock_and_cleanup_extent_if_need(struct btrfs_inode *inode, struct page **pages,
- 	return ret;
- }
- 
--static noinline int check_can_nocow(struct btrfs_inode *inode, loff_t pos,
--				    size_t *write_bytes)
-+int btrfs_check_can_nocow(struct btrfs_inode *inode, loff_t pos,
-+			  size_t *write_bytes)
- {
- 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
- 	struct btrfs_root *root = inode->root;
-@@ -1647,7 +1647,7 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
- 		if (ret < 0) {
- 			if ((BTRFS_I(inode)->flags & (BTRFS_INODE_NODATACOW |
- 						      BTRFS_INODE_PREALLOC)) &&
--			    check_can_nocow(BTRFS_I(inode), pos,
-+			    btrfs_check_can_nocow(BTRFS_I(inode), pos,
- 					&write_bytes) > 0) {
- 				/*
- 				 * For nodata cow case, no need to reserve
-@@ -1927,7 +1927,8 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
- 		 */
- 		if (!(BTRFS_I(inode)->flags & (BTRFS_INODE_NODATACOW |
- 					      BTRFS_INODE_PREALLOC)) ||
--		    check_can_nocow(BTRFS_I(inode), pos, &nocow_bytes) <= 0) {
-+		    btrfs_check_can_nocow(BTRFS_I(inode), pos,
-+					  &nocow_bytes) <= 0) {
- 			inode_unlock(inode);
- 			return -EAGAIN;
- 		}
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 9ac40991a640..2356b28afebe 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -5133,11 +5133,13 @@ int btrfs_truncate_block(struct inode *inode, loff_t from, loff_t len,
- 	struct extent_state *cached_state = NULL;
- 	struct extent_changeset *data_reserved = NULL;
- 	char *kaddr;
-+	bool only_release_metadata = false;
- 	u32 blocksize = fs_info->sectorsize;
- 	pgoff_t index = from >> PAGE_SHIFT;
- 	unsigned offset = from & (blocksize - 1);
- 	struct page *page;
- 	gfp_t mask = btrfs_alloc_write_mask(mapping);
-+	size_t write_bytes = blocksize;
- 	int ret = 0;
- 	u64 block_start;
- 	u64 block_end;
-@@ -5149,11 +5151,27 @@ int btrfs_truncate_block(struct inode *inode, loff_t from, loff_t len,
- 	block_start = round_down(from, blocksize);
- 	block_end = block_start + blocksize - 1;
- 
--	ret = btrfs_delalloc_reserve_space(inode, &data_reserved,
--					   block_start, blocksize);
--	if (ret)
--		goto out;
- 
-+	ret = btrfs_check_data_free_space(inode, &data_reserved, block_start,
-+					  blocksize);
-+	if (ret < 0) {
-+		if ((BTRFS_I(inode)->flags & (BTRFS_INODE_NODATACOW |
-+					      BTRFS_INODE_PREALLOC)) &&
-+		    btrfs_check_can_nocow(BTRFS_I(inode), block_start,
-+					  &write_bytes) > 0) {
-+			/* For nocow case, no need to reserve data space */
-+			only_release_metadata = true;
-+		} else {
-+			goto out;
-+		}
-+	}
-+	ret = btrfs_delalloc_reserve_metadata(BTRFS_I(inode), blocksize);
-+	if (ret < 0) {
-+		if (!only_release_metadata)
-+			btrfs_free_reserved_data_space(inode, data_reserved,
-+					block_start, blocksize);
-+		goto out;
-+	}
- again:
- 	page = find_or_create_page(mapping, index, mask);
- 	if (!page) {
-@@ -5222,14 +5240,26 @@ int btrfs_truncate_block(struct inode *inode, loff_t from, loff_t len,
- 	set_page_dirty(page);
- 	unlock_extent_cached(io_tree, block_start, block_end, &cached_state);
- 
-+	if (only_release_metadata)
-+		set_extent_bit(&BTRFS_I(inode)->io_tree, block_start,
-+				block_end, EXTENT_NORESERVE, NULL, NULL,
-+				GFP_NOFS);
-+
- out_unlock:
--	if (ret)
--		btrfs_delalloc_release_space(inode, data_reserved, block_start,
--					     blocksize, true);
-+	if (ret) {
-+		if (only_release_metadata)
-+			btrfs_delalloc_release_metadata(BTRFS_I(inode),
-+					blocksize, true);
-+		else
-+			btrfs_delalloc_release_space(inode, data_reserved,
-+					block_start, blocksize, true);
-+	}
- 	btrfs_delalloc_release_extents(BTRFS_I(inode), blocksize);
- 	unlock_page(page);
- 	put_page(page);
- out:
-+	if (only_release_metadata)
-+		btrfs_end_write_no_snapshotting(BTRFS_I(inode)->root);
- 	extent_changeset_free(data_reserved);
- 	return ret;
- }
--- 
-2.25.1
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
