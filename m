@@ -2,102 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B80286FAA
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2110286FBC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:45:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727800AbgJHHkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 03:40:19 -0400
-Received: from mail-il1-f208.google.com ([209.85.166.208]:46439 "EHLO
-        mail-il1-f208.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727224AbgJHHkT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 03:40:19 -0400
-Received: by mail-il1-f208.google.com with SMTP id z8so3473921ilh.13
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 00:40:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=sY2IwiMHaNHjrlHF4HKmprZAKOkbqITB/BHAQtltvXw=;
-        b=PkDxNdV91kCpJ55btqPGeX37GruWw5iRF5lCpwPNnkZmRokCYPrIUshWfCbUb2Abx4
-         RZ1okqGfDESzwWOR2kAvpwLlaDVKUwD+8P9iIklqGq6ME8sAeNjxQUr3ZtZ3EtPgvDkg
-         PnzetD554BBp2ltOaqxwUaqg2vAwyJRtDshjqhsktcLVF2sutTG9/2OzH2yA1L2JjdZs
-         0uC7NYHcJMBTWXQb9Wq4jgBvdM3No6RdkaVTG4R7mvMy3CIamG5pgrtOe3pansjafFbf
-         Zpk1sdNKFY0Qqe7dIWvrweGLcV9hJU5GKs73ylCzhd6u/vWiKKuoqeMfpB7CkU+uiK/g
-         5CCw==
-X-Gm-Message-State: AOAM5335yY0AazGcns8eGIStU5bBzew2Js/6Bgb2c9W5OtCwQci7ZRzQ
-        Xd5+q/haoPgH46vYv3HGHKdZeWhiaVcUJvZ4w5EusMTPZklf
-X-Google-Smtp-Source: ABdhPJwu338smk3gnI3WmrD/qM6p1msBcGtR1Ta0xpsNG36bwiBcJaaXiNnNP6YdutsZLGdAJD1QSK7cyG98n9+UUaew2TcaV5Gs
+        id S1727376AbgJHHpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 03:45:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60268 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725899AbgJHHpR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 03:45:17 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4B9A02184D;
+        Thu,  8 Oct 2020 07:45:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602143116;
+        bh=Cht0AAlXCeqIAyO4xP3T6BPPZYtciZXHc+YFx0n8WOg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YmjRIAUMIbprCKDN16qg6QaLwl/mO/PO7bjszExYHGwtlHqYqTYrRSmDShDARFHqG
+         DS3QtwSKpXbR2ip8bgE1yv4UVQa3d5qYNYgvdzNkv0xftq6AORoj8GYXrzIs8tKqI1
+         7Pi41pzPk0jAs6j/xw7QhnHtfwICvzIVTAFvafn0=
+Date:   Thu, 8 Oct 2020 09:46:00 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Badhri Jagan Sridharan <badhri@google.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Prashant Malani <pmalani@chromium.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, Amelie Delaunay <amelie.delaunay@st.com>
+Subject: Re: [PATCH v10 00/15] TCPM support for FRS and AutoDischarge
+ Disconnect
+Message-ID: <20201008074600.GA247486@kroah.com>
+References: <20201008061556.1402293-1-badhri@google.com>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:b5c2:: with SMTP id e185mr4988645iof.106.1602142818040;
- Thu, 08 Oct 2020 00:40:18 -0700 (PDT)
-Date:   Thu, 08 Oct 2020 00:40:18 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008c848805b123f174@google.com>
-Subject: WARNING in ieee80211_ibss_csa_beacon
-From:   syzbot <syzbot+b6c9fe29aefe68e4ad34@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201008061556.1402293-1-badhri@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Oct 07, 2020 at 11:15:41PM -0700, Badhri Jagan Sridharan wrote:
+> Hi,
+> 
+> Made two changes:
+> 
+> 1. Added "additionalProperties: false" as suggested by Rob Herring in
+> https://lore.kernel.org/linux-usb/20201005144618.GA154206@bogus/
+> 
+> 2. Removed FRS dts binding constants to address Rob Herring's comment in
+> https://lore.kernel.org/linux-usb/20201006182940.GA2574941@bogus/
 
-syzbot found the following issue on:
+That worked better.  I've applied the patches that Heikki had reviewed
+to my usb-testing branch now.
 
-HEAD commit:    c85fb28b Merge tag 'arm64-fixes' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15b2b400500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=de7f697da23057c7
-dashboard link: https://syzkaller.appspot.com/bug?extid=b6c9fe29aefe68e4ad34
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+thanks,
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b6c9fe29aefe68e4ad34@syzkaller.appspotmail.com
-
-WARNING: CPU: 1 PID: 11321 at net/mac80211/ibss.c:504 ieee80211_ibss_csa_beacon+0x4e9/0x5a0 net/mac80211/ibss.c:504
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 11321 Comm: kworker/u4:0 Not tainted 5.9.0-rc8-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: phy10 ieee80211_csa_finalize_work
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1d6/0x29e lib/dump_stack.c:118
- panic+0x2c0/0x800 kernel/panic.c:231
- __warn+0x227/0x250 kernel/panic.c:600
- report_bug+0x1b1/0x2e0 lib/bug.c:198
- handle_bug+0x42/0x80 arch/x86/kernel/traps.c:234
- exc_invalid_op+0x16/0x40 arch/x86/kernel/traps.c:254
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-RIP: 0010:ieee80211_ibss_csa_beacon+0x4e9/0x5a0 net/mac80211/ibss.c:504
-Code: e8 fc 29 8b f9 b8 f4 ff ff ff eb 0a e8 f0 29 8b f9 b8 00 01 00 00 48 83 c4 30 5b 41 5c 41 5d 41 5e 41 5f 5d c3 e8 d7 29 8b f9 <0f> 0b b8 ea ff ff ff eb e3 e8 c9 29 8b f9 0f 0b e9 88 fb ff ff 48
-RSP: 0018:ffffc9000ab5fbf8 EFLAGS: 00010293
-RAX: ffffffff87e9d419 RBX: ffff88804cc20580 RCX: ffff888016268280
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffff88804cc23490 R08: dffffc0000000000 R09: fffffbfff16c82b4
-R10: fffffbfff16c82b4 R11: 0000000000000000 R12: ffff8880a21a18c0
-R13: ffff8880a21a18ba R14: ffff8880a21a0c00 R15: ffff8880a21a18e0
- ieee80211_set_after_csa_beacon net/mac80211/cfg.c:3043 [inline]
- __ieee80211_csa_finalize net/mac80211/cfg.c:3099 [inline]
- ieee80211_csa_finalize+0x46f/0x960 net/mac80211/cfg.c:3122
- ieee80211_csa_finalize_work+0xfb/0x140 net/mac80211/cfg.c:3147
- process_one_work+0x789/0xfc0 kernel/workqueue.c:2269
- worker_thread+0xaa4/0x1460 kernel/workqueue.c:2415
- kthread+0x37e/0x3a0 drivers/block/aoe/aoecmd.c:1234
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+greg k-h
