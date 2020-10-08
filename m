@@ -2,184 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F472877CA
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 17:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 079442877E3
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 17:48:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729327AbgJHPqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 11:46:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35176 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725912AbgJHPqn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 11:46:43 -0400
-Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0092220739;
-        Thu,  8 Oct 2020 15:46:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602172001;
-        bh=URIrqbBZFVv8zRZdEp54wBusdj0zVHMR07U5vdNs8mo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=TZ9QNy0j3cHF52KEoAsDg3e2O0fg8cBtYwcgVxf6EsTB8WYcC7QGE6i0PceSPVN/z
-         2b5yTSx3VmP0gAz5PALL10zmdiXh1x059sJ8/zFq0PKFRzsaQAoFrL8eDPMvP3OOdt
-         UTkzTKRamDYaHTkQbpzFiTjKWRLx+FAKtndIePUc=
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Stefano Stabellini <sstabellini@kernel.org>,
-        Julien Grall <julien@xen.org>
-Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Alex=20Benn=C3=A9e?= <alex.bennee@linaro.org>,
-        takahiro.akashi@linaro.org
-Subject: [PATCH v3] arm/arm64: xen: Fix to convert percpu address to gfn correctly
-Date:   Fri,  9 Oct 2020 00:46:37 +0900
-Message-Id: <160217199753.214054.18187130778764820148.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-User-Agent: StGit/0.19
+        id S1731167AbgJHPsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 11:48:25 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:36163 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726165AbgJHPsV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 11:48:21 -0400
+Received: from localhost.localdomain ([192.30.34.233]) by
+ mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1M7KKA-1kIpyQ2KzM-007kBr; Thu, 08 Oct 2020 17:47:15 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     linux-kernel@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Philip Blundell <philb@gnu.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Sam Creasey <sammy@sammy.net>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 00/13] Clean up legacy clock tick users
+Date:   Thu,  8 Oct 2020 17:46:38 +0200
+Message-Id: <20201008154651.1901126-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:ToCg0sXzfof6vBLW0FBjjVXywAK/gLyirWECWdzB4HS8Fcsvfc3
+ KICej28tXkzfQ4JRGwmkABm7jfD+Q1lU1BJw7T0Lwpe5f+9kcKbUsHe20Hl/PaNGaJm7f64
+ vzJ+b6TvkgNmTNmKF4q0otuZPBYaKl04cVbqXwwhtpd4LjYBTPzdyr5BMwVWRMEtd03OY9O
+ 9R1EBRW62aNmSfzzkZ7hQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:XzC6G7gG190=:Cqm3PvhpJLmyzbv8maC2Qh
+ dnY6yR+InSfpI2H7h2qKLgqXY0N/nDpx+LyKwsDfWCfy30pv1/X179z3M18wDXjMbMsUpzZ6F
+ 4B5NNcDcFVMTUCUPlRfy2d3qzVZht/dx1zUdmL1xXlE9E6pFkyUCwoA1J8rrxWA6pnghYo8Ah
+ 0QSFCJMZvvnYyDhAejrhQIiHSmxWuUyB1azRxHYtMm8V4BzxflkuuFqtzYNFyr5b7P1Avsz1e
+ vjXufHhD9qmSPjaXhc5RcMXIkJAI+tb9RmveUbqRO0gARB+S5JRJAOPu55715IQVquUYc+Y5C
+ N5gF9BoV3MEe9uywKU5G6DC9AoyVV+MojMMrN4HTf3AH28dnEbcQyqhAAvff+j+KTTMO4Hukl
+ xIaBIKOo129/+r06dLt9e+ttV49J6xE04WgPvF5KAVvx7q18DrfiB7sQ+FWwkxcvLNlkgfqbV
+ p3QRrIypBFfQvLQYH2yK74by+sk2YmiWpDsQOvIMimQy5W7CyoB4zE8YWuxKhPxD6hec9R/yc
+ DqXtXjbeI22nK835/2cu3jL/ee7OYxq153PK5R+xpWaWMUEfgHODmzl2dQKvdlKKK0EUA6ude
+ Kx5FnaKQM2AQen2RtvDCMpnrIY6mfmE7JyR1UYiwOBxq94oNhfYrqF51lwlEk+2IqfKP8p1pq
+ 2Qpt//BK9nvrV4/feo5U6lbqA3jqVxd4+3SBbYvE4zeNuixTzu60EDSpJLikef7pvt3YItvJw
+ F9NzxPuwnT+XRGwnAbbJtv/0NyKifs6ul5oBFvy4znZCAaP/bkNaai/drzAigtOY0YH+Cevib
+ CIPjT954uXTsZoTu+YGOFhXj/r9QB5+3/FxlRKqwpWINpJmbBojGsvZ5XZYaHlnDgvrQbsx
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use per_cpu_ptr_to_phys() instead of virt_to_phys() and __pa()
-for per-cpu address conversion.
+When I created the patch removing CONFIG_ARCH_GETTIMEOFFSET,
+I also had a look at CONFIG_GENERIC_CLOCKEVENTS, which is
+selected by most, but not all, platforms today, each of the
+ones that lack it doing the timer tick slightly differently.
 
-In xen_starting_cpu(), per-cpu xen_vcpu_info address is converted
-to gfn by virt_to_gfn() macro. However, since the virt_to_gfn(v)
-assumes the given virtual address is in linear mapped kernel memory
-area, it can not convert the per-cpu memory if it is allocated on
-vmalloc area.
+The cleanups here make the old platforms a bit more
+consistent, in multiple ways:
 
-This depends on from where the xen_vcpu_info percpu object is
-allocated. If CONFIG_NEED_PER_CPU_EMBED_FIRST_CHUNK=y, the
-first chunk of percpu is on the kernel linear mapped area.
-If the first chunk is enough large, xen_guest_init() can allocate
-the xen_vcpu_info on the first chunk. However, if it is not large
-enough, or other subsystem init functions called earlier than
-xen_guest_init() runs out the first chunk, the xen_vcpu_info is
-allocated on the 2nd chunk of percpu, and it can be on vmalloc
-memory (depends on CONFIG_NEED_PER_CPU_KM=n).
+- rather than selecting GENERIC_CLOCKEVENTS on modern
+  platforms, select LEGACY_TIMER_TICK on the old ones.
 
-Without this fix and, unfortnunately, xen_vcpu_info is allocated
-on the vmalloc area, the Dom0 kernel will fail to boot with
-following errors.
+- Hide some more of the internal implementation and only
+  provide a single common entry point for the timer tick,
+  which also makes the behavior more consistent.
 
-[    0.466172] Xen: initializing cpu0
-[    0.469601] ------------[ cut here ]------------
-[    0.474295] WARNING: CPU: 0 PID: 1 at arch/arm64/xen/../../arm/xen/enlighten.c:153 xen_starting_cpu+0x160/0x180
-[    0.484435] Modules linked in:
-[    0.487565] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc4+ #4
-[    0.493895] Hardware name: Socionext Developer Box (DT)
-[    0.499194] pstate: 00000005 (nzcv daif -PAN -UAO BTYPE=--)
-[    0.504836] pc : xen_starting_cpu+0x160/0x180
-[    0.509263] lr : xen_starting_cpu+0xb0/0x180
-[    0.513599] sp : ffff8000116cbb60
-[    0.516984] x29: ffff8000116cbb60 x28: ffff80000abec000
-[    0.522366] x27: 0000000000000000 x26: 0000000000000000
-[    0.527754] x25: ffff80001156c000 x24: fffffdffbfcdb600
-[    0.533129] x23: 0000000000000000 x22: 0000000000000000
-[    0.538511] x21: ffff8000113a99c8 x20: ffff800010fe4f68
-[    0.543892] x19: ffff8000113a9988 x18: 0000000000000010
-[    0.549274] x17: 0000000094fe0f81 x16: 00000000deadbeef
-[    0.554655] x15: ffffffffffffffff x14: 0720072007200720
-[    0.560037] x13: 0720072007200720 x12: 0720072007200720
-[    0.565418] x11: 0720072007200720 x10: 0720072007200720
-[    0.570801] x9 : ffff8000100fbdc0 x8 : ffff800010715208
-[    0.576182] x7 : 0000000000000054 x6 : ffff00001b790f00
-[    0.581564] x5 : ffff800010bbf880 x4 : 0000000000000000
-[    0.586945] x3 : 0000000000000000 x2 : ffff80000abec000
-[    0.592327] x1 : 000000000000002f x0 : 0000800000000000
-[    0.597716] Call trace:
-[    0.600232]  xen_starting_cpu+0x160/0x180
-[    0.604309]  cpuhp_invoke_callback+0xac/0x640
-[    0.608736]  cpuhp_issue_call+0xf4/0x150
-[    0.612728]  __cpuhp_setup_state_cpuslocked+0x128/0x2c8
-[    0.618030]  __cpuhp_setup_state+0x84/0xf8
-[    0.622192]  xen_guest_init+0x324/0x364
-[    0.626097]  do_one_initcall+0x54/0x250
-[    0.630003]  kernel_init_freeable+0x12c/0x2c8
-[    0.634428]  kernel_init+0x1c/0x128
-[    0.637988]  ret_from_fork+0x10/0x18
-[    0.641635] ---[ end trace d95b5309a33f8b27 ]---
-[    0.646337] ------------[ cut here ]------------
-[    0.651005] kernel BUG at arch/arm64/xen/../../arm/xen/enlighten.c:158!
-[    0.657697] Internal error: Oops - BUG: 0 [#1] SMP
-[    0.662548] Modules linked in:
-[    0.665676] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W         5.9.0-rc4+ #4
-[    0.673398] Hardware name: Socionext Developer Box (DT)
-[    0.678695] pstate: 00000005 (nzcv daif -PAN -UAO BTYPE=--)
-[    0.684338] pc : xen_starting_cpu+0x178/0x180
-[    0.688765] lr : xen_starting_cpu+0x144/0x180
-[    0.693188] sp : ffff8000116cbb60
-[    0.696573] x29: ffff8000116cbb60 x28: ffff80000abec000
-[    0.701955] x27: 0000000000000000 x26: 0000000000000000
-[    0.707344] x25: ffff80001156c000 x24: fffffdffbfcdb600
-[    0.712718] x23: 0000000000000000 x22: 0000000000000000
-[    0.718107] x21: ffff8000113a99c8 x20: ffff800010fe4f68
-[    0.723481] x19: ffff8000113a9988 x18: 0000000000000010
-[    0.728863] x17: 0000000094fe0f81 x16: 00000000deadbeef
-[    0.734245] x15: ffffffffffffffff x14: 0720072007200720
-[    0.739626] x13: 0720072007200720 x12: 0720072007200720
-[    0.745008] x11: 0720072007200720 x10: 0720072007200720
-[    0.750390] x9 : ffff8000100fbdc0 x8 : ffff800010715208
-[    0.755771] x7 : 0000000000000054 x6 : ffff00001b790f00
-[    0.761153] x5 : ffff800010bbf880 x4 : 0000000000000000
-[    0.766534] x3 : 0000000000000000 x2 : 00000000deadbeef
-[    0.771916] x1 : 00000000deadbeef x0 : ffffffffffffffea
-[    0.777304] Call trace:
-[    0.779819]  xen_starting_cpu+0x178/0x180
-[    0.783898]  cpuhp_invoke_callback+0xac/0x640
-[    0.788325]  cpuhp_issue_call+0xf4/0x150
-[    0.792317]  __cpuhp_setup_state_cpuslocked+0x128/0x2c8
-[    0.797619]  __cpuhp_setup_state+0x84/0xf8
-[    0.801779]  xen_guest_init+0x324/0x364
-[    0.805683]  do_one_initcall+0x54/0x250
-[    0.809590]  kernel_init_freeable+0x12c/0x2c8
-[    0.814016]  kernel_init+0x1c/0x128
-[    0.817583]  ret_from_fork+0x10/0x18
-[    0.821226] Code: d0006980 f9427c00 cb000300 17ffffea (d4210000)
-[    0.827415] ---[ end trace d95b5309a33f8b28 ]---
-[    0.832076] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-[    0.839815] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
+- Remove the m68k and arm specific infrastructure pieces
+  and call the common helper directly from each timer
+  interrupt function.
 
-Theoletically, this issue has been introduced by commit 9a9ab3cc00dc
-("xen/arm: SMP support") because it uses __pa() on percpu address.
+I tested the series on m68k with the qemu q800 target
+platform, both with the legacy_timer_tick() implementation
+and after converting that to a periodic clockevent driver.
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
----
- Changes in v3:
-   Update patch description to explain the mechanism of the problem.
----
- arch/arm/xen/enlighten.c |    2 +-
- include/xen/arm/page.h   |    3 +++
- 2 files changed, 4 insertions(+), 1 deletion(-)
+     Arnd
 
-diff --git a/arch/arm/xen/enlighten.c b/arch/arm/xen/enlighten.c
-index e93145d72c26..a6ab3689b2f4 100644
---- a/arch/arm/xen/enlighten.c
-+++ b/arch/arm/xen/enlighten.c
-@@ -150,7 +150,7 @@ static int xen_starting_cpu(unsigned int cpu)
- 	pr_info("Xen: initializing cpu%d\n", cpu);
- 	vcpup = per_cpu_ptr(xen_vcpu_info, cpu);
- 
--	info.mfn = virt_to_gfn(vcpup);
-+	info.mfn = percpu_to_gfn(vcpup);
- 	info.offset = xen_offset_in_page(vcpup);
- 
- 	err = HYPERVISOR_vcpu_op(VCPUOP_register_vcpu_info, xen_vcpu_nr(cpu),
-diff --git a/include/xen/arm/page.h b/include/xen/arm/page.h
-index 39df751d0dc4..ac1b65470563 100644
---- a/include/xen/arm/page.h
-+++ b/include/xen/arm/page.h
-@@ -83,6 +83,9 @@ static inline unsigned long bfn_to_pfn(unsigned long bfn)
- 	})
- #define gfn_to_virt(m)		(__va(gfn_to_pfn(m) << XEN_PAGE_SHIFT))
- 
-+#define percpu_to_gfn(v)	\
-+	(pfn_to_gfn(per_cpu_ptr_to_phys(v) >> XEN_PAGE_SHIFT))
-+
- /* Only used in PV code. But ARM guests are always HVM. */
- static inline xmaddr_t arbitrary_virt_to_machine(void *vaddr)
- {
+Arnd Bergmann (13):
+  timekeeping: add CONFIG_LEGACY_TIMER_TICK
+  ia64: convert to legacy_timer_tick
+  ARM: rpc: use legacy_timer_tick
+  parisc: use legacy_timer_tick
+  m68k: coldfire: use legacy_timer_tick()
+  m68k: split heartbeat out of timer function
+  m68k: sun3/sun3c: use legacy_timer_tick
+  m68k: m68328: use legacy_timer_tick()
+  m68k: change remaining timers to legacy_timer_tick
+  m68k: remove timer_interrupt() function
+  timekeeping: remove xtime_update
+  timekeeping: default GENERIC_CLOCKEVENTS to enabled
+  [RFC] m68k: mac: convert to generic clockevent
+
+ .../time/clockevents/arch-support.txt         |  8 ++--
+ arch/alpha/Kconfig                            |  1 -
+ arch/arc/Kconfig                              |  1 -
+ arch/arm/Kconfig                              | 13 +-----
+ arch/arm/include/asm/mach/time.h              |  2 -
+ arch/arm/kernel/time.c                        | 14 ------
+ arch/arm/mach-rpc/time.c                      |  2 +-
+ arch/arm64/Kconfig                            |  1 -
+ arch/arm64/Kconfig.platforms                  |  1 -
+ arch/c6x/Kconfig                              |  1 -
+ arch/csky/Kconfig                             |  1 -
+ arch/h8300/Kconfig                            |  1 -
+ arch/hexagon/Kconfig                          |  1 -
+ arch/ia64/Kconfig                             |  1 +
+ arch/ia64/kernel/time.c                       | 36 ++++++---------
+ arch/m68k/68000/timers.c                      |  7 ++-
+ arch/m68k/Kconfig.cpu                         | 34 +++++++++++---
+ arch/m68k/Kconfig.machine                     | 15 +++++++
+ arch/m68k/amiga/config.c                      | 11 +++--
+ arch/m68k/apollo/config.c                     | 11 +++--
+ arch/m68k/atari/config.c                      |  2 +-
+ arch/m68k/atari/time.c                        |  9 ++--
+ arch/m68k/bvme6000/config.c                   |  9 ++--
+ arch/m68k/coldfire/Makefile                   | 32 ++++++++------
+ arch/m68k/coldfire/pit.c                      |  2 +-
+ arch/m68k/coldfire/sltimers.c                 |  8 ++--
+ arch/m68k/coldfire/timers.c                   |  8 ++--
+ arch/m68k/hp300/time.c                        |  8 ++--
+ arch/m68k/hp300/time.h                        |  2 +-
+ arch/m68k/include/asm/machdep.h               | 12 +++--
+ arch/m68k/kernel/setup_mm.c                   |  2 +-
+ arch/m68k/kernel/setup_no.c                   |  2 +-
+ arch/m68k/kernel/time.c                       | 18 ++------
+ arch/m68k/mac/config.c                        |  6 +--
+ arch/m68k/mac/via.c                           | 44 +++++++++++++++----
+ arch/m68k/mvme147/config.c                    |  9 ++--
+ arch/m68k/mvme16x/config.c                    |  9 ++--
+ arch/m68k/q40/config.c                        |  2 +-
+ arch/m68k/q40/q40ints.c                       | 10 ++---
+ arch/m68k/sun3/config.c                       |  4 +-
+ arch/m68k/sun3/sun3ints.c                     |  3 +-
+ arch/m68k/sun3x/time.c                        |  5 +--
+ arch/m68k/sun3x/time.h                        |  2 +-
+ arch/microblaze/Kconfig                       |  1 -
+ arch/mips/Kconfig                             |  1 -
+ arch/nds32/Kconfig                            |  1 -
+ arch/nios2/Kconfig                            |  1 -
+ arch/openrisc/Kconfig                         |  1 -
+ arch/parisc/Kconfig                           |  2 +-
+ arch/parisc/kernel/time.c                     |  9 ++--
+ arch/powerpc/Kconfig                          |  1 -
+ arch/riscv/Kconfig                            |  1 -
+ arch/s390/Kconfig                             |  1 -
+ arch/sh/Kconfig                               |  1 -
+ arch/sparc/Kconfig                            |  1 -
+ arch/um/Kconfig                               |  1 -
+ arch/x86/Kconfig                              |  1 -
+ arch/xtensa/Kconfig                           |  1 -
+ include/linux/timekeeping.h                   |  5 +--
+ kernel/time/Kconfig                           |  9 +++-
+ kernel/time/Makefile                          |  1 +
+ kernel/time/tick-legacy.c                     | 37 ++++++++++++++++
+ kernel/time/timekeeping.c                     | 16 -------
+ kernel/time/timekeeping.h                     |  1 +
+ 64 files changed, 242 insertions(+), 221 deletions(-)
+ create mode 100644 kernel/time/tick-legacy.c
+
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Fenghua Yu <fenghua.yu@intel.com>
+Cc: Greg Ungerer <gerg@linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Finn Thain <fthain@telegraphics.com.au>
+Cc: Philip Blundell <philb@gnu.org>
+Cc: Joshua Thompson <funaho@jurai.org>
+Cc: Sam Creasey <sammy@sammy.net>
+Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc: Helge Deller <deller@gmx.de>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: John Stultz <john.stultz@linaro.org>
+Cc: Stephen Boyd <sboyd@kernel.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-ia64@vger.kernel.org
+Cc: linux-parisc@vger.kernel.org
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-arm-kernel@lists.infradead.org
+
+-- 
+2.27.0
 
