@@ -2,132 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A38E287D40
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 22:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F7E2287D48
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 22:40:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730547AbgJHUe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 16:34:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725917AbgJHUe1 (ORCPT
+        id S1728860AbgJHUkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 16:40:53 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:53716 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726022AbgJHUkx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 16:34:27 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E5A4C0613D2;
-        Thu,  8 Oct 2020 13:34:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=p+sWvwr5fj3pIZ69PzilhbvvjIg6DA9KEI2Chppr5F4=; b=bbnVi60TUED7FdFwXGm/6JNPKU
-        IOEkniGGLwDwcUwfAWG2L/C0kH6MDFl2XNbtMO16r/cTZMxx2xjKTJpKg9/Xh0TU5UOvLlx/8o8/R
-        EJTO/Hz2jeRC1Nl7Kv7bZa/cv/AO0kRX6AnGzrw/nFvLbRVMxh0CS4mje/auiqQSLCNtaZZNxFmYx
-        svPDfWytLKSQskS6r4KvBsM6nBHLk8VUNkNoNHfqlqiafeiQ6W7tSasegcd52nB7fMsysKopaCiln
-        o8GyaF0Ujr9b+7sHjkp98rSuv19gpCvCRUptueg/EG8YCBvbAJFs28kr3pTWyRz1BDMqPlkIweEjm
-        phJU3bhA==;
-Received: from [2601:1c0:6280:3f0::2c9a]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kQccC-0001ZY-49; Thu, 08 Oct 2020 20:34:16 +0000
-Subject: Re: [PATCH 02/35] mm: support direct memory reservation
-To:     yulei.kernel@gmail.com, akpm@linux-foundation.org,
-        naoya.horiguchi@nec.com, viro@zeniv.linux.org.uk,
-        pbonzini@redhat.com
-Cc:     linux-fsdevel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xiaoguangrong.eric@gmail.com,
-        kernellwp@gmail.com, lihaiwei.kernel@gmail.com,
-        Yulei Zhang <yuleixzhang@tencent.com>,
-        Xiao Guangrong <gloryxiao@tencent.com>
-References: <cover.1602093760.git.yuleixzhang@tencent.com>
- <2fbc347a5f52591fc9da8d708fef0be238eb06a5.1602093760.git.yuleixzhang@tencent.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <b1703e32-052a-e56b-a4d3-ddd361953f6d@infradead.org>
-Date:   Thu, 8 Oct 2020 13:34:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Thu, 8 Oct 2020 16:40:53 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 098Kdfkl057454;
+        Thu, 8 Oct 2020 20:40:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=wpJwDablKFFDfkEM7eTe80cS7DPSS3zt2y0g1uxH/c0=;
+ b=pHBHNWDQiXPkCjzVDbq5ZOdeHmqPVoVjcnCxLE0pMvEKptiDiGX7lTYaIdtr/3olS6yi
+ YfCLR7xfuiwWA7e3lyL+p6m0VHuO9yaD6jO3uMcFZPFiAX78l2l3Y2JyCllq/S6UjAGG
+ Xl0K7me6rfX+cIknnni3FKElw5CgE+k1JNnRvAEnkS0ZDMa492wXz+AXMQ+9r+mIbkQv
+ jAvQfCXOLA8wcMpgbgDJZ8MWubJy2aaPHQzm9bv0oZqRQOATa9pYtR40KY0XlfNnd0iS
+ x5h6/xPm4em9FFlqOQb8ZFBB4faRxnYyiWWFaToE8ftabG4pwUYDPKvBQT7+ASWjDOX9 Mw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 3429jmg5ab-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 08 Oct 2020 20:40:30 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 098KYtwb087014;
+        Thu, 8 Oct 2020 20:40:30 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 3429kagsre-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 08 Oct 2020 20:40:29 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 098KeMso009103;
+        Thu, 8 Oct 2020 20:40:22 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 08 Oct 2020 13:40:21 -0700
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        dm-devel@redhat.com, open list <linux-kernel@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        drbd-dev@tron.linbit.com,
+        "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
+        <linux-ide@vger.kernel.org>, linux-raid@vger.kernel.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, Song Liu <song@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        martin.petersen@oracle.com, Hannes Reinecke <hare@suse.de>
+Subject: Re: [ Regressions ] linux next 20201008: blk_update_request: I/O
+ error, dev sda, sector 0 op 0x1:(WRITE) flags 0x800 phys_seg 0 prio class
+ 0
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1zh4w1mrq.fsf@ca-mkp.ca.oracle.com>
+References: <CA+G9fYtwisRJtN4ht=ApeWc1jWssDok-7y2wee6Z0kzMP-atKg@mail.gmail.com>
+        <CA+G9fYseTYRWoHUNZ=j4mjFs9dDJ-KOD8hDy+RnyDPx75HcVWw@mail.gmail.com>
+        <24c8ee4d-d5f7-e49f-cd0c-7cf50a5fd885@kernel.dk>
+        <20201008203058.GA27821@lst.de>
+Date:   Thu, 08 Oct 2020 16:40:18 -0400
+In-Reply-To: <20201008203058.GA27821@lst.de> (Christoph Hellwig's message of
+        "Thu, 8 Oct 2020 22:30:58 +0200")
 MIME-Version: 1.0
-In-Reply-To: <2fbc347a5f52591fc9da8d708fef0be238eb06a5.1602093760.git.yuleixzhang@tencent.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9768 signatures=668681
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 adultscore=0
+ phishscore=0 spamscore=0 mlxscore=0 malwarescore=0 bulkscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010080145
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9768 signatures=668681
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 suspectscore=1
+ clxscore=1011 phishscore=0 lowpriorityscore=0 impostorscore=0
+ malwarescore=0 mlxlogscore=999 priorityscore=1501 mlxscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010080146
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/8/20 12:53 AM, yulei.kernel@gmail.com wrote:
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index a1068742a6df..da15d4fc49db 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -980,6 +980,44 @@
->  			The filter can be disabled or changed to another
->  			driver later using sysfs.
->  
-> +	dmem=[!]size[KMG]
-> +			[KNL, NUMA] When CONFIG_DMEM is set, this means
-> +			the size of memory reserved for dmemfs on each numa
 
-			                                               NUMA
+Christoph,
 
-> +			memory node and 'size' must be aligned to the default
-> +			alignment that is the size of memory section which is
-> +			128M on default on x86_64. If set '!', such amount of
+> On Thu, Oct 08, 2020 at 02:17:41PM -0600, Jens Axboe wrote:
+>> Just for everyones edification, that would be these 9 patches from the
+>> SCSI tree:
+>
+> I sent the fixes out a bit ago and Cced the reporters..
 
-			     by default
+I do not have any libata-connected devices in the SCSI test setup so
+things worked fine for me yesterday. I have a retired Nehalem server in
+the rack which has a couple of ATA 500GB disk drives in it. I'll try to
+see if I can add that to my test pool. Just for good measure.
 
-> +			memory on each node will be owned by kernel and dmemfs
-> +			own the rest of memory on each node.
+In any case the fixes are now in my for-next branch:
 
-			owns
-
-> +			Example: Reserve 4G memory on each node for dmemfs
-> +				dmem = 4G
-
-IIRC, you don't want spaces in this example.
-Or did you check? Does the kernel's command line parser accept & ignore spaces like these?
-
-
-> +
-> +	dmem=[!]size[KMG]:align[KMG]
-> +			[KNL, NUMA] Ditto. 'align' should be power of two and
-> +			it's not smaller than the default alignment. Also
-
-	drop "it's"
-
-> +			'size' must be aligned to 'align'.
-> +			Example: Bad dmem parameter because 'size' misaligned
-> +				dmem=0x40200000:1G
-> +
-> +	dmem=size[KMG]@addr[KMG]
-> +			[KNL] When CONFIG_DMEM is set, this marks specific
-> +			memory as reserved for dmemfs. Region of memory will be
-> +			used by dmemfs, from addr to addr + size. Reserving a
-> +			certain memory region for kernel is illegal so '!' is
-> +			forbidden. Should not assign 'addr' to 0 because kernel
-> +			will occupy fixed memory region begin at 0 address.
-
-			                                beginning
-
-> +			Ditto, 'size' and 'addr' must be aligned to default
-> +			alignment.
-> +			Example: Exclude memory from 5G-6G for dmemfs.
-> +				dmem=1G@5G
-> +
-> +	dmem=size[KMG]@addr[KMG]:align[KMG]
-> +			[KNL] Ditto. 'align' should be power of two and it's
-
-		Drop "it's"
-
-> +			not smaller than the default alignment. Also 'size'
-> +			and 'addr' must be aligned to 'align'. Specially,
-> +			'@addr' and ':align' could occur in any order.
-> +			Example: Exclude memory from 5G-6G for dmemfs.
-> +				dmem=1G:1G@5G
-> +
->  	driver_async_probe=  [KNL]
->  			List of driver names to be probed asynchronously.
->  			Format: <driver_name1>,<driver_name2>...
-
+b6ba9b0e201a scsi: core: Set sc_data_direction to DMA_NONE for no-transfer commands
+9120ac54cce6 scsi: sr: Initialize ->cmd_len
 
 -- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Martin K. Petersen	Oracle Linux Engineering
