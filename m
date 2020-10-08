@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86A6C286F18
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:18:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77BB8286F17
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726629AbgJHHSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 03:18:01 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:15446 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725845AbgJHHR6 (ORCPT
+        id S1726530AbgJHHRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 03:17:55 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:38408 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725845AbgJHHRy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 03:17:58 -0400
-Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20201008071755epoutp03aca3ba62dbaa9c29c0fe641b65a630c6~78y7b7why0978409784epoutp034
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 07:17:55 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20201008071755epoutp03aca3ba62dbaa9c29c0fe641b65a630c6~78y7b7why0978409784epoutp034
+        Thu, 8 Oct 2020 03:17:54 -0400
+Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20201008071751epoutp043e2df76ba404db1449065b93e3e15c1a~78y4G7r8g3199131991epoutp04X
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 07:17:51 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20201008071751epoutp043e2df76ba404db1449065b93e3e15c1a~78y4G7r8g3199131991epoutp04X
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1602141475;
-        bh=Vf5REYWqW81SHW1qFAuyX9aUQajo/8TbNcbRUGivZr0=;
+        s=mail20170921; t=1602141471;
+        bh=7bOY40C14FlTn6CNSDZ31H6o8aQXRDrmi4JEk/EXl2A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h0PI5z1u/VKzG1O/TlV/YgeeQHSx4bOFkb8kB7rzN7aUN8Urwyg61QpnyUbbv23HU
-         COLurLWJwbVC0mHWkRp2elCkODEKYxfX2N7pAVDwEEGzCqFqMgGVGaJJEi7PvB0MWT
-         FU58bI3c/mqGvCG2H1WfS/07CEoAhmexEDRFcRWE=
-Received: from epsmges5p2new.samsung.com (unknown [182.195.42.74]) by
-        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
-        20201008071754epcas5p24636bafeeba46dd3f61352fb627ba5c7~78y65RvQA1424614246epcas5p2J;
-        Thu,  8 Oct 2020 07:17:54 +0000 (GMT)
-Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
-        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        8C.9F.09922.22DBE7F5; Thu,  8 Oct 2020 16:17:54 +0900 (KST)
+        b=n0XuCj42JDCBWnp/EgF/0Bnyz0FK7Vwj7uC47o8KegTtLV7++68W2ErWmeW/mnJCK
+         gnAuO1wl3sh/gmltiAGDH+GS2rUCvL4ZSTYfJlV+UCGA17s3mpF4S8vzZDsDy0aHRD
+         rb/UPHA4tMVGloqD3S/qmsqj6Adg+ja9U92quClk=
+Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
+        20201008071750epcas5p305b0c7ce6431d59cbb5d990bc2962f9f~78y3iOnE71100711007epcas5p3G;
+        Thu,  8 Oct 2020 07:17:50 +0000 (GMT)
+Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
+        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        51.D2.09567.E1DBE7F5; Thu,  8 Oct 2020 16:17:50 +0900 (KST)
 Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
-        20201008071633epcas5p20f5c533ac67ab235997e7e4a8ad3022b~78xva7Asx2308523085epcas5p2u;
-        Thu,  8 Oct 2020 07:16:33 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
+        20201008071639epcas5p465f13d992a25936ba63436baf1fb6f83~78x0pJn5b0806608066epcas5p49;
+        Thu,  8 Oct 2020 07:16:39 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
         epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201008071633epsmtrp15269389e67d4a8a91a98a3906c78d6e2~78xvaE7Tz1688916889epsmtrp1g;
-        Thu,  8 Oct 2020 07:16:33 +0000 (GMT)
-X-AuditID: b6c32a4a-337ff700000026c2-3e-5f7ebd229670
+        20201008071639epsmtrp1813629dc629515a8bfe66f518748448b~78x0oPSwE1688916889epsmtrp1i;
+        Thu,  8 Oct 2020 07:16:39 +0000 (GMT)
+X-AuditID: b6c32a4b-2f3ff7000000255f-55-5f7ebd1e322e
 Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        DF.D8.08604.1DCBE7F5; Thu,  8 Oct 2020 16:16:33 +0900 (KST)
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        7F.9A.08745.6DCBE7F5; Thu,  8 Oct 2020 16:16:38 +0900 (KST)
 Received: from localhost.localdomain (unknown [107.109.224.135]) by
         epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20201008071630epsmtip1fd5b3c2fc6c841c8feae3a254a7a7056~78xsfNEN21840618406epsmtip12;
-        Thu,  8 Oct 2020 07:16:30 +0000 (GMT)
+        20201008071635epsmtip1811c5c403afefee620d73e8ea180e363~78xxYtWLM1815718157epsmtip17;
+        Thu,  8 Oct 2020 07:16:35 +0000 (GMT)
 From:   Maninder Singh <maninder1.s@samsung.com>
 To:     linux@armlinux.org.uk, ndesaulniers@google.com, caij2003@gmail.com,
         tglx@linutronix.de, bigeasy@linutronix.de, maz@kernel.org,
@@ -55,195 +55,249 @@ To:     linux@armlinux.org.uk, ndesaulniers@google.com, caij2003@gmail.com,
 Cc:     a.sahrawat@samsung.com, v.narang@samsung.com,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Maninder Singh <maninder1.s@samsung.com>
-Subject: [PATCH 1/3] arm: introduce self pointer in thread info
-Date:   Thu,  8 Oct 2020 12:45:31 +0530
-Message-Id: <1602141333-17822-2-git-send-email-maninder1.s@samsung.com>
+Subject: [PATCH 2/3] arm: introduce IRQ stacks
+Date:   Thu,  8 Oct 2020 12:45:32 +0530
+Message-Id: <1602141333-17822-3-git-send-email-maninder1.s@samsung.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1602141333-17822-1-git-send-email-maninder1.s@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrEKsWRmVeSWpSXmKPExsWy7bCmpq7S3rp4gy+ThC0mTHvBYnFxd6rF
-        nPVr2CymXZzEbLFy3k5Gi02Pr7FaXN41h83i0NS9jBaH57exWOycc5LV4sOE/0wWmw9/YrHY
-        vGkqs8Whk3MZLbbP/8lscX6bv0XLHVMHQY8189Ywely+dpHZ4/q6AI+ds+6yeyzYVOqxaVUn
-        m8e7c+fYPU7M+M3isXlJvUffllWMHp83yQVwR3HZpKTmZJalFunbJXBlrF/7grHggWLFhRkr
-        mBoYW6W7GDk5JARMJA6en84OYgsJ7GaUaJpc3cXIBWR/YpRYfWUTC4TzjVHiUdMiZpiOtve3
-        oRJ7GSVuzXvLBuF8ZZRoXnCfFaSKTUBPYtWuPWBVIgJTmCTmfV0O5jALLGKUmHOxnxGkSljA
-        XuLMn09gNouAqsSZB9eYQGxeAXeJmfeaWSD2yUncPNcJtJuDg1PAQ+LvR02QORICezgktlyZ
-        wgpR4yIxcd5OqPuEJV4d38IOYUtJvOxvY4doaGaU+LRvLSOEM4VRYunFj1Dd9hKvmxuYQDYw
-        C2hKrN+lDxGWlZh6ah3YQcwCfBK9v58wQcR5JXbMg7FVJVpuboAaIy3x+eNHqKM9JM6cWMYM
-        CZfZjBLb125nmcAoNwthxQJGxlWMkqkFxbnpqcWmBUZ5qeV6xYm5xaV56XrJ+bmbGMHJSstr
-        B+PDBx/0DjEycTAeYpTgYFYS4U33rokX4k1JrKxKLcqPLyrNSS0+xCjNwaIkzqv040yckEB6
-        YklqdmpqQWoRTJaJg1OqgWnN/fW3jPdvEbunnBqyuL9MKsNwVe6nyf0J7FKG3qt9l7owfTr8
-        beX+vzVL2T2n5Nzz6Fx84YH+UoeNz4zXJeS7Ojy+flbXtJlzyRa5nHTdZddOBkYzt8Sees0X
-        X7732uLVrtcrNsv9Cbm+/WeNxacX5+dt49HryLkZdGRJ92veCOnjm53iolRC1zo8dLGql35X
-        mPLfzmGn+PYw4Rlne/fGM24wDtm/b4lUdWGd5+nFmp78bn672UuMjr1tSS+I3smct+XmhLku
-        Tz3jw1v/Hy67duPXox2+XCKijkfKrC07P9R3FS7e8fjdZYnwy+JxZ8QKHkf6Z4i5zGxeb3mC
-        V/vHplRO3ofzF70MavG4n67EUpyRaKjFXFScCADEoZI3xQMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrELMWRmVeSWpSXmKPExsWy7bCSnO7FPXXxBjv7RCwmTHvBYnFxd6rF
-        nPVr2CymXZzEbLFy3k5Gi02Pr7FaXN41h83i0NS9jBaH57exWOycc5LV4sOE/0wWmw9/YrHY
-        vGkqs8Whk3MZLbbP/8lscX6bv0XLHVMHQY8189Ywely+dpHZ4/q6AI+ds+6yeyzYVOqxaVUn
-        m8e7c+fYPU7M+M3isXlJvUffllWMHp83yQVwR3HZpKTmZJalFunbJXBlrF/7grHggWLFhRkr
-        mBoYW6W7GDk5JARMJNre32bpYuTiEBLYzSjx8/86NoiEtMTPf+9ZIGxhiZX/nrNDFH1mlDi0
-        ai87SIJNQE9i1a49YN0iAkuYJI5emswK4jALLGOUaP+7lhWkSljAXuLMn0+MIDaLgKrEmQfX
-        mEBsXgF3iZn3mqFWyEncPNfJ3MXIwcEp4CHx96MmSFgIqGRi113WCYx8CxgZVjFKphYU56bn
-        FhsWGOallusVJ+YWl+al6yXn525iBEeDluYOxu2rPugdYmTiYDzEKMHBrCTCm+5dEy/Em5JY
-        WZValB9fVJqTWnyIUZqDRUmc90bhwjghgfTEktTs1NSC1CKYLBMHp1QDk0vwpoYMqY9XKg29
-        DuWaTclY9/7X3NlbhBXe3NP9kc69PFvx2blHv3OYtLQnJCWzGjqVlTdO1z7C+kz+kpnrTkft
-        dZ8DLprX7tWVd2JOX7aVVzFyJ8cmi30JxZvr1K4eaZTYcCXm8sxfdZ/li7suxsqobb+8REC/
-        jaNi25SC4JcCd98d3co961luTYNeSnZNqEASs3TKyZn3DTbMqvD01bnXdOne49hYXVuToNBr
-        f9XVlscYcv1Ol/q5cqv7cnUtv6m2lqbHf8sJvbLTXm6VP3XCr9VLI7U+X/KpMD4om9m/um6Z
-        0dypUX+jsw+ynZObyWB80bP6ai7/h5TkvadeMDtuP+2acteAZZGPidROJZbijERDLeai4kQA
-        vSWzoPUCAAA=
-X-CMS-MailID: 20201008071633epcas5p20f5c533ac67ab235997e7e4a8ad3022b
+X-Brightmail-Tracker: H4sIAAAAAAAAA0VSf0xTVxjdfe+1fZRU31oSLwVZ7MYCJisYNN4wU0fitpeRZWzGP3TRWuWl
+        JULBPn6HCBumm52zwAojXWmJVjcZIi0o0FomxQ1QV1dJIFUwzCERyKRQCWOAzvZB9t853znn
+        O19uLomLHTwpmaMtZHRaVa6MLySu9ycnvZPgOaVMfXFBjmoanhLI72aQ5WorHzX463B02doD
+        kPOvER4adln4yFvvAajfpidQj2WIh4I1LzHU0b9AoA5nPY68Q00AddmWcXTv+ifo9Niu916n
+        W62tgB4e8eP0aFsW3WMeF9DNziLa2XKGTz/z+QT0YOMKQXfYK+lznS2ADjkTsqIPCfdkM7k5
+        xYwuRXFUqPF0dQsKBpNKXb1GQRVYizeAKBJSO6HlOzfPAISkmHID2Gj/EufIAoChpyY87BJT
+        IQC/dkdvJLpCVYCbuwB0tGVzgUUAgz1TEYFPyWGL6wYRFmIoEwatiz9GCE6dB9DiN0Zcklcu
+        i9UgCGOCSoR/9C1EsIj6ELpHG3lcXQIM+M68OoMkoygars0nh/dA6gYJl/v+5XOefXDt5iOC
+        wxI4M9Ap4LAUThv1Ai5QDeBC7xXAEROAF/3z6w174Wx1FRZuwKlkeNWVwo23wvrbbVgY49Qm
+        +O3KJMbNRbDbuoET4elA+/qaOBian18/gobnayzrr/oDgBOuYV4NSDD/X9EMQAuIZQrYPDXD
+        7ipI0zIlclaVxxZp1fLj+XlOEPlV2zO7weOJoNwLMBJ4ASRxWYxInVmhFIuyVWXljC5fqSvK
+        ZVgviCMJ2RaR7J+7R8SUWlXInGCYAka3oWJklLQKG7ifLtz0gUkxdu+O5LX91z6akdaa399s
+        fKYvU2TFja7GeT4fYd8eadp2aUaQ+Vt5TL5tqilWVFdmXHG8wauNest+NjX2z4rE2Vu3HeMl
+        jgO9SiOxI6jYvBofKG19UDq3zy5tt+pW2YxjJz9+0nBhbaz8YMwW2/jf08uBSfLSL7WK37ee
+        PLukf/lZHfwp/eHcFxMH5dScxn9nUD/15OflSW8wPcn8LjI0ZyivlBbm7M5pX+xLGzZYnzcq
+        H3auTp9LPXYEVo+9KHGErL5PNZYBjR97M1sdf6ty91IKUTwr8Xzz1R6fNnqItn1/eKlY8ZhO
+        M9+0V0oOB37da9q/7ZqiwpghI1iNasd2XMeq/gPOHennxAMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrELMWRmVeSWpSXmKPExsWy7bCSnO61PXXxBnP/mltMmPaCxeLi7lSL
+        OevXsFlMuziJ2WLlvJ2MFpseX2O1uLxrDpvFoal7GS0Oz29jsdg55ySrxYcJ/5ksNh/+xGKx
+        edNUZotDJ+cyWmyf/5PZ4vw2f4uWO6YOgh5r5q1h9Lh87SKzx/V1AR47Z91l91iwqdRj06pO
+        No93586xe5yY8ZvFY/OSeo++LasYPT5vkgvgjuKySUnNySxLLdK3S+DK2Lt9B3vBCY2KXfv6
+        2RsY/8p0MXJySAiYSGz/3MDYxcjFISSwg1Fiz47NrBAJaYmf/96zQNjCEiv/PWeHKPrMKHHr
+        7U92kASbgJ7Eql17WEASIgJLmCSOXprMCuIwCyxjlGj/uxZslDBQ1Zx5XWAdLAKqEhcOfgKz
+        eQXcJXZfnwG1Tk7i5rlO5i5GDg5OAQ+Jvx81QcJCQCUTu+6yTmDkW8DIsIpRMrWgODc9t9iw
+        wCgvtVyvODG3uDQvXS85P3cTIzgatLR2MO5Z9UHvECMTB+MhRgkOZiUR3nTvmngh3pTEyqrU
+        ovz4otKc1OJDjNIcLErivF9nLYwTEkhPLEnNTk0tSC2CyTJxcEo1MJ1T+Fh58a54TMa/6sX/
+        uKRX/d4R5VKZt1H44x9NDVXfTI5QH6G3j1YJ/LZZcTTx7ck/K4yfLBOqkVJZEGNg5nd18hKL
+        l2vMpY4uuP/lQtgJrZnBSQtf88/tP7j18CojQZlzrxJ+TMk4u84oqi/f2u2QkbeYg8qKX9ZT
+        05+/XKSgfC9TRVRUczOXZrbBzqWXfXOyvufGHOF8wPGWbe7r/GzPXUpWLSVT0260fdi8yv3l
+        pO1Be7m2r2m1/v3NsvDL8yzFzyK9R4LSZs16LCqf/EvhP0teXkHi64U+l5Itr3N9s0s7tofV
+        5ZT65y3bXi0qPFHfwP/uy+5W/Q1z0ne1pE7f/KdZxeXhNMVGrgthSWeUWIozEg21mIuKEwHn
+        VyUa9QIAAA==
+X-CMS-MailID: 20201008071639epcas5p465f13d992a25936ba63436baf1fb6f83
 X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
 X-Sendblock-Type: REQ_APPROVE
 CMS-TYPE: 105P
-X-CMS-RootMailID: 20201008071633epcas5p20f5c533ac67ab235997e7e4a8ad3022b
+X-CMS-RootMailID: 20201008071639epcas5p465f13d992a25936ba63436baf1fb6f83
 References: <1602141333-17822-1-git-send-email-maninder1.s@samsung.com>
-        <CGME20201008071633epcas5p20f5c533ac67ab235997e7e4a8ad3022b@epcas5p2.samsung.com>
+        <CGME20201008071639epcas5p465f13d992a25936ba63436baf1fb6f83@epcas5p4.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-self pointer to thread info is added in thread info.
-It is base change required for IRQ stack on ARM.
+This patch adds code for switching to IRQ stack.
+IRQ stack and Kernel SVC stack have below design.
 
-both stacks will have pointer to thread_info at bottom.
+IRQ STACK:-
+                    ------------ IRQ stack top
+                    |          |
+                    ------------
+                    .          .
+                    .          .
+                    .          .
+                    ------------
+                    |    sp    | <- irq_stack_base + 0x8
+                    ------------
+                    |    fp    | <- irq_stack_base + 0x4
+                    ------------
+                    |tinfo_ptr | /* pointer to thread info */
+irq_stack_ptr -->   ------------ IRQ stack base
+
+Kernel SVC stack:-
+                    ------------  Kernel stack top
+                    |          |
+                    ------------
+                    .          .
+                    .          .
+                    .          .
+                    ------------
+                    |          |
+                    |          |
+                    ------------
+                    |tinfo_ptr |  /* pointer to thread info */
+                    ------------ Kernel stack base
 
 Co-developed-by: Vaneet Narang <v.narang@samsung.com>
 Signed-off-by: Vaneet Narang <v.narang@samsung.com>
 Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
 ---
- arch/arm/Kconfig                   | 10 ++++++++++
- arch/arm/include/asm/assembler.h   |  3 +++
- arch/arm/include/asm/thread_info.h | 27 +++++++++++++++++++++++++++
- include/linux/thread_info.h        |  4 ++++
- kernel/fork.c                      |  1 +
- 5 files changed, 45 insertions(+)
+ arch/arm/include/asm/assembler.h |  8 ++++++++
+ arch/arm/include/asm/irq.h       |  6 ++++++
+ arch/arm/kernel/entry-armv.S     | 41 +++++++++++++++++++++++++++++++++++++++-
+ arch/arm/kernel/irq.c            | 24 +++++++++++++++++++++++
+ 4 files changed, 78 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index fe2f17eb2..434442f 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -1667,6 +1667,16 @@ config STACKPROTECTOR_PER_TASK
- 	  Enable this option to switch to a different method that uses a
- 	  different canary value for each task.
- 
-+config IRQ_STACK
-+	bool "use separate stacks for Interrupts"
-+	default n
-+	depends on FRAME_POINTER && !CC_IS_CLANG
-+	help
-+	  Select this option to use separate stacks for Interrupt handling code.
-+	  It will add latency in fetching thread info of one more derefer operation
-+	  and add latency in Interrupt serve at time as for each Interrupt, thread_info
-+	  pointer needs to be stored at bottom of interrupt stack.
-+
- endmenu
- 
- menu "Boot options"
 diff --git a/arch/arm/include/asm/assembler.h b/arch/arm/include/asm/assembler.h
-index fce52eed..8512bdc 100644
+index 8512bdc..82ee6ee 100644
 --- a/arch/arm/include/asm/assembler.h
 +++ b/arch/arm/include/asm/assembler.h
-@@ -207,6 +207,9 @@
-  THUMB(	mov	\rd, sp			)
-  THUMB(	lsr	\rd, \rd, #THREAD_SIZE_ORDER + PAGE_SHIFT	)
- 	mov	\rd, \rd, lsl #THREAD_SIZE_ORDER + PAGE_SHIFT
-+#ifdef CONFIG_IRQ_STACK
-+	ldr	\rd, [\rd]
-+#endif
+@@ -212,6 +212,14 @@
+ #endif
  	.endm
  
++	.macro	this_cpu_ptr, sym, reg, tmp
++	ldr	\reg, =\sym
++#if defined(CONFIG_SMP) && !defined(CONFIG_CPU_V6)
++	mrc	p15, 0, \tmp, cr13, c0, 4
++	add	\reg, \reg, \tmp
++#endif
++	.endm
++
  /*
-diff --git a/arch/arm/include/asm/thread_info.h b/arch/arm/include/asm/thread_info.h
-index 536b6b9..a4d5f76 100644
---- a/arch/arm/include/asm/thread_info.h
-+++ b/arch/arm/include/asm/thread_info.h
-@@ -44,6 +44,9 @@ struct cpu_context_save {
-  * __switch_to() assumes cpu_context follows immediately after cpu_domain.
+  * Increment/decrement the preempt count.
   */
- struct thread_info {
-+#ifdef CONFIG_IRQ_STACK
-+	void			*tinfo_ptr;	/* pointer to self thread_info */
-+#endif
- 	unsigned long		flags;		/* low level flags */
- 	int			preempt_count;	/* 0 => preemptable, <0 => bug */
- 	mm_segment_t		addr_limit;	/* address limit */
-@@ -67,14 +70,33 @@ struct thread_info {
+diff --git a/arch/arm/include/asm/irq.h b/arch/arm/include/asm/irq.h
+index 46d4114..f3299ab 100644
+--- a/arch/arm/include/asm/irq.h
++++ b/arch/arm/include/asm/irq.h
+@@ -22,10 +22,16 @@
+ #define NO_IRQ	((unsigned int)(-1))
  #endif
- };
  
++#define IRQ_STACK_SIZE	THREAD_SIZE
 +
+ #ifndef __ASSEMBLY__
+ struct irqaction;
+ struct pt_regs;
+ 
 +#ifdef CONFIG_IRQ_STACK
-+#define INIT_THREAD_SELF_PTR				\
-+	.tinfo_ptr	= &init_thread_union.thread_info,
-+#else
-+#define INIT_THREAD_SELF_PTR
++DECLARE_PER_CPU(unsigned long *, irq_stack_ptr);
 +#endif
 +
- #define INIT_THREAD_INFO(tsk)						\
- {									\
-+	INIT_THREAD_SELF_PTR						\
- 	.task		= &tsk,						\
- 	.flags		= 0,						\
- 	.preempt_count	= INIT_PREEMPT_COUNT,				\
- 	.addr_limit	= KERNEL_DS,					\
+ extern void asm_do_IRQ(unsigned int, struct pt_regs *);
+ void handle_IRQ(unsigned int, struct pt_regs *);
+ void init_IRQ(void);
+diff --git a/arch/arm/kernel/entry-armv.S b/arch/arm/kernel/entry-armv.S
+index 55a47df..13a5889 100644
+--- a/arch/arm/kernel/entry-armv.S
++++ b/arch/arm/kernel/entry-armv.S
+@@ -32,6 +32,43 @@
+ #include "entry-header.S"
+ #include <asm/entry-macro-multi.S>
+ #include <asm/probes.h>
++#ifdef CONFIG_IRQ_STACK
++#include <asm/irq.h>
++#endif
++
++	.macro  irq_stack_entry
++#ifdef CONFIG_IRQ_STACK
++	mov	r6, sp	/* preserve sp */
++
++	this_cpu_ptr irq_stack_ptr, r7, r8
++	ldr	r7, [r7]
++	mov	r8, r7
++
++	/*
++	 * Compare sp with base of IRQ stack.
++	 * if the top ~(#THREAD_SIZE_ORDER + PAGE_SHIFT) bits match,
++	 * we are on a irq stack.
++	 */
++	eor	r8, r8, sp
++	lsrs	r8, #THREAD_SIZE_ORDER + PAGE_SHIFT
++	beq	9998f
++
++	/*
++	 * store thread info pointer on IRQ stack and
++	 * switch to the irq stack.
++	 */
++	get_thread_info r8
++	stm	r7, {r8, fp, sp}
++	add	sp, r7, #IRQ_STACK_SIZE
++9998:
++#endif
++        .endm
++
++	.macro	irq_stack_exit
++#ifdef CONFIG_IRQ_STACK
++	mov	sp, r6	/* restore sp */
++#endif
++       .endm
+ 
+ /*
+  * Interrupt handling.
+@@ -41,11 +78,13 @@
+ 	ldr	r1, =handle_arch_irq
+ 	mov	r0, sp
+ 	badr	lr, 9997f
++	irq_stack_entry
+ 	ldr	pc, [r1]
++9997:
++	irq_stack_exit
+ #else
+ 	arch_irq_handler_default
+ #endif
+-9997:
+ 	.endm
+ 
+ 	.macro	pabt_helper
+diff --git a/arch/arm/kernel/irq.c b/arch/arm/kernel/irq.c
+index 698b6f6..79872e5 100644
+--- a/arch/arm/kernel/irq.c
++++ b/arch/arm/kernel/irq.c
+@@ -43,6 +43,15 @@
+ 
+ unsigned long irq_err_count;
+ 
++#ifdef CONFIG_IRQ_STACK
++DEFINE_PER_CPU(unsigned long *, irq_stack_ptr);
++
++/*
++ * irq_stack must be IRQ_STACK_SIZE(THREAD_SIZE) aligned,
++ */
++DEFINE_PER_CPU(unsigned long [IRQ_STACK_SIZE/sizeof(long)], irq_stack) __aligned(IRQ_STACK_SIZE);
++#endif
++
+ int arch_show_interrupts(struct seq_file *p, int prec)
+ {
+ #ifdef CONFIG_FIQ
+@@ -55,6 +64,20 @@ int arch_show_interrupts(struct seq_file *p, int prec)
+ 	return 0;
  }
  
-+
 +#ifdef CONFIG_IRQ_STACK
-+#define TASK_THREAD_SELF_POINTER(tsk)				\
-+{								\
-+	struct thread_info *ti = task_thread_info(tsk);		\
-+								\
-+	ti->tinfo_ptr = ti;					\
++static void init_irq_stacks(void)
++{
++	int cpu;
++
++	for_each_possible_cpu(cpu)
++		per_cpu(irq_stack_ptr, cpu) = per_cpu(irq_stack, cpu);
++}
++#else
++static inline void init_irq_stacks(void)
++{
 +}
 +#endif
 +
  /*
-  * how to get the thread information struct from C
-  */
-@@ -82,8 +104,13 @@ struct thread_info {
- 
- static inline struct thread_info *current_thread_info(void)
+  * handle_IRQ handles all hardware IRQ's.  Decoded IRQs should
+  * not come via this function.  Instead, they should provide their
+@@ -79,6 +102,7 @@ void __init init_IRQ(void)
  {
-+#ifdef CONFIG_IRQ_STACK
-+	return (struct thread_info *)
-+		(*((unsigned long *)(current_stack_pointer & ~(THREAD_SIZE - 1))));
-+#else
- 	return (struct thread_info *)
- 		(current_stack_pointer & ~(THREAD_SIZE - 1));
-+#endif
- }
+ 	int ret;
  
- #define thread_saved_pc(tsk)	\
-diff --git a/include/linux/thread_info.h b/include/linux/thread_info.h
-index e93e249..ddf7b43 100644
---- a/include/linux/thread_info.h
-+++ b/include/linux/thread_info.h
-@@ -43,6 +43,10 @@ enum {
- #define THREAD_ALIGN	THREAD_SIZE
- #endif
- 
-+#ifndef TASK_THREAD_SELF_POINTER
-+#define TASK_THREAD_SELF_POINTER(tsk)
-+#endif
-+
- #define THREADINFO_GFP		(GFP_KERNEL_ACCOUNT | __GFP_ZERO)
- 
- /*
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 7ef3eb3..d53f5eb 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -901,6 +901,7 @@ static struct task_struct *dup_task_struct(struct task_struct *orig, int node)
- #endif
- 
- 	setup_thread_stack(tsk, orig);
-+	TASK_THREAD_SELF_POINTER(tsk);
- 	clear_user_return_notifier(tsk);
- 	clear_tsk_need_resched(tsk);
- 	set_task_stack_end_magic(tsk);
++	init_irq_stacks();
+ 	if (IS_ENABLED(CONFIG_OF) && !machine_desc->init_irq)
+ 		irqchip_init();
+ 	else
 -- 
 1.9.1
 
