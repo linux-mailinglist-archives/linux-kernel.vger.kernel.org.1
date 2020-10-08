@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF14428768A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:59:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D83BD287689
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:59:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730768AbgJHO7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1730775AbgJHO7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 8 Oct 2020 10:59:19 -0400
-Received: from mail-io1-f79.google.com ([209.85.166.79]:35836 "EHLO
-        mail-io1-f79.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730685AbgJHO7S (ORCPT
+Received: from mail-il1-f205.google.com ([209.85.166.205]:55438 "EHLO
+        mail-il1-f205.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730750AbgJHO7S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 8 Oct 2020 10:59:18 -0400
-Received: by mail-io1-f79.google.com with SMTP id 64so98984ioy.2
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 07:59:17 -0700 (PDT)
+Received: by mail-il1-f205.google.com with SMTP id 9so4276972ile.22
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 07:59:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=S0n5JCd9SrefY0K/bE0BUwuaxFr2/JQdj8K7MO2HBwo=;
-        b=MpYbg7S5ktYhD0nMtS5p4jvc+M0KFLJFeAKVt/uPP6Y8fQQjLkIfopOQo0RbKMJIMI
-         SJvGEpgoPXSiOQZz/nrJY8Pu4rJtvnUAtMwKB4MSauvZILMQKrLxf67TXf3jAD26QsRz
-         m1Uk+3G5ZSO3eY3Tn2uHK1bWnfzCs7HAxpg18MZIFe8woJ7pFajHGNjxzEE55I+Pnd7u
-         z9rP5bPG91sWq4EzqQC2Dtm2Y+UlOgwzSh6xGupNPPOiIDKJVZWvjX/tsp6FIUiK+kIP
-         Y6UwTI1nRtb51CAZeX2+7zj2XJdW3UqXy2Xxl7Y8+32I8R9tw8ZoWyy3TZOY7qn4UuXg
-         R+nQ==
-X-Gm-Message-State: AOAM531XeJmTADdABsI/Yw7KBoc2NFKi9WEexHnTgP2/TrtvoyZwlIMn
-        emx7yrtT4BvXuCNmBvwAOyX6BZZdIEwdTNEFhDtY98stNLu3
-X-Google-Smtp-Source: ABdhPJyVROS/QHB6L9ylt6hctnvKKyQoDrfrBHOKj4ZiItU2g1eo7hO2ekhikOcTpckvAmztmrQS9HMJ0WT671r2mz8+A4O3haIT
+        bh=PduyJpvNzvzrVpxv+i1EoFks3qADDQEN3YsVMd137NY=;
+        b=e3EgR7uPT/k4rTEgcXOvw2/utL+L5N6zBDSnzq9zt6PmdzBNi9X7aOnKXGOsznpuP9
+         ctUutBH/7HxUvR778OJpw+269730WUsvyHrw4LOnayxehANqI+YXJ9vxC6MTXsB6Ux8T
+         VRjv2gcDe/77FcT30ZBFrIR3c2huCybIrSwWwb9rH+7hWwuXn7iK+gEWUPjhubB6g+MC
+         ffOgbE5Axu5DpH3HASCKSioHwdwj+Am0IN2Zt5mA8tBT6qkzt+HJmGlCk7NGlYLV+wgG
+         90kHk7qGeIgbNVcSOlqRNY/RcLgOXS1KxNTe3gWfojC2ZDf6TOlBGVF2lqVR9XrEZRyP
+         wAcQ==
+X-Gm-Message-State: AOAM531HP8or1rJribxgurLiiGPWuEaLABsn8KF90mJaPKxSpH27ocZ1
+        VSqXcDiLitZQrF9FdU8cQmDy9MRAepgccy5Sho8zm+ftjqDx
+X-Google-Smtp-Source: ABdhPJzz1MActP86o8lrA0eWRgo0hTkMoCE4wNwY13Wz6FXWIL1N1oazw3U/pSr3RRYghkcyszfeZ+lS0Xlham1QX3fBSzN5Cf58
 MIME-Version: 1.0
-X-Received: by 2002:a02:c942:: with SMTP id u2mr7070148jao.114.1602169157524;
+X-Received: by 2002:a92:8587:: with SMTP id f129mr7263256ilh.226.1602169157826;
  Thu, 08 Oct 2020 07:59:17 -0700 (PDT)
 Date:   Thu, 08 Oct 2020 07:59:17 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000081256605b12a1311@google.com>
-Subject: KASAN: use-after-free Read in search_by_entry_key
-From:   syzbot <syzbot+83b6f7cf9922cae5c4d7@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, colin.king@canonical.com, jack@suse.cz,
-        jeffm@suse.com, linux-kernel@vger.kernel.org,
-        reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <00000000000085be6f05b12a1366@google.com>
+Subject: general protection fault in utf8_casefold
+From:   syzbot <syzbot+05139c4039d0679e19ff@syzkaller.appspotmail.com>
+To:     krisman@collabora.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -50,81 +49,72 @@ syzbot found the following issue on:
 
 HEAD commit:    c85fb28b Merge tag 'arm64-fixes' of git://git.kernel.org/p..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=136fa1fb900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1785ccd0500000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=de7f697da23057c7
-dashboard link: https://syzkaller.appspot.com/bug?extid=83b6f7cf9922cae5c4d7
+dashboard link: https://syzkaller.appspot.com/bug?extid=05139c4039d0679e19ff
 compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17ef5d4f900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11396677900000
-
-Bisection is inconclusive: the issue happens on the oldest tested release.
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13e47620500000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=10147620500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17e47620500000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12316e00500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16e80420500000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+83b6f7cf9922cae5c4d7@syzkaller.appspotmail.com
+Reported-by: syzbot+05139c4039d0679e19ff@syzkaller.appspotmail.com
 
-REISERFS (device loop0): journal params: device loop0, size 15748, journal first block 18, max trans len 1024, max batch 900, max commit age 30, max trans age 30
-REISERFS (device loop0): checking transaction log (loop0)
-REISERFS (device loop0): Using r5 hash to sort names
-REISERFS (device loop0): using 3.5.x disk format
-==================================================================
-BUG: KASAN: use-after-free in bin_search_in_dir_item fs/reiserfs/namei.c:40 [inline]
-BUG: KASAN: use-after-free in search_by_entry_key+0x450/0xad0 fs/reiserfs/namei.c:164
-Read of size 4 at addr ffff88807cd0b7bd by task syz-executor710/6847
-
-CPU: 1 PID: 6847 Comm: syz-executor710 Not tainted 5.9.0-rc8-syzkaller #0
+F2FS-fs (loop0): invalid crc_offset: 0
+F2FS-fs (loop0): f2fs_check_nid_range: out-of-range nid=1, run fsck to fix.
+F2FS-fs (loop0): f2fs_check_nid_range: out-of-range nid=2, run fsck to fix.
+F2FS-fs (loop0): Try to recover 2th superblock, ret: 0
+F2FS-fs (loop0): Mounted with checkpoint version = 27d57943
+general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
+CPU: 0 PID: 6860 Comm: syz-executor835 Not tainted 5.9.0-rc8-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:utf8_casefold+0x43/0x1b0 fs/unicode/utf8-core.c:107
+Code: 89 fd 65 48 8b 04 25 28 00 00 00 48 89 44 24 48 49 be 00 00 00 00 00 fc ff df e8 d8 c5 19 ff 48 83 c5 08 48 89 e8 48 c1 e8 03 <42> 8a 04 30 84 c0 0f 85 21 01 00 00 8b 7d 00 e8 89 f8 ff ff 49 89
+RSP: 0018:ffffc900072e7c48 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: ffff888087470e10 RCX: ffff8880a6b26440
+RDX: 0000000000000000 RSI: ffff888087470e10 RDI: 0000000000000000
+RBP: 0000000000000008 R08: ffffffff834b74e9 R09: fffffbfff16c82b1
+R10: fffffbfff16c82b1 R11: 0000000000000000 R12: ffffc900072e7dc8
+R13: 1ffff92000e5cfb3 R14: dffffc0000000000 R15: 00000000000000ff
+FS:  00007f59a4052700(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f360e3b4000 CR3: 00000000973fb000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1d6/0x29e lib/dump_stack.c:118
- print_address_description+0x66/0x620 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report+0x132/0x1d0 mm/kasan/report.c:530
- bin_search_in_dir_item fs/reiserfs/namei.c:40 [inline]
- search_by_entry_key+0x450/0xad0 fs/reiserfs/namei.c:164
- reiserfs_find_entry+0x246/0x1260 fs/reiserfs/namei.c:321
- reiserfs_lookup+0x156/0x3a0 fs/reiserfs/namei.c:367
- __lookup_slow+0x240/0x370 fs/namei.c:1544
- lookup_one_len+0x10e/0x200 fs/namei.c:2562
- reiserfs_lookup_privroot+0x85/0x1e0 fs/reiserfs/xattr.c:972
- reiserfs_fill_super+0x2b51/0x3240 fs/reiserfs/super.c:2176
- mount_bdev+0x24f/0x360 fs/super.c:1417
- legacy_get_tree+0xea/0x180 fs/fs_context.c:592
- vfs_get_tree+0x88/0x270 fs/super.c:1547
- do_new_mount fs/namespace.c:2875 [inline]
- path_mount+0x179d/0x29e0 fs/namespace.c:3192
- do_mount fs/namespace.c:3205 [inline]
- __do_sys_mount fs/namespace.c:3413 [inline]
- __se_sys_mount+0x126/0x180 fs/namespace.c:3390
+ f2fs_init_casefolded_name fs/f2fs/dir.c:85 [inline]
+ __f2fs_setup_filename fs/f2fs/dir.c:118 [inline]
+ f2fs_prepare_lookup+0x3bf/0x640 fs/f2fs/dir.c:163
+ f2fs_lookup+0x10d/0x920 fs/f2fs/namei.c:494
+ __lookup_hash+0x115/0x240 fs/namei.c:1445
+ filename_create+0x14b/0x630 fs/namei.c:3467
+ user_path_create fs/namei.c:3524 [inline]
+ do_mkdirat+0x56/0x310 fs/namei.c:3664
  do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x447d9a
-Code: b8 08 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 7d a3 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 5a a3 fb ff c3 66 0f 1f 84 00 00 00 00 00
-RSP: 002b:00007ffc5d05d468 EFLAGS: 00000297 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007ffc5d05d4c0 RCX: 0000000000447d9a
-RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007ffc5d05d480
-RBP: 00007ffc5d05d480 R08: 00007ffc5d05d4c0 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000297 R12: 0000000000000006
-R13: 0000000000000004 R14: 0000000000000003 R15: 0000000000000003
-
-The buggy address belongs to the page:
-page:0000000023b676e0 refcount:0 mapcount:0 mapping:0000000000000000 index:0x1 pfn:0x7cd0b
-flags: 0xfffe0000000000()
-raw: 00fffe0000000000 ffffea0001f34308 ffffea0001f34288 0000000000000000
-raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff88807cd0b680: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff88807cd0b700: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->ffff88807cd0b780: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-                                        ^
- ffff88807cd0b800: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff88807cd0b880: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-==================================================================
+RIP: 0033:0x449367
+Code: ff ff ff ff c3 66 0f 1f 44 00 00 48 c7 c0 d0 ff ff ff 64 c7 00 16 00 00 00 b8 ff ff ff ff c3 0f 1f 40 00 b8 53 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 8d e0 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f59a4051bb8 EFLAGS: 00000203 ORIG_RAX: 0000000000000053
+RAX: ffffffffffffffda RBX: 00000000ffffffff RCX: 0000000000449367
+RDX: 0000000000000000 RSI: 00000000000001ff RDI: 0000000020001940
+RBP: 00007f59a40526d0 R08: 0000000000000002 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000203 R12: 00000000ffffffff
+R13: 0000000000000000 R14: 0000000000000000 R15: 00007f59a4051c50
+Modules linked in:
+---[ end trace cf7b61b9a89941d1 ]---
+RIP: 0010:utf8_casefold+0x43/0x1b0 fs/unicode/utf8-core.c:107
+Code: 89 fd 65 48 8b 04 25 28 00 00 00 48 89 44 24 48 49 be 00 00 00 00 00 fc ff df e8 d8 c5 19 ff 48 83 c5 08 48 89 e8 48 c1 e8 03 <42> 8a 04 30 84 c0 0f 85 21 01 00 00 8b 7d 00 e8 89 f8 ff ff 49 89
+RSP: 0018:ffffc900072e7c48 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: ffff888087470e10 RCX: ffff8880a6b26440
+RDX: 0000000000000000 RSI: ffff888087470e10 RDI: 0000000000000000
+RBP: 0000000000000008 R08: ffffffff834b74e9 R09: fffffbfff16c82b1
+R10: fffffbfff16c82b1 R11: 0000000000000000 R12: ffffc900072e7dc8
+R13: 1ffff92000e5cfb3 R14: dffffc0000000000 R15: 00000000000000ff
+FS:  00007f59a4052700(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f360e3b4000 CR3: 00000000973fb000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
 ---
@@ -134,6 +124,5 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 syzbot can test patches for this issue, for details see:
 https://goo.gl/tpsmEJ#testing-patches
