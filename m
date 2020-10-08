@@ -2,118 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F62928720E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 11:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71BD6287212
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 11:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729260AbgJHJ4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 05:56:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725849AbgJHJ4V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 05:56:21 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9975C061755;
-        Thu,  8 Oct 2020 02:56:19 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id ce10so7215221ejc.5;
-        Thu, 08 Oct 2020 02:56:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=vud+Tde+jCn43K272A0b3+noi0OEELurVQ7SECSZPOY=;
-        b=uQH4TLrIMlR7FlO+StJtZGH3v6i2HYIsRq6E3pAvqIqCVCxjv8v180DhoHWXYvBotS
-         3yL6RA/+Im86xIYkxg0k95GyYIIUIWPRNcJtNBju3UZk8FEeaeKbowYgn8GApgxMzWoe
-         vN4Ex+gFLe6EvtnuWCNDzSmUKqq1m21nBR24XLrHg4A8pEbA4jvc3pZi2mO3RxjesVpI
-         fjQOe3j+lt/131osV2TZkz4o+MX8CD/S/ty7ZgomeVdeDpg5I9vBn18e4R4fctVC6fW7
-         ByzwFeVHUw6y5j9tlfBbKlj4Mw8feksNeIJMc1+EmksKuQqxH0KzPEbc8aHMr1nyHgs1
-         fcGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vud+Tde+jCn43K272A0b3+noi0OEELurVQ7SECSZPOY=;
-        b=hGd/p53Db6zfD5Ks/bLkMcj2hfpzkkgy9lVBM+r6fQz0IFZQkU66cPJ4aRK5BebG8Y
-         Uqsvx+VWl+hZ/HiKNmhWUdxWZtXQhYClu0cPV/ca86ugFFrESZKiSTxcloQ6x6gz4U+p
-         nBH+w5ZTFPk+a/SSxM2P3q5zxwUeY3mACr09cv7P9HbED4h5D5W/IgdyPwIKF7JXwZDi
-         RkMRxnxQBZhzTsKiI7wvCyf+CV+I0MA4FLx5OlxZFqK32Gzm0sLkO7FJNoaJZc+GJF4v
-         bHxrvaTwhYH929UikfUSqsebONHKuypu4HkLmWdumzGolkIXN4zT8Mx2H36Pwxtxe8sd
-         tFyQ==
-X-Gm-Message-State: AOAM533rVkA+S5xzKnEfPqqKVo8s6WAmFLKkK6bov+GYife4eUVVAuxQ
-        83oCSb/7A3ZRlF//2uC/Ln4=
-X-Google-Smtp-Source: ABdhPJwrZ4dHMXazfEMebENZYGWYwSvw5NiZ+X5aNceexc6qPbhddzUF+Vc+g5rMO3mqD7PByPK+QA==
-X-Received: by 2002:a17:906:170e:: with SMTP id c14mr7758141eje.275.1602150978403;
-        Thu, 08 Oct 2020 02:56:18 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id b1sm3532006edr.51.2020.10.08.02.56.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 02:56:17 -0700 (PDT)
-Date:   Thu, 8 Oct 2020 11:56:15 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     joro@8bytes.org, vdumpa@nvidia.com, jonathanh@nvidia.com,
-        digetx@gmail.com, linux-tegra@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        hch@infradead.org
-Subject: Re: [PATCH v4 2/2] iommu/tegra-smmu: Expand mutex protection range
-Message-ID: <20201008095615.GC2349275@ulmo>
-References: <20200929061325.10197-1-nicoleotsuka@gmail.com>
- <20200929061325.10197-3-nicoleotsuka@gmail.com>
+        id S1729300AbgJHJ4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 05:56:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44302 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725849AbgJHJ4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 05:56:36 -0400
+Received: from localhost (p54b33b8c.dip0.t-ipconnect.de [84.179.59.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0BCB72083B;
+        Thu,  8 Oct 2020 09:56:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602150995;
+        bh=67+NuNT2UHBer+NKq+5rAQ1KcQNMPcWUDBXJvCqObSw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=z4xXoMz4bDkX00PWLz7d3A6owo1/38o5WaAOygwOVwfAOdG4z/gWSJHB2YiOzhMgD
+         PLqU3tpAPn2VStKKEGU/sh8UKDzDqLSw2Kd7Y5lpKhLdbm3GK22Wl+4vuEoFmPhR7x
+         tw5aTTOy98aghKJQVLu1+uo+De1yV0z5a/PrgS3c=
+Date:   Thu, 8 Oct 2020 11:56:31 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Christian Eggers <ceggers@arri.de>
+Cc:     Oleksij Rempel <linux@rempel-privat.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        David Laight <David.Laight@aculab.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>, stable@vger.kernel.org
+Subject: Re: [PATCH v5 1/3] i2c: imx: Fix reset of I2SR_IAL flag
+Message-ID: <20201008095631.GB76290@ninjato>
+References: <20201007084524.10835-1-ceggers@arri.de>
+ <20201007084524.10835-2-ceggers@arri.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="1SQmhf2mF2YjsYvc"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ZfOjI3PrQbgiZnxM"
 Content-Disposition: inline
-In-Reply-To: <20200929061325.10197-3-nicoleotsuka@gmail.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+In-Reply-To: <20201007084524.10835-2-ceggers@arri.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---1SQmhf2mF2YjsYvc
-Content-Type: text/plain; charset=us-ascii
+--ZfOjI3PrQbgiZnxM
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 28, 2020 at 11:13:25PM -0700, Nicolin Chen wrote:
-> This is used to protect potential race condition at use_count.
-> since probes of client drivers, calling attach_dev(), may run
-> concurrently.
+On Wed, Oct 07, 2020 at 10:45:22AM +0200, Christian Eggers wrote:
+> According to the "VFxxx Controller Reference Manual" (and the comment
+> block starting at line 97), Vybrid requires writing a one for clearing
+> an interrupt flag. Syncing the method for clearing I2SR_IIF in
+> i2c_imx_isr().
 >=20
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> ---
->=20
-> Changelog
-> v3->v4:
->  * Fixed typo "Expend" =3D> "Expand"
-> v2->v3:
->  * Renamed label "err_unlock" to "unlock"
-> v1->v2:
->  * N/A
->=20
->  drivers/iommu/tegra-smmu.c | 34 +++++++++++++++++++++-------------
->  1 file changed, 21 insertions(+), 13 deletions(-)
+> Signed-off-by: Christian Eggers <ceggers@arri.de>
+> Fixes: 4b775022f6fd ("i2c: imx: add struct to hold more configurable quir=
+ks")
+> Reviewed-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+> Cc: stable@vger.kernel.org
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+Applied to for-current, thanks!
 
---1SQmhf2mF2YjsYvc
+Waiting for review tags for patches 2 & 3.
+
+
+--ZfOjI3PrQbgiZnxM
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9+4j8ACgkQ3SOs138+
-s6GrKxAAuQKdxk03qO0RyklzIvs/tQ4YwXAu25i2zLUTZsHePVoDX5cmHR3yMauj
-QZKg81UOmUYDx2olNKqFfb6r+0cQUh1A2WXOufC4PaDDrOXTtztY6UAtjkW4subD
-eASIetGdq+q+LOY46iq4iKtMMGCC50lEw7deNDcy2pGsawdVSpxk0EqSJUl+847Y
-u14ZM2DseMxV6/l/ZYR+RlkwFfevKTBCe0ZiMmT4pPFQ/OvCy0tKYu9cJthZMLxZ
-VKxtJ/l/tcGmZh3FEnS74jL65OXbykbuOyRujnC+tJlsB7MoaPjo+V6SKtDNbx+W
-a90hcFiTCrBnEXjSDDvBeHm7NZEDKyD7s84WP3B1X3cXKJ16t9rNKCSMofj8RRVi
-J/FJ4bYeBT9IGwrkEwroh2yBV3tVsv8OQkgPC1vxkB72vfDsz1FY4OsV3gz9+/Ai
-k6sKVM1YyqKIDOWZT+vvleYz+mJU3cifRBl9pmktdbunjasHYIJFcfiv/+M7qkqW
-lt75sN1s8H6TIKFBTb9ZEPOsfv2AbHa1+ibCwFdkcUfcNUU3n6wAuy+TO/9R65Ss
-JtrbZIbhykdN6gnxVhb8FkcUn8JNx/AD+iSgkw4fx6GGaX6Wca0AcWedFRSV/6P/
-QRFPkms+FTsdvN88T+PPqy6bmlV4QDxPKowfBQMyZHNj/cJKN7M=
-=dNPP
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9+4k8ACgkQFA3kzBSg
+KbZ9qhAAgKhI6M7LDGtr4rgN5aM9C/PH7BSIAhhywx9YkeKU1XiIWnXA559eKSs+
+2xFwbwZGtDXxKaxB6KFGrJvrFbeOt8M7FGZ4UyufRJStG8FYQeJRjvAOThfcUxpu
+YgMkzrG962/bXPcO0LPD6n1aq4LTcr7g9OMai7CQHnyI7RrhQYZeqjPpbbfIms5U
+mLLxbjvtRVJaHNbkwsAMe8AHHYRxB4gn/zIzlIEUHgkFMpnlrsPCOnZg9yH2TtpO
+9J7aZeT1+0XiLpdNjdDKkzTB4fNLTikTTSORnl+WYt3D1RYjkPDOjv1bMHGa/ZxZ
+dOARk4XVWqqoIZ7civGgdFCQtpY++fqtcxt6qGIwvFWRwFSleNNu7fWZI91GtPeD
+hNW9meo8zoBQTsNuoYLT4cxunUVNbTx0tiVZSbRt9S3DI5UZZQL5/pDP7KLq339d
+Hifhk+iPG65mR75zInjj3JBdb4bYVcSkTeL9Nsqp6RB3AQGPTy/3s/f/v/nBW690
+it/YmzrH+s2LGzoH6gEXSEHxab0PP//FBAtg66zwuszN51Yrk5Je9hMOCEM6esG6
+7kXWoGy7rDZ7BiOXk5pMlYOfD02U6losxRS9XUnhBGwvqNL18+MG3kq5+PcubQpv
+YJFwQrFe9gR4MlZMe1CtOI21mxz91xvh8G5+u8yiXgzFZEH2WyM=
+=F4QS
 -----END PGP SIGNATURE-----
 
---1SQmhf2mF2YjsYvc--
+--ZfOjI3PrQbgiZnxM--
