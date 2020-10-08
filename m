@@ -2,90 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8918E286E5D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 07:58:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77DD9286E62
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 08:03:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728312AbgJHF61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 01:58:27 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:41258 "EHLO fornost.hmeau.com"
+        id S1728312AbgJHGDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 02:03:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726245AbgJHF61 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 01:58:27 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1kQOwT-0006fQ-Q9; Thu, 08 Oct 2020 16:58:18 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 08 Oct 2020 16:58:18 +1100
-Date:   Thu, 8 Oct 2020 16:58:18 +1100
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: [PATCH] lib/mpi: Remove unused scalar_copied
-Message-ID: <20201008055818.GB9813@gondor.apana.org.au>
-References: <20200928182438.GA11739@embeddedor>
+        id S1726245AbgJHGDM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 02:03:12 -0400
+Received: from coco.lan (ip5f5ad5d8.dynamic.kabel-deutschland.de [95.90.213.216])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E06092173E;
+        Thu,  8 Oct 2020 06:03:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602136991;
+        bh=vpzw2eAPwPm0AHcA/aZnYkEH6aH6DDHIDFv9+O5ovNo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=CDRzFJMF8lg4koIcHSZ5b9K6yXAf9BTq+2DS7fj4GKi7TYzJHtgJs3sr0cwBw/Atg
+         ZxsyZiE8JOgZtUOvMQqJcXGpfuVe4+J6Be6icBJhBf7xGi4RfPvx0/dYxCq3fhdZE+
+         eWtXD71GaJ7BzsP2HfoGLqvngjtIOeyPyUajpAJ4=
+Date:   Thu, 8 Oct 2020 08:03:06 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     "=?UTF-8?B?TsOtY29sYXM=?= F. R. A. Prado" <nfraprado@protonmail.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lkcamp@lists.libreplanetbr.org,
+        andrealmeid@collabora.com
+Subject: Re: [PATCH] docs: Make automarkup ready for Sphinx 3.1+
+Message-ID: <20201008080306.25e89901@coco.lan>
+In-Reply-To: <20201008024706.GZ20115@casper.infradead.org>
+References: <C674RBXSO9XN.1LXXU71QQNTF1@ArchWay>
+        <20201008024706.GZ20115@casper.infradead.org>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200928182438.GA11739@embeddedor>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 01:24:38PM -0500, Gustavo A. R. Silva wrote:
-> 
-> I'm reporting the following bug detected by Coverity:
-> 
-> The _scalar_copied_ variable is set to 0 at
-> 
-> lib/mpi/ec.c:1255:
-> 1255                 int scalar_copied = 0;
-> 
-> and it is never updated before reaching the code below:
-> 
-> lib/mpi/ec.c:1317
-> 1317                 if (scalar_copied)                                                         
-> 1318                         mpi_free(scalar);
-> 
-> This code was introduced by commit d58bb7e55a8a ("lib/mpi: Introduce ec
-> implementation to MPI library")
-> 
-> Any ideas on what's the right solution for this?
+Em Thu, 8 Oct 2020 03:47:06 +0100
+Matthew Wilcox <willy@infradead.org> escreveu:
 
-I think it should be removed.
+> On Thu, Oct 08, 2020 at 02:15:24AM +0000, N=C3=ADcolas F. R. A. Prado wro=
+te:
+> > > I have a feature request ... could you automarkup NULL as being
+> > > :c:macro?
+> > > Or maybe just anything matching \<[[:upper:]_[:digit:]]*\>
+> > > (i may have my regex syntax confused ... a word composed of any
+> > > arrangement of upper-case, digits and underscores.) =20
+> >=20
+> > I think what you are suggesting are two separate things.
+> >=20
+> > For NULL, what you're interested in is that it appears in a monospaced =
+font, as
+> > if written ``NULL``, right? As I don't think a cross-reference to "the =
+NULL
+> > macro definition" would make much sense.
+> >=20
+> > While "anything containing only upper-case, digits and underscores" wou=
+ld
+> > actually be for cross-referencing to the definition of the macro symbol=
+ in
+> > question, right? =20
+>=20
+> Well, maybe!  What I'd really like is to remove all the markup from
+> xarray.rst.  Jon managed to get rid of most of it with the (), but
+> there's still markup on:
+>=20
+> LONG_MAX
+> NULL
+> -EBUSY
+> true
+> XA_MARK_[012]
+> XA_FLAGS_*
+> ENOMEM
+> EINVAL
+>=20
+> I'm not sure there's much that automarkup can do about ``true``, but all
+> the others fit the all-caps-and-underscore-and-digits pattern.
+>=20
+> I don't know how much we want errnos to link to anything in particular.
+> So maybe split these into 'well-known' (eg defined by ANSI C or POSIX)
+> definitions and things which are local macros:
+>=20
+> LONG_MAX
+> NULL
+> -EBUSY
+> ENOMEM
+> EINVAL
 
----8<---
-The scalar_copied variable is not as the scalar is never copied
-in that block.  This patch removes it.
+Yeah, a nice improvement would be to auto-markup error codes and NULL as
+literal blocks.
 
-Fixes: d58bb7e55a8a ("lib/mpi: Introduce ec implementation to...")
-Reported-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+>=20
+> vs
+>=20
+> XA_MARK_[012]
 
-diff --git a/lib/mpi/ec.c b/lib/mpi/ec.c
-index c21470122dfc..40f5908e57a4 100644
---- a/lib/mpi/ec.c
-+++ b/lib/mpi/ec.c
-@@ -1252,7 +1252,6 @@ void mpi_ec_mul_point(MPI_POINT result,
- 		MPI_POINT q1, q2, prd, sum;
- 		unsigned long sw;
- 		mpi_size_t rsize;
--		int scalar_copied = 0;
- 
- 		/* Compute scalar point multiplication with Montgomery Ladder.
- 		 * Note that we don't use Y-coordinate in the points at all.
-@@ -1314,8 +1313,6 @@ void mpi_ec_mul_point(MPI_POINT result,
- 		point_free(&p2);
- 		point_free(&p1_);
- 		point_free(&p2_);
--		if (scalar_copied)
--			mpi_free(scalar);
- 		return;
- 	}
- 
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+> XA_FLAGS_*
+
+Actually, things that end with an * (but doesn't start with an *)
+are good candidates for being literals - although extra care should
+be taken on such case, as parsing those automatically will likely hit
+lots of false-positives.
+
+> I'm willing to add more inline kernel-doc to get this to work better.
+
+Why? inline kernel-doc should be evaluated just like normal blocks.
+
+Right now, kernel-doc handles constants like NULL and XA_FLAGS_* using
+two ways:
+
+	%FOO
+or
+	``FOO``
+
+The regex for those are:
+
+	my $type_constant =3D '\b``([^\`]+)``\b';
+	my $type_constant2 =3D '\%([-_\w]+)';
+
+
+In other words, "%FOO" should not contain any symbol, except for
+'-' and '_'.
+
+If there is any other symbol, like in "XA_FLAGS_*", the alternative
+syntax is needed.
+
+No matter if you use inline or block definitions, the same regexes
+are used.
+
+> Or even convert #defines to enums ... whatever gets this working better.
+
+Using enums where possible[1] is nicer, IMHO.=20
+
+[1] enums shouldn't be used on uAPI, as its size depends on the C
+    compiler implementation.
+
+Thanks,
+Mauro
