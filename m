@@ -2,100 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1C18287BAC
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 20:27:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7210D287BAE
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 20:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728464AbgJHS1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 14:27:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37296 "EHLO
+        id S1728926AbgJHS1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 14:27:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725874AbgJHS1a (ORCPT
+        with ESMTP id S1725874AbgJHS1u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 14:27:30 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D676C061755
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 11:27:29 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id b193so4135368pga.6
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 11:27:29 -0700 (PDT)
+        Thu, 8 Oct 2020 14:27:50 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B9DC061755
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 11:27:50 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id r10so1826328ilm.11
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 11:27:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=qKVACZ37gbwD3Vrxyl3CjxzaTSwtlD53B6L2JTDGMHU=;
-        b=Fn3tdWFMiAEW6EWkMQETL2Z/9ovncZzYcTjnB9JoCeEf7x1B9bMmnIOCwW3XnMo/o4
-         YQeTr5MDPPN84mG1hI3NPWaazecbGiVAwwZLCRIgs3mT0WGrPwubyYYacBm1GGS86bpQ
-         IHafEAhVmAhip4kz7k/3tNbEF3rbrwROgrtWA/jcN8TtwvXtGzMK7Yza10XFYwi9tpvk
-         TvXDSVe+2K4oSxX/msRb8qFm5mOxq1VSisZ36LN0PkBsF3nfwig7RbUnyIBnIjRAZhLV
-         O1WWPnx3vUzTCAx8JGZsrffLbF3FwA3l0cG9b4jIdhNN90FIxds4sl7n2ZcNqFBuWyVB
-         MYeQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RrkOdAbBDCwyeOQ37z5tV7CnkLENGAjGaGO/schUabQ=;
+        b=KOwuXgfsy9d3hZ9ebY1MDbA+SQZ34Ep/hpkIyi8xd/Dzs9rEKt+5vx2AiS6+Cqohrf
+         WUu1wEzLRxNjDKUUKrGAiu8Sh6LunX42uuGSGKthYgpZLrbUp9a6XlrUQZHp4R3dyZSG
+         A8QT+Bjdc9CK8oYU7MkpW/4899D7lD3plf1FxnSFhUgoUIRNOa1wb9O+Ul3y+g3MWXYi
+         MoV9lwPLXmhoKVDd6m4Ps/XTbjYdaenWSmXkncPd6DwJ5P8Z7U+gh+cojH0Uaad3+QjD
+         uPUNlh3k7E6bB2LtRrjm+l5Bu0HNLzZSeb0ch/kEnd/YjUlnMBeR8pd79dGcCj+WLQmD
+         OeYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=qKVACZ37gbwD3Vrxyl3CjxzaTSwtlD53B6L2JTDGMHU=;
-        b=hBl8oUxL4zWrURwnt+DAOj1FSfvR/pH4qZexhLXFKhmJbFGIvR1rq9dpnm5m8+7e6I
-         U7yKvz0FckNEWyTF0e9aqLpd5nr7BZ/XEHE191bpT8R+nU1dISZj5wERne92gTunaLGE
-         1uS4M0gAnx99s8aJ9JGNdy0DLhdwnLEBAzUZigEFVNhoiC1JypklWenzG3oIeZOd4dGy
-         6HHWKnbStKDLMpEjrKMXCi4fUIVh7G19EpcLqxU2M2hLweZ1wxgV2QJMhJqJcs1XoO7d
-         /yEdJCEEXoRJXAJAQtvWzJIZF8ksfP0OG46tx28lwL529fM2kb4aw1JpcylckkpqSNAA
-         JFkg==
-X-Gm-Message-State: AOAM530CucXkbRLMk/yzf73YfHe4ZzQKqce+/vVzPMNj0Nyxb8APUkaS
-        0OmFCCmGfFJY1ws0xa1fSen8PXFM9QlPbshz
-X-Google-Smtp-Source: ABdhPJy2Y5k/y/cg1OlJGlvvVyWrIFFOlPnUf6VwIHjw6IqMTLEmhNLGn0jaX89EwMyGxkqZNQgX9A==
-X-Received: by 2002:a62:7f81:0:b029:152:6197:f1f2 with SMTP id a123-20020a627f810000b02901526197f1f2mr8452244pfd.49.1602181648003;
-        Thu, 08 Oct 2020 11:27:28 -0700 (PDT)
-Received: from localhost.localdomain ([150.129.237.234])
-        by smtp.googlemail.com with ESMTPSA id z8sm8212640pfk.49.2020.10.08.11.27.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 11:27:27 -0700 (PDT)
-From:   Harshal Chaudhari <harshalchau04@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     arnd@arndb.de, sudipm.mukherjee@gmail.com,
-        linux-kernel@vger.kernel.org, harshalchau04@gmail.com
-Subject: [PATCH] char: ppdev: check if ioctl argument is present and valid
-Date:   Thu,  8 Oct 2020 23:57:13 +0530
-Message-Id: <20201008182713.2764-1-harshalchau04@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RrkOdAbBDCwyeOQ37z5tV7CnkLENGAjGaGO/schUabQ=;
+        b=fC3+RJ2nyI2bG1UAJQYoTV9gqqGSt1RRyOQyInmRtX+lNzU8s/PzcEJdLtNcha+375
+         EYbwh+VEgTKshdfxVx/cTtdVWQ+LwYA+2ykQVau2jb9UscJTBugTN7IFIvV+ckHNP1q8
+         Kz+JwcitefCVyOUqGHOGM2iCTTVPNMG/LKmHgWh1y7ydb8spbSdqLgBT37cKkLbz0WKy
+         qBsrsowxH8O8pqTqBnLRA09JRUxBHafPHb61/sFfU5vvEc2raEwlB5yACNofnBhNjIts
+         OGaAeYlrIkIuEp4P3Uw1reZhaTrzoQ65qrim6SC8d6xmgT1RpFuRpnGnKCnkFYb5ngAs
+         SjhA==
+X-Gm-Message-State: AOAM531g9c63yneUu1bRWsb8iHZWFY474dNvMs28tbiUB2RiykwSDyeM
+        Gk2cy8D/w8y2TV9kflfQr2WlVSCEWD/+bmyhq4cZQQ==
+X-Google-Smtp-Source: ABdhPJx2ISXtg+5wgVEGtpWtH9JkiOPqpq0nDgXIkl0aFwYeEmDjLStOH9ErLi1lPojEWjAmlzHEdZhgs6x7qCFck04=
+X-Received: by 2002:a92:7914:: with SMTP id u20mr7656969ilc.203.1602181668922;
+ Thu, 08 Oct 2020 11:27:48 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200925212302.3979661-1-bgardon@google.com> <20200925212302.3979661-18-bgardon@google.com>
+ <6990180c-f99c-3f1d-ef6a-57e37a9999d2@redhat.com>
+In-Reply-To: <6990180c-f99c-3f1d-ef6a-57e37a9999d2@redhat.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Thu, 8 Oct 2020 11:27:37 -0700
+Message-ID: <CANgfPd8itkAnPqr=PfFn3Jf1O_NbY90AEQBKDQ8OR14CagDOzg@mail.gmail.com>
+Subject: Re: [PATCH 17/22] kvm: mmu: Support dirty logging for the TDP MMU
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Checking the argument passed to the ioctl is valid
-or not. if not then return -EINVAL.
+On Fri, Sep 25, 2020 at 6:04 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 25/09/20 23:22, Ben Gardon wrote:
+> >                               start_level, KVM_MAX_HUGEPAGE_LEVEL, false);
+> > +     if (kvm->arch.tdp_mmu_enabled)
+> > +             flush = kvm_tdp_mmu_wrprot_slot(kvm, memslot, false) || flush;
+> >       spin_unlock(&kvm->mmu_lock);
+> >
+>
+> In fact you can just pass down the end-level KVM_MAX_HUGEPAGE_LEVEL or
+> PGLEVEL_4K here to kvm_tdp_mmu_wrprot_slot and from there to
+> wrprot_gfn_range.
 
-Signed-off-by: Harshal Chaudhari <harshalchau04@gmail.com>
----
- drivers/char/ppdev.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+That makes sense. My only worry there is the added complexity of error
+handling values besides PG_LEVEL_2M and PG_LEVEL_4K. Since there are
+only two callers, I don't think that will be too much of a problem
+though. I don't think KVM_MAX_HUGEPAGE_LEVEL would actually be a good
+value to pass in as I don't think that would write protect 2M
+mappings. KVM_MAX_HUGEPAGE_LEVEL is defined as PG_LEVEL_1G, or 3.
 
-diff --git a/drivers/char/ppdev.c b/drivers/char/ppdev.c
-index 38b46c7d1737..001392980202 100644
---- a/drivers/char/ppdev.c
-+++ b/drivers/char/ppdev.c
-@@ -354,7 +354,7 @@ static int pp_do_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 	unsigned int minor = iminor(file_inode(file));
- 	struct pp_struct *pp = file->private_data;
- 	struct parport *port;
--	void __user *argp = (void __user *)arg;
-+	void __user *argp = NULL;
- 	struct ieee1284_info *info;
- 	unsigned char reg;
- 	unsigned char mask;
-@@ -364,6 +364,16 @@ static int pp_do_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 	struct timespec64 ts;
- 	int ret;
- 
-+	if (_IOC_TYPE(cmd) != PP_IOCTL)
-+		return -ENOTTY;
-+
-+	/* check if ioctl argument is present and valid */
-+	if (_IOC_DIR(cmd) != _IOC_NONE) {
-+		argp = (void __user *)arg;
-+		if (!argp)
-+			return -EINVAL;
-+	}
-+
- 	/* First handle the cases that don't take arguments. */
- 	switch (cmd) {
- 	case PPCLAIM:
--- 
-2.17.1
+>
+> >
+> > +             /*
+> > +              * Take a reference on the root so that it cannot be freed if
+> > +              * this thread releases the MMU lock and yields in this loop.
+> > +              */
+> > +             get_tdp_mmu_root(kvm, root);
+> > +
+> > +             spte_set = wrprot_gfn_range(kvm, root, slot->base_gfn,
+> > +                             slot->base_gfn + slot->npages, skip_4k) ||
+> > +                        spte_set;
+> > +
+> > +             put_tdp_mmu_root(kvm, root);
+>
+>
+> Generalyl using "|=" is the more common idiom in mmu.c.
 
+I changed to this in response to some feedback on the RFC, about
+mixing bitwise ops and bools, but I like the |= syntax more as well.
+
+>
+> > +static bool clear_dirty_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+> > +                        gfn_t start, gfn_t end)
+> > ...
+> > +             __handle_changed_spte(kvm, as_id, iter.gfn, iter.old_spte,
+> > +                                   new_spte, iter.level);
+> > +             handle_changed_spte_acc_track(iter.old_spte, new_spte,
+> > +                                           iter.level);
+>
+> Is it worth not calling handle_changed_spte?  handle_changed_spte_dlog
+> obviously will never fire but duplicating the code is a bit ugly.
+>
+> I guess this patch is the first one that really gives the "feeling" of
+> what the data structures look like.  The main difference with the shadow
+> MMU is that you have the tdp_iter instead of the callback-based code of
+> slot_handle_level_range, but otherwise it's not hard to follow one if
+> you know the other.  Reorganizing the code so that mmu.c is little more
+> than a wrapper around the two will help as well in this respect.
+>
+> Paolo
+>
