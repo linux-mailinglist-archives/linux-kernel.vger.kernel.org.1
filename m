@@ -2,191 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8126D286D64
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 05:54:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB965286D6B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 05:57:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728536AbgJHDyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 23:54:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726469AbgJHDyq (ORCPT
+        id S1728312AbgJHD5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 23:57:52 -0400
+Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:47146 "EHLO
+        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726469AbgJHD5v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 23:54:46 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9EE7C061755
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 20:54:45 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id g9so3104877pgh.8
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 20:54:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Q+c2MJYhELH98kr9lkjUCAnsZSZe5uNfKC1agYba9DQ=;
-        b=gwk/NF2dinzLpw9FR5Bslo0btqWiij9ybZg/UvVmRrAnxH7ifStyzuISzmMUJbO3bO
-         X3d8fdmqRB6KXwm90lZawW7QFP2l622Cl6z0y+NCR9h0jFtVvtr0GGVNqxkv0ZDjRp5W
-         9oAttZrPASIeT1rf3V5HQkxgvOWAtk6IQwHTASv0jRMIBYlGEMj9JJk7E8lK9MipVKKT
-         ahNi+zT9HZM9XwHg1a6+SXo3wVuE3rYBHWRn6BapMC0utK1csmZQ9eLiLEG4DSXAaCTO
-         a/BDXJ5ia5C8vlgLPohUJp9DvdRhaBsqO+g6E1GJkwO/FbxaJGJFvyRMd+ErAcg1wm2s
-         osfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=Q+c2MJYhELH98kr9lkjUCAnsZSZe5uNfKC1agYba9DQ=;
-        b=fGlsS4rOmL9qyict29qFoD+wa8c8TqWMU19rXwpzSueoIJiVWIiZaeQYw2om0gg6nZ
-         jEmNcdR/wlqu2BIr4Fiz6WlMyFmwlVOg6vqC4Yot4BBiamrk0xwIpg5uuy3wWG8/xuJW
-         /ib/BdgfYHvX5EfeDmlwh0FL4ezh718WWPnTYNmBgHSv7tVpLRt++7SdsQKMCxd8lhT2
-         pXtRWrOrm+Ueh7H1V9RD+8V3zvNm5+00eGOHShGyHVeGNUBbRobxCifFXFQ4MDFl1GDi
-         uglKQKFFklwRrXfCN2Mx7Puge01bbDWdCBNVft/5R/Hhs+jIDM2tAl6Vsv2xTUt0T1SO
-         BxQw==
-X-Gm-Message-State: AOAM532UECA4Y/HuyPYwFJE/V5/JfQLCSPOvsVrdcSS1LqNH4KkmHryT
-        Q2LvmYbDWpuweCwwGNkWNcWhZBibcKA5Vw==
-X-Google-Smtp-Source: ABdhPJzKUM9qiDzRRwdWo1bPBY+3Rl7tDqYOZHkJB6/meotQwzCYmvdSoFfbOayJDJ5x7Y6ix7Farg==
-X-Received: by 2002:a17:90a:5901:: with SMTP id k1mr5914200pji.33.1602129284695;
-        Wed, 07 Oct 2020 20:54:44 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id q8sm5128753pfl.100.2020.10.07.20.54.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 20:54:44 -0700 (PDT)
-Date:   Wed, 07 Oct 2020 20:54:44 -0700 (PDT)
-X-Google-Original-Date: Wed, 07 Oct 2020 20:54:42 PDT (-0700)
-Subject:     Re: [PATCH 2/2] riscv: Fixup static_obj() fail v2
-In-Reply-To: <1602083313-19239-2-git-send-email-guoren@kernel.org>
-CC:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        atishp@atishpatra.org, schwab@linux-m68k.org, aurelien@aurel32.net,
-        guoren@linux.alibaba.com
-From:   Palmer Dabbelt <palmerdabbelt@google.com>
-To:     guoren@kernel.org
-Message-ID: <mhng-81dee5c2-f8ee-4ab5-92d7-0e46dc952e87@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Wed, 7 Oct 2020 23:57:51 -0400
+Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
+        by mx0a-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0983lbJs025835;
+        Wed, 7 Oct 2020 20:57:41 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=proofpoint;
+ bh=0YEaVG1Hl4iXhyT1e4hPpkfGMIjVP4W3wI6QBiL1OdY=;
+ b=IOU0PQjKybqPOVN2+QONY8+TC4KXDyunBnFWHhwtGFn/gjDI0US8dzZbMmzrPhW9h5pa
+ IS7cSXHA09i+R4blPcWWMuWESeoVcvbSNEVgy41TG0IuCoTOxr/3f+pn3tQmeiwcq1Fb
+ HaMBN6Cd69TCDHYycvuqNDe9OLDja4Yx5lDEokFGVfYDoSaqyZO5NadckQi6Pu16Zdq6
+ qxwDJMxcO6m7Tmp2mgAIFG+eWbWGgkU2cQx8k0wrVFDVZ4MRN3NmWP/X79d69fF3MEvu
+ G/x5U9GGSCMqRlcnZlDSzHYQ74XDgaBXoZAvyPh586SpSj8knfZNnnjzTmdSXCEWAf3u fA== 
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2177.outbound.protection.outlook.com [104.47.56.177])
+        by mx0a-0014ca01.pphosted.com with ESMTP id 33xnuxre27-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Oct 2020 20:57:41 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GBu2zXSuv8zUcZxHXQzfiavJ9ayCe6ruI7AYAClnHhSRhWElGUA6G44kZdI3WaHWI3uJ1vI1cvgkdhl+sULPGrEzuz1W0kg64is85o1mfHUPBLfu1BJlbYS2OPq++j235lF5RHNrWMCdT6IsqXP3OzaJ6C7S8VdxpxHMsGnI3/yIit++Xdppz1ZOz/krWRYv3pFgLEaP7xOW6KTRAafWQvyyWdP9QNpR4hQfKR2GoRjPNe8hIVumJ8OIJg9ItJS09WiMc0V3u4pUlUo9NUhVa+qJID/1iI/2Hz2ZrmptIje+KDALZkSVdp+gyYOd9uLOr27Vae9FiXDR+BKevCq1xg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0YEaVG1Hl4iXhyT1e4hPpkfGMIjVP4W3wI6QBiL1OdY=;
+ b=H5UwrAw5341Nd6H/5hFHLEtomVD4ECVlP8DD0NkY42/xai3ZAFRMeGM6SCQAUJr65J7da/86VP3DcvU9PIy8VzFAkwVP99E/Rg9GOr3HNfcr3RlMsNsMl+UUV0SAIAlHpds9EPuqzzonP1cptomGnhN/xvC6BGIb19KSHVa5gOn3kmXEJnFkvJcXVbLn+uCta4ObaepTPdsIR30piu2N0HNDyqGQLSnvyGq4pXILEcwhQlbystEb9Xtxd1UPeY6RqaxFD7XXqQqpp6pqTCe+AWTjsxdbC3YEfQnaBpNwtWYYlWfJ7Jb3MbrC4XLmcSdmTh9GJpO9XqpHV5cSKnHmMg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cadence.com; dmarc=pass action=none header.from=cadence.com;
+ dkim=pass header.d=cadence.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0YEaVG1Hl4iXhyT1e4hPpkfGMIjVP4W3wI6QBiL1OdY=;
+ b=SHHI0QkgsS882BjQA4XPVXOoP9UJ11zIX4PwIpDelvgmo5i3I8XQe9xcKShD7Sz0WKUvnqXlzcfkxpHzlVWiSPgDMWkZ8cMXCkbQXaJohPLI8i/0zL6EToXJXZXUhoX0bRkkGN9nyGqaGdUjyPSIpDgSJwBLGC8MuNViVhg6pyo=
+Received: from DM6PR07MB5529.namprd07.prod.outlook.com (2603:10b6:5:7a::30) by
+ DM5PR07MB4037.namprd07.prod.outlook.com (2603:10b6:4:b2::38) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3433.42; Thu, 8 Oct 2020 03:57:39 +0000
+Received: from DM6PR07MB5529.namprd07.prod.outlook.com
+ ([fe80::2087:7f2b:5dc6:a960]) by DM6PR07MB5529.namprd07.prod.outlook.com
+ ([fe80::2087:7f2b:5dc6:a960%6]) with mapi id 15.20.3433.046; Thu, 8 Oct 2020
+ 03:57:39 +0000
+From:   Pawel Laszczak <pawell@cadence.com>
+To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Roger Quadros <rogerq@ti.com>,
+        "balbi@kernel.org" <balbi@kernel.org>
+CC:     "peter.chen@nxp.com" <peter.chen@nxp.com>,
+        "nsekhar@ti.com" <nsekhar@ti.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Rahul Kumar <kurahul@cadence.com>
+Subject: =?utf-8?B?UkU6IFtQQVRDSCAyLzJdIHVzYjogY2RuczM6IFZhcmlhYmxlIOKAmGxlbmd0?=
+ =?utf-8?B?aOKAmSBzZXQgYnV0IG5vdCB1c2Vk?=
+Thread-Topic: =?utf-8?B?W1BBVENIIDIvMl0gdXNiOiBjZG5zMzogVmFyaWFibGUg4oCYbGVuZ3Ro4oCZ?=
+ =?utf-8?Q?_set_but_not_used?=
+Thread-Index: AQHWnFuti3XUYQUWRkOXE/bkBsrAi6mLyzCAgAAlWICAASOvkA==
+Date:   Thu, 8 Oct 2020 03:57:38 +0000
+Message-ID: <DM6PR07MB552984371C356A6E31D8D116DD0B0@DM6PR07MB5529.namprd07.prod.outlook.com>
+References: <20201007033932.23050-1-pawell@cadence.com>
+ <8994106d-2cc5-fa2c-bbcc-6526632ff80b@ti.com>
+ <18bf46b7-d86a-fbf0-9ce7-c2d0765758f1@gmail.com>
+In-Reply-To: <18bf46b7-d86a-fbf0-9ce7-c2d0765758f1@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNccGF3ZWxsXGFwcGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEyOWUzNWJcbXNnc1xtc2ctNjY2OWEwOWItMDkxYS0xMWViLTg3NmItMWM0ZDcwMWRmYmE0XGFtZS10ZXN0XDY2NjlhMDlkLTA5MWEtMTFlYi04NzZiLTFjNGQ3MDFkZmJhNGJvZHkudHh0IiBzej0iNzM4IiB0PSIxMzI0NjYwMzA1NjcwNzk3OTciIGg9Im5WU2JjVit4dDBIMjFpeXl1USs4emErb0lpYz0iIGlkPSIiIGJsPSIwIiBibz0iMSIvPjwvbWV0YT4=
+x-dg-rorf: true
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=cadence.com;
+x-originating-ip: [34.99.247.194]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9dfe5770-1e7d-42a6-c5c9-08d86b3e4c98
+x-ms-traffictypediagnostic: DM5PR07MB4037:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM5PR07MB4037CD4E7666DC67C4BFEE28DD0B0@DM5PR07MB4037.namprd07.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:128;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: b7Olp1JuGxqoIwmzF8aYU+GyAN9uz7tTH9wF7J63Wbvjc3sa1dFf4Muemi1PaO95RwihWUgPMh6UioA3qRo7LecxjrJPp1hQf3xmnpolshM+Hn05oAv40IIvfbUwiUNeEuE5NiPMLRKOKDJW9DRrayUrkW0kNH67LjsmLCw/XyCDcawN+44swdM0fJrrzZXdACf9XMxZedh+ZnnJVDbTbQI7+A7eB1mxnlUOjGYTdd7ntIsmSpWOdsWpwHBRj+IAWhv23irpkvmuSUH4zK7AaN9uiMtakrfh8NHaPkPogCZ+dSjfqDcX61ai+Qa68vi5wkd54VPFe14i3Jx7+4CEXB2GXxpKeGQp228R4XklkAcF0MeqNPIfLrMpKC0YIBim
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR07MB5529.namprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(396003)(366004)(376002)(39860400002)(36092001)(9686003)(7696005)(76116006)(6506007)(107886003)(55016002)(54906003)(4326008)(4744005)(316002)(33656002)(478600001)(186003)(110136005)(66946007)(26005)(66446008)(66476007)(64756008)(66556008)(5660300002)(8936002)(2906002)(52536014)(83380400001)(71200400001)(86362001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: NHMfJ/MQyaA3vtanAbivcImKYYG9DJpRS6x8z4H2T8fIvIeSdPhcDs/J/GbIeecBa+OWrVY2XWjbmEDOEYxH6oXqGLsGi1Oqg98LjBwh60aFXUOuo8IveMUFpnHsbjr1dJngVMxG7q9nl1QepC+Hn2HyyZa6kpZdNW7LwD6+pn/dGat0Npa1NEN4hG/tjVrwnLTbRMQ8UILS/K8GnzqhY/Z3RMdCbd/LvpG+5Jqr30z9R2SjMmjMhHXP+4f0iAyCOBKZhGSxBlqmEZu7ZyOsLeRZa/A8PQb6OWKkEgCvwh6PqyGvum6Yfl8ruLK9Y4WjVxOqYL1I5Nym8nIBybAgObRVK6Ewcm8XucTNNpaXizIOGt0Y3Ftc6wAEcasbAKpJ0EeSzUu/PEYHtOh9yrs4wBUUJhZPsFIlpKDbc5NJSYJJaXh+0cIYlULxdNeSbMLi++wx33Vkje9QeSCGYKxwycNIi86JO3AOrcsXOoRwXPNuy09sfdzq3eaxNikf3pDnTm/95rPo9xMk0b7U1J/SdJsQAu3ueQYjsli6+SFUZBtauuO1GkyBR3j7H59k4zl3c0Cl8m8eTzECRdlSjzY6w+kuXcne7dljpcba+c0/3OFde46U9ayscgLle9qzKpYVF0uzqfY7t8esf7xZtpwLwQ==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR07MB5529.namprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9dfe5770-1e7d-42a6-c5c9-08d86b3e4c98
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Oct 2020 03:57:38.8331
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Z1a30GeGfzls7TPYkCvrTElx7+q/jCtIk3oGGQRUIXbUBeUSU8BAg8qCHizpBcI79y1BQ0YDczup0ou7n2c2ilPYx71aV7Z5fNIf64VvcSM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR07MB4037
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-08_01:2020-10-07,2020-10-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 malwarescore=0
+ mlxscore=0 mlxlogscore=616 priorityscore=1501 phishscore=0 spamscore=0
+ clxscore=1011 adultscore=0 suspectscore=0 impostorscore=0 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2010080030
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 07 Oct 2020 08:08:33 PDT (-0700), guoren@kernel.org wrote:
-> From: Guo Ren <guoren@linux.alibaba.com>
->
-> v1 is commit: 6184358da0004c8fd940afda6c0a0fa4027dc911 which has
-> been reverted.
->
-> When enable LOCKDEP, static_obj() will cause error:
->
-> [    0.067192] INFO: trying to register non-static key.
-> [    0.067325] the code is fine but needs lockdep annotation.
-> [    0.067449] turning off the locking correctness validator.
-> [    0.067718] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.7.0-rc7-dirty #44
-> [    0.067945] Call Trace:
-> [    0.068369] [<ffffffe00020323c>] walk_stackframe+0x0/0xa4
-> [    0.068506] [<ffffffe000203422>] show_stack+0x2a/0x34
-> [    0.068631] [<ffffffe000521e4e>] dump_stack+0x94/0xca
-> [    0.068757] [<ffffffe000255a4e>] register_lock_class+0x5b8/0x5bc
-> [    0.068969] [<ffffffe000255abe>] __lock_acquire+0x6c/0x1d5c
-> [    0.069101] [<ffffffe0002550fe>] lock_acquire+0xae/0x312
-> [    0.069228] [<ffffffe000989a8e>] _raw_spin_lock_irqsave+0x40/0x5a
-> [    0.069357] [<ffffffe000247c64>] complete+0x1e/0x50
-> [    0.069479] [<ffffffe000984c38>] rest_init+0x1b0/0x28a
-> [    0.069660] [<ffffffe0000016a2>] 0xffffffe0000016a2
-> [    0.069779] [<ffffffe000001b84>] 0xffffffe000001b84
-> [    0.069953] [<ffffffe000001092>] 0xffffffe000001092
->
-> Because some __initdata static variables is before _stext:
->
-> static int static_obj(const void *obj)
-> {
->         unsigned long start = (unsigned long) &_stext,
->                       end   = (unsigned long) &_end,
->                       addr  = (unsigned long) obj;
->
->         /*
->          * static variable?
->          */
->         if ((addr >= start) && (addr < end))
->                 return 1;
->
-> 	if (arch_is_kernel_data(addr))
-> 		return 1;
->
-> We could implement arch_is_kernel_data to fixup it.
->
-> Link: https://lore.kernel.org/linux-riscv/1593266228-61125-1-git-send-email-guoren@kernel.org/T/#t
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> Reported-by: Aurelien Jarno <aurelien@aurel32.net>
-> Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-> Cc: Atish Patra <atishp@atishpatra.org>
-> Cc: Andreas Schwab <schwab@linux-m68k.org>
-> Cc: Aurelien Jarno <aurelien@aurel32.net>
-> ---
->  arch/riscv/include/asm/sections.h | 20 ++++++++++++++++++++
->  arch/riscv/kernel/setup.c         |  9 +++++++++
->  2 files changed, 29 insertions(+)
->  create mode 100644 arch/riscv/include/asm/sections.h
->
-> diff --git a/arch/riscv/include/asm/sections.h b/arch/riscv/include/asm/sections.h
-> new file mode 100644
-> index 00000000..2317b9e
-> --- /dev/null
-> +++ b/arch/riscv/include/asm/sections.h
-> @@ -0,0 +1,20 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +
-> +#ifndef _ASM_RISCV_SECTIONS_H
-> +#define _ASM_RISCV_SECTIONS_H
-> +
-> +#define arch_is_kernel_data arch_is_kernel_data
-> +
-> +#include <asm-generic/sections.h>
-> +
-> +extern bool init_mem_is_free;
-> +
-> +static inline int arch_is_kernel_data(unsigned long addr)
-> +{
-> +	if (init_mem_is_free)
-> +		return 0;
-> +
-> +	return addr >= (unsigned long)__init_begin &&
-> +		addr < (unsigned long)__init_end;
-> +}
-> +#endif /* _ASM_RISCV_SECTIONS_H */
-> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
-> index 2c6dd32..9ebd5eb4 100644
-> --- a/arch/riscv/kernel/setup.c
-> +++ b/arch/riscv/kernel/setup.c
-> @@ -17,6 +17,7 @@
->  #include <linux/sched/task.h>
->  #include <linux/swiotlb.h>
->  #include <linux/smp.h>
-> +#include <linux/poison.h>
->
->  #include <asm/cpu_ops.h>
->  #include <asm/setup.h>
-> @@ -112,3 +113,11 @@ static int __init topology_init(void)
->  	return 0;
->  }
->  subsys_initcall(topology_init);
-> +
-> +bool init_mem_is_free = false;
-> +
-> +void free_initmem(void)
-> +{
-> +	free_initmem_default(POISON_FREE_INITMEM);
-> +	init_mem_is_free = true;
-> +}
-
-I'm a bit confused as to what you're trying to do here.  Yesterday I got
-another version of this patch set that moves init data around, today a
-different one.  Yesterday's is tested and simpler, and given it's so late in
-the process I'm inclined to take that as I don't want to break anything.
-
-Right now I have
-
-84814460eef9 ("riscv: Fixup bootup failure with HARDENED_USERCOPY")
-a78c6f5956a9 ("RISC-V: Make sure memblock reserves the memory containing DT")
-549738f15da0 ("Linux 5.9-rc8")
-
-Unless there's some functional bug, that's what I'm going to send out for 5.9
--- I'm not all that worried about lacking the ability to free init data.  The
-above seems like fine 5.10 material.
-
-Let me know if I'm missing something here.
+U2llcmdlaSwNCg0KPg0KPk9uIDEwLzcvMjAgMTE6MTUgQU0sIFJvZ2VyIFF1YWRyb3Mgd3JvdGU6
+DQo+DQo+Wy4uLl0NCj4+PiBQYXRjaCByZW1vdmVzIG5vdCB1c2VkIHZhcmlhYmxlICdsZW5ndGgn
+IGZyb20NCj4+PiBjZG5zM193YTJfZGVzY21pc3NfY29weV9kYXRhIGZ1bmN0aW9uLg0KPj4+DQo+
+Pj4gU2lnbmVkLW9mZi1ieTogUGF3ZWwgTGFzemN6YWsgPHBhd2VsbEBjYWRlbmNlLmNvbT4NCj4+
+DQo+PiBGaXhlczogY29tbWl0IDE0MWU3MGZlZjRlZSAoInVzYjogY2RuczM6IGdhZGdldDogbmVl
+ZCB0byBoYW5kbGUgc2cgY2FzZSBmb3Igd29ya2Fyb3VuZCAyIGNhc2UiKQ0KPg0KPiAgIE5vICJj
+b21taXQiIGlzIG5lZWRlZCBoZXJlLg0KDQpDYW4geW91IGV4cGxhaW4gd2h5PyANCg0KSSBndWVz
+cyBpdCdzIGJlY2F1c2UgY29tbWl0IDE0MWU3MGZlZjRlZSBpcyBxdWl0ZSBuZXcgYW5kIGl0J3Mg
+bm90IHlldCBpbmNsdWRlZCBpbiBhbnkgc3RhYmxlIGtlcm5lbCB2ZXJzaW9uLCANCm9yIGJlY2F1
+c2UgaXQncyBvbmx5IHdhcm5pbmcgLSBub3QgZXJyb3IuIA0KDQpBbSBJIHJpZ2h0ID8gDQoNCj4N
+Cj4+IEFja2VkLWJ5OiBSb2dlciBRdWFkcm9zIDxyb2dlcnFAdGkuY29tPg0KPlsuLi5dDQo+DQoN
+ClJlZ2FyZHMsIA0KUGF3ZWwNCg==
