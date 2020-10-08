@@ -2,91 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE0E0287729
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 17:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E56828772B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 17:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731072AbgJHPaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 11:30:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730918AbgJHPaF (ORCPT
+        id S1731074AbgJHPak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 11:30:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26585 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730918AbgJHPaj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 11:30:05 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFD4AC061755
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 08:30:05 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id y198so7464442qka.0
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 08:30:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SqRA6Yl5kFaqC7nyN7S9QqR04lj9MdeB5jpNUBqGXqM=;
-        b=YdO/TXzfFIrrT/MRkO75xee8G5E6WtV/lTOy53v0S5TxjisEIvcT0zzH3A26gGkrBF
-         lCfs5HRd3T+DV5BHCMuP6TymS0xTTZjfM5SouBf4QTniTNEp+UEloZ0a/p+/opelOVmG
-         GtHAiJ0YP1Z+KKuRoeHr0c7WL2EhV/geynbK4tSBV9OCjoHclLSMTwLNbe+9RTT6v/4e
-         ywg+vAcsB2fy7GvkRjCJSKm1tKHZGC2PsQaaXawZho2k755gasm5S5QMe6ayr7UtlAbF
-         OIQDYsr3J3jvKdWy8yVRH8W+1ufDuxj79QZ8Yt3W5/7ynY3h6Tkd3iTrqZO0bKKzNiBq
-         FhgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=SqRA6Yl5kFaqC7nyN7S9QqR04lj9MdeB5jpNUBqGXqM=;
-        b=czsPjK6tHe5AJym+12LR+lAZE3/989KQ+0uIk509xEFlevglLM3Y317j38ci5F6bjo
-         168evDruDnPNaNVph/et+Lp22U93+qzoZPxI8MaHsYQ9zv0+AooR+C9Aw7rdIUQAE+rX
-         wVgGRbIcYJVm/KHjMl614MbG5dkZeMOZ1jeGAgEqR//C1s+hQW3CuWFdVQ6oC8bOkN1q
-         s7DyYxf7W9I7xvjwMkGmg+xPJAk7OHpS4FvDTcjWJGf1WeKssTLRkUX58gw0w/2tAIrI
-         CHeacUZuPE4qOs/6hXRlP9fbs9IjNeoo920iL3Hp/AF+BB1n6CkX7Aw1/dZ6wAEH+Kgt
-         Kg8Q==
-X-Gm-Message-State: AOAM532pZtsGwq1r0Rxbx6JlaCTSLSKbJ2vLNQXEWr5FyPhboNHbalPj
-        fjHbJX430SPzat+iqm6rn5w=
-X-Google-Smtp-Source: ABdhPJxrUmaCakA+f0Fzy0VGe9QFB0qQxeIU05jTo5T0N6WjR+ZUQEd7dySQ9YvWKa4KtEnFPcOufw==
-X-Received: by 2002:a05:620a:7f8:: with SMTP id k24mr1509742qkk.5.1602171004828;
-        Thu, 08 Oct 2020 08:30:04 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id t64sm3970421qkd.69.2020.10.08.08.30.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 08:30:03 -0700 (PDT)
-Sender: Arvind Sankar <niveditas98@gmail.com>
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Thu, 8 Oct 2020 11:30:02 -0400
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>, x86@kernel.org,
-        Joerg Roedel <jroedel@suse.de>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/5] x86/boot: Move get_cmd_line_ptr() and
- COMMAND_LINE_SIZE into misc.h
-Message-ID: <20201008153002.GA2697342@rani.riverdale.lan>
-References: <20201007195351.776555-1-nivedita@alum.mit.edu>
- <20201007195351.776555-3-nivedita@alum.mit.edu>
- <20201008093042.GA6491@zn.tnic>
- <20201008134723.GB2429573@rani.riverdale.lan>
- <20201008151047.GB5505@zn.tnic>
+        Thu, 8 Oct 2020 11:30:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602171037;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qBdS920Wg4eEWu1R0a6u/lkZLtobuePIsMDu1AdO+oY=;
+        b=iUlKzuCcxJG+SC5ESmG6mvtsIj9fjUyGnUT9/B5hqK7TOfNBGU9AFwNT/fVTa91WHGNdB7
+        ZkQ8mWleTKFnq2JR+RvmzBjD18csG/4TXqqm3x4O3Siu6HldUa4ip3QuVmbS8Kgm5D+DP4
+        BsDtSpqslOBoX3kmV3AudbhPFRE/Ik4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-449-b1o9M-55P6aIsRoAtR6HtQ-1; Thu, 08 Oct 2020 11:30:33 -0400
+X-MC-Unique: b1o9M-55P6aIsRoAtR6HtQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9520180402A;
+        Thu,  8 Oct 2020 15:30:31 +0000 (UTC)
+Received: from redhat.com (ovpn-119-161.rdu2.redhat.com [10.10.119.161])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 96DA760BFA;
+        Thu,  8 Oct 2020 15:30:30 +0000 (UTC)
+Date:   Thu, 8 Oct 2020 11:30:28 -0400
+From:   Jerome Glisse <jglisse@redhat.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Tejun Heo <tj@kernel.org>, Jan Kara <jack@suse.cz>,
+        Josef Bacik <jbacik@fb.com>
+Subject: Re: [PATCH 00/14] Small step toward KSM for file back page.
+Message-ID: <20201008153028.GA3508856@redhat.com>
+References: <20201007010603.3452458-1-jglisse@redhat.com>
+ <20201007032013.GS20115@casper.infradead.org>
+ <20201007144835.GA3471400@redhat.com>
+ <20201007170558.GU20115@casper.infradead.org>
+ <20201007175419.GA3478056@redhat.com>
+ <20201007220916.GX20115@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201008151047.GB5505@zn.tnic>
+In-Reply-To: <20201007220916.GX20115@casper.infradead.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 05:10:47PM +0200, Borislav Petkov wrote:
-> On Thu, Oct 08, 2020 at 09:47:23AM -0400, Arvind Sankar wrote:
-> > Are you ok with the include of setup.h?
+On Wed, Oct 07, 2020 at 11:09:16PM +0100, Matthew Wilcox wrote:
+> On Wed, Oct 07, 2020 at 01:54:19PM -0400, Jerome Glisse wrote:
+> > > For other things (NUMA distribution), we can point to something which
+> > > isn't a struct page and can be distiguished from a real struct page by a
+> > > bit somewhere (I have ideas for at least three bits in struct page that
+> > > could be used for this).  Then use a pointer in that data structure to
+> > > point to the real page.  Or do NUMA distribution at the inode level.
+> > > Have a way to get from (inode, node) to an address_space which contains
+> > > just regular pages.
+> > 
+> > How do you find all the copies ? KSM maintains a list for a reasons.
+> > Same would be needed here because if you want to break the write prot
+> > you need to find all the copy first. If you intend to walk page table
+> > then how do you synchronize to avoid more copy to spawn while you
+> > walk reverse mapping, we could lock the struct page i guess. Also how
+> > do you walk device page table which are completely hidden from core mm.
 > 
-> Or you could simply add cmdline.h and include that. It is high time we
-> started cleaning up that include hell in compressed/ and all facilities
-> there be nicely separated. Recently I started untangling it but it is a
-> serious mess. And kernel proper includes leak in there, yuck.
+> So ... why don't you put a PageKsm page in the page cache?  That way you
+> can share code with the current KSM implementation.  You'd need
+> something like this:
+
+I do just that but there is no need to change anything in page cache.
+So below code is not necessary. What you need is a way to find all
+the copies so if you have a write fault (or any write access) then
+from that fault you get the mapping and offset and you use that to
+lookup the fs specific informations and de-duplicate the page with
+new page and the fs specific informations. Hence the filesystem code
+do not need to know anything it all happens in generic common code.
+
+So flow is:
+
+  Same as before:
+    1 - write fault (address, vma)
+    2 - regular write fault handler -> find page in page cache
+
+  New to common page fault code:
+    3 - ksm check in write fault common code (same as ksm today
+        for anonymous page fault code path).
+    4 - break ksm (address, vma) -> (file offset, mapping)
+        4.a - use mapping and file offset to lookup the proper
+              fs specific information that were save when the
+              page was made ksm.
+        4.b - allocate new page and initialize it with that
+              information (and page content), update page cache
+              and mappings ie all the pte who where pointing to
+              the ksm for that mapping at that offset to now use
+              the new page (like KSM for anonymous page today).
+
+  Resume regular code path:
+        mkwrite /|| set pte ...
+
+Roughly the same for write ioctl (other cases goes through GUP
+which itself goes through page fault code path). There is no
+need to change page cache in anyway. Just common code path that
+enable write to file back page.
+
+The fs specific information is page->private, some of the flags
+(page->flags) and page->indexi (file offset). Everytime a page
+is deduplicated a copy of that information is save in an alias
+struct which you can get to from the the share KSM page (page->
+mapping is a pointer to ksm root struct which has a pointer to
+list of all aliases).
+
+> 
+> +++ b/mm/filemap.c
+> @@ -1622,6 +1622,9 @@ struct page *find_lock_entry(struct address_space *mapping
+> , pgoff_t index)
+>                 lock_page(page);
+>                 /* Has the page been truncated? */
+>                 if (unlikely(page->mapping != mapping)) {
+> +                       if (PageKsm(page)) {
+> +                               ...
+> +                       }
+>                         unlock_page(page);
+>                         put_page(page);
+>                         goto repeat;
+> @@ -1655,6 +1658,7 @@ struct page *find_lock_entry(struct address_space *mapping, pgoff_t index)
+>   * * %FGP_WRITE - The page will be written
+>   * * %FGP_NOFS - __GFP_FS will get cleared in gfp mask
+>   * * %FGP_NOWAIT - Don't get blocked by page lock
+> + * * %FGP_KSM - Return KSM pages
+>   *
+>   * If %FGP_LOCK or %FGP_CREAT are specified then the function may sleep even
+>   * if the %GFP flags specified for %FGP_CREAT are atomic.
+> @@ -1687,6 +1691,11 @@ struct page *pagecache_get_page(struct address_space *mapping, pgoff_t index,
+>  
+>                 /* Has the page been truncated? */
+>                 if (unlikely(page->mapping != mapping)) {
+> +                       if (PageKsm(page) {
+> +                               if (fgp_flags & FGP_KSM)
+> +                                       return page;
+> +                               ...
+> +                       }
+>                         unlock_page(page);
+>                         put_page(page);
+>                         goto repeat;
+> 
+> I don't know what you want to do when you find a KSM page, so I just left
+> an ellipsis.
 > 
 
-Ok, I can do that.
-
-I'm working on a couple of separate series to clean up cmdline and the
-compressed boot code a bit. I was actually planning to get rid of
-boot/compressed/cmdline.c entirely, replacing it with
-arch/x86/lib/cmdline.c instead: that one's better and is reusable as-is
-for the decompressor stub, instead of the current hack to use the
-real-mode boot stub's cmdline.c. The real mess in there is all the
-includes of .c files from various places.
