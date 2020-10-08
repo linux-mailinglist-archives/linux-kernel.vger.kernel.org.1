@@ -2,551 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 246F32874D9
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 15:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BCFF2874DC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 15:06:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730299AbgJHNFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 09:05:45 -0400
-Received: from esa4.microchip.iphmx.com ([68.232.154.123]:12301 "EHLO
-        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730190AbgJHNFn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 09:05:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1602162341; x=1633698341;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=UhCLBLuu3mzVk3c7IwuTaa+FhI94pNsN1Q+l5nc21eY=;
-  b=1tcMyYIuI+XDbuKakApmZXcumOGvsF0eGejPYf8AYBx+27blfLazoBXl
-   YkP3nLKesOC0bmeuRcUAPZAlPsRpwcf2kIp/3w4cQmb+7w144re84jdYC
-   Hu6QSqkfiEaWac5eOr//Zx+dH6OMtyGAuPfpzxCe9PJbggDS3KncmmSfN
-   gsCyi7u14QcLrZT0Jv82mK4vgbNaHTj3rLUsHAoiFTja1IK0rCT2gZwti
-   EeuHc1Qz0I4r8H/UOE3oYUD24PDmpPm2XXUjbIsOdwbszrL0wufqCYPIo
-   2sm1XYAdazj2ZVZP6iYASPVGmgo0+4wZB95/sQ04Y34qOYF2ri3Sulr8J
-   g==;
-IronPort-SDR: BlVI+T/EB+QJT1ri+BPLkAsP96g76h/u0OYlad3CoSidtvIwESruMsGlSXgmUlSFjkKDXmRS36
- 679GvGRPYiONoQGpkpsXd2gqVSxOX6W0NTW3ptuGlqu5znk0im+fO+uZOUNT3rEMtIF364xCK/
- Yrtd1mWx+4mgll/0Bq0QhXA6mLx5ueXhpemPwskmkqyuGUwuXO9KVU4BKbR6Y6FQqb4KTSEhzg
- qTBsnfLA6sj2/fZh59beMHHPtpdEuMtVAJKpG9dMjpZFjJ3a9t+y+nEI4W6+B2X4UYmqA2Bu93
- U9s=
-X-IronPort-AV: E=Sophos;i="5.77,350,1596524400"; 
-   d="scan'208";a="89549284"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 08 Oct 2020 06:05:41 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 8 Oct 2020 06:05:15 -0700
-Received: from soft-dev10.microsemi.net (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Thu, 8 Oct 2020 06:05:38 -0700
-From:   Lars Povlsen <lars.povlsen@microchip.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-CC:     Lars Povlsen <lars.povlsen@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        <devicetree@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: [PATCH v5 3/3] arm64: dts: sparx5: Add SGPIO devices
-Date:   Thu, 8 Oct 2020 15:05:15 +0200
-Message-ID: <20201008130515.2385825-4-lars.povlsen@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201008130515.2385825-1-lars.povlsen@microchip.com>
-References: <20201008130515.2385825-1-lars.povlsen@microchip.com>
+        id S1730307AbgJHNGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 09:06:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39484 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730146AbgJHNGX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 09:06:23 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A58382083B;
+        Thu,  8 Oct 2020 13:06:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602162381;
+        bh=2lDf35uHFZosEIVYa7uiAybKH2YKzlzLSzz7E16+iTM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=dvbxheAZiHonPfftSbghLP4gXTbyJNpkXoFFeu8P7RgkZdrZNSEbzbNDhmZjCXgpk
+         JJFhlue8V89P8adodQ+BM3NufGvRZEFFYTT1p3mvhTFmun0WO28s4fJC1tAN9J3Hfr
+         9a3H3zZens5u2iwHuJUYkw/k5BywPG6Lp054Gk6Q=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kQVch-000hXN-JE; Thu, 08 Oct 2020 14:06:19 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 08 Oct 2020 14:06:19 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Sowjanya Komatineni <skomatineni@nvidia.com>,
+        Venkat Reddy Talla <vreddytalla@nvidia.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v3 1/4] genirq/irqdomain: Allow partial trimming of
+ irq_data hierarchy
+In-Reply-To: <87d01t2c90.fsf@nanos.tec.linutronix.de>
+References: <20201007124544.1397322-1-maz@kernel.org>
+ <20201007124544.1397322-2-maz@kernel.org>
+ <87d01t2c90.fsf@nanos.tec.linutronix.de>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <9341eb039193d630d8a3f7bac920a76c@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: tglx@linutronix.de, linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, thierry.reding@gmail.com, jonathanh@nvidia.com, digetx@gmail.com, skomatineni@nvidia.com, vreddytalla@nvidia.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds SGPIO devices for the Sparx5 SoC and configures it for the
-applicable reference boards.
+On 2020-10-08 12:22, Thomas Gleixner wrote:
+> On Wed, Oct 07 2020 at 13:45, Marc Zyngier wrote:
+>> +/**
+>> + * irq_domain_trim_hierarchy - Trim the uninitialized part of a irq 
+>> hierarchy
+>> + * @virq:	IRQ number to trim where the hierarchy is to be trimmed
+>> + *
+>> + * Drop the partial irq_data hierarchy from the level where the
+>> + * irq_data->chip is NULL.
+>> + *
+>> + * Its only use is to be able to trim levels of hierarchy that do not
+>> + * have any real meaning for this interrupt, and that the driver 
+>> leaves
+>> + * uninitialized in its .alloc() callback.
+>> + */
+>> +static void irq_domain_trim_hierarchy(unsigned int virq)
+>> +{
+>> +	struct irq_data *tail, *irq_data = irq_get_irq_data(virq);
+>> +
+>> +	/* It really needs to be a hierarchy, and not a single entry */
+>> +	if (!irq_data->parent_data)
+>> +		return;
+>> +
+>> +	/* Skip until we find a parent irq_data without a populated chip */
+>> +	while (irq_data->parent_data && irq_data->parent_data->chip)
+>> +		irq_data = irq_data->parent_data;
+>> +
+>> +	/* All levels populated */
+>> +	if (!irq_data->parent_data)
+>> +		return;
+>> +
+>> +	pr_info("IRQ%d: trimming hierarchy from %s\n",
+>> +		virq, irq_data->parent_data->domain->name);
+>> +
+>> +	/* Sever the inner part of the hierarchy...  */
+>> +	tail = irq_data->parent_data;
+>> +	irq_data->parent_data = NULL;
+>> +	__irq_domain_free_hierarchy(tail);
+>> +}
+> 
+> I like that way more than the previous version, but there are still
+> quite some dangeroos waiting to bite.
+> 
+> Just for robustness sake we should do the following:
 
-Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
----
- arch/arm64/boot/dts/microchip/sparx5.dtsi     |  91 ++++++
- .../boot/dts/microchip/sparx5_pcb125.dts      |   5 +
- .../dts/microchip/sparx5_pcb134_board.dtsi    | 258 ++++++++++++++++++
- .../dts/microchip/sparx5_pcb135_board.dtsi    |  55 ++++
- 4 files changed, 409 insertions(+)
+[...]
 
-diff --git a/arch/arm64/boot/dts/microchip/sparx5.dtsi b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-index 1def30e6b728..d64621d1213b 100644
---- a/arch/arm64/boot/dts/microchip/sparx5.dtsi
-+++ b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-@@ -231,6 +231,22 @@ si2_pins: si2-pins {
- 				function = "si2";
- 			};
- 
-+			sgpio0_pins: sgpio-pins {
-+				pins = "GPIO_0", "GPIO_1", "GPIO_2", "GPIO_3";
-+				function = "sg0";
-+			};
+Here's what I have now, with the pmc driver calling
+irq_domain_disconnect_hierarchy() at the right spots.
+
+         M.
+
+diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
+index b37350c4fe37..a52b095bd404 100644
+--- a/include/linux/irqdomain.h
++++ b/include/linux/irqdomain.h
+@@ -509,6 +509,9 @@ extern void irq_domain_free_irqs_parent(struct 
+irq_domain *domain,
+  					unsigned int irq_base,
+  					unsigned int nr_irqs);
+
++extern int irq_domain_disconnect_hierarchy(struct irq_domain *domain,
++					   unsigned int virq);
 +
-+			sgpio1_pins: sgpio1-pins {
-+				pins = "GPIO_4", "GPIO_5", "GPIO_12", "GPIO_13";
-+				function = "sg1";
-+			};
+  static inline bool irq_domain_is_hierarchy(struct irq_domain *domain)
+  {
+  	return domain->flags & IRQ_DOMAIN_FLAG_HIERARCHY;
+diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
+index 76cd7ebd1178..316f5baa9cd9 100644
+--- a/kernel/irq/irqdomain.c
++++ b/kernel/irq/irqdomain.c
+@@ -1136,6 +1136,17 @@ static struct irq_data 
+*irq_domain_insert_irq_data(struct irq_domain *domain,
+  	return irq_data;
+  }
+
++static void __irq_domain_free_hierarchy(struct irq_data *irq_data)
++{
++	struct irq_data *tmp;
 +
-+			sgpio2_pins: sgpio2-pins {
-+				pins = "GPIO_30", "GPIO_31", "GPIO_32",
-+				       "GPIO_33";
-+				function = "sg2";
-+			};
++	while (irq_data) {
++		tmp = irq_data;
++		irq_data = irq_data->parent_data;
++		kfree(tmp);
++	}
++}
 +
- 			uart_pins: uart-pins {
- 				pins = "GPIO_10", "GPIO_11";
- 				function = "uart";
-@@ -261,6 +277,81 @@ emmc_pins: emmc-pins {
- 			};
- 		};
- 
-+		sgpio0: gpio@61101036c {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			compatible = "microchip,sparx5-sgpio";
-+			status = "disabled";
-+			clocks = <&sys_clk>;
-+			pinctrl-0 = <&sgpio0_pins>;
-+			pinctrl-names = "default";
-+			reg = <0x6 0x1101036c 0x100>;
-+			sgpio_in0: gpio@0 {
-+				compatible = "microchip,sparx5-sgpio-bank";
-+				reg = <0>;
-+				gpio-controller;
-+				#gpio-cells = <3>;
-+				ngpios = <96>;
-+			};
-+			sgpio_out0: gpio@1 {
-+				compatible = "microchip,sparx5-sgpio-bank";
-+				reg = <1>;
-+				gpio-controller;
-+				#gpio-cells = <3>;
-+				ngpios = <96>;
-+			};
-+		};
+  static void irq_domain_free_irq_data(unsigned int virq, unsigned int 
+nr_irqs)
+  {
+  	struct irq_data *irq_data, *tmp;
+@@ -1147,12 +1158,81 @@ static void irq_domain_free_irq_data(unsigned 
+int virq, unsigned int nr_irqs)
+  		irq_data->parent_data = NULL;
+  		irq_data->domain = NULL;
+
+-		while (tmp) {
+-			irq_data = tmp;
+-			tmp = tmp->parent_data;
+-			kfree(irq_data);
++		__irq_domain_free_hierarchy(tmp);
++	}
++}
 +
-+		sgpio1: gpio@611010484 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			compatible = "microchip,sparx5-sgpio";
-+			status = "disabled";
-+			clocks = <&sys_clk>;
-+			pinctrl-0 = <&sgpio1_pins>;
-+			pinctrl-names = "default";
-+			reg = <0x6 0x11010484 0x100>;
-+			sgpio_in1: gpio@0 {
-+				compatible = "microchip,sparx5-sgpio-bank";
-+				reg = <0>;
-+				gpio-controller;
-+				#gpio-cells = <3>;
-+				ngpios = <96>;
-+			};
-+			sgpio_out1: gpio@1 {
-+				compatible = "microchip,sparx5-sgpio-bank";
-+				reg = <1>;
-+				gpio-controller;
-+				#gpio-cells = <3>;
-+				ngpios = <96>;
-+			};
-+		};
++int irq_domain_disconnect_hierarchy(struct irq_domain *domain,
++				    unsigned int virq)
++{
++	struct irq_data *irqd;
 +
-+		sgpio2: gpio@61101059c {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			compatible = "microchip,sparx5-sgpio";
-+			status = "disabled";
-+			clocks = <&sys_clk>;
-+			pinctrl-0 = <&sgpio2_pins>;
-+			pinctrl-names = "default";
-+			reg = <0x6 0x1101059c 0x100>;
-+			sgpio_in2: gpio@0 {
-+				reg = <0>;
-+				compatible = "microchip,sparx5-sgpio-bank";
-+				gpio-controller;
-+				#gpio-cells = <3>;
-+				ngpios = <96>;
-+			};
-+			sgpio_out2: gpio@1 {
-+				compatible = "microchip,sparx5-sgpio-bank";
-+				reg = <1>;
-+				gpio-controller;
-+				#gpio-cells = <3>;
-+				ngpios = <96>;
-+			};
-+		};
++	irqd = irq_domain_get_irq_data(domain, virq);
++	if (!irqd)
++		return -EINVAL;
 +
- 		i2c0: i2c@600101000 {
- 			compatible = "snps,designware-i2c";
- 			status = "disabled";
-diff --git a/arch/arm64/boot/dts/microchip/sparx5_pcb125.dts b/arch/arm64/boot/dts/microchip/sparx5_pcb125.dts
-index 6b2da7c7520c..9baa085d7861 100644
---- a/arch/arm64/boot/dts/microchip/sparx5_pcb125.dts
-+++ b/arch/arm64/boot/dts/microchip/sparx5_pcb125.dts
-@@ -69,6 +69,11 @@ spi-flash@9 {
- 	};
- };
- 
-+&sgpio0 {
-+	status = "okay";
-+	microchip,sgpio-port-ranges = <0 23>;
-+};
++	irqd->chip = ERR_PTR(-ENOTCONN);
++	return 0;
++}
 +
- &i2c1 {
- 	status = "okay";
- };
-diff --git a/arch/arm64/boot/dts/microchip/sparx5_pcb134_board.dtsi b/arch/arm64/boot/dts/microchip/sparx5_pcb134_board.dtsi
-index 35984785d611..4f1512b0e871 100644
---- a/arch/arm64/boot/dts/microchip/sparx5_pcb134_board.dtsi
-+++ b/arch/arm64/boot/dts/microchip/sparx5_pcb134_board.dtsi
-@@ -36,6 +36,242 @@ gpio-restart {
- 		gpios = <&gpio 37 GPIO_ACTIVE_LOW>;
- 		priority = <200>;
- 	};
++/**
++ * irq_domain_trim_hierarchy - Trim the uninitialized part of a irq 
+hierarchy
++ * @virq:	IRQ number to trim where the hierarchy is to be trimmed
++ *
++ * Drop the partial irq_data hierarchy from the level where the
++ * irq_data->chip is a trim marker (PTR_ERR(-ENOTCONN)).
++ *
++ * Its only use is to be able to trim levels of hierarchy that do not
++ * have any real meaning for this interrupt, and that the driver marks
++ * as such from its .alloc() callback.
++ */
++static int irq_domain_trim_hierarchy(unsigned int virq)
++{
++	struct irq_data *tail, *irqd, *irq_data;
 +
-+	leds {
-+		compatible = "gpio-leds";
-+		led@0 {
-+			label = "twr0:green";
-+			gpios = <&sgpio_out0 8 0 GPIO_ACTIVE_LOW>;
-+		};
-+		led@1 {
-+			label = "twr0:yellow";
-+			gpios = <&sgpio_out0 8 1 GPIO_ACTIVE_LOW>;
-+		};
-+		led@2 {
-+			label = "twr1:green";
-+			gpios = <&sgpio_out0 9 0 GPIO_ACTIVE_LOW>;
-+		};
-+		led@3 {
-+			label = "twr1:yellow";
-+			gpios = <&sgpio_out0 9 1 GPIO_ACTIVE_LOW>;
-+		};
-+		led@4 {
-+			label = "twr2:green";
-+			gpios = <&sgpio_out0 10 0 GPIO_ACTIVE_LOW>;
-+		};
-+		led@5 {
-+			label = "twr2:yellow";
-+			gpios = <&sgpio_out0 10 1 GPIO_ACTIVE_LOW>;
-+		};
-+		led@6 {
-+			label = "twr3:green";
-+			gpios = <&sgpio_out0 11 0 GPIO_ACTIVE_LOW>;
-+		};
-+		led@7 {
-+			label = "twr3:yellow";
-+			gpios = <&sgpio_out0 11 1 GPIO_ACTIVE_LOW>;
-+		};
-+		led@8 {
-+			label = "eth12:green";
-+			gpios = <&sgpio_out0 12 0 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@9 {
-+			label = "eth12:yellow";
-+			gpios = <&sgpio_out0 12 1 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@10 {
-+			label = "eth13:green";
-+			gpios = <&sgpio_out0 13 0 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@11 {
-+			label = "eth13:yellow";
-+			gpios = <&sgpio_out0 13 1 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@12 {
-+			label = "eth14:green";
-+			gpios = <&sgpio_out0 14 0 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@13 {
-+			label = "eth14:yellow";
-+			gpios = <&sgpio_out0 14 1 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@14 {
-+			label = "eth15:green";
-+			gpios = <&sgpio_out0 15 0 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@15 {
-+			label = "eth15:yellow";
-+			gpios = <&sgpio_out0 15 1 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@16 {
-+			label = "eth48:green";
-+			gpios = <&sgpio_out1 16 0 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@17 {
-+			label = "eth48:yellow";
-+			gpios = <&sgpio_out1 16 1 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@18 {
-+			label = "eth49:green";
-+			gpios = <&sgpio_out1 17 0 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@19 {
-+			label = "eth49:yellow";
-+			gpios = <&sgpio_out1 17 1 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@20 {
-+			label = "eth50:green";
-+			gpios = <&sgpio_out1 18 0 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@21 {
-+			label = "eth50:yellow";
-+			gpios = <&sgpio_out1 18 1 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@22 {
-+			label = "eth51:green";
-+			gpios = <&sgpio_out1 19 0 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@23 {
-+			label = "eth51:yellow";
-+			gpios = <&sgpio_out1 19 1 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@24 {
-+			label = "eth52:green";
-+			gpios = <&sgpio_out1 20 0 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@25 {
-+			label = "eth52:yellow";
-+			gpios = <&sgpio_out1 20 1 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@26 {
-+			label = "eth53:green";
-+			gpios = <&sgpio_out1 21 0 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@27 {
-+			label = "eth53:yellow";
-+			gpios = <&sgpio_out1 21 1 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@28 {
-+			label = "eth54:green";
-+			gpios = <&sgpio_out1 22 0 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@29 {
-+			label = "eth54:yellow";
-+			gpios = <&sgpio_out1 22 1 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@30 {
-+			label = "eth55:green";
-+			gpios = <&sgpio_out1 23 0 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@31 {
-+			label = "eth55:yellow";
-+			gpios = <&sgpio_out1 23 1 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@32 {
-+			label = "eth56:green";
-+			gpios = <&sgpio_out1 24 0 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@33 {
-+			label = "eth56:yellow";
-+			gpios = <&sgpio_out1 24 1 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@34 {
-+			label = "eth57:green";
-+			gpios = <&sgpio_out1 25 0 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@35 {
-+			label = "eth57:yellow";
-+			gpios = <&sgpio_out1 25 1 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@36 {
-+			label = "eth58:green";
-+			gpios = <&sgpio_out1 26 0 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@37 {
-+			label = "eth58:yellow";
-+			gpios = <&sgpio_out1 26 1 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@38 {
-+			label = "eth59:green";
-+			gpios = <&sgpio_out1 27 0 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@39 {
-+			label = "eth59:yellow";
-+			gpios = <&sgpio_out1 27 1 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@40 {
-+			label = "eth60:green";
-+			gpios = <&sgpio_out1 28 0 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@41 {
-+			label = "eth60:yellow";
-+			gpios = <&sgpio_out1 28 1 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@42 {
-+			label = "eth61:green";
-+			gpios = <&sgpio_out1 29 0 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@43 {
-+			label = "eth61:yellow";
-+			gpios = <&sgpio_out1 29 1 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@44 {
-+			label = "eth62:green";
-+			gpios = <&sgpio_out1 30 0 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@45 {
-+			label = "eth62:yellow";
-+			gpios = <&sgpio_out1 30 1 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@46 {
-+			label = "eth63:green";
-+			gpios = <&sgpio_out1 31 0 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+		led@47 {
-+			label = "eth63:yellow";
-+			gpios = <&sgpio_out1 31 1 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+	};
- };
- 
- &spi0 {
-@@ -54,6 +290,28 @@ spi-flash@9 {
- 	};
- };
- 
-+&sgpio0 {
-+	status = "okay";
-+	microchip,sgpio-port-ranges = <8 15>;
-+	gpio@0 {
-+		ngpios = <64>;
-+	};
-+	gpio@1 {
-+		ngpios = <64>;
-+	};
-+};
++	irq_data = irq_get_irq_data(virq);
++	tail = NULL;
 +
-+&sgpio1 {
-+	status = "okay";
-+	microchip,sgpio-port-ranges = <24 31>;
-+	gpio@0 {
-+		ngpios = <64>;
-+	};
-+	gpio@1 {
-+		ngpios = <64>;
-+	};
-+};
++	/* The first entry must have a valid irqchip */
++	if (!irq_data->chip || IS_ERR(irq_data->chip))
++		return -EINVAL;
 +
- &gpio {
- 	i2cmux_pins_i: i2cmux-pins-i {
- 	       pins = "GPIO_16", "GPIO_17", "GPIO_18", "GPIO_19",
-diff --git a/arch/arm64/boot/dts/microchip/sparx5_pcb135_board.dtsi b/arch/arm64/boot/dts/microchip/sparx5_pcb135_board.dtsi
-index 7de66806b14b..66381271bef9 100644
---- a/arch/arm64/boot/dts/microchip/sparx5_pcb135_board.dtsi
-+++ b/arch/arm64/boot/dts/microchip/sparx5_pcb135_board.dtsi
-@@ -20,6 +20,50 @@ gpio-restart {
- 		gpios = <&gpio 37 GPIO_ACTIVE_LOW>;
- 		priority = <200>;
- 	};
++	/*
++	 * Validate that the irq_data chain is sane in the presence of
++	 * a hierarchy trimming marker.
++	 */
++	for (irqd = irq_data->parent_data; irqd; irq_data = irqd, irqd = 
+irqd->parent_data) {
++		/* Can't have a valid irqchip after a trim marker */
++		if (irqd->chip && tail)
++			return -EINVAL;
 +
-+	leds {
-+		compatible = "gpio-leds";
-+		led@0 {
-+			label = "eth60:yellow";
-+			gpios = <&sgpio_out1 28 0 GPIO_ACTIVE_LOW>;
-+			default-state = "off";
-+		};
-+		led@1 {
-+			label = "eth60:green";
-+			gpios = <&sgpio_out1 28 1 GPIO_ACTIVE_LOW>;
-+			default-state = "off";
-+		};
-+		led@2 {
-+			label = "eth61:yellow";
-+			gpios = <&sgpio_out1 29 0 GPIO_ACTIVE_LOW>;
-+			default-state = "off";
-+		};
-+		led@3 {
-+			label = "eth61:green";
-+			gpios = <&sgpio_out1 29 1 GPIO_ACTIVE_LOW>;
-+			default-state = "off";
-+		};
-+		led@4 {
-+			label = "eth62:yellow";
-+			gpios = <&sgpio_out1 30 0 GPIO_ACTIVE_LOW>;
-+			default-state = "off";
-+		};
-+		led@5 {
-+			label = "eth62:green";
-+			gpios = <&sgpio_out1 30 1 GPIO_ACTIVE_LOW>;
-+			default-state = "off";
-+		};
-+		led@6 {
-+			label = "eth63:yellow";
-+			gpios = <&sgpio_out1 31 0 GPIO_ACTIVE_LOW>;
-+			default-state = "off";
-+		};
-+		led@7 {
-+			label = "eth63:green";
-+			gpios = <&sgpio_out1 31 1 GPIO_ACTIVE_LOW>;
-+			default-state = "off";
-+		};
-+	};
- };
- 
- &gpio {
-@@ -67,6 +111,17 @@ spi-flash@9 {
- 	};
- };
- 
-+&sgpio1 {
-+	status = "okay";
-+	microchip,sgpio-port-ranges = <24 31>;
-+	gpio@0 {
-+		ngpios = <64>;
-+	};
-+	gpio@1 {
-+		ngpios = <64>;
-+	};
-+};
++		/* Can't have an empty irqchip before a trim marker */
++		if (!irqd->chip && !tail)
++			return -EINVAL;
 +
- &axi {
- 	i2c0_imux: i2c0-imux@0 {
- 		compatible = "i2c-mux-pinctrl";
++		if (IS_ERR(irqd->chip)) {
++			/* Only -ENOTCONN is a valid trim marker */
++			if (PTR_ERR(irqd->chip) != -ENOTCONN)
++				return -EINVAL;
++
++			tail = irq_data;
+  		}
+  	}
++
++	/* No trim marker, nothing to do */
++	if (!tail)
++		return 0;
++
++	pr_info("IRQ%d: trimming hierarchy from %s\n",
++		virq, tail->parent_data->domain->name);
++
++	/* Sever the inner part of the hierarchy...  */
++	irqd = tail;
++	tail = tail->parent_data;
++	irqd->parent_data = NULL;
++	__irq_domain_free_hierarchy(tail);
++
++	return 0;
+  }
+
+  static int irq_domain_alloc_irq_data(struct irq_domain *domain,
+@@ -1362,11 +1442,16 @@ int __irq_domain_alloc_irqs(struct irq_domain 
+*domain, int irq_base,
+  		mutex_unlock(&irq_domain_mutex);
+  		goto out_free_irq_data;
+  	}
+-	for (i = 0; i < nr_irqs; i++)
++	for (i = 0; i < nr_irqs; i++) {
++		ret = irq_domain_trim_hierarchy(virq + i);
++		if (ret)
++			break;
+  		irq_domain_insert_irq(virq + i);
++	}
+  	mutex_unlock(&irq_domain_mutex);
+
+-	return virq;
++	if (!ret)
++		return virq;
+
+  out_free_irq_data:
+  	irq_domain_free_irq_data(virq, nr_irqs);
+
 -- 
-2.25.1
-
+Jazz is not dead. It just smells funny...
