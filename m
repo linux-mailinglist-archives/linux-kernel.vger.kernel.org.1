@@ -2,17 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96CB128726A
+	by mail.lfdr.de (Postfix) with ESMTP id 29BE8287269
 	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 12:19:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729517AbgJHKTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 06:19:24 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14752 "EHLO huawei.com"
+        id S1729509AbgJHKTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 06:19:22 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14748 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729459AbgJHKTP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 06:19:15 -0400
+        id S1729450AbgJHKTM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 06:19:12 -0400
 Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 6C6E325AF3E8FF15C4A9;
+        by Forcepoint Email with ESMTP id 47BDD3D26AD12A724D0D;
         Thu,  8 Oct 2020 18:19:10 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.58) by
  DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
@@ -26,10 +26,10 @@ To:     <acme@kernel.org>, <will@kernel.org>, <mark.rutland@arm.com>,
 CC:     <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>, <qiangqing.zhang@nxp.com>,
         <zhangshaokun@hisilicon.com>, <james.clark@arm.com>,
-        <linux-imx@nxp.com>, John Garry <john.garry@huawei.com>
-Subject: [PATCH RFC v4 07/13] perf vendor events arm64: Add hip09 uncore events
-Date:   Thu, 8 Oct 2020 18:15:15 +0800
-Message-ID: <1602152121-240367-8-git-send-email-john.garry@huawei.com>
+        <linux-imx@nxp.com>
+Subject: [PATCH RFC v4 08/13] perf metricgroup: Fix uncore metric expressions
+Date:   Thu, 8 Oct 2020 18:15:16 +0800
+Message-ID: <1602152121-240367-9-git-send-email-john.garry@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1602152121-240367-1-git-send-email-john.garry@huawei.com>
 References: <1602152121-240367-1-git-send-email-john.garry@huawei.com>
@@ -41,283 +41,162 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add uncore events for DDRC, HHA, and L3C. We use "Compat" property to
-match to specific implementations of the PMUs.
+From: Ian Rogers <irogers@google.com>
 
-Signed-off-by: John Garry <john.garry@huawei.com>
+A metric like DRAM_BW_Use has on SkylakeX events uncore_imc/cas_count_read/
+and uncore_imc/case_count_write/. These events open 6 events per socket
+with pmu names of uncore_imc_[0-5]. The current metric setup code in
+find_evsel_group assumes one ID will map to 1 event to be recorded in
+metric_events. For events with multiple matches, the first event is
+recorded in metric_events (avoiding matching >1 event with the same
+name) and the evlist_used updated so that duplicate events aren't
+removed when the evlist has unused events removed.
+
+Before this change:
+$ /tmp/perf/perf stat -M DRAM_BW_Use -a -- sleep 1
+
+ Performance counter stats for 'system wide':
+
+             41.14 MiB  uncore_imc/cas_count_read/
+     1,002,614,251 ns   duration_time
+
+       1.002614251 seconds time elapsed
+
+After this change:
+$ /tmp/perf/perf stat -M DRAM_BW_Use -a -- sleep 1
+
+ Performance counter stats for 'system wide':
+
+            157.47 MiB  uncore_imc/cas_count_read/ #     0.00 DRAM_BW_Use
+            126.97 MiB  uncore_imc/cas_count_write/
+     1,003,019,728 ns   duration_time
+
+Erroneous duplication introduced in:
+commit 2440689d62e9 ("perf metricgroup: Remove duped metric group events").
+
+Fixes: ded80bda8bc9 ("perf expr: Migrate expr ids table to a hashmap").
+Reported-by: Jin Yao <yao.jin@linux.intel.com>
+Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- .../hisilicon/hip09/sys/uncore-ddrc.json      |  58 ++++++++++
- .../arm64/hisilicon/hip09/sys/uncore-hha.json |  82 ++++++++++++++
- .../arm64/hisilicon/hip09/sys/uncore-l3c.json | 106 ++++++++++++++++++
- 3 files changed, 246 insertions(+)
- create mode 100644 tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-ddrc.json
- create mode 100644 tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-hha.json
- create mode 100644 tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-l3c.json
+ tools/perf/util/metricgroup.c | 75 ++++++++++++++++++++++++++---------
+ 1 file changed, 56 insertions(+), 19 deletions(-)
 
-diff --git a/tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-ddrc.json b/tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-ddrc.json
-new file mode 100644
-index 000000000000..a91c97813ae0
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-ddrc.json
-@@ -0,0 +1,58 @@
-+[
-+   {
-+	    "EventCode": "0x00",
-+	    "EventName": "uncore_hisi_ddrc.cycles",
-+	    "BriefDescription": "DDRC total clock cycles",
-+	    "PublicDescription": "DDRC total clock cycles",
-+	    "Unit": "hisi_sccl,ddrc"
-+	    "Compat": "0x00000030"
-+   },
-+   {
-+	    "EventCode": "0x01",
-+	    "EventName": "uncore_hisi_ddrc.act_cmd",
-+	    "BriefDescription": "DDRC active commands",
-+	    "PublicDescription": "DDRC active commands",
-+	    "Unit": "hisi_sccl,ddrc"
-+	    "Compat": "0x00000030"
-+   },
-+   {
-+	    "EventCode": "0x03",
-+	    "EventName": "uncore_hisi_ddrc.rw_cmd",
-+	    "BriefDescription": "DDRC read and write commands",
-+	    "PublicDescription": "DDRC read and write commands",
-+	    "Unit": "hisi_sccl,ddrc"
-+	    "Compat": "0x00000030"
-+   }
-+   {
-+	    "EventCode": "0x04",
-+	    "EventName": "uncore_hisi_ddrc.refresh_cmd",
-+	    "BriefDescription": "DDRC total refresh commands",
-+	    "PublicDescription": "DDRC total refresh commands",
-+	    "Unit": "hisi_sccl,ddrc"
-+	    "Compat": "0x00000030"
-+   },
-+   {
-+	    "EventCode": "0x05",
-+	    "EventName": "uncore_hisi_ddrc.preall_cmd",
-+	    "BriefDescription": "DDRC precharge-all commands",
-+	    "PublicDescription": "DDRC precharge-all commands",
-+	    "Unit": "hisi_sccl,ddrc"
-+	    "Compat": "0x00000030"
-+   },
-+   {
-+	    "EventCode": "0x41",
-+	    "EventName": "uncore_hisi_ddrc.read_cmd",
-+	    "BriefDescription": "DDRC read commands",
-+	    "PublicDescription": "DDRC read commands",
-+	    "Unit": "hisi_sccl,ddrc"
-+	    "Compat": "0x00000030"
-+   },
-+   {
-+	    "EventCode": "0x44",
-+	    "EventName": "uncore_hisi_ddrc.write_cmd",
-+	    "BriefDescription": "DDRC write commands",
-+	    "PublicDescription": "DDRC write commands",
-+	    "Unit": "hisi_sccl,ddrc"
-+	    "Compat": "0x00000030"
-+   }
-+]
-diff --git a/tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-hha.json b/tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-hha.json
-new file mode 100644
-index 000000000000..5a39f1083ee6
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-hha.json
-@@ -0,0 +1,82 @@
-+[
-+   {
-+	    "EventCode": "0x00",
-+	    "EventName": "uncore_hisi_hha.rx_ops_num",
-+	    "BriefDescription": "The number of all operations received by the HHA",
-+	    "PublicDescription": "The number of all operations received by the HHA",
-+	    "Unit": "hisi_sccl,hha"
-+	    "Compat": "0x00000030"
-+   },
-+   {
-+	    "EventCode": "0x01",
-+	    "EventName": "uncore_hisi_hha.rx_outer",
-+	    "BriefDescription": "The number of all operations received by the HHA from another socket",
-+	    "PublicDescription": "The number of all operations received by the HHA from another socket",
-+	    "Unit": "hisi_sccl,hha"
-+	    "Compat": "0x00000030"
-+   },
-+   {
-+	    "EventCode": "0x02",
-+	    "EventName": "uncore_hisi_hha.rx_sccl",
-+	    "BriefDescription": "The number of all operations received by the HHA from another SCCL in this socket",
-+	    "PublicDescription": "The number of all operations received by the HHA from another SCCL in this socket",
-+	    "Unit": "hisi_sccl,hha"
-+	    "Compat": "0x00000030"
-+   },
-+   {
-+	    "EventCode": "0x03",
-+	    "EventName": "uncore_hisi_hha.rx_ccix",
-+	    "BriefDescription": "Count of the number of operations that HHA has received from CCIX",
-+	    "PublicDescription": "Count of the number of operations that HHA has received from CCIX",
-+	    "Unit": "hisi_sccl,hha"
-+	    "Compat": "0x00000030"
-+   },
-+   {
-+	    "EventCode": "0x1c",
-+	    "EventName": "uncore_hisi_hha.rd_ddr_64b",
-+	    "BriefDescription": "The number of read operations sent by HHA to DDRC which size is 64 bytes",
-+	    "PublicDescription": "The number of read operations sent by HHA to DDRC which size is 64bytes",
-+	    "Unit": "hisi_sccl,hha"
-+	    "Compat": "0x00000030"
-+   },
-+   {
-+	    "EventCode": "0x1d",
-+	    "EventName": "uncore_hisi_hha.wr_ddr_64b",
-+	    "BriefDescription": "The number of write operations sent by HHA to DDRC which size is 64 bytes",
-+	    "PublicDescription": "The number of write operations sent by HHA to DDRC which size is 64 bytes",
-+	    "Unit": "hisi_sccl,hha"
-+	    "Compat": "0x00000030"
-+   },
-+   {
-+	    "EventCode": "0x1e",
-+	    "EventName": "uncore_hisi_hha.rd_ddr_128b",
-+	    "BriefDescription": "The number of read operations sent by HHA to DDRC which size is 128 bytes",
-+	    "PublicDescription": "The number of read operations sent by HHA to DDRC which size is 128 bytes",
-+	    "Unit": "hisi_sccl,hha"
-+	    "Compat": "0x00000030"
-+   },
-+   {
-+	    "EventCode": "0x1f",
-+	    "EventName": "uncore_hisi_hha.wr_ddr_128b",
-+	    "BriefDescription": "The number of write operations sent by HHA to DDRC which size is 128 bytes",
-+	    "PublicDescription": "The number of write operations sent by HHA to DDRC which size is 128 bytes",
-+	    "Unit": "hisi_sccl,hha"
-+	    "Compat": "0x00000030"
-+   },
-+   {
-+	    "EventCode": "0x20",
-+	    "EventName": "uncore_hisi_hha.spill_num",
-+	    "BriefDescription": "Count of the number of spill operations that the HHA has sent",
-+	    "PublicDescription": "Count of the number of spill operations that the HHA has sent",
-+	    "Unit": "hisi_sccl,hha"
-+	    "Compat": "0x00000030"
-+   },
-+   {
-+	    "EventCode": "0x21",
-+	    "EventName": "uncore_hisi_hha.spill_success",
-+	    "BriefDescription": "Count of the number of successful spill operations that the HHA has sent",
-+	    "PublicDescription": "Count of the number of successful spill operations that the HHA has sent",
-+	    "Unit": "hisi_sccl,hha"
-+	    "Compat": "0x00000030"
-+   }
-+]
-diff --git a/tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-l3c.json b/tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-l3c.json
-new file mode 100644
-index 000000000000..3ae7948982ca
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-l3c.json
-@@ -0,0 +1,106 @@
-+[
-+   {
-+	    "EventCode": "0x00",
-+	    "EventName": "uncore_hisi_l3c.rd_cpipe",
-+	    "BriefDescription": "Total read accesses",
-+	    "PublicDescription": "Total read accesses",
-+	    "Unit": "hisi_sccl,l3c"
-+	    "Compat": "0x00000030"
-+   },
-+   {
-+	    "EventCode": "0x01",
-+	    "EventName": "uncore_hisi_l3c.wr_cpipe",
-+	    "BriefDescription": "Total write accesses",
-+	    "PublicDescription": "Total write accesses",
-+	    "Unit": "hisi_sccl,l3c"
-+	    "Compat": "0x00000030"
-+   },
-+   {
-+	    "EventCode": "0x02",
-+	    "EventName": "uncore_hisi_l3c.rd_hit_cpipe",
-+	    "BriefDescription": "Total read hits",
-+	    "PublicDescription": "Total read hits",
-+	    "Unit": "hisi_sccl,l3c"
-+	    "Compat": "0x00000030"
-+   },
-+   {
-+	    "EventCode": "0x03",
-+	    "EventName": "uncore_hisi_l3c.wr_hit_cpipe",
-+	    "BriefDescription": "Total write hits",
-+	    "PublicDescription": "Total write hits",
-+	    "Unit": "hisi_sccl,l3c"
-+	    "Compat": "0x00000030"
-+   },
-+   {
-+	    "EventCode": "0x04",
-+	    "EventName": "uncore_hisi_l3c.victim_num",
-+	    "BriefDescription": "l3c precharge commands",
-+	    "PublicDescription": "l3c precharge commands",
-+	    "Unit": "hisi_sccl,l3c"
-+	    "Compat": "0x00000030"
-+   },
-+   {
-+	    "EventCode": "0x20",
-+	    "EventName": "uncore_hisi_l3c.rd_spipe",
-+	    "BriefDescription": "Count of the number of read lines that come from this cluster of CPU core in spipe",
-+	    "PublicDescription": "Count of the number of read lines that come from this cluster of CPU core in spipe",
-+	    "Unit": "hisi_sccl,l3c"
-+	    "Compat": "0x00000030"
-+   },
-+   {
-+	    "EventCode": "0x21",
-+	    "EventName": "uncore_hisi_l3c.wr_spipe",
-+	    "BriefDescription": "Count of the number of write lines that come from this cluster of CPU core in spipe",
-+	    "PublicDescription": "Count of the number of write lines that come from this cluster of CPU core in spipe",
-+	    "Unit": "hisi_sccl,l3c"
-+	    "Compat": "0x00000030"
-+   },
-+   {
-+	    "EventCode": "0x22",
-+	    "EventName": "uncore_hisi_l3c.rd_hit_spipe",
-+	    "BriefDescription": "Count of the number of read lines that hits in spipe of this L3C",
-+	    "PublicDescription": "Count of the number of read lines that hits in spipe of this L3C",
-+	    "Unit": "hisi_sccl,l3c"
-+	    "Compat": "0x00000030"
-+   },
-+   {
-+	    "EventCode": "0x23",
-+	    "EventName": "uncore_hisi_l3c.wr_hit_spipe",
-+	    "BriefDescription": "Count of the number of write lines that hits in spipe of this L3C",
-+	    "PublicDescription": "Count of the number of write lines that hits in spipe of this L3C",
-+	    "Unit": "hisi_sccl,l3c"
-+	    "Compat": "0x00000030"
-+   },
-+   {
-+	    "EventCode": "0x29",
-+	    "EventName": "uncore_hisi_l3c.back_invalid",
-+	    "BriefDescription": "Count of the number of L3C back invalid operations",
-+	    "PublicDescription": "Count of the number of L3C back invalid operations",
-+	    "Unit": "hisi_sccl,l3c"
-+	    "Compat": "0x00000030"
-+   },
-+   {
-+	    "EventCode": "0x40",
-+	    "EventName": "uncore_hisi_l3c.retry_cpu",
-+	    "BriefDescription": "Count of the number of retry that L3C suppresses the CPU operations",
-+	    "PublicDescription": "Count of the number of retry that L3C suppresses the CPU operations",
-+	    "Unit": "hisi_sccl,l3c"
-+	    "Compat": "0x00000030"
-+   },
-+   {
-+	    "EventCode": "0x41",
-+	    "EventName": "uncore_hisi_l3c.retry_ring",
-+	    "BriefDescription": "Count of the number of retry that L3C suppresses the ring operations",
-+	    "PublicDescription": "Count of the number of retry that L3C suppresses the ring operations",
-+	    "Unit": "hisi_sccl,l3c"
-+	    "Compat": "0x00000030"
-+   },
-+   {
-+	    "EventCode": "0x42",
-+	    "EventName": "uncore_hisi_l3c.prefetch_drop",
-+	    "BriefDescription": "Count of the number of prefetch drops from this L3C",
-+	    "PublicDescription": "Count of the number of prefetch drops from this L3C",
-+	    "Unit": "hisi_sccl,l3c"
-+	    "Compat": "0x00000030"
-+   }
-+]
+diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+index ab5030fcfed4..d948a7f910cf 100644
+--- a/tools/perf/util/metricgroup.c
++++ b/tools/perf/util/metricgroup.c
+@@ -150,6 +150,18 @@ static void expr_ids__exit(struct expr_ids *ids)
+ 		free(ids->id[i].id);
+ }
+ 
++static bool contains_event(struct evsel **metric_events, int num_events,
++			const char *event_name)
++{
++	int i;
++
++	for (i = 0; i < num_events; i++) {
++		if (!strcmp(metric_events[i]->name, event_name))
++			return true;
++	}
++	return false;
++}
++
+ /**
+  * Find a group of events in perf_evlist that correpond to those from a parsed
+  * metric expression. Note, as find_evsel_group is called in the same order as
+@@ -180,7 +192,11 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
+ 	int i = 0, matched_events = 0, events_to_match;
+ 	const int idnum = (int)hashmap__size(&pctx->ids);
+ 
+-	/* duration_time is grouped separately. */
++	/*
++	 * duration_time is always grouped separately, when events are grouped
++	 * (ie has_constraint is false) then ignore it in the matching loop and
++	 * add it to metric_events at the end.
++	 */
+ 	if (!has_constraint &&
+ 	    hashmap__find(&pctx->ids, "duration_time", (void **)&val_ptr))
+ 		events_to_match = idnum - 1;
+@@ -207,23 +223,20 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
+ 				sizeof(struct evsel *) * idnum);
+ 			current_leader = ev->leader;
+ 		}
+-		if (hashmap__find(&pctx->ids, ev->name, (void **)&val_ptr)) {
+-			if (has_constraint) {
+-				/*
+-				 * Events aren't grouped, ensure the same event
+-				 * isn't matched from two groups.
+-				 */
+-				for (i = 0; i < matched_events; i++) {
+-					if (!strcmp(ev->name,
+-						    metric_events[i]->name)) {
+-						break;
+-					}
+-				}
+-				if (i != matched_events)
+-					continue;
+-			}
++		/*
++		 * Check for duplicate events with the same name. For example,
++		 * uncore_imc/cas_count_read/ will turn into 6 events per socket
++		 * on skylakex. Only the first such event is placed in
++		 * metric_events. If events aren't grouped then this also
++		 * ensures that the same event in different sibling groups
++		 * aren't both added to metric_events.
++		 */
++		if (contains_event(metric_events, matched_events, ev->name))
++			continue;
++		/* Does this event belong to the parse context? */
++		if (hashmap__find(&pctx->ids, ev->name, (void **)&val_ptr))
+ 			metric_events[matched_events++] = ev;
+-		}
++
+ 		if (matched_events == events_to_match)
+ 			break;
+ 	}
+@@ -239,7 +252,7 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
+ 	}
+ 
+ 	if (matched_events != idnum) {
+-		/* Not whole match */
++		/* Not a whole match */
+ 		return NULL;
+ 	}
+ 
+@@ -247,8 +260,32 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
+ 
+ 	for (i = 0; i < idnum; i++) {
+ 		ev = metric_events[i];
+-		ev->metric_leader = ev;
++		/* Don't free the used events. */
+ 		set_bit(ev->idx, evlist_used);
++		/*
++		 * The metric leader points to the identically named event in
++		 * metric_events.
++		 */
++		ev->metric_leader = ev;
++		/*
++		 * Mark two events with identical names in the same group (or
++		 * globally) as being in use as uncore events may be duplicated
++		 * for each pmu. Set the metric leader of such events to be the
++		 * event that appears in metric_events.
++		 */
++		evlist__for_each_entry_continue(perf_evlist, ev) {
++			/*
++			 * If events are grouped then the search can terminate
++			 * when then group is left.
++			 */
++			if (!has_constraint &&
++			    ev->leader != metric_events[i]->leader)
++				break;
++			if (!strcmp(metric_events[i]->name, ev->name)) {
++				set_bit(ev->idx, evlist_used);
++				ev->metric_leader = metric_events[i];
++			}
++		}
+ 	}
+ 
+ 	return metric_events[0];
 -- 
 2.26.2
 
