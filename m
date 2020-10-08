@@ -2,163 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF1802871A2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 11:35:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 214722871AB
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 11:36:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729186AbgJHJf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 05:35:27 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60136 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725852AbgJHJf1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 05:35:27 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 79F17ACAC;
-        Thu,  8 Oct 2020 09:35:24 +0000 (UTC)
-Message-ID: <4fcb8adf6241e601109cfae5945f38be0e67e0f6.camel@suse.de>
-Subject: Re: [PATCH v5 80/80] ARM: dts: bcm2711: Enable the display pipeline
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Maxime Ripard <maxime@cerno.tech>
-Cc:     Tim Gover <tim.gover@raspberrypi.com>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Eric Anholt <eric@anholt.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Hoegeun Kwon <hoegeun.kwon@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        Phil Elwell <phil@raspberrypi.com>,
-        linux-arm-kernel@lists.infradead.org
-Date:   Thu, 08 Oct 2020 11:35:21 +0200
-In-Reply-To: <CAPY8ntAr+wV0F-GCxHLg+30tuu8van51BFQ9Nh_C1LD+CPRcLA@mail.gmail.com>
-References: <cfce2276d172d3d9c4d34d966b58fd47f77c4e46.1599120059.git-series.maxime@cerno.tech>
-         <20200929221526.GA1370981@ubuntu-m3-large-x86>
-         <20200930140758.gummt3umouva3wyu@gilmour.lan>
-         <20200930163823.GA237050@ubuntu-m3-large-x86>
-         <cacbaef2-4221-50d8-3c5d-efab9f1a9c04@i2se.com>
-         <20201001064843.dlewcu3b7dvqanyy@gilmour.lan>
-         <20201001085402.t6mzzwzplviunhoc@gilmour.lan>
-         <CAAvKZ65WqQqH-9JVdb5M6HcKbR3yQdvZha8n9UXXCfciYRq4aA@mail.gmail.com>
-         <20201002151954.wazqc5riesdomlpx@gilmour.lan>
-         <CAPY8ntCkY9F0e=hOyg=rs5G2a=iEbukWgmr0adXrwJQPm=uY6A@mail.gmail.com>
-         <20201006152623.sjc3jxagj4wh7g5f@gilmour.lan>
-         <CAPY8ntAr+wV0F-GCxHLg+30tuu8van51BFQ9Nh_C1LD+CPRcLA@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-GGTW+6nQFXkETNpj3DA5"
-User-Agent: Evolution 3.36.5 
+        id S1729198AbgJHJgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 05:36:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725852AbgJHJgH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 05:36:07 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1F07C061755;
+        Thu,  8 Oct 2020 02:36:06 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C6R0M3TX6z9sSC;
+        Thu,  8 Oct 2020 20:36:02 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1602149763;
+        bh=Pj2US0szbTXAu9G3VuYoyPI9XJYEZhKpMFhzx7Cle1Q=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ghEqc+v4lSyGgWw76XB62zqIsn/ixoRrlM/D3yvrsbgvfZVe8G6xBu0HXVGY7BGdw
+         26Mt2I4/zoLPpFZeFDxWAurtcyB80U3oQBfwZEyn3r3a/LqxIJbVbAe3oFjmoRqHvP
+         1iGt8SWIzznStZZiPg9jmeOqWWd0pOvoD3saW6/eaRiJgpVE+0bPw+tjAnyeKjyo/H
+         BG4on5JkpQRBoTvzlawq0CJz7zL974igA91sZpSQK/512tJnbImE091IUvqV5RiAtE
+         mu1IiR/hOCT+vCd87BFnTO/QB5kUD7GANyY17ap9s3Jbu5c3+mDq1xtqUK65CtLINX
+         o/L94JnePF6kg==
+Date:   Thu, 8 Oct 2020 20:35:59 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the pm tree
+Message-ID: <20201008203559.735dd600@canb.auug.org.au>
+In-Reply-To: <20201001194337.35f881af@canb.auug.org.au>
+References: <20200922181126.3cae159a@canb.auug.org.au>
+        <20201001194337.35f881af@canb.auug.org.au>
 MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/e=PgqzMUTh1MTFIsV7NH+7A";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---=-GGTW+6nQFXkETNpj3DA5
-Content-Type: text/plain; charset="UTF-8"
+--Sig_/e=PgqzMUTh1MTFIsV7NH+7A
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-Hi Dave, sorry for the late reply.
+Hi all,
 
-On Tue, 2020-10-06 at 18:14 +0100, Dave Stevenson wrote:
-> Hi Maxime
->=20
-> On Tue, 6 Oct 2020 at 16:26, Maxime Ripard <maxime@cerno.tech> wrote:
-> > Hi Dave,
+On Thu, 1 Oct 2020 19:43:37 +1000 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>
+> On Tue, 22 Sep 2020 18:11:26 +1000 Stephen Rothwell <sfr@canb.auug.org.au=
+> wrote:
+> >
+> > After merging the pm tree, today's linux-next build (i386 defconfig)
+> > produced this warning:
 > >=20
-> > On Fri, Oct 02, 2020 at 04:57:05PM +0100, Dave Stevenson wrote:
-> > > Hi Maxime
-> > >=20
-> > > On Fri, 2 Oct 2020 at 16:19, Maxime Ripard <maxime@cerno.tech> wrote:
-> > > > Hi Tim,
-> > > >=20
-> > > > On Thu, Oct 01, 2020 at 11:15:46AM +0100, Tim Gover wrote:
-> > > > > hdmi_enable_4k60=3D1 causes the firmware to select 3.3 GHz for th=
-e PLLC
-> > > > > VCO to support a core-frequency of 550 MHz which is the minimum
-> > > > > frequency required by the HVS at 4Kp60. The side effect is that i=
-f the
-> > > > > display clock requirements are lower than 4Kp60 then you will see
-> > > > > different core frequencies selected by DVFS.
-> > > > >=20
-> > > > > If enable_uart=3D1 and the mini-uart is selected (default unless
-> > > > > bluetooth is disabled) then the firmware will pin the core-freque=
-ncy
-> > > > > to either core_freq max (500 or 550). Although, I think there is =
-a way
-> > > > > of pinning it to a lower fixed frequency.
-> > > > >=20
-> > > > > The table in overclocking.md defines options for setting the maxi=
-mum
-> > > > > core frequency but unless core_freq_min is specified DVFS will
-> > > > > automatically pick the lowest idle frequency required by the disp=
-lay
-> > > > > resolution.
-> > > >=20
-> > > > I'm wondering if there's some way to detect this from Linux? I gues=
-s it
-> > > > would be nice to be able to at least detect a broken config to warn=
- /
-> > > > prevent an user that their situation is not going to be reliable / =
-work
-> > > > really well (like if they have a 4k display without hdmi_enable_4kp=
-60
-> > > > set, or the issue we're discussing here)
-> > >=20
-> > > The main filter in the firmware is the parameter
-> > > hdmi_pixel_freq_limit. That can either be set manually from
-> > > config.txt, or defaults appropriately based on hdmi_enable_4kp60.
-> > > Under firmware_kms [1] I read back those values to use as a filter
-> > > within crtc_mode_valid[2].
-> > > I can't think of a nice way of exposing that without the vc4 driver
-> > > gaining a DT link to the firmware, and that starts to get ugly.
+> > In file included from include/acpi/acpi.h:24,
+> >                  from drivers/acpi/acpica/hwgpe.c:10:
+> > drivers/acpi/acpica/hwgpe.c: In function 'acpi_hw_gpe_read':
+> > include/acpi/actypes.h:501:48: warning: cast to pointer from integer of=
+ different size [-Wint-to-pointer-cast]
+> >   501 | #define ACPI_CAST_PTR(t, p)             ((t *) (acpi_uintptr_t)=
+ (p))
+> >       |                                                ^
+> > drivers/acpi/acpica/acmacros.h:18:41: note: in expansion of macro 'ACPI=
+_CAST_PTR'
+> >    18 | #define ACPI_CAST8(ptr)                 ACPI_CAST_PTR (u8, (ptr=
+))
+> >       |                                         ^~~~~~~~~~~~~
+> > drivers/acpi/acpica/acmacros.h:22:43: note: in expansion of macro 'ACPI=
+_CAST8'
+> >    22 | #define ACPI_GET8(ptr)                  (*ACPI_CAST8 (ptr))
+> >       |                                           ^~~~~~~~~~
+> > drivers/acpi/acpica/hwgpe.c:50:17: note: in expansion of macro 'ACPI_GE=
+T8'
+> >    50 |   *value =3D (u64)ACPI_GET8(reg->address);
+> >       |                 ^~~~~~~~~
+> > drivers/acpi/acpica/hwgpe.c: In function 'acpi_hw_gpe_write':
+> > include/acpi/actypes.h:501:48: warning: cast to pointer from integer of=
+ different size [-Wint-to-pointer-cast]
+> >   501 | #define ACPI_CAST_PTR(t, p)             ((t *) (acpi_uintptr_t)=
+ (p))
+> >       |                                                ^
+> > drivers/acpi/acpica/acmacros.h:18:41: note: in expansion of macro 'ACPI=
+_CAST_PTR'
+> >    18 | #define ACPI_CAST8(ptr)                 ACPI_CAST_PTR (u8, (ptr=
+))
+> >       |                                         ^~~~~~~~~~~~~
+> > drivers/acpi/acpica/acmacros.h:26:43: note: in expansion of macro 'ACPI=
+_CAST8'
+> >    26 | #define ACPI_SET8(ptr, val)             (*ACPI_CAST8 (ptr) =3D =
+(u8) (val))
+> >       |                                           ^~~~~~~~~~
+> > drivers/acpi/acpica/hwgpe.c:85:3: note: in expansion of macro 'ACPI_SET=
+8'
+> >    85 |   ACPI_SET8(reg->address, value);
+> >       |   ^~~~~~~~~
 > >=20
-> > I had in mind something like if the clock driver can infer that somehow
-> > through some the boundaries reported by the firmware maybe? IIRC,
-> > hdmi_enable_4kp60 will already change the max frequency reported to
-> > 550MHz instead of 500MHz
+> > Introduced by commit
+> >=20
+> >   7a8379eb41a4 ("ACPICA: Add support for using logical addresses of GPE=
+ blocks") =20
 >=20
-> Yes, that's plausible, but I don't know enough about the clock
-> infrastructure for advertising limits to know what works there.
-> Tell me what you need from the mailbox service and I'll see what I can do=
-.
->=20
-> We do already have RPI_FIRMWARE_GET_MAX_CLOCK_RATE and
-> RPI_FIRMWARE_GET_MIN_CLOCK_RATE. It'd take a few minutes of staring at
-> the code (or a quick test) to confirm if they definitely are changed
-> for CORE clock by hdmi_enable_4kp60 - I think it does.
+> I am still getting these warnings ...
 
-Tim commented earlier that you meant to pin CORE frequency when enable_uart=
-=3D1.
-In practice it doesn't seem to be the case, but it would solve the UART
-problem for most use cases. Would that be feasible?
+Still there :-(
 
-If we have to change the CORE frequency during runtime we could, while we
-search for a proper solution, print a warning that we're about to break the=
- low
-speed peripherals.
+--=20
+Cheers,
+Stephen Rothwell
 
-Regards,
-Nicolas
-
-
---=-GGTW+6nQFXkETNpj3DA5
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+--Sig_/e=PgqzMUTh1MTFIsV7NH+7A
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl9+3VkACgkQlfZmHno8
-x/6lNQf/RX2DLfzMbpiRUL7IE3tjUlCl92Irb0CiVN54cIbjREI3mpHvnODwZ54B
-O2PoojpqTltsyyixX6sI3vYUyiYbaWNCC8NEMd2+2h4RFFqdDjZU+L80yQcL7Ms4
-dEOaTNjfm3Fo2wxgUXrt79Z4yotEnT1UVAhqdXXFj+18EMzJfFddMk/0UsO0wP0f
-COkCwXpBy4m3RD/orkS8QHNZxcl2YXzG0GLqm2FCrnypLSCFgXHIzLkyxaHMwxK8
-sE1yZfgoG2QlE7HYFVfNyksx2DT9p0f6EKh7Qi4vk82WsJlJfkywpf3k8wI1jm3J
-ayS4IGCyOSMUrvlZUX/REvUPN3mLLQ==
-=jTkd
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9+3X8ACgkQAVBC80lX
+0GzxEAf7ByLzg+psGPtGuLOIyWh4EPlKPN8Rkl73EYwT/+5PItvYyv8RUNiZsl/1
+QufRlOYXiyVt0GiENCLJvXuhlXUEYe+FYwXA0jqMktAbqq4KjwHTPs1f1b6tA9XZ
+BTDF69JHSBW83IvFJhYsNvT4g8W0ecg6SC1QgkDxR6qDOpWZSkpl1UhvIXWewBWH
+4S6ZJrNYTcZT7nnumJ+BbvInxu6PT8Xb2hQSYB2yXPAcBQ8gsQmGb57JTjZ6Iuvo
+ghCSF84WPFw4R88/R7Rd8TXQG/q8CZdVCTr1Yt8tssr9ymI+KIcNYuWttVJ1u4ln
+JYrVQ/8PJ2tSnBfylZynrHlZf4GX1g==
+=d8QS
 -----END PGP SIGNATURE-----
 
---=-GGTW+6nQFXkETNpj3DA5--
-
+--Sig_/e=PgqzMUTh1MTFIsV7NH+7A--
