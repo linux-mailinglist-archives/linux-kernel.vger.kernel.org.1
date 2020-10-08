@@ -2,138 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41843286F7E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:32:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3439286F8C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:33:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727311AbgJHHcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 03:32:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48488 "EHLO
+        id S1727173AbgJHHdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 03:33:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727232AbgJHHcS (ORCPT
+        with ESMTP id S1725899AbgJHHdm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 03:32:18 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A8BC0613D3
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 00:32:18 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id y12so12468wrp.6
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 00:32:18 -0700 (PDT)
+        Thu, 8 Oct 2020 03:33:42 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 663A9C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 00:33:41 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id z1so5393195wrt.3
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 00:33:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=6Q5cOldM6q5JrfqCs8qEdwrhCyVv/oMVbGGujp3ARP4=;
-        b=D/9VgxnWJBnhCcPwvZUCvpvCPL0ACCOx02s1jjCFHNcO1bQpTc/6jAQ/1M14PLM4VK
-         sPI0HOsTSm80tYxBfJ4riYN/1etxSuVl2C51EXSNtj6h/s+v06IiS2SPGWhdaQIYFT1e
-         HG13yQC4Vc3hvBvPW4+/fmGfKMTvLSP7cPaU0Roda0PNrmFUEuX/899X9NPxyBgmOELK
-         MOtP7NAadyRrh2lJBFRSGZ0bkrum2Lk1pRjvWJe0+KuQShTsWRbaliz0M84CN1q4i9Jc
-         5HDeXGJW+zZuj1GLe4a5TppeuWXh2vvtHXSa722XxGMJQSGCh2r543oOcljRjmwNzxWi
-         vp2w==
+        bh=tgWoS1DNrNMjeMErRF1VLwt6P/QpByafehH2pDshfP0=;
+        b=ZsFHLmxE7BINX3sLNhZmok4EUe+DHyNsoKFxHXdX3XoSP/qHZ6sO4YdEVZnTldhdY7
+         26iJvDlQBO5kneSJgq8Ui40Fv99Qfopg22haKLGa7CTGRmxvfG5orLelU4lG2qZiGElE
+         dkoMO11L1XEeGCXndx2NoKnjCR9PDvPpU+7dELIvNgPtdPpnwhuLZKm4h4zdb6JXoeU2
+         xxWCenu7xveYXeRW/fFuM7i4SAdQdP8Q2EPua1MW2787y1cWhN8CJkWCyic9+GFesKWz
+         w+b0z7cnlPzn6cPtmqVDDXtZPtjWeZ8S+kbZJoZdAm8Cdr4W17C7OiYCPMJiNDQuM6GZ
+         Y2Zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=6Q5cOldM6q5JrfqCs8qEdwrhCyVv/oMVbGGujp3ARP4=;
-        b=av8+BK3NxssFMmvmuDv3Wtbzw2+oB38VTh+nhn9gdETXllm/XLhUXj/Fmc/3f6/EPA
-         MreJMh3sZIiPVKtkFu31rjFGU4VcffNIbR93WdIOVa3pq7XFP1oWEg0+QULTFYVrIXjA
-         l+oQnw81aKeU8uZI5RXvOT9GLOyddlSOW2nSjFDMOUe1ZPIurEfvGUdcfbHXaVqG/vIj
-         WUYuCjN22lStySpp+Q4WSqWP3G8ZtQmTt2427cXI+zuIaQTyYK2J9iRcWxAVaYwYaNSu
-         C6q/Eu4MsxprAeu8nH3mVLsseqa3bZ9U27QTH2biGuJFZWwT7IWupLGeTG4JISe4h0Dv
-         Y0CA==
-X-Gm-Message-State: AOAM533o1GWFuR8+M3BWCCIRR79EC1/Z5UKvVrdwToC7SmbImLLsBdg0
-        KFQgUlbBtDa30jYs7JMa3i2CJw==
-X-Google-Smtp-Source: ABdhPJxFjGV/yxOiFqpYLTyRD7i+NgV9Bw3QiP14XQdh13hJO+WlbWlBg3JHxI4WR5vxKchmzx73uw==
-X-Received: by 2002:adf:e4c5:: with SMTP id v5mr7371061wrm.320.1602142337036;
-        Thu, 08 Oct 2020 00:32:17 -0700 (PDT)
+        bh=tgWoS1DNrNMjeMErRF1VLwt6P/QpByafehH2pDshfP0=;
+        b=rSYR16a4cdTZ75Fn+xtj+VS3pZqGBrIra6b6VO/9q/n2rhD/FnNfYSJjZVAFmM3ydq
+         yOKjGz14+n/z2KI1T2METyfns51YYVq3NahITmUrr5WKp/yNFp+s4CF7wcq/WRxy9isS
+         Df7Z+MYbbtRLCkTbWTm73Ik4kGLtFWwmIyM3R+6EL3gtadJ5V9GK5e8qAVhjFe6Vmw7m
+         X03j+jDRey11XhW/IXQl5ik/RE9ZYAjfepXr0hBKuu3pgEb5Xzj4eb4IkHvJViDyvkdg
+         hxgb6R+X+AbqAfmdxW05/t1mgjTshpjBBe7p+3aheAECszozeiq7FW9rr54Vm9YHV/IJ
+         Veqw==
+X-Gm-Message-State: AOAM531VDaKbeMN5gEGNaFpyKIWr2sboMqOBLRyvo0zQicRKygfOpLn3
+        pGirfHcLMf953eHUld9TEMJBTQ==
+X-Google-Smtp-Source: ABdhPJzabvtfwLmhnEYubgjfeo2bB0aroK/nU1F0zOHh2mrKpbUH4p2gKhjVT7qNDholk5mCIJP9Ag==
+X-Received: by 2002:a5d:40c3:: with SMTP id b3mr8460241wrq.157.1602142419967;
+        Thu, 08 Oct 2020 00:33:39 -0700 (PDT)
 Received: from dell ([91.110.221.232])
-        by smtp.gmail.com with ESMTPSA id n6sm6423368wrx.58.2020.10.08.00.32.15
+        by smtp.gmail.com with ESMTPSA id s11sm1385391wrm.56.2020.10.08.00.33.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 00:32:16 -0700 (PDT)
-Date:   Thu, 8 Oct 2020 08:32:14 +0100
+        Thu, 08 Oct 2020 00:33:39 -0700 (PDT)
+Date:   Thu, 8 Oct 2020 08:33:37 +0100
 From:   Lee Jones <lee.jones@linaro.org>
-To:     "David E. Box" <david.e.box@linux.intel.com>
-Cc:     dvhart@infradead.org, andy@infradead.org, bhelgaas@google.com,
-        hdegoede@redhat.com, alexey.budankov@linux.intel.com,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-pci@vger.kernel.org,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH V8 2/5] mfd: Intel Platform Monitoring Technology support
-Message-ID: <20201008073214.GF1763265@dell>
-References: <20201003013123.20269-1-david.e.box@linux.intel.com>
- <20201003013123.20269-3-david.e.box@linux.intel.com>
- <20201007065751.GA1763265@dell>
- <09930d0783d6a5f17f9af872b4fc7a244c6dc5e1.camel@linux.intel.com>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Alexander Dahl <post@lespocky.de>, Dan Murphy <dmurphy@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alexander Dahl <ada@thorsis.com>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-amlogic@lists.infradead.org, linux-mips@vger.kernel.org,
+        Jeff LaBundy <jeff@labundy.com>
+Subject: Re: [PATCH v7 03/12] dt-bindings: mfd: Fix schema warnings for
+ pwm-leds
+Message-ID: <20201008073337.GG1763265@dell>
+References: <20201005203451.9985-1-post@lespocky.de>
+ <20201005203451.9985-4-post@lespocky.de>
+ <20201007100359.GC12224@duo.ucw.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <09930d0783d6a5f17f9af872b4fc7a244c6dc5e1.camel@linux.intel.com>
+In-Reply-To: <20201007100359.GC12224@duo.ucw.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 07 Oct 2020, David E. Box wrote:
+On Wed, 07 Oct 2020, Pavel Machek wrote:
 
-> On Wed, 2020-10-07 at 07:57 +0100, Lee Jones wrote:
-> > On Fri, 02 Oct 2020, David E. Box wrote:
-> > 
-> > > Intel Platform Monitoring Technology (PMT) is an architecture for
-> > > enumerating and accessing hardware monitoring facilities. PMT
-> > > supports
-> > > multiple types of monitoring capabilities. This driver creates
-> > > platform
-> > > devices for each type so that they may be managed by capability
-> > > specific
-> > > drivers (to be introduced). Capabilities are discovered using PCIe
-> > > DVSEC
-> > > ids. Support is included for the 3 current capability types,
-> > > Telemetry,
-> > > Watcher, and Crashlog. The features are available on new Intel
-> > > platforms
-> > > starting from Tiger Lake for which support is added. This patch
-> > > adds
-> > > support for Tiger Lake (TGL), Alder Lake (ADL), and Out-of-Band
-> > > Management
-> > > Services Module (OOBMSM).
-> > > 
-> > > Also add a quirk mechanism for several early hardware differences
-> > > and bugs.
-> > > For Tiger Lake and Alder Lake, do not support Watcher and Crashlog
-> > > capabilities since they will not be compatible with future product.
-> > > Also,
-> > > fix use a quirk to fix the discovery table offset.
-> > > 
-> > > Co-developed-by: Alexander Duyck <alexander.h.duyck@linux.intel.com
-> > > >
-> > > Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> > > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> > > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> > > ---
-> > >  MAINTAINERS             |   5 +
-> > >  drivers/mfd/Kconfig     |  10 ++
-> > >  drivers/mfd/Makefile    |   1 +
-> > >  drivers/mfd/intel_pmt.c | 226
-> > > ++++++++++++++++++++++++++++++++++++++++
-> > >  4 files changed, 242 insertions(+)
-> > >  create mode 100644 drivers/mfd/intel_pmt.c
-> > 
-> > I Acked this back in August.
-> > 
-> > Any reason why you didn't carry it forward?
+> Hi!
 > 
-> So that you could review changes made after the Ack.
-> Please let me know if this is not preferred. Thanks.
+> > The node names for devices using the pwm-leds driver follow a certain
+> > naming scheme (now).  Parent node name is not enforced, but recommended
+> > by DT project.
+> > 
+> >   DTC     Documentation/devicetree/bindings/mfd/iqs62x.example.dt.yaml
+> >   CHECK   Documentation/devicetree/bindings/mfd/iqs62x.example.dt.yaml
+> > /home/alex/build/linux/Documentation/devicetree/bindings/mfd/iqs62x.example.dt.yaml: pwmleds: 'panel' does not match any of the regexes: '^led(-[0-9a-f]+)?$', 'pinctrl-[0-9]+'
+> >         From schema: /home/alex/src/linux/leds/Documentation/devicetree/bindings/leds/leds-pwm.yaml
+> > 
+> > Signed-off-by: Alexander Dahl <post@lespocky.de>
+> 
+> Okay, so I need Rob's ack here, I guess... and rest of the series is
+> not really for my tree.
 
-No, that is the correct way to do things (see below).
-
-> You did and you requested fixups which were made.
-
-Keeping the status of each and every patch-set currently in my inbox
-would be a very difficult task.
-
-This is why I recommend patch-level changelogs (just below the '---'
-marker).
+This patch is not for your tree either. ;)
 
 -- 
 Lee Jones [李琼斯]
