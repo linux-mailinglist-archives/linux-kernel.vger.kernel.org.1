@@ -2,155 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF4992873F1
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 14:20:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D87B42873F7
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 14:23:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729774AbgJHMUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 08:20:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36690 "EHLO
+        id S1729811AbgJHMXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 08:23:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725852AbgJHMUq (ORCPT
+        with ESMTP id S1729701AbgJHMXY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 08:20:46 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 173B9C061755
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 05:20:46 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id n14so3848290pff.6
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 05:20:46 -0700 (PDT)
+        Thu, 8 Oct 2020 08:23:24 -0400
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E07FEC061755
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 05:23:23 -0700 (PDT)
+Received: by mail-ua1-x942.google.com with SMTP id r21so1805787uaw.10
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 05:23:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=i113na5WZQwVLGUym6+dZhvqLmyupFHhMJH579nd8mo=;
-        b=S0H1H9iDbJ2q36sWSl1CSICTXdhdPJuQrcVbJlUHTdPBdYn7ia+rIqZoiNVRq+vZkT
-         RYThFs8qtPnMqA5ek5/MIcmpoxY1NtaiAiFDqpo4PKE9aUbJiuRidpkr4tnJhJzK3Jz8
-         Pa5zd7yAY1GHEnsVb0FLrbpoyr53W74uTK02E0DzJ5Ntf9249NW/8UwJ+m7Ei0c0Ftcc
-         zQ6LNpLSCD56fmXtix7IwpJBX3XPWus1YmRgPmuv+KzLdrSeNshIWvS0SlmuS2HobLKr
-         dVSiKCaQnlfIW4MoT6tfrAdxA9e1ERplw6iXK8aRyKTuKB7U06+8hip7BGxyPl3M4BV1
-         BOvw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6yaLQlxNw70bRGmpr47sIPOg0JWUbIqHrAviNgxR9U8=;
+        b=ZV/udlGzIl/jBrUJkuN1KwkLbErRiww1AXfbdYjhu4aftSNTMtV4+PM1BRjHauZxfp
+         HbtfbtxaCjWO7kt3kz8IqDCxFVt6zufkjs0R5JcP1kz9I5bfIyMblsiuAEvsfk4IJitP
+         k7F6hH3KcaYkZgb85VTdANYMENGpTOqykJwHPOTx+/h7Lk61QKg66tm/uB+lty3qHwiW
+         GEqGpwFCwllORWVB21LnPAoTOZk+p4jhax1BUnlUQoHo1whWYCl7pItcKd+vz4XSCK5I
+         gNwxPHcFXodJUNDYPYp7haWTvUmJiATg0vIwrH1GHoNVL4t1C2nyWafuHOFtVW9XD5+C
+         tTzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=i113na5WZQwVLGUym6+dZhvqLmyupFHhMJH579nd8mo=;
-        b=HejH5584rReEmv5oirSQOqTj6KkO18Izx0sF41KXt2e0YQMfbaR67QBKnbmdUtxIdM
-         xubwDZ2y4f/7+8FRegcCoaT6j1aFArxxwb9+pwXw9A4XVeoY0CZ5ljg/DMIm/FXGJ10U
-         tDh41rrXCjqiXz1G1gj4nRXe4BcAFovGHWS7617O9v0M7ZWRdQDHJO/eSkCVQZhuYU+x
-         SJHaJ3U6wGjpGuQH2KD5nj6+967PVbNqhngPzklTdzkmIkjblujsfGf5SCUCcKToKiz9
-         TSPRJI4xAX57hOISCJLysk1lrRYZbsD8wHmRD/2D6JDb8QQvRKh3kH/0ZeWTr0QlD+nx
-         DrVg==
-X-Gm-Message-State: AOAM531B/dWiSdS7aXzVh/LlYnihEcHwJljhHY8qw1PJC7vaLxAn9azA
-        QZQgepp7kElkF5V/rxAbbEg=
-X-Google-Smtp-Source: ABdhPJwGaCAxtlGSLZRqjYdmCSdxO2/+akfrj/mU8BkOwFoIrKWBFWz2i51FYsg5NZrgtN6zTc8b0A==
-X-Received: by 2002:a62:6042:0:b029:155:7e44:ed3d with SMTP id u63-20020a6260420000b02901557e44ed3dmr96751pfb.73.1602159645561;
-        Thu, 08 Oct 2020 05:20:45 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id m11sm6768775pfk.57.2020.10.08.05.20.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 05:20:44 -0700 (PDT)
-Date:   Thu, 8 Oct 2020 21:20:42 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shreyas Joshi <shreyas.joshi@biamp.com>, rostedt@goodmis.org,
-        shreyasjoshi15@gmail.com, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] printk: handle blank console arguments passed in.
-Message-ID: <20201008122042.GB127397@jagdpanzerIV.localdomain>
-References: <20201006025935.GA597@jagdpanzerIV.localdomain>
- <f19c18fd-20b3-b694-5448-7d899966a868@roeck-us.net>
- <20201006095226.GB32369@alley>
- <24f7a6bc-c917-2bb7-0e86-9d729c18e812@roeck-us.net>
- <20201006134328.GD32369@alley>
- <20201006163514.GE32369@alley>
- <20201006171504.GA64770@jagdpanzerIV.localdomain>
- <20201007072853.GF32369@alley>
- <20201007123044.GA509@jagdpanzerIV.localdomain>
- <20201008085008.GA16837@alley>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6yaLQlxNw70bRGmpr47sIPOg0JWUbIqHrAviNgxR9U8=;
+        b=j4x8YHdaAdfAI2oyUZvQ4bb7tutfAC+o+NvhqU5dhBxH3DI1DZENPq6xEhYJLjm4dW
+         3McRg9bBmqB+Prt0MOCQbY7Q9QXeIp+/ylBqRqOSjWMBUEXcxPnP7EKwlhP8RciZorRA
+         XgipJeIStpXOW25ePAH8zMBoxjI9uh8pkhgHlYpWO8Ra1F+Ubbu3AN5kdl6ZJXxuwkT4
+         ArEKRbR4Tgczw/Lvx7Lf2FOo8fWE3uPIMaX04M/6DqVgvR91rOAD8BVc8vzdQqJzhGXv
+         Md4Bq2HTd8lyzi5sgwxyh0mkgHo6hVnbpxh69XybPDN1gZ1v3Qga0Mn8N1P4/CizLevz
+         hNww==
+X-Gm-Message-State: AOAM530OaJx+IQbSGnXM9LUtjDLIJcUz2cT33Mt7tYDIEbxDGP4F+xdH
+        pFMo+cxvP9F8cckFL0km36+WqacShXA=
+X-Google-Smtp-Source: ABdhPJyQ92iU2pSPt9y6tCpoKPjUyVMX4PknszyLlmHH0uSdfRK9RkF+tM3lRzhlKVGXAJtSEfFOQQ==
+X-Received: by 2002:ab0:76cd:: with SMTP id w13mr4344672uaq.37.1602159802368;
+        Thu, 08 Oct 2020 05:23:22 -0700 (PDT)
+Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com. [209.85.217.48])
+        by smtp.gmail.com with ESMTPSA id z7sm609678vsn.14.2020.10.08.05.23.20
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Oct 2020 05:23:21 -0700 (PDT)
+Received: by mail-vs1-f48.google.com with SMTP id f8so2927363vsl.3
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 05:23:20 -0700 (PDT)
+X-Received: by 2002:a67:d84:: with SMTP id 126mr4218029vsn.51.1602159800489;
+ Thu, 08 Oct 2020 05:23:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201008085008.GA16837@alley>
+References: <20201008115808.91850-1-coiby.xu@gmail.com> <20201008115808.91850-2-coiby.xu@gmail.com>
+In-Reply-To: <20201008115808.91850-2-coiby.xu@gmail.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Thu, 8 Oct 2020 08:22:44 -0400
+X-Gmail-Original-Message-ID: <CA+FuTSdEK+0nBCd5KAYpbEECmSvjoMEgcEOtM+ZKFF4QQKuAfw@mail.gmail.com>
+Message-ID: <CA+FuTSdEK+0nBCd5KAYpbEECmSvjoMEgcEOtM+ZKFF4QQKuAfw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/6] staging: qlge: Initialize devlink health dump
+ framework for the dlge driver
+To:     Coiby Xu <coiby.xu@gmail.com>
+Cc:     devel@driverdev.osuosl.org,
+        Benjamin Poirier <benjamin.poirier@gmail.com>,
+        Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+        Manish Chopra <manishc@marvell.com>,
+        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
+        <GR-Linux-NIC-Dev@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:QLOGIC QLGE 10Gb ETHERNET DRIVER" <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/10/08 10:50), Petr Mladek wrote:
-> On Wed 2020-10-07 21:30:44, Sergey Senozhatsky wrote:
-> > On (20/10/07 09:28), Petr Mladek wrote:
-> > > 
-> > > 		/*
-> > > 		 * Dirty hack to prevent using any console with tty
-> > > 		 * binding as a fallback and adding the empty
-> > > 		 * name into console_cmdline array.
-> > > 		 */
-> > > 		preferred_console = MAX_CMDLINECONSOLES;
-> > 
-> > Let me dump my findings so far. I still don't understand what exactly
-> > crashes the laptop (blank screen is not very helpful).
-> > 
-> > So, things start with the "preferred_console = -1". In console_setup()
-> > we call __add_preferred_console(). Since we have no consoles, the
-> > name matching loop is not executed, and console selection counter remains
-> > at 0. After the loop, despite the fact that we don't have the console
-> > (`name' is empty), we still set `preferred_console', to 0.
-> 
-> Heh, we actually add the console.
+On Thu, Oct 8, 2020 at 7:58 AM Coiby Xu <coiby.xu@gmail.com> wrote:
+>
+> Initialize devlink health dump framework for the dlge driver so the
+> coredump could be done via devlink.
+>
+> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
 
-To the console drovers list? I don't think so. At least on my laptop
-what I have is as follows:
+> @@ -4556,6 +4559,13 @@ static int qlge_probe(struct pci_dev *pdev,
+>         struct ql_adapter *qdev = NULL;
+>         static int cards_found;
+>         int err = 0;
+> +       struct devlink *devlink;
+> +       struct qlge_devlink *ql_devlink;
+> +
+> +       devlink = devlink_alloc(&qlge_devlink_ops, sizeof(struct qlge_devlink));
+> +       if (!devlink)
+> +               return -ENOMEM;
+> +       ql_devlink = devlink_priv(devlink);
+>
+>         ndev = alloc_etherdev_mq(sizeof(struct ql_adapter),
+>                                  min(MAX_CPUS,
 
-	/* See if this console matches one we selected on the command line */
-	err = try_enable_new_console(newcon, true);
+need to goto devlink_free instead of return -ENOMEM here, too.
 
-	/* If not, try to match against the platform default(s) */
-	if (err == -ENOENT)
-		err = try_enable_new_console(newcon, false);
+> @@ -4614,6 +4624,16 @@ static int qlge_probe(struct pci_dev *pdev,
+>                 free_netdev(ndev);
+>                 return err;
 
-	/* printk() messages are not printed to the Braille console. */
-	if (err || newcon->flags & CON_BRL)
-		return;
+and here
 
-We hit this error return. Because both try_enable_new_console() return
--ENOENT. So this is never executed
-
-	...
-	console_lock();
-	if ((newcon->flags & CON_CONSDEV) || console_drivers == NULL) {
-		newcon->next = console_drivers;
-		console_drivers = newcon;
-		if (newcon->next)
-			newcon->next->flags &= ~CON_CONSDEV;
-		/* Ensure this flag is always set for the head of the list */
-		newcon->flags |= CON_CONSDEV;
-	} else {
-		newcon->next = console_drivers->next;
-		console_drivers->next = newcon;
-	}
-	...
-
-The console driver list is 0x00.
-
-> I wonder if you see the problem solved by the commit 2d3145f8d2809592ef8
-> ("early init: fix error handling when opening /dev/console").
-
-/dev/console does exist. What does not exist is console driver, because
-console drivers list is NULL. So the failure here is not filp_open()
-per se, but tty_lookup_driver()->console_device(), which returns NULL.
-As far as I'm concerned.
-
-> I am also curious about the commit 74f1a299107b9e1a56 "Revert "fs:
-> remove ksys_dup()"". I wonder why it was safe to call ksys_dup(0);
-> even though the previous ksys_open() failed.
-
-I'm quite sure ksys_dup(0) fails, in fact. I guess the issue here boils
-down to user-space that does modprobe/fsck/mount and what kind of things
-it attempts to do with standard file descriptors 0/1/2.
-
-> PS: I am quite busy with something else this week.
-
-Sure, no prob. Thanks.
-
-	-ss
+>         }
+> +
+> +       err = devlink_register(devlink, &pdev->dev);
+> +       if (err) {
+> +               goto devlink_free;
+> +       }
+> +
+> +       qlge_health_create_reporters(ql_devlink);
+> +       ql_devlink->qdev = qdev;
+> +       ql_devlink->ndev = ndev;
+> +       qdev->ql_devlink = ql_devlink;
+>         /* Start up the timer to trigger EEH if
+>          * the bus goes dead
+>          */
+> @@ -4624,6 +4644,10 @@ static int qlge_probe(struct pci_dev *pdev,
+>         atomic_set(&qdev->lb_count, 0);
+>         cards_found++;
+>         return 0;
+> +
+> +devlink_free:
+> +       devlink_free(devlink);
+> +       return err;
+>  }
