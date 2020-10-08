@@ -2,178 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 749CE286F1F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:20:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7010286F24
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726567AbgJHHT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 03:19:58 -0400
-Received: from mail-bn8nam11on2071.outbound.protection.outlook.com ([40.107.236.71]:47713
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726105AbgJHHT6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 03:19:58 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=H1Jx1zvm2YKQjSVexW/HiHytVbeO2x2Rfu3woHwpmzFuKn7H7tB7MN7xOGaPeohnS164d1fXFmFy6tUJNYwMMBY9roWrEmZJL1mnHGP/yZ+l3gVoSrfSYHJLjC//WzkAQ13ahcI1LgRZOgNNyhWjb0VMOXh538KqErrvFm6zsAw+FpPGfawBnpaHsmDLQimwPLxASSKoFwerzqfgVcDQia2z2sGQ2pp/1VloTIzhETU82UAzJ+jn7vtQwsqpaFGGxbYIv4lmrEewy11vdIZ4aLWTBgA+KLi6bysHdK2etwlX4iWI2bHo+5fCGSYhlw1L6n8XxhYCmkbcyjNSGXF7yA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uiJnOc7U2DDt0XClKewfzOUcZiZTxClt7hx9pyXrrIc=;
- b=BffbMqQsJ5htd9JAqlbRbdNPmEVzR5j8ZoxeIjaisFfDWUBN1/kAtYB4wJghQCyN/XCKNIzHtlxXWzLY051pXt3O4a/mQq7S+HLvpGbub06x6uzFTzJDhPXcXizQCOyrHTrL/sfuz/ZrXdxivfNq3iF4a/wt3ClN4GwYPBm3BcA56ZgyYzUbT5FIuHCixaxw7Gm3eb79UgZC+IBnPCtYxOsYuMT0soK53C7dJ1jB+EHq7A1Sy7mxoNQkTKYYLQVl28E547JjcwC5VW3VZDICs9zQFxy4MsySfU30kfwQOWOAL5CoGNmPygXoFUw97qckOv5H+BQWBjL3hRUvktQfaw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uiJnOc7U2DDt0XClKewfzOUcZiZTxClt7hx9pyXrrIc=;
- b=EqihwonztYuhx+E7/F+W7Un/jBcRel2G32b/dPXF2xjjAlBBxn0waS7Eo4/F5l0Pv/6yiJ4Kf9K+7CWNDVaECf+1WDNcyLWy5YbSJ1zKrZ7YxF2Na/sp5FWg8Pek4S/AZmAotPCAn/rW9VE1g/eZ0ZsjeDW4SfkxOGnWkt342J0=
-Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
- header.d=none;lists.freedesktop.org; dmarc=none action=none
- header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by MN2PR12MB4797.namprd12.prod.outlook.com (2603:10b6:208:a4::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.37; Thu, 8 Oct
- 2020 07:19:53 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::f8f7:7403:1c92:3a60]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::f8f7:7403:1c92:3a60%6]) with mapi id 15.20.3455.024; Thu, 8 Oct 2020
- 07:19:53 +0000
-Subject: Re: [PATCH 00/14] drm/amd/pm: Replace one-element arrays with
- flexible-array members
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-hardening@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-References: <cover.1602020074.git.gustavoars@kernel.org>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <d71c8436-334c-45d9-d464-9798e75f2a73@amd.com>
-Date:   Thu, 8 Oct 2020 09:19:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <cover.1602020074.git.gustavoars@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
-X-ClientProxiedBy: FR2P281CA0014.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:a::24) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+        id S1725909AbgJHHUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 03:20:19 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:57683 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726121AbgJHHUS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 03:20:18 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602141617; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=xcv5dzo+anLNvdgtjCcQMqFVFBWCEf27U/6mqW7B/Po=; b=PvfRLZiYO/Ub5Bp2Mqn2sCX2XW5p0YyDU6UUUtoq98GKaPNPdhV5WCffBYKty0sGKlPz7ndq
+ eV8lwYDohFlcc9h9SXLGekkaUYi5WgdDtvlWVx/94/SiRUqvdGdWnKJ5awUpS3ASbD0rLMig
+ nVflCaDBIYjMAdrVI3690zJ+6yQ=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5f7ebdb1aad2c3cd1c7df9a5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 08 Oct 2020 07:20:17
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D6CA1C43391; Thu,  8 Oct 2020 07:20:16 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 450B5C433FE;
+        Thu,  8 Oct 2020 07:20:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 450B5C433FE
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Luca Coelho <luca@coelho.fi>
+Cc:     Lee Jones <lee.jones@linaro.org>, davem@davemloft.net,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v2 00/29] [Set 1,2,3] Rid W=1 warnings in Wireless
+References: <20200910065431.657636-1-lee.jones@linaro.org>
+        <20201002090353.GS6148@dell> <87362rdhv2.fsf@codeaurora.org>
+        <20201006065617.GX6148@dell> <87lfgjbzin.fsf@codeaurora.org>
+        <27f10117a4f26d6f1f528d8e03fe753614dbef1a.camel@coelho.fi>
+Date:   Thu, 08 Oct 2020 10:20:11 +0300
+In-Reply-To: <27f10117a4f26d6f1f528d8e03fe753614dbef1a.camel@coelho.fi> (Luca
+        Coelho's message of "Wed, 07 Oct 2020 09:01:10 +0300")
+Message-ID: <87k0w12nh0.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by FR2P281CA0014.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:a::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.16 via Frontend Transport; Thu, 8 Oct 2020 07:19:51 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: db6e6251-c302-4fb9-34e5-08d86b5a8cf1
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4797:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR12MB47975CB08BD9D68001CBA4E1830B0@MN2PR12MB4797.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mNM74Yel2zbAGb9+kvk5F+UBC6ie3neX7/rg+JBDl9c4G8BoK1ypBDGWCcJERY+5gadTQ8gtAPRP6W5vFH6b7dvB4ZcFPA+tS9F0hojRCJZQQ7rj5ut08Il0mDTjom/BUWxpK/l+dJOAMR+MrI1kELK6x3Vsxr+NH9qvUl/PFw9f1advQDX27nDVMIAv6VpuU3+eQbKdyn2enCZnkSr4HVVuqcb0RKyZVbcb0jrssN9aCB0000zA0GzNCKrrkkSYhaBeTMKh3v8tqIda0F7V8wGIywLkb6x29ymof0lUAxI8KItM3YJfmSwH2VJMFYLCARShMmM8EgQ+EgVBjUa+gqoq1/JS486OvpD6z1QCqkAkD47rm0qMw7zK/LzGHygK3NzRHCEfugQqZ3FGikVyP4wGy6550ABqSXkBEoGGAH4xnXFw5BJ5h2qeuVxTGc7tTqwe1yoQmrksL/yvmZ+xvg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(136003)(346002)(376002)(396003)(31686004)(36756003)(2906002)(83380400001)(66574015)(8936002)(966005)(52116002)(31696002)(4326008)(83080400001)(6486002)(66556008)(66946007)(66476007)(8676002)(5660300002)(86362001)(478600001)(19627235002)(2616005)(186003)(16526019)(54906003)(316002)(6666004)(45080400002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: CfuIukV0m143oELk3fMjmF9/G3lUH8k6XIWn1WA+BNQnopsjKtTtyAg1zDtZjPBTxZ6kPPr20xhM2ycBEspYjy6DrNxM7glGYNdLC+PuqUXqPMBRpqYc+MW+Cie5CxU/9Uf4V5Ya9c2fcKlgfDyCulyNAwmGQg9LN6aVoBT4g/Z8MXdMn5w3sqyl9mKPzxpD3kCmiinWJbcIQ9/rwjS15k0mtBt0hsT8MFMBky9hejbYb8sDPFLSSejWYuYJysk8+EZii7TwUwlxWYRiS731Lx1HCMiu5p7GDufPLLibMfNdA18qcyY7UpFOndi2QG4EPvg2d3l8bwoR1RxBc6njgEqiz1t7ncR3sR80tdXBqiWO4DQMZVMS4mkHeIUh7Ht5kBSuTzTUIh3r3g5JzCrnlo4w/vlWBFO8niqOmBKBxR9GtGDF8/FaEn4WypIoDgXxRQjeuIQAKRZ2aY51VFbJ9q7fSg21gjcIW9z4JHXaPQmHZnw8sj09fSmZuapj+yIKkePwuJuroG//Dao5z/ayBlhVkKG8zjhPNZNIUtdpSapbQMj0Tu4khmPQBAVerSwkggwkPnkRMei72v3Np+oRV20SwbTucYr3swtMSN2uiGZpdQYY85I7ufHNlScUseMvcm1h1MdqAmaA0heArf7KDZQbRwOk5RuC/A2MGQ9cCAn3Qf/FwbE2ILywh64AsCS8PvQwqgbtiB3SFw8R0S7MQw==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: db6e6251-c302-4fb9-34e5-08d86b5a8cf1
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Oct 2020 07:19:53.0690
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Vv8tKeS6aidKr/Dd/qRAdOITgroC5DsT9lJRjd+o8NKb0O+sv3kgxAKtNwgwXcxO
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4797
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 07.10.20 um 18:01 schrieb Gustavo A. R. Silva:
-> Hi all,
->
-> This series aims to replace one-element arrays with flexible-array
-> members.
->
-> There is a regular need in the kernel to provide a way to declare having
-> a dynamically sized set of trailing elements in a structure. Kernel code
-> should always use “flexible array members”[1] for these cases. The older
-> style of one-element or zero-length arrays should no longer be used[2].
->
-> Refactor the code according to the use of flexible-array members, instead
-> of one-element arrays, and use the struct_size() helper to calculate the
-> size for the dynamic memory allocation.
->
-> Also, save some heap space in the process. More on this on each individual
-> patch.
+Luca Coelho <luca@coelho.fi> writes:
 
-Ah! Nice to see that finally be documented and cleaned up.
+> On Tue, 2020-10-06 at 10:10 +0300, Kalle Valo wrote:
+>> Lee Jones <lee.jones@linaro.org> writes:
+>> 
+>> > On Tue, 06 Oct 2020, Kalle Valo wrote:
+>> > 
+>> > > Lee Jones <lee.jones@linaro.org> writes:
+>> > > 
+>> > > > On Thu, 10 Sep 2020, Lee Jones wrote:
+>> > > > 
+>> > > > > This is a rebased/re-worked set of patches which have been
+>> > > > > previously posted to the mailing list(s).
+>> > > > > 
+>> > > > > This set is part of a larger effort attempting to clean-up W=1
+>> > > > > kernel builds, which are currently overwhelmingly riddled with
+>> > > > > niggly little warnings.
+>> > > > > 
+>> > > > > There are quite a few W=1 warnings in the Wireless.  My plan
+>> > > > > is to work through all of them over the next few weeks.
+>> > > > > Hopefully it won't be too long before drivers/net/wireless
+>> > > > > builds clean with W=1 enabled.
+>> > > > > 
+>> > > > > Lee Jones (29):
+>> > > > >   iwlwifi: dvm: Demote non-compliant kernel-doc headers
+>> > > > >   iwlwifi: rs: Demote non-compliant kernel-doc headers
+>> > > > >   iwlwifi: dvm: tx: Demote non-compliant kernel-doc headers
+>> > > > >   iwlwifi: dvm: lib: Demote non-compliant kernel-doc headers
+>> > > > >   iwlwifi: calib: Demote seemingly unintentional kerneldoc header
+>> > > > >   wil6210: Fix a couple of formatting issues in 'wil6210_debugfs_init'
+>> > > > >   iwlwifi: dvm: sta: Demote a bunch of nonconformant kernel-doc headers
+>> > > > >   iwlwifi: mvm: ops: Remove unused static struct 'iwl_mvm_debug_names'
+>> > > > >   iwlwifi: dvm: Demote a couple of nonconformant kernel-doc headers
+>> > > > >   iwlwifi: mvm: utils: Fix some doc-rot
+>> > > > >   iwlwifi: dvm: scan: Demote a few nonconformant kernel-doc headers
+>> > > > >   iwlwifi: dvm: rxon: Demote non-conformant kernel-doc headers
+>> > > > >   iwlwifi: mvm: tx: Demote misuse of kernel-doc headers
+>> > > > >   iwlwifi: dvm: devices: Fix function documentation formatting issues
+>> > > > >   iwlwifi: iwl-drv: Provide descriptions debugfs dentries
+>> > > > >   wil6210: wmi: Fix formatting and demote non-conforming function
+>> > > > >     headers
+>> > > > >   wil6210: interrupt: Demote comment header which is clearly not
+>> > > > >     kernel-doc
+>> > > > >   wil6210: txrx: Demote obvious abuse of kernel-doc
+>> > > > >   wil6210: txrx_edma: Demote comments which are clearly not kernel-doc
+>> > > > >   wil6210: pmc: Demote a few nonconformant kernel-doc function headers
+>> > > > >   wil6210: wil_platform: Demote kernel-doc header to standard comment
+>> > > > >     block
+>> > > > >   wil6210: wmi: Correct misnamed function parameter 'ptr_'
+>> > > > >   ath6kl: wmi: Remove unused variable 'rate'
+>> > > > >   ath9k: ar9002_initvals: Remove unused array
+>> > > > >     'ar9280PciePhy_clkreq_off_L1_9280'
+>> > > > >   ath9k: ar9001_initvals: Remove unused array 'ar5416Bank6_9100'
+>> > > > >   ath9k: ar5008_initvals: Remove unused table entirely
+>> > > > >   ath9k: ar5008_initvals: Move ar5416Bank{0,1,2,3,7} to where they are
+>> > > > >     used
+>> > > > >   brcmsmac: phytbl_lcn: Remove unused array 'dot11lcn_gain_tbl_rev1'
+>> > > > >   brcmsmac: phy_lcn: Remove unused variable
+>> > > > >     'lcnphy_rx_iqcomp_table_rev0'
+>> > > > 
+>> > > > What's happening with all of these iwlwifi patches?
+>> > > > 
+>> > > > Looks like they are still not applied.
+>> > > 
+>> > > Luca (CCed) takes iwlwifi patches to his iwlwifi tree.
+>> > 
+>> > Thanks Kalle.
+>> > 
+>> > Luca,
+>> > 
+>> >   Do you know why these patches have not been applied yet?  Do you
+>> > plan on applying them this week?  -rc1 is not due for release for
+>> > nearly 3 weeks now that Linus tagged an -rc8.
+>> 
+>> I can also take Lee's patches directly to wireless-drivers-next, if
+>> that's easier for Luca.
+>
+> Yes, please take these patches directly.  It simplifies things.
 
-Feel free to add an Acked-by: Christian König <christian.koenig@amd.com>
+Ok, I have assigned all Lee's pending iwlwifi patches to me on
+patchwork.
 
-I also know about a case where we don't use struct_size in the DMA-buf code.
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-I'm the maintainer of that stuff as well, so be prepared to get patches 
-thrown at you to clean that up as well.
-
-Thanks,
-Christian.
-
->
-> This series also addresses multiple of the following sorts of warnings:
->
-> drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/smu8_hwmgr.c:1515:37:
-> warning: array subscript 1 is above array bounds of ‘const struct
-> phm_clock_voltage_dependency_record[1]’ [-Warray-bounds]
->
-> which, in this case, they are false positives, but nervertheless should be
-> fixed in order to enable -Warray-bounds[3][4].
->
-> [1] https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFlexible_array_member&amp;data=02%7C01%7Cchristian.koenig%40amd.com%7C5312862a3b8c41838ef508d86ad969c1%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637376829947099179&amp;sdata=5LEWyR8pYSxmHsqhHiYiOS%2BPPk%2Fm5suOc6H7f5cIBL4%3D&amp;reserved=0
-> [2] https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fwww.kernel.org%2Fdoc%2Fhtml%2Fv5.9-rc1%2Fprocess%2Fdeprecated.html%23zero-length-and-one-element-arrays&amp;data=02%7C01%7Cchristian.koenig%40amd.com%7C5312862a3b8c41838ef508d86ad969c1%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637376829947099179&amp;sdata=wOqxnNkA9FnOI%2BfB3dHn9RU7cqPJ62qqGCK9gsd2i%2Bo%3D&amp;reserved=0
-> [3] https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgit.kernel.org%2Flinus%2F44720996e2d79e47d508b0abe99b931a726a3197&amp;data=02%7C01%7Cchristian.koenig%40amd.com%7C5312862a3b8c41838ef508d86ad969c1%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637376829947099179&amp;sdata=x%2BSJeOrQA11HXoTaZEdyLyNWL9rC4GngDyoDMRBUn4M%3D&amp;reserved=0
-> [4] https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgithub.com%2FKSPP%2Flinux%2Fissues%2F109&amp;data=02%7C01%7Cchristian.koenig%40amd.com%7C5312862a3b8c41838ef508d86ad969c1%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637376829947099179&amp;sdata=48155uVo7AboCdSZfsTP10i2rHfBJctG%2F432lD%2BpfHo%3D&amp;reserved=0
->
-> Gustavo A. R. Silva (14):
->    drm/amd/pm: Replace one-element array with flexible-array member
->    drm/amd/pm: Replace one-element array with flexible-array member in
->      struct vi_dpm_table
->    drm/amd/pm: Replace one-element array with flexible-array in struct
->      phm_clock_array
->    drm/amd/pm: Replace one-element array with flexible-array in struct
->      phm_uvd_clock_voltage_dependency_table
->    drm/amd/pm: Replace one-element array with flexible-array in struct
->      phm_acp_clock_voltage_dependency_table
->    drm/amd/pm: Replace one-element array with flexible-array in struct
->      phm_phase_shedding_limits_table
->    drm/amd/pm: Replace one-element array with flexible-array in struct
->      phm_vce_clock_voltage_dependency_table
->    drm/amd/pm: Replace one-element array with flexible-array in struct
->      phm_cac_leakage_table
->    drm/amd/pm: Replace one-element array with flexible-array in struct
->      phm_samu_clock_voltage_dependency_table
->    drm/amd/pm: Replace one-element array with flexible-array in struct
->      phm_ppt_v1_clock_voltage_dependency_table
->    drm/amd/pm: Replace one-element array with flexible-array in struct
->      phm_ppt_v1_mm_clock_voltage_dependency_table
->    drm/amd/pm: Replace one-element array with flexible-array in struct
->      phm_ppt_v1_voltage_lookup_table
->    drm/amd/pm: Replace one-element array with flexible-array in struct
->      phm_ppt_v1_pcie_table
->    drm/amd/pm: Replace one-element array with flexible-array in struct
->      ATOM_Vega10_GFXCLK_Dependency_Table
->
->   drivers/gpu/drm/amd/pm/inc/hwmgr.h            | 20 ++---
->   .../drm/amd/pm/powerplay/hwmgr/hwmgr_ppt.h    |  8 +-
->   .../powerplay/hwmgr/process_pptables_v1_0.c   | 85 +++++++-----------
->   .../amd/pm/powerplay/hwmgr/processpptables.c  | 85 +++++++-----------
->   .../drm/amd/pm/powerplay/hwmgr/smu8_hwmgr.c   |  2 +-
->   .../drm/amd/pm/powerplay/hwmgr/smu_helper.c   |  5 +-
->   .../amd/pm/powerplay/hwmgr/vega10_pptable.h   |  2 +-
->   .../powerplay/hwmgr/vega10_processpptables.c  | 88 ++++++-------------
->   8 files changed, 107 insertions(+), 188 deletions(-)
->
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
