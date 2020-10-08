@@ -2,101 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43786286E54
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 07:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10CD9286E56
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 07:55:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728572AbgJHFwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 01:52:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31957 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728418AbgJHFwy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 01:52:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602136373;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ltGs068siZf3xtEoiji16jcQ5M11pmWZuXAiz0lIBWM=;
-        b=R6VyFQoJEFe5MlGN8xQqYzPWwQxFzsMqAyrkbLHI+CoDVKY1H6YowaTYs3pbiYSi6Pjp8v
-        2s/EXC7+oQWilzExOfFuj1l4Pq0fgrkDfngxLYxUFIo3/jHJW+Lr2UZjg/9VajFBLDCCuP
-        bzfmdPRx46Rf5vtwNGero5DiNMYblLQ=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-533-bqlMQGinNEKRuyr_6k5bLg-1; Thu, 08 Oct 2020 01:52:51 -0400
-X-MC-Unique: bqlMQGinNEKRuyr_6k5bLg-1
-Received: by mail-wr1-f69.google.com with SMTP id r16so3437751wrm.18
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 22:52:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ltGs068siZf3xtEoiji16jcQ5M11pmWZuXAiz0lIBWM=;
-        b=K/BFoYMVW6Gd3JoQy6qsHhmPzHhH+a0kHWTixSYl4tkRmxz2O4lGOO1bvzwbq6sBN9
-         pIVgPmBSGdP6ZGsPVZp2wWK2VGm+O0OyIjOfKYwEaEAAlcEP0CKO0uRtgjidTVWJ+Kz1
-         EtUBh0DakKiYi2One2E+1E5JWWwvLxjnffhHKFiRXpgitX0IYlPSxvxpbfbArlL2OKkv
-         WLiIiEkl5BeT3kBZg2E0F0H0Yhtd63DKsfUoKU4FsX66XV49nEtXSMZQeqgZkdbDx7Ec
-         kgTp8NvWnuInFZx8KvLGAfZ+Nmr242hRDuE6Tx04kqD935Vdln5aT4y15xvWGWU2t7AF
-         hs7A==
-X-Gm-Message-State: AOAM532SMaIVW9XvJ3M5PqT7nmPePFZlTsUlTuW5/YcHCmqsMWCgPvUS
-        pKjkCwbJF4T3eE5SZ7lrGt1Tq+GjwOK41s1q3ricKe5iCpNyplx+JHmBmmxEZnS1wzi48emAxs5
-        Z5cGcH9ezIuP0M/rRhP9H/Ajq
-X-Received: by 2002:adf:fc8d:: with SMTP id g13mr7171580wrr.248.1602136370098;
-        Wed, 07 Oct 2020 22:52:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy5Bm/ZD8U7+p2VglQe5fK4bJTyhYCj95+XyM/xiKcrn7gpj+d3p19Xy0SSDHPLrmm2ZEDASw==
-X-Received: by 2002:adf:fc8d:: with SMTP id g13mr7171562wrr.248.1602136369782;
-        Wed, 07 Oct 2020 22:52:49 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:d2f4:5943:190c:39ff? ([2001:b07:6468:f312:d2f4:5943:190c:39ff])
-        by smtp.gmail.com with ESMTPSA id j14sm5759851wrr.66.2020.10.07.22.52.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Oct 2020 22:52:49 -0700 (PDT)
-Subject: Re: [PATCH] KVM: SVM: Use a separate vmcb for the nested L2 guest
-To:     Maxim Levitsky <mlevitsk@redhat.com>,
-        Cathy Avery <cavery@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     vkuznets@redhat.com, wei.huang2@amd.com
-References: <20200917192306.2080-1-cavery@redhat.com>
- <587d1da1a037dd3ab7844c5cacc50bfda5ce6021.camel@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <aaaadb29-6299-5537-47a9-072ca34ba512@redhat.com>
-Date:   Thu, 8 Oct 2020 07:52:46 +0200
+        id S1728577AbgJHFzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 01:55:04 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37198 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728312AbgJHFzD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 01:55:03 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1BA43B00A;
+        Thu,  8 Oct 2020 05:55:02 +0000 (UTC)
+Subject: Re: [v5 01/12] struct device: Add function callback durable_name
+To:     tasleson@redhat.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Christoph Hellwig <hch@infradead.org>, linux-scsi@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-ide@vger.kernel.org,
+        pmladek@suse.com, David Lehman <dlehman@redhat.com>,
+        sergey.senozhatsky@gmail.com, jbaron@akamai.com,
+        James.Bottomley@HansenPartnership.com,
+        linux-kernel@vger.kernel.org, rafael@kernel.org,
+        martin.petersen@oracle.com, kbusch@kernel.org, axboe@fb.com,
+        sagi@grimberg.me, akpm@linux-foundation.org, orson.zhai@unisoc.com,
+        viro@zeniv.linux.org.uk
+References: <20200925161929.1136806-1-tasleson@redhat.com>
+ <20200925161929.1136806-2-tasleson@redhat.com>
+ <20200929175102.GA1613@infradead.org> <20200929180415.GA1400445@kroah.com>
+ <20e220a6-4bde-2331-6e5e-24de39f9aa3b@redhat.com>
+ <20200930073859.GA1509708@kroah.com>
+ <c6b031b8-f617-0580-52a5-26532da4ee03@redhat.com>
+ <20201001114832.GC2368232@kroah.com>
+ <72be0597-a3e2-bf7b-90b2-799d10fdf56c@redhat.com>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <dedb9926-d4fb-af1a-8dc8-2bc0680d971a@suse.de>
+Date:   Thu, 8 Oct 2020 07:54:59 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <587d1da1a037dd3ab7844c5cacc50bfda5ce6021.camel@redhat.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <72be0597-a3e2-bf7b-90b2-799d10fdf56c@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/10/20 00:14, Maxim Levitsky wrote:
+On 10/7/20 10:10 PM, Tony Asleson wrote:
+> On 10/1/20 6:48 AM, Greg Kroah-Hartman wrote:
+>> On Wed, Sep 30, 2020 at 09:35:52AM -0500, Tony Asleson wrote:
+>>> On 9/30/20 2:38 AM, Greg Kroah-Hartman wrote:
+>>>> On Tue, Sep 29, 2020 at 05:04:32PM -0500, Tony Asleson wrote:
+>>>>> I'm trying to figure out a way to positively identify which storage
+>>>>> device an error belongs to over time.
+>>>>
+>>>> "over time" is not the kernel's responsibility.
+>>>>
+>>>> This comes up every 5 years or so. The kernel provides you, at runtime,
+>>>> a mapping between a hardware device and a "logical" device.  It can
+>>>> provide information to userspace about this mapping, but once that
+>>>> device goes away, the kernel is free to reuse that logical device again.
+>>>>
+>>>> If you want to track what logical devices match up to what physical
+>>>> device, then do it in userspace, by parsing the log files.
+>>>
+>>> I don't understand why people think it's acceptable to ask user space to
+>>> parse text that is subject to change.
 >>
->> +	if (svm->vmcb01->control.asid == 0)
->> +		svm->vmcb01->control.asid = svm->nested.vmcb02->control.asid;
+>> What text is changing? The format of of the prefix of dev_*() is well
+>> known and has been stable for 15+ years now, right?  What is difficult
+>> in parsing it?
 > 
-> I think that the above should be done always. The asid field is currently host
-> controlled only (that is L2 value is ignored, selective ASID tlb flush is not
-> advertized to the guest and lnvlpga is emulated as invlpg). 
-
-Yes, in fact I suggested that ASID should be in svm->asid and moved to
-svm->vmcb->asid in svm_vcpu_run.  Then there's no need to special case
-it in nested code.
-
-This should be a patch coming before this one.
-
+> Many of the storage layer messages are using printk, not dev_printk.
 > 
-> 1. Something wrong with memory types - like guest is using UC memory for everything.
->     I can't completely rule that out yet
+So that would be the immediate angle of attack ...
 
-You can print g_pat and see if it is all zeroes.
+>>>>> Thank you for supplying some feedback and asking questions.  I've been
+>>>>> asking for suggestions and would very much like to have a discussion on
+>>>>> how this issue is best solved.  I'm not attached to what I've provided.
+>>>>> I'm just trying to get towards a solution.
+>>>>
+>>>> Again, solve this in userspace, you have the information there at
+>>>> runtime, why not use it?
+>>>
+>>> We usually don't have the needed information if you remove the
+>>> expectation that user space should parse the human readable portion of
+>>> the error message.
+>>
+>> I don't expect that userspace should have to parse any human readable
+>> portion, if they don't want to.  But if you do want it to, it is pretty
+>> trivial to parse what you have today:
+>>
+>> 	scsi 2:0:0:0: Direct-Access     Generic  STORAGE DEVICE   1531 PQ: 0 ANSI: 6
+>>
+>> If you really have a unique identifier, then great, parse it today:
+>>
+>> 	usb 4-1.3.1: Product: USB3.0 Card Reader
+>> 	usb 4-1.3.1: Manufacturer: Generic
+>> 	usb 4-1.3.1: SerialNumber: 000000001531
+>>
+>> What's keeping that from working now?
+> 
+> I believe these examples are using dev_printk.  With dev_printk we don't
+> need to parse the text, we can use the meta data.
+> So it looks as most of your usecase would be solved by moving to 
+dev_printk().
+Why not work on that instead?
+I do presume this will have immediate benefits for everybody, and will 
+have approval from everyone.
 
-In general I think it's better to be explicit with vmcb01 vs. vmcb02,
-like Cathy did, but I can see it's a matter of personal preference to
-some extent.
+Cheers,
 
-Paolo
-
+Hannes
+-- 
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
