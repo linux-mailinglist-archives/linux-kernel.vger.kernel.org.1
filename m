@@ -2,96 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71BD6287212
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 11:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 983B4287216
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 11:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729300AbgJHJ4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 05:56:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44302 "EHLO mail.kernel.org"
+        id S1729244AbgJHJ6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 05:58:54 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47578 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725849AbgJHJ4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 05:56:36 -0400
-Received: from localhost (p54b33b8c.dip0.t-ipconnect.de [84.179.59.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0BCB72083B;
-        Thu,  8 Oct 2020 09:56:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602150995;
-        bh=67+NuNT2UHBer+NKq+5rAQ1KcQNMPcWUDBXJvCqObSw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=z4xXoMz4bDkX00PWLz7d3A6owo1/38o5WaAOygwOVwfAOdG4z/gWSJHB2YiOzhMgD
-         PLqU3tpAPn2VStKKEGU/sh8UKDzDqLSw2Kd7Y5lpKhLdbm3GK22Wl+4vuEoFmPhR7x
-         tw5aTTOy98aghKJQVLu1+uo+De1yV0z5a/PrgS3c=
-Date:   Thu, 8 Oct 2020 11:56:31 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     Oleksij Rempel <linux@rempel-privat.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        David Laight <David.Laight@aculab.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>, stable@vger.kernel.org
-Subject: Re: [PATCH v5 1/3] i2c: imx: Fix reset of I2SR_IAL flag
-Message-ID: <20201008095631.GB76290@ninjato>
-References: <20201007084524.10835-1-ceggers@arri.de>
- <20201007084524.10835-2-ceggers@arri.de>
+        id S1725849AbgJHJ6y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 05:58:54 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C5E1DAC82;
+        Thu,  8 Oct 2020 09:58:52 +0000 (UTC)
+Message-ID: <2caab0c666fe3ccf5e3247a1f1a78fd8f55a36b8.camel@suse.de>
+Subject: Re: [PATCH v1] PCI: brcmstb: fix error return paths in probe()
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Jim Quinlan <james.quinlan@broadcom.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        bcm-kernel-feedback-list@broadcom.com
+Cc:     Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jim Quinlan <jquinlan@broadcom.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
+        <linux-pci@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Thu, 08 Oct 2020 11:58:51 +0200
+In-Reply-To: <20201001151821.27575-1-james.quinlan@broadcom.com>
+References: <20201001151821.27575-1-james.quinlan@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ZfOjI3PrQbgiZnxM"
-Content-Disposition: inline
-In-Reply-To: <20201007084524.10835-2-ceggers@arri.de>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 2020-10-01 at 11:18 -0400, Jim Quinlan wrote:
+> Fixes two cases where we were returning without calling
+> clk_disable_unprepare().  Although there is a common place to go on probe()
+> errors (the 'fail' label), one can only jump there after executing
+> brcm_pcie_setup(), so we have to add clk_disable_unprepare() calls to the
+> two error paths.
+> 
+> Fixes: b98f52bc6495 ("PCI: brcmstb: Add control of rescal reset")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
+> ---
 
---ZfOjI3PrQbgiZnxM
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 
-On Wed, Oct 07, 2020 at 10:45:22AM +0200, Christian Eggers wrote:
-> According to the "VFxxx Controller Reference Manual" (and the comment
-> block starting at line 97), Vybrid requires writing a one for clearing
-> an interrupt flag. Syncing the method for clearing I2SR_IIF in
-> i2c_imx_isr().
->=20
-> Signed-off-by: Christian Eggers <ceggers@arri.de>
-> Fixes: 4b775022f6fd ("i2c: imx: add struct to hold more configurable quir=
-ks")
-> Reviewed-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-> Cc: stable@vger.kernel.org
-
-Applied to for-current, thanks!
-
-Waiting for review tags for patches 2 & 3.
+Thanks!
 
 
---ZfOjI3PrQbgiZnxM
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9+4k8ACgkQFA3kzBSg
-KbZ9qhAAgKhI6M7LDGtr4rgN5aM9C/PH7BSIAhhywx9YkeKU1XiIWnXA559eKSs+
-2xFwbwZGtDXxKaxB6KFGrJvrFbeOt8M7FGZ4UyufRJStG8FYQeJRjvAOThfcUxpu
-YgMkzrG962/bXPcO0LPD6n1aq4LTcr7g9OMai7CQHnyI7RrhQYZeqjPpbbfIms5U
-mLLxbjvtRVJaHNbkwsAMe8AHHYRxB4gn/zIzlIEUHgkFMpnlrsPCOnZg9yH2TtpO
-9J7aZeT1+0XiLpdNjdDKkzTB4fNLTikTTSORnl+WYt3D1RYjkPDOjv1bMHGa/ZxZ
-dOARk4XVWqqoIZ7civGgdFCQtpY++fqtcxt6qGIwvFWRwFSleNNu7fWZI91GtPeD
-hNW9meo8zoBQTsNuoYLT4cxunUVNbTx0tiVZSbRt9S3DI5UZZQL5/pDP7KLq339d
-Hifhk+iPG65mR75zInjj3JBdb4bYVcSkTeL9Nsqp6RB3AQGPTy/3s/f/v/nBW690
-it/YmzrH+s2LGzoH6gEXSEHxab0PP//FBAtg66zwuszN51Yrk5Je9hMOCEM6esG6
-7kXWoGy7rDZ7BiOXk5pMlYOfD02U6losxRS9XUnhBGwvqNL18+MG3kq5+PcubQpv
-YJFwQrFe9gR4MlZMe1CtOI21mxz91xvh8G5+u8yiXgzFZEH2WyM=
-=F4QS
------END PGP SIGNATURE-----
-
---ZfOjI3PrQbgiZnxM--
