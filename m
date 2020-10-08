@@ -2,116 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 846B5286BE8
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 02:01:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6F26286BEA
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 02:06:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727080AbgJHAB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 20:01:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44800 "EHLO mail.kernel.org"
+        id S1727261AbgJHAGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 20:06:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726181AbgJHAB0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 20:01:26 -0400
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+        id S1726129AbgJHAGH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 20:06:07 -0400
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7CE8C20872
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 00:01:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 042A520739
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 00:06:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602115285;
-        bh=DQSQgnf7iZN9oYiYCpxCoUi+P0CeJf5tjxkIeK1NTSU=;
+        s=default; t=1602115566;
+        bh=bS0l/wIJtDRND8W0efdV/S17wUdgcGyO+U2nsP9YKT0=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=2pt31eEE2afgzpWpq2IhHZO3N1ID2FEFu00XbkVtKKFAOjq1Tfwn/lcd6Z8VHVFyE
-         TUBxWztRZpZSGsBDEGV9x+96DtTas0+0jP7c8c/t7y8hbW++rpWpWQKOkDYM2cSTu6
-         47DKS+qi/se9zuQpb23EtolCoT6TkxDCZTRFbwno=
-Received: by mail-ed1-f46.google.com with SMTP id g4so4039270edk.0
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 17:01:25 -0700 (PDT)
-X-Gm-Message-State: AOAM5336SOfXEn4MN49nre4GAZw2Wg6Q3+m1MqYKcjenqIww4FbqtjFR
-        snPr2biBtLUTOj0YsfAcKVS3f3zEZhru67rGCw==
-X-Google-Smtp-Source: ABdhPJwAznF2oZv2XNaUDfOTBX5/13+HntqtKHAHMCYO1QVKA8/FxWkmX5F2efLji9U+4yq9OgRkvGIS89wIpEMwPKE=
-X-Received: by 2002:aa7:c3ca:: with SMTP id l10mr6393321edr.72.1602115284045;
- Wed, 07 Oct 2020 17:01:24 -0700 (PDT)
+        b=pJ+giGL2pM4ZgcTYomhm617uKI4eenEIRjun0ZlD1EiY3xuQUnR6NbBV1dG9SrV49
+         s4RyC/61cIRjvPKdYBShORwp2CIRv7CbAGHuUQy9+sX9HPiguWd1LoGGY2Jor/X2Lz
+         M9ZjiODPL0PQL02R2GZ6E/C6Des4YJGm2xBULdmQ=
+Received: by mail-wr1-f44.google.com with SMTP id n6so4033198wrm.13
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 17:06:05 -0700 (PDT)
+X-Gm-Message-State: AOAM530OeKsx8zuMBnn6RJ8u7ovapV25+imll1oxeS08yedKDrXdBXD/
+        zN17lrZIrjBgI7gvvbVzbv+GvGS55WfJ10BbkyoqkQ==
+X-Google-Smtp-Source: ABdhPJwn4+QJw2ybHRs+h9LAqbPLXTIZ0OyVRfGd/uVU/L4Y5hWr0t58YtmHSd6y2U4hai2CM8tN6nrYfFKMAlCYsQY=
+X-Received: by 2002:a05:6000:1202:: with SMTP id e2mr5998788wrx.75.1602115564523;
+ Wed, 07 Oct 2020 17:06:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201006193320.405529-1-enric.balletbo@collabora.com> <20201006193320.405529-5-enric.balletbo@collabora.com>
-In-Reply-To: <20201006193320.405529-5-enric.balletbo@collabora.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Thu, 8 Oct 2020 08:01:12 +0800
-X-Gmail-Original-Message-ID: <CAAOTY__X8L2sK0s3rkq2LDaMNoQrZKfzn=aJ791fK=UwnJMAyQ@mail.gmail.com>
-Message-ID: <CAAOTY__X8L2sK0s3rkq2LDaMNoQrZKfzn=aJ791fK=UwnJMAyQ@mail.gmail.com>
-Subject: Re: [PATCH 4/4] soc: mediatek: mmsys: Use an array for setting the
- routing registers
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        CK Hu <ck.hu@mediatek.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
+References: <20201004032536.1229030-1-krisman@collabora.com> <20201004032536.1229030-7-krisman@collabora.com>
+In-Reply-To: <20201004032536.1229030-7-krisman@collabora.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Wed, 7 Oct 2020 17:05:51 -0700
+X-Gmail-Original-Message-ID: <CALCETrW5Oq0L0G7JrjYLFp08+y4kr0STkmn8cf4LKcHOfz0heQ@mail.gmail.com>
+Message-ID: <CALCETrW5Oq0L0G7JrjYLFp08+y4kr0STkmn8cf4LKcHOfz0heQ@mail.gmail.com>
+Subject: Re: [PATCH v3 06/10] x86: elf: Use e_machine to select start_thread
+ for x32
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     Andrew Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Christoph Hellwig <hch@lst.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+        Robert Richter <rric@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Christopherson, Sean J" <sean.j.christopherson@intel.com>,
+        kernel@collabora.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Enric:
+On Sat, Oct 3, 2020 at 8:26 PM Gabriel Krisman Bertazi
+<krisman@collabora.com> wrote:
+>
+> Since TIF_X32 is going away, avoid using it to find the ELF type in
+> compat_start_thread.
+>
+> According to SysV AMD64 ABI Draft, an AMD64 ELF object using ILP32 must
+> have ELFCLASS32 with (E_MACHINE == EM_X86_64), so use that ELF field to
+> differentiate a x32 object from a IA32 object when executing
+> start_thread in compat mode.
 
-Enric Balletbo i Serra <enric.balletbo@collabora.com> =E6=96=BC 2020=E5=B9=
-=B410=E6=9C=887=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=883:33=E5=AF=AB=
-=E9=81=93=EF=BC=9A
->
-> From: CK Hu <ck.hu@mediatek.com>
->
-> Actually, setting the registers for routing, use multiple 'if-else' for d=
-ifferent
-> routes, but this code would be more and more complicated while we
-> support more and more SoCs. Change that and use a table per SoC so the
-> code will be more portable and clear.
->
-> Signed-off-by: CK Hu <ck.hu@mediatek.com>
-> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> ---
->
->  drivers/soc/mediatek/mtk-mmsys.c | 393 +++++++++++++++++--------------
->  1 file changed, 210 insertions(+), 183 deletions(-)
->
+Hmm, I suppose I can live with this.  It's not fundamentally worse
+than any of the other ELF compat hacks.
 
-[snip]
-
->
->  static const struct mtk_mmsys_driver_data mt2701_mmsys_driver_data =3D {
-> @@ -93,10 +115,6 @@ static const struct mtk_mmsys_driver_data mt6797_mmsy=
-s_driver_data =3D {
->         .clk_driver =3D "clk-mt6797-mm",
->  };
->
-> -static const struct mtk_mmsys_driver_data mt8173_mmsys_driver_data =3D {
-> -       .clk_driver =3D "clk-mt8173-mm",
-> -};
-> -
->  static const struct mtk_mmsys_driver_data mt8183_mmsys_driver_data =3D {
->         .clk_driver =3D "clk-mt8183-mm",
->  };
-> @@ -106,180 +124,192 @@ struct mtk_mmsys {
->         const struct mtk_mmsys_driver_data *data;
->  };
->
-
-[snip]
-
-> +static const struct mtk_mmsys_driver_data mt8173_mmsys_driver_data =3D {
-> +       .clk_driver =3D "clk-mt8173-mm",
-> +       .routes =3D mt8173_mmsys_routing_table,
-> +       .num_routes =3D ARRAY_SIZE(mt8173_mmsys_routing_table),
-> +};
->
-
-I remove my Reviewed-by tag. You does not set routes for mt2701 and
-mt2712, but these two SoC need that. Maybe now they use the same table
-as mt8173.
-
-Regards,
-Chun-Kuang.
+Reviewed-by: Andy Lutomirski <luto@kernel.org>
