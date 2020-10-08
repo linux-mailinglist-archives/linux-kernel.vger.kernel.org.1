@@ -2,89 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCC57286FA2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:39:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C28D286FA5
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727313AbgJHHjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 03:39:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49550 "EHLO
+        id S1727737AbgJHHj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 03:39:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725899AbgJHHjJ (ORCPT
+        with ESMTP id S1727224AbgJHHj2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 03:39:09 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 700EBC061755
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 00:39:08 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id v12so5437692wmh.3
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 00:39:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=acT3mJ3SgCskMXGei75f2QgPPdiS23kx6LiqTgcMbyI=;
-        b=i5CzYo7dzSmpMLz4rtu2Pkeh1wioILnCpnEabEsBViz7tWcc2f48rPuXmkfOu4+Rwz
-         otLbJQ6Y6l7Rbh7U2IMQueo6eVKPyLujdFZKaP3krJTZrz+xToNJtIlE3SP75WOnrQlU
-         MMJsaYYif+YYgsJlyM9vlQSKbpwdB/n52VJBvnyVk62Sk70xvfMj5D0AEU7DGgBzwMx3
-         1gPiNFlzJNB7EvFG8zwD0+za37BmhXBPLbV19Z95vDN9UiWHO0TjUFrN4IefJLeFBQ/F
-         aUIkAookidELNTC1LR3SLqlNfn1l6Kupn/qq8sPaSWZi1srvCeRYbySJZciFLwiFT7cw
-         hDUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=acT3mJ3SgCskMXGei75f2QgPPdiS23kx6LiqTgcMbyI=;
-        b=eNExlxB9ozabqYW3mkxkfF7IhubkdB6VhjHKiCzHP+4yzpN1hjxojoZlHGPNH/sC8f
-         hCyp/1vV9AGFh8DM05x6HOEd/byAFKmhYGlg7TRdrRHO6KbbkLSMJCSq2OqBYZSyMjW1
-         3TiunVbL1z7XaVvYby5Ruf/qDcAJnA1pVDoUV9ajuP01h18siCXjdk0yRK2bgSLKzRye
-         o+MOCNLguGtOJ9pDdL+3k/KpW3IML9EtZ09XSOidBee8rEN8ig/5BaV1hoQbI6+FiCKv
-         NktXEBPNsxJHveDAzbHMcuEuUVetmdJNX0phzzolZYJVCt8WLSFNah1M7qiyxyfE4/gx
-         Rivg==
-X-Gm-Message-State: AOAM5322KVRYBlZue1OUPuRCiIoGPqfcBufCYilvH3azo1BIrPvFF8+f
-        CU18nx9C8TAp8VHeaQm0qPveJw==
-X-Google-Smtp-Source: ABdhPJwjHpTJ7/ur9Z19VLp3xZ8ALp/j4Fp7NgchaRmjLtruqhs8jAB14QOUHbXX4R1qL5vuo4t8lg==
-X-Received: by 2002:a7b:c7d5:: with SMTP id z21mr2929815wmk.73.1602142747144;
-        Thu, 08 Oct 2020 00:39:07 -0700 (PDT)
-Received: from localhost ([85.163.43.78])
-        by smtp.gmail.com with ESMTPSA id h76sm5708531wme.10.2020.10.08.00.39.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 00:39:06 -0700 (PDT)
-Date:   Thu, 8 Oct 2020 09:39:05 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Moshe Shemesh <moshe@mellanox.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@nvidia.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2 03/16] devlink: Add devlink reload limit
- option
-Message-ID: <20201008073905.GF3064@nanopsycho>
-References: <1602050457-21700-1-git-send-email-moshe@mellanox.com>
- <1602050457-21700-4-git-send-email-moshe@mellanox.com>
+        Thu, 8 Oct 2020 03:39:28 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BDC9C061755;
+        Thu,  8 Oct 2020 00:39:28 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602142766;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wGS8RvPqjWluL2zEoasmPYr+Mt5G8eg7w6trwMiIRys=;
+        b=g9sr7Db6oViY7+CNLNPLqR2diLWAEuYBHLUy/gNyBzuAWzXRUgeUCs6sNOZpxLofDhl+i6
+        68Fd1xmKCe2rwDvq/sd7PiT7+B5XvK8VScniD1E/1UG5GG5n3PQaEjVFd5Stx1YlLqKv7B
+        9XwIRII8xSs4awPsfGqvHoLy5muOKShFWHqOW0jSXflOCow69afm+4nz71foETF3RSbH7s
+        ePMmR11SPMWL2vmoJMViNcwI0n3TsbNss5yxMEWcJ3pjyRWKyv5VJsUUwrjOU9UixwRzZf
+        bpfq+sDP8CfUzrSK65nj/ZFfGBlny2Z6RTdEfPu0VMOUudDamZtQg4b5EmyRww==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602142766;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wGS8RvPqjWluL2zEoasmPYr+Mt5G8eg7w6trwMiIRys=;
+        b=usUoY8ncbtaKaCM2W+geUKP8rahFbzcy+Er9Fhx50RETPyNpyWBGA5efdMzHwrX80a2EbK
+        iU4RrqW+LMMyioDQ==
+To:     Dave Jiang <dave.jiang@intel.com>, vkoul@kernel.org,
+        megha.dey@intel.com, maz@kernel.org, bhelgaas@google.com,
+        alex.williamson@redhat.com, jacob.jun.pan@intel.com,
+        ashok.raj@intel.com, jgg@mellanox.com, yi.l.liu@intel.com,
+        baolu.lu@intel.com, kevin.tian@intel.com, sanjay.k.kumar@intel.com,
+        tony.luck@intel.com, jing.lin@intel.com, dan.j.williams@intel.com,
+        kwankhede@nvidia.com, eric.auger@redhat.com, parav@mellanox.com,
+        rafael@kernel.org, netanelg@mellanox.com, shahafs@mellanox.com,
+        yan.y.zhao@linux.intel.com, pbonzini@redhat.com,
+        samuel.ortiz@intel.com, mona.hossain@intel.com
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-pci@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v3 11/18] dmaengine: idxd: ims setup for the vdcm
+In-Reply-To: <0f9bdae0-73d7-1b4e-b478-3cbd05c095f4@intel.com>
+References: <160021207013.67751.8220471499908137671.stgit@djiang5-desk3.ch.intel.com> <160021253189.67751.12686144284999931703.stgit@djiang5-desk3.ch.intel.com> <87mu17ghr1.fsf@nanos.tec.linutronix.de> <0f9bdae0-73d7-1b4e-b478-3cbd05c095f4@intel.com>
+Date:   Thu, 08 Oct 2020 09:39:26 +0200
+Message-ID: <87r1q92mkx.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1602050457-21700-4-git-send-email-moshe@mellanox.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wed, Oct 07, 2020 at 08:00:44AM CEST, moshe@mellanox.com wrote:
->Add reload limit to demand restrictions on reload actions.
->Reload limits supported:
->no_reset: No reset allowed, no down time allowed, no link flap and no
->          configuration is lost.
->
->By default reload limit is unspecified and so no constraints on reload
->actions are required.
->
->Some combinations of action and limit are invalid. For example, driver
->can not reinitialize its entities without any downtime.
->
->The no_reset reload limit will have usecase in this patchset to
->implement restricted fw_activate on mlx5.
->
->Have the uapi parameter of reload limit ready for future support of
->multiselection.
->
->Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
+On Wed, Oct 07 2020 at 14:54, Dave Jiang wrote:
+> On 9/30/2020 12:57 PM, Thomas Gleixner wrote:
+>> Aside of that this is fiddling in the IMS storage array behind the irq
+>> chips back without any comment here and a big fat comment about the
+>> shared usage of ims_slot::ctrl in the irq chip driver.
+>> 
+> This is to program the pasid fields in the IMS table entry. Was
+> thinking the pasid fields may be considered device specific so didn't
+> attempt to add the support to the core code.
 
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Well, the problem is that this is not really irq chip functionality.
+
+But the PASID programming needs to touch the IMS storage which is also
+touched by the irq chip.
+
+This might be correct as is, but without a big fat comment explaining
+WHY it is safe to do so without any form of serialization this is just
+voodoo and unreviewable.
+
+Can you please explain when the PASID is programmed and what the state
+of the interrupt is at that point? Is this a one off setup operation or
+does this happen dynamically at random points during runtime?
+
+This needs to be clarified first.
+
+Thanks,
+
+        tglx
+
+
