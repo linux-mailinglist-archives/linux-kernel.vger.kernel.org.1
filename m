@@ -2,86 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FE1F28739B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 13:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C61F287392
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 13:51:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729577AbgJHLw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 07:52:27 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2965 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729056AbgJHLwX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 07:52:23 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id ECF6381D48C2EA3B2156;
-        Thu,  8 Oct 2020 12:52:20 +0100 (IST)
-Received: from [127.0.0.1] (10.210.169.237) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 8 Oct 2020
- 12:52:19 +0100
-Subject: Re: [PATCH RFC v4 00/13] perf pmu-events: Support event aliasing for
- system PMUs
-To:     kajoljain <kjain@linux.ibm.com>,
-        "acme@kernel.org" <acme@kernel.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "jolsa@redhat.com" <jolsa@redhat.com>,
-        "irogers@google.com" <irogers@google.com>,
-        "leo.yan@linaro.org" <leo.yan@linaro.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "alexander.shishkin@linux.intel.com" 
-        <alexander.shishkin@linux.intel.com>,
-        "namhyung@kernel.org" <namhyung@kernel.org>,
-        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>
-CC:     Linuxarm <linuxarm@huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "qiangqing.zhang@nxp.com" <qiangqing.zhang@nxp.com>,
-        Zhangshaokun <zhangshaokun@hisilicon.com>,
-        "james.clark@arm.com" <james.clark@arm.com>,
-        "linux-imx@nxp.com" <linux-imx@nxp.com>
-References: <1602152121-240367-1-git-send-email-john.garry@huawei.com>
- <1f1c4537-2224-cd83-a10a-947ef8cd2864@linux.ibm.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <2ca3d31e-478f-5e0a-dd36-37e84e4abf7c@huawei.com>
-Date:   Thu, 8 Oct 2020 12:49:15 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1726348AbgJHLvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 07:51:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725802AbgJHLvR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 07:51:17 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9400FC061755
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 04:51:16 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id ce10so7677102ejc.5
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 04:51:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:user-agent:mime-version;
+        bh=EKS4Rl7taEFKEAjyfKeNM4So5LpeFxU2RUXgnXem7BU=;
+        b=Q74/FCsNrM4/oj1pPejy/g9GINBxGZsA4gVxVIaYJ4MsGEVX1y+Xry2faiiplEiEQz
+         gp6YTOpNWHL6yM3gV6tFeEjdhFVav7Ac+ZGcIHUHKDvN8cv3DqAW2Bo8nV5cgVxCTaa4
+         1dp/kgPM0/ltWe8+0HIxmxsW02JpnlePwBkphxenlZ5e2dVb/FqLS0a+nkMAnRvAJhr6
+         YjXVPrglDxwsFXIyCwsC2c8c5l5ABjK56GtUB7N3QLPsxLYTtL2Rln3xoR5c916+WrzG
+         1bvUGfkBoQcpvlY/K4LRUXOlEae+jxMl4vk9Vzav3mDY8Zse0T7SzeDKJTbUaxyy7Jpb
+         Di9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:user-agent
+         :mime-version;
+        bh=EKS4Rl7taEFKEAjyfKeNM4So5LpeFxU2RUXgnXem7BU=;
+        b=FeT/LI7QAjP3B2JeC4EPXTDz/M2Z8mjchN4gHt0yckIPlsDgVhwao5ISDD8tXRS0Aj
+         OUICBXpQ7ztQjdQ5U7JkF9HomPiK5gh3g391rgIalzP6Xe7tqqv6yd5QW6y5OsFPat/J
+         DJqQxXLTpOH/wg7UZcSt9I9YmGAbbK1EQJa/5nLao7EqrquoG/rYJbDnWnBz/Ar4VHXs
+         qlqXUBL5+HndSSUI47hF2DIokIxBPn6D8sTMspzNtZpvq6KG7tHusjp52mF3/c4hi3Wg
+         TJH+lNhBFDE+eFGVAZ/b29IIugVuRNy9Z7A/Ipym9EpxqBaURpDNjn3FzJtjImgh0Sk2
+         Duvw==
+X-Gm-Message-State: AOAM531epOeDkNMRBCvY7hwHa+NHGhKMzifZgzSHPyV8vf+wB2STooHR
+        eL6whgel5Gr5rUMyTWvV0bg=
+X-Google-Smtp-Source: ABdhPJyEcyf9UBhEyTeCnS0LcUO9nqMkIqRZoXKo4/0oyvreo3Ih8ruMp3tAltm7LRrVFLaAFV0u8g==
+X-Received: by 2002:a17:907:20e7:: with SMTP id rh7mr8673675ejb.515.1602157875013;
+        Thu, 08 Oct 2020 04:51:15 -0700 (PDT)
+Received: from felia ([2001:16b8:2dc7:4d00:248e:daaa:460c:6b4])
+        by smtp.gmail.com with ESMTPSA id u26sm3732317eds.2.2020.10.08.04.51.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Oct 2020 04:51:14 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
+Date:   Thu, 8 Oct 2020 13:50:56 +0200 (CEST)
+X-X-Sender: lukas@felia
+To:     Joe Perches <joe@perches.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>
+cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: checkpatch.pl: REPEATED_WORD: massive false positive in
+ MAINTAINERS
+Message-ID: <alpine.DEB.2.21.2010081247510.19461@felia>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <1f1c4537-2224-cd83-a10a-947ef8cd2864@linux.ibm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.169.237]
-X-ClientProxiedBy: lhreml730-chm.china.huawei.com (10.201.108.81) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/10/2020 12:27, kajoljain wrote:
-> Hi John,
->    I am looking into these patches, it seems they are not re-based on top of
-> latest Arnaldo's perf/core branch. Can you rebase these changes. I think we are missing
-> multiple updates.
-> 
-> 
-> Thanks,
-> Kajol Jain
-> 
+Dear Joe, dear Dwaipayan,
 
-Hi Kajol Jain,
+while maintaining MAINTAINERS, I noticed that the REPEATED_WORD check, 
+which in general is a great addition to checkpatch.pl, generates a massive
+number of warnings due to one specific pattern in the MAINTAINERS file:
 
-My thought was that since the kernel part needs acceptance first [0], 
-which is based on v5.9-rc7, I would just use the same baseline here.
+$ ./scripts/checkpatch.pl --show-types -f MAINTAINERS
 
-However I suppose I should still use Arnaldo's perf/core from now on as 
-baseline, so I'll look at that now.
+results in 625 warnings of the following kind:
 
-Thanks,
-John
+WARNING:REPEATED_WORD: Possible repeated word: 'git'
+#XYZ: FILE: MAINTAINERS:XYZ:
++T:	git git://...
 
-[0] 
-https://lore.kernel.org/lkml/1602149181-237415-1-git-send-email-john.garry@huawei.com/T/#mc34f758ab72f3d4a90d854b9bda7e6bbb90835b2
+That pattern above is of course intentional and perfectly fine, so now the 
+REPEATED_WORD check should not complain here.
+
+
+Joe, would you accept a suitable refinement of the REPEATED_WORD check 
+that address the issue above?
+
+Dwaipayan, is that another good issue for you to look into and improve?
+There are multiple ways to handle it either directly checking for that 
+pattern or excluding MAINTAINERS or both or something completely 
+different.
+
+
+Lukas
