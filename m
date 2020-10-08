@@ -2,198 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BED462876F3
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 17:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 088592876F9
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 17:18:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730926AbgJHPQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 11:16:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35656 "EHLO
+        id S1730935AbgJHPSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 11:18:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730550AbgJHPQX (ORCPT
+        with ESMTP id S1730550AbgJHPSF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 11:16:23 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDB16C061755
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 08:16:22 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id 140so5638798qko.2
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 08:16:22 -0700 (PDT)
+        Thu, 8 Oct 2020 11:18:05 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F3AFC061755;
+        Thu,  8 Oct 2020 08:18:05 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id l16so6238756eds.3;
+        Thu, 08 Oct 2020 08:18:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pHRJWCSun0VJ1G5+k8UnmqCRL8Yd5f7znmF3gBnbB3o=;
-        b=G3iQr75c2qWXNzE1TTuhZ56VcAS5y/X+omVvETmmyx5mT1CiXWx4u/Wy8KnTcyAioe
-         vVKtvwVC3tDVLuSbSh5u8ExJEQfEQ4VNGY4xYjQ7Y7wmixMbbBaMluJQDLJyyPwiFi2X
-         nTaLq62ndN5wlKrxKU7THa9N+EJyw8O3XZwFRQY8gr4ybahuPvOUYYg668PWwQbE/gZZ
-         0lg3fldvR3sx4cDKT4sTDcjnxlIpmxm4tpAB0Ns8NZJmY4I1Rk3xsmtyFfEJJRSkhLYa
-         8trensZDmzhr5ACp6f7ta1JZoD2BbQTpMgFNOVdOOOy+szVogrA4ssV4WudqQLl8k/iY
-         bpmA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HaUjiwWIcQ+hNrtAd+gLYowEZL3sz2AKFA9C75NfuwE=;
+        b=fqtx8uMyXjMNEgAsv3rbeqLRvkUlTtn6XvDlheS5+5ZjRqsnIsVqHp4jAhYoeUNQ9c
+         1xikYr8kqDtbf4UKT/c5bsRdLz6CZziw7ATpVXKniU1/qtoS5YPOzeIFLpMDoVpurr70
+         czUJJv8qiXiiB6uBAqdL30TeGIY7ZnZhXuvc+LEJt2329CqTJtpSxBZsRij0sj/XLhYF
+         5z39fQeumC2woPlXPvVOPaG5vI8J5/lryB1BTb8LYd2qgoYGFbHDtuk8BU4P89Rrohug
+         ity1QwWSRWbi7b6wVjXBE79C2mxH1Iqh9Xi07mKojP7XhdRKWhPkZ0/lL0PILQ/ycRYR
+         aF7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pHRJWCSun0VJ1G5+k8UnmqCRL8Yd5f7znmF3gBnbB3o=;
-        b=FZiqU3jbGEWLFAvffnWuH0PJbEt2WjoDIJjWYadqS/9hW3Zh6seJKO8APKl96SBFp9
-         0kkvC7Lb4hh86db08Jz1rUnWDWoQfyXgOrlE9uM9vfSo1ZGoftezGWNJzCL10aoUwP1q
-         lfExIVsx2owIeiGT6wvayd/roZv/5YOUJgWapeETKVc5jc3UcTj6VfbHjLmyxYIwZatV
-         aOCOwIRMJo1ss/njjlawJc0FjDLSweptS5rTX2RyVh2J7VeMhzN07lfZyOeay9olKgwk
-         OW62KvUXAMAhFzDlv5Qw1uYD66mGUZApR8uYLkcEnqEv52EyjBGFDeVWSPcmCWu/5FzK
-         V9mg==
-X-Gm-Message-State: AOAM533Q1K0rDuWgDm+1uyE4w/QFevdvTLHLxbD73XNZziUvVnt/aqoR
-        kcmiHL0hS2DKhrHlfSfI4FXVaw==
-X-Google-Smtp-Source: ABdhPJyhoDlFUl573H2VWMKIXT+NoZa+T9fU6/W3uFlg9ko71ypsoyHfrH6yTFYzCZXFib7P/mZquA==
-X-Received: by 2002:a37:8e82:: with SMTP id q124mr1395437qkd.297.1602170181915;
-        Thu, 08 Oct 2020 08:16:21 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:9294])
-        by smtp.gmail.com with ESMTPSA id 9sm3954786qkv.110.2020.10.08.08.16.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 08:16:21 -0700 (PDT)
-Date:   Thu, 8 Oct 2020 11:14:49 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Greg Thelen <gthelen@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        SeongJae Park <sjpark@amazon.com>, andrea.righi@canonical.com
-Subject: Re: [PATCH] memcg: introduce per-memcg reclaim interface
-Message-ID: <20201008151449.GB163830@cmpxchg.org>
-References: <20200909215752.1725525-1-shakeelb@google.com>
- <20200928210216.GA378894@cmpxchg.org>
- <CALvZod7afgoAL7KyfjpP-LoSFGSHv7XtfbbnVhEEhsiZLqZu9A@mail.gmail.com>
- <20201001151058.GB493631@cmpxchg.org>
- <CALvZod66T4-y2JQnN+favf6tnKkkFQ17HZ8EAAX0GXAcbO4v+w@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HaUjiwWIcQ+hNrtAd+gLYowEZL3sz2AKFA9C75NfuwE=;
+        b=JPRdJplEzhgHCxOAG4cb7Zul8LVbbTSIdPVoZc1Ni1CkuuP/ST/3tHkIz3BALMrSMR
+         +mq37UntDQT1pSwd40sFP3DLeG/0Ez8f61vd+RPpE9hnyBHtBI5O8XH8S4bigKquBdc/
+         4mYNVpFnmLi78R0+zwR30dOLRTfkaFrMbJKJ/gI1x8tN7XQca7U8nit+cOHInZVYQipj
+         vUByKa14Rg+0N5ggJ+GSr4myyH9RMv0l0MR3Typ6mWkyrRpKbi5hcTyXdH+82yW8kMbR
+         Tyz027EeZLdfZOQezBVPNkjGMZmleHwNDc2Vs0tJ5wLvMnU4TuENqu9fMhbQC4y+NTbE
+         +rTA==
+X-Gm-Message-State: AOAM531RGZiypNpg56ib08CAVbStIZEVBR0mIBLDDW56lk52PNW+H8lL
+        HBej69nD7KAuKa1XJoJr4oWA3/HtT0o=
+X-Google-Smtp-Source: ABdhPJxyfwaN4HTUW2Vgtn4iV8oluCYmuKlOQIOwqz5bzn40dj7KgA6cu8yzME0sMnokhxbsiARnFA==
+X-Received: by 2002:a05:6402:32f:: with SMTP id q15mr9598050edw.230.1602170283396;
+        Thu, 08 Oct 2020 08:18:03 -0700 (PDT)
+Received: from [192.168.2.202] (pd9e5a9e4.dip0.t-ipconnect.de. [217.229.169.228])
+        by smtp.gmail.com with ESMTPSA id y3sm4470691ejk.92.2020.10.08.08.18.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Oct 2020 08:18:02 -0700 (PDT)
+Subject: Re: [PATCH v3 1/5] platform: Add Surface platform directory
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Gayatri Kammela <gayatri.kammela@intel.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        =?UTF-8?Q?Bla=c5=be_Hrastnik?= <blaz@mxxn.io>,
+        Stephen Just <stephenjust@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Chen Yu <yu.c.chen@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201008143455.340599-1-luzmaximilian@gmail.com>
+ <20201008143455.340599-2-luzmaximilian@gmail.com>
+ <CAHp75Vd61qnLMUbted_ohqEtMdVFbqKhKf3kKh0ombAwhf8dCA@mail.gmail.com>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+Message-ID: <9711c3c9-63ed-8c9f-b77b-d1feb2c07f78@gmail.com>
+Date:   Thu, 8 Oct 2020 17:18:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod66T4-y2JQnN+favf6tnKkkFQ17HZ8EAAX0GXAcbO4v+w@mail.gmail.com>
+In-Reply-To: <CAHp75Vd61qnLMUbted_ohqEtMdVFbqKhKf3kKh0ombAwhf8dCA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 02:59:10PM -0700, Shakeel Butt wrote:
-> Hi Johannes,
+On 10/8/20 4:52 PM, Andy Shevchenko wrote:
+> On Thu, Oct 8, 2020 at 5:35 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
+>>
+>> It may make sense to split the Microsoft Surface hardware platform
+>> drivers out to a separate subdirectory, since some of it may be shared
+>> between ARM and x86 in the future (regarding devices like the Surface
+>> Pro X).
+>>
+>> Further, newer Surface devices will require additional platform drivers
+>> for fundamental support (mostly regarding their embedded controller),
+>> which may also warrant this split from a size perspective.
+>>
+>> This commit introduces a new platform/surface subdirectory for the
+>> Surface device family, with subsequent commits moving existing Surface
+>> drivers over from platform/x86.
+>>
+>> A new MAINTAINERS entry is added for this directory. Patches to files in
+>> this directory will be taken up by the platform-drivers-x86 team (i.e.
+>> Hans de Goede and Mark Gross) after they have been reviewed by
+>> Maximilian Luz.
 > 
-> On Thu, Oct 1, 2020 at 8:12 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> >
-> > Hello Shakeel,
-> >
-> > On Wed, Sep 30, 2020 at 08:26:26AM -0700, Shakeel Butt wrote:
-> > > On Mon, Sep 28, 2020 at 2:03 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > > > Workloads may not
-> > > > allocate anything for hours, and then suddenly allocate gigabytes
-> > > > within seconds. A sudden onset of streaming reads through the
-> > > > filesystem could destroy the workingset measurements, whereas a limit
-> > > > would catch it and do drop-behind (and thus workingset sampling) at
-> > > > the exact rate of allocations.
-> > > >
-> > > > Again I believe something that may be doable as a hyperscale operator,
-> > > > but likely too fragile to get wider applications beyond that.
-> > > >
-> > > > My take is that a proactive reclaim feature, whose goal is never to
-> > > > thrash or punish but to keep the LRUs warm and the workingset trimmed,
-> > > > would ideally have:
-> > > >
-> > > > - a pressure or size target specified by userspace but with
-> > > >   enforcement driven inside the kernel from the allocation path
-> > > >
-> > > > - the enforcement work NOT be done synchronously by the workload
-> > > >   (something I'd argue we want for *all* memory limits)
-> > > >
-> > > > - the enforcement work ACCOUNTED to the cgroup, though, since it's the
-> > > >   cgroup's memory allocations causing the work (again something I'd
-> > > >   argue we want in general)
-> > >
-> > > For this point I think we want more flexibility to control the
-> > > resources we want to dedicate for proactive reclaim. One particular
-> > > example from our production is the batch jobs with high memory
-> > > footprint. These jobs don't have enough CPU quota but we do want to
-> > > proactively reclaim from them. We would prefer to dedicate some amount
-> > > of CPU to proactively reclaim from them independent of their own CPU
-> > > quota.
-> >
-> > Would it not work to add headroom for this reclaim overhead to the CPU
-> > quota of the job?
-> >
-> > The reason I'm asking is because reclaim is only one side of the
-> > proactive reclaim medal. The other side is taking faults and having to
-> > do IO and/or decompression (zswap, compressed btrfs) on the workload
-> > side. And that part is unavoidably consuming CPU and IO quota of the
-> > workload. So I wonder how much this can generally be separated out.
-> >
-> > It's certainly something we've been thinking about as well. Currently,
-> > because we use memory.high, we have all the reclaim work being done by
-> > a privileged daemon outside the cgroup, and the workload pressure only
-> > stems from the refault side.
-> >
-> > But that means a workload is consuming privileged CPU cycles, and the
-> > amount varies depending on the memory access patterns - how many
-> > rotations the reclaim scanner is doing etc.
-> >
-> > So I do wonder whether this "cost of business" of running a workload
-> > with a certain memory footprint should be accounted to the workload
-> > itself. Because at the end of the day, the CPU you have available will
-> > dictate how much memory you need, and both of these axes affect how
-> > you can schedule this job in a shared compute pool. Do neighboring
-> > jobs on the same host leave you either the memory for your colder
-> > pages, or the CPU (and IO) to trim them off?
-> >
-> > For illustration, compare extreme examples of this.
-> >
-> >         A) A workload that has its executable/libraries and a fixed
-> >            set of hot heap pages. Proactive reclaim will be relatively
-> >            slow and cheap - a couple of deactivations/rotations.
-> >
-> >         B) A workload that does high-speed streaming IO and generates
-> >            a lot of drop-behind cache; or a workload that has a huge
-> >            virtual anon set with lots of allocations and MADV_FREEing
-> >            going on. Proactive reclaim will be fast and expensive.
-> >
-> > Even at the same memory target size, these two types of jobs have very
-> > different requirements toward the host environment they can run on.
-> >
-> > It seems to me that this is cost that should be captured in the job's
-> > overall resource footprint.
+> Thanks for the patch, my minor comments below.
 > 
-> I understand your point but from the usability perspective, I am
-> finding it hard to deploy/use.
+> ...
 > 
-> As you said, the proactive reclaim cost will be different for
-> different types of workload but I do not expect the job owners telling
-> me how much headroom their jobs need.
-
-Isn't that the same for all work performed by the kernel? Instead of
-proactive reclaim, it could just be regular reclaim due to a limit,
-whose required headroom depends on the workload's allocation rate.
-
-We wouldn't question whether direct reclaim cycles should be charged
-to the cgroup. I'm not quite sure why proactive reclaim is different -
-it's the same work done earlier.
-
-> I would have to start with a fixed headroom for a job, have to monitor
-> the resource usage of the proactive reclaim for it and dynamically
-> adjust the headroom to not steal the CPU from the job (I am assuming
-> there is no isolation between job and proactive reclaim).
+>> +MICROSOFT SURFACE PLATFORM DRIVERS
 > 
-> This seems very hard to use as compared to setting aside a fixed
-> amount of CPU for proactive reclaim system wide. Please correct me if
-> I am misunderstanding something.
+> (1)
+> 
+>> +M:     Hans de Goede <hdegoede@redhat.com>
+>> +M:     Mark Gross <mgross@linux.intel.com>
+>> +M:     Maximilian Luz <luzmaximilian@gmail.com>
+>> +L:     platform-driver-x86@vger.kernel.org
+>> +S:     Maintained
+> 
+>> +T:     git git://git.infradead.org/linux-platform-drivers-x86.git
+> 
+> It's now on kernel.org.
+> git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git
 
-I see your point, but I don't know how a fixed system-wide pool is
-easier to configure if you don't know the constituent consumers. How
-much would you set aside?
+Thank you, will update this. FYI: The entry was mostly copied from the
+X86 PLATFORM DRIVERS entry, so it should probably be updated there, too.
 
-A shared resource outside the natural cgroup hierarchy also triggers
-my priority inversion alarm bells. How do you prevent a lower priority
-job from consuming a disproportionate share of this pool? And as a
-result cause the reclaim in higher priority groups to slow down, which
-causes their memory footprint to expand and their LRUs to go stale.
+>> +F:     drivers/platform/surface/
+> 
+>> @@ -9,3 +9,4 @@ obj-$(CONFIG_MIPS)              += mips/
+>>   obj-$(CONFIG_OLPC_EC)          += olpc/
+>>   obj-$(CONFIG_GOLDFISH)         += goldfish/
+>>   obj-$(CONFIG_CHROME_PLATFORMS) += chrome/
+>> +obj-$(CONFIG_SURFACE_PLATFORM) += surface/
+> 
+> (2)
+> 
+>> +menuconfig SURFACE_PLATFORM
+> 
+> (3a)
+> 
+>> +if SURFACE_PLATFORM
+> 
+> (3b)
+> 
+>> +endif # SURFACE_PLATFORM
+> 
+> (3c)
+> 
+> I think in (1), (2) and (3) it makes sense to mimic Chrome, i.e. use
+> plural: PLATFORMS.
 
-It also still leaves the question around IO budget. Even if you manage
-to not eat into the CPU budget of the job, you'd still eat into the IO
-budget of the job, and that's harder to separate out.
+I agree with (2) and (3), but I'm not so sure about (1). For Chrome, the
+entry is CHROME HARDWARE PLATFORM SUPPORT, so should I change it to
+MICROSOFT SURFACE HARDWARE PLATFORM SUPPORT?
+
+Thanks,
+Max
