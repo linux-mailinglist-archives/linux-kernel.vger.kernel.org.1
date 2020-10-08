@@ -2,110 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A44A286F14
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:17:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19462286F22
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726320AbgJHHRV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 8 Oct 2020 03:17:21 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:3974 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725852AbgJHHRV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 03:17:21 -0400
-Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.53])
-        by Forcepoint Email with ESMTP id 348A5DFF96053E27784C;
-        Thu,  8 Oct 2020 15:17:19 +0800 (CST)
-Received: from dggeme753-chm.china.huawei.com (10.3.19.99) by
- dggeme752-chm.china.huawei.com (10.3.19.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Thu, 8 Oct 2020 15:17:18 +0800
-Received: from dggeme753-chm.china.huawei.com ([10.7.64.70]) by
- dggeme753-chm.china.huawei.com ([10.7.64.70]) with mapi id 15.01.1913.007;
- Thu, 8 Oct 2020 15:17:18 +0800
-From:   linmiaohe <linmiaohe@huawei.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm: mmap: Fix general protection fault in
- unlink_file_vma()
-Thread-Topic: [PATCH] mm: mmap: Fix general protection fault in
- unlink_file_vma()
-Thread-Index: AdadPUUH1xGewDMwTA2vF7DsJG74mw==
-Date:   Thu, 8 Oct 2020 07:17:18 +0000
-Message-ID: <8d3d451883a44f608173fe651b7e6718@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.177.16]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726698AbgJHHUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 03:20:02 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:55475 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725900AbgJHHUA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 03:20:00 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602141598; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=sMId6QbHBP1c3GiWF09Qa5VF+xMEy1yf5rDnhSRqa8U=; b=vv7rJK7YVtl+VvUM6NNM153W2Mw4Sv1sW7Wlf8jKq7zXDsXw/ckiOkHdtprSd773Eo+uHVCa
+ JtKLps5pdCIIzZxu/ZeU+oRXoIIDxg71ru2KZVT1a/eQMw31/LREo7Tz0IIUDDgalW2MPjoW
+ 7DRJuiOarC+ab3+ULbvVRJpc1+w=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5f7ebd92ad37af35ec10f636 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 08 Oct 2020 07:19:46
+ GMT
+Sender: neeraju=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A571AC43385; Thu,  8 Oct 2020 07:19:46 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.0.102] (unknown [124.123.181.24])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: neeraju)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2380AC433CB;
+        Thu,  8 Oct 2020 07:19:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2380AC433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
+Subject: Re: [PATCH v2] rcu/tree: nocb: Avoid raising softirq when there are
+ ready to execute CBs
+To:     paulmck@kernel.org,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
+References: <20201005021132.146534-1-joel@joelfernandes.org>
+ <20201007223438.GU29330@paulmck-ThinkPad-P72>
+From:   Neeraj Upadhyay <neeraju@codeaurora.org>
+Message-ID: <7fb89900-18e3-f438-ec31-2bce21c02afe@codeaurora.org>
+Date:   Thu, 8 Oct 2020 12:49:40 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <20201007223438.GU29330@paulmck-ThinkPad-P72>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrew Morton <akpm@linux-foundation.org> wrote:
-> On Wed, 16 Sep 2020 05:07:33 -0400 Miaohe Lin <linmiaohe@huawei.com> wrote:
->
->> The syzbot reported the below general protection fault:
->> 
->> general protection fault, probably for non-canonical address
->> 0xe00eeaee0000003b: 0000 [#1] PREEMPT SMP KASAN
->> KASAN: maybe wild-memory-access in range 
->> [0x00777770000001d8-0x00777770000001df]
->> CPU: 1 PID: 10488 Comm: syz-executor721 Not tainted 
->> 5.9.0-rc3-syzkaller #0
->> Trace:
->>  free_pgtables+0x1b3/0x2f0 mm/memory.c:415
->>  exit_mmap+0x2c0/0x530 mm/mmap.c:3184
->>  __mmput+0x122/0x470 kernel/fork.c:1076
->> 
->> It's because the ->mmap() callback can change vma->vm_file and fput 
->> the original file. But the commit d70cec898324 ("mm: mmap: merge vma 
->> after
->> call_mmap() if possible") failed to catch this case and always fput() 
->> the original file, hence add an extra fput().
->> 
->> ...
+
+
+On 10/8/2020 4:04 AM, Paul E. McKenney wrote:
+> On Sun, Oct 04, 2020 at 10:11:32PM -0400, Joel Fernandes (Google) wrote:
+>> During testing, I see it is possible that rcu_pending() returns 1 when
+>> offloaded callbacks are ready to execute thus raising the RCU softirq.
 >>
->> --- a/mm/mmap.c
->> +++ b/mm/mmap.c
->> @@ -1815,7 +1815,11 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
->>  			merge = vma_merge(mm, prev, vma->vm_start, vma->vm_end, vma->vm_flags,
->>  				NULL, vma->vm_file, vma->vm_pgoff, NULL, NULL_VM_UFFD_CTX);
->>  			if (merge) {
->> -				fput(file);
->> +				/* ->mmap() can change vma->vm_file and fput the original file. So
->> +				 * fput the vma->vm_file here or we would add an extra fput for file
->> +				 * and cause general protection fault ultimately.
->> +				 */
->> +				fput(vma->vm_file);
->>  				vm_area_free(vma);
->>  				vma = merge;
->>  				/* Update vm_flags and possible addr to pick up the change. We 
->> don't
->
->What about the case where this code block does its `goto unmap_writable'?
->
->	/* Once vma denies write, undo our temporary denial count */
->	if (file) {
->unmap_writable:
->		if (vm_flags & VM_SHARED)
->			mapping_unmap_writable(file->f_mapping);
->		if (vm_flags & VM_DENYWRITE)
->			allow_write_access(file);
->	}
->	file = vma->vm_file;
->
->is this using the correct file?  I think it is, but please do check.
->
+>> However, softirq does not execute offloaded callbacks. They are executed in a
+>> kthread which is awakened independent of the softirq.
+>>
+>> This commit therefore avoids raising the softirq in the first place. That's
+>> probably a good thing considering that the purpose of callback offloading is to
+>> reduce softirq activity.
+>>
+>> Passed 30 minute tests of TREE01 through TREE09 each.
+>>
+>> On TREE08, I notice that there is atmost 150us from when the softirq was
+>> NOT raised when ready cbs were present, to when the ready callbacks were
+>> invoked by the rcuop thread. This also further confirms that there is no
+>> need to raise the softirq for ready cbs in the first place.
+>>
+>> Cc: neeraju@codeaurora.org
+>> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> 
+> Looks good, applied, thank you!  I reworked things a bit based on
+> previous patches and to more precisely capture why this patch does
+> not cause additional problems.  Please let me know if I messed
+> anything up.
+> 
+> 							Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+> commit 33847a34a2d261354a79b4a24d9d37222e8ec888
+> Author: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Date:   Wed Oct 7 13:50:36 2020 -0700
+> 
+>      rcu/tree: nocb: Avoid raising softirq for offloaded ready-to-execute CBs
+>      
+>      Testing showed that rcu_pending() can return 1 when offloaded callbacks
+>      are ready to execute.  This invokes RCU core processing, for example,
+>      by raising RCU_SOFTIRQ, eventually resulting in a call to rcu_core().
+>      However, rcu_core() explicitly avoids in any way manipulating offloaded
+>      callbacks, which are instead handled by the rcuog and rcuoc kthreads,
+>      which work independently of rcu_core().
+>      
+>      One exception to this independence is that rcu_core() invokes
+>      do_nocb_deferred_wakeup(), however, rcu_pending() also checks
+>      rcu_nocb_need_deferred_wakeup() in order to correctly handle this case,
+>      invoking rcu_core() when needed.
+>      
+>      This commit therefore avoids needlessly invoking RCU core processing
+>      by checking rcu_segcblist_ready_cbs() only on non-offloaded CPUs.
+>      This reduces overhead, for example, by reducing softirq activity.
+>      
+>      This change passed 30 minute tests of TREE01 through TREE09 each.
+>      
+>      On TREE08, there is at most 150us from the time that rcu_pending() chose
+>      not to invoke RCU core processing to the time when the ready callbacks
+>      were invoked by the rcuoc kthread.  This provides further evidence that
+>      there is no need to invoke rcu_core() for offloaded callbacks that are
+>      ready to invoke.
+>      
+>      Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+>      Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+>      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> 
 
-Many thanks for your reply.
+Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
 
-Yes, I think so too. We do deny_write_access and mapping_map_writable on @file, so we should undo all of this on @file.
-Since @file is unchanged over the second vma_merge() time, we'are using the correct @file to undo our temporary denial count.
 
-But how should I check this explicitly ? I can't find out a way to do this. Could you please figure it out for me?
-Thanks again.
+Thanks
+Neeraj
 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 85e3f29..bfd38f2 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -3716,7 +3716,8 @@ static int rcu_pending(int user)
+>   		return 1;
+>   
+>   	/* Does this CPU have callbacks ready to invoke? */
+> -	if (rcu_segcblist_ready_cbs(&rdp->cblist))
+> +	if (!rcu_segcblist_is_offloaded(&rdp->cblist) &&
+> +	    rcu_segcblist_ready_cbs(&rdp->cblist))
+>   		return 1;
+>   
+>   	/* Has RCU gone idle with this CPU needing another grace period? */
+> 
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member of the Code Aurora Forum, hosted by The Linux Foundation
