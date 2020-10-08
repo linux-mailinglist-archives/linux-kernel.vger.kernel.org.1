@@ -2,115 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CCCB287EB9
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 00:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB83C287EBC
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 00:39:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730474AbgJHWhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 18:37:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34096 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729017AbgJHWhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 18:37:20 -0400
-Received: from earth.universe (unknown [185.213.155.232])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E6A1422243;
-        Thu,  8 Oct 2020 22:37:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602196639;
-        bh=x1SmoSmcLC3AgO9NSV4YaBZZzQalnejPtKrdLuUbWmw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fL72wgri135ejMGWb6DK4zUxZo/ZvnKwhwMqX1OjhUVKEayNRWnfouUPzLK6FNuFr
-         kUW4UlC9X/dEL1NvzJuCmnUNPlzySuxXtGNVcvXOnS9k1XcDWReSVJTLTr/6DFtZ/c
-         n6t949BySsNsNRX4J6S25Y9xGa4tXBvD5FKtJ7Uk=
-Received: by earth.universe (Postfix, from userid 1000)
-        id 8B7003C0C87; Fri,  9 Oct 2020 00:37:16 +0200 (CEST)
-Date:   Fri, 9 Oct 2020 00:37:16 +0200
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Myungjoo Ham <myungjoo.ham@samsung.com>,
-        linux-pm@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] charger-manager: fix incorrect check on
- charging_duration_ms
-Message-ID: <20201008223716.353rpnkvte7q3miv@earth.universe>
-References: <20200902133117.108025-1-colin.king@canonical.com>
+        id S1730480AbgJHWjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 18:39:08 -0400
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:34035 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728348AbgJHWjI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 18:39:08 -0400
+X-Originating-IP: 67.5.25.97
+Received: from localhost (unknown [67.5.25.97])
+        (Authenticated sender: josh@joshtriplett.org)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 83D1CC0007;
+        Thu,  8 Oct 2020 22:39:01 +0000 (UTC)
+Date:   Thu, 8 Oct 2020 15:38:58 -0700
+From:   Josh Triplett <josh@joshtriplett.org>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org
+Subject: Re: ext4 regression in v5.9-rc2 from e7bfb5c9bb3d on ro fs with
+ overlapped bitmaps
+Message-ID: <20201008223858.GC45658@localhost>
+References: <20201006003216.GB6553@localhost>
+ <20201006025110.GJ49559@magnolia>
+ <20201006031834.GA5797@mit.edu>
+ <20201006050306.GA8098@localhost>
+ <20201006133533.GC5797@mit.edu>
+ <20201007080304.GB1112@localhost>
+ <20201007143211.GA235506@mit.edu>
+ <20201007201424.GB15049@localhost>
+ <20201008021017.GD235506@mit.edu>
+ <20201008175448.GA6532@magnolia>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wyfglm34rtjztloq"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200902133117.108025-1-colin.king@canonical.com>
+In-Reply-To: <20201008175448.GA6532@magnolia>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 08, 2020 at 10:54:48AM -0700, Darrick J. Wong wrote:
+> IMO, the prominent free software filesystem projects offer (at least)
+> four layers of social structures to keep everyone on the same page,
+> including people writing competing implementations.
 
---wyfglm34rtjztloq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+(I certainly hope that this isn't a *competing* implementation. It's
+more that it serves a different purpose than the existing tools.)
 
-Hi Colin,
+> The first is "Does
+> everything we write still work with the kernel", which I guess you
+> clearly did since you're complaining about this change in 5.9-rc2.
 
-On Wed, Sep 02, 2020 at 02:31:17PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
->=20
-> Currently the duration check on the discharging duration setting is
-> checking the charging duration rather than the discharging duration
-> due to a cut-n-paste coding error. Fix this by checking the value
-> desc->charging_max_duration_ms.
->=20
-> Addresses-Coverity: ("Copy-paste-error")
-> Fixes: 8fcfe088e21a ("charger-manager: Support limit of maximum possible")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
+Right.
 
-Thanks, queued.
+> The second layer is "Does it pass fsck?" which, given that you're asking
+> for changes to e2fsck elsewhere in this thread and I couldn't figure out
+> how to generate a shared-bitmaps ext4 fs that didn't also cause e2fsck
+> to complain about the overlap doesn't make me confident that you went
+> beyond the first step before shipping something.
 
--- Sebastian
+I did ensure that, other than the one top-level complaint that the
+bitmaps overlapped, I got no complaints from e2fsck. I also confirmed
+that with a patch to that one item, e2fsck passed with no issues.
 
->  drivers/power/supply/charger-manager.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/power/supply/charger-manager.c b/drivers/power/suppl=
-y/charger-manager.c
-> index 07992821e252..44d919954e9e 100644
-> --- a/drivers/power/supply/charger-manager.c
-> +++ b/drivers/power/supply/charger-manager.c
-> @@ -471,7 +471,7 @@ static int check_charging_duration(struct charger_man=
-ager *cm)
->  	} else if (cm->battery_status =3D=3D POWER_SUPPLY_STATUS_NOT_CHARGING) {
->  		duration =3D curr - cm->charging_end_time;
-> =20
-> -		if (duration > desc->charging_max_duration_ms) {
-> +		if (duration > desc->discharging_max_duration_ms) {
->  			dev_info(cm->dev, "Discharging duration exceed %ums\n",
->  				 desc->discharging_max_duration_ms);
->  			ret =3D true;
-> --=20
-> 2.27.0
->=20
+> The third layer is consulting the ondisk format documentation to see if
+> it points out anything that the kernel or fsck didn't notice.  That
+> one's kind of on Ted for not updating Documentation/ to spell out what
+> SHARED_BLOCKS actually means, but that just leads me to the fourth thing.
 
---wyfglm34rtjztloq
-Content-Type: application/pgp-signature; name="signature.asc"
+I've been making *extensive* use of Documentation/filesystems/ext4 by
+the way, and I greatly appreciate it. I know you've done a ton of work
+in that area.
 
------BEGIN PGP SIGNATURE-----
+> The fourth layer is emailing the list to ask "Hey, I was thinking of
+> ___, does anyone see a problem with my interpretation?".  That clearly
+> hasn't been done for shared bitmaps until now, which is all the more
+> strange since you /did/ ask linux-ext4 about the inline data topic
+> months ago.
 
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl9/lJwACgkQ2O7X88g7
-+pozdQ//V0Z7wo7rb2YBOxWmUcpp1KjqM12cynFCTDgE7ydMT64gZKFnNjQBk9zg
-Y/WesekfwYIDdqt/7/sXHzNitNZjn/WeyBIaJBx7L9eVpTYsQNHDdwgNEIzQByDP
-9SlzveKeVDdxpGacfsrEsBVnIo70LKunZ0TUb5wZcpWzDWN1xBi6xnYAMPRrWhrp
-HXIst3Jl8tAWQWCVu+kzY5SVUA2TmPAbNrtrJExpUcwX7/sajhgUv2g6qPPkOvaN
-UM9DS+kS3GPPM7raHUmL4Ph1gzuFsXemUCnTuQUq0uQJSQzVWaR82kSUcGTearP9
-lJXbbMFOx2eai6qHGaJnafJRNOsYW2xU8Lxqv/HfD/M0b9KZr71jy2NoQFMYR0Bm
-/ZH2pczf2t70QqzpIo7ScZYXl6pwDmiyxbMLorybAyc9sSIErqa/qeX0vx9t30TK
-uyLv+uqNoKziiQe+D5FfkH1Mc3be2iSZJ2G+z3Z2mGlPGQDDB4ETcCUudL2nVgjD
-3z9Te0FqZ9QaslzTiZqiyd3tIt7gZbKp++DxdBcodwPkagI6D/4ZcVof5YKpLTYx
-zzqa9fKWOdw8sYVQ2cUlcvgFsI9tA3cfE3+l6D2QckdKN5MTcEErHZKm6ISahgd2
-2Y9nMid6NJ2psIG0ancF/o2D1p56G5B3D8lSNYLiyoDWhhOGQms=
-=Cx8z
------END PGP SIGNATURE-----
+That one was on me, you're right. Because Ted is the maintainer of
+e2fsprogs in Debian, and conversations about ext4 often happen in the
+Debian BTS, reporting a bug on e2fsprogs there felt like starting an
+upstream conversation. That was my mistake; in the future, I'll make
+sure that things make it to linux-ext4. I already did so for
+https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=971014 , and I
+*should* have gone back and done so for the shared bitmap blocks issue.
 
---wyfglm34rtjztloq--
+> ext* and XFS have been around for 25 years.  The software validation of
+> both is imperfect and incomplete because the complexity of the ondisk
+> formats is vast and we haven't caught up with the technical debt that
+> resulted from not writing rigorous checks that would have been very
+> difficult with mid-90s hardware.  I know, because I've been writing
+> online checking for XFS and have seen the wide the gap between what the
+> existing software looks for and what the ondisk format documentation
+> allows.
+> 
+> The only chance that we as a community have at managing the complexity
+> of a filesystem is to use those four tools I outlined above to try to
+> keep the mental models of everyone who participates in close enough
+> alignment.  That's how we usually avoid discussions that end in rancor
+> and confusion.
+> 
+> That was a very long way of reiterating "If you're going to interpret
+> aspects of the software, please come talk to us before you start writing
+> code".  That is key to ext4's long history of compatibility, because a
+> project cannot maintain continuity when actors develop conflicting code
+> in the shadows.  Look at all the mutations FAT and UFS that have
+> appeared over the years-- the codebases became a mess as a result.
+
+Understood, agreed, and acknowledged. I'll make sure that any future
+potentially "adventurous" filesystem experiments get discussed on
+linux-ext4 first, not just in a distro bugtracker with a limited
+audience.
+
+> > > the head", and continued with the notion that anything other than
+> > > e2fsprogs making something to be mounted by mount(2) and handled by
+> > > fs/ext4 is being "inflicted", and if the goal didn't still seem to be
+> > > "how do we make it go away so that only e2fsprogs and the kernel ever
+> > > touch ext4". I started this thread because I'd written some userspace
+> > > code, a new version of the kernel made that userspace code stop working,
+> > > so I wanted to report that the moment I'd discovered that, along with a
+> > > potential way to address it with as little disrupton to ext4 as
+> > > possible.
+> 
+> Ted: I don't think it's a good idea to make SHARED_BLOCKS disable block
+> validity checking by default.  You could someday enable users to write
+> to block-sharing files by teaching ext4 how to COW, at which point you'd
+> need correct bitmaps and block validity to prevent accidental overwrite
+> of critical metadata.  At that point you'd either be stuck with the
+> precedent that SHARED_BLOCKS implies noblock_validity, or you'd end up
+> breaking Josh's images again.
+
+That's a fair point (though I think a writable COW version of
+SHARED_BLOCKS would need a different flag). It'd make more sense to key
+this logic off of RO_COMPAT_READONLY or similar. But even better:
+
+> "noblock_validity" in the superblock mount options field of the images
+> you create.
+
+Yeah, I can do that. That's a much better solution, thank you. It would
+have been problematic to have to change the userspace that mounts the
+filesystem to pass new mount options ("noblock_validity") for the new
+kernel. But if I can embed it in the filesystem, that'll work.
+
+I'll do that, and please feel free to drop the original proposed patch
+as it's no longer needed. Thanks, Darrick.
+
+- Josh Triplett
