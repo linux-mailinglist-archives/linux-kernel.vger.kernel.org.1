@@ -2,79 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E373287313
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 13:03:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A314287319
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 13:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729744AbgJHLDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 07:03:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37620 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725852AbgJHLDO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 07:03:14 -0400
-Received: from gaia (unknown [95.149.105.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C9362215A4;
-        Thu,  8 Oct 2020 11:03:10 +0000 (UTC)
-Date:   Thu, 8 Oct 2020 12:03:07 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Jann Horn <jannh@google.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        "David S. Miller" <davem@davemloft.net>,
-        sparclinux@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Khalid Aziz <khalid.aziz@oracle.com>,
-        Anthony Yznaga <anthony.yznaga@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Dave Kleikamp <shaggy@linux.vnet.ibm.com>
-Subject: Re: [PATCH 1/2] mm/mprotect: Call arch_validate_prot under mmap_lock
- and with length
-Message-ID: <20201008110307.GH7661@gaia>
-References: <20201007073932.865218-1-jannh@google.com>
- <20201007123544.GA11433@infradead.org>
- <CAG48ez3kjTeVtQcjQerYYRs7sX5qq3O7SU-FEaYLNXisFmAeOg@mail.gmail.com>
- <87o8ld0zwt.fsf@mpe.ellerman.id.au>
+        id S1729158AbgJHLGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 07:06:44 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:48242 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725852AbgJHLGo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 07:06:44 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 098B6Zug008842;
+        Thu, 8 Oct 2020 06:06:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1602155196;
+        bh=21oQ75JE5XwVPKHNqPU6RzI4lViOQrmwirX2BSJwmPA=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=HYAPIO0gKevPIf0wlneT15CYFZdAlptqwhvfAoH3DJQ7HCyZeu459WZaWUMM4Hcmg
+         YuSGpyWz84NiX/bruD+EApv0Z2PuhXACHONvB5VpD2cAeddhfjyP5Fo4dDGCi3kt/5
+         v24s/ajJlAyVv+IV0N4FhXKfascc6O0vqifZxWwI=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 098B6ZPE019620
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 8 Oct 2020 06:06:35 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 8 Oct
+ 2020 06:06:35 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 8 Oct 2020 06:06:35 -0500
+Received: from [127.0.0.1] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 098B6XTu009332;
+        Thu, 8 Oct 2020 06:06:34 -0500
+Subject: Re: [PATCH 0/2] Enable GPIO and I2C configs for TI's J721e platform
+To:     Faiz Abbas <faiz_abbas@ti.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <will@kernel.org>, <catalin.marinas@arm.com>, <nm@ti.com>
+References: <20201002164535.9920-1-faiz_abbas@ti.com>
+ <68cadd9b-63b1-caaf-080c-e2f346f4a908@ti.com>
+ <ce66e552-a816-9e67-5e94-d9a20bbc2bc7@ti.com>
+ <f8877ca8-fe32-29e5-cb0c-2ce0af3eb73a@ti.com>
+ <0b46dc95-6778-7f01-395a-8d4eaf33b0f7@ti.com>
+ <51978593-fe09-3740-ef90-deac8ef3d2f2@ti.com>
+ <142b9d12-ea65-320f-aef9-583389aabb3e@ti.com>
+From:   Tero Kristo <t-kristo@ti.com>
+Message-ID: <83e519f3-b8e4-6fe7-2e0b-de7a5484f2b6@ti.com>
+Date:   Thu, 8 Oct 2020 14:06:33 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87o8ld0zwt.fsf@mpe.ellerman.id.au>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <142b9d12-ea65-320f-aef9-583389aabb3e@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 09:34:26PM +1100, Michael Ellerman wrote:
-> Jann Horn <jannh@google.com> writes:
-> > So while the mprotect() case
-> > checks the flags and refuses unknown values, the mmap() code just lets
-> > the architecture figure out which bits are actually valid to set (via
-> > arch_calc_vm_prot_bits()) and silently ignores the rest?
-> >
-> > And powerpc apparently decided that they do want to error out on bogus
-> > prot values passed to their version of mmap(), and in exchange, assume
-> > in arch_calc_vm_prot_bits() that the protection bits are valid?
+On 08/10/2020 12:40, Faiz Abbas wrote:
+> Tero,
 > 
-> I don't think we really decided that, it just happened by accident and
-> no one noticed/complained.
+> On 08/10/20 2:49 pm, Tero Kristo wrote:
+>> On 08/10/2020 11:59, Faiz Abbas wrote:
+>>> Tero,
+>>>
+>>> On 06/10/20 6:40 pm, Tero Kristo wrote:
+>>>> On 06/10/2020 16:03, Faiz Abbas wrote:
+>>>>> Hi Tero,
+>>>>>
+>>>>> On 06/10/20 5:21 pm, Tero Kristo wrote:
+>>>>>> On 02/10/2020 19:45, Faiz Abbas wrote:
+>>>>>>> The following patches enable configs in the arm64 defconfig to support
+>>>>>>> GPIO and I2C support on TI's J721e platform.
+>>>>>>>
+>>>>>>> Faiz Abbas (2):
+>>>>>>>       arm64: defconfig: Enable OMAP I2C driver
+>>>>>>>       arm64: defconfig: Enable DAVINCI_GPIO driver
+>>>>>>>
+>>>>>>>      arch/arm64/configs/defconfig | 2 ++
+>>>>>>>      1 file changed, 2 insertions(+)
+>>>>>>>
+>>>>>>
+>>>>>> Why are you enabling these?
+>>>>>>
+>>>>>> Are they required for booting the board?
+>>>>>>
+>>>>>> If not, they shall not be enabled, as it just clutters the arm64 defconfig unnecessarily.
+>>>>>>
+>>>>>
+>>>>> They are required because the SD card regulators need gpio over i2c expander and also
+>>>>> soc gpio support to come up in UHS modes.
+>>>>
+>>>> Is that needed for boot support? If it is only needed with UHS cards, that does not seem important enough for me. We can already boot the board via other means.
+>>>
+>>> Without these configs, the regulator drivers keep EPROBE_DEFERing waiting for their gpio drivers
+>>> to probe and SD card never comes up. This configuration happens before any UHS capabilities are detected.
+>>>
+>>> [    1.326654] sdhci-am654 4fb0000.sdhci: _devm_regulator_get id:vmmc ret:-517
+>>> [    1.333651] sdhci-am654 4fb0000.sdhci: _devm_regulator_get id:vqmmc ret:-517
+>>> [    1.340693] sdhci-am654 4fb0000.sdhci: sdhci_am654_probe ret:-517
+>>> [    1.489088] sdhci-am654 4fb0000.sdhci: _devm_regulator_get id:vmmc ret:-517
+>>> [    1.496067] sdhci-am654 4fb0000.sdhci: _devm_regulator_get id:vqmmc ret:-517
+>>> [    1.510392] sdhci-am654 4fb0000.sdhci: sdhci_am654_probe ret:-517
+>>> [    1.543210] sdhci-am654 4fb0000.sdhci: _devm_regulator_get id:vmmc ret:-517
+>>> [    1.550186] sdhci-am654 4fb0000.sdhci: _devm_regulator_get id:vqmmc ret:-517
+>>> [    1.568134] sdhci-am654 4fb0000.sdhci: sdhci_am654_probe ret:-517
+>>
+>> This happens because you have merged/enabled UHS support or? This sounds like a regression as I haven't seen this happen before.
+>>
 > 
-> Seems userspace is pretty well behaved when it comes to passing prot
-> values to mmap().
+> Thats right. The EPROBE_DEFERs will happen if my patches enabling UHS modes here are merged. I need to repost them for v5.11-rc1:
+> https://lore.kernel.org/linux-arm-kernel/20201001190541.6364-1-faiz_abbas@ti.com/
 
-It's not necessarily about well behaved but whether it can have security
-implications. On arm64, if the underlying memory does not support MTE
-(say some DAX mmap) but we still allow PROT_MTE driven by user, it will
-lead to an SError which brings the whole machine down.
+Ok I think that would be good enough reason to enable these by default 
+as the MMC as boot media won't work anymore without them, and carrying 
+the DTS patches would be just silly.
 
-Not sure whether ADI has similar requirements but at least for arm64 we
-addressed the mmap() case as well (see my other email on the details; I
-think the approach would work on SPARC as well).
+Acked-by: Tero Kristo <t-kristo@ti.com>
 
--- 
-Catalin
+--
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
