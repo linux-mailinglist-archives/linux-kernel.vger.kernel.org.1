@@ -2,80 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 465B5287E76
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 00:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A7E6287E88
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 00:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729331AbgJHWDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 18:03:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54580 "EHLO mail.kernel.org"
+        id S1727234AbgJHWLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 18:11:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725852AbgJHWDm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 18:03:42 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        id S1725852AbgJHWLd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 18:11:33 -0400
+Received: from localhost (unknown [104.132.1.66])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 666E022241;
-        Thu,  8 Oct 2020 22:03:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7F6EE22241;
+        Thu,  8 Oct 2020 22:11:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602194622;
-        bh=AeT6tduvvnK32DuXyUelUNi0j2jvtQ1WF3gbVAximcE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=dvud6lF9LsqMei3QC5ri01tEoAWoj0IANTB2ZNNDLbbikORBHnrb1ro086cGhFRmR
-         FZ+GbB3AaArn/pcPgSUaC/p3YSnzxz9uM81CxIa4lAmycsRdGoCDY7CcnYR1yBdDXJ
-         SR9/2ZCmk0KYnasJuNw9lK2onWz/93pdE3rGcrg0=
-Date:   Thu, 8 Oct 2020 17:09:05 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] wlcore: Use fallthrough pseudo-keyword
-Message-ID: <20201008220905.GA8040@embeddedor>
+        s=default; t=1602195092;
+        bh=5cwnMyQhKUP3d82WK3IQRFD3LayprBJ/26VCNg9TYjI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=s5KO77zHEHTrjhoGLQRAFkidlXW0qvk0fmxgztaroiU7PbCWpTewDIobEef1OeBOj
+         FP7rjSApa4gqsoLNwDRlqvVo44nsfu4NKriQDnL2cHMxK4TSMHc+uWABfbjQSxqnMk
+         GpYECZNvpdpQb093O8Vcb+y0r435FywMC/+yh/Lw=
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH] f2fs: fix memory alignment to support 32bit
+Date:   Thu,  8 Oct 2020 15:11:31 -0700
+Message-Id: <20201008221131.925195-1-jaegeuk@kernel.org>
+X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to enable -Wimplicit-fallthrough for Clang[1], replace the
-existing /* fall-through */ comments with the new pseudo-keyword
-macro fallthrough[2].
+In 32bit system, 64-bits key breaks memory alignment.
+This fixes the commit "f2fs: support 64-bits key in f2fs rb-tree node entry".
 
-[1] https://git.kernel.org/linus/e2079e93f562c7f7a030eb7642017ee5eabaaa10
-[2] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
-
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Reported-by: Nicolas Chauvet <kwizart@gmail.com>
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 ---
- drivers/net/wireless/ti/wlcore/main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/f2fs/f2fs.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ti/wlcore/main.c b/drivers/net/wireless/ti/wlcore/main.c
-index 6863fd552d5e..122c7a4b374f 100644
---- a/drivers/net/wireless/ti/wlcore/main.c
-+++ b/drivers/net/wireless/ti/wlcore/main.c
-@@ -2227,7 +2227,7 @@ static int wl12xx_init_vif_data(struct wl1271 *wl, struct ieee80211_vif *vif)
- 	switch (ieee80211_vif_type_p2p(vif)) {
- 	case NL80211_IFTYPE_P2P_CLIENT:
- 		wlvif->p2p = 1;
--		/* fall-through */
-+		fallthrough;
- 	case NL80211_IFTYPE_STATION:
- 	case NL80211_IFTYPE_P2P_DEVICE:
- 		wlvif->bss_type = BSS_TYPE_STA_BSS;
-@@ -2237,7 +2237,7 @@ static int wl12xx_init_vif_data(struct wl1271 *wl, struct ieee80211_vif *vif)
- 		break;
- 	case NL80211_IFTYPE_P2P_GO:
- 		wlvif->p2p = 1;
--		/* fall-through */
-+		fallthrough;
- 	case NL80211_IFTYPE_AP:
- 	case NL80211_IFTYPE_MESH_POINT:
- 		wlvif->bss_type = BSS_TYPE_AP_BSS;
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 713ab95223ef6..ce79b9b5b1eff 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -617,7 +617,7 @@ struct rb_entry {
+ 			unsigned int len;	/* length of the entry */
+ 		};
+ 		unsigned long long key;		/* 64-bits key */
+-	};
++	} __packed;
+ };
+ 
+ struct extent_info {
 -- 
-2.27.0
+2.28.0.1011.ga647a8990f-goog
 
