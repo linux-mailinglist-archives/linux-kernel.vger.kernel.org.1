@@ -2,114 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 831C3286F0E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:16:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A44A286F14
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:17:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726217AbgJHHQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 03:16:14 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:38278 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725852AbgJHHQO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 03:16:14 -0400
-Received: by mail-lj1-f196.google.com with SMTP id a23so3821653ljp.5;
-        Thu, 08 Oct 2020 00:16:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=axxcjrN6jheBIbfDrV/Ff/WSbvxOpFA8SBhcP4k8xkg=;
-        b=b3PPdy/R3rB+LAyaNh52R7THCmfZbGbXx6bTMoSZViLXn3DysDBGGcoGqAC5TB6yxE
-         CV4LiYNiTuTOsfxU6lVFDWEA1++ueDnE7YqvnUwVva1YROuwqxtdsnql/dWMVvJ1kTx9
-         +YLyHFG0IM0pbdaMCy29AoUb6ld1xtXy6d8npRi6YbNiiFeSUGQZivI5pEL+GIHbPth0
-         BLUiXOK4+oAg/bymfXg/i3nOkGkY1aVe/i9ApL8GQ0Rv7oTcsMGmxugH6MDJYaJSin3+
-         8OpmJOLDszxw+AAfhJ+a9jrq4r84i3dYwUxtMHwkGD9YFebUeeCpUOLoKwY8i8mppKMR
-         CM6Q==
-X-Gm-Message-State: AOAM53234s/STlQJK5jdklVdMfKeyB1WVFtCnChOS8S3p0qkEezWUjcE
-        8YG5Sbmm/9HA0GLFWS42jBzp7/DRYVE=
-X-Google-Smtp-Source: ABdhPJyKujpONsm8tNbjrZfTqlzdWi4CYLN384q7YoRJmIQ/EzWQnvBbKIx1FgS3kWD0W4gB95jCKg==
-X-Received: by 2002:a2e:9602:: with SMTP id v2mr2500461ljh.455.1602141370876;
-        Thu, 08 Oct 2020 00:16:10 -0700 (PDT)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id t21sm704792ljh.65.2020.10.08.00.16.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 00:16:09 -0700 (PDT)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kQQ9k-0004uj-Hk; Thu, 08 Oct 2020 09:16:04 +0200
-Date:   Thu, 8 Oct 2020 09:16:04 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-Cc:     Johan Hovold <johan@kernel.org>, Lars Melin <larsm17@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        =?iso-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        netdev@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH 2/2] usb: serial: option: add Cellient MPL200 card
-Message-ID: <20201008071604.GG26280@localhost>
-References: <cover.1601715478.git.wilken.gottwalt@mailbox.org>
- <3db5418fe9e516f4b290736c5a199c9796025e3c.1601715478.git.wilken.gottwalt@mailbox.org>
- <20201005082045.GL5141@localhost>
- <20201005130134.459b4de9@monster.powergraphx.local>
- <20201005110638.GP5141@localhost>
- <5222246c-08d7-dcf8-248d-c1fefc72c46f@gmail.com>
- <20201005140723.56f6c434@monster.powergraphx.local>
- <20201006070201.GB26280@localhost>
- <20201008084733.41ba3cec@monster.powergraphx.local>
+        id S1726320AbgJHHRV convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 8 Oct 2020 03:17:21 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:3974 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725852AbgJHHRV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 03:17:21 -0400
+Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.53])
+        by Forcepoint Email with ESMTP id 348A5DFF96053E27784C;
+        Thu,  8 Oct 2020 15:17:19 +0800 (CST)
+Received: from dggeme753-chm.china.huawei.com (10.3.19.99) by
+ dggeme752-chm.china.huawei.com (10.3.19.98) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Thu, 8 Oct 2020 15:17:18 +0800
+Received: from dggeme753-chm.china.huawei.com ([10.7.64.70]) by
+ dggeme753-chm.china.huawei.com ([10.7.64.70]) with mapi id 15.01.1913.007;
+ Thu, 8 Oct 2020 15:17:18 +0800
+From:   linmiaohe <linmiaohe@huawei.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mm: mmap: Fix general protection fault in
+ unlink_file_vma()
+Thread-Topic: [PATCH] mm: mmap: Fix general protection fault in
+ unlink_file_vma()
+Thread-Index: AdadPUUH1xGewDMwTA2vF7DsJG74mw==
+Date:   Thu, 8 Oct 2020 07:17:18 +0000
+Message-ID: <8d3d451883a44f608173fe651b7e6718@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.177.16]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201008084733.41ba3cec@monster.powergraphx.local>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 08:47:33AM +0200, Wilken Gottwalt wrote:
-> On Tue, 6 Oct 2020 09:02:01 +0200
-> Johan Hovold <johan@kernel.org> wrote:
-> 
-> > On Mon, Oct 05, 2020 at 02:07:23PM +0200, Wilken Gottwalt wrote:
-> > > On Mon, 5 Oct 2020 18:36:36 +0700 Lars Melin <larsm17@gmail.com> wrote:
+Andrew Morton <akpm@linux-foundation.org> wrote:
+> On Wed, 16 Sep 2020 05:07:33 -0400 Miaohe Lin <linmiaohe@huawei.com> wrote:
+>
+>> The syzbot reported the below general protection fault:
+>> 
+>> general protection fault, probably for non-canonical address
+>> 0xe00eeaee0000003b: 0000 [#1] PREEMPT SMP KASAN
+>> KASAN: maybe wild-memory-access in range 
+>> [0x00777770000001d8-0x00777770000001df]
+>> CPU: 1 PID: 10488 Comm: syz-executor721 Not tainted 
+>> 5.9.0-rc3-syzkaller #0
+>> Trace:
+>>  free_pgtables+0x1b3/0x2f0 mm/memory.c:415
+>>  exit_mmap+0x2c0/0x530 mm/mmap.c:3184
+>>  __mmput+0x122/0x470 kernel/fork.c:1076
+>> 
+>> It's because the ->mmap() callback can change vma->vm_file and fput 
+>> the original file. But the commit d70cec898324 ("mm: mmap: merge vma 
+>> after
+>> call_mmap() if possible") failed to catch this case and always fput() 
+>> the original file, hence add an extra fput().
+>> 
+>> ...
+>>
+>> --- a/mm/mmap.c
+>> +++ b/mm/mmap.c
+>> @@ -1815,7 +1815,11 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
+>>  			merge = vma_merge(mm, prev, vma->vm_start, vma->vm_end, vma->vm_flags,
+>>  				NULL, vma->vm_file, vma->vm_pgoff, NULL, NULL_VM_UFFD_CTX);
+>>  			if (merge) {
+>> -				fput(file);
+>> +				/* ->mmap() can change vma->vm_file and fput the original file. So
+>> +				 * fput the vma->vm_file here or we would add an extra fput for file
+>> +				 * and cause general protection fault ultimately.
+>> +				 */
+>> +				fput(vma->vm_file);
+>>  				vm_area_free(vma);
+>>  				vma = merge;
+>>  				/* Update vm_flags and possible addr to pick up the change. We 
+>> don't
+>
+>What about the case where this code block does its `goto unmap_writable'?
+>
+>	/* Once vma denies write, undo our temporary denial count */
+>	if (file) {
+>unmap_writable:
+>		if (vm_flags & VM_SHARED)
+>			mapping_unmap_writable(file->f_mapping);
+>		if (vm_flags & VM_DENYWRITE)
+>			allow_write_access(file);
+>	}
+>	file = vma->vm_file;
+>
+>is this using the correct file?  I think it is, but please do check.
+>
 
-> > > > It is very likely that Cellient has replaced the VID with their own and 
-> > > > kept the PID, it is something other mfgrs has done when buying modules 
-> > > > from Qualcomm's series of devices with predefined composition.
-> > > > 
-> > > > The MS Windows driver for 05c6:9025 describes the interfaces as:
-> > > > 
-> > > > MI_00 Qualcomm HS-USB Diagnostics 9025
-> > > > MI_01 Android Composite ADB Interface
-> > > > MI_02 Qualcomm HS-USB Android Modem 9025
-> > > > MI_03 Qualcomm HS-USB NMEA 9025
-> > > > MI_04 Qualcomm Wireless HS-USB Ethernet Adapter 9025
-> > > > MI_05 USB Mass Storage Device
-> > > > 
-> > > > where the net interface is for QMI/RMNET.
-> > > > It fully matches the blacklisting Wilken has done for 2692:9025
-> > > 
-> > > Does your device have a GPS connector? Mine had not and I'm not sure
-> > > if the description of MI_01 is actually correct. I remember looking at
-> > > this port and seeing bogus NMEA data.
-> > 
-> > Well if it's NMEA then the interface shouldn't be blacklisted (even if
-> > the values are bogus on your device), but if it's ADB it should be as
-> > that is handled by userspace.
-> > 
-> > Here's some lsusb output from a Cellient MPL200 that still uses the
-> > Qualcomm VID:
-> > 
-> > 	https://www.mail-archive.com/modemmanager-devel@lists.freedesktop.org/msg04523.html
-> > 
-> > which gives some support to Lars's hypothesis. I guess we'll just keep
-> > the first interface reserved.
-> 
-> Lars and Johan are right here. I found an older external Gobi driver
-> where I actually added comments saying interface 1 is ADB and interface 3
-> is NMEA delivering only zeroed values because of the missing antenna
-> connector, at least for the models I had access to.
+Many thanks for your reply.
 
-Great, thanks for confirming.
+Yes, I think so too. We do deny_write_access and mapping_map_writable on @file, so we should undo all of this on @file.
+Since @file is unchanged over the second vma_merge() time, we'are using the correct @file to undo our temporary denial count.
 
-Johan
+But how should I check this explicitly ? I can't find out a way to do this. Could you please figure it out for me?
+Thanks again.
+
