@@ -2,312 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 854E22872E9
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 12:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38B2C2872EE
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 12:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728642AbgJHK5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 06:57:45 -0400
-Received: from esa6.microchip.iphmx.com ([216.71.154.253]:52512 "EHLO
-        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727224AbgJHK5p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 06:57:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1602154663; x=1633690663;
-  h=references:from:to:cc:subject:in-reply-to:date:
-   message-id:mime-version;
-  bh=sbsYblhM7HBECp1Iw7gGZrJTSXmYJPEc0TVl2NmfuLg=;
-  b=MqfoNOH+ENnqGb4DK3xPwdc8JeEBqbtmtxOsZCcFbgqMvFwNehgW1ZbV
-   Wg5IMMMByesJNMkl2Qijzc0Ih98eA9fJyn8//5CQDBhkv7JmErFEhzEPX
-   eefcnE104LjwRimEQHbuQLLoRA53kR/JGr1SSSAQnv3sZ+RYarluaZlMi
-   fZetf+rl9n5rGwqbZZsIL6w1fnh1IYwwtq4/sAlfCsIrSODNrAn+cJZgq
-   O8prJTqQoMLJ+4ocGws88NzG/uEAkA6EpZxCXWXNV7ISvQF4vPjopKxmv
-   yOJu/gbkMgLLqsFDfaIDpSwvc8j+UE8YIaQ3xjV25TLStdX4vG0GJ3fpS
-   A==;
-IronPort-SDR: W1L25IG2YRzeJ5cgA1BK2uWtRzxQrvEmH+oYQPDzJnJ/1O1H5EFRAOenV5rsudJBysL0AIYeBE
- gS3mDqkS0LjTZ31CANbCIAiHVaeY3p2O+RLJB0wp8ab2heD3isdSnIzIIG/mFag1xll++laeIr
- hMeW2fiW2Y7CRltm0XgQYo/jM3whPNoT9KN3ukc+jPOL22CBvt2ZyRmAW5nGct9VBDH6ZD2MW1
- lZ2CKm7r/6CPAoZ8TJcNNftGE4lS7JAh+PGtuWIaE8HdEhyd1hKkBpPfYhJ9xapry388n3bgVU
- /Bk=
+        id S1728743AbgJHK6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 06:58:51 -0400
+Received: from mga17.intel.com ([192.55.52.151]:63890 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725941AbgJHK6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 06:58:50 -0400
+IronPort-SDR: IK4xDdyQCzPo+t8MmDOnXUDRgZCaMJ7MISxA0+AEcvp0ZbAY9DwUe9P6Ris82KfikQJT0VdYwR
+ ILWFqLJ+BXdA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9767"; a="145182255"
 X-IronPort-AV: E=Sophos;i="5.77,350,1596524400"; 
-   d="scan'208";a="29188573"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 08 Oct 2020 03:57:43 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 8 Oct 2020 03:57:18 -0700
-Received: from soft-dev15.microsemi.net.microchip.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
- via Frontend Transport; Thu, 8 Oct 2020 03:57:41 -0700
-References: <20201006142532.2247515-1-lars.povlsen@microchip.com> <20201006142532.2247515-3-lars.povlsen@microchip.com> <CACRpkda+OSgma3E0XxXUk8a2yrn5Hpu3a47cBN50rOkoSMkiwQ@mail.gmail.com>
-From:   Lars Povlsen <lars.povlsen@microchip.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-CC:     Lars Povlsen <lars.povlsen@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+   d="scan'208";a="145182255"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 03:58:50 -0700
+IronPort-SDR: 8sd9nLNJnObfiYi8NdqPtHp397fUVU8PhBz5+MoA1xr9FOAR2lFSppsRviOf3tvrKYvf6VWhGL
+ nK7jjAGVKOoA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,350,1596524400"; 
+   d="scan'208";a="297914543"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.94]) ([10.237.72.94])
+  by fmsmga007.fm.intel.com with ESMTP; 08 Oct 2020 03:58:47 -0700
+Subject: Re: [PATCH v4 4/4] mmc: sdhci-of-arasan: Enable UHS-1 support for
+ Keem Bay SOC
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        muhammad.husaini.zulkifli@intel.com
+Cc:     Michal Simek <michal.simek@xilinx.com>,
+        andriy.shevchenko@intel.com,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: Re: [RESEND PATCH v3 2/3] pinctrl: pinctrl-mchp-sgpio: Add pinctrl driver for Microsemi Serial GPIO
-In-Reply-To: <CACRpkda+OSgma3E0XxXUk8a2yrn5Hpu3a47cBN50rOkoSMkiwQ@mail.gmail.com>
-Date:   Thu, 8 Oct 2020 12:57:39 +0200
-Message-ID: <87ft6px9wc.fsf@soft-dev15.microsemi.net>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        lakshmi.bai.raja.subramanian@intel.com,
+        Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>
+References: <20201008020936.19894-1-muhammad.husaini.zulkifli@intel.com>
+ <20201008020936.19894-5-muhammad.husaini.zulkifli@intel.com>
+ <CAPDyKFpUv8yeVrWVLRKvz4eKsSDdk0y4dKY2mYs07zpA2UqNdw@mail.gmail.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <35692f1c-62a4-6c71-d67a-2a216e97e7d5@intel.com>
+Date:   Thu, 8 Oct 2020 13:58:31 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <CAPDyKFpUv8yeVrWVLRKvz4eKsSDdk0y4dKY2mYs07zpA2UqNdw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Linus Walleij writes:
-
-> Hi Lars!
->
-> Thanks for the update, this looks much improved!
-
-Glad you like it! It's been a difficult birth...
-
->
-> Some further hints at things I saw here:
->
-> On Tue, Oct 6, 2020 at 4:25 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
->
->> This adds a pinctrl driver for the Microsemi/Microchip Serial GPIO
->> (SGPIO) device used in various SoC's.
+On 8/10/20 12:27 pm, Ulf Hansson wrote:
+> On Thu, 8 Oct 2020 at 04:12, <muhammad.husaini.zulkifli@intel.com> wrote:
 >>
->> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
->
->> +       /* 2 banks: IN/OUT */
->> +       struct {
->> +               struct gpio_chip gpio;
->> +               struct pinctrl_desc pctl_desc;
->> +               struct pinctrl_dev *pctl_dev;
->> +       } bank[2];
->
-> Is it really good to use index [0,1] to refer to these?
-> Isnt it easier to do something like:
->
-> struct sgpio_bank {
->          struct gpio_chip gpio;
->          struct pinctrl_desc pctl_desc;
->          struct pinctrl_dev *pctl_dev;
-> };
->
-> struct sgpio_priv {
->         (...)
->         struct sgpio_bank in;
->         struct sgpio_bank out;
->         (...)
-> };
->
-> This way you I think the code becomes clearer.
->
-
-I have done the change as suggested, and I think your right - looks
-better. Also helped loose the "is_input" helper functions.
-
->> +static inline bool sgpio_pctl_is_input(struct sgpio_priv *priv,
->> +                                      struct pinctrl_dev *pctl)
+>> From: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
+>>
+>> Voltage switching sequence is needed to support UHS-1 interface.
+>> There are 2 places to control the voltage.
+>> 1) By setting the AON register using firmware driver calling
+>> system-level platform management layer (SMC) to set the register.
+>> 2) By controlling the GPIO expander value to drive either 1.8V or 3.3V
+>> for power mux input.
+>>
+>> Signed-off-by: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
+>> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
+>> Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
+>> ---
+>>  drivers/mmc/host/sdhci-of-arasan.c | 126 +++++++++++++++++++++++++++++
+>>  1 file changed, 126 insertions(+)
+>>
+>> diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
+>> index 46aea6516133..ea2467b0073d 100644
+>> --- a/drivers/mmc/host/sdhci-of-arasan.c
+>> +++ b/drivers/mmc/host/sdhci-of-arasan.c
+>> @@ -16,6 +16,7 @@
+>>   */
+>>
+>>  #include <linux/clk-provider.h>
+>> +#include <linux/gpio/consumer.h>
+>>  #include <linux/mfd/syscon.h>
+>>  #include <linux/module.h>
+>>  #include <linux/of_device.h>
+>> @@ -23,6 +24,7 @@
+>>  #include <linux/regmap.h>
+>>  #include <linux/of.h>
+>>  #include <linux/firmware/xlnx-zynqmp.h>
+>> +#include <linux/firmware/intel/keembay_firmware.h>
+>>
+>>  #include "cqhci.h"
+>>  #include "sdhci-pltfm.h"
+>> @@ -136,6 +138,7 @@ struct sdhci_arasan_clk_data {
+>>   * @soc_ctl_base:      Pointer to regmap for syscon for soc_ctl registers.
+>>   * @soc_ctl_map:       Map to get offsets into soc_ctl registers.
+>>   * @quirks:            Arasan deviations from spec.
+>> + * @uhs_gpio:          Pointer to the uhs gpio.
+>>   */
+>>  struct sdhci_arasan_data {
+>>         struct sdhci_host *host;
+>> @@ -150,6 +153,7 @@ struct sdhci_arasan_data {
+>>         struct regmap   *soc_ctl_base;
+>>         const struct sdhci_arasan_soc_ctl_map *soc_ctl_map;
+>>         unsigned int    quirks;
+>> +       struct gpio_desc *uhs_gpio;
+>>
+>>  /* Controller does not have CD wired and will not function normally without */
+>>  #define SDHCI_ARASAN_QUIRK_FORCE_CDTEST        BIT(0)
+>> @@ -361,6 +365,112 @@ static int sdhci_arasan_voltage_switch(struct mmc_host *mmc,
+>>         return -EINVAL;
+>>  }
+>>
+>> +static int sdhci_arasan_keembay_voltage_switch(struct mmc_host *mmc,
+>> +                                      struct mmc_ios *ios)
 >> +{
->> +       /* 1st index is input */
->> +       return pctl == priv->bank[0].pctl_dev;
->> +}
->> +
->> +static inline bool sgpio_gpio_is_input(struct sgpio_priv *priv,
->> +                                      struct gpio_chip *gc)
->> +{
->> +       /* 1st index is input */
->> +       return gc == &priv->bank[0].gpio;
->> +}
->
-> Isn't it easier to just add a
->
-> bool is_input;
->
-> to the struct gpio_bank?
-
-Yes, did that.
-
->
->> +static inline u32 sgpio_readl(struct sgpio_priv *priv, u32 rno, u32 off)
->> +{
->> +       u32 __iomem *reg = &priv->regs[priv->properties->regoff[rno] + off];
->> +
->> +       return readl(reg);
->> +}
->> +
->> +static inline void sgpio_writel(struct sgpio_priv *priv,
->> +                               u32 val, u32 rno, u32 off)
->> +{
->> +       u32 __iomem *reg = &priv->regs[priv->properties->regoff[rno] + off];
->> +
->> +       writel(val, reg);
->> +}
->> +
->> +static inline void sgpio_clrsetbits(struct sgpio_priv *priv,
->> +                                   u32 rno, u32 off, u32 clear, u32 set)
->> +{
->> +       u32 __iomem *reg = &priv->regs[priv->properties->regoff[rno] + off];
->> +       u32 val = readl(reg);
->> +
->> +       val &= ~clear;
->> +       val |= set;
->> +
->> +       writel(val, reg);
->> +}
->
-> These accessors are somewhat re-implementing regmap-mmio, especially
-> the clrsetbits. I would consider just creating a regmap for each
-> struct sgpio_bank and manipulate the register through that.
-> (Not any requirement just a suggestion.)
->
-
-Humm, not sure if these few functions warrants using regmap. I'll have a
-closer look.
-
->> +static void sgpio_output_set(struct sgpio_priv *priv,
->> +                            struct sgpio_port_addr *addr,
->> +                            int value)
->> +{
->> +       u32 mask = 3 << (3 * addr->bit);
->> +       value = (value & 3) << (3 * addr->bit);
->
-> I would spell it out a bit so it becomes clear what is going in
-> and use the bits helpers.
->
-> value & 3 doesn't make much sense since value here is always
-> 0 or 1. Thus if value is 1 it in effect becomes value = 1 << (3 * addr->bit)
-> so with the above helper bit:
->
-> unsigned int bit = 3 * addr->bit;
-> u32 mask = GENMASK(bit+1, bit);
-> u32 val = BIT(bit);
->
-> This way it becomes clear that you set the output usin the lower
-> of the two bits.
->
-> Also note that I use val rather than value to avoid overwriting
-> the parameter: it is legal but confusing. Let the compiler optimize
-> register use.
->
-
-I will change as suggested.
-
->> +static int sgpio_output_get(struct sgpio_priv *priv,
->> +                           struct sgpio_port_addr *addr)
->> +{
->> +       u32 portval = sgpio_readl(priv, REG_PORT_CONFIG, addr->port);
+>> +       struct sdhci_host *host = mmc_priv(mmc);
+>> +       struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+>> +       struct sdhci_arasan_data *sdhci_arasan = sdhci_pltfm_priv(pltfm_host);
+>> +       u16 ctrl_2, clk;
 >> +       int ret;
 >> +
->> +       ret = SGPIO_X_PORT_CFG_BIT_SOURCE(priv, portval);
->> +       ret = !!(ret & (3 << (3 * addr->bit)));
->
-> Is the output direction really controlled by both bits?
->
-> ret = !!(ret & (BIT(3 * addr->bit))); ?
->
-
-The 3 bits are actually "mode" not direction. The direction is fixed as
-described earlier.
-
-0: Forced 0
-1: Forced 1
-2: Blink mode 0
-3: Blink mode 1
-4: Link activity blink mode 0
-5: Link activity blink mode 1
-
-But you are still right the (forced) _value_ can still be read using
-just the first bit. I will change to using just the first bit.
-
->> +static int microchip_sgpio_get_direction(struct gpio_chip *gc, unsigned int gpio)
->> +{
->> +       struct sgpio_priv *priv = gpiochip_get_data(gc);
+>> +       switch (ios->signal_voltage) {
+>> +       case MMC_SIGNAL_VOLTAGE_180:
+>> +               clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+>> +               clk &= ~SDHCI_CLOCK_CARD_EN;
+>> +               sdhci_writew(host, clk, SDHCI_CLOCK_CONTROL);
 >> +
->> +       return sgpio_gpio_is_input(priv, gc); /* 0=out, 1=in */
->
-> You can use the #defines from <linux/gpio/driver.h> if you want to be explicit:
->
-> return sgpio_gpio_is_input(priv, gc) ? GPIO_LINE_DIRECTION_IN :
-> GPIO_LINE_DIRECTION_OUT;
->
-
-Yes, good suggestion. Also using bank->is_input now.
-
->> +static int microchip_sgpio_of_xlate(struct gpio_chip *gc,
->> +                              const struct of_phandle_args *gpiospec,
->> +                              u32 *flags)
->> +{
->> +       struct sgpio_priv *priv = gpiochip_get_data(gc);
->> +       int pin;
+>> +               clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+>> +               if (clk & SDHCI_CLOCK_CARD_EN)
+>> +                       return -EAGAIN;
 >> +
->> +       if (gpiospec->args[0] > SGPIO_BITS_PER_WORD ||
->> +           gpiospec->args[1] > priv->bitcount)
->> +               return -EINVAL;
+>> +               sdhci_writeb(host, SDHCI_POWER_ON | SDHCI_POWER_180,
+>> +                                  SDHCI_POWER_CONTROL);
 >> +
->> +       pin = gpiospec->args[1] + (gpiospec->args[0] * priv->bitcount);
+>> +               /*
+>> +                * Set VDDIO_B voltage to Low for 1.8V
+>> +                * which is controlling by GPIO Expander.
+>> +                */
+>> +               gpiod_set_value_cansleep(sdhci_arasan->uhs_gpio, 0);
 >> +
->> +       if (pin > gc->ngpio)
->> +               return -EINVAL;
+>> +               /*
+>> +                * This is like a final gatekeeper. Need to ensure changed voltage
+>> +                * is settled before and after turn on this bit.
+>> +                */
+>> +               usleep_range(1000, 1100);
 >> +
->> +       if (flags)
->> +               *flags = gpiospec->args[2];
+>> +               ret = keembay_sd_voltage_selection(KEEMBAY_SET_1V8_VOLT);
+>> +               if (ret)
+>> +                       return ret;
 >> +
->> +       return pin;
->> +}
->
-> I'm still not convinced that you need the flags in args[2].
->
-> Just using the default of_gpio_simple_xlate() with one flag
-> should be fine. But I will go and review the bindings to figure
-> this out.
->
+>> +               usleep_range(1000, 1100);
+> 
+> No, sorry, but I don't like this.
+> 
+> This looks like a GPIO regulator with an extension of using the
+> keembay_sd_voltage_selection() thingy. I think you can model these
+> things behind a regulator and hook it up as a vqmmc supply in DT
+> instead. BTW, this is the common way we deal with these things for mmc
+> host drivers.
 
-Ok, I just assumed the std GPIO flags in args[2] were kind of mandatory,
-I mean polarity would be needed?
+It seemed to me that would just result in calling regulator API instead of
+GPIO API but the flow above would otherwise be unchanged i.e. no benefit
 
-F.ex. a GPIO (led) looks like this now:
-
-    led@0 {
-            label = "eth60:yellow";
-            gpios = <&sgpio_out1 28 1 GPIO_ACTIVE_LOW>;
-            default-state = "off";
-    };
-
->> +       gc->of_xlate            = microchip_sgpio_of_xlate;
->> +       gc->of_gpio_n_cells     = 3;
->
-> So I'm sceptical to this.
->
-> Why can't you just use the pin index in cell 0 directly
-> and avoid cell 1?
->
-
-You scepticism has surfaced before :-). The (now) 2 indices relates to
-how the hardware address signals.
-
-Each signal/pin is addressed by port, bit number and direction. We now
-have the direction encoded in the bank/phandle.
-
-While it would be possible to just produce a linear range of (32 *
-width), hardware designs and documentation use pXXbY (as "p28b1" above),
-making the cross reference much better using the 2 indices when
-specifying a pin (as opposed to using f.ex. value "60" in the example).
-
-Hope this helps.
-
-Thank you for your comments, I will refresh later today.
-
----Lars
-
-> Yours,
-> Linus Walleij
-
--- 
-Lars Povlsen,
-Microchip
