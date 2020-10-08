@@ -2,196 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9C3228757C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 15:54:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CD1A28757E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 15:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729976AbgJHNx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 09:53:59 -0400
-Received: from mail-bn7nam10on2041.outbound.protection.outlook.com ([40.107.92.41]:59240
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726875AbgJHNx6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 09:53:58 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UsQdHS83B82VaCyIkcUlzgm0yhuqSl5cYLjH/OXqnlIWIQ6pRqPvU+5dhAgYifMGyJkmkV2gS9ECYg90uBg/Ai4HcdsLgiUnh6jH9/4xrdYCc3pRFIIpWngp670Tfrk1jIjC8ty/ebazTA4gY1XAhQnKLq2bwAMDtofJ5hbpRaIoKGgigbkMunV+MrGwgwVdIdvqSJ9glmNo3IdduDSTTygF82HcfNzoZn70vYLtYDP7u9qKJctCM1incLkRGfuNIDixbpmMt1dPjVeHGd7yaiB2BXlWUjsxAWaAKOD0M2SN8WrbKrh4//T425XVTTVmCUJd1cSTvMUn1iOT0g+TDA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QOwssnWEpwCYeb5XXIBISUyaQgfSWiaVmWPZSJaZgwI=;
- b=i/63UXemGWFft/axsbd3I+8NyLxUQZqGJhG3J1g0IPaFCc5pZLIcwcPRHRXfMoopOFejZTKyrBLzop8y8TYfjbrWmHEMdHY7TrWW5WReBpOMWQcf4Ir4/D9LspeSOOfNLoI+0zHiUAThcGYzbBpFcuEszkL8qaOgiY+hAAaxqIbh8eZLyubMIYkcg3mMWJn10fwe5jP0UBZgrD4h98trn9u6JbCSPhXAPx3RgywXBiFHGOAcG1QpkoHgJ2nX3N8Sz7vcKF9QMQzIC/FVz5ZFdz7eckBwpBlWcHLoIrHzWMT3xulIjTeFoeE7L5Se7kCT5bpcGk2J5JoXzRS24cu3Dw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=openfive.com; dmarc=pass action=none header.from=openfive.com;
- dkim=pass header.d=openfive.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=osportal.onmicrosoft.com; s=selector2-osportal-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QOwssnWEpwCYeb5XXIBISUyaQgfSWiaVmWPZSJaZgwI=;
- b=S3MdwgEt5MjmvHdVmLwSZUmsSS4kjJ903v1Y4W7unwgb8G6rU7pQshwKd0kbIXZ2S7oTFtoJMhVYBbv069ziMYYvkjP/UAohgcTiA2E0DNhRwzQP2QO1brmUaHR5dVyRUcWWdRpkT5cWIG691vZYGPxf4F5zrmtV5OWsRErj2nY=
-Received: from DM6PR13MB3451.namprd13.prod.outlook.com (2603:10b6:5:1c3::10)
- by DM6PR13MB3210.namprd13.prod.outlook.com (2603:10b6:5:5::29) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3455.13; Thu, 8 Oct 2020 13:53:55 +0000
-Received: from DM6PR13MB3451.namprd13.prod.outlook.com
- ([fe80::a48a:1f7c:267c:876]) by DM6PR13MB3451.namprd13.prod.outlook.com
- ([fe80::a48a:1f7c:267c:876%7]) with mapi id 15.20.3455.025; Thu, 8 Oct 2020
- 13:53:55 +0000
-From:   Sagar Kadam <sagar.kadam@openfive.com>
-To:     Peter Korsgaard <peter@korsgaard.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        "Paul Walmsley ( Sifive)" <paul.walmsley@sifive.com>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>
-Subject: RE: [PATCH 1/1] i2c: ocores: fix polling mode workaround on
- FU540-C000 SoC
-Thread-Topic: [PATCH 1/1] i2c: ocores: fix polling mode workaround on
- FU540-C000 SoC
-Thread-Index: AQHWnAmkr9Lwbf//qkyD2meVp4P0G6mMBUVSgAELwtA=
-Date:   Thu, 8 Oct 2020 13:53:55 +0000
-Message-ID: <DM6PR13MB345137AD526D0AAA6CE0DBDF970B0@DM6PR13MB3451.namprd13.prod.outlook.com>
-References: <1602006796-273724-1-git-send-email-sagar.kadam@sifive.com>
-        <1602006796-273724-2-git-send-email-sagar.kadam@sifive.com>
- <87imbm4639.fsf@dell.be.48ers.dk>
-In-Reply-To: <87imbm4639.fsf@dell.be.48ers.dk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: korsgaard.com; dkim=none (message not signed)
- header.d=none;korsgaard.com; dmarc=none action=none header.from=openfive.com;
-x-originating-ip: [116.74.151.16]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4d5542f2-e212-48f4-9f99-08d86b91993e
-x-ms-traffictypediagnostic: DM6PR13MB3210:
-x-ld-processed: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR13MB3210D0AF366EF7CD7B140A9B970B0@DM6PR13MB3210.namprd13.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: KYY6FoCU3RzTN/mXqyifBxqSEDjYxwM6Dnd+X4HohAUjaS6362W+ni4GJax9Uy0hP5jFY/T/7cuYh/NSyWW5pii3siy5cBB1X4HcDLwoGeANu4VAbGeD1nch4mX8fzOMvfC8wN7hJ8J5W9LeVH6DcZ+Y4e1Yd0iFhxCJZu4dGEsQzhqzqXGY64feRdmmUIMO0/hlxNw1bs42PPIAPbk+RtNNC6nu3qNB/dNqhxB014vdwlSMMQCskvidtNV0zkK4WecbLOByWfth0218Phoj/pCa8u6q82A6YzYIxKvnNUY+9vNh2RabRSKeFREqY24f
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR13MB3451.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(376002)(136003)(39850400004)(366004)(86362001)(5660300002)(8676002)(8936002)(4326008)(44832011)(71200400001)(6916009)(9686003)(55016002)(33656002)(66446008)(2906002)(7696005)(55236004)(64756008)(76116006)(186003)(53546011)(26005)(83380400001)(478600001)(52536014)(316002)(66946007)(54906003)(66556008)(66476007)(6506007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: dejgIB1Nto6y4AXiqYhwY273LPUqtYXv5f9L7UrIpI52hhMgEHe2DTbUgytJN72UWxIJ215yEM3O57hovUZLhC5ElK1TJJ7ZoTkkLaBPw+L/J8vs2BY3RkaQBcqCbYZOk753TAClr2GAwwGRWaXP26lWTvnGhM+5ZGC/rto/GlzxWAqMPnHU4cTZXZ1Xs4LDqTw1UN30+58u8RylnMfkbJj3fy6fKVW67mRsVFTY7QIN1fEQFrvsbOAYsgfy63gIyT6duNLMzf6IcZjahdjbw72uWvW045gQU/KD6XSTI/oqAPSvbisAX2o/VVfRhDuBeqNgNZ3E5UVYHlFrEibDNrHU8K1WwQ9I99Am+pgKbP5qlCmNZ+SmBcn2TOSQyH9liDMCV2bwqbCSyEa6ZPxkcyWx4+zhaaGFdCjocthfbNtE0r0r2o2z37mpR06qZ+ANygUmgFFbR9Ioz9AeI2wMG3hLsMO/b+CysqOd4TeCRotDn4vJu4dlFSV20LBLcEtRf9AECeQ42ROnGM03vudEPkVwI39kGmJHTX171evD6KFF82Q49DnbU153qk3V0UprzUR3wxnxRB6hcNhXbbstxAB3VaLAEUuywZoKZezqUNczfcEZEKHkhX0NMeo3v63XxRptuv+REF2lYrCO2sgAsw==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1730022AbgJHNzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 09:55:15 -0400
+Received: from mail-02.mail-europe.com ([51.89.119.103]:46610 "EHLO
+        mail-02.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726875AbgJHNzP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 09:55:15 -0400
+X-Greylist: delayed 52954 seconds by postgrey-1.27 at vger.kernel.org; Thu, 08 Oct 2020 09:55:12 EDT
+Date:   Thu, 08 Oct 2020 13:54:59 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1602165309;
+        bh=Y/pPK1issXvupXK1vEfd+jHpkeY03DvRwMZK/5N2xdA=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=Lsru1v6BAh883F25hycvK7ZnIFVXKIua4VxmXCywBKZmW3gP+3LTTBTQH1efA+qwF
+         QH7iO+XogLxOINpMOANlpJqU3xduO9Sdaf/G/4YLc8/hxKXG5eIeBYHkApA/D6r43H
+         IGxZZ7nag6VI9Y8aXFQHyRU+JaqAgJteggLxp69o=
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-doc@vger.kernel.org
+From:   =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
+        <nfraprado@protonmail.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
+        lkcamp@lists.libreplanetbr.org, andrealmeid@collabora.com
+Reply-To: =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
+          <nfraprado@protonmail.com>
+Subject: Re: [PATCH] docs: Make automarkup ready for Sphinx 3.1+
+Message-ID: <C67JVCS5C9NG.LIAW4RFKE6A9@ArchWay>
 MIME-Version: 1.0
-X-OriginatorOrg: openfive.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR13MB3451.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4d5542f2-e212-48f4-9f99-08d86b91993e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Oct 2020 13:53:55.8103
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Y9x+yhHi33XmoKgjz+8dGEvcDMUF98pCVcK5Fj+rQ6lpfgnsR96MamGMwinS7B8NF+hq/UlWaVYwrJISFXblUQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR13MB3210
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Peter,
+On Thu Oct 8, 2020 at 2:27 AM -03, Mauro Carvalho Chehab wrote:
+>
+> Hi N=C3=ADcolas,
+>
+> Em Wed, 07 Oct 2020 23:12:25 +0000
+> N=C3=ADcolas F. R. A. Prado <nfraprado@protonmail.com> escreveu:
+>
+> > While Sphinx 2 used a single c:type role for struct, union, enum and
+> > typedef, Sphinx 3 uses a specific role for each one.
+> > To keep backward compatibility, detect the Sphinx version and use the
+> > correct roles for that version.
+> >
+> > Also, Sphinx 3 is more strict with its C domain and generated warnings,
+> > exposing issues in the parsing.
+> > To fix the warnings, make the C regexes use ASCII, ensure the
+> > expressions only match the beginning of words and skip trying to
+> > cross-reference C reserved words.
+> >
+> > Signed-off-by: N=C3=ADcolas F. R. A. Prado <nfraprado@protonmail.com>
+> > ---
+> >
+> > Hi,
+> >
+> > after Mauro's series making everything ready for Sphinx 3.1, only the a=
+utomarkup
+> > was left to be ported.
+> > This patch makes the needed changes to automarkup so that we can soon f=
+lip the
+> > switch to Sphinx 3.1.
+> >
+> > This change was tested both with Sphinx 2.4.4 and Sphinx 3.1.
+> >
+> > This change doesn't add any warnings to the Documentation build.
+> > I tested it with Mauro's series but later rebased it to docs-next, and =
+it can be
+> > accepted independently of that series.
+> >
+> > I ended up doing more than one thing in this single patch, but since it=
+ was all
+> > changing the same lines and for the same purpose, I felt it would be be=
+tter to
+> > keep it as a single commit.
+> >
+>
+> Thanks for doing this! That was the last missing part on fully
+> supporting
+> Sphinx 3.1+.
+>
+> > Mauro,
+> > if this patch is ok, the 3rd patch in your series, which disables autom=
+arkup for
+> > sphinx 3, should be dropped.
+>
+> Yeah, sure.
+>
+> > Although I'm not sure what the implications of your patches adding name=
+spaces
+> > and using the c:macro for functions are.
+>
+> With regards to namespaces:
+>
+> Currently, only the media docs use namespaces, and it declares it at the
+> beginning of each file that needs it, without overriding it later[1].
+>
+> [1] btw, the cdomain.py backward compat code doesn't support namespace
+> changes - as it parses namespaces before handling the C domain tags.
+> I doubt that we'll need to have a single .rst file using more than
+> one namespace anyway.
+>
+> The main usage is to avoid conflicts for uAPI documentation for
+> syscalls - actually for libc userspace wrappers to syscalls. It
+> documents
+> things like: open, close, read, write, ioctl, poll, select.
 
-> -----Original Message-----
-> From: Peter Korsgaard <jacmet@gmail.com> On Behalf Of Peter Korsgaard
-> Sent: Wednesday, October 7, 2020 5:10 PM
-> To: Sagar Kadam <sagar.kadam@openfive.com>
-> Cc: linux-kernel@vger.kernel.org; linux-riscv@lists.infradead.org; linux-
-> i2c@vger.kernel.org; andrew@lunn.ch; Paul Walmsley ( Sifive)
-> <paul.walmsley@sifive.com>; palmer@dabbelt.com;
-> aou@eecs.berkeley.edu
-> Subject: Re: [PATCH 1/1] i2c: ocores: fix polling mode workaround on FU54=
-0-
-> C000 SoC
->=20
-> [External Email] Do not click links or attachments unless you recognize t=
-he
-> sender and know the content is safe
->=20
-> >>>>> "Sagar" =3D=3D Sagar Shrikant Kadam <sagar.kadam@sifive.com> writes=
-:
->=20
->  > The FU540-C000 has a broken IRQ and support was added earlier
->  > so that it will operate in polling mode, but seems to work only
->  > in case interrupts property is missing from the i2c0 dt-node.
->  > This should not be the case and the driver should handle polling
->  > mode with the interrupt property present in i2c0 node of the
->  > device tree.
->  > So check if it's the FU540-C000 soc and enable polling mode master
->  > xfers, as the IRQ for this chip is broken.
->=20
->  > Fixes commit c45d4ba86731 ("i2c: ocores: add polling mode workaround
->  > for Sifive FU540-C000 SoC")
->=20
->  > Signed-off-by: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
->  > ---
->  >  drivers/i2c/busses/i2c-ocores.c | 22 +++++++++++++---------
->  >  1 file changed, 13 insertions(+), 9 deletions(-)
->=20
->  > diff --git a/drivers/i2c/busses/i2c-ocores.c b/drivers/i2c/busses/i2c-
-> ocores.c
->  > index f5fc75b..4405244 100644
->  > --- a/drivers/i2c/busses/i2c-ocores.c
->  > +++ b/drivers/i2c/busses/i2c-ocores.c
->  > @@ -686,17 +686,21 @@ static int ocores_i2c_probe(struct
-> platform_device *pdev)
->=20
->  >      init_waitqueue_head(&i2c->wait);
->=20
->  > +    /*
->  > +     * Set OCORES_FLAG_BROKEN_IRQ to enable workaround for
->  > +     * FU540-C000 SoC in polling mode.
->  > +     * Since the SoC does have interrupt it's dt has the interrupt
->  > +     * defined but it should be bypassed in driver as this SoC has
->  > +     * a broken IRQ, hence update the master_xfer to use polling
->  > +     * transfers.
->  > +     */
->  > +    match =3D of_match_node(ocores_i2c_match, pdev->dev.of_node);
->  > +    if (match && (long)match->data =3D=3D TYPE_SIFIVE_REV0)
->  > +            i2c->flags |=3D OCORES_FLAG_BROKEN_IRQ;
->  > +
->  >      irq =3D platform_get_irq(pdev, 0);
->  > -    if (irq =3D=3D -ENXIO) {
->  > +    if (i2c->flags =3D=3D OCORES_FLAG_BROKEN_IRQ || irq =3D=3D -ENXIO=
-) {
->=20
-> NIT: flags is a bitmask, so i2c->flags & OCORES_FLAG_BROKEN_IRQ would be
-> better, even if there currently doesn't exist any other flags.
->=20
-Thanks for your suggestions. I will apply the bitmask, this will be better.
+If it's mainly for that, I think automarkup could skip handling namespaces.
+From automarkup.py:
 
-> TYPE_SIFIVE_REV0 is also set for two compatibles:
->=20
->         {
->                 .compatible =3D "sifive,fu540-c000-i2c",
->                 .data =3D (void *)TYPE_SIFIVE_REV0,
->         },
->         {
->                 .compatible =3D "sifive,i2c0",
->                 .data =3D (void *)TYPE_SIFIVE_REV0,
->         },
->=20
-> Are both affected by this issue? if not, we will need to extend the code
-> to handle them differently.
->=20
+#
+# Many places in the docs refer to common system calls.  It is
+# pointless to try to cross-reference them and, as has been known
+# to happen, somebody defining a function by these names can lead
+# to the creation of incorrect and confusing cross references.  So
+# just don't even try with these names.
+#
+Skipfuncs =3D [ 'open', 'close', 'read', 'write', 'fcntl', 'mmap',
+              'select', 'poll', 'fork', 'execve', 'clone', 'ioctl',
+=09      'socket' ]
 
-No, this issue is present in FU540-C000 SoC i.e SoC- specific, and so I can=
- check=20
-for the soc-compatible string as follows:
+So unless I'm confusing things and the namespaces actually sidestep that is=
+sue,
+the namespace handling could be left out of automarkup.
 
--       match =3D of_match_node(ocores_i2c_match, pdev->dev.of_node);
--       if (match && (long)match->data =3D=3D TYPE_SIFIVE_REV0)
-+       if (of_device_is_compatible(pdev->dev.of_node,
-+                                       "sifive,fu540-c000-i2c"))
+>
+> I'm not sure if the automarkup should be aware of it, or if the c.py
+> code
+> at Sphinx 3.x will add the namespace automatically, but I suspect that
+> automarkup will need to handle it as well.
+>
+> One file you could use for checking it is this one:
+>
+> Documentation/userspace-api/media/v4l/hist-v4l2.rst
+>
+> It contains a namespace directive and documents what changed without
+> using any explicit reference (after my patch series + linux-next).
+>
+> With regards to c:macro vs c:function:
+>
+> I suspect that automarkup should test both when trying to do
+> cross-references for function-like calls. E. g. test first if
+> there is a :c:function, falling back to check for :c:macro.
+>
+> I would add a "sphinx3_c_func_ref" function that would handle
+> such special case, e. g. something like:
+>
+> markup_func_sphinx3 =3D {RE_doc: markup_doc_ref,
+> RE_function: sphinx3_c_func_ref,
+> RE_struct: markup_c_ref,
+> RE_union: markup_c_ref,
+> RE_enum: markup_c_ref,
+> RE_typedef: markup_c_ref}
 
-Please let me know if this is okay.
+Sounds good.
 
-Thanks & BR,
-Sagar
+I'll make this patch into a series and add that function/macro handling as =
+a new
+patch, and the namespace handling depending on your answer on the above com=
+ment,
+for v2.
 
-> Other than that, it looks OK to me.
->=20
-> --
-> Bye, Peter Korsgaard
+>
+> > All I did here was use the specific roles for sphinx 3 and fix the warn=
+ings, but
+> > that was enough to get correct cross-references even after your series.
+> >
+> > Thanks,
+> > N=C3=ADcolas
+>
+> >
+> >
+> >  Documentation/sphinx/automarkup.py | 69 ++++++++++++++++++++++++++----
+> >  1 file changed, 60 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/Documentation/sphinx/automarkup.py b/Documentation/sphinx/=
+automarkup.py
+> > index a1b0f554cd82..fd1e927408ad 100644
+> > --- a/Documentation/sphinx/automarkup.py
+> > +++ b/Documentation/sphinx/automarkup.py
+> > @@ -22,13 +22,34 @@ from itertools import chain
+> >  # :c:func: block (i.e. ":c:func:`mmap()`s" flakes out), so the last
+> >  # bit tries to restrict matches to things that won't create trouble.
+> >  #
+> > -RE_function =3D re.compile(r'(([\w_][\w\d_]+)\(\))')
+> > -RE_type =3D re.compile(r'(struct|union|enum|typedef)\s+([\w_][\w\d_]+)=
+')
+> > +RE_function =3D re.compile(r'\b(([a-zA-Z_]\w+)\(\))', flags=3Dre.ASCII=
+)
+> > +
+> > +#
+> > +# Sphinx 2 uses the same :c:type role for struct, union, enum and type=
+def
+> > +#
+> > +RE_generic_type =3D re.compile(r'\b(struct|union|enum|typedef)\s+([a-z=
+A-Z_]\w+)',
+> > +                             flags=3Dre.ASCII)
+> > +
+> > +#
+> > +# Sphinx 3 uses a different C role for each one of struct, union, enum=
+ and
+> > +# typedef
+> > +#
+> > +RE_struct =3D re.compile(r'\b(struct)\s+([a-zA-Z_]\w+)', flags=3Dre.AS=
+CII)
+> > +RE_union =3D re.compile(r'\b(union)\s+([a-zA-Z_]\w+)', flags=3Dre.ASCI=
+I)
+> > +RE_enum =3D re.compile(r'\b(enum)\s+([a-zA-Z_]\w+)', flags=3Dre.ASCII)
+> > +RE_typedef =3D re.compile(r'\b(typedef)\s+([a-zA-Z_]\w+)', flags=3Dre.=
+ASCII)
+> > +
+> >  #
+> >  # Detects a reference to a documentation page of the form Documentatio=
+n/... with
+> >  # an optional extension
+> >  #
+> > -RE_doc =3D re.compile(r'Documentation(/[\w\-_/]+)(\.\w+)*')
+> > +RE_doc =3D re.compile(r'\bDocumentation(/[\w\-_/]+)(\.\w+)*')
+> > +
+> > +#
+> > +# Reserved C words that we should skip when cross-referencing
+> > +#
+> > +Skipnames =3D [ 'for', 'if', 'register', 'sizeof', 'struct', 'unsigned=
+' ]
+> > +
+> >
+> >  #
+> >  # Many places in the docs refer to common system calls.  It is
+> > @@ -48,9 +69,22 @@ def markup_refs(docname, app, node):
+> >      #
+> >      # Associate each regex with the function that will markup its matc=
+hes
+> >      #
+> > -    markup_func =3D {RE_type: markup_c_ref,
+> > -                   RE_function: markup_c_ref,
+> > -                   RE_doc: markup_doc_ref}
+> > +    markup_func_sphinx2 =3D {RE_doc: markup_doc_ref,
+> > +                           RE_function: markup_c_ref,
+> > +                           RE_generic_type: markup_c_ref}
+> > +
+> > +    markup_func_sphinx3 =3D {RE_doc: markup_doc_ref,
+> > +                           RE_function: markup_c_ref,
+> > +                           RE_struct: markup_c_ref,
+> > +                           RE_union: markup_c_ref,
+> > +                           RE_enum: markup_c_ref,
+> > +                           RE_typedef: markup_c_ref}
+> > +
+> > +    if sphinx.__version__[0] =3D=3D '3':
+> > +        markup_func =3D markup_func_sphinx3
+> > +    else:
+> > +        markup_func =3D markup_func_sphinx2
+> > +
+> >      match_iterators =3D [regex.finditer(t) for regex in markup_func]
+> >      #
+> >      # Sort all references by the starting position in text
+> > @@ -79,8 +113,24 @@ def markup_refs(docname, app, node):
+> >  # type_name) with an appropriate cross reference.
+> >  #
+> >  def markup_c_ref(docname, app, match):
+> > -    class_str =3D {RE_function: 'c-func', RE_type: 'c-type'}
+> > -    reftype_str =3D {RE_function: 'function', RE_type: 'type'}
+> > +    class_str =3D {RE_function: 'c-func',
+> > +                 # Sphinx 2 only
+> > +                 RE_generic_type: 'c-type',
+> > +                 # Sphinx 3+ only
+> > +                 RE_struct: 'c-struct',
+> > +                 RE_union: 'c-union',
+> > +                 RE_enum: 'c-enum',
+> > +                 RE_typedef: 'c-type',
+> > +                 }
+> > +    reftype_str =3D {RE_function: 'function',
+> > +                   # Sphinx 2 only
+> > +                   RE_generic_type: 'type',
+> > +                   # Sphinx 3+ only
+> > +                   RE_struct: 'struct',
+> > +                   RE_union: 'union',
+> > +                   RE_enum: 'enum',
+> > +                   RE_typedef: 'type',
+> > +                   }
+> >
+> >      cdom =3D app.env.domains['c']
+> >      #
+> > @@ -89,7 +139,8 @@ def markup_c_ref(docname, app, match):
+> >      target =3D match.group(2)
+> >      target_text =3D nodes.Text(match.group(0))
+> >      xref =3D None
+> > -    if not (match.re =3D=3D RE_function and target in Skipfuncs):
+> > +    if not ((match.re =3D=3D RE_function and target in Skipfuncs)
+> > +            or (target in Skipnames)):
+> >          lit_text =3D nodes.literal(classes=3D['xref', 'c', class_str[m=
+atch.re]])
+> >          lit_text +=3D target_text
+> >          pxref =3D addnodes.pending_xref('', refdomain =3D 'c',
+>
+>
+>
+> Thanks,
+> Mauro
+
+Thanks,
+N=C3=ADcolas
+
