@@ -2,75 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 972A2287A95
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 19:07:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6A37287A77
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 19:00:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731633AbgJHRHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 13:07:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731592AbgJHRHa (ORCPT
+        id S1729420AbgJHRAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 13:00:43 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:39328 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727698AbgJHRAn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 13:07:30 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB59C061755;
-        Thu,  8 Oct 2020 10:07:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=lFsuL5fiQpUDvhtt5fozsfGKqdT49zToyfpYwey6+xI=; b=ASKAd2B6AXXo8EQU0anUauThTY
-        Xs+INzR/+2gmCusmIBzQSVkXzjRKpTmstSXY5ttvhN1QTl2AXy9LEtpPVxoi5ctQMsksLObnipIKR
-        JJ9M7p5XBoKp3LJ/YzwaPHYoUUcfJbOjyIaZaM5Zy37IykTNcmhaJEtbXUiFC64OpmOLiRctr/G+S
-        laVoV9oi2zAnTe0evHAULLd7iAmewSPZAtfyKWURzxixSSF8ZhVjnNmuzgdenLd7dreBwyXYeHko1
-        7nxkhrlPnebM33Ltu4ijPaB6AFx/VeQMI8AKbgGFXSNKq5uzKQv11TLgovBrkdzGE2AY7JDw3ytYI
-        jd6yuvwA==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kQZO4-0007Q1-5u; Thu, 08 Oct 2020 17:07:28 +0000
-Date:   Thu, 8 Oct 2020 18:07:28 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Topi Miettinen <toiwoton@gmail.com>
-Cc:     linux-hardening@vger.kernel.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND v2] mm: Optional full ASLR for mmap() and mremap()
-Message-ID: <20201008170728.GK20115@casper.infradead.org>
-References: <20201008165408.38228-1-toiwoton@gmail.com>
+        Thu, 8 Oct 2020 13:00:43 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 098GsS9O177249;
+        Thu, 8 Oct 2020 17:00:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=1vH0OsjmL5a+LFZyquS1yehptSAp2NAApw9a5KtUAHY=;
+ b=KBNWIPuWY25lE/DBE09mNhUj288XRuNkTPxXBo1/Dg8dpmXD+VTJqjisEZTThOlo+GC3
+ rhyTMimTOx6Fj/3lz6g8tfl8gtxfMZBuQNCFlzMwU2dc+VM8/6F1sgxk7hDPePaPaopz
+ hS2iE/CWVfMybkpmbeior7pGXoB6mUAm0uaWE4kCtbiGaxxWNpCX33f6DIMb3d32jrtP
+ 8QbvIvZ+RGQVSebrMcHDn88isnu5piG3L5g5pFsGBoomtnhawVJaEY1jkBPRU2LOrwmv
+ HCnbnlR4Ld2g5smJl6VWQrmsbBinavqTE74OzwBlfecEnbRM1h/UOMJ9sxAdAyc3ULHb Xg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 33xetb91h4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 08 Oct 2020 17:00:29 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 098GtG8C185292;
+        Thu, 8 Oct 2020 16:58:28 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 341xnby43p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 08 Oct 2020 16:58:28 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 098GwR1m027465;
+        Thu, 8 Oct 2020 16:58:27 GMT
+Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 08 Oct 2020 09:58:26 -0700
+Date:   Thu, 8 Oct 2020 13:07:36 -0400
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>
+Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Robin Murphy <robin.murphy@arm.com>, mark.rutland@arm.com,
+        jiangshanlai@gmail.com, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, tj@kernel.org,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: WARNING: at kernel/workqueue.c:1473 __queue_work+0x3b8/0x3d0
+Message-ID: <20201008170736.h3ajky2wgonbfred@ca-dmjordan1.us.oracle.com>
+References: <20200221174223.r3y6tugavp3k5jdl@ca-dmjordan1.us.oracle.com>
+ <20200228123311.GE3275@willie-the-truck>
+ <20200228153331.uimy62rat2tdxxod@ca-dmjordan1.us.oracle.com>
+ <20200301175351.GA11684@Red>
+ <20200302172510.fspofleipqjcdxak@ca-dmjordan1.us.oracle.com>
+ <e7c92da2-42c0-a97d-7427-6fdc769b41b9@arm.com>
+ <20200303213017.tanczhqd3nhpeeak@ca-dmjordan1.us.oracle.com>
+ <20201001175022.GA22444@Red>
+ <20201005170910.vxwrdwnzlw3ahkb4@ca-dmjordan1.us.oracle.com>
+ <20201007194117.GA4859@Red>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201008165408.38228-1-toiwoton@gmail.com>
+In-Reply-To: <20201007194117.GA4859@Red>
+User-Agent: NeoMutt/20180716
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9768 signatures=668681
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
+ malwarescore=0 adultscore=0 mlxscore=0 phishscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2010080126
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9768 signatures=668681
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxscore=0
+ clxscore=1015 priorityscore=1501 adultscore=0 mlxlogscore=999 phishscore=0
+ impostorscore=0 malwarescore=0 suspectscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010080126
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 07:54:08PM +0300, Topi Miettinen wrote:
-> +3   Additionally enable full randomization of memory mappings created
-> +    with mmap(NULL, ...). With 2, the base of the VMA used for such
-> +    mappings is random, but the mappings are created in predictable
-> +    places within the VMA and in sequential order. With 3, new VMAs
-> +    are created to fully randomize the mappings. Also mremap(...,
-> +    MREMAP_MAYMOVE) will move the mappings even if not necessary.
-> +
-> +    On 32 bit systems this may cause problems due to increased VM
-> +    fragmentation if the address space gets crowded.
+On Wed, Oct 07, 2020 at 09:41:17PM +0200, Corentin Labbe wrote:
+> I have added CONFIG_FTRACE=y and your second patch.
+> The boot log can be seen at http://kernel.montjoie.ovh/108789.log
+> 
+> But it seems the latest dump_stack addition flood a bit.
 
-On all systems, it will reduce performance and increase memory usage due
-to less efficient use of page tables and inability to merge adjacent VMAs
-with compatible attributes.
+Heh, sorry for making it spew, there wasn't such a flood when I tried.  Your
+output is sufficiently incriminating, so I'll go post the fix now.
 
-> +	if ((flags & MREMAP_MAYMOVE) && randomize_va_space >= 3) {
-> +		/*
-> +		 * Caller is happy with a different address, so let's
-> +		 * move even if not necessary!
-> +		 */
-> +		new_addr = arch_mmap_rnd();
-> +
-> +		ret = mremap_to(addr, old_len, new_addr, new_len,
-> +				&locked, flags, &uf, &uf_unmap_early,
-> +				&uf_unmap);
-> +		goto out;
-> +	}
-> +
-> +
+> I have started to read ftrace documentation, but if you have a quick what to do in /sys/kernel/debug/tracing, it will be helpfull.
 
-Overly enthusiastic newline
+Sure, you can view the trace in /sys/kernel/debug/tracing/trace and
+kernel-parameters.txt has the boot options documented.
