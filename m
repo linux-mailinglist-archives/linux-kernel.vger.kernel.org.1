@@ -2,117 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A64286ED9
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 08:50:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5B59286EDD
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 08:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728268AbgJHGue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 02:50:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42082 "EHLO
+        id S1728135AbgJHGxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 02:53:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726013AbgJHGue (ORCPT
+        with ESMTP id S1726013AbgJHGxH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 02:50:34 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7C87C061755;
-        Wed,  7 Oct 2020 23:50:33 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C6MKL1pdWz9sTK;
-        Thu,  8 Oct 2020 17:50:30 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1602139830;
-        bh=flEQw/8k26vuSbjk5fEZZ/qgggGnG1wI97t/EHM/iYI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Fv6EFEXtF5uCZep7fG77WEJLjZRJKGuPXYwIYmqrdXC0f52VEDTcV57B7rRPgQGR/
-         pAa9l4PKT0mhkfJU60cweu/HtxGATDIQ7FEwryJR4BeWmKtDpknFukgTNRifl2/1o9
-         lvoMoY1Ya+O3sxSt5VtZAOcEuSnf9P3sNnW2+wMDOaS9OOI72pmD26oeg/PxPvdr7l
-         aRzhc7Hd939zBTplO74Rdz0K+PftYmJu3jqkeHiLda9MMtBX8lpRkaf5+y085p5mND
-         MBu2oM4yprCp+QK9KmRFfLN/LdD5TtBmnVFywC9p7OD/C1dW6Wc25MKDP06yHfMvXg
-         V9ZAE5XkNeSwA==
-Date:   Thu, 8 Oct 2020 17:50:29 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the xarray tree
-Message-ID: <20201008175029.7dd2d637@canb.auug.org.au>
+        Thu, 8 Oct 2020 02:53:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20FDEC061755;
+        Wed,  7 Oct 2020 23:53:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=BKPfVq1WNjEP482JRlMf/O/7ehMr1L/SqAOw+UYjUwE=; b=HyXdCXS8uEhcA2dJEClupFhOz2
+        LtB+vTMDvLfw3IzGcJDivlJDj6Wspmd9ZbVS3URjMkWmtP4C0S3X1G08RPg/uEidfXs87/6h+YP5j
+        ylDby8rfMPx5sazy4N43fKD98qEldElgYco30Nno+lRvu8TV3HH/Ltai0ibJUKZYunzlVZXcxNtjS
+        uoxhN+pFlXoplNTSNqnAaqxtn/nvsvrWKBlLLJVS6YbL5+ms4cKjmp2OPwUr3H1bktKRygGefgUTx
+        2B2M0Qhj0oBO7uHS80HQRKwV/pJ4w8iTryUm5T5YLcmStvXdicNqFHQhPk6GexoSa+zUX0T3Bu1KG
+        Bfq/e+UQ==;
+Received: from [2001:4bb8:184:92a2:5831:14b2:58c8:625e] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kQPnU-0000Sl-JV; Thu, 08 Oct 2020 06:53:05 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     rafael.j.wysocki@intel.com
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] pnp: remove the now unused pnp_find_card function
+Date:   Thu,  8 Oct 2020 08:53:03 +0200
+Message-Id: <20201008065303.1486028-1-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/9AioJc0GunGqgrAWcz6Ns4C";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/9AioJc0GunGqgrAWcz6Ns4C
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+All user of the pnp_find_card compat wrapper are gone, so remove
+the function as well.
 
-Hi all,
-
-After merging the xarray tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
-
-lib/test_xarray.c: In function 'check_xa_mark_3':
-lib/test_xarray.c:305:3: error: implicit declaration of function 'assert' [=
--Werror=3Dimplicit-function-declaration]
-  305 |   assert(1);
-      |   ^~~~~~
-lib/test_xarray.c:11:1: note: 'assert' is defined in header '<assert.h>'; d=
-id you forget to '#include <assert.h>'?
-   10 | #include <linux/module.h>
-  +++ |+#include <assert.h>
-   11 |=20
-
-Caused by commit
-
-  5c8052d7925b ("XArray test: Add new test")
-
-I have added the following hack for today:
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Thu, 8 Oct 2020 17:46:26 +1100
-Subject: [PATCH] XArray test: remove assert()
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- lib/test_xarray.c | 1 -
- 1 file changed, 1 deletion(-)
+ Documentation/admin-guide/pnp.rst |  4 ----
+ drivers/pnp/isapnp/compat.c       | 23 -----------------------
+ include/linux/isapnp.h            |  6 ------
+ 3 files changed, 33 deletions(-)
 
-diff --git a/lib/test_xarray.c b/lib/test_xarray.c
-index 9d9c09d1f781..21bb06c213a2 100644
---- a/lib/test_xarray.c
-+++ b/lib/test_xarray.c
-@@ -302,7 +302,6 @@ static noinline void check_xa_mark_3(struct xarray *xa)
- 	rcu_read_lock();
- 	xas_for_each_marked(&xas, entry, ULONG_MAX, XA_MARK_0) {
- 		count++;
--		assert(1);
- 	}
- 	XA_BUG_ON(xa, count !=3D 1);
- 	rcu_read_unlock();
---=20
+diff --git a/Documentation/admin-guide/pnp.rst b/Documentation/admin-guide/pnp.rst
+index bab2d10631f00d..3eda08191d139a 100644
+--- a/Documentation/admin-guide/pnp.rst
++++ b/Documentation/admin-guide/pnp.rst
+@@ -281,10 +281,6 @@ ISAPNP drivers.  They should serve as a temporary solution only.
+ 
+ They are as follows::
+ 
+-	struct pnp_card *pnp_find_card(unsigned short vendor,
+-				       unsigned short device,
+-				       struct pnp_card *from)
+-
+ 	struct pnp_dev *pnp_find_dev(struct pnp_card *card,
+ 				     unsigned short vendor,
+ 				     unsigned short function,
+diff --git a/drivers/pnp/isapnp/compat.c b/drivers/pnp/isapnp/compat.c
+index 6c845b6283163d..035e9509248968 100644
+--- a/drivers/pnp/isapnp/compat.c
++++ b/drivers/pnp/isapnp/compat.c
+@@ -21,28 +21,6 @@ static void pnp_convert_id(char *buf, unsigned short vendor,
+ 		(device >> 12) & 0x0f, (device >> 8) & 0x0f);
+ }
+ 
+-struct pnp_card *pnp_find_card(unsigned short vendor, unsigned short device,
+-			       struct pnp_card *from)
+-{
+-	char id[8];
+-	char any[8];
+-	struct list_head *list;
+-
+-	pnp_convert_id(id, vendor, device);
+-	pnp_convert_id(any, ISAPNP_ANY_ID, ISAPNP_ANY_ID);
+-
+-	list = from ? from->global_list.next : pnp_cards.next;
+-
+-	while (list != &pnp_cards) {
+-		struct pnp_card *card = global_to_pnp_card(list);
+-
+-		if (compare_pnp_id(card->id, id) || (memcmp(id, any, 7) == 0))
+-			return card;
+-		list = list->next;
+-	}
+-	return NULL;
+-}
+-
+ struct pnp_dev *pnp_find_dev(struct pnp_card *card, unsigned short vendor,
+ 			     unsigned short function, struct pnp_dev *from)
+ {
+@@ -86,5 +64,4 @@ struct pnp_dev *pnp_find_dev(struct pnp_card *card, unsigned short vendor,
+ 	return NULL;
+ }
+ 
+-EXPORT_SYMBOL(pnp_find_card);
+ EXPORT_SYMBOL(pnp_find_dev);
+diff --git a/include/linux/isapnp.h b/include/linux/isapnp.h
+index 11edb2109a68f6..dba18c95844bde 100644
+--- a/include/linux/isapnp.h
++++ b/include/linux/isapnp.h
+@@ -75,9 +75,6 @@ static inline int isapnp_proc_done(void) { return 0; }
+ #endif
+ 
+ /* compat */
+-struct pnp_card *pnp_find_card(unsigned short vendor,
+-			       unsigned short device,
+-			       struct pnp_card *from);
+ struct pnp_dev *pnp_find_dev(struct pnp_card *card,
+ 			     unsigned short vendor,
+ 			     unsigned short function,
+@@ -92,9 +89,6 @@ static inline int isapnp_cfg_end(void) { return -ENODEV; }
+ static inline unsigned char isapnp_read_byte(unsigned char idx) { return 0xff; }
+ static inline void isapnp_write_byte(unsigned char idx, unsigned char val) { ; }
+ 
+-static inline struct pnp_card *pnp_find_card(unsigned short vendor,
+-					     unsigned short device,
+-					     struct pnp_card *from) { return NULL; }
+ static inline struct pnp_dev *pnp_find_dev(struct pnp_card *card,
+ 					   unsigned short vendor,
+ 					   unsigned short function,
+-- 
 2.28.0
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/9AioJc0GunGqgrAWcz6Ns4C
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9+trUACgkQAVBC80lX
-0Gx0ngf/eY2vEEka+rkYgFHE3S/MDLuJcQGLnHlqBq8lVo+YwhrSnbgBwP9NVWX0
-ytA9dbRAaUKUSCbpRlP/qXAuTJzktepoD2mnMS8GoLD58PQ7cjHM7MxJ8zeDDmtV
-0KD87mcu9HxHM3NBzwMcp/Sj/ES6FoZQuK+iWt1m6q0tL7+PVXfNhyDsXY8ZIXXf
-je0oetn+8U+LDQHpMrXHIkCAJGPBmA88E8T71hvLloH3amEJ/z7nb4yD79RzpVP5
-U2a8IewWEENiegr9Nmfa/kELt4+1UuAyVjiy+Yf35znekIwZ95aU0CaePaFUb68N
-XQat6XGOAv1xwtUNR0zdNLeYeftdQQ==
-=KeBo
------END PGP SIGNATURE-----
-
---Sig_/9AioJc0GunGqgrAWcz6Ns4C--
