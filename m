@@ -2,101 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40B92287D54
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 22:43:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48E60287D60
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 22:45:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730582AbgJHUnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 16:43:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48709 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728848AbgJHUnI (ORCPT
+        id S1730641AbgJHUpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 16:45:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728848AbgJHUp0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 16:43:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602189787;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=huKURS9xZVwjRl6HwVKXLMhhJbFrna5oxeAZtRaNfLM=;
-        b=hlOhhwW2CweJzF2e5YJZyjmRZq+44UEe1V9R0jBIec424U8X2UVXt+enrh+fW1JbArT/Jc
-        Pp+1LJsPYrJQoJAQttsjj0MIk9rzHrKazzfTJx4PiUBWRAXmLNn0va1kd4gTgO3gRqdrN4
-        U+rJlWc6leZ1G5uCJ3XbPdGU0pUf1qE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-367-0rDDCUGZOiWINQ_Q48nHTg-1; Thu, 08 Oct 2020 16:43:03 -0400
-X-MC-Unique: 0rDDCUGZOiWINQ_Q48nHTg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6B147425EB;
-        Thu,  8 Oct 2020 20:43:02 +0000 (UTC)
-Received: from steredhat.redhat.com (ovpn-112-116.ams2.redhat.com [10.36.112.116])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 556BD55786;
-        Thu,  8 Oct 2020 20:42:57 +0000 (UTC)
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     mst@redhat.com
-Cc:     kvm@vger.kernel.org, netdev@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Rusty Russell <rusty@rustcorp.com.au>,
-        Jason Wang <jasowang@redhat.com>
-Subject: [PATCH v2] vringh: fix __vringh_iov() when riov and wiov are different
-Date:   Thu,  8 Oct 2020 22:42:56 +0200
-Message-Id: <20201008204256.162292-1-sgarzare@redhat.com>
+        Thu, 8 Oct 2020 16:45:26 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2687AC0613D2;
+        Thu,  8 Oct 2020 13:45:24 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id z22so7553378wmi.0;
+        Thu, 08 Oct 2020 13:45:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hlJS54LS1QeMz9CXsMLIWQSJKthUuahxWTnjdupvZw8=;
+        b=Y/D49zWH50fLTwowZ62kkutY8OxokW5uA6tbVKMO713V0yNnGGONc7AA1u638bC0s4
+         KTT9ceEdsiFWvyUU5OFSfKsmb7J10R2wU8EXTmKXR9NaaJeCVYYqyurGgaFqpB7o/tDh
+         Oz4mRzh1eAARN4joHEojuYhmx81sk5yoif4x2Bsbycj3iKuqQnWwsrG8Jf6kwBbfc/Aw
+         0gz3vcwaxCHEEyuwGxwKvR+9wgpCetGf0Lidyc6ZV/RlV99xV0ek1VRiyNDMDZbodLJD
+         KLFmGT0yjhjx/36Lc72iDMBYwjRQXqdrA/6HTb0+VmpVFCmtTNFTFMmE9OfPR9fwDPXa
+         GRzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hlJS54LS1QeMz9CXsMLIWQSJKthUuahxWTnjdupvZw8=;
+        b=HmQVDVjx6J/wqIyl8n5Pv35SHzMknoFTe7pTSPwjS0VBcjVTO2jx1VHzcihMWRbIID
+         23weXrCUZqX3vfseXBqLx5f4IGzCEW/h9Jfdar/wTJdJ4orKW7TYhVryrtfbCmDfNS9y
+         8ab7NxSB1JUJv1gaSXv3j5JfpskoAPjSO0CZ98TcLmH60tjdINRkODOlvS8qdA0EOmpj
+         UQo61f96KrvEVMAvmJtJ7WCjSQcPzhICXvBg/+v/nJU3T/P2EEK8zQH0VD4/nGOT6Qjq
+         dCnsapVKYozIQKWpKlP3B+n7yugL0pqsWt9jq3u5Nf9OB36IaAPghrGy0ztjMOsYsdW6
+         Rntw==
+X-Gm-Message-State: AOAM530v8tNwwEtgEiR/nVCD4K9R3tSaXvHKuH2NPzsZ09XZSzmscFX+
+        uvV4ChpaMO501X2NpRSKO9M=
+X-Google-Smtp-Source: ABdhPJza7b1khwnjBmQP+L5sWLHROePRe7riFfCVoxP/UexYqgksh2pbERzzPt7d0zXz//IDCf0sdQ==
+X-Received: by 2002:a1c:6457:: with SMTP id y84mr10320458wmb.36.1602189921783;
+        Thu, 08 Oct 2020 13:45:21 -0700 (PDT)
+Received: from IcarusMOD.eternityproject.eu ([2.237.20.237])
+        by smtp.gmail.com with ESMTPSA id o14sm8640103wmc.36.2020.10.08.13.45.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Oct 2020 13:45:21 -0700 (PDT)
+From:   kholk11@gmail.com
+To:     bjorn.andersson@linaro.org
+Cc:     robh+dt@kernel.org, agross@kernel.org, georgi.djakov@linaro.org,
+        kholk11@gmail.com, marijns95@gmail.com, konradybcio@gmail.com,
+        martin.botka1@gmail.com, linux-arm-msm@vger.kernel.org,
+        phone-devel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/2] Add SDM630/636/660 interconnect driver
+Date:   Thu,  8 Oct 2020 22:45:13 +0200
+Message-Id: <20201008204515.695210-1-kholk11@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If riov and wiov are both defined and they point to different
-objects, only riov is initialized. If the wiov is not initialized
-by the caller, the function fails returning -EINVAL and printing
-"Readable desc 0x... after writable" error message.
+From: AngeloGioacchino Del Regno <kholk11@gmail.com>
 
-This issue happens when descriptors have both readable and writable
-buffers (eg. virtio-blk devices has virtio_blk_outhdr in the readable
-buffer and status as last byte of writable buffer) and we call
-__vringh_iov() to get both type of buffers in two different iovecs.
+This patch series adds the SDM660 interconnect provider driver in
+order to stop some timeouts and achieve some decent performance by
+avoiding to be NoC limited.
+It's also providing some power consumption improvement, but I have
+only measured that as less heat, which is quite important when
+working on thermally constrained devices like smartphones.
 
-Let's replace the 'else if' clause with 'if' to initialize both
-riov and wiov if they are not NULL.
+Please note that this driver's yaml binding is referring to a MMCC
+clock, so this series does depend on the SDM660 MMCC driver that I
+have sent separately.
+The multimedia clock is required only for the Multimedia NoC (mnoc).
 
-As checkpatch pointed out, we also avoid crashing the kernel
-when riov and wiov are both NULL, replacing BUG() with WARN_ON()
-and returning -EINVAL.
+This patch series has been tested against the following devices:
+ - Sony Xperia XA2 Ultra (SDM630 Nile Discovery)
+ - Sony Xperia 10        (SDM630 Ganges Kirin)
+ - Sony Xperia 10 Plus   (SDM636 Ganges Mermaid)
 
-Fixes: f87d0fbb5798 ("vringh: host-side implementation of virtio rings.")
-Cc: stable@vger.kernel.org
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
----
- drivers/vhost/vringh.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+Changes in v2:
+ - Added missing qcom,mmcc-sdm660.h dt-binding include in the
+   interconnect/qcom,sdm660.yaml binding, as pointed out by
+   Rob Herring
 
-diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
-index e059a9a47cdf..8bd8b403f087 100644
---- a/drivers/vhost/vringh.c
-+++ b/drivers/vhost/vringh.c
-@@ -284,13 +284,14 @@ __vringh_iov(struct vringh *vrh, u16 i,
- 	desc_max = vrh->vring.num;
- 	up_next = -1;
- 
-+	/* You must want something! */
-+	if (WARN_ON(!riov && !wiov))
-+		return -EINVAL;
-+
- 	if (riov)
- 		riov->i = riov->used = 0;
--	else if (wiov)
-+	if (wiov)
- 		wiov->i = wiov->used = 0;
--	else
--		/* You must want something! */
--		BUG();
- 
- 	for (;;) {
- 		void *addr;
+Changes in v3:
+ - Moved the dt-bindings/interconnect/qcom,sdm660.h header
+   to dt-bindings commit.
+
+AngeloGioacchino Del Regno (2):
+  dt-bindings: interconnect: Add bindings for Qualcomm SDM660 NoC
+  interconnect: qcom: Add SDM660 interconnect provider driver
+
+ .../bindings/interconnect/qcom,sdm660.yaml    | 147 +++
+ drivers/interconnect/qcom/Kconfig             |   9 +
+ drivers/interconnect/qcom/Makefile            |   2 +
+ drivers/interconnect/qcom/sdm660.c            | 919 ++++++++++++++++++
+ .../dt-bindings/interconnect/qcom,sdm660.h    | 116 +++
+ 5 files changed, 1193 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/interconnect/qcom,sdm660.yaml
+ create mode 100644 drivers/interconnect/qcom/sdm660.c
+ create mode 100644 include/dt-bindings/interconnect/qcom,sdm660.h
+
 -- 
-2.26.2
+2.28.0
 
