@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C428A287690
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 17:00:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA7AA287694
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 17:00:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730798AbgJHPAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1730790AbgJHPAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 8 Oct 2020 11:00:22 -0400
-Received: from mail-io1-f78.google.com ([209.85.166.78]:47881 "EHLO
-        mail-io1-f78.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730694AbgJHPAW (ORCPT
+Received: from mail-io1-f80.google.com ([209.85.166.80]:43726 "EHLO
+        mail-io1-f80.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730745AbgJHPAV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 11:00:22 -0400
-Received: by mail-io1-f78.google.com with SMTP id s13so3865280ioo.14
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 08:00:20 -0700 (PDT)
+        Thu, 8 Oct 2020 11:00:21 -0400
+Received: by mail-io1-f80.google.com with SMTP id x13so3884034iom.10
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 08:00:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=ZWnDANWUQlu270VES8UjaVW3caWeIqfI6UFhnzEXQ7w=;
-        b=QDpi2J3XDR/AkRBN7mXI3ppB4SHXArtcg/NnDIeKfOi5pvS0ly4PuhGswjfOK6Ekkt
-         /3r46RQBIJ2k1TFtdi4tejJqSPocBqRI2xY2QMHLhghmKTfIN04nsWbe5agHxYgtRdAH
-         uaMflBIWda3+h64t5Zrotdzz/H0d5culpglEoLDs3f5jb+/htV3k7+oDLgqPbLDVbMij
-         nP8HiZj5CqybR/AVdJrnAa3Azj5qER30anCwMZDeHxR9InxIWOro1H/z48pAYq/tYOAi
-         uBnmZi4vmnYQEeWExHpGHWRV5Bg1+n2YpDZxbjcBSY3VJjJ63bjyHKijqULUyivNY6ZT
-         LHIg==
-X-Gm-Message-State: AOAM531nV35lNlH3FAah7OIy8dzYorD4aONSDNBsIfMaKkoGaMRhzwHz
-        8nWWrxrpZ1/Xdi0DL6Opj2P4HANJMKUFCtH4nVQFhNmi6TA5
-X-Google-Smtp-Source: ABdhPJyDsh80CdKJN9vHU2pKOYGHSeFuAkgUIdPPIgOWvEhI1lpIBQ9fUZ5XSK+J4hRiIaC1WWkwahWSJcvIeEwkT54Uxf28Cuim
+        bh=lY++L9cL0ljmsfqhwTNdE4O6nYJ0FxIg2oBi5vOfh+k=;
+        b=ugQTz3fpjPHj7Y72k8Cv11ZuztwQoh0hktpZX/bYfXTKxrF6UqXaFfmezMuMhfRxuF
+         sPDXfEdNTDTgFiBjOynWYBy4MDPL171fxUaC4XON/QLiCARqABUSOrm9+LBgYiItHzd7
+         SxjPVkt7a4f2pZqTqSJVl8qPMRNnzf+vzgyGtTrz6ZZDQxV2BI5U7gM7YSRMyAIQBOSx
+         Ta7j2qPqNeWjRzk98N/VrQhxmgv3b4EA8V+MMduzsdyiA+4lA9O3u+OtsVprSajGdoNP
+         fZ9AREV7nrTfWv2zZ9EcvtZl0J1ru6Wn1eKbKne5033+5/n1jQc4jfFJaQxXYonIj/sq
+         fCOQ==
+X-Gm-Message-State: AOAM532U6IXeucLzCqA59nCvmh/dHu+sFahOtjYgBd+la+Wmm7KwWnDa
+        PLTTYMPANy00iMjEZ4iDHdK51+gnWUnpG0vD+GsCWDNNPT6p
+X-Google-Smtp-Source: ABdhPJy5aHn+Vg0GvVVRIq4RnjAMgJLNj5w4U0f/S+lPUJa9VMu5/sO8YizAwNfFZdRrYz3IbJZ7t+wEq3upfkE/hCqmhC0zV3Zf
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:8b3:: with SMTP id a19mr6931279ilt.174.1602169220321;
+X-Received: by 2002:a02:a510:: with SMTP id e16mr7153429jam.51.1602169220736;
  Thu, 08 Oct 2020 08:00:20 -0700 (PDT)
 Date:   Thu, 08 Oct 2020 08:00:20 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003f57e905b12a17b5@google.com>
-Subject: KASAN: slab-out-of-bounds Read in strset_parse_request
-From:   syzbot <syzbot+9d1389df89299fa368dc@syzkaller.appspotmail.com>
-To:     andrew@lunn.ch, davem@davemloft.net, f.fainelli@gmail.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org, mkubecek@suse.cz,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <00000000000045ac4605b12a1720@google.com>
+Subject: inconsistent lock state in xa_destroy
+From:   syzbot <syzbot+cdcbdc0bd42e559b52b9@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,104 +48,119 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    9faebeb2 Merge branch 'ethtool-allow-dumping-policies-to-u..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=15f7dc00500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8ad9ecfafd94317b
-dashboard link: https://syzkaller.appspot.com/bug?extid=9d1389df89299fa368dc
+HEAD commit:    e4fb79c7 Add linux-next specific files for 20201008
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=12555227900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=568d41fe4341ed0f
+dashboard link: https://syzkaller.appspot.com/bug?extid=cdcbdc0bd42e559b52b9
 compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15d9b94f900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=105268bf900000
+
+Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9d1389df89299fa368dc@syzkaller.appspotmail.com
+Reported-by: syzbot+cdcbdc0bd42e559b52b9@syzkaller.appspotmail.com
 
-==================================================================
-BUG: KASAN: slab-out-of-bounds in strset_parse_request+0x4dd/0x530 net/ethtool/strset.c:172
-Read of size 8 at addr ffff8880a120be18 by task syz-executor483/6874
+================================
+WARNING: inconsistent lock state
+5.9.0-rc8-next-20201008-syzkaller #0 Not tainted
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+syz-executor.2/6913 [HC0[0]:SC1[1]:HE0:SE0] takes:
+ffff888023003c18 (&xa->xa_lock#9){+.?.}-{2:2}, at: xa_destroy+0xaa/0x350 lib/xarray.c:2205
+{SOFTIRQ-ON-W} state was registered at:
+  lock_acquire+0x1f2/0xaa0 kernel/locking/lockdep.c:5419
+  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+  spin_lock include/linux/spinlock.h:354 [inline]
+  io_uring_add_task_file fs/io_uring.c:8607 [inline]
+  io_uring_add_task_file+0x207/0x430 fs/io_uring.c:8590
+  io_uring_get_fd fs/io_uring.c:9116 [inline]
+  io_uring_create fs/io_uring.c:9280 [inline]
+  io_uring_setup+0x2727/0x3660 fs/io_uring.c:9314
+  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+irq event stamp: 362445
+hardirqs last  enabled at (362444): [<ffffffff8847f0df>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (362444): [<ffffffff8847f0df>] _raw_spin_unlock_irqrestore+0x6f/0x90 kernel/locking/spinlock.c:191
+hardirqs last disabled at (362445): [<ffffffff8847f6c9>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (362445): [<ffffffff8847f6c9>] _raw_spin_lock_irqsave+0xa9/0xd0 kernel/locking/spinlock.c:159
+softirqs last  enabled at (361998): [<ffffffff86db0172>] tcp_close+0x8d2/0x1220 net/ipv4/tcp.c:2576
+softirqs last disabled at (362079): [<ffffffff88600f2f>] asm_call_irq_on_stack+0xf/0x20
 
-CPU: 1 PID: 6874 Comm: syz-executor483 Not tainted 5.9.0-rc8-syzkaller #0
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&xa->xa_lock#9);
+  <Interrupt>
+    lock(&xa->xa_lock#9);
+
+ *** DEADLOCK ***
+
+1 lock held by syz-executor.2/6913:
+ #0: ffffffff8a554c80 (rcu_callback){....}-{0:0}, at: rcu_do_batch kernel/rcu/tree.c:2474 [inline]
+ #0: ffffffff8a554c80 (rcu_callback){....}-{0:0}, at: rcu_core+0x5d8/0x1240 kernel/rcu/tree.c:2718
+
+stack backtrace:
+CPU: 0 PID: 6913 Comm: syz-executor.2 Not tainted 5.9.0-rc8-next-20201008-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Call Trace:
+ <IRQ>
  __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fd lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
- strset_parse_request+0x4dd/0x530 net/ethtool/strset.c:172
- ethnl_default_parse+0xda/0x130 net/ethtool/netlink.c:282
- ethnl_default_start+0x21f/0x510 net/ethtool/netlink.c:501
- genl_start+0x3cc/0x670 net/netlink/genetlink.c:604
- __netlink_dump_start+0x585/0x900 net/netlink/af_netlink.c:2363
- genl_family_rcv_msg_dumpit+0x1c9/0x310 net/netlink/genetlink.c:697
- genl_family_rcv_msg net/netlink/genetlink.c:780 [inline]
- genl_rcv_msg+0x434/0x580 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2489
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
+ dump_stack+0x198/0x1fb lib/dump_stack.c:118
+ print_usage_bug kernel/locking/lockdep.c:3715 [inline]
+ valid_state kernel/locking/lockdep.c:3726 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3929 [inline]
+ mark_lock.cold+0x32/0x74 kernel/locking/lockdep.c:4396
+ mark_usage kernel/locking/lockdep.c:4281 [inline]
+ __lock_acquire+0x118a/0x56d0 kernel/locking/lockdep.c:4771
+ lock_acquire+0x1f2/0xaa0 kernel/locking/lockdep.c:5419
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0x94/0xd0 kernel/locking/spinlock.c:159
+ xa_destroy+0xaa/0x350 lib/xarray.c:2205
+ __io_uring_free+0x60/0xc0 fs/io_uring.c:7693
+ io_uring_free include/linux/io_uring.h:40 [inline]
+ __put_task_struct+0xff/0x3f0 kernel/fork.c:732
+ put_task_struct include/linux/sched/task.h:111 [inline]
+ delayed_put_task_struct+0x1f6/0x340 kernel/exit.c:172
+ rcu_do_batch kernel/rcu/tree.c:2484 [inline]
+ rcu_core+0x645/0x1240 kernel/rcu/tree.c:2718
+ __do_softirq+0x203/0xab6 kernel/softirq.c:298
+ asm_call_irq_on_stack+0xf/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0x9b/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu kernel/softirq.c:423 [inline]
+ irq_exit_rcu+0x235/0x280 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x51/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:memset_erms+0x9/0x10 arch/x86/lib/memset_64.S:66
+Code: c1 e9 03 40 0f b6 f6 48 b8 01 01 01 01 01 01 01 01 48 0f af c6 f3 48 ab 89 d1 f3 aa 4c 89 c8 c3 90 49 89 f9 40 88 f0 48 89 d1 <f3> aa 4c 89 c8 c3 90 49 89 fa 40 0f b6 ce 48 b8 01 01 01 01 01 01
+RSP: 0018:ffffc900053c7b78 EFLAGS: 00010202
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000002040
+RDX: 0000000000008000 RSI: 0000000000000000 RDI: ffffc900161a5fc0
+RBP: ffffc900053c7d08 R08: 0000000000000001 R09: ffffc900161a0000
+R10: fffff52002c34fff R11: 0000000000000000 R12: ffff88805b9f0380
+R13: ffff888010ccae08 R14: 0000000001200000 R15: 0000000000000000
+ memset include/linux/string.h:384 [inline]
+ alloc_thread_stack_node kernel/fork.c:232 [inline]
+ dup_task_struct kernel/fork.c:864 [inline]
+ copy_process+0x68a/0x6e90 kernel/fork.c:1938
+ kernel_clone+0xe5/0xae0 kernel/fork.c:2456
+ __do_sys_clone+0xc8/0x110 kernel/fork.c:2573
  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x440979
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 5b 11 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffe892965e8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440979
-RDX: 0000000000000000 RSI: 0000000020000780 RDI: 0000000000000003
-RBP: 00000000006ca018 R08: 0000000000000001 R09: 00000000004002c8
-R10: 0000000000000008 R11: 0000000000000246 R12: 0000000000401f60
-R13: 0000000000401ff0 R14: 0000000000000000 R15: 0000000000000000
-
-Allocated by task 6874:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
- __do_kmalloc mm/slab.c:3659 [inline]
- __kmalloc+0x1b0/0x360 mm/slab.c:3668
- kmalloc_array include/linux/slab.h:594 [inline]
- genl_family_rcv_msg_attrs_parse.constprop.0+0xd7/0x280 net/netlink/genetlink.c:543
- genl_start+0x187/0x670 net/netlink/genetlink.c:584
- __netlink_dump_start+0x585/0x900 net/netlink/af_netlink.c:2363
- genl_family_rcv_msg_dumpit+0x1c9/0x310 net/netlink/genetlink.c:697
- genl_family_rcv_msg net/netlink/genetlink.c:780 [inline]
- genl_rcv_msg+0x434/0x580 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2489
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-The buggy address belongs to the object at ffff8880a120be00
- which belongs to the cache kmalloc-32 of size 32
-The buggy address is located 24 bytes inside of
- 32-byte region [ffff8880a120be00, ffff8880a120be20)
-The buggy address belongs to the page:
-page:000000007938d980 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff8880a120bfc1 pfn:0xa120b
-flags: 0xfffe0000000200(slab)
-raw: 00fffe0000000200 ffffea0002848c08 ffffea00027e6b48 ffff8880aa040100
-raw: ffff8880a120bfc1 ffff8880a120b000 0000000100000011 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff8880a120bd00: fb fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
- ffff8880a120bd80: fb fb fb fb fc fc fc fc 00 01 fc fc fc fc fc fc
->ffff8880a120be00: 00 00 00 fc fc fc fc fc 00 01 fc fc fc fc fc fc
-                            ^
- ffff8880a120be80: fa fb fb fb fc fc fc fc fb fb fb fb fc fc fc fc
- ffff8880a120bf00: 05 fc fc fc fc fc fc fc 05 fc fc fc fc fc fc fc
-==================================================================
+RIP: 0033:0x45c3fa
+Code: f7 d8 64 89 04 25 d4 02 00 00 64 4c 8b 0c 25 10 00 00 00 31 d2 4d 8d 91 d0 02 00 00 31 f6 bf 11 00 20 01 b8 38 00 00 00 0f 05 <48> 3d 00 f0 ff ff 0f 87 f5 00 00 00 85 c0 41 89 c5 0f 85 fc 00 00
+RSP: 002b:00007ffe5dc445b0 EFLAGS: 00000246 ORIG_RAX: 0000000000000038
+RAX: ffffffffffffffda RBX: 00007ffe5dc445b0 RCX: 000000000045c3fa
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000001200011
+RBP: 00007ffe5dc445f0 R08: 0000000000000001 R09: 0000000002f46940
+R10: 0000000002f46c10 R11: 0000000000000246 R12: 0000000000000001
+R13: 0000000000000000 R14: 0000000000000001 R15: 00007ffe5dc44640
 
 
 ---
@@ -155,5 +170,3 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
