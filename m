@@ -2,164 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B016286E51
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 07:52:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43786286E54
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 07:52:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728475AbgJHFwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 01:52:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726245AbgJHFwm (ORCPT
+        id S1728572AbgJHFwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 01:52:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31957 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728418AbgJHFwy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 01:52:42 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D94EC061755
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 22:52:42 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id y14so3054585pfp.13
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 22:52:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=E/Fx3EEpUtmYqkplb0FjHD2BN92xz6YGIh9sDxudzG4=;
-        b=ert8QG3WHzyEJRVoDJ13JIxUe6SUIxcWXwWco2NxjcJnlTHQw4yImu35L2NXlQgNRN
-         l2T8rha0O5NwhpNz8ixcnOi+WLJdq/mek79m5VGWo0t4JbXifm1nnBdeB1YjL5FxGPh8
-         wJD2fMi7qx5nMIuxIpc1ANnWh5bkYOHrr00cAZgYdDDesTnh1VruLVZu1TiJh2888OiZ
-         DM6M4qAjU8M3gI2bXyGGYV11JVsQoeLNx1EwcmNWao7N9zdqNejHLcYnoIfqmyUtdX0h
-         BMjG7VacZf+3Y7Y9AqyZ0EUcewijpHy7mW9jlYrD2KeaNyUcqrgEck/XxScQZ8IotJ95
-         Rr7w==
+        Thu, 8 Oct 2020 01:52:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602136373;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ltGs068siZf3xtEoiji16jcQ5M11pmWZuXAiz0lIBWM=;
+        b=R6VyFQoJEFe5MlGN8xQqYzPWwQxFzsMqAyrkbLHI+CoDVKY1H6YowaTYs3pbiYSi6Pjp8v
+        2s/EXC7+oQWilzExOfFuj1l4Pq0fgrkDfngxLYxUFIo3/jHJW+Lr2UZjg/9VajFBLDCCuP
+        bzfmdPRx46Rf5vtwNGero5DiNMYblLQ=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-533-bqlMQGinNEKRuyr_6k5bLg-1; Thu, 08 Oct 2020 01:52:51 -0400
+X-MC-Unique: bqlMQGinNEKRuyr_6k5bLg-1
+Received: by mail-wr1-f69.google.com with SMTP id r16so3437751wrm.18
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 22:52:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=E/Fx3EEpUtmYqkplb0FjHD2BN92xz6YGIh9sDxudzG4=;
-        b=arRSJjfh0f3KGKUldmkuKmIx8xEgcMIsPR7eu1KTfC3BllWaXnayYZcCEFGAH6F/hO
-         XwVtqjzmQBf3P5czT08vyc8FBxE3Wyhw8l/Xyvz2J86ARMTTU2GhaR5zMGiDbOetO+a2
-         A3+gBEIRk7Yw/vn3wxIWdCVipfa++mwGBZql44fgT8inMyJvKoBgAQVvwYypSVyiJX51
-         OACb1cX3koPw7Mk7pgrzbVaqSTJhSotNrG2PjpsAwrqyJpNIdzvpwFuBFvb2hHRiqhDG
-         z+VgRkE9h5e7JFzN97wTfpEc6g6xxKt1vqnerkPNMY1BUPB5cLkueEAqdbWO2Jxpqa/b
-         /XnQ==
-X-Gm-Message-State: AOAM532p5rA1jOISuL5+HMYhh/dR4eXXeAR1Fkx6zw1IXCp8sEpIQcHn
-        djrYtm3bjhHa+3f9fo99FTw=
-X-Google-Smtp-Source: ABdhPJwwDqTok5Z4b554bKXi1m18ENR317iYc7cBlpHbJJ5neQjQLXmgcGJ7Uq1mSsuiNujvMdXRVw==
-X-Received: by 2002:a65:6883:: with SMTP id e3mr5943863pgt.250.1602136361633;
-        Wed, 07 Oct 2020 22:52:41 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id i24sm5271453pfd.15.2020.10.07.22.52.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 22:52:40 -0700 (PDT)
-Date:   Thu, 8 Oct 2020 14:52:38 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Guenter Roeck <linux@roeck-us.net>, Petr Mladek <pmladek@suse.com>
-Cc:     Shreyas Joshi <shreyas.joshi@biamp.com>, rostedt@goodmis.org,
-        shreyasjoshi15@gmail.com, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Subject: Re: [PATCH] printk: handle blank console arguments passed in.
-Message-ID: <20201008055238.GA554@jagdpanzerIV.localdomain>
-References: <f19c18fd-20b3-b694-5448-7d899966a868@roeck-us.net>
- <20201006095226.GB32369@alley>
- <24f7a6bc-c917-2bb7-0e86-9d729c18e812@roeck-us.net>
- <20201006134328.GD32369@alley>
- <20201006163514.GE32369@alley>
- <20201006171504.GA64770@jagdpanzerIV.localdomain>
- <20201007072853.GF32369@alley>
- <20201007123044.GA509@jagdpanzerIV.localdomain>
- <be66237b-e7b2-0321-c00c-cd6fba6e3b58@roeck-us.net>
- <20201007162942.GA440@jagdpanzerIV.localdomain>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ltGs068siZf3xtEoiji16jcQ5M11pmWZuXAiz0lIBWM=;
+        b=K/BFoYMVW6Gd3JoQy6qsHhmPzHhH+a0kHWTixSYl4tkRmxz2O4lGOO1bvzwbq6sBN9
+         pIVgPmBSGdP6ZGsPVZp2wWK2VGm+O0OyIjOfKYwEaEAAlcEP0CKO0uRtgjidTVWJ+Kz1
+         EtUBh0DakKiYi2One2E+1E5JWWwvLxjnffhHKFiRXpgitX0IYlPSxvxpbfbArlL2OKkv
+         WLiIiEkl5BeT3kBZg2E0F0H0Yhtd63DKsfUoKU4FsX66XV49nEtXSMZQeqgZkdbDx7Ec
+         kgTp8NvWnuInFZx8KvLGAfZ+Nmr242hRDuE6Tx04kqD935Vdln5aT4y15xvWGWU2t7AF
+         hs7A==
+X-Gm-Message-State: AOAM532SMaIVW9XvJ3M5PqT7nmPePFZlTsUlTuW5/YcHCmqsMWCgPvUS
+        pKjkCwbJF4T3eE5SZ7lrGt1Tq+GjwOK41s1q3ricKe5iCpNyplx+JHmBmmxEZnS1wzi48emAxs5
+        Z5cGcH9ezIuP0M/rRhP9H/Ajq
+X-Received: by 2002:adf:fc8d:: with SMTP id g13mr7171580wrr.248.1602136370098;
+        Wed, 07 Oct 2020 22:52:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy5Bm/ZD8U7+p2VglQe5fK4bJTyhYCj95+XyM/xiKcrn7gpj+d3p19Xy0SSDHPLrmm2ZEDASw==
+X-Received: by 2002:adf:fc8d:: with SMTP id g13mr7171562wrr.248.1602136369782;
+        Wed, 07 Oct 2020 22:52:49 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:d2f4:5943:190c:39ff? ([2001:b07:6468:f312:d2f4:5943:190c:39ff])
+        by smtp.gmail.com with ESMTPSA id j14sm5759851wrr.66.2020.10.07.22.52.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Oct 2020 22:52:49 -0700 (PDT)
+Subject: Re: [PATCH] KVM: SVM: Use a separate vmcb for the nested L2 guest
+To:     Maxim Levitsky <mlevitsk@redhat.com>,
+        Cathy Avery <cavery@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     vkuznets@redhat.com, wei.huang2@amd.com
+References: <20200917192306.2080-1-cavery@redhat.com>
+ <587d1da1a037dd3ab7844c5cacc50bfda5ce6021.camel@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <aaaadb29-6299-5537-47a9-072ca34ba512@redhat.com>
+Date:   Thu, 8 Oct 2020 07:52:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201007162942.GA440@jagdpanzerIV.localdomain>
+In-Reply-To: <587d1da1a037dd3ab7844c5cacc50bfda5ce6021.camel@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/10/08 01:29), Sergey Senozhatsky wrote:
-> On (20/10/07 08:57), Guenter Roeck wrote:
-> > On 10/7/20 5:30 AM, Sergey Senozhatsky wrote:
+On 08/10/20 00:14, Maxim Levitsky wrote:
+>>
+>> +	if (svm->vmcb01->control.asid == 0)
+>> +		svm->vmcb01->control.asid = svm->nested.vmcb02->control.asid;
 > 
-> [..]
+> I think that the above should be done always. The asid field is currently host
+> controlled only (that is L2 value is ignored, selective ASID tlb flush is not
+> advertized to the guest and lnvlpga is emulated as invlpg). 
+
+Yes, in fact I suggested that ASID should be in svm->asid and moved to
+svm->vmcb->asid in svm_vcpu_run.  Then there's no need to special case
+it in nested code.
+
+This should be a patch coming before this one.
+
 > 
-> > I can see to options: Link /dev/console to /dev/null if there is no console,
-> > or do something like
-> > 
-> > 	if (IS_ERR(file)) {
-> >                 pr_warn("Warning: unable to open an initial console.\n");
-> >                 file = filp_open("/dev/null", O_RDWR, 0);
-> > 		if (IS_ERR(file))
-> >                 	return;
-> >         }
-> 
-> As far as I can tell, /dev/null does not exist yet on this stage
-> (at least not in my system). But generally the idea looks interesting.
+> 1. Something wrong with memory types - like guest is using UC memory for everything.
+>     I can't completely rule that out yet
 
-Hmm. How about this. console= is undocumented and unspecified - it
-may work sometimes or it may kill the system (and theoretically even
-corrupt some files, depending on what fd 1 and fd 2 point to). So
-maybe we can document console= and handle it in printk, rather than
-somewhere deep in init/main.c
+You can print g_pat and see if it is all zeroes.
 
-IOW add one more flag (yeah, I know) and set it when console_setup()
-sees console= boot param. The idea is allow console registration,
-but all consoles should be disabled (cleared CON_ENABLED bit). This
-would be easier to document, at least.
+In general I think it's better to be explicit with vmcb01 vs. vmcb02,
+like Cathy did, but I can see it's a matter of personal preference to
+some extent.
 
-Schematically:
+Paolo
 
----
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 929e86a01148..b71ff9d87693 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -281,6 +281,7 @@ static struct console_cmdline console_cmdline[MAX_CMDLINECONSOLES];
- 
- static int preferred_console = -1;
- static bool has_preferred_console;
-+static bool mute_consoles = false;
- int console_set_on_cmdline;
- EXPORT_SYMBOL(console_set_on_cmdline);
- 
-@@ -2141,6 +2142,9 @@ static int __add_preferred_console(char *name, int idx, char *options,
- 	struct console_cmdline *c;
- 	int i;
- 
-+	if (mute_consoles)
-+		return;
-+
- 	/*
- 	 *	See if this tty is not yet registered, and
- 	 *	if we have a slot free.
-@@ -2189,6 +2193,11 @@ static int __init console_setup(char *str)
- 	char *s, *options, *brl_options = NULL;
- 	int idx;
- 
-+	if (str[0] == 0) {
-+		mute_consoles = true;
-+		return 0;
-+	}
-+
- 	if (_braille_console_setup(&str, &brl_options))
- 		return 1;
- 
-@@ -2630,6 +2639,9 @@ EXPORT_SYMBOL(console_stop);
- 
- void console_start(struct console *console)
- {
-+	if (mute_consoles)
-+		return;
-+
- 	console_lock();
- 	console->flags |= CON_ENABLED;
- 	console_unlock();
-@@ -2811,6 +2823,9 @@ void register_console(struct console *newcon)
- 		console_drivers->next = newcon;
- 	}
- 
-+	if (mute_consoles)
-+		newcon->flags &= ~CON_ENABLED;
-+
- 	if (newcon->flags & CON_EXTENDED)
- 		nr_ext_console_drivers++;
- 
