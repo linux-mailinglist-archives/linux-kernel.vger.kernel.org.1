@@ -2,109 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3042128755A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 15:42:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B1728755E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 15:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730371AbgJHNmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 09:42:06 -0400
-Received: from foss.arm.com ([217.140.110.172]:58262 "EHLO foss.arm.com"
+        id S1730385AbgJHNpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 09:45:36 -0400
+Received: from foss.arm.com ([217.140.110.172]:58430 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725871AbgJHNmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 09:42:05 -0400
+        id S1728969AbgJHNpd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 09:45:33 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5A55C1063;
-        Thu,  8 Oct 2020 06:42:04 -0700 (PDT)
-Received: from localhost (unknown [10.1.199.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EDFF33F71F;
-        Thu,  8 Oct 2020 06:42:03 -0700 (PDT)
-Date:   Thu, 8 Oct 2020 14:42:02 +0100
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Nicola Mazzucato <nicola.mazzucato@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        sudeep.holla@arm.com, rjw@rjwysocki.net, vireshk@kernel.org,
-        robh+dt@kernel.org, daniel.lezcano@linaro.org,
-        chris.redpath@arm.com, morten.rasmussen@arm.com
-Subject: Re: [PATCH v2 1/2] dt-bindings: arm: Add devicetree binding for
- cpu-performance-dependencies
-Message-ID: <20201008134153.GA20268@arm.com>
-References: <20200924095347.32148-1-nicola.mazzucato@arm.com>
- <20200924095347.32148-2-nicola.mazzucato@arm.com>
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B3D541529;
+        Thu,  8 Oct 2020 06:45:32 -0700 (PDT)
+Received: from [192.168.2.22] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B61CF3F70D;
+        Thu,  8 Oct 2020 06:45:30 -0700 (PDT)
+From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
+Subject: Re: [PATCH v2 01/14] perf arm-spe: Include bitops.h for BIT() macro
+To:     Leo Yan <leo.yan@linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Wei Li <liwei391@huawei.com>,
+        James Clark <james.clark@arm.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        linux-kernel@vger.kernel.org, Al Grant <Al.Grant@arm.com>
+References: <20200929133917.9224-1-leo.yan@linaro.org>
+ <20200929133917.9224-2-leo.yan@linaro.org>
+Organization: ARM Ltd.
+Message-ID: <e61b9ce6-5ab1-126d-4528-431885ca8fae@arm.com>
+Date:   Thu, 8 Oct 2020 14:44:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924095347.32148-2-nicola.mazzucato@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200929133917.9224-2-leo.yan@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi guys,
+On 29/09/2020 14:39, Leo Yan wrote:
+> Include header linux/bitops.h, directly use its BIT() macro and remove
+> the self defined macros.
+> 
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
 
-On Thursday 24 Sep 2020 at 10:53:46 (+0100), Nicola Mazzucato wrote:
-[..]
-> diff --git a/Documentation/devicetree/bindings/arm/cpu-perf-dependencies.yaml b/Documentation/devicetree/bindings/arm/cpu-perf-dependencies.yaml
-> new file mode 100644
-> index 000000000000..c7a577236cd6
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/arm/cpu-perf-dependencies.yaml
-> @@ -0,0 +1,48 @@
-> +# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/arm/cpu-perf-dependencies.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: CPU Performance Dependencies
-> +
-> +maintainers:
-> +  - Nicola Mazzucato <nicola.mazzucato@arm.com>
-> +
-> +description: |+
-> +  This optional node provides information to OSPM of cpu performance
-> +  dependencies.
-> +  Each list represents a set of CPUs which have performance level
-> +  dependencies and can assumed to be roughly at the same performance
-> +  level coordinated by hardware and/or firmware.
-> +  Example: Describing CPUs in the same clock domain.
+Reviewed-by: Andre Przywara <andre.przywara@arm.com>
 
-I'm continuing here a conversation started in v1 on the characteristics of
-cpu-perf-dependencies and whether this binding actually describes the
-hardware.
+Thanks,
+Andre
 
-In the way I see this, the answer is clearly yes and it is information
-that we need in the device tree, beyond the presence of SCMI as cpufreq
-driver, and beyond the way it will be consumed by EAS/thermal/etc.
+> ---
+>  tools/perf/util/arm-spe-decoder/arm-spe-decoder.c     | 5 +----
+>  tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c | 3 +--
+>  2 files changed, 2 insertions(+), 6 deletions(-)
+> 
+> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
+> index 93e063f22be5..cc18a1e8c212 100644
+> --- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
+> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
+> @@ -12,6 +12,7 @@
+>  #include <string.h>
+>  #include <stdint.h>
+>  #include <stdlib.h>
+> +#include <linux/bitops.h>
+>  #include <linux/compiler.h>
+>  #include <linux/zalloc.h>
+>  
+> @@ -21,10 +22,6 @@
+>  
+>  #include "arm-spe-decoder.h"
+>  
+> -#ifndef BIT
+> -#define BIT(n)		(1UL << (n))
+> -#endif
+> -
+>  static u64 arm_spe_calc_ip(int index, u64 payload)
+>  {
+>  	u8 *addr = (u8 *)&payload;
+> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> index b94001b756c7..46ddb53a6457 100644
+> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> @@ -8,11 +8,10 @@
+>  #include <string.h>
+>  #include <endian.h>
+>  #include <byteswap.h>
+> +#include <linux/bitops.h>
+>  
+>  #include "arm-spe-pkt-decoder.h"
+>  
+> -#define BIT(n)		(1ULL << (n))
+> -
+>  #define NS_FLAG		BIT(63)
+>  #define EL_FLAG		(BIT(62) | BIT(61))
+>  
+> 
 
-I link this to whether software will do the aggregation of per CPU
-information in establishing the next frequency to be requested from the
-driver/hardware for all dependent CPUs, or whether hardware is able to
-receive the per CPU information on different channels and do the
-aggregation itself.
-
-This software aggregation is the typical way currently supported in
-cpufreq, but hardware aggregation will be needed the more we see
-hardware features for performance/power control.
-
-But support for hardware aggregation involves having per-cpu channels
-to convey the frequency request for that CPU. But currently the device
-tree only gives us the ability to describe the information to be used
-for sending frequency requests and as a result the kernel considers
-CPUs as dependent only if they use the same controls for those CPUs.
-So we currently can have hardware aggregation, but we lose all
-information about what CPUs actually ended up having the same frequency,
-because they are actually using the same clocks.
-
-Therefore this new binding is needed for when hardware/firmware is better
-equipped to make a decision about the clock rate for a group of CPUs, when
-information is given about each CPU. The usefulness comes from informing
-the software that some CPUs will have the same clock and therefore it
-does describe a hardware characteristic of the system. In some cases
-counters will help observe what was the frequency that was eventually
-granted by hardware.
-
-Knowing what CPUs actually use the same clock is very useful for the
-scheduler (EAS, frequency invariance) and thermal.
-
-Hope it helps,
-Ionela.
