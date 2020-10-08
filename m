@@ -2,77 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7A55287B1F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 19:41:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C91A287B57
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 20:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731442AbgJHRlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 13:41:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725888AbgJHRlZ (ORCPT
+        id S1730865AbgJHSF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 14:05:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39490 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730626AbgJHSF1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 13:41:25 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E18C061755;
-        Thu,  8 Oct 2020 10:41:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Rhut7fqpaoq3MhbllV5fKKQkrXAlHWXe1jVhLgupsFg=; b=qarES/+1XNKcQx3evKHbUX/o/2
-        pEemqwzwsLRa6tFhQuoQetXxyM8+ojno0EFBK4RD5V6GfxK6J9NFHuhYpKdrHuAZ3Qs9nSIms4vQD
-        z9vcXOezBzjGYCkyfH3XAMVD7gvpjRUeCmXGNntP4tCFaYvcGyH6YLj5+1pAPB4u/Of+1oGDT94vF
-        ZGbRTjwNiJ8Lh4Qe0zpYblKI5Q7Dek1Zd4riizFumCC+cJm+Fk0SjuizMXUojXt0giMYyxJ4EmMeN
-        LSV/eXglJL72XqxplGsbGLyiy3+4duNvqgOR1RZcj/2vQZmpVbaiyzil14ExISXZSJdD6hfXeaECr
-        CeZ+PHdg==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kQZus-00015k-VS; Thu, 08 Oct 2020 17:41:23 +0000
-Date:   Thu, 8 Oct 2020 18:41:22 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jann Horn <jannh@google.com>
-Cc:     Topi Miettinen <toiwoton@gmail.com>,
-        linux-hardening@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH RESEND v2] mm: Optional full ASLR for mmap() and mremap()
-Message-ID: <20201008174122.GM20115@casper.infradead.org>
-References: <20201008165408.38228-1-toiwoton@gmail.com>
- <CAG48ez1OU9PFQ06mf4L59SEmi6Vwxnao8RuVXH=dCiyMhqVwYA@mail.gmail.com>
- <20201008172300.GL20115@casper.infradead.org>
- <CAG48ez3-uvDXL7-WBapEJMHrkXYpnAw=AgbP2evOZgNMFWKy-A@mail.gmail.com>
+        Thu, 8 Oct 2020 14:05:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602180327;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=P2FMA6dYjcqdGcGBKsq85dw0RtnS7nDHyn2Pz4+p0sU=;
+        b=FX0/Z1jbftoe+2+9+8/vAp0R+Awm+n5eoekOWD4kCGHIGZQliRE957i9wGioYAY3VBXoV4
+        a/lvXC3MB5+okJbky1+ULFD+DAVZLVf4xt2g9wB/3qoQ2proe1G0iRfhELdwLJrRqPvNp9
+        CBG/eTW9XAECs4A2hLgdOyEsM56PmL0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-336-ZvUmeQQIN1qnAIRfQsn5NA-1; Thu, 08 Oct 2020 14:05:23 -0400
+X-MC-Unique: ZvUmeQQIN1qnAIRfQsn5NA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 32BFF8064AB;
+        Thu,  8 Oct 2020 18:05:22 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-7.gru2.redhat.com [10.97.112.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9527E5576D;
+        Thu,  8 Oct 2020 18:05:16 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id 23D23416C894; Thu,  8 Oct 2020 14:43:51 -0300 (-03)
+Date:   Thu, 8 Oct 2020 14:43:51 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nitesh Narayan Lal <nitesh@redhat.com>
+Subject: Re: [patch 1/2] nohz: only wakeup a single target cpu when kicking a
+ task
+Message-ID: <20201008174351.GA14207@fuller.cnet>
+References: <20201007180151.623061463@redhat.com>
+ <20201007180229.724302019@redhat.com>
+ <20201008145940.GG6026@xz-x1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAG48ez3-uvDXL7-WBapEJMHrkXYpnAw=AgbP2evOZgNMFWKy-A@mail.gmail.com>
+In-Reply-To: <20201008145940.GG6026@xz-x1>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 07:26:31PM +0200, Jann Horn wrote:
-> On Thu, Oct 8, 2020 at 7:23 PM Matthew Wilcox <willy@infradead.org> wrote:
-> > On Thu, Oct 08, 2020 at 07:13:51PM +0200, Jann Horn wrote:
-> > > And for expanding stacks, it might be a good idea for other
-> > > reasons as well (locking consistency) to refactor them such that the
-> > > size in the VMA tree corresponds to the maximum expansion of the stack
-> > > (and if an allocation is about to fail, shrink such stack mappings).
-> >
-> > We're doing that as part of the B-tree ;-)  Although not the shrink
-> > stack mappings part ...
+On Thu, Oct 08, 2020 at 10:59:40AM -0400, Peter Xu wrote:
+> On Wed, Oct 07, 2020 at 03:01:52PM -0300, Marcelo Tosatti wrote:
+> > +static void tick_nohz_kick_task(struct task_struct *tsk)
+> > +{
+> > +	int cpu = task_cpu(tsk);
+> > +
+> > +	/*
+> > +	 * If the task concurrently migrates to another cpu,
+> > +	 * we guarantee it sees the new tick dependency upon
+> > +	 * schedule.
+> > +	 *
+> > +	 *
+> > +	 * set_task_cpu(p, cpu);
+> > +	 *   STORE p->cpu = @cpu
+> > +	 * __schedule() (switch to task 'p')
+> > +	 *   LOCK rq->lock
+> > +	 *   smp_mb__after_spin_lock()          STORE p->tick_dep_mask
+> > +	 *   tick_nohz_task_switch()            smp_mb() (atomic_fetch_or())
+> > +	 *      LOAD p->tick_dep_mask           LOAD p->cpu
+> > +	 */
+> > +
+> > +	preempt_disable();
 > 
-> Wheee, thanks! Finally no more data races on ->vm_start?
+> Pure question: is preempt_disable() required here?  Same question to
+> tick_nohz_full_kick_all().
 
-Ah, maybe still that.  The B-tree records the start of the mapping in
-the tree, but we still keep vma->vm_start as pointing to the current top
-of the stack (it's still the top if it grows down ... right?)  The key is
-that these numbers may now be different, so from the tree's point of view,
-the vm addresses for 1MB below the stack appear to be occupied.  From the
-VMA's point of view, the stack finishes where it was last accessed.
+Hi Peter,
 
-We also get rid of the insanity of "return the next VMA if there's no
-VMA at this address" which most of the callers don't want and have to
-check for.  Again, from the tree's point of view, there is a VMA at this
-address, but from the VMA's point of view, it'll need to expand to reach
-that address.
+Don't see why: irq_queue_work_on() disables preemption if necessary.
 
-I don't think this piece is implemented yet, but it's definitely planned.
+> 
+> > +	if (cpu_online(cpu))
+> > +		tick_nohz_full_kick_cpu(cpu);
+> > +	preempt_enable();
+> > +}
+> 
+> -- 
+> Peter Xu
+
