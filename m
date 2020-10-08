@@ -2,102 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F81E286E2C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 07:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B55286E2D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 07:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728386AbgJHFhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 01:37:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59068 "EHLO
+        id S1728412AbgJHFiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 01:38:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728334AbgJHFhv (ORCPT
+        with ESMTP id S1728008AbgJHFiS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 01:37:51 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B34CAC0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 22:37:50 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id e17so5080385wru.12
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 22:37:50 -0700 (PDT)
+        Thu, 8 Oct 2020 01:38:18 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79674C061755
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 22:38:17 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id m13so4439221otl.9
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 22:38:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uzc1+OIpuC778zhrwXmoWv4oWCtwA3uOVXW778gGkv8=;
-        b=ml3paT+KU4nk5x+67HGcDobgbHZCUhknrUGbn8Ei/i83N7QKesst6RKodzyNnzpYUL
-         OE4Q8oDcGhTBpDDwJYbX0t4LPj4H+iFvRnJIV0X/ibHVqLtB8kDxf+nr/K23f+W4Sglj
-         w4zB3+WLo07WUdGOkGxFYsPfMUg/Nk2R9H1hj4/VOzQpBzmFP7xc2j+PuP10WRM5qfey
-         CxNoAqIKXTgliKTdGm45ez/GXOnmML8v/Nixp8f3B+5bV+UMGSOI8wNAFYffKYXQUQgS
-         h+rYoRjIYHqov7TrHMaRK2kPktgYDnEA+fZX+SapdxilqPml2+ToGEkhR/1tY7OdeTqD
-         +XSg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bNyi5HMoPtRD0x7CayTyLOQya/iPNAWDKxtNev5YIPo=;
+        b=zExvBE4nRYuhgI4z2rHDOJuOlYFx7hF437fwixkwJlZ5ZvY56AszFkTY+UAd+bf3Mw
+         4m7BobmEHIkfUh2tZGxoquxRAFH7XUMi+H7XYhj6ZgNRa/8JPiF6dqtw1MaCgzzbv5LX
+         yWWztyu+V4lblFRYzdlxV58v7MTvZtoodLbs7P2B373YXyO5JeMbzyZF95j0M+fE068d
+         /80VwGT7WEvULIDHF5V3MXPHttZlfQoG0oSTOTm1rt6O0PJNdLAnVu0G9cV5tkLWXtjQ
+         rdBaytNrvgMTMJIr0ghTMiXoQSIyR7qrn8nSyGLcsywxmBbTib/c5rMvqVpPm50nDAy1
+         vgAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uzc1+OIpuC778zhrwXmoWv4oWCtwA3uOVXW778gGkv8=;
-        b=r6nsjkSTUgyAxPK7JgUeuNiFVoear7Rlosq1xKpvx6f4I30Qqesvx0x8WUB7vWfmBA
-         9xCwaMEGust/axe0tPQa4bYiPN2CLUaTHyUcDOe/XKWcj82KT7u7oOdkiRHK3X9hNoYq
-         fbqAAPfFju1iGft5seOVSKouRJ3Xo8WzL+vIEewwhNURf4oeLUED2d2ykuhsNtTRh/x2
-         3yVDvwCC0ghhf635swvFTVkkDKy47Hr6DhfPQTET4rF/0GitU9chiI8GnHGtC6XM7HYS
-         BKOKzF8JC4k2v1xS6W1EmVj34+owdMI88nSbU17qeNiTKZbfyprsYg9SwYov2I8LCkDb
-         CO4g==
-X-Gm-Message-State: AOAM530c2vtouYXQTi9dg+fSRlHXxvfAsqww1c0ZTUVbAWzrl7mZV0mK
-        Id1+MeIYU/ReoXybo8a4gMPs5w==
-X-Google-Smtp-Source: ABdhPJy0nwSSdzGNFRWaXQ/aqDIfsPChRlGqie/SnNdwPMFez5OYqoih1QeT3sEFc7n3rd7ZrLLWfA==
-X-Received: by 2002:adf:8030:: with SMTP id 45mr7377274wrk.177.1602135469363;
-        Wed, 07 Oct 2020 22:37:49 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id b200sm5594266wme.44.2020.10.07.22.37.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 07 Oct 2020 22:37:48 -0700 (PDT)
-Subject: Re: [PATCH v11 5/7] ASoC: qcom: Add support for lpass hdmi driver
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-References: <1602134223-2562-1-git-send-email-srivasam@codeaurora.org>
- <1602134223-2562-6-git-send-email-srivasam@codeaurora.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <fa33de91-16b8-8938-9577-e8e763039f83@linaro.org>
-Date:   Thu, 8 Oct 2020 06:37:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bNyi5HMoPtRD0x7CayTyLOQya/iPNAWDKxtNev5YIPo=;
+        b=PnRuW1EQLPmNZ5JZDbxlc9jML5Im61zEEqCSeZ+/Lus6dGuGKlp20/q1KvdUYIG3EZ
+         LMEnn4L4y6gtuFGhM80ISGx9W/tIbsNC7jAx4v2ppjrl+ToSK+pAt4HYh0DY31zRwMIU
+         gbpc/ikOFa9Esul44zSTX1JFjzAYzoxucoTM7sE+i3YwTSoEXib9vVh1yLg7tm4RClpu
+         +L71Ev6+UBqI2Qe+tHJReEqXaNGnJXFqFbry4T2+tcB86Zu3c9PqwzD9A3CDPPPHb2AI
+         rv8TppK3dCyQ39HlfHJmrpbaTHj4AHUW2qVd55wEQAGAirLAxQRJdPwzkMQNLXVSLouF
+         656Q==
+X-Gm-Message-State: AOAM533Z/Lbm144AuKOYgTqaSZSj3dzwxCqFSoTJekdBCIc0CuSvMOqQ
+        TBJUJ8YcAxQyfKA5uJPWp5VIXWEJXSdHEBrfnLEBrA==
+X-Google-Smtp-Source: ABdhPJx4AuhnGkt6ubnmQPzbQLprP/8ICD0w2XfAjwKnemXdn1J5bRFGT3BBLOB0nG7uKwMhhwzCIreC4PsotSswdHM=
+X-Received: by 2002:a9d:2c4:: with SMTP id 62mr4342756otl.102.1602135496869;
+ Wed, 07 Oct 2020 22:38:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1602134223-2562-6-git-send-email-srivasam@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201003040257.62768-8-john.stultz@linaro.org> <20201007074352.GP4282@kadam>
+In-Reply-To: <20201007074352.GP4282@kadam>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Wed, 7 Oct 2020 22:38:03 -0700
+Message-ID: <CALAqxLVdjxYB-7hNRoxAMu+qbiQ+qEfo0VMSvRNV391=ffZQwQ@mail.gmail.com>
+Subject: Re: [PATCH v3 7/7] dma-buf: system_heap: Add a system-uncached heap
+ re-using the system heap
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     kbuild@lists.01.org, lkml <linux-kernel@vger.kernel.org>,
+        kbuild test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 7, 2020 at 12:44 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>
+> Hi John,
+>
+> url:    https://github.com/0day-ci/linux/commits/John-Stultz/dma-buf-Performance-improvements-for-system-heap-a-system-uncached-implementation/20201003-120520
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git bcf876870b95592b52519ed4aafcf9d95999bc9c
+> config: i386-randconfig-m021-20201002 (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+>
+> smatch warnings:
+> drivers/dma-buf/heaps/system_heap.c:496 system_heap_create() warn: passing zero to 'PTR_ERR'
+>
+> vim +/PTR_ERR +496 drivers/dma-buf/heaps/system_heap.c
+>
+> efa04fefebbd724 John Stultz     2019-12-03  478  static int system_heap_create(void)
+> efa04fefebbd724 John Stultz     2019-12-03  479  {
+> efa04fefebbd724 John Stultz     2019-12-03  480         struct dma_heap_export_info exp_info;
+> efa04fefebbd724 John Stultz     2019-12-03  481
+> 263e38f82cbb35b Andrew F. Davis 2019-12-16  482         exp_info.name = "system";
+> efa04fefebbd724 John Stultz     2019-12-03  483         exp_info.ops = &system_heap_ops;
+> efa04fefebbd724 John Stultz     2019-12-03  484         exp_info.priv = NULL;
+> efa04fefebbd724 John Stultz     2019-12-03  485
+> efa04fefebbd724 John Stultz     2019-12-03  486         sys_heap = dma_heap_add(&exp_info);
+> efa04fefebbd724 John Stultz     2019-12-03  487         if (IS_ERR(sys_heap))
+> a2e10cdd2e4d12a John Stultz     2020-10-03  488                 return PTR_ERR(sys_heap);
+> efa04fefebbd724 John Stultz     2019-12-03  489
+> 553f4e0fafc5b3b John Stultz     2020-10-03  490         exp_info.name = "system-uncached";
+> 553f4e0fafc5b3b John Stultz     2020-10-03  491         exp_info.ops = &system_uncached_heap_ops;
+> 553f4e0fafc5b3b John Stultz     2020-10-03  492         exp_info.priv = NULL;
+> 553f4e0fafc5b3b John Stultz     2020-10-03  493
+> 553f4e0fafc5b3b John Stultz     2020-10-03  494         sys_uncached_heap = dma_heap_add(&exp_info);
+> 553f4e0fafc5b3b John Stultz     2020-10-03  495         if (IS_ERR(sys_uncached_heap))
+> 553f4e0fafc5b3b John Stultz     2020-10-03 @496                 return PTR_ERR(sys_heap);
+>                                                                        ^^^^^^^^^^^^^^^^^
+> This should be return PTR_ERR(sys_uncached_heap);
 
-
-On 08/10/2020 06:17, Srinivasa Rao Mandadapu wrote:
-> From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-> 
-> Upadate lpass cpu and platform driver to support audio over dp.
-> Also add lpass-hdmi.c and lpass-hdmi.h.
-> 
-> Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-> Signed-off-by: Srinivasa Rao <srivasam@codeaurora.org>
-> ---
->   sound/soc/qcom/Kconfig           |   5 +
->   sound/soc/qcom/Makefile          |   2 +
->   sound/soc/qcom/lpass-apq8016.c   |   4 +-
->   sound/soc/qcom/lpass-cpu.c       | 247 ++++++++++++++++++++++++-
->   sound/soc/qcom/lpass-hdmi.c      | 258 ++++++++++++++++++++++++++
->   sound/soc/qcom/lpass-hdmi.h      | 102 +++++++++++
->   sound/soc/qcom/lpass-ipq806x.c   |   4 +-
->   sound/soc/qcom/lpass-lpaif-reg.h |  49 +++--
->   sound/soc/qcom/lpass-platform.c  | 383 ++++++++++++++++++++++++++++++++-------
->   sound/soc/qcom/lpass.h           | 118 +++++++++++-
->   10 files changed, 1075 insertions(+), 97 deletions(-)
->   create mode 100644 sound/soc/qcom/lpass-hdmi.c
->   create mode 100644 sound/soc/qcom/lpass-hdmi.h
-> 
-
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Oh nice! Very impressed that the tool caught that!
+Thanks so much for the report! I'll fix it up here shortly.
+-john
