@@ -2,171 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07667287EEF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 01:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD51E287EF5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 01:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729945AbgJHXAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 19:00:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42346 "EHLO mail.kernel.org"
+        id S1730164AbgJHXDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 19:03:17 -0400
+Received: from mga17.intel.com ([192.55.52.151]:3176 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727556AbgJHXAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 19:00:36 -0400
-Received: from earth.universe (unknown [185.213.155.232])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C100422248;
-        Thu,  8 Oct 2020 23:00:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602198035;
-        bh=RhmG9ir2Fk6IUNm/SmhzpPjolcBLKYD4AciOj2QmkgY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y9zWyfLSdYCLWQjsv2CkXnG/tX9oGZTBYXF2AbUsSWpudKvTtA/TiaziC6dYtwsFB
-         qeFW/p7aUhKWV9rMtE5Pk+RtYG683BWX4sC++qMRWelaUIqKguqlVQxxExPqSR2VHV
-         qnsnRVfLjqSs4PJXv1X0L/UG9/nlIA5YjdYsT+6s=
-Received: by earth.universe (Postfix, from userid 1000)
-        id 68CF93C0C87; Fri,  9 Oct 2020 01:00:32 +0200 (CEST)
-Date:   Fri, 9 Oct 2020 01:00:32 +0200
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Lubomir Rintel <lkundrak@v3.sk>, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/5] dt-bindings: mfd: Add ENE KB930 Embedded
- Controller binding
-Message-ID: <20201008230032.a2mgd3yymxbbreqo@earth.universe>
-References: <20200906195103.1347-1-digetx@gmail.com>
- <20200906195103.1347-2-digetx@gmail.com>
+        id S1727324AbgJHXDR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 19:03:17 -0400
+IronPort-SDR: DjveMciltHLd9t9pIu6J98p9snBLOGF2dPOSH8otv72oIB6S7b+8E6TNFuq4fV2wZ5zQffM5fx
+ O6Tm7+g0Oyww==
+X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="145282980"
+X-IronPort-AV: E=Sophos;i="5.77,352,1596524400"; 
+   d="scan'208";a="145282980"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 16:03:16 -0700
+IronPort-SDR: LOPogIk0y36j6+ilVR3IsDGlsoNtLvWLruS08DX7Qw0BSxVJ8bUPhAqfu4JANKfXHlBtYiTj6R
+ nW5e3Gf2cGuA==
+X-IronPort-AV: E=Sophos;i="5.77,352,1596524400"; 
+   d="scan'208";a="461973934"
+Received: from rhweight-mobl2.amr.corp.intel.com (HELO [10.0.2.15]) ([10.254.33.152])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 16:03:15 -0700
+Subject: Re: [PATCH v2 1/6] mfd: intel-m10-bmc: support for MAX10 BMC Security
+ Engine
+From:   Russ Weight <russell.h.weight@intel.com>
+To:     Tom Rix <trix@redhat.com>, mdf@kernel.org, lee.jones@linaro.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
+        matthew.gerlach@intel.com
+References: <20201003012412.16831-1-russell.h.weight@intel.com>
+ <20201003012412.16831-2-russell.h.weight@intel.com>
+ <6eef3a9a-ffc9-7e93-e3ef-69e755fbf8cc@redhat.com>
+ <53a712e8-63e5-8b75-a2a4-6bf7fa327462@intel.com>
+Message-ID: <9e5b012d-c8e4-2c01-26e0-a6bf6dce6679@intel.com>
+Date:   Thu, 8 Oct 2020 16:03:14 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jddqv7i2wiys2vkp"
-Content-Disposition: inline
-In-Reply-To: <20200906195103.1347-2-digetx@gmail.com>
+In-Reply-To: <53a712e8-63e5-8b75-a2a4-6bf7fa327462@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+I just realized that I missed a few questions on my first reply.
+Please see my responses below.
 
---jddqv7i2wiys2vkp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 10/7/20 5:52 PM, Russ Weight wrote:
+>
+> On 10/6/20 9:34 AM, Tom Rix wrote:
+>> On 10/2/20 6:24 PM, Russ Weight wrote:
+>>> Add macros and definitions required by the MAX10 BMC
+>>> Security Engine driver.
+>>>
+>>> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+>>> ---
+>>> v2:
+>>>   - These functions and macros were previously distributed among
+>>>     the patches that needed them. They are now grouped together
+>>>     in a single patch containing changes to the Intel MAX10 BMC
+>>>     driver.
+>>>   - Added DRBL_ prefix to some definitions
+>>>   - Some address definitions were moved here from the .c files that
+>>>     use them.
+>>> ---
+>>>  include/linux/mfd/intel-m10-bmc.h | 134 ++++++++++++++++++++++++++++++
+>>>  1 file changed, 134 insertions(+)
+>>>
+>>> diff --git a/include/linux/mfd/intel-m10-bmc.h b/include/linux/mfd/intel-m10-bmc.h
+>>> index c8ef2f1654a4..880f907302eb 100644
+>>> --- a/include/linux/mfd/intel-m10-bmc.h
+>>> +++ b/include/linux/mfd/intel-m10-bmc.h
+>>> @@ -13,6 +13,9 @@
+>>>  #define M10BMC_SYS_BASE			0x300800
+>>>  #define M10BMC_MEM_END			0x200000fc
+>>>  
+>>> +#define M10BMC_STAGING_BASE		0x18000000
+>>> +#define M10BMC_STAGING_SIZE		0x3800000
+>> The staging size is not used, please use it in m10bmc_sec_write_blk to
+>>
+>> check the input parameter 'size'
+> It is used to check the input size in the prepare function:
+> m10bmc_sec_prepare()
+>
+>         if (smgr->remaining_size > M10BMC_STAGING_SIZE)
+>                 return FPGA_SEC_ERR_INVALID_SIZE;
+>
+> - Russ
+>
+>>> +
+>>>  /* Register offset of system registers */
+>>>  #define NIOS2_FW_VERSION		0x0
+>>>  #define M10BMC_TEST_REG			0x3c
+>>> @@ -21,6 +24,88 @@
+>>>  #define M10BMC_VER_PCB_INFO_MSK		GENMASK(31, 24)
+>>>  #define M10BMC_VER_LEGACY_INVALID	0xffffffff
+>>>  
+>>> +/* Secure update doorbell register, in system register region */
+>>> +#define M10BMC_DOORBELL			0x400
+>>> +
+>>> +/* Authorization Result register, in system register region */
+>>> +#define M10BMC_AUTH_RESULT		0x404
+>>> +
+>>> +/* Doorbell register fields */
+>>> +#define DRBL_RSU_REQUEST		BIT(0)
+>>> +#define DRBL_RSU_PROGRESS		GENMASK(7, 4)
+>>> +#define DRBL_HOST_STATUS		GENMASK(11, 8)
+>>> +#define DRBL_RSU_STATUS			GENMASK(23, 16)
+>>> +#define DRBL_PKVL_EEPROM_LOAD_SEC	BIT(24)
+>>> +#define DRBL_PKVL1_POLL_EN		BIT(25)
+>>> +#define DRBL_PKVL2_POLL_EN		BIT(26)
+>> PKVL seems like it would be n3000 specific.
+>>
+>> For this and similar it may be good to add a _N3000_ in the name.
+I'm hoping Yilun and Hao might chime in here. We have substituted PKVL
+for Retimer in some places in the code.
+>>
+>>> +#define DRBL_CONFIG_SEL			BIT(28)
+>>> +#define DRBL_REBOOT_REQ			BIT(29)
+>>> +#define DRBL_REBOOT_DISABLED		BIT(30)
+>>> +
+>>> +/* Progress states */
+>>> +#define RSU_PROG_IDLE			0x0
+>>> +#define RSU_PROG_PREPARE		0x1
+>>> +#define RSU_PROG_READY			0x3
+>>> +#define RSU_PROG_AUTHENTICATING		0x4
+>>> +#define RSU_PROG_COPYING		0x5
+>>> +#define RSU_PROG_UPDATE_CANCEL		0x6
+>>> +#define RSU_PROG_PROGRAM_KEY_HASH	0x7
+>>> +#define RSU_PROG_RSU_DONE		0x8
+>>> +#define RSU_PROG_PKVL_PROM_DONE		0x9
+>>> +
+>>> +/* Device and error states */
+>>> +#define RSU_STAT_NORMAL			0x0
+>>> +#define RSU_STAT_TIMEOUT		0x1
+>>> +#define RSU_STAT_AUTH_FAIL		0x2
+>>> +#define RSU_STAT_COPY_FAIL		0x3
+>>> +#define RSU_STAT_FATAL			0x4
+>>> +#define RSU_STAT_PKVL_REJECT		0x5
+>>> +#define RSU_STAT_NON_INC		0x6
+>>> +#define RSU_STAT_ERASE_FAIL		0x7
+>>> +#define RSU_STAT_WEAROUT		0x8
+>>> +#define RSU_STAT_NIOS_OK		0x80
+>>> +#define RSU_STAT_USER_OK		0x81
+>>> +#define RSU_STAT_FACTORY_OK		0x82
+>>> +#define RSU_STAT_USER_FAIL		0x83
+>>> +#define RSU_STAT_FACTORY_FAIL		0x84
+>>> +#define RSU_STAT_NIOS_FLASH_ERR		0x85
+>>> +#define RSU_STAT_FPGA_FLASH_ERR		0x86
+>>> +
+>>> +#define HOST_STATUS_IDLE		0x0
+>>> +#define HOST_STATUS_WRITE_DONE		0x1
+>>> +#define HOST_STATUS_ABORT_RSU		0x2
+>>> +
+>>> +#define rsu_prog(doorbell)	FIELD_GET(DRBL_RSU_PROGRESS, doorbell)
+>>> +#define rsu_stat(doorbell)	FIELD_GET(DRBL_RSU_STATUS, doorbell)
+>>> +
+>>> +/* interval 100ms and timeout 5s */
+>>> +#define NIOS_HANDSHAKE_INTERVAL_US	(100 * 1000)
+>>> +#define NIOS_HANDSHAKE_TIMEOUT_US	(5 * 1000 * 1000)
+>>> +
+>>> +/* RSU PREP Timeout (2 minutes) to erase flash staging area */
+>>> +#define RSU_PREP_INTERVAL_MS		100
+>>> +#define RSU_PREP_TIMEOUT_MS		(2 * 60 * 1000)
+>>> +
+>>> +/* RSU Complete Timeout (40 minutes) for full flash update */
+>>> +#define RSU_COMPLETE_INTERVAL_MS	1000
+>>> +#define RSU_COMPLETE_TIMEOUT_MS		(40 * 60 * 1000)
+>> minutes is an unusual timeout unit.
+>>
+>> It may be worthwhile to spell out MINUTES to avoid confusing with micro seconds.
+The _MS at the end of the constants means milliseconds. That is pretty
+standard, isn't it? Although the wait is 40 minutes, the constant is a
+millisecond count that corresponds to 40 minutes. I expanded the definition
+to make things more clear: 40 (minutes) * 60 (seconds) * 1000 milliseconds =
+(40 minutes expressed in milliseconds).
+>> Tom
+>>
+>>> +
+>>> +/* Addresses for security related data in FLASH */
+>>> +#define BMC_REH_ADDR	0x17ffc004
+>>> +#define BMC_PROG_ADDR	0x17ffc000
+>>> +#define BMC_PROG_MAGIC	0x5746
+>>> +
+>>> +#define SR_REH_ADDR	0x17ffd004
+>>> +#define SR_PROG_ADDR	0x17ffd000
+>>> +#define SR_PROG_MAGIC	0x5253
+>>> +
+>>> +#define PR_REH_ADDR	0x17ffe004
+>>> +#define PR_PROG_ADDR	0x17ffe000
+>>> +#define PR_PROG_MAGIC	0x5250
+>>> +
+>>> +/* Address of inverted bit vector containing user the image FLASH count */
+>>> +#define USER_FLASH_COUNT 0x17ffb000
+>>> +
+>>>  /**
+>>>   * struct intel_m10bmc - Intel MAX 10 BMC parent driver data structure
+>>>   * @dev: this device
+>>> @@ -35,7 +120,11 @@ struct intel_m10bmc {
+>>>   * register access helper functions.
+>>>   *
+>>>   * m10bmc_raw_read - read m10bmc register per addr
+>>> + * m10bmc_raw_bulk_read - bulk read max10 registers per addr
+>>> + * m10bmc_raw_bulk_write - bulk write max10 registers per addr
+>>> + * m10bmc_raw_update_bits - update max10 register per addr
+>>>   * m10bmc_sys_read - read m10bmc system register per offset
+>>> + * m10bmc_sys_update_bits - update max10 system register per offset
+>>>   */
+>>>  static inline int
+>>>  m10bmc_raw_read(struct intel_m10bmc *m10bmc, unsigned int addr,
+>>> @@ -51,6 +140,48 @@ m10bmc_raw_read(struct intel_m10bmc *m10bmc, unsigned int addr,
+>>>  	return ret;
+>>>  }
+>>>  
+>>> +static inline int
+>>> +m10bmc_raw_bulk_read(struct intel_m10bmc *m10bmc, unsigned int addr,
+>>> +		     void *val, size_t cnt)
+>>> +{
+>>> +	int ret;
+>>> +
+>>> +	ret = regmap_bulk_read(m10bmc->regmap, addr, val, cnt);
+>>> +	if (ret)
+>>> +		dev_err(m10bmc->dev, "fail to read raw reg %x cnt %zx: %d\n",
+>>> +			addr, cnt, ret);
+>>> +
+>>> +	return ret;
+>>> +}
+>>> +
+>>> +static inline int
+>>> +m10bmc_raw_bulk_write(struct intel_m10bmc *m10bmc, unsigned int addr,
+>>> +		      void *val, size_t cnt)
+>>> +{
+>>> +	int ret;
+>>> +
+>>> +	ret = regmap_bulk_write(m10bmc->regmap, addr, val, cnt);
+>>> +	if (ret)
+>>> +		dev_err(m10bmc->dev, "fail to write raw reg %x cnt %zx: %d\n",
+>>> +			addr, cnt, ret);
+>>> +
+>>> +	return ret;
+>>> +}
+>>> +
+>>> +static inline int
+>>> +m10bmc_raw_update_bits(struct intel_m10bmc *m10bmc, unsigned int addr,
+>>> +		       unsigned int msk, unsigned int val)
+>>> +{
+>>> +	int ret;
+>>> +
+>>> +	ret = regmap_update_bits(m10bmc->regmap, addr, msk, val);
+>>> +	if (ret)
+>>> +		dev_err(m10bmc->dev, "fail to update raw reg %x: %d\n",
+>>> +			addr, ret);
+>>> +
+>>> +	return ret;
+>>> +}
+>>> +
+>>>  /*
+>>>   * The base of the system registers could be configured by HW developers, and
+>>>   * in HW SPEC, the base is not added to the addresses of the system registers.
+>>> @@ -62,4 +193,7 @@ m10bmc_raw_read(struct intel_m10bmc *m10bmc, unsigned int addr,
+>>>  #define m10bmc_sys_read(m10bmc, offset, val) \
+>>>  	m10bmc_raw_read(m10bmc, M10BMC_SYS_BASE + (offset), val)
+>>>  
+>>> +#define m10bmc_sys_update_bits(m10bmc, offset, msk, val) \
+>>> +	m10bmc_raw_update_bits(m10bmc, M10BMC_SYS_BASE + (offset), msk, val)
+>>> +
+>>>  #endif /* __MFD_INTEL_M10_BMC_H */
 
-Hi,
-
-On Sun, Sep 06, 2020 at 10:50:59PM +0300, Dmitry Osipenko wrote:
-> Add binding document for the ENE KB930 Embedded Controller.
->=20
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  .../devicetree/bindings/mfd/ene-kb930.yaml    | 66 +++++++++++++++++++
->  1 file changed, 66 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mfd/ene-kb930.yaml
->=20
-> diff --git a/Documentation/devicetree/bindings/mfd/ene-kb930.yaml b/Docum=
-entation/devicetree/bindings/mfd/ene-kb930.yaml
-> new file mode 100644
-> index 000000000000..635c8966ca22
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mfd/ene-kb930.yaml
-> @@ -0,0 +1,66 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mfd/ene-kb930.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: ENE KB930 Embedded Controller bindings
-> +
-> +description: |
-> +  This binding describes the ENE KB930 Embedded Controller attached to an
-> +  I2C bus.
-> +
-> +maintainers:
-> +  - Dmitry Osipenko <digetx@gmail.com>
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +        - acer,a500-iconia-ec # Acer A500 Iconia tablet device
-> +      - enum:
-> +        - ene,kb930
-> +  reg:
-> +    maxItems: 1
-> +
-> +  monitored-battery: true
-
-^^^ this is not being used by your battery driver. Do you plan
-to use it in the future or is it a copy&paste mistake? :)
-
--- Sebastian
-
-> +  power-supplies: true
-> +  system-power-controller: true
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    battery: battery-cell {
-> +      compatible =3D "simple-battery";
-> +      charge-full-design-microamp-hours =3D <3260000>;
-> +      energy-full-design-microwatt-hours =3D <24000000>;
-> +      operating-range-celsius =3D <0 40>;
-> +    };
-> +
-> +    mains: ac-adapter {
-> +      compatible =3D "gpio-charger";
-> +      charger-type =3D "mains";
-> +      gpios =3D <&gpio 125 0>;
-> +    };
-> +
-> +    i2c {
-> +      #address-cells =3D <1>;
-> +      #size-cells =3D <0>;
-> +
-> +      embedded-controller@58 {
-> +        compatible =3D "acer,a500-iconia-ec", "ene,kb930";
-> +        reg =3D <0x58>;
-> +
-> +        system-power-controller;
-> +
-> +        monitored-battery =3D <&battery>;
-> +        power-supplies =3D <&mains>;
-> +      };
-> +    };
-> +
-> +...
-> --=20
-> 2.27.0
->=20
-
---jddqv7i2wiys2vkp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl9/mhAACgkQ2O7X88g7
-+pp63A//ZZhQ8x9f3hQfOOIo4d7D0X+Ybay9oCzCADuEMxtx+s9y57OBHSkMNiZ5
-uaBXwueE/HMe0VVsc/HOmBh2T9iOxVmab1+YP36zeNB6tsma/jmfjToqEjwjyXMn
-uqEfC8aKFSar9Hm2JtYRjkwAcNxCktmXHyKpiBsA66UWq8W6PMePeDeZNBLJBd+R
-XZg/Z/RgXRmgD5Hdm2tuQqPHM8+9yvS08I69E4uFW9b/ci9LyNkDZ2Nv8Fztyaw8
-CNpFSNB9+GI3RsXDFg9oKz5ofyGvICElD2M9QumvoBdTriJPBA2Btsggn4z0ERpP
-hl+ixC/hu1+wK0NLL4wyoJdIlfzPRWp1oL0C9q0C8coSgaC5dEBLscadtMrjVr9l
-2WbXodXV+igOW5egV5z1G6LzJygbUAq+xs4XtO+f+OzV74p+LS1QS0AF7D8zdSqS
-Ne+4Dj30VWqbYgI1fVWaT4BmgzSPcHLLLAA0dytpmDzoHezNqGyHcO8OuZ0PgPnB
-t9Rlptvg/QQEnxdzhzZiT5gT49eHcyzvfYhZngzUjpkN7o53Grjm4HXqVLuUo/cj
-HVR6i9+GKDLPKrzKYIiINyfY6TV+WVlCbDUDUPn0S5aTpkpSf1zfRV0ShWamZ6C4
-77hVvD10pIUr9UfbF3pdvk2xOLYg82J6b4WrArkl/U7tvEztR8Q=
-=spjz
------END PGP SIGNATURE-----
-
---jddqv7i2wiys2vkp--
