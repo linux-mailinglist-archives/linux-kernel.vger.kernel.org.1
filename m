@@ -2,129 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 748E1287D23
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 22:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28A0E287D26
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 22:31:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730420AbgJHUas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 16:30:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725979AbgJHUar (ORCPT
+        id S1730454AbgJHUbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 16:31:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58192 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730288AbgJHUa6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 16:30:47 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A5EAC0613D2;
-        Thu,  8 Oct 2020 13:30:47 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id 13so7751781wmf.0;
-        Thu, 08 Oct 2020 13:30:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FTbqlGFvhgZ6bH2B5iw3WBigT5tQeWMYA6WjQ/SSBmc=;
-        b=tpE5I38J1MAKh2K1b6ATm7O7RJLI/T/Oe7m4EkK4C87f21i9ENQCiPW9wu/dihkjPV
-         a69So7t5zrTzH7xQMyCMMd/L7F0ykz/WA2dMJVpyEeog3aYTH0GCOQbAa7ibO7iB1nLy
-         MEOU4eiMsDoytEOju1TU8dwME6Pl6fvpN4RwboK0VHMeFoYsfaFXLj9DiQf4QE+mGr4n
-         y9eGV76KzR6pkKbocHdJJHoK+AxccDmwZBaVYwMQl668J+VhZMJCuMBlSwVWQ0Hk1pMh
-         +KPNOMEhfopZ/ChX4ayRE0me1qv7s7iypWfh/pOvu3FK9cTxqzBxhF+n8r55YSYfrvY1
-         2Q+g==
+        Thu, 8 Oct 2020 16:30:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602189057;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=lgT/Pao2dhRy7r2cOmOSyyn/G9gLMf1e4iWJG7ETJJY=;
+        b=M2zZYYdJ5+q+9TleHTorYoPeLeaQ/nhamfBEfqyigEje8LU5drjh6BmyAOpV+aVx+XGfx5
+        4X5eo7mbSVR9yA90vRjWjRWEHmxQ2cbzdo/DTxpi6Zpzcz8AAm2aKKC+kqTyQq6Ut6F14D
+        hzjlO1nKEtxYHCUWWHgT5KogDayU0CQ=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-7-AmcJoiEhMVCodmdRS6IJ3w-1; Thu, 08 Oct 2020 16:30:55 -0400
+X-MC-Unique: AmcJoiEhMVCodmdRS6IJ3w-1
+Received: by mail-wm1-f72.google.com with SMTP id b20so4442665wmj.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 13:30:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FTbqlGFvhgZ6bH2B5iw3WBigT5tQeWMYA6WjQ/SSBmc=;
-        b=NJRCQhysXfoCUp9jPv0KVTi/lRgYDPIHqO01GgbPTSW24OgVo0B16nWfSbwb7I1rHn
-         44HAnkEJz7FsSElkaxvUf2sCh8qm71N5aHKR7/vchrn2d78Ax46PEKYy+4+kjEAXGFZz
-         J2CD1eSlj9kTYvRPUrat9Y25KYT3BtIfnBTFAST3ao023dTfehRWxLbMi1N+XF0cXFTk
-         QnwENpf8u1xAxytlrkwfs8VNLx3qmvunK/gduPSv8HSnqhsVS5r/iYoGRKIQgQJvGgvt
-         loJmdJmVztO/lkuJvmfoPTbdAwI874+FFmHw8T5KkMBVrLWbUZEdI321UGMMhN9V7VmU
-         ExIw==
-X-Gm-Message-State: AOAM5306vuovzP+X2Wl4uNgTrKIigcSTIRoapSCxRaIL0bUbefKmi+cc
-        TnOKJIdzYlNFC1CrMDnrKuMHfFz+0tI+vlD8uPo=
-X-Google-Smtp-Source: ABdhPJwXiPFomUDsqa24JmwvN1oUSiMK/NTuoyM4K9e35X66nNBFb066ZiPJ8D6Rx6A1GBT8GxS/j4Mhsl13P6kSkWI=
-X-Received: by 2002:a7b:cb17:: with SMTP id u23mr10247720wmj.166.1602189045971;
- Thu, 08 Oct 2020 13:30:45 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=lgT/Pao2dhRy7r2cOmOSyyn/G9gLMf1e4iWJG7ETJJY=;
+        b=d1IeSUyxHr6/XUB/w5ab9JNzUjOLea0lAkpd1kQmKrrbcWmhMsyG7ctqE9NTa+U72A
+         Xy6wqxMLtMMhFBWRMMiCDRavz6BUxggWTjY7q8hFDctGLVdoMyLhgeTr3zXIwrN86ScI
+         01m8pNaKJo8ra6e1syn5rRt79hImYMD8uwIK8ZYVZK8RNU9HGyD117QT9e8H1tMYkcyK
+         qksiwnVDhkdp7mIK7gHXDU+jpglrQoqBbZK8ayOWKg50Pkiac3+EcKDecZHcebE6svP4
+         oH/32iNmv+Ic4yH+TeA6gWbIjzKlKH6QnQS8BHAQ61NGCes/S84Q5TcY0dLzM60LqAbw
+         HAdA==
+X-Gm-Message-State: AOAM530zZuvTYUkCSuI/ibfUCp0RWYiG2EEROcOf2lu/kbsBiFCvPE1N
+        H1zztxUwIOq5XPTPg2o+77BdEgwMqxx1e7+t7I99sWB/zBm5MR995toybJ+PnvMglHqxky5XfZn
+        XqetVII/Ahl+Ml86guDIQPqlk
+X-Received: by 2002:a7b:c305:: with SMTP id k5mr10972364wmj.102.1602189054221;
+        Thu, 08 Oct 2020 13:30:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz39hXz1Of1vVfE+ExLOVbu6aOgDjiquQ4GfgQ/XcsmEw8zvuDHbrPJdW4dVAvGz1TOUqEloQ==
+X-Received: by 2002:a7b:c305:: with SMTP id k5mr10972350wmj.102.1602189054015;
+        Thu, 08 Oct 2020 13:30:54 -0700 (PDT)
+Received: from redhat.com (bzq-79-179-71-128.red.bezeqint.net. [79.179.71.128])
+        by smtp.gmail.com with ESMTPSA id a81sm9549014wmf.32.2020.10.08.13.30.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Oct 2020 13:30:53 -0700 (PDT)
+Date:   Thu, 8 Oct 2020 16:30:51 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        elic@nvidia.com, groug@kaod.org, jasowang@redhat.com,
+        lkp@intel.com, michael.christie@oracle.com, mst@redhat.com,
+        si-wei.liu@oracle.com, stable@vger.kernel.org
+Subject: [GIT PULL] vhost,vdpa: last minute fixes
+Message-ID: <20201008163051-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-References: <20201008181514.668548-1-kholk11@gmail.com> <20201008181514.668548-4-kholk11@gmail.com>
- <CAJKOXPdZ_zo0bPwQd=_dKHhA2KWHgsH4KTH=+cX8hNxSVrqrig@mail.gmail.com>
-In-Reply-To: <CAJKOXPdZ_zo0bPwQd=_dKHhA2KWHgsH4KTH=+cX8hNxSVrqrig@mail.gmail.com>
-From:   AngeloGioacchino Del Regno <kholk11@gmail.com>
-Date:   Thu, 8 Oct 2020 22:30:35 +0200
-Message-ID: <CAK7fi1ZJN=AbkusWqDEbAkZ=AgKEPCvWH43hBpX0-EUDJWOC5g@mail.gmail.com>
-Subject: Re: [PATCH v4 3/3] dt-bindings: touchscreen: Add binding for Novatek
- NT36xxx series driver
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     dmitry.torokhov@gmail.com, Rob Herring <robh+dt@kernel.org>,
-        rydberg@bitmath.org, priv.luk@gmail.com,
-        linux-input@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        marijns95@gmail.com, konradybcio@gmail.com,
-        martin.botka1@gmail.com, phone-devel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mutt-Fcc: =sent
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il giorno gio 8 ott 2020 alle ore 20:21 Krzysztof Kozlowski
-<krzk@kernel.org> ha scritto:
->
-> On Thu, 8 Oct 2020 at 20:15, <kholk11@gmail.com> wrote:
-> >
-> > From: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> >
-> > Add binding for the Novatek NT36xxx series touchscreen driver.
-> >
-> > Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> > ---
-> >  .../input/touchscreen/novatek,nt36xxx.yaml    | 59 +++++++++++++++++++
-> >  1 file changed, 59 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml b/Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml
-> > new file mode 100644
-> > index 000000000000..e747cacae036
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml
-> > @@ -0,0 +1,59 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/input/touchscreen/novatek,nt36xxx.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Novatek NT36xxx series touchscreen controller Bindings
-> > +
-> > +maintainers:
-> > +  - Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> > +
-> > +allOf:
-> > +  - $ref: touchscreen.yaml#
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: novatek,nt36xxx
->
-> Thanks for the changes, they look good except this part here which I
-> missed before. The compatible should not contain wildcards. If all
-> devices are really compatible, just add here one const, e.g. "const:
-> novatek,nt36525". If they are different, you could add multiple
-> compatibles in enum.
->
-> Best regards,
-> Krzysztof
+The following changes since commit a127c5bbb6a8eee851cbdec254424c480b8edd75:
 
-They are all managed the same way, but the page addresses are
-changing between all of them... the driver is reading the chip ID
-while the TS MCU is in "boot mode", then checking in a ID table
-if the chip is supported and finally assigning a page address table.
-This is done for the entire NT36*** series.
+  vhost-vdpa: fix backend feature ioctls (2020-09-24 05:54:36 -0400)
 
-If wildcards are not permitted, perhaps I can change it to something
-like "novatek,nt36" or "novatek,nt36-ts"... as then specifying the
-specific IC model into the DT means that I would have to logically
-change the driver itself to also crosscheck a DT-specified model
-with whatever gets recognized by reading the chip (which then would
-be a triple check of what's going on, imo overcomplicating the logic).
+are available in the Git repository at:
 
-What would you propose, at this point?
+  https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
+
+for you to fetch changes up to aff90770e54cdb40228f2ab339339e95d0aa0c9a:
+
+  vdpa/mlx5: Fix dependency on MLX5_CORE (2020-10-08 16:02:00 -0400)
+
+----------------------------------------------------------------
+vhost,vdpa: last minute fixes
+
+Some last minute fixes. The last two of them haven't been in next but
+they do seem kind of obvious, very small and safe, fix bugs reported in
+the field, and they are both in a new mlx5 vdpa driver, so it's not like
+we can introduce regressions.
+
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+
+----------------------------------------------------------------
+Eli Cohen (1):
+      vdpa/mlx5: Fix dependency on MLX5_CORE
+
+Greg Kurz (3):
+      vhost: Don't call access_ok() when using IOTLB
+      vhost: Use vhost_get_used_size() in vhost_vring_set_addr()
+      vhost: Don't call log_access_ok() when using IOTLB
+
+Mike Christie (1):
+      vhost vdpa: fix vhost_vdpa_open error handling
+
+Si-Wei Liu (3):
+      vhost-vdpa: fix vhost_vdpa_map() on error condition
+      vhost-vdpa: fix page pinning leakage in error path
+      vdpa/mlx5: should keep avail_index despite device status
+
+ drivers/vdpa/Kconfig              |   7 +--
+ drivers/vdpa/mlx5/net/mlx5_vnet.c |  20 ++++--
+ drivers/vhost/vdpa.c              | 127 +++++++++++++++++++++++---------------
+ drivers/vhost/vhost.c             |  33 +++++++---
+ 4 files changed, 117 insertions(+), 70 deletions(-)
+
