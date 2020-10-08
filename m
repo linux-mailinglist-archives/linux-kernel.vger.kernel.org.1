@@ -2,134 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C078287721
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 17:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE0E0287729
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 17:30:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731038AbgJHP2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 11:28:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37578 "EHLO
+        id S1731072AbgJHPaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 11:30:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730550AbgJHP2r (ORCPT
+        with ESMTP id S1730918AbgJHPaF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 11:28:47 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAF17C061755;
-        Thu,  8 Oct 2020 08:28:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=KTnCY2TC0EEDY87TJ5e0IxZJrc3I29yWn7wm8w//0YU=; b=cn4jHTWHF0dMQGfH+Wlmn7RoRc
-        wKxkeGZGZX5O0bvFm1r83vQWN7GJbqR6S0K+eJQ/13r99OV/DCtx/Jmtf9z5x7hj3S0iB4FYDMs9Z
-        XwhZ5tdZXLHej+oIqdV7VuTXMrN1KFIvsHz3UoY3jOWbznZZdqNpPF8v5kwJhg8BhE/xcvgyz51Sq
-        8ZA2QvO64ZgK1Jfj+SHPqy+8jyOPGCNZGunwf2SYrFRVSIN3bQcn2a7UWPyuUNWEA3OJA3x3YcZNA
-        QOngRmq70pf/bcKP77QCMQx8faIAMZ3T+rxnnc6kHKnFnB1xUntDLLwWpON61lWVaPozN76OAVhYi
-        Hz93dyqQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kQXqW-00007S-Lh; Thu, 08 Oct 2020 15:28:44 +0000
-Date:   Thu, 8 Oct 2020 16:28:44 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     syzbot <syzbot+cdcbdc0bd42e559b52b9@syzkaller.appspotmail.com>,
-        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk
-Subject: Re: inconsistent lock state in xa_destroy
-Message-ID: <20201008152844.GI20115@casper.infradead.org>
-References: <00000000000045ac4605b12a1720@google.com>
- <de842e7f-fa50-193b-b1d7-c573e515ef8b@kernel.dk>
- <20201008150518.GG20115@casper.infradead.org>
- <ecfb657e-91fe-5e53-20b7-63e9e6105986@kernel.dk>
+        Thu, 8 Oct 2020 11:30:05 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFD4AC061755
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 08:30:05 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id y198so7464442qka.0
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 08:30:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SqRA6Yl5kFaqC7nyN7S9QqR04lj9MdeB5jpNUBqGXqM=;
+        b=YdO/TXzfFIrrT/MRkO75xee8G5E6WtV/lTOy53v0S5TxjisEIvcT0zzH3A26gGkrBF
+         lCfs5HRd3T+DV5BHCMuP6TymS0xTTZjfM5SouBf4QTniTNEp+UEloZ0a/p+/opelOVmG
+         GtHAiJ0YP1Z+KKuRoeHr0c7WL2EhV/geynbK4tSBV9OCjoHclLSMTwLNbe+9RTT6v/4e
+         ywg+vAcsB2fy7GvkRjCJSKm1tKHZGC2PsQaaXawZho2k755gasm5S5QMe6ayr7UtlAbF
+         OIQDYsr3J3jvKdWy8yVRH8W+1ufDuxj79QZ8Yt3W5/7ynY3h6Tkd3iTrqZO0bKKzNiBq
+         FhgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=SqRA6Yl5kFaqC7nyN7S9QqR04lj9MdeB5jpNUBqGXqM=;
+        b=czsPjK6tHe5AJym+12LR+lAZE3/989KQ+0uIk509xEFlevglLM3Y317j38ci5F6bjo
+         168evDruDnPNaNVph/et+Lp22U93+qzoZPxI8MaHsYQ9zv0+AooR+C9Aw7rdIUQAE+rX
+         wVgGRbIcYJVm/KHjMl614MbG5dkZeMOZ1jeGAgEqR//C1s+hQW3CuWFdVQ6oC8bOkN1q
+         s7DyYxf7W9I7xvjwMkGmg+xPJAk7OHpS4FvDTcjWJGf1WeKssTLRkUX58gw0w/2tAIrI
+         CHeacUZuPE4qOs/6hXRlP9fbs9IjNeoo920iL3Hp/AF+BB1n6CkX7Aw1/dZ6wAEH+Kgt
+         Kg8Q==
+X-Gm-Message-State: AOAM532pZtsGwq1r0Rxbx6JlaCTSLSKbJ2vLNQXEWr5FyPhboNHbalPj
+        fjHbJX430SPzat+iqm6rn5w=
+X-Google-Smtp-Source: ABdhPJxrUmaCakA+f0Fzy0VGe9QFB0qQxeIU05jTo5T0N6WjR+ZUQEd7dySQ9YvWKa4KtEnFPcOufw==
+X-Received: by 2002:a05:620a:7f8:: with SMTP id k24mr1509742qkk.5.1602171004828;
+        Thu, 08 Oct 2020 08:30:04 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id t64sm3970421qkd.69.2020.10.08.08.30.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Oct 2020 08:30:03 -0700 (PDT)
+Sender: Arvind Sankar <niveditas98@gmail.com>
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Thu, 8 Oct 2020 11:30:02 -0400
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>, x86@kernel.org,
+        Joerg Roedel <jroedel@suse.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/5] x86/boot: Move get_cmd_line_ptr() and
+ COMMAND_LINE_SIZE into misc.h
+Message-ID: <20201008153002.GA2697342@rani.riverdale.lan>
+References: <20201007195351.776555-1-nivedita@alum.mit.edu>
+ <20201007195351.776555-3-nivedita@alum.mit.edu>
+ <20201008093042.GA6491@zn.tnic>
+ <20201008134723.GB2429573@rani.riverdale.lan>
+ <20201008151047.GB5505@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ecfb657e-91fe-5e53-20b7-63e9e6105986@kernel.dk>
+In-Reply-To: <20201008151047.GB5505@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 09:06:56AM -0600, Jens Axboe wrote:
-> On 10/8/20 9:05 AM, Matthew Wilcox wrote:
-> > On Thu, Oct 08, 2020 at 09:01:57AM -0600, Jens Axboe wrote:
-> >> On 10/8/20 9:00 AM, syzbot wrote:
-> >>> Hello,
-> >>>
-> >>> syzbot found the following issue on:
-> >>>
-> >>> HEAD commit:    e4fb79c7 Add linux-next specific files for 20201008
-> >>> git tree:       linux-next
-> >>> console output: https://syzkaller.appspot.com/x/log.txt?x=12555227900000
-> >>> kernel config:  https://syzkaller.appspot.com/x/.config?x=568d41fe4341ed0f
-> >>> dashboard link: https://syzkaller.appspot.com/bug?extid=cdcbdc0bd42e559b52b9
-> >>> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> >>>
-> >>> Unfortunately, I don't have any reproducer for this issue yet.
-> >>>
-> >>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> >>> Reported-by: syzbot+cdcbdc0bd42e559b52b9@syzkaller.appspotmail.com
-> >>
-> >> Already pushed out a fix for this, it's really an xarray issue where it just
-> >> assumes that destroy can irq grab the lock.
-> > 
-> > ... nice of you to report the issue to the XArray maintainer.
+On Thu, Oct 08, 2020 at 05:10:47PM +0200, Borislav Petkov wrote:
+> On Thu, Oct 08, 2020 at 09:47:23AM -0400, Arvind Sankar wrote:
+> > Are you ok with the include of setup.h?
 > 
-> This is from not even 12h ago, 10h of which I was offline. It wasn't on
-> the top of my list of priority items to tackle this morning, but it
-> is/was on the list.
+> Or you could simply add cmdline.h and include that. It is high time we
+> started cleaning up that include hell in compressed/ and all facilities
+> there be nicely separated. Recently I started untangling it but it is a
+> serious mess. And kernel proper includes leak in there, yuck.
+> 
 
-How's this?
+Ok, I can do that.
 
-diff --git a/lib/xarray.c b/lib/xarray.c
-index 1e4ed5bce5dc..d84cb98d5485 100644
---- a/lib/xarray.c
-+++ b/lib/xarray.c
-@@ -1999,21 +1999,32 @@ EXPORT_SYMBOL_GPL(xa_delete_node);	/* For the benefit of the test suite */
-  * xa_destroy() - Free all internal data structures.
-  * @xa: XArray.
-  *
-- * After calling this function, the XArray is empty and has freed all memory
-- * allocated for its internal data structures.  You are responsible for
-- * freeing the objects referenced by the XArray.
-- *
-- * Context: Any context.  Takes and releases the xa_lock, interrupt-safe.
-+ * After calling this function, the XArray is empty and has freed all
-+ * memory allocated for its internal data structures.  You are responsible
-+ * for freeing the objects referenced by the XArray.
-+ *
-+ * You do not need to call xa_destroy() if you know the XArray is
-+ * already empty.  The IDR used to require this, so you may see some
-+ * old code calling idr_destroy() or xa_destroy() on arrays which we
-+ * know to be empty, but new code should not do this.
-+ *
-+ * Context: If the XArray is protected by an IRQ-safe lock, this function
-+ * must not be called from interrupt context or with interrupts disabled.
-+ * Otherwise it may be called from any context.  It will take and release
-+ * the xa_lock with the appropriate disabling & enabling of softirqs
-+ * or interrupts.
-  */
- void xa_destroy(struct xarray *xa)
- {
- 	XA_STATE(xas, xa, 0);
--	unsigned long flags;
-+	unsigned int lock_type = xa_lock_type(xa);
- 	void *entry;
- 
- 	xas.xa_node = NULL;
--	xas_lock_irqsave(&xas, flags);
-+	xas_lock_type(&xas, lock_type);
- 	entry = xa_head_locked(xa);
-+	if (!entry)
-+		goto out;
- 	RCU_INIT_POINTER(xa->xa_head, NULL);
- 	xas_init_marks(&xas);
- 	if (xa_zero_busy(xa))
-@@ -2021,7 +2032,8 @@ void xa_destroy(struct xarray *xa)
- 	/* lockdep checks we're still holding the lock in xas_free_nodes() */
- 	if (xa_is_node(entry))
- 		xas_free_nodes(&xas, xa_to_node(entry));
--	xas_unlock_irqrestore(&xas, flags);
-+out:
-+	xas_unlock_type(&xas, lock_type);
- }
- EXPORT_SYMBOL(xa_destroy);
- 
+I'm working on a couple of separate series to clean up cmdline and the
+compressed boot code a bit. I was actually planning to get rid of
+boot/compressed/cmdline.c entirely, replacing it with
+arch/x86/lib/cmdline.c instead: that one's better and is reusable as-is
+for the decompressor stub, instead of the current hack to use the
+real-mode boot stub's cmdline.c. The real mess in there is all the
+includes of .c files from various places.
