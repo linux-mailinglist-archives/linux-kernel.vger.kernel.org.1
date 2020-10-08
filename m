@@ -2,101 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48834287545
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 15:35:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 993CC287546
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 15:36:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730162AbgJHNfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 09:35:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48332 "EHLO
+        id S1730310AbgJHNgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 09:36:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726293AbgJHNfu (ORCPT
+        with ESMTP id S1726293AbgJHNgM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 09:35:50 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC7C6C061755
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 06:35:49 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id l4so5471085ota.7
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 06:35:49 -0700 (PDT)
+        Thu, 8 Oct 2020 09:36:12 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 319F0C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 06:36:12 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id t18so5668625ilo.12
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 06:36:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2gxPFYsnlZ12+GaKZv8ppvoZXQ2lPcKEK4w6wsUjhc0=;
-        b=kSRbKf40XqV0l411+b4zQLVQOonAxtlSNecMg/T80Ukzk/KBIGsRMiYozaRMGoE+I9
-         YZmlnArjYcsAzdbyx0eta8P4gSWpJbKAhs27GS76bvi65Rcy4AY+0UdOZC7/n7OXPDeT
-         5hzrbN9EFrDCH25BySerKQbgk1zAmjMvBw9xJfEeBwH3PtB1toIzKqjMeaKdBmeSKqia
-         rBU9PocD6IY/c5DQlp8rLF28OQWJP1wpS0dJ/LWb7qJGrh0iXG4ocuKveN5Cf6U0u6Ne
-         RySDT935UhaAeEOjgYjc69aSLmrUQsvz8eiSO02I21uVOOmt+NG8vHiSSEgD12NLAEYA
-         xFXw==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=e7rKdhz9ciQ35grcxHtJq/vbArd/VYg41u1IRyoy8VI=;
+        b=HfGsbetB6A3geRl7IVm3II/NsMYKjFCFSFfoj1iukhJmepiTMLgPiaDn5YGf4i9jz2
+         TqzIuKIFdAe11i4HznOu927mFEkzbGbAUlRPOXKK0LtJT4hLAcZdpODNOt9fOtxaUhQv
+         k8uAtIVRYHNJi7p8BAWiPjXYOwRdIKTL5bHK+Yzu+P77q2eQzbDsVgeJPVl9KUe5cIF0
+         MmGOb6XJUvNH96DiwSkhKRHbINUNOs3sRNpDrKBQkzU5TGoao/lz8X24GZjZWS/F1Ft6
+         it2raX3dGmumll3aktLzsGWbzLAgFFLyoH3G7uz0iKOpx01VF03O90IU0ZFs2adTgnvV
+         SVKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2gxPFYsnlZ12+GaKZv8ppvoZXQ2lPcKEK4w6wsUjhc0=;
-        b=jFwOQuEmUphYXc3xpVdABxai9GqNRMessWj3hlrsjRE0EOaP0jaz18BJwW6/OjH4LB
-         a6sHgbP6anHcShov/vKY3plkcdaLg3vacXhZSdEXWNyPw8aHQQCS+dsusU0B7XrnPL6D
-         Mqd0lQ9P6bS5mvnsEZ9T8szA9BOSJ1w3zGuwOmGlKMuBWXawLnZjYEhzigoB9cOFg4Qd
-         rRVYQUN3xVdMPC6xxDL2ejhJoMb/7oZ7ejdW0ct4Z1qDw2IU+PECTRU4EzbrlwlrMdXS
-         7mWCv/rEZuQg0gV85sr2o8UJ/jOAaCTYgiu+WhiJ/128QviSFVCgpo19uJz/wB4vtElh
-         bu7A==
-X-Gm-Message-State: AOAM5338BeTldIiDlACd8oMbqAFPWdzJN5gA7TDMsiiFvZXlNJfcoTEg
-        lrGbEn4e/04Q4TLKQZ2srPER8TRui66CJgGQbbY=
-X-Google-Smtp-Source: ABdhPJyYy+WNZqpUVoS3/U9Ws1pjVAS/8vxjphuMpLvUmDDtWyupvbqAY21CaP4FFp4pAZs0DrEfziADasHV/mPsWiY=
-X-Received: by 2002:a9d:6c4b:: with SMTP id g11mr3476386otq.265.1602164149001;
- Thu, 08 Oct 2020 06:35:49 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=e7rKdhz9ciQ35grcxHtJq/vbArd/VYg41u1IRyoy8VI=;
+        b=g8KAeC20cx5BGMIQXZIH8QI/o1PWeYP3DNjFawvQQNWux1xoxMS6OCAF8lzSdU3l7q
+         /QkPYPXIACtbaxAPfIoRC64dsJ+jMoxJx+w3ANG8DumLQTm20dVm8TQ0+MoS22wgJClE
+         3VzHHA9FTlhxbMR1jj3q69jj3U2J0PdhDUf5zYq2FnP50s2aS9IJcarMM5Mu+Kw1bWSW
+         ofarKCoL1pCWD/Qny5xnaQOPbynPsTqCICjOmQ2zkWQlGPJNGK+7UP4+eJVN01XiNUYQ
+         tvgxcn06XMnoGfFEeaumWzijCFoPxn4737Kj5NcWXD/phheq/XCPOCKr5k5GC/RbvhsY
+         xskw==
+X-Gm-Message-State: AOAM5330dySTLXG3++KlIKZn8gOTtVNK/42TObUMF0MqAjcQkTmMMXNK
+        qgXPQuvBzELdziI5N7SNLnjgtg==
+X-Google-Smtp-Source: ABdhPJz6tDDYK+6C45xazMybLC2eN+4Dol/Z1XWOgrGCAjKxpHzNLZq/+mSHZoSnPk7k+mx1rgBKMQ==
+X-Received: by 2002:a92:2591:: with SMTP id l139mr6902795ill.271.1602164171318;
+        Thu, 08 Oct 2020 06:36:11 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id m10sm2636882ilg.74.2020.10.08.06.36.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Oct 2020 06:36:10 -0700 (PDT)
+Subject: Re: [PATCH 1/6] tracehook: clear TIF_NOTIFY_RESUME in
+ tracehook_notify_resume()
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+        peterz@infradead.org, tglx@linutronix.de
+References: <20201005150438.6628-1-axboe@kernel.dk>
+ <20201005150438.6628-2-axboe@kernel.dk> <20201008123748.GD9995@redhat.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <641b5760-3b0d-0ac9-02e0-5322daba7dad@kernel.dk>
+Date:   Thu, 8 Oct 2020 07:36:09 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <alpine.DEB.2.21.2010081247510.19461@felia> <b6cd81b936671a8868fe98536d7c80771bdfd61c.camel@perches.com>
-In-Reply-To: <b6cd81b936671a8868fe98536d7c80771bdfd61c.camel@perches.com>
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Thu, 8 Oct 2020 19:05:24 +0530
-Message-ID: <CABJPP5DLhdOfuOX=Ls0-726-ECL3+o4pkVtcRY0gqk2EvLsByg@mail.gmail.com>
-Subject: Re: checkpatch.pl: REPEATED_WORD: massive false positive in MAINTAINERS
-To:     Joe Perches <joe@perches.com>
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201008123748.GD9995@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 8, 2020 at 6:18 PM Joe Perches <joe@perches.com> wrote:
->
-> On Thu, 2020-10-08 at 13:50 +0200, Lukas Bulwahn wrote:
-> > Dear Joe, dear Dwaipayan,
-> >
-> > while maintaining MAINTAINERS, I noticed that the REPEATED_WORD check,
-> > which in general is a great addition to checkpatch.pl, generates a massive
-> > number of warnings due to one specific pattern in the MAINTAINERS file:
->
-> I didn't actually check if there were many
-> new false positives, but
-> clearly that's one.
->
-> Maybe exclude the MAINTAINERS file?
->
-> -               if ($rawline =~ /^\+/ || $in_commit_log) {
-> +               if (($rawline =~ /^\+/ || $in_commit_log) && $realfile ne "MAINTAINERS") {
->
-> Maybe add git to the check for "long long"?
->
-> -                               next if ($first eq 'long');
-> +                               next if ($first =~ /^(?:long|git)$/);
->
->
->
+On 10/8/20 6:37 AM, Oleg Nesterov wrote:
+> Jens, sorry for delay..
 
-Hi,
-It does resolve all the warnings concerned.
-But could we also exclude documentation type blocks like:
-/**
-* @size size of access
-*/
-There were quite a few of these in include/linux/instrumented.
+No worries, thanks for looking at it!
 
-And also it isn't case sensitive. So the line
-"the the word is repeated" generates a warning, but
-"The the word is repeated" doesn't generate anything.
+> On 10/05, Jens Axboe wrote:
+>>
+>> All the callers currently do this, clean it up and move the clearing
+>> into tracehook_notify_resume() instead.
+> 
+> To me this looks like a good cleanup regardless.
 
-Thanks,
-Dwaipayan.
+Thanks.
+
+-- 
+Jens Axboe
+
