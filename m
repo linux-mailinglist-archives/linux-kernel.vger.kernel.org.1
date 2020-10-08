@@ -2,84 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C40A287073
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 10:07:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02985287078
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 10:09:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728516AbgJHIHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 04:07:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725966AbgJHIHl (ORCPT
+        id S1728541AbgJHIJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 04:09:14 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:59738 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728004AbgJHIJO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 04:07:41 -0400
-Received: from canardo.mork.no (canardo.mork.no [IPv6:2001:4641::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A26CDC061755;
-        Thu,  8 Oct 2020 01:07:40 -0700 (PDT)
-Received: from miraculix.mork.no (miraculix.mork.no [IPv6:2001:4641:0:2:7627:374e:db74:e353])
-        (authenticated bits=0)
-        by canardo.mork.no (8.15.2/8.15.2) with ESMTPSA id 09887LOr003713
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-        Thu, 8 Oct 2020 10:07:21 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mork.no; s=b;
-        t=1602144441; bh=tV+r+n/6hptr1Cjyk7c2jxN8WJX6lDayGAgagQDk9Xw=;
-        h=From:To:Cc:Subject:References:Date:Message-ID:From;
-        b=DXGPI+o/dUVXiVieloQ1PRWctameELzK7jd/ESotw2hhcSjZmyntimMD5vBp6N4Ec
-         CVnpb23wimIavRSTEEJoPujYT0Q+H0EvLy3Ig70Xm0DBvPx9PLlQ93S7nZpp4Kfj9q
-         bTcul6ptT6eokqWwArwCKcpvlPdVMpNY/ePJSY28=
-Received: from bjorn by miraculix.mork.no with local (Exim 4.94)
-        (envelope-from <bjorn@mork.no>)
-        id 1kQQxM-0017cV-Le; Thu, 08 Oct 2020 10:07:20 +0200
-From:   =?utf-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>
-To:     Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        netdev@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] net: usb: qmi_wwan: add Cellient MPL200 card
-Organization: m
-References: <cover.1602140720.git.wilken.gottwalt@mailbox.org>
-        <f5858ed121df35460ef17591152d606a78aa65db.1602140720.git.wilken.gottwalt@mailbox.org>
-Date:   Thu, 08 Oct 2020 10:07:20 +0200
-In-Reply-To: <f5858ed121df35460ef17591152d606a78aa65db.1602140720.git.wilken.gottwalt@mailbox.org>
-        (Wilken Gottwalt's message of "Thu, 8 Oct 2020 09:21:38 +0200")
-Message-ID: <87d01ti1jb.fsf@miraculix.mork.no>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        Thu, 8 Oct 2020 04:09:14 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 7D1C01C0BA3; Thu,  8 Oct 2020 10:09:11 +0200 (CEST)
+Date:   Thu, 8 Oct 2020 10:09:09 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     jic23@kernel.org, kamel.bouhara@bootlin.com, gwendal@chromium.org,
+        alexandre.belloni@bootlin.com, david@lechnology.com,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
+        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com
+Subject: Re: [PATCH v5 4/5] docs: counter: Document character device interface
+Message-ID: <20201008080909.GA31561@amd>
+References: <cover.1601170670.git.vilhelm.gray@gmail.com>
+ <54190f9875b81b6aa5483a7710b084053a44abb8.1601170670.git.vilhelm.gray@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Virus-Scanned: clamav-milter 0.102.4 at canardo
-X-Virus-Status: Clean
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="5mCyUwZo2JvN/JJP"
+Content-Disposition: inline
+In-Reply-To: <54190f9875b81b6aa5483a7710b084053a44abb8.1601170670.git.vilhelm.gray@gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wilken Gottwalt <wilken.gottwalt@mailbox.org> writes:
 
-> Add usb ids of the Cellient MPL200 card.
->
-> Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-> ---
->  drivers/net/usb/qmi_wwan.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/net/usb/qmi_wwan.c b/drivers/net/usb/qmi_wwan.c
-> index 07c42c0719f5..5ca1356b8656 100644
-> --- a/drivers/net/usb/qmi_wwan.c
-> +++ b/drivers/net/usb/qmi_wwan.c
-> @@ -1375,6 +1375,7 @@ static const struct usb_device_id products[] =3D {
->  	{QMI_QUIRK_SET_DTR(0x2cb7, 0x0104, 4)},	/* Fibocom NL678 series */
->  	{QMI_FIXED_INTF(0x0489, 0xe0b4, 0)},	/* Foxconn T77W968 LTE */
->  	{QMI_FIXED_INTF(0x0489, 0xe0b5, 0)},	/* Foxconn T77W968 LTE with eSIM s=
-upport*/
-> +	{QMI_FIXED_INTF(0x2692, 0x9025, 4)},    /* Cellient MPL200 (rebranded Q=
-ualcomm 05c6:9025) */
->=20=20
->  	/* 4. Gobi 1000 devices */
->  	{QMI_GOBI1K_DEVICE(0x05c6, 0x9212)},	/* Acer Gobi Modem Device */
+--5mCyUwZo2JvN/JJP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hi!
 
-Thanks.  Looks nice now.
+> +        int main(void)
+> +        {
+> +                struct pollfd pfd =3D { .events =3D POLLIN };
+> +                struct counter_event event_data[2];
+> +
+> +                pfd.fd =3D open("/dev/counter0", O_RDWR);
+> +
+> +                ioctl(pfd.fd, COUNTER_SET_WATCH_IOCTL, watches);
+> +                ioctl(pfd.fd, COUNTER_SET_WATCH_IOCTL, watches + 1);
+> +                ioctl(pfd.fd, COUNTER_LOAD_WATCHES_IOCTL);
+> +
+> +                for (;;) {
+> +                        poll(&pfd, 1, -1);
 
-Acked-by: Bj=C3=B8rn Mork <bjorn@mork.no>
+Why do poll, when you are doing blocking read?
+
+> +                        read(pfd.fd, event_data,  sizeof(event_data));
+
+Does your new chrdev always guarantee returning complete buffer?
+
+If so, should it behave like that?
+
+Best regards,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--5mCyUwZo2JvN/JJP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl9+ySUACgkQMOfwapXb+vKILgCdGWcMSFTNlT8BzJiXCxl8XH94
+G+kAn1mYy8F8mA++sLAit6PznfuXTwgX
+=pq8O
+-----END PGP SIGNATURE-----
+
+--5mCyUwZo2JvN/JJP--
