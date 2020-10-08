@@ -2,102 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF8DC286F43
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C76A6286F45
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:22:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727026AbgJHHW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 03:22:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46938 "EHLO
+        id S1727032AbgJHHWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 03:22:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725874AbgJHHW0 (ORCPT
+        with ESMTP id S1725874AbgJHHWf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 03:22:26 -0400
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [IPv6:2001:67c:2050::465:201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F0D8C061755;
-        Thu,  8 Oct 2020 00:22:26 -0700 (PDT)
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4C6N284dWnzQkKW;
-        Thu,  8 Oct 2020 09:22:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
-        in-reply-to:content-disposition:content-type:content-type
-        :mime-version:references:message-id:subject:subject:from:from
-        :date:date:received; s=mail20150812; t=1602141741; bh=F3zl6R34j8
-        XuyXiPkLvQN+72dc49XEvMfpEJa7+LlQc=; b=j2teyyaC0m4cyDgyBEll5h21mP
-        xR4SrQvngYUfAsksHQLxWlIjVZ04z5sBBNnEn9iR4/d845gL5cfmX8kXXYHX9417
-        RlWA7tLEIsDDFFT1TgK1yDCB/i8k9UFXBZK7DOjuQ2XMkbMTgBuO4AayELAC2GRP
-        BhhOmrs23sCO5K97npogbSVNs6EES067wTaKQxhDaLOi5RBD4pajIaErSivluhyr
-        0fKMbfC28rAaOgQ3a9O6wwnEZATfxLeZ6fV7bwDMdB/uDt9vKUNmSGWAlHWUlRwV
-        soC/LeQMfjBAw2kJg8gIwf4v6NOzYZ8biZytn+IetVVMY4ndiMTDsOSNOPXw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1602141742;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MsE9L155w97UxlzVBtMihNM3sUIgsGa6NaXfRjav7Go=;
-        b=ac7rpwCdd/zH/skA5ERuOU/cYvDuaYgVQ+t9tTztgOxN8UOUy0fJMjOR/Kb87Uya+zu8yp
-        VsFULNqi4hOcA2l+afPap+sOqASMIPKobUir4kRO4t1WHQIEK+5hoKca6tTkspHriNXdMF
-        4Oo6eccAjkNVFev4+a214rR/k4vQPfdPkOMNKFbqryxdxal8Yu/3TBuYdG9RwwqToBmb54
-        7+GD8hhz5X5gjfMFpBYIULQekgsfRq/+cO3asjTNF500Sk+D4N3/XFmytjPOqhugXaKApd
-        n3DSI7019lMEGY710LrIQhbbGjg7bXhuWS3PeM3BL7qllzgioj0nNZ5uvt6DuA==
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp2.mailbox.org ([80.241.60.241])
-        by spamfilter02.heinlein-hosting.de (spamfilter02.heinlein-hosting.de [80.241.56.116]) (amavisd-new, port 10030)
-        with ESMTP id OAruJgduMDiW; Thu,  8 Oct 2020 09:22:21 +0200 (CEST)
-Date:   Thu, 8 Oct 2020 09:22:19 +0200
-From:   Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     =?iso-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        netdev@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: [PATCH v2 2/2] usb: serial: option: add Cellient MPL200 card
-Message-ID: <be90904f21494eaa8235db962829a8842025b22e.1602140720.git.wilken.gottwalt@mailbox.org>
-References: <cover.1602140720.git.wilken.gottwalt@mailbox.org>
+        Thu, 8 Oct 2020 03:22:35 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3099CC061755
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 00:22:35 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id k18so3825780ybh.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 00:22:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NVt6HPCbv7NkAw3ASSdTsU1dVq2uc72ksR0NlB2xCJg=;
+        b=kutSNlGCJ4DWn8geC2BcqllTlHrAhFdTBF/cCO7YJMeNrBGCCDWQ37FEUYopj9TwnB
+         Kk55GYLf+Yj9o5CkMTmK37F0rRg1tiAPHFZZkNEUfrR8ap6lbtFUAWT9Fqf0mMzJhQ2p
+         mcoBY+xr69zGzD2/Ofyr4eYlFPvQx91ROInlE6NkEymnoGnv7M/6VKak7kmfuxImRkWZ
+         OaP+Fs2qg57HdvIjh+x1jcF7U6UsMaHNorlCGYG9UIQ8KFvF5GxWdi1vn6VD0BA/rYv3
+         2jPGtJWkmUNNul8SU6+fd3SGVUTjlFdNqGZjPl6b62GdxPzCqmfJyEvjnLwffL8NREs6
+         bDDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NVt6HPCbv7NkAw3ASSdTsU1dVq2uc72ksR0NlB2xCJg=;
+        b=bhSIQRWX4r81tSR8FOroke5Os60nhul7hRPyFGQy1V+M4UaT1NKVszfF/PYY/1Obw3
+         u7CQ9KZ+YUG7aZj4qRTBIvRzr6RIORT0kPnp/E6OGU39Kauz84egtgWbd/Jkz4mIrZu7
+         GQcHQyMzGHKCC5eaT+EEQX+f5IQiXhkbFIW0lDL5b/H1TeCZFAu18rcoWKsuYdOZzFn9
+         QBsKmBoAWRSL6HOhBSRN8UW8x8c41RQxvAOxxdoRQyRo8wv5DDEq5uitM9DZspR+gGkV
+         mA5Xkofkw9NK8O5CLSxiqdF2LNcYBLWNvj6FELc3RMhMjCtiIW89ldbJ9zX7X/hRWm2v
+         wY2g==
+X-Gm-Message-State: AOAM533q+ojW7QCE1Kq7wd3PRASnHo4q/IJBLR+K3Fuu5KTjjfeBVByd
+        mONGTRdRV6q1y6s/1NM6JIfKpqlPyvJBEf1ZZPLAEg==
+X-Google-Smtp-Source: ABdhPJwpFp41/iqnZPbR9ZaIh0yqzdNQJ50wKIrTOJk31V+lLXBS8CnYFjtdxBlZoVA+/iYDktEcyuwVqP1YU3MRL04=
+X-Received: by 2002:a25:d4d7:: with SMTP id m206mr9441434ybf.332.1602141753828;
+ Thu, 08 Oct 2020 00:22:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1602140720.git.wilken.gottwalt@mailbox.org>
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -3.52 / 15.00 / 15.00
-X-Rspamd-Queue-Id: 93B8B1721
-X-Rspamd-UID: e7e67e
+References: <20201007184403.1902111-1-axelrasmussen@google.com> <20201007184403.1902111-2-axelrasmussen@google.com>
+In-Reply-To: <20201007184403.1902111-2-axelrasmussen@google.com>
+From:   Michel Lespinasse <walken@google.com>
+Date:   Thu, 8 Oct 2020 00:22:21 -0700
+Message-ID: <CANN689E_uE3MosPqVJwG71Trwo15CGNJB2H5+U_Gg47FtPLbxA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] tracing: support "bool" type in synthetic trace events
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Jann Horn <jannh@google.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add usb ids of the Cellient MPL200 card.
+On Wed, Oct 7, 2020 at 11:44 AM Axel Rasmussen <axelrasmussen@google.com> wrote:
+> It's common [1] to define tracepoint fields as "bool" when they contain
+> a true / false value. Currently, defining a synthetic event with a
+> "bool" field yields EINVAL. It's possible to work around this by using
+> e.g. u8 (assuming sizeof(bool) is 1, and bool is unsigned; if either of
+> these properties don't match, you get EINVAL [2]).
+>
+> Supporting "bool" explicitly makes hooking this up easier and more
+> portable for userspace.
 
-Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
----
- drivers/usb/serial/option.c | 3 +++
- 1 file changed, 3 insertions(+)
+Acked-by: Michel Lespinasse <walken@google.com>
 
-diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
-index 0c6f160a214a..a65e620b2277 100644
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -528,6 +528,7 @@ static void option_instat_callback(struct urb *urb);
- /* Cellient products */
- #define CELLIENT_VENDOR_ID			0x2692
- #define CELLIENT_PRODUCT_MEN200			0x9005
-+#define CELLIENT_PRODUCT_MPL200			0x9025
- 
- /* Hyundai Petatel Inc. products */
- #define PETATEL_VENDOR_ID			0x1ff4
-@@ -1982,6 +1983,8 @@ static const struct usb_device_id option_ids[] = {
- 	{ USB_DEVICE_AND_INTERFACE_INFO(MEDIATEK_VENDOR_ID, MEDIATEK_PRODUCT_DC_4COM2, 0xff, 0x02, 0x01) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(MEDIATEK_VENDOR_ID, MEDIATEK_PRODUCT_DC_4COM2, 0xff, 0x00, 0x00) },
- 	{ USB_DEVICE(CELLIENT_VENDOR_ID, CELLIENT_PRODUCT_MEN200) },
-+	{ USB_DEVICE(CELLIENT_VENDOR_ID, CELLIENT_PRODUCT_MPL200),
-+	  .driver_info = RSVD(1) | RSVD(4) },
- 	{ USB_DEVICE(PETATEL_VENDOR_ID, PETATEL_PRODUCT_NP10T_600A) },
- 	{ USB_DEVICE(PETATEL_VENDOR_ID, PETATEL_PRODUCT_NP10T_600E) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(TPLINK_VENDOR_ID, TPLINK_PRODUCT_LTE, 0xff, 0x00, 0x00) },	/* TP-Link LTE Module */
--- 
-2.28.0
-
+Looks fine to me, but you really want to get Steven's opinion over mine here :)
