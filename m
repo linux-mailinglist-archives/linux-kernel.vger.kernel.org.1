@@ -2,197 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A003287995
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 18:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9BDF28787F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 17:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732084AbgJHQAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 12:00:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41590 "EHLO
+        id S1731375AbgJHPyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 11:54:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731539AbgJHPxt (ORCPT
+        with ESMTP id S1731349AbgJHPy2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 11:53:49 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD27DC0613D2;
-        Thu,  8 Oct 2020 08:53:48 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id k18so7020217wmj.5;
-        Thu, 08 Oct 2020 08:53:48 -0700 (PDT)
+        Thu, 8 Oct 2020 11:54:28 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95101C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 08:54:28 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id y20so2524764iod.5
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 08:54:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=zfnSh1S7AyPLXhddsPPCiUSDnY9RVRvL/aKUF/eOH70=;
-        b=gu/Sv0y8h5LSilfHz1MlSh63wBSqedxUpjHZ9D7e7N2KII5tH40//lqH6Fz5UX14ER
-         yWvPU8RWuCFlzEETOWn8TqUJmOsaOtWtUrjk+Qe2g5Ik1i3APa/dZeWp3RV3F7dkmyqf
-         aXy6M7xwzCfDsWL7DsaE2kWcPHTozXSKfHq9iW3ggLRp61PupjQ5Wh3hOt+o4+gxNlJY
-         HeDSM89yFYmjZZwyrui0CcRx4d1kHmPnWAZav0k18FphCpge7vr9gFFlaEwo4HTxgg9G
-         z2z930PDCXH39lBpsUOKBuL9TEYHJsrEU3w0zJBHvn4FoFSx3nsjbMQojwb6W+kygXi5
-         DZsg==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=K87Z76MUaMwGT4jUWUnqmzUL4QRao9GTWVhIdgVOY/E=;
+        b=e4G8JbIBYYn4byga8lFuWrt9CFFn9lYWoAD1LGBR+e/tZ9poYwiZqM7gs3ybG/gIBq
+         zz7dL371KLKSGU4f/NBlLH3fIBgSyxzXtghqEaeYZfJRMNpkI0lMQUcDgm83at78bStx
+         Zc5xkxTsJtNTTgSVb6C5zeNi4HJEQKN4gDzA77kH6lJvcIcwRV2pmVwq5/PgqmSrASUG
+         xbrn92HnLUWQ6gUEymthXOXuR+hO60OOsqKfgFo7bBNGjVva2ymBMjttK1FZrqr6B/G7
+         ZlF+88bveRMRKdWikJfadYEq0z02G/ow6P9+CaJF4ELyIevNQlcDIqcngP7Yq/AUPwvN
+         W9Ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=zfnSh1S7AyPLXhddsPPCiUSDnY9RVRvL/aKUF/eOH70=;
-        b=mbLRBmZfQJiD+ItQmzCEvNjitrp/7FdoaBqBc022Abl33KC0EfZIjsr2iovirpHVWZ
-         fVrmei23Gv9926DC8w5/wMjQwM/CZFdD3qBRccMlLsvWyD00S/5eygPKFTkzztq/87+0
-         RK7WiCBmscZWs/ufPSUeuEQuT0KphyrFD33uDFfnrEPj4cd2yIbLDUrWo6IcY2nFs2Gs
-         XYZkTP1wu2wooQcRA6r/xi//Dqc22XO3PKmK9+6m8QlNiMc65BZnDMIxXu2FKJDSBrTS
-         a7TGZjQG43dqjiyo+VWLZrGM7id9s723bB2+DB5Ho1HZGlybMlBxopuxTifIlsz5UgAx
-         J/wQ==
-X-Gm-Message-State: AOAM531rhRVBWwG6IGztAxJvJv/IgW4WO//zVsacolpB9r3i0ZkNvah1
-        gwzvrJ7D8N3kCA/LlbkaaRxGNF0YCXnwJZhoSmI=
-X-Google-Smtp-Source: ABdhPJy/tXQQdC55L192BlAu88uxZZ2IKYZOOTv9bZVSpdIXRW5uMtsF9H/ESiLz3OiNlXuEgE+LvtzdwHwx4rgwlwY=
-X-Received: by 2002:a7b:c7d5:: with SMTP id z21mr5233566wmk.73.1602172427513;
- Thu, 08 Oct 2020 08:53:47 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=K87Z76MUaMwGT4jUWUnqmzUL4QRao9GTWVhIdgVOY/E=;
+        b=XarWjSX8F+IqBDKO2jl76ij4037qtfl4MQIBUmSWVDmQnfGZXhP1U2hz3bU+gf8omI
+         9aENvqYyQg6NajYVVP51r5JxBMDUkL6bnh6mOXNAT5TnxpolRkp40ZxXnJUaXxnca+lF
+         /lQdK0FZowBRQ9WoEp/nimL0kiEBpRxucQ8kyKtYNpgw43m7LWb3fOQBePYF/t+9cK8z
+         8NkabE1fYJtV4xQ3ernZYjUOvsymcBbH/VL1ykrJ64nmjkuWLGB+lFeOQ1lIUOWM9O1+
+         uac7j3RVx93HYw4WaRXMnyPqL93i7xtHkTsfLqmwMLD8bQOes8IYCk4glcFHWuHmg08T
+         yvsQ==
+X-Gm-Message-State: AOAM533FlEiLXZNVOT6eNTdg0jksIMDXYbze/ta1qmNo7nKGuQOWU1n5
+        OFIKjJEPqSkSEahXA4KvdQgTYQ==
+X-Google-Smtp-Source: ABdhPJxhx7JoupFXMCiMHmWdoKyUTtxiD0NERl7t1I0IK9IlW8bYTtunZy46ck3A+NMEuATEqSoQrw==
+X-Received: by 2002:a02:6a4f:: with SMTP id m15mr7245672jaf.2.1602172467984;
+        Thu, 08 Oct 2020 08:54:27 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id g17sm2801603ilq.15.2020.10.08.08.54.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Oct 2020 08:54:27 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kQYFO-001WnB-6r; Thu, 08 Oct 2020 12:54:26 -0300
+Date:   Thu, 8 Oct 2020 12:54:26 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Jan Engelhardt <jengelh@inai.de>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rdma@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: remaining flexible-array conversions
+Message-ID: <20201008155426.GE5177@ziepe.ca>
+References: <6342c465-e34b-3e18-cc31-1d989926aebd@embeddedor.com>
+ <20200424034704.GA12320@ubuntu-s3-xlarge-x86>
+ <20200424121553.GE26002@ziepe.ca>
+ <36r41qn8-87o3-2pr1-856p-040167pq097@vanv.qr>
 MIME-Version: 1.0
-References: <cover.1602020074.git.gustavoars@kernel.org> <d71c8436-334c-45d9-d464-9798e75f2a73@amd.com>
-In-Reply-To: <d71c8436-334c-45d9-d464-9798e75f2a73@amd.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 8 Oct 2020 11:53:36 -0400
-Message-ID: <CADnq5_O3KSo3ZkhS0HKiyzM1h-LccUHUOkqi4FE_KnSGHZJiGQ@mail.gmail.com>
-Subject: Re: [PATCH 00/14] drm/amd/pm: Replace one-element arrays with
- flexible-array members
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <36r41qn8-87o3-2pr1-856p-040167pq097@vanv.qr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 8, 2020 at 3:20 AM Christian K=C3=B6nig <christian.koenig@amd.c=
-om> wrote:
->
-> Am 07.10.20 um 18:01 schrieb Gustavo A. R. Silva:
-> > Hi all,
-> >
-> > This series aims to replace one-element arrays with flexible-array
-> > members.
-> >
-> > There is a regular need in the kernel to provide a way to declare havin=
-g
-> > a dynamically sized set of trailing elements in a structure. Kernel cod=
-e
-> > should always use =E2=80=9Cflexible array members=E2=80=9D[1] for these=
- cases. The older
-> > style of one-element or zero-length arrays should no longer be used[2].
-> >
-> > Refactor the code according to the use of flexible-array members, inste=
-ad
-> > of one-element arrays, and use the struct_size() helper to calculate th=
-e
-> > size for the dynamic memory allocation.
-> >
-> > Also, save some heap space in the process. More on this on each individ=
-ual
-> > patch.
->
-> Ah! Nice to see that finally be documented and cleaned up.
->
-> Feel free to add an Acked-by: Christian K=C3=B6nig <christian.koenig@amd.=
-com>
+On Thu, Oct 08, 2020 at 05:24:03PM +0200, Jan Engelhardt wrote:
 
-Applied 1-13.  patch 14 is changing a file shared with firmware, so I
-left it for consistency.
+> In the case of the RDMA headers, even if we assume best conditions --
+> a block of malloc(sizeof(struct ib_uverbs_create_cq_resp) +
+> sizeof(u64)*N) and not some struct -- it smells a lot like undefined
+> behavior, because ib_uverbs_create_cq_resp::driver_data accesses data
+> as u64
 
-Thanks!
+driver_data[] is never accessed, it is only used as a pointer. Aliasing
+should be OK because all accesses to those bytes consistently use u32.
 
-Alex
+Fixing the compiler warning requires significant edits of kernel and
+user code, not entirely sure it is worthwhile.
 
->
-> I also know about a case where we don't use struct_size in the DMA-buf co=
-de.
->
-> I'm the maintainer of that stuff as well, so be prepared to get patches
-> thrown at you to clean that up as well.
->
-> Thanks,
-> Christian.
->
-> >
-> > This series also addresses multiple of the following sorts of warnings:
-> >
-> > drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/smu8_hwmgr.c:1515:37:
-> > warning: array subscript 1 is above array bounds of =E2=80=98const stru=
-ct
-> > phm_clock_voltage_dependency_record[1]=E2=80=99 [-Warray-bounds]
-> >
-> > which, in this case, they are false positives, but nervertheless should=
- be
-> > fixed in order to enable -Warray-bounds[3][4].
-> >
-> > [1] https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2=
-Fen.wikipedia.org%2Fwiki%2FFlexible_array_member&amp;data=3D02%7C01%7Cchris=
-tian.koenig%40amd.com%7C5312862a3b8c41838ef508d86ad969c1%7C3dd8961fe4884e60=
-8e11a82d994e183d%7C0%7C0%7C637376829947099179&amp;sdata=3D5LEWyR8pYSxmHsqhH=
-iYiOS%2BPPk%2Fm5suOc6H7f5cIBL4%3D&amp;reserved=3D0
-> > [2] https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2=
-Fwww.kernel.org%2Fdoc%2Fhtml%2Fv5.9-rc1%2Fprocess%2Fdeprecated.html%23zero-=
-length-and-one-element-arrays&amp;data=3D02%7C01%7Cchristian.koenig%40amd.c=
-om%7C5312862a3b8c41838ef508d86ad969c1%7C3dd8961fe4884e608e11a82d994e183d%7C=
-0%7C0%7C637376829947099179&amp;sdata=3DwOqxnNkA9FnOI%2BfB3dHn9RU7cqPJ62qqGC=
-K9gsd2i%2Bo%3D&amp;reserved=3D0
-> > [3] https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2=
-Fgit.kernel.org%2Flinus%2F44720996e2d79e47d508b0abe99b931a726a3197&amp;data=
-=3D02%7C01%7Cchristian.koenig%40amd.com%7C5312862a3b8c41838ef508d86ad969c1%=
-7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637376829947099179&amp;sdata=
-=3Dx%2BSJeOrQA11HXoTaZEdyLyNWL9rC4GngDyoDMRBUn4M%3D&amp;reserved=3D0
-> > [4] https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2=
-Fgithub.com%2FKSPP%2Flinux%2Fissues%2F109&amp;data=3D02%7C01%7Cchristian.ko=
-enig%40amd.com%7C5312862a3b8c41838ef508d86ad969c1%7C3dd8961fe4884e608e11a82=
-d994e183d%7C0%7C0%7C637376829947099179&amp;sdata=3D48155uVo7AboCdSZfsTP10i2=
-rHfBJctG%2F432lD%2BpfHo%3D&amp;reserved=3D0
-> >
-> > Gustavo A. R. Silva (14):
-> >    drm/amd/pm: Replace one-element array with flexible-array member
-> >    drm/amd/pm: Replace one-element array with flexible-array member in
-> >      struct vi_dpm_table
-> >    drm/amd/pm: Replace one-element array with flexible-array in struct
-> >      phm_clock_array
-> >    drm/amd/pm: Replace one-element array with flexible-array in struct
-> >      phm_uvd_clock_voltage_dependency_table
-> >    drm/amd/pm: Replace one-element array with flexible-array in struct
-> >      phm_acp_clock_voltage_dependency_table
-> >    drm/amd/pm: Replace one-element array with flexible-array in struct
-> >      phm_phase_shedding_limits_table
-> >    drm/amd/pm: Replace one-element array with flexible-array in struct
-> >      phm_vce_clock_voltage_dependency_table
-> >    drm/amd/pm: Replace one-element array with flexible-array in struct
-> >      phm_cac_leakage_table
-> >    drm/amd/pm: Replace one-element array with flexible-array in struct
-> >      phm_samu_clock_voltage_dependency_table
-> >    drm/amd/pm: Replace one-element array with flexible-array in struct
-> >      phm_ppt_v1_clock_voltage_dependency_table
-> >    drm/amd/pm: Replace one-element array with flexible-array in struct
-> >      phm_ppt_v1_mm_clock_voltage_dependency_table
-> >    drm/amd/pm: Replace one-element array with flexible-array in struct
-> >      phm_ppt_v1_voltage_lookup_table
-> >    drm/amd/pm: Replace one-element array with flexible-array in struct
-> >      phm_ppt_v1_pcie_table
-> >    drm/amd/pm: Replace one-element array with flexible-array in struct
-> >      ATOM_Vega10_GFXCLK_Dependency_Table
-> >
-> >   drivers/gpu/drm/amd/pm/inc/hwmgr.h            | 20 ++---
-> >   .../drm/amd/pm/powerplay/hwmgr/hwmgr_ppt.h    |  8 +-
-> >   .../powerplay/hwmgr/process_pptables_v1_0.c   | 85 +++++++-----------
-> >   .../amd/pm/powerplay/hwmgr/processpptables.c  | 85 +++++++-----------
-> >   .../drm/amd/pm/powerplay/hwmgr/smu8_hwmgr.c   |  2 +-
-> >   .../drm/amd/pm/powerplay/hwmgr/smu_helper.c   |  5 +-
-> >   .../amd/pm/powerplay/hwmgr/vega10_pptable.h   |  2 +-
-> >   .../powerplay/hwmgr/vega10_processpptables.c  | 88 ++++++------------=
--
-> >   8 files changed, 107 insertions(+), 188 deletions(-)
-> >
->
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+If someone wants to do it let me know and I'll give some guidance.
+
+Jason
