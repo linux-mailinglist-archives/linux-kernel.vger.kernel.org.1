@@ -2,70 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C86A286CE0
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 04:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11E2B286CE6
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 04:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728307AbgJHCjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 22:39:18 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:41232 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727253AbgJHCjS (ORCPT
+        id S1728135AbgJHCps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 22:45:48 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:46516 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727449AbgJHCps (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 22:39:18 -0400
-X-UUID: e226b603c5de4507be9bddd61be37f3a-20201008
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=mpoi5o7pn88Bf30tloJ48idTmrzVeVxim+3Lb5r6NCI=;
-        b=QP8HHD/hqOJK2BMlqTzUSzKuBNuV+8HQ274q87a1he2M3BcCLHgXwTzsCyPvJRfQblHYvsVF5NYTlaKLUw/U01XVqTiUpcuipyi0HeIvdMKv/8EMzk58SdiWFkLxZTTRKnB1XxhW/chTAnolXIPeWbGOB3irphVjn9gbfO0DSm8=;
-X-UUID: e226b603c5de4507be9bddd61be37f3a-20201008
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <hanks.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 19265678; Thu, 08 Oct 2020 10:39:14 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 8 Oct 2020 10:39:13 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 8 Oct 2020 10:39:13 +0800
-Message-ID: <1602124753.29177.7.camel@mtkswgap22>
-Subject: Re: [PATCH v10 3/3] clk: mediatek: add UART0 clock support
-From:   Hanks Chen <hanks.chen@mediatek.com>
-To:     Stephen Boyd <sboyd@kernel.org>
-CC:     Michael Turquette <mturquette@baylibre.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <devicetree@vger.kernel.org>, CC Hwang <cc.hwang@mediatek.com>,
-        Andy Teng <andy.teng@mediatek.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        YueHaibing <yuehaibing@huawei.com>,
-        <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-gpio@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Loda Chou <loda.chou@mediatek.com>,
-        mtk01761 <wendell.lin@mediatek.com>,
-        <linux-arm-kernel@lists.infradead.org>
-Date:   Thu, 8 Oct 2020 10:39:13 +0800
-In-Reply-To: <160212240863.310579.5253840355657757088@swboyd.mtv.corp.google.com>
-References: <1596115816-11758-1-git-send-email-hanks.chen@mediatek.com>
-         <1596115816-11758-4-git-send-email-hanks.chen@mediatek.com>
-         <1599546314.24690.3.camel@mtkswgap22> <1601719607.774.1.camel@mtkswgap22>
-         <160212240863.310579.5253840355657757088@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Wed, 7 Oct 2020 22:45:48 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0982iYt3028576;
+        Thu, 8 Oct 2020 02:45:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=xicZbT4oZuZBz0LXKZAvNVURnXr0lB1RvmDLIr1UKMI=;
+ b=HWhLP4LnZPyjJ6YuyxnszAnTYv650Sk6TxqtiECj04uZ/dBUErJCItWvtg7CwFcFIYei
+ UGob8qKLBF8oj8FJ+gXebgnWnYD3sTazfXNmyNl7eUpZKmKkei5oUK7lAExMDq/lvdJe
+ 7ReHAvMtDoIdcIWBEFrPCY330U/nmEQOmNLodfY6whhBswJ+KjmQ14npDvuTVfwieiJo
+ S0vT39qJRTRYpt0VaOAgpdFaYyagIiOl8MYyOiwor79nC6XyYq0AlD4D6aTpcTILapf0
+ NqIux1xaEz980P6rUxj/xvELHk6ovHRxDYoJwhEFNxDRfA1izL0d3W/nvSUkjXdBRP05 JQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 33xetb5bmr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 08 Oct 2020 02:45:34 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0982esxD008144;
+        Thu, 8 Oct 2020 02:45:33 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 3410k0dhkv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 08 Oct 2020 02:45:33 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0982jWEx000746;
+        Thu, 8 Oct 2020 02:45:32 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 07 Oct 2020 19:45:32 -0700
+To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
+Cc:     <anil.gurumurthy@qlogic.com>, <sudarsana.kalluru@qlogic.com>,
+        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <emilne@redhat.com>, <hare@suse.de>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] scsi: bfa: fix error return in bfad_pci_init()
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1eem9xwos.fsf@ca-mkp.ca.oracle.com>
+References: <20200925062423.161504-1-jingxiangfeng@huawei.com>
+Date:   Wed, 07 Oct 2020 22:45:30 -0400
+In-Reply-To: <20200925062423.161504-1-jingxiangfeng@huawei.com> (Jing
+        Xiangfeng's message of "Fri, 25 Sep 2020 14:24:23 +0800")
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 6B6413CFD2C10AA86898B0C0F25664CFCFEF09CBDE40F37D9A417BA19BDDAEC32000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 spamscore=0
+ adultscore=0 bulkscore=0 malwarescore=0 suspectscore=1 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010080023
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxscore=0
+ clxscore=1011 priorityscore=1501 adultscore=0 mlxlogscore=999 phishscore=0
+ impostorscore=0 malwarescore=0 suspectscore=1 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010080023
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIwLTEwLTA3IGF0IDE5OjAwIC0wNzAwLCBTdGVwaGVuIEJveWQgd3JvdGU6DQo+
-IFF1b3RpbmcgSGFua3MgQ2hlbiAoMjAyMC0xMC0wMyAwMzowNjo0NykNCj4gPiBIaSBNaWNoYWVs
-ICYgU3RlcGhlbiwNCj4gPiANCj4gPiBQbGVhc2Uga2luZGx5IGxldCBtZSBrbm93IHlvdXIgY29t
-bWVudHMgYWJvdXQgdGhpcyBwYXRjaC4NCj4gPiBUaGFua3MNCj4gPiANCj4gDQo+IFdoYXQncyB0
-aGUgYmFzZSBmb3IgdGhpcyBwYXRjaD8gSSB0cmllZCBhcHBseWluZyB0byB2NS45LXJjMSBhbmQg
-aXQNCj4gZGlkbid0IHdvcmsuDQoNClNvcnJ5LCB3aGF0IGRvZXMgdGhhdCBtZWFuPw0KDQpEbyB5
-b3UgaGF2ZSBlbmNvdW50ZXJlZCBhIG1lcmdlZCBjb25mbGljdCBvciBydW4gdGltZSBmYWlsZWQ/
-DQoNCkkgYmFzZWQgb24ga2VybmVsLTUuOC1yYzEgdG8gYWRkIGl0IGFuZCBpdCBjYW4gYm9vdCB0
-byBrZXJuZWwgc2hlbGwuDQoNClRoYW5rcyENCg0KDQpIYW5rcyBDaGVuDQo=
 
+Jing,
+
+> Fix to return error code -ENODEV from the error handling case instead
+> of 0.
+
+Applied to 5.10/scsi-staging, thanks!
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
