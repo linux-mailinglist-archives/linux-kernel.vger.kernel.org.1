@@ -2,88 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AC55287289
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 12:29:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23EEE287291
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 12:30:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729455AbgJHK3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 06:29:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58036 "EHLO mail.kernel.org"
+        id S1729473AbgJHKa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 06:30:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729325AbgJHK3h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 06:29:37 -0400
-Received: from coco.lan (ip5f5ad5d8.dynamic.kabel-deutschland.de [95.90.213.216])
+        id S1725917AbgJHKa3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 06:30:29 -0400
+Received: from mail.kernel.org (ip5f5ad5d8.dynamic.kabel-deutschland.de [95.90.213.216])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC9322076B;
-        Thu,  8 Oct 2020 10:29:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 62CB72076B;
+        Thu,  8 Oct 2020 10:30:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602152976;
-        bh=XHI5eZX58sToTeMD5p9ZUxHyJjzwD/WCDYNuZbi56vU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=m/7o9uA9S2RFmymlpn8tWUch6q+JhNKekWs3vXjB2A9XJ62bLrjw1p2plaOV6dXk0
-         h4fk+CL4Uaq1fwk0jkSjfL5ZLg4sa2c+Vvc+sGeofHPJsmL7OP4gRyc5kKSIsCcyUm
-         rv5OUP7/T0je5+WwFN3jyUvdo4iBz5nIP+HivAI8=
-Date:   Thu, 8 Oct 2020 12:29:31 +0200
+        s=default; t=1602153028;
+        bh=mGcl0+UEOKcaJrhyVy9Nci998WtvNfv06Hf8G2COFPs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=F0mIzbLDP2CXmvxQCddTdj4WO6hhKiF/4e6jDn2lPf2+zvrGRjtgbUaUvR+JiAKQ7
+         T0uDc81uUMKPrxCENqstIOPjy+Yehk22Fmn/b5fVu2iXwiq3Tq0Gxo1YdBCEmqtUSD
+         /rUHoAcRL1wwoGvq8MheIccp1T0PvwtECxmVcCgs=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kQTBp-002WMs-W2; Thu, 08 Oct 2020 12:30:26 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     "Jonathan Corbet" <corbet@lwn.net>,
         Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH v3] script: add a script for checking doc problems with
- external functions
-Message-ID: <20201008122931.369b628d@coco.lan>
-In-Reply-To: <c256819190b2691f62c515c4aa82033a8d35c8f0.1602077410.git.mchehab+huawei@kernel.org>
-References: <aac55ad312d17bb12f905b544a4e485ad507735d.1602070137.git.mchehab+huawei@kernel.org>
-        <c256819190b2691f62c515c4aa82033a8d35c8f0.1602077410.git.mchehab+huawei@kernel.org>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] scripts: check_docs_external_symbols: speed up its execution
+Date:   Thu,  8 Oct 2020 12:30:24 +0200
+Message-Id: <73387e5c0c4fd99c37303dee184ad09e505c81bb.1602152989.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20201008122931.369b628d@coco.lan>
+References: <20201008122931.369b628d@coco.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed,  7 Oct 2020 15:31:10 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
+This script is slow. Speed it up by using one thread per CPU.
 
-> While not all EXPORT_SYMBOL*() symbols should be documented,
-> it seems useful to have a tool which would help to check what
-> symbols aren't documented.
-> 
-> This is a first step on this direction. The tool has some
-> limitations. Yet, it could be useful for maintainers to check
-> about missing documents on their subsystems.
+On my desktop with 4 cores (8 threads) and SSD disks, before
+this change, it takes:
 
+	$ time scripts/check_docs_external_symbols drivers/media/v4l2-core/
+	...
+	real	0m11,044s
+	user	0m13,860s
+	sys	0m2,048s
 
+After it:
 
-./scripts/check_docs_external_symbols drivers/gpu/drm/ took 102.04 seconds
+	$ time scripts/check_docs_external_symbols drivers/media/v4l2-core/
+	...
+	real	0m3,153s
+	user	0m19,322s
+	sys	0m2,738s
 
+So, it is now almost 4 times faster.
 
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ scripts/check_docs_external_symbols | 46 +++++++++++++++++++++++++----
+ 1 file changed, 41 insertions(+), 5 deletions(-)
 
-It took more than an hour to run on a Xeon workstation for
-the complete Kernel tree.
+diff --git a/scripts/check_docs_external_symbols b/scripts/check_docs_external_symbols
+index e04af5f03a1d..d312e1973530 100755
+--- a/scripts/check_docs_external_symbols
++++ b/scripts/check_docs_external_symbols
+@@ -23,6 +23,8 @@ use warnings;
+ use strict;
+ use File::Find;
+ use Cwd 'abs_path';
++use threads;
++use Thread::Queue;
+ 
+ sub check_kerneldoc_symbols($$$$) {
+ 	my $file = shift;
+@@ -131,14 +133,15 @@ sub check_kerneldoc_symbols($$$$) {
+ 	return %hash;
+ }
+ 
+-sub check_file($) {
++sub do_check_file($) {
+ 	my $file = shift;
+ 	my (@files, @exports, @doc, @doc_refs, %file_exports);
+ 	my $content = "\n";
+ 
+-	$file =~ s/\s+$//;
+-
+-	return 0 if (!($file =~ /\.[ch]$/));
++	local $SIG{'KILL'} = sub {
++		print "$$ aborted.\n";
++		exit(1);
++	};
+ 
+ 	my $dir = $file;
+ 	$dir =~ s,[^\/]+$,,;
+@@ -262,6 +265,20 @@ sub check_file($) {
+ 	return 1;
+ }
+ 
++my $queue;
++
++sub check_file($) {
++	my $file = shift;
++
++	$file =~ s/\s+$//;
++
++	return if (!($file =~ /\.[ch]$/));
++
++#printf "queuing $file\n";
++
++	$queue->enqueue($file);
++}
++
+ sub parse_dir {
+ 	check_file $File::Find::name;
+ }
+@@ -270,6 +287,20 @@ sub parse_dir {
+ # main
+ #
+ 
++my $cpus = qx(nproc);
++
++$queue = Thread::Queue->new();
++
++for (my $i = 0; $i < $cpus; $i++) {
++	threads->create(
++		sub {
++			while (defined(my $file = $queue->dequeue())) {
++				do_check_file($file);
++			}
++		}
++	);
++};
++
+ if (@ARGV) {
+ 	while (@ARGV) {
+ 		my $file = shift;
+@@ -280,10 +311,15 @@ if (@ARGV) {
+ 			check_file $file;
+ 		}
+ 	}
+-	exit;
+ } else {
+ 	my @files = qx(git grep -l EXPORT_SYMBOL);
+ 	foreach my $file (@files) {
+ 		check_file $file;
+ 	}
+ }
++
++$queue->end();
++
++foreach my $thr(threads->list()) {
++	$thr->join();
++}
+-- 
+2.26.2
 
-So, I'm sending a followup patch that makes it a lot better by using
-one perl thread per CPU thread.
-
-Before such patch, running this command:
-
-	$ /usr/bin/time --format='%C took %e seconds'  ./scripts/check_docs_external_symbols drivers/gpu/drm/
-	
-It takes:
-
-	./scripts/check_docs_external_symbols drivers/gpu/drm/ took 1218.96 seconds
-
-
-After the patch:
-
-	./scripts/check_docs_external_symbols drivers/gpu/drm/ took 102.04 seconds
-
-
-measured on a machine with a machine with a Xeon(R) W-2133 CPU @ 3.60GHz
-(12 CPU threads), with normal HDD.
-
-> Suggested-by: Matthew Wilcox <willy@infradead.org>
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-
-Thanks,
-Mauro
