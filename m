@@ -2,82 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11E2B286CE6
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 04:45:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 414C5286CE9
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 04:47:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728135AbgJHCps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 22:45:48 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:46516 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727449AbgJHCps (ORCPT
+        id S1728179AbgJHCq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 22:46:59 -0400
+Received: from smtprelay0089.hostedemail.com ([216.40.44.89]:60818 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726400AbgJHCq7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 22:45:48 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0982iYt3028576;
-        Thu, 8 Oct 2020 02:45:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=xicZbT4oZuZBz0LXKZAvNVURnXr0lB1RvmDLIr1UKMI=;
- b=HWhLP4LnZPyjJ6YuyxnszAnTYv650Sk6TxqtiECj04uZ/dBUErJCItWvtg7CwFcFIYei
- UGob8qKLBF8oj8FJ+gXebgnWnYD3sTazfXNmyNl7eUpZKmKkei5oUK7lAExMDq/lvdJe
- 7ReHAvMtDoIdcIWBEFrPCY330U/nmEQOmNLodfY6whhBswJ+KjmQ14npDvuTVfwieiJo
- S0vT39qJRTRYpt0VaOAgpdFaYyagIiOl8MYyOiwor79nC6XyYq0AlD4D6aTpcTILapf0
- NqIux1xaEz980P6rUxj/xvELHk6ovHRxDYoJwhEFNxDRfA1izL0d3W/nvSUkjXdBRP05 JQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 33xetb5bmr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 08 Oct 2020 02:45:34 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0982esxD008144;
-        Thu, 8 Oct 2020 02:45:33 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 3410k0dhkv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 08 Oct 2020 02:45:33 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0982jWEx000746;
-        Thu, 8 Oct 2020 02:45:32 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 07 Oct 2020 19:45:32 -0700
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
-Cc:     <anil.gurumurthy@qlogic.com>, <sudarsana.kalluru@qlogic.com>,
-        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <emilne@redhat.com>, <hare@suse.de>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] scsi: bfa: fix error return in bfad_pci_init()
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1eem9xwos.fsf@ca-mkp.ca.oracle.com>
-References: <20200925062423.161504-1-jingxiangfeng@huawei.com>
-Date:   Wed, 07 Oct 2020 22:45:30 -0400
-In-Reply-To: <20200925062423.161504-1-jingxiangfeng@huawei.com> (Jing
-        Xiangfeng's message of "Fri, 25 Sep 2020 14:24:23 +0800")
+        Wed, 7 Oct 2020 22:46:59 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 6B73618029128;
+        Thu,  8 Oct 2020 02:46:58 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1437:1515:1516:1518:1534:1538:1566:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3876:3877:4321:4699:5007:6114:6642:7809:10004:10400:10848:11232:11658:11914:12043:12297:12555:12760:13069:13311:13357:13439:14181:14659:14721:14777:21060:21080:21433:21451:21627:21819:30022:30064,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: wax25_0e0e3ab271d4
+X-Filterd-Recvd-Size: 1308
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf20.hostedemail.com (Postfix) with ESMTPA;
+        Thu,  8 Oct 2020 02:46:56 +0000 (UTC)
+Message-ID: <f7726a1873f14972f137f64a4d6cd35e530c6c95.camel@perches.com>
+Subject: [likely PATCH] MAINTAINERS: CISCO VIC LOW LATENCY NIC DRIVER
+From:   Joe Perches <joe@perches.com>
+To:     Christian Benvenuti <benve@cisco.com>,
+        Nelson Escobar <neescoba@cisco.com>
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-rdma@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Date:   Wed, 07 Oct 2020 19:46:54 -0700
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 spamscore=0
- adultscore=0 bulkscore=0 malwarescore=0 suspectscore=1 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010080023
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxscore=0
- clxscore=1011 priorityscore=1501 adultscore=0 mlxlogscore=999 phishscore=0
- impostorscore=0 malwarescore=0 suspectscore=1 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010080023
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Parvi Kaustubhi's email bounces.
 
-Jing,
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ MAINTAINERS | 1 -
+ 1 file changed, 1 deletion(-)
 
-> Fix to return error code -ENODEV from the error handling case instead
-> of 0.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 9ecb727f0a8f..3647500be78f 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4275,7 +4275,6 @@ F:	drivers/net/ethernet/cisco/enic/
+ CISCO VIC LOW LATENCY NIC DRIVER
+ M:	Christian Benvenuti <benve@cisco.com>
+ M:	Nelson Escobar <neescoba@cisco.com>
+-M:	Parvi Kaustubhi <pkaustub@cisco.com>
+ S:	Supported
+ F:	drivers/infiniband/hw/usnic/
+ 
 
-Applied to 5.10/scsi-staging, thanks!
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
