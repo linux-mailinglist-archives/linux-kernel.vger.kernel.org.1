@@ -2,66 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 183C528735E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 13:30:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 061CE287BBB
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 20:32:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729282AbgJHLae convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 8 Oct 2020 07:30:34 -0400
-Received: from smtp03.udep.edu.pe ([200.37.64.10]:18567 "EHLO
-        SRVEXCHANGE.udep.pe" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726065AbgJHLae (ORCPT
+        id S1729013AbgJHSb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 14:31:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728988AbgJHSb5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 07:30:34 -0400
-Received: from SRVEXCHANGE.udep.pe (172.30.20.36) by SRVEXCHANGE.udep.pe
- (172.30.20.36) with Microsoft SMTP Server (TLS) id 15.0.847.32; Thu, 8 Oct
- 2020 06:29:57 -0500
-Received: from User (10.112.40.169) by SRVEXCHANGE.udep.pe (172.30.20.36) with
- Microsoft SMTP Server id 15.0.847.32 via Frontend Transport; Thu, 8 Oct 2020
- 06:29:31 -0500
-Reply-To: <stevekon39@rediffmail.com>
-From:   "From: Steve Odonkon" <admin@gmail.com>
-Subject: RE: STRICTLY CONFIDENTIAL (Respond Immediately)  
-Date:   Thu, 8 Oct 2020 11:31:04 -0700
+        Thu, 8 Oct 2020 14:31:57 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3284C061755
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 11:31:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=cN6ZwJs0Pwl21647+oi9PMK1ab0yD5u4USBWVMShrKM=; b=cyJrBwpxSsf4A5jVZx1MOgV4FU
+        JMiQf9t1xVGX13AvaVy41iO7/IL5MsD6V71n+motAdOXxN3iGwCRCW1ShFA5Cf1bEwN84wiT2mqFo
+        XohTKbOgiFFG2Qjn82dtbMJLHPCfk3kOjti14xTd5njOlAlcAWK72rd7QzRALiVDdtQu+8galups6
+        4QuEPU1+ePvFwasFQ9X0pcKobMHrhVLd7ueMctAXfdM9lkceZP7DAjDmYiUPHbk2jlj9RhI32Pm4k
+        2bz9I/OqSZvKzAvrmRFLytiVIyNMVYl0lBSgmRtL9dqiP+YackPwc6p9/iCncWqP3zzUtNLSl2ZBC
+        ZSUyU7DQ==;
+Received: from [2601:1c0:6280:3f0::2c9a]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kQahR-0007I3-1A; Thu, 08 Oct 2020 18:31:33 +0000
+Subject: Re: [PATCH] x86/x86_64_defconfig: Enable the serial console
+To:     Borislav Petkov <bp@alien8.de>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        =?UTF-8?Q?Diego_Elio_Petten=c3=b2?= <flameeyes@flameeyes.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Willy Tarreau <w@1wt.eu>
+References: <20201008162206.862203-1-enric.balletbo@collabora.com>
+ <20201008164044.GE5505@zn.tnic>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <4162cfa4-7bf2-3e6e-1b8c-e19187e6fa10@infradead.org>
+Date:   Thu, 8 Oct 2020 11:31:27 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="Windows-1251"
-Content-Transfer-Encoding: 8BIT
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-X-Antivirus: AVG (VPS 201008-0, 10/07/2020), Outbound message
-X-Antivirus-Status: Clean
-Message-ID: <96601284-f298-4d5c-a82e-3477f52f9eb7@SRVEXCHANGE.udep.pe>
-To:     Undisclosed recipients:;
+In-Reply-To: <20201008164044.GE5505@zn.tnic>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Esteem Complement,    Tuesday October 6th 2020
+On 10/8/20 9:40 AM, Borislav Petkov wrote:
+> On Thu, Oct 08, 2020 at 06:22:06PM +0200, Enric Balletbo i Serra wrote:
+>> As part of KernelCI, we added a bunch of different x86 based Chromebooks
+>> to do test booting and runtime testing. It will be useful have serial
+>> support for these platforms in the default defconfig, as this, is the
+>> defconfig used by default for the different maintainer's tree.
+>>
+>> SERIAL_8250_DW is the actual support for the console, but to have
+>> support we need to enable X86_AMD_PLATFORM_DEVICE for specific AMD
+>> boards and MFD_INTEL for specific Intel boards.
+>>
+>> While here, also enable USB_RTL8152 config which enables a common
+>> USB-Ethernet adapter used very commonly in the KernelCI labs.
+> 
+> To me defconfig sounds like the config which contains items which are
+> needed on the majority of x86 hardware out there.
 
-Hello, my name is Steve Odonkon, Audit Accounting Officer of Standard Chartered Bank, Basinghall Ave, London, United Kingdom. I got your information when I was searching for an oversea partner among other names, I ask for your pardon if my approach is offensive as I never meant to invade your privacy through this means, and also i believe this is the best and secured means I can pass my message across to you in clear terms. I have sent you this proposal before now; I do hope this will get to you in good health.
+to run in normal (or common) user mode(s).
 
+Nothing to do with automated testing like syzbot or CI IMO.
 
-As the Audit Accounting Officer of the bank, I have access to lots of documents because I handle some of the bank's sensitive files. On the course of the last year 2019 business report, I discovered that my branch in which I am the Audit Accounting Officer made (£5,720,000.00). Million British pounds from some past government contractors in which my head office are not aware of and will never be aware of. I have placed this funds on what we call escrow call account with no beneficiary.
+> Are those which you enable that common and if not, why can't your build
+> supply a custom .config instead?
 
+I suppose that we are lacking a definition of a defconfig, but again, IMO,
+these Kconfig symbols don't meet the need for normal users.
 
-As an officer of this bank I cannot be directly connected to this money, so my aim of contacting you is to assist me receive this money in your bank account and get 40% of the total funds as commission. There are practically no risks involved, it will be a bank-to-bank transfer, and all I need from you is to stand claim as the Original depositor of these funds who made the deposit with my branch so that my head office can order the transfer to your designated bank account.
-
-Send me your contact details below to enable me furnish you with more relevant details that will help you understand the transaction.
-
-Full Name...
-
-Telephone Number...
-
-
-Thank you in advance and May God bless you and your family.
-
-Yours truly,
-Steve Odonkon
-E-mail:  stevekon39@rediffmail.com
-Call: +44 7926062919
 
 -- 
-This email has been checked for viruses by AVG.
-https://www.avg.com
+~Randy
 
