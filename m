@@ -2,193 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6782B2876E4
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 17:13:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E653C2876E6
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 17:13:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730959AbgJHPNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 11:13:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730953AbgJHPNE (ORCPT
+        id S1730967AbgJHPNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 11:13:20 -0400
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:43233 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730650AbgJHPNU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 11:13:04 -0400
-Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35618C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 08:13:04 -0700 (PDT)
-Received: by mail-vk1-xa41.google.com with SMTP id d2so1380589vkd.13
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 08:13:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wsPwsTl/hAvDoxdVSq6VH5qAHlyEl+VKWN+4G8Q2WOQ=;
-        b=s3+iGaEsVITyDA7YZovcQvYscw4EjPjWOCEJT6rKSq1KDPf+ha55v3LiLzlgk3arv3
-         f1t4gMJ1jg1x8B8c2TjMHfn6n98VLEiDa4W0kR175b3mrUz/3u+jS6Y11ta9gFMmZun4
-         uI/4ljpbnWGXI7aGQCKMOaujD8rnXq4yQTrvenvACQ49VN6X/fwVY+7OUi87dyauylOW
-         JFVG/gaaoLasrA541feJDtIv9X+uS8PXYIUw+MRowHzzA4vrj80/G2Bg+ootk3eJ/jBN
-         JEunId1ia3jNICZ6G9I2rookeL5+xZG7ere0myXr68+Eo1bxrU6rW3a8X3IHaqMzEG33
-         X5lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wsPwsTl/hAvDoxdVSq6VH5qAHlyEl+VKWN+4G8Q2WOQ=;
-        b=FmZHRSnT4fBM4/qUoJ4v+nIv2bqMdexmmaPJJHkPowrLC38XVeHytNTLzmSSTLAh5z
-         7PJ+NhCCTcIZiM4WTTaSfqra03gvMjo5wqIu1JubxGlCe9IX9N8Pu04FGCNXf6Vb/dZ4
-         yn92zBn6Fh0BXmoHHAxN98OpOXrSKsU/+db5YFh+JAaofvx1Cn5Ci1gykSylcDZ24gGF
-         NBaMqnTmKKUlnYruSK1Aa3XgE22QWbFvoC2T+ULvDaeaU5QtZQlNt1qNpGUfYR08Zqmn
-         LOd/FXcBrt1u5ZTAEJos4LbB5jA1LlEDKrE3vzudbIeTapzRlu9L7wff4C1sJppx9Suv
-         veyQ==
-X-Gm-Message-State: AOAM533sY1/5sCyKP+P3y6f+u2t9iBwbAgklsEYhWnCGl9Bn3zt9xPrb
-        5ITNm3hR/8EwMOpqbvDUiw6esQwbclTmjlfGrLpf/sloiH7GKdBK
-X-Google-Smtp-Source: ABdhPJwEjGnJf7ZCkTSVlSm0STvrBQYCiSWeuqvCe29hXNIC4YsoSyZw/x3HwLnhyDvaFcM5tgClpCqZEqy/KFuvln0=
-X-Received: by 2002:a1f:ae85:: with SMTP id x127mr1703271vke.8.1602169983032;
- Thu, 08 Oct 2020 08:13:03 -0700 (PDT)
+        Thu, 8 Oct 2020 11:13:20 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 28FA6882;
+        Thu,  8 Oct 2020 11:13:19 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 08 Oct 2020 11:13:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=gAAtAfDZQ+SVtFKSeugyWhxxrLY
+        /NxMX+mMNTVPsT/U=; b=jfIXSq4j09XVXiVfSHu0TgunQ3Y+HIE6t0ml+2TraGs
+        Js9ClZuLQSXeaUlsIi4TLrteyt4I2D6ES5jqO9NNOCMJhTVkp2ivq2ma6CYLMymQ
+        /NY4RQTGkXj1JTxdFriA0BRIooBIJ5pFtN0TAIM/qoSZZaGJ0xfh8welv1AGvRKF
+        XhejeKs5re4C8HH1GH+pfDidC4tf9mBxYklt4b90old+yJoNGNyY8vjWdtrnnnmL
+        gBtlibFs8j5UVPeJ/RluOebMvfwttEaiYaoeE00RwYCyYgnVMWadZdrSzjr+JFMU
+        vtTxMTrMcmzSCyQmA72W96JowdrWBNf0M4G9T1xP+cQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=gAAtAf
+        DZQ+SVtFKSeugyWhxxrLY/NxMX+mMNTVPsT/U=; b=M0DohbovIWDD1bWxoDhkxy
+        T9LEu7X86W9MmvWjNdgqVOFLhsSRN+ZWXQy6Wls+fuKnPNGAYg8QIeNpsndgF9h6
+        zLJQzuWQYOy6N+8utr5x1aJvV/sgWKwwxHFCXdfuO3yt8a21J4BrRKDNM7VqJwtp
+        1DM2OLwg1qLwwGyNe+6iOVHfrUtPmZgKghUsJidvV9fmpoDvR2gD5+HfbvzM27R0
+        KUQ9P1fRyKlD3gwxzDUhsLxmFC0eoTHQPFgeCzOGwrR7th2vv9z/Ky6E7qYrjLOt
+        UDNPpoNjkEuhrKGcjRgvRDkdVpvOwKRyoq+HtnjRoRz+1gQnNgS5K2PqUbgnWP0A
+        ==
+X-ME-Sender: <xms:jSx_X2TpghYd1nNGNObRfTFbnG0MONf3WfcZCkPmpz_CILEyGdzRXQ>
+    <xme:jSx_X7xTk1vZjIij0thdOGWJcQ6izMXVyfIVm6slysvvIzBR5G1fptmMlZZNVfRws
+    aasPtqnB3xjVhpqamk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrgeelgdehlecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:jSx_Xz3npYtFC2qZvMe31ePg_HRtFZBuf-ayWb_Yo5zhSafsFSsHYw>
+    <xmx:jSx_XyCvg9pnKAge1x9fS_T9Yn4gsxz_r8B0hSLsyO-xJrJ-BoJAkg>
+    <xmx:jSx_X_gULMdXsTiWVlMA0PwMV4laswn-MMV2F0PSpuyhxkRwcHW8qw>
+    <xmx:jix_X8tSwKKBPIe9VJfv_trW0I8cmjjf3Yyww1PDyCaGrKN7Ad-3bQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id D1FE33280059;
+        Thu,  8 Oct 2020 11:13:16 -0400 (EDT)
+Date:   Thu, 8 Oct 2020 17:13:15 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Michal Suchanek <msuchanek@suse.de>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ARM: dts: sun8i: h2+: Enable optional SPI flash on
+ Orange Pi Zero board
+Message-ID: <20201008151315.v3geykbs6musl4wq@gilmour.lan>
+References: <20200929083025.2089-1-msuchanek@suse.de>
 MIME-Version: 1.0
-References: <20201008020936.19894-1-muhammad.husaini.zulkifli@intel.com>
- <20201008020936.19894-5-muhammad.husaini.zulkifli@intel.com>
- <CAPDyKFpUv8yeVrWVLRKvz4eKsSDdk0y4dKY2mYs07zpA2UqNdw@mail.gmail.com> <35692f1c-62a4-6c71-d67a-2a216e97e7d5@intel.com>
-In-Reply-To: <35692f1c-62a4-6c71-d67a-2a216e97e7d5@intel.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 8 Oct 2020 17:12:26 +0200
-Message-ID: <CAPDyKFqy5jhbRWmcc-rMSzendMnkj2MQ-MQYu+=fVAZufTWbOQ@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] mmc: sdhci-of-arasan: Enable UHS-1 support for
- Keem Bay SOC
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     muhammad.husaini.zulkifli@intel.com,
-        Michal Simek <michal.simek@xilinx.com>,
-        andriy.shevchenko@intel.com,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        lakshmi.bai.raja.subramanian@intel.com,
-        Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="3jq5ty6aibw6pauv"
+Content-Disposition: inline
+In-Reply-To: <20200929083025.2089-1-msuchanek@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 8 Oct 2020 at 12:58, Adrian Hunter <adrian.hunter@intel.com> wrote:
->
-> On 8/10/20 12:27 pm, Ulf Hansson wrote:
-> > On Thu, 8 Oct 2020 at 04:12, <muhammad.husaini.zulkifli@intel.com> wrote:
-> >>
-> >> From: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
-> >>
-> >> Voltage switching sequence is needed to support UHS-1 interface.
-> >> There are 2 places to control the voltage.
-> >> 1) By setting the AON register using firmware driver calling
-> >> system-level platform management layer (SMC) to set the register.
-> >> 2) By controlling the GPIO expander value to drive either 1.8V or 3.3V
-> >> for power mux input.
-> >>
-> >> Signed-off-by: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
-> >> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
-> >> Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
-> >> ---
-> >>  drivers/mmc/host/sdhci-of-arasan.c | 126 +++++++++++++++++++++++++++++
-> >>  1 file changed, 126 insertions(+)
-> >>
-> >> diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
-> >> index 46aea6516133..ea2467b0073d 100644
-> >> --- a/drivers/mmc/host/sdhci-of-arasan.c
-> >> +++ b/drivers/mmc/host/sdhci-of-arasan.c
-> >> @@ -16,6 +16,7 @@
-> >>   */
-> >>
-> >>  #include <linux/clk-provider.h>
-> >> +#include <linux/gpio/consumer.h>
-> >>  #include <linux/mfd/syscon.h>
-> >>  #include <linux/module.h>
-> >>  #include <linux/of_device.h>
-> >> @@ -23,6 +24,7 @@
-> >>  #include <linux/regmap.h>
-> >>  #include <linux/of.h>
-> >>  #include <linux/firmware/xlnx-zynqmp.h>
-> >> +#include <linux/firmware/intel/keembay_firmware.h>
-> >>
-> >>  #include "cqhci.h"
-> >>  #include "sdhci-pltfm.h"
-> >> @@ -136,6 +138,7 @@ struct sdhci_arasan_clk_data {
-> >>   * @soc_ctl_base:      Pointer to regmap for syscon for soc_ctl registers.
-> >>   * @soc_ctl_map:       Map to get offsets into soc_ctl registers.
-> >>   * @quirks:            Arasan deviations from spec.
-> >> + * @uhs_gpio:          Pointer to the uhs gpio.
-> >>   */
-> >>  struct sdhci_arasan_data {
-> >>         struct sdhci_host *host;
-> >> @@ -150,6 +153,7 @@ struct sdhci_arasan_data {
-> >>         struct regmap   *soc_ctl_base;
-> >>         const struct sdhci_arasan_soc_ctl_map *soc_ctl_map;
-> >>         unsigned int    quirks;
-> >> +       struct gpio_desc *uhs_gpio;
-> >>
-> >>  /* Controller does not have CD wired and will not function normally without */
-> >>  #define SDHCI_ARASAN_QUIRK_FORCE_CDTEST        BIT(0)
-> >> @@ -361,6 +365,112 @@ static int sdhci_arasan_voltage_switch(struct mmc_host *mmc,
-> >>         return -EINVAL;
-> >>  }
-> >>
-> >> +static int sdhci_arasan_keembay_voltage_switch(struct mmc_host *mmc,
-> >> +                                      struct mmc_ios *ios)
-> >> +{
-> >> +       struct sdhci_host *host = mmc_priv(mmc);
-> >> +       struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
-> >> +       struct sdhci_arasan_data *sdhci_arasan = sdhci_pltfm_priv(pltfm_host);
-> >> +       u16 ctrl_2, clk;
-> >> +       int ret;
-> >> +
-> >> +       switch (ios->signal_voltage) {
-> >> +       case MMC_SIGNAL_VOLTAGE_180:
-> >> +               clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
-> >> +               clk &= ~SDHCI_CLOCK_CARD_EN;
-> >> +               sdhci_writew(host, clk, SDHCI_CLOCK_CONTROL);
-> >> +
-> >> +               clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
-> >> +               if (clk & SDHCI_CLOCK_CARD_EN)
-> >> +                       return -EAGAIN;
-> >> +
-> >> +               sdhci_writeb(host, SDHCI_POWER_ON | SDHCI_POWER_180,
-> >> +                                  SDHCI_POWER_CONTROL);
-> >> +
-> >> +               /*
-> >> +                * Set VDDIO_B voltage to Low for 1.8V
-> >> +                * which is controlling by GPIO Expander.
-> >> +                */
-> >> +               gpiod_set_value_cansleep(sdhci_arasan->uhs_gpio, 0);
-> >> +
-> >> +               /*
-> >> +                * This is like a final gatekeeper. Need to ensure changed voltage
-> >> +                * is settled before and after turn on this bit.
-> >> +                */
-> >> +               usleep_range(1000, 1100);
-> >> +
-> >> +               ret = keembay_sd_voltage_selection(KEEMBAY_SET_1V8_VOLT);
-> >> +               if (ret)
-> >> +                       return ret;
-> >> +
-> >> +               usleep_range(1000, 1100);
-> >
-> > No, sorry, but I don't like this.
-> >
-> > This looks like a GPIO regulator with an extension of using the
-> > keembay_sd_voltage_selection() thingy. I think you can model these
-> > things behind a regulator and hook it up as a vqmmc supply in DT
-> > instead. BTW, this is the common way we deal with these things for mmc
-> > host drivers.
->
-> It seemed to me that would just result in calling regulator API instead of
-> GPIO API but the flow above would otherwise be unchanged i.e. no benefit
->
 
-To me, the benefit is about avoiding platform specific code in drivers
-- but also about consistency. For I/O signal voltage, the common
-method here, is to model this as a GPIO regulator. This means we can
-use these available helpers from the core:
+--3jq5ty6aibw6pauv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-mmc_regulator_set_vqmmc()
-mmc_regulator_get_supply()
+Hi,
 
-Kind regards
-Uffe
+On Tue, Sep 29, 2020 at 10:30:25AM +0200, Michal Suchanek wrote:
+> The flash is present on all new boards and users went out of their way
+> to add it on the old ones.
+>=20
+> Enabling it makes a more reasonable default.
+>=20
+> Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+> ---
+>  arch/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dts | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/arch/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dts b/arch/arm=
+/boot/dts/sun8i-h2-plus-orangepi-zero.dts
+> index f19ed981da9d..061d295bbba7 100644
+> --- a/arch/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dts
+> +++ b/arch/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dts
+> @@ -163,8 +163,8 @@ &ohci1 {
+>  };
+> =20
+>  &spi0 {
+> -	/* Disable SPI NOR by default: it optional on Orange Pi Zero boards */
+> -	status =3D "disabled";
+> +	/* Enable optional SPI NOR by default */
+> +	status =3D "okay";
+> =20
+>  	flash@0 {
+>  		#address-cells =3D <1>;
+
+Unfortunately, it's optional, so there's really no reason to enable it
+all the time. If it's troublesome to users, then the distros or vendors
+should make the changes necessary to the hardware, bootloader or their
+documentation to make it easier for those users.
+
+Maxime
+
+--3jq5ty6aibw6pauv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX38siwAKCRDj7w1vZxhR
+xcSAAP9PvkQx5Q81Zhhvzgn+tmPzl7bCxG1cUlqZZ+/JGJt+TwD+KubY5HG4h852
+7ppZm294af5hYuKgY0iPbBpYbxNuYgk=
+=OfOL
+-----END PGP SIGNATURE-----
+
+--3jq5ty6aibw6pauv--
