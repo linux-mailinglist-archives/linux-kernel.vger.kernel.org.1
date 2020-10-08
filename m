@@ -2,136 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E22E28744B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 14:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38605287453
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 14:35:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730058AbgJHMdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 08:33:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730031AbgJHMdC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 08:33:02 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31AADC061755;
-        Thu,  8 Oct 2020 05:33:02 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id v19so5639189edx.9;
-        Thu, 08 Oct 2020 05:33:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Wutsq0w67FFOmYL9AjxDGdsGlmIL42b8TT5TUqNaum4=;
-        b=G2PrL0zqW68mvLQQIF+2g2b5Gvqi/3aiYkzMzmtKqKJ6psVXhOlnI03I3OH3oDfLDy
-         u6gVUJvpQDOtM720gDyHL/GD2NSMD9LE51VFEzKqcgjvHx3kHtygcwPY73bXtJB6sGZD
-         s57IC7voC/U144mYaT9lBw1b9AodOsgUC08wt8+nRWUkEdgdr06aIjvpYNoH2Vyw9gky
-         WY6kSs2nKEnX/PUawQGNH7+YlEpogDBzKOhvGKufDNjsIptIKVYqDtgMY3xZNwkm9/WG
-         baRunNdPKfSHfKOs7aXGzdCoPWhd80kMkJPQPM1m3Af6htPlhpJDLutdfclvGqhw1KmQ
-         eSQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Wutsq0w67FFOmYL9AjxDGdsGlmIL42b8TT5TUqNaum4=;
-        b=YAVPFGjxMsyejVKur8e4R/l7YqW15/AXOgMaDrntYmtFuUq4M2bdM50c3j/a8eJr9R
-         69l04JC4wpq8yLI47AtMOPTx3QpCpvtkiULQ0WKiq56pDTWNka6+a2/uVC5u1AZn8dBn
-         i/nKPXTxvvCEo0nZrGnjvMFIHaQG0fflLVY5V8k21FmRkmRhm4oJG01uhaDTUgEs1Vkf
-         aqNFCUBbP7MuHUNCHjgLtEPz9ZfBT8MUVsNK+aPx8Jvwf/p19XMZzrNyyZWp4s8X3P3S
-         aEgMjN/CJd0oogJwIHGtJU9zFmOeJFsXzOd957tuw9NnjDkj8iPy4wZ9D1ERsJhz4mZb
-         3+Hg==
-X-Gm-Message-State: AOAM532fSXVns/gN7fys9QWRFFpLNxTKSDGuJ/p5BY/5mF+m1Rlj2PlR
-        EPly2Mgk71xvbcc/ZJsbZ1ESzXfAxpk=
-X-Google-Smtp-Source: ABdhPJxT5mu5d0/sXPIX3aoQ7Q5Ewb/BjAnmp8srAGZm0HBfwEOVMQiv/bf33MCB4knjFf8W7jpnXg==
-X-Received: by 2002:aa7:da05:: with SMTP id r5mr2433549eds.184.1602160380403;
-        Thu, 08 Oct 2020 05:33:00 -0700 (PDT)
-Received: from [192.168.2.202] (pd9e5a9e4.dip0.t-ipconnect.de. [217.229.169.228])
-        by smtp.gmail.com with ESMTPSA id d20sm3847873edt.32.2020.10.08.05.32.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Oct 2020 05:32:59 -0700 (PDT)
-Subject: Re: [PATCH v2 0/5] platform/surface: Create a platform subdirectory
- for Microsoft Surface devices
-To:     Hans de Goede <hdegoede@redhat.com>,
-        platform-driver-x86@vger.kernel.org
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        =?UTF-8?Q?Bla=c5=be_Hrastnik?= <blaz@mxxn.io>,
-        Stephen Just <stephenjust@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Chen Yu <yu.c.chen@intel.com>, linux-kernel@vger.kernel.org
-References: <20201005160307.39201-1-luzmaximilian@gmail.com>
- <a82e3aff-801d-d116-bbf4-91f3981f713b@redhat.com>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <deb1c682-5843-61b1-173b-a70ef51e85f2@gmail.com>
-Date:   Thu, 8 Oct 2020 14:32:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1730074AbgJHMfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 08:35:25 -0400
+Received: from m12-18.163.com ([220.181.12.18]:44019 "EHLO m12-18.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729769AbgJHMfZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 08:35:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=7snQg
+        UUJSF5tKYLwhoTXmX+RnS13E0l5FHg91pRGEt8=; b=TBwxSNoIp21YXiaIJENv0
+        MP5W7XPDKS3g7j6aUCxBY1VvRFNFo2nLYIeyER1o0tOtZWOgC2MNeVYZjMdU2xy0
+        I6jCGPN9DpkmWlG0VmB9pBcz9nnbhMGZd1gYdCCqsJc/xWCClQxXr8XdmKluD5zr
+        JsAcTktXCGtnTkD2ZLomW0=
+Received: from localhost (unknown [101.228.30.83])
+        by smtp14 (Coremail) with SMTP id EsCowACnL6cdB39fzHnSSA--.1218S2;
+        Thu, 08 Oct 2020 20:33:34 +0800 (CST)
+Date:   Thu, 8 Oct 2020 20:33:33 +0800
+From:   Hui Su <sh_def@163.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     akpm@linux-foundation.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH] mm: fix some comments in page_alloc.c and mempolicy.c
+Message-ID: <20201008123333.GA7424@rlk>
+References: <20200925160650.GA42847@rlk>
+ <10c1b339-b352-7643-7adf-d82c941c7d2c@redhat.com>
+ <11c9c699aaa873847b4d14dfa5e2435b94c08569.camel@perches.com>
 MIME-Version: 1.0
-In-Reply-To: <a82e3aff-801d-d116-bbf4-91f3981f713b@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <11c9c699aaa873847b4d14dfa5e2435b94c08569.camel@perches.com>
+X-CM-TRANSID: EsCowACnL6cdB39fzHnSSA--.1218S2
+X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxU2qg4UUUUU
+X-Originating-IP: [101.228.30.83]
+X-CM-SenderInfo: xvkbvvri6rljoofrz/xtbBywq3X1PAPK5HEgAAs9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/8/20 1:44 PM, Hans de Goede wrote:
-> Hi Maximilian,
+On Thu, Oct 01, 2020 at 09:17:29AM -0700, Joe Perches wrote:
+> On Thu, 2020-10-01 at 14:27 +0200, David Hildenbrand wrote:
+> > On 25.09.20 18:06, Hui Su wrote:
+> > > 1. the cpuset.c has been moved from kernel/cpuset.c to
+> > > kernel/cgroup/cpuset.c long time ago, but the comment is stale,
+> > > so we update it.
+> []
+> > > diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> []
+> > > @@ -1,5 +1,5 @@
+> > >  /*
+> > > - *  kernel/cpuset.c
+> > > + *  kernel/cgroup/cpuset.c
 > 
-> On 10/5/20 6:03 PM, Maximilian Luz wrote:
->> As has come up in the discussion around
->>
->>    [RFC PATCH] Add support for Microsoft Surface System Aggregator Module
->>
->> it may make sense to add a Microsoft Surface specific platform
->> subdirectory. Andy has suggested drivers/platform/surface for that.
->> This series follows said suggestion and creates that subdirectory, as
->> well as moves Microsoft Surface related drivers over to it and updates
->> their MAINTAINERS entries (if available) accordingly.
->>
->> This series does not modify any existing driver code, symbols, or help
->> text.
-> 
-> In case you do not know I'm taking over from any as
-> drivers/platform/x86 maintainer.
-> 
-> I'm fine with the concept of this series, but who is going to maintain
-> this new drivers/platform/surface directory ?
-> 
-> Ah I see that the first patch answers that question and the plan
-> is to keep this part of the pdx86 maintainership.
-> 
-> I would prefer for the new dir to have its own
-> MAINTAINERS entry if I'm honest, I would like to try and
-> split maintainership for the surface stuff as follows:
-> 
-> 1. Who will review (and add their Reviewed-by or ask for improvements
->     or nack) patches to files in this dir?
-> 
-> 2. Who will gather approved patches apply them to a for-next branch
->     and send them out to Linus during the merge Window?
-> 
-> I can pick up 2. but I could really use some help with 1. So I
-> was thinking having a separate MAINTAINERS entry for the new
-> dir with you (Maximilian) (and me and Mark Gross) listed as
-> MAINTAINERS; and then I'm hoping that you can do the review
-> of surface related patches. At least those which you have not
-> written yourself.
-> 
-> How does that sound ?
+> It's probably better to remove this altogether instead.
 
-Sounds good, I'd be happy to help review and approve any Surface related
-patches. However, I think it would be beneficial if you and Mark still
-have a final look (and say) over the ones I've reviewed and accepted (if
-that's not already a given). I feel like I may lack a bit of experience
-for this job and might miss some things.
+Please ignore this change, thanks.
 
-I'll add the MAINTAINERS entry and send a v3 later today, if that's OK.
-
-Regards,
-Max
