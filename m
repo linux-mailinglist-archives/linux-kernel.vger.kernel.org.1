@@ -2,179 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88398286FB0
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:40:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F81F28700E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:55:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728115AbgJHHkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 03:40:49 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:53659 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727172AbgJHHkt (ORCPT
+        id S1728829AbgJHHyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 03:54:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728741AbgJHHyp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 03:40:49 -0400
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20201008074045epoutp02034d30c325075840b02276fc7f2a43a2~79G3p2wnu0252902529epoutp02D
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 07:40:45 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20201008074045epoutp02034d30c325075840b02276fc7f2a43a2~79G3p2wnu0252902529epoutp02D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1602142845;
-        bh=MCtneW5ZW/xmqkxzmXsjRSEsnWZHb9ZS23VNZRV6ibc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n+VbEf0aSLLGfrngWsKOd01UpzqHgyKL3pAeHoqRKD0VaunNfhM3dP36BA+xiVE5z
-         vkGzNsJHULcpF4rUDx8WTSNb7YXd1eUiH0JNMVR62LjsXb96RMuqD0jwlmbBOSSk9H
-         fR/VHgs1pDg2nglIWj7ox6NiYUVK6/WbOlbb/sUw=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20201008074044epcas1p434b3e3a72e061d241efb67191e9be50b~79G3F1xJS2323723237epcas1p40;
-        Thu,  8 Oct 2020 07:40:44 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.40.158]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4C6NRG1Pk5zMqYkx; Thu,  8 Oct
-        2020 07:40:42 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        58.BC.09582.972CE7F5; Thu,  8 Oct 2020 16:40:42 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20201008074041epcas1p4d2b9c36c5b3fef5c10db602b9d90c2aa~79G0E4tq42323723237epcas1p4t;
-        Thu,  8 Oct 2020 07:40:41 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20201008074041epsmtrp268fbdd1dc89a06c212a1749305d634b4~79G0D4AYR0844008440epsmtrp2-;
-        Thu,  8 Oct 2020 07:40:41 +0000 (GMT)
-X-AuditID: b6c32a37-899ff7000000256e-c9-5f7ec279fc14
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        8D.5D.08745.972CE7F5; Thu,  8 Oct 2020 16:40:41 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.113.221.102]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20201008074041epsmtip1ad808c752984c3329a97746b32478c0f~79Gz3hu3j3022330223epsmtip1r;
-        Thu,  8 Oct 2020 07:40:41 +0000 (GMT)
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-To:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     mka@chromium.org, rostedt@goodmis.org, mingo@redhat.com,
-        cw00.choi@samsung.com, chanwoo@kernel.org,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com
-Subject: [PATCH 3/3] PM / devfreq: Add tracepoint for frequency changes
-Date:   Thu,  8 Oct 2020 16:54:03 +0900
-Message-Id: <20201008075403.26181-4-cw00.choi@samsung.com>
+        Thu, 8 Oct 2020 03:54:45 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 957AFC0613D2;
+        Thu,  8 Oct 2020 00:54:44 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id x5so2372554plo.6;
+        Thu, 08 Oct 2020 00:54:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :in-reply-to:references;
+        bh=j2YZZCvtQrFkPVWDuwpwq7+KzOOQJEvUrhZvKk1fjMk=;
+        b=ecFJwkfjeUhG6Ewb8+CxFWrP9cOyAEta2DZv8zhYOyGy3Q0qE4Mpwd6+BobicUOsmj
+         1wM+GyB01Xqf0tLzmC7m18rtkgstQQQsXIYh19vScyOTtPfnkzmvkRWBC+8jd5aDeaCx
+         ntfkwO/fJ8k0UwhZOr2kYUmulX96oykExS1XJ8vxkyUtoyRajHf1UFP1Ir1VERT9/l+M
+         ZZ8nNMimh6xTU/vZ6jf8rTfp1fLzzk7rLaVzhzygoThnTRU0vGG2IDednS2eoWuNeSxk
+         XXogKMADQrgX6uSMTpJ7XaAZ81TximYoBC9VePUa2DQ8ZDnThdYUyFXg6eAeniix5U+C
+         T8ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:in-reply-to:references;
+        bh=j2YZZCvtQrFkPVWDuwpwq7+KzOOQJEvUrhZvKk1fjMk=;
+        b=T2RRHhCPtWc5POSNt1ciIPtbjRgwUl2TFFcdq0nSr/vg39BPS6tGYpxUCFx9GH0CwM
+         TbLpL5nP+zd8otyubMXgXnpWSQg8W7lHG+JJuiu/UCQ05cn7vZhTXChgZ9e7WvjDzgGT
+         WCEyoyUZzxwWHT/guI2fRPZi3l/ceFihSpOyJ0HGwKnrWtgDYSu/viz7MR2OZjssiKK4
+         bHWku/ipJyILyDbvuTKMD5aWF3cz+AFoHwLiUGpJkhWOKnRe6fpyaAf3QqCU4DEDsYat
+         jQkk4j0L5EwScHWpZl8uSS5uSW9nbXJr8s2qkv0Lt7GJGnb10yheYCPW24iSwH9gjuGj
+         jMXg==
+X-Gm-Message-State: AOAM532wBgxxF3zUvks06qrQWzW3z7Of8wXNOqBzJzH+SAdQ/65t6C0V
+        zNRuUBCgRJ0of02Q33lGado=
+X-Google-Smtp-Source: ABdhPJzREbTGVLK3lHXufvOTN8YIq/D7sgMqNQp77hhr15+N41wNgFbuZMgu0HCr6gW/c1hx19Y0AQ==
+X-Received: by 2002:a17:902:8d8f:b029:d0:cc02:8527 with SMTP id v15-20020a1709028d8fb02900d0cc028527mr6504505plo.33.1602143684225;
+        Thu, 08 Oct 2020 00:54:44 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.61])
+        by smtp.gmail.com with ESMTPSA id k206sm6777106pfd.126.2020.10.08.00.54.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Oct 2020 00:54:43 -0700 (PDT)
+From:   yulei.kernel@gmail.com
+X-Google-Original-From: yuleixzhang@tencent.com
+To:     akpm@linux-foundation.org, naoya.horiguchi@nec.com,
+        viro@zeniv.linux.org.uk, pbonzini@redhat.com
+Cc:     linux-fsdevel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xiaoguangrong.eric@gmail.com,
+        kernellwp@gmail.com, lihaiwei.kernel@gmail.com,
+        Yulei Zhang <yuleixzhang@tencent.com>,
+        Chen Zhuo <sagazchen@tencent.com>
+Subject: [PATCH 13/35] mm, dmem: introduce PFN_DMEM and pfn_t_dmem
+Date:   Thu,  8 Oct 2020 15:54:03 +0800
+Message-Id: <8c193bcb9cfd7ccce174bc4bbc9c4f5239c1f5ed.1602093760.git.yuleixzhang@tencent.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201008075403.26181-1-cw00.choi@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrLKsWRmVeSWpSXmKPExsWy7bCmrm7Vobp4g/52RouJN66wWFz/8pzV
-        4mzTG3aLy7vmsFl87j3CaHHpwAImi88bHjNa3G5cwWaxr+MBkwOnx+yGiyweLftusXtsWtXJ
-        5vF+31U2j74tqxg9Pm+SC2CLyrbJSE1MSS1SSM1Lzk/JzEu3VfIOjneONzUzMNQ1tLQwV1LI
-        S8xNtVVy8QnQdcvMAbpKSaEsMacUKBSQWFyspG9nU5RfWpKqkJFfXGKrlFqQklNgWaBXnJhb
-        XJqXrpecn2tlaGBgZApUmJCdMf12F0vBFOGKyQsnMTcwLhDoYuTkkBAwkVh04yJLFyMXh5DA
-        DkaJn53/mSGcT4wSF7e9Z4RwPjNKHFhxgRGm5dTkQ2wQiV2MEuvnHGOHcL4wSsw7ehqsik1A
-        S2L/ixtsILaIgJXE6f8dYHOZBeYzSvy9+xOsSFjAXeLZqc1MXYwcHCwCqhL9F8RBwrxA9R0/
-        XrJBbJOXWL3hADOIzSlgLfH99A+wORICj9glfrzdwQpR5CJx+M0KJghbWOLV8S3sELaUxOd3
-        e6EGVUusPHmEDaK5g1Fiy/4LUM3GEvuXTgY7gllAU2L9Ln2IsKLEzt9zwe5kFuCTePe1hxWk
-        REKAV6KjTQiiRFni8oO7UGslJRa3d0Kt8pBom/WIFRIofYwSeyc2ME9glJuFsGEBI+MqRrHU
-        guLc9NRiwwJj5DjbxAhOd1rmOxinvf2gd4iRiYPxEKMEB7OSCG+6d028EG9KYmVValF+fFFp
-        TmrxIUZTYOBNZJYSTc4HJty8knhDUyNjY2MLE0MzU0NDJXHeh7cU4oUE0hNLUrNTUwtSi2D6
-        mDg4pRqYtpwP0LjCrnjEy8Hbim8pw4tnTnmNE+fcmnrOo/RwSwDH7ek+SvNM53FwrHhT5Npz
-        6Oi2VTr8TqcFAx9dcgjasE7UriCi4ITq2puzP4k9qtya++uwQ07OeqbvM6WiDl9vvlXMdSr5
-        7mXDMydenvMu6jVgtuaseJR24Od0xqoPFXFivElZmUwPNxaxGJjcmvF45e8WTVYXfl8/w3ui
-        rAUHDrmYTX42repbOYfapRmCdzk+HH4q2bEw5WDKM7dL5h/u1FR8nXX24brMiMAtCx0ExMz3
-        x2eVJm5dsbc+66XOG86d+zbHiR4QWyxqv1RsdWr4nIPLrz12seiKaZu5u7LerStYJY1j1Z3s
-        FSW5AtHmSizFGYmGWsxFxYkAiD8zgwAEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrCLMWRmVeSWpSXmKPExsWy7bCSnG7lobp4g67/khYTb1xhsbj+5Tmr
-        xdmmN+wWl3fNYbP43HuE0eLSgQVMFp83PGa0uN24gs1iX8cDJgdOj9kNF1k8WvbdYvfYtKqT
-        zeP9vqtsHn1bVjF6fN4kF8AWxWWTkpqTWZZapG+XwJUx/XYXS8EU4YrJCycxNzAuEOhi5OSQ
-        EDCRODX5EFsXIxeHkMAORonH3ctZIRKSEtMuHmXuYuQAsoUlDh8uhqj5xCgx68lNdpAaNgEt
-        if0vbrCB2CICNhJ3F19jAbGZBZYzSsxtFQSxhQXcJZ6d2swEModFQFWi/4I4SJhXwEqi48dL
-        NohV8hKrNxxgBrE5Bawlvp/+AWYLAdWs3PeEaQIj3wJGhlWMkqkFxbnpucWGBUZ5qeV6xYm5
-        xaV56XrJ+bmbGMEBqaW1g3HPqg96hxiZOBgPMUpwMCuJ8KZ718QL8aYkVlalFuXHF5XmpBYf
-        YpTmYFES5/06a2GckEB6YklqdmpqQWoRTJaJg1OqgWn6k5jwoy52hlPnxOw/tvdHWMsslWv7
-        VBhnsroVfIhgvbhq3dEXzZc+lGoZSfUVlpxuv6S0+oGM04+Vl3czFmQlhFy5YX9/l63nY+ub
-        jb4L7SdzKxZ8UHpWMlGm3npOyUwj0Sv232Z+9foyu1OtNLBur/HHh+FyFgoFLQfkjkadYT//
-        50Xo+bXS5iun97SWfXl2+i/38wTb5B+zlB4F9LhN2ubaufNOq6XTnKa/Tl+LmyM5XknOZ2ZJ
-        /c625ZJ5pXL3bcEd1gYnFlsxfIpQ33vF7uB9wfOpD1wmKU3v0DbeJjdpokFItPHrsPoC7fdy
-        1tr7Pb0Mhbjnuf7NrJY4wLeVf3GSqOsr5sSfVnveJCqxFGckGmoxFxUnAgCEz+sHtwIAAA==
-X-CMS-MailID: 20201008074041epcas1p4d2b9c36c5b3fef5c10db602b9d90c2aa
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201008074041epcas1p4d2b9c36c5b3fef5c10db602b9d90c2aa
-References: <20201008075403.26181-1-cw00.choi@samsung.com>
-        <CGME20201008074041epcas1p4d2b9c36c5b3fef5c10db602b9d90c2aa@epcas1p4.samsung.com>
+In-Reply-To: <cover.1602093760.git.yuleixzhang@tencent.com>
+References: <cover.1602093760.git.yuleixzhang@tencent.com>
+In-Reply-To: <cover.1602093760.git.yuleixzhang@tencent.com>
+References: <cover.1602093760.git.yuleixzhang@tencent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthias Kaehlcke <mka@chromium.org>
+From: Yulei Zhang <yuleixzhang@tencent.com>
 
-Add a tracepoint for frequency changes of devfreq devices and
-use it.
+Introduce PFN_DMEM as a new pfn flag for dmem pfn, define it
+by setting (BITS_PER_LONG_LONG - 6) bit.
 
-Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-[cw00.choi: Move print position of tracepoint and add more information]
-Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
+Introduce pfn_t_dmem() helper to recognize dmem pfn.
+
+Signed-off-by: Chen Zhuo <sagazchen@tencent.com>
+Signed-off-by: Yulei Zhang <yuleixzhang@tencent.com>
 ---
- drivers/devfreq/devfreq.c      |  8 ++++++++
- include/trace/events/devfreq.h | 28 ++++++++++++++++++++++++++++
- 2 files changed, 36 insertions(+)
+ include/linux/pfn_t.h | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
-index 5b069a8a1026..d4c4aa050efa 100644
---- a/drivers/devfreq/devfreq.c
-+++ b/drivers/devfreq/devfreq.c
-@@ -369,6 +369,14 @@ static int devfreq_set_target(struct devfreq *devfreq, unsigned long new_freq,
- 		return err;
- 	}
+diff --git a/include/linux/pfn_t.h b/include/linux/pfn_t.h
+index 2d9148221e9a..c6c0f1f84498 100644
+--- a/include/linux/pfn_t.h
++++ b/include/linux/pfn_t.h
+@@ -11,6 +11,7 @@
+  * PFN_MAP - pfn has a dynamic page mapping established by a device driver
+  * PFN_SPECIAL - for CONFIG_FS_DAX_LIMITED builds to allow XIP, but not
+  *		 get_user_pages
++ * PFN_DMEM - pfn references a dmem page
+  */
+ #define PFN_FLAGS_MASK (((u64) (~PAGE_MASK)) << (BITS_PER_LONG_LONG - PAGE_SHIFT))
+ #define PFN_SG_CHAIN (1ULL << (BITS_PER_LONG_LONG - 1))
+@@ -18,13 +19,15 @@
+ #define PFN_DEV (1ULL << (BITS_PER_LONG_LONG - 3))
+ #define PFN_MAP (1ULL << (BITS_PER_LONG_LONG - 4))
+ #define PFN_SPECIAL (1ULL << (BITS_PER_LONG_LONG - 5))
++#define PFN_DMEM (1ULL << (BITS_PER_LONG_LONG - 6))
  
-+	/*
-+	 * Print devfreq_frequency trace information between DEVFREQ_PRECHANGE
-+	 * and DEVFREQ_POSTCHANGE because for showing the correct frequency
-+	 * change order of between devfreq device and passive devfreq device.
-+	 */
-+	if (trace_devfreq_frequency_enabled() && new_freq != cur_freq)
-+		trace_devfreq_frequency(devfreq, new_freq, cur_freq);
-+
- 	freqs.new = new_freq;
- 	devfreq_notify_transition(devfreq, &freqs, DEVFREQ_POSTCHANGE);
+ #define PFN_FLAGS_TRACE \
+ 	{ PFN_SPECIAL,	"SPECIAL" }, \
+ 	{ PFN_SG_CHAIN,	"SG_CHAIN" }, \
+ 	{ PFN_SG_LAST,	"SG_LAST" }, \
+ 	{ PFN_DEV,	"DEV" }, \
+-	{ PFN_MAP,	"MAP" }
++	{ PFN_MAP,	"MAP" }, \
++	{ PFN_DMEM,	"DMEM" }
  
-diff --git a/include/trace/events/devfreq.h b/include/trace/events/devfreq.h
-index bd36d28d16bc..7627c620bbda 100644
---- a/include/trace/events/devfreq.h
-+++ b/include/trace/events/devfreq.h
-@@ -8,6 +8,34 @@
- #include <linux/devfreq.h>
- #include <linux/tracepoint.h>
- 
-+TRACE_EVENT(devfreq_frequency,
-+	TP_PROTO(struct devfreq *devfreq, unsigned long freq,
-+		 unsigned long prev_freq),
+ static inline pfn_t __pfn_to_pfn_t(unsigned long pfn, u64 flags)
+ {
+@@ -128,4 +131,16 @@ static inline bool pfn_t_special(pfn_t pfn)
+ 	return false;
+ }
+ #endif /* CONFIG_ARCH_HAS_PTE_SPECIAL */
 +
-+	TP_ARGS(devfreq, freq, prev_freq),
-+
-+	TP_STRUCT__entry(
-+		__string(dev_name, dev_name(&devfreq->dev))
-+		__field(unsigned long, freq)
-+		__field(unsigned long, prev_freq)
-+		__field(unsigned long, busy_time)
-+		__field(unsigned long, total_time)
-+	),
-+
-+	TP_fast_assign(
-+		__assign_str(dev_name, dev_name(&devfreq->dev));
-+		__entry->freq = freq;
-+		__entry->prev_freq = prev_freq;
-+		__entry->busy_time = devfreq->last_status.busy_time;
-+		__entry->total_time = devfreq->last_status.total_time;
-+	),
-+
-+	TP_printk("dev_name=%-30s freq=%-12lu prev_freq=%-12lu load=%-2lu",
-+		__get_str(dev_name), __entry->freq, __entry->prev_freq,
-+		__entry->total_time == 0 ? 0 :
-+			(100 * __entry->busy_time) / __entry->total_time)
-+);
-+
- TRACE_EVENT(devfreq_monitor,
- 	TP_PROTO(struct devfreq *devfreq),
- 
++#ifdef CONFIG_ARCH_HAS_PTE_DMEM
++static inline bool pfn_t_dmem(pfn_t pfn)
++{
++	return (pfn.val & PFN_DMEM) == PFN_DMEM;
++}
++#else
++static inline bool pfn_t_dmem(pfn_t pfn)
++{
++	return false;
++}
++#endif /* CONFIG_ARCH_HAS_PTE_DMEM */
+ #endif /* _LINUX_PFN_T_H_ */
 -- 
-2.17.1
+2.28.0
 
