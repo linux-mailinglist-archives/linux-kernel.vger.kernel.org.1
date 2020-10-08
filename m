@@ -2,284 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78D04286D7C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 06:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A19F286D7E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 06:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726285AbgJHER2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 00:17:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726105AbgJHER2 (ORCPT
+        id S1727071AbgJHESO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 00:18:14 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:47299 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726105AbgJHESN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 00:17:28 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCEDBC0613D2
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 21:17:27 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id q1so4455813ilt.6
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 21:17:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6QFGJN3qVhpBRjjOtHOQ/iBClZaJcZiRzcWJlfey2eU=;
-        b=pppR9YCcJ6UaOVx5oDj/5io3YajfzfVOVtNLJB7PIZH79K4Rrmn+0Zt3F3aJ2+alNv
-         QkLOlYH0zKSzkL3HPNvi7KtTAU8Yk/ZIMinjLeTkfWCxOek03dshSHoo5fXbNlt2Ge5D
-         Ed6RtHtXL/CKyxoYUVEijNCaTHdiTAgKNefJ2hFLuy+jG8AkcL+rrnPlgLCFDJJ9uOzp
-         kEpmL6M7Qv4cghCMddjOVoBPKtUf97Shq+Y6DFglcmB5HKxm4Em+LQkGPOnCOivnSIU0
-         jnI95HWlUEY7WulPio8m6V5w1uF1HMszVlCu5cjOzpsQV+OQJsRwZXiGfDNaN31o4Jcj
-         s8mA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6QFGJN3qVhpBRjjOtHOQ/iBClZaJcZiRzcWJlfey2eU=;
-        b=FBgS/mnvQNM93Y3fBiks5Zc2X80Uyou9DC5W4RS4wmLpfM1MOB7R5KyTfBnZBUy7jl
-         zsOD1MqVlcNgWglPElwC9B+nyJ2JgJDS0rQ3LLTZJwVe2OI4dM0G3f0YLGzCzkEMI5c1
-         UJ4FAvekNBhO+WqINILO6b9bP+F7PpJXeJizQWw9NBI4hIGasKziQW9C+kNsXa4vjvyD
-         usYCH6GSIVk3dGznt/jP0GQTWmp2W9DBMN187blzvIfu/0s2DhT9L98CONLULred2Lsw
-         ti+L0i7cddlN2G8er9pG/IqRZi3fjEGyFkfrS1RFNzh7Lb0MHbyp7A5yLAdeeKUVt7MX
-         nUxw==
-X-Gm-Message-State: AOAM5318wJijIeDbxOvXIQp6JYRrFtoSySxJecm3unjSLD6lYc1n+80h
-        TQcxRJ5PcDLkAx2dsatZa7PGY4BZU0Vaebjyr8BOXw==
-X-Google-Smtp-Source: ABdhPJwyh7NquIrKK07SdWn1xoELKnJZnAT0IOdkB3ameC8cLKfSBP8VIGIthm08yUg/0h732kDewdix7a9H66Xog6w=
-X-Received: by 2002:a92:1b18:: with SMTP id b24mr1198984ilb.83.1602130646908;
- Wed, 07 Oct 2020 21:17:26 -0700 (PDT)
+        Thu, 8 Oct 2020 00:18:13 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 0984HmamE025802, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmb01.realtek.com.tw[172.21.6.94])
+        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 0984HmamE025802
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 8 Oct 2020 12:17:48 +0800
+Received: from localhost (172.22.88.222) by RTEXMB01.realtek.com.tw
+ (172.21.6.94) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Thu, 8 Oct 2020
+ 12:17:48 +0800
+From:   <ricky_wu@realtek.com>
+To:     <arnd@arndb.de>, <gregkh@linuxfoundation.org>,
+        <ricky_wu@realtek.corp-partner.google.com>,
+        <ulf.hansson@linaro.org>, <kdlnx@doth.eu>,
+        <rui_feng@realsil.com.cn>, <swboyd@chromium.org>,
+        <levinale@chromium.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] misc: rtsx: rts522a support L1 substate
+Date:   Thu, 8 Oct 2020 12:17:42 +0800
+Message-ID: <20201008041742.5511-1-ricky_wu@realtek.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <ca2f491fc97bdf6d7fc8d6fee5f702be27db6702.1602084104.git.viresh.kumar@linaro.org>
-In-Reply-To: <ca2f491fc97bdf6d7fc8d6fee5f702be27db6702.1602084104.git.viresh.kumar@linaro.org>
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-Date:   Thu, 8 Oct 2020 09:47:15 +0530
-Message-ID: <CAKohpokqZ0dfRdiEv9_RtTRQh4OLU3LuCe18f4xsChxYkg05Lw@mail.gmail.com>
-Subject: Re: [RFC V2] dt-bindings: mailbox : arm,mhuv2: Add bindings
-To:     Rob Herring <robh+dt@kernel.org>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>, morten_bp@live.dk
-Cc:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Sudeep Holla <Sudeep.Holla@arm.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Tushar Khandelwal <tushar.khandelwal@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [172.22.88.222]
+X-ClientProxiedBy: RTEXMB01.realtek.com.tw (172.21.6.94) To
+ RTEXMB01.realtek.com.tw (172.21.6.94)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Updated Morten's email id as he is no longer with ARM.
+From: Ricky Wu <ricky_wu@realtek.corp-partner.google.com>
 
-On Wed, 7 Oct 2020 at 20:58, Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> This patch adds device tree binding for ARM Message Handling Unit (MHU)
-> controller version 2.
->
-> Based on earlier work by Morten Borup Petersen.
->
-> Co-developed-by: Morten Borup Petersen <morten.petersen@arm.com>
-> Signed-off-by: Morten Borup Petersen <morten.petersen@arm.com>
-> Signed-off-by: Tushar Khandelwal <tushar.khandelwal@arm.com>
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
->
-> ---
-> Morten/Tushar,
->
-> I have prepared this based on the best of my understanding about the
-> hardware, but since I haven't worked on the actual hardware yet there
-> are chances that I may have misunderstood some of it. Please lemme know
-> if any of my understanding is incorrect.
->
-> Here is the link to the previous attempt by Tushar to get it upstreamed
-> long back:
->
-> https://lore.kernel.org/lkml/20190717192616.1731-1-tushar.khandelwal@arm.com/
->
-> This is very much a new approach and so I am not pointing out the
-> differences from the previous one.
->
-> I haven't started with redesigning the driver as of now and would like
-> to get some feedback on the bindings first. Thanks in advance.
-> ---
->  .../bindings/mailbox/arm,mhuv2.yaml           | 170 ++++++++++++++++++
->  1 file changed, 170 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mailbox/arm,mhuv2.yaml
->
-> diff --git a/Documentation/devicetree/bindings/mailbox/arm,mhuv2.yaml b/Documentation/devicetree/bindings/mailbox/arm,mhuv2.yaml
-> new file mode 100644
-> index 000000000000..3cbdc97f1f4c
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mailbox/arm,mhuv2.yaml
-> @@ -0,0 +1,170 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mailbox/arm,mhuv2.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: ARM MHUv2 Mailbox Controller
-> +
-> +maintainers:
-> +  - Morten Borup Petersen <morten.petersen@arm.com>
-> +  - Viresh Kumar <viresh.kumar@linaro.org>
-> +
-> +description: |
-> +  The Arm Message Handling Unit (MHU) Version 2 is a mailbox controller that has
-> +  between 1 and 124 channel windows (each 32-bit wide) to provide unidirectional
-> +  communication with remote processor(s), where the number of channel windows
-> +  are implementation dependent.
-> +
-> +  Given the unidirectional nature of the controller, an MHUv2 mailbox may only
-> +  be written to or read from. If a pair of MHU controllers is implemented
-> +  between two processing elements to provide bidirectional communication, these
-> +  must be specified as two separate mailboxes.
-> +
-> +  If the interrupts property is present in device tree node, then its treated as
-> +  a receiver mailbox, otherwise a sender.
-> +
-> +  An MHU controller must be specified along with the supported transport
-> +  protocols. The transport protocols determine the method of data transmission
-> +  as well as the number of provided mailbox channels.
-> +
-> +  Following are the possible transport protocols.
-> +
-> +  - Doorbell: Each transfer is made up of single bit flag, using any one of the
-> +    bits in a channel window. A channel window can support up to 32 doorbells
-> +    and the entire window shall be used in doorbell mode.  Optionally, data may
-> +    be transmitted through a shared memory region, wherein the MHU is used
-> +    strictly as an interrupt generation mechanism but that is out of the scope
-> +    of these bindings.
-> +
-> +  - Single-word: Each transfer is single word, using a single Channel window.
-> +
-> +  - Multi-word: Each transfer is made of two or more words, using two or more
-> +    channel windows.
-> +
-> +# We need a select here so we don't match all nodes with 'arm,primecell'
-> +select:
-> +  properties:
-> +    compatible:
-> +      contains:
-> +        const: arm,mhuv2
-> +  required:
-> +    - compatible
-> +
-> +properties:
-> +  compatible:
-> +        items:
-> +          - const: arm,mhuv2
-> +          - const: arm,primecell
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  clock-names:
-> +    items:
-> +      - const: apb_pclk
-> +
-> +  arm-mhuv2-mode:
-> +    description: |
-> +      The MHUv2 controller may contain up to 124 channel windows (each 32-bit
-> +      wide). The hardware and the DT bindings allows any combination of those to
-> +      be used for various transport protocols.
-> +
-> +      This property allows a platform to describe how these channel windows are
-> +      used in various transport protocols. The entries in this property shall be
-> +      present as an array of tuples, where each tuple describes details about
-> +      one of the transport protocol being implemented over some channel
-> +      window(s).
-> +
-> +      The first field of a tuple signifies the transfer protocol, 0 is reserved
-> +      for doorbell protocol, 1 is reserved for single-word protocol and 2 is
-> +      reserved for multi-word protocol. Using any other value in the first field
-> +      of a tuple makes it invalid.
-> +
-> +      The second field of a tuple signifies the number of channel windows where
-> +      the protocol would be used. For doorbell protocol this field signifies the
-> +      number of 32-bit channel windows that implement the doorbell protocol. For
-> +      single-word protocol this field signifies the number of 32-bit channel
-> +      windows that implement separate single-word protocol mailbox channels. For
-> +      multi-word protocol this field signifies the number of channel windows
-> +      used for a multi-word protocol, it should be 2 or more.
-> +
-> +      The total number of channel windows specified here shouldn't be more than
-> +      the ones implemented by the platform.
-> +
-> +      mhu: mailbox@2b1f0000 {
-> +          ...
-> +
-> +          arm-mhuv2-mode = <0 2>, <1 3>, <2 5>, <2 7>;
-> +      }
-> +
-> +      The above example defines the mode of an ARM MHUv2 mailbox controller,
-> +      where a total of 17 channel windows are used. The first two windows are
-> +      used in doorbell mode (64 doorbells), the next 3 windows are (separately)
-> +      used in single-word mode, and the last two mailbox channels are used in
-> +      multi-word mode of length 5 and 7 channel windows.
-> +
-> +  '#mbox-cells':
-> +    description: |
-> +      It contains two fields, the first field represents the channel number,
-> +      which may be used in doorbell, single-word, or multi-word mode, and the
-> +      second field (only relevant in doorbell mode, ignored otherwise)
-> +      represents the doorbell number within the 32 bit wide channel window.
-> +
-> +      From the example given above for the arm-mhuv2-mode, here is how a client
-> +      node can reference them.
-> +
-> +      mboxes = <&mhu 0 5>; // Mailbox channel 0, doorbell 5.
-> +      mboxes = <&mhu 1 7>; // Mailbox channel 1, doorbell 7.
-> +      mboxes = <&mhu 2 0>; // Mailbox channel 2, single-word mode.
-> +      mboxes = <&mhu 4 0>; // Mailbox channel 4, single-word mode.
-> +      mboxes = <&mhu 6 0>; // Mailbox channel 6, multi-word mode with 7 windows.
-> +
-> +    const: 2
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - '#mbox-cells'
-> +  - arm-mhuv2-mode
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  # Multiple transport protocols implemented by the mailbox controller
-> +  # configured in sender mode
-> +  - |
-> +    soc {
-> +        #address-cells = <2>;
-> +        #size-cells = <2>;
-> +
-> +        mhu: mailbox@2b1f0000 {
-> +            #mbox-cells = <2>;
-> +            compatible = "arm,mhuv2", "arm,primecell";
-> +            reg = <0 0x2b1f0000 0 0x1000>;
-> +            clocks = <&clock 0>;
-> +            clock-names = "apb_pclk";
-> +            arm-mhuv2-mode = <1 5>, <2 2>, <2 5>, <2 7>, <0 2>;
-> +        };
-> +
-> +        mhu_client: scb@2e000000 {
-> +            compatible = "fujitsu,mb86s70-scb-1.0";
-> +            reg = <0 0x2e000000 0 0x4000>;
-> +
-> +            mboxes =
-> +                     //single-word protocol channel 0
-> +                     <&mhu 0 0>,
-> +                     //single-word protocol channel 4
-> +                     <&mhu 4 0>,
-> +                     //multi-word protocol channel 6 with 5 windows
-> +                     <&mhu 6 0>,
-> +                     //doorbell protocol channel 9, doorbell 27
-> +                     <&mhu 9 27>;
-> +        };
-> +    };
-> --
-> 2.25.0.rc1.19.g042ed3e048af
->
+add rts522a L1 substate functions for kernel 5.4
+
+Signed-off-by: Ricky Wu <ricky_wu@realtek.corp-partner.google.com>
+---
+ drivers/misc/cardreader/rts5227.c  | 111 ++++++++++++++++++++++++++++-
+ drivers/misc/cardreader/rtsx_pcr.c |  30 ++++++++
+ drivers/misc/cardreader/rtsx_pcr.h |   2 +
+ include/linux/rtsx_pci.h           |   5 ++
+ 4 files changed, 146 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/misc/cardreader/rts5227.c b/drivers/misc/cardreader/rts5227.c
+index 3a9467aaa435..0d59106c7228 100644
+--- a/drivers/misc/cardreader/rts5227.c
++++ b/drivers/misc/cardreader/rts5227.c
+@@ -89,10 +89,73 @@ static void rts5227_force_power_down(struct rtsx_pcr *pcr, u8 pm_state)
+ 	rtsx_pci_write_register(pcr, FPDCTL, 0x03, 0x03);
+ }
+ 
++static void rts5227_init_from_cfg(struct rtsx_pcr *pcr)
++{
++	struct pci_dev *pdev = pcr->pci;
++	int l1ss;
++	u32 lval;
++	struct rtsx_cr_option *option = &pcr->option;
++
++	l1ss = pci_find_ext_capability(pdev, PCI_EXT_CAP_ID_L1SS);
++	if (!l1ss)
++		return;
++
++	pci_read_config_dword(pdev, l1ss + PCI_L1SS_CTL1, &lval);
++
++	if (CHK_PCI_PID(pcr, 0x522A)) {
++		if (0 == (lval & 0x0F))
++			rtsx_pci_enable_oobs_polling(pcr);
++		else
++			rtsx_pci_disable_oobs_polling(pcr);
++	}
++
++	if (lval & PCI_L1SS_CTL1_ASPM_L1_1)
++		rtsx_set_dev_flag(pcr, ASPM_L1_1_EN);
++	else
++		rtsx_clear_dev_flag(pcr, ASPM_L1_1_EN);
++
++	if (lval & PCI_L1SS_CTL1_ASPM_L1_2)
++		rtsx_set_dev_flag(pcr, ASPM_L1_2_EN);
++	else
++		rtsx_clear_dev_flag(pcr, ASPM_L1_2_EN);
++
++	if (lval & PCI_L1SS_CTL1_PCIPM_L1_1)
++		rtsx_set_dev_flag(pcr, PM_L1_1_EN);
++	else
++		rtsx_clear_dev_flag(pcr, PM_L1_1_EN);
++
++	if (lval & PCI_L1SS_CTL1_PCIPM_L1_2)
++		rtsx_set_dev_flag(pcr, PM_L1_2_EN);
++	else
++		rtsx_clear_dev_flag(pcr, PM_L1_2_EN);
++
++	if (option->ltr_en) {
++		u16 val;
++
++		pcie_capability_read_word(pcr->pci, PCI_EXP_DEVCTL2, &val);
++		if (val & PCI_EXP_DEVCTL2_LTR_EN) {
++			option->ltr_enabled = true;
++			option->ltr_active = true;
++			rtsx_set_ltr_latency(pcr, option->ltr_active_latency);
++		} else {
++			option->ltr_enabled = false;
++		}
++	}
++
++	if (rtsx_check_dev_flag(pcr, ASPM_L1_1_EN | ASPM_L1_2_EN
++				| PM_L1_1_EN | PM_L1_2_EN))
++		option->force_clkreq_0 = false;
++	else
++		option->force_clkreq_0 = true;
++
++}
++
+ static int rts5227_extra_init_hw(struct rtsx_pcr *pcr)
+ {
+ 	u16 cap;
++	struct rtsx_cr_option *option = &pcr->option;
+ 
++	rts5227_init_from_cfg(pcr);
+ 	rtsx_pci_init_cmd(pcr);
+ 
+ 	/* Configure GPIO as output */
+@@ -114,9 +177,17 @@ static int rts5227_extra_init_hw(struct rtsx_pcr *pcr)
+ 	rts5227_fill_driving(pcr, OUTPUT_3V3);
+ 	/* Configure force_clock_req */
+ 	if (pcr->flags & PCR_REVERSE_SOCKET)
+-		rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, PETXCFG, 0xB8, 0xB8);
++		rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, PETXCFG, 0x30, 0x30);
++	else
++		rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, PETXCFG, 0x30, 0x00);
++
++	if (option->force_clkreq_0)
++		rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, PETXCFG,
++				FORCE_CLKREQ_DELINK_MASK, FORCE_CLKREQ_LOW);
+ 	else
+-		rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, PETXCFG, 0xB8, 0x88);
++		rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, PETXCFG,
++				FORCE_CLKREQ_DELINK_MASK, FORCE_CLKREQ_HIGH);
++
+ 	rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, pcr->reg_pm_ctrl3, 0x10, 0x00);
+ 
+ 	return rtsx_pci_send_cmd(pcr, 100);
+@@ -372,6 +443,28 @@ static int rts522a_switch_output_voltage(struct rtsx_pcr *pcr, u8 voltage)
+ 	return rtsx_pci_send_cmd(pcr, 100);
+ }
+ 
++static void rts522a_set_l1off_cfg_sub_d0(struct rtsx_pcr *pcr, int active)
++{
++	struct rtsx_cr_option *option = &pcr->option;
++	int aspm_L1_1, aspm_L1_2;
++	u8 val = 0;
++
++	aspm_L1_1 = rtsx_check_dev_flag(pcr, ASPM_L1_1_EN);
++	aspm_L1_2 = rtsx_check_dev_flag(pcr, ASPM_L1_2_EN);
++
++	if (active) {
++		/* run, latency: 60us */
++		if (aspm_L1_1)
++			val = option->ltr_l1off_snooze_sspwrgate;
++	} else {
++		/* l1off, latency: 300us */
++		if (aspm_L1_2)
++			val = option->ltr_l1off_sspwrgate;
++	}
++
++	rtsx_set_l1off_sub(pcr, val);
++}
++
+ 
+ /* rts522a operations mainly derived from rts5227, except phy/hw init setting.
+  */
+@@ -389,15 +482,29 @@ static const struct pcr_ops rts522a_pcr_ops = {
+ 	.cd_deglitch = NULL,
+ 	.conv_clk_and_div_n = NULL,
+ 	.force_power_down = rts5227_force_power_down,
++	.set_l1off_cfg_sub_d0 = rts522a_set_l1off_cfg_sub_d0,
+ };
+ 
+ void rts522a_init_params(struct rtsx_pcr *pcr)
+ {
++	struct rtsx_cr_option *option = &pcr->option;
++
+ 	rts5227_init_params(pcr);
+ 	pcr->ops = &rts522a_pcr_ops;
+ 	pcr->tx_initial_phase = SET_CLOCK_PHASE(20, 20, 11);
+ 	pcr->reg_pm_ctrl3 = RTS522A_PM_CTRL3;
+ 
++	option->dev_flags = LTR_L1SS_PWR_GATE_EN;
++	option->ltr_en = true;
++
++	/* init latency of active, idle, L1OFF to 60us, 300us, 3ms */
++	option->ltr_active_latency = LTR_ACTIVE_LATENCY_DEF;
++	option->ltr_idle_latency = LTR_IDLE_LATENCY_DEF;
++	option->ltr_l1off_latency = LTR_L1OFF_LATENCY_DEF;
++	option->l1_snooze_delay = L1_SNOOZE_DELAY_DEF;
++	option->ltr_l1off_sspwrgate = 0x7F;
++	option->ltr_l1off_snooze_sspwrgate = 0x78;
++
+ 	pcr->option.ocp_en = 1;
+ 	if (pcr->option.ocp_en)
+ 		pcr->hw_param.interrupt_en |= SD_OC_INT_EN;
+diff --git a/drivers/misc/cardreader/rtsx_pcr.c b/drivers/misc/cardreader/rtsx_pcr.c
+index f20a6d52149b..ebac27212f07 100644
+--- a/drivers/misc/cardreader/rtsx_pcr.c
++++ b/drivers/misc/cardreader/rtsx_pcr.c
+@@ -1229,6 +1229,36 @@ void rtsx_pci_clear_ocpstat(struct rtsx_pcr *pcr)
+ 	}
+ }
+ 
++void rtsx_pci_enable_oobs_polling(struct rtsx_pcr *pcr)
++{
++	u16 val;
++
++	if ((PCI_PID(pcr) != PID_525A) && (PCI_PID(pcr) != PID_5260)) {
++		rtsx_pci_read_phy_register(pcr, 0x01, &val);
++		val |= 1<<9;
++		rtsx_pci_write_phy_register(pcr, 0x01, val);
++	}
++	rtsx_pci_write_register(pcr, REG_CFG_OOBS_OFF_TIMER, 0xFF, 0x32);
++	rtsx_pci_write_register(pcr, REG_CFG_OOBS_ON_TIMER, 0xFF, 0x05);
++	rtsx_pci_write_register(pcr, REG_CFG_VCM_ON_TIMER, 0xFF, 0x83);
++	rtsx_pci_write_register(pcr, REG_CFG_OOBS_POLLING, 0xFF, 0xDE);
++
++}
++
++void rtsx_pci_disable_oobs_polling(struct rtsx_pcr *pcr)
++{
++	u16 val;
++
++	if ((PCI_PID(pcr) != PID_525A) && (PCI_PID(pcr) != PID_5260)) {
++		rtsx_pci_read_phy_register(pcr, 0x01, &val);
++		val &= ~(1<<9);
++		rtsx_pci_write_phy_register(pcr, 0x01, val);
++	}
++	rtsx_pci_write_register(pcr, REG_CFG_VCM_ON_TIMER, 0xFF, 0x03);
++	rtsx_pci_write_register(pcr, REG_CFG_OOBS_POLLING, 0xFF, 0x00);
++
++}
++
+ int rtsx_sd_power_off_card3v3(struct rtsx_pcr *pcr)
+ {
+ 	rtsx_pci_write_register(pcr, CARD_CLK_EN, SD_CLK_EN |
+diff --git a/drivers/misc/cardreader/rtsx_pcr.h b/drivers/misc/cardreader/rtsx_pcr.h
+index ed391df52f4f..77c11d80157e 100644
+--- a/drivers/misc/cardreader/rtsx_pcr.h
++++ b/drivers/misc/cardreader/rtsx_pcr.h
+@@ -101,6 +101,8 @@ void rtsx_pci_disable_ocp(struct rtsx_pcr *pcr);
+ void rtsx_pci_enable_ocp(struct rtsx_pcr *pcr);
+ int rtsx_pci_get_ocpstat(struct rtsx_pcr *pcr, u8 *val);
+ void rtsx_pci_clear_ocpstat(struct rtsx_pcr *pcr);
++void rtsx_pci_enable_oobs_polling(struct rtsx_pcr *pcr);
++void rtsx_pci_disable_oobs_polling(struct rtsx_pcr *pcr);
+ int rtsx_sd_power_off_card3v3(struct rtsx_pcr *pcr);
+ int rtsx_ms_power_off_card3v3(struct rtsx_pcr *pcr);
+ 
+diff --git a/include/linux/rtsx_pci.h b/include/linux/rtsx_pci.h
+index 65b8142a7fed..588005fc9b97 100644
+--- a/include/linux/rtsx_pci.h
++++ b/include/linux/rtsx_pci.h
+@@ -667,6 +667,11 @@
+ #define   PM_WAKE_EN			0x01
+ #define PM_CTRL4			0xFF47
+ 
++#define REG_CFG_OOBS_OFF_TIMER 0xFEA6
++#define REG_CFG_OOBS_ON_TIMER 0xFEA7
++#define REG_CFG_VCM_ON_TIMER 0xFEA8
++#define REG_CFG_OOBS_POLLING 0xFEA9
++
+ /* Memory mapping */
+ #define SRAM_BASE			0xE600
+ #define RBUF_BASE			0xF400
+-- 
+2.17.1
+
