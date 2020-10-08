@@ -2,125 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FAF9287D35
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 22:32:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DFA9287D3E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 22:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730525AbgJHUcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 16:32:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41293 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725988AbgJHUcd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 16:32:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602189152;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tpdXmRvgARTnY1If9z6ashQTu7MgRoRzw2/k90YmvbQ=;
-        b=NJy2StpKyDQLlHkBZ2gT/KV2Qgk5q7sQXxpsl538I7a5xsY4GxxIbC19w8bbFIDPlLNNJh
-        jWB/4K5FGGhMUd8y2gGHCivILJ96Ph3q6Dd7X1YZyIXKDfbNQRpUEli3pwwtOmrJvq+W2D
-        5IPIvJ83q935Ia5tLTNv46OLFYib2zk=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-262-7o_QjoL-O1yMgkq-SxgxMQ-1; Thu, 08 Oct 2020 16:32:30 -0400
-X-MC-Unique: 7o_QjoL-O1yMgkq-SxgxMQ-1
-Received: by mail-wr1-f72.google.com with SMTP id x16so3949262wrg.7
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 13:32:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tpdXmRvgARTnY1If9z6ashQTu7MgRoRzw2/k90YmvbQ=;
-        b=SK+UURl3oPo5cJisGUqmr2XjW2mC9Zk2SS5pWGv1riBeT7DvWBG8vEnFJYVuPermt9
-         51xptKSfZanQp2nxufC7sycRpWohnfS76V4pNSxkOAmnIK3Z5vEQihahFOzdFuWxalXS
-         oPEX0sQsYlwJdyQ/C8DtcUjYEJQHWTdS9sglu0+cICwidCr99LkhQZz/2WpcG+3/BqMj
-         R1mN1Xp6Aq4YfoxfgZAAekd4o+xsNEj1+6PRW1oqDxJM8MTx5GXRZ6ioLbqQHBsXwdJf
-         lsGZTBluVvYmTeXG/DqmWTgwH/707dRQuvJiYUwFxrdUFVC2PZALmQyJOit+A0RS2MXF
-         sRkw==
-X-Gm-Message-State: AOAM531YpYVDkcUMFstJdtfsNevuDpRp/hgUCkYe09auygUGsRqm3Nao
-        wz9DJKT7Rgkqygo+inEScEg6r1OSlpPjt3gmFCo34NhnKV0uAmpfEAnmIFtiAU74pmpL65hhAFV
-        IhHnMM9vO/HkjL3LwNoGK8cpR
-X-Received: by 2002:a1c:6457:: with SMTP id y84mr10281547wmb.36.1602189149157;
-        Thu, 08 Oct 2020 13:32:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwQUG0KijlK+QL7Ax8XS9d5dAD0ojfOCzcq6UzOONYpRTIZTzyZtNzvqD6dDng76NlJsz1nrg==
-X-Received: by 2002:a1c:6457:: with SMTP id y84mr10281528wmb.36.1602189148924;
-        Thu, 08 Oct 2020 13:32:28 -0700 (PDT)
-Received: from steredhat (host-79-27-201-176.retail.telecomitalia.it. [79.27.201.176])
-        by smtp.gmail.com with ESMTPSA id o14sm8603590wmc.36.2020.10.08.13.32.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 13:32:28 -0700 (PDT)
-Date:   Thu, 8 Oct 2020 22:32:25 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     netdev@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Rusty Russell <rusty@rustcorp.com.au>, stable@vger.kernel.org,
-        Jason Wang <jasowang@redhat.com>
-Subject: Re: [PATCH] vringh: fix __vringh_iov() when riov and wiov are
- different
-Message-ID: <20201008203225.7ndzfnpyxxntthtj@steredhat>
-References: <20201008161311.114398-1-sgarzare@redhat.com>
- <20201008160035-mutt-send-email-mst@kernel.org>
- <20201008202436.r33jqbbttqynfvhe@steredhat>
- <20201008162813-mutt-send-email-mst@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201008162813-mutt-send-email-mst@kernel.org>
+        id S1726301AbgJHUdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 16:33:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49590 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725917AbgJHUdn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 16:33:43 -0400
+Received: from tzanussi-mobl (c-73-209-127-30.hsd1.il.comcast.net [73.209.127.30])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CA21721D43;
+        Thu,  8 Oct 2020 20:33:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602189223;
+        bh=Wa6+SwmoUyDZWGsqat8x+/bUGRdpJ/vaeMrsIpQd+qc=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=W7nmOE5qmQ6BUwgCKLNVpo5GHa9Tqmz9mlBcvfeP6+955vReHDngk43dFXq1OEllS
+         XOLUfvj1NeuDPQPCRnlX2Ezi1/6MAoy3jnhcCdkHnur3iPkqiqlYJotwlKVqka35X8
+         5TKGvfqP5kb/0gwuZ1Kp6mrJGrnoB8HXs132yM2I=
+Message-ID: <dce75e64b996c9d676376440a9acf087395eec99.camel@kernel.org>
+Subject: Re: [PATCH v4 4/7] tracing: Add support for dynamic strings to
+ synthetic events
+From:   Tom Zanussi <zanussi@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     rostedt@goodmis.org, axelrasmussen@google.com,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 08 Oct 2020 15:33:41 -0500
+In-Reply-To: <20201008182207.7526e70da842a01e373dd8cd@kernel.org>
+References: <cover.1601848695.git.zanussi@kernel.org>
+         <3ed35b6d0e390f5b94cb4a9ba1cc18f5982ab277.1601848695.git.zanussi@kernel.org>
+         <20201008182207.7526e70da842a01e373dd8cd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 04:28:40PM -0400, Michael S. Tsirkin wrote:
-> On Thu, Oct 08, 2020 at 10:24:36PM +0200, Stefano Garzarella wrote:
-> > On Thu, Oct 08, 2020 at 04:00:51PM -0400, Michael S. Tsirkin wrote:
-> > > On Thu, Oct 08, 2020 at 06:13:11PM +0200, Stefano Garzarella wrote:
-> > > > If riov and wiov are both defined and they point to different
-> > > > objects, only riov is initialized. If the wiov is not initialized
-> > > > by the caller, the function fails returning -EINVAL and printing
-> > > > "Readable desc 0x... after writable" error message.
-> > > > 
-> > > > Let's replace the 'else if' clause with 'if' to initialize both
-> > > > riov and wiov if they are not NULL.
-> > > > 
-> > > > As checkpatch pointed out, we also avoid crashing the kernel
-> > > > when riov and wiov are both NULL, replacing BUG() with WARN_ON()
-> > > > and returning -EINVAL.
-> > > > 
-> > > > Fixes: f87d0fbb5798 ("vringh: host-side implementation of virtio rings.")
-> > > > Cc: stable@vger.kernel.org
-> > > > Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-> > > 
-> > > Can you add more detail please? when does this trigger?
-> > 
-> > I'm developing vdpa_sim_blk and I'm using vringh_getdesc_iotlb()
-> > to get readable and writable buffers.
-> > 
-> > With virtio-blk devices a descriptors has both readable and writable
-> > buffers (eg. virtio_blk_outhdr in the readable buffer and status as last byte
-> > of writable buffer).
-> > So, I'm calling vringh_getdesc_iotlb() one time to get both type of buffer
-> > and put them in 2 iovecs:
-> > 
-> > 	ret = vringh_getdesc_iotlb(&vq->vring, &vq->riov, &vq->wiov,
-> > 				   &vq->head, GFP_ATOMIC);
-> > 
-> > With this patch applied it works well, without the function fails
-> > returning -EINVAL and printing "Readable desc 0x... after writable".
-> > 
-> > Am I using vringh_getdesc_iotlb() in the wrong way?
-> > 
-> > Thanks,
-> > Stefano
-> > 
-> 
-> 
-> I think it's ok, this info just needs to be in the commit log ...
+Hi Masami,
 
-Sure, I'll send a v2 adding this info.
-Sorry for not adding it earlier!
+On Thu, 2020-10-08 at 18:22 +0900, Masami Hiramatsu wrote:
+> Hi Tom,
+> 
+> On Sun,  4 Oct 2020 17:14:06 -0500
+> Tom Zanussi <zanussi@kernel.org> wrote:
+> 
+> > Currently, sythetic events only support static string fields such
+> > as:
+> > 
+> >   # echo 'test_latency u64 lat; char somename[32]' >
+> > /sys/kernel/debug/tracing/synthetic_events
+> > 
+> > Which is fine, but wastes a lot of space in the event.
+> > 
+> > It also prevents the most commonly-defined strings in the existing
+> > trace events e.g. those defined using __string(), from being passed
+> > to
+> > synthetic events via the trace() action.
+> > 
+> > With this change, synthetic events with dynamic fields can be
+> > defined:
+> > 
+> >   # echo 'test_latency u64 lat; char somename[]' >
+> > /sys/kernel/debug/tracing/synthetic_events
+> > 
+> > And the trace() action can be used to generate events using either
+> > dynamic or static strings:
+> > 
+> >   # echo 'hist:keys=name:lat=common_timestamp.usecs-
+> > $ts0:onmatch(sys.event).test_latency($lat,name)' >
+> > /sys/kernel/debug/tracing/events
+> > 
+> > The synthetic event dynamic strings are implemented in the same way
+> > as
+> > the existing __data_loc strings and appear as such in the format
+> > file.
+> > 
+> > [ <rostedt@goodmis.org>: added __set_synth_event_print_fmt()
+> > changes:
+> > 
+> >   I added the following to make it work with trace-cmd. Dynamic
+> > strings
+> >   must have __get_str() for events in the print_fmt otherwise it
+> > can't be
+> >   parsed correctly. ]
+> 
+> I confirmed this works, but have some questions;
+> - It seems no error message when we failed to define with wrong
+> syntax
+
+Yes, I need to add an error message for this (as well as others in this
+file).
+
+> 
+> /sys/kernel/debug/tracing # echo 'myevent char name []' >>
+> synthetic_events 
+> sh: write error: Invalid argument
+> /sys/kernel/debug/tracing # cat error_log 
+> /sys/kernel/debug/tracing #
+> 
+> - what we write and what we see in synthetic_events are different
+> 
+> /sys/kernel/debug/tracing # echo 'myevent char name[]' >>
+> synthetic_events 
+> /sys/kernel/debug/tracing # cat synthetic_events 
+> myevent	__data_loc char[] name
+> 
+> - And it is not able to re-define with that syntax
+> 
+> /sys/kernel/debug/tracing # echo > synthetic_events 
+> /sys/kernel/debug/tracing # echo 'myevent __data_loc char[] name' >>
+> synthetic_events 
+> sh: write error: Invalid argument
+> /sys/kernel/debug/tracing # 
+> 
+
+Yes, only the format needs to have the __data_loc, but the event
+description shouldn't.
+
+> - It seems to accept wrong name for variables
+> 
+> /sys/kernel/debug/tracing # echo 'myevent char name]' >>
+> synthetic_events 
+> /sys/kernel/debug/tracing # echo 'myevent2 char name;[]' >>
+> synthetic_events 
+> /sys/kernel/debug/tracing # cat synthetic_events 
+> myevent	char name]
+> myevent2	__data_loc char[] name;
+> 
+
+Yes, I think all these other errors boil down to allowing illegal
+names.  Applying your is_good_name() function for probe events to these
+fields should get rid of them.
+
+> Some of those issues are not introduced from this series. I think
+> we'd better fix those before introducing this series so that
+> we can backport it to stable kernels.
+> 
+
+I should have patches addressing all of these shortly, tomorrow at the
+latest.
 
 Thanks,
-Stefano
+
+Tom
+
+> Thank you,
+> 
+> 
 
