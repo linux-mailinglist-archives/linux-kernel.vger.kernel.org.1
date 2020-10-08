@@ -2,50 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CE702870DC
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 10:42:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6654F2870DE
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 10:42:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726924AbgJHImW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 04:42:22 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48872 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725616AbgJHImW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 04:42:22 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 101C0AD32;
-        Thu,  8 Oct 2020 08:42:21 +0000 (UTC)
-Date:   Thu, 8 Oct 2020 10:42:19 +0200
-From:   Joerg Roedel <jroedel@suse.de>
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/5] x86/head/64: Disable stack protection for
- head$(BITS).o
-Message-ID: <20201008084219.GC3209@suse.de>
-References: <20201007195351.776555-1-nivedita@alum.mit.edu>
- <20201007195351.776555-6-nivedita@alum.mit.edu>
+        id S1727234AbgJHImh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 04:42:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725616AbgJHImh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 04:42:37 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB916C061755;
+        Thu,  8 Oct 2020 01:42:36 -0700 (PDT)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1kQRVO-001UdQ-Az; Thu, 08 Oct 2020 10:42:31 +0200
+Message-ID: <81ebd41b4f39c78867949e6453b2fb58e69ed48d.camel@sipsolutions.net>
+Subject: Re: [PATCH] docs: net: 80211: reduce docs build time
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org
+Date:   Thu, 08 Oct 2020 10:42:29 +0200
+In-Reply-To: <f0085721d85ebc3a77164b457ed948eee48b55df.1601890703.git.mchehab+huawei@kernel.org>
+References: <f0085721d85ebc3a77164b457ed948eee48b55df.1601890703.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201007195351.776555-6-nivedita@alum.mit.edu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 03:53:51PM -0400, Arvind Sankar wrote:
-> On 64-bit, the startup_64_setup_env() function added in
->   866b556efa12 ("x86/head/64: Install startup GDT")
-> has stack protection enabled because of set_bringup_idt_handler().
+On Mon, 2020-10-05 at 11:38 +0200, Mauro Carvalho Chehab wrote:
+> the files under /80211 calls kernel-doc script 207 times, one for each
+> single function and doc chapter. Due to that, it takes a lot of time
+> handling it:
 > 
-> At this point, %gs is not yet initialized, and this doesn't cause a
-> crash only because the #PF handler from the decompressor stub is still
-> installed and handles the page fault.
+> 	$ touch Documentation/driver-api/80211/*rst && time make SPHINXDIRS=driver-api/80211 htmldocs
+> ...
+> 	real	0m22,928s
+> 	user	0m21,644s
+> 	sys	0m1,334s
+> 
+> Reduce the build time by doing only one kernel-doc call
+> per functions that belong to the same group. With that, there's now
+> 50 calls to kernel-doc, which makes the build time for those docs
+> 62% faster:
+> 
+> 	$ touch Documentation/driver-api/80211/*rst && time make SPHINXDIRS=driver-api/80211 htmldocs
+> ...
+> 	real	0m8,666s
+> 	user	0m8,084s
+> 	sys	0m0,642s
+> 
+> As a side effect, it should now be easier to add newer
+> functions, as there's no need to repeat the kernel-doc
+> pattern.
 
-Hmm, that is weird. Can you please share your config with which this
-happens? I have a commit in my local branch which disables page-faulting
-in the pre-decompression code before jumping to the uncompressed kernel
-image, and it did not break anything here.
+Thanks, I'll apply this.
 
-Also, what compiler did you use to trigger this?
+I wasn't even aware of that syntax ...
+
+johannes
 
