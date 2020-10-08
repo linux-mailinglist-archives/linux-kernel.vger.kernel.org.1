@@ -2,116 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97EFC286EC4
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 08:36:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C6C2286EC9
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 08:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728011AbgJHGg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 02:36:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726041AbgJHGg2 (ORCPT
+        id S1727882AbgJHGlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 02:41:19 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:33184 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726013AbgJHGlT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 02:36:28 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E59B1C061755;
-        Wed,  7 Oct 2020 23:36:27 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id l11so5190513wmh.2;
-        Wed, 07 Oct 2020 23:36:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IBRbeWKDJRldULV0/PLeknMFH5O6Eh3yednDqQnM9vY=;
-        b=vZCCwXT8Xqm41H5jMNICGm61BoycUAX2GktRhlUz/TFG+4wOSgBL+I0v3u77rTM4WL
-         bYSmzmY9VRP5L30+EYIp40qpmngbiNsAOmqm4ojBBcvG428zxGsFkPdxNELhwWqEZlgn
-         54iimffXyU0Z2OWqAxKjOPvNwQ+bZDd+ItQTaCuq7PUflw4nqYqoiSii/ifXodaQ4EJK
-         J9Xn3HYGeZUlD6MOjS+awbtr4RwUYf2Mv4zdGeMP8sNRplIQg9kQEPRWA0MAuCEblFg6
-         THJcJ1AEA0EwUn0MNM+TjobkgqOT2a/fv0p6xqgLFB6CvbAniQdWZtOR4MfnksQwfhrR
-         +xMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IBRbeWKDJRldULV0/PLeknMFH5O6Eh3yednDqQnM9vY=;
-        b=POAHdb5PAKSf5jPMmO/MKeyNV/qsEjPzNKchD//nyOa1vh2ZTwRAipGO3KoUwnjvDZ
-         s4ccBMkaiDKdbQdvb/Pauwt7HnKpI7vfAmAnqQA+2Eq9VlVle0d+xUWpX5VVPMfmbkNV
-         tdS7iXWD4SKksY6Ws3grjGmt8fG81EIOm4GeJxlU7nUvNmAzuhKUIZuBk9zYmoDGMci3
-         lhtAd6XpbVwg2ihhlW/NRP3y9Q1Qwd21KAek3fMjYivVFcJWImbWjupEZRBE7TH/ayjv
-         ydMlr70CCjzmJWFD/+cIRkZFbqX9AvDKC6bSHR6noBYGxDMXMvfUIAkGACFfs9aOXsO3
-         doIA==
-X-Gm-Message-State: AOAM531bvsK8iBleR61Ju+NQOC8RPXu9BUln1Bu6sdF8C2xQ33K5ypni
-        lRnFdwYRU7S977rZ5t6MA8UPemGED6c=
-X-Google-Smtp-Source: ABdhPJzMoxWNIMLAYr5QmRECiDBuQKbrhPzLftRz1wDgk05hMA1m4Nf/YXHp+oxVZ8lAc/jETOpw9g==
-X-Received: by 2002:a7b:c3d0:: with SMTP id t16mr6910479wmj.169.1602138986586;
-        Wed, 07 Oct 2020 23:36:26 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id d23sm5397303wmb.6.2020.10.07.23.36.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 23:36:25 -0700 (PDT)
-Date:   Thu, 8 Oct 2020 08:36:23 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>
-Subject: Re: [v2 PATCH] crypto: sun4i-ss - Fix sparse endianness markers
-Message-ID: <20201008063623.GA17802@Red>
-References: <202009061621.J89kO43Q%lkp@intel.com>
- <20200907062400.GA15841@gondor.apana.org.au>
- <20200907160029.GC11894@Red>
- <20200908050036.GA19817@gondor.apana.org.au>
- <20200910122248.GA22506@Red>
- <20200911041354.GA5275@gondor.apana.org.au>
- <20200914104058.GA14265@Red>
- <20200924030859.GA8223@gondor.apana.org.au>
- <20200924132738.GA24386@Red>
- <20201008055238.GA9813@gondor.apana.org.au>
+        Thu, 8 Oct 2020 02:41:19 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0986fB3A036284;
+        Thu, 8 Oct 2020 01:41:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1602139271;
+        bh=gsL6qGyv3yy3qt79DsqdekTiwlE1pswLY4v54xlQGaU=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=n3Fj0lfsWQDrsoyvfP9Uv/V5oXyfBDyrfdLVs8xCLZorZaqQYZg0e0xtiOdpx8KSL
+         VyiIwYQcMqczKR+E71EkBKW3PC0rac75y/SFbeNVOkI5aRzTwRtmguGlJMhGdCYM5I
+         6twh2j47g2LWOIKeGCmPfVy3xiLojGG+0TVlJpqQ=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0986fBxX019430
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 8 Oct 2020 01:41:11 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 8 Oct
+ 2020 01:41:11 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 8 Oct 2020 01:41:11 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0986f8SO048206;
+        Thu, 8 Oct 2020 01:41:09 -0500
+Subject: Re: [PATCH 01/18] dmaengine: of-dma: Add support for optional router
+ configuration callback
+To:     Vinod Koul <vkoul@kernel.org>
+CC:     <nm@ti.com>, <ssantosh@kernel.org>, <robh+dt@kernel.org>,
+        <vigneshr@ti.com>, <dan.j.williams@intel.com>, <t-kristo@ti.com>,
+        <lokeshvutla@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <dmaengine@vger.kernel.org>
+References: <20200930091412.8020-1-peter.ujfalusi@ti.com>
+ <20200930091412.8020-2-peter.ujfalusi@ti.com>
+ <20201007054404.GR2968@vkoul-mobl>
+ <be615881-1eb4-f8fe-a32d-04fabb6cb27b@ti.com>
+ <20201007155533.GZ2968@vkoul-mobl>
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+Message-ID: <45adb88b-1ef8-1fbf-08c1-9afc6ea4c6f0@ti.com>
+Date:   Thu, 8 Oct 2020 09:41:29 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201008055238.GA9813@gondor.apana.org.au>
+In-Reply-To: <20201007155533.GZ2968@vkoul-mobl>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 04:52:38PM +1100, Herbert Xu wrote:
-> On Thu, Sep 24, 2020 at 03:27:38PM +0200, Corentin Labbe wrote:
-> >
-> > This is an example on next-20200923+BigEndian
-> > alg: ahash: sha1 test failed (wrong result) on test vector \"random: psize=194 ksize=0\", cfg=\"random: inplace may_sleep use_finup src_divs=[98.25%@+1124, <flush>1.75%@+5] iv_offset=18\"
-> 
-> Hmm, the only way I can see this happening is if it was triggered
-> by tcrypt.  Were you using tcrypt by any chance?
-> 
-> Ccing Eric in case he has any insight.
-> 
-> > === DUMP /proc/crypto ===
-> > name         : sha1
-> > driver       : sha1-sun4i-ss
-> > module       : kernel
-> > priority     : 300
-> > refcnt       : 1
-> > selftest     : passed
-> > internal     : no
-> > type         : ahash
-> > async        : no
-> > blocksize    : 64
-> > digestsize   : 20
-> 
-> ...
-> 
-> > name         : sha1
-> > driver       : sha1-generic
-> > module       : kernel
-> > priority     : 100
-> > refcnt       : 1
-> > selftest     : passed
-> > internal     : no
-> > type         : shash
-> > blocksize    : 64
-> > digestsize   : 20
-> 
-> Thanks,
 
-Yes I use tcrypt to force all algos to be tested.
+
+On 07/10/2020 18.55, Vinod Koul wrote:
+> On 07-10-20, 11:08, Peter Ujfalusi wrote:
+> 
+>> Not really. In DT an event triggered channel can be requested via router
+>> (when this is used) for example:
+>>
+>> dmas = <&inta_l2g a b c>;
+>> a - the input number of the DMA request in l2g
+>> b - edge or level trigger to be selected
+>> c - ASEL number for the channel for coherency
+>>
+>> The l2g router driver then translate this to:
+>> <&main_bcdma 1 0 c>
+>> 1 - Global trigger 0 is used by the DMA
+>> 0 - ignored
+>> c - ASEL number.
+>>
+>> The router needs to send an event which is going to be received by the
+>> channel we have picked up, this event number can only be known when we
+>> do have the channel.
+>>
+>> So the flow in this case:
+>> router converts the dma_spec for the DMA, but it does not yet know what
+>> is the event number it has to use.
+>> The BCDMA driver will pick an available bchan and notes that the
+>> transfers will be triggered by global event 0.
+>> When we have the channel, the core saves the router information and
+>> calls the device_router_config of BCDMA.
+>> In there we call back to the router and give the event number it has to
+>> use to send the trigger for the channel.
+> 
+> Ah that is intresting, so you would call router driver foo_set_event()
+> and would send the event number
+
+Yes, that's correct.
+
+> why not call that API from alloc
+> channel or even xlate?
+
+at alloc / xlate time the DMA driver does not have information about
+router. The alloc/xlate will result the channel, but in my case it will
+result a broken setup as the router does not know which event to send.
+
+> Why do you need new callback?
+
+When I added the DMA event router support, it was designed in a way that
+the DMA driver itself must not know anything about the router, it has to
+be transparent. One can just add a router on front of any DMA and
+everything will work.
+This is the right thing to do, and it works for existing setups.
+
+> Or did i miss something..
+
+The BCDMA triggered channel setup is a chicken-egg setup.
+For this case the channel can be triggered by a global event. A channel
+can receive two global event, but this is not a concern atm.
+The event number depends on the channel we use, for simplicity let's
+say: bchan_id + trigger_offset = bchan_trigger_evt.
+
+of_dma_router_xlate does this:
+
+1. calls the dma router's of_dma_route_allocate callback to allocate a
+route and craft a dma_spec for the DMA to configure a channel.
+
+2. using this crafted dma_spec we request a channel via of_dma_xlate
+callback
+
+3. if we got the channel, we save the router information, so it can be
+deallocated when the channel is disabled.
+
+I need a fourth step to do a final configuration since only at this time
+(after it has been allocated) the channel has information about possible
+router.
+
+In the new optional callback the DMA driver can figure out the event
+number which must be used by the router to send the event to the desired
+global event target of the channel.
+
+Other DMAs might need something different, but imho if there is going to
+be a need for such post alloc router config, then it is most likely will
+come from the need to feed back some sort of channel information to the
+router. Or take parameter from the router itself for the channel.
+
+To summarize:
+In of_dma_route_allocate() the router does not yet know the channel we
+are going to get.
+In of_dma_xlate() the DMA driver does not yet know if the channel will
+use router or not.
+I need to tell the router the event number it has to send, which is
+based on the channel number I got.
+
+- Péter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
