@@ -2,116 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 792C228757A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 15:53:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9C3228757C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 15:54:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729922AbgJHNxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 09:53:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26759 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729808AbgJHNxd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 09:53:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602165212;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Pk7ZZAadddESqYB+VY4XdoDBtWSd1nh1D4Je1J3dXys=;
-        b=akNKYzlzqfxgwsJULHL3AhpWbjYKm+FYTrbhmjk2ieeVpKOcF/dpLTY5/lStWyt7u5WAun
-        0H2MzkLGgsVZX+sVlaKHk7f03l7+GiZz7qh3/DoJllHqIZ8F0XWPFYDMr1nzyfswxYtkoL
-        agxUwjaOYkOFYQw7aYR0jy66zslg8I0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-472-ovluvz7vOjC0IwSS9V3JPA-1; Thu, 08 Oct 2020 09:53:30 -0400
-X-MC-Unique: ovluvz7vOjC0IwSS9V3JPA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AECDD18C9F42;
-        Thu,  8 Oct 2020 13:53:28 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.132])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 3F50660BFA;
-        Thu,  8 Oct 2020 13:53:27 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Thu,  8 Oct 2020 15:53:28 +0200 (CEST)
-Date:   Thu, 8 Oct 2020 15:53:26 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-        peterz@infradead.org, tglx@linutronix.de
-Subject: Re: [PATCH 4/6] kernel: add support for TIF_NOTIFY_SIGNAL
-Message-ID: <20201008135325.GG9995@redhat.com>
-References: <20201005150438.6628-1-axboe@kernel.dk>
- <20201005150438.6628-5-axboe@kernel.dk>
+        id S1729976AbgJHNx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 09:53:59 -0400
+Received: from mail-bn7nam10on2041.outbound.protection.outlook.com ([40.107.92.41]:59240
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726875AbgJHNx6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 09:53:58 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UsQdHS83B82VaCyIkcUlzgm0yhuqSl5cYLjH/OXqnlIWIQ6pRqPvU+5dhAgYifMGyJkmkV2gS9ECYg90uBg/Ai4HcdsLgiUnh6jH9/4xrdYCc3pRFIIpWngp670Tfrk1jIjC8ty/ebazTA4gY1XAhQnKLq2bwAMDtofJ5hbpRaIoKGgigbkMunV+MrGwgwVdIdvqSJ9glmNo3IdduDSTTygF82HcfNzoZn70vYLtYDP7u9qKJctCM1incLkRGfuNIDixbpmMt1dPjVeHGd7yaiB2BXlWUjsxAWaAKOD0M2SN8WrbKrh4//T425XVTTVmCUJd1cSTvMUn1iOT0g+TDA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QOwssnWEpwCYeb5XXIBISUyaQgfSWiaVmWPZSJaZgwI=;
+ b=i/63UXemGWFft/axsbd3I+8NyLxUQZqGJhG3J1g0IPaFCc5pZLIcwcPRHRXfMoopOFejZTKyrBLzop8y8TYfjbrWmHEMdHY7TrWW5WReBpOMWQcf4Ir4/D9LspeSOOfNLoI+0zHiUAThcGYzbBpFcuEszkL8qaOgiY+hAAaxqIbh8eZLyubMIYkcg3mMWJn10fwe5jP0UBZgrD4h98trn9u6JbCSPhXAPx3RgywXBiFHGOAcG1QpkoHgJ2nX3N8Sz7vcKF9QMQzIC/FVz5ZFdz7eckBwpBlWcHLoIrHzWMT3xulIjTeFoeE7L5Se7kCT5bpcGk2J5JoXzRS24cu3Dw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=openfive.com; dmarc=pass action=none header.from=openfive.com;
+ dkim=pass header.d=openfive.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=osportal.onmicrosoft.com; s=selector2-osportal-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QOwssnWEpwCYeb5XXIBISUyaQgfSWiaVmWPZSJaZgwI=;
+ b=S3MdwgEt5MjmvHdVmLwSZUmsSS4kjJ903v1Y4W7unwgb8G6rU7pQshwKd0kbIXZ2S7oTFtoJMhVYBbv069ziMYYvkjP/UAohgcTiA2E0DNhRwzQP2QO1brmUaHR5dVyRUcWWdRpkT5cWIG691vZYGPxf4F5zrmtV5OWsRErj2nY=
+Received: from DM6PR13MB3451.namprd13.prod.outlook.com (2603:10b6:5:1c3::10)
+ by DM6PR13MB3210.namprd13.prod.outlook.com (2603:10b6:5:5::29) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3455.13; Thu, 8 Oct 2020 13:53:55 +0000
+Received: from DM6PR13MB3451.namprd13.prod.outlook.com
+ ([fe80::a48a:1f7c:267c:876]) by DM6PR13MB3451.namprd13.prod.outlook.com
+ ([fe80::a48a:1f7c:267c:876%7]) with mapi id 15.20.3455.025; Thu, 8 Oct 2020
+ 13:53:55 +0000
+From:   Sagar Kadam <sagar.kadam@openfive.com>
+To:     Peter Korsgaard <peter@korsgaard.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "Paul Walmsley ( Sifive)" <paul.walmsley@sifive.com>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>
+Subject: RE: [PATCH 1/1] i2c: ocores: fix polling mode workaround on
+ FU540-C000 SoC
+Thread-Topic: [PATCH 1/1] i2c: ocores: fix polling mode workaround on
+ FU540-C000 SoC
+Thread-Index: AQHWnAmkr9Lwbf//qkyD2meVp4P0G6mMBUVSgAELwtA=
+Date:   Thu, 8 Oct 2020 13:53:55 +0000
+Message-ID: <DM6PR13MB345137AD526D0AAA6CE0DBDF970B0@DM6PR13MB3451.namprd13.prod.outlook.com>
+References: <1602006796-273724-1-git-send-email-sagar.kadam@sifive.com>
+        <1602006796-273724-2-git-send-email-sagar.kadam@sifive.com>
+ <87imbm4639.fsf@dell.be.48ers.dk>
+In-Reply-To: <87imbm4639.fsf@dell.be.48ers.dk>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: korsgaard.com; dkim=none (message not signed)
+ header.d=none;korsgaard.com; dmarc=none action=none header.from=openfive.com;
+x-originating-ip: [116.74.151.16]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 4d5542f2-e212-48f4-9f99-08d86b91993e
+x-ms-traffictypediagnostic: DM6PR13MB3210:
+x-ld-processed: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR13MB3210D0AF366EF7CD7B140A9B970B0@DM6PR13MB3210.namprd13.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: KYY6FoCU3RzTN/mXqyifBxqSEDjYxwM6Dnd+X4HohAUjaS6362W+ni4GJax9Uy0hP5jFY/T/7cuYh/NSyWW5pii3siy5cBB1X4HcDLwoGeANu4VAbGeD1nch4mX8fzOMvfC8wN7hJ8J5W9LeVH6DcZ+Y4e1Yd0iFhxCJZu4dGEsQzhqzqXGY64feRdmmUIMO0/hlxNw1bs42PPIAPbk+RtNNC6nu3qNB/dNqhxB014vdwlSMMQCskvidtNV0zkK4WecbLOByWfth0218Phoj/pCa8u6q82A6YzYIxKvnNUY+9vNh2RabRSKeFREqY24f
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR13MB3451.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(376002)(136003)(39850400004)(366004)(86362001)(5660300002)(8676002)(8936002)(4326008)(44832011)(71200400001)(6916009)(9686003)(55016002)(33656002)(66446008)(2906002)(7696005)(55236004)(64756008)(76116006)(186003)(53546011)(26005)(83380400001)(478600001)(52536014)(316002)(66946007)(54906003)(66556008)(66476007)(6506007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: dejgIB1Nto6y4AXiqYhwY273LPUqtYXv5f9L7UrIpI52hhMgEHe2DTbUgytJN72UWxIJ215yEM3O57hovUZLhC5ElK1TJJ7ZoTkkLaBPw+L/J8vs2BY3RkaQBcqCbYZOk753TAClr2GAwwGRWaXP26lWTvnGhM+5ZGC/rto/GlzxWAqMPnHU4cTZXZ1Xs4LDqTw1UN30+58u8RylnMfkbJj3fy6fKVW67mRsVFTY7QIN1fEQFrvsbOAYsgfy63gIyT6duNLMzf6IcZjahdjbw72uWvW045gQU/KD6XSTI/oqAPSvbisAX2o/VVfRhDuBeqNgNZ3E5UVYHlFrEibDNrHU8K1WwQ9I99Am+pgKbP5qlCmNZ+SmBcn2TOSQyH9liDMCV2bwqbCSyEa6ZPxkcyWx4+zhaaGFdCjocthfbNtE0r0r2o2z37mpR06qZ+ANygUmgFFbR9Ioz9AeI2wMG3hLsMO/b+CysqOd4TeCRotDn4vJu4dlFSV20LBLcEtRf9AECeQ42ROnGM03vudEPkVwI39kGmJHTX171evD6KFF82Q49DnbU153qk3V0UprzUR3wxnxRB6hcNhXbbstxAB3VaLAEUuywZoKZezqUNczfcEZEKHkhX0NMeo3v63XxRptuv+REF2lYrCO2sgAsw==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201005150438.6628-5-axboe@kernel.dk>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-OriginatorOrg: openfive.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR13MB3451.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4d5542f2-e212-48f4-9f99-08d86b91993e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Oct 2020 13:53:55.8103
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Y9x+yhHi33XmoKgjz+8dGEvcDMUF98pCVcK5Fj+rQ6lpfgnsR96MamGMwinS7B8NF+hq/UlWaVYwrJISFXblUQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR13MB3210
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/05, Jens Axboe wrote:
->
->  static inline int signal_pending(struct task_struct *p)
->  {
-> +#ifdef TIF_NOTIFY_SIGNAL
-> +	/*
-> +	 * TIF_NOTIFY_SIGNAL isn't really a signal, but it requires the same
-> +	 * behavior in terms of ensuring that we break out of wait loops
-> +	 * so that notify signal callbacks can be processed.
-> +	 */
-> +	if (unlikely(test_tsk_thread_flag(p, TIF_NOTIFY_SIGNAL)))
-> +		return 1;
-> +#endif
->  	return task_sigpending(p);
->  }
+Hello Peter,
 
-perhaps we can add test_tsk_thread_mask() later...
+> -----Original Message-----
+> From: Peter Korsgaard <jacmet@gmail.com> On Behalf Of Peter Korsgaard
+> Sent: Wednesday, October 7, 2020 5:10 PM
+> To: Sagar Kadam <sagar.kadam@openfive.com>
+> Cc: linux-kernel@vger.kernel.org; linux-riscv@lists.infradead.org; linux-
+> i2c@vger.kernel.org; andrew@lunn.ch; Paul Walmsley ( Sifive)
+> <paul.walmsley@sifive.com>; palmer@dabbelt.com;
+> aou@eecs.berkeley.edu
+> Subject: Re: [PATCH 1/1] i2c: ocores: fix polling mode workaround on FU54=
+0-
+> C000 SoC
+>=20
+> [External Email] Do not click links or attachments unless you recognize t=
+he
+> sender and know the content is safe
+>=20
+> >>>>> "Sagar" =3D=3D Sagar Shrikant Kadam <sagar.kadam@sifive.com> writes=
+:
+>=20
+>  > The FU540-C000 has a broken IRQ and support was added earlier
+>  > so that it will operate in polling mode, but seems to work only
+>  > in case interrupts property is missing from the i2c0 dt-node.
+>  > This should not be the case and the driver should handle polling
+>  > mode with the interrupt property present in i2c0 node of the
+>  > device tree.
+>  > So check if it's the FU540-C000 soc and enable polling mode master
+>  > xfers, as the IRQ for this chip is broken.
+>=20
+>  > Fixes commit c45d4ba86731 ("i2c: ocores: add polling mode workaround
+>  > for Sifive FU540-C000 SoC")
+>=20
+>  > Signed-off-by: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
+>  > ---
+>  >  drivers/i2c/busses/i2c-ocores.c | 22 +++++++++++++---------
+>  >  1 file changed, 13 insertions(+), 9 deletions(-)
+>=20
+>  > diff --git a/drivers/i2c/busses/i2c-ocores.c b/drivers/i2c/busses/i2c-
+> ocores.c
+>  > index f5fc75b..4405244 100644
+>  > --- a/drivers/i2c/busses/i2c-ocores.c
+>  > +++ b/drivers/i2c/busses/i2c-ocores.c
+>  > @@ -686,17 +686,21 @@ static int ocores_i2c_probe(struct
+> platform_device *pdev)
+>=20
+>  >      init_waitqueue_head(&i2c->wait);
+>=20
+>  > +    /*
+>  > +     * Set OCORES_FLAG_BROKEN_IRQ to enable workaround for
+>  > +     * FU540-C000 SoC in polling mode.
+>  > +     * Since the SoC does have interrupt it's dt has the interrupt
+>  > +     * defined but it should be bypassed in driver as this SoC has
+>  > +     * a broken IRQ, hence update the master_xfer to use polling
+>  > +     * transfers.
+>  > +     */
+>  > +    match =3D of_match_node(ocores_i2c_match, pdev->dev.of_node);
+>  > +    if (match && (long)match->data =3D=3D TYPE_SIFIVE_REV0)
+>  > +            i2c->flags |=3D OCORES_FLAG_BROKEN_IRQ;
+>  > +
+>  >      irq =3D platform_get_irq(pdev, 0);
+>  > -    if (irq =3D=3D -ENXIO) {
+>  > +    if (i2c->flags =3D=3D OCORES_FLAG_BROKEN_IRQ || irq =3D=3D -ENXIO=
+) {
+>=20
+> NIT: flags is a bitmask, so i2c->flags & OCORES_FLAG_BROKEN_IRQ would be
+> better, even if there currently doesn't exist any other flags.
+>=20
+Thanks for your suggestions. I will apply the bitmask, this will be better.
 
->  static inline void restore_saved_sigmask_unless(bool interrupted)
->  {
-> -	if (interrupted)
-> +	if (interrupted) {
-> +#ifdef TIF_NOTIFY_SIGNAL
-> +		WARN_ON(!test_thread_flag(TIF_SIGPENDING) &&
-> +			!test_thread_flag(TIF_NOTIFY_SIGNAL));
-> +#else
->  		WARN_ON(!test_thread_flag(TIF_SIGPENDING));
-> -	else
-> +#endif
-> +	} else {
->  		restore_saved_sigmask();
-> +	}
+> TYPE_SIFIVE_REV0 is also set for two compatibles:
+>=20
+>         {
+>                 .compatible =3D "sifive,fu540-c000-i2c",
+>                 .data =3D (void *)TYPE_SIFIVE_REV0,
+>         },
+>         {
+>                 .compatible =3D "sifive,i2c0",
+>                 .data =3D (void *)TYPE_SIFIVE_REV0,
+>         },
+>=20
+> Are both affected by this issue? if not, we will need to extend the code
+> to handle them differently.
+>=20
 
-I'd suggest to simply do
+No, this issue is present in FU540-C000 SoC i.e SoC- specific, and so I can=
+ check=20
+for the soc-compatible string as follows:
 
-	-	WARN_ON(!test_thread_flag(TIF_SIGPENDING));
-	+	WARN_ON(!signal_pending(current);
+-       match =3D of_match_node(ocores_i2c_match, pdev->dev.of_node);
+-       if (match && (long)match->data =3D=3D TYPE_SIFIVE_REV0)
++       if (of_device_is_compatible(pdev->dev.of_node,
++                                       "sifive,fu540-c000-i2c"))
 
+Please let me know if this is okay.
 
-> --- a/kernel/entry/kvm.c
-> +++ b/kernel/entry/kvm.c
-> @@ -8,6 +8,9 @@ static int xfer_to_guest_mode_work(struct kvm_vcpu *vcpu, unsigned long ti_work)
->  	do {
->  		int ret;
->  
-> +		if (ti_work & _TIF_NOTIFY_SIGNAL)
-> +			tracehook_notify_signal();
+Thanks & BR,
+Sagar
 
-Can't really comment this change, but to me it would be more safe to
-simply return -EINTR.
-
-Or perhaps even better, treat _TIF_NOTIFY_SIGNAL and _TIF_SIGPENDING
-equally:
-
-	-	if (ti_work & _TIF_SIGPENDING) {
-	+	if (ti_work & (_TIF_SIGPENDING | _TIF_NOTIFY_SIGNAL)) {
-			kvm_handle_signal_exit(vcpu);
-			return -EINTR;
-
-Oleg.
-
+> Other than that, it looks OK to me.
+>=20
+> --
+> Bye, Peter Korsgaard
