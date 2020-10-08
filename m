@@ -2,242 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F3DC287CA4
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 21:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 603A4287CA8
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 21:53:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729254AbgJHTuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 15:50:06 -0400
-Received: from foss.arm.com ([217.140.110.172]:47110 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729220AbgJHTuF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 15:50:05 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E9FCA1063;
-        Thu,  8 Oct 2020 12:50:03 -0700 (PDT)
-Received: from [192.168.2.22] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 073FC3F66B;
-        Thu,  8 Oct 2020 12:50:01 -0700 (PDT)
-Subject: Re: [PATCH v2 06/14] perf arm-spe: Refactor packet header parsing
-To:     Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Wei Li <liwei391@huawei.com>,
-        James Clark <james.clark@arm.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        linux-kernel@vger.kernel.org, Al Grant <Al.Grant@arm.com>
-References: <20200929133917.9224-1-leo.yan@linaro.org>
- <20200929133917.9224-7-leo.yan@linaro.org>
-From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
-Organization: ARM Ltd.
-Message-ID: <d3d0bf64-0285-1aef-3ec1-74f0d28257a6@arm.com>
-Date:   Thu, 8 Oct 2020 20:49:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1729320AbgJHTxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 15:53:22 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:43788 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728538AbgJHTxW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 15:53:22 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 098JiY01121352;
+        Thu, 8 Oct 2020 19:52:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=TOXYoPq7dhn6DY/1xOASv8Mqfnor1vAExhw+DTAwaGY=;
+ b=l+BVAMIQHQuI/buil576rcNVLNwOWWg9XHB8Kka1ny5c+3NiQAiu6yGmEmqdDyJrVkIa
+ 9MgaV1Ri/GwGb3JkAvufPKriR7tEfbgnRq1qEn8Uur1iz3Q9CMdV9Juq76SSP3KcEbRz
+ M4IHIZgsD0WhxSzmIfrEA4GW56W3qxW459Vhm0jZBHlKjsRN804PBm7PFqa/XKVRQJqi
+ Z6mgNF4EiCMlZjqlRkVn0HVljEhu1zRDQaoJJDUst+C11z1U3UWxzunfjFTnIyIij/Go
+ ZThcSZYBoht2G01MamvOOHUAdX+aAmQhyS9w/3NhLRXAeOImUCsJToZVvyr6AfIPhJEC ew== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 33xetb9vxn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 08 Oct 2020 19:52:50 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 098JkGT2068959;
+        Thu, 8 Oct 2020 19:52:50 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 33y381mmvk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 08 Oct 2020 19:52:50 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 098JqXsO027511;
+        Thu, 8 Oct 2020 19:52:33 GMT
+Received: from [10.74.86.78] (/10.74.86.78)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 08 Oct 2020 12:52:32 -0700
+Subject: Re: [PATCH v6 09/11] mm/memremap_pages: convert to 'struct range'
+To:     Dan Williams <dan.j.williams@intel.com>, akpm@linux-foundation.org
+Cc:     Paul Mackerras <paulus@ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        dave.hansen@linux.intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        david@redhat.com, joao.m.martins@oracle.com
+References: <160196728453.2166475.12832711415715687418.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <160196733645.2166475.12840692906594512941.stgit@dwillia2-desk3.amr.corp.intel.com>
+From:   boris.ostrovsky@oracle.com
+Organization: Oracle Corporation
+Message-ID: <a2a740e2-424c-69ff-45a6-3d71feac5c50@oracle.com>
+Date:   Thu, 8 Oct 2020 15:52:14 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.3.1
 MIME-Version: 1.0
-In-Reply-To: <20200929133917.9224-7-leo.yan@linaro.org>
+In-Reply-To: <160196733645.2166475.12840692906594512941.stgit@dwillia2-desk3.amr.corp.intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9768 signatures=668681
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 spamscore=0
+ mlxscore=0 malwarescore=0 suspectscore=0 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010080138
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9768 signatures=668681
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxscore=0
+ clxscore=1015 priorityscore=1501 adultscore=0 mlxlogscore=999 phishscore=0
+ impostorscore=0 malwarescore=0 suspectscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010080138
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/09/2020 14:39, Leo Yan wrote:
 
-Hi Leo,
+On 10/6/20 2:55 AM, Dan Williams wrote:
+> The 'struct resource' in 'struct dev_pagemap' is only used for holding
+> resource span information.  The other fields, 'name', 'flags', 'desc',
+> 'parent', 'sibling', and 'child' are all unused wasted space.
+>
+> This is in preparation for introducing a multi-range extension of
+> devm_memremap_pages().
+>
+> The bulk of this change is unwinding all the places internal to libnvdimm
+> that used 'struct resource' unnecessarily, and replacing instances of
+> 'struct dev_pagemap'.res with 'struct dev_pagemap'.range.
+>
+> P2PDMA had a minor usage of the resource flags field, but only to report
+> failures with "%pR".  That is replaced with an open coded print of the
+> range.
+>
+> Link: https://lkml.kernel.org/r/159643103173.4062302.768998885691711532.stgit@dwillia2-desk3.amr.corp.intel.com
+> Link: https://lkml.kernel.org/r/20200926121402.GA7467@kadam
+> Cc: Paul Mackerras <paulus@ozlabs.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Vishal Verma <vishal.l.verma@intel.com>
+> Cc: Vivek Goyal <vgoyal@redhat.com>
+> Cc: Dave Jiang <dave.jiang@intel.com>
+> Cc: Ben Skeggs <bskeggs@redhat.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Ira Weiny <ira.weiny@intel.com>
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+> Cc: Juergen Gross <jgross@suse.com>
+> Cc: Stefano Stabellini <sstabellini@kernel.org>
+> Cc: "Jérôme Glisse" <jglisse@redhat.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
 
-> The packet header parsing uses the hard coded values and it uses nested
-> if-else statements.
-> 
-> To improve the readability, this patch refactors the macros for packet
-> header format so it removes the hard coded values.  Furthermore, based
-> on the new mask macros it reduces the nested if-else statements and
-> changes to use the flat conditions checking, this is directive and can
-> easily map to the descriptions in ARMv8-a architecture reference manual
-> (ARM DDI 0487E.a), chapter 'D10.1.5 Statistical Profiling Extension
-> protocol packet headers'.
 
-Yeah, that's so much better, thank you!
+For Xen bits
 
-I checked all the bits and comparisons against the ARM ARM.
 
-Two minor things below ...
-
-> 
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> ---
->  .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 92 +++++++++----------
->  .../arm-spe-decoder/arm-spe-pkt-decoder.h     | 21 +++++
->  2 files changed, 62 insertions(+), 51 deletions(-)
-> 
-> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> index 96b717a19163..e738bd04f209 100644
-> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> @@ -16,28 +16,6 @@
->  #define NS_FLAG		BIT(63)
->  #define EL_FLAG		(BIT(62) | BIT(61))
->  
-> -#define SPE_HEADER0_PAD			0x0
-> -#define SPE_HEADER0_END			0x1
-> -#define SPE_HEADER0_ADDRESS		0x30 /* address packet (short) */
-> -#define SPE_HEADER0_ADDRESS_MASK	0x38
-> -#define SPE_HEADER0_COUNTER		0x18 /* counter packet (short) */
-> -#define SPE_HEADER0_COUNTER_MASK	0x38
-> -#define SPE_HEADER0_TIMESTAMP		0x71
-> -#define SPE_HEADER0_TIMESTAMP		0x71
-> -#define SPE_HEADER0_EVENTS		0x2
-> -#define SPE_HEADER0_EVENTS_MASK		0xf
-> -#define SPE_HEADER0_SOURCE		0x3
-> -#define SPE_HEADER0_SOURCE_MASK		0xf
-> -#define SPE_HEADER0_CONTEXT		0x24
-> -#define SPE_HEADER0_CONTEXT_MASK	0x3c
-> -#define SPE_HEADER0_OP_TYPE		0x8
-> -#define SPE_HEADER0_OP_TYPE_MASK	0x3c
-> -#define SPE_HEADER1_ALIGNMENT		0x0
-> -#define SPE_HEADER1_ADDRESS		0xb0 /* address packet (extended) */
-> -#define SPE_HEADER1_ADDRESS_MASK	0xf8
-> -#define SPE_HEADER1_COUNTER		0x98 /* counter packet (extended) */
-> -#define SPE_HEADER1_COUNTER_MASK	0xf8
-> -
->  #if __BYTE_ORDER == __BIG_ENDIAN
->  #define le16_to_cpu bswap_16
->  #define le32_to_cpu bswap_32
-> @@ -198,46 +176,58 @@ static int arm_spe_get_addr(const unsigned char *buf, size_t len,
->  static int arm_spe_do_get_packet(const unsigned char *buf, size_t len,
->  				 struct arm_spe_pkt *packet)
->  {
-> -	unsigned int byte;
-> +	unsigned int hdr;
-> +	unsigned char ext_hdr = 0;
->  
->  	memset(packet, 0, sizeof(struct arm_spe_pkt));
->  
->  	if (!len)
->  		return ARM_SPE_NEED_MORE_BYTES;
->  
-> -	byte = buf[0];
-> -	if (byte == SPE_HEADER0_PAD)
-> +	hdr = buf[0];
-> +
-> +	if (hdr == SPE_HEADER0_PAD)
->  		return arm_spe_get_pad(packet);
-> -	else if (byte == SPE_HEADER0_END) /* no timestamp at end of record */
-> +
-> +	if (hdr == SPE_HEADER0_END) /* no timestamp at end of record */
->  		return arm_spe_get_end(packet);
-> -	else if (byte & 0xc0 /* 0y11xxxxxx */) {
-> -		if (byte & 0x80) {
-> -			if ((byte & SPE_HEADER0_ADDRESS_MASK) == SPE_HEADER0_ADDRESS)
-> -				return arm_spe_get_addr(buf, len, 0, packet);
-> -			if ((byte & SPE_HEADER0_COUNTER_MASK) == SPE_HEADER0_COUNTER)
-> -				return arm_spe_get_counter(buf, len, 0, packet);
-> -		} else
-> -			if (byte == SPE_HEADER0_TIMESTAMP)
-> -				return arm_spe_get_timestamp(buf, len, packet);
-> -			else if ((byte & SPE_HEADER0_EVENTS_MASK) == SPE_HEADER0_EVENTS)
-> -				return arm_spe_get_events(buf, len, packet);
-> -			else if ((byte & SPE_HEADER0_SOURCE_MASK) == SPE_HEADER0_SOURCE)
-> -				return arm_spe_get_data_source(buf, len, packet);
-> -			else if ((byte & SPE_HEADER0_CONTEXT_MASK) == SPE_HEADER0_CONTEXT)
-> -				return arm_spe_get_context(buf, len, packet);
-> -			else if ((byte & SPE_HEADER0_OP_TYPE_MASK) == SPE_HEADER0_OP_TYPE)
-> -				return arm_spe_get_op_type(buf, len, packet);
-> -	} else if ((byte & 0xe0) == 0x20 /* 0y001xxxxx */) {
-> -		/* 16-bit header */
-> -		byte = buf[1];
-> -		if (byte == SPE_HEADER1_ALIGNMENT)
-> +
-> +	if (hdr == SPE_HEADER0_TIMESTAMP)
-> +		return arm_spe_get_timestamp(buf, len, packet);
-> +
-> +	if ((hdr & SPE_HEADER0_MASK1) == SPE_HEADER0_EVENTS)
-> +		return arm_spe_get_events(buf, len, packet);
-> +
-> +	if ((hdr & SPE_HEADER0_MASK1) == SPE_HEADER0_SOURCE)
-> +		return arm_spe_get_data_source(buf, len, packet);
-> +
-> +	if ((hdr & SPE_HEADER0_MASK2) == SPE_HEADER0_CONTEXT)
-> +		return arm_spe_get_context(buf, len, packet);
-> +
-> +	if ((hdr & SPE_HEADER0_MASK2) == SPE_HEADER0_OPERATION)
-> +		return arm_spe_get_op_type(buf, len, packet);
-> +
-> +	if ((hdr & SPE_HEADER0_MASK3) == SPE_HEADER0_EXTENDED) {
-
-Is there any reason you are using MASK3 here, and not MASK2? The ARM ARM
-seems to suggest that bits [7:2] make up the mask for the extended
-header type, as the actual subtype is handled in the next byte.
-
-> +		/* 16-bit extended format header */
-> +		ext_hdr = 1;
-> +
-> +		hdr = buf[1];
-> +		if (hdr == SPE_HEADER1_ALIGNMENT)
->  			return arm_spe_get_alignment(buf, len, packet);
-> -		else if ((byte & SPE_HEADER1_ADDRESS_MASK) == SPE_HEADER1_ADDRESS)
-> -			return arm_spe_get_addr(buf, len, 1, packet);
-> -		else if ((byte & SPE_HEADER1_COUNTER_MASK) == SPE_HEADER1_COUNTER)
-> -			return arm_spe_get_counter(buf, len, 1, packet);
->  	}
->  
-> +	/*
-> +	 * The short format header's byte 0 or the extended format header's
-> +	 * byte 1 has been assigned to 'hdr', which uses the same encoding for
-> +	 * address packet and counter packet, so don't need to distinguish if
-> +	 * it's short format or extended format and handle in once.
-> +	 */
-> +	if ((hdr & SPE_HEADER0_MASK4) == SPE_HEADER0_ADDRESS)
-> +		return arm_spe_get_addr(buf, len, ext_hdr, packet);
-> +
-> +	if ((hdr & SPE_HEADER0_MASK4) == SPE_HEADER0_COUNTER)
-> +		return arm_spe_get_counter(buf, len, ext_hdr, packet);
-> +
->  	return ARM_SPE_BAD_PACKET;
->  }
->  
-> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-> index f2d0af39a58c..a30fe3c5ab67 100644
-> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-> @@ -37,6 +37,27 @@ struct arm_spe_pkt {
->  	uint64_t		payload;
->  };
->  
-> +/* Short header (HEADER0) and extended header (HEADER1) */
-> +#define SPE_HEADER0_PAD			0x0
-> +#define SPE_HEADER0_END			0x1
-> +#define SPE_HEADER0_TIMESTAMP		0x71
-> +/* Mask for event & data source */
-> +#define SPE_HEADER0_MASK1		(GENMASK_ULL(7, 6) | GENMASK_ULL(3, 0))
-> +#define SPE_HEADER0_EVENTS		0x42
-> +#define SPE_HEADER0_SOURCE		0x43
-> +/* Mask for context & operation */
-> +#define SPE_HEADER0_MASK2		GENMASK_ULL(7, 2)
-> +#define SPE_HEADER0_CONTEXT		0x64
-> +#define SPE_HEADER0_OPERATION		0x48
-
-Just a nit, but should the name be ..._OP_TYPE instead?
-
-Cheers,
-Andre
-
-> +/* Mask for extended format */
-> +#define SPE_HEADER0_MASK3		GENMASK_ULL(7, 5)
-> +#define SPE_HEADER0_EXTENDED		0x20
-> +/* Mask for address & counter */
-> +#define SPE_HEADER0_MASK4		GENMASK_ULL(7, 3)
-> +#define SPE_HEADER0_ADDRESS		0xb0
-> +#define SPE_HEADER0_COUNTER		0x98
-> +#define SPE_HEADER1_ALIGNMENT		0x0
-> +
->  #define SPE_HEADER_SZ_SHIFT		(4)
->  #define SPE_HEADER_SZ_MASK		GENMASK_ULL(5, 4)
->  
-> 
+Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
 
