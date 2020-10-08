@@ -2,230 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5613286D74
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 06:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 995B1286D77
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 06:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726249AbgJHEB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 00:01:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58444 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726148AbgJHEB4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 00:01:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602129713;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ayx0RH2EmuBsF+SJ5HofbKfMYekN3xbWZ4RAelYIgVk=;
-        b=ayzd5qHBY0a2gXTY4IHQaCHWVvW8FyF3Bkwn9qgGttMwP8Afzek8VqHmzD+NfU+u8sqouV
-        p6nMdHHpXnhlru62hznHRf+PHDOwL7xFM+ALkL9zSetlFyWRZ7iXIVJKgq1FBVpKpI1H+C
-        U7i6TfqsvTTWKuq3l6dGZljHy/ZY8dc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-402-a7s1O-dAOYmcHUo2I-Ik1g-1; Thu, 08 Oct 2020 00:01:49 -0400
-X-MC-Unique: a7s1O-dAOYmcHUo2I-Ik1g-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E8216425D0;
-        Thu,  8 Oct 2020 04:01:45 +0000 (UTC)
-Received: from mail (ovpn-112-72.rdu2.redhat.com [10.10.112.72])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 29B7D76650;
-        Thu,  8 Oct 2020 04:01:42 +0000 (UTC)
-Date:   Thu, 8 Oct 2020 00:01:41 -0400
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Lokesh Gidra <lokeshgidra@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>, Peter Xu <peterx@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Daniel Colascione <dancol@dancol.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-doc@vger.kernel.org, Kalesh Singh <kaleshsingh@google.com>,
-        Calin Juravle <calin@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Nick Kralevich <nnk@google.com>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Shaohua Li <shli@fb.com>, Jerome Glisse <jglisse@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Nitin Gupta <nigupta@nvidia.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Luis Chamberlain <mcgrof@kernel.org>
-Subject: Re: [PATCH v4 0/2] Control over userfaultfd kernel-fault handling
-Message-ID: <20201008040141.GA17076@redhat.com>
-References: <20200924065606.3351177-1-lokeshgidra@google.com>
- <CA+EESO7kCqtJf+ApoOcceFT+NX8pBwGmOr0q0PVnJf9Dnkrp6A@mail.gmail.com>
+        id S1726256AbgJHEFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 00:05:04 -0400
+Received: from mga07.intel.com ([134.134.136.100]:29236 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725858AbgJHEFE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 00:05:04 -0400
+IronPort-SDR: uPCpY+LmMsbO9RYRl+n8Twny8lIOA5G0bf7lRY9pmUS24gC5wM9HBko5pIqYlWGHMNN2wh9dtT
+ avBGDvX93xRw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9767"; a="229443990"
+X-IronPort-AV: E=Sophos;i="5.77,349,1596524400"; 
+   d="scan'208";a="229443990"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 21:05:03 -0700
+IronPort-SDR: bCz5AFMewUovswstgQNFoPUgpOQkrzizvIxLEXfMmxIgzHQhnpDjt+FrOFuTIKb+HA7aLmFxjy
+ GF81jr4V1bMA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,349,1596524400"; 
+   d="scan'208";a="528318398"
+Received: from lkp-server02.sh.intel.com (HELO b5ae2f167493) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 07 Oct 2020 21:05:01 -0700
+Received: from kbuild by b5ae2f167493 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kQNAr-0001xS-9S; Thu, 08 Oct 2020 04:05:01 +0000
+Date:   Thu, 08 Oct 2020 12:04:28 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:ras/core] BUILD SUCCESS
+ 300638101329e8f1569115f3d7197ef5ef754a3a
+Message-ID: <5f7e8fcc.JjrR1MyiceYxNM6v%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+EESO7kCqtJf+ApoOcceFT+NX8pBwGmOr0q0PVnJf9Dnkrp6A@mail.gmail.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Lokesh,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  ras/core
+branch HEAD: 300638101329e8f1569115f3d7197ef5ef754a3a  x86/mce: Decode a kernel instruction to determine if it is copying from user
 
-On Wed, Oct 07, 2020 at 01:26:55PM -0700, Lokesh Gidra wrote:
-> On Wed, Sep 23, 2020 at 11:56 PM Lokesh Gidra <lokeshgidra@google.com> wrote:
-> >
-> > This patch series is split from [1]. The other series enables SELinux
-> > support for userfaultfd file descriptors so that its creation and
-> > movement can be controlled.
-> >
-> > It has been demonstrated on various occasions that suspending kernel
-> > code execution for an arbitrary amount of time at any access to
-> > userspace memory (copy_from_user()/copy_to_user()/...) can be exploited
-> > to change the intended behavior of the kernel. For instance, handling
-> > page faults in kernel-mode using userfaultfd has been exploited in [2, 3].
-> > Likewise, FUSE, which is similar to userfaultfd in this respect, has been
-> > exploited in [4, 5] for similar outcome.
-> >
-> > This small patch series adds a new flag to userfaultfd(2) that allows
-> > callers to give up the ability to handle kernel-mode faults with the
-> > resulting UFFD file object. It then adds a 'user-mode only' option to
-> > the unprivileged_userfaultfd sysctl knob to require unprivileged
-> > callers to use this new flag.
-> >
-> > The purpose of this new interface is to decrease the chance of an
-> > unprivileged userfaultfd user taking advantage of userfaultfd to
-> > enhance security vulnerabilities by lengthening the race window in
-> > kernel code.
-> >
-> > [1] https://lore.kernel.org/lkml/20200211225547.235083-1-dancol@google.com/
-> > [2] https://duasynt.com/blog/linux-kernel-heap-spray
-> > [3] https://duasynt.com/blog/cve-2016-6187-heap-off-by-one-exploit
+elapsed time: 723m
 
-I've looking at those links and I've been trying to verify the link
-[3] is relevant.
+configs tested: 115
+configs skipped: 2
 
-Specifically I've been trying to verify if 1) current state of the art
-modern SLUB randomization techniques already enabled in production and
-rightfully wasting some CPU in all enterprise kernels to prevent
-things like above to become an issue in practice 2) combined with the
-fact different memcg need to share the same kmemcaches (which was
-incidentally fixed a few months ago upstream) and 3) further
-robustness enhancements against exploits in the slub metadata, may
-already render the exploit [3] from 2016 irrelevant in practice.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-So I started by trying to reproduce [3] by building 4.5.1 with a
-.config with no robustness features and I booted it on fedora-32 or
-gentoo userland and I cannot even invoke call_usermodehelper. Calling
-socket(22, AF_INET, 0) won't invoke such function. Can you reproduce
-on 4.5.1? Which kernel .config should I use to build 4.5.1 in order
-for call_usermodehelper to be invoked by the exploit? Could you help
-to verify it?
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+m68k                            q40_defconfig
+arm64                            alldefconfig
+arm                        realview_defconfig
+arm                      pxa255-idp_defconfig
+microblaze                      mmu_defconfig
+mips                         bigsur_defconfig
+powerpc                       eiger_defconfig
+mips                       rbtx49xx_defconfig
+arm                           tegra_defconfig
+powerpc                        icon_defconfig
+mips                malta_qemu_32r6_defconfig
+arm                        magician_defconfig
+powerpc                     tqm8540_defconfig
+powerpc                       maple_defconfig
+arm                              zx_defconfig
+sh                   rts7751r2dplus_defconfig
+m68k                        stmark2_defconfig
+arm                  colibri_pxa300_defconfig
+sh                          rsk7203_defconfig
+sh                          urquell_defconfig
+powerpc               mpc834x_itxgp_defconfig
+powerpc                     asp8347_defconfig
+sh                   secureedge5410_defconfig
+arm                          tango4_defconfig
+powerpc                 canyonlands_defconfig
+h8300                               defconfig
+h8300                       h8s-sim_defconfig
+m68k                       m5249evb_defconfig
+xtensa                    smp_lx200_defconfig
+arm                        keystone_defconfig
+mips                      pic32mzda_defconfig
+mips                          rb532_defconfig
+arm                         mv78xx0_defconfig
+arm                         assabet_defconfig
+powerpc                     tqm8548_defconfig
+arm                        clps711x_defconfig
+arm                          ep93xx_defconfig
+sh                              ul2_defconfig
+sh                          r7780mp_defconfig
+microblaze                          defconfig
+mips                           ip22_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20201008
+x86_64               randconfig-a003-20201008
+x86_64               randconfig-a005-20201008
+x86_64               randconfig-a001-20201008
+x86_64               randconfig-a002-20201008
+x86_64               randconfig-a006-20201008
+i386                 randconfig-a006-20201008
+i386                 randconfig-a005-20201008
+i386                 randconfig-a001-20201008
+i386                 randconfig-a004-20201008
+i386                 randconfig-a002-20201008
+i386                 randconfig-a003-20201008
+i386                 randconfig-a015-20201008
+i386                 randconfig-a013-20201008
+i386                 randconfig-a014-20201008
+i386                 randconfig-a016-20201008
+i386                 randconfig-a011-20201008
+i386                 randconfig-a012-20201008
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-It even has uninitialized variable spawning random perrors so it
-doesn't give a warm fuzzy feeling:
+clang tested configs:
+x86_64               randconfig-a012-20201008
+x86_64               randconfig-a015-20201008
+x86_64               randconfig-a013-20201008
+x86_64               randconfig-a014-20201008
+x86_64               randconfig-a011-20201008
+x86_64               randconfig-a016-20201008
 
-====
-int main(int argc, char **argv) {
-	void *region, *map;
-	              ^^^^^
-	pthread_t uffd_thread;
-	int uffd, msqid, i;
-
-	region = (void *)mmap((void *)0x40000000, 0x2000, PROT_READ|PROT_WRITE,
-                               MAP_FIXED|MAP_PRIVATE|MAP_ANON, -1, 0);
-
-	if (!region) {
-		perror("mmap");
-		exit(2);
-	}
-
-	setup_pagefault(region + 0x1000, 0x1000, 1);
-
-	printf("my pid = %d\n", getpid());
-
-	if (!map) {
-	^^^^^^^^
-		perror("mmap");
-====
-
-The whole point of being able to reproduce on 4.5.1 is then to
-simulate if the same exploit would also reproduce on current kernels
-with all enterprise default robustness features enabled. Or did
-anybody already verify it?
-
-Anyway the links I was playing with are all in the cover letter, the
-cover letter is not as important as the actual patches. The actual
-patches looks fine to me.
-
-The only improvement I can think of is, what about to add a
-printk_once to suggest to toggle the sysctl if userfaultfd bails out
-because the process lacks the CAP_SYS_PTRACE capability? That would
-facilitate the /etc/sysctl.conf or tuned tweaking in case the apps
-aren't verbose enough.
-
-It's not relevant anymore with this latest patchset, but about the
-previous argument that seccomp couldn't be used in all Android
-processes because of performance concern, I'm slightly confused.
-
-https://android-developers.googleblog.com/2017/07/seccomp-filter-in-android-o.html
-
-"Android O includes a single seccomp filter installed into zygote, the
-process from which all the Android applications are derived. Because
-the filter is installed into zygote—and therefore all apps—the Android
-security team took extra caution to not break existing apps"
-
-Example:
-
-$ uname -mo
-aarch64 Android
-$ cat swapoff.c
-#include <sys/swap.h>
-
-int main()
-{
-        swapoff("");
-}
-$ gcc swapoff.c -o swapoff -O2
-$ ./swapoff
-Bad system call
-$
-
-It's hard to imagine what is more performance critical than the zygote
-process and the actual apps as above?
-
-It's also hard to imagine what kind of performance concern can arise
-by adding seccomp filters also to background system apps that
-generally should consume ~0% of CPU.
-
-If performance is really a concern, the BPF JIT representation with
-the bitmap to be able to run the filter in O(1) sounds a better
-solution than not adding ad-hoc filters and it's being worked on for
-x86-64 and can be ported to aarch64 too. Many of the standalone
-background processes likely wouldn't even use uffd at all so you could
-block the user initiated faults too that way.
-
-Ultimately because of issues as [3] (be them still relevant or not, to
-be double checked), no matter if through selinux, seccomp or a
-different sysctl value, without this patchset applied the default
-behavior of the userfaultfd syscall for all Linux binaries running on
-Android kernels, would deviate from the upstream kernel. So even if we
-would make the pipe mutex logic more complex the deviation would
-remain. Your patchset adds much less risk of breakage than adding a
-timeout to kernel initiated userfaults and it resolves all concerns as
-well as a timeout. We'll also make better use of the "0" value this
-way. So while I'm not certain this is the best for the long term, this
-looks the sweet spot for the short term to resolve many issues at
-once.
-
-Thanks!
-Andrea
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
