@@ -2,136 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D027728716B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 11:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5B5F28716E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 11:28:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728898AbgJHJ1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 05:27:11 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:15110 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725852AbgJHJ1L (ORCPT
+        id S1728936AbgJHJ2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 05:28:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725916AbgJHJ2H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 05:27:11 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0989DdBg054554;
-        Thu, 8 Oct 2020 05:26:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=BjZhoUeT4Qcv0SHj+E+EgCiPRWnqRLM0QCX5QaunyDM=;
- b=p0v+6esZfkLQ9w2g+KVCAQA93iz5XZ4q9nf+OB6t+rSfv/wG61exxB9Qd0qkVyfHTVbt
- Y9fOdxFyNanSaMCITz0njFDpBhm4NYeI5SIlTa69r7lUrXJd9XqV59nphdVW/LnbaVjN
- 4HCA69hB3Uyd0oYgxrd/c0lLLTLcWxoEwzNyjx2x5ELv/95yERel+bEg0OzfYnl8GQxh
- ZB31M+Qkxi8yj29gFyGjWAOtG9SzFc7sJ9YjBhc58TNA5lh69C9xQEDAcLqq01JUPqgd
- JM/RNc617Jo9X1CtlHR18ZhYpj1y/n1rCgmGjMWQm7whKvx+NYsn4gBcu/+bps6frqfF Ww== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 341yxmgb70-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Oct 2020 05:26:53 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0989EOf5055605;
-        Thu, 8 Oct 2020 05:26:53 -0400
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 341yxmgb6d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Oct 2020 05:26:53 -0400
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0989BLNT022913;
-        Thu, 8 Oct 2020 09:26:51 GMT
-Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
-        by ppma02wdc.us.ibm.com with ESMTP id 341car7cw4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Oct 2020 09:26:51 +0000
-Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
-        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0989QoFM59965936
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 8 Oct 2020 09:26:50 GMT
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CC164136053;
-        Thu,  8 Oct 2020 09:26:50 +0000 (GMT)
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 83F21136051;
-        Thu,  8 Oct 2020 09:26:45 +0000 (GMT)
-Received: from skywalker.ibmuc.com (unknown [9.85.112.45])
-        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu,  8 Oct 2020 09:26:45 +0000 (GMT)
-From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-To:     linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au
-Cc:     npiggin@gmail.com, "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [RFC PATCH] mm: Fetch the dirty bit before we reset the pte
-Date:   Thu,  8 Oct 2020 14:56:27 +0530
-Message-Id: <20201008092627.399131-1-aneesh.kumar@linux.ibm.com>
-X-Mailer: git-send-email 2.26.2
+        Thu, 8 Oct 2020 05:28:07 -0400
+Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57509C061755
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 02:28:07 -0700 (PDT)
+Received: by mail-vk1-xa42.google.com with SMTP id d125so1162232vkh.10
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 02:28:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7Haly/m6B5uEAQZZGswDUFxf1Joe6+/u8n74/f04RGA=;
+        b=DWNSCN5nnMXdNcjanEut1aXQ9keVYjEND78LHgNsHgRaX1z/9uvib3C8CbT9zos1Gp
+         q3QP9+Va8blGKIs0+W5Zc+Ei/fAeEP7dkRT0jbDXbFpusvZT2dlBCVq5g+wt4MZxoudC
+         0gYQulFOp4EQJ/4OFOPR4trCoRNaaX5k6tQaAaVIg/Rk6Op9onCI1fv3yZCf/Fjl5CbS
+         Kob5Y9TiRDorwgcdHATtxtQ0pd+Pxgj8Nt6PsjdTG0NDrNFxTVIdyWUQp9XC1VOEkFEv
+         2kUhocglC9GqEzqMaVRUkSX47gRd++6ql0bOREX67wdFZfx2in5c6/p/7VjbcqaP2YpE
+         88Lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7Haly/m6B5uEAQZZGswDUFxf1Joe6+/u8n74/f04RGA=;
+        b=Mh8DPaycV/lt+5SDKRt/y0DAX5XhAzkYWS8jx2iXf/1OfrsZvXxzzNcGtifYamBgld
+         TQxCU+hzE7GqfMz4HNpaQlvSHQBvzA7mJdD5MI4xTEp2fxh5k+nTfL0AfqHa4QTuduch
+         Iv3VVyJbHotEMacJDdXFFxL2CutCVjMTIGIPNxaG15qUzUkXfOGWwXAt8lXDRq4RzWZN
+         n3uXydA1bqLX8v++M9qid4awDTnVfna2ZFWUjaoCT2OkaSaO/IPLZt/Of/bfc5tWysSs
+         VYd74sPh1Yp28dqhJlRBYCohOpEXdrw/KDC0TX6I5aBKaqqPs8+FGS25HSPx6tD7iNVt
+         TgKA==
+X-Gm-Message-State: AOAM5309m5xIYz2w6vepSMwa1Erjw6nFIMRyum8HlBY7LXJlTKiaNgjm
+        ua5+KvcMFcgNYMsI8NP2jNPI1XR4iAEtoBXScrE9xA==
+X-Google-Smtp-Source: ABdhPJyGT+f5K0NlflRmr0Oujg9N8RzDRyq2G3QJRww1A0zSLrRBClj7br0zFW3BcP+Cmdijt0LNuXoQJvgjp6Hu0pQ=
+X-Received: by 2002:a1f:ae85:: with SMTP id x127mr615243vke.8.1602149286384;
+ Thu, 08 Oct 2020 02:28:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-08_04:2020-10-08,2020-10-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- mlxscore=0 lowpriorityscore=0 bulkscore=0 adultscore=0 phishscore=0
- mlxlogscore=999 spamscore=0 clxscore=1015 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010080064
+References: <20201008020936.19894-1-muhammad.husaini.zulkifli@intel.com> <20201008020936.19894-5-muhammad.husaini.zulkifli@intel.com>
+In-Reply-To: <20201008020936.19894-5-muhammad.husaini.zulkifli@intel.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 8 Oct 2020 11:27:30 +0200
+Message-ID: <CAPDyKFpUv8yeVrWVLRKvz4eKsSDdk0y4dKY2mYs07zpA2UqNdw@mail.gmail.com>
+Subject: Re: [PATCH v4 4/4] mmc: sdhci-of-arasan: Enable UHS-1 support for
+ Keem Bay SOC
+To:     muhammad.husaini.zulkifli@intel.com
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        andriy.shevchenko@intel.com,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        lakshmi.bai.raja.subramanian@intel.com,
+        Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In copy_present_page, after we mark the pte non-writable, we should
-check for previous dirty bit updates and make sure we don't lose the dirty
-bit on reset.
+On Thu, 8 Oct 2020 at 04:12, <muhammad.husaini.zulkifli@intel.com> wrote:
+>
+> From: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
+>
+> Voltage switching sequence is needed to support UHS-1 interface.
+> There are 2 places to control the voltage.
+> 1) By setting the AON register using firmware driver calling
+> system-level platform management layer (SMC) to set the register.
+> 2) By controlling the GPIO expander value to drive either 1.8V or 3.3V
+> for power mux input.
+>
+> Signed-off-by: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
+> Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
+> ---
+>  drivers/mmc/host/sdhci-of-arasan.c | 126 +++++++++++++++++++++++++++++
+>  1 file changed, 126 insertions(+)
+>
+> diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
+> index 46aea6516133..ea2467b0073d 100644
+> --- a/drivers/mmc/host/sdhci-of-arasan.c
+> +++ b/drivers/mmc/host/sdhci-of-arasan.c
+> @@ -16,6 +16,7 @@
+>   */
+>
+>  #include <linux/clk-provider.h>
+> +#include <linux/gpio/consumer.h>
+>  #include <linux/mfd/syscon.h>
+>  #include <linux/module.h>
+>  #include <linux/of_device.h>
+> @@ -23,6 +24,7 @@
+>  #include <linux/regmap.h>
+>  #include <linux/of.h>
+>  #include <linux/firmware/xlnx-zynqmp.h>
+> +#include <linux/firmware/intel/keembay_firmware.h>
+>
+>  #include "cqhci.h"
+>  #include "sdhci-pltfm.h"
+> @@ -136,6 +138,7 @@ struct sdhci_arasan_clk_data {
+>   * @soc_ctl_base:      Pointer to regmap for syscon for soc_ctl registers.
+>   * @soc_ctl_map:       Map to get offsets into soc_ctl registers.
+>   * @quirks:            Arasan deviations from spec.
+> + * @uhs_gpio:          Pointer to the uhs gpio.
+>   */
+>  struct sdhci_arasan_data {
+>         struct sdhci_host *host;
+> @@ -150,6 +153,7 @@ struct sdhci_arasan_data {
+>         struct regmap   *soc_ctl_base;
+>         const struct sdhci_arasan_soc_ctl_map *soc_ctl_map;
+>         unsigned int    quirks;
+> +       struct gpio_desc *uhs_gpio;
+>
+>  /* Controller does not have CD wired and will not function normally without */
+>  #define SDHCI_ARASAN_QUIRK_FORCE_CDTEST        BIT(0)
+> @@ -361,6 +365,112 @@ static int sdhci_arasan_voltage_switch(struct mmc_host *mmc,
+>         return -EINVAL;
+>  }
+>
+> +static int sdhci_arasan_keembay_voltage_switch(struct mmc_host *mmc,
+> +                                      struct mmc_ios *ios)
+> +{
+> +       struct sdhci_host *host = mmc_priv(mmc);
+> +       struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+> +       struct sdhci_arasan_data *sdhci_arasan = sdhci_pltfm_priv(pltfm_host);
+> +       u16 ctrl_2, clk;
+> +       int ret;
+> +
+> +       switch (ios->signal_voltage) {
+> +       case MMC_SIGNAL_VOLTAGE_180:
+> +               clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+> +               clk &= ~SDHCI_CLOCK_CARD_EN;
+> +               sdhci_writew(host, clk, SDHCI_CLOCK_CONTROL);
+> +
+> +               clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+> +               if (clk & SDHCI_CLOCK_CARD_EN)
+> +                       return -EAGAIN;
+> +
+> +               sdhci_writeb(host, SDHCI_POWER_ON | SDHCI_POWER_180,
+> +                                  SDHCI_POWER_CONTROL);
+> +
+> +               /*
+> +                * Set VDDIO_B voltage to Low for 1.8V
+> +                * which is controlling by GPIO Expander.
+> +                */
+> +               gpiod_set_value_cansleep(sdhci_arasan->uhs_gpio, 0);
+> +
+> +               /*
+> +                * This is like a final gatekeeper. Need to ensure changed voltage
+> +                * is settled before and after turn on this bit.
+> +                */
+> +               usleep_range(1000, 1100);
+> +
+> +               ret = keembay_sd_voltage_selection(KEEMBAY_SET_1V8_VOLT);
+> +               if (ret)
+> +                       return ret;
+> +
+> +               usleep_range(1000, 1100);
 
-Also, avoid marking the pte write-protected again if copy_present_page
-already marked it write-protected.
+No, sorry, but I don't like this.
 
-Cc: Peter Xu <peterx@redhat.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: John Hubbard <jhubbard@nvidia.com>
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Jan Kara <jack@suse.cz>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Kirill Shutemov <kirill@shutemov.name>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
----
- mm/memory.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+This looks like a GPIO regulator with an extension of using the
+keembay_sd_voltage_selection() thingy. I think you can model these
+things behind a regulator and hook it up as a vqmmc supply in DT
+instead. BTW, this is the common way we deal with these things for mmc
+host drivers.
 
-diff --git a/mm/memory.c b/mm/memory.c
-index bfe202ef6244..f57b1f04d50a 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -848,6 +848,9 @@ copy_present_page(struct mm_struct *dst_mm, struct mm_struct *src_mm,
- 	if (likely(!page_maybe_dma_pinned(page)))
- 		return 1;
- 
-+	if (pte_dirty(*src_pte))
-+		pte = pte_mkdirty(pte);
-+
- 	/*
- 	 * Uhhuh. It looks like the page might be a pinned page,
- 	 * and we actually need to copy it. Now we can set the
-@@ -904,6 +907,11 @@ copy_present_pte(struct mm_struct *dst_mm, struct mm_struct *src_mm,
- 		if (retval <= 0)
- 			return retval;
- 
-+		/*
-+		 * Fetch the src pte value again, copy_present_page
-+		 * could modify it.
-+		 */
-+		pte = *src_pte;
- 		get_page(page);
- 		page_dup_rmap(page, false);
- 		rss[mm_counter(page)]++;
--- 
-2.26.2
+> +
+> +               ctrl_2 = sdhci_readw(host, SDHCI_HOST_CONTROL2);
+> +               ctrl_2 |= SDHCI_CTRL_VDD_180;
+> +               sdhci_writew(host, ctrl_2, SDHCI_HOST_CONTROL2);
+> +
+> +               /* Sleep for 5ms to stabilize 1.8V regulator */
+> +               usleep_range(5000, 5500);
+> +
+> +               /* 1.8V regulator output should be stable within 5 ms */
+> +               ctrl_2 = sdhci_readw(host, SDHCI_HOST_CONTROL2);
+> +               if (!(ctrl_2 & SDHCI_CTRL_VDD_180))
+> +                       return -EAGAIN;
+> +
+> +               clk  = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+> +               clk |= SDHCI_CLOCK_CARD_EN;
+> +               sdhci_writew(host, clk, SDHCI_CLOCK_CONTROL);
+> +               break;
+> +       case MMC_SIGNAL_VOLTAGE_330:
+> +               /*
+> +                * Set VDDIO_B voltage to High for 3.3V
+> +                * which is controlling by GPIO Expander.
+> +                */
+> +               gpiod_set_value_cansleep(sdhci_arasan->uhs_gpio, 1);
+> +
+> +               /*
+> +                * This is like a final gatekeeper. Need to ensure changed voltage
+> +                * is settled before and after turn on this bit.
+> +                */
+> +               usleep_range(1000, 1100);
+> +
+> +               ret = keembay_sd_voltage_selection(KEEMBAY_SET_3V3_VOLT);
+> +               if (ret)
+> +                       return ret;
+> +
+> +               usleep_range(1000, 1100);
+> +
+> +               /* Set 1.8V Signal Enable in the Host Control2 register to 0 */
+> +               ctrl_2 = sdhci_readw(host, SDHCI_HOST_CONTROL2);
+> +               ctrl_2 &= ~SDHCI_CTRL_VDD_180;
+> +               sdhci_writew(host, ctrl_2, SDHCI_HOST_CONTROL2);
+> +
+> +               /* Sleep for 5ms to stabilize 3.3V regulator */
+> +               usleep_range(5000, 5500);
+> +
+> +               /* 3.3V regulator output should be stable within 5 ms */
+> +               ctrl_2 = sdhci_readw(host, SDHCI_HOST_CONTROL2);
+> +               if (ctrl_2 & SDHCI_CTRL_VDD_180)
+> +                       return -EAGAIN;
+> +
+> +               break;
+> +       default:
+> +               return -EINVAL;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int sdhci_arasan_keembay_select_drive_strength(struct mmc_card *card,
+> +                                       unsigned int max_dtr, int host_drv,
+> +                                       int card_drv, int *drv_type)
+> +{
+> +       if (card->host->ios.signal_voltage == MMC_SIGNAL_VOLTAGE_180)
+> +               *drv_type = MMC_SET_DRIVER_TYPE_C;
+> +
+> +       return 0;
+> +}
+> +
+>  static const struct sdhci_ops sdhci_arasan_ops = {
+>         .set_clock = sdhci_arasan_set_clock,
+>         .get_max_clock = sdhci_pltfm_clk_get_max_clock,
+> @@ -1601,6 +1711,22 @@ static int sdhci_arasan_probe(struct platform_device *pdev)
+>                 host->mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY;
+>         }
+>
+> +       if (of_device_is_compatible(np, "intel,keembay-sdhci-5.1-sd")) {
+> +               struct gpio_desc *uhs;
+> +
+> +               uhs = devm_gpiod_get_optional(dev, "uhs", GPIOD_OUT_HIGH);
+> +               if (IS_ERR(uhs))
+> +                       return dev_err_probe(dev, PTR_ERR(uhs), "can't get uhs gpio\n");
+> +
+> +               sdhci_arasan->uhs_gpio = uhs;
+> +
+> +               host->mmc_host_ops.start_signal_voltage_switch =
+> +                       sdhci_arasan_keembay_voltage_switch;
+> +
+> +               host->mmc_host_ops.select_drive_strength =
+> +                       sdhci_arasan_keembay_select_drive_strength;
+> +       }
+> +
+>         sdhci_arasan_update_baseclkfreq(host);
+>
+>         ret = sdhci_arasan_register_sdclk(sdhci_arasan, clk_xin, &pdev->dev);
+> --
+> 2.17.1
+>
 
+Kind regards
+Uffe
