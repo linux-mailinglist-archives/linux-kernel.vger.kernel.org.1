@@ -2,151 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFA992875E1
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 239142875E4
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730530AbgJHOUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 10:20:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55686 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730512AbgJHOUI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 10:20:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602166807;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=28gyQXNpF1DN/ygNYXtmZFhoYYiRhK+HkImKGmUzg8Q=;
-        b=DCRzdOHz47WI6HJ4yFDPSpCif/tbrC+Qvl1TT9FtEdvWo2nm1d9iexdm+wvXLldRtSoPZ9
-        Ee4v3R8wGkYpsz4/PIqKRwU2pKTc3F1nh7OzDjuIfwrOpI/fITzrLQoH6MxEAIsd0Tm84W
-        e3V0CiPGGjrpxlvWk2LJeSp+PkTLN4Y=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-220-TdQSkDTHPpO_FgmFl3Ucxw-1; Thu, 08 Oct 2020 10:20:05 -0400
-X-MC-Unique: TdQSkDTHPpO_FgmFl3Ucxw-1
-Received: by mail-ed1-f69.google.com with SMTP id u17so2247333edr.12
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 07:20:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=28gyQXNpF1DN/ygNYXtmZFhoYYiRhK+HkImKGmUzg8Q=;
-        b=cpW2ca071WKvnwElK3mMcwI6fl/0ulrp39ReMehN5xCi2zabH9JYopFUQux3vs5il2
-         THEzPX7bdK5jUhQJGkPW65cMgvn5pprOeXZJGpparP4gWsshSYw1jpj8/Gtj/ihA7OtU
-         hS09NNSwkw8jRLDNzZmRArP6ictp8g3zM5/OMV5UTc+bmq3uclK9j6KsQUklL/hY4XJG
-         mjf2SBjGGbwbF9+GWcrcPnTloD9IsZexNfHCj+EJ9HKQHUVpNrysZazw+wwB7jYVa5Dt
-         pW+4Vrk6ndz3w9uOJOMiyc6lYNtpX6XUNsj1y5HEcH9fbkrLdztxXm/AZw1PJl+yo9WR
-         cjLg==
-X-Gm-Message-State: AOAM5323tyYOvR3RqfmuKXVBVCUD/WENBQHgNT8uMY+ZMPt852MN1CiL
-        Kaa7Trx/H2xECdSgsNyqoLsTkMNtc1PYqvPv6hthUL0M71l7223nS6TBHPUZR0OfVM1+yd1RYgm
-        R1f85wPMjY7xoOIF7En+WNFMb
-X-Received: by 2002:aa7:cd98:: with SMTP id x24mr9016832edv.237.1602166803854;
-        Thu, 08 Oct 2020 07:20:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxxzFAf6/LrvEIPJQafA407xL21ruZvhDdt9yl4HgGg5gpcaswQVQnwdH87ON/AX90hBn4Wtg==
-X-Received: by 2002:aa7:cd98:: with SMTP id x24mr9016793edv.237.1602166803590;
-        Thu, 08 Oct 2020 07:20:03 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id h12sm4043238eds.22.2020.10.08.07.20.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Oct 2020 07:20:02 -0700 (PDT)
-Subject: Re: [PATCH v2 0/5] platform/surface: Create a platform subdirectory
- for Microsoft Surface devices
-To:     Maximilian Luz <luzmaximilian@gmail.com>,
-        platform-driver-x86@vger.kernel.org
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        =?UTF-8?Q?Bla=c5=be_Hrastnik?= <blaz@mxxn.io>,
-        Stephen Just <stephenjust@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Chen Yu <yu.c.chen@intel.com>, linux-kernel@vger.kernel.org
-References: <20201005160307.39201-1-luzmaximilian@gmail.com>
- <a82e3aff-801d-d116-bbf4-91f3981f713b@redhat.com>
- <deb1c682-5843-61b1-173b-a70ef51e85f2@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <4b77d470-0a73-ae3d-1364-7f6e9a01885c@redhat.com>
-Date:   Thu, 8 Oct 2020 16:20:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730536AbgJHOVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 10:21:05 -0400
+Received: from foss.arm.com ([217.140.110.172]:60076 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729992AbgJHOVE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 10:21:04 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 87C1A1063;
+        Thu,  8 Oct 2020 07:21:03 -0700 (PDT)
+Received: from [10.57.48.204] (unknown [10.57.48.204])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7D7FB3F70D;
+        Thu,  8 Oct 2020 07:21:00 -0700 (PDT)
+Subject: Re: [PATCH v2 3/3] dt-bindings: thermal: update sustainable-power
+ with abstract scale
+To:     Doug Anderson <dianders@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Amit Kucheria <amitk@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Dietmar.Eggemann@arm.com, Quentin Perret <qperret@google.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+References: <20201002114426.31277-1-lukasz.luba@arm.com>
+ <20201002114426.31277-4-lukasz.luba@arm.com>
+ <CAD=FV=UbNP5-G1z95F37Fmv8=n0JPSSwnPQO_K==WpAc4vAHWQ@mail.gmail.com>
+ <e9b6fc5a-45d3-168d-db38-6c068da26f6b@arm.com>
+ <CAD=FV=Xkg1zpsMW5rERbibnjrgY6opZi8Z9DUFkWebb7NHtU5w@mail.gmail.com>
+ <bc5d21c1-ea84-9132-2e52-ae84fbb0515a@arm.com>
+ <CAD=FV=VfA8AB3BZk8Ykkhigv9eGijzu4zuA6KdXk0K5UG0yCCQ@mail.gmail.com>
+ <CAL_JsqJ37TVk4=E1DyZuhfH1jZ7wyauGLucSH7XW9wkeT3PSgg@mail.gmail.com>
+ <CAD=FV=Vy641h5KNLKipC1n=tgjp7a3HGHw0odY9fNpwdqorrAg@mail.gmail.com>
+ <CAL_JsqJ=brfbLiTm9D+p2N0Az-gcStbYj=RS2EaG50dHo0-5WA@mail.gmail.com>
+ <CAD=FV=XF_kqr0=vBqHVT4RWB8NWx0kHoFnap-smxtv_m+GQvSg@mail.gmail.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <45fae8cd-0635-41dc-c744-3c9833bf6492@arm.com>
+Date:   Thu, 8 Oct 2020 15:20:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <deb1c682-5843-61b1-173b-a70ef51e85f2@gmail.com>
+In-Reply-To: <CAD=FV=XF_kqr0=vBqHVT4RWB8NWx0kHoFnap-smxtv_m+GQvSg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 10/8/20 2:32 PM, Maximilian Luz wrote:
-> On 10/8/20 1:44 PM, Hans de Goede wrote:
->> Hi Maximilian,
->>
->> On 10/5/20 6:03 PM, Maximilian Luz wrote:
->>> As has come up in the discussion around
->>>
->>>    [RFC PATCH] Add support for Microsoft Surface System Aggregator Module
->>>
->>> it may make sense to add a Microsoft Surface specific platform
->>> subdirectory. Andy has suggested drivers/platform/surface for that.
->>> This series follows said suggestion and creates that subdirectory, as
->>> well as moves Microsoft Surface related drivers over to it and updates
->>> their MAINTAINERS entries (if available) accordingly.
->>>
->>> This series does not modify any existing driver code, symbols, or help
->>> text.
->>
->> In case you do not know I'm taking over from any as
->> drivers/platform/x86 maintainer.
->>
->> I'm fine with the concept of this series, but who is going to maintain
->> this new drivers/platform/surface directory ?
->>
->> Ah I see that the first patch answers that question and the plan
->> is to keep this part of the pdx86 maintainership.
->>
->> I would prefer for the new dir to have its own
->> MAINTAINERS entry if I'm honest, I would like to try and
->> split maintainership for the surface stuff as follows:
->>
->> 1. Who will review (and add their Reviewed-by or ask for improvements
->>     or nack) patches to files in this dir?
->>
->> 2. Who will gather approved patches apply them to a for-next branch
->>     and send them out to Linus during the merge Window?
->>
->> I can pick up 2. but I could really use some help with 1. So I
->> was thinking having a separate MAINTAINERS entry for the new
->> dir with you (Maximilian) (and me and Mark Gross) listed as
->> MAINTAINERS; and then I'm hoping that you can do the review
->> of surface related patches. At least those which you have not
->> written yourself.
->>
->> How does that sound ?
+
+On 10/7/20 10:40 PM, Doug Anderson wrote:
+> Hi,
 > 
-> Sounds good, I'd be happy to help review and approve any Surface related
-> patches. However, I think it would be beneficial if you and Mark still
-> have a final look (and say) over the ones I've reviewed and accepted (if
-> that's not already a given). I feel like I may lack a bit of experience
-> for this job and might miss some things.
+> On Wed, Oct 7, 2020 at 6:26 AM Rob Herring <robh+dt@kernel.org> wrote:
+>>
+>> On Tue, Oct 6, 2020 at 8:17 PM Doug Anderson <dianders@chromium.org> wrote:
+>>>
+>>> Hi,
+>>>
+>>> On Tue, Oct 6, 2020 at 3:24 PM Rob Herring <robh+dt@kernel.org> wrote:
+>>>>
+>>>> On Fri, Oct 2, 2020 at 12:39 PM Doug Anderson <dianders@chromium.org> wrote:
+>>>>>
+>>>>> Hi,
+>>>>>
+>>>>> On Fri, Oct 2, 2020 at 9:40 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>>>>>
+>>>>>> On 10/2/20 4:47 PM, Doug Anderson wrote:
+>>>>>>> Hi,
+>>>>>>>
+>>>>>>> On Fri, Oct 2, 2020 at 8:13 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>>>>>>>
+>>>>>>>> Hi Doug,
+>>>>>>>>
+>>>>>>>> On 10/2/20 3:31 PM, Doug Anderson wrote:
+>>>>>>>>> Hi,
+>>>>>>>>>
+>>>>>>>>> On Fri, Oct 2, 2020 at 4:45 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>>>>>>>>>
+>>>>>>>>>> Update the documentation for the binding 'sustainable-power' and allow
+>>>>>>>>>> to provide values in an abstract scale. It is required when the cooling
+>>>>>>>>>> devices use an abstract scale for their power values.
+>>>>>>>>>>
+>>>>>>>>>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+>>>>>>>>>> ---
+>>>>>>>>>>     .../devicetree/bindings/thermal/thermal-zones.yaml  | 13 +++++++++----
+>>>>>>>>>>     1 file changed, 9 insertions(+), 4 deletions(-)
+>>>>>>>>>>
+>>>>>>>>>> diff --git a/Documentation/devicetree/bindings/thermal/thermal-zones.yaml b/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
+>>>>>>>>>> index 3ec9cc87ec50..4d8f2e37d1e6 100644
+>>>>>>>>>> --- a/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
+>>>>>>>>>> +++ b/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
+>>>>>>>>>> @@ -99,10 +99,15 @@ patternProperties:
+>>>>>>>>>>           sustainable-power:
+>>>>>>>>>>             $ref: /schemas/types.yaml#/definitions/uint32
+>>>>>>>>>>             description:
+>>>>>>>>>> -          An estimate of the sustainable power (in mW) that this thermal zone
+>>>>>>>>>> -          can dissipate at the desired control temperature. For reference, the
+>>>>>>>>>> -          sustainable power of a 4-inch phone is typically 2000mW, while on a
+>>>>>>>>>> -          10-inch tablet is around 4500mW.
+>>>>>>>>>> +          An estimate of the sustainable power (in mW or in an abstract scale)
+>>>>>>>>>> +         that this thermal zone can dissipate at the desired control
+>>>>>>>>>> +         temperature. For reference, the sustainable power of a 4-inch phone
+>>>>>>>>>> +         is typically 2000mW, while on a 10-inch tablet is around 4500mW.
+>>>>>>>>>> +
+>>>>>>>>>> +         It is possible to express the sustainable power in an abstract
+>>>>>>>>>> +         scale. This is the case when the related cooling devices use also
+>>>>>>>>>> +         abstract scale to express their power usage. The scale must be
+>>>>>>>>>> +         consistent.
+>>>>>>>>>
+>>>>>>>>> Two thoughts:
+>>>>>>>>>
+>>>>>>>>> 1. If we're going to allow "sustainable-power" to be in abstract
+>>>>>>>>> scale, why not allow "dynamic-power-coefficient" to be in abstract
+>>>>>>>>> scale too?  I assume that the whole reason against that originally was
+>>>>>>>>> the idea of device tree purity, but if we're allowing the abstract
+>>>>>>>>> scale here then there seems no reason not to allow it for
+>>>>>>>>> "dynamic-power-coefficient".
+>>>>>>>>
+>>>>>>>> With this binding it's a bit more tricky.
+>>>>>>>> I also have to discuss a few things internally. This requirement of
+>>>>>>>> uW/MHz/V^2 makes the code easier also for potential drivers
+>>>>>>>> like GPU (which are going to register the devfreq cooling with EM).
+>>>>>>>>
+>>>>>>>> Let me think about it, but for now I would just update these bits.
+>>>>>>>> These are required to proper IPA operation, the dyn.-pow.-coef. is a
+>>>>>>>> nice to have and possible next step.
+>>>>>>>
+>>>>>>> I guess the problem is that Rajendra is currently planning to remove
+>>>>>>> all the "dynamic-power-coefficient" values from device tree right now
+>>>>>>> and move them to the source code because the numbers we currently have
+>>>>>>> in the device tree _are_ in abstract scale and thus violate the
+>>>>>>> bindings.  Moving this to source code won't help us get to more real
+>>>>>>> power numbers (since it'll still be abstract scale), it'll just be
+>>>>>>> pure churn.  If we're OK with the abstract scale in general then we
+>>>>>>> should allow it everywhere and not add churn for no reason.
+>>>>>>
+>>>>>> IIUC he is still going to use the Energy Model, but with different
+>>>>>> registration function. We have such a driver: scmi-cpufreq.c, which
+>>>>>> uses em_dev_register_perf_domain(). He can still use EM, EAS, IPA
+>>>>>> not violating anything.
+>>>>>
+>>>>> Right.  He's going to take the exact same "abstract scale" numbers
+>>>>> that he has today and take them out of device tree and put them in the
+>>>>> cpufreq driver.  Doing so magically makes it so that he's not
+>>>>> violating anything since "abstract scale" is not currently allowed in
+>>>>> device tree but is allowed in the cpufreq driver.  I'm not saying that
+>>>>> he's doing anything wrong, I'm just saying that it's pointless churn.
+>>>>> If we're OK with "abstract scale" in one place in the device tree we
+>>>>> should be OK with it everywhere in the device tree.  Then Rajendra
+>>>>> wouldn't need his patch at all and he could leave his numbers in the
+>>>>> device tree.
+>>>>>
+>>>>>
+>>>>>> The real problem that we want to address is with sustainable-power in
+>>>>>> IPA. It is used in power budget calculation and if the devices operate
+>>>>>> in abstract scale, then there is an issue.
+>>>>>> There are two options to get that value:
+>>>>>> 1. from DT, which can have optimized value, stored by OEM engineer
+>>>>>> 2. from IPA estimation code, which just calculates it as a sum of
+>>>>>> minimum OPP power for each cooling device.
+>>>>>>
+>>>>>> The 2nd option might not be the best for a platform, so vendor/OEM
+>>>>>> engineer might want to provide a better value in DT -> 1st option.
+>>>>>> This is currently against the binding description and I have to fix it.
+>>>>>
+>>>>> Right, things are already broken today because a SoC vendor could
+>>>>> (without violating any rules) provide their SoC core
+>>>>> "dynamic-power-coefficient" in "abstract scale" in code and there
+>>>>> would be no way to for a board to (without violating DT bindings)
+>>>>> specify a "sustainable-power".  ...so, in that sense, your patch does
+>>>>> provide a benefit even if we don't make any changes to the rules for
+>>>>> "sustainable-power".  All I'm saying is that if these new rules for
+>>>>> allowing an abstract scale for "sustainable-power" in the device tree
+>>>>> are OK that it should _also_ be OK to add new rules to allow an
+>>>>> abstract scale for "dynamic-power-coefficient".
+>>>>
+>>>> Didn't we beat this one to death with "dynamic-power-coefficient"?
+>>>
+>>> We did?  Where / when?
+>>
+>> https://lore.kernel.org/r/1448288921-30307-1-git-send-email-juri.lelli@arm.com/
+> 
+> Thanks for the reference.
+> 
+> 
+>>> I'm not sure I was involved, but right now
+>>> both "sustainable-power" and "dynamic-power-coefficient" are still
+>>> defined in the device tree to be in real units, not abstract scale.
+>>> Are you saying that we beat it to death and decided that it needed to
+>>> be in real units, or we beat it to death and decided that abstract
+>>> scale was OK and we just didn't put it in the bindings?
+>>
+>> The former.
+> 
+> OK.  So I suppose this is a NAK to Lukasz's patch.  It also means that:
 
-Since Mark or I will be merging the patches we will indeed still take
-a look at them, but it helps if someone else has already done a review
-first.
+I also consider this as a NAK for this patch 3/3, but other two can go.
+It will be also NAK for dt-binding change adding 'abstract scale'
+description to "dynamic-power-coefficient", so I won't post it.
 
-> I'll add the MAINTAINERS entry and send a v3 later today, if that's OK.
+> 
+> * The power numbers that landed in the sc7180 devicetree violate
+> what's documented in the bindings.
+> 
+> * While Rajendra can fix this by moving the numbers out of devicetree
+> and into code, it doesn't really help us because there will be no way
+> to allow boards to specify their "sustainable-power" in code.
+> 
+> * Anyone who is using the "abstract scale" provided by firmware or by
+> code is in the same boat.  There's no way for a board to specify
+> "sustainable-power" that will match this "abstract scale" without
+> violating the devicetree bindings.
+> 
+> Obviously the easiest way to fix this is to just move everyone off of
+> "abstract scale".
+> 
+> If someone else has other bright ideas I'm all ears.
 
-That sounds good, thanks.
+To summarize, we allow abstract scale to be in EM, EAS and IPA.
+For EM/EAS it is possible have this via
+em_dev_register_perf_domain()
+IPA would also get these devices with abstract scale, but the DT
+"sustainable-power" would not be aligned, so might be not set in DT.
+For that, what would help:
+- IPA internal code for sustainable power estimation
+- thermal sysfs interface for IPA 'sustainable_power'
+
+In this case I think patch 1/3 and 2/3 can go into upstream.
+This one (patch 3/3) can be dropped.
+
+Thank you Rob and Doug for this discussion.
 
 Regards,
-
-Hans
+Lukasz
 
