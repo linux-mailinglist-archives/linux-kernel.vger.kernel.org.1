@@ -2,81 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53DA3286CA4
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 04:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAD58286CA8
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 04:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728209AbgJHCNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 22:13:16 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:53386 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727742AbgJHCNQ (ORCPT
+        id S1727688AbgJHCPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 22:15:35 -0400
+Received: from mail1.protonmail.ch ([185.70.40.18]:37828 "EHLO
+        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727345AbgJHCPf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 22:13:16 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09823U7Q174732;
-        Thu, 8 Oct 2020 02:13:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=fKGpwbpCUrO7poR5kPR53uD17H/Na+4QP1jfSojSiHY=;
- b=RJXCBbRUshXl3o4xApOq0CU1fcZDBdKuTRc4Lcc9SePdZmrKEnBmYKNHFfmldeI6ePAy
- 1CqSF4d+EYHKab5AUWm53vH+bJkJ+pwai3Oj94DmfKJaslg7V9kPQh5sJvgCB6PJeu8C
- ZZdafPkLIw7KN2SHC1g569PPJUQO+v6jBN+gR/h2IU2kSdT3JTYwXmDA2zEY+um9qIaX
- 2kgouNRwg2uAWXNpVHhEo0dIA8T2nTfdAP5kpYNbGO3ZjO0/rTMJlt/gn7JE59HHiAKY
- FFeyMG6TPRIPOcVyhLVzYJRBLNl7lR9estHrIVbk41C/Gzhv0n+LcxrKA5wPsB3mPpIi BQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 33xhxn52bs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 08 Oct 2020 02:13:02 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09824rgA114571;
-        Thu, 8 Oct 2020 02:13:01 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 3410k0cpcw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 08 Oct 2020 02:13:01 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0982Cx4r031199;
-        Thu, 8 Oct 2020 02:13:00 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 07 Oct 2020 19:12:59 -0700
-To:     Pavel Machek <pavel@denx.de>
-Cc:     njavali@marvell.com, GR-QLogic-Storage-Upstream@marvell.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] qla2xxx: Use constant when it is known.
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1o8ldzcrg.fsf@ca-mkp.ca.oracle.com>
-References: <20200921112340.GA19336@duo.ucw.cz>
-Date:   Wed, 07 Oct 2020 22:12:57 -0400
-In-Reply-To: <20200921112340.GA19336@duo.ucw.cz> (Pavel Machek's message of
-        "Mon, 21 Sep 2020 13:23:40 +0200")
+        Wed, 7 Oct 2020 22:15:35 -0400
+Date:   Thu, 08 Oct 2020 02:15:24 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1602123332;
+        bh=B1wAESJVuS+GsSF9/mSAS6lCbLjALb6I1zRkvEvPt2o=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=FzTwjWcDKbLTkEyoxW0ckGM3jACHqyEfAW/3pyqXtqgeIc86XlUFSzyMF6qk/Y2SU
+         m7/CkHVgILUYKEDQwFFltk0vDnnaUDB5UIigYgntTlRi5OWs42caV1eTrIjt1uYl4D
+         XKrP+qM6FifHAVUtJFDZ7fzNTLT0+mfyrOfHi47M=
+To:     Matthew Wilcox <willy@infradead.org>
+From:   =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
+        <nfraprado@protonmail.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lkcamp@lists.libreplanetbr.org, andrealmeid@collabora.com
+Reply-To: =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
+          <nfraprado@protonmail.com>
+Subject: Re: [PATCH] docs: Make automarkup ready for Sphinx 3.1+
+Message-ID: <C674RBXSO9XN.1LXXU71QQNTF1@ArchWay>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=954 spamscore=0
- adultscore=0 bulkscore=0 malwarescore=0 suspectscore=1 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010080017
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 bulkscore=0
- impostorscore=0 lowpriorityscore=0 suspectscore=1 phishscore=0
- mlxlogscore=968 adultscore=0 clxscore=1011 spamscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010080017
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed Oct 7, 2020 at 8:40 PM -03, Matthew Wilcox wrote:
+>
+> On Wed, Oct 07, 2020 at 11:12:25PM +0000, N=C3=ADcolas F. R. A. Prado wro=
+te:
+> > While Sphinx 2 used a single c:type role for struct, union, enum and
+> > typedef, Sphinx 3 uses a specific role for each one.
+> > To keep backward compatibility, detect the Sphinx version and use the
+> > correct roles for that version.
+> >
+> > Also, Sphinx 3 is more strict with its C domain and generated warnings,
+> > exposing issues in the parsing.
+> > To fix the warnings, make the C regexes use ASCII, ensure the
+> > expressions only match the beginning of words and skip trying to
+> > cross-reference C reserved words.
+>
+> Thank you for doing this!
+>
+> I have a feature request ... could you automarkup NULL as being
+> :c:macro?
+> Or maybe just anything matching \<[[:upper:]_[:digit:]]*\>
+> (i may have my regex syntax confused ... a word composed of any
+> arrangement of upper-case, digits and underscores.)
 
-Pavel,
+I think what you are suggesting are two separate things.
 
-> Directly return constant when it is known, to make code easier to
-> understand.
+For NULL, what you're interested in is that it appears in a monospaced font=
+, as
+if written ``NULL``, right? As I don't think a cross-reference to "the NULL
+macro definition" would make much sense.
 
-Applied to 5.10/scsi-staging, thanks!
+While "anything containing only upper-case, digits and underscores" would
+actually be for cross-referencing to the definition of the macro symbol in
+question, right?
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+At the moment, this automarkup script is being used only for cross-referenc=
+ing,
+but it is indeed a generic automarkup script, and could be used for the
+formatting of NULL.  But we also can't just make every upper-case word writ=
+ten
+in monospaced font, as that doesn't always makes sense.
+
+So if I understood your two requests correctly, I think we could:
+1. Always automatically format NULL using a literal ``.
+2. Try to cross-reference every upper-case word with the macro definition u=
+sing
+:c:macro, but if the cross-reference doesn't exist, format it normally, sin=
+ce
+it's just normal text (this is what we're doing for C references at the mom=
+ent).
+
+What do you think?
+
+Thanks,
+N=C3=ADcolas
+
