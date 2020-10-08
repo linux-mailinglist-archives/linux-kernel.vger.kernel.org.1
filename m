@@ -2,229 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65BC12871BC
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 11:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39DCC2871BD
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 11:41:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729072AbgJHJlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 05:41:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725849AbgJHJlG (ORCPT
+        id S1729197AbgJHJlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 05:41:15 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:60920 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729148AbgJHJlO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 05:41:06 -0400
-Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 693C1C061755
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 02:41:04 -0700 (PDT)
-Received: by mail-oo1-xc44.google.com with SMTP id c25so659075ooe.13
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 02:41:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qfMhghjBP9os9D7z08t6DZuXpLEhZ0q00x6tVMxnguE=;
-        b=XhgNGt7sZGGLxtmNrRJ871VQhJd0fNw2qyyQ3bG65nG8yWrd0coT2vg98wemz73DRa
-         OQFOsfFkqX3Qpv6BqvANBrGp1v/zHUL6/F//Y8Z8W+ZGO/O8NtUgc/cun0XtY3sugtqC
-         rpD3wq1fMFPkSqujDdgA11TQivyGzt2VdLlYgjK/OCYOLFei2YuVtXmBbN7RTzbZJAfD
-         qg8lTlu+yyX5/bTsKx6BRHDb4yxxyO3Mtr7iiyFVeFHjxKSdhHNGb+TLiumyyyP20mYk
-         f39q+It7JtrMXjXHTF8AbAY15c/yMOL/TbbKTQoU4hosJJHPQ6/5rrrouihLrRtPS1gs
-         HArg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qfMhghjBP9os9D7z08t6DZuXpLEhZ0q00x6tVMxnguE=;
-        b=iZujtQ3Ij5PDf+qmSRjeDGGmW6HkjIsXUdtpnkAOLANaVmlqVci4keUQOK4zvSsiyA
-         brybT24WAZfPsyVRJkLFkh3ngws2qUcaLnsRhgtkfWeGLA2fUq4yfSSNI310fZRjfmYD
-         zJbSTYT9Xwyo2iRRpoHiWKEWYn+lm2/3IwxVog3vMJBdP0BLQLQpzzOlyF3qxSMqE7Dh
-         PsWGMCSh2hbZdZRWhCk4RqxtOhrNLV0ECDmb6LrCDokJR1VQuWuYJ8BI+CZ2jKwZCWZb
-         E0EVye8HxaPc0j+iYpyso+tRGwWaSAUlKEw61m1VuM3KP5ugXpc5JmispkI8diHdYrJ6
-         Y1VQ==
-X-Gm-Message-State: AOAM531U0ie0Nd2CWBkLv24KYlwSCTfvxWi2bzXCg5FUOq4M0sV7mDCU
-        smAJx66NdP7rOd7wHQgJ0hG9tftsocJS4f6JWz1+FQ==
-X-Google-Smtp-Source: ABdhPJz6rUkb1Txy1Mg6WERcI/aK60bYF3BpyK1h2rgllajlsKxuWqvgLfUlTY2lcTNMmGW97hxPyj88uoxYkOw99u4=
-X-Received: by 2002:a4a:751a:: with SMTP id j26mr4844047ooc.14.1602150063537;
- Thu, 08 Oct 2020 02:41:03 -0700 (PDT)
+        Thu, 8 Oct 2020 05:41:14 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0989f4DS026050;
+        Thu, 8 Oct 2020 04:41:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1602150064;
+        bh=fmnTnaxNK7vcj4oUYy5xvoT+SbngQIFMGE0hDhvvrZ4=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=caOCcWCXC+CrNOthQkz8wWJpzXE24uzhqlnNwMQoQWS+y4nWJPa8HILQYkjirDY88
+         XTJ+Rle3RDpxoNoWNqBMKq2BmITgoAq2PcvNsfLvBRO4fwaoxT+RIp1/RvGNkM07VW
+         i+kJB8q70z0QqBkdvXUPdXtI7rn/rKK9G+QXy1qM=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0989f46W075674
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 8 Oct 2020 04:41:04 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 8 Oct
+ 2020 04:41:04 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 8 Oct 2020 04:41:04 -0500
+Received: from [10.250.232.88] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0989ewVC122503;
+        Thu, 8 Oct 2020 04:41:00 -0500
+Subject: Re: [PATCH 0/2] Enable GPIO and I2C configs for TI's J721e platform
+To:     Tero Kristo <t-kristo@ti.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <will@kernel.org>, <catalin.marinas@arm.com>, <nm@ti.com>
+References: <20201002164535.9920-1-faiz_abbas@ti.com>
+ <68cadd9b-63b1-caaf-080c-e2f346f4a908@ti.com>
+ <ce66e552-a816-9e67-5e94-d9a20bbc2bc7@ti.com>
+ <f8877ca8-fe32-29e5-cb0c-2ce0af3eb73a@ti.com>
+ <0b46dc95-6778-7f01-395a-8d4eaf33b0f7@ti.com>
+ <51978593-fe09-3740-ef90-deac8ef3d2f2@ti.com>
+From:   Faiz Abbas <faiz_abbas@ti.com>
+Message-ID: <142b9d12-ea65-320f-aef9-583389aabb3e@ti.com>
+Date:   Thu, 8 Oct 2020 15:10:57 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200921132611.1700350-1-elver@google.com> <20200921132611.1700350-4-elver@google.com>
- <20200921143059.GO2139@willie-the-truck> <CAG_fn=WXknUnNmyniy_UE7daivSNmy0Da2KzNmX4wcmXC2Z_Mg@mail.gmail.com>
- <20200929140226.GB53442@C02TD0UTHF1T.local> <CAG_fn=VOR-3LgmLY-T2Fy6K_VYFgCHK0Hv+Y-atrvrVZ4mQE=Q@mail.gmail.com>
- <20201001175716.GA89689@C02TD0UTHF1T.local>
-In-Reply-To: <20201001175716.GA89689@C02TD0UTHF1T.local>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 8 Oct 2020 11:40:52 +0200
-Message-ID: <CANpmjNMFrMZybOebFwJ1GRXpt8v39AN016UDgPZzE8J3zKh9RA@mail.gmail.com>
-Subject: Re: [PATCH v3 03/10] arm64, kfence: enable KFENCE for ARM64
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dmitriy Vyukov <dvyukov@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Kees Cook <keescook@chromium.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        SeongJae Park <sjpark@amazon.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <51978593-fe09-3740-ef90-deac8ef3d2f2@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 1 Oct 2020 at 19:58, Mark Rutland <mark.rutland@arm.com> wrote:
-[...]
-> > > If you need virt_to_page() to work, the address has to be part of the
-> > > linear/direct map.
-[...]
->
-> What's the underlying requirement here? Is this a performance concern,
-> codegen/codesize, or something else?
+Tero,
 
-It used to be performance, since is_kfence_address() is used in the
-fast path. However, with some further tweaks we just did to
-is_kfence_address(), our benchmarks show a pointer load can be
-tolerated.
+On 08/10/20 2:49 pm, Tero Kristo wrote:
+> On 08/10/2020 11:59, Faiz Abbas wrote:
+>> Tero,
+>>
+>> On 06/10/20 6:40 pm, Tero Kristo wrote:
+>>> On 06/10/2020 16:03, Faiz Abbas wrote:
+>>>> Hi Tero,
+>>>>
+>>>> On 06/10/20 5:21 pm, Tero Kristo wrote:
+>>>>> On 02/10/2020 19:45, Faiz Abbas wrote:
+>>>>>> The following patches enable configs in the arm64 defconfig to support
+>>>>>> GPIO and I2C support on TI's J721e platform.
+>>>>>>
+>>>>>> Faiz Abbas (2):
+>>>>>>      arm64: defconfig: Enable OMAP I2C driver
+>>>>>>      arm64: defconfig: Enable DAVINCI_GPIO driver
+>>>>>>
+>>>>>>     arch/arm64/configs/defconfig | 2 ++
+>>>>>>     1 file changed, 2 insertions(+)
+>>>>>>
+>>>>>
+>>>>> Why are you enabling these?
+>>>>>
+>>>>> Are they required for booting the board?
+>>>>>
+>>>>> If not, they shall not be enabled, as it just clutters the arm64 defconfig unnecessarily.
+>>>>>
+>>>>
+>>>> They are required because the SD card regulators need gpio over i2c expander and also
+>>>> soc gpio support to come up in UHS modes.
+>>>
+>>> Is that needed for boot support? If it is only needed with UHS cards, that does not seem important enough for me. We can already boot the board via other means.
+>>
+>> Without these configs, the regulator drivers keep EPROBE_DEFERing waiting for their gpio drivers
+>> to probe and SD card never comes up. This configuration happens before any UHS capabilities are detected.
+>>
+>> [    1.326654] sdhci-am654 4fb0000.sdhci: _devm_regulator_get id:vmmc ret:-517
+>> [    1.333651] sdhci-am654 4fb0000.sdhci: _devm_regulator_get id:vqmmc ret:-517
+>> [    1.340693] sdhci-am654 4fb0000.sdhci: sdhci_am654_probe ret:-517
+>> [    1.489088] sdhci-am654 4fb0000.sdhci: _devm_regulator_get id:vmmc ret:-517
+>> [    1.496067] sdhci-am654 4fb0000.sdhci: _devm_regulator_get id:vqmmc ret:-517
+>> [    1.510392] sdhci-am654 4fb0000.sdhci: sdhci_am654_probe ret:-517
+>> [    1.543210] sdhci-am654 4fb0000.sdhci: _devm_regulator_get id:vmmc ret:-517
+>> [    1.550186] sdhci-am654 4fb0000.sdhci: _devm_regulator_get id:vqmmc ret:-517
+>> [    1.568134] sdhci-am654 4fb0000.sdhci: sdhci_am654_probe ret:-517
+> 
+> This happens because you have merged/enabled UHS support or? This sounds like a regression as I haven't seen this happen before.
+> 
 
-> > (3) For addresses belonging to that pool virt_addr_valid() is true
-> > (SLAB/SLUB rely on that)
->
-> As I hinted at before, there's a reasonable amount of code which relies
-> on being able to round-trip convert (va->{pa,page}->va) allocations from
-> SLUB, e.g. phys = virt_to_page(addr); ... ; phys = page_to_virt(phys).
-> Usually this is because the phys addr is stored in some HW register, or
-> in-memory structure shared with HW.
->
-> I'm fairly certain KFENCE will need to support this in order to be
-> deployable in production, and arm64 is the canary in the coalmine.
->
-> I added tests for this back when tag-based KASAN broke this property.
-> See commit:
->
->   b92a953cb7f727c4 ("lib/test_kasan.c: add roundtrip tests")
->
-> ... for which IIUC the kfree_via_phys() test would be broken by KFENCE,
-> even on x86:
-
-Yeah, we're fixing that by also making x86 use a dynamically allocated
-pool now. The benefits we got from the static pool no longer apply, so
-the whole dance to make the static pool work right is no longer worth
-it.
-
-> | static noinline void __init kfree_via_phys(void)
-> | {
-> |        char *ptr;
-> |        size_t size = 8;
-> |        phys_addr_t phys;
-> |
-> |        pr_info("invalid-free false positive (via phys)\n");
-> |        ptr = kmalloc(size, GFP_KERNEL);
-> |        if (!ptr) {
-> |                pr_err("Allocation failed\n");
-> |                return;
-> |        }
-> |
-> |        phys = virt_to_phys(ptr);
-> |        kfree(phys_to_virt(phys));
-> | }
->
-> ... since the code will pass the linear map alias of the KFENCE VA into
-> kfree().
->
-> To avoid random breakage we either need to:
->
-> * Have KFENCE retain this property (which effectively requires
->   allocation VAs to fall within the linear/direct map)
-
-^^ Yes, this is the only realistic option.
-
-> * Decide that round-trips are forbidden, and go modify that code
->   somehow, which was deemed to be impractical in the past
->
-> ... and I would strongly prefer the former as it's less liable to break any
-> existing code.
->
-> > On x86 we achieve (2) by making our pool a .bss array, so that its
-> > address is known statically. Aligning that array on 4K and calling
-> > set_memory_4k() ensures that (1) is also fulfilled. (3) seems to just
-> > happen automagically without any address translations.
-> >
-> > Now, what we are seeing on arm64 is different.
-> > My understanding (please correct me if I'm wrong) is that on arm64
-> > only the memory range at 0xffff000000000000 has valid struct pages,
-> > and the size of that range depends on the amount of memory on the
-> > system.
->
-> The way virt_to_page() works is based on there being a constant (at
-> runtime) offset between a linear map address and the corresponding
-> physical page. That makes it easy to get the PA with a subtraction, then
-> the PFN with a shift, then to index the vmemmap array with that to get
-> the page. The x86 version of virt_to_page() automatically fixes up an
-> image address to its linear map alias internally.
->
-> > This probably means we cannot just pick a fixed address for our pool
-> > in that range, unless it is very close to 0xffff000000000000.
->
-> It would have to be part of the linear map, or we'd have to apply the
-> same fixup as x86 does. But as above, I'm reluctant to do that as it
-> only encourages writing fragile code. The only sensible way to detect
-> that is to disallow virt_to_*() on image addresses, since that's the
-> only time we can distinguish the source.
->
-> > If we allocate the pool statically in the way x86 does (assuming we
-> > somehow resolve (1)), we can apply lm_alias() to addresses returned by
-> > the KFENCE allocator, making kmalloc() always return addresses from
-> > the linear map and satisfying (3).
-> > But in that case is_kfence_address() will also need to be updated to
-> > compare the addresses to lm_alias(__kfence_pool), and this becomes
-> > more heavyweight than just reading the address from memory.
->
-> We can calculate the lm_alias(__kfence_pool) at boot time, so it's only
-> a read from memory in the fast-path.
->
-> > So looks like it's still more preferable to allocate the pool
-> > dynamically on ARM64, unless there's a clever trick to allocate a
-> > fixed address in the linear map (DTS maybe?)
->
-> I'm not too worried about allocating this dynamically, but:
->
-> * The arch code needs to set up the translation tables for this, as we
->   cannot safely change the mapping granularity live.
->
-> * As above I'm fairly certain x86 needs to use a carevout from the
->   linear map to function correctly anyhow, so we should follow the same
->   approach for both arm64 and x86. That might be a static carevout that
->   we figure out the aliasing for, or something entirely dynamic.
-
-We're going with dynamically allocating the pool (for both x86 and
-arm64), since any benefits we used to measure from the static pool are
-no longer measurable (after removing a branch from
-is_kfence_address()). It should hopefully simplify a lot of things,
-given all the caveats that you pointed out.
-
-For arm64, the only thing left then is to fix up the case if the
-linear map is not forced to page granularity.
+Thats right. The EPROBE_DEFERs will happen if my patches enabling UHS modes here are merged. I need to repost them for v5.11-rc1:
+https://lore.kernel.org/linux-arm-kernel/20201001190541.6364-1-faiz_abbas@ti.com/
 
 Thanks,
--- Marco
+Faiz
