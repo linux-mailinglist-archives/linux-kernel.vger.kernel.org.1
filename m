@@ -2,259 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D626A287357
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 13:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5E2A287355
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 13:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729020AbgJHL2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 07:28:00 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:34620 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728711AbgJHL2A (ORCPT
+        id S1728703AbgJHL1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 07:27:50 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:45401 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726065AbgJHL1t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 07:28:00 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 098B2W13129377;
-        Thu, 8 Oct 2020 07:27:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=JefGAfRXyinKKpf9nJrIxAz7SNq9YE1zrFfUWcH0L48=;
- b=OOUdt/J8sTh418oo1vp1HF+mBBukoGfSGbEj1x0Ch8WrPq8ajAf6Rkhs3iyFJqmB4Ou6
- gunYUTEM6Om9O1vL5RUN8pOiuX4CuqduU1pxR6Hc7FAvhDax1fLq8YyZUCaJkd3Ohzoj
- oKJ3BVEdEoMbKKZ8C6xyAzFxUMamhijj0avLCs4YJkYRLdZB2WTIdlTg3P08rdGuD14/
- M3PMB0+29TQ5kuv3r5iXtEgXhfvmMP1Tcn/+RkjF7S90o1yHitDf037woUVvT9LFavBo
- WBBtBLxk5zNbhVWw5MNpft5Ex5yt+MPrXhfMnBlwwruP+u6UQsfJPLdl9Ak9YlGHObSc 5g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34218s1auy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Oct 2020 07:27:28 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 098BLti7054197;
-        Thu, 8 Oct 2020 07:27:27 -0400
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34218s1aup-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Oct 2020 07:27:27 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 098BLYRv021840;
-        Thu, 8 Oct 2020 11:27:26 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma03dal.us.ibm.com with ESMTP id 33xgxa075t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Oct 2020 11:27:26 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 098BRLTM59376010
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 8 Oct 2020 11:27:21 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8229DC605A;
-        Thu,  8 Oct 2020 11:27:25 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 71EDDC6057;
-        Thu,  8 Oct 2020 11:27:18 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.87.145])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu,  8 Oct 2020 11:27:18 +0000 (GMT)
-Subject: Re: [PATCH RFC v4 00/13] perf pmu-events: Support event aliasing for
- system PMUs
-To:     John Garry <john.garry@huawei.com>, acme@kernel.org,
-        will@kernel.org, mark.rutland@arm.com, jolsa@redhat.com,
-        irogers@google.com, leo.yan@linaro.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        namhyung@kernel.org, mathieu.poirier@linaro.org
-Cc:     linuxarm@huawei.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, qiangqing.zhang@nxp.com,
-        zhangshaokun@hisilicon.com, james.clark@arm.com, linux-imx@nxp.com
-References: <1602152121-240367-1-git-send-email-john.garry@huawei.com>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <1f1c4537-2224-cd83-a10a-947ef8cd2864@linux.ibm.com>
-Date:   Thu, 8 Oct 2020 16:57:16 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Thu, 8 Oct 2020 07:27:49 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id D7DA558032E;
+        Thu,  8 Oct 2020 07:27:47 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 08 Oct 2020 07:27:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=KTPwdqBKAJjRWkkEeQTJTtrMtpG
+        t/EY8qnr4KEuhkqo=; b=lvD7ycev3K8NQWfZ5iKZf3fo84QLHSLZucAG0ZdGXRk
+        4SLAj22MBuPPxpm+Vk9vo0BLDL2xhCxJiX8PN7SbqEQl/+aFb/oaA7jV5TR1yytM
+        b+ageLjU1Jc03eJqZ26dcgSggIHrUij+7LMwgKvFIPEWo6HhqzzXiXkmLsKJ0BJ4
+        qh6v8aXD3DL+pRFKsdmMx51xPYkzmePeo1xLTObC3v64pL2IBjXVwCJF5Zlug2oC
+        Z6dy5loT96Oj1LI+ETmHe+u2Xq3oeAeWMfs6VwO7iiyemWvdmgw6ZBbpk57MoKpo
+        PVjMWNLYdPIbC82hJxVZilNh5shmV90+emdoVd/Q2uw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=KTPwdq
+        BKAJjRWkkEeQTJTtrMtpGt/EY8qnr4KEuhkqo=; b=iYr0ajqyKZvq/1vmZEAiBc
+        Z+iGMK+5BvFeVFzS15HGbaJEl+hNnQ91a+srTVAk2m2oXH8BFem6KyV8GViR7fqx
+        63Cy/W3bUBx2xOidvBvgdrv6QmQkrbmaisvVzI6TWb0gCgBIVs1LyAGnlG/3/yxj
+        Fq8tcFCpPYoN0HZmgo0VTdYsZySMv8bdG3Zxnek8zfX5iJrEcDJD1NyTkhXDWBYt
+        A7nfLxZLAe1qO+EteuELUUE0Ue9xb3selORgLshZaomUetA7JdyMybtJEbRHo+mc
+        IIYvAJkKe5C+SJG3cu3fgpscuUDtgip27lqTR1wXPiINEN7Z1O5pgEbRV5/bDwAw
+        ==
+X-ME-Sender: <xms:svd-X2Bj9zAHGaj9fIaqiW4oq4W0eWqyzksvJIImJ_1ZJKafwT8efQ>
+    <xme:svd-XwisE0HjP6AgDZRQ474RCZYgpthiUE08hsQHjLpEKfGV35_btA_2H6bbvmpc7
+    bLqSSvKJ3KttUpWOFk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrgeelgddufecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtudenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeduvdduhfekkeehgffftefflefgffdtheffudffgeevteffheeuiedvvdejvdfg
+    veenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:svd-X5nHr-CuTKdp2JjWfC_Pl-681fSOz70nSWOySYcufNhzOBrrbw>
+    <xmx:svd-X0zeGoxzkyGat3RWFoivP8DurFNbK0IlGjpUtLCnW7qRasD1WQ>
+    <xmx:svd-X7SyfN23T3Y76mEh3zpN7Xke9x0KD0Swke4n01QbwrTQ8n2hGQ>
+    <xmx:s_d-X5ARXK-BfMV4MGAIuwJxY3PJshCKWiJA_TRNqh-N-EQnKcTK7Q>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 9F3173280066;
+        Thu,  8 Oct 2020 07:27:46 -0400 (EDT)
+Date:   Thu, 8 Oct 2020 13:27:45 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Hoegeun Kwon <hoegeun.kwon@samsung.com>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>, devicetree@vger.kernel.org,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Rob Herring <robh+dt@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        Phil Elwell <phil@raspberrypi.com>,
+        linux-arm-kernel@lists.infradead.org,
+        =?utf-8?B?64KY7ISx6rWt?= <sungguk.na@samsung.com>
+Subject: Re: [PATCH v5 00/80] drm/vc4: Support BCM2711 Display Pipeline
+Message-ID: <20201008112745.hezf7kerapqgrp6m@gilmour.lan>
+References: <CGME20200904071259epcas1p3de4209531c0bc5ed6ea9ef19827b6ed5@epcas1p3.samsung.com>
+ <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
+ <cca5234f-e1e8-b642-048b-b710f402409d@samsung.com>
+ <20200908120019.3rmhzoijoijrbb7d@gilmour.lan>
+ <3e113525-aa89-b1e2-56b7-ca55bd41d057@samsung.com>
+ <20200916165705.7pfgesma47vgkfxt@gilmour.lan>
 MIME-Version: 1.0
-In-Reply-To: <1602152121-240367-1-git-send-email-john.garry@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-08_04:2020-10-08,2020-10-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1011
- priorityscore=1501 lowpriorityscore=0 phishscore=0 spamscore=0
- mlxlogscore=999 adultscore=0 malwarescore=0 impostorscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010080077
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="vx4lspazv3mcpaic"
+Content-Disposition: inline
+In-Reply-To: <20200916165705.7pfgesma47vgkfxt@gilmour.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--vx4lspazv3mcpaic
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 10/8/20 3:45 PM, John Garry wrote:
-> Currently event aliasing and metrics for only CPU and uncore PMUs is
-> supported. In fact, only uncore PMUs aliasing is supported for when the
-> uncore PMUs are fixed for a CPU, which may not always be the case for
-> certain architectures.
-> 
-> This series adds support for PMU event aliasing and metrics for system and
-> other uncore PMUs which are not tied to a specific CPU.
-> 
-> For this, we introduce system event tables in generated pmu-events.c,
-> which contain a per-SoC table of events of all its system PMUs. Each
-> per-PMU event is matched by a "COMPAT" property.
-> 
-> When creating aliased and metrics PMUs, we treat core/uncore and
-> system PMUs differently:
-> 
-> - For CPU PMUs, we always match for the event mapfile based on the CPUID.
->   This has not changed.
-> 
-> - For an system PMUs, we iterate through all the events in all the system
->   PMU tables.
-> 
->   Matches are based on the "COMPAT" property matching the PMU sysfs
->   identifier contents, in /sys/bus/event_source/devices/<PMU>/identifier
-> 
->   Uncore PMUs, may be matched via CPUID or same as system PMU, depending
->   on whether the uncore PMU is tied to a specific CPUID.
-> 
-> Initial reference support is also added for ARM SMMUv3 PMCG (Performance
-> Monitor Event Group) PMU for HiSilicon hip09 platform with only a single
-> event so far - see driver in drivers/perf/arm_smmuv3_pmu.c reference.
-> 
-> Here is a sample output with this series on Huawei D06CS board:
-> 
-> root@ubuntu:/# ./perf list
->    [...]
-> 
-> smmu v3 pmcg:
->    smmuv3_pmcg.config_cache_miss
->         [Configuration cache miss caused by transaction or(ATS or
->         non-ATS)translation request. Unit: smmuv3_pmcg]
->    smmuv3_pmcg.config_struct_access
->         [Configuration structure access. Unit: smmuv3_pmcg]
->    smmuv3_pmcg.cycles
->         [Clock cycles. Unit: smmuv3_pmcg]
->    smmuv3_pmcg.l1_tlb
->         [SMMUv3 PMCG L1 TABLE transation. Unit: smmuv3_pmcg]
->    smmuv3_pmcg.pcie_ats_trans_passed
->         [PCIe ATS Translated Transaction passed through SMMU. Unit: 
-> smmuv3_pmcg]
->    smmuv3_pmcg.pcie_ats_trans_rq
->         [PCIe ATS Translation Request received. Unit: smmuv3_pmcg]
->    smmuv3_pmcg.tlb_miss
->         [TLB miss caused by incomingtransaction or (ATS or non-ATS) 
-> translation request. Unit: smmuv3_pmcg]
->    smmuv3_pmcg.trans_table_walk_access
->         [Translation table walk access. Unit: smmuv3_pmcg]
->    smmuv3_pmcg.transaction
->         [Transaction. Unit: smmuv3_pmcg]
-> 
-> 
-> root@ubuntu:/# ./perf stat -v -e smmuv3_pmcg.l1_tlb sleep 1
-> Using CPUID 0x00000000480fd010
-> Using SYSID HIP08
-> -> smmuv3_pmcg_200100020/event=0x8a/
-> -> smmuv3_pmcg_200140020/event=0x8a/
-> -> smmuv3_pmcg_100020/event=0x8a/
-> -> smmuv3_pmcg_140020/event=0x8a/
-> -> smmuv3_pmcg_200148020/event=0x8a/
-> -> smmuv3_pmcg_148020/event=0x8a/
-> smmuv3_pmcg.l1_tlb: 0 1001221690 1001221690
-> smmuv3_pmcg.l1_tlb: 0 1001220090 1001220090
-> smmuv3_pmcg.l1_tlb: 101 1001219660 1001219660
-> smmuv3_pmcg.l1_tlb: 0 1001219010 1001219010
-> smmuv3_pmcg.l1_tlb: 0 1001218360 1001218360
-> smmuv3_pmcg.l1_tlb: 134 1001217850 1001217850
-> 
-> Performance counter stats for 'system wide':
-> 
->                 235      smmuv3_pmcg.l1_tlb 
-> 
->         1.001263128 seconds time elapsed
-> 
-> root@ubuntu:/#
-> 
-> Support is also added for imx8mm DDR PMU and HiSilicon hip09 uncore events.
-> Some events for hip09 may not be accurate at the moment.
-> 
-> Series is here:
-> https://github.com/hisilicon/kernel-dev/tree/private-topic-perf-5.9-sys-pmu-events-v4
-> 
-> Kernel part is here:
-> https://lore.kernel.org/lkml/1602149181-237415-1-git-send-email-john.garry@huawei.com/T/#mc34f758ab72f3d4a90d854b9bda7e6bbb90835b2
-> 
-> Differences to v3:
-> - Rebase to v5.9-rc7
-> - Includes Ian's uncore metric expressions Fix and another fix
-> - Add hip09 uncore events
-> - Tidy jevents.c changes a bit
-> 
-> Differences to v2:
-> - fixups for imx8mm JSONs
-> - fix for metrics being repeated per PMU
-> - use sysfs__read_str()
-> - fix typo in PMCG JSON
-> - drop evsel fix, which someone else fixed
-> 
-> Differences to v1:
-> - Stop using SoC id and use a per-PMU identifier instead
-> - Add metric group sys events support
->    - This is a bit hacky
-> - Add imx8mm DDR Perf support
-> - Add fix for parse events sel
-> 	- without it, I get this spewed for metric event:
-> 
-> 	assertion failed at util/parse-events.c:1637
-> 
-> Ian Rogers (1):
->   perf metricgroup: Fix uncore metric expressions
-> 
-> Joakim Zhang (1):
->   perf vendor events: Add JSON metrics for imx8mm DDR Perf
-> 
-> John Garry (11):
->   perf jevents: Add support for an extra directory level
->   perf jevents: Add support for system events tables
->   perf pmu: Add pmu_id()
->   perf pmu: Add pmu_add_sys_aliases()
->   perf vendor events arm64: Add Architected events smmuv3-pmcg.json
->   perf vendor events arm64: Add hip09 SMMUv3 PMCG events
->   perf vendor events arm64: Add hip09 uncore events
->   perf metricgroup: Hack a fix for aliases when covering multiple PMUs
->   perf metricgroup: Split up metricgroup__print()
->   perf metricgroup: Support printing metric groups for system PMUs
->   perf metricgroup: Support adding metrics for system PMUs
-> 
+On Wed, Sep 16, 2020 at 06:57:05PM +0200, Maxime Ripard wrote:
+> On Mon, Sep 14, 2020 at 07:14:11PM +0900, Hoegeun Kwon wrote:
+> > Hi Maxime,
+> >=20
+> > On 9/8/20 9:00 PM, Maxime Ripard wrote:
+> > > Hi Hoegeun,
+> > >
+> > > On Mon, Sep 07, 2020 at 08:49:12PM +0900, Hoegeun Kwon wrote:
+> > >> On 9/3/20 5:00 PM, Maxime Ripard wrote:
+> > >>> Hi everyone,
+> > >>>
+> > >>> Here's a (pretty long) series to introduce support in the VC4 DRM d=
+river
+> > >>> for the display pipeline found in the BCM2711 (and thus the Raspber=
+ryPi 4).
+> > >>>
+> > >>> The main differences are that there's two HDMI controllers and that=
+ there's
+> > >>> more pixelvalve now. Those pixelvalve come with a mux in the HVS th=
+at still
+> > >>> have only 3 FIFOs. Both of those differences are breaking a bunch of
+> > >>> expectations in the driver, so we first need a good bunch of cleanu=
+p and
+> > >>> reworks to introduce support for the new controllers.
+> > >>>
+> > >>> Similarly, the HDMI controller has all its registers shuffled and s=
+plit in
+> > >>> multiple controllers now, so we need a bunch of changes to support =
+this as
+> > >>> well.
+> > >>>
+> > >>> Only the HDMI support is enabled for now (even though the DPI and D=
+SI
+> > >>> outputs have been tested too).
+> > >>>
+> > >>> Let me know if you have any comments
+> > >>> Maxime
+> > >>>
+> > >>> Cc: bcm-kernel-feedback-list@broadcom.com
+> > >>> Cc: devicetree@vger.kernel.org
+> > >>> Cc: Kamal Dasu <kdasu.kdev@gmail.com>
+> > >>> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> > >>> Cc: Rob Herring <robh+dt@kernel.org>
+> > >>> Cc: Stephen Boyd <sboyd@kernel.org>
+> > >>>
+> > >>> Changes from v4:
+> > >>>     - Rebased on top of next-20200828
+> > >>>     - Collected the various tags
+> > >>>     - Fixed some issues with 4k support and dual output (thanks Hoe=
+geun!)
+> > >> Thanks for your v5 patchset.
+> > >>
+> > >> I tested all patches based on the next-20200812.
+> > > Thanks again for testing all the patches
+> > >
+> > >> Everything else is fine, but the dual hdmi modetest doesn't work wel=
+l in my
+> > >> environment...
+> > >>
+> > >> In my environment, dsi is not connected, I have seen your answer[1].
+> > > Can you share a bit more your setup? What monitors are being connected
+> > > to each HDMI port? Do you hotplug any?
+> > Yes, Monitors are being connected to each HDMI ports. (did not use hotp=
+lug)
+> >=20
+> > When booting, both HDMI-0 and 1 are recognized and the kernel log is ou=
+tput.
+> > But after run modetest on HDMI-0(works) and modetest on HDMI-1(works),
+> > crtc timed out occurs on HDMI-0 and does not work.
+> >=20
+> > When HDMI-0 is not working we do a modetest on HDMI-0, it will work agin
+> > after about 40 sec.
+> >=20
+> > Below is the log for modetest.
+> >=20
+> >=20
+> > root:~> modetest -Mvc4 -s 32:1280x720 =A0=A0=A0 =A0=A0=A0 - HDMI-0 works
+> > setting mode 1280x720-60Hz@XR24 on connectors 32, crtc 64
+> > failed to set gamma: Invalid argument
+> >=20
+> > root:~> modetest -Mvc4 -s 32:1280x720 =A0=A0=A0 =A0=A0=A0 - HDMI-0 works
+> > setting mode 1280x720-60Hz@XR24 on connectors 32, crtc 64
+> > failed to set gamma: Invalid argument
+> >=20
+> > root:~> modetest -Mvc4 -s 38:1280x720 =A0=A0=A0 =A0=A0=A0 - HDMI-1 works
+> > setting mode 1280x720-60Hz@XR24 on connectors 38, crtc 69
+> > failed to set gamma: Invalid argument
+> >=20
+> >  =A0=A0=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=
+=A0=A0 =A0=A0=A0 - Crtc timed out occurs on HDMI-0 and=20
+> > does not work.
+> >=20
+> > [=A0=A0 71.134283] [drm:drm_atomic_helper_wait_for_flip_done] *ERROR*=
+=20
+> > [CRTC:64:crtc-3] flip_done timed out
+> > [=A0=A0 81.374296] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR=
+*=20
+> > [CRTC:64:crtc-3] flip_done timed out
+> > [=A0=A0 91.618380] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR=
+*=20
+> > [CONNECTOR:32:HDMI-A-1] flip_done timed out
+> > [=A0 101.854274] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR*=
+=20
+> > [PLANE:60:plane-3] flip_done timed out
+> >=20
+> > [=A0 112.094271] [drm:drm_atomic_helper_wait_for_flip_done] *ERROR*=20
+> > [CRTC:64:crtc-3] flip_done timed out
+> > [=A0 122.590311] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR*=
+=20
+> > [CRTC:64:crtc-3] flip_done timed out
+> >=20
+> > root:~> modetest -Mvc4 -s 32:1280x720
+> > [=A0 132.830309] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR*=
+=20
+> > [CONNECTOR:32:HDMI-A-1] flip_done timed out
+> > [=A0 143.070307] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR*=
+=20
+> > [PLANE:60:plane-3] flip_done timed out
+> > [=A0 153.310303] [drm:drm_atomic_helper_wait_for_flip_done] *ERROR*=20
+> > [CRTC:64:crtc-3] flip_done timed out
+> > setting mode 1280x720-60Hz@XR24 on connectors 32, crtc 64
+> > [=A0 163.550340] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR*=
+=20
+> > [CRTC:64:crtc-3] flip_done timed out
+> > [=A0 173.790277] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR*=
+=20
+> > [CONNECTOR:32:HDMI-A-1] flip_done timed out
+> > [=A0 184.030286] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR*=
+=20
+> > [PLANE:60:plane-3] flip_done timed out
+> > failed to set gamma: Invalid argument =A0=A0=A0 =A0=A0=A0 - HDMI-0 works
+>=20
+> Thanks :)
+>=20
+> I was able to reproduce it just by also letting X boot. I'm on a good
+> path to fix it and found a workaround. I'll send you the patch in the
+> upcoming days :)
 
-Hi John,
-  I am looking into these patches, it seems they are not re-based on top of
-latest Arnaldo's perf/core branch. Can you rebase these changes. I think we are missing
-multiple updates.
+It took a bit longer than expected but the last 4 patches I just sent
+should fix that issue
+
+Thanks for reporting it!
+
+Maxime
 
 
-Thanks,
-Kajol Jain
+--vx4lspazv3mcpaic
+Content-Type: application/pgp-signature; name="signature.asc"
 
->  .../arch/arm64/freescale/imx8mm/sys/ddrc.json |  39 +++
->  .../arm64/freescale/imx8mm/sys/metrics.json   |  18 +
->  .../hisilicon/hip09/sys/smmu-v3-pmcg.json     |  42 +++
->  .../hisilicon/hip09/sys/uncore-ddrc.json      |  58 ++++
->  .../arm64/hisilicon/hip09/sys/uncore-hha.json |  82 +++++
->  .../arm64/hisilicon/hip09/sys/uncore-l3c.json | 106 ++++++
->  .../pmu-events/arch/arm64/smmuv3-pmcg.json    |  58 ++++
->  tools/perf/pmu-events/jevents.c               | 136 ++++++--
->  tools/perf/pmu-events/jevents.h               |  11 +-
->  tools/perf/pmu-events/pmu-events.h            |   6 +
->  tools/perf/util/metricgroup.c                 | 322 +++++++++++++-----
->  tools/perf/util/pmu.c                         |  96 ++++++
->  tools/perf/util/pmu.h                         |   3 +
->  13 files changed, 863 insertions(+), 114 deletions(-)
->  create mode 100644 tools/perf/pmu-events/arch/arm64/freescale/imx8mm/sys/ddrc.json
->  create mode 100644 tools/perf/pmu-events/arch/arm64/freescale/imx8mm/sys/metrics.json
->  create mode 100644 tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/smmu-v3-pmcg.json
->  create mode 100644 tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-ddrc.json
->  create mode 100644 tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-hha.json
->  create mode 100644 tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-l3c.json
->  create mode 100644 tools/perf/pmu-events/arch/arm64/smmuv3-pmcg.json
-> 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX373sQAKCRDj7w1vZxhR
+xaijAQCiVFUZM394JaI2etMYfTg7j/vcScUh7E138WM8+Bf0mgEAmj19xR8DPlxb
+DK5k8BjAT7QqySqs5YVWfcmK8Qc4OQI=
+=k2dm
+-----END PGP SIGNATURE-----
+
+--vx4lspazv3mcpaic--
