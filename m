@@ -2,107 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4C2028759F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:06:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 715382875A3
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:08:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730454AbgJHOGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 10:06:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:59364 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730432AbgJHOGJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 10:06:09 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7F2481063;
-        Thu,  8 Oct 2020 07:06:08 -0700 (PDT)
-Received: from bogus (unknown [10.57.53.233])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EA9673F70D;
-        Thu,  8 Oct 2020 07:06:05 -0700 (PDT)
-Date:   Thu, 8 Oct 2020 15:05:58 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Ionela Voinescu <ionela.voinescu@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/2]cpufreq,topology,arm: disable FI for BL_SWITCHER
-Message-ID: <20201008140558.ovytcc34div3ih6m@bogus>
-References: <20200924123016.13427-1-ionela.voinescu@arm.com>
- <CAJZ5v0hr+MZzokObNq5L0q1Fd0M5EXc6QmLXDv9b85P5b4yp4g@mail.gmail.com>
+        id S1730458AbgJHOH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 10:07:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730175AbgJHOH5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 10:07:57 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F32F5C061755
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 07:07:56 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id l16so5743015ilt.13
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 07:07:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=diM16rALesHaCmwXGl03a1r60jg62usWEYSJ8E59HcQ=;
+        b=dGWchd14Qhgki7wTp4s3wAGENm3BnuFx6wwLUm9CyWKSzpBBScby8wM1IW687+3qyq
+         b5qbTGQ08HSpX32nGgwQNyO9GCZvRuW7cMsovzjzOVC6kg/2fzVWgmGmG/ddhqzq8iGV
+         4oxVGZTcpsHEFRUYpvc/wqaKWillCTtAkMW/V/WVFwmVkRF2lkAA7xPV2ZPFn3raUpGu
+         8E9XTe1cgYx+vUUyXPyBl5Co7f+CgMUavAAHBCkivdsBZmluS/Ohbvu1NGxVOwlXRfGF
+         NmxrprhTSQq92ENFloJfFX6/vo1Q04mGIfwTvhmvCLs22gXIOjF0qBBrxZClYVG37VdU
+         cEnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=diM16rALesHaCmwXGl03a1r60jg62usWEYSJ8E59HcQ=;
+        b=j9//t7J1wsiVGKDiy5aDSx0DJfQJenGdPstiZp4wjH3dmIBSzgWnUYOSXhupC5T1IH
+         +mQ7lrqPbUGqP6rjvMfBrK0V8pDJI93Nyjpym6hMGZ1pkof8sps1ZnPg55rq8gMNKCVO
+         EIjpsPymWiSkJjDv7nWfbYkOiAL8pjnBVusBXyflpdypBI+j/2DCJAAlZLdcyuTIBh8P
+         EKTdoRS8YntbtooMU1lNoWKum34AmVwO2iM26l7/OtxCBpOeMsuUUm23Yo4E5mmfRVb2
+         o6GyRbdjQH8dikLwPELJKSsEluymzZKSg5vrFOXHZE4081mMqSFaaCekzIwueuPX/b8o
+         EJ5Q==
+X-Gm-Message-State: AOAM532aWki6maXpAdt/YtJmgjCE3aH3JjngreimVxC4GQckjW4pcfHg
+        mFquV62JKgdZJGrbWe1DjfJusA==
+X-Google-Smtp-Source: ABdhPJzN0O4GYXwVtzshMhwu2JGkqvxiOKnf/9fN5dg8j/tlNarx0Pyra0Nc6zri58QPeCAPvroKXg==
+X-Received: by 2002:a92:6e05:: with SMTP id j5mr6436063ilc.248.1602166076312;
+        Thu, 08 Oct 2020 07:07:56 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id t10sm2279646iog.49.2020.10.08.07.07.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Oct 2020 07:07:55 -0700 (PDT)
+Subject: Re: [PATCH 4/6] kernel: add support for TIF_NOTIFY_SIGNAL
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+        peterz@infradead.org, tglx@linutronix.de
+References: <20201005150438.6628-1-axboe@kernel.dk>
+ <20201005150438.6628-5-axboe@kernel.dk> <20201008135325.GG9995@redhat.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <b691ff60-8847-e48f-956b-41f8f5c1275b@kernel.dk>
+Date:   Thu, 8 Oct 2020 08:07:55 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0hr+MZzokObNq5L0q1Fd0M5EXc6QmLXDv9b85P5b4yp4g@mail.gmail.com>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <20201008135325.GG9995@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 04:34:44PM +0200, Rafael J. Wysocki wrote:
-> On Thu, Sep 24, 2020 at 2:30 PM Ionela Voinescu <ionela.voinescu@arm.com> wrote:
-> >
-> > This series is the result of the discussions ([1], [2]) around the
-> > complications that the BL_SWITCHER poses when it comes to Frequency
-> > Invariance (FI) and it aims to restart the discussions.
-> >
-> > To properly scale its per-entity load-tracking signals, the task
-> > scheduler needs to be given a frequency scale factor, i.e. some image of
-> > the current frequency the CPU is running at, relative to its maximum
-> > frequency.
-> >
-> > But (reiterating the message in the changelog of patch 2/2), big.LITTLE
-> > switching complicates the setting of a correct cpufreq-based frequency
-> > invariance scale factor due to (as observed in
-> > drivers/cpufreq/vexpress-spc-cpufreq.c):
-> >  - Incorrect current and maximum frequencies as a result of the
-> >    exposure of a virtual frequency table to the cpufreq core,
-> >  - Missed updates as a result of asynchronous frequency adjustments
-> >    caused by frequency changes in other CPU pairs.
-> > More information on this feature can be found at [3].
-> >
-> > Given that its functionality is atypical in regards to FI and that this
-> > is an old technology, patch 2/2 disable FI for when big.LITTLE switching
-> > is configured in to prevent incorrect scale setting.
-> >
-> > For this purpose patch 1/2 changes the way arch_set_freq_scale() is
-> > defined in architecture code which brings it in line with the logic of
-> > other architectural function definitions while allowing for less invasive
-> > filtering of FI support.
-> >
-> > In the discussions at [2], three possible solutions were suggested:
-> >  - (1) conditioning FI by !CONFIG_BL_SWITCHER
-> >  - (2) leave as is with note in driver specifying this FI broken
-> >    functionality
-> >  - (3) removing full BL_SWITCHER support
-> >
-> > This series restructures the solution at (1). The reason for it is that
-> > the new patch limits the ifdef filtering to the arm topology include file,
-> > a location where frequency invariance functions are defined. Therefore,
-> > this seems more appropriate given that the b.L switcher is an arm
-> > technology and that the new FI filtering location seems more natural for
-> > conditioned FI disabling.
-> >
-> > Solutions (2) and (3) were not implemented given that there might be some
-> > remaining users of this technology (Samsung Chromebook 2 - Samsung Exynos
-> > 5 Octa 5420, Samsung Exynos 5 Octa 5800) and therefore leaving this
-> > broken (2) seems equally bad to removing support for it (3).
-> >
-> > [1] https://lore.kernel.org/lkml/20200701090751.7543-5-ionela.voinescu@arm.com/
-> > [2] https://lore.kernel.org/lkml/20200722093732.14297-4-ionela.voinescu@arm.com/
-> > [3] https://lwn.net/Articles/481055/
+On 10/8/20 7:53 AM, Oleg Nesterov wrote:
+> On 10/05, Jens Axboe wrote:
+>>
+>>  static inline int signal_pending(struct task_struct *p)
+>>  {
+>> +#ifdef TIF_NOTIFY_SIGNAL
+>> +	/*
+>> +	 * TIF_NOTIFY_SIGNAL isn't really a signal, but it requires the same
+>> +	 * behavior in terms of ensuring that we break out of wait loops
+>> +	 * so that notify signal callbacks can be processed.
+>> +	 */
+>> +	if (unlikely(test_tsk_thread_flag(p, TIF_NOTIFY_SIGNAL)))
+>> +		return 1;
+>> +#endif
+>>  	return task_sigpending(p);
+>>  }
 > 
-> I can take this set with the ACKs from Viresh if that's fine by
-> everyone.  Catalin?  Sudeep?
+> perhaps we can add test_tsk_thread_mask() later...
 
-Acked-by: Sudeep Holla <sudeep.holla@arm.com> (BL_SWITCHER and topology parts)
+Yeah would be nice, and I bet there are a lot of cases in the kernel
+that test multiple bits like that.
+
+>>  static inline void restore_saved_sigmask_unless(bool interrupted)
+>>  {
+>> -	if (interrupted)
+>> +	if (interrupted) {
+>> +#ifdef TIF_NOTIFY_SIGNAL
+>> +		WARN_ON(!test_thread_flag(TIF_SIGPENDING) &&
+>> +			!test_thread_flag(TIF_NOTIFY_SIGNAL));
+>> +#else
+>>  		WARN_ON(!test_thread_flag(TIF_SIGPENDING));
+>> -	else
+>> +#endif
+>> +	} else {
+>>  		restore_saved_sigmask();
+>> +	}
+> 
+> I'd suggest to simply do
+> 
+> 	-	WARN_ON(!test_thread_flag(TIF_SIGPENDING));
+> 	+	WARN_ON(!signal_pending(current);
+
+Ah yes, that's much better. I'll make the edit.
+
+>> --- a/kernel/entry/kvm.c
+>> +++ b/kernel/entry/kvm.c
+>> @@ -8,6 +8,9 @@ static int xfer_to_guest_mode_work(struct kvm_vcpu *vcpu, unsigned long ti_work)
+>>  	do {
+>>  		int ret;
+>>  
+>> +		if (ti_work & _TIF_NOTIFY_SIGNAL)
+>> +			tracehook_notify_signal();
+> 
+> Can't really comment this change, but to me it would be more safe to
+> simply return -EINTR.
+> 
+> Or perhaps even better, treat _TIF_NOTIFY_SIGNAL and _TIF_SIGPENDING
+> equally:
+> 
+> 	-	if (ti_work & _TIF_SIGPENDING) {
+> 	+	if (ti_work & (_TIF_SIGPENDING | _TIF_NOTIFY_SIGNAL)) {
+> 			kvm_handle_signal_exit(vcpu);
+> 			return -EINTR;
+
+Not sure I follow your logic here. Why treat it any different than
+NOTIFY_RESUME from this perspective?
 
 -- 
-Regards,
-Sudeep
+Jens Axboe
+
