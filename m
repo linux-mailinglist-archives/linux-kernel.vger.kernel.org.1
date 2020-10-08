@@ -2,151 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B64628754F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 15:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A3D4287556
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 15:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730364AbgJHNii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 09:38:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27275 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730356AbgJHNii (ORCPT
+        id S1729718AbgJHNmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 09:42:00 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:48710 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725871AbgJHNl7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 09:38:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602164316;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=28gyQXNpF1DN/ygNYXtmZFhoYYiRhK+HkImKGmUzg8Q=;
-        b=Bydy+rx2uBgta/tBsYRPoBPhT454ponJVoWRdRgfoAETjmcuCTl4pUiCB759HasNNM37rU
-        0CfnSnd8Al97+/2ZRFpECSQb5J/MJcST60xvhUc0ZX5ztWB1t/UX2wHHRUHdJHeRRt278A
-        kJNAiC8TWDes1bwwR4OpafTXSLWS/2M=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-145-IeMcRdowOPWe2kHBr4z2EQ-1; Thu, 08 Oct 2020 09:38:35 -0400
-X-MC-Unique: IeMcRdowOPWe2kHBr4z2EQ-1
-Received: by mail-ej1-f71.google.com with SMTP id c11so295242ejp.9
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 06:38:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=28gyQXNpF1DN/ygNYXtmZFhoYYiRhK+HkImKGmUzg8Q=;
-        b=MKHk3jAcjRjFIUaOipe/YR2lurratAzKU2XJ0WBdHG/TWlGuYFtxo7vMO/ceAJLIAJ
-         XEF+PoucRxGviZyQOfkbnTTWqnf4PA0VyTh93ZXEobj/tqQsz09ihPi8pneDjUIeZJkB
-         opujbWW8kBs4F7PTVcX4JWNtxZbvwEMUj+bBZRMUG08l7jbHhzpqyLSXR8RnJzO3YIbI
-         gopRUMsFWTLrusR3xU+ANak2Wv0LjYBdeSl3hux9KEGSTgvZiCUaEdcTVdAfOrFPNgQk
-         oKW2nPGxdWJmdBpdlYnOfOWzE4yKCeFqT+fUkfCrorau1ury0YSACdqha3iCZ8nAHnRE
-         5HKg==
-X-Gm-Message-State: AOAM5301KDM61HIw0xlCgT2gn9cUX3qiBzU2Z6+2Wu5GJr6yuyzY32KD
-        +vflbyeX34ypQZNA5RgiFDD6VnE0a08u74rBRVW8Hl0MAt6iRbUB22+AiZU+fJuIPMR2y8Cy9pk
-        jZqNSnS57v+xPhfR9C7lyJmdU
-X-Received: by 2002:a17:907:2179:: with SMTP id rl25mr9090369ejb.450.1602164313976;
-        Thu, 08 Oct 2020 06:38:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzh54qp6elhh4b0bi/0hfuhxUSlSSJ4eT5ng6FX5vjZkWVuN+vp5Op50gDFY3RH/EU/AB79DA==
-X-Received: by 2002:a17:907:2179:: with SMTP id rl25mr9090339ejb.450.1602164313696;
-        Thu, 08 Oct 2020 06:38:33 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id j5sm4208913ejt.52.2020.10.08.06.38.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Oct 2020 06:38:33 -0700 (PDT)
-Subject: Re: [PATCH v2 0/5] platform/surface: Create a platform subdirectory
- for Microsoft Surface devices
-To:     Maximilian Luz <luzmaximilian@gmail.com>,
-        platform-driver-x86@vger.kernel.org
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        =?UTF-8?Q?Bla=c5=be_Hrastnik?= <blaz@mxxn.io>,
-        Stephen Just <stephenjust@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Chen Yu <yu.c.chen@intel.com>, linux-kernel@vger.kernel.org
-References: <20201005160307.39201-1-luzmaximilian@gmail.com>
- <a82e3aff-801d-d116-bbf4-91f3981f713b@redhat.com>
- <deb1c682-5843-61b1-173b-a70ef51e85f2@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <389f3a38-83ca-dfcd-476a-61b1d33751bb@redhat.com>
-Date:   Thu, 8 Oct 2020 15:38:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 8 Oct 2020 09:41:59 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 098DYA7v010515;
+        Thu, 8 Oct 2020 13:41:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=jzmATnldS38FX6jEZg2vEDqAzZxWXVdxseVpsaZlnC8=;
+ b=OKyaTN/isCszNAy9nplOB7QenruZlYnrbOy7JdxYwW0Xwulz9vAs1G6uN5oiDUCJ5pnk
+ vpd1Kkh1qycNPwLLp+/yaBROpDdCOTAlrO4zm5hGqnCJbFbCab3XYtwxbVZBl0aGcXvX
+ 8t7EgD+GxSlJYCdl48mjFZ4F/ikTgIKTh+2lhsPLmGGRsDWlNWZ6EAb71ZFNluspMtgZ
+ 4wLCH8FGBd37gwYs45bn+0abSoVAHm+oRYyElqHLQ3oYObcAYfd5EZTpswPgS3t1kdwC
+ 8QBDFRFyMwraE3qMohpcDsv90F2xQyq3Y9huP4eITv2z4dVn9WWKAu1k02XzLGZ7XVTh OA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 33xhxn7nb7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 08 Oct 2020 13:41:49 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 098DZMha191619;
+        Thu, 8 Oct 2020 13:39:48 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 33y2vr250p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 08 Oct 2020 13:39:48 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 098DdlbO007679;
+        Thu, 8 Oct 2020 13:39:47 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 08 Oct 2020 06:39:47 -0700
+Date:   Thu, 8 Oct 2020 16:39:40 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Coiby Xu <coiby.xu@gmail.com>
+Cc:     devel@driverdev.osuosl.org,
+        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
+        <GR-Linux-NIC-Dev@marvell.com>,
+        Manish Chopra <manishc@marvell.com>,
+        "open list:QLOGIC QLGE 10Gb ETHERNET DRIVER" <netdev@vger.kernel.org>,
+        Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Benjamin Poirier <benjamin.poirier@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v1 2/6] staging: qlge: coredump via devlink health
+ reporter
+Message-ID: <20201008133940.GC1042@kadam>
+References: <20201008115808.91850-1-coiby.xu@gmail.com>
+ <20201008115808.91850-3-coiby.xu@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <deb1c682-5843-61b1-173b-a70ef51e85f2@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201008115808.91850-3-coiby.xu@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
+ malwarescore=0 suspectscore=0 spamscore=0 phishscore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2010080102
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 bulkscore=0
+ impostorscore=0 lowpriorityscore=0 suspectscore=0 phishscore=0
+ mlxlogscore=999 adultscore=0 clxscore=1015 spamscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010080102
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Oct 08, 2020 at 07:58:04PM +0800, Coiby Xu wrote:
+> -static int
+> -qlge_reporter_coredump(struct devlink_health_reporter *reporter,
+> -			struct devlink_fmsg *fmsg, void *priv_ctx,
+> -			struct netlink_ext_ack *extack)
+> +static int fill_seg_(struct devlink_fmsg *fmsg,
+> +		    struct mpi_coredump_segment_header *seg_header,
+> +		    u32 *reg_data)
+>  {
+> -	return 0;
+> +	int i;
+> +	int header_size = sizeof(struct mpi_coredump_segment_header);
 
-On 10/8/20 2:32 PM, Maximilian Luz wrote:
-> On 10/8/20 1:44 PM, Hans de Goede wrote:
->> Hi Maximilian,
->>
->> On 10/5/20 6:03 PM, Maximilian Luz wrote:
->>> As has come up in the discussion around
->>>
->>>    [RFC PATCH] Add support for Microsoft Surface System Aggregator Module
->>>
->>> it may make sense to add a Microsoft Surface specific platform
->>> subdirectory. Andy has suggested drivers/platform/surface for that.
->>> This series follows said suggestion and creates that subdirectory, as
->>> well as moves Microsoft Surface related drivers over to it and updates
->>> their MAINTAINERS entries (if available) accordingly.
->>>
->>> This series does not modify any existing driver code, symbols, or help
->>> text.
->>
->> In case you do not know I'm taking over from any as
->> drivers/platform/x86 maintainer.
->>
->> I'm fine with the concept of this series, but who is going to maintain
->> this new drivers/platform/surface directory ?
->>
->> Ah I see that the first patch answers that question and the plan
->> is to keep this part of the pdx86 maintainership.
->>
->> I would prefer for the new dir to have its own
->> MAINTAINERS entry if I'm honest, I would like to try and
->> split maintainership for the surface stuff as follows:
->>
->> 1. Who will review (and add their Reviewed-by or ask for improvements
->>     or nack) patches to files in this dir?
->>
->> 2. Who will gather approved patches apply them to a for-next branch
->>     and send them out to Linus during the merge Window?
->>
->> I can pick up 2. but I could really use some help with 1. So I
->> was thinking having a separate MAINTAINERS entry for the new
->> dir with you (Maximilian) (and me and Mark Gross) listed as
->> MAINTAINERS; and then I'm hoping that you can do the review
->> of surface related patches. At least those which you have not
->> written yourself.
->>
->> How does that sound ?
-> 
-> Sounds good, I'd be happy to help review and approve any Surface related
-> patches. However, I think it would be beneficial if you and Mark still
-> have a final look (and say) over the ones I've reviewed and accepted (if
-> that's not already a given). I feel like I may lack a bit of experience
-> for this job and might miss some things.
+Please use the sizeof() directly in the code.  Don't introduce
+indirection if you can help it.
 
-Since Mark or I will be merging the patches we will indeed still take
-a look at them, but it helps if someone else has already done a review
-first.
+> +	int regs_num = (seg_header->seg_size - header_size) / sizeof(u32);
+> +	int err;
+> +
 
-> I'll add the MAINTAINERS entry and send a v3 later today, if that's OK.
-
-That sounds good, thanks.
-
-Regards,
-
-Hans
-
+regards,
+dan carpenter
