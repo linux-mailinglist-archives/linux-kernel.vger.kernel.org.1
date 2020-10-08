@@ -2,71 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ED0A286F72
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF8A1286F7B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727126AbgJHHbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 03:31:36 -0400
-Received: from mail-lj1-f176.google.com ([209.85.208.176]:40229 "EHLO
-        mail-lj1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725849AbgJHHbf (ORCPT
+        id S1727206AbgJHHbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 03:31:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726684AbgJHHbv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 03:31:35 -0400
-Received: by mail-lj1-f176.google.com with SMTP id f21so4650809ljh.7;
-        Thu, 08 Oct 2020 00:31:34 -0700 (PDT)
+        Thu, 8 Oct 2020 03:31:51 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B28B9C061755
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 00:31:49 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id q136so4179098oic.8
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 00:31:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ogkw1NmOSWleETzvxYwVZZIizSINMS0qQkiw0aowwRQ=;
+        b=dAa4UrodoeKqvvGBic2n/ikfUtGXIrA84JDvhHoeTG0wQyvzwM6zRb58ASAp90bOAP
+         Z0Gq9W2/rAIbo9tt/Rdw3PX+Bn1vOefBbbpajIIFIeMsYr0JsELM1frkf/Q6RzY+4q6w
+         KwDjwJvmHbSV+DyPoGD+FRH2axWgRzr70NSco=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+1g36aKYcNrXZCi0eKfetb55THHV9Hf9K+OzdAh90uU=;
-        b=lkNd0Kl9fFlfcFOESoSP/B36V+cDkRm+iejuSyJlSsd7O4zGWyIvSazfcUutaLalnB
-         pPTXSPiXY1hqEcz6Zfy/msgQO6U3AShk24lBEVX376mg9hFMtKhS4YSjxGKn8xODN4K7
-         rWBHhLMbqgvkPQU1PS+O/A0Ld8nhqPkTUI39YXpqaMX2wXn7wZDbVbL4rBmYJOKOTEH2
-         6/UYpZ5Z4CN9LxPgF42MPrliYxam9hXC/pXmlPw0VujDgDWnE/nJlWNRNNQ0Blh+7LCV
-         s/TFb3Crqa75+2Z5TdgTlrEa9F29ETErr5HqB/TU+3QSq9ja2ujwsE5+iO2rmaMfAggx
-         UzGw==
-X-Gm-Message-State: AOAM531sh7eFM6CXaGNX+R1q8z95WWrBrrXJKWLQU7c6/CMmWM1oQ9fN
-        yxftY/+nunNBshBuK4QnRAA=
-X-Google-Smtp-Source: ABdhPJyXd1soH2qzb3AiRG9NyrEwiO1y3XgoMYHfLNfkVS2YrpoVPo3s2hHaiuQIEZMBHNvrEAxWSg==
-X-Received: by 2002:a2e:978f:: with SMTP id y15mr2476766lji.300.1602142293522;
-        Thu, 08 Oct 2020 00:31:33 -0700 (PDT)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id u23sm719491lfq.173.2020.10.08.00.31.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 00:31:32 -0700 (PDT)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kQQOd-0006eJ-Jo; Thu, 08 Oct 2020 09:31:27 +0200
-Date:   Thu, 8 Oct 2020 09:31:27 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-Cc:     linux-kernel@vger.kernel.org,
-        =?iso-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        netdev@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] usb: serial: option: add Cellient MPL200 card
-Message-ID: <20201008073127.GH26280@localhost>
-References: <cover.1602140720.git.wilken.gottwalt@mailbox.org>
- <be90904f21494eaa8235db962829a8842025b22e.1602140720.git.wilken.gottwalt@mailbox.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ogkw1NmOSWleETzvxYwVZZIizSINMS0qQkiw0aowwRQ=;
+        b=QN/V+oX2I4J3SWIPkbKrmXDiWwq8vkBgcRJktCxjhPxpkSCrbS20vnkEvGpe0KvT03
+         C5sLuOWnKf6N345osSsH7w6EtLLJfMSDYjBceltnyeQ1DXAIOOP5gcsZNWfQ0vnWLV2K
+         i7mtx+5H1UL78x/y7xF2A34hRyh+BuiUOxJoz/E86o1zWoi1Tg8NcATmy9/sgAH+Nhov
+         kkF3o88b2BVUzeY71VnTYBL7Wh9OHeTJzkOKG8g94pG06fb+p9dRxUykhux/hYElwGsX
+         Bk3KJwOEh65AWcq4H/UEHxR1JqH7AWoVg1R4j2LBxBGpBIc37IappFO8wa248tT1ek2J
+         /tBg==
+X-Gm-Message-State: AOAM531kjLztmiwZa0yOHHPogkW+sf6kVD27Vw2RyeWs93SzVKrt1Ykr
+        WP+iJbJFF4s9u2gKaHS4AFqF+HAMRdHNmobiLFgzZQ==
+X-Google-Smtp-Source: ABdhPJx491RwkFJI9puzs4morldhkHhy8TQN885mw0wtSqvJNbvAlJbcViFwT+IWX3hheU/oD67HmER0Hab3kMQkGCo=
+X-Received: by 2002:aca:6083:: with SMTP id u125mr4379406oib.14.1602142309051;
+ Thu, 08 Oct 2020 00:31:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <be90904f21494eaa8235db962829a8842025b22e.1602140720.git.wilken.gottwalt@mailbox.org>
+References: <20201007164426.1812530-1-daniel.vetter@ffwll.ch>
+ <20201007164426.1812530-11-daniel.vetter@ffwll.ch> <CAPcyv4hBL68A7CZa+YnooufDH2tevoxrx32DTJMQ6OHRnec7QQ@mail.gmail.com>
+ <20201007232448.GC5177@ziepe.ca>
+In-Reply-To: <20201007232448.GC5177@ziepe.ca>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Thu, 8 Oct 2020 09:31:37 +0200
+Message-ID: <CAKMK7uF6pdQScwcihBq+9BZ7bSrNXimi-ddN8w7zg2ANhSduWw@mail.gmail.com>
+Subject: Re: [PATCH 10/13] PCI: revoke mappings like devmem
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "Linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>, Bjorn Helgaas <bhelgaas@google.com>,
+        Linux PCI <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 09:22:19AM +0200, Wilken Gottwalt wrote:
-> Add usb ids of the Cellient MPL200 card.
-> 
-> Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-> ---
+On Thu, Oct 8, 2020 at 1:24 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Wed, Oct 07, 2020 at 12:33:06PM -0700, Dan Williams wrote:
+> > On Wed, Oct 7, 2020 at 11:11 AM Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
+> > >
+> > > Since 3234ac664a87 ("/dev/mem: Revoke mappings when a driver claims
+> > > the region") /dev/kmem zaps ptes when the kernel requests exclusive
+> > > acccess to an iomem region. And with CONFIG_IO_STRICT_DEVMEM, this is
+> > > the default for all driver uses.
+> > >
+> > > Except there's two more ways to access pci bars: sysfs and proc mmap
+> > > support. Let's plug that hole.
+> >
+> > Ooh, yes, lets.
+> >
+> > >
+> > > For revoke_devmem() to work we need to link our vma into the same
+> > > address_space, with consistent vma->vm_pgoff. ->pgoff is already
+> > > adjusted, because that's how (io_)remap_pfn_range works, but for the
+> > > mapping we need to adjust vma->vm_file->f_mapping. Usually that's done
+> > > at ->open time, but that's a bit tricky here with all the entry points
+> > > and arch code. So instead create a fake file and adjust vma->vm_file.
+> >
+> > I don't think you want to share the devmem inode for this, this should
+> > be based off the sysfs inode which I believe there is already only one
+> > instance per resource. In contrast /dev/mem can have multiple inodes
+> > because anyone can just mknod a new character device file, the same
+> > problem does not exist for sysfs.
+>
+> The inode does not come from the filesystem char/mem.c creates a
+> singular anon inode in devmem_init_inode()
+>
+> Seems OK to use this more widely, but it feels a bit weird to live in
+> char/memory.c.
+>
+> This is what got me thinking maybe this needs to be a bit bigger
+> generic infrastructure - eg enter this scheme from fops mmap and
+> everything else is in mm/user_iomem.c
 
-So I had already applied this one (which didn't change since v1).
-
-Thanks again.
-
-Johan
+Yeah moving it to iomem and renaming it to have an iomem_prefix
+instead of devmem sounds like a good idea.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
