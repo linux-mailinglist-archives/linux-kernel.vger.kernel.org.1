@@ -2,144 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85BAC2873E3
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 14:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F4992873EC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 14:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729686AbgJHMPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 08:15:24 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:32791 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725802AbgJHMPW (ORCPT
+        id S1729730AbgJHMTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 08:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725802AbgJHMTt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 08:15:22 -0400
-Received: by mail-io1-f69.google.com with SMTP id m10so3530763ioq.0
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 05:15:20 -0700 (PDT)
+        Thu, 8 Oct 2020 08:19:49 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC5AC061755;
+        Thu,  8 Oct 2020 05:19:47 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id x16so4153369pgj.3;
+        Thu, 08 Oct 2020 05:19:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=1CA425vbWwjFQrsT0hVnTla+NVXZOa5B24PA0M3G49E=;
+        b=tLof7ZgI51M9pwjScND+pAJ5mDdGWF+natvmIxLwwhOzE9HSBYOPdhK+8uLdVL44o5
+         KZL74nkU6VXqdcnPm3qE+8YT94DSHUwzVZ7FoSod+X4sFWlPugLVVMdMJYeCld1WovqU
+         DcQJoh3HJAhSaUyxIkP1qwdoZvC5pgKNbr+hX0enXI3WfRMP/ZgBjMyKzuwA9DMqoImQ
+         6LOe0nNzBk/OgWXiQbMnFrPKuDsHy4V22L9Sv3Wbj6sFtOaLbqOh8VZRRyuJNjfRok8h
+         Gup7vOBtVFSza7CC8FAFWjNEOclEXzAvyLydb3qx4k1J375twP3hATCtREETw9e9dLaV
+         7Rsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=pIWW7+ADs4mL5pWYTBfL/vsBU9YaDtPFDDib5/UgpPE=;
-        b=I625DV1QUbXfM13DE1nOS0T2ijE4IYWXDX6sgSGY/7vbdwTXLLJ+Ppln0nKkDoz2jW
-         031jjzsJGYtn/nisLfGV1EwUJofjsXJojDFQZklQP/L14Fxn9xIea0eMjFpMpMspfrbT
-         ZbZPBvur/xxA6j3i4+Xzhm2BobaIjZiO4zr9V63GJ8UvewofAbr4XJ+wZohkOOQkkIsT
-         s+pa9Ieizo31/QoSdvIR4ec16Chmpe7EJ/Fp/KaO0e3eN2iIDpEaXDKp4NjRvX0Vig3l
-         JbnCGH4hcPzp/huSNH1C3LM3dUS9lxl7XKnZd5pvZdrYoAZF2kBjeQEoQ71Y+Dk2dEYl
-         GdIg==
-X-Gm-Message-State: AOAM533luywaOT/ycmQhPr9OQCEh/s0z5xJ2DYbcK6RQjkNgPu6vKtJm
-        Rf4ugZQP1zuNHHF1h6pGMp9OGURTDGsgeNd+58JPhfPmliIh
-X-Google-Smtp-Source: ABdhPJxL4+KEXadvLvkpXDJmnZMkeyEECK51lsd0+QRshE77s6Sq56UmHl1/jfTX3vzE5CfM07b4qDdFMW2lpZVnVKsCNhdZucXI
-MIME-Version: 1.0
-X-Received: by 2002:a92:d4d0:: with SMTP id o16mr5040883ilm.152.1602159319952;
- Thu, 08 Oct 2020 05:15:19 -0700 (PDT)
-Date:   Thu, 08 Oct 2020 05:15:19 -0700
-In-Reply-To: <0000000000009caba805a9c7b840@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000023b29205b127c953@google.com>
-Subject: Re: INFO: rcu detected stall in __se_sys_mount
-From:   syzbot <syzbot+3f2db34df769d77edf8c@syzkaller.appspotmail.com>
-To:     fweisbec@gmail.com, linux-kernel@vger.kernel.org, mingo@kernel.org,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=1CA425vbWwjFQrsT0hVnTla+NVXZOa5B24PA0M3G49E=;
+        b=CjxhNiS0OT21X75VXRNtDo8/QWrLkjJ2VazhUTXdzofNJ4TcwVI2hVWTdLzbrAiUhH
+         5vqvABeewVpmI5mR37kHxYy8ZF/BydejA9deGrUGILXCfSl42EStk3PCofyviE0Pj7Ew
+         wx0/cIhXHqbmGf+35CTZ6Hr1RG4PsaMCz8kz3Kl980ty5YREYz7t98urzfJKWTxNqhkx
+         my8jU62mj3ErYOWZmnJH8xM7Oo/j99WUe+4QfnfxDApigJHURvbNx0rNA9E95ATj/3pR
+         bJmGOU8RrS1K4o4dD9MVJmy4H8mVLGqygEyBhYKajDZdVk8oPhEhjk4HFvUYJv3PidD6
+         MgdQ==
+X-Gm-Message-State: AOAM531wxfyq5t8MGlztorTFtMA3nTtxGp9zJlKRdNUHMftT3X4f5M5F
+        G/YWtwP8RmvO6QsBeWy/ww==
+X-Google-Smtp-Source: ABdhPJwbSTQfC7Pbcdo+SQ8cZvp7bmyr47AoUrvtlbp97scUNUSAx1nvnWzjaV8hjaQj4aaFe7PluQ==
+X-Received: by 2002:a62:6346:0:b029:154:f822:27cf with SMTP id x67-20020a6263460000b0290154f82227cfmr7133362pfb.42.1602159586960;
+        Thu, 08 Oct 2020 05:19:46 -0700 (PDT)
+Received: from localhost.localdomain ([47.242.140.181])
+        by smtp.gmail.com with ESMTPSA id c7sm7233914pfj.84.2020.10.08.05.19.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Oct 2020 05:19:46 -0700 (PDT)
+From:   Pujin Shi <shipujin.t@gmail.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Ursula Braun <ubraun@linux.ibm.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, hankinsea@gmail.com,
+        Pujin Shi <shipujin.t@gmail.com>
+Subject: [PATCH 1/2] net: smc: fix missing brace warning for old compilers
+Date:   Thu,  8 Oct 2020 20:19:28 +0800
+Message-Id: <20201008121929.1270-1-shipujin.t@gmail.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+For older versions of gcc, the array = {0}; will cause warnings:
 
-HEAD commit:    c85fb28b Merge tag 'arm64-fixes' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16b1804f900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=de7f697da23057c7
-dashboard link: https://syzkaller.appspot.com/bug?extid=3f2db34df769d77edf8c
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11df5d4f900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=157851e0500000
+net/smc/smc_llc.c: In function 'smc_llc_send_link_delete_all':
+net/smc/smc_llc.c:1317:9: warning: missing braces around initializer [-Wmissing-braces]
+  struct smc_llc_msg_del_link delllc = {0};
+         ^
+net/smc/smc_llc.c:1317:9: warning: (near initialization for 'delllc.hd') [-Wmissing-braces]
 
-Bisection is inconclusive: the issue happens on the oldest tested release.
+1 warnings generated
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12cedc5c900000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=11cedc5c900000
-console output: https://syzkaller.appspot.com/x/log.txt?x=16cedc5c900000
+Fixes: f3811fd7bc97 ("net/smc: send DELETE_LINK, ALL message and wait for send to complete")
+Signed-off-by: Pujin Shi <shipujin.t@gmail.com>
+---
+ net/smc/smc_llc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3f2db34df769d77edf8c@syzkaller.appspotmail.com
-
-rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-rcu: 	Tasks blocked on level-0 rcu_node (CPUs 0-1):
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 7452 at kernel/sched/core.c:3013 rq_unlock kernel/sched/sched.h:1325 [inline]
-WARNING: CPU: 1 PID: 7452 at kernel/sched/core.c:3013 try_invoke_on_locked_down_task+0x12d/0x270 kernel/sched/core.c:3019
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 7452 Comm: syz-executor259 Not tainted 5.9.0-rc8-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1d6/0x29e lib/dump_stack.c:118
- panic+0x2c0/0x800 kernel/panic.c:231
- __warn+0x227/0x250 kernel/panic.c:600
- report_bug+0x1b1/0x2e0 lib/bug.c:198
- handle_bug+0x42/0x80 arch/x86/kernel/traps.c:234
- exc_invalid_op+0x16/0x40 arch/x86/kernel/traps.c:254
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-RIP: 0010:try_invoke_on_locked_down_task+0x12d/0x270 kernel/sched/sched.h:1325
-Code: f8 48 c1 e8 03 42 8a 04 38 84 c0 0f 85 10 01 00 00 8b 74 24 18 48 89 ef e8 90 47 09 00 4c 89 ef e8 88 9b fd 06 e9 a4 00 00 00 <0f> 0b e9 2b ff ff ff 48 c7 c1 74 fb af 89 80 e1 07 80 c1 03 38 c1
-RSP: 0018:ffffc90000da8c50 EFLAGS: 00010046
-RAX: 0000000000000000 RBX: ffffffff896ff600 RCX: 0013916f856b3a00
-RDX: ffffc90000da8d00 RSI: ffffffff8162d990 RDI: ffff88809027e480
-RBP: ffffffff8162d990 R08: dffffc0000000000 R09: fffffbfff12df8f9
-R10: fffffbfff12df8f9 R11: 0000000000000000 R12: 0000000000000000
-R13: ffffffff896ff600 R14: ffff88809027e480 R15: dffffc0000000000
- rcu_print_task_stall kernel/rcu/tree_stall.h:267 [inline]
- print_other_cpu_stall kernel/rcu/tree_stall.h:475 [inline]
- check_cpu_stall kernel/rcu/tree_stall.h:634 [inline]
- rcu_pending kernel/rcu/tree.c:3639 [inline]
- rcu_sched_clock_irq+0x12bc/0x1eb0 kernel/rcu/tree.c:2521
- update_process_times+0x130/0x1b0 kernel/time/timer.c:1710
- tick_sched_handle kernel/time/tick-sched.c:176 [inline]
- tick_sched_timer+0x25e/0x410 kernel/time/tick-sched.c:1328
- __run_hrtimer kernel/time/hrtimer.c:1524 [inline]
- __hrtimer_run_queues+0x42d/0x930 kernel/time/hrtimer.c:1588
- hrtimer_interrupt+0x373/0xd60 kernel/time/hrtimer.c:1650
- local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
- __sysvec_apic_timer_interrupt+0xf0/0x260 arch/x86/kernel/apic/apic.c:1097
- asm_call_irq_on_stack+0xf/0x20
- </IRQ>
- __run_sysvec_on_irqstack arch/x86/include/asm/irq_stack.h:37 [inline]
- run_sysvec_on_irqstack_cond arch/x86/include/asm/irq_stack.h:89 [inline]
- sysvec_apic_timer_interrupt+0x94/0xf0 arch/x86/kernel/apic/apic.c:1091
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:581
-RIP: 0010:strncasecmp+0x0/0x1c0 lib/string.c:44
-Code: 2b 09 f2 48 01 c8 89 ce c1 e6 11 48 c1 e9 2f 09 f1 89 c6 31 ce 48 c1 e8 20 31 f0 31 d0 5b 41 5c 41 5d 41 5e 41 5f 5d c3 cc cc <55> 41 57 41 56 41 55 41 54 53 48 83 ec 10 48 85 d2 0f 84 80 01 00
-RSP: 0018:ffffc90006357b98 EFLAGS: 00000246
-RAX: 0000000000000000 RBX: 0000000000000007 RCX: dffffc0000000000
-RDX: 0000000000000007 RSI: ffff88809752ce81 RDI: ffff88809eedc100
-RBP: 0000000000000007 R08: ffffffff82dd8855 R09: ffffed1014220716
-R10: ffffed1014220716 R11: 0000000000000000 R12: 00000000000009a0
-R13: ffff88809eedc100 R14: 0000000000000007 R15: ffff8880a1103800
- afs_lookup_cell_rcu+0x2bc/0x6f0 fs/afs/cell.c:88
- afs_lookup_cell+0x246/0x14d0 fs/afs/cell.c:249
- afs_parse_source fs/afs/super.c:290 [inline]
- afs_parse_param+0x526/0x790 fs/afs/super.c:326
- vfs_parse_fs_param+0x1e5/0x460 fs/fs_context.c:117
- vfs_parse_fs_string fs/fs_context.c:161 [inline]
- generic_parse_monolithic+0x230/0x350 fs/fs_context.c:201
- do_new_mount fs/namespace.c:2871 [inline]
- path_mount+0x176c/0x29e0 fs/namespace.c:3192
- do_mount fs/namespace.c:3205 [inline]
- __do_sys_mount fs/namespace.c:3413 [inline]
- __se_sys_mount+0x126/0x180 fs/namespace.c:3390
- do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x447a3a
-Code: b8 08 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 9d a3 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 7a a3 fb ff c3 66 0f 1f 84 00 00 00 00 00
-RSP: 002b:00007ffc915e4f78 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007ffc915e4fc0 RCX: 0000000000447a3a
-RDX: 0000000020000000 RSI: 0000000020000040 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 00007ffc915e4fc0 R09: 0000000000000004
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000402240
-R13: 00000000004022d0 R14: 0000000000000000 R15: 0000000000000000
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+diff --git a/net/smc/smc_llc.c b/net/smc/smc_llc.c
+index 2db967f2fb50..d09d9d2d0bfd 100644
+--- a/net/smc/smc_llc.c
++++ b/net/smc/smc_llc.c
+@@ -1314,7 +1314,7 @@ static void smc_llc_process_cli_delete_link(struct smc_link_group *lgr)
+  */
+ void smc_llc_send_link_delete_all(struct smc_link_group *lgr, bool ord, u32 rsn)
+ {
+-	struct smc_llc_msg_del_link delllc = {0};
++	struct smc_llc_msg_del_link delllc = {};
+ 	int i;
+ 
+ 	delllc.hd.common.type = SMC_LLC_DELETE_LINK;
+-- 
+2.18.1
 
