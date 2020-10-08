@@ -2,98 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88017287124
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 11:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 870B6287126
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 11:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727315AbgJHJBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 05:01:33 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:49196 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725802AbgJHJBd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 05:01:33 -0400
-Date:   Thu, 08 Oct 2020 09:01:29 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602147690;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=durKiTlB47YIdyvZ39mwAzI/Jri1OZ66NuaWMy09ZfU=;
-        b=KnyRGYVYkccpu5OrYl7XvxrnkTzP+T3Idn4pFsU86QCsTOh8ET7wej+grxFAU2s6FEp9aQ
-        aH9F9o7S0RDHy47MkSu45PcmoEDIq/CW3NojwCUrX9hqn52nZwKQIhIYD7xst3tjpEoYSm
-        Lo73hbIRXIFGOWvuKevEfDU/9gBmrtWEywiDjvaeI07Sh6ohvT1cSBDl163vrq6xttHqyC
-        toXPKoK1DXoRJ/68SloVGVyTE558zpkgyo1Mh3Vf4hQjVjDBi4i80bzJrLphetvyUt7dfl
-        sUrvtrN4m36zTHTioQY0Rc4c8SdZvmwCNnLfiiD8KmeD2rCwdKplpuNcda/DlA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602147690;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=durKiTlB47YIdyvZ39mwAzI/Jri1OZ66NuaWMy09ZfU=;
-        b=Lwt09hNFkyutJqKs0ovTK9Ge4A7JrPfUMFzhRpAgsr26RlR7T/ALdU/yhAvX9jpAYqWTL4
-        b1e0K1l3gz9DMODg==
-From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: ras/core] x86/mce: Allow for copy_mc_fragile symbol checksum to
- be generated
-Cc:     Borislav Petkov <bp@suse.de>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201007111447.GA23257@zn.tnic>
-References: <20201007111447.GA23257@zn.tnic>
+        id S1728282AbgJHJBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 05:01:38 -0400
+Received: from mx2.suse.de ([195.135.220.15]:32886 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725802AbgJHJBh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 05:01:37 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3232EAC3C;
+        Thu,  8 Oct 2020 09:01:36 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id BD5DA1E1305; Thu,  8 Oct 2020 11:01:35 +0200 (CEST)
+Date:   Thu, 8 Oct 2020 11:01:35 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+Cc:     linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Theodore Ts'o <tytso@mit.edu>, Christoph Hellwig <hch@lst.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v2] ext4/xfs: add page refcount helper
+Message-ID: <20201008090135.GA3486@quack2.suse.cz>
+References: <20201007214925.11181-1-rcampbell@nvidia.com>
 MIME-Version: 1.0
-Message-ID: <160214768965.7002.13479051629988685867.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201007214925.11181-1-rcampbell@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the ras/core branch of tip:
+On Wed 07-10-20 14:49:25, Ralph Campbell wrote:
+> There are several places where ZONE_DEVICE struct pages assume a reference
+> count == 1 means the page is idle and free. Instead of open coding this,
+> add helper functions to hide this detail.
+> 
+> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Acked-by: Darrick J. Wong <darrick.wong@oracle.com>
+> Acked-by: Theodore Ts'o <tytso@mit.edu> # for fs/ext4/inode.c
 
-Commit-ID:     b3149ffcdb31a8eb854cc442a389ae0b539bf28a
-Gitweb:        https://git.kernel.org/tip/b3149ffcdb31a8eb854cc442a389ae0b539bf28a
-Author:        Borislav Petkov <bp@suse.de>
-AuthorDate:    Wed, 07 Oct 2020 18:55:35 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 08 Oct 2020 10:39:21 +02:00
+The patch looks good to me. Feel free to add:
 
-x86/mce: Allow for copy_mc_fragile symbol checksum to be generated
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Add asm/mce.h to asm/asm-prototypes.h so that that asm symbol's checksum
-can be generated in order to support CONFIG_MODVERSIONS with it and fix:
+								Honza
 
-  WARNING: modpost: EXPORT symbol "copy_mc_fragile" [vmlinux] version \
-	  generation failed, symbol will not be versioned.
-
-For reference see:
-
-  4efca4ed05cb ("kbuild: modversions for EXPORT_SYMBOL() for asm")
-  334bb7738764 ("x86/kbuild: enable modversions for symbols exported from asm")
-
-Fixes: ec6347bb4339 ("x86, powerpc: Rename memcpy_mcsafe() to copy_mc_to_{user, kernel}()")
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20201007111447.GA23257@zn.tnic
----
- arch/x86/include/asm/asm-prototypes.h | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/x86/include/asm/asm-prototypes.h b/arch/x86/include/asm/asm-prototypes.h
-index 5a42f92..51e2bf2 100644
---- a/arch/x86/include/asm/asm-prototypes.h
-+++ b/arch/x86/include/asm/asm-prototypes.h
-@@ -5,6 +5,7 @@
- #include <asm/string.h>
- #include <asm/page.h>
- #include <asm/checksum.h>
-+#include <asm/mce.h>
- 
- #include <asm-generic/asm-prototypes.h>
- 
+> ---
+> 
+> Changes in v2:
+> I strongly resisted the idea of extending this patch but after Jan
+> Kara's comment about there being more places that could be cleaned
+> up, I felt compelled to make this one tensy wensy change to add
+> a dax_wakeup_page() to match the dax_wait_page().
+> I kept the Reviewed/Acked-bys since I don't think this substantially
+> changes the patch.
+> 
+>  fs/dax.c            |  4 ++--
+>  fs/ext4/inode.c     |  5 +----
+>  fs/xfs/xfs_file.c   |  4 +---
+>  include/linux/dax.h | 15 +++++++++++++++
+>  mm/memremap.c       |  3 ++-
+>  5 files changed, 21 insertions(+), 10 deletions(-)
+> 
+> diff --git a/fs/dax.c b/fs/dax.c
+> index 5b47834f2e1b..85c63f735909 100644
+> --- a/fs/dax.c
+> +++ b/fs/dax.c
+> @@ -358,7 +358,7 @@ static void dax_disassociate_entry(void *entry, struct address_space *mapping,
+>  	for_each_mapped_pfn(entry, pfn) {
+>  		struct page *page = pfn_to_page(pfn);
+>  
+> -		WARN_ON_ONCE(trunc && page_ref_count(page) > 1);
+> +		WARN_ON_ONCE(trunc && !dax_layout_is_idle_page(page));
+>  		WARN_ON_ONCE(page->mapping && page->mapping != mapping);
+>  		page->mapping = NULL;
+>  		page->index = 0;
+> @@ -372,7 +372,7 @@ static struct page *dax_busy_page(void *entry)
+>  	for_each_mapped_pfn(entry, pfn) {
+>  		struct page *page = pfn_to_page(pfn);
+>  
+> -		if (page_ref_count(page) > 1)
+> +		if (!dax_layout_is_idle_page(page))
+>  			return page;
+>  	}
+>  	return NULL;
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 771ed8b1fadb..132620cbfa13 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -3937,10 +3937,7 @@ int ext4_break_layouts(struct inode *inode)
+>  		if (!page)
+>  			return 0;
+>  
+> -		error = ___wait_var_event(&page->_refcount,
+> -				atomic_read(&page->_refcount) == 1,
+> -				TASK_INTERRUPTIBLE, 0, 0,
+> -				ext4_wait_dax_page(ei));
+> +		error = dax_wait_page(ei, page, ext4_wait_dax_page);
+>  	} while (error == 0);
+>  
+>  	return error;
+> diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
+> index 3d1b95124744..a5304aaeaa3a 100644
+> --- a/fs/xfs/xfs_file.c
+> +++ b/fs/xfs/xfs_file.c
+> @@ -749,9 +749,7 @@ xfs_break_dax_layouts(
+>  		return 0;
+>  
+>  	*retry = true;
+> -	return ___wait_var_event(&page->_refcount,
+> -			atomic_read(&page->_refcount) == 1, TASK_INTERRUPTIBLE,
+> -			0, 0, xfs_wait_dax_page(inode));
+> +	return dax_wait_page(inode, page, xfs_wait_dax_page);
+>  }
+>  
+>  int
+> diff --git a/include/linux/dax.h b/include/linux/dax.h
+> index b52f084aa643..e2da78e87338 100644
+> --- a/include/linux/dax.h
+> +++ b/include/linux/dax.h
+> @@ -243,6 +243,21 @@ static inline bool dax_mapping(struct address_space *mapping)
+>  	return mapping->host && IS_DAX(mapping->host);
+>  }
+>  
+> +static inline bool dax_layout_is_idle_page(struct page *page)
+> +{
+> +	return page_ref_count(page) == 1;
+> +}
+> +
+> +static inline void dax_wakeup_page(struct page *page)
+> +{
+> +	wake_up_var(&page->_refcount);
+> +}
+> +
+> +#define dax_wait_page(_inode, _page, _wait_cb)				\
+> +	___wait_var_event(&(_page)->_refcount,				\
+> +		dax_layout_is_idle_page(_page),				\
+> +		TASK_INTERRUPTIBLE, 0, 0, _wait_cb(_inode))
+> +
+>  #ifdef CONFIG_DEV_DAX_HMEM_DEVICES
+>  void hmem_register_device(int target_nid, struct resource *r);
+>  #else
+> diff --git a/mm/memremap.c b/mm/memremap.c
+> index 2bb276680837..504a10ff2edf 100644
+> --- a/mm/memremap.c
+> +++ b/mm/memremap.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/types.h>
+>  #include <linux/wait_bit.h>
+>  #include <linux/xarray.h>
+> +#include <linux/dax.h>
+>  
+>  static DEFINE_XARRAY(pgmap_array);
+>  
+> @@ -508,7 +509,7 @@ void free_devmap_managed_page(struct page *page)
+>  {
+>  	/* notify page idle for dax */
+>  	if (!is_device_private_page(page)) {
+> -		wake_up_var(&page->_refcount);
+> +		dax_wakeup_page(page);
+>  		return;
+>  	}
+>  
+> -- 
+> 2.20.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
