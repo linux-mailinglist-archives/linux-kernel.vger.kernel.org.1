@@ -2,718 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80E8A287A55
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 18:51:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74824287A59
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 18:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730574AbgJHQvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 12:51:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50632 "EHLO
+        id S1730722AbgJHQvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 12:51:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728218AbgJHQvT (ORCPT
+        with ESMTP id S1730603AbgJHQvh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 12:51:19 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57426C061755;
-        Thu,  8 Oct 2020 09:51:19 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id c22so9135189ejx.0;
-        Thu, 08 Oct 2020 09:51:19 -0700 (PDT)
+        Thu, 8 Oct 2020 12:51:37 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09621C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 09:51:37 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id g7so6872191iov.13
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 09:51:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=q+RA5pi1DR1hDMKdPtjTjTwXI8Y3pnPsPk60JeL9S3o=;
-        b=Npnel+/aj11/RJFRFwDxdDb0SfpvLUDz4cNtevNIMKJsQsHziTxV33roxxXlNOCBgV
-         0Toxx6Q0hEFH4d4koqBwn2frlG1OfEF4NuOv6p9Xx8KPOIH9nehkIMN7rsUi/ePlS4bG
-         ywokTiHo7QK3WYMUS5q5yUHGKRYfg4QD4giUU6v/2EOgMFhdYkIxllpJLTsCYyoXVrnf
-         nrlb0oa7/Dq/1caWSHHvnHLD7jBVMQLKGV6Urqs2zXlXdOkIN52rEW2iIoDFnBNLKt4Y
-         fVRI2dLHroGzfNJzfYBZPGqZZv0NrjipswM5zmRhp3UD4WW+bBoTwGFOFxNJzde3co5f
-         nVrQ==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8/6RY8TKKj+W/1VmDo+d0IEG9PszfHwoIwLRWUh4HqQ=;
+        b=tEVYzXdqmEuMxhEQ0rTIN1mKGckoCsmqMQIjcB6YajNa/oz8WyoEoF1AVe91zYP6FT
+         nXVJn8QYYMX9zT8mnuQ2gU/9L0W1jBsEhei/V1Z+vyH4TDK7nlolKFf/V/K94bI75nwD
+         Xdk9tpFcAVnZyDHm2RWcMkKKfvx+2FE2IpS8JZtNZv7kaYAanz2dJUNYqUqiBJJS1mr7
+         JRtnDZ1w/uq69iQHoP3eg+MP6PtOslr6Ktl36/7hqHfjf5gsh+O3BSoDYScW/I+6aPEr
+         qR3jGjrUVwyDcsCojhCVpBEsHi94aU33bQTP7HKD0ttsTF45O6xH85mQLR7hVzKTj596
+         WQHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=q+RA5pi1DR1hDMKdPtjTjTwXI8Y3pnPsPk60JeL9S3o=;
-        b=EpLnrmCNlz4mcU7cuo0xxe71e0Ju5jyhMrKzO2UpR/AfnEqBleTyRRMcMXkcJJMEoG
-         G18z+C7nFk8odWcw9bLPhzGM/g3nxTACgWIjKjjF4ODFBUfe0McKOelFVRIIHHtZF0jQ
-         tZY9sGbUPd9Tv1QzZjWr86sT8tHumuxWt16zFHuZ0sVKiRgLBmwSsgV4x6Ci3UOLDMJj
-         jB+oop+jV9wTVwXtljs2uZIyFPZmC547k7KhYgbhM7zxSs6ZPNkiNhgIadrnStWo/NZ1
-         42aDoeWqr2yAA3bLVdU/Qo5wKJ8TXUUbmbmGhSY96LIQvfih7cY/AoJ0lDAkLdNV88/S
-         0RVg==
-X-Gm-Message-State: AOAM531TRjXR4OVeiBWAKeb4Uyr2ngIfEvxo2e/OqbSHCpTxbAwHo2y/
-        xPDSW+JLMGDtF5Rs9yIpyXA2aI6sKwhLzw==
-X-Google-Smtp-Source: ABdhPJzED43dwuD7sGu1ik7a9EF/AHfLx2y/g2ezjEQNRX//634nzpXexkxv0Ew77If300XuIA/sIw==
-X-Received: by 2002:a17:906:468c:: with SMTP id a12mr9411677ejr.269.1602175877546;
-        Thu, 08 Oct 2020 09:51:17 -0700 (PDT)
-Received: from ?IPv6:2003:ea:8f00:6a00:28bc:8b04:587d:85d4? (p200300ea8f006a0028bc8b04587d85d4.dip0.t-ipconnect.de. [2003:ea:8f00:6a00:28bc:8b04:587d:85d4])
-        by smtp.googlemail.com with ESMTPSA id g18sm4419222eje.12.2020.10.08.09.51.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Oct 2020 09:51:17 -0700 (PDT)
-Subject: Re: [PATCH net-next 2/2] net: phy: dp83td510: Add support for the
- DP83TD510 Ethernet PHY
-To:     Dan Murphy <dmurphy@ti.com>, davem@davemloft.net, andrew@lunn.ch,
-        f.fainelli@gmail.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201008162347.5290-1-dmurphy@ti.com>
- <20201008162347.5290-3-dmurphy@ti.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <62bbff66-c2f0-df0c-82c2-7bd8b9d63220@gmail.com>
-Date:   Thu, 8 Oct 2020 18:51:10 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8/6RY8TKKj+W/1VmDo+d0IEG9PszfHwoIwLRWUh4HqQ=;
+        b=fOihyTydi7lrQN2Bl+mKadkb4IEAiIrF8Uq0t9ugTmpwtPddxAC3p0xhRXOCdIPpyJ
+         YZLaQiZBWSRPqZwpheFA68oZTfoUnKzpf7M/EZ0gMhxFBUZ6FbnUM17Li5GUeipBzlk6
+         IZ/YqGhCWtYlTr7Y8BxTxwKxlWbeD0JHzF9h353yytl4mzbTbEkjNYtbNQ3p1shjYvqi
+         SdD+20qVjIozjnMtXIlbbxFg9dZkI2dC/MSJWSvdSxY/+z9Btp0fPm25HcUbo9j0yki5
+         lCRAPsLloyCruzWzX+M4UYJAM8eVCQuV9nUDDe6niKGX9g7OfYpFk5Ptz1X5H6LrRnXj
+         rQrA==
+X-Gm-Message-State: AOAM532UjfhiosNcwSTxOSiRL6ExqqefnpAC+0XGiQgWvlFTyCu1ZgHL
+        RIvt2AaysxFdntt3s5FW/pdTWqpj85xByEo5BlmXGQ==
+X-Google-Smtp-Source: ABdhPJyz8vN0rhjNpoi55kPcxH5V3GpQx2VePFa+C6kevoO60oURqttQCBcoFzUfKpSvkdcDDYTWKBsRnxXY3mK2Vwk=
+X-Received: by 2002:a5e:9b11:: with SMTP id j17mr6488597iok.176.1602175895571;
+ Thu, 08 Oct 2020 09:51:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201008162347.5290-3-dmurphy@ti.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200916054130.8685-1-Zhiqiang.Hou@nxp.com> <CAL_JsqJwgNUpWFTq2YWowDUigndSOB4rUcVm0a_U=FEpEmk94Q@mail.gmail.com>
+ <HE1PR0402MB3371F8191538F47E8249F048843F0@HE1PR0402MB3371.eurprd04.prod.outlook.com>
+ <CAL_JsqLdQY_DqpduaTv4hMDM_-cvZ_+s8W+HdOuZVVYjTO4yxw@mail.gmail.com>
+ <HE1PR0402MB337180458625B05D1529535384390@HE1PR0402MB3371.eurprd04.prod.outlook.com>
+ <20200928093911.GB12010@e121166-lin.cambridge.arm.com> <HE1PR0402MB33713A623A37D08AE3253DEB84320@HE1PR0402MB3371.eurprd04.prod.outlook.com>
+ <DM5PR12MB1276D80424F88F8A9243D5E2DA320@DM5PR12MB1276.namprd12.prod.outlook.com>
+ <CAL_JsqJJxq2jZzbzZffsrPxnoLJdWLLS-7bG-vaqyqs5NkQhHQ@mail.gmail.com>
+ <9ac53f04-f2e8-c5f9-e1f7-e54270ec55a0@ti.com> <CAL_JsqJEp8yyctJYUjHM4Ti6ggPb4ouYM_WDvpj_PiobnAozBw@mail.gmail.com>
+ <67ac959f-561e-d1a0-2d89-9a85d5f92c72@ti.com> <99d24fe08ecb5a6f5bba7dc6b1e2b42b@walle.cc>
+ <CA+G9fYtR5MwQ_Gd1=R=815eCAz+5uC67wXV2x094pc_=PtkA2g@mail.gmail.com>
+ <CA+G9fYsubwpT9HY7Dx-+zvYdM1t1m+mrnH8WfHJ-_BpMTt40vA@mail.gmail.com> <CAL_Jsq+uFJp5Vt=u2ZFhGCTTM62mb_1rKOz_Dj2=ez5bKJad1Q@mail.gmail.com>
+In-Reply-To: <CAL_Jsq+uFJp5Vt=u2ZFhGCTTM62mb_1rKOz_Dj2=ez5bKJad1Q@mail.gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 8 Oct 2020 22:21:24 +0530
+Message-ID: <CA+G9fYufopBTRdqdHy=m17mc2N2Y8o-bcqAz_nON7X6ZYAb7Ug@mail.gmail.com>
+Subject: Re: [PATCH] PCI: dwc: Added link up check in map_bus of dw_child_pcie_ops
+To:     Rob Herring <robh@kernel.org>
+Cc:     "Z.Q. Hou" <Zhiqiang.Hou@nxp.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Michael Walle <michael@walle.cc>,
+        Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.10.2020 18:23, Dan Murphy wrote:
-> The DP83TD510E is an ultra-low power Ethernet physical layer transceiver
-> that supports 10M single pair cable.
-> 
-> The device supports both 2.4-V p2p and 1-V p2p output voltage as defined
-> by IEEE 802.3cg 10Base-T1L specfications. These modes can be forced via
-> the device tree or the device is defaulted to auto negotiation to
-> determine the proper p2p voltage.
-> 
-> Signed-off-by: Dan Murphy <dmurphy@ti.com>
-> ---
->  drivers/net/phy/Kconfig     |   6 +
->  drivers/net/phy/Makefile    |   1 +
->  drivers/net/phy/dp83td510.c | 583 ++++++++++++++++++++++++++++++++++++
->  3 files changed, 590 insertions(+)
->  create mode 100644 drivers/net/phy/dp83td510.c
-> 
-> diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
-> index 698bea312adc..017252e1504c 100644
-> --- a/drivers/net/phy/Kconfig
-> +++ b/drivers/net/phy/Kconfig
-> @@ -302,6 +302,12 @@ config DP83869_PHY
->  	  Currently supports the DP83869 PHY.  This PHY supports copper and
->  	  fiber connections.
->  
-> +config DP83TD510_PHY
-> +	tristate "Texas Instruments DP83TD510 10M Single Pair Ethernet PHY"
-> +	help
-> +	  Support for the DP83TD510 Ethernet PHY. This PHY supports a 10M single
-> +	  pair Ethernet connection.
-> +
->  config VITESSE_PHY
->  	tristate "Vitesse PHYs"
->  	help
-> diff --git a/drivers/net/phy/Makefile b/drivers/net/phy/Makefile
-> index a13e402074cf..bf62ce211eb4 100644
-> --- a/drivers/net/phy/Makefile
-> +++ b/drivers/net/phy/Makefile
-> @@ -56,6 +56,7 @@ obj-$(CONFIG_DP83848_PHY)	+= dp83848.o
->  obj-$(CONFIG_DP83867_PHY)	+= dp83867.o
->  obj-$(CONFIG_DP83869_PHY)	+= dp83869.o
->  obj-$(CONFIG_DP83TC811_PHY)	+= dp83tc811.o
-> +obj-$(CONFIG_DP83TD510_PHY)	+= dp83td510.o
->  obj-$(CONFIG_FIXED_PHY)		+= fixed_phy.o
->  obj-$(CONFIG_ICPLUS_PHY)	+= icplus.o
->  obj-$(CONFIG_INTEL_XWAY_PHY)	+= intel-xway.o
-> diff --git a/drivers/net/phy/dp83td510.c b/drivers/net/phy/dp83td510.c
-> new file mode 100644
-> index 000000000000..0cce9063fd1c
-> --- /dev/null
-> +++ b/drivers/net/phy/dp83td510.c
-> @@ -0,0 +1,583 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Driver for the Texas Instruments DP83TD510 PHY
-> + * Copyright (C) 2020 Texas Instruments Incorporated - https://www.ti.com/
-> + */
-> +
-> +#include <linux/ethtool.h>
-> +#include <linux/etherdevice.h>
-> +#include <linux/kernel.h>
-> +#include <linux/mii.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/phy.h>
-> +#include <linux/netdevice.h>
-> +
-> +#define DP83TD510E_PHY_ID	0x20000180
-> +#define DP83TD510_DEVADDR_AN	0x7
-> +#define DP83TD510_DEVADDR	0x1f
-> +
-> +#define DP83TD510_MII_REG	0x0
-> +#define DP83TD510_PHY_STAT	0x10
-> +#define DP83TD510_GEN_CFG	0x11
-> +#define DP83TD510_INT_REG1	0x12
-> +#define DP83TD510_INT_REG2	0x13
-> +#define DP83TD510_MAC_CFG_1	0x17
-> +
-> +#define DP83TD510_SOR_1		0x467
-> +
-> +#define DP83TD510_HW_RESET	BIT(15)
-> +#define DP83TD510_SW_RESET	BIT(14)
-> +
-> +/* GEN CFG bits */
-> +#define DP83TD510_INT_OE	BIT(0)
-> +#define DP83TD510_INT_EN	BIT(1)
-> +
-> +/* INT REG 1 bits */
-> +#define DP83TD510_INT1_ESD_EN	BIT(3)
-> +#define DP83TD510_INT1_LINK_EN	BIT(5)
-> +#define DP83TD510_INT1_RHF_EN	BIT(7)
-> +#define DP83TD510_INT1_ESD	BIT(11)
-> +#define DP83TD510_INT1_LINK	BIT(13)
-> +#define DP83TD510_INT1_RHF	BIT(15)
-> +
-> +/* INT REG 2 bits */
-> +#define DP83TD510_INT2_POR_EN	BIT(0)
-> +#define DP83TD510_INT2_POL_EN	BIT(1)
-> +#define DP83TD510_INT2_PAGE_EN	BIT(5)
-> +#define DP83TD510_INT2_POR	BIT(8)
-> +#define DP83TD510_INT2_POL	BIT(9)
-> +#define DP83TD510_INT2_PAGE	BIT(13)
-> +
-> +/* MAC CFG bits */
-> +#define DP83TD510_RX_CLK_SHIFT	BIT(12)
-> +#define DP83TD510_TX_CLK_SHIFT	BIT(11)
-> +
-> +#define DP83TD510_MASTER_MODE	BIT(2)
-> +#define DP83TD510_2_4V		BIT(7)
-> +#define DP83TD510_RGMII		BIT(8)
-> +
-> +#define DP83TD510_FIFO_DEPTH_MASK	GENMASK(6, 5)
-> +#define DP83TD510_FIFO_DEPTH_4_B_NIB	0
-> +#define DP83TD510_FIFO_DEPTH_5_B_NIB	BIT(5)
-> +#define DP83TD510_FIFO_DEPTH_6_B_NIB	BIT(6)
-> +#define DP83TD510_FIFO_DEPTH_8_B_NIB	(BIT(5) | BIT(6))
-> +
-> +enum dp83td510_mode_config {
-> +	DP83TD510_AUTO_NEG = 0,
-> +	DP83TD510_MASTER_1 = 1,
-> +	DP83TD510_MASTER_24 = 2,
-> +	DP83TD510_SLAVE_1 = 3,
-> +	DP83TD510_SLAVE_24 = 4,
-> +};
-> +
-> +struct dp83td510_private {
-> +	u32 forced_mode;
-> +	u32 tx_fifo_depth;
-> +	u32 rgmii_delay;
-> +	bool is_rgmii;
-> +};
-> +
-> +struct dp83td510_init_reg {
-> +	int reg;
-> +	int val;
-> +};
-> +
-> +static struct dp83td510_init_reg dp83td510_master_1_0[] = {
-> +	{ 0x000d, 0x0007 }, /* disable auto-neg */
-> +	{ 0x000e, 0x0200 },
-> +	{ 0x000d, 0x4007 },
-> +	{ 0x000e, 0x0000 },
-> +	{ 0x000d, 0x0001 }, /* force master mode */
-> +	{ 0x000e, 0x0834 },
-> +	{ 0x000d, 0x4001 },
-> +	{ 0x000e, 0x4000 },
-> +	{ 0x000d, 0x0001 }, /* force 1.0v swing */
-> +	{ 0x000e, 0x08f6 },
-> +	{ 0x000d, 0x4001 },
-> +	{ 0x000e, 0x0000 },
-> +	{ 0x0608, 0x003b }, /* disable_0_transition */
-> +	{ 0x0862, 0x39f8 }, /* AGC Gain during Autoneg */
-> +	{ 0x081a, 0x67c0 }, /* deq offset for 1V swing */
-> +	{ 0x081c, 0xfb62 }, /* deq offset for 2.4V swing */
-> +	{ 0x0830, 0x05a3 }, /* Enable energy lost fallback */
-> +	{ 0x0855, 0x1b55 }, /* MSE Threshold change */
-> +	{ 0x0831, 0x0403 }, /* energy detect threshold */
-> +	{ 0x0856, 0x1800 }, /* good1 MSE threshold change */
-> +	{ 0x0857, 0x8fa0 }, /* Enable fallback to phase 1 on watchdog trigger */
-> +	{ 0x0871, 0x000c }, /* TED input changed to slicer_in without FFE */
-> +	{ 0x0883, 0x022e }, /* Enable Rx Filter, Change PGA threshold for Short Cable detection */
-> +	{ 0x0402, 0x1800 }, /* Adjusr LD swing */
-> +	{ 0x0878, 0x2248 }, /* Change PI up/down polarity */
-> +	{ 0x010c, 0x0008 }, /* tx filter coefficient */
-> +	{ 0x0112, 0x1212 }, /* tx filter scaling factor */
-> +	{ 0x0809, 0x5c80 }, /* AGC retrain */
-> +	{ 0x0803, 0x1529 }, /* Master Ph1 Back-off */
-> +	{ 0x0804, 0x1a33 }, /* Master Ph1 Back-off */
-> +	{ 0x0805, 0x1f3d }, /* Master Ph1 Back-off */
-> +	{ 0x0850, 0x045b }, /* hybrid gain & delay */
-> +	{ 0x0874, 0x6967 }, /* kp step 0 for master */
-> +	{ 0x0852, 0x7800 }, /* FAGC init gain */
-> +	{ 0x0806, 0x1e1e }, /* Master/Slave Ph2 Back-off */
-> +	{ 0x0807, 0x2525 }, /* Master/Slave Ph2 Back-off */
-> +	{ 0x0808, 0x2c2c }, /* Master/Slave Ph2 Back-off */
-> +	{ 0x0850, 0x0590 }, /* Hybrid Gain/Delay Code */
-> +	{ 0x0827, 0x4000 }, /* Echo Fixed Delay */
-> +	{ 0x0849, 0x0fe4 }, /* Hybrid Cal enable */
-> +	{ 0x084b, 0x04b5 }, /* Echo Score Sel */
-> +	{ 0x0018, 0x0043 }, /* Set CRS/RX_DV pin as RX_DV for RMII repeater mode */
-> +};
-> +
-> +static struct dp83td510_init_reg dp83td510_slave_1_0[] = {
-> +	{ 0x000d, 0x0007 }, /* disable auto-neg */
-> +	{ 0x000e, 0x0200 },
-> +	{ 0x000d, 0x4007 },
-> +	{ 0x000e, 0x0000 },
-> +	{ 0x000d, 0x0001 }, /* force slave mode */
-> +	{ 0x000e, 0x0834 },
-> +	{ 0x000d, 0x4001 },
-> +	{ 0x000e, 0x0000 },
-> +	{ 0x000d, 0x0001 }, /* force 1.0v swing */
-> +	{ 0x000d, 0x4001 },
-> +	{ 0x000e, 0x0000 },
-> +	{ 0x0608, 0x003b }, /* disable_0_transition */
-> +	{ 0x0862, 0x39f8 }, /* AGC Gain during Autoneg */
-> +	{ 0x081a, 0x67c0 }, /* deq offset for 1V swing */
-> +	{ 0x081c, 0xfb62 }, /* deq offset for 2.4V swing */
-> +	{ 0x0830, 0x05a3 }, /* Enable energy lost fallback */
-> +	{ 0x0855, 0x1b55 }, /* MSE Threshold change */
-> +	{ 0x0831, 0x0403 }, /* energy detect threshold */
-> +	{ 0x0856, 0x1800 }, /* good1 MSE threshold change */
-> +	{ 0x0857, 0x8fa0 }, /* Enable fallback to phase 1 on watchdog trigger */
-> +	{ 0x0871, 0x000c }, /* TED input changed to slicer_in without FFE */
-> +	{ 0x0883, 0x022e }, /* Enable Rx Filter, PGA threshold for Short Cable detection */
-> +	{ 0x0402, 0x1800 }, /* Adjusr LD swing */
-> +	{ 0x0878, 0x2248 }, /* Change PI up/down polarity */
-> +	{ 0x010c, 0x0008 }, /* tx filter coefficient */
-> +	{ 0x0112, 0x1212 }, /* tx filter scaling factor */
-> +	{ 0x0809, 0x5c80 }, /* AGC retrain */
-> +	{ 0x0803, 0x1529 }, /* Master Ph1 Back-off */
-> +	{ 0x0804, 0x1a33 }, /* Master Ph1 Back-off */
-> +	{ 0x0805, 0x1f3d }, /* Master Ph1 Back-off */
-> +	{ 0x0850, 0x045b }, /* hybrid gain & delay */
-> +	{ 0x0874, 0x6967 }, /* kp step 0 for master */
-> +	{ 0x0852, 0x7800 }, /* FAGC init gain */
-> +	{ 0x0806, 0x1e1e }, /* Master/Slave Ph2 Back-off */
-> +	{ 0x0807, 0x2525 }, /* Master/Slave Ph2 Back-off */
-> +	{ 0x0808, 0x2c2c }, /* Master/Slave Ph2 Back-off */
-> +	{ 0x0850, 0x0590 }, /* Hybrid Gain/Delay Code */
-> +	{ 0x0827, 0x4000 }, /* Echo Fixed Delay */
-> +	{ 0x0849, 0x0fe4 }, /* Hybrid Cal enable */
-> +	{ 0x084b, 0x04b5 }, /* Echo Score Sel */
-> +	{ 0x0018, 0x0043 }, /* Set CRS/RX_DV pin as RX_DV for RMII repeater mode */
-> +};
-> +
-> +static struct dp83td510_init_reg dp83td510_master_2_4[] = {
-> +	{ 0x000d, 0x0007 }, /* disable auto-neg */
-> +	{ 0x000e, 0x0200 },
-> +	{ 0x000d, 0x4007 },
-> +	{ 0x000e, 0x0000 },
-> +	{ 0x000d, 0x0001 }, /* force Master mode */
-> +	{ 0x000e, 0x0834 },
-> +	{ 0x000d, 0x4001 },
-> +	{ 0x000e, 0x4000 },
-> +	{ 0x000d, 0x0001 }, /* force 2.4v swing */
-> +	{ 0x000e, 0x08f6 },
-> +	{ 0x000d, 0x4001 },
-> +	{ 0x000e, 0x1000 },
-> +	{ 0x0608, 0x003b }, /* disable_0_transition */
-> +	{ 0x0862, 0x39f8 }, /* AGC Gain during Autoneg */
-> +	{ 0x081a, 0x67c0 }, /* deq offset for 1V swing */
-> +	{ 0x081c, 0xfb62 }, /* deq offset for 2.4V swing */
-> +	{ 0x0830, 0x05a3 }, /* Enable energy lost fallback */
-> +	{ 0x0855, 0x1b55 }, /* MSE Threshold change */
-> +	{ 0x0831, 0x0403 }, /* energy detect threshold */
-> +	{ 0x0856, 0x1800 }, /* good1 MSE threshold change */
-> +	{ 0x0857, 0x8fa0 }, /* Enable fallback to phase 1 on watchdog trigger */
-> +	{ 0x0871, 0x000c }, /* TED input changed to slicer_in without FFE */
-> +	{ 0x0883, 0x022e }, /* Enable Rx Filter, Change PGA threshold for Short Cable detection */
-> +	{ 0x0402, 0x1800 }, /* Adjusr LD swing */
-> +	{ 0x0878, 0x2248 }, /* Change PI up/down polarity */
-> +	{ 0x010c, 0x0008 }, /* tx filter coefficient */
-> +	{ 0x0112, 0x1212 }, /* tx filter scaling factor */
-> +	{ 0x0809, 0x5c80 }, /* AGC retrain */
-> +	{ 0x0803, 0x1529 }, /* Master Ph1 Back-off */
-> +	{ 0x0804, 0x1a33 }, /* Master Ph1 Back-off */
-> +	{ 0x0805, 0x1f3d }, /* Master Ph1 Back-off */
-> +	{ 0x0850, 0x045b }, /* hybrid gain & delay */
-> +	{ 0x0874, 0x6967 }, /* kp step 0 for master */
-> +	{ 0x0852, 0x7800 }, /* FAGC init gain */
-> +	{ 0x0806, 0x1e1e }, /* Master/Slave Ph2 Back-off */
-> +	{ 0x0807, 0x2525 }, /* Master/Slave Ph2 Back-off */
-> +	{ 0x0808, 0x2c2c }, /* Master/Slave Ph2 Back-off */
-> +	{ 0x0850, 0x0590 }, /* Hybrid Gain/Delay Code */
-> +	{ 0x0827, 0x4000 }, /* Echo Fixed Delay */
-> +	{ 0x0849, 0x0fe4 }, /* Hybrid Cal enable */
-> +	{ 0x084b, 0x04b5 }, /* Echo Score Sel */
-> +	{ 0x0018, 0x0043 }, /* Set CRS/RX_DV pin as RX_DV for RMII repeater mode */
-> +};
-> +
-> +static struct dp83td510_init_reg dp83td510_slave_2_4[] = {
-> +	{ 0x000d, 0x0007}, /* disable auto-neg */
-> +	{ 0x000e, 0x0200},
-> +	{ 0x000d, 0x4007},
-> +	{ 0x000e, 0x0000},
-> +	{ 0x000d, 0x0001}, /* force slave mode */
-> +	{ 0x000e, 0x0834},
-> +	{ 0x000d, 0x4001},
-> +	{ 0x000e, 0x0000},
-> +	{ 0x000d, 0x0001}, /* force 2.4v swing */
-> +	{ 0x000e, 0x08f6},
-> +	{ 0x000d, 0x4001},
-> +	{ 0x000e, 0x1000},
-> +	{ 0x0608, 0x003b}, /* disable_0_transition */
-> +	{ 0x0862, 0x39f8}, /* AGC Gain during Autoneg */
-> +	{ 0x081a, 0x67c0}, /* deq offset for 1V swing */
-> +	{ 0x081c, 0xfb62}, /* deq offset for 2.4V swing */
-> +	{ 0x0830, 0x05a3}, /* Enable energy lost fallback */
-> +	{ 0x0855, 0x1b55}, /* MSE Threshold change */
-> +	{ 0x0831, 0x0403}, /* energy detect threshold */
-> +	{ 0x0856, 0x1800}, /* good1 MSE threshold change */
-> +	{ 0x0857, 0x8fa0}, /* Enable fallback to phase 1 on watchdog trigger */
-> +	{ 0x0871, 0x000c}, /* TED input changed to slicer_in without FFE */
-> +	{ 0x0883, 0x022e}, /* Enable Rx Filter, Change PGA threshold for Short Cable detection */
-> +	{ 0x0402, 0x1800}, /* Adjusr LD swing */
-> +	{ 0x0878, 0x2248}, /* Change PI up/down polarity */
-> +	{ 0x010c, 0x0008}, /* tx filter coefficient */
-> +	{ 0x0112, 0x1212}, /* tx filter scaling factor */
-> +	{ 0x0809, 0x5c80}, /* AGC retrain */
-> +	{ 0x0803, 0x1529}, /* Master Ph1 Back-off */
-> +	{ 0x0804, 0x1a33}, /* Master Ph1 Back-off */
-> +	{ 0x0805, 0x1f3d}, /* Master Ph1 Back-off */
-> +	{ 0x0850, 0x045b}, /* hybrid gain & delay */
-> +	{ 0x0874, 0x6967}, /* kp step 0 for master */
-> +	{ 0x0852, 0x7800}, /* FAGC init gain */
-> +	{ 0x0806, 0x1e1e}, /* Master/Slave Ph2 Back-off */
-> +	{ 0x0807, 0x2525}, /* Master/Slave Ph2 Back-off */
-> +	{ 0x0808, 0x2c2c}, /* Master/Slave Ph2 Back-off */
-> +	{ 0x0850, 0x0590}, /* Hybrid Gain/Delay Code */
-> +	{ 0x0827, 0x4000}, /* Echo Fixed Delay */
-> +	{ 0x0849, 0x0fe4}, /* Hybrid Cal enable */
-> +	{ 0x084b, 0x04b5}, /* Echo Score Sel */
-> +	{ 0x0018, 0x0043}, /* Set CRS/RX_DV pin as RX_DV for RMII repeater mode */
-> +};
-> +
-> +static struct dp83td510_init_reg dp83td510_auto_neg[] = {
-> +	{ 0x608, 0x003b }, /* disable_0_transition */
-> +	{ 0x862, 0x39f8 }, /* AGC Gain during Autoneg */
-> +	{ 0x81a, 0x67c0 }, /* deq offset for 1V swing */
-> +	{ 0x81c, 0xfb62 }, /* deq offset for 2.4V swing */
-> +	{ 0x830, 0x05a3 }, /* Enable energy lost fallback */
-> +	{ 0x855, 0x1b55 }, /* MSE Threshold change */
-> +	{ 0x831, 0x0403 }, /* energy detect threshold */
-> +	{ 0x856, 0x1800 }, /* good1 MSE threshold change */
-> +	{ 0x857, 0x8fa0 }, /* Enable fallback to phase 1 on watchdog trigger */
-> +	{ 0x871, 0x000c }, /* TED input changed to slicer_in without FFE */
-> +	{ 0x883, 0x022e }, /* Enable Rx Filter Change PGA threshold for Short Cable detection */
-> +	{ 0x402, 0x1800 }, /* Adjusr LD swing */
-> +	{ 0x878, 0x2248 }, /* Change PI up/down polarity */
-> +	{ 0x10c, 0x0008 }, /* tx filter coefficient */
-> +	{ 0x112, 0x1212 }, /* tx filter scaling factor */
-> +	{ 0x809, 0x5c80 }, /* AGC retrain */
-> +	{ 0x803, 0x1529 }, /* Master Ph1 Back-off */
-> +	{ 0x804, 0x1a33 }, /* Master Ph1 Back-off */
-> +	{ 0x805, 0x1f3d }, /* Master Ph1 Back-off */
-> +	{ 0x850, 0x045b }, /* hybrid gain & delay */
-> +	{ 0x874, 0x6967 }, /* kp step 0 for master */
-> +	{ 0x852, 0x7800 }, /* FAGC init gain */
-> +	{ 0x806, 0x1e1e }, /* Master/Slave Ph2 Back-off */
-> +	{ 0x807, 0x2525 }, /* Master/Slave Ph2 Back-off */
-> +	{ 0x808, 0x2c2c }, /* Master/Slave Ph2 Back-off */
-> +	{ 0x850, 0x0590 }, /* Hybrid Gain/Delay Code */
-> +	{ 0x827, 0x4000 }, /* Echo Fixed Delay */
-> +	{ 0x849, 0x0fe4 }, /* Hybrid Cal enable */
-> +	{ 0x84b, 0x04b5 }, /* Echo Score Sel */
-> +	{ 0x018, 0x0043 }, /* Set CRS/RX_DV pin as RX_DV for RMII repeater mode */
-> +};
-> +
-> +static int dp83td510_ack_interrupt(struct phy_device *phydev)
-> +{
-> +	int ret;
-> +
-> +	ret = phy_read(phydev, DP83TD510_INT_REG1);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	ret = phy_read(phydev, DP83TD510_INT_REG2);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	return 0;
-> +}
-> +
-> +static int dp83td510_config_intr(struct phy_device *phydev)
-> +{
-> +	int int_status;
-> +	int gen_cfg_val;
-> +	int ret;
-> +
-> +	if (phydev->interrupts == PHY_INTERRUPT_ENABLED) {
-> +		int_status = phy_read(phydev, DP83TD510_INT_REG1);
-> +		if (int_status < 0)
-> +			return int_status;
-> +
-> +		int_status = (DP83TD510_INT1_ESD_EN | DP83TD510_INT1_LINK_EN |
-> +			      DP83TD510_INT1_RHF_EN);
-> +
-> +		ret = phy_write(phydev, DP83TD510_INT_REG1, int_status);
-> +		if (ret)
-> +			return ret;
-> +
-> +		int_status = phy_read(phydev, DP83TD510_INT_REG2);
-> +		if (int_status < 0)
-> +			return int_status;
-> +
-> +		int_status = (DP83TD510_INT2_POR | DP83TD510_INT2_POL |
-> +				DP83TD510_INT2_PAGE);
-> +
-> +		ret = phy_write(phydev, DP83TD510_INT_REG2, int_status);
-> +		if (ret)
-> +			return ret;
-> +
-> +		gen_cfg_val = phy_read(phydev, DP83TD510_GEN_CFG);
-> +		if (gen_cfg_val < 0)
-> +			return gen_cfg_val;
-> +
-> +		gen_cfg_val |= DP83TD510_INT_OE | DP83TD510_INT_EN;
-> +
-> +	} else {
-> +		ret = phy_write(phydev, DP83TD510_INT_REG1, 0);
-> +		if (ret)
-> +			return ret;
-> +
-> +		ret = phy_write(phydev, DP83TD510_INT_REG2, 0);
-> +		if (ret)
-> +			return ret;
-> +
-> +		gen_cfg_val = phy_read(phydev, DP83TD510_GEN_CFG);
-> +		if (gen_cfg_val < 0)
-> +			return gen_cfg_val;
-> +
-> +		gen_cfg_val &= ~DP83TD510_INT_EN;
-> +	}
-> +
-> +	return phy_write(phydev, DP83TD510_GEN_CFG, gen_cfg_val);
-> +}
-> +
-> +static int dp83td510_configure_mode(struct phy_device *phydev)
-> +{
-> +	struct dp83td510_private *dp83td510 = phydev->priv;
-> +	struct dp83td510_init_reg *init_data;
-> +	int size;
-> +	int ret;
-> +	int i;
-> +
-> +	ret = phy_set_bits(phydev, DP83TD510_MII_REG, DP83TD510_HW_RESET);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	switch (dp83td510->forced_mode) {
-> +	case DP83TD510_MASTER_1:
-> +		size = ARRAY_SIZE(dp83td510_master_1_0);
-> +		init_data = dp83td510_master_1_0;
-> +		break;
-> +	case DP83TD510_MASTER_24:
-> +		size = ARRAY_SIZE(dp83td510_master_2_4);
-> +		init_data = dp83td510_master_2_4;
-> +		break;
-> +	case DP83TD510_SLAVE_1:
-> +		size = ARRAY_SIZE(dp83td510_slave_1_0);
-> +		init_data = dp83td510_slave_1_0;
-> +		break;
-> +	case DP83TD510_SLAVE_24:
-> +		size = ARRAY_SIZE(dp83td510_slave_2_4);
-> +		init_data = dp83td510_slave_2_4;
-> +		break;
-> +	case DP83TD510_AUTO_NEG:
-> +	default:
-> +		size = ARRAY_SIZE(dp83td510_auto_neg);
-> +		init_data = dp83td510_auto_neg;
-> +		break;
-> +	};
-> +
-> +	for (i = 0; i < size; i++) {
-> +		ret = phy_write_mmd(phydev, DP83TD510_DEVADDR, init_data[i].reg,
-> +				    init_data[i].val);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	return phy_set_bits(phydev, DP83TD510_MII_REG, DP83TD510_SW_RESET);
-> +}
-> +
-> +static int dp83td510_config_init(struct phy_device *phydev)
-> +{
-> +	struct dp83td510_private *dp83td510 = phydev->priv;
-> +	int ret = 0;
-> +
-> +	if (phy_interface_is_rgmii(phydev)) {
-> +		if (dp83td510->rgmii_delay) {
-> +			ret = phy_set_bits_mmd(phydev, DP83TD510_DEVADDR,
-> +					       DP83TD510_MAC_CFG_1, dp83td510->rgmii_delay);
-> +			if (ret)
-> +				return ret;
-> +		}
-> +	}
-> +
-> +	if (phydev->interface == PHY_INTERFACE_MODE_RMII)
-> +		ret = phy_modify(phydev, DP83TD510_GEN_CFG,
-> +				 DP83TD510_FIFO_DEPTH_MASK,
-> +				 dp83td510->tx_fifo_depth);
-> +
-> +	linkmode_clear_bit(ETHTOOL_LINK_MODE_100baseT_Half_BIT, phydev->advertising);
-> +	linkmode_clear_bit(ETHTOOL_LINK_MODE_100baseT_Half_BIT, phydev->supported);
-> +	linkmode_clear_bit(ETHTOOL_LINK_MODE_100baseT_Full_BIT, phydev->advertising);
-> +	linkmode_clear_bit(ETHTOOL_LINK_MODE_100baseT_Full_BIT, phydev->supported);
-> +	linkmode_clear_bit(ETHTOOL_LINK_MODE_MII_BIT, phydev->advertising);
-> +	linkmode_clear_bit(ETHTOOL_LINK_MODE_MII_BIT, phydev->supported);
-> +
-> +	return dp83td510_configure_mode(phydev);
-> +}
-> +
-> +static int dp83td510_phy_reset(struct phy_device *phydev)
-> +{
-> +	int ret;
-> +
-> +	ret = phy_set_bits(phydev, DP83TD510_MII_REG, DP83TD510_SW_RESET);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	usleep_range(10, 20);
-> +
-> +	return dp83td510_config_init(phydev);
-> +}
-> +
-> +static int dp83td510_read_straps(struct phy_device *phydev)
-> +{
-> +	struct dp83td510_private *dp83td510 = phydev->priv;
-> +	int strap;
-> +
-> +	strap = phy_read_mmd(phydev, DP83TD510_DEVADDR, DP83TD510_SOR_1);
-> +	if (strap < 0)
-> +		return strap;
-> +
-> +	if (strap & DP83TD510_RGMII)
-> +		dp83td510->is_rgmii = true;
-> +
-> +	return 0;
-> +};
-> +
-> +#if IS_ENABLED(CONFIG_OF_MDIO)
-> +static int dp83td510_of_init(struct phy_device *phydev)
-> +{
-> +	struct dp83td510_private *dp83td510 = phydev->priv;
-> +	struct device *dev = &phydev->mdio.dev;
-> +	struct device_node *of_node = dev->of_node;
-> +	s32 rx_int_delay;
-> +	s32 tx_int_delay;
-> +	int ret;
-> +
-> +	if (!of_node)
-> +		return -ENODEV;
-> +
-> +	ret = dp83td510_read_straps(phydev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = device_property_read_u32(&phydev->mdio.dev, "ti,master-slave-mode",
-> +				       &dp83td510->forced_mode);
-> +	if (ret)
-> +		dp83td510->forced_mode = DP83TD510_AUTO_NEG;
-> +
-> +	if (dp83td510->forced_mode < DP83TD510_AUTO_NEG ||
-> +	    dp83td510->forced_mode > DP83TD510_SLAVE_24)
-> +		return -EINVAL;
-> +
-> +	if (device_property_read_u32(&phydev->mdio.dev, "tx-fifo-depth",
-> +				     &dp83td510->tx_fifo_depth))
-> +		dp83td510->tx_fifo_depth = DP83TD510_FIFO_DEPTH_5_B_NIB;
-> +
-> +	switch (dp83td510->tx_fifo_depth) {
-> +	case 4:
-> +		dp83td510->tx_fifo_depth = DP83TD510_FIFO_DEPTH_4_B_NIB;
-> +		break;
-> +	case 5:
-> +		dp83td510->tx_fifo_depth = DP83TD510_FIFO_DEPTH_5_B_NIB;
-> +		break;
-> +	case 6:
-> +		dp83td510->tx_fifo_depth = DP83TD510_FIFO_DEPTH_6_B_NIB;
-> +		break;
-> +	case 8:
-> +		dp83td510->tx_fifo_depth = DP83TD510_FIFO_DEPTH_8_B_NIB;
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	rx_int_delay = phy_get_internal_delay(phydev, dev, NULL, 0, true);
-> +	if (rx_int_delay <= 0)
-> +		dp83td510->rgmii_delay = DP83TD510_RX_CLK_SHIFT;
-> +	else
-> +		dp83td510->rgmii_delay = 0;
-> +
-> +	tx_int_delay = phy_get_internal_delay(phydev, dev, NULL, 0, false);
-> +	if (tx_int_delay <= 0)
-> +		dp83td510->rgmii_delay |= DP83TD510_TX_CLK_SHIFT;
-> +	else
-> +		dp83td510->rgmii_delay &= ~DP83TD510_TX_CLK_SHIFT;
-> +
-> +	return ret;
-> +}
-> +#else
-> +static int dp83869_of_init(struct phy_device *phydev)
-> +{
-> +	return dp83td510_read_straps(phydev);
-> +}
-> +#endif /* CONFIG_OF_MDIO */
-> +
-> +static int dp83td510_probe(struct phy_device *phydev)
-> +{
-> +	struct dp83td510_private *dp83td510;
-> +	int ret;
-> +
-> +	dp83td510 = devm_kzalloc(&phydev->mdio.dev, sizeof(*dp83td510), GFP_KERNEL);
-> +	if (!dp83td510)
-> +		return -ENOMEM;
-> +
-> +	phydev->priv = dp83td510;
-> +
-> +	ret = dp83td510_of_init(phydev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return dp83td510_config_init(phydev);
-> +}
-> +
-> +static struct phy_driver dp83td510_driver[] = {
-> +	{
-> +		PHY_ID_MATCH_MODEL(DP83TD510E_PHY_ID),
-> +		.name		= "TI DP83TD510E",
-> +		.probe          = dp83td510_probe,
-> +		.config_init	= dp83td510_config_init,
-> +		.soft_reset	= dp83td510_phy_reset,
-> +		.features	= PHY_BASIC_FEATURES,
+On Thu, 8 Oct 2020 at 20:42, Rob Herring <robh@kernel.org> wrote:
+>
+> On Thu, Oct 8, 2020 at 9:47 AM Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> >
+> > On Fri, 2 Oct 2020 at 14:59, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> > >
+> > > On Thu, 1 Oct 2020 at 22:16, Michael Walle <michael@walle.cc> wrote:
+> > > >
+> > > > Am 2020-10-01 15:32, schrieb Kishon Vijay Abraham I:
+> > > >
+> > > > > Meanwhile would it be okay to add linkup check atleast for DRA7X so
+> > > > > that
+> > > > > we could have it booting in linux-next?
+> > > >
+> > > > Layerscape SoCs (at least the LS1028A) are also still broken in
+> > > > linux-next,
+> > > > did I miss something here?
+> > >
+> > > I have been monitoring linux next boot and functional testing on nxp devices
+> > > for more than two week and still the problem exists on nxp-ls2088.
+> > >
+> > > Do you mind checking the possibilities to revert bad patches on linux next tree
+> > > and continue to work on fixes please ?
+> > >
+> > > suspected bad commit: [ I have not bisected this problem ]
+> > > c2b0c098fbd1 ("PCI: dwc: Use generic config accessors")
+> > >
+> > > crash log snippet:
+> > > [    1.563008] SError Interrupt on CPU5, code 0xbf000002 -- SError
+> > > [    1.563010] CPU: 5 PID: 1 Comm: swapper/0 Not tainted
+> > > 5.9.0-rc7-next-20201001 #1
+> > > [    1.563011] Hardware name: Freescale Layerscape 2088A RDB Board (DT)
+> > > [    1.563013] pstate: 20000085 (nzCv daIf -PAN -UAO -TCO BTYPE=--)
+> > > [    1.563014] pc : pci_generic_config_read+0x44/0xe8
+> > > [    1.563015] lr : pci_generic_config_read+0x2c/0xe8
+> >
+> >
+> > This reported issue is gone now on Linux next master branch.
 
-Per default phylib uses genphy_read_abilities() to auto-detect
-the features. Doesn't your PHY support the needed clause 22
-standard registers? Or are they incorrectly populated?
+I am taking this verdict back.
+I have seen the boot pass and the reported issue is gone but after checking
+all 20 test jobs the 4 boot passes without the above reported error.
+and later the 16 boot failed with the reported error.
 
-Maybe better than setting PHY_BASIC_FEATURES and then removing
-unsuported features in dp83td510_config_init() would be to
-implement phy_driver callback get_features. Then you can set
-the supported fatures directly.
+> > I am not sure which is a fix commit.
+>
+> There isn't one, better double check that. We're still waiting on
+> respinning of the revert patch.
+>
+> BTW, why is the kernelci NXP lab almost always down? I have a branch
+> now to test things and I'm not done breaking the DWC driver. :)
 
-> +
-> +		/* IRQ related */
-> +		.ack_interrupt	= dp83td510_ack_interrupt,
-> +		.config_intr	= dp83td510_config_intr,
-> +
-> +		.suspend	= genphy_suspend,
-> +		.resume		= genphy_resume,
-> +	},
-> +};
-> +module_phy_driver(dp83td510_driver);
-> +
-> +static struct mdio_device_id __maybe_unused dp83td510_tbl[] = {
-> +	{ PHY_ID_MATCH_MODEL(DP83TD510E_PHY_ID) },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(mdio, dp83td510_tbl);
-> +
-> +MODULE_DESCRIPTION("Texas Instruments DP83TD510E PHY driver");
-> +MODULE_AUTHOR("Dan Murphy <dmurphy@ti.com");
-> +MODULE_LICENSE("GPL v2");
-> +
-> 
+Now the NXP LAVA lab is back online after upgrade.
+LKFT running daily testing on device "nxp-ls2088" [1]
 
+You can monitor and check results on Linaro Linux next project [2]
+
+[1] https://lavalab.nxp.com/scheduler/device_type/nxp-ls2088
+[2] https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20201008/?results_layout=table&failures_only=false#!?details=995,999#test-results
+
+- Naresh
