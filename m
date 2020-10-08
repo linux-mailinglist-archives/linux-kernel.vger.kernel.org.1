@@ -2,82 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76D88286CBD
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 04:27:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AA16286CBC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 04:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728136AbgJHC0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 22:26:41 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:57266 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727605AbgJHC0l (ORCPT
+        id S1728094AbgJHCZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 22:25:39 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:39903 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1727605AbgJHCZi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 22:26:41 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0982OC2m077039;
-        Thu, 8 Oct 2020 02:26:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=wnU28EFcIbJxso0n42g+3vGsqoAySFtYcnwF10mFpMA=;
- b=LDInZQGBzYPw0PkdFGTNkcu/fke6qda5Vs9FNy5bhXBvQyvA8b+d8gZZdz0rooWL8wi7
- Gm4EdIfaCwTPJ136W93WII+j4AysXRe0mt226/lXdzRunDQPKYYtSWHHaqDGOlA7/XE9
- 3LpSxCRai175FG8yqt0BNibihxd8RLHOA7y71xncQRrDnKpM5+M4CjRZoX2WwwFu2OG4
- mN2r8UehDE2/0Kw/3ChcgFxd7YcWt9tG6zvjsWZ/FH9enlZAXigTyLgf/6M7muPAAwLs
- SXzhEIMLc7FGST3akZ9s+A2ZEdyCnUY6F7xqd2dWlVBl+i+D22vFo4MlWQ34lnHXcBLe Hg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 33ym34t8up-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 08 Oct 2020 02:26:27 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0982LDtq090313;
-        Thu, 8 Oct 2020 02:24:26 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 33yyjj0k5g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 08 Oct 2020 02:24:26 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0982ONpt025197;
-        Thu, 8 Oct 2020 02:24:23 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 07 Oct 2020 19:24:22 -0700
-To:     Qinglang Miao <miaoqinglang@huawei.com>
-Cc:     Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        GR-QLogic-Storage-Upstream <GR-QLogic-Storage-Upstream@marvell.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next v2] scsi: qla2xxx: Convert to DEFINE_SHOW_ATTRIBUTE
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq17ds1zc8y.fsf@ca-mkp.ca.oracle.com>
-References: <20200919025202.17531-1-miaoqinglang@huawei.com>
-        <68C6E741-9A58-4E4E-B746-4E810EA7D651@oracle.com>
-Date:   Wed, 07 Oct 2020 22:24:20 -0400
-In-Reply-To: <68C6E741-9A58-4E4E-B746-4E810EA7D651@oracle.com> (Himanshu
-        Madhani's message of "Wed, 7 Oct 2020 08:35:42 -0500")
+        Wed, 7 Oct 2020 22:25:38 -0400
+Received: (qmail 480496 invoked by uid 1000); 7 Oct 2020 22:25:37 -0400
+Date:   Wed, 7 Oct 2020 22:25:37 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>, parri.andrea@gmail.com,
+        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        dlustig@nvidia.com, joel@joelfernandes.org,
+        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: Re: Bug in herd7 [Was: Re: Litmus test for question from Al Viro]
+Message-ID: <20201008022537.GA480405@rowland.harvard.edu>
+References: <20201005155310.GH376584@rowland.harvard.edu>
+ <20201005165223.GB29330@paulmck-ThinkPad-P72>
+ <20201005181949.GA387079@rowland.harvard.edu>
+ <20201005191801.GF29330@paulmck-ThinkPad-P72>
+ <20201005194834.GB389867@rowland.harvard.edu>
+ <20201006163954.GM29330@paulmck-ThinkPad-P72>
+ <20201006170525.GA423499@rowland.harvard.edu>
+ <20201007175040.GQ29330@paulmck-ThinkPad-P72>
+ <20201007194050.GC468921@rowland.harvard.edu>
+ <20201007223851.GV29330@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 adultscore=0 bulkscore=0
- phishscore=0 mlxlogscore=999 mlxscore=0 spamscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010080019
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 priorityscore=1501
- mlxscore=0 mlxlogscore=999 clxscore=1015 bulkscore=0 spamscore=0
- malwarescore=0 phishscore=0 suspectscore=1 adultscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010080020
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201007223851.GV29330@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 07, 2020 at 03:38:51PM -0700, Paul E. McKenney wrote:
+> On Wed, Oct 07, 2020 at 03:40:50PM -0400, Alan Stern wrote:
+> > On Wed, Oct 07, 2020 at 10:50:40AM -0700, Paul E. McKenney wrote:
+> > > And here is the updated version.
+> > > 
+> > > 							Thanx, Paul
+> > > 
+> > > ------------------------------------------------------------------------
+> > > 
+> > > commit b7cd60d4b41ad56b32b36b978488f509c4f7e228
+> > > Author: Alan Stern <stern@rowland.harvard.edu>
+> > > Date:   Tue Oct 6 09:38:37 2020 -0700
+> > > 
+> > >     manual/kernel: Add LB+mb+data litmus test
+> > 
+> > Let's change this to:
+> > 
+> >       manual/kernel: Add LB data dependency test with no intermediate variable
+> > 
+> > Without that extra qualification, people reading just the title would
+> > wonder why we need a simple LB litmus test in the archive.
 
->> Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
+> I might get this right sooner or later.  You never know.
+> 
+> Like this?
+> 
+> 							Thanx, Paul
 
-Applied to 5.10/scsi-staging, thanks!
+Paul, I think you must need new reading glasses.  You completely missed 
+the text above.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+Alan
+
+> ------------------------------------------------------------------------
+> 
+> commit 5b6a4ff2c8ad25fc77f4151e71e6cbd8f3268d7b
+> Author: Alan Stern <stern@rowland.harvard.edu>
+> Date:   Tue Oct 6 09:38:37 2020 -0700
+> 
+>     manual/kernel: Add LB+mb+data litmus test
+>     
+>     Test whether herd7 can detect a data dependency when there is no
+>     intermediate local variable, as in WRITE_ONCE(*x, READ_ONCE(*y)).
+>     Commit 0f3f8188a326 in herdtools fixed an oversight which caused such
+>     dependencies to be missed.
+>     
+>     Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
+>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
