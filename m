@@ -2,142 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A868D287338
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 13:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B505D28733B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 13:23:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728627AbgJHLWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 07:22:38 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:49996 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725871AbgJHLWi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 07:22:38 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602156155;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=b6+lOlv1iwgaOYJSo0B4bAoDFZBDK2Xe5o6Luzef3Lk=;
-        b=BoHx8+F2Jc247mGCaTP9Bpi2UfNR1qiiNjRlYM1D7nivnl6P8yyna+zV6d9XWdZNKmWcUM
-        6s1r/DJqZYyRlwN66odfdx8a4zW1EoLkHs7cf3cWuRTzx7UIgLVGdp7jlMiMKba/j1yUvT
-        6CeEBD6rzbmRJrfZXQNbymhHyp6TNCnnJKoD8o/6fVU7m1vAs1SSNCSiXpCzBuqj4chIWQ
-        7sseCTxpIqnFxvdveCyx0WOsdWWdkDyRdWLG/RTJZ0eZpP8YX5ouiOYP1egkbGN5kZ2zsW
-        nqHSWt2DoWrXP7lVXUxbpsugFHbrgwxWuKe6WMiKEhR7IEzIK+T+x+Qw6ybPeQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602156155;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=b6+lOlv1iwgaOYJSo0B4bAoDFZBDK2Xe5o6Luzef3Lk=;
-        b=Q+enYPn5ITD2l0pill+t8nPwCu4NEfLJeB4vBS5U8ed363RD6htO77XrmpBcQnlWgPE0NI
-        0SziIb5gmmIWafDA==
-To:     Marc Zyngier <maz@kernel.org>, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Sowjanya Komatineni <skomatineni@nvidia.com>,
-        Venkat Reddy Talla <vreddytalla@nvidia.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v3 1/4] genirq/irqdomain: Allow partial trimming of irq_data hierarchy
-In-Reply-To: <20201007124544.1397322-2-maz@kernel.org>
-References: <20201007124544.1397322-1-maz@kernel.org> <20201007124544.1397322-2-maz@kernel.org>
-Date:   Thu, 08 Oct 2020 13:22:35 +0200
-Message-ID: <87d01t2c90.fsf@nanos.tec.linutronix.de>
+        id S1729247AbgJHLXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 07:23:23 -0400
+Received: from foss.arm.com ([217.140.110.172]:51764 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725871AbgJHLXW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 07:23:22 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AE169D6E;
+        Thu,  8 Oct 2020 04:23:21 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 27BD03F71F;
+        Thu,  8 Oct 2020 04:23:20 -0700 (PDT)
+Date:   Thu, 8 Oct 2020 12:23:14 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Murali Karicheri <m-karicheri2@ti.com>,
+        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
+        Jassi Brar <jaswinder.singh@linaro.org>
+Subject: Re: [PATCH v3 0/4] PCI: dwc: Move iATU register mapping to common
+ framework
+Message-ID: <20201008112314.GA1181@e121166-lin.cambridge.arm.com>
+References: <1601444167-11316-1-git-send-email-hayashi.kunihiko@socionext.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1601444167-11316-1-git-send-email-hayashi.kunihiko@socionext.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07 2020 at 13:45, Marc Zyngier wrote:
-> +/**
-> + * irq_domain_trim_hierarchy - Trim the uninitialized part of a irq hierarchy
-> + * @virq:	IRQ number to trim where the hierarchy is to be trimmed
-> + *
-> + * Drop the partial irq_data hierarchy from the level where the
-> + * irq_data->chip is NULL.
-> + *
-> + * Its only use is to be able to trim levels of hierarchy that do not
-> + * have any real meaning for this interrupt, and that the driver leaves
-> + * uninitialized in its .alloc() callback.
-> + */
-> +static void irq_domain_trim_hierarchy(unsigned int virq)
-> +{
-> +	struct irq_data *tail, *irq_data = irq_get_irq_data(virq);
-> +
-> +	/* It really needs to be a hierarchy, and not a single entry */
-> +	if (!irq_data->parent_data)
-> +		return;
-> +
-> +	/* Skip until we find a parent irq_data without a populated chip */
-> +	while (irq_data->parent_data && irq_data->parent_data->chip)
-> +		irq_data = irq_data->parent_data;
-> +
-> +	/* All levels populated */
-> +	if (!irq_data->parent_data)
-> +		return;
-> +
-> +	pr_info("IRQ%d: trimming hierarchy from %s\n",
-> +		virq, irq_data->parent_data->domain->name);
-> +
-> +	/* Sever the inner part of the hierarchy...  */
-> +	tail = irq_data->parent_data;
-> +	irq_data->parent_data = NULL;
-> +	__irq_domain_free_hierarchy(tail);
-> +}
+On Wed, Sep 30, 2020 at 02:36:03PM +0900, Kunihiko Hayashi wrote:
+> This moves iATU register mapping in the Keystone driver to common
+> framework. And this adds "iatu" property description to the dt-bindings
+> for UniPhier PCIe host and endpoint controller.
+> 
+> This series is split from the previous patches:
+> https://www.spinics.net/lists/linux-pci/msg97608.html
+> "[PATCH v6 0/6] PCI: uniphier: Add features for UniPhier PCIe host controller"
+> 
+> This has been confirmed with PCIe version 4.80 controller on UniPhier platform.
+> Please comfirm this series on Keystone platform if necessary.
+> 
+> Changes since v2:
+> - dt-bindings: Fix errors from dt_binding_check
+> 
+> Changes since v1:
+> - Use to_platform_device() instead of of_find_device_by_node()
+> - Add Reviewed-by: line to 4th patch for keystone
+> - dt-bindings: Add description for uniphier-ep
+> 
+> Kunihiko Hayashi (4):
+>   dt-bindings: PCI: uniphier: Add iATU register description
+>   dt-bindings: PCI: uniphier-ep: Add iATU register description
+>   PCI: dwc: Add common iATU register support
+>   PCI: keystone: Remove iATU register mapping
+> 
+>  .../bindings/pci/socionext,uniphier-pcie-ep.yaml     | 20 ++++++++++++++------
+>  .../devicetree/bindings/pci/uniphier-pcie.txt        |  1 +
+>  drivers/pci/controller/dwc/pci-keystone.c            | 20 ++++----------------
+>  drivers/pci/controller/dwc/pcie-designware.c         |  5 +++++
+>  4 files changed, 24 insertions(+), 22 deletions(-)
 
-I like that way more than the previous version, but there are still
-quite some dangeroos waiting to bite.
+Applied to pci/dwc, thanks.
 
-Just for robustness sake we should do the following:
-
- Let the alloc() callback which decides to break the hierarchy tell the
- core code about it.  Conveying this through an error return might be
- tedious, but the alloc() callback should call:
-
-static inline void irq_disconnect_hierarchy(struct irq_data *irqd)
-{
-    irqd->chip = ERR_PTR(-ENOTCONN);
-}
-
-to signal that this is intenionally the end of the hierarchy.
-
-Then the above function would not only trim, but also sanity check the
-hierarchy.
-
-	trim = NULL;
-        
-        for (irqd = irq_data; irqd; irqd = irqd->parent_data) {
-                  if (!irqd->chip && !trim)
-                  	return -EINVAL;
-
-		  if (trim && irqd->chip)
-                  	return -EINVAL;
-                 
-                  if (IS_ERR(irqd->chip) {
-                  	if (PTR_ERR(irqd->chip) != -ENOTCONN)
-                        	return -EINVAL;
-                        trim = irqd;
-                  }
-        }
-
-        for (irqd = irq_data; trim && irqd; irqd = irqd->parent_data) {
-        	if (trim == irqd->parent_data) {
-                	irqd->parent_data = NULL;
-                        free_stuff(trim);
-                }
-        }
-
-	return 0;
-
-or some less convoluted variant of it :)
-
-That way we catch cases which do outright stupid crap and we let the
-allocation fail which needs to be handled at the outmost caller anyway
-instead of crashing later in the middle of the irq chip chain.
-
-Thanks,
-
-        tglx
+Lorenzo
