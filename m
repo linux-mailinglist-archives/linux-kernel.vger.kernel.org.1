@@ -2,95 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6249287687
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF14428768A
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730748AbgJHO6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 10:58:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729833AbgJHO6j (ORCPT
+        id S1730768AbgJHO7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 10:59:19 -0400
+Received: from mail-io1-f79.google.com ([209.85.166.79]:35836 "EHLO
+        mail-io1-f79.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730685AbgJHO7S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 10:58:39 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07635C061755;
-        Thu,  8 Oct 2020 07:58:39 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id y14so4476195pgf.12;
-        Thu, 08 Oct 2020 07:58:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ooZjKz5uSjTKoQI2IxfmGtOoaA/YElVdEKthcp4JCy0=;
-        b=kYRqTRYPJwu/u/x+JWPji3EJLHY8iHLCu0fp4xrK8eN44hz/EKpsrCwGy2J5jQsqUl
-         1pmSvEyy75FzbU76a72nI370rkQ5V0ltSuG8uqjwViEvbOA6Y1BdMeodJyl4ywvaa5GI
-         X0aggxGC9vHlDMi7AOLvnaCf/YdyjpXvZwsagPkxvTJfM6tIBlarogipQQi9iEfSV7av
-         eZrACIDjS4Bm6BFPSm7hnhsFT3pgQY9pYlmZ0vveaqcWsYZMQZIhInyPFG8WEcSOPlwD
-         xJqbPsVKBEHObi2GksOrrBOOHg4o2O584suy8PfZUTICerVyOM4cb729k5WJ0qvGpqor
-         DxKA==
+        Thu, 8 Oct 2020 10:59:18 -0400
+Received: by mail-io1-f79.google.com with SMTP id 64so98984ioy.2
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 07:59:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ooZjKz5uSjTKoQI2IxfmGtOoaA/YElVdEKthcp4JCy0=;
-        b=rnAHLTToso4FNdMl8UtPb9jTJ1G0o8TQKLaRe7HwU+X/5MB7hG9OgIPSLG+UkdYU2i
-         zs3+FwrTyfOq9koNNamjlwErY5zDcRCtqQhxncRHPiZst0QQWql9Zkt3qHnyIXKGd0fI
-         zyrsHbTaLVO0D2cRITAcZ9ukv4DURjrVzpFipN5Zi/TGqTbeFwyj4cpM0KeyqHrExXxg
-         SXMrX+cOg+nuR810BEGJEjaec+btnfQNUYiKou1U7FUDNzBPcijiDaAPonMPLGecwGfX
-         sWkaEzCyw0lLl4DsRJHeY3MI2yzwFNMqsHM1pKgZWIPEKDZazueCvcbFhP2+UgqVczjt
-         /3hw==
-X-Gm-Message-State: AOAM533UhuSEQQppsU3TomxXGnCX01147ERlmqngEWLZRaPehvNezF2v
-        74/uIGtZdTUK9Q0ypy5A1lk=
-X-Google-Smtp-Source: ABdhPJy0eL9K5c2FxGv07NPIdvY7W6v4AtwKGIOyCaMbhX2X4MJexS8uTGuygF9J3KZAT6flcWW3hA==
-X-Received: by 2002:a65:6487:: with SMTP id e7mr7513174pgv.409.1602169118483;
-        Thu, 08 Oct 2020 07:58:38 -0700 (PDT)
-Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
-        by smtp.gmail.com with ESMTPSA id z20sm7718395pfk.199.2020.10.08.07.58.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Oct 2020 07:58:37 -0700 (PDT)
-Subject: Re: [PATCH 2/3] ARM: dts: BCM5301X: Linksys EA9500 add port 5 and
- port 7
-To:     Andrew Lunn <andrew@lunn.ch>, Vivek Unune <npcomplete13@gmail.com>
-Cc:     devicetree@vger.kernel.org, Hauke Mehrtens <hauke@hauke-m.de>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org
-References: <cover.1601655904.git.npcomplete13@gmail.com>
- <cd64e0ccae3e5785c80ad4d73af533a40fc15876.1601655904.git.npcomplete13@gmail.com>
- <20201007210327.GE112961@lunn.ch> <20201007220718.GB1972@ubuntu>
- <20201008003241.GG112961@lunn.ch>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <9c6e4da5-033e-6b30-4525-9f3a7b4ba01f@gmail.com>
-Date:   Thu, 8 Oct 2020 07:58:35 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.3.1
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=S0n5JCd9SrefY0K/bE0BUwuaxFr2/JQdj8K7MO2HBwo=;
+        b=MpYbg7S5ktYhD0nMtS5p4jvc+M0KFLJFeAKVt/uPP6Y8fQQjLkIfopOQo0RbKMJIMI
+         SJvGEpgoPXSiOQZz/nrJY8Pu4rJtvnUAtMwKB4MSauvZILMQKrLxf67TXf3jAD26QsRz
+         m1Uk+3G5ZSO3eY3Tn2uHK1bWnfzCs7HAxpg18MZIFe8woJ7pFajHGNjxzEE55I+Pnd7u
+         z9rP5bPG91sWq4EzqQC2Dtm2Y+UlOgwzSh6xGupNPPOiIDKJVZWvjX/tsp6FIUiK+kIP
+         Y6UwTI1nRtb51CAZeX2+7zj2XJdW3UqXy2Xxl7Y8+32I8R9tw8ZoWyy3TZOY7qn4UuXg
+         R+nQ==
+X-Gm-Message-State: AOAM531XeJmTADdABsI/Yw7KBoc2NFKi9WEexHnTgP2/TrtvoyZwlIMn
+        emx7yrtT4BvXuCNmBvwAOyX6BZZdIEwdTNEFhDtY98stNLu3
+X-Google-Smtp-Source: ABdhPJyVROS/QHB6L9ylt6hctnvKKyQoDrfrBHOKj4ZiItU2g1eo7hO2ekhikOcTpckvAmztmrQS9HMJ0WT671r2mz8+A4O3haIT
 MIME-Version: 1.0
-In-Reply-To: <20201008003241.GG112961@lunn.ch>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a02:c942:: with SMTP id u2mr7070148jao.114.1602169157524;
+ Thu, 08 Oct 2020 07:59:17 -0700 (PDT)
+Date:   Thu, 08 Oct 2020 07:59:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000081256605b12a1311@google.com>
+Subject: KASAN: use-after-free Read in search_by_entry_key
+From:   syzbot <syzbot+83b6f7cf9922cae5c4d7@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, colin.king@canonical.com, jack@suse.cz,
+        jeffm@suse.com, linux-kernel@vger.kernel.org,
+        reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    c85fb28b Merge tag 'arm64-fixes' of git://git.kernel.org/p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=136fa1fb900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=de7f697da23057c7
+dashboard link: https://syzkaller.appspot.com/bug?extid=83b6f7cf9922cae5c4d7
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17ef5d4f900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11396677900000
+
+Bisection is inconclusive: the issue happens on the oldest tested release.
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13e47620500000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=10147620500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=17e47620500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+83b6f7cf9922cae5c4d7@syzkaller.appspotmail.com
+
+REISERFS (device loop0): journal params: device loop0, size 15748, journal first block 18, max trans len 1024, max batch 900, max commit age 30, max trans age 30
+REISERFS (device loop0): checking transaction log (loop0)
+REISERFS (device loop0): Using r5 hash to sort names
+REISERFS (device loop0): using 3.5.x disk format
+==================================================================
+BUG: KASAN: use-after-free in bin_search_in_dir_item fs/reiserfs/namei.c:40 [inline]
+BUG: KASAN: use-after-free in search_by_entry_key+0x450/0xad0 fs/reiserfs/namei.c:164
+Read of size 4 at addr ffff88807cd0b7bd by task syz-executor710/6847
+
+CPU: 1 PID: 6847 Comm: syz-executor710 Not tainted 5.9.0-rc8-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1d6/0x29e lib/dump_stack.c:118
+ print_address_description+0x66/0x620 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report+0x132/0x1d0 mm/kasan/report.c:530
+ bin_search_in_dir_item fs/reiserfs/namei.c:40 [inline]
+ search_by_entry_key+0x450/0xad0 fs/reiserfs/namei.c:164
+ reiserfs_find_entry+0x246/0x1260 fs/reiserfs/namei.c:321
+ reiserfs_lookup+0x156/0x3a0 fs/reiserfs/namei.c:367
+ __lookup_slow+0x240/0x370 fs/namei.c:1544
+ lookup_one_len+0x10e/0x200 fs/namei.c:2562
+ reiserfs_lookup_privroot+0x85/0x1e0 fs/reiserfs/xattr.c:972
+ reiserfs_fill_super+0x2b51/0x3240 fs/reiserfs/super.c:2176
+ mount_bdev+0x24f/0x360 fs/super.c:1417
+ legacy_get_tree+0xea/0x180 fs/fs_context.c:592
+ vfs_get_tree+0x88/0x270 fs/super.c:1547
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x179d/0x29e0 fs/namespace.c:3192
+ do_mount fs/namespace.c:3205 [inline]
+ __do_sys_mount fs/namespace.c:3413 [inline]
+ __se_sys_mount+0x126/0x180 fs/namespace.c:3390
+ do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x447d9a
+Code: b8 08 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 7d a3 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 5a a3 fb ff c3 66 0f 1f 84 00 00 00 00 00
+RSP: 002b:00007ffc5d05d468 EFLAGS: 00000297 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffc5d05d4c0 RCX: 0000000000447d9a
+RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007ffc5d05d480
+RBP: 00007ffc5d05d480 R08: 00007ffc5d05d4c0 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000297 R12: 0000000000000006
+R13: 0000000000000004 R14: 0000000000000003 R15: 0000000000000003
+
+The buggy address belongs to the page:
+page:0000000023b676e0 refcount:0 mapcount:0 mapping:0000000000000000 index:0x1 pfn:0x7cd0b
+flags: 0xfffe0000000000()
+raw: 00fffe0000000000 ffffea0001f34308 ffffea0001f34288 0000000000000000
+raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff88807cd0b680: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff88807cd0b700: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>ffff88807cd0b780: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+                                        ^
+ ffff88807cd0b800: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff88807cd0b880: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+==================================================================
 
 
-On 10/7/2020 5:32 PM, Andrew Lunn wrote:
->> This router is currently not enabled in Openwrt
-> 
-> You have to be careful here. Not everything runs OpenWRT. You cannot
-> break backwards compatibility in mainline, simple as that. You need to
-> ensure that mainline does not see a change in the CPU port.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-I don't think this is breaking anything, in premise all 3 CPU interfaces 
-are completely interchangeable, with the notable fact that port 8 
-happens to have the flow accelerator block available for re-circulation 
-of packets if we wanted to support a NATP offload at some point in the 
-future.
-
-Vivek, maybe you can add ports 5 and 7 in the Device Tree and mark them 
-as disabled for now.
--- 
-Florian
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
