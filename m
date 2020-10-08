@@ -2,205 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF8A5287E2B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 23:42:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D02287E39
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 23:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727701AbgJHVmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 17:42:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39204 "EHLO
+        id S1728622AbgJHVop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 17:44:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725995AbgJHVmx (ORCPT
+        with ESMTP id S1725995AbgJHVoo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 17:42:53 -0400
+        Thu, 8 Oct 2020 17:44:44 -0400
 Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 642CBC0613D2;
-        Thu,  8 Oct 2020 14:42:53 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id lw21so10204459ejb.6;
-        Thu, 08 Oct 2020 14:42:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78F0BC0613D2;
+        Thu,  8 Oct 2020 14:44:44 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id c22so10245063ejx.0;
+        Thu, 08 Oct 2020 14:44:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hFDoG3fQdlhIOZ8IJAwTd18Qq8zG8h1BvVCyh4lmt3Y=;
-        b=HTuKFemmRx2Ymd9m5//8leO6bwra40/yjCvfZ79hk5KjxmPRLcwJRL/ANFoOQz5AYK
-         2Hm5+2CrTJC93AwEvpnHrMdTvdU3qdTM+9eiIrwhZL+P5mjTZJxPFtDY9YpBwwIYUc5x
-         DlS545kIJiwNZSUyg71QejrfTFSCWc5K0ABMZ4uOsUHnU+HLSwKmUBdm+ZmE/s2Lssrx
-         IwI0IcZWzuenqjXTvEOD7gtw4GbGSioHsCem5lvbc0SZ99LYmhveWe/J/CuOHRn5iVXp
-         e+iLDkb9v9S1GtdZs2ciCRygh3NO1Jtwv8TqqjjNwdMMtdIu/DnagIpbnlS7jKhaETm3
-         1wdQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OL8+lmrAXXWLp+r3THXbwOuJFsPpc8Sn/rLcUaGJ2o0=;
+        b=AVQ6dqo9sNa/8TQxRe1y96btk3lhED4lonWb4FioNzxOJ3YWRSuPDjUDlgW5dOi93B
+         E8sPjPKEqToa+UsF8KZimkwrZcMcDzyvnxY//h9r+e3+9LmSEYIo4k9sdcak3md+iaNh
+         ZyWSZUfEkvipVhEjNqHwWiExsKuNbeypdL0BKZmUCf2kOWWRBfHyEdorKFOz2xekLrsJ
+         PDyeW2/2i8Wm5x/Qd6O+/qu9hzbXFVKvP4sypMG6Zq6LXJirfwIbYDWgivmUEZ5C4/YO
+         oiZr7VFEqLbiQZ5Lex/4tHIYUY8fdU1P6jWrxbzBo4ojJda0T9KiAAaVjborbTxalI1k
+         naIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=hFDoG3fQdlhIOZ8IJAwTd18Qq8zG8h1BvVCyh4lmt3Y=;
-        b=EifLybvtSFvoBZlYGuAFcu5lZWEmnjILYipTXQphLmglEqyFm5HeRpEHOqYIxmaBN1
-         mLyIQ2VB/66QU5/+6bVBGAKV1TjJhedIJlp7K38QflPuWTh+5B1zdeHtiwDw6f5iolBa
-         54d9+6crWo9vCgZ8AjinThfv+PE99qJq+Tkers0dTtGWjzFJlOlT6n7Wxlvla1SR4+KA
-         f3yYacPnh/tvIaNUhkvi9G8OiqY8C/Iw0Z6ZKzPx9GkosW0F/uaRW5D1F2NiX0E8YkbD
-         jEGwYqMhsrSptBLsMqueuIxWc3ssbZTpRVnfJOUkOBxoXzc7EJOCcCmGFnNE/G31iWLW
-         zbEg==
-X-Gm-Message-State: AOAM5319Ou07RjdAwEVYAcNzu9AhxhfsE8SOU/mNB8IiDjg1rfpSS5mh
-        egYPtbntFc+JtR+rlJxNRm0=
-X-Google-Smtp-Source: ABdhPJy9kQW67aVqErjy36BpoDQBTRVwkGVvV6XJITIyjaQrxfGboo8FwLf2Cc9zn2r3s/Utn25xEw==
-X-Received: by 2002:a17:906:70d4:: with SMTP id g20mr11466584ejk.413.1602193371995;
-        Thu, 08 Oct 2020 14:42:51 -0700 (PDT)
-Received: from ?IPv6:2a01:110f:b59:fd00:a188:5df3:7e17:9e85? ([2a01:110f:b59:fd00:a188:5df3:7e17:9e85])
-        by smtp.gmail.com with ESMTPSA id p25sm4935384edm.60.2020.10.08.14.42.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Oct 2020 14:42:51 -0700 (PDT)
-Subject: Re: [PATCH v5 1/2] dt-bindings: leds: Add bindings for MT6360 LED
-To:     Gene Chen <gene.chen.richtek@gmail.com>, pavel@ucw.cz,
-        robh+dt@kernel.org, matthias.bgg@gmail.com
-Cc:     dmurphy@ti.com, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
-References: <1602034966-3524-1-git-send-email-gene.chen.richtek@gmail.com>
- <1602034966-3524-2-git-send-email-gene.chen.richtek@gmail.com>
-From:   Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Message-ID: <2dcc2958-8942-642a-8ace-71d397857463@gmail.com>
-Date:   Thu, 8 Oct 2020 23:42:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        bh=OL8+lmrAXXWLp+r3THXbwOuJFsPpc8Sn/rLcUaGJ2o0=;
+        b=gSpHH3ss5PFWtEhV5ovkZCziW6WgGgnKk6UDAjJMAMi+VbFS4UQDzIsAKa5XkHEBU6
+         WwH/lhtsm+dAhbhhhnwy87ZRfX69x/i7qfS7e/7W60IRgOMEn0wI2VLhKBJxiLi2kGws
+         NyJeXs5/5ZQLM2dQj17Kcruy26E01XfEbNvGaSGdyE5zNeJK0+pj3umg5izYmS/JVuca
+         K+oDmPEtZiia2i8VUeVYg2D1PZ2tt5KlNI12r/VR3K5zUzr/7Y0QKm7ar1jMXiYx4Cn5
+         eW/29u98qKpgh5pd/SNNpPgKH7MGSGOL+QdBoD0kjJEa+mr2SJTaCSqDLezIXKoBrgTc
+         +a2w==
+X-Gm-Message-State: AOAM530dvwXWWv5Psd7n/giGwlPnAi1zuVfy054Gf8i5BrohJy/3vD9z
+        i2tcVNr+gcCi737QQOmnXhQ=
+X-Google-Smtp-Source: ABdhPJzF+Qci1OtJC3oz+/z1/FAYSrNrBvkc4xolg+Nt5Q1mvU4lidSaZfZ7WNFlSOtYUb9Tp5GbeQ==
+X-Received: by 2002:a17:906:7c4b:: with SMTP id g11mr6062120ejp.469.1602193483082;
+        Thu, 08 Oct 2020 14:44:43 -0700 (PDT)
+Received: from localhost.localdomain ([188.24.159.61])
+        by smtp.gmail.com with ESMTPSA id i8sm4831800ejg.84.2020.10.08.14.44.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Oct 2020 14:44:42 -0700 (PDT)
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+        Wolfram Sang <wsa@kernel.org>, Peter Rosin <peda@axentia.se>
+Cc:     linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-actions@lists.infradead.org
+Subject: [PATCH 0/3] Improve Actions Semi Owl I2C driver
+Date:   Fri,  9 Oct 2020 00:44:38 +0300
+Message-Id: <cover.1602190168.git.cristian.ciocaltea@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <1602034966-3524-2-git-send-email-gene.chen.richtek@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gene,
+This patchset brings a few improvements to the Actions Semiconductor
+Owl I2C driver driver:
 
-Thanks for the update.
+- Fixes an issue reported by Mani related to the error handling
+- Adds support for atomic transfers
+- Enables asynchronous probing, per Mani's suggestion
 
-On 10/7/20 3:42 AM, Gene Chen wrote:
-> From: Gene Chen <gene_chen@richtek.com>
-> 
-> Add bindings document for LED support on MT6360 PMIC
-> 
-> Signed-off-by: Gene Chen <gene_chen@richtek.com>
-> ---
->   .../devicetree/bindings/leds/leds-mt6360.yaml      | 95 ++++++++++++++++++++++
->   1 file changed, 95 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/leds/leds-mt6360.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/leds/leds-mt6360.yaml b/Documentation/devicetree/bindings/leds/leds-mt6360.yaml
-> new file mode 100644
-> index 0000000..2fa636f
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/leds/leds-mt6360.yaml
-> @@ -0,0 +1,95 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/leds/leds-mt6360.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: LED driver for MT6360 PMIC from MediaTek Integrated.
-> +
-> +maintainers:
-> +  - Gene Chen <gene_chen@richtek.com>
-> +
-> +description: |
-> +  This module is part of the MT6360 MFD device.
-> +  see Documentation/devicetree/bindings/mfd/mt6360.yaml
-> +  Add MT6360 LED driver include 2-channel Flash LED with torch/strobe mode,
-> +  and 4-channel RGB LED support Register/Flash/Breath Mode
-> +
-> +properties:
-> +  compatible:
-> +    const: mediatek,mt6360-led
-> +
-> +  "#address-cells":
-> +    const: 1
-> +
-> +  "#size-cells":
-> +    const: 0
-> +
-> +patternProperties:
-> +  "^led@[0-3]$":
-> +    type: object
-> +    $ref: common.yaml#
-> +    description:
-> +      Properties for a single LED.
-> +
-> +    properties:
-> +      reg:
-> +        description: Index of the LED.
-> +        enum:
-> +          - 0 # LED output INDICATOR1_RGB
-> +          - 1 # LED output INDICATOR2
-> +          - 2 # LED output FLED1
-> +          - 3 # LED output FLED2
-> +
-> +unevaluatedProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - "#address-cells"
-> +  - "#size-cells"
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> + - |
-> +   #include <dt-bindings/leds/common.h>
-> +   led-controller {
-> +     compatible = "mediatek,mt6360-led";
-> +     #address-cells = <1>;
-> +     #size-cells = <0>;
-> +
-> +     led@0 {
-> +       reg = <0>;
-> +       function = LED_FUNCTION_INDICATOR;
-> +       color = <LED_COLOR_ID_RGB>;
-> +       led-max-microamp = <24000>;
-> +     };
+Please note the first two patches incorporate the review received for
+the following patch (which became obsolete now):
+https://lore.kernel.org/lkml/b6c56858854805b0f03e29b7dde40b20796d5c93.1599561278.git.cristian.ciocaltea@gmail.com/
 
-This should be multi-led node. See [0] for a reference.
+Kind regards,
+Cristi
 
-> +     led@1 {
-> +       reg = <1>;
-> +       function = LED_FUNCTION_INDICATOR;
+Cristian Ciocaltea (3):
+  i2c: owl: Clear NACK and BUS error bits
+  i2c: owl: Add support for atomic transfers
+  i2c: owl: Enable asynchronous probing
 
-Maybe add LED_FUNCTION_MOONLIGHT ?
-
-> +       color = <LED_COLOR_ID_AMBER>;
-> +       default-state = "off";
-> +       led-max-microamp = <150000>;
-> +     };
-> +     led@2 {
-> +       reg = <2>;
-> +       function = LED_FUNCTION_FLASH;
-> +       color = <LED_COLOR_ID_WHITE>;
-> +       function-enumerator = <1>;
-> +       default-state = "off";
-> +       led-max-microamp = <200000>;
-> +       flash-max-microamp = <500000>;
-> +       flash-max-timeout-us = <1024000>;
-> +     };
-> +     led@3 {
-> +       reg = <3>;
-> +       function = LED_FUNCTION_FLASH;
-> +       color = <LED_COLOR_ID_WHITE>;
-> +       function-enumerator = <2>;
-> +       default-state = "off";
-> +       led-max-microamp = <200000>;
-> +       flash-max-microamp = <500000>;
-> +       flash-max-timeout-us = <1024000>;
-> +     };
-> +   };
-> +...
-> 
-
-[0] 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/leds/leds-lp55xx.yaml
+ drivers/i2c/busses/i2c-owl.c | 83 +++++++++++++++++++++++++++---------
+ 1 file changed, 63 insertions(+), 20 deletions(-)
 
 -- 
-Best regards,
-Jacek Anaszewski
+2.28.0
+
