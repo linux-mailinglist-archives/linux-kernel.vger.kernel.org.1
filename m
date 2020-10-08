@@ -2,85 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53001287C81
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 21:32:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63290287C89
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 21:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726361AbgJHTce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 15:32:34 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:13437 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725616AbgJHTce (ORCPT
+        id S1728620AbgJHTfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 15:35:51 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:34095 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725616AbgJHTfu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 15:32:34 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7f68440000>; Thu, 08 Oct 2020 12:28:04 -0700
-Received: from [10.2.85.86] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 8 Oct
- 2020 19:28:22 +0000
-Subject: Re: [PATCH] Documentation: filesystems: better locations for
- sysfs-pci, sysfs-tagging
-To:     Jonathan Corbet <corbet@lwn.net>
-CC:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Jan Kara <jack@suse.cz>, David Sterba <dsterba@suse.com>,
-        <linux-doc@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-References: <20201007233151.490953-1-jhubbard@nvidia.com>
- <20201008100427.39ca3c1f@lwn.net>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <d91a1088-641c-07e1-4065-bbd8ad79332c@nvidia.com>
-Date:   Thu, 8 Oct 2020 12:28:21 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Thu, 8 Oct 2020 15:35:50 -0400
+Received: from mail-qk1-f174.google.com ([209.85.222.174]) by
+ mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MmU5P-1kqpqm1A25-00iSZd for <linux-kernel@vger.kernel.org>; Thu, 08 Oct
+ 2020 21:35:49 +0200
+Received: by mail-qk1-f174.google.com with SMTP id w12so8261100qki.6
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 12:35:49 -0700 (PDT)
+X-Gm-Message-State: AOAM533aQGRS3NBCxLOMLGmyxf7dSRS6PUd3NI7aUH4Vxgz7d5LD6ANM
+        RP7NCuQmSjPKdA0zDcAzcF21JOIXhWkO3PYjDrw=
+X-Google-Smtp-Source: ABdhPJxtDgXmC1qVf05wiZe1kDndVdMeWJAsi0qywXzfsOVjo9EDTqBUxlCzoCxwUuqPAwm31T0uguA+Zbet5mxoSNI=
+X-Received: by 2002:a05:620a:74f:: with SMTP id i15mr10183732qki.352.1602185748173;
+ Thu, 08 Oct 2020 12:35:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201008100427.39ca3c1f@lwn.net>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1602185284; bh=SDS6BGkPbeIhE1YR1pvqQexHVFA/bCFdW7c+ZbpQHZc=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=VhSeSrRrNiRttdO08KwCiAM8uK6vaaI2YouT1s+XQOJGBL2Yp5cx2noXhZe8QHRpM
-         RwY9KvPRSwwrxcEaNTokxVj7unRI3foMuYEKljGo2v1CnRMYeZmF2EEoMQQ4ifNqGl
-         oCGdHzoKe7kGbpPkgTxcjs2KOLmgzvkNoXta8Taig2jCQndhExqc5WM+7vM++rcbJa
-         Gj4nKgBebdxSF13ClIHFyV4JLzh83uYBLPcS+8Nm6mupmSvwseb/EvnwruzcVtZV/S
-         AvkfsDX9YYfENIUsxS5K7rJkqo3mPYuDKAt7G9CjsyZ7z7QXBvwEtCoswS6qnlz57p
-         5CVmUbc31bi3g==
+References: <20201008182713.2764-1-harshalchau04@gmail.com>
+In-Reply-To: <20201008182713.2764-1-harshalchau04@gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 8 Oct 2020 21:35:32 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1cSCDAHDNFX9KrqQ3-7TNsidzyX6_Yn-fmVOQGqyCHCA@mail.gmail.com>
+Message-ID: <CAK8P3a1cSCDAHDNFX9KrqQ3-7TNsidzyX6_Yn-fmVOQGqyCHCA@mail.gmail.com>
+Subject: Re: [PATCH] char: ppdev: check if ioctl argument is present and valid
+To:     Harshal Chaudhari <harshalchau04@gmail.com>
+Cc:     gregkh <gregkh@linuxfoundation.org>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:rI3NjZO4yvP03LzfIjtXm9SpBQH9C8QA7KlDkI5y0TC0eHxTURX
+ 5Bg63H3rUC/SXnuvpGYwYp/Xw/3/x1D+Wo8hKxdO1MzJXUXDp1Tvp/S3Y1wyukwOtFGyciC
+ fAXs3EuNv28xiHcIKYOQcw1ZDlkyEO9txlJ+nXmdE6dLKdOoS3YwACX9Lxuq80FD5aLop0d
+ S5PcSn1uTDKqxH3zk1/jQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:CYh94WlcGfA=:lp4blldvLxedzPLwwyjInM
+ OrHOwC9IzJKAqwc/UUJoEJOGPNrKPq669gONKQmI8XZphjX8epUCODZTb/Rqps3MBuJ5S3K0I
+ /1sg1EWNuYjFls2O7MyEPBjxXccYs4zyvgDtaN0c64498JHlZ74jPGPOenzC6ofOFuuSOrB4a
+ mJGE4i91RI/1H8dosfExNIkTrU+uwbuR99w4tAIXcD96sypfTRErVKl65XC2x0NZAlzQhJPbL
+ hqKfqDORVN7c5NANo5V/4gKFjE8Vvz/edluiaw9y4ycrHF6JGymTOi7Wkt8XmBIPsWLfghdno
+ qCAafHR/Ynx53jpTMoAyLXMrTXiDbQg80+ev9I84+gNCOZXgf9SfquZr30BiK2U0ZK6RCGtWU
+ sFaTeAAjx3hYYUHtgrIkYCDXOpZOsYph13MV6mPoE+KGNhy5qsiWIooUWqSImzpLOAJ13uOMu
+ wvsbj3quiKidRsqN88OBq7bCSrbuKpNXRKD9PTGYay+t+80mcMuN/epWXcX/u6lQ1yNKVTBNy
+ EBkGknK0ebT5tkaJ91gBFhpgYtxAM0p00Q/NCXKAtIJ3IG4Mm0qWd4wt3tsdAer3hK03m2CXi
+ 8f5eGBTzeqr4KGaI4A1YpNCDof9z0QBPfsPaAuOzfa7MZYMCHWXPXy2iOlEsIy8ISl1ImaUB9
+ XDlEsNTaCSeUvHfMKm1vyeFWAzxll1zeJO9th4aTbK9KvvCiwAgm8BvZZtibs/ercpRrfCa1U
+ t6WZT4AehVp7LUwZcy6iOLaFg+FHoz7YpafyzGSqFZBNUyhI8lEiBG9yHM6UtA0biqBqfGc7r
+ CNrErHsObybOXkWDE9zQPPaivc1Q6RECKgaY2aSWeVD4OB2DsxVDLKbr8XYw0BKq1PaD+YS
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/8/20 9:04 AM, Jonathan Corbet wrote:
-> On Wed, 7 Oct 2020 16:31:51 -0700
-> John Hubbard <jhubbard@nvidia.com> wrote:
-> 
->> sysfs-pci and sysfs-tagging were mis-filed: their locations with
->> Documentation/ implied that they were related to file systems. Actually,
->> each topic is about a very specific *use* of sysfs, and sysfs *happens*
->> to be a (virtual) filesystem, so this is not really the right place.
->>
->> It's jarring to be reading about filesystems in general and then come
->> across these specific details about PCI, and tagging...and then back to
->> general filesystems again.
->>
->> Move sysfs-pci and sysfs-tagging to a location under the sysfs topic.
->>
->> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-> 
-> I see why you want to do this, but I have to wonder if moving them out of
-> Documentation/filesystems entirely might not be a better approach.
-> sysfs-pci.rst might better belong in the admin guide or under PCI/, while
-> sysfs-tagging.rst could go under networking/.
-> 
-> Make sense?
-> 
+On Thu, Oct 8, 2020 at 8:27 PM Harshal Chaudhari
+<harshalchau04@gmail.com> wrote:
+>
+> Checking the argument passed to the ioctl is valid
+> or not. if not then return -EINVAL.
+>
+> Signed-off-by: Harshal Chaudhari <harshalchau04@gmail.com>
+> ---
+>  drivers/char/ppdev.c | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/char/ppdev.c b/drivers/char/ppdev.c
+> index 38b46c7d1737..001392980202 100644
+> --- a/drivers/char/ppdev.c
+> +++ b/drivers/char/ppdev.c
+> @@ -354,7 +354,7 @@ static int pp_do_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+>         unsigned int minor = iminor(file_inode(file));
+>         struct pp_struct *pp = file->private_data;
+>         struct parport *port;
+> -       void __user *argp = (void __user *)arg;
+> +       void __user *argp = NULL;
+>         struct ieee1284_info *info;
+>         unsigned char reg;
+>         unsigned char mask;
 
-Absolutely, I'll post a v2 that does it that way.
+Assigning to NULL serves no purpose here.
 
-thanks,
--- 
-John Hubbard
-NVIDIA
+> @@ -364,6 +364,16 @@ static int pp_do_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+>         struct timespec64 ts;
+>         int ret;
+>
+> +       if (_IOC_TYPE(cmd) != PP_IOCTL)
+> +               return -ENOTTY;
+
+This looks correct but is normally done as a "default" case
+
+> +       /* check if ioctl argument is present and valid */
+> +       if (_IOC_DIR(cmd) != _IOC_NONE) {
+> +               argp = (void __user *)arg;
+> +               if (!argp)
+> +                       return -EINVAL;
+> +       }
+
+This is a change in behavior, it changes the return code from the correct
+-EFAULT to an unusual -EINVAL for the special case that the pointer
+is NULL compared to other invalid pointers.
+
+      Arnd
