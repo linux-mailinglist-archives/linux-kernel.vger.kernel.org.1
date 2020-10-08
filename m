@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91DD72879E4
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 18:23:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 082462879E7
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 18:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730511AbgJHQXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 12:23:07 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:59816 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726012AbgJHQXG (ORCPT
+        id S1730787AbgJHQX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 12:23:56 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:53674 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726012AbgJHQXz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 12:23:06 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 098GN0hK064790;
-        Thu, 8 Oct 2020 11:23:00 -0500
+        Thu, 8 Oct 2020 12:23:55 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 098GNpqi016489;
+        Thu, 8 Oct 2020 11:23:51 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1602174180;
+        s=ti-com-17Q1; t=1602174231;
         bh=1qreb2kVtUQKe4lI6IV2IRG5ZuGQneUy3UDTv28QzTA=;
         h=From:To:CC:Subject:Date;
-        b=qcJEN7rzGZBrbcL+YNrBxEtyuZX7TbNE2GAwgXqUeR1V4ArIMFBLcWQRI/xWEBXNc
-         HW7hLGkrh65LmdXlbDeKX/Y3GCOvL7P3i3s5x7BPmXzxdAtf2y5fz2iY9eOuTYbZBH
-         5oulFjnU4cKY9YcxSsfx6NrHfe7EGl4WHjTAW2Zk=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 098GN0lq003833
+        b=FdGRTTNsDZ2SrvPtzK29tN06l41/wHLe4sWLTIfkD0TRfAayNm40qb/G0O5XgUKbj
+         D2aXNen9ig6dlRvVxRUmqLQ7JWLct5J1zclQ2Oyhb0eNYXUnlD0oBrIdraDRH4vl5K
+         aKBHhJkDuKkwTy7s+ZOGOsLhc7GSE+RVZlA7r0Yc=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 098GNoBa120158
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 8 Oct 2020 11:23:00 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+        Thu, 8 Oct 2020 11:23:50 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 8 Oct
- 2020 11:23:00 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ 2020 11:23:50 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 8 Oct 2020 11:23:00 -0500
+ Frontend Transport; Thu, 8 Oct 2020 11:23:50 -0500
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 098GMw1r067942;
-        Thu, 8 Oct 2020 11:22:59 -0500
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 098GNnG1070069;
+        Thu, 8 Oct 2020 11:23:50 -0500
 From:   Dan Murphy <dmurphy@ti.com>
 To:     <davem@davemloft.net>, <andrew@lunn.ch>, <f.fainelli@gmail.com>,
         <hkallweit1@gmail.com>
 CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Dan Murphy <dmurphy@ti.com>
 Subject: [PATCH net-next 0/2] DP83TD510 Single Pair 10Mbps Ethernet PHY
-Date:   Thu, 8 Oct 2020 11:22:36 -0500
-Message-ID: <20201008162238.5083-1-dmurphy@ti.com>
+Date:   Thu, 8 Oct 2020 11:23:45 -0500
+Message-ID: <20201008162347.5290-1-dmurphy@ti.com>
 X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
