@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF012287639
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:38:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A4328763C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730640AbgJHOip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 10:38:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58048 "EHLO
+        id S1730699AbgJHOix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 10:38:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729770AbgJHOio (ORCPT
+        with ESMTP id S1729770AbgJHOiq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 10:38:44 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67D26C061755
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 07:38:44 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id e18so6873784wrw.9
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 07:38:44 -0700 (PDT)
+        Thu, 8 Oct 2020 10:38:46 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2B9FC061755
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 07:38:45 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id n6so6595569wrm.13
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 07:38:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=CnaYY18o2fUBSxrKOxr4IUz/CoikwNfBXHHG6rEGY+E=;
-        b=zSN5/dFY3Pss71qJeL0BUGIjbsSNjXfA8EnhZObgHsbIGYe9uEqAG0D8Mt85u+JeUa
-         rof4fEdSwxU3KGnZ4kZVhZMdNVxrtiwIsmUle4hHkpj9A/+YVT7QXj6jHfxIg8HTG79C
-         4kTsbHGPNg4BK2LZ6hTPFGpDVXwkyAyFjMpradHBYcKhBFcteoJyR/OwFgEFGoF20Zw3
-         mFVzbOKe3VxZ6370CKOoQwPHGz7/l7nzR4YauObVVhr578Em3+AY/R3McLx4xOlvDwAg
-         Cj0/TVHN3rWPyIP1w2WX52S/rrsrcH/D3tB/mcPWFGMYgKRX9KH91damRNvQN83hM4mm
-         IrVw==
+        bh=fGkjTPMi2V3zZZF0+OMF37VrvjDLPDRxTs3MRGoDMBg=;
+        b=Y1bCIMyFDS1UY7hqJ2e5vxCxhQRE6HviXtylOjCWXSrwnTG8W5kyBwnaPSgogGxsyB
+         TiGiZsz6UmJNxxqX9M5oQ0eoMd9fu1xxqezD/D8ckX3m/X8RUgatbmsUIUro+ahODEAu
+         3ItyuwY/9hLyulO704XHVVFjBz9X2tj6GMqjAPP0nhEiuU0tDGxD3JolzMesOAK1LXR3
+         tTSU17Om/DdKiWthuVmfuzjMuGraUTYCnSWQ3TFjX4lTgLUX8U1p21FOA2Avw7KvLM4O
+         sI7hhYyuQyFu9SWgTytdbZ8gtyxW5NUwrEo3eUOnVhzQqRDm7cRqq6aOFUk04NI05gfY
+         m1zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=CnaYY18o2fUBSxrKOxr4IUz/CoikwNfBXHHG6rEGY+E=;
-        b=AXzMCetBa2RIwE+6zKmFRs1Ss/BF4222NrMrA5KG2vYS67rF1pYBrHq59GK9JaHhIp
-         ODN5IuyXHdvwPH6o5tsGY2bA0CwUf5sQgNscCB/rXyz9uSn3dtlb8yI+7Wpn30jRXCtd
-         +zheHK/2AE/cIggp1wuuVrLhYhcQU6EivKUyS7OKpNqFdmR9RN5A2Hpl9jIVWsFaw5S6
-         J3aLty7bmN+QrngI408xHkzAqUv/w9cTjEjKMzO5Sh93AmzBsq+NivA0RTdqR5YMabdE
-         Cf4pWsPsA6SLTwTlYfDW4unCXKGI9tbe7++BpFs5pt/D1ZHOa1cR7hHWURug6ywBIljQ
-         5VOA==
-X-Gm-Message-State: AOAM532Neq1aYVAxsZvBdjH+GQam5AkPYfEAvXTKqKjhzRvAcapWepRK
-        zpaHa/E9+p0wCU3vSE+WPmqUbp41Fe28jScf6Co=
-X-Google-Smtp-Source: ABdhPJyx7CZ7tbTU69BULIH+0qH16YJhWmb6egZ/ijGM04WH4OKQaFlQj4KlXU5EMlA1w3n2NUX0nw==
-X-Received: by 2002:adf:e38f:: with SMTP id e15mr9723978wrm.294.1602167923002;
-        Thu, 08 Oct 2020 07:38:43 -0700 (PDT)
+        bh=fGkjTPMi2V3zZZF0+OMF37VrvjDLPDRxTs3MRGoDMBg=;
+        b=qMf6dIsRgMv5fcCQJJxjlE/O3spI0MmUfdFeTWGzqp2GoCsXZblCFSE3Zy5jMTdb5r
+         NXC07ND61f0LuAW30aV3iQ5+pFAJV49ZYxvHsvqwsequRciJr1U2g6N1iTXcPpa7XkJ8
+         6ntlHh8XUk8yTuELqPo7/M9HA5YkY+oJn6CaDUGw8xqMJw3pogk+XxxvVOkob3OUDzCj
+         YK6NwrV2uGHQrnX4vjda8HeNFDwqz5p3zPDUMmrHt+qCQGwL72USBi+tKcW04kVF4Dys
+         g0XQp7uQ5uVTyfnkoB3D66EXHudf6bvgR0S5hZepOWRlDBr15lpgbbfqOmf9fhIPzkV/
+         IV8Q==
+X-Gm-Message-State: AOAM533l+t9CV6NItSeYRyEdx5TbRNd2+BAPwretn66oDKhNYy3mjrJK
+        xkPmrAH1TEs36GA6Ib13LhrZcpMi1TEk7uTDtqw=
+X-Google-Smtp-Source: ABdhPJyL6s+5OY5gglmH/jnSTgDyh+Lz5CLiCPryYXQ8CPd+l4JpwYWOmvdg592zQOtlwmycxHiX0g==
+X-Received: by 2002:a05:6000:1284:: with SMTP id f4mr9686712wrx.210.1602167924118;
+        Thu, 08 Oct 2020 07:38:44 -0700 (PDT)
 Received: from lmecxl0524.lme.st.com ([2a04:cec0:11c8:908d:6533:9100:d943:8b22])
-        by smtp.gmail.com with ESMTPSA id y14sm6926942wma.48.2020.10.08.07.38.42
+        by smtp.gmail.com with ESMTPSA id y14sm6926942wma.48.2020.10.08.07.38.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 07:38:42 -0700 (PDT)
+        Thu, 08 Oct 2020 07:38:43 -0700 (PDT)
 From:   Etienne Carriere <etienne.carriere@linaro.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org,
@@ -54,10 +54,11 @@ Cc:     linux-arm-kernel@lists.infradead.org,
         Cristian Marussi <cristian.marussi@arm.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
         Souvik Chakravarty <Souvik.Chakravarty@arm.com>,
-        Etienne Carriere <etienne.carriere@linaro.org>
-Subject: [PATCH 3/5] firmware: arm_scmi: add config dependency for smc transport
-Date:   Thu,  8 Oct 2020 16:37:20 +0200
-Message-Id: <20201008143722.21888-3-etienne.carriere@linaro.org>
+        Etienne Carriere <etienne.carriere@linaro.org>,
+        Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH 4/5] firmware: arm_scmi: smc transport supports multi-message pool
+Date:   Thu,  8 Oct 2020 16:37:21 +0200
+Message-Id: <20201008143722.21888-4-etienne.carriere@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201008143722.21888-1-etienne.carriere@linaro.org>
 References: <20201008143722.21888-1-etienne.carriere@linaro.org>
@@ -65,29 +66,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix dependencies for configuration switch ARM_SCMI_PROTOCOL that
-is not exclusively dependent on MAILBOX since the alternate
-smc transport that is depends on HAVE_ARM_SMCCC_DISCOVERY since [1].
+There is no reason for the smc transport to restrict itself to a 1
+message pool. More can be allocated, messages are copied from/to the
+shared memory only on SMC exit/entry hence SCMI driver can play with
+several messages.
 
-Link: [1] d76428237784 ("firmware: arm_scmi: Use HAVE_ARM_SMCCC_DISCOVERY instead of ARM_PSCI_FW")
+Use value of 20 to mimic mailbox transport implementation. Any high
+value could fit. This should be something configurable.
+
 Signed-off-by: Etienne Carriere <etienne.carriere@linaro.org>
+Cc: Peng Fan <peng.fan@nxp.com>
 ---
- drivers/firmware/Kconfig | 2 +-
+ drivers/firmware/arm_scmi/smc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-index 3315e3c21586..5bdd411206ff 100644
---- a/drivers/firmware/Kconfig
-+++ b/drivers/firmware/Kconfig
-@@ -9,7 +9,7 @@ menu "Firmware Drivers"
- config ARM_SCMI_PROTOCOL
- 	tristate "ARM System Control and Management Interface (SCMI) Message Protocol"
- 	depends on ARM || ARM64 || COMPILE_TEST
--	depends on MAILBOX
-+	depends on MAILBOX || HAVE_ARM_SMCCC_DISCOVERY
- 	help
- 	  ARM System Control and Management Interface (SCMI) protocol is a
- 	  set of operating system-independent software interfaces that are
+diff --git a/drivers/firmware/arm_scmi/smc.c b/drivers/firmware/arm_scmi/smc.c
+index 1a03c3ec0230..82a82a5dc86a 100644
+--- a/drivers/firmware/arm_scmi/smc.c
++++ b/drivers/firmware/arm_scmi/smc.c
+@@ -149,6 +149,6 @@ static const struct scmi_transport_ops scmi_smc_ops = {
+ const struct scmi_desc scmi_smc_desc = {
+ 	.ops = &scmi_smc_ops,
+ 	.max_rx_timeout_ms = 30,
+-	.max_msg = 1,
++	.max_msg = 20,
+ 	.max_msg_size = 128,
+ };
 -- 
 2.17.1
 
