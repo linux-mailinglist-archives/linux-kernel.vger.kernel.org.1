@@ -2,132 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7210D287BAE
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 20:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 183C528735E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 13:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728926AbgJHS1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 14:27:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725874AbgJHS1u (ORCPT
+        id S1729282AbgJHLae convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 8 Oct 2020 07:30:34 -0400
+Received: from smtp03.udep.edu.pe ([200.37.64.10]:18567 "EHLO
+        SRVEXCHANGE.udep.pe" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726065AbgJHLae (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 14:27:50 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B9DC061755
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 11:27:50 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id r10so1826328ilm.11
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 11:27:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RrkOdAbBDCwyeOQ37z5tV7CnkLENGAjGaGO/schUabQ=;
-        b=KOwuXgfsy9d3hZ9ebY1MDbA+SQZ34Ep/hpkIyi8xd/Dzs9rEKt+5vx2AiS6+Cqohrf
-         WUu1wEzLRxNjDKUUKrGAiu8Sh6LunX42uuGSGKthYgpZLrbUp9a6XlrUQZHp4R3dyZSG
-         A8QT+Bjdc9CK8oYU7MkpW/4899D7lD3plf1FxnSFhUgoUIRNOa1wb9O+Ul3y+g3MWXYi
-         MoV9lwPLXmhoKVDd6m4Ps/XTbjYdaenWSmXkncPd6DwJ5P8Z7U+gh+cojH0Uaad3+QjD
-         uPUNlh3k7E6bB2LtRrjm+l5Bu0HNLzZSeb0ch/kEnd/YjUlnMBeR8pd79dGcCj+WLQmD
-         OeYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RrkOdAbBDCwyeOQ37z5tV7CnkLENGAjGaGO/schUabQ=;
-        b=fC3+RJ2nyI2bG1UAJQYoTV9gqqGSt1RRyOQyInmRtX+lNzU8s/PzcEJdLtNcha+375
-         EYbwh+VEgTKshdfxVx/cTtdVWQ+LwYA+2ykQVau2jb9UscJTBugTN7IFIvV+ckHNP1q8
-         Kz+JwcitefCVyOUqGHOGM2iCTTVPNMG/LKmHgWh1y7ydb8spbSdqLgBT37cKkLbz0WKy
-         qBsrsowxH8O8pqTqBnLRA09JRUxBHafPHb61/sFfU5vvEc2raEwlB5yACNofnBhNjIts
-         OGaAeYlrIkIuEp4P3Uw1reZhaTrzoQ65qrim6SC8d6xmgT1RpFuRpnGnKCnkFYb5ngAs
-         SjhA==
-X-Gm-Message-State: AOAM531g9c63yneUu1bRWsb8iHZWFY474dNvMs28tbiUB2RiykwSDyeM
-        Gk2cy8D/w8y2TV9kflfQr2WlVSCEWD/+bmyhq4cZQQ==
-X-Google-Smtp-Source: ABdhPJx2ISXtg+5wgVEGtpWtH9JkiOPqpq0nDgXIkl0aFwYeEmDjLStOH9ErLi1lPojEWjAmlzHEdZhgs6x7qCFck04=
-X-Received: by 2002:a92:7914:: with SMTP id u20mr7656969ilc.203.1602181668922;
- Thu, 08 Oct 2020 11:27:48 -0700 (PDT)
+        Thu, 8 Oct 2020 07:30:34 -0400
+Received: from SRVEXCHANGE.udep.pe (172.30.20.36) by SRVEXCHANGE.udep.pe
+ (172.30.20.36) with Microsoft SMTP Server (TLS) id 15.0.847.32; Thu, 8 Oct
+ 2020 06:29:57 -0500
+Received: from User (10.112.40.169) by SRVEXCHANGE.udep.pe (172.30.20.36) with
+ Microsoft SMTP Server id 15.0.847.32 via Frontend Transport; Thu, 8 Oct 2020
+ 06:29:31 -0500
+Reply-To: <stevekon39@rediffmail.com>
+From:   "From: Steve Odonkon" <admin@gmail.com>
+Subject: RE: STRICTLY CONFIDENTIAL (Respond Immediately)  
+Date:   Thu, 8 Oct 2020 11:31:04 -0700
 MIME-Version: 1.0
-References: <20200925212302.3979661-1-bgardon@google.com> <20200925212302.3979661-18-bgardon@google.com>
- <6990180c-f99c-3f1d-ef6a-57e37a9999d2@redhat.com>
-In-Reply-To: <6990180c-f99c-3f1d-ef6a-57e37a9999d2@redhat.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Thu, 8 Oct 2020 11:27:37 -0700
-Message-ID: <CANgfPd8itkAnPqr=PfFn3Jf1O_NbY90AEQBKDQ8OR14CagDOzg@mail.gmail.com>
-Subject: Re: [PATCH 17/22] kvm: mmu: Support dirty logging for the TDP MMU
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="Windows-1251"
+Content-Transfer-Encoding: 8BIT
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+X-Antivirus: AVG (VPS 201008-0, 10/07/2020), Outbound message
+X-Antivirus-Status: Clean
+Message-ID: <96601284-f298-4d5c-a82e-3477f52f9eb7@SRVEXCHANGE.udep.pe>
+To:     Undisclosed recipients:;
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 6:04 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 25/09/20 23:22, Ben Gardon wrote:
-> >                               start_level, KVM_MAX_HUGEPAGE_LEVEL, false);
-> > +     if (kvm->arch.tdp_mmu_enabled)
-> > +             flush = kvm_tdp_mmu_wrprot_slot(kvm, memslot, false) || flush;
-> >       spin_unlock(&kvm->mmu_lock);
-> >
->
-> In fact you can just pass down the end-level KVM_MAX_HUGEPAGE_LEVEL or
-> PGLEVEL_4K here to kvm_tdp_mmu_wrprot_slot and from there to
-> wrprot_gfn_range.
+Esteem Complement,    Tuesday October 6th 2020
 
-That makes sense. My only worry there is the added complexity of error
-handling values besides PG_LEVEL_2M and PG_LEVEL_4K. Since there are
-only two callers, I don't think that will be too much of a problem
-though. I don't think KVM_MAX_HUGEPAGE_LEVEL would actually be a good
-value to pass in as I don't think that would write protect 2M
-mappings. KVM_MAX_HUGEPAGE_LEVEL is defined as PG_LEVEL_1G, or 3.
+Hello, my name is Steve Odonkon, Audit Accounting Officer of Standard Chartered Bank, Basinghall Ave, London, United Kingdom. I got your information when I was searching for an oversea partner among other names, I ask for your pardon if my approach is offensive as I never meant to invade your privacy through this means, and also i believe this is the best and secured means I can pass my message across to you in clear terms. I have sent you this proposal before now; I do hope this will get to you in good health.
 
->
-> >
-> > +             /*
-> > +              * Take a reference on the root so that it cannot be freed if
-> > +              * this thread releases the MMU lock and yields in this loop.
-> > +              */
-> > +             get_tdp_mmu_root(kvm, root);
-> > +
-> > +             spte_set = wrprot_gfn_range(kvm, root, slot->base_gfn,
-> > +                             slot->base_gfn + slot->npages, skip_4k) ||
-> > +                        spte_set;
-> > +
-> > +             put_tdp_mmu_root(kvm, root);
->
->
-> Generalyl using "|=" is the more common idiom in mmu.c.
 
-I changed to this in response to some feedback on the RFC, about
-mixing bitwise ops and bools, but I like the |= syntax more as well.
+As the Audit Accounting Officer of the bank, I have access to lots of documents because I handle some of the bank's sensitive files. On the course of the last year 2019 business report, I discovered that my branch in which I am the Audit Accounting Officer made (£5,720,000.00). Million British pounds from some past government contractors in which my head office are not aware of and will never be aware of. I have placed this funds on what we call escrow call account with no beneficiary.
 
->
-> > +static bool clear_dirty_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
-> > +                        gfn_t start, gfn_t end)
-> > ...
-> > +             __handle_changed_spte(kvm, as_id, iter.gfn, iter.old_spte,
-> > +                                   new_spte, iter.level);
-> > +             handle_changed_spte_acc_track(iter.old_spte, new_spte,
-> > +                                           iter.level);
->
-> Is it worth not calling handle_changed_spte?  handle_changed_spte_dlog
-> obviously will never fire but duplicating the code is a bit ugly.
->
-> I guess this patch is the first one that really gives the "feeling" of
-> what the data structures look like.  The main difference with the shadow
-> MMU is that you have the tdp_iter instead of the callback-based code of
-> slot_handle_level_range, but otherwise it's not hard to follow one if
-> you know the other.  Reorganizing the code so that mmu.c is little more
-> than a wrapper around the two will help as well in this respect.
->
-> Paolo
->
+
+As an officer of this bank I cannot be directly connected to this money, so my aim of contacting you is to assist me receive this money in your bank account and get 40% of the total funds as commission. There are practically no risks involved, it will be a bank-to-bank transfer, and all I need from you is to stand claim as the Original depositor of these funds who made the deposit with my branch so that my head office can order the transfer to your designated bank account.
+
+Send me your contact details below to enable me furnish you with more relevant details that will help you understand the transaction.
+
+Full Name...
+
+Telephone Number...
+
+
+Thank you in advance and May God bless you and your family.
+
+Yours truly,
+Steve Odonkon
+E-mail:  stevekon39@rediffmail.com
+Call: +44 7926062919
+
+-- 
+This email has been checked for viruses by AVG.
+https://www.avg.com
+
