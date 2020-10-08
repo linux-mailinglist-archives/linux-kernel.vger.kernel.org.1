@@ -2,139 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A8A32877E8
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 17:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CC332877CD
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 17:46:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731203AbgJHPsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 11:48:32 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:55725 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726304AbgJHPs3 (ORCPT
+        id S1729454AbgJHPq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 11:46:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729355AbgJHPq5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 11:48:29 -0400
-Received: from localhost.localdomain ([192.30.34.233]) by
- mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1MWSFB-1jskwY2rRj-00Xu9o; Thu, 08 Oct 2020 17:47:42 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     linux-kernel@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Philip Blundell <philb@gnu.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Sam Creasey <sammy@sammy.net>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 04/13] parisc: use legacy_timer_tick
-Date:   Thu,  8 Oct 2020 17:46:42 +0200
-Message-Id: <20201008154651.1901126-5-arnd@arndb.de>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201008154651.1901126-1-arnd@arndb.de>
-References: <20201008154651.1901126-1-arnd@arndb.de>
+        Thu, 8 Oct 2020 11:46:57 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78E86C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 08:46:57 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id t21so6321544eds.6
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 08:46:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5CLwKaQ/l8llf+Or4hYgPAZkrBIS2luSBRXVAMHRyvY=;
+        b=xNikS+fWe8LCRBMr9n01Uq7Gf3g5dodK5oHiD32dOURBYTjQjnmcOaoVZjjGGQOdPr
+         br2TMBcpkFAKpza5Yp9o1+jSYDgjLZU4DqRsBOswxcPHVPwn81SWd4y/p2zkOiRmNIbU
+         +0SZm58XrZSj8Uy5zCytAbLvXR6QcsxSKupFg9Czm927mYzEc3tA53mW77yD3pn4vHBS
+         41iHhrtk1k5mXSaZlc2ETJctfXdZJiNEFarDUeLsaTQ4a9k6KPwqO66McxxyVJ0InyuP
+         6185NtD1IQ2Cq7Z95iAawzljBIbrXvA3OZSCudC3N9MwpOxj9copZsHSLt5suJaB9X+P
+         gN8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5CLwKaQ/l8llf+Or4hYgPAZkrBIS2luSBRXVAMHRyvY=;
+        b=a86vkVK4FBb7brNubYTjCMCKenYlPSID/CNPvEwi0icpzHLgCVM95DwrSkAgGR/BEt
+         xJl/i5/+T3Bt+txhSh1SXYIIWbL/GFM91oIx0yuykie6yHec9Ss2boL3qpDct3AAAenm
+         DonoG6DE1mgExXhnJHy7wMD+whOb9jpE+/tT1XkmDV3H7z0UIIEB1mM+twuiOrHBB/2c
+         I951Fd7u21ymiuPd6/E82RCSTPIgxUBTpEeLe8EZvLQIvH1IIJ6KQNRQJ9d9hSQFmoY4
+         1sQ8988qXOXxbw6yf+vMpkwykN4lMFvGR1orQ6Rg7odfxSEdf+yzKgRQMMpFcOLN7bFr
+         w8Zg==
+X-Gm-Message-State: AOAM533nT4er+wzpDz5mvhrDsac7SSq0UB1mQiicMf+q6Fwntm5Kdl2S
+        55kzNBAedSinslGBM9CN400qKrH8QtR1PPP2087sVw==
+X-Google-Smtp-Source: ABdhPJwrl3LJ2qVIveN3fG1l3INuXOebOppLmo6R/dapnUKDQ/yDq7OGo9SBv5T7z1xcpuxHlY0PE/krnpdrjd6V6ik=
+X-Received: by 2002:aa7:c3c7:: with SMTP id l7mr9647539edr.213.1602172015993;
+ Thu, 08 Oct 2020 08:46:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:JdVsDzGIawLwj8GEUcu7QzV/eSgsFBBvS0zSunz+ouzZc2Q42gH
- wrq8P/ptdFN5PdXAnSdPK0jcmjjMVf2vwLGkyGbU+4+wf7ii7gGAJOpJxhpL50KcY/HrtG/
- cWCdxngFkr9agKUW7Hbh21FchDr+S7YHVvrOZTcGziVShhOCTL4Yu5VjfVRuTZfOWZaoUva
- CcYs2SG7EoaTpdxAmfUzA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:KZruJGxefIk=:xe3mRoOuTB6CmdWXSfBp/W
- OxmZ6VsiGfShkMH1AvQb3F7fr+iAbCgSbX/UM3s0vTBpZDkM3oEuD5h0UsiHP/2qzs5gcY436
- Odm6b+I7fFLD0OMLDqKzkb7D5hORDXcGk5ob+C5YMe2wObJw3Mg1zgKV+mzBdfSj6yOeTfhqS
- 478MASLcP8Qqc1N2NOJ1ukQvGIhiucZTuHdhGPmlRwGPiuZUZ6+j4yT/C/SpkMX6ehPnH9okK
- jNOCK7+HVIxxlbKtzOi0YSwT/ikQAHBRKYToKMUpbGRZwDQdHDqL9/LHFNW7rLG7gCpCBrvP2
- IZoBoAN3Wm1FHx/NN3jHYSTfrX9PGYtgT4ACQ0XseAi4iNuQCFfd7ztsA8H+sO4wmaCaJUXRR
- PD9WCPi16Zrizrhvyp3gswizEF+Gbxmu0cjCcNrIJhWPLmrpXv+3TK3us04jpfQHInW/ogqV1
- a/24PqyLY/NvbJwxO+HTYnbhXFzIM9cLmw66It7D8ThBhFAmNaP1Pbpm5COVz9YL0HTC0dpzc
- yE96fToR2MNVWM3i5dVUmxrTBMhwlHfkayyb6bXBtbltsf3ZCAVL8xCBPOo3zEe8YLXufyg7G
- BHUMrmSx5xE1mVF0ssKoLh8Uz+fjmXMrIo7je9EU68kjozzKmFbWQKWrAT33olxXvB23K+pYr
- T+kVW32AGwSkx+1fZWkpQJoBud4RhdI62tZEkmNV+sTPHbNG0yi3kg5g3rQrSjCSvkE32R1Aj
- 8p5Rws7nG8SCU2qhjGQghuOCDq/ACf0+pkOC7fbNgfdsA6I/Nu/MlU8ZVo91WaRyePMWSA1BI
- sW1IR23mPOEb2kT3spdqoIRUDps68oE2qN17RLFhr92t9xFlIeoxQ+6gys/MRXh5YzG8K1B
+References: <20201005070329.21055-1-warthog618@gmail.com>
+In-Reply-To: <20201005070329.21055-1-warthog618@gmail.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Thu, 8 Oct 2020 17:46:43 +0200
+Message-ID: <CAMpxmJUbxuAHmcf_1vP27qb1gSXTfE1OBb8X3MSoESpa=pycgQ@mail.gmail.com>
+Subject: Re: [PATCH 0/5] gpio: uapi: documentation improvements
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-parisc has selected CONFIG_GENERIC_CLOCKEVENTS since commit 43b1f6abd590
-("parisc: Switch to generic sched_clock implementation"), but does not
-appear to actually be using it, and instead calls the low-level
-timekeeping functions directly.
+On Mon, Oct 5, 2020 at 9:03 AM Kent Gibson <warthog618@gmail.com> wrote:
+>
+> I'm intending to add some GPIO chardev documentation to
+> Documentation/admin-guide/gpio/chardev.rst (or perhaps
+> Documentation/userspace-api/??), but that is taking longer than I'd like,
+> so in the meantime here is a collection of minor documentation tidy-ups
+> and improvements to the kernel-doc that I've made along the way.
+> Hopefully nothing controversial - mainly formatting improvements,
+> and a couple of minor wording changes.
+>
+> Cheers,
+> Kent.
+>
+> Kent Gibson (5):
+>   gpio: uapi: fix kernel-doc warnings
+>   gpio: uapi: comment consistency
+>   gpio: uapi: kernel-doc formatting improvements
+>   gpio: uapi: remove whitespace
+>   gpio: uapi: clarify the meaning of 'empty' char arrays
+>
+>  include/uapi/linux/gpio.h | 106 +++++++++++++++++++-------------------
+>  1 file changed, 54 insertions(+), 52 deletions(-)
+>
+>
+> base-commit: 237d96164f2c2b33d0d5094192eb743e9e1b04ad
+> --
+> 2.28.0
+>
 
-Remove the GENERIC_CLOCKEVENTS select again, and instead convert to
-the newly added legacy_timer_tick() helper.
+For the entire series:
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- Documentation/features/time/clockevents/arch-support.txt | 2 +-
- arch/parisc/Kconfig                                      | 2 +-
- arch/parisc/kernel/time.c                                | 9 +++------
- 3 files changed, 5 insertions(+), 8 deletions(-)
+Reviewed-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-diff --git a/Documentation/features/time/clockevents/arch-support.txt b/Documentation/features/time/clockevents/arch-support.txt
-index 8287b6aa522e..61a5c9d68c15 100644
---- a/Documentation/features/time/clockevents/arch-support.txt
-+++ b/Documentation/features/time/clockevents/arch-support.txt
-@@ -21,7 +21,7 @@
-     |       nds32: |  ok  |
-     |       nios2: |  ok  |
-     |    openrisc: |  ok  |
--    |      parisc: |  ok  |
-+    |      parisc: | TODO |
-     |     powerpc: |  ok  |
-     |       riscv: |  ok  |
-     |        s390: |  ok  |
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index b234e8154cbd..78b17621ee4a 100644
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -52,7 +52,7 @@ config PARISC
- 	select HAVE_REGS_AND_STACK_ACCESS_API
- 	select GENERIC_SCHED_CLOCK
- 	select HAVE_UNSTABLE_SCHED_CLOCK if SMP
--	select GENERIC_CLOCKEVENTS
-+	select LEGACY_TIMER_TICK
- 	select CPU_NO_EFFICIENT_FFS
- 	select NEED_DMA_MAP_STATE
- 	select NEED_SG_DMA_LENGTH
-diff --git a/arch/parisc/kernel/time.c b/arch/parisc/kernel/time.c
-index 04508158815c..889aaaa555ea 100644
---- a/arch/parisc/kernel/time.c
-+++ b/arch/parisc/kernel/time.c
-@@ -70,8 +70,6 @@ irqreturn_t __irq_entry timer_interrupt(int irq, void *dev_id)
- 	/* gcc can optimize for "read-only" case with a local clocktick */
- 	unsigned long cpt = clocktick;
- 
--	profile_tick(CPU_PROFILING);
--
- 	/* Initialize next_tick to the old expected tick time. */
- 	next_tick = cpuinfo->it_value;
- 
-@@ -86,10 +84,9 @@ irqreturn_t __irq_entry timer_interrupt(int irq, void *dev_id)
- 	cpuinfo->it_value = next_tick;
- 
- 	/* Go do system house keeping. */
--	if (cpu == 0)
--		xtime_update(ticks_elapsed);
--
--	update_process_times(user_mode(get_irq_regs()));
-+	if (cpu != 0)
-+		ticks_elapsed = 0;
-+	legacy_timer_tick(ticks_elapsed);
- 
- 	/* Skip clockticks on purpose if we know we would miss those.
- 	 * The new CR16 must be "later" than current CR16 otherwise
--- 
-2.27.0
+Linus: can you take them for v5.10 through your tree directly?
 
+Bartosz
