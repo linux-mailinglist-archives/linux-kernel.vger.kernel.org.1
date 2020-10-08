@@ -2,111 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2912876D8
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 17:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6782B2876E4
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 17:13:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730900AbgJHPM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 11:12:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52850 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729833AbgJHPM2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 11:12:28 -0400
-Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 03E7421D24;
-        Thu,  8 Oct 2020 15:12:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602169948;
-        bh=8F7IKYPdyEkQ5+ilFOZ4E/Td1drT5/jN039WnHHDGDQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=SjvbUktr1mIFydvTrLp7/Y4dC5TdxsLvSCsyiweYVrbkF6AvfpMhq2pZgkA6aLLA9
-         MfEZfXQR9iEeQJS61YFlMtEaPUdaa37VEHMZo77iUabi1fXeeojEEVp+QWWJN3jY6+
-         ciX3IGlikZCnOCpNHY7ufOUhWI7Xi0Rfem1bkNio=
-Received: by mail-oo1-f52.google.com with SMTP id w7so1546638oow.7;
-        Thu, 08 Oct 2020 08:12:27 -0700 (PDT)
-X-Gm-Message-State: AOAM533nfsiwjM76PUmX07qPZO3NmSeoo2GbPwjouCmwCmoicsqp4eFO
-        vVfAJ5l3T74vaLF4DZwFtkWL3++Yn5+5nCibyw==
-X-Google-Smtp-Source: ABdhPJzsuMJxj3A0SOI3qwTv0mAde+XyqceFsKsNefeucc+I+1n5lqIYSXjAv8ROXFx+DUeBW40J+AuS2kF4iVlEjaA=
-X-Received: by 2002:a4a:b30d:: with SMTP id m13mr5645883ooo.50.1602169947137;
- Thu, 08 Oct 2020 08:12:27 -0700 (PDT)
+        id S1730959AbgJHPNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 11:13:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730953AbgJHPNE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 11:13:04 -0400
+Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35618C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 08:13:04 -0700 (PDT)
+Received: by mail-vk1-xa41.google.com with SMTP id d2so1380589vkd.13
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 08:13:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wsPwsTl/hAvDoxdVSq6VH5qAHlyEl+VKWN+4G8Q2WOQ=;
+        b=s3+iGaEsVITyDA7YZovcQvYscw4EjPjWOCEJT6rKSq1KDPf+ha55v3LiLzlgk3arv3
+         f1t4gMJ1jg1x8B8c2TjMHfn6n98VLEiDa4W0kR175b3mrUz/3u+jS6Y11ta9gFMmZun4
+         uI/4ljpbnWGXI7aGQCKMOaujD8rnXq4yQTrvenvACQ49VN6X/fwVY+7OUi87dyauylOW
+         JFVG/gaaoLasrA541feJDtIv9X+uS8PXYIUw+MRowHzzA4vrj80/G2Bg+ootk3eJ/jBN
+         JEunId1ia3jNICZ6G9I2rookeL5+xZG7ere0myXr68+Eo1bxrU6rW3a8X3IHaqMzEG33
+         X5lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wsPwsTl/hAvDoxdVSq6VH5qAHlyEl+VKWN+4G8Q2WOQ=;
+        b=FmZHRSnT4fBM4/qUoJ4v+nIv2bqMdexmmaPJJHkPowrLC38XVeHytNTLzmSSTLAh5z
+         7PJ+NhCCTcIZiM4WTTaSfqra03gvMjo5wqIu1JubxGlCe9IX9N8Pu04FGCNXf6Vb/dZ4
+         yn92zBn6Fh0BXmoHHAxN98OpOXrSKsU/+db5YFh+JAaofvx1Cn5Ci1gykSylcDZ24gGF
+         NBaMqnTmKKUlnYruSK1Aa3XgE22QWbFvoC2T+ULvDaeaU5QtZQlNt1qNpGUfYR08Zqmn
+         LOd/FXcBrt1u5ZTAEJos4LbB5jA1LlEDKrE3vzudbIeTapzRlu9L7wff4C1sJppx9Suv
+         veyQ==
+X-Gm-Message-State: AOAM533sY1/5sCyKP+P3y6f+u2t9iBwbAgklsEYhWnCGl9Bn3zt9xPrb
+        5ITNm3hR/8EwMOpqbvDUiw6esQwbclTmjlfGrLpf/sloiH7GKdBK
+X-Google-Smtp-Source: ABdhPJwEjGnJf7ZCkTSVlSm0STvrBQYCiSWeuqvCe29hXNIC4YsoSyZw/x3HwLnhyDvaFcM5tgClpCqZEqy/KFuvln0=
+X-Received: by 2002:a1f:ae85:: with SMTP id x127mr1703271vke.8.1602169983032;
+ Thu, 08 Oct 2020 08:13:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200916054130.8685-1-Zhiqiang.Hou@nxp.com> <CAL_JsqJwgNUpWFTq2YWowDUigndSOB4rUcVm0a_U=FEpEmk94Q@mail.gmail.com>
- <HE1PR0402MB3371F8191538F47E8249F048843F0@HE1PR0402MB3371.eurprd04.prod.outlook.com>
- <CAL_JsqLdQY_DqpduaTv4hMDM_-cvZ_+s8W+HdOuZVVYjTO4yxw@mail.gmail.com>
- <HE1PR0402MB337180458625B05D1529535384390@HE1PR0402MB3371.eurprd04.prod.outlook.com>
- <20200928093911.GB12010@e121166-lin.cambridge.arm.com> <HE1PR0402MB33713A623A37D08AE3253DEB84320@HE1PR0402MB3371.eurprd04.prod.outlook.com>
- <DM5PR12MB1276D80424F88F8A9243D5E2DA320@DM5PR12MB1276.namprd12.prod.outlook.com>
- <CAL_JsqJJxq2jZzbzZffsrPxnoLJdWLLS-7bG-vaqyqs5NkQhHQ@mail.gmail.com>
- <9ac53f04-f2e8-c5f9-e1f7-e54270ec55a0@ti.com> <CAL_JsqJEp8yyctJYUjHM4Ti6ggPb4ouYM_WDvpj_PiobnAozBw@mail.gmail.com>
- <67ac959f-561e-d1a0-2d89-9a85d5f92c72@ti.com> <99d24fe08ecb5a6f5bba7dc6b1e2b42b@walle.cc>
- <CA+G9fYtR5MwQ_Gd1=R=815eCAz+5uC67wXV2x094pc_=PtkA2g@mail.gmail.com> <CA+G9fYsubwpT9HY7Dx-+zvYdM1t1m+mrnH8WfHJ-_BpMTt40vA@mail.gmail.com>
-In-Reply-To: <CA+G9fYsubwpT9HY7Dx-+zvYdM1t1m+mrnH8WfHJ-_BpMTt40vA@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 8 Oct 2020 10:12:15 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+uFJp5Vt=u2ZFhGCTTM62mb_1rKOz_Dj2=ez5bKJad1Q@mail.gmail.com>
-Message-ID: <CAL_Jsq+uFJp5Vt=u2ZFhGCTTM62mb_1rKOz_Dj2=ez5bKJad1Q@mail.gmail.com>
-Subject: Re: [PATCH] PCI: dwc: Added link up check in map_bus of dw_child_pcie_ops
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     "Z.Q. Hou" <Zhiqiang.Hou@nxp.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Michael Walle <michael@walle.cc>,
-        Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>
+References: <20201008020936.19894-1-muhammad.husaini.zulkifli@intel.com>
+ <20201008020936.19894-5-muhammad.husaini.zulkifli@intel.com>
+ <CAPDyKFpUv8yeVrWVLRKvz4eKsSDdk0y4dKY2mYs07zpA2UqNdw@mail.gmail.com> <35692f1c-62a4-6c71-d67a-2a216e97e7d5@intel.com>
+In-Reply-To: <35692f1c-62a4-6c71-d67a-2a216e97e7d5@intel.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 8 Oct 2020 17:12:26 +0200
+Message-ID: <CAPDyKFqy5jhbRWmcc-rMSzendMnkj2MQ-MQYu+=fVAZufTWbOQ@mail.gmail.com>
+Subject: Re: [PATCH v4 4/4] mmc: sdhci-of-arasan: Enable UHS-1 support for
+ Keem Bay SOC
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     muhammad.husaini.zulkifli@intel.com,
+        Michal Simek <michal.simek@xilinx.com>,
+        andriy.shevchenko@intel.com,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        lakshmi.bai.raja.subramanian@intel.com,
+        Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 8, 2020 at 9:47 AM Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+On Thu, 8 Oct 2020 at 12:58, Adrian Hunter <adrian.hunter@intel.com> wrote:
 >
-> On Fri, 2 Oct 2020 at 14:59, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> On 8/10/20 12:27 pm, Ulf Hansson wrote:
+> > On Thu, 8 Oct 2020 at 04:12, <muhammad.husaini.zulkifli@intel.com> wrote:
+> >>
+> >> From: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
+> >>
+> >> Voltage switching sequence is needed to support UHS-1 interface.
+> >> There are 2 places to control the voltage.
+> >> 1) By setting the AON register using firmware driver calling
+> >> system-level platform management layer (SMC) to set the register.
+> >> 2) By controlling the GPIO expander value to drive either 1.8V or 3.3V
+> >> for power mux input.
+> >>
+> >> Signed-off-by: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
+> >> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
+> >> Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
+> >> ---
+> >>  drivers/mmc/host/sdhci-of-arasan.c | 126 +++++++++++++++++++++++++++++
+> >>  1 file changed, 126 insertions(+)
+> >>
+> >> diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
+> >> index 46aea6516133..ea2467b0073d 100644
+> >> --- a/drivers/mmc/host/sdhci-of-arasan.c
+> >> +++ b/drivers/mmc/host/sdhci-of-arasan.c
+> >> @@ -16,6 +16,7 @@
+> >>   */
+> >>
+> >>  #include <linux/clk-provider.h>
+> >> +#include <linux/gpio/consumer.h>
+> >>  #include <linux/mfd/syscon.h>
+> >>  #include <linux/module.h>
+> >>  #include <linux/of_device.h>
+> >> @@ -23,6 +24,7 @@
+> >>  #include <linux/regmap.h>
+> >>  #include <linux/of.h>
+> >>  #include <linux/firmware/xlnx-zynqmp.h>
+> >> +#include <linux/firmware/intel/keembay_firmware.h>
+> >>
+> >>  #include "cqhci.h"
+> >>  #include "sdhci-pltfm.h"
+> >> @@ -136,6 +138,7 @@ struct sdhci_arasan_clk_data {
+> >>   * @soc_ctl_base:      Pointer to regmap for syscon for soc_ctl registers.
+> >>   * @soc_ctl_map:       Map to get offsets into soc_ctl registers.
+> >>   * @quirks:            Arasan deviations from spec.
+> >> + * @uhs_gpio:          Pointer to the uhs gpio.
+> >>   */
+> >>  struct sdhci_arasan_data {
+> >>         struct sdhci_host *host;
+> >> @@ -150,6 +153,7 @@ struct sdhci_arasan_data {
+> >>         struct regmap   *soc_ctl_base;
+> >>         const struct sdhci_arasan_soc_ctl_map *soc_ctl_map;
+> >>         unsigned int    quirks;
+> >> +       struct gpio_desc *uhs_gpio;
+> >>
+> >>  /* Controller does not have CD wired and will not function normally without */
+> >>  #define SDHCI_ARASAN_QUIRK_FORCE_CDTEST        BIT(0)
+> >> @@ -361,6 +365,112 @@ static int sdhci_arasan_voltage_switch(struct mmc_host *mmc,
+> >>         return -EINVAL;
+> >>  }
+> >>
+> >> +static int sdhci_arasan_keembay_voltage_switch(struct mmc_host *mmc,
+> >> +                                      struct mmc_ios *ios)
+> >> +{
+> >> +       struct sdhci_host *host = mmc_priv(mmc);
+> >> +       struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+> >> +       struct sdhci_arasan_data *sdhci_arasan = sdhci_pltfm_priv(pltfm_host);
+> >> +       u16 ctrl_2, clk;
+> >> +       int ret;
+> >> +
+> >> +       switch (ios->signal_voltage) {
+> >> +       case MMC_SIGNAL_VOLTAGE_180:
+> >> +               clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+> >> +               clk &= ~SDHCI_CLOCK_CARD_EN;
+> >> +               sdhci_writew(host, clk, SDHCI_CLOCK_CONTROL);
+> >> +
+> >> +               clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+> >> +               if (clk & SDHCI_CLOCK_CARD_EN)
+> >> +                       return -EAGAIN;
+> >> +
+> >> +               sdhci_writeb(host, SDHCI_POWER_ON | SDHCI_POWER_180,
+> >> +                                  SDHCI_POWER_CONTROL);
+> >> +
+> >> +               /*
+> >> +                * Set VDDIO_B voltage to Low for 1.8V
+> >> +                * which is controlling by GPIO Expander.
+> >> +                */
+> >> +               gpiod_set_value_cansleep(sdhci_arasan->uhs_gpio, 0);
+> >> +
+> >> +               /*
+> >> +                * This is like a final gatekeeper. Need to ensure changed voltage
+> >> +                * is settled before and after turn on this bit.
+> >> +                */
+> >> +               usleep_range(1000, 1100);
+> >> +
+> >> +               ret = keembay_sd_voltage_selection(KEEMBAY_SET_1V8_VOLT);
+> >> +               if (ret)
+> >> +                       return ret;
+> >> +
+> >> +               usleep_range(1000, 1100);
 > >
-> > On Thu, 1 Oct 2020 at 22:16, Michael Walle <michael@walle.cc> wrote:
-> > >
-> > > Am 2020-10-01 15:32, schrieb Kishon Vijay Abraham I:
-> > >
-> > > > Meanwhile would it be okay to add linkup check atleast for DRA7X so
-> > > > that
-> > > > we could have it booting in linux-next?
-> > >
-> > > Layerscape SoCs (at least the LS1028A) are also still broken in
-> > > linux-next,
-> > > did I miss something here?
+> > No, sorry, but I don't like this.
 > >
-> > I have been monitoring linux next boot and functional testing on nxp devices
-> > for more than two week and still the problem exists on nxp-ls2088.
-> >
-> > Do you mind checking the possibilities to revert bad patches on linux next tree
-> > and continue to work on fixes please ?
-> >
-> > suspected bad commit: [ I have not bisected this problem ]
-> > c2b0c098fbd1 ("PCI: dwc: Use generic config accessors")
-> >
-> > crash log snippet:
-> > [    1.563008] SError Interrupt on CPU5, code 0xbf000002 -- SError
-> > [    1.563010] CPU: 5 PID: 1 Comm: swapper/0 Not tainted
-> > 5.9.0-rc7-next-20201001 #1
-> > [    1.563011] Hardware name: Freescale Layerscape 2088A RDB Board (DT)
-> > [    1.563013] pstate: 20000085 (nzCv daIf -PAN -UAO -TCO BTYPE=--)
-> > [    1.563014] pc : pci_generic_config_read+0x44/0xe8
-> > [    1.563015] lr : pci_generic_config_read+0x2c/0xe8
+> > This looks like a GPIO regulator with an extension of using the
+> > keembay_sd_voltage_selection() thingy. I think you can model these
+> > things behind a regulator and hook it up as a vqmmc supply in DT
+> > instead. BTW, this is the common way we deal with these things for mmc
+> > host drivers.
 >
+> It seemed to me that would just result in calling regulator API instead of
+> GPIO API but the flow above would otherwise be unchanged i.e. no benefit
 >
-> This reported issue is gone now on Linux next master branch.
-> I am not sure which is a fix commit.
 
-There isn't one, better double check that. We're still waiting on
-respinning of the revert patch.
+To me, the benefit is about avoiding platform specific code in drivers
+- but also about consistency. For I/O signal voltage, the common
+method here, is to model this as a GPIO regulator. This means we can
+use these available helpers from the core:
 
-BTW, why is the kernelci NXP lab almost always down? I have a branch
-now to test things and I'm not done breaking the DWC driver. :)
+mmc_regulator_set_vqmmc()
+mmc_regulator_get_supply()
 
-Rob
+Kind regards
+Uffe
