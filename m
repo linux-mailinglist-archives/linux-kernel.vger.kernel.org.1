@@ -2,363 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11C08287F04
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 01:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A42C287F0A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 01:22:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730855AbgJHXRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 19:17:43 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:53524 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728996AbgJHXRn (ORCPT
+        id S1730931AbgJHXWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 19:22:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728996AbgJHXWu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 19:17:43 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602199059;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=T7apZwGHYCTEDNSPiTkzSbbIXwX8iIGpZEuOQe4bpNU=;
-        b=0pvtE5qWMUCSidIMbMBal6F3MY8HayVW6Kqmwj+3Jew6K/zgRZwBw1N63/7Xh7aGvhpWrn
-        ygPnki/HLljXj+Oye+KiIe8w6Qe/iomPgTiWjLyW8n9RZu25jcHAtqpTKP1tU41IKx8374
-        IwRF+/ch1/CEKSc7Lwlsu1Sgk28Fi6h+pwAdl2fqm1uTU9pHjwSOvixV2yRsGEtM5w+jtz
-        z7rikjHUs5FVlLwhCUqEUSpKWiHUus7XtYxVALMfijlDTgSY70373v8U8WHo4CER//7dOW
-        BLOI/zFcK3n65MneSl1In6nzEpvSr5zuyhy+FdNmZLLrl2EXEM7BO5J1hxMUcg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602199059;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=T7apZwGHYCTEDNSPiTkzSbbIXwX8iIGpZEuOQe4bpNU=;
-        b=YVvxbcs5PStoUIk4hwuoxYfFb32Ad4+RRpd975rk5cF2MVkppLoCj4EEq6bVrDhJT/eaZk
-        fdKxAwJysv2BYkBw==
-To:     Dave Jiang <dave.jiang@intel.com>, vkoul@kernel.org,
-        megha.dey@intel.com, maz@kernel.org, bhelgaas@google.com,
-        alex.williamson@redhat.com, jacob.jun.pan@intel.com,
-        ashok.raj@intel.com, jgg@mellanox.com, yi.l.liu@intel.com,
-        baolu.lu@intel.com, kevin.tian@intel.com, sanjay.k.kumar@intel.com,
-        tony.luck@intel.com, jing.lin@intel.com, dan.j.williams@intel.com,
-        kwankhede@nvidia.com, eric.auger@redhat.com, parav@mellanox.com,
-        rafael@kernel.org, netanelg@mellanox.com, shahafs@mellanox.com,
-        yan.y.zhao@linux.intel.com, pbonzini@redhat.com,
-        samuel.ortiz@intel.com, mona.hossain@intel.com
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-pci@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v3 11/18] dmaengine: idxd: ims setup for the vdcm
-In-Reply-To: <44e19c5d-a0d2-0ade-442c-61727701f4d8@intel.com>
-References: <160021207013.67751.8220471499908137671.stgit@djiang5-desk3.ch.intel.com> <160021253189.67751.12686144284999931703.stgit@djiang5-desk3.ch.intel.com> <87mu17ghr1.fsf@nanos.tec.linutronix.de> <0f9bdae0-73d7-1b4e-b478-3cbd05c095f4@intel.com> <87r1q92mkx.fsf@nanos.tec.linutronix.de> <44e19c5d-a0d2-0ade-442c-61727701f4d8@intel.com>
-Date:   Fri, 09 Oct 2020 01:17:38 +0200
-Message-ID: <87y2kgux2l.fsf@nanos.tec.linutronix.de>
+        Thu, 8 Oct 2020 19:22:50 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18F30C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 16:22:50 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id h6so5795072ybi.11
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 16:22:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=pfLY6NJMMNBF6tf7lQ1m6FQIX7pTGz4aW6ys+I9FOHQ=;
+        b=oCz8NftMVyAUYVB/cnihhjtq4Qb9IYBQ37nbSeEMzmn5jvZOwH7S5seI9m7XxYNVVE
+         MCluyGraKb8yKh82/5CgCxXGU6msSNlqp00GtAqLsih/URqyglJxlmsxwAsNA/aGhk23
+         pdUosZHgwlnBEZGdePwFVdwv3ZzZ1HbuUQNj0nkpdE/QaVszVmFnJ9PfLe0yXxi4odPh
+         0FbEMSb1+/4GC6767e1Z3wwT0/JwJRSCYWXTuT/jKG9GUDhCrmKMCGNygn9Q3DdTO7Me
+         tRI+CKHVsa7MoKQPGvcMu7dSi7ZXyaq0xmrpW/27eYJ6qijGo9/sVW0b0kB1/CIG4NiN
+         rJ+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=pfLY6NJMMNBF6tf7lQ1m6FQIX7pTGz4aW6ys+I9FOHQ=;
+        b=U37uJTq+UYGWGA5bsPTQAouUFPC2uNbzzmTeq2MXp98N1Yp2IsqXEsVJxslHTIl8ww
+         f/cCKRWKSNfWnD9PQSfXNmIgbmz6EaisCoSradiH5KqawB+nG0EoVeiazViGdsnd+OjD
+         E00Az8e05EBP195Vc+uxoIMbnf3XCHzHeHyR97syJ+Mp1+dhWbAiEslX3d/jIOGVuIHy
+         nqVmkkniFn6VvN3IkC3ehgIg+FXvW3Xz/f5Jz+PLIJVjd8nAXQMOLqqoWVqngOCdYRaJ
+         Oj8JU/vVIv+l21VwvOAI/64f0tm1MVyfl66B0+C5CuvuiVrFmixKGTFV5xJsPWtJE22R
+         8isQ==
+X-Gm-Message-State: AOAM533DRjKXTA3glyhkIvNexXt+1G3EbVyH75KRDQTigdhn4artVpz3
+        sLZtlwot4a/lN6w+yWVEqAYqWTCPIcR2LYtuSPhpDA==
+X-Google-Smtp-Source: ABdhPJyX0CDq9kyDz0XCQILMTz1l28FHrncM4bE4cBxgbXwRky7KKKn9fiX0bYuzzWU8KPrslm5Kx7hkU7X0iX8HRnA=
+X-Received: by 2002:a5b:d44:: with SMTP id f4mr13535317ybr.153.1602199368952;
+ Thu, 08 Oct 2020 16:22:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200924065606.3351177-1-lokeshgidra@google.com>
+ <CA+EESO7kCqtJf+ApoOcceFT+NX8pBwGmOr0q0PVnJf9Dnkrp6A@mail.gmail.com> <20201008040141.GA17076@redhat.com>
+In-Reply-To: <20201008040141.GA17076@redhat.com>
+From:   Nick Kralevich <nnk@google.com>
+Date:   Thu, 8 Oct 2020 16:22:36 -0700
+Message-ID: <CAFJ0LnGoD9NaKhbsohdXo5zt5nyMOX=g1aMRX0b0W1zBSNaSBg@mail.gmail.com>
+Subject: Re: [PATCH v4 0/2] Control over userfaultfd kernel-fault handling
+To:     Andrea Arcangeli <aarcange@redhat.com>
+Cc:     Lokesh Gidra <lokeshgidra@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>, Peter Xu <peterx@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Daniel Colascione <dancol@dancol.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-doc@vger.kernel.org, Kalesh Singh <kaleshsingh@google.com>,
+        Calin Juravle <calin@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Shaohua Li <shli@fb.com>, Jerome Glisse <jglisse@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Nitin Gupta <nigupta@nvidia.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dave,
-
-On Thu, Oct 08 2020 at 09:51, Dave Jiang wrote:
-> On 10/8/2020 12:39 AM, Thomas Gleixner wrote:
->> On Wed, Oct 07 2020 at 14:54, Dave Jiang wrote:
->>> On 9/30/2020 12:57 PM, Thomas Gleixner wrote:
->>>> Aside of that this is fiddling in the IMS storage array behind the irq
->>>> chips back without any comment here and a big fat comment about the
->>>> shared usage of ims_slot::ctrl in the irq chip driver.
->>>>
->>> This is to program the pasid fields in the IMS table entry. Was
->>> thinking the pasid fields may be considered device specific so didn't
->>> attempt to add the support to the core code.
->> 
->> Well, the problem is that this is not really irq chip functionality.
->> 
->> But the PASID programming needs to touch the IMS storage which is also
->> touched by the irq chip.
->> 
->> This might be correct as is, but without a big fat comment explaining
->> WHY it is safe to do so without any form of serialization this is just
->> voodoo and unreviewable.
->> 
->> Can you please explain when the PASID is programmed and what the state
->> of the interrupt is at that point? Is this a one off setup operation or
->> does this happen dynamically at random points during runtime?
+On Wed, Oct 7, 2020 at 9:01 PM Andrea Arcangeli <aarcange@redhat.com> wrote=
+:
 >
-> I will put in comments for the function to explain why and when we modify the 
-> pasid field for the IMS entry. Programming of the pasid is done right before we 
-> request irq. And the clearing is done after we free the irq. We will not be 
-> touching the IMS field at runtime. So the touching of the entry should be safe.
+> Hello Lokesh,
+>
+> On Wed, Oct 07, 2020 at 01:26:55PM -0700, Lokesh Gidra wrote:
+> > On Wed, Sep 23, 2020 at 11:56 PM Lokesh Gidra <lokeshgidra@google.com> =
+wrote:
+> > >
+> > > This patch series is split from [1]. The other series enables SELinux
+> > > support for userfaultfd file descriptors so that its creation and
+> > > movement can be controlled.
+> > >
+> > > It has been demonstrated on various occasions that suspending kernel
+> > > code execution for an arbitrary amount of time at any access to
+> > > userspace memory (copy_from_user()/copy_to_user()/...) can be exploit=
+ed
+> > > to change the intended behavior of the kernel. For instance, handling
+> > > page faults in kernel-mode using userfaultfd has been exploited in [2=
+, 3].
+> > > Likewise, FUSE, which is similar to userfaultfd in this respect, has =
+been
+> > > exploited in [4, 5] for similar outcome.
+> > >
+> > > This small patch series adds a new flag to userfaultfd(2) that allows
+> > > callers to give up the ability to handle kernel-mode faults with the
+> > > resulting UFFD file object. It then adds a 'user-mode only' option to
+> > > the unprivileged_userfaultfd sysctl knob to require unprivileged
+> > > callers to use this new flag.
+> > >
+> > > The purpose of this new interface is to decrease the chance of an
+> > > unprivileged userfaultfd user taking advantage of userfaultfd to
+> > > enhance security vulnerabilities by lengthening the race window in
+> > > kernel code.
+> > >
+> > > [1] https://lore.kernel.org/lkml/20200211225547.235083-1-dancol@googl=
+e.com/
+> > > [2] https://duasynt.com/blog/linux-kernel-heap-spray
+> > > [3] https://duasynt.com/blog/cve-2016-6187-heap-off-by-one-exploit
+>
+> I've looking at those links and I've been trying to verify the link
+> [3] is relevant.
+>
+> Specifically I've been trying to verify if 1) current state of the art
+> modern SLUB randomization techniques already enabled in production and
+> rightfully wasting some CPU in all enterprise kernels to prevent
+> things like above to become an issue in practice 2) combined with the
+> fact different memcg need to share the same kmemcaches (which was
+> incidentally fixed a few months ago upstream) and 3) further
+> robustness enhancements against exploits in the slub metadata, may
+> already render the exploit [3] from 2016 irrelevant in practice.
 
-Thanks for clarifying that.
+It's quite possible that some other mitigation was helpful against the
+technique used by this particular exploit. It's the nature of exploits
+that they are fragile and will change as new soft mitigations are
+introduced. The effectiveness of a particular exploit mitigation
+change is orthogonal to the change presented here.
 
-Thinking more about it, that very same thing will be needed for any
-other IMS device and of course this is not going to end well because
-some driver will fiddle with the PASID at the wrong time.
+The purpose of this change is to prevent an attacker from suspending
+kernel code execution and having kernel data structures in a
+predictable state. This makes it harder for an attacker to "win" race
+conditions against various kernel data structures. This change
+compliments other kernel hardening changes such as the changes you've
+referenced above. Focusing on one particular exploit somewhat misses
+the point of this change.
 
-Find below an infrastructure patch which adds ASID support to the core
-and a delta patch for the IMS irq chip. All of it neither compiled nor
-tested.
+>
+> So I started by trying to reproduce [3] by building 4.5.1 with a
+> .config with no robustness features and I booted it on fedora-32 or
+> gentoo userland and I cannot even invoke call_usermodehelper. Calling
+> socket(22, AF_INET, 0) won't invoke such function. Can you reproduce
+> on 4.5.1? Which kernel .config should I use to build 4.5.1 in order
+> for call_usermodehelper to be invoked by the exploit? Could you help
+> to verify it?
 
-Setting IMS_PASID_ENABLE might have other conditions which I don't know
-of, so the IMS part might be completely wrong, but you get the idea.
+I haven't tried to verify this myself. I wonder if the usermode
+hardening changes also impacted this exploit? See
+https://lkml.org/lkml/2017/1/16/468
 
-Thanks,
+But again, focusing on an exploit, which is inherently fragile in
+nature and dependent on the state of the kernel tree at a particular
+time, is unlikely to be useful to analyze this patch.
 
-        tglx
+>
+> It even has uninitialized variable spawning random perrors so it
+> doesn't give a warm fuzzy feeling:
+>
+> =3D=3D=3D=3D
+> int main(int argc, char **argv) {
+>         void *region, *map;
+>                       ^^^^^
+>         pthread_t uffd_thread;
+>         int uffd, msqid, i;
+>
+>         region =3D (void *)mmap((void *)0x40000000, 0x2000, PROT_READ|PRO=
+T_WRITE,
+>                                MAP_FIXED|MAP_PRIVATE|MAP_ANON, -1, 0);
+>
+>         if (!region) {
+>                 perror("mmap");
+>                 exit(2);
+>         }
+>
+>         setup_pagefault(region + 0x1000, 0x1000, 1);
+>
+>         printf("my pid =3D %d\n", getpid());
+>
+>         if (!map) {
+>         ^^^^^^^^
+>                 perror("mmap");
+> =3D=3D=3D=3D
+>
+> The whole point of being able to reproduce on 4.5.1 is then to
+> simulate if the same exploit would also reproduce on current kernels
+> with all enterprise default robustness features enabled. Or did
+> anybody already verify it?
+>
+> Anyway the links I was playing with are all in the cover letter, the
+> cover letter is not as important as the actual patches. The actual
+> patches looks fine to me.
 
-8<-----------
-Subject: genirq: Provide irq_set_asid()
-From: Thomas Gleixner <tglx@linutronix.de>
-Date: Thu, 08 Oct 2020 23:32:16 +0200
+That's great to hear.
 
-Provide storage and a setter for an Address Space IDentifier.
+>
+> The only improvement I can think of is, what about to add a
+> printk_once to suggest to toggle the sysctl if userfaultfd bails out
+> because the process lacks the CAP_SYS_PTRACE capability? That would
+> facilitate the /etc/sysctl.conf or tuned tweaking in case the apps
+> aren't verbose enough.
+>
+> It's not relevant anymore with this latest patchset, but about the
+> previous argument that seccomp couldn't be used in all Android
+> processes because of performance concern, I'm slightly confused.
 
-The identifier is stored in the top level irq_data and it only can be
-modified when the interrupt is not requested.
+Seccomp causes more problems than just performance. Seccomp is not
+designed for whole-of-system protections. Please see my other writeup
+at https://lore.kernel.org/lkml/CAFJ0LnEo-7YUvgOhb4pHteuiUW+wPfzqbwXUCGAA35=
+ZMx11A-w@mail.gmail.com/
 
-Add the necessary storage and helper functions and validate that interrupts
-which require an ASID have one assigned.
+>
+> https://android-developers.googleblog.com/2017/07/seccomp-filter-in-andro=
+id-o.html
+>
+> "Android O includes a single seccomp filter installed into zygote, the
+> process from which all the Android applications are derived. Because
+> the filter is installed into zygote=E2=80=94and therefore all apps=E2=80=
+=94the Android
+> security team took extra caution to not break existing apps"
+>
+> Example:
+>
+> $ uname -mo
+> aarch64 Android
+> $ cat swapoff.c
+> #include <sys/swap.h>
+>
+> int main()
+> {
+>         swapoff("");
+> }
+> $ gcc swapoff.c -o swapoff -O2
+> $ ./swapoff
+> Bad system call
+> $
+>
+> It's hard to imagine what is more performance critical than the zygote
+> process and the actual apps as above?
+>
+> It's also hard to imagine what kind of performance concern can arise
+> by adding seccomp filters also to background system apps that
+> generally should consume ~0% of CPU.
+>
+> If performance is really a concern, the BPF JIT representation with
+> the bitmap to be able to run the filter in O(1) sounds a better
+> solution than not adding ad-hoc filters and it's being worked on for
+> x86-64 and can be ported to aarch64 too. Many of the standalone
+> background processes likely wouldn't even use uffd at all so you could
+> block the user initiated faults too that way.
+>
+> Ultimately because of issues as [3] (be them still relevant or not, to
+> be double checked), no matter if through selinux, seccomp or a
+> different sysctl value, without this patchset applied the default
+> behavior of the userfaultfd syscall for all Linux binaries running on
+> Android kernels, would deviate from the upstream kernel. So even if we
+> would make the pipe mutex logic more complex the deviation would
+> remain. Your patchset adds much less risk of breakage than adding a
+> timeout to kernel initiated userfaults and it resolves all concerns as
+> well as a timeout. We'll also make better use of the "0" value this
+> way. So while I'm not certain this is the best for the long term, this
+> looks the sweet spot for the short term to resolve many issues at
+> once.
+>
+> Thanks!
+> Andrea
+>
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- include/linux/irq.h    |    8 ++++++++
- kernel/irq/internals.h |   10 ++++++++++
- kernel/irq/irqdesc.c   |    1 +
- kernel/irq/manage.c    |   40 ++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 59 insertions(+)
 
---- a/include/linux/irq.h
-+++ b/include/linux/irq.h
-@@ -161,6 +161,7 @@ struct irq_common_data {
-  * @mask:		precomputed bitmask for accessing the chip registers
-  * @irq:		interrupt number
-  * @hwirq:		hardware interrupt number, local to the interrupt domain
-+ * @asid:		Optional address space ID for this interrupt.
-  * @common:		point to data shared by all irqchips
-  * @chip:		low level interrupt hardware access
-  * @domain:		Interrupt translation domain; responsible for mapping
-@@ -174,6 +175,7 @@ struct irq_data {
- 	u32			mask;
- 	unsigned int		irq;
- 	unsigned long		hwirq;
-+	u32			asid;
- 	struct irq_common_data	*common;
- 	struct irq_chip		*chip;
- 	struct irq_domain	*domain;
-@@ -183,6 +185,8 @@ struct irq_data {
- 	void			*chip_data;
- };
- 
-+#define IRQ_INVALID_ASID	U32_MAX
-+
- /*
-  * Bit masks for irq_common_data.state_use_accessors
-  *
-@@ -555,6 +559,8 @@ struct irq_chip {
-  * IRQCHIP_EOI_THREADED:	Chip requires eoi() on unmask in threaded mode
-  * IRQCHIP_SUPPORTS_LEVEL_MSI	Chip can provide two doorbells for Level MSIs
-  * IRQCHIP_SUPPORTS_NMI:	Chip can deliver NMIs, only for root irqchips
-+ * IRQCHIP_REQUIRES_ASID:	Interrupt chip requires a valid Address Space
-+ *				IDentifier
-  */
- enum {
- 	IRQCHIP_SET_TYPE_MASKED		= (1 <<  0),
-@@ -566,6 +572,7 @@ enum {
- 	IRQCHIP_EOI_THREADED		= (1 <<  6),
- 	IRQCHIP_SUPPORTS_LEVEL_MSI	= (1 <<  7),
- 	IRQCHIP_SUPPORTS_NMI		= (1 <<  8),
-+	IRQCHIP_REQUIRES_ASID		= (1 <<  9),
- };
- 
- #include <linux/irqdesc.h>
-@@ -792,6 +799,7 @@ extern int irq_set_irq_type(unsigned int
- extern int irq_set_msi_desc(unsigned int irq, struct msi_desc *entry);
- extern int irq_set_msi_desc_off(unsigned int irq_base, unsigned int irq_offset,
- 				struct msi_desc *entry);
-+extern int irq_set_asid(unsigned int irq, u32 asid);
- extern struct irq_data *irq_get_irq_data(unsigned int irq);
- 
- static inline struct irq_chip *irq_get_chip(unsigned int irq)
---- a/kernel/irq/internals.h
-+++ b/kernel/irq/internals.h
-@@ -281,6 +281,16 @@ static inline void
- irq_pm_remove_action(struct irq_desc *desc, struct irqaction *action) { }
- #endif
- 
-+static inline bool irq_requires_asid(struct irq_desc *desc)
-+{
-+	return desc->irq_data.chip->flags & IRQCHIP_REQUIRES_ASID;
-+}
-+
-+static inline bool irq_invalid_asid(struct irq_desc *desc)
-+{
-+	return desc->irq_data.asid == IRQ_INVALID_ASID;
-+}
-+
- #ifdef CONFIG_IRQ_TIMINGS
- 
- #define IRQ_TIMINGS_SHIFT	5
---- a/kernel/irq/irqdesc.c
-+++ b/kernel/irq/irqdesc.c
-@@ -115,6 +115,7 @@ static void desc_set_defaults(unsigned i
- 	irq_settings_clr_and_set(desc, ~0, _IRQ_DEFAULT_INIT_FLAGS);
- 	irqd_set(&desc->irq_data, IRQD_IRQ_DISABLED);
- 	irqd_set(&desc->irq_data, IRQD_IRQ_MASKED);
-+	desc->irq_data.asid = IRQ_INVALID_ASID;
- 	desc->handle_irq = handle_bad_irq;
- 	desc->depth = 1;
- 	desc->irq_count = 0;
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -1520,6 +1520,22 @@ static int
- 	}
- 
- 	/*
-+	 * If the topmost interrupt chip requires that a valid Address
-+	 * Space IDentifier is set, validate that the interrupt is not
-+	 * shared and that a valid ASID is set.
-+	 */
-+	if (irq_requires_asid(desc)) {
-+		if (shared || irq_invalid_asid(desc)) {
-+			ret = -EINVAL;
-+			goto out_unlock;
-+		}
-+		/*
-+		 * CHECKME: Is there a way to figure out that the ASID
-+		 * makes sense in the context of the caller?
-+		 */
-+	}
-+
-+	/*
- 	 * Setup the thread mask for this irqaction for ONESHOT. For
- 	 * !ONESHOT irqs the thread mask is 0 so we can avoid a
- 	 * conditional in irq_wake_thread().
-@@ -1848,6 +1864,8 @@ static struct irqaction *__free_irq(stru
- 		 */
- 		raw_spin_lock_irqsave(&desc->lock, flags);
- 		irq_domain_deactivate_irq(&desc->irq_data);
-+		/* Invalidate the ASID associated to this interrupt */
-+		desc->irq_data.asid = IRQ_INVALID_ASID;
- 		raw_spin_unlock_irqrestore(&desc->lock, flags);
- 
- 		irq_release_resources(desc);
-@@ -2752,3 +2770,25 @@ int irq_set_irqchip_state(unsigned int i
- 	return err;
- }
- EXPORT_SYMBOL_GPL(irq_set_irqchip_state);
-+
-+int irq_set_asid(unsigned int irq, u32 asid)
-+{
-+	struct irq_desc *desc;
-+	struct irq_data *data;
-+	unsigned long flags;
-+	int err = -EBUSY;
-+
-+	desc = irq_get_desc_buslock(irq, &flags, IRQ_GET_DESC_CHECK_GLOBAL);
-+	if (!desc)
-+		return -EINVAL;
-+
-+	/* If the interrupt is active changig ASID is a NONO */
-+	if (!desc->action) {
-+		data = irq_desc_get_irq_data(desc);
-+		data->asid = asid;
-+	}
-+
-+	irq_put_desc_busunlock(desc, flags);
-+	return err;
-+}
-+EXPORT_SYMBOL_GPL(irq_set_asid);
-
-8<------------------
-
-Subject: irqchip/ims: PASID support
-From: Thomas Gleixner <tglx@linutronix.de>
-Date: Fri, 09 Oct 2020 01:02:09 +0200
-
-NOT-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- drivers/irqchip/irq-ims-msi.c       |   29 ++++++++++++++++++++++-------
- include/linux/irqchip/irq-ims-msi.h |    2 ++
- 2 files changed, 24 insertions(+), 7 deletions(-)
-
---- a/drivers/irqchip/irq-ims-msi.c
-+++ b/drivers/irqchip/irq-ims-msi.c
-@@ -18,14 +18,26 @@ struct ims_array_data {
- 	unsigned long		map[0];
- };
- 
-+#define IMS_ASID_SHIFT		12
-+
-+static inline u32 ims_ctrl_val(struct irq_data *data, u32 ctrl)
-+{
-+	return ctrl | (data->asid) << 12 | IMS_PASID_ENABLE;
-+}
-+
-+static inline void iowrite32_and_flush(u32 value, void __iomem *addr)
-+{
-+	iowrite32(value, addr);
-+	ioread32(addr);
-+}
-+
- static void ims_array_mask_irq(struct irq_data *data)
- {
- 	struct msi_desc *desc = irq_data_get_msi_desc(data);
- 	struct ims_slot __iomem *slot = desc->device_msi.priv_iomem;
- 	u32 __iomem *ctrl = &slot->ctrl;
- 
--	iowrite32(ioread32(ctrl) | IMS_VECTOR_CTRL_MASK, ctrl);
--	ioread32(ctrl); /* Flush write to device */
-+	iowrite32_and_flush(ims_ctrl_val(data, IMS_VECTOR_CTRL_MASK), ctrl);
- }
- 
- static void ims_array_unmask_irq(struct irq_data *data)
-@@ -34,7 +46,10 @@ static void ims_array_unmask_irq(struct
- 	struct ims_slot __iomem *slot = desc->device_msi.priv_iomem;
- 	u32 __iomem *ctrl = &slot->ctrl;
- 
--	iowrite32(ioread32(ctrl) & ~IMS_VECTOR_CTRL_MASK, ctrl);
-+	if (!WARN_ON_ONCE(data->asid == IRQ_INVALID_ASID))
-+		return;
-+
-+	iowrite32_and_flush(ims_ctrl_val(data, 0), ctrl);
- }
- 
- static void ims_array_write_msi_msg(struct irq_data *data, struct msi_msg *msg)
-@@ -44,8 +59,7 @@ static void ims_array_write_msi_msg(stru
- 
- 	iowrite32(msg->address_lo, &slot->address_lo);
- 	iowrite32(msg->address_hi, &slot->address_hi);
--	iowrite32(msg->data, &slot->data);
--	ioread32(slot);
-+	iowrite32_and_flush(msg->data, &slot->data);
- }
- 
- static const struct irq_chip ims_array_msi_controller = {
-@@ -54,7 +68,8 @@ static const struct irq_chip ims_array_m
- 	.irq_unmask		= ims_array_unmask_irq,
- 	.irq_write_msi_msg	= ims_array_write_msi_msg,
- 	.irq_retrigger		= irq_chip_retrigger_hierarchy,
--	.flags			= IRQCHIP_SKIP_SET_WAKE,
-+	.flags			= IRQCHIP_SKIP_SET_WAKE |
-+				  IRQCHIP_REQUIRES_ASID,
- };
- 
- static void ims_array_reset_slot(struct ims_slot __iomem *slot)
-@@ -62,7 +77,7 @@ static void ims_array_reset_slot(struct
- 	iowrite32(0, &slot->address_lo);
- 	iowrite32(0, &slot->address_hi);
- 	iowrite32(0, &slot->data);
--	iowrite32(0, &slot->ctrl);
-+	iowrite32_and_flush(IMS_VECTOR_CTRL_MASK, &slot->ctrl);
- }
- 
- static void ims_array_free_msi_store(struct irq_domain *domain,
---- a/include/linux/irqchip/irq-ims-msi.h
-+++ b/include/linux/irqchip/irq-ims-msi.h
-@@ -25,6 +25,8 @@ struct ims_slot {
- 
- /* Bit to mask the interrupt in ims_hw_slot::ctrl */
- #define IMS_VECTOR_CTRL_MASK	0x01
-+/* Bit to enable PASID in ims_hw_slot::ctrl */
-+#define IMS_PASID_ENABLE	0x08
- 
- /**
-  * struct ims_array_info - Information to create an IMS array domain
+--=20
+Nick Kralevich | nnk@google.com
