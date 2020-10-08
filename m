@@ -2,78 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85211287CA3
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 21:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3DC287CA4
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 21:50:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729164AbgJHTsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 15:48:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35562 "EHLO mail.kernel.org"
+        id S1729254AbgJHTuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 15:50:06 -0400
+Received: from foss.arm.com ([217.140.110.172]:47110 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727273AbgJHTsX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 15:48:23 -0400
-Received: from localhost (i15-lef02-th2-89-83-218-254.ft.lns.abo.bbox.fr [89.83.218.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2DEF3221FD;
-        Thu,  8 Oct 2020 19:48:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602186502;
-        bh=BTeLevHpVqiAww66o52yvDVIXekJ4KK/OnGhnEnqV6s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=B3imO/BGRTzFBACw+eqDWVFQ1/ztowfqY6jbxJrKQWkFj6kqphn2HdfKQ1e/gBqI0
-         Ye33Z3je5cCFLGEQQ05VPhCDvz5hISl6NP5l8QwFFfrIAW92aU87n2zsT8hx0Od5ou
-         r3tjzQL1cggSNwxH5DnqzTX7AtgUqNDbDNH4II/Q=
-Date:   Thu, 8 Oct 2020 21:48:19 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Peter Xu <peterx@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Nitesh Narayan Lal <nitesh@redhat.com>
-Subject: Re: [patch 1/2] nohz: only wakeup a single target cpu when kicking a
- task
-Message-ID: <20201008194819.GA86389@lothringen>
-References: <20201007180151.623061463@redhat.com>
- <20201007180229.724302019@redhat.com>
- <20201008145940.GG6026@xz-x1>
- <20201008152844.GB2628@hirez.programming.kicks-ass.net>
+        id S1729220AbgJHTuF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 15:50:05 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E9FCA1063;
+        Thu,  8 Oct 2020 12:50:03 -0700 (PDT)
+Received: from [192.168.2.22] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 073FC3F66B;
+        Thu,  8 Oct 2020 12:50:01 -0700 (PDT)
+Subject: Re: [PATCH v2 06/14] perf arm-spe: Refactor packet header parsing
+To:     Leo Yan <leo.yan@linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Wei Li <liwei391@huawei.com>,
+        James Clark <james.clark@arm.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        linux-kernel@vger.kernel.org, Al Grant <Al.Grant@arm.com>
+References: <20200929133917.9224-1-leo.yan@linaro.org>
+ <20200929133917.9224-7-leo.yan@linaro.org>
+From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
+Organization: ARM Ltd.
+Message-ID: <d3d0bf64-0285-1aef-3ec1-74f0d28257a6@arm.com>
+Date:   Thu, 8 Oct 2020 20:49:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201008152844.GB2628@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200929133917.9224-7-leo.yan@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 05:28:44PM +0200, Peter Zijlstra wrote:
-> On Thu, Oct 08, 2020 at 10:59:40AM -0400, Peter Xu wrote:
-> > On Wed, Oct 07, 2020 at 03:01:52PM -0300, Marcelo Tosatti wrote:
-> > > +static void tick_nohz_kick_task(struct task_struct *tsk)
-> > > +{
-> > > +	int cpu = task_cpu(tsk);
-> > > +
-> > > +	/*
-> > > +	 * If the task concurrently migrates to another cpu,
-> > > +	 * we guarantee it sees the new tick dependency upon
-> > > +	 * schedule.
-> > > +	 *
-> > > +	 *
-> > > +	 * set_task_cpu(p, cpu);
-> > > +	 *   STORE p->cpu = @cpu
-> > > +	 * __schedule() (switch to task 'p')
-> > > +	 *   LOCK rq->lock
-> > > +	 *   smp_mb__after_spin_lock()          STORE p->tick_dep_mask
-> > > +	 *   tick_nohz_task_switch()            smp_mb() (atomic_fetch_or())
-> > > +	 *      LOAD p->tick_dep_mask           LOAD p->cpu
-> > > +	 */
-> > > +
-> > > +	preempt_disable();
-> > 
-> > Pure question: is preempt_disable() required here?  Same question to
-> > tick_nohz_full_kick_all().
+On 29/09/2020 14:39, Leo Yan wrote:
+
+Hi Leo,
+
+> The packet header parsing uses the hard coded values and it uses nested
+> if-else statements.
 > 
-> I think it serializes against hotplug.
+> To improve the readability, this patch refactors the macros for packet
+> header format so it removes the hard coded values.  Furthermore, based
+> on the new mask macros it reduces the nested if-else statements and
+> changes to use the flat conditions checking, this is directive and can
+> easily map to the descriptions in ARMv8-a architecture reference manual
+> (ARM DDI 0487E.a), chapter 'D10.1.5 Statistical Profiling Extension
+> protocol packet headers'.
 
-Exactly!
+Yeah, that's so much better, thank you!
 
-Thanks.
+I checked all the bits and comparisons against the ARM ARM.
+
+Two minor things below ...
+
+> 
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> ---
+>  .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 92 +++++++++----------
+>  .../arm-spe-decoder/arm-spe-pkt-decoder.h     | 21 +++++
+>  2 files changed, 62 insertions(+), 51 deletions(-)
+> 
+> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> index 96b717a19163..e738bd04f209 100644
+> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> @@ -16,28 +16,6 @@
+>  #define NS_FLAG		BIT(63)
+>  #define EL_FLAG		(BIT(62) | BIT(61))
+>  
+> -#define SPE_HEADER0_PAD			0x0
+> -#define SPE_HEADER0_END			0x1
+> -#define SPE_HEADER0_ADDRESS		0x30 /* address packet (short) */
+> -#define SPE_HEADER0_ADDRESS_MASK	0x38
+> -#define SPE_HEADER0_COUNTER		0x18 /* counter packet (short) */
+> -#define SPE_HEADER0_COUNTER_MASK	0x38
+> -#define SPE_HEADER0_TIMESTAMP		0x71
+> -#define SPE_HEADER0_TIMESTAMP		0x71
+> -#define SPE_HEADER0_EVENTS		0x2
+> -#define SPE_HEADER0_EVENTS_MASK		0xf
+> -#define SPE_HEADER0_SOURCE		0x3
+> -#define SPE_HEADER0_SOURCE_MASK		0xf
+> -#define SPE_HEADER0_CONTEXT		0x24
+> -#define SPE_HEADER0_CONTEXT_MASK	0x3c
+> -#define SPE_HEADER0_OP_TYPE		0x8
+> -#define SPE_HEADER0_OP_TYPE_MASK	0x3c
+> -#define SPE_HEADER1_ALIGNMENT		0x0
+> -#define SPE_HEADER1_ADDRESS		0xb0 /* address packet (extended) */
+> -#define SPE_HEADER1_ADDRESS_MASK	0xf8
+> -#define SPE_HEADER1_COUNTER		0x98 /* counter packet (extended) */
+> -#define SPE_HEADER1_COUNTER_MASK	0xf8
+> -
+>  #if __BYTE_ORDER == __BIG_ENDIAN
+>  #define le16_to_cpu bswap_16
+>  #define le32_to_cpu bswap_32
+> @@ -198,46 +176,58 @@ static int arm_spe_get_addr(const unsigned char *buf, size_t len,
+>  static int arm_spe_do_get_packet(const unsigned char *buf, size_t len,
+>  				 struct arm_spe_pkt *packet)
+>  {
+> -	unsigned int byte;
+> +	unsigned int hdr;
+> +	unsigned char ext_hdr = 0;
+>  
+>  	memset(packet, 0, sizeof(struct arm_spe_pkt));
+>  
+>  	if (!len)
+>  		return ARM_SPE_NEED_MORE_BYTES;
+>  
+> -	byte = buf[0];
+> -	if (byte == SPE_HEADER0_PAD)
+> +	hdr = buf[0];
+> +
+> +	if (hdr == SPE_HEADER0_PAD)
+>  		return arm_spe_get_pad(packet);
+> -	else if (byte == SPE_HEADER0_END) /* no timestamp at end of record */
+> +
+> +	if (hdr == SPE_HEADER0_END) /* no timestamp at end of record */
+>  		return arm_spe_get_end(packet);
+> -	else if (byte & 0xc0 /* 0y11xxxxxx */) {
+> -		if (byte & 0x80) {
+> -			if ((byte & SPE_HEADER0_ADDRESS_MASK) == SPE_HEADER0_ADDRESS)
+> -				return arm_spe_get_addr(buf, len, 0, packet);
+> -			if ((byte & SPE_HEADER0_COUNTER_MASK) == SPE_HEADER0_COUNTER)
+> -				return arm_spe_get_counter(buf, len, 0, packet);
+> -		} else
+> -			if (byte == SPE_HEADER0_TIMESTAMP)
+> -				return arm_spe_get_timestamp(buf, len, packet);
+> -			else if ((byte & SPE_HEADER0_EVENTS_MASK) == SPE_HEADER0_EVENTS)
+> -				return arm_spe_get_events(buf, len, packet);
+> -			else if ((byte & SPE_HEADER0_SOURCE_MASK) == SPE_HEADER0_SOURCE)
+> -				return arm_spe_get_data_source(buf, len, packet);
+> -			else if ((byte & SPE_HEADER0_CONTEXT_MASK) == SPE_HEADER0_CONTEXT)
+> -				return arm_spe_get_context(buf, len, packet);
+> -			else if ((byte & SPE_HEADER0_OP_TYPE_MASK) == SPE_HEADER0_OP_TYPE)
+> -				return arm_spe_get_op_type(buf, len, packet);
+> -	} else if ((byte & 0xe0) == 0x20 /* 0y001xxxxx */) {
+> -		/* 16-bit header */
+> -		byte = buf[1];
+> -		if (byte == SPE_HEADER1_ALIGNMENT)
+> +
+> +	if (hdr == SPE_HEADER0_TIMESTAMP)
+> +		return arm_spe_get_timestamp(buf, len, packet);
+> +
+> +	if ((hdr & SPE_HEADER0_MASK1) == SPE_HEADER0_EVENTS)
+> +		return arm_spe_get_events(buf, len, packet);
+> +
+> +	if ((hdr & SPE_HEADER0_MASK1) == SPE_HEADER0_SOURCE)
+> +		return arm_spe_get_data_source(buf, len, packet);
+> +
+> +	if ((hdr & SPE_HEADER0_MASK2) == SPE_HEADER0_CONTEXT)
+> +		return arm_spe_get_context(buf, len, packet);
+> +
+> +	if ((hdr & SPE_HEADER0_MASK2) == SPE_HEADER0_OPERATION)
+> +		return arm_spe_get_op_type(buf, len, packet);
+> +
+> +	if ((hdr & SPE_HEADER0_MASK3) == SPE_HEADER0_EXTENDED) {
+
+Is there any reason you are using MASK3 here, and not MASK2? The ARM ARM
+seems to suggest that bits [7:2] make up the mask for the extended
+header type, as the actual subtype is handled in the next byte.
+
+> +		/* 16-bit extended format header */
+> +		ext_hdr = 1;
+> +
+> +		hdr = buf[1];
+> +		if (hdr == SPE_HEADER1_ALIGNMENT)
+>  			return arm_spe_get_alignment(buf, len, packet);
+> -		else if ((byte & SPE_HEADER1_ADDRESS_MASK) == SPE_HEADER1_ADDRESS)
+> -			return arm_spe_get_addr(buf, len, 1, packet);
+> -		else if ((byte & SPE_HEADER1_COUNTER_MASK) == SPE_HEADER1_COUNTER)
+> -			return arm_spe_get_counter(buf, len, 1, packet);
+>  	}
+>  
+> +	/*
+> +	 * The short format header's byte 0 or the extended format header's
+> +	 * byte 1 has been assigned to 'hdr', which uses the same encoding for
+> +	 * address packet and counter packet, so don't need to distinguish if
+> +	 * it's short format or extended format and handle in once.
+> +	 */
+> +	if ((hdr & SPE_HEADER0_MASK4) == SPE_HEADER0_ADDRESS)
+> +		return arm_spe_get_addr(buf, len, ext_hdr, packet);
+> +
+> +	if ((hdr & SPE_HEADER0_MASK4) == SPE_HEADER0_COUNTER)
+> +		return arm_spe_get_counter(buf, len, ext_hdr, packet);
+> +
+>  	return ARM_SPE_BAD_PACKET;
+>  }
+>  
+> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
+> index f2d0af39a58c..a30fe3c5ab67 100644
+> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
+> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
+> @@ -37,6 +37,27 @@ struct arm_spe_pkt {
+>  	uint64_t		payload;
+>  };
+>  
+> +/* Short header (HEADER0) and extended header (HEADER1) */
+> +#define SPE_HEADER0_PAD			0x0
+> +#define SPE_HEADER0_END			0x1
+> +#define SPE_HEADER0_TIMESTAMP		0x71
+> +/* Mask for event & data source */
+> +#define SPE_HEADER0_MASK1		(GENMASK_ULL(7, 6) | GENMASK_ULL(3, 0))
+> +#define SPE_HEADER0_EVENTS		0x42
+> +#define SPE_HEADER0_SOURCE		0x43
+> +/* Mask for context & operation */
+> +#define SPE_HEADER0_MASK2		GENMASK_ULL(7, 2)
+> +#define SPE_HEADER0_CONTEXT		0x64
+> +#define SPE_HEADER0_OPERATION		0x48
+
+Just a nit, but should the name be ..._OP_TYPE instead?
+
+Cheers,
+Andre
+
+> +/* Mask for extended format */
+> +#define SPE_HEADER0_MASK3		GENMASK_ULL(7, 5)
+> +#define SPE_HEADER0_EXTENDED		0x20
+> +/* Mask for address & counter */
+> +#define SPE_HEADER0_MASK4		GENMASK_ULL(7, 3)
+> +#define SPE_HEADER0_ADDRESS		0xb0
+> +#define SPE_HEADER0_COUNTER		0x98
+> +#define SPE_HEADER1_ALIGNMENT		0x0
+> +
+>  #define SPE_HEADER_SZ_SHIFT		(4)
+>  #define SPE_HEADER_SZ_MASK		GENMASK_ULL(5, 4)
+>  
+> 
+
