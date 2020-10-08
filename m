@@ -2,117 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2DD287F13
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 01:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35026287F16
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 01:27:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730988AbgJHXZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 19:25:16 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:34014 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730206AbgJHXZQ (ORCPT
+        id S1731004AbgJHX1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 19:27:09 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:53588 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725969AbgJHX1J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 19:25:16 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 098NOF8l067270;
-        Thu, 8 Oct 2020 23:25:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id; s=corp-2020-01-29;
- bh=nZnWsiDFEcPgQ5B79nIlPz4Zz2ktxkZud96KgKbHQLw=;
- b=oWgkus4VuCsFXS/7NnKOK/q5NxnzspOoazFY7ub40NTnUqaCzr3IRxOMJi4dN8XfQ0ZY
- XQToF863lZyuH2KmXfqEaG3v7ADxZHcr51Z62TtqMMUTt2ExjTERmAIoH84NPuEmqagk
- ODqkDVu+RrQjHqv/W2diF/5Tvs1GnNwfVrqEWQ7xUCUHZBokSkeEEjBl0VH0ZwLeHbgI
- VIeo1E03Huc4OhrPuCFF1O7kWpnBipADE6WMpOwhq9KiI+1wXbComaD6TmUwH0+KbDho
- WHLzSA3DjEKXunR23qkyoFWSowSauPmXS09xJHbq3PuA0ofmg2WoNOPwu0SxC7NwQ19t GQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 3429jurrt5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 08 Oct 2020 23:25:13 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 098NLNhS113561;
-        Thu, 8 Oct 2020 23:25:13 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 3429kk4hsb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 08 Oct 2020 23:25:13 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 098NPBw4032394;
-        Thu, 8 Oct 2020 23:25:11 GMT
-Received: from toshiba-tecra.attlocal.net (/10.159.157.36)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 08 Oct 2020 16:25:11 -0700
-From:   Victor Erminpour <victor.erminpour@oracle.com>
-To:     masahiroy@kernel.org
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] merge_config.sh: Add switch to specify ARCH variable
-Date:   Thu,  8 Oct 2020 16:26:28 -0700
-Message-Id: <1602199588-24468-1-git-send-email-victor.erminpour@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9768 signatures=668681
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 mlxlogscore=913
- spamscore=0 adultscore=0 mlxscore=0 malwarescore=0 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010080164
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9768 signatures=668681
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=928 mlxscore=0
- phishscore=0 bulkscore=0 suspectscore=1 lowpriorityscore=0 spamscore=0
- clxscore=1011 malwarescore=0 priorityscore=1501 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010080164
+        Thu, 8 Oct 2020 19:27:09 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602199626;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mCF0g/+MND1nwyGx+3yFFM5NagyeBqr5yClJxHT9QEA=;
+        b=Swp8IJ+Dgcfzc0AiaM09Ka+XguUbPbdks8xUopa30a0QG9VTUz1p8OEM/pGJUj68R66uKo
+        3BNSmfCEhBPwkb8gb5JL4X55GCeGTMuIK1C1gxHhGqSuscAuXf8wAkIfOwuc+l67uhL3Xe
+        BqUhMtEBt3gBjhNjB+VlWJuFDj9QSipDsfeTtxaYo7SEDz1Go6f4eLWBGNVolW/TsKzcAx
+        ydm1GNGRt4oEliwJTKULEbyOwkKClOsukVdfspauVbOvwTZbIA9O7efNhcV6ZK2tGqNIwt
+        MftjjoJYadRztuHmP53tOwnPCc2E7z5TtmehSD/jmszTLaRQy/YjrMb2cJsBnQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602199626;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mCF0g/+MND1nwyGx+3yFFM5NagyeBqr5yClJxHT9QEA=;
+        b=p20GZo4A08k/MQ9YpJFZ8xL4ZpcN/OzaBgyB0Z6JYGu3goDxY7suWz1HdpJ6zXE5AO7QvB
+        KZHAotM6g3c4ycCw==
+To:     David Woodhouse <dwmw2@infradead.org>, x86@kernel.org
+Cc:     kvm <kvm@vger.kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 5/5] x86/kvm: Add KVM_FEATURE_MSI_EXT_DEST_ID
+In-Reply-To: <c6f21628733cac23fd28679842c20423df2dd423.camel@infradead.org>
+References: <803bb6b2212e65c568c84ff6882c2aa8a0ee03d5.camel@infradead.org> <20201007122046.1113577-1-dwmw2@infradead.org> <20201007122046.1113577-5-dwmw2@infradead.org> <87blhcx6qz.fsf@nanos.tec.linutronix.de> <f27b17cf4ab64fdb4f14a056bd8c6a93795d9a85.camel@infradead.org> <95625dfce360756b99641c31212634c1bf80a69a.camel@infradead.org> <87362owhcb.fsf@nanos.tec.linutronix.de> <c6f21628733cac23fd28679842c20423df2dd423.camel@infradead.org>
+Date:   Fri, 09 Oct 2020 01:27:06 +0200
+Message-ID: <87tuv4uwmt.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a switch to merge_config.sh to specify the ARCH variable
-which defines the target architecture.
+On Thu, Oct 08 2020 at 22:39, David Woodhouse wrote:
+> On Thu, 2020-10-08 at 23:14 +0200, Thomas Gleixner wrote:
+>> > 
+>> > (We'd want the x86_vector_domain to actually have an MSI compose
+>> > function in the !CONFIG_PCI_MSI case if we did this, of course.)
+>> 
+>> The compose function and the vector domain wrapper can simply move to
+>> vector.c
+>
+> I ended up putting __irq_msi_compose_msg() into apic.c and that way I
+> can make virt_ext_dest_id static in that file.
+>
+> And then I can move all the HPET-MSI support into hpet.c too.
 
-Set x86 as the default architecture.
+Works for me.
 
-Signed-off-by: Victor Erminpour <victor.erminpour@oracle.com>
----
- scripts/kconfig/merge_config.sh | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+> https://git.infradead.org/users/dwmw2/linux.git/shortlog/refs/heads/ext_dest_id
 
-diff --git a/scripts/kconfig/merge_config.sh b/scripts/kconfig/merge_config.sh
-index 63c8565206a4..b7a687f093f0 100755
---- a/scripts/kconfig/merge_config.sh
-+++ b/scripts/kconfig/merge_config.sh
-@@ -22,6 +22,7 @@ clean_up() {
- 
- usage() {
- 	echo "Usage: $0 [OPTIONS] [CONFIG [...]]"
-+	echo "  -a    set ARCH variable to define the target architecture"
- 	echo "  -h    display this help text"
- 	echo "  -m    only merge the fragments, do not execute the make command"
- 	echo "  -n    use allnoconfig instead of alldefconfig"
-@@ -34,6 +35,7 @@ usage() {
- 
- RUNMAKE=true
- ALLTARGET=alldefconfig
-+ARCH=x86
- WARNREDUN=false
- BUILTIN=false
- OUTPUT=.
-@@ -46,6 +48,11 @@ while true; do
- 		shift
- 		continue
- 		;;
-+	"-a")
-+		ARCH=$2
-+		shift 2
-+		continue
-+		;;
- 	"-m")
- 		RUNMAKE=false
- 		shift
-@@ -172,7 +179,7 @@ fi
- # Use the merged file as the starting point for:
- # alldefconfig: Fills in any missing symbols with Kconfig default
- # allnoconfig: Fills in any missing symbols with # CONFIG_* is not set
--make KCONFIG_ALLCONFIG=$TMP_FILE $OUTPUT_ARG $ALLTARGET
-+make ARCH=$ARCH KCONFIG_ALLCONFIG=$TMP_FILE $OUTPUT_ARG $ALLTARGET
- 
- 
- # Check all specified config values took (might have missed-dependency issues)
--- 
-1.8.3.1
+For the next submission, can you please
 
+ - pick up the -ENODEV changes for HPET/IOAPIC which I posted earlier
+
+ - shuffle all that compose/IOAPIC cleanup around
+
+before adding that extended dest id stuff.
+
+Thanks,
+
+        tglx
