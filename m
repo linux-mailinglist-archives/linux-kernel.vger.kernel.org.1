@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9572D287DED
+	by mail.lfdr.de (Postfix) with ESMTP id 2834B287DEC
 	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 23:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730937AbgJHV1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 17:27:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36864 "EHLO
+        id S1730923AbgJHV1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 17:27:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725982AbgJHV1i (ORCPT
+        with ESMTP id S1729223AbgJHV1k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 17:27:38 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4473DC0613D2;
-        Thu,  8 Oct 2020 14:27:38 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id c5so7253021ilr.9;
-        Thu, 08 Oct 2020 14:27:38 -0700 (PDT)
+        Thu, 8 Oct 2020 17:27:40 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0344DC0613D3;
+        Thu,  8 Oct 2020 14:27:40 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id g7so7906092iov.13;
+        Thu, 08 Oct 2020 14:27:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=4Gd0TD0Zh9E4/4Vtm9YyHlb0NPvcC47sf/ndhX4ehe8=;
-        b=po2HVF55v+iJBto5bS1ESXYgxMQ74GzLz8Xni7yD3Oz6fuv4GnaP56ySWYCHJXhEXD
-         TFyuvreRi5gWTCUvTtgmN5sB/+LeP5HCVzeLe/7AlGXiIxZJKcoUTmjx8jUkCgAOzfGc
-         vCNE/JyR7YQ1a1XoXJe0Dpx/sAhVtx+4BbeL/MWnguSayMVx765HylZ38m+aVIsU6eLr
-         2x9vTY5AOMh+KVNW/IzLJ9zcKNZWOnIuZz4NMqtPEN9ZESyS8TdVcLqRQ01cR5DeDNoZ
-         gH6IsAxX/AFOz3pm+I9wLGn0WhjeSWK46Y01w8Oe+LpyKfvktnq0dBD+meo/q+1Jb9fc
-         KVdQ==
+        bh=jSyjIzYbBigGT0AzTfXLoS02VDK6YwDiuu+biIO3XI4=;
+        b=UM0fMrHomjTawuqPBKKxJ3ndD3+6WawB6vEGpTjXPLxlWmrG/e4+ma+349sIcEX2xW
+         iQOM8vvYgysbprsfGQYZ9ZfphYPuJHQ5eWofrScEZzWpwwcT0FoKWBzx8pvC4sO3yXnZ
+         96CxvZBnMHgcDweiaD7n+n8dNa4QwOfou2THGRKskF+B0yaZaYnUAruQtKsJhK+lPg2j
+         dUtszfdhHGz80uNHdAtULr67mNNgxbtLKIgBAJK9q+PeC8AGhX2xt9DP2ESQ+NPrJ7b0
+         /JZu1XWIz2fOuCk0wuu7i5HE92aySngLaM7S3Lsg6LCwHgV6LnxzSDEv2nIX2AkSt8TN
+         SXwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4Gd0TD0Zh9E4/4Vtm9YyHlb0NPvcC47sf/ndhX4ehe8=;
-        b=HkMH8fT1Ejkvdu25SHz//9PRFgc5seGH4cGdeL/JcFrqQlNOnCqkcLftKSfAIl1O4n
-         LCVeEhxoVAf2tPHLZ6oaPWKSv3rOpmXiJJiqa9WNIaCH0stp5TtzZTTOT+CyXyCAtPSw
-         MExwEv/nX+uzZg9ZDCVNuuenODjQaNqCG94MgTISD8E/Lw5yYfrEUzUbusGubSe/Er55
-         /ZF0BFgiPOopbx9PqcQyHFu0dd5wroOC9OknTd/1fV/UWt3ZZZ4qPXJ0bhOi+z+zzUrg
-         xza9sW27x7sZw/GCXif/elot8MzYkdxDEs/I7nTt/dT6FFeKFCW/RmmAfK4ZaImRvfqq
-         rWOQ==
-X-Gm-Message-State: AOAM530gLqQ9dIO1epxl/U0+1iaSBKIbEAZG2OE3xAJBChozVLrVs0EZ
-        gKjqQ8r4u4slqB0qptXJgls=
-X-Google-Smtp-Source: ABdhPJwGO65CU4jREynWJcUwCS5duofAaw3UYYu2qmj9hnMTKYkEVO3bJSXFzrh+7sMwAiGrArv1Dw==
-X-Received: by 2002:a92:aa0e:: with SMTP id j14mr7244753ili.120.1602192457539;
-        Thu, 08 Oct 2020 14:27:37 -0700 (PDT)
+        bh=jSyjIzYbBigGT0AzTfXLoS02VDK6YwDiuu+biIO3XI4=;
+        b=tT+eCgwgKYcnQqyStQTa7h/ucDL42d71AQpyeJq5N5IwVAuYvljsmLgRoPAinNByRI
+         n48Zu/WZqI5hkd8awhKqxM5Uow8z9ZH/1sibZpGvGFKKP6uNb8ctI//vYaR7bZeTIwnM
+         2Y0iMEEWvvwbd8Xgbxo9E6BiDJkzHGwPEQYm4SjvSy80XT8ZwlC+dVBTRkTtRT/WG4Xj
+         a2noF5++7vZYdIg29OADVOJ3g697gq9wobNPzOSkchkW8HgqyS2/XZcvhxNQl5fIjVlq
+         cCenXprhrn3pfUgXnOnJH88TxKKc2JcZfOJrxc8giRk4kFtVfJ3oacINNNoRSqM2lNK/
+         xojA==
+X-Gm-Message-State: AOAM531Z3aqTclUN0uM92JTxhE+yD3m2PWnsAe2J6LXJZUqzoySCl9GA
+        IR30zBgd79zj/GkVo4BFjjg=
+X-Google-Smtp-Source: ABdhPJznfkzthNXZDou0V1pe+KZJJi52F7DyY5i6obOBnMPB2EDY8Tj3xoqewJ6q2FRzZyUkS9elPQ==
+X-Received: by 2002:a5d:8787:: with SMTP id f7mr7234798ion.79.1602192459023;
+        Thu, 08 Oct 2020 14:27:39 -0700 (PDT)
 Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:7c62:dd9d:b755:cfbd])
-        by smtp.gmail.com with ESMTPSA id o72sm3067090ilb.6.2020.10.08.14.27.36
+        by smtp.gmail.com with ESMTPSA id o72sm3067090ilb.6.2020.10.08.14.27.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 14:27:36 -0700 (PDT)
+        Thu, 08 Oct 2020 14:27:38 -0700 (PDT)
 From:   Adam Ford <aford173@gmail.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
@@ -60,9 +60,9 @@ Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] arm64: dts: imx8mm: Add node for SPDIF
-Date:   Thu,  8 Oct 2020 16:27:05 -0500
-Message-Id: <20201008212706.870115-2-aford173@gmail.com>
+Subject: [PATCH 3/3] arm64: defconfig: Enable additional sound drivers on i.MX8M Mini
+Date:   Thu,  8 Oct 2020 16:27:06 -0500
+Message-Id: <20201008212706.870115-3-aford173@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201008212706.870115-1-aford173@gmail.com>
 References: <20201008212706.870115-1-aford173@gmail.com>
@@ -72,48 +72,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The i.MX8M Mini can support SPIDF which is very similar to the
-IP used on the i.MX35.
+The i.MX8M Mini has micfil and SPDIF support but the drivers
+are not being loaded.
 
-This patch adds the SPIF node.
+This patch updates the defconfig to add support for these drivers.
 
 Signed-off-by: Adam Ford <aford173@gmail.com>
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-index fad1f9cdb241..44a59f59f65a 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-@@ -358,6 +358,30 @@ micfil: audio-controller@30080000 {
- 				status = "disabled";
- 			};
- 
-+			spdif1: spdif@30090000 {
-+				compatible = "fsl,imx8mm-spdif", "fsl,imx35-spdif";
-+				reg = <0x30090000 0x10000>;
-+				interrupts = <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
-+				clocks = <&clk IMX8MM_CLK_AUDIO_AHB>, /* core */
-+					 <&clk IMX8MM_CLK_24M>, /* rxtx0 */
-+					 <&clk IMX8MM_CLK_SPDIF1>, /* rxtx1 */
-+					 <&clk IMX8MM_CLK_DUMMY>, /* rxtx2 */
-+					 <&clk IMX8MM_CLK_DUMMY>, /* rxtx3 */
-+					 <&clk IMX8MM_CLK_DUMMY>, /* rxtx4 */
-+					 <&clk IMX8MM_CLK_AUDIO_AHB>, /* rxtx5 */
-+					 <&clk IMX8MM_CLK_DUMMY>, /* rxtx6 */
-+					 <&clk IMX8MM_CLK_DUMMY>, /* rxtx7 */
-+					 <&clk IMX8MM_CLK_DUMMY>; /* spba */
-+				clock-names = "core", "rxtx0",
-+					      "rxtx1", "rxtx2",
-+					      "rxtx3", "rxtx4",
-+					      "rxtx5", "rxtx6",
-+					      "rxtx7", "spba";
-+				dmas = <&sdma2 28 18 0>, <&sdma2 29 18 0>;
-+				dma-names = "rx", "tx";
-+				status = "disabled";
-+			};
-+
- 			gpio1: gpio@30200000 {
- 				compatible = "fsl,imx8mm-gpio", "fsl,imx35-gpio";
- 				reg = <0x30200000 0x10000>;
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index e0f33826819f..20362359b212 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -674,6 +674,10 @@ CONFIG_SND_HDA_CODEC_HDMI=m
+ CONFIG_SND_SOC=y
+ CONFIG_SND_BCM2835_SOC_I2S=m
+ CONFIG_SND_SOC_FSL_SAI=m
++CONFIG_SND_SOC_FSL_MICFIL=m
++CONFIG_SND_IMX_SOC=m
++CONFIG_SND_SOC_IMX_SPDIF=m
++CONFIG_SND_SOC_IMX_AUDMIX=m
+ CONFIG_SND_MESON_AXG_SOUND_CARD=m
+ CONFIG_SND_MESON_GX_SOUND_CARD=m
+ CONFIG_SND_SOC_SDM845=m
 -- 
 2.25.1
 
