@@ -2,74 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4814F287714
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 17:27:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAFEE287715
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 17:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730937AbgJHP1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 11:27:46 -0400
-Received: from w1.tutanota.de ([81.3.6.162]:33514 "EHLO w1.tutanota.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730550AbgJHP1p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 11:27:45 -0400
-Received: from w3.tutanota.de (unknown [192.168.1.164])
-        by w1.tutanota.de (Postfix) with ESMTP id C0BE7FA003A;
-        Thu,  8 Oct 2020 15:27:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1602170863;
-        s=s1; d=tutanota.com;
-        h=From:From:To:To:Subject:Subject:Content-Description:Content-ID:Content-Type:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Cc:Cc:Date:Date:In-Reply-To:In-Reply-To:MIME-Version:MIME-Version:Message-ID:Message-ID:Reply-To:References:References:Sender;
-        bh=4tUhvZae2CaRGaj9CmoS516TRIpLQRFgwli850r4wxI=;
-        b=AZxLeRR8FBn1MZd4D0nVcj57FPFQngpeS9VFl9KygtF2hT8aMr7nL+L3LtMS0Wvx
-        Eyr4wIuqb8EdY8zhvF8MQSz/8SLGny/vgInF0QijjvjTfIZnn0bmrmgQ85meR6/df9J
-        WUrEoCY/KNUBOhr/Ua2jDGCxQarILaITvSdKLMrbL5f2GND9QkAJj2ArX3x5+shZBnn
-        rt1Jo1JHreBLTGQno7BYE/xUvGBQvUmQSB6ykCYid0A9kHac2ZP9K+0IKj1WLeIoaoU
-        HCA9UStPyVPXCmXqaYS+8vY6NcR0CtZI8oktqBKHtq/pucsrptSiOM0kdOIhm4mR+Dg
-        CVvhsyiivg==
-Date:   Thu, 8 Oct 2020 17:27:43 +0200 (CEST)
-From:   ultracoolguy@tutanota.com
-To:     Dan Murphy <dmurphy@ti.com>, Pavel <pavel@ucw.cz>
-Cc:     Marek Behun <kabel@blackhole.sk>,
-        Linux Leds <linux-leds@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-Message-ID: <MJ7onrW--7-2@tutanota.com>
-In-Reply-To: <MJ76lXD--3-2@tutanota.com>
-References: <MIuPIKy--3-2@tutanota.com> <20201007012600.3b3e7779@blackhole.sk> <MJ2-gcy----2@tutanota.com> <346621c1-757e-d182-d290-877fccc8b4aa@ti.com> <MJ76lXD--3-2@tutanota.com>
-Subject: Re: [PATCH] lm3697: Rename struct into more appropiate name
+        id S1730986AbgJHP15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 11:27:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730958AbgJHP14 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 11:27:56 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DAACC0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 08:27:56 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id u19so6615933ion.3
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 08:27:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Kf1FHcscdRPc5Run8iqbfToPP1jlTdzpFNUhRWFKvq8=;
+        b=eYrIc4DKiojP3lwG3IPCBV8LMMb4cffXdyL4ngIrVpvRzeUq+7RJO4ggvSr5oq3PH+
+         9R5/J3k0eSpWrwe9oQl6dEOM1xMkNmNTCQ81bMxRRnydgDx+nsn3xsq5DAbU5UE7F3iC
+         oUy5jC8M7b5N/aL4BFL2YOavkNQ7bqXveYSgK/57ErT4ZfrcnGXDvN1KerT2oE27cLaa
+         zU7OTlgAr6BHrFX1LyHCDC3JCpknJddQyblZxkA1nVYEYcI/q7lr8nNTr3bjbF3oLM7P
+         x7ZTutF7y0Af9ieWXhFaSYTec5l+a380qOK7Y2yaDTda/KCVYlsKDiBFhpQFpw8kbGac
+         EOpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Kf1FHcscdRPc5Run8iqbfToPP1jlTdzpFNUhRWFKvq8=;
+        b=l4+7t7B0rb+ypo2H0K1g20lVaQv9VqksL4aJ+aDWUxzr6liavY5HlSHH/SmQe0qHag
+         s9f+OHXy3Ft1BPFX56RPaXPc2nFzVIvtl1xYN9Ij+VorzIvNUOYl+RkXOhgislpRtOwE
+         DQ1lx2VwunO5YLSGI62BoMvRtKYIWWxJZ7x0tJvZ6z3ZvroARU6lrnSH4L2S5SeOsj8L
+         qmk2CGSPdNfLt6DH1Y162JUcAsr/i3K9251wz3OidY9snBN6J+DzIZ/9Ae8nFxruiKX+
+         VeRdyv7FW6Etv8Zj7vhnN9j2e+YWmFCqZlEWUoOp8g6Ax6sO3tzeRVmKz5ULKiLk3QBm
+         47Tg==
+X-Gm-Message-State: AOAM530DjfGvQ68AHqp6nDsyxULHpFEqPV6MPXSaGv5qwvKBxqh4VNzL
+        jllJmgOCQU8VhXr8h/iwFEjaia3RIv8qaQ==
+X-Google-Smtp-Source: ABdhPJxS38WsptZEv2BWRJ7clN9DvJ5Lqor+vrAgcuBuwv1RTMrhVhavYM519/V3o3lz7GRRKxeEOg==
+X-Received: by 2002:a5d:8188:: with SMTP id u8mr6754266ion.66.1602170875610;
+        Thu, 08 Oct 2020 08:27:55 -0700 (PDT)
+Received: from p1.localdomain ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id l77sm2866260ill.4.2020.10.08.08.27.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Oct 2020 08:27:54 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org
+Cc:     peterz@infradead.org, oleg@redhat.com, tglx@linutronix.de
+Subject: [PATCHSET v4] Add support for TIF_NOTIFY_SIGNAL
+Date:   Thu,  8 Oct 2020 09:27:48 -0600
+Message-Id: <20201008152752.218889-1-axboe@kernel.dk>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-Umm:
+The goal is this patch series is to decouple TWA_SIGNAL based task_work
+from real signals and signal delivery. The motivation is speeding up
+TWA_SIGNAL based task_work, particularly for threaded setups where
+->sighand is shared across threads. See the last patch for numbers.
 
-<linux-kernel@vger.kernel.org>: host vger.kernel.org[23.128.96.18] said: 553
-    5.7.1 Hello [178.21.23.139], for your MAIL FROM address
-    <ultracoolguy@disroot.org> policy analysis reported: Your address is not
-    liked source for email (in reply to MAIL FROM command)Is disroot.org banned?
+v4 is nicely reduced, thanks to feedback from Oleg, dropping two of the
+core patches and resulting in something that is easier to adopt in other
+archs as well.
 
-Oct 8, 2020, 12:10 by ultracoolguy@tutanota.com:
+ arch/alpha/kernel/signal.c         |  1 -
+ arch/arc/kernel/signal.c           |  2 +-
+ arch/arm/kernel/signal.c           |  1 -
+ arch/arm64/kernel/signal.c         |  1 -
+ arch/c6x/kernel/signal.c           |  4 +--
+ arch/csky/kernel/signal.c          |  1 -
+ arch/h8300/kernel/signal.c         |  4 +--
+ arch/hexagon/kernel/process.c      |  1 -
+ arch/ia64/kernel/process.c         |  2 +-
+ arch/m68k/kernel/signal.c          |  2 +-
+ arch/microblaze/kernel/signal.c    |  2 +-
+ arch/mips/kernel/signal.c          |  1 -
+ arch/nds32/kernel/signal.c         |  4 +--
+ arch/nios2/kernel/signal.c         |  2 +-
+ arch/openrisc/kernel/signal.c      |  1 -
+ arch/parisc/kernel/signal.c        |  4 +--
+ arch/powerpc/kernel/signal.c       |  1 -
+ arch/riscv/kernel/signal.c         |  4 +--
+ arch/s390/kernel/signal.c          |  1 -
+ arch/sh/kernel/signal_32.c         |  4 +--
+ arch/sparc/kernel/signal_32.c      |  4 +--
+ arch/sparc/kernel/signal_64.c      |  4 +--
+ arch/um/kernel/process.c           |  2 +-
+ arch/x86/include/asm/thread_info.h |  2 ++
+ arch/x86/kernel/signal.c           |  5 +++-
+ arch/xtensa/kernel/signal.c        |  2 +-
+ include/linux/entry-common.h       |  6 ++++-
+ include/linux/entry-kvm.h          |  4 +--
+ include/linux/sched/signal.h       | 20 ++++++++++++---
+ include/linux/tracehook.h          | 31 ++++++++++++++++++++--
+ kernel/entry/common.c              |  3 +--
+ kernel/entry/kvm.c                 |  7 ++---
+ kernel/events/uprobes.c            |  2 +-
+ kernel/signal.c                    |  8 +++---
+ kernel/task_work.c                 | 41 +++++++++++++++++++++---------
+ 35 files changed, 113 insertions(+), 71 deletions(-)
 
-> Gotcha.
->
-> From now on I'm gonna respond with this new email: > ultracoolguy@disroot.org>  .
->
-> Oct 7, 2020, 14:56 by dmurphy@ti.com:
->
->> Gabriel
->>
->> On 10/7/20 7:21 AM, ultracoolguy@tutanota.com wrote:
->>
->>> The reason I didn't use git send-mail earlier is because Tutanota doesn't supports SMTP and Protonmail requires a paid account for using SMTP/IMAP. However, I made an account creation request for Disroot(which does support SMTP for free), so when/if the account gets created I'll send future patches through there.
->>> Oct 6, 2020, 23:26 by kabel@blackhole.sk:
->>>
->> Also please note top posting on emails is not preferred. As you will find in the LED domain bottom posts and trimming emails to what is being commented on is preferred.
->>
->> As demonstrated.
->>
->> Dan
->>
->
->
+Also find the changes here:
+
+https://git.kernel.dk/cgit/linux-block/log/?h=tif-task_work
+
+Changes since v3:
+
+- Drop not needed io_uring change
+- Drop syscall restart split, handle TIF_NOTIFY_SIGNAL from the arch
+  signal handling, using task_sigpending() to see if we need to care
+  about real signals.
+- Fix a few over-zelaous task_sigpending() changes
+- Cleanup WARN_ON() in restore_saved_sigmask_unless()
+
+-- 
+Jens Axboe
+
 
