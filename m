@@ -2,118 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FC01288856
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 14:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E8A28885A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 14:12:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388402AbgJIMMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 08:12:10 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:40182 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732957AbgJIMMJ (ORCPT
+        id S2388414AbgJIMMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 08:12:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388404AbgJIMMP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 08:12:09 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 099CC7NU071967;
-        Fri, 9 Oct 2020 07:12:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1602245527;
-        bh=sfIRZSYBuq+MnozQeCBK9PSbZtBv00OpSwHV6m/Zcv0=;
-        h=From:To:CC:Subject:Date;
-        b=Kgo558q1C7K20OGjWya28RrOuaKM485hETMvlu/0nTx7j/oQfaLPa/GvnmY3F67Lb
-         7zJY1JHZuH1QcwM/gc29ruvk80Rj4b8HgxWY1ikvdhsgFnaSXAI70fvqlbGxiu67Ln
-         l92Z40b2bukBwSyNjk96YxYw7+EOdTYKdbkKvOA4=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 099CC7WG105005
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 9 Oct 2020 07:12:07 -0500
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 9 Oct
- 2020 07:12:07 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 9 Oct 2020 07:12:07 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 099CC6Rv104538;
-        Fri, 9 Oct 2020 07:12:06 -0500
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <sre@kernel.org>
-CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <robh@kernel.org>,
-        Dan Murphy <dmurphy@ti.com>
-Subject: [PATCH] power: supply: bq25980: Fix uninitialized wd_reg_val and overrun
-Date:   Fri, 9 Oct 2020 07:12:05 -0500
-Message-ID: <20201009121205.28178-1-dmurphy@ti.com>
-X-Mailer: git-send-email 2.27.0
+        Fri, 9 Oct 2020 08:12:15 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3226DC0613D2;
+        Fri,  9 Oct 2020 05:12:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=CZNlQmq+OKPCGz68APmjQ2kr+Z7Wp7wJQZLN1idsatI=; b=hFpuEDKO7XXAc32ekbXZ8RUkTk
+        ZQO0xsvmQvANDYbFb4d7rGV80xyiVqdEYBxa6k8jj7T0mKXIlObgC7qpk8DoViCdbUlq+eihw1Utw
+        QhSPM0wGWC5vFXhmv96O51tDNg9Q/Hh/LvEmkjvOlRJhLx3P5B4lHuFkXDERPOcioFpZYx7gqZuv5
+        lm2jP3qm0a3cQgKdYDPDKly5/RjTSraObxe9kjFATKtz3Q8d6TcZdY+/9C/uMeroZ5Y6N9ecMdTnq
+        C54IerXjBZ3mRpm/abZDJVOlKblnwprFiP0WvuhNpo3DRFt/YTbL3+r/CmDXh5epC4sovaZ4dysMb
+        e9Kr2RHA==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kQrFr-0005rQ-87; Fri, 09 Oct 2020 12:12:11 +0000
+Date:   Fri, 9 Oct 2020 13:12:11 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     syzbot <syzbot+77efce558b2b9e6b6405@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Subject: Re: KASAN: use-after-free Read in __io_uring_files_cancel
+Message-ID: <20201009121211.GQ20115@casper.infradead.org>
+References: <0000000000001a684d05b1385e71@google.com>
+ <3a98a77a-a507-954a-f2ec-e38af18c168f@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3a98a77a-a507-954a-f2ec-e38af18c168f@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the issue when 'i' is equal to array size then array index over
-runs the array when checking for the watch dog value.
+On Fri, Oct 09, 2020 at 02:10:49PM +0300, Pavel Begunkov wrote:
+> >  kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
+> >  xas_next_entry include/linux/xarray.h:1630 [inline]
+> >  __io_uring_files_cancel+0x417/0x440 fs/io_uring.c:8681
+> >  io_uring_files_cancel include/linux/io_uring.h:35 [inline]
+> >  exit_files+0xe4/0x170 fs/file.c:456
+> >  do_exit+0xae9/0x2930 kernel/exit.c:801
+> >  do_group_exit+0x125/0x310 kernel/exit.c:903
+> >  get_signal+0x428/0x1f00 kernel/signal.c:2757
+> >  arch_do_signal+0x82/0x2470 arch/x86/kernel/signal.c:811
+> >  exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+> >  exit_to_user_mode_prepare+0x194/0x1f0 kernel/entry/common.c:192
+> >  syscall_exit_to_user_mode+0x7a/0x2c0 kernel/entry/common.c:267
+> >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> It seems this fails on "node->shift" in xas_next_entry(), that would
+> mean that the node itself was freed while we're iterating on it.
+> 
+> __io_uring_files_cancel() iterates with xas_next_entry() and creates
+> XA_STATE once by hand, but it also removes entries in the loop with
+> io_uring_del_task_file() -> xas_store(&xas, NULL); without updating
+> the iterating XA_STATE. Could it be the problem? See a diff below
 
-This also fixes the uninitialized wd_reg_val if the for..loop was not
-successful in finding an appropriate match.
+No, the problem is that the lock is dropped after calling
+xas_next_entry(), and at any point after calling xas_next_entry(),
+the node that it's pointing to can be freed.
 
-Fixes: 5069185fc18e ("power: supply: bq25980: Add support for the BQ259xx family")
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
----
- drivers/power/supply/bq25980_charger.c | 29 +++++++++++++-------------
- 1 file changed, 15 insertions(+), 14 deletions(-)
+I don't think there's any benefit to using the advanced API here.
+Since io_uring_cancel_task_requests() can sleep, we have to drop the lock
+for each iteration around the loop, and so we have to walk from the top of the tree each time.  So we may as well make this easy to read:
 
-diff --git a/drivers/power/supply/bq25980_charger.c b/drivers/power/supply/bq25980_charger.c
-index 3995fb7cf060..e6a91e43ae5b 100644
---- a/drivers/power/supply/bq25980_charger.c
-+++ b/drivers/power/supply/bq25980_charger.c
-@@ -1099,28 +1099,29 @@ static int bq25980_power_supply_init(struct bq25980_device *bq,
- static int bq25980_hw_init(struct bq25980_device *bq)
+@@ -8665,28 +8665,19 @@ static void io_uring_attempt_task_drop(struct file *file, bool exiting)
+ void __io_uring_files_cancel(struct files_struct *files)
  {
- 	struct power_supply_battery_info bat_info = { };
--	int wd_reg_val;
-+	int wd_reg_val = BQ25980_WATCHDOG_DIS;
-+	int wd_max_val = BQ25980_NUM_WD_VAL - 1;
- 	int ret = 0;
- 	int curr_val;
- 	int volt_val;
- 	int i;
+        struct io_uring_task *tctx = current->io_uring;
+-       XA_STATE(xas, &tctx->xa, 0);
++       struct file *file;
++       unsigned long index;
  
--	if (!bq->watchdog_timer) {
--		ret = regmap_update_bits(bq->regmap, BQ25980_CHRGR_CTRL_3,
--					 BQ25980_WATCHDOG_DIS,
--					 BQ25980_WATCHDOG_DIS);
--	} else {
--		for (i = 0; i < BQ25980_NUM_WD_VAL; i++) {
--			if (bq->watchdog_timer > bq25980_watchdog_time[i] &&
--			    bq->watchdog_timer < bq25980_watchdog_time[i + 1]) {
--				wd_reg_val = i;
--				break;
-+	if (bq->watchdog_timer) {
-+		if (bq->watchdog_timer >= bq25980_watchdog_time[wd_max_val])
-+			wd_reg_val = wd_max_val;
-+		else {
-+			for (i = 0; i < wd_max_val; i++) {
-+				if (bq->watchdog_timer > bq25980_watchdog_time[i] &&
-+				    bq->watchdog_timer < bq25980_watchdog_time[i + 1]) {
-+					wd_reg_val = i;
-+					break;
-+				}
- 			}
- 		}
+        /* make sure overflow events are dropped */
+        tctx->in_idle = true;
+ 
+-       do {
+-               struct io_ring_ctx *ctx;
+-               struct file *file;
 -
--		ret = regmap_update_bits(bq->regmap, BQ25980_CHRGR_CTRL_3,
--					BQ25980_WATCHDOG_MASK, wd_reg_val);
- 	}
-+
-+	ret = regmap_update_bits(bq->regmap, BQ25980_CHRGR_CTRL_3,
-+				 BQ25980_WATCHDOG_MASK, wd_reg_val);
- 	if (ret)
- 		return ret;
+-               xas_lock(&xas);
+-               file = xas_next_entry(&xas, ULONG_MAX);
+-               xas_unlock(&xas);
+-
+-               if (!file)
+-                       break;
+-
+-               ctx = file->private_data;
++       xa_for_each(&tctx->xa, index, file) {
++               struct io_ring_ctx *ctx = file->private_data;
  
--- 
-2.28.0.585.ge1cfff676549
+                io_uring_cancel_task_requests(ctx, files);
+                if (files)
+                        io_uring_del_task_file(file);
+-       } while (1);
++       }
+ }
+ 
+ static inline bool io_uring_task_idle(struct io_uring_task *tctx)
 
+I'll send a proper patch in a few minutes -- I'd like to neaten up a
+few of the other XArray uses.
