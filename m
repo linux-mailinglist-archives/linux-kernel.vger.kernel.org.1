@@ -2,165 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 524D82899BA
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 22:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D6E2899BE
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 22:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389313AbgJIU1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 16:27:12 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:50747 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387846AbgJIU1L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 16:27:11 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602275230; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=52lzXpIM5c5WEUGQw7Y5zF9EbTe3/SJ1ngiJwmEncaE=;
- b=IXkBL2oViXkDLUUWc25IG/EP5pW95RcgrRrOUmLi0hOBsmY4p4zkWaa2hJp72FbivBZ0QqPm
- fb53PeaFUCPHwSeJZxkLpIayjkcmhQ7o7kg1SLjTKyULxm+wj8YiOepQNlwAATCBrZB3lpKb
- 7XNnGlEKG4G5yEVxO/RgjMdyAtw=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5f80c794a03b63d6738f9987 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 09 Oct 2020 20:27:00
- GMT
-Sender: cgoldswo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BE9A5C433FE; Fri,  9 Oct 2020 20:27:00 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cgoldswo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8D6C2C433F1;
-        Fri,  9 Oct 2020 20:26:59 +0000 (UTC)
+        id S2388250AbgJIU2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 16:28:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732244AbgJIU2x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 16:28:53 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1782AC0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 13:28:53 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id t18so10371156ilo.12
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 13:28:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uT9ly7TYDXvoKw3E5mo8VQB1vHtS6L18zdPOqqqYv4A=;
+        b=L6sg3Q9mjrk/VQLo9OSXexDUrdFSR5THUe2/A0lJ/VXjem88X5a/Q+iO3/MbQehJA2
+         PHYlF2uJ1PGt1C7KxNhF7x+2r5/tc5WBZlSAL8sEdgiB81rDk5/PvnMCkEIEVETO6Oqq
+         X7R/9xB4b65QSrMUPjs4lJJ/M+j8GaiHew2ujTjEJe9WW0gAD4aOJcAGk7vjE4QdG/UB
+         FqH+dJeIkh2ZCFphiSjSdgUHlrRA4ibymt+fA1BXXNjxkXGv6XhusYnkgseUHuhO8L+k
+         cKn4Sbt1w0EuFdSJHGnvH7r0fRm1a9IwUOkGpzu+wRKc49UnXlwTkU4ZssN+cWP+ZT2S
+         PjeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uT9ly7TYDXvoKw3E5mo8VQB1vHtS6L18zdPOqqqYv4A=;
+        b=dwyTNvRKhiXNHYCUBYenkpqdN/PoQ9k3TMRg5pVyfsUDFABdawcdH+PqCL6qwB4zdA
+         RnIHpNhHPG/reI/QbsX3HhTH7O09EnmOvaY+6EFTuNvx3x1ZW44mq4HCwmz2lkUbI91u
+         cmPY6Wk4zBQ6w1KvBZIMMCaHe1TGh77cgxMVQ/frXAnrAnyLkr3TCQqHmZqmd3N2mUzJ
+         30t8s2GQp32Ski+9TzKvjGcMD44Cml4tnxwJLjjHgl8NL6L33S8UrQ0G+CFZ62UPNKiF
+         Ct5Rw9F+svMnmwjDClbS1k/W2zPXWgX1tJ2BRI2KG8hjS2lILL0O1cOvDM2VNAsZ7cES
+         WMgw==
+X-Gm-Message-State: AOAM531qneZANXxBkt8tJ7VkfgA12qSddJwxx7G1IuCP4IdblQ+5ravB
+        jByxWd29FTIrUy1Xwzy5sCCzag==
+X-Google-Smtp-Source: ABdhPJz2MvMclVY+MloIwHSMGKKurDv7fsoBVrX4M9zDs9F6tq3BHphsYsMO4RJlgaYW4aqt3u1iNA==
+X-Received: by 2002:a92:a307:: with SMTP id a7mr10506517ili.97.1602275332398;
+        Fri, 09 Oct 2020 13:28:52 -0700 (PDT)
+Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id e17sm4654235ile.60.2020.10.09.13.28.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Oct 2020 13:28:51 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     evgreen@chromium.org, subashab@codeaurora.org,
+        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
+        mka@chromium.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net v2] net: ipa: skip suspend/resume activities if not set up
+Date:   Fri,  9 Oct 2020 15:28:48 -0500
+Message-Id: <20201009202848.29341-1-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 09 Oct 2020 13:26:59 -0700
-From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org, minchan@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pratikp@codeaurora.org, pdaly@codeaurora.org,
-        sudaraja@codeaurora.org, iamjoonsoo.kim@lge.com, david@redhat.com,
-        vinmenon@codeaurora.org, minchan.kim@gmail.com
-Subject: Re: [PATCH v4] mm: cma: indefinitely retry allocations in cma_alloc
-In-Reply-To: <20200929055937.GA5332@infradead.org>
-References: <cover.1601324066.git.cgoldswo@codeaurora.org>
- <afd4f52cc767115bacaeea935e1d7b6e5e7c24e8.1601324066.git.cgoldswo@codeaurora.org>
- <20200929055937.GA5332@infradead.org>
-Message-ID: <3cdd6c30c062cf11eb1a7e3c47ff111e@codeaurora.org>
-X-Sender: cgoldswo@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-28 22:59, Christoph Hellwig wrote:
-> On Mon, Sep 28, 2020 at 01:30:27PM -0700, Chris Goldsworthy wrote:
->> CMA allocations will fail if 'pinned' pages are in a CMA area, since 
->> we
->> cannot migrate pinned pages. The _refcount of a struct page being 
->> greater
->> than _mapcount for that page can cause pinning for anonymous pages.  
->> This
->> is because try_to_unmap(), which (1) is called in the CMA allocation 
->> path,
->> and (2) decrements both _refcount and _mapcount for a page, will stop
->> unmapping a page from VMAs once the _mapcount for a page reaches 0.  
->> This
->> implies that after try_to_unmap() has finished successfully for a page
->> where _recount > _mapcount, that _refcount will be greater than 0.  
->> Later
->> in the CMA allocation path in migrate_page_move_mapping(), we will 
->> have one
->> more reference count than intended for anonymous pages, meaning the
->> allocation will fail for that page.
->> 
->> If a process ends up causing _refcount > _mapcount for a page (by 
->> either
->> incrementing _recount or decrementing _mapcount), such that the 
->> process is
->> context switched out after modifying one refcount but before modifying 
->> the
->> other, the page will be temporarily pinned.
->> 
->> One example of where _refcount can be greater than _mapcount is inside 
->> of
->> zap_pte_range(), which is called for all the entries of a PMD when a
->> process is exiting, to unmap the process's memory.  Inside of
->> zap_pte_range(), after unammping a page with page_remove_rmap(), we 
->> have
->> that _recount > _mapcount.  _refcount can only be decremented after a 
->> TLB
->> flush is performed for the page - this doesn't occur until enough 
->> pages
->> have been batched together for flushing.  The flush can either occur 
->> inside
->> of zap_pte_range() (during the same invocation or a later one), or if 
->> there
->> aren't enough pages collected by the time we unmap all of the pages in 
->> a
->> process, the flush will occur in tlb_finish_mmu() in exit_mmap().  
->> After
->> the flush has occurred, tlb_batch_pages_flush() will decrement the
->> references on the flushed pages.
->> 
->> Another such example like the above is inside of copy_one_pte(), which 
->> is
->> called during a fork. For PTEs for which pte_present(pte) == true,
->> copy_one_pte() will increment the _refcount field followed by the
->> _mapcount field of a page.
->> 
->> So, inside of cma_alloc(), add the option of letting users pass in
->> __GFP_NOFAIL to indicate that we should retry CMA allocations 
->> indefinitely,
->> in the event that alloc_contig_range() returns -EBUSY after having 
->> scanned
->> a whole CMA-region bitmap.
-> 
-> And who is going to use this?  AS-is this just seems to add code that
-> isn't actually used and thus actually tested.  (In addition to beeing
-> a relly bad idea as discussed before)
+When processing a system suspend request we suspend modem endpoints
+if they are enabled, and call ipa_cmd_tag_process() (which issues
+IPA commands) to ensure the IPA pipeline is cleared.  It is an error
+to attempt to issue an IPA command before setup is complete, so this
+is clearly a bug.  But we also shouldn't suspend or resume any
+endpoints that have not been set up.
 
-Hi Christoph,
+Have ipa_endpoint_suspend() and ipa_endpoint_resume() immediately
+return if setup hasn't completed, to avoid any attempt to configure
+endpoints or issue IPA commands in that case.
 
-That had slipped my mind - what we would have submitted would have been 
-a modified /drivers/dma-heap/heaps/cma_heap.c, which would have created 
-a "linux,cma-nofail" heap, that when allocated from, passes GFP_NOFAIL 
-to cma_alloc().  But, since this retry approach (finite and infinite) 
-has effectively been nacked, I've gone back to the drawing board to find 
-either (1) a lock based approach to solving this (as posed by Andrew 
-Morton here: https://lkml.org/lkml/2020/8/21/1490), or (2) using 
-preempt_disable() calls.
+Fixes: 84f9bd12d46d ("soc: qcom: ipa: IPA endpoints")
+Tested-by: Matthias Kaehlcke <mka@chromium.org>
+Signed-off-by: Alex Elder <elder@linaro.org>
+---
+v2:  Patch posted alone (Jakub pointed out the other was unnecessary)
 
-Thanks,
+ drivers/net/ipa/ipa_endpoint.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Chris.
-
->> --- a/kernel/dma/contiguous.c
->> +++ b/kernel/dma/contiguous.c
->> @@ -196,7 +196,7 @@ struct page *dma_alloc_from_contiguous(struct 
->> device *dev, size_t count,
->>  	if (align > CONFIG_CMA_ALIGNMENT)
->>  		align = CONFIG_CMA_ALIGNMENT;
->> 
->> -	return cma_alloc(dev_get_cma_area(dev), count, align, no_warn);
->> +	return cma_alloc(dev_get_cma_area(dev), count, align, no_warn ? 
->> __GFP_NOWARN : 0);
-> 
-> Also don't add pointlessly overlong lines.
-
+diff --git a/drivers/net/ipa/ipa_endpoint.c b/drivers/net/ipa/ipa_endpoint.c
+index b7efd7c95e9c8..ed60fa5bcdaca 100644
+--- a/drivers/net/ipa/ipa_endpoint.c
++++ b/drivers/net/ipa/ipa_endpoint.c
+@@ -1471,6 +1471,9 @@ void ipa_endpoint_resume_one(struct ipa_endpoint *endpoint)
+ 
+ void ipa_endpoint_suspend(struct ipa *ipa)
+ {
++	if (!ipa->setup_complete)
++		return;
++
+ 	if (ipa->modem_netdev)
+ 		ipa_modem_suspend(ipa->modem_netdev);
+ 
+@@ -1482,6 +1485,9 @@ void ipa_endpoint_suspend(struct ipa *ipa)
+ 
+ void ipa_endpoint_resume(struct ipa *ipa)
+ {
++	if (!ipa->setup_complete)
++		return;
++
+ 	ipa_endpoint_resume_one(ipa->name_map[IPA_ENDPOINT_AP_COMMAND_TX]);
+ 	ipa_endpoint_resume_one(ipa->name_map[IPA_ENDPOINT_AP_LAN_RX]);
+ 
 -- 
-The Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+2.20.1
+
