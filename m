@@ -2,110 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A43882884E3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:07:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50BC62884E1
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732649AbgJIIHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 04:07:08 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:51545 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732614AbgJIIG7 (ORCPT
+        id S1732599AbgJIIGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 04:06:43 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:42386 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732337AbgJIIGm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 04:06:59 -0400
-Received: from [125.35.49.90] (helo=[10.1.1.101])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <hui.wang@canonical.com>)
-        id 1kQnQW-0007ln-DI; Fri, 09 Oct 2020 08:06:56 +0000
-Subject: Re: Lenovo P50 headphone issue
-To:     Fabio Coatti <fabio.coatti@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <CADpTngV5uuDTxVOOOSxc3wh8pP64Gyjtt48HgWrhNrQDrnK3UQ@mail.gmail.com>
-Cc:     Fabio Coatti <fabio.coatti@gmail.com>
-From:   Hui Wang <hui.wang@canonical.com>
-Message-ID: <8c351a09-759a-62f3-1f8c-d61f53d991fc@canonical.com>
-Date:   Fri, 9 Oct 2020 16:06:23 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 9 Oct 2020 04:06:42 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09986VA4111967;
+        Fri, 9 Oct 2020 03:06:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1602230791;
+        bh=BHTrCfkiTOmXAou93T2ihLIRlwCwPpMEKu1ad7VxsbA=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=G+b6W2PG2fdRqSHgCyBL7rYoIjHLHbnG3bjeh7mXe863YM0jen/l3tk+KAsw58rKm
+         PuEN40yCkC631DMp4/fZBfTxl29L8HCpfHwnfmGWDNrNKSSgdzwvoqVJ9n/ekmn5dt
+         L3r35sJjDI0bwNBKZw740t7LXTNIMzHB+ArBlw6M=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09986V0w091492
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 9 Oct 2020 03:06:31 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 9 Oct
+ 2020 03:06:30 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 9 Oct 2020 03:06:30 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09986R0G066243;
+        Fri, 9 Oct 2020 03:06:28 -0500
+Subject: Re: [PATCH 09/18] dt-bindings: dma: ti: Add document for K3 BCDMA
+To:     Rob Herring <robh@kernel.org>
+CC:     Vinod <vkoul@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Vignesh R <vigneshr@ti.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tero Kristo <t-kristo@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        "open list:DMA GENERIC OFFLOAD ENGINE SUBSYSTEM" 
+        <dmaengine@vger.kernel.org>
+References: <20200930091412.8020-1-peter.ujfalusi@ti.com>
+ <20200930091412.8020-10-peter.ujfalusi@ti.com>
+ <20201006192909.GA2679155@bogus>
+ <bc054ef7-dcd7-dde2-13f8-4900a33b1377@ti.com> <20201007154635.GA273523@bogus>
+ <d5746fca-bbdd-0fd1-cbcb-21b6269c39ac@ti.com>
+ <CAL_JsqJnk=ycRurUTBwWgX1+vOq_MZuevegvK2MwGJHkHW50mg@mail.gmail.com>
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+Message-ID: <1f532784-c46d-6746-2511-466fd82c0809@ti.com>
+Date:   Fri, 9 Oct 2020 11:06:49 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-In-Reply-To: <CADpTngV5uuDTxVOOOSxc3wh8pP64Gyjtt48HgWrhNrQDrnK3UQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL_JsqJnk=ycRurUTBwWgX1+vOq_MZuevegvK2MwGJHkHW50mg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fabio,
 
-Looks like the P50 has a different codec, it is alc298, and I don't have 
-the P50 to debug. It is better to report a bug to bugzilla against the 
-upstream kernel and cc the realtek engineers to take a look.
 
-Regards,
+On 08/10/2020 22.15, Rob Herring wrote:
+> On Thu, Oct 8, 2020 at 3:40 AM Peter Ujfalusi <peter.ujfalusi@ti.com> wrote:
 
-Hui.
+>>> Yeah, you have to do 'unevaluatedProperties: false' which doesn't
+>>> actually do anything yet, but can 'see' into $ref's.
+>>
+>> I see, but even if I add the unevaluatedProperties: false I will have
+>> the same error as long as I have additionalProperties: false
+> 
+> Yes. I meant unevaluatedProperties instead of additionalProperties.
 
-On 2020/10/9 下午3:14, Fabio Coatti wrote:
-> Hi All,
-> I'm experiencing issues with a Lenovo P50 regarding headphones. It has
-> some similarities with the issue fixed in 5.8.13 with
-> commit ad0643252831ede7d6ab7b70a4f03768e032e6b4
-> Author: Hui Wang <hui.wang@canonical.com>
-> Date:   Mon Sep 14 14:51:18 2020 +0800
->
->      ALSA: hda/realtek - Couldn't detect Mic if booting with headset plugged
->
-> I've been seeing this behavior since some time and now I'm running 5.8.14
-> Description: sometimes when I start the laptop with headphones plugged
-> in, no sound comes out of the headphones. The only thing I can hear is
-> the "usual" click when the kernel boots. Sound config in the gui
-> reports headphones plugged, nothing seems really wrong but no sound.
-> Removing headphones does not help: sound can be heard from laptop
-> loudspeakers but  to get back the sound on headphones I have to unplug
-> the jack, reboot the laptop and once booted, inserting the headphones
-> makes everything work as  expected. Gui tools report everything as
-> expected: headphones inserted, volume is ok and so on.
-> Below you can find the dmesg boot messages related to sound devices.
-> If you need more details please let me know.
-> If I picked the wrong address to report the issue please let me know,
-> I'll try to contact the relevant sources.
-> Please note that I'm not subscribed to this list even though I monitor
-> it, so being in CC: will be really appreciated.
-> Many thanks for any answer.
-> [Fri Oct  9 08:20:05 2020] snd_hda_codec_realtek hdaudioC0D0:
-> autoconfig for ALC298: line_outs=1 (0x14/0x0/0x0/0x0/0x0) type:speaker
-> [Fri Oct  9 08:20:05 2020] snd_hda_codec_realtek hdaudioC0D0:
-> speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
-> [Fri Oct  9 08:20:05 2020] snd_hda_codec_realtek hdaudioC0D0:
-> hp_outs=2 (0x17/0x21/0x0/0x0/0x0)
-> [Fri Oct  9 08:20:05 2020] snd_hda_codec_realtek hdaudioC0D0:    mono:
-> mono_out=0x0
-> [Fri Oct  9 08:20:05 2020] snd_hda_codec_realtek hdaudioC0D0:    inputs:
-> [Fri Oct  9 08:20:05 2020] snd_hda_codec_realtek hdaudioC0D0:      Mic=0x18
-> [Fri Oct  9 08:20:05 2020] snd_hda_codec_realtek hdaudioC0D0:      Dock Mic=0x19
-> [Fri Oct  9 08:20:05 2020] snd_hda_codec_realtek hdaudioC0D0:
-> Internal Mic=0x12
-> [Fri Oct  9 08:20:05 2020] videodev: Linux video capture interface: v2.00
-> [Fri Oct  9 08:20:05 2020] input: HDA NVidia HDMI/DP,pcm=3 as
-> /devices/pci0000:00/0000:00:01.0/0000:01:00.1/sound/card1/input15
-> [Fri Oct  9 08:20:05 2020] input: HDA NVidia HDMI/DP,pcm=7 as
-> /devices/pci0000:00/0000:00:01.0/0000:01:00.1/sound/card1/input16
-> [Fri Oct  9 08:20:05 2020] input: HDA NVidia HDMI/DP,pcm=8 as
-> /devices/pci0000:00/0000:00:01.0/0000:01:00.1/sound/card1/input17
-> [Fri Oct  9 08:20:05 2020] input: HDA NVidia HDMI/DP,pcm=9 as
-> /devices/pci0000:00/0000:00:01.0/0000:01:00.1/sound/card1/input18
-> [Fri Oct  9 08:20:05 2020] input: HDA NVidia HDMI/DP,pcm=10 as
-> /devices/pci0000:00/0000:00:01.0/0000:01:00.1/sound/card1/input19
-> [Fri Oct  9 08:20:05 2020] input: HDA NVidia HDMI/DP,pcm=11 as
-> /devices/pci0000:00/0000:00:01.0/0000:01:00.1/sound/card1/input20
-> [Fri Oct  9 08:20:05 2020] input: HDA Intel PCH Mic as
-> /devices/pci0000:00/0000:00:1f.3/sound/card0/input22
-> [Fri Oct  9 08:20:05 2020] input: HDA Intel PCH Dock Mic as
-> /devices/pci0000:00/0000:00:1f.3/sound/card0/input23
-> [Fri Oct  9 08:20:05 2020] input: HDA Intel PCH Dock Headphone as
-> /devices/pci0000:00/0000:00:1f.3/sound/card0/input24
-> [Fri Oct  9 08:20:05 2020] input: HDA Intel PCH Headphone as
-> /devices/pci0000:00/0000:00:1f.3/sound/card0/input25
-> --
-> Fabio
+OK, changed it to unevaluatedProperties.
+
+>> If I remove the additionalProperties then it makes no difference if I
+>> have the unevaluatedProperties: false or I don't.
+> 
+> Not yet, but it will soon. Once I have the tree in a consistent state
+> in 5.10-rc1, there will be a meta-schema to check all this (which is
+> one of those must always be present).
+> 
+> Though, as of now 'unevaluatedProperties' doesn't do anything because
+> the underlying json-schema tool doesn't yet support it.
+
+Understand, thanks for the details.
+
+>>>>>> +  ti,sci-rm-range-bchan:
+>>>>>> +    description: |
+>>>>>> +      Array of BCDMA block-copy channel resource subtypes for resource
+>>>>>> +      allocation for this host
+>>>>>> +    allOf:
+>>>>>> +      - $ref: /schemas/types.yaml#/definitions/uint32-array
+>>>>>> +    minItems: 1
+>>>>>> +    # Should be enough
+>>>>>> +    maxItems: 255
+>>>>>
+>>>>> Are there constraints for the individual elements?
+>>>>
+>>>> In practice the subtype ID is 6bits number.
+>>>> Should I add limits to individual elements?
+>>>
+>>> Yes:
+>>>
+>>> items:
+>>>   maximum: 0x3f
+>>
+>> Right, I can just omit the minimum.
+>>
+>> It would be nice if I could use definitions for these ranges to avoid
+>> duplicated lines by adding
+>>
+>> definitions:
+>>   ti,rm-range:
+>>     $ref: /schemas/types.yaml#/definitions/uint32-array
+>>     minItems: 1
+>>     # Should be enough
+>>     maxItems: 255
+>>     items:
+>>       minimum: 0
+>>       maximum: 0x3f
+>>
+>> to schemas/arm/keystone/ti,k3-sci-common.yaml
+>>
+>> and only have:
+>>
+>>   ti,sci-rm-range-bchan:
+>>     $ref:
+>> /schemas/arm/keystone/ti,k3-sci-common.yaml#/definitions/ti,rm-range
+>>     description: |
+>>       Array of BCDMA block-copy channel resource subtypes for resource
+>>       allocation for this host
+> 
+> Just do:
+> 
+> patternProperties:
+>   "^ti,sci-rm-range-[btr]chan$":
+>     ...
+> 
+> If this is common for other bindings, then you can put it in
+> ti,k3-sci-common.yaml.
+
+Similar property (for RM ranges) also used by the ringacc, I have tried
+to standardize us to use: ti,sci-rm-range-* in DT.
+
+I will leave it as it is now for this series and we can simplify it
+later with a wider series touching all involved yaml files.
+
+>> but it results:
+>> Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml:
+>> properties:ti,sci-rm-range-bchan: {'$ref':
+>> '/schemas/arm/keystone/ti,k3-sci-common.yaml#/definitions/ti,rm-range',
+>> 'description': 'Array of BCDMA block-copy channel resource subtypes for
+>> resource\nallocation for this host\n'} is not valid under any of the
+>> given schemas (Possible causes of the failure):
+>>         Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml:
+>> properties:ti,sci-rm-range-bchan: 'not' is a required property
+>>         Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml:
+>> properties:ti,sci-rm-range-bchan:$ref:
+>> '/schemas/arm/keystone/ti,k3-sci-common.yaml#/definitions/ti,rm-range'
+>> does not match 'types.yaml#[/]{0,1}definitions/.*'
+> 
+> We probably should allow for using 'definitions' which is pretty
+> common json-schema practice, but don't primarily in order to keep
+> folks within the lines. Things are optimized for not knowing
+> json-schema and trying to minimize errors I have to check for.
+
+I agree on these.
+
+> Supporting it would complicate the meta-schema and the tools' fixup
+> code. So far, the need for it has been pretty infrequent.
+
+Sure, for the couple of duplication I have it is manageable without
+sacrificing readability.
+
+btw: I have made the similar changes to the k3-pktdma schema.
+
+> 
+> Rob
+> 
+
+- Péter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
