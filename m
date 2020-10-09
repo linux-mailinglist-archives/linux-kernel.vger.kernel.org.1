@@ -2,125 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81E21288110
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 06:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F069B288115
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 06:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729292AbgJIEQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 00:16:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbgJIEQg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 00:16:36 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E49FC0613D2;
-        Thu,  8 Oct 2020 21:16:36 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id p13so7971939edi.7;
-        Thu, 08 Oct 2020 21:16:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=AfwAzZgxUctq+B9Xwm5LEy7q5lioBZycU4ewFeC4ZrU=;
-        b=YeuI3ZU/Q95zGksRh/xPkTQuaKMozCNBWHj+oL9M9Y/jIEAET0+TVTnhYDk17L2ESl
-         Po3EAv7LSh0BdfZTBahj4Xy1jjUYO1LgqavXAlxotKM6x+sABn4BgRaGhKgoKq7D/APk
-         FPr4i7RJkARmVt7oApHNvPtTRqrVTzYm6ZfV2QIAjAzQQiaRJdkfQoOGNNAYKyftMofW
-         wb7IZkuTzm4cW9umXnEb5EiXn4h5X6ibsIHURgefnDZfCJ4mTXNZpOmimAKfdGTTTi+a
-         tn/HA+9zLa2CEgg8sWAgZyRejGA8nWgbKoIoEZkA//EKEpMAi/lEmqsvvRmFjDDKi7ro
-         HHuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=AfwAzZgxUctq+B9Xwm5LEy7q5lioBZycU4ewFeC4ZrU=;
-        b=hSXVJQ2Vn7Zzjp8uz50w+J9mXDJwGeNyl0Jb0VScbCzeeWJVVm5Yupf9QRCJcuIRRM
-         fMS24+cTZTMQIZLslA55S36sSGkHFR3bTGeYcYSQDC/cQuwBR8ia0C12m1wASQNC3wlq
-         F5Fog+a2m/UfacKZ9aaTdcnC1Fwt+pDNnNkWg9rEouv3hWPZZF4AMpiG5Mc6Lje/kClS
-         5gaT0YbgWh5dJGLGhCxHJ7xOAn4ztk0pBAqbOH+TSAXkrfK5Gl99XC2b6bl/LW9ARnpv
-         4A+GZoeDXh3lx1kXOXjVrW4n2kgTRtAsmYgPeEuH7TZlp6vjnUKXp6JHBtS8iqUYzytt
-         16WA==
-X-Gm-Message-State: AOAM532KnLQ2AFdsdZL5P2wCaMUT31CvyplKglNuSXEMq2Nsje68ci/M
-        XOtWZqRqPBMceNWCUzNqEyoVeSqJGMPbMg==
-X-Google-Smtp-Source: ABdhPJyANwK4YJx0wVZaHj0CcX+4bLk3AB9hNGwkbJnRsWUmnv9UXC5XoaoqXKNU7nhJfS7T4UP/uw==
-X-Received: by 2002:a05:6402:10d5:: with SMTP id p21mr12751645edu.14.1602216994860;
-        Thu, 08 Oct 2020 21:16:34 -0700 (PDT)
-Received: from felia.fritz.box ([2001:16b8:2d6e:f600:80f1:4ea4:2130:b98])
-        by smtp.gmail.com with ESMTPSA id o11sm5415265edw.80.2020.10.08.21.16.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 21:16:34 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Corentin Labbe <clabbe@baylibre.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        mjpeg-users@lists.sourceforge.net, linux-media@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devel@driverdev.osuosl.org, Joe Perches <joe@perches.com>,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] MAINTAINERS: rectify ZR36067 VIDEO FOR LINUX DRIVER section
-Date:   Fri,  9 Oct 2020 06:16:21 +0200
-Message-Id: <20201009041621.17513-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1729635AbgJIERU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 00:17:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59648 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725900AbgJIERT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 00:17:19 -0400
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD8A522248;
+        Fri,  9 Oct 2020 04:17:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602217039;
+        bh=6HzeqdBIfVdvyZk6B7RpcfY+6wxw2GL9NoatG6xmzKs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dD56mhdY8U+eRBjGbi+EGx+ZnFeHXPfrEHEPb7vS3cPUV7mX9bow2Ui4kHI05CUs0
+         SnGPeMJVlzEIbqYwo7BOC++emtF9x4YEa+unrqys2lM7MxJMWslDf2zizmI59sAgBb
+         HB4syT/6knjOm3WQXnEGxeoo2k25BO2i6gSW619o=
+Date:   Thu, 8 Oct 2020 21:17:17 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc:     Jessica Yu <jeyu@kernel.org>,
+        Corentin Labbe <clabbe.montjoie@gmail.com>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] module: statically initialize init section freeing data
+Message-ID: <20201009041717.GA854@sol.localdomain>
+References: <20201008173220.923671-1-daniel.m.jordan@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201008173220.923671-1-daniel.m.jordan@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 754f0f1ba8d9 ("media: MAINTAINERS: change maintainer of the zoran
-driver") added a new section in MAINTAINERS with an invalid file entry
-and at the wrong place for alphabetic ordering.
+On Thu, Oct 08, 2020 at 01:32:20PM -0400, Daniel Jordan wrote:
+> Corentin hit the following workqueue warning when running with
+> CRYPTO_MANAGER_EXTRA_TESTS:
+> 
+>   WARNING: CPU: 2 PID: 147 at kernel/workqueue.c:1473 __queue_work+0x3b8/0x3d0
+>   Modules linked in: ghash_generic
+>   CPU: 2 PID: 147 Comm: modprobe Not tainted
+>       5.6.0-rc1-next-20200214-00068-g166c9264f0b1-dirty #545
+>   Hardware name: Pine H64 model A (DT)
+>   pc : __queue_work+0x3b8/0x3d0
+>   Call trace:
+>    __queue_work+0x3b8/0x3d0
+>    queue_work_on+0x6c/0x90
+>    do_init_module+0x188/0x1f0
+>    load_module+0x1d00/0x22b0
+> 
+> I wasn't able to reproduce on x86 or rpi 3b+.
+> 
+> This is
+> 
+>   WARN_ON(!list_empty(&work->entry))
+> 
+> from __queue_work(), and it happens because the init_free_wq work item
+> isn't initialized in time for a crypto test that requests the gcm
+> module.  Some crypto tests were recently moved earlier in boot as
+> explained in commit c4741b230597 ("crypto: run initcalls for generic
+> implementations earlier"), which went into mainline less than two weeks
+> before the Fixes commit.
+> 
+> Avoid the warning by statically initializing init_free_wq and the
+> corresponding llist.
+> 
+> Link: https://lore.kernel.org/lkml/20200217204803.GA13479@Red/
+> Fixes: 1a7b7d922081 ("modules: Use vmalloc special flag")
+> Reported-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+> Tested-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+> Tested-on: sun50i-h6-pine-h64
+> Tested-on: imx8mn-ddr4-evk
+> Tested-on: sun50i-a64-bananapi-m64
+> Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
 
-Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
+Looks good,
 
-  warning: no file matches  F:  Documentation/media/v4l-drivers/zoran.rst
-
-Point the file entry to the right location and move the section to the
-right place in MAINTAINERS.
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies cleanly on next-20201008
-
-Corentin, please ack.
-Mauro, please pick this minor non-urgent cleanup patch into your -next tree.
-
- MAINTAINERS | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 239ae2425cf8..6879ca545677 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -19412,6 +19412,13 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/dlemoal/zonefs.git
- F:	Documentation/filesystems/zonefs.rst
- F:	fs/zonefs/
- 
-+ZPOOL COMPRESSED PAGE STORAGE API
-+M:	Dan Streetman <ddstreet@ieee.org>
-+L:	linux-mm@kvack.org
-+S:	Maintained
-+F:	include/linux/zpool.h
-+F:	mm/zpool.c
-+
- ZR36067 VIDEO FOR LINUX DRIVER
- M:	Corentin Labbe <clabbe@baylibre.com>
- L:	mjpeg-users@lists.sourceforge.net
-@@ -19419,16 +19426,9 @@ L:	linux-media@vger.kernel.org
- S:	Maintained
- W:	http://mjpeg.sourceforge.net/driver-zoran/
- Q:	https://patchwork.linuxtv.org/project/linux-media/list/
--F:	Documentation/media/v4l-drivers/zoran.rst
-+F:	Documentation/driver-api/media/drivers/v4l-drivers/zoran.rst
- F:	drivers/staging/media/zoran/
- 
--ZPOOL COMPRESSED PAGE STORAGE API
--M:	Dan Streetman <ddstreet@ieee.org>
--L:	linux-mm@kvack.org
--S:	Maintained
--F:	include/linux/zpool.h
--F:	mm/zpool.c
--
- ZRAM COMPRESSED RAM BLOCK DEVICE DRVIER
- M:	Minchan Kim <minchan@kernel.org>
- M:	Nitin Gupta <ngupta@vflare.org>
--- 
-2.17.1
-
+Reviewed-by: Eric Biggers <ebiggers@google.com>
