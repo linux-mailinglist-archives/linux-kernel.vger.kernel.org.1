@@ -2,209 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08768288BCD
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88962288BD4
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388825AbgJIOsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 10:48:08 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:58923 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732056AbgJIOsI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 10:48:08 -0400
-Received: from bootlin.com (atoulouse-258-1-33-168.w90-55.abo.wanadoo.fr [90.55.104.168])
-        (Authenticated sender: maxime.chevallier@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 33E08240014;
-        Fri,  9 Oct 2020 14:47:59 +0000 (UTC)
-Date:   Fri, 9 Oct 2020 16:47:57 +0200
-From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Subject: Re: [PATCH 3/3] media: i2c: Introduce a driver for the Techwell
- TW9900 decoder
-Message-ID: <20201009164757.33802bf2@bootlin.com>
-In-Reply-To: <57c93f63-2450-aa43-7616-e3a763c95e36@xs4all.nl>
-References: <20200918142422.1086555-1-maxime.chevallier@bootlin.com>
-        <20200918142422.1086555-4-maxime.chevallier@bootlin.com>
-        <57c93f63-2450-aa43-7616-e3a763c95e36@xs4all.nl>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S2388871AbgJIOtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 10:49:11 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52328 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732056AbgJIOtL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 10:49:11 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1FBAEAD73;
+        Fri,  9 Oct 2020 14:49:09 +0000 (UTC)
+Date:   Fri, 9 Oct 2020 16:49:07 +0200
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     x86@kernel.org, Borislav Petkov <bp@alien8.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/5] x86/boot/64: Explicitly map boot_params and
+ command line
+Message-ID: <20201009144907.GB3302@suse.de>
+References: <20201008191623.2881677-1-nivedita@alum.mit.edu>
+ <20201008191623.2881677-5-nivedita@alum.mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201008191623.2881677-5-nivedita@alum.mit.edu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans,
+On Thu, Oct 08, 2020 at 03:16:22PM -0400, Arvind Sankar wrote:
+> Commits
+> 
+>   ca0e22d4f011 ("x86/boot/compressed/64: Always switch to own page table")
+>   8570978ea030 ("x86/boot/compressed/64: Don't pre-map memory in KASLR code")
+> 
+> set up a new page table in the decompressor stub, but without explicit
+> mappings for boot_params and the kernel command line, relying on the #PF
+> handler instead.
+> 
+> This is fragile, as boot_params and the command line mappings are
+> required for the main kernel. If EARLY_PRINTK and RANDOMIZE_BASE are
+> disabled, a QEMU/OVMF boot never accesses the command line in the
+> decompressor stub, and so it never gets mapped. The main kernel accesses
+> it from the identity mapping if AMD_MEM_ENCRYPT is enabled, and will
+> crash.
+> 
+> Fix this by adding back the explicit mapping of boot_params and the
+> command line.
+> 
+> Note: the changes also removed the explicit mapping of the main kernel,
+> with the result that .bss and .brk may not be in the identity mapping,
+> but those don't get accessed by the main kernel before it switches to
+> its own page tables.
+> 
+> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+> ---
+>  arch/x86/boot/compressed/ident_map_64.c | 16 ++++++++++++++--
+>  1 file changed, 14 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/boot/compressed/ident_map_64.c b/arch/x86/boot/compressed/ident_map_64.c
+> index fd957b2625e9..a3613857c532 100644
+> --- a/arch/x86/boot/compressed/ident_map_64.c
+> +++ b/arch/x86/boot/compressed/ident_map_64.c
+> @@ -21,6 +21,7 @@
+>  
+>  #include "error.h"
+>  #include "misc.h"
+> +#include "cmdline.h"
+>  
+>  /* These actually do the work of building the kernel identity maps. */
+>  #include <linux/pgtable.h>
+> @@ -109,6 +110,8 @@ static void add_identity_map(unsigned long start, unsigned long end)
+>  /* Locates and clears a region for a new top level page table. */
+>  void initialize_identity_maps(void)
+>  {
+> +	unsigned long cmdline;
+> +
+>  	/* Exclude the encryption mask from __PHYSICAL_MASK */
+>  	physical_mask &= ~sme_me_mask;
+>  
+> @@ -149,10 +152,19 @@ void initialize_identity_maps(void)
+>  	}
+>  
+>  	/*
+> -	 * New page-table is set up - map the kernel image and load it
+> -	 * into cr3.
+> +	 * New page-table is set up - map the kernel image, boot_params and the
+> +	 * command line.
+> +	 * The uncompressed kernel requires boot_params and the command line to
+> +	 * be mapped in the identity mapping.
+> +	 * Map them explicitly here in case the compressed kernel does not
+> +	 * touch them, or does not touch all the pages covering them.
+>  	 */
+>  	add_identity_map((unsigned long)_head, (unsigned long)_end);
+> +	add_identity_map((unsigned long)boot_params, (unsigned long)(boot_params + 1));
+> +	cmdline = get_cmd_line_ptr();
+> +	add_identity_map(cmdline, cmdline + COMMAND_LINE_SIZE);
+> +
+> +	/* Load the new page-table. */
+>  	write_cr3(top_level_pgt);
+>  }
 
-On Fri, 25 Sep 2020 14:52:25 +0200
-Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
+Reviewed-by: Joerg Roedel <jroedel@suse.de>
 
->Hi Maxime,
->
->Some comments below, this driver needs to be changed:
-
-Thanks for the review !
-
->On 18/09/2020 16:24, Maxime Chevallier wrote:
->> The Techwell video decoder supports PAL, NTSC and SECAM input formats,
->> and outputs a BT.656 signal.
->> 
->> This commit adds support for this device, based on an implementation
->> made by Rockchip. This implemention adds basic support for NTSC and PAL,
->> and some basic brightness and contrast controls.
->> 
->> Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
-
- [ ... ]
-
->> +static const struct v4l2_subdev_ops tw9900_subdev_ops = {
->> +	.core	= &tw9900_core_ops,
->> +	.video	= &tw9900_video_ops,
->> +	.pad	= &tw9900_pad_ops,
->> +	.sensor = &tw9900_sensor_ops,
->> +};  
->
->This is wrong. This is not a sensor, so you don't set the format, instead
->you set the TV standard (s_std).
->
->drivers/media/i2c/tw9910.c is a fairly OK template to use. The tw9910 supports
->a simple scaler as well, but I don't know if the tw9900 has the same feature.
->If not, then the format resolution is fixed based on the current selected
->TV standard.
->
->There is definitely no need for g_skip_top_lines: 1) it's a sensor-only op,
->and 2) that function always returns 0, so why keep it?
-
-Thanks for the clarification. Indeed the TW9900 is simpler and doesn't
-have a scaler. I'll stick to the s_std / g_std ops then.
-
-I'll also change the denomination from "sensor" to "decoder", you're
-right.
-
->> +
->> +static const struct v4l2_ctrl_ops tw9900_ctrl_ops = {
->> +	.s_ctrl = tw9900_s_ctrl,
->> +};
->> +
->> +#ifdef CONFIG_VIDEO_V4L2_SUBDEV_API
->> +static const struct v4l2_subdev_internal_ops tw9900_internal_ops = {
->> +	.open = tw9900_open,
->> +};
->> +#endif
->> +
->> +static int tw9900_check_sensor_id(struct tw9900 *tw9900,  
->
->*Not* a sensor :-)
->
->> +				  struct i2c_client *client)
->> +{
->> +	struct device *dev = &tw9900->client->dev;
->> +	u8 id;
->> +
->> +	id = tw9900_read_reg(client, TW9900_CHIP_ID);
->> +
->> +	if (id != TW9900_CHIP_ID) {
->> +		dev_err(dev, "Wrong camera sensor id(%04x)\n", id);
->> +		return -EINVAL;
->> +	}
->> +
->> +	dev_info(dev, "Detected TW9900 (%04x) sensor\n", TW9900_CHIP_ID);
->> +
->> +	return 0;
->> +}
->> +
->> +static int tw9900_configure_regulators(struct tw9900 *tw9900)
->> +{
->> +	u32 i;
->> +
->> +	for (i = 0; i < TW9900_NUM_SUPPLIES; i++)
->> +		tw9900->supplies[i].supply = tw9900_supply_names[i];
->> +
->> +	return devm_regulator_bulk_get(&tw9900->client->dev,
->> +				       TW9900_NUM_SUPPLIES,
->> +				       tw9900->supplies);
->> +}
->> +
->> +static int tw9900_probe(struct i2c_client *client,
->> +			const struct i2c_device_id *id)
->> +{
->> +	struct device *dev = &client->dev;
->> +	struct v4l2_ctrl_handler *hdl;
->> +	struct tw9900 *tw9900;
->> +	int ret;
->> +
->> +	tw9900 = devm_kzalloc(dev, sizeof(*tw9900), GFP_KERNEL);
->> +	if (!tw9900)
->> +		return -ENOMEM;
->> +
->> +	tw9900->client = client;
->> +	tw9900->cur_mode = &supported_modes[0];
->> +
->> +	tw9900->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_LOW);
->> +	if (IS_ERR(tw9900->reset_gpio))
->> +		tw9900->reset_gpio = NULL;
->> +
->> +	ret = tw9900_configure_regulators(tw9900);
->> +	if (ret) {
->> +		dev_err(dev, "Failed to get power regulators\n");
->> +		return ret;
->> +	}
->> +
->> +	v4l2_i2c_subdev_init(&tw9900->subdev, client, &tw9900_subdev_ops);
->> +	tw9900->subdev.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE | V4L2_SUBDEV_FL_HAS_EVENTS;
->> +
->> +	hdl = &tw9900->hdl;
->> +
->> +	v4l2_ctrl_handler_init(hdl, 2);
->> +
->> +	v4l2_ctrl_new_std(hdl, &tw9900_ctrl_ops, V4L2_CID_BRIGHTNESS,
->> +			  -128, 127, 1, 0);
->> +	v4l2_ctrl_new_std(hdl, &tw9900_ctrl_ops, V4L2_CID_CONTRAST,
->> +			  0, 255, 1, 0x60);
->> +
->> +	tw9900->subdev.ctrl_handler = hdl;
->> +	if (hdl->error) {
->> +		int err = hdl->error;
->> +
->> +		v4l2_ctrl_handler_free(hdl);
->> +		return err;
->> +	}
->> +
->> +	ret = __tw9900_power_on(tw9900);
->> +	if (ret)
->> +		return ret;
->> +
->> +	ret = tw9900_check_sensor_id(tw9900, client);
->> +	if (ret)
->> +		goto err_power_off;
->> +
->> +#ifdef CONFIG_VIDEO_V4L2_SUBDEV_API
->> +	tw9900->subdev.internal_ops = &tw9900_internal_ops;
->> +	tw9900->subdev.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
->> +#endif
->> +#if defined(CONFIG_MEDIA_CONTROLLER)
->> +	tw9900->pad.flags = MEDIA_PAD_FL_SOURCE;
->> +	tw9900->subdev.entity.function = MEDIA_ENT_F_CAM_SENSOR;  
->
->Set to MEDIA_ENT_F_ATV_DECODER.
-
-Will do ! Thanks agains,
-
-Maxime
-
-
-
--- 
-Maxime Chevallier, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
