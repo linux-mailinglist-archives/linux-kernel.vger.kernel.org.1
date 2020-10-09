@@ -2,135 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A1E288150
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 06:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A257288153
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 06:28:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731062AbgJIE1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 00:27:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45066 "EHLO
+        id S1731225AbgJIE2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 00:28:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727816AbgJIE1w (ORCPT
+        with ESMTP id S1727816AbgJIE2x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 00:27:52 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5412EC0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 21:27:50 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id u21so11185277eja.2
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 21:27:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=Wa83KDJqEIQFwYhYvTrdA/0P1iUPtwhqUCll5VkxxTM=;
-        b=KpAyRVEAdAaCwD+Yx6pELyeWFCw6hmhbf/6XG6boCoLNgXhlVj/wMaRZggwh/DHdE4
-         j3S4ZOtdhpy1LtL36FMR65fmpFwroVpgHhNx7uhiG83woYsoOClVEMA1HKjjoeeuccsU
-         0/NvrvJ8ERX5pwDvVZRsKTiD0PkY58wvHun4QomLCeS8574cEHxSJBV1z6KvSIN1Y4rT
-         QcmffTwQTIPkXR8zW+e/fdOlr/JPKxERpFbJkvavcQjboyo4h4iMASE9rPDtFKlZi+nv
-         jn5k9XVt0Wxk6P+G7ofrS/ZTwz0g9MR2P2gtfbnrflKP6Nie/7/7kX/pK8+D5FuXsS7f
-         i9WA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=Wa83KDJqEIQFwYhYvTrdA/0P1iUPtwhqUCll5VkxxTM=;
-        b=eNp+8Dcx1cjFS1/IMjP9/2B7wdP+0V3NiZ7qFqgjx/v77KD5RIIypEcOqDjCFbCGn3
-         c3RdjcSJJQzwScoqT5xg6j/s0QhdrwLNBjawcpv4aHNbMu8WM0fY6+uNexBDsuqJwwgJ
-         ZYKD1lmXW0+xD5mip22iUYvOfeW+jKdehIDWrwvB774HhhjRL0ryIouSnB7dNFQC/J71
-         I3qi1IWSngLGt2bUPfrmFxIfyXSZ4IUJAyqq0xbl2Jshco2LVPqUCrjyB8qeBuVUkshk
-         z5mH/oaCn1e0rIpll2kKi0nl58VQoiUiXyeYGqA990s2R5S9Lm1Q0h/qpo2P2pB4BpOB
-         AEtQ==
-X-Gm-Message-State: AOAM531BXD7zq6YlX38rrUmlOtLDGuc7DlozUirMTReD4XEnPqJCK5ZJ
-        QfwgWqsGsUJHpWg3pg7x0kM=
-X-Google-Smtp-Source: ABdhPJwRaS0SMAw1qCu/TiUfeuovMZop0hM7vP4uKj/gyv19otcl5FvQai3oT5+iz6yElSNHMR5snw==
-X-Received: by 2002:a17:906:564d:: with SMTP id v13mr12954650ejr.217.1602217668965;
-        Thu, 08 Oct 2020 21:27:48 -0700 (PDT)
-Received: from felia ([2001:16b8:2d6e:f600:80f1:4ea4:2130:b98])
-        by smtp.gmail.com with ESMTPSA id t16sm5463935eje.39.2020.10.08.21.27.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 21:27:48 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
-Date:   Fri, 9 Oct 2020 06:27:46 +0200 (CEST)
-X-X-Sender: lukas@felia
-To:     Ondrej Jirman <megous@megous.com>
-cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        =?ISO-8859-15?Q?Guido_G=FCnther?= <agx@sigxcpu.org>,
-        Purism Kernel Team <kernel@puri.sm>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH] MAINTAINERS: Update entry for st7703 driver after the
- rename
-In-Reply-To: <20200701184640.1674969-1-megous@megous.com>
-Message-ID: <alpine.DEB.2.21.2010090623060.15995@felia>
-References: <20200701184640.1674969-1-megous@megous.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Fri, 9 Oct 2020 00:28:53 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C77CC0613D2;
+        Thu,  8 Oct 2020 21:28:53 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C6w7M2Lrhz9sRk;
+        Fri,  9 Oct 2020 15:28:47 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1602217728;
+        bh=2Xg2v30A+wUoQbYA2psCGm28W1qa14kbfkT/zV+rz0I=;
+        h=Date:From:To:Cc:Subject:From;
+        b=E+bKGryPGAXmECCxQLY4lwH0BdzDmPuJS3yvg3B+lRie6e+btkaYGeLkoeucToOBy
+         H1JsXeFePr7opGMey4wX4/opTCHL+mibhM37TW7s1Uw5t4+oO6UT5cktGzH0Xn3k2i
+         637WaXDO4EK895sR9ZyjH3E01ogdl8SiY+iwHugjQZtB27RfKpeJA6LglHKMnMbjK7
+         dTH+0mTdT0Zltq+XE2nqhvsL9XpHW3vlR9j4rTHlFneAczPUAh7JSXI7huzTce6J8+
+         B83JHXihbATcwVbHKllhTDlytH9zxfokHzUX328fu0PEwX5Quw4CKLf/tZywtLe8Ck
+         P3FECmvQ939NQ==
+Date:   Fri, 9 Oct 2020 15:28:46 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the tip tree
+Message-ID: <20201009152846.072e6bbf@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1811521063-1602217668=:15995"
+Content-Type: multipart/signed; boundary="Sig_/D8pWvJ1NJO5SiQ1GCGu+IE4";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+--Sig_/D8pWvJ1NJO5SiQ1GCGu+IE4
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
---8323329-1811521063-1602217668=:15995
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Hi all,
 
+After merging the tip tree, today's linux-next build (perf) failed
+like this:
 
+In file included from tools/include/linux/build_bug.h:5,
+                 from tools/include/linux/kernel.h:8,
+                 from util/intel-pt-decoder/intel-pt-insn-decoder.c:7:
+util/intel-pt-decoder/../../../arch/x86/lib/insn.c: In function '__insn_get=
+_emulate_prefix':
+tools/include/linux/compiler.h:37:38: error: nested extern declaration of '=
+__compiletime_assert_0' [-Werror=3Dnested-externs]
+   37 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNT=
+ER__)
+      |                                      ^~~~~~~~~~~~~~~~~~~~~
+tools/include/linux/compiler.h:16:15: note: in definition of macro '__compi=
+letime_assert'
+   16 |   extern void prefix ## suffix(void) __compiletime_error(msg); \
+      |               ^~~~~~
+tools/include/linux/compiler.h:37:2: note: in expansion of macro '_compilet=
+ime_assert'
+   37 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNT=
+ER__)
+      |  ^~~~~~~~~~~~~~~~~~~
+tools/include/linux/build_bug.h:39:37: note: in expansion of macro 'compile=
+time_assert'
+   39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+      |                                     ^~~~~~~~~~~~~~~~~~
+tools/include/linux/build_bug.h:59:21: note: in expansion of macro 'BUILD_B=
+UG_ON_MSG'
+   59 | #define BUILD_BUG() BUILD_BUG_ON_MSG(1, "BUILD_BUG failed")
+      |                     ^~~~~~~~~~~~~~~~
+util/intel-pt-decoder/../../../arch/x86/lib/insn.c:27:3: note: in expansion=
+ of macro 'BUILD_BUG'
+   27 |   BUILD_BUG(); break;     \
+      |   ^~~~~~~~~
+util/intel-pt-decoder/../../../arch/x86/lib/insn.c:40:41: note: in expansio=
+n of macro 'leXX_to_cpu'
+   40 |  ({ t r =3D *(t*)((insn)->next_byte + n); leXX_to_cpu(t, r); })
+      |                                         ^~~~~~~~~~~
+util/intel-pt-decoder/../../../arch/x86/lib/insn.c:46:61: note: in expansio=
+n of macro '__peek_nbyte_next'
+   46 |  ({ if (unlikely(!validate_next(t, insn, n))) goto err_out; __peek_=
+nbyte_next(t, insn, n); })
+      |                                                             ^~~~~~~=
+~~~~~~~~~~
+util/intel-pt-decoder/../../../arch/x86/lib/insn.c:86:7: note: in expansion=
+ of macro 'peek_nbyte_next'
+   86 |   if (peek_nbyte_next(insn_byte_t, insn, i) !=3D prefix[i])
+      |       ^~~~~~~~~~~~~~~
 
-On Wed, 1 Jul 2020, Ondrej Jirman wrote:
+Caused by commit
 
-> The driver was renamed, change the path in the MAINTAINERS file.
-> 
-> Signed-off-by: Ondrej Jirman <megous@megous.com>
+  2a522b53c470 ("x86/insn: Support big endian cross-compiles")
 
-This minor non-urgent cleanup patch has not been picked up yet by anyone.
+I have reverted commits
 
-Hence, ./scripts/get_maintainers.pl --self-test=patterns continues to 
-complain:
+a23b701ae9b3 objtool: Rework header include paths
+1b4998c364bc objtool: Fix x86 orc generation on big endian cross compiles
+317664a7fcc9 objtool: Fix reloc generation on big endian cross compiles
+2a522b53c470 x86/insn: Support big endian cross-compiles
+2486baae2cf6 objtool: Allow nested externs to enable BUILD_BUG()
 
-  warning: no file matches  F:	Documentation/devicetree/bindings/display/panel/rocktech,jh057n00900.txt
-  warning: no file matches  F:	drivers/gpu/drm/panel/panel-rocktech-jh057n00900.c
+for today.
 
-This patch cleanly applies on next-20201008 and resolves the issue above.
+This is a PowerPC LE native build of tools/perf.
 
-Reviewed-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_/D8pWvJ1NJO5SiQ1GCGu+IE4
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Lukas
+-----BEGIN PGP SIGNATURE-----
 
-> ---
->  MAINTAINERS | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 5f186a661a9b..f5183eae08df 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -5487,12 +5487,13 @@ S:	Maintained
->  F:	Documentation/devicetree/bindings/display/panel/raydium,rm67191.yaml
->  F:	drivers/gpu/drm/panel/panel-raydium-rm67191.c
->  
-> -DRM DRIVER FOR ROCKTECH JH057N00900 PANELS
-> +DRM DRIVER FOR SITRONIX ST7703 PANELS
->  M:	Guido Günther <agx@sigxcpu.org>
->  R:	Purism Kernel Team <kernel@puri.sm>
-> +R:	Ondrej Jirman <megous@megous.com>
->  S:	Maintained
-> -F:	Documentation/devicetree/bindings/display/panel/rocktech,jh057n00900.txt
-> -F:	drivers/gpu/drm/panel/panel-rocktech-jh057n00900.c
-> +F:	Documentation/devicetree/bindings/display/panel/rocktech,jh057n00900.yaml
-> +F:	drivers/gpu/drm/panel/panel-sitronix-st7703.c
->  
->  DRM DRIVER FOR SAVAGE VIDEO CARDS
->  S:	Orphan / Obsolete
-> -- 
-> 2.27.0
-> 
-> 
---8323329-1811521063-1602217668=:15995--
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9/5v4ACgkQAVBC80lX
+0GwuHgf/bNF770bTmccxD7Bb7XHLgwE9t50XM5TA1Rh3qyoosyt4D2I1EfyJQhuJ
+Nq3uOMRMQyqWyYu53sbHZhyb4rMFdcZzrG0iewDFHLKw7pZ/BCxzsO1GGaJC4h6v
+QKOF5IQJOX+Lj3Iu55+rSXycSmfJpur5ECa6BaNfWGZVfrXf8Zba14eloWScmNvb
+UknSJtNK4ftW6tEpy/EeKUPvCIMlMO9yJ9ho6kwNTT4znRTBs7ltdu4KbMUSHZB6
++VJwRPQ+0ParZW0QGwjjHkdBgO/sSBCx9Mj1P9pw9lCj2cVtepIyaggYevkJnMhG
+fe8i5FbZbYA/4r2T3kTc07S2WqLHCA==
+=QJTb
+-----END PGP SIGNATURE-----
+
+--Sig_/D8pWvJ1NJO5SiQ1GCGu+IE4--
