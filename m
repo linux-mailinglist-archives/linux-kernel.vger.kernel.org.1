@@ -2,116 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA524289A27
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 23:05:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE247289A34
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 23:10:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391096AbgJIVF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 17:05:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733176AbgJIVF4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 17:05:56 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E50FEC0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 14:05:55 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id b26so7892729pff.3
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 14:05:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QXQaBaNS7A6eVo/ydORo8r5bdU1C9Le836RTdHwCBbM=;
-        b=JoSdKxNwxsMfI2U0CjlTc5BwvhqCy714WkSi+WKKGJVkSxeS4A84NzKevK6CPn9KXt
-         luyi7jDs6nQbVyyVPeYM9mQUjAAefT+ScUKjFnKzQLP7hS1caTnxv6LwwjUOs1sG613o
-         Z1mfBp8CiisbR4rWjXF/lItpg0T+9m58kSN6ymcBrb9qx1Q5pE6/8rfEwDSOFoHPmLeK
-         ZOhU9su8JfRbkCsj5wTlpzUcuguhQKLNKVmqQEdIiT1RZKGFUwDcT20B3P+mB4B8pmtl
-         zOKoiM+eB3smbcYTz3v4uqlSVWDNijwAFgnLDRm8ha9grVnXIpZsyUDrdJ34aNugK5Zh
-         t79g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QXQaBaNS7A6eVo/ydORo8r5bdU1C9Le836RTdHwCBbM=;
-        b=Sfawn/g9DlyjOC+W3XiCO8KtOtkBMD3s4t7LOPmq9rZA5cfR+gNdG1HI7CR9J1VQmX
-         67wuD7TqtcJ1ZVSUfcskscPBe1qbXocDjTQXF98EBrUgydvN4x4cHORcojjqEQPKBBD4
-         PBdNS2eitbFbjp5654G9ETWkTncXNJkV2t56FTqW9ORkYyLj+JIIrFc/Bek1qwrm72Pk
-         n3fmEDTc89K0XgoM56LYDqRNeY0HycpBBSd/0V7KaCpmXsReucnPxV3v7RsxIDJ4jcIu
-         dus7nykhZcb5zVSfptwNG0sPfbrejJEwUpNKLebmGBUfn5wr4dXzZoPpBKqB4zHCey1z
-         2enA==
-X-Gm-Message-State: AOAM532j5O75t/c2ngkCcwZSic1z/4Fzl0lZHvGvdneyGLyJteH4rTwu
-        sKLSqUWQgm86X9W2XTXUmbwDAQ==
-X-Google-Smtp-Source: ABdhPJxjzJ92vFbxcRcoQJ+j6aZ4ui51r5YFp2dBuqEKUdI8vRCJOM24sn81H3xCAiwt33ZPrcU5Mg==
-X-Received: by 2002:a65:64cc:: with SMTP id t12mr5047545pgv.106.1602277555126;
-        Fri, 09 Oct 2020 14:05:55 -0700 (PDT)
-Received: from google.com ([2620:15c:201:2:f693:9fff:fef4:1b6d])
-        by smtp.gmail.com with ESMTPSA id t13sm12057753pfc.1.2020.10.09.14.05.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 14:05:54 -0700 (PDT)
-Date:   Fri, 9 Oct 2020 14:05:48 -0700
-From:   Sami Tolvanen <samitolvanen@google.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [PATCH v5 00/29] Add support for Clang LTO
-Message-ID: <20201009210548.GB1448445@google.com>
-References: <20201009161338.657380-1-samitolvanen@google.com>
- <20201009153512.1546446a@gandalf.local.home>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201009153512.1546446a@gandalf.local.home>
+        id S2391279AbgJIVKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 17:10:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33122 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389007AbgJIVKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 17:10:09 -0400
+Received: from tzanussi-mobl (c-73-209-127-30.hsd1.il.comcast.net [73.209.127.30])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 53C61222C3;
+        Fri,  9 Oct 2020 21:10:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602277808;
+        bh=qDPUDxE4AbwHFOlY76iqPi7ikUmn1YPb8j23oUDqTdc=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=GRfRvlym51mizFezFe3Bp3KNeS+e56K0U2rihex9KA3ZRtTIqUlBUzxVnwCsSAHxa
+         3DCDsnLIWV4UbXHa2jkLAL42R9As25L5IEMTFie/DQ41l+bZ6ZuEQFetmuQxagls/V
+         vKbOBDH0alTrg77urMNOdLVGYFzlY+ec58azvtf0=
+Message-ID: <39fbddae7f82df6be1488e819589713974b68a68.camel@kernel.org>
+Subject: Re: [PATCH 0/5] tracing: Synthetic event dynamic string fixes
+From:   Tom Zanussi <zanussi@kernel.org>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Fri, 09 Oct 2020 16:10:06 -0500
+In-Reply-To: <CAJHvVchmmJ4LF-wY=BJgJSaEo7w6AhgKzsF9Q5HCDN276uv=HA@mail.gmail.com>
+References: <cover.1602255803.git.zanussi@kernel.org>
+         <CAJHvVchmmJ4LF-wY=BJgJSaEo7w6AhgKzsF9Q5HCDN276uv=HA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 03:35:12PM -0400, Steven Rostedt wrote:
-> On Fri,  9 Oct 2020 09:13:09 -0700
-> Sami Tolvanen <samitolvanen@google.com> wrote:
+Hi Axel,
+
+On Fri, 2020-10-09 at 13:35 -0700, Axel Rasmussen wrote:
+> On Fri, Oct 9, 2020 at 8:17 AM Tom Zanussi <zanussi@kernel.org>
+> wrote:
+> > 
+> > These patches provide fixes for the problems observed by Masami in
+> > the
+> > new synthetic event dynamic string patchset.
+> > 
+> > The first patch (tracing: Don't show dynamic string internals in
+> > synthetic event description) removes the __data_loc from the event
+> > description but leaves it in the format.
+> > 
+> > The patch (tracing: Add synthetic event error logging) addresses
+> > the
+> > lack of error messages when parse errors occur.
+> > 
+> > The remaining three patches address the other problems Masami noted
+> > which result from allowing illegal characters in synthetic event
+> > and
+> > field names when defining an event.  The is_good_name() function is
+> > used to check that's not possible for the probe events, but should
+> > also be used for the synthetic events as well.
+> > 
+> > (tracing: Move is_good_name() from trace_probe.h to trace.h) makes
+> > that function available to other trace subsystems by putting it in
+> > trace.h.  (tracing: Check that the synthetic event and field names
+> > are
+> > legal) applies it to the synthetic events, and (selftests/ftrace:
+> > Change synthetic event name for inter-event-combined test) changes
+> > a
+> > testcase that now fails because it uses an illegal name.
+> > 
+> > The following changes since commit
+> > 848183553e431e6e9c2ea2f72421a7a1bbc6532e:
+> > 
+> >   tracing: Fix synthetic print fmt check for use of __get_str()
+> > (2020-10-08 15:29:07 -0400)
+> > 
+> > are available in the Git repository at:
+> > 
+> >   git://git.kernel.org/pub/scm/linux/kernel/git/zanussi/linux-
+> > trace.git ftrace/dynstring-fixes-v1
 > 
-> > This patch series adds support for building x86_64 and arm64 kernels
-> > with Clang's Link Time Optimization (LTO).
-> > 
-> > In addition to performance, the primary motivation for LTO is
-> > to allow Clang's Control-Flow Integrity (CFI) to be used in the
-> > kernel. Google has shipped millions of Pixel devices running three
-> > major kernel versions with LTO+CFI since 2018.
-> > 
-> > Most of the patches are build system changes for handling LLVM
-> > bitcode, which Clang produces with LTO instead of ELF object files,
-> > postponing ELF processing until a later stage, and ensuring initcall
-> > ordering.
-> > 
-> > Note that this version is based on tip/master to reduce the number
-> > of prerequisite patches, and to make it easier to manage changes to
-> > objtool. Patch 1 is from Masahiro's kbuild tree, and while it's not
-> > directly related to LTO, it makes the module linker script changes
-> > cleaner.
-> > 
+> I applied this series, and then my mmap_lock tracepoints series, onto
+> v5.9-rc8. I played with the edge cases Masami raised in the other
+> thread, and I also tried constructing a synthetic event as we
+> discussed on the thread about my series.
 > 
-> I went to test this, but it appears that the latest tip/master fails to
-> build for me. This error is on tip/master, before I even applied a single
-> patch.
+> As far as I can see, this addresses the edge cases Masami pointed
+> out,
+> and it all seems to work as intended. It works fine with the kind of
+> synthetic event I'm hoping to define for my particular use case.
 > 
-> (config attached)
+> So, for what it's worth:
+> 
+> Tested-By: Axel Rasmussen <axelrasmussen@google.com>
+> 
 
-Ah yes, X86_DECODER_SELFTEST seems to be broken in tip/master. If you
-prefer, I have these patches on top of mainline here:
+Great, thanks for (re-)testing!
 
-  https://github.com/samitolvanen/linux/tree/clang-lto
+Tom
 
-Testing your config with LTO on this tree, it does build and boot for
-me, although I saw a couple of new objtool warnings, and with LLVM=1,
-one warning from llvm-objdump.
+> > 
+> > Tom Zanussi (5):
+> >   tracing: Don't show dynamic string internals in synthetic event
+> >     description
+> >   tracing: Move is_good_name() from trace_probe.h to trace.h
+> >   tracing: Check that the synthetic event and field names are legal
+> >   tracing: Add synthetic event error logging
+> >   selftests/ftrace: Change synthetic event name for inter-event-
+> > combined
+> >     test
+> > 
+> >  kernel/trace/trace.h                          |  13 ++
+> >  kernel/trace/trace_events_synth.c             | 133
+> > +++++++++++++++++-
+> >  kernel/trace/trace_probe.h                    |  13 --
+> >  .../trigger-inter-event-combined-hist.tc      |   8 +-
+> >  4 files changed, 147 insertions(+), 20 deletions(-)
+> > 
+> > --
+> > 2.17.1
+> > 
 
-Sami
