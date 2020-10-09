@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C862E288C51
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:14:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95D1C288C5E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389177AbgJIPOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 11:14:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60340 "EHLO
+        id S2389212AbgJIPPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 11:15:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388914AbgJIPOU (ORCPT
+        with ESMTP id S2388533AbgJIPPn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 11:14:20 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81971C0613D5
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 08:14:20 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id 13so4895048qvc.9
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 08:14:20 -0700 (PDT)
+        Fri, 9 Oct 2020 11:15:43 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F0C2C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 08:15:42 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id g3so8159394qtq.10
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 08:15:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=d5tRJ9PpcVIuucKEk9PjSNEdnKeyXjPzYCqe74ejgpM=;
-        b=Zn8X4w0/OSkhz1OuZv5cn9hAzblt5Hz2mscK1C8WJ1JcDT5nIpUMpSMLResc3MFIeJ
-         GYAwP5W+J0Fxn2Md7iAQTDLSGl8qafxyhc+wXW+psUrtfS5wngK5J1ar+PSV3qeK2Nj5
-         0m6G/dAXHeQgo5p2oWl5wszCZy8X++skWa3fLZ38pZcn+TFZhh2cIuqy4at1AIMSl2Rj
-         sRITU+dZXxiE1XajWjAvISGvD4aFphoRP21auU1OzDipxnqXLk9pmk/qYrzNztspn4bq
-         ia3DCQaNq81q+PGYCObzRoeKRHiP/S327EfmURD1pAthONNzdj/rwgMutzPgFDspy8uM
-         keMg==
+        bh=XeahOZa88YOWCvFbh6+bgMvAS5KgvoSIrQZEwsz1AvI=;
+        b=fiL8LqVIzi0BjC3AqpEniGWmtrH2e79DZDkKidQOoBdeBwwAF9glihw+P1udtUiRiR
+         dTk+zv6qfOMRvAe+t3ZpstOPjWPwltaqd/54uMwnhyMbGimWYP6wjQZSPDPRSBLDMEq3
+         jODLb9NnENznI2EjlVY8eeeQyOUt4wDCUBVw5E4o4CtxhrkZCvZljgQal96XAy815jPH
+         RDf/kD1jB8E0S7A8xBT0hfridv/3aaapdFgFp0DMdGUAYVCsNNXdo32vpE1si8aOY0qD
+         6JQLnOXMhIaPxpkffwZ3sgo12yyxh9cXcLPNx5AWVvptt5wn10sWuE/osKnMQoWVJT4F
+         EMkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=d5tRJ9PpcVIuucKEk9PjSNEdnKeyXjPzYCqe74ejgpM=;
-        b=ubA1j8LaSN1aXB4AkRQCQbUf/42p23wU6ax1qu+0c8fOSI6Gb3mOyBpsSp2i6pxOKl
-         CYM6gU1cJtq2iLkc1tx6yIzfoyx560CpdibfVuoyw5wuE9aUA2/7v5QoxfiQoQhHcxo/
-         mpODWoxyp5FQoRJU2R5FPOqmAzTYZ4m2bSMw/tbi2mL+mFTphFJaqiwJU0fGki9+krja
-         g8rPrY0uLsR6vL9kPbnBr9nit/ohZhqD0GJREKUVE2907r9+ijQGlYPcFlQGCQurwh0s
-         lATbHJqzK868wwreagEf0LQM/GT6lpUv3JrG8ASMw88JDQaOXFWuzQ4cExBEzuVC9/6S
-         h4Ww==
-X-Gm-Message-State: AOAM5323s7ch2TKfBGjr6Jt5YUL/cqy/1yQIviqyp8xjjbxDp5qkbGzr
-        t5bbk8p+9PgHQ9PABYJ1XaQtPQ==
-X-Google-Smtp-Source: ABdhPJxKiahJdvTtsQaQo417yOupHNeidai5L3YpYKdnVDmVTqBZN9rm1cv4o5Miumg1ehkWBKEPgQ==
-X-Received: by 2002:a0c:cd0e:: with SMTP id b14mr13194813qvm.3.1602256459739;
-        Fri, 09 Oct 2020 08:14:19 -0700 (PDT)
+        bh=XeahOZa88YOWCvFbh6+bgMvAS5KgvoSIrQZEwsz1AvI=;
+        b=uDbh+/W7s4A+1PsGKPKIiQeYtdqNct4CbSxzcVpjevWccanAI80sdzhsHOeZgZdAaA
+         lBF6cnjYBzhO/I8QLS087U2g5jQW+qi4ItxnpBzymu5Go3zbIvzLthbya53JIubGFPbX
+         tSU4ZEXp1K36bMe+z/m49JuDsSTh+QvLQXASOANdQQt3Fav/L1CENuNybN+x4XNffbDQ
+         9RwpRlFmNXqeHBisTkpnUAYxAGYGAygntJy3uZfPjnay33jucTG352S0DRWcQbffLKMd
+         bRzgl/jw+yevQt23/+BxNbU/vtlEJwibFWJpO2XUmUvxRNbookJpjBB4YB5hXPeCEfLK
+         MF8A==
+X-Gm-Message-State: AOAM533K0rEGJYh1mGuAmHSgPcWq2vi3xJjv1G2vqmqJDYkbnvb+SIjx
+        gTQXEVl0HTBVcxKpFaz/PjgG2Q==
+X-Google-Smtp-Source: ABdhPJxmLOKDbXxWMI0YoJdQfdZgk6XHAKS3TkXBLEezFKBn9UGmtIW842jk7ARXlak9j8uix2/hmg==
+X-Received: by 2002:ac8:545a:: with SMTP id d26mr14359060qtq.124.1602256541398;
+        Fri, 09 Oct 2020 08:15:41 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id s15sm6329516qkj.21.2020.10.09.08.14.18
+        by smtp.gmail.com with ESMTPSA id s123sm6228708qkd.128.2020.10.09.08.15.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 08:14:19 -0700 (PDT)
+        Fri, 09 Oct 2020 08:15:40 -0700 (PDT)
 Received: from jgg by mlx with local (Exim 4.94)
         (envelope-from <jgg@ziepe.ca>)
-        id 1kQu66-0020X4-DL; Fri, 09 Oct 2020 12:14:18 -0300
-Date:   Fri, 9 Oct 2020 12:14:18 -0300
+        id 1kQu7Q-0020Yl-8k; Fri, 09 Oct 2020 12:15:40 -0300
+Date:   Fri, 9 Oct 2020 12:15:40 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Christian =?utf-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>
 Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
@@ -60,46 +60,61 @@ Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         linux-media@vger.kernel.org, chris@chris-wilson.co.uk,
         airlied@redhat.com, akpm@linux-foundation.org, daniel@ffwll.ch,
         sumit.semwal@linaro.org, willy@infradead.org, jhubbard@nvidia.com
-Subject: Re: [PATCH 2/6] mm: introduce vma_set_file function v3
-Message-ID: <20201009151418.GW5177@ziepe.ca>
+Subject: Re: [PATCH 1/6] mm: mmap: fix fput in error path
+Message-ID: <20201009151540.GX5177@ziepe.ca>
 References: <20201009150342.1979-1-christian.koenig@amd.com>
- <20201009150342.1979-2-christian.koenig@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201009150342.1979-2-christian.koenig@amd.com>
+In-Reply-To: <20201009150342.1979-1-christian.koenig@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 05:03:38PM +0200, Christian König wrote:
-> +/*
-> + * Change backing file, only valid to use during initial VMA setup.
-> + */
-> +void vma_set_file(struct vm_area_struct *vma, struct file *file)
-> +{
-> +	if (file)
-> +	        get_file(file);
-> +
-> +	swap(vma->vm_file, file);
-> +
-> +	if (file)
-> +		fput(file);
-> +}
+On Fri, Oct 09, 2020 at 05:03:37PM +0200, Christian König wrote:
+> Patch "495c10cc1c0c CHROMIUM: dma-buf: restore args..."
+> adds a workaround for a bug in mmap_region.
+> 
+> As the comment states ->mmap() callback can change
+> vma->vm_file and so we might call fput() on the wrong file.
+> 
+> Revert the workaround and proper fix this in mmap_region.
+> 
+> Signed-off-by: Christian König <christian.koenig@amd.com>
+>  drivers/dma-buf/dma-buf.c | 22 +++++-----------------
+>  mm/mmap.c                 |  2 +-
+>  2 files changed, 6 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+> index a6ba4d598f0e..edd57402a48a 100644
+> +++ b/drivers/dma-buf/dma-buf.c
+> @@ -1143,9 +1143,6 @@ EXPORT_SYMBOL_GPL(dma_buf_end_cpu_access);
+>  int dma_buf_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma,
+>  		 unsigned long pgoff)
+>  {
+> -	struct file *oldfile;
+> -	int ret;
+> -
+>  	if (WARN_ON(!dmabuf || !vma))
+>  		return -EINVAL;
+>  
+> @@ -1163,22 +1160,13 @@ int dma_buf_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma,
+>  		return -EINVAL;
+>  
+>  	/* readjust the vma */
+> -	get_file(dmabuf->file);
+> -	oldfile = vma->vm_file;
+> -	vma->vm_file = dmabuf->file;
+> -	vma->vm_pgoff = pgoff;
+> +	if (vma->vm_file)
+> +		fput(vma->vm_file);
 
-fput crashes when file is NULL so the error handling after
-unmap_and_free_vma: can't handle this case, similarly vm_file can't be
-NULL either.
+This if is redundant too
 
-So just simply:
+But otherwise
 
- swap(vma->vm_file, file);
- get_file(vma->vm_file);
- fput(file);
- 
-Will do?
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-Just let it crash if any of them are wrongly NULL.
-
+Thanks,
 Jason
