@@ -2,74 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E10E828887F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 14:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8434A288885
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 14:18:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732791AbgJIMQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 08:16:40 -0400
-Received: from forward101j.mail.yandex.net ([5.45.198.241]:35767 "EHLO
-        forward101j.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730726AbgJIMQk (ORCPT
+        id S1732949AbgJIMS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 08:18:29 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:42246 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732556AbgJIMS3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 08:16:40 -0400
-Received: from forward100q.mail.yandex.net (forward100q.mail.yandex.net [IPv6:2a02:6b8:c0e:4b:0:640:4012:bb97])
-        by forward101j.mail.yandex.net (Yandex) with ESMTP id 18FCF1BE1BA7;
-        Fri,  9 Oct 2020 15:16:37 +0300 (MSK)
-Received: from mxback8q.mail.yandex.net (mxback8q.mail.yandex.net [IPv6:2a02:6b8:c0e:42:0:640:b38f:32ec])
-        by forward100q.mail.yandex.net (Yandex) with ESMTP id 13B1A7080004;
-        Fri,  9 Oct 2020 15:16:37 +0300 (MSK)
-Received: from vla3-3dd1bd6927b2.qloud-c.yandex.net (vla3-3dd1bd6927b2.qloud-c.yandex.net [2a02:6b8:c15:350f:0:640:3dd1:bd69])
-        by mxback8q.mail.yandex.net (mxback/Yandex) with ESMTP id r7DUHYblvr-GadGW3bS;
-        Fri, 09 Oct 2020 15:16:37 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1602245797;
-        bh=WUtDIoR4iluD92A4YT4RWnCJ9f15qpCaPNrXb1hVUIY=;
-        h=In-Reply-To:To:Subject:From:Date:References:Message-ID;
-        b=eEWjC4eS2JvWh/ezlhmazTdv/1MfFkWjW6w+qoen1KTguwsnBc39qK7yAPCwjWCYJ
-         V290RJiXYMUlwqZDUnh9M0G9+flJIVEpRPAv0X42TUdRDPuwHsPqXfQoQz0MunNvsc
-         856bBh1OT0vraTkn7V1+oM2++ymWdrmtXOfsJJlk=
-Authentication-Results: mxback8q.mail.yandex.net; dkim=pass header.i=@yandex.ru
-Received: by vla3-3dd1bd6927b2.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id yGnkQcd4j8-GanqWC9S;
-        Fri, 09 Oct 2020 15:16:36 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-From:   stsp <stsp2@yandex.ru>
-Subject: Re: drmfb console switching problems/questions
-To:     Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-fbdev@vger.kernel.org,
-        Linux kernel <linux-kernel@vger.kernel.org>
-References: <17980f58-c2d2-ac58-88ce-e21b5a56da39@yandex.ru>
- <df4d1918-dcb1-4951-6280-f178ecbbfc2f@suse.de>
-Message-ID: <70ce31ca-5922-584c-8631-3853c488f3c7@yandex.ru>
-Date:   Fri, 9 Oct 2020 15:16:25 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Fri, 9 Oct 2020 08:18:29 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 099CIMgM074620;
+        Fri, 9 Oct 2020 07:18:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1602245902;
+        bh=15gAqw+NsfnwoKS3VkzcBFirfksRlsnPF3W5GMRL+iY=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=m2Vf9MA51v1aJFBxApnBsZPfi87+xzHx0tn9/afw5J0IBvVcsSXjanW2x35/aAnNu
+         h6WrbJCSTy/oO7bCyS9Q5zBEwvIQOBf6PiqedQR8SX0pIw9zSNtDS5YxUzcE2mdTPK
+         FXEpZEH8i6E42ljZ2cbODrbLZozkDmY+TL5bRpHM=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 099CIMe7114662
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 9 Oct 2020 07:18:22 -0500
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 9 Oct
+ 2020 07:18:22 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 9 Oct 2020 07:18:22 -0500
+Received: from [10.250.67.147] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 099CIK5d115895;
+        Fri, 9 Oct 2020 07:18:21 -0500
+Subject: Re: [PATCH v3 2/2] power: supply: bq25790: Introduce the BQ25790
+ charger driver
+To:     Dan Carpenter <dan.carpenter@oracle.com>, <kbuild@lists.01.org>,
+        <sre@kernel.org>
+CC:     <lkp@intel.com>, <kbuild-all@lists.01.org>,
+        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <robh@kernel.org>,
+        Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+References: <20201009121532.GN1042@kadam>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <a38c3dcd-4e19-0d99-105c-c2cb0a645eb6@ti.com>
+Date:   Fri, 9 Oct 2020 07:18:20 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <df4d1918-dcb1-4951-6280-f178ecbbfc2f@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201009121532.GN1042@kadam>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-09.10.2020 14:59, Thomas Zimmermann пишет:
-> Fbdev exposes the video ram (or a shadow buffer of it) to all
-> applications. Only one can draw at the same time. It's a limitation of
-> the design. To fix this, your application has to stop drawing when you
-> switch consoles.
-OK, thanks for info.
-Quite a sad news, if you ask me.
-Is there any ongoing work at solving that?
+Dan
 
-Anyway, the fact that fb can
-permanently hang, is, I suppose,
-another problem - the one that
-can't be worked around in an app.
-I suspect it is the result of sdl doing
-ioctl(console_fd, KDSETMODE, KD_GRAPHICS);
-After which, I think, redrawing on a
-VC switch became disabled.
-Would it make sense to improve SAK
-to unfreeze from that? Otherwise its
-too easy to hang the screen permanently,
-and no way to recover.
+On 10/9/20 7:15 AM, Dan Carpenter wrote:
+> Hi Dan,
+>
+> url:    https://github.com/0day-ci/linux/commits/Dan-Murphy/dt-bindings-power-Add-the-bq25790-dt-bindings/20201008-234450
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/sre/linux-power-supply.git for-next
+> config: i386-randconfig-m021-20201009 (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+>
+> smatch warnings:
+> drivers/power/supply/bq25790_charger.c:170 bq25790_usb_work() warn: ignoring unreachable code.
+> drivers/power/supply/bq25790_charger.c:624 bq25790_get_property() warn: should this be a bitwise op?
+
+Fixing both of these now
+
+Dan
+
