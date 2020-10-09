@@ -2,121 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F7E928851E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:21:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EF12288520
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732740AbgJIIVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 04:21:51 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:55756 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732337AbgJIIVu (ORCPT
+        id S1732744AbgJIIW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 04:22:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732337AbgJIIWz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 04:21:50 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id A9C211C0B88; Fri,  9 Oct 2020 10:21:48 +0200 (CEST)
-Date:   Fri, 9 Oct 2020 10:21:47 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Pavel Machek <pavel@denx.de>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Seth Moore <sethmo@google.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Suresh Siddha <suresh.b.siddha@intel.com>,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
-        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
-        luto@kernel.org, nhorman@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
-        mikko.ylinen@intel.com
-Subject: Re: [PATCH v39 11/24] x86/sgx: Add SGX enclave driver
-Message-ID: <20201009082146.GA15188@amd>
-References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
- <20201003045059.665934-12-jarkko.sakkinen@linux.intel.com>
- <20201003143925.GB800720@kroah.com>
- <20201009071045.GA10335@amd>
- <20201009072141.GA12545@kroah.com>
+        Fri, 9 Oct 2020 04:22:55 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 765B1C0613D2;
+        Fri,  9 Oct 2020 01:22:55 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id y16so7602435ljk.1;
+        Fri, 09 Oct 2020 01:22:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:organization:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=z4PYgixxEo74naXVTGCu473YIzjZyoMssDBGjCVNhz8=;
+        b=DvEcPpSsHXvt+QCKNgFD0OGbS0cOIPIHELaLxGjbP37VbXYPPozfcIRAdrSmOR8HvV
+         S0tXg49NuxysApDt+TalMm467uLyRoSZH2lrDZZLGXmK8gSf7V+wzyQgEb6o61PcH5Eu
+         /SuIDyKLxzATkYuFFkoZlx6a4PFXw02IiWr6VZs+tCcpjLnbSgJe1xMkU7OsWzpp2T83
+         6oc/b4AfsTwrDsWLkm4NURIQhxqyyTGdolrTaI2z401NHkwA98DrBFAPgRZL6kXk6lIi
+         fTcClX+nTlqX7peXiWnk3fFFg5pFFegtt5+0QvuQbsaFt8F9gJcm5/zw03TVhozozCz1
+         ecHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=z4PYgixxEo74naXVTGCu473YIzjZyoMssDBGjCVNhz8=;
+        b=EZP3mKv6UWLm2Fzb8sDRCOBHfqyZuK/JNitwyNLdU9KWPegQi+ebRwVJQM3E+qQHwJ
+         y0W/rk26qUpOLsgejP2c8A7nCwGDpuMfVRDsql+SxUlg+fyxFRexJViFORPFrgsMnQ3m
+         8uLd6awEHOhJE0Q8Eet/Ag619jZAAABC5iqnh/HQ6zX44cz9ESI2JrAqS2NDo7DUTof4
+         OnK8eXJFK+ZfpODTU0OIGuKXErTQQFhvaD9ZkEGx0uW4V8lMAXwaLxrDnfs9EzvbtEyr
+         1WJnbYwfKAqIGB3KnRlUQgoe3lxoDMslW3N86fmcgrDJFuYa1IvAfMp3+wtg+UlbZ3l2
+         r0Ww==
+X-Gm-Message-State: AOAM532UpHeaDg7xyTOWiga+bPxoXqvpvfcdeL5JuQRbeigfkwjjiBaa
+        C+eClQM3ZjZsYeWvrUMH4lQVuBAd/P7Vwg==
+X-Google-Smtp-Source: ABdhPJyCc0AibnzQbXHWDVK6b5qd4dQXk2CIZ+rxQ8FfNIh/3E1HoS8vWe1fFdjiMjJKICo8WL7eRw==
+X-Received: by 2002:a2e:8159:: with SMTP id t25mr4863515ljg.137.1602231773820;
+        Fri, 09 Oct 2020 01:22:53 -0700 (PDT)
+Received: from [192.168.1.100] ([213.87.137.199])
+        by smtp.gmail.com with ESMTPSA id v11sm682269ljk.109.2020.10.09.01.22.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Oct 2020 01:22:53 -0700 (PDT)
+Subject: Re: [PATCH v2 3/3] ARM: dts: add ehci uhci enable in evb dts
+To:     Ryan Chen <ryan_chen@aspeedtech.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, bmc-sw@aspeedtech.com,
+        Alan Stern <stern@rowland.harvard.edu>
+References: <20200930040823.26065-4-ryan_chen@aspeedtech.com>
+ <20201009024937.11246-1-ryan_chen@aspeedtech.com>
+ <20201009024937.11246-4-ryan_chen@aspeedtech.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Organization: Brain-dead Software
+Message-ID: <4efff4e7-27e0-35be-c112-5377f222a478@gmail.com>
+Date:   Fri, 9 Oct 2020 11:22:38 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="5mCyUwZo2JvN/JJP"
-Content-Disposition: inline
-In-Reply-To: <20201009072141.GA12545@kroah.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20201009024937.11246-4-ryan_chen@aspeedtech.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+HEllo!
 
---5mCyUwZo2JvN/JJP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 09.10.2020 5:49, Ryan Chen wrote:
 
-On Fri 2020-10-09 09:21:41, Greg KH wrote:
-> On Fri, Oct 09, 2020 at 09:10:45AM +0200, Pavel Machek wrote:
-> > Hi!
-> >=20
-> > > > new file mode 100644
-> > > > index 000000000000..f54da5f19c2b
-> > > > --- /dev/null
-> > > > +++ b/arch/x86/kernel/cpu/sgx/driver.c
-> > > > @@ -0,0 +1,173 @@
-> > > > +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-> > >=20
-> > > You use gpl-only header files in this file, so how in the world can it
-> > > be bsd-3 licensed?
-> > >=20
-> > > Please get your legal department to agree with this, after you explain
-> > > to them how you are mixing gpl2-only code in with this file.
-> >=20
-> > This specifies license of driver.c, not of the headers included. Are
-> > you saying that it is impossible to have a kernel driver with anything
-> > else than GPL-2? That would be news to many, and that's not what
-> > current consensus is.
->=20
-> If you want to write any non-GPL-2-only kernel code, you had better be
-> consulting your lawyers and get very explicit instructions on how to do
-> this in a way that does not violate any licenses.
->=20
-> I am not a lawyer, and will not be giving you any such advice, as I
-> think it's not something that people should be doing.
+> Add EHCI UHCI enable build in aspeed-ast2600-evb.dts
 
-You are pushing view that is well outside accepted community
-consensus, then try to hide it by claiming that you are not a lawyer.
+    Enable ECHI/UHCI for the  Aspeed AST2600 EVB, perhaps?
 
-Stop it.
+> Signed-off-by: Ryan Chen <ryan_chen@aspeedtech.com>
+[...]
 
-Dual licensed drivers are common in the kernel, and are considered
-okay by everyone but you. Author is free to select license for his
-work.
-
-								Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---5mCyUwZo2JvN/JJP
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl+AHZoACgkQMOfwapXb+vKOjACgl9a8pvMx5bpSZjOeW06bWO7I
-Z6oAniRaZ5xNHGC/MQ/hB3c/rW5oYhGI
-=jELf
------END PGP SIGNATURE-----
-
---5mCyUwZo2JvN/JJP--
+MBR, Sergei
