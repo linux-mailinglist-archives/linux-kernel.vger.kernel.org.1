@@ -2,132 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B26C288ADE
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:30:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D122288AE1
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388710AbgJIOaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 10:30:05 -0400
-Received: from mail-eopbgr690065.outbound.protection.outlook.com ([40.107.69.65]:35747
-        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728934AbgJIOaE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 10:30:04 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PV84I/lm/EdmwwsdT6QwaaQHeuf9Fmk8OAWlxSyoXG0r1CiF+3yH/f1FuhEORAadc7/1Z3I4zbLBXp2Gf/jT+FgtiNr7mvjZpwUVeq4QzCszaO8SeHAZz8kA4ckTckVcThhoU3vnxkWEV8EYSPp8CCbT3etOM5K3a/o/DwV+BCwRyoAAwR8E+cIVgMu4JRtOvqoIeUV3yK3giN4DynzRCyG39vXYQNhDGDOSEjdyKmO42zVkwJaR+JoNHPZhfBFhRaWTav+8bG+6cnrFANkC1asbKUu8oNDhBGzZ1a6TsGO7/+wtVQEpT4CLM697Wq1hpQ2UATnvg1OeijEQF2ppsw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=h8HRRhEx3lleKRTEQD7f8UhAoDHN+IiT4sBWXQMPlGM=;
- b=MCgijlAsEYUa6A5hIAfok6CL6AZJLEg//vKuZXG4xQIMUxvaJF/CJLEhQfa5Gxq5BU3j9ZzmwQa3rEJMMoQ8seZ+Iy3lTA3jZb1tCSECBkvv2ByGTm+nMnQ3uqgrC75Hi+2hVxCXWE0PxP802jwDj0deD04i+fUHwx+cQnA3Rex41/RHgXetxsc1rkMtEhd7YfK8wodyjhaJeqENzXfWUPOm26LC2jeWk//KOJlfEF7vhu20VlSOsM2ftNuVxqRgs1UQpQI/IY7U2jgfzxHuUvF/s4iolOOXKRicnc7W5mqu9oT0azMGWU9BjPcmV/eobtHPfrh4FBHOKpfr9Xsi7A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S2388762AbgJIOaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 10:30:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388727AbgJIOaM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 10:30:12 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D450DC0613D5
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 07:30:11 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id z6so10765897qkz.4
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 07:30:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=h8HRRhEx3lleKRTEQD7f8UhAoDHN+IiT4sBWXQMPlGM=;
- b=euOFN+Ypx5mKk3D2en6DeHvOLB3aZt3uJCO/bdCXOY3qsFIpsrYCDTkmEZhi+pxLULrObtlEXnk7tYkUpy+KcFlJCmQ5yOywbJWwbyV6C6p4umDZAy8gxYNtyylL48mBeg36c2DWqTWJiTv80O4/PZyz/fbuBKy9JTqv0aLxGXM=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by MN2PR12MB4302.namprd12.prod.outlook.com (2603:10b6:208:1de::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.26; Fri, 9 Oct
- 2020 14:30:00 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::f8f7:7403:1c92:3a60]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::f8f7:7403:1c92:3a60%6]) with mapi id 15.20.3455.027; Fri, 9 Oct 2020
- 14:30:00 +0000
-Subject: Re: [PATCH][next] amd/amdgpu_ctx: Use struct_size() helper and
- kmalloc()
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-References: <20201008143450.GA23077@embeddedor>
- <4fe00048-2612-39f3-29bb-c9424000f836@amd.com>
- <20201009135430.GA31347@embeddedor>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <de2282e7-7eb9-db79-1082-36d6508b05dd@amd.com>
-Date:   Fri, 9 Oct 2020 16:29:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20201009135430.GA31347@embeddedor>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
-X-ClientProxiedBy: AM0PR02CA0107.eurprd02.prod.outlook.com
- (2603:10a6:208:154::48) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=p7Tcy41BHHzdJD3d55Dx7+SitKAuIMpz6nsj1EKscQ4=;
+        b=PXQzFPw+2zyeumJOQcaBO0MUOi3o+J7O34smVyrogzNMl+qwUVlv5JD9mWKrvmZqx4
+         6O7hY5mXBCBp+JMuIOs0AUUI09cw+F3mZozuQ0HA2oTZPmn3WvFLzbrESeUi1QSpktvV
+         RZ2izTI0vG7QKJL+vybdmyFBujHf4DfJCRCGwevYFXywyJQpuW4gjJieQ1pLzC5YUuRR
+         j1u5XwQgtC36/uSpcjUkBu+f3KtSUHs7owqqAWhfPtrTIBV8fDqGyP0W58Y3Ca/6iOWh
+         DWOEfokxeQXQX21QxYgUi7Eiamh8Lw/QDbwNINXKHJikr2ILcLmGc4FAQcqHwWBqclof
+         3izA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=p7Tcy41BHHzdJD3d55Dx7+SitKAuIMpz6nsj1EKscQ4=;
+        b=Z6KnRqF8BuTaLvGFO3sIp1Z+Nwvh8oUh1GLQN7kSP11SP6kY+2EWpnEpxPdghyjxza
+         KiilNgfk7fFnVZ4iLJcnUeHjmP6sW5B6uohKx3OSEKGJGkSrwq9YRQ5iug1rVT5cMJ+4
+         F7lP6dYz2HZ6lsHeNJX7+OtKipl8+rkUUCpi++7r5ZRllgrAlq05o32OPIEOGueac3F9
+         ornrXg9HTF/agLwoXzk0uNO5ncyTgAS516wDj9YL4X7fI2Iac2/0EpDsbSr8gcv//eGR
+         OGzPV18F4o0zvxRTo4++AmGPkWgeOCEbEsV5bG190+J5vpGty7UozQVphQalTUK8cyxC
+         oRpw==
+X-Gm-Message-State: AOAM530XkBfUQxRUD7RFeCL/NGt4Ji5cMa0p5ONP9inPwWnlv4rpl+8o
+        /n9l1K0mwxoP+AA3AcaN9Uj/npqRee0Dlg==
+X-Google-Smtp-Source: ABdhPJykdSDHPibSC9hA2ZTSLVymx8cWxLJ7r95HtK9LpRSGM3JYCE24+QKVrBoWD/AJwUNdKPcMUw==
+X-Received: by 2002:a05:620a:128c:: with SMTP id w12mr14124460qki.355.1602253810703;
+        Fri, 09 Oct 2020 07:30:10 -0700 (PDT)
+Received: from ?IPv6:2620:10d:c0a8:11e8::107d? ([2620:10d:c091:480::1:f1f8])
+        by smtp.gmail.com with ESMTPSA id x25sm6278777qtp.64.2020.10.09.07.30.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Oct 2020 07:30:09 -0700 (PDT)
+Subject: Re: [PATCH] btrfs: ref-verify: Fix memleak in add_extent_data_ref
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu
+Cc:     Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200827074339.22950-1-dinghao.liu@zju.edu.cn>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <f13c740e-b140-9dbc-04f2-0142de59f099@toxicpanda.com>
+Date:   Fri, 9 Oct 2020 10:30:08 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.3.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM0PR02CA0107.eurprd02.prod.outlook.com (2603:10a6:208:154::48) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.23 via Frontend Transport; Fri, 9 Oct 2020 14:29:58 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: a1a5b6da-c9da-42d2-e554-08d86c5fcd69
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4302:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR12MB4302FC63E3E9A37971E2480383080@MN2PR12MB4302.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3044;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2CfiYDTmO1yMEFkGBPScVI18ylx6DHUNgRu5CsUBQkJ4wD83UydSAt5gdK98xP0aHliLzoFe+4ULjKY0cBqSPkOb4wC9GmEjz8H4cwBiUzdUgsgpbf1iJ5qHFe501XDgD5c8tmv1a7kcoMSyzttiejNa2Vvjxlf4gCd05aRYQE+8iASctXTsCn28kuKgNRTD8aAwI5j1t7yg/k4YW4xeu07tYb9fr7Ewf+ZhjjddUBilVZhM7u9FBAuV2MXpEswZlnYtbomU0B3CLUf0Xui17KYW3BpsnkzEm6w6DLoNA+Khw20xw5IYQYCALZljXbCb6gpjyXAVUn5jpNZUMw2AN5jY13Gmsy4X6drIuVXdG/1pMiLp8iA5KtSyiFX5Lwnu
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(366004)(396003)(39860400002)(31686004)(8936002)(2906002)(6666004)(83380400001)(6486002)(31696002)(54906003)(4326008)(66574015)(52116002)(2616005)(316002)(6916009)(5660300002)(8676002)(86362001)(186003)(16526019)(478600001)(66946007)(36756003)(66556008)(66476007)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: qyYR4unOw0SaE857F0W1DB2JBCPb1a992B5g2KJ6eOghue3lO6USOeDT7wU6CAot2pukB/OE3cL0Qxjw/sSpGRv4tIs2i0gziIQKNirbxj0zLD8+725oJygRb27SRdOg3u13sSJeH8PMy73QW9J9J7RTPz1HVrCZUftdOg6iSim/lPqdCu1yj+6qZllngQSQ7wo8jOgFolDi7D+1yqtJgf64p6h1kk+i1YYKS6rLKGOqkjmDxu0LzUxuJweKgFqb1ng1ZIUyGlf6/TA3A24/xnzLhLsCggjWxDEQsKLwwUwXjpqRwEbm2nXgzdA7s7/E5EtllS4PvxjRLAFw5/NfuqKCpltghIgnvCPOK7uTN89Xi/IXOLwDd4SIRQAOSnZBwu4XAJYfbjcq8Du4iVyKjnIJx4wT79uEwNgzZSV7Hmb+D69VxPD2Vds5huLAtW41ki8WR4CtxqL8EXhVLf2+IvZ0XtbRYa40miZGNUvEAvdyjt6Hqxi7mcgJY9KuXDWTvI5zr/Sv8fHZcrIKc80+9lMwyYMDBQKiWivNpsRdqN7F234ZAWywfFgy8arn1fJ216JTs2IRFx1Fm3oWzBPLR+Q+XcFihNhPh8m6gXzRUGNmvLw0I94f7lOwbxEbKFcgkcKI+IlhUpqv+CIZZbFz6gX/KgM6hlQTYisfU1KSRM1Azgs+/paiVeFOEii54rbD2OMloWPcLy1j4UIpZ15BwQ==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a1a5b6da-c9da-42d2-e554-08d86c5fcd69
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2020 14:29:59.9026
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 91tCQdavCY71BwONN0CY21PzO4dTT8+jp85NtsEEPhz82EQUELmAYo1rCWxmsaKC
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4302
+In-Reply-To: <20200827074339.22950-1-dinghao.liu@zju.edu.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 09.10.20 um 15:54 schrieb Gustavo A. R. Silva:
-> On Fri, Oct 09, 2020 at 09:08:51AM +0200, Christian König wrote:
->> Am 08.10.20 um 16:34 schrieb Gustavo A. R. Silva:
->>> Make use of the new struct_size() helper instead of the offsetof() idiom.
->>> Also, use kmalloc() instead of kcalloc().
->>>
->>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->>> ---
->>>    drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c | 2 +-
->>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
->>> index c80d8339f58c..5be125f3b92a 100644
->>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
->>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
->>> @@ -100,7 +100,7 @@ static int amdgpu_ctx_init_entity(struct amdgpu_ctx *ctx, u32 hw_ip,
->>>    	enum drm_sched_priority priority;
->>>    	int r;
->>> -	entity = kcalloc(1, offsetof(typeof(*entity), fences[amdgpu_sched_jobs]),
->>> +	entity = kmalloc(struct_size(entity, fences, amdgpu_sched_jobs),
->> NAK. You could use kzalloc() here, but kmalloc won't zero initialize the
->> memory which could result in unforeseen consequences.
-> Oh I see.. I certainly didn't take that into account.
->
-> I'll fix that up and respin.
+On 8/27/20 3:43 AM, Dinghao Liu wrote:
+> When lookup_root_entry() fails, ref should be freed
+> just like when insert_ref_entry() fails.
+> 
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-Shit happens, we already have a fix for this. Alex merged it and it 
-immediately broke our testing systems.
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-So one of our engineers came up with a fix which should already have 
-been applied.
+Thanks,
 
-Christian.
-
->
-> Thanks
-> --
-> Gustavo
-
+Josef
