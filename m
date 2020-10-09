@@ -2,74 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A30828898A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 15:04:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D0CE288988
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 15:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388084AbgJINEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 09:04:24 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:50324 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732468AbgJINEY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 09:04:24 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 388E0FBD45FB23536C0D;
-        Fri,  9 Oct 2020 21:04:15 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Fri, 9 Oct 2020
- 21:03:46 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH] mm/swapfile.c: remove unnecessary out label in __swap_duplicate()
-Date:   Fri, 9 Oct 2020 09:03:37 -0400
-Message-ID: <20201009130337.29698-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
+        id S2388067AbgJINDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 09:03:46 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39384 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732468AbgJINDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 09:03:45 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1602248624;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GK3coka4JKr5h6VaBUij/uP3o5nU+N7gnzjAysRtMAw=;
+        b=nrLxba9acrofSSN+o5K83yWYPgEkHW3hdUV/3YAAvgLYcq3w4XOPyoRe3DxxtscpIck6Ao
+        DIvIHdArLkj6o718W5GiXqyg4TQ2BpUGeNerMRDR03ldRRjSecHQISCL8L2/9TOPps1mIn
+        fo+S3+/M3WDYKgb9c9smVuw9UW6koC0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C5574AC6C;
+        Fri,  9 Oct 2020 13:03:44 +0000 (UTC)
+Date:   Fri, 9 Oct 2020 15:03:44 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Mel Gorman <mgorman@suse.de>,
+        Frederic Weisbecker <fweisbecker@suse.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH v2 0/5] allow overriding default preempt mode from
+ command line
+Message-ID: <20201009130344.GN4967@dhcp22.suse.cz>
+References: <20201007120401.11200-1-mhocko@kernel.org>
+ <20201009122926.29962-1-mhocko@kernel.org>
+ <20201009125056.GN2628@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201009125056.GN2628@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the code went to the out label, it must have p == NULL. So what out
-label really does is redundant if check and return err. We should Remove
-this unnecessary out label because it does not handle resource free and so
-on.
+On Fri 09-10-20 14:50:56, Peter Zijlstra wrote:
+> 
+> Can you please not thread the new series onto the old one? That's some
+> seriously annoying behaviour that I see more and more... It makes me
+> loose whole patch-sets.
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- mm/swapfile.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Sure, no problem. This is not really unusual in mm and I personally
+prefer to have discussion in a single thread rather than separated in
+two or more. But I definitely do not insist of course. It is surprising
+that you are losing the whole patchset as the threading seems to be done
+properly. Mutt doesn't seem to have problems with that.
 
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 06984de4cb9a..22c63beb10da 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -3441,11 +3441,11 @@ static int __swap_duplicate(swp_entry_t entry, unsigned char usage)
- 	unsigned long offset;
- 	unsigned char count;
- 	unsigned char has_cache;
--	int err = -EINVAL;
-+	int err;
- 
- 	p = get_swap_device(entry);
- 	if (!p)
--		goto out;
-+		return -EINVAL;
- 
- 	offset = swp_offset(entry);
- 	ci = lock_cluster_or_swap_info(p, offset);
-@@ -3492,7 +3492,6 @@ static int __swap_duplicate(swp_entry_t entry, unsigned char usage)
- 
- unlock_out:
- 	unlock_cluster_or_swap_info(p, ci);
--out:
- 	if (p)
- 		put_swap_device(p);
- 	return err;
+Anyway, let me know if I should repost.
+
 -- 
-2.19.1
-
+Michal Hocko
+SUSE Labs
