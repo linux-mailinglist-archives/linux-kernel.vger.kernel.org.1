@@ -2,167 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1FC72887ED
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 13:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 343AB288802
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 13:42:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388150AbgJILkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 07:40:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55300 "EHLO
+        id S2388197AbgJILmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 07:42:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731908AbgJILkA (ORCPT
+        with ESMTP id S1731908AbgJILmc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 07:40:00 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4DCCC0613D2;
-        Fri,  9 Oct 2020 04:39:59 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id m11so8652483otk.13;
-        Fri, 09 Oct 2020 04:39:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pXsB/QVQRYyXFbKxYCEyS3/5LBs8o136vGIU2Jgeew0=;
-        b=X/OvMvqMRAC510RhUV8pSOUwthMvQ2dTBGynnk184JaqGE1m+pcEPtDFBuCBYX4kY4
-         Jj5u8u73BPjXJE+UXn9iVKjtZ4qqsAMcGqP24Haet3K/pg7xu0oqEQulI/vOsRzQKu8g
-         1tOugOLsMLuuMD33qnnf8pjyVu0uskmsjyxoGdBcnlMU2ZQXBUDmW3r6NU3L9M7wL8vN
-         JF0sELrt6ngM0S/Ltl2WpQQtwNChb5LpP2BqKtqI3k6vLTANbPKaL7CKZlmvF/9u/WdX
-         KCNHVtLmvXhHzSS/uk3PRTQ6uZPiYaq1Uk9gejNLOgtfiEoKrOXjxqrO5h5Cm9mrqKh3
-         JcpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pXsB/QVQRYyXFbKxYCEyS3/5LBs8o136vGIU2Jgeew0=;
-        b=giAhRcinAdG/8DzJTwxC1E2JF1KAI3G+HOARqUMhzUxCt6sJaLeDkHewrzM9NNZw5X
-         rmF9C56p5b2wzrfk7ees+TIl6gwmsV0Vpx8OGSsosonWMN0RCeAAALMrp//yT727nvn3
-         tIvWwKOJQnF65c/gFFf7x5SUHQCqsvS/gMsNO9lEJiseTrOeDJ4909JQe66eSZKCVaxs
-         52NfsfUE9F6DppBbdctZGq5KqH4BmskKTH5eLR8A8U+2ZNMWeAfHf302ZlEXtYmTG28w
-         C9eJt4YSAXh23TbPI6WbXkTtClJdyzVDusiRkg7QN6ss0w6LzvJ6rotHH98Ht/GIlZVn
-         aZ0Q==
-X-Gm-Message-State: AOAM530OOA3FB45TMoBH+MTrTInKL/rUAz6CR/XufsuTYwQ475yzrA0T
-        iebGv2RC6rIPSDyHRdNcDHzoM9Zu3UCr0BXbWik=
-X-Google-Smtp-Source: ABdhPJy68YZcI0wwimcOeMZsDG/1H0xEIksRYNZLcYIPR6NmZldSZXo9t7sGWbaIUNrENfudIP970EH/+3bouXCFse4=
-X-Received: by 2002:a9d:d13:: with SMTP id 19mr8829529oti.116.1602243599317;
- Fri, 09 Oct 2020 04:39:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1602093760.git.yuleixzhang@tencent.com> <bdd0250e-4e14-f407-a584-f39af12c4e09@oracle.com>
-In-Reply-To: <bdd0250e-4e14-f407-a584-f39af12c4e09@oracle.com>
-From:   yulei zhang <yulei.kernel@gmail.com>
-Date:   Fri, 9 Oct 2020 19:39:47 +0800
-Message-ID: <CACZOiM2qKhogXQ_DXzWjGM5UCeCuEqT6wnR=f2Wi_T45_uoYHQ@mail.gmail.com>
-Subject: Re: [PATCH 00/35] Enhance memory utilization with DMEMFS
-To:     Joao Martins <joao.m.martins@oracle.com>
-Cc:     linux-fsdevel@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        Fri, 9 Oct 2020 07:42:32 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE26C0613D2;
+        Fri,  9 Oct 2020 04:42:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=RcamcxMM04cAFejMyuerox9iFyryVbfUvRjDUF6K+9E=; b=rV/73fj+p5/T3eYZYDymfCt5SP
+        EGKltICU3UJgzJot3PlAdj3AbR+gk5Fu9ALysyRXUjXz1Zz9lkn1oy67SKaaUgwwoVb88K0SV7Bsh
+        FqvpyAsddMNfO/uaOg5us46reQYdxoaw4V+Z56lK4XPhIyX56i/ukTdBdBh7EvlM1NHScvtTABqpo
+        znLocfz8vCn//mXjXUAto9jooaYcx8KnZYLrEJUFEaEecZwQ67rFlXOnv+PAUplGmjypRkBw6zEJZ
+        e0yFWzBMPGuSmWRNegKe32QuMxAhYnEeqk1p16v+xTaCE9aMZ0ypzDv+kqeYOcTeyxLPICzHhq0Jp
+        54eNIb9Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kQqmw-0003xU-UC; Fri, 09 Oct 2020 11:42:19 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E04B9300455;
+        Fri,  9 Oct 2020 13:42:16 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8A6E02B08A0EA; Fri,  9 Oct 2020 13:42:16 +0200 (CEST)
+Date:   Fri, 9 Oct 2020 13:42:16 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Frederic Weisbecker <fweisbecker@suse.de>,
         LKML <linux-kernel@vger.kernel.org>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Haiwei Li <lihaiwei.kernel@gmail.com>,
-        Yulei Zhang <yuleixzhang@tencent.com>,
-        akpm@linux-foundation.org, naoya.horiguchi@nec.com,
-        viro@zeniv.linux.org.uk, Paolo Bonzini <pbonzini@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Jane Y Chu <jane.chu@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org,
+        Brian Cain <bcain@codeaurora.org>,
+        linux-hexagon@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um@lists.infradead.org
+Subject: Re: [RFC PATCH] kernel: allow to configure PREEMPT_NONE,
+ PREEMPT_VOLUNTARY on kernel command line
+Message-ID: <20201009114216.GM2628@hirez.programming.kicks-ass.net>
+References: <20201007120401.11200-1-mhocko@kernel.org>
+ <20201009091218.GF4967@dhcp22.suse.cz>
+ <20201009094245.GG2628@hirez.programming.kicks-ass.net>
+ <20201009101044.GH4967@dhcp22.suse.cz>
+ <20201009101431.GJ2628@hirez.programming.kicks-ass.net>
+ <20201009103730.GJ4967@dhcp22.suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201009103730.GJ4967@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Joao, thanks a lot for the feedback. One more thing needs to mention
-is that dmemfs also support fine-grained
-memory management which makes it more flexible for tenants with
-different requirements.
+On Fri, Oct 09, 2020 at 12:37:30PM +0200, Michal Hocko wrote:
+> On Fri 09-10-20 12:14:31, Peter Zijlstra wrote:
+> > On Fri, Oct 09, 2020 at 12:10:44PM +0200, Michal Hocko wrote:
+> > > On Fri 09-10-20 11:42:45, Peter Zijlstra wrote:
+> > > > On Fri, Oct 09, 2020 at 11:12:18AM +0200, Michal Hocko wrote:
+> > > > > Is there any additional feedback? Should I split up the patch and repost
+> > > > > for inclusion?
+> > > > 
+> > > > Maybe remove PREEMPT_NONE after that?  Since that's then equivalent to
+> > > > building with VOLUNTARY and booting with preempt=none.
+> > > 
+> > > So do you mean that I should post an additional patch which does this on
+> > > top? With a justification that there is one option less to chose from?
+> > 
+> > Exactly!
+> 
+> It seems we have to get rid of CONFIG_NO_PREEMPT first
+> $ git grep ARCH_NO_PREEMPT
+> arch/Kconfig:config ARCH_NO_PREEMPT
+> arch/alpha/Kconfig:     select ARCH_NO_PREEMPT
+> arch/hexagon/Kconfig:   select ARCH_NO_PREEMPT
+> arch/m68k/Kconfig:      select ARCH_NO_PREEMPT if !COLDFIRE
+> arch/um/Kconfig:        select ARCH_NO_PREEMPT
+> kernel/Kconfig.preempt: depends on !ARCH_NO_PREEMPT
+> kernel/Kconfig.preempt: depends on !ARCH_NO_PREEMPT
+> lib/Kconfig.debug:      select PREEMPT_COUNT if !ARCH_NO_PREEMPT
+> lib/Kconfig.debug:      depends on !ARCH_NO_PREEMPT
+> 
+> Is there anybody working on that. Is this even possible? I can see it
+> has been added by 87a4c375995e ("kconfig: include kernel/Kconfig.preempt
+> from init/Kconfig") but this looks more like a mechanical change and it
+> has defined ARCH_NO_PREEMPT all arches which haven't included
+> Kconfig.preempt. But is there any reason why those cannot support
+> preemption for some reason? Cc respective maintainer (the email thread
+> starts http://lkml.kernel.org/r/20201007120401.11200-1-mhocko@kernel.org
 
-On Fri, Oct 9, 2020 at 3:01 AM Joao Martins <joao.m.martins@oracle.com> wrote:
->
-> [adding a couple folks that directly or indirectly work on the subject]
->
-> On 10/8/20 8:53 AM, yulei.kernel@gmail.com wrote:
-> > From: Yulei Zhang <yuleixzhang@tencent.com>
-> >
-> > In current system each physical memory page is assocaited with
-> > a page structure which is used to track the usage of this page.
-> > But due to the memory usage rapidly growing in cloud environment,
-> > we find the resource consuming for page structure storage becomes
-> > highly remarkable. So is it an expense that we could spare?
-> >
-> Happy to see another person working to solve the same problem!
->
-> I am really glad to see more folks being interested in solving
-> this problem and I hope we can join efforts?
->
-> BTW, there is also a second benefit in removing struct page -
-> which is carving out memory from the direct map.
->
-> > This patchset introduces an idea about how to save the extra
-> > memory through a new virtual filesystem -- dmemfs.
-> >
-> > Dmemfs (Direct Memory filesystem) is device memory or reserved
-> > memory based filesystem. This kind of memory is special as it
-> > is not managed by kernel and most important it is without 'struct page'.
-> > Therefore we can leverage the extra memory from the host system
-> > to support more tenants in our cloud service.
-> >
-> This is like a walk down the memory lane.
->
-> About a year ago we followed the same exact idea/motivation to
-> have memory outside of the direct map (and removing struct page overhead)
-> and started with our own layer/thingie. However we realized that DAX
-> is one the subsystems which already gives you direct access to memory
-> for free (and is already upstream), plus a couple of things which we
-> found more handy.
->
-> So we sent an RFC a couple months ago:
->
-> https://lore.kernel.org/linux-mm/20200110190313.17144-1-joao.m.martins@oracle.com/
->
-> Since then majority of the work has been in improving DAX[1].
-> But now that is done I am going to follow up with the above patchset.
->
-> [1]
-> https://lore.kernel.org/linux-mm/159625229779.3040297.11363509688097221416.stgit@dwillia2-desk3.amr.corp.intel.com/
->
-> (Give me a couple of days and I will send you the link to the latest
-> patches on a git-tree - would love feedback!)
->
-> The struct page removal for DAX would then be small, and ticks the
-> same bells and whistles (MCE handling, reserving PAT memtypes, ptrace
-> support) that we both do, with a smaller diffstat and it doesn't
-> touch KVM (not at least fundamentally).
->
->         15 files changed, 401 insertions(+), 38 deletions(-)
->
-> The things needed in core-mm is for handling PMD/PUD PAGE_SPECIAL much
-> like we both do. Furthermore there wouldn't be a need for a new vm type,
-> consuming an extra page bit (in addition to PAGE_SPECIAL) or new filesystem.
->
-> [1]
-> https://lore.kernel.org/linux-mm/159625229779.3040297.11363509688097221416.stgit@dwillia2-desk3.amr.corp.intel.com/
->
->
-> > We uses a kernel boot parameter 'dmem=' to reserve the system
-> > memory when the host system boots up, the details can be checked
-> > in /Documentation/admin-guide/kernel-parameters.txt.
-> >
-> > Theoretically for each 4k physical page it can save 64 bytes if
-> > we drop the 'struct page', so for guest memory with 320G it can
-> > save about 5G physical memory totally.
-> >
-> Also worth mentioning that if you only care about 'struct page' cost, and not on the
-> security boundary, there's also some work on hugetlbfs preallocation of hugepages into
-> tricking vmemmap in reusing tail pages.
->
->   https://lore.kernel.org/linux-mm/20200915125947.26204-1-songmuchun@bytedance.com/
->
-> Going forward that could also make sense for device-dax to avoid so many
-> struct pages allocated (which would require its transition to compound
-> struct pages like hugetlbfs which we are looking at too). In addition an
-> idea <handwaving> would be perhaps to have a stricter mode in DAX where
-> we initialize/use the metadata ('struct page') but remove the underlaying
-> PFNs (of the 'struct page') from the direct map having to bear the cost of
-> mapping/unmapping on gup/pup.
->
->         Joao
+I suspect we can drop ARCH_NO_PREEMPT from VOLUNTARY, IIRC there's no
+arch dependency there. PREEMPT itself obviously needs arch help.
