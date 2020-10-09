@@ -2,92 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84CE428835D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 09:20:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89165288363
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 09:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731847AbgJIHU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 03:20:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44776 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725908AbgJIHU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 03:20:56 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CA7D322244;
-        Fri,  9 Oct 2020 07:20:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602228055;
-        bh=zIymCSHg9Zg+z9GLKQbc3ItuquT9CYWzArm0DOFUUoI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tq0xt+Nj7bKX0IcFmLIcPoPZcfdELavFD7QDp0QLmuFCy5I77+nFLPbz94RDcOasl
-         abJmGXK82DmAQLJSj7lATakLmj1QgQL+idU2cELdRtn3zw+9C8kvf3zqff2ZqkhcEy
-         owFFKDs7GEWMZtFxuyJFiTRKgXG8TcAcu4GyPcvE=
-Date:   Fri, 9 Oct 2020 09:21:41 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Seth Moore <sethmo@google.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Suresh Siddha <suresh.b.siddha@intel.com>,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
-        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
-        luto@kernel.org, nhorman@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
-        mikko.ylinen@intel.com
-Subject: Re: [PATCH v39 11/24] x86/sgx: Add SGX enclave driver
-Message-ID: <20201009072141.GA12545@kroah.com>
-References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
- <20201003045059.665934-12-jarkko.sakkinen@linux.intel.com>
- <20201003143925.GB800720@kroah.com>
- <20201009071045.GA10335@amd>
+        id S1731900AbgJIHWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 03:22:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725908AbgJIHWU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 03:22:20 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 197EBC0613D4
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 00:22:19 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id e23so1731840wme.2
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 00:22:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=FRDO93LNDWBO9t9FG7SMLF0roE6kX6YwpV57FevClu0=;
+        b=CfHHtwFc6a6bvulf0veIbCtXAQQpLhc1gE2KdAPVttSYSkRbeqAmws1+Gu3DPMWxZD
+         5atKgRcTDPtRmBKt1GiWY7gGEtCEMt06LWPQeCg5GM6Jmrg8eGlDdDq1sbBY8LU8X6YO
+         CChGChdM/OIW7FbZZxd5nL/1fKNJbpsQPILg+d6YOSK0AtGfcSjlyj30/IkoNyiT60pv
+         LojzvolBcCnsps6JF64PzQW2QZ0groZ5To+V1sdf4pImrItwbGU/cymnyD7lESdppbSH
+         W2wGvpU9urMU8vxdHh0GUxArNKlqk82bg2IgmmZ7uIuB2dyU31gT8inHBvuePPo4zmIQ
+         Q+iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=FRDO93LNDWBO9t9FG7SMLF0roE6kX6YwpV57FevClu0=;
+        b=DWodrGj5qpxgaFZoVwMZFfF/w8zJHrGdT8JGIF2+aswXDBHR4KLfBDGsU3OjYbHJIz
+         vq7GUH3++RxKbZR+4rYEkmJhYKht4LxsZ0xQbsiLPNf9MuBz+1tkSdk9h/zKhG3ynKAh
+         7FLKo54KNttp9Ttbi/w5D1iO+cAyvnU/wNtlP9VEzDTQ/fytsYW+goegIDSUfZxKlxm5
+         tU6+DWAnNIvlX3ZGbLbMvP6W1I/TJ7mVsYYms9SijI3grpe0zi2pJJncFYnoEh19i/Jy
+         BPL1qRiD9YfIWfqzPYf7W3dJa0rvakf+PRc8ohrBPQY1BBqttwbk3noEebNF6LS/B5Fb
+         GeKA==
+X-Gm-Message-State: AOAM533t5O+iZj13rtbN0G4mh/odlP2lgpwMMcKtlat4XHYDc0lA2VhT
+        FjrZn3fi6qEgPtPzO2LYwsT+6A==
+X-Google-Smtp-Source: ABdhPJzdjCUYMn/4MtXAFjf0Y6Cba+61ceqI/EqZ/a9KT/4y3GfS342ZrklmZNgk9XDx7oht1EJgIg==
+X-Received: by 2002:a1c:4c13:: with SMTP id z19mr11648037wmf.121.1602228137682;
+        Fri, 09 Oct 2020 00:22:17 -0700 (PDT)
+Received: from dell ([91.110.221.232])
+        by smtp.gmail.com with ESMTPSA id t16sm10778955wmi.18.2020.10.09.00.22.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Oct 2020 00:22:16 -0700 (PDT)
+Date:   Fri, 9 Oct 2020 08:22:15 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Russ Weight <russell.h.weight@intel.com>
+Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
+        yilun.xu@intel.com, hao.wu@intel.com, matthew.gerlach@intel.com
+Subject: Re: [PATCH v3 1/6] mfd: intel-m10-bmc: support for MAX10 BMC Secure
+ Updates
+Message-ID: <20201009072215.GJ1763265@dell>
+References: <20201009011423.22741-1-russell.h.weight@intel.com>
+ <20201009011423.22741-2-russell.h.weight@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201009071045.GA10335@amd>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201009011423.22741-2-russell.h.weight@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 09:10:45AM +0200, Pavel Machek wrote:
-> Hi!
+On Thu, 08 Oct 2020, Russ Weight wrote:
+
+> Add macros and definitions required by the MAX10 BMC
+> Secure Update driver.
 > 
-> > > new file mode 100644
-> > > index 000000000000..f54da5f19c2b
-> > > --- /dev/null
-> > > +++ b/arch/x86/kernel/cpu/sgx/driver.c
-> > > @@ -0,0 +1,173 @@
-> > > +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-> > 
-> > You use gpl-only header files in this file, so how in the world can it
-> > be bsd-3 licensed?
-> > 
-> > Please get your legal department to agree with this, after you explain
-> > to them how you are mixing gpl2-only code in with this file.
-> 
-> This specifies license of driver.c, not of the headers included. Are
-> you saying that it is impossible to have a kernel driver with anything
-> else than GPL-2? That would be news to many, and that's not what
-> current consensus is.
+> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> ---
+> v3:
+>   - Changed "MAX10 BMC Secure Engine driver" to "MAX10 BMC Secure
+>     Update driver"
+>   - Removed wrapper functions (m10bmc_raw_*, m10bmc_sys_*). The
+>     underlying functions will be called directly.
+> v2:
+>   - These functions and macros were previously distributed among
+>     the patches that needed them. They are now grouped together
+>     in a single patch containing changes to the Intel MAX10 BMC
+>     driver.
+>   - Added DRBL_ prefix to some definitions
+>   - Some address definitions were moved here from the .c files that
+>     use them.
+> ---
+>  include/linux/mfd/intel-m10-bmc.h | 85 +++++++++++++++++++++++++++++++
+>  1 file changed, 85 insertions(+)
 
-If you want to write any non-GPL-2-only kernel code, you had better be
-consulting your lawyers and get very explicit instructions on how to do
-this in a way that does not violate any licenses.
+Acked-by: Lee Jones <lee.jones@linaro.org>
 
-I am not a lawyer, and will not be giving you any such advice, as I
-think it's not something that people should be doing.
-
-greg k-h
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
