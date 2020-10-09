@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E2B288A68
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25CA9288A69
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:12:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388631AbgJIOLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 10:11:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50584 "EHLO
+        id S2388642AbgJIOL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 10:11:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727560AbgJIOLy (ORCPT
+        with ESMTP id S2388192AbgJIOLy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 9 Oct 2020 10:11:54 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78D54C0613D2;
-        Fri,  9 Oct 2020 07:11:52 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id t20so3185537edr.11;
-        Fri, 09 Oct 2020 07:11:52 -0700 (PDT)
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AC30C0613D5;
+        Fri,  9 Oct 2020 07:11:54 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id g4so9531954edk.0;
+        Fri, 09 Oct 2020 07:11:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hQO4b2yNCZwtGggHaJW09jdb16yB4LZzWYfRXkA2rMM=;
-        b=OCTUH2YmFovxKqkB1R1nzmFtkVxPh2Dp87YUZuiql3+tE82L3hUO+NTxcHPJ6Yv396
-         +kMby010IpkICigVtyZgzoqGkVtQNlZzsnIxG/HS8uQ6jnLitMqyoGSrYOKIfzeWbQRM
-         VoJ9montT3S5UiMPS2iNdJWNJ0dBk1EolvvQjH1YFCa4UOrJip5Hn1nbGGMBfa+TBj5H
-         svvCVai8vAK7fCSqbnrltZ9tvIa3JgnwFaoRCJh26wqMUeaDAT4j1EmW7yz5QEmuyA8j
-         v0NwofkN6ycaO2AtgryQSRcAkye7bMbnP+tMf8PAzPQ8iiJkM6jsxnmYIKXnTXrqxmgL
-         lLjQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=INgaBC2CtaXS91raCpnmI2DSX5HfMuIxr1e8xfCUBVE=;
+        b=ITvNHZ+JbWPmw2t0ZO1/2PFRqKp1Mdo3jbQfvWTS3s30ot46QvjJ5h8XaQBewtl5Hj
+         1GibPLjJTxKjtooLXeQ8l3KE85Ps6KFISltZAA9XqhwW38RP63XbjCL/FAw8CgTR3PEy
+         qCikQW8pbeq6S0ADmraWfTk9OEucbBoM+ILH8QfxCmCv7bpLmtFfkZimUVUBhhPnnCf3
+         k7WZuOqo0fk4wfEYfDEEyUAcVKf7cLoy8EbgO3SXePh84AdD1n/bOyZnWMHeq/tGXrPr
+         Lq8UdQ4NAcx3N4L8sFTEDUj6pQ67UmvAV1qeKEFQ6h/8+6qMD+jxqVZANarjnsSqiqQr
+         aSXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hQO4b2yNCZwtGggHaJW09jdb16yB4LZzWYfRXkA2rMM=;
-        b=avmD6SjLn82ExPiKGMaKIdv5mF9w0R1xii+AhHB9wmYTJuInsTE/x8bGJKOjnjWHFt
-         NVPF0M2UQIAYRs8gI3ZjPXe3FyRvGaWf5cJuvhYbsflPpDQeWayCFVVUgs/Lqcnt8/bC
-         WtSt8biFYLQ4f9Z4u8M8s3YwHo1BCE0DvD3YDP/xzKSa44LHUGbFXZW2Hf373U8F6gg2
-         Myq20x2g8I0BfraFhk2O0PeBN0O23v/dkHrmyLvila93OqaTvDKyorY8ZR4cWV66ktxJ
-         /f8JtHGAY0pQI7dnWlIF8Mq0SXPBZVUu4DiiLCZoswRiyuYOiGCLpVYLfAOb1bHwDKG/
-         PbLA==
-X-Gm-Message-State: AOAM531KQxa7p7iLNBVEY7tWXS7zkC9Fl11ZOBsbvvX/T6e62VwyNmkl
-        fzocDUZPtZD0jJtXI2V/qU8zueU3SiM=
-X-Google-Smtp-Source: ABdhPJyfp3GUr1Yr6gClI/pcemrCrk4oHQhWVCGKyIpF90tLJf2K4mRj6oJun6WNF7YY4c7xfWXcQw==
-X-Received: by 2002:aa7:c90a:: with SMTP id b10mr15023504edt.163.1602252710499;
-        Fri, 09 Oct 2020 07:11:50 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=INgaBC2CtaXS91raCpnmI2DSX5HfMuIxr1e8xfCUBVE=;
+        b=VN0PZCeBuhMWj2h3Cm4LlntZKDflWmJ9F6SufCKoPpTEwEw4XQmCiAzEvCrpUbUXe+
+         9QySUefoOAw7AfXc2QwImoPFUYjiR8dpv4GzdMsXaAFY1MKqMJMUhM/DqpLXgmnyPrOO
+         EmGw8ShsnAH/wfTrCE0X6yNYpuSSvOZHpT5K/rGrDM0zzhHPzszZ3VxsG4APG7vC85BF
+         dDhtWiW/AeT7eKLH8j0PdY6SgGk02EMYGCom7P1WLw7NvQZ8WrQtK+gtUDhka8g3kzLU
+         3wP3/mZSZULOfEONJw16sKe8DThP9oA283sM5qMAoN/ISkv4l3i6K9P+EPdTs+wqmVrR
+         CeKg==
+X-Gm-Message-State: AOAM532Q3IzCd9bNctxCWO9lrCnRg+RlmAO1u9RXhsEplrFSzHmc+DM5
+        klqNPXe2xQmemkmYdKoAC2YQ2gS5oXU=
+X-Google-Smtp-Source: ABdhPJzq2QpAJcHF21RP2pGv7Lmf0Uk38nX6CLa6sVSW1pHTWYICHMTeHkmWp4Er1bAGNEyRp87pCA==
+X-Received: by 2002:a50:e447:: with SMTP id e7mr11024605edm.263.1602252712302;
+        Fri, 09 Oct 2020 07:11:52 -0700 (PDT)
 Received: from xws.fritz.box (pd9e5a236.dip0.t-ipconnect.de. [217.229.162.54])
-        by smtp.gmail.com with ESMTPSA id a5sm6184108edl.6.2020.10.09.07.11.48
+        by smtp.gmail.com with ESMTPSA id a5sm6184108edl.6.2020.10.09.07.11.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 07:11:49 -0700 (PDT)
+        Fri, 09 Oct 2020 07:11:51 -0700 (PDT)
 From:   Maximilian Luz <luzmaximilian@gmail.com>
 To:     platform-driver-x86@vger.kernel.org
 Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
@@ -63,89 +63,136 @@ Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
         Benjamin Tissoires <benjamin.tissoires@redhat.com>,
         Chen Yu <yu.c.chen@intel.com>, linux-kernel@vger.kernel.org,
         Maximilian Luz <luzmaximilian@gmail.com>
-Subject: [PATCH v4 0/5] platform/surface: Create a platform subdirectory for Microsoft Surface devices
-Date:   Fri,  9 Oct 2020 16:11:23 +0200
-Message-Id: <20201009141128.683254-1-luzmaximilian@gmail.com>
+Subject: [PATCH v4 1/5] platform: Add Surface platform directory
+Date:   Fri,  9 Oct 2020 16:11:24 +0200
+Message-Id: <20201009141128.683254-2-luzmaximilian@gmail.com>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201009141128.683254-1-luzmaximilian@gmail.com>
+References: <20201009141128.683254-1-luzmaximilian@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As has come up in the discussion around
+It may make sense to split the Microsoft Surface hardware platform
+drivers out to a separate subdirectory, since some of it may be shared
+between ARM and x86 in the future (regarding devices like the Surface
+Pro X).
 
-  [RFC PATCH] Add support for Microsoft Surface System Aggregator Module
+Further, newer Surface devices will require additional platform drivers
+for fundamental support (mostly regarding their embedded controller),
+which may also warrant this split from a size perspective.
 
-it may make sense to add a Microsoft Surface specific platform
-subdirectory. Andy has suggested drivers/platform/surface for that.
-This series follows said suggestion and creates that subdirectory, as
-well as moves Microsoft Surface related drivers over to it and updates
-their MAINTAINERS entries (if available) accordingly.
+This commit introduces a new platform/surface subdirectory for the
+Surface device family, with subsequent commits moving existing Surface
+drivers over from platform/x86.
 
-This series does not modify any existing driver code, symbols, or help
-text.
+A new MAINTAINERS entry is added for this directory. Patches to files in
+this directory will be taken up by the platform-drivers-x86 team (i.e.
+Hans de Goede and Mark Gross) after they have been reviewed by
+Maximilian Luz.
 
-More details regarding maintainership can be found in
-
-  [PATCH v4 1/5] platform: Add Surface platform directory
-
-Thanks,
-Max
-
-Link to discussion:
-  https://lore.kernel.org/lkml/CAHp75Vfp86h38Rd-VEgER7ASADdmz5ymAkuHvD0Q6WPDqZBqHw@mail.gmail.com/
-
-Cc: Hans de Goede <hdegoede@redhat.com>
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+---
 
 Changes in v2:
- - Rebase onto linux-platform-drivers-x86/for-next to incorporate
-   changes in Maintainer file.
+ - Do not create a separate MAINTAINERS entry for platform/surface.
+   Instead add drivers/platform/surface to x86 platform drivers entry.
+   This incorporates recent changes in the x86 platform driver
+   MAINTAINERS entry.
+ - Fix typo in commit message.
 
 Changes in v3:
  - Add separate MAINTAINERS entry for platform/surface
  - Add Maximilian Luz as reviewer for platform/surface
 
 Changes in v4:
- - Rebase onto platform-drivers-x86/for-next.
- - Restructure MAINTAINERS entry and Kconfig option to be more similar
-   to platform/chrome.
+ - Rename MAINTAINERS entry to be similar to platform/chrome.
+ - Rename Kconfig options to be similar to platform/chrome
+   (PLATFORM -> PLATFORMS)
  - Drop placeholder comments.
 
-For more details regarding changes, refer to the individual patches.
-
-P.S: for Andy:
-  I have not added your Rb tag for 1 and 2 as I was not completely sure
-  that the changes are as you intended.
-
-Maximilian Luz (5):
-  platform: Add Surface platform directory
-  platform/surface: Move Surface 3 WMI driver to platform/surface
-  platform/surface: Move Surface 3 Button driver to platform/surface
-  platform/surface: Move Surface 3 Power OpRegion driver to
-    platform/surface
-  platform/surface: Move Surface Pro 3 Button driver to platform/surface
-
- MAINTAINERS                                   | 11 ++++-
- drivers/platform/Kconfig                      |  2 +
- drivers/platform/Makefile                     |  1 +
- drivers/platform/surface/Kconfig              | 49 +++++++++++++++++++
- drivers/platform/surface/Makefile             | 10 ++++
- .../platform/{x86 => surface}/surface3-wmi.c  |  0
- .../{x86 => surface}/surface3_button.c        |  0
- .../{x86 => surface}/surface3_power.c         |  0
- .../{x86 => surface}/surfacepro3_button.c     |  0
- drivers/platform/x86/Kconfig                  | 31 ------------
- drivers/platform/x86/Makefile                 |  6 ---
- 11 files changed, 72 insertions(+), 38 deletions(-)
+---
+ MAINTAINERS                       |  9 +++++++++
+ drivers/platform/Kconfig          |  2 ++
+ drivers/platform/Makefile         |  1 +
+ drivers/platform/surface/Kconfig  | 14 ++++++++++++++
+ drivers/platform/surface/Makefile |  5 +++++
+ 5 files changed, 31 insertions(+)
  create mode 100644 drivers/platform/surface/Kconfig
  create mode 100644 drivers/platform/surface/Makefile
- rename drivers/platform/{x86 => surface}/surface3-wmi.c (100%)
- rename drivers/platform/{x86 => surface}/surface3_button.c (100%)
- rename drivers/platform/{x86 => surface}/surface3_power.c (100%)
- rename drivers/platform/{x86 => surface}/surfacepro3_button.c (100%)
 
---
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 2a2170ff3a91..9fea3ce2db2d 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -11532,6 +11532,15 @@ F:	drivers/scsi/smartpqi/smartpqi*.[ch]
+ F:	include/linux/cciss*.h
+ F:	include/uapi/linux/cciss*.h
+ 
++MICROSOFT SURFACE HARDWARE PLATFORM SUPPORT
++M:	Hans de Goede <hdegoede@redhat.com>
++M:	Mark Gross <mgross@linux.intel.com>
++M:	Maximilian Luz <luzmaximilian@gmail.com>
++L:	platform-driver-x86@vger.kernel.org
++S:	Maintained
++T:	git git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git
++F:	drivers/platform/surface/
++
+ MICROSOFT SURFACE PRO 3 BUTTON DRIVER
+ M:	Chen Yu <yu.c.chen@intel.com>
+ L:	platform-driver-x86@vger.kernel.org
+diff --git a/drivers/platform/Kconfig b/drivers/platform/Kconfig
+index 971426bb4302..18fc6a08569e 100644
+--- a/drivers/platform/Kconfig
++++ b/drivers/platform/Kconfig
+@@ -13,3 +13,5 @@ source "drivers/platform/chrome/Kconfig"
+ source "drivers/platform/mellanox/Kconfig"
+ 
+ source "drivers/platform/olpc/Kconfig"
++
++source "drivers/platform/surface/Kconfig"
+diff --git a/drivers/platform/Makefile b/drivers/platform/Makefile
+index 6fda58c021ca..4de08ef4ec9d 100644
+--- a/drivers/platform/Makefile
++++ b/drivers/platform/Makefile
+@@ -9,3 +9,4 @@ obj-$(CONFIG_MIPS)		+= mips/
+ obj-$(CONFIG_OLPC_EC)		+= olpc/
+ obj-$(CONFIG_GOLDFISH)		+= goldfish/
+ obj-$(CONFIG_CHROME_PLATFORMS)	+= chrome/
++obj-$(CONFIG_SURFACE_PLATFORMS)	+= surface/
+diff --git a/drivers/platform/surface/Kconfig b/drivers/platform/surface/Kconfig
+new file mode 100644
+index 000000000000..b67926ece95f
+--- /dev/null
++++ b/drivers/platform/surface/Kconfig
+@@ -0,0 +1,14 @@
++# SPDX-License-Identifier: GPL-2.0-only
++#
++# Microsoft Surface Platform-Specific Drivers
++#
++
++menuconfig SURFACE_PLATFORMS
++	bool "Microsoft Surface Platform-Specific Device Drivers"
++	default y
++	help
++	  Say Y here to get to see options for platform-specific device drivers
++	  for Microsoft Surface devices. This option alone does not add any
++	  kernel code.
++
++	  If you say N, all options in this submenu will be skipped and disabled.
+diff --git a/drivers/platform/surface/Makefile b/drivers/platform/surface/Makefile
+new file mode 100644
+index 000000000000..3700f9e84299
+--- /dev/null
++++ b/drivers/platform/surface/Makefile
+@@ -0,0 +1,5 @@
++# SPDX-License-Identifier: GPL-2.0
++#
++# Makefile for linux/drivers/platform/surface
++# Microsoft Surface Platform-Specific Drivers
++#
+-- 
 2.28.0
 
