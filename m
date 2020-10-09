@@ -2,48 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFCC528822A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 08:35:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 390192882C0
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 08:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731918AbgJIGfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 02:35:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36370 "EHLO
+        id S1732369AbgJIGjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 02:39:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731845AbgJIGfO (ORCPT
+        with ESMTP id S1731857AbgJIGfQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 02:35:14 -0400
+        Fri, 9 Oct 2020 02:35:16 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95F11C0613D4;
-        Thu,  8 Oct 2020 23:35:14 -0700 (PDT)
-Date:   Fri, 09 Oct 2020 06:35:12 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D6E3C0613D2;
+        Thu,  8 Oct 2020 23:35:16 -0700 (PDT)
+Date:   Fri, 09 Oct 2020 06:35:13 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602225313;
+        s=2020; t=1602225314;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=9sd/ZRDtPyTAQwjxZNelfkdlun6QlT44m2PyrfOJN+o=;
-        b=e4j4eumJJY8hNlLa0RJD3/0iXBCazq/NmILpH0bWAc+6YQbakkDbXtQnySroALSZif+0zB
-        1h7eA2XKdoiZ5wPzM2sWXtBF1HmNv5VCSe0Y1PUS2qNxXjq0JE4Zj3yJTSSNU8wMlLLfiq
-        SWYRYOTLm1K0rYODv2ApjcDD2bw1BphPc4wKI5e4Qmly4v3NdGSKEoNTGZMcjVqt4mYh+I
-        N88Ab+gFMMlrwZWWbWgdRGbp5n5W1A+C4yeL3gvf5cS42CdICbpXgFaYhwXJBopFyIW84L
-        rcfySqBfINvdYwjEteu2g9/GsDoSLS3DrDvwdxyChd5/cG1diNvdtAK5GPLujw==
+        bh=YnwkJdBoLLT4OWV0dYyYZQ1jJAhnJHYTWLjAhHwZgvE=;
+        b=NaKyYFyjUjbl5x9h6FaFBmwadz/0cnO+VXjHe4YfOAyruLghBYf92LrlAA/KKloLLuGQDd
+        Rso4twM5IZLQzcedauGZ24n0zmRNschJrE01N4++ty+wvZG1WTL6+EoklAMW32I7kbP0pu
+        mVuN41/RdjGMF2am7MxiXocVlobvuiY+RG13iGdvXmfpbaBIYpsB/RZcRa9zke8sfLDO2n
+        ZMVl3QOB6/6TzSFupKRQTjiISjP49HtoqEOrrbWBiJkl+P+FwedwAs5oh3IRlOiqi7SfFe
+        rZQ/Y/Vk85aJR0v5MWMpevymdlqb77eUcPWOB29iHmfmfvXB3MZ6nQZgY6OUuQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602225313;
+        s=2020e; t=1602225314;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=9sd/ZRDtPyTAQwjxZNelfkdlun6QlT44m2PyrfOJN+o=;
-        b=lF/I3gPc2XTjAf2QDzjBli4UFGRGRmiIf+DLBfjKykMzy42nWbzK+sfbOeYZZ15NqXI+JH
-        2JF2jY8FUzTWj7BA==
+        bh=YnwkJdBoLLT4OWV0dYyYZQ1jJAhnJHYTWLjAhHwZgvE=;
+        b=qfhISFINYa0cRdiVt/Ryk+QEDNFTYyhU63/d2WldlaSHOS23whOZ0JKos1GgteP7CrYAwv
+        dp3KITj2nOfig3Dg==
 From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] rcutorture: Properly synchronize with OOM notifier
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
+Subject: [tip: core/rcu] rcutorture: Add CONFIG_PROVE_RCU_LIST to TREE05
+Cc:     Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <160222531245.7002.6514159583240984002.tip-bot2@tip-bot2>
+Message-ID: <160222531390.7002.3682274709500222618.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -54,83 +56,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     57f602022e82ee8fa6476d0e16ddbaf3eb86b245
-Gitweb:        https://git.kernel.org/tip/57f602022e82ee8fa6476d0e16ddbaf3eb86b245
+Commit-ID:     fc848cf4face352dce663c1fcc73717fba2d4557
+Gitweb:        https://git.kernel.org/tip/fc848cf4face352dce663c1fcc73717fba2d4557
 Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Mon, 20 Jul 2020 08:34:07 -07:00
+AuthorDate:    Tue, 14 Jul 2020 11:02:15 -07:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 24 Aug 2020 18:45:34 -07:00
+CommitterDate: Mon, 24 Aug 2020 18:45:33 -07:00
 
-rcutorture: Properly synchronize with OOM notifier
+rcutorture: Add CONFIG_PROVE_RCU_LIST to TREE05
 
-The current rcutorture forward-progress code assumes that it is the
-only cause of out-of-memory (OOM) events.  For script-based rcutorture
-testing, this assumption is in fact correct.  However, testing based
-on modprobe/rmmod might well encounter external OOM events, which could
-happen at any time.
+Currently, the CONFIG_PROVE_RCU_LIST=y case is untested.  This commit
+therefore adds CONFIG_PROVE_RCU_LIST=y to rcutorture's TREE05 scenario.
 
-This commit therefore properly synchronizes the interaction between
-rcutorture's forward-progress testing and its OOM notifier by adding a
-global mutex.
-
+Cc: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+Cc: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ tools/testing/selftests/rcutorture/configs/rcu/TREE05 | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 7942be4..2b3f04e 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -1796,6 +1796,7 @@ struct rcu_fwd {
- 	unsigned long rcu_launder_gp_seq_start;
- };
- 
-+static DEFINE_MUTEX(rcu_fwd_mutex);
- static struct rcu_fwd *rcu_fwds;
- static bool rcu_fwd_emergency_stop;
- 
-@@ -2062,8 +2063,14 @@ static void rcu_torture_fwd_prog_cr(struct rcu_fwd *rfp)
- static int rcutorture_oom_notify(struct notifier_block *self,
- 				 unsigned long notused, void *nfreed)
- {
--	struct rcu_fwd *rfp = rcu_fwds;
-+	struct rcu_fwd *rfp;
- 
-+	mutex_lock(&rcu_fwd_mutex);
-+	rfp = rcu_fwds;
-+	if (!rfp) {
-+		mutex_unlock(&rcu_fwd_mutex);
-+		return NOTIFY_OK;
-+	}
- 	WARN(1, "%s invoked upon OOM during forward-progress testing.\n",
- 	     __func__);
- 	rcu_torture_fwd_cb_hist(rfp);
-@@ -2081,6 +2088,7 @@ static int rcutorture_oom_notify(struct notifier_block *self,
- 	smp_mb(); /* Frees before return to avoid redoing OOM. */
- 	(*(unsigned long *)nfreed)++; /* Forward progress CBs freed! */
- 	pr_info("%s returning after OOM processing.\n", __func__);
-+	mutex_unlock(&rcu_fwd_mutex);
- 	return NOTIFY_OK;
- }
- 
-@@ -2148,7 +2156,9 @@ static int __init rcu_torture_fwd_prog_init(void)
- 		return -ENOMEM;
- 	spin_lock_init(&rfp->rcu_fwd_lock);
- 	rfp->rcu_fwd_cb_tail = &rfp->rcu_fwd_cb_head;
-+	mutex_lock(&rcu_fwd_mutex);
- 	rcu_fwds = rfp;
-+	mutex_unlock(&rcu_fwd_mutex);
- 	return torture_create_kthread(rcu_torture_fwd_prog, rfp, fwd_prog_task);
- }
- 
-@@ -2158,7 +2168,9 @@ static void rcu_torture_fwd_prog_cleanup(void)
- 
- 	torture_stop_kthread(rcu_torture_fwd_prog, fwd_prog_task);
- 	rfp = rcu_fwds;
-+	mutex_lock(&rcu_fwd_mutex);
- 	rcu_fwds = NULL;
-+	mutex_unlock(&rcu_fwd_mutex);
- 	kfree(rfp);
- }
- 
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE05 b/tools/testing/selftests/rcutorture/configs/rcu/TREE05
+index 2dde0d9..4f95f85 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/TREE05
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE05
+@@ -16,5 +16,6 @@ CONFIG_RCU_NOCB_CPU=y
+ CONFIG_DEBUG_LOCK_ALLOC=y
+ CONFIG_PROVE_LOCKING=y
+ #CHECK#CONFIG_PROVE_RCU=y
++CONFIG_PROVE_RCU_LIST=y
+ CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
+ CONFIG_RCU_EXPERT=y
