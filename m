@@ -2,130 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDBA72883DC
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 09:47:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E47282883E0
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 09:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732281AbgJIHrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 03:47:20 -0400
-Received: from mga02.intel.com ([134.134.136.20]:63788 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730797AbgJIHrT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 03:47:19 -0400
-IronPort-SDR: nWPmMEUqEHLQ6xHUOSl5OrUzZYDnMDlrsvwEmPipLjVwcX1oHFI6nrVVcHeDHukKhoY172Dacr
- xxormTos+DJw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="152375174"
-X-IronPort-AV: E=Sophos;i="5.77,354,1596524400"; 
-   d="scan'208";a="152375174"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 00:47:17 -0700
-IronPort-SDR: JkpgvC5hVfiOGpMTJ9Z+pcx0pm9FYnbnsWbOnWjQPUJnuGVSOMmvXY8v6BvOM0dUvoaRaWaKmm
- kHMrS8/kwhRg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,354,1596524400"; 
-   d="scan'208";a="312468081"
-Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.65])
-  by orsmga003.jf.intel.com with ESMTP; 09 Oct 2020 00:47:10 -0700
-From:   "Huang\, Ying" <ying.huang@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Rafael Aquini <aquini@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [PATCH] mm: Fix a race during split THP
-References: <20201009073647.1531083-1-ying.huang@intel.com>
-Date:   Fri, 09 Oct 2020 15:47:09 +0800
-In-Reply-To: <20201009073647.1531083-1-ying.huang@intel.com> (Ying Huang's
-        message of "Fri, 9 Oct 2020 15:36:47 +0800")
-Message-ID: <87blhb96yq.fsf@yhuang-dev.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        id S1732292AbgJIHrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 03:47:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729278AbgJIHrh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 03:47:37 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E72CC0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 00:47:37 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id m9so7252400qth.7
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 00:47:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UAiaW+93Fl44jRzXXS4wP2VkVubvR/5JY7dN1rt4R24=;
+        b=W2/Ti3kYbkEU5RKCfPrBtOvrhfe9cr5iuuAldgjQ7SvTctTZBqQB3etOoQUyfT1pjh
+         9uLIyPpE3dMy91CHV8oruvhojOvHgUTEGe0B1p52ndlkMEoY9sf9xwsZ8MwshknuqA4f
+         jpAFBR0c47xN5bTpItg86xQwUfhypUtNqWUPU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UAiaW+93Fl44jRzXXS4wP2VkVubvR/5JY7dN1rt4R24=;
+        b=NPk354q9vMnQqVXri7MTcdcRQe8h9ws7PsPXo8jn1eRq6nawPFzVxh9AGgCND2yCiu
+         MMHJ49F+O9eRuFMfQvq1H0gd3yPsMis3nD10i6ca3977w+dV0kMjCj/P0HVqefcM1PQg
+         4I4GH9UIaRSPv+YF1RJefUGQR2f803RaMWkNAr2J3PkOwTrmRwRdsrieDhOtQ3ptTxyM
+         F5N6q6P7npVGAb1dglTmhsIYxnfthvxC3lJjmDnMlePv/COshvFXAcLAvvEcD4PT1ChS
+         pzkSQbntBX2uv3proWCWZaCjsZd51I5yK+NQgJ+Uqnx6cGlmq6YN9eisQcPkWRvxBjXB
+         h64g==
+X-Gm-Message-State: AOAM530SG0j9WpQ8SJPJigo3j5RvIY8OT2s7CrI3dzgW7XtHm0i4J+16
+        RMYOvlKrRSvWjRElnj/jAU5/B0xLfIexKKM9BxrwWMtt
+X-Google-Smtp-Source: ABdhPJzaS4AsDvCUEmHGRC+WwFuD4vOUEpxsmXwUsmKQfLl5+lxXtC5MeHCenesLqwiwzmORkg0T9r/PACyAmMvdq7A=
+X-Received: by 2002:ac8:48ca:: with SMTP id l10mr12339910qtr.385.1602229656436;
+ Fri, 09 Oct 2020 00:47:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+References: <20200222235152.242816-1-megous@megous.com> <020e9eb5-4fdc-44d0-b00e-42b6e6435110@www.fastmail.com>
+In-Reply-To: <020e9eb5-4fdc-44d0-b00e-42b6e6435110@www.fastmail.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Fri, 9 Oct 2020 07:47:24 +0000
+Message-ID: <CACPK8Xd-o+5xA=T12yR6+gxmpvwkqi_VjU10MpsLVzh0e2dKnA@mail.gmail.com>
+Subject: Re: [PATCH] drm: aspeed: Fix GENMASK misuse
+To:     Andrew Jeffery <andrew@aj.id.au>
+Cc:     Ondrej Jirman <megous@megous.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM DRIVER FOR ASPEED BMC GFX" 
+        <linux-aspeed@lists.ozlabs.org>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Huang, Ying" <ying.huang@intel.com> writes:
+On Mon, 24 Feb 2020 at 00:06, Andrew Jeffery <andrew@aj.id.au> wrote:
+>
+>
+>
+> On Sun, 23 Feb 2020, at 10:21, Ondrej Jirman wrote:
+> > Arguments to GENMASK should be msb >= lsb.
+> >
+> > Signed-off-by: Ondrej Jirman <megous@megous.com>
+> > ---
+> > I just grepped the whole kernel tree for GENMASK argument order issues,
+> > and this is one of the three that popped up. No testing was done.
+>
+> I think someone's sent a patch previously, and last time it turned into a
+> discussion about how the macros aren't actually used and could be
+> removed.
+>
+> Regardless:
+>
+> Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
 
-> From: Huang Ying <ying.huang@intel.com>
->
-> It is reported that the following bug is triggered if the HDD is used as swap
-> device,
->
-> [ 5758.157556] BUG: kernel NULL pointer dereference, address: 0000000000000007
-> [ 5758.165331] #PF: supervisor write access in kernel mode
-> [ 5758.171161] #PF: error_code(0x0002) - not-present page
-> [ 5758.176894] PGD 0 P4D 0
-> [ 5758.179721] Oops: 0002 [#1] SMP PTI
-> [ 5758.183614] CPU: 10 PID: 316 Comm: kswapd1 Kdump: loaded Tainted: G S               --------- ---  5.9.0-0.rc3.1.tst.el8.x86_64 #1
-> [ 5758.196717] Hardware name: Intel Corporation S2600CP/S2600CP, BIOS SE5C600.86B.02.01.0002.082220131453 08/22/2013
-> [ 5758.208176] RIP: 0010:split_swap_cluster+0x47/0x60
-> [ 5758.213522] Code: c1 e3 06 48 c1 eb 0f 48 8d 1c d8 48 89 df e8 d0 20 6a 00 80 63 07 fb 48 85 db 74 16 48 89 df c6 07 00 66 66 66 90 31 c0 5b c3 <80> 24 25 07 00 00 00 fb 31 c0 5b c3 b8 f0 ff ff ff 5b c3 66 0f 1f
-> [ 5758.234478] RSP: 0018:ffffb147442d7af0 EFLAGS: 00010246
-> [ 5758.240309] RAX: 0000000000000000 RBX: 000000000014b217 RCX: ffffb14779fd9000
-> [ 5758.248281] RDX: 000000000014b217 RSI: ffff9c52f2ab1400 RDI: 000000000014b217
-> [ 5758.256246] RBP: ffffe00c51168080 R08: ffffe00c5116fe08 R09: ffff9c52fffd3000
-> [ 5758.264208] R10: ffffe00c511537c8 R11: ffff9c52fffd3c90 R12: 0000000000000000
-> [ 5758.272172] R13: ffffe00c51170000 R14: ffffe00c51170000 R15: ffffe00c51168040
-> [ 5758.280134] FS:  0000000000000000(0000) GS:ffff9c52f2a80000(0000) knlGS:0000000000000000
-> [ 5758.289163] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 5758.295575] CR2: 0000000000000007 CR3: 0000000022a0e003 CR4: 00000000000606e0
-> [ 5758.303538] Call Trace:
-> [ 5758.306273]  split_huge_page_to_list+0x88b/0x950
-> [ 5758.311433]  deferred_split_scan+0x1ca/0x310
-> [ 5758.316202]  do_shrink_slab+0x12c/0x2a0
-> [ 5758.320491]  shrink_slab+0x20f/0x2c0
-> [ 5758.324482]  shrink_node+0x240/0x6c0
-> [ 5758.328469]  balance_pgdat+0x2d1/0x550
-> [ 5758.332652]  kswapd+0x201/0x3c0
-> [ 5758.336157]  ? finish_wait+0x80/0x80
-> [ 5758.340147]  ? balance_pgdat+0x550/0x550
-> [ 5758.344525]  kthread+0x114/0x130
-> [ 5758.348126]  ? kthread_park+0x80/0x80
-> [ 5758.352214]  ret_from_fork+0x22/0x30
-> [ 5758.356203] Modules linked in: fuse zram rfkill sunrpc intel_rapl_msr intel_rapl_common sb_edac x86_pkg_temp_thermal intel_powerclamp coretemp mgag200 iTCO_wdt crct10dif_pclmul iTCO_vendor_support drm_kms_helper crc32_pclmul ghash_clmulni_intel syscopyarea sysfillrect sysimgblt fb_sys_fops cec rapl joydev intel_cstate ipmi_si ipmi_devintf drm intel_uncore i2c_i801 ipmi_msghandler pcspkr lpc_ich mei_me i2c_smbus mei ioatdma ip_tables xfs libcrc32c sr_mod sd_mod cdrom t10_pi sg igb ahci libahci i2c_algo_bit crc32c_intel libata dca wmi dm_mirror dm_region_hash dm_log dm_mod
-> [ 5758.412673] CR2: 0000000000000007
-> [    0.000000] Linux version 5.9.0-0.rc3.1.tst.el8.x86_64 (mockbuild@x86-vm-15.build.eng.bos.redhat.com) (gcc (GCC) 8.3.1 20191121 (Red Hat 8.3.1-5), GNU ld version 2.30-79.el8) #1 SMP Wed Sep 9 16:03:34 EDT 2020
->
-> After further digging it's found that the following race condition exists in the
-> original implementation,
->
-> CPU1                                                             CPU2
-> ----                                                             ----
-> deferred_split_scan()
->   split_huge_page(page) /* page isn't compound head */
->     split_huge_page_to_list(page, NULL)
->       __split_huge_page(page, )
->         ClearPageCompound(head)
->         /* unlock all subpages except page (not head) */
->                                                                  add_to_swap(head)  /* not THP */
->                                                                    get_swap_page(head)
->                                                                    add_to_swap_cache(head, )
->                                                                      SetPageSwapCache(head)
->      if PageSwapCache(head)
->        split_swap_cluster(/* swap entry of head */)
->          /* Deref sis->cluster_info: NULL accessing! */
->
-> So, in split_huge_page_to_list(), PageSwapCache() is called for the already
-> split and unlocked "head", which may be added to swap cache in another CPU.  So
-> split_swap_cluster() may be called wrongly.
->
-> To fix the race, the call to split_swap_cluster() is moved to
-> __split_huge_page() before all subpages are unlocked.  So that the
-> PageSwapCache() is stable.
->
-> Fixes: 59807685a7e77 ("mm, THP, swap: support splitting THP for THP swap out")
-> Reported-and-tested-by: Rafael Aquini <aquini@redhat.com>
-> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-> Cc: Hugh Dickins <hughd@google.com>
-> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Cc: Andrea Arcangeli <aarcange@redhat.com>
-
-Sorry, should have added
-
-Cc: stable@vger.kernel.org
-
-Best Regards,
-Huang, Ying
+Thanks, I've applied this to drm-misc-next. Apologies for the delay.
