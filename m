@@ -2,235 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F1D2887C0
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 13:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 242752887C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 13:23:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732581AbgJILTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 07:19:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:48404 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725908AbgJILTR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 07:19:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 021A5D6E;
-        Fri,  9 Oct 2020 04:19:16 -0700 (PDT)
-Received: from localhost (unknown [10.1.199.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 970063F66B;
-        Fri,  9 Oct 2020 04:19:15 -0700 (PDT)
-Date:   Fri, 9 Oct 2020 12:19:14 +0100
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        daniel.lezcano@linaro.org, amitk@kernel.org,
-        Dietmar.Eggemann@arm.com
-Subject: Re: [PATCH v2 2/2] thermal: power allocator: change how estimation
- code is called
-Message-ID: <20201009111906.GA5207@arm.com>
-References: <20201008170426.465-1-lukasz.luba@arm.com>
- <20201008170426.465-3-lukasz.luba@arm.com>
+        id S2388061AbgJILXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 07:23:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23972 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732637AbgJILXj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 07:23:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602242617;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WJdri2oZoNVHxIAcqLLd1XqQYsP87sfa6ccUO/06Bx8=;
+        b=I7GpRWv4Zzfgdkzg++YdC4AHjWxrUMLWCX+WmqBcZ6cEaCLXiYNFAQHSAMCdox2WFdABut
+        V3TsAts78n+kSYSUOUqAAHsNk+Sf4dp5iT8hjcDjFZTp54fdY3NlXxMgnjSxHk6rkVxW1A
+        OvKMX+7rlXEEG/biTpPYgVL+32ufskM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-405-UloWVlHdOoWuW2NlJ9hzUw-1; Fri, 09 Oct 2020 07:23:33 -0400
+X-MC-Unique: UloWVlHdOoWuW2NlJ9hzUw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B079D80401F;
+        Fri,  9 Oct 2020 11:23:31 +0000 (UTC)
+Received: from krava (unknown [10.40.195.10])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 19B2F75124;
+        Fri,  9 Oct 2020 11:23:27 +0000 (UTC)
+Date:   Fri, 9 Oct 2020 13:23:27 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Vasily Gorbik <gor@linux.ibm.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: [PATCH 1/1] perf build: Allow nested externs to enable
+ BUILD_BUG() usage
+Message-ID: <20201009112327.GC656950@krava>
+References: <20201009152846.072e6bbf@canb.auug.org.au>
+ <cover.thread-d92c35.your-ad-here.call-01602224864-ext-8734@work.hours>
+ <patch-1.thread-d92c35.git-d92c35ca4748.your-ad-here.call-01602224864-ext-8734@work.hours>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201008170426.465-3-lukasz.luba@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <patch-1.thread-d92c35.git-d92c35ca4748.your-ad-here.call-01602224864-ext-8734@work.hours>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lukasz,
-
-On Thursday 08 Oct 2020 at 18:04:26 (+0100), Lukasz Luba wrote:
-> The sustainable power value might come from the Device Tree or can be
-> estimated in run time. There is no need to estimate every time when the
-> governor is called and temperature is high. Instead, store the estimated
-> value and make it available via standard sysfs interface so it can be
-> checked from the user-space. Re-invoke the estimation only in case the
-> sustainable power was set to 0. Apart from that the PID coefficients
-> are not going to be force updated thus can better handle sysfs settings.
+On Fri, Oct 09, 2020 at 08:47:45AM +0200, Vasily Gorbik wrote:
+> Currently BUILD_BUG() macro is expanded to smth like the following:
+>    do {
+>            extern void __compiletime_assert_0(void)
+>                    __attribute__((error("BUILD_BUG failed")));
+>            if (!(!(1)))
+>                    __compiletime_assert_0();
+>    } while (0);
 > 
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> If used in a function body this obviously would produce build errors
+> with -Wnested-externs and -Werror.
+> 
+> To enable BUILD_BUG() usage in tools/arch/x86/lib/insn.c which perf
+> includes in intel-pt-decoder, build perf without -Wnested-externs.
+> 
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 > ---
->  drivers/thermal/gov_power_allocator.c | 56 +++++++++++++--------------
->  1 file changed, 26 insertions(+), 30 deletions(-)
+>  tools/perf/Makefile.config | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
-> index aa35aa6c561c..1ad8d9c2685f 100644
-> --- a/drivers/thermal/gov_power_allocator.c
-> +++ b/drivers/thermal/gov_power_allocator.c
-> @@ -96,6 +96,9 @@ static u32 estimate_sustainable_power(struct thermal_zone_device *tz)
->  		if (instance->trip != params->trip_max_desired_temperature)
->  			continue;
+> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+> index 190be4fa5c21..8137a6046a47 100644
+> --- a/tools/perf/Makefile.config
+> +++ b/tools/perf/Makefile.config
+> @@ -16,7 +16,7 @@ $(shell printf "" > $(OUTPUT).config-detected)
+>  detected     = $(shell echo "$(1)=y"       >> $(OUTPUT).config-detected)
+>  detected_var = $(shell echo "$(1)=$($(1))" >> $(OUTPUT).config-detected)
 >  
-> +		if (!cdev_is_power_actor(cdev))
-> +			continue;
-> +
->  		if (cdev->ops->state2power(cdev, tz, instance->upper,
->  					   &min_power))
->  			continue;
-> @@ -109,31 +112,28 @@ static u32 estimate_sustainable_power(struct thermal_zone_device *tz)
->  /**
->   * estimate_pid_constants() - Estimate the constants for the PID controller
-      ^^^^^^^^^^^^^^^^^^^^^^
-      estimate_tzp_constants()?
+> -CFLAGS := $(EXTRA_CFLAGS) $(EXTRA_WARNINGS)
+> +CFLAGS := $(EXTRA_CFLAGS) $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
 
-When called in pid_controller() it feels strange that we check for
-sustainable_power, then we call estimate_pid_constants() and then we
-magically have an non-zero sustainable_power. Therefore, it would be
-good to change the name to indicate it's not only the PID constants that
-are estimated.
+looks good, but I can't apply the patch with 'git am'
 
->   * @tz:		thermal zone for which to estimate the constants
-> - * @sustainable_power:	sustainable power for the thermal zone
->   * @trip_switch_on:	trip point number for the switch on temperature
->   * @control_temp:	target temperature for the power allocator governor
-> - * @force:	whether to force the update of the constants
->   *
->   * This function is used to update the estimation of the PID
->   * controller constants in struct thermal_zone_parameters.
+	Applying: perf build: Allow nested externs to enable BUILD_BUG() usage
+	error: patch failed: tools/perf/Makefile.config:16
+	error: tools/perf/Makefile.config: patch does not apply
+	Patch failed at 0001 perf build: Allow nested externs to enable BUILD_BUG() usage
+	hint: Use 'git am --show-current-patch=diff' to see the failed patch
+	When you have resolved this problem, run "git am --continue".
+	If you prefer to skip this patch, run "git am --skip" instead.
+	To restore the original branch and stop patching, run "git am --abort".
 
-How about replacing this with: 
+I wonder it's that picture at the bottom ;-)
 
-"""
- * This function is used to estimate the sustainable power and PID controller
- * constants in struct thermal_zone_parameters. These estimations will then be
- * available in sysfs.
-"""
+jirka
 
-> - * Sustainable power is provided in case it was estimated.  The
-> - * estimated sustainable_power should not be stored in the
-> - * thermal_zone_parameters so it has to be passed explicitly to this
-> - * function.
-> - *
-> - * If @force is not set, the values in the thermal zone's parameters
-> - * are preserved if they are not zero.  If @force is set, the values
-> - * in thermal zone's parameters are overwritten.
-> + * Sustainable power is going to be estimated in case it is 0.
->   */
->  static void estimate_pid_constants(struct thermal_zone_device *tz,
-> -				   u32 sustainable_power, int trip_switch_on,
-> -				   int control_temp, bool force)
-> +				   int trip_switch_on, int control_temp)
->  {
-> -	int ret;
-> -	int switch_on_temp;
-> +	u32 sustainable_power = tz->tzp->sustainable_power;
->  	u32 temperature_threshold;
-> +	int switch_on_temp;
-> +	int ret;
->  	s32 k_i;
+
 >  
-> +	if (!sustainable_power) {
-> +		sustainable_power = estimate_sustainable_power(tz);
-> +		/* Make the estimation available in sysfs */
-
-I would remove this comment from here. The reason is that this is not a
-special case. This will happen for all the tzp parameters set below.
-That's why I suggested adding this to the overall function comment above.
-
-> +		tz->tzp->sustainable_power = sustainable_power;
-> +	}
-> +
->  	ret = tz->ops->get_trip_temp(tz, trip_switch_on, &switch_on_temp);
->  	if (ret)
->  		switch_on_temp = 0;
-> @@ -150,15 +150,15 @@ static void estimate_pid_constants(struct thermal_zone_device *tz,
->  	if (!temperature_threshold)
->  		return;
+>  include $(srctree)/tools/scripts/Makefile.arch
 >  
-> -	if (!tz->tzp->k_po || force)
-> +	if (!tz->tzp->k_po)
->  		tz->tzp->k_po = int_to_frac(sustainable_power) /
->  			temperature_threshold;
->  
-> -	if (!tz->tzp->k_pu || force)
-> +	if (!tz->tzp->k_pu)
->  		tz->tzp->k_pu = int_to_frac(2 * sustainable_power) /
->  			temperature_threshold;
->  
-> -	if (!tz->tzp->k_i || force) {
-> +	if (!tz->tzp->k_i) {
->  		k_i = tz->tzp->k_pu / 10;
->  		tz->tzp->k_i = k_i > 0 ? k_i : 1;
->  	}
-
-(Possibly judgement call)
-
-I agree we don't need the force argument to this function, but I would
-still keep an internal force variable (default false) to be set to true
-when we estimate and set the sustainable power.
-
-The reason for this is that there is no guarantee that when
-sustainable_power is found to be 0 and estimated, we'll then find all of
-the PID constants 0 as well in order to set them to a sane default.
-Basically my worry is that we'll end up with a combination of PID
-constants and sustainable power (some estimated and some not) that is not
-quite sane.
-
-But I understand a potential usecase in which a user might want to set
-it's own PID constants while wanting an estimated sustainable_power.
-But for this do you think it might be worth just having a pr_info
-message saying that "Sustainable power is 0; will estimate sustainable
-power and PID constants."? For this the user would only have to know
-that they need to set the sustainable_power to 0 first and then
-populate its own PID constants if they want to.
-
-> @@ -198,14 +198,11 @@ static u32 pid_controller(struct thermal_zone_device *tz,
->  
->  	max_power_frac = int_to_frac(max_allocatable_power);
->  
-> -	if (tz->tzp->sustainable_power) {
-> -		sustainable_power = tz->tzp->sustainable_power;
-> -	} else {
-> -		sustainable_power = estimate_sustainable_power(tz);
-> -		estimate_pid_constants(tz, sustainable_power,
-> -				       params->trip_switch_on, control_temp,
-> -				       true);
-> -	}
-> +	if (!tz->tzp->sustainable_power)
-> +		estimate_pid_constants(tz, params->trip_switch_on,
-> +				       control_temp);
-> +
-> +	sustainable_power = tz->tzp->sustainable_power;
->  
-
-(Nit)
-
-This is only used once below in:
-power_range = sustainable_power + frac_to_int(power_range);
-
-I think we can use tz->tzp->sustainable_power directly there and
-completely remove sustainable_power.
-
-Thank you,
-Ionela.
-
->  	err = control_temp - tz->temperature;
->  	err = int_to_frac(err);
-> @@ -603,20 +600,19 @@ static int power_allocator_bind(struct thermal_zone_device *tz)
->  
->  	get_governor_trips(tz, params);
->  
-> +	tz->governor_data = params;
-> +
->  	if (tz->trips > 0) {
->  		ret = tz->ops->get_trip_temp(tz,
->  					params->trip_max_desired_temperature,
->  					&control_temp);
->  		if (!ret)
-> -			estimate_pid_constants(tz, tz->tzp->sustainable_power,
-> -					       params->trip_switch_on,
-> -					       control_temp, false);
-> +			estimate_pid_constants(tz, params->trip_switch_on,
-> +					       control_temp);
->  	}
->  
->  	reset_pid_controller(params);
->  
-> -	tz->governor_data = params;
-> -
->  	return 0;
->  
->  free_params:
 > -- 
-> 2.17.1
-> 
+> ⣿⣿⣿⣿⢋⡀⣀⠹⣿⣿⣿⣿
+> ⣿⣿⣿⣿⠠⣶⡦⠀⣿⣿⣿⣿
+> ⣿⣿⣿⠏⣴⣮⣴⣧⠈⢿⣿⣿
+> ⣿⣿⡏⢰⣿⠖⣠⣿⡆⠈⣿⣿
+> ⣿⢛⣵⣄⠙⣶⣶⡟⣅⣠⠹⣿
+> ⣿⣜⣛⠻⢎⣉⣉⣀⠿⣫⣵⣿
+
