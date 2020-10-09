@@ -2,182 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE792889E0
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 15:33:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A1B32889E7
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 15:37:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731743AbgJINdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 09:33:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43676 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727737AbgJINdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 09:33:50 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E5225AC3F;
-        Fri,  9 Oct 2020 13:33:47 +0000 (UTC)
-Message-ID: <7b030a00d866f869acb4dea729df5fc93d561558.camel@suse.de>
-Subject: Re: [PATCH 1/4] of/fdt: Update zone_dma_bits when running in bcm2711
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        iommu@lists.linux-foundation.org, Rob Herring <robh+dt@kernel.org>,
-        linux-rpi-kernel@lists.infradead.org,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Robin Murphy <robin.murphy@arm.com>
-Date:   Fri, 09 Oct 2020 15:33:46 +0200
-In-Reply-To: <CAMj1kXGP_OTKgqMT0-+t3=7EKDY26y9n9xjLodSF1E-mUCe9tg@mail.gmail.com>
-References: <20201001161740.29064-1-nsaenzjulienne@suse.de>
-         <20201001161740.29064-2-nsaenzjulienne@suse.de>
-         <20201001171500.GN21544@gaia> <20201001172320.GQ21544@gaia>
-         <b47232e2173e9e5ddf8f5be4c7b5a2f897f34eb7.camel@suse.de>
-         <20201002115541.GC7034@gaia>
-         <12f33d487eabd626db4c07ded5a1447795eed355.camel@suse.de>
-         <20201009071013.GA12208@lst.de>
-         <CAMj1kXG+7Lq=rgUfyU_XS9LrJwpUiC8nKsRPom+R0=phuXioHQ@mail.gmail.com>
-         <513833810c15b5efeab7c3cbae1963a78c71a79f.camel@suse.de>
-         <CAMj1kXGP_OTKgqMT0-+t3=7EKDY26y9n9xjLodSF1E-mUCe9tg@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-QKDQqezONyqKzfC6bWKQ"
-User-Agent: Evolution 3.36.5 
+        id S1732021AbgJINha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 09:37:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48967 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731678AbgJINh3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 09:37:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602250645;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=x1qsye1PzZJmVZ4NeMP08Jte5iTc9p8avnaZ06vt4hA=;
+        b=SLRHN8EBfcb4hEUg8w/g53FbJTUwmEyABFE0x1u8KeY6mRaJXrGTcVnciQbV9fSFJh6BWZ
+        rDrmSs29UPyv5W7grhk7lCluLS18YlIyBjdPiHs3G/Wg5SqUHqBRYiBRM9qQK9nZ4J5E7g
+        VAzMGV5ksbuRQeg9aocfJlWqgVLRr7E=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-220-pGyVKoYQPZWi-E-Lwi__NA-1; Fri, 09 Oct 2020 09:37:23 -0400
+X-MC-Unique: pGyVKoYQPZWi-E-Lwi__NA-1
+Received: by mail-ej1-f70.google.com with SMTP id x12so3601707eju.22
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 06:37:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=x1qsye1PzZJmVZ4NeMP08Jte5iTc9p8avnaZ06vt4hA=;
+        b=ccoTPa7tEX2rK4Vl9X2Gyj/eAHcvpSQ84IVyUgteoZIhExu3I4aYFKlCpkpzd+RfCq
+         nlybx3jlnmXk2a+0DnH2hdlrF1QvPPznfvA0lpAD9m1I+CW5Z4y0cgrgA8HcnITNQOQb
+         Kne20wr+ZYcUaaCVyJsieEFuLKpOQZBnb/Vt9jUKbyez0HC8sM2jmLWlrRJvWVVYp8u1
+         8LVQrbgA4i0YLVO3n4+O5ynOocASwp+V90uLAS2XZ8IvRfIQD2WJbGy/ljntraYZWzPC
+         L540MiUrIThOdhb4McAJ2O5Sr8CqPayXHoTXG1naRyuoN+HZzZ3ykKrvhxWargiMn+r8
+         0S/A==
+X-Gm-Message-State: AOAM533h2UXr2ONZxQ5GjnFe2lWymFLXO9fhBGhxsrfGsMoZBNyBLM9l
+        Ccz0Bm+yKqLynwKK/J1RbMCfcdpwvL9B081K+aICW/yCP+IGhNlFmN5/DB3Zmf8Yun9qF9c9miw
+        hIO8IBaBCzSOA68LkXu3NZzYy
+X-Received: by 2002:a17:907:1042:: with SMTP id oy2mr13804210ejb.64.1602250642190;
+        Fri, 09 Oct 2020 06:37:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyjDRASl1SrPHlItgzc579TQKOKrfxm53XFwA9vXZ7WeJVfCVMdKa3NAHVVi+JadU/McrwRPw==
+X-Received: by 2002:a17:907:1042:: with SMTP id oy2mr13804186ejb.64.1602250641942;
+        Fri, 09 Oct 2020 06:37:21 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id cz11sm6138649edb.62.2020.10.09.06.37.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Oct 2020 06:37:21 -0700 (PDT)
+Subject: Re: [PATCH V6 RESEND] HID: ASUS: Add support for ASUS N-Key keyboard
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Mark Gross <mgross@linux.intel.com>
+Cc:     Luke D Jones <luke@ljones.dev>, benjamin.tissoires@redhat.com,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+References: <20200923215633.209724-1-luke@ljones.dev>
+ <nycvar.YFH.7.76.2010091137510.3336@cbobk.fhfr.pm>
+ <20201009131435.GF4077@smile.fi.intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <46e870fa-ff64-73ca-9979-32c8a1b5b12a@redhat.com>
+Date:   Fri, 9 Oct 2020 15:37:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20201009131435.GF4077@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---=-QKDQqezONyqKzfC6bWKQ
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On 10/9/20 3:14 PM, Andy Shevchenko wrote:
+> On Fri, Oct 09, 2020 at 11:38:55AM +0200, Jiri Kosina wrote:
+>> On Thu, 24 Sep 2020, Luke D Jones wrote:
+>>
+>>> The ASUS N-Key keyboard uses the productId of 0x1866 and is used in
+>>> almost all modern ASUS gaming laptops with slight changes to the
+>>> firmware. This patch enables: Fn+key hotkeys, keyboard backlight
+>>> brightness control, and notify asus-wmi to toggle "fan-mode".
+>>>
+>>> The keyboard has many of the same key outputs as the existing G752
+>>> keyboard including a few extras, and varies a little between laptop
+>>> models. The key-sets have been split and sub-grouped so that there
+>>> will not be conflict between key event codes used.
+>>>
+>>> An existing key event used across some keyboards for "Mic Toggle"
+>>> has been changed to emit "F20" as this is what all the main
+>>> desktop environments are using.
+>>>
+>>> Additionally this keyboard requires the LED interface to be
+>>> intitialised before such things as keyboard backlight control work.
+>>>
+>>> Misc changes in scope: update some hardcoded comparisons to use an
+>>> available define.
+>>>
+>>> Signed-off-by: Luke D Jones <luke@ljones.dev>
+>>
+>> Thanks for the patch. Looks good to me in general, one small nit before
+>> this can be merged as a whole ...
+>>
+>>> ---
+>>>   drivers/hid/hid-asus.c                     | 188 ++++++++++++++++++---
+>>>   drivers/hid/hid-ids.h                      |   1 +
+>>>   include/linux/platform_data/x86/asus-wmi.h |   2 +
+>>
+>> ... I'd like to get Ack from Andy (CCing) on the addition below to
+>> asus-wmi.h.
+> 
+> There is a new sheriff in town (Hans and Mark).
+> My personal opinion it is good to go.
+> 
+> Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-On Fri, 2020-10-09 at 11:13 +0200, Ard Biesheuvel wrote:
-> On Fri, 9 Oct 2020 at 10:36, Nicolas Saenz Julienne
-> <nsaenzjulienne@suse.de> wrote:
-> > On Fri, 2020-10-09 at 09:37 +0200, Ard Biesheuvel wrote:
-> > > On Fri, 9 Oct 2020 at 09:11, Christoph Hellwig <hch@lst.de> wrote:
-> > > > On Thu, Oct 08, 2020 at 12:05:25PM +0200, Nicolas Saenz Julienne wr=
-ote:
-> > > > > Sadly I just realised that the series is incomplete, we have RPi4=
- users that
-> > > > > want to boot unsing ACPI, and this series would break things for =
-them. I'll
-> > > > > have a word with them to see what we can do for their use-case.
-> > > >=20
-> > > > Stupid question:  why do these users insist on a totally unsuitable
-> > > > interface? And why would we as Linux developers care to support suc=
-h
-> > > > a aims?
-> > >=20
-> > > The point is really whether we want to revert changes in Linux that
-> > > made both DT and ACPI boot work without quirks on RPi4.
-> >=20
-> > Well, and broke a big amount of devices that were otherwise fine.
-> >=20
->=20
-> Yeah that was unfortunate.
->=20
-> > > Having to check the RPi4 compatible string or OEM id in core init cod=
-e is
-> > > awful, regardless of whether you boot via ACPI or via DT.
-> > >=20
-> > > The problem with this hardware is that it uses a DMA mask which is
-> > > narrower than 32, and the arm64 kernel is simply not set up to deal
-> > > with that at all. On DT, we have DMA ranges properties and the likes
-> > > to describe such limitations, on ACPI we have _DMA methods as well as
-> > > DMA range attributes in the IORT, both of which are now handled
-> > > correctly. So all the information is there, we just have to figure ou=
-t
-> > > how to consume it early on.
-> >=20
-> > Is it worth the effort just for a single board? I don't know about ACPI=
- but
-> > parsing dma-ranges that early at boot time is not trivial. My intuition=
- tells
-> > me that it'd be even harder for ACPI, being a more complex data structu=
-re.
-> >=20
->=20
-> Yes, it will be harder, especially for the _DMA methods.
->=20
-> > > Interestingly, this limitation always existed in the SoC, but it
-> > > wasn't until they started shipping it with more than 1 GB of DRAM tha=
-t
-> > > it became a problem. This means issues like this could resurface in
-> > > the future with existing SoCs when they get shipped with more memory,
-> > > and so I would prefer fixing this in a generic way.
-> >=20
-> > Actually what I proposed here is pretty generic. Specially from arm64's
-> > perspective. We call early_init_dt_scan(), which sets up zone_dma_bits =
-based on
-> > whatever it finds in DT. Both those operations are architecture indepen=
-dent.
-> > arm64 arch code doesn't care about the logic involved in ascertaining
-> > zone_dma_bits. I get that the last step isn't generic. But it's all set=
-up so as
-> > to make it as such whenever it's worth the effort.
-> >=20
->=20
-> The problem is that, while we are providing a full description of the
-> SoC's capabilities, we short circuit this by inserting knowledge into
-> the code (that is shared between all DT architectures) that
-> "brcm,bcm2711" is special, and needs a DMA zone override.
-
-Yes I understand this and I sympathize with it, not the most beautiful thin=
-g
-out there :). But that's only half the issue, as I said, implementing this
-early at boot time is a tangible amount of work and a burden to maintain ju=
-st
-for one board. So this is the compromise we discussed with the DT maintaine=
-r
-(RobH). The series sets things up so as to be able to implement the right
-thing transparently to arm64's architecture when deemed worth the effort.
-
-Ultimately, if you're worried about inserting knowledge into the code, aren=
-'t
-we doing that, in a more extreme way, when imposing an extra unwarranted zo=
-ne
-to the whole arm64 ecosystem?
-
-Note that I'm more that happy to work on alternative solutions, but let's f=
-irst
-settle on what would be acceptable to everyone.
-
-> I think for ACPI boot, we might be able to work around this by cold
-> plugging the memory above 1 GB, but I have to double check whether it
-> won't get pulled into ZONE_DMA32 anyway (unless anyone can answer that
-> for me here from the top of their head)
-
-Don't know much about what ACPI memory cold plugging involves, but we'll st=
-ill
-need a proper ZONE_DMA32 (i.e. spanning the whole 32-bit address space) for
-RPi4.
+I'm afraid that a quick review by me has found multiple issues with
+this patch. I'm going to take a quick break now, I'll email a
+detailed review after that.
 
 Regards,
-Nicolas
+
+Hans
 
 
---=-QKDQqezONyqKzfC6bWKQ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl+AZroACgkQlfZmHno8
-x/5PlQf+P8QLXrJShl8jG/06exIg90GTMkjn9WMCdvUp6fq+rQCD/XEZW+RmqybB
-4hu4TrASI2evkAQUhOw3BuyxEblsrWJrM7ySV9t2bOIAQ+XP4/UVVDg+PP4z310h
-QCVHOSyB9OeKVgPMyrm16+Eb8C+cpHIP29TCjTbP/0hiJEWkIzrJE+h+9Vl/JNMs
-WBQmbxIzUZK8GlivpqbkbHXaPyo2Fa+Yf4NB/JJB11nRwLrFsA2Ka6yyu0ZVp/CF
-gZ2nu1pm9P4DVwpaTrqEdB7g4ghRjHjWH7qxYNLQPm98gB0LZjHrZSXm4sL3pBt3
-ZOjgS3QZ6gYgCZIwChD3fk/qcqtRXw==
-=tHjf
------END PGP SIGNATURE-----
-
---=-QKDQqezONyqKzfC6bWKQ--
+> 
+>> [ ... snip ... ]
+>>> diff --git a/include/linux/platform_data/x86/asus-wmi.h b/include/linux/platform_data/x86/asus-wmi.h
+>>> index 897b8332a39f..05253cfe786c 100644
+>>> --- a/include/linux/platform_data/x86/asus-wmi.h
+>>> +++ b/include/linux/platform_data/x86/asus-wmi.h
+>>> @@ -27,6 +27,8 @@
+>>>   #define ASUS_WMI_METHODID_INIT		0x54494E49 /* INITialize */
+>>>   #define ASUS_WMI_METHODID_HKEY		0x59454B48 /* Hot KEY ?? */
+>>>
+>>> +#define ASUS_WMI_METHODID_NOTIF		0x00100021 /* Notify method ?? */
+>>> +
+>>>   #define ASUS_WMI_UNSUPPORTED_METHOD	0xFFFFFFFE
+>>>
+>>>   /* Wireless */
+> 
 
