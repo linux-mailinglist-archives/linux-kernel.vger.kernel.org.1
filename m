@@ -2,200 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C69C288655
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 11:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFE7428865C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 11:50:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733256AbgJIJsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 05:48:00 -0400
-Received: from mga09.intel.com ([134.134.136.24]:44973 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733239AbgJIJr7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 05:47:59 -0400
-IronPort-SDR: TT5eHq9C9NfcP3rTT4Lx/9biR7QcRrZnSVekCQ7QtdeIJSOO8fRk30zJcwBUnEvVg79MdnKxCQ
- Tgfne2NKF2Hg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="165579189"
-X-IronPort-AV: E=Sophos;i="5.77,354,1596524400"; 
-   d="scan'208";a="165579189"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 02:47:57 -0700
-IronPort-SDR: pPywwhoQ8IZ0oqnSyAy7Si9u7fhcqFsuiRTRfdjMWfQODPzT5+PsDTX8QsBMudIyk2KOf3VcKr
- TS88VD5e6ZZA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,354,1596524400"; 
-   d="scan'208";a="298385120"
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
-  by fmsmga008.fm.intel.com with SMTP; 09 Oct 2020 02:47:51 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Fri, 09 Oct 2020 12:47:50 +0300
-Date:   Fri, 9 Oct 2020 12:47:50 +0300
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-s390@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Kees Cook <keescook@chromium.org>, kvm@vger.kernel.org,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH v2 17/17] drm/i915: Properly request PCI BARs
-Message-ID: <20201009094750.GQ6112@intel.com>
-References: <20201009075934.3509076-1-daniel.vetter@ffwll.ch>
- <20201009075934.3509076-18-daniel.vetter@ffwll.ch>
+        id S1733263AbgJIJuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 05:50:04 -0400
+Received: from smtp-8faf.mail.infomaniak.ch ([83.166.143.175]:39463 "EHLO
+        smtp-8faf.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725917AbgJIJuE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 05:50:04 -0400
+Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4C73G20ms8zlhJG2;
+        Fri,  9 Oct 2020 11:50:02 +0200 (CEST)
+Received: from ns3096276.ip-94-23-54.eu (unknown [94.23.54.103])
+        by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4C73G12Gytzllmh6;
+        Fri,  9 Oct 2020 11:50:01 +0200 (CEST)
+Subject: Re: [PATCH v1] dm verity: Add support for signature verification with
+ 2nd keyring
+To:     Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@redhat.com>
+Cc:     Deven Bowers <deven.desai@linux.microsoft.com>,
+        Jaskaran Khurana <jaskarankhurana@linux.microsoft.com>,
+        Milan Broz <gmazyland@gmail.com>, dm-devel@redhat.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
+References: <20201002071802.535023-1-mic@digikod.net>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <bda2ffd7-3b7c-33a4-667f-a3435e112fc1@digikod.net>
+Date:   Fri, 9 Oct 2020 11:50:03 +0200
+User-Agent: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <20201002071802.535023-1-mic@digikod.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201009075934.3509076-18-daniel.vetter@ffwll.ch>
-X-Patchwork-Hint: comment
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 09:59:34AM +0200, Daniel Vetter wrote:
-> When trying to test my CONFIG_IO_STRICT_DEVMEM changes I realized they
-> do nothing for i915. Because i915 doesn't request any regions, like
-> pretty much all drm pci drivers. I guess this is some very old
-> remnants from the userspace modesetting days, when we wanted to
-> co-exist with the fbdev driver. Which usually requested these
-> resources.
+Hi,
+
+What do you think about this patch?
+
+Regards,
+ MickaÃ«l
+
+On 02/10/2020 09:18, MickaÃ«l SalaÃ¼n wrote:
+> From: MickaÃ«l SalaÃ¼n <mic@linux.microsoft.com>
 > 
-> But makes me wonder why the pci subsystem doesn't just request
-> resource automatically when we map a bar and a pci driver is bound?
+> Add a new DM_VERITY_VERIFY_ROOTHASH_SIG_SECONDARY_KEYRING configuration
+> to enable dm-verity signatures to be verified against the secondary
+> trusted keyring.  This allows certificate updates without kernel update
+> and reboot, aligning with module and kernel (kexec) signature
+> verifications.
 > 
-> Knowledge about which pci bars we need kludged together from
-> intel_uncore.c and intel_gtt.c from i915 and intel-gtt.c over in the
-> fake agp driver.
-> 
-> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: John Hubbard <jhubbard@nvidia.com>
-> Cc: Jérôme Glisse <jglisse@redhat.com>
-> Cc: Jan Kara <jack@suse.cz>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: linux-mm@kvack.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-samsung-soc@vger.kernel.org
-> Cc: linux-media@vger.kernel.org
-> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: linux-pci@vger.kernel.org
+> Signed-off-by: MickaÃ«l SalaÃ¼n <mic@linux.microsoft.com>
+> Cc: Jaskaran Khurana <jaskarankhurana@linux.microsoft.com>
+> Cc: Mike Snitzer <snitzer@redhat.com>
+> Cc: Milan Broz <gmazyland@gmail.com>
 > ---
->  drivers/gpu/drm/i915/intel_uncore.c | 25 +++++++++++++++++++++++--
->  1 file changed, 23 insertions(+), 2 deletions(-)
+>  drivers/md/Kconfig                | 13 ++++++++++++-
+>  drivers/md/dm-verity-verify-sig.c |  9 +++++++--
+>  2 files changed, 19 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/gpu/drm/i915/intel_uncore.c b/drivers/gpu/drm/i915/intel_uncore.c
-> index 54e201fdeba4..ce39049d8919 100644
-> --- a/drivers/gpu/drm/i915/intel_uncore.c
-> +++ b/drivers/gpu/drm/i915/intel_uncore.c
-> @@ -1692,10 +1692,13 @@ static int uncore_mmio_setup(struct intel_uncore *uncore)
->  	struct pci_dev *pdev = i915->drm.pdev;
->  	int mmio_bar;
->  	int mmio_size;
-> +	int bar_selection;
-
-Signed bitmasks always make me uneasy. But looks like
-that's what it is in the pci api. So meh.
-
-> +	int ret;
+> diff --git a/drivers/md/Kconfig b/drivers/md/Kconfig
+> index 30ba3573626c..63870fdfe8ce 100644
+> --- a/drivers/md/Kconfig
+> +++ b/drivers/md/Kconfig
+> @@ -530,11 +530,22 @@ config DM_VERITY_VERIFY_ROOTHASH_SIG
+>  	bool "Verity data device root hash signature verification support"
+>  	depends on DM_VERITY
+>  	select SYSTEM_DATA_VERIFICATION
+> -	  help
+> +	---help---
+>  	  Add ability for dm-verity device to be validated if the
+>  	  pre-generated tree of cryptographic checksums passed has a pkcs#7
+>  	  signature file that can validate the roothash of the tree.
 >  
->  	mmio_bar = IS_GEN(i915, 2) ? 1 : 0;
-> +	bar_selection = BIT (2) | BIT(mmio_bar);
-                           ^
-spurious space			   
-
-That's also not correct for gen2 I think.
-
-gen2:
-0 = GMADR
-1 = MMADR
-2 = IOBAR
-
-gen3:
-0 = MMADR
-1 = IOBAR
-2 = GMADR
-3 = GTTADR
-
-gen4+:
-0+1 = GTTMMADR
-2+3 = GMADR
-4 = IOBAR
-
-Maybe we should just have an explicit list of bars like that in a
-comment?
-
-I'd also suggest sucking this bitmask calculation into a small helper
-so you can reuse it for the release.
-
->  	/*
-> -	 * Before gen4, the registers and the GTT are behind different BARs.
-> +	 * On gen3 the registers and the GTT are behind different BARs.
->  	 * However, from gen4 onwards, the registers and the GTT are shared
->  	 * in the same BAR, so we want to restrict this ioremap from
->  	 * clobbering the GTT which we want ioremap_wc instead. Fortunately,
-> @@ -1703,6 +1706,8 @@ static int uncore_mmio_setup(struct intel_uncore *uncore)
->  	 * generations up to Ironlake.
->  	 * For dgfx chips register range is expanded to 4MB.
->  	 */
-> +	if (INTEL_GEN(i915) == 3)
-> +		bar_selection |= BIT(3);
->  	if (INTEL_GEN(i915) < 5)
->  		mmio_size = 512 * 1024;
->  	else if (IS_DGFX(i915))
-> @@ -1710,8 +1715,15 @@ static int uncore_mmio_setup(struct intel_uncore *uncore)
->  	else
->  		mmio_size = 2 * 1024 * 1024;
->  
-> +	ret = pci_request_selected_regions(pdev, bar_selection, "i915");
-> +	if (ret < 0) {
-> +		drm_err(&i915->drm, "failed to request pci bars\n");
-> +		return ret;
-> +	}
+> +	  By default, rely on the builtin trusted keyring.
 > +
->  	uncore->regs = pci_iomap(pdev, mmio_bar, mmio_size);
->  	if (uncore->regs == NULL) {
-> +		pci_release_selected_regions(pdev, bar_selection);
->  		drm_err(&i915->drm, "failed to map registers\n");
->  		return -EIO;
+> +	  If unsure, say N.
+> +
+> +config DM_VERITY_VERIFY_ROOTHASH_SIG_SECONDARY_KEYRING
+> +	bool "Verity data device root hash signature verification with secondary keyring"
+> +	depends on DM_VERITY_VERIFY_ROOTHASH_SIG
+> +	depends on SECONDARY_TRUSTED_KEYRING
+> +	---help---
+> +	  Rely on the secondary trusted keyring to verify dm-verity signatures.
+> +
+>  	  If unsure, say N.
+>  
+>  config DM_VERITY_FEC
+> diff --git a/drivers/md/dm-verity-verify-sig.c b/drivers/md/dm-verity-verify-sig.c
+> index 614e43db93aa..29385dc470d5 100644
+> --- a/drivers/md/dm-verity-verify-sig.c
+> +++ b/drivers/md/dm-verity-verify-sig.c
+> @@ -119,8 +119,13 @@ int verity_verify_root_hash(const void *root_hash, size_t root_hash_len,
 >  	}
-> @@ -1721,9 +1733,18 @@ static int uncore_mmio_setup(struct intel_uncore *uncore)
 >  
->  static void uncore_mmio_cleanup(struct intel_uncore *uncore)
->  {
-> -	struct pci_dev *pdev = uncore->i915->drm.pdev;
-> +	struct drm_i915_private *i915 = uncore->i915;
-> +	struct pci_dev *pdev = i915->drm.pdev;
-> +	int mmio_bar;
-> +	int bar_selection;
-> +
-> +	mmio_bar = IS_GEN(i915, 2) ? 1 : 0;
-> +	bar_selection = BIT (2) | BIT(mmio_bar);
-> +	if (INTEL_GEN(i915) == 3)
-> +		bar_selection |= BIT(3);
+>  	ret = verify_pkcs7_signature(root_hash, root_hash_len, sig_data,
+> -				sig_len, NULL, VERIFYING_UNSPECIFIED_SIGNATURE,
+> -				NULL, NULL);
+> +				sig_len,
+> +#ifdef CONFIG_DM_VERITY_VERIFY_ROOTHASH_SIG_SECONDARY_KEYRING
+> +				VERIFY_USE_SECONDARY_KEYRING,
+> +#else
+> +				NULL,
+> +#endif
+> +				VERIFYING_UNSPECIFIED_SIGNATURE, NULL, NULL);
 >  
->  	pci_iounmap(pdev, uncore->regs);
-> +	pci_release_selected_regions(pdev, bar_selection);
+>  	return ret;
 >  }
->  
->  void intel_uncore_init_early(struct intel_uncore *uncore,
-> -- 
-> 2.28.0
 > 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
-
--- 
-Ville Syrjälä
-Intel
