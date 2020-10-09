@@ -2,155 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30427288961
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 14:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A751128896A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 14:57:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387850AbgJIMz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 08:55:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54518 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730626AbgJIMzZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 08:55:25 -0400
-Received: from mail.kernel.org (unknown [95.90.213.208])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BB8E6222BA;
-        Fri,  9 Oct 2020 12:55:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602248124;
-        bh=qfJg059R+ulFXS2MriZQjy1jkWjepa6QmsXYhZ2egvc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=BK8XHONMdI5ZjBzCvZJ38g0z43/WAYiR1yZghmghPBIWE9/IjY9cA+Pk6qailuzIJ
-         Fmsu9Zcj/9LYAWszg+gbaHd9tu3gGwmO51iFYfhRJAdjkQQmdxM13Z4Sme7EW6Wj94
-         iXSYL5CsQtll0gBpDR3+ldmyseCqWSORHoDPaE5U=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1kQrve-003m4S-Ga; Fri, 09 Oct 2020 14:55:22 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     "Jonathan Corbet" <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH] scripts: kernel-doc: allow printing the documented symbols
-Date:   Fri,  9 Oct 2020 14:55:18 +0200
-Message-Id: <179c640b7d54512742c9864f0ed364bb7599e1e0.1602247918.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S2387914AbgJIM5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 08:57:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387898AbgJIM5D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 08:57:03 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8130C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 05:57:02 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id m11so8848030otk.13
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 05:57:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z+2UjvYQEk6KM0AsuDZuOv+FGWV2KQ+KdyDRwReGjM4=;
+        b=Tl8tAm9w5P9TK5QA4yY7Zk6i4bB/OBpkHel+TKMpNNmU+A1VpPpFpuz1C8crWi98+7
+         Z0GNF06CV6eAtWET8brSORBZhLkgV3H7M1rR792YhlpNhW9CUjCS3dYK5+lLG/EvrbXj
+         yE462SjjECA0jKJc6x5bniKEf4i9YNxDzspHw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z+2UjvYQEk6KM0AsuDZuOv+FGWV2KQ+KdyDRwReGjM4=;
+        b=pWc1e7mUnWnZ21Q2zj6m/jPWX34aWkMAEUKWmVjz9urt2jqNuIy3CDSIw/oTF6X0IL
+         XSWKbhTsH+ylNn5qaarbDrB62ZU6I0ibvN2BbD8onMT+C3dKXHVKdqDpf5i2R+oAOgZv
+         wsOd1fUr1eLcSQVQlXGyt4zinf0qCUI8uClNOhw9lI5915QA3m+DJjAnddV3CVF1SbmL
+         uXIqAmi5YeknoTsL0Z8N/EZNnQ6MOcTrHvmztCnoq6xxdbKEPD+7OX0R98ZyRPeF9iGR
+         ZURLz5SvhD/rwkoM7FyFpivmpLwyhsgLs2/DkT2HN/pyZE2SfAfUvrogNbAdl0k0Kc1q
+         VMuw==
+X-Gm-Message-State: AOAM532+2QRjZKupnOoNyhI/e7lG99UmDfMmrja5+aPDtmWidzaucATm
+        Fn2sIfTAjn7jVTIVqqltCjMMN44/Lxdr3DvX
+X-Google-Smtp-Source: ABdhPJygKx68cyJ4qMlx+2S2yFZy9Ta8SXy4s12XnBMPUvyk+YdfrIr8BTcCED96gdyD1UWmBMMQag==
+X-Received: by 2002:a9d:7308:: with SMTP id e8mr473937otk.238.1602248221723;
+        Fri, 09 Oct 2020 05:57:01 -0700 (PDT)
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com. [209.85.210.51])
+        by smtp.gmail.com with ESMTPSA id o16sm7348874oic.27.2020.10.09.05.57.00
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Oct 2020 05:57:00 -0700 (PDT)
+Received: by mail-ot1-f51.google.com with SMTP id f10so8888640otb.6
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 05:57:00 -0700 (PDT)
+X-Received: by 2002:a9d:6445:: with SMTP id m5mr8484954otl.36.1602248219891;
+ Fri, 09 Oct 2020 05:56:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+References: <20200928164431.21884-1-stanimir.varbanov@linaro.org> <20200928164431.21884-2-stanimir.varbanov@linaro.org>
+In-Reply-To: <20200928164431.21884-2-stanimir.varbanov@linaro.org>
+From:   Alexandre Courbot <acourbot@chromium.org>
+Date:   Fri, 9 Oct 2020 21:56:47 +0900
+X-Gmail-Original-Message-ID: <CAPBb6MVFeGcDMWopXA5PNPVHTsgZ5r8L_-zE0TUwm5wFswVdmw@mail.gmail.com>
+Message-ID: <CAPBb6MVFeGcDMWopXA5PNPVHTsgZ5r8L_-zE0TUwm5wFswVdmw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] venus: vdec: Fix non reliable setting of LAST flag
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Vikash Garodia <vgarodia@codeaurora.org>,
+        Mansur Alisha Shaik <mansur@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is useful to know what symbols are documented, as
-scripts could use this in order to check for documentation
-issues. This comes almost for free from kernel-doc parsing.
+On Tue, Sep 29, 2020 at 1:44 AM Stanimir Varbanov
+<stanimir.varbanov@linaro.org> wrote:
+>
+> In real use of dynamic-resolution-change it is observed that the
+> LAST buffer flag (which marks the last decoded buffer with the
+> resolution before the resolution-change event) is not reliably set.
+>
+> Fix this by set the LAST buffer flag on next queued capture buffer
+> after the resolution-change event.
+>
+> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+> ---
+>  drivers/media/platform/qcom/venus/core.h    |  5 +-
+>  drivers/media/platform/qcom/venus/helpers.c |  6 +++
+>  drivers/media/platform/qcom/venus/vdec.c    | 52 ++++++++++++---------
+>  3 files changed, 38 insertions(+), 25 deletions(-)
+>
+> diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
+> index 7b79a33dc9d6..e30eeaf0ada9 100644
+> --- a/drivers/media/platform/qcom/venus/core.h
+> +++ b/drivers/media/platform/qcom/venus/core.h
+> @@ -274,7 +274,6 @@ enum venus_dec_state {
+>         VENUS_DEC_STATE_DRAIN           = 5,
+>         VENUS_DEC_STATE_DECODING        = 6,
+>         VENUS_DEC_STATE_DRC             = 7,
+> -       VENUS_DEC_STATE_DRC_FLUSH_DONE  = 8,
+>  };
+>
+>  struct venus_ts_metadata {
+> @@ -339,7 +338,7 @@ struct venus_ts_metadata {
+>   * @priv:      a private for HFI operations callbacks
+>   * @session_type:      the type of the session (decoder or encoder)
+>   * @hprop:     a union used as a holder by get property
+> - * @last_buf:  last capture buffer for dynamic-resoluton-change
+> + * @next_buf_last: a flag to mark next queued capture buffer as last
+>   */
+>  struct venus_inst {
+>         struct list_head list;
+> @@ -401,7 +400,7 @@ struct venus_inst {
+>         union hfi_get_property hprop;
+>         unsigned int core_acquired: 1;
+>         unsigned int bit_depth;
+> -       struct vb2_buffer *last_buf;
+> +       bool next_buf_last;
+>  };
+>
+>  #define IS_V1(core)    ((core)->res->hfi_version == HFI_VERSION_1XX)
+> diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
+> index 50439eb1ffea..5ca3920237c5 100644
+> --- a/drivers/media/platform/qcom/venus/helpers.c
+> +++ b/drivers/media/platform/qcom/venus/helpers.c
+> @@ -1347,6 +1347,12 @@ void venus_helper_vb2_buf_queue(struct vb2_buffer *vb)
+>
+>         v4l2_m2m_buf_queue(m2m_ctx, vbuf);
+>
+> +       /* Skip processing queued capture buffers after LAST flag */
+> +       if (inst->session_type == VIDC_SESSION_TYPE_DEC &&
+> +           V4L2_TYPE_IS_CAPTURE(vb->vb2_queue->type) &&
+> +           inst->codec_state == VENUS_DEC_STATE_DRC)
+> +               goto unlock;
+> +
+>         cache_payload(inst, vb);
+>
+>         if (inst->session_type == VIDC_SESSION_TYPE_ENC &&
+> diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
+> index ea13170a6a2c..c11bdf3ca21b 100644
+> --- a/drivers/media/platform/qcom/venus/vdec.c
+> +++ b/drivers/media/platform/qcom/venus/vdec.c
+> @@ -914,10 +914,6 @@ static int vdec_start_capture(struct venus_inst *inst)
+>                 return 0;
+>
+>  reconfigure:
+> -       ret = hfi_session_flush(inst, HFI_FLUSH_OUTPUT, true);
+> -       if (ret)
+> -               return ret;
+> -
+>         ret = vdec_output_conf(inst);
+>         if (ret)
+>                 return ret;
+> @@ -954,6 +950,7 @@ static int vdec_start_capture(struct venus_inst *inst)
+>         inst->streamon_cap = 1;
+>         inst->sequence_cap = 0;
+>         inst->reconfig = false;
+> +       inst->next_buf_last = false;
+>
+>         return 0;
+>
+> @@ -985,6 +982,7 @@ static int vdec_start_output(struct venus_inst *inst)
+>         venus_helper_init_instance(inst);
+>         inst->sequence_out = 0;
+>         inst->reconfig = false;
+> +       inst->next_buf_last = false;
+>
+>         ret = vdec_set_properties(inst);
+>         if (ret)
+> @@ -1078,9 +1076,7 @@ static int vdec_stop_capture(struct venus_inst *inst)
+>                 inst->codec_state = VENUS_DEC_STATE_STOPPED;
+>                 break;
+>         case VENUS_DEC_STATE_DRC:
+> -               WARN_ON(1);
+> -               fallthrough;
+> -       case VENUS_DEC_STATE_DRC_FLUSH_DONE:
+> +               ret = hfi_session_flush(inst, HFI_FLUSH_OUTPUT, true);
+>                 inst->codec_state = VENUS_DEC_STATE_CAPTURE_SETUP;
+>                 venus_helper_free_dpb_bufs(inst);
+>                 break;
+> @@ -1204,9 +1200,28 @@ static void vdec_buf_cleanup(struct vb2_buffer *vb)
+>  static void vdec_vb2_buf_queue(struct vb2_buffer *vb)
+>  {
+>         struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
+> +       struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+> +       static const struct v4l2_event eos = { .type = V4L2_EVENT_EOS };
+>
+>         vdec_pm_get_put(inst);
+>
+> +       mutex_lock(&inst->lock);
+> +
+> +       if (inst->next_buf_last && V4L2_TYPE_IS_CAPTURE(vb->vb2_queue->type) &&
+> +           inst->codec_state == VENUS_DEC_STATE_DRC) {
+> +               vbuf->flags |= V4L2_BUF_FLAG_LAST;
+> +               vbuf->sequence = inst->sequence_cap++;
+> +               vbuf->field = V4L2_FIELD_NONE;
+> +               vb2_set_plane_payload(vb, 0, 0);
+> +               v4l2_m2m_buf_done(vbuf, VB2_BUF_STATE_DONE);
+> +               v4l2_event_queue_fh(&inst->fh, &eos);
+> +               inst->next_buf_last = false;
+> +               mutex_unlock(&inst->lock);
+> +               return;
+> +       }
+> +
+> +       mutex_unlock(&inst->lock);
+> +
+>         venus_helper_vb2_buf_queue(vb);
+>  }
+>
+> @@ -1250,13 +1265,6 @@ static void vdec_buf_done(struct venus_inst *inst, unsigned int buf_type,
+>                 vb->timestamp = timestamp_us * NSEC_PER_USEC;
+>                 vbuf->sequence = inst->sequence_cap++;
+>
+> -               if (inst->last_buf == vb) {
+> -                       inst->last_buf = NULL;
+> -                       vbuf->flags |= V4L2_BUF_FLAG_LAST;
+> -                       vb2_set_plane_payload(vb, 0, 0);
+> -                       vb->timestamp = 0;
+> -               }
+> -
+>                 if (vbuf->flags & V4L2_BUF_FLAG_LAST) {
+>                         const struct v4l2_event ev = { .type = V4L2_EVENT_EOS };
+>
+> @@ -1344,13 +1352,14 @@ static void vdec_event_change(struct venus_inst *inst,
+>                 struct vb2_v4l2_buffer *last;
+>                 int ret;
+>
+> -               last = v4l2_m2m_last_dst_buf(inst->m2m_ctx);
+> -               if (last)
+> -                       inst->last_buf = &last->vb2_buf;
+> +               inst->next_buf_last = true;
+>
+> -               ret = hfi_session_flush(inst, HFI_FLUSH_OUTPUT, false);
+> -               if (ret)
+> -                       dev_dbg(dev, VDBGH "flush output error %d\n", ret);
+> +               last = v4l2_m2m_last_dst_buf(inst->m2m_ctx);
+> +               if (last) {
+> +                       ret = hfi_session_flush(inst, HFI_FLUSH_OUTPUT, false);
+> +                       if (ret)
+> +                               dev_dbg(dev, VDBGH "flush output error %d\n", ret);
+> +               }
 
-So, add support for it.
+Do we still need to call hfi_session_flush() here? It will be called
+in vdec_stop_capture() anyway, and for some reason we are only calling
+it if there is a CAPTURE buffer available (which is not guaranteed).
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
+I suspect that we can call it unconditionally, and maybe remove the
+call to hfi_session_flush() in vdec_stop_capture() when the state is
+VENUS_DEC_STATE_DRC. That way flushing will be performed earlier and
+in one place only.
 
-While checking what's documented on some media files, I found
-the lack of a feature that would report it on an easy way.
-
-Well, it turns that it is very easy to make kernel-doc report it.
-With that, it is easy to check, for example, what are the external
-symbols that are documented with:
-
-$ ./scripts/kernel-doc --export --symbols drivers/media/dvb-core/dvb_ca_en50221.c
-dvb_ca_en50221_camchange_irq()
-dvb_ca_en50221_camready_irq()
-dvb_ca_en50221_frda_irq()
-dvb_ca_en50221_init()
-dvb_ca_en50221_release()
-
-And the internal ones with:
-
-$ ./scripts/kernel-doc --internal --symbols drivers/media/dvb-core/dvb_ca_en50221.c
-findstr()
-dvb_ca_en50221_wait_if_status()
-dvb_ca_en50221_link_init()
-dvb_ca_en50221_read_tuple()
-dvb_ca_en50221_parse_attributes()
-dvb_ca_en50221_set_configoption()
-dvb_ca_en50221_read_data()
-dvb_ca_en50221_write_data()
-dvb_ca_en50221_slot_shutdown()
-dvb_ca_en50221_thread_wakeup()
-dvb_ca_en50221_thread_update_delay()
-dvb_ca_en50221_poll_cam_gone()
-dvb_ca_en50221_thread_state_machine()
-dvb_ca_en50221_io_do_ioctl()
-dvb_ca_en50221_io_ioctl()
-dvb_ca_en50221_io_write()
-dvb_ca_en50221_io_read()
-dvb_ca_en50221_io_open()
-dvb_ca_en50221_io_release()
-dvb_ca_en50221_io_poll()
-
-
- scripts/kernel-doc | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
-
-diff --git a/scripts/kernel-doc b/scripts/kernel-doc
-index 297312824d26..9168a783efd1 100755
---- a/scripts/kernel-doc
-+++ b/scripts/kernel-doc
-@@ -55,6 +55,7 @@ Output format selection (mutually exclusive):
-   -man			Output troff manual page format. This is the default.
-   -rst			Output reStructuredText format.
-   -none			Do not output documentation, only warnings.
-+  -symbols		Output just the documented symbol names.
- 
- Output format selection modifier (affects only ReST output):
- 
-@@ -434,6 +435,8 @@ while ($ARGV[0] =~ m/^--?(.*)/) {
- 	$blankline = $blankline_rst;
-     } elsif ($cmd eq "none") {
- 	$output_mode = "none";
-+    } elsif ($cmd eq "symbols") {
-+	$output_mode = "symbols";
-     } elsif ($cmd eq "module") { # not needed for XML, inherits from calling document
- 	$modulename = shift @ARGV;
-     } elsif ($cmd eq "function") { # to only output specific functions
-@@ -1139,6 +1142,35 @@ sub output_struct_none(%) {
- sub output_blockhead_none(%) {
- }
- 
-+## symbols mode output functions
-+
-+sub output_function_symbols(%) {
-+        my %args = %{$_[0]};
-+
-+	print "$args{'function'}()\n";
-+}
-+
-+sub output_enum_symbols(%) {
-+        my %args = %{$_[0]};
-+
-+	print "enum $args{'enum'}\n";
-+}
-+
-+sub output_typedef_symbols(%) {
-+        my %args = %{$_[0]};
-+
-+	print "typedef $args{'typedef'}\n";
-+}
-+
-+sub output_struct_symbols(%) {
-+        my %args = %{$_[0]};
-+
-+	print "struct $args{'struct'}\n";
-+}
-+
-+sub output_blockhead_symbols(%) {
-+}
-+
- ##
- # generic output function for all types (function, struct/union, typedef, enum);
- # calls the generated, variable output_ function name based on
--- 
-2.26.2
-
-
+>         }
+>
+>         inst->reconfig = true;
+> @@ -1395,8 +1404,7 @@ static void vdec_event_notify(struct venus_inst *inst, u32 event,
+>
+>  static void vdec_flush_done(struct venus_inst *inst)
+>  {
+> -       if (inst->codec_state == VENUS_DEC_STATE_DRC)
+> -               inst->codec_state = VENUS_DEC_STATE_DRC_FLUSH_DONE;
+> +       dev_dbg(inst->core->dev_dec, VDBGH "flush done\n");
+>  }
+>
+>  static const struct hfi_inst_ops vdec_hfi_ops = {
+> --
+> 2.17.1
+>
