@@ -2,201 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 826CA288415
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 09:58:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54B75288419
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 09:58:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732453AbgJIH63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 03:58:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48622 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732086AbgJIH62 (ORCPT
+        id S1732465AbgJIH6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 03:58:44 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56090 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732393AbgJIH6o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 03:58:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602230307;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Fri, 9 Oct 2020 03:58:44 -0400
+Date:   Fri, 09 Oct 2020 07:58:40 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602230321;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=iVtewP7s5qyHI/1d+VGBxPQ+aBPBWOMB6+eMQ61/Xu8=;
-        b=IvY0znSrBq02uNqKjuc7gZe/ILz6IHKSGq8FfaQrF8O0m8n6YxCRhvEVfdJ7KwrCHOCYTS
-        6Mkmg4GyL3uuiWzoyHdjVjnEmC2Wq9LcJdVaTL48W5MXlziQun7VqHk1vxkYNF1D5EBpjG
-        QBn2qlXPg/GIeD3OAtUwxDtz1cz9szM=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-60-WOYqiplkOJy9GOj2XVl-YA-1; Fri, 09 Oct 2020 03:58:25 -0400
-X-MC-Unique: WOYqiplkOJy9GOj2XVl-YA-1
-Received: by mail-ej1-f72.google.com with SMTP id x22so3269333ejs.17
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 00:58:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=iVtewP7s5qyHI/1d+VGBxPQ+aBPBWOMB6+eMQ61/Xu8=;
-        b=Qi25c8xHdrUhx25SgkVQSUTizdPcgWQytwoVNmVIJ8MT/0dJ1H7VfAhKb44s4X45cJ
-         jvXt2mm+Ge1rxYYoi3V3hO4gXFSa82CgfdrXpgUsCil6t9I9+Gv5PnCN+IHKMImQmCXa
-         RGS2eX8JkeEuoXsLqw84u/5Jn5Fd2F1V1F3hB0JIJOXSDRKqWPWeQgvVsxpftpM93+L0
-         tO+gqbCKQBWnQB88LU43QGzu7vzHFy0WaTiCV/NJR6cgUyYe4vcg26caUDlNzaUmP0kk
-         pTgBWesnC8PkyC9Rr414CEY0zNdIys7F1bam11a4gz3NHDAvDxhjvseqie2ww18yTZ8B
-         XazQ==
-X-Gm-Message-State: AOAM530snufGCjrx9K+3P3lwXbaGr84qnEZRvdddPWjtx2KN/c1yCfuJ
-        avOPjye7KxixNj8haw70maQYkAbsAm3RynjXHyqxdHHh0xClRBYhvw5tNlSh30kJcMp+eDdqX8f
-        z7VAiIUadJMvyFBApLnC6wGft
-X-Received: by 2002:a50:c199:: with SMTP id m25mr12731674edf.207.1602230303973;
-        Fri, 09 Oct 2020 00:58:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyGLLbe5PJGZf0JdhylEg7DAfHZXgLhwZN0l/qVt+kqh4CIT9fmTssJbfbdyLss4r7lfP7SGA==
-X-Received: by 2002:a50:c199:: with SMTP id m25mr12731664edf.207.1602230303717;
-        Fri, 09 Oct 2020 00:58:23 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id c17sm5876578ejb.15.2020.10.09.00.58.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Oct 2020 00:58:22 -0700 (PDT)
-Subject: Re: [PATCH v5] Introduce support for Systems Management Driver over
- WMI for Dell Systems
-To:     "Bharathi, Divya" <Divya.Bharathi@Dell.com>,
-        Divya Bharathi <divya27392@gmail.com>,
-        "dvhart@infradead.org" <dvhart@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        mark gross <mgross@linux.intel.com>,
-        "Limonciello, Mario" <Mario.Limonciello@dell.com>,
-        "Ksr, Prasanth" <Prasanth.Ksr@dell.com>
-References: <20200929025521.59573-1-divya.bharathi@dell.com>
- <7015e6d5-3c1e-e07e-572f-d5d47a9b0191@redhat.com>
- <CY4PR19MB125486920AE0C6CA105B973A850D0@CY4PR19MB1254.namprd19.prod.outlook.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <a7cc8b62-c87a-2253-de7a-7b463589ee4c@redhat.com>
-Date:   Fri, 9 Oct 2020 09:58:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=EB7LSG9cpjiYheyNbqOWtFUDg4ADNMcAuWNonRSOIUw=;
+        b=1ng54W8rDSJ9akJVeTCXQCinUaaTVIZ4JH97s5YeOs1VntoasU0yf68YyJZA4Aq2UX9d0e
+        wBSwTCtTjZzw8c4R9WE4UBduT53NZOJ1idatv3tc97fjkmBFgxKa9ydt6ovGFA5qI0n5+V
+        Ygv3Y/aR6hPGx6bea8jO3O0q2YlxGBNTgT6RYSl3p+wOULz8//cgNWBkmjXqPvd+fheKXi
+        plPuRJTRn3uC1q8CQ8HZtt5VzTG9ClaUb5qgczvBghxCi10vN86KZFsmCK/JtgWeybh3sG
+        0w54PceUurw3iWkte0G7EWo1/nlB3IYMrMTMkvyPfXpXyHjNexbA4MIrVnEVFg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602230321;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EB7LSG9cpjiYheyNbqOWtFUDg4ADNMcAuWNonRSOIUw=;
+        b=0rk9PWoqtFOFduvDkLNkcbGiyVE7bYHQ8rVJkmrJ7sCdcrGQnLY2mIlhfeP/jvRsM4WDtV
+        a6VwYa/X7hixPlDQ==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/core] lockdep: Revert "lockdep: Use raw_cpu_*() for
+ per-cpu variables"
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20201005095958.GJ2651@hirez.programming.kicks-ass.net>
+References: <20201005095958.GJ2651@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <CY4PR19MB125486920AE0C6CA105B973A850D0@CY4PR19MB1254.namprd19.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Message-ID: <160223032064.7002.17084902433756818893.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI,
+The following commit has been merged into the locking/core branch of tip:
 
-On 10/6/20 10:46 AM, Bharathi, Divya wrote:
-> Sorry for another mail on same patch. I missed to add one response on
-> previous comments
+Commit-ID:     baffd723e44dc3d7f84f0b8f1fe1ece00ddd2710
+Gitweb:        https://git.kernel.org/tip/baffd723e44dc3d7f84f0b8f1fe1ece00ddd2710
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Mon, 05 Oct 2020 09:56:57 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Fri, 09 Oct 2020 08:54:00 +02:00
 
-No problem.
+lockdep: Revert "lockdep: Use raw_cpu_*() for per-cpu variables"
 
-> <snip>
-> 
->>> +/**
->>> + * init_bios_attributes() - Initialize all attributes for a type
->>> + * @attr_type: The attribute type to initialize
->>> + * @guid: The WMI GUID associated with this type to initialize
->>> + *
->>> + * Initialiaze all 4 types of attributes enumeration, integer, string and
->> password object.
->>> + * Populates each attrbute typ's respective properties under sysfs files
->>> + **/
->>> +static int init_bios_attributes(int attr_type, const char *guid)
->>> +{
->>> +	struct kobject *attr_name_kobj; //individual attribute names
->>> +	union acpi_object *obj = NULL;
->>> +	union acpi_object *elements;
->>> +	struct kset *tmp_set;
->>> +
->>> +	/* instance_id needs to be reset for each type GUID
->>> +	 * also, instance IDs are unique within GUID but not across
->>> +	 */
->>> +	int instance_id = 0;
->>> +	int retval = 0;
->>> +
->>> +	retval = alloc_attributes_data(attr_type);
->>> +	if (retval)
->>> +		return retval;
->>> +	/* need to use specific instance_id and guid combination to get right
->> data */
->>> +	obj = get_wmiobj_pointer(instance_id, guid);
->>> +	if (!obj)
->>> +		return -ENODEV;
->>> +	elements = obj->package.elements;
->>> +
->>> +	mutex_lock(&wmi_priv.mutex);
->>> +	while (elements) {
->>> +		/* sanity checking */
->>> +		if (strlen(elements[ATTR_NAME].string.pointer) == 0) {
->>> +			pr_debug("empty attribute found\n");
->>> +			goto nextobj;
->>> +		}
->>> +		if (attr_type == PO)
->>> +			tmp_set = wmi_priv.authentication_dir_kset;
->>> +		else
->>> +			tmp_set = wmi_priv.main_dir_kset;
->>> +
->>> +		if (kset_find_obj(tmp_set,
->> elements[ATTR_NAME].string.pointer)) {
->>> +			pr_debug("duplicate attribute name found - %s\n",
->>> +				elements[ATTR_NAME].string.pointer);
->>> +			goto nextobj;
->>> +		}
->>> +
->>> +		/* build attribute */
->>> +		attr_name_kobj = kzalloc(sizeof(*attr_name_kobj),
->> GFP_KERNEL);
->>> +		if (!attr_name_kobj)
->>> +			goto err_attr_init;
->>> +
->>> +		attr_name_kobj->kset = tmp_set;
->>> +
->>> +		retval = kobject_init_and_add(attr_name_kobj,
->> &attr_name_ktype, NULL, "%s",
->>> +
->> 	elements[ATTR_NAME].string.pointer);
->>> +		if (retval) {
->>> +			kobject_put(attr_name_kobj);
->>> +			goto err_attr_init;
->>> +		}
->>> +
->>> +		/* enumerate all of this attribute */
->>> +		switch (attr_type) {
->>> +		case ENUM:
->>> +			retval = populate_enum_data(elements, instance_id,
->> attr_name_kobj);
->>> +			break;
->>> +		case INT:
->>> +			retval = populate_int_data(elements, instance_id,
->> attr_name_kobj);
->>> +			break;
->>> +		case STR:
->>> +			retval = populate_str_data(elements, instance_id,
->> attr_name_kobj);
->>> +			break;
->>> +		case PO:
->>> +			retval = populate_po_data(elements, instance_id,
->> attr_name_kobj);
->>> +			break;
->>> +		default:
->>> +			break;
->>> +		}
->>
->> The show functions don't take the mutex and can be called as soon as
->> kobject_init_and_add() is called, so it would be better to first populate the
->> data for the current instance_id and only then call kobject_init_and_add()
->>
-> 
-> Populate functions called here for each type of attribute uses
-> attribute_koject which helps in attribute group cleanup.
+The thinking in commit:
 
-Good point, and we do allocate the data before creating the kobjects,
-so if a user manages to hit the race (which almost certainly would have
-to be done intentionally) then the read would just result in an empty
-string (rather then say a null pointer dereference oops).
+  fddf9055a60d ("lockdep: Use raw_cpu_*() for per-cpu variables")
 
-So lets just keep this as is.
+is flawed. While it is true that when we're migratable both CPUs will
+have a 0 value, it doesn't hold that when we do get migrated in the
+middle of a raw_cpu_op(), the old CPU will still have 0 by the time we
+get around to reading it on the new CPU.
 
-Regards,
+Luckily, the reason for that commit (s390 using preempt_disable()
+instead of preempt_disable_notrace() in their percpu code), has since
+been fixed by commit:
 
-Hans
+  1196f12a2c96 ("s390: don't trace preemption in percpu macros")
 
+An audit of arch/*/include/asm/percpu*.h shows there are no other
+architectures affected by this particular issue.
+
+Fixes: fddf9055a60d ("lockdep: Use raw_cpu_*() for per-cpu variables")
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lkml.kernel.org/r/20201005095958.GJ2651@hirez.programming.kicks-ass.net
+---
+ include/linux/lockdep.h | 26 +++++++++-----------------
+ 1 file changed, 9 insertions(+), 17 deletions(-)
+
+diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+index b1227be..1130f27 100644
+--- a/include/linux/lockdep.h
++++ b/include/linux/lockdep.h
+@@ -512,19 +512,19 @@ static inline void print_irqtrace_events(struct task_struct *curr)
+ #define lock_map_release(l)			lock_release(l, _THIS_IP_)
+ 
+ #ifdef CONFIG_PROVE_LOCKING
+-# define might_lock(lock) 						\
++# define might_lock(lock)						\
+ do {									\
+ 	typecheck(struct lockdep_map *, &(lock)->dep_map);		\
+ 	lock_acquire(&(lock)->dep_map, 0, 0, 0, 1, NULL, _THIS_IP_);	\
+ 	lock_release(&(lock)->dep_map, _THIS_IP_);			\
+ } while (0)
+-# define might_lock_read(lock) 						\
++# define might_lock_read(lock)						\
+ do {									\
+ 	typecheck(struct lockdep_map *, &(lock)->dep_map);		\
+ 	lock_acquire(&(lock)->dep_map, 0, 0, 1, 1, NULL, _THIS_IP_);	\
+ 	lock_release(&(lock)->dep_map, _THIS_IP_);			\
+ } while (0)
+-# define might_lock_nested(lock, subclass) 				\
++# define might_lock_nested(lock, subclass)				\
+ do {									\
+ 	typecheck(struct lockdep_map *, &(lock)->dep_map);		\
+ 	lock_acquire(&(lock)->dep_map, subclass, 0, 1, 1, NULL,		\
+@@ -536,29 +536,21 @@ DECLARE_PER_CPU(int, hardirqs_enabled);
+ DECLARE_PER_CPU(int, hardirq_context);
+ DECLARE_PER_CPU(unsigned int, lockdep_recursion);
+ 
+-/*
+- * The below lockdep_assert_*() macros use raw_cpu_read() to access the above
+- * per-cpu variables. This is required because this_cpu_read() will potentially
+- * call into preempt/irq-disable and that obviously isn't right. This is also
+- * correct because when IRQs are enabled, it doesn't matter if we accidentally
+- * read the value from our previous CPU.
+- */
+-
+-#define __lockdep_enabled	(debug_locks && !raw_cpu_read(lockdep_recursion))
++#define __lockdep_enabled	(debug_locks && !this_cpu_read(lockdep_recursion))
+ 
+ #define lockdep_assert_irqs_enabled()					\
+ do {									\
+-	WARN_ON_ONCE(__lockdep_enabled && !raw_cpu_read(hardirqs_enabled)); \
++	WARN_ON_ONCE(__lockdep_enabled && !this_cpu_read(hardirqs_enabled)); \
+ } while (0)
+ 
+ #define lockdep_assert_irqs_disabled()					\
+ do {									\
+-	WARN_ON_ONCE(__lockdep_enabled && raw_cpu_read(hardirqs_enabled)); \
++	WARN_ON_ONCE(__lockdep_enabled && this_cpu_read(hardirqs_enabled)); \
+ } while (0)
+ 
+ #define lockdep_assert_in_irq()						\
+ do {									\
+-	WARN_ON_ONCE(__lockdep_enabled && !raw_cpu_read(hardirq_context)); \
++	WARN_ON_ONCE(__lockdep_enabled && !this_cpu_read(hardirq_context)); \
+ } while (0)
+ 
+ #define lockdep_assert_preemption_enabled()				\
+@@ -566,7 +558,7 @@ do {									\
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_PREEMPT_COUNT)	&&		\
+ 		     __lockdep_enabled			&&		\
+ 		     (preempt_count() != 0		||		\
+-		      !raw_cpu_read(hardirqs_enabled)));		\
++		      !this_cpu_read(hardirqs_enabled)));		\
+ } while (0)
+ 
+ #define lockdep_assert_preemption_disabled()				\
+@@ -574,7 +566,7 @@ do {									\
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_PREEMPT_COUNT)	&&		\
+ 		     __lockdep_enabled			&&		\
+ 		     (preempt_count() == 0		&&		\
+-		      raw_cpu_read(hardirqs_enabled)));			\
++		      this_cpu_read(hardirqs_enabled)));		\
+ } while (0)
+ 
+ #else
