@@ -2,149 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91FE92887CA
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 13:27:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90EF72887CD
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 13:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388069AbgJIL1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 07:27:08 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:47622 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731442AbgJIL1I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 07:27:08 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 099B3c1k119694;
-        Fri, 9 Oct 2020 07:26:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=+gUJK0zH62vROwFwAyGDCYUlInBCWB3latI7AND8UaQ=;
- b=aAR/ZhWeOWqp8jy2QgwxXRc613eFG67mo9TYmSmLfLsZkFBwrcJ1Vy7cpKkCWLoBlgRJ
- iA748WNAK6ey+C7rwZUSlOOjEshFG46lq85djKhLvNYwIIsqPiaZsqFZ0Qn4tb7Ym/bD
- yHXfPCQf8Rjzt3FwVuDpIGx6GZeOIBr3u0Q3ix4C3zg/LQGiS2F/QXXwIUeDJwF6aPcx
- d1VSAa3sM8tY1EI7wZOE7T9lDUeYCdPEXKk+daG2+Xzg3ENR8UOgHA+IUYbWanqtjhST
- JqOnNrBMAR2LJq/aHpmzfencEaiCfYjZKs153MM/GBfDzBn4oui63bzNOShkjN4LPzUP xA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 342pjbgt4q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Oct 2020 07:26:55 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 099BG8aw006340;
-        Fri, 9 Oct 2020 07:26:54 -0400
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 342pjbgt46-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Oct 2020 07:26:54 -0400
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 099BBZlV016772;
-        Fri, 9 Oct 2020 11:26:53 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma01dal.us.ibm.com with ESMTP id 3429hq61ty-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Oct 2020 11:26:53 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 099BQqwZ15205128
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 9 Oct 2020 11:26:52 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 95B40AE063;
-        Fri,  9 Oct 2020 11:26:52 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 221F9AE05C;
-        Fri,  9 Oct 2020 11:26:47 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.199.32.205])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri,  9 Oct 2020 11:26:46 +0000 (GMT)
-Subject: Re: [PATCH] perf jevents: Fix event code for events referencing std
- arch events
-To:     John Garry <john.garry@huawei.com>, peterz@infradead.org,
-        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, irogers@google.com, yao.jin@linux.intel.com,
-        yeyunfeng@huawei.com
-Cc:     linux-kernel@vger.kernel.org, linuxarm@huawei.com,
-        =linux-arm-kernel@lists.infradead.org
-References: <1602170368-11892-1-git-send-email-john.garry@huawei.com>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <a7cbb1f7-1f7f-6bf9-6acf-fd5455aadd82@linux.ibm.com>
-Date:   Fri, 9 Oct 2020 16:56:45 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S2388082AbgJIL2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 07:28:12 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:49423 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731442AbgJIL2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 07:28:12 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602242891; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=7SOw3lWK9P7+n02hV+SmjQ1SeqrU8OAZ/VA2UVy4Kmo=; b=OBo8AL4W+SjVxsdFfG2Ms3fM0XMHWeeQ4OptmJssE52gAyfi8yU+GaVcEiHVMZR1c1sPVMzj
+ HMZNY77Rc/y9lMJD+b9CTDyhCS/K8sOQI2zhFQmUVR114ZxGYk99lLjBbMDt2K9xdQzEOvvD
+ sQrEs20oQrbkG16kGT5ZUIUcexo=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5f80493422a1856a122fd618 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 09 Oct 2020 11:27:48
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3CA3DC433CB; Fri,  9 Oct 2020 11:27:47 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BB3C5C433CB;
+        Fri,  9 Oct 2020 11:27:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BB3C5C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     gokulsri@codeaurora.org, sboyd@kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, sricharan@codeaurora.org,
+        ath11k@lists.infradead.org
+Subject: Re: [PATCH v3 3/3] arm64: dts: Enabled MHI device over PCIe
+References: <1602160344-19586-1-git-send-email-gokulsri@codeaurora.org>
+        <1602160344-19586-4-git-send-email-gokulsri@codeaurora.org>
+        <20201008131115.GA23649@linux>
+        <7dd959fd2d9375d5529cf52e93aafda3@codeaurora.org>
+        <20201009082625.GD23649@linux>
+Date:   Fri, 09 Oct 2020 14:27:41 +0300
+In-Reply-To: <20201009082625.GD23649@linux> (Manivannan Sadhasivam's message
+        of "Fri, 9 Oct 2020 13:56:25 +0530")
+Message-ID: <87d01r1vwy.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <1602170368-11892-1-git-send-email-john.garry@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-09_06:2020-10-09,2020-10-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
- suspectscore=2 spamscore=0 priorityscore=1501 mlxscore=0
- lowpriorityscore=0 phishscore=0 clxscore=1011 malwarescore=0
- impostorscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2010090074
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
++ ath11k list
 
+Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> writes:
 
-On 10/8/20 8:49 PM, John Garry wrote:
-> The event code for events referencing std arch events is incorrectly
-> evaluated in json_events().
-> 
-> The issue is that je.event is evaluated properly from try_fixup(), but
-> later NULLified from the real_event() call, as "event" may be NULL.
-> 
-> Fix by setting "event" same je.event in try_fixup().
-> 
-> Also remove support for overwriting event code for events using std arch
-> events, as it is not used.
+> On Thu, Oct 08, 2020 at 11:03:42PM +0530, gokulsri@codeaurora.org wrote:
+>> On 2020-10-08 18:41, Manivannan Sadhasivam wrote:
+>> > Hi,
+>> > 
+>> > On Thu, Oct 08, 2020 at 06:02:24PM +0530, Gokul Sriram Palanisamy wrote:
+>> > > Enabled MHI device support over PCIe and added memory
+>> > > reservation required for MHI enabled QCN9000 PCIe card.
+>> > > 
+>> > > Signed-off-by: Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
+>> > > ---
+>> > >  arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi | 47
+>> > > ++++++++++++++++++++++++++++++
+>> > >  1 file changed, 47 insertions(+)
+>> > > 
+>> > > diff --git a/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
+>> > > b/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
+>> > > index 0827055..e5c1ec0 100644
+>> > > --- a/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
+>> > > +++ b/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
+>
+> [...]
+>
+>> > > +	pcie0_rp: pcie0_rp {
+>> > > +		reg = <0 0 0 0 0>;
+>> > > +
+>> > > +		status = "ok";
+>> > > +		mhi_0: qcom,mhi@0 {
+>> > 
+>> > MHI doesn't support devicetree as of now so how is this supposed to
+>> > work?
+>> > Have you tested this series with mainline?
+>> > 
+>> > Thanks,
+>> > Mani
+>> > 
+>> 
+>>  Hi Mani,
+>>  This node entries will be consumed by ath11k driver and is not supposed to
+>> be consumed by mhi driver.
+>>  And yes, it is tested on Mainline.
 
-Patch looks good to me. Not sure if any adding any example with this issue
-is helpful.
+Upstream ath11k does not yet support QCN9074 so I don't see how this is
+tested with mainline ath11k. You must be using some out-of-tree
+_unofficial_ ath11k patches.
 
-Reviewed-By: Kajol Jain<kjain@linux.ibm.com>
+> Can you please point me to the relevant binding or the code which consumes this
+> change?
+>
+> Also please explain what it does! For enabling MHI support over PCIe you don't
+> need this node at all. You just need to define the PCIe device ID in the ath11k
+> driver and that's it.
+>
+> Adding Kalle to this thread...
 
-Thanks,
-Kajol Jain
-> 
-> Signed-off-by: John Garry <john.garry@huawei.com>
-> 
-> diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
-> index 99df41a9543d..e47644cab3fa 100644
-> --- a/tools/perf/pmu-events/jevents.c
-> +++ b/tools/perf/pmu-events/jevents.c
-> @@ -505,20 +505,15 @@ static char *real_event(const char *name, char *event)
->  }
->  
->  static int
-> -try_fixup(const char *fn, char *arch_std, unsigned long long eventcode,
-> -	  struct json_event *je)
-> +try_fixup(const char *fn, char *arch_std, struct json_event *je, char **event)
->  {
->  	/* try to find matching event from arch standard values */
->  	struct event_struct *es;
->  
->  	list_for_each_entry(es, &arch_std_events, list) {
->  		if (!strcmp(arch_std, es->name)) {
-> -			if (!eventcode && es->event) {
-> -				/* allow EventCode to be overridden */
-> -				free(je->event);
-> -				je->event = NULL;
-> -			}
->  			FOR_ALL_EVENT_STRUCT_FIELDS(TRY_FIXUP_FIELD);
-> +			*event = je->event;
->  			return 0;
->  		}
->  	}
-> @@ -678,7 +673,7 @@ static int json_events(const char *fn,
->  			 * An arch standard event is referenced, so try to
->  			 * fixup any unassigned values.
->  			 */
-> -			err = try_fixup(fn, arch_std, eventcode, &je);
-> +			err = try_fixup(fn, arch_std, &je, &event);
->  			if (err)
->  				goto free_strings;
->  		}
-> 
+So currently QCN9074 firmware needs 55 MB of contiguous host memory and
+I suspect one reason for these DT entries is an ugly hack to provide
+that memory range to the firmware.
+
+We are currently preparing QCN9074 patches for ath11k and finding a
+solution how to implement these properly in ath11k. Hopefully there's no
+need for hacks like this, we know more once we get the ath11k QCN9074
+patches ready. Please drop this patch.
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
