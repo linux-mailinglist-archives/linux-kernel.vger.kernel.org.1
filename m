@@ -2,138 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90EF72887CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 13:28:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C73C2887D0
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 13:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388082AbgJIL2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 07:28:12 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:49423 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731442AbgJIL2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 07:28:12 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602242891; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=7SOw3lWK9P7+n02hV+SmjQ1SeqrU8OAZ/VA2UVy4Kmo=; b=OBo8AL4W+SjVxsdFfG2Ms3fM0XMHWeeQ4OptmJssE52gAyfi8yU+GaVcEiHVMZR1c1sPVMzj
- HMZNY77Rc/y9lMJD+b9CTDyhCS/K8sOQI2zhFQmUVR114ZxGYk99lLjBbMDt2K9xdQzEOvvD
- sQrEs20oQrbkG16kGT5ZUIUcexo=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5f80493422a1856a122fd618 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 09 Oct 2020 11:27:48
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3CA3DC433CB; Fri,  9 Oct 2020 11:27:47 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BB3C5C433CB;
-        Fri,  9 Oct 2020 11:27:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BB3C5C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     gokulsri@codeaurora.org, sboyd@kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, sricharan@codeaurora.org,
-        ath11k@lists.infradead.org
-Subject: Re: [PATCH v3 3/3] arm64: dts: Enabled MHI device over PCIe
-References: <1602160344-19586-1-git-send-email-gokulsri@codeaurora.org>
-        <1602160344-19586-4-git-send-email-gokulsri@codeaurora.org>
-        <20201008131115.GA23649@linux>
-        <7dd959fd2d9375d5529cf52e93aafda3@codeaurora.org>
-        <20201009082625.GD23649@linux>
-Date:   Fri, 09 Oct 2020 14:27:41 +0300
-In-Reply-To: <20201009082625.GD23649@linux> (Manivannan Sadhasivam's message
-        of "Fri, 9 Oct 2020 13:56:25 +0530")
-Message-ID: <87d01r1vwy.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S2388090AbgJIL26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 07:28:58 -0400
+Received: from mail-eopbgr30107.outbound.protection.outlook.com ([40.107.3.107]:40832
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729986AbgJIL26 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 07:28:58 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nl7rAz2oGT/nN5TIRHmQyyNclItQCy4ujvuu4xsQgXNx44eA+6zAyqGqWxS3MxhxlUcYUrnz7/S8wtAuE2Z7uzeu7ELdx2zHMaPR8vkamp2sDsUaEn8jV1FV/nCKiONI7BBYfiLRW6SNrF1GtqjkxVmpHaqc+bhSQsQPdxku73Mz5IXCkpY+U35g6CKElDi7gnaF1zxYxCwCwGFWTWwmGCVV8CfqoiQXe/k81zcc0RIEIVW6I2ao/IzlfunhLSPg8R2hldL0MxOKZZ3XUIhIWSelWaBEr7IkmNIOX0LIGEtVbqbB0sOllVQRIoWVu5ibC7diKdTqfagL14T/8vkLOg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+55ybRl8FO1fPtVwKshA7kwUPv+x3gBMx2JtvV9YYVo=;
+ b=nuLNmJBCdQNMfgiTVTkDzbumhGe5PPcd9PqEY5GkKIs2PPaWvmbuO85WgVTHy7lLQxGsJXPi6CSSFzHvxyeSw/sAaDjqwBPSFLJsj6xgwfyvOOE3kBQuObqRkSQEh2gXBVO7bMyosnb04Y7uFXPetlQ50YvvWQihdUjTmB1dYFrTMTokmb08OL3ayE8swpTpK5OiJnzSNL5LOojGE1x6oV7wDQFnw8wDzGfSG7nByX0nKRelwFlP3nPN84M+uHJJZo7V77ihHLRgyU+pzuWI6sZEjfKu/C4+Y13QyxUlnv7EsQZZhpU+E+UV099y/q3pVCJirlCoLHiWJzKz/Q8yXA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
+ dkim=pass header.d=nokia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
+ s=selector1-nokia-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+55ybRl8FO1fPtVwKshA7kwUPv+x3gBMx2JtvV9YYVo=;
+ b=bajlJWyfM7jBPeRQ4oWlUY/k9GCK3r2s6y2KMINA4uY7OtQD8zN8uvpmCUiX0XfpziWqziwGci8zpV0twyq+DDzfkyX7FgxNHmzC8QKsCR8/ibaAoI9udL44rGniVrwtfc1WTkDNrasdLIkvxVxJvjrM5zXf5ii31awtZjb3sUk=
+Received: from HE1PR07MB3450.eurprd07.prod.outlook.com (2603:10a6:7:2c::17) by
+ HE1PR07MB3100.eurprd07.prod.outlook.com (2603:10a6:7:31::10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3477.11; Fri, 9 Oct 2020 11:28:09 +0000
+Received: from HE1PR07MB3450.eurprd07.prod.outlook.com
+ ([fe80::eca3:4085:434:e74]) by HE1PR07MB3450.eurprd07.prod.outlook.com
+ ([fe80::eca3:4085:434:e74%6]) with mapi id 15.20.3455.023; Fri, 9 Oct 2020
+ 11:28:09 +0000
+From:   "Rantala, Tommi T. (Nokia - FI/Espoo)" <tommi.t.rantala@nokia.com>
+To:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: LTS couple perf test and perf top fixes
+Thread-Topic: LTS couple perf test and perf top fixes
+Thread-Index: AQHWni9DJjv3tFLW4UqXV6LpqZfhgw==
+Date:   Fri, 9 Oct 2020 11:28:09 +0000
+Message-ID: <f471ab5f93cd97af4eddebbc78d047289cc55888.camel@nokia.com>
+Accept-Language: fi-FI, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+authentication-results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=nokia.com;
+x-originating-ip: [131.228.2.18]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 37727927-421c-4615-4a57-08d86c466669
+x-ms-traffictypediagnostic: HE1PR07MB3100:
+x-microsoft-antispam-prvs: <HE1PR07MB3100BF0BEA28EBFEA68AD24DB4080@HE1PR07MB3100.eurprd07.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:234;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: NYmwsXTI/AE84gCEyCMUoqgMojJyt6QpkokISuwbrQJbE1P+q5dCabXrBYab0P7dLZiSTlo8ZvtBob974vEC3BTnAd/Ctl0UFlF+m0S46N2FxJB1KUwJOxGoPKUJLJF6X6cRdMUsTNpfRPQPYekbjmlNRlsyaK5aSyqoOUt4gky4WKChFRq5Qridu0Y/JbAGYscB6g+LChdeAJhXw6K+jZkNrPirjgxrpcFF4cy2f25OHYwOewOT35WAra+C8TqTGW45mMauALG6ng6k+FD68OooU3tqcTCw/ckvE+JkoJI/1iXpUQCIzWpdxd8gaTfo
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR07MB3450.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(39860400002)(376002)(366004)(136003)(6512007)(8936002)(110136005)(5660300002)(2906002)(6506007)(186003)(6486002)(316002)(8676002)(4744005)(478600001)(2616005)(71200400001)(86362001)(4326008)(66446008)(64756008)(66556008)(66476007)(66946007)(76116006)(91956017)(26005)(36756003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: ICufSHg5+REgIpSCDfHbL6/h1sG/AviLdzbE1AV1lCbA2hlh34ZuF3wbsJ50y+0BOdv9n6dl1XAi1beyy06hfl9td3amE8aKmHkfkN3FHzHQqepMqHwvwUYeEzWQ1N6vv3KCPvhhr37h7gGGGRe3rKQBSDQbohotoai1xL0qp59OK2hggdiOZCbFLmoDbP1xrK5dUjjR2ztoPIkAknep17niRL6ZvpTbYdHcBcIDGLM8RXblhvIEjoUoa+Fzf3N2oTymJjsBVSsLtSpCK3uIQBM8GyeSS8oCDLjnbfP+XtSaAxZ2LSieH5ATVl7JYjzul91cjfifpMP2VQXVy4zTa1ZJvW/nRV4+YSgW0Ud5D/siztMFiuAscxzZPsTcEJdP7ib7rr5Yu4x4loNqpZvsRB8EMF2We211KmK9bmolM+jNxr9fsI6jeWuOu6s27/6Af1eW8ik1sfr4AkCzDxSNFKMRtvK+QfbdDZcswq0EtvDChoRODOBOYY73QtqEMQ9b9w6hWcbPly5WVIX2VxxYeLFt8UCkQyYCkWzwOpYwxP7uaOzGJY8zHlP+rjArxZCqWVhWh3vvt5WxaE0tSbWxjPFqnCLgp3F/cmVYFsuY6aa0njF9ux3/Dwd5cGEUQbSN/rAGxR61AIMI8xstDeEFNw==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <9ED17A6BE8CA514D9A38DC387E534D42@eurprd07.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
+X-OriginatorOrg: nokia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HE1PR07MB3450.eurprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 37727927-421c-4615-4a57-08d86c466669
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Oct 2020 11:28:09.3082
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 64CzusExGDF0VQKz76cmRl/8DbVPBTgXr9qAYmHGdVZn0YkZrLkE+tRZOmXkU4oFCyedRiCsEXbMKV6XhSsGDXeQAMcYJr+7rJW5/795Q9c=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR07MB3100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ ath11k list
-
-Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> writes:
-
-> On Thu, Oct 08, 2020 at 11:03:42PM +0530, gokulsri@codeaurora.org wrote:
->> On 2020-10-08 18:41, Manivannan Sadhasivam wrote:
->> > Hi,
->> > 
->> > On Thu, Oct 08, 2020 at 06:02:24PM +0530, Gokul Sriram Palanisamy wrote:
->> > > Enabled MHI device support over PCIe and added memory
->> > > reservation required for MHI enabled QCN9000 PCIe card.
->> > > 
->> > > Signed-off-by: Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
->> > > ---
->> > >  arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi | 47
->> > > ++++++++++++++++++++++++++++++
->> > >  1 file changed, 47 insertions(+)
->> > > 
->> > > diff --git a/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
->> > > b/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
->> > > index 0827055..e5c1ec0 100644
->> > > --- a/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
->> > > +++ b/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
->
-> [...]
->
->> > > +	pcie0_rp: pcie0_rp {
->> > > +		reg = <0 0 0 0 0>;
->> > > +
->> > > +		status = "ok";
->> > > +		mhi_0: qcom,mhi@0 {
->> > 
->> > MHI doesn't support devicetree as of now so how is this supposed to
->> > work?
->> > Have you tested this series with mainline?
->> > 
->> > Thanks,
->> > Mani
->> > 
->> 
->>  Hi Mani,
->>  This node entries will be consumed by ath11k driver and is not supposed to
->> be consumed by mhi driver.
->>  And yes, it is tested on Mainline.
-
-Upstream ath11k does not yet support QCN9074 so I don't see how this is
-tested with mainline ath11k. You must be using some out-of-tree
-_unofficial_ ath11k patches.
-
-> Can you please point me to the relevant binding or the code which consumes this
-> change?
->
-> Also please explain what it does! For enabling MHI support over PCIe you don't
-> need this node at all. You just need to define the PCIe device ID in the ath11k
-> driver and that's it.
->
-> Adding Kalle to this thread...
-
-So currently QCN9074 firmware needs 55 MB of contiguous host memory and
-I suspect one reason for these DT entries is an ugly hack to provide
-that memory range to the firmware.
-
-We are currently preparing QCN9074 patches for ath11k and finding a
-solution how to implement these properly in ath11k. Hopefully there's no
-need for hacks like this, we know more once we get the ath11k QCN9074
-patches ready. Please drop this patch.
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+SGkgR3JlZywgU2FzaGEsDQoNCkNhbiB5b3UgcGljayB0aGlzIHRvIDUuNDoNCg0KY29tbWl0IGRi
+ZDY2MGU2YjI4ODRiODY0ZDI2NDJkOTMwYTE2M2QzYmNlYmU0YmUNCkF1dGhvcjogVG9tbWkgUmFu
+dGFsYSA8dG9tbWkudC5yYW50YWxhQG5va2lhLmNvbT4NCkRhdGU6ICAgVGh1IEFwciAyMyAxNDo1
+Mzo0MCAyMDIwICswMzAwDQoNCiAgICBwZXJmIHRlc3Qgc2Vzc2lvbiB0b3BvbG9neTogRml4IGRh
+dGEgcGF0aA0KDQoNCkFuZCB0aGlzIHRvIDUuNCBhbmQgb2xkZXIgTFRTIHRyZWVzIHRvbzoNCg0K
+Y29tbWl0IDI5YjRmNWYxODg1NzFjMTEyNzEzYzM1Y2M4N2VlZmI0NmVmZWU2MTINCkF1dGhvcjog
+VG9tbWkgUmFudGFsYSA8dG9tbWkudC5yYW50YWxhQG5va2lhLmNvbT4NCkRhdGU6ICAgVGh1IE1h
+ciA1IDEwOjM3OjEyIDIwMjAgKzAyMDANCg0KICAgIHBlcmYgdG9wOiBGaXggc3RkaW8gaW50ZXJm
+YWNlIGlucHV0IGhhbmRsaW5nIHdpdGggZ2xpYmMgMi4yOCsNCg0KDQpUaGFua3MhDQotVG9tbWkN
+Cg0K
