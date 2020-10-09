@@ -2,157 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA10428810D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 06:14:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81E21288110
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 06:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729032AbgJIEOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 00:14:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43012 "EHLO
+        id S1729292AbgJIEQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 00:16:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728317AbgJIEOY (ORCPT
+        with ESMTP id S1725900AbgJIEQg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 00:14:24 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02263C0613D5
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 21:14:23 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id t18so3839654plo.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 21:14:23 -0700 (PDT)
+        Fri, 9 Oct 2020 00:16:36 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E49FC0613D2;
+        Thu,  8 Oct 2020 21:16:36 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id p13so7971939edi.7;
+        Thu, 08 Oct 2020 21:16:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2EdRl1RZSZyQAx1Q/Ie821/xWpZ1zaRf0wSS4lUA3SI=;
-        b=v7gBYn5/EZRmnBAafloGJqCSbpmjFsH9/KMYR1XRcVdwbTsT+m1XSFlQI84qBLDeOT
-         b6kqq2Jl1eNr7H6VNFbnPEN3x97qDCgPpi/SPmll2afdgy/agYkIwQeMQYm2S8IO9ztp
-         OHcPIBkoKPNfbYmailisJnqZthEwjvGgu8lniBGv3y5+22eE7vAsugCQiA6cnJ9pNAfO
-         TBz4fOgAgQiOOiyrCe6fjZuO1tQ5Ougo0x6zCMAT8nLaQBtch2+Y+la2jwgpauoS2nyi
-         VJi1YXlCmmzENl7kiOneL+0Q+/1cXu+BVnEXk3bhxCwELuqUtAHE+dkeLkC03XLw7fUe
-         va5Q==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=AfwAzZgxUctq+B9Xwm5LEy7q5lioBZycU4ewFeC4ZrU=;
+        b=YeuI3ZU/Q95zGksRh/xPkTQuaKMozCNBWHj+oL9M9Y/jIEAET0+TVTnhYDk17L2ESl
+         Po3EAv7LSh0BdfZTBahj4Xy1jjUYO1LgqavXAlxotKM6x+sABn4BgRaGhKgoKq7D/APk
+         FPr4i7RJkARmVt7oApHNvPtTRqrVTzYm6ZfV2QIAjAzQQiaRJdkfQoOGNNAYKyftMofW
+         wb7IZkuTzm4cW9umXnEb5EiXn4h5X6ibsIHURgefnDZfCJ4mTXNZpOmimAKfdGTTTi+a
+         tn/HA+9zLa2CEgg8sWAgZyRejGA8nWgbKoIoEZkA//EKEpMAi/lEmqsvvRmFjDDKi7ro
+         HHuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2EdRl1RZSZyQAx1Q/Ie821/xWpZ1zaRf0wSS4lUA3SI=;
-        b=lVg7SdMME7MiYbZ50us8r7xHlBjbAD+fBDfwyAocDZZyV2zzSSJ1g+kTfQ7v8VqKO9
-         Jh47M3iAmuzI+jkcy3bP0F7kZM7bn/ku+mqbr0B5+ebafXeaDmmmvBkaHArV4OO74b8w
-         Wgf8LbiCI818C2D3VY3zL38A2HXU7abhVTTubXBFFrcnCOVwA96m3G8BXucNJHZ1SnmN
-         lFopjZeLXbbL1A11MzHVCcCXCnDdJWZtpTJY4RPLMtyGKMaHJuNK3NeGReyebSonXnaM
-         w4RsYgyykQm89xJ3rTHwMGhGK6ymCzsCGzU7KkC0rmt6+l/OfinEE9Tpo8eSpKsPmpqp
-         vc3g==
-X-Gm-Message-State: AOAM532AAV0tz4On9TGGt1y8TYWKLJHRSmVQXZuC2z5EYdBCHntlI0hn
-        RRFkbY6ZzGHbeObL6xFCoaJsbMr1lpLr6Ctgh4/8uw==
-X-Google-Smtp-Source: ABdhPJy+9zgYNBhCq4QlEB9KjNxaK/TjK9EK5mKamVQ74y0m5jXebPwnkkW6871aHrnVRAd4WHnZoDUCYUoEHq5INcY=
-X-Received: by 2002:a17:902:7681:b029:d2:88b1:b130 with SMTP id
- m1-20020a1709027681b02900d288b1b130mr10859993pll.20.1602216863306; Thu, 08
- Oct 2020 21:14:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200915125947.26204-1-songmuchun@bytedance.com>
- <31eac1d8-69ba-ed2f-8e47-d957d6bb908c@oracle.com> <9d220de0-f06d-cb5b-363f-6ae97d5b4146@oracle.com>
-In-Reply-To: <9d220de0-f06d-cb5b-363f-6ae97d5b4146@oracle.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 9 Oct 2020 12:13:44 +0800
-Message-ID: <CAMZfGtXAB7CqNxp2Et=SSY4iPDbxS92cwcDEo2C_88m92JNWoQ@mail.gmail.com>
-Subject: Re: [External] Re: [RFC PATCH 00/24] mm/hugetlb: Free some vmemmap
- pages of hugetlb page
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Matthew Wilcox <willy@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel@vger.kernel.org,
-        Xiongchun duan <duanxiongchun@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=AfwAzZgxUctq+B9Xwm5LEy7q5lioBZycU4ewFeC4ZrU=;
+        b=hSXVJQ2Vn7Zzjp8uz50w+J9mXDJwGeNyl0Jb0VScbCzeeWJVVm5Yupf9QRCJcuIRRM
+         fMS24+cTZTMQIZLslA55S36sSGkHFR3bTGeYcYSQDC/cQuwBR8ia0C12m1wASQNC3wlq
+         F5Fog+a2m/UfacKZ9aaTdcnC1Fwt+pDNnNkWg9rEouv3hWPZZF4AMpiG5Mc6Lje/kClS
+         5gaT0YbgWh5dJGLGhCxHJ7xOAn4ztk0pBAqbOH+TSAXkrfK5Gl99XC2b6bl/LW9ARnpv
+         4A+GZoeDXh3lx1kXOXjVrW4n2kgTRtAsmYgPeEuH7TZlp6vjnUKXp6JHBtS8iqUYzytt
+         16WA==
+X-Gm-Message-State: AOAM532KnLQ2AFdsdZL5P2wCaMUT31CvyplKglNuSXEMq2Nsje68ci/M
+        XOtWZqRqPBMceNWCUzNqEyoVeSqJGMPbMg==
+X-Google-Smtp-Source: ABdhPJyANwK4YJx0wVZaHj0CcX+4bLk3AB9hNGwkbJnRsWUmnv9UXC5XoaoqXKNU7nhJfS7T4UP/uw==
+X-Received: by 2002:a05:6402:10d5:: with SMTP id p21mr12751645edu.14.1602216994860;
+        Thu, 08 Oct 2020 21:16:34 -0700 (PDT)
+Received: from felia.fritz.box ([2001:16b8:2d6e:f600:80f1:4ea4:2130:b98])
+        by smtp.gmail.com with ESMTPSA id o11sm5415265edw.80.2020.10.08.21.16.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Oct 2020 21:16:34 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Corentin Labbe <clabbe@baylibre.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        mjpeg-users@lists.sourceforge.net, linux-media@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org, Joe Perches <joe@perches.com>,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] MAINTAINERS: rectify ZR36067 VIDEO FOR LINUX DRIVER section
+Date:   Fri,  9 Oct 2020 06:16:21 +0200
+Message-Id: <20201009041621.17513-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 8, 2020 at 5:15 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->
-> On 9/29/20 2:58 PM, Mike Kravetz wrote:
-> > On 9/15/20 5:59 AM, Muchun Song wrote:
-> >> Hi all,
-> >>
-> >> This patch series will free some vmemmap pages(struct page structures)
-> >> associated with each hugetlbpage when preallocated to save memory.
-> > ...
-> >> The mapping of the first page(index 0) and the second page(index 1) is
-> >> unchanged. The remaining 6 pages are all mapped to the same page(index
-> >> 1). So we only need 2 pages for vmemmap area and free 6 pages to the
-> >> buddy system to save memory. Why we can do this? Because the content
-> >> of the remaining 7 pages are usually same except the first page.
-> >>
-> >> When a hugetlbpage is freed to the buddy system, we should allocate 6
-> >> pages for vmemmap pages and restore the previous mapping relationship.
-> >>
-> >> If we uses the 1G hugetlbpage, we can save 4095 pages. This is a very
-> >> substantial gain. On our server, run some SPDK applications which will
-> >> use 300GB hugetlbpage. With this feature enabled, we can save 4797MB
-> >> memory.
->
-> I had a hard time going through the patch series as it is currently
-> structured, and instead examined all the code together.  Muchun put in
-> much effort and the code does reduce memory usage.
-> - For 2MB hugetlb pages, we save 5 pages of struct pages
-> - For 1GB hugetlb pages, we save 4086 pages of struct pages
->
-> Code is even in pace to handle poisoned pages, although I have not looked
-> at this closely.  The code survives the libhugetlbfs and ltp huge page tests.
->
-> To date, nobody has asked the important question "Is the added complexity
-> worth the memory savings?".  I suppose it all depends on one's use case.
-> Obviously, the savings are more significant when one uses 1G huge pages but
-> that may not be the common case today.
->
-> > At a high level this seems like a reasonable optimization for hugetlb
-> > pages.  It is possible because hugetlb pages are 'special' and mostly
-> > handled differently than pages in normal mm paths.
->
-> Such an optimization only makes sense for something like hugetlb pages.  One
-> reason is the 'special' nature of hugetlbfs as stated above.  The other is
-> that this optimization mostly makes sense for huge pages that are created
-> once and stick around for a long time.  hugetlb pool pages are a perfect
-> example.  This is because manipulation of struct page mappings is done when
-> a huge page is created or destroyed.
+Commit 754f0f1ba8d9 ("media: MAINTAINERS: change maintainer of the zoran
+driver") added a new section in MAINTAINERS with an invalid file entry
+and at the wrong place for alphabetic ordering.
 
-Yeah, in our cloud server, we have some application scenarios(e.g. SPDK,
-DPDK, QEMU and jemalloc). These applications may use a lot of hugetlb
-pages.
+Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
 
->
-> > The majority of the new code is hugetlb specific, so it should not be
-> > of too much concern for the general mm code paths.
->
-> It is true that much of the code in this series was put in hugetlb.c.  However,
-> I would argue that there is a bunch of code that only deals with remapping
-> the memmap which should more generic and added to sparse-vmemmap.c.  This
-> would at least allow for easier reuse.
+  warning: no file matches  F:  Documentation/media/v4l-drivers/zoran.rst
 
-I agree with you.
+Point the file entry to the right location and move the section to the
+right place in MAINTAINERS.
 
->
-> Before Muchun and myself put more effort into this series, I would really
-> like to get feedback on the whether or not this should move forward.
-> Specifically, is the memory savings worth added complexity?  Is the removing
-> of struct pages going to come back and cause issues for future features?
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+applies cleanly on next-20201008
 
-Some users do need this optimization to save memory. But if some users
-do not need this optimization, they also can disable it by using a kernel boot
-parameter 'hugetlb_free_vmemmap=off' or not configuring
-CONFIG_HUGETLB_PAGE_FREE_VMEMMAP.
+Corentin, please ack.
+Mauro, please pick this minor non-urgent cleanup patch into your -next tree.
 
-I have no idea about "cause issues for future features". Is there any feature
-ongoing or planned?
+ MAINTAINERS | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 239ae2425cf8..6879ca545677 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -19412,6 +19412,13 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/dlemoal/zonefs.git
+ F:	Documentation/filesystems/zonefs.rst
+ F:	fs/zonefs/
+ 
++ZPOOL COMPRESSED PAGE STORAGE API
++M:	Dan Streetman <ddstreet@ieee.org>
++L:	linux-mm@kvack.org
++S:	Maintained
++F:	include/linux/zpool.h
++F:	mm/zpool.c
++
+ ZR36067 VIDEO FOR LINUX DRIVER
+ M:	Corentin Labbe <clabbe@baylibre.com>
+ L:	mjpeg-users@lists.sourceforge.net
+@@ -19419,16 +19426,9 @@ L:	linux-media@vger.kernel.org
+ S:	Maintained
+ W:	http://mjpeg.sourceforge.net/driver-zoran/
+ Q:	https://patchwork.linuxtv.org/project/linux-media/list/
+-F:	Documentation/media/v4l-drivers/zoran.rst
++F:	Documentation/driver-api/media/drivers/v4l-drivers/zoran.rst
+ F:	drivers/staging/media/zoran/
+ 
+-ZPOOL COMPRESSED PAGE STORAGE API
+-M:	Dan Streetman <ddstreet@ieee.org>
+-L:	linux-mm@kvack.org
+-S:	Maintained
+-F:	include/linux/zpool.h
+-F:	mm/zpool.c
+-
+ ZRAM COMPRESSED RAM BLOCK DEVICE DRVIER
+ M:	Minchan Kim <minchan@kernel.org>
+ M:	Nitin Gupta <ngupta@vflare.org>
 -- 
-Yours,
-Muchun
+2.17.1
+
