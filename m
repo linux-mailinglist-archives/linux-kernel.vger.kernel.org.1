@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61898288D70
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2C8288D79
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389505AbgJIP4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 11:56:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38694 "EHLO
+        id S2389553AbgJIP4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 11:56:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389257AbgJIP4M (ORCPT
+        with ESMTP id S2389501AbgJIP4P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 11:56:12 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0004C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 08:56:12 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id u126so10604784oif.13
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 08:56:12 -0700 (PDT)
+        Fri, 9 Oct 2020 11:56:15 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C698DC0613D9
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 08:56:13 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id i12so9440386ota.5
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 08:56:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linuxfoundation.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=LzNUXoqWkCfe5RfMPJ8BgNbf85j7vUJ3HuYLgvdsuac=;
-        b=GdUSnwIMVKTfRFQs7PyYvGJuD4xHU9TNZcUKu/M8ur54uzu2FUmgbTdepKlccnjFHI
-         dsWJxPADIhLu1uXYZoH3nPRchlFRt1NULykM+jKx/p5Sywdjqt9QaiQaN6SYgXW3hNU3
-         jJmHmomtjAPV/UjrEhXr9KOHZuiQrv04239fA=
+        bh=NhVKT+1Dp3cLQ927y3IeE45PijqPHl/y1tcL0VMnAkY=;
+        b=MJ59A2zSUmOd4vH98m00yfAlFCElHYcQzDfBMYHrVQy7lR2WZx36tRcnEIiex/HpTh
+         psiwZkcYnFqUu7CqyFJf/2WggvVUrR8lhitdRnQgqBvey72k6+WleuW5MyqR1ij81nka
+         s1sooOAOzyxbgRa3UcAAW84OfUXQpR1PvmUpI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=LzNUXoqWkCfe5RfMPJ8BgNbf85j7vUJ3HuYLgvdsuac=;
-        b=juRkx+MWTfyuA4kqVcJ3v/WX4FW0qJIPWX/w7DshTy4BpwTqOPreJNj0N9ED76uzGy
-         SkIJnNFwNt/Cc+Qp7tVMvY0ar0vmvNaoj8fz90i2sQalYCf0UEnkYj+aQioKY+9cCuMY
-         SXYbo0P3+lvE4iMWHiypRC/0Oz2B+u2+X7yqK47Mzy1xR2GXo3mPhAJdENNKfBC7s4zO
-         jw2RCZWXfKCzbg108Y/+Dx2jJ1CLb/kb35Q1kgrSbbAuMtSFpBs3cNkgR2H2ZPdhikvv
-         WW7pBRu2Rm8axEBAmHiZKhYNJ/C2BBuOpC18ASAUlFQeKnrvH99bVs8wTU98HznEtRyh
-         xAvA==
-X-Gm-Message-State: AOAM532JCM4m7ai8IFdJh4Ocuz6fjCc/n87mKuf6ZNHiGZhZeqqk1qPs
-        V3QLfzVOaDmoSHSrn17HYUvitA==
-X-Google-Smtp-Source: ABdhPJydSvnyxBwibM9aBUi6YV6KsCGIxZjC6LgLN6vSUvH81x8IyzWBg1DgpEm8f7zWy90zWwI/BA==
-X-Received: by 2002:aca:a893:: with SMTP id r141mr2744342oie.50.1602258971939;
-        Fri, 09 Oct 2020 08:56:11 -0700 (PDT)
+        bh=NhVKT+1Dp3cLQ927y3IeE45PijqPHl/y1tcL0VMnAkY=;
+        b=VuXBj9jWgUShBSBFukGrv/GH/JmFcx8JSdWH3NkgJd7cEemdXUmkMs2ztRrdVffIUL
+         jTgyuM+lH1f+EETUlAa4fXz43LbGYgkxdw/cUn8OaGy6STKVABmnW/2gtMNJAVGq4LBV
+         F7vVb1dp2oHwk8R99K1lBfKJ0YkEZjI+mGXtiIRCd9HZplk/AtZ89bJ8lxMuibwZP/r1
+         /gcXoQ/6woXWdbs9HpJtjyk1PSoo9clBGpAEqvMW7Pz7YbscmZ2OdVHA5x+xA7NeWqS/
+         wcmgn3U2Di2lKIbTwghOwF+5RBNWlVv8Ysd3NlGTTqlCcPX2gnLCnxWnoVvCQPyglR4U
+         sWng==
+X-Gm-Message-State: AOAM532IxSHOkZK/qd5m52tt6wP1OuQ4xU/QawRvNgH6GyJrggTe8Usj
+        4l1wE9OXpBqoetppHJWbMcM/BHeqwg3WIQ==
+X-Google-Smtp-Source: ABdhPJxStfMuXX1WzYtWLp3zKvwHlUVTk033Hdfs1+nAN/BlfU0MSSy8ICasd76nlLmEKo4UR+BpUQ==
+X-Received: by 2002:a05:6830:1d75:: with SMTP id l21mr8771101oti.89.1602258972855;
+        Fri, 09 Oct 2020 08:56:12 -0700 (PDT)
 Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id e7sm7347246oia.9.2020.10.09.08.56.10
+        by smtp.gmail.com with ESMTPSA id e7sm7347246oia.9.2020.10.09.08.56.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 08:56:11 -0700 (PDT)
+        Fri, 09 Oct 2020 08:56:12 -0700 (PDT)
 From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     corbet@lwn.net, keescook@chromium.org, gregkh@linuxfoundation.org
-Cc:     Shuah Khan <skhan@linuxfoundation.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 01/11] counters: Introduce counter_atomic* counters
-Date:   Fri,  9 Oct 2020 09:55:56 -0600
-Message-Id: <baede266cc0c69da61142b467ff386c6b31a70b7.1602209970.git.skhan@linuxfoundation.org>
+To:     shuah@kernel.org, keescook@chromium.org, gregkh@linuxfoundation.org
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH v3 02/11] selftests:lib:test_counters: add new test for counters
+Date:   Fri,  9 Oct 2020 09:55:57 -0600
+Message-Id: <688424d7ff981d34523cd6794d7ce3c27cfe57b4.1602209970.git.skhan@linuxfoundation.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1602209970.git.skhan@linuxfoundation.org>
 References: <cover.1602209970.git.skhan@linuxfoundation.org>
@@ -61,7 +61,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce Simple atomic counters.
+Add a new selftest for testing counter_atomic* Counters API. This test
+load test_counters test modules and unloads.
+
+The test module runs tests and prints results in dmesg.
 
 There are a number of atomic_t usages in the kernel where atomic_t api
 is used strictly for counting and not for managing object lifetime. In
@@ -87,535 +90,63 @@ Using counter_atomic* to guard lifetimes could lead to use-after free
 when it overflows and undefined behavior when used to manage state
 changes and device usage/open states.
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 ---
- Documentation/core-api/counters.rst | 109 +++++++++++++++++
- MAINTAINERS                         |   7 ++
- include/linux/counters.h            | 176 ++++++++++++++++++++++++++++
- lib/Kconfig                         |   9 ++
- lib/Makefile                        |   1 +
- lib/test_counters.c                 | 162 +++++++++++++++++++++++++
- 6 files changed, 464 insertions(+)
- create mode 100644 Documentation/core-api/counters.rst
- create mode 100644 include/linux/counters.h
- create mode 100644 lib/test_counters.c
+ MAINTAINERS                                  |  1 +
+ tools/testing/selftests/lib/Makefile         |  1 +
+ tools/testing/selftests/lib/config           |  1 +
+ tools/testing/selftests/lib/test_counters.sh | 10 ++++++++++
+ 4 files changed, 13 insertions(+)
+ create mode 100755 tools/testing/selftests/lib/test_counters.sh
 
-diff --git a/Documentation/core-api/counters.rst b/Documentation/core-api/counters.rst
-new file mode 100644
-index 000000000000..642d907f4d3a
---- /dev/null
-+++ b/Documentation/core-api/counters.rst
-@@ -0,0 +1,109 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+======================
-+Simple atomic counters
-+======================
-+
-+:Author: Shuah Khan
-+:Copyright: |copy| 2020, The Linux Foundation
-+:Copyright: |copy| 2020, Shuah Khan <skhan@linuxfoundation.org>
-+
-+There are a number of atomic_t usages in the kernel where atomic_t api
-+is used strictly for counting and not for managing object lifetime. In
-+some cases, atomic_t might not even be needed.
-+
-+The purpose of these counters is to clearly differentiate atomic_t counters
-+from atomic_t usages that guard object lifetimes, hence prone to overflow
-+and underflow errors. It allows tools that scan for underflow and overflow
-+on atomic_t usages to detect overflow and underflows to scan just the cases
-+that are prone to errors.
-+
-+Simple atomic counters api provides interfaces for simple atomic counters
-+that just count, and don't guard resource lifetimes. The interfaces are
-+built on top of atomic_t api, providing a smaller subset of atomic_t
-+interfaces necessary to support simple counters.
-+
-+Counter wraps around to INT_MIN when it overflows and should not be used
-+to guard resource lifetimes, device usage and open counts that control
-+state changes, and pm states. Overflowing to INT_MIN is consistent with
-+the atomic_t api, which it is built on top of.
-+
-+Using counter_atomic32_* to guard lifetimes could lead to use-after free
-+when it overflows and undefined behavior when used to manage state
-+changes and device usage/open states.
-+
-+Use refcount_t interfaces for guarding resources.
-+
-+.. warning::
-+        Counter wraps around to INT_MIN when it overflows.
-+        Should not be used to guard resource lifetimes.
-+        Should not be used to manage device state and pm state.
-+
-+Test Counters Module and selftest
-+---------------------------------
-+
-+Please see :ref:`lib/test_counters.c <Test Counters Module>` for how to
-+use these interfaces and also test them.
-+
-+Selftest for testing:
-+:ref:`testing/selftests/lib/test_counters.sh <selftest for counters>`
-+
-+Atomic counter interfaces
-+=========================
-+
-+counter_atomic32 and counter_atomic64 types use atomic_t and atomic64_t
-+underneath to leverage atomic_t api,  providing a small subset of atomic_t
-+interfaces necessary to support simple counters. ::
-+
-+        struct counter_atomic32 { atomic_t cnt; };
-+        struct counter_atomic64 { atomic64_t cnt; };
-+
-+Please see :ref:`Documentation/core-api/atomic_ops.rst <atomic_ops>` for
-+information on the Semantics and Behavior of Atomic operations.
-+
-+.. warning::
-+        It is important to keep the ops to a very small subset to ensure
-+        that the Counter API will never be used for guarding resource
-+        lifetimes and state management.
-+
-+        inc_return() is added to support current atomic_inc_return()
-+        usages and avoid forcing the use of _inc() followed by _read().
-+
-+Initializers
-+------------
-+
-+Interfaces for initializing counters are write operations which in turn
-+invoke their ``ATOMIC_INIT() and atomic_set()`` counterparts ::
-+
-+        #define COUNTER_ATOMIC_INIT(i)    { .cnt = ATOMIC_INIT(i) }
-+        counter_atomic32_set() --> atomic_set()
-+
-+        static struct counter_atomic32 acnt = COUNTER_ATOMIC_INIT(0);
-+        counter_atomic32_set(0);
-+
-+        static struct counter_atomic64 acnt = COUNTER_ATOMIC_INIT(0);
-+        counter_atomic64_set(0);
-+
-+Increment interface
-+-------------------
-+
-+Increments counter and doesn't return the new counter value. ::
-+
-+        counter_atomic32_inc() --> atomic_inc()
-+        counter_atomic64_inc() --> atomic64_inc()
-+
-+Increment and return new counter value interface
-+------------------------------------------------
-+
-+Increments counter and returns the new counter value. ::
-+
-+        counter_atomic32_inc_return() --> atomic_inc_return()
-+        counter_atomic64_inc_return() --> atomic64_inc_return()
-+
-+Decrement interface
-+-------------------
-+
-+Decrements counter and doesn't return the new counter value. ::
-+
-+        counter_atomic32_dec() --> atomic_dec()
-+        counter_atomic64_dec() --> atomic64_dec()
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 33b27e62ce19..4e82d0ffcab0 100644
+index 4e82d0ffcab0..26719b8dd48e 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -15839,6 +15839,13 @@ S:	Maintained
- F:	Documentation/fb/sm712fb.rst
- F:	drivers/video/fbdev/sm712*
+@@ -15845,6 +15845,7 @@ L:	linux-kernel@vger.kernel.org
+ S:	Maintained
+ F:	include/linux/counters.h
+ F:	lib/test_counters.c
++F:	tools/testing/selftests/lib/test_counters.sh
  
-+SIMPLE ATOMIC and NON-ATOMIC COUNTERS
-+M:	Shuah Khan <skhan@linuxfoundation.org>
-+L:	linux-kernel@vger.kernel.org
-+S:	Maintained
-+F:	include/linux/counters.h
-+F:	lib/test_counters.c
-+
  SIMPLE FIRMWARE INTERFACE (SFI)
  S:	Obsolete
- W:	http://simplefirmware.org/
-diff --git a/include/linux/counters.h b/include/linux/counters.h
-new file mode 100644
-index 000000000000..bb96dd544553
+diff --git a/tools/testing/selftests/lib/Makefile b/tools/testing/selftests/lib/Makefile
+index a105f094676e..e8960d7934e2 100644
+--- a/tools/testing/selftests/lib/Makefile
++++ b/tools/testing/selftests/lib/Makefile
+@@ -5,5 +5,6 @@
+ all:
+ 
+ TEST_PROGS := printf.sh bitmap.sh prime_numbers.sh strscpy.sh
++TEST_PROGS += test_counters.sh
+ 
+ include ../lib.mk
+diff --git a/tools/testing/selftests/lib/config b/tools/testing/selftests/lib/config
+index b80ee3f6e265..6ed25024d371 100644
+--- a/tools/testing/selftests/lib/config
++++ b/tools/testing/selftests/lib/config
+@@ -3,3 +3,4 @@ CONFIG_TEST_BITMAP=m
+ CONFIG_PRIME_NUMBERS=m
+ CONFIG_TEST_STRSCPY=m
+ CONFIG_TEST_BITOPS=m
++CONFIG_TEST_COUNTERS=m
+diff --git a/tools/testing/selftests/lib/test_counters.sh b/tools/testing/selftests/lib/test_counters.sh
+new file mode 100755
+index 000000000000..78726cad5c7a
 --- /dev/null
-+++ b/include/linux/counters.h
-@@ -0,0 +1,176 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * counters.h - Interface for simple atomic counters that just count.
-+ *
-+ * Copyright (c) 2020 Shuah Khan <skhan@linuxfoundation.org>
-+ * Copyright (c) 2020 The Linux Foundation
-+ *
-+ * Counter wraps around to INT_MIN when it overflows and should not be
-+ * used to guard resource lifetimes, device usage and open counts that
-+ * control state changes, and pm states. Using counter_atomic to guard
-+ * lifetimes could lead to use-after free when it overflows and undefined
-+ * behavior when used to manage state changes and device usage/open states.
-+ *
-+ * Use refcount_t interfaces for guarding resources.
-+ *
-+ * The interface provides:
-+ * atomic32 & atomic64 functions:
-+ *	increment and no return
-+ *	increment and return value
-+ *	decrement and no return
-+ *	read
-+ *	set
-+ *
-+ * counter_atomic32 functions leverage/use atomic_t interfaces.
-+ * counter_atomic64 functions leverage/use atomic64_t interfaces.
-+ * The counter wraps around to INT_MIN when it overflows.
-+ * These interfaces should not be used to guard resource lifetimes.
-+ *
-+ * Reference and API guide:
-+ *	Documentation/core-api/counters.rst for more information.
-+ *
-+ */
-+
-+#ifndef __LINUX_COUNTERS_H
-+#define __LINUX_COUNTERS_H
-+
-+#include <linux/atomic.h>
-+
-+/**
-+ * struct counter_atomic32 - Simple atomic counter
-+ * @cnt: int
-+ *
-+ * The counter wraps around to INT_MIN, when it overflows. Should not
-+ * be used to guard object lifetimes.
-+ **/
-+struct counter_atomic32 {
-+	atomic_t cnt;
-+};
-+
-+#define COUNTER_ATOMIC_INIT(i)		{ .cnt = ATOMIC_INIT(i) }
-+
-+/*
-+ * counter_atomic32_inc() - increment counter value
-+ * @cntr: struct counter_atomic32 pointer
-+ *
-+ */
-+static inline void counter_atomic32_inc(struct counter_atomic32 *cntr)
-+{
-+	atomic_inc(&cntr->cnt);
-+}
-+
-+/*
-+ * counter_atomic32_inc_return() - increment counter value and return it
-+ * @cntr: struct counter_atomic32 pointer
-+ *
-+ * Return: returns the new counter value after incrementing it
-+ */
-+static inline int counter_atomic32_inc_return(struct counter_atomic32 *cntr)
-+{
-+	return atomic_inc_return(&cntr->cnt);
-+}
-+
-+/*
-+ * counter_atomic32_dec() - decrement counter value
-+ * @cntr: struct counter_atomic32 pointer
-+ *
-+ */
-+static inline void counter_atomic32_dec(struct counter_atomic32 *cntr)
-+{
-+	atomic_dec(&cntr->cnt);
-+}
-+
-+/*
-+ * counter_atomic32_read() - read counter value
-+ * @cntr: struct counter_atomic32 pointer
-+ *
-+ * Return: return the counter value
-+ */
-+static inline int counter_atomic32_read(const struct counter_atomic32 *cntr)
-+{
-+	return atomic_read(&cntr->cnt);
-+}
-+
-+/*
-+ * counter_atomic32_set() - set counter value
-+ * @cntr: struct counter_atomic32 pointer
-+ * @val:  new counter value to set
-+ *
-+ */
-+static inline void
-+counter_atomic32_set(struct counter_atomic32 *cntr, int val)
-+{
-+	atomic_set(&cntr->cnt, val);
-+}
-+
-+#ifdef CONFIG_64BIT
-+/*
-+ * struct counter_atomic64 - Simple atomic counter
-+ * @cnt: atomic64_t
-+ *
-+ * The counter wraps around to INT_MIN, when it overflows. Should not
-+ * be used to guard object lifetimes.
-+ */
-+struct counter_atomic64 {
-+	atomic64_t cnt;
-+};
-+
-+/*
-+ * counter_atomic64_inc() - increment counter value
-+ * @cntr: struct counter_atomic64 pointer
-+ *
-+ */
-+static inline void counter_atomic64_inc(struct counter_atomic64 *cntr)
-+{
-+	atomic64_inc(&cntr->cnt);
-+}
-+
-+/*
-+ * counter_atomic64_inc_return() - increment counter value and return it
-+ * @cntr: struct counter_atomic64 pointer
-+ *
-+ * Return: return the new counter value after incrementing it
-+ */
-+static inline s64
-+counter_atomic64_inc_return(struct counter_atomic64 *cntr)
-+{
-+	return atomic64_inc_return(&cntr->cnt);
-+}
-+
-+/*
-+ * counter_atomic64_dec() - decrement counter value
-+ * @cntr: struct counter_atomic64 pointer
-+ *
-+ */
-+static inline void counter_atomic64_dec(
-+				struct counter_atomic64 *cntr)
-+{
-+	atomic64_dec(&cntr->cnt);
-+}
-+
-+/*
-+ * counter_atomic64_read() - read counter value
-+ * @cntr: struct counter_atomic64 pointer
-+ *
-+ * Return: return the counter value
-+ */
-+static inline s64
-+counter_atomic64_read(const struct counter_atomic64 *cntr)
-+{
-+	return atomic64_read(&cntr->cnt);
-+}
-+
-+/*
-+ * counter_atomic64_set() - set counter value
-+ * @cntr: struct counter_atomic64 pointer
-+ * &val:  new counter value to set
-+ *
-+ */
-+static inline void
-+counter_atomic64_set(struct counter_atomic64 *cntr, s64 val)
-+{
-+	atomic64_set(&cntr->cnt, val);
-+}
-+
-+#endif /* CONFIG_64BIT */
-+#endif /* __LINUX_COUNTERS_H */
-diff --git a/lib/Kconfig b/lib/Kconfig
-index b4b98a03ff98..e05e3d0a6d9c 100644
---- a/lib/Kconfig
-+++ b/lib/Kconfig
-@@ -658,6 +658,15 @@ config OBJAGG
- config STRING_SELFTEST
- 	tristate "Test string functions"
- 
-+config TEST_COUNTERS
-+	tristate "Test Simple Atomic counter functions"
-+	help
-+	   A test module for Simple Atomic counter functions.
-+	   A corresponding selftest can be used to test the
-+	   counter functions.
-+
-+	   Select this if you would like to test counters.
-+
- endmenu
- 
- config GENERIC_IOREMAP
-diff --git a/lib/Makefile b/lib/Makefile
-index a4a4c6864f51..95b357bb5f3c 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -99,6 +99,7 @@ obj-$(CONFIG_TEST_BLACKHOLE_DEV) += test_blackhole_dev.o
- obj-$(CONFIG_TEST_MEMINIT) += test_meminit.o
- obj-$(CONFIG_TEST_LOCKUP) += test_lockup.o
- obj-$(CONFIG_TEST_HMM) += test_hmm.o
-+obj-$(CONFIG_TEST_COUNTERS) += test_counters.o
- 
- #
- # CFLAGS for compiling floating point code inside the kernel. x86/Makefile turns
-diff --git a/lib/test_counters.c b/lib/test_counters.c
-new file mode 100644
-index 000000000000..7a7251273ba7
---- /dev/null
-+++ b/lib/test_counters.c
-@@ -0,0 +1,162 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * test_counters.c - Kernel module for testing Counters
-+ *
-+ * Copyright (c) 2020 Shuah Khan <skhan@linuxfoundation.org>
-+ * Copyright (c) 2020 The Linux Foundation
-+ *
-+ */
-+
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
-+#include <linux/module.h>
-+#include <linux/counters.h>
-+
-+static inline void
-+test_counter_result_print32(char *msg, int start, int end, int expected)
-+{
-+	pr_info("%s: %d to %d - %s\n",
-+		msg, start, end,
-+		((expected == end) ? "PASS" : "FAIL"));
-+}
-+
-+
-+static void test_counter_atomic32(void)
-+{
-+	static struct counter_atomic32 acnt = COUNTER_ATOMIC_INIT(0);
-+	int start_val = counter_atomic32_read(&acnt);
-+	int end_val;
-+
-+	counter_atomic32_inc(&acnt);
-+	end_val = counter_atomic32_read(&acnt);
-+	test_counter_result_print32("Test read and increment",
-+				    start_val, end_val, start_val+1);
-+
-+	start_val = counter_atomic32_read(&acnt);
-+	end_val = counter_atomic32_inc_return(&acnt);
-+	test_counter_result_print32("Test read increment and return",
-+				    start_val, end_val, start_val+1);
-+
-+	start_val = counter_atomic32_read(&acnt);
-+	counter_atomic32_dec(&acnt);
-+	end_val = counter_atomic32_read(&acnt);
-+	test_counter_result_print32("Test read and decrement",
-+				    start_val, end_val, start_val-1);
-+
-+	start_val = counter_atomic32_read(&acnt);
-+	counter_atomic32_set(&acnt, INT_MAX);
-+	end_val = counter_atomic32_read(&acnt);
-+	test_counter_result_print32("Test set", start_val, end_val, INT_MAX);
-+}
-+
-+static void test_counter_atomic32_overflow(void)
-+{
-+	static struct counter_atomic32 ucnt = COUNTER_ATOMIC_INIT(0);
-+	static struct counter_atomic32 ocnt = COUNTER_ATOMIC_INIT(INT_MAX);
-+	int start_val;
-+	int end_val;
-+
-+	start_val = counter_atomic32_read(&ucnt);
-+	counter_atomic32_dec(&ucnt);
-+	end_val = counter_atomic32_read(&ucnt);
-+	test_counter_result_print32("Test underflow (int)",
-+				    start_val, end_val, start_val-1);
-+	test_counter_result_print32("Test underflow (-1)",
-+				    start_val, end_val, -1);
-+
-+	start_val = counter_atomic32_read(&ocnt);
-+	end_val = counter_atomic32_inc_return(&ocnt);
-+	test_counter_result_print32("Test overflow (int)",
-+				    start_val, end_val, start_val+1);
-+	test_counter_result_print32("Test overflow (INT_MIN)",
-+				    start_val, end_val, INT_MIN);
-+}
-+
-+#ifdef CONFIG_64BIT
-+
-+static inline void
-+test_counter_result_print64(char *msg, s64 start, s64 end, s64 expected)
-+{
-+	pr_info("%s: %lld to %lld - %s\n",
-+		msg, start, end,
-+		((expected == end) ? "PASS" : "FAIL"));
-+}
-+
-+static void test_counter_atomic64(void)
-+{
-+	static struct counter_atomic64 acnt = COUNTER_ATOMIC_INIT(0);
-+	s64 start_val = counter_atomic64_read(&acnt);
-+	s64 end_val;
-+
-+	counter_atomic64_inc(&acnt);
-+	end_val = counter_atomic64_read(&acnt);
-+	test_counter_result_print64("Test read and increment",
-+				    start_val, end_val, start_val+1);
-+
-+	start_val = counter_atomic64_read(&acnt);
-+	end_val = counter_atomic64_inc_return(&acnt);
-+	test_counter_result_print64("Test read increment and return",
-+				    start_val, end_val, start_val+1);
-+
-+	start_val = counter_atomic64_read(&acnt);
-+	counter_atomic64_dec(&acnt);
-+	end_val = counter_atomic64_read(&acnt);
-+	test_counter_result_print64("Test read and decrement",
-+				    start_val, end_val, start_val-1);
-+
-+	start_val = counter_atomic64_read(&acnt);
-+	counter_atomic64_set(&acnt, INT_MAX);
-+	end_val = counter_atomic64_read(&acnt);
-+	test_counter_result_print64("Test set", start_val, end_val, INT_MAX);
-+}
-+
-+static void test_counter_atomic64_overflow(void)
-+{
-+	static struct counter_atomic64 ucnt = COUNTER_ATOMIC_INIT(0);
-+	static struct counter_atomic64 ocnt = COUNTER_ATOMIC_INIT(INT_MAX);
-+	s64 start_val;
-+	s64 end_val;
-+
-+	start_val = counter_atomic64_read(&ucnt);
-+	counter_atomic64_dec(&ucnt);
-+	end_val = counter_atomic64_read(&ucnt);
-+	test_counter_result_print64("Test underflow",
-+				    start_val, end_val, start_val-1);
-+
-+	start_val = counter_atomic64_read(&ocnt);
-+	end_val = counter_atomic64_inc_return(&ocnt);
-+	test_counter_result_print64("Test overflow",
-+				    start_val, end_val, start_val+1);
-+}
-+
-+#endif /* CONFIG_64BIT */
-+
-+static int __init test_counters_init(void)
-+{
-+	pr_info("Start counter_atomic32_*() interfaces test\n");
-+	test_counter_atomic32();
-+	test_counter_atomic32_overflow();
-+	pr_info("End counter_atomic32_*() interfaces test\n\n");
-+
-+#ifdef CONFIG_64BIT
-+	pr_info("Start counter_atomic64_*() interfaces test\n");
-+	test_counter_atomic64();
-+	test_counter_atomic64_overflow();
-+	pr_info("End counter_atomic64_*() interfaces test\n\n");
-+
-+#endif /* CONFIG_64BIT */
-+
-+	return 0;
-+}
-+
-+module_init(test_counters_init);
-+
-+static void __exit test_counters_exit(void)
-+{
-+	pr_info("exiting.\n");
-+}
-+
-+module_exit(test_counters_exit);
-+
-+MODULE_AUTHOR("Shuah Khan <skhan@linuxfoundation.org>");
-+MODULE_LICENSE("GPL v2");
++++ b/tools/testing/selftests/lib/test_counters.sh
+@@ -0,0 +1,10 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0
++#
++# Copyright (c) 2020 Shuah Khan <skhan@linuxfoundation.org>
++# Copyright (c) 2020 The Linux Foundation
++#
++# Tests the Simple Atomic Counters interfaces using test_counters
++# kernel module
++#
++$(dirname $0)/../kselftest/module.sh "test_counters" test_counters
 -- 
 2.25.1
 
