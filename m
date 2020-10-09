@@ -2,69 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B87D7288AE3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7984A288B49
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388791AbgJIOaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 10:30:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39369 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731698AbgJIOaQ (ORCPT
+        id S2389048AbgJIOcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 10:32:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388853AbgJIObL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 10:30:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602253815;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VZwi1PuAHHUonkjQhC6XnnNKvufbOcpHYJxIfyAttlM=;
-        b=c6lbCxk10TEhVuBKIFeyIATZ9nqXL+Jlg6l+RAFnrNuf8lGxqU4LrepQcCmOva4m0FiYKj
-        5eVPNdfeNuMZ90q4BqY3bIius86nt5cy6rOj5G2pYPN0racs+aeqB5/Q/zkX+YrLd0hOgZ
-        bgpRIHj+KytD28ej2EqhrMSTp4Gnwcc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-321-E31mPg-WMJ2_5nnlADFGsg-1; Fri, 09 Oct 2020 10:30:13 -0400
-X-MC-Unique: E31mPg-WMJ2_5nnlADFGsg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5C01018FE860;
-        Fri,  9 Oct 2020 14:30:12 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.195.138])
-        by smtp.corp.redhat.com (Postfix) with SMTP id DA6226EF7B;
-        Fri,  9 Oct 2020 14:30:10 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Fri,  9 Oct 2020 16:30:12 +0200 (CEST)
-Date:   Fri, 9 Oct 2020 16:30:09 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-        peterz@infradead.org, tglx@linutronix.de
-Subject: Re: [PATCHSET v4] Add support for TIF_NOTIFY_SIGNAL
-Message-ID: <20201009143009.GA14523@redhat.com>
-References: <20201008152752.218889-1-axboe@kernel.dk>
+        Fri, 9 Oct 2020 10:31:11 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E8C4C0613D7;
+        Fri,  9 Oct 2020 07:31:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=GeyZChjU8Oj99Pp+9Mi0xQ6/HJ6pKkZb0kZT9pF9iBE=; b=Dq9QSGgeteBqpVdE+hBXk+LzdL
+        I4AVG5F9x8v0QGJ5MRwNuBqwfxHyMo/Io8eUCPuH8g6FiNs6SFWDDC/LaxdgLL9IRmO378buAs0Nd
+        /9fFuziR9D8ptZW2K48QSlR0cl+tAHJWxW9OWT6KzQpFo64yaxYXBs+NwGFwnEH1szT9X5UKIDv9a
+        I4IgyXpNyes45ny+RuOTSQ/+VIMqtrQ/O+Dt6tEE5DLIEE5Bys7Feal0RaDC9hjliaOa48W9e4I15
+        evQwTi1i6I1cP89eget5ZT673r2Hl0R5jp619lb54zyWDhXlpnWQV50yOUzipONAoMNyZ2lMu4spW
+        D5naUVtg==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kQtQI-0005uQ-A9; Fri, 09 Oct 2020 14:31:06 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-mm@kvack.org, v9fs-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, linux-afs@lists.infradead.org,
+        ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ecryptfs@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
+        linux-xfs@vger.kernel.org
+Subject: [PATCH v2 00/16] Allow readpage to return a locked page
+Date:   Fri,  9 Oct 2020 15:30:48 +0100
+Message-Id: <20201009143104.22673-1-willy@infradead.org>
+X-Mailer: git-send-email 2.21.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201008152752.218889-1-axboe@kernel.dk>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/08, Jens Axboe wrote:
->
-> Changes since v3:
-> 
-> - Drop not needed io_uring change
-> - Drop syscall restart split, handle TIF_NOTIFY_SIGNAL from the arch
->   signal handling, using task_sigpending() to see if we need to care
->   about real signals.
-> - Fix a few over-zelaous task_sigpending() changes
-> - Cleanup WARN_ON() in restore_saved_sigmask_unless()
+Linus recently made the page lock more fair.  That means that the old
+pattern where we returned from ->readpage with the page unlocked and
+then attempted to re-lock it will send us to the back of the queue for
+this page's lock.
 
-Reviewed-by: Oleg Nesterov <oleg@redhat.com>
+A further benefit is that a synchronous readpage implementation allows
+us to return an error to someone who might actually care about it.
+There's no need to SetPageError, but I don't want to learn about how
+a dozen filesystems handle I/O errors (hint: they're all different),
+so I have not attempted to change that.  Except for iomap.
 
-but let me comment 3/4...
+Ideally all filesystems would return from ->readpage with the page
+Uptodate and Locked, but it's a bit painful to convert all the
+asynchronous readpage implementations to synchronous.  The first 14
+filesystems converted are already synchronous.  The last two patches
+convert iomap to synchronous readpage.
+
+This patchset is against iomap-for-next.  Andrew, it would make merging
+the THP patchset much easier if you could merge at least the first patch
+adding AOP_UPDATED_PAGE during the merge window which opens next week.
+
+Matthew Wilcox (Oracle) (16):
+  mm: Add AOP_UPDATED_PAGE return value
+  mm: Inline wait_on_page_read into its one caller
+  9p: Tell the VFS that readpage was synchronous
+  afs: Tell the VFS that readpage was synchronous
+  ceph: Tell the VFS that readpage was synchronous
+  cifs: Tell the VFS that readpage was synchronous
+  cramfs: Tell the VFS that readpage was synchronous
+  ecryptfs: Tell the VFS that readpage was synchronous
+  fuse: Tell the VFS that readpage was synchronous
+  hostfs: Tell the VFS that readpage was synchronous
+  jffs2: Tell the VFS that readpage was synchronous
+  ubifs: Tell the VFS that readpage was synchronous
+  udf: Tell the VFS that readpage was synchronous
+  vboxsf: Tell the VFS that readpage was synchronous
+  iomap: Inline iomap_iop_set_range_uptodate into its one caller
+  iomap: Make readpage synchronous
+
+ Documentation/filesystems/locking.rst |  7 +-
+ Documentation/filesystems/vfs.rst     | 21 ++++--
+ fs/9p/vfs_addr.c                      |  6 +-
+ fs/afs/file.c                         |  3 +-
+ fs/ceph/addr.c                        |  9 +--
+ fs/cifs/file.c                        |  8 ++-
+ fs/cramfs/inode.c                     |  5 +-
+ fs/ecryptfs/mmap.c                    | 11 ++--
+ fs/fuse/file.c                        |  2 +
+ fs/hostfs/hostfs_kern.c               |  2 +
+ fs/iomap/buffered-io.c                | 92 ++++++++++++++-------------
+ fs/jffs2/file.c                       |  6 +-
+ fs/ubifs/file.c                       | 16 +++--
+ fs/udf/file.c                         |  3 +-
+ fs/vboxsf/file.c                      |  2 +
+ include/linux/fs.h                    |  5 ++
+ mm/filemap.c                          | 33 +++++-----
+ 17 files changed, 135 insertions(+), 96 deletions(-)
+
+-- 
+2.28.0
 
