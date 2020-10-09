@@ -2,88 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D9D288664
+	by mail.lfdr.de (Postfix) with ESMTP id 9012E288665
 	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 11:53:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733284AbgJIJxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1733293AbgJIJx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 05:53:27 -0400
+Received: from foss.arm.com ([217.140.110.172]:46510 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733276AbgJIJxZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 9 Oct 2020 05:53:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725917AbgJIJxY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 05:53:24 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 965F4C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 02:53:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/ClJchKp0ikj2wNIM+u+4iC4WzNwd2ei6WliGpK0apI=; b=c7i9Yo8NOF+jporKly0ZFFUffi
-        XmNjqy56fbFatcBuFMJPFsiBaO3UrG0H3IZ/tzxzuDwWSedBFCs3foE8BZ8As6e5kmrAbmXG338Vs
-        BOgtVfUX6SBxhDrUSrn79iJIeXJFfOdJ+ysWZSh7YOmvZKP24rxNc34kcXhspSfQkEmSXTr7wCq8/
-        KHQSTuPEKfx4c8mhmq8ue/6iIQF6DRCjXPnb8tMJRqurbv9ZDBSvY/xShPczWTWNX1BUuKru2yOSB
-        6p0SkVTRoAzxRjOyvwi4PTf+OSUwCRPn5Kht28zAucz4+wiGKrLNOR5p44JsqqDM/CEOnUe24gh6r
-        dSoSFiig==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kQp5C-0005ck-08; Fri, 09 Oct 2020 09:53:02 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 12F52300B22;
-        Fri,  9 Oct 2020 11:53:01 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0162829E787A9; Fri,  9 Oct 2020 11:53:00 +0200 (CEST)
-Date:   Fri, 9 Oct 2020 11:53:00 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     kan.liang@linux.intel.com, mingo@redhat.com, acme@kernel.org,
-        linux-kernel@vger.kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        eranian@google.com, ak@linux.intel.com, dave.hansen@intel.com,
-        kirill.shutemov@linux.intel.com, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org,
-        David Miller <davem@davemloft.net>
-Subject: Re: [PATCH V9 1/4] perf/core: Add PERF_SAMPLE_DATA_PAGE_SIZE
-Message-ID: <20201009095300.GI2628@hirez.programming.kicks-ass.net>
-References: <20201001135749.2804-1-kan.liang@linux.intel.com>
- <20201001135749.2804-2-kan.liang@linux.intel.com>
- <20201009090927.GQ2611@hirez.programming.kicks-ass.net>
- <20201009093750.GD29594@willie-the-truck>
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A9CB7D6E;
+        Fri,  9 Oct 2020 02:53:24 -0700 (PDT)
+Received: from [10.37.12.22] (unknown [10.37.12.22])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 45DAD3F66B;
+        Fri,  9 Oct 2020 02:53:21 -0700 (PDT)
+Subject: Re: [PATCH v4 29/39] arm64: mte: Switch GCR_EL1 in kernel entry and
+ exit
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1601593784.git.andreyknvl@google.com>
+ <1f2681fdff1aa1096df949cb8634a9be6bf4acc4.1601593784.git.andreyknvl@google.com>
+ <20201002140652.GG7034@gaia> <1b2327ee-5f30-e412-7359-32a7a38b4c8d@arm.com>
+ <20201009081111.GA23638@gaia>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <106f8670-3dd0-70ad-91ac-4f419585df50@arm.com>
+Date:   Fri, 9 Oct 2020 10:56:02 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201009093750.GD29594@willie-the-truck>
+In-Reply-To: <20201009081111.GA23638@gaia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 10:37:51AM +0100, Will Deacon wrote:
-> On Fri, Oct 09, 2020 at 11:09:27AM +0200, Peter Zijlstra wrote:
 
-> > Patch 4 makes it all far worse by exposing it to pretty much everybody.
-> > 
-> > Now, I think we can fix at least the user mappings with the below delta,
-> > but if archs are using non-page-table MMU sizes we'll need arch helpers.
-> > 
-> > ARM64 is in that last boat.
-> > 
-> > Will, can you live with the below, if not, what would you like to do,
-> > make the entire function __weak so that you can override it, or hook
-> > into it somewhere?
+
+On 10/9/20 9:11 AM, Catalin Marinas wrote:
+> On Thu, Oct 08, 2020 at 07:24:12PM +0100, Vincenzo Frascino wrote:
+>> On 10/2/20 3:06 PM, Catalin Marinas wrote:
+>>> On Fri, Oct 02, 2020 at 01:10:30AM +0200, Andrey Konovalov wrote:
+>>>> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+>>>> index 7c67ac6f08df..d1847f29f59b 100644
+>>>> --- a/arch/arm64/kernel/mte.c
+>>>> +++ b/arch/arm64/kernel/mte.c
+>>>> @@ -23,6 +23,8 @@
+>>>>  #include <asm/ptrace.h>
+>>>>  #include <asm/sysreg.h>
+>>>>  
+>>>> +u64 gcr_kernel_excl __ro_after_init;
+>>>> +
+>>>>  static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap)
+>>>>  {
+>>>>  	pte_t old_pte = READ_ONCE(*ptep);
+>>>> @@ -120,6 +122,13 @@ void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
+>>>>  	return ptr;
+>>>>  }
+>>>>  
+>>>> +void mte_init_tags(u64 max_tag)
+>>>> +{
+>>>> +	u64 incl = GENMASK(max_tag & MTE_TAG_MAX, 0);
+>>>
+>>> Nitpick: it's not obvious that MTE_TAG_MAX is a mask, so better write
+>>> this as GENMASK(min(max_tag, MTE_TAG_MAX), 0).
+>>
+>> The two things do not seem equivalent because the format of the tags in KASAN is
+>> 0xFF and in MTE is 0xF, hence if extract the minimum whatever is the tag passed
+>> by KASAN it will always be MTE_TAG_MAX.
+>>
+>> To make it cleaner I propose: GENMASK(FIELD_GET(MTE_TAG_MAX, max_tag), 0);
 > 
-> Hmm, so I don't think we currently have any PMUs that set 'data->addr'
-> on arm64, in which case maybe none of this currently matters for us.
+> I don't think that's any clearer since FIELD_GET still assumes that
+> MTE_TAG_MAX is a mask. I think it's better to add a comment on why this
+> is needed, as you explained above that the KASAN tags go to 0xff.
 > 
-> However, I must admit that I couldn't figure out exactly what gets exposed
-> to userspace when the backend drivers don't look at the sample_type or
-> do anything with the addr field.
+> If you want to get rid of MTE_TAG_MAX altogether, just do a
+> 
+> 	max_tag &= (1 << MAX_TAG_SIZE) - 1;
+> 
+> before setting incl (a comment is still useful).
+> 
 
-Patch 4:
+Agree, but still think we should use FIELD_GET here since it is common language
+in the kernel.
 
-  https://lkml.kernel.org/r/20201001135749.2804-5-kan.liang@linux.intel.com
+How about we get rid of MTE_TAG_MAX and we do something like:
 
-is the one that exposes this to everybody with perf support. It will
-then report the page-size for the code address (SAMPLE_IP).
+GENMASK(FIELD_GET(MTE_TAG_MASK >> MTE_TAG_SHIFT, max_tag), 0);
 
+Obviously with a comment ;)
+
+-- 
+Regards,
+Vincenzo
