@@ -2,80 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CC06288685
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 12:04:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1CFF288690
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 12:10:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387446AbgJIKEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 06:04:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29017 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727737AbgJIKEb (ORCPT
+        id S2387480AbgJIKKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 06:10:11 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:42105 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726357AbgJIKKK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 06:04:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602237870;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6oUXl8cXDiQxWYoF9OWbqCnK1IBZgB0WGXU+7KILpBs=;
-        b=UIg7qUQdqFTezvKHsgOMTqUm2OAhzJmCEI4Vzm+kfZ04v1gP0BLAXukbU8uy/8GzH+LhIS
-        /VArnfq2I8JKt72ecNRPrP5bmKpyrZMd1Byb8/mlFAg5Uhx/XaQtifs1e7MWACz/sSARNF
-        2MqCcArGBV+i0qLN0Ts+xZxzel9mibQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-281-vlyUsbZHNJ-WtKzGTvkj6A-1; Fri, 09 Oct 2020 06:04:28 -0400
-X-MC-Unique: vlyUsbZHNJ-WtKzGTvkj6A-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1E5DB1019625;
-        Fri,  9 Oct 2020 10:04:27 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-116-196.rdu2.redhat.com [10.10.116.196])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9E2116266E;
-        Fri,  9 Oct 2020 10:04:25 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20200924134052.1156-1-hdanton@sina.com>
-References: <20200924134052.1156-1-hdanton@sina.com> <000000000000650d4005b00bcb0c@google.com>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     dhowells@redhat.com,
-        syzbot <syzbot+459a5dce0b4cb70fd076@syzkaller.appspotmail.com>,
-        linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: general protection fault in strncasecmp
+        Fri, 9 Oct 2020 06:10:10 -0400
+Received: by mail-oi1-f194.google.com with SMTP id 16so9623353oix.9
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 03:10:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VXgTAeNLVRwrvbBQvZBKH0svcGPL7IUxdBe/H8dLzzA=;
+        b=CpN3Ev1yuU52dFSAw9qNOyVUo1jOn31wCaLwes8QaXa1uWz3LSqlQ0SLVUVITGO9RG
+         Zk+7kUv97Lx52bN3VuQZVOMDZBQa2epHVUHrpHoAg8E6rLUIkMuQLruxOezs8IfeVVG0
+         VpMzCmZWO/e4N85b+asrWTW28O3jwx2c5gtR9wdxjhMqVqPjxh5u7/iuPFYu2RMdxuvZ
+         yutuORFvK8dgYLqtBi3B2UjZdNd1DHQ41YvRKryY+2athbsoXYQaHBDHaigSwvb2Czl0
+         d9ADWIyHbxXkVJ5JIADZheaEdB2yckAJZwfsUXqluQpcSGb/3QYm+YKz/PjwaTq25+Zz
+         +w9w==
+X-Gm-Message-State: AOAM531Q5d83/5cETOHbQfKyJy1cYq4xjbdChpKtf2QaXClGPQaLOcEC
+        2/l1T2dqoZODOILP1a1GdMvUZwSXa6mwiMgsjgoPBGJ0
+X-Google-Smtp-Source: ABdhPJzCiM2XmUWGqDX7CzY9RyUkC0BiX6GPjQTNsOIQ6Ki/UsmD18hb6kCuXY2SG1Dw7ubQLpxfUyUXadw8itY2Wco=
+X-Received: by 2002:aca:4441:: with SMTP id r62mr1823303oia.153.1602238209569;
+ Fri, 09 Oct 2020 03:10:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <471039.1602237864.1@warthog.procyon.org.uk>
-Date:   Fri, 09 Oct 2020 11:04:24 +0100
-Message-ID: <471040.1602237864@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20201009095621.833192-1-laurent@vivier.eu>
+In-Reply-To: <20201009095621.833192-1-laurent@vivier.eu>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 9 Oct 2020 12:09:58 +0200
+Message-ID: <CAMuHMdXa=6xbSka9VYzwu1a1hDYufTcOCF=-Qdd9WGzU0vT4Gg@mail.gmail.com>
+Subject: Re: [PATCH] m68k: remove unused mach_max_dma_address
+To:     Laurent Vivier <laurent@vivier.eu>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Roman Zippel <zippel@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Philip Blundell <philb@gnu.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Sam Creasey <sammy@sammy.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hillf Danton <hdanton@sina.com> wrote:
+On Fri, Oct 9, 2020 at 11:56 AM Laurent Vivier <laurent@vivier.eu> wrote:
+> This information is unused since the discontinuous memory support
+> has been introduced in 2007.
+>
+> Fixes: 12d810c1b8c2 ("m68k: discontinuous memory support")
+> Signed-off-by: Laurent Vivier <laurent@vivier.eu>
 
-> +			/*
-> +			 * care to detect writers because
-> +			 *
-> +			 * read_seqbegin_or_lock(&net->cells_lock, &seq);
-> +			 *
-> +			 * is unable to block 
-> +			 *
-> +			 * write_seqlock(&net->cells_lock);
-> +			 *
-> +			 */
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k for-v5.11 branch.
 
-That shouldn't be true.  The loop may make one or two passes, the first
-without the lock, the second with.  The RCU read lock is supposed to be held
-in both cases too (but see below).
+Gr{oetje,eeting}s,
 
-One of the call sites, however, afs_probe_cell_name(), doesn't call
-afs_lookup_cell_rcu() with the RCU read lock held - which is an error, but not
-obviously the one that's biting here.
+                        Geert
 
-David
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
