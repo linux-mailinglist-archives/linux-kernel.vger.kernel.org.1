@@ -2,367 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A6228856A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:38:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3FB5288566
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:38:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732866AbgJIIik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 04:38:40 -0400
-Received: from mail-eopbgr760082.outbound.protection.outlook.com ([40.107.76.82]:14720
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729347AbgJIIij (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 04:38:39 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IYFWZw+tdyHfG1+Ec+QtVjpwY1dFQKdM3NL0WeBjwgS5VuuWj6g3mlW4EjN2GYngtoSS1jAqVD5wlT/KtwSPaFO/4O1flsPcscBcjcnndhoK6ksvGccjO/QxbYj+/u613JmFQius4ir/vZCuXdh3jWalVYNmmtjEfzB9zlI1ME4GNP18e8WSyavEnoCpaaJgp4QgWsdQD/haDhPgP21Zb49m82+StttbwEdasEmmkTscPF/mHuDg+tOc+VONavvH4/dbQFTbI+abUvZbv3sVYfIJ7mRAEh1aS/lp0Uc8vUREVKlg9wT6IYq00f9NlyaKKSFQB0oYo9YUmDYmwYSeEA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2eXqIw4mzCOu6TLn52Dz+PDp7w1flwlg7x1kYcufS98=;
- b=CuesTJRTpZJfUfmlxQZ3x5nND2F8SHDkNlLi55vnRwK1QkeP2FMyzmX4l6zfDMoK+iLG0c4yt+/AoVVhqp050EGg1TelXHH2E2WzZVm8QzPNgftrqx5Sd9WswnngnDAlFYh/zJvS/i+l1u/RWHneinPmEDKnncYDDLAg1j8Ios1NLIquuBBLnOTpCwoVYidy7262h4fhhbJcwxKF+aDNKDc0cs9vUXy2p3tYeSNyyxn8UCg8VG5cqNqeDwX3rnjDal9fiVRBxa5njS2c2ygm4LnyqLY7izOTM44cTbTx0abz28Z3+kb9fAocSZcY/tFCnTNtM1mW62ODY3yBcpi7SA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2eXqIw4mzCOu6TLn52Dz+PDp7w1flwlg7x1kYcufS98=;
- b=oaNrBydqi6C2LH3Ah2HnPAVXJe2bSLoCtUca+6X2VS2mTVHIqVzyeEzjJ+YnMB2K06/fzIVs8MLNRmfdyM0YZA2qOhaFwLuQSuAPV8vs6vYgfVSIpi5GlufywQYpdUXXAyyia7By8tMKyNLb45nIpls8E8MsICYlqb7Erq5NVhg=
-Authentication-Results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=synaptics.com;
-Received: from BN7PR03MB4547.namprd03.prod.outlook.com (2603:10b6:408:9::22)
- by BN8PR03MB4978.namprd03.prod.outlook.com (2603:10b6:408:78::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.21; Fri, 9 Oct
- 2020 08:38:34 +0000
-Received: from BN7PR03MB4547.namprd03.prod.outlook.com
- ([fe80::8056:3100:523:68d]) by BN7PR03MB4547.namprd03.prod.outlook.com
- ([fe80::8056:3100:523:68d%7]) with mapi id 15.20.3455.023; Fri, 9 Oct 2020
- 08:38:33 +0000
-Date:   Fri, 9 Oct 2020 16:37:47 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Vidya Sagar <vidyas@nvidia.com>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Richard Zhu <hongxing.zhu@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        "Pengutronix Kernel Team" <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        "NXP Linux Team" <linux-imx@nxp.com>,
-        Yue Wang <yue.wang@Amlogic.com>,
-        "Kevin Hilman" <khilman@baylibre.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Jesper Nilsson <jesper.nilsson@axis.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        Pratyush Anand <pratyush.anand@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "Kunihiko Hayashi" <hayashi.kunihiko@socionext.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "linux-amlogic@lists.infradead.org" 
-        <linux-amlogic@lists.infradead.org>,
-        "linux-arm-kernel@axis.com" <linux-arm-kernel@axis.com>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-Subject: [PATCH] PCI: dwc: Move dw_pcie_msi_init() from each users to
- designware host
-Message-ID: <20201009163747.64b1de4a@xhacker.debian>
-In-Reply-To: <435c8cf8-8f4a-c491-4aca-3ec5b7abe49a@nvidia.com>
-References: <20200924190421.549cb8fc@xhacker.debian>
-        <b977d9b4-cc98-e817-0d51-8f2c6ba1445d@nvidia.com>
-        <20201006143647.3f989340@xhacker.debian>
-        <435c8cf8-8f4a-c491-4aca-3ec5b7abe49a@nvidia.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [124.74.246.114]
-X-ClientProxiedBy: TY1PR01CA0200.jpnprd01.prod.outlook.com (2603:1096:403::30)
- To BN7PR03MB4547.namprd03.prod.outlook.com (2603:10b6:408:9::22)
+        id S1732672AbgJIIh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 04:37:57 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59790 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729347AbgJIIh4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 04:37:56 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D9052AC7D;
+        Fri,  9 Oct 2020 08:37:53 +0000 (UTC)
+Message-ID: <e5e724bc6f07c766f1f4188729d0b757dea363f3.camel@suse.de>
+Subject: Re: [PATCH 1/4] of/fdt: Update zone_dma_bits when running in bcm2711
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Jeremy Linton <jeremy.linton@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        iommu@lists.linux-foundation.org, Rob Herring <robh+dt@kernel.org>,
+        linux-rpi-kernel@lists.infradead.org,
+        Will Deacon <will@kernel.org>, Christoph Hellwig <hch@lst.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Robin Murphy <robin.murphy@arm.com>
+Date:   Fri, 09 Oct 2020 10:37:50 +0200
+In-Reply-To: <978e01a1-71e6-7286-0876-bb10698ba1d2@arm.com>
+References: <20201001161740.29064-1-nsaenzjulienne@suse.de>
+         <20201001161740.29064-2-nsaenzjulienne@suse.de>
+         <20201001171500.GN21544@gaia> <20201001172320.GQ21544@gaia>
+         <b47232e2173e9e5ddf8f5be4c7b5a2f897f34eb7.camel@suse.de>
+         <20201002115541.GC7034@gaia>
+         <12f33d487eabd626db4c07ded5a1447795eed355.camel@suse.de>
+         <20201008101353.GE7661@gaia>
+         <CAMj1kXFDEdEJ_eaB=jb1m=tKBpVdskrC0fW67NvGNZFS5PVL=Q@mail.gmail.com>
+         <978e01a1-71e6-7286-0876-bb10698ba1d2@arm.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-QEUs6mNIatkWXfPNUc5q"
+User-Agent: Evolution 3.36.5 
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (124.74.246.114) by TY1PR01CA0200.jpnprd01.prod.outlook.com (2603:1096:403::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.22 via Frontend Transport; Fri, 9 Oct 2020 08:38:22 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fac939c5-1c35-47b0-44ef-08d86c2eb4d0
-X-MS-TrafficTypeDiagnostic: BN8PR03MB4978:
-X-Microsoft-Antispam-PRVS: <BN8PR03MB4978A30FDEFE229BC4FE98A6ED080@BN8PR03MB4978.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Moz4ARLpI0/gm3PrYYH1dW6Oxcn6n9+mazMyp+rBoXnYEZ5KBINXmK2EHVIz7Ik3/oCmgAKwtNPK3OUoQ1s6yVkOz6J+iA8uS0i/e8B+tQaHYUdPIbNsWXz8LAXYjEfD0tBA73KBo81+HdBTDKDMZyWVDUPEzsw6y0k6giyE68i+DKbOoyaurDsWjji+wYW7r5ZjTAVv7buAZlnPyU2R0Ii6UXDTlfESi18ZsdY7pgBVHAPTLWgMsKqwnzLloKR0DvNT61E8sxYPDS8NkzgIWBLjsF0bvwF0VPqAs3LbV9jggKUV8rXnhtI9Dr7q8I+szVfPKu4r5RSc7bmHKhaSvQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN7PR03MB4547.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(136003)(366004)(39850400004)(346002)(9686003)(55016002)(66476007)(6916009)(6506007)(66556008)(66946007)(478600001)(956004)(5660300002)(7406005)(26005)(7416002)(86362001)(1076003)(54906003)(52116002)(7696005)(8676002)(6666004)(2906002)(8936002)(186003)(316002)(83380400001)(4326008)(16526019);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: GACrIvmrtosVZOxk1KJtilgpQaYso1R8wqF5Xrv1Pvn5kZpzxosfejBpKxAu9vKZQUeI/dsI0R2VjTxbxE6fIXEAyT6iG+Y9cOIr4w3oi24yIAKA1UDCTzj24wJ+/VILz/GC32UXucSbnlXCvHTTOLIxSSMSjGJxigj9gOW/1ec5RUc2CqKxHIJDAfXzM7Ua4lO6Z+NdKQRbilgYbV09CaL7D1DylDYt+l/SPuELr40WxDkaJU4UMuyfgUxFvsE+E1TYmaTNCQX5lTyHHNs00/eENLN5uIOz2vLN7XUucCjCFcTVlcU0fbhtNoXF5nSqNrOVnz6cSF/fIWaPZy87deyBtJhku9G3ej3t/MPrm9V9okh77XusXeWRgUHvB7ARU2OQp/x114iAnSS3DfyzqcQtlZ8v360qLrj5m586Vf+syH6un07nZmS34Wqd7ymG1o+/LAGiQJa2YjMjAelI3j9uud4iHeYhCFNLIuDnDJhaxqsw2e8yBmTNb2EDbvEtCGX78sEU2C+7q5rQLp6PQjHTMJJIyrAyVczmU+tKUAJ2BUMMQjre0d58ItHvekmPXYJTq6mSgE9D1eOwb3NL/LxGgatXC3rgQkMawOS98D8LiH3YjV9nuGNpnK/sRktWL8a0W555OKezHJhmrgm8Mw==
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fac939c5-1c35-47b0-44ef-08d86c2eb4d0
-X-MS-Exchange-CrossTenant-AuthSource: BN7PR03MB4547.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2020 08:38:33.5146
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1ZKbFB0RuGdSjrqruT4jktcVyL1lY6HRJ3S6hsobSfGWf6UWlgxUmnRNxueYrKwJq9Sl5PImgddarOBuKWPsTg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR03MB4978
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let the designware host take care the integrated msi init rather
-than duplicate dw_pcie_msi_init() in each users.
 
-Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
----
+--=-QEUs6mNIatkWXfPNUc5q
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Vidya,
+Hi Jeremy.
 
-After V7, only this patch is left, others in v2 are not needed. There's one
-more clean up chance -- we can also move dw_pcie_free_msi() to designware
-host and make it static if we can clean up dra7xx. I see Rob is working on
-some larger MSI clean-ups, maybe this will be done in his clean-ups.
+On Thu, 2020-10-08 at 22:59 -0500, Jeremy Linton wrote:
+> On 10/8/20 2:43 PM, Ard Biesheuvel wrote:
+> > (+ Lorenzo)
+> >=20
+> > On Thu, 8 Oct 2020 at 12:14, Catalin Marinas <catalin.marinas@arm.com> =
+wrote:
+> > > On Thu, Oct 08, 2020 at 12:05:25PM +0200, Nicolas Saenz Julienne wrot=
+e:
+> > > > On Fri, 2020-10-02 at 12:55 +0100, Catalin Marinas wrote:
+> > > > > On Thu, Oct 01, 2020 at 07:31:19PM +0200, Nicolas Saenz Julienne =
+wrote:
+> > > > > > On Thu, 2020-10-01 at 18:23 +0100, Catalin Marinas wrote:
+> > > > > > > On Thu, Oct 01, 2020 at 06:15:01PM +0100, Catalin Marinas wro=
+te:
+> > > > > > > > On Thu, Oct 01, 2020 at 06:17:37PM +0200, Nicolas Saenz Jul=
+ienne wrote:
+> > > > > > > > > diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+> > > > > > > > > index 4602e467ca8b..cd0d115ef329 100644
+> > > > > > > > > --- a/drivers/of/fdt.c
+> > > > > > > > > +++ b/drivers/of/fdt.c
+> > > > > > > > > @@ -25,6 +25,7 @@
+> > > > > > > > >   #include <linux/serial_core.h>
+> > > > > > > > >   #include <linux/sysfs.h>
+> > > > > > > > >   #include <linux/random.h>
+> > > > > > > > > +#include <linux/dma-direct.h>      /* for zone_dma_bits =
+*/
+> > > > > > > > >=20
+> > > > > > > > >   #include <asm/setup.h>  /* for COMMAND_LINE_SIZE */
+> > > > > > > > >   #include <asm/page.h>
+> > > > > > > > > @@ -1198,6 +1199,14 @@ void __init early_init_dt_scan_nod=
+es(void)
+> > > > > > > > >      of_scan_flat_dt(early_init_dt_scan_memory, NULL);
+> > > > > > > > >   }
+> > > > > > > > >=20
+> > > > > > > > > +void __init early_init_dt_update_zone_dma_bits(void)
+> > > > > > > > > +{
+> > > > > > > > > +   unsigned long dt_root =3D of_get_flat_dt_root();
+> > > > > > > > > +
+> > > > > > > > > +   if (of_flat_dt_is_compatible(dt_root, "brcm,bcm2711")=
+)
+> > > > > > > > > +           zone_dma_bits =3D 30;
+> > > > > > > > > +}
+> > > > > > > >=20
+> > > > > > > > I think we could keep this entirely in the arm64 setup_mach=
+ine_fdt() and
+> > > > > > > > not pollute the core code with RPi4-specific code.
+> > > > > > >=20
+> > > > > > > Actually, even better, could we not move the check to
+> > > > > > > arm64_memblock_init() when we initialise zone_dma_bits?
+> > > > > >=20
+> > > > > > I did it this way as I vaguely remembered Rob saying he wanted =
+to centralise
+> > > > > > all early boot fdt code in one place. But I'll be happy to move=
+ it there.
+> > > > >=20
+> > > > > I can see Rob replied and I'm fine if that's his preference. Howe=
+ver,
+> > > > > what I don't particularly like is that in the arm64 code, if
+> > > > > zone_dma_bits =3D=3D 24, we set it to 32 assuming that it wasn't =
+touched by
+> > > > > the early_init_dt_update_zone_dma_bits(). What if at some point w=
+e'll
+> > > > > get a platform that actually needs 24 here (I truly hope not, but=
+ just
+> > > > > the principle of relying on magic values)?
+> > > > >=20
+> > > > > So rather than guessing, I'd prefer if the arch code can override
+> > > > > ZONE_DMA_BITS_DEFAULT. Then, in arm64, we'll just set it to 32 an=
+d no
+> > > > > need to explicitly touch the zone_dma_bits variable.
+> > > >=20
+> > > > Yes, sonds like the way to go. TBH I wasn't happy with that solutio=
+n either,
+> > > > but couldn't think of a nicer alternative.
+> > > >=20
+> > > > Sadly I just realised that the series is incomplete, we have RPi4 u=
+sers that
+> > > > want to boot unsing ACPI, and this series would break things for th=
+em. I'll
+> > > > have a word with them to see what we can do for their use-case.
+> > >=20
+> > > Is there a way to get some SoC information from ACPI?
+> > >=20
+> >=20
+> > This is unfortunate. We used ACPI _DMA methods as they were designed
+> > to communicate the DMA limit of the XHCI controller to the OS.
+> >=20
+> > It shouldn't be too hard to match the OEM id field in the DSDT, and
+> > switch to the smaller mask. But it sucks to have to add a quirk like
+> > that.
+> > It also requires delaying setting the arm64_dma_phy_limit a bit, but=
+=20
+> that doesn't appear to be causing a problem. I've been boot/compiling=20
+> with a patch like:
+>=20
+> diff --git a/arch/arm64/kernel/acpi.c b/arch/arm64/kernel/acpi.c
+> index cada0b816c8a..9dfe776c1c75 100644
+> --- a/arch/arm64/kernel/acpi.c
+> +++ b/arch/arm64/kernel/acpi.c
+> @@ -14,6 +14,7 @@
+>=20
+>   #include <linux/acpi.h>
+>   #include <linux/cpumask.h>
+> +#include <linux/dma-direct.h>
+>   #include <linux/efi.h>
+>   #include <linux/efi-bgrt.h>
+>   #include <linux/init.h>
+> @@ -168,6 +169,11 @@ static int __init acpi_fadt_sanity_check(void)
+>                  ret =3D -EINVAL;
+>          }
+>=20
+> +       if (!strncmp(table->oem_id, "RPIFDN", ACPI_OEM_ID_SIZE) &&
+> +           !strncmp(table->oem_table_id,  "RPI4    ",=20
+> ACPI_OEM_TABLE_ID_SIZE) &&
+> +           table->oem_revision <=3D 0x200)  {
+> +               zone_dma_bits =3D 30;
+> +       }
+>   out:
+>          /*
+>           * acpi_get_table() creates FADT table mapping that
+> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> index cd5caca8a929..6c8aaf1570ce 100644
+> --- a/arch/arm64/mm/init.c
+> +++ b/arch/arm64/mm/init.c
+> @@ -195,6 +195,7 @@ static void __init zone_sizes_init(unsigned long=20
+> min, unsigned long max)
+>          unsigned long max_zone_pfns[MAX_NR_ZONES]  =3D {0};
+>=20
+>   #ifdef CONFIG_ZONE_DMA
+> +       arm64_dma_phys_limit =3D max_zone_phys(zone_dma_bits);
+>          max_zone_pfns[ZONE_DMA] =3D PFN_DOWN(arm64_dma_phys_limit);
+>   #endif
+>   #ifdef CONFIG_ZONE_DMA32
+> @@ -393,7 +394,6 @@ void __init arm64_memblock_init(void)
+>                   */
+>                  if (zone_dma_bits =3D=3D ZONE_DMA_BITS_DEFAULT)
+>                          zone_dma_bits =3D 32;
+> -               arm64_dma_phys_limit =3D max_zone_phys(zone_dma_bits);
+>          }
+>=20
+>          if (IS_ENABLED(CONFIG_ZONE_DMA32))
+>=20
+>=20
 
-Thanks
+Thanks for taking the time to look at this!
 
- drivers/pci/controller/dwc/pci-dra7xx.c           | 1 -
- drivers/pci/controller/dwc/pci-exynos.c           | 2 --
- drivers/pci/controller/dwc/pci-imx6.c             | 1 -
- drivers/pci/controller/dwc/pci-meson.c            | 2 --
- drivers/pci/controller/dwc/pcie-artpec6.c         | 1 -
- drivers/pci/controller/dwc/pcie-designware-host.c | 5 +++--
- drivers/pci/controller/dwc/pcie-designware-plat.c | 1 -
- drivers/pci/controller/dwc/pcie-designware.h      | 5 -----
- drivers/pci/controller/dwc/pcie-histb.c           | 1 -
- drivers/pci/controller/dwc/pcie-kirin.c           | 1 -
- drivers/pci/controller/dwc/pcie-qcom.c            | 1 -
- drivers/pci/controller/dwc/pcie-spear13xx.c       | 4 +---
- drivers/pci/controller/dwc/pcie-tegra194.c        | 2 --
- drivers/pci/controller/dwc/pcie-uniphier.c        | 2 --
- 14 files changed, 4 insertions(+), 25 deletions(-)
+Regards,
+Nicolas
 
-diff --git a/drivers/pci/controller/dwc/pci-dra7xx.c b/drivers/pci/controller/dwc/pci-dra7xx.c
-index 6d012d2b1e90..a5edaa6b6b58 100644
---- a/drivers/pci/controller/dwc/pci-dra7xx.c
-+++ b/drivers/pci/controller/dwc/pci-dra7xx.c
-@@ -185,7 +185,6 @@ static int dra7xx_pcie_host_init(struct pcie_port *pp)
- 
- 	dra7xx_pcie_establish_link(pci);
- 	dw_pcie_wait_for_link(pci);
--	dw_pcie_msi_init(pp);
- 	dra7xx_pcie_enable_interrupts(dra7xx);
- 
- 	return 0;
-diff --git a/drivers/pci/controller/dwc/pci-exynos.c b/drivers/pci/controller/dwc/pci-exynos.c
-index 242683cde04a..97c166885277 100644
---- a/drivers/pci/controller/dwc/pci-exynos.c
-+++ b/drivers/pci/controller/dwc/pci-exynos.c
-@@ -298,8 +298,6 @@ static void exynos_pcie_msi_init(struct exynos_pcie *ep)
- 	struct pcie_port *pp = &pci->pp;
- 	u32 val;
- 
--	dw_pcie_msi_init(pp);
--
- 	/* enable MSI interrupt */
- 	val = exynos_pcie_readl(ep->mem_res->elbi_base, PCIE_IRQ_EN_LEVEL);
- 	val |= IRQ_MSI_ENABLE;
-diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-index 337c74cbdfdb..cf52eb5d7d2e 100644
---- a/drivers/pci/controller/dwc/pci-imx6.c
-+++ b/drivers/pci/controller/dwc/pci-imx6.c
-@@ -836,7 +836,6 @@ static int imx6_pcie_host_init(struct pcie_port *pp)
- 	imx6_setup_phy_mpll(imx6_pcie);
- 	dw_pcie_setup_rc(pp);
- 	imx6_pcie_establish_link(imx6_pcie);
--	dw_pcie_msi_init(pp);
- 
- 	return 0;
- }
-diff --git a/drivers/pci/controller/dwc/pci-meson.c b/drivers/pci/controller/dwc/pci-meson.c
-index 33deb290c4e7..11bfc42fac1c 100644
---- a/drivers/pci/controller/dwc/pci-meson.c
-+++ b/drivers/pci/controller/dwc/pci-meson.c
-@@ -387,8 +387,6 @@ static int meson_pcie_host_init(struct pcie_port *pp)
- 	if (ret)
- 		return ret;
- 
--	dw_pcie_msi_init(pp);
--
- 	return 0;
- }
- 
-diff --git a/drivers/pci/controller/dwc/pcie-artpec6.c b/drivers/pci/controller/dwc/pcie-artpec6.c
-index 929448e9e0bc..73d4bf99c737 100644
---- a/drivers/pci/controller/dwc/pcie-artpec6.c
-+++ b/drivers/pci/controller/dwc/pcie-artpec6.c
-@@ -331,7 +331,6 @@ static int artpec6_pcie_host_init(struct pcie_port *pp)
- 	dw_pcie_setup_rc(pp);
- 	artpec6_pcie_establish_link(pci);
- 	dw_pcie_wait_for_link(pci);
--	dw_pcie_msi_init(pp);
- 
- 	return 0;
- }
-diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-index d02c7e74738d..7622f114223e 100644
---- a/drivers/pci/controller/dwc/pcie-designware-host.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-@@ -275,7 +275,7 @@ void dw_pcie_free_msi(struct pcie_port *pp)
- 	}
- }
- 
--void dw_pcie_msi_init(struct pcie_port *pp)
-+static void dw_pcie_msi_init(struct pcie_port *pp)
- {
- 	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
- 	u64 msi_target = (u64)pp->msi_data;
-@@ -287,7 +287,6 @@ void dw_pcie_msi_init(struct pcie_port *pp)
- 	dw_pcie_writel_dbi(pci, PCIE_MSI_ADDR_LO, lower_32_bits(msi_target));
- 	dw_pcie_writel_dbi(pci, PCIE_MSI_ADDR_HI, upper_32_bits(msi_target));
- }
--EXPORT_SYMBOL_GPL(dw_pcie_msi_init);
- 
- int dw_pcie_host_init(struct pcie_port *pp)
- {
-@@ -545,6 +544,8 @@ void dw_pcie_setup_rc(struct pcie_port *pp)
- 					    ~0);
- 		}
- 	}
-+	if (pci_msi_enabled() && pp->msi_data)
-+		dw_pcie_msi_init(pp);
- 
- 	/* Setup RC BARs */
- 	dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_0, 0x00000004);
-diff --git a/drivers/pci/controller/dwc/pcie-designware-plat.c b/drivers/pci/controller/dwc/pcie-designware-plat.c
-index e3e300669ed5..9ccf69a3dcf4 100644
---- a/drivers/pci/controller/dwc/pcie-designware-plat.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-plat.c
-@@ -39,7 +39,6 @@ static int dw_plat_pcie_host_init(struct pcie_port *pp)
- 
- 	dw_pcie_setup_rc(pp);
- 	dw_pcie_wait_for_link(pci);
--	dw_pcie_msi_init(pp);
- 
- 	return 0;
- }
-diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-index 9d2f511f13fa..f9f6b276a11a 100644
---- a/drivers/pci/controller/dwc/pcie-designware.h
-+++ b/drivers/pci/controller/dwc/pcie-designware.h
-@@ -365,7 +365,6 @@ static inline void dw_pcie_dbi_ro_wr_dis(struct dw_pcie *pci)
- 
- #ifdef CONFIG_PCIE_DW_HOST
- irqreturn_t dw_handle_msi_irq(struct pcie_port *pp);
--void dw_pcie_msi_init(struct pcie_port *pp);
- void dw_pcie_free_msi(struct pcie_port *pp);
- void dw_pcie_setup_rc(struct pcie_port *pp);
- int dw_pcie_host_init(struct pcie_port *pp);
-@@ -379,10 +378,6 @@ static inline irqreturn_t dw_handle_msi_irq(struct pcie_port *pp)
- 	return IRQ_NONE;
- }
- 
--static inline void dw_pcie_msi_init(struct pcie_port *pp)
--{
--}
--
- static inline void dw_pcie_free_msi(struct pcie_port *pp)
- {
- }
-diff --git a/drivers/pci/controller/dwc/pcie-histb.c b/drivers/pci/controller/dwc/pcie-histb.c
-index afc1abbe49aa..aa9eaee2c4bd 100644
---- a/drivers/pci/controller/dwc/pcie-histb.c
-+++ b/drivers/pci/controller/dwc/pcie-histb.c
-@@ -202,7 +202,6 @@ static int histb_pcie_host_init(struct pcie_port *pp)
- 	pp->bridge->ops = &histb_pci_ops;
- 
- 	histb_pcie_establish_link(pp);
--	dw_pcie_msi_init(pp);
- 
- 	return 0;
- }
-diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/controller/dwc/pcie-kirin.c
-index 6f01ae013326..dc30e43a6be9 100644
---- a/drivers/pci/controller/dwc/pcie-kirin.c
-+++ b/drivers/pci/controller/dwc/pcie-kirin.c
-@@ -429,7 +429,6 @@ static int kirin_pcie_host_init(struct pcie_port *pp)
- 	pp->bridge->ops = &kirin_pci_ops;
- 
- 	kirin_pcie_establish_link(pp);
--	dw_pcie_msi_init(pp);
- 
- 	return 0;
- }
-diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-index 5eb28251dbee..4f66e534e011 100644
---- a/drivers/pci/controller/dwc/pcie-qcom.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom.c
-@@ -1271,7 +1271,6 @@ static int qcom_pcie_host_init(struct pcie_port *pp)
- 	}
- 
- 	dw_pcie_setup_rc(pp);
--	dw_pcie_msi_init(pp);
- 
- 	qcom_ep_reset_deassert(pcie);
- 
-diff --git a/drivers/pci/controller/dwc/pcie-spear13xx.c b/drivers/pci/controller/dwc/pcie-spear13xx.c
-index e348225f651f..c75550573a1e 100644
---- a/drivers/pci/controller/dwc/pcie-spear13xx.c
-+++ b/drivers/pci/controller/dwc/pcie-spear13xx.c
-@@ -129,11 +129,9 @@ static void spear13xx_pcie_enable_interrupts(struct spear13xx_pcie *spear13xx_pc
- 	struct pcie_app_reg *app_reg = spear13xx_pcie->app_base;
- 
- 	/* Enable MSI interrupt */
--	if (IS_ENABLED(CONFIG_PCI_MSI)) {
--		dw_pcie_msi_init(pp);
-+	if (IS_ENABLED(CONFIG_PCI_MSI))
- 		writel(readl(&app_reg->int_mask) |
- 				MSI_CTRL_INT, &app_reg->int_mask);
--	}
- }
- 
- static int spear13xx_pcie_link_up(struct dw_pcie *pci)
-diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
-index aa511ec0d800..b093be21cab2 100644
---- a/drivers/pci/controller/dwc/pcie-tegra194.c
-+++ b/drivers/pci/controller/dwc/pcie-tegra194.c
-@@ -772,8 +772,6 @@ static void tegra_pcie_enable_msi_interrupts(struct pcie_port *pp)
- 	struct tegra_pcie_dw *pcie = to_tegra_pcie(pci);
- 	u32 val;
- 
--	dw_pcie_msi_init(pp);
--
- 	/* Enable MSI interrupt generation */
- 	val = appl_readl(pcie, APPL_INTR_EN_L0_0);
- 	val |= APPL_INTR_EN_L0_0_SYS_MSI_INTR_EN;
-diff --git a/drivers/pci/controller/dwc/pcie-uniphier.c b/drivers/pci/controller/dwc/pcie-uniphier.c
-index 48176265c867..c19bdfed4337 100644
---- a/drivers/pci/controller/dwc/pcie-uniphier.c
-+++ b/drivers/pci/controller/dwc/pcie-uniphier.c
-@@ -322,8 +322,6 @@ static int uniphier_pcie_host_init(struct pcie_port *pp)
- 	if (ret)
- 		return ret;
- 
--	dw_pcie_msi_init(pp);
--
- 	return 0;
- }
- 
--- 
-2.28.0
+
+--=-QEUs6mNIatkWXfPNUc5q
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl+AIV4ACgkQlfZmHno8
+x/47xwf/S14oxsPutK80WqAd6TtLMvOUoTUdYaejvsvKz0m5rogBFI3AE8s1LRj5
+HtFyy0/t9JlCUlCPqw1p2kx9+Tw/LmrV74OAthLKSnQGhRyDDXXZn4F9qbJp+Bcu
+oE+SrvsCaWt+pgyw9H/YjbrKPEah4iV4F86/e8IG2HdevcaB9xNAZ9ymJ9O/mFKK
+V4n7FhhWKgfsYZFjiQFQUiGB5iMK2Kwc9W1GiDhYwaorD76GJft3Xh3FsLk1jLrV
+DE4OoChhGo48Z98Jmjs2dw9ee4KdyBm10KnTqHbCYwBJReROTuHF6v8JYxT88Msx
+ObWZ1Ng0jXl3r4hp4ze8FTlqln/R+w==
+=PDNU
+-----END PGP SIGNATURE-----
+
+--=-QEUs6mNIatkWXfPNUc5q--
 
