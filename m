@@ -2,131 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85C122886E8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 12:30:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36ED82886EF
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 12:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387599AbgJIK34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 06:29:56 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:33382 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725979AbgJIK3z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 06:29:55 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 099AKk5E081439;
-        Fri, 9 Oct 2020 10:28:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=iO7iieAE97VWREkueb1YYE1lfRocN/epUOpy+ZHHzLU=;
- b=lm/RRwEN7aMfPBGuu1y8+/4adW66cEn+DgLonp2Cdor0mppzl8uvoXGxADkJGXzaahLt
- 08zSAgiY+fuMh6tp5BIn3HO/xI9FiGXYGAvEsnjUVQICwqzoX437nzYz7/eJbZmaJrke
- sE9v5SNvFFNfgL1dH20+B051p/OgMi7bOPKQmkhCo6gfGayoRqV+hCsxvEdpAwA27BmR
- KWmf6KPdEd3FhRWsN26JIB7pcqKANL7eF+hkIaaigun95lhrqk8ADLMcyIxYUUUQDVZG
- rL7P3chD49VMIw9nGsp2r4BOSof7u6vPob3e/gcg+9ROOAjIT/mraIkajbyHC1ipo2SC xA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 3429juts2b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 09 Oct 2020 10:28:39 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 099AQH6t142717;
-        Fri, 9 Oct 2020 10:28:38 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 3429k0x68n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 09 Oct 2020 10:28:38 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 099ASa86025600;
-        Fri, 9 Oct 2020 10:28:36 GMT
-Received: from [10.175.178.74] (/10.175.178.74)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 09 Oct 2020 03:28:36 -0700
-Subject: Re: [PATCH 22/35] kvm, x86: Distinguish dmemfs page from mmio page
-To:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        yulei.kernel@gmail.com
-Cc:     akpm@linux-foundation.org, naoya.horiguchi@nec.com,
-        viro@zeniv.linux.org.uk, pbonzini@redhat.com,
-        linux-fsdevel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xiaoguangrong.eric@gmail.com,
-        kernellwp@gmail.com, lihaiwei.kernel@gmail.com,
-        Yulei Zhang <yuleixzhang@tencent.com>,
-        Chen Zhuo <sagazchen@tencent.com>
-References: <cover.1602093760.git.yuleixzhang@tencent.com>
- <b2b6837785f6786575823c919788464373d3ee05.1602093760.git.yuleixzhang@tencent.com>
- <20201009005823.GA11151@linux.intel.com>
-From:   Joao Martins <joao.m.martins@oracle.com>
-Message-ID: <a6dd5fbe-ca71-cf05-ec40-ec916843e9b7@oracle.com>
-Date:   Fri, 9 Oct 2020 11:28:31 +0100
+        id S2387671AbgJIKaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 06:30:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49354 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387661AbgJIKaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 06:30:24 -0400
+Received: from localhost (unknown [122.182.251.219])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0C5192226B;
+        Fri,  9 Oct 2020 10:30:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602239423;
+        bh=2S5cTsiaGUTnL4qYAUGa56y6UyS/LmE34JmfxGcQ1cI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ws/Iqsc0keJOJ4dffz7XEfkOTlv2bWVqrWRRcbvydc1+adsdkeKel5MAWcBuDqoTx
+         ecTxhwGKjS8SDcsrTDq4zg4i3Fjly892qD7bo2q/1+/DPxpaR9Sw9zqzhQOPe24puQ
+         B0xH1diT7tVjHj27BpXRKGNqjvfy2Ih+vVr0urW8=
+Date:   Fri, 9 Oct 2020 16:00:19 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc:     dmaengine@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/3] dmaengine: add peripheral configuration
+Message-ID: <20201009103019.GD2968@vkoul-mobl>
+References: <20201008123151.764238-1-vkoul@kernel.org>
+ <20201008123151.764238-3-vkoul@kernel.org>
+ <e2c0323b-4f41-1926-5930-c63624fe1dd1@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20201009005823.GA11151@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9768 signatures=668681
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 malwarescore=0
- mlxlogscore=999 bulkscore=0 suspectscore=1 adultscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010090073
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9768 signatures=668681
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999 mlxscore=0
- phishscore=0 bulkscore=0 suspectscore=1 lowpriorityscore=0 spamscore=0
- clxscore=1011 malwarescore=0 priorityscore=1501 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010090072
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e2c0323b-4f41-1926-5930-c63624fe1dd1@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/9/20 1:58 AM, Sean Christopherson wrote:
-> On Thu, Oct 08, 2020 at 03:54:12PM +0800, yulei.kernel@gmail.com wrote:
->> From: Yulei Zhang <yuleixzhang@tencent.com>
->>
->> Dmem page is pfn invalid but not mmio. Support cacheable
->> dmem page for kvm.
->>
->> Signed-off-by: Chen Zhuo <sagazchen@tencent.com>
->> Signed-off-by: Yulei Zhang <yuleixzhang@tencent.com>
->> ---
->>  arch/x86/kvm/mmu/mmu.c | 5 +++--
->>  include/linux/dmem.h   | 7 +++++++
->>  mm/dmem.c              | 7 +++++++
->>  3 files changed, 17 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
->> index 71aa3da2a0b7..0115c1767063 100644
->> --- a/arch/x86/kvm/mmu/mmu.c
->> +++ b/arch/x86/kvm/mmu/mmu.c
->> @@ -41,6 +41,7 @@
->>  #include <linux/hash.h>
->>  #include <linux/kern_levels.h>
->>  #include <linux/kthread.h>
->> +#include <linux/dmem.h>
->>  
->>  #include <asm/page.h>
->>  #include <asm/memtype.h>
->> @@ -2962,9 +2963,9 @@ static bool kvm_is_mmio_pfn(kvm_pfn_t pfn)
->>  			 */
->>  			(!pat_enabled() || pat_pfn_immune_to_uc_mtrr(pfn));
->>  
->> -	return !e820__mapped_raw_any(pfn_to_hpa(pfn),
->> +	return (!e820__mapped_raw_any(pfn_to_hpa(pfn),
->>  				     pfn_to_hpa(pfn + 1) - 1,
->> -				     E820_TYPE_RAM);
->> +				     E820_TYPE_RAM)) || (!is_dmem_pfn(pfn));
-> 
-> This is wrong.  As is, the logic reads "A PFN is MMIO if it is INVALID &&
-> (!RAM || !DMEM)".  The obvious fix would be to change it to "INVALID &&
-> !RAM && !DMEM", but that begs the question of whether or DMEM is reported
-> as RAM.  I don't see any e820 related changes in the series, i.e. no evidence
-> that dmem yanks its memory out of the e820 tables, which makes me think this
-> change is unnecessary.
-> 
-Even if there would exist e820 changes, e820__mapped_raw_any() checks against
-hardware-provided e820 that we are given before any changes happen i.e. not the one kernel
-has changed (e820_table_firmware). So unless you're having that memory carved from an MMIO
-range (which would be wrong), or the BIOS is misrepresenting its memory map... the
-e820__mapped_raw_any(E820_TYPE_RAM) ought to be enough to cover RAM.
+Hi Peter,
 
-Or at least that has been my experience with similar work.
+On 09-10-20, 12:04, Peter Ujfalusi wrote:
+> On 08/10/2020 15.31, Vinod Koul wrote:
+> > Some complex dmaengine controllers have capability to program the
+> > peripheral device, so pass on the peripheral configuration as part of
+> > dma_slave_config
+> >
+> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> > ---
+> >  include/linux/dmaengine.h | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> > 
+> > diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
+> > index 6fbd5c99e30c..a15dc2960f6d 100644
+> > --- a/include/linux/dmaengine.h
+> > +++ b/include/linux/dmaengine.h
+> > @@ -418,6 +418,9 @@ enum dma_slave_buswidth {
+> >   * @slave_id: Slave requester id. Only valid for slave channels. The dma
+> >   * slave peripheral will have unique id as dma requester which need to be
+> >   * pass as slave config.
+> > + * @peripheral_config: peripheral configuration for programming peripheral
+> > + * for dmaengine transfer
+> > + * @peripheral_size: peripheral configuration buffer size
+> >   *
+> >   * This struct is passed in as configuration data to a DMA engine
+> >   * in order to set up a certain channel for DMA transport at runtime.
+> > @@ -443,6 +446,8 @@ struct dma_slave_config {
+> >  	u32 dst_port_window_size;
+> >  	bool device_fc;
+> >  	unsigned int slave_id;
+> > +	void *peripheral_config;
+> > +	size_t peripheral_size;
+> 
+> Do you foresee a need of src/dst pair of these?
+> If we do DEV_TO_DEV with different type of peripherals it is going to
+> cause issues.
 
-	Joao
+Not really as the channel already has direction and this is per channel.
+If for any any reason subsequent txn is for different direction, I would
+expect that parameters are set again before prep_ calls
+
+-- 
+~Vinod
