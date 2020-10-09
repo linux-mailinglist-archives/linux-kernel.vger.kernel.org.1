@@ -2,150 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0269F2881A0
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 07:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4AE72881A4
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 07:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730230AbgJIFMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 01:12:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51894 "EHLO
+        id S1730945AbgJIFPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 01:15:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725917AbgJIFMi (ORCPT
+        with ESMTP id S1730589AbgJIFPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 01:12:38 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D656EC0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 22:12:37 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id g29so6261303pgl.2
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 22:12:37 -0700 (PDT)
+        Fri, 9 Oct 2020 01:15:34 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B206CC0613D4
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 22:15:34 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id k8so5885275pfk.2
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 22:15:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=OYd+TYtCwcTkRErm6PrBZhr36/0O5PMrgsfdqqyaYI0=;
-        b=aUatzWoaOLKWccPDyFkkngfUk3K3gYS481LLw3b4hCBK6UzGM0nxisY5dxjngotd8b
-         4g2sCb2FTSSxjpX7om5s9uPpfJUPn1vHICiqMpKkxokeOWKNC6569ZKg0n7gt4uBp2kG
-         4sx7jkF9qa8zr7+urwx4Kt/P2rDGyqgMHHksylntLPFJ+Q6Wm/H9kGyfBerKYeK79Fmi
-         /GEDMfrLh/6rnxl3Z5pbCaYJI4Z7FHUcfEJK7VP5y7fa3xEUDk0R0gZEuGHiQYH9ntrU
-         OvvNPbyMRbVNZs8SY+uxz1UcUlKWnm6uDO9y+9zPBe2+mNmO4ICPSfASyxK9ffPV7fr0
-         oAAQ==
+        bh=G8Nv66WyfzDbZb96ZzpHY2rCT/XGW71eFKJ/39nR8TI=;
+        b=XCoNHHpR6Vhu0dp1FPc+9nNkBsd5828pOu6BwS+P8s2Vdorubxx2Y2IAtZsi/nMaca
+         e+TkRySMistYnVoFo5Z9bLk7QRa4W6weIKbFGeJH0Vz5orS5mNhLXq3Hxd9Fa5Tgf1sI
+         NhlYxCX+6eRYUbGun4XXVlbz7e6EjJaYRoKlddaptvY/bK1P1mXBltBbFfrGjZpRJxNo
+         8xmC36xR0mcZ2Hjz/k2WlRrVCyu5dIOr9dlLZQKsLf81SC+yNk2TPlU20njb/v3X2Szc
+         S2LTCV6AQnPdmhhH3HzZywkVzzDzkuiRUNg86ydh+cG09bU/omt0wDu3NEc9XYv88M89
+         xn4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=OYd+TYtCwcTkRErm6PrBZhr36/0O5PMrgsfdqqyaYI0=;
-        b=W9i/ExfnxhX+IPTJVJEccJIIdsUBku9xuqSYcffoeZrzgK1tOLp0CxDTJSWmoe0uEq
-         +t1Om9J8vw+62tvNiUkLdx5j4MdddyS/SJMFFKAmFmuZa9avnqrLZgwlkxpHb49T4gW5
-         vOVNwSk7Wnn7dftyTnMcI4VhZZGgtLqHE6gvpGjbj5vhwGCshWiES8hjW0H9cDiXnjSV
-         WDvQw/K5jQJFc9TEaDrFGHwcli54B/Y412mtk1pk/MSrSKB9SovefydQvX7yo3CXVdBy
-         hNrJLWn3DaWbm/8Fube6VlpqOhEROt5lHKnrby/ehbtMrYnyoh4rpw80lhHq+4Ur2MzE
-         x2gA==
-X-Gm-Message-State: AOAM5323cylsuJbageExxBOR0jmqAgQrcAoo1dbiuK3aALKTTsTWdVU8
-        8eCRH9s2zlI6IoM1me7baYP45g==
-X-Google-Smtp-Source: ABdhPJx3IoklH8AdZdltn7petBy9Vtfp2LQ1yeUvGrm0ltqXpUl00f9rUuxaEp5kz74S44LyV28CyA==
-X-Received: by 2002:a63:d558:: with SMTP id v24mr2045134pgi.294.1602220357237;
-        Thu, 08 Oct 2020 22:12:37 -0700 (PDT)
+        bh=G8Nv66WyfzDbZb96ZzpHY2rCT/XGW71eFKJ/39nR8TI=;
+        b=dkIBTaOraGQuCc3i7sI9if+3MyhwWmYbUI0VNwE7iaqgoVljWSBOsYVdeB50dSnpz9
+         T7J1/TeZXp7SQ4aM4/hP0NfKXVhyF21DubKCzW6EjNwVJXmCOLhEjR4LiRnFzj3Sj72V
+         Ww9ZnIodCo3mTnL/5BmU66p1ZU1JXKKGToXz17n9631Mo/P5sQ0fM/rxIJqT6uTWl2A6
+         K23393dfKa8CfHsHgppU4MysuFDuJPkcjrf9YT8aIxbFuOoNRCRL1/z2G4AxBURUqaT0
+         kNtsMRZ/lN3bK67Zk9VYTl0osNfARwZfj//K0Fj582OFlr6XSDcgzFEAfj9dbwMJD/iW
+         rYAA==
+X-Gm-Message-State: AOAM531LbzSLWiHBzC0gf0j5aCIX9wLqsAUOvsaYLiJDnNeyvFRnTWbs
+        QlwpgppmZUtVGlp4JUAqBfrbsA==
+X-Google-Smtp-Source: ABdhPJwMAbt3m8tzVuwutYCoq9Ex4jJiYU6jAHGkyZslmrwAEnxhVZ77mlrygUBEez+RF7uvOzZPlg==
+X-Received: by 2002:a63:d046:: with SMTP id s6mr2103311pgi.76.1602220534209;
+        Thu, 08 Oct 2020 22:15:34 -0700 (PDT)
 Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id f4sm9199776pgk.19.2020.10.08.22.12.35
+        by smtp.gmail.com with ESMTPSA id gd14sm9188455pjb.31.2020.10.08.22.15.33
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 08 Oct 2020 22:12:36 -0700 (PDT)
-Date:   Fri, 9 Oct 2020 10:42:33 +0530
+        Thu, 08 Oct 2020 22:15:33 -0700 (PDT)
+Date:   Fri, 9 Oct 2020 10:45:31 +0530
 From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     morten_bp@live.dk, Jassi Brar <jaswinder.singh@linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        devicetree@vger.kernel.org, Sudeep Holla <Sudeep.Holla@arm.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Tushar Khandelwal <tushar.khandelwal@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC V2] dt-bindings: mailbox : arm,mhuv2: Add bindings
-Message-ID: <20201009051233.zn72y7fmwsy3btv4@vireshk-i7>
-References: <ca2f491fc97bdf6d7fc8d6fee5f702be27db6702.1602084104.git.viresh.kumar@linaro.org>
- <CAL_JsqJTkeHHKm8ZYM7f1eO_ESPvaG3wnFXK03_ML3uT62rKNw@mail.gmail.com>
+To:     Hector Yuan <hector.yuan@mediatek.com>
+Cc:     linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        linux-kernel@vger.kernel.org, wsd_upstream@mediatek.com
+Subject: Re: [PATCH v1 1/1] cpufreq: mediatek-hw: Register EM power table
+Message-ID: <20201009051531.gmlpv4wnpbtyqldt@vireshk-i7>
+References: <1602159204-13756-1-git-send-email-hector.yuan@mediatek.com>
+ <1602159204-13756-2-git-send-email-hector.yuan@mediatek.com>
+ <20201009041912.nzhvubzmfox2twxg@vireshk-i7>
+ <1602218579.21446.57.camel@mtkswgap22>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAL_JsqJTkeHHKm8ZYM7f1eO_ESPvaG3wnFXK03_ML3uT62rKNw@mail.gmail.com>
+In-Reply-To: <1602218579.21446.57.camel@mtkswgap22>
 User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08-10-20, 09:30, Rob Herring wrote:
-> On Wed, Oct 7, 2020 at 10:28 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> > +  clock-names:
-> > +    items:
-> > +      - const: apb_pclk
+On 09-10-20, 12:42, Hector Yuan wrote:
+> On Fri, 2020-10-09 at 09:49 +0530, Viresh Kumar wrote:
+> > On 08-10-20, 20:13, Hector Yuan wrote:
+> > > From: "Hector.Yuan" <hector.yuan@mediatek.com>
+> > > 
+> > > Register CPU power table to energy model framework
+> > > 
+> > > Signed-off-by: Hector.Yuan <hector.yuan@mediatek.com>
+> > > ---
+> > >  drivers/cpufreq/mediatek-cpufreq-hw.c |   50 +++++++++++++++++++++++++--------
+> > >  1 file changed, 38 insertions(+), 12 deletions(-)
+> > 
+> > I don't see this file in mainline. What am I missing ?
+> > 
+> Hi, Viresh:
 > 
-> Just 'maxItems: 1' is fine here as the name is already defined.
+> Yes, I base on my patches which is currently reviewed by Rob for the
+> Device tree part.
+> As I mentioned in cover letter.
 > 
-> > +
-> > +  arm-mhuv2-mode:
+> This patch depends on Mediatek cpufreq HW driver patch submitted by
+> Hector Yuan.
+>  https://lkml.org/lkml/2020/9/10/13
 > 
-> arm,mhuv2-mode.
+> I have asked your approval for sending my new patches based on it and
+> you said it's okay to you.
+> I will stop sending new patches if you have any concerns.
+> Thank you so much.
 
-This is what I did initially but was getting errors with it...
-
-> Needs a type reference.
-
-And this fixed it.
-
-> > +    description: |
-> > +      The MHUv2 controller may contain up to 124 channel windows (each 32-bit
-> > +      wide). The hardware and the DT bindings allows any combination of those to
-> > +      be used for various transport protocols.
-> > +
-> > +      This property allows a platform to describe how these channel windows are
-> > +      used in various transport protocols. The entries in this property shall be
-> > +      present as an array of tuples, where each tuple describes details about
-> > +      one of the transport protocol being implemented over some channel
-> > +      window(s).
-> > +
-> > +      The first field of a tuple signifies the transfer protocol, 0 is reserved
-> > +      for doorbell protocol, 1 is reserved for single-word protocol and 2 is
-> > +      reserved for multi-word protocol. Using any other value in the first field
-> > +      of a tuple makes it invalid.
-> > +
-> > +      The second field of a tuple signifies the number of channel windows where
-> > +      the protocol would be used. For doorbell protocol this field signifies the
-> > +      number of 32-bit channel windows that implement the doorbell protocol. For
-> > +      single-word protocol this field signifies the number of 32-bit channel
-> > +      windows that implement separate single-word protocol mailbox channels. For
-> > +      multi-word protocol this field signifies the number of channel windows
-> > +      used for a multi-word protocol, it should be 2 or more.
-> 
-> These are based on IP configuration or a software decision?
-
-Software/firmware.
-
-The platform only fixes the total number of 32-bit registers available
-(channel windows) for use, how we use them is left to us. I tried to
-make it as generic as possible so any combinations of protocols can be
-used here.
-
-> > +      The total number of channel windows specified here shouldn't be more than
-> > +      the ones implemented by the platform.
-> 
-> But can be less? Then do you need this to be a mask or range?
-
-Yes, we don't need to use all the windows that are available to us. I
-am not sure why we would need a mask/range here.
-
-Just to clarify a little, as it took me some time to come to this
-understanding, the maximum number of channel windows (these aren't
-necessarily mailbox channels) supported by the hardware is 124, i.e.
-124 32-bit registers. Though a platform may implement only 8 of them,
-for example and the OS may want to use only 4 of them.
-
-If we use the entire thing in:
-
-- multi-word mode, we can create a single mailbox channel which is
-  capable of transferring 124 words in one go.
-
-- single-word mode, we will end up having 124 mailbox channels, each
-  32 bit wide.
-
-- doorbell mode, we will end up having 124 * 32 mailbox channels.
+Sorry about that, I failed to see the details in the cover-letter.
 
 -- 
 viresh
