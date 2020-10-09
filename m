@@ -2,54 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 906BF288F79
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 19:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 387DA288F76
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 19:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390080AbgJIRCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 13:02:11 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:59214 "EHLO
+        id S2390064AbgJIRCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 13:02:07 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:59238 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389936AbgJIRB3 (ORCPT
+        with ESMTP id S2389956AbgJIRB3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 9 Oct 2020 13:01:29 -0400
-Date:   Fri, 09 Oct 2020 17:01:25 -0000
+Date:   Fri, 09 Oct 2020 17:01:26 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602262886;
+        s=2020; t=1602262887;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=SE7Czp+opUNx4ncsSvp0lItuPv8IWzF11iong+Ft6LY=;
-        b=y6fVjPPUBagujRcAmhIwv5Inp3Sf5edELAhK1A6oy1ftqN9X+IH4F60+FuVYDXIyG2uBcv
-        6qzITS5hoTYlmL7ScxUpcX1gzGfwSQQpZJYQItHOU//HgXoBWrYbzutkps2cTL9CiRXj6s
-        uy8/eZR9Zm+4ETHwZGNIvW4s7kDE4t48GBIPawyhTrG8g1nwof0ecMdsFM+NkHqbtXacH4
-        0BIO19wD2FwS9lnTkzCF6eR7sYbze8iigb9qM92WEyYWL2tFm4Np5PsbfplFAPXcfjRjcf
-        mFNhmF2H+uV5DnRW+KNizBQEjQp/dVoHrfCvmuaTmoa9E8hbzreoTVEhzbWdjw==
+        bh=sPv/jwMpTJ/WLqjluXCnE6YwZw3GZZcgS5Miuo/XdZc=;
+        b=pMYKcW/YWfGBK4sogmPNqTGpw0+lmMTpzNYxAedyCwcnJAAxjjRcG6pSEptUv9oj+BOvq8
+        5Atya/Fd8njIGz87zkE5nSKc8H/rPuGb/fc+7kguV/CNOjdhFPhb0CP8jBP6Iyw/C75Bbp
+        BX6vNJBtxLqNyQg8hcOo6DOrW4JHO90p4Re8nbGazSV4bW3BdM1zCMQEOdYqtMWHmJBqVk
+        +lSkIHc3sgWBHzbIOJXfnKM6xdeyFQ7CVCIi9QCg7z/t+aS48JGi6s4J2VfTdKPEeEo3QN
+        8nL0pWLgLDsJCGfuFqGe+JSFGvpFvNtPJJKNK3x18HlhRXUWjyJpR07eextDDg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602262886;
+        s=2020e; t=1602262887;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=SE7Czp+opUNx4ncsSvp0lItuPv8IWzF11iong+Ft6LY=;
-        b=20+dVflXkAjCJ5MDWEzGiaJQuByQTGupuFOln6VsgXR45l3GfWHg4qQeSqqwMoLXbBt4Tc
-        pBoh1x3okDTL2xAg==
+        bh=sPv/jwMpTJ/WLqjluXCnE6YwZw3GZZcgS5Miuo/XdZc=;
+        b=Vb4RU27SJjvsaKQkqBdJhbkw8sZQvApkAnFKM9T6RuF/bSZ53vquRytvR2yheERpDErRef
+        fNpZfYMrLUlL70BQ==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] sched: Cleanup PREEMPT_COUNT leftovers
+Subject: [tip: core/rcu] locking/bitspinlock: Cleanup PREEMPT_COUNT leftovers
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
         "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <160226288549.7002.94618164546835622.tip-bot2@tip-bot2>
+Message-ID: <160226288653.7002.2578979062422193705.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,67 +53,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     4a291f57d97ce1c14d286b2451573ccbb3b43022
-Gitweb:        https://git.kernel.org/tip/4a291f57d97ce1c14d286b2451573ccbb3b43022
+Commit-ID:     cce05b43263a1b12b7c0a8b003d6c2295e17f580
+Gitweb:        https://git.kernel.org/tip/cce05b43263a1b12b7c0a8b003d6c2295e17f580
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Mon, 14 Sep 2020 19:30:49 +02:00
+AuthorDate:    Mon, 14 Sep 2020 19:28:08 +02:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 28 Sep 2020 16:03:21 -07:00
+CommitterDate: Mon, 28 Sep 2020 16:03:20 -07:00
 
-sched: Cleanup PREEMPT_COUNT leftovers
+locking/bitspinlock: Cleanup PREEMPT_COUNT leftovers
 
 CONFIG_PREEMPT_COUNT is now unconditionally enabled and will be
 removed. Cleanup the leftovers before doing so.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ben Segall <bsegall@google.com>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+Acked-by: Will Deacon <will@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/sched/core.c | 6 +-----
- lib/Kconfig.debug   | 1 -
- 2 files changed, 1 insertion(+), 6 deletions(-)
+ include/linux/bit_spinlock.h | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 2d95dc3..1c304a1 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -3706,8 +3706,7 @@ asmlinkage __visible void schedule_tail(struct task_struct *prev)
- 	 * finish_task_switch() for details.
- 	 *
- 	 * finish_task_switch() will drop rq->lock() and lower preempt_count
--	 * and the preempt_enable() will end up enabling preemption (on
--	 * PREEMPT_COUNT kernels).
-+	 * and the preempt_enable() will end up enabling preemption.
- 	 */
+diff --git a/include/linux/bit_spinlock.h b/include/linux/bit_spinlock.h
+index bbc4730..1e03d54 100644
+--- a/include/linux/bit_spinlock.h
++++ b/include/linux/bit_spinlock.h
+@@ -90,10 +90,8 @@ static inline int bit_spin_is_locked(int bitnum, unsigned long *addr)
+ {
+ #if defined(CONFIG_SMP) || defined(CONFIG_DEBUG_SPINLOCK)
+ 	return test_bit(bitnum, addr);
+-#elif defined CONFIG_PREEMPT_COUNT
+-	return preempt_count();
+ #else
+-	return 1;
++	return preempt_count();
+ #endif
+ }
  
- 	rq = finish_task_switch(prev);
-@@ -7308,9 +7307,6 @@ void __cant_sleep(const char *file, int line, int preempt_offset)
- 	if (irqs_disabled())
- 		return;
- 
--	if (!IS_ENABLED(CONFIG_PREEMPT_COUNT))
--		return;
--
- 	if (preempt_count() > preempt_offset)
- 		return;
- 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index d4d0574..52af6ad 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -1320,7 +1320,6 @@ config DEBUG_LOCKDEP
- 
- config DEBUG_ATOMIC_SLEEP
- 	bool "Sleep inside atomic section checking"
--	select PREEMPT_COUNT
- 	depends on DEBUG_KERNEL
- 	help
- 	  If you say Y here, various routines which may sleep will become very
