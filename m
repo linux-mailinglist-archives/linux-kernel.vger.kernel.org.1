@@ -2,169 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10B4B288E96
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 18:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7557D288EA4
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 18:19:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389700AbgJIQRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 12:17:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42078 "EHLO
+        id S2389644AbgJIQT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 12:19:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389410AbgJIQRO (ORCPT
+        with ESMTP id S2389523AbgJIQT2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 12:17:14 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9707C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 09:17:14 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id u126so10675340oif.13
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 09:17:14 -0700 (PDT)
+        Fri, 9 Oct 2020 12:19:28 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B18C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 09:19:27 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id o18so9956819edq.4
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 09:19:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Nv6hxgJE6F13m8yrGBTnSqZNZeOQ+Nxj6uvnt0DeaLw=;
-        b=EvqJ0t1jWB/MleGe/MtVqHEC19LuB4vdffCzjYJUI+lxhU9U54wbBOutBCe29gT+w4
-         ZNShBzOks2mhBhdFQSJR05pDUpm1H1IgkZS1vM4A3Cnp+vb36ohdzoM9byZGPc/MygcG
-         GAXx68ht3Cjkiuyg6pWky7O6QrRb/1exBUPXVKWw6FjYcc4KvxWnG5mtx6hSQDwODtnO
-         zJISoRNysIJ3KMpm9Q8opO0483kbLk2Xeala5PhHFcZvG8qHRj1DMYOI1q3w19b6Cv9P
-         w7FXz3OLrjbzGEnQz5eEwACyrvTl6BxIwjjLTDTSJaowwOQ4GXN2aY4oUvlYmzPmn1ti
-         zApg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9Wo3GQt6leaI+dEFdoiBhU3rEXywu8hm1tVt2jcDCuE=;
+        b=gaLYRn5XMJhSd0yMPv/fSjokN8gSCgwk0c/hem9RD2l1v29pBVmvoANsxAznEzHXgW
+         MtpsvrreNA/R9j9avZPwrpgrdtlOvNVEt8c19t32tNTg2Btu+RXZyq9oUQUlngFyB/tN
+         h0BCE67KWAX9Y6EI+TSdqiVVI1Jw/s+WddjGHsQb68xF9zEEGuBVROSg4fEmrt4j8yk9
+         djaytII6T38DGObIhkdRd113DdzrT8j+jxHxZZyA0C+UvrkUekucZje20qXff0P6M4jm
+         HfR0i0VhEOBMkFs2lcu2JZtzLdViTX6iNMfPJNa5xtm8BsLGhq4Ip57/Q89MImFrWo1H
+         PSjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Nv6hxgJE6F13m8yrGBTnSqZNZeOQ+Nxj6uvnt0DeaLw=;
-        b=EZQSB7fiqYrG6GGqQuQ3j3TU8Yp5eO3AOMTsk664lAqzMtelz6Muo9WW/qthAxI4tI
-         Vh5J0OrG4a6d6iEDYbCedG8TTS62ZrbRTSnwzQdarzh9m8TrS32H8SE5Bf3rY5VIcZhU
-         4fM6nq4n55nKvvIeYZhBSpUxJL3uJqDOrpyLsivy9zzjmIBDGyBeUtq29kUUcgCqkQI7
-         Migpsx1SMukAJu62gYb0uo6y3e2ih3tZWA9aChDIPSzo/ZkPzxZcQ1anuZCXra+Mm8OQ
-         CQhykC9oIedwmmj4OTHC3vtUAxeKV/k0wMCgHDpmVwrKXlrezpGqhiTUoiUWEZxpCCFH
-         3Atg==
-X-Gm-Message-State: AOAM530cnZ6IAPTFRhsHIK0+Irjzd6ITO+JWlhJaJ/LkG7JqsPbUf9fF
-        4Asgl3RYU1wvK9MV7AsXiCfnWXqzzKITopDICoHA6w==
-X-Google-Smtp-Source: ABdhPJxxzc9zLpycYReAvd3jJ3fYqaypxWgmnH6JI44BhzCNS3bW9E+/wFhaW3h5AKLb8WYy5mcCWl1oF0+kmsPex5s=
-X-Received: by 2002:aca:5b05:: with SMTP id p5mr2779753oib.6.1602260233764;
- Fri, 09 Oct 2020 09:17:13 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9Wo3GQt6leaI+dEFdoiBhU3rEXywu8hm1tVt2jcDCuE=;
+        b=gtO8Hpg2Dbc++mXGbDsZVZ/l7TSwgJ1f3C2KtKLBU1rdMnBMOqyL9aOjScoGK4aQwK
+         Ox9OqeiYc+0vYTRnP8/4mDT8be0KGBQ7ORjExqV3utkw9IHU02lIQ1Ez8uPWSlFNS390
+         bM3EysJTftCqWDtwhkn3gjZhMz4p1gt+B/cPH61pNhClYnHvT+aOWZhmxiEI6xW5cfZ/
+         0Kkwy/JLsR4hOIFmyZO0Zd0oZiJ+gCKPuz3j3f4yitW5/QJyOrxY0NBfeBHbzNJbM5fg
+         UQ2/rN75Q0ICUCUX7+H94dGCISljY6hOFDGtWDkSWRymJujAsSpBEBgIkbLoU2hwWEfj
+         e6Hw==
+X-Gm-Message-State: AOAM533qmvyr1P7Ga5C/JLnCqF4uxkHvjEH+DTCoTq0uFvzd5ftG4Jy2
+        Hyq0gnXPbjlSU99OV4fh0LYyxvroIH8=
+X-Google-Smtp-Source: ABdhPJyPNMC6jUhJUqrp8O8ULL3mjWXLSE11IcNDo8B1LxTa2j6cnhygiRGKgnW9KKo729ATyIBnbQ==
+X-Received: by 2002:a50:abc3:: with SMTP id u61mr15176759edc.253.1602260365676;
+        Fri, 09 Oct 2020 09:19:25 -0700 (PDT)
+Received: from ltop.local ([2a02:a03f:b7fe:f700:b916:75c5:e328:ad7c])
+        by smtp.gmail.com with ESMTPSA id t4sm6552821ejj.6.2020.10.09.09.19.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Oct 2020 09:19:24 -0700 (PDT)
+Date:   Fri, 9 Oct 2020 18:19:24 +0200
+From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild@lists.01.org, Dan Carpenter <error27@gmail.com>,
+        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: Re: sound/pci/au88x0/au88x0_core.c:2029 vortex_adb_checkinout()
+ warn: signedness bug returning '(-22)'
+Message-ID: <20201009161924.wc4omcb22ppaqcx2@ltop.local>
+References: <20201009120043.GL1042@kadam>
 MIME-Version: 1.0
-References: <20200710154811.418214-1-mgamal@redhat.com> <20200710154811.418214-8-mgamal@redhat.com>
-In-Reply-To: <20200710154811.418214-8-mgamal@redhat.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Fri, 9 Oct 2020 09:17:02 -0700
-Message-ID: <CALMp9eSbY6FjZAXt7ojQrX_SC_Lyg24dTGFZdKZK7fARGA=3hg@mail.gmail.com>
-Subject: Re: [PATCH v3 7/9] KVM: VMX: Add guest physical address check in EPT
- violation and misconfig
-To:     Mohammed Gamal <mgamal@redhat.com>
-Cc:     kvm list <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201009120043.GL1042@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 8:48 AM Mohammed Gamal <mgamal@redhat.com> wrote:
->
-> Check guest physical address against it's maximum physical memory. If
-> the guest's physical address exceeds the maximum (i.e. has reserved bits
-> set), inject a guest page fault with PFERR_RSVD_MASK set.
->
-> This has to be done both in the EPT violation and page fault paths, as
-> there are complications in both cases with respect to the computation
-> of the correct error code.
->
-> For EPT violations, unfortunately the only possibility is to emulate,
-> because the access type in the exit qualification might refer to an
-> access to a paging structure, rather than to the access performed by
-> the program.
->
-> Trapping page faults instead is needed in order to correct the error code,
-> but the access type can be obtained from the original error code and
-> passed to gva_to_gpa.  The corrections required in the error code are
-> subtle. For example, imagine that a PTE for a supervisor page has a reserved
-> bit set.  On a supervisor-mode access, the EPT violation path would trigger.
-> However, on a user-mode access, the processor will not notice the reserved
-> bit and not include PFERR_RSVD_MASK in the error code.
->
-> Co-developed-by: Mohammed Gamal <mgamal@redhat.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->  arch/x86/kvm/vmx/vmx.c | 24 +++++++++++++++++++++---
->  arch/x86/kvm/vmx/vmx.h |  3 ++-
->  2 files changed, 23 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 770b090969fb..de3f436b2d32 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -4790,9 +4790,15 @@ static int handle_exception_nmi(struct kvm_vcpu *vcpu)
->
->         if (is_page_fault(intr_info)) {
->                 cr2 = vmx_get_exit_qual(vcpu);
-> -               /* EPT won't cause page fault directly */
-> -               WARN_ON_ONCE(!vcpu->arch.apf.host_apf_flags && enable_ept);
-> -               return kvm_handle_page_fault(vcpu, error_code, cr2, NULL, 0);
-> +               if (enable_ept && !vcpu->arch.apf.host_apf_flags) {
-> +                       /*
-> +                        * EPT will cause page fault only if we need to
-> +                        * detect illegal GPAs.
-> +                        */
-> +                       kvm_fixup_and_inject_pf_error(vcpu, cr2, error_code);
-> +                       return 1;
-> +               } else
-> +                       return kvm_handle_page_fault(vcpu, error_code, cr2, NULL, 0);
->         }
->
->         ex_no = intr_info & INTR_INFO_VECTOR_MASK;
-> @@ -5308,6 +5314,18 @@ static int handle_ept_violation(struct kvm_vcpu *vcpu)
->                PFERR_GUEST_FINAL_MASK : PFERR_GUEST_PAGE_MASK;
->
->         vcpu->arch.exit_qualification = exit_qualification;
-> +
-> +       /*
-> +        * Check that the GPA doesn't exceed physical memory limits, as that is
-> +        * a guest page fault.  We have to emulate the instruction here, because
-> +        * if the illegal address is that of a paging structure, then
-> +        * EPT_VIOLATION_ACC_WRITE bit is set.  Alternatively, if supported we
-> +        * would also use advanced VM-exit information for EPT violations to
-> +        * reconstruct the page fault error code.
-> +        */
-> +       if (unlikely(kvm_mmu_is_illegal_gpa(vcpu, gpa)))
-> +               return kvm_emulate_instruction(vcpu, 0);
-> +
+On Fri, Oct 09, 2020 at 03:00:43PM +0300, kernel test robot wrote:
+> Hi Luc,
+> 
+> First bad commit (maybe != root cause):
+> 
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   c85fb28b6f999db9928b841f63f1beeb3074eeca
+> commit: 80591e61a0f7e88deaada69844e4a31280c4a38f kbuild: tell sparse about the $ARCH
+> config: powerpc64-randconfig-m031-20201008 (attached as .config)
+> compiler: powerpc-linux-gcc (GCC) 9.3.0
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> 
+> New smatch warnings:
+> sound/pci/au88x0/au88x0_core.c:2029 vortex_adb_checkinout() warn: signedness bug returning '(-22)'
+> sound/pci/rme9652/hdsp.c:4085 snd_hdsp_channel_info() warn: impossible condition '(hdsp->channel_map[channel] < 0) => (0-255 < 0)'
+> 
+> Old smatch warnings:
+> sound/pci/au88x0/au88x0_core.c:2046 vortex_adb_checkinout() warn: signedness bug returning '(-12)'
+> sound/pci/rme9652/hdsp.c:3338 snd_hdsp_proc_read() warn: argument 5 to %lx specifier is cast from pointer
+> sound/pci/rme9652/hdsp.c:5305 snd_hdsp_create() warn: 'hdsp->iobase' not released on lines: 5237.
+> sound/pci/rme9652/hdsp.c:5305 snd_hdsp_create() warn: 'pci' not released on lines: 5237.
+> 
+> vim +2029 sound/pci/au88x0/au88x0_core.c
+> 
+> ^1da177e4c3f415 Linus Torvalds  2005-04-16  2001  static char
+>                                                          ^^^^
+> Is char unsigned on PowerPC?  I thought that was only on s390.
 
-Is kvm's in-kernel emulator up to the task? What if the instruction in
-question is AVX-512, or one of the myriad instructions that the
-in-kernel emulator can't handle? Ice Lake must support the advanced
-VM-exit information for EPT violations, so that would seem like a
-better choice.
+All PowerPC machines or cross compiler I have access to give me:
+	$ gcc -E -dD -o - - < /dev/null | grep __CHAR_UNSIGNED__
+	#define __CHAR_UNSIGNED__ 1
 
->         return kvm_mmu_page_fault(vcpu, gpa, error_code, NULL, 0);
->  }
->
-> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-> index b0e5e210f1c1..0d06951e607c 100644
-> --- a/arch/x86/kvm/vmx/vmx.h
-> +++ b/arch/x86/kvm/vmx/vmx.h
-> @@ -11,6 +11,7 @@
->  #include "kvm_cache_regs.h"
->  #include "ops.h"
->  #include "vmcs.h"
-> +#include "cpuid.h"
->
->  extern const u32 vmx_msr_index[];
->
-> @@ -552,7 +553,7 @@ static inline bool vmx_has_waitpkg(struct vcpu_vmx *vmx)
->
->  static inline bool vmx_need_pf_intercept(struct kvm_vcpu *vcpu)
->  {
-> -       return !enable_ept;
-> +       return !enable_ept || cpuid_maxphyaddr(vcpu) < boot_cpu_data.x86_phys_bits;
->  }
->
->  void dump_vmcs(void);
-> --
-> 2.26.2
->
+and the PPC ABI requires it so.
+ 
+-- Luc
