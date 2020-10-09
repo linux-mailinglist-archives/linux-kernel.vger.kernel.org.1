@@ -2,102 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 510CF288F69
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 19:03:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0922B288F7A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 19:03:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390009AbgJIRBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 13:01:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48948 "EHLO
+        id S2390093AbgJIRCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 13:02:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389973AbgJIRBb (ORCPT
+        with ESMTP id S2390077AbgJIRCK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 13:01:31 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58EEEC0613D7;
-        Fri,  9 Oct 2020 10:01:31 -0700 (PDT)
-Date:   Fri, 09 Oct 2020 17:01:29 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602262889;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=dl6bWOeNvDMJEmrzVygAD+18R4nb/SFMZF/6yau/mC0=;
-        b=lgni7+HVI3dHMiGQM7Pxlfp9JO94ezup5mdVxBVpmQ3QteFOlxkjQowLPOP6Tss7jkTXFB
-        gTmCjyM8SVJUSUDJsiiVBkZMBzZ0i72bwatrD0IoI9C7bm1oviFSfjI2GjUlOeEEQeVUYf
-        Rs8criQMcvvwWa76AxNNCbl6pCJ9biRszLoh2Zu7WaDjOxmNkDPR1Pr283NDcUKpPnX9dt
-        DQhx2OHMjUrpIVbhIcDO624CYzN/d1yoNGZ2jml8GRjNvAfB/PTZMI95qxTaDgo7pvON3a
-        AjmwUOz0h4t2fo/zjZMVNhu64Pe21dLHyqvm3FIGpzUMkVbSeHqKoO2+2NYhSQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602262889;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=dl6bWOeNvDMJEmrzVygAD+18R4nb/SFMZF/6yau/mC0=;
-        b=g6BMF/I4rSkiDMtioWGt62dIdTHpQLNV1T2OdEyuDfRCmtzR+hCHHGAZVM11nOQW1nuAkM
-        nfGX97L/id1Tx0CQ==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] lib/debug: Remove pointless ARCH_NO_PREEMPT dependencies
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        Fri, 9 Oct 2020 13:02:10 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA092C0613D2;
+        Fri,  9 Oct 2020 10:02:09 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id g12so11012875wrp.10;
+        Fri, 09 Oct 2020 10:02:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OQjXtAUBiUt8FZeF7VwlJkEHyrNsrnaij5FiCyQ3fQQ=;
+        b=MecW84xz1Y6hya5EsgYzu/gfNosmgK1IQW0ERxhH6z3tyiZYmvq1BG+OSyvvc48kzJ
+         QJsqiwl8CiVx/EjFoq2LOVQ87riqWUxp8xzwOq31agG5QWZkQyTXaLsf4BjuRSXirElI
+         L76cra59A2J8F0Xj0AAQdYMBuZoe0TMiZuny4Ax33OaWBu4JgfyvAUzjGV7b4Hnu7G39
+         eVC2urRtnaikTDkZZ5qU1n54Ag2iHpF0D6QFQ/gfdTUss+KGEgP3jhRa5y+RE3ymj3dp
+         CPJuJwFwPDDKVGiUMynhBk6UdnmqRMjjs1xNjO1KbftD9UIzFlcnKG/ET5TGAKzCFzLb
+         1xXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OQjXtAUBiUt8FZeF7VwlJkEHyrNsrnaij5FiCyQ3fQQ=;
+        b=HJ8AKOg9JnRE5EbL5xHt/i8inIHDzXvCq2mLi8opGyLz9g3e0fnM9bM7l9qpXJ1N1q
+         TMQqzuKIfcende8I3dJg2YQT4ZvTtbzTP/D4tLyVO3f6v6jEUUJAQ5oJdq9oYlf+tHtw
+         qPk9xdZBFojD80DY1NhCbvzp3gwEZ372rkgrNxt/7h2bCpIvtfW6GAkz2v6uLWRXaiLn
+         83D6J4KypuhvIprgNVwp6hM8ZSgKBXFrvRRxK+kb3GUdjBhNHSbRyftaTwk0jNSSh93O
+         iW9iItpAj9WKDc8tXefnT4dSA+unM21KsmUW8Uzj4C/buwSRc6QbWOA0pjG2q+8g32EQ
+         YlTg==
+X-Gm-Message-State: AOAM531EY6oZ2+dRHnGQBO+hMq9nT359NpR9e9t1KlNCToJm2QhxQxLh
+        /7W2UerK540ZoDLYNgJQq14=
+X-Google-Smtp-Source: ABdhPJxOLPMJ/OTwRWLN6JGLl2IHYdtRODFUaAvYApkLJSw1zM761u1IKsAuwVY+wEvRe7p1OEoC9g==
+X-Received: by 2002:a05:6000:c5:: with SMTP id q5mr16999496wrx.175.1602262928645;
+        Fri, 09 Oct 2020 10:02:08 -0700 (PDT)
+Received: from nogikh.c.googlers.com.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
+        by smtp.gmail.com with ESMTPSA id s6sm13211092wrg.92.2020.10.09.10.02.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Oct 2020 10:02:08 -0700 (PDT)
+From:   Aleksandr Nogikh <a.nogikh@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, johannes@sipsolutions.net,
+        akpm@linux-foundation.org
+Cc:     edumazet@google.com, andreyknvl@google.com, dvyukov@google.com,
+        elver@google.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+        nogikh@google.com
+Subject: [PATCH v2 0/3] [PATCH v2 0/3] [PATCH v2 0/3] net, mac80211, kernel: enable KCOV remote coverage collection for 802.11 frame handling
+Date:   Fri,  9 Oct 2020 17:01:59 +0000
+Message-Id: <20201009170202.103512-1-a.nogikh@gmail.com>
+X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
 MIME-Version: 1.0
-Message-ID: <160226288912.7002.16299812541183928186.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the core/rcu branch of tip:
+From: Aleksandr Nogikh <nogikh@google.com>
 
-Commit-ID:     45015f8840baa8a99f5161d42fc1ca070d534365
-Gitweb:        https://git.kernel.org/tip/45015f8840baa8a99f5161d42fc1ca070d534365
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Mon, 14 Sep 2020 20:35:55 +02:00
-Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Fri, 25 Sep 2020 11:24:14 -07:00
+This patch series enables remote KCOV coverage collection during
+802.11 frames processing. These changes make it possible to perform
+coverage-guided fuzzing in search of remotely triggerable bugs.
 
-lib/debug: Remove pointless ARCH_NO_PREEMPT dependencies
+Normally, KCOV collects coverage information for the code that is
+executed inside the system call context. It is easy to identify where
+that coverage should go and whether it should be collected at all by
+looking at the current process. If KCOV was enabled on that process,
+coverage will be stored in a buffer specific to that process.
+Howerever, it is not always enough as handling can happen elsewhere
+(e.g. in separate kernel threads).
 
-ARCH_NO_PREEMPT disables the selection of CONFIG_PREEMPT_VOLUNTARY and
-CONFIG_PREEMPT, but architectures which set this config option still
-support preempt count for hard and softirq accounting.
+When it is impossible to infer KCOV-related info just by looking at
+the currently running process, one needs to manually pass some
+information to the code that should be instrumented. The information
+takes the form of 64 bit integers (KCOV remote handles). Zero is the
+special value that corresponds to an empty handle. More details on
+KCOV and remote coverage collection can be found in
+Documentation/dev-tools/kcov.rst.
 
-There is absolutely no reason to prevent lockdep from using the preempt
-counter nor is there a reason to prevent the enablement of
-CONFIG_DEBUG_ATOMIC_SLEEP on such architectures.
+The series consists of three commits.
+1. Apply a minor fix to kcov_common_handle() so that it returns a
+valid handle (zero) when called in an interrupt context.
+2. Take the remote handle from KCOV and attach it to newly allocated
+SKBs. If the allocation happens inside a system call context, the SKB
+will be tied to the process that issued the syscall (if that process
+is interested in remote coverage collection).
+3. Annotate the code that processes incoming 802.11 frames with
+kcov_remote_start()/kcov_remote_stop()
 
-Remove the dependencies.
+This patch series conflicts with another proposed patch
+http://lkml.kernel.org/r/223901affc7bd759b2d6995c2dbfbdd0a29bc88a.1602248029.git.andreyknvl@google.com
+One of these patches needs to be rebased once the other one is merged.
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- lib/Kconfig.debug | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+v2:
+* Moved KCOV annotations from ieee80211_tasklet_handler to
+  ieee80211_rx.
+* Updated kcov_common_handle() to return 0 if it is called in
+  interrupt context.
+* Updated the cover letter.
+ 
+v1: https://lkml.kernel.org/r/20201007101726.3149375-1-a.nogikh@gmail.com
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index e068c3c..f50fbcf 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -1161,7 +1161,7 @@ config PROVE_LOCKING
- 	select DEBUG_RWSEMS
- 	select DEBUG_WW_MUTEX_SLOWPATH
- 	select DEBUG_LOCK_ALLOC
--	select PREEMPT_COUNT if !ARCH_NO_PREEMPT
-+	select PREEMPT_COUNT
- 	select TRACE_IRQFLAGS
- 	default n
- 	help
-@@ -1323,7 +1323,6 @@ config DEBUG_ATOMIC_SLEEP
- 	bool "Sleep inside atomic section checking"
- 	select PREEMPT_COUNT
- 	depends on DEBUG_KERNEL
--	depends on !ARCH_NO_PREEMPT
- 	help
- 	  If you say Y here, various routines which may sleep will become very
- 	  noisy if they are called inside atomic sections: when a spinlock is
+Aleksandr Nogikh (3):
+  kernel: make kcov_common_handle consider the current context
+  net: store KCOV remote handle in sk_buff
+  mac80211: add KCOV remote annotations to incoming frame processing
+
+ include/linux/skbuff.h | 21 +++++++++++++++++++++
+ include/net/mac80211.h |  2 ++
+ kernel/kcov.c          |  2 ++
+ net/core/skbuff.c      |  1 +
+ net/mac80211/iface.c   |  2 ++
+ 5 files changed, 28 insertions(+)
+
+
+base-commit: a804ab086e9de200e2e70600996db7fc14c91959
+-- 
+2.28.0.1011.ga647a8990f-goog
+
