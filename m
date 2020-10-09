@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75AFF2884CC
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D9BA2884D6
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732921AbgJIICp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 04:02:45 -0400
-Received: from mail-io1-f77.google.com ([209.85.166.77]:38613 "EHLO
-        mail-io1-f77.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732924AbgJIICU (ORCPT
+        id S1732669AbgJIID3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 04:03:29 -0400
+Received: from mail-io1-f80.google.com ([209.85.166.80]:40090 "EHLO
+        mail-io1-f80.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732469AbgJIID2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 04:02:20 -0400
-Received: by mail-io1-f77.google.com with SMTP id e21so5656295iod.5
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 01:02:18 -0700 (PDT)
+        Fri, 9 Oct 2020 04:03:28 -0400
+Received: by mail-io1-f80.google.com with SMTP id v7so3628648ioe.7
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 01:03:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=wjVhKiqgqTabR+ms1hyzS3BfeUzc+mXHyOkqU5qccHg=;
-        b=pCadnLBS4p1jD9Y2/7Umq2uhHks8gL/vQtYFZJxkI/T78+rQKcS1QvSwmEg2UM6LG6
-         WWeAYMiLh2ES07EjrpiApmrNVU8dUfsIoxh0rSAQM0Hw8/Uq6WGdSkw6SiSZEJ8S7sTo
-         YF5SYLIUTzhS28jebqkxRSumOoLA88so5AWZADV0VNunuvvYvsNuv+0CJPKYu+OpmLMs
-         hwdgasPBj0B4b0zL5vIusGTVEOvIWLUaAGe4rCFdLw4zhzFD4rDLy4KA3u30Nk4s2LR5
-         ZwLya8dDcolNFrBrHfyozgKMlyNFeXjPCXimtxVLjinjMSHQTQdR0/TtGAWNcOefhQb0
-         I+dA==
-X-Gm-Message-State: AOAM530N5fTHIqR4s8Td7Yd8xthxGyTY+iXZPLdQRdOKaJjfkaZvHbHo
-        TyiZGDtGjy9vGg7zqvTpWBtPBJDaZW29fftc9ll+HRzQ96j5
-X-Google-Smtp-Source: ABdhPJxvPML8Fq9zq1J/OM2ISnEuo4McWxii+SNAUhGQ4MOg5taScDzwaz+lZBKph82jR2BOp9UJo83i8mIGfDlVXFkK636edH8x
+        bh=Rvx7NbZ6B7vi+U6k35vJXxZn6dZ+LZeTCuQdj51s5PA=;
+        b=njvGgXeEvi8vgXCV4AEmQvutI0fafUEsLy5tnkGpR4TBrSsGw1vysmV7G41lmf0BRe
+         ByYLUXs0FtlAAviHaBoavw/vBHXrmZArkbVKCSFB1lmDTW6CacJsqbLz8XZj5TZGf9PM
+         t5xtqEoZalps8Gwdvi0YecmvnclSWfI885K7E3kXkCfgCSH/mjBKfQWeanmwk+eQGrKd
+         83dTfh19K4WHkiCryrpLs+XkczYqgKns0ePF+jDsNaigeoIXFioIurWp0XswuVuy7hJz
+         i5KyyzzOr10qrkaIvIx8AJ1HAuH4/d8anMzhjzCTooEp0Kq/7Is+/K87NeTlV+RC7rsw
+         KCiA==
+X-Gm-Message-State: AOAM531+WxCcjZ4c5HbsKWcEDKIwCfOJ8z4SaTYicNbAIa7H5kHMGAcP
+        uV2ZKVm4j6FfY1ZI5XxOhIDVDVIVtb4zMDoQE/fSjzdMTkGw
+X-Google-Smtp-Source: ABdhPJwEUFducMP4LN+SpAwXA0k51N+2gmE3z6WZwNEfI6YT4hbhhp4vOcf1cT74/DHfutug3In6x90GS4ii2y6apDzIOoBNHjMG
 MIME-Version: 1.0
-X-Received: by 2002:a92:c74c:: with SMTP id y12mr9899144ilp.19.1602230538625;
- Fri, 09 Oct 2020 01:02:18 -0700 (PDT)
-Date:   Fri, 09 Oct 2020 01:02:18 -0700
+X-Received: by 2002:a92:c949:: with SMTP id i9mr9329395ilq.252.1602230606856;
+ Fri, 09 Oct 2020 01:03:26 -0700 (PDT)
+Date:   Fri, 09 Oct 2020 01:03:26 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001a684d05b1385e71@google.com>
-Subject: KASAN: use-after-free Read in __io_uring_files_cancel
-From:   syzbot <syzbot+77efce558b2b9e6b6405@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Message-ID: <0000000000002b8ac905b1386290@google.com>
+Subject: KASAN: use-after-free Read in ieee80211_scan_rx
+From:   syzbot <syzbot+9250865a55539d384347@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,140 +48,130 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    e4fb79c7 Add linux-next specific files for 20201008
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1592ee1b900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=568d41fe4341ed0f
-dashboard link: https://syzkaller.appspot.com/bug?extid=77efce558b2b9e6b6405
+HEAD commit:    c85fb28b Merge tag 'arm64-fixes' of git://git.kernel.org/p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1658aa8b900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c06bcf3cc963d91c
+dashboard link: https://syzkaller.appspot.com/bug?extid=9250865a55539d384347
 compiler:       gcc (GCC) 10.1.0-syz 20200507
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+77efce558b2b9e6b6405@syzkaller.appspotmail.com
+Reported-by: syzbot+9250865a55539d384347@syzkaller.appspotmail.com
 
 ==================================================================
-BUG: KASAN: use-after-free in xas_next_entry include/linux/xarray.h:1630 [inline]
-BUG: KASAN: use-after-free in __io_uring_files_cancel+0x417/0x440 fs/io_uring.c:8681
-Read of size 1 at addr ffff888033631880 by task syz-executor.1/8477
+BUG: KASAN: use-after-free in ieee80211_scan_rx+0x749/0x780 net/mac80211/scan.c:269
+Read of size 4 at addr ffff88808b2ae32c by task ksoftirqd/0/9
 
-CPU: 1 PID: 8477 Comm: syz-executor.1 Not tainted 5.9.0-rc8-next-20201008-syzkaller #0
+CPU: 0 PID: 9 Comm: ksoftirqd/0 Not tainted 5.9.0-rc8-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Call Trace:
  __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fb lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:385
- __kasan_report mm/kasan/report.c:545 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
- xas_next_entry include/linux/xarray.h:1630 [inline]
- __io_uring_files_cancel+0x417/0x440 fs/io_uring.c:8681
- io_uring_files_cancel include/linux/io_uring.h:35 [inline]
- exit_files+0xe4/0x170 fs/file.c:456
- do_exit+0xae9/0x2930 kernel/exit.c:801
- do_group_exit+0x125/0x310 kernel/exit.c:903
- get_signal+0x428/0x1f00 kernel/signal.c:2757
- arch_do_signal+0x82/0x2470 arch/x86/kernel/signal.c:811
- exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
- exit_to_user_mode_prepare+0x194/0x1f0 kernel/entry/common.c:192
- syscall_exit_to_user_mode+0x7a/0x2c0 kernel/entry/common.c:267
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45de29
-Code: Unable to access opcode bytes at RIP 0x45ddff.
-RSP: 002b:00007f887aa8fcf8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-RAX: fffffffffffffe00 RBX: 000000000118bf28 RCX: 000000000045de29
-RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000118bf28
-RBP: 000000000118bf20 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bf2c
-R13: 00007ffe3a42135f R14: 00007f887aa909c0 R15: 000000000118bf2c
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+ ieee80211_scan_rx+0x749/0x780 net/mac80211/scan.c:269
+ __ieee80211_rx_handle_packet net/mac80211/rx.c:4591 [inline]
+ ieee80211_rx_list+0x1ea2/0x23a0 net/mac80211/rx.c:4779
+ ieee80211_rx_napi+0xf7/0x3d0 net/mac80211/rx.c:4800
+ ieee80211_rx include/net/mac80211.h:4435 [inline]
+ ieee80211_tasklet_handler+0xd3/0x130 net/mac80211/main.c:235
+ tasklet_action_common.constprop.0+0x237/0x470 kernel/softirq.c:559
+ __do_softirq+0x1f8/0xb23 kernel/softirq.c:298
+ run_ksoftirqd kernel/softirq.c:652 [inline]
+ run_ksoftirqd+0xcf/0x170 kernel/softirq.c:644
+ smpboot_thread_fn+0x655/0x9e0 kernel/smpboot.c:165
+ kthread+0x3b5/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
 
-Allocated by task 8477:
+Allocated by task 12531:
  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
  kasan_set_track mm/kasan/common.c:56 [inline]
  __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
- slab_post_alloc_hook mm/slab.h:514 [inline]
- slab_alloc mm/slab.c:3314 [inline]
- kmem_cache_alloc+0x162/0x550 mm/slab.c:3484
- xas_alloc+0x330/0x440 lib/xarray.c:374
- xas_create+0x2db/0x1020 lib/xarray.c:676
- xas_store+0x8a/0x1bb0 lib/xarray.c:784
- io_uring_add_task_file fs/io_uring.c:8608 [inline]
- io_uring_add_task_file+0x212/0x430 fs/io_uring.c:8590
- io_uring_get_fd fs/io_uring.c:9116 [inline]
- io_uring_create fs/io_uring.c:9280 [inline]
- io_uring_setup+0x2727/0x3660 fs/io_uring.c:9314
+ __do_kmalloc mm/slab.c:3659 [inline]
+ __kmalloc+0x1b0/0x360 mm/slab.c:3668
+ kmalloc include/linux/slab.h:559 [inline]
+ kzalloc include/linux/slab.h:666 [inline]
+ cfg80211_conn_scan+0x1af/0xfb0 net/wireless/sme.c:81
+ cfg80211_sme_connect net/wireless/sme.c:586 [inline]
+ cfg80211_connect+0x1616/0x2010 net/wireless/sme.c:1258
+ nl80211_connect+0x1646/0x2220 net/wireless/nl80211.c:10392
+ genl_family_rcv_msg_doit net/netlink/genetlink.c:669 [inline]
+ genl_family_rcv_msg net/netlink/genetlink.c:714 [inline]
+ genl_rcv_msg+0x61d/0x980 net/netlink/genetlink.c:731
+ netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:742
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:671
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Freed by task 6907:
+Freed by task 360:
  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
  kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
  kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
  __kasan_slab_free+0xd8/0x120 mm/kasan/common.c:422
- __cache_free mm/slab.c:3420 [inline]
- kmem_cache_free.part.0+0x74/0x1d0 mm/slab.c:3695
- rcu_do_batch kernel/rcu/tree.c:2484 [inline]
- rcu_core+0x645/0x1240 kernel/rcu/tree.c:2718
- __do_softirq+0x203/0xab6 kernel/softirq.c:298
+ __cache_free mm/slab.c:3422 [inline]
+ kfree+0x10e/0x2b0 mm/slab.c:3760
+ ___cfg80211_scan_done+0x2ae/0x5f0 net/wireless/scan.c:505
+ __cfg80211_scan_done+0x1f/0x30 net/wireless/scan.c:521
+ process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+ kthread+0x3b5/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
 
 Last call_rcu():
  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
  kasan_record_aux_stack+0x82/0xb0 mm/kasan/generic.c:346
- __call_rcu kernel/rcu/tree.c:2960 [inline]
- call_rcu+0x15e/0x7d0 kernel/rcu/tree.c:3033
- xa_node_free lib/xarray.c:258 [inline]
- xas_delete_node lib/xarray.c:494 [inline]
- update_node lib/xarray.c:756 [inline]
- xas_store+0xbcc/0x1bb0 lib/xarray.c:841
- io_uring_del_task_file+0x105/0x1a0 fs/io_uring.c:8630
- __io_uring_files_cancel+0x3dd/0x440 fs/io_uring.c:8691
- io_uring_files_cancel include/linux/io_uring.h:35 [inline]
- exit_files+0xe4/0x170 fs/file.c:456
- do_exit+0xae9/0x2930 kernel/exit.c:801
- do_group_exit+0x125/0x310 kernel/exit.c:903
- get_signal+0x428/0x1f00 kernel/signal.c:2757
- arch_do_signal+0x82/0x2470 arch/x86/kernel/signal.c:811
- exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
- exit_to_user_mode_prepare+0x194/0x1f0 kernel/entry/common.c:192
- syscall_exit_to_user_mode+0x7a/0x2c0 kernel/entry/common.c:267
+ __call_rcu kernel/rcu/tree.c:2896 [inline]
+ call_rcu+0x15e/0x7c0 kernel/rcu/tree.c:2970
+ neigh_parms_release net/core/neighbour.c:1662 [inline]
+ neigh_parms_release+0x1e3/0x260 net/core/neighbour.c:1652
+ inetdev_destroy net/ipv4/devinet.c:325 [inline]
+ inetdev_event+0xca6/0x14fd net/ipv4/devinet.c:1599
+ notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
+ call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2033
+ call_netdevice_notifiers_extack net/core/dev.c:2045 [inline]
+ call_netdevice_notifiers net/core/dev.c:2059 [inline]
+ rollback_registered_many+0x77a/0x1250 net/core/dev.c:9347
+ rollback_registered net/core/dev.c:9392 [inline]
+ unregister_netdevice_queue+0x2dd/0x570 net/core/dev.c:10490
+ unregister_netdevice include/linux/netdevice.h:2789 [inline]
+ ppp_release+0x216/0x240 drivers/net/ppp/ppp_generic.c:403
+ __fput+0x285/0x920 fs/file_table.c:281
+ task_work_run+0xdd/0x190 kernel/task_work.c:141
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:165 [inline]
+ exit_to_user_mode_prepare+0x1e1/0x200 kernel/entry/common.c:192
+ syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:267
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Second to last call_rcu():
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_record_aux_stack+0x82/0xb0 mm/kasan/generic.c:346
- __call_rcu kernel/rcu/tree.c:2960 [inline]
- call_rcu+0x15e/0x7d0 kernel/rcu/tree.c:3033
- radix_tree_node_free lib/radix-tree.c:308 [inline]
- delete_node+0xef/0x8c0 lib/radix-tree.c:571
- __radix_tree_delete+0x190/0x370 lib/radix-tree.c:1377
- radix_tree_delete_item+0xe7/0x230 lib/radix-tree.c:1428
- free_pid+0x9b/0x260 kernel/pid.c:152
- __change_pid+0x1c7/0x2d0 kernel/pid.c:353
- __unhash_process kernel/exit.c:76 [inline]
- __exit_signal kernel/exit.c:147 [inline]
- release_task+0xd1c/0x14d0 kernel/exit.c:198
- exit_notify kernel/exit.c:681 [inline]
- do_exit+0x143f/0x2930 kernel/exit.c:826
- call_usermodehelper_exec_async+0x413/0x580 kernel/umh.c:123
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-
-The buggy address belongs to the object at ffff888033631880
- which belongs to the cache radix_tree_node of size 576
-The buggy address is located 0 bytes inside of
- 576-byte region [ffff888033631880, ffff888033631ac0)
+The buggy address belongs to the object at ffff88808b2ae300
+ which belongs to the cache kmalloc-192 of size 192
+The buggy address is located 44 bytes inside of
+ 192-byte region [ffff88808b2ae300, ffff88808b2ae3c0)
 The buggy address belongs to the page:
-page:00000000c45adbd1 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff888033631ffb pfn:0x33631
+page:00000000f60d3173 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x8b2ae
 flags: 0xfffe0000000200(slab)
-raw: 00fffe0000000200 ffffea0000cd8908 ffffea0000cd8488 ffff88800ec6f000
-raw: ffff888033631ffb ffff888033631040 0000000100000005 0000000000000000
+raw: 00fffe0000000200 ffffea0002252108 ffffea000287e0c8 ffff8880aa040000
+raw: 0000000000000000 ffff88808b2ae000 0000000100000010 0000000000000000
 page dumped because: kasan: bad access detected
 
 Memory state around the buggy address:
- ffff888033631780: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff888033631800: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff888033631880: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                   ^
- ffff888033631900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888033631980: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88808b2ae200: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88808b2ae280: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+>ffff88808b2ae300: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                  ^
+ ffff88808b2ae380: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+ ffff88808b2ae400: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
 ==================================================================
 
 
