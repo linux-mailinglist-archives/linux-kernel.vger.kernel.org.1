@@ -2,259 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58B7528814D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 06:25:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC3CF28814F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 06:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730983AbgJIEZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 00:25:28 -0400
-Received: from mga05.intel.com ([192.55.52.43]:48068 "EHLO mga05.intel.com"
+        id S1731040AbgJIE1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 00:27:31 -0400
+Received: from ozlabs.org ([203.11.71.1]:49575 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727816AbgJIEZ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 00:25:28 -0400
-IronPort-SDR: uGRRXdo+31MfVyVG7UWer2xeHPK+Ryzs9EjBVwsThuZJyEMsp6qk+Tp94yANfOt8arLBpe3zpZ
- 84/gQ/UDmKqA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="250135301"
-X-IronPort-AV: E=Sophos;i="5.77,353,1596524400"; 
-   d="scan'208";a="250135301"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 21:25:27 -0700
-IronPort-SDR: 6v56RAwzJiv+oG+jKAFm4gXvQZ8JLmiZpDF/cUVg3DDik/f2gNRGGF6HdH4dzDyEHs5i7gppRY
- 0BAKTpcPY+sg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,353,1596524400"; 
-   d="scan'208";a="316920589"
-Received: from lkp-server02.sh.intel.com (HELO 80eb06af76cf) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 08 Oct 2020 21:25:25 -0700
-Received: from kbuild by 80eb06af76cf with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kQjy9-0000Ax-3K; Fri, 09 Oct 2020 04:25:25 +0000
-Date:   Fri, 09 Oct 2020 12:25:20 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:perf/core] BUILD SUCCESS
- 84ad70320241566e028ada955c694ab92f3351e3
-Message-ID: <5f7fe630.+onYjjaqf4iP2T/E%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1731008AbgJIE1b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 00:27:31 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C6w5r33RDz9sRk;
+        Fri,  9 Oct 2020 15:27:28 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1602217648;
+        bh=H2YLiXuGkBSqOqzwg+471E2SZ2wWV5jW7UmnJSOd8cc=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=XDFEAlcD3LRDwyj46ai4x6PWqZs9fNY9RjyeaHa9fWQwwC/fE63SuWxqpth0o5crN
+         7gPntlBH9UKer+B2CFkJrewrzuUAHjd9tfBbLdDHmhTHWQnQaSB82BZD60XJZ6WID4
+         yi/0Bb8iKeDd+Z5UPwSBu98qHkoITNoJRGaus3+TRigIHbZfUm07NW/FXZJbkQfygM
+         bnNJoYvV+aAaateddOfQvrfPeaiYcTjY/caxHEqaORlIw+h2nBMFe+xqyzHZj739Rt
+         9Sq2USsaTcy/eC8wb8AMiXOJDpA7qbtxBlJJiK+P539Ow6tejrjbUn4wvzZo2D0Swn
+         pJvVSPA57aTfA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+Cc:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Fixes tag needs some work in the powerpc tree
+In-Reply-To: <20201009075816.0cb5a86f@canb.auug.org.au>
+References: <20201009075816.0cb5a86f@canb.auug.org.au>
+Date:   Fri, 09 Oct 2020 15:27:25 +1100
+Message-ID: <87ft6o10sy.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  perf/core
-branch HEAD: 84ad70320241566e028ada955c694ab92f3351e3  perf: Fix task_function_call() error handling
+Stephen Rothwell <sfr@canb.auug.org.au> writes:
 
-elapsed time: 720m
+> Hi all,
+>
+> In commit
+>
+>   a2d0230b91f7 ("cpufreq: powernv: Fix frame-size-overflow in powernv_cpufreq_reboot_notifier")
+>
+> Fixes tag
+>
+>   Fixes: cf30af76 ("cpufreq: powernv: Set the cpus to nominal frequency during reboot/kexec")
 
-configs tested: 195
-configs skipped: 2
+Gah.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+I've changed my scripts to make this a hard error when I'm applying
+patches.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                  colibri_pxa300_defconfig
-m68k                       m5475evb_defconfig
-mips                      fuloong2e_defconfig
-arm                          exynos_defconfig
-s390                       zfcpdump_defconfig
-m68k                       m5208evb_defconfig
-powerpc                    mvme5100_defconfig
-mips                        jmr3927_defconfig
-mips                       rbtx49xx_defconfig
-arm                            u300_defconfig
-nios2                               defconfig
-sh                         ap325rxa_defconfig
-powerpc                 xes_mpc85xx_defconfig
-m68k                        m5307c3_defconfig
-arm                             mxs_defconfig
-h8300                               defconfig
-powerpc                  mpc885_ads_defconfig
-sh                          rsk7203_defconfig
-sh                 kfr2r09-romimage_defconfig
-c6x                        evmc6678_defconfig
-powerpc                      ppc64e_defconfig
-powerpc                        warp_defconfig
-sh                          polaris_defconfig
-arm                           sama5_defconfig
-sh                   secureedge5410_defconfig
-powerpc                      bamboo_defconfig
-sh                         ecovec24_defconfig
-powerpc                         ps3_defconfig
-arm                           h3600_defconfig
-powerpc                     mpc512x_defconfig
-parisc                           allyesconfig
-sh                          landisk_defconfig
-mips                     decstation_defconfig
-sparc                               defconfig
-powerpc                     pseries_defconfig
-arm                       netwinder_defconfig
-arm                          ep93xx_defconfig
-i386                             alldefconfig
-powerpc                 mpc834x_itx_defconfig
-m68k                        mvme16x_defconfig
-arc                    vdk_hs38_smp_defconfig
-arc                          axs103_defconfig
-mips                         bigsur_defconfig
-powerpc                  storcenter_defconfig
-sh                        dreamcast_defconfig
-m68k                       m5275evb_defconfig
-riscv                             allnoconfig
-powerpc                     ppa8548_defconfig
-openrisc                    or1ksim_defconfig
-sh                          rsk7201_defconfig
-mips                      malta_kvm_defconfig
-sh                           se7721_defconfig
-arc                     haps_hs_smp_defconfig
-sh                          r7780mp_defconfig
-sh                          r7785rp_defconfig
-um                             i386_defconfig
-powerpc                     tqm8548_defconfig
-arm                           omap1_defconfig
-arm                         mv78xx0_defconfig
-arm                         assabet_defconfig
-mips                          ath25_defconfig
-nds32                             allnoconfig
-arm                         s3c6400_defconfig
-powerpc                       eiger_defconfig
-mips                        nlm_xlp_defconfig
-arm                         nhk8815_defconfig
-sparc                       sparc32_defconfig
-h8300                            alldefconfig
-arm                           viper_defconfig
-powerpc                      ppc44x_defconfig
-powerpc                      chrp32_defconfig
-arm                         lpc18xx_defconfig
-powerpc                 mpc8313_rdb_defconfig
-mips                      pic32mzda_defconfig
-arm                         s5pv210_defconfig
-x86_64                              defconfig
-openrisc                         alldefconfig
-arm                          pxa168_defconfig
-powerpc                      ppc6xx_defconfig
-arm                    vt8500_v6_v7_defconfig
-mips                        qi_lb60_defconfig
-c6x                        evmc6472_defconfig
-sh                     sh7710voipgw_defconfig
-m68k                          multi_defconfig
-mips                         tb0219_defconfig
-sh                          urquell_defconfig
-ia64                        generic_defconfig
-mips                           ip28_defconfig
-arm                        shmobile_defconfig
-powerpc                      arches_defconfig
-powerpc                    gamecube_defconfig
-powerpc                     ksi8560_defconfig
-h8300                     edosk2674_defconfig
-arm                     eseries_pxa_defconfig
-m68k                          amiga_defconfig
-mips                           xway_defconfig
-sh                              ul2_defconfig
-sh                          lboxre2_defconfig
-arm                     davinci_all_defconfig
-powerpc                          allyesconfig
-mips                  decstation_64_defconfig
-powerpc                     kmeter1_defconfig
-powerpc                      obs600_defconfig
-mips                       capcella_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-arc                              allyesconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20201008
-x86_64               randconfig-a003-20201008
-x86_64               randconfig-a005-20201008
-x86_64               randconfig-a001-20201008
-x86_64               randconfig-a002-20201008
-x86_64               randconfig-a006-20201008
-i386                 randconfig-a006-20201008
-i386                 randconfig-a005-20201008
-i386                 randconfig-a001-20201008
-i386                 randconfig-a004-20201008
-i386                 randconfig-a002-20201008
-i386                 randconfig-a003-20201008
-i386                 randconfig-a006-20201009
-i386                 randconfig-a005-20201009
-i386                 randconfig-a001-20201009
-i386                 randconfig-a004-20201009
-i386                 randconfig-a002-20201009
-i386                 randconfig-a003-20201009
-x86_64               randconfig-a012-20201009
-x86_64               randconfig-a015-20201009
-x86_64               randconfig-a013-20201009
-x86_64               randconfig-a014-20201009
-x86_64               randconfig-a011-20201009
-x86_64               randconfig-a016-20201009
-i386                 randconfig-a015-20201009
-i386                 randconfig-a013-20201009
-i386                 randconfig-a014-20201009
-i386                 randconfig-a016-20201009
-i386                 randconfig-a011-20201009
-i386                 randconfig-a012-20201009
-i386                 randconfig-a015-20201008
-i386                 randconfig-a013-20201008
-i386                 randconfig-a014-20201008
-i386                 randconfig-a016-20201008
-i386                 randconfig-a011-20201008
-i386                 randconfig-a012-20201008
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                                  kexec
-x86_64                               rhel-8.3
-
-clang tested configs:
-x86_64               randconfig-a012-20201008
-x86_64               randconfig-a015-20201008
-x86_64               randconfig-a013-20201008
-x86_64               randconfig-a014-20201008
-x86_64               randconfig-a011-20201008
-x86_64               randconfig-a016-20201008
-x86_64               randconfig-a004-20201009
-x86_64               randconfig-a003-20201009
-x86_64               randconfig-a005-20201009
-x86_64               randconfig-a001-20201009
-x86_64               randconfig-a002-20201009
-x86_64               randconfig-a006-20201009
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+cheers
