@@ -2,87 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D2BD2884DB
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00764288477
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:01:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732478AbgJIIGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 04:06:07 -0400
-Received: from mail-m1271.qiye.163.com ([115.236.127.1]:51276 "EHLO
-        mail-m1271.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732337AbgJIIGG (ORCPT
+        id S1732823AbgJIIAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 04:00:33 -0400
+Received: from mail-il1-f208.google.com ([209.85.166.208]:47651 "EHLO
+        mail-il1-f208.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732436AbgJIIAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 04:06:06 -0400
-X-Greylist: delayed 307 seconds by postgrey-1.27 at vger.kernel.org; Fri, 09 Oct 2020 04:06:05 EDT
-Received: from ubuntu.localdomain (unknown [157.0.31.125])
-        by mail-m1271.qiye.163.com (Hmail) with ESMTPA id BF05D581FBE;
-        Fri,  9 Oct 2020 16:00:56 +0800 (CST)
-From:   Yang Yang <yang.yang@vivo.com>
-To:     Jens Axboe <axboe@kernel.dk>, Bart Van Assche <bvanassche@acm.org>,
-        Hannes Reinecke <hare@suse.com>,
-        Ming Lei <ming.lei@redhat.com>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     onlyfever@icloud.com, yang.yang@vivo.com
-Subject: [PATCH] blk-mq: move cancel of hctx->run_work to the front of blk_exit_queue
-Date:   Fri,  9 Oct 2020 01:00:14 -0700
-Message-Id: <20201009080015.3217-1-yang.yang@vivo.com>
-X-Mailer: git-send-email 2.17.1
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGE1NSktDHkIYTkhMVkpNS0lJSEtPTk1CTUhVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS09ISVVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PD46Khw6IT8vAkxMDQ4xNQER
-        Hh8wCj5VSlVKTUtJSUhLT05MSE1NVTMWGhIXVQIaFRxVAhoVHDsNEg0UVRgUFkVZV1kSC1lBWUpO
-        TFVLVUhKVUpJTllXWQgBWUFJT0hINwY+
-X-HM-Tid: 0a750c60924998b6kuuubf05d581fbe
+        Fri, 9 Oct 2020 04:00:25 -0400
+Received: by mail-il1-f208.google.com with SMTP id z14so6254579ilb.14
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 01:00:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=eOD7BtHWSKEPTdJ+fUO2oFYrU8z7mMDg/rYmr1MnpH8=;
+        b=sTadPjuPsRa6+mIaNn6c/t+uRtkfBjHWocpLHpiypbyntLpT3bXaHEDwkGA2WRJX7D
+         JjC2CKY4wajOnAjeyi64efftHAtU5BY+LYWpY+0mt75RcnYsVhwnzTwgiqPfsvNrGRhJ
+         tWtvKrsC9tjDNajuQujrgAk32zm6Xec/Af+/B6HPue4wyKTDuR+/+woabuj6UYkXVssJ
+         XbE/iSmCimwdsg7pgDosVIfDmfe6oO3hVoB783dXtqPAMQbq+IL5WCE56xcMWeFn3zFQ
+         WwKHsgwnwKoJN1NnwlvC4iLJse32hzUPsbwuI+Jq5N5WuacbetZCwqvaHJcIi8CGnFUn
+         A27A==
+X-Gm-Message-State: AOAM533mp3oyTrA3Gu1gXRtjhj0EWJlJKL3f1BheDf8t4UlXNfuq0pyA
+        WI4MSuEhSbVe6A7G66K5l+0oksysi+QdLu/6vmb3O5saAruA
+X-Google-Smtp-Source: ABdhPJwH60XYZ2M2nGvt2bLfm3bvuc9NBX2KOIX9Fet9jO9hHCS3SbvBvxns4ss6fVe6e65XHkmi/UJnoHj0G7thFmH9cPa25G8n
+MIME-Version: 1.0
+X-Received: by 2002:a05:6638:1616:: with SMTP id x22mr10409541jas.110.1602230422963;
+ Fri, 09 Oct 2020 01:00:22 -0700 (PDT)
+Date:   Fri, 09 Oct 2020 01:00:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000358ba805b1385785@google.com>
+Subject: inconsistent lock state in io_uring_add_task_file
+From:   syzbot <syzbot+27c12725d8ff0bfe1a13@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-blk_exit_queue will free elevator_data, while blk_mq_run_work_fn
-will access it. Move cancel of hctx->run_work to the front of
-blk_exit_queue to avoid use-after-free.
+Hello,
 
-Fixes: 1b97871b501f ("blk-mq: move cancel of hctx->run_work into blk_mq_hw_sysfs_release")
-Signed-off-by: Yang Yang <yang.yang@vivo.com>
+syzbot found the following issue on:
+
+HEAD commit:    e4fb79c7 Add linux-next specific files for 20201008
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=172b3ebf900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=568d41fe4341ed0f
+dashboard link: https://syzkaller.appspot.com/bug?extid=27c12725d8ff0bfe1a13
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+27c12725d8ff0bfe1a13@syzkaller.appspotmail.com
+
+================================
+WARNING: inconsistent lock state
+5.9.0-rc8-next-20201008-syzkaller #0 Not tainted
+--------------------------------
+inconsistent {IN-SOFTIRQ-W} -> {SOFTIRQ-ON-W} usage.
+syz-executor.2/8511 [HC0[0]:SC0[0]:HE1:SE1] takes:
+ffff8880161fdc18 (&xa->xa_lock#8){+.?.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff8880161fdc18 (&xa->xa_lock#8){+.?.}-{2:2}, at: io_uring_add_task_file fs/io_uring.c:8607 [inline]
+ffff8880161fdc18 (&xa->xa_lock#8){+.?.}-{2:2}, at: io_uring_add_task_file+0x207/0x430 fs/io_uring.c:8590
+{IN-SOFTIRQ-W} state was registered at:
+  lock_acquire+0x1f2/0xaa0 kernel/locking/lockdep.c:5419
+  __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+  _raw_spin_lock_irqsave+0x94/0xd0 kernel/locking/spinlock.c:159
+  xa_destroy+0xaa/0x350 lib/xarray.c:2205
+  __io_uring_free+0x60/0xc0 fs/io_uring.c:7693
+  io_uring_free include/linux/io_uring.h:40 [inline]
+  __put_task_struct+0xff/0x3f0 kernel/fork.c:732
+  put_task_struct include/linux/sched/task.h:111 [inline]
+  delayed_put_task_struct+0x1f6/0x340 kernel/exit.c:172
+  rcu_do_batch kernel/rcu/tree.c:2484 [inline]
+  rcu_core+0x645/0x1240 kernel/rcu/tree.c:2718
+  __do_softirq+0x203/0xab6 kernel/softirq.c:298
+  asm_call_irq_on_stack+0xf/0x20
+  __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+  run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+  do_softirq_own_stack+0x9b/0xd0 arch/x86/kernel/irq_64.c:77
+  invoke_softirq kernel/softirq.c:393 [inline]
+  __irq_exit_rcu kernel/softirq.c:423 [inline]
+  irq_exit_rcu+0x235/0x280 kernel/softirq.c:435
+  sysvec_apic_timer_interrupt+0x51/0xf0 arch/x86/kernel/apic/apic.c:1091
+  asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+  arch_local_irq_restore arch/x86/include/asm/paravirt.h:653 [inline]
+  lock_acquire+0x27b/0xaa0 kernel/locking/lockdep.c:5422
+  rcu_lock_acquire include/linux/rcupdate.h:253 [inline]
+  rcu_read_lock include/linux/rcupdate.h:642 [inline]
+  batadv_nc_purge_orig_hash net/batman-adv/network-coding.c:407 [inline]
+  batadv_nc_worker+0x12d/0xe50 net/batman-adv/network-coding.c:718
+  process_one_work+0x933/0x15a0 kernel/workqueue.c:2269
+  worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+  kthread+0x3af/0x4a0 kernel/kthread.c:292
+  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+irq event stamp: 225
+hardirqs last  enabled at (225): [<ffffffff8847f0df>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (225): [<ffffffff8847f0df>] _raw_spin_unlock_irqrestore+0x6f/0x90 kernel/locking/spinlock.c:191
+hardirqs last disabled at (224): [<ffffffff8847f6c9>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (224): [<ffffffff8847f6c9>] _raw_spin_lock_irqsave+0xa9/0xd0 kernel/locking/spinlock.c:159
+softirqs last  enabled at (206): [<ffffffff870a2164>] read_pnet include/net/net_namespace.h:327 [inline]
+softirqs last  enabled at (206): [<ffffffff870a2164>] sock_net include/net/sock.h:2521 [inline]
+softirqs last  enabled at (206): [<ffffffff870a2164>] unix_create1+0x484/0x570 net/unix/af_unix.c:816
+softirqs last disabled at (204): [<ffffffff870a20e1>] unix_sockets_unbound net/unix/af_unix.c:133 [inline]
+softirqs last disabled at (204): [<ffffffff870a20e1>] unix_create1+0x401/0x570 net/unix/af_unix.c:810
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&xa->xa_lock#8);
+  <Interrupt>
+    lock(&xa->xa_lock#8);
+
+ *** DEADLOCK ***
+
+1 lock held by syz-executor.2/8511:
+ #0: ffffffff8a554da0 (rcu_read_lock){....}-{1:2}, at: io_uring_add_task_file fs/io_uring.c:8600 [inline]
+ #0: ffffffff8a554da0 (rcu_read_lock){....}-{1:2}, at: io_uring_add_task_file+0x138/0x430 fs/io_uring.c:8590
+
+stack backtrace:
+CPU: 1 PID: 8511 Comm: syz-executor.2 Not tainted 5.9.0-rc8-next-20201008-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fb lib/dump_stack.c:118
+ print_usage_bug kernel/locking/lockdep.c:3715 [inline]
+ valid_state kernel/locking/lockdep.c:3726 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3929 [inline]
+ mark_lock.cold+0x32/0x74 kernel/locking/lockdep.c:4396
+ mark_usage kernel/locking/lockdep.c:4299 [inline]
+ __lock_acquire+0x886/0x56d0 kernel/locking/lockdep.c:4771
+ lock_acquire+0x1f2/0xaa0 kernel/locking/lockdep.c:5419
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_uring_add_task_file fs/io_uring.c:8607 [inline]
+ io_uring_add_task_file+0x207/0x430 fs/io_uring.c:8590
+ io_uring_get_fd fs/io_uring.c:9116 [inline]
+ io_uring_create fs/io_uring.c:9280 [inline]
+ io_uring_setup+0x2727/0x3660 fs/io_uring.c:9314
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45de29
+Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fc3719c4bf8 EFLAGS: 00000206 ORIG_RAX: 00000000000001a9
+RAX: ffffffffffffffda RBX: 0000000020000080 RCX: 000000000045de29
+RDX: 00000000206d4000 RSI: 0000000020000080 RDI: 0000000000000087
+RBP: 000000000118bf78 R08: 0000000020000040 R09: 0000000020000040
+R10: 0000000020000000 R11: 0000000000000206 R12: 00000000206d4000
+R13: 0000000020ee7000 R14: 0000000020000040 R15: 0000000020000000
+
+
 ---
- block/blk-mq-sysfs.c | 2 --
- block/blk-sysfs.c    | 9 ++++++++-
- 2 files changed, 8 insertions(+), 3 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/block/blk-mq-sysfs.c b/block/blk-mq-sysfs.c
-index 062229395a50..7b52e7657b2d 100644
---- a/block/blk-mq-sysfs.c
-+++ b/block/blk-mq-sysfs.c
-@@ -36,8 +36,6 @@ static void blk_mq_hw_sysfs_release(struct kobject *kobj)
- 	struct blk_mq_hw_ctx *hctx = container_of(kobj, struct blk_mq_hw_ctx,
- 						  kobj);
- 
--	cancel_delayed_work_sync(&hctx->run_work);
--
- 	if (hctx->flags & BLK_MQ_F_BLOCKING)
- 		cleanup_srcu_struct(hctx->srcu);
- 	blk_free_flush_queue(hctx->fq);
-diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
-index 7dda709f3ccb..8c6bafc801dd 100644
---- a/block/blk-sysfs.c
-+++ b/block/blk-sysfs.c
-@@ -934,9 +934,16 @@ static void blk_release_queue(struct kobject *kobj)
- 
- 	blk_free_queue_stats(q->stats);
- 
--	if (queue_is_mq(q))
-+	if (queue_is_mq(q)) {
-+		struct blk_mq_hw_ctx *hctx;
-+		int i;
-+
- 		cancel_delayed_work_sync(&q->requeue_work);
- 
-+		queue_for_each_hw_ctx(q, hctx, i)
-+			cancel_delayed_work_sync(&hctx->run_work);
-+	}
-+
- 	blk_exit_queue(q);
- 
- 	blk_queue_free_zone_bitmaps(q);
--- 
-2.17.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
