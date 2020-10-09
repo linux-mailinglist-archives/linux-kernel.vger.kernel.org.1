@@ -2,162 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E65C288C7A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:23:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10582288C84
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:24:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389168AbgJIPXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 11:23:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388719AbgJIPXX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 11:23:23 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 045B4C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 08:23:22 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id q123so7164477pfb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 08:23:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=f03xLBfpCjhpQ8+06VWnlGPHAwyo32pFe58xdhERybU=;
-        b=tASVNQ4GLB7cQtH7STDA0zX+iVq+lacXg4nSsNq9uEozGd2a5y6gnJSYYO4Qyx55sa
-         KyUIi6CUvUmwKtZEFZNSih6DkaWxv3eqEtc9bcgE7yKfeK5Ot8inKHP2mYnKdkijQegy
-         61e2syuq+5Iqq6fuQBkgi/+QXS6QZuZErvOSEVrA6oaYFy8/TmUlwq4NPxT+XzVYrzPV
-         INYRpk9g+RS1k4F5tjaJvc4QrXxFIPzZ5NuB3R0nSV7snTwysJhtUtAiAAs+UPlUjmf0
-         3SfANa+Wyp/wS0N+Lt1Ssq0oTR2mJJUidgVwP26SywvpmqbT8MsftOb+1FjdBMsyfPWd
-         dfZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=f03xLBfpCjhpQ8+06VWnlGPHAwyo32pFe58xdhERybU=;
-        b=T5+KDH2R5gXTdeLIC1KgMEu5DdNNnmpfGy4iQOMt4dg0pOtpGxZ0dVQf4VZY1L5tef
-         hEh6l7jcsMhBAEVXFwohXOELDLUI5nbD94T2KxLqE5orp4A74zRcOtkoSWY4Dpfga4Mu
-         8PZx7pjyxILOjP2/Tu1FdzkeomNe2zymem7+ZpqTpjf31t9+ftDDRIny4T4iYvWjCghD
-         VfEcnQfVkzyn+sP0ApLIkrD7j9trshW/tdI2vbUScdw8G/Xvc9jX2RhGt/5mr763qOZC
-         UFFqBdQPpn6LTqivC6g77Tm4pRu7KBSQfuKYTpGA/TVG4Ie/vedf7YxhVBoFCgjfm6jh
-         4Jjg==
-X-Gm-Message-State: AOAM5315ZTMoNyrde/jnsj97A6eLi74if2LX7/VAM3WY4/VVYXdKfeKY
-        y7e2Ccl1+ncyiwYtAZ4q8plAt/TWrjLT
-X-Google-Smtp-Source: ABdhPJzUJDjFzUfAnbseHKTwWub7TRcGAYctQvJGBOGUbM6VG7myWd3msQt8fxqaExH52L2zY+CW7g==
-X-Received: by 2002:a62:bd0e:0:b029:142:2501:35e7 with SMTP id a14-20020a62bd0e0000b0290142250135e7mr12374530pff.71.1602257002180;
-        Fri, 09 Oct 2020 08:23:22 -0700 (PDT)
-Received: from Mani-XPS-13-9360 ([2409:4072:6292:5a21:d5ff:f3e8:fcf2:ccc7])
-        by smtp.gmail.com with ESMTPSA id u22sm10840866pgi.85.2020.10.09.08.23.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 09 Oct 2020 08:23:21 -0700 (PDT)
-Date:   Fri, 9 Oct 2020 20:53:14 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 01/10] bus: mhi: core: Use appropriate names for
- firmware load functions
-Message-ID: <20201009152314.GB4810@Mani-XPS-13-9360>
-References: <1600480955-16827-1-git-send-email-bbhatt@codeaurora.org>
- <1600480955-16827-2-git-send-email-bbhatt@codeaurora.org>
+        id S2389074AbgJIPYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 11:24:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:53668 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732056AbgJIPYl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 11:24:41 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1542D1063;
+        Fri,  9 Oct 2020 08:24:40 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4D02D3F70D;
+        Fri,  9 Oct 2020 08:24:38 -0700 (PDT)
+Date:   Fri, 9 Oct 2020 16:24:33 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        iommu@lists.linux-foundation.org, Rob Herring <robh+dt@kernel.org>,
+        linux-rpi-kernel@lists.infradead.org,
+        Frank Rowand <frowand.list@gmail.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [PATCH 1/4] of/fdt: Update zone_dma_bits when running in bcm2711
+Message-ID: <20201009152433.GA19953@e121166-lin.cambridge.arm.com>
+References: <20201001161740.29064-2-nsaenzjulienne@suse.de>
+ <20201001171500.GN21544@gaia>
+ <20201001172320.GQ21544@gaia>
+ <b47232e2173e9e5ddf8f5be4c7b5a2f897f34eb7.camel@suse.de>
+ <20201002115541.GC7034@gaia>
+ <12f33d487eabd626db4c07ded5a1447795eed355.camel@suse.de>
+ <20201009071013.GA12208@lst.de>
+ <CAMj1kXG+7Lq=rgUfyU_XS9LrJwpUiC8nKsRPom+R0=phuXioHQ@mail.gmail.com>
+ <513833810c15b5efeab7c3cbae1963a78c71a79f.camel@suse.de>
+ <CAMj1kXGP_OTKgqMT0-+t3=7EKDY26y9n9xjLodSF1E-mUCe9tg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1600480955-16827-2-git-send-email-bbhatt@codeaurora.org>
+In-Reply-To: <CAMj1kXGP_OTKgqMT0-+t3=7EKDY26y9n9xjLodSF1E-mUCe9tg@mail.gmail.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 07:02:26PM -0700, Bhaumik Bhatt wrote:
-> mhi_fw_load_sbl() function is currently used to transfer SBL or EDL
-> images over BHI (Boot Host Interface). Same goes with mhi_fw_load_amss()
-> which uses BHIe. However, the contents of these functions do not
-> indicate support for a specific set of images. Since these can be used
-> for any image download over BHI or BHIe, rename them based on the
-> protocol used.
+On Fri, Oct 09, 2020 at 11:13:59AM +0200, Ard Biesheuvel wrote:
+> On Fri, 9 Oct 2020 at 10:36, Nicolas Saenz Julienne
+> <nsaenzjulienne@suse.de> wrote:
+> >
+> > On Fri, 2020-10-09 at 09:37 +0200, Ard Biesheuvel wrote:
+> > > On Fri, 9 Oct 2020 at 09:11, Christoph Hellwig <hch@lst.de> wrote:
+> > > > On Thu, Oct 08, 2020 at 12:05:25PM +0200, Nicolas Saenz Julienne wrote:
+> > > > > Sadly I just realised that the series is incomplete, we have RPi4 users that
+> > > > > want to boot unsing ACPI, and this series would break things for them. I'll
+> > > > > have a word with them to see what we can do for their use-case.
+> > > >
+> > > > Stupid question:  why do these users insist on a totally unsuitable
+> > > > interface? And why would we as Linux developers care to support such
+> > > > a aims?
+> > >
+> > > The point is really whether we want to revert changes in Linux that
+> > > made both DT and ACPI boot work without quirks on RPi4.
+> >
+> > Well, and broke a big amount of devices that were otherwise fine.
+> >
 > 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> ---
->  drivers/bus/mhi/core/boot.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
+> Yeah that was unfortunate.
 > 
-> diff --git a/drivers/bus/mhi/core/boot.c b/drivers/bus/mhi/core/boot.c
-> index 24422f5..92b8dd3 100644
-> --- a/drivers/bus/mhi/core/boot.c
-> +++ b/drivers/bus/mhi/core/boot.c
-> @@ -171,7 +171,7 @@ int mhi_download_rddm_img(struct mhi_controller *mhi_cntrl, bool in_panic)
->  }
->  EXPORT_SYMBOL_GPL(mhi_download_rddm_img);
->  
-> -static int mhi_fw_load_amss(struct mhi_controller *mhi_cntrl,
-> +static int mhi_fw_load_bhie(struct mhi_controller *mhi_cntrl,
->  			    const struct mhi_buf *mhi_buf)
->  {
->  	void __iomem *base = mhi_cntrl->bhie;
-> @@ -187,7 +187,7 @@ static int mhi_fw_load_amss(struct mhi_controller *mhi_cntrl,
->  	}
->  
->  	sequence_id = MHI_RANDOM_U32_NONZERO(BHIE_TXVECSTATUS_SEQNUM_BMSK);
-> -	dev_dbg(dev, "Starting AMSS download via BHIe. Sequence ID:%u\n",
-> +	dev_dbg(dev, "Starting image download via BHIe. Sequence ID:%u\n",
->  		sequence_id);
->  	mhi_write_reg(mhi_cntrl, base, BHIE_TXVECADDR_HIGH_OFFS,
->  		      upper_32_bits(mhi_buf->dma_addr));
-> @@ -218,7 +218,7 @@ static int mhi_fw_load_amss(struct mhi_controller *mhi_cntrl,
->  	return (!ret) ? -ETIMEDOUT : 0;
->  }
->  
-> -static int mhi_fw_load_sbl(struct mhi_controller *mhi_cntrl,
-> +static int mhi_fw_load_bhi(struct mhi_controller *mhi_cntrl,
->  			   dma_addr_t dma_addr,
->  			   size_t size)
->  {
-> @@ -245,7 +245,7 @@ static int mhi_fw_load_sbl(struct mhi_controller *mhi_cntrl,
->  	}
->  
->  	session_id = MHI_RANDOM_U32_NONZERO(BHI_TXDB_SEQNUM_BMSK);
-> -	dev_dbg(dev, "Starting SBL download via BHI. Session ID:%u\n",
-> +	dev_dbg(dev, "Starting image download via BHI. Session ID:%u\n",
->  		session_id);
->  	mhi_write_reg(mhi_cntrl, base, BHI_STATUS, 0);
->  	mhi_write_reg(mhi_cntrl, base, BHI_IMGADDR_HIGH,
-> @@ -446,9 +446,9 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
->  		return;
->  	}
->  
-> -	/* Download SBL image */
-> +	/* Download SBL or EDL image using BHI */
+> > > Having to check the RPi4 compatible string or OEM id in core init code is
+> > > awful, regardless of whether you boot via ACPI or via DT.
+> > >
+> > > The problem with this hardware is that it uses a DMA mask which is
+> > > narrower than 32, and the arm64 kernel is simply not set up to deal
+> > > with that at all. On DT, we have DMA ranges properties and the likes
+> > > to describe such limitations, on ACPI we have _DMA methods as well as
+> > > DMA range attributes in the IORT, both of which are now handled
+> > > correctly. So all the information is there, we just have to figure out
+> > > how to consume it early on.
+> >
+> > Is it worth the effort just for a single board? I don't know about ACPI but
+> > parsing dma-ranges that early at boot time is not trivial. My intuition tells
+> > me that it'd be even harder for ACPI, being a more complex data structure.
+> >
+> 
+> Yes, it will be harder, especially for the _DMA methods.
+> 
+> > > Interestingly, this limitation always existed in the SoC, but it
+> > > wasn't until they started shipping it with more than 1 GB of DRAM that
+> > > it became a problem. This means issues like this could resurface in
+> > > the future with existing SoCs when they get shipped with more memory,
+> > > and so I would prefer fixing this in a generic way.
+> >
+> > Actually what I proposed here is pretty generic. Specially from arm64's
+> > perspective. We call early_init_dt_scan(), which sets up zone_dma_bits based on
+> > whatever it finds in DT. Both those operations are architecture independent.
+> > arm64 arch code doesn't care about the logic involved in ascertaining
+> > zone_dma_bits. I get that the last step isn't generic. But it's all setup so as
+> > to make it as such whenever it's worth the effort.
+> >
+> 
+> The problem is that, while we are providing a full description of the
+> SoC's capabilities, we short circuit this by inserting knowledge into
+> the code (that is shared between all DT architectures) that
+> "brcm,bcm2711" is special, and needs a DMA zone override.
+> 
+> I think for ACPI boot, we might be able to work around this by cold
+> plugging the memory above 1 GB, but I have to double check whether it
+> won't get pulled into ZONE_DMA32 anyway (unless anyone can answer that
+> for me here from the top of their head)
 
-You are mentioning "image" in the debug print but "SBL/EDL" here and below.
-Please use "image" for consistency.
+Is this information that we can infer from IORT nodes and make it
+generic (ie make a DMA limit out of all IORT nodes allowed ranges) ?
+
+We can move this check to IORT code and call it from arm64 if it
+can be made to work.
 
 Thanks,
-Mani
-
->  	memcpy(buf, firmware->data, size);
-> -	ret = mhi_fw_load_sbl(mhi_cntrl, dma_addr, size);
-> +	ret = mhi_fw_load_bhi(mhi_cntrl, dma_addr, size);
->  	mhi_free_coherent(mhi_cntrl, size, buf, dma_addr);
->  
->  	if (!mhi_cntrl->fbc_download || ret || mhi_cntrl->ee == MHI_EE_EDL)
-> @@ -456,7 +456,7 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
->  
->  	/* Error or in EDL mode, we're done */
->  	if (ret) {
-> -		dev_err(dev, "MHI did not load SBL, ret:%d\n", ret);
-> +		dev_err(dev, "MHI did not load SBL/EDL image, ret:%d\n", ret);
->  		return;
->  	}
->  
-> @@ -506,7 +506,7 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
->  
->  	/* Start full firmware image download */
->  	image_info = mhi_cntrl->fbc_image;
-> -	ret = mhi_fw_load_amss(mhi_cntrl,
-> +	ret = mhi_fw_load_bhie(mhi_cntrl,
->  			       /* Vector table is the last entry */
->  			       &image_info->mhi_buf[image_info->entries - 1]);
->  	if (ret)
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+Lorenzo
