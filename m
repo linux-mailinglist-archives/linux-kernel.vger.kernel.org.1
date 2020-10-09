@@ -2,44 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C606289CDA
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 03:02:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5FF928919A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 21:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729273AbgJJA4Y convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 9 Oct 2020 20:56:24 -0400
-Received: from email.indiamr.com ([202.53.11.26]:46610 "EHLO email.indiamr.com"
-        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729071AbgJJAdD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 20:33:03 -0400
-X-Greylist: delayed 15046 seconds by postgrey-1.27 at vger.kernel.org; Fri, 09 Oct 2020 20:33:02 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by email.indiamr.com (Postfix) with ESMTP id 988FA304EF9FC;
-        Sat, 10 Oct 2020 00:40:35 +0530 (IST)
-Received: from email.indiamr.com ([127.0.0.1])
-        by localhost (email.indiamr.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id uqd0F51Cx3eA; Sat, 10 Oct 2020 00:40:35 +0530 (IST)
-Received: from localhost (localhost [127.0.0.1])
-        by email.indiamr.com (Postfix) with ESMTP id EF65F304F168B;
-        Sat, 10 Oct 2020 00:40:33 +0530 (IST)
-X-Virus-Scanned: amavisd-new at indiamr.com
-Received: from email.indiamr.com ([127.0.0.1])
-        by localhost (email.indiamr.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id kiMPaUCHhwOV; Sat, 10 Oct 2020 00:40:33 +0530 (IST)
-Received: from [156.96.56.102] (gateway [192.168.1.1])
-        by email.indiamr.com (Postfix) with ESMTPS id 8AED1304F1213;
-        Sat, 10 Oct 2020 00:40:26 +0530 (IST)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S2388491AbgJITKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 15:10:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37564 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726118AbgJITKo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 15:10:44 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 966C62222C;
+        Fri,  9 Oct 2020 19:10:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602270643;
+        bh=v2fLNDNw9E5Dxf8cWXPkBgDsi23Ey8d9d78t/u8unGE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=so9ZYu/RvKHhe4TT+/IS7Ctz3muGp/460kSp6a9O+esdDaYnsraNUdCiL1N0EK7GD
+         Wbw8mu0rPAQqdXhfNyB/DxsGCa9i6IiNOa2D9bjjzQYKNHCW9QPZlqIHPNcmISuOMd
+         RqqGTofCZDA0y+/Kf4QVp0M+e5dYZ5ViOf+TQZlg=
+Date:   Fri, 9 Oct 2020 12:10:41 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Moshe Shemesh <moshe@mellanox.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jiri Pirko <jiri@nvidia.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2 00/16] Add devlink reload action and limit
+ options
+Message-ID: <20201009121041.7370f573@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1602050457-21700-1-git-send-email-moshe@mellanox.com>
+References: <1602050457-21700-1-git-send-email-moshe@mellanox.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: 09/10/2020
-To:     Recipients <Mr.Edward@email.indiamr.com>
-From:   "Mr. Edward"@email.indiamr.com, Chris@email.indiamr.com
-Date:   Fri, 09 Oct 2020 12:10:20 -0700
-Reply-To: chrishtette@gmail.com
-Message-Id: <20201009191026.8AED1304F1213@email.indiamr.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, I am Barrister Chris Tetteh Attorney to the late Engr. Steve Moore who died with his wife and their three kids in a car accident. Before his death he  had funds valued at twenty seven Million dollars deposited in a bank. I need your assistance to retrieve the money left behind by my client. Get back to me for more details. Thanks Barrister Chris Tetteh
+On Wed,  7 Oct 2020 09:00:41 +0300 Moshe Shemesh wrote:
+> Introduce new options on devlink reload API to enable the user to select
+> the reload action required and constrains limits on these actions that he
+> may want to ensure. Complete support for reload actions in mlx5.
+> The following reload actions are supported:
+>   driver_reinit: driver entities re-initialization, applying devlink-param
+>                  and devlink-resource values.
+>   fw_activate: firmware activate.
+
+Applied, thanks everyone!
