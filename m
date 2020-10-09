@@ -2,457 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC116288B9C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0928E288B78
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389084AbgJIOip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 10:38:45 -0400
-Received: from esa2.microchip.iphmx.com ([68.232.149.84]:51529 "EHLO
-        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389025AbgJIOiT (ORCPT
+        id S2388751AbgJIOhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 10:37:46 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:40611 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1733112AbgJIOhq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 10:38:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1602254298; x=1633790298;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ncs2Wn0QlOqRhLvRNOYU1tkXSIe+nDYFy83PJhL9e2I=;
-  b=gQMQjP+k8/7fmlV2R148Stv7q61GEHNiWYdoejUckyt2qaTKpE08kPIY
-   tRPQelM9hALDnqI5DZkoXWALBuqV8xqLGyqZJTZfEJ5Sm5ID69aY+rccZ
-   QtS2okc6o0Ey8wQeVnkbmvErNB6Gf/27v/6GzRBwH80pUjzMrtmxb2bFz
-   ynwF2ix3QXs7otDW9ENDLCa/mxzgP0lNU67gq0REaDTMJqPvESZcZRiWT
-   ux4l6ySQacnEKusDyzjX1f/AI5nCTNoz48+2wxAB8+R47nrrDpaq9FRoI
-   ctF3/73Bx/FT2lPqywpWceyF8InMNz9+HB2A/DvAlpMwn6mb2FIh2NCKq
-   Q==;
-IronPort-SDR: hWHRNyzV1pSfAwthhlvvkamWsKEALQ90RR0PxZKpzMnlc1cL4rlnjta6sDGJsyw8slx1d3Lu2o
- ESb6cFpEDIphkEFkF+otrPGCntXT47AfeW2YgDeRA+nJjLWeyw592Buw+kqJchTzmnOR890T2V
- GlNn+b8fZvdCADhMMf2ro9FgcOGs5mQgbWRp4c2X2VpERYDyN7vJxHyMy+d4N6CaZE6zBFeFLG
- 7RPFNd4k8/Hxwc3sTIl3S6HBrJlpLN2MPXJS5Gn6Xjp47iAnqY05G2fAHq4SWUUj2NwU4Mms+V
- sc8=
-X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
-   d="scan'208";a="92058440"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 09 Oct 2020 07:38:17 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 9 Oct 2020 07:37:42 -0700
-Received: from soft-test08.microsemi.net (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Fri, 9 Oct 2020 07:38:13 -0700
-From:   Henrik Bjoernlund <henrik.bjoernlund@microchip.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <roopa@nvidia.com>,
-        <nikolay@nvidia.com>, <jiri@mellanox.com>, <idosch@mellanox.com>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <bridge@lists.linux-foundation.org>, <UNGLinuxDriver@microchip.com>
-CC:     Henrik Bjoernlund <henrik.bjoernlund@microchip.com>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH net-next v4 10/10] bridge: cfm: Netlink Notifications.
-Date:   Fri, 9 Oct 2020 14:35:30 +0000
-Message-ID: <20201009143530.2438738-11-henrik.bjoernlund@microchip.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201009143530.2438738-1-henrik.bjoernlund@microchip.com>
-References: <20201009143530.2438738-1-henrik.bjoernlund@microchip.com>
+        Fri, 9 Oct 2020 10:37:46 -0400
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 099EbWwa005346
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 9 Oct 2020 10:37:32 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 1D13C420107; Fri,  9 Oct 2020 10:37:32 -0400 (EDT)
+Date:   Fri, 9 Oct 2020 10:37:32 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Josh Triplett <josh@joshtriplett.org>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org
+Subject: Re: ext4 regression in v5.9-rc2 from e7bfb5c9bb3d on ro fs with
+ overlapped bitmaps
+Message-ID: <20201009143732.GJ235506@mit.edu>
+References: <20201006003216.GB6553@localhost>
+ <20201006025110.GJ49559@magnolia>
+ <20201006031834.GA5797@mit.edu>
+ <20201006050306.GA8098@localhost>
+ <20201006133533.GC5797@mit.edu>
+ <20201007080304.GB1112@localhost>
+ <20201007143211.GA235506@mit.edu>
+ <20201007201424.GB15049@localhost>
+ <20201008021017.GD235506@mit.edu>
+ <20201008222259.GA45658@localhost>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+In-Reply-To: <20201008222259.GA45658@localhost>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the implementation of Netlink notifications out of CFM.
+On Thu, Oct 08, 2020 at 03:22:59PM -0700, Josh Triplett wrote:
+> 
+> I wasn't trying to make a *new* general principle or policy. I was under
+> the impression that this *was* the policy, because it never occurred to
+> me that it could be otherwise. It seemed like a natural aspect of the
+> kernel/userspace boundary, to the point that the idea of it *not* being
+> part of the kernel's stability guarantees didn't cross my mind. 
 
-Notifications are initiated whenever a state change happens in CFM.
+From our perspective (and Darrick and I discussed this on this week's
+ext4 video conference, so it represents the ext4 and xfs maintainer's
+position) is that the file system format is different.  First, the
+on-disk format is not an ABI, and it is several orders more complex
+than a system call interface.  Second, we make no guarantees about
+what the file system created by malicious tools will do.  For example,
+XFS developers reject bug reports from file system fuzzers, because
+the v5 format has CRC checks, so randomly corrupted file systems won't
+crash the kernel.  Yes, this doesn't protect against maliciously
+created file systems where the attacker makes sure the checksums are
+valid, but only crazy people who think containers are just as secure
+as VM's and that unprivileged users should be allowed to make the
+kernel mount potentially maliciously created file systems would be
+exposing the kernel to such maliciously created images.
 
-IFLA_BRIDGE_CFM:
-    Points to the CFM information.
+> Finally, I think there's also some clarification needed in the role of
+> what some of the incompat and ro_compat flags mean. For instance,
+> "RO_COMPAT_READONLY" is documented as:
+> >     - Read-only filesystem image; the kernel will not mount this image
+> >       read-write and most tools will refuse to write to the image.
+> Is it reasonable to interpret this as "this can never, ever become
+> writable", such that no kernel should ever "understand" that flag in
+> ro_compat?
 
-IFLA_BRIDGE_CFM_MEP_STATUS_INFO:
-    This indicate that the MEP instance status are following.
-IFLA_BRIDGE_CFM_CC_PEER_STATUS_INFO:
-    This indicate that the peer MEP status are following.
+Yes.  However...
 
-CFM nested attribute has the following attributes in next level.
+> I'd assumed so, but this discussion is definitely leading me
+> to want to confirm any such assumptions. Is this a flag that e2fsck
+> could potentially use to determine that it shouldn't check
+> read-write-specific data structures, or should that be a different flag?
 
-IFLA_BRIDGE_CFM_MEP_STATUS_INSTANCE:
-    The MEP instance number of the delivered status.
-    The type is NLA_U32.
-IFLA_BRIDGE_CFM_MEP_STATUS_OPCODE_UNEXP_SEEN:
-    The MEP instance received CFM PDU with unexpected Opcode.
-    The type is NLA_U32 (bool).
-IFLA_BRIDGE_CFM_MEP_STATUS_VERSION_UNEXP_SEEN:
-    The MEP instance received CFM PDU with unexpected version.
-    The type is NLA_U32 (bool).
-IFLA_BRIDGE_CFM_MEP_STATUS_RX_LEVEL_LOW_SEEN:
-    The MEP instance received CCM PDU with MD level lower than
-    configured level. This frame is discarded.
-    The type is NLA_U32 (bool).
+Just because it won't be modifiable, shouldn't mean that e2fsck won't
+check to make sure that such structures are valid.  "Won't be changed"
+and "valid" are two different concepts.  And certainly, today we *do*
+check to make sure the bitmaps are valid and don't overlap, and we
+can't go back in time to change that.
 
-IFLA_BRIDGE_CFM_CC_PEER_STATUS_INSTANCE:
-    The MEP instance number of the delivered status.
-    The type is NLA_U32.
-IFLA_BRIDGE_CFM_CC_PEER_STATUS_PEER_MEPID:
-    The added Peer MEP ID of the delivered status.
-    The type is NLA_U32.
-IFLA_BRIDGE_CFM_CC_PEER_STATUS_CCM_DEFECT:
-    The CCM defect status.
-    The type is NLA_U32 (bool).
-    True means no CCM frame is received for 3.25 intervals.
-    IFLA_BRIDGE_CFM_CC_CONFIG_EXP_INTERVAL.
-IFLA_BRIDGE_CFM_CC_PEER_STATUS_RDI:
-    The last received CCM PDU RDI.
-    The type is NLA_U32 (bool).
-IFLA_BRIDGE_CFM_CC_PEER_STATUS_PORT_TLV_VALUE:
-    The last received CCM PDU Port Status TLV value field.
-    The type is NLA_U8.
-IFLA_BRIDGE_CFM_CC_PEER_STATUS_IF_TLV_VALUE:
-    The last received CCM PDU Interface Status TLV value field.
-    The type is NLA_U8.
-IFLA_BRIDGE_CFM_CC_PEER_STATUS_SEEN:
-    A CCM frame has been received from Peer MEP.
-    The type is NLA_U32 (bool).
-    This is cleared after GETLINK IFLA_BRIDGE_CFM_CC_PEER_STATUS_INFO.
-IFLA_BRIDGE_CFM_CC_PEER_STATUS_TLV_SEEN:
-    A CCM frame with TLV has been received from Peer MEP.
-    The type is NLA_U32 (bool).
-    This is cleared after GETLINK IFLA_BRIDGE_CFM_CC_PEER_STATUS_INFO.
-IFLA_BRIDGE_CFM_CC_PEER_STATUS_SEQ_UNEXP_SEEN:
-    A CCM frame with unexpected sequence number has been received
-    from Peer MEP.
-    The type is NLA_U32 (bool).
-    When a sequence number is not one higher than previously received
-    then it is unexpected.
-    This is cleared after GETLINK IFLA_BRIDGE_CFM_CC_PEER_STATUS_INFO.
+That being said, on the ext4 weekly video chat, we did discuss other
+uses of an incompat feature flag that would allow the allocation
+bitmap blocks and inode table block fields in the superblock to be
+zero, which would mean that they are unallocated.  This would allow us
+to dynamically grow the inode table by adding an extra block group
+descriptor.  In fact, I'd probably use this as an opportunity to make
+some other changes, such using inodes to store locations of the block
+group descriptors, inode tables, and allocation bitmaps at the same
+time.  Those details can be discussed later, but the point is that
+this is why it's good to discuss format changes from a requirements
+perspective, so that if we do need to make an incompat change, we can
+kill multiple birds with a single stone.
 
-Signed-off-by: Henrik Bjoernlund  <henrik.bjoernlund@microchip.com>
-Reviewed-by: Horatiu Vultur  <horatiu.vultur@microchip.com>
----
- net/bridge/br_cfm.c         | 48 ++++++++++++++++++++++++
- net/bridge/br_cfm_netlink.c | 25 ++++++++-----
- net/bridge/br_netlink.c     | 73 ++++++++++++++++++++++++++++++++-----
- net/bridge/br_private.h     | 22 ++++++++++-
- 4 files changed, 147 insertions(+), 21 deletions(-)
+> It's an arbitrary filesystem hierarchy, including directories, files of
+> various sizes (hence using inline_data), and permissions. The problem
+> isn't to get data from point A to point B; the problem is (in part) to
+> turn a representation of a filesystem into an actual mounted filesystem
+> as efficiently as possible, live-serving individual blocks on demand
+> rather than generating the whole image in advance.
 
-diff --git a/net/bridge/br_cfm.c b/net/bridge/br_cfm.c
-index c8de462c2fd4..b945033934bc 100644
---- a/net/bridge/br_cfm.c
-+++ b/net/bridge/br_cfm.c
-@@ -138,6 +138,13 @@ static void ccm_rx_timer_start(struct br_cfm_peer_mep *peer_mep)
- 			   usecs_to_jiffies(interval_us / 4));
- }
- 
-+static void br_cfm_notify(int event, const struct net_bridge_port *port)
-+{
-+	u32 filter = RTEXT_FILTER_CFM_STATUS;
-+
-+	return br_info_notify(event, port->br, NULL, filter);
-+}
-+
- static void cc_peer_enable(struct br_cfm_peer_mep *peer_mep)
- {
- 	memset(&peer_mep->cc_status, 0, sizeof(peer_mep->cc_status));
-@@ -287,6 +294,7 @@ static void ccm_tx_work_expired(struct work_struct *work)
- static void ccm_rx_work_expired(struct work_struct *work)
- {
- 	struct br_cfm_peer_mep *peer_mep;
-+	struct net_bridge_port *b_port;
- 	struct delayed_work *del_work;
- 
- 	del_work = to_delayed_work(work);
-@@ -304,6 +312,13 @@ static void ccm_rx_work_expired(struct work_struct *work)
- 		 * CCM defect detected
- 		 */
- 		peer_mep->cc_status.ccm_defect = true;
-+
-+		/* Change in CCM defect status - notify */
-+		rcu_read_lock();
-+		b_port = rcu_dereference(peer_mep->mep->b_port);
-+		if (b_port)
-+			br_cfm_notify(RTM_NEWLINK, b_port);
-+		rcu_read_unlock();
- 	}
- }
- 
-@@ -429,6 +444,9 @@ static int br_cfm_frame_rx(struct net_bridge_port *port, struct sk_buff *skb)
- 		if (peer_mep->cc_status.ccm_defect) {
- 			peer_mep->cc_status.ccm_defect = false;
- 
-+			/* Change in CCM defect status - notify */
-+			br_cfm_notify(RTM_NEWLINK, port);
-+
- 			/* Start CCM RX timer */
- 			ccm_rx_timer_start(peer_mep);
- 		}
-@@ -816,6 +834,36 @@ int br_cfm_cc_ccm_tx(struct net_bridge *br, const u32 instance,
- 	return 0;
- }
- 
-+int br_cfm_mep_count(struct net_bridge *br, u32 *count)
-+{
-+	struct br_cfm_mep *mep;
-+
-+	*count = 0;
-+
-+	rcu_read_lock();
-+	hlist_for_each_entry_rcu(mep, &br->mep_list, head)
-+		*count += 1;
-+	rcu_read_unlock();
-+
-+	return 0;
-+}
-+
-+int br_cfm_peer_mep_count(struct net_bridge *br, u32 *count)
-+{
-+	struct br_cfm_peer_mep *peer_mep;
-+	struct br_cfm_mep *mep;
-+
-+	*count = 0;
-+
-+	rcu_read_lock();
-+	hlist_for_each_entry_rcu(mep, &br->mep_list, head)
-+		hlist_for_each_entry_rcu(peer_mep, &mep->peer_mep_list, head)
-+			*count += 1;
-+	rcu_read_unlock();
-+
-+	return 0;
-+}
-+
- bool br_cfm_created(struct net_bridge *br)
- {
- 	return !hlist_empty(&br->mep_list);
-diff --git a/net/bridge/br_cfm_netlink.c b/net/bridge/br_cfm_netlink.c
-index 94e9b46d5fb4..5f81262c9caa 100644
---- a/net/bridge/br_cfm_netlink.c
-+++ b/net/bridge/br_cfm_netlink.c
-@@ -618,7 +618,9 @@ int br_cfm_config_fill_info(struct sk_buff *skb, struct net_bridge *br)
- 	return -EMSGSIZE;
- }
- 
--int br_cfm_status_fill_info(struct sk_buff *skb, struct net_bridge *br)
-+int br_cfm_status_fill_info(struct sk_buff *skb,
-+			    struct net_bridge *br,
-+			    bool getlink)
- {
- 	struct nlattr *tb;
- 	struct br_cfm_mep *mep;
-@@ -648,10 +650,13 @@ int br_cfm_status_fill_info(struct sk_buff *skb, struct net_bridge *br)
- 				mep->status.rx_level_low_seen))
- 			goto nla_put_failure;
- 
--		/* Clear all 'seen' indications */
--		mep->status.opcode_unexp_seen = false;
--		mep->status.version_unexp_seen = false;
--		mep->status.rx_level_low_seen = false;
-+		/* Only clear if this is a GETLINK */
-+		if (getlink) {
-+			/* Clear all 'seen' indications */
-+			mep->status.opcode_unexp_seen = false;
-+			mep->status.version_unexp_seen = false;
-+			mep->status.rx_level_low_seen = false;
-+		}
- 
- 		nla_nest_end(skb, tb);
- 
-@@ -705,10 +710,12 @@ int br_cfm_status_fill_info(struct sk_buff *skb, struct net_bridge *br)
- 					peer_mep->cc_status.seq_unexp_seen))
- 				goto nla_put_failure;
- 
--			/* Clear all 'seen' indications */
--			peer_mep->cc_status.seen = false;
--			peer_mep->cc_status.tlv_seen = false;
--			peer_mep->cc_status.seq_unexp_seen = false;
-+			if (getlink) { /* Only clear if this is a GETLINK */
-+				/* Clear all 'seen' indications */
-+				peer_mep->cc_status.seen = false;
-+				peer_mep->cc_status.tlv_seen = false;
-+				peer_mep->cc_status.seq_unexp_seen = false;
-+			}
- 
- 			nla_nest_end(skb, tb);
- 		}
-diff --git a/net/bridge/br_netlink.c b/net/bridge/br_netlink.c
-index 68c2ed87e26b..6952d4852942 100644
---- a/net/bridge/br_netlink.c
-+++ b/net/bridge/br_netlink.c
-@@ -94,9 +94,11 @@ static size_t br_get_link_af_size_filtered(const struct net_device *dev,
- {
- 	struct net_bridge_vlan_group *vg = NULL;
- 	struct net_bridge_port *p = NULL;
--	struct net_bridge *br;
--	int num_vlan_infos;
-+	struct net_bridge *br = NULL;
-+	u32 num_cfm_peer_mep_infos;
-+	u32 num_cfm_mep_infos;
- 	size_t vinfo_sz = 0;
-+	int num_vlan_infos;
- 
- 	rcu_read_lock();
- 	if (netif_is_bridge_port(dev)) {
-@@ -115,6 +117,49 @@ static size_t br_get_link_af_size_filtered(const struct net_device *dev,
- 	/* Each VLAN is returned in bridge_vlan_info along with flags */
- 	vinfo_sz += num_vlan_infos * nla_total_size(sizeof(struct bridge_vlan_info));
- 
-+	if (!(filter_mask & RTEXT_FILTER_CFM_STATUS))
-+		return vinfo_sz;
-+
-+	if (!br)
-+		return vinfo_sz;
-+
-+	/* CFM status info must be added */
-+	br_cfm_mep_count(br, &num_cfm_mep_infos);
-+	br_cfm_peer_mep_count(br, &num_cfm_peer_mep_infos);
-+
-+	vinfo_sz += nla_total_size(0);	/* IFLA_BRIDGE_CFM */
-+	/* For each status struct the MEP instance (u32) is added */
-+	/* MEP instance (u32) + br_cfm_mep_status */
-+	vinfo_sz += num_cfm_mep_infos *
-+		     /*IFLA_BRIDGE_CFM_MEP_STATUS_INSTANCE */
-+		    (nla_total_size(sizeof(u32))
-+		     /* IFLA_BRIDGE_CFM_MEP_STATUS_OPCODE_UNEXP_SEEN */
-+		     + nla_total_size(sizeof(u32))
-+		     /* IFLA_BRIDGE_CFM_MEP_STATUS_VERSION_UNEXP_SEEN */
-+		     + nla_total_size(sizeof(u32))
-+		     /* IFLA_BRIDGE_CFM_MEP_STATUS_RX_LEVEL_LOW_SEEN */
-+		     + nla_total_size(sizeof(u32)));
-+	/* MEP instance (u32) + br_cfm_cc_peer_status */
-+	vinfo_sz += num_cfm_peer_mep_infos *
-+		     /* IFLA_BRIDGE_CFM_CC_PEER_STATUS_INSTANCE */
-+		    (nla_total_size(sizeof(u32))
-+		     /* IFLA_BRIDGE_CFM_CC_PEER_STATUS_PEER_MEPID */
-+		     + nla_total_size(sizeof(u32))
-+		     /* IFLA_BRIDGE_CFM_CC_PEER_STATUS_CCM_DEFECT */
-+		     + nla_total_size(sizeof(u32))
-+		     /* IFLA_BRIDGE_CFM_CC_PEER_STATUS_RDI */
-+		     + nla_total_size(sizeof(u32))
-+		     /* IFLA_BRIDGE_CFM_CC_PEER_STATUS_PORT_TLV_VALUE */
-+		     + nla_total_size(sizeof(u8))
-+		     /* IFLA_BRIDGE_CFM_CC_PEER_STATUS_IF_TLV_VALUE */
-+		     + nla_total_size(sizeof(u8))
-+		     /* IFLA_BRIDGE_CFM_CC_PEER_STATUS_SEEN */
-+		     + nla_total_size(sizeof(u32))
-+		     /* IFLA_BRIDGE_CFM_CC_PEER_STATUS_TLV_SEEN */
-+		     + nla_total_size(sizeof(u32))
-+		     /* IFLA_BRIDGE_CFM_CC_PEER_STATUS_SEQ_UNEXP_SEEN */
-+		     + nla_total_size(sizeof(u32)));
-+
- 	return vinfo_sz;
- }
- 
-@@ -378,7 +423,8 @@ static int br_fill_ifvlaninfo(struct sk_buff *skb,
- static int br_fill_ifinfo(struct sk_buff *skb,
- 			  const struct net_bridge_port *port,
- 			  u32 pid, u32 seq, int event, unsigned int flags,
--			  u32 filter_mask, const struct net_device *dev)
-+			  u32 filter_mask, const struct net_device *dev,
-+			  bool getlink)
- {
- 	u8 operstate = netif_running(dev) ? dev->operstate : IF_OPER_DOWN;
- 	struct nlattr *af = NULL;
-@@ -499,7 +545,7 @@ static int br_fill_ifinfo(struct sk_buff *skb,
- 
- 		if (filter_mask & RTEXT_FILTER_CFM_STATUS) {
- 			rcu_read_lock();
--			err = br_cfm_status_fill_info(skb, br);
-+			err = br_cfm_status_fill_info(skb, br, getlink);
- 			rcu_read_unlock();
- 			if (err)
- 				goto nla_put_failure;
-@@ -519,11 +565,9 @@ static int br_fill_ifinfo(struct sk_buff *skb,
- 	return -EMSGSIZE;
- }
- 
--/* Notify listeners of a change in bridge or port information */
--void br_ifinfo_notify(int event, const struct net_bridge *br,
--		      const struct net_bridge_port *port)
-+void br_info_notify(int event, const struct net_bridge *br,
-+		    const struct net_bridge_port *port, u32 filter)
- {
--	u32 filter = RTEXT_FILTER_BRVLAN_COMPRESSED;
- 	struct net_device *dev;
- 	struct sk_buff *skb;
- 	int err = -ENOBUFS;
-@@ -548,7 +592,7 @@ void br_ifinfo_notify(int event, const struct net_bridge *br,
- 	if (skb == NULL)
- 		goto errout;
- 
--	err = br_fill_ifinfo(skb, port, 0, 0, event, 0, filter, dev);
-+	err = br_fill_ifinfo(skb, port, 0, 0, event, 0, filter, dev, false);
- 	if (err < 0) {
- 		/* -EMSGSIZE implies BUG in br_nlmsg_size() */
- 		WARN_ON(err == -EMSGSIZE);
-@@ -561,6 +605,15 @@ void br_ifinfo_notify(int event, const struct net_bridge *br,
- 	rtnl_set_sk_err(net, RTNLGRP_LINK, err);
- }
- 
-+/* Notify listeners of a change in bridge or port information */
-+void br_ifinfo_notify(int event, const struct net_bridge *br,
-+		      const struct net_bridge_port *port)
-+{
-+	u32 filter = RTEXT_FILTER_BRVLAN_COMPRESSED;
-+
-+	return br_info_notify(event, br, port, filter);
-+}
-+
- /*
-  * Dump information about all ports, in response to GETLINK
-  */
-@@ -577,7 +630,7 @@ int br_getlink(struct sk_buff *skb, u32 pid, u32 seq,
- 		return 0;
- 
- 	return br_fill_ifinfo(skb, port, pid, seq, RTM_NEWLINK, nlflags,
--			      filter_mask, dev);
-+			      filter_mask, dev, true);
- }
- 
- static int br_vlan_info(struct net_bridge *br, struct net_bridge_port *p,
-diff --git a/net/bridge/br_private.h b/net/bridge/br_private.h
-index 9394709e2531..6c79b10dad82 100644
---- a/net/bridge/br_private.h
-+++ b/net/bridge/br_private.h
-@@ -1467,7 +1467,11 @@ int br_cfm_parse(struct net_bridge *br, struct net_bridge_port *p,
- bool br_cfm_created(struct net_bridge *br);
- void br_cfm_port_del(struct net_bridge *br, struct net_bridge_port *p);
- int br_cfm_config_fill_info(struct sk_buff *skb, struct net_bridge *br);
--int br_cfm_status_fill_info(struct sk_buff *skb, struct net_bridge *br);
-+int br_cfm_status_fill_info(struct sk_buff *skb,
-+			    struct net_bridge *br,
-+			    bool getlink);
-+int br_cfm_mep_count(struct net_bridge *br, u32 *count);
-+int br_cfm_peer_mep_count(struct net_bridge *br, u32 *count);
- #else
- static inline int br_cfm_parse(struct net_bridge *br, struct net_bridge_port *p,
- 			       struct nlattr *attr, int cmd,
-@@ -1491,7 +1495,19 @@ static inline int br_cfm_config_fill_info(struct sk_buff *skb, struct net_bridge
- 	return -EOPNOTSUPP;
- }
- 
--static inline int br_cfm_status_fill_info(struct sk_buff *skb, struct net_bridge *br)
-+static inline int br_cfm_status_fill_info(struct sk_buff *skb,
-+					  struct net_bridge *br,
-+					  bool getlink)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-+static inline int br_cfm_mep_count(struct net_bridge *br, u32 *count)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-+static inline int br_cfm_peer_mep_count(struct net_bridge *br, u32 *count)
- {
- 	return -EOPNOTSUPP;
- }
-@@ -1503,6 +1519,8 @@ int br_netlink_init(void);
- void br_netlink_fini(void);
- void br_ifinfo_notify(int event, const struct net_bridge *br,
- 		      const struct net_bridge_port *port);
-+void br_info_notify(int event, const struct net_bridge *br,
-+		    const struct net_bridge_port *port, u32 filter);
- int br_setlink(struct net_device *dev, struct nlmsghdr *nlmsg, u16 flags,
- 	       struct netlink_ext_ack *extack);
- int br_dellink(struct net_device *dev, struct nlmsghdr *nlmsg, u16 flags);
--- 
-2.28.0
+Ah, so you want to be able to let the other side "look at" the file
+system in parallel with it being generated on demand?  The cache
+coherency problems would seem to be... huge.  For example, how can you
+add a file to directory after the reader has looked at the directory
+inode and directory blocks?  Or for that matter, looked at a portion
+of the inode table block?  Or are you using 4k inodes so there is only
+one inode per block?  What about the fact that we sometimes do
+readahead of inode table blocks?
 
+I can think of all sorts of implementation level changes in terms of
+caching, readahead behavior, etc., that we might make in the future
+that might break you if you are doing some quite as outré are that.
+Again, the fact that you're being cagey about what you are doing, and
+potentially complaining about changes we might make that would break
+you, is ***really*** scaring me now.
+
+Can you go into more details here?  I'm sorry if you're working for
+some startup who might want to patent these ideas, but if you want to
+guarantee future compatibility, I'm really going to have to insist.
+
+	  	 		    	   - Ted
+					 
