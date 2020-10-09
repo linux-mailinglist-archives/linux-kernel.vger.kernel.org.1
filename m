@@ -2,105 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65E3F28864D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 11:46:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF507288650
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 11:47:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733225AbgJIJq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 05:46:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45239 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725917AbgJIJq5 (ORCPT
+        id S1733236AbgJIJrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 05:47:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725917AbgJIJrt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 05:46:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602236816;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=a4XUeXXmXlqIj+XqwTZZwDnHthCD+pdCzaZWs+qGYP4=;
-        b=DNbByV2x8FPdM1ORiRHFF3HJ6vhN2WFNWSeAGyf6niy/GnYnpFDz4fLy+tzLaXZcHNncXX
-        7Zu358wBcethdBxuI9GccZbnvYhsAMRuuM9mdDWK7zH815fu4U/eeKDGb1gFsIPOS/8gCz
-        eyxOt/aJpoIKHhHp0S75GcvCMS6U7Bc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-103-S4eEBrtrOdWvJ9wbhG3QQA-1; Fri, 09 Oct 2020 05:46:52 -0400
-X-MC-Unique: S4eEBrtrOdWvJ9wbhG3QQA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BC6271007465;
-        Fri,  9 Oct 2020 09:46:50 +0000 (UTC)
-Received: from T590 (ovpn-13-88.pek2.redhat.com [10.72.13.88])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6006B6266E;
-        Fri,  9 Oct 2020 09:46:43 +0000 (UTC)
-Date:   Fri, 9 Oct 2020 17:46:40 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Yang Yang <yang.yang@vivo.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Bart Van Assche <bvanassche@acm.org>,
-        Hannes Reinecke <hare@suse.com>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, onlyfever@icloud.com
-Subject: Re: [PATCH] blk-mq: move cancel of hctx->run_work to the front of
- blk_exit_queue
-Message-ID: <20201009094640.GA53552@T590>
-References: <20201009080015.3217-1-yang.yang@vivo.com>
+        Fri, 9 Oct 2020 05:47:49 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B3E4C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 02:47:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=omMwUi1pb0JZYEzX9WrMwNVM/9noWra8skwW352I5FM=; b=qHI4TdYNEzWyfUfPt9MFUcGLDU
+        ExiZiIRnUVS7ww5mj2B/4N/e4qtqL+eNIg32SPlGFQyoLEC981bFX4PbPBYjSfRnldTbCDFNUXIOI
+        8RYGYjAb8Kf+izUxecbZF6RF6gWuwFystKL69nyQ+Uc8a0BJX7C+F1CNMQyZ59ZnXoNRJf4tDCpXq
+        48GS9UeguOGZsw5fF6Kq4moA2qgpT6vTTZM2fHJublakBNyst+1SguQ58MQ/aNlXxrkbm5T5pxG6d
+        PpLJnS4Zc4Wf5aoaBIUPDuNd7EOsKcySlTMTSLwnq4J+lGCYkwZUQVNmHlv8VlhFpUH5rQ80EIFK3
+        IIw5ArRQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kQp03-0004ws-Mf; Fri, 09 Oct 2020 09:47:43 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3A6A33019CE;
+        Fri,  9 Oct 2020 11:47:41 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D4F2320DB441C; Fri,  9 Oct 2020 11:47:41 +0200 (CEST)
+Date:   Fri, 9 Oct 2020 11:47:41 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Frederic Weisbecker <fweisbecker@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>
+Subject: Re: [RFC PATCH] kernel: allow to configure PREEMPT_NONE,
+ PREEMPT_VOLUNTARY on kernel command line
+Message-ID: <20201009094741.GH2628@hirez.programming.kicks-ass.net>
+References: <20201007120401.11200-1-mhocko@kernel.org>
+ <20201007122144.GF2628@hirez.programming.kicks-ass.net>
+ <20201007123553.GK29020@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201009080015.3217-1-yang.yang@vivo.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20201007123553.GK29020@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 01:00:14AM -0700, Yang Yang wrote:
-> blk_exit_queue will free elevator_data, while blk_mq_run_work_fn
-> will access it. Move cancel of hctx->run_work to the front of
-> blk_exit_queue to avoid use-after-free.
+On Wed, Oct 07, 2020 at 02:35:53PM +0200, Michal Hocko wrote:
+> On Wed 07-10-20 14:21:44, Peter Zijlstra wrote:
+> > On Wed, Oct 07, 2020 at 02:04:01PM +0200, Michal Hocko wrote:
+> > > I wanted to make sure that the idea is sound for maintainers first. The
+> > > next step would be extending the command line to support full preemption
+> > > as well but there is much more work in that area. Frederic has promissed
+> > > to look into that.
+> > 
+> > The sanest way there is to static_call() __preempt_schedule() I think.
 > 
-> Fixes: 1b97871b501f ("blk-mq: move cancel of hctx->run_work into blk_mq_hw_sysfs_release")
-> Signed-off-by: Yang Yang <yang.yang@vivo.com>
-> ---
->  block/blk-mq-sysfs.c | 2 --
->  block/blk-sysfs.c    | 9 ++++++++-
->  2 files changed, 8 insertions(+), 3 deletions(-)
-> 
-> diff --git a/block/blk-mq-sysfs.c b/block/blk-mq-sysfs.c
-> index 062229395a50..7b52e7657b2d 100644
-> --- a/block/blk-mq-sysfs.c
-> +++ b/block/blk-mq-sysfs.c
-> @@ -36,8 +36,6 @@ static void blk_mq_hw_sysfs_release(struct kobject *kobj)
->  	struct blk_mq_hw_ctx *hctx = container_of(kobj, struct blk_mq_hw_ctx,
->  						  kobj);
->  
-> -	cancel_delayed_work_sync(&hctx->run_work);
-> -
->  	if (hctx->flags & BLK_MQ_F_BLOCKING)
->  		cleanup_srcu_struct(hctx->srcu);
->  	blk_free_flush_queue(hctx->fq);
-> diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
-> index 7dda709f3ccb..8c6bafc801dd 100644
-> --- a/block/blk-sysfs.c
-> +++ b/block/blk-sysfs.c
-> @@ -934,9 +934,16 @@ static void blk_release_queue(struct kobject *kobj)
->  
->  	blk_free_queue_stats(q->stats);
->  
-> -	if (queue_is_mq(q))
-> +	if (queue_is_mq(q)) {
-> +		struct blk_mq_hw_ctx *hctx;
-> +		int i;
-> +
->  		cancel_delayed_work_sync(&q->requeue_work);
->  
-> +		queue_for_each_hw_ctx(q, hctx, i)
-> +			cancel_delayed_work_sync(&hctx->run_work);
-> +	}
-> +
+> Yes, I have checked the code and identified few other places like
+> irqentry_exit_cond_resched. We also need unconditional
+> CONFIG_PREEMPT_COUNT IIUC and there are quite some places guarded by
+> CONFIG_PREEMPTION that would need to be examined. Some of them are
+> likely pretending to be more clever than they really are/should be -
+> e.g. mm/slub.c. So there is likely a lot of leg work.
 
-Looks fine:
+The easiest way might be to introduce PREEMPT_DYNAMIC that
+depends/selects PREEMPT. That way you're basically running a PREEMPT=y
+kernel.
 
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
+Then have PREEMPT_DYNAMIC allow disabling the __preempt_schedule /
+preempt_schedule_irq() callsites using static_call/static_branch
+respectively.
 
-Thanks,
-Ming
-
+That is, work backwards (from PREEMPT back to VOLUNTARY) instead of the
+other way around.
