@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54B75288419
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 09:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5F2B28841F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 09:59:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732465AbgJIH6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 03:58:44 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:56090 "EHLO
+        id S1732503AbgJIH6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 03:58:54 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56112 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732393AbgJIH6o (ORCPT
+        with ESMTP id S1732456AbgJIH6p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 03:58:44 -0400
-Date:   Fri, 09 Oct 2020 07:58:40 -0000
+        Fri, 9 Oct 2020 03:58:45 -0400
+Date:   Fri, 09 Oct 2020 07:58:41 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602230321;
+        s=2020; t=1602230322;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=EB7LSG9cpjiYheyNbqOWtFUDg4ADNMcAuWNonRSOIUw=;
-        b=1ng54W8rDSJ9akJVeTCXQCinUaaTVIZ4JH97s5YeOs1VntoasU0yf68YyJZA4Aq2UX9d0e
-        wBSwTCtTjZzw8c4R9WE4UBduT53NZOJ1idatv3tc97fjkmBFgxKa9ydt6ovGFA5qI0n5+V
-        Ygv3Y/aR6hPGx6bea8jO3O0q2YlxGBNTgT6RYSl3p+wOULz8//cgNWBkmjXqPvd+fheKXi
-        plPuRJTRn3uC1q8CQ8HZtt5VzTG9ClaUb5qgczvBghxCi10vN86KZFsmCK/JtgWeybh3sG
-        0w54PceUurw3iWkte0G7EWo1/nlB3IYMrMTMkvyPfXpXyHjNexbA4MIrVnEVFg==
+        bh=RHIOtxnDP1JZxo+W+QrNBZd4wcFwXbIcUS4t4cyZsNI=;
+        b=YYtKi4c/ljyfYsFXVOORAL9ZlJ6iHhPlo5cEW8odmSbEud6Y/a3IzKnU2SOxoIpFurNlbC
+        nq7OBd2sx1d1e7m2A7teKAT7HkvOf/rnJdJ3gutauotoZAkVD4BdCYYmDracav0bmZX8V0
+        4WgS0LToVjHoahTbfszy83BVdUd+kvfrNa1OxNOKOseyRwudNPhzgBAmasqmIhTUHYh1aB
+        hQJf8TTA0/T740qza9Q8FqlVg9dRIyQqd520lvUgi7gpiSZSAglqC+lyNxYYqaOPSYTTJS
+        KCDCJjj7gXhMr2PCmasD423nl0pBAYGuqz4NTzFtJTF3Z9S00kvuXjzbzBb4nA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602230321;
+        s=2020e; t=1602230322;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=EB7LSG9cpjiYheyNbqOWtFUDg4ADNMcAuWNonRSOIUw=;
-        b=0rk9PWoqtFOFduvDkLNkcbGiyVE7bYHQ8rVJkmrJ7sCdcrGQnLY2mIlhfeP/jvRsM4WDtV
-        a6VwYa/X7hixPlDQ==
+        bh=RHIOtxnDP1JZxo+W+QrNBZd4wcFwXbIcUS4t4cyZsNI=;
+        b=59TlZJNhsXcwbN7oEhvpdAeGTe/Meg5FY4IKDkI7YoxMGkoVvZryjqiTjUDlSFrsItQiks
+        vhv+zbEZxpPKDuBQ==
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] lockdep: Revert "lockdep: Use raw_cpu_*() for
- per-cpu variables"
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+Subject: [tip: locking/core] lockdep: Fix usage_traceoverflow
+Cc:     Qian Cai <cai@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201005095958.GJ2651@hirez.programming.kicks-ass.net>
-References: <20201005095958.GJ2651@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200930094937.GE2651@hirez.programming.kicks-ass.net>
+References: <20200930094937.GE2651@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Message-ID: <160223032064.7002.17084902433756818893.tip-bot2@tip-bot2>
+Message-ID: <160223032171.7002.8334463802918365937.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,117 +59,157 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/core branch of tip:
 
-Commit-ID:     baffd723e44dc3d7f84f0b8f1fe1ece00ddd2710
-Gitweb:        https://git.kernel.org/tip/baffd723e44dc3d7f84f0b8f1fe1ece00ddd2710
+Commit-ID:     2bb8945bcc1a768f2bc402a16c9610bba8d5187d
+Gitweb:        https://git.kernel.org/tip/2bb8945bcc1a768f2bc402a16c9610bba8d5187d
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Mon, 05 Oct 2020 09:56:57 +02:00
+AuthorDate:    Wed, 30 Sep 2020 11:49:37 +02:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Fri, 09 Oct 2020 08:54:00 +02:00
+CommitterDate: Fri, 09 Oct 2020 08:53:08 +02:00
 
-lockdep: Revert "lockdep: Use raw_cpu_*() for per-cpu variables"
+lockdep: Fix usage_traceoverflow
 
-The thinking in commit:
+Basically print_lock_class_header()'s for loop is out of sync with the
+the size of of ->usage_traces[].
 
-  fddf9055a60d ("lockdep: Use raw_cpu_*() for per-cpu variables")
+Also clean things up a bit while at it, to avoid such mishaps in the future.
 
-is flawed. While it is true that when we're migratable both CPUs will
-have a 0 value, it doesn't hold that when we do get migrated in the
-middle of a raw_cpu_op(), the old CPU will still have 0 by the time we
-get around to reading it on the new CPU.
-
-Luckily, the reason for that commit (s390 using preempt_disable()
-instead of preempt_disable_notrace() in their percpu code), has since
-been fixed by commit:
-
-  1196f12a2c96 ("s390: don't trace preemption in percpu macros")
-
-An audit of arch/*/include/asm/percpu*.h shows there are no other
-architectures affected by this particular issue.
-
-Fixes: fddf9055a60d ("lockdep: Use raw_cpu_*() for per-cpu variables")
+Fixes: 23870f122768 ("locking/lockdep: Fix "USED" <- "IN-NMI" inversions")
+Reported-by: Qian Cai <cai@redhat.com>
+Debugged-by: Boqun Feng <boqun.feng@gmail.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lkml.kernel.org/r/20201005095958.GJ2651@hirez.programming.kicks-ass.net
+Tested-by: Qian Cai <cai@redhat.com>
+Link: https://lkml.kernel.org/r/20200930094937.GE2651@hirez.programming.kicks-ass.net
 ---
- include/linux/lockdep.h | 26 +++++++++-----------------
- 1 file changed, 9 insertions(+), 17 deletions(-)
+ include/linux/lockdep_types.h      |  8 +++++--
+ kernel/locking/lockdep.c           | 32 +++++++++++++----------------
+ kernel/locking/lockdep_internals.h |  7 ++++--
+ 3 files changed, 26 insertions(+), 21 deletions(-)
 
-diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
-index b1227be..1130f27 100644
---- a/include/linux/lockdep.h
-+++ b/include/linux/lockdep.h
-@@ -512,19 +512,19 @@ static inline void print_irqtrace_events(struct task_struct *curr)
- #define lock_map_release(l)			lock_release(l, _THIS_IP_)
+diff --git a/include/linux/lockdep_types.h b/include/linux/lockdep_types.h
+index bb35b44..9a1fd49 100644
+--- a/include/linux/lockdep_types.h
++++ b/include/linux/lockdep_types.h
+@@ -35,8 +35,12 @@ enum lockdep_wait_type {
+ /*
+  * We'd rather not expose kernel/lockdep_states.h this wide, but we do need
+  * the total number of states... :-(
++ *
++ * XXX_LOCK_USAGE_STATES is the number of lines in lockdep_states.h, for each
++ * of those we generates 4 states, Additionally we report on USED and USED_READ.
+  */
+-#define XXX_LOCK_USAGE_STATES		(1+2*4)
++#define XXX_LOCK_USAGE_STATES		2
++#define LOCK_TRACE_STATES		(XXX_LOCK_USAGE_STATES*4 + 2)
  
- #ifdef CONFIG_PROVE_LOCKING
--# define might_lock(lock) 						\
-+# define might_lock(lock)						\
- do {									\
- 	typecheck(struct lockdep_map *, &(lock)->dep_map);		\
- 	lock_acquire(&(lock)->dep_map, 0, 0, 0, 1, NULL, _THIS_IP_);	\
- 	lock_release(&(lock)->dep_map, _THIS_IP_);			\
- } while (0)
--# define might_lock_read(lock) 						\
-+# define might_lock_read(lock)						\
- do {									\
- 	typecheck(struct lockdep_map *, &(lock)->dep_map);		\
- 	lock_acquire(&(lock)->dep_map, 0, 0, 1, 1, NULL, _THIS_IP_);	\
- 	lock_release(&(lock)->dep_map, _THIS_IP_);			\
- } while (0)
--# define might_lock_nested(lock, subclass) 				\
-+# define might_lock_nested(lock, subclass)				\
- do {									\
- 	typecheck(struct lockdep_map *, &(lock)->dep_map);		\
- 	lock_acquire(&(lock)->dep_map, subclass, 0, 1, 1, NULL,		\
-@@ -536,29 +536,21 @@ DECLARE_PER_CPU(int, hardirqs_enabled);
- DECLARE_PER_CPU(int, hardirq_context);
- DECLARE_PER_CPU(unsigned int, lockdep_recursion);
+ /*
+  * NR_LOCKDEP_CACHING_CLASSES ... Number of classes
+@@ -106,7 +110,7 @@ struct lock_class {
+ 	 * IRQ/softirq usage tracking bits:
+ 	 */
+ 	unsigned long			usage_mask;
+-	const struct lock_trace		*usage_traces[XXX_LOCK_USAGE_STATES];
++	const struct lock_trace		*usage_traces[LOCK_TRACE_STATES];
  
--/*
-- * The below lockdep_assert_*() macros use raw_cpu_read() to access the above
-- * per-cpu variables. This is required because this_cpu_read() will potentially
-- * call into preempt/irq-disable and that obviously isn't right. This is also
-- * correct because when IRQs are enabled, it doesn't matter if we accidentally
-- * read the value from our previous CPU.
-- */
+ 	/*
+ 	 * Generation counter, when doing certain classes of graph walking,
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index 2facbbd..a430fbb 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -585,6 +585,8 @@ static const char *usage_str[] =
+ #include "lockdep_states.h"
+ #undef LOCKDEP_STATE
+ 	[LOCK_USED] = "INITIAL USE",
++	[LOCK_USED_READ] = "INITIAL READ USE",
++	/* abused as string storage for verify_lock_unused() */
+ 	[LOCK_USAGE_STATES] = "IN-NMI",
+ };
+ #endif
+@@ -1939,7 +1941,7 @@ static void print_lock_class_header(struct lock_class *class, int depth)
+ #endif
+ 	printk(KERN_CONT " {\n");
+ 
+-	for (bit = 0; bit < LOCK_USAGE_STATES; bit++) {
++	for (bit = 0; bit < LOCK_TRACE_STATES; bit++) {
+ 		if (class->usage_mask & (1 << bit)) {
+ 			int len = depth;
+ 
+@@ -3969,7 +3971,7 @@ static int separate_irq_context(struct task_struct *curr,
+ static int mark_lock(struct task_struct *curr, struct held_lock *this,
+ 			     enum lock_usage_bit new_bit)
+ {
+-	unsigned int old_mask, new_mask, ret = 1;
++	unsigned int new_mask, ret = 1;
+ 
+ 	if (new_bit >= LOCK_USAGE_STATES) {
+ 		DEBUG_LOCKS_WARN_ON(1);
+@@ -3996,30 +3998,26 @@ static int mark_lock(struct task_struct *curr, struct held_lock *this,
+ 	if (unlikely(hlock_class(this)->usage_mask & new_mask))
+ 		goto unlock;
+ 
+-	old_mask = hlock_class(this)->usage_mask;
+ 	hlock_class(this)->usage_mask |= new_mask;
+ 
+-	/*
+-	 * Save one usage_traces[] entry and map both LOCK_USED and
+-	 * LOCK_USED_READ onto the same entry.
+-	 */
+-	if (new_bit == LOCK_USED || new_bit == LOCK_USED_READ) {
+-		if (old_mask & (LOCKF_USED | LOCKF_USED_READ))
+-			goto unlock;
+-		new_bit = LOCK_USED;
++	if (new_bit < LOCK_TRACE_STATES) {
++		if (!(hlock_class(this)->usage_traces[new_bit] = save_trace()))
++			return 0;
+ 	}
+ 
+-	if (!(hlock_class(this)->usage_traces[new_bit] = save_trace()))
+-		return 0;
 -
--#define __lockdep_enabled	(debug_locks && !raw_cpu_read(lockdep_recursion))
-+#define __lockdep_enabled	(debug_locks && !this_cpu_read(lockdep_recursion))
+ 	switch (new_bit) {
++	case 0 ... LOCK_USED-1:
++		ret = mark_lock_irq(curr, this, new_bit);
++		if (!ret)
++			return 0;
++		break;
++
+ 	case LOCK_USED:
+ 		debug_atomic_dec(nr_unused_locks);
+ 		break;
++
+ 	default:
+-		ret = mark_lock_irq(curr, this, new_bit);
+-		if (!ret)
+-			return 0;
++		break;
+ 	}
  
- #define lockdep_assert_irqs_enabled()					\
- do {									\
--	WARN_ON_ONCE(__lockdep_enabled && !raw_cpu_read(hardirqs_enabled)); \
-+	WARN_ON_ONCE(__lockdep_enabled && !this_cpu_read(hardirqs_enabled)); \
- } while (0)
+ unlock:
+diff --git a/kernel/locking/lockdep_internals.h b/kernel/locking/lockdep_internals.h
+index b0be156..de49f9e 100644
+--- a/kernel/locking/lockdep_internals.h
++++ b/kernel/locking/lockdep_internals.h
+@@ -20,9 +20,12 @@ enum lock_usage_bit {
+ #undef LOCKDEP_STATE
+ 	LOCK_USED,
+ 	LOCK_USED_READ,
+-	LOCK_USAGE_STATES
++	LOCK_USAGE_STATES,
+ };
  
- #define lockdep_assert_irqs_disabled()					\
- do {									\
--	WARN_ON_ONCE(__lockdep_enabled && raw_cpu_read(hardirqs_enabled)); \
-+	WARN_ON_ONCE(__lockdep_enabled && this_cpu_read(hardirqs_enabled)); \
- } while (0)
++/* states after LOCK_USED_READ are not traced and printed */
++static_assert(LOCK_TRACE_STATES == LOCK_USAGE_STATES);
++
+ #define LOCK_USAGE_READ_MASK 1
+ #define LOCK_USAGE_DIR_MASK  2
+ #define LOCK_USAGE_STATE_MASK (~(LOCK_USAGE_READ_MASK | LOCK_USAGE_DIR_MASK))
+@@ -121,7 +124,7 @@ static const unsigned long LOCKF_USED_IN_IRQ_READ =
+ extern struct list_head all_lock_classes;
+ extern struct lock_chain lock_chains[];
  
- #define lockdep_assert_in_irq()						\
- do {									\
--	WARN_ON_ONCE(__lockdep_enabled && !raw_cpu_read(hardirq_context)); \
-+	WARN_ON_ONCE(__lockdep_enabled && !this_cpu_read(hardirq_context)); \
- } while (0)
+-#define LOCK_USAGE_CHARS (1+LOCK_USAGE_STATES/2)
++#define LOCK_USAGE_CHARS (2*XXX_LOCK_USAGE_STATES + 1)
  
- #define lockdep_assert_preemption_enabled()				\
-@@ -566,7 +558,7 @@ do {									\
- 	WARN_ON_ONCE(IS_ENABLED(CONFIG_PREEMPT_COUNT)	&&		\
- 		     __lockdep_enabled			&&		\
- 		     (preempt_count() != 0		||		\
--		      !raw_cpu_read(hardirqs_enabled)));		\
-+		      !this_cpu_read(hardirqs_enabled)));		\
- } while (0)
- 
- #define lockdep_assert_preemption_disabled()				\
-@@ -574,7 +566,7 @@ do {									\
- 	WARN_ON_ONCE(IS_ENABLED(CONFIG_PREEMPT_COUNT)	&&		\
- 		     __lockdep_enabled			&&		\
- 		     (preempt_count() == 0		&&		\
--		      raw_cpu_read(hardirqs_enabled)));			\
-+		      this_cpu_read(hardirqs_enabled)));		\
- } while (0)
- 
- #else
+ extern void get_usage_chars(struct lock_class *class,
+ 			    char usage[LOCK_USAGE_CHARS]);
