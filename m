@@ -2,95 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECEFF289BBD
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 00:25:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E95A289BCA
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 00:35:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391180AbgJIWZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 18:25:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42722 "EHLO
+        id S2389849AbgJIWfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 18:35:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390153AbgJIWZM (ORCPT
+        with ESMTP id S2388159AbgJIWfO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 18:25:12 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7FF1C0613D5
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 15:25:11 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id cv1so5549281qvb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 15:25:11 -0700 (PDT)
+        Fri, 9 Oct 2020 18:35:14 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C069C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 15:35:14 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id 67so8386966ybt.6
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 15:35:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=8oWWXTJLgz6k0eoay/wZw+xNoGlz9otu+1gTZ3QYQTU=;
-        b=JLw9cOIADbCSt30KyPOolp7D8T1ydtcphV5lvGpBdT0H+g77HDzGqjI0IhTwDtshej
-         z8W9/A5rl7Fs73WAAOZCMBnYeiPIeODDdOK72bckk1yyjqKzGzJGpGNwVGUB0vRNaqG6
-         ap064g18fjDLNTiIERClhqsAS5BC7X7bh6LtPx49QkjIsF0B7Xd4H4eYYxg/AdJF3NbQ
-         6Q2Uw/NINPLSaXbo4JkZOxArbxVx5MKT8yoo5U7zqDz0bBWlEov3++WNlmduRS66dQKB
-         STAnvBVe/E+zYOop/N5UjYdXTGAqyB9F1cQa/HvHMUIVc87d8UVxGlSEk0HwjL0aOg35
-         Angg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NP7EwU7Wgi3GKoYOtUC4dl2ophm6HoyRW7fEMUmtnzE=;
+        b=eyqAmq06cVJmWm0yKH3E9VMKkdcgK7AyWyd8HtlTQFmYC7LBk5vqu+65udfdzcbc0o
+         xKoChhK97kDIGyS7uDQdmmBmsCwzGM/yUwm2tW/MjiNsMn4vaw3N6hNtqg6NTMLZwhTx
+         gP2aiGWkl4IyhBcuRl4kfsbflrfzSbO+xE+GVdm4EJjb0ZECJfrm7U6F5FU42BT9rlQs
+         82NrHN2FutgMXRwfD4J9Bnuw33PjQp2Xi3HaQnKYJUOjNbawMeUYOKdHW/almm4UIpNn
+         kXVlVkRW/1pt0cRxB2al7trPI6n+rmfIZ5scYeJM/JMtR+w67Kkp/Xu8WFqq5oX4F1Q8
+         Wf/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=8oWWXTJLgz6k0eoay/wZw+xNoGlz9otu+1gTZ3QYQTU=;
-        b=QKgWyOofz21oOM8IzyFYEBgrEZfyK53B6l1Vrp/Pw9vZ90YI/S8bkMrJN/xvFKbyQb
-         UOPOGII+oAWSW+7HVYmjLC5/A0hpNtb7/bP9A+h5N9aZV9/hGkh0M5l6LwIXwwpfAPpK
-         JnPph4OJHw8m/2a0VPB9aD5y8UTy7fvLCYVUxaKJ+0+nhkZaR4FutCfPEPwPwo3BeTnO
-         ubxSfKW3liRxdKrHZZkKR7wZZHtfZqxX9viUyLXg8NGom81yfWIQJ5PbD/LU6Wkclh37
-         MpblVA1SCErL7YZkkBzUsOpzTvXKPbc8B83sy4g66hAsuEyx9uTG+Hg2VkQ6mwC8P4uW
-         xdOQ==
-X-Gm-Message-State: AOAM532350PttQkDF4kihP+gYOzEpl1FJQPSY8FNbbPENHnM39GwItCc
-        OUmSnDWIQj83LysFzYTa8WgzkA==
-X-Google-Smtp-Source: ABdhPJx4KrjLeEug0hrbNvxkGQnKMdvwXI9Ssl/PdIck48j/G9dQSZkfDxN9OyPFgyOzHX6NhQzoFg==
-X-Received: by 2002:a0c:9a01:: with SMTP id p1mr14524630qvd.61.1602282310859;
-        Fri, 09 Oct 2020 15:25:10 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id t3sm7141813qtq.24.2020.10.09.15.25.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 15:25:10 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kR0p3-002qLD-KY; Fri, 09 Oct 2020 19:25:09 -0300
-Date:   Fri, 9 Oct 2020 19:25:09 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Christian =?utf-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, chris@chris-wilson.co.uk,
-        airlied@redhat.com, daniel@ffwll.ch, sumit.semwal@linaro.org,
-        willy@infradead.org, jhubbard@nvidia.com,
-        Miaohe Lin <linmiaohe@huawei.com>
-Subject: Re: [PATCH 1/6] mm: mmap: fix fput in error path
-Message-ID: <20201009222509.GC5177@ziepe.ca>
-References: <20201009150342.1979-1-christian.koenig@amd.com>
- <20201009150420.450833e3830b9d39a2385dd9@linux-foundation.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NP7EwU7Wgi3GKoYOtUC4dl2ophm6HoyRW7fEMUmtnzE=;
+        b=ogexVnOabbVngsEPbeXPk3wCZH/A5bnOvmeJXsyaXBn1kfZWN6TG5QjOOcAyeflESk
+         InmA9CvWb5RfYZrWPVeF94GhSNoxMPIvTBX6b7d9ztc8KNW41M8V+SwY5/jDwnsfMq0B
+         vwsJbEA9i991tBrwOhSICEOp+0MiD76Y5LTyl8q/iLaOElbodfJzHqPCeRxJluiqKQbk
+         I3v21eFV4t/coRyA36kM9I3MdsGRvD0eoN+Zcp6DskvcWbQf2615P7RP4vG9w+JgA9jP
+         BuN+AjgqGsRdnD0Or6IKCTGeXfbEJXF5MO2YaSwzaf+FLDvjWfdltquDiXQqMmbyW9pc
+         P0mw==
+X-Gm-Message-State: AOAM533p9uRl1d5S3fRtsSt3zFGo3J6391fuquQl8ZOtArIHi+OnY0r8
+        Ly2RnqBI1B7lEpBFI5fVbtrVNzBN9gxdnXYD18b2fg==
+X-Google-Smtp-Source: ABdhPJxzMYgtqhmZms+YU3oGvBBYXC5cxhBblMlch2sRtV/6PrjBZdx9b38bkVO0mi4OljexEeEtF7jucz7wXQyAWGc=
+X-Received: by 2002:a5b:d51:: with SMTP id f17mr18525307ybr.298.1602282913113;
+ Fri, 09 Oct 2020 15:35:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201009150420.450833e3830b9d39a2385dd9@linux-foundation.org>
+References: <20201009220524.485102-1-axelrasmussen@google.com> <20201009220524.485102-3-axelrasmussen@google.com>
+In-Reply-To: <20201009220524.485102-3-axelrasmussen@google.com>
+From:   Michel Lespinasse <walken@google.com>
+Date:   Fri, 9 Oct 2020 15:35:00 -0700
+Message-ID: <CANN689FYh6Uv+STH6f0oNHDwPdtg1etO8WM8GygFW55zH+ZrQQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] mmap_lock: add tracepoints around lock acquisition
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Jann Horn <jannh@google.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 03:04:20PM -0700, Andrew Morton wrote:
-> On Fri,  9 Oct 2020 17:03:37 +0200 "Christian König" <ckoenig.leichtzumerken@gmail.com> wrote:
-> 
-> > Patch "495c10cc1c0c CHROMIUM: dma-buf: restore args..."
-> > adds a workaround for a bug in mmap_region.
-> > 
-> > As the comment states ->mmap() callback can change
-> > vma->vm_file and so we might call fput() on the wrong file.
-> > 
-> > Revert the workaround and proper fix this in mmap_region.
-> > 
-> 
-> Doesn't this patch series address the same thing as
-> https://lkml.kernel.org/r/20200916090733.31427-1-linmiaohe@huawei.com?
+On Fri, Oct 9, 2020 at 3:05 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
+> The goal of these tracepoints is to be able to debug lock contention
+> issues. This lock is acquired on most (all?) mmap / munmap / page fault
+> operations, so a multi-threaded process which does a lot of these can
+> experience significant contention.
+>
+> We trace just before we start acquisition, when the acquisition returns
+> (whether it succeeded or not), and when the lock is released (or
+> downgraded). The events are broken out by lock type (read / write).
+>
+> The events are also broken out by memcg path. For container-based
+> workloads, users often think of several processes in a memcg as a single
+> logical "task", so collecting statistics at this level is useful.
+>
+> The end goal is to get latency information. This isn't directly included
+> in the trace events. Instead, users are expected to compute the time
+> between "start locking" and "acquire returned", using e.g. synthetic
+> events or BPF. The benefit we get from this is simpler code.
+>
+> Because we use tracepoint_enabled() to decide whether or not to trace,
+> this patch has effectively no overhead unless tracepoints are enabled at
+> runtime. If tracepoints are enabled, there is a performance impact, but
+> how much depends on exactly what e.g. the BPF program does.
+>
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 
-Same basic issue, looks like both of these patches should be combined
-to plug it fully.
+Reviewed-by: Michel Lespinasse <walken@google.com>
 
-Jason 
+Looks good to me, thanks!
