@@ -2,54 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37AE7288F6B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 19:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 510CF288F69
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 19:03:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390019AbgJIRBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 13:01:46 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:59278 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389959AbgJIRBb (ORCPT
+        id S2390009AbgJIRBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 13:01:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389973AbgJIRBb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 9 Oct 2020 13:01:31 -0400
-Date:   Fri, 09 Oct 2020 17:01:28 -0000
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58EEEC0613D7;
+        Fri,  9 Oct 2020 10:01:31 -0700 (PDT)
+Date:   Fri, 09 Oct 2020 17:01:29 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602262888;
+        s=2020; t=1602262889;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=bEiGaFe8w2yBnywMFDHpC8wya+x7LPwS1axpjWats5E=;
-        b=ISVqq1VPRMcVrC5RPALNNp/X4xxlV3H4UsE4QokQSQhsXUdd63RcZ3J1jFKsLzHbSH1ggp
-        F84Qu3MGR5PItTFJzI/kVVERHan8dYQXMJCahXxbYGdRkL7uofG+no9EXExPh1yHe/KtPM
-        P27A+u+aCoAkCC7ZNZfFItYnO+ALZZ5FalTDM1JJJ7mZ/Cg24gw4SKnQXWpnoPWlYfl47I
-        KlX9NG0+pqHSbCx7gdq+cDAU4/M5ujtYk/RSbfq4Hn8R+VwYrwaXvbWQPJESOxAL2noPcr
-        AenbdiUyeJ0TIK6FM5z0R3M2Ei/GaL+QMr+y9DaS85Hsrvw4+vpwnNt1okxFpA==
+        bh=dl6bWOeNvDMJEmrzVygAD+18R4nb/SFMZF/6yau/mC0=;
+        b=lgni7+HVI3dHMiGQM7Pxlfp9JO94ezup5mdVxBVpmQ3QteFOlxkjQowLPOP6Tss7jkTXFB
+        gTmCjyM8SVJUSUDJsiiVBkZMBzZ0i72bwatrD0IoI9C7bm1oviFSfjI2GjUlOeEEQeVUYf
+        Rs8criQMcvvwWa76AxNNCbl6pCJ9biRszLoh2Zu7WaDjOxmNkDPR1Pr283NDcUKpPnX9dt
+        DQhx2OHMjUrpIVbhIcDO624CYzN/d1yoNGZ2jml8GRjNvAfB/PTZMI95qxTaDgo7pvON3a
+        AjmwUOz0h4t2fo/zjZMVNhu64Pe21dLHyqvm3FIGpzUMkVbSeHqKoO2+2NYhSQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602262888;
+        s=2020e; t=1602262889;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=bEiGaFe8w2yBnywMFDHpC8wya+x7LPwS1axpjWats5E=;
-        b=umuIuKu7b8k8wbX5lAg9l6HlQymZYA8Ke4TGmvN/DQhljqGvAKEgChDszER1nz87Al9QzZ
-        mjGY0aUHoW8HyqBQ==
+        bh=dl6bWOeNvDMJEmrzVygAD+18R4nb/SFMZF/6yau/mC0=;
+        b=g6BMF/I4rSkiDMtioWGt62dIdTHpQLNV1T2OdEyuDfRCmtzR+hCHHGAZVM11nOQW1nuAkM
+        nfGX97L/id1Tx0CQ==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] preempt: Cleanup PREEMPT_COUNT leftovers
+Subject: [tip: core/rcu] lib/debug: Remove pointless ARCH_NO_PREEMPT dependencies
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
         "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <160226288816.7002.14635860661393046833.tip-bot2@tip-bot2>
+Message-ID: <160226288912.7002.16299812541183928186.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,113 +55,49 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     a19bfa918cdfbb43157bb2ab5c8df364b241b77b
-Gitweb:        https://git.kernel.org/tip/a19bfa918cdfbb43157bb2ab5c8df364b241b77b
+Commit-ID:     45015f8840baa8a99f5161d42fc1ca070d534365
+Gitweb:        https://git.kernel.org/tip/45015f8840baa8a99f5161d42fc1ca070d534365
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Mon, 14 Sep 2020 19:21:01 +02:00
+AuthorDate:    Mon, 14 Sep 2020 20:35:55 +02:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 28 Sep 2020 16:03:18 -07:00
+CommitterDate: Fri, 25 Sep 2020 11:24:14 -07:00
 
-preempt: Cleanup PREEMPT_COUNT leftovers
+lib/debug: Remove pointless ARCH_NO_PREEMPT dependencies
 
-CONFIG_PREEMPT_COUNT is now unconditionally enabled and will be
-removed. Cleanup the leftovers before doing so.
+ARCH_NO_PREEMPT disables the selection of CONFIG_PREEMPT_VOLUNTARY and
+CONFIG_PREEMPT, but architectures which set this config option still
+support preempt count for hard and softirq accounting.
+
+There is absolutely no reason to prevent lockdep from using the preempt
+counter nor is there a reason to prevent the enablement of
+CONFIG_DEBUG_ATOMIC_SLEEP on such architectures.
+
+Remove the dependencies.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ben Segall <bsegall@google.com>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/preempt.h | 37 ++++---------------------------------
- 1 file changed, 4 insertions(+), 33 deletions(-)
+ lib/Kconfig.debug | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/include/linux/preempt.h b/include/linux/preempt.h
-index 7d9c1c0..513769b 100644
---- a/include/linux/preempt.h
-+++ b/include/linux/preempt.h
-@@ -56,8 +56,7 @@
- #define PREEMPT_DISABLED	(PREEMPT_DISABLE_OFFSET + PREEMPT_ENABLED)
- 
- /*
-- * Disable preemption until the scheduler is running -- use an unconditional
-- * value so that it also works on !PREEMPT_COUNT kernels.
-+ * Disable preemption until the scheduler is running.
-  *
-  * Reset by start_kernel()->sched_init()->init_idle()->init_idle_preempt_count().
-  */
-@@ -69,7 +68,6 @@
-  *
-  *    preempt_count() == 2*PREEMPT_DISABLE_OFFSET
-  *
-- * Note: PREEMPT_DISABLE_OFFSET is 0 for !PREEMPT_COUNT kernels.
-  * Note: See finish_task_switch().
-  */
- #define FORK_PREEMPT_COUNT	(2*PREEMPT_DISABLE_OFFSET + PREEMPT_ENABLED)
-@@ -106,11 +104,7 @@
- /*
-  * The preempt_count offset after preempt_disable();
-  */
--#if defined(CONFIG_PREEMPT_COUNT)
--# define PREEMPT_DISABLE_OFFSET	PREEMPT_OFFSET
--#else
--# define PREEMPT_DISABLE_OFFSET	0
--#endif
-+#define PREEMPT_DISABLE_OFFSET	PREEMPT_OFFSET
- 
- /*
-  * The preempt_count offset after spin_lock()
-@@ -122,8 +116,8 @@
-  *
-  *  spin_lock_bh()
-  *
-- * Which need to disable both preemption (CONFIG_PREEMPT_COUNT) and
-- * softirqs, such that unlock sequences of:
-+ * Which need to disable both preemption and softirqs, such that unlock
-+ * sequences of:
-  *
-  *  spin_unlock();
-  *  local_bh_enable();
-@@ -164,8 +158,6 @@ extern void preempt_count_sub(int val);
- #define preempt_count_inc() preempt_count_add(1)
- #define preempt_count_dec() preempt_count_sub(1)
- 
--#ifdef CONFIG_PREEMPT_COUNT
--
- #define preempt_disable() \
- do { \
- 	preempt_count_inc(); \
-@@ -231,27 +223,6 @@ do { \
- 	__preempt_count_dec(); \
- } while (0)
- 
--#else /* !CONFIG_PREEMPT_COUNT */
--
--/*
-- * Even if we don't have any preemption, we need preempt disable/enable
-- * to be barriers, so that we don't have things like get_user/put_user
-- * that can cause faults and scheduling migrate into our preempt-protected
-- * region.
-- */
--#define preempt_disable()			barrier()
--#define sched_preempt_enable_no_resched()	barrier()
--#define preempt_enable_no_resched()		barrier()
--#define preempt_enable()			barrier()
--#define preempt_check_resched()			do { } while (0)
--
--#define preempt_disable_notrace()		barrier()
--#define preempt_enable_no_resched_notrace()	barrier()
--#define preempt_enable_notrace()		barrier()
--#define preemptible()				0
--
--#endif /* CONFIG_PREEMPT_COUNT */
--
- #ifdef MODULE
- /*
-  * Modules have no business playing preemption tricks.
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index e068c3c..f50fbcf 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1161,7 +1161,7 @@ config PROVE_LOCKING
+ 	select DEBUG_RWSEMS
+ 	select DEBUG_WW_MUTEX_SLOWPATH
+ 	select DEBUG_LOCK_ALLOC
+-	select PREEMPT_COUNT if !ARCH_NO_PREEMPT
++	select PREEMPT_COUNT
+ 	select TRACE_IRQFLAGS
+ 	default n
+ 	help
+@@ -1323,7 +1323,6 @@ config DEBUG_ATOMIC_SLEEP
+ 	bool "Sleep inside atomic section checking"
+ 	select PREEMPT_COUNT
+ 	depends on DEBUG_KERNEL
+-	depends on !ARCH_NO_PREEMPT
+ 	help
+ 	  If you say Y here, various routines which may sleep will become very
+ 	  noisy if they are called inside atomic sections: when a spinlock is
