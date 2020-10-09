@@ -2,273 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EED42288157
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 06:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FA1628815D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 06:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731274AbgJIE3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 00:29:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45358 "EHLO
+        id S1731335AbgJIEaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 00:30:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726386AbgJIE3p (ORCPT
+        with ESMTP id S1731301AbgJIEaU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 00:29:45 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7793C0613D2;
-        Thu,  8 Oct 2020 21:29:44 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id dt13so11160628ejb.12;
-        Thu, 08 Oct 2020 21:29:44 -0700 (PDT)
+        Fri, 9 Oct 2020 00:30:20 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C773C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 21:30:20 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id f10so7861272otb.6
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 21:30:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=1F7aYVEZF5q16a3jyVNYHgdOJZG/vnxh0WHbePxIvus=;
-        b=CyF3+7gxhvX386B4lGhsR7yZoMxu4PJsNI8P6TyGutJPSINEYhHe2Jlc7XurJkw+2g
-         banpt+5yJnBrCGgl9ugQRzPpnpXj5dSKgjupWsZ0/1FjFMKG8OnvKgCFF8OZPRL5+Zsf
-         L9kDYNNa+AzPusFeGyUEFRSneTBNMZdEaBzimSzZFBvhtkh2sizj2znaCj8kAiQvI9Q5
-         20QK5bLgXz+Bk12Ua7+tdflTWSZYEXSdvJqEUJQdFM8+BoFDOLotcT9/Qjj9W8qFfeUI
-         HXoscamp9bndFf+Mq+4ErU1mmLXqiJjwpa2J06Oj/PCXEF657RDyCsMxFqw7hdXkNJtQ
-         fkIQ==
+         :cc;
+        bh=bQCRsRi8kNOo2aPGfc7lMNsOSErczm6II0z2jnbK/64=;
+        b=hOWJ7xYfYM+6d5Y3UGE81JEW30JgDfoQMe1Tn0bTzgehmm0gWfnBdkgQ7HuIXYBQB2
+         /tjbwY4uuJr6AXHAvxJsDIe/hODY461gREIMT00jtu90X+3zfGwdybMA4O/Q4aJNV1ay
+         z+8z3GXqz2BvyOqTty4J6/NVLV5vh7K0jy1gk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1F7aYVEZF5q16a3jyVNYHgdOJZG/vnxh0WHbePxIvus=;
-        b=gJk756TsELcdlLC90CIPQAjKlAFrZA3yB0wOVh9rAzzBurll/XlbVY8npUTAZZcrcX
-         YiViU54fPTwBz27xAWPGqO7+vNPP4Gqg2OlSoFIukUjToQZ5B4RmPX0m8am9lZDmlSRM
-         MeCYYUauqhiXcwMHQ1J8gdg97iwHNAOi7IphPixUDSBBBI++qvjkTpeTxQ0mEMxZli7w
-         3hJ9AwxYAUEKS+rJdGaYlKvqRJi6MabCK/9VausAqwoWsbKJM3r1WZ7YxKW4LU0Blv9W
-         u5jWyN0M7w+z7r1NEcO1FGDeLQXIDWPtD8HVWUQ/bc2ND6pnZijSFidx+uoEBRRmapYc
-         wkgQ==
-X-Gm-Message-State: AOAM533UrLLSkhOSON2YBi2Doj3tLyLoXRKB7uJHS2YTV/8cOPHlE3/d
-        I5W0VQpoxlTObUWv43esMLAvwypEvIl5n06rq84=
-X-Google-Smtp-Source: ABdhPJzX1Xi0zdvI/PNLAnLQFsEV1IrrVegdTfM9Uvrslb2fDFuejPhalmRXMgvr5koWMDbGFknJMv0lh9Jfbxr9wxU=
-X-Received: by 2002:a17:906:b2d1:: with SMTP id cf17mr12149778ejb.321.1602217783399;
- Thu, 08 Oct 2020 21:29:43 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=bQCRsRi8kNOo2aPGfc7lMNsOSErczm6II0z2jnbK/64=;
+        b=ClfyBZnznO4cYwMsov2+F4f3Hac+3xMNXafoWHkMmg+f46uADapdRqvbdv7kaQP8tn
+         rcqO0QCuG0F4WjIoftUQdHhXl05oXXsYOEEOx18GdM/GJAvFhTw9qDc3F+pFa9DxkVRp
+         tOEaAhSyPRRCdb3ZmcFbEgFSvXuDiONqJsl2PL2Wozvt+ZzIz8ra4f0DuUeAAXC0aFFi
+         4sN9uD8Tjq0zME16ctNEqqFcj8qbWohpbx0kw+tW6gnV5rSTVvB5nTQWMYzftlZR2vxZ
+         ldbtM9xZfQn7eBc8zibWOju1S949fsj51IjvdgH9YF4t98553F7DtvX1WVFIv3PfUqXc
+         tq0g==
+X-Gm-Message-State: AOAM533VdW/C4O1Ey/oTjkErtvvZvy9FCAhZXZjqZ1373LRAa7s7rrcl
+        PqoRnulJRrZlalCwOpCPhD/qrAmuxmZJjzut
+X-Google-Smtp-Source: ABdhPJyNnR0uqGMidzXSLyJGo46ttEqMyYTFzw/VXsQCJyeN8AhtDJT0zxXJ7nUXbn0iNvllNycF3g==
+X-Received: by 2002:a9d:23e2:: with SMTP id t89mr7824198otb.196.1602217819388;
+        Thu, 08 Oct 2020 21:30:19 -0700 (PDT)
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com. [209.85.210.47])
+        by smtp.gmail.com with ESMTPSA id n13sm6582442oic.14.2020.10.08.21.30.18
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Oct 2020 21:30:18 -0700 (PDT)
+Received: by mail-ot1-f47.google.com with SMTP id t15so7908855otk.0
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 21:30:18 -0700 (PDT)
+X-Received: by 2002:a9d:7a2:: with SMTP id 31mr7000765oto.141.1602217817599;
+ Thu, 08 Oct 2020 21:30:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <1601470479-26848-1-git-send-email-guomin_chen@sina.com> <20200930080919.1a9c66f8@x1.home>
-In-Reply-To: <20200930080919.1a9c66f8@x1.home>
-From:   gchen chen <gchen.guomin@gmail.com>
-Date:   Fri, 9 Oct 2020 12:30:04 +0800
-Message-ID: <CAEEwsfRZt=r54SWOqbKvF60zPKu2tiTeQtFcFW14Hp92kT6M9Q@mail.gmail.com>
-Subject: Re: [PATCH] irqbypass: fix error handle when irq_bypass_register_producer()
- return fails
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     guomin_chen@sina.com, Cornelia Huck <cohuck@redhat.com>,
-        Jiang Yi <giangyi@amazon.com>, Marc Zyngier <maz@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20201004122234.802044-1-acourbot@chromium.org>
+ <c3e1c20a-7729-9f48-ce66-41e67f195fc7@xs4all.nl> <cda40a8e-4dd2-5fd7-c5ff-8b048475164b@xs4all.nl>
+ <CAPBb6MX8rFZU=9Pd5o0mqQ6pf+1oQYzk=D0WiR93_S3FUG7jJw@mail.gmail.com> <1bb71c21-0f03-5d8f-be2c-fdcb13dadcd6@xs4all.nl>
+In-Reply-To: <1bb71c21-0f03-5d8f-be2c-fdcb13dadcd6@xs4all.nl>
+From:   Alexandre Courbot <acourbot@chromium.org>
+Date:   Fri, 9 Oct 2020 13:30:06 +0900
+X-Gmail-Original-Message-ID: <CAPBb6MWf7bWkigMPUwx7g6dXjwMkttGhHwC9X_=e6=cz1K5J0w@mail.gmail.com>
+Message-ID: <CAPBb6MWf7bWkigMPUwx7g6dXjwMkttGhHwC9X_=e6=cz1K5J0w@mail.gmail.com>
+Subject: Re: [PATCH v2] media: mtk-vcodec: fix builds when remoteproc is disabled
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alex Williamson <alex.williamson@redhat.com> =E4=BA=8E2020=E5=B9=B49=E6=9C=
-=8830=E6=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=8810:09=E5=86=99=E9=81=93=
-=EF=BC=9A
+On Fri, Oct 9, 2020 at 1:13 AM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
 >
+> On 08/10/2020 16:02, Alexandre Courbot wrote:
+> > Hi Hans, thanks for taking the time to look at this!
+> >
+> > On Thu, Oct 8, 2020 at 10:12 PM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
+> >>
+> >> On 08/10/2020 15:07, Hans Verkuil wrote:
+> >>> Hi Alexandre,
+> >>>
+> >>> On 04/10/2020 14:22, Alexandre Courbot wrote:
+> >>>> The addition of MT8183 support added a dependency on the SCP remoteproc
+> >>>> module. However the initial patch used the "select" Kconfig directive,
+> >>>> which may result in the SCP module to not be compiled if remoteproc was
+> >>>> disabled. In such a case, mtk-vcodec would try to link against
+> >>>> non-existent SCP symbols. "select" was clearly misused here as explained
+> >>>> in kconfig-language.txt.
+> >>>>
+> >>>> Replace this by a "depends" directive on at least one of the VPU and
+> >>>> SCP modules, to allow the driver to be compiled as long as one of these
+> >>>> is enabled, and adapt the code to support this new scenario.
+> >>>>
+> >>>> Also adapt the Kconfig text to explain the extra requirements for MT8173
+> >>>> and MT8183.
+> >>>>
+> >>>> Reported-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> >>>> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
+> >>>> Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+> >>>> ---
+> >>>>  drivers/media/platform/Kconfig                | 10 +--
+> >>>>  .../media/platform/mtk-vcodec/mtk_vcodec_fw.c | 72 ++++++++++++-------
+> >>>>  2 files changed, 54 insertions(+), 28 deletions(-)
+> >>>>
+> >>>> diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
+> >>>> index a3cb104956d5..98eb62e49ec2 100644
+> >>>> --- a/drivers/media/platform/Kconfig
+> >>>> +++ b/drivers/media/platform/Kconfig
+> >>>> @@ -253,14 +253,16 @@ config VIDEO_MEDIATEK_VCODEC
+> >>>>      depends on MTK_IOMMU || COMPILE_TEST
+> >>>>      depends on VIDEO_DEV && VIDEO_V4L2
+> >>>>      depends on ARCH_MEDIATEK || COMPILE_TEST
+> >>>> +    depends on VIDEO_MEDIATEK_VPU || MTK_SCP
+> >>>
+> >>> Close, but no cigar.
+> >>>
+> >>> If VIDEO_MEDIATEK_VPU=y and MTK_SCP=m, then VIDEO_MEDIATEK_VCODEC can be configured
+> >>> to y, and then it won't be able to find the scp_ functions.
+> >>>
+> >>> To be honest, I'm not sure how to solve this.
+> >>
+> >> Found it. Add this:
+> >>
+> >>         depends on MTK_SCP || !MTK_SCP
+> >>         depends on VIDEO_MEDIATEK_VPU || !VIDEO_MEDIATEK_VPU
+> >>
+> >> Ugly as hell, but it appears to be the correct incantation for this.
+> >
+> > But doesn't it mean that the driver can be compiled if !MTK_SCP and
+> > !VIDEO_MEDIATEK_VPU? That's the one case we want to avoid.
 >
-> Please version your postings so we know which one to consider as the
-> current proposal.
+> No, because you still have:
 >
-> On Wed, 30 Sep 2020 20:54:39 +0800
-> guomin_chen@sina.com wrote:
+>         depends on VIDEO_MEDIATEK_VPU || MTK_SCP
 >
-> > From: guomin chen <guomin_chen@sina.com>
-> >
-> > When the producer object registration fails,In the future, due to
-> > incorrect matching when unregistering, list_del(&producer->node)
-> > may still be called, then trigger a BUG:
-> >
-> >     vfio-pci 0000:db:00.0: irq bypass producer (token 0000000060c8cda5)=
- registration fails: -16
-> >     vfio-pci 0000:db:00.0: irq bypass producer (token 0000000060c8cda5)=
- registration fails: -16
-> >     vfio-pci 0000:db:00.0: irq bypass producer (token 0000000060c8cda5)=
- registration fails: -16
-> >     ...
-> >     list_del corruption, ffff8f7fb8ba0828->next is LIST_POISON1 (dead00=
-0000000100)
-> >     ------------[ cut here ]------------
-> >     kernel BUG at lib/list_debug.c:47!
-> >     invalid opcode: 0000 [#1] SMP NOPTI
-> >     CPU: 29 PID: 3914 Comm: qemu-kvm Kdump: loaded Tainted: G      E
-> >     -------- - -4.18.0-193.6.3.el8.x86_64 #1
-> >     Hardware name: Lenovo ThinkSystem SR650 -[7X06CTO1WW]-/-[7X06CTO1WW=
-]-,
-> >     BIOS -[IVE636Z-2.13]- 07/18/2019
-> >     RIP: 0010:__list_del_entry_valid.cold.1+0x12/0x4c
-> >     Code: ce ff 0f 0b 48 89 c1 4c 89 c6 48 c7 c7 40 85 4d 88 e8 8c bc
-> >           ce ff 0f 0b 48 89 fe 48 89 c2 48 c7 c7 d0 85 4d 88 e8 78 bc
-> >           ce ff <0f> 0b 48 c7 c7 80 86 4d 88 e8 6a bc ce ff 0f 0b 48
-> >           89 f2 48 89 fe
-> >     RSP: 0018:ffffaa9d60197d20 EFLAGS: 00010246
-> >     RAX: 000000000000004e RBX: ffff8f7fb8ba0828 RCX: 0000000000000000
-> >     RDX: 0000000000000000 RSI: ffff8f7fbf4d6a08 RDI: ffff8f7fbf4d6a08
-> >     RBP: 0000000000000000 R08: 000000000000084b R09: 000000000000005d
-> >     R10: 0000000000000000 R11: ffffaa9d60197bd0 R12: ffff8f4fbe863000
-> >     R13: 00000000000000c2 R14: 0000000000000000 R15: 0000000000000000
-> >     FS:  00007f7cb97fa700(0000) GS:ffff8f7fbf4c0000(0000)
-> >     knlGS:0000000000000000
-> >     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> >     CR2: 00007fcf31da4000 CR3: 0000005f6d404001 CR4: 00000000007626e0
-> >     DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> >     DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> >     PKRU: 55555554
-> >     Call Trace:
-> >         irq_bypass_unregister_producer+0x9b/0xf0 [irqbypass]
-> >         vfio_msi_set_vector_signal+0x8c/0x290 [vfio_pci]
-> >         ? load_fixmap_gdt+0x22/0x30
-> >         vfio_msi_set_block+0x6e/0xd0 [vfio_pci]
-> >         vfio_pci_ioctl+0x218/0xbe0 [vfio_pci]
-> >         ? kvm_vcpu_ioctl+0xf2/0x5f0 [kvm]
-> >         do_vfs_ioctl+0xa4/0x630
-> >         ? syscall_trace_enter+0x1d3/0x2c0
-> >         ksys_ioctl+0x60/0x90
-> >         __x64_sys_ioctl+0x16/0x20
-> >         do_syscall_64+0x5b/0x1a0
-> >         entry_SYSCALL_64_after_hwframe+0x65/0xca
-> >
-> > Cc: Alex Williamson <alex.williamson@redhat.com>
-> > Cc: Cornelia Huck <cohuck@redhat.com>
-> > Cc: Jiang Yi <giangyi@amazon.com>
-> > Cc: Marc Zyngier <maz@kernel.org>
-> > Cc: Peter Xu <peterx@redhat.com>
-> > Cc: Eric Auger <eric.auger@redhat.com>
-> > Cc: "Michael S. Tsirkin" <mst@redhat.com>
-> > Cc: Jason Wang <jasowang@redhat.com>
-> > Cc: kvm@vger.kernel.org
-> > Cc: linux-kernel@vger.kernel.org
-> > Signed-off-by: guomin chen <guomin_chen@sina.com>
-> > ---
-> >  drivers/vfio/pci/vfio_pci_intrs.c | 13 +++++++++++--
-> >  drivers/vhost/vdpa.c              |  7 +++++++
-> >  2 files changed, 18 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/vfio/pci/vfio_pci_intrs.c b/drivers/vfio/pci/vfio_=
-pci_intrs.c
-> > index 1d9fb25..c371943 100644
-> > --- a/drivers/vfio/pci/vfio_pci_intrs.c
-> > +++ b/drivers/vfio/pci/vfio_pci_intrs.c
-> > @@ -352,12 +352,21 @@ static int vfio_msi_set_vector_signal(struct vfio=
-_pci_device *vdev,
-> >       vdev->ctx[vector].producer.token =3D trigger;
-> >       vdev->ctx[vector].producer.irq =3D irq;
-> >       ret =3D irq_bypass_register_producer(&vdev->ctx[vector].producer)=
-;
-> > -     if (unlikely(ret))
-> > +     if (unlikely(ret)) {
-> >               dev_info(&pdev->dev,
-> >               "irq bypass producer (token %p) registration fails: %d\n"=
-,
-> >               vdev->ctx[vector].producer.token, ret);
-> >
-> > -     vdev->ctx[vector].trigger =3D trigger;
-> > +             kfree(vdev->ctx[vector].name);
-> > +             eventfd_ctx_put(trigger);
-> > +
-> > +             cmd =3D vfio_pci_memory_lock_and_enable(vdev);
-> > +             free_irq(irq, trigger);
-> > +             vfio_pci_memory_unlock_and_restore(vdev, cmd);
-> > +
-> > +             vdev->ctx[vector].trigger =3D NULL;
-> > +     } else
-> > +             vdev->ctx[vector].trigger =3D trigger;
-> >
-> >       return 0;
-> >  }
+> So at least one of these must be set.
 >
-> Once again, the irq bypass registration cannot cause the vector setup
-> to fail, either by returning an error code or failing to configure the
-> vector while returning success.  It's my assertion that we simply need
-> to set the producer.token to NULL on failure such that unregistering
-> the producer will not generate a match, as you've done below.  The
-> vector still works even if this registration fails.
->
-Yes,  the irq bypass registration cannot cause the vector setup to fail.
-But if I simply set producer.token to NULL when fails, instead of
-cleaning up vector, it will trigger the following BUG:
+> Just try it :-)
 
-vfio_ecap_init: 0000:db:00.0 hiding ecap 0x1e@0x310
-vfio-pci 0000:db:00.0: irq bypass producer (token 000000004409229f)
-registration fails: -16
-------------[ cut here ]------------
-kernel BUG at drivers/pci/msi.c:352!
-invalid opcode: 0000 [#1] SMP NOPTI
-CPU: 55 PID: 9389 Comm: qemu-kvm Kdump: loaded Tainted: G
-E    --------- -  - 4.18.0-193.irqb.r1.el8.x86_64 #1
-Hardware name: Lenovo ThinkSystem SR650 -[7X06CTO1WW]-/-[7X06CTO1WW]-,
-  BIOS -[IVE636Z-2.13]- 07/18/2019
-RIP: 0010:free_msi_irqs+0x180/0x1b0
-Code: 14 85 c0 0f 84 d5 fe ff ff 31 ed eb 0f 83 c5 01 39 6b 14 0f 86
-      c5 fe ff ff 8b 7b 10 01 ef e8 d7 4a c9 ff 48 83 78 70 00 74 e3
-  <0f> 0b 49 8d b5 b0 00 00 00 e8 e2 e3 c9 ff e9 c7 fe ff ff 48
-  8b 7b
-RSP: 0018:ffffaeca4f4bfcd8 EFLAGS: 00010286
-RAX: ffff8bec77441600 RBX: ffff8bbcdb637e40 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: 00000000000001ab RDI: ffffffff8ea5b2a0
-RBP: 0000000000000000 R08: ffff8bec7e746828 R09: ffff8bec7e7466a8
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff8bbcde921308
-R13: ffff8bbcde921000 R14: 000000000000000b R15: 0000000000000021
-FS:  00007fd18d7fa700(0000) GS:ffff8bec7f6c0000(0000) knlGS:000000000000000=
-0
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f83650024a0 CR3: 000000476e70c001 CR4: 00000000007626e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-PKRU: 55555554
-Call Trace:
- pci_disable_msix+0xf3/0x120
- pci_free_irq_vectors+0xe/0x20
- vfio_msi_disable+0x89/0xd0 [vfio_pci]
- vfio_pci_set_msi_trigger+0x229/0x2d0 [vfio_pci]
- vfio_pci_ioctl+0x24f/0xdb0 [vfio_pci]
- ? pollwake+0x74/0x90
- ? wake_up_q+0x70/0x70
- do_vfs_ioctl+0xa4/0x630
- ? __alloc_fd+0x33/0x140
- ? syscall_trace_enter+0x1d3/0x2c0
- ksys_ioctl+0x60/0x90
- __x64_sys_ioctl+0x16/0x20
- do_syscall_64+0x5b/0x1a0
- entry_SYSCALL_64_after_hwframe+0x65/0xca
+Aha, I misread your message and thought you suggested replacing the
+dependencies with these two lines. In this case it would certainly
+work! Thanks for the suggestion, I'll send a v3 soon.
 
-
-> > diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-> > index 796fe97..4e082b8 100644
-> > --- a/drivers/vhost/vdpa.c
-> > +++ b/drivers/vhost/vdpa.c
-> > @@ -107,6 +107,13 @@ static void vhost_vdpa_setup_vq_irq(struct vhost_v=
-dpa *v, u16 qid)
-> >       vq->call_ctx.producer.token =3D vq->call_ctx.ctx;
-> >       vq->call_ctx.producer.irq =3D irq;
-> >       ret =3D irq_bypass_register_producer(&vq->call_ctx.producer);
-> > +     if (unlikely(ret)) {
-> > +             /*
-> > +              * If registration failed,
-> > +              * there is no need to unregister later.
-> > +              */
-> > +             vq->call_ctx.producer.token =3D NULL;
-> > +     }
-> >       spin_unlock(&vq->call_ctx.ctx_lock);
-> >  }
-> >
 >
-> 'ret' is otherwise unused in this function, so we could simply remove
-> ret and change this to
+> Regards,
 >
->         if (irq_bypass_register_producer(&vq->call_ctx.producer)) {
->                 /* avoid generating bogus match on unregister */
->                 vq->call_ctx.producer.token =3D NULL;
->         }
->
-> Also please submit vfio and vdpa as separate patches so that the
-> respective maintainer for each area can handle them.  Thanks,
->
-> Alex
->
-OK, thank you, I'll submit it again in two separate patches.
-Thanks Alex.
+>         Hans
