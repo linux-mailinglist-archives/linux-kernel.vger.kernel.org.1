@@ -2,48 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1657F288285
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 08:38:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99AFD288284
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 08:38:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732328AbgJIGhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 02:37:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731995AbgJIGfd (ORCPT
+        id S1731726AbgJIGhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 02:37:41 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:55554 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731989AbgJIGfe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 02:35:33 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41781C0613D6;
-        Thu,  8 Oct 2020 23:35:33 -0700 (PDT)
+        Fri, 9 Oct 2020 02:35:34 -0400
 Date:   Fri, 09 Oct 2020 06:35:31 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602225331;
+        s=2020; t=1602225332;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=A+4ctZtLuQOlEI+pA+FucARFF/uSBELG4pHJXVZdXl4=;
-        b=O5+7bZ1b4ZlYkXzADuW9luxxTxTKh+z/JDymPyxts6SDHpwQe+SYxr9ULJCBk7Rai5SBZB
-        wEX1HKXTzpmj61SCAsL6A2kSs3mmIi1gH2Ws7r/kpftzuxOGkvHgcF1TtPagINRN8UMPK1
-        ShbAYO+vuCpSTwvBXTpz/M69fta5x68n3WVESupyM/rowWpmEoi1/m5BqVUHIQQ7Lmb6zv
-        dV+H6Si2hEYM8z5/1aDq+WPkUOoDQUyyz1MDmg7fiVoVRh2ec/Fjz0jPigGxgym2Il/3dq
-        IMtGc5GrcXPGXwYlfqU9kTxG8/EuGJHUNlP+Je6GsTyO8F/IeZ035wjV2tm83Q==
+        bh=9NGi3lo2WNaSvl+69fEGlcXvMQQ0+8vJ0Fy7KDPq36g=;
+        b=mEH3RDloaH+zkO+NAhbKs9erllsdX7UuTd8kB/uHY8aZeyw7woNBGMGLaBiW4GvhS+G28N
+        Bhti7ZwG47IYifh8OeP9iaos0RSVW1NuHqYYvoUMLK9ImX6SQ+CX/72YDkZ/CYER6Afp5q
+        V1MOSRgegi7yg9rAFSLmOzpk+b5NrgUHqDq746EDRve7bIYd3QiZCPVl/o9pmc49waStbJ
+        ETKxMBGSDOCjbvMuRSoWfleI6MnN6aEFfBbNp55nssjvEDjpVgCGjYKCHQqk1V+6doThWn
+        2JcsveM+cySBwN48rDu7EpjJfpdIWXjR4jys4vy1Wh7XWVQ0r6U8LuJsnJCvxg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602225331;
+        s=2020e; t=1602225332;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=A+4ctZtLuQOlEI+pA+FucARFF/uSBELG4pHJXVZdXl4=;
-        b=kax36MGFaZoIeRgieI9tgOi9yb3K4+9nt2sJLcfLV3/U96hq5dihg9KOJZvD8ywHBdc2du
-        xCtLNlBl5vIEIODw==
+        bh=9NGi3lo2WNaSvl+69fEGlcXvMQQ0+8vJ0Fy7KDPq36g=;
+        b=i25wD6cEACHNiVM4vtAYqog8kzwihJMO1QkPvAu4qrX0OFcEatzgncdEJAgZ7/MtzqFkSs
+        1T1kQyjjAgnz3RCQ==
 From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] scftorture: Summarize per-thread statistics
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
+Subject: [tip: core/rcu] tick-sched: Clarify "NOHZ: local_softirq_pending" warning
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <160222533102.7002.11230901526584142414.tip-bot2@tip-bot2>
+Message-ID: <160222533152.7002.4472002575038406164.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -54,69 +55,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     dba3142b37f343734bf61dbce2914acb76e69fb6
-Gitweb:        https://git.kernel.org/tip/dba3142b37f343734bf61dbce2914acb76e69fb6
+Commit-ID:     bca37119c57bdc2c68c84b313a5118005e8693cf
+Gitweb:        https://git.kernel.org/tip/bca37119c57bdc2c68c84b313a5118005e8693cf
 Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Tue, 30 Jun 2020 16:13:37 -07:00
+AuthorDate:    Fri, 26 Jun 2020 13:39:41 -07:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 24 Aug 2020 18:38:33 -07:00
+CommitterDate: Mon, 24 Aug 2020 18:38:32 -07:00
 
-scftorture: Summarize per-thread statistics
+tick-sched: Clarify "NOHZ: local_softirq_pending" warning
 
-This commit summarizes the per-thread statistics, providing counts of
-the number of single, many, and all calls, both no-wait and wait, and,
-for the single case, the number where the target CPU was offline.
+Currently, can_stop_idle_tick() prints "NOHZ: local_softirq_pending HH"
+(where "HH" is the hexadecimal softirq vector number) when one or more
+non-RCU softirq handlers are still enabled when checking to stop the
+scheduler-tick interrupt.  This message is not as enlightening as one
+might hope, so this commit changes it to "NOHZ tick-stop error: Non-RCU
+local softirq work is pending, handler #HH".
 
+Reported-by: Andy Lutomirski <luto@kernel.org>
+Cc: Frederic Weisbecker <fweisbec@gmail.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/scftorture.c | 22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
+ kernel/time/tick-sched.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/scftorture.c b/kernel/scftorture.c
-index 5f19845..09a6242 100644
---- a/kernel/scftorture.c
-+++ b/kernel/scftorture.c
-@@ -128,13 +128,27 @@ DEFINE_TORTURE_RANDOM_PERCPU(scf_torture_rand);
- static void scf_torture_stats_print(void)
- {
- 	int cpu;
-+	int i;
- 	long long invoked_count = 0;
- 	bool isdone = READ_ONCE(scfdone);
-+	struct scf_statistics scfs = {};
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index f0199a4..81632cd 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -927,7 +927,7 @@ static bool can_stop_idle_tick(int cpu, struct tick_sched *ts)
  
- 	for_each_possible_cpu(cpu)
- 		invoked_count += data_race(per_cpu(scf_invoked_count, cpu));
--	pr_alert("%s scf_invoked_count %s: %lld ",
--		 SCFTORT_FLAG, isdone ? "VER" : "ver", invoked_count);
-+	for (i = 0; i < nthreads; i++) {
-+		scfs.n_single += scf_stats_p[i].n_single;
-+		scfs.n_single_ofl += scf_stats_p[i].n_single_ofl;
-+		scfs.n_single_wait += scf_stats_p[i].n_single_wait;
-+		scfs.n_single_wait_ofl += scf_stats_p[i].n_single_wait_ofl;
-+		scfs.n_many += scf_stats_p[i].n_many;
-+		scfs.n_many_wait += scf_stats_p[i].n_many_wait;
-+		scfs.n_all += scf_stats_p[i].n_all;
-+		scfs.n_all_wait += scf_stats_p[i].n_all_wait;
-+	}
-+	pr_alert("%s scf_invoked_count %s: %lld single: %lld/%lld single_ofl: %lld/%lld many: %lld/%lld all: %lld/%lld ",
-+		 SCFTORT_FLAG, isdone ? "VER" : "ver", invoked_count,
-+		 scfs.n_single, scfs.n_single_wait, scfs.n_single_ofl, scfs.n_single_wait_ofl,
-+		 scfs.n_many, scfs.n_many_wait, scfs.n_all, scfs.n_all_wait);
- 	torture_onoff_stats();
- 	pr_cont("\n");
- }
-@@ -357,11 +371,11 @@ static void scf_torture_cleanup(void)
- 			torture_stop_kthread("scftorture_invoker", scf_stats_p[i].task);
- 	else
- 		goto end;
--	kfree(scf_stats_p);
--	scf_stats_p = NULL;
- 	smp_call_function(scf_cleanup_handler, NULL, 0);
- 	torture_stop_kthread(scf_torture_stats, scf_torture_stats_task);
- 	scf_torture_stats_print();  // -After- the stats thread is stopped!
-+	kfree(scf_stats_p);  // -After- the last stats print has completed!
-+	scf_stats_p = NULL;
- 
- 	if (atomic_read(&n_errs))
- 		scftorture_print_module_parms("End of test: FAILURE");
+ 		if (ratelimit < 10 &&
+ 		    (local_softirq_pending() & SOFTIRQ_STOP_IDLE_MASK)) {
+-			pr_warn("NOHZ: local_softirq_pending %02x\n",
++			pr_warn("NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #%02x!!!\n",
+ 				(unsigned int) local_softirq_pending());
+ 			ratelimit++;
+ 		}
