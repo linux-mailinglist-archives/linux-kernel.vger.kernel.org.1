@@ -2,125 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 814EA288A40
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:02:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F269F288A45
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:05:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388405AbgJIOCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 10:02:54 -0400
-Received: from mga04.intel.com ([192.55.52.120]:13027 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733094AbgJIOCy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 10:02:54 -0400
-IronPort-SDR: UutEvLR3JUtQIv25kQgoaCBms5nZVe4qRuyfC/jqqSWGH1c4iEIB/dlEvqBGwGb7A1rOokYZDa
- +KVKhHNkB7iA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="162849315"
-X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
-   d="scan'208";a="162849315"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 07:02:53 -0700
-IronPort-SDR: EazpoFCcRi80uPDcWICyeM9WQNoyxdt91PeQMKi8hcUG0fyssTX6k6X5v/WvqCqZmpbhfEK6L4
- VqC3E716LyDA==
-X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
-   d="scan'208";a="312564410"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 07:02:51 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kQszy-002eNI-P6; Fri, 09 Oct 2020 17:03:54 +0300
-Date:   Fri, 9 Oct 2020 17:03:54 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Luke D Jones <luke@ljones.dev>,
-        benjamin.tissoires@redhat.com, linux-kernel@vger.kernel.org,
-        linux-input@vger.kernel.org
-Subject: Re: [PATCH V6 RESEND] HID: ASUS: Add support for ASUS N-Key keyboard
-Message-ID: <20201009140354.GH4077@smile.fi.intel.com>
-References: <20200923215633.209724-1-luke@ljones.dev>
- <nycvar.YFH.7.76.2010091137510.3336@cbobk.fhfr.pm>
- <20201009131435.GF4077@smile.fi.intel.com>
- <46e870fa-ff64-73ca-9979-32c8a1b5b12a@redhat.com>
+        id S1732398AbgJIOFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 10:05:47 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:43914 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727737AbgJIOFq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 10:05:46 -0400
+Received: by mail-oi1-f193.google.com with SMTP id l85so10268804oih.10;
+        Fri, 09 Oct 2020 07:05:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dyalSiZn45S4a+6jujOvfnO/RK2cFb+Vq+tH54TVFEA=;
+        b=OrrYY7vVISeonzwsacIdzEOQf56DjKpWlQv5EDS2le38irl6yLKGAeXfccHncH6diD
+         fukfEdV4iCn3dgih9FYU2cjMq7qROqLlfOGYtKO1ihLk97GRKf+bdAntcpQYMxQGKb4N
+         MA6w0/LEyG2SltYQcqeTUQzs/ebIjhY/Qe7KAKX7oEe12vB6rwQrtWWeJS6GSteAlJfG
+         joWAvvYo7lBNTVQmQ4L0sXN1YYPqHW3gz9lxYrYHJKIXxPJ8hFbRk1PVTkV14Sa7wDhN
+         8Os7Qv7oF/AhQCXjwtu2L2x7ReZ7H9LJdjebkJ1CzErZy5/KRX1J2MblVN+2nVZ4rG5d
+         wn9w==
+X-Gm-Message-State: AOAM530/+UByLI9iK7zBAcRG+h//h7lcADU1RoHvQ2+o0ByBgUBbD6jd
+        RVNX/FU8BCOyDG0MLsR8CHfepBHDdTx0
+X-Google-Smtp-Source: ABdhPJxsTciM9UAO+e8EG/rRkxLowDeJJ0mpmhUvP/1Yu/QRYdwZcSle050QqMWzNTlwohesQKoIlg==
+X-Received: by 2002:aca:a810:: with SMTP id r16mr2673248oie.114.1602252345680;
+        Fri, 09 Oct 2020 07:05:45 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id r188sm44078oia.13.2020.10.09.07.05.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Oct 2020 07:05:44 -0700 (PDT)
+Received: (nullmailer pid 4076255 invoked by uid 1000);
+        Fri, 09 Oct 2020 14:05:44 -0000
+Date:   Fri, 9 Oct 2020 09:05:44 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Caleb Connolly <caleb@connolly.tech>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/5] dt-bindings: panel: add documentation for oneplus6
+ panel
+Message-ID: <20201009140544.GB4071736@bogus>
+References: <20201007174736.292968-1-caleb@connolly.tech>
+ <20201007174736.292968-3-caleb@connolly.tech>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <46e870fa-ff64-73ca-9979-32c8a1b5b12a@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20201007174736.292968-3-caleb@connolly.tech>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 03:37:20PM +0200, Hans de Goede wrote:
-> On 10/9/20 3:14 PM, Andy Shevchenko wrote:
-> > On Fri, Oct 09, 2020 at 11:38:55AM +0200, Jiri Kosina wrote:
-> > > On Thu, 24 Sep 2020, Luke D Jones wrote:
-> > > 
-> > > > The ASUS N-Key keyboard uses the productId of 0x1866 and is used in
-> > > > almost all modern ASUS gaming laptops with slight changes to the
-> > > > firmware. This patch enables: Fn+key hotkeys, keyboard backlight
-> > > > brightness control, and notify asus-wmi to toggle "fan-mode".
-> > > > 
-> > > > The keyboard has many of the same key outputs as the existing G752
-> > > > keyboard including a few extras, and varies a little between laptop
-> > > > models. The key-sets have been split and sub-grouped so that there
-> > > > will not be conflict between key event codes used.
-> > > > 
-> > > > An existing key event used across some keyboards for "Mic Toggle"
-> > > > has been changed to emit "F20" as this is what all the main
-> > > > desktop environments are using.
-> > > > 
-> > > > Additionally this keyboard requires the LED interface to be
-> > > > intitialised before such things as keyboard backlight control work.
-> > > > 
-> > > > Misc changes in scope: update some hardcoded comparisons to use an
-> > > > available define.
-> > > > 
-> > > > Signed-off-by: Luke D Jones <luke@ljones.dev>
-> > > 
-> > > Thanks for the patch. Looks good to me in general, one small nit before
-> > > this can be merged as a whole ...
-> > > 
-> > > > ---
-> > > >   drivers/hid/hid-asus.c                     | 188 ++++++++++++++++++---
-> > > >   drivers/hid/hid-ids.h                      |   1 +
-> > > >   include/linux/platform_data/x86/asus-wmi.h |   2 +
-> > > 
-> > > ... I'd like to get Ack from Andy (CCing) on the addition below to
-> > > asus-wmi.h.
-> > 
-> > There is a new sheriff in town (Hans and Mark).
-> > My personal opinion it is good to go.
-> > 
-> > Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On Wed, Oct 07, 2020 at 05:49:14PM +0000, Caleb Connolly wrote:
+> Document the OnePlus 6/T common panel driver, example from
+> arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi
 > 
-> I'm afraid that a quick review by me has found multiple issues with
-> this patch. I'm going to take a quick break now, I'll email a
-> detailed review after that.
-
-Thanks Hans.
-I forgot to add that I reviewed only asus-wmi.h part. Sorry for the confusion.
-
-
-> > > > diff --git a/include/linux/platform_data/x86/asus-wmi.h b/include/linux/platform_data/x86/asus-wmi.h
-> > > > index 897b8332a39f..05253cfe786c 100644
-> > > > --- a/include/linux/platform_data/x86/asus-wmi.h
-> > > > +++ b/include/linux/platform_data/x86/asus-wmi.h
-> > > > @@ -27,6 +27,8 @@
-> > > >   #define ASUS_WMI_METHODID_INIT		0x54494E49 /* INITialize */
-> > > >   #define ASUS_WMI_METHODID_HKEY		0x59454B48 /* Hot KEY ?? */
-> > > > 
-> > > > +#define ASUS_WMI_METHODID_NOTIF		0x00100021 /* Notify method ?? */
-> > > > +
-> > > >   #define ASUS_WMI_UNSUPPORTED_METHOD	0xFFFFFFFE
-> > > > 
-> > > >   /* Wireless */
-> > 
+> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
+> ---
+>  .../display/panel/panel-oneplus6.yaml         | 73 +++++++++++++++++++
+>  1 file changed, 73 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/panel/panel-oneplus6.yaml
 > 
+> diff --git a/Documentation/devicetree/bindings/display/panel/panel-oneplus6.yaml b/Documentation/devicetree/bindings/display/panel/panel-oneplus6.yaml
+> new file mode 100644
+> index 000000000000..23ba369cc2f5
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/panel/panel-oneplus6.yaml
+> @@ -0,0 +1,73 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/panel/panel-oneplus6.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: OnePlus 6/T panel driver
+> +
+> +description: |
+> +  The OnePlus 6 panel driver encompasses the display panels found in the
+> +  OnePlus 6 and 6T devices, the panels have almost identical behaviour and
+> +  are not used by any other devices.
+> +
+> +maintainers:
+> +  - Caleb Connolly <caleb@connolly.tech>
+> +
+> +allOf:
+> +  - $ref: panel-common.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - samsung,sofef00
+> +      - samsung,s6e3fc2x01
+> +
+> +  reg: true
+> +  reset-gpios: true
+> +  port: true
+> +
+> +  vddio-supply:
+> +    description: VDDIO regulator
 
--- 
-With Best Regards,
-Andy Shevchenko
+A panel with a single supply can use panel-simple-dsi.yaml.
 
+'reset-gpios' was missing, but has been added recently.
 
+Rob
