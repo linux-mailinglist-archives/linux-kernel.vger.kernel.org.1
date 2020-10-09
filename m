@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9B40288D73
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:58:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31AE4288D78
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389520AbgJIP4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 11:56:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38710 "EHLO
+        id S2389546AbgJIP42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 11:56:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389507AbgJIP4R (ORCPT
+        with ESMTP id S2389508AbgJIP4R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 9 Oct 2020 11:56:17 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3994C0613DA
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 08:56:15 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id m7so10709342oie.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 08:56:15 -0700 (PDT)
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05D0DC0613DB
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 08:56:17 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id o8so9435760otl.4
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 08:56:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linuxfoundation.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=TrZJO7Q5TAom7Iz2MDVkwWu+RVJ+trX9KvWRo2x1VQw=;
-        b=Ho/Nc3BclVhqaifWfu+1IjeMUp8B6qK0yWFT7ZRKn4mQsYxPId+CXkk656OKrxcoA+
-         H3aUNePqLYVhzI4YsWl9kNg0uOkx/h508PG12x/zQW5FI7HuCrrkPtNobQULfGFKQtJm
-         N/XeZkVxkezpUvbv5p+a7MmhiK4MK8A8IeZPs=
+        bh=IJjgaUZaZ+rzdDuxjp7rbE4oiR+xJP2zpCkQ9BJrqzE=;
+        b=QwmxN9RxRycSmgMChWIl0NH0gbcRsP8/Z+tgndphiaJJGvNjywwnqtyxVlWYP54I9r
+         Xg5F3NKtm0FVrOT5cn/wn1nU2FqUVm6vmRsXPKm/NeeEqe7mo8GMIHRT+ltEm0wACaN+
+         VjY9YrudR9/2aEFnp+OVv2VVkYBPUC/OfBqPc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=TrZJO7Q5TAom7Iz2MDVkwWu+RVJ+trX9KvWRo2x1VQw=;
-        b=lnZ9AxTeT5h6VNJC/h3ScM4LzqHhpyco/qYLGp2S8SQJteju1gnpMb814zWQmLUOfj
-         slXqQ/SRix4qbgvTgiX/DkRVovF2dgQR1wwAvj26IAeh0DVMbufkKpX+ka3lq7RJwn8w
-         HuK20buQgmzH6Z6jkglwmkDPXQJ/CqyX/5ir/bcEbTtvHuLPkt8O/xEhADvMP3vBt8qt
-         3Kxs6WvOT0Klu3dc+rBfZv0oqnjAAOuAdTG3grI80vnSlJHOU81mBppcJfdA9j4uOGWb
-         C2Lw0x9cBsjEkYYNEBnAfaejWtzO1rJvbvjYWL9lYMyzYpnsepWq+i76OUR3VyMgZNnM
-         Ns/w==
-X-Gm-Message-State: AOAM532VeXSxEuFGlE3UwMbElGHRoh9tDJTSC9E3y9hREV4KGsw+XSh3
-        b16hJnUwvLfXYBhrWycOc8g83g==
-X-Google-Smtp-Source: ABdhPJzDaaMzDN3HqDRosQ53Tp2yqcP0Yo/293AdelRsk9+u82c3di74+9EV8YoEwCjUOeCZwfBa4g==
-X-Received: by 2002:aca:f40b:: with SMTP id s11mr2734357oih.66.1602258975181;
-        Fri, 09 Oct 2020 08:56:15 -0700 (PDT)
+        bh=IJjgaUZaZ+rzdDuxjp7rbE4oiR+xJP2zpCkQ9BJrqzE=;
+        b=oaS2kxBs7rBiBa6JWrlGMxflZMkIaLwWnZmBA4naVduSwfiE7qe/Q7y8ptv4gEMAkJ
+         fn5DxIVIT0B7IpLsrmtTptilbRn13q64io54vfBQjXrdMroAfqSzRZyQQbEV0ACP5eDo
+         pI2Lm6SOzJVjbZjM7xvnwN87GCpWA7opxoV3E2gA01I8wBiJ16pPXqkSj2RQ4K2Sw/sW
+         NBgRv0ccsqvp2m85qB120GT5h6HDyuIh4ZalTqMDky/2c4NGDc+Bk69Nwn+Y8K2RjlK+
+         3ANnVs0ncYxENdnTDq7GXrw+avnOVdZ2v1WFoufI9lvTD2t5uovJvS7H796QQyE1bpCk
+         cuGg==
+X-Gm-Message-State: AOAM530QjBfPBNMX2SivmBAHDIoi8vyZ3q28zfGpg3E/CO9vGjawHzas
+        ACBrS00P6Fet5NYRpboQ+WB4nA==
+X-Google-Smtp-Source: ABdhPJyn/3sr7V8YTxz6Z14BffXAUtV/l33E+JLfZdnDEuibY2Mv0bJKLgyQkHkbw5G+ZMACKO0jUw==
+X-Received: by 2002:a9d:27a1:: with SMTP id c30mr8736898otb.214.1602258976414;
+        Fri, 09 Oct 2020 08:56:16 -0700 (PDT)
 Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id e7sm7347246oia.9.2020.10.09.08.56.14
+        by smtp.gmail.com with ESMTPSA id e7sm7347246oia.9.2020.10.09.08.56.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 08:56:14 -0700 (PDT)
+        Fri, 09 Oct 2020 08:56:15 -0700 (PDT)
 From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     johannes@sipsolutions.net, gregkh@linuxfoundation.org,
-        rafael@kernel.org, keescook@chromium.org
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+To:     rafael@kernel.org, lenb@kernel.org, gregkh@linuxfoundation.org,
+        keescook@chromium.org
+Cc:     Shuah Khan <skhan@linuxfoundation.org>, linux-acpi@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 04/11] drivers/base/devcoredump: convert devcd_count to counter_atomic32
-Date:   Fri,  9 Oct 2020 09:55:59 -0600
-Message-Id: <9eee4448ec53e3a875e6785fa63bcda211e09d23.1602209970.git.skhan@linuxfoundation.org>
+Subject: [PATCH v3 05/11] drivers/acpi: convert seqno counter_atomic32
+Date:   Fri,  9 Oct 2020 09:56:00 -0600
+Message-Id: <53a101719b89cd0db55885f726a186bc987aba1e.1602209970.git.skhan@linuxfoundation.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1602209970.git.skhan@linuxfoundation.org>
 References: <cover.1602209970.git.skhan@linuxfoundation.org>
@@ -66,53 +66,56 @@ counter_atomic* is introduced to be used when a variable is used as
 a simple counter and doesn't guard object lifetimes. This clearly
 differentiates atomic_t usages that guard object lifetimes.
 
-counter_atomic* variables wrap around to INT_MIN when it overflows
-and should not be used to guard resource lifetimes, device usage and
+counter_atomic* variables wrap around to INT_MIN when it overflows and
+should not be used to guard resource lifetimes, device usage and
 open counts that control state changes, and pm states.
 
-devcd_count is used to track dev_coredumpm device count and used in
-device name string. It doesn't guard object lifetimes, device usage
-counts, device open counts, and pm states. There is very little chance
-of this counter overflowing. Convert it to use counter_atomic32.
+seqno is a sequence number counter for logging. This counter gets
+incremented. Unsure if there is a chance of this overflowing. It
+doesn't look like overflowing causes any problems since it is used
+to tag the log messages and nothing more.
+
+Convert it to use counter_atomic32.
 
 This conversion doesn't change the overflow wrap around behavior.
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+Reviewed-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 ---
- drivers/base/devcoredump.c | 5 +++--
+ drivers/acpi/acpi_extlog.c | 5 +++--
  1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/base/devcoredump.c b/drivers/base/devcoredump.c
-index e42d0b514384..59bc48ee44af 100644
---- a/drivers/base/devcoredump.c
-+++ b/drivers/base/devcoredump.c
-@@ -16,6 +16,7 @@
- #include <linux/slab.h>
- #include <linux/fs.h>
- #include <linux/workqueue.h>
+diff --git a/drivers/acpi/acpi_extlog.c b/drivers/acpi/acpi_extlog.c
+index f138e12b7b82..d1e733f15cf5 100644
+--- a/drivers/acpi/acpi_extlog.c
++++ b/drivers/acpi/acpi_extlog.c
+@@ -12,6 +12,7 @@
+ #include <linux/ratelimit.h>
+ #include <linux/edac.h>
+ #include <linux/ras.h>
 +#include <linux/counters.h>
+ #include <asm/cpu.h>
+ #include <asm/mce.h>
  
- static struct class devcd_class;
- 
-@@ -255,7 +256,7 @@ void dev_coredumpm(struct device *dev, struct module *owner,
- 				   void *data, size_t datalen),
- 		   void (*free)(void *data))
+@@ -93,7 +94,7 @@ static struct acpi_hest_generic_status *extlog_elog_entry_check(int cpu, int ban
+ static void __print_extlog_rcd(const char *pfx,
+ 			       struct acpi_hest_generic_status *estatus, int cpu)
  {
--	static atomic_t devcd_count = ATOMIC_INIT(0);
-+	static struct counter_atomic32 devcd_count = COUNTER_ATOMIC_INIT(0);
- 	struct devcd_entry *devcd;
- 	struct device *existing;
+-	static atomic_t seqno;
++	static struct counter_atomic32 seqno;
+ 	unsigned int curr_seqno;
+ 	char pfx_seq[64];
  
-@@ -286,7 +287,7 @@ void dev_coredumpm(struct device *dev, struct module *owner,
- 	device_initialize(&devcd->devcd_dev);
- 
- 	dev_set_name(&devcd->devcd_dev, "devcd%d",
--		     atomic_inc_return(&devcd_count));
-+		     counter_atomic32_inc_return(&devcd_count));
- 	devcd->devcd_dev.class = &devcd_class;
- 
- 	if (device_add(&devcd->devcd_dev))
+@@ -103,7 +104,7 @@ static void __print_extlog_rcd(const char *pfx,
+ 		else
+ 			pfx = KERN_ERR;
+ 	}
+-	curr_seqno = atomic_inc_return(&seqno);
++	curr_seqno = counter_atomic32_inc_return(&seqno);
+ 	snprintf(pfx_seq, sizeof(pfx_seq), "%s{%u}", pfx, curr_seqno);
+ 	printk("%s""Hardware error detected on CPU%d\n", pfx_seq, cpu);
+ 	cper_estatus_print(pfx_seq, estatus);
 -- 
 2.25.1
 
