@@ -2,143 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D47A289C1D
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 01:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36AA8289C27
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 01:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727126AbgJIX2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 19:28:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51964 "EHLO
+        id S1727657AbgJIXgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 19:36:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726469AbgJIXZr (ORCPT
+        with ESMTP id S1727172AbgJIX2x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 19:25:47 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9D1AC0613D6
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 16:25:55 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id p16so2354278ilq.5
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 16:25:55 -0700 (PDT)
+        Fri, 9 Oct 2020 19:28:53 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF9A3C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 16:29:01 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id g12so11889155wrp.10
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 16:29:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bdQJAu4yF5dce0DD49SyLKXgzP39u50c+umqE0FLgBU=;
-        b=1GLphmj5/R5BqAlFnPGRnzhsW3asqG+CCFd5rKI5mUooAraedSiE4OyXexCuybI9ab
-         xUnuGU5fG5NdgE+d1dDkiQfGVYhCMKbYNMXtqGIAnWGaB1u4aOHTG/PypcuMTIALyA4b
-         BEM9UVh5gDdrzbW6+zKMfdJXnVr5UyYiirF6OCXsG8SQCp0Om0/6ATaL5bEK0g6/mBYr
-         Qtrvz/63nBPc38xo69uBkPbUPWWTlP2SmmPRjMZckmiqMQN4xoBAxIwgGebnbT8LLlD7
-         4fKKgoVmdyOwDvmfC5OnplL/lF0NLIV5XfGQiq7dnu/UB6/cb2PFf0uU6wNBjhb/jOqJ
-         03CQ==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=THq3ttYjMA/wwLeW9nschOt45SRyCQs5uQevvZP2GkY=;
+        b=BemPNOphDVGBRk3Rg2QcPkDyWH7rxocZV1ckrgc5O/KDarO8uU+q1AsJ9xFvmdnoNR
+         vIChLC7LU3hQxKOlWtj71DKUYr8gUF9NllM6Y7awDnfyoBKuFSIfRtDX+YwG4JeocUWN
+         cdDiVeU5TQOmjR0cF5GRWqdDo+XA6zdH0u93FKgxpoWR4mKlP2ecOb1syH5F5y3ATkfi
+         k5qBNQ544de5u2qp52YprG568iSlj4A+91LQMVj6qG70gr1yarKABdPrjV4pCs9Kfeqo
+         CeEmTnC1hAVVTKCwOE6e/GB3F1aTfJEI9tbiXRqyUyKhbnkRDIY5mcDHOjLKgfcOXgX6
+         RIHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bdQJAu4yF5dce0DD49SyLKXgzP39u50c+umqE0FLgBU=;
-        b=Q1GYOQ6o6AdCVzh40pQfhp4inP7Tvc/LlRDJCdAe3ROiEt5NYmG138aEAYenVCglm6
-         BaBnBTO3PaAozCykwiAGkUkVK624+YZjRS/Rez3AGDBqFj0wZG0EvHvNZ6H12PSxxEl6
-         32g15TtlltcY0ljtlBZGG+jtdX+Fpj3olUBolKmHzwTIn6yYMXDS7priZcrI86iUDyKm
-         g1ntXkhzSW9Z3aL9S8Eh07T/V04PbFmHyGx2Olp3AekEF5WXJ4fs8vVBaiM3mKSkk6P2
-         srkotsNi6BtkUMrUlQItBGyb4hh9EYWOqjzq+K4a+XWPC5xhygJqO8UTzMb9qX7RreSN
-         sDcg==
-X-Gm-Message-State: AOAM530YnATZRXjB9iHOW5bFdF6zvY6efG2Ib8UIO58honsvkJuY8MaM
-        bD4ZIdEELCzr+jVNWeWBgyLzTb7yH9kL/GyOG0N1ow==
-X-Google-Smtp-Source: ABdhPJxP+j1e3PZosu12MlCEp2JiKAfso8sX9UH9nEzXe5UARh1wrbVACQBg+/qhTwIeyoCWuBJU5G9A5iggmiUld6A=
-X-Received: by 2002:a92:6811:: with SMTP id d17mr11954140ilc.145.1602285954971;
- Fri, 09 Oct 2020 16:25:54 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=THq3ttYjMA/wwLeW9nschOt45SRyCQs5uQevvZP2GkY=;
+        b=OXoPdGKfmSsS4Jj54BjPOUkq6ahgeEoxAvo6aqLLcsOYiaLXioiJ/Hado5PXhX1nju
+         BzT80Ct90028BCWjmCMAH6p0Ap4eNN4maFFC0hFUFk78f4aefB6eatTOcLppqMDyBe+z
+         ILDo61FAnQ4p4fsck8rRaSxJa5GRzd6ziKS1HZepExd6k2Tu1ZxQ5JJG08oUPjQw5A/d
+         NMW0V9/ipvlz3giBqUbEZ1IQuQZGzbw+DvusF0ckz4TyaIb7tQWfUgFuL0a/awjqeFts
+         3KFZHqvCf6V7v2VmFx4NjIQ6zSFpjinz3XPy/3cPCZDKOSmgpOYp8FN62fbMNy7BSQWH
+         EgNw==
+X-Gm-Message-State: AOAM530XXfjmbsAIXyXOXWZW31B0t0rqIvJylzPB5gW/IELlrmdOsfxr
+        IcvL0pZnL1IUbS71xQat5RnKGW4sIo3LTT/6
+X-Google-Smtp-Source: ABdhPJxZKH+FXT904Kdbcmw1Vf6EoFKSGTTRZEl7WYok/yJnx3MSDQaPjI9/CFts04uW9r91htpJJQ==
+X-Received: by 2002:adf:bc14:: with SMTP id s20mr18358799wrg.220.1602286139275;
+        Fri, 09 Oct 2020 16:28:59 -0700 (PDT)
+Received: from [192.168.1.5] ([195.24.90.54])
+        by smtp.googlemail.com with ESMTPSA id 4sm5143347wrp.58.2020.10.09.16.28.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Oct 2020 16:28:58 -0700 (PDT)
+Subject: Re: [PATCH 1/3] venus: vdec: Fix non reliable setting of LAST flag
+To:     Alexandre Courbot <acourbot@chromium.org>
+Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Vikash Garodia <vgarodia@codeaurora.org>,
+        Mansur Alisha Shaik <mansur@codeaurora.org>
+References: <20200928164431.21884-1-stanimir.varbanov@linaro.org>
+ <20200928164431.21884-2-stanimir.varbanov@linaro.org>
+ <CAPBb6MUMFnzd6zZE4C4T+bX5p=3iKPZp+S_hrTLECvHTHYXrtQ@mail.gmail.com>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <9d3e6549-ee2a-1872-48c4-29b2f21f815a@linaro.org>
+Date:   Sat, 10 Oct 2020 02:28:55 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201007004901.39859-1-luka.kovacic@sartura.hr>
- <20201007004901.39859-5-luka.kovacic@sartura.hr> <20201007112756.GD12224@duo.ucw.cz>
-In-Reply-To: <20201007112756.GD12224@duo.ucw.cz>
-From:   Luka Kovacic <luka.kovacic@sartura.hr>
-Date:   Sat, 10 Oct 2020 01:25:43 +0200
-Message-ID: <CADZsf3Y=Z9pys=g1QtN=+vhLDV=NVK=rbF14Duv50expF=gzeA@mail.gmail.com>
-Subject: Re: [PATCH v4 4/6] drivers: leds: Add the iEi WT61P803 PUZZLE LED driver
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hwmon@vger.kernel.org,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, Dan Murphy <dmurphy@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Marek Behun <marek.behun@nic.cz>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Robert Marko <robert.marko@sartura.hr>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAPBb6MUMFnzd6zZE4C4T+bX5p=3iKPZp+S_hrTLECvHTHYXrtQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 1:27 PM Pavel Machek <pavel@ucw.cz> wrote:
->
-> Hi!
->
-> > Add support for the iEi WT61P803 PUZZLE LED driver.
-> > Currently only the front panel power LED is supported.
-> >
-> > This driver depends on the iEi WT61P803 PUZZLE MFD driver.
->
-> > +static int iei_wt61p803_puzzle_led_brightness_set_blocking(struct led_classdev *cdev,
-> > +                                                        enum led_brightness brightness)
-> > +{
-> > +     struct iei_wt61p803_puzzle_led *priv = cdev_to_iei_wt61p803_puzzle_led(cdev);
-> > +     unsigned char *resp_buf = priv->response_buffer;
-> > +     unsigned char led_power_cmd[5] = {
-> > +             IEI_WT61P803_PUZZLE_CMD_HEADER_START,
-> > +             IEI_WT61P803_PUZZLE_CMD_LED,
-> > +             IEI_WT61P803_PUZZLE_CMD_LED_POWER,
-> > +             (char)IEI_LED_OFF
-> > +     };
-> > +     size_t reply_size;
-> > +
-> > +     mutex_lock(&priv->lock);
-> > +     if (brightness == LED_OFF) {
-> > +             led_power_cmd[3] = (char)IEI_LED_OFF;
-> > +             priv->led_power_state = LED_OFF;
-> > +     } else {
-> > +             led_power_cmd[3] = (char)IEI_LED_ON;
-> > +             priv->led_power_state = LED_ON;
-> > +     }
-> > +     mutex_unlock(&priv->lock);
->
-> Are you sure you need the mutex?
->
-> > +     ret = devm_led_classdev_register_ext(dev, &priv->cdev, &init_data);
-> > +     if (ret) {
-> > +             dev_err(dev, "Could not register LED\n");
-> > +             goto err_child_node;
-> > +     }
-> > +     return 0;
-> > +err_child_node:
-> > +     fwnode_handle_put(child);
-> > +     return ret;
-> > +}
->
-> Is the fwnode_handle_put(child); missing in non-error path somewhere?
->
-> > +MODULE_LICENSE("GPL");
->
-> Make sure this is consistent with file header. GPLv2+, if you can.
->
-> Best regards,
->
->                                                                         Pavel
-> --
-> (english) http://www.livejournal.com/~pavelmachek
-> (cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
+Hi Alex,
 
-Hi Pavel,
+On 10/9/20 3:45 PM, Alexandre Courbot wrote:
+> On Tue, Sep 29, 2020 at 1:44 AM Stanimir Varbanov
+> <stanimir.varbanov@linaro.org> wrote:
+>>
+>> In real use of dynamic-resolution-change it is observed that the
+>> LAST buffer flag (which marks the last decoded buffer with the
+>> resolution before the resolution-change event) is not reliably set.
+>>
+>> Fix this by set the LAST buffer flag on next queued capture buffer
+>> after the resolution-change event.
+>>
+>> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+>> ---
+>>  drivers/media/platform/qcom/venus/core.h    |  5 +-
+>>  drivers/media/platform/qcom/venus/helpers.c |  6 +++
+>>  drivers/media/platform/qcom/venus/vdec.c    | 52 ++++++++++++---------
+>>  3 files changed, 38 insertions(+), 25 deletions(-)
+>>
+>> diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
+>> index 7b79a33dc9d6..e30eeaf0ada9 100644
+>> --- a/drivers/media/platform/qcom/venus/core.h
+>> +++ b/drivers/media/platform/qcom/venus/core.h
+>> @@ -274,7 +274,6 @@ enum venus_dec_state {
+>>         VENUS_DEC_STATE_DRAIN           = 5,
+>>         VENUS_DEC_STATE_DECODING        = 6,
+>>         VENUS_DEC_STATE_DRC             = 7,
+>> -       VENUS_DEC_STATE_DRC_FLUSH_DONE  = 8,
+>>  };
+>>
+>>  struct venus_ts_metadata {
+>> @@ -339,7 +338,7 @@ struct venus_ts_metadata {
+>>   * @priv:      a private for HFI operations callbacks
+>>   * @session_type:      the type of the session (decoder or encoder)
+>>   * @hprop:     a union used as a holder by get property
+>> - * @last_buf:  last capture buffer for dynamic-resoluton-change
+>> + * @next_buf_last: a flag to mark next queued capture buffer as last
+>>   */
+>>  struct venus_inst {
+>>         struct list_head list;
+>> @@ -401,7 +400,7 @@ struct venus_inst {
+>>         union hfi_get_property hprop;
+>>         unsigned int core_acquired: 1;
+>>         unsigned int bit_depth;
+>> -       struct vb2_buffer *last_buf;
+>> +       bool next_buf_last;
+>>  };
+>>
+>>  #define IS_V1(core)    ((core)->res->hfi_version == HFI_VERSION_1XX)
+>> diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
+>> index 50439eb1ffea..5ca3920237c5 100644
+>> --- a/drivers/media/platform/qcom/venus/helpers.c
+>> +++ b/drivers/media/platform/qcom/venus/helpers.c
+>> @@ -1347,6 +1347,12 @@ void venus_helper_vb2_buf_queue(struct vb2_buffer *vb)
+>>
+>>         v4l2_m2m_buf_queue(m2m_ctx, vbuf);
+>>
+>> +       /* Skip processing queued capture buffers after LAST flag */
+>> +       if (inst->session_type == VIDC_SESSION_TYPE_DEC &&
+>> +           V4L2_TYPE_IS_CAPTURE(vb->vb2_queue->type) &&
+>> +           inst->codec_state == VENUS_DEC_STATE_DRC)
+>> +               goto unlock;
+>> +
+>>         cache_payload(inst, vb);
+>>
+>>         if (inst->session_type == VIDC_SESSION_TYPE_ENC &&
+>> diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
+>> index ea13170a6a2c..c11bdf3ca21b 100644
+>> --- a/drivers/media/platform/qcom/venus/vdec.c
+>> +++ b/drivers/media/platform/qcom/venus/vdec.c
+>> @@ -914,10 +914,6 @@ static int vdec_start_capture(struct venus_inst *inst)
+>>                 return 0;
+>>
+>>  reconfigure:
+>> -       ret = hfi_session_flush(inst, HFI_FLUSH_OUTPUT, true);
+>> -       if (ret)
+>> -               return ret;
+>> -
+>>         ret = vdec_output_conf(inst);
+>>         if (ret)
+>>                 return ret;
+>> @@ -954,6 +950,7 @@ static int vdec_start_capture(struct venus_inst *inst)
+>>         inst->streamon_cap = 1;
+>>         inst->sequence_cap = 0;
+>>         inst->reconfig = false;
+>> +       inst->next_buf_last = false;
+> 
+> Is this needed? Whether a resolution change occurs should only be
+> dependent on what the OUTPUT queue receives, so even if the CAPTURE
+> queue is stopped and resumed for some reason, pending resolution
+> change events and their associated LAST buffer should still be
+> emitted. With this statement we are taking the risk of sending a
+> change resolution event without a corresponding LAST buffer (so the
+> following LAST buffer might be misinterpreted).
 
-The mutex is locked in
-iei_wt61p803_puzzle_led_brightness_set_blocking(), as concurrent
-access to the same private structure member should be possible, when
-reading the state
-from iei_wt61p803_puzzle_led_brightness_get().
+I added it in start_capture just to be sure that the flag is reset
+before we resume decoding on new resolution. Also, I don't expect any
+source change events from firmware before we call hfi_session_continue.
+So I guess this flag should be reset before hfi_session_continue.
 
-It does look like I missed the final fwnode_handle_put(child) here.
+> 
+>>
+>>         return 0;
+>>
+>> @@ -985,6 +982,7 @@ static int vdec_start_output(struct venus_inst *inst)
+>>         venus_helper_init_instance(inst);
+>>         inst->sequence_out = 0;
+>>         inst->reconfig = false;
+>> +       inst->next_buf_last = false;
+> 
+> This one I understand better - if the client seeks, it should probably
+> check for pending events before resuming.
 
-My understanding regarding the license is that when
-MODULE_LICENSE("GPL") is used
-the SPDX identifier can either be GPL-2.0-only or GPL-2.0-or-later.
+On second thought I think it shouldn't be here - the last buffer flag is
+a property of the capture queue.
 
-Kind regards,
-Luka
+> 
+>>
+>>         ret = vdec_set_properties(inst);
+>>         if (ret)
+>> @@ -1078,9 +1076,7 @@ static int vdec_stop_capture(struct venus_inst *inst)
+>>                 inst->codec_state = VENUS_DEC_STATE_STOPPED;
+>>                 break;
+>>         case VENUS_DEC_STATE_DRC:
+>> -               WARN_ON(1);
+>> -               fallthrough;
+>> -       case VENUS_DEC_STATE_DRC_FLUSH_DONE:
+>> +               ret = hfi_session_flush(inst, HFI_FLUSH_OUTPUT, true);
+>>                 inst->codec_state = VENUS_DEC_STATE_CAPTURE_SETUP;
+>>                 venus_helper_free_dpb_bufs(inst);
+>>                 break;
+>> @@ -1204,9 +1200,28 @@ static void vdec_buf_cleanup(struct vb2_buffer *vb)
+>>  static void vdec_vb2_buf_queue(struct vb2_buffer *vb)
+>>  {
+>>         struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
+>> +       struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+>> +       static const struct v4l2_event eos = { .type = V4L2_EVENT_EOS };
+>>
+>>         vdec_pm_get_put(inst);
+>>
+>> +       mutex_lock(&inst->lock);
+>> +
+>> +       if (inst->next_buf_last && V4L2_TYPE_IS_CAPTURE(vb->vb2_queue->type) &&
+>> +           inst->codec_state == VENUS_DEC_STATE_DRC) {
+>> +               vbuf->flags |= V4L2_BUF_FLAG_LAST;
+>> +               vbuf->sequence = inst->sequence_cap++;
+>> +               vbuf->field = V4L2_FIELD_NONE;
+>> +               vb2_set_plane_payload(vb, 0, 0);
+>> +               v4l2_m2m_buf_done(vbuf, VB2_BUF_STATE_DONE);
+>> +               v4l2_event_queue_fh(&inst->fh, &eos);
+> 
+> I don't think publishing an EOS event here is correct. As the spec says:
+
+I've taken this from vicodec driver, and I guess there is
+misinterpretation of the spec. IMO LAST buffer flag and EOS event
+somehow overlaps. I've no problem to drop it in next version.
+
+> 
+> "
+> ... Last of the buffers will have the V4L2_BUF_FLAG_LAST flag set. To
+> determine the sequence to follow, the client must check if there is
+> any pending event and:
+> 
+> * if a V4L2_EVENT_SOURCE_CHANGE event with changes set to
+> V4L2_EVENT_SRC_CH_RESOLUTION is pending, the Dynamic Resolution Change
+> sequence needs to be followed,
+> * if a V4L2_EVENT_EOS event is pending, the End of Stream sequence
+> needs to be followed.
+> "
+> 
+> With this we will have *both* resolution change and EOS events pending
+> when the client checks the event queue after receiving the LAST
+> buffer.
+> 
+> 
+>> +               inst->next_buf_last = false;
+>> +               mutex_unlock(&inst->lock);
+>> +               return;
+>> +       }
+>> +
+>> +       mutex_unlock(&inst->lock);
+>> +
+>>         venus_helper_vb2_buf_queue(vb);
+>>  }
+>>
+>> @@ -1250,13 +1265,6 @@ static void vdec_buf_done(struct venus_inst *inst, unsigned int buf_type,
+>>                 vb->timestamp = timestamp_us * NSEC_PER_USEC;
+>>                 vbuf->sequence = inst->sequence_cap++;
+>>
+>> -               if (inst->last_buf == vb) {
+>> -                       inst->last_buf = NULL;
+>> -                       vbuf->flags |= V4L2_BUF_FLAG_LAST;
+>> -                       vb2_set_plane_payload(vb, 0, 0);
+>> -                       vb->timestamp = 0;
+>> -               }
+>> -
+>>                 if (vbuf->flags & V4L2_BUF_FLAG_LAST) {
+>>                         const struct v4l2_event ev = { .type = V4L2_EVENT_EOS };
+>>
+>> @@ -1344,13 +1352,14 @@ static void vdec_event_change(struct venus_inst *inst,
+>>                 struct vb2_v4l2_buffer *last;
+>>                 int ret;
+>>
+>> -               last = v4l2_m2m_last_dst_buf(inst->m2m_ctx);
+>> -               if (last)
+>> -                       inst->last_buf = &last->vb2_buf;
+>> +               inst->next_buf_last = true;
+>>
+>> -               ret = hfi_session_flush(inst, HFI_FLUSH_OUTPUT, false);
+>> -               if (ret)
+>> -                       dev_dbg(dev, VDBGH "flush output error %d\n", ret);
+>> +               last = v4l2_m2m_last_dst_buf(inst->m2m_ctx);
+>> +               if (last) {
+>> +                       ret = hfi_session_flush(inst, HFI_FLUSH_OUTPUT, false);
+>> +                       if (ret)
+>> +                               dev_dbg(dev, VDBGH "flush output error %d\n", ret);
+>> +               }
+>>         }
+>>
+>>         inst->reconfig = true;
+>> @@ -1395,8 +1404,7 @@ static void vdec_event_notify(struct venus_inst *inst, u32 event,
+>>
+>>  static void vdec_flush_done(struct venus_inst *inst)
+>>  {
+>> -       if (inst->codec_state == VENUS_DEC_STATE_DRC)
+>> -               inst->codec_state = VENUS_DEC_STATE_DRC_FLUSH_DONE;
+>> +       dev_dbg(inst->core->dev_dec, VDBGH "flush done\n");
+>>  }
+>>
+>>  static const struct hfi_inst_ops vdec_hfi_ops = {
+>> --
+>> 2.17.1
+>>
+
+-- 
+regards,
+Stan
