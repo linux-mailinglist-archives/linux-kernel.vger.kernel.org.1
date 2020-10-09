@@ -2,165 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52E4F288335
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 09:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA3AF28833C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 09:07:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731665AbgJIHHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 03:07:02 -0400
-Received: from mail-eopbgr80082.outbound.protection.outlook.com ([40.107.8.82]:61166
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        id S1731729AbgJIHHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 03:07:42 -0400
+Received: from mail-mw2nam10on2066.outbound.protection.outlook.com ([40.107.94.66]:63049
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725908AbgJIHHC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 03:07:02 -0400
+        id S1725908AbgJIHHm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 03:07:42 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OPvGC6IqvZut2zOBs5ub0a7fVngAN8d+VWi9c7RoUUVeZvFBaqC8f9AtWTFzlSMGzlTyQ+siqr0p6FssLSzVJuIQJlOR3aETmI9gSao/hRbfRumoORgqSA8LnYhZ2yqIhQ5g6DWtufNF0Pfihf2BWCxrBj2aS3VChc76wzsykG2KsMWJBbGVVpTriqgBLowl3jBoPE1/bswwkEw3sa4aWXKeKCiu+0Bx1kcTFmDKVXOx9L+F3kmrNHKO+9IuP5yXTehcKpokq0lVsP0UxWzCF2Hdf7wYcAxnnOJTBQkpmIhJM3tKsRxABj5hdwe5zRvkVMdqIEn8LOia80Gh2x9Nog==
+ b=GSoQjE8jcWXyE9LU3qewpe2fLxAyQIzUkOuyMmkuDNHFb+1AggmGOAUBm00L/bMiHhLUXB7XbJeVGAOJa2KU0mD+/+yWskglHAhK8tW/f6Oj2bMDQ0lF8WXJDzi/NZdrPyqTY47Yi8RjMtcI9Z8rxvoYMI0xcJcW4X+EbnUWmYfdO7r/QOuCqBjX72mhVgAZ/GuuqfTD+xQTePdaXd7x+hWc6i1cIupiE3k0DmySTcUn5YDFDw3DHfdqbXi3LJSUkxuIcsCgOAiCPjGHwe7w2TSx8JIU79PkiEN8ZRh9qggf7eewi8HHMchUsrg9gVVKU3P2thXX8a+OE0bWQ/n72g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mKbBKdnc2SdXFjz+I83fRQfF8M92fAL3yqi2QBP8kGg=;
- b=PDHm+G8ZERnsalPnT4hunw/FedSc2cpq9sXRMDJOsppcnHBKINnDh5H1z7EH/359EEgiGXx0550itwF3vWnsbGlZAUsN/75ouV17e5KVI9WL1j2vxICeK5BWxjjWAvRSiYmDWpLmwXry3pe2zhPHxJWjYJDV2aq3076pnd9+AAu1+rqoXTQxlGqpsf0BvBuni2UC2v+6lC5fQE3mRWAs9F7QC6k2bC0artLfcsGQo7ypWJw1+dO4Gzu+gPkhug7DXnqJq3DnkLL5ncf2lj0qARZuBrqZkQV7pOOvYVzGDGehOSHWTial/MWbcl8+9GmXXNLtOEEZc/vhBsH+V77uVQ==
+ bh=WtSzWU8QqFxbw0Q+DmOQb0yEWY7U8XgzCyDFJ7Dgi3k=;
+ b=Vo6rmXl773xStE0kV5TnaTltWs06vHd2iepBrNMiH84nU7ns67v+y+BKs2HKeIOD57otKOE1d5bQ3MJfMSoNkv1trTPqjuorFTOzsdF4vvLZayjU7YGocxW6B90tdbWh1ZO3abWhcnjCoUpbWvy3vKgJuC5VCD1LOp4YMu3+gbo445NH03Ryy3JrMTTt16B//ubFsvw6hA0l2s/spDdQqs/2ogy8yYsIpp0mwUoVQVOSxzcphljuP1QzOfitpPz4CCQWM/IxDwNr5affqHJd1FPpT6XD5T7n2RZEUn1BNrveHGAs1evSG5jOawTzDTcl6ox88h0wFR3JH439LY4F7w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mKbBKdnc2SdXFjz+I83fRQfF8M92fAL3yqi2QBP8kGg=;
- b=gLcvnntwSj++p0QlV1QnsAth8NJt51b9gV0sbjbhRKT3D1c5Ii0nxLN7s/z/we9CHGgrDtgT9/qGoIYsSMa8Pr9vsXoI+LlUqIfUkfQLS5hqapct7N/PzNqOWEKAczpg7WVlYy1AK9PgaQidhqJ5TFzBA57qe5qCxNBEemOPouk=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oss.nxp.com;
-Received: from AM0PR04MB5636.eurprd04.prod.outlook.com (2603:10a6:208:130::22)
- by AM0PR04MB5953.eurprd04.prod.outlook.com (2603:10a6:208:10f::33) with
+ bh=WtSzWU8QqFxbw0Q+DmOQb0yEWY7U8XgzCyDFJ7Dgi3k=;
+ b=zKNpE8wzC1amxULrLFcXgd1a60i1M251joYCmTXtx0MOaVxXrtw0MvStJviVT9EYJXwiAAKJhSsnBAZdFZirMbMOfaTUQu5ms2DLwmHuglDjUMYwAmFtjId7WZxOLfEh4u2cX3hQ/5ArpQPzOArXc7Gr2Pcu34dW3nEj7qeyOyQ=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB4343.namprd12.prod.outlook.com (2603:10b6:208:26f::9) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.23; Fri, 9 Oct
- 2020 07:06:58 +0000
-Received: from AM0PR04MB5636.eurprd04.prod.outlook.com
- ([fe80::a997:35ae:220c:14ef]) by AM0PR04MB5636.eurprd04.prod.outlook.com
- ([fe80::a997:35ae:220c:14ef%7]) with mapi id 15.20.3433.044; Fri, 9 Oct 2020
- 07:06:58 +0000
-Date:   Fri, 9 Oct 2020 12:36:36 +0530
-From:   Calvin Johnson <calvin.johnson@oss.nxp.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, davem@davemloft.net,
-        Grant Likely <grant.likely@arm.com>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        netdev <netdev@vger.kernel.org>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:ACPI FOR ARM64 (ACPI/arm64)" <linux-acpi@vger.kernel.org>,
-        linux.cj@gmail.com, Frank Rowand <frowand.list@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        devicetree@vger.kernel.org
-Subject: Re: [net-next PATCH v1] net: phy: Move of_mdio from drivers/of to
- drivers/net/mdio
-Message-ID: <20201009070636.GA31495@lsv03152.swis.in-blr01.nxp.com>
-References: <20201008144706.8212-1-calvin.johnson@oss.nxp.com>
- <CAL_JsqLf0UJNmx8OgpDye2zfFNZyJJ8gbr3nbmGyiMg81RoHOg@mail.gmail.com>
- <20201009022056.GA17999@lsv03152.swis.in-blr01.nxp.com>
- <2a0f9055-9110-ecc5-aab2-ff6ec9dc157a@gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2a0f9055-9110-ecc5-aab2-ff6ec9dc157a@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [14.142.151.118]
-X-ClientProxiedBy: SG2PR06CA0233.apcprd06.prod.outlook.com
- (2603:1096:4:ac::17) To AM0PR04MB5636.eurprd04.prod.outlook.com
- (2603:10a6:208:130::22)
+ 2020 07:07:39 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::f8f7:7403:1c92:3a60]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::f8f7:7403:1c92:3a60%6]) with mapi id 15.20.3455.027; Fri, 9 Oct 2020
+ 07:07:38 +0000
+Subject: Re: [PATCH][next] drm/amdgpu: Use struct_size() helper in kmalloc()
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20201008142305.GA21249@embeddedor>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <273fb8b5-61cc-d65e-bf4a-43767eaad348@amd.com>
+Date:   Fri, 9 Oct 2020 09:07:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20201008142305.GA21249@embeddedor>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+X-ClientProxiedBy: AM4PR07CA0015.eurprd07.prod.outlook.com
+ (2603:10a6:205:1::28) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from lsv03152.swis.in-blr01.nxp.com (14.142.151.118) by SG2PR06CA0233.apcprd06.prod.outlook.com (2603:1096:4:ac::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.21 via Frontend Transport; Fri, 9 Oct 2020 07:06:51 +0000
+Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM4PR07CA0015.eurprd07.prod.outlook.com (2603:10a6:205:1::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.11 via Frontend Transport; Fri, 9 Oct 2020 07:07:36 +0000
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 8e629b30-fd8b-48f0-86c7-08d86c21e8fa
-X-MS-TrafficTypeDiagnostic: AM0PR04MB5953:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Office365-Filtering-Correlation-Id: 8c9c02f5-5fb7-47d7-027b-08d86c220147
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4343:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR04MB595307A2A16101F475C02563D2080@AM0PR04MB5953.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-Microsoft-Antispam-PRVS: <MN2PR12MB43431C36D72BCA911B5DB0DF83080@MN2PR12MB4343.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1169;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kahgQ/vHNas60RUDXWlowBJguxWbIEDIcFDMS7kpR7mgGqBmAWEJZ96u+ZA84SjFRG2rS08beJCukI09UsZbK0BpHceLMJDUSSLRYymQzgwWAw5mCClMUFU0X8kc/V6AND5rPEI/WjToptig4JJepCn76yAghFAM9mEB78UDh6tz/jtPcTbn0lVL2Yqs4ksmzdKpA8WHP87q5nMiHYBz1QpcnEsIAYNlTQZi5gk6gGjQnPVyOzbHuKcaCzUsbn1tpcIArV/r3qA6kX4s10k8axtjq1VVHqu7+Vsek8a13BZIdKJoYF0jO9+sHz98FtOx6LVD6ocYc7c9EqVAm40Az313CFSmEyk3Bk6dX3QadsMg8Q99OFbWpZjaa4vkrc5j
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5636.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(376002)(346002)(136003)(39860400002)(6506007)(7696005)(26005)(7416002)(55236004)(83380400001)(52116002)(53546011)(316002)(4326008)(54906003)(44832011)(5660300002)(1076003)(478600001)(66476007)(66946007)(2906002)(6666004)(66556008)(1006002)(86362001)(6916009)(9686003)(33656002)(8936002)(186003)(956004)(55016002)(16526019)(8676002)(110426005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: H//lD80z49Z03zPiI4/tmsDbGahgseOPHjSjBXT2/1GwDtalo+/qWANiJLudqfOYfndKc6riTy+kfdAGfwIbGFuOU4AvCmZTlf6LQ7mNvPWDphHe80NMBAqqgC50irpuG8LjMoEnGDo/mpzhVCAiwCJDBMdhLtMYBuGPc0or6Tkf1VRDQnDnbuATxCfgwyPH3xoWQXi6+lv4ssxx/A5r+++gxz2bJDxMa6P9hk9nv5r78g1mXNGfxiZnTYgdDNnKnt+C5oPMCzc1F3MJM9pGAixp5eJ9iYdYhVhPNAG3wJd1JaOOI5TNbbH6fYfo3IbKz9Z0gnniwLd9x+K9aZHK7jSUWyBXfAmqbH6Sl8xWWb3fraeGdqpp8yg3Qr7RxV9F4lr/3HrtxkbiZ2Xe7awYOlt1K0YRQoZAonxS1nq9n+W0qMFhRMdiWsKShHqYsCRoww2K7Eihc2HniZYtWtQborRLRsxuTaloMLAEaFJMH69nJxM2w/0bOeTNzO0BpPGM/11f/isDKSaDjru/QlxrIiRBw10U1yqd07VsER/2ONrgVVpW3fXYCALb2K4Lw12LG3jETM3rLlyW3QoHikdupXMLzf7YjfEQfpOlZcbaYuFNYePtq79SAVgLcpmUtljkgGo8etsg7/gnYv5JLPqHyg==
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8e629b30-fd8b-48f0-86c7-08d86c21e8fa
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5636.eurprd04.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: LnUt1hMFnxnB8dqwHdnqWCr8N5fPoq2gCVuRBE8gbO1Zr0c9JOGZliqdFa5u2rmQgr966GbhGlkjJ3+rCDAcouj+NSai0ORsNoqwlatTYj4aTMeFPmrxD3SLr/qM2BXj/3Gr+zv6lkcbtWE+QFHLcahi9Q6hdfvidGo2hsXmJhZ1d7JK4FdQed2uSKs3wBxy4EWNb4Dm6hWBDVqqBQLDSByXsMTylGf0HDX5XepXd3Tqc2wgO94oSQTpsiwyfSY8X1qCPgYL0uE9/V3+t7DNCMxo47pz47X4P7aO4x0lvAHR/ht6SkTXBiWXdlDz1o/nA0fa2qkjlMdpgmWhuuEeVcwofj86Axh3nfMwq+CskNdgV4mU5SzMMpY4nsgn7XNR
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(396003)(346002)(366004)(376002)(31696002)(31686004)(6486002)(66476007)(66946007)(86362001)(66556008)(478600001)(186003)(8936002)(16526019)(316002)(4326008)(2906002)(5660300002)(6666004)(4744005)(83380400001)(52116002)(110136005)(2616005)(8676002)(36756003)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: W4BG0qQ+aDL3aoXXT4+54HBCupW4rXEG/8Pcl/1nsZp7Xn3WG5+s/3eYeWlwzR8LIsDDxgvgZKtcqUFRlSRLJe66OQHn8rRCXgkFYdt4xzHoUt0uKBYLcaxgdEa5aVHALfTtJO4xKtRer28vMXt1UrAx4iVHz+pk+yCYfCvKze2f0ISt+GZxpXBdfiypmo0QMFv0PMHkiBvwL4U0cGA//DASHJ4bWsBKEIYNuPPCOxWsNju1EXtOtobe8Rs5BoohqfiD5GeqpmOWKrFF6a+xOWfj694O+6GAXEoCAB/Xf8ipGlxPtZFWfOrJI84ZUCjoMGgUX4gOUIxvSo1kpXtrhSxEbamlbiXWPxjsUz4kxJrba1MSK4J2BMrbWE1HeedfDyqqIyVgDUGmkFjwHKEpxbuKtMZKdWtYPHXcqaoIH+VymUjueNqu8sLLKiROQ/+u6yE9MTbRUUdpLpXlw93WqSDAirSZM/ByT29hp1Gyz59MPI0kfT8HbHGSGTZ14E2+vSf0dYpvIdGI7j40exRGxlktcrQrg2MahTeyBsSK1sFIS//P32Nwggt1QBrp4dB4RvJi766hGJz+p9eZ/YMEJ7e/MxPEONGkk85kgWD5FQy883B4yg9vJXz9hkNcI1nJok83D66M5cfU3Jc8iNhdD0B+vbewanuVlPupRdC0yeX9//S7SSsn0XN0Svd0MFVr94f7KTVe5uxBcTClqMj9tw==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8c9c02f5-5fb7-47d7-027b-08d86c220147
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2020 07:06:57.7984
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2020 07:07:38.6559
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BPI/yU7ea4qilJww+nCqTBUgK4qQtvNju1DGYUdQbFL57gBhERdBnFhcs06lqmrdbze/Myybkovecx5s8y4FuA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB5953
+X-MS-Exchange-CrossTenant-UserPrincipalName: NSI+iJ8F9QSv8pwLRrfVquVf2+Souzfp/vthJpqfWGtry+ZdQ+KoH2oH3tChJjr4
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4343
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Florian,
+Am 08.10.20 um 16:23 schrieb Gustavo A. R. Silva:
+> Make use of the new struct_size() helper instead of the offsetof() idiom.
+>
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-On Thu, Oct 08, 2020 at 07:26:44PM -0700, Florian Fainelli wrote:
-> 
-> 
-> On 10/8/2020 7:20 PM, Calvin Johnson wrote:
-> > Hi Rob,
-> > 
-> > On Thu, Oct 08, 2020 at 11:35:07AM -0500, Rob Herring wrote:
-> > > On Thu, Oct 8, 2020 at 9:47 AM Calvin Johnson
-> > > <calvin.johnson@oss.nxp.com> wrote:
-> > > > 
-> > > > Better place for of_mdio.c is drivers/net/mdio.
-> > > > Move of_mdio.c from drivers/of to drivers/net/mdio
-> > > 
-> > > One thing off my todo list. I'd started this ages ago[1].
-> > > 
-> > > > 
-> > > > Signed-off-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
-> > > > ---
-> > > > 
-> > > >   MAINTAINERS                        | 2 +-
-> > > >   drivers/net/mdio/Kconfig           | 8 ++++++++
-> > > >   drivers/net/mdio/Makefile          | 2 ++
-> > > >   drivers/{of => net/mdio}/of_mdio.c | 0
-> > > >   drivers/of/Kconfig                 | 7 -------
-> > > >   drivers/of/Makefile                | 1 -
-> > > >   6 files changed, 11 insertions(+), 9 deletions(-)
-> > > >   rename drivers/{of => net/mdio}/of_mdio.c (100%)
-> > > 
-> > > of_mdio.c is really a combination of mdio and phylib functions, so it
-> > > should be split up IMO. With that, I think you can get rid of
-> > > CONFIG_OF_MDIO. See my branch[1] for what I had in mind. But that can
-> > > be done after this if the net maintainers prefer.
-> > > 
-> > > Acked-by: Rob Herring <robh@kernel.org>
-> > > 
-> > > Rob
-> > > 
-> > > [1] git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git dt/move-net
-> > 
-> > Makes sense to me to split of_mdio.c. I can work on it once my current task
-> > completes.
-> 
-> If you could take Rob's patches, given then a round of randconfig build
-> tests and update the MAINTAINERS file (no more drivers/of/of_mdio.c), then
-> this looks like the right approach to me. Thanks!
+Reviewed-by: Christian König <christian.koenig@amd.com>
 
-I gave a quick try with those patches and it needs some more work to apply
-as they are bit old. I can look into this later afer the ACPI work is done.
+> ---
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
+> index 5da487b64a66..30192dce7775 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
+> @@ -239,8 +239,7 @@ static int amdgpu_amdkfd_remove_eviction_fence(struct amdgpu_bo *bo,
+>   	if (!old)
+>   		return 0;
+>   
+> -	new = kmalloc(offsetof(typeof(*new), shared[old->shared_max]),
+> -		      GFP_KERNEL);
+> +	new = kmalloc(struct_size(new, shared, old->shared_max), GFP_KERNEL);
+>   	if (!new)
+>   		return -ENOMEM;
+>   
 
-For now, this patch is good to merge as I've done some sanity.
-
-Thanks
-Calvin
