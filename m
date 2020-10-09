@@ -2,114 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F269F288A45
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2136288A48
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732398AbgJIOFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 10:05:47 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:43914 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727737AbgJIOFq (ORCPT
+        id S1732985AbgJIOGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 10:06:05 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:56607 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727737AbgJIOGE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 10:05:46 -0400
-Received: by mail-oi1-f193.google.com with SMTP id l85so10268804oih.10;
-        Fri, 09 Oct 2020 07:05:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dyalSiZn45S4a+6jujOvfnO/RK2cFb+Vq+tH54TVFEA=;
-        b=OrrYY7vVISeonzwsacIdzEOQf56DjKpWlQv5EDS2le38irl6yLKGAeXfccHncH6diD
-         fukfEdV4iCn3dgih9FYU2cjMq7qROqLlfOGYtKO1ihLk97GRKf+bdAntcpQYMxQGKb4N
-         MA6w0/LEyG2SltYQcqeTUQzs/ebIjhY/Qe7KAKX7oEe12vB6rwQrtWWeJS6GSteAlJfG
-         joWAvvYo7lBNTVQmQ4L0sXN1YYPqHW3gz9lxYrYHJKIXxPJ8hFbRk1PVTkV14Sa7wDhN
-         8Os7Qv7oF/AhQCXjwtu2L2x7ReZ7H9LJdjebkJ1CzErZy5/KRX1J2MblVN+2nVZ4rG5d
-         wn9w==
-X-Gm-Message-State: AOAM530/+UByLI9iK7zBAcRG+h//h7lcADU1RoHvQ2+o0ByBgUBbD6jd
-        RVNX/FU8BCOyDG0MLsR8CHfepBHDdTx0
-X-Google-Smtp-Source: ABdhPJxsTciM9UAO+e8EG/rRkxLowDeJJ0mpmhUvP/1Yu/QRYdwZcSle050QqMWzNTlwohesQKoIlg==
-X-Received: by 2002:aca:a810:: with SMTP id r16mr2673248oie.114.1602252345680;
-        Fri, 09 Oct 2020 07:05:45 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id r188sm44078oia.13.2020.10.09.07.05.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 07:05:44 -0700 (PDT)
-Received: (nullmailer pid 4076255 invoked by uid 1000);
-        Fri, 09 Oct 2020 14:05:44 -0000
-Date:   Fri, 9 Oct 2020 09:05:44 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Caleb Connolly <caleb@connolly.tech>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/5] dt-bindings: panel: add documentation for oneplus6
- panel
-Message-ID: <20201009140544.GB4071736@bogus>
-References: <20201007174736.292968-1-caleb@connolly.tech>
- <20201007174736.292968-3-caleb@connolly.tech>
+        Fri, 9 Oct 2020 10:06:04 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 763826A3;
+        Fri,  9 Oct 2020 10:06:03 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Fri, 09 Oct 2020 10:06:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=QA1BxHl/gsKUUyFeFALiOB1m/Z+
+        blvmdd5I9GCrB3kU=; b=iv8Vr0ACoqWlXa1w9ikn0KDS1VhK/H/SR66vblm5/fB
+        Od8R49fMCkCKlUB4iF2N4W3zceHD4qmsFdbMzEWwkF/azFu9QNSdj5hLDB1sJejh
+        rrRNbUHHMK294gPtEqu2OsqBHU3NPRSq7CyHvl14tBNOZP9sm+nJueBRrciEyz+s
+        MXyB08LRVaxZjhmcivMVNCQTYOVbFuiia2/EvCwu7cuGPclF6NYn5SUBgGQoqOeg
+        PYCuSEAa9xmB05X6BVKB5YNTmonm9dx3WQiaywC1qi6e/3ke6cvqLSH+sxdAmYFB
+        08/YRbLea8hmQo228Olm8jJQv0fbL44ed9OTIpP1z/w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=QA1BxH
+        l/gsKUUyFeFALiOB1m/Z+blvmdd5I9GCrB3kU=; b=EELLIb/RhTEJU2Y+v3K3Qi
+        R+EoMK1meguKEDLOzi/aKIFyE2srjnNksnvLUhbRFOqiP/uaBN7acoySbIl6Dgt3
+        It/s+qGomgDmb/QbEN1muUPDvZl88IF+KsdcJSw6Tb9gr3tBbcO/tu2GZCIQchwU
+        6UKLh70FXpVQ2jbyKTwve5+qdr93k1VMVTsL23rCqzpsNjsJ84qPrdxYgqrgcw/A
+        Ypbag91B/8/dF/128nzBP+3sk9ueuqKAt0oGENMCqeEHwGNLC4fImpftkjZzg9sI
+        rcz3fa0spXLbviQnhwDpsqBLaW359zYwE3B35r/KUidXUu2Tr2SNyHJmGEAWrowQ
+        ==
+X-ME-Sender: <xms:Sm6AX9HuLQbJ_INlim0Gn9UZwtjRsRXLZ3unFpXMEtxrdc8-f0fdig>
+    <xme:Sm6AXyWRwJTGErgYU4l_r9Cw9vJZs-hm_9EwyV5FdzdjAiwH17vY7Aihrc-qSPwIZ
+    yHwdXKn6IpGGQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrhedugdejfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
+    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
+    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeekfedr
+    keeirdejgedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
+X-ME-Proxy: <xmx:Sm6AX_Ji4TPz--QEiAxTuWIceueKeoXyXczObkxvbQfncER_8NYDvg>
+    <xmx:Sm6AXzH51-2ZoPTFDXznIH7W5hT5ATCJhSxLRInfxXngr0enhLpDRg>
+    <xmx:Sm6AXzXkRsKCcy1ic79xERgHyQ2ep7PgYi74sBiRIXCY33dKGF1mXg>
+    <xmx:S26AX5z_enu8sWs-J0MVT6R0lBhxYrRe1Xr1X48f1TWPqtXB2-sJpA>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 7B90D328005A;
+        Fri,  9 Oct 2020 10:06:02 -0400 (EDT)
+Date:   Fri, 9 Oct 2020 16:06:48 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org, wqu@suse.com,
+        fdmanana@suse.com, dsterba@suse.com, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH stable-5.4 6/6] btrfs: allow btrfs_truncate_block() to
+ fallback to nocow for data space reservation
+Message-ID: <20201009140648.GB573779@kroah.com>
+References: <cover.1599750901.git.anand.jain@oracle.com>
+ <9df7b36688030028271fe5d4265512328534f9b6.1599750901.git.anand.jain@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201007174736.292968-3-caleb@connolly.tech>
+In-Reply-To: <9df7b36688030028271fe5d4265512328534f9b6.1599750901.git.anand.jain@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 05:49:14PM +0000, Caleb Connolly wrote:
-> Document the OnePlus 6/T common panel driver, example from
-> arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi
+On Thu, Oct 08, 2020 at 06:59:54PM +0800, Anand Jain wrote:
+> From: Qu Wenruo <wqu@suse.com>
 > 
-> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
-> ---
->  .../display/panel/panel-oneplus6.yaml         | 73 +++++++++++++++++++
->  1 file changed, 73 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/panel/panel-oneplus6.yaml
+> commit 6d4572a9d71d5fc2affee0258d8582d39859188c upstream.
 > 
-> diff --git a/Documentation/devicetree/bindings/display/panel/panel-oneplus6.yaml b/Documentation/devicetree/bindings/display/panel/panel-oneplus6.yaml
-> new file mode 100644
-> index 000000000000..23ba369cc2f5
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/panel/panel-oneplus6.yaml
-> @@ -0,0 +1,73 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/panel/panel-oneplus6.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: OnePlus 6/T panel driver
-> +
-> +description: |
-> +  The OnePlus 6 panel driver encompasses the display panels found in the
-> +  OnePlus 6 and 6T devices, the panels have almost identical behaviour and
-> +  are not used by any other devices.
-> +
-> +maintainers:
-> +  - Caleb Connolly <caleb@connolly.tech>
-> +
-> +allOf:
-> +  - $ref: panel-common.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - samsung,sofef00
-> +      - samsung,s6e3fc2x01
-> +
-> +  reg: true
-> +  reset-gpios: true
-> +  port: true
-> +
-> +  vddio-supply:
-> +    description: VDDIO regulator
+> [BUG]
+> When the data space is exhausted, even if the inode has NOCOW attribute,
+> we will still refuse to truncate unaligned range due to ENOSPC.
+> 
+> The following script can reproduce it pretty easily:
+>   #!/bin/bash
+> 
+>   dev=/dev/test/test
+>   mnt=/mnt/btrfs
+> 
+>   umount $dev &> /dev/null
+>   umount $mnt &> /dev/null
+> 
+>   mkfs.btrfs -f $dev -b 1G
+>   mount -o nospace_cache $dev $mnt
+>   touch $mnt/foobar
+>   chattr +C $mnt/foobar
+> 
+>   xfs_io -f -c "pwrite -b 4k 0 4k" $mnt/foobar > /dev/null
+>   xfs_io -f -c "pwrite -b 4k 0 1G" $mnt/padding &> /dev/null
+>   sync
+> 
+>   xfs_io -c "fpunch 0 2k" $mnt/foobar
+>   umount $mnt
+> 
+> Currently this will fail at the fpunch part.
+> 
+> [CAUSE]
+> Because btrfs_truncate_block() always reserves space without checking
+> the NOCOW attribute.
+> 
+> Since the writeback path follows NOCOW bit, we only need to bother the
+> space reservation code in btrfs_truncate_block().
+> 
+> [FIX]
+> Make btrfs_truncate_block() follow btrfs_buffered_write() to try to
+> reserve data space first, and fall back to NOCOW check only when we
+> don't have enough space.
+> 
+> Such always-try-reserve is an optimization introduced in
+> btrfs_buffered_write(), to avoid expensive btrfs_check_can_nocow() call.
+> 
+> This patch will export check_can_nocow() as btrfs_check_can_nocow(), and
+> use it in btrfs_truncate_block() to fix the problem.
+> 
+> Reported-by: Martin Doucha <martin.doucha@suse.com>
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> Reviewed-by: Anand Jain <anand.jain@oracle.com>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Reviewed-by: David Sterba <dsterba@suse.com>
+> Signed-off-by: David Sterba <dsterba@suse.com>
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+>  Conflicts:
+> 	fs/btrfs/ctree.h
+> 	fs/btrfs/file.c
+> 	fs/btrfs/inode.c
 
-A panel with a single supply can use panel-simple-dsi.yaml.
+Why are these Conflicts: lines here?
 
-'reset-gpios' was missing, but has been added recently.
+Anyway, fixed up, and all queued up now, thansk!
 
-Rob
+greg k-h
