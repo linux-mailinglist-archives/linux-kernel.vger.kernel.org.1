@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CE5E289A79
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 23:14:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19CBC289A7B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 23:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391372AbgJIVN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 17:13:59 -0400
+        id S2391464AbgJIVOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 17:14:08 -0400
 Received: from esa2.hgst.iphmx.com ([68.232.143.124]:50437 "EHLO
         esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388641AbgJIVNy (ORCPT
+        with ESMTP id S2391321AbgJIVNz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 17:13:54 -0400
+        Fri, 9 Oct 2020 17:13:55 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1602278540; x=1633814540;
+  t=1602278541; x=1633814541;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=uLCpsvC/inR65HE35KjykwBVwDdqIbHHxLVflczTr2Y=;
-  b=gAuQV2QeFJPSYU+xb7Zv7PcKJlsNEx6ZUHcoRRsQijQYjgY1LdMp0ggc
-   0lWBf8zwEeLXSRr83CHP3UH4OsKPYXrzNEWIU8acdtfMuSVY5QJwNbbj2
-   ejj3zswe674antiBffUsA/Cx+qffZpgV/PD5c0NxRMh+ITcmI3r8KDVH+
-   z3qjifw0gJfrWArRVH/tskGVYsABXDI3WXNUvTddwAjPxMluMKNeyJA/T
-   U1/Hwi4Zi62B+uKP7z+/gPVl0BtN59tlRrerMNEVrlA3fS5e2or+B1kZQ
-   O2271rwhdykUpIJezxZBhhDDErGqvYPvVTtlUMY2o6CiriEu2MaYZ5oJm
-   A==;
-IronPort-SDR: 2jTULRqrLt75s7R9QWiBxH9KryrBoPYyFzEFV2C/SBH39SHg96lxYm81TlNVWlVePygP+0ComR
- 7wN2LwfR8+jxSd2dVUsoJODU1NeybocyOc0XpRYbUcm/Xa/Flj7XDWpkbzojxj6+mS2qI9n4jn
- a/OtxcvbpdcMqjlYOQtMAlS0qyb4aTEILuKUMa4yghroDDU/mVJ+NlbcI8RQd4N7grR8EKvJyv
- H08CmX+eRW72rwSyE8TbkygVIN1g08INQSS2qLWi/cfX6Pi3ChSJ3PjKXTbX+ZTFUw7scVnu8M
- xHA=
+  bh=Fglb0o2Ozn6JOzVy78SpXXGYj0jpbArC9/S0MZnBZpA=;
+  b=mzmHS7YOlkpjQ4ljyXaO1NZ2Q1b2HC0U1p8zqzXE18Tr7djAsa5Djqaj
+   vJVRx9WZaEOTh+15k78FVchdWWvHBEklJ2bx3Z2wrIf1/BMHIQLNr2vtk
+   5qfG74tfr1relE5nvwJSuEOKnq5dxNID/jOqmhBTKXXVdJ50jBLkAu19X
+   dCCgXLtmfn3/aJuT/d4mgZmeWPS76coUxdF+xTIfRMB1/l+JnTw7ssRYB
+   nFzdVjNSaZYIeXy9UHDrGQ6jFIeEHW39ymDfJgWVBHg/VDqaNfZ2Fl7LH
+   P1pKwLpN5yQmipmmYim6iFI6+p7yFlX+U4Nwpt/niukaDKQf1CAfCVmXG
+   Q==;
+IronPort-SDR: LE+5nH5EEra8SmpWUDJ2aO9pNH1HAzShMWl0SATvuV1A1MHblx75m+zhStMdFiyMwhKV3PwpjG
+ yOUUnPZCvJHGkDi//m8KANGAiCyi5B2b7cjjGUBbXrQCe4PAZdKDFBFY8UUn42R5z0EQ0pybei
+ e7iKL1fl/yLAGXfZBWHZXbEOmmK0utVndCPrgdCgMT65jWrnJM0j3WdhNrKkHOF2IRy41Qq3Kw
+ HN+9T5mFLjMGBKbjavMN4gaaP68SNwoKr+X/P0TtYg+o/qHOtwdCu7mMK3bCW0qlyr4xg2gksn
+ rUU=
 X-IronPort-AV: E=Sophos;i="5.77,356,1596470400"; 
-   d="scan'208";a="252936932"
+   d="scan'208";a="252936937"
 Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 10 Oct 2020 05:22:20 +0800
-IronPort-SDR: CiFH05tBtND0QWKQeZMmvomLN4pxVWiaUa7cObTJRBeYmmdUSL3lvzBqcRRdMfz8c+XBmxbDKr
- RSVMg+v49eVxwJpQHb/xXBhTmxV5oeT0eefbyzIOT9OJu9bEvWqNjPeRlGAtBz9IqL0oIUShl8
- tRyeT8ToVSZPs+2+opTeAK013LWaZCmMmU3Iy4G5IP5Rmj4RRIBeGary4TrtFiX808dAkjFsmW
- Csey8P/JZEvjywqQtDWohvpukB+zcGw+mojGnosE8n2bU0TE3EmNgAlFdm06r2KOqEKIt8Xrg4
- ts25VoIBcalsyWyaerd6VfRk
+  by ob1.hgst.iphmx.com with ESMTP; 10 Oct 2020 05:22:21 +0800
+IronPort-SDR: 6R2VbyT48R60U3t8RdWoiA/1weQN3dEQIFBX5aCfLH8C0d4GYe4y72hUx242kEQg6HCMIvPaIK
+ /H7XMPfzgpB5nPTQMfNdxsIsRVTlcy/XzmfxXjCrmNfnuXCZuiMQUyJLXP2NEmwWMfsnwgsUuW
+ Gi25MzBl8dLLVtvwkYU25IoeocHRzo+5mz54eVDDKh3DEYaMarpmgLSXpEB58PDMYVr+PBVHzJ
+ Vodyj+O9I5MQRnGcKpUr9Vvo8y4V1WVr9R6Dx/y0kUoTSdGb3MqbENVXpCaF03WcpXTgKLT1Lc
+ rmKvX6a4N3pAUL6Us+R0hTtm
 Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 13:59:41 -0700
-IronPort-SDR: k7VpveUvGC2efjb8TPkb5b963i4tk0vSeShUCYhda4iG2UWjLq+U326k8Xt4PhRxdYNxbiKZlQ
- /mBkP0UVKgvqGOVYokqviIhHplcWANZ7EsinNEySw51Yn+4Ac5jV/YeNq+Zufdes7yw8VE/Zx+
- vE/MtSu5voyQ5Ycv8mdj3yTD9Q/Sd517jWj4nIxipZ5wPzDivks1gcSZ2ikOthVbWJtplBy+nP
- WQGaAG1aXjZw+VDCaMbqVrqB4Ix9O92YzSxBPXVdJsavTS4J0IZBC6pd/olzUvJb5ymWMbgd6V
- Rrg=
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 13:59:42 -0700
+IronPort-SDR: eXGMo36/52VIraPdKKeyD28xmyCV+mQZPzhV/YTH64o581o6ScGk7bLiN93yXBMQTCkjGuOkms
+ 0N3E+GW1tdh1bVCCL+QBeaHOw6asvHx1UicY9iUd+c7IwJC+woP9ogmP4SjWFEqSXWoZ68n8AD
+ O7Altp7APqErBc3jAA0g2uQ7iaM6hBC35fHXn6hUhEGKsJKLgTASVOqhsG+/UTKMHTj6+gSF8l
+ 4Q/1ezkRYQmZ27+AEIEptvxYcveQOB3bPouGAM9EXcXwnvA526DJKdotAeu/3T6TgoxTKknKj1
+ H+E=
 WDCIronportException: Internal
 Received: from usa003000.ad.shared (HELO jedi-01.hgst.com) ([10.86.60.38])
-  by uls-op-cesaip01.wdc.com with ESMTP; 09 Oct 2020 14:13:53 -0700
+  by uls-op-cesaip01.wdc.com with ESMTP; 09 Oct 2020 14:13:54 -0700
 From:   Atish Patra <atish.patra@wdc.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Atish Patra <atish.patra@wdc.com>,
@@ -64,9 +64,9 @@ Cc:     Atish Patra <atish.patra@wdc.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Paul Walmsley <paul.walmsley@sifive.com>,
         Zong Li <zong.li@sifive.com>
-Subject: [PATCH 2/5] RISC-V: Initialize SBI early
-Date:   Fri,  9 Oct 2020 14:13:41 -0700
-Message-Id: <20201009211344.2358688-3-atish.patra@wdc.com>
+Subject: [PATCH 3/5] RISC-V: Enforce protections for kernel sections early
+Date:   Fri,  9 Oct 2020 14:13:42 -0700
+Message-Id: <20201009211344.2358688-4-atish.patra@wdc.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201009211344.2358688-1-atish.patra@wdc.com>
 References: <20201009211344.2358688-1-atish.patra@wdc.com>
@@ -76,42 +76,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, SBI is initialized towards the end of arch setup. This prevents
-the set memory operations to be invoked earlier as it requires a full tlb
-flush.
+Currently, all memblocks are mapped with PAGE_KERNEL_EXEC and the strict
+permissions are only enforced after /init starts. This leaves the kernel
+vulnerable from possible buggy built-in modules.
 
-Initialize SBI as early as possible.
+Apply permissions to individual sections as early as possible.
 
 Signed-off-by: Atish Patra <atish.patra@wdc.com>
 ---
- arch/riscv/kernel/setup.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ arch/riscv/include/asm/set_memory.h |  2 ++
+ arch/riscv/kernel/setup.c           |  2 ++
+ arch/riscv/mm/init.c                | 11 +++++++++--
+ 3 files changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
-index 1db17f37736e..a5cac440aadf 100644
---- a/arch/riscv/kernel/setup.c
-+++ b/arch/riscv/kernel/setup.c
-@@ -90,6 +90,9 @@ void __init setup_arch(char **cmdline_p)
- 		pr_err("No DTB found in kernel mappings\n");
+diff --git a/arch/riscv/include/asm/set_memory.h b/arch/riscv/include/asm/set_memory.h
+index 4c5bae7ca01c..4cc3a4e2afd3 100644
+--- a/arch/riscv/include/asm/set_memory.h
++++ b/arch/riscv/include/asm/set_memory.h
+@@ -15,11 +15,13 @@ int set_memory_ro(unsigned long addr, int numpages);
+ int set_memory_rw(unsigned long addr, int numpages);
+ int set_memory_x(unsigned long addr, int numpages);
+ int set_memory_nx(unsigned long addr, int numpages);
++void protect_kernel_text_data(void);
+ #else
+ static inline int set_memory_ro(unsigned long addr, int numpages) { return 0; }
+ static inline int set_memory_rw(unsigned long addr, int numpages) { return 0; }
+ static inline int set_memory_x(unsigned long addr, int numpages) { return 0; }
+ static inline int set_memory_nx(unsigned long addr, int numpages) { return 0; }
++static inline void protect_kernel_text_data(void) {};
  #endif
  
-+#if IS_ENABLED(CONFIG_RISCV_SBI)
-+	sbi_init();
-+#endif
+ int set_direct_map_invalid_noflush(struct page *page);
+diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
+index a5cac440aadf..4176a2affd1d 100644
+--- a/arch/riscv/kernel/setup.c
++++ b/arch/riscv/kernel/setup.c
+@@ -23,6 +23,7 @@
+ #include <asm/cpu_ops.h>
+ #include <asm/early_ioremap.h>
+ #include <asm/setup.h>
++#include <asm/set_memory.h>
+ #include <asm/sections.h>
+ #include <asm/sbi.h>
+ #include <asm/tlbflush.h>
+@@ -93,6 +94,7 @@ void __init setup_arch(char **cmdline_p)
+ #if IS_ENABLED(CONFIG_RISCV_SBI)
+ 	sbi_init();
+ #endif
++	protect_kernel_text_data();
  #ifdef CONFIG_SWIOTLB
  	swiotlb_init(1);
  #endif
-@@ -98,10 +101,6 @@ void __init setup_arch(char **cmdline_p)
- 	kasan_init();
- #endif
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index c888c4470b34..7859a1d1b34d 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -623,7 +623,7 @@ static inline void setup_vm_final(void)
+ #endif /* CONFIG_MMU */
  
--#if IS_ENABLED(CONFIG_RISCV_SBI)
--	sbi_init();
--#endif
--
- #ifdef CONFIG_SMP
- 	setup_smp();
- #endif
+ #ifdef CONFIG_STRICT_KERNEL_RWX
+-void mark_rodata_ro(void)
++void protect_kernel_text_data(void)
+ {
+ 	unsigned long text_start = (unsigned long)_text;
+ 	unsigned long text_end = (unsigned long)_etext;
+@@ -632,9 +632,16 @@ void mark_rodata_ro(void)
+ 	unsigned long max_low = (unsigned long)(__va(PFN_PHYS(max_low_pfn)));
+ 
+ 	set_memory_ro(text_start, (text_end - text_start) >> PAGE_SHIFT);
+-	set_memory_ro(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
+ 	set_memory_nx(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
+ 	set_memory_nx(data_start, (max_low - data_start) >> PAGE_SHIFT);
++}
++
++void mark_rodata_ro(void)
++{
++	unsigned long rodata_start = (unsigned long)__start_rodata;
++	unsigned long data_start = (unsigned long)_data;
++
++	set_memory_ro(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
+ 
+ 	debug_checkwx();
+ }
 -- 
 2.25.1
 
