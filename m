@@ -2,113 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 104D1288577
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:43:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C0A528857B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732865AbgJIInG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 04:43:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49862 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730726AbgJIInG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 04:43:06 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 57AB9215A4;
-        Fri,  9 Oct 2020 08:43:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602232985;
-        bh=1tPbrUnuRvd+9kdjyNxALYwFuoG3rcdxGM7JrBH24vw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=sqRQ4+LU0aUTLhStZvG9aJ5KvlgKk4mI0nOf+0k9VLoTtX60PIWrdq+HFSyT7rvEi
-         c2f5TSVJYyfJcCG8DvJzUIX8Cqtyw5ayKXFTQsGXLDkyLqqD2UN3L0qjB6TtPGsua/
-         pxQ16GCsXCV5cJwRuVe9UNKSTbkP0L14qol7q8p8=
-Received: by pali.im (Postfix)
-        id DE9EA515; Fri,  9 Oct 2020 10:43:02 +0200 (CEST)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Jens Axboe <axboe@kernel.dk>, Hans de Goede <hdegoede@redhat.com>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Grzegorz Jaszczyk <jaz@semihalf.com>,
-        Andre Heider <a.heider@gmail.com>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ata: ahci: mvebu: Make SATA PHY optional for Armada 3720
-Date:   Fri,  9 Oct 2020 10:42:44 +0200
-Message-Id: <20201009084244.29156-1-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S1732889AbgJIIol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 04:44:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730726AbgJIIok (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 04:44:40 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4987C0613D2;
+        Fri,  9 Oct 2020 01:44:40 -0700 (PDT)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1kQo0z-002ADp-I5; Fri, 09 Oct 2020 10:44:37 +0200
+Message-ID: <e3a807b1d5f728c178f43b453f3b495bf53abfce.camel@sipsolutions.net>
+Subject: Re: [CRAZY-RFF] debugfs: track open files and release on remove
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     David Laight <David.Laight@ACULAB.COM>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "nstange@suse.de" <nstange@suse.de>,
+        "ap420073@gmail.com" <ap420073@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "rafael@kernel.org" <rafael@kernel.org>
+Date:   Fri, 09 Oct 2020 10:44:35 +0200
+In-Reply-To: <03c42bb5f57a4c3d9c782a023add28cd@AcuMS.aculab.com>
+References: <87v9fkgf4i.fsf@suse.de>
+         <20201009095306.0d87c3aa13db.Ib3a7019bff15bb6308f6d259473a1648312a4680@changeid>
+         <20201009080355.GA398994@kroah.com>
+         <be61c6a38d0f6ca1aa0bc3f0cb45bbb216a12982.camel@sipsolutions.net>
+         <20201009081624.GA401030@kroah.com>
+         <1ec056cf3ec0953d2d1abaa05e37e89b29c7cc63.camel@sipsolutions.net>
+         <03c42bb5f57a4c3d9c782a023add28cd@AcuMS.aculab.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Older ATF does not provide SMC call for SATA phy power on functionality and
-therefore initialization of ahci_mvebu is failing when older version of ATF
-is using. In this case phy_power_on() function returns -EOPNOTSUPP.
+On Fri, 2020-10-09 at 08:34 +0000, David Laight wrote:
+> 
+> > I think adding the .owner everywhere would be good, and perhaps we can
+> > somehow put a check somewhere like
+> > 
+> > 	WARN_ON(is_module_address((unsigned long)fops) && !fops->owner);
+> > 
+> > to prevent the issue in the future?
+> 
+> Does it ever make any sense to set .owner to anything other than
+> THIS_MODULE?
 
-This patch adds a new hflag AHCI_HFLAG_IGN_NOTSUPP_POWER_ON which cause
-that ahci_platform_enable_phys() would ignore -EOPNOTSUPP errors from
-phy_power_on() call.
+No. But I believe THIS_MODULE is NULL for built-in code, so we can't
+just WARN_ON(!fops->owner).
 
-It fixes initialization of ahci_mvebu on Espressobin boards where is older
-Marvell's Arm Trusted Firmware without SMC call for SATA phy power.
+> If not the code that saves the 'struct file_operations' address
+> ought to be able to save the associated module.
 
-This is regression introduced in commit 8e18c8e58da64 ("arm64: dts: marvell:
-armada-3720-espressobin: declare SATA PHY property") where SATA phy was
-defined and therefore ahci_platform_enable_phys() on Espressobin started
-failing.
+No, it's const.
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Tested-by: Tomasz Maciej Nowak <tmn505@gmail.com>
-Fixes: 8e18c8e58da64 ("arm64: dts: marvell: armada-3720-espressobin: declare SATA PHY property")
-Cc: <stable@vger.kernel.org> # 5.1+: ea17a0f153af: phy: marvell: comphy: Convert internal SMCC firmware return codes to errno
----
- drivers/ata/ahci.h             | 2 ++
- drivers/ata/ahci_mvebu.c       | 2 +-
- drivers/ata/libahci_platform.c | 2 +-
- 3 files changed, 4 insertions(+), 2 deletions(-)
+> I was also wondering if this affects normal opens?
+> They should hold a reference on the module to stop it being unloaded.
+> Does that rely on .owner being set?
 
-diff --git a/drivers/ata/ahci.h b/drivers/ata/ahci.h
-index d991dd46e89c..98b8baa47dc5 100644
---- a/drivers/ata/ahci.h
-+++ b/drivers/ata/ahci.h
-@@ -240,6 +240,8 @@ enum {
- 							as default lpm_policy */
- 	AHCI_HFLAG_SUSPEND_PHYS		= (1 << 26), /* handle PHYs during
- 							suspend/resume */
-+	AHCI_HFLAG_IGN_NOTSUPP_POWER_ON	= (1 << 27), /* ignore -EOPNOTSUPP
-+							from phy_power_on() */
- 
- 	/* ap->flags bits */
- 
-diff --git a/drivers/ata/ahci_mvebu.c b/drivers/ata/ahci_mvebu.c
-index d4bba3ace45d..3ad46d26d9d5 100644
---- a/drivers/ata/ahci_mvebu.c
-+++ b/drivers/ata/ahci_mvebu.c
-@@ -227,7 +227,7 @@ static const struct ahci_mvebu_plat_data ahci_mvebu_armada_380_plat_data = {
- 
- static const struct ahci_mvebu_plat_data ahci_mvebu_armada_3700_plat_data = {
- 	.plat_config = ahci_mvebu_armada_3700_config,
--	.flags = AHCI_HFLAG_SUSPEND_PHYS,
-+	.flags = AHCI_HFLAG_SUSPEND_PHYS | AHCI_HFLAG_IGN_NOTSUPP_POWER_ON,
- };
- 
- static const struct of_device_id ahci_mvebu_of_match[] = {
-diff --git a/drivers/ata/libahci_platform.c b/drivers/ata/libahci_platform.c
-index 86261deeb4c5..de638dafce21 100644
---- a/drivers/ata/libahci_platform.c
-+++ b/drivers/ata/libahci_platform.c
-@@ -59,7 +59,7 @@ int ahci_platform_enable_phys(struct ahci_host_priv *hpriv)
- 		}
- 
- 		rc = phy_power_on(hpriv->phys[i]);
--		if (rc) {
-+		if (rc && !(rc == -EOPNOTSUPP && (hpriv->flags & AHCI_HFLAG_IGN_NOTSUPP_POWER_ON))) {
- 			phy_exit(hpriv->phys[i]);
- 			goto disable_phys;
- 		}
--- 
-2.20.1
+Yes.
+
+> For debugfs surely it is possible to determine and save THIS_MODULE
+> when he nodes are registers and do a try_module_get() in the open?
+
+I don't really see where to save it?
+
+johannes
 
