@@ -2,159 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80A1128831F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 09:00:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09D7D288329
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 09:01:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731658AbgJIHAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 03:00:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43012 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729434AbgJIHAZ (ORCPT
+        id S1731751AbgJIHBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 03:01:30 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:19996 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725908AbgJIHBa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 03:00:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602226823;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GXty0grP7iFnbUH+QMsyFwyfvHHZk16B0G0LGpkyhew=;
-        b=Ger9pOhDnia8s7yfIm+kfxncHLhHreOblue2TMcm6+AclsIK9mySRmYlMCXgGOJtJnPK+H
-        kN9CjL5D45Dr+UD3+MeIGGqVI4CljoM1dZg3iCx0rWf3c1PacyKJPCVQSRQqtdXb1HtZ+C
-        7l6AcV0lGRUZ/rgNW7YNztGXx48wiB8=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-582-WhMfaTPeOT-zeD8HZSloNw-1; Fri, 09 Oct 2020 03:00:22 -0400
-X-MC-Unique: WhMfaTPeOT-zeD8HZSloNw-1
-Received: by mail-wm1-f69.google.com with SMTP id l15so3786929wmh.9
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 00:00:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=GXty0grP7iFnbUH+QMsyFwyfvHHZk16B0G0LGpkyhew=;
-        b=ORQK9LlmQpUTizCSEoENku3RnLjb2vNbTTGcArdT82MIZcC6puBBC1aZGwCCBgGZuF
-         P9avDOdknffyLkmD47A/P18sXE/ITjf0ZmvLAeaPNFhCnaNr7ZaOXQPU2K3TgyooIlcV
-         kIZVSqiDjKLh/DUcgaqdzyHkwdO7k34tYkkz4c7wYC1Q7V2xHepzLRirnN3i+cQDw/9T
-         zy9l6zfqdonA99NP+9eiqE3yz4RX3EQV1X+wrqeQxyFwkiDnMyv6H5pCAhHvVIM/Mb+J
-         INgwkzEoYAA8LSNLX9NlNGIAqC979L7q9RKrzYAVFw0eQCpRIYsv8i3xM2aaqlCkDdkZ
-         DSoA==
-X-Gm-Message-State: AOAM532SkWM/101H2DKReFPE50mCXXE6P3EwZxhdOA9MrwQsW7laP8fb
-        10XBRtplGzemGnCOJtJTPse/jg4TF7XRZ2AXfXax25aP3tSnztFO7Xzve2zYToIl6FBqb5RW/Bz
-        HiCrd3Hf7kmUbbdi2OHSBlJ+0
-X-Received: by 2002:a05:600c:21c3:: with SMTP id x3mr12206028wmj.81.1602226820728;
-        Fri, 09 Oct 2020 00:00:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxp7Lu/KmOA3fdiMHtLHOVmduGD0Yzn7NZXzdIik47vcv/WVxJcCv5AZmkOtGRqoqzzsmlj5Q==
-X-Received: by 2002:a05:600c:21c3:: with SMTP id x3mr12205994wmj.81.1602226820381;
-        Fri, 09 Oct 2020 00:00:20 -0700 (PDT)
-Received: from steredhat (host-79-27-201-176.retail.telecomitalia.it. [79.27.201.176])
-        by smtp.gmail.com with ESMTPSA id k8sm10070788wrl.42.2020.10.09.00.00.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 00:00:19 -0700 (PDT)
-Date:   Fri, 9 Oct 2020 09:00:17 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     mst@redhat.com, kvm@vger.kernel.org, netdev@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Rusty Russell <rusty@rustcorp.com.au>
-Subject: Re: [PATCH v2] vringh: fix __vringh_iov() when riov and wiov are
- different
-Message-ID: <20201009070017.shdcumaifllakfrb@steredhat>
-References: <20201008204256.162292-1-sgarzare@redhat.com>
- <8d84abcb-2f2e-8f24-039f-447e8686b878@redhat.com>
+        Fri, 9 Oct 2020 03:01:30 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f800a910008>; Fri, 09 Oct 2020 00:00:33 -0700
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 9 Oct
+ 2020 07:01:30 +0000
+Received: from sandstorm.nvidia.com (172.20.13.39) by mail.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Fri, 9 Oct 2020 07:01:30 +0000
+From:   John Hubbard <jhubbard@nvidia.com>
+To:     Jonathan Corbet <corbet@lwn.net>
+CC:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Jan Kara <jack@suse.cz>, David Sterba <dsterba@suse.com>,
+        <linux-doc@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: [PATCH v2] Documentation: better locations for sysfs-pci, sysfs-tagging
+Date:   Fri, 9 Oct 2020 00:01:28 -0700
+Message-ID: <20201009070128.118639-1-jhubbard@nvidia.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8d84abcb-2f2e-8f24-039f-447e8686b878@redhat.com>
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1602226833; bh=IKsshG2P8w9TQtkug7AHOInsxKiFv+rqEkEZux0T+u0=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+         X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
+        b=c7da8hc+S4k3uArBydiGgk0PrAt12ww3gbw8ireAydgXBrDcw2NTLZ7U4ypTH4ERF
+         YePSgwGCs2xa9ifDRPQjhOY3XoYPIlA2tfuQzaHgZqgBOwCSq3ud4MfdL3WpreHCZY
+         djw9QR1sCahqRWbTIXf1IyWg2um4LRY4Y2mVqCY3RxcfELuyY3vkV3WWyEK8dYleGA
+         bv6Z5hAWDKIwslXXnYqR0TJ/5blvTRfw2100FcNamp1/9eGQudEEc7nkZX4yxKj9F5
+         ZWTWqWFI/RtS8uz5VDGZO9KJsg9qpbU+9bHxfN8B3kYfYsus3ekrjYinPRNbx+DgNF
+         eF1ECoMbiiOpA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 12:05:15PM +0800, Jason Wang wrote:
-> 
-> On 2020/10/9 上午4:42, Stefano Garzarella wrote:
-> > If riov and wiov are both defined and they point to different
-> > objects, only riov is initialized. If the wiov is not initialized
-> > by the caller, the function fails returning -EINVAL and printing
-> > "Readable desc 0x... after writable" error message.
-> > 
-> > This issue happens when descriptors have both readable and writable
-> > buffers (eg. virtio-blk devices has virtio_blk_outhdr in the readable
-> > buffer and status as last byte of writable buffer) and we call
-> > __vringh_iov() to get both type of buffers in two different iovecs.
-> > 
-> > Let's replace the 'else if' clause with 'if' to initialize both
-> > riov and wiov if they are not NULL.
-> > 
-> > As checkpatch pointed out, we also avoid crashing the kernel
-> > when riov and wiov are both NULL, replacing BUG() with WARN_ON()
-> > and returning -EINVAL.
-> 
-> 
-> It looks like I met the exact similar issue when developing ctrl vq support
-> (which requires both READ and WRITE descriptor).
-> 
-> While I was trying to fix the issue I found the following comment:
-> 
->  * Note that you may need to clean up riov and wiov, even on error!
->  */
-> int vringh_getdesc_iotlb(struct vringh *vrh,
+sysfs-pci and sysfs-tagging were mis-filed: their locations within
+Documentation/ implied that they were related to file systems. Actually,
+each topic is about a very specific *use* of sysfs, and sysfs *happens*
+to be a (virtual) filesystem, so this is not really the right place.
 
-Thank you for pointing that out, I didn't see it!
+It's jarring to be reading about filesystems in general and then come
+across these specific details about PCI, and tagging...and then back to
+general filesystems again.
 
-> 
-> I saw some driver call vringh_kiov_cleanup().
-> 
-> So I just follow to use that.
-> 
-> I'm not quite sure which one is better.
+Move sysfs-pci to PCI, and move sysfs-tagging to networking. (Thanks to
+Jonathan Corbet for coming up with the final locations.)
 
-Me too, but in both cases the 'else if' is wrong.
+Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+---
 
-Either we completely remove the reset in the function or we merge this patch.
-In the first case, we should also fix drivers that don't call
-vringh_kiov_cleanup() (e.g. vdpa_sim).
+Changes since v1: moved sysfs-pci to PCI, and sysfs-tagging to
+networking, and poked around in the generated HTML via Firefox.
+It looks like the right place now.
 
-I'm fine with both.
+thanks,
+John Hubbard
+NVIDIA
 
-Thanks,
-Stefano
 
-> 
-> Thanks
-> 
-> 
-> > 
-> > Fixes: f87d0fbb5798 ("vringh: host-side implementation of virtio rings.")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-> > ---
-> >   drivers/vhost/vringh.c | 9 +++++----
-> >   1 file changed, 5 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
-> > index e059a9a47cdf..8bd8b403f087 100644
-> > --- a/drivers/vhost/vringh.c
-> > +++ b/drivers/vhost/vringh.c
-> > @@ -284,13 +284,14 @@ __vringh_iov(struct vringh *vrh, u16 i,
-> >   	desc_max = vrh->vring.num;
-> >   	up_next = -1;
-> > +	/* You must want something! */
-> > +	if (WARN_ON(!riov && !wiov))
-> > +		return -EINVAL;
-> > +
-> >   	if (riov)
-> >   		riov->i = riov->used = 0;
-> > -	else if (wiov)
-> > +	if (wiov)
-> >   		wiov->i = wiov->used = 0;
-> > -	else
-> > -		/* You must want something! */
-> > -		BUG();
-> >   	for (;;) {
-> >   		void *addr;
-> 
+ Documentation/PCI/index.rst                                 | 1 +
+ Documentation/{filesystems =3D> PCI}/sysfs-pci.rst            | 0
+ Documentation/filesystems/index.rst                         | 2 --
+ Documentation/networking/index.rst                          | 1 +
+ Documentation/{filesystems =3D> networking}/sysfs-tagging.rst | 0
+ 5 files changed, 2 insertions(+), 2 deletions(-)
+ rename Documentation/{filesystems =3D> PCI}/sysfs-pci.rst (100%)
+ rename Documentation/{filesystems =3D> networking}/sysfs-tagging.rst (100%=
+)
+
+diff --git a/Documentation/PCI/index.rst b/Documentation/PCI/index.rst
+index 8f66feaafd4f..c17c87af1968 100644
+--- a/Documentation/PCI/index.rst
++++ b/Documentation/PCI/index.rst
+@@ -12,6 +12,7 @@ Linux PCI Bus Subsystem
+    pciebus-howto
+    pci-iov-howto
+    msi-howto
++   sysfs-pci
+    acpi-info
+    pci-error-recovery
+    pcieaer-howto
+diff --git a/Documentation/filesystems/sysfs-pci.rst b/Documentation/PCI/sy=
+sfs-pci.rst
+similarity index 100%
+rename from Documentation/filesystems/sysfs-pci.rst
+rename to Documentation/PCI/sysfs-pci.rst
+diff --git a/Documentation/filesystems/index.rst b/Documentation/filesystem=
+s/index.rst
+index 4c536e66dc4c..98f59a864242 100644
+--- a/Documentation/filesystems/index.rst
++++ b/Documentation/filesystems/index.rst
+@@ -34,8 +34,6 @@ algorithms work.
+    quota
+    seq_file
+    sharedsubtree
+-   sysfs-pci
+-   sysfs-tagging
+=20
+    automount-support
+=20
+diff --git a/Documentation/networking/index.rst b/Documentation/networking/=
+index.rst
+index c29496fff81c..611e4b130c1e 100644
+--- a/Documentation/networking/index.rst
++++ b/Documentation/networking/index.rst
+@@ -95,6 +95,7 @@ Contents:
+    seg6-sysctl
+    strparser
+    switchdev
++   sysfs-tagging
+    tc-actions-env-rules
+    tcp-thin
+    team
+diff --git a/Documentation/filesystems/sysfs-tagging.rst b/Documentation/ne=
+tworking/sysfs-tagging.rst
+similarity index 100%
+rename from Documentation/filesystems/sysfs-tagging.rst
+rename to Documentation/networking/sysfs-tagging.rst
+--=20
+2.28.0
 
