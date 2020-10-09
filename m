@@ -2,66 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BFB8289C39
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 01:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B3AA289C7E
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 01:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728365AbgJIXtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 19:49:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39836 "EHLO mail.kernel.org"
+        id S1728040AbgJIXyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 19:54:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728147AbgJIXoh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 19:44:37 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        id S1728275AbgJIXux (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 19:50:53 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3827A2072C;
-        Fri,  9 Oct 2020 23:44:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C307C208C7;
+        Fri,  9 Oct 2020 23:50:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602287068;
-        bh=wTFIx2CSqh1G0MpOojsjedYTpM7bEW5o1sXijZJG0tA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=vbSf2cnnErHzJqQelOJtbP+hojyH0jdd+ljF03QVdBGGn/j94JYNagATE04SzmaBK
-         BwF9WFsz5xlM05XrI8gV/SCpIwgjXw5mTpk4L6t2z8yKYmZtHCa01FU5mRxRPUZRk6
-         xTYbzu83xG+Ilg3nuo2Xn3vDy3XeN72rJMH+Bb+Q=
-From:   Mark Brown <broonie@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] SPI fixes for v5.9-rc8
-Date:   Sat, 10 Oct 2020 00:44:23 +0100
-Message-Id: <20201009234428.3827A2072C@mail.kernel.org>
+        s=default; t=1602287433;
+        bh=AQvna38hRSTE9+h7oWP0R7rRfzl0SoNSmK5pNJWsFxY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=LXKdzvvVAgmfdVDRctlhG/Lbcq6SnlKp1fm7tw0h/+iyodCtzGxeTbnqLh9M5WqGU
+         vUMuJzRWFoe39r1C6guFe3BhUJkoN7eSCX4UWdjLKj+hywrNXT2Bdj7bWHTG0v50ns
+         Px2vi6yRGwNGKnjTkkvWMgpHjGmgEHNs2RboiUpg=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 7D57B3522837; Fri,  9 Oct 2020 16:50:33 -0700 (PDT)
+Date:   Fri, 9 Oct 2020 16:50:33 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Tom Rix <trix@redhat.com>
+Cc:     dave@stgolabs.net, josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, natechancellor@gmail.com,
+        ndesaulniers@google.com, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] rcutorture: remove unneeded check
+Message-ID: <20201009235033.GM29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201009194736.2364-1-trix@redhat.com>
+ <20201009201825.GL29330@paulmck-ThinkPad-P72>
+ <03e3eeed-6072-ccb8-a9c6-c79a99c701b8@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <03e3eeed-6072-ccb8-a9c6-c79a99c701b8@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 00fb259c618ea1198fc51b53a6167aa0d78672a9:
+On Fri, Oct 09, 2020 at 02:18:41PM -0700, Tom Rix wrote:
+> 
+> On 10/9/20 1:18 PM, Paul E. McKenney wrote:
+> > On Fri, Oct 09, 2020 at 12:47:36PM -0700, trix@redhat.com wrote:
+> >> From: Tom Rix <trix@redhat.com>
+> >>
+> >> clang static analysis reports this problem:
+> >>
+> >> rcutorture.c:1999:2: warning: Called function pointer
+> >>   is null (null dereference)
+> >>         cur_ops->sync(); /* Later readers see above write. */
+> >>         ^~~~~~~~~~~~~~~
+> >>
+> >> This is a false positive triggered by an earlier, later ignored
+> >> NULL check of sync() op.  By inspection of the rcu_torture_ops,
+> >> the sync() op is never uninitialized.  So this earlier check is
+> >> not needed.
+> > You lost me on this one.  This check is at the very beginning of
+> > rcu_torture_fwd_prog_nr().  Or are you saying that clang is seeing an
+> > earlier check in one of rcu_torture_fwd_prog_nr()'s callers?  If so,
+> > where exactly is this check?
+> >
+> > In any case, the check is needed because all three functions are invoked
+> > if there is a self-propagating RCU callback that ensures that there is
+> > always an RCU grace period outstanding.
+> >
+> > Ah.  Is clang doing local analysis and assuming that because there was
+> > a NULL check earlier, then the pointer might be NULL later?  That does
+> > not seem to me to be a sound check.
+> >
+> > So please let me know exactly what is causing clang to emit this
+> > diagnostic.  It might or might not be worth fixing this, but either way
+> > I need to understand the situation so as to be able to understand the
+> > set of feasible fixes.
+> >
+> > 						Thanx, Paul
+> 
+> In rcu_prog_nr() there is check for for sync.
+> 
+> if ( ... cur_op->sync ...
+> 
+>    do something
+> 
+> This flags in clang's static analyzer as 'could be null'
+> 
+> later in the function, in a reachable block it is used
+> 
+> cur_ops->sync()
+> 
+> I agree this is not a good check that's why i said is was a false positive.
+> 
+> However when looking closer at how cur_ops is set, it is never uninitialized.
+> 
+> So the check is not needed.
 
-  spi: bcm-qspi: Fix probe regression on iProc platforms (2020-09-24 12:09:46 +0100)
+OK, got it, and thank you for the explanation.
 
-are available in the Git repository at:
+> This is not a fix, the code works fine.  It is a small optimization.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.9-rc8
+Well, there really is a bug.  Yes, right now all ->sync pointers are
+non-NULL, but they have not been in the past and might not be in the
+future.  So if ->sync is NULL, rcu_torture_fwd_prog_nr() either should
+not be called or it should return immediately without doing anything.
 
-for you to fetch changes up to 1c33524f79853f41e80390b1a223254aadd30bd4:
+My current thought is something like the (untested) patch below, of
+course with your Reported-by.
 
-  MAINTAINERS: Add maintainer of DW APB SSI driver (2020-10-05 13:22:59 +0100)
+Thoughts?
 
-----------------------------------------------------------------
-spi: Fix for v5.9
+							Thanx, Paul
 
-One last minute fix for v5.9 which has been causing crashes in test
-systems with the fsl-dspi driver when they hit deferred probe (and which
-I probably let cook in next a bit longer than is ideal) plus an update
-to MAINTAINERS reflecting Serge's extensive and detailed recent work on
-the DesignWare driver.
+------------------------------------------------------------------------
 
-----------------------------------------------------------------
-Michael Walle (1):
-      spi: fsl-dspi: fix NULL pointer dereference
-
-Serge Semin (1):
-      MAINTAINERS: Add maintainer of DW APB SSI driver
-
- MAINTAINERS                | 7 +++++++
- drivers/spi/spi-fsl-dspi.c | 5 +++--
- 2 files changed, 10 insertions(+), 2 deletions(-)
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index beba9e7..44749be 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -1989,7 +1989,9 @@ static void rcu_torture_fwd_prog_nr(struct rcu_fwd *rfp,
+ 	unsigned long stopat;
+ 	static DEFINE_TORTURE_RANDOM(trs);
+ 
+-	if  (cur_ops->call && cur_ops->sync && cur_ops->cb_barrier) {
++	if (!cur_ops->sync) 
++		return; // Cannot do need_resched() forward progress testing without ->sync.
++	if (cur_ops->call && cur_ops->cb_barrier) {
+ 		init_rcu_head_on_stack(&fcs.rh);
+ 		selfpropcb = true;
+ 	}
+@@ -2215,8 +2217,8 @@ static int __init rcu_torture_fwd_prog_init(void)
+ 
+ 	if (!fwd_progress)
+ 		return 0; /* Not requested, so don't do it. */
+-	if (!cur_ops->stall_dur || cur_ops->stall_dur() <= 0 ||
+-	    cur_ops == &rcu_busted_ops) {
++	if ((!cur_ops->sync && !cur_ops->call) ||
++	    !cur_ops->stall_dur || cur_ops->stall_dur() <= 0 || cur_ops == &rcu_busted_ops) {
+ 		VERBOSE_TOROUT_STRING("rcu_torture_fwd_prog_init: Disabled, unsupported by RCU flavor under test");
+ 		return 0;
+ 	}
