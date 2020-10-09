@@ -2,153 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D6428857E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F38B0288581
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:46:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732892AbgJIIpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 04:45:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730726AbgJIIpo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 04:45:44 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0BF3C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 01:45:44 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id y1so605160plp.6
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 01:45:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ORjMAqZkzpP1CBUX3hMJCRTwWJbFlamPjNAuY/fQyLo=;
-        b=U+15yQkQeJs/btau5BIG2D7ByHK7a1ek27TkHiV6qwJxbPFF2+afMtvhO5Xj6/E0gO
-         oIplZv7qRTFoH2ROyu6YY3ceETHBmlGtzZd4EK4xfAGkU3qdj1jxxawBhQocl7YUPcqk
-         hHLK1NPQro1DkOmcj4CdKffYZB5ssV2juSzL4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ORjMAqZkzpP1CBUX3hMJCRTwWJbFlamPjNAuY/fQyLo=;
-        b=FlkKUcIoP+qQC89qdIyM+m7QqghnAF0SATzOsomOHSkDj9TS8MOGIbzzAnLMYZNuOY
-         f0VWkqTt9hmGx80nJKpvu8pAaeJPIRe8uKOTZUTX/7PAXBiGfYhRmRwRgDZwnkHxKTrP
-         3pyUjQXkyH72f0IB1jjAd17+7emFmEGF2f46z2cqM3bhLrvOC9fCmB2cKgtQLZZwxYkc
-         +tsydfgZMkZVVbomP6X84yXSBiZBXt4EtVAPedymYkSGM9N2g0M1tFFCJEE6uc8x0JZm
-         XsTt5gpVsQLoGaqlX8+KSU/mUTVMaflXi+GxI9S/dNGEt4FeCn4Q7RilNrVKkx0XT9VD
-         3V/g==
-X-Gm-Message-State: AOAM533T1MwUNNWwDouEe9vbfrADdQHNVfoL5vnN9RKLFPegdbxfPU7M
-        ew7UtE5EzmMUnEjmjSvnF8rWPg==
-X-Google-Smtp-Source: ABdhPJzA0jWGMM2jo96MtVdKXdv8pv4bFGf3nZggi8s+JXNc15k3wzeGhC7sm6TVO8oYRFFSg9+qqQ==
-X-Received: by 2002:a17:902:a588:b029:d3:7f4a:28a2 with SMTP id az8-20020a170902a588b02900d37f4a28a2mr11325987plb.26.1602233144239;
-        Fri, 09 Oct 2020 01:45:44 -0700 (PDT)
-Received: from acourbot.tok.corp.google.com ([2401:fa00:8f:203:eeb1:d7ff:fe57:b7e5])
-        by smtp.gmail.com with ESMTPSA id w10sm9872760pjy.13.2020.10.09.01.45.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 01:45:43 -0700 (PDT)
-From:   Alexandre Courbot <acourbot@chromium.org>
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Alexandre Courbot <acourbot@chromium.org>
-Subject: [PATCH] venus: vdec: return parsed crop information from stream
-Date:   Fri,  9 Oct 2020 17:45:33 +0900
-Message-Id: <20201009084533.2405320-1-acourbot@chromium.org>
-X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
+        id S1732922AbgJIIqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 04:46:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51332 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730726AbgJIIqn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 04:46:43 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A7D79215A4;
+        Fri,  9 Oct 2020 08:46:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602233203;
+        bh=wDVSK9lDifu555hYLt/QcE1K+Rrce7ovaPwUry7eR9U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1GvnP2KovqKJ/n9WjwQvNaPfJPHa2OblOoJcaPU1QGZ4dTQlUmdw5ay8S/AUmNIfk
+         NBEQEx1BQLZHuBYsHTWVZ37sKUN9P0G1tABbnC+PCnh4gwZP9fA8UF40JTf/bFxORl
+         pSkgGCZe6oFXyZUrt+hdSh0bjojvydvgPCQwo7Cs=
+Date:   Fri, 9 Oct 2020 10:47:29 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     linux-kernel@vger.kernel.org, nstange@suse.de, ap420073@gmail.com,
+        David.Laight@aculab.com, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, rafael@kernel.org
+Subject: Re: [CRAZY-RFF] debugfs: track open files and release on remove
+Message-ID: <20201009084729.GA406522@kroah.com>
+References: <87v9fkgf4i.fsf@suse.de>
+ <20201009095306.0d87c3aa13db.Ib3a7019bff15bb6308f6d259473a1648312a4680@changeid>
+ <20201009080355.GA398994@kroah.com>
+ <be61c6a38d0f6ca1aa0bc3f0cb45bbb216a12982.camel@sipsolutions.net>
+ <20201009081624.GA401030@kroah.com>
+ <1ec056cf3ec0953d2d1abaa05e37e89b29c7cc63.camel@sipsolutions.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1ec056cf3ec0953d2d1abaa05e37e89b29c7cc63.camel@sipsolutions.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Per the stateful codec specification, VIDIOC_G_SELECTION with a target
-of V4L2_SEL_TGT_COMPOSE is supposed to return the crop area of capture
-buffers containing the decoded frame. Until now the driver did not get
-that information from the firmware and just returned the dimensions of
-CAPTURE buffers.
+On Fri, Oct 09, 2020 at 10:19:02AM +0200, Johannes Berg wrote:
+> On Fri, 2020-10-09 at 10:16 +0200, Greg KH wrote:
+> > On Fri, Oct 09, 2020 at 10:06:14AM +0200, Johannes Berg wrote:
+> > > We used to say the proxy_fops weren't needed and it wasn't an issue, and
+> > > then still implemented it. Dunno. I'm not really too concerned about it
+> > > myself, only root can hold the files open and remove modules ...
+> > 
+> > proxy_fops were needed because devices can be removed from the system at
+> > any time, causing their debugfs files to want to also be removed.  It
+> > wasn't because of unloading kernel code.
+> 
+> Indeed, that's true. Still, we lived with it for years.
 
-Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
----
- drivers/media/platform/qcom/venus/core.h |  1 +
- drivers/media/platform/qcom/venus/vdec.c | 21 ++++++++++++++++-----
- 2 files changed, 17 insertions(+), 5 deletions(-)
+Because no one wanted to fix the code, not because it was correct :)
 
-diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-index 7b79a33dc9d6..3bc129a4f817 100644
---- a/drivers/media/platform/qcom/venus/core.h
-+++ b/drivers/media/platform/qcom/venus/core.h
-@@ -361,6 +361,7 @@ struct venus_inst {
- 	unsigned int streamon_cap, streamon_out;
- 	u32 width;
- 	u32 height;
-+	struct v4l2_rect crop;
- 	u32 out_width;
- 	u32 out_height;
- 	u32 colorspace;
-diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
-index ea13170a6a2c..ee74346f0cae 100644
---- a/drivers/media/platform/qcom/venus/vdec.c
-+++ b/drivers/media/platform/qcom/venus/vdec.c
-@@ -325,6 +325,10 @@ static int vdec_s_fmt(struct file *file, void *fh, struct v4l2_format *f)
- 
- 	inst->width = format.fmt.pix_mp.width;
- 	inst->height = format.fmt.pix_mp.height;
-+	inst->crop.top = 0;
-+	inst->crop.left = 0;
-+	inst->crop.width = inst->width;
-+	inst->crop.height = inst->height;
- 
- 	if (f->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
- 		inst->fmt_out = fmt;
-@@ -343,6 +347,9 @@ vdec_g_selection(struct file *file, void *fh, struct v4l2_selection *s)
- 	    s->type != V4L2_BUF_TYPE_VIDEO_OUTPUT)
- 		return -EINVAL;
- 
-+	s->r.top = 0;
-+	s->r.left = 0;
-+
- 	switch (s->target) {
- 	case V4L2_SEL_TGT_CROP_BOUNDS:
- 	case V4L2_SEL_TGT_CROP_DEFAULT:
-@@ -363,16 +370,12 @@ vdec_g_selection(struct file *file, void *fh, struct v4l2_selection *s)
- 	case V4L2_SEL_TGT_COMPOSE:
- 		if (s->type != V4L2_BUF_TYPE_VIDEO_CAPTURE)
- 			return -EINVAL;
--		s->r.width = inst->out_width;
--		s->r.height = inst->out_height;
-+		s->r = inst->crop;
- 		break;
- 	default:
- 		return -EINVAL;
- 	}
- 
--	s->r.top = 0;
--	s->r.left = 0;
--
- 	return 0;
- }
- 
-@@ -1309,6 +1312,10 @@ static void vdec_event_change(struct venus_inst *inst,
- 
- 	inst->width = format.fmt.pix_mp.width;
- 	inst->height = format.fmt.pix_mp.height;
-+	inst->crop.left = ev_data->input_crop.left;
-+	inst->crop.top = ev_data->input_crop.top;
-+	inst->crop.width = ev_data->input_crop.width;
-+	inst->crop.height = ev_data->input_crop.height;
- 
- 	inst->out_width = ev_data->width;
- 	inst->out_height = ev_data->height;
-@@ -1412,6 +1419,10 @@ static void vdec_inst_init(struct venus_inst *inst)
- 	inst->fmt_cap = &vdec_formats[0];
- 	inst->width = frame_width_min(inst);
- 	inst->height = ALIGN(frame_height_min(inst), 32);
-+	inst->crop.left = 0;
-+	inst->crop.top = 0;
-+	inst->crop.width = inst->width;
-+	inst->crop.height = inst->height;
- 	inst->out_width = frame_width_min(inst);
- 	inst->out_height = frame_height_min(inst);
- 	inst->fps = 30;
--- 
-2.28.0.1011.ga647a8990f-goog
+> Anyway, like I said, I really just did this more to see that it _could_
+> be done, not to suggest that it _should_ :-)
 
+Agreed.
+
+> I think adding the .owner everywhere would be good, and perhaps we can
+> somehow put a check somewhere like
+> 
+> 	WARN_ON(is_module_address((unsigned long)fops) && !fops->owner);
+> 
+> to prevent the issue in the future?
+
+That will fail for all of the debugfs_create_* operations, as there is
+only one set of file operations for all of the different files created
+with these calls.
+
+Which, now that I remember it, is why we went down the proxy "solution"
+in the first place :(
+
+thanks,
+
+greg k-h
