@@ -2,110 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D866288A15
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 15:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6866288A18
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 15:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387684AbgJINzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 09:55:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48122 "EHLO
+        id S2387721AbgJIN4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 09:56:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732547AbgJINzz (ORCPT
+        with ESMTP id S1731374AbgJIN4g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 09:55:55 -0400
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00539C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 06:55:54 -0700 (PDT)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id 2CDBD63E; Fri,  9 Oct 2020 09:55:54 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 2CDBD63E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1602251754;
-        bh=EvWh/sK89rBqiusgud0y7S4S1jC5DcDYAD+jwDtI2CI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=r0wKJC1UbWwApSm0pnMO9aJHhJ3078epkYPBek9yLoY1uAxefX6+UJxvX1dy8M3BP
-         ohvyO4DHTMqkfm+yPQNdeSDfiedYJB0u1Bo9bfNsGVoYRYxbOQCr/bIAKM7Kzd75b4
-         09TTO8BRUlXcoxjBtGvcAT76RnSKjUwC1Gha9ZZ4=
-Date:   Fri, 9 Oct 2020 09:55:54 -0400
-From:   "J. Bruce Fields" <bfields@fieldses.org>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Michael =?utf-8?B?V2Vpw58=?= <michael.weiss@aisec.fraunhofer.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrei Vagin <avagin@gmail.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        linux-kernel@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>
-Subject: Re: [PATCH v2 2/4] time: make getboottime64 aware of time namespace
-Message-ID: <20201009135554.GE15719@fieldses.org>
-References: <20201008053944.32718-1-michael.weiss@aisec.fraunhofer.de>
- <20201008053944.32718-3-michael.weiss@aisec.fraunhofer.de>
- <20201009132815.5afulu5poh5ti57m@wittgenstein>
+        Fri, 9 Oct 2020 09:56:36 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 848E7C0613D5
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 06:56:36 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id t18so9203821ilo.12
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 06:56:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:from:date:message-id:subject:to:cc;
+        bh=6o6qPP8lMx7cYOKA/MqaKbaqIjCjGnaiLWr14rPl5P0=;
+        b=Hlz0T0HYpcI1RmYPyeOF014dP7wq6mto4JOO5AQX3su3fh95zbsrdvX+wsqbFQFmuk
+         o56RJq7SGR5KyYMNTqsQjirLof/hnJtOBvvKEwO9b1+TN3p0b4gl92toDcBj7VMPnn7/
+         8tY2NMUR4+quoUAFnkcxw7tVy93kHmwxgOPAcTX7m1Uo+ZCdjtmxau9fhNb4E82Tq5ot
+         B5nJJa8LIH8PryvenpUGFLf4m8Kd88gjuibR7FbKT1TrjSS9oz09MR1uncgkH+1kLLzz
+         /FVRczFb6cSO2chHkoCGBoFXPEzehWoc1SQrPGaGcYlVCO8j83PhHkDjqmQt2j07l4cf
+         0s7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:from:date:message-id
+         :subject:to:cc;
+        bh=6o6qPP8lMx7cYOKA/MqaKbaqIjCjGnaiLWr14rPl5P0=;
+        b=nv6QhUJoUGswRg5ktkKa5On+AULRbr9y7Uqb/pA+zfthWqhkRpYqNMaLFebBP6VihN
+         ZM2Ly4mjig48qjZNoM78SNUVg1Clcxki8WDx5NX8VO0fcMBCP1e1zdNBTZMnuRbEZf5B
+         SKD4OGt8H6WlJOsaL9OmzeQlq7LEWpoFaimE42XuhDPFTl1Mf7uPd1TisIrWdsmDiy14
+         pBMUWpPygfx1H0FMDRphrASWUdeYJ4pjNf+CFQ4ED3eF0ihkT+CKd7YZbSJWwoyvszAd
+         BBdsWmZ6J+DBRTFGlS0S2tm4II3btr+2ZqDUn5InTmjJal/zHjL9hQFkZelhPOQTBC8Y
+         nSpQ==
+X-Gm-Message-State: AOAM532mysdMCv6tlhAJPJUb7ENUb4oIOUmy/8atfidVleL4Tn5s9Kz5
+        Ud3l/wAA7owYVY+PhjahJk4iilHE+jfTyPWbSf4icA==
+X-Google-Smtp-Source: ABdhPJzUkvbAvYEa3k1BsUYozC/xotWpIsogjry89hwi8FrKRfRA/5IIZf6URsj+bAxUF2s9ybtiMe1E4JF5+OFqUys=
+X-Received: by 2002:a05:6e02:664:: with SMTP id l4mr11033643ilt.81.1602251795786;
+ Fri, 09 Oct 2020 06:56:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201009132815.5afulu5poh5ti57m@wittgenstein>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+References: <CA+G9fYvuq58q+GsWnzni0sKSHbubuQz-UaK3TASX26V_a7yBVw@mail.gmail.com>
+ <20200924090349.GF27174@8bytes.org> <ecf71b34-a104-d42a-bfcd-9570e73520a7@arm.com>
+ <20200924092546.GJ27174@8bytes.org> <e2186418-d4d6-e1f4-5eb4-3bfafb5cebb2@arm.com>
+ <20200924095629.GL27174@8bytes.org> <CA+G9fYu42j_B+Rg2nq+KKBiKLqxVEqabQ15CujyJ+o6jqRj2uQ@mail.gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 9 Oct 2020 19:26:24 +0530
+Message-ID: <CA+G9fYtG6Ro-NdrP89ipDyUqVVT2=_8pTvjTSeFcWr795bp8AA@mail.gmail.com>
+Subject: Re: arm-smmu 5000000.iommu: Cannot accommodate DMA offset for IOMMU
+ page tables
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Poonam Aggrwal <poonam.aggrwal@nxp.com>,
+        Rob Herring <robh@kernel.org>, Joerg Roedel <jroedel@suse.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Richard Weinberger <richard@nod.at>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mtd@lists.infradead.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Suram Suram <suram@nxp.com>, masonccyang@mxic.com.tw,
+        Will Deacon <will@kernel.org>,
+        "Z.Q. Hou" <Zhiqiang.Hou@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 03:28:15PM +0200, Christian Brauner wrote:
-> On Thu, Oct 08, 2020 at 07:39:42AM +0200, Michael Weiß wrote:
-> > getboottime64() provides the time stamp of system boot. In case of
-> > time namespaces,
+On Fri, 9 Oct 2020 at 19:24, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+>
+>
+>
+> On Thu, 24 Sep 2020 at 15:26, Joerg Roedel <joro@8bytes.org> wrote:
+> >
+> > On Thu, Sep 24, 2020 at 10:36:47AM +0100, Robin Murphy wrote:
+> > > Yes, the issue was introduced by one of the changes in "dma-mapping:
+> > > introduce DMA range map, supplanting dma_pfn_offset", so it only existed in
+> > > the dma-mapping/for-next branch anyway.
+>
 
-Huh, I didn't know there were time namespaces.
+FYI,
+The reported problem still exists on 5.9.0-rc8-next-20201009.
 
-> > the offset to the boot time stamp was not applied
-> > earlier. However, getboottime64 is used e.g., in /proc/stat to print
-> > the system boot time to userspace. In container runtimes which utilize
-> > time namespaces to virtualize boottime of a container, this leaks
-> > information about the host system boot time.
-> > 
-> > Therefore, we make getboottime64() to respect the time namespace offset
-> > for boottime by subtracting the boottime offset.
-> > 
-> > Signed-off-by: Michael Weiß <michael.weiss@aisec.fraunhofer.de>
-> > ---
-> >  kernel/time/timekeeping.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
-> > index 4c47f388a83f..67530cdb389e 100644
-> > --- a/kernel/time/timekeeping.c
-> > +++ b/kernel/time/timekeeping.c
-> > @@ -17,6 +17,7 @@
-> >  #include <linux/clocksource.h>
-> >  #include <linux/jiffies.h>
-> >  #include <linux/time.h>
-> > +#include <linux/time_namespace.h>
-> >  #include <linux/tick.h>
-> >  #include <linux/stop_machine.h>
-> >  #include <linux/pvclock_gtod.h>
-> > @@ -2154,6 +2155,8 @@ void getboottime64(struct timespec64 *ts)
-> >  {
-> >  	struct timekeeper *tk = &tk_core.timekeeper;
-> >  	ktime_t t = ktime_sub(tk->offs_real, tk->offs_boot);
-> > +	/* shift boot time stamp according to the timens offset */
-> > +	t = timens_ktime_to_host(CLOCK_BOOTTIME, t);
-> 
-> Note that getbootime64() is mostly used in net/sunrpc and I don't know
-> if this change has any security implications for them.
-> 
-> Hey, Trond, Anna, Bruce, and Chuck this virtualizes boottime according
-> to the time namespace of the caller, i.e. a container can e.g. reset
-> it's boottime when started. This is already possible. The series here
-> fixes a bug where /proc/stat's btime field is not virtualized but since
-> this changes getboottime64() this would also apply to sunrpc's
-> timekeeping. Is that ok or does sunrpc rely on the hosts's boot time,
-> i.e. the time in the initial time namespace?
+[    1.843814] Driver must set ecc.strength when using hardware ECC
+[    1.849847] WARNING: CPU: 4 PID: 1 at
+drivers/mtd/nand/raw/nand_base.c:5687 nand_scan_with_ids+0x1450/0x1470
+[    1.859676] Modules linked in:
+[    1.862730] CPU: 4 PID: 1 Comm: swapper/0 Not tainted
+5.9.0-rc8-next-20201009 #1
+[    1.870125] Hardware name: Freescale Layerscape 2088A RDB Board (DT)
+[    1.876478] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
+[    1.882483] pc : nand_scan_with_ids+0x1450/0x1470
+[    1.887183] lr : nand_scan_with_ids+0x1450/0x1470
 
-Looking at how it's used in net/sunrpc/cache.c....  All it's doing is
-comparing times which have all been calculated relative to the time
-returned by getboottime64().  So it doesn't really matter what
-getboottime64() is, as long as it's always the same.
+full test log,
+https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20201009/testrun/3284876/suite/linux-log-parser/test/check-kernel-warning-92014/log
 
-So, I don't think this should change behavior of the sunrpc code at all.
+> >
+> > Okay, alright then.
+> >
 
---b.
+- Naresh
