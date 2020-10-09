@@ -2,106 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E1EA2891D3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 21:38:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C668B2891DA
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 21:39:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390694AbgJITi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 15:38:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44942 "EHLO
+        id S2390720AbgJITjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 15:39:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731727AbgJITi1 (ORCPT
+        with ESMTP id S2388859AbgJITjt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 15:38:27 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E68B3C0613D2;
-        Fri,  9 Oct 2020 12:38:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=zLIUwi6of4TVrIDqm7ubPP1mBc2NCjeZDMTgFgFGRzs=; b=I6zPCWGlxvFkdnxvrDnYKEl/Ki
-        DXahwbFmj8CjDIv2zMKJsaj6l/PlLp8BW5A0fPAU4uqSuQGhJS3sD1uqSXqLZsZPfeunh4DOuvE5n
-        xcAkyW8lqrSSh5xrEFlC41DOYpQEF9SrAicmyGJ430dnnoVtcX/QPBM62kwEDMrJAwz/sPodMxPwi
-        rniweX1LZSEw/l1kQK555JY2mb9g3xfm5vkM0coqpPB85Q8CpKpM5X//PwBU8gQO6FVTQsZoJPZW5
-        4oQFUewmHOTq8XMVe/CMjko1SUyh1NgLkQG9fMzAroffdR7hY8fxRacfuL07WCx65S+XYIFoHiMvo
-        T+yGDamA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kQyDC-0007fm-TI; Fri, 09 Oct 2020 19:37:55 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D9571300B22;
-        Fri,  9 Oct 2020 21:37:46 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9CBE320AEA644; Fri,  9 Oct 2020 21:37:46 +0200 (CEST)
-Date:   Fri, 9 Oct 2020 21:37:46 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     corbet@lwn.net, keescook@chromium.org, gregkh@linuxfoundation.org,
-        shuah@kernel.org, rafael@kernel.org, johannes@sipsolutions.net,
-        lenb@kernel.org, james.morse@arm.com, tony.luck@intel.com,
-        bp@alien8.de, arve@android.com, tkjos@android.com,
-        maco@android.com, joel@joelfernandes.org, christian@brauner.io,
-        hridya@google.com, surenb@google.com, minyard@acm.org,
-        arnd@arndb.de, mchehab@kernel.org, rric@kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-acpi@vger.kernel.org,
-        devel@driverdev.osuosl.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-edac@vger.kernel.org, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v3 00/11] Introduce Simple atomic counters
-Message-ID: <20201009193746.GA1073957@hirez.programming.kicks-ass.net>
-References: <cover.1602209970.git.skhan@linuxfoundation.org>
+        Fri, 9 Oct 2020 15:39:49 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 027FEC0613D5
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 12:39:49 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id b2so10259121ilr.1
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 12:39:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xQ8UTjmcxBkyr9kdzQcEkeWqctEHrqs8CDp7y053heY=;
+        b=YOEmmwX3weBMkV6EMLrxzpPx92svbqEyYiZ4LCKEDVhYQu8ZOXwFM5xkz3ihAesEFZ
+         MCXZyqZeW6Q0TFlYry6DmYF5Pkfx5w7f7aBedyt8IgrjToiz+8UZM9SJMrAp5dduNwax
+         rcRU4ygtpdzI0nA6+c4+BHBrJJn6zRJmWayexvx2siJf4g7QLzkvYbCAXD0f60e5Lz+2
+         4bcU2Rc3vGhdMjtFFfQd6vMOxz0MAMu8R/DO153fWD8/O6uJEPja9c79vhEELwp8hqX6
+         ljLcdL6DYheQyzTwCTSghPOmvHUbapSYasHMnsdpLm/+M5+Ob4KjmXGFWTdVcXcUz++N
+         ta8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xQ8UTjmcxBkyr9kdzQcEkeWqctEHrqs8CDp7y053heY=;
+        b=EWwK7slZx45rG2xzKckqnO3cHWZQCx0EQ+T/ofl0n4rxEQ54Zlw0lohE4VZYEilLkQ
+         diX+IXFOtV/ziWr8ota92pXSwgKPyWUH+LN1/Q2pZYyk96K5xnCBKTwB/trU7wWpXOfO
+         u9zeMaKk2h5+Ay4QkapYKzceELnb/NZOzJjP8MmWp+J3bg0AQHHA5A2OHGOlaMT3ZKXa
+         NI3B8WGkoB/mktk45HG9EfkoEmjRE9s74uYd3ozZjULQOx0TukulvT/vZwP12I7DuSYz
+         o/1h+lQc3cN3nznpSYPvAGzR1NtIoxwmYGQXE5eM3ar3Gkd5wkDSeDPv5TOls3G/NDla
+         cseQ==
+X-Gm-Message-State: AOAM5329z52eRKMrHlg/KhkaSENPL3AIo4TIgjENzfIteas55GnH7JEj
+        Mvwgbssp/jofqWF9QdeIJ283OMhdlDY7Tg==
+X-Google-Smtp-Source: ABdhPJwtulAG6wcmzNl16+TH2gPGVSgNW5ffvDVQB4/BEAIm2zsxbCyxEh1NiO37k5owtKUtvYNgRA==
+X-Received: by 2002:a05:6e02:13f0:: with SMTP id w16mr1687966ilj.208.1602272387629;
+        Fri, 09 Oct 2020 12:39:47 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id b3sm3877236iot.37.2020.10.09.12.39.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Oct 2020 12:39:46 -0700 (PDT)
+Subject: Re: [PATCH net 1/2] net: ipa: only clear hardware state if setup has
+ completed
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     davem@davemloft.net, evgreen@chromium.org, subashab@codeaurora.org,
+        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
+        mka@chromium.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201006213047.31308-1-elder@linaro.org>
+ <20201006213047.31308-2-elder@linaro.org>
+ <20201009122517.02a53088@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <65ea5328-9f15-5bb6-80e9-514970cd4380@linaro.org>
+Date:   Fri, 9 Oct 2020 14:39:45 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1602209970.git.skhan@linuxfoundation.org>
+In-Reply-To: <20201009122517.02a53088@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 09:55:55AM -0600, Shuah Khan wrote:
-> This patch series is a result of discussion at the refcount_t BOF
-> the Linux Plumbers Conference. In this discussion, we identified
-> a need for looking closely and investigating atomic_t usages in
-> the kernel when it is used strictly as a counter without it
-> controlling object lifetimes and state changes.
+On 10/9/20 2:25 PM, Jakub Kicinski wrote:
+> On Tue,  6 Oct 2020 16:30:46 -0500 Alex Elder wrote:
+>> In the setup phase of initialization, GSI firmware gets loaded
+>> and initialized, and the AP command TX and default RX endpoints
+>> get set up.  Until that happens, IPA commands must not be issued
+>> to the hardware.
+>>
+>> If the modem crashes, we stop endpoint channels and perform a
+>> number of other activities to clear modem-related IPA state,
+>> including zeroing filter and routing tables (using IPA commands).
+>> This is a bug if setup is not complete.  We should also not be
+>> performing the other cleanup activity in that case either.
+>>
+>> Fix this by returning immediately when handling a modem crash if we
+>> haven't completed setup.
+>>
+>> Fixes: a646d6ec9098 ("soc: qcom: ipa: modem and microcontroller")
+>> Tested-by: Matthias Kaehlcke <mka@chromium.org>
+>> Signed-off-by: Alex Elder <elder@linaro.org>
 > 
-> There are a number of atomic_t usages in the kernel where atomic_t api
-> is used strictly for counting and not for managing object lifetime. In
-> some cases, atomic_t might not even be needed.
-
-Then the right patch is to not user atomic_t in those cases.
-
-> The purpose of these counters is to clearly differentiate atomic_t
-> counters from atomic_t usages that guard object lifetimes, hence prone
-> to overflow and underflow errors. It allows tools that scan for underflow
-> and overflow on atomic_t usages to detect overflow and underflows to scan
-> just the cases that are prone to errors.
-
-Guarding lifetimes is what we got refcount_t for.
-
-> Simple atomic counters api provides interfaces for simple atomic counters
-> that just count, and don't guard resource lifetimes. The interfaces are
-> built on top of atomic_t api, providing a smaller subset of atomic_t
-> interfaces necessary to support simple counters.
-
-To what actual purpose?!? AFACIT its pointless wrappery, it gets us
-nothing.
-
-> Counter wraps around to INT_MIN when it overflows and should not be used
-> to guard resource lifetimes, device usage and open counts that control
-> state changes, and pm states. Overflowing to INT_MIN is consistent with
-> the atomic_t api, which it is built on top of.
->     
-> Using counter_atomic* to guard lifetimes could lead to use-after free
-> when it overflows and undefined behavior when used to manage state
-> changes and device usage/open states.
+>> diff --git a/drivers/net/ipa/ipa_modem.c b/drivers/net/ipa/ipa_modem.c
+>> index e34fe2d77324e..dd5b89c5cb2d4 100644
+>> --- a/drivers/net/ipa/ipa_modem.c
+>> +++ b/drivers/net/ipa/ipa_modem.c
+>> @@ -285,6 +285,9 @@ static void ipa_modem_crashed(struct ipa *ipa)
+>>   	struct device *dev = &ipa->pdev->dev;
+>>   	int ret;
+>>   
+>> +	if (!ipa->setup_complete)
+>> +		return;
+>> +
+>>   	ipa_endpoint_modem_pause_all(ipa, true);
+>>   
+>>   	ipa_endpoint_modem_hol_block_clear_all(ipa);
 > 
-> This patch series introduces Simple atomic counters. Counter atomic ops
-> leverage atomic_t and provide a sub-set of atomic_t ops.
+> The only call site already checks setup_complete, so this is not needed,
+> no?
 
-Thanks for Cc'ing the atomic maintainers :/
+Wow, you are correct.
 
-NAK.
+I was mainly focused on the fact that the ipa_modem_crashed()
+call could happen asynchronously, and that it called
+ipa_table_reset() which requires IPA immediate commands.
+I should have followed it back to its callers.
+
+I agree with you, this is not needed.  The other patch
+is definitely needed though.
+
+Would you like me to re-post that single patch, or is
+it acceptable as-is?
+
+Thank you for reviewing this and catching my mistake.
+
+					-Alex
+
+> $ git grep -C2 ipa_modem_crashed\(
+> drivers/net/ipa/ipa_modem.c-
+> drivers/net/ipa/ipa_modem.c-/* Treat a "clean" modem stop the same as a crash */
+> drivers/net/ipa/ipa_modem.c:static void ipa_modem_crashed(struct ipa *ipa)
+> drivers/net/ipa/ipa_modem.c-{
+> drivers/net/ipa/ipa_modem.c-    struct device *dev = &ipa->pdev->dev;
+> --
+> drivers/net/ipa/ipa_modem.c-                     notify_data->crashed ? "crashed" : "stopping");
+> drivers/net/ipa/ipa_modem.c-            if (ipa->setup_complete)
+> drivers/net/ipa/ipa_modem.c:                    ipa_modem_crashed(ipa);
+> drivers/net/ipa/ipa_modem.c-            break;
+> drivers/net/ipa/ipa_modem.c-
+> 
+
