@@ -2,101 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48D102882E5
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 08:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E88622882F3
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 08:47:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731388AbgJIGoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 02:44:34 -0400
-Received: from mga11.intel.com ([192.55.52.93]:42448 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725908AbgJIGoe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 02:44:34 -0400
-IronPort-SDR: LE39SZeEM9U2OF07+jBN2Wq50RkfaouRxNbVBjBHxR511NrWaI3H2dRmojc9BB3ZmJIkuiAYMM
- NZgDc9+OMkbw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="161987900"
-X-IronPort-AV: E=Sophos;i="5.77,354,1596524400"; 
-   d="scan'208";a="161987900"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 23:44:33 -0700
-IronPort-SDR: nWBjKdL7QJVZTuBJO2CmcW40pcRcMkvlGVs5Nlm1P5gbFESmwMNOsL4oeVSGlwMwz5dwRHeEns
- ARpK4H9O1A7A==
-X-IronPort-AV: E=Sophos;i="5.77,354,1596524400"; 
-   d="scan'208";a="298346639"
-Received: from rgordani-mobl.ger.corp.intel.com (HELO localhost) ([10.249.34.105])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 23:44:17 -0700
-Date:   Fri, 9 Oct 2020 09:44:14 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Haitao Huang <haitao.huang@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Seth Moore <sethmo@google.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Suresh Siddha <suresh.b.siddha@intel.com>,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
-        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
-        luto@kernel.org, nhorman@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
-        mikko.ylinen@intel.com
-Subject: Re: [PATCH v39 11/24] x86/sgx: Add SGX enclave driver
-Message-ID: <20201009064414.GA2744@linux.intel.com>
-References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
- <20201003045059.665934-12-jarkko.sakkinen@linux.intel.com>
- <20201003143925.GB800720@kroah.com>
- <20201004143246.GA3561@linux.intel.com>
- <20201005094246.GB151835@kroah.com>
- <20201005124221.GA191854@linux.intel.com>
- <op.0r4p1bn7wjvjmi@mqcpg7oapc828.gar.corp.intel.com>
- <20201007192655.GA104072@kroah.com>
+        id S1731287AbgJIGro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 02:47:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729280AbgJIGro (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 02:47:44 -0400
+X-Greylist: delayed 106 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 08 Oct 2020 23:47:43 PDT
+Received: from forwardcorp1j.mail.yandex.net (forwardcorp1j.mail.yandex.net [IPv6:2a02:6b8:0:1619::183])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C540BC0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 23:47:43 -0700 (PDT)
+Received: from sas1-5717c3cea310.qloud-c.yandex.net (sas1-5717c3cea310.qloud-c.yandex.net [IPv6:2a02:6b8:c14:3616:0:640:5717:c3ce])
+        by forwardcorp1j.mail.yandex.net (Yandex) with ESMTP id C3F752E147D
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 09:45:51 +0300 (MSK)
+Received: from sas2-32987e004045.qloud-c.yandex.net (sas2-32987e004045.qloud-c.yandex.net [2a02:6b8:c08:b889:0:640:3298:7e00])
+        by sas1-5717c3cea310.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id rgmzNeaOpD-jpwGHCu2;
+        Fri, 09 Oct 2020 09:45:51 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1602225951; bh=nzzJ1cGOxnVetfEPuT/9nmgY+IAyxnDqgSq/yQmsA04=;
+        h=Message-Id:Date:Subject:To:From:Cc;
+        b=xUEs0V/xYovTlR3UWbaXG7RUnAAYYkwxQURlJUS2lQLddUDCNXAMXd+I85ejCfNZy
+         cPXhWqJxlB4Zoyhgf1woQtfET/CRAIuYk+LRLeGEF0tUFeVlNyDOH0zTZ5ak+uXtyQ
+         F7P1TBVRAr3+0sjhNvKOSBZ1t2tAt1UhFVh7JVQA=
+Authentication-Results: sas1-5717c3cea310.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from unknown (unknown [95.108.210.65])
+        by sas2-32987e004045.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id SRjkjS1hBS-jpmC3nqE;
+        Fri, 09 Oct 2020 09:45:51 +0300
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client certificate not present)
+From:   Stanislav Ivanichkin <sivanichkin@yandex-team.ru>
+To:     linux-kernel@vger.kernel.org
+Cc:     dmtrmonakhov@yandex-team.ru
+Subject: [PATCH] perf trace: Segfault when trying to trace events by cgroup
+Date:   Fri,  9 Oct 2020 09:45:47 +0300
+Message-Id: <20201009064547.62047-1-sivanichkin@yandex-team.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201007192655.GA104072@kroah.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 09:26:55PM +0200, Greg KH wrote:
-> On Wed, Oct 07, 2020 at 01:09:01PM -0500, Haitao Huang wrote:
-> > > > > There is a patch that adds "sgx/provision".
-> > > > 
-> > > > What number in this series?
-> > > 
-> > > It's 15/24.
-> > > 
-> > 
-> > Don't know if this is critical. I'd prefer to keep them as is. Directory
-> > seems natural to me and makes sense to add more under the same dir in case
-> > there are more to come.
-> 
-> Why is this so special that you need a subdirectory for a single driver
-> with a mere 2 device nodes?  Do any other misc drivers have a new
-> subdirectory in /dev/ for them?
+ # ./perf trace -e sched:sched_switch -G test -a sleep 1
+ perf: Segmentation fault
+ Obtained 11 stack frames.
+ ./perf(sighandler_dump_stack+0x43) [0x55cfdc636db3]
+ /lib/x86_64-linux-gnu/libc.so.6(+0x3efcf) [0x7fd23eecafcf]
+ ./perf(parse_cgroups+0x36) [0x55cfdc673f36]
+ ./perf(+0x3186ed) [0x55cfdc70d6ed]
+ ./perf(parse_options_subcommand+0x629) [0x55cfdc70e999]
+ ./perf(cmd_trace+0x9c2) [0x55cfdc5ad6d2]
+ ./perf(+0x1e8ae0) [0x55cfdc5ddae0]
+ ./perf(+0x1e8ded) [0x55cfdc5ddded]
+ ./perf(main+0x370) [0x55cfdc556f00]
+ /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xe6) [0x7fd23eeadb96]
+ ./perf(_start+0x29) [0x55cfdc557389]
+ Segmentation fault
 
-Absolutely nothing as far as I'm concerned. Should have done that
-already at the time when I switched to misc based on your feedback. I
-was acting too reactive I guess. For sure I'll rename.
+ It happens because "struct trace" in option->value is passed to
+ parse_cgroups function instead of "struct evlist".
 
-I also looked at encl->refcount with time. Instead of just "moving the
-garbage up to the correct waste pit", I'll address that one by
-refactoring it out and making the reclaimer thread to do the reaper's
-job.
+Signed-off-by: Stanislav Ivanichkin <sivanichkin@yandex-team.ru>
+Reviewed-by: Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
+---
+ tools/perf/builtin-trace.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-> thanks,
-> 
-> greg k-h
+diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
+index bea461b6f937..cbc4de6840db 100644
+--- a/tools/perf/builtin-trace.c
++++ b/tools/perf/builtin-trace.c
+@@ -4651,9 +4651,12 @@ static int trace__parse_cgroups(const struct option *opt, const char *str, int u
+ {
+ 	struct trace *trace = opt->value;
+ 
+-	if (!list_empty(&trace->evlist->core.entries))
+-		return parse_cgroups(opt, str, unset);
+-
++	if (!list_empty(&trace->evlist->core.entries)) {
++		struct option o = OPT_CALLBACK('G', "cgroup", &trace->evlist,
++			"name", "monitor event in cgroup name only",
++			parse_cgroups);
++		return parse_cgroups(&o, str, unset);
++	}
+ 	trace->cgroup = evlist__findnew_cgroup(trace->evlist, str);
+ 
+ 	return 0;
+-- 
+2.17.1
 
-/Jarkko
