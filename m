@@ -2,278 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B20AD288151
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 06:28:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A1E288150
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 06:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731199AbgJIE2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 00:28:25 -0400
-Received: from mailout11.rmx.de ([94.199.88.76]:35440 "EHLO mailout11.rmx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727816AbgJIE2Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 00:28:25 -0400
-Received: from kdin01.retarus.com (kdin01.dmz1.retloc [172.19.17.48])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mailout11.rmx.de (Postfix) with ESMTPS id 4C6w6r6QzJz3yRN;
-        Fri,  9 Oct 2020 06:28:20 +0200 (CEST)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin01.retarus.com (Postfix) with ESMTPS id 4C6w6D0wv2z2xFb;
-        Fri,  9 Oct 2020 06:27:48 +0200 (CEST)
-Received: from N95HX1G2.wgnetz.xx (192.168.54.16) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Fri, 9 Oct
- 2020 06:27:47 +0200
-From:   Christian Eggers <ceggers@arri.de>
-To:     Mark Brown <broonie@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        "Sascha Hauer" <s.hauer@pengutronix.de>
-CC:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        <linux-spi@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Christian Eggers <ceggers@arri.de>
-Subject: [PATCH] spi: imx: Revert "spi: imx: enable runtime pm support"
-Date:   Fri, 9 Oct 2020 06:27:38 +0200
-Message-ID: <20201009042738.26602-1-ceggers@arri.de>
-X-Mailer: git-send-email 2.26.2
+        id S1731062AbgJIE1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 00:27:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727816AbgJIE1w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 00:27:52 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5412EC0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 21:27:50 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id u21so11185277eja.2
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 21:27:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=Wa83KDJqEIQFwYhYvTrdA/0P1iUPtwhqUCll5VkxxTM=;
+        b=KpAyRVEAdAaCwD+Yx6pELyeWFCw6hmhbf/6XG6boCoLNgXhlVj/wMaRZggwh/DHdE4
+         j3S4ZOtdhpy1LtL36FMR65fmpFwroVpgHhNx7uhiG83woYsoOClVEMA1HKjjoeeuccsU
+         0/NvrvJ8ERX5pwDvVZRsKTiD0PkY58wvHun4QomLCeS8574cEHxSJBV1z6KvSIN1Y4rT
+         QcmffTwQTIPkXR8zW+e/fdOlr/JPKxERpFbJkvavcQjboyo4h4iMASE9rPDtFKlZi+nv
+         jn5k9XVt0Wxk6P+G7ofrS/ZTwz0g9MR2P2gtfbnrflKP6Nie/7/7kX/pK8+D5FuXsS7f
+         i9WA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=Wa83KDJqEIQFwYhYvTrdA/0P1iUPtwhqUCll5VkxxTM=;
+        b=eNp+8Dcx1cjFS1/IMjP9/2B7wdP+0V3NiZ7qFqgjx/v77KD5RIIypEcOqDjCFbCGn3
+         c3RdjcSJJQzwScoqT5xg6j/s0QhdrwLNBjawcpv4aHNbMu8WM0fY6+uNexBDsuqJwwgJ
+         ZYKD1lmXW0+xD5mip22iUYvOfeW+jKdehIDWrwvB774HhhjRL0ryIouSnB7dNFQC/J71
+         I3qi1IWSngLGt2bUPfrmFxIfyXSZ4IUJAyqq0xbl2Jshco2LVPqUCrjyB8qeBuVUkshk
+         z5mH/oaCn1e0rIpll2kKi0nl58VQoiUiXyeYGqA990s2R5S9Lm1Q0h/qpo2P2pB4BpOB
+         AEtQ==
+X-Gm-Message-State: AOAM531BXD7zq6YlX38rrUmlOtLDGuc7DlozUirMTReD4XEnPqJCK5ZJ
+        QfwgWqsGsUJHpWg3pg7x0kM=
+X-Google-Smtp-Source: ABdhPJwRaS0SMAw1qCu/TiUfeuovMZop0hM7vP4uKj/gyv19otcl5FvQai3oT5+iz6yElSNHMR5snw==
+X-Received: by 2002:a17:906:564d:: with SMTP id v13mr12954650ejr.217.1602217668965;
+        Thu, 08 Oct 2020 21:27:48 -0700 (PDT)
+Received: from felia ([2001:16b8:2d6e:f600:80f1:4ea4:2130:b98])
+        by smtp.gmail.com with ESMTPSA id t16sm5463935eje.39.2020.10.08.21.27.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Oct 2020 21:27:48 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
+Date:   Fri, 9 Oct 2020 06:27:46 +0200 (CEST)
+X-X-Sender: lukas@felia
+To:     Ondrej Jirman <megous@megous.com>
+cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        =?ISO-8859-15?Q?Guido_G=FCnther?= <agx@sigxcpu.org>,
+        Purism Kernel Team <kernel@puri.sm>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH] MAINTAINERS: Update entry for st7703 driver after the
+ rename
+In-Reply-To: <20200701184640.1674969-1-megous@megous.com>
+Message-ID: <alpine.DEB.2.21.2010090623060.15995@felia>
+References: <20200701184640.1674969-1-megous@megous.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.54.16]
-X-RMX-ID: 20201009-062748-4C6w6D0wv2z2xFb-0@kdin01
-X-RMX-SOURCE: 217.111.95.66
+Content-Type: multipart/mixed; boundary="8323329-1811521063-1602217668=:15995"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 525c9e5a32bd7951eae3f06d9d077fea51718a6c.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-If CONFIG_PM is disabled, the system completely freezes on probe as
-nothing enables the clock of the SPI peripheral.
+--8323329-1811521063-1602217668=:15995
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-Signed-off-by: Christian Eggers <ceggers@arri.de>
----
- drivers/spi/spi-imx.c | 121 ++++++++++++------------------------------
- 1 file changed, 33 insertions(+), 88 deletions(-)
 
-diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c
-index 38a5f1304cec..fdc25f549378 100644
---- a/drivers/spi/spi-imx.c
-+++ b/drivers/spi/spi-imx.c
-@@ -13,9 +13,7 @@
- #include <linux/irq.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
--#include <linux/pinctrl/consumer.h>
- #include <linux/platform_device.h>
--#include <linux/pm_runtime.h>
- #include <linux/slab.h>
- #include <linux/spi/spi.h>
- #include <linux/spi/spi_bitbang.h>
-@@ -32,8 +30,6 @@ static bool use_dma = true;
- module_param(use_dma, bool, 0644);
- MODULE_PARM_DESC(use_dma, "Enable usage of DMA when available (default)");
- 
--#define MXC_RPM_TIMEOUT		2000 /* 2000ms */
--
- #define MXC_CSPIRXDATA		0x00
- #define MXC_CSPITXDATA		0x04
- #define MXC_CSPICTRL		0x08
-@@ -1534,16 +1530,20 @@ spi_imx_prepare_message(struct spi_master *master, struct spi_message *msg)
- 	struct spi_imx_data *spi_imx = spi_master_get_devdata(master);
- 	int ret;
- 
--	ret = pm_runtime_get_sync(spi_imx->dev);
--	if (ret < 0) {
--		dev_err(spi_imx->dev, "failed to enable clock\n");
-+	ret = clk_enable(spi_imx->clk_per);
-+	if (ret)
-+		return ret;
-+
-+	ret = clk_enable(spi_imx->clk_ipg);
-+	if (ret) {
-+		clk_disable(spi_imx->clk_per);
- 		return ret;
- 	}
- 
- 	ret = spi_imx->devtype_data->prepare_message(spi_imx, msg);
- 	if (ret) {
--		pm_runtime_mark_last_busy(spi_imx->dev);
--		pm_runtime_put_autosuspend(spi_imx->dev);
-+		clk_disable(spi_imx->clk_ipg);
-+		clk_disable(spi_imx->clk_per);
- 	}
- 
- 	return ret;
-@@ -1554,8 +1554,8 @@ spi_imx_unprepare_message(struct spi_master *master, struct spi_message *msg)
- {
- 	struct spi_imx_data *spi_imx = spi_master_get_devdata(master);
- 
--	pm_runtime_mark_last_busy(spi_imx->dev);
--	pm_runtime_put_autosuspend(spi_imx->dev);
-+	clk_disable(spi_imx->clk_ipg);
-+	clk_disable(spi_imx->clk_per);
- 	return 0;
- }
- 
-@@ -1674,15 +1674,13 @@ static int spi_imx_probe(struct platform_device *pdev)
- 		goto out_master_put;
- 	}
- 
--	pm_runtime_enable(spi_imx->dev);
--	pm_runtime_set_autosuspend_delay(spi_imx->dev, MXC_RPM_TIMEOUT);
--	pm_runtime_use_autosuspend(spi_imx->dev);
-+	ret = clk_prepare_enable(spi_imx->clk_per);
-+	if (ret)
-+		goto out_master_put;
- 
--	ret = pm_runtime_get_sync(spi_imx->dev);
--	if (ret < 0) {
--		dev_err(spi_imx->dev, "failed to enable clock\n");
--		goto out_runtime_pm_put;
--	}
-+	ret = clk_prepare_enable(spi_imx->clk_ipg);
-+	if (ret)
-+		goto out_put_per;
- 
- 	spi_imx->spi_clk = clk_get_rate(spi_imx->clk_per);
- 	/*
-@@ -1692,7 +1690,7 @@ static int spi_imx_probe(struct platform_device *pdev)
- 	if (spi_imx->devtype_data->has_dmamode) {
- 		ret = spi_imx_sdma_init(&pdev->dev, spi_imx, master);
- 		if (ret == -EPROBE_DEFER)
--			goto out_runtime_pm_put;
-+			goto out_clk_put;
- 
- 		if (ret < 0)
- 			dev_err(&pdev->dev, "dma setup error %d, use pio\n",
-@@ -1707,20 +1705,19 @@ static int spi_imx_probe(struct platform_device *pdev)
- 	ret = spi_bitbang_start(&spi_imx->bitbang);
- 	if (ret) {
- 		dev_err(&pdev->dev, "bitbang start failed with %d\n", ret);
--		goto out_runtime_pm_put;
-+		goto out_clk_put;
- 	}
- 
- 	dev_info(&pdev->dev, "probed\n");
- 
--	pm_runtime_mark_last_busy(spi_imx->dev);
--	pm_runtime_put_autosuspend(spi_imx->dev);
--
-+	clk_disable(spi_imx->clk_ipg);
-+	clk_disable(spi_imx->clk_per);
- 	return ret;
- 
--out_runtime_pm_put:
--	pm_runtime_dont_use_autosuspend(spi_imx->dev);
--	pm_runtime_put_sync(spi_imx->dev);
--	pm_runtime_disable(spi_imx->dev);
-+out_clk_put:
-+	clk_disable_unprepare(spi_imx->clk_ipg);
-+out_put_per:
-+	clk_disable_unprepare(spi_imx->clk_per);
- out_master_put:
- 	spi_master_put(master);
- 
-@@ -1735,82 +1732,30 @@ static int spi_imx_remove(struct platform_device *pdev)
- 
- 	spi_bitbang_stop(&spi_imx->bitbang);
- 
--	ret = pm_runtime_get_sync(spi_imx->dev);
--	if (ret < 0) {
--		dev_err(spi_imx->dev, "failed to enable clock\n");
--		return ret;
--	}
--
--	writel(0, spi_imx->base + MXC_CSPICTRL);
--
--	pm_runtime_dont_use_autosuspend(spi_imx->dev);
--	pm_runtime_put_sync(spi_imx->dev);
--	pm_runtime_disable(spi_imx->dev);
--
--	spi_imx_sdma_exit(spi_imx);
--	spi_master_put(master);
--
--	return 0;
--}
--
--static int __maybe_unused spi_imx_runtime_resume(struct device *dev)
--{
--	struct spi_master *master = dev_get_drvdata(dev);
--	struct spi_imx_data *spi_imx;
--	int ret;
--
--	spi_imx = spi_master_get_devdata(master);
--
--	ret = clk_prepare_enable(spi_imx->clk_per);
-+	ret = clk_enable(spi_imx->clk_per);
- 	if (ret)
- 		return ret;
- 
--	ret = clk_prepare_enable(spi_imx->clk_ipg);
-+	ret = clk_enable(spi_imx->clk_ipg);
- 	if (ret) {
--		clk_disable_unprepare(spi_imx->clk_per);
-+		clk_disable(spi_imx->clk_per);
- 		return ret;
- 	}
- 
--	return 0;
--}
--
--static int __maybe_unused spi_imx_runtime_suspend(struct device *dev)
--{
--	struct spi_master *master = dev_get_drvdata(dev);
--	struct spi_imx_data *spi_imx;
--
--	spi_imx = spi_master_get_devdata(master);
--
--	clk_disable_unprepare(spi_imx->clk_per);
-+	writel(0, spi_imx->base + MXC_CSPICTRL);
- 	clk_disable_unprepare(spi_imx->clk_ipg);
-+	clk_disable_unprepare(spi_imx->clk_per);
-+	spi_imx_sdma_exit(spi_imx);
-+	spi_master_put(master);
- 
- 	return 0;
- }
- 
--static int __maybe_unused spi_imx_suspend(struct device *dev)
--{
--	pinctrl_pm_select_sleep_state(dev);
--	return 0;
--}
--
--static int __maybe_unused spi_imx_resume(struct device *dev)
--{
--	pinctrl_pm_select_default_state(dev);
--	return 0;
--}
--
--static const struct dev_pm_ops imx_spi_pm = {
--	SET_RUNTIME_PM_OPS(spi_imx_runtime_suspend,
--				spi_imx_runtime_resume, NULL)
--	SET_SYSTEM_SLEEP_PM_OPS(spi_imx_suspend, spi_imx_resume)
--};
--
- static struct platform_driver spi_imx_driver = {
- 	.driver = {
- 		   .name = DRIVER_NAME,
- 		   .of_match_table = spi_imx_dt_ids,
--		   .pm = &imx_spi_pm,
--	},
-+		   },
- 	.id_table = spi_imx_devtype,
- 	.probe = spi_imx_probe,
- 	.remove = spi_imx_remove,
--- 
-Christian Eggers
-Embedded software developer
 
-Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
-Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
-Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
+On Wed, 1 Jul 2020, Ondrej Jirman wrote:
 
+> The driver was renamed, change the path in the MAINTAINERS file.
+> 
+> Signed-off-by: Ondrej Jirman <megous@megous.com>
+
+This minor non-urgent cleanup patch has not been picked up yet by anyone.
+
+Hence, ./scripts/get_maintainers.pl --self-test=patterns continues to 
+complain:
+
+  warning: no file matches  F:	Documentation/devicetree/bindings/display/panel/rocktech,jh057n00900.txt
+  warning: no file matches  F:	drivers/gpu/drm/panel/panel-rocktech-jh057n00900.c
+
+This patch cleanly applies on next-20201008 and resolves the issue above.
+
+Reviewed-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+
+
+Lukas
+
+> ---
+>  MAINTAINERS | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 5f186a661a9b..f5183eae08df 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -5487,12 +5487,13 @@ S:	Maintained
+>  F:	Documentation/devicetree/bindings/display/panel/raydium,rm67191.yaml
+>  F:	drivers/gpu/drm/panel/panel-raydium-rm67191.c
+>  
+> -DRM DRIVER FOR ROCKTECH JH057N00900 PANELS
+> +DRM DRIVER FOR SITRONIX ST7703 PANELS
+>  M:	Guido Günther <agx@sigxcpu.org>
+>  R:	Purism Kernel Team <kernel@puri.sm>
+> +R:	Ondrej Jirman <megous@megous.com>
+>  S:	Maintained
+> -F:	Documentation/devicetree/bindings/display/panel/rocktech,jh057n00900.txt
+> -F:	drivers/gpu/drm/panel/panel-rocktech-jh057n00900.c
+> +F:	Documentation/devicetree/bindings/display/panel/rocktech,jh057n00900.yaml
+> +F:	drivers/gpu/drm/panel/panel-sitronix-st7703.c
+>  
+>  DRM DRIVER FOR SAVAGE VIDEO CARDS
+>  S:	Orphan / Obsolete
+> -- 
+> 2.27.0
+> 
+> 
+--8323329-1811521063-1602217668=:15995--
