@@ -2,197 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50BC62884E1
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB84C2884E5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732599AbgJIIGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 04:06:43 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:42386 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732337AbgJIIGm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 04:06:42 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09986VA4111967;
-        Fri, 9 Oct 2020 03:06:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1602230791;
-        bh=BHTrCfkiTOmXAou93T2ihLIRlwCwPpMEKu1ad7VxsbA=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=G+b6W2PG2fdRqSHgCyBL7rYoIjHLHbnG3bjeh7mXe863YM0jen/l3tk+KAsw58rKm
-         PuEN40yCkC631DMp4/fZBfTxl29L8HCpfHwnfmGWDNrNKSSgdzwvoqVJ9n/ekmn5dt
-         L3r35sJjDI0bwNBKZw740t7LXTNIMzHB+ArBlw6M=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09986V0w091492
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 9 Oct 2020 03:06:31 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 9 Oct
- 2020 03:06:30 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 9 Oct 2020 03:06:30 -0500
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09986R0G066243;
-        Fri, 9 Oct 2020 03:06:28 -0500
-Subject: Re: [PATCH 09/18] dt-bindings: dma: ti: Add document for K3 BCDMA
-To:     Rob Herring <robh@kernel.org>
-CC:     Vinod <vkoul@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Vignesh R <vigneshr@ti.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tero Kristo <t-kristo@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        "open list:DMA GENERIC OFFLOAD ENGINE SUBSYSTEM" 
-        <dmaengine@vger.kernel.org>
-References: <20200930091412.8020-1-peter.ujfalusi@ti.com>
- <20200930091412.8020-10-peter.ujfalusi@ti.com>
- <20201006192909.GA2679155@bogus>
- <bc054ef7-dcd7-dde2-13f8-4900a33b1377@ti.com> <20201007154635.GA273523@bogus>
- <d5746fca-bbdd-0fd1-cbcb-21b6269c39ac@ti.com>
- <CAL_JsqJnk=ycRurUTBwWgX1+vOq_MZuevegvK2MwGJHkHW50mg@mail.gmail.com>
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-Message-ID: <1f532784-c46d-6746-2511-466fd82c0809@ti.com>
-Date:   Fri, 9 Oct 2020 11:06:49 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
-MIME-Version: 1.0
-In-Reply-To: <CAL_JsqJnk=ycRurUTBwWgX1+vOq_MZuevegvK2MwGJHkHW50mg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        id S1732621AbgJIIIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 04:08:23 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:10560 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732458AbgJIIIX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 04:08:23 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602230902; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=75E1HKPsei40eEw+eHRkIo0miSo6IqCWxY6d9GK39LU=; b=oCfysDkDA46Cf6WmcypBWNOy4lsl86/voy0BRiAw135uoRcexsvov0YiwmCi/KeeOV5crMe8
+ lkbPOka0dWs6RtVImTz+hY/+48XEXpsolc7BTnO/DyCh8mu8nfEmUUmivegUZihBJ/PWIU3n
+ exiWvs6h+zx5gOvHYSlugV/tg7g=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5f801a6daad2c3cd1c5149e2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 09 Oct 2020 08:08:13
+ GMT
+Sender: ipkumar=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 95EBEC43382; Fri,  9 Oct 2020 08:08:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from ipkumar-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: ipkumar)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8FF1BC43382;
+        Fri,  9 Oct 2020 08:08:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8FF1BC43382
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=ipkumar@codeaurora.org
+From:   Praveenkumar I <ipkumar@codeaurora.org>
+To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        sivaprak@codeaurora.org, peter.ujfalusi@ti.com,
+        boris.brezillon@collabora.com, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org, kathirav@codeaurora.org,
+        Praveenkumar I <ipkumar@codeaurora.org>
+Subject: [PATCH] mtd: rawnand: qcom: Fix DMA sync on FLASH_STATUS register read
+Date:   Fri,  9 Oct 2020 13:37:52 +0530
+Message-Id: <1602230872-25616-1-git-send-email-ipkumar@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+After each codeword NAND_FLASH_STATUS is read for possible operational
+failures. But there is no DMA sync for CPU operation before reading it
+and this leads to incorrect or older copy of DMA buffer in reg_read_buf.
 
+This patch adds the DMA sync on reg_read_buf for CPU before reading it.
 
-On 08/10/2020 22.15, Rob Herring wrote:
-> On Thu, Oct 8, 2020 at 3:40 AM Peter Ujfalusi <peter.ujfalusi@ti.com> wrote:
+Fixes: 5bc36b2bf6e2 ("mtd: rawnand: qcom: check for operation errors in case of raw read")
+Signed-off-by: Praveenkumar I <ipkumar@codeaurora.org>
+---
+ drivers/mtd/nand/raw/qcom_nandc.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
->>> Yeah, you have to do 'unevaluatedProperties: false' which doesn't
->>> actually do anything yet, but can 'see' into $ref's.
->>
->> I see, but even if I add the unevaluatedProperties: false I will have
->> the same error as long as I have additionalProperties: false
-> 
-> Yes. I meant unevaluatedProperties instead of additionalProperties.
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index bd7a7251429b..5bb85f1ba84c 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -1570,6 +1570,8 @@ static int check_flash_errors(struct qcom_nand_host *host, int cw_cnt)
+ 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+ 	int i;
+ 
++	nandc_read_buffer_sync(nandc, true);
++
+ 	for (i = 0; i < cw_cnt; i++) {
+ 		u32 flash = le32_to_cpu(nandc->reg_read_buf[i]);
+ 
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-OK, changed it to unevaluatedProperties.
-
->> If I remove the additionalProperties then it makes no difference if I
->> have the unevaluatedProperties: false or I don't.
-> 
-> Not yet, but it will soon. Once I have the tree in a consistent state
-> in 5.10-rc1, there will be a meta-schema to check all this (which is
-> one of those must always be present).
-> 
-> Though, as of now 'unevaluatedProperties' doesn't do anything because
-> the underlying json-schema tool doesn't yet support it.
-
-Understand, thanks for the details.
-
->>>>>> +  ti,sci-rm-range-bchan:
->>>>>> +    description: |
->>>>>> +      Array of BCDMA block-copy channel resource subtypes for resource
->>>>>> +      allocation for this host
->>>>>> +    allOf:
->>>>>> +      - $ref: /schemas/types.yaml#/definitions/uint32-array
->>>>>> +    minItems: 1
->>>>>> +    # Should be enough
->>>>>> +    maxItems: 255
->>>>>
->>>>> Are there constraints for the individual elements?
->>>>
->>>> In practice the subtype ID is 6bits number.
->>>> Should I add limits to individual elements?
->>>
->>> Yes:
->>>
->>> items:
->>>   maximum: 0x3f
->>
->> Right, I can just omit the minimum.
->>
->> It would be nice if I could use definitions for these ranges to avoid
->> duplicated lines by adding
->>
->> definitions:
->>   ti,rm-range:
->>     $ref: /schemas/types.yaml#/definitions/uint32-array
->>     minItems: 1
->>     # Should be enough
->>     maxItems: 255
->>     items:
->>       minimum: 0
->>       maximum: 0x3f
->>
->> to schemas/arm/keystone/ti,k3-sci-common.yaml
->>
->> and only have:
->>
->>   ti,sci-rm-range-bchan:
->>     $ref:
->> /schemas/arm/keystone/ti,k3-sci-common.yaml#/definitions/ti,rm-range
->>     description: |
->>       Array of BCDMA block-copy channel resource subtypes for resource
->>       allocation for this host
-> 
-> Just do:
-> 
-> patternProperties:
->   "^ti,sci-rm-range-[btr]chan$":
->     ...
-> 
-> If this is common for other bindings, then you can put it in
-> ti,k3-sci-common.yaml.
-
-Similar property (for RM ranges) also used by the ringacc, I have tried
-to standardize us to use: ti,sci-rm-range-* in DT.
-
-I will leave it as it is now for this series and we can simplify it
-later with a wider series touching all involved yaml files.
-
->> but it results:
->> Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml:
->> properties:ti,sci-rm-range-bchan: {'$ref':
->> '/schemas/arm/keystone/ti,k3-sci-common.yaml#/definitions/ti,rm-range',
->> 'description': 'Array of BCDMA block-copy channel resource subtypes for
->> resource\nallocation for this host\n'} is not valid under any of the
->> given schemas (Possible causes of the failure):
->>         Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml:
->> properties:ti,sci-rm-range-bchan: 'not' is a required property
->>         Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml:
->> properties:ti,sci-rm-range-bchan:$ref:
->> '/schemas/arm/keystone/ti,k3-sci-common.yaml#/definitions/ti,rm-range'
->> does not match 'types.yaml#[/]{0,1}definitions/.*'
-> 
-> We probably should allow for using 'definitions' which is pretty
-> common json-schema practice, but don't primarily in order to keep
-> folks within the lines. Things are optimized for not knowing
-> json-schema and trying to minimize errors I have to check for.
-
-I agree on these.
-
-> Supporting it would complicate the meta-schema and the tools' fixup
-> code. So far, the need for it has been pretty infrequent.
-
-Sure, for the couple of duplication I have it is manageable without
-sacrificing readability.
-
-btw: I have made the similar changes to the k3-pktdma schema.
-
-> 
-> Rob
-> 
-
-- Péter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
