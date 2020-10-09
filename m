@@ -2,114 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0218F288526
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99635288519
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:20:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732767AbgJIIYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 04:24:06 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2966 "EHLO huawei.com"
+        id S1732694AbgJIIUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 04:20:34 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15199 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732644AbgJIIYF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 04:24:05 -0400
-Received: from lhreml715-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id 3ED5A84B8FB842474DD8;
-        Fri,  9 Oct 2020 09:24:04 +0100 (IST)
-Received: from DESKTOP-6T4S3DQ.china.huawei.com (10.47.90.75) by
- lhreml715-chm.china.huawei.com (10.201.108.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Fri, 9 Oct 2020 09:24:03 +0100
-From:   Shiju Jose <shiju.jose@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <linuxarm@huawei.com>, <wangzhou1@hisilicon.com>,
-        <shiju.jose@huawei.com>
-Subject: [PATCH 1/1] crypto: hisilicon: Fix doc warnings in sgl.c and qm.c
-Date:   Fri, 9 Oct 2020 09:19:38 +0100
-Message-ID: <20201009081938.1526-1-shiju.jose@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        id S1732547AbgJIIUe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 04:20:34 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 1AED2D3E59D5D3204E6D;
+        Fri,  9 Oct 2020 16:20:31 +0800 (CST)
+Received: from [127.0.0.1] (10.74.185.4) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Fri, 9 Oct 2020
+ 16:20:25 +0800
+Subject: Re: [PATCH v3] ACPI / APEI: do memory failure on the physical address
+ reported by ARM processor error section
+To:     James Morse <james.morse@arm.com>
+References: <1601258560-6658-1-git-send-email-tanxiaofei@huawei.com>
+ <06ebead0-ffa5-5003-f0a7-0b38fcb0e702@arm.com>
+CC:     <rafael@kernel.org>, <rjw@rjwysocki.net>, <lenb@kernel.org>,
+        <tony.luck@intel.com>, <bp@alien8.de>, <akpm@linux-foundation.org>,
+        <jroedel@suse.de>, <peterz@infradead.org>,
+        <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>
+From:   Xiaofei Tan <tanxiaofei@huawei.com>
+Message-ID: <5F801D49.302@huawei.com>
+Date:   Fri, 9 Oct 2020 16:20:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.5.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.47.90.75]
-X-ClientProxiedBy: lhreml721-chm.china.huawei.com (10.201.108.72) To
- lhreml715-chm.china.huawei.com (10.201.108.66)
+In-Reply-To: <06ebead0-ffa5-5003-f0a7-0b38fcb0e702@arm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.74.185.4]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix following warnings caused by mismatch between
-function parameters and function comments.
+Hi James, Thanks for reviewing the patch.
 
-drivers/crypto/hisilicon/sgl.c:256: warning: Excess function parameter 'hw_sgl_dma' description in 'hisi_acc_sg_buf_unmap'
-drivers/crypto/hisilicon/sgl.c:256: warning: Excess function parameter 'pool' description in 'hisi_acc_sg_buf_unmap'
-drivers/crypto/hisilicon/qm.c:1849: warning: Function parameter or member 'qp' not described in 'qm_drain_qp'
-drivers/crypto/hisilicon/qm.c:2420: warning: Function parameter or member 'qm' not described in 'hisi_qm_set_vft'
-drivers/crypto/hisilicon/qm.c:2420: warning: Function parameter or member 'fun_num' not described in 'hisi_qm_set_vft'
-drivers/crypto/hisilicon/qm.c:2420: warning: Function parameter or member 'base' not described in 'hisi_qm_set_vft'
-drivers/crypto/hisilicon/qm.c:2420: warning: Function parameter or member 'number' not described in 'hisi_qm_set_vft'
-drivers/crypto/hisilicon/qm.c:2620: warning: Function parameter or member 'qm' not described in 'qm_clear_queues'
+On 2020/10/1 21:44, James Morse wrote:
+> Hi Tanxiaofei,
+> 
+> (sorry for the late reply)
+> 
+> On 28/09/2020 03:02, Xiaofei Tan wrote:
+>> After the commit 8fcc4ae6faf8 ("arm64: acpi: Make apei_claim_sea()
+>> synchronise with APEI's irq work") applied, do_sea() return directly
+>> for user-mode if apei_claim_sea() handled any error record. Therefore,
+>> each error record reported by the user-mode SEA must be effectively
+>> processed in APEI GHES driver.
+>>
+>> Currently, GHES driver only processes Memory Error Section.(Ignore PCIe
+>> Error Section, as it has nothing to do with SEA). It is not enough.
+>> Because ARM Processor Error could also be used for SEA in some hardware
+>> platforms, such as Kunpeng9xx series. We can't ask them to switch to
+>> use Memory Error Section for two reasons:
+>> 1)The server was delivered to customers, and it will introduce
+>> compatibility issue.
+> 
+>> 2)It make sense to use ARM Processor Error Section. Because either
+>> cache or memory errors could generate SEA when consumed by a processor.
+>>
+>> Do memory failure handling for ARM Processor Error Section just like
+>> for Memory Error Section.
+> 
+> 
+>> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+>> index 99df00f..ca0aa97 100644
+>> --- a/drivers/acpi/apei/ghes.
+>> +++ b/drivers/acpi/apei/ghes.c
+>> @@ -441,28 +441,35 @@ static void ghes_kick_task_work(struct callback_head *head)
+> 
+>> +static bool ghes_handle_arm_hw_error(struct acpi_hest_generic_data *gdata, int sev)
+>> +{
+>> +	struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
+>> +	struct cper_arm_err_info *err_info;
+>> +	bool queued = false;
+>> +	int sec_sev, i;
+>> +
+>> +	log_arm_hw_error(err);
+>> +
+>> +	sec_sev = ghes_severity(gdata->error_severity);
+>> +	if (sev != GHES_SEV_RECOVERABLE || sec_sev != GHES_SEV_RECOVERABLE)
+>> +		return false;
+>> +
+>> +	err_info = (struct cper_arm_err_info *) (err + 1);
+>> +	for (i = 0; i < err->err_info_num; i++, err_info++) {
+> 
+> err_info has its own length, could we use that in case someone comes up with a new table
+> version? (like this, old versions of the kernel will read mis-aligned structures)
+> 
 
-Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
-Reviewed-by: Zhou Wang <wangzhou1@hisilicon.com>
----
- drivers/crypto/hisilicon/qm.c  | 13 +++++++++++++
- drivers/crypto/hisilicon/sgl.c |  2 --
- 2 files changed, 13 insertions(+), 2 deletions(-)
+The length of err_info is hard written in "ARM Processor Error Section", always 32 bytes.
+If someone comes up with a new table version, must also be this length. It seems no much
+differences to change to use the fixed 32 bytes here.
 
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 530f23116d7c..050fe4e74523 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -1843,6 +1843,9 @@ int hisi_qm_start_qp(struct hisi_qp *qp, unsigned long arg)
- EXPORT_SYMBOL_GPL(hisi_qm_start_qp);
- 
- /**
-+ * qm_drain_qp() - Drain a qp.
-+ * @qp: The qp we want to drain.
-+ *
-  * Determine whether the queue is cleared by judging the tail pointers of
-  * sq and cq.
-  */
-@@ -2486,6 +2489,12 @@ int hisi_qm_get_vft(struct hisi_qm *qm, u32 *base, u32 *number)
- EXPORT_SYMBOL_GPL(hisi_qm_get_vft);
- 
- /**
-+ * hisi_qm_set_vft() - Set vft to a qm.
-+ * @qm: The qm we want to set its vft.
-+ * @fun_num: The function number.
-+ * @base: The base number of queue in vft.
-+ * @number: The number of queues in vft.
-+ *
-  * This function is alway called in PF driver, it is used to assign queues
-  * among PF and VFs.
-  *
-@@ -2690,7 +2699,11 @@ static int qm_stop_started_qp(struct hisi_qm *qm)
- 	return 0;
- }
- 
-+
- /**
-+ * qm_clear_queues() - Clear all queues memory in a qm.
-+ * @qm: The qm in which the queues will be cleared.
-+ *
-  * This function clears all queues memory in a qm. Reset of accelerator can
-  * use this to clear queues.
-  */
-diff --git a/drivers/crypto/hisilicon/sgl.c b/drivers/crypto/hisilicon/sgl.c
-index 725a739800b0..3bff6394acaf 100644
---- a/drivers/crypto/hisilicon/sgl.c
-+++ b/drivers/crypto/hisilicon/sgl.c
-@@ -246,8 +246,6 @@ EXPORT_SYMBOL_GPL(hisi_acc_sg_buf_map_to_hw_sgl);
-  * @dev: The device which hw sgl belongs to.
-  * @sgl: Related scatterlist.
-  * @hw_sgl: Virtual address of hw sgl.
-- * @hw_sgl_dma: DMA address of hw sgl.
-- * @pool: Pool which hw sgl is allocated in.
-  *
-  * This function unmaps allocated hw sgl.
-  */
+> 
+>> +		if (!(err_info->validation_bits & CPER_ARM_INFO_VALID_PHYSICAL_ADDR))
+>> +			continue;
+>> +
+>> +		if (err_info->type != CPER_ARM_CACHE_ERROR) {
+>> +			pr_warn_ratelimited(FW_WARN GHES_PFX
+>> +			"Physical address should be invalid for %s\n",
+> 
+> Should? A bus-error could have a valid physical address. I can't see anything in the spec
+> that forbids this.
+
+Really? Our platform can't physical address for bus-error.
+I remember you asked this in earlier version patch, which is why i skipped non-cache error.
+
+
+ In general we shouldn't try to validate what firmware is doing.
+> 
+> 
+>> +			err_info->type < ARRAY_SIZE(cper_proc_error_type_strs) ?
+>> +			cper_proc_error_type_strs[err_info->type] : "unknown error type");
+>> +			continue;
+>> +		}
+> 
+> I think we should warn for the cases this handler doesn't cover, but we should try to
+> catch all of them. e.g:
+> 
+> |	bool is_cache = (err_info->type == CPER_ARM_CACHE_ERROR);
+> |	bool has_pa = (err_info->validation_bits & CPER_ARM_INFO_VALID_PHYSICAL_ADDR)
+> |
+> |	if (!is_cache || !has_pa) {
+> |		pr_warn_ratelimited(..."Unhandled processor error type %s\n", ...);
+> |		continue;
+> |	}
+> 
+
+OK
+
+> 
+> For cache errors, (err_info->error_info & BIT(26)) has its own corrected/uncorrected flag.
+> You filter out 'overall corrected' section types earlier, could you check this error
+> record before invoking memory_failure()?
+> 
+
+Do you mean skip corrected error in a recoverable or fatal error section ?
+We only use the  severity type of section header, and this corrected/uncorrected flag
+may not be filled correctly in firmware.
+
+> (sections may contain a set of errors. I'm not convinced a 'corrected section' can't
+> contain latent uncorrected errors, it just means the machine didn't need that data yet)
+> 
+
+If contain uncorrected errors, then the error section should be defined as recoverable.
+
+> 
+> 
+>> +		if (ghes_do_memory_failure(err_info->physical_fault_addr, 0))
+>> +			queued = true;
+> 
+> May as well:
+> |		return ghes_do_memory_failure(...);
+> 
+
+We can't return directly from here, as other error info may not have been handled.
+
+> 
+>> +	}
+>> +
+>> +	return queued;
+> 
+> (and make this:
+> |	return false
+> )
+> 
+>> +}
+> 
+> 
+> 
+> Thanks,
+> 
+> James
+> 
+> .
+> 
+
 -- 
-2.17.1
-
+ thanks
+tanxiaofei
 
