@@ -2,80 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D122288AE1
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:30:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B87D7288AE3
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388762AbgJIOaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 10:30:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388727AbgJIOaM (ORCPT
+        id S2388791AbgJIOaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 10:30:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39369 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731698AbgJIOaQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 10:30:12 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D450DC0613D5
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 07:30:11 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id z6so10765897qkz.4
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 07:30:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=p7Tcy41BHHzdJD3d55Dx7+SitKAuIMpz6nsj1EKscQ4=;
-        b=PXQzFPw+2zyeumJOQcaBO0MUOi3o+J7O34smVyrogzNMl+qwUVlv5JD9mWKrvmZqx4
-         6O7hY5mXBCBp+JMuIOs0AUUI09cw+F3mZozuQ0HA2oTZPmn3WvFLzbrESeUi1QSpktvV
-         RZ2izTI0vG7QKJL+vybdmyFBujHf4DfJCRCGwevYFXywyJQpuW4gjJieQ1pLzC5YUuRR
-         j1u5XwQgtC36/uSpcjUkBu+f3KtSUHs7owqqAWhfPtrTIBV8fDqGyP0W58Y3Ca/6iOWh
-         DWOEfokxeQXQX21QxYgUi7Eiamh8Lw/QDbwNINXKHJikr2ILcLmGc4FAQcqHwWBqclof
-         3izA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=p7Tcy41BHHzdJD3d55Dx7+SitKAuIMpz6nsj1EKscQ4=;
-        b=Z6KnRqF8BuTaLvGFO3sIp1Z+Nwvh8oUh1GLQN7kSP11SP6kY+2EWpnEpxPdghyjxza
-         KiilNgfk7fFnVZ4iLJcnUeHjmP6sW5B6uohKx3OSEKGJGkSrwq9YRQ5iug1rVT5cMJ+4
-         F7lP6dYz2HZ6lsHeNJX7+OtKipl8+rkUUCpi++7r5ZRllgrAlq05o32OPIEOGueac3F9
-         ornrXg9HTF/agLwoXzk0uNO5ncyTgAS516wDj9YL4X7fI2Iac2/0EpDsbSr8gcv//eGR
-         OGzPV18F4o0zvxRTo4++AmGPkWgeOCEbEsV5bG190+J5vpGty7UozQVphQalTUK8cyxC
-         oRpw==
-X-Gm-Message-State: AOAM530XkBfUQxRUD7RFeCL/NGt4Ji5cMa0p5ONP9inPwWnlv4rpl+8o
-        /n9l1K0mwxoP+AA3AcaN9Uj/npqRee0Dlg==
-X-Google-Smtp-Source: ABdhPJykdSDHPibSC9hA2ZTSLVymx8cWxLJ7r95HtK9LpRSGM3JYCE24+QKVrBoWD/AJwUNdKPcMUw==
-X-Received: by 2002:a05:620a:128c:: with SMTP id w12mr14124460qki.355.1602253810703;
-        Fri, 09 Oct 2020 07:30:10 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c0a8:11e8::107d? ([2620:10d:c091:480::1:f1f8])
-        by smtp.gmail.com with ESMTPSA id x25sm6278777qtp.64.2020.10.09.07.30.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Oct 2020 07:30:09 -0700 (PDT)
-Subject: Re: [PATCH] btrfs: ref-verify: Fix memleak in add_extent_data_ref
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu
-Cc:     Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200827074339.22950-1-dinghao.liu@zju.edu.cn>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <f13c740e-b140-9dbc-04f2-0142de59f099@toxicpanda.com>
-Date:   Fri, 9 Oct 2020 10:30:08 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.3.1
+        Fri, 9 Oct 2020 10:30:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602253815;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VZwi1PuAHHUonkjQhC6XnnNKvufbOcpHYJxIfyAttlM=;
+        b=c6lbCxk10TEhVuBKIFeyIATZ9nqXL+Jlg6l+RAFnrNuf8lGxqU4LrepQcCmOva4m0FiYKj
+        5eVPNdfeNuMZ90q4BqY3bIius86nt5cy6rOj5G2pYPN0racs+aeqB5/Q/zkX+YrLd0hOgZ
+        bgpRIHj+KytD28ej2EqhrMSTp4Gnwcc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-321-E31mPg-WMJ2_5nnlADFGsg-1; Fri, 09 Oct 2020 10:30:13 -0400
+X-MC-Unique: E31mPg-WMJ2_5nnlADFGsg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5C01018FE860;
+        Fri,  9 Oct 2020 14:30:12 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.195.138])
+        by smtp.corp.redhat.com (Postfix) with SMTP id DA6226EF7B;
+        Fri,  9 Oct 2020 14:30:10 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Fri,  9 Oct 2020 16:30:12 +0200 (CEST)
+Date:   Fri, 9 Oct 2020 16:30:09 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+        peterz@infradead.org, tglx@linutronix.de
+Subject: Re: [PATCHSET v4] Add support for TIF_NOTIFY_SIGNAL
+Message-ID: <20201009143009.GA14523@redhat.com>
+References: <20201008152752.218889-1-axboe@kernel.dk>
 MIME-Version: 1.0
-In-Reply-To: <20200827074339.22950-1-dinghao.liu@zju.edu.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201008152752.218889-1-axboe@kernel.dk>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/27/20 3:43 AM, Dinghao Liu wrote:
-> When lookup_root_entry() fails, ref should be freed
-> just like when insert_ref_entry() fails.
+On 10/08, Jens Axboe wrote:
+>
+> Changes since v3:
 > 
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> - Drop not needed io_uring change
+> - Drop syscall restart split, handle TIF_NOTIFY_SIGNAL from the arch
+>   signal handling, using task_sigpending() to see if we need to care
+>   about real signals.
+> - Fix a few over-zelaous task_sigpending() changes
+> - Cleanup WARN_ON() in restore_saved_sigmask_unless()
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: Oleg Nesterov <oleg@redhat.com>
 
-Thanks,
+but let me comment 3/4...
 
-Josef
