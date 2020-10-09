@@ -2,46 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3107288287
+	by mail.lfdr.de (Postfix) with ESMTP id 1657F288285
 	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 08:38:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732062AbgJIGhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 02:37:53 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:55416 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731970AbgJIGfc (ORCPT
+        id S1732328AbgJIGhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 02:37:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731995AbgJIGfd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 02:35:32 -0400
-Date:   Fri, 09 Oct 2020 06:35:30 -0000
+        Fri, 9 Oct 2020 02:35:33 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41781C0613D6;
+        Thu,  8 Oct 2020 23:35:33 -0700 (PDT)
+Date:   Fri, 09 Oct 2020 06:35:31 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602225330;
+        s=2020; t=1602225331;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=zdDfHF+nbfWKrxxTyGW/+bnegHmzKtqAi7hUkaAhi2E=;
-        b=uKxIa0Q3jQnI61vBKnlldCwbJn0kkwLNLvWETLK4Sead5KEb16/2tPMZM9YeYbgZDH/12F
-        zwAlxJC2xdQXwfGGRrYqj2eC+axnuV/feRpc6NWqSdD8xkJMdIRV9yoFIPgvVFmHbfSlvZ
-        xmzzB7FuL7JAlWfo413hGhUfbWswsHqCjMgBZKkigeuIjruVOkYQWoO1SImwj7RVLIyWco
-        AdLgBG/A9O+cNcs+R93tMyqieBMh39vIyS9oK9qVbEbNEPu9DuVpjTrRHRjIK1dkrSDfM3
-        uQ9lRGyXWj72OcU3uU2ts3U8PzprDNK+TgJEaeNiYnu8FEE3b9w75Cy1b6xI6w==
+        bh=A+4ctZtLuQOlEI+pA+FucARFF/uSBELG4pHJXVZdXl4=;
+        b=O5+7bZ1b4ZlYkXzADuW9luxxTxTKh+z/JDymPyxts6SDHpwQe+SYxr9ULJCBk7Rai5SBZB
+        wEX1HKXTzpmj61SCAsL6A2kSs3mmIi1gH2Ws7r/kpftzuxOGkvHgcF1TtPagINRN8UMPK1
+        ShbAYO+vuCpSTwvBXTpz/M69fta5x68n3WVESupyM/rowWpmEoi1/m5BqVUHIQQ7Lmb6zv
+        dV+H6Si2hEYM8z5/1aDq+WPkUOoDQUyyz1MDmg7fiVoVRh2ec/Fjz0jPigGxgym2Il/3dq
+        IMtGc5GrcXPGXwYlfqU9kTxG8/EuGJHUNlP+Je6GsTyO8F/IeZ035wjV2tm83Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602225330;
+        s=2020e; t=1602225331;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=zdDfHF+nbfWKrxxTyGW/+bnegHmzKtqAi7hUkaAhi2E=;
-        b=u1uk2940rudhW0q795MJDUbA7uNM1UxZ+xrn8P4pHIPqlOWiDabm6m+SQjXg1flXZukvzF
-        NvxgxB9AzKfe0mBA==
+        bh=A+4ctZtLuQOlEI+pA+FucARFF/uSBELG4pHJXVZdXl4=;
+        b=kax36MGFaZoIeRgieI9tgOi9yb3K4+9nt2sJLcfLV3/U96hq5dihg9KOJZvD8ywHBdc2du
+        xCtLNlBl5vIEIODw==
 From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] scftorture: Add smp_call_function_many()
- memory-ordering checks
+Subject: [tip: core/rcu] scftorture: Summarize per-thread statistics
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <160222533003.7002.8090034918982279919.tip-bot2@tip-bot2>
+Message-ID: <160222533102.7002.11230901526584142414.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -52,75 +54,69 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     980205ee8489d53c4380f7762debac87312b0fb3
-Gitweb:        https://git.kernel.org/tip/980205ee8489d53c4380f7762debac87312b0fb3
+Commit-ID:     dba3142b37f343734bf61dbce2914acb76e69fb6
+Gitweb:        https://git.kernel.org/tip/dba3142b37f343734bf61dbce2914acb76e69fb6
 Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Wed, 01 Jul 2020 12:30:02 -07:00
+AuthorDate:    Tue, 30 Jun 2020 16:13:37 -07:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 24 Aug 2020 18:38:34 -07:00
+CommitterDate: Mon, 24 Aug 2020 18:38:33 -07:00
 
-scftorture: Add smp_call_function_many() memory-ordering checks
+scftorture: Summarize per-thread statistics
 
-This commit adds checks for memory misordering across calls to and
-returns from smp_call_function_many() in the case where the caller waits.
-Misordering results in a splat.
+This commit summarizes the per-thread statistics, providing counts of
+the number of single, many, and all calls, both no-wait and wait, and,
+for the single case, the number where the target CPU was offline.
 
-Note that in contrast to smp_call_function_single(), this code does not
-test memory ordering into the handler in the no-wait case because none
-of the handlers would be able to free the scf_check structure without
-introducing heavy synchronization to work out which was last.
-
-[ paulmck: s/GFP_KERNEL/GFP_ATOMIC/ per kernel test robot feedback. ]
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/scftorture.c | 26 +++++++++++++++++++++++---
- 1 file changed, 23 insertions(+), 3 deletions(-)
+ kernel/scftorture.c | 22 ++++++++++++++++++----
+ 1 file changed, 18 insertions(+), 4 deletions(-)
 
 diff --git a/kernel/scftorture.c b/kernel/scftorture.c
-index 9b42271..3519ad1 100644
+index 5f19845..09a6242 100644
 --- a/kernel/scftorture.c
 +++ b/kernel/scftorture.c
-@@ -240,8 +240,11 @@ static void scf_handler(void *scfc_in)
- 	unsigned long r = torture_random(this_cpu_ptr(&scf_torture_rand));
- 	struct scf_check *scfcp = scfc_in;
+@@ -128,13 +128,27 @@ DEFINE_TORTURE_RANDOM_PERCPU(scf_torture_rand);
+ static void scf_torture_stats_print(void)
+ {
+ 	int cpu;
++	int i;
+ 	long long invoked_count = 0;
+ 	bool isdone = READ_ONCE(scfdone);
++	struct scf_statistics scfs = {};
  
--	if (likely(scfcp) && WARN_ON_ONCE(unlikely(!READ_ONCE(scfcp->scfc_in))))
--		atomic_inc(&n_mb_in_errs);
-+	if (likely(scfcp)) {
-+		WRITE_ONCE(scfcp->scfc_out, false); // For multiple receivers.
-+		if (WARN_ON_ONCE(unlikely(!READ_ONCE(scfcp->scfc_in))))
-+			atomic_inc(&n_mb_in_errs);
+ 	for_each_possible_cpu(cpu)
+ 		invoked_count += data_race(per_cpu(scf_invoked_count, cpu));
+-	pr_alert("%s scf_invoked_count %s: %lld ",
+-		 SCFTORT_FLAG, isdone ? "VER" : "ver", invoked_count);
++	for (i = 0; i < nthreads; i++) {
++		scfs.n_single += scf_stats_p[i].n_single;
++		scfs.n_single_ofl += scf_stats_p[i].n_single_ofl;
++		scfs.n_single_wait += scf_stats_p[i].n_single_wait;
++		scfs.n_single_wait_ofl += scf_stats_p[i].n_single_wait_ofl;
++		scfs.n_many += scf_stats_p[i].n_many;
++		scfs.n_many_wait += scf_stats_p[i].n_many_wait;
++		scfs.n_all += scf_stats_p[i].n_all;
++		scfs.n_all_wait += scf_stats_p[i].n_all_wait;
 +	}
- 	this_cpu_inc(scf_invoked_count);
- 	if (longwait <= 0) {
- 		if (!(r & 0xffc0))
-@@ -325,11 +328,28 @@ static void scftorture_invoke_one(struct scf_statistics *scfp, struct torture_ra
- 		}
- 		break;
- 	case SCF_PRIM_MANY:
-+		if (scfsp->scfs_wait) {
-+			scfcp = kmalloc(sizeof(*scfcp), GFP_ATOMIC);
-+			if (WARN_ON_ONCE(!scfcp))
-+				atomic_inc(&n_alloc_errs);
-+		}
- 		if (scfsp->scfs_wait)
- 			scfp->n_many_wait++;
- 		else
- 			scfp->n_many++;
--		smp_call_function_many(cpu_online_mask, scf_handler, NULL, scfsp->scfs_wait);
-+		if (scfcp) {
-+			scfcp->scfc_cpu = -1;
-+			scfcp->scfc_wait = true;
-+			scfcp->scfc_out = false;
-+			scfcp->scfc_in = true;
-+		}
-+		smp_call_function_many(cpu_online_mask, scf_handler, scfcp, scfsp->scfs_wait);
-+		if (scfcp) {
-+			if (WARN_ON_ONCE(!scfcp->scfc_out))
-+				atomic_inc(&n_mb_out_errs);  // Leak rather than trash!
-+			else
-+				kfree(scfcp);
-+		}
- 		break;
- 	case SCF_PRIM_ALL:
- 		if (scfsp->scfs_wait)
++	pr_alert("%s scf_invoked_count %s: %lld single: %lld/%lld single_ofl: %lld/%lld many: %lld/%lld all: %lld/%lld ",
++		 SCFTORT_FLAG, isdone ? "VER" : "ver", invoked_count,
++		 scfs.n_single, scfs.n_single_wait, scfs.n_single_ofl, scfs.n_single_wait_ofl,
++		 scfs.n_many, scfs.n_many_wait, scfs.n_all, scfs.n_all_wait);
+ 	torture_onoff_stats();
+ 	pr_cont("\n");
+ }
+@@ -357,11 +371,11 @@ static void scf_torture_cleanup(void)
+ 			torture_stop_kthread("scftorture_invoker", scf_stats_p[i].task);
+ 	else
+ 		goto end;
+-	kfree(scf_stats_p);
+-	scf_stats_p = NULL;
+ 	smp_call_function(scf_cleanup_handler, NULL, 0);
+ 	torture_stop_kthread(scf_torture_stats, scf_torture_stats_task);
+ 	scf_torture_stats_print();  // -After- the stats thread is stopped!
++	kfree(scf_stats_p);  // -After- the last stats print has completed!
++	scf_stats_p = NULL;
+ 
+ 	if (atomic_read(&n_errs))
+ 		scftorture_print_module_parms("End of test: FAILURE");
