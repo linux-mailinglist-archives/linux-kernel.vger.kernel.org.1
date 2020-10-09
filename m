@@ -2,150 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0CDB2883B3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 09:36:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5052883B7
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 09:37:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732142AbgJIHgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 03:36:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732122AbgJIHgp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 03:36:45 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47DA8C0613D2;
-        Fri,  9 Oct 2020 00:36:44 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id dt13so11681442ejb.12;
-        Fri, 09 Oct 2020 00:36:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=reply-to:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=KDyUTK8HE57boREsu/kkQV3gAaTaD15LV09WfHJl7QA=;
-        b=kIGXTJl/kOjQKxmgRI69WHaqY7wqG2Iftx5wG5g2WhEIYTHKNVtTW0rZIYWWs4UDho
-         DM2mbQx2xiJ0y3D0Py2Dsju2CITpUnRITmBmsIJrS4mTjp5L5oEgPHYvtwRpHreYFZWs
-         YQ0GFatuSc7Ed2uFiNpB8CotQXhkN7tvSToTlnE+UsFez1BjvKcNuqrfN2kv80c+LHI+
-         tsonF8erzFyfkOUt8NqnsJZLxO0ZL4mzCChcWxnQQrqU2nMKDLWF0PGAygmnFsu8t0+O
-         l4x1RBptHp5dY4jISuBlzc9/4LH1UZnUbJHu8lenU1eHd56zkQX0xo8cM2jccYBXTble
-         0jZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:subject:to:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=KDyUTK8HE57boREsu/kkQV3gAaTaD15LV09WfHJl7QA=;
-        b=EBUulbAFdsPMykMQc+sUhax7yNERg8N+SuxCofXYlxPW8pqWfD9wZmUmYwnySVOvcn
-         1x6EJghS9OyiQAA8vWI34gds32SN5ijZgSuSLK6kYWDWK4qPQV54r6nlxGUgW+vr15d+
-         klHV39hMtcxelor/CfO8q+bus76tIcti0U4nyeJ52FvqBNT+eTP7zvMXVqxVqJCqI1Cl
-         2ihz5lDGOfjDsjK3apZQ7RThcvC9+UdbQ+GNJBvuvktGppoCZ2Q1V27DXK8292dbxwNr
-         Eg6Oqee5VjHZTojIzZ9dNOr1+0yN4AtRcU2I3bxIlE5eD1OXSeBLMbzKOoXLJfckhObt
-         AqYg==
-X-Gm-Message-State: AOAM531K1nOyFoL5CCKXmvPcXkQl2r+aeNp13NjviAqrwUN3mpE/ycpz
-        L6AN7wHGueKHo+N1GBFb4Iw=
-X-Google-Smtp-Source: ABdhPJwmLU0/zFy/biwCWPdlbly4yd8EXZvqkIyBmFwrU0xdwElcWIp7GYrCCXyxceMhCvEZZAAqtw==
-X-Received: by 2002:a17:906:68c4:: with SMTP id y4mr13159828ejr.197.1602229003288;
-        Fri, 09 Oct 2020 00:36:43 -0700 (PDT)
-Received: from ?IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7? ([2a02:908:1252:fb60:be8a:bd56:1f94:86e7])
-        by smtp.gmail.com with ESMTPSA id w25sm5360262ejy.123.2020.10.09.00.36.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Oct 2020 00:36:42 -0700 (PDT)
-Reply-To: christian.koenig@amd.com
-Subject: Re: [PATCH 2/4] drm/prime: document that use the page array is
- deprecated
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, chris@chris-wilson.co.uk,
-        airlied@redhat.com, akpm@linux-foundation.org,
-        sumit.semwal@linaro.org
-References: <20201008112342.9394-1-christian.koenig@amd.com>
- <20201008112342.9394-2-christian.koenig@amd.com>
- <20201008140914.GF438822@phenom.ffwll.local>
- <20201008141419.GH438822@phenom.ffwll.local>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-Message-ID: <6cc96549-2724-6849-0f38-0de60ed6989c@gmail.com>
-Date:   Fri, 9 Oct 2020 09:36:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1732181AbgJIHhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 03:37:06 -0400
+Received: from mga03.intel.com ([134.134.136.65]:30796 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732087AbgJIHhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 03:37:05 -0400
+IronPort-SDR: VHabuWfFAoBZamhnxK73bHJqaSsHNE1e2KWgau/uNt4Ri8Mh+oLCcEbgqihKbh3wUVj9pit4sZ
+ T6MT07/WzoUQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="165516332"
+X-IronPort-AV: E=Sophos;i="5.77,354,1596524400"; 
+   d="scan'208";a="165516332"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 00:37:04 -0700
+IronPort-SDR: MDJhdq95lbtKuXRxTvEgaUWRva3ZXx9xfAoO4FRwSYRuqtqbEihOfXNaSkAy/f7xelLYyPSwUb
+ 2G1M/URwmWjg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,354,1596524400"; 
+   d="scan'208";a="518580128"
+Received: from yhuang-dev.sh.intel.com ([10.239.159.65])
+  by fmsmga006.fm.intel.com with ESMTP; 09 Oct 2020 00:37:01 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Huang Ying <ying.huang@intel.com>,
+        Rafael Aquini <aquini@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>
+Subject: [PATCH] mm: Fix a race during split THP
+Date:   Fri,  9 Oct 2020 15:36:47 +0800
+Message-Id: <20201009073647.1531083-1-ying.huang@intel.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20201008141419.GH438822@phenom.ffwll.local>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 08.10.20 um 16:14 schrieb Daniel Vetter:
-> On Thu, Oct 08, 2020 at 04:09:14PM +0200, Daniel Vetter wrote:
->> On Thu, Oct 08, 2020 at 01:23:40PM +0200, Christian König wrote:
->>> We have reoccurring requests on this so better document that
->>> this approach doesn't work and dma_buf_mmap() needs to be used instead.
->>>
->>> Signed-off-by: Christian König <christian.koenig@amd.com>
->>> ---
->>>   drivers/gpu/drm/drm_prime.c | 7 ++++++-
->>>   1 file changed, 6 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
->>> index 4910c446db83..16fa2bfc271e 100644
->>> --- a/drivers/gpu/drm/drm_prime.c
->>> +++ b/drivers/gpu/drm/drm_prime.c
->>> @@ -956,7 +956,7 @@ EXPORT_SYMBOL(drm_gem_prime_import);
->>>   /**
->>>    * drm_prime_sg_to_page_addr_arrays - convert an sg table into a page array
->>>    * @sgt: scatter-gather table to convert
->>> - * @pages: optional array of page pointers to store the page array in
->>> + * @pages: deprecated array of page pointers to store the page array in
->>>    * @addrs: optional array to store the dma bus address of each page
->>>    * @max_entries: size of both the passed-in arrays
->>>    *
->>> @@ -965,6 +965,11 @@ EXPORT_SYMBOL(drm_gem_prime_import);
->>>    *
->>>    * Drivers can use this in their &drm_driver.gem_prime_import_sg_table
->>>    * implementation.
->>> + *
->>> + * Specifying the pages array is deprecated and strongly discouraged for new
->>> + * drivers. The pages array is only useful for page faults and those can
->>> + * corrupt fields in the struct page if they are not handled by the exporting
->>> + * driver.
->>>    */
->> I'd make this a _lot_ stronger: Aside from amdgpu and radeon all drivers
->> using this only need it for the pages array. Imo just open-code the sg
->> table walking loop in amdgpu/radeon (it's really not much code), and then
->> drop the dma_addr_t parameter from this function here (it's set to NULL by
->> everyone else).
->>
->> And then deprecate this entire function here with a big warning that a)
->> dma_buf_map_attachment is allowed to leave the struct page pointers NULL
->> and b) this breaks mmap, users must call dma_buf_mmap instead.
->>
->> Also maybe make it an uppercase DEPRECATED or something like that :-)
-> OK I just realized I missed nouveau. That would be 3 places where we need
-> to stuff the dma_addr_t list into something ttm can take. Still feels
-> better than this half-deprecated function kludge ...
+From: Huang Ying <ying.huang@intel.com>
 
-Mhm, I don't see a reason why nouveau would need the struct page either.
+It is reported that the following bug is triggered if the HDD is used as swap
+device,
 
-How about we split that up into two function?
+[ 5758.157556] BUG: kernel NULL pointer dereference, address: 0000000000000007
+[ 5758.165331] #PF: supervisor write access in kernel mode
+[ 5758.171161] #PF: error_code(0x0002) - not-present page
+[ 5758.176894] PGD 0 P4D 0
+[ 5758.179721] Oops: 0002 [#1] SMP PTI
+[ 5758.183614] CPU: 10 PID: 316 Comm: kswapd1 Kdump: loaded Tainted: G S               --------- ---  5.9.0-0.rc3.1.tst.el8.x86_64 #1
+[ 5758.196717] Hardware name: Intel Corporation S2600CP/S2600CP, BIOS SE5C600.86B.02.01.0002.082220131453 08/22/2013
+[ 5758.208176] RIP: 0010:split_swap_cluster+0x47/0x60
+[ 5758.213522] Code: c1 e3 06 48 c1 eb 0f 48 8d 1c d8 48 89 df e8 d0 20 6a 00 80 63 07 fb 48 85 db 74 16 48 89 df c6 07 00 66 66 66 90 31 c0 5b c3 <80> 24 25 07 00 00 00 fb 31 c0 5b c3 b8 f0 ff ff ff 5b c3 66 0f 1f
+[ 5758.234478] RSP: 0018:ffffb147442d7af0 EFLAGS: 00010246
+[ 5758.240309] RAX: 0000000000000000 RBX: 000000000014b217 RCX: ffffb14779fd9000
+[ 5758.248281] RDX: 000000000014b217 RSI: ffff9c52f2ab1400 RDI: 000000000014b217
+[ 5758.256246] RBP: ffffe00c51168080 R08: ffffe00c5116fe08 R09: ffff9c52fffd3000
+[ 5758.264208] R10: ffffe00c511537c8 R11: ffff9c52fffd3c90 R12: 0000000000000000
+[ 5758.272172] R13: ffffe00c51170000 R14: ffffe00c51170000 R15: ffffe00c51168040
+[ 5758.280134] FS:  0000000000000000(0000) GS:ffff9c52f2a80000(0000) knlGS:0000000000000000
+[ 5758.289163] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 5758.295575] CR2: 0000000000000007 CR3: 0000000022a0e003 CR4: 00000000000606e0
+[ 5758.303538] Call Trace:
+[ 5758.306273]  split_huge_page_to_list+0x88b/0x950
+[ 5758.311433]  deferred_split_scan+0x1ca/0x310
+[ 5758.316202]  do_shrink_slab+0x12c/0x2a0
+[ 5758.320491]  shrink_slab+0x20f/0x2c0
+[ 5758.324482]  shrink_node+0x240/0x6c0
+[ 5758.328469]  balance_pgdat+0x2d1/0x550
+[ 5758.332652]  kswapd+0x201/0x3c0
+[ 5758.336157]  ? finish_wait+0x80/0x80
+[ 5758.340147]  ? balance_pgdat+0x550/0x550
+[ 5758.344525]  kthread+0x114/0x130
+[ 5758.348126]  ? kthread_park+0x80/0x80
+[ 5758.352214]  ret_from_fork+0x22/0x30
+[ 5758.356203] Modules linked in: fuse zram rfkill sunrpc intel_rapl_msr intel_rapl_common sb_edac x86_pkg_temp_thermal intel_powerclamp coretemp mgag200 iTCO_wdt crct10dif_pclmul iTCO_vendor_support drm_kms_helper crc32_pclmul ghash_clmulni_intel syscopyarea sysfillrect sysimgblt fb_sys_fops cec rapl joydev intel_cstate ipmi_si ipmi_devintf drm intel_uncore i2c_i801 ipmi_msghandler pcspkr lpc_ich mei_me i2c_smbus mei ioatdma ip_tables xfs libcrc32c sr_mod sd_mod cdrom t10_pi sg igb ahci libahci i2c_algo_bit crc32c_intel libata dca wmi dm_mirror dm_region_hash dm_log dm_mod
+[ 5758.412673] CR2: 0000000000000007
+[    0.000000] Linux version 5.9.0-0.rc3.1.tst.el8.x86_64 (mockbuild@x86-vm-15.build.eng.bos.redhat.com) (gcc (GCC) 8.3.1 20191121 (Red Hat 8.3.1-5), GNU ld version 2.30-79.el8) #1 SMP Wed Sep 9 16:03:34 EDT 2020
 
-One for converting the sg_table into a linear dma_addr array.
+After further digging it's found that the following race condition exists in the
+original implementation,
 
-And one for converting the sg_table into a linear struct page array with 
-a __deprecated attribute on it?
+CPU1                                                             CPU2
+----                                                             ----
+deferred_split_scan()
+  split_huge_page(page) /* page isn't compound head */
+    split_huge_page_to_list(page, NULL)
+      __split_huge_page(page, )
+        ClearPageCompound(head)
+        /* unlock all subpages except page (not head) */
+                                                                 add_to_swap(head)  /* not THP */
+                                                                   get_swap_page(head)
+                                                                   add_to_swap_cache(head, )
+                                                                     SetPageSwapCache(head)
+     if PageSwapCache(head)
+       split_swap_cluster(/* swap entry of head */)
+         /* Deref sis->cluster_info: NULL accessing! */
 
-Christian.
+So, in split_huge_page_to_list(), PageSwapCache() is called for the already
+split and unlocked "head", which may be added to swap cache in another CPU.  So
+split_swap_cluster() may be called wrongly.
 
-> -Daniel
->
->> -Daniel
->>
->>>   int drm_prime_sg_to_page_addr_arrays(struct sg_table *sgt, struct page **pages,
->>>   				     dma_addr_t *addrs, int max_entries)
->>> -- 
->>> 2.17.1
->>>
->> -- 
->> Daniel Vetter
->> Software Engineer, Intel Corporation
->> http://blog.ffwll.ch
+To fix the race, the call to split_swap_cluster() is moved to
+__split_huge_page() before all subpages are unlocked.  So that the
+PageSwapCache() is stable.
+
+Fixes: 59807685a7e77 ("mm, THP, swap: support splitting THP for THP swap out")
+Reported-and-tested-by: Rafael Aquini <aquini@redhat.com>
+Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+---
+ mm/huge_memory.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index cba3812a5c3e..87b0389673dd 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -2478,6 +2478,12 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+ 
+ 	remap_page(head, nr);
+ 
++	if (PageSwapCache(head)) {
++		swp_entry_t entry = { .val = page_private(head) };
++
++		split_swap_cluster(entry);
++	}
++
+ 	for (i = 0; i < nr; i++) {
+ 		struct page *subpage = head + i;
+ 		if (subpage == page)
+@@ -2713,12 +2719,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+ 		}
+ 
+ 		__split_huge_page(page, list, end, flags);
+-		if (PageSwapCache(head)) {
+-			swp_entry_t entry = { .val = page_private(head) };
+-
+-			ret = split_swap_cluster(entry);
+-		} else
+-			ret = 0;
++		ret = 0;
+ 	} else {
+ 		if (IS_ENABLED(CONFIG_DEBUG_VM) && mapcount) {
+ 			pr_alert("total_mapcount: %u, page_count(): %u\n",
+-- 
+2.28.0
 
