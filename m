@@ -2,130 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D70B288DD2
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 18:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05335288DE1
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 18:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389608AbgJIQLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 12:11:37 -0400
-Received: from mga06.intel.com ([134.134.136.31]:47375 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388882AbgJIQLh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 12:11:37 -0400
-IronPort-SDR: l0oa+VIBgcLrPR+HnGTLBGs5PX7DUycs+0I03Ov6gGfOEe7lflZFtRbzmho8m24CQbebutI9gD
- zR3IlICCmFFw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9769"; a="227152850"
-X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
-   d="scan'208";a="227152850"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 09:11:35 -0700
-IronPort-SDR: bsFMhdrIf0qWvQzdN1jIBDkd7A6O35ARwW4FggGWDxvCPRz/BVKn1BTZI0VH0Okpcg5gOx4lON
- PEZ0k4N+fxbw==
-X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
-   d="scan'208";a="528984520"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 09:11:35 -0700
-Date:   Fri, 9 Oct 2020 09:11:34 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     stsp <stsp2@yandex.ru>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/6] KVM: x86: KVM_SET_SREGS.CR4 bug fixes and cleanup
-Message-ID: <20201009161134.GB16234@linux.intel.com>
-References: <20201007014417.29276-1-sean.j.christopherson@intel.com>
- <99334de1-ba3d-dfac-0730-e637d39b948f@yandex.ru>
- <20201008175951.GA9267@linux.intel.com>
- <7efe1398-24c0-139f-29fa-3d89b6013f34@yandex.ru>
- <20201009040453.GA10744@linux.intel.com>
- <5dfa55f3-ecdf-9f8d-2d45-d2e6e54f2daa@yandex.ru>
- <20201009153053.GA16234@linux.intel.com>
- <5bf99bdf-b16f-8caf-ba61-860457606b8e@yandex.ru>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5bf99bdf-b16f-8caf-ba61-860457606b8e@yandex.ru>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+        id S2389643AbgJIQNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 12:13:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389492AbgJIQNm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 12:13:42 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56EF6C0613D5
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 09:13:41 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id y62so1098957pgy.16
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 09:13:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=U16gZthY7GiG18hos+s39UYV/dexC5axxz2McFtoNlo=;
+        b=vhS3dYYv7bY+kDyncQJsbZHYYRW1XDqySvWZWDFarm0NAC6t9TncD/IBNB/bSb7aeW
+         yO1QWKnY9zZuRVt0I5ketNvf2kwK6hQr/FtPX4aTTCjPQpQH9Kg5pG4twJezVXWA7gG5
+         q61G4nTK1e1JfKvUs62OWO2wUvu5uFU95sw9VJOgMZ84UQFi9tifXdq1QzQQb9/Q4Bar
+         SMjL1y00LJghai39w0XQPvPAqn9xpZkft1LV9D9T1plKJclDr7pQLMRdfPsbiVEMAusr
+         HQiAgzqgWCYnbolCw3ACEgXYwB2G6s0voPqAnEYoukixEBca0YeYYXWai/YvJXDmoRdf
+         XvCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=U16gZthY7GiG18hos+s39UYV/dexC5axxz2McFtoNlo=;
+        b=q7KAgp3I1yTsCNwh7BIpLrRN4ML+zKI4I8qe6J4mD1ibEG6ekaGS9VfzhKX41kxfuT
+         WF3MjZS54/NzGcq1pXXbUzfMEOuj/ne4MPchCo1XQdrOgSeKUp3uqnMpucohy1q332Hf
+         zK+YYB+fD6HVsmUK1Y127znS6Yw8kJE019VIvJXH63VUTeeIN+bEO6tYuinlfmdhdKdq
+         hfAIQ6cQePZDcZpKVeayZW+E7B4bzQRahHND1qFOlYoWRf4RLE/9e8VWfNRaFccVlG8y
+         HkMtCeCBLIOrirWKSAuhftxw5DS08X/L3n3faGwcnqg8KuMBg/oBrIbd5EaeOWZOIS6d
+         Qaww==
+X-Gm-Message-State: AOAM5306PLJWDAql6mg8fGj7wBRuwEjGD3Tq8IMGcJ4hsLbm5vx8dP2B
+        orLsJofBY2DHMJm6M22A+dVMI4x5A5sNa0HynZg=
+X-Google-Smtp-Source: ABdhPJwbxDO8SrAUtzuxujURZ/yjaUl/YNSKyWSLiFwER3BiW6zhR2u6G2f7Brx3XJ1eZPqqUJbUpRgrV5plJ6K3FIk=
+Sender: "samitolvanen via sendgmr" 
+        <samitolvanen@samitolvanen1.mtv.corp.google.com>
+X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:f693:9fff:fef4:1b6d])
+ (user=samitolvanen job=sendgmr) by 2002:aa7:8812:0:b029:154:e0ed:1fed with
+ SMTP id c18-20020aa788120000b0290154e0ed1fedmr12987823pfo.33.1602260020696;
+ Fri, 09 Oct 2020 09:13:40 -0700 (PDT)
+Date:   Fri,  9 Oct 2020 09:13:09 -0700
+Message-Id: <20201009161338.657380-1-samitolvanen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
+Subject: [PATCH v5 00/29] Add support for Clang LTO
+From:   Sami Tolvanen <samitolvanen@google.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        x86@kernel.org, Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 06:48:21PM +0300, stsp wrote:
-> 09.10.2020 18:30, Sean Christopherson пишет:
-> >On Fri, Oct 09, 2020 at 05:11:51PM +0300, stsp wrote:
-> >>09.10.2020 07:04, Sean Christopherson пишет:
-> >>>>Hmm. But at least it was lying
-> >>>>similarly on AMD and Intel CPUs. :)
-> >>>>So I was able to reproduce the problems
-> >>>>myself.
-> >>>>Do you mean, any AMD tests are now useless, and we need to proceed with Intel
-> >>>>tests only?
-> >>>For anything VMXE related, yes.
-> >>What would be the expected behaviour on Intel, if it is set? Any difference
-> >>with AMD?
-> >On Intel, userspace should be able to stuff CR4.VMXE=1 via KVM_SET_SREGS if
-> >the 'nested' module param is 1, e.g. if 'modprobe kvm_intel nested=1'.  Note,
-> >'nested' is enabled by default on kernel 5.0 and later.
-> 
-> So if I understand you correctly, we
-> need to test that:
-> - with nested=0 VMXE gives EINVAL
-> - with nested=1 VMXE changes nothing
-> visible, except probably to allow guest
-> to read that value (we won't test guest
-> reading though).
-> 
-> Is this correct?
+This patch series adds support for building x86_64 and arm64 kernels
+with Clang's Link Time Optimization (LTO).
 
-Yep, exactly!
- 
-> >With AMD, setting CR4.VMXE=1 is never allowed as AMD doesn't support VMX,
-> 
-> OK, for that I can give you a
-> Tested-by: Stas Sergeev <stsp@users.sourceforge.net>
-> 
-> because I confirm that on AMD it now consistently returns EINVAL, whereas
-> without your patches it did random crap, depending on whether it is a first
-> call to KVM_SET_SREGS, or not first.
-> 
-> 
-> >>But we do not use unrestricted guest.
-> >>We use v86 under KVM.
-> >Unrestricted guest can kick in even if CR0.PG=1 && CR0.PE=1, e.g. there are
-> >segmentation checks that apply if and only if unrestricted_guest=0.  Long story
-> >short, without a deep audit, it's basically impossible to rule out a dependency
-> >on unrestricted guest since you're playing around with v86.
-> 
-> You mean "unrestricted_guest" as a module parameter, rather than the similar
-> named CPU feature, right? So we may depend on unrestricted_guest parameter,
-> but not on a hardware feature, correct?
+In addition to performance, the primary motivation for LTO is
+to allow Clang's Control-Flow Integrity (CFI) to be used in the
+kernel. Google has shipped millions of Pixel devices running three
+major kernel versions with LTO+CFI since 2018.
 
-The unrestricted_guest module param is tied directly to the hardware feature,
-i.e. if kvm_intel.unrestricted_guest=0 then KVM will run guests with
-unrestricted guest disabled.  That doesn't necessarily mean any of the
-behavior that is allowed by unrestricted guest will be encountered, but if
-it is encountered, then it will be handled by the CPU instead of causing a
-VM-Exit and requiring KVM emulation.
+Most of the patches are build system changes for handling LLVM
+bitcode, which Clang produces with LTO instead of ELF object files,
+postponing ELF processing until a later stage, and ensuring initcall
+ordering.
 
-The reported is using an old CPU that doesn't support unrestricted guest,
-so both the hardware feature and the module param will be off/0.
+Note that this version is based on tip/master to reduce the number
+of prerequisite patches, and to make it easier to manage changes to
+objtool. Patch 1 is from Masahiro's kbuild tree, and while it's not
+directly related to LTO, it makes the module linker script changes
+cleaner.
 
-> >>The only other effect of setting VMXE was clearing VME. Which shouldn't
-> >>affect anything either, right?
-> >Hmm, clearing VME would mean that exceptions/interrupts within the guest would
-> >trigger a switch out of v86 and into vanilla protected mode.  v86 and PM have
-> >different consistency checks, particularly for segmentation, so it's plausible
-> >that clearing CR4.VME inadvertantly worked around the bug by avoiding invalid
-> >guest state for v86.
-> 
-> Lets assume that was the case.  With those github guys its not possible to do
-> any consistent checks. :(
+Furthermore, patches 2-6 include Peter's patch for generating
+__mcount_loc with objtool, and build system changes to enable it on
+x86. With these patches, we no longer need to annotate functions
+that have non-call references to __fentry__ with LTO, which greatly
+simplifies supporting dynamic ftrace.
 
-K.  If this is ever a problem in the future, having a way relatively simple
-reproducer, e.g. something we can run without having to build/install a
-variety of tools, would make it easier to debug.  In theory, the bug should be
-reproducible even on modern hardware by loading KVM with unrestricted_guest=0.
+You can also pull this series from
+
+  https://github.com/samitolvanen/linux.git lto-v5
+
+---
+Changes in v5:
+
+  - Rebased on top of tip/master.
+
+  - Changed the command line for objtool to use --vmlinux --duplicate
+    to disable warnings about retpoline thunks and to fix .orc_unwind
+    generation for vmlinux.o.
+
+  - Added --noinstr flag to objtool, so we can use --vmlinux without
+    also enabling noinstr validation.
+
+  - Disabled objtool's unreachable instruction warnings with LTO to
+    disable false positives for the int3 padding in vmlinux.o.
+
+  - Added ANNOTATE_RETPOLINE_SAFE annotations to the indirect jumps
+    in x86 assembly code to fix objtool warnings with retpoline.
+
+  - Fixed modpost warnings about missing version information with
+    CONFIG_MODVERSIONS.
+
+  - Included Makefile.lib into Makefile.modpost for ld_flags. Thanks
+    to Sedat for pointing this out.
+
+  - Updated the help text for ThinLTO to better explain the trade-offs.
+
+  - Updated commit messages with better explanations.
+
+Changes in v4:
+
+  - Fixed a typo in Makefile.lib to correctly pass --no-fp to objtool.
+
+  - Moved ftrace configs related to generating __mcount_loc to Kconfig,
+    so they are available also in Makefile.modfinal.
+
+  - Dropped two prerequisite patches that were merged to Linus' tree.
+
+Changes in v3:
+
+  - Added a separate patch to remove the unused DISABLE_LTO treewide,
+    as filtering out CC_FLAGS_LTO instead is preferred.
+
+  - Updated the Kconfig help to explain why LTO is behind a choice
+    and disabled by default.
+
+  - Dropped CC_FLAGS_LTO_CLANG, compiler-specific LTO flags are now
+    appended directly to CC_FLAGS_LTO.
+
+  - Updated $(AR) flags as KBUILD_ARFLAGS was removed earlier.
+
+  - Fixed ThinLTO cache handling for external module builds.
+
+  - Rebased on top of Masahiro's patch for preprocessing modules.lds,
+    and moved the contents of module-lto.lds to modules.lds.S.
+
+  - Moved objtool_args to Makefile.lib to avoid duplication of the
+    command line parameters in Makefile.modfinal.
+
+  - Clarified in the commit message for the initcall ordering patch
+    that the initcall order remains the same as without LTO.
+
+  - Changed link-vmlinux.sh to use jobserver-exec to control the
+    number of jobs started by generate_initcall_ordering.pl.
+
+  - Dropped the x86/relocs patch to whitelist L4_PAGE_OFFSET as it's
+    no longer needed with ToT kernel.
+
+  - Disabled LTO for arch/x86/power/cpu.c to work around a Clang bug
+    with stack protector attributes.
+
+Changes in v2:
+
+  - Fixed -Wmissing-prototypes warnings with W=1.
+
+  - Dropped cc-option from -fsplit-lto-unit and added .thinlto-cache
+    scrubbing to make distclean.
+
+  - Added a comment about Clang >=11 being required.
+
+  - Added a patch to disable LTO for the arm64 KVM nVHE code.
+
+  - Disabled objtool's noinstr validation with LTO unless enabled.
+
+  - Included Peter's proposed objtool mcount patch in the series
+    and replaced recordmcount with the objtool pass to avoid
+    whitelisting relocations that are not calls.
+
+  - Updated several commit messages with better explanations.
+
+
+Masahiro Yamada (1):
+  kbuild: preprocess module linker script
+
+Peter Zijlstra (1):
+  objtool: Add a pass for generating __mcount_loc
+
+Sami Tolvanen (27):
+  objtool: Don't autodetect vmlinux.o
+  tracing: move function tracer options to Kconfig
+  tracing: add support for objtool mcount
+  x86, build: use objtool mcount
+  treewide: remove DISABLE_LTO
+  kbuild: add support for Clang LTO
+  kbuild: lto: fix module versioning
+  objtool: Split noinstr validation from --vmlinux
+  kbuild: lto: postpone objtool
+  kbuild: lto: limit inlining
+  kbuild: lto: merge module sections
+  kbuild: lto: remove duplicate dependencies from .mod files
+  init: lto: ensure initcall ordering
+  init: lto: fix PREL32 relocations
+  PCI: Fix PREL32 relocations for LTO
+  modpost: lto: strip .lto from module names
+  scripts/mod: disable LTO for empty.c
+  efi/libstub: disable LTO
+  drivers/misc/lkdtm: disable LTO for rodata.o
+  arm64: vdso: disable LTO
+  KVM: arm64: disable LTO for the nVHE directory
+  arm64: disable recordmcount with DYNAMIC_FTRACE_WITH_REGS
+  arm64: allow LTO_CLANG and THINLTO to be selected
+  x86/asm: annotate indirect jumps
+  x86, vdso: disable LTO only for vDSO
+  x86, cpu: disable LTO for cpu.c
+  x86, build: allow LTO_CLANG and THINLTO to be selected
+
+ .gitignore                                    |   1 +
+ Makefile                                      |  68 +++--
+ arch/Kconfig                                  |  74 +++++
+ arch/arm/Makefile                             |   4 -
+ .../module.lds => include/asm/module.lds.h}   |   2 +
+ arch/arm64/Kconfig                            |   4 +
+ arch/arm64/Makefile                           |   4 -
+ .../module.lds => include/asm/module.lds.h}   |   2 +
+ arch/arm64/kernel/vdso/Makefile               |   4 +-
+ arch/arm64/kvm/hyp/nvhe/Makefile              |   4 +-
+ arch/ia64/Makefile                            |   1 -
+ .../{module.lds => include/asm/module.lds.h}  |   0
+ arch/m68k/Makefile                            |   1 -
+ .../module.lds => include/asm/module.lds.h}   |   0
+ arch/powerpc/Makefile                         |   1 -
+ .../module.lds => include/asm/module.lds.h}   |   0
+ arch/riscv/Makefile                           |   3 -
+ .../module.lds => include/asm/module.lds.h}   |   3 +-
+ arch/sparc/vdso/Makefile                      |   2 -
+ arch/um/include/asm/Kbuild                    |   1 +
+ arch/x86/Kconfig                              |   3 +
+ arch/x86/Makefile                             |   5 +
+ arch/x86/entry/vdso/Makefile                  |   5 +-
+ arch/x86/kernel/acpi/wakeup_64.S              |   2 +
+ arch/x86/platform/pvh/head.S                  |   2 +
+ arch/x86/power/Makefile                       |   4 +
+ arch/x86/power/hibernate_asm_64.S             |   3 +
+ drivers/firmware/efi/libstub/Makefile         |   2 +
+ drivers/misc/lkdtm/Makefile                   |   1 +
+ include/asm-generic/Kbuild                    |   1 +
+ include/asm-generic/module.lds.h              |  10 +
+ include/asm-generic/vmlinux.lds.h             |  11 +-
+ include/linux/init.h                          |  79 ++++-
+ include/linux/pci.h                           |  19 +-
+ kernel/Makefile                               |   3 -
+ kernel/trace/Kconfig                          |  29 ++
+ scripts/.gitignore                            |   1 +
+ scripts/Makefile                              |   3 +
+ scripts/Makefile.build                        |  69 +++--
+ scripts/Makefile.lib                          |  17 +-
+ scripts/Makefile.modfinal                     |  29 +-
+ scripts/Makefile.modpost                      |  25 +-
+ scripts/generate_initcall_order.pl            | 270 ++++++++++++++++++
+ scripts/link-vmlinux.sh                       |  98 ++++++-
+ scripts/mod/Makefile                          |   1 +
+ scripts/mod/modpost.c                         |  16 +-
+ scripts/mod/modpost.h                         |   9 +
+ scripts/mod/sumversion.c                      |   6 +-
+ scripts/{module-common.lds => module.lds.S}   |  31 ++
+ scripts/package/builddeb                      |   2 +-
+ tools/objtool/builtin-check.c                 |  10 +-
+ tools/objtool/check.c                         |  84 +++++-
+ tools/objtool/include/objtool/builtin.h       |   2 +-
+ tools/objtool/include/objtool/check.h         |   1 +
+ tools/objtool/include/objtool/objtool.h       |   1 +
+ tools/objtool/objtool.c                       |   1 +
+ 56 files changed, 903 insertions(+), 131 deletions(-)
+ rename arch/arm/{kernel/module.lds => include/asm/module.lds.h} (72%)
+ rename arch/arm64/{kernel/module.lds => include/asm/module.lds.h} (76%)
+ rename arch/ia64/{module.lds => include/asm/module.lds.h} (100%)
+ rename arch/m68k/{kernel/module.lds => include/asm/module.lds.h} (100%)
+ rename arch/powerpc/{kernel/module.lds => include/asm/module.lds.h} (100%)
+ rename arch/riscv/{kernel/module.lds => include/asm/module.lds.h} (84%)
+ create mode 100644 include/asm-generic/module.lds.h
+ create mode 100755 scripts/generate_initcall_order.pl
+ rename scripts/{module-common.lds => module.lds.S} (59%)
+
+
+base-commit: 80396d76da65fc8b82581c0260c25a6aa0a495a3
+-- 
+2.28.0.1011.ga647a8990f-goog
+
