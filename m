@@ -2,109 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B486A287F56
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 02:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B28FF287F5E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 02:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730758AbgJIAAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 20:00:10 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:20440 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729571AbgJIAAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 20:00:09 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602201608; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=svOoRqtJ5cLu3s1vASk0kRY90uC+P608o+2VET2Fo2I=; b=gyCOQm3AGsEqUA4QSATktEaImIV+HGYHLn3ZdccyFLpn/i1fpHrtgYu3Abx/CfsFWKGL/BOs
- uUMZ1tN/vP9vj19/1Stg/zCyql80A/4pH/Hwy2IqUqLm/lf3sVOzcmIN8yldrbhPbE/P/bf7
- 3ehsW5ioRoQH4shcYBNRtVp9ZGM=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5f7fa7f2d6d00c7a9e28c5ea (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 08 Oct 2020 23:59:45
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B77F5C43452; Thu,  8 Oct 2020 23:59:42 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9131DC43443;
-        Thu,  8 Oct 2020 23:59:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9131DC43443
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-From:   Wesley Cheng <wcheng@codeaurora.org>
-To:     sboyd@kernel.org, heikki.krogerus@linux.intel.com,
-        agross@kernel.org, robh+dt@kernel.org, gregkh@linuxfoundation.org,
-        bjorn.andersson@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jackp@codeaurora.org, sergei.shtylyov@gmail.com,
-        Wesley Cheng <wcheng@codeaurora.org>
-Subject: [PATCH v10 4/4] arm64: boot: dts: qcom: pm8150b: Add DTS node for PMIC VBUS booster
-Date:   Thu,  8 Oct 2020 16:59:34 -0700
-Message-Id: <20201008235934.8931-5-wcheng@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201008235934.8931-1-wcheng@codeaurora.org>
-References: <20201008235934.8931-1-wcheng@codeaurora.org>
+        id S1728538AbgJIACe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 20:02:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725988AbgJIACe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 20:02:34 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE090C0613D2;
+        Thu,  8 Oct 2020 17:02:33 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id l16so7602642eds.3;
+        Thu, 08 Oct 2020 17:02:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=GhVFR2anfqi/iNioQ+Ge255uzt1ydh5lKOCkiLHnrXI=;
+        b=AcYiWVzLRtt58/ab6QInE9XuUWjEoSPIvGHJSiXCf7LRe8jSH1KDQdRQMAazwQZlWC
+         ytC2uXoQuFoYh0tgQ/8S2upSxpM4VeUegnt4ALW9HpI4az0EhF7X0TcyN8Z17UvEDr2M
+         SvYAwI0t4GpX71QO+1dPcNZTbMcxzL/0+Mi5nnupQfflL2GXHVAUzh/Vwbxpk7sPWBK5
+         ePGiaMUFKJennlreGsSGe8SecEBMcZX9BsucCZsOQfXreUNlJieBoB44Y6T++Er/8GaF
+         e1psULzmQQU/pgBdEdVWJOWAUJFTh7/6OfJ5ea21Vxm5K723wu2tydn8EfnUTxbhTRMA
+         GWnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=GhVFR2anfqi/iNioQ+Ge255uzt1ydh5lKOCkiLHnrXI=;
+        b=MGjjP7czVGIVEGf/q80j27bgWMMBfI9BHVmfDq139ouCKgBCEdUkAIFCswegirikHP
+         qkPQbU8kUBGJ1e4rF1tTN7BIi9AlzMeOjy4E/Danjm3f5g6t3gGddxtVIiEi3NM9R85z
+         Y7ZJZ0apB3fM5RXUhnqzgzhxX1RAa1VChMnC+uhWFT7B+xLCPQBLZfLNo3x7MOb+xk29
+         xg61VQDEbt0aywAyvDXS1qzD1t0roPJ30q2CrnxBychM9BO/EDgVXdjQIXLr/pircPD0
+         ixN1wFHM4Fc01qvS/pnA+5tGZxlXdENCNpUUEF3Z3fJ/+aiCTc1wlLUv7kWCzOipjZLq
+         5PcQ==
+X-Gm-Message-State: AOAM530niBT45bYrOKvXxxR17OVmZu9lLQo8NG44JRohU8i/so1ibRQX
+        19aOoMGn2E/7EuEBNMhhP9pJPQ4XYHb8TSb4SP6K/a3ir6VOoQ==
+X-Google-Smtp-Source: ABdhPJwCkSBriuq2l2DcuGWPRBdnIxHzxNuW8JwRwD35DLpjlN7W00MNuW49xhqz5OopfNLwEIHB4PYOnJC6z+KsRtE=
+X-Received: by 2002:a05:6402:2207:: with SMTP id cq7mr11989861edb.359.1602201752216;
+ Thu, 08 Oct 2020 17:02:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   marc spencer <i.am.mark.spencer@gmail.com>
+Date:   Fri, 9 Oct 2020 05:31:38 +0530
+Message-ID: <CAEonGa5As=W01GZw7V9W2Y2J+-XV=S+KfsF9XAPm9m_D1wy0wA@mail.gmail.com>
+Subject: syndrome list mlx5
+To:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the required DTS node for the USB VBUS output regulator, which is
-available on PM8150B.  This will provide the VBUS source to connected
-peripherals.
+Hi,
 
-Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/pm8150b.dtsi   | 6 ++++++
- arch/arm64/boot/dts/qcom/sm8150-mtp.dts | 4 ++++
- 2 files changed, 10 insertions(+)
+Where can I get access to mlx5 syndrome list for e.g when a HCA
+command is issued, we get a return status
+(OK/INTERNAL_ERR/BAD_OP/BAD_RES_STATE etc) and also syndrome.
 
-diff --git a/arch/arm64/boot/dts/qcom/pm8150b.dtsi b/arch/arm64/boot/dts/qcom/pm8150b.dtsi
-index 2bf385f5a55a..49ea597cc0c5 100644
---- a/arch/arm64/boot/dts/qcom/pm8150b.dtsi
-+++ b/arch/arm64/boot/dts/qcom/pm8150b.dtsi
-@@ -53,6 +53,12 @@ power-on@800 {
- 			status = "disabled";
- 		};
- 
-+		pm8150b_vbus: regulator@1100 {
-+			compatible = "qcom,pm8150b-vbus-reg";
-+			status = "disabled";
-+			reg = <0x1100>;
-+		};
-+
- 		pm8150b_typec: usb-typec@1500 {
- 			compatible = "qcom,pm8150b-usb-typec";
- 			status = "disabled";
-diff --git a/arch/arm64/boot/dts/qcom/sm8150-mtp.dts b/arch/arm64/boot/dts/qcom/sm8150-mtp.dts
-index 6c6325c3af59..ba3b5b802954 100644
---- a/arch/arm64/boot/dts/qcom/sm8150-mtp.dts
-+++ b/arch/arm64/boot/dts/qcom/sm8150-mtp.dts
-@@ -409,6 +409,10 @@ &ufs_mem_phy {
- 	vdda-pll-max-microamp = <19000>;
- };
- 
-+&pm8150b_vbus {
-+	status = "okay";
-+};
-+
- &usb_1_hsphy {
- 	status = "okay";
- 	vdda-pll-supply = <&vdd_usb_hs_core>;
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+To decode the syndrome, I believe there is a list from Mellanox. Can
+anyone point me to such a list?
 
+Thanks
+Best Regards
+Marc
