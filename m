@@ -2,201 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 056702881F3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 08:04:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFDD02881F5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 08:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731794AbgJIGEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 02:04:43 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:47686 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731739AbgJIGEn (ORCPT
+        id S1729660AbgJIGHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 02:07:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727313AbgJIGHV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 02:04:43 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09962FLA113622;
-        Fri, 9 Oct 2020 02:04:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=KXPO49hXQxj1M9qPp+Zqeft7/at6K8bGnLzy4qtVbVc=;
- b=eJwHzd0DAwc4yJ/ZbGEFGV2rJ9UOdnz5tvURykT8q9GZRFZ/8D8DvQGUAZCnnORIyoo0
- +bN1EP0vjMytpvJjDmraXpfqZtS2V4sOxqFMq5dk40s6BTzPrnyxMup1HedVMt+cgA/r
- UTMJ5gkF6W+BFMkA2LI67cVnuWWICbnsMeNVwfFnEcR+nxsiAFhGDAPFARWyML9206Ho
- 42+rpTQgFJ0G3VXafUlgqyW23MwoXGu2nvUq3j9Tunxaqta2O2uo5n2CIGC7KkZ7HkfU
- inU/5VbrNTWzkVVp8i06evFCmdXpax3Gqoom0ag8ZmQSpib9Svy0+SBqRhD7zHFmuRk4 2A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 342j6k8710-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Oct 2020 02:04:33 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09962aBT115078;
-        Fri, 9 Oct 2020 02:04:33 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 342j6k86yn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Oct 2020 02:04:33 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0995pfmx016636;
-        Fri, 9 Oct 2020 06:04:31 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma02fra.de.ibm.com with ESMTP id 3429hrg5ub-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Oct 2020 06:04:31 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09964TWv33554728
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 9 Oct 2020 06:04:29 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 50AD5AE045;
-        Fri,  9 Oct 2020 06:04:29 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C7E2FAE055;
-        Fri,  9 Oct 2020 06:04:27 +0000 (GMT)
-Received: from bharata.ibmuc.com (unknown [9.199.46.47])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri,  9 Oct 2020 06:04:27 +0000 (GMT)
-From:   Bharata B Rao <bharata@linux.ibm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     cl@linux.com, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, linux-mm@kvack.org, guro@fb.com,
-        Bharata B Rao <bharata@linux.ibm.com>
-Subject: [PATCH FIX v0] mm: memcg/slab: Uncharge during kmem_cache_free_bulk()
-Date:   Fri,  9 Oct 2020 11:34:23 +0530
-Message-Id: <20201009060423.390479-1-bharata@linux.ibm.com>
-X-Mailer: git-send-email 2.26.2
+        Fri, 9 Oct 2020 02:07:21 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E6A4C0613D2;
+        Thu,  8 Oct 2020 23:07:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Message-ID:From:CC:To:Subject:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:
+        Date:Sender:Reply-To:Content-ID:Content-Description;
+        bh=2p54TBCV6IXlB1szJ2D6yALxADUV3N3loPFLFKdD3xk=; b=pn5UGAr5HAqsQpWLR4av2ytYWN
+        TELUOkUz01XHHf2B6D+mLuxcmrAThFnkldCL2X7IaajhWHFWkgh1efUPyrogVMJysuBxNxnJhn2gN
+        sTaUROJzHF5Y2ZQEF2ZAXVnpVhD1RpMheFiWGpPti5xCNkXY92CixDOivmf0QJpNKJP9wFuTp723z
+        6P3iboa0stO8xE8myqJ+T0aALaukQkWIIjRqFCYz92lkMHBETCJGPjKr13z82+SDbLnWFIscrpUSy
+        PtPqGkkjL+TRN6c/PI88uXflEISrzqPHgI0zNi8K1FoLdHIyfuRgRYM34nAhJPlh8L5l+knU/iNtJ
+        cSZ/Anaw==;
+Received: from [2001:8b0:10b:1:ad95:471b:fe64:9cc3]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kQlYi-0007za-0i; Fri, 09 Oct 2020 06:07:16 +0000
+Date:   Fri, 09 Oct 2020 07:07:12 +0100
+User-Agent: K-9 Mail for Android
+In-Reply-To: <87tuv4uwmt.fsf@nanos.tec.linutronix.de>
+References: <803bb6b2212e65c568c84ff6882c2aa8a0ee03d5.camel@infradead.org> <20201007122046.1113577-1-dwmw2@infradead.org> <20201007122046.1113577-5-dwmw2@infradead.org> <87blhcx6qz.fsf@nanos.tec.linutronix.de> <f27b17cf4ab64fdb4f14a056bd8c6a93795d9a85.camel@infradead.org> <95625dfce360756b99641c31212634c1bf80a69a.camel@infradead.org> <87362owhcb.fsf@nanos.tec.linutronix.de> <c6f21628733cac23fd28679842c20423df2dd423.camel@infradead.org> <87tuv4uwmt.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-09_02:2020-10-09,2020-10-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- adultscore=0 mlxlogscore=999 priorityscore=1501 lowpriorityscore=0
- clxscore=1011 suspectscore=3 phishscore=0 mlxscore=0 impostorscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010090041
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH 5/5] x86/kvm: Add KVM_FEATURE_MSI_EXT_DEST_ID
+To:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
+CC:     kvm <kvm@vger.kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+From:   David Woodhouse <dwmw2@infradead.org>
+Message-ID: <770B6323-61CC-4D33-B2B2-797686BD9D56@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Object cgroup charging is done for all the objects during
-allocation, but during freeing, uncharging ends up happening
-for only one object in the case of bulk allocation/freeing.
 
-Fix this by having a separate call to uncharge all the
-objects from kmem_cache_free_bulk() and by modifying
-memcg_slab_free_hook() to take care of bulk uncharging.
 
-Signed-off-by: Bharata B Rao <bharata@linux.ibm.com>
----
- mm/slab.c |  2 +-
- mm/slab.h | 42 +++++++++++++++++++++++++++---------------
- mm/slub.c |  3 ++-
- 3 files changed, 30 insertions(+), 17 deletions(-)
+On 9 October 2020 00:27:06 BST, Thomas Gleixner <tglx@linutronix=2Ede> wro=
+te:
+>On Thu, Oct 08 2020 at 22:39, David Woodhouse wrote:
+>> On Thu, 2020-10-08 at 23:14 +0200, Thomas Gleixner wrote:
+>>> >=20
+>>> > (We'd want the x86_vector_domain to actually have an MSI compose
+>>> > function in the !CONFIG_PCI_MSI case if we did this, of course=2E)
+>>>=20
+>>> The compose function and the vector domain wrapper can simply move
+>to
+>>> vector=2Ec
+>>
+>> I ended up putting __irq_msi_compose_msg() into apic=2Ec and that way I
+>> can make virt_ext_dest_id static in that file=2E
+>>
+>> And then I can move all the HPET-MSI support into hpet=2Ec too=2E
+>
+>Works for me=2E
+>
+>>
+>https://git=2Einfradead=2Eorg/users/dwmw2/linux=2Egit/shortlog/refs/heads=
+/ext_dest_id
+>
+>For the next submission, can you please
+>
+> - pick up the -ENODEV changes for HPET/IOAPIC which I posted earlier
 
-diff --git a/mm/slab.c b/mm/slab.c
-index f658e86ec8cee..5c70600d8b1cc 100644
---- a/mm/slab.c
-+++ b/mm/slab.c
-@@ -3440,7 +3440,7 @@ void ___cache_free(struct kmem_cache *cachep, void *objp,
- 		memset(objp, 0, cachep->object_size);
- 	kmemleak_free_recursive(objp, cachep->flags);
- 	objp = cache_free_debugcheck(cachep, objp, caller);
--	memcg_slab_free_hook(cachep, virt_to_head_page(objp), objp);
-+	memcg_slab_free_hook(cachep, &objp, 1);
- 
- 	/*
- 	 * Skip calling cache_free_alien() when the platform is not numa.
-diff --git a/mm/slab.h b/mm/slab.h
-index 6cc323f1313af..6dd4b702888a7 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -345,30 +345,42 @@ static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
- 	obj_cgroup_put(objcg);
- }
- 
--static inline void memcg_slab_free_hook(struct kmem_cache *s, struct page *page,
--					void *p)
-+static inline void memcg_slab_free_hook(struct kmem_cache *s_orig,
-+					void **p, int objects)
- {
-+	struct kmem_cache *s;
- 	struct obj_cgroup *objcg;
-+	struct page *page;
- 	unsigned int off;
-+	int i;
- 
- 	if (!memcg_kmem_enabled())
- 		return;
- 
--	if (!page_has_obj_cgroups(page))
--		return;
-+	for (i = 0; i < objects; i++) {
-+		if (unlikely(!p[i]))
-+			continue;
- 
--	off = obj_to_index(s, page, p);
--	objcg = page_obj_cgroups(page)[off];
--	page_obj_cgroups(page)[off] = NULL;
-+		page = virt_to_head_page(p[i]);
-+		if (!page_has_obj_cgroups(page))
-+			continue;
- 
--	if (!objcg)
--		return;
-+		if (!s_orig)
-+			s = page->slab_cache;
-+		else
-+			s = s_orig;
- 
--	obj_cgroup_uncharge(objcg, obj_full_size(s));
--	mod_objcg_state(objcg, page_pgdat(page), cache_vmstat_idx(s),
--			-obj_full_size(s));
-+		off = obj_to_index(s, page, p[i]);
-+		objcg = page_obj_cgroups(page)[off];
-+		if (!objcg)
-+			continue;
- 
--	obj_cgroup_put(objcg);
-+		page_obj_cgroups(page)[off] = NULL;
-+		obj_cgroup_uncharge(objcg, obj_full_size(s));
-+		mod_objcg_state(objcg, page_pgdat(page), cache_vmstat_idx(s),
-+				-obj_full_size(s));
-+		obj_cgroup_put(objcg);
-+	}
- }
- 
- #else /* CONFIG_MEMCG_KMEM */
-@@ -406,8 +418,8 @@ static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
- {
- }
- 
--static inline void memcg_slab_free_hook(struct kmem_cache *s, struct page *page,
--					void *p)
-+static inline void memcg_slab_free_hook(struct kmem_cache *s,
-+					void **p, int objects)
- {
- }
- #endif /* CONFIG_MEMCG_KMEM */
-diff --git a/mm/slub.c b/mm/slub.c
-index 6d3574013b2f8..0cbe67f13946e 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -3091,7 +3091,7 @@ static __always_inline void do_slab_free(struct kmem_cache *s,
- 	struct kmem_cache_cpu *c;
- 	unsigned long tid;
- 
--	memcg_slab_free_hook(s, page, head);
-+	memcg_slab_free_hook(s, &head, 1);
- redo:
- 	/*
- 	 * Determine the currently cpus per cpu slab.
-@@ -3253,6 +3253,7 @@ void kmem_cache_free_bulk(struct kmem_cache *s, size_t size, void **p)
- 	if (WARN_ON(!size))
- 		return;
- 
-+	memcg_slab_free_hook(s, p, size);
- 	do {
- 		struct detached_freelist df;
- 
--- 
-2.26.2
+Ack=2E
 
+> - shuffle all that compose/IOAPIC cleanup around
+
+I'd prefer the MSI swizzling bit to stay last in the series=2E I want to s=
+tare hard at the hyperv-iommu part a bit more, and ideally even have it tes=
+ted=2E I'd prefer the real functionality that I care about, not to depend o=
+n that cleanup=2E
+
+If it actually let me remove all mention of ext_dest_id from the IOAPIC co=
+de and use *only* MSI swizzling, I'd be keener to reorder=2E But as noted, =
+there are a couple of manual RTE constructions in there still anyway=2E
+
+I can move __irq_compose_msi_msg() earlier in the series though, and then =
+virt_ext_dest_id can be static in apic=2Ec from its inception=2E
+
+OK?
+
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
