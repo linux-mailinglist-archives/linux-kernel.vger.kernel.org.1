@@ -2,96 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 692A128806F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 04:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB47A288068
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 04:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729916AbgJIClx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 22:41:53 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:29604 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729517AbgJIClx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 22:41:53 -0400
-X-UUID: 1e9425752dcd4f278ed88c21beac7b6e-20201009
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=TkH5V8eKQiruL8/pn1MjIKfrBNvjzUM+osNIwqVGMGw=;
-        b=ZVlW3RTUONuu2bpktdUbH4PZIZqDzyruWo/BLzQK12Yld+Uh9HGTspwXM30z24LmGjXestdj+AT6GEZZyB+14ckDc84BVsAloLEpRMM2SEhR2dzvk9q3vvnbtb3vLh67v3sLmlArBTMK5itgJP9jj8zocmUFsXYmwC3nsMhmXvI=;
-X-UUID: 1e9425752dcd4f278ed88c21beac7b6e-20201009
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <lina.wang@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 2058584294; Fri, 09 Oct 2020 10:41:39 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- MTKMBS32N1.mediatek.inc (172.27.4.71) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 9 Oct 2020 10:41:36 +0800
-Received: from localhost.localdomain (10.15.20.246) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 9 Oct 2020 10:41:35 +0800
-From:   mtk81216 <lina.wang@mediatek.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <kernel-team@android.com>,
-        Lina Wang <lina.wang@mediatek.com>
-Subject: [PATCH] xfrm:ignore big packets when tunnel mode
-Date:   Fri, 9 Oct 2020 10:35:32 +0800
-Message-ID: <20201009023532.6474-1-lina.wang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        id S1727155AbgJIChH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 22:37:07 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:57508 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725908AbgJIChG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 22:37:06 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 21366D85430CAD6D5036;
+        Fri,  9 Oct 2020 10:37:05 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 9 Oct 2020
+ 10:37:02 +0800
+Subject: Re: [f2fs-dev] [f2fs bug] infinite loop in
+ f2fs_get_meta_page_nofail()
+To:     <jaegeuk@kernel.org>
+CC:     Eric Biggers <ebiggers@kernel.org>,
+        <syzbot+ee250ac8137be41d7b13@syzkaller.appspotmail.com>,
+        <syzkaller-bugs@googlegroups.com>, <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <000000000000432c5405b1113296@google.com>
+ <20201007213253.GD1530638@gmail.com> <20201007215305.GA714500@google.com>
+ <c7baef0d-d459-114f-7146-627f0c4159ad@huawei.com>
+ <20201009015015.GA1931838@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <8fa4f9fe-5ca5-f3a3-c8f4-e800373c1e46@huawei.com>
+Date:   Fri, 9 Oct 2020 10:37:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 008FD9764427441DC770CAB2E01159E36266243A2F20FBE2BA8406546E8153EF2000:8
-Content-Transfer-Encoding: base64
+In-Reply-To: <20201009015015.GA1931838@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTGluYSBXYW5nIDxsaW5hLndhbmdAbWVkaWF0ZWsuY29tPg0KDQpJbiB0dW5uZWwgbW9k
-ZSwgd2hlbiBpbm5lciBpbnRlcmZhY2UgaXMgaXB2NCxvdXRlciBpbnRlcmZhY2UgaXMgaXB2Niwg
-ZmxhZ3MNCm9mIHR1bm5lbCBtb2RlJ3MgeGZybSBzdGF0ZSBpcyBhZi11bnNwZWMsIGlmIGEgbGFy
-Z2VyIHBhY2tldCB3aG8gaXMgYmlnZ2VyDQp0aGFuIG10dSBnb2VzIHRocm91Z2ggdHVubmVsIGlu
-dGVyZmFjZSwgaXQgZW50ZXJzIGlwNl9mcmFnbWVudCwgZ29lcyB0bw0KZmFpbF90b29iaWcsIGFu
-ZCBJQ01QVjYoSUNNUFY2X1BLVF9UT09CSUcpIHdpbGwgYmUgc2VudC4gSXQgaXMgdW5uZWNlc3Nh
-cnkNCnRvIGRvIHNvLiBJcDZfZnJhZ21lbnQgd2lsbCBmcmFnbWVudCBzdWNoIHBhY2tldCB3aXRo
-IG91dGVyIGludGVyZmFjZSdzIG10dQ0KbWludXMgdHVubmVsbGVkIGVzcCBoZWFkZXIsaXQgd29u
-b3QgYmUgdG9vIGJpZy4NCg0KVGhlIHNhbWUgdGhpbmdzIGhhcHBlbiwgd2hlbiBhIGxhcmdlciBm
-cmFnbWVudGVkIHBhY2tldCB3aG9zZSBmcmFnX21heF9zaXplDQppcyBsYXJnZXIgdGhhbiBtdHUu
-DQoNCldoZW4gYSBsYXJnZXIgZnJhZ21lbnRlZCBwYWNrZXQgaXMgZm9yd2FyZGVkLCBpdCBhbHNv
-IG1lZXRzIHRoZSBzYW1lIA0Kc2NlbmFyeS4NCg0KVGhpcyBwYXRjaCBoYXMgaGFuZGxlZCB0aHJl
-ZSBhYm92ZSBzY2VuYXJpZXMsIGlmIGl0IGlzIHR1bm5lbCBtb2RlLGp1c3QgDQppZ25vcmUgc2ti
-X2xlbiBvciBmcmFnX21heF9zaXplLCBrZWVwIGdvaW5nLg0KDQpTaWduZWQtb2ZmLWJ5OiBMaW5h
-IFdhbmcgPGxpbmEud2FuZ0BtZWRpYXRlay5jb20+DQotLS0NCiBuZXQvaXB2Ni9pcDZfb3V0cHV0
-LmMgfCAyMyArKysrKysrKysrKysrKy0tLS0tLS0tLQ0KIDEgZmlsZSBjaGFuZ2VkLCAxNCBpbnNl
-cnRpb25zKCspLCA5IGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvbmV0L2lwdjYvaXA2X291
-dHB1dC5jIGIvbmV0L2lwdjYvaXA2X291dHB1dC5jDQppbmRleCBjNzhlNjdkNzc0N2YuLjBlMWU2
-ZmNkN2E1ZCAxMDA2NDQNCi0tLSBhL25ldC9pcHY2L2lwNl9vdXRwdXQuYw0KKysrIGIvbmV0L2lw
-djYvaXA2X291dHB1dC5jDQpAQCAtNDAyLDEyICs0MDIsMTQgQEAgc3RhdGljIGlubGluZSBpbnQg
-aXA2X2ZvcndhcmRfZmluaXNoKHN0cnVjdCBuZXQgKm5ldCwgc3RydWN0IHNvY2sgKnNrLA0KIA0K
-IHN0YXRpYyBib29sIGlwNl9wa3RfdG9vX2JpZyhjb25zdCBzdHJ1Y3Qgc2tfYnVmZiAqc2tiLCB1
-bnNpZ25lZCBpbnQgbXR1KQ0KIHsNCisJc3RydWN0IHJ0Nl9pbmZvICpydCA9IChzdHJ1Y3QgcnQ2
-X2luZm8gKilza2JfZHN0KHNrYik7DQogCWlmIChza2ItPmxlbiA8PSBtdHUpDQogCQlyZXR1cm4g
-ZmFsc2U7DQogDQogCS8qIGlwdjYgY29ubnRyYWNrIGRlZnJhZyBzZXRzIG1heF9mcmFnX3NpemUg
-KyBpZ25vcmVfZGYgKi8NCiAJaWYgKElQNkNCKHNrYiktPmZyYWdfbWF4X3NpemUgJiYgSVA2Q0Io
-c2tiKS0+ZnJhZ19tYXhfc2l6ZSA+IG10dSkNCi0JCXJldHVybiB0cnVlOw0KKwkJaWYgKHJ0ICYm
-ICEocnQtPmRzdC5mbGFncyAmIERTVF9YRlJNX1RVTk5FTCkpDQorCQkJcmV0dXJuIHRydWU7DQog
-DQogCWlmIChza2ItPmlnbm9yZV9kZikNCiAJCXJldHVybiBmYWxzZTsNCkBAIC03ODcsMTYgKzc4
-OSwxOSBAQCBpbnQgaXA2X2ZyYWdtZW50KHN0cnVjdCBuZXQgKm5ldCwgc3RydWN0IHNvY2sgKnNr
-LCBzdHJ1Y3Qgc2tfYnVmZiAqc2tiLA0KIAkgKiBvciBpZiB0aGUgc2tiIGl0IG5vdCBnZW5lcmF0
-ZWQgYnkgYSBsb2NhbCBzb2NrZXQuDQogCSAqLw0KIAlpZiAodW5saWtlbHkoIXNrYi0+aWdub3Jl
-X2RmICYmIHNrYi0+bGVuID4gbXR1KSkNCi0JCWdvdG8gZmFpbF90b29iaWc7DQotDQotCWlmIChJ
-UDZDQihza2IpLT5mcmFnX21heF9zaXplKSB7DQotCQlpZiAoSVA2Q0Ioc2tiKS0+ZnJhZ19tYXhf
-c2l6ZSA+IG10dSkNCisJCWlmIChydCAmJiAocnQtPmRzdC5mbGFncyAmIERTVF9YRlJNX1RVTk5F
-TCkpDQogCQkJZ290byBmYWlsX3Rvb2JpZzsNCiANCi0JCS8qIGRvbid0IHNlbmQgZnJhZ21lbnRz
-IGxhcmdlciB0aGFuIHdoYXQgd2UgcmVjZWl2ZWQgKi8NCi0JCW10dSA9IElQNkNCKHNrYiktPmZy
-YWdfbWF4X3NpemU7DQotCQlpZiAobXR1IDwgSVBWNl9NSU5fTVRVKQ0KLQkJCW10dSA9IElQVjZf
-TUlOX01UVTsNCisJaWYgKElQNkNCKHNrYiktPmZyYWdfbWF4X3NpemUpIHsNCisJCWlmIChJUDZD
-Qihza2IpLT5mcmFnX21heF9zaXplID4gbXR1KSB7DQorCQkJaWYgKHJ0ICYmICEocnQtPmRzdC5m
-bGFncyAmIERTVF9YRlJNX1RVTk5FTCkpDQorCQkJCWdvdG8gZmFpbF90b29iaWc7DQorCQl9IGVs
-c2Ugew0KKwkJCS8qIGRvbid0IHNlbmQgZnJhZ21lbnRzIGxhcmdlciB0aGFuIHdoYXQgd2UgcmVj
-ZWl2ZWQgKi8NCisJCQltdHUgPSBJUDZDQihza2IpLT5mcmFnX21heF9zaXplOw0KKwkJCWlmICht
-dHUgPCBJUFY2X01JTl9NVFUpDQorCQkJCW10dSA9IElQVjZfTUlOX01UVTsNCisJCX0NCiAJfQ0K
-IA0KIAlpZiAobnAgJiYgbnAtPmZyYWdfc2l6ZSA8IG10dSkgew0KLS0gDQoyLjE4LjANCg==
+On 2020/10/9 9:50, jaegeuk@kernel.org wrote:
+> On 10/09, Chao Yu wrote:
+>> On 2020/10/8 5:53, jaegeuk@kernel.org wrote:
+>>> On 10/07, Eric Biggers wrote:
+>>>> [moved linux-fsdevel to Bcc]
+>>>>
+>>>> On Wed, Oct 07, 2020 at 02:18:19AM -0700, syzbot wrote:
+>>>>> Hello,
+>>>>>
+>>>>> syzbot found the following issue on:
+>>>>>
+>>>>> HEAD commit:    a804ab08 Add linux-next specific files for 20201006
+>>>>> git tree:       linux-next
+>>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=17fe30bf900000
+>>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=26c1b4cc4a62ccb
+>>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=ee250ac8137be41d7b13
+>>>>> compiler:       gcc (GCC) 10.1.0-syz 20200507
+>>>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1336413b900000
+>>>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12f7392b900000
+>>>>>
+>>>>> The issue was bisected to:
+>>>>>
+>>>>> commit eede846af512572b1f30b34f9889d7df64c017d4
+>>>>> Author: Jaegeuk Kim <jaegeuk@kernel.org>
+>>>>> Date:   Fri Oct 2 21:17:35 2020 +0000
+>>>>>
+>>>>>       f2fs: f2fs_get_meta_page_nofail should not be failed
+>>>>>
+>>>>
+>>>> Jaegeuk, it looks like the loop you added in the above commit doesn't terminate
+>>>> if the requested page is beyond the end of the device.
+>>>
+>>> Yes, that will go infinite loop. Otherwise, it will trigger a panic during
+>>> the device reboot. Let me think how to avoid that before trying to get the
+>>> wrong lba access.
+>>
+>> Delivering f2fs_get_sum_page()'s return value needs a lot of codes change, I think
+>> we can just zeroing sum_page in error case, as we have already shutdown f2fs via
+>> calling f2fs_stop_checkpoint(), then f2fs_cp_error() will stop all updates to
+>> filesystem data including summary pages.
+> 
+> That sounds like one solution tho, I'm afraid of getting another panic by
+> wrong zero'ed summary page.
 
+What case do you mean? maybe I missed some corner cases?
+
+Thanks,
+
+> 
+>>
+>> Thoughts?
+>>
+>> Thanks,
+>>
+>>>
+>>>>
+>>>> - Eric
+>>>
+>>>
+>>> _______________________________________________
+>>> Linux-f2fs-devel mailing list
+>>> Linux-f2fs-devel@lists.sourceforge.net
+>>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+>>> .
+>>>
+> .
+> 
