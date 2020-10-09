@@ -2,138 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 302CC2881C6
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 07:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8F3F2881C9
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 07:46:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731173AbgJIFlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 01:41:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731076AbgJIFlR (ORCPT
+        id S1731260AbgJIFqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 01:46:55 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:45327 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725917AbgJIFqz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 01:41:17 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8410C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 22:41:17 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id x22so5895265pfo.12
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 22:41:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=BtDQZIEMLmhF49jnffnO6s6n101uAcwJbVqfJI9bloU=;
-        b=gLtNphPuxO/huMzVOdahNog6vTAfDxOKzwZr8kuLPoDx3zhHExJBFO1FNqXWYHyQB1
-         7T1XE/NlhFzFDGSZExn+kdBVZhsW+rVHOhFCneh+yKUT/h46cdWw0qUO4HnlW9dVFynH
-         V0rPgGpCr2hIx9M7HyNH1gY3MnOae078/ROgQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=BtDQZIEMLmhF49jnffnO6s6n101uAcwJbVqfJI9bloU=;
-        b=ebJG/07WXhtWX9oa+qQ6az2xk1odb8HlutWWS6jG6QIjA7h2BchAsKDrKM252llDvW
-         b6Wj73CUC52Vzgm/KRrQMxVZmylZmvNTYLIHeV91FF6UmZx0MKoxKaldAaDG7pjI+SQ7
-         o0+U7TVMwDI2UKmQR1cDWbvtzBhkddq8YTmPg0izRBOz6qZHJVvzzZ79QYfQ7EXxlvJf
-         cgna+2cWZskz3kvZoaTqRap9LQki083VHkFR7LkXqkXwT2f8BIwO8EcwYIqjEQECFpyq
-         PkH4NnsCcKwF02YYz6h+2K64l4HHd5Ji7J+UiopqsrxaRBf2u+UaYKzUxIDWIzEWI9FK
-         ZgEw==
-X-Gm-Message-State: AOAM532Z6f9qdCOK7miR9qBo+aq6J1Lw2/8rNMNh/2x0u/micxBX3Fgn
-        VJTik7L2FvBURqbirt/ZCHAHkgl9M8eqKA==
-X-Google-Smtp-Source: ABdhPJx5nhK9QmdRyfBWqhmKPI9k3k7mtwxMc2RozKFPrmPt2YIUBzplio+r3UmWZcjh8f12k2UeKA==
-X-Received: by 2002:a17:90a:248:: with SMTP id t8mr3002688pje.64.1602222077073;
-        Thu, 08 Oct 2020 22:41:17 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id z73sm9693620pfc.75.2020.10.08.22.41.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 22:41:15 -0700 (PDT)
-Date:   Thu, 8 Oct 2020 22:41:14 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     YiFei Zhu <zhuyifei1999@gmail.com>
-Cc:     Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Subject: Re: [PATCH v3 seccomp 2/5] seccomp/cache: Add "emulator" to check if
- filter is constant allow
-Message-ID: <202010082235.3D6A5F2@keescook>
-References: <cover.1601478774.git.yifeifz2@illinois.edu>
- <b16456e8dbc378c41b73c00c56854a3c30580833.1601478774.git.yifeifz2@illinois.edu>
- <CABqSeAQELsMP4116LwOY+WMcs9Zjr9fYUZ-pK+yNTGYETLf46w@mail.gmail.com>
+        Fri, 9 Oct 2020 01:46:55 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id B08505C00FB;
+        Fri,  9 Oct 2020 01:46:53 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Fri, 09 Oct 2020 01:46:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=lr6M8yNWNeNhl0M7Uihv92Zrbfw
+        BaHLmXICbGyQw3sw=; b=FJ/tXpD0Y7sB0j+cc5vQf+iH2TZGeRZXYgUxYBpWp22
+        M/rU3q47XK6L2i3skTzn5H7TMHBYmyJ1hCLO6s6/vcaHctVvV5hm+R1CkKVVCj//
+        F++o4MQaaNY4+okaADmWuiXixSf4Aw7+cRIS6k1dNrfLUfm0SApp2MnBlxf5T1P3
+        bOOtfIct1mPO8ejAgeFGC+fW2H7LF9eNUZHWg6iLKXVStiHlzP3DpNjHtPopYa+X
+        KBbqQUpV31r8QtGbkz2345GOsUWTZ0dJiGGxiZU+sWxLXfru2xV+lWDDuTdhyANW
+        j7wGnIFAcWIgVrHpPwRMOgNpyMC+LIzwoGyF0nY6Gbg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=lr6M8y
+        NWNeNhl0M7Uihv92ZrbfwBaHLmXICbGyQw3sw=; b=lPzBjITbjluDqdA+x3a6p1
+        fXUE5PHtDHEybWDeXsIEc4LTD1nRvMtrs2qxOJUuU39ay5Kgp+e2XzjmpPBaHPRr
+        6xozogYcCQr/UQQa6BpPAYlTIaas6JfwDGZM4ZNStAbfoGnlhb+OHjwMDeWZYWhS
+        dDdUqu3ZcH7s6Vvrq3n5Eo5z+Xl9dc2nP4kTsCcL0E6en/iLdB9r8Gv2sBZ/jfkF
+        8JVvV6BiTZsbeTYI+JdZJQHVHmU1qUQeKF+SNaldHros5EM7AFlp3fmjY5bQKNXF
+        6AqMN0Ss43l7BwnEJik6pPv81lZd1kwxmKoYlXVZciY/6CGVODi7YPOAyfGzvDLw
+        ==
+X-ME-Sender: <xms:TPl_X2caWGvi3VRHyI18GPeLki0nojvAaIU-ndh3AXLSK9zvGq9BJQ>
+    <xme:TPl_XwPkJc1LRi_rhqmd6ukmT3iAL9lgMy4n658LaDgNBJNlAK_ov4r6KazaGmkjG
+    ROqBmseWdyZag>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrhedtgdellecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
+    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
+    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeekfedr
+    keeirdejgedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
+X-ME-Proxy: <xmx:TPl_X3gfISg1OAJpOr8-k4XRDHyWWHQNI9BNAKlxOrq21OfubtLnlQ>
+    <xmx:TPl_Xz-i4y-sQAFs1-zWDjqhc09qGEN_-cfQbvyNw2cJFVprgpDT0w>
+    <xmx:TPl_XytzCFjgas5xRQ1mrLR4mFqrzY6eyElzJ_hw7pnuc0slMwYzRw>
+    <xmx:Tfl_X2jnrDMdOayiTncG2in50xxMJQ8nGzSZj7EWovAGH1zPfpc60A>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 2AD563064610;
+        Fri,  9 Oct 2020 01:46:52 -0400 (EDT)
+Date:   Fri, 9 Oct 2020 07:46:50 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     Ryan Chen <ryan_chen@aspeedtech.com>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-usb@vger.kernel.org, BMC-SW <bmc-sw@aspeedtech.com>,
+        Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: [PATCH v2 1/3] configs: aspeed: enable UHCI driver in defconfig
+Message-ID: <20201009054650.GA117723@kroah.com>
+References: <20200930040823.26065-4-ryan_chen@aspeedtech.com>
+ <20201009024937.11246-1-ryan_chen@aspeedtech.com>
+ <20201009024937.11246-2-ryan_chen@aspeedtech.com>
+ <20201009044526.GB111063@kroah.com>
+ <CACPK8Xd0h_2yGeyOjrpqV2_X8f4stZA_ur72b4Y4Nx91GrbXag@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABqSeAQELsMP4116LwOY+WMcs9Zjr9fYUZ-pK+yNTGYETLf46w@mail.gmail.com>
+In-Reply-To: <CACPK8Xd0h_2yGeyOjrpqV2_X8f4stZA_ur72b4Y4Nx91GrbXag@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 11:47:17PM -0500, YiFei Zhu wrote:
-> On Wed, Sep 30, 2020 at 10:20 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
-> > @@ -544,7 +577,8 @@ static struct seccomp_filter *seccomp_prepare_filter(struct sock_fprog *fprog)
-> >  {
-> >         struct seccomp_filter *sfilter;
-> >         int ret;
-> > -       const bool save_orig = IS_ENABLED(CONFIG_CHECKPOINT_RESTORE);
-> > +       const bool save_orig = IS_ENABLED(CONFIG_CHECKPOINT_RESTORE) ||
-> > +                              IS_ENABLED(CONFIG_SECCOMP_CACHE_NR_ONLY);
+On Fri, Oct 09, 2020 at 04:55:19AM +0000, Joel Stanley wrote:
+> On Fri, 9 Oct 2020 at 04:45, Greg KH <greg@kroah.com> wrote:
 > >
-> >         if (fprog->len == 0 || fprog->len > BPF_MAXINSNS)
-> >                 return ERR_PTR(-EINVAL);
+> > On Fri, Oct 09, 2020 at 10:49:35AM +0800, Ryan Chen wrote:
+> > > v2:
+> > >  -Changed : Add SCSI, BLK_DEV_SD, USB_STORAGE support.
+> > > v1:
+> > >  -Enable UHCI driver in aspeed_g5_defconfig.
+> > >
+> > > Signed-off-by: Ryan Chen <ryan_chen@aspeedtech.com>
+> >
+> > Why do you need this in a defconfig?
 > 
-> I'm trying to use __is_defined(SECCOMP_ARCH_NATIVE) here, and got this message:
-> 
-> kernel/seccomp.c: In function ‘seccomp_prepare_filter’:
-> ././include/linux/kconfig.h:44:44: error: pasting "__ARG_PLACEHOLDER_"
-> and "(" does not give a valid preprocessing token
->    44 | #define ___is_defined(val)  ____is_defined(__ARG_PLACEHOLDER_##val)
->       |                                            ^~~~~~~~~~~~~~~~~~
-> ././include/linux/kconfig.h:43:27: note: in expansion of macro ‘___is_defined’
->    43 | #define __is_defined(x)   ___is_defined(x)
->       |                           ^~~~~~~~~~~~~
-> kernel/seccomp.c:629:11: note: in expansion of macro ‘__is_defined’
->   629 |           __is_defined(SECCOMP_ARCH_NATIVE);
->       |           ^~~~~~~~~~~~
-> 
-> Looking at the implementation of __is_defined, it is:
-> 
-> #define __ARG_PLACEHOLDER_1 0,
-> #define __take_second_arg(__ignored, val, ...) val
-> #define __is_defined(x) ___is_defined(x)
-> #define ___is_defined(val) ____is_defined(__ARG_PLACEHOLDER_##val)
-> #define ____is_defined(arg1_or_junk) __take_second_arg(arg1_or_junk 1, 0)
-> 
-> Hence, when FOO is defined to be 1, then the expansion would be
-> __is_defined(FOO) -> ___is_defined(1) ->
-> ____is_defined(__ARG_PLACEHOLDER_1) -> __take_second_arg(0, 1, 0) ->
-> 1,
-> and when FOO is not defined, the expansion would be __is_defined(FOO)
-> -> ___is_defined(FOO) -> ____is_defined(__ARG_PLACEHOLDER_FOO) ->
-> __take_second_arg(__ARG_PLACEHOLDER_FOO 1, 0) -> 0
-> 
-> However, here SECCOMP_ARCH_NATIVE is an expression from an OR of some
-> bits, and __is_defined(SECCOMP_ARCH_NATIVE) would not expand to
-> __ARG_PLACEHOLDER_1 during any stage in the preprocessing.
-> 
-> Is there any better way to do this? I'm thinking of just doing #if
-> defined(CONFIG_CHECKPOINT_RESTORE) || defined(SECCOMP_ARCH_NATIVE)
-> like in Kee's patch.
+> I would prefer configurations that are being used to be present in the
+> defconfig so we can test it. I think this is a sensible change.
 
-Yeah, I think that's simplest.
+Then it needs to be described in the changelog, otherwise we have no
+idea why this is happening :)
 
--- 
-Kees Cook
+thanks,
+
+greg k-h
