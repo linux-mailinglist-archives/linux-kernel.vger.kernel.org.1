@@ -2,104 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97B15288DB5
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 18:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84CD0288DBB
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 18:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389585AbgJIQFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 12:05:02 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:11067 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388882AbgJIQFC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 12:05:02 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602259502; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=CRr4mmuobyXTTLIv8mSddWm/kl/HZjTgem40TcX5IZM=; b=pPS6BPoKUTtWAwTUELCDGgv+MHS9r3n8RGWln/VTF4HN2vRHhcwDpwtmQ4sJlMpYLJWDXb2R
- qHYv27Z2v6wh3FG618ym6+CGvmeB3riniUA4zN4FJRsybrcc8mc6nWa86HKw6Z7kd6BBVnQs
- zyhnZTI6I7zjpbIbhDRXrCZOl3Y=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5f8089f53711fec7b1fc36e9 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 09 Oct 2020 16:04:05
- GMT
-Sender: jhugo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D0A66C43382; Fri,  9 Oct 2020 16:04:04 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C3E89C433C9;
-        Fri,  9 Oct 2020 16:04:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C3E89C433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
-Subject: Re: [PATCH v1 04/10] bus: mhi: core: Use the IRQF_ONESHOT flag for
- the BHI interrupt line
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        linux-kernel@vger.kernel.org
-References: <1600480955-16827-1-git-send-email-bbhatt@codeaurora.org>
- <1600480955-16827-5-git-send-email-bbhatt@codeaurora.org>
- <20201009155706.GE4810@Mani-XPS-13-9360>
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-Message-ID: <26de08b5-b477-c5b9-fdca-eb80bcf98561@codeaurora.org>
-Date:   Fri, 9 Oct 2020 10:04:02 -0600
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        id S2389604AbgJIQG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 12:06:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389144AbgJIQG2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 12:06:28 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04111C0613D2;
+        Fri,  9 Oct 2020 09:06:27 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id r127so11208209lff.12;
+        Fri, 09 Oct 2020 09:06:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=hVM3wtpHG/QwknzCZDjPbZZwN5F8vjj/ZrYHWh9NZ7g=;
+        b=RGwkmFzpAa0LIDU2sfh/kpdO8Ob+aaYCKuip5WJdj2QHrvE3saKd97qgpp+Hr80zIp
+         aSJN4aeRp80n9lH7FPHxjaY3eOVDZUYyhAM3M74QgiBBU2nXvfBoVgAjsWIE8Tfv9lhh
+         lGnyFgXlhAkOL7ZMBTeVNLDKNeptoifLMhFoLTCfSz5ApxWKk1HFXCk+yiLwiOtd14P/
+         6evWyAsxIlfwsJR7cITVLgQb8d1q7BuX4A3lwcRBgWATA3/7Qb4QxnTXIbHZxDxvMoqI
+         KxvvFeZuUEVzjDWsLcVbfqY3MOElL3Rp7cWX+YafA9XgcJMExgHKaSIYdfy6hTc69OQK
+         EUkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=hVM3wtpHG/QwknzCZDjPbZZwN5F8vjj/ZrYHWh9NZ7g=;
+        b=JGAZg/FaVfZS7/xLNecX3nqAyDnha6Zv2+7/LHGr0UisZxIXtaSrpCWyhpJ425Vy+F
+         dbCHH+DOFTPITCahdfs3HZfjBwjzKkH7UbYPBemEIsf1LguPlZ1beCUfjsqzVvLeU1/D
+         D1FhYDf0Uv3u83DmPjMFzE/H9kOk76Q3Jeqcv/xRegb/c/pFZuPawkbYpPesvmvxmKBi
+         qlaiQ5kCRXA6OBAtelinvpxaAeaSa3arXgRZscPKc8zvTV6qD1nJPWIFLrSnyWTIlw/M
+         b6+eJ0ym6tESKsE9lghfDN++XEzgGzvh/WBfpYo8JlHD6xMrikm5ANL3/txDVjsk3at+
+         av2g==
+X-Gm-Message-State: AOAM53290vJG1b4Cs7eZIYvHRLLCyB1SMmaNT/3xlw6vTUn5naSJQFug
+        Injs5KYSC2T0EyeNWy4QeOk8uqY6gZuNNxNc5Lg=
+X-Google-Smtp-Source: ABdhPJzS/RTF66VORQsC5HkYJjNUswX0Xrsu3VrHvwmmlzhy+F9N8feTY4i+IP9TTtVNQj74Mu0nO46k0vqCQ8KwIS8=
+X-Received: by 2002:a19:2346:: with SMTP id j67mr4213461lfj.427.1602259585224;
+ Fri, 09 Oct 2020 09:06:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201009155706.GE4810@Mani-XPS-13-9360>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1599060933-8092-1-git-send-email-u0084500@gmail.com>
+ <20200902165713.GG56237@roeck-us.net> <CADiBU3_iHk4aoM8o6GcaTmWDZT4ymvb0Ff-XeLLZ0C9dhCnLZQ@mail.gmail.com>
+ <fd2a33fc-2383-66cb-0fd7-d5aa0cc9111f@roeck-us.net> <CADiBU3_vYAmHDCONrExzyM+1CTfqJx_eS1hYG8aHkNWFzTcwfg@mail.gmail.com>
+ <63c7f5e4-eff2-1420-30a5-a0b98a7815e0@roeck-us.net> <CADiBU3-83rVLqhVAqqSGc0qQ66PHsGVVcp_m3sm_4ZS5A+GXKQ@mail.gmail.com>
+ <CADiBU3_c5O-yUac-ytp5WoQQ12edkU+4wn+WNBOVGRGM15NBJA@mail.gmail.com>
+ <20201002133145.GA3384841@kroah.com> <c2d689eb-5538-6af2-614f-766521100273@roeck-us.net>
+ <20201005110808.GA298743@kroah.com> <88586992-650f-a4a1-2fa0-8cef313380fb@roeck-us.net>
+ <CADiBU38wk825SqtFRAiYqqV47Wwi43AuWKut19qeTbGBZFqPow@mail.gmail.com>
+ <CAKgpwJWwyvUyVj+jQ0y2i_eK1XEN2g3NvR0zgrRLfcmtgn8DDg@mail.gmail.com>
+ <CADiBU3_TADpGmV7-BXJd3YaPNiv8Eg8zmKUD_OoB9CG1MT12mg@mail.gmail.com>
+ <CADiBU392ZL6AHf6Dns61KXFVuvwh6grfnJjXmcFE4Ma2gjK6EA@mail.gmail.com> <VE1PR04MB6528CF55BE68A8DCF4B7904689080@VE1PR04MB6528.eurprd04.prod.outlook.com>
+In-Reply-To: <VE1PR04MB6528CF55BE68A8DCF4B7904689080@VE1PR04MB6528.eurprd04.prod.outlook.com>
+From:   ChiYuan Huang <u0084500@gmail.com>
+Date:   Sat, 10 Oct 2020 00:06:13 +0800
+Message-ID: <CADiBU38-jX=4sbQ9aFoA=Xr6S7cFbfQy8tpdohoZdpaY-AK-Vw@mail.gmail.com>
+Subject: Re: [PATCH] usb: typec: tcpm: Fix if vbus before cc, hard_reset_count
+ not reset issue
+To:     Jun Li <jun.li@nxp.com>
+Cc:     Jun Li <lijun.kernel@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        cy_huang <cy_huang@richtek.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/9/2020 9:57 AM, Manivannan Sadhasivam wrote:
-> On Fri, Sep 18, 2020 at 07:02:29PM -0700, Bhaumik Bhatt wrote:
->> Remove the IRQF_SHARED flag as it is not needed for the BHI interrupt
->> and replace it with IRQF_ONESHOT so that host can be sure that the
->> next BHI hard interrupt is triggered only when the threaded interrupt
->> handler has returned. This is to avoid any race conditions we may run
->> into if BHI interrupts fire one after another.
->>
->> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
->> ---
->>   drivers/bus/mhi/core/init.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
->> index ca32563..9ae4c19 100644
->> --- a/drivers/bus/mhi/core/init.c
->> +++ b/drivers/bus/mhi/core/init.c
->> @@ -167,7 +167,7 @@ int mhi_init_irq_setup(struct mhi_controller *mhi_cntrl)
->>   	/* Setup BHI_INTVEC IRQ */
->>   	ret = request_threaded_irq(mhi_cntrl->irq[0], mhi_intvec_handler,
->>   				   mhi_intvec_threaded_handler,
->> -				   IRQF_SHARED | IRQF_NO_SUSPEND,
->> +				   IRQF_ONESHOT | IRQF_NO_SUSPEND,
-> 
-> Jeff, I believe you're the one requested for shared irq during initial push.
-> Are you okay with this?
+Jun Li <jun.li@nxp.com> =E6=96=BC 2020=E5=B9=B410=E6=9C=889=E6=97=A5 =E9=80=
+=B1=E4=BA=94 =E4=B8=8B=E5=8D=882:12=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+>
+>
+> > -----Original Message-----
+> > From: ChiYuan Huang <u0084500@gmail.com>
+> > Sent: Wednesday, October 7, 2020 6:13 PM
+> > To: Jun Li <lijun.kernel@gmail.com>
+> > Cc: Guenter Roeck <linux@roeck-us.net>; Greg KH
+> > <gregkh@linuxfoundation.org>; Heikki Krogerus
+> > <heikki.krogerus@linux.intel.com>; Linux USB List
+> > <linux-usb@vger.kernel.org>; lkml <linux-kernel@vger.kernel.org>;
+> > cy_huang <cy_huang@richtek.com>; Jun Li <jun.li@nxp.com>
+> > Subject: Re: [PATCH] usb: typec: tcpm: Fix if vbus before cc, hard_rese=
+t_count
+> > not reset issue
+> >
+> > ChiYuan Huang <u0084500@gmail.com> =E6=96=BC 2020=E5=B9=B410=E6=9C=887=
+=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=881:39=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+> > >
+> > > Jun Li <lijun.kernel@gmail.com> =E6=96=BC 2020=E5=B9=B410=E6=9C=887=
+=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=8812:52=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+> > > >
+> > > > ChiYuan Huang <u0084500@gmail.com> =E4=BA=8E2020=E5=B9=B410=E6=9C=
+=886=E6=97=A5=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=8812:38=E5=86=99
+> > =E9=81=93=EF=BC=9A
+> > > > >
+> > > > > Guenter Roeck <linux@roeck-us.net> =E6=96=BC 2020=E5=B9=B410=E6=
+=9C=885=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=8811:30
+> > =E5=AF=AB=E9=81=93=EF=BC=9A
+> > > > > >
+> > > > > > On 10/5/20 4:08 AM, Greg KH wrote:
+> > > > > > [ ... ]
+> > > > > > >>> What ever happened with this patch, is there still disagree=
+ment?
+> > > > > > >>>
+> > > > > > >>
+> > > > > > >> Yes, there is. I wouldn't have added the conditional without
+> > > > > > >> reason, and I am concerned that removing it entirely will op=
+en
+> > another problem.
+> > > > > > >> Feel free to apply, though - I can't prove that my concern i=
+s
+> > > > > > >> valid, and after all we'll get reports from the field later =
+if
+> > it is.
+> > > > > > >
+> > > > > > > Ok, can I get an ack so I know who to come back to in the
+> > > > > > > future if there are issues?  :)
+> > > > > > >
+> > > > > >
+> > > > > > Not from me, for the reasons I stated. I would be ok with somet=
+hing
+> > like:
+> > > > > >
+> > > > > > -       if (tcpm_port_is_disconnected(port))
+> > > > > > +       if (tcpm_port_is_disconnected(port) ||
+> > > > > > +           (tcpm_cc_is_open(port->cc1) &&
+> > > > > > + tcpm_cc_is_open(port->cc2)))
+> > > > > >
+> > > > > > to narrow down the condition.
+> > > > >
+> > > > > I have tried the above comment and It doesn't work.
+> > > > > How about to change the judgement like as below
+> > > > >
+> > > > > -       if (tcpm_port_is_disconnected(port))
+> > > > > +       if (tcpm_port_is_disconnected(port) ||
+> > > > > + !port->vbus_present)
+> > > > >
+> > > > > The hard_reset_count not reset issue is following by the below
+> > > > > order 1. VBUS off ( at the same time, cc is still detected as
+> > > > > attached)
+> > > > > port->attached become false and cc is not open
+> > > > > 2. After that, cc detached.
+> > > > > due to port->attached is false, tcpm_detach() directly return.
+> > > >
+> > > > If tcpm_detach() return directly, then how your patch can reset
+> > > > hard_reset_count?
+> > > >
+> > > Yes, it can. We know vbus_present change from true to false and cc
+> > > detach both trigger tcpm_detach.
+> > > My change is whenever tcpm_detach to be called, hard_reset_count will
+> > > be reset to zero.
+> > >
+> > > > I am seeing the same issue on my platform, the proposed change:
+> > > > -       if (tcpm_port_is_disconnected(port))
+> > > > -               port->hard_reset_count =3D 0;
+> > > > +       port->hard_reset_count =3D 0;
+> > > > can't resolve it on my platform.
+> > > >
+> > > I'm not sure what's your condition. Could you directly paste the tcpm
+> > > log for the check?
+> > > > How about reset hard_reset_count in SNK_READY?
+> > > > @@ -3325,6 +3329,7 @@ static void run_state_machine(struct tcpm_por=
+t
+> > *port)
+> > > >         case SNK_READY:
+> > > >                 port->try_snk_count =3D 0;
+> > > >                 port->update_sink_caps =3D false;
+> > > > +               port->hard_reset_count =3D 0;
+> > > >                 if (port->explicit_contract) {
+> > > >                         typec_set_pwr_opmode(port->typec_port,
+> > > >                                              TYPEC_PWR_MODE_PD);
+> > > >
+> > > > can this resolve your problem?
+> > > I'm not sure. It need to have a try, then I can answer you.
+> > > But from USBPD spec, the hard_reset_count need to reset zero only whe=
+n
+> > > 1. At src state, pe_src_send_cap and receive GoodCRC 2. At snk state,
+> > > pe_snk_evaluate_cap need to reset hard_reset_count
+>
+> 3.
+> 8.3.3.3.8 PE_SNK_Hard_Reset state
+> "Note: The HardResetCounter is reset on a power cycle or Detach."
+>
+> > > >
+> > > > Li Jun
+> > > > >
+> > > > > And that's why hard_reset_count is not reset to 0.
+> >
+> > I tried in snk_ready to reset hard_reset_count.
+> > At normal case, it works.
+> > But it seems still the possible fail case like as below.
+> > 200ms -> cc debounce max time
+> > 240ms -> snk_waitcap max time
+> > If the plugin/out period is between (200+240) and (200+ 2* 240)ms , and=
+ the
+> > src side plug out like as the described scenario.
+> > From this case, hard_reset_count may still 1.
+> > And we expect the next plugin hard_reset_count is 0. But not, actually =
+it
+> > never reset.
+> > So at next plugin, only one hard_reset will be sent and reach hard_rese=
+t_count
+> > max (2).
+> >
+> > This case is hard to reproduce. But actually it's possible.
+>
+> Make sense.
+>
+> Then I propose doing this at SNK_UNATTACHED
+> @@ -3156,6 +3156,7 @@ static void run_state_machine(struct tcpm_port *por=
+t)
+>                 if (!port->non_pd_role_swap)
+>                         tcpm_swap_complete(port, -ENOTCONN);
+>                 tcpm_pps_complete(port, -ENOTCONN);
+> +               port->hard_reset_count =3D 0;
+>                 tcpm_snk_detach(port);
+>                 if (tcpm_start_toggling(port, TYPEC_CC_RD)) {
+>                         tcpm_set_state(port, TOGGLING, 0);
+> Li Jun
 
-Nope  :)
+For the current power role is snk, I think it may work.
+How about the src role? src role only reset the hard_reset_count in
+tcpm_detach and src_ready state?
 
-AIC100 has a single interrupt for BHI/MHI activity, so this needs to be 
-shared.
+I check the flow that  you mentioned in the previous mail. It's really
+a special case from any state to port_reset.
+If the case is considered, how about to reset  the hard_reset_count
+and don't care the port is attached or not in tcpm_detach function
+like as below.
 
+@@ -2789,6 +2789,8 @@ static void tcpm_reset_port(struct tcpm_port *port)
 
--- 
-Jeffrey Hugo
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+ static void tcpm_detach(struct tcpm_port *port)
+ {
++       port->hard_reset_count =3D 0;
++
+        if (!port->attached)
+                return;
+
+@@ -2797,9 +2799,6 @@ static void tcpm_detach(struct tcpm_port *port)
+                port->tcpc->set_bist_data(port->tcpc, false);
+        }
+
+-       if (tcpm_port_is_disconnected(port))
+-               port->hard_reset_count =3D 0;
+-
+        tcpm_reset_port(port);
+ }
+
+Like I mentioned before, whatever the condition is, hard_reset_count
+must be reset to zero during tcpm_detach.
+
+But refer to Guenter's mail,  he prefer to narrow down the condition
+to reset this counter.
+
+I think the original thought is important why to put this line there.
+
+Hi, Guenter:
+   From the discussion, we really need to know why you put the reset
+line below port attached is false and also make some judgement.
+I think there may be ome condition that we don't considered.
+
+>
+> >
+> > > > > >
+> > > > > > Guenter
