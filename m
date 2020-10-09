@@ -2,115 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5DA9288CAE
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:33:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1BBA288CB5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389320AbgJIPax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 11:30:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31068 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389296AbgJIPav (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 11:30:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602257450;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HhcoI+2TUmCVBTasDOAADDA46P10/1EEE1A+Q+QUMXg=;
-        b=KhEMD1sCAXLBp9GptwPy1K1Pc1Jx26JyUVTPJPtggkkam9jqopgyDldvNxm53lk7M+Ysm0
-        1PAeOdbaLdGrK8yLW2K7mmjG23t60AJirWAfW604oHhI++X2Giv9ACsTWkEgS6unGZP/MU
-        9tz2rFStZXWgjWt3WX41kAQbk0vTKZg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-88-VMDdQT3wMG67TRXr_ZVgIw-1; Fri, 09 Oct 2020 11:30:47 -0400
-X-MC-Unique: VMDdQT3wMG67TRXr_ZVgIw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B90BA83DBC5;
-        Fri,  9 Oct 2020 15:30:40 +0000 (UTC)
-Received: from ovpn-66-175.rdu2.redhat.com (unknown [10.10.67.175])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 03BE710021AA;
-        Fri,  9 Oct 2020 15:30:38 +0000 (UTC)
-Message-ID: <07fffca72fdd585a96ab8c45761c1ea223dc24f2.camel@redhat.com>
-Subject: Re: [tip: locking/core] lockdep: Fix lockdep recursion
-From:   Qian Cai <cai@redhat.com>
-To:     paulmck@kernel.org
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Boqun Feng <boqun.feng@gmail.com>
-Date:   Fri, 09 Oct 2020 11:30:38 -0400
-In-Reply-To: <20201009135837.GD29330@paulmck-ThinkPad-P72>
-References: <160223032121.7002.1269740091547117869.tip-bot2@tip-bot2>
-         <e438b231c5e1478527af6c3e69bf0b37df650110.camel@redhat.com>
-         <20201009135837.GD29330@paulmck-ThinkPad-P72>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        id S2389348AbgJIPbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 11:31:04 -0400
+Received: from mga11.intel.com ([192.55.52.93]:18325 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389338AbgJIPa5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 11:30:57 -0400
+IronPort-SDR: l0xFZVnpm6KTvg5QgAcBsFnPICCjjzj7JBqHesiE+KomvUrZCFZwnldIM17DJl32yrI0pwhaXQ
+ MBEgDcfZOmuA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9769"; a="162037706"
+X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
+   d="scan'208";a="162037706"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 08:30:56 -0700
+IronPort-SDR: JmvrfZj2ui+ugzIgHxksMvKTgMJfteFSAMvlceYoMtmFxdAwUVwKXsKCyyFdj0wX4brrG3er/d
+ WOTo2X+tLqxg==
+X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
+   d="scan'208";a="462228629"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 08:30:56 -0700
+Date:   Fri, 9 Oct 2020 08:30:55 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     stsp <stsp2@yandex.ru>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/6] KVM: x86: KVM_SET_SREGS.CR4 bug fixes and cleanup
+Message-ID: <20201009153053.GA16234@linux.intel.com>
+References: <20201007014417.29276-1-sean.j.christopherson@intel.com>
+ <99334de1-ba3d-dfac-0730-e637d39b948f@yandex.ru>
+ <20201008175951.GA9267@linux.intel.com>
+ <7efe1398-24c0-139f-29fa-3d89b6013f34@yandex.ru>
+ <20201009040453.GA10744@linux.intel.com>
+ <5dfa55f3-ecdf-9f8d-2d45-d2e6e54f2daa@yandex.ru>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5dfa55f3-ecdf-9f8d-2d45-d2e6e54f2daa@yandex.ru>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-10-09 at 06:58 -0700, Paul E. McKenney wrote:
-> On Fri, Oct 09, 2020 at 09:41:24AM -0400, Qian Cai wrote:
-> > On Fri, 2020-10-09 at 07:58 +0000, tip-bot2 for Peter Zijlstra wrote:
-> > > The following commit has been merged into the locking/core branch of tip:
-> > > 
-> > > Commit-ID:     4d004099a668c41522242aa146a38cc4eb59cb1e
-> > > Gitweb:        
-> > > https://git.kernel.org/tip/4d004099a668c41522242aa146a38cc4eb59cb1e
-> > > Author:        Peter Zijlstra <peterz@infradead.org>
-> > > AuthorDate:    Fri, 02 Oct 2020 11:04:21 +02:00
-> > > Committer:     Ingo Molnar <mingo@kernel.org>
-> > > CommitterDate: Fri, 09 Oct 2020 08:53:30 +02:00
-> > > 
-> > > lockdep: Fix lockdep recursion
-> > > 
-> > > Steve reported that lockdep_assert*irq*(), when nested inside lockdep
-> > > itself, will trigger a false-positive.
-> > > 
-> > > One example is the stack-trace code, as called from inside lockdep,
-> > > triggering tracing, which in turn calls RCU, which then uses
-> > > lockdep_assert_irqs_disabled().
-> > > 
-> > > Fixes: a21ee6055c30 ("lockdep: Change hardirq{s_enabled,_context} to per-
-> > > cpu
-> > > variables")
-> > > Reported-by: Steven Rostedt <rostedt@goodmis.org>
-> > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > > Signed-off-by: Ingo Molnar <mingo@kernel.org>
-> > 
-> > Reverting this linux-next commit fixed booting RCU-list warnings everywhere.
+On Fri, Oct 09, 2020 at 05:11:51PM +0300, stsp wrote:
+> 09.10.2020 07:04, Sean Christopherson пишет:
+> >>Hmm. But at least it was lying
+> >>similarly on AMD and Intel CPUs. :)
+> >>So I was able to reproduce the problems
+> >>myself.
+> >>Do you mean, any AMD tests are now useless, and we need to proceed with Intel
+> >>tests only?
+> >For anything VMXE related, yes.
 > 
-> Is it possible that the RCU-list warnings were being wrongly suppressed
-> without a21ee6055c30?  As in are you certain that these RCU-list warnings
-> are in fact false positives?
+> What would be the expected behaviour on Intel, if it is set? Any difference
+> with AMD?
 
-I guess you mean this commit a046a86082cc ("lockdep: Fix lockdep recursion")
-instead of a21ee6055c30. It is unclear to me how that commit a046a86082cc would
-suddenly start to generate those warnings, although I can see it starts to use
-percpu variables even though the CPU is not yet set online.
+On Intel, userspace should be able to stuff CR4.VMXE=1 via KVM_SET_SREGS if
+the 'nested' module param is 1, e.g. if 'modprobe kvm_intel nested=1'.  Note,
+'nested' is enabled by default on kernel 5.0 and later.
 
-DECLARE_PER_CPU(unsigned int, lockdep_recursion);
+With AMD, setting CR4.VMXE=1 is never allowed as AMD doesn't support VMX,
+AMD's virtualization solution is called SVM (Secure Virtual Machine).  KVM
+doesn't support nesting VMX within SVM and vice versa.
 
-Anyway, the problem is that when we in the early boot:
+> >>Then additional question.
+> >>On old Intel CPUs we needed to set VMXE in guest to make it to work in
+> >>nested-guest mode.
+> >>Is it still needed even with your patches?
+> >>Or the nested-guest mode will work now even on older Intel CPUs and KVM will
+> >>set VMXE for us itself, when needed?
+> >I'm struggling to even come up with a theory as to how setting VMXE from
+> >userspace would have impacted KVM with unrestricted_guest=n, let alone fixed
+> >anything.
+> >
+> >CR4.VMXE must always be 1 in _hardware_ when VMX is on, including when running
+> >the guest.  But KVM forces vmcs.GUEST_CR4.VMXE=1 at all times, regardless of
+> >the guest's actual value (the guest sees a shadow value when it reads CR4).
+> >
+> >And unless I grossly misunderstand dosemu2, it's not doing anything related to
+> >nested virtualization, i.e. the stuffing VMXE=1 for the guest's shadow value
+> >should have absolutely zero impact.
+> >
+> >More than likely, VMXE was a red herring.
+> 
+> Yes, it was. :( (as you can see from the end of the github thread)
+> 
+> 
+> >   Given that the reporter is also
+> >seeing the same bug on bare metal after moving to kernel 5.4, odds are good
+> >the issue is related to unrestricted_guest=n and has nothing to do with nVMX.
+> 
+> But we do not use unrestricted guest.
+> We use v86 under KVM.
 
-start_secondary()
-  smp_init_secondary()
-    init_cpu_timer()
-      clockevents_register_device()
+Unrestricted guest can kick in even if CR0.PG=1 && CR0.PE=1, e.g. there are
+segmentation checks that apply if and only if unrestricted_guest=0.  Long story
+short, without a deep audit, it's basically impossible to rule out a dependency
+on unrestricted guest since you're playing around with v86.
+ 
+> The only other effect of setting VMXE was clearing VME. Which shouldn't
+> affect anything either, right?
 
-We are taking a lock there but the CPU is not yet online, and the
-__lock_acquire() would call things like hlist_for_each_entry_rcu() from
-lookup_chain_cache() or register_lock_class(). Thus, triggering the RCU-list
-from an offline CPU warnings.
-
-I am not entirely sure how to fix those though.
-
+Hmm, clearing VME would mean that exceptions/interrupts within the guest would
+trigger a switch out of v86 and into vanilla protected mode.  v86 and PM have
+different consistency checks, particularly for segmentation, so it's plausible
+that clearing CR4.VME inadvertantly worked around the bug by avoiding invalid
+guest state for v86.
