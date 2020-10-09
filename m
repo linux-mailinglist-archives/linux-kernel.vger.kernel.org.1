@@ -2,71 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFEE9288B73
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3C04288BA8
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:41:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388748AbgJIOeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 10:34:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51892 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387662AbgJIOeX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 10:34:23 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 262C02226B;
-        Fri,  9 Oct 2020 14:34:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602254063;
-        bh=NI5DLF6uPJ5jya9JuzI9Ra3gtpgV9aB2BH0rzTb6zPM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rJrRD065RVWZjHBQeufYQpcmp+VhiPjAiFyotfN37ETJ9AvJBbpjGfFgucwPeHHbD
-         Pz1H92kmLDZnIkdkG0Hhg7YMQnRWRzye+bxbKlsBaJ3Ob5KT7cMRQeK9WmBYZ9L+Ca
-         /OX1TyVGfVNQm9EwZ56xQvA/nf/yG65ezRlm+bT8=
-Date:   Fri, 9 Oct 2020 09:39:47 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] amd/amdgpu_ctx: Use struct_size() helper and
- kmalloc()
-Message-ID: <20201009143947.GA32493@embeddedor>
-References: <20201008143450.GA23077@embeddedor>
- <4fe00048-2612-39f3-29bb-c9424000f836@amd.com>
- <20201009135430.GA31347@embeddedor>
- <de2282e7-7eb9-db79-1082-36d6508b05dd@amd.com>
+        id S2388958AbgJIOlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 10:41:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388691AbgJIOlE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 10:41:04 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A068C0613D2;
+        Fri,  9 Oct 2020 07:41:04 -0700 (PDT)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94)
+        (envelope-from <benjamin@sipsolutions.net>)
+        id 1kQtZr-002KHD-Q5; Fri, 09 Oct 2020 16:41:00 +0200
+From:   Benjamin Berg <benjamin@sipsolutions.net>
+To:     linux-usb@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-kernel@vger.kernel.org, Benjamin Berg <bberg@redhat.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Subject: [PATCH 0/2] UCSI race condition resulting in wrong port state
+Date:   Fri,  9 Oct 2020 16:40:45 +0200
+Message-Id: <20201009144047.505957-1-benjamin@sipsolutions.net>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <de2282e7-7eb9-db79-1082-36d6508b05dd@amd.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 04:29:55PM +0200, Christian König wrote:
-> > > > -	entity = kcalloc(1, offsetof(typeof(*entity), fences[amdgpu_sched_jobs]),
-> > > > +	entity = kmalloc(struct_size(entity, fences, amdgpu_sched_jobs),
-> > > NAK. You could use kzalloc() here, but kmalloc won't zero initialize the
-> > > memory which could result in unforeseen consequences.
-> > Oh I see.. I certainly didn't take that into account.
-> > 
-> > I'll fix that up and respin.
-> 
-> Shit happens, we already have a fix for this. Alex merged it and it
-> immediately broke our testing systems.
+From: Benjamin Berg <bberg@redhat.com>
 
-:/
+Hi all,
 
-> So one of our engineers came up with a fix which should already have been
-> applied.
+so, I kept running in an issue where the UCSI port information was saying
+that power was being delivered (online: 1), while no cable was attached.
 
-Great. Good to know it's already fixed! :)
+The core of the problem is that there are scenarios where UCSI change
+notifications are lost. This happens because querying the changes that
+happened is done using the GET_CONNECTOR_STATUS command while clearing the
+bitfield happens from the separate ACK command. Any change in between will
+be lost.
 
-Thanks
---
-Gustavo
+Note that the problem may be almost invisible in the UI as e.g. GNOME will
+still show the battery as discharging. But some policies like automatic
+suspend may be applied incorrectly.
+
+Cc: Hans de Goede <hdegoede@redhat.com>
+Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
+Benjamin Berg (2):
+  usb: typec: ucsi: acpi: Always decode connector change information
+  usb: typec: ucsi: Work around PPM losing change information
+
+ drivers/usb/typec/ucsi/ucsi.c      | 125 ++++++++++++++++++++++++-----
+ drivers/usb/typec/ucsi/ucsi.h      |   2 +
+ drivers/usb/typec/ucsi/ucsi_acpi.c |   5 +-
+ 3 files changed, 110 insertions(+), 22 deletions(-)
+
+-- 
+2.26.2
+
