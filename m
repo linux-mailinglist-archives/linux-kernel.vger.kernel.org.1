@@ -2,166 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F6C128892A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 14:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F4D0288931
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 14:48:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732430AbgJIMsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 08:48:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60326 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732391AbgJIMsW (ORCPT
+        id S1732739AbgJIMsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 08:48:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732395AbgJIMsx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 08:48:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602247700;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Ma9SFMzdkJ5yBVRsnLxMjp1y9pGoX30Pnen2ZZiqr2c=;
-        b=YzZHxFMx92JG+gEAjgwJAQeT7/csjBqPOVm8xaVdBq8j4NcmWZLUfo/+dwhp7JoUElMLhg
-        udGZhp0UaZ4CULGTH1mVAR7rdLBxT6PGSWRTfupeLhH7GRiicUgCX5n6quhqjh/xvXDgZj
-        vKPfr7/r3DCpDC54059Gr/spDKAjzNQ=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-355-uTsW6QCnMI6CR47MhPGmOQ-1; Fri, 09 Oct 2020 08:48:18 -0400
-X-MC-Unique: uTsW6QCnMI6CR47MhPGmOQ-1
-Received: by mail-wm1-f70.google.com with SMTP id o136so4035311wme.8
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 05:48:18 -0700 (PDT)
+        Fri, 9 Oct 2020 08:48:53 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E381C0613D7
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 05:48:52 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id y198so10416738qka.0
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 05:48:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bKAda/rTW4nq6+j1jXEBgS/13SJBQ2WY2j5bHQ+ISAM=;
+        b=HLVf/9fs3er+0kSwyJTggMLNde7v6twDJX2OORdUgNP4K/LTsJAusSj3xZhnK/9iEP
+         2MiDVI/gcY40GDzZOHFy1D1gUeZmYvK+y8q3WrgO2wIZyqUCgxZmIrGytraz5FbwrvVk
+         FIWoQQ/EYzOwBXKaVfiWwe8sni4FQhNRH93rHGzY9G+WQBuX2toU0JYl3qUK8vxILogk
+         CO/+6WIVejt98w1VEtO30gtBiu4FzGnjZIpjkg9+CRC8VLCjso0cqZThY5uICmC4Leel
+         mG8PVTlyewS4MOqVzGOqsDKY0BxrcNvf/7YuapUiGj3wEjRkZ+Rv/IezCJ6KD+Oa9Tui
+         5i5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ma9SFMzdkJ5yBVRsnLxMjp1y9pGoX30Pnen2ZZiqr2c=;
-        b=ByQn+KzWFzqCGv0cafg8fQJ8UseMYRCrqVA/93MeLKhPOMQEN0iIEQM4JC/jeYV8LV
-         BdAMxAE66Pfz/PS8r0zf1ESXbXRYFC4f701S8RLZMQSDdinsb4IYjd1DVPni0FG6pR/2
-         1EAVmgnCycg8lO8ZIGKsNCMNJOeMbQjTya8WM459dY37K4CxOaDYx/X8LmRbULXFWyFq
-         uZVqRRpE7nTq2xR5OXg4eXqfkUWddgI8/ftGih4x8pKjA8N5hxWi4WUPFyGB5dW8WFAJ
-         u5ma0Pt3Mgp7MXeDy8XbNre+9DvOcxH/0fbFdH+RWHGfBj1WUVbK30oXZqQmMSPX8z5P
-         GCbg==
-X-Gm-Message-State: AOAM532UgeGu1BP90EAmZDeO6HFH6Nk1yLclhD5ZFHlI5lI9cu3duEw4
-        i/svLNTgZA+TY8kP0EIetlX7sQa5C+I8M1gLYqk6CKw6B349VfKXrnYSRTq29AZd4emAUWk2sQD
-        WnqFHQds+IjA6bf8iPacWKE3q
-X-Received: by 2002:a1c:dd0b:: with SMTP id u11mr13791365wmg.186.1602247697164;
-        Fri, 09 Oct 2020 05:48:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy/SF4ChAJKbRcFTapWkvjhgpreOJnLpLJRd4p4YON4As2iwS/TFebC8I8ajLwpyNDeDdDSDg==
-X-Received: by 2002:a1c:dd0b:: with SMTP id u11mr13791343wmg.186.1602247696899;
-        Fri, 09 Oct 2020 05:48:16 -0700 (PDT)
-Received: from localhost.localdomain.com ([151.29.23.182])
-        by smtp.gmail.com with ESMTPSA id j13sm12542411wru.86.2020.10.09.05.48.15
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bKAda/rTW4nq6+j1jXEBgS/13SJBQ2WY2j5bHQ+ISAM=;
+        b=cfQm5DHNnX53a8n6PM4QhdFN+29TmwelpWPaBWJy6yU/hrxEXIA8Hfjx3qee+E6ws6
+         dogn8HXRi7DGWn22flCM6Cq1MMBvEKcn2WHVGUIrhYqf36P2WivnQW6v7BoEmcZQtLwZ
+         esSDLiG9ZF/Of+L5Kwuepl0XCyZNrD9lZBkIrNeNYNVeEaV4Bni3Z5VibKLTTETtjERK
+         AKZgvY0kzzIlOvP9MPOFAi21h5Gg9pjb+kHFfsqBoOVtQSuUuGY8U6iIEya4063udIcs
+         i06S6LIcq9GRLwN5GG5x74FFi0cU/gLVD3yAeOkFEoLHkjnOyeQld3yzsXozmfioy+C1
+         vIJQ==
+X-Gm-Message-State: AOAM53339kMK7nNU/NBtAHj8MtdoqO2Myqg2CBdBaKJ013yt76Y6SwVa
+        JncPOwxx6To04qVdK2qHMN56/Q==
+X-Google-Smtp-Source: ABdhPJxKkkXOIA4i8TbRkwc7dtfamUS7+upXdOHf9JVMgQW+IXdzrhalpqUKvvNnrEeFMFZ6pHcyaQ==
+X-Received: by 2002:ae9:e702:: with SMTP id m2mr6280147qka.387.1602247731583;
+        Fri, 09 Oct 2020 05:48:51 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id m18sm4248636qkk.102.2020.10.09.05.48.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 05:48:16 -0700 (PDT)
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     tglx@linutronix.de, bigeasy@linutronix.de
-Cc:     linux-rt-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bristot@redhat.com, williams@redhat.com, echaudro@redhat.com,
-        atheurer@redhat.com, Juri Lelli <juri.lelli@redhat.com>
-Subject: [PATCH 5.9 RT] net: openvswitch: Fix using smp_processor_id() in preemptible code
-Date:   Fri,  9 Oct 2020 14:47:59 +0200
-Message-Id: <20201009124759.592550-1-juri.lelli@redhat.com>
-X-Mailer: git-send-email 2.26.2
+        Fri, 09 Oct 2020 05:48:50 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kQrpK-001y6e-9J; Fri, 09 Oct 2020 09:48:50 -0300
+Date:   Fri, 9 Oct 2020 09:48:50 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-s390@vger.kernel.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v2 09/17] mm: Add unsafe_follow_pfn
+Message-ID: <20201009124850.GP5177@ziepe.ca>
+References: <20201009075934.3509076-1-daniel.vetter@ffwll.ch>
+ <20201009075934.3509076-10-daniel.vetter@ffwll.ch>
+ <20201009123421.67a80d72@coco.lan>
+ <20201009122111.GN5177@ziepe.ca>
+ <20201009143723.45609bfb@coco.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201009143723.45609bfb@coco.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following BUG has been reported (slightly edited):
+On Fri, Oct 09, 2020 at 02:37:23PM +0200, Mauro Carvalho Chehab wrote:
 
- BUG: using smp_processor_id() in preemptible [00000000] code: handler106/3082
- caller is flow_lookup.isra.15+0x2c/0xf0 [openvswitch]
- CPU: 46 PID: 3082 Comm: handler106 Not tainted ... #1
- Hardware name: Dell Inc. PowerEdge R640/06DKY5, BIOS 2.5.4 01/13/2020
- Call Trace:
-  dump_stack+0x5c/0x80
-  check_preemption_disabled+0xc4/0xd0
-  flow_lookup.isra.15+0x2c/0xf0 [openvswitch]
-  ovs_flow_tbl_lookup+0x3b/0x60 [openvswitch]
-  ovs_flow_cmd_new+0x2d8/0x430 [openvswitch]
-  ? __switch_to_asm+0x35/0x70
-  ? __switch_to_asm+0x41/0x70
-  ? __switch_to_asm+0x35/0x70
-  genl_family_rcv_msg+0x1d7/0x410
-  ? migrate_enable+0x123/0x3a0
-  genl_rcv_msg+0x47/0x8c
-  ? __kmalloc_node_track_caller+0xff/0x2e0
-  ? genl_family_rcv_msg+0x410/0x410
-  netlink_rcv_skb+0x4c/0x120
-  genl_rcv+0x24/0x40
-  netlink_unicast+0x197/0x230
-  netlink_sendmsg+0x204/0x3d0
-  sock_sendmsg+0x4c/0x50
-  ___sys_sendmsg+0x29f/0x300
-  ? migrate_enable+0x123/0x3a0
-  ? ep_send_events_proc+0x8a/0x1f0
-  ? ep_scan_ready_list.constprop.23+0x237/0x260
-  ? rt_spin_unlock+0x23/0x40
-  ? ep_poll+0x1b3/0x390
-  ? __fget+0x72/0xa0
-  __sys_sendmsg+0x57/0xa0
-  do_syscall_64+0x87/0x1a0
-  entry_SYSCALL_64_after_hwframe+0x65/0xca
- RIP: 0033:0x7f1ed72ccb07
- Code: ...
- RSP: 002b:00007f1ecbd9ba80 EFLAGS: 00003293 ORIG_RAX: 000000000000002e
- RAX: ffffffffffffffda RBX: 000000000000007b RCX: 00007f1ed72ccb07
- RDX: 0000000000000000 RSI: 00007f1ecbd9bb10 RDI: 000000000000007b
- RBP: 00007f1ecbd9bb10 R08: 0000000000000000 R09: 00007f1ecbd9d390
- R10: 0000000019616156 R11: 0000000000003293 R12: 0000000000000000
- R13: 00007f1ecbd9d338 R14: 00007f1ecbd9bfb0 R15: 00007f1ecbd9bb10
+> I'm not a mm/ expert, but, from what I understood from Daniel's patch
+> description is that this is unsafe *only if*  __GFP_MOVABLE is used.
 
-This happens because openvswitch/flow_table::flow_lookup() accesses
-per-cpu data while being preemptible (and migratable).
+No, it is unconditionally unsafe. The CMA movable mappings are
+specific VMAs that will have bad issues here, but there are other
+types too.
 
-Fix it by adding get/put_cpu_light(), so that, even if preempted, the
-task executing this code is not migrated (operation is also guarded by
-ovs_mutex mutex).
+The only way to do something at a VMA level is to have a list of OK
+VMAs, eg because they were creatd via a special mmap helper from the
+media subsystem.
 
-Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
----
- net/openvswitch/flow_table.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+> Well, no drivers inside the media subsystem uses such flag, although
+> they may rely on some infrastructure that could be using it behind
+> the bars.
 
-diff --git a/net/openvswitch/flow_table.c b/net/openvswitch/flow_table.c
-index e2235849a57e..7df27ef7da09 100644
---- a/net/openvswitch/flow_table.c
-+++ b/net/openvswitch/flow_table.c
-@@ -732,11 +732,14 @@ static struct sw_flow *flow_lookup(struct flow_table *tbl,
- 				   u32 *n_cache_hit,
- 				   u32 *index)
- {
--	u64 *usage_counters = this_cpu_ptr(ma->masks_usage_cntr);
-+	u64 *usage_counters;
- 	struct sw_flow *flow;
- 	struct sw_flow_mask *mask;
- 	int i;
- 
-+	get_cpu_light();
-+	usage_counters = this_cpu_ptr(ma->masks_usage_cntr);
-+
- 	if (likely(*index < ma->max)) {
- 		mask = rcu_dereference_ovsl(ma->masks[*index]);
- 		if (mask) {
-@@ -746,6 +749,7 @@ static struct sw_flow *flow_lookup(struct flow_table *tbl,
- 				usage_counters[*index]++;
- 				u64_stats_update_end(&ma->syncp);
- 				(*n_cache_hit)++;
-+				put_cpu_light();
- 				return flow;
- 			}
- 		}
-@@ -766,10 +770,12 @@ static struct sw_flow *flow_lookup(struct flow_table *tbl,
- 			u64_stats_update_begin(&ma->syncp);
- 			usage_counters[*index]++;
- 			u64_stats_update_end(&ma->syncp);
-+			put_cpu_light();
- 			return flow;
- 		}
- 	}
- 
-+	put_cpu_light();
- 	return NULL;
- }
- 
--- 
-2.26.2
+It doesn't matter, nothing prevents the user from calling media APIs
+on mmaps it gets from other subsystems.
 
+> If this is the case, the proper fix seems to have a GFP_NOT_MOVABLE
+> flag that it would be denying the core mm code to set __GFP_MOVABLE.
+
+We can't tell from the VMA these kinds of details..
+
+It has to go the other direction, evey mmap that might be used as a
+userptr here has to be found and the VMA specially created to allow
+its use. At least that is a kernel only change, but will need people
+with the HW to do this work.
+
+> Please let address the issue on this way, instead of broken an
+> userspace API that it is there since 1991.
+
+It has happened before :( It took 4 years for RDMA to undo the uAPI
+breakage caused by a security fix for something that was a 15 years
+old bug. 
+
+Jason
