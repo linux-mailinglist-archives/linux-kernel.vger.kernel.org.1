@@ -2,212 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A94F328905D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 19:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AFC6289072
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 20:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390240AbgJIR5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 13:57:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51712 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731500AbgJIR5s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 13:57:48 -0400
-Received: from localhost (170.sub-72-107-125.myvzw.com [72.107.125.170])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B561F21D6C;
-        Fri,  9 Oct 2020 17:57:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602266267;
-        bh=fA1G6iaFDU8VitYbv4kHdSBjdwWgSXZzpv/yl/rHKUc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=mkPqIcHIoP46GfkP4si6HrPvnVwqvUb7LVO24Rjd5RRYzdQ6NGgK4V3lp4H5S/JWf
-         3LRdWSyQ8jJ86RmZLdHwTMg0GyaGfMZ/6+cfdU2KOYbsScncWfp3RoIL87hNj7l1lM
-         IqHksy9o0ZF7NHDkUkyAw44B4WeBPioEFD3WSxmY=
-Date:   Fri, 9 Oct 2020 12:57:45 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Sean V Kelley <seanvk.dev@oregontracks.org>
-Cc:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
-        rafael.j.wysocki@intel.com, ashok.raj@intel.com,
-        tony.luck@intel.com, sathyanarayanan.kuppuswamy@intel.com,
-        qiuxu.zhuo@intel.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sean V Kelley <sean.v.kelley@intel.com>
-Subject: Re: [PATCH v8 11/14] PCI/RCEC: Add RCiEP's linked RCEC to AER/ERR
-Message-ID: <20201009175745.GA3489710@bjorn-Precision-5520>
+        id S2390280AbgJISA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 14:00:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730110AbgJISA7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 14:00:59 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A10AC0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 11:00:57 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id r10so7781750pgb.10
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 11:00:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=O9DeNfGtICXdSR5fMF3uxBj8llIMlwvh5++n6DPD1NQ=;
+        b=LNi1SKK6Xz0Ui1DpFu+MzFvSO+5SC9UcJ+bDYYds1O2bQss4jaPUCy8Pcisk8JeAR7
+         2pr3m00T+iBZ70OKhG3qne17xLaUjoJmAnb0la7XsJsETjAlzbjH5Ao4CAlRbaiUXN9q
+         tj7rVI4emXl01pB0do08uo3+SgDGSB6d0rhA0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=O9DeNfGtICXdSR5fMF3uxBj8llIMlwvh5++n6DPD1NQ=;
+        b=ZiPOdPz7Ql1P8nq0bDnro7nlYl7bi2Ycul5fPz/FSRmRJ2fb+ieIPjrdvrbDXi3LYl
+         E9TTFGcBqKpqFwdX+WNSXl2FalxrFKV4L84ZFMVbikL98Tw5P9WzaoPEOyWelbqVKlmJ
+         JbmQ8UiscFlIDEufT+1liPUcpjBM06b6v8iQruSu9XktaLyjPsYVc9M7jjX9SBcI96w9
+         zHT7K+IubplxpBYINNVHYk8nYeqyZjM7Huyc/msyj3koduUI2pl3mhJWf5Vqwu6OA3dV
+         oIfwdlk0BURbJvoK4K3POpSnuVdp1R9iqu5jETouz1iBHPld5F8hTLprltgve8dwwsNn
+         5FFg==
+X-Gm-Message-State: AOAM531A/zr5KkL4wlgRpQM0exmGlPe2g2RNi3/7jpCotNso8xu6B42G
+        chWA5ms5PMUYcidnkU8+fThi7g==
+X-Google-Smtp-Source: ABdhPJy6T/ZuzZpYG66+gogxlz7cBmM928ppbl+iWfviaU1v/1ivieeoj2WBNr1sj2yt1SNBrY9CTg==
+X-Received: by 2002:a17:90a:840b:: with SMTP id j11mr5729347pjn.5.1602266457053;
+        Fri, 09 Oct 2020 11:00:57 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id d12sm11098085pgd.93.2020.10.09.11.00.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Oct 2020 11:00:55 -0700 (PDT)
+Date:   Fri, 9 Oct 2020 11:00:54 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     corbet@lwn.net, gregkh@linuxfoundation.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 01/11] counters: Introduce counter_atomic* counters
+Message-ID: <202010091100.9327D918@keescook>
+References: <cover.1602209970.git.skhan@linuxfoundation.org>
+ <baede266cc0c69da61142b467ff386c6b31a70b7.1602209970.git.skhan@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201002184735.1229220-12-seanvk.dev@oregontracks.org>
+In-Reply-To: <baede266cc0c69da61142b467ff386c6b31a70b7.1602209970.git.skhan@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 11:47:32AM -0700, Sean V Kelley wrote:
-> From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+On Fri, Oct 09, 2020 at 09:55:56AM -0600, Shuah Khan wrote:
+> Introduce Simple atomic counters.
 > 
-> When attempting error recovery for an RCiEP associated with an RCEC device,
-> there needs to be a way to update the Root Error Status, the Uncorrectable
-> Error Status and the Uncorrectable Error Severity of the parent RCEC.
-> In some non-native cases in which there is no OS visible device
-> associated with the RCiEP, there is nothing to act upon as the firmware
-> is acting before the OS. So add handling for the linked 'rcec' in AER/ERR
-> while taking into account non-native cases.
+> There are a number of atomic_t usages in the kernel where atomic_t api
+> is used strictly for counting and not for managing object lifetime. In
+> some cases, atomic_t might not even be needed.
 > 
-> Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
-> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
-> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> ---
->  drivers/pci/pcie/aer.c |  9 +++++----
->  drivers/pci/pcie/err.c | 39 ++++++++++++++++++++++++++++-----------
->  2 files changed, 33 insertions(+), 15 deletions(-)
+> The purpose of these counters is to clearly differentiate atomic_t
+> counters from atomic_t usages that guard object lifetimes, hence prone
+> to overflow and underflow errors. It allows tools that scan for underflow
+> and overflow on atomic_t usages to detect overflow and underflows to scan
+> just the cases that are prone to errors.
 > 
-> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-> index 65dff5f3457a..dccdba60b5d9 100644
-> --- a/drivers/pci/pcie/aer.c
-> +++ b/drivers/pci/pcie/aer.c
-> @@ -1358,17 +1358,18 @@ static int aer_probe(struct pcie_device *dev)
->  static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
->  {
->  	int aer = dev->aer_cap;
-> +	int rc = 0;
->  	u32 reg32;
-> -	int rc;
-> -
->  
->  	/* Disable Root's interrupt in response to error messages */
->  	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
->  	reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
->  	pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
->  
-> -	rc = pci_bus_error_reset(dev);
-> -	pci_info(dev, "Root Port link has been reset\n");
-> +	if (pci_pcie_type(dev) != PCI_EXP_TYPE_RC_EC) {
-> +		rc = pci_bus_error_reset(dev);
-> +		pci_info(dev, "Root Port link has been reset\n");
-> +	}
->  
->  	/* Clear Root Error Status */
->  	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, &reg32);
-> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-> index 38abd7984996..956ad4c86d53 100644
-> --- a/drivers/pci/pcie/err.c
-> +++ b/drivers/pci/pcie/err.c
-> @@ -149,7 +149,8 @@ static int report_resume(struct pci_dev *dev, void *data)
->  /**
->   * pci_walk_bridge - walk bridges potentially AER affected
->   * @bridge   bridge which may be an RCEC with associated RCiEPs,
-> - *           an RCiEP associated with an RCEC, or a Port.
-> + *           or a Port.
-> + * @dev      an RCiEP lacking an associated RCEC.
->   * @cb       callback to be called for each device found
->   * @userdata arbitrary pointer to be passed to callback.
->   *
-> @@ -160,13 +161,20 @@ static int report_resume(struct pci_dev *dev, void *data)
->   * If the device provided has no subordinate bus, call the provided
->   * callback on the device itself.
->   */
-> -static void pci_walk_bridge(struct pci_dev *bridge, int (*cb)(struct pci_dev *, void *),
-> +static void pci_walk_bridge(struct pci_dev *bridge, struct pci_dev *dev,
-> +			    int (*cb)(struct pci_dev *, void *),
->  			    void *userdata)
->  {
-> -	if (bridge->subordinate)
-> +	/*
-> +	 * In a non-native case where there is no OS-visible reporting
-> +	 * device the bridge will be NULL, i.e., no RCEC, no PORT.
-> +	 */
-> +	if (bridge && bridge->subordinate)
->  		pci_walk_bus(bridge->subordinate, cb, userdata);
-> -	else
-> +	else if (bridge)
->  		cb(bridge, userdata);
-> +	else
-> +		cb(dev, userdata);
->  }
->  
->  static pci_ers_result_t flr_on_rciep(struct pci_dev *dev)
-> @@ -196,16 +204,25 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->  	type = pci_pcie_type(dev);
->  	if (type == PCI_EXP_TYPE_ROOT_PORT ||
->  	    type == PCI_EXP_TYPE_DOWNSTREAM ||
-> -	    type == PCI_EXP_TYPE_RC_EC ||
-> -	    type == PCI_EXP_TYPE_RC_END)
-> +	    type == PCI_EXP_TYPE_RC_EC)
->  		bridge = dev;
-> +	else if (type == PCI_EXP_TYPE_RC_END)
-> +		bridge = dev->rcec;
->  	else
->  		bridge = pci_upstream_bridge(dev);
->  
->  	pci_dbg(dev, "broadcast error_detected message\n");
->  	if (state == pci_channel_io_frozen) {
-> -		pci_walk_bridge(bridge, report_frozen_detected, &status);
-> +		pci_walk_bridge(bridge, dev, report_frozen_detected, &status);
->  		if (type == PCI_EXP_TYPE_RC_END) {
-> +			/*
-> +			 * The callback only clears the Root Error Status
-> +			 * of the RCEC (see aer.c). Only perform this for the
-> +			 * native case, i.e., an RCEC is present.
-> +			 */
-> +			if (bridge)
-> +				reset_subordinate_devices(bridge);
-
-Help me understand this.  There are lots of callbacks in this picture,
-but I guess this "callback only clears Root Error Status" must refer
-to aer_root_reset(), i.e., the reset_subordinate_devices pointer?
-
-Of course, the caller of pcie_do_recovery() supplied that pointer.
-And we can infer that it must be aer_root_reset(), not
-dpc_reset_link(), because RCECs and RCiEPs are not allowed to
-implement DPC.
-
-I wish we didn't have either this assumption about what
-reset_subordinate_devices points to, or the assumption about what
-aer_root_reset() does.  They both seem a little bit tenuous.
-
-We already made aer_root_reset() smart enough to check for RCECs.  Can
-we put the FLR there, too?  Then we wouldn't have this weird situation
-where reset_subordinate_devices() does a reset and clears error
-status, EXCEPT for this case where it only clears error status and we
-do the reset here?
-
->  			status = flr_on_rciep(dev);
->  			if (status != PCI_ERS_RESULT_RECOVERED) {
->  				pci_warn(dev, "function level reset failed\n");
-> @@ -219,13 +236,13 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->  			}
->  		}
->  	} else {
-> -		pci_walk_bridge(bridge, report_normal_detected, &status);
-> +		pci_walk_bridge(bridge, dev, report_normal_detected, &status);
->  	}
->  
->  	if (status == PCI_ERS_RESULT_CAN_RECOVER) {
->  		status = PCI_ERS_RESULT_RECOVERED;
->  		pci_dbg(dev, "broadcast mmio_enabled message\n");
-> -		pci_walk_bridge(bridge, report_mmio_enabled, &status);
-> +		pci_walk_bridge(bridge, dev, report_mmio_enabled, &status);
->  	}
->  
->  	if (status == PCI_ERS_RESULT_NEED_RESET) {
-> @@ -236,14 +253,14 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->  		 */
->  		status = PCI_ERS_RESULT_RECOVERED;
->  		pci_dbg(dev, "broadcast slot_reset message\n");
-> -		pci_walk_bridge(bridge, report_slot_reset, &status);
-> +		pci_walk_bridge(bridge, dev, report_slot_reset, &status);
->  	}
->  
->  	if (status != PCI_ERS_RESULT_RECOVERED)
->  		goto failed;
->  
->  	pci_dbg(dev, "broadcast resume message\n");
-> -	pci_walk_bridge(bridge, report_resume, &status);
-> +	pci_walk_bridge(bridge, dev, report_resume, &status);
->  
->  	if (type == PCI_EXP_TYPE_ROOT_PORT ||
->  	    type == PCI_EXP_TYPE_DOWNSTREAM ||
-> -- 
-> 2.28.0
+> Simple atomic counters api provides interfaces for simple atomic counters
+> that just count, and don't guard resource lifetimes. The interfaces are
+> built on top of atomic_t api, providing a smaller subset of atomic_t
+> interfaces necessary to support simple counters.
 > 
+> Counter wraps around to INT_MIN when it overflows and should not be used
+> to guard resource lifetimes, device usage and open counts that control
+> state changes, and pm states. Overflowing to INT_MIN is consistent with
+> the atomic_t api, which it is built on top of.
+> 
+> Using counter_atomic* to guard lifetimes could lead to use-after free
+> when it overflows and undefined behavior when used to manage state
+> changes and device usage/open states.
+> 
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+-- 
+Kees Cook
