@@ -2,88 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36ED82886EF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 12:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 108B52886FC
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 12:32:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387671AbgJIKaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 06:30:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49354 "EHLO mail.kernel.org"
+        id S2387695AbgJIKcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 06:32:18 -0400
+Received: from mailout08.rmx.de ([94.199.90.85]:41460 "EHLO mailout08.rmx.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387661AbgJIKaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 06:30:24 -0400
-Received: from localhost (unknown [122.182.251.219])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1730763AbgJIKcS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 06:32:18 -0400
+Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0C5192226B;
-        Fri,  9 Oct 2020 10:30:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602239423;
-        bh=2S5cTsiaGUTnL4qYAUGa56y6UyS/LmE34JmfxGcQ1cI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ws/Iqsc0keJOJ4dffz7XEfkOTlv2bWVqrWRRcbvydc1+adsdkeKel5MAWcBuDqoTx
-         ecTxhwGKjS8SDcsrTDq4zg4i3Fjly892qD7bo2q/1+/DPxpaR9Sw9zqzhQOPe24puQ
-         B0xH1diT7tVjHj27BpXRKGNqjvfy2Ih+vVr0urW8=
-Date:   Fri, 9 Oct 2020 16:00:19 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc:     dmaengine@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/3] dmaengine: add peripheral configuration
-Message-ID: <20201009103019.GD2968@vkoul-mobl>
-References: <20201008123151.764238-1-vkoul@kernel.org>
- <20201008123151.764238-3-vkoul@kernel.org>
- <e2c0323b-4f41-1926-5930-c63624fe1dd1@ti.com>
+        by mailout08.rmx.de (Postfix) with ESMTPS id 4C74Bk6dDszMt0L;
+        Fri,  9 Oct 2020 12:32:14 +0200 (CEST)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin02.retarus.com (Postfix) with ESMTPS id 4C74BJ1tfXz2TTLg;
+        Fri,  9 Oct 2020 12:31:52 +0200 (CEST)
+Received: from N95HX1G2.wgnetz.xx (192.168.54.145) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Fri, 9 Oct
+ 2020 12:31:52 +0200
+From:   Christian Eggers <ceggers@arri.de>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Deepa Dinamani <deepa.kernel@gmail.com>
+CC:     Willem de Bruijn <willemb@google.com>,
+        Christoph Hellwig <hch@lst.de>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Christian Eggers <ceggers@arri.de>
+Subject: [PATCH net 1/2] socket: fix option SO_TIMESTAMPING_NEW
+Date:   Fri, 9 Oct 2020 12:31:20 +0200
+Message-ID: <20201009103121.1004-1-ceggers@arri.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e2c0323b-4f41-1926-5930-c63624fe1dd1@ti.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [192.168.54.145]
+X-RMX-ID: 20201009-123152-4C74BJ1tfXz2TTLg-0@kdin02
+X-RMX-SOURCE: 217.111.95.66
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+The comparison of optname with SO_TIMESTAMPING_NEW is wrong way around,
+so SOCK_TSTAMP_NEW will first be set and than reset again. Additionally
+move it out of the test for SOF_TIMESTAMPING_RX_SOFTWARE as this seems
+unrelated.
 
-On 09-10-20, 12:04, Peter Ujfalusi wrote:
-> On 08/10/2020 15.31, Vinod Koul wrote:
-> > Some complex dmaengine controllers have capability to program the
-> > peripheral device, so pass on the peripheral configuration as part of
-> > dma_slave_config
-> >
-> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> > ---
-> >  include/linux/dmaengine.h | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> > 
-> > diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
-> > index 6fbd5c99e30c..a15dc2960f6d 100644
-> > --- a/include/linux/dmaengine.h
-> > +++ b/include/linux/dmaengine.h
-> > @@ -418,6 +418,9 @@ enum dma_slave_buswidth {
-> >   * @slave_id: Slave requester id. Only valid for slave channels. The dma
-> >   * slave peripheral will have unique id as dma requester which need to be
-> >   * pass as slave config.
-> > + * @peripheral_config: peripheral configuration for programming peripheral
-> > + * for dmaengine transfer
-> > + * @peripheral_size: peripheral configuration buffer size
-> >   *
-> >   * This struct is passed in as configuration data to a DMA engine
-> >   * in order to set up a certain channel for DMA transport at runtime.
-> > @@ -443,6 +446,8 @@ struct dma_slave_config {
-> >  	u32 dst_port_window_size;
-> >  	bool device_fc;
-> >  	unsigned int slave_id;
-> > +	void *peripheral_config;
-> > +	size_t peripheral_size;
-> 
-> Do you foresee a need of src/dst pair of these?
-> If we do DEV_TO_DEV with different type of peripherals it is going to
-> cause issues.
+This problem happens on 32 bit platforms were the libc has already
+switched to struct timespec64 (from SO_TIMExxx_OLD to SO_TIMExxx_NEW
+socket options). ptp4l complains with "missing timestamp on transmitted
+peer delay request" because the wrong format is received (and
+discarded).
 
-Not really as the channel already has direction and this is per channel.
-If for any any reason subsequent txn is for different direction, I would
-expect that parameters are set again before prep_ calls
+Fixes: 9718475e6908 ("socket: Add SO_TIMESTAMPING_NEW")
+Signed-off-by: Christian Eggers <ceggers@arri.de>
+---
+ net/core/sock.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 34a8d12e38d7..3926804702c1 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -1024,16 +1024,15 @@ int sock_setsockopt(struct socket *sock, int level, int optname,
+ 		}
+ 
+ 		sk->sk_tsflags = val;
++		if (optname != SO_TIMESTAMPING_NEW)
++			sock_reset_flag(sk, SOCK_TSTAMP_NEW);
++
+ 		if (val & SOF_TIMESTAMPING_RX_SOFTWARE)
+ 			sock_enable_timestamp(sk,
+ 					      SOCK_TIMESTAMPING_RX_SOFTWARE);
+-		else {
+-			if (optname == SO_TIMESTAMPING_NEW)
+-				sock_reset_flag(sk, SOCK_TSTAMP_NEW);
+-
++		else
+ 			sock_disable_timestamp(sk,
+ 					       (1UL << SOCK_TIMESTAMPING_RX_SOFTWARE));
+-		}
+ 		break;
+ 
+ 	case SO_RCVLOWAT:
 -- 
-~Vinod
+Christian Eggers
+Embedded software developer
+
+Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
+Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
+Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
+Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
+
