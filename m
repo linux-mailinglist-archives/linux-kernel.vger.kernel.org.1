@@ -2,110 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9561E28821A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 08:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0550128821F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 08:29:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731573AbgJIG1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 02:27:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35128 "EHLO
+        id S1731796AbgJIG32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 02:29:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726501AbgJIG1M (ORCPT
+        with ESMTP id S1731012AbgJIG31 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 02:27:12 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 459DFC0613D2;
-        Thu,  8 Oct 2020 23:27:12 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id g4so8238208edk.0;
-        Thu, 08 Oct 2020 23:27:12 -0700 (PDT)
+        Fri, 9 Oct 2020 02:29:27 -0400
+Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 422BFC0613D5
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 23:29:26 -0700 (PDT)
+Received: by mail-vk1-xa44.google.com with SMTP id t67so890473vkb.8
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 23:29:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=B/qQ6z62oBTKW8sKojWB9f9ePL7Gl12iSS1GwgVd2B0=;
-        b=LR7kmnh447DFLvGR+uFs3HNOb7qge4PfVTxQJOLV8F0FOHG7bllbNw0USoUNvoJ6Mv
-         Ep9BVLZ2Ohrp5nvLZ1359oWQXwBvWJ0IFbd5BovhBs/5zCRar5KiR4IwNSFvnGts+ZDI
-         utyrct9M4euk7zc46x5R5XABtd2Scl4msh/fLROj0rKDzH2FfSxlElRvRhgu/Xy0ZHHe
-         ukBkvsf6Ajy3HI2vn0cBwX4Me4DUb2Xhg+633mybUS7To7QDeJS0/CacuVXwamMr7yX2
-         aRwb7rMDN42ZXZx0wixUZpi/BwLiyNoL6APPG2yYT+i0vrp1T40iz4sQynTuHeWni6lY
-         KQBw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=29TPjXHq/BNLabnsJW1LaxXDiuG1x9tYewU9pgUGQT8=;
+        b=tU0Jj/MpM4lhRIpYC1RoltT97ueOKcw7JWL+loQCcDXb63XC+Z/78WcXODBBv4Gvlj
+         6nh4DWjTmeBV0P4SKBeUla0Q88NfJQg1PSP7KDZgQNcMDViwnDrf5WhG2+KmRz/OVcQC
+         KV6o4yJOr6OCbAzQxXlglR5WxOCXkTNeSx8Rb76wQv6NXS5kuWga4lvHyk8qogRpRqT3
+         DpC7NMcQtcMDMh5sarPw0p2UG1wxzXuLWMJk1sD56L1ZOgNA1+txN0lU1w7TqnG4wHYQ
+         nqNAPzSm/tbUVjRb2sqlOHEAEJwZlMH8IXrC2uhoQFqlolDwMoeablnCy5g8NEKBCKyE
+         LnYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=B/qQ6z62oBTKW8sKojWB9f9ePL7Gl12iSS1GwgVd2B0=;
-        b=VYnsn+hJGuHCKP7bj/mAbdBDoGs5Rjbc7IL0PKpTICPrtnioid5TQIJ8cU8THJnWJo
-         I22QD467RUZb/d6Hp6IK2PEkF4WoQKBP4qGS+3Uvr+OcRb443pgPrlQsOeULe7z8CV5G
-         QsfkDcZr/ovFKmXNcARpnz5O6IEGwB086QO0rNna2A+1yvYDnG5rsZPFKPuSN7HNUFqv
-         u87l5NUZzEA6T6X1fzubfiYRVHDbV9lWWUfNu1byoO8dCxfbpConbeHamfkDpPTojw20
-         HmMgihHLUS3ESYuOMLtlen9z3qvRDe5lnaylWoNzC8bLU1ih8NC+0KmuRmRitTDt3Qua
-         SYug==
-X-Gm-Message-State: AOAM533Uz0qZbCmjoXwlMHwt6MHWClFJV/8nLhKhzQGVohT12vFSMnom
-        EEj9NwbWQ8m3uXJ7EuJs9q4=
-X-Google-Smtp-Source: ABdhPJw9WgDp3Ai3otLAiK6NI6UlxvoFUgnb306b4BDI0sd0VlE8CxkPrWWiAlcyS1dVQP7kPPyB4g==
-X-Received: by 2002:a50:a693:: with SMTP id e19mr13290081edc.333.1602224831030;
-        Thu, 08 Oct 2020 23:27:11 -0700 (PDT)
-Received: from gmail.com (563BAB65.dsl.pool.telekom.hu. [86.59.171.101])
-        by smtp.gmail.com with ESMTPSA id q3sm5602036edt.1.2020.10.08.23.27.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 23:27:10 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Fri, 9 Oct 2020 08:27:08 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        colin.king@canonical.com, grandmaster@al2klimov.de,
-        joel@joelfernandes.org, madhuparnabhowmik10@gmail.com,
-        neeraju@codeaurora.org, paul.gortmaker@windriver.com,
-        qiang.zhang@windriver.com, rdunlap@infradead.org,
-        tklauser@distanz.ch, weiyongjun1@huawei.com, kernel-team@fb.com
-Subject: Re: [GIT PULL tip/core/rcu] RCU commits for v5.10
-Message-ID: <20201009062708.GB9972@gmail.com>
-References: <20200914174607.GA12722@paulmck-ThinkPad-P72>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=29TPjXHq/BNLabnsJW1LaxXDiuG1x9tYewU9pgUGQT8=;
+        b=ZWktkl4Tmpq1aSYUPimVFyP4v2kzaqNYnVR6n0E1Y7j9pD+vmc7tMSIosoj+LBMPw1
+         1LA2O6Xbr0WB5lNiw8O++TA2Nq1BUbRYSX+6jbvLWLld/UeUQymvgql9aMBf6+Bv7rPr
+         PcFjiE7RKJdnzzxES1xzyGdlJfEd8wKQ9K8qzUZe3lmV8tJ7qUEFn9GJBvz3aACsjDra
+         e+2nbhjV7Z0RoLsfJpCqXeO5QelbFghuaMIeBOJ+vJNaOL1miI05VBc41XzjqlCXX0xm
+         KFoM0oa5Vy7SQgiUtMk7q27hAs6d+xN65rB5bWdyw/+vMEKynqDi7I/Sfkh06ptakxWO
+         Qg3A==
+X-Gm-Message-State: AOAM530Em60M+qSz7gYkZnopEkHSGR1RgoCe4pRy6jd+fByVNTMWxp22
+        q8kKGZmzpMwQ6VLqB9t+IkXp3kV4aW8z1395gNEzxg==
+X-Google-Smtp-Source: ABdhPJz4n+U9vseqM4gSLaEt+c3jl3buZB4FQyIUsFMpR8FQOqAC7YdrEYODHprc5waifmsL8d13qRiLVsjacE3ee3I=
+X-Received: by 2002:a1f:1c2:: with SMTP id 185mr6748118vkb.15.1602224965129;
+ Thu, 08 Oct 2020 23:29:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914174607.GA12722@paulmck-ThinkPad-P72>
+References: <20201002013852.51968-1-colyli@suse.de>
+In-Reply-To: <20201002013852.51968-1-colyli@suse.de>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 9 Oct 2020 08:28:47 +0200
+Message-ID: <CAPDyKFokxaKxaDqip-ZTxBSAZ_EK=9EjuWQUw+1nwoPmoP88Zw@mail.gmail.com>
+Subject: Re: [PATCH v4] mmc: core: don't set limits.discard_granularity as 0
+To:     Coly Li <colyli@suse.de>
+Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Vicente Bergas <vicencb@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 2 Oct 2020 at 03:39, Coly Li <colyli@suse.de> wrote:
+>
+> In mmc_queue_setup_discard() the mmc driver queue's discard_granularity
+> might be set as 0 (when card->pref_erase > max_discard) while the mmc
+> device still declares to support discard operation. This is buggy and
+> triggered the following kernel warning message,
+>
+> WARNING: CPU: 0 PID: 135 at __blkdev_issue_discard+0x200/0x294
+> CPU: 0 PID: 135 Comm: f2fs_discard-17 Not tainted 5.9.0-rc6 #1
+> Hardware name: Google Kevin (DT)
+> pstate: 00000005 (nzcv daif -PAN -UAO BTYPE=3D--)
+> pc : __blkdev_issue_discard+0x200/0x294
+> lr : __blkdev_issue_discard+0x54/0x294
+> sp : ffff800011dd3b10
+> x29: ffff800011dd3b10 x28: 0000000000000000 x27: ffff800011dd3cc4 x26: ff=
+ff800011dd3e18 x25: 000000000004e69b x24: 0000000000000c40 x23: ffff0000f1d=
+eaaf0 x22: ffff0000f2849200 x21: 00000000002734d8 x20: 0000000000000008 x19=
+: 0000000000000000 x18: 0000000000000000 x17: 0000000000000000 x16: 0000000=
+000000000 x15: 0000000000000000 x14: 0000000000000394 x13: 0000000000000000=
+ x12: 0000000000000000 x11: 0000000000000000 x10: 00000000000008b0 x9 : fff=
+f800011dd3cb0 x8 : 000000000004e69b x7 : 0000000000000000 x6 : ffff0000f192=
+6400 x5 : ffff0000f1940800 x4 : 0000000000000000 x3 : 0000000000000c40 x2 :=
+ 0000000000000008 x1 : 00000000002734d8 x0 : 0000000000000000 Call trace:
+> __blkdev_issue_discard+0x200/0x294
+> __submit_discard_cmd+0x128/0x374
+> __issue_discard_cmd_orderly+0x188/0x244
+> __issue_discard_cmd+0x2e8/0x33c
+> issue_discard_thread+0xe8/0x2f0
+> kthread+0x11c/0x120
+> ret_from_fork+0x10/0x1c
+> ---[ end trace e4c8023d33dfe77a ]---
+>
+> This patch fixes the issue by setting discard_granularity as SECTOR_SIZE
+> instead of 0 when (card->pref_erase > max_discard) is true. Now no more
+> complain from __blkdev_issue_discard() for the improper value of discard
+> granularity.
+>
+> This issue is exposed after commit b35fd7422c2f ("block: check queue's
+> limits.discard_granularity in __blkdev_issue_discard()"), a "Fixes:" tag
+> is also added for the commit to make sure people won't miss this patch
+> after applying the change of __blkdev_issue_discard().
+>
+> Fixes: e056a1b5b67b ("mmc: queue: let host controllers specify maximum di=
+scard timeout")
+> Fixes: b35fd7422c2f ("block: check queue's limits.discard_granularity in =
+__blkdev_issue_discard()").
+> Reported-and-tested-by: Vicente Bergas <vicencb@gmail.com>
+> Signed-off-by: Coly Li <colyli@suse.de>
+> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+> Cc: Ulf Hansson <ulf.hansson@linaro.org>
 
-* Paul E. McKenney <paulmck@kernel.org> wrote:
+While waiting for a new version that uses the logical block size, I
+instead decided to apply this for fixes as is, thanks!
 
-> Hello, Ingo!
-> 
-> This pull request contains the following changes:
-> 
-> 1.	Documentation updates.
-> 
-> 	https://lore.kernel.org/lkml/20200831175419.GA31013@paulmck-ThinkPad-P72
-> 
-> 2.	Miscellaneous fixes.
-> 
-> 	https://lore.kernel.org/lkml/20200831180050.GA32590@paulmck-ThinkPad-P72
-> 
-> 3.	Torture-test updates.
-> 
-> 	https://lore.kernel.org/lkml/20200831180348.GA416@paulmck-ThinkPad-P72
-> 
-> 4.	New smp_call_function() torture test.
-> 
-> 	https://lore.kernel.org/lkml/20200831180731.GA582@paulmck-ThinkPad-P72
-> 
-> 5.	Strict grace periods for KASAN.  The point of this series is to find
-> 	RCU-usage bugs, so the corresponding new RCU_STRICT_GRACE_PERIOD
-> 	Kconfig option depends on both DEBUG_KERNEL and RCU_EXPERT, and is
-> 	further disabled by dfefault.  Finally, the help text includes
-> 	a goodly list of scary caveats.
-> 
-> 	https://lore.kernel.org/lkml/20200831181101.GA950@paulmck-ThinkPad-P72
-> 
-> 6.	Debugging for smp_call_function().
-> 
-> 	https://lore.kernel.org/lkml/20200831181356.GA1224@paulmck-ThinkPad-P72
+Please base the new version on top of this one instead.
 
->  57 files changed, 1582 insertions(+), 421 deletions(-)
+Kind regards
+Uffe
 
-Pulled into tip:core/rcu, thanks a lot Paul!
 
-	Ingo
+> ---
+> Changelog,
+> v4, update to Reported-and-tested-by tag for Vicente Bergas.
+> v3, add Fixes tag for both commits.
+> v2, change commit id of the Fixes tag.
+> v1, initial version.
+>
+>  drivers/mmc/core/queue.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
+> index 6c022ef0f84d..350d0cc4ee62 100644
+> --- a/drivers/mmc/core/queue.c
+> +++ b/drivers/mmc/core/queue.c
+> @@ -190,7 +190,7 @@ static void mmc_queue_setup_discard(struct request_qu=
+eue *q,
+>         q->limits.discard_granularity =3D card->pref_erase << 9;
+>         /* granularity must not be greater than max. discard */
+>         if (card->pref_erase > max_discard)
+> -               q->limits.discard_granularity =3D 0;
+> +               q->limits.discard_granularity =3D SECTOR_SIZE;
+>         if (mmc_can_secure_erase_trim(card))
+>                 blk_queue_flag_set(QUEUE_FLAG_SECERASE, q);
+>  }
+> --
+> 2.26.2
+>
