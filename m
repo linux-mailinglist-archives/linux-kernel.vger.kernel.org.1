@@ -2,137 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0C722880CC
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 05:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D67D2880CD
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 05:47:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731549AbgJIDqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 23:46:22 -0400
-Received: from mga07.intel.com ([134.134.136.100]:45009 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726386AbgJIDqW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 23:46:22 -0400
-IronPort-SDR: sAH5wkdwKvr49s5rBqK+N47Gs7teTsZQv2Ysu2OoOOWqtREX4XJUAXbtJpAOuaTbHvOzwffp0N
- tUIkBt2RirGg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="229624589"
-X-IronPort-AV: E=Sophos;i="5.77,353,1596524400"; 
-   d="scan'208";a="229624589"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 20:46:20 -0700
-IronPort-SDR: FpjiBfNdoN7koPf8fXg6fDEgVMPctALFUvERJN1oVb0s+aBw6dMeqtgXHkOelCOvEep486C0DU
- HCiG3AAiwEwA==
-X-IronPort-AV: E=Sophos;i="5.77,353,1596524400"; 
-   d="scan'208";a="462045333"
-Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 20:46:20 -0700
-Date:   Thu, 8 Oct 2020 20:46:14 -0700
-From:   "Raj, Ashok" <ashok.raj@intel.com>
-To:     Hedi Berriche <hedi.berriche@hpe.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Russ Anderson <rja@hpe.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Keith Busch <keith.busch@intel.com>,
-        Joerg Roedel <jroedel@suse.com>, stable@kernel.org,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [PATCH v1 1/1] PCI/ERR: don't clobber status after reset_link()
-Message-ID: <20201009034614.GB60852@otc-nc-03>
-References: <20201009025251.2360659-1-hedi.berriche@hpe.com>
+        id S1731566AbgJIDrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 23:47:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47948 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727181AbgJIDrC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 23:47:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602215220;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ux54JNdDdEVnzLVcdf0BICEoj5Z4IXVy7u4NzlDD89k=;
+        b=bp74xLL/4Hifzvm9x//kosmf4/CUjXn1HVFolsqGPivUnfpnMUKAchEwVCztVBELJC6HTw
+        5uxCptHn221RPPiS49nTIYMUv7oc5SWfYuF6c+Z1C2sM+pDCe3FZmvsRMuud7UYOLtRUAB
+        7xIqAc8Y6H12C3M+svJUkiBW0yBUnvo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-399-CF7VmrsZN8Kp6ziGbLQnNw-1; Thu, 08 Oct 2020 23:46:59 -0400
+X-MC-Unique: CF7VmrsZN8Kp6ziGbLQnNw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8679884A61F;
+        Fri,  9 Oct 2020 03:46:57 +0000 (UTC)
+Received: from [10.72.13.133] (ovpn-13-133.pek2.redhat.com [10.72.13.133])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 534906EF63;
+        Fri,  9 Oct 2020 03:46:30 +0000 (UTC)
+Subject: Re: [RFC PATCH 06/24] vhost-vdpa: switch to use vhost-vdpa specific
+ IOTLB
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     mst@redhat.com, lulu@redhat.com, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rob.miller@broadcom.com,
+        lingshan.zhu@intel.com, eperezma@redhat.com, hanand@xilinx.com,
+        mhabets@solarflare.com, amorenoz@redhat.com,
+        maxime.coquelin@redhat.com, stefanha@redhat.com,
+        sgarzare@redhat.com
+References: <20200924032125.18619-1-jasowang@redhat.com>
+ <20200924032125.18619-7-jasowang@redhat.com>
+ <20200930120202.GA229518@mtl-vdi-166.wap.labs.mlnx>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <766420cf-09bc-fb3d-f83b-140f99bfc6e3@redhat.com>
+Date:   Fri, 9 Oct 2020 11:46:28 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201009025251.2360659-1-hedi.berriche@hpe.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200930120202.GA229518@mtl-vdi-166.wap.labs.mlnx>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 03:52:51AM +0100, Hedi Berriche wrote:
-> Commit 6d2c89441571 ("PCI/ERR: Update error status after reset_link()")
-> changed pcie_do_recovery() so that status is updated with the return
-> value from reset_link(); this was to fix the problem where we would
-> wrongly report recovery failure, despite a successful reset_link(),
-> whenever the initial error status is PCI_ERS_RESULT_DISCONNECT or
-> PCI_ERS_RESULT_NO_AER_DRIVER.
-> 
-> Unfortunately this breaks the flow of pcie_do_recovery() as it prevents
 
-What is the reference to "this breaks" above?  
+On 2020/9/30 下午8:02, Eli Cohen wrote:
+> On Thu, Sep 24, 2020 at 11:21:07AM +0800, Jason Wang wrote:
+>> To ease the implementation of per group ASID support for vDPA
+>> device. This patch switches to use a vhost-vdpa specific IOTLB to
+>> avoid the unnecessary refactoring of the vhost core.
+>>
+>> Signed-off-by: Jason Wang <jasowang@redhat.com>
+>> ---
+>>   drivers/vhost/vdpa.c | 14 ++++++++------
+>>   1 file changed, 8 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+>> index 74bef1c15a70..ec3c94f706c1 100644
+>> --- a/drivers/vhost/vdpa.c
+>> +++ b/drivers/vhost/vdpa.c
+>> @@ -40,6 +40,7 @@ struct vhost_vdpa {
+>>   	struct vhost_virtqueue *vqs;
+>>   	struct completion completion;
+>>   	struct vdpa_device *vdpa;
+>> +	struct vhost_iotlb *iotlb;
+>>   	struct device dev;
+>>   	struct cdev cdev;
+>>   	atomic_t opened;
+>> @@ -514,12 +515,11 @@ static void vhost_vdpa_iotlb_unmap(struct vhost_vdpa *v,
+>>   
+>>   static void vhost_vdpa_iotlb_free(struct vhost_vdpa *v)
+>>   {
+>> -	struct vhost_dev *dev = &v->vdev;
+>> -	struct vhost_iotlb *iotlb = dev->iotlb;
+>> +	struct vhost_iotlb *iotlb = v->iotlb;
+>>   
+>>   	vhost_vdpa_iotlb_unmap(v, iotlb, 0ULL, 0ULL - 1);
+>> -	kfree(dev->iotlb);
+>> -	dev->iotlb = NULL;
+>> +	kfree(v->iotlb);
+>> +	v->iotlb = NULL;
+>>   }
+>>   
+>>   static int perm_to_iommu_flags(u32 perm)
+>> @@ -681,7 +681,7 @@ static int vhost_vdpa_process_iotlb_msg(struct vhost_dev *dev,
+>>   	struct vhost_vdpa *v = container_of(dev, struct vhost_vdpa, vdev);
+>>   	struct vdpa_device *vdpa = v->vdpa;
+>>   	const struct vdpa_config_ops *ops = vdpa->config;
+>> -	struct vhost_iotlb *iotlb = dev->iotlb;
+>> +	struct vhost_iotlb *iotlb = v->iotlb;
+>>   	int r = 0;
+>>   
+>>   	r = vhost_dev_check_owner(dev);
+>> @@ -812,12 +812,14 @@ static int vhost_vdpa_open(struct inode *inode, struct file *filep)
+>>   
+>>   	r = vhost_vdpa_alloc_domain(v);
+>>   	if (r)
+>> -		goto err_init_iotlb;
+>> +		goto err_alloc_domain;
+> You're still using this:
+> dev->iotlb = vhost_iotlb_alloc(0, 0);
+>
+> Shouldn't you use
+> v->iotlb = host_iotlb_alloc(0, 0);
+>
+> to set the vdpa device iotlb field?
 
-> the actions needed when the initial error is PCI_ERS_RESULT_CAN_RECOVER
-> or PCI_ERS_RESULT_NEED_RESET from taking place which causes error
-> recovery to fail.
-> 
-> Don't clobber status after reset_link() to restore the intended flow in
-> pcie_do_recovery().
-> 
-> Fix the original problem by saving the return value from reset_link()
-> and use it later on to decide whether error recovery should be deemed
-> successful in the scenarios where the initial error status is
-> PCI_ERS_RESULT_{DISCONNECT,NO_AER_DRIVER}.
 
-I would rather rephrase the above to make it clear what is being proposed.
-Since the description seems to talk about the old problem and new solution
-all mixed up.
+Yes, you're right.
 
-> 
-> Fixes: 6d2c89441571 ("PCI/ERR: Update error status after reset_link()")
-> Signed-off-by: Hedi Berriche <hedi.berriche@hpe.com>
-> Cc: Russ Anderson <rja@hpe.com>
-> Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: Ashok Raj <ashok.raj@intel.com>
-> Cc: Keith Busch <keith.busch@intel.com>
-> Cc: Joerg Roedel <jroedel@suse.com>
-> 
-> Cc: stable@kernel.org # v5.7+
-> ---
->  drivers/pci/pcie/err.c | 13 ++++++++++---
->  1 file changed, 10 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-> index c543f419d8f9..dbd0b56bd6c1 100644
-> --- a/drivers/pci/pcie/err.c
-> +++ b/drivers/pci/pcie/err.c
-> @@ -150,7 +150,7 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->  			pci_channel_state_t state,
->  			pci_ers_result_t (*reset_link)(struct pci_dev *pdev))
->  {
-> -	pci_ers_result_t status = PCI_ERS_RESULT_CAN_RECOVER;
-> +	pci_ers_result_t post_reset_status, status = PCI_ERS_RESULT_CAN_RECOVER;
+Will fix.
 
-why call it post_reset_status? 
+Thanks
 
->  	struct pci_bus *bus;
->  
->  	/*
-> @@ -165,8 +165,8 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->  	pci_dbg(dev, "broadcast error_detected message\n");
->  	if (state == pci_channel_io_frozen) {
->  		pci_walk_bus(bus, report_frozen_detected, &status);
-> -		status = reset_link(dev);
-> -		if (status != PCI_ERS_RESULT_RECOVERED) {
-> +		post_reset_status = reset_link(dev);
-> +		if (post_reset_status != PCI_ERS_RESULT_RECOVERED) {
->  			pci_warn(dev, "link reset failed\n");
->  			goto failed;
->  		}
-> @@ -174,6 +174,13 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->  		pci_walk_bus(bus, report_normal_detected, &status);
->  	}
->  
-> +	if ((status == PCI_ERS_RESULT_DISCONNECT ||
-> +	     status == PCI_ERS_RESULT_NO_AER_DRIVER) &&
-> +	     post_reset_status == PCI_ERS_RESULT_RECOVERED) {
-> +		/* error recovery succeeded thanks to reset_link() */
-> +		status = PCI_ERS_RESULT_RECOVERED;
-> +	}
-> +
->  	if (status == PCI_ERS_RESULT_CAN_RECOVER) {
->  		status = PCI_ERS_RESULT_RECOVERED;
->  		pci_dbg(dev, "broadcast mmio_enabled message\n");
-> -- 
-> 2.28.0
-> 
+
+>
+>>   
+>>   	filep->private_data = v;
+>>   
+>>   	return 0;
+>>   
+>> +err_alloc_domain:
+>> +	vhost_vdpa_iotlb_free(v);
+>>   err_init_iotlb:
+>>   	vhost_vdpa_cleanup(v);
+>>   err:
+>> -- 
+>> 2.20.1
+>>
+
