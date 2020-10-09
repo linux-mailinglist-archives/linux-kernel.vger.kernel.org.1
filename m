@@ -2,63 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDC75288A29
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 15:59:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 801FF288A35
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:01:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387995AbgJIN7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 09:59:32 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14810 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387861AbgJIN7c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 09:59:32 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 85992501CC98135D3D78;
-        Fri,  9 Oct 2020 21:59:29 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Fri, 9 Oct 2020
- 21:59:22 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>, <sfr@canb.auug.org.au>,
-        <ziy@nvidia.com>, <alexander.h.duyck@linux.intel.com>,
-        <willy@infradead.org>, <osalvador@suse.de>, <steven.price@arm.com>,
-        <ying.huang@intel.com>, <yang.shi@linux.alibaba.com>,
-        <david@redhat.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH] page-flags: Remove unused __[Set|Clear]PagePrivate
-Date:   Fri, 9 Oct 2020 09:59:14 -0400
-Message-ID: <20201009135914.64826-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
+        id S2388140AbgJIOBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 10:01:41 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:34209 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729935AbgJIOBl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 10:01:41 -0400
+Received: from mail-qv1-f43.google.com ([209.85.219.43]) by
+ mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1Mm9NA-1k0ahf2Mca-00iGrh; Fri, 09 Oct 2020 16:01:39 +0200
+Received: by mail-qv1-f43.google.com with SMTP id s17so4778529qvr.11;
+        Fri, 09 Oct 2020 07:01:39 -0700 (PDT)
+X-Gm-Message-State: AOAM5302ERk7DEDG4Ujo23oAg3QFGVR/Y+x3p3UPxnOpQboQWZTlwAO1
+        VzcCI1Agl4pZyxsHHMkw7P67lwcsWVATKRF/VPo=
+X-Google-Smtp-Source: ABdhPJwjNmSCNPZJ7fvoFaz4dcFko8eQYPdZ2dZqQAjsZwcIZUcYPFriGUhRAzz2id1fnZeZYevCTfiUhQzeS2CbBRg=
+X-Received: by 2002:a0c:b39a:: with SMTP id t26mr13068697qve.19.1602252098321;
+ Fri, 09 Oct 2020 07:01:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+References: <20200901141539.1757549-1-npiggin@gmail.com> <159965079776.3591084.10754647036857628984.b4-ty@arndb.de>
+In-Reply-To: <159965079776.3591084.10754647036857628984.b4-ty@arndb.de>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 9 Oct 2020 16:01:22 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1XqhV+7OVgWhGg3az4Y+_6V-mCjcJ1dBenwD+ZUaaT9g@mail.gmail.com>
+Message-ID: <CAK8P3a1XqhV+7OVgWhGg3az4Y+_6V-mCjcJ1dBenwD+ZUaaT9g@mail.gmail.com>
+Subject: Re: [PATCH v3 00/23] Use asm-generic for mmu_context no-op functions
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        linux-arch <linux-arch@vger.kernel.org>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:krlM9bfXGg2NhHGF91LtOYfERmZceSJnAfxV+3onQuKMBF5ymV4
+ FT61q70WpWKC2m+mdHrPYJ+fzppalYWvTojy1dmcwU8mzsTN3cBk/+AzhnXX+OMsyIGv/AA
+ xEcxtIXXyT1XCHYMAa0SukLT7q5I8r+K47Zl+mRqyF1ffnE/H7Z6VxiD4t0GeJVMVjX9GOw
+ /hykiCRsoC/a7slx9Wtow==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:30IzcaTGSmk=:WvMtqoPqF6ME0vFdoyRi08
+ 6bcVMeoRL2F4Wo+YYa58qKTSK0+kFFXhcYLwlI/OqcA0w0EFdosnMGQukJPo2mXFHGsAvpo80
+ QiAuQaQsp15mG57beaMlbaw02iXMTYEP/JQp8ElaHhqoG9lybUn3/19T0TcvBZGPEvVYrCbGN
+ uQk4UqhcDrm32TbnppSkf6ZA6t6Z3SEahkhLH3PpBmeh0xg/H2PMqmzg2nQ/kQkyxL6m5znuk
+ 5ATavZciPbOSxCuIAoA9dF9dzcPtRqliRsZWf2lXNSMUFJmgXJjmVVowsPQEzPgu4zHbvTjtJ
+ bpmvbzw6NvRDMnsJJqlPs3IgxWx+IRXG/XKtUTYik4+DuAlZDUM3ntxSwyT0J2saqlCxTik81
+ ncoSFgBafbx5UQSE83g38t182eDSl/9U9qJcCr0Dl0Nu1A62veN/CiAg3Pfupux67Iz01CM89
+ jfo5sR7dKz1PO4iAODHTmr/Qu41gQU7slbk+MbyyctFf35ZAZMvnKHP7RstfYWQktsayg3kLg
+ RAayGUyguAdFkWxxluH1aDNPh8kt7/jsQOwVIbUXZmGNLjJG42VazNYMSeVa0SsPEEHNIL3BH
+ U3mUBlV+iE61/wJadYmrbD0OmrV75MX6ddpLz3XsdWLTnUuMCKLbNUQmdluCDlszvqydfrBaQ
+ hkFv1PHf4638jwIObKtiC2CRGgttyVwvRYTfksqbTos6AbQFJCZ9OYFkoGTatB6n4YoFVmZ9d
+ +B3RqtbaNIAWOKELJrmcQpsCxhntMFThf3LZE4R8Y/JXWx3QCRb1UwrP9jCtOp2r+zB/S5idv
+ TwYyVA9fvBbeLUCeFhn+DGdjuVBvNuF5gYAm7RQ4pXRD8buG1ErO8WSG7AmpP9+wC437XB5yM
+ cLIREz+c6Cnmq509/N6kx8SOq4JoL8G9zlFVt3ADHSpW1YwmB5Ab0/ObS/qlsCWzWK0buWa9o
+ h1jugmuRpBZwD75/ASHOiyHtNX2la5qA41kGOicJv5c0EejIaWX4V
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-They are unused anymore.
+On Wed, Sep 9, 2020 at 1:27 PM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Wed, 2 Sep 2020 00:15:16 +1000, Nicholas Piggin wrote:
+> > It would be nice to be able to modify mmu_context functions or add a
+> > hook without updating all architectures, many of which will be no-ops.
+> >
+> > The motivation for this series is a change to lazy mmu handling, but
+> > this series stands on its own as a good cleanup whether or not we end
+> > up making that change.
+> >
+> > [...]
+>
+> Applied to asm-generic, thanks!
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- include/linux/page-flags.h | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Hi Nick,
 
-diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-index 4f6ba9379112..50cbf5e931bc 100644
---- a/include/linux/page-flags.h
-+++ b/include/linux/page-flags.h
-@@ -363,8 +363,7 @@ PAGEFLAG(SwapBacked, swapbacked, PF_NO_TAIL)
-  * for its own purposes.
-  * - PG_private and PG_private_2 cause releasepage() and co to be invoked
-  */
--PAGEFLAG(Private, private, PF_ANY) __SETPAGEFLAG(Private, private, PF_ANY)
--	__CLEARPAGEFLAG(Private, private, PF_ANY)
-+PAGEFLAG(Private, private, PF_ANY)
- PAGEFLAG(Private2, private_2, PF_ANY) TESTSCFLAG(Private2, private_2, PF_ANY)
- PAGEFLAG(OwnerPriv1, owner_priv_1, PF_ANY)
- 	TESTCLEARFLAG(OwnerPriv1, owner_priv_1, PF_ANY)
--- 
-2.19.1
+I just noticed a fatal mistake I made when pushing it to the branch on
+kernel.org: I used to have both a 'master' and an 'asm-generic' branch
+in asm-generic.git but tried to remove the 'master' one as there is not
+really any point in having two.
 
+Unfortunately I forgot to check which one of the two was part of
+linux-next, and it was the other one, so none of the patches I picked
+up ever saw any wider testing aside from the 0day bot building it
+(successfully).
+
+Are there other changes that depend on this? If not, I would
+just wait until -rc1 and then either push the branch correctly or
+rebase the patches on that first, to avoid pushing something that
+did not see the necessary testing.
+
+      Arnd
