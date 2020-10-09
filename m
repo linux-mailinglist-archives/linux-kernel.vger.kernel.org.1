@@ -2,263 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50BBF28881B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 13:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B37E028881D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 13:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388247AbgJIL51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 07:57:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:49072 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732737AbgJIL51 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 07:57:27 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 057B91063;
-        Fri,  9 Oct 2020 04:57:26 -0700 (PDT)
-Received: from [10.57.51.133] (unknown [10.57.51.133])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A21C83F70D;
-        Fri,  9 Oct 2020 04:57:24 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] thermal: power allocator: change how estimation
- code is called
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        daniel.lezcano@linaro.org, amitk@kernel.org,
-        Dietmar.Eggemann@arm.com
-References: <20201008170426.465-1-lukasz.luba@arm.com>
- <20201008170426.465-3-lukasz.luba@arm.com> <20201009111906.GA5207@arm.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <d1565986-77d1-1e63-f8b5-05027460c263@arm.com>
-Date:   Fri, 9 Oct 2020 12:57:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S2388259AbgJIL5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 07:57:43 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:10414 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732480AbgJIL5n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 07:57:43 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f804ffe0000>; Fri, 09 Oct 2020 04:56:46 -0700
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 9 Oct
+ 2020 11:57:42 +0000
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.169)
+ by HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 9 Oct 2020 11:57:42 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NvrUxQPlXnyV9CeIGniPf+V8s/rP7ADVK4e66aaSJTdrx+dab1VgJTjCXZjUFUwA+f4LPFL6hIJVsjrAG7b2J+JZE8LJkhI00eEJGgXARyhAu6pT9WuixMrFSgGTgNqGXQszl0fJgQ+26vscv1TFtdbyFx7wDjmXo0Fdmu2hug65yDIVyIE09SxauyE7ZmYTTvvPY9s0PftFbnXRDLXv+ERFJNQXVEZER0VcMFnzjg/owv4axEDCFjZNGkrEO5yOtfbrL17YGmS1bnZ8QaR4kRidIaUzsEWaU+r91JoiHcT4Igsui2ujotoLiMYj2ALJTaE8DPGaxNQv3Bv42vKqeQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vuNFOkVvS+Zf5/DO+Q6L2tltqT555sMBAanpEkNoGBc=;
+ b=IK5mc+heraa1qAiuP/+P59nvpRfCEIGJ11r/LwnDJfz92xi3FPRPjLTkDRCd8AuIwFQw9FLJJRRIGz6+BT4vLqv/No5CwoNqjQvVKlFja4wXCzrtNAgpHJqCafz0jq4UHl5wsBZM6ED7r1ljMRKTpq9H3eQo+p5bTlkJ4mwE4E3D1DwX/K7CZQV6/jykRlJwHCkaAfOlQWDsvqgdzcRE9wB1Hz752P8gSBiZ2m8mcF8gfKgEoIaSNUBKOUz87v8TS522szv0wbtJxJ/MopQBl/5pWfGCtTQYUE1zg/7HVe6JTbZahApt/9lhFSX8Q3h3ItIcHNRv4+Iw3kw7kKZ/vw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4451.namprd12.prod.outlook.com (2603:10b6:5:2ab::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.23; Fri, 9 Oct
+ 2020 11:57:40 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3455.026; Fri, 9 Oct 2020
+ 11:57:39 +0000
+Date:   Fri, 9 Oct 2020 08:57:37 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Raj, Ashok" <ashok.raj@intel.com>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Dave Jiang <dave.jiang@intel.com>, <vkoul@kernel.org>,
+        <megha.dey@intel.com>, <maz@kernel.org>, <bhelgaas@google.com>,
+        <alex.williamson@redhat.com>, <jacob.jun.pan@intel.com>,
+        <yi.l.liu@intel.com>, <baolu.lu@intel.com>, <kevin.tian@intel.com>,
+        <sanjay.k.kumar@intel.com>, <tony.luck@intel.com>,
+        <jing.lin@intel.com>, <dan.j.williams@intel.com>,
+        <kwankhede@nvidia.com>, <eric.auger@redhat.com>,
+        <parav@mellanox.com>, <rafael@kernel.org>, <netanelg@mellanox.com>,
+        <shahafs@mellanox.com>, <yan.y.zhao@linux.intel.com>,
+        <pbonzini@redhat.com>, <samuel.ortiz@intel.com>,
+        <mona.hossain@intel.com>, <dmaengine@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
+        <linux-pci@vger.kernel.org>, <kvm@vger.kernel.org>
+Subject: Re: [PATCH v3 11/18] dmaengine: idxd: ims setup for the vdcm
+Message-ID: <20201009115737.GI4734@nvidia.com>
+References: <160021207013.67751.8220471499908137671.stgit@djiang5-desk3.ch.intel.com>
+ <160021253189.67751.12686144284999931703.stgit@djiang5-desk3.ch.intel.com>
+ <87mu17ghr1.fsf@nanos.tec.linutronix.de>
+ <0f9bdae0-73d7-1b4e-b478-3cbd05c095f4@intel.com>
+ <87r1q92mkx.fsf@nanos.tec.linutronix.de>
+ <44e19c5d-a0d2-0ade-442c-61727701f4d8@intel.com>
+ <87y2kgux2l.fsf@nanos.tec.linutronix.de> <20201008233210.GH4734@nvidia.com>
+ <20201009012231.GA60263@otc-nc-03>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201009012231.GA60263@otc-nc-03>
+X-ClientProxiedBy: MN2PR15CA0041.namprd15.prod.outlook.com
+ (2603:10b6:208:237::10) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <20201009111906.GA5207@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR15CA0041.namprd15.prod.outlook.com (2603:10b6:208:237::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.23 via Frontend Transport; Fri, 9 Oct 2020 11:57:39 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kQr1l-001xP1-CZ; Fri, 09 Oct 2020 08:57:37 -0300
+X-LD-Processed: 43083d15-7273-40c1-b7db-39efd9ccc17a,ExtAddr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1602244606; bh=vuNFOkVvS+Zf5/DO+Q6L2tltqT555sMBAanpEkNoGBc=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-LD-Processed;
+        b=BbrNDoVMJ4Cn+J3fVi80gJ7wltUQTj5GNM+ZoauKPqtyhvW4N7B4POQhFOYMpDJNu
+         GB6jHCpRGuylid+lYjvfPAYHN1mTZWUS9xreBLlbYVind/S3bed6ct+BitDRbicRPf
+         EpBgCWHg7hhmJETSrkAGw/ydaMjtcXiSvkIqClKcbAKtchbHu+t/gmUirLiU9gVleT
+         5VN3miLPZUScCtdcga+9Bql5Kt/Q82rRL4ZclaO5sE0KdyBLOte3Glo0mEeKHM3+nj
+         8bjrTD4a8yzzulyiexmAJJQfRHwXuRaSDANzXQB4+YxMu43Wy8yMIXERy3cSDHgR6O
+         GQlwXjZ3iWoCA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ionela,
+On Thu, Oct 08, 2020 at 06:22:31PM -0700, Raj, Ashok wrote:
 
-On 10/9/20 12:19 PM, Ionela Voinescu wrote:
-> Hi Lukasz,
-> 
-> On Thursday 08 Oct 2020 at 18:04:26 (+0100), Lukasz Luba wrote:
->> The sustainable power value might come from the Device Tree or can be
->> estimated in run time. There is no need to estimate every time when the
->> governor is called and temperature is high. Instead, store the estimated
->> value and make it available via standard sysfs interface so it can be
->> checked from the user-space. Re-invoke the estimation only in case the
->> sustainable power was set to 0. Apart from that the PID coefficients
->> are not going to be force updated thus can better handle sysfs settings.
->>
->> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->> ---
->>   drivers/thermal/gov_power_allocator.c | 56 +++++++++++++--------------
->>   1 file changed, 26 insertions(+), 30 deletions(-)
->>
->> diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
->> index aa35aa6c561c..1ad8d9c2685f 100644
->> --- a/drivers/thermal/gov_power_allocator.c
->> +++ b/drivers/thermal/gov_power_allocator.c
->> @@ -96,6 +96,9 @@ static u32 estimate_sustainable_power(struct thermal_zone_device *tz)
->>   		if (instance->trip != params->trip_max_desired_temperature)
->>   			continue;
->>   
->> +		if (!cdev_is_power_actor(cdev))
->> +			continue;
->> +
->>   		if (cdev->ops->state2power(cdev, tz, instance->upper,
->>   					   &min_power))
->>   			continue;
->> @@ -109,31 +112,28 @@ static u32 estimate_sustainable_power(struct thermal_zone_device *tz)
->>   /**
->>    * estimate_pid_constants() - Estimate the constants for the PID controller
->        ^^^^^^^^^^^^^^^^^^^^^^
->        estimate_tzp_constants()?
-> 
-> When called in pid_controller() it feels strange that we check for
-> sustainable_power, then we call estimate_pid_constants() and then we
-> magically have an non-zero sustainable_power. Therefore, it would be
-> good to change the name to indicate it's not only the PID constants that
-> are estimated.
+> Not randomly put there Jason :-).. There is a good reason for it. 
 
-I agree, I will rename it.
+Sure the PASID value being associated with the IRQ make sense, but
+combining that register with the interrupt mask is just a compltely
+random thing to do.
 
-> 
->>    * @tz:		thermal zone for which to estimate the constants
->> - * @sustainable_power:	sustainable power for the thermal zone
->>    * @trip_switch_on:	trip point number for the switch on temperature
->>    * @control_temp:	target temperature for the power allocator governor
->> - * @force:	whether to force the update of the constants
->>    *
->>    * This function is used to update the estimation of the PID
->>    * controller constants in struct thermal_zone_parameters.
-> 
-> How about replacing this with:
-> 
-> """
->   * This function is used to estimate the sustainable power and PID controller
->   * constants in struct thermal_zone_parameters. These estimations will then be
->   * available in sysfs.
-> """
+If this HW was using MSI-X PASID would have been given its own
+register.
 
-Yes, that change is required since the function name will also change.
-
-> 
->> - * Sustainable power is provided in case it was estimated.  The
->> - * estimated sustainable_power should not be stored in the
->> - * thermal_zone_parameters so it has to be passed explicitly to this
->> - * function.
->> - *
->> - * If @force is not set, the values in the thermal zone's parameters
->> - * are preserved if they are not zero.  If @force is set, the values
->> - * in thermal zone's parameters are overwritten.
->> + * Sustainable power is going to be estimated in case it is 0.
->>    */
->>   static void estimate_pid_constants(struct thermal_zone_device *tz,
->> -				   u32 sustainable_power, int trip_switch_on,
->> -				   int control_temp, bool force)
->> +				   int trip_switch_on, int control_temp)
->>   {
->> -	int ret;
->> -	int switch_on_temp;
->> +	u32 sustainable_power = tz->tzp->sustainable_power;
->>   	u32 temperature_threshold;
->> +	int switch_on_temp;
->> +	int ret;
->>   	s32 k_i;
->>   
->> +	if (!sustainable_power) {
->> +		sustainable_power = estimate_sustainable_power(tz);
->> +		/* Make the estimation available in sysfs */
-> 
-> I would remove this comment from here. The reason is that this is not a
-> special case. This will happen for all the tzp parameters set below.
-> That's why I suggested adding this to the overall function comment above.
-
-Yes, function comment will handle this better.
-
-> 
->> +		tz->tzp->sustainable_power = sustainable_power;
->> +	}
->> +
->>   	ret = tz->ops->get_trip_temp(tz, trip_switch_on, &switch_on_temp);
->>   	if (ret)
->>   		switch_on_temp = 0;
->> @@ -150,15 +150,15 @@ static void estimate_pid_constants(struct thermal_zone_device *tz,
->>   	if (!temperature_threshold)
->>   		return;
->>   
->> -	if (!tz->tzp->k_po || force)
->> +	if (!tz->tzp->k_po)
->>   		tz->tzp->k_po = int_to_frac(sustainable_power) /
->>   			temperature_threshold;
->>   
->> -	if (!tz->tzp->k_pu || force)
->> +	if (!tz->tzp->k_pu)
->>   		tz->tzp->k_pu = int_to_frac(2 * sustainable_power) /
->>   			temperature_threshold;
->>   
->> -	if (!tz->tzp->k_i || force) {
->> +	if (!tz->tzp->k_i) {
->>   		k_i = tz->tzp->k_pu / 10;
->>   		tz->tzp->k_i = k_i > 0 ? k_i : 1;
->>   	}
-> 
-> (Possibly judgement call)
-> 
-> I agree we don't need the force argument to this function, but I would
-> still keep an internal force variable (default false) to be set to true
-> when we estimate and set the sustainable power.
-
-Yes, make sense, I will set locally.
-
-> 
-> The reason for this is that there is no guarantee that when
-> sustainable_power is found to be 0 and estimated, we'll then find all of
-> the PID constants 0 as well in order to set them to a sane default.
-> Basically my worry is that we'll end up with a combination of PID
-> constants and sustainable power (some estimated and some not) that is not
-> quite sane.
-> 
-> But I understand a potential usecase in which a user might want to set
-> it's own PID constants while wanting an estimated sustainable_power.
-> But for this do you think it might be worth just having a pr_info
-> message saying that "Sustainable power is 0; will estimate sustainable
-> power and PID constants."? For this the user would only have to know
-> that they need to set the sustainable_power to 0 first and then
-> populate its own PID constants if they want to.
-
-Yes, the print message is good in this case.
-
-> 
->> @@ -198,14 +198,11 @@ static u32 pid_controller(struct thermal_zone_device *tz,
->>   
->>   	max_power_frac = int_to_frac(max_allocatable_power);
->>   
->> -	if (tz->tzp->sustainable_power) {
->> -		sustainable_power = tz->tzp->sustainable_power;
->> -	} else {
->> -		sustainable_power = estimate_sustainable_power(tz);
->> -		estimate_pid_constants(tz, sustainable_power,
->> -				       params->trip_switch_on, control_temp,
->> -				       true);
->> -	}
->> +	if (!tz->tzp->sustainable_power)
->> +		estimate_pid_constants(tz, params->trip_switch_on,
->> +				       control_temp);
->> +
->> +	sustainable_power = tz->tzp->sustainable_power;
->>   
-> 
-> (Nit)
-> 
-> This is only used once below in:
-> power_range = sustainable_power + frac_to_int(power_range);
-> 
-> I think we can use tz->tzp->sustainable_power directly there and
-> completely remove sustainable_power.
-
-I had the feeling that it won't fit in 80line there but it does.
-I will change it.
-
-Thank you for the review.
-
-Lukasz
-
-> 
-> Thank you,
-> Ionela.
-> 
->>   	err = control_temp - tz->temperature;
->>   	err = int_to_frac(err);
->> @@ -603,20 +600,19 @@ static int power_allocator_bind(struct thermal_zone_device *tz)
->>   
->>   	get_governor_trips(tz, params);
->>   
->> +	tz->governor_data = params;
->> +
->>   	if (tz->trips > 0) {
->>   		ret = tz->ops->get_trip_temp(tz,
->>   					params->trip_max_desired_temperature,
->>   					&control_temp);
->>   		if (!ret)
->> -			estimate_pid_constants(tz, tz->tzp->sustainable_power,
->> -					       params->trip_switch_on,
->> -					       control_temp, false);
->> +			estimate_pid_constants(tz, params->trip_switch_on,
->> +					       control_temp);
->>   	}
->>   
->>   	reset_pid_controller(params);
->>   
->> -	tz->governor_data = params;
->> -
->>   	return 0;
->>   
->>   free_params:
->> -- 
->> 2.17.1
->>
+Jason
