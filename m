@@ -2,151 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E842884FD
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A118A288500
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732509AbgJIIOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 04:14:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732337AbgJIIOm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 04:14:42 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F173C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 01:14:42 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kQnXn-0006kZ-A8; Fri, 09 Oct 2020 10:14:27 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kQnXl-00053q-Gt; Fri, 09 Oct 2020 10:14:25 +0200
-Date:   Fri, 9 Oct 2020 10:14:25 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     Oleksij Rempel <linux@rempel-privat.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        David Laight <David.Laight@ACULAB.COM>,
-        linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        stable@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-i2c@vger.kernel.org
-Subject: Re: [PATCH v5 3/3] i2c: imx: Don't generate STOP condition if
- arbitration has been lost
-Message-ID: <20201009081425.GD817@pengutronix.de>
-References: <20201007084524.10835-1-ceggers@arri.de>
- <20201007084524.10835-4-ceggers@arri.de>
+        id S1732629AbgJIIPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 04:15:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40602 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732467AbgJIIPj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 04:15:39 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1BADA2222C;
+        Fri,  9 Oct 2020 08:15:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602231338;
+        bh=bS3V9uZo4PgOtJ1O8yC/OZ2Npybro8w45UriJBmph14=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AmEQoSqYkxoN7Bun525jzPHg4FMECofYVkMgf1RljW4VMfjMparKGTf6iTk5UI4xh
+         TBsiLIPs7Nv7bkQ8GwShvMmvy/R5exO4rSWqhy2jwoG2Xombp/KU5rUgwBdIgf+sTt
+         cV2YkUZux9zLw55XdPrc9ykH0sbJqyYGCQJGh6xQ=
+Date:   Fri, 9 Oct 2020 10:16:24 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     linux-kernel@vger.kernel.org, nstange@suse.de, ap420073@gmail.com,
+        David.Laight@aculab.com, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, rafael@kernel.org
+Subject: Re: [CRAZY-RFF] debugfs: track open files and release on remove
+Message-ID: <20201009081624.GA401030@kroah.com>
+References: <87v9fkgf4i.fsf@suse.de>
+ <20201009095306.0d87c3aa13db.Ib3a7019bff15bb6308f6d259473a1648312a4680@changeid>
+ <20201009080355.GA398994@kroah.com>
+ <be61c6a38d0f6ca1aa0bc3f0cb45bbb216a12982.camel@sipsolutions.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201007084524.10835-4-ceggers@arri.de>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 10:13:39 up 35 days, 22:21, 227 users,  load average: 10.92, 14.39,
- 9.84
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <be61c6a38d0f6ca1aa0bc3f0cb45bbb216a12982.camel@sipsolutions.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 10:45:24AM +0200, Christian Eggers wrote:
-> If arbitration is lost, the master automatically changes to slave mode.
-> I2SR_IBB may or may not be reset by hardware. Raising a STOP condition
-> by resetting I2CR_MSTA has no effect and will not clear I2SR_IBB.
-> 
-> So calling i2c_imx_bus_busy() is not required and would busy-wait until
-> timeout.
-> 
-> Signed-off-by: Christian Eggers <ceggers@arri.de>
-> Tested (not extensively) on Vybrid VF500 (Toradex VF50):
-> Tested-by: Krzysztof Kozlowski <krzk@kernel.org>
-> Cc: stable@vger.kernel.org # Requires trivial backporting, simple remove
->                            # the 3rd argument from the calls to
->                            # i2c_imx_bus_busy().
+On Fri, Oct 09, 2020 at 10:06:14AM +0200, Johannes Berg wrote:
+> We used to say the proxy_fops weren't needed and it wasn't an issue, and
+> then still implemented it. Dunno. I'm not really too concerned about it
+> myself, only root can hold the files open and remove modules ...
 
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Thank you!
+proxy_fops were needed because devices can be removed from the system at
+any time, causing their debugfs files to want to also be removed.  It
+wasn't because of unloading kernel code.
 
+thanks,
 
-> ---
->  drivers/i2c/busses/i2c-imx.c | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
-> index 63575af41c09..5d8a79319b2b 100644
-> --- a/drivers/i2c/busses/i2c-imx.c
-> +++ b/drivers/i2c/busses/i2c-imx.c
-> @@ -615,6 +615,8 @@ static void i2c_imx_stop(struct imx_i2c_struct *i2c_imx, bool atomic)
->  		/* Stop I2C transaction */
->  		dev_dbg(&i2c_imx->adapter.dev, "<%s>\n", __func__);
->  		temp = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2CR);
-> +		if (!(temp & I2CR_MSTA))
-> +			i2c_imx->stopped = 1;
->  		temp &= ~(I2CR_MSTA | I2CR_MTX);
->  		if (i2c_imx->dma)
->  			temp &= ~I2CR_DMAEN;
-> @@ -778,9 +780,12 @@ static int i2c_imx_dma_read(struct imx_i2c_struct *i2c_imx,
->  		 */
->  		dev_dbg(dev, "<%s> clear MSTA\n", __func__);
->  		temp = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2CR);
-> +		if (!(temp & I2CR_MSTA))
-> +			i2c_imx->stopped = 1;
->  		temp &= ~(I2CR_MSTA | I2CR_MTX);
->  		imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2CR);
-> -		i2c_imx_bus_busy(i2c_imx, 0, false);
-> +		if (!i2c_imx->stopped)
-> +			i2c_imx_bus_busy(i2c_imx, 0, false);
->  	} else {
->  		/*
->  		 * For i2c master receiver repeat restart operation like:
-> @@ -905,9 +910,12 @@ static int i2c_imx_read(struct imx_i2c_struct *i2c_imx, struct i2c_msg *msgs,
->  				dev_dbg(&i2c_imx->adapter.dev,
->  					"<%s> clear MSTA\n", __func__);
->  				temp = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2CR);
-> +				if (!(temp & I2CR_MSTA))
-> +					i2c_imx->stopped =  1;
->  				temp &= ~(I2CR_MSTA | I2CR_MTX);
->  				imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2CR);
-> -				i2c_imx_bus_busy(i2c_imx, 0, atomic);
-> +				if (!i2c_imx->stopped)
-> +					i2c_imx_bus_busy(i2c_imx, 0, atomic);
->  			} else {
->  				/*
->  				 * For i2c master receiver repeat restart operation like:
-> -- 
-> Christian Eggers
-> Embedded software developer
-> 
-> Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-> Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
-> Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
-> Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
-> Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+greg k-h
