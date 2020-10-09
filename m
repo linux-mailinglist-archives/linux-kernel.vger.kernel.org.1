@@ -2,108 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 343AB288802
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 13:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB1412887FC
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 13:42:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388197AbgJILmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 07:42:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55696 "EHLO
+        id S2388181AbgJILm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 07:42:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731908AbgJILmc (ORCPT
+        with ESMTP id S1731908AbgJILm2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 07:42:32 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE26C0613D2;
-        Fri,  9 Oct 2020 04:42:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=RcamcxMM04cAFejMyuerox9iFyryVbfUvRjDUF6K+9E=; b=rV/73fj+p5/T3eYZYDymfCt5SP
-        EGKltICU3UJgzJot3PlAdj3AbR+gk5Fu9ALysyRXUjXz1Zz9lkn1oy67SKaaUgwwoVb88K0SV7Bsh
-        FqvpyAsddMNfO/uaOg5us46reQYdxoaw4V+Z56lK4XPhIyX56i/ukTdBdBh7EvlM1NHScvtTABqpo
-        znLocfz8vCn//mXjXUAto9jooaYcx8KnZYLrEJUFEaEecZwQ67rFlXOnv+PAUplGmjypRkBw6zEJZ
-        e0yFWzBMPGuSmWRNegKe32QuMxAhYnEeqk1p16v+xTaCE9aMZ0ypzDv+kqeYOcTeyxLPICzHhq0Jp
-        54eNIb9Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kQqmw-0003xU-UC; Fri, 09 Oct 2020 11:42:19 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E04B9300455;
-        Fri,  9 Oct 2020 13:42:16 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8A6E02B08A0EA; Fri,  9 Oct 2020 13:42:16 +0200 (CEST)
-Date:   Fri, 9 Oct 2020 13:42:16 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Frederic Weisbecker <fweisbecker@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org,
-        Brian Cain <bcain@codeaurora.org>,
-        linux-hexagon@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um@lists.infradead.org
-Subject: Re: [RFC PATCH] kernel: allow to configure PREEMPT_NONE,
- PREEMPT_VOLUNTARY on kernel command line
-Message-ID: <20201009114216.GM2628@hirez.programming.kicks-ass.net>
-References: <20201007120401.11200-1-mhocko@kernel.org>
- <20201009091218.GF4967@dhcp22.suse.cz>
- <20201009094245.GG2628@hirez.programming.kicks-ass.net>
- <20201009101044.GH4967@dhcp22.suse.cz>
- <20201009101431.GJ2628@hirez.programming.kicks-ass.net>
- <20201009103730.GJ4967@dhcp22.suse.cz>
+        Fri, 9 Oct 2020 07:42:28 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A665C0613D2;
+        Fri,  9 Oct 2020 04:42:28 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id 16so9848448oix.9;
+        Fri, 09 Oct 2020 04:42:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hXOK1m3FD3UfW2u2hlQ7/M3TxfyRzNQFec749sTesbA=;
+        b=QcJ1GtV5RB69XZFSZ+4kfpeOUPpgGfZPL08OuPM96ZZlLcJV0eM4wUvHvoHTVyP/hf
+         XO2A+nfCaUi/lmYhXdI39GBeUgyiea1mRiSXKJ3LewRsSRdBmrbvru6b/5OFhPHE/8JR
+         j0ZBxdZX+fE84i63hm1Jd42PGOsp7P/y8i6pXjAlycS2Cj58UoNfvkBKNoFfzxVATMfX
+         9yw0VpBrdxaJfJ+MldElFxnCoY7zDm3OMfdGZbTgxMFPOrBjgwYHxDIRfLw7gIdoqtZ0
+         MER/6yJJCvPrtHPMqXMb1nJbKYkckySioNphDGoo/EXgU/jMXvPrbvu+Pofic8nvR1EB
+         UMKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hXOK1m3FD3UfW2u2hlQ7/M3TxfyRzNQFec749sTesbA=;
+        b=WxX5RyqS3mFVLkqdz/TPIASCV63x8dj5XISbsnv1umfA9i3TloXB03WYoZ+q1b3Iuq
+         5KGyL1DICorEPD4xxeGPpTjMh7lztuU2jbz3uYNUR7lgh3HIdhI+UzSQAgJiQRxqYwdQ
+         BgiHXwv+oW/BPwtOeatuAqk2LJ3oogPI/mMEFijvnqIwgzAenUKSgjCOgTXMgRhzXbRn
+         +aYMmH52tljcEWlT2A+vtj5JAv8lIxr1pWFsXJ0euiT7+p9+4c9AngorVNEncTXFXsg7
+         LNvZ+pPgvPlBemI3PrbVJOvPWjUZ/0HIi4WVF5ThOoHzVQ1YH5tFdXv3UcmULPvcNkVk
+         o6yw==
+X-Gm-Message-State: AOAM530x+o5Q6vV1kj3hyopoOpZXCHrymzqO0MZON6maSQc1Y0gIy76+
+        1hfyzsCdblzWOu4euEt7moULEOVlok/zQ/kBCQ4U4lcP
+X-Google-Smtp-Source: ABdhPJzZiHR+wFgNZIb/LIZlrvspscgw66vXvl2VjBjRRM9QZT/FRiqjR2y9XNBraQPZFBemzsCY2J/dZLG2TBfMhow=
+X-Received: by 2002:aca:ec4d:: with SMTP id k74mr2164591oih.96.1602243747954;
+ Fri, 09 Oct 2020 04:42:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201009103730.GJ4967@dhcp22.suse.cz>
+References: <cover.1602093760.git.yuleixzhang@tencent.com> <b2b6837785f6786575823c919788464373d3ee05.1602093760.git.yuleixzhang@tencent.com>
+ <20201009005823.GA11151@linux.intel.com> <a6dd5fbe-ca71-cf05-ec40-ec916843e9b7@oracle.com>
+In-Reply-To: <a6dd5fbe-ca71-cf05-ec40-ec916843e9b7@oracle.com>
+From:   yulei zhang <yulei.kernel@gmail.com>
+Date:   Fri, 9 Oct 2020 19:42:17 +0800
+Message-ID: <CACZOiM2W_8P_S6EypD3XfX1RuU+Do69w9qEMk7nDH2BxtK2E1g@mail.gmail.com>
+Subject: Re: [PATCH 22/35] kvm, x86: Distinguish dmemfs page from mmio page
+To:     Joao Martins <joao.m.martins@oracle.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        akpm@linux-foundation.org, naoya.horiguchi@nec.com,
+        viro@zeniv.linux.org.uk, Paolo Bonzini <pbonzini@redhat.com>,
+        linux-fsdevel@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Haiwei Li <lihaiwei.kernel@gmail.com>,
+        Yulei Zhang <yuleixzhang@tencent.com>,
+        Chen Zhuo <sagazchen@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 12:37:30PM +0200, Michal Hocko wrote:
-> On Fri 09-10-20 12:14:31, Peter Zijlstra wrote:
-> > On Fri, Oct 09, 2020 at 12:10:44PM +0200, Michal Hocko wrote:
-> > > On Fri 09-10-20 11:42:45, Peter Zijlstra wrote:
-> > > > On Fri, Oct 09, 2020 at 11:12:18AM +0200, Michal Hocko wrote:
-> > > > > Is there any additional feedback? Should I split up the patch and repost
-> > > > > for inclusion?
-> > > > 
-> > > > Maybe remove PREEMPT_NONE after that?  Since that's then equivalent to
-> > > > building with VOLUNTARY and booting with preempt=none.
-> > > 
-> > > So do you mean that I should post an additional patch which does this on
-> > > top? With a justification that there is one option less to chose from?
-> > 
-> > Exactly!
-> 
-> It seems we have to get rid of CONFIG_NO_PREEMPT first
-> $ git grep ARCH_NO_PREEMPT
-> arch/Kconfig:config ARCH_NO_PREEMPT
-> arch/alpha/Kconfig:     select ARCH_NO_PREEMPT
-> arch/hexagon/Kconfig:   select ARCH_NO_PREEMPT
-> arch/m68k/Kconfig:      select ARCH_NO_PREEMPT if !COLDFIRE
-> arch/um/Kconfig:        select ARCH_NO_PREEMPT
-> kernel/Kconfig.preempt: depends on !ARCH_NO_PREEMPT
-> kernel/Kconfig.preempt: depends on !ARCH_NO_PREEMPT
-> lib/Kconfig.debug:      select PREEMPT_COUNT if !ARCH_NO_PREEMPT
-> lib/Kconfig.debug:      depends on !ARCH_NO_PREEMPT
-> 
-> Is there anybody working on that. Is this even possible? I can see it
-> has been added by 87a4c375995e ("kconfig: include kernel/Kconfig.preempt
-> from init/Kconfig") but this looks more like a mechanical change and it
-> has defined ARCH_NO_PREEMPT all arches which haven't included
-> Kconfig.preempt. But is there any reason why those cannot support
-> preemption for some reason? Cc respective maintainer (the email thread
-> starts http://lkml.kernel.org/r/20201007120401.11200-1-mhocko@kernel.org
+Sean and Joao, thanks for the feedback. Probably we can drop this change.
 
-I suspect we can drop ARCH_NO_PREEMPT from VOLUNTARY, IIRC there's no
-arch dependency there. PREEMPT itself obviously needs arch help.
+On Fri, Oct 9, 2020 at 6:28 PM Joao Martins <joao.m.martins@oracle.com> wrote:
+>
+> On 10/9/20 1:58 AM, Sean Christopherson wrote:
+> > On Thu, Oct 08, 2020 at 03:54:12PM +0800, yulei.kernel@gmail.com wrote:
+> >> From: Yulei Zhang <yuleixzhang@tencent.com>
+> >>
+> >> Dmem page is pfn invalid but not mmio. Support cacheable
+> >> dmem page for kvm.
+> >>
+> >> Signed-off-by: Chen Zhuo <sagazchen@tencent.com>
+> >> Signed-off-by: Yulei Zhang <yuleixzhang@tencent.com>
+> >> ---
+> >>  arch/x86/kvm/mmu/mmu.c | 5 +++--
+> >>  include/linux/dmem.h   | 7 +++++++
+> >>  mm/dmem.c              | 7 +++++++
+> >>  3 files changed, 17 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> >> index 71aa3da2a0b7..0115c1767063 100644
+> >> --- a/arch/x86/kvm/mmu/mmu.c
+> >> +++ b/arch/x86/kvm/mmu/mmu.c
+> >> @@ -41,6 +41,7 @@
+> >>  #include <linux/hash.h>
+> >>  #include <linux/kern_levels.h>
+> >>  #include <linux/kthread.h>
+> >> +#include <linux/dmem.h>
+> >>
+> >>  #include <asm/page.h>
+> >>  #include <asm/memtype.h>
+> >> @@ -2962,9 +2963,9 @@ static bool kvm_is_mmio_pfn(kvm_pfn_t pfn)
+> >>                       */
+> >>                      (!pat_enabled() || pat_pfn_immune_to_uc_mtrr(pfn));
+> >>
+> >> -    return !e820__mapped_raw_any(pfn_to_hpa(pfn),
+> >> +    return (!e820__mapped_raw_any(pfn_to_hpa(pfn),
+> >>                                   pfn_to_hpa(pfn + 1) - 1,
+> >> -                                 E820_TYPE_RAM);
+> >> +                                 E820_TYPE_RAM)) || (!is_dmem_pfn(pfn));
+> >
+> > This is wrong.  As is, the logic reads "A PFN is MMIO if it is INVALID &&
+> > (!RAM || !DMEM)".  The obvious fix would be to change it to "INVALID &&
+> > !RAM && !DMEM", but that begs the question of whether or DMEM is reported
+> > as RAM.  I don't see any e820 related changes in the series, i.e. no evidence
+> > that dmem yanks its memory out of the e820 tables, which makes me think this
+> > change is unnecessary.
+> >
+> Even if there would exist e820 changes, e820__mapped_raw_any() checks against
+> hardware-provided e820 that we are given before any changes happen i.e. not the one kernel
+> has changed (e820_table_firmware). So unless you're having that memory carved from an MMIO
+> range (which would be wrong), or the BIOS is misrepresenting its memory map... the
+> e820__mapped_raw_any(E820_TYPE_RAM) ought to be enough to cover RAM.
+>
+> Or at least that has been my experience with similar work.
+>
+>         Joao
