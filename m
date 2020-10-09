@@ -2,85 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E986D288CFC
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5057288CFF
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:43:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389375AbgJIPlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 11:41:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388696AbgJIPlS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 11:41:18 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C94C0613D2;
-        Fri,  9 Oct 2020 08:41:18 -0700 (PDT)
-Date:   Fri, 9 Oct 2020 17:41:16 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602258077;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LzoqlKvnB0DJ8DXslRDdZXi+gnl9UDKfq4lWRVndgWk=;
-        b=EiO9Fxtc37/HKn+RtbL5Nc/7DbIqelxUy1uI8m9fQ+LMKkFamsCk6sCEaDB+6EhxRx/xfG
-        H7NzPQpdTomL357yGw7asvR9hqLqD5X9NUQM7BjZMGVfQnS79xrujfkxxpQLggD93RGP8o
-        j6DzPvH+RJzkM+AFNkQXoDeAeLizXMqU1BZtVuS8jRw48yKF3Ux4m0NvOL1CtSTjYbsdh7
-        wHL1B1JgbFKThAFnrZctV7l6KWcdMxnR7pc4Rp2uLpMOfiX10qKDvQWOF6O35ZX7mTpkK7
-        3SzO1TlJEEBAnhGDBRzM8sxOKsgmA8F/fLtri0v42asrAC3+Eas86VQLEHgZUw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602258077;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LzoqlKvnB0DJ8DXslRDdZXi+gnl9UDKfq4lWRVndgWk=;
-        b=tVjDY3vAW6eTHq/PXxf8DNSmv6tILey/tMm4YtDAqbONSoICd5Gx6e+8rN3Lt2fuCA/PpJ
-        mcvu91zCzsdTXaCw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Juri Lelli <juri.lelli@redhat.com>
-Cc:     tglx@linutronix.de, linux-rt-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bristot@redhat.com,
-        williams@redhat.com, echaudro@redhat.com, atheurer@redhat.com
-Subject: Re: [PATCH 5.9 RT] net: openvswitch: Fix using smp_processor_id() in
- preemptible code
-Message-ID: <20201009154116.a4fcrrm7flxonidd@linutronix.de>
-References: <20201009124759.592550-1-juri.lelli@redhat.com>
+        id S2389335AbgJIPn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 11:43:29 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:17787 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388696AbgJIPn3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 11:43:29 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602258208; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
+ To: From: Sender; bh=YjxIF3Ji/QmYt5sjPuySlWu/hH2szUxIVvrgfKdThtY=; b=BMmZcT1W4lW4yom18yZYEPhk46Loi0WVADf+72LOQQ88+Rp8ovFL8ZKZROLQUFsDtYpD1R7I
+ vxkiSFtBuMNnjrlhhyt/6wXQmECsZ8Bs+xrQPROjqSEDKhs2YpD1reHkslf2asxeMqdS8W3Q
+ d+W6ZG1P89vfmFobnmeuHndt2fU=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5f8084f406d81bc48d9747ba (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 09 Oct 2020 15:42:44
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 99520C43382; Fri,  9 Oct 2020 15:42:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from tynnyri.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F3974C433C9;
+        Fri,  9 Oct 2020 15:42:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F3974C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     miaoqinglang <miaoqinglang@huawei.com>
+Cc:     Jakub Kicinski <kubakici@wp.pl>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-wireless@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] mt7601u: Convert to DEFINE_SHOW_ATTRIBUTE
+References: <20200716085749.11105-1-miaoqinglang@huawei.com>
+        <20200716082036.76f47d2f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <d0817369-c884-981a-6dd7-2fef0f361e9e@huawei.com>
+Date:   Fri, 09 Oct 2020 18:42:37 +0300
+In-Reply-To: <d0817369-c884-981a-6dd7-2fef0f361e9e@huawei.com> (miaoqinglang's
+        message of "Sat, 19 Sep 2020 10:49:46 +0800")
+Message-ID: <87eem7s8wi.fsf@tynnyri.adurom.net>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201009124759.592550-1-juri.lelli@redhat.com>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-09 14:47:59 [+0200], Juri Lelli wrote:
-> This happens because openvswitch/flow_table::flow_lookup() accesses
-> per-cpu data while being preemptible (and migratable).
-> 
-> Fix it by adding get/put_cpu_light(), so that, even if preempted, the
-> task executing this code is not migrated (operation is also guarded by
-> ovs_mutex mutex).
+miaoqinglang <miaoqinglang@huawei.com> writes:
 
-This warning is not limited to PREEMPT_RT it also present upstream since
-commit
-   eac87c413bf97 ("net: openvswitch: reorder masks array based on usage")
+> =E5=9C=A8 2020/7/16 23:20, Jakub Kicinski =E5=86=99=E9=81=93:
+>> On Thu, 16 Jul 2020 16:57:49 +0800 Qinglang Miao wrote:
+>>> Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
+>>>
+>>> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+>>
+>> Acked-by: Jakub Kicinski <kubakici@wp.pl>
+>>
+> Hi Jakub,
+>
+> I noticed that this patch has been acked by you and not patched into
+> linux-next. There's little difference now so resent a new patch
+> against linux-next(20200917), and it can be applied to mainline
+> cleanly now.
 
-You should be able to reproduce it there, too.
-The path ovs_flow_tbl_lookup() -> flow_lookup() is guarded by ovs_lock()
-I can't say that this true for
-   ovs_vport_receive() -> ovs_dp_process_packet() ->
-   ovs_flow_tbl_lookup_stats() -> flow_lookup()
+This patch didn't apply to wireless-drivers-next and my script sent you
+an email about it:
 
-(means I don't know but it looks like coming from NAPI).
+https://patchwork.kernel.org/patch/11666949/
 
-Which means u64_stats_update_begin() could have two writers. This must
-not happen.
-There are two reader which do u64_stats_fetch_begin_irq(). Disabling
-interrupts makes no sense since they perform cross-CPU access.
+Please rebase over latest wireless-drivers-next and resend as v2.
 
--> You need to ensure that there is only one writer at a time.
+--=20
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-If mask_array gains a spinlock_t for writer protection then you can
-acquire the lock prio grabbing ->masks_usage_cntr. But as of now there
-is one `ma->syncp'.
-
-Sebastian
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
