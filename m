@@ -2,103 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D6A2899A1
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 22:18:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 524D82899BA
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 22:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390167AbgJIUS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 16:18:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49808 "EHLO mail.kernel.org"
+        id S2389313AbgJIU1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 16:27:12 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:50747 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732506AbgJIUS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 16:18:26 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2387846AbgJIU1L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 16:27:11 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602275230; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=52lzXpIM5c5WEUGQw7Y5zF9EbTe3/SJ1ngiJwmEncaE=;
+ b=IXkBL2oViXkDLUUWc25IG/EP5pW95RcgrRrOUmLi0hOBsmY4p4zkWaa2hJp72FbivBZ0QqPm
+ fb53PeaFUCPHwSeJZxkLpIayjkcmhQ7o7kg1SLjTKyULxm+wj8YiOepQNlwAATCBrZB3lpKb
+ 7XNnGlEKG4G5yEVxO/RgjMdyAtw=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 5f80c794a03b63d6738f9987 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 09 Oct 2020 20:27:00
+ GMT
+Sender: cgoldswo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BE9A5C433FE; Fri,  9 Oct 2020 20:27:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A59D2222F;
-        Fri,  9 Oct 2020 20:18:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602274705;
-        bh=L0qpncHGg/+Qtn1TS4oa9yI5owIYAKhg9hD49e2xzDE=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=n/kZTsz7OUCX9r0SBPNjt0gGxOc6JoczmJKmT7ge+BteHzykuOTG2w6bHQ+k8Idov
-         Ru13C1wEUaLa8pFmpK4EsIJZyFItJHMzvV32MM8SCShoPCfxq8YoFUWCQFVaSb5xBH
-         X3YDGRGkbN8K3jwAGI+vvhDg12rRGJBNoTKe6RQU=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 5E9C235227D5; Fri,  9 Oct 2020 13:18:25 -0700 (PDT)
-Date:   Fri, 9 Oct 2020 13:18:25 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     trix@redhat.com
-Cc:     dave@stgolabs.net, josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, natechancellor@gmail.com,
-        ndesaulniers@google.com, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] rcutorture: remove unneeded check
-Message-ID: <20201009201825.GL29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201009194736.2364-1-trix@redhat.com>
+        (Authenticated sender: cgoldswo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8D6C2C433F1;
+        Fri,  9 Oct 2020 20:26:59 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201009194736.2364-1-trix@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 09 Oct 2020 13:26:59 -0700
+From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org, minchan@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pratikp@codeaurora.org, pdaly@codeaurora.org,
+        sudaraja@codeaurora.org, iamjoonsoo.kim@lge.com, david@redhat.com,
+        vinmenon@codeaurora.org, minchan.kim@gmail.com
+Subject: Re: [PATCH v4] mm: cma: indefinitely retry allocations in cma_alloc
+In-Reply-To: <20200929055937.GA5332@infradead.org>
+References: <cover.1601324066.git.cgoldswo@codeaurora.org>
+ <afd4f52cc767115bacaeea935e1d7b6e5e7c24e8.1601324066.git.cgoldswo@codeaurora.org>
+ <20200929055937.GA5332@infradead.org>
+Message-ID: <3cdd6c30c062cf11eb1a7e3c47ff111e@codeaurora.org>
+X-Sender: cgoldswo@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 12:47:36PM -0700, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
+On 2020-09-28 22:59, Christoph Hellwig wrote:
+> On Mon, Sep 28, 2020 at 01:30:27PM -0700, Chris Goldsworthy wrote:
+>> CMA allocations will fail if 'pinned' pages are in a CMA area, since 
+>> we
+>> cannot migrate pinned pages. The _refcount of a struct page being 
+>> greater
+>> than _mapcount for that page can cause pinning for anonymous pages.  
+>> This
+>> is because try_to_unmap(), which (1) is called in the CMA allocation 
+>> path,
+>> and (2) decrements both _refcount and _mapcount for a page, will stop
+>> unmapping a page from VMAs once the _mapcount for a page reaches 0.  
+>> This
+>> implies that after try_to_unmap() has finished successfully for a page
+>> where _recount > _mapcount, that _refcount will be greater than 0.  
+>> Later
+>> in the CMA allocation path in migrate_page_move_mapping(), we will 
+>> have one
+>> more reference count than intended for anonymous pages, meaning the
+>> allocation will fail for that page.
+>> 
+>> If a process ends up causing _refcount > _mapcount for a page (by 
+>> either
+>> incrementing _recount or decrementing _mapcount), such that the 
+>> process is
+>> context switched out after modifying one refcount but before modifying 
+>> the
+>> other, the page will be temporarily pinned.
+>> 
+>> One example of where _refcount can be greater than _mapcount is inside 
+>> of
+>> zap_pte_range(), which is called for all the entries of a PMD when a
+>> process is exiting, to unmap the process's memory.  Inside of
+>> zap_pte_range(), after unammping a page with page_remove_rmap(), we 
+>> have
+>> that _recount > _mapcount.  _refcount can only be decremented after a 
+>> TLB
+>> flush is performed for the page - this doesn't occur until enough 
+>> pages
+>> have been batched together for flushing.  The flush can either occur 
+>> inside
+>> of zap_pte_range() (during the same invocation or a later one), or if 
+>> there
+>> aren't enough pages collected by the time we unmap all of the pages in 
+>> a
+>> process, the flush will occur in tlb_finish_mmu() in exit_mmap().  
+>> After
+>> the flush has occurred, tlb_batch_pages_flush() will decrement the
+>> references on the flushed pages.
+>> 
+>> Another such example like the above is inside of copy_one_pte(), which 
+>> is
+>> called during a fork. For PTEs for which pte_present(pte) == true,
+>> copy_one_pte() will increment the _refcount field followed by the
+>> _mapcount field of a page.
+>> 
+>> So, inside of cma_alloc(), add the option of letting users pass in
+>> __GFP_NOFAIL to indicate that we should retry CMA allocations 
+>> indefinitely,
+>> in the event that alloc_contig_range() returns -EBUSY after having 
+>> scanned
+>> a whole CMA-region bitmap.
 > 
-> clang static analysis reports this problem:
+> And who is going to use this?  AS-is this just seems to add code that
+> isn't actually used and thus actually tested.  (In addition to beeing
+> a relly bad idea as discussed before)
+
+Hi Christoph,
+
+That had slipped my mind - what we would have submitted would have been 
+a modified /drivers/dma-heap/heaps/cma_heap.c, which would have created 
+a "linux,cma-nofail" heap, that when allocated from, passes GFP_NOFAIL 
+to cma_alloc().  But, since this retry approach (finite and infinite) 
+has effectively been nacked, I've gone back to the drawing board to find 
+either (1) a lock based approach to solving this (as posed by Andrew 
+Morton here: https://lkml.org/lkml/2020/8/21/1490), or (2) using 
+preempt_disable() calls.
+
+Thanks,
+
+Chris.
+
+>> --- a/kernel/dma/contiguous.c
+>> +++ b/kernel/dma/contiguous.c
+>> @@ -196,7 +196,7 @@ struct page *dma_alloc_from_contiguous(struct 
+>> device *dev, size_t count,
+>>  	if (align > CONFIG_CMA_ALIGNMENT)
+>>  		align = CONFIG_CMA_ALIGNMENT;
+>> 
+>> -	return cma_alloc(dev_get_cma_area(dev), count, align, no_warn);
+>> +	return cma_alloc(dev_get_cma_area(dev), count, align, no_warn ? 
+>> __GFP_NOWARN : 0);
 > 
-> rcutorture.c:1999:2: warning: Called function pointer
->   is null (null dereference)
->         cur_ops->sync(); /* Later readers see above write. */
->         ^~~~~~~~~~~~~~~
-> 
-> This is a false positive triggered by an earlier, later ignored
-> NULL check of sync() op.  By inspection of the rcu_torture_ops,
-> the sync() op is never uninitialized.  So this earlier check is
-> not needed.
+> Also don't add pointlessly overlong lines.
 
-You lost me on this one.  This check is at the very beginning of
-rcu_torture_fwd_prog_nr().  Or are you saying that clang is seeing an
-earlier check in one of rcu_torture_fwd_prog_nr()'s callers?  If so,
-where exactly is this check?
-
-In any case, the check is needed because all three functions are invoked
-if there is a self-propagating RCU callback that ensures that there is
-always an RCU grace period outstanding.
-
-Ah.  Is clang doing local analysis and assuming that because there was
-a NULL check earlier, then the pointer might be NULL later?  That does
-not seem to me to be a sound check.
-
-So please let me know exactly what is causing clang to emit this
-diagnostic.  It might or might not be worth fixing this, but either way
-I need to understand the situation so as to be able to understand the
-set of feasible fixes.
-
-						Thanx, Paul
-
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->  kernel/rcu/rcutorture.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> index beba9e7963c8..6efc03a1d623 100644
-> --- a/kernel/rcu/rcutorture.c
-> +++ b/kernel/rcu/rcutorture.c
-> @@ -1989,7 +1989,7 @@ static void rcu_torture_fwd_prog_nr(struct rcu_fwd *rfp,
->  	unsigned long stopat;
->  	static DEFINE_TORTURE_RANDOM(trs);
->  
-> -	if  (cur_ops->call && cur_ops->sync && cur_ops->cb_barrier) {
-> +	if  (cur_ops->call && cur_ops->cb_barrier) {
->  		init_rcu_head_on_stack(&fcs.rh);
->  		selfpropcb = true;
->  	}
-> -- 
-> 2.18.1
-> 
+-- 
+The Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
