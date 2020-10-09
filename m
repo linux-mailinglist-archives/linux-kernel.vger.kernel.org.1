@@ -2,45 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC32028825D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 08:37:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 722C728825A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 08:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732227AbgJIGge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 02:36:34 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:55660 "EHLO
+        id S1732219AbgJIGgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 02:36:32 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:55662 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732067AbgJIGfo (ORCPT
+        with ESMTP id S1732072AbgJIGfp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 02:35:44 -0400
-Date:   Fri, 09 Oct 2020 06:35:41 -0000
+        Fri, 9 Oct 2020 02:35:45 -0400
+Date:   Fri, 09 Oct 2020 06:35:42 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602225342;
+        s=2020; t=1602225343;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=ONbO1lgMYtS7IaXC70WkOV/UqFQRp72omcXS19SjjxM=;
-        b=hKf2cJNh07DuoWy7AEaP1tpV49faCfReLGZ01q+oVPuN+QAcvvZvnFaxFThp+F9xZnARQF
-        NgtWD26kN2sVWNKGk0Jh/oEFbU8rvJ8Ba6B41ajzFLUPKGh/NkHOUqC9UcCADG+LvIoNBB
-        On1PyY7LlLx+F66l3Bl1+h3CvMbVzF69Sj3XQ2sVEEdbuQhRgG0JVPUUY8IYZaC5peZgYK
-        z48zJGsz7yfPY3c3vF4twTl0cB2AlapDE+Gm1OzrdeZ7L6oj11EMTkxSMSTriHEMC8w2Ot
-        EUPAcq4epy0OKl7lnTg2f4XrAqN2OUfifb4j2IBeEzSCo+HVVeQYIXcchqXvPA==
+        bh=ITg+dG7tl+GjY5lV5WKsORS1RXlwXv8V2CL4q3hnLck=;
+        b=fK0UB8xfqvxO8B6TYYfJ6+Tz20akSsknCFlGgjCXr6taiIRvFBYRIW3UD2wWIiQZUpGDeN
+        HP9t3wkU3okRh/t4YzLBTYJAWDbkd3ydV+KaFGJ0BNY4OUTVcss0A0IbKSq7kI1J05XcV1
+        JOmsQdtcbCNxfvy6ykOKmvJN/S0rM0aiwhGDsg7M/4uLy/6oUMjS1ibE1ButJ4OnjEcZev
+        x6ewub3qvs687MoeDuu2pU53t9nlOPHtr8peuzzEmYKEUS4T7dTBIhUEGhPX0+QcUvuOgl
+        4z8A749QN4kRfJ07k5wXweWATvK4OPRLqISkjhrdZjbbKudd3UY50EAZY5jTJw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602225342;
+        s=2020e; t=1602225343;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=ONbO1lgMYtS7IaXC70WkOV/UqFQRp72omcXS19SjjxM=;
-        b=A0iC+3kHLlJOp34723g69UG2K0kGY7eUmWg7NPWC2IbTkmsPdD1yNnhtgx+FOswv+qjPoQ
-        LlGo60V6+zWHAhCQ==
-From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
+        bh=ITg+dG7tl+GjY5lV5WKsORS1RXlwXv8V2CL4q3hnLck=;
+        b=Yn+jGSTG03xQ2C+tlNu19CkW+xk5/lsge/Izrt3A9ABy1vWowSmYtke6HCtle++o1qTQXV
+        38Zt8IdNo/WaCtAg==
+From:   "tip-bot2 for Joel Fernandes (Google)" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] nocb: Clarify RCU nocb CPU error message
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
+Subject: [tip: core/rcu] rcu/trace: Use gp_seq_req in acceleration's
+ rcu_grace_period tracepoint
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <160222534184.7002.17898670386211902428.tip-bot2@tip-bot2>
+Message-ID: <160222534236.7002.14439556240682068228.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -51,35 +53,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     e082c7b38185af0f59e55efff840939c35391f85
-Gitweb:        https://git.kernel.org/tip/e082c7b38185af0f59e55efff840939c35391f85
-Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Mon, 22 Jun 2020 09:25:34 -07:00
+Commit-ID:     a7886e899fd8334a03d37e66ad10295d175725ea
+Gitweb:        https://git.kernel.org/tip/a7886e899fd8334a03d37e66ad10295d175725ea
+Author:        Joel Fernandes (Google) <joel@joelfernandes.org>
+AuthorDate:    Thu, 18 Jun 2020 21:36:40 -04:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 24 Aug 2020 18:36:05 -07:00
+CommitterDate: Mon, 24 Aug 2020 18:36:04 -07:00
 
-nocb: Clarify RCU nocb CPU error message
+rcu/trace: Use gp_seq_req in acceleration's rcu_grace_period tracepoint
 
-A message of the form "rcu:    !!! lDTs ." can be tracked down, but
-doing so is not trivial.  This commit therefore eases this process by
-adding text so that this error message now reads as follows:
-"rcu:    nocb GP activity on CB-only CPU!!! lDTs ."
+During acceleration of CB, the rsp's gp_seq is rcu_seq_snap'd. This is
+the value used for acceleration - it is the value of gp_seq at which it
+is safe the execute all callbacks in the callback list.
 
+The rdp's gp_seq is not very useful for this scenario. Make
+rcu_grace_period report the gp_seq_req instead as it allows one to
+reason about how the acceleration works.
+
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_plugin.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/rcu/tree.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 982fc5b..bbc0c07 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -2417,7 +2417,7 @@ static void show_rcu_nocb_state(struct rcu_data *rdp)
- 	    !waslocked && !wastimer && !wassleep)
- 		return;  /* Nothing untowards. */
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index eb36779..8969120 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1483,9 +1483,10 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
  
--	pr_info("   !!! %c%c%c%c %c\n",
-+	pr_info("   nocb GP activity on CB-only CPU!!! %c%c%c%c %c\n",
- 		"lL"[waslocked],
- 		"dD"[!!rdp->nocb_defer_wakeup],
- 		"tT"[wastimer],
+ 	/* Trace depending on how much we were able to accelerate. */
+ 	if (rcu_segcblist_restempty(&rdp->cblist, RCU_WAIT_TAIL))
+-		trace_rcu_grace_period(rcu_state.name, rdp->gp_seq, TPS("AccWaitCB"));
++		trace_rcu_grace_period(rcu_state.name, gp_seq_req, TPS("AccWaitCB"));
+ 	else
+-		trace_rcu_grace_period(rcu_state.name, rdp->gp_seq, TPS("AccReadyCB"));
++		trace_rcu_grace_period(rcu_state.name, gp_seq_req, TPS("AccReadyCB"));
++
+ 	return ret;
+ }
+ 
