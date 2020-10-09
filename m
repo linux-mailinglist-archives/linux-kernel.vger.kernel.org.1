@@ -2,57 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7B2288D77
+	by mail.lfdr.de (Postfix) with ESMTP id 4165B288D76
 	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389537AbgJIP4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 11:56:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38728 "EHLO
+        id S2389528AbgJIP4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 11:56:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389511AbgJIP4V (ORCPT
+        with ESMTP id S2389382AbgJIP4V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 9 Oct 2020 11:56:21 -0400
 Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 372D9C0613DD
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 08:56:18 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id 60so9430242otw.3
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 08:56:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68761C0613DF
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 08:56:19 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id 60so9430296otw.3
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 08:56:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linuxfoundation.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=nxGBD0NCi/MzhF6RzJGO1Op3qiNabAYCN4C/VOLMVMg=;
-        b=Pv8X98rQrxmQmC3AYgeqGl/3Wk9jEr2z3r1AsjjBWItQarSnLt+hACI/K+54PmcGqB
-         a6eccMthV+9Z0NohOHwemKNP3iAKtcfB871irTEsCjdu6VJjkKtzuC0TCZ+38LgwYXqy
-         22DWwqfvNOxEp+4/pcAGi+dbraAvqO0gRaIDs=
+        bh=A1N4mi8Zf4gb8ftqUkRYHg/x5FlWQplCKiI34SuO3n4=;
+        b=Z/ahUIVUocf/jyhMdVQ9cNINzt03KhJFdbREveQrU8g3EQ5rfYAlT7v5SIutmHV/yT
+         P6YtA72110Jq+F2BdBwZPbuow0oPNAsthTPZLZzImKeHcvZT7cKQDM5PDs5wSA5ptAYh
+         AbL592FL/3GCa57V4aDLJzyvBBy6VilM6WUbU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=nxGBD0NCi/MzhF6RzJGO1Op3qiNabAYCN4C/VOLMVMg=;
-        b=AQcxPXjSVzlQfTwYY7NF6hUnT/f4lhEgHULlapbBJCTlqsOkl6IgN9cbxA1n07Es1B
-         OHdbf8Nihmwrbuyq467Nl0MOCngUi1qdqZsrV+6bsFfrJLL4tkQeOtNT2DcK4/bQuYhE
-         qe1Pcrwzcp8bRKpKKXdBpTogphYqdxQLxC44FYsth2iASgdsoYBorzfP65IorUKhzMyW
-         5pLvJNe1X1MLfxwOsZFLAGF+Tcp079ev225dy5odg8+q1SDldZ36qgvtiOo3lK2VKB9Z
-         uzf8sk0MqhG0onB8reAXO6EPHm4pcQ0JxtQLLwJSB58cDtIjiJBUzqrTr820zAIpooxk
-         ObKQ==
-X-Gm-Message-State: AOAM531AwPaPV4dbd8aQOnHH/bme+2Y5SsbgKskOJms/s2rplL6n7Rjn
-        Ul3GP+JzFVQwTDyKmaGNyYi1Ng==
-X-Google-Smtp-Source: ABdhPJwbBZCHnPwAt1monb6rS8Y1Exeh2/LVfsjInRAkUPpEXOu1zrSNDvtpFRcJNjRoSW4w4ceTAQ==
-X-Received: by 2002:a9d:224b:: with SMTP id o69mr8748064ota.358.1602258977631;
-        Fri, 09 Oct 2020 08:56:17 -0700 (PDT)
+        bh=A1N4mi8Zf4gb8ftqUkRYHg/x5FlWQplCKiI34SuO3n4=;
+        b=lL+PhnuCXsoPG+d4JyriI2yDAg1XZXw6VND2ezx8cUg88Vod58sYH1Et8jykajCFIx
+         bgJI/a/tLrKZc4oxIr+xhrS12sI3OCKoy/93SdybbtZGo9LSyifcM/INzG4t+ueF2uZu
+         9TQDLS1GamuCc+K0wLPMNmyYsGNg5am/BcVEzyyjfnYFsQ8UluXssfnsZfbXvQcQDcW5
+         b/fO3Oqm8infTufaIHAoDOTWBEbeY63Yu8yyS/doRPQNR4XZAZxEOFzuRItqykAcYrq2
+         M8/O61t6Eh8ZvcUHvuBqgxXmU/v73pkTkSk4YT6m8HwFUyj5N2e3LDhDSIgjxJj//Xk8
+         Oiww==
+X-Gm-Message-State: AOAM533QCsRYPDt+lzys7gA6Tk/AyBdxYodAt5u8FcboZDs1y7J1Cv1j
+        B2Au6v7zIbdwjONLtiVwoNtJRQ==
+X-Google-Smtp-Source: ABdhPJwJnsHbdiehHd1EZ75yuq+iazTGW+NKlhAG8cQhOLTw+81X0rQFyh8y2zP4MwYygrGRxCXqYA==
+X-Received: by 2002:a05:6830:1e19:: with SMTP id s25mr8880139otr.294.1602258978791;
+        Fri, 09 Oct 2020 08:56:18 -0700 (PDT)
 Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id e7sm7347246oia.9.2020.10.09.08.56.16
+        by smtp.gmail.com with ESMTPSA id e7sm7347246oia.9.2020.10.09.08.56.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 08:56:17 -0700 (PDT)
+        Fri, 09 Oct 2020 08:56:18 -0700 (PDT)
 From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     rafael@kernel.org, james.morse@arm.com, tony.luck@intel.com,
-        bp@alien8.de, gregkh@linuxfoundation.org, keescook@chromium.org
-Cc:     Shuah Khan <skhan@linuxfoundation.org>, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>
-Subject: [PATCH v3 06/11] drivers/acpi/apei: convert seqno counter_atomic32
-Date:   Fri,  9 Oct 2020 09:56:01 -0600
-Message-Id: <2f39e13e92b587ac48b7c11a17854b6426cfb745.1602209970.git.skhan@linuxfoundation.org>
+To:     gregkh@linuxfoundation.org, arve@android.com, tkjos@android.com,
+        maco@android.com, joel@joelfernandes.org, christian@brauner.io,
+        hridya@google.com, surenb@google.com, keescook@chromium.org
+Cc:     Shuah Khan <skhan@linuxfoundation.org>, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: [PATCH v3 07/11] drivers/android/binder: convert stats, transaction_log to counter_atomic32
+Date:   Fri,  9 Oct 2020 09:56:02 -0600
+Message-Id: <907441886ba11255ec6be480c1fd90a1f23f959c.1602209970.git.skhan@linuxfoundation.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1602209970.git.skhan@linuxfoundation.org>
 References: <cover.1602209970.git.skhan@linuxfoundation.org>
@@ -66,57 +68,175 @@ counter_atomic* is introduced to be used when a variable is used as
 a simple counter and doesn't guard object lifetimes. This clearly
 differentiates atomic_t usages that guard object lifetimes.
 
-counter_atomic* variables wrap around to INT_MIN when it overflows
-and should not be used to guard resource lifetimes, device usage and
-open counts that control state changes, and pm states.
+counter_atomic* variables wrap around to INT_MIN when it overflows and
+should not be used to guard resource lifetimes, device usage and open
+counts that control state changes, and pm states.
 
-seqno is a sequence number counter for logging. This counter gets
-incremented. Unsure if there is a chance of this overflowing. It
-doesn't look like overflowing causes any problems since it is used
-to tag the log messages and nothing more.
+stats tracks per-process binder statistics. Unsure if there is a chance
+of this overflowing, other than stats getting reset to 0. Convert it to
+use counter_atomic.
 
-Convert it to use counter_atomic32.
+binder_transaction_log:cur is used to keep track of the current log entry
+location. Overflow is handled in the code. Since it is used as a
+counter, convert it to use counter_atomic32.
 
 This conversion doesn't change the overflow wrap around behavior.
 
-Acked-by: Rafael J. Wysocki <rafael@kernel.org>
-Acked-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Reviewed-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Christian Brauner <christian.brauner@ubuntu.com>
 Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 ---
- drivers/acpi/apei/ghes.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/android/binder.c          | 41 ++++++++++++++++---------------
+ drivers/android/binder_internal.h |  3 ++-
+ 2 files changed, 23 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
-index 81bf71b10d44..92169436be18 100644
---- a/drivers/acpi/apei/ghes.c
-+++ b/drivers/acpi/apei/ghes.c
-@@ -41,6 +41,7 @@
- #include <linux/uuid.h>
- #include <linux/ras.h>
+diff --git a/drivers/android/binder.c b/drivers/android/binder.c
+index f936530a19b0..52175cd6a62b 100644
+--- a/drivers/android/binder.c
++++ b/drivers/android/binder.c
+@@ -66,6 +66,7 @@
+ #include <linux/syscalls.h>
  #include <linux/task_work.h>
+ #include <linux/sizes.h>
 +#include <linux/counters.h>
  
- #include <acpi/actbl1.h>
- #include <acpi/ghes.h>
-@@ -562,7 +563,7 @@ static void __ghes_print_estatus(const char *pfx,
- 				 const struct acpi_hest_generic *generic,
- 				 const struct acpi_hest_generic_status *estatus)
- {
--	static atomic_t seqno;
-+	static struct counter_atomic32 seqno = COUNTER_ATOMIC_INIT(0);
- 	unsigned int curr_seqno;
- 	char pfx_seq[64];
+ #include <uapi/linux/android/binder.h>
+ #include <uapi/linux/android/binderfs.h>
+@@ -172,22 +173,22 @@ enum binder_stat_types {
+ };
  
-@@ -573,7 +574,7 @@ static void __ghes_print_estatus(const char *pfx,
- 		else
- 			pfx = KERN_ERR;
+ struct binder_stats {
+-	atomic_t br[_IOC_NR(BR_FAILED_REPLY) + 1];
+-	atomic_t bc[_IOC_NR(BC_REPLY_SG) + 1];
+-	atomic_t obj_created[BINDER_STAT_COUNT];
+-	atomic_t obj_deleted[BINDER_STAT_COUNT];
++	struct counter_atomic32 br[_IOC_NR(BR_FAILED_REPLY) + 1];
++	struct counter_atomic32 bc[_IOC_NR(BC_REPLY_SG) + 1];
++	struct counter_atomic32 obj_created[BINDER_STAT_COUNT];
++	struct counter_atomic32 obj_deleted[BINDER_STAT_COUNT];
+ };
+ 
+ static struct binder_stats binder_stats;
+ 
+ static inline void binder_stats_deleted(enum binder_stat_types type)
+ {
+-	atomic_inc(&binder_stats.obj_deleted[type]);
++	counter_atomic32_inc(&binder_stats.obj_deleted[type]);
+ }
+ 
+ static inline void binder_stats_created(enum binder_stat_types type)
+ {
+-	atomic_inc(&binder_stats.obj_created[type]);
++	counter_atomic32_inc(&binder_stats.obj_created[type]);
+ }
+ 
+ struct binder_transaction_log binder_transaction_log;
+@@ -197,7 +198,7 @@ static struct binder_transaction_log_entry *binder_transaction_log_add(
+ 	struct binder_transaction_log *log)
+ {
+ 	struct binder_transaction_log_entry *e;
+-	unsigned int cur = atomic_inc_return(&log->cur);
++	unsigned int cur = counter_atomic32_inc_return(&log->cur);
+ 
+ 	if (cur >= ARRAY_SIZE(log->entry))
+ 		log->full = true;
+@@ -3615,9 +3616,9 @@ static int binder_thread_write(struct binder_proc *proc,
+ 		ptr += sizeof(uint32_t);
+ 		trace_binder_command(cmd);
+ 		if (_IOC_NR(cmd) < ARRAY_SIZE(binder_stats.bc)) {
+-			atomic_inc(&binder_stats.bc[_IOC_NR(cmd)]);
+-			atomic_inc(&proc->stats.bc[_IOC_NR(cmd)]);
+-			atomic_inc(&thread->stats.bc[_IOC_NR(cmd)]);
++			counter_atomic32_inc(&binder_stats.bc[_IOC_NR(cmd)]);
++			counter_atomic32_inc(&proc->stats.bc[_IOC_NR(cmd)]);
++			counter_atomic32_inc(&thread->stats.bc[_IOC_NR(cmd)]);
+ 		}
+ 		switch (cmd) {
+ 		case BC_INCREFS:
+@@ -4047,9 +4048,9 @@ static void binder_stat_br(struct binder_proc *proc,
+ {
+ 	trace_binder_return(cmd);
+ 	if (_IOC_NR(cmd) < ARRAY_SIZE(binder_stats.br)) {
+-		atomic_inc(&binder_stats.br[_IOC_NR(cmd)]);
+-		atomic_inc(&proc->stats.br[_IOC_NR(cmd)]);
+-		atomic_inc(&thread->stats.br[_IOC_NR(cmd)]);
++		counter_atomic32_inc(&binder_stats.br[_IOC_NR(cmd)]);
++		counter_atomic32_inc(&proc->stats.br[_IOC_NR(cmd)]);
++		counter_atomic32_inc(&thread->stats.br[_IOC_NR(cmd)]);
  	}
--	curr_seqno = atomic_inc_return(&seqno);
-+	curr_seqno = counter_atomic32_inc_return(&seqno);
- 	snprintf(pfx_seq, sizeof(pfx_seq), "%s{%u}" HW_ERR, pfx, curr_seqno);
- 	printk("%s""Hardware error from APEI Generic Hardware Error Source: %d\n",
- 	       pfx_seq, generic->header.source_id);
+ }
+ 
+@@ -5841,7 +5842,7 @@ static void print_binder_stats(struct seq_file *m, const char *prefix,
+ 	BUILD_BUG_ON(ARRAY_SIZE(stats->bc) !=
+ 		     ARRAY_SIZE(binder_command_strings));
+ 	for (i = 0; i < ARRAY_SIZE(stats->bc); i++) {
+-		int temp = atomic_read(&stats->bc[i]);
++		int temp = counter_atomic32_read(&stats->bc[i]);
+ 
+ 		if (temp)
+ 			seq_printf(m, "%s%s: %d\n", prefix,
+@@ -5851,7 +5852,7 @@ static void print_binder_stats(struct seq_file *m, const char *prefix,
+ 	BUILD_BUG_ON(ARRAY_SIZE(stats->br) !=
+ 		     ARRAY_SIZE(binder_return_strings));
+ 	for (i = 0; i < ARRAY_SIZE(stats->br); i++) {
+-		int temp = atomic_read(&stats->br[i]);
++		int temp = counter_atomic32_read(&stats->br[i]);
+ 
+ 		if (temp)
+ 			seq_printf(m, "%s%s: %d\n", prefix,
+@@ -5863,8 +5864,8 @@ static void print_binder_stats(struct seq_file *m, const char *prefix,
+ 	BUILD_BUG_ON(ARRAY_SIZE(stats->obj_created) !=
+ 		     ARRAY_SIZE(stats->obj_deleted));
+ 	for (i = 0; i < ARRAY_SIZE(stats->obj_created); i++) {
+-		int created = atomic_read(&stats->obj_created[i]);
+-		int deleted = atomic_read(&stats->obj_deleted[i]);
++		int created = counter_atomic32_read(&stats->obj_created[i]);
++		int deleted = counter_atomic32_read(&stats->obj_deleted[i]);
+ 
+ 		if (created || deleted)
+ 			seq_printf(m, "%s%s: active %d total %d\n",
+@@ -6054,7 +6055,7 @@ static void print_binder_transaction_log_entry(struct seq_file *m,
+ int binder_transaction_log_show(struct seq_file *m, void *unused)
+ {
+ 	struct binder_transaction_log *log = m->private;
+-	unsigned int log_cur = atomic_read(&log->cur);
++	unsigned int log_cur = counter_atomic32_read(&log->cur);
+ 	unsigned int count;
+ 	unsigned int cur;
+ 	int i;
+@@ -6124,8 +6125,8 @@ static int __init binder_init(void)
+ 	if (ret)
+ 		return ret;
+ 
+-	atomic_set(&binder_transaction_log.cur, ~0U);
+-	atomic_set(&binder_transaction_log_failed.cur, ~0U);
++	counter_atomic32_set(&binder_transaction_log.cur, ~0U);
++	counter_atomic32_set(&binder_transaction_log_failed.cur, ~0U);
+ 
+ 	binder_debugfs_dir_entry_root = debugfs_create_dir("binder", NULL);
+ 	if (binder_debugfs_dir_entry_root)
+diff --git a/drivers/android/binder_internal.h b/drivers/android/binder_internal.h
+index 283d3cb9c16e..c77960c01430 100644
+--- a/drivers/android/binder_internal.h
++++ b/drivers/android/binder_internal.h
+@@ -12,6 +12,7 @@
+ #include <linux/stddef.h>
+ #include <linux/types.h>
+ #include <linux/uidgid.h>
++#include <linux/counters.h>
+ 
+ struct binder_context {
+ 	struct binder_node *binder_context_mgr_node;
+@@ -136,7 +137,7 @@ struct binder_transaction_log_entry {
+ };
+ 
+ struct binder_transaction_log {
+-	atomic_t cur;
++	struct counter_atomic32 cur;
+ 	bool full;
+ 	struct binder_transaction_log_entry entry[32];
+ };
 -- 
 2.25.1
 
