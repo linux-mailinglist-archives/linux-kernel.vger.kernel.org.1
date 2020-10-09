@@ -2,97 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AFC6289072
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 20:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0164E289073
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 20:01:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390280AbgJISA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 14:00:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730110AbgJISA7 (ORCPT
+        id S2390288AbgJISBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 14:01:21 -0400
+Received: from smtprelay0021.hostedemail.com ([216.40.44.21]:33560 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730110AbgJISBV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 14:00:59 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A10AC0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 11:00:57 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id r10so7781750pgb.10
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 11:00:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=O9DeNfGtICXdSR5fMF3uxBj8llIMlwvh5++n6DPD1NQ=;
-        b=LNi1SKK6Xz0Ui1DpFu+MzFvSO+5SC9UcJ+bDYYds1O2bQss4jaPUCy8Pcisk8JeAR7
-         2pr3m00T+iBZ70OKhG3qne17xLaUjoJmAnb0la7XsJsETjAlzbjH5Ao4CAlRbaiUXN9q
-         tj7rVI4emXl01pB0do08uo3+SgDGSB6d0rhA0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=O9DeNfGtICXdSR5fMF3uxBj8llIMlwvh5++n6DPD1NQ=;
-        b=ZiPOdPz7Ql1P8nq0bDnro7nlYl7bi2Ycul5fPz/FSRmRJ2fb+ieIPjrdvrbDXi3LYl
-         E9TTFGcBqKpqFwdX+WNSXl2FalxrFKV4L84ZFMVbikL98Tw5P9WzaoPEOyWelbqVKlmJ
-         JbmQ8UiscFlIDEufT+1liPUcpjBM06b6v8iQruSu9XktaLyjPsYVc9M7jjX9SBcI96w9
-         zHT7K+IubplxpBYINNVHYk8nYeqyZjM7Huyc/msyj3koduUI2pl3mhJWf5Vqwu6OA3dV
-         oIfwdlk0BURbJvoK4K3POpSnuVdp1R9iqu5jETouz1iBHPld5F8hTLprltgve8dwwsNn
-         5FFg==
-X-Gm-Message-State: AOAM531A/zr5KkL4wlgRpQM0exmGlPe2g2RNi3/7jpCotNso8xu6B42G
-        chWA5ms5PMUYcidnkU8+fThi7g==
-X-Google-Smtp-Source: ABdhPJy6T/ZuzZpYG66+gogxlz7cBmM928ppbl+iWfviaU1v/1ivieeoj2WBNr1sj2yt1SNBrY9CTg==
-X-Received: by 2002:a17:90a:840b:: with SMTP id j11mr5729347pjn.5.1602266457053;
-        Fri, 09 Oct 2020 11:00:57 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d12sm11098085pgd.93.2020.10.09.11.00.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 11:00:55 -0700 (PDT)
-Date:   Fri, 9 Oct 2020 11:00:54 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     corbet@lwn.net, gregkh@linuxfoundation.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 01/11] counters: Introduce counter_atomic* counters
-Message-ID: <202010091100.9327D918@keescook>
-References: <cover.1602209970.git.skhan@linuxfoundation.org>
- <baede266cc0c69da61142b467ff386c6b31a70b7.1602209970.git.skhan@linuxfoundation.org>
+        Fri, 9 Oct 2020 14:01:21 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 6CA43181D3030;
+        Fri,  9 Oct 2020 18:01:20 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 91,10,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3167:3315:3353:3622:3653:3865:3866:3868:3870:3871:3872:3874:4321:5007:7576:7903:10004:10400:10848:11026:11232:11473:11658:11914:12043:12297:12438:12740:12760:12895:13184:13229:13255:13439:14181:14659:14721:21080:21221:21433:21451:21627:21740:21741:21891:21990:30025:30034:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: boys36_610ce33271e2
+X-Filterd-Recvd-Size: 3039
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf19.hostedemail.com (Postfix) with ESMTPA;
+        Fri,  9 Oct 2020 18:01:19 +0000 (UTC)
+Message-ID: <b57a59bc80e432c7696b347a223eb12339013970.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: Check for .byte-spelled insn opcodes
+ documentation on x86
+From:   Joe Perches <joe@perches.com>
+To:     Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andy Whitcroft <apw@canonical.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Date:   Fri, 09 Oct 2020 11:01:18 -0700
+In-Reply-To: <20201009161423.14583-1-bp@alien8.de>
+References: <20201009161423.14583-1-bp@alien8.de>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <baede266cc0c69da61142b467ff386c6b31a70b7.1602209970.git.skhan@linuxfoundation.org>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 09:55:56AM -0600, Shuah Khan wrote:
-> Introduce Simple atomic counters.
+On Fri, 2020-10-09 at 18:14 +0200, Borislav Petkov wrote:
+> From: Borislav Petkov <bp@suse.de>
 > 
-> There are a number of atomic_t usages in the kernel where atomic_t api
-> is used strictly for counting and not for managing object lifetime. In
-> some cases, atomic_t might not even be needed.
+> Instruction opcode bytes spelled using the gas directive .byte should
+> carry a comment above them stating which binutils version has added
+> support for the instruction mnemonic so that they can be replaced with
+> the mnemonic when that binutils version is equal or less than the
+> minimum-supported version by the kernel.
 > 
-> The purpose of these counters is to clearly differentiate atomic_t
-> counters from atomic_t usages that guard object lifetimes, hence prone
-> to overflow and underflow errors. It allows tools that scan for underflow
-> and overflow on atomic_t usages to detect overflow and underflows to scan
-> just the cases that are prone to errors.
-> 
-> Simple atomic counters api provides interfaces for simple atomic counters
-> that just count, and don't guard resource lifetimes. The interfaces are
-> built on top of atomic_t api, providing a smaller subset of atomic_t
-> interfaces necessary to support simple counters.
-> 
-> Counter wraps around to INT_MIN when it overflows and should not be used
-> to guard resource lifetimes, device usage and open counts that control
-> state changes, and pm states. Overflowing to INT_MIN is consistent with
-> the atomic_t api, which it is built on top of.
-> 
-> Using counter_atomic* to guard lifetimes could lead to use-after free
-> when it overflows and undefined behavior when used to manage state
-> changes and device usage/open states.
-> 
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> Add a check for that.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+OK but several notes:
 
--- 
-Kees Cook
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> @@ -6858,6 +6858,18 @@ sub process {
+>  			WARN("DUPLICATED_SYSCTL_CONST",
+>  				"duplicated sysctl range checking value '$1', consider using the shared one in include/linux/sysctl.h\n" . $herecurr);
+>  		}
+> +
+> +# document which binutils version supports the actual insn mnemonic so that the naked opcode bytes can be replaced.
+> +# x86-only.
+> +		if ($rawline =~ /(\.byte(?:0[xX][0-9a-fA-F]+0-9a-fx,]+)/ && $realfile =~ "^arch/x86/") {
+
+Given the location, this only works on .c and .h files.
+It does not work on .S files.  Should it?
+
+No need for a capture group.
+
+Please use @ not " as all the other $realfile comparisons
+use that form when expecting a /
+
+So it looks like the regex would be more complete as:
+
+	if ($realfile =~ m@^arch/x86/@ &&
+	    $rawline =~ /\.byte\s+(?:$Constant|(?:\\)?$Ident|"\s*$Ident)\b/) {
+
+etc...
+
+> +			my $comment = ctx_locate_comment(0, $linenr);
+
+A patch can modify any number of files.
+
+This should use ctx_locate_comment($file ? 0 : $first_line, $linenr)
+as checkpatch tests work on patch contexts not the entire
+file before this line.
+
+> +			if (! $comment || ($comment !~ /binutils version [0-9.]+/(ms)) {
+
+No need for the $!comment test
+
+> +				WARN("MISSING_BINUTILS_VERSION",
+> +				     "Please document which binutils version supports these .byte-spelled\n" .
+> +				     "\tinsn opcodes by adding \"binutils version <num>\" in a comment" .
+> +				     " above them.\n" . $herecurr);
+
+checkpatch uses only a single line output only before $herecurr
+Output line length doesn't matter.
+
+
