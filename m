@@ -2,245 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 575A228839E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 09:31:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA8F2883A1
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 09:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732030AbgJIHb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 03:31:29 -0400
-Received: from mga12.intel.com ([192.55.52.136]:35493 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726326AbgJIHb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 03:31:29 -0400
-IronPort-SDR: xIJRTdkmotFm5EkKWR0zPpkdeetV/lY1/KAICTjYIgIkEAGzw0sKfGAWgJ4q6iZo43ak40A8ub
- khzc8xtKRgUg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="144775084"
-X-IronPort-AV: E=Sophos;i="5.77,354,1596524400"; 
-   d="scan'208";a="144775084"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 00:31:28 -0700
-IronPort-SDR: P7xUBCtnZQ8Uo6Rh9crMiK0P2v8hKI+qCrhxLKguBjDbWFkbfDPrDQvBvsG6iXZ4P+9edtwE/X
- HdpnDvseAwOA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,354,1596524400"; 
-   d="scan'208";a="349748975"
-Received: from lkp-server02.sh.intel.com (HELO 80eb06af76cf) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 09 Oct 2020 00:31:27 -0700
-Received: from kbuild by 80eb06af76cf with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kQmsB-0000In-20; Fri, 09 Oct 2020 07:31:27 +0000
-Date:   Fri, 09 Oct 2020 15:30:55 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2020.10.07a] BUILD SUCCESS
- fd87eb470f6dfa18b3c810eb69778d6a6647befc
-Message-ID: <5f8011af.qVX5jN+KP/Avn+Wq%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1732028AbgJIHdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 03:33:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726326AbgJIHdI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 03:33:08 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1708AC0613D2;
+        Fri,  9 Oct 2020 00:33:08 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id o18so8367814edq.4;
+        Fri, 09 Oct 2020 00:33:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=reply-to:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=zHLZR+cdQxUXAapkvnhHRxEGDbtuU0jlMqUOlyS9CQ8=;
+        b=IwKJFEewQoSKcdG2YAPPCbvHXC/d2fJCXSoWKxPDWofdhldJOtN8hS/Pi5QmL2msmn
+         fgO0tfHHRvDJp5uq9wMO8PF1j4J3ajDFOYcMFiiaYbCL9NgUHnvdfzApp7sEygo8gHxC
+         XuNUH0cjc2UyhfzR8KOepak+beCJyiDatAyXYrrwq6vTnuio5ewdh3s45qi6I4MnPepn
+         RvfsaAkCY5dUJqRtOzl726dnOvp9VkasIudKgL/r8Bwc1xElpx5geFYNETeMzzNk/itj
+         Se2doJ6dBHD+gWR5v+n062bMQQl2yZI38NO7DfFv72qUtNzYYk4S/7RgNX+cj0ebgjTt
+         XBTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:reply-to:subject:to:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=zHLZR+cdQxUXAapkvnhHRxEGDbtuU0jlMqUOlyS9CQ8=;
+        b=P6sqXqkAWz3OHeqX77gE/6fZ6tO3ILgJSIlcGHYXxMXCWLMl/Nm2IuCI+jBVXOKqzI
+         X4z2RftAEMFYIPmNWmSGoZHFJv2u0rduM3vIpTwrNbmEjADmvTiaKV8kSVXSDu3OLF0p
+         7F1fiApK7EJld/fGBZxIeOCrB1IiLWOzia7+S7SpkZs19khAIZEpW2T+d9oYsI7KSBO+
+         GtGqK3xsQNvvyYwkp5ncKsf/vm/NZAsr7zkKOKMdX7thFyMV5RjBH3ojvaEcktrqKR5L
+         6eN0I5xvwAZowconMiz5gRZn6S1psnAkskGei9Nw9A3ulwspSJoiTkGtsVVmeq0Obef+
+         XrOQ==
+X-Gm-Message-State: AOAM53328EeCEeKOXS5r4DvHBwgr4IDMaRc7TAMhGO3zE4tXkqUG36un
+        i5WZlrWyvzkt1DsJGa5KyCHcGoitBIs=
+X-Google-Smtp-Source: ABdhPJzXIarjT4XlMBlwIGVzLRN/9SvySlM1kW8J0vZXEormyHb9njn+Y4gL6yZ2ZXkN7zR7BWjQ5A==
+X-Received: by 2002:aa7:d29a:: with SMTP id w26mr12533300edq.59.1602228786703;
+        Fri, 09 Oct 2020 00:33:06 -0700 (PDT)
+Received: from ?IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7? ([2a02:908:1252:fb60:be8a:bd56:1f94:86e7])
+        by smtp.gmail.com with ESMTPSA id gv10sm5824756ejb.46.2020.10.09.00.33.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Oct 2020 00:33:06 -0700 (PDT)
+Reply-To: christian.koenig@amd.com
+Subject: Re: [PATCH 1/4] mm: introduce vma_set_file function v2
+To:     John Hubbard <jhubbard@nvidia.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
+        chris@chris-wilson.co.uk, airlied@redhat.com,
+        akpm@linux-foundation.org, daniel@ffwll.ch, sumit.semwal@linaro.org
+References: <20201008112342.9394-1-christian.koenig@amd.com>
+ <b6b77e60-f93d-efe4-e267-983a2bdbbe71@nvidia.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+Message-ID: <747e1832-0341-9029-95f6-638f0f1a6f76@gmail.com>
+Date:   Fri, 9 Oct 2020 09:33:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <b6b77e60-f93d-efe4-e267-983a2bdbbe71@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.10.07a
-branch HEAD: fd87eb470f6dfa18b3c810eb69778d6a6647befc  rcu/tree: nocb: Avoid raising softirq for offloaded ready-to-execute CBs
+Am 08.10.20 um 23:49 schrieb John Hubbard:
+> On 10/8/20 4:23 AM, Christian König wrote:
+>> Add the new vma_set_file() function to allow changing
+>> vma->vm_file with the necessary refcount dance.
+>>
+>> v2: add more users of this.
+>>
+>> Signed-off-by: Christian König <christian.koenig@amd.com>
+>> ---
+>>   drivers/dma-buf/dma-buf.c                  | 16 +++++-----------
+>>   drivers/gpu/drm/etnaviv/etnaviv_gem.c      |  4 +---
+>>   drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c |  3 +--
+>>   drivers/gpu/drm/i915/gem/i915_gem_mman.c   |  4 ++--
+>>   drivers/gpu/drm/msm/msm_gem.c              |  4 +---
+>>   drivers/gpu/drm/omapdrm/omap_gem.c         |  3 +--
+>>   drivers/gpu/drm/vgem/vgem_drv.c            |  3 +--
+>>   drivers/staging/android/ashmem.c           |  5 ++---
+>>   include/linux/mm.h                         |  2 ++
+>>   mm/mmap.c                                  | 16 ++++++++++++++++
+>>   10 files changed, 32 insertions(+), 28 deletions(-)
+>
+> Looks like a nice cleanup. Two comments below.
+>
+> ...
+>
+>> diff --git a/drivers/gpu/drm/i915/gem/i915_gem_mman.c 
+>> b/drivers/gpu/drm/i915/gem/i915_gem_mman.c
+>> index 3d69e51f3e4d..c9d5f1a38af3 100644
+>> --- a/drivers/gpu/drm/i915/gem/i915_gem_mman.c
+>> +++ b/drivers/gpu/drm/i915/gem/i915_gem_mman.c
+>> @@ -893,8 +893,8 @@ int i915_gem_mmap(struct file *filp, struct 
+>> vm_area_struct *vma)
+>>        * requires avoiding extraneous references to their filp, hence 
+>> why
+>>        * we prefer to use an anonymous file for their mmaps.
+>>        */
+>> -    fput(vma->vm_file);
+>> -    vma->vm_file = anon;
+>> +    vma_set_file(vma, anon);
+>> +    fput(anon);
+>
+> That's one fput() too many, isn't it?
 
-elapsed time: 721m
+No, the other cases were replacing the vm_file with something 
+pre-allocated and also grabbed a new reference.
 
-configs tested: 181
-configs skipped: 2
+But this case here uses the freshly allocated anon file and so 
+vma_set_file() grabs another extra reference which we need to drop.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+The alternative is to just keep it as it is. Opinions?
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                  colibri_pxa300_defconfig
-m68k                       m5475evb_defconfig
-mips                      fuloong2e_defconfig
-arm                          exynos_defconfig
-powerpc                 mpc832x_mds_defconfig
-arm                        mvebu_v5_defconfig
-arm                           omap1_defconfig
-s390                                defconfig
-mips                   sb1250_swarm_defconfig
-powerpc                  mpc885_ads_defconfig
-sh                          rsk7203_defconfig
-sh                 kfr2r09-romimage_defconfig
-c6x                        evmc6678_defconfig
-powerpc                      ppc64e_defconfig
-powerpc                        warp_defconfig
-arm                       mainstone_defconfig
-mips                             allyesconfig
-powerpc                     ep8248e_defconfig
-powerpc                        fsp2_defconfig
-sh                           se7343_defconfig
-arm                        clps711x_defconfig
-arm                       aspeed_g5_defconfig
-arm                              zx_defconfig
-sh                          r7785rp_defconfig
-powerpc                     kilauea_defconfig
-mips                     cu1830-neo_defconfig
-powerpc                 mpc832x_rdb_defconfig
-m68k                             allmodconfig
-sh                   rts7751r2dplus_defconfig
-powerpc                        icon_defconfig
-sh                          landisk_defconfig
-mips                     decstation_defconfig
-sparc                               defconfig
-powerpc                     pseries_defconfig
-arm                       netwinder_defconfig
-arm                          ep93xx_defconfig
-i386                             alldefconfig
-powerpc                 mpc834x_itx_defconfig
-m68k                        mvme16x_defconfig
-arc                    vdk_hs38_smp_defconfig
-arc                          axs103_defconfig
-m68k                        m5307c3_defconfig
-m68k                       m5275evb_defconfig
-powerpc                     ppa8548_defconfig
-openrisc                    or1ksim_defconfig
-sh                          rsk7201_defconfig
-riscv                             allnoconfig
-arc                     haps_hs_smp_defconfig
-sh                          r7780mp_defconfig
-um                             i386_defconfig
-alpha                            allyesconfig
-powerpc                     tqm8548_defconfig
-mips                           rs90_defconfig
-powerpc                       holly_defconfig
-arm                      pxa255-idp_defconfig
-sh                        edosk7705_defconfig
-openrisc                            defconfig
-powerpc                      cm5200_defconfig
-powerpc                       eiger_defconfig
-sh                        sh7757lcr_defconfig
-arm                          imote2_defconfig
-powerpc                      chrp32_defconfig
-arm                         lpc18xx_defconfig
-powerpc                 mpc8313_rdb_defconfig
-mips                      pic32mzda_defconfig
-arm                         s5pv210_defconfig
-x86_64                              defconfig
-arm                       aspeed_g4_defconfig
-sh                             shx3_defconfig
-sh                           se7721_defconfig
-arm                        spear3xx_defconfig
-arm                          pxa910_defconfig
-powerpc                 mpc85xx_cds_defconfig
-arm                    vt8500_v6_v7_defconfig
-mips                        qi_lb60_defconfig
-c6x                        evmc6472_defconfig
-sh                     sh7710voipgw_defconfig
-m68k                          multi_defconfig
-mips                         tb0219_defconfig
-sh                          urquell_defconfig
-ia64                        generic_defconfig
-ia64                             alldefconfig
-arm                        oxnas_v6_defconfig
-arm                        trizeps4_defconfig
-h8300                     edosk2674_defconfig
-arm                     eseries_pxa_defconfig
-m68k                          amiga_defconfig
-mips                           xway_defconfig
-sh                              ul2_defconfig
-sh                          lboxre2_defconfig
-powerpc                      obs600_defconfig
-mips                       capcella_defconfig
-powerpc                     kmeter1_defconfig
-arm                         hackkit_defconfig
-arm                      tct_hammer_defconfig
-arm                         vf610m4_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20201008
-x86_64               randconfig-a003-20201008
-x86_64               randconfig-a005-20201008
-x86_64               randconfig-a001-20201008
-x86_64               randconfig-a002-20201008
-x86_64               randconfig-a006-20201008
-i386                 randconfig-a006-20201009
-i386                 randconfig-a005-20201009
-i386                 randconfig-a001-20201009
-i386                 randconfig-a004-20201009
-i386                 randconfig-a002-20201009
-i386                 randconfig-a003-20201009
-i386                 randconfig-a006-20201008
-i386                 randconfig-a005-20201008
-i386                 randconfig-a001-20201008
-i386                 randconfig-a004-20201008
-i386                 randconfig-a002-20201008
-i386                 randconfig-a003-20201008
-x86_64               randconfig-a012-20201009
-x86_64               randconfig-a015-20201009
-x86_64               randconfig-a013-20201009
-x86_64               randconfig-a014-20201009
-x86_64               randconfig-a011-20201009
-x86_64               randconfig-a016-20201009
-i386                 randconfig-a015-20201009
-i386                 randconfig-a013-20201009
-i386                 randconfig-a014-20201009
-i386                 randconfig-a016-20201009
-i386                 randconfig-a011-20201009
-i386                 randconfig-a012-20201009
-i386                 randconfig-a015-20201008
-i386                 randconfig-a013-20201008
-i386                 randconfig-a014-20201008
-i386                 randconfig-a016-20201008
-i386                 randconfig-a011-20201008
-i386                 randconfig-a012-20201008
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                                  kexec
+>
+>
+> ...
+>
+>> diff --git a/drivers/staging/android/ashmem.c 
+>> b/drivers/staging/android/ashmem.c
+>> index 10b4be1f3e78..a51dc089896e 100644
+>> --- a/drivers/staging/android/ashmem.c
+>> +++ b/drivers/staging/android/ashmem.c
+>> @@ -450,9 +450,8 @@ static int ashmem_mmap(struct file *file, struct 
+>> vm_area_struct *vma)
+>>           vma_set_anonymous(vma);
+>>       }
+>>   -    if (vma->vm_file)
+>> -        fput(vma->vm_file);
+>> -    vma->vm_file = asma->file;
+>> +    vma_set_file(vma, asma->file);
+>> +    fput(asma->file);
+>
+> Same here: that fput() seems wrong, as it was already done within 
+> vma_set_file().
 
-clang tested configs:
-x86_64               randconfig-a004-20201009
-x86_64               randconfig-a003-20201009
-x86_64               randconfig-a005-20201009
-x86_64               randconfig-a001-20201009
-x86_64               randconfig-a002-20201009
-x86_64               randconfig-a006-20201009
+No, that case is correct as well. The Android code here has the matching 
+get_file() a few lines up, see the surrounding code.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+I didn't wanted to replace that since it does some strange error 
+handling here, so the result is that we need to drop the extra reference 
+as again.
+
+We could also keep it like it is or maybe better put a TODO comment on it.
+
+Regards,
+Christian.
+
+>
+>
+>
+> thanks,
+
