@@ -2,171 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0895C288557
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06C0A2887DC
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 13:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732875AbgJIIby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 04:31:54 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:61954 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732798AbgJIIby (ORCPT
+        id S2388110AbgJILai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 07:30:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729986AbgJILai (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 04:31:54 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0998OWB1017267;
-        Fri, 9 Oct 2020 04:31:46 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 3429n1skex-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Oct 2020 04:31:46 -0400
-Received: from SCSQMBX10.ad.analog.com (scsqmbx10.ad.analog.com [10.77.17.5])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 0998ViXA037624
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Fri, 9 Oct 2020 04:31:45 -0400
-Received: from SCSQCASHYB7.ad.analog.com (10.77.17.133) by
- SCSQMBX10.ad.analog.com (10.77.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Fri, 9 Oct 2020 01:31:26 -0700
-Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by
- SCSQCASHYB7.ad.analog.com (10.77.17.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Fri, 9 Oct 2020 01:31:25 -0700
-Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX10.ad.analog.com
- (10.77.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Fri, 9 Oct 2020 01:31:25 -0700
-Received: from btogorean-pc.ad.analog.com ([10.48.65.113])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0998VEn1027915;
-        Fri, 9 Oct 2020 04:31:37 -0400
-From:   Bogdan Togorean <bogdan.togorean@analog.com>
-To:     <linux-media@vger.kernel.org>
-CC:     Bogdan Togorean <bogdan.togorean@analog.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Fri, 9 Oct 2020 07:30:38 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83D2AC0613D2;
+        Fri,  9 Oct 2020 04:30:37 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id l16so8989801eds.3;
+        Fri, 09 Oct 2020 04:30:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=cmzLh7799a8AwMknnddM1AHF6UxknT8ZEXggO3stiRM=;
+        b=HYYqpSAoSy4H1yNP56Um2CGJOZ14fsizdBwfpG5Kw+5vk46CFyLzekDdN74eaQEtat
+         xohHGmPtXgMjHCZD5nLd3viri39PfVUOnFn21Y/6wOUATYtJ5grJDUevR2e1SnzcPZOf
+         2w4nRL0+vlWDy6SdFdA3ZZzUewuewU8s/iRdgkkPUP49M1RvCebkjUCDfdlboarqSOKs
+         IzkZDRutIuwjTbom4Ty2NyXvdMephIFIXwfu7YZOrnrtFN/UN5FgRVvOsxcyuV280LE4
+         GWkzD1+Y6qp67mFwTDOZu/cCE8UesSyGH/6ECp3BMu7T8oKWgZtErBOXTXNMqvjTmEd9
+         aPFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=cmzLh7799a8AwMknnddM1AHF6UxknT8ZEXggO3stiRM=;
+        b=YjaH4tNOjQOnlDRMsS+RDK8US3g2eFwwZGRagjGeSdtUJbWLH8vOy77lVYNF1StjaB
+         eOm8ISxdZ8LWC5b1LpA6AufAtegCfouKbJ7qdVV0LQ58SceSeRYpWz1bcRI6bmNfcIor
+         POCLhqdJmoJSiM9e7Tep60lRzvB4rPGtY2tDzJQaHZtpPPU24Okk+XLh5MEDe6/R5Sqf
+         w2NUfXxPuHKANsjsZeazYivdU3VkbdbfresoJMhb/IhnMIF9qwg3rwr9L1O4cMRlv2Hv
+         Fxqtc+hmF7COccheiQbtqzCrgJCIrXNwPbbNwntj8KAOcc3cphjQq57pTtEJ6UMvGXD+
+         67iw==
+X-Gm-Message-State: AOAM533QO1KYD95GatTob/xtuDUNn1yQRnvSMcV4iAM2WSiDTYnT35S8
+        nlID37mPqHQDpvBRygbHoKc=
+X-Google-Smtp-Source: ABdhPJzpeqGvsfbEYNdmYNuLrq27oT7l7P8raftX0Mao/IlG/V/3jYwz8CDa4jcuxdFB0UsKNv5m/g==
+X-Received: by 2002:aa7:cb05:: with SMTP id s5mr13966105edt.363.1602243036219;
+        Fri, 09 Oct 2020 04:30:36 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id h12sm5994544eds.22.2020.10.09.04.30.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Oct 2020 04:30:33 -0700 (PDT)
+Date:   Fri, 9 Oct 2020 13:30:32 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        "Jacopo Mondi" <jacopo+renesas@jmondi.org>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
         Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Shawn Tu <shawnx.tu@intel.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 2/2] media: dt-bindings: media: i2c: Add bindings for ADDI9036
-Date:   Fri, 9 Oct 2020 14:29:55 +0300
-Message-ID: <20201009113014.71531-2-bogdan.togorean@analog.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201009113014.71531-1-bogdan.togorean@analog.com>
-References: <20201009113014.71531-1-bogdan.togorean@analog.com>
+        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Subject: Re: [PATCH v2 0/2] dt-bindings: Document tpu, pwm support for R8A7742
+Message-ID: <20201009113032.GA447979@ulmo>
+References: <20201006081910.1238-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRoutedOnPrem: True
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-09_05:2020-10-09,2020-10-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
- bulkscore=0 mlxlogscore=999 lowpriorityscore=0 impostorscore=0
- suspectscore=1 adultscore=0 spamscore=0 mlxscore=0 phishscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010090060
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="pWyiEgJYm5f9v55/"
+Content-Disposition: inline
+In-Reply-To: <20201006081910.1238-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add YAML device tree bindings for Analog Devices Inc. ADDI9036 CCD TOF
-front-end.
 
-Signed-off-by: Bogdan Togorean <bogdan.togorean@analog.com>
----
-v3: drop I2C reg description
-    specify maxItems on reset-gpios property
----
- .../bindings/media/i2c/adi,addi9036.yaml      | 76 +++++++++++++++++++
- 1 file changed, 76 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/media/i2c/adi,addi9036.yaml
+--pWyiEgJYm5f9v55/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/Documentation/devicetree/bindings/media/i2c/adi,addi9036.yaml b/Documentation/devicetree/bindings/media/i2c/adi,addi9036.yaml
-new file mode 100644
-index 000000000000..067b08ad8f53
---- /dev/null
-+++ b/Documentation/devicetree/bindings/media/i2c/adi,addi9036.yaml
-@@ -0,0 +1,76 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/media/i2c/adi,addi9036.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Analog Devices ADDI9036 VGA CCD Time of Flight Sensor
-+
-+maintainers:
-+  - Bogdan Togorean <bogdan.togorean@analog.com>
-+
-+description: |-
-+  The ADDI9036 is a complete, 45 MHz, front-end solution for charge coupled
-+  device (CCD) time of flight (TOF) imaging applications. It is programmable
-+  through I2C interface. Image data is sent through MIPI CSI-2 2 lanes and
-+  can output two RAW12 packed data streams. One is IR and the other is Depth.
-+  Each data stream is on a separate or same MIPI Virtual Channel, depending
-+  on configuration and each have 640x480 resolution.
-+
-+properties:
-+  compatible:
-+    const: adi,addi9036
-+
-+  reg:
-+    maxItems: 1
-+
-+  reset-gpios:
-+    maxItems: 1
-+    description: |-
-+      Reference to the GPIO connected to the RST/SYNC pin, if any.
-+      Must be released (set high) after all supplies are applied.
-+
-+  # See ../video-interfaces.txt for more details
-+  port:
-+    type: object
-+    properties:
-+      endpoint:
-+        type: object
-+        properties:
-+          data-lanes:
-+            description: |-
-+              The sensor supports two-lane operation.
-+              For two-lane operation the property must be set to <1 2>.
-+            items:
-+              - const: 1
-+              - const: 2
-+
-+required:
-+  - compatible
-+  - reg
-+  - port
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c0 {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        addi9036: addi9036_tof@64 {
-+            compatible = "adi,addi9036";
-+            reg = <0x64>;
-+
-+            reset-gpios = <&gpio 41 1>;
-+
-+            port {
-+                addi9036_ep: endpoint {
-+                    remote-endpoint = <&csi1_ep>;
-+                    data-lanes = <1 2>;
-+                };
-+            };
-+        };
-+    };
-+
-+...
--- 
-2.28.0
+On Tue, Oct 06, 2020 at 09:19:08AM +0100, Lad Prabhakar wrote:
+> Hi All,
+>=20
+> This patches are part of series [1], where patch 1/2 was missed to be app=
+lied
+> before YAML conversation and patch 2/2 was never applied.
+>=20
+> I have restored the Acks for patch 1/2 and patch 2/2 is unchanged.
+>=20
+> [1] https://patchwork.kernel.org/project/linux-renesas-soc/list/?series=
+=3D329853
+>=20
+> Cheers,
+> Prabhakar
+>=20
+> Lad Prabhakar (2):
+>   dt-bindings: pwm: renesas,tpu-pwm: Document r8a7742 support
+>   dt-bindings: pwm: renesas,pwm-rcar: Add r8a7742 support
+>=20
+>  Documentation/devicetree/bindings/pwm/renesas,pwm-rcar.yaml | 1 +
+>  Documentation/devicetree/bindings/pwm/renesas,tpu-pwm.yaml  | 1 +
+>  2 files changed, 2 insertions(+)
 
+Applied, thanks.
+
+Thierry
+
+--pWyiEgJYm5f9v55/
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+ASdQACgkQ3SOs138+
+s6E2rQ//YrShguVFFG7u4sQvUa08ItxuFHT7b2pTJHkeLuSIdPAyCtQ5tpS6LAyJ
+pESS9NnrAdmFmLXEgXCZjx4G1XyeSCx6l9hRbBjxVgST1QjssS4R//LcgCe5CHiT
+A1iHikOlevX3YXRXLopsgVyZCcQtPIkpPu6BhRjAi/I4ePISMHnGHSVOsDZG1SMd
+PinfjCk+cmsGi2uHugcSz5A0wIx5ISuoNQ0hlBhqCChxeZggLRwbxmZXfi2A/Cv8
+AtCLlfwleIV7POILIlUHMuoOFKXxpe2IJqBEZOIFnn2spRvD6HCZCJ5rYD6OuI8P
+xLmzfPZi1KBkRiqIKWI79ipFihCA/99QUho9JrQEnxuD9lKjlgjH4BGxX8wVcc7l
+qk4VFmWFVtDzlIRWB82GpCphUYdTmw5WNthPZMyvoLQ/G92pKjKn11dO27LKkWMp
+NmVqdsmdOw0L9bz6uYzBNU4YsTZ7yR06np7UzlHpketfPxX2Kw3OFGuR1fF1uPUQ
+q2PnZ4nNnRTLBOweMkfszknbVnszQWPa3eQy8OUgBKEfuveHkoYl1AJDFbx4uc5f
+MRDNZ+DlZjQDtNdxQy19gtoo0dlDGph3cYQJGkUvpNf7663xgXkukMqCGF8jFsZO
+vnOP1xDwJF25Vbos84kQ/uT8Q5yPU2s7hczDzcmVN14UAynGuxk=
+=nKum
+-----END PGP SIGNATURE-----
+
+--pWyiEgJYm5f9v55/--
