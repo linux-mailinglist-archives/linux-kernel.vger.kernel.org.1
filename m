@@ -2,56 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96A92288A6A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F234288A7C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:14:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388652AbgJIOMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 10:12:00 -0400
-Received: from forward102o.mail.yandex.net ([37.140.190.182]:44567 "EHLO
-        forward102o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727560AbgJIOL6 (ORCPT
+        id S1732391AbgJIOOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 10:14:47 -0400
+Received: from forward101p.mail.yandex.net ([77.88.28.101]:49173 "EHLO
+        forward101p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726471AbgJIOOr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 10:11:58 -0400
-Received: from forward101q.mail.yandex.net (forward101q.mail.yandex.net [IPv6:2a02:6b8:c0e:4b:0:640:4012:bb98])
-        by forward102o.mail.yandex.net (Yandex) with ESMTP id 5295A66800B3;
-        Fri,  9 Oct 2020 17:11:54 +0300 (MSK)
-Received: from mxback10q.mail.yandex.net (mxback10q.mail.yandex.net [IPv6:2a02:6b8:c0e:1b4:0:640:b6ef:cb3])
-        by forward101q.mail.yandex.net (Yandex) with ESMTP id 401B9CF40005;
-        Fri,  9 Oct 2020 17:11:54 +0300 (MSK)
-Received: from vla5-47b3f4751bc4.qloud-c.yandex.net (vla5-47b3f4751bc4.qloud-c.yandex.net [2a02:6b8:c18:3508:0:640:47b3:f475])
-        by mxback10q.mail.yandex.net (mxback/Yandex) with ESMTP id zrKwLBa7XU-BrCWgPYm;
-        Fri, 09 Oct 2020 17:11:54 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1602252714;
-        bh=QnZ5DRgh9AnhoAJPFzwxk5KVV2gYGi2dmlD6DyGmKEA=;
-        h=In-Reply-To:From:To:Subject:Cc:Date:References:Message-ID;
-        b=qoKSWL5Irds4zNXcW8OIvqGV4gZzGvoG2OmbmAMTCDT1pqnaUdmIY2x40VbGZzzpp
-         4453f/zbW/P8CxB8UzfTi7s8Wm5x8Q9QC351yAXaHn7HqUXt24/0ogN/QjF+cevzG7
-         AQHePYzIR91g2SWD1/RPArp9eu5h4fNpP+fJhQ/E=
-Authentication-Results: mxback10q.mail.yandex.net; dkim=pass header.i=@yandex.ru
-Received: by vla5-47b3f4751bc4.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id DI6R0U7krW-Brnm8Vah;
-        Fri, 09 Oct 2020 17:11:53 +0300
+        Fri, 9 Oct 2020 10:14:47 -0400
+Received: from mxback10g.mail.yandex.net (mxback10g.mail.yandex.net [IPv6:2a02:6b8:0:1472:2741:0:8b7:171])
+        by forward101p.mail.yandex.net (Yandex) with ESMTP id AC43226448F3;
+        Fri,  9 Oct 2020 17:14:44 +0300 (MSK)
+Received: from iva1-bc1861525829.qloud-c.yandex.net (iva1-bc1861525829.qloud-c.yandex.net [2a02:6b8:c0c:a0e:0:640:bc18:6152])
+        by mxback10g.mail.yandex.net (mxback/Yandex) with ESMTP id C5mD5bxPqh-EiWW1dRw;
+        Fri, 09 Oct 2020 17:14:44 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1602252884;
+        bh=4IQ2UZqrxX06X24xfc0QT/4vwxH62r4bVpdGWVMTZd8=;
+        h=In-Reply-To:From:Date:References:To:Subject:Message-ID;
+        b=pEgnJQLS9BDCjQlqqh5+Jw1h4zcGZG02vaHgSDpXQMt8N+f5X91ty7VSUiyUTtggT
+         MLpS5nLZF6SN/L1Uv41nMrYmF7g1WRf/S0fOH8ppMxdqWdHErxApAf1WSJrU2SSXma
+         DEX8D4I0EHQPoC0/9dN3jhtrVvPU8A2UxfZLjBok=
+Authentication-Results: mxback10g.mail.yandex.net; dkim=pass header.i=@yandex.ru
+Received: by iva1-bc1861525829.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id 7JDfKQrgBy-Eim4k5Fq;
+        Fri, 09 Oct 2020 17:14:44 +0300
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (Client certificate not present)
-Subject: Re: [PATCH 0/6] KVM: x86: KVM_SET_SREGS.CR4 bug fixes and cleanup
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201007014417.29276-1-sean.j.christopherson@intel.com>
- <99334de1-ba3d-dfac-0730-e637d39b948f@yandex.ru>
- <20201008175951.GA9267@linux.intel.com>
- <7efe1398-24c0-139f-29fa-3d89b6013f34@yandex.ru>
- <20201009040453.GA10744@linux.intel.com>
+Subject: Re: drmfb console switching problems/questions
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-fbdev@vger.kernel.org,
+        Linux kernel <linux-kernel@vger.kernel.org>
+References: <17980f58-c2d2-ac58-88ce-e21b5a56da39@yandex.ru>
+ <df4d1918-dcb1-4951-6280-f178ecbbfc2f@suse.de>
+ <70ce31ca-5922-584c-8631-3853c488f3c7@yandex.ru>
+ <e2118f89-2c55-ec12-1e33-f2ba418af914@suse.de>
+ <cacba527-fe32-e80c-4659-799452741791@yandex.ru>
+ <050632f0-6440-1254-2aed-931dd515ff37@suse.de>
 From:   stsp <stsp2@yandex.ru>
-Message-ID: <5dfa55f3-ecdf-9f8d-2d45-d2e6e54f2daa@yandex.ru>
-Date:   Fri, 9 Oct 2020 17:11:51 +0300
+Message-ID: <e3f40930-6927-042f-7857-e843e1e24236@yandex.ru>
+Date:   Fri, 9 Oct 2020 17:14:42 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.3.1
 MIME-Version: 1.0
-In-Reply-To: <20201009040453.GA10744@linux.intel.com>
+In-Reply-To: <050632f0-6440-1254-2aed-931dd515ff37@suse.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
@@ -59,51 +53,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-09.10.2020 07:04, Sean Christopherson пишет:
->> Hmm. But at least it was lying
->> similarly on AMD and Intel CPUs. :)
->> So I was able to reproduce the problems
->> myself.
->> Do you mean, any AMD tests are now useless, and we need to proceed with Intel
->> tests only?
-> For anything VMXE related, yes.
-
-What would be the expected behaviour
-on Intel, if it is set? Any difference with AMD?
-
-
->> Then additional question.
->> On old Intel CPUs we needed to set VMXE in guest to make it to work in
->> nested-guest mode.
->> Is it still needed even with your patches?
->> Or the nested-guest mode will work now even on older Intel CPUs and KVM will
->> set VMXE for us itself, when needed?
-> I'm struggling to even come up with a theory as to how setting VMXE from
-> userspace would have impacted KVM with unrestricted_guest=n, let alone fixed
-> anything.
->
-> CR4.VMXE must always be 1 in _hardware_ when VMX is on, including when running
-> the guest.  But KVM forces vmcs.GUEST_CR4.VMXE=1 at all times, regardless of
-> the guest's actual value (the guest sees a shadow value when it reads CR4).
->
-> And unless I grossly misunderstand dosemu2, it's not doing anything related to
-> nested virtualization, i.e. the stuffing VMXE=1 for the guest's shadow value
-> should have absolutely zero impact.
->
-> More than likely, VMXE was a red herring.
-
-Yes, it was. :(
-(as you can see from the end of the
-github thread)
-
-
->    Given that the reporter is also
-> seeing the same bug on bare metal after moving to kernel 5.4, odds are good
-> the issue is related to unrestricted_guest=n and has nothing to do with nVMX.
-
-But we do not use unrestricted guest.
-We use v86 under KVM.
-The only other effect of setting VMXE
-was clearing VME. Which shouldn't affect
-anything either, right?
-
+09.10.2020 16:31, Thomas Zimmermann пишет:
+> I can't say for sure. IIRC SDL2 can use DRM directly.
+Yes, that was a great hint indeed,
+thanks. It didn't work for me in the past
+(a year ago or so), so I added SDL1
+support. But now I re-tried, and it indeed
+works!
+And, as far as I can tell, the hanging
+behaviour does not happen, at least
+not that simple.
+Thank you.
