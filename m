@@ -2,128 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406D62880FD
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 06:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 107DA2880FF
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 06:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726567AbgJIEFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 00:05:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28817 "EHLO
+        id S1726468AbgJIEFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 00:05:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35510 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726365AbgJIEFp (ORCPT
+        by vger.kernel.org with ESMTP id S1725978AbgJIEFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 00:05:45 -0400
+        Fri, 9 Oct 2020 00:05:44 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
         s=mimecast20190719; t=1602216343;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=YKXcX1Zdg1COG+JHgP7kxCkfawMp8ssx2TcF3Bvm0fI=;
-        b=TTwroaamE2V/V7AqPCfK5KlBszS5iOb37Dk+/jhbbEf5U0a7coi4awOVa4g1Xp127gkhny
-        jrYAOytxgcmThliTRUIhVfRph9aS/j2bhux9QPPYrKn8d5L3+nN+I1cZleQca3FR3OqfOI
-        JJ65iNFwm1VjFwr2e6y2Hip4nYj6Oio=
+        bh=0LJZLfN1evxEALdYZ+iKwkAO+jzveYCVlDmJws2G9/M=;
+        b=gshiYZyB/VenNcMmQITYFdsQHpyK09ZlZvlZ0Y8oFLOHQrdQoKbw09oOBZonaMNqA7phY+
+        kBEQ2tb+O0ASjV0iUKdtfC1fdi4c5VldfGnKdoYoWEyVPW97pSC37mg3XVRNAB0SXY7Mra
+        OWTguRg+7tG8tGFjNHHe8/mnQb8PA74=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-294-MQnK_CGjM6qCMDUK3oEmaQ-1; Fri, 09 Oct 2020 00:05:41 -0400
-X-MC-Unique: MQnK_CGjM6qCMDUK3oEmaQ-1
+ us-mta-456-xglw9SF9NZWwo7f1JWlwBg-1; Fri, 09 Oct 2020 00:05:39 -0400
+X-MC-Unique: xglw9SF9NZWwo7f1JWlwBg-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 06F5280B70A;
-        Fri,  9 Oct 2020 04:05:40 +0000 (UTC)
-Received: from [10.72.13.133] (ovpn-13-133.pek2.redhat.com [10.72.13.133])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8BB42100164C;
-        Fri,  9 Oct 2020 04:05:20 +0000 (UTC)
-Subject: Re: [PATCH v2] vringh: fix __vringh_iov() when riov and wiov are
- different
-To:     Stefano Garzarella <sgarzare@redhat.com>, mst@redhat.com
-Cc:     kvm@vger.kernel.org, netdev@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Rusty Russell <rusty@rustcorp.com.au>
-References: <20201008204256.162292-1-sgarzare@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <8d84abcb-2f2e-8f24-039f-447e8686b878@redhat.com>
-Date:   Fri, 9 Oct 2020 12:05:15 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 299D457083;
+        Fri,  9 Oct 2020 04:05:37 +0000 (UTC)
+Received: from T590 (ovpn-13-88.pek2.redhat.com [10.72.13.88])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 851FC10013C1;
+        Fri,  9 Oct 2020 04:05:29 +0000 (UTC)
+Date:   Fri, 9 Oct 2020 12:05:25 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     syzbot <syzbot+fd15ff734dace9e16437@syzkaller.appspotmail.com>,
+        bcrl@kvack.org, hch@lst.de, linux-aio@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tj@kernel.org,
+        viro@zeniv.linux.org.uk, vkabatov@redhat.com
+Subject: Re: general protection fault in percpu_ref_exit
+Message-ID: <20201009040525.GB27356@T590>
+References: <000000000000b1412b05b12eab0a@google.com>
+ <165db20c-bfc5-fca8-1ecf-45d85ea5d9e2@kernel.dk>
 MIME-Version: 1.0
-In-Reply-To: <20201008204256.162292-1-sgarzare@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <165db20c-bfc5-fca8-1ecf-45d85ea5d9e2@kernel.dk>
 X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 08, 2020 at 07:23:02PM -0600, Jens Axboe wrote:
+> On 10/8/20 2:28 PM, syzbot wrote:
+> > syzbot has bisected this issue to:
+> > 
+> > commit 2b0d3d3e4fcfb19d10f9a82910b8f0f05c56ee3e
+> > Author: Ming Lei <ming.lei@redhat.com>
+> > Date:   Thu Oct 1 15:48:41 2020 +0000
+> > 
+> >     percpu_ref: reduce memory footprint of percpu_ref in fast path
+> > 
+> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=126930d0500000
+> > start commit:   8b787da7 Add linux-next specific files for 20201007
+> > git tree:       linux-next
+> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=116930d0500000
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=166930d0500000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=aac055e9c8fbd2b8
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=fd15ff734dace9e16437
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=119a0568500000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=106c0a8b900000
+> > 
+> > Reported-by: syzbot+fd15ff734dace9e16437@syzkaller.appspotmail.com
+> > Fixes: 2b0d3d3e4fcf ("percpu_ref: reduce memory footprint of percpu_ref in fast path")
+> > 
+> > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> 
+> Ming, this looks like a call of percpu_ref_exit() on a zeroed refs (that
+> hasn't been initialized). Really a caller error imho, but might make sense
+> to be a bit safer there.
 
-On 2020/10/9 上午4:42, Stefano Garzarella wrote:
-> If riov and wiov are both defined and they point to different
-> objects, only riov is initialized. If the wiov is not initialized
-> by the caller, the function fails returning -EINVAL and printing
-> "Readable desc 0x... after writable" error message.
->
-> This issue happens when descriptors have both readable and writable
-> buffers (eg. virtio-blk devices has virtio_blk_outhdr in the readable
-> buffer and status as last byte of writable buffer) and we call
-> __vringh_iov() to get both type of buffers in two different iovecs.
->
-> Let's replace the 'else if' clause with 'if' to initialize both
-> riov and wiov if they are not NULL.
->
-> As checkpatch pointed out, we also avoid crashing the kernel
-> when riov and wiov are both NULL, replacing BUG() with WARN_ON()
-> and returning -EINVAL.
+Hello Jens,
 
+The fix is sent out as:
 
-It looks like I met the exact similar issue when developing ctrl vq 
-support (which requires both READ and WRITE descriptor).
+https://lore.kernel.org/linux-block/20201009040356.43802-1-ming.lei@redhat.com/T/#u
 
-While I was trying to fix the issue I found the following comment:
+Sorry for making the trouble.
 
-  * Note that you may need to clean up riov and wiov, even on error!
-  */
-int vringh_getdesc_iotlb(struct vringh *vrh,
-
-I saw some driver call vringh_kiov_cleanup().
-
-So I just follow to use that.
-
-I'm not quite sure which one is better.
-
-Thanks
-
-
->
-> Fixes: f87d0fbb5798 ("vringh: host-side implementation of virtio rings.")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-> ---
->   drivers/vhost/vringh.c | 9 +++++----
->   1 file changed, 5 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
-> index e059a9a47cdf..8bd8b403f087 100644
-> --- a/drivers/vhost/vringh.c
-> +++ b/drivers/vhost/vringh.c
-> @@ -284,13 +284,14 @@ __vringh_iov(struct vringh *vrh, u16 i,
->   	desc_max = vrh->vring.num;
->   	up_next = -1;
->   
-> +	/* You must want something! */
-> +	if (WARN_ON(!riov && !wiov))
-> +		return -EINVAL;
-> +
->   	if (riov)
->   		riov->i = riov->used = 0;
-> -	else if (wiov)
-> +	if (wiov)
->   		wiov->i = wiov->used = 0;
-> -	else
-> -		/* You must want something! */
-> -		BUG();
->   
->   	for (;;) {
->   		void *addr;
+Thanks,
+Ming
 
