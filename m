@@ -2,90 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F071E288D9D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 18:03:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97B15288DB5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 18:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389527AbgJIQCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 12:02:54 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58854 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389135AbgJIQCx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 12:02:53 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602259371;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZHt8XKpvOg8gA4nFcOb4ywxF5VhRSTiXsFiBgkwu8B8=;
-        b=PZXU42J+noDD0cxK0VwzkFTB1O1ZMlVR4ciJrWmGNNjCW7z+U6/fPdM/VrIK5jn891zfRF
-        zsZySS/8mYik/JuGzKmmWWbEya2Zwm3ZS4siFcm+rWM0kbLOX2SVR0ClM3ytOeJvQr7QZh
-        dAcxQ5R6F6FknxrG9JuOt07A8eUCSza53Cv5AuC+hlpDhlrxB51jXTgZVtlzqteqGKToAP
-        AP/Y2z83BB+TMGZL6Bs2yRDuYy581E6ItMpfV1UcXhLxmcNOEf/iGEWUwFN4Cxv135AYmk
-        FTgQgJNVyUhJD+vIFuFMk2+g0f9SGIOwu6wLNAJ/T5b2Qfyths1T+PSzw1DNXw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602259371;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZHt8XKpvOg8gA4nFcOb4ywxF5VhRSTiXsFiBgkwu8B8=;
-        b=w1fJ/MJLSeMBuSGG0nDlKWfzrPoFMaZhljKfwDjF06uVySTctoTPsdDTaJTQNfblBx2kFS
-        umsjrxsBGffaBqDw==
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Dave Jiang <dave.jiang@intel.com>, vkoul@kernel.org,
-        megha.dey@intel.com, maz@kernel.org, bhelgaas@google.com,
-        alex.williamson@redhat.com, jacob.jun.pan@intel.com,
-        ashok.raj@intel.com, yi.l.liu@intel.com, baolu.lu@intel.com,
-        kevin.tian@intel.com, sanjay.k.kumar@intel.com,
-        tony.luck@intel.com, jing.lin@intel.com, dan.j.williams@intel.com,
-        kwankhede@nvidia.com, eric.auger@redhat.com, parav@mellanox.com,
-        rafael@kernel.org, netanelg@mellanox.com, shahafs@mellanox.com,
-        yan.y.zhao@linux.intel.com, pbonzini@redhat.com,
-        samuel.ortiz@intel.com, mona.hossain@intel.com,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-pci@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v3 11/18] dmaengine: idxd: ims setup for the vdcm
-In-Reply-To: <20201009145236.GM4734@nvidia.com>
-References: <160021207013.67751.8220471499908137671.stgit@djiang5-desk3.ch.intel.com> <160021253189.67751.12686144284999931703.stgit@djiang5-desk3.ch.intel.com> <87mu17ghr1.fsf@nanos.tec.linutronix.de> <0f9bdae0-73d7-1b4e-b478-3cbd05c095f4@intel.com> <87r1q92mkx.fsf@nanos.tec.linutronix.de> <44e19c5d-a0d2-0ade-442c-61727701f4d8@intel.com> <87y2kgux2l.fsf@nanos.tec.linutronix.de> <20201008233210.GH4734@nvidia.com> <87v9fjtq5w.fsf@nanos.tec.linutronix.de> <20201009145236.GM4734@nvidia.com>
-Date:   Fri, 09 Oct 2020 18:02:51 +0200
-Message-ID: <87d01rtmj8.fsf@nanos.tec.linutronix.de>
+        id S2389585AbgJIQFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 12:05:02 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:11067 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388882AbgJIQFC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 12:05:02 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602259502; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=CRr4mmuobyXTTLIv8mSddWm/kl/HZjTgem40TcX5IZM=; b=pPS6BPoKUTtWAwTUELCDGgv+MHS9r3n8RGWln/VTF4HN2vRHhcwDpwtmQ4sJlMpYLJWDXb2R
+ qHYv27Z2v6wh3FG618ym6+CGvmeB3riniUA4zN4FJRsybrcc8mc6nWa86HKw6Z7kd6BBVnQs
+ zyhnZTI6I7zjpbIbhDRXrCZOl3Y=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5f8089f53711fec7b1fc36e9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 09 Oct 2020 16:04:05
+ GMT
+Sender: jhugo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D0A66C43382; Fri,  9 Oct 2020 16:04:04 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C3E89C433C9;
+        Fri,  9 Oct 2020 16:04:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C3E89C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
+Subject: Re: [PATCH v1 04/10] bus: mhi: core: Use the IRQF_ONESHOT flag for
+ the BHI interrupt line
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        linux-kernel@vger.kernel.org
+References: <1600480955-16827-1-git-send-email-bbhatt@codeaurora.org>
+ <1600480955-16827-5-git-send-email-bbhatt@codeaurora.org>
+ <20201009155706.GE4810@Mani-XPS-13-9360>
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+Message-ID: <26de08b5-b477-c5b9-fdca-eb80bcf98561@codeaurora.org>
+Date:   Fri, 9 Oct 2020 10:04:02 -0600
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20201009155706.GE4810@Mani-XPS-13-9360>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09 2020 at 11:52, Jason Gunthorpe wrote:
-> On Fri, Oct 09, 2020 at 04:44:27PM +0200, Thomas Gleixner wrote:
->> > This is really not that different from what I was describing for queue
->> > contexts - the queue context needs to be assigned to the irq # before
->> > it can be used in the irq chip other wise there is no idea where to
->> > write the msg to. Just like pasid here.
->> 
->> Not really. In the IDXD case the storage is known when the host device
->> and the irq domain is initialized which is not the case for your variant
->> and it neither needs to send a magic command to the device to update the
->> data.
->
-> I mean, needing the PASID vs needing the memory address before the IRQ
-> can be use are basically the same issue. Data needs to be attached to
-> the IRQ before it can be programmed.. In this case programming with
-> the wrong PASID could lead to a security issue.
+On 10/9/2020 9:57 AM, Manivannan Sadhasivam wrote:
+> On Fri, Sep 18, 2020 at 07:02:29PM -0700, Bhaumik Bhatt wrote:
+>> Remove the IRQF_SHARED flag as it is not needed for the BHI interrupt
+>> and replace it with IRQF_ONESHOT so that host can be sure that the
+>> next BHI hard interrupt is triggered only when the threaded interrupt
+>> handler has returned. This is to avoid any race conditions we may run
+>> into if BHI interrupts fire one after another.
+>>
+>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+>> ---
+>>   drivers/bus/mhi/core/init.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+>> index ca32563..9ae4c19 100644
+>> --- a/drivers/bus/mhi/core/init.c
+>> +++ b/drivers/bus/mhi/core/init.c
+>> @@ -167,7 +167,7 @@ int mhi_init_irq_setup(struct mhi_controller *mhi_cntrl)
+>>   	/* Setup BHI_INTVEC IRQ */
+>>   	ret = request_threaded_irq(mhi_cntrl->irq[0], mhi_intvec_handler,
+>>   				   mhi_intvec_threaded_handler,
+>> -				   IRQF_SHARED | IRQF_NO_SUSPEND,
+>> +				   IRQF_ONESHOT | IRQF_NO_SUSPEND,
+> 
+> Jeff, I believe you're the one requested for shared irq during initial push.
+> Are you okay with this?
 
-Yeah. I looked at doing it similar to the callback I added for
-retrieving the shadow storage pointer, but the PASID is not necessarily
-established at that point.
+Nope  :)
 
->> I agree that irq_set_auxdata() is not the most elegant thing, but the
->> alternative solutions I looked at are just worse.
->
-> It seems reasonable, but quite an obfuscated way to tell a driver they
-> need to hold irq_get_desc_buslock() when touching data shared with the
-> irqchip ops.. Not that I have a better suggestion
+AIC100 has a single interrupt for BHI/MHI activity, so this needs to be 
+shared.
 
-It's an obfuscated way to make obfuscated hardware supported :)
 
-Thanks,
-
-        tglx
+-- 
+Jeffrey Hugo
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
