@@ -2,152 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53292288F90
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 19:06:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C4DB288F99
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 19:10:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389963AbgJIRGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 13:06:02 -0400
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:43400 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389529AbgJIRGC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 13:06:02 -0400
-Received: by mail-ot1-f47.google.com with SMTP id n61so9603520ota.10;
-        Fri, 09 Oct 2020 10:06:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Hahw4Z+pkoPGKYqMxdiIRA4sO3mk0rSthtnfTsKHy7k=;
-        b=UdeL3tGFgx8Kvmz08I3+m4QfCRologaggI9T5ZDlD68vjXAnge6k0YWrouUPzx+R/I
-         EuduGG0WQJx6dJxsmTXVADkY52wIbxkfGUvklcLdRwjT6qqDiytm/aX39+bckZlpw72U
-         Ae+QhDSc6SuvQdvJQ263NvpJWvTfJVh2PLLcHaLaqomrbU/hIAs5eyFRES8Hpvqa41Fd
-         FPIIL93uu1lx5AG7NApb+sF+MfSPmMNe33Zr5jawTzhj6tgKj4fJ0EtejVVn+m9KiWdr
-         NKbdcpubJIYiZSjojShaDTnN3ryrWhOONqAexPoR3V1KNNhOnDoA6Xv8W+XMYg8UbdEV
-         +Zyg==
-X-Gm-Message-State: AOAM530VTA5zIUcDYAzbt8ZktNZFvfRM438my0fZ+cbXgP6em9YzXpWo
-        HK9UQsVDK6GkSPzUjdRcXeQ3xWQXC/cd
-X-Google-Smtp-Source: ABdhPJywwcCYWZfZPtwXKX6Rg4+wSmBerOuOFejivO7kYf/2E44i9IRn8BCFPP9dYkJL9fi1kgovhw==
-X-Received: by 2002:a05:6830:1f4d:: with SMTP id u13mr9075478oth.184.1602263159959;
-        Fri, 09 Oct 2020 10:05:59 -0700 (PDT)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id r188sm167207oia.13.2020.10.09.10.05.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 10:05:59 -0700 (PDT)
-From:   Rob Herring <robh@kernel.org>
-To:     devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: Add running yamllint to dt_binding_check
-Date:   Fri,  9 Oct 2020 12:05:57 -0500
-Message-Id: <20201009170557.168785-1-robh@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        id S2389929AbgJIRK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 13:10:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50658 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389529AbgJIRK5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 13:10:57 -0400
+Received: from gaia (unknown [95.149.105.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8A42E22267;
+        Fri,  9 Oct 2020 17:10:54 +0000 (UTC)
+Date:   Fri, 9 Oct 2020 18:10:52 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        iommu@lists.linux-foundation.org, Rob Herring <robh+dt@kernel.org>,
+        linux-rpi-kernel@lists.infradead.org,
+        Frank Rowand <frowand.list@gmail.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [PATCH 1/4] of/fdt: Update zone_dma_bits when running in bcm2711
+Message-ID: <20201009171051.GL23638@gaia>
+References: <20201001172320.GQ21544@gaia>
+ <b47232e2173e9e5ddf8f5be4c7b5a2f897f34eb7.camel@suse.de>
+ <20201002115541.GC7034@gaia>
+ <12f33d487eabd626db4c07ded5a1447795eed355.camel@suse.de>
+ <20201009071013.GA12208@lst.de>
+ <CAMj1kXG+7Lq=rgUfyU_XS9LrJwpUiC8nKsRPom+R0=phuXioHQ@mail.gmail.com>
+ <513833810c15b5efeab7c3cbae1963a78c71a79f.camel@suse.de>
+ <CAMj1kXGP_OTKgqMT0-+t3=7EKDY26y9n9xjLodSF1E-mUCe9tg@mail.gmail.com>
+ <20201009152433.GA19953@e121166-lin.cambridge.arm.com>
+ <CAMj1kXFuqw3qNRAB78OzvMws+t7=B6L8pASA36D2fxXobbvpUA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXFuqw3qNRAB78OzvMws+t7=B6L8pASA36D2fxXobbvpUA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a yamllint config file and support for running yamllint on DT
-binding schema files. This runs on the whole tree as yamllint is Python
-and suffers from Python's slow startup times.
+On Fri, Oct 09, 2020 at 06:23:06PM +0200, Ard Biesheuvel wrote:
+> On Fri, 9 Oct 2020 at 17:24, Lorenzo Pieralisi
+> <lorenzo.pieralisi@arm.com> wrote:
+> > We can move this check to IORT code and call it from arm64 if it
+> > can be made to work.
+> 
+> Finding the smallest value in the IORT, and assigning it to
+> zone_dma_bits if it is < 32 should be easy. But as I understand it,
+> having these separate DMA and DMA32 zones is what breaks kdump, no? So
+> how is this going to fix the underlying issue?
 
-Users can run on individual files doing:
+If zone_dma_bits is 32, ZONE_DMA32 disappears into ZONE_DMA (GFP_DMA32
+allocations fall back to ZONE_DMA).
 
-yamllint -c Documentation/devicetree/bindings/.yamllint <binding file>
+kdump wants DMA-able memory and, without a 30-bit ZONE_DMA, that would
+be the bottom 32-bit. With the introduction of ZONE_DMA, this suddenly
+became 1GB. We could change kdump to allocate ZONE_DMA32 but this one
+may also be small as it lost 1GB to ZONE_DMA. However, the kdump kernel
+would need to be rebuilt without ZONE_DMA since it won't have any. IIRC
+(it's been a while since I looked), the kdump allocation couldn't span
+multiple zones.
 
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- Documentation/devicetree/bindings/.yamllint | 39 +++++++++++++++++++++
- Documentation/devicetree/bindings/Makefile  |  9 ++++-
- 2 files changed, 47 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/devicetree/bindings/.yamllint
+In a separate thread, we try to fix kdump to use allocations above 4G as
+a fallback but this only fixes platforms with enough RAM (and maybe it's
+only those platforms that care about kdump).
 
-diff --git a/Documentation/devicetree/bindings/.yamllint b/Documentation/devicetree/bindings/.yamllint
-new file mode 100644
-index 000000000000..214abd3ec440
---- /dev/null
-+++ b/Documentation/devicetree/bindings/.yamllint
-@@ -0,0 +1,39 @@
-+extends: relaxed
-+
-+rules:
-+  line-length:
-+    # 80 chars should be enough, but don't fail if a line is longer
-+    max: 110
-+    allow-non-breakable-words: true
-+    level: warning
-+  braces:
-+    min-spaces-inside: 0
-+    max-spaces-inside: 1
-+    min-spaces-inside-empty: 0
-+    max-spaces-inside-empty: 0
-+  brackets:
-+    min-spaces-inside: 0
-+    max-spaces-inside: 1
-+    min-spaces-inside-empty: 0
-+    max-spaces-inside-empty: 0
-+  colons: {max-spaces-before: 0, max-spaces-after: 1}
-+  commas: {min-spaces-after: 1, max-spaces-after: 1}
-+  comments:
-+    require-starting-space: false
-+    min-spaces-from-content: 1
-+  comments-indentation: disable
-+  document-start:
-+    present: true
-+  empty-lines:
-+    max: 3
-+    max-end: 1
-+  empty-values:
-+    forbid-in-block-mappings: true
-+    forbid-in-flow-mappings: true
-+  hyphens:
-+    max-spaces-after: 1
-+  indentation:
-+    spaces: 2
-+    indent-sequences: true
-+    check-multi-line-strings: false
-+  trailing-spaces: false
-diff --git a/Documentation/devicetree/bindings/Makefile b/Documentation/devicetree/bindings/Makefile
-index ec8073cb2e71..f50420099a55 100644
---- a/Documentation/devicetree/bindings/Makefile
-+++ b/Documentation/devicetree/bindings/Makefile
-@@ -3,6 +3,8 @@ DT_DOC_CHECKER ?= dt-doc-validate
- DT_EXTRACT_EX ?= dt-extract-example
- DT_MK_SCHEMA ?= dt-mk-schema
- 
-+DT_SCHEMA_LINT = $(shell which yamllint)
-+
- DT_SCHEMA_MIN_VERSION = 2020.8.1
- 
- PHONY += check_dtschema_version
-@@ -24,6 +26,10 @@ find_cmd = find $(srctree)/$(src) \( -name '*.yaml' ! \
- 		-name 'processed-schema*' ! \
- 		-name '*.example.dt.yaml' \)
- 
-+quiet_cmd_yamllint = LINT    $(src)
-+      cmd_yamllint = $(find_cmd) | \
-+                     xargs $(DT_SCHEMA_LINT) -f parsable -c $(srctree)/$(src)/.yamllint
-+
- quiet_cmd_chk_bindings = CHKDT   $@
-       cmd_chk_bindings = $(find_cmd) | \
-                          xargs -n200 -P$$(nproc) $(DT_DOC_CHECKER) -u $(srctree)/$(src)
-@@ -37,6 +43,7 @@ quiet_cmd_mk_schema = SCHEMA  $@
- 		      rm -f $$f
- 
- define rule_chkdt
-+	$(if $(DT_SCHEMA_LINT),$(call cmd,yamllint),)
- 	$(call cmd,chk_bindings)
- 	$(call cmd,mk_schema)
- endef
-@@ -48,7 +55,7 @@ override DTC_FLAGS := \
- 	-Wno-graph_child_address \
- 	-Wno-interrupt_provider
- 
--$(obj)/processed-schema-examples.json: $(DT_DOCS) check_dtschema_version FORCE
-+$(obj)/processed-schema-examples.json: $(DT_DOCS) $(src)/.yamllint check_dtschema_version FORCE
- 	$(call if_changed_rule,chkdt)
- 
- ifeq ($(DT_SCHEMA_FILES),)
 -- 
-2.25.1
-
+Catalin
