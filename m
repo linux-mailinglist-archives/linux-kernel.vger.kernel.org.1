@@ -2,143 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 757BD287FF6
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 03:22:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B71D6287FFB
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 03:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729903AbgJIBWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 21:22:35 -0400
-Received: from mga03.intel.com ([134.134.136.65]:3588 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725857AbgJIBWe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 21:22:34 -0400
-IronPort-SDR: i4TZgkCgPEDAkCGz/9iXtjzmAQf4iBx56Z8Aauws9YSChvo/pq01nW7WAinKIINjMk9I0naFPY
- Y9DKly3iKwWQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="165490296"
-X-IronPort-AV: E=Sophos;i="5.77,353,1596524400"; 
-   d="scan'208";a="165490296"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 18:22:33 -0700
-IronPort-SDR: JAvf5QKWpmPeCKr0CEBrwqKK1z9BzRyDlH438xxOFtxLoKKkNaohlGpuIFHCrHyfGrfPTV4bS9
- qzdr8AnV/pRA==
-X-IronPort-AV: E=Sophos;i="5.77,353,1596524400"; 
-   d="scan'208";a="343630539"
-Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 18:22:32 -0700
-Date:   Thu, 8 Oct 2020 18:22:31 -0700
-From:   "Raj, Ashok" <ashok.raj@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Dave Jiang <dave.jiang@intel.com>, vkoul@kernel.org,
-        megha.dey@intel.com, maz@kernel.org, bhelgaas@google.com,
-        alex.williamson@redhat.com, jacob.jun.pan@intel.com,
-        yi.l.liu@intel.com, baolu.lu@intel.com, kevin.tian@intel.com,
-        sanjay.k.kumar@intel.com, tony.luck@intel.com, jing.lin@intel.com,
-        dan.j.williams@intel.com, kwankhede@nvidia.com,
-        eric.auger@redhat.com, parav@mellanox.com, rafael@kernel.org,
-        netanelg@mellanox.com, shahafs@mellanox.com,
-        yan.y.zhao@linux.intel.com, pbonzini@redhat.com,
-        samuel.ortiz@intel.com, mona.hossain@intel.com,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-pci@vger.kernel.org, kvm@vger.kernel.org,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [PATCH v3 11/18] dmaengine: idxd: ims setup for the vdcm
-Message-ID: <20201009012231.GA60263@otc-nc-03>
-References: <160021207013.67751.8220471499908137671.stgit@djiang5-desk3.ch.intel.com>
- <160021253189.67751.12686144284999931703.stgit@djiang5-desk3.ch.intel.com>
- <87mu17ghr1.fsf@nanos.tec.linutronix.de>
- <0f9bdae0-73d7-1b4e-b478-3cbd05c095f4@intel.com>
- <87r1q92mkx.fsf@nanos.tec.linutronix.de>
- <44e19c5d-a0d2-0ade-442c-61727701f4d8@intel.com>
- <87y2kgux2l.fsf@nanos.tec.linutronix.de>
- <20201008233210.GH4734@nvidia.com>
+        id S1726348AbgJIBXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 21:23:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725857AbgJIBXG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 21:23:06 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 490B1C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 18:23:06 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id 34so5796930pgo.13
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 18:23:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=/sJCsgPrmvx1zlBU6M8v4TR3AdDB8zcW7pSVcNMUnJ0=;
+        b=LBsf8YtlE4fcauqSKGpZKwD9r8ECebVGEfAlSm/bRt1yPNFgX3hIUoIC81ZytrW9Iq
+         tZekgCxrAQ2MSidZR20ENUi6vIvxL2AkbWEx7t72yrpvXHbnxDhkg1m+MW4qnXvTvh4C
+         V6akNy1+c8+zrjI3Co7+aJVhUansdLSbbSjoXmHdnntRmh1VNCk2CpSqNw0OUecyRjip
+         yYdNGEnHJFX3M1iSdLUlgPGnWC54KKr6InLvEqlnlp7+WsJ6lbm9ISfnFGefmZ9M2v1C
+         IPCbAdJ8qrFak8bZVlkuqUXSLQj6iGPWDTbmKKl2DxffIFGTkaVAa4nWLyTKXg2ebQ7U
+         8L7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/sJCsgPrmvx1zlBU6M8v4TR3AdDB8zcW7pSVcNMUnJ0=;
+        b=Y3p3bJbJx2/CCmqNwgH3Jdyij2g9j6GuXKecSXLeYryF2NA7Xgq3nPIt+vT19r5QID
+         U/cUgyL40yIbvu4fZtY/YUF+HPtWJ3n7szeq73i2GOanlD1vFPZHl34CJcIDRkY6OseK
+         CWgxcXN68f4jxnblIl4DBQFkqIziieySCk8x9+xUlw8wAHIkyC3Cq4wTiPAvR1RLYbiU
+         C98JEAUZViILAlQO7klcQBs8G6kbFHw/dG9Fv+MwPy9mtCzZW4tvj1ebzKVKjB7ENcWg
+         N7tjItZIw0C8nTDIY5ntSwSb+WQ3HMbgHwMUPImDN6womfxfKnZWV9drA3RDwHP2Mb1W
+         YGZQ==
+X-Gm-Message-State: AOAM533Kc7QWQ6pnaX8Y89qDtrN1gJQQxVibkrGJCEIf4xmdAkk4VouN
+        vJ20nmpw3fb7FVjGjTBFkPBcqQ==
+X-Google-Smtp-Source: ABdhPJx44xaZS+LhtrGY32LuTa5Ur3kdhZkjc5PdW4N0t4veunOByWM7WLihotO1f50zjHTDBGYdtA==
+X-Received: by 2002:a63:5a11:: with SMTP id o17mr1323955pgb.287.1602206585774;
+        Thu, 08 Oct 2020 18:23:05 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id w5sm8999927pgf.61.2020.10.08.18.23.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Oct 2020 18:23:05 -0700 (PDT)
+Subject: Re: general protection fault in percpu_ref_exit
+To:     syzbot <syzbot+fd15ff734dace9e16437@syzkaller.appspotmail.com>,
+        bcrl@kvack.org, hch@lst.de, linux-aio@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ming.lei@redhat.com, syzkaller-bugs@googlegroups.com,
+        tj@kernel.org, viro@zeniv.linux.org.uk, vkabatov@redhat.com
+References: <000000000000b1412b05b12eab0a@google.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <165db20c-bfc5-fca8-1ecf-45d85ea5d9e2@kernel.dk>
+Date:   Thu, 8 Oct 2020 19:23:02 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201008233210.GH4734@nvidia.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <000000000000b1412b05b12eab0a@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason
-
-On Thu, Oct 08, 2020 at 08:32:10PM -0300, Jason Gunthorpe wrote:
-> On Fri, Oct 09, 2020 at 01:17:38AM +0200, Thomas Gleixner wrote:
-> > Dave,
-> > 
-> > On Thu, Oct 08 2020 at 09:51, Dave Jiang wrote:
-> > > On 10/8/2020 12:39 AM, Thomas Gleixner wrote:
-> > >> On Wed, Oct 07 2020 at 14:54, Dave Jiang wrote:
-> > >>> On 9/30/2020 12:57 PM, Thomas Gleixner wrote:
-> > >>>> Aside of that this is fiddling in the IMS storage array behind the irq
-> > >>>> chips back without any comment here and a big fat comment about the
-> > >>>> shared usage of ims_slot::ctrl in the irq chip driver.
-> > >>>>
-> > >>> This is to program the pasid fields in the IMS table entry. Was
-> > >>> thinking the pasid fields may be considered device specific so didn't
-> > >>> attempt to add the support to the core code.
-> > >> 
-> > >> Well, the problem is that this is not really irq chip functionality.
-> > >> 
-> > >> But the PASID programming needs to touch the IMS storage which is also
-> > >> touched by the irq chip.
-> > >> 
-> > >> This might be correct as is, but without a big fat comment explaining
-> > >> WHY it is safe to do so without any form of serialization this is just
-> > >> voodoo and unreviewable.
-> > >> 
-> > >> Can you please explain when the PASID is programmed and what the state
-> > >> of the interrupt is at that point? Is this a one off setup operation or
-> > >> does this happen dynamically at random points during runtime?
-> > >
-> > > I will put in comments for the function to explain why and when we modify the 
-> > > pasid field for the IMS entry. Programming of the pasid is done right before we 
-> > > request irq. And the clearing is done after we free the irq. We will not be 
-> > > touching the IMS field at runtime. So the touching of the entry should be safe.
-> > 
-> > Thanks for clarifying that.
-> > 
-> > Thinking more about it, that very same thing will be needed for any
-> > other IMS device and of course this is not going to end well because
-> > some driver will fiddle with the PASID at the wrong time.
+On 10/8/20 2:28 PM, syzbot wrote:
+> syzbot has bisected this issue to:
 > 
-> Why? This looks like some quirk of the IDXD HW where it just randomly
-> put PASID along with the IRQ mask register. Probably because PASID is
-> not the full 32 bits.
-
-Not randomly put there Jason :-).. There is a good reason for it. I'm sure
-Dave must have responded already. ENQCMD for DSA has the interrupt handle
-on which the notification should be sent. Since the data from from user
-space HW will verify if the PASID for IMS entry matches what is there in
-the descriptor. 
-
-Check description in section 9.2.2.1 of the DSA specification, when PASID
-enable is 1, this field is checked against the PASID field of the
-descriptor. Also check Section 5.4 and Interrupt Virtualization 7.3.3 for
-more info.
-
+> commit 2b0d3d3e4fcfb19d10f9a82910b8f0f05c56ee3e
+> Author: Ming Lei <ming.lei@redhat.com>
+> Date:   Thu Oct 1 15:48:41 2020 +0000
 > 
-> AFAIK the PASID is not tagged on the MemWr TLP triggering the
-> interrupt, so it really is unrelated to the irq.
-
-Correct, the purpose is not to send PASID prefix for interrupt tranactions.
-
+>     percpu_ref: reduce memory footprint of percpu_ref in fast path
 > 
-> I think the ioread to get the PASID is rather ugly, it should pluck
-
-Where do you see the ioread? I suppose idxd driver will fill in from the
-aux_domain default PASID. Not reading from the device IMS entry.
-
-> the PASID out of some driver specific data structure with proper
-> locking, and thus use the sleepable version of the irqchip?
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=126930d0500000
+> start commit:   8b787da7 Add linux-next specific files for 20201007
+> git tree:       linux-next
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=116930d0500000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=166930d0500000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=aac055e9c8fbd2b8
+> dashboard link: https://syzkaller.appspot.com/bug?extid=fd15ff734dace9e16437
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=119a0568500000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=106c0a8b900000
 > 
-> This is really not that different from what I was describing for queue
-> contexts - the queue context needs to be assigned to the irq # before
-> it can be used in the irq chip other wise there is no idea where to
-> write the msg to. Just like pasid here.
+> Reported-by: syzbot+fd15ff734dace9e16437@syzkaller.appspotmail.com
+> Fixes: 2b0d3d3e4fcf ("percpu_ref: reduce memory footprint of percpu_ref in fast path")
+> 
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-Sorry, I don't follow you on this.. you mean context in hardware or user
-context that holds interrupt addr/data values?
+Ming, this looks like a call of percpu_ref_exit() on a zeroed refs (that
+hasn't been initialized). Really a caller error imho, but might make sense
+to be a bit safer there.
+
+-- 
+Jens Axboe
 
