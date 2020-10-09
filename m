@@ -2,62 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E4C3288A0D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 15:51:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CF31288A10
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 15:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387567AbgJINvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 09:51:22 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15201 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732456AbgJINvW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 09:51:22 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 4CAA0C8C8E38F4713939;
-        Fri,  9 Oct 2020 21:51:20 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Fri, 9 Oct 2020
- 21:51:13 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>, <hannes@cmpxchg.org>,
-        <mhocko@kernel.org>, <vdavydov.dev@gmail.com>
-CC:     <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <linmiaohe@huawei.com>
-Subject: [PATCH] mm: memcontrol: eliminate redundant check in __mem_cgroup_insert_exceeded()
-Date:   Fri, 9 Oct 2020 09:51:04 -0400
-Message-ID: <20201009135104.39048-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
+        id S2387609AbgJINwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 09:52:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39724 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732456AbgJINwf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 09:52:35 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 06B14222B9;
+        Fri,  9 Oct 2020 13:52:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602251554;
+        bh=cwk9i4KBau0qPm27KzJl3XXeYfNbSm1YHxXTzmMkdOY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xYHb+/ddD3CKObc4tAlrPj2U8OIa+LavQ5ml/H3KzlNFr+FetR8wU/W4lEzql2ywb
+         9FTBXAY7aE7Ao54UCKQmnoTgMN2Gmd8ov1Xin4z8z1b3MJG7D7bVTD8f6VU63uo5K0
+         86m35/V0p1MGv251jWFKJei8tgsXP2s9qeP1ITQc=
+Date:   Fri, 9 Oct 2020 14:52:31 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Ajye Huang <ajye.huang@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, dianders@chromium.org,
+        devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-arm-msm@vger.kernel.org, Patrick Lai <plai@codeaurora.org>,
+        Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rohit kumar <rohitkr@codeaurora.org>, tzungbi@chromium.org,
+        linux-arm-kernel@lists.infradead.org, cychiang@chromium.org
+Subject: Re: [PATCH v1 1/2] ASoC: qcom: dt-bindings: Modify sc7180 machine
+ bindings
+Message-ID: <20201009135231.GA6655@sirena.org.uk>
+References: <20200928063744.525700-1-ajye_huang@compal.corp-partner.google.com>
+ <20200928063744.525700-2-ajye_huang@compal.corp-partner.google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pf9I7BMVVzbSWLtt"
+Content-Disposition: inline
+In-Reply-To: <20200928063744.525700-2-ajye_huang@compal.corp-partner.google.com>
+X-Cookie: Please take note:
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mz->usage_in_excess >= mz_node->usage_in_excess check is exactly the
-else case of mz->usage_in_excess < mz_node->usage_in_excess. So we could
-replace else if (mz->usage_in_excess >= mz_node->usage_in_excess) with else
-equally.
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- mm/memcontrol.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--pf9I7BMVVzbSWLtt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 2636f8bad908..f607afd0fcbf 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -629,7 +629,7 @@ static void __mem_cgroup_insert_exceeded(struct mem_cgroup_per_node *mz,
- 		 * We can't avoid mem cgroups that are over their soft
- 		 * limit by the same amount
- 		 */
--		else if (mz->usage_in_excess >= mz_node->usage_in_excess)
-+		else
- 			p = &(*p)->rb_right;
- 	}
- 
--- 
-2.19.1
+On Mon, Sep 28, 2020 at 02:37:43PM +0800, Ajye Huang wrote:
+> Add compatible "qcom,sc7180-sndcard-rt5682-m98357-2mic"
+> for 2mic case.
 
+This doesn't apply against current code, please check and resend.
+
+--pf9I7BMVVzbSWLtt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+Aax8ACgkQJNaLcl1U
+h9BLUgf/bL/7/DLssH7LN6HzEKNltT4ltao9sKdRmjuIPgTA9rwYf3cazWimkZoo
+ZbecRbpOKAPZ5ymsnWo1QAq9pNJ+ll5EwgqwiOmYPavfKpfNwULh10oE+wokLdJl
++1SuMACMFIHvnKzcwSydpEupP7uFfO01XLpGNoMOvvHITC3vuAETk9AthXKTSD02
+N1TpmZdSCEbtfy81kvCk4NFFaTjmm4wB2MT93+uRKbwHVf/Xnv/hpXFsWo1glTfN
+1p1K3dQ8V2G2tjq7E7+nKFC5DObjE7wSG0HQHH+8wTt3F2axIuPX6P2Vhjy9ZjSR
+NEC32HzNHukUPp0j5dlyUr6izyD8Hg==
+=HyGA
+-----END PGP SIGNATURE-----
+
+--pf9I7BMVVzbSWLtt--
