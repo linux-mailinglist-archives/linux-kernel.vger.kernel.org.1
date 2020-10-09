@@ -2,196 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4403F2887B7
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 13:17:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AB322887BA
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 13:17:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732213AbgJILRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 07:17:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53114 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731313AbgJILRG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 07:17:06 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1602242224;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DqksQAnJCB3g13Puq9zwiSNMONneY496/lTwvC/s7s0=;
-        b=LkAyfQyvP9GnSMkhhHXkZ6AaBoPW32VP3loUNm2TrtfkVQKbDBLDxy1Le5m1LwS6tkxVBK
-        ttY7ndJHG4tQkuc+9AFEArz/5skkZEPUYexxLc+tm7Vqk5vk0nvkRTF8mzlBbHZxLUWMIG
-        UsTOZJJhY4AbooATlkoZyXqg7fbq6hY=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 86CF9AC84;
-        Fri,  9 Oct 2020 11:17:04 +0000 (UTC)
-Date:   Fri, 9 Oct 2020 13:17:03 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Frederic Weisbecker <fweisbecker@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>
-Subject: Re: [RFC PATCH] kernel: allow to configure PREEMPT_NONE,
- PREEMPT_VOLUNTARY on kernel command line
-Message-ID: <20201009111703.GL4967@dhcp22.suse.cz>
-References: <20201007120401.11200-1-mhocko@kernel.org>
- <20201007122144.GF2628@hirez.programming.kicks-ass.net>
- <20201007123553.GK29020@dhcp22.suse.cz>
- <20201009094741.GH2628@hirez.programming.kicks-ass.net>
- <20201009101405.GI4967@dhcp22.suse.cz>
- <20201009102009.GK2628@hirez.programming.kicks-ass.net>
- <20201009104808.GK4967@dhcp22.suse.cz>
+        id S2388041AbgJILRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 07:17:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732307AbgJILRQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 07:17:16 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D5EBC0613D5
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 04:17:15 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id f19so6575878pfj.11
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 04:17:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=sdKjLE39B7ygzVMKXpWDsFa+IvvEq27MGJewZf/7lCg=;
+        b=Nw+5vsPOCAS7UG8LvQZQR5XoQM3EArj6MEMgN42MSx2WhLXo2n7CqMWoffdqNQO7VM
+         H7dgPtUyrr7Bp3AiXcgiEbnIe/jL0Y0Q6/um7ChE5MT3umLjSPAjnzJKQVp560Q/Yjom
+         dlCs3XWucYsx6mDUTX9krJvWc6elh11ttJykknP3DgnW2LKqjDCcUXmJbKPmTzQDtKi0
+         zNxQndFXYPyZlmveBrH8+Uu5WhAOjdpbpDfE7MKxaiiRNRaC9boPkeXTZloCWU8+xArI
+         MspHoYYS4wcIqWGuCoe597m6XBZM6hhGrNhklKo/h/7rOD1n+KUg+SXlzW9wVYkXyoIQ
+         bI6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=sdKjLE39B7ygzVMKXpWDsFa+IvvEq27MGJewZf/7lCg=;
+        b=WjLEcJB6pg5FOPbF8tvCpTeteFlVrQsz7sb6+ouzDIW4C6DIK9s7gOy+OxHdtwGYGZ
+         Kja7EYHxkLtmZxmB0OeBjZ1C13Le7cULl2iqrylcQHHHwVTYzrykdba0vuV9OEB6610v
+         a0aeBbonBoRxiv2uYCdONMQUNeea0t+2Fcf3GLChddF/olYsl4sIF5EEEidYbjenK/bP
+         2mBeEMzZXNsEud1/doB0jrd4mQkYfonTNnWPD0cF0Y400ETjOA2qSlygBjhgNnpN4PFB
+         +EBLFXyI8VgHQTzPb1VLCg3RJnhZdCXrHT/w0NIQ3+gUJrWL4/LP9MZ/696Ffu2oBh9A
+         sG0Q==
+X-Gm-Message-State: AOAM53137+ZZxF/fHEDNnqlQUWD66fegqSt/UG3kDZuxMtbSETyFddly
+        iUZXLS30QzOlYER+DJVswDnMZw==
+X-Google-Smtp-Source: ABdhPJxBKuG1iPxOpqq941k33Ge0O8I4ewjPMmBzrqpHWVf5NcOde3wtKA9HWOPkM8yq2Oo8IOl2rQ==
+X-Received: by 2002:a17:90a:dc06:: with SMTP id i6mr4132826pjv.162.1602242234766;
+        Fri, 09 Oct 2020 04:17:14 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id p22sm10941904pju.48.2020.10.09.04.17.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 09 Oct 2020 04:17:13 -0700 (PDT)
+Date:   Fri, 9 Oct 2020 16:47:11 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Nicola Mazzucato <nicola.mazzucato@arm.com>
+Cc:     Ionela Voinescu <ionela.voinescu@arm.com>,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        vireshk@kernel.org, daniel.lezcano@linaro.org, rjw@rjwysocki.net,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        sudeep.holla@arm.com, chris.redpath@arm.com,
+        morten.rasmussen@arm.com, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 2/2] [RFC] CPUFreq: Add support for
+ cpu-perf-dependencies
+Message-ID: <20201009111711.5sl7m24engcwiqii@vireshk-i7>
+References: <20200924095347.32148-1-nicola.mazzucato@arm.com>
+ <20200924095347.32148-3-nicola.mazzucato@arm.com>
+ <20201006071909.3cgz7i5v35dgnuzn@vireshk-i7>
+ <2417d7b5-bc58-fa30-192c-e5991ec22ce0@arm.com>
+ <20201008110241.dcyxdtqqj7slwmnc@vireshk-i7>
+ <20201008150317.GB20268@arm.com>
+ <56846759-e3a6-9471-827d-27af0c3d410d@arm.com>
+ <20201009053921.pkq4pcyrv4r7ylzu@vireshk-i7>
+ <42e3c8e9-cadc-d013-1e1f-fa06af4a45ff@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201009104808.GK4967@dhcp22.suse.cz>
+In-Reply-To: <42e3c8e9-cadc-d013-1e1f-fa06af4a45ff@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 09-10-20 12:48:09, Michal Hocko wrote:
-[...]
-> I will add the CONFIG_PREEMPT_DYNAMIC in the next version. I just have
-> to think whether flipping the direction is really safe and easier in the
-> end. For our particular usecase we are more interested in
-> NONE<->VOLUNTARY at this moment and having full preemption in the mix
-> later is just fine. If you insist on the other direction then we can
-> work on that.
+On 09-10-20, 12:10, Nicola Mazzucato wrote:
+> I thought about it and looked for other platforms' DT to see if can reuse
+> existing opp information. Unfortunately I don't think it is optimal. The reason
+> being that, because cpus have the same opp table it does not necessarily mean
+> that they share a clock wire. It just tells us that they have the same
+> capabilities (literally just tells us they have the same V/f op points).
 
-This is a quick implementation of PREEMPT_DYNAMIC (still with the
-original approach to start from non preemptive kernels). It is a bit
-hairy but I suspect that starting with CONFIG_PREEMPTION wouldn't make
-it very much easier but I haven't tried that yet. Advantage of this
-approach is that it is clear that it is safe as NONE/VOLUNTARY are
-trivial to examine.
+No.
 
-diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-index d2d37bd5ecd5..b61ab02dba84 100644
---- a/include/linux/kernel.h
-+++ b/include/linux/kernel.h
-@@ -193,20 +193,36 @@ struct completion;
- struct pt_regs;
- struct user;
- 
-+/*
-+ * cond_resched() and cond_resched_lock(): latency reduction via
-+ * explicit rescheduling in places that are safe. The return
-+ * value indicates whether a reschedule was done in fact.
-+ * cond_resched_lock() will drop the spinlock before scheduling,
-+ */
- #ifndef CONFIG_PREEMPTION
-+extern int _cond_resched(void);
-+#else
-+static inline int _cond_resched(void) { return 0; }
-+#endif
-+
-+#ifdef CONFIG_PREEMPT_DYNAMIC
- #ifdef CONFIG_PREEMPT_VOLUNTARY
- DECLARE_STATIC_KEY_TRUE(preempt_voluntary_key);
- #else
- DECLARE_STATIC_KEY_FALSE(preempt_voluntary_key);
- #endif
- 
--extern int _cond_resched(void);
- # define might_resched() \
- 	do { if (static_branch_likely(&preempt_voluntary_key)) _cond_resched(); } while (0)
- #else
-+
-+#ifdef CONFIG_PREEMPT_VOLUNTARY
- # define might_resched() \
--	do { } while (0)
-+	do { _cond_resched(); } while (0)
-+#else
-+# define might_resched() do { } while (0)
- #endif
-+#endif /* CONFIG_PREEMPT_DYNAMIC */
- 
- #ifdef CONFIG_DEBUG_ATOMIC_SLEEP
- extern void ___might_sleep(const char *file, int line, int preempt_offset);
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index afe01e232935..184b5e162184 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1812,18 +1812,6 @@ static inline int test_tsk_need_resched(struct task_struct *tsk)
- 	return unlikely(test_tsk_thread_flag(tsk,TIF_NEED_RESCHED));
- }
- 
--/*
-- * cond_resched() and cond_resched_lock(): latency reduction via
-- * explicit rescheduling in places that are safe. The return
-- * value indicates whether a reschedule was done in fact.
-- * cond_resched_lock() will drop the spinlock before scheduling,
-- */
--#ifndef CONFIG_PREEMPTION
--extern int _cond_resched(void);
--#else
--static inline int _cond_resched(void) { return 0; }
--#endif
--
- #define cond_resched() ({			\
- 	___might_sleep(__FILE__, __LINE__, 0);	\
- 	_cond_resched();			\
-diff --git a/kernel/Kconfig.preempt b/kernel/Kconfig.preempt
-index bf82259cff96..a73b5564cc51 100644
---- a/kernel/Kconfig.preempt
-+++ b/kernel/Kconfig.preempt
-@@ -74,6 +74,25 @@ config PREEMPT_RT
- 
- endchoice
- 
-+config PREEMPT_DYNAMIC
-+	bool "Allow boot time preemption model selection"
-+	depends on PREEMPT_NONE || PREEMPT_VOLUNTARY
-+	help
-+	  This option allows to define the preemption model on the kernel
-+	  command line parameter and thus override the default preemption
-+	  model defined during compile time.
-+
-+	  The feature is primarily interesting for Linux distributions which
-+	  provide a pre-built kernel binary to reduce the number of kernel
-+	  flavors they offer while still offering different usecases.
-+
-+	  The runtime overhead is negligible with JUMP_LABELS enabled but if
-+	  runtime patching is not available for the specific architecture then
-+	  the potential overhead should be considered.
-+
-+	  Select if you the same pre-built kernel should be used for both Server
-+	  and Desktop workloads.
-+
- config PREEMPT_COUNT
-        bool
- 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 07d37d862637..fe22b2fca864 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -43,6 +43,8 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(sched_update_nr_running_tp);
- 
- DEFINE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
- 
-+#ifdef CONFIG_PREEMPT_DYNAMIC
-+
- #ifdef CONFIG_PREEMPT_VOLUNTARY
- DEFINE_STATIC_KEY_TRUE(preempt_voluntary_key);
- #else
-@@ -51,6 +53,8 @@ DEFINE_STATIC_KEY_FALSE(preempt_voluntary_key);
- #endif
- EXPORT_SYMBOL(preempt_voluntary_key);
- 
-+#endif
-+
- #if defined(CONFIG_SCHED_DEBUG) && defined(CONFIG_JUMP_LABEL)
- /*
-  * Debugging: various feature bits
-@@ -8491,7 +8495,7 @@ void call_trace_sched_update_nr_running(struct rq *rq, int count)
-         trace_sched_update_nr_running_tp(rq, count);
- }
- 
--#ifndef CONFIG_PREEMPTION
-+#ifdef CONFIG_PREEMPT_DYNAMIC
- static int __init setup_non_preempt_mode(char *str)
- {
- 	if (!strcmp(str, "none")) {
+> Unless I am missing something?
+
+Yes.
+
+Here are the different scenarios which can happen.
+- Two CPUs have separate OPP tables, even if they are exact copy of
+  each other, these CPUs don't share a clock line, but just v/f points
+  as you said.
+
+- Two CPUs use the same OPP table, i.e. both point to it, but
+  "opp-shared" property is missing. This is same as above case. They
+  just share the v/f points and this is the preferred way instead of
+  duplicate OPP tables.
+
+- Case two with "opp-shared" property present in the OPP table. The
+  CPUs share clock-lines.
+
+And this is exactly how we find out today if CPUs share a policy or
+not.
+
 -- 
-Michal Hocko
-SUSE Labs
+viresh
