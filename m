@@ -2,96 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9AD289164
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 20:48:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC508289167
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 20:48:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387728AbgJISsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 14:48:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733050AbgJISsM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 14:48:12 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 023FCC0613D6
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 11:48:12 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id g9so7903136pgh.8
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 11:48:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sZ18D9yNTLA/NbXOdAuKEsTcR5giW4iKOjznOdAv43U=;
-        b=layQZtMfZhok4YcGFUOCqBqjuos48dSw3w18unOH1LX6L5xlaUBWWByGGvXBb7BfUY
-         YR/R9NS0u/GmmrkajjNXDdwNfv/b9fehQyfuQ4Ar7gYgqEnuLwFz0PJXkJA/zeeOEeCR
-         AZ8FNy9/r4DY4HD7lGgrMwC8bKvaLjpjKhA0GeDhI+rqgLxcKdzolXS6jrFRvAFq2be5
-         a9LcLzDXrSJco0b54+y5eGsHRePe9iJ0vfd7j3Fpne9Hpf7RAX6df+FEUXZn7qf/O8Fb
-         uIxDAOifs0PQvIPAcI2ygNeiDNF0TAVRlGSvz7How+mz5ZKVHCcc+4tJxDH8NTTk6Qdo
-         RpIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sZ18D9yNTLA/NbXOdAuKEsTcR5giW4iKOjznOdAv43U=;
-        b=Ex0izr1Gmgc0kR2eSHmDpCNv9h5u4iwE2VYDIUQb8oxZROOWvj70ZVR8Y/TTulQPgk
-         l0zEYzSIY+WzDH98w1dYIxUD3l1CkOqnDCV/2VXaa38UOuTjiMFSJ5vvAm9dFP5PgqrH
-         3sjVAQK/st2amP32dk39tTknpcDnjDj3arguInvo4GMF1QEZAIR+F2OkMUf8dcrSxyby
-         CcSEVjwvBT1+5vEzwAmSD+S9giJGRXKP4WVSmvOR5p/6SnHTxGHry2rqgYXZcxWUPtYF
-         5vlSirjbF8CLYkPaE71fbzf2DmhwjZxayr09lm+mObKu2pKH4r1vQKcPrWX4HsS/j6hw
-         jRNw==
-X-Gm-Message-State: AOAM531M31f0Tksmd97nOMmqi9yKbh08lFP3wOIGs1thE91kXwYddRFX
-        DnDiMpz+UBZ+dmgvrMy0c+y7LCsRau2qX64L
-X-Google-Smtp-Source: ABdhPJxqyas0MEynpaSrfsaEfLR4Dw2Rhv/m+ZG1w/Op5bM6JIENsGe0bADD3LRy+bUWa3/ZvTrqsQ==
-X-Received: by 2002:a17:90a:62c2:: with SMTP id k2mr5904693pjs.78.1602269291364;
-        Fri, 09 Oct 2020 11:48:11 -0700 (PDT)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id n67sm11148309pgn.14.2020.10.09.11.48.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Oct 2020 11:48:10 -0700 (PDT)
-Subject: Re: [PATCH] ata: ahci: mvebu: Make SATA PHY optional for Armada 3720
-To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Grzegorz Jaszczyk <jaz@semihalf.com>,
-        Andre Heider <a.heider@gmail.com>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201009084244.29156-1-pali@kernel.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <7e60bd4f-46bf-cc13-0705-0431adc699c7@kernel.dk>
-Date:   Fri, 9 Oct 2020 12:48:08 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2387864AbgJISst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 14:48:49 -0400
+Received: from smtp-out.kfki.hu ([148.6.0.48]:48583 "EHLO smtp-out.kfki.hu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733157AbgJISss (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 14:48:48 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by smtp2.kfki.hu (Postfix) with ESMTP id EE0A8CC011F;
+        Fri,  9 Oct 2020 20:48:46 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at smtp2.kfki.hu
+Received: from smtp2.kfki.hu ([127.0.0.1])
+        by localhost (smtp2.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP; Fri,  9 Oct 2020 20:48:44 +0200 (CEST)
+Received: from blackhole.kfki.hu (blackhole.szhk.kfki.hu [148.6.240.2])
+        by smtp2.kfki.hu (Postfix) with ESMTP id 8F01ECC011B;
+        Fri,  9 Oct 2020 20:48:42 +0200 (CEST)
+Received: by blackhole.kfki.hu (Postfix, from userid 1000)
+        id 3BE9E340D60; Fri,  9 Oct 2020 20:48:42 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by blackhole.kfki.hu (Postfix) with ESMTP id 37C65340D5C;
+        Fri,  9 Oct 2020 20:48:42 +0200 (CEST)
+Date:   Fri, 9 Oct 2020 20:48:42 +0200 (CEST)
+From:   Jozsef Kadlecsik <kadlec@netfilter.org>
+X-X-Sender: kadlec@blackhole.kfki.hu
+To:     Florian Westphal <fw@strlen.de>
+cc:     Francesco Ruggeri <fruggeri@arista.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, coreteam@netfilter.org,
+        netfilter-devel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@davemloft.net>, fw@strlen.org,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: [PATCH nf v2] netfilter: conntrack: connection timeout after
+ re-register
+In-Reply-To: <20201009110323.GC5723@breakpoint.cc>
+Message-ID: <alpine.DEB.2.23.453.2010092035550.19307@blackhole.kfki.hu>
+References: <20201007193252.7009D95C169C@us180.sjc.aristanetworks.com> <CA+HUmGhBxBHU85oFfvoAyP=hG17DG2kgO67eawk1aXmSjehOWQ@mail.gmail.com> <alpine.DEB.2.23.453.2010090838430.19307@blackhole.kfki.hu> <20201009110323.GC5723@breakpoint.cc>
+User-Agent: Alpine 2.23 (DEB 453 2020-06-18)
 MIME-Version: 1.0
-In-Reply-To: <20201009084244.29156-1-pali@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/9/20 2:42 AM, Pali Rohár wrote:
-> Older ATF does not provide SMC call for SATA phy power on functionality and
-> therefore initialization of ahci_mvebu is failing when older version of ATF
-> is using. In this case phy_power_on() function returns -EOPNOTSUPP.
-> 
-> This patch adds a new hflag AHCI_HFLAG_IGN_NOTSUPP_POWER_ON which cause
-> that ahci_platform_enable_phys() would ignore -EOPNOTSUPP errors from
-> phy_power_on() call.
-> 
-> It fixes initialization of ahci_mvebu on Espressobin boards where is older
-> Marvell's Arm Trusted Firmware without SMC call for SATA phy power.
-> 
-> This is regression introduced in commit 8e18c8e58da64 ("arm64: dts: marvell:
-> armada-3720-espressobin: declare SATA PHY property") where SATA phy was
-> defined and therefore ahci_platform_enable_phys() on Espressobin started
-> failing.
+Hi Florian,
 
-Applied, thanks.
+On Fri, 9 Oct 2020, Florian Westphal wrote:
 
--- 
-Jens Axboe
+> Jozsef Kadlecsik <kadlec@netfilter.org> wrote:
+> > > The reproducer has two files. client_server.py creates both ends of 
+> > > a tcp connection, bounces a few packets back and forth, and then 
+> > > blocks on a recv on the client side. The client's keepalive is 
+> > > configured to time out in 20 seconds. This connection should not 
+> > > time out. test is a bash script that creates a net namespace where 
+> > > it sets iptables rules for the connection, starts client_server.py, 
+> > > and then clears and restores the iptables rules (which causes 
+> > > conntrack hooks to be de-registered and re-registered).
+> > 
+> > In my opinion an iptables restore should not cause conntrack hooks to be 
+> > de-registered and re-registered, because important TCP initialization 
+> > parameters cannot be "restored" later from the packets. Therefore the 
+> > proper fix would be to prevent it to happen. Otherwise your patch looks OK 
+> > to handle the case when conntrack is intentionally restarted.
+> 
+> The repro clears all rules, waits 4 seconds, then restores the ruleset. 
+> using iptables-restore < FOO; sleep 4; iptables-restore < FOO will not 
+> result in any unregister ops.
+>
+> We could make kernel defer unregister via some work queue but i don't
+> see what this would help/accomplish (and its questionable of how long it
+> should wait).
 
+Sorry, I can't put together the two paragraphs above: in the first you 
+wrote that no (hook) unregister-register happens and in the second one 
+that those could be derefed.
+
+> We could disallow unregister, but that seems silly (forces reboot...).
+> 
+> I think the patch is fine.
+
+The patch is fine, but why the packets are handled by conntrack (after the 
+first restore and during the 4s sleep? And then again after the second 
+restore?) as if all conntrack entries were removed?
+ 
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
+PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics
+          H-1525 Budapest 114, POB. 49, Hungary
