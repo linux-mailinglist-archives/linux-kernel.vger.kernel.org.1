@@ -2,81 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2286D2888B6
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 14:30:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D85C2888AB
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 14:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388542AbgJIMaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 08:30:15 -0400
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:41523 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733117AbgJIMaB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 08:30:01 -0400
-Received: by mail-ej1-f66.google.com with SMTP id x7so2653436eje.8
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 05:30:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=RMeWwwANxhjjIfeIc8PXKMbqt4pds9dxGsPZyRdXfds=;
-        b=CpsuZP/YCEcJHXh6y89xm4MyPuV2sHUQNDUH2Wtn/FBJnouZ/m+LnlZ+Jtv5iHKM1C
-         vk6r4A4VgIroX+Qom3BxPn8wgQAG0NJ7Rf32aCJFswQtlrOZX0nZIETV/6bdS9jVpmUv
-         3zo09Bp0njPbDCUJHLYC8bI26spKJ72ADRlTxz2vyfTtmYtF3pRX1Y+1SVXu0XFKQoew
-         VYwmikNTHInxAsRve4UoXn78lkY6b1gdN4JlratkfW3rm26K+zUQowvTQtJ7Ol3idi9w
-         8Z5YiFiG5OssrlfPGPftfsyhJ4XFSXjvCmgSuLAGgEG/JW4AUi5j1VlBIGtxsGdF7WXX
-         ysHw==
-X-Gm-Message-State: AOAM5330JJnNTsBnO/7CQlWgizRd5uKVDrnKRVqMBTFT9zaFySCZsfr6
-        fIwuZqFnF0I19I7q01RJ+vc=
-X-Google-Smtp-Source: ABdhPJzv3HUix6XXzlFbzeAbsVJQJUTyCLZBDegSgiofxT+Vc/3oA416WUNDROy4IUwLRNaYcKaI5g==
-X-Received: by 2002:a17:907:3393:: with SMTP id zj19mr13637307ejb.258.1602246599417;
-        Fri, 09 Oct 2020 05:29:59 -0700 (PDT)
-Received: from tiehlicka.suse.cz (ip-85-160-42-169.eurotel.cz. [85.160.42.169])
-        by smtp.gmail.com with ESMTPSA id q27sm6412701ejd.74.2020.10.09.05.29.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 05:29:59 -0700 (PDT)
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Mel Gorman <mgorman@suse.de>,
-        Frederic Weisbecker <fweisbecker@suse.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Michal Hocko <mhocko@suse.com>
-Subject: [RFC PATCH v2 3/5] kernel: ARCH_NO_PREEMPT shouldn't exclude PREEMPT_VOLUNTARY
-Date:   Fri,  9 Oct 2020 14:29:24 +0200
-Message-Id: <20201009122926.29962-4-mhocko@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201009122926.29962-1-mhocko@kernel.org>
-References: <20201007120401.11200-1-mhocko@kernel.org>
- <20201009122926.29962-1-mhocko@kernel.org>
+        id S1730582AbgJIM3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 08:29:30 -0400
+Received: from mga06.intel.com ([134.134.136.31]:28196 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726011AbgJIM3a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 08:29:30 -0400
+IronPort-SDR: pbTyASPO5UrvShCN3Ey+lYF4yfGclNSJMg05vEHKVFWzJ63rQm4p0CTxkXPPfQmhi9bcCbft/D
+ UsYs2o+3ONEw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="227125831"
+X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
+   d="scan'208";a="227125831"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 05:29:29 -0700
+IronPort-SDR: brXMhEC7edjubEjxgKYipSodYTOetuw4sSXc7kdr+55p2nw/DYer2MUcKjs9fK7nbAnmFn6pLm
+ MAu2yGF63+5Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
+   d="scan'208";a="349813720"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga002.fm.intel.com with ESMTP; 09 Oct 2020 05:29:28 -0700
+Received: from [10.251.2.196] (kliang2-MOBL.ccr.corp.intel.com [10.251.2.196])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id DDB085807BA;
+        Fri,  9 Oct 2020 05:29:26 -0700 (PDT)
+Subject: Re: [PATCH V9 1/4] perf/core: Add PERF_SAMPLE_DATA_PAGE_SIZE
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@redhat.com, acme@kernel.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, eranian@google.com, ak@linux.intel.com,
+        dave.hansen@intel.com, kirill.shutemov@linux.intel.com,
+        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        Will Deacon <will@kernel.org>,
+        David Miller <davem@davemloft.net>
+References: <20201001135749.2804-1-kan.liang@linux.intel.com>
+ <20201001135749.2804-2-kan.liang@linux.intel.com>
+ <20201009090927.GQ2611@hirez.programming.kicks-ass.net>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <a184fa36-a25d-cc7f-57b7-a1cf278b5465@linux.intel.com>
+Date:   Fri, 9 Oct 2020 08:29:25 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201009090927.GQ2611@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michal Hocko <mhocko@suse.com>
 
-PREEMPT_VOLUNTARY is fully arch agnostic so there shouldn't be any
-reason to restrict this preemption mode by ARCH_NO_PREEMPT.
 
-Signed-off-by: Michal Hocko <mhocko@suse.com>
----
- kernel/Kconfig.preempt | 1 -
- 1 file changed, 1 deletion(-)
+On 10/9/2020 5:09 AM, Peter Zijlstra wrote:
+> (we might not need the #ifdef gunk, but I've not yet dug out my cross
+>   compilers this morning)
+> 
+> ---
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -7009,6 +7009,7 @@ static u64 perf_virt_to_phys(u64 virt)
+>    */
+>   static u64 __perf_get_page_size(struct mm_struct *mm, unsigned long addr)
+>   {
+> +	struct page *page;
+>   	pgd_t *pgd;
+>   	p4d_t *p4d;
+>   	pud_t *pud;
+> @@ -7030,15 +7031,27 @@ static u64 __perf_get_page_size(struct m
+>   	if (!pud_present(*pud))
+>   		return 0;
+>   
+> -	if (pud_leaf(*pud))
+> +	if (pud_leaf(*pud)) {
+> +#ifdef pud_page
+> +		page = pud_page(*pud);
+> +		if (PageHuge(page))
+> +			return page_size(compound_head(page));
 
-diff --git a/kernel/Kconfig.preempt b/kernel/Kconfig.preempt
-index bf82259cff96..c460a9a2373b 100644
---- a/kernel/Kconfig.preempt
-+++ b/kernel/Kconfig.preempt
-@@ -19,7 +19,6 @@ config PREEMPT_NONE
- 
- config PREEMPT_VOLUNTARY
- 	bool "Voluntary Kernel Preemption (Desktop)"
--	depends on !ARCH_NO_PREEMPT
- 	help
- 	  This option reduces the latency of the kernel by adding more
- 	  "explicit preemption points" to the kernel code. These new
--- 
-2.28.0
+I think the page_size() returns the Kernel Page Size of a compound page.
+What we want is the MMU page size.
 
+If it's for the generic code, I think it should be a problem for X86.
+
+Thanks,
+Kan
+
+> +#endif
+>   		return 1ULL << PUD_SHIFT;
+> +	}
+>   
+>   	pmd = pmd_offset(pud, addr);
+>   	if (!pmd_present(*pmd))
+>   		return 0;
+>   
+> -	if (pmd_leaf(*pmd))
+> +	if (pmd_leaf(*pmd)) {
+> +#ifdef pmd_page
+> +		page = pmd_page(*pmd);
+> +		if (PageHuge(page))
+> +			return page_size(compound_head(page));
+> +#endif
+>   		return 1ULL << PMD_SHIFT;
+> +	}
+>   
+>   	pte = pte_offset_map(pmd, addr);
+>   	if (!pte_present(*pte)) {
+> @@ -7046,6 +7059,10 @@ static u64 __perf_get_page_size(struct m
+>   		return 0;
+>   	}
+>   
+> +	page = pte_page(*pte);
+> +	if (PageHuge(page))
+> +		return page_size(compound_head(page));
+> +
+>   	pte_unmap(pte);
+>   	return PAGE_SIZE;
+>   }
