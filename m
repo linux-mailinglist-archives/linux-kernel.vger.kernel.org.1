@@ -2,95 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 966AA288573
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 104D1288577
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:43:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732860AbgJIIl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 04:41:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729347AbgJIIl4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 04:41:56 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B332DC0613D2;
-        Fri,  9 Oct 2020 01:41:56 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id x20so6662635ybs.8;
-        Fri, 09 Oct 2020 01:41:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pWRP8OPHPDiX0yGCyQ3J0h/q/llirJbt+mqaV/WGwCI=;
-        b=OB3axd98zHIsRnDSu/UtTEPGs47EBcf4Y4koXk28s84hO2oWgDLzMM6W08DQFtFL64
-         mxjE8A7HDcigDW/izDXy3Eav1yN467U/rqtwMWGTNKAVJGajkM3eN/n4BiJmPgwJWEvQ
-         3Id3ZueLBSOdl604SVqobVIGmfQKw9fUW6Hd8PjODje6hV6e617VVH3zt3gKewJmd+Nk
-         euLtLARbeV3PLkdEOh4SqWUwkR5XqP4oSxLMrPcW2ZbNV8tA9OGRj4tZfVOhT5Cogyg6
-         tSNxwNECCGQ/mLpwOzb31hm6BkSeXu6F3DE2pv+r3aEcN6cPPUnqtq6FirEcoVLVjy2U
-         MBAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pWRP8OPHPDiX0yGCyQ3J0h/q/llirJbt+mqaV/WGwCI=;
-        b=S06xQSBkPK5zgioq5x/OzjEMOXdQbV/H5+nmuFtJOEmzl73KPAsmDbYNdhgCwjBA3R
-         k6ddni8AeS8GrShP4ckDfLPmSCk1HnHggJgL5QN1XYp0GI4HPMGrg3P9JMFG3S+X1Fbk
-         f8OYwd23cDPY8mVGeJiCkehgELLrPNzfSiyQRkE/cdnlpJX5ttd8LmUtelQWoFTbrG5I
-         6t007pkzzE9eBxgDPTmsKVvJUQ+M6FYHFkWKj2ZHTOK8i7agKW7P5Ji/xs0J9voXlLAD
-         q2ivvhpeQLRu+49nD4lSXr7pAb5FNeVodfq9692xF/dGvCx2AnluDfv8FYZGbLBI+5fq
-         89ig==
-X-Gm-Message-State: AOAM532fzwZic+DRaxQvNcqbFVQqOfxE5jOHmZoqrOjRcpuvpyNb/sp6
-        YINRZUahnv5CQ4a7PjGSQeFxb/KtbSfoH3YXBHE=
-X-Google-Smtp-Source: ABdhPJz0JVUhDD/zJs0nsn0utlR+VgQJg6uPI+zxcTJA1LBqbdXee85q9E4iPysbq7EaWVNJvRMfv+CpCz525f26zMg=
-X-Received: by 2002:a25:ce81:: with SMTP id x123mr17387616ybe.445.1602232915836;
- Fri, 09 Oct 2020 01:41:55 -0700 (PDT)
+        id S1732865AbgJIInG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 04:43:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49862 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730726AbgJIInG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 04:43:06 -0400
+Received: from pali.im (pali.im [31.31.79.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 57AB9215A4;
+        Fri,  9 Oct 2020 08:43:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602232985;
+        bh=1tPbrUnuRvd+9kdjyNxALYwFuoG3rcdxGM7JrBH24vw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=sqRQ4+LU0aUTLhStZvG9aJ5KvlgKk4mI0nOf+0k9VLoTtX60PIWrdq+HFSyT7rvEi
+         c2f5TSVJYyfJcCG8DvJzUIX8Cqtyw5ayKXFTQsGXLDkyLqqD2UN3L0qjB6TtPGsua/
+         pxQ16GCsXCV5cJwRuVe9UNKSTbkP0L14qol7q8p8=
+Received: by pali.im (Postfix)
+        id DE9EA515; Fri,  9 Oct 2020 10:43:02 +0200 (CEST)
+From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+To:     Jens Axboe <axboe@kernel.dk>, Hans de Goede <hdegoede@redhat.com>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Grzegorz Jaszczyk <jaz@semihalf.com>,
+        Andre Heider <a.heider@gmail.com>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>
+Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ata: ahci: mvebu: Make SATA PHY optional for Armada 3720
+Date:   Fri,  9 Oct 2020 10:42:44 +0200
+Message-Id: <20201009084244.29156-1-pali@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20200907155541.2011-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20200907155541.2011-4-prabhakar.mahadev-lad.rj@bp.renesas.com> <20201009073349.GD10335@amd>
-In-Reply-To: <20201009073349.GD10335@amd>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Fri, 9 Oct 2020 09:41:29 +0100
-Message-ID: <CA+V-a8tEtQwfz=NstFdBXdJiSy4-QJDoT5HjOh1kgUbuFpgs4g@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] ARM: dts: r8a7742-iwg21d-q7: Enable SD2 LED indication
-To:     Pavel Machek <pavel@denx.de>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
+Older ATF does not provide SMC call for SATA phy power on functionality and
+therefore initialization of ahci_mvebu is failing when older version of ATF
+is using. In this case phy_power_on() function returns -EOPNOTSUPP.
 
-Thank you for the review.
+This patch adds a new hflag AHCI_HFLAG_IGN_NOTSUPP_POWER_ON which cause
+that ahci_platform_enable_phys() would ignore -EOPNOTSUPP errors from
+phy_power_on() call.
 
-On Fri, Oct 9, 2020 at 8:33 AM Pavel Machek <pavel@denx.de> wrote:
->
-> Hi!
->
-> > +++ b/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
-> > @@ -63,6 +63,16 @@
-> >               enable-gpios = <&gpio3 11 GPIO_ACTIVE_HIGH>;
-> >       };
-> >
-> > +     leds {
-> > +             compatible = "gpio-leds";
-> > +
-> > +             sdhi2_led {
-> > +                     label = "sdio-led";
->
-> This should use appropriate label... probably mmc1:green:activity.
->
-$ grep -nr mmc | grep -i activity
-$ grep -nr  sd | grep -i activity
+It fixes initialization of ahci_mvebu on Espressobin boards where is older
+Marvell's Arm Trusted Firmware without SMC call for SATA phy power.
 
-Results in 0 outputs in dts folder.
+This is regression introduced in commit 8e18c8e58da64 ("arm64: dts: marvell:
+armada-3720-espressobin: declare SATA PHY property") where SATA phy was
+defined and therefore ahci_platform_enable_phys() on Espressobin started
+failing.
 
-Cheers,
-Prabhakar
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Tested-by: Tomasz Maciej Nowak <tmn505@gmail.com>
+Fixes: 8e18c8e58da64 ("arm64: dts: marvell: armada-3720-espressobin: declare SATA PHY property")
+Cc: <stable@vger.kernel.org> # 5.1+: ea17a0f153af: phy: marvell: comphy: Convert internal SMCC firmware return codes to errno
+---
+ drivers/ata/ahci.h             | 2 ++
+ drivers/ata/ahci_mvebu.c       | 2 +-
+ drivers/ata/libahci_platform.c | 2 +-
+ 3 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/ata/ahci.h b/drivers/ata/ahci.h
+index d991dd46e89c..98b8baa47dc5 100644
+--- a/drivers/ata/ahci.h
++++ b/drivers/ata/ahci.h
+@@ -240,6 +240,8 @@ enum {
+ 							as default lpm_policy */
+ 	AHCI_HFLAG_SUSPEND_PHYS		= (1 << 26), /* handle PHYs during
+ 							suspend/resume */
++	AHCI_HFLAG_IGN_NOTSUPP_POWER_ON	= (1 << 27), /* ignore -EOPNOTSUPP
++							from phy_power_on() */
+ 
+ 	/* ap->flags bits */
+ 
+diff --git a/drivers/ata/ahci_mvebu.c b/drivers/ata/ahci_mvebu.c
+index d4bba3ace45d..3ad46d26d9d5 100644
+--- a/drivers/ata/ahci_mvebu.c
++++ b/drivers/ata/ahci_mvebu.c
+@@ -227,7 +227,7 @@ static const struct ahci_mvebu_plat_data ahci_mvebu_armada_380_plat_data = {
+ 
+ static const struct ahci_mvebu_plat_data ahci_mvebu_armada_3700_plat_data = {
+ 	.plat_config = ahci_mvebu_armada_3700_config,
+-	.flags = AHCI_HFLAG_SUSPEND_PHYS,
++	.flags = AHCI_HFLAG_SUSPEND_PHYS | AHCI_HFLAG_IGN_NOTSUPP_POWER_ON,
+ };
+ 
+ static const struct of_device_id ahci_mvebu_of_match[] = {
+diff --git a/drivers/ata/libahci_platform.c b/drivers/ata/libahci_platform.c
+index 86261deeb4c5..de638dafce21 100644
+--- a/drivers/ata/libahci_platform.c
++++ b/drivers/ata/libahci_platform.c
+@@ -59,7 +59,7 @@ int ahci_platform_enable_phys(struct ahci_host_priv *hpriv)
+ 		}
+ 
+ 		rc = phy_power_on(hpriv->phys[i]);
+-		if (rc) {
++		if (rc && !(rc == -EOPNOTSUPP && (hpriv->flags & AHCI_HFLAG_IGN_NOTSUPP_POWER_ON))) {
+ 			phy_exit(hpriv->phys[i]);
+ 			goto disable_phys;
+ 		}
+-- 
+2.20.1
+
