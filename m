@@ -2,108 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6866288A18
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 15:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC267288A1E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 15:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387721AbgJIN4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 09:56:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731374AbgJIN4g (ORCPT
+        id S2387784AbgJIN5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 09:57:14 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:46214 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726211AbgJIN5N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 09:56:36 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 848E7C0613D5
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 06:56:36 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id t18so9203821ilo.12
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 06:56:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:from:date:message-id:subject:to:cc;
-        bh=6o6qPP8lMx7cYOKA/MqaKbaqIjCjGnaiLWr14rPl5P0=;
-        b=Hlz0T0HYpcI1RmYPyeOF014dP7wq6mto4JOO5AQX3su3fh95zbsrdvX+wsqbFQFmuk
-         o56RJq7SGR5KyYMNTqsQjirLof/hnJtOBvvKEwO9b1+TN3p0b4gl92toDcBj7VMPnn7/
-         8tY2NMUR4+quoUAFnkcxw7tVy93kHmwxgOPAcTX7m1Uo+ZCdjtmxau9fhNb4E82Tq5ot
-         B5nJJa8LIH8PryvenpUGFLf4m8Kd88gjuibR7FbKT1TrjSS9oz09MR1uncgkH+1kLLzz
-         /FVRczFb6cSO2chHkoCGBoFXPEzehWoc1SQrPGaGcYlVCO8j83PhHkDjqmQt2j07l4cf
-         0s7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:from:date:message-id
-         :subject:to:cc;
-        bh=6o6qPP8lMx7cYOKA/MqaKbaqIjCjGnaiLWr14rPl5P0=;
-        b=nv6QhUJoUGswRg5ktkKa5On+AULRbr9y7Uqb/pA+zfthWqhkRpYqNMaLFebBP6VihN
-         ZM2Ly4mjig48qjZNoM78SNUVg1Clcxki8WDx5NX8VO0fcMBCP1e1zdNBTZMnuRbEZf5B
-         SKD4OGt8H6WlJOsaL9OmzeQlq7LEWpoFaimE42XuhDPFTl1Mf7uPd1TisIrWdsmDiy14
-         pBMUWpPygfx1H0FMDRphrASWUdeYJ4pjNf+CFQ4ED3eF0ihkT+CKd7YZbSJWwoyvszAd
-         BBdsWmZ6J+DBRTFGlS0S2tm4II3btr+2ZqDUn5InTmjJal/zHjL9hQFkZelhPOQTBC8Y
-         nSpQ==
-X-Gm-Message-State: AOAM532mysdMCv6tlhAJPJUb7ENUb4oIOUmy/8atfidVleL4Tn5s9Kz5
-        Ud3l/wAA7owYVY+PhjahJk4iilHE+jfTyPWbSf4icA==
-X-Google-Smtp-Source: ABdhPJzUkvbAvYEa3k1BsUYozC/xotWpIsogjry89hwi8FrKRfRA/5IIZf6URsj+bAxUF2s9ybtiMe1E4JF5+OFqUys=
-X-Received: by 2002:a05:6e02:664:: with SMTP id l4mr11033643ilt.81.1602251795786;
- Fri, 09 Oct 2020 06:56:35 -0700 (PDT)
+        Fri, 9 Oct 2020 09:57:13 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id B941B29DE7B
+Subject: Re: [PATCH 00/12] soc: mediatek: pm-domains: Add new driver for
+ SCPSYS power domains controller
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Weiyi Lu <weiyi.lu@mediatek.com>
+Cc:     devicetree@vger.kernel.org, drinkcat@chromium.org,
+        linux-kernel@vger.kernel.org, fparent@baylibre.com,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-mediatek@lists.infradead.org, hsinyi@chromium.org,
+        Collabora Kernel ML <kernel@collabora.com>,
+        linux-arm-kernel@lists.infradead.org
+References: <20200910172826.3074357-1-enric.balletbo@collabora.com>
+ <1601028361.1346.38.camel@mtksdaap41>
+ <19678952-e354-2067-e619-ffac28b347be@gmail.com>
+ <1601967207.8638.4.camel@mtksdaap41>
+ <f2185b28-0b1f-8cf9-8717-12e28cf2bbf0@gmail.com>
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <181df5c6-9046-5273-879b-ed0d1a59c8b3@collabora.com>
+Date:   Fri, 9 Oct 2020 15:57:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <CA+G9fYvuq58q+GsWnzni0sKSHbubuQz-UaK3TASX26V_a7yBVw@mail.gmail.com>
- <20200924090349.GF27174@8bytes.org> <ecf71b34-a104-d42a-bfcd-9570e73520a7@arm.com>
- <20200924092546.GJ27174@8bytes.org> <e2186418-d4d6-e1f4-5eb4-3bfafb5cebb2@arm.com>
- <20200924095629.GL27174@8bytes.org> <CA+G9fYu42j_B+Rg2nq+KKBiKLqxVEqabQ15CujyJ+o6jqRj2uQ@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 9 Oct 2020 19:26:24 +0530
-Message-ID: <CA+G9fYtG6Ro-NdrP89ipDyUqVVT2=_8pTvjTSeFcWr795bp8AA@mail.gmail.com>
-Subject: Re: arm-smmu 5000000.iommu: Cannot accommodate DMA offset for IOMMU
- page tables
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Poonam Aggrwal <poonam.aggrwal@nxp.com>,
-        Rob Herring <robh@kernel.org>, Joerg Roedel <jroedel@suse.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Richard Weinberger <richard@nod.at>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mtd@lists.infradead.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Suram Suram <suram@nxp.com>, masonccyang@mxic.com.tw,
-        Will Deacon <will@kernel.org>,
-        "Z.Q. Hou" <Zhiqiang.Hou@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <f2185b28-0b1f-8cf9-8717-12e28cf2bbf0@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 9 Oct 2020 at 19:24, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->
->
->
-> On Thu, 24 Sep 2020 at 15:26, Joerg Roedel <joro@8bytes.org> wrote:
-> >
-> > On Thu, Sep 24, 2020 at 10:36:47AM +0100, Robin Murphy wrote:
-> > > Yes, the issue was introduced by one of the changes in "dma-mapping:
-> > > introduce DMA range map, supplanting dma_pfn_offset", so it only existed in
-> > > the dma-mapping/for-next branch anyway.
->
+Hi,
 
-FYI,
-The reported problem still exists on 5.9.0-rc8-next-20201009.
+On 9/10/20 14:50, Matthias Brugger wrote:
+> 
+> 
+> On 06/10/2020 08:53, Weiyi Lu wrote:
+>> On Fri, 2020-09-25 at 16:04 +0200, Matthias Brugger wrote:
+>>>
+>>> On 25/09/2020 12:06, Weiyi Lu wrote:
+>>>> On Thu, 2020-09-10 at 19:28 +0200, Enric Balletbo i Serra wrote:
+>>>>> Dear all,
+>>>>>
+>>>>> This is a new driver with the aim to deprecate the mtk-scpsys driver.
+>>>>> The problem with that driver is that, in order to support more Mediatek
+>>>>> SoCs you need to add some logic to handle properly the power-up
+>>>>> sequence of newer Mediatek SoCs, doesn't handle parent-child power
+>>>>> domains and need to hardcode all the clocks in the driver itself. The
+>>>>> result is that the driver is getting bigger and bigger every time a
+>>>>> new SoC needs to be supported.
+>>>>>
+>>>>
+>>>> Hi Enric and Matthias,
+>>>>
+>>>> First of all, thank you for the patch. But I'm worried the problem you
+>>>> mentioned won't be solved even if we work on this new driver in the
+>>>> future. My work on the MT8183 scpsys(now v17) is to implement the new
+>>>> hardware logic. Here, I also see related patches, which means that these
+>>>> new logics are necessary. Why can't we work on the original driver?
+>>>
+>>> Well the decision was to change the driver in a not compatible way to make
+>>> device tree entries better. If we work on the old driver, we would need to find
+>>> some creative ways to handle old bindings vs new bindings.
+>>>
+>>> So I thought it would be better doing a fresh start implementing mt1873 support
+>>> for reference and add mt8183 as new SoC. From what I have seen mt8192 and others
+>>> fit the driver structure too.
+>>>
+>>>> Meanwhile, I thought maybe we should separate the driver into general
+>>>> control and platform data for each SoC, otherwise it'll keep getting
+>>>> bigger and bigger if it need to be support new SoC.
+>>>>
+>>>
+>>> We could in a later series split the SoC depended data structures and put them
+>>> in drivers/soc/mediatek/pm-domains-mt8183.h or something like this. Is that what
+>>> you mean?
+>>>
+>>
+>> Yes, that is what I want. And I guess it could avoid the collisions in
+>> the different defines to the control registers and power status bits you
+>> mentioned. Hope this will happen in this series.
+>>
+> 
+> Sounds good to me. Enric could you move the soc specific data to separate
+> include files?
+> 
 
-[    1.843814] Driver must set ecc.strength when using hardware ECC
-[    1.849847] WARNING: CPU: 4 PID: 1 at
-drivers/mtd/nand/raw/nand_base.c:5687 nand_scan_with_ids+0x1450/0x1470
-[    1.859676] Modules linked in:
-[    1.862730] CPU: 4 PID: 1 Comm: swapper/0 Not tainted
-5.9.0-rc8-next-20201009 #1
-[    1.870125] Hardware name: Freescale Layerscape 2088A RDB Board (DT)
-[    1.876478] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
-[    1.882483] pc : nand_scan_with_ids+0x1450/0x1470
-[    1.887183] lr : nand_scan_with_ids+0x1450/0x1470
+Sure, I'll do this in v4.
 
-full test log,
-https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20201009/testrun/3284876/suite/linux-log-parser/test/check-kernel-warning-92014/log
+Thanks,
+ Enric
 
-> >
-> > Okay, alright then.
-> >
-
-- Naresh
+> Regards,
+> Matthias
+> 
