@@ -2,137 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32A5228904B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 19:52:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EEA8289045
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 19:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390159AbgJIRwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 13:52:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56780 "EHLO
+        id S2388704AbgJIRwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 13:52:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389529AbgJIRwT (ORCPT
+        with ESMTP id S2388603AbgJIRwL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 13:52:19 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D12C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 10:52:17 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id s66so9779292otb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 10:52:17 -0700 (PDT)
+        Fri, 9 Oct 2020 13:52:11 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA138C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 10:52:10 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id 132so905233pfz.5
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 10:52:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Chc8637Rd8yI9tLS7AREeItMweAw4M0AE06Zuj7bhU0=;
-        b=L4kTmlRVcZoe/avVgvgJLaWOs03iPF87kjF+Wg5Dr1BO68grQeWij+sKeGLbjkKVnS
-         uWxXV8aahQlRlzimSn7k7/L57rwPuRVe9l/HoPbmKuzL42kNzmiAubvKP93NNRPozIcb
-         M7wzXGB/zvSu+un9zoWu7yVJIqeg+g4rBMVIc=
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:cc:from:to:message-id;
+        bh=wVsQ9q5Q7s1s2K/FqK048q1RDnfVI41to7Mmyngot/U=;
+        b=XhIyavq8e/26hIs74uPffC+5QFXoQULQ7hdbrnAqZ1ilmOUyi3gcaCVmzNwEpzLX2b
+         rKdCg9+tqIsMw+K2pOKGx5xvlHB2OOdPs4Eq8q/gRJDTXXXLZsJgigJWuDrj6IYY0BuW
+         yI0C4N3AZQ/ZaL8lBoPMR1tgZYBBGCnfbxbk7bNlQ+n6Nw5y4n8E1eqDyJLfr+rbiU5W
+         aclex6pKaax2Gwve3s3NMXqQq/s9i90/CTaeN3JCP1UmZ5ARmEidDYEWviaUgkRHwMBH
+         okzei8cKuXRjIZCncGfKjXJ99nvn/ejIv89XDGvHLgz06IYJ3SviWV6CPka/g+gTNI95
+         fuQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Chc8637Rd8yI9tLS7AREeItMweAw4M0AE06Zuj7bhU0=;
-        b=D0SE6RhNmrrJwb9hHI+5CDge4FzXVOlL0+BrNIAa8SExqWYTCWTwZaNAKoN6uF0QxH
-         PF7WFz2fnt2vAA5rzAueuGkFUKVwjEm4ImpgAE2w2IzUl9wrshyI6ZQBhtZs5bQ8hLcj
-         7p7vCIWLJVJOBznqfWq6E6WkGiQWEv+BvYXWhR3V4dkRk+Ec0XzKYR1Pc1KR0EXcGkAZ
-         qHnVIr/s5IkbSwePWYJU/o3LMHFz+/Y2ESpZEPhQnpbTXUbvoZlG9WS9838vgJiHaEJI
-         xBX6DuXMNNQki8+tjWPiumCKuaDzdwYKjftSdslErUBfv/jRYrcXtDrIZuzF2RJenG7f
-         nH6A==
-X-Gm-Message-State: AOAM530bFR6e8t04ALxksgQ35tyEb1kFKmEWg/wzx36mTxPVdRX3qTUq
-        Ewv4ct3JUIU2bAvhQMieZLeeBKmtWeMr4fhzBOj82A==
-X-Google-Smtp-Source: ABdhPJxFnmBLRj+lrjXy7n2SbqbKqfPXOoR4PVOcPvoZoMGu71c5Uydzax6ZExKmO8/pv5qIPQDGfl3spZzjZBbiaDw=
-X-Received: by 2002:a05:6830:1647:: with SMTP id h7mr10168614otr.281.1602265936612;
- Fri, 09 Oct 2020 10:52:16 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201009075934.3509076-1-daniel.vetter@ffwll.ch>
- <20201009075934.3509076-10-daniel.vetter@ffwll.ch> <20201009123421.67a80d72@coco.lan>
- <20201009122111.GN5177@ziepe.ca> <20201009143723.45609bfb@coco.lan> <20201009124850.GP5177@ziepe.ca>
-In-Reply-To: <20201009124850.GP5177@ziepe.ca>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Fri, 9 Oct 2020 19:52:05 +0200
-Message-ID: <CAKMK7uF-hrSwzFQkp6qEP88hM1Qg8TMQOunuRHh=f2+D8MaMRg@mail.gmail.com>
-Subject: Re: [PATCH v2 09/17] mm: Add unsafe_follow_pfn
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:subject:cc:from:to:message-id;
+        bh=wVsQ9q5Q7s1s2K/FqK048q1RDnfVI41to7Mmyngot/U=;
+        b=QrfEMeLavSVEBabUIsR+gdAqSSXuzggNfdV4/pqJq1BK27kIX3nU5WEmS6J3diSmOY
+         HNXGnbBouWnv+SEs6ns3Y73/M2OTu/XpeREiD2XMP5nfasC0bob0/HFAOnnn74xaNbrB
+         yGGl4f3J6jJQuDGaPp6/Ul8oP1VvIQldDBddyzwbpBQDrBahTsW7Dfy6ds5STnSUW+Dt
+         q0/UGfY7CPTwg1W7SGtfJ/XPswd4aZXhoHbGuRoMYBkKP7U9v39rcP7CvNoO/0i6MGOo
+         R+QCKbUO+/Cs6+XHrIW3eNjekVEl2DoO0MhtSbvjegNJrQ6V8pRhbJjYttxrhKH2EJ3K
+         NawQ==
+X-Gm-Message-State: AOAM531UUIqcHkFAv2bpcWjVf1U7QMlIr9SCrR4stMCBL/ktz3NAPPXF
+        4yXIkjsYPTQCdRvOUDd/ex4Ajg4DisePYNGo
+X-Google-Smtp-Source: ABdhPJw1UfBrhjq/v8VFLEsMgIVl2JkDSyZFhDM9kj9WzdsuIxN1Qahc4T3xKTzOzmdFNEtgVaGoeg==
+X-Received: by 2002:a63:4f5e:: with SMTP id p30mr4176607pgl.6.1602265930214;
+        Fri, 09 Oct 2020 10:52:10 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id k25sm1207735pfi.42.2020.10.09.10.52.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Oct 2020 10:52:09 -0700 (PDT)
+Date:   Fri, 09 Oct 2020 10:52:09 -0700 (PDT)
+X-Google-Original-Date: Fri, 09 Oct 2020 10:52:06 PDT (-0700)
+Subject: [GIT PULL] RISC-V Fixes for 5.9
+CC:         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Message-ID: <mhng-9c92c420-8192-474d-906c-3f43e1f4d7e0@palmerdabbelt-glaptop1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 9, 2020 at 2:48 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Fri, Oct 09, 2020 at 02:37:23PM +0200, Mauro Carvalho Chehab wrote:
->
-> > I'm not a mm/ expert, but, from what I understood from Daniel's patch
-> > description is that this is unsafe *only if*  __GFP_MOVABLE is used.
->
-> No, it is unconditionally unsafe. The CMA movable mappings are
-> specific VMAs that will have bad issues here, but there are other
-> types too.
->
-> The only way to do something at a VMA level is to have a list of OK
-> VMAs, eg because they were creatd via a special mmap helper from the
-> media subsystem.
->
-> > Well, no drivers inside the media subsystem uses such flag, although
-> > they may rely on some infrastructure that could be using it behind
-> > the bars.
->
-> It doesn't matter, nothing prevents the user from calling media APIs
-> on mmaps it gets from other subsystems.
+The following changes since commit 549738f15da0e5a00275977623be199fbbf7df50:
 
-I think a good first step would be to disable userptr of non struct
-page backed storage going forward for any new hw support. Even on
-existing drivers. dma-buf sharing has been around for long enough now
-that this shouldn't be a problem. Unfortunately right now this doesn't
-seem to exist, so the entire problem keeps getting perpetuated.
+  Linux 5.9-rc8 (2020-10-04 16:04:34 -0700)
 
-> > If this is the case, the proper fix seems to have a GFP_NOT_MOVABLE
-> > flag that it would be denying the core mm code to set __GFP_MOVABLE.
->
-> We can't tell from the VMA these kinds of details..
->
-> It has to go the other direction, evey mmap that might be used as a
-> userptr here has to be found and the VMA specially created to allow
-> its use. At least that is a kernel only change, but will need people
-> with the HW to do this work.
+are available in the Git repository at:
 
-I think the only reasonable way to keep this working is:
-- add a struct dma_buf *vma_tryget_dma_buf(struct vm_area_struct *vma);
-- add dma-buf export support to fbdev and v4l
-- roll this out everywhere we still need it.
+  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.9
 
-Realistically this just isn't going to happen. And anything else just
-reimplements half of dma-buf, which is kinda pointless (you need
-minimally refcounting and some way to get at a promise of a permanent
-sg list for dma. Plus probably the vmap for kernel cpu access.
+for you to fetch changes up to 84814460eef9af0fb56a4698341c9cb7996a6312:
 
-> > Please let address the issue on this way, instead of broken an
-> > userspace API that it is there since 1991.
->
-> It has happened before :( It took 4 years for RDMA to undo the uAPI
-> breakage caused by a security fix for something that was a 15 years
-> old bug.
+  riscv: Fixup bootup failure with HARDENED_USERCOPY (2020-10-06 18:34:00 -0700)
 
-Yeah we have a bunch of these on the drm side too. Some of them are
-really just "you have to upgrade userspace", and there's no real fix
-for the security nightmare without that.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+----------------------------------------------------------------
+RISC-V Fixes for 5.9
+
+I have two fixes this week:
+
+* A fix to actually reserve the device tree's memory.  Without this the device
+  tree can be overwritten on systems that don't otherwise reserve it.  This
+  issue should only manifest on !MMU systems.
+* A workaround for a BUG() that triggers when the memory that originally
+  contained initdata is freed and later repurposed.  This triggers a BUG() on
+  builds that with HARDENED_USERCOPY enabled.
+
+----------------------------------------------------------------
+Atish Patra (1):
+      RISC-V: Make sure memblock reserves the memory containing DT
+
+Guo Ren (1):
+      riscv: Fixup bootup failure with HARDENED_USERCOPY
+
+ arch/riscv/kernel/vmlinux.lds.S | 5 +++--
+ arch/riscv/mm/init.c            | 1 +
+ 2 files changed, 4 insertions(+), 2 deletions(-)
