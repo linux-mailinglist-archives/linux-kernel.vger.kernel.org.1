@@ -2,311 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3879828917A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 20:53:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5222B28917C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 20:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388168AbgJISxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 14:53:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388075AbgJISxf (ORCPT
+        id S2388193AbgJISzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 14:55:50 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:46981 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S2388184AbgJISzt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 14:53:35 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B715C0613D5
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 11:53:35 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id g9so7914540pgh.8
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 11:53:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JyLV6sLV00caFgGk9PiR+O+gn3aUFBh8cwMoQ42GGvM=;
-        b=ybliSMPV1SASp0fh0b6PIeGTFZPbqpkzLnXc4auPBEvKcRwjAeBJAhaE+hL35MJM5l
-         0rOMteoN1Zj/Ago1AvSzIc4xZoCKsoy0R91LwmIQCsQZyJYPjkuqi4yFzCzjyWkZ01M6
-         z30KDVrdJbo2y97In7slYRqx5tlbZIbgPULDzCWpo+IPimh/yE8AE/m4PQfP+YpRVyS7
-         ofwbtNjmd7UM6eBdIiz155IqHBVoQNKRttK2FnvSqMHEH5hJ3tc9oExDFjl0TlSS4mae
-         8eC+jbM1mAdRQEpu9ujpvUN21XDb9FNmWUF8T/j5G1MGsA0UFhet01TWppDiS/m9p+DI
-         DDDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JyLV6sLV00caFgGk9PiR+O+gn3aUFBh8cwMoQ42GGvM=;
-        b=FKhznbnP+QHDXwYQSq+mJff6gWn98eHWiIRnI1SFgYHTtl59Fqb4MTzfrXUl0GF65u
-         PmHdyjyzgAE7O/HeBzJf9t0XETBihD9Gcfe2Z08gJALn/Igy84ibyeCAbbwt8r/3ImNg
-         tSuw4bkl3CS8EBp1Z414jH5Fy04dKdrjkQ0MBqDtpjSGBIFx+8Gdjwwipz2710zlDDBd
-         QPFpmiT0BF5yWJd2PDzghuS9M9gCWm3XDlisdy2UGQdToW5SfYxAM4XJMfiDPqjLBhyi
-         tjLcViVEBWPVRXn0/qj7siOum+bgw5p5DTJ0tOXDhxpCcYJdSPRwncMI/MOomzNCzynf
-         E53g==
-X-Gm-Message-State: AOAM53206oXwJADSpXWXDNNv9w1Z07jCqLjAhv4Dgz8b0Ow7Dg9AfZQe
-        j1kk5rp/wkAZxwwCDWdN69smyw==
-X-Google-Smtp-Source: ABdhPJzdYYpTC4/utkBMI8hkwLu9MoVuEzFaf9ptmb7SP77Uo+l75JUFR9e9XtYFf3lo7QWWCNLfdw==
-X-Received: by 2002:a17:90a:7c0c:: with SMTP id v12mr6062226pjf.71.1602269614526;
-        Fri, 09 Oct 2020 11:53:34 -0700 (PDT)
-Received: from [10.213.166.37] (fmdmzpr03-ext.fm.intel.com. [192.55.54.38])
-        by smtp.gmail.com with ESMTPSA id s13sm11267035pgo.56.2020.10.09.11.53.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 09 Oct 2020 11:53:33 -0700 (PDT)
-From:   "Sean V Kelley" <sean.v.kelley@intel.com>
-To:     "Bjorn Helgaas" <helgaas@kernel.org>
-Cc:     "Sean V Kelley" <seanvk.dev@oregontracks.org>, bhelgaas@google.com,
-        Jonathan.Cameron@huawei.com, rafael.j.wysocki@intel.com,
-        ashok.raj@intel.com, tony.luck@intel.com,
-        sathyanarayanan.kuppuswamy@intel.com, qiuxu.zhuo@intel.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 11/14] PCI/RCEC: Add RCiEP's linked RCEC to AER/ERR
-Date:   Fri, 09 Oct 2020 11:53:31 -0700
-X-Mailer: MailMate (1.13.2r5673)
-Message-ID: <B3F01188-01A5-4807-B2C8-33AD5AD4A506@intel.com>
-In-Reply-To: <C3CF4A15-B00B-4347-89C7-B331E17ECF69@intel.com>
-References: <20201009175745.GA3489710@bjorn-Precision-5520>
- <41B2B0A9-80B0-41DA-9FF3-A5D9465E6E08@intel.com>
- <C3CF4A15-B00B-4347-89C7-B331E17ECF69@intel.com>
+        Fri, 9 Oct 2020 14:55:49 -0400
+Received: (qmail 547642 invoked by uid 1000); 9 Oct 2020 14:55:48 -0400
+Date:   Fri, 9 Oct 2020 14:55:48 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     syzbot <syzbot+f5378bcf0f0cab45c1c6@syzkaller.appspotmail.com>,
+        QCA ath9k Development <ath9k-devel@qca.qualcomm.com>
+Cc:     andreyknvl@google.com, eli.billauer@gmail.com,
+        gregkh@linuxfoundation.org, gustavoars@kernel.org,
+        ingrassia@epigenesys.com, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, oneukum@suse.com,
+        linux-wireless@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tiwai@suse.de
+Subject: Re: WARNING in hif_usb_send/usb_submit_urb
+Message-ID: <20201009185548.GA546075@rowland.harvard.edu>
+References: <000000000000021e6b05b0ea60bd@google.com>
+ <00000000000069707b05b13da267@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00000000000069707b05b13da267@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9 Oct 2020, at 11:34, Sean V Kelley wrote:
+To the ath9k_htc maintainers:
 
-> On 9 Oct 2020, at 11:26, Sean V Kelley wrote:
->
->> Hi Bjorn,
->>
->> On 9 Oct 2020, at 10:57, Bjorn Helgaas wrote:
->>
->>> On Fri, Oct 02, 2020 at 11:47:32AM -0700, Sean V Kelley wrote:
->>>> From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
->>>>
->>>> When attempting error recovery for an RCiEP associated with an RCEC 
->>>> device,
->>>> there needs to be a way to update the Root Error Status, the 
->>>> Uncorrectable
->>>> Error Status and the Uncorrectable Error Severity of the parent 
->>>> RCEC.
->>>> In some non-native cases in which there is no OS visible device
->>>> associated with the RCiEP, there is nothing to act upon as the 
->>>> firmware
->>>> is acting before the OS. So add handling for the linked 'rcec' in 
->>>> AER/ERR
->>>> while taking into account non-native cases.
->>>>
->>>> Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
->>>> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
->>>> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
->>>> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
->>>> ---
->>>>  drivers/pci/pcie/aer.c |  9 +++++----
->>>>  drivers/pci/pcie/err.c | 39 
->>>> ++++++++++++++++++++++++++++-----------
->>>>  2 files changed, 33 insertions(+), 15 deletions(-)
->>>>
->>>> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
->>>> index 65dff5f3457a..dccdba60b5d9 100644
->>>> --- a/drivers/pci/pcie/aer.c
->>>> +++ b/drivers/pci/pcie/aer.c
->>>> @@ -1358,17 +1358,18 @@ static int aer_probe(struct pcie_device 
->>>> *dev)
->>>>  static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
->>>>  {
->>>>  	int aer = dev->aer_cap;
->>>> +	int rc = 0;
->>>>  	u32 reg32;
->>>> -	int rc;
->>>> -
->>>>
->>>>  	/* Disable Root's interrupt in response to error messages */
->>>>  	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
->>>>  	reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
->>>>  	pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
->>>>
->>>> -	rc = pci_bus_error_reset(dev);
->>>> -	pci_info(dev, "Root Port link has been reset\n");
->>>> +	if (pci_pcie_type(dev) != PCI_EXP_TYPE_RC_EC) {
->>>> +		rc = pci_bus_error_reset(dev);
->>>> +		pci_info(dev, "Root Port link has been reset\n");
->>>> +	}
->>>>
->>>>  	/* Clear Root Error Status */
->>>>  	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, &reg32);
->>>> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
->>>> index 38abd7984996..956ad4c86d53 100644
->>>> --- a/drivers/pci/pcie/err.c
->>>> +++ b/drivers/pci/pcie/err.c
->>>> @@ -149,7 +149,8 @@ static int report_resume(struct pci_dev *dev, 
->>>> void *data)
->>>>  /**
->>>>   * pci_walk_bridge - walk bridges potentially AER affected
->>>>   * @bridge   bridge which may be an RCEC with associated RCiEPs,
->>>> - *           an RCiEP associated with an RCEC, or a Port.
->>>> + *           or a Port.
->>>> + * @dev      an RCiEP lacking an associated RCEC.
->>>>   * @cb       callback to be called for each device found
->>>>   * @userdata arbitrary pointer to be passed to callback.
->>>>   *
->>>> @@ -160,13 +161,20 @@ static int report_resume(struct pci_dev *dev, 
->>>> void *data)
->>>>   * If the device provided has no subordinate bus, call the 
->>>> provided
->>>>   * callback on the device itself.
->>>>   */
->>>> -static void pci_walk_bridge(struct pci_dev *bridge, int 
->>>> (*cb)(struct pci_dev *, void *),
->>>> +static void pci_walk_bridge(struct pci_dev *bridge, struct pci_dev 
->>>> *dev,
->>>> +			    int (*cb)(struct pci_dev *, void *),
->>>>  			    void *userdata)
->>>>  {
->>>> -	if (bridge->subordinate)
->>>> +	/*
->>>> +	 * In a non-native case where there is no OS-visible reporting
->>>> +	 * device the bridge will be NULL, i.e., no RCEC, no PORT.
->>>> +	 */
->>>> +	if (bridge && bridge->subordinate)
->>>>  		pci_walk_bus(bridge->subordinate, cb, userdata);
->>>> -	else
->>>> +	else if (bridge)
->>>>  		cb(bridge, userdata);
->>>> +	else
->>>> +		cb(dev, userdata);
->>>>  }
->>>>
->>>>  static pci_ers_result_t flr_on_rciep(struct pci_dev *dev)
->>>> @@ -196,16 +204,25 @@ pci_ers_result_t pcie_do_recovery(struct 
->>>> pci_dev *dev,
->>>>  	type = pci_pcie_type(dev);
->>>>  	if (type == PCI_EXP_TYPE_ROOT_PORT ||
->>>>  	    type == PCI_EXP_TYPE_DOWNSTREAM ||
->>>> -	    type == PCI_EXP_TYPE_RC_EC ||
->>>> -	    type == PCI_EXP_TYPE_RC_END)
->>>> +	    type == PCI_EXP_TYPE_RC_EC)
->>>>  		bridge = dev;
->>>> +	else if (type == PCI_EXP_TYPE_RC_END)
->>>> +		bridge = dev->rcec;
->>>>  	else
->>>>  		bridge = pci_upstream_bridge(dev);
->>>>
->>>>  	pci_dbg(dev, "broadcast error_detected message\n");
->>>>  	if (state == pci_channel_io_frozen) {
->>>> -		pci_walk_bridge(bridge, report_frozen_detected, &status);
->>>> +		pci_walk_bridge(bridge, dev, report_frozen_detected, &status);
->>>>  		if (type == PCI_EXP_TYPE_RC_END) {
->>>> +			/*
->>>> +			 * The callback only clears the Root Error Status
->>>> +			 * of the RCEC (see aer.c). Only perform this for the
->>>> +			 * native case, i.e., an RCEC is present.
->>>> +			 */
->>>> +			if (bridge)
->>>> +				reset_subordinate_devices(bridge);
->>>
->>> Help me understand this.  There are lots of callbacks in this 
->>> picture,
->>> but I guess this "callback only clears Root Error Status" must refer
->>> to aer_root_reset(), i.e., the reset_subordinate_devices pointer?
->>
->> The ‘bridge’ in this case will always be dev->rcec, the event 
->> collector for the associated RC_END. And that’s what’s being 
->> cleared in aer.c via aer_root_reset() as the callback. It’s also 
->> being checked for native/non-native here.
->>
->>>
->>> Of course, the caller of pcie_do_recovery() supplied that pointer.
->>> And we can infer that it must be aer_root_reset(), not
->>> dpc_reset_link(), because RCECs and RCiEPs are not allowed to
->>> implement DPC.
->>
->> Correct.
->>
->>>
->>> I wish we didn't have either this assumption about what
->>> reset_subordinate_devices points to, or the assumption about what
->>> aer_root_reset() does.  They both seem a little bit tenuous.
->>
->> Agree. It’s the relationship between the RC_END and the RC_EC.
->>
->>>
->>> We already made aer_root_reset() smart enough to check for RCECs.  
->>> Can
->>> we put the FLR there, too?  Then we wouldn't have this weird 
->>> situation
->>> where reset_subordinate_devices() does a reset and clears error
->>> status, EXCEPT for this case where it only clears error status and 
->>> we
->>> do the reset here?
->>
->> We could add the smarts to aer_root_reset() to check for an RC_END in 
->> that callback and perform the clear there on its RC_EC. We just 
->> wouldn’t map ‘bridge’ to dev->rcec for RC_END in 
->> pcie_do_recovery() which would simplify things.
->>
->> Further, the FLR in the case of flr_on_rciep() below is specific to 
->> the RCiEP itself. So it could be performed either in aer_root_reset() 
->> or remain in the pcie_do_recovery().
->>
->> That should work.
->>
->> Sean
->
-> Thinking more on this, you could still pass dev->rcec to the callback 
-> (eventually aer_root_reset()), but you won’t have the ability to 
-> handle the FLR there without the pointer to the RC_END. That’s why I 
-> suggested passing the RC_END and checking for its RC_EC in 
-> aer_root_reset() if you want to also handle FLR there too from below.
+This is an attempt to fix a bug detected by the syzbot fuzzer.  The bug 
+arises when a USB device claims to be an ATH9K but doesn't have the 
+expected endpoints.  (In this case there was a bulk endpoint where the 
+driver expected an interrupt endpoint.)  The kernel needs to be able to 
+handle such devices without getting an internal error.
 
-Where you get into trouble is that you don’t want to do anything in 
-the non-native case and shouldn’t be going to the callback. So this 
-would add complexity to aer_root_reset() for checking on dev->rcec == 
-NULL…where before you never would have invoked 
-reset_subordinate_devices() in the non-native case.
+On Fri, Oct 09, 2020 at 07:19:19AM -0700, syzbot wrote:
+> syzbot has found a reproducer for the following issue on:
+> 
+> HEAD commit:    6c8cf369 usb: typec: Add QCOM PMIC typec detection driver
+
+Andrey, why doesn't syzbot put a 12-digit commit ID here?
+
+> git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+> console output: https://syzkaller.appspot.com/x/log.txt?x=14ea791b900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=df3bb4023c36d114
+> dashboard link: https://syzkaller.appspot.com/bug?extid=f5378bcf0f0cab45c1c6
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1087bfe7900000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1327b010500000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+f5378bcf0f0cab45c1c6@syzkaller.appspotmail.com
+> 
+> usb 1-1: Manufacturer: syz
+> usb 1-1: SerialNumber: syz
+> usb 1-1: ath9k_htc: Firmware ath9k_htc/htc_9271-1.4.0.fw requested
+> usb 1-1: ath9k_htc: Transferred FW: ath9k_htc/htc_9271-1.4.0.fw, size: 51008
+> ------------[ cut here ]------------
+> usb 1-1: BOGUS urb xfer, pipe 1 != type 3
+> WARNING: CPU: 1 PID: 72 at drivers/usb/core/urb.c:493 usb_submit_urb+0xce2/0x14e0 drivers/usb/core/urb.c:493
+> Kernel panic - not syncing: panic_on_warn set ...
+> CPU: 1 PID: 72 Comm: kworker/1:2 Not tainted 5.9.0-rc8-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Workqueue: events request_firmware_work_func
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x107/0x16e lib/dump_stack.c:118
+>  panic+0x2cb/0x702 kernel/panic.c:231
+>  __warn.cold+0x20/0x44 kernel/panic.c:600
+>  report_bug+0x1bd/0x210 lib/bug.c:198
+>  handle_bug+0x41/0x80 arch/x86/kernel/traps.c:234
+>  exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+>  asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+> RIP: 0010:usb_submit_urb+0xce2/0x14e0 drivers/usb/core/urb.c:493
+> Code: 84 04 03 00 00 e8 3e 98 c6 fd 4c 89 ef e8 66 b6 12 ff 41 89 d8 44 89 e1 4c 89 f2 48 89 c6 48 c7 c7 20 b3 5d 86 e8 d0 ba 9a fd <0f> 0b e9 c6 f8 ff ff e8 12 98 c6 fd 48 81 c5 40 06 00 00 e9 f2 f7
+> RSP: 0018:ffff8881d4757808 EFLAGS: 00010286
+> RAX: 0000000000000000 RBX: 0000000000000003 RCX: 0000000000000000
+> RDX: ffff8881d4ffe500 RSI: ffffffff8129efa3 RDI: ffffed103a8eaef3
+> RBP: ffff8881cde7d800 R08: 0000000000000001 R09: ffff8881db32f50f
+> R10: 0000000000000000 R11: 0000000000003754 R12: 0000000000000001
+> R13: ffff8881d1edd0a0 R14: ffff8881d9bc9320 R15: ffff8881d9ba8600
+>  hif_usb_send_regout drivers/net/wireless/ath/ath9k/hif_usb.c:127 [inline]
+>  hif_usb_send+0x4c1/0xcf0 drivers/net/wireless/ath/ath9k/hif_usb.c:470
+>  htc_issue_send drivers/net/wireless/ath/ath9k/htc_hst.c:34 [inline]
+>  htc_connect_service+0x705/0xa00 drivers/net/wireless/ath/ath9k/htc_hst.c:275
+>  ath9k_wmi_connect+0xc9/0x190 drivers/net/wireless/ath/ath9k/wmi.c:268
+>  ath9k_init_htc_services.constprop.0+0xb3/0x640 drivers/net/wireless/ath/ath9k/htc_drv_init.c:146
+>  ath9k_htc_probe_device+0x25f/0x1e10 drivers/net/wireless/ath/ath9k/htc_drv_init.c:962
+>  ath9k_htc_hw_init+0x31/0x60 drivers/net/wireless/ath/ath9k/htc_hst.c:501
+>  ath9k_hif_usb_firmware_cb+0x274/0x530 drivers/net/wireless/ath/ath9k/hif_usb.c:1220
+>  request_firmware_work_func+0x126/0x250 drivers/base/firmware_loader/main.c:1006
+>  process_one_work+0x94c/0x15f0 kernel/workqueue.c:2269
+>  worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+>  kthread+0x392/0x470 kernel/kthread.c:292
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+> Kernel Offset: disabled
+> Rebooting in 86400 seconds..
+
+I don't know if all the devices used by the ath9k_htc driver are 
+expected to have all of these endpoints and no others.  I just added 
+checks for the ones listed in the hif_usb.h file.
+
+Alan Stern
+
+#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git 6c8cf369
+
+Index: usb-devel/drivers/net/wireless/ath/ath9k/hif_usb.c
+===================================================================
+--- usb-devel.orig/drivers/net/wireless/ath/ath9k/hif_usb.c
++++ usb-devel/drivers/net/wireless/ath/ath9k/hif_usb.c
+@@ -1307,6 +1307,20 @@ static int ath9k_hif_usb_probe(struct us
+ 	struct usb_device *udev = interface_to_usbdev(interface);
+ 	struct hif_device_usb *hif_dev;
+ 	int ret = 0;
++	struct usb_host_interface *alt;
++	struct usb_endpoint_descriptor *epd;
++
++	/* Verify the expected endpoints are present */
++	alt = interface->cur_altsetting;
++	if (!usb_find_int_in_endpoint(alt, &epd) ||
++			usb_endpoint_num(epd) != USB_REG_IN_PIPE ||
++	    !usb_find_int_out_endpoint(alt, &epd) ||
++			usb_endpoint_num(epd) != USB_REG_OUT_PIPE ||
++	    !usb_find_bulk_in(endpoint(alt, &epd) ||
++			usb_endpoint_num(epd) != USB_WLAN_RX_PIPE ||
++	    !usb_find_bulk_out(endpoint(alt, &epd) ||
++			usb_endpoint_num(epd) != USB_WLAN_TX_PIPE)
++		return -ENODEV;
+ 
+ 	if (id->driver_info == STORAGE_DEVICE)
+ 		return send_eject_command(interface);
 
 
->
-> Sean
->
->>
->>
->>>
->>>>  			status = flr_on_rciep(dev);
->>>>  			if (status != PCI_ERS_RESULT_RECOVERED) {
->>>>  				pci_warn(dev, "function level reset failed\n");
->>>> @@ -219,13 +236,13 @@ pci_ers_result_t pcie_do_recovery(struct 
->>>> pci_dev *dev,
->>>>  			}
->>>>  		}
->>>>  	} else {
->>>> -		pci_walk_bridge(bridge, report_normal_detected, &status);
->>>> +		pci_walk_bridge(bridge, dev, report_normal_detected, &status);
->>>>  	}
->>>>
->>>>  	if (status == PCI_ERS_RESULT_CAN_RECOVER) {
->>>>  		status = PCI_ERS_RESULT_RECOVERED;
->>>>  		pci_dbg(dev, "broadcast mmio_enabled message\n");
->>>> -		pci_walk_bridge(bridge, report_mmio_enabled, &status);
->>>> +		pci_walk_bridge(bridge, dev, report_mmio_enabled, &status);
->>>>  	}
->>>>
->>>>  	if (status == PCI_ERS_RESULT_NEED_RESET) {
->>>> @@ -236,14 +253,14 @@ pci_ers_result_t pcie_do_recovery(struct 
->>>> pci_dev *dev,
->>>>  		 */
->>>>  		status = PCI_ERS_RESULT_RECOVERED;
->>>>  		pci_dbg(dev, "broadcast slot_reset message\n");
->>>> -		pci_walk_bridge(bridge, report_slot_reset, &status);
->>>> +		pci_walk_bridge(bridge, dev, report_slot_reset, &status);
->>>>  	}
->>>>
->>>>  	if (status != PCI_ERS_RESULT_RECOVERED)
->>>>  		goto failed;
->>>>
->>>>  	pci_dbg(dev, "broadcast resume message\n");
->>>> -	pci_walk_bridge(bridge, report_resume, &status);
->>>> +	pci_walk_bridge(bridge, dev, report_resume, &status);
->>>>
->>>>  	if (type == PCI_EXP_TYPE_ROOT_PORT ||
->>>>  	    type == PCI_EXP_TYPE_DOWNSTREAM ||
->>>> -- 
->>>> 2.28.0
->>>>
