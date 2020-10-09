@@ -2,201 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C7A8288AC3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:24:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37776288AD0
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388813AbgJIOY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 10:24:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52538 "EHLO
+        id S2388753AbgJIO0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 10:26:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388208AbgJIOYW (ORCPT
+        with ESMTP id S1729280AbgJIO0H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 10:24:22 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE077C0613D2;
-        Fri,  9 Oct 2020 07:24:21 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id k8so7027414pfk.2;
-        Fri, 09 Oct 2020 07:24:21 -0700 (PDT)
+        Fri, 9 Oct 2020 10:26:07 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 247DDC0613D2;
+        Fri,  9 Oct 2020 07:26:07 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id x1so9548899eds.1;
+        Fri, 09 Oct 2020 07:26:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=q+2Clz/NAhLwQuKk3P4SbeWMBJAyhKSLhdK8Heojwbw=;
-        b=jii3OnLA+7tN1244Lz9UoYYMK+tbAX5iKGnCgBaw5Ddw0lpqi0cQxdyYe/0XumeNYq
-         N6aW8KssqYU7wCHvcGr264pDV4fY9oScqtlHB/VIgY9OSEzFdzry8KruQ3bKlsaN+pDH
-         ELlKllHKlS9a0DTYL+GRTTMtPfjTlF41452r1qqH8LZ8nu05GKbaM0ND4BsPilmHH2qE
-         fUOiXgjBZCFQwl7vMwq6zYU1ZPvPpO7asA/59Is28eGfWOtHPJYg6y2JOL91sGdpyHSP
-         4p6vupHTPGcWRIvoERRoLWPb33YEHRPTQBJeThRSoA9bZW8X0DCGZbciyrxzLcSeVD0E
-         7Nlg==
+        bh=cHvy1KQN5hLuKt6ToeI3sdJ0ZRUbDtCJMWu2DR4x78o=;
+        b=Voze/ZFV30MCsweq27VpVXhOCyoYFMibKZjEJwOrtuJLIIo2Ok4RhN+Ie2G+eswXfA
+         1q70MwzV9lDxKwjiAuz1Jk0I1QriZaOPrwrKszjDC+3Z5/DnUEtxm5Vwix28gShZZdKk
+         vBkyETVLN10wqBfnqIQho2OTVci1QbGGZSVyhtMbVsl9JGiQQq/TcMZCoa/ANGahT6Y5
+         +QnQH6J85ytrmM1iD8petUSmD2j5Hs6n/J6L7wHltC+SGlnTXPN/HhVBlzqusY5/KPuj
+         La2A3UayCXMjf+ZUfgqWzkR5XqAwpqIjQGzXSERW6dRxVLccjEJNMt1c/aexKuuP0Lq6
+         apIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=q+2Clz/NAhLwQuKk3P4SbeWMBJAyhKSLhdK8Heojwbw=;
-        b=U5nCeJZt/Q1uQ9cUipKQcd8eEYuvKhySJ8c5Aim2r8gUOT/CB4trv84lb3aYkq4jrU
-         8iNvvu3+hlYUmLm+icjjue36rq4QiZLvZIiXmnIy25PygFODhTJH1mEN9MF/pLsDQMfB
-         dwDtZD6evSIVpjUOyVvNgTc9Or75ACwDbkhUnLkXMVKanHPIdLXYst/U/m7oKaBeYhKy
-         38p47PHDGdBinWz1t0Q3Sf0FvOUKc3zS0NksiU5h1RlXFUu8c3cU0ORYDVbPIzpkXw//
-         35pKEx4gAWeDyuJXYXn0gcED7Fkb/en1aFaA/Rm4igDLpQHI96y27On2ufPPNDVcDy2H
-         pKfw==
-X-Gm-Message-State: AOAM530GytnWV9BGS5j5mJVV6TxhBRvqacwHeMUAnyvrgOFacpLKxJuH
-        RfsGboXR2DDitEwju3vnKYAUCmrRqTCXPd8HrEw=
-X-Google-Smtp-Source: ABdhPJwRb+wuaMB05BbRElITfrf6g1EqZsm9diOdR4xAiRCK6THfEfH9L9DDIA/XJUWjcYdrkRTMKNmiYLUOBE+Gaoc=
-X-Received: by 2002:a17:90a:fb92:: with SMTP id cp18mr5064012pjb.228.1602253461470;
- Fri, 09 Oct 2020 07:24:21 -0700 (PDT)
+        bh=cHvy1KQN5hLuKt6ToeI3sdJ0ZRUbDtCJMWu2DR4x78o=;
+        b=XwEu0PfY+XuZjGxRG05QyUJV3+VZ1Jap9CTVH2HeNsF0MPzdcdc2OoCO2LqCh+5YCo
+         aVV25MdQlnScEr+oP8j/9qUN9CJjgjYXgVjDMGq2Jidr7cszYxPMJJhe5TDgFjPuyyVs
+         BL8ciRozjR82gJbcmMod4itUYmHWeLxe55bhRZYTnvRGa6X7vAh4xRlRSMuTvh1AOLkj
+         P596KZbcUmwzqzZfFSRcGktZ8okOsS+7iB9+FqPRvJNGTUr5+htlBd83EVCUKLScziIr
+         W0RPr9jV2s/BFwr4QE6RENHbzeV8xzGRaFl0mx7Z1sSM5xqVNv8QuwY98WJWKY4Ms4Fw
+         r7wA==
+X-Gm-Message-State: AOAM533YUlVI4hHywsbTOflrSSlIdWPDuC3dGJlAn4h74h8/g+Mr+W+s
+        8K4ja2HJjICBjETILRqXvsi4OHf58z9YVSZsCp0=
+X-Google-Smtp-Source: ABdhPJy53WMWN3WNZMoTcdkRBXF6OkwhMxZOCZHBEzZxaaMBvHj+4P42vcVIHzNnpJkFGujfGV6zw914KUB/EBTpruI=
+X-Received: by 2002:a50:e78f:: with SMTP id b15mr15077444edn.104.1602253565716;
+ Fri, 09 Oct 2020 07:26:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201009141128.683254-1-luzmaximilian@gmail.com> <20201009141128.683254-2-luzmaximilian@gmail.com>
-In-Reply-To: <20201009141128.683254-2-luzmaximilian@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 9 Oct 2020 17:25:11 +0300
-Message-ID: <CAHp75VeJ6ep4ibzHG5RX9_Q_vtJ0_gAMscK1UQG2KUbgOYr7xA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/5] platform: Add Surface platform directory
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-Cc:     Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        =?UTF-8?Q?Bla=C5=BE_Hrastnik?= <blaz@mxxn.io>,
-        Stephen Just <stephenjust@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Chen Yu <yu.c.chen@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201006080424.GA6988@pengutronix.de> <CAOMZO5Ds7mm4dWdt_a+HU=V40zjp006JQJbozRCicx9yiqacgg@mail.gmail.com>
+In-Reply-To: <CAOMZO5Ds7mm4dWdt_a+HU=V40zjp006JQJbozRCicx9yiqacgg@mail.gmail.com>
+From:   Bruno Thomsen <bruno.thomsen@gmail.com>
+Date:   Fri, 9 Oct 2020 16:25:49 +0200
+Message-ID: <CAH+2xPD=CE+pk_cEC=cLv1nebBBg7X+xDpOFANf3rQ4V2+2Cvw@mail.gmail.com>
+Subject: Re: PHY reset question
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>, David Jander <david@protonic.nl>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Marek Vasut <marex@denx.de>,
+        Florian Fainelli <f.fainelli@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 9, 2020 at 5:11 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
->
-> It may make sense to split the Microsoft Surface hardware platform
-> drivers out to a separate subdirectory, since some of it may be shared
-> between ARM and x86 in the future (regarding devices like the Surface
-> Pro X).
->
-> Further, newer Surface devices will require additional platform drivers
-> for fundamental support (mostly regarding their embedded controller),
-> which may also warrant this split from a size perspective.
->
-> This commit introduces a new platform/surface subdirectory for the
-> Surface device family, with subsequent commits moving existing Surface
-> drivers over from platform/x86.
->
-> A new MAINTAINERS entry is added for this directory. Patches to files in
-> this directory will be taken up by the platform-drivers-x86 team (i.e.
-> Hans de Goede and Mark Gross) after they have been reviewed by
-> Maximilian Luz.
+Hi Fabio and Oleksij
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Den ons. 7. okt. 2020 kl. 11.50 skrev Fabio Estevam <festevam@gmail.com>:
+>
+> Hi Oleksij,
+>
+> On Tue, Oct 6, 2020 at 5:05 AM Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+> >
+> > Hello PHY experts,
+> >
+> > Short version:
+> > what is the proper way to handle the PHY reset before identifying PHY?
+> >
+> > Long version:
+> > I stumbled over following issue:
+> > If PHY reset is registered within PHY node. Then, sometimes,  we will not be
+> > able to identify it (read PHY ID), because PHY is under reset.
+> >
+> > mdio {
+> >         compatible = "virtual,mdio-gpio";
+> >
+> >         [...]
+> >
+> >         /* Microchip KSZ8081 */
+> >         usbeth_phy: ethernet-phy@3 {
+> >                 reg = <0x3>;
+> >
+> >                 interrupts-extended = <&gpio5 12 IRQ_TYPE_LEVEL_LOW>;
+> >                 reset-gpios = <&gpio5 11 GPIO_ACTIVE_LOW>;
+> >                 reset-assert-us = <500>;
+> >                 reset-deassert-us = <1000>;
+> >         };
+> >
+> >         [...]
+> > };
+> >
+> > On simple boards with one PHY per MDIO bus, it is easy to workaround by using
+> > phy-reset-gpios withing MAC node (illustrated in below DT example), instead of
+> > using reset-gpios within PHY node (see above DT example).
+> >
+> > &fec {
+> >         [...]
+> >         phy-mode = "rmii";
+> >         phy-reset-gpios = <&gpio4 12 GPIO_ACTIVE_LOW>;
+> >         [...]
+>
+> I thought this has been fixed by Bruno's series:
+> https://www.spinics.net/lists/netdev/msg673611.html
 
-> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
-> ---
->
-> Changes in v2:
->  - Do not create a separate MAINTAINERS entry for platform/surface.
->    Instead add drivers/platform/surface to x86 platform drivers entry.
->    This incorporates recent changes in the x86 platform driver
->    MAINTAINERS entry.
->  - Fix typo in commit message.
->
-> Changes in v3:
->  - Add separate MAINTAINERS entry for platform/surface
->  - Add Maximilian Luz as reviewer for platform/surface
->
-> Changes in v4:
->  - Rename MAINTAINERS entry to be similar to platform/chrome.
->  - Rename Kconfig options to be similar to platform/chrome
->    (PLATFORM -> PLATFORMS)
->  - Drop placeholder comments.
->
-> ---
->  MAINTAINERS                       |  9 +++++++++
->  drivers/platform/Kconfig          |  2 ++
->  drivers/platform/Makefile         |  1 +
->  drivers/platform/surface/Kconfig  | 14 ++++++++++++++
->  drivers/platform/surface/Makefile |  5 +++++
->  5 files changed, 31 insertions(+)
->  create mode 100644 drivers/platform/surface/Kconfig
->  create mode 100644 drivers/platform/surface/Makefile
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 2a2170ff3a91..9fea3ce2db2d 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -11532,6 +11532,15 @@ F:     drivers/scsi/smartpqi/smartpqi*.[ch]
->  F:     include/linux/cciss*.h
->  F:     include/uapi/linux/cciss*.h
->
-> +MICROSOFT SURFACE HARDWARE PLATFORM SUPPORT
-> +M:     Hans de Goede <hdegoede@redhat.com>
-> +M:     Mark Gross <mgross@linux.intel.com>
-> +M:     Maximilian Luz <luzmaximilian@gmail.com>
-> +L:     platform-driver-x86@vger.kernel.org
-> +S:     Maintained
-> +T:     git git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git
-> +F:     drivers/platform/surface/
-> +
->  MICROSOFT SURFACE PRO 3 BUTTON DRIVER
->  M:     Chen Yu <yu.c.chen@intel.com>
->  L:     platform-driver-x86@vger.kernel.org
-> diff --git a/drivers/platform/Kconfig b/drivers/platform/Kconfig
-> index 971426bb4302..18fc6a08569e 100644
-> --- a/drivers/platform/Kconfig
-> +++ b/drivers/platform/Kconfig
-> @@ -13,3 +13,5 @@ source "drivers/platform/chrome/Kconfig"
->  source "drivers/platform/mellanox/Kconfig"
->
->  source "drivers/platform/olpc/Kconfig"
-> +
-> +source "drivers/platform/surface/Kconfig"
-> diff --git a/drivers/platform/Makefile b/drivers/platform/Makefile
-> index 6fda58c021ca..4de08ef4ec9d 100644
-> --- a/drivers/platform/Makefile
-> +++ b/drivers/platform/Makefile
-> @@ -9,3 +9,4 @@ obj-$(CONFIG_MIPS)              += mips/
->  obj-$(CONFIG_OLPC_EC)          += olpc/
->  obj-$(CONFIG_GOLDFISH)         += goldfish/
->  obj-$(CONFIG_CHROME_PLATFORMS) += chrome/
-> +obj-$(CONFIG_SURFACE_PLATFORMS)        += surface/
-> diff --git a/drivers/platform/surface/Kconfig b/drivers/platform/surface/Kconfig
-> new file mode 100644
-> index 000000000000..b67926ece95f
-> --- /dev/null
-> +++ b/drivers/platform/surface/Kconfig
-> @@ -0,0 +1,14 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +#
-> +# Microsoft Surface Platform-Specific Drivers
-> +#
-> +
-> +menuconfig SURFACE_PLATFORMS
-> +       bool "Microsoft Surface Platform-Specific Device Drivers"
-> +       default y
-> +       help
-> +         Say Y here to get to see options for platform-specific device drivers
-> +         for Microsoft Surface devices. This option alone does not add any
-> +         kernel code.
-> +
-> +         If you say N, all options in this submenu will be skipped and disabled.
-> diff --git a/drivers/platform/surface/Makefile b/drivers/platform/surface/Makefile
-> new file mode 100644
-> index 000000000000..3700f9e84299
-> --- /dev/null
-> +++ b/drivers/platform/surface/Makefile
-> @@ -0,0 +1,5 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# Makefile for linux/drivers/platform/surface
-> +# Microsoft Surface Platform-Specific Drivers
-> +#
-> --
-> 2.28.0
->
+Yes, that has fixed the Microchip/Micrel PHY ID auto detection
+issue. I have send a DTS patch v3 that makes use of the newly
+added device tree parameter:
+https://lkml.org/lkml/2020/9/23/595
 
-
--- 
-With Best Regards,
-Andy Shevchenko
+/Bruno
