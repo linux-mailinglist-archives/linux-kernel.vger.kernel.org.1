@@ -2,85 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A7E2885A9
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:58:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DEB02885B1
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 11:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732987AbgJII65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 04:58:57 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:35744 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732507AbgJII64 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 04:58:56 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 9FB24A3E691660E77F98;
-        Fri,  9 Oct 2020 16:58:55 +0800 (CST)
-Received: from [10.67.102.197] (10.67.102.197) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 9 Oct 2020 16:58:48 +0800
-Subject: Re: [PATCH] arm:traps: Don't print stack or raw PC/LR values in
- backtraces
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Russell King - ARM Linux admin" <linux@armlinux.org.uk>
-CC:     <dima@arista.com>, <will@kernel.org>, <jpoimboe@redhat.com>,
-        <akpm@linux-foundation.org>, <christian.brauner@ubuntu.com>,
-        <viro@zeniv.linux.org.uk>, <ldufour@linux.ibm.com>,
-        <amanieu@gmail.com>, <walken@google.com>,
-        <ben.dooks@codethink.co.uk>, <tglx@linutronix.de>,
-        <mingo@kernel.org>, <vincent.whitchurch@axis.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <wangle6@huawei.com>,
-        <luohaizheng@huawei.com>
-References: <20201009075957.110017-1-nixiaoming@huawei.com>
- <20201009080849.GM1551@shell.armlinux.org.uk>
- <20201009081820.jargnmck6zfkzegx@linutronix.de>
-From:   Xiaoming Ni <nixiaoming@huawei.com>
-Message-ID: <ca6d4c91-2059-8325-8622-1445e15bc0b9@huawei.com>
-Date:   Fri, 9 Oct 2020 16:58:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.0.1
+        id S1733008AbgJIJAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 05:00:12 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:36052 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732969AbgJIJAM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 05:00:12 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 099909VX053162;
+        Fri, 9 Oct 2020 04:00:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1602234009;
+        bh=atVNXqR8De4QltIjOct1Mc9+wmSGMbZbnMsOGmwFWco=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=SXna70VzLVA7qbO1Ne45HmLgYFNTDYNAzCVCRahGZsyD7vDW7EmA91jE378Eq0KA4
+         DIgNCvEv1K1/dlAXsXtEOKkH/QzkhrIxKSFgdi7md/dxNanZOlz74MMqedE80X193A
+         lrNKu2EoxTHcXwD+Xc8uA/lawKx+05kX46ZxpHwI=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 099909A4051886
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 9 Oct 2020 04:00:09 -0500
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 9 Oct
+ 2020 04:00:08 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 9 Oct 2020 04:00:08 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 099907jW100953;
+        Fri, 9 Oct 2020 04:00:07 -0500
+Subject: Re: [PATCH v4 3/3] dmaengine: qcom: Add GPI dma driver
+To:     Vinod Koul <vkoul@kernel.org>, <dmaengine@vger.kernel.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20201008123151.764238-1-vkoul@kernel.org>
+ <20201008123151.764238-4-vkoul@kernel.org>
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+Message-ID: <6d6b4bf8-5610-f1cb-8c9d-f4bb82c93bdb@ti.com>
+Date:   Fri, 9 Oct 2020 12:00:28 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-In-Reply-To: <20201009081820.jargnmck6zfkzegx@linutronix.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.197]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20201008123151.764238-4-vkoul@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/10/9 16:18, Sebastian Andrzej Siewior wrote:
-> On 2020-10-09 09:08:50 [+0100], Russell King - ARM Linux admin wrote:
->> I am really not happy about this - it hurts at least my ability to
->> debug the kernel when people post oopses to the mailing list. If
+Hi Vinod,
 
-In the reset scenario, dump_mem is retained:
-
-@@ -125,6 +118,9 @@ static void dump_mem(const char *lvl, const char 
-*str, unsigned long bottom,
-         mm_segment_t fs;
-         int i;
-
-+ /* Do not print virtual addresses in non-reset scenarios */
-+ if (!panic_on_oops)
-+         return;
-
-
->> people wish to make the kernel harder to debug, and are prepared
->> to be told "your kernel is undebuggable" then this patch is fine.
+On 08/10/2020 15.31, Vinod Koul wrote:
+> This controller provides DMAengine capabilities for a variety of peripheral
+> buses such as I2C, UART, and SPI. By using GPI dmaengine driver, bus
+> drivers can use a standardize interface that is protocol independent to
+> transfer data between memory and peripheral.
 > 
-> I haven't look at the patch but don't they keep/add the representation:
->    PC: symbol+offset/size
->    LR: symbol+offset/size
-> 
-> ? This is needed at very least as a replacement for the missing address.
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>  drivers/dma/qcom/Kconfig     |   12 +
+>  drivers/dma/qcom/Makefile    |    1 +
+>  drivers/dma/qcom/gpi.c       | 2303 ++++++++++++++++++++++++++++++++++
+>  include/linux/qcom-gpi-dma.h |   83 ++
 
-Yes, only %08lx was deleted, but %ps is still retained.
+Would not be better to have the header under include/linux/dma/ ?
 
--	printk("%s[<%08lx>] (%ps) from [<%08lx>] (%pS)\n",
--		loglvl, where, (void *)where, from, (void *)from);
-+	printk("%s (%ps) from (%pS)\n",
-+		loglvl, (void *)where, (void *)from);
+>  4 files changed, 2399 insertions(+)
+>  create mode 100644 drivers/dma/qcom/gpi.c
+>  create mode 100644 include/linux/qcom-gpi-dma.h
 
-Thanks
-Xiaoming Ni
+- Péter
 
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
