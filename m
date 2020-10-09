@@ -2,71 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D24BB289C0F
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 01:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30C0F289C16
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 01:21:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726847AbgJIXQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 19:16:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53102 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725802AbgJIXQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 19:16:01 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5981B222EB;
-        Fri,  9 Oct 2020 23:16:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602285360;
-        bh=l6taX0FCEWeJUtB5xJSPpOswP3JU4Ua+gVwYeASRj70=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=xIc7ck5uziWAG/SSx/mh88eb3LlScn3+0DzlM9FJUMXbsTFPZK3r57aJ13AibdtEB
-         jPhbQyIZ4yIfHnFBNcrlHeD07F8y7bAnOgX0nBBJez0/1BG9ETEHJrpySjmPDqpld8
-         8TztDhpzEvy67xgveMfrjgvJ4Qi30Cq3EIzm8tLo=
-Date:   Fri, 9 Oct 2020 16:15:58 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Aleksandr Nogikh <a.nogikh@gmail.com>
-Cc:     davem@davemloft.net, johannes@sipsolutions.net,
-        edumazet@google.com, andreyknvl@google.com, dvyukov@google.com,
-        elver@google.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        nogikh@google.com
-Subject: Re: [PATCH 1/2] net: store KCOV remote handle in sk_buff
-Message-ID: <20201009161558.57792e1a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201007101726.3149375-2-a.nogikh@gmail.com>
-References: <20201007101726.3149375-1-a.nogikh@gmail.com>
-        <20201007101726.3149375-2-a.nogikh@gmail.com>
+        id S1726986AbgJIXS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 19:18:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726120AbgJIXSL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 19:18:11 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE0F1C0613D5
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 16:18:10 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id e10so8124347pfj.1
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 16:18:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=D744gDcHOWXajYrsEOce8eCK8+o4p+P+OG7A3xbJaOo=;
+        b=Lr1dfoHemJlX/RIX2hvL2D/L44xa5PQeU7QnVLpPhzAzEOQAlmblx8B40RmQGL/07E
+         VCSHsxo6VPYFWmSWRAxyjPtDbXNEFu1QxWriaykwo9hkwNCSPWr3lehsNnYMCBvsFPcq
+         5ZaxgqdbhnQ+j6kvffD/AwvtU0IQXPPK+WzIw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=D744gDcHOWXajYrsEOce8eCK8+o4p+P+OG7A3xbJaOo=;
+        b=Xc+9aehgVtEK9uDBLeL5aDPriP1s/H/zm+sHhq8Plq/s/TOehrnz+suluvosPzDxD5
+         5XJg6vqK7ZGiAQsHaijY1ac8Ih/Ek5ohycqnznTlDxkxfcOolhiKBanc1bUMGeHcuhFC
+         yUseJ7XDyszapR+JP6LmUkoXXz7OXl5soWPRf+9nPuiVP25U+asJWB2HBBqwhSzkvoQF
+         /n1tVlon3pniU9sMkU6tyWyR6idJgmOIAudXHZOiYePp3hRdWsWFMBmi02TDu1O8zw0Y
+         y+bXu1G9Y3X+2iI2ghhSymXyDTk8jbJ9rhNOtpjJ+QeFHRraV0WSTvdJyRfprfNUjGjc
+         Zk4w==
+X-Gm-Message-State: AOAM530L4RoIpQ1SUEs8dK8SbOXeddC3F9vR+Y85Oj0aGop+iFjGTnA/
+        7R5bqAMVwYMflzr8HpZuP1OaGg==
+X-Google-Smtp-Source: ABdhPJx8ui/HzkhIAhu2rRwKn7Y9jfi9DolNG8cFk6RzmyJOjHiY9uQq6NzZY+18AB3NyWZTy5R5OQ==
+X-Received: by 2002:a17:90a:3fcb:: with SMTP id u11mr6950918pjm.128.1602285490320;
+        Fri, 09 Oct 2020 16:18:10 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 15sm11555731pgt.24.2020.10.09.16.18.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Oct 2020 16:18:09 -0700 (PDT)
+Date:   Fri, 9 Oct 2020 16:18:08 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     containers@lists.linux-foundation.org,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Subject: Re: [PATCH v4 seccomp 1/5] seccomp/cache: Lookup syscall allowlist
+ bitmap for fast path
+Message-ID: <202010091614.8BB0EB64@keescook>
+References: <cover.1602263422.git.yifeifz2@illinois.edu>
+ <896cd9de97318d20c25edb1297db8c65e1cfdf84.1602263422.git.yifeifz2@illinois.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <896cd9de97318d20c25edb1297db8c65e1cfdf84.1602263422.git.yifeifz2@illinois.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  7 Oct 2020 10:17:25 +0000 Aleksandr Nogikh wrote:
-> From: Aleksandr Nogikh <nogikh@google.com>
+On Fri, Oct 09, 2020 at 12:14:29PM -0500, YiFei Zhu wrote:
+> From: YiFei Zhu <yifeifz2@illinois.edu>
 > 
-> Remote KCOV coverage collection enables coverage-guided fuzzing of the
-> code that is not reachable during normal system call execution. It is
-> especially helpful for fuzzing networking subsystems, where it is
-> common to perform packet handling in separate work queues even for the
-> packets that originated directly from the user space.
+> The overhead of running Seccomp filters has been part of some past
+> discussions [1][2][3]. Oftentimes, the filters have a large number
+> of instructions that check syscall numbers one by one and jump based
+> on that. Some users chain BPF filters which further enlarge the
+> overhead. A recent work [6] comprehensively measures the Seccomp
+> overhead and shows that the overhead is non-negligible and has a
+> non-trivial impact on application performance.
 > 
-> Enable coverage-guided frame injection by adding a kcov_handle
-> parameter to sk_buff structure. Initialization in __alloc_skb ensures
-> that no socket buffer that was generated during a system call will be
-> missed.
+> We observed some common filters, such as docker's [4] or
+> systemd's [5], will make most decisions based only on the syscall
+> numbers, and as past discussions considered, a bitmap where each bit
+> represents a syscall makes most sense for these filters.
 > 
-> Code that is of interest and that performs packet processing should be
-> annotated with kcov_remote_start()/kcov_remote_stop().
+> The fast (common) path for seccomp should be that the filter permits
+> the syscall to pass through, and failing seccomp is expected to be
+> an exceptional case; it is not expected for userspace to call a
+> denylisted syscall over and over.
 > 
-> An alternative approach is to determine kcov_handle solely on the
-> basis of the device/interface that received the specific socket
-> buffer. However, in this case it would be impossible to distinguish
-> between packets that originated from normal background network
-> processes and those that were intentionally injected from the user
-> space.
+> When it can be concluded that an allow must occur for the given
+> architecture and syscall pair (this determination is introduced in
+> the next commit), seccomp will immediately allow the syscall,
+> bypassing further BPF execution.
 > 
-> Signed-off-by: Aleksandr Nogikh <nogikh@google.com>
+> Each architecture number has its own bitmap. The architecture
+> number in seccomp_data is checked against the defined architecture
+> number constant before proceeding to test the bit against the
+> bitmap with the syscall number as the index of the bit in the
+> bitmap, and if the bit is set, seccomp returns allow. The bitmaps
+> are all clear in this patch and will be initialized in the next
+> commit.
+> 
+> [1] https://lore.kernel.org/linux-security-module/c22a6c3cefc2412cad00ae14c1371711@huawei.com/T/
+> [2] https://lore.kernel.org/lkml/202005181120.971232B7B@keescook/T/
+> [3] https://github.com/seccomp/libseccomp/issues/116
+> [4] https://github.com/moby/moby/blob/ae0ef82b90356ac613f329a8ef5ee42ca923417d/profiles/seccomp/default.json
+> [5] https://github.com/systemd/systemd/blob/6743a1caf4037f03dc51a1277855018e4ab61957/src/shared/seccomp-util.c#L270
+> [6] Draco: Architectural and Operating System Support for System Call Security
+>     https://tianyin.github.io/pub/draco.pdf, MICRO-53, Oct. 2020
+> 
+> Co-developed-by: Dimitrios Skarlatos <dskarlat@cs.cmu.edu>
+> Signed-off-by: Dimitrios Skarlatos <dskarlat@cs.cmu.edu>
+> Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
+> ---
+>  kernel/seccomp.c | 72 ++++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 72 insertions(+)
+> 
+> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> index ae6b40cc39f4..73f6b6e9a3b0 100644
+> --- a/kernel/seccomp.c
+> +++ b/kernel/seccomp.c
+> @@ -143,6 +143,34 @@ struct notification {
+>  	struct list_head notifications;
+>  };
+>  
+> +#ifdef SECCOMP_ARCH_NATIVE
+> +/**
+> + * struct action_cache - per-filter cache of seccomp actions per
+> + * arch/syscall pair
+> + *
+> + * @allow_native: A bitmap where each bit represents whether the
+> + *		  filter will always allow the syscall, for the
+> + *		  native architecture.
+> + * @allow_compat: A bitmap where each bit represents whether the
+> + *		  filter will always allow the syscall, for the
+> + *		  compat architecture.
+> + */
+> +struct action_cache {
+> +	DECLARE_BITMAP(allow_native, SECCOMP_ARCH_NATIVE_NR);
+> +#ifdef SECCOMP_ARCH_COMPAT
+> +	DECLARE_BITMAP(allow_compat, SECCOMP_ARCH_COMPAT_NR);
+> +#endif
+> +};
+> +#else
+> +struct action_cache { };
+> +
+> +static inline bool seccomp_cache_check_allow(const struct seccomp_filter *sfilter,
+> +					     const struct seccomp_data *sd)
+> +{
+> +	return false;
+> +}
+> +#endif /* SECCOMP_ARCH_NATIVE */
+> +
+>  /**
+>   * struct seccomp_filter - container for seccomp BPF programs
+>   *
+> @@ -298,6 +326,47 @@ static int seccomp_check_filter(struct sock_filter *filter, unsigned int flen)
+>  	return 0;
+>  }
+>  
+> +#ifdef SECCOMP_ARCH_NATIVE
+> +static inline bool seccomp_cache_check_allow_bitmap(const void *bitmap,
+> +						    size_t bitmap_size,
+> +						    int syscall_nr)
+> +{
+> +	if (unlikely(syscall_nr < 0 || syscall_nr >= bitmap_size))
+> +		return false;
+> +	syscall_nr = array_index_nospec(syscall_nr, bitmap_size);
+> +
+> +	return test_bit(syscall_nr, bitmap);
+> +}
+> +
+> +/**
+> + * seccomp_cache_check_allow - lookup seccomp cache
+> + * @sfilter: The seccomp filter
+> + * @sd: The seccomp data to lookup the cache with
+> + *
+> + * Returns true if the seccomp_data is cached and allowed.
+> + */
+> +static inline bool seccomp_cache_check_allow(const struct seccomp_filter *sfilter,
+> +					     const struct seccomp_data *sd)
+> +{
+> +	int syscall_nr = sd->nr;
+> +	const struct action_cache *cache = &sfilter->cache;
+> +
+> +	if (likely(sd->arch == SECCOMP_ARCH_NATIVE))
+> +		return seccomp_cache_check_allow_bitmap(cache->allow_native,
+> +							SECCOMP_ARCH_NATIVE_NR,
+> +							syscall_nr);
+> +#ifdef SECCOMP_ARCH_COMPAT
+> +	if (likely(sd->arch == SECCOMP_ARCH_COMPAT))
+> +		return seccomp_cache_check_allow_bitmap(cache->allow_compat,
+> +							SECCOMP_ARCH_COMPAT_NR,
+> +							syscall_nr);
+> +#endif /* SECCOMP_ARCH_COMPAT */
+> +
+> +	WARN_ON_ONCE(true);
+> +	return false;
+> +}
+> +#endif /* SECCOMP_ARCH_NATIVE */
 
-Could you use skb_extensions for this?
+An small optimization for the non-compat case might be to do this to
+avoid the sd->arch test (which should have no way to ever change in such
+builds):
+
+static inline bool seccomp_cache_check_allow(const struct seccomp_filter *sfilter,
+                                             const struct seccomp_data *sd)
+{
+        const struct action_cache *cache = &sfilter->cache;
+
+#ifndef SECCOMP_ARCH_COMPAT
+        /* A native-only architecture doesn't need to check sd->arch. */
+        return seccomp_cache_check_allow_bitmap(cache->allow_native,
+                                                SECCOMP_ARCH_NATIVE_NR,
+                                                sd->nr);
+#else /* SECCOMP_ARCH_COMPAT */
+        if (likely(sd->arch == SECCOMP_ARCH_NATIVE))
+                return seccomp_cache_check_allow_bitmap(cache->allow_native,
+                                                        SECCOMP_ARCH_NATIVE_NR,
+                                                        sd->nr);
+        if (likely(sd->arch == SECCOMP_ARCH_COMPAT))
+                return seccomp_cache_check_allow_bitmap(cache->allow_compat,
+                                                        SECCOMP_ARCH_COMPAT_NR,
+                                                        sd->nr);
+#endif
+
+        WARN_ON_ONCE(true);
+        return false;
+}
+
+> +
+>  /**
+>   * seccomp_run_filters - evaluates all seccomp filters against @sd
+>   * @sd: optional seccomp data to be passed to filters
+> @@ -320,6 +389,9 @@ static u32 seccomp_run_filters(const struct seccomp_data *sd,
+>  	if (WARN_ON(f == NULL))
+>  		return SECCOMP_RET_KILL_PROCESS;
+>  
+> +	if (seccomp_cache_check_allow(f, sd))
+> +		return SECCOMP_RET_ALLOW;
+> +
+>  	/*
+>  	 * All filters in the list are evaluated and the lowest BPF return
+>  	 * value always takes priority (ignoring the DATA).
+> -- 
+> 2.28.0
+> 
+
+This is all looking good; thank you! I'm doing some test builds/runs
+now. :)
+
+-- 
+Kees Cook
