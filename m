@@ -2,129 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D857D288B50
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E725A288B75
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:34:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388738AbgJIOcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 10:32:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53808 "EHLO
+        id S2388832AbgJIOen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 10:34:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389023AbgJIOcL (ORCPT
+        with ESMTP id S2387662AbgJIOen (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 10:32:11 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70616C0613D8
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 07:32:11 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id c2so10710806qkf.10
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 07:32:11 -0700 (PDT)
+        Fri, 9 Oct 2020 10:34:43 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8421C0613D2;
+        Fri,  9 Oct 2020 07:34:42 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id t6so736965qvz.4;
+        Fri, 09 Oct 2020 07:34:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=73DpVirPZ06c1n2mkJSkENlUc+TenafPYOh6N9YsRj8=;
-        b=j3fuCopb7iniyL2y53HSklILSjdWqx7XXY5J7anSdWIzVAS51yHUg1bH+xWsQqV3an
-         hVaIqQtPYG5XhAZxJubl7tnA+2dzIyrb1eABP/rsrrjt9Ddzi0d1WmSuwF0UQqwD1tgr
-         69SltM6wnxkhZu8y4olirPc3PCASUILXSC5ua6+ynVuzP7VwBBECaBlnoZLOtcJNGGyr
-         NOkdDPv6Ux3fvUs6FlZoAKLjSdk3YJbxq2oDe3QQYv1fkcF15D+45H8TBvKAbi8SeVAg
-         F1hEOalHcniDpc4tE9aqUhgdNW4MqmHYSXYkxAhz5TsGfdhszvZtn/5ZEIEGhUQjLvR4
-         psaA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ls9vz0a1qTFN1GMHqLkY6qWko2ASP2xU7lPUVCQ8ZGo=;
+        b=levKtKXFBhq1hsCUosWHpEv/H426nlHTQ3ECBv+8Iy7DpkdaeY39QdjY3zkTjsOm70
+         gRk5tZVVA8vrMLi55gQmOimNmJDQvpZGoazL/GrWa2T6/FhYgThl0o4hL9c7ROhz8FYB
+         TL4xG8f+5xVVJnLL7c4aRq45Srx6wli9ZW5YFsxzqoYfO5LoORJ2NI1at1XwcpAfvnTV
+         GPmSp/XQ3kIs0EFKSkXqPggcX++30zoetJLzhNDPQsNeYn03ai8Ev/36id6KFVPxyT1p
+         E0rd+bTNLwwugNEMTcslkgGV2DE6eXN6J0hXM8hL7DVzebR0xzDJG1NarANwM71Qg3ir
+         7uxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=73DpVirPZ06c1n2mkJSkENlUc+TenafPYOh6N9YsRj8=;
-        b=Rx17V6HnU4/1rxXiqNXGEFxAvEm3X1QyxDopM89SM217OxKERBIyvNbRMUJP/k33KH
-         NoSUzpXNKfT+zo2RXFyau0lDExjCScqAWzFXLbLSMW2Wp8FrJwMTdjEv9oX+eeFUsKsI
-         wwufqvAZd+OJIyHNCIuGOffxbt1k7sxA83eywskpTCJThUbtGBoqpeHKAC4WuYC1RaKx
-         xfX/TkorGR55JGfwRFtz7msFpur1koeBxlzYUUrMLz2ZulzvAhiAvXbR8FSko8UfJ0p5
-         tUGRSjUzjGuI3tezfVBXvlZ36KWwwmC6DWCoUujSduI2HRGaHKtjTww6JvW/fDD9BYuf
-         IvOw==
-X-Gm-Message-State: AOAM533oWdteM1yrLWj/cCRvu8wF5jbPAMqhQ4ASplf8aKgFPrL8UCDe
-        7dKkqFiLs+5BcKL9V/TSHo/pNA==
-X-Google-Smtp-Source: ABdhPJzpwYy/97Cu1hz1/nj4gs64VmTlSZ35zli/9trR97tocuoZHHYGhTwRETY7JpaxNsFSCH9jrQ==
-X-Received: by 2002:a37:4d95:: with SMTP id a143mr13781409qkb.248.1602253930622;
-        Fri, 09 Oct 2020 07:32:10 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id r64sm6400897qkf.119.2020.10.09.07.32.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 07:32:10 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kQtRJ-001zsY-G1; Fri, 09 Oct 2020 11:32:09 -0300
-Date:   Fri, 9 Oct 2020 11:32:09 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: Re: [PATCH v2 14/17] resource: Move devmem revoke code to resource
- framework
-Message-ID: <20201009143209.GS5177@ziepe.ca>
-References: <20201009075934.3509076-1-daniel.vetter@ffwll.ch>
- <20201009075934.3509076-15-daniel.vetter@ffwll.ch>
- <20201009123109.GO5177@ziepe.ca>
- <CAKMK7uFpPP-Q0jC0vM7vYPEcg0m4NzTw+Ld=swdTF3BgMX5Qug@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ls9vz0a1qTFN1GMHqLkY6qWko2ASP2xU7lPUVCQ8ZGo=;
+        b=hQ3omL5Js1MGbvPd0uD/Fz/Zw0wXP/MURgRskhfjZo0lqAeb+7b8eiaCn62pGEurJr
+         7qJ1ldEtgq7PbdBFRSpCgAq9QoFKpJfhQwqd4tIzxOuSLHsYJn8h7Nlu365kNRUTtDtt
+         slmwzgzR4CJQmTE92pjl7IWZVexl+epSWETjknYAtaNVzJKsJba2B7rkFlhQsJ1elKA2
+         0Y7/VJvwaI/furkrqf0TL0/8reV5OvAlbnzcOuIe8HvEb8dH4NLDFmEpXf0ZhXHh7c92
+         eTSVivHp16VEX1xPv07r51i2C4A2GBbygsb3vQb1xujmJPh2yyYN6lqU2aZVGtwlu29F
+         eKFg==
+X-Gm-Message-State: AOAM5317zUsTcHD72+BC058PFatHg7cw2mYTMmyz1h4UZuP+f4KFQkLU
+        7JWqGDLTl9X7QECCMN59e4cT76/MTfWy9lp62iI=
+X-Google-Smtp-Source: ABdhPJzBD8SPzyj50tFSLUKQ30K6ksYYUgx5iylfjWwPGxFTqyAs3HpJ76EoSYTvPiJxGfR6KfH5wRtdb4nQV05p5So=
+X-Received: by 2002:a05:6214:1147:: with SMTP id b7mr5862560qvt.10.1602254081785;
+ Fri, 09 Oct 2020 07:34:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKMK7uFpPP-Q0jC0vM7vYPEcg0m4NzTw+Ld=swdTF3BgMX5Qug@mail.gmail.com>
+References: <20201007133002.GA3236436@bjorn-Precision-5520> <2C086FFC-28F5-42BB-933E-0C1C4FDC738B@canonical.com>
+In-Reply-To: <2C086FFC-28F5-42BB-933E-0C1C4FDC738B@canonical.com>
+From:   Ian Kumlien <ian.kumlien@gmail.com>
+Date:   Fri, 9 Oct 2020 16:34:30 +0200
+Message-ID: <CAA85sZszpwU4MNKzb=W3MaK8YHwfuEmdXkc03TJkDtOD6a3L0A@mail.gmail.com>
+Subject: Re: [PATCH 2/2] PCI: vmd: Enable ASPM for mobile platforms
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Derrick, Jonathan" <jonathan.derrick@intel.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 04:24:45PM +0200, Daniel Vetter wrote:
-> On Fri, Oct 9, 2020 at 2:31 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+On Thu, Oct 8, 2020 at 6:19 AM Kai-Heng Feng
+<kai.heng.feng@canonical.com> wrote:
+>
+>
+>
+> > On Oct 7, 2020, at 21:30, Bjorn Helgaas <helgaas@kernel.org> wrote:
 > >
-> > On Fri, Oct 09, 2020 at 09:59:31AM +0200, Daniel Vetter wrote:
+> > On Wed, Oct 07, 2020 at 12:26:19PM +0800, Kai-Heng Feng wrote:
+> >>> On Oct 6, 2020, at 03:19, Bjorn Helgaas <helgaas@kernel.org> wrote:
+> >>> On Tue, Oct 06, 2020 at 02:40:32AM +0800, Kai-Heng Feng wrote:
+> >>>>> On Oct 3, 2020, at 06:18, Bjorn Helgaas <helgaas@kernel.org> wrote:
+> >>>>> On Wed, Sep 30, 2020 at 04:24:54PM +0800, Kai-Heng Feng wrote:
 > >
-> > > +struct address_space *iomem_get_mapping(void)
-> > > +{
-> > > +     return iomem_inode->i_mapping;
+> > ...
+> >>>> I wonder whether other devices that add PCIe domain have the same
+> >>>> behavior?  Maybe it's not a special case at all...
+> >>>
+> >>> What other devices are these?
+> >>
+> >> Controllers which add PCIe domain.
 > >
-> > This should pair an acquire with the release below
+> > I was looking for specific examples, not just a restatement of what
+> > you said before.  I'm just curious because there are a lot of
+> > controllers I'm not familiar with, and I can't think of an example.
 > >
-> > > +     /*
-> > > +      * Publish /dev/mem initialized.
-> > > +      * Pairs with smp_load_acquire() in revoke_iomem().
-> > > +      */
-> > > +     smp_store_release(&iomem_inode, inode);
+> >>>> I understand the end goal is to keep consistency for the entire ASPM
+> >>>> logic. However I can't think of any possible solution right now.
+> >>>>
+> >>>>> - If we built with CONFIG_PCIEASPM_POWERSAVE=y, would that solve the
+> >>>>>  SoC power state problem?
+> >>>>
+> >>>> Yes.
+> >>>>
+> >>>>> - What issues would CONFIG_PCIEASPM_POWERSAVE=y introduce?
+> >>>>
+> >>>> This will break many systems, at least for the 1st Gen Ryzen
+> >>>> desktops and laptops.
+> >>>>
+> >>>> All PCIe ASPM are not enabled by BIOS, and those systems immediately
+> >>>> freeze once ASPM is enabled.
+> >>>
+> >>> That indicates a defect in the Linux ASPM code.  We should fix that.
+> >>> It should be safe to use CONFIG_PCIEASPM_POWERSAVE=y on every system.
+> >>
+> >> On those systems ASPM are also not enabled on Windows. So I think
+> >> ASPM are disabled for a reason.
 > >
-> > However, this seems abnormal, initcalls rarely do this kind of stuff
-> > with global data..
+> > If the platform knows ASPM needs to be disabled, it should be using
+> > ACPI_FADT_NO_ASPM or _OSC to prevent the OS from using it.  And if
+> > CONFIG_PCIEASPM_POWERSAVE=y means Linux enables ASPM when it
+> > shouldn't, that's a Linux bug that we need to fix.
+>
+> Yes that's a bug which fixed by Ian's new patch.
+>
 > >
-> > The kernel crashes if this fs_initcall is raced with
-> > iomem_get_mapping() due to the unconditional dereference, so I think
-> > it can be safely switched to a simple assignment.
-> 
-> Ah yes I checked this all, but forgot to correctly annotate the
-> iomem_get_mapping access. For reference, see b34e7e298d7a ("/dev/mem:
-> Add missing memory barriers for devmem_inode").
+> >>> Are there bug reports for these? The info we would need to start with
+> >>> includes "lspci -vv" and dmesg log (with CONFIG_PCIEASPM_DEFAULT=y).
+> >>> If a console log with CONFIG_PCIEASPM_POWERSAVE=y is available, that
+> >>> might be interesting, too.  We'll likely need to add some
+> >>> instrumentation and do some experimentation, but in principle, this
+> >>> should be fixable.
+> >>
+> >> Doing this is asking users to use hardware settings that ODM/OEM
+> >> never tested, and I think the risk is really high.
+> >
+> > What?  That's not what I said at all.  I'm asking for information
+> > about these hangs so we can fix them.  I'm not suggesting that you
+> > should switch to CONFIG_PCIEASPM_POWERSAVE=y for the distro.
+>
+> Ah, I thought your suggestion is switching to CONFIG_PCIEASPM_POWERSAVE=y, because I sense you want to use that to cover the VMD ASPM this patch tries to solve.
+>
+> Do we have a conclusion how to enable VMD ASPM with CONFIG_PCIEASPM_DEFAULT=y?
+>
+> >
+> > Let's back up.  You said:
+> >
+> >  CONFIG_PCIEASPM_POWERSAVE=y ... will break many systems, at least
+> >  for the 1st Gen Ryzen desktops and laptops.
+> >
+> >  All PCIe ASPM are not enabled by BIOS, and those systems immediately
+> >  freeze once ASPM is enabled.
+> >
+> > These system hangs might be caused by (1) some hardware issue that
+> > causes a hang when ASPM is enabled even if it is configured correctly
+> > or (2) Linux configuring ASPM incorrectly.
+>
+> It's (2) here.
+>
+> >
+> > For case (1), the platform should be using ACPI_FADT_NO_ASPM or _OSC
+> > to prevent the OS from enabling ASPM.  Linux should pay attention to
+> > that even when CONFIG_PCIEASPM_POWERSAVE=y.
+> >
+> > If the platform *should* use these mechanisms but doesn't, the
+> > solution is a quirk, not the folklore that "we can't use
+> > CONFIG_PCIEASPM_POWERSAVE=y because it breaks some systems."
+>
+> The platform in question doesn't prevent OS from enabling ASPM.
+>
+> >
+> > For case (2), we should fix Linux so it configures ASPM correctly.
+> >
+> > We cannot use the build-time CONFIG_PCIEASPM settings to avoid these
+> > hangs.  We need to fix the Linux run-time code so the system operates
+> > correctly no matter what CONFIG_PCIEASPM setting is used.
+> >
+> > We have sysfs knobs to control ASPM (see 72ea91afbfb0 ("PCI/ASPM: Add
+> > sysfs attributes for controlling ASPM link states")).  They can do the
+> > same thing at run-time as CONFIG_PCIEASPM_POWERSAVE=y does at
+> > build-time.  If those knobs cause hangs on 1st Gen Ryzen systems, we
+> > need to fix that.
+>
+> Ian's patch solves the issue, at least for the systems I have.
 
-Oh yikes, so revoke_iomem can run concurrently during early boot,
-tricky.
+Could you add:
+diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+index 15d64832a988..cd9f2101f9a2 100644
+--- a/drivers/pci/pcie/aspm.c
++++ b/drivers/pci/pcie/aspm.c
+@@ -482,7 +482,12 @@ static void pcie_aspm_check_latency(struct
+pci_dev *endpoint)
+                        latency = max_t(u32, link->latency_up.l1,
+link->latency_dw.l1);
+                        l1_max_latency = max_t(u32, latency, l1_max_latency);
+                        if (l1_max_latency + l1_switch_latency > acceptable->l1)
++                       {
++                               pci_info(endpoint, "L1 latency
+exceeded - path: %i - max: %i\n", l1_switch_latency, l1_max_latency);
++                               pci_info(link->pdev, "Upstream device
+- %i\n", link->latency_up.l1);
++                               pci_info(link->downstream, "Downstream
+device - %i\n", link->latency_dw.l1);
+                                link->aspm_capable &= ~ASPM_STATE_L1;
++                       }
 
-> The reasons for the annotations is that iomem requests can happen
-> fairly early, way before fs_initcalls happen. That means revoke_iomem
-> needs to check for that and bail out if we race - nothing bad can
-> happen since userspace isn't running at this point anyway. And
-> apparently it needs to be a full acquire fence since we don't just
-> write a value, but need a barrier for the struct stuff.
+                        l1_switch_latency += 1000;
+                }
 
-Yes, if that is what is happening it release/acquire is needed.
+So we can see what device triggers what links to be disabled?
 
-Jason
+I think your use-case is much more important than mine - mine fixes
+something as a side effect
+
+Also, please send me the lspci -vvv output as well as lspci -PP -s
+<device id> for the device id:s mentioned in dmesg with the patch
+above applied ;)
+
+> Kai-Heng
+>
+> >
+> > Bjorn
+>
