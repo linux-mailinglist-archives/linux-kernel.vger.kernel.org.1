@@ -2,201 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7D42886D8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 12:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85C122886E8
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 12:30:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387658AbgJIKZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 06:25:24 -0400
-Received: from foss.arm.com ([217.140.110.172]:47260 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387599AbgJIKZY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 06:25:24 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 838C8D6E;
-        Fri,  9 Oct 2020 03:25:23 -0700 (PDT)
-Received: from [192.168.0.110] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7BD263F66B;
-        Fri,  9 Oct 2020 03:25:21 -0700 (PDT)
-Subject: Re: [PATCH v4] arm64: Enable perf events based hard lockup detector
-To:     Sumit Garg <sumit.garg@linaro.org>, will@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
-        mark.rutland@arm.com, peterz@infradead.org, mingo@redhat.com,
-        acme@kernel.org, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org, tglx@linutronix.de,
-        swboyd@chromium.org, julien.thierry.kdev@gmail.com,
-        dianders@chromium.org, daniel.thompson@linaro.org,
-        linux-kernel@vger.kernel.org
-References: <1602060704-10921-1-git-send-email-sumit.garg@linaro.org>
-From:   Alexandru Elisei <alexandru.elisei@arm.com>
-Message-ID: <33f53714-c069-3939-6fe3-000ec783dbf4@arm.com>
-Date:   Fri, 9 Oct 2020 11:26:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S2387599AbgJIK34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 06:29:56 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:33382 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725979AbgJIK3z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 06:29:55 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 099AKk5E081439;
+        Fri, 9 Oct 2020 10:28:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=iO7iieAE97VWREkueb1YYE1lfRocN/epUOpy+ZHHzLU=;
+ b=lm/RRwEN7aMfPBGuu1y8+/4adW66cEn+DgLonp2Cdor0mppzl8uvoXGxADkJGXzaahLt
+ 08zSAgiY+fuMh6tp5BIn3HO/xI9FiGXYGAvEsnjUVQICwqzoX437nzYz7/eJbZmaJrke
+ sE9v5SNvFFNfgL1dH20+B051p/OgMi7bOPKQmkhCo6gfGayoRqV+hCsxvEdpAwA27BmR
+ KWmf6KPdEd3FhRWsN26JIB7pcqKANL7eF+hkIaaigun95lhrqk8ADLMcyIxYUUUQDVZG
+ rL7P3chD49VMIw9nGsp2r4BOSof7u6vPob3e/gcg+9ROOAjIT/mraIkajbyHC1ipo2SC xA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 3429juts2b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 09 Oct 2020 10:28:39 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 099AQH6t142717;
+        Fri, 9 Oct 2020 10:28:38 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 3429k0x68n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 09 Oct 2020 10:28:38 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 099ASa86025600;
+        Fri, 9 Oct 2020 10:28:36 GMT
+Received: from [10.175.178.74] (/10.175.178.74)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 09 Oct 2020 03:28:36 -0700
+Subject: Re: [PATCH 22/35] kvm, x86: Distinguish dmemfs page from mmio page
+To:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        yulei.kernel@gmail.com
+Cc:     akpm@linux-foundation.org, naoya.horiguchi@nec.com,
+        viro@zeniv.linux.org.uk, pbonzini@redhat.com,
+        linux-fsdevel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xiaoguangrong.eric@gmail.com,
+        kernellwp@gmail.com, lihaiwei.kernel@gmail.com,
+        Yulei Zhang <yuleixzhang@tencent.com>,
+        Chen Zhuo <sagazchen@tencent.com>
+References: <cover.1602093760.git.yuleixzhang@tencent.com>
+ <b2b6837785f6786575823c919788464373d3ee05.1602093760.git.yuleixzhang@tencent.com>
+ <20201009005823.GA11151@linux.intel.com>
+From:   Joao Martins <joao.m.martins@oracle.com>
+Message-ID: <a6dd5fbe-ca71-cf05-ec40-ec916843e9b7@oracle.com>
+Date:   Fri, 9 Oct 2020 11:28:31 +0100
 MIME-Version: 1.0
-In-Reply-To: <1602060704-10921-1-git-send-email-sumit.garg@linaro.org>
+In-Reply-To: <20201009005823.GA11151@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9768 signatures=668681
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 malwarescore=0
+ mlxlogscore=999 bulkscore=0 suspectscore=1 adultscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010090073
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9768 signatures=668681
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999 mlxscore=0
+ phishscore=0 bulkscore=0 suspectscore=1 lowpriorityscore=0 spamscore=0
+ clxscore=1011 malwarescore=0 priorityscore=1501 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010090072
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 10/9/20 1:58 AM, Sean Christopherson wrote:
+> On Thu, Oct 08, 2020 at 03:54:12PM +0800, yulei.kernel@gmail.com wrote:
+>> From: Yulei Zhang <yuleixzhang@tencent.com>
+>>
+>> Dmem page is pfn invalid but not mmio. Support cacheable
+>> dmem page for kvm.
+>>
+>> Signed-off-by: Chen Zhuo <sagazchen@tencent.com>
+>> Signed-off-by: Yulei Zhang <yuleixzhang@tencent.com>
+>> ---
+>>  arch/x86/kvm/mmu/mmu.c | 5 +++--
+>>  include/linux/dmem.h   | 7 +++++++
+>>  mm/dmem.c              | 7 +++++++
+>>  3 files changed, 17 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+>> index 71aa3da2a0b7..0115c1767063 100644
+>> --- a/arch/x86/kvm/mmu/mmu.c
+>> +++ b/arch/x86/kvm/mmu/mmu.c
+>> @@ -41,6 +41,7 @@
+>>  #include <linux/hash.h>
+>>  #include <linux/kern_levels.h>
+>>  #include <linux/kthread.h>
+>> +#include <linux/dmem.h>
+>>  
+>>  #include <asm/page.h>
+>>  #include <asm/memtype.h>
+>> @@ -2962,9 +2963,9 @@ static bool kvm_is_mmio_pfn(kvm_pfn_t pfn)
+>>  			 */
+>>  			(!pat_enabled() || pat_pfn_immune_to_uc_mtrr(pfn));
+>>  
+>> -	return !e820__mapped_raw_any(pfn_to_hpa(pfn),
+>> +	return (!e820__mapped_raw_any(pfn_to_hpa(pfn),
+>>  				     pfn_to_hpa(pfn + 1) - 1,
+>> -				     E820_TYPE_RAM);
+>> +				     E820_TYPE_RAM)) || (!is_dmem_pfn(pfn));
+> 
+> This is wrong.  As is, the logic reads "A PFN is MMIO if it is INVALID &&
+> (!RAM || !DMEM)".  The obvious fix would be to change it to "INVALID &&
+> !RAM && !DMEM", but that begs the question of whether or DMEM is reported
+> as RAM.  I don't see any e820 related changes in the series, i.e. no evidence
+> that dmem yanks its memory out of the e820 tables, which makes me think this
+> change is unnecessary.
+> 
+Even if there would exist e820 changes, e820__mapped_raw_any() checks against
+hardware-provided e820 that we are given before any changes happen i.e. not the one kernel
+has changed (e820_table_firmware). So unless you're having that memory carved from an MMIO
+range (which would be wrong), or the BIOS is misrepresenting its memory map... the
+e820__mapped_raw_any(E820_TYPE_RAM) ought to be enough to cover RAM.
 
-On 10/7/20 9:51 AM, Sumit Garg wrote:
-> With the recent feature added to enable perf events to use pseudo NMIs
-> as interrupts on platforms which support GICv3 or later, its now been
-> possible to enable hard lockup detector (or NMI watchdog) on arm64
-> platforms. So enable corresponding support.
->
-> One thing to note here is that normally lockup detector is initialized
-> just after the early initcalls but PMU on arm64 comes up much later as
-> device_initcall(). So we need to re-initialize lockup detection once
-> PMU has been initialized.
+Or at least that has been my experience with similar work.
 
-Has another look, the PMU bits looks alright. Just to be on the safe side, I did a
-few quick boot tests on an espressobin with a kernel with CONFIG_ARM64_PSEUDO_NMI,
-with nmis enabled and disabled from the command line, and without
-CONFIG_ARM64_PSEUDO_NMI, found nothing out of the ordinary. For the PMU part:
-
-Acked-by: Alexandru Elisei <alexandru.elisei@arm.com>
-
-Thanks,
-
-Alex
-
->
-> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> ---
->
-> Changes in v4:
-> - Rebased to latest pmu v7 NMI patch-set [1] and in turn use "has_nmi"
->   hook to know if PMU IRQ has been requested as an NMI.
-> - Add check for return value prior to initializing hard-lockup detector.
->
-> [1] https://lkml.org/lkml/2020/9/24/458
->
-> Changes in v3:
-> - Rebased to latest pmu NMI patch-set [1].
-> - Addressed misc. comments from Stephen.
->
-> [1] https://lkml.org/lkml/2020/8/19/671
->
-> Changes since RFC:
-> - Rebased on top of Alex's WIP-pmu-nmi branch.
-> - Add comment for safe max. CPU frequency.
-> - Misc. cleanup.
->
->  arch/arm64/Kconfig             |  2 ++
->  arch/arm64/kernel/perf_event.c | 41 +++++++++++++++++++++++++++++++++++++++--
->  drivers/perf/arm_pmu.c         |  5 +++++
->  include/linux/perf/arm_pmu.h   |  2 ++
->  4 files changed, 48 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index 6d23283..b5c2594 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -167,6 +167,8 @@ config ARM64
->  	select HAVE_NMI
->  	select HAVE_PATA_PLATFORM
->  	select HAVE_PERF_EVENTS
-> +	select HAVE_PERF_EVENTS_NMI if ARM64_PSEUDO_NMI
-> +	select HAVE_HARDLOCKUP_DETECTOR_PERF if PERF_EVENTS && HAVE_PERF_EVENTS_NMI
->  	select HAVE_PERF_REGS
->  	select HAVE_PERF_USER_STACK_DUMP
->  	select HAVE_REGS_AND_STACK_ACCESS_API
-> diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
-> index ef206fb..6ad5120 100644
-> --- a/arch/arm64/kernel/perf_event.c
-> +++ b/arch/arm64/kernel/perf_event.c
-> @@ -23,6 +23,8 @@
->  #include <linux/platform_device.h>
->  #include <linux/sched_clock.h>
->  #include <linux/smp.h>
-> +#include <linux/nmi.h>
-> +#include <linux/cpufreq.h>
->  
->  /* ARMv8 Cortex-A53 specific event types. */
->  #define ARMV8_A53_PERFCTR_PREF_LINEFILL				0xC2
-> @@ -1224,10 +1226,21 @@ static struct platform_driver armv8_pmu_driver = {
->  
->  static int __init armv8_pmu_driver_init(void)
->  {
-> +	int ret;
-> +
->  	if (acpi_disabled)
-> -		return platform_driver_register(&armv8_pmu_driver);
-> +		ret = platform_driver_register(&armv8_pmu_driver);
->  	else
-> -		return arm_pmu_acpi_probe(armv8_pmuv3_init);
-> +		ret = arm_pmu_acpi_probe(armv8_pmuv3_init);
-> +
-> +	/*
-> +	 * Try to re-initialize lockup detector after PMU init in
-> +	 * case PMU events are triggered via NMIs.
-> +	 */
-> +	if (ret == 0 && arm_pmu_irq_is_nmi())
-> +		lockup_detector_init();
-> +
-> +	return ret;
->  }
->  device_initcall(armv8_pmu_driver_init)
->  
-> @@ -1285,3 +1298,27 @@ void arch_perf_update_userpage(struct perf_event *event,
->  	userpg->cap_user_time_zero = 1;
->  	userpg->cap_user_time_short = 1;
->  }
-> +
-> +#ifdef CONFIG_HARDLOCKUP_DETECTOR_PERF
-> +/*
-> + * Safe maximum CPU frequency in case a particular platform doesn't implement
-> + * cpufreq driver. Although, architecture doesn't put any restrictions on
-> + * maximum frequency but 5 GHz seems to be safe maximum given the available
-> + * Arm CPUs in the market which are clocked much less than 5 GHz. On the other
-> + * hand, we can't make it much higher as it would lead to a large hard-lockup
-> + * detection timeout on parts which are running slower (eg. 1GHz on
-> + * Developerbox) and doesn't possess a cpufreq driver.
-> + */
-> +#define SAFE_MAX_CPU_FREQ	5000000000UL // 5 GHz
-> +u64 hw_nmi_get_sample_period(int watchdog_thresh)
-> +{
-> +	unsigned int cpu = smp_processor_id();
-> +	unsigned long max_cpu_freq;
-> +
-> +	max_cpu_freq = cpufreq_get_hw_max_freq(cpu) * 1000UL;
-> +	if (!max_cpu_freq)
-> +		max_cpu_freq = SAFE_MAX_CPU_FREQ;
-> +
-> +	return (u64)max_cpu_freq * watchdog_thresh;
-> +}
-> +#endif
-> diff --git a/drivers/perf/arm_pmu.c b/drivers/perf/arm_pmu.c
-> index cb2f55f..794a37d 100644
-> --- a/drivers/perf/arm_pmu.c
-> +++ b/drivers/perf/arm_pmu.c
-> @@ -726,6 +726,11 @@ static int armpmu_get_cpu_irq(struct arm_pmu *pmu, int cpu)
->  	return per_cpu(hw_events->irq, cpu);
->  }
->  
-> +bool arm_pmu_irq_is_nmi(void)
-> +{
-> +	return has_nmi;
-> +}
-> +
->  /*
->   * PMU hardware loses all context when a CPU goes offline.
->   * When a CPU is hotplugged back in, since some hardware registers are
-> diff --git a/include/linux/perf/arm_pmu.h b/include/linux/perf/arm_pmu.h
-> index 5b616dd..5765069 100644
-> --- a/include/linux/perf/arm_pmu.h
-> +++ b/include/linux/perf/arm_pmu.h
-> @@ -160,6 +160,8 @@ int arm_pmu_acpi_probe(armpmu_init_fn init_fn);
->  static inline int arm_pmu_acpi_probe(armpmu_init_fn init_fn) { return 0; }
->  #endif
->  
-> +bool arm_pmu_irq_is_nmi(void);
-> +
->  /* Internal functions only for core arm_pmu code */
->  struct arm_pmu *armpmu_alloc(void);
->  struct arm_pmu *armpmu_alloc_atomic(void);
+	Joao
