@@ -2,128 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8892289084
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 20:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE2E289075
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 20:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390379AbgJISDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 14:03:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58264 "EHLO
+        id S2390298AbgJISCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 14:02:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390339AbgJISBs (ORCPT
+        with ESMTP id S1730110AbgJISCO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 14:01:48 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84818C0613D8
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 11:01:48 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id ev17so5179639qvb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 11:01:48 -0700 (PDT)
+        Fri, 9 Oct 2020 14:02:14 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1068C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 11:02:14 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id g9so7799613pgh.8
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 11:02:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=JtTniNbWimQFTlPWxNfhtRJTUnIfWE2pIrRn0nLquTU=;
-        b=f/szaRC+vLdnDgqFvq8AOddrp6VSsc5+VOKHgdN1Blfz+Kdocq0LgJzoYOwFNRhbsb
-         R58LfaQQ3n9+kujlpK+dXsyPtLR7PpkdHaoMjpLP5dFUu9uKpYtIgwUv2SzANG3wJ4HI
-         uZ2jIrHb3l+wKyafHdJPZ5UpeQcq4bXudJq3VH1qWYsmCJKZjK3dkCknvRMRvHtmwEaJ
-         +C7ytvDBDqqX8xISydsOLSJIZQl1e2A9hJato/1mUA5uyCKy3VQWCdd1nWlOILZ9XItf
-         xtRqWEAdtlSCbEhxBM5pVhNugecQkdco1xNKTq95myZ76QxSJibw5Xyqk8ww4uW9rkwK
-         T0kw==
+        bh=fps3PqFaysle0PRgPWn697Q6yTfHdUTrcLR8SfGSjDI=;
+        b=J4UrOZFfjvg9i76n7Ym5mqm8RLf9OMc2L/LhCwWyI2J+T0aryrUTB4LXPDfIP5r8H4
+         SCr7j/xrmFs1AByYCLLafZoAi7YLzBTbTrRyUoqesu/cZLZbFYpLxBb5mxmN4CcG221s
+         CXRW9jeyAar4k0bFs1FYRmVrlSzD0rhQ1OlII=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=JtTniNbWimQFTlPWxNfhtRJTUnIfWE2pIrRn0nLquTU=;
-        b=g+5MHAKYebQXUGju7g2q+8pTOKLQEbUD4Lr1FAN6b0XgFQYEiZBTLmHP3wPA7RNEGL
-         kQuascmCNQD+zcxgPegWAJH4LmFQFUTMTvSrGoZUO3N6bDHT6lV5fiJoM+8cblnAnVHs
-         oEXPmA2whAvnZ5YMdVYn1yQQOFAvxPgSZK5UV/PdZzJDHtRIiHEvjQ/UVivz1o1uzdFd
-         2fVQU+qAz0Kzwry+OHR1r5pBGjAYkjoVBypjjmiEN+PxFy71FFp8zBtFpMiEHS80e8XP
-         8ivUdVTsXormrRH5dhoo/VcPfJIcvWgFonMCDfzUcn515r64oMjkZ21dtN3hSfvmVUOD
-         oWsA==
-X-Gm-Message-State: AOAM532hNvPnt5hf93YAQHMp+Z784n584hPQGZGHhmUPx/MdmnbxvUG+
-        i8ZLrQgRmufX7eJxXI2yUxHCdQ==
-X-Google-Smtp-Source: ABdhPJwGH8DcAarR0OMfhGw63SRnoeGEeh/DF4k79ebCsxHoTPcqFkl2Atp6g4SjeQTYysb9k3E+GQ==
-X-Received: by 2002:ad4:52c6:: with SMTP id p6mr12553168qvs.38.1602266507532;
-        Fri, 09 Oct 2020 11:01:47 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id 68sm6690974qkg.108.2020.10.09.11.01.46
+        bh=fps3PqFaysle0PRgPWn697Q6yTfHdUTrcLR8SfGSjDI=;
+        b=crPG1G+iTJGdVkc3m+l7ukj9I0wdypW5xglWU2Sd1LSg/DruVOWoRKOjL4vqQrNvpT
+         Gu4jwKnTtUuJxW5Q3XuS+nERf0HjHYLxc5ngLWjHjoW9FRXeH2B5Ty3Sg/TQgUKjUfPI
+         lrIsoeBG1/eL9okTABL6ByukdYQjz6oFKZlSaIS8AJ0CYKuS0yCVkiUJqMFftNCLsj6W
+         GTOsBZFiBvPaLRbGIsYh12RW+4jQ9VZY5WoOb9Iwm06fyyMPiSGWSH9QoXmq5u37Pw74
+         uLQqNNBjLrBM/9s4lY2+IXFvLgmwFyZBh7KIWgdKd6fDP2JOE9oOZQSJcztB/SQhmLxV
+         Jz5w==
+X-Gm-Message-State: AOAM532noC9WeP7HFOlGCM5nAB64uBO68muyyWda9rE+HvrzZuUt4qml
+        +Y/zeHrof/jKOZVPUclJP/vMGw==
+X-Google-Smtp-Source: ABdhPJywxDSyJysznZQyNAhMTDcr5kiIlix/kWmii64iJd+8gbW9LAMhhTxCfCY+YJpdCpgSrxNt2w==
+X-Received: by 2002:a17:90b:ed3:: with SMTP id gz19mr6086256pjb.53.1602266534262;
+        Fri, 09 Oct 2020 11:02:14 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id d2sm3952110pjx.4.2020.10.09.11.02.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 11:01:46 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kQwi9-002b28-P5; Fri, 09 Oct 2020 15:01:45 -0300
-Date:   Fri, 9 Oct 2020 15:01:45 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v2 09/17] mm: Add unsafe_follow_pfn
-Message-ID: <20201009180145.GB5177@ziepe.ca>
-References: <20201009075934.3509076-1-daniel.vetter@ffwll.ch>
- <20201009075934.3509076-10-daniel.vetter@ffwll.ch>
- <20201009123421.67a80d72@coco.lan>
- <20201009122111.GN5177@ziepe.ca>
- <20201009143723.45609bfb@coco.lan>
- <20201009124850.GP5177@ziepe.ca>
- <CAKMK7uF-hrSwzFQkp6qEP88hM1Qg8TMQOunuRHh=f2+D8MaMRg@mail.gmail.com>
+        Fri, 09 Oct 2020 11:02:13 -0700 (PDT)
+Date:   Fri, 9 Oct 2020 11:02:12 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     shuah@kernel.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v3 02/11] selftests:lib:test_counters: add new test for
+ counters
+Message-ID: <202010091102.9073C41@keescook>
+References: <cover.1602209970.git.skhan@linuxfoundation.org>
+ <688424d7ff981d34523cd6794d7ce3c27cfe57b4.1602209970.git.skhan@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKMK7uF-hrSwzFQkp6qEP88hM1Qg8TMQOunuRHh=f2+D8MaMRg@mail.gmail.com>
+In-Reply-To: <688424d7ff981d34523cd6794d7ce3c27cfe57b4.1602209970.git.skhan@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 07:52:05PM +0200, Daniel Vetter wrote:
-
-> > > If this is the case, the proper fix seems to have a GFP_NOT_MOVABLE
-> > > flag that it would be denying the core mm code to set __GFP_MOVABLE.
-> >
-> > We can't tell from the VMA these kinds of details..
-> >
-> > It has to go the other direction, evey mmap that might be used as a
-> > userptr here has to be found and the VMA specially created to allow
-> > its use. At least that is a kernel only change, but will need people
-> > with the HW to do this work.
+On Fri, Oct 09, 2020 at 09:55:57AM -0600, Shuah Khan wrote:
+> Add a new selftest for testing counter_atomic* Counters API. This test
+> load test_counters test modules and unloads.
 > 
-> I think the only reasonable way to keep this working is:
-> - add a struct dma_buf *vma_tryget_dma_buf(struct vm_area_struct *vma);
-> - add dma-buf export support to fbdev and v4l
-> - roll this out everywhere we still need it.
+> The test module runs tests and prints results in dmesg.
+> 
+> There are a number of atomic_t usages in the kernel where atomic_t api
+> is used strictly for counting and not for managing object lifetime. In
+> some cases, atomic_t might not even be needed.
+> 
+> The purpose of these counters is to clearly differentiate atomic_t
+> counters from atomic_t usages that guard object lifetimes, hence prone
+> to overflow and underflow errors. It allows tools that scan for underflow
+> and overflow on atomic_t usages to detect overflow and underflows to scan
+> just the cases that are prone to errors.
+> 
+> Simple atomic counters api provides interfaces for simple atomic counters
+> that just count, and don't guard resource lifetimes. The interfaces are
+> built on top of atomic_t api, providing a smaller subset of atomic_t
+> interfaces necessary to support simple counters.
+> 
+> Counter wraps around to INT_MIN when it overflows and should not be used
+> to guard resource lifetimes, device usage and open counts that control
+> state changes, and pm states. Overflowing to INT_MIN is consistent with
+> the atomic_t api, which it is built on top of.
+> 
+> Using counter_atomic* to guard lifetimes could lead to use-after free
+> when it overflows and undefined behavior when used to manage state
+> changes and device usage/open states.
+> 
+> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 
-It seems to me there is a technical way forward to restore user
-compat, so it is really no different than RDMA/DRM pain we both
-suffered before.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Thus no justification to NAK it. If media wants things to keep working
-they have to do the technical path like you outline above.
-
-> Realistically this just isn't going to happen. 
-
-If your series goes ahead it will get solved. Someone will take on the
-huge project to either add DMA buf to the drivers people still care
-about, or do the work above to transparently handle in kernel.
-
-If we allow things to keep working without consequence then nobody
-will do it.
-
-The only reason we did the 4 years of work in RDMA was because Linus
-went in and broke the uABI for a security fix. It was hundreds of
-patches to fix it, so I don't have much sympathy for "it is too hard"
-here.
-
-Jason
+-- 
+Kees Cook
