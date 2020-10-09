@@ -2,452 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D03D2288EDB
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 18:28:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3DD8288EE9
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 18:30:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389792AbgJIQ2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 12:28:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43750 "EHLO
+        id S2389766AbgJIQai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 12:30:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389144AbgJIQ2B (ORCPT
+        with ESMTP id S2389471AbgJIQai (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 12:28:01 -0400
-Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F6B4C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 09:28:01 -0700 (PDT)
-Received: by mail-oo1-xc42.google.com with SMTP id 4so2486672ooh.11
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 09:28:01 -0700 (PDT)
+        Fri, 9 Oct 2020 12:30:38 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29409C0613D2;
+        Fri,  9 Oct 2020 09:30:38 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id c5so9666724ilr.9;
+        Fri, 09 Oct 2020 09:30:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=FwD9qRck80aaS6hcwpVV+fGUUTa5tO1fSET+ZcHE9T8=;
-        b=bQX4adCPHglu9tPk5eecC53IQeTGWv+EUOVCyYKo9uvRy4oEYH0nD+gAP2w+5nnP8B
-         QlzdPV/9xf4H6eRw2kVrCXVQjh3aPSPtgDAAPdcSWJc1Spe5MOovBjYVYLXz0p3Oh4nT
-         ofg2Zh9gTRaOVUMmYlegSOiljWKzfcI4G7PRY=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=2Gc2VbZdU1IXiw57R85Qt4LavpkHTDXOYsNp+15DYcg=;
+        b=hEJDk5aBM0OyqBiz/S2cVXzsuVix3FYn+kcS8O/nMkNrXwfPu3otjRaoP9O72rYi1n
+         VjYgucLsJp3Z0hR/a2uaU9ns3nc7w4a7XUDetwg855x7SSC1DCcnd4EuUhQ8JwrBIpux
+         s5MK022NgE0jxmvV9srK5hu5hnQSALf/i/ahx+83zw85cza0K01ntWXWSsjiEWgsaL+F
+         LCVUVda2u45vCa63xSh7XUKzTMLwA/RY9xZ7HLgC18IHAvuO7h7GmXOuV1rPbw01inLF
+         75zwGqlQi0C/qZRRfmtw3sj/uucK+NkR6M9+b6Grz2pok1SOVBvXn5qCWkT6jYv5rCc3
+         qTSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=FwD9qRck80aaS6hcwpVV+fGUUTa5tO1fSET+ZcHE9T8=;
-        b=qYbqe1Le35cOVC3hqCKkdPqoM6p36VZmW4c+LVvFd7N2ad9kHcjn+Mnu04V5dGr41S
-         THeTAy5wLiuMxLwEYj7fbLr8I3pvJ122vA0MpumWKgMPodrVEX5d73QBQ+t4jiiIpEL2
-         yBHQwqTwh/zgZyE24QVtZ1EZsO1f8J/WoVyUJqi0YslwcQf7wLtAqOXeXNaQGbZnAgJC
-         V72fpxsQLMoYvhRWKuPTD+V6MbGvBOIAPjllMSy3LiUojvHirkh1yviHKdYT5Aj3pCxr
-         2dSoAVL1xRrxUbSCOKa7Fce+TrLk+Wn1SXqYWyMSWN1bTWBGMcQZeUExcGNV0OTA7fOD
-         ihgA==
-X-Gm-Message-State: AOAM531Om/svRV9lsLJ3JVnnjc3Y9cPN+0HIJGqA8pwH4MvjphLKqWCl
-        kpI/yKV50RmgikeiH+vaKyFBDBb2y9NQ0Jlm6PhpwA==
-X-Google-Smtp-Source: ABdhPJzdQbwMUYb0ZFQJ3kLnpydd0XpR/r7Yz1OrUQs9NEMEBiryzok72FhSC53llTTytdAIzIrW3/i8SCIpf4/IZNY=
-X-Received: by 2002:a4a:c011:: with SMTP id v17mr9630277oop.89.1602260880414;
- Fri, 09 Oct 2020 09:28:00 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=2Gc2VbZdU1IXiw57R85Qt4LavpkHTDXOYsNp+15DYcg=;
+        b=dFKvrWJvyx9I4jKPP7IjpK+OpdpnG8IZGJLPDorwy9/Q3Y6yr/wYQeX5PLjtmHRVrv
+         epdIOkbERUV3XadSS8RPTyrfSk5O2ciukPUbmhU0HMZBhesFuYjBj0IYAKx6zbqU3zSP
+         urOXorrXIdZhqVKkK0qL3YOg89/67TOXVo6mwWGhugJt+PcvAkifmP8iDMiDcCdtoKfF
+         GMxNBMQ8vImtPMExQEehQYga0Gx3TbqhSWZ0T+Cp1eNCh+6pQH5on1QbSnwGhKWcGMlP
+         2pokPcyLb3EGIl4kpWeszG/fvoLNSiGefnZCizH+nKZI4TTtrg1G7cgvCcU9wyWfrimx
+         xw/Q==
+X-Gm-Message-State: AOAM530HwV5fDglmnqQssyKG+N1WC8+iAMLc3CJQ7P7VA1YI+FsPmxlF
+        Ldhfkw48VC7LpQntHpNrA+4ybSW9raTb3D0Mli4=
+X-Google-Smtp-Source: ABdhPJwBFeZdsljqopYTCCei86vRF8PIXqbXb7fERVj0i5Cq3wzs1MXDtB1itEnSoiXD6rCUYCsGvFHBayZUFIR0ZXw=
+X-Received: by 2002:a92:7f05:: with SMTP id a5mr11486123ild.112.1602261037165;
+ Fri, 09 Oct 2020 09:30:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201009150342.1979-1-christian.koenig@amd.com>
- <20201009150342.1979-6-christian.koenig@amd.com> <20201009162444.GO438822@phenom.ffwll.local>
-In-Reply-To: <20201009162444.GO438822@phenom.ffwll.local>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Fri, 9 Oct 2020 18:27:49 +0200
-Message-ID: <CAKMK7uHNEcXNHHiJZu=7+YK2OpFULSpo7pYNvOavzR6xXe0MAQ@mail.gmail.com>
-Subject: Re: [PATCH 6/6] drm/prime: document that use the page array is
- deprecated v2
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        "Wilson, Chris" <chris@chris-wilson.co.uk>,
-        Dave Airlie <airlied@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
+References: <20201009161338.657380-1-samitolvanen@google.com>
+In-Reply-To: <20201009161338.657380-1-samitolvanen@google.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 9 Oct 2020 18:30:24 +0200
+Message-ID: <CA+icZUVWdRWfhPhPy79Hpjmqbfw+n8xsgMKv_RU+hoh1bphXdg@mail.gmail.com>
+Subject: Re: [PATCH v5 00/29] Add support for Clang LTO
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        x86@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 9, 2020 at 6:24 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+On Fri, Oct 9, 2020 at 6:13 PM 'Sami Tolvanen' via Clang Built Linux
+<clang-built-linux@googlegroups.com> wrote:
 >
-> On Fri, Oct 09, 2020 at 05:03:42PM +0200, Christian K=C3=B6nig wrote:
-> > We have reoccurring requests on this so better document that
-> > this approach doesn't work and dma_buf_mmap() needs to be used instead.
-> >
-> > v2: split it into two functions
-> >
-> > Signed-off-by: Christian K=C3=B6nig <christian.koenig@amd.com>
+> This patch series adds support for building x86_64 and arm64 kernels
+> with Clang's Link Time Optimization (LTO).
 >
-> Patches 3-5:
+> In addition to performance, the primary motivation for LTO is
+> to allow Clang's Control-Flow Integrity (CFI) to be used in the
+> kernel. Google has shipped millions of Pixel devices running three
+> major kernel versions with LTO+CFI since 2018.
 >
-> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> Most of the patches are build system changes for handling LLVM
+> bitcode, which Clang produces with LTO instead of ELF object files,
+> postponing ELF processing until a later stage, and ensuring initcall
+> ordering.
 >
-> This one looks good, but you have it on a strange baseline. This doesn't
-> contain the sg walking fixes from Marek, so reintroduces the bugs.
-> Probably need to request a backmerge chain, first of -rc8 into drm-next,
-> and then that into drm-misc-next.
+> Note that this version is based on tip/master to reduce the number
+> of prerequisite patches, and to make it easier to manage changes to
+> objtool. Patch 1 is from Masahiro's kbuild tree, and while it's not
+> directly related to LTO, it makes the module linker script changes
+> cleaner.
+>
+> Furthermore, patches 2-6 include Peter's patch for generating
+> __mcount_loc with objtool, and build system changes to enable it on
+> x86. With these patches, we no longer need to annotate functions
+> that have non-call references to __fentry__ with LTO, which greatly
+> simplifies supporting dynamic ftrace.
+>
+> You can also pull this series from
+>
+>   https://github.com/samitolvanen/linux.git lto-v5
+>
+> ---
+> Changes in v5:
+>
+>   - Rebased on top of tip/master.
+>
 
-Marek's patch is in drm-next, so just needs a backmerge into drm-misc-next.
+What are the plans to get this into mainline?
+Linux v5.10 :-) too early - needs more review/testing?
 
-Thomas, can you pls do that? We need 0552daac2d18f
+Will clang-cfi be based on this, too?
 
-I'll wait for the next round for patches 1&2 since Jason seems to have
-found a small issue with them.
--Daniel
+>   - Changed the command line for objtool to use --vmlinux --duplicate
+>     to disable warnings about retpoline thunks and to fix .orc_unwind
+>     generation for vmlinux.o.
+>
+>   - Added --noinstr flag to objtool, so we can use --vmlinux without
+>     also enabling noinstr validation.
+>
+>   - Disabled objtool's unreachable instruction warnings with LTO to
+>     disable false positives for the int3 padding in vmlinux.o.
+>
+>   - Added ANNOTATE_RETPOLINE_SAFE annotations to the indirect jumps
+>     in x86 assembly code to fix objtool warnings with retpoline.
+>
+>   - Fixed modpost warnings about missing version information with
+>     CONFIG_MODVERSIONS.
+>
+>   - Included Makefile.lib into Makefile.modpost for ld_flags. Thanks
+>     to Sedat for pointing this out.
+>
 
+That was a long way to detect this as I had very big Debian Linux
+debug packages generated with CONFIG_DEBUG_INFO_COMPRESSED=y.
+
+Thanks for v5 of clang-lto.
+
+- Sedat -
+
+[1] https://github.com/ClangBuiltLinux/linux/issues/1086#issuecomment-705754002
+
+>   - Updated the help text for ThinLTO to better explain the trade-offs.
 >
-> Everything else in here lgtm.
-> -Daniel
+>   - Updated commit messages with better explanations.
+>
+> Changes in v4:
+>
+>   - Fixed a typo in Makefile.lib to correctly pass --no-fp to objtool.
+>
+>   - Moved ftrace configs related to generating __mcount_loc to Kconfig,
+>     so they are available also in Makefile.modfinal.
+>
+>   - Dropped two prerequisite patches that were merged to Linus' tree.
+>
+> Changes in v3:
+>
+>   - Added a separate patch to remove the unused DISABLE_LTO treewide,
+>     as filtering out CC_FLAGS_LTO instead is preferred.
+>
+>   - Updated the Kconfig help to explain why LTO is behind a choice
+>     and disabled by default.
+>
+>   - Dropped CC_FLAGS_LTO_CLANG, compiler-specific LTO flags are now
+>     appended directly to CC_FLAGS_LTO.
+>
+>   - Updated $(AR) flags as KBUILD_ARFLAGS was removed earlier.
+>
+>   - Fixed ThinLTO cache handling for external module builds.
+>
+>   - Rebased on top of Masahiro's patch for preprocessing modules.lds,
+>     and moved the contents of module-lto.lds to modules.lds.S.
+>
+>   - Moved objtool_args to Makefile.lib to avoid duplication of the
+>     command line parameters in Makefile.modfinal.
+>
+>   - Clarified in the commit message for the initcall ordering patch
+>     that the initcall order remains the same as without LTO.
+>
+>   - Changed link-vmlinux.sh to use jobserver-exec to control the
+>     number of jobs started by generate_initcall_ordering.pl.
+>
+>   - Dropped the x86/relocs patch to whitelist L4_PAGE_OFFSET as it's
+>     no longer needed with ToT kernel.
+>
+>   - Disabled LTO for arch/x86/power/cpu.c to work around a Clang bug
+>     with stack protector attributes.
+>
+> Changes in v2:
+>
+>   - Fixed -Wmissing-prototypes warnings with W=1.
+>
+>   - Dropped cc-option from -fsplit-lto-unit and added .thinlto-cache
+>     scrubbing to make distclean.
+>
+>   - Added a comment about Clang >=11 being required.
+>
+>   - Added a patch to disable LTO for the arm64 KVM nVHE code.
+>
+>   - Disabled objtool's noinstr validation with LTO unless enabled.
+>
+>   - Included Peter's proposed objtool mcount patch in the series
+>     and replaced recordmcount with the objtool pass to avoid
+>     whitelisting relocations that are not calls.
+>
+>   - Updated several commit messages with better explanations.
 >
 >
+> Masahiro Yamada (1):
+>   kbuild: preprocess module linker script
 >
-> > ---
-> >  drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c     |  9 ++-
-> >  drivers/gpu/drm/drm_prime.c                 | 67 +++++++++++++++------
-> >  drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c |  3 +-
-> >  drivers/gpu/drm/msm/msm_gem.c               |  2 +-
-> >  drivers/gpu/drm/nouveau/nouveau_bo.c        |  5 +-
-> >  drivers/gpu/drm/radeon/radeon_ttm.c         |  9 ++-
-> >  drivers/gpu/drm/vgem/vgem_drv.c             |  3 +-
-> >  drivers/gpu/drm/vkms/vkms_gem.c             |  2 +-
-> >  drivers/gpu/drm/xen/xen_drm_front_gem.c     |  4 +-
-> >  include/drm/drm_prime.h                     |  7 ++-
-> >  10 files changed, 69 insertions(+), 42 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/=
-amd/amdgpu/amdgpu_ttm.c
-> > index ac463e706b19..6a65490de391 100644
-> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-> > @@ -1011,8 +1011,8 @@ static int amdgpu_ttm_tt_pin_userptr(struct ttm_b=
-o_device *bdev,
-> >               goto release_sg;
-> >
-> >       /* convert SG to linear array of pages and dma addresses */
-> > -     drm_prime_sg_to_page_addr_arrays(ttm->sg, NULL, gtt->ttm.dma_addr=
-ess,
-> > -                                      ttm->num_pages);
-> > +     drm_prime_sg_to_dma_addr_array(ttm->sg, gtt->ttm.dma_address,
-> > +                                    ttm->num_pages);
-> >
-> >       return 0;
-> >
-> > @@ -1345,9 +1345,8 @@ static int amdgpu_ttm_tt_populate(struct ttm_bo_d=
-evice *bdev,
-> >                       ttm->sg =3D sgt;
-> >               }
-> >
-> > -             drm_prime_sg_to_page_addr_arrays(ttm->sg, NULL,
-> > -                                              gtt->ttm.dma_address,
-> > -                                              ttm->num_pages);
-> > +             drm_prime_sg_to_dma_addr_array(ttm->sg, gtt->ttm.dma_addr=
-ess,
-> > +                                            ttm->num_pages);
-> >               ttm_tt_set_populated(ttm);
-> >               return 0;
-> >       }
-> > diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
-> > index 4910c446db83..8b750c074494 100644
-> > --- a/drivers/gpu/drm/drm_prime.c
-> > +++ b/drivers/gpu/drm/drm_prime.c
-> > @@ -954,27 +954,25 @@ struct drm_gem_object *drm_gem_prime_import(struc=
-t drm_device *dev,
-> >  EXPORT_SYMBOL(drm_gem_prime_import);
-> >
-> >  /**
-> > - * drm_prime_sg_to_page_addr_arrays - convert an sg table into a page =
-array
-> > + * drm_prime_sg_to_page_array - convert an sg table into a page array
-> >   * @sgt: scatter-gather table to convert
-> > - * @pages: optional array of page pointers to store the page array in
-> > - * @addrs: optional array to store the dma bus address of each page
-> > - * @max_entries: size of both the passed-in arrays
-> > + * @pages: array of page pointers to store the pages in
-> > + * @max_entries: size of the passed-in array
-> >   *
-> > - * Exports an sg table into an array of pages and addresses. This is c=
-urrently
-> > - * required by the TTM driver in order to do correct fault handling.
-> > + * Exports an sg table into an array of pages.
-> >   *
-> > - * Drivers can use this in their &drm_driver.gem_prime_import_sg_table
-> > - * implementation.
-> > + * This function is deprecated and strongly discouraged to be used.
-> > + * The page array is only useful for page faults and those can corrupt=
- fields
-> > + * in the struct page if they are not handled by the exporting driver.
-> >   */
-> > -int drm_prime_sg_to_page_addr_arrays(struct sg_table *sgt, struct page=
- **pages,
-> > -                                  dma_addr_t *addrs, int max_entries)
-> > +int __deprecated drm_prime_sg_to_page_array(struct sg_table *sgt,
-> > +                                         struct page **pages,
-> > +                                         int max_entries)
-> >  {
-> >       unsigned count;
-> >       struct scatterlist *sg;
-> >       struct page *page;
-> >       u32 page_len, page_index;
-> > -     dma_addr_t addr;
-> > -     u32 dma_len, dma_index;
-> >
-> >       /*
-> >        * Scatterlist elements contains both pages and DMA addresses, bu=
-t
-> > @@ -984,14 +982,11 @@ int drm_prime_sg_to_page_addr_arrays(struct sg_ta=
-ble *sgt, struct page **pages,
-> >        * described by the sg_dma_address(sg).
-> >        */
-> >       page_index =3D 0;
-> > -     dma_index =3D 0;
-> >       for_each_sg(sgt->sgl, sg, sgt->nents, count) {
-> >               page_len =3D sg->length;
-> >               page =3D sg_page(sg);
-> > -             dma_len =3D sg_dma_len(sg);
-> > -             addr =3D sg_dma_address(sg);
-> >
-> > -             while (pages && page_len > 0) {
-> > +             while (page_len > 0) {
-> >                       if (WARN_ON(page_index >=3D max_entries))
-> >                               return -1;
-> >                       pages[page_index] =3D page;
-> > @@ -999,7 +994,43 @@ int drm_prime_sg_to_page_addr_arrays(struct sg_tab=
-le *sgt, struct page **pages,
-> >                       page_len -=3D PAGE_SIZE;
-> >                       page_index++;
-> >               }
-> > -             while (addrs && dma_len > 0) {
-> > +     }
-> > +     return 0;
-> > +}
-> > +EXPORT_SYMBOL(drm_prime_sg_to_page_array);
-> > +
-> > +/**
-> > + * drm_prime_sg_to_dma_addr_array - convert an sg table into a dma add=
-r array
-> > + * @sgt: scatter-gather table to convert
-> > + * @addrs: array to store the dma bus address of each page
-> > + * @max_entries: size of both the passed-in arrays
-> > + *
-> > + * Exports an sg table into an array of addresses.
-> > + *
-> > + * Drivers should use this in their &drm_driver.gem_prime_import_sg_ta=
-ble
+> Peter Zijlstra (1):
+>   objtool: Add a pass for generating __mcount_loc
 >
-> s/should/can/
+> Sami Tolvanen (27):
+>   objtool: Don't autodetect vmlinux.o
+>   tracing: move function tracer options to Kconfig
+>   tracing: add support for objtool mcount
+>   x86, build: use objtool mcount
+>   treewide: remove DISABLE_LTO
+>   kbuild: add support for Clang LTO
+>   kbuild: lto: fix module versioning
+>   objtool: Split noinstr validation from --vmlinux
+>   kbuild: lto: postpone objtool
+>   kbuild: lto: limit inlining
+>   kbuild: lto: merge module sections
+>   kbuild: lto: remove duplicate dependencies from .mod files
+>   init: lto: ensure initcall ordering
+>   init: lto: fix PREL32 relocations
+>   PCI: Fix PREL32 relocations for LTO
+>   modpost: lto: strip .lto from module names
+>   scripts/mod: disable LTO for empty.c
+>   efi/libstub: disable LTO
+>   drivers/misc/lkdtm: disable LTO for rodata.o
+>   arm64: vdso: disable LTO
+>   KVM: arm64: disable LTO for the nVHE directory
+>   arm64: disable recordmcount with DYNAMIC_FTRACE_WITH_REGS
+>   arm64: allow LTO_CLANG and THINLTO to be selected
+>   x86/asm: annotate indirect jumps
+>   x86, vdso: disable LTO only for vDSO
+>   x86, cpu: disable LTO for cpu.c
+>   x86, build: allow LTO_CLANG and THINLTO to be selected
 >
-> There's no requirement, if your driver just handles everything as an sgt
-> there's no conversion needed.
+>  .gitignore                                    |   1 +
+>  Makefile                                      |  68 +++--
+>  arch/Kconfig                                  |  74 +++++
+>  arch/arm/Makefile                             |   4 -
+>  .../module.lds => include/asm/module.lds.h}   |   2 +
+>  arch/arm64/Kconfig                            |   4 +
+>  arch/arm64/Makefile                           |   4 -
+>  .../module.lds => include/asm/module.lds.h}   |   2 +
+>  arch/arm64/kernel/vdso/Makefile               |   4 +-
+>  arch/arm64/kvm/hyp/nvhe/Makefile              |   4 +-
+>  arch/ia64/Makefile                            |   1 -
+>  .../{module.lds => include/asm/module.lds.h}  |   0
+>  arch/m68k/Makefile                            |   1 -
+>  .../module.lds => include/asm/module.lds.h}   |   0
+>  arch/powerpc/Makefile                         |   1 -
+>  .../module.lds => include/asm/module.lds.h}   |   0
+>  arch/riscv/Makefile                           |   3 -
+>  .../module.lds => include/asm/module.lds.h}   |   3 +-
+>  arch/sparc/vdso/Makefile                      |   2 -
+>  arch/um/include/asm/Kbuild                    |   1 +
+>  arch/x86/Kconfig                              |   3 +
+>  arch/x86/Makefile                             |   5 +
+>  arch/x86/entry/vdso/Makefile                  |   5 +-
+>  arch/x86/kernel/acpi/wakeup_64.S              |   2 +
+>  arch/x86/platform/pvh/head.S                  |   2 +
+>  arch/x86/power/Makefile                       |   4 +
+>  arch/x86/power/hibernate_asm_64.S             |   3 +
+>  drivers/firmware/efi/libstub/Makefile         |   2 +
+>  drivers/misc/lkdtm/Makefile                   |   1 +
+>  include/asm-generic/Kbuild                    |   1 +
+>  include/asm-generic/module.lds.h              |  10 +
+>  include/asm-generic/vmlinux.lds.h             |  11 +-
+>  include/linux/init.h                          |  79 ++++-
+>  include/linux/pci.h                           |  19 +-
+>  kernel/Makefile                               |   3 -
+>  kernel/trace/Kconfig                          |  29 ++
+>  scripts/.gitignore                            |   1 +
+>  scripts/Makefile                              |   3 +
+>  scripts/Makefile.build                        |  69 +++--
+>  scripts/Makefile.lib                          |  17 +-
+>  scripts/Makefile.modfinal                     |  29 +-
+>  scripts/Makefile.modpost                      |  25 +-
+>  scripts/generate_initcall_order.pl            | 270 ++++++++++++++++++
+>  scripts/link-vmlinux.sh                       |  98 ++++++-
+>  scripts/mod/Makefile                          |   1 +
+>  scripts/mod/modpost.c                         |  16 +-
+>  scripts/mod/modpost.h                         |   9 +
+>  scripts/mod/sumversion.c                      |   6 +-
+>  scripts/{module-common.lds => module.lds.S}   |  31 ++
+>  scripts/package/builddeb                      |   2 +-
+>  tools/objtool/builtin-check.c                 |  10 +-
+>  tools/objtool/check.c                         |  84 +++++-
+>  tools/objtool/include/objtool/builtin.h       |   2 +-
+>  tools/objtool/include/objtool/check.h         |   1 +
+>  tools/objtool/include/objtool/objtool.h       |   1 +
+>  tools/objtool/objtool.c                       |   1 +
+>  56 files changed, 903 insertions(+), 131 deletions(-)
+>  rename arch/arm/{kernel/module.lds => include/asm/module.lds.h} (72%)
+>  rename arch/arm64/{kernel/module.lds => include/asm/module.lds.h} (76%)
+>  rename arch/ia64/{module.lds => include/asm/module.lds.h} (100%)
+>  rename arch/m68k/{kernel/module.lds => include/asm/module.lds.h} (100%)
+>  rename arch/powerpc/{kernel/module.lds => include/asm/module.lds.h} (100%)
+>  rename arch/riscv/{kernel/module.lds => include/asm/module.lds.h} (84%)
+>  create mode 100644 include/asm-generic/module.lds.h
+>  create mode 100755 scripts/generate_initcall_order.pl
+>  rename scripts/{module-common.lds => module.lds.S} (59%)
 >
-> > + * implementation.
-> > + */
-> > +int drm_prime_sg_to_dma_addr_array(struct sg_table *sgt, dma_addr_t *a=
-ddrs,
-> > +                                int max_entries)
-> > +{
-> > +     struct scatterlist *sg;
-> > +     u32 dma_len, dma_index;
-> > +     dma_addr_t addr;
-> > +     unsigned count;
-> > +
-> > +     /*
-> > +      * Scatterlist elements contains both pages and DMA addresses, bu=
-t
-> > +      * one shoud not assume 1:1 relation between them. The sg->length=
- is
-> > +      * the size of the physical memory chunk described by the sg->pag=
-e,
-> > +      * while sg_dma_len(sg) is the size of the DMA (IO virtual) chunk
-> > +      * described by the sg_dma_address(sg).
-> > +      */
-> > +     dma_index =3D 0;
-> > +     for_each_sg(sgt->sgl, sg, sgt->nents, count) {
-> > +             dma_len =3D sg_dma_len(sg);
-> > +             addr =3D sg_dma_address(sg);
-> > +
-> > +             while (dma_len > 0) {
-> >                       if (WARN_ON(dma_index >=3D max_entries))
-> >                               return -1;
-> >                       addrs[dma_index] =3D addr;
-> > @@ -1010,7 +1041,7 @@ int drm_prime_sg_to_page_addr_arrays(struct sg_ta=
-ble *sgt, struct page **pages,
-> >       }
-> >       return 0;
-> >  }
-> > -EXPORT_SYMBOL(drm_prime_sg_to_page_addr_arrays);
-> > +EXPORT_SYMBOL(drm_prime_sg_to_dma_addr_array);
-> >
-> >  /**
-> >   * drm_prime_gem_destroy - helper to clean up a PRIME-imported GEM obj=
-ect
-> > diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c b/drivers/gpu/=
-drm/etnaviv/etnaviv_gem_prime.c
-> > index 135fbff6fecf..8c04b8e8054c 100644
-> > --- a/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
-> > +++ b/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
-> > @@ -133,8 +133,7 @@ struct drm_gem_object *etnaviv_gem_prime_import_sg_=
-table(struct drm_device *dev,
-> >               goto fail;
-> >       }
-> >
-> > -     ret =3D drm_prime_sg_to_page_addr_arrays(sgt, etnaviv_obj->pages,
-> > -                                            NULL, npages);
-> > +     ret =3D drm_prime_sg_to_page_array(sgt, etnaviv_obj->pages, npage=
-s);
-> >       if (ret)
-> >               goto fail;
-> >
-> > diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_ge=
-m.c
-> > index a71f42870d5e..616b87641740 100644
-> > --- a/drivers/gpu/drm/msm/msm_gem.c
-> > +++ b/drivers/gpu/drm/msm/msm_gem.c
-> > @@ -1174,7 +1174,7 @@ struct drm_gem_object *msm_gem_import(struct drm_=
-device *dev,
-> >               goto fail;
-> >       }
-> >
-> > -     ret =3D drm_prime_sg_to_page_addr_arrays(sgt, msm_obj->pages, NUL=
-L, npages);
-> > +     ret =3D drm_prime_sg_to_page_array(sgt, msm_obj->pages, npages);
-> >       if (ret) {
-> >               mutex_unlock(&msm_obj->lock);
-> >               goto fail;
-> > diff --git a/drivers/gpu/drm/nouveau/nouveau_bo.c b/drivers/gpu/drm/nou=
-veau/nouveau_bo.c
-> > index e378bb491688..835edd74ef59 100644
-> > --- a/drivers/gpu/drm/nouveau/nouveau_bo.c
-> > +++ b/drivers/gpu/drm/nouveau/nouveau_bo.c
-> > @@ -1299,9 +1299,8 @@ nouveau_ttm_tt_populate(struct ttm_bo_device *bde=
-v,
-> >               return 0;
-> >
-> >       if (slave && ttm->sg) {
-> > -             drm_prime_sg_to_page_addr_arrays(ttm->sg, NULL,
-> > -                                              ttm_dma->dma_address,
-> > -                                              ttm->num_pages);
-> > +             drm_prime_sg_to_dma_addr_array(ttm->sg, ttm_dma->dma_addr=
-ess,
-> > +                                            ttm->num_pages);
-> >               ttm_tt_set_populated(ttm);
-> >               return 0;
-> >       }
-> > diff --git a/drivers/gpu/drm/radeon/radeon_ttm.c b/drivers/gpu/drm/rade=
-on/radeon_ttm.c
-> > index 4b92cdbcd29b..7997e4564576 100644
-> > --- a/drivers/gpu/drm/radeon/radeon_ttm.c
-> > +++ b/drivers/gpu/drm/radeon/radeon_ttm.c
-> > @@ -474,8 +474,8 @@ static int radeon_ttm_tt_pin_userptr(struct ttm_bo_=
-device *bdev, struct ttm_tt *
-> >       if (r)
-> >               goto release_sg;
-> >
-> > -     drm_prime_sg_to_page_addr_arrays(ttm->sg, NULL, gtt->ttm.dma_addr=
-ess,
-> > -                                      ttm->num_pages);
-> > +     drm_prime_sg_to_dma_addr_array(ttm->sg, gtt->ttm.dma_address,
-> > +                                    ttm->num_pages);
-> >
-> >       return 0;
-> >
-> > @@ -642,9 +642,8 @@ static int radeon_ttm_tt_populate(struct ttm_bo_dev=
-ice *bdev,
-> >       }
-> >
-> >       if (slave && ttm->sg) {
-> > -             drm_prime_sg_to_page_addr_arrays(ttm->sg, NULL,
-> > -                                              gtt->ttm.dma_address,
-> > -                                              ttm->num_pages);
-> > +             drm_prime_sg_to_dma_addr_array(ttm->sg, gtt->ttm.dma_addr=
-ess,
-> > +                                            ttm->num_pages);
-> >               ttm_tt_set_populated(ttm);
-> >               return 0;
-> >       }
-> > diff --git a/drivers/gpu/drm/vgem/vgem_drv.c b/drivers/gpu/drm/vgem/vge=
-m_drv.c
-> > index ea0eecae5153..e505e5a291b3 100644
-> > --- a/drivers/gpu/drm/vgem/vgem_drv.c
-> > +++ b/drivers/gpu/drm/vgem/vgem_drv.c
-> > @@ -356,8 +356,7 @@ static struct drm_gem_object *vgem_prime_import_sg_=
-table(struct drm_device *dev,
-> >       }
-> >
-> >       obj->pages_pin_count++; /* perma-pinned */
-> > -     drm_prime_sg_to_page_addr_arrays(obj->table, obj->pages, NULL,
-> > -                                     npages);
-> > +     drm_prime_sg_to_page_array(obj->table, obj->pages, npages);
-> >       return &obj->base;
-> >  }
-> >
-> > diff --git a/drivers/gpu/drm/vkms/vkms_gem.c b/drivers/gpu/drm/vkms/vkm=
-s_gem.c
-> > index 19a0e260a4df..a2ff21f47101 100644
-> > --- a/drivers/gpu/drm/vkms/vkms_gem.c
-> > +++ b/drivers/gpu/drm/vkms/vkms_gem.c
-> > @@ -256,6 +256,6 @@ vkms_prime_import_sg_table(struct drm_device *dev,
-> >               return ERR_PTR(-ENOMEM);
-> >       }
-> >
-> > -     drm_prime_sg_to_page_addr_arrays(sg, obj->pages, NULL, npages);
-> > +     drm_prime_sg_to_page_array(sg, obj->pages, npages);
-> >       return &obj->gem;
-> >  }
-> > diff --git a/drivers/gpu/drm/xen/xen_drm_front_gem.c b/drivers/gpu/drm/=
-xen/xen_drm_front_gem.c
-> > index f3830a0d1808..f4150ddfc5e2 100644
-> > --- a/drivers/gpu/drm/xen/xen_drm_front_gem.c
-> > +++ b/drivers/gpu/drm/xen/xen_drm_front_gem.c
-> > @@ -220,8 +220,8 @@ xen_drm_front_gem_import_sg_table(struct drm_device=
- *dev,
-> >
-> >       xen_obj->sgt_imported =3D sgt;
-> >
-> > -     ret =3D drm_prime_sg_to_page_addr_arrays(sgt, xen_obj->pages,
-> > -                                            NULL, xen_obj->num_pages);
-> > +     ret =3D drm_prime_sg_to_page_array(sgt, xen_obj->pages,
-> > +                                      xen_obj->num_pages);
-> >       if (ret < 0)
-> >               return ERR_PTR(ret);
-> >
-> > diff --git a/include/drm/drm_prime.h b/include/drm/drm_prime.h
-> > index 093f760cc131..4bda9ab3a3bb 100644
-> > --- a/include/drm/drm_prime.h
-> > +++ b/include/drm/drm_prime.h
-> > @@ -103,8 +103,9 @@ struct drm_gem_object *drm_gem_prime_import(struct =
-drm_device *dev,
-> >
-> >  void drm_prime_gem_destroy(struct drm_gem_object *obj, struct sg_table=
- *sg);
-> >
-> > -int drm_prime_sg_to_page_addr_arrays(struct sg_table *sgt, struct page=
- **pages,
-> > -                                  dma_addr_t *addrs, int max_pages);
-> > -
-> > +int drm_prime_sg_to_page_array(struct sg_table *sgt, struct page **pag=
-es,
-> > +                            int max_pages);
-> > +int drm_prime_sg_to_dma_addr_array(struct sg_table *sgt, dma_addr_t *a=
-ddrs,
-> > +                                int max_pages);
-> >
-> >  #endif /* __DRM_PRIME_H__ */
-> > --
-> > 2.17.1
-> >
+>
+> base-commit: 80396d76da65fc8b82581c0260c25a6aa0a495a3
+> --
+> 2.28.0.1011.ga647a8990f-goog
 >
 > --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
-
-
-
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20201009161338.657380-1-samitolvanen%40google.com.
