@@ -2,146 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78AE1288F49
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 18:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E514A288F56
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 19:01:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389931AbgJIQ5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 12:57:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389334AbgJIQ5q (ORCPT
+        id S2389932AbgJIRBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 13:01:25 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:59144 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389742AbgJIRBZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 12:57:46 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8FA1C0613D8
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 09:57:45 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id n2so10890443oij.1
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 09:57:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brighamcampbell-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:subject:message-id:mime-version:content-disposition;
-        bh=EbwPy1y/PDnWF/XWV+k/167QLJ1qvpJCPajzvXyb2I8=;
-        b=cUqrB4JklGqN2yfEv9pV2mxV3CrUk8jzQFzLjg/lPf/k5MuTY4NieXxa8mNd13wKr/
-         tXtsmyaNFRo19sKPTYsLzsNt+EUQl4wUcJbT8kUytcNLrv6NHCfBf/0kFHGJ6aX/SuJi
-         2+XZfjY+p8uTrypnBLiaMHRxyElVzGFNa7spJwfUyV9dpFuyeClwedAoXFxdSnCbQJoi
-         kTwd1MRObH+PZeIsaAwEvHWMdPvq718+zMAmATiZGWwv/W42rF3WCk3qcH86Q8wzTmnU
-         imB6Y9megyaxPfwP+FH5fxDL/+9BaMzo2RTvcybmv6LBzUPlbN67BPhnDgKGfYOgr5I0
-         6oyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition;
-        bh=EbwPy1y/PDnWF/XWV+k/167QLJ1qvpJCPajzvXyb2I8=;
-        b=bj7Tzt+rqf1xpxhS9V4/q/Pzoc4RvDAzDT1UPaAz7Pdtwdeikn5i3EAK3ofy9QpWyM
-         qI8G1k5s2e2aW7bp6mHjxaEeNPA1b16c9IRIPIB3t9G6gpEx8PLYtrhCkCyur3QY4dTe
-         dYm8okp7mO84uhYUY3Mn41ziWDQQ2T/ZPkjeBZKYr6HRf+F17jAz9GrrRLcksPud7aSs
-         p6rXqdFY+0T1j3KKfgM1CbNVwHQgZeStR8yaDwPbQEDRQWaGuhUUZ5DgXxaKA7ZMA4ni
-         Ssyh6hnTcn/+sZv3rlns4yC7DxQVgxx2Dmj1u/85xWC70WjVuAWfmjMfY+d7Ml6EF5do
-         XqtA==
-X-Gm-Message-State: AOAM5331qVwzLrkLVLBwKC9VITXxdUhyzjEKSEdXtBaN+wjXcin8+NZR
-        ZWAtpfvepSepicVOGA1e6cB/5Q==
-X-Google-Smtp-Source: ABdhPJzXjp4t0VYZDcxs8EgiRNA3NNcLIBvlG1vx4qSFeJE7/hcfhQWWEW1MZsL8kp78i2ZnVAv7KA==
-X-Received: by 2002:aca:b354:: with SMTP id c81mr2914448oif.41.1602262665045;
-        Fri, 09 Oct 2020 09:57:45 -0700 (PDT)
-Received: from arch-xps.localdomain ([72.52.67.8])
-        by smtp.gmail.com with ESMTPSA id r33sm8001898ooi.48.2020.10.09.09.57.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 09:57:44 -0700 (PDT)
-Date:   Fri, 9 Oct 2020 10:57:42 -0600
-From:   Brigham Campbell <me@brighamcampbell.com>
-To:     robh+dt@kernel.org, robh@kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alchark@gmail.com
-Subject: [PATCH] ARM: dts: Add empty "chosen" node to WM8xxx device trees
-Message-ID: <20201009165742.GA35334@arch-xps.localdomain>
+        Fri, 9 Oct 2020 13:01:25 -0400
+Date:   Fri, 09 Oct 2020 17:01:21 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602262883;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=X0dgRra6o3xbQR+mSY3zpUGGOE2pAm7wo2s6v5QuJGA=;
+        b=pIXLTbW2WPErHoDAQLcvzTjIRgN0ERXfsdswC3tFr0mXZq7SFQHDbZIvwKC7Rc7/kwloif
+        lPJbimssFt+nRQW3gzwvfb+cXW26FU9mvuUsAq6McrUGDbUw/mIYax5ykQ53rNaaMSeuIk
+        rNXCesuAKGyeubX5G2tS3c15iGDtx6ssIzYoXDMGQ3iPlI5ewI1Spx1skXkvKgrQy4eRdh
+        vACKeX587BGbvrhVg+AGGiqVcZe2nT0IGK5yNSnQ4GtqEKW5zyosVPKM2biFp4wh/flx3P
+        TXBsy7UoGbLpBRIa/VcMdfYKLKI7YW4w7e/9nKj8arp3K2Hk8Q2wCbdnXCNRng==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602262883;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=X0dgRra6o3xbQR+mSY3zpUGGOE2pAm7wo2s6v5QuJGA=;
+        b=Vh/SsD3cp06HP/ksnh7lbufzY0wWriK8ZJowIzViPA+vls5bHxTsFyyWwnOjIXXHqFB6Fw
+        0C0meqmSx3ely4DA==
+From:   "tip-bot2 for kernel test robot" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: core/rcu] kvfree_rcu(): Fix ifnullfree.cocci warnings
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        kernel test robot <lkp@intel.com>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Message-ID: <160226288169.7002.481627657092505420.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following patch is a bug fix for an issue introduced by commit
-abe60a3a7afb4058278864aa18c5faf62094c11a which removed the deprecated
-device tree skeletons.
+The following commit has been merged into the core/rcu branch of tip:
 
-For the devices corresponding to these device trees, an updated version
-of U-Boot is not available. Therefore, we must append DTBs to the kernel
-instead of counting on the bootloader to load one into memory and pass
-the pointer to the kernel during init.
+Commit-ID:     849b9c5446ccb0c98c7b11c69f169d22777ab31b
+Gitweb:        https://git.kernel.org/tip/849b9c5446ccb0c98c7b11c69f169d22777ab31b
+Author:        kernel test robot <lkp@intel.com>
+AuthorDate:    Sun, 27 Sep 2020 15:00:29 +02:00
+Committer:     Paul E. McKenney <paulmck@kernel.org>
+CommitterDate: Thu, 01 Oct 2020 09:07:24 -07:00
 
-For some reason, when this method of appending DTBs to the kernel is
-used with any revision after abe60a3a7, the DTB seems to load correctly,
-but the kernel parameters aren't loaded correctly. Regardless of whether
-the kernel parameters are built into the kernel or passed in via U-Boot,
-they simply aren't registered by the running kernel.
+kvfree_rcu(): Fix ifnullfree.cocci warnings
 
-Adding an empty "chosen" node to the device tree fixes this issue. I've
-tested this with a WM8650-based laptop. Regrettably, I'd be lying if I
-said that I know exactly why this fixes the problem. However, I know
-that this solution works. I'm happy to hear suggestions/ridicule
-regarding these changes.
+NULL check before kfree is not needed.
 
-Finally, I have my suspicions that the WM8xxx series devices aren't the
-only ones affected by this issue. I think this solution, if acceptable,
-could be applied to other devices which may or may not be having issues
-related to appended DTBs and kernel parameters. Perhaps other devices
-which commit abe60a3a7 changed?
+Generated by: scripts/coccinelle/free/ifnullfree.cocci
 
-This is my first patch submission to the Linux kernel, so please tear it
-apart. Let me know what I've done incorrectly. And thanks, Alexey, for
-helping me along. I have much to learn and I wouldn't have made it half
-as far without his patience.
-
-Thanks,
-Brigham Campbell
-
-Signed-off-by: Brigham Campbell <me@brighamcampbell.com>
-
+Fixes: 16a6320addfc ("rcu/tree: Allocate a page when caller is preemptible")
+Acked-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- arch/arm/boot/dts/wm8505.dtsi | 2 ++
- arch/arm/boot/dts/wm8650.dtsi | 2 ++
- arch/arm/boot/dts/wm8850.dtsi | 2 ++
- 3 files changed, 6 insertions(+)
+ kernel/rcu/tree.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/wm8505.dtsi b/arch/arm/boot/dts/wm8505.dtsi
-index 168cd12b07bc..2b814b48b458 100644
---- a/arch/arm/boot/dts/wm8505.dtsi
-+++ b/arch/arm/boot/dts/wm8505.dtsi
-@@ -10,6 +10,8 @@ / {
- 	#size-cells = <1>;
- 	compatible = "wm,wm8505";
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 39ac930..09dfd03 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3165,8 +3165,7 @@ static void kfree_rcu_work(struct work_struct *work)
+ 				bkvhead[i] = NULL;
+ 			krc_this_cpu_unlock(krcp, flags);
  
-+	chosen {};
-+
- 	cpus {
- 		#address-cells = <0>;
- 		#size-cells = <0>;
-diff --git a/arch/arm/boot/dts/wm8650.dtsi b/arch/arm/boot/dts/wm8650.dtsi
-index bc057b6f7d16..a68c82c8035e 100644
---- a/arch/arm/boot/dts/wm8650.dtsi
-+++ b/arch/arm/boot/dts/wm8650.dtsi
-@@ -10,6 +10,8 @@ / {
- 	#size-cells = <1>;
- 	compatible = "wm,wm8650";
+-			if (bkvhead[i])
+-				kfree(bkvhead[i]);
++			kfree(bkvhead[i]);
  
-+	chosen {};
-+
- 	cpus {
- 		#address-cells = <0>;
- 		#size-cells = <0>;
-diff --git a/arch/arm/boot/dts/wm8850.dtsi b/arch/arm/boot/dts/wm8850.dtsi
-index 65c9271050e6..c864883ae777 100644
---- a/arch/arm/boot/dts/wm8850.dtsi
-+++ b/arch/arm/boot/dts/wm8850.dtsi
-@@ -10,6 +10,8 @@ / {
- 	#size-cells = <1>;
- 	compatible = "wm,wm8850";
- 
-+	chosen {};
-+
- 	cpus {
- 		#address-cells = <1>;
- 		#size-cells = <0>;
--- 
-2.28.0
-
+ 			cond_resched_tasks_rcu_qs();
+ 		}
