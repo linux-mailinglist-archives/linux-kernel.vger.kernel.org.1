@@ -2,81 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EECDF287FCD
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 03:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98DCB287FDB
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 03:14:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729297AbgJIBK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 21:10:27 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14753 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725979AbgJIBK0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 21:10:26 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id D0EDA1FD2288C3F2A90E;
-        Fri,  9 Oct 2020 09:10:23 +0800 (CST)
-Received: from [10.174.177.149] (10.174.177.149) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 9 Oct 2020 09:10:18 +0800
-Subject: Re: [PATCH -next] gnss: simplify the return expression of gnss_uevent
-To:     Johan Hovold <johan@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>
-References: <20200921131028.91837-1-miaoqinglang@huawei.com>
- <20201008144247.GJ26280@localhost>
-From:   miaoqinglang <miaoqinglang@huawei.com>
-Message-ID: <ff65fc05-b992-ed76-909d-37935287307a@huawei.com>
-Date:   Fri, 9 Oct 2020 09:10:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20201008144247.GJ26280@localhost>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.149]
-X-CFilter-Loop: Reflected
+        id S1730048AbgJIBO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 21:14:28 -0400
+Received: from mga17.intel.com ([192.55.52.151]:13068 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725979AbgJIBO2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 21:14:28 -0400
+IronPort-SDR: N1dx9tLbMqbSoZiXSmOvrjs4W3ezUtd70iLfn86GwXvrTsU9UzziAUZqIUwLw7vbQIVBwDY2Hk
+ pW7NrSFpiXGg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="145294127"
+X-IronPort-AV: E=Sophos;i="5.77,353,1596524400"; 
+   d="scan'208";a="145294127"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 18:14:27 -0700
+IronPort-SDR: 6VyLAW55I+cYbkuBpxHirYb5qJCBBjBz2kxOLt6JE0Yq60E1E/dQvdR/uOROjL/QHcBGW/PenI
+ Er3jYu3TRYDA==
+X-IronPort-AV: E=Sophos;i="5.77,353,1596524400"; 
+   d="scan'208";a="462002339"
+Received: from rhweight-mobl2.amr.corp.intel.com (HELO rhweight-mobl2.ra.intel.com) ([10.254.33.152])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 18:14:26 -0700
+From:   Russ Weight <russell.h.weight@intel.com>
+To:     mdf@kernel.org, lee.jones@linaro.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
+        hao.wu@intel.com, matthew.gerlach@intel.com,
+        Russ Weight <russell.h.weight@intel.com>
+Subject: [PATCH v3 0/6] Intel MAX10 BMC Secure Update Driver
+Date:   Thu,  8 Oct 2020 18:14:17 -0700
+Message-Id: <20201009011423.22741-1-russell.h.weight@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The Intel MAX10 BMC Secure Update driver instantiates the FPGA
+Security Manager class driver and provides the callback functions
+required to support secure updates on Intel n3000 PAC devices.
+This driver is implemented as a sub-driver of the Intel MAX10 BMC
+mfd driver. Future instances of the MAX10 BMC will support other
+devices as well (e.g. d5005) and this same MAX10 BMC Secure
+Update driver will receive modifications to support that device.
 
+This driver interacts with the HW secure update engine of the
+BMC in order to transfer new FPGA and BMC images to FLASH so
+that they will be automatically loaded when the FPGA card reboots.
+Security is enforced by hardware and firmware. The MAX10 BMC
+Secure Update driver interacts with the firmware to initiate
+an update, pass in the necessary data, and collect status on
+the update.
 
-ÔÚ 2020/10/8 22:42, Johan Hovold Ð´µÀ:
-> On Mon, Sep 21, 2020 at 09:10:28PM +0800, Qinglang Miao wrote:
->> Simplify the return expression.
->>
->> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-> 
-> The current code was written with an explicit error path on purpose, and
-> there's no need to change it.
-> 
-> Same applies to your other gnss ubx patch.
-> 
-Glad for knowing that and it sounds resonable to me.
+This driver passes call-back function pointers to the FPGA
+Security Manager Class Driver to support the following functions:
 
-Thanks.
->> ---
->>   drivers/gnss/core.c | 7 +------
->>   1 file changed, 1 insertion(+), 6 deletions(-)
->>
->> diff --git a/drivers/gnss/core.c b/drivers/gnss/core.c
->> index e6f94501c..e6b9ac9da 100644
->> --- a/drivers/gnss/core.c
->> +++ b/drivers/gnss/core.c
->> @@ -368,13 +368,8 @@ ATTRIBUTE_GROUPS(gnss);
->>   static int gnss_uevent(struct device *dev, struct kobj_uevent_env *env)
->>   {
->>   	struct gnss_device *gdev = to_gnss_device(dev);
->> -	int ret;
->>   
->> -	ret = add_uevent_var(env, "GNSS_TYPE=%s", gnss_type_name(gdev));
->> -	if (ret)
->> -		return ret;
->> -
->> -	return 0;
->> +	return add_uevent_var(env, "GNSS_TYPE=%s", gnss_type_name(gdev));
->>   }
->>   
->>   static int __init gnss_module_init(void)
-> 
-> Johan
-> .
-> 
+(1) Instantiate and monitor a secure update
+(2) Display security information including: Root Entry Hashes (REH),
+    Canceled Code Signing Keys (CSK), and flash update counts for
+    both BMC and FPGA images.
+
+These patches are dependent on other patches that are under
+review. If you want to apply these patches on linux-next,
+please apply these patches first, in the following order:
+
+(1 patch)   https://marc.info/?l=linux-fpga&m=159782339732362&w=2
+(4 patches) https://marc.info/?l=linux-fpga&m=160014074806950&w=2
+(7 patches) https://marc.info/?l=linux-fpga&m=160211621032687&w=2
+
+Changelog v2 -> v3:
+  - Changed "MAX10 BMC Security Engine driver" to "MAX10 BMC Secure
+    Update driver"
+  - Changed from "Intel FPGA Security Manager" to FPGA Security Manager"
+  - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
+  - Removed wrapper functions (m10bmc_raw_*, m10bmc_sys_*). The
+    underlying functions are now called directly.
+  - Changed "_root_entry_hash" to "_reh", with a comment explaining
+    what reh is.
+  - Renamed get_csk_vector() to m10bmc_csk_vector()
+  - Changed calling functions of functions that return "enum fpga_sec_err"
+    to check for (ret != FPGA_SEC_ERR_NONE) instead of (ret)
+
+Changelog v1 -> v2:
+  - These patches were previously submitted as part of a larger V1
+    patch set under the title "Intel FPGA Security Manager Class Driver".
+  - Grouped all changes to include/linux/mfd/intel-m10-bmc.h into a
+    single patch: "mfd: intel-m10-bmc: support for MAX10 BMC Security
+    Engine".
+  - Removed ifpga_sec_mgr_init() and ifpga_sec_mgr_uinit() functions.
+  - Adapted to changes in the Intel FPGA Security Manager by splitting
+    the single call to ifpga_sec_mgr_register() into two function
+    calls: devm_ifpga_sec_mgr_create() and ifpga_sec_mgr_register().
+  - Replaced small function-creation macros for explicit function
+    declarations.
+  - Bug fix for the get_csk_vector() function to properly apply the
+    stride variable in calls to m10bmc_raw_bulk_read().
+  - Added m10bmc_ prefix to functions in m10bmc_iops structure
+  - Implemented HW_ERRINFO_POISON for m10bmc_sec_hw_errinfo() to
+    ensure that corresponding bits are set to 1 if we are unable
+    to read the doorbell or auth_result registers.
+  - Added comments and additional code cleanup per V1 review.
+
+Russ Weight (6):
+  mfd: intel-m10-bmc: support for MAX10 BMC Secure Updates
+  fpga: m10bmc-sec: create max10 bmc secure update driver
+  fpga: m10bmc-sec: expose max10 flash update counts
+  fpga: m10bmc-sec: expose max10 canceled keys in sysfs
+  fpga: m10bmc-sec: add max10 secure update functions
+  fpga: m10bmc-sec: add max10 get_hw_errinfo callback func
+
+ MAINTAINERS                         |   1 +
+ drivers/fpga/Kconfig                |  11 +
+ drivers/fpga/Makefile               |   3 +
+ drivers/fpga/intel-m10-bmc-secure.c | 599 ++++++++++++++++++++++++++++
+ include/linux/mfd/intel-m10-bmc.h   |  85 ++++
+ 5 files changed, 699 insertions(+)
+ create mode 100644 drivers/fpga/intel-m10-bmc-secure.c
+
+-- 
+2.17.1
+
