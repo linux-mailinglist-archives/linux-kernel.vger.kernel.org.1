@@ -2,178 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9682886D3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 12:25:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C7D42886D8
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 12:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387639AbgJIKYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 06:24:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:47226 "EHLO foss.arm.com"
+        id S2387658AbgJIKZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 06:25:24 -0400
+Received: from foss.arm.com ([217.140.110.172]:47260 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387598AbgJIKYo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 06:24:44 -0400
+        id S2387599AbgJIKZY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 06:25:24 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6CCC2D6E;
-        Fri,  9 Oct 2020 03:24:43 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.51.22])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 759393F66B;
-        Fri,  9 Oct 2020 03:24:41 -0700 (PDT)
-Date:   Fri, 9 Oct 2020 11:24:38 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Qian Cai <cai@redhat.com>, linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCHv2] arm64: initialize per-cpu offsets earlier
-Message-ID: <20201009102438.GB87530@C02TD0UTHF1T.local>
-References: <20201005164303.21389-1-mark.rutland@arm.com>
- <711bc57a314d8d646b41307008db2845b7537b3d.camel@redhat.com>
- <20201009085115.GC29594@willie-the-truck>
- <20201009094318.GA87530@C02TD0UTHF1T.local>
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 838C8D6E;
+        Fri,  9 Oct 2020 03:25:23 -0700 (PDT)
+Received: from [192.168.0.110] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7BD263F66B;
+        Fri,  9 Oct 2020 03:25:21 -0700 (PDT)
+Subject: Re: [PATCH v4] arm64: Enable perf events based hard lockup detector
+To:     Sumit Garg <sumit.garg@linaro.org>, will@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
+        mark.rutland@arm.com, peterz@infradead.org, mingo@redhat.com,
+        acme@kernel.org, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org, tglx@linutronix.de,
+        swboyd@chromium.org, julien.thierry.kdev@gmail.com,
+        dianders@chromium.org, daniel.thompson@linaro.org,
+        linux-kernel@vger.kernel.org
+References: <1602060704-10921-1-git-send-email-sumit.garg@linaro.org>
+From:   Alexandru Elisei <alexandru.elisei@arm.com>
+Message-ID: <33f53714-c069-3939-6fe3-000ec783dbf4@arm.com>
+Date:   Fri, 9 Oct 2020 11:26:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201009094318.GA87530@C02TD0UTHF1T.local>
+In-Reply-To: <1602060704-10921-1-git-send-email-sumit.garg@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 10:43:18AM +0100, Mark Rutland wrote:
-> Hi Qian,
-> 
-> On Fri, Oct 09, 2020 at 09:51:15AM +0100, Will Deacon wrote:
-> > On Thu, Oct 08, 2020 at 09:18:24PM -0400, Qian Cai wrote:
-> > > On Mon, 2020-10-05 at 17:43 +0100, Mark Rutland wrote:
-> > > > The current initialization of the per-cpu offset register is difficult
-> > > > to follow and this initialization is not always early enough for
-> > > > upcoming instrumentation with KCSAN, where the instrumentation callbacks
-> > > > use the per-cpu offset.
-> > > > 
-> > > > To make it possible to support KCSAN, and to simplify reasoning about
-> > > > early bringup code, let's initialize the per-cpu offset earlier, before
-> > > > we run any C code that may consume it. To do so, this patch adds a new
-> > > > init_this_cpu_offset() helper that's called before the usual
-> > > > primary/secondary start functions. For consistency, this is also used to
-> > > > re-initialize the per-cpu offset after the runtime per-cpu areas have
-> > > > been allocated (which can change CPU0's offset).
-> > > > 
-> > > > So that init_this_cpu_offset() isn't subject to any instrumentation that
-> > > > might consume the per-cpu offset, it is marked with noinstr, preventing
-> > > > instrumentation.
-> > > > 
-> > > > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> > > > Cc: Catalin Marinas <catalin.marinas@arm.com>
-> > > > Cc: James Morse <james.morse@arm.com>
-> > > > Cc: Will Deacon <will@kernel.org>
-> > > 
-> > > Reverting this commit on the top of today's linux-next fixed an issue that
-> > > Thunder X2 is unable to boot:
-> > > 
-> > > .config: https://gitlab.com/cailca/linux-mm/-/blob/master/arm64.config
-> 
-> Sorry about this. :/
-> 
-> Will, to save you reading all the below, I think the right thing to do
-> for now is to revert this.
+Hi,
 
+On 10/7/20 9:51 AM, Sumit Garg wrote:
+> With the recent feature added to enable perf events to use pseudo NMIs
+> as interrupts on platforms which support GICv3 or later, its now been
+> possible to enable hard lockup detector (or NMI watchdog) on arm64
+> platforms. So enable corresponding support.
+>
+> One thing to note here is that normally lockup detector is initialized
+> just after the early initcalls but PMU on arm64 comes up much later as
+> device_initcall(). So we need to re-initialize lockup detection once
+> PMU has been initialized.
 
-> Looking at the assembly, task_cpu() gets instrumented (which puts this
-> patch on dodgy ground generally and I think warrants the revert), but as
-> it's instrumented with KASAN_INLINE that doesn't immediately explain the
-> issue since the shadow should be up and so we shouldn't call the report
-> function. I'll dig into this some more.
+Has another look, the PMU bits looks alright. Just to be on the safe side, I did a
+few quick boot tests on an espressobin with a kernel with CONFIG_ARM64_PSEUDO_NMI,
+with nmis enabled and disabled from the command line, and without
+CONFIG_ARM64_PSEUDO_NMI, found nothing out of the ordinary. For the PMU part:
 
-Ok; that's my fault due to trying to do this before kasan_early_init.
-
-I see what's going on now. If you're happy to take a fixup instead of a
-revert, patch below. Otherwise I'll a complete patch atop of the revert
-after rc1.
+Acked-by: Alexandru Elisei <alexandru.elisei@arm.com>
 
 Thanks,
-Mark.
 
----->8----
-From e93fcb9649c9ccfbea9a6f17b68280420685ddc5 Mon Sep 17 00:00:00 2001
-From: Mark Rutland <mark.rutland@arm.com>
-Date: Fri, 9 Oct 2020 11:06:32 +0100
-Subject: [PATCH] arm64: fix per-cpu offset initialization
+Alex
 
-Qian sees a boot-time hang introduced by commit:
-
-  353e228eb355be5a ("arm64: initialize per-cpu offsets earlier")
-
-... which happens because task_cpu() can be instrumented by KASAN, and
-we call init_this_cpu_offset() before we've performed the early KASAN
-initialization.
-
-We don't need to initialize the per-cpu offset before the early KASAN
-initialization runs (and we didn't prior to the patch in question), so
-we can avoid bothering with that.
-
-However, were task_cpu() instrumented with something else, this could
-cause similar issues, so let's also open-code that within
-init_this_cpu_offset() to avoid that possibility.
-
-It's also possible that set_my_cpu_offset() gets instrumented in
-future, so let's avoid that by marking it __always_inline. It's only
-used by init_this_cpu_offset(), so this doesn't matter for any other
-code.
-
-Finally, per_cpu_offset(x) is a macro expanding to __per_cpu_offset[x],
-which is inlined and not instrumented.
-
-Fixes: 353e228eb355be5a ("arm64: initialize per-cpu offsets earlier")
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Reported-by:  Qian Cai <cai@redhat.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
----
- arch/arm64/include/asm/percpu.h | 2 +-
- arch/arm64/kernel/head.S        | 2 --
- arch/arm64/kernel/setup.c       | 2 +-
- 3 files changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/arch/arm64/include/asm/percpu.h b/arch/arm64/include/asm/percpu.h
-index 0b6409b89e5e0..0c347d3faf55c 100644
---- a/arch/arm64/include/asm/percpu.h
-+++ b/arch/arm64/include/asm/percpu.h
-@@ -11,7 +11,7 @@
- #include <asm/cmpxchg.h>
- #include <asm/stack_pointer.h>
- 
--static inline void set_my_cpu_offset(unsigned long off)
-+static __always_inline void set_my_cpu_offset(unsigned long off)
- {
- 	asm volatile(ALTERNATIVE("msr tpidr_el1, %0",
- 				 "msr tpidr_el2, %0",
-diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
-index e28c9d4e5278c..9bbea14a9ca3f 100644
---- a/arch/arm64/kernel/head.S
-+++ b/arch/arm64/kernel/head.S
-@@ -448,8 +448,6 @@ SYM_FUNC_START_LOCAL(__primary_switched)
- 	bl	__pi_memset
- 	dsb	ishst				// Make zero page visible to PTW
- 
--	bl	init_this_cpu_offset
--
- #ifdef CONFIG_KASAN
- 	bl	kasan_early_init
- #endif
-diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
-index 005171972764b..161eaa83264ea 100644
---- a/arch/arm64/kernel/setup.c
-+++ b/arch/arm64/kernel/setup.c
-@@ -278,7 +278,7 @@ EXPORT_SYMBOL_GPL(cpu_logical_map);
- 
- void noinstr init_this_cpu_offset(void)
- {
--	unsigned int cpu = task_cpu(current);
-+	unsigned int cpu = current->cpu;
- 	set_my_cpu_offset(per_cpu_offset(cpu));
- }
- 
--- 
-2.11.0
-
+>
+> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> ---
+>
+> Changes in v4:
+> - Rebased to latest pmu v7 NMI patch-set [1] and in turn use "has_nmi"
+>   hook to know if PMU IRQ has been requested as an NMI.
+> - Add check for return value prior to initializing hard-lockup detector.
+>
+> [1] https://lkml.org/lkml/2020/9/24/458
+>
+> Changes in v3:
+> - Rebased to latest pmu NMI patch-set [1].
+> - Addressed misc. comments from Stephen.
+>
+> [1] https://lkml.org/lkml/2020/8/19/671
+>
+> Changes since RFC:
+> - Rebased on top of Alex's WIP-pmu-nmi branch.
+> - Add comment for safe max. CPU frequency.
+> - Misc. cleanup.
+>
+>  arch/arm64/Kconfig             |  2 ++
+>  arch/arm64/kernel/perf_event.c | 41 +++++++++++++++++++++++++++++++++++++++--
+>  drivers/perf/arm_pmu.c         |  5 +++++
+>  include/linux/perf/arm_pmu.h   |  2 ++
+>  4 files changed, 48 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 6d23283..b5c2594 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -167,6 +167,8 @@ config ARM64
+>  	select HAVE_NMI
+>  	select HAVE_PATA_PLATFORM
+>  	select HAVE_PERF_EVENTS
+> +	select HAVE_PERF_EVENTS_NMI if ARM64_PSEUDO_NMI
+> +	select HAVE_HARDLOCKUP_DETECTOR_PERF if PERF_EVENTS && HAVE_PERF_EVENTS_NMI
+>  	select HAVE_PERF_REGS
+>  	select HAVE_PERF_USER_STACK_DUMP
+>  	select HAVE_REGS_AND_STACK_ACCESS_API
+> diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
+> index ef206fb..6ad5120 100644
+> --- a/arch/arm64/kernel/perf_event.c
+> +++ b/arch/arm64/kernel/perf_event.c
+> @@ -23,6 +23,8 @@
+>  #include <linux/platform_device.h>
+>  #include <linux/sched_clock.h>
+>  #include <linux/smp.h>
+> +#include <linux/nmi.h>
+> +#include <linux/cpufreq.h>
+>  
+>  /* ARMv8 Cortex-A53 specific event types. */
+>  #define ARMV8_A53_PERFCTR_PREF_LINEFILL				0xC2
+> @@ -1224,10 +1226,21 @@ static struct platform_driver armv8_pmu_driver = {
+>  
+>  static int __init armv8_pmu_driver_init(void)
+>  {
+> +	int ret;
+> +
+>  	if (acpi_disabled)
+> -		return platform_driver_register(&armv8_pmu_driver);
+> +		ret = platform_driver_register(&armv8_pmu_driver);
+>  	else
+> -		return arm_pmu_acpi_probe(armv8_pmuv3_init);
+> +		ret = arm_pmu_acpi_probe(armv8_pmuv3_init);
+> +
+> +	/*
+> +	 * Try to re-initialize lockup detector after PMU init in
+> +	 * case PMU events are triggered via NMIs.
+> +	 */
+> +	if (ret == 0 && arm_pmu_irq_is_nmi())
+> +		lockup_detector_init();
+> +
+> +	return ret;
+>  }
+>  device_initcall(armv8_pmu_driver_init)
+>  
+> @@ -1285,3 +1298,27 @@ void arch_perf_update_userpage(struct perf_event *event,
+>  	userpg->cap_user_time_zero = 1;
+>  	userpg->cap_user_time_short = 1;
+>  }
+> +
+> +#ifdef CONFIG_HARDLOCKUP_DETECTOR_PERF
+> +/*
+> + * Safe maximum CPU frequency in case a particular platform doesn't implement
+> + * cpufreq driver. Although, architecture doesn't put any restrictions on
+> + * maximum frequency but 5 GHz seems to be safe maximum given the available
+> + * Arm CPUs in the market which are clocked much less than 5 GHz. On the other
+> + * hand, we can't make it much higher as it would lead to a large hard-lockup
+> + * detection timeout on parts which are running slower (eg. 1GHz on
+> + * Developerbox) and doesn't possess a cpufreq driver.
+> + */
+> +#define SAFE_MAX_CPU_FREQ	5000000000UL // 5 GHz
+> +u64 hw_nmi_get_sample_period(int watchdog_thresh)
+> +{
+> +	unsigned int cpu = smp_processor_id();
+> +	unsigned long max_cpu_freq;
+> +
+> +	max_cpu_freq = cpufreq_get_hw_max_freq(cpu) * 1000UL;
+> +	if (!max_cpu_freq)
+> +		max_cpu_freq = SAFE_MAX_CPU_FREQ;
+> +
+> +	return (u64)max_cpu_freq * watchdog_thresh;
+> +}
+> +#endif
+> diff --git a/drivers/perf/arm_pmu.c b/drivers/perf/arm_pmu.c
+> index cb2f55f..794a37d 100644
+> --- a/drivers/perf/arm_pmu.c
+> +++ b/drivers/perf/arm_pmu.c
+> @@ -726,6 +726,11 @@ static int armpmu_get_cpu_irq(struct arm_pmu *pmu, int cpu)
+>  	return per_cpu(hw_events->irq, cpu);
+>  }
+>  
+> +bool arm_pmu_irq_is_nmi(void)
+> +{
+> +	return has_nmi;
+> +}
+> +
+>  /*
+>   * PMU hardware loses all context when a CPU goes offline.
+>   * When a CPU is hotplugged back in, since some hardware registers are
+> diff --git a/include/linux/perf/arm_pmu.h b/include/linux/perf/arm_pmu.h
+> index 5b616dd..5765069 100644
+> --- a/include/linux/perf/arm_pmu.h
+> +++ b/include/linux/perf/arm_pmu.h
+> @@ -160,6 +160,8 @@ int arm_pmu_acpi_probe(armpmu_init_fn init_fn);
+>  static inline int arm_pmu_acpi_probe(armpmu_init_fn init_fn) { return 0; }
+>  #endif
+>  
+> +bool arm_pmu_irq_is_nmi(void);
+> +
+>  /* Internal functions only for core arm_pmu code */
+>  struct arm_pmu *armpmu_alloc(void);
+>  struct arm_pmu *armpmu_alloc_atomic(void);
