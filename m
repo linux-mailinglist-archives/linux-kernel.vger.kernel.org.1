@@ -2,122 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37776288AD0
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:26:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C73D2288ACD
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388753AbgJIO0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 10:26:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52828 "EHLO
+        id S2388841AbgJIOZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 10:25:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729280AbgJIO0H (ORCPT
+        with ESMTP id S2388833AbgJIOZM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 10:26:07 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 247DDC0613D2;
-        Fri,  9 Oct 2020 07:26:07 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id x1so9548899eds.1;
-        Fri, 09 Oct 2020 07:26:07 -0700 (PDT)
+        Fri, 9 Oct 2020 10:25:12 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0B1BC0613D2;
+        Fri,  9 Oct 2020 07:25:12 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id w21so1773550plq.3;
+        Fri, 09 Oct 2020 07:25:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=cHvy1KQN5hLuKt6ToeI3sdJ0ZRUbDtCJMWu2DR4x78o=;
-        b=Voze/ZFV30MCsweq27VpVXhOCyoYFMibKZjEJwOrtuJLIIo2Ok4RhN+Ie2G+eswXfA
-         1q70MwzV9lDxKwjiAuz1Jk0I1QriZaOPrwrKszjDC+3Z5/DnUEtxm5Vwix28gShZZdKk
-         vBkyETVLN10wqBfnqIQho2OTVci1QbGGZSVyhtMbVsl9JGiQQq/TcMZCoa/ANGahT6Y5
-         +QnQH6J85ytrmM1iD8petUSmD2j5Hs6n/J6L7wHltC+SGlnTXPN/HhVBlzqusY5/KPuj
-         La2A3UayCXMjf+ZUfgqWzkR5XqAwpqIjQGzXSERW6dRxVLccjEJNMt1c/aexKuuP0Lq6
-         apIw==
+        bh=J7qE0GUuBpfv8UjMVWbZ0ncuDXglYrJh0hxvzENiZ/8=;
+        b=JBBVCTAcdPeVOeY24OObzt1FQFK/0dbrwcz8o15piYCM9wKumNVa25e+K0WRk1e38l
+         ldSw2BR8PbjpUuRJA2Bz36JvLnVrD7Vq7M1VCM+u8LrI4KpeenlEYs07H1+hecgnPaGz
+         oNeuxVJXAu9t2auQq9G9byyqlxa/0cLVweaCDuXYvi1AeUQJdmpjRfArYEzilqd8AQxX
+         t3kEw7+I1XyQ3SqSXCrb6yy2M290azWEdz1Qr2Il9Etl16bTsXMvxv35YJb8wDcNgNrK
+         c4Y19lv4jWcQWSzQpv8IfvLn3pqf9h9NrHPkk4iyHuj6bi09kdCVJvOnIjSGPX8fRdv9
+         K1JA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=cHvy1KQN5hLuKt6ToeI3sdJ0ZRUbDtCJMWu2DR4x78o=;
-        b=XwEu0PfY+XuZjGxRG05QyUJV3+VZ1Jap9CTVH2HeNsF0MPzdcdc2OoCO2LqCh+5YCo
-         aVV25MdQlnScEr+oP8j/9qUN9CJjgjYXgVjDMGq2Jidr7cszYxPMJJhe5TDgFjPuyyVs
-         BL8ciRozjR82gJbcmMod4itUYmHWeLxe55bhRZYTnvRGa6X7vAh4xRlRSMuTvh1AOLkj
-         P596KZbcUmwzqzZfFSRcGktZ8okOsS+7iB9+FqPRvJNGTUr5+htlBd83EVCUKLScziIr
-         W0RPr9jV2s/BFwr4QE6RENHbzeV8xzGRaFl0mx7Z1sSM5xqVNv8QuwY98WJWKY4Ms4Fw
-         r7wA==
-X-Gm-Message-State: AOAM533YUlVI4hHywsbTOflrSSlIdWPDuC3dGJlAn4h74h8/g+Mr+W+s
-        8K4ja2HJjICBjETILRqXvsi4OHf58z9YVSZsCp0=
-X-Google-Smtp-Source: ABdhPJy53WMWN3WNZMoTcdkRBXF6OkwhMxZOCZHBEzZxaaMBvHj+4P42vcVIHzNnpJkFGujfGV6zw914KUB/EBTpruI=
-X-Received: by 2002:a50:e78f:: with SMTP id b15mr15077444edn.104.1602253565716;
- Fri, 09 Oct 2020 07:26:05 -0700 (PDT)
+        bh=J7qE0GUuBpfv8UjMVWbZ0ncuDXglYrJh0hxvzENiZ/8=;
+        b=mG9+neVyh54J1Rw54bEivJCVg4lNToIlpB1I7svC92upJmQkEiBts6+e1mGW3EVaRQ
+         +ruUbAXwmv51xhWbH3RinsA/59YxsIIf4HKr+ldYsZaAW3oWwJCRgYCoORNg+Zc5PWzN
+         9aR1Qdd1LXHr8TNTX0H7pmAhDoIIixd55CQJyVwYH/QLa75IXWfWrws6qrPcFeykdLNz
+         iaNfm7mcob4MBIHqFJ9zZA9sa+iy4/S9Gri4Yrv/H7u4h8UVTpkY9T6ySUxoFzqtl1s4
+         emsvai3uwZwxCIPjyy6YggQH50t8ZyVhiC/KfBjV0J9JEjr8dYFHEhv3ZR5joXaJNkJ2
+         CCtw==
+X-Gm-Message-State: AOAM533LeG/St1bekbW9NGnTLk/AkW3bIbA+CZ1LYr5KBzi1CXO/WDLH
+        JgcnWnN/M9SRmHk/ULbVOx3fpBLNYry6W73dx6M=
+X-Google-Smtp-Source: ABdhPJyZg/PkK/hjqy/5vVWSOS1AXfLxmeEoMXE0Id1GSJWLrjE5E8Me834jLrcvXmHmwLx7Zy17XZG174r1FC4GYVw=
+X-Received: by 2002:a17:902:aa8a:b029:d3:c9dd:77d1 with SMTP id
+ d10-20020a170902aa8ab02900d3c9dd77d1mr12650563plr.0.1602253512112; Fri, 09
+ Oct 2020 07:25:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201006080424.GA6988@pengutronix.de> <CAOMZO5Ds7mm4dWdt_a+HU=V40zjp006JQJbozRCicx9yiqacgg@mail.gmail.com>
-In-Reply-To: <CAOMZO5Ds7mm4dWdt_a+HU=V40zjp006JQJbozRCicx9yiqacgg@mail.gmail.com>
-From:   Bruno Thomsen <bruno.thomsen@gmail.com>
-Date:   Fri, 9 Oct 2020 16:25:49 +0200
-Message-ID: <CAH+2xPD=CE+pk_cEC=cLv1nebBBg7X+xDpOFANf3rQ4V2+2Cvw@mail.gmail.com>
-Subject: Re: PHY reset question
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>, David Jander <david@protonic.nl>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Marek Vasut <marex@denx.de>,
-        Florian Fainelli <f.fainelli@gmail.com>
+References: <20201009141128.683254-1-luzmaximilian@gmail.com> <20201009141128.683254-3-luzmaximilian@gmail.com>
+In-Reply-To: <20201009141128.683254-3-luzmaximilian@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 9 Oct 2020 17:26:01 +0300
+Message-ID: <CAHp75VfJNrJs3PFuH4+Cw5wZ8MB+hoeuZc-+2s1YD2wHYzf8pg@mail.gmail.com>
+Subject: Re: [PATCH v4 2/5] platform/surface: Move Surface 3 WMI driver to platform/surface
+To:     Maximilian Luz <luzmaximilian@gmail.com>
+Cc:     Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Gayatri Kammela <gayatri.kammela@intel.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        =?UTF-8?Q?Bla=C5=BE_Hrastnik?= <blaz@mxxn.io>,
+        Stephen Just <stephenjust@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Chen Yu <yu.c.chen@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fabio and Oleksij
-
-Den ons. 7. okt. 2020 kl. 11.50 skrev Fabio Estevam <festevam@gmail.com>:
+On Fri, Oct 9, 2020 at 5:11 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
 >
-> Hi Oleksij,
->
-> On Tue, Oct 6, 2020 at 5:05 AM Oleksij Rempel <o.rempel@pengutronix.de> wrote:
-> >
-> > Hello PHY experts,
-> >
-> > Short version:
-> > what is the proper way to handle the PHY reset before identifying PHY?
-> >
-> > Long version:
-> > I stumbled over following issue:
-> > If PHY reset is registered within PHY node. Then, sometimes,  we will not be
-> > able to identify it (read PHY ID), because PHY is under reset.
-> >
-> > mdio {
-> >         compatible = "virtual,mdio-gpio";
-> >
-> >         [...]
-> >
-> >         /* Microchip KSZ8081 */
-> >         usbeth_phy: ethernet-phy@3 {
-> >                 reg = <0x3>;
-> >
-> >                 interrupts-extended = <&gpio5 12 IRQ_TYPE_LEVEL_LOW>;
-> >                 reset-gpios = <&gpio5 11 GPIO_ACTIVE_LOW>;
-> >                 reset-assert-us = <500>;
-> >                 reset-deassert-us = <1000>;
-> >         };
-> >
-> >         [...]
-> > };
-> >
-> > On simple boards with one PHY per MDIO bus, it is easy to workaround by using
-> > phy-reset-gpios withing MAC node (illustrated in below DT example), instead of
-> > using reset-gpios within PHY node (see above DT example).
-> >
-> > &fec {
-> >         [...]
-> >         phy-mode = "rmii";
-> >         phy-reset-gpios = <&gpio4 12 GPIO_ACTIVE_LOW>;
-> >         [...]
->
-> I thought this has been fixed by Bruno's series:
-> https://www.spinics.net/lists/netdev/msg673611.html
+> Move the Surface 3 WMI driver from platform/x86 to the newly created
+> platform/surface directory.
 
-Yes, that has fixed the Microchip/Micrel PHY ID auto detection
-issue. I have send a DTS patch v3 that makes use of the newly
-added device tree parameter:
-https://lkml.org/lkml/2020/9/23/595
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-/Bruno
+> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+> ---
+>  drivers/platform/surface/Kconfig                 | 16 ++++++++++++++++
+>  drivers/platform/surface/Makefile                |  2 ++
+>  drivers/platform/{x86 => surface}/surface3-wmi.c |  0
+>  drivers/platform/x86/Kconfig                     | 12 ------------
+>  drivers/platform/x86/Makefile                    |  1 -
+>  5 files changed, 18 insertions(+), 13 deletions(-)
+>  rename drivers/platform/{x86 => surface}/surface3-wmi.c (100%)
+>
+> diff --git a/drivers/platform/surface/Kconfig b/drivers/platform/surface/Kconfig
+> index b67926ece95f..326f7bbf83d7 100644
+> --- a/drivers/platform/surface/Kconfig
+> +++ b/drivers/platform/surface/Kconfig
+> @@ -12,3 +12,19 @@ menuconfig SURFACE_PLATFORMS
+>           kernel code.
+>
+>           If you say N, all options in this submenu will be skipped and disabled.
+> +
+> +if SURFACE_PLATFORMS
+> +
+> +config SURFACE3_WMI
+> +       tristate "Surface 3 WMI Driver"
+> +       depends on ACPI_WMI
+> +       depends on DMI
+> +       depends on INPUT
+> +       depends on SPI
+> +       help
+> +         Say Y here if you have a Surface 3.
+> +
+> +         To compile this driver as a module, choose M here: the module will
+> +         be called surface3-wmi.
+> +
+> +endif # SURFACE_PLATFORMS
+> diff --git a/drivers/platform/surface/Makefile b/drivers/platform/surface/Makefile
+> index 3700f9e84299..f889d521420f 100644
+> --- a/drivers/platform/surface/Makefile
+> +++ b/drivers/platform/surface/Makefile
+> @@ -3,3 +3,5 @@
+>  # Makefile for linux/drivers/platform/surface
+>  # Microsoft Surface Platform-Specific Drivers
+>  #
+> +
+> +obj-$(CONFIG_SURFACE3_WMI)             += surface3-wmi.o
+> diff --git a/drivers/platform/x86/surface3-wmi.c b/drivers/platform/surface/surface3-wmi.c
+> similarity index 100%
+> rename from drivers/platform/x86/surface3-wmi.c
+> rename to drivers/platform/surface/surface3-wmi.c
+> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+> index 0d91d136bc3b..0759913c9846 100644
+> --- a/drivers/platform/x86/Kconfig
+> +++ b/drivers/platform/x86/Kconfig
+> @@ -870,18 +870,6 @@ config INTEL_VBTN
+>           To compile this driver as a module, choose M here: the module will
+>           be called intel_vbtn.
+>
+> -config SURFACE3_WMI
+> -       tristate "Surface 3 WMI Driver"
+> -       depends on ACPI_WMI
+> -       depends on DMI
+> -       depends on INPUT
+> -       depends on SPI
+> -       help
+> -         Say Y here if you have a Surface 3.
+> -
+> -         To compile this driver as a module, choose M here: the module will
+> -         be called surface3-wmi.
+> -
+>  config SURFACE_3_BUTTON
+>         tristate "Power/home/volume buttons driver for Microsoft Surface 3 tablet"
+>         depends on ACPI && KEYBOARD_GPIO && I2C
+> diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
+> index 5f823f7eff45..29563a32b3e3 100644
+> --- a/drivers/platform/x86/Makefile
+> +++ b/drivers/platform/x86/Makefile
+> @@ -82,7 +82,6 @@ obj-$(CONFIG_INTEL_OAKTRAIL)          += intel_oaktrail.o
+>  obj-$(CONFIG_INTEL_VBTN)               += intel-vbtn.o
+>
+>  # Microsoft
+> -obj-$(CONFIG_SURFACE3_WMI)             += surface3-wmi.o
+>  obj-$(CONFIG_SURFACE_3_BUTTON)         += surface3_button.o
+>  obj-$(CONFIG_SURFACE_3_POWER_OPREGION) += surface3_power.o
+>  obj-$(CONFIG_SURFACE_PRO3_BUTTON)      += surfacepro3_button.o
+> --
+> 2.28.0
+>
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
