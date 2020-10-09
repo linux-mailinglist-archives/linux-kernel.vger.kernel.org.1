@@ -2,91 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E7162887DF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 13:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B9D02887E5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 13:33:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388119AbgJILbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 07:31:35 -0400
-Received: from foss.arm.com ([217.140.110.172]:48630 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729986AbgJILbe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 07:31:34 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 22299D6E;
-        Fri,  9 Oct 2020 04:31:34 -0700 (PDT)
-Received: from bogus (unknown [10.57.53.233])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 55B1A3F66B;
-        Fri,  9 Oct 2020 04:31:32 -0700 (PDT)
-Date:   Fri, 9 Oct 2020 12:31:29 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        ALKML <linux-arm-kernel@lists.infradead.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        DTML <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh@kernel.org>, Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v2 0/4] mailbox: arm_mhu: Add ARM MHU doorbell controller
- driver
-Message-ID: <20201009113129.uqw5zrqztjgw6vga@bogus>
-References: <20201008191452.38672-1-sudeep.holla@arm.com>
- <20201009042237.yuumlyoiougygoqs@vireshk-i7>
+        id S2388129AbgJILdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 07:33:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51363 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729986AbgJILdx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 07:33:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602243231;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PZRmIEX+5coj1lckLNFd6QB/eWw8ns4LBmqZd7pHr2I=;
+        b=DF1xvZiZNK1IDY9sE5pxdgxYOaX4WOFAz4QDp9SEn3/DLziBLYvcruIoRptc75pWHHgwm/
+        +kxMBh+FdtxlCHQEtJY68YADZydRHpVHxVgqT29YkOYW1XDBry9EKskxCsExherMKdeTvd
+        Zpjf6Fe+lrjMLVa7O4C8OEOdA38+MXI=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-139-RcWbg-PDM8-g7oJeBuTzxA-1; Fri, 09 Oct 2020 07:33:49 -0400
+X-MC-Unique: RcWbg-PDM8-g7oJeBuTzxA-1
+Received: by mail-ed1-f70.google.com with SMTP id a15so3012594eda.15
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 04:33:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PZRmIEX+5coj1lckLNFd6QB/eWw8ns4LBmqZd7pHr2I=;
+        b=hkULP+mGf0zkX8eMep2IFhnf+XdelYMS0XukusaO6w45/+6blK6FQwhhUP5ZWOnWJf
+         ydBi80wSy8Q5suulMAVId+zXBh8SRUc+YrSoQIq56KdxWBpit/nJqlG4hKm7cc0U2OiZ
+         cG+f03GTba/iRDkYjo8J/J3lKOFPH9vZOyxNulmH371lUdNxNwWgVe2HXCdj9G7cW5+7
+         5dk2Cp8dpGUKtvzXqR+Pc2VkJ+Egr6ylZo7c1d7EzRfHtqtYLoc5kAr/9uAltP67jqWT
+         Z+gqTF5kQTIqIjL3/TiuaAUTkahWpNqDD9Y45cypKM/V+VhVVdOr3AP2RvO34F8Xhtg5
+         ztQQ==
+X-Gm-Message-State: AOAM53146wN1ieTslnwE15ihc09OAArtDVOmTyiIrUNRu9VOrZz9PjVy
+        KeFBoZe1vg8l6ySw9h7125mcgY1e+AR6r0db099nxCJRiFxRs7WCKGRF9fEIgyJWy2shxn81eDb
+        WwBXIzT4pM71whCFuXsNbUZl1
+X-Received: by 2002:a17:906:1914:: with SMTP id a20mr13378295eje.425.1602243228255;
+        Fri, 09 Oct 2020 04:33:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwUpPqn4/BzN1UKwHf8EhXhi8gQQP/FiIe93a8JlxOVrgBQgzNUBLvR6AThQkC3hr6K4V1VZA==
+X-Received: by 2002:a17:906:1914:: with SMTP id a20mr13378271eje.425.1602243227968;
+        Fri, 09 Oct 2020 04:33:47 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id i14sm6066775edu.40.2020.10.09.04.33.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Oct 2020 04:33:47 -0700 (PDT)
+Subject: Re: [RFC] Documentation: Add documentation for new
+ performance_profile sysfs class
+To:     "Limonciello, Mario" <Mario.Limonciello@dell.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Mark Gross <mgross@linux.intel.com>
+Cc:     Mark Pearson <mpearson@lenovo.com>,
+        Elia Devito <eliadevito@gmail.com>,
+        Bastien Nocera <hadess@hadess.net>,
+        Benjamin Berg <bberg@redhat.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mark Pearson <markpearson@lenovo.com>
+References: <20201003131938.9426-1-hdegoede@redhat.com>
+ <20201003131938.9426-2-hdegoede@redhat.com>
+ <DM6PR19MB263669227D122BB7699951E6FA0C0@DM6PR19MB2636.namprd19.prod.outlook.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <809a45c7-735d-52e8-edfc-f3e74058063e@redhat.com>
+Date:   Fri, 9 Oct 2020 13:33:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201009042237.yuumlyoiougygoqs@vireshk-i7>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <DM6PR19MB263669227D122BB7699951E6FA0C0@DM6PR19MB2636.namprd19.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 09:52:37AM +0530, Viresh Kumar wrote:
-> On 08-10-20, 20:14, Sudeep Holla wrote:
-> > Hi,
-> > 
-> > These series adds ARM MHU doorbell controller driver based on the
-> > discussion[1]. The DT patches are just repost from Viresh's last posting[2]
-> > 
-> > Regards,
-> > Sudeep
-> > 
-> > v1[3]->v2:
-> > 	- No updates to binding patches(1-2)
-> > 	- Fixed memory leak and improved logic to find free channel reusing
-> > 	  mhu_db_mbox_to_channel as suggested by Jassi
-> > 
-> > [1] https://lore.kernel.org/r/20200909044618.deyx37pzocxiga7u@vireshk-i7
-> > [2] https://lore.kernel.org/r/3874de094d193a08624a00a35067a3237e0b42b1.1600249102.git.viresh.kumar@linaro.org
-> > [3] https://lore.kernel.org/r/20200928114445.19689-1-sudeep.holla@arm.com
-> > 
-> > Sudeep Holla (3):
-> >   dt-bindings: mailbox: add doorbell support to ARM MHU
-> >   mailbox: arm_mhu: Match only if compatible is "arm,mhu"
-> >   mailbox: arm_mhu: Add ARM MHU doorbell driver
-> > 
-> > Viresh Kumar (1):
-> >   dt-bindings: mailbox : arm,mhu: Convert to Json-schema
-> > 
-> >  .../devicetree/bindings/mailbox/arm,mhu.yaml  | 135 +++++++
-> >  .../devicetree/bindings/mailbox/arm-mhu.txt   |  43 ---
-> >  drivers/mailbox/Makefile                      |   2 +-
-> >  drivers/mailbox/arm_mhu.c                     |   3 +
-> >  drivers/mailbox/arm_mhu_db.c                  | 354 ++++++++++++++++++
-> >  5 files changed, 493 insertions(+), 44 deletions(-)
-> >  create mode 100644 Documentation/devicetree/bindings/mailbox/arm,mhu.yaml
-> >  delete mode 100644 Documentation/devicetree/bindings/mailbox/arm-mhu.txt
-> >  create mode 100644 drivers/mailbox/arm_mhu_db.c
+Hi,
+
+On 10/5/20 2:58 PM, Limonciello, Mario wrote:
+>> On modern systems CPU/GPU/... performance is often dynamically configurable
+>> in the form of e.g. variable clock-speeds and TPD. The performance is often
+>> automatically adjusted to the load by some automatic-mechanism (which may
+>> very well live outside the kernel).
+>>
+>> These auto performance-adjustment mechanisms often can be configured with
+>> one of several performance-profiles, with either a bias towards low-power
+>> consumption (and cool and quiet) or towards performance (and higher power
+>> consumption and thermals).
+>>
+>> Introduce a new performance_profile class/sysfs API which offers a generic
+>> API for selecting the performance-profile of these automatic-mechanisms.
+>>
 > 
-> MAINTAINERS ?
+> If introducing an API for this - let me ask the question, why even let each
+> driver offer a class interface and userspace need to change "each" driver's
+> performance setting?
+> 
+> I would think that you could just offer something kernel-wide like
+> /sys/power/performance-profile
+> 
+> Userspace can read and write to a single file.  All drivers can get notified
+> on this sysfs file changing.
 
-Duh ! Generated patches before I added and totally forgot to regenerate.
-Will wait for Jassi's response and then will post as addon if no comments
-or will respin the series. Sorry for that.
+In the case of the currently intended users of this API there will be
+only 1 provider (using the system type). So that pretty much does what
+you suggest.
 
--- 
+But I can see there being multiple components in a system which
+each can have their own performance-profile. E.g. in some desktop
+cases the CPU and GPU may be in separate compartments of the case
+which each have their own independent airflow (and thus cooling budget).
+
+Some components may even have their own air cooling with their own
+external radiator.
+
+So given the (potential) case with multiple components with each
+their own thermal-profile. Then exporting only a single setting
+for all components combined has 2 problems:
+
+That would mean either some complicated policy in the kernel
+for this, or a simple one where we set them all to the same level.
+
+The simple policy has a number of issues:
+
+1. Setting all components to the same level assume they have
+identical profile options, but one component might offer low-power,
+while another component does not offer that (the other component
+could instead e.g. only offer quiet which is not 100% the same).
+
+2. It is a given that some power users will be wanting to be able
+to control the profiles of different components separately, so
+having just a simply/naive policy in the kernel for this is not going
+to work for all use-cases.
+
+That leaves doing some complex policy mechanism, but in general
+where possible the kernel tries to stay out of enforcing policies,
+instead (where possible) it is greatly preferred to only offer a
+mechanism to allow the functionality and then let userspace handle
+any policy decisions.
+
+So I believe that having 1 class device for each component
+which offers selectable performance profiles is best.
+
+Note that something like the performance-profile-daemon Bastien
+is working on might very will choice to implement a KISS policy
+where all components get configured with a similar performance-profile,
+resulting in what you are suggesting. But at least this way
+leaves the possibility to do things differently open.
+
+>> Cc: Mark Pearson <markpearson@lenovo.com>
+>> Cc: Elia Devito <eliadevito@gmail.com>
+>> Cc: Bastien Nocera <hadess@hadess.net>
+>> Cc: Benjamin Berg <bberg@redhat.com>
+>> Cc: linux-pm@vger.kernel.org
+>> Cc: linux-acpi@vger.kernel.org
+>> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+>> ---
+>>   .../testing/sysfs-class-performance_profile   | 104 ++++++++++++++++++
+>>   1 file changed, 104 insertions(+)
+>>   create mode 100644 Documentation/ABI/testing/sysfs-class-performance_profile
+>>
+>> diff --git a/Documentation/ABI/testing/sysfs-class-performance_profile
+>> b/Documentation/ABI/testing/sysfs-class-performance_profile
+>> new file mode 100644
+>> index 000000000000..9c67cae39600
+>> --- /dev/null
+>> +++ b/Documentation/ABI/testing/sysfs-class-performance_profile
+>> @@ -0,0 +1,104 @@
+>> +Performance-profile selection (e.g.
+>> /sys/class/performance_profile/thinkpad_acpi/)
+>> +
+>> +On modern systems CPU/GPU/... performance is often dynamically configurable
+>> +in the form of e.g. variable clock-speeds and TPD. The performance is often
+>> +automatically adjusted to the load by some automatic-mechanism (which may
+>> +very well live outside the kernel).
+> 
+> Are you intending to word this specifically to cover both firmware and userspace
+> implementations?  Or were you really meaning firmware implementations?
+
+What I'm trying to cover here is both firmware (run by say some microcontroller/EC)
+implementations as well and in-kernel implementations like cpufreq and possible
+support for controlling GPU frequencies. Note this is intended to future proof
+things in case e.g. a GPU driver, where freq. control is done inside the kernel.
+would like to use this API. This scenario might never materialize.
+
+Userspace implementations (which seems to likely become a thing on at least ARM)
+I would expect to have their own API (e.g. dbus / configfile) to configure their
+behavior rather then making a round trip through kernel space with some virtual
+device exporting this sysfs API.
+
+
+>> +These auto performance-adjustment mechanisms often can be configured with
+>> +one of several performance-profiles, with either a bias towards low-power
+>> +consumption (and cool and quiet) or towards performance (and higher power
+>> +consumption and thermals).
+>> +
+>> +The purpose of the performance_profile class is to offer a generic sysfs
+>> +API for selecting the performance-profile of these automatic-mechanisms.
+>> +
+>> +Note that this API is only for selecting the performance-profile, it is
+>> +NOT a goal of this API to allow monitoring the resulting performance
+>> +characteristics. Monitoring performance is best done with device/vendor
+>> +specific tools such as e.g. turbostat.
+> 
+> Another thought that comes to mind (which is completely separate from my previous
+> idea):
+> 
+> Why not make this register to firmware-attributes class as being discussed in the
+> new Dell driver?
+> 
+> It seems like it could easily be read as:
+> /sys/class/firmware-attributes/thinkpad-foo/attributes/PerformanceProfile/current_value
+> /sys/class/firmware-attributes/thinkpad-foo/attributes/PerformanceProfile/possible_values
+
+That would be mixing boot-time settings with runtime settings under the same
+API. At least some Thinkpads already have firmware attributes for selecting
+the performance profile but that just sets the profile at boot.
+
+More in general we could put pretty much anything which can be expressed as
+a key=value pair inside that API, but doing so feels like abusing the API.
+The firmware-attributes API really is intended only for setting values which
+are stored in some nvram by the firmware, not for runtime changes.
+
 Regards,
-Sudeep
+
+Hans
+
