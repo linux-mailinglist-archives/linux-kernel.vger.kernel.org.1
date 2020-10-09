@@ -2,185 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73A9C288316
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 08:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5C9288304
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 08:53:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731501AbgJIG7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 02:59:35 -0400
-Received: from smtp-out.kfki.hu ([148.6.0.45]:55003 "EHLO smtp-out.kfki.hu"
+        id S1730515AbgJIGxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 02:53:55 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:11166 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725908AbgJIG7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 02:59:34 -0400
-X-Greylist: delayed 411 seconds by postgrey-1.27 at vger.kernel.org; Fri, 09 Oct 2020 02:59:32 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by smtp0.kfki.hu (Postfix) with ESMTP id ED8B167400F2;
-        Fri,  9 Oct 2020 08:52:39 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at smtp0.kfki.hu
-Received: from smtp0.kfki.hu ([127.0.0.1])
-        by localhost (smtp0.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP; Fri,  9 Oct 2020 08:52:37 +0200 (CEST)
-Received: from blackhole.kfki.hu (blackhole.szhk.kfki.hu [148.6.240.2])
-        by smtp0.kfki.hu (Postfix) with ESMTP id 3F54B67400F1;
-        Fri,  9 Oct 2020 08:52:37 +0200 (CEST)
-Received: by blackhole.kfki.hu (Postfix, from userid 1000)
-        id 12613340D5C; Fri,  9 Oct 2020 08:52:37 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by blackhole.kfki.hu (Postfix) with ESMTP id 0D8E2340D07;
-        Fri,  9 Oct 2020 08:52:37 +0200 (CEST)
-Date:   Fri, 9 Oct 2020 08:52:37 +0200 (CEST)
-From:   Jozsef Kadlecsik <kadlec@netfilter.org>
-X-X-Sender: kadlec@blackhole.kfki.hu
-To:     Francesco Ruggeri <fruggeri@arista.com>
-cc:     open list <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, coreteam@netfilter.org,
-        netfilter-devel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>, fw@strlen.org,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH nf v2] netfilter: conntrack: connection timeout after
- re-register
-In-Reply-To: <CA+HUmGhBxBHU85oFfvoAyP=hG17DG2kgO67eawk1aXmSjehOWQ@mail.gmail.com>
-Message-ID: <alpine.DEB.2.23.453.2010090838430.19307@blackhole.kfki.hu>
-References: <20201007193252.7009D95C169C@us180.sjc.aristanetworks.com> <CA+HUmGhBxBHU85oFfvoAyP=hG17DG2kgO67eawk1aXmSjehOWQ@mail.gmail.com>
-User-Agent: Alpine 2.23 (DEB 453 2020-06-18)
+        id S1728996AbgJIGxy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 02:53:54 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602226434; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=YDkhWM48cAkdMOYBmNFvGoMUdH8DwI8lrMxm58+8ZjQ=; b=jVB485LRL2y90tS/Prun6yyeQ49Om0i2lodXiTLL1xBrw5jfYAJmL6rVRP+3hx+l98nfOabX
+ OpwhGsuHrl+yoYkJDz6dwN825/5M3UdFPmUzcVfCmKDfCIKO66QN3KoSX7xbRrW8v8bIxiD7
+ Z1GZlS6jEAs8vqKjjWBreT8Om7M=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5f80090157b88ccb567e4b61 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 09 Oct 2020 06:53:53
+ GMT
+Sender: msavaliy=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7F66EC433C9; Fri,  9 Oct 2020 06:53:53 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.43.8] (unknown [106.213.185.102])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: msavaliy)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B2D7BC433CB;
+        Fri,  9 Oct 2020 06:53:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B2D7BC433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=msavaliy@codeaurora.org
+Subject: Re: [PATCH 5/5] i2c: geni: sdm845: dont perform DMA for the oneplus6
+To:     Wolfram Sang <wsa@kernel.org>, Caleb Connolly <caleb@connolly.tech>
+Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        ~postmarketos/upstreaming@lists.sr.ht, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201007174736.292968-1-caleb@connolly.tech>
+ <20201007174736.292968-6-caleb@connolly.tech>
+ <20201008100352.GF76290@ninjato>
+From:   "Mukesh, Savaliya" <msavaliy@codeaurora.org>
+Message-ID: <5243ff4c-f08a-d9ff-ab1d-cadfa84171b8@codeaurora.org>
+Date:   Fri, 9 Oct 2020 12:23:41 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20201008100352.GF76290@ninjato>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Francesco,
 
-On Thu, 8 Oct 2020, Francesco Ruggeri wrote:
-
-> On Wed, Oct 7, 2020 at 12:32 PM Francesco Ruggeri <fruggeri@arista.com> wrote:
-> >
-> > If the first packet conntrack sees after a re-register is an outgoing 
-> > keepalive packet with no data (SEG.SEQ = SND.NXT-1), td_end is set to 
-> > SND.NXT-1. When the peer correctly acknowledges SND.NXT, tcp_in_window 
-> > fails check III (Upper bound for valid (s)ack: sack <= 
-> > receiver.td_end) and returns false, which cascades into 
-> > nf_conntrack_in setting skb->_nfct = 0 and in later conntrack iptables 
-> > rules not matching. In cases where iptables are dropping packets that 
-> > do not match conntrack rules this can result in idle tcp connections 
-> > to time out.
-> >
-> > v2: adjust td_end when getting the reply rather than when sending out
-> >     the keepalive packet.
-> >
-> 
-> Any comments?
-> Here is a simple reproducer. The idea is to show that keepalive packets 
-> in an idle tcp connection will be dropped (and the connection will time 
-> out) if conntrack hooks are de-registered and then re-registered. The 
-> reproducer has two files. client_server.py creates both ends of a tcp 
-> connection, bounces a few packets back and forth, and then blocks on a 
-> recv on the client side. The client's keepalive is configured to time 
-> out in 20 seconds. This connection should not time out. test is a bash 
-> script that creates a net namespace where it sets iptables rules for the 
-> connection, starts client_server.py, and then clears and restores the 
-> iptables rules (which causes conntrack hooks to be de-registered and 
-> re-registered).
-
-In my opinion an iptables restore should not cause conntrack hooks to be 
-de-registered and re-registered, because important TCP initialization 
-parameters cannot be "restored" later from the packets. Therefore the 
-proper fix would be to prevent it to happen. Otherwise your patch looks OK 
-to handle the case when conntrack is intentionally restarted.
-
-Best regards,
-Jozsef
- 
-> ================ file client_server.py
-> #!/usr/bin/python
-> 
-> import socket
-> 
-> PORT=4446
-> 
-> # create server socket
-> sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-> sock.bind(('localhost', PORT))
-> sock.listen(1)
-> 
-> # create client socket
-> cl_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-> cl_sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
-> cl_sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPIDLE, 2)
-> cl_sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPINTVL, 2)
-> cl_sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPCNT, 10)
-> cl_sock.connect(('localhost', PORT))
-> 
-> srv_sock, _ = sock.accept()
-> 
-> # Bounce a packet back and forth a few times
-> buf = 'aaaaaaaaaaaa'
-> for i in range(5):
->    cl_sock.send(buf)
->    buf = srv_sock.recv(100)
->    srv_sock.send(buf)
->    buf = cl_sock.recv(100)
->    print buf
-> 
-> # idle the connection
-> try:
->    buf = cl_sock.recv(100)
-> except socket.error, e:
->    print "Error: %s" % e
-> 
-> sock.close()
-> cl_sock.close()
-> srv_sock.close()
-> 
-> ============== file test
-> #!/bin/bash
-> 
-> ip netns add dummy
-> ip netns exec dummy ip link set lo up
-> echo "Created namespace"
-> 
-> ip netns exec dummy iptables-restore <<END
-> *filter
-> :INPUT DROP [0:0]
-> :FORWARD ACCEPT [0:0]
-> :OUTPUT ACCEPT [0:0]
-> -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-> -A INPUT -p tcp -m tcp --dport 4446 -j ACCEPT
-> COMMIT
-> END
-> echo "Installed iptables rules"
-> 
-> ip netns exec dummy ./client_server.py &
-> echo "Created tcp connection"
-> sleep 2
-> 
-> ip netns exec dummy iptables-restore << END
-> *filter
-> :INPUT ACCEPT [0:0]
-> :FORWARD ACCEPT [0:0]
-> :OUTPUT ACCEPT [0:0]
-> COMMIT
-> END
-> echo "Cleared iptables rules"
-> sleep 4
-> 
-> ip netns exec dummy iptables-restore << END
-> *filter
-> :INPUT DROP [0:0]
-> :FORWARD ACCEPT [0:0]
-> :OUTPUT ACCEPT [0:0]
-> -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-> -A INPUT -p tcp -m tcp --dport 4446 -j ACCEPT
-> COMMIT
-> END
-> echo "Restored original iptables rules"
-> 
-> wait
-> ip netns del dummy
-> exit 0
-> 
-
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
-PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+On 10/8/2020 3:33 PM, Wolfram Sang wrote:
+> On Wed, Oct 07, 2020 at 05:49:35PM +0000, Caleb Connolly wrote:
+>> The OnePlus 6/T has the same issues as the c630 causing a crash when DMA
+>> is used for i2c, so disable it.
+>>
+>> https://patchwork.kernel.org/patch/11133827/
+>> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
+Reviewed-by: Mukesh Kumar Savaliya <msavaliy@codeaurora.org>
+> May I ask for a quick review here, so we can get this into 5.9 if
+> qcom-geni maintainers agree this is good to go?
+>
+>> ---
+>>   drivers/i2c/busses/i2c-qcom-geni.c | 6 ++++--
+>>   1 file changed, 4 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
+>> index dead5db3315a..50a0674a6553 100644
+>> --- a/drivers/i2c/busses/i2c-qcom-geni.c
+>> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
+>> @@ -358,7 +358,8 @@ static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
+>>   	struct geni_se *se = &gi2c->se;
+>>   	size_t len = msg->len;
+>>   
+>> -	if (!of_machine_is_compatible("lenovo,yoga-c630"))
+>> +	if (!of_machine_is_compatible("lenovo,yoga-c630") &&
+>> +	    !of_machine_is_compatible("oneplus,oneplus6"))
+>>   		dma_buf = i2c_get_dma_safe_msg_buf(msg, 32);
+>>   
+>>   	if (dma_buf)
+>> @@ -400,7 +401,8 @@ static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
+>>   	struct geni_se *se = &gi2c->se;
+>>   	size_t len = msg->len;
+>>   
+>> -	if (!of_machine_is_compatible("lenovo,yoga-c630"))
+>> +	if (!of_machine_is_compatible("lenovo,yoga-c630") &&
+>> +	    !of_machine_is_compatible("oneplus,oneplus6"))
+>>   		dma_buf = i2c_get_dma_safe_msg_buf(msg, 32);
+>>   
+>>   	if (dma_buf)
+>> -- 
+>> 2.28.0
+>>
+>>
