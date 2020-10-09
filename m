@@ -2,183 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E8862888A1
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 14:26:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4285B2888A4
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 14:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388512AbgJIM0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 08:26:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388452AbgJIM0B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 08:26:01 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F37DC0613D2;
-        Fri,  9 Oct 2020 05:26:01 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id lw21so12790278ejb.6;
-        Fri, 09 Oct 2020 05:26:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=vxWvga10iK++hQGsOFVlXKsQyXZ7GztSMmrf028ztk4=;
-        b=NwXhEoXGxC+R37EfS1lfuy3g8wbdrNmU1E77zfyzc9D/fJwROKORSsZfAQKLCnnOMk
-         d5vWXwQRNB4Bi+3zTINWBL0LgydS59ZKZRYp40cKQvY8QiUfAY73FMiBfEWBIGw56R8y
-         iS4a2hSi7xRdR5vj0D+RFTrOaiYJ7evxpNryiOknzByilQ9uNIGR+y0R5FUhcVptSfMM
-         63P7nk78F1hZKMy+TR1hNm9QyO+zYqHIC3cstDV2l2kqtjSuIyCxdIXx5aF63qupP1vn
-         P+WHmPHGzAyyA1lXVqWwtitoHl7b4GiR/PsPmEYg76+c2mfqCWA9pNAP7fV4/QKiLCux
-         D0BQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vxWvga10iK++hQGsOFVlXKsQyXZ7GztSMmrf028ztk4=;
-        b=YiyqUlnI1I0zl45UYfE7v7cQue5MEKbEdMFKr91gA8aNwVHgFsaFd9gYJy690CiNua
-         Ma2gk7z7j9E1l//6NtSuM5TsoXjpTLZTGBKwPGOobEi4aT2U4AG6dE0SnMMAuLIaX9Hi
-         Vy6lbFCKILDFCNXSpm+ENr8iTInjA0FpaDfKyzHalJoQGCXp6oM8qwBSLKnqoQayPe/q
-         chHixuBZPDA9r9NVV5Rrwu+7LDXyTLXLQVVHUMNhcFyThciPqc34sD03pbe7/lNpyqJY
-         8uUCayWdESuOnLgAVpJB3ihPyv0igybF5T+8dm2Z7Kijf1gUBokbtgtkh2YNBPgfL+KX
-         h5yw==
-X-Gm-Message-State: AOAM531nLT6aqERUVNUryoCzrQe/iEXp2bw7g+2hwgcG98WSEzAFbKF/
-        KDYRfsQYe26WMmhPofDpiYA=
-X-Google-Smtp-Source: ABdhPJxkD3KtJ6bfK9EwnyjmX+Fl4PJjDDa08bzc4YEJmViDgYAtnI0ithJ1zzW1tf+4J5V2VWMRNQ==
-X-Received: by 2002:a17:906:490d:: with SMTP id b13mr13800241ejq.122.1602246359881;
-        Fri, 09 Oct 2020 05:25:59 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id lb11sm6271626ejb.27.2020.10.09.05.25.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 05:25:58 -0700 (PDT)
-Date:   Fri, 9 Oct 2020 14:25:56 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     Dmitry Osipenko <digetx@gmail.com>, joro@8bytes.org,
-        vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/3] iommu/tegra-smmu: Rework tegra_smmu_probe_device()
-Message-ID: <20201009122556.GE458338@ulmo>
-References: <20201002060807.32138-1-nicoleotsuka@gmail.com>
- <20201002060807.32138-3-nicoleotsuka@gmail.com>
- <5542b314-f414-1e83-8cf6-2bf22a41ae9c@gmail.com>
- <20201002185828.GC29706@Asurada-Nvidia>
- <20201005095754.GJ425362@ulmo>
- <20201006010546.GB28640@Asurada-Nvidia>
- <20201008095343.GA2349275@ulmo>
- <20201008211209.GC32140@Asurada-Nvidia>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="TD8GDToEDw0WLGOL"
-Content-Disposition: inline
-In-Reply-To: <20201008211209.GC32140@Asurada-Nvidia>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+        id S2388518AbgJIM0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 08:26:54 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36476 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731594AbgJIM0x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 08:26:53 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9B408AC12;
+        Fri,  9 Oct 2020 12:26:51 +0000 (UTC)
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] MIPS: cpu-probe: remove MIPS_CPU_BP_GHIST option bit
+Date:   Fri,  9 Oct 2020 14:26:48 +0200
+Message-Id: <20201009122649.85490-1-tsbogend@alpha.franken.de>
+X-Mailer: git-send-email 2.16.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+MIPS_CPU_BP_GHIST is only set two times and more or less immediately
+used in cpu-probe.c itself. Remove this option to make room in options
+word.
 
---TD8GDToEDw0WLGOL
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+---
+ arch/mips/include/asm/cpu-features.h                      |  3 ---
+ arch/mips/include/asm/cpu.h                               |  1 -
+ arch/mips/include/asm/mach-au1x00/cpu-feature-overrides.h |  1 -
+ arch/mips/kernel/cpu-probe.c                              | 10 ++++------
+ 4 files changed, 4 insertions(+), 11 deletions(-)
 
-On Thu, Oct 08, 2020 at 02:12:10PM -0700, Nicolin Chen wrote:
-> On Thu, Oct 08, 2020 at 11:53:43AM +0200, Thierry Reding wrote:
-> > On Mon, Oct 05, 2020 at 06:05:46PM -0700, Nicolin Chen wrote:
-> > > On Mon, Oct 05, 2020 at 11:57:54AM +0200, Thierry Reding wrote:
-> > > > On Fri, Oct 02, 2020 at 11:58:29AM -0700, Nicolin Chen wrote:
-> > > > > On Fri, Oct 02, 2020 at 06:02:18PM +0300, Dmitry Osipenko wrote:
-> > > > > > 02.10.2020 09:08, Nicolin Chen =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > > > > > >  static int tegra_smmu_of_xlate(struct device *dev,
-> > > > > > >  			       struct of_phandle_args *args)
-> > > > > > >  {
-> > > > > > > +	struct platform_device *iommu_pdev =3D of_find_device_by_no=
-de(args->np);
-> > > > > > > +	struct tegra_mc *mc =3D platform_get_drvdata(iommu_pdev);
-> > > > > > >  	u32 id =3D args->args[0];
-> > > > > > > =20
-> > > > > > > +	of_node_put(args->np);
-> > > > > >=20
-> > > > > > of_find_device_by_node() takes device reference and not the np
-> > > > > > reference. This is a bug, please remove of_node_put().
-> > > > >=20
-> > > > > Looks like so. Replacing it with put_device(&iommu_pdev->dev);
-> > > >=20
-> > > > Putting the put_device() here is wrong, though. You need to make su=
-re
-> > > > you keep a reference to it as long as you keep accessing the data t=
-hat
-> > > > is owned by it.
-> > >=20
-> > > I am confused. You said in the other reply (to Dmitry) that we do
-> > > need to put_device(mc->dev), where mc->dev should be the same as
-> > > iommu_pdev->dev. But here your comments sounds that we should not
-> > > put_device at all since ->probe_device/group_device/attach_dev()
-> > > will use it later.
-> >=20
-> > You need to call put_device() at some point to release the reference
-> > that you acquired by calling of_find_device_by_node(). If you don't
-> > release it, you're leaking the reference and the kernel isn't going to
-> > know when it's safe to delete the device.
-> >=20
-> > So what I'm saying is that we either release it here, which isn't quite
-> > right because we do reference data relating to the device later on. And
->=20
-> I see. A small question here by the way: By looking at other IOMMU
-> drivers that are calling driver_find_device_by_fwnode() function,
-> I found that most of them put_device right after the function call,
-> and dev_get_drvdata() after putting the device..
->=20
-> Feels like they are doing it wrongly?
+diff --git a/arch/mips/include/asm/cpu-features.h b/arch/mips/include/asm/cpu-features.h
+index 78cf7e300f12..f2e216eef7da 100644
+--- a/arch/mips/include/asm/cpu-features.h
++++ b/arch/mips/include/asm/cpu-features.h
+@@ -171,9 +171,6 @@
+ #ifndef cpu_has_llsc
+ #define cpu_has_llsc		__isa_ge_or_opt(1, MIPS_CPU_LLSC)
+ #endif
+-#ifndef cpu_has_bp_ghist
+-#define cpu_has_bp_ghist	__opt(MIPS_CPU_BP_GHIST)
+-#endif
+ #ifndef kernel_uses_llsc
+ #define kernel_uses_llsc	cpu_has_llsc
+ #endif
+diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
+index 388a82f28a87..c9222cc2244f 100644
+--- a/arch/mips/include/asm/cpu.h
++++ b/arch/mips/include/asm/cpu.h
+@@ -398,7 +398,6 @@ enum cpu_type_enum {
+ #define MIPS_CPU_RW_LLB		BIT_ULL(32)	/* LLADDR/LLB writes are allowed */
+ #define MIPS_CPU_LPA		BIT_ULL(33)	/* CPU supports Large Physical Addressing */
+ #define MIPS_CPU_CDMM		BIT_ULL(34)	/* CPU has Common Device Memory Map */
+-#define MIPS_CPU_BP_GHIST	BIT_ULL(35)	/* R12K+ Branch Prediction Global History */
+ #define MIPS_CPU_SP		BIT_ULL(36)	/* Small (1KB) page support */
+ #define MIPS_CPU_FTLB		BIT_ULL(37)	/* CPU has Fixed-page-size TLB */
+ #define MIPS_CPU_NAN_LEGACY	BIT_ULL(38)	/* Legacy NaN implemented */
+diff --git a/arch/mips/include/asm/mach-au1x00/cpu-feature-overrides.h b/arch/mips/include/asm/mach-au1x00/cpu-feature-overrides.h
+index ecfbb5aeada3..e6e527224a15 100644
+--- a/arch/mips/include/asm/mach-au1x00/cpu-feature-overrides.h
++++ b/arch/mips/include/asm/mach-au1x00/cpu-feature-overrides.h
+@@ -39,7 +39,6 @@
+ #define cpu_has_guestctl2		0
+ #define cpu_has_guestid			0
+ #define cpu_has_drg			0
+-#define cpu_has_bp_ghist		0
+ #define cpu_has_mips16			0
+ #define cpu_has_mips16e2		0
+ #define cpu_has_mdmx			0
+diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+index b8e073772bdb..e6853697a056 100644
+--- a/arch/mips/kernel/cpu-probe.c
++++ b/arch/mips/kernel/cpu-probe.c
+@@ -1278,8 +1278,9 @@ static inline void cpu_probe_legacy(struct cpuinfo_mips *c, unsigned int cpu)
+ 		c->options = MIPS_CPU_TLB | MIPS_CPU_4K_CACHE | MIPS_CPU_4KEX |
+ 			     MIPS_CPU_FPU | MIPS_CPU_32FPR |
+ 			     MIPS_CPU_COUNTER | MIPS_CPU_WATCH |
+-			     MIPS_CPU_LLSC | MIPS_CPU_BP_GHIST;
++			     MIPS_CPU_LLSC;
+ 		c->tlbsize = 64;
++		write_c0_r10k_diag(read_c0_r10k_diag() | R10K_DIAG_E_GHIST);
+ 		break;
+ 	case PRID_IMP_R14000:
+ 		if (((c->processor_id >> 4) & 0x0f) > 2) {
+@@ -1293,8 +1294,9 @@ static inline void cpu_probe_legacy(struct cpuinfo_mips *c, unsigned int cpu)
+ 		c->options = MIPS_CPU_TLB | MIPS_CPU_4K_CACHE | MIPS_CPU_4KEX |
+ 			     MIPS_CPU_FPU | MIPS_CPU_32FPR |
+ 			     MIPS_CPU_COUNTER | MIPS_CPU_WATCH |
+-			     MIPS_CPU_LLSC | MIPS_CPU_BP_GHIST;
++			     MIPS_CPU_LLSC;
+ 		c->tlbsize = 64;
++		write_c0_r10k_diag(read_c0_r10k_diag() | R10K_DIAG_E_GHIST);
+ 		break;
+ 	case PRID_IMP_LOONGSON_64C:  /* Loongson-2/3 */
+ 		switch (c->processor_id & PRID_REV_MASK) {
+@@ -2054,10 +2056,6 @@ void cpu_probe(void)
+ 	else
+ 		cpu_set_nofpu_opts(c);
+ 
+-	if (cpu_has_bp_ghist)
+-		write_c0_r10k_diag(read_c0_r10k_diag() |
+-				   R10K_DIAG_E_GHIST);
+-
+ 	if (cpu_has_mips_r2_r6) {
+ 		c->srsets = ((read_c0_srsctl() >> 26) & 0x0f) + 1;
+ 		/* R2 has Performance Counter Interrupt indicator */
+-- 
+2.16.4
 
-Well, like I said this is somewhat academic because these are all
-referencing the IOMMU that by definition still needs to be around
-when this code is called, and there's locks in place to ensure
-these don't go away. So it's not like these drivers are doing it
-wrong, they're just not doing it pedantically right.
-
->=20
-> > because it isn't quite right there should be a reason to justify it,
-> > which is that the SMMU parent device is the same as the MC, so the
-> > reference count isn't strictly necessary. But that's not quite obvious,
-> > so highlighting it in a comment makes sense.
-> >=20
-> > The other alternative is to not call put_device() here and keep on to
-> > the reference as long as you keep using "mc". This might be difficult to
-> > implement because it may not be obvious where to release it. I think
-> > this is the better alternative, but if it's too complicated to implement
-> > it might not be worth it.
->=20
-> I feel so too. The dev is got at of_xlate() that does not have an
-> obvious counterpart function. So I'll just remove put_device() and
-> put a line of comments, as you suggested.
-
-I think you misunderstood. Not calling put_device() would be wrong
-because that leaks a reference to the SMMU that you can't get back. My
-suggestion was rather to keep put_device() here, but add a comment as to
-why it's okay to call the put_device() here, even though you keep using
-its private data later beyond this point, which typically would be wrong
-to do.
-
-Thierry
-
---TD8GDToEDw0WLGOL
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+AVtQACgkQ3SOs138+
-s6FyaRAAkt3dP2DNCS6TI3/NevoBQ2IpMYqF1ex7aH/lNxsI1ES7OlWIkSvq7Nbp
-OdGJxPgxHA9kvYKCwk6u97yR8TX8erODLYov8YWeIYT4j5QcSS/axChfZJwYScEy
-TPMyMZrSoQz89AbZjJ1nXF7pafhPzc+9VI9oyouFL2kwJ5nG7oCmHM+oIswYy5gO
-ek1ARsPvwoQu1hBT19wRzaQMgE9TVc/HzaRtjaCbWBAXZSNlScjn3MxuWW4Teo6P
-5lG3qhBCof7r374RLMz/7bq5MUndj3R5MuwX1eOVzcJgxVYV+94fjTs4ysawaG7f
-vqetJ3RBUHia+rXWZx09T3F0ax+EErEs9cQ94OysiDqdnvMSxb/av8yS0j+rYN2u
-ZLOBqTMgfQaVLiTZgehSSYU1wGyId93lWNvH8oQ9VZ032x5ys37j8y5+9IOtufM7
-ebDWZwobYybBpr8qVA/odW6gStS5qj7gbUE9GBg06y+VB74UdN8K7YLzr4nYNFgz
-HEatjuW3kEIAB/Si2fB/yTBm62HAL7pZ2eGeIDxhFr9d0An5mhTkkUF4eN3GPIyA
-gfOkKq+Vfq+0JOFF4GJj1nGB5kV7CON90yy/lZ5Snt5ru2SdQNhhreFAo3v6QhgH
-IdtXPzcQLz/qJ+QceSHsqujPWojzkVLkGTJVkzojRKwOv6B1vVw=
-=8opr
------END PGP SIGNATURE-----
-
---TD8GDToEDw0WLGOL--
