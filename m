@@ -2,133 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1BAC288826
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 13:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5701F288827
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 13:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388268AbgJIL7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 07:59:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40290 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732456AbgJIL7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 07:59:31 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DE972AD1A;
-        Fri,  9 Oct 2020 11:59:28 +0000 (UTC)
-Subject: Re: drmfb console switching problems/questions
-To:     stsp <stsp2@yandex.ru>, linux-fbdev@vger.kernel.org,
-        Linux kernel <linux-kernel@vger.kernel.org>
-References: <17980f58-c2d2-ac58-88ce-e21b5a56da39@yandex.ru>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <df4d1918-dcb1-4951-6280-f178ecbbfc2f@suse.de>
-Date:   Fri, 9 Oct 2020 13:59:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S2388275AbgJIL7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 07:59:55 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:46050 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732456AbgJIL7z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 07:59:55 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 099BxlB9117443;
+        Fri, 9 Oct 2020 06:59:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1602244787;
+        bh=lbHB2t+9cdnp16Vg+EKQvgv0g50IbJWJa1ti64DJZJ4=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=IoXJAGuAWXX7F8kS42SkhEk+iTbULhr8Vtug2kfDBtxxLCmH/Z7PnRh3ju364m2P/
+         dhtFeIzbOPmA+oo7hj29g96+iVLMpzGMkG1E+hpQ4ZhpBiUS8gdHNDPYpnYVkw1OSV
+         MshsZZRKG37rswWQ5jq1qiM5d3fRw+wptASaVSis=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 099BxlML084938
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 9 Oct 2020 06:59:47 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 9 Oct
+ 2020 06:59:47 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 9 Oct 2020 06:59:47 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 099BxkBH096189;
+        Fri, 9 Oct 2020 06:59:47 -0500
+Date:   Fri, 9 Oct 2020 06:59:46 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
+CC:     <t-kristo@ti.com>, <ssantosh@kernel.org>, <lokeshvutla@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <grygorii.strashko@ti.com>
+Subject: Re: [PATCH v2 10/11] soc: ti: k3-ringacc: Use correct device for
+ allocation in RING mode
+Message-ID: <20201009115946.fl4lvkg5yk7f43pz@calculus>
+References: <20201008115224.1591-1-peter.ujfalusi@ti.com>
+ <20201008115224.1591-11-peter.ujfalusi@ti.com>
+ <20201009030204.3i3d6azsmfekl5qx@whole>
+ <6d8f5331-251d-5409-4a1c-e3e42d340071@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <17980f58-c2d2-ac58-88ce-e21b5a56da39@yandex.ru>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="JURA3xtcP0EYmRfuLZ0TwQyRNkOJdomBF"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <6d8f5331-251d-5409-4a1c-e3e42d340071@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---JURA3xtcP0EYmRfuLZ0TwQyRNkOJdomBF
-Content-Type: multipart/mixed; boundary="r4Zq18ekkqdRrrSmLiYBaFEdMmZyzJwyK";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: stsp <stsp2@yandex.ru>, linux-fbdev@vger.kernel.org,
- Linux kernel <linux-kernel@vger.kernel.org>
-Message-ID: <df4d1918-dcb1-4951-6280-f178ecbbfc2f@suse.de>
-Subject: Re: drmfb console switching problems/questions
-References: <17980f58-c2d2-ac58-88ce-e21b5a56da39@yandex.ru>
-In-Reply-To: <17980f58-c2d2-ac58-88ce-e21b5a56da39@yandex.ru>
-
---r4Zq18ekkqdRrrSmLiYBaFEdMmZyzJwyK
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-Hi
-
-Am 09.10.20 um 12:50 schrieb stsp:
-> Hi!
->=20
-> I am trying to run my sdl1-based app
-> under linux kms framebuffer (amdgpudrmfb
-> in my case).
-> The app itself works perfectly, but
-> console switching is not.
->=20
-> If I switch the console while the app
-> is drawing, then it will corrupt the
-> VC I switched to. It will just draw on
-> top of the VC's content.
-> Question: is this expected? Is drm
-> framebuffer global, rather than per-vc?
-> If so, should I somehow freeze my
-> app when it is switched away? And
-> why would it be the case, with the
-> modern video cards that have multi
-> gigas of RAM on board?
->=20
-> If my app crashes without a clean
-> shutdown, then the framebuffer kinda
-> hangs. I can switch to other VCs but
-> I don't see their content. All I see is
-> the last drawing of my app. If I happen
-> to have an X server on some other VC,
-> then switching to it immediately unhangs
-> everything, and I can switch back.
-> In fact, even if I hit Ctrl-Alt-Del, then
-> fb immediately unhangs (by systemd
-> or plymouth or whoever else). But for
-> example SAK combo doesn't unhang.
-> So it seems to be very simple to hang
-> the framebuffer, and is quite difficult
-> to recover.
-> Question: is this an expected behaviour
-> or a drmfb bug?
-
-Fbdev exposes the video ram (or a shadow buffer of it) to all
-applications. Only one can draw at the same time. It's a limitation of
-the design. To fix this, your application has to stop drawing when you
-switch consoles.
-
-Best regards
-Thomas
-
->=20
-> Thanks!
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+On 10:43-20201009, Peter Ujfalusi wrote:
+> Nishanth,
+> 
+> On 09/10/2020 6.02, Nishanth Menon wrote:
+> > On 14:52-20201008, Peter Ujfalusi wrote:
+> >> -	ring->ring_mem_virt = dma_alloc_coherent(ringacc->dev,
+> >> +	ring->ring_mem_virt = dma_alloc_coherent(ring->dma_dev,
+> >>  					ring->size * (4 << ring->elm_size),
+> >>  					&ring->ring_mem_dma, GFP_KERNEL);
+> > 
+> > Any chance of getting a cleanup of the file for 5.11? I know this series
+> > has'nt introduced this warning or set of warnings, but I am starting to
+> > get concerned that we are carrying over too much of a debt now?
+> > 
+> > https://pastebin.ubuntu.com/p/tT2kPDsCWD/
+> 
+> Right, you know that git blame points the finger at you on ti_sci.c errors?
+> 
+> Never the less, I have run the tool locally on my linux-next-wip with
+> these patches:
+> https://pastebin.ubuntu.com/p/myJwjvKYw8/
+> 
+> and I don't see the noise you see.
 
 
---r4Zq18ekkqdRrrSmLiYBaFEdMmZyzJwyK--
+Hmm.. Looks like gcc9/10 make W=2 does generate those warnings with
+container_of .. I will investigate it later today.. just checking to see
+if it is just me seeing this..
 
---JURA3xtcP0EYmRfuLZ0TwQyRNkOJdomBF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Yes, I introduced the container_of() usage, which is pretty standard
+usage in other subsystems as well, but lots of checks have gotten
+stricter and catches new issues since I introduced things in 2016..
+Time to get the new issues (if valid) fixed up.
 
------BEGIN PGP SIGNATURE-----
+> 
+> > Checkpatch does point this:
+> > 
+> > --- /tmp/kernel-patch-verify.25812/ptest_check-start	2020-10-08
+> > 19:33:31.025898581 +0000
+> > +++ /tmp/kernel-patch-verify.25812/ptest_check-end	2020-10-08
+> > 19:33:31.593893830 +0000
+> > @@ -0,0 +1,6 @@
+> > +CHECK: Alignment should match open parenthesis
+> > +#84: FILE: drivers/soc/ti/k3-ringacc.c:657:
+> > ++	ring->ring_mem_virt = dma_alloc_coherent(ring->dma_dev,
+> > + 					ring->size * (4 << ring->elm_size),
+> 
+> Yes, that's correct. Readability VS very long lines
 
-iQFIBAEBCAAyFiEEchf7rIzpz2NEoWjlaA3BHVMLeiMFAl+AUJ0UHHR6aW1tZXJt
-YW5uQHN1c2UuZGUACgkQaA3BHVMLeiPbdQf/QDlWQY6YM/uMGqvFJmh1L9lEv5OS
-f75bd6w4iwMFgYyOdC3isCRrEZOO4vymqpInN3sUTFymOKXx5V+ng4+rHEAltCnk
-KFJine41W84o+aRfIxeA+IQa44BXfrh8H3zlRnyonjifwZ3ujEQOfi3vJ7nNIovy
-AMXrScHSAIxPFavpKnEB1erE90ij67ufoIgv0ifVTBQPTBrujgpD1kuH5moGg38w
-mFXyEjshh8n8WwUmnB3VeEWZV1NHGVvMiXvnMhQIW7WutdPYEprIG/5BuC0HJNTK
-fKo8zRrEuLR8hdufxCKQUzsB1HGYsgUCAoMqIeQNSenpRuc47J4C5Q6lEA==
-=pZ/y
------END PGP SIGNATURE-----
 
---JURA3xtcP0EYmRfuLZ0TwQyRNkOJdomBF--
+checkpatch limit in linux kernel is now 100 chars (I know, it is
+hard to update .vimrc etc.. to the new norm..)but, anyways.. will
+be good not to see such warnings esp when you are touching the same
+lines.
+
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
