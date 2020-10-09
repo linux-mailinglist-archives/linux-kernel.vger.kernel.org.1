@@ -2,69 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B01DA2883F1
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 09:52:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D8DD2883E4
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 09:48:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732349AbgJIHwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 03:52:30 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:40242 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729278AbgJIHwa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 03:52:30 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 38BDE1A0BC4;
-        Fri,  9 Oct 2020 09:52:28 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id F35DD1A0BD9;
-        Fri,  9 Oct 2020 09:52:20 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id C51F240310;
-        Fri,  9 Oct 2020 09:52:11 +0200 (CEST)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, krzk@kernel.org,
-        aford173@gmail.com, daniel.baluta@nxp.com, shengjiu.wang@nxp.com,
-        peter.chen@nxp.com, alifer.wsdm@gmail.com, abel.vesa@nxp.com,
-        yibin.gong@nxp.com, jun.li@nxp.com, l.stach@pengutronix.de,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH 3/3] arm64: dts: imx8mp-evk: Correct WDOG_B pin configuration
-Date:   Fri,  9 Oct 2020 15:47:47 +0800
-Message-Id: <1602229667-13165-3-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1602229667-13165-1-git-send-email-Anson.Huang@nxp.com>
-References: <1602229667-13165-1-git-send-email-Anson.Huang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1732312AbgJIHsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 03:48:13 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:51942 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732295AbgJIHsN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 03:48:13 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 4A6511C0B88; Fri,  9 Oct 2020 09:48:10 +0200 (CEST)
+Date:   Fri, 9 Oct 2020 09:48:09 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Subject: Re: [PATCH 2/4] arm64: dts: renesas: Add support for MIPI Adapter
+ V2.1 connected to HiHope RZ/G2H
+Message-ID: <20201009074809.GE10335@amd>
+References: <20201006112701.11800-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20201006112701.11800-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="FEz7ebHBGB6b2e8X"
+Content-Disposition: inline
+In-Reply-To: <20201006112701.11800-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Different revision of i.MX8MP EVK boards may have different external
-pull up registor design, some are enabled while some are NOT, to make
-sure the WDOG_B pin works properly, better to enable internal pull up
-resistor. Since enabling internal pull up resistor is NOT harmful and
-having benefit of flexibility on different board design, just enable
-it for all i.MX8MP boards.
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
- arch/arm64/boot/dts/freescale/imx8mp-evk.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--FEz7ebHBGB6b2e8X
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp-evk.dts b/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
-index ad66f12..908b92b 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
-@@ -262,7 +262,7 @@
- 
- 	pinctrl_wdog: wdoggrp {
- 		fsl,pins = <
--			MX8MP_IOMUXC_GPIO1_IO02__WDOG1_WDOG_B	0xc6
-+			MX8MP_IOMUXC_GPIO1_IO02__WDOG1_WDOG_B	0x166
- 		>;
- 	};
- };
--- 
-2.7.4
+Hi!
 
+> index 000000000000..c62ddb9b2ba5
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/renesas/hihope-rzg2-ex-aistarvision-mipi-adapte=
+r-2.1.dtsi
+> @@ -0,0 +1,109 @@
+> +// SPDX-License-Identifier: GPL-2.0
+
+dts files are normally dual-licensed...?
+
+Best regards,
+								Pavel
+							=09
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--FEz7ebHBGB6b2e8X
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl+AFbkACgkQMOfwapXb+vJhUQCcCnk/rOgedQZB419VdeB8rDzc
+Q2EAoLyCNfXl+u5ArDL45fLrPFFEHqQp
+=2YF9
+-----END PGP SIGNATURE-----
+
+--FEz7ebHBGB6b2e8X--
