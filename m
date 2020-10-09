@@ -2,74 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD572885D8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 11:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFE942885D6
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 11:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733067AbgJIJQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 05:16:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731262AbgJIJQt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 05:16:49 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54ED2C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 02:16:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=y21hzAeH0iN3CCdZ7u60F0himStwk45E92eSH+vcx6I=; b=E7gdOdozrI2njdSPkwQhFu7otU
-        UqkSfte/igxyDpt6+dcbY6NPnSTjrxm7HBZdtiPAsUlMHa1f+oYZfYO9h6EIHL0BnphanSlQn8Y8k
-        jCtvKmKRZr2DsErTulTXJD2xkpW3ZeBNVeuT8sdgFD1hHm3mnH6VTrMIWFU16H9Q1c3YkxF2VAE/k
-        BE48/hQnFihC7Egtib3aLJVEtiV3/IAl4bOpXxkF8Or9VlSnCwnVroyFZ933wxkLvYi1kSWFv1QzN
-        +J5XFNSCRBA/GwERcaSnnS6YoTevsMiHra7/tBgX363tCNMkpZO6RSPyCX/eYs//WybOr50rHWBl6
-        7VZRCziw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kQoVW-0003Bn-DE; Fri, 09 Oct 2020 09:16:10 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7C4A0300B22;
-        Fri,  9 Oct 2020 11:16:07 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 463052019D2CA; Fri,  9 Oct 2020 11:16:07 +0200 (CEST)
-Date:   Fri, 9 Oct 2020 11:16:07 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     kan.liang@linux.intel.com
-Cc:     mingo@redhat.com, acme@kernel.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, eranian@google.com, ak@linux.intel.com,
-        dave.hansen@intel.com, kirill.shutemov@linux.intel.com,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        Will Deacon <will@kernel.org>,
-        David Miller <davem@davemloft.net>
-Subject: Re: [PATCH V9 1/4] perf/core: Add PERF_SAMPLE_DATA_PAGE_SIZE
-Message-ID: <20201009091607.GM2651@hirez.programming.kicks-ass.net>
-References: <20201001135749.2804-1-kan.liang@linux.intel.com>
- <20201001135749.2804-2-kan.liang@linux.intel.com>
- <20201009090927.GQ2611@hirez.programming.kicks-ass.net>
+        id S1733060AbgJIJQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 05:16:23 -0400
+Received: from foss.arm.com ([217.140.110.172]:45660 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731262AbgJIJQW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 05:16:22 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D5C1ED6E;
+        Fri,  9 Oct 2020 02:16:21 -0700 (PDT)
+Received: from [10.57.51.133] (unknown [10.57.51.133])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BD9AF3F66B;
+        Fri,  9 Oct 2020 02:16:18 -0700 (PDT)
+Subject: Re: [PATCH v2 0/3] Clarify abstract scale usage for power values in
+ Energy Model, EAS and IPA
+To:     rjw@rjwysocki.net
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, amitk@kernel.org, corbet@lwn.net,
+        daniel.lezcano@linaro.org, Dietmar.Eggemann@arm.com,
+        qperret@google.com, dianders@chromium.org, mka@chromium.org,
+        rnayak@codeaurora.org
+References: <20201002114426.31277-1-lukasz.luba@arm.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <d2960f6a-1805-1fb4-98ae-4a756d20370b@arm.com>
+Date:   Fri, 9 Oct 2020 10:16:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201009090927.GQ2611@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201002114426.31277-1-lukasz.luba@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 11:09:27AM +0200, Peter Zijlstra wrote:
-> @@ -7046,6 +7059,10 @@ static u64 __perf_get_page_size(struct m
->  		return 0;
->  	}
->  
-> +	page = pte_page(*pte);
-> +	if (PageHuge(page))
-> +		return page_size(compound_head(page));
+Hi Rafael,
 
-Argh, this misses pte_unmap()..
+On 10/2/20 12:44 PM, Lukasz Luba wrote:
+> Hi all,
+> 
+> The Energy Model supports power values expressed in an abstract scale.
+> This has an impact on Intelligent Power Allocation (IPA) and should be
+> documented properly. There is also a need to update the DT binding for the
+> 'sustainable-power' and allow it to have abstract scale as well.
+> 
+> Changes:
+> v2:
+> - updated sustainable power section in IPA documentation
+> - updated DT binding for the 'sustainable-power'
+> 
+> The v1 of the patch set and related discussion can be found in [1].
+> 
+> Regards,
+> Lukasz Luba
+> 
+> [1] https://lore.kernel.org/linux-doc/20200929121610.16060-1-lukasz.luba@arm.com/
+> 
+> Lukasz Luba (3):
+>    docs: Clarify abstract scale usage for power values in Energy Model
+>    PM / EM: update the comments related to power scale
+>    dt-bindings: thermal: update sustainable-power with abstract scale
+> 
+>   .../devicetree/bindings/thermal/thermal-zones.yaml  | 13 +++++++++----
+>   .../driver-api/thermal/power_allocator.rst          | 13 ++++++++++++-
+>   Documentation/power/energy-model.rst                | 13 +++++++++++++
+>   Documentation/scheduler/sched-energy.rst            |  5 +++++
+>   include/linux/energy_model.h                        | 11 +++++------
+>   kernel/power/energy_model.c                         |  2 +-
+>   6 files changed, 45 insertions(+), 12 deletions(-)
+> 
 
-> +
->  	pte_unmap(pte);
->  	return PAGE_SIZE;
->  }
+Could you take patch 1/3 and patch 2/3 via your PM tree,
+please? I will be very grateful.
+
+These patches just update the documentation and comments regarding
+an issue that we can have: bogoWatts in the Energy Model (and we
+already have). One of the drawbacks is that we cannot derive real energy
+from these numbers. Will see how this would evolve.
+
+The patch 3/3 with dt-binding is not going to fly upstream [1].
+I hope developers will put a real number in DT so we could
+have real milliWatts from that source (wishful thinking).
+Doug even made a script, which might be helpful for that [2].
+
+Regards,
+Lukasz
+
+[1] 
+https://lore.kernel.org/linux-pm/45fae8cd-0635-41dc-c744-3c9833bf6492@arm.com/
+[2] 
+https://lore.kernel.org/linux-pm/CAD=FV=U1FP0e3_AVHpauUUZtD-5X3XCwh5aT9fH_8S_FFML2Uw@mail.gmail.com/
