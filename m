@@ -2,81 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 136D52887F8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 13:41:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D91B2887EC
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 13:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388170AbgJILlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 07:41:39 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2967 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732405AbgJILlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 07:41:39 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id 90C49EF1BB54D9D31778;
-        Fri,  9 Oct 2020 12:41:37 +0100 (IST)
-Received: from [127.0.0.1] (10.47.0.88) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 9 Oct 2020
- 12:41:36 +0100
-Subject: Re: [PATCH] perf jevents: Fix event code for events referencing std
- arch events
-To:     kajoljain <kjain@linux.ibm.com>, <peterz@infradead.org>,
-        <mingo@redhat.com>, <acme@kernel.org>, <mark.rutland@arm.com>,
-        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
-        <namhyung@kernel.org>, <irogers@google.com>,
-        <yao.jin@linux.intel.com>, <yeyunfeng@huawei.com>
-CC:     <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <1602170368-11892-1-git-send-email-john.garry@huawei.com>
- <a7cbb1f7-1f7f-6bf9-6acf-fd5455aadd82@linux.ibm.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <e22710ee-0afc-4d49-8432-a00549a969b6@huawei.com>
-Date:   Fri, 9 Oct 2020 12:38:31 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S2388137AbgJILjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 07:39:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731908AbgJILjU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 07:39:20 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E862FC0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 04:39:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=jUWvupSS4x5Jc67h2CeSW+ULhwAq8rOUFqfMfL42U8Q=; b=bWHt8+GUjByoxNEQeA57hs9di7
+        i7mGxYz3T/cym89tzhgnlcxiqTF2dGMHenx1Qmheg1uM4Sb5Pdg3cbsKad6YFKaBdXeXCRZenS1io
+        Ec6LVYwWdaOnzTporuIxjsBJnED7gXmbse0kCYVTJiGJ0Nw91zd522X/GShkPeFGSO/ICAv+l4gsw
+        9m21Q+jkq57NF/cNmI/m5IH7nHK3gAsChQJ9JE6SImzKa/w4Ke1CWOFzmfyi4ebHavd1fvklLkjad
+        DGZBNGPL1ujc8ywEzBYsq9Yhh5Y9nLEO4Wtv5lJfmptQtYjTptJM0kWQvCgd11fHUVsSyAin6VuLh
+        7ENGwByg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kQqjy-0003hu-03; Fri, 09 Oct 2020 11:39:14 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 68F6530008D;
+        Fri,  9 Oct 2020 13:39:09 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4E2A329AE66EF; Fri,  9 Oct 2020 13:39:09 +0200 (CEST)
+Date:   Fri, 9 Oct 2020 13:39:09 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Frederic Weisbecker <fweisbecker@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>
+Subject: Re: [RFC PATCH] kernel: allow to configure PREEMPT_NONE,
+ PREEMPT_VOLUNTARY on kernel command line
+Message-ID: <20201009113909.GL2628@hirez.programming.kicks-ass.net>
+References: <20201007120401.11200-1-mhocko@kernel.org>
+ <20201007122144.GF2628@hirez.programming.kicks-ass.net>
+ <20201007123553.GK29020@dhcp22.suse.cz>
+ <20201009094741.GH2628@hirez.programming.kicks-ass.net>
+ <20201009101405.GI4967@dhcp22.suse.cz>
+ <20201009102009.GK2628@hirez.programming.kicks-ass.net>
+ <20201009104808.GK4967@dhcp22.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <a7cbb1f7-1f7f-6bf9-6acf-fd5455aadd82@linux.ibm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.0.88]
-X-ClientProxiedBy: lhreml735-chm.china.huawei.com (10.201.108.86) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201009104808.GK4967@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/10/2020 12:26, kajoljain wrote:
+On Fri, Oct 09, 2020 at 12:48:08PM +0200, Michal Hocko wrote:
+> On Fri 09-10-20 12:20:09, Peter Zijlstra wrote:
+> > On Fri, Oct 09, 2020 at 12:14:05PM +0200, Michal Hocko wrote:
+> > > On Fri 09-10-20 11:47:41, Peter Zijlstra wrote:
+> > 
+> > > > That is, work backwards (from PREEMPT back to VOLUNTARY) instead of the
+> > > > other way around.
+> > > 
+> > > My original idea was that the config would only define the default
+> > > preemption mode. preempt_none parameter would then just act as an
+> > > override. That would mean that CONFIG_PREEMPTION would be effectively
+> > > gone from the kernel. The reason being that any code outside of the
+> > > scheduler shouldn't really care about the preemption mode. I suspect
+> > > this will prevent from dubious hacks and provide a more robust code in
+> > > the end.
+> > 
+> > Sure; but the way of arriving at that destination might be easier if
+> > you work backwards from PREEMPT=y, because while there _should_ not be
+> > dependencies outside of the scheduler, we both know there are.
 > 
-> On 10/8/20 8:49 PM, John Garry wrote:
->> The event code for events referencing std arch events is incorrectly
->> evaluated in json_events().
->>
->> The issue is that je.event is evaluated properly from try_fixup(), but
->> later NULLified from the real_event() call, as "event" may be NULL.
->>
->> Fix by setting "event" same je.event in try_fixup().
->>
->> Also remove support for overwriting event code for events using std arch
->> events, as it is not used.
-> Patch looks good to me. Not sure if any adding any example with this issue
-> is helpful.
+> Wouldn't we need to examine each of the CONFIG_PREEMPTION code anyway?
+> And wouldn't that be even more tricky? The boot time option would result
+> in a more restrictive preemption mode while the code is actually
+> assuming a less restrictive one.
 
-So we get something like this in pmu-events.c:
+Sure, in the end we'll have to look at all of that.
 
-{
-         .name = "l1d_cache_wb_victim",
-         .event = "event=0x0",
-[...]
-},
-
-But event should "event=0x46".
-
-I can add this if Arnaldo wants a v2.
-
+> > This also makes your patches independent of the series that makes
+> > CONFIG_PREEMPTION unconditional.
+> >
+> > It also gives Kconfig space to limit the dynamic thing to archs that
+> > have sufficient support (we'll be relying on static_call/static_branch,
+> > and not everybody has that implemented in a way that makes it the
+> > dynamic change worth-while).
 > 
-> Reviewed-By: Kajol Jain<kjain@linux.ibm.com>
+> Hmm, this is actually a good argument. I can imagine that kernels
+> without CONFIG_JUMP_LABEL might increase a runtime overhead for
+> something that users of that kernel might be not really interested in.
+> This would make CONFIG_PREEMPT_DYNAMIC be selected by CONFIG_JUMP_LABEL.
+> 
+> I will add the CONFIG_PREEMPT_DYNAMIC in the next version. I just have
+> to think whether flipping the direction is really safe and easier in the
+> end. For our particular usecase we are more interested in
+> NONE<->VOLUNTARY at this moment and having full preemption in the mix
+> later is just fine. If you insist on the other direction then we can
+> work on that.
 
-thanks
-
+Ah, I was purely thinking of the FULL preempt case. For the
+NONE/VOLATILE case you can probably keep it simpler.
