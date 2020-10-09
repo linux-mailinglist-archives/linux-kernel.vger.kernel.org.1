@@ -2,101 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06F2B288347
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 09:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 325B728834C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 09:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731818AbgJIHKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 03:10:50 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:48494 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725908AbgJIHKt (ORCPT
+        id S1731852AbgJIHLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 03:11:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725908AbgJIHLn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 03:10:49 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id E0D061C0B88; Fri,  9 Oct 2020 09:10:45 +0200 (CEST)
-Date:   Fri, 9 Oct 2020 09:10:45 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Seth Moore <sethmo@google.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Suresh Siddha <suresh.b.siddha@intel.com>,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
-        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
-        luto@kernel.org, nhorman@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
-        mikko.ylinen@intel.com
-Subject: Re: [PATCH v39 11/24] x86/sgx: Add SGX enclave driver
-Message-ID: <20201009071045.GA10335@amd>
-References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
- <20201003045059.665934-12-jarkko.sakkinen@linux.intel.com>
- <20201003143925.GB800720@kroah.com>
+        Fri, 9 Oct 2020 03:11:43 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A55E3C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 00:11:43 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kQmYw-0005sr-Qa; Fri, 09 Oct 2020 09:11:34 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kQmYu-0000l6-Hp; Fri, 09 Oct 2020 09:11:32 +0200
+Date:   Fri, 9 Oct 2020 09:11:32 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Christian Eggers <ceggers@arri.de>
+Cc:     Oleksij Rempel <linux@rempel-privat.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        David Laight <David.Laight@ACULAB.COM>,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        stable@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-i2c@vger.kernel.org
+Subject: Re: [PATCH v5 1/3] i2c: imx: Fix reset of I2SR_IAL flag
+Message-ID: <20201009071132.GA817@pengutronix.de>
+References: <20201007084524.10835-1-ceggers@arri.de>
+ <20201007084524.10835-2-ceggers@arri.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="pWyiEgJYm5f9v55/"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201003143925.GB800720@kroah.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201007084524.10835-2-ceggers@arri.de>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 09:09:37 up 35 days, 21:17, 228 users,  load average: 11.65, 14.13,
+ 11.62
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Christian,
 
---pWyiEgJYm5f9v55/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Wed, Oct 07, 2020 at 10:45:22AM +0200, Christian Eggers wrote:
+> According to the "VFxxx Controller Reference Manual" (and the comment
+> block starting at line 97), Vybrid requires writing a one for clearing
+> an interrupt flag. Syncing the method for clearing I2SR_IIF in
+> i2c_imx_isr().
+> 
+> Signed-off-by: Christian Eggers <ceggers@arri.de>
+> Fixes: 4b775022f6fd ("i2c: imx: add struct to hold more configurable quirks")
+> Reviewed-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> Cc: stable@vger.kernel.org
+> ---
+>  drivers/i2c/busses/i2c-imx.c | 20 +++++++++++++++-----
+>  1 file changed, 15 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
+> index 0ab5381aa012..cbdcab73a055 100644
+> --- a/drivers/i2c/busses/i2c-imx.c
+> +++ b/drivers/i2c/busses/i2c-imx.c
+> @@ -412,6 +412,19 @@ static void i2c_imx_dma_free(struct imx_i2c_struct *i2c_imx)
+>  	dma->chan_using = NULL;
+>  }
+>  
+> +static void i2c_imx_clear_irq(struct imx_i2c_struct *i2c_imx, unsigned int bits)
+> +{
+> +	unsigned int temp;
+> +
+> +	/*
+> +	 * i2sr_clr_opcode is the value to clear all interrupts. Here we want to
+> +	 * clear only <bits>, so we write ~i2sr_clr_opcode with just <bits>
+> +	 * toggled. This is required because i.MX needs W1C and Vybrid uses W0C.
+> +	 */
 
-Hi!
+This comment need correction. The i.MX needs W0C and Vybrid uses W1C 
 
-> > new file mode 100644
-> > index 000000000000..f54da5f19c2b
-> > --- /dev/null
-> > +++ b/arch/x86/kernel/cpu/sgx/driver.c
-> > @@ -0,0 +1,173 @@
-> > +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
->=20
-> You use gpl-only header files in this file, so how in the world can it
-> be bsd-3 licensed?
->=20
-> Please get your legal department to agree with this, after you explain
-> to them how you are mixing gpl2-only code in with this file.
+> +	temp = ~i2c_imx->hwdata->i2sr_clr_opcode ^ bits;
+> +	imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2SR);
+> +}
+> +
+>  static int i2c_imx_bus_busy(struct imx_i2c_struct *i2c_imx, int for_busy, bool atomic)
+>  {
+>  	unsigned long orig_jiffies = jiffies;
+> @@ -424,8 +437,7 @@ static int i2c_imx_bus_busy(struct imx_i2c_struct *i2c_imx, int for_busy, bool a
+>  
+>  		/* check for arbitration lost */
+>  		if (temp & I2SR_IAL) {
+> -			temp &= ~I2SR_IAL;
+> -			imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2SR);
+> +			i2c_imx_clear_irq(i2c_imx, I2SR_IAL);
+>  			return -EAGAIN;
+>  		}
+>  
+> @@ -623,9 +635,7 @@ static irqreturn_t i2c_imx_isr(int irq, void *dev_id)
+>  	if (temp & I2SR_IIF) {
+>  		/* save status register */
+>  		i2c_imx->i2csr = temp;
+> -		temp &= ~I2SR_IIF;
+> -		temp |= (i2c_imx->hwdata->i2sr_clr_opcode & I2SR_IIF);
+> -		imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2SR);
+> +		i2c_imx_clear_irq(i2c_imx, I2SR_IIF);
+>  		wake_up(&i2c_imx->queue);
+>  		return IRQ_HANDLED;
+>  	}
+> -- 
 
-This specifies license of driver.c, not of the headers included. Are
-you saying that it is impossible to have a kernel driver with anything
-else than GPL-2? That would be news to many, and that's not what
-current consensus is.
+Otherwise
 
-									Pavel
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de> 
 
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---pWyiEgJYm5f9v55/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl+ADPQACgkQMOfwapXb+vKVEwCfY+JReb343qegPAGFFXefdckX
-DF4An0yKi+RyYbyEpzz/Me/hS45KZ+gP
-=5FhP
------END PGP SIGNATURE-----
-
---pWyiEgJYm5f9v55/--
+Regards,
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
