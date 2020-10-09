@@ -2,88 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA8BA288A8C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:18:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 115CF288A95
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:19:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388677AbgJIOSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 10:18:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51622 "EHLO
+        id S2388694AbgJIOTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 10:19:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388649AbgJIOSb (ORCPT
+        with ESMTP id S1731820AbgJIOTF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 10:18:31 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB2FC0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 07:18:31 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id b69so10684342qkg.8
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 07:18:31 -0700 (PDT)
+        Fri, 9 Oct 2020 10:19:05 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4887C0613D8
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 07:19:05 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id 60so9136364otw.3
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 07:19:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2Nsozhx6Vbc7+gevBK4suxhbi1tLEGMu37jB4LFRAPw=;
-        b=hxFVkoe9fUSNiPI+uQ12JsKm6OjRLbKc/6lbFpVRDpIhsRf4KNWmimf4Uw4bwdRTz5
-         uQebX3pJKZMtpcnAIYfdaL/HusqLmmVCjy1WhA7fNAyfon0iBRnmnTuq2eXAKWGAKu/g
-         /vTH9xfC6VEOLORYAQpLlpSOhlk9U2mh95fmy7zrpVmL8CpQGirmNAr8bviupqSX4BiN
-         JsjOaIWFbd15tmtcIRr9ygyReyr9DpipdN4qGf3pIBBGAQj2KR4tjY8vTI0zqQxk5GwQ
-         Ocn5+xIj9xtTzKOSYGRzic4/Nq4+1UxKLsdYs+sy/07AkRNYMjjoJc4aPs5x3V89ALRG
-         9rTg==
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=MM70QuqTQsUBVq7gYXvXBZty2HeYwYo1AwlGqBndKzc=;
+        b=TXHPzxH9Da/xVr/PCQoDGy8c0zPWy+ggD3CN9+uIIarhuboqtJeD+WQppuYxHsd6Lw
+         Y7BHU63LYKcn8Q19C0ojPAIbHvLgUU7idHjBxl/cqvgWdtq9sYwq7aJadM3ewUTikvYS
+         Or+ZtapYPyo5QGIWg5F96VAf0fQY9D81hLV+0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2Nsozhx6Vbc7+gevBK4suxhbi1tLEGMu37jB4LFRAPw=;
-        b=Z83/il86P19eUJ6KCC4YlOw8LD1zSxpuwEOs5XzWs7VZwOsxbPoe1k8gpUzTgFSX4E
-         r4InisMIbQA9i6q2AiMmo3KToIWgZsy9Vd2/9ZqIqbRrEOa2xkI1vM5pEk1beCA+FwFA
-         HtQf8zZmJoUCHE00tdKS2AsXsBHNB0bMnIMTqMbu7ZeT4hEBMKvZko4s2b1b6a8P6W9v
-         qiwGj6aJGKnVIJeMXy1Gp/fneOmC6ADOWI7ETjt0lfbm3QLlgGu9AHZEtA2ft/T2oY15
-         j0ZqdoSG0rKWOlxZg67Xw7UfyZi8wSJMrHRN6ITzSXER4aG8bnuaghEWwciHGHHvu/dk
-         kXeA==
-X-Gm-Message-State: AOAM531mT4WVTexMWu5uK+Iq7rxoC+HvC4dfCDsqWw50HnOoVQLIv3m9
-        lyS1tnkJhiBH7Dui7MJ3SNU1EA==
-X-Google-Smtp-Source: ABdhPJwWctAz3Cj788czTSYpVZIZN+OINVRMuTkx431OvmGfAhyvUvX02fo6IXvszZ32Z1TA67pjlA==
-X-Received: by 2002:a37:4587:: with SMTP id s129mr12042169qka.99.1602253110784;
-        Fri, 09 Oct 2020 07:18:30 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c0a8:11e8::107d? ([2620:10d:c091:480::1:f1f8])
-        by smtp.gmail.com with ESMTPSA id t7sm5107903qkm.130.2020.10.09.07.18.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Oct 2020 07:18:29 -0700 (PDT)
-Subject: Re: [PATCH 6/7] btrfs: Promote to unsigned long long before shifting
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org
-Cc:     ericvh@gmail.com, lucho@ionkov.net, viro@zeniv.linux.org.uk,
-        jlayton@kernel.org, idryomov@gmail.com, mark@fasheh.com,
-        jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
-        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        ceph-devel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        linux-btrfs@vger.kernel.org, clm@fb.com, dsterba@suse.com,
-        stable@vger.kernel.org
-References: <20201004180428.14494-1-willy@infradead.org>
- <20201004180428.14494-7-willy@infradead.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <84f3800c-445e-6dbf-2381-56840d7bba69@toxicpanda.com>
-Date:   Fri, 9 Oct 2020 10:18:27 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.3.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=MM70QuqTQsUBVq7gYXvXBZty2HeYwYo1AwlGqBndKzc=;
+        b=hlpad+9vXlZU9DEUlVt1zpFhFp1sOdkjqdqOvpT9fJXxc3vUvoFhFGL7T7+LJujcxv
+         J2lk42KqcmWKoBzoyXf/6EAjpO8dN2v5YzUYXCkw1Ch3QECa8IWzToX7enyEZgAFMRAx
+         HLkxdMJQD1EJaAc/veDJdAWghB57oMqM5f87AKpwNEUhCJCk2NafHCk8GSF4OzA+Y/tB
+         lRP/BttespHFT5tJFuWpIa/1wziGg9vfgnOI8kfLtWJ0L484DcoOqUSoBSWj4Xj7V3ut
+         eIkJKdY1mFMWPGNwa5tHIJoKqSON4NaD/TlUUxljjkYK1lU9z8NKMnJ/pif5EPjk7tm5
+         D+RQ==
+X-Gm-Message-State: AOAM532FsvOZOCVQQeyqbAiji8FH2jCyVhxhvD0zMRcPrAOAoItDG2cw
+        RZvh+TZM45C2cVj1bo6JmTdvfHOeCmf/nGFqY+H6Pg==
+X-Google-Smtp-Source: ABdhPJzNidxPOYe2uXf9i2kyX3nO4EFb7XRxsxlaQUOxC+n0ejMSsQdbIKmUu2me6/FBsUnaPi9FuwTaAIvXBztd7mE=
+X-Received: by 2002:a05:6830:1c3c:: with SMTP id f28mr9534834ote.188.1602253144991;
+ Fri, 09 Oct 2020 07:19:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201004180428.14494-7-willy@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201009075934.3509076-1-daniel.vetter@ffwll.ch>
+ <20201009075934.3509076-18-daniel.vetter@ffwll.ch> <20201009094750.GQ6112@intel.com>
+ <CAKMK7uH3o3hnRkTDqr93PR=wuRejpty+AbyMacoEFDDb6OgJeQ@mail.gmail.com> <20201009104154.GR6112@intel.com>
+In-Reply-To: <20201009104154.GR6112@intel.com>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Fri, 9 Oct 2020 16:18:53 +0200
+Message-ID: <CAKMK7uEp71+B3EVTezog8U3VY=DUYAbe1QeqZH9NEG8T37M_Cw@mail.gmail.com>
+Subject: Re: [PATCH v2 17/17] drm/i915: Properly request PCI BARs
+To:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Kees Cook <keescook@chromium.org>,
+        KVM list <kvm@vger.kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/4/20 2:04 PM, Matthew Wilcox (Oracle) wrote:
-> On 32-bit systems, this shift will overflow for files larger than 4GB.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 53b381b3abeb ("Btrfs: RAID5 and RAID6")
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+On Fri, Oct 9, 2020 at 12:42 PM Ville Syrj=C3=A4l=C3=A4
+<ville.syrjala@linux.intel.com> wrote:
+>
+> On Fri, Oct 09, 2020 at 12:01:39PM +0200, Daniel Vetter wrote:
+> > On Fri, Oct 9, 2020 at 11:47 AM Ville Syrj=C3=A4l=C3=A4
+> > <ville.syrjala@linux.intel.com> wrote:
+> > >
+> > > On Fri, Oct 09, 2020 at 09:59:34AM +0200, Daniel Vetter wrote:
+> > > > When trying to test my CONFIG_IO_STRICT_DEVMEM changes I realized t=
+hey
+> > > > do nothing for i915. Because i915 doesn't request any regions, like
+> > > > pretty much all drm pci drivers. I guess this is some very old
+> > > > remnants from the userspace modesetting days, when we wanted to
+> > > > co-exist with the fbdev driver. Which usually requested these
+> > > > resources.
+> > > >
+> > > > But makes me wonder why the pci subsystem doesn't just request
+> > > > resource automatically when we map a bar and a pci driver is bound?
+> > > >
+> > > > Knowledge about which pci bars we need kludged together from
+> > > > intel_uncore.c and intel_gtt.c from i915 and intel-gtt.c over in th=
+e
+> > > > fake agp driver.
+> > > >
+> > > > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> > > > Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> > > > Cc: Kees Cook <keescook@chromium.org>
+> > > > Cc: Dan Williams <dan.j.williams@intel.com>
+> > > > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > > > Cc: John Hubbard <jhubbard@nvidia.com>
+> > > > Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
+> > > > Cc: Jan Kara <jack@suse.cz>
+> > > > Cc: Dan Williams <dan.j.williams@intel.com>
+> > > > Cc: linux-mm@kvack.org
+> > > > Cc: linux-arm-kernel@lists.infradead.org
+> > > > Cc: linux-samsung-soc@vger.kernel.org
+> > > > Cc: linux-media@vger.kernel.org
+> > > > Cc: Bjorn Helgaas <bhelgaas@google.com>
+> > > > Cc: linux-pci@vger.kernel.org
+> > > > ---
+> > > >  drivers/gpu/drm/i915/intel_uncore.c | 25 +++++++++++++++++++++++--
+> > > >  1 file changed, 23 insertions(+), 2 deletions(-)
+> > > >
+> > > > diff --git a/drivers/gpu/drm/i915/intel_uncore.c b/drivers/gpu/drm/=
+i915/intel_uncore.c
+> > > > index 54e201fdeba4..ce39049d8919 100644
+> > > > --- a/drivers/gpu/drm/i915/intel_uncore.c
+> > > > +++ b/drivers/gpu/drm/i915/intel_uncore.c
+> > > > @@ -1692,10 +1692,13 @@ static int uncore_mmio_setup(struct intel_u=
+ncore *uncore)
+> > > >       struct pci_dev *pdev =3D i915->drm.pdev;
+> > > >       int mmio_bar;
+> > > >       int mmio_size;
+> > > > +     int bar_selection;
+> > >
+> > > Signed bitmasks always make me uneasy. But looks like
+> > > that's what it is in the pci api. So meh.
+> >
+> > Yeah it's surprising.
+> >
+> > > > +     int ret;
+> > > >
+> > > >       mmio_bar =3D IS_GEN(i915, 2) ? 1 : 0;
+> > > > +     bar_selection =3D BIT (2) | BIT(mmio_bar);
+> > >                            ^
+> > > spurious space
+> > >
+> > > That's also not correct for gen2 I think.
+> > >
+> > > gen2:
+> > > 0 =3D GMADR
+> > > 1 =3D MMADR
+> > > 2 =3D IOBAR
+> > >
+> > > gen3:
+> > > 0 =3D MMADR
+> > > 1 =3D IOBAR
+> > > 2 =3D GMADR
+> > > 3 =3D GTTADR
+> > >
+> > > gen4+:
+> > > 0+1 =3D GTTMMADR
+> > > 2+3 =3D GMADR
+> > > 4 =3D IOBAR
+> > >
+> > > Maybe we should just have an explicit list of bars like that in a
+> > > comment?
+> > >
+> > > I'd also suggest sucking this bitmask calculation into a small helper
+> > > so you can reuse it for the release.
+> >
+> > tbh I just hacked this up for testing. Given how almost no other drm
+> > driver does this, I'm wondering whether we should or not.
+> >
+> > Also the only reason why I didn't just use the pci_request_regions
+> > helper is to avoid the vga ioport range, since that's managed by
+> > vgaarbiter.
+>
+> VGA io range isn't part of any bar. Or do you mean just the io decode
+> enable bit in the pci command register? That should be just a matter
+> or pci_enable_device() vs. pci_enable_device_mem() I think. So nothing
+> to do with which bars we've requested IIRC.
+>
+> >
+> > So I think if we go for this for real we should:
+> > - register the vga ioport range in the vgaarbiter
+> > - have a pci_request_iomem_regions helper that grabs all mem bars
+> > - roll that out to all drm pci drivers
+> >
+> > Or something like that. The other complication is when we resize the
+> > iobar. So not really sure what to do here.
+>
+> We resize it?
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+By default I thought firmware puts everything (well, squeezes) into
+the lower 32bit. Maybe they stopped doing that. So when we want the
+full bar (for discrete at least) we need to resize it and put it
+somewhere in the 64bit range above end of system memory.
 
-Thanks,
-
-Josef
+So I guess correct phrasing is "we will resize it" :-)
+-Daniel
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
