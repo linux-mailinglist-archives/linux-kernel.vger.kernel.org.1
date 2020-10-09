@@ -2,169 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA05428871A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 12:41:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9689A28871D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 12:42:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387760AbgJIKl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 06:41:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725979AbgJIKl2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 06:41:28 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7729CC0613D2;
-        Fri,  9 Oct 2020 03:41:28 -0700 (PDT)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1kQppy-002DFq-PG; Fri, 09 Oct 2020 12:41:22 +0200
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     nstange@suse.de, ap420073@gmail.com, David.Laight@aculab.com,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        gregkh@linuxfoundation.org, rafael@kernel.org,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [RFC] debugfs: protect against rmmod while files are open
-Date:   Fri,  9 Oct 2020 12:41:13 +0200
-Message-Id: <20201009124113.a723e46a677a.Ib6576679bb8db01eb34d3dce77c4c6899c28ce26@changeid>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <4a58caee3b6b8975f4ff632bf6d2a6673788157d.camel@sipsolutions.net>
-References: <4a58caee3b6b8975f4ff632bf6d2a6673788157d.camel@sipsolutions.net>
+        id S2387766AbgJIKmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 06:42:03 -0400
+Received: from mga17.intel.com ([192.55.52.151]:53580 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387763AbgJIKmC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 06:42:02 -0400
+IronPort-SDR: WrvfIwYBRrG7Sd5TxuGgMevs8BNLVe53ACF5mgUoU7eO18SzhxMkZjdOMC+w7+aqtrDa7/Ju31
+ F5+AYR8WmFmA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="145334129"
+X-IronPort-AV: E=Sophos;i="5.77,354,1596524400"; 
+   d="scan'208";a="145334129"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 03:42:01 -0700
+IronPort-SDR: D5eqKzTjS4VWkdDx7L10EJhvpJmbWpaNFT2AjYNswUUzxVgophba1dI0Vl4ciDLSRhrLHR2HwJ
+ Z2f9ybtMlUDw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,354,1596524400"; 
+   d="scan'208";a="316996829"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
+  by orsmga006.jf.intel.com with SMTP; 09 Oct 2020 03:41:55 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Fri, 09 Oct 2020 13:41:54 +0300
+Date:   Fri, 9 Oct 2020 13:41:54 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Kees Cook <keescook@chromium.org>,
+        KVM list <kvm@vger.kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Subject: Re: [PATCH v2 17/17] drm/i915: Properly request PCI BARs
+Message-ID: <20201009104154.GR6112@intel.com>
+References: <20201009075934.3509076-1-daniel.vetter@ffwll.ch>
+ <20201009075934.3509076-18-daniel.vetter@ffwll.ch>
+ <20201009094750.GQ6112@intel.com>
+ <CAKMK7uH3o3hnRkTDqr93PR=wuRejpty+AbyMacoEFDDb6OgJeQ@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKMK7uH3o3hnRkTDqr93PR=wuRejpty+AbyMacoEFDDb6OgJeQ@mail.gmail.com>
+X-Patchwork-Hint: comment
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+On Fri, Oct 09, 2020 at 12:01:39PM +0200, Daniel Vetter wrote:
+> On Fri, Oct 9, 2020 at 11:47 AM Ville Syrjälä
+> <ville.syrjala@linux.intel.com> wrote:
+> >
+> > On Fri, Oct 09, 2020 at 09:59:34AM +0200, Daniel Vetter wrote:
+> > > When trying to test my CONFIG_IO_STRICT_DEVMEM changes I realized they
+> > > do nothing for i915. Because i915 doesn't request any regions, like
+> > > pretty much all drm pci drivers. I guess this is some very old
+> > > remnants from the userspace modesetting days, when we wanted to
+> > > co-exist with the fbdev driver. Which usually requested these
+> > > resources.
+> > >
+> > > But makes me wonder why the pci subsystem doesn't just request
+> > > resource automatically when we map a bar and a pci driver is bound?
+> > >
+> > > Knowledge about which pci bars we need kludged together from
+> > > intel_uncore.c and intel_gtt.c from i915 and intel-gtt.c over in the
+> > > fake agp driver.
+> > >
+> > > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> > > Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> > > Cc: Kees Cook <keescook@chromium.org>
+> > > Cc: Dan Williams <dan.j.williams@intel.com>
+> > > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > > Cc: John Hubbard <jhubbard@nvidia.com>
+> > > Cc: Jérôme Glisse <jglisse@redhat.com>
+> > > Cc: Jan Kara <jack@suse.cz>
+> > > Cc: Dan Williams <dan.j.williams@intel.com>
+> > > Cc: linux-mm@kvack.org
+> > > Cc: linux-arm-kernel@lists.infradead.org
+> > > Cc: linux-samsung-soc@vger.kernel.org
+> > > Cc: linux-media@vger.kernel.org
+> > > Cc: Bjorn Helgaas <bhelgaas@google.com>
+> > > Cc: linux-pci@vger.kernel.org
+> > > ---
+> > >  drivers/gpu/drm/i915/intel_uncore.c | 25 +++++++++++++++++++++++--
+> > >  1 file changed, 23 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/gpu/drm/i915/intel_uncore.c b/drivers/gpu/drm/i915/intel_uncore.c
+> > > index 54e201fdeba4..ce39049d8919 100644
+> > > --- a/drivers/gpu/drm/i915/intel_uncore.c
+> > > +++ b/drivers/gpu/drm/i915/intel_uncore.c
+> > > @@ -1692,10 +1692,13 @@ static int uncore_mmio_setup(struct intel_uncore *uncore)
+> > >       struct pci_dev *pdev = i915->drm.pdev;
+> > >       int mmio_bar;
+> > >       int mmio_size;
+> > > +     int bar_selection;
+> >
+> > Signed bitmasks always make me uneasy. But looks like
+> > that's what it is in the pci api. So meh.
+> 
+> Yeah it's surprising.
+> 
+> > > +     int ret;
+> > >
+> > >       mmio_bar = IS_GEN(i915, 2) ? 1 : 0;
+> > > +     bar_selection = BIT (2) | BIT(mmio_bar);
+> >                            ^
+> > spurious space
+> >
+> > That's also not correct for gen2 I think.
+> >
+> > gen2:
+> > 0 = GMADR
+> > 1 = MMADR
+> > 2 = IOBAR
+> >
+> > gen3:
+> > 0 = MMADR
+> > 1 = IOBAR
+> > 2 = GMADR
+> > 3 = GTTADR
+> >
+> > gen4+:
+> > 0+1 = GTTMMADR
+> > 2+3 = GMADR
+> > 4 = IOBAR
+> >
+> > Maybe we should just have an explicit list of bars like that in a
+> > comment?
+> >
+> > I'd also suggest sucking this bitmask calculation into a small helper
+> > so you can reuse it for the release.
+> 
+> tbh I just hacked this up for testing. Given how almost no other drm
+> driver does this, I'm wondering whether we should or not.
+> 
+> Also the only reason why I didn't just use the pci_request_regions
+> helper is to avoid the vga ioport range, since that's managed by
+> vgaarbiter.
 
-Currently, things will crash (or at least UAF) in release() when
-a module owning a debugfs file, but that didn't set the fops.owner,
-is removed while the offending debugfs file is open.
+VGA io range isn't part of any bar. Or do you mean just the io decode
+enable bit in the pci command register? That should be just a matter
+or pci_enable_device() vs. pci_enable_device_mem() I think. So nothing
+to do with which bars we've requested IIRC.
 
-Since we have the proxy_fops, we can break that down into two
-different cases:
+> 
+> So I think if we go for this for real we should:
+> - register the vga ioport range in the vgaarbiter
+> - have a pci_request_iomem_regions helper that grabs all mem bars
+> - roll that out to all drm pci drivers
+> 
+> Or something like that. The other complication is when we resize the
+> iobar. So not really sure what to do here.
 
-If the fops doesn't have a release method, we don't even need
-to keep a reference to the real_fops, we can just fops_put()
-them already in debugfs remove, and a later full_proxy_release()
-won't call anything anyway - this just crashed/UAFed because it
-used real_fops, not because there was actually a (now invalid)
-release() method.
+We resize it?
 
-If, on the other hand, the fops do have a release method then
-WARN and prevent adding this debugfs file if it doesn't also
-have an owner and the release method is in a module. In theory,
-the fops and the release method could be in different modules,
-while this is something we don't really need to consider it is
-in fact handled as well because we make a copy of the release()
-pointer and call through that, releasing the fops when the file
-is removed from debugfs.
-
-Surely this warning will find a few places that should have an
-owner, but at least then we don't have to add one everywhere.
-
-Reported-by: Taehee Yoo <ap420073@gmail.com>
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- fs/debugfs/file.c     | 24 +++++++++++++++++++-----
- fs/debugfs/inode.c    |  9 +++++++++
- fs/debugfs/internal.h |  1 +
- 3 files changed, 29 insertions(+), 5 deletions(-)
-
-diff --git a/fs/debugfs/file.c b/fs/debugfs/file.c
-index ae49a55bda00..addacefc356e 100644
---- a/fs/debugfs/file.c
-+++ b/fs/debugfs/file.c
-@@ -94,6 +94,7 @@ int debugfs_file_get(struct dentry *dentry)
- 
- 		fsd->real_fops = (void *)((unsigned long)d_fsd &
- 					~DEBUGFS_FSDATA_IS_REAL_FOPS_BIT);
-+		fsd->fop_release = fsd->real_fops->release;
- 		refcount_set(&fsd->active_users, 1);
- 		init_completion(&fsd->active_users_drained);
- 		if (cmpxchg(&dentry->d_fsdata, d_fsd, fsd) != d_fsd) {
-@@ -258,8 +259,8 @@ static __poll_t full_proxy_poll(struct file *filp,
- 
- static int full_proxy_release(struct inode *inode, struct file *filp)
- {
--	const struct dentry *dentry = F_DENTRY(filp);
--	const struct file_operations *real_fops = debugfs_real_fops(filp);
-+	struct dentry *dentry = F_DENTRY(filp);
-+	struct debugfs_fsdata *fsd = dentry->d_fsdata;
- 	const struct file_operations *proxy_fops = filp->f_op;
- 	int r = 0;
- 
-@@ -268,13 +269,26 @@ static int full_proxy_release(struct inode *inode, struct file *filp)
- 	 * original releaser should be called unconditionally in order
- 	 * not to leak any resources. Releasers must not assume that
- 	 * ->i_private is still being meaningful here.
-+	 *
-+	 * Note, however, that we don't reference real_fops (unless we
-+	 * can guarantee it's still around). We made a copy of release()
-+	 * before, in case it was NULL we then will not call anything and
-+	 * don't need to use real_fops at all. This allows us to allow
-+	 * module unloading of modules exposing debugfs files if they
-+	 * don't have release() methods.
- 	 */
--	if (real_fops->release)
--		r = real_fops->release(inode, filp);
-+	if (fsd->fop_release)
-+		r = fsd->fop_release(inode, filp);
- 
- 	replace_fops(filp, d_inode(dentry)->i_fop);
- 	kfree((void *)proxy_fops);
--	fops_put(real_fops);
-+
-+	/* fops_put() only if not already gone */
-+	if (refcount_inc_not_zero(&fsd->active_users)) {
-+		fops_put(fsd->real_fops);
-+		debugfs_file_put(dentry);
-+	}
-+
- 	return r;
- }
- 
-diff --git a/fs/debugfs/inode.c b/fs/debugfs/inode.c
-index b7f2e971ecbc..25fd95f79c3b 100644
---- a/fs/debugfs/inode.c
-+++ b/fs/debugfs/inode.c
-@@ -377,6 +377,13 @@ static struct dentry *__debugfs_create_file(const char *name, umode_t mode,
- 	struct dentry *dentry;
- 	struct inode *inode;
- 
-+	if (WARN(real_fops->release &&
-+		 is_module_text_address((unsigned long)real_fops->release) &&
-+		 !real_fops->owner,
-+		 "%ps is in a module but %ps doesn't have an owner",
-+		 real_fops->release, real_fops))
-+		return ERR_PTR(-EINVAL);
-+
- 	if (!(mode & S_IFMT))
- 		mode |= S_IFREG;
- 	BUG_ON(!S_ISREG(mode));
-@@ -672,6 +679,8 @@ static void __debugfs_file_removed(struct dentry *dentry)
- 		return;
- 	if (!refcount_dec_and_test(&fsd->active_users))
- 		wait_for_completion(&fsd->active_users_drained);
-+	fops_put(fsd->real_fops);
-+	fsd->real_fops = NULL;
- }
- 
- static void remove_one(struct dentry *victim)
-diff --git a/fs/debugfs/internal.h b/fs/debugfs/internal.h
-index 034e6973cead..160a77abcfab 100644
---- a/fs/debugfs/internal.h
-+++ b/fs/debugfs/internal.h
-@@ -17,6 +17,7 @@ extern const struct file_operations debugfs_full_proxy_file_operations;
- 
- struct debugfs_fsdata {
- 	const struct file_operations *real_fops;
-+	int (*fop_release)(struct inode *, struct file *);
- 	refcount_t active_users;
- 	struct completion active_users_drained;
- };
 -- 
-2.26.2
-
+Ville Syrjälä
+Intel
