@@ -2,223 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F40F2897CF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 22:05:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1E492897CE
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 22:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387622AbgJIUFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 16:05:15 -0400
-Received: from mga02.intel.com ([134.134.136.20]:58660 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390420AbgJIUDF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 16:03:05 -0400
-IronPort-SDR: x5UoKwfqyzP8HQYf4Lb4RTqCMKO2t/4fKcOroQ4O3XO7aNPkxFvkB3dHtYoYWylp9C98ZjEwIb
- z43e/rr6DRiQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9769"; a="152452238"
-X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
-   d="scan'208";a="152452238"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 13:02:49 -0700
-IronPort-SDR: jDNbI4aAbF58jWxQvv/tRI/XpmO1R/hEDt6xCYa5iPpp/OVv59jkW7Jpb1PSb8SPlIQB4DUzLZ
- 67A2zN0ZngVQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
-   d="scan'208";a="317149491"
-Received: from lkp-server02.sh.intel.com (HELO 80eb06af76cf) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 09 Oct 2020 13:02:47 -0700
-Received: from kbuild by 80eb06af76cf with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kQybG-0000he-36; Fri, 09 Oct 2020 20:02:46 +0000
-Date:   Sat, 10 Oct 2020 04:02:27 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:locking/core] BUILD SUCCESS
- 2116d708b0580c0048fc80b82ec4b53f4ddaa166
-Message-ID: <5f80c1d3.KGeGVdta+5taYUoF%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S2389150AbgJIUFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 16:05:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50478 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2391260AbgJIUE1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 16:04:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602273864;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8jSo7UvyGR7s1DtAjGCNS9MuRdGwc8XEmp+yEY4/nYA=;
+        b=TTcbVgOYHCphhtYeaOh+INyr1GvoUd2Rpbzem89nejlC04/WRCLG5L3V+DTLLTelV4tAwq
+        inkcPH5Xjz5ed6RUsrMxRkzHkYY4zwRP05L5KAlWoGTdNiHqqDQHOlfxY7qvKrpx3qZJYI
+        j0PVtjwQX/LT7nXYZmuzHJUR36Cix6k=
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
+ [209.85.161.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-452-805cH6rAO_6FRrZbk0C1ig-1; Fri, 09 Oct 2020 16:04:22 -0400
+X-MC-Unique: 805cH6rAO_6FRrZbk0C1ig-1
+Received: by mail-oo1-f71.google.com with SMTP id a192so4458601ooc.23
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 13:04:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=8jSo7UvyGR7s1DtAjGCNS9MuRdGwc8XEmp+yEY4/nYA=;
+        b=d3263WEVkZJZKfdF8ZVVGvp1lmE10SG4uWNE98K6K+7lf4R+H2LJ/l8WMCzFWkgqdN
+         4G402BhsRq+A3Fz7vOP6B7u11fyRpzUYjffHyAP1u5UuG3DaM7SEMRLqVV7XrDcpSXoF
+         PQ0oD0ZaM0mSzJFMlornWswavzx6mPMnV2YEmuH699Mvizc0pdUktNJskIu/tY1YMW5o
+         qY3SLILG12U4pNgP6EqYfiunZjCuNY7tILr1C3oZ1wkQ+lxWjyDP6pb0Xl4vutWDZL1m
+         N3pf26ckpZtRWPTfu+G+BognrbS9gOISVfB5c15DKg7vvggcCXyjiFEjv2/oAB0833hv
+         JDuA==
+X-Gm-Message-State: AOAM531AQkkuFw6nD1fRoGFyP/6eP08F9PKrYj9ubaD40d0Pc249Jzvg
+        DsqMpSyAznSl+oriyry5NTP+mP6xhr+sp13Jpe1t1mMH2/8FXJyi5yablPcraZH/Sx4k6ADjcEm
+        sEThnhh7pv007jNCvc3nfiGay
+X-Received: by 2002:aca:b607:: with SMTP id g7mr3344777oif.38.1602273861697;
+        Fri, 09 Oct 2020 13:04:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzm70L6kwpBUnuCBogJWUfOK2wId/IbF5GRWy0Rt5wZ7+2ZWshfIGo5rtGtokJNvOJPZHRKFg==
+X-Received: by 2002:aca:b607:: with SMTP id g7mr3344756oif.38.1602273861372;
+        Fri, 09 Oct 2020 13:04:21 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id l109sm6509057otc.10.2020.10.09.13.04.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Oct 2020 13:04:20 -0700 (PDT)
+Subject: Re: [PATCH v2 1/6] mfd: intel-m10-bmc: support for MAX10 BMC Security
+ Engine
+To:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
+        lee.jones@linaro.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
+        matthew.gerlach@intel.com
+References: <20201003012412.16831-1-russell.h.weight@intel.com>
+ <20201003012412.16831-2-russell.h.weight@intel.com>
+ <6eef3a9a-ffc9-7e93-e3ef-69e755fbf8cc@redhat.com>
+ <53a712e8-63e5-8b75-a2a4-6bf7fa327462@intel.com>
+ <9e5b012d-c8e4-2c01-26e0-a6bf6dce6679@intel.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <8b43c654-f780-d2ca-33a1-4fa672d66b1a@redhat.com>
+Date:   Fri, 9 Oct 2020 13:04:19 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <9e5b012d-c8e4-2c01-26e0-a6bf6dce6679@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  locking/core
-branch HEAD: 2116d708b0580c0048fc80b82ec4b53f4ddaa166  Merge branch 'lkmm' of git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu into locking/core
 
-elapsed time: 723m
+On 10/8/20 4:03 PM, Russ Weight wrote:
+> I just realized that I missed a few questions on my first reply.
+> Please see my responses below.
+>
+> On 10/7/20 5:52 PM, Russ Weight wrote:
+>> On 10/6/20 9:34 AM, Tom Rix wrote:
+>>> On 10/2/20 6:24 PM, Russ Weight wrote:
+>>>> Add macros and definitions required by the MAX10 BMC
+>>>> Security Engine driver.
+>>>>
+>>>> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+>>>> ---
+>>>> v2:
+>>>>   - These functions and macros were previously distributed among
+>>>>     the patches that needed them. They are now grouped together
+>>>>     in a single patch containing changes to the Intel MAX10 BMC
+>>>>     driver.
+>>>>   - Added DRBL_ prefix to some definitions
+>>>>   - Some address definitions were moved here from the .c files that
+>>>>     use them.
+>>>> ---
+>>>>  include/linux/mfd/intel-m10-bmc.h | 134 ++++++++++++++++++++++++++++++
+>>>>  1 file changed, 134 insertions(+)
+>>>>
+>>>> diff --git a/include/linux/mfd/intel-m10-bmc.h b/include/linux/mfd/intel-m10-bmc.h
+>>>> index c8ef2f1654a4..880f907302eb 100644
+>>>> --- a/include/linux/mfd/intel-m10-bmc.h
+>>>> +++ b/include/linux/mfd/intel-m10-bmc.h
+>>>> @@ -13,6 +13,9 @@
+>>>>  #define M10BMC_SYS_BASE			0x300800
+>>>>  #define M10BMC_MEM_END			0x200000fc
+>>>>  
+>>>> +#define M10BMC_STAGING_BASE		0x18000000
+>>>> +#define M10BMC_STAGING_SIZE		0x3800000
+>>> The staging size is not used, please use it in m10bmc_sec_write_blk to
+>>>
+>>> check the input parameter 'size'
+>> It is used to check the input size in the prepare function:
+>> m10bmc_sec_prepare()
+>>
+>> Â Â Â Â Â Â Â  if (smgr->remaining_size > M10BMC_STAGING_SIZE)
+>> Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  return FPGA_SEC_ERR_INVALID_SIZE;
+ok, i missing this.
+>>
+>> - Russ
+>>
+>>>> +
+>>>>  /* Register offset of system registers */
+>>>>  #define NIOS2_FW_VERSION		0x0
+>>>>  #define M10BMC_TEST_REG			0x3c
+>>>> @@ -21,6 +24,88 @@
+>>>>  #define M10BMC_VER_PCB_INFO_MSK		GENMASK(31, 24)
+>>>>  #define M10BMC_VER_LEGACY_INVALID	0xffffffff
+>>>>  
+>>>> +/* Secure update doorbell register, in system register region */
+>>>> +#define M10BMC_DOORBELL			0x400
+>>>> +
+>>>> +/* Authorization Result register, in system register region */
+>>>> +#define M10BMC_AUTH_RESULT		0x404
+>>>> +
+>>>> +/* Doorbell register fields */
+>>>> +#define DRBL_RSU_REQUEST		BIT(0)
+>>>> +#define DRBL_RSU_PROGRESS		GENMASK(7, 4)
+>>>> +#define DRBL_HOST_STATUS		GENMASK(11, 8)
+>>>> +#define DRBL_RSU_STATUS			GENMASK(23, 16)
+>>>> +#define DRBL_PKVL_EEPROM_LOAD_SEC	BIT(24)
+>>>> +#define DRBL_PKVL1_POLL_EN		BIT(25)
+>>>> +#define DRBL_PKVL2_POLL_EN		BIT(26)
+>>> PKVL seems like it would be n3000 specific.
+>>>
+>>> For this and similar it may be good to add a _N3000_ in the name.
+> I'm hoping Yilun and Hao might chime in here. We have substituted PKVL
+> for Retimer in some places in the code.
+>>>> +#define DRBL_CONFIG_SEL			BIT(28)
+>>>> +#define DRBL_REBOOT_REQ			BIT(29)
+>>>> +#define DRBL_REBOOT_DISABLED		BIT(30)
+>>>> +
+>>>> +/* Progress states */
+>>>> +#define RSU_PROG_IDLE			0x0
+>>>> +#define RSU_PROG_PREPARE		0x1
+>>>> +#define RSU_PROG_READY			0x3
+>>>> +#define RSU_PROG_AUTHENTICATING		0x4
+>>>> +#define RSU_PROG_COPYING		0x5
+>>>> +#define RSU_PROG_UPDATE_CANCEL		0x6
+>>>> +#define RSU_PROG_PROGRAM_KEY_HASH	0x7
+>>>> +#define RSU_PROG_RSU_DONE		0x8
+>>>> +#define RSU_PROG_PKVL_PROM_DONE		0x9
+>>>> +
+>>>> +/* Device and error states */
+>>>> +#define RSU_STAT_NORMAL			0x0
+>>>> +#define RSU_STAT_TIMEOUT		0x1
+>>>> +#define RSU_STAT_AUTH_FAIL		0x2
+>>>> +#define RSU_STAT_COPY_FAIL		0x3
+>>>> +#define RSU_STAT_FATAL			0x4
+>>>> +#define RSU_STAT_PKVL_REJECT		0x5
+>>>> +#define RSU_STAT_NON_INC		0x6
+>>>> +#define RSU_STAT_ERASE_FAIL		0x7
+>>>> +#define RSU_STAT_WEAROUT		0x8
+>>>> +#define RSU_STAT_NIOS_OK		0x80
+>>>> +#define RSU_STAT_USER_OK		0x81
+>>>> +#define RSU_STAT_FACTORY_OK		0x82
+>>>> +#define RSU_STAT_USER_FAIL		0x83
+>>>> +#define RSU_STAT_FACTORY_FAIL		0x84
+>>>> +#define RSU_STAT_NIOS_FLASH_ERR		0x85
+>>>> +#define RSU_STAT_FPGA_FLASH_ERR		0x86
+>>>> +
+>>>> +#define HOST_STATUS_IDLE		0x0
+>>>> +#define HOST_STATUS_WRITE_DONE		0x1
+>>>> +#define HOST_STATUS_ABORT_RSU		0x2
+>>>> +
+>>>> +#define rsu_prog(doorbell)	FIELD_GET(DRBL_RSU_PROGRESS, doorbell)
+>>>> +#define rsu_stat(doorbell)	FIELD_GET(DRBL_RSU_STATUS, doorbell)
+>>>> +
+>>>> +/* interval 100ms and timeout 5s */
+>>>> +#define NIOS_HANDSHAKE_INTERVAL_US	(100 * 1000)
+>>>> +#define NIOS_HANDSHAKE_TIMEOUT_US	(5 * 1000 * 1000)
+>>>> +
+>>>> +/* RSU PREP Timeout (2 minutes) to erase flash staging area */
+>>>> +#define RSU_PREP_INTERVAL_MS		100
+>>>> +#define RSU_PREP_TIMEOUT_MS		(2 * 60 * 1000)
+>>>> +
+>>>> +/* RSU Complete Timeout (40 minutes) for full flash update */
+>>>> +#define RSU_COMPLETE_INTERVAL_MS	1000
+>>>> +#define RSU_COMPLETE_TIMEOUT_MS		(40 * 60 * 1000)
+>>> minutes is an unusual timeout unit.
+>>>
+>>> It may be worthwhile to spell out MINUTES to avoid confusing with micro seconds.
+> The _MS at the end of the constants means milliseconds. That is pretty
+> standard, isn't it? Although the wait is 40 minutes, the constant is a
+> millisecond count that corresponds to 40 minutes. I expanded the definition
+> to make things more clear: 40 (minutes) * 60 (seconds) * 1000 milliseconds (40 minutes expressed in milliseconds).
 
-configs tested: 159
-configs skipped: 2
+sorry, my fault, i read this to fast.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Tom
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-nios2                               defconfig
-powerpc                     pq2fads_defconfig
-arm                        spear6xx_defconfig
-arm                          ep93xx_defconfig
-ia64                             alldefconfig
-powerpc                       maple_defconfig
-arm                           sama5_defconfig
-arm                       multi_v4t_defconfig
-powerpc                     ksi8560_defconfig
-sh                     magicpanelr2_defconfig
-m68k                          hp300_defconfig
-arc                    vdk_hs38_smp_defconfig
-sparc64                          alldefconfig
-arm                     am200epdkit_defconfig
-arm                        magician_defconfig
-powerpc                      ppc44x_defconfig
-arm                     davinci_all_defconfig
-arm                           corgi_defconfig
-powerpc64                           defconfig
-powerpc                        fsp2_defconfig
-sh                   sh7770_generic_defconfig
-arm                           viper_defconfig
-i386                             allyesconfig
-arc                      axs103_smp_defconfig
-arm                         s3c6400_defconfig
-arm                           efm32_defconfig
-powerpc                 mpc8560_ads_defconfig
-arm                             rpc_defconfig
-m68k                          sun3x_defconfig
-mips                      pistachio_defconfig
-arm                         socfpga_defconfig
-um                           x86_64_defconfig
-sh                  sh7785lcr_32bit_defconfig
-arm                          pxa910_defconfig
-mips                        bcm63xx_defconfig
-powerpc                 mpc836x_rdk_defconfig
-m68k                        m5307c3_defconfig
-openrisc                 simple_smp_defconfig
-alpha                            alldefconfig
-arc                         haps_hs_defconfig
-ia64                        generic_defconfig
-arm                          iop32x_defconfig
-arm                         cm_x300_defconfig
-powerpc                      walnut_defconfig
-mips                     loongson1b_defconfig
-arc                             nps_defconfig
-arm                       mainstone_defconfig
-powerpc                     tqm5200_defconfig
-um                             i386_defconfig
-sparc64                             defconfig
-sh                        edosk7705_defconfig
-sh                 kfr2r09-romimage_defconfig
-mips                      pic32mzda_defconfig
-arc                            hsdk_defconfig
-arm                          lpd270_defconfig
-arm                             pxa_defconfig
-powerpc                    ge_imp3a_defconfig
-arm                          prima2_defconfig
-arm                           tegra_defconfig
-arm                        neponset_defconfig
-powerpc                 mpc834x_mds_defconfig
-powerpc                    sam440ep_defconfig
-powerpc                      ppc64e_defconfig
-mips                       capcella_defconfig
-sh                   sh7724_generic_defconfig
-arm                      tct_hammer_defconfig
-powerpc                 linkstation_defconfig
-m68k                            mac_defconfig
-powerpc                   motionpro_defconfig
-arc                        vdk_hs38_defconfig
-sh                          rsk7203_defconfig
-sh                   secureedge5410_defconfig
-arm                        trizeps4_defconfig
-arm                         nhk8815_defconfig
-mips                           ip28_defconfig
-powerpc                     powernv_defconfig
-m68k                         apollo_defconfig
-arm                         mv78xx0_defconfig
-h8300                     edosk2674_defconfig
-sh                             espt_defconfig
-arm                   milbeaut_m10v_defconfig
-mips                    maltaup_xpa_defconfig
-arm                       spear13xx_defconfig
-powerpc                     mpc5200_defconfig
-mips                     cu1830-neo_defconfig
-openrisc                         alldefconfig
-mips                         db1xxx_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a006-20201009
-i386                 randconfig-a005-20201009
-i386                 randconfig-a001-20201009
-i386                 randconfig-a004-20201009
-i386                 randconfig-a002-20201009
-i386                 randconfig-a003-20201009
-x86_64               randconfig-a012-20201009
-x86_64               randconfig-a015-20201009
-x86_64               randconfig-a013-20201009
-x86_64               randconfig-a014-20201009
-x86_64               randconfig-a011-20201009
-x86_64               randconfig-a016-20201009
-i386                 randconfig-a015-20201009
-i386                 randconfig-a013-20201009
-i386                 randconfig-a014-20201009
-i386                 randconfig-a016-20201009
-i386                 randconfig-a011-20201009
-i386                 randconfig-a012-20201009
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+>>> Tom
+>>>
+>>>> +
+>>>> +/* Addresses for security related data in FLASH */
+>>>> +#define BMC_REH_ADDR	0x17ffc004
+>>>> +#define BMC_PROG_ADDR	0x17ffc000
+>>>> +#define BMC_PROG_MAGIC	0x5746
+>>>> +
+>>>> +#define SR_REH_ADDR	0x17ffd004
+>>>> +#define SR_PROG_ADDR	0x17ffd000
+>>>> +#define SR_PROG_MAGIC	0x5253
+>>>> +
+>>>> +#define PR_REH_ADDR	0x17ffe004
+>>>> +#define PR_PROG_ADDR	0x17ffe000
+>>>> +#define PR_PROG_MAGIC	0x5250
+>>>> +
+>>>> +/* Address of inverted bit vector containing user the image FLASH count */
+>>>> +#define USER_FLASH_COUNT 0x17ffb000
+>>>> +
+>>>>  /**
+>>>>   * struct intel_m10bmc - Intel MAX 10 BMC parent driver data structure
+>>>>   * @dev: this device
+>>>> @@ -35,7 +120,11 @@ struct intel_m10bmc {
+>>>>   * register access helper functions.
+>>>>   *
+>>>>   * m10bmc_raw_read - read m10bmc register per addr
+>>>> + * m10bmc_raw_bulk_read - bulk read max10 registers per addr
+>>>> + * m10bmc_raw_bulk_write - bulk write max10 registers per addr
+>>>> + * m10bmc_raw_update_bits - update max10 register per addr
+>>>>   * m10bmc_sys_read - read m10bmc system register per offset
+>>>> + * m10bmc_sys_update_bits - update max10 system register per offset
+>>>>   */
+>>>>  static inline int
+>>>>  m10bmc_raw_read(struct intel_m10bmc *m10bmc, unsigned int addr,
+>>>> @@ -51,6 +140,48 @@ m10bmc_raw_read(struct intel_m10bmc *m10bmc, unsigned int addr,
+>>>>  	return ret;
+>>>>  }
+>>>>  
+>>>> +static inline int
+>>>> +m10bmc_raw_bulk_read(struct intel_m10bmc *m10bmc, unsigned int addr,
+>>>> +		     void *val, size_t cnt)
+>>>> +{
+>>>> +	int ret;
+>>>> +
+>>>> +	ret = regmap_bulk_read(m10bmc->regmap, addr, val, cnt);
+>>>> +	if (ret)
+>>>> +		dev_err(m10bmc->dev, "fail to read raw reg %x cnt %zx: %d\n",
+>>>> +			addr, cnt, ret);
+>>>> +
+>>>> +	return ret;
+>>>> +}
+>>>> +
+>>>> +static inline int
+>>>> +m10bmc_raw_bulk_write(struct intel_m10bmc *m10bmc, unsigned int addr,
+>>>> +		      void *val, size_t cnt)
+>>>> +{
+>>>> +	int ret;
+>>>> +
+>>>> +	ret = regmap_bulk_write(m10bmc->regmap, addr, val, cnt);
+>>>> +	if (ret)
+>>>> +		dev_err(m10bmc->dev, "fail to write raw reg %x cnt %zx: %d\n",
+>>>> +			addr, cnt, ret);
+>>>> +
+>>>> +	return ret;
+>>>> +}
+>>>> +
+>>>> +static inline int
+>>>> +m10bmc_raw_update_bits(struct intel_m10bmc *m10bmc, unsigned int addr,
+>>>> +		       unsigned int msk, unsigned int val)
+>>>> +{
+>>>> +	int ret;
+>>>> +
+>>>> +	ret = regmap_update_bits(m10bmc->regmap, addr, msk, val);
+>>>> +	if (ret)
+>>>> +		dev_err(m10bmc->dev, "fail to update raw reg %x: %d\n",
+>>>> +			addr, ret);
+>>>> +
+>>>> +	return ret;
+>>>> +}
+>>>> +
+>>>>  /*
+>>>>   * The base of the system registers could be configured by HW developers, and
+>>>>   * in HW SPEC, the base is not added to the addresses of the system registers.
+>>>> @@ -62,4 +193,7 @@ m10bmc_raw_read(struct intel_m10bmc *m10bmc, unsigned int addr,
+>>>>  #define m10bmc_sys_read(m10bmc, offset, val) \
+>>>>  	m10bmc_raw_read(m10bmc, M10BMC_SYS_BASE + (offset), val)
+>>>>  
+>>>> +#define m10bmc_sys_update_bits(m10bmc, offset, msk, val) \
+>>>> +	m10bmc_raw_update_bits(m10bmc, M10BMC_SYS_BASE + (offset), msk, val)
+>>>> +
+>>>>  #endif /* __MFD_INTEL_M10_BMC_H */
 
-clang tested configs:
-x86_64               randconfig-a004-20201009
-x86_64               randconfig-a003-20201009
-x86_64               randconfig-a005-20201009
-x86_64               randconfig-a001-20201009
-x86_64               randconfig-a002-20201009
-x86_64               randconfig-a006-20201009
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
