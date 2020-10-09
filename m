@@ -2,142 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7082288C71
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:20:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF4E6288C77
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:21:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389210AbgJIPU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 11:20:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:53562 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387664AbgJIPUz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 11:20:55 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A3C941063;
-        Fri,  9 Oct 2020 08:20:54 -0700 (PDT)
-Received: from bogus (unknown [10.57.53.233])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7C6803F70D;
-        Fri,  9 Oct 2020 08:20:53 -0700 (PDT)
-Date:   Fri, 9 Oct 2020 16:20:51 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Etienne Carriere <etienne.carriere@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Souvik Chakravarty <Souvik.Chakravarty@arm.com>
-Subject: Re: [PATCH 2/5] firmware: arm_scmi: fix transfer missing
- re-initialization
-Message-ID: <20201009152051.qjxdg3goqqmdtr74@bogus>
-References: <20201008143722.21888-1-etienne.carriere@linaro.org>
- <20201008143722.21888-2-etienne.carriere@linaro.org>
- <20201008211804.soegjqsvmsgfmcne@bogus>
- <CAN5uoS9EGrzoaJ7tA__A=dPx2Y1Cp=v2THMm9YJTrOLUpkaggg@mail.gmail.com>
+        id S2389260AbgJIPVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 11:21:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389229AbgJIPVa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 11:21:30 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 497C2C0613D5
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 08:21:28 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id 7so7410987pgm.11
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 08:21:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1l5bQ+lqgCSA/OaJHeyIm/1E5UGT669jRSDiiWTQv9I=;
+        b=brT8d82RuNrUqMXWLQfdFIuobfKiEJIqSIwJD8P+BnfqDb3rb8iuhuCoXdtHdH9tFh
+         Pva7sJfJoXRCNIb6ZKbIQ2OM+6GTuJbzIijQBwTzaNCUhnq7ovAK6X5WYkV6iVdHb8O7
+         biCufPq1qQLyo/3OgQ3z1QqGonl2Ts0G8YtrPjbKVwk7Lq7YydxQ5qDX6mmRGzTlssQU
+         EX863ruA2BMcXl2pCSqsVtkJXLQGqw7/L+YGwgg6bdIu3TJLnDn7X39xJ+kvRZjIXYu7
+         40ScFjJhy8xgya7iFVHluj7DYlCrkxomHZheUpmww4EnWGLjTc0vSmtz3vMu+CO/AVaQ
+         wJMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1l5bQ+lqgCSA/OaJHeyIm/1E5UGT669jRSDiiWTQv9I=;
+        b=AMP3/Ln53NXEYhLdRxrfyjrXtQQkmxBBlHDJXcIjUudhQVgX4o0d6SVh8CkeLLf772
+         2H+NkgtzgPRjaz9PDkNkGUlXKwqMLX5/YjQelBozqM4ut2F2KF7guJ1m3u7ZRz7LHcvr
+         DnIHi4+mJt96xaOd2WdEIOu4jIv2LeajYecyYiAeJO/UcJ715xM1NU33/HiQgpR7gz3L
+         l5sOmIpR42nMHbOJ29+NBg+LL+FZQrDpuyEtpmK2v+rwaVWnxNEywQrI/bIn7ljXsP1i
+         aNZ8z79P2ZD0SYY+JmJIfrs3JsLm1fXujEtAcsRGd7IQw+lu8LZPF7q8ZHWbIQelMrcJ
+         GzHQ==
+X-Gm-Message-State: AOAM532/EuQCCnkIQ3pfosZ5rCg5rEeGgEgZHHxbGrWk0B2Y5rgFqxzI
+        0v9wLfl9dD7SEFKXqoJ0VcUGoQ==
+X-Google-Smtp-Source: ABdhPJwUMZx9n5iEt9MhvI4G8mWEw6oBLxru3MuJM1VuUFIOvRfTfC6Jet8YwH35gE0WPxK1J+y/Cw==
+X-Received: by 2002:a17:90b:4189:: with SMTP id hh9mr5249219pjb.199.1602256887739;
+        Fri, 09 Oct 2020 08:21:27 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id t13sm11594162pjo.15.2020.10.09.08.21.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Oct 2020 08:21:27 -0700 (PDT)
+Subject: Re: [PATCHSET RFC v3 0/6] Add support for TIF_NOTIFY_SIGNAL
+To:     Miroslav Benes <mbenes@suse.cz>, Oleg Nesterov <oleg@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+        peterz@infradead.org, tglx@linutronix.de,
+        live-patching@vger.kernel.org
+References: <20201005150438.6628-1-axboe@kernel.dk>
+ <20201008145610.GK9995@redhat.com>
+ <alpine.LSU.2.21.2010090959260.23400@pobox.suse.cz>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <e33ec671-3143-d720-176b-a8815996fd1c@kernel.dk>
+Date:   Fri, 9 Oct 2020 09:21:25 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAN5uoS9EGrzoaJ7tA__A=dPx2Y1Cp=v2THMm9YJTrOLUpkaggg@mail.gmail.com>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <alpine.LSU.2.21.2010090959260.23400@pobox.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 02:38:16PM +0200, Etienne Carriere wrote:
-> On Thu, 8 Oct 2020 at 23:18, Sudeep Holla <sudeep.holla@arm.com> wrote:
-> >
-> > On Thu, Oct 08, 2020 at 04:37:19PM +0200, Etienne Carriere wrote:
-> > > Implement helper function scmi_do_xfer_again() to process consecutive
-> > > transfers that are initialized only once with scmi_xfer_get_init()
-> > > and hence get the pool completion and responses message length not
-> > > reloaded regarding last completed transfer.
-> > >
-> > > Signed-off-by: Etienne Carriere <etienne.carriere@linaro.org>
-> > > ---
-> > >  drivers/firmware/arm_scmi/base.c    |  2 +-
-> > >  drivers/firmware/arm_scmi/clock.c   |  2 +-
-> > >  drivers/firmware/arm_scmi/common.h  |  2 ++
-> > >  drivers/firmware/arm_scmi/driver.c  | 10 ++++++++++
-> > >  drivers/firmware/arm_scmi/perf.c    |  2 +-
-> > >  drivers/firmware/arm_scmi/sensors.c |  2 +-
-> > >  6 files changed, 16 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/drivers/firmware/arm_scmi/base.c b/drivers/firmware/arm_scmi/base.c
-> > > index 9853bd3c4d45..508f214baa1b 100644
-> > > --- a/drivers/firmware/arm_scmi/base.c
-> > > +++ b/drivers/firmware/arm_scmi/base.c
-> > > @@ -183,7 +183,7 @@ static int scmi_base_implementation_list_get(const struct scmi_handle *handle,
-> > >               /* Set the number of protocols to be skipped/already read */
-> > >               *num_skip = cpu_to_le32(tot_num_ret);
-> > >
-> > > -             ret = scmi_do_xfer(handle, t);
-> > > +             ret = scmi_do_xfer_again(handle, t);
-> > >               if (ret)
-> > >                       break;
-> > >
-> > > diff --git a/drivers/firmware/arm_scmi/clock.c b/drivers/firmware/arm_scmi/clock.c
-> > > index c1cfe3ee3d55..9bb54c1a8d55 100644
-> > > --- a/drivers/firmware/arm_scmi/clock.c
-> > > +++ b/drivers/firmware/arm_scmi/clock.c
-> > > @@ -161,7 +161,7 @@ scmi_clock_describe_rates_get(const struct scmi_handle *handle, u32 clk_id,
-> > >               /* Set the number of rates to be skipped/already read */
-> > >               clk_desc->rate_index = cpu_to_le32(tot_rate_cnt);
-> > >
-> > > -             ret = scmi_do_xfer(handle, t);
-> > > +             ret = scmi_do_xfer_again(handle, t);
-> > >               if (ret)
-> > >                       goto err;
-> > >
-> > > diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
-> > > index 37fb583f1bf5..6d4eea7b0f3e 100644
-> > > --- a/drivers/firmware/arm_scmi/common.h
-> > > +++ b/drivers/firmware/arm_scmi/common.h
-> > > @@ -143,6 +143,8 @@ struct scmi_xfer {
-> > >
-> > >  void scmi_xfer_put(const struct scmi_handle *h, struct scmi_xfer *xfer);
-> > >  int scmi_do_xfer(const struct scmi_handle *h, struct scmi_xfer *xfer);
-> > > +int scmi_do_xfer_again(const struct scmi_handle *handle,
-> > > +                    struct scmi_xfer *xfer);
-> > >  int scmi_do_xfer_with_response(const struct scmi_handle *h,
-> > >                              struct scmi_xfer *xfer);
-> > >  int scmi_xfer_get_init(const struct scmi_handle *h, u8 msg_id, u8 prot_id,
-> > > diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-> > > index c5dea87edf8f..887cb8249db0 100644
-> > > --- a/drivers/firmware/arm_scmi/driver.c
-> > > +++ b/drivers/firmware/arm_scmi/driver.c
-> > > @@ -402,6 +402,16 @@ int scmi_do_xfer(const struct scmi_handle *handle, struct scmi_xfer *xfer)
-> > >       return ret;
-> > >  }
-> > >
-> > > +int scmi_do_xfer_again(const struct scmi_handle *handle, struct scmi_xfer *xfer)
-> > > +{
-> > > +     struct scmi_info *info = handle_to_scmi_info(handle);
-> > > +
-> > > +     xfer->rx.len = info->desc->max_msg_size;
-> >
-> > I am tempted to just have helper for above and use it where needed.
-> > Or may be I just don't like the name of the function, how about
-> > scmi_do_xfer_rxlen_reinit or anything else. Suggestions ?
+On 10/9/20 2:01 AM, Miroslav Benes wrote:
+> On Thu, 8 Oct 2020, Oleg Nesterov wrote:
 > 
-> I think a smoother way would be that scmi_do_xfer() initializes
-> both
->   xfer->rx.len = info->desc->max_msg_size
-
-Possibly
-
-> and
->   xfer->hdr.poll_completion = false
-> instead of doing that from scmi_xfer_get_init().
->
-> >
-> > > +     xfer->hdr.poll_completion = false;
-> >
-> > Do we really need the above ?
+>> On 10/05, Jens Axboe wrote:
+>>>
+>>> Hi,
+>>>
+>>> The goal is this patch series is to decouple TWA_SIGNAL based task_work
+>>> from real signals and signal delivery.
+>>
+>> I think TIF_NOTIFY_SIGNAL can have more users. Say, we can move
+>> try_to_freeze() from get_signal() to tracehook_notify_signal(), kill
+>> fake_signal_wake_up(), and remove freezing() from recalc_sigpending().
+>>
+>> Probably the same for TIF_PATCH_PENDING, klp_send_signals() can use
+>> set_notify_signal() rather than signal_wake_up().
 > 
-> I think so. Once a transfer is completed, poll_completion is true.
+> Yes, that was my impression from the patch set too, when I accidentally 
+> noticed it.
+> 
+> Jens, could you CC our live patching ML when you submit v4, please? It 
+> would be a nice cleanup.
 
-Where and how ? By default it is always false and it can be set to true
-only by perf set/get calls. So I still see no need for this.
+Definitely, though it'd be v5 at this point. But we really need to get
+all archs supporting TIF_NOTIFY_SIGNAL first. Once we have that, there's
+a whole slew of cleanups that'll fall out naturally:
+
+- Removal of JOBCTL_TASK_WORK
+- Removal of special path for TWA_SIGNAL in task_work
+- TIF_PATCH_PENDING can be converted and then removed
+- try_to_freeze() cleanup that Oleg mentioned
+
+And probably more I'm not thinking of right now :-)
 
 -- 
-Regards,
-Sudeep
+Jens Axboe
+
