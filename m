@@ -2,227 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C9A1288D3F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3794E288D47
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:48:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389481AbgJIPri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 11:47:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49370 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389144AbgJIPri (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 11:47:38 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D47EF20658;
-        Fri,  9 Oct 2020 15:47:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602258457;
-        bh=YrZvXgpNpQFMPy1K3qREb5b4WS6IxWnTEICmVQrbelw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0qMHyT/vvQ2hUlPVJSCVY1jTmFG3N7/WfU2egHZUjxUIVY628t2MDujj6UhW6vxwO
-         /+nLdUPZGou1WuFdIW9mzURWrnD+2mK7L3FKi/sQMYqcSqqZrewgIEv/BV5giDtKRM
-         sRl34eVr15c+4mljjx17dF0HZCYRniCiiVpkpgCk=
-Received: by pali.im (Postfix)
-        id 74CD2515; Fri,  9 Oct 2020 17:47:34 +0200 (CEST)
-Date:   Fri, 9 Oct 2020 17:47:34 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dsterba@suse.cz" <dsterba@suse.cz>,
-        "aaptel@suse.com" <aaptel@suse.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "joe@perches.com" <joe@perches.com>,
-        "mark@harmstone.com" <mark@harmstone.com>,
-        "nborisov@suse.com" <nborisov@suse.com>
-Subject: Re: [PATCH v5 08/10] fs/ntfs3: Add Kconfig, Makefile and doc
-Message-ID: <20201009154734.andv4es3azkkskm5@pali>
-References: <20200911141018.2457639-1-almaz.alexandrovich@paragon-software.com>
- <20200911141018.2457639-9-almaz.alexandrovich@paragon-software.com>
- <20200921132631.q6jfmbhqf6j6ay5t@pali>
- <7facb550be6449c2b35f467ab1716224@paragon-software.com>
- <20200926082324.npbljzb3ydkfbswy@pali>
- <940ff3bbce3e4c8b9cb5666c3f5c113f@paragon-software.com>
+        id S2389490AbgJIPs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 11:48:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389144AbgJIPs3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 11:48:29 -0400
+Received: from forward105o.mail.yandex.net (forward105o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::608])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55277C0613D2;
+        Fri,  9 Oct 2020 08:48:28 -0700 (PDT)
+Received: from mxback14j.mail.yandex.net (mxback14j.mail.yandex.net [IPv6:2a02:6b8:0:1619::90])
+        by forward105o.mail.yandex.net (Yandex) with ESMTP id 308CA420191C;
+        Fri,  9 Oct 2020 18:48:24 +0300 (MSK)
+Received: from myt6-efff10c3476a.qloud-c.yandex.net (myt6-efff10c3476a.qloud-c.yandex.net [2a02:6b8:c12:13a3:0:640:efff:10c3])
+        by mxback14j.mail.yandex.net (mxback/Yandex) with ESMTP id WAnDOLR12X-mNkSxxve;
+        Fri, 09 Oct 2020 18:48:24 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1602258504;
+        bh=nE34g5pkiv+lyAv8KGYmFqhMePEwK7biDs9eZPxRsC4=;
+        h=In-Reply-To:From:To:Subject:Cc:Date:References:Message-ID;
+        b=sKY1w1KQeRWoVPIxkWPy2BuJ0QArwURKhswJVOWva5qLqdXebdWa+pyW98QiNsN0m
+         sUKGAFBlPX1kRAxyRI+3amc4syVHoDxt2jmtpyWnd4EYHo0WOMBJ/bHN2nN98/5cUT
+         Kfc0P0cZp0LSrM5QEtJe380YrynzJkSmrPHs4TGY=
+Authentication-Results: mxback14j.mail.yandex.net; dkim=pass header.i=@yandex.ru
+Received: by myt6-efff10c3476a.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id TnvO1WRrh9-mNIuqjPx;
+        Fri, 09 Oct 2020 18:48:23 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+Subject: Re: [PATCH 0/6] KVM: x86: KVM_SET_SREGS.CR4 bug fixes and cleanup
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201007014417.29276-1-sean.j.christopherson@intel.com>
+ <99334de1-ba3d-dfac-0730-e637d39b948f@yandex.ru>
+ <20201008175951.GA9267@linux.intel.com>
+ <7efe1398-24c0-139f-29fa-3d89b6013f34@yandex.ru>
+ <20201009040453.GA10744@linux.intel.com>
+ <5dfa55f3-ecdf-9f8d-2d45-d2e6e54f2daa@yandex.ru>
+ <20201009153053.GA16234@linux.intel.com>
+From:   stsp <stsp2@yandex.ru>
+Message-ID: <5bf99bdf-b16f-8caf-ba61-860457606b8e@yandex.ru>
+Date:   Fri, 9 Oct 2020 18:48:21 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20201009153053.GA16234@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <940ff3bbce3e4c8b9cb5666c3f5c113f@paragon-software.com>
-User-Agent: NeoMutt/20180716
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 09 October 2020 15:31:10 Konstantin Komarov wrote:
-> From: Pali Rohár <pali@kernel.org>
-> Sent: Saturday, September 26, 2020 11:23 AM
-> > To: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-> > Cc: linux-fsdevel@vger.kernel.org; viro@zeniv.linux.org.uk; linux-kernel@vger.kernel.org; dsterba@suse.cz; aaptel@suse.com;
-> > willy@infradead.org; rdunlap@infradead.org; joe@perches.com; mark@harmstone.com; nborisov@suse.com
-> > Subject: Re: [PATCH v5 08/10] fs/ntfs3: Add Kconfig, Makefile and doc
-> > 
-> > On Friday 25 September 2020 16:30:19 Konstantin Komarov wrote:
-> > > From: Pali Rohár <pali@kernel.org>
-> > > Sent: Monday, September 21, 2020 4:27 PM
-> > > > To: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-> > > > Cc: linux-fsdevel@vger.kernel.org; viro@zeniv.linux.org.uk; linux-kernel@vger.kernel.org; dsterba@suse.cz; aaptel@suse.com;
-> > > > willy@infradead.org; rdunlap@infradead.org; joe@perches.com; mark@harmstone.com; nborisov@suse.com
-> > > > Subject: Re: [PATCH v5 08/10] fs/ntfs3: Add Kconfig, Makefile and doc
-> > > >
-> > > > On Friday 11 September 2020 17:10:16 Konstantin Komarov wrote:
-> > > > > +Mount Options
-> > > > > +=============
-> > > > > +
-> > > > > +The list below describes mount options supported by NTFS3 driver in addition to
-> > > > > +generic ones.
-> > > > > +
-> > > > > +===============================================================================
-> > > > > +
-> > > > > +nls=name		This option informs the driver how to interpret path
-> > > > > +			strings and translate them to Unicode and back. If
-> > > > > +			this option is not set, the default codepage will be
-> > > > > +			used (CONFIG_NLS_DEFAULT).
-> > > > > +			Examples:
-> > > > > +				'nls=utf8'
-> > > > > +
-> > > > > +nls_alt=name		This option extends "nls". It will be used to translate
-> > > > > +			path string to Unicode if primary nls failed.
-> > > > > +			Examples:
-> > > > > +				'nls_alt=cp1251'
-> > > >
-> > > > Hello! I'm looking at other filesystem drivers and no other with UNICODE
-> > > > semantic (vfat, udf, isofs) has something like nls_alt option.
-> > > >
-> > > > So do we really need it? And if yes, it should be added to all other
-> > > > UNICODE filesystem drivers for consistency.
-> > > >
-> > > > But I'm very sceptical if such thing is really needed. nls= option just
-> > > > said how to convert UNICODE code points for userpace. This option is
-> > > > passed by userspace (when mounting disk), so userspace already know what
-> > > > it wanted. And it should really use this encoding for filenames (e.g.
-> > > > utf8 or cp1251) which already told to kernel.
-> > >
-> > > Hi Pali! Thanks for the feedback. We do not consider the nls_alt option as the must have
-> > > one. But it is very nice "QOL-type" mount option, which may help some amount of
-> > > dual-booters/Windows users to avoid tricky fails with files originated on non-English
-> > > Windows systems. One of the cases where this one may be useful is the case of zipping
-> > > files with non-English names (e.g. Polish etc) under Windows and then unzipping the archive
-> > > under Linux. In this case unzip will likely to fail on those files, as archive stores filenames not
-> > > in utf.
-> > 
-> > Hello!
-> > 
-> > Thank you for providing example. Now I can imagine the problem which
-> > this option is trying to "workaround".
-> > 
-> > Personally, I think that this is the issue of the program which is
-> > unzipping content of the archive. If files are in archive are stored in
-> > different encoding, then user needs to provide information in which it
-> > is stored. Otherwise it would be broken.
-> > 
-> 
-> Hi Pali! Partially it is the issue of the program. But such issue may affect
-> a lot of programs, esp. given that this case is somehwat niche for the Linux,
-> because it origins in Windows. We may assume it is unlikely a lot of programs
-> will try/are trying to support this case. The mount option, on the other hand,
-> gives this ability without relying on the application itself.
+09.10.2020 18:30, Sean Christopherson пишет:
+> On Fri, Oct 09, 2020 at 05:11:51PM +0300, stsp wrote:
+>> 09.10.2020 07:04, Sean Christopherson пишет:
+>>>> Hmm. But at least it was lying
+>>>> similarly on AMD and Intel CPUs. :)
+>>>> So I was able to reproduce the problems
+>>>> myself.
+>>>> Do you mean, any AMD tests are now useless, and we need to proceed with Intel
+>>>> tests only?
+>>> For anything VMXE related, yes.
+>> What would be the expected behaviour on Intel, if it is set? Any difference
+>> with AMD?
+> On Intel, userspace should be able to stuff CR4.VMXE=1 via KVM_SET_SREGS if
+> the 'nested' module param is 1, e.g. if 'modprobe kvm_intel nested=1'.  Note,
+> 'nested' is enabled by default on kernel 5.0 and later.
 
-Hello! I understand this issue. But what you have described is basically
-filesystem independent, this may happen also on ext4 with UNICODE
-support and also on fat32 with VFAT support.
+So if I understand you correctly, we
+need to test that:
+- with nested=0 VMXE gives EINVAL
+- with nested=1 VMXE changes nothing
+visible, except probably to allow guest
+to read that value (we won't test guest
+reading though).
 
-Therefore I do not think it is good idea to have e.g. nls_alt=cp1251
-option directly in just one filesystem driver.
+Is this correct?
 
-This would just make ntfs driver inconsistent with other Linux UNICODE
-filesystem drivers and it would cause more problems that application
-unzip is working with ntfs driver, but does not work with vfat or ext4
-driver.
 
-I would really suggest to not include this nls_alt option into
-filesystem driver. And rather come up with some universal solution for
-all UNICODE filesystem drivers. There are multiple solutions, e.g.
-implement option in VFS layer and propagate it to UNICODE fs drivers, OR
-implement NLS codepage which would handle it...
+> With AMD, setting CR4.VMXE=1 is never allowed as AMD doesn't support VMX,
 
-Inconsistency of one FS driver with all other would really cause
-problems if not now, then in future.
+OK, for that I can give you a
+Tested-by: Stas Sergeev <stsp@users.sourceforge.net>
 
-This issue which you described is already there, also without ntfs
-driver. And still adding something for ntfs driver looks like a
-workaround or hack for that issue. Not a solution.
+because I confirm that on AMD it now
+consistently returns EINVAL, whereas
+without your patches it did random crap,
+depending on whether it is a first call to
+KVM_SET_SREGS, or not first.
 
-> > Also this your approach with nls=utf-8 and nls_alt=cp1251 is broken. I
-> > can provide you string encoded in cp1251 which is also valid UTF-8
-> > sequence.
-> > 
-> > For example: sequence of bytes "d0 93".
-> > 
-> > In cp1251 it is Р“, but also it is valid UTF-8 sequence for Г (CYRILLIC
-> > CAPITAL LETTER GHE).
-> > 
-> > Because cp1251 is set as nls_alt, you would get UTF-8 interpretation.
-> > And for all other invalid UTF-8 sequences you would get cp1251.
-> > 
-> > For me it looks like you are trying to implement workaround based on
-> > some heuristic in kernel for userspace application which handles
-> > encoding incorrectly. And because all CP???? encodings are defined at
-> > full 8bit space and UTF-8 is subset of 8bit space, it would never work
-> > correctly.
-> > 
-> 
-> In this case, the whole string will be treated as UTF-8 string, no matter of
-> what's the value of "nls_alt" option. The option's related logic starts to be applied
-> only for those strings which contain "invalid" UTF-8 character. And it works not in
-> symbol-by-symbol way, but applies to the whole string. So if a string does not
-> contain invalid UTF-8, the "nls_alt" won't be applied, even if set. And if the string
-> contains invalid UTF-8 AND "nls_alt" is set, then the logic will be applied with assumption
-> that user, when set the "nls_alt" had in mind that he may be in such situation.
-> 
-> When it is coming to valid UTF-8 sequences, which are actually meant to represent another
-> encoding, there is ambiguity, which seems unable to be resolved both with and without
-> the "nls_alt". But at least those cases, when the sequence is incorrect UTF-8, but correct
-> e.g. CP-1251, may be solved with the "nls_alt", but not without it. 
-> 
-> It is not covering all the cases, but covers at least those, which otherwise lead to inability
-> operating with the file (e.g. error during unzip). Also it is set only explicitly by the user.
-> 
-> We'll follow the community opinion in our implementation, just want to make sure the
-> solution is understood correctly. Regarding the "nls_alt", it doesn't seem
-> to be harmful in any way, but may help some amount of users to overcome interoperability
-> issues.
-> 
-> > Also I do not think that kernel is correct place for workarounding
-> > userspace applications which handles encoding incorrectly.
-> > 
-> > > Windows have that "Language for non-Unicode programs" setting, which controls the
-> > > encoding used for the described (and similar) cases.
-> > 
-> > This windows setting is something different. It is system wide option
-> > which affects -A WINAPI functions and defines one fixed 8bit encoding
-> > (ACP) which should be used for converting UTF-16 strings (wchar_t*) into
-> > 8bit (char*) ACP encoding.
-> > 
-> > It is something similar to Unix CODESET set in LC_CTYPE from locale. But
-> > not the same.
-> > 
-> > > Overall, it's kinda niche mount option, but we suppose it's legit for Windows-originated filesystems.
-> > > What do you think on this, Pali?
-> > 
-> > I think this is not only for Windows-orientated FS, but rather for all
-> > filesystems which store filenames in UNICODE (as opposite of sequence of
-> > bytes).
-> > 
-> > E.g. ext4 now has extension for storing (and validating) that filenames
-> > are also in UNICODE (on disk it is in UTF-8).
-> > 
-> > Same for Beos FS or UDF fs (on DVD/BD-R). In most cases these fs are
-> > mounted with nls=utf-8 to interpret UNICODE as utf-8.
-> > 
-> > And none of these fs have such nls_alt option as I show above, it cannot
-> > work reliable.
-> 
-> Thanks.
+
+>> But we do not use unrestricted guest.
+>> We use v86 under KVM.
+> Unrestricted guest can kick in even if CR0.PG=1 && CR0.PE=1, e.g. there are
+> segmentation checks that apply if and only if unrestricted_guest=0.  Long story
+> short, without a deep audit, it's basically impossible to rule out a dependency
+> on unrestricted guest since you're playing around with v86.
+
+You mean "unrestricted_guest" as a module
+parameter, rather than the similar named CPU
+feature, right? So we may depend on
+unrestricted_guest parameter, but not on a
+hardware feature, correct?
+
+
+>> The only other effect of setting VMXE was clearing VME. Which shouldn't
+>> affect anything either, right?
+> Hmm, clearing VME would mean that exceptions/interrupts within the guest would
+> trigger a switch out of v86 and into vanilla protected mode.  v86 and PM have
+> different consistency checks, particularly for segmentation, so it's plausible
+> that clearing CR4.VME inadvertantly worked around the bug by avoiding invalid
+> guest state for v86.
+
+Lets assume that was the case.
+With those github guys its not possible
+to do any consistent checks. :(
+
