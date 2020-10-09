@@ -2,120 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7298288162
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 06:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60D51288167
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 06:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731384AbgJIEcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 00:32:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35258 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730673AbgJIEcj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 00:32:39 -0400
-Received: from localhost (unknown [104.132.1.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 30EB12223C;
-        Fri,  9 Oct 2020 04:32:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602217958;
-        bh=SdrY3x/AegRW3+Z55+vO/ZT63wJgoZN3xHB0iZxUPJ8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TaEF/uk2ucCTptiXF1qhWAK0nO4/1eckb6mlwfsk2IF5NFPxgcg3AHiyTgLNAtCW6
-         dbNQuYNTtjBe5L9d0nLfA8Ty+2zkIWZkBjiCb8y+s7tdtaaOGJDZtEdcXnuu6GrLTV
-         o3yTjJwy3NHqC/rKW5VgqBDe/9nJeDED/YcwNV44=
-Date:   Thu, 8 Oct 2020 21:32:37 -0700
-From:   jaegeuk@kernel.org
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        <syzbot+ee250ac8137be41d7b13@syzkaller.appspotmail.com>,
-        <syzkaller-bugs@googlegroups.com>, <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-Subject: Re: [f2fs-dev] [f2fs bug] infinite loop in
- f2fs_get_meta_page_nofail()
-Message-ID: <20201009043237.GB1973455@google.com>
-References: <000000000000432c5405b1113296@google.com>
- <20201007213253.GD1530638@gmail.com>
- <20201007215305.GA714500@google.com>
- <c7baef0d-d459-114f-7146-627f0c4159ad@huawei.com>
- <20201009015015.GA1931838@google.com>
- <8fa4f9fe-5ca5-f3a3-c8f4-e800373c1e46@huawei.com>
+        id S1726375AbgJIEnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 00:43:05 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:59806 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725917AbgJIEnF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 00:43:05 -0400
+X-UUID: f1420bb577d648a68139800033ad5ee4-20201009
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=Ijk9zEMYAAMFlQhF4wPAOfPw0u7B12zhXrXvw8s3OT4=;
+        b=qvJ2vFkrUbJIVMh2+kD2N/bY0oLWLJujRrk8dO+7li+pIuoNacv1ssPSdChpJwZNIf7gT2+/3GVKv4i3VMvoV4+tE68T/1zJZwUC41DUWyrmc2T97DQMeqjqjBLvUOC1Ajo1K552cKHhWmyFaPMwthJYdmxRGImYJFoQqWed3pQ=;
+X-UUID: f1420bb577d648a68139800033ad5ee4-20201009
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <hector.yuan@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1072511865; Fri, 09 Oct 2020 12:43:01 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 9 Oct 2020 12:42:59 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 9 Oct 2020 12:42:57 +0800
+Message-ID: <1602218579.21446.57.camel@mtkswgap22>
+Subject: Re: [PATCH v1 1/1] cpufreq: mediatek-hw: Register EM power table
+From:   Hector Yuan <hector.yuan@mediatek.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+CC:     <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>
+Date:   Fri, 9 Oct 2020 12:42:59 +0800
+In-Reply-To: <20201009041912.nzhvubzmfox2twxg@vireshk-i7>
+References: <1602159204-13756-1-git-send-email-hector.yuan@mediatek.com>
+         <1602159204-13756-2-git-send-email-hector.yuan@mediatek.com>
+         <20201009041912.nzhvubzmfox2twxg@vireshk-i7>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8fa4f9fe-5ca5-f3a3-c8f4-e800373c1e46@huawei.com>
+X-TM-SNTS-SMTP: 9FC3C75B20CA1A3C7FC84E92EBC44B1270F1640D81729BFB725E74D47F77370C2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/09, Chao Yu wrote:
-> On 2020/10/9 9:50, jaegeuk@kernel.org wrote:
-> > On 10/09, Chao Yu wrote:
-> > > On 2020/10/8 5:53, jaegeuk@kernel.org wrote:
-> > > > On 10/07, Eric Biggers wrote:
-> > > > > [moved linux-fsdevel to Bcc]
-> > > > > 
-> > > > > On Wed, Oct 07, 2020 at 02:18:19AM -0700, syzbot wrote:
-> > > > > > Hello,
-> > > > > > 
-> > > > > > syzbot found the following issue on:
-> > > > > > 
-> > > > > > HEAD commit:    a804ab08 Add linux-next specific files for 20201006
-> > > > > > git tree:       linux-next
-> > > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=17fe30bf900000
-> > > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=26c1b4cc4a62ccb
-> > > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=ee250ac8137be41d7b13
-> > > > > > compiler:       gcc (GCC) 10.1.0-syz 20200507
-> > > > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1336413b900000
-> > > > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12f7392b900000
-> > > > > > 
-> > > > > > The issue was bisected to:
-> > > > > > 
-> > > > > > commit eede846af512572b1f30b34f9889d7df64c017d4
-> > > > > > Author: Jaegeuk Kim <jaegeuk@kernel.org>
-> > > > > > Date:   Fri Oct 2 21:17:35 2020 +0000
-> > > > > > 
-> > > > > >       f2fs: f2fs_get_meta_page_nofail should not be failed
-> > > > > > 
-> > > > > 
-> > > > > Jaegeuk, it looks like the loop you added in the above commit doesn't terminate
-> > > > > if the requested page is beyond the end of the device.
-> > > > 
-> > > > Yes, that will go infinite loop. Otherwise, it will trigger a panic during
-> > > > the device reboot. Let me think how to avoid that before trying to get the
-> > > > wrong lba access.
-> > > 
-> > > Delivering f2fs_get_sum_page()'s return value needs a lot of codes change, I think
-> > > we can just zeroing sum_page in error case, as we have already shutdown f2fs via
-> > > calling f2fs_stop_checkpoint(), then f2fs_cp_error() will stop all updates to
-> > > filesystem data including summary pages.
-> > 
-> > That sounds like one solution tho, I'm afraid of getting another panic by
-> > wrong zero'ed summary page.
-> 
-> What case do you mean? maybe I missed some corner cases?
+T24gRnJpLCAyMDIwLTEwLTA5IGF0IDA5OjQ5ICswNTMwLCBWaXJlc2ggS3VtYXIgd3JvdGU6DQo+
+IE9uIDA4LTEwLTIwLCAyMDoxMywgSGVjdG9yIFl1YW4gd3JvdGU6DQo+ID4gRnJvbTogIkhlY3Rv
+ci5ZdWFuIiA8aGVjdG9yLnl1YW5AbWVkaWF0ZWsuY29tPg0KPiA+IA0KPiA+IFJlZ2lzdGVyIENQ
+VSBwb3dlciB0YWJsZSB0byBlbmVyZ3kgbW9kZWwgZnJhbWV3b3JrDQo+ID4gDQo+ID4gU2lnbmVk
+LW9mZi1ieTogSGVjdG9yLll1YW4gPGhlY3Rvci55dWFuQG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0N
+Cj4gPiAgZHJpdmVycy9jcHVmcmVxL21lZGlhdGVrLWNwdWZyZXEtaHcuYyB8ICAgNTAgKysrKysr
+KysrKysrKysrKysrKysrKysrKy0tLS0tLS0tDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAzOCBpbnNl
+cnRpb25zKCspLCAxMiBkZWxldGlvbnMoLSkNCj4gDQo+IEkgZG9uJ3Qgc2VlIHRoaXMgZmlsZSBp
+biBtYWlubGluZS4gV2hhdCBhbSBJIG1pc3NpbmcgPw0KPiANCkhpLCBWaXJlc2g6DQoNClllcywg
+SSBiYXNlIG9uIG15IHBhdGNoZXMgd2hpY2ggaXMgY3VycmVudGx5IHJldmlld2VkIGJ5IFJvYiBm
+b3IgdGhlDQpEZXZpY2UgdHJlZSBwYXJ0Lg0KQXMgSSBtZW50aW9uZWQgaW4gY292ZXIgbGV0dGVy
+Lg0KDQpUaGlzIHBhdGNoIGRlcGVuZHMgb24gTWVkaWF0ZWsgY3B1ZnJlcSBIVyBkcml2ZXIgcGF0
+Y2ggc3VibWl0dGVkIGJ5DQpIZWN0b3IgWXVhbi4NCiBodHRwczovL2xrbWwub3JnL2xrbWwvMjAy
+MC85LzEwLzEzDQoNCkkgaGF2ZSBhc2tlZCB5b3VyIGFwcHJvdmFsIGZvciBzZW5kaW5nIG15IG5l
+dyBwYXRjaGVzIGJhc2VkIG9uIGl0IGFuZA0KeW91IHNhaWQgaXQncyBva2F5IHRvIHlvdS4NCkkg
+d2lsbCBzdG9wIHNlbmRpbmcgbmV3IHBhdGNoZXMgaWYgeW91IGhhdmUgYW55IGNvbmNlcm5zLg0K
+VGhhbmsgeW91IHNvIG11Y2guDQo=
 
-I sent v2 to fix syzbot issue, which fixes wrong use of
-f2fs_get_meta_page_nofail.
-
-> 
-> Thanks,
-> 
-> > 
-> > > 
-> > > Thoughts?
-> > > 
-> > > Thanks,
-> > > 
-> > > > 
-> > > > > 
-> > > > > - Eric
-> > > > 
-> > > > 
-> > > > _______________________________________________
-> > > > Linux-f2fs-devel mailing list
-> > > > Linux-f2fs-devel@lists.sourceforge.net
-> > > > https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
-> > > > .
-> > > > 
-> > .
-> > 
