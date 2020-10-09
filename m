@@ -2,122 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4D0288931
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 14:48:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48E6928894A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 14:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732739AbgJIMsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 08:48:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37812 "EHLO
+        id S2387774AbgJIMvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 08:51:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732395AbgJIMsx (ORCPT
+        with ESMTP id S1730740AbgJIMvn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 08:48:53 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E381C0613D7
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 05:48:52 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id y198so10416738qka.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 05:48:52 -0700 (PDT)
+        Fri, 9 Oct 2020 08:51:43 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55DDAC0613D2;
+        Fri,  9 Oct 2020 05:51:41 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id h5so94816wrv.7;
+        Fri, 09 Oct 2020 05:51:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bKAda/rTW4nq6+j1jXEBgS/13SJBQ2WY2j5bHQ+ISAM=;
-        b=HLVf/9fs3er+0kSwyJTggMLNde7v6twDJX2OORdUgNP4K/LTsJAusSj3xZhnK/9iEP
-         2MiDVI/gcY40GDzZOHFy1D1gUeZmYvK+y8q3WrgO2wIZyqUCgxZmIrGytraz5FbwrvVk
-         FIWoQQ/EYzOwBXKaVfiWwe8sni4FQhNRH93rHGzY9G+WQBuX2toU0JYl3qUK8vxILogk
-         CO/+6WIVejt98w1VEtO30gtBiu4FzGnjZIpjkg9+CRC8VLCjso0cqZThY5uICmC4Leel
-         mG8PVTlyewS4MOqVzGOqsDKY0BxrcNvf/7YuapUiGj3wEjRkZ+Rv/IezCJ6KD+Oa9Tui
-         5i5Q==
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:autocrypt:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=l4ZXKMjg/m/2/oKO/FJW5fn59l9WHj+2kE6N+OHW648=;
+        b=LnAKdX6mGy0/uuAO+XaRbepY47bgIlZ5hTgQ5O7n+qpSKowjDR4au9DjiC/2JMeBVw
+         IaY9UwaNkS376AsyxuGQcwlXsRdcNpN30R5yzZJ3HCHRezVyhQecKW8hovUpovE74Roq
+         fRR0boALoZYr+6ZSdhzm03p0iecbKOjPHouxjG+f/pRQa26LCdhIKpqkIUN/+2lE85FT
+         Hpq0QgnShcn0U9/vuJye1EVC8pZ0af0q5zv/HDSO/DjydTTH37wmflG9dX0NBXz+ohS9
+         MAjpt+J7WFh7yfr1vUM5fqkSvZlaiZZ3kbkwbkjVqbO2gzsSVFVPqb5+Y4yP0acAT2R4
+         JNDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bKAda/rTW4nq6+j1jXEBgS/13SJBQ2WY2j5bHQ+ISAM=;
-        b=cfQm5DHNnX53a8n6PM4QhdFN+29TmwelpWPaBWJy6yU/hrxEXIA8Hfjx3qee+E6ws6
-         dogn8HXRi7DGWn22flCM6Cq1MMBvEKcn2WHVGUIrhYqf36P2WivnQW6v7BoEmcZQtLwZ
-         esSDLiG9ZF/Of+L5Kwuepl0XCyZNrD9lZBkIrNeNYNVeEaV4Bni3Z5VibKLTTETtjERK
-         AKZgvY0kzzIlOvP9MPOFAi21h5Gg9pjb+kHFfsqBoOVtQSuUuGY8U6iIEya4063udIcs
-         i06S6LIcq9GRLwN5GG5x74FFi0cU/gLVD3yAeOkFEoLHkjnOyeQld3yzsXozmfioy+C1
-         vIJQ==
-X-Gm-Message-State: AOAM53339kMK7nNU/NBtAHj8MtdoqO2Myqg2CBdBaKJ013yt76Y6SwVa
-        JncPOwxx6To04qVdK2qHMN56/Q==
-X-Google-Smtp-Source: ABdhPJxKkkXOIA4i8TbRkwc7dtfamUS7+upXdOHf9JVMgQW+IXdzrhalpqUKvvNnrEeFMFZ6pHcyaQ==
-X-Received: by 2002:ae9:e702:: with SMTP id m2mr6280147qka.387.1602247731583;
-        Fri, 09 Oct 2020 05:48:51 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id m18sm4248636qkk.102.2020.10.09.05.48.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 05:48:50 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kQrpK-001y6e-9J; Fri, 09 Oct 2020 09:48:50 -0300
-Date:   Fri, 9 Oct 2020 09:48:50 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-s390@vger.kernel.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v2 09/17] mm: Add unsafe_follow_pfn
-Message-ID: <20201009124850.GP5177@ziepe.ca>
-References: <20201009075934.3509076-1-daniel.vetter@ffwll.ch>
- <20201009075934.3509076-10-daniel.vetter@ffwll.ch>
- <20201009123421.67a80d72@coco.lan>
- <20201009122111.GN5177@ziepe.ca>
- <20201009143723.45609bfb@coco.lan>
+        h=x-gm-message-state:to:cc:references:from:autocrypt:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=l4ZXKMjg/m/2/oKO/FJW5fn59l9WHj+2kE6N+OHW648=;
+        b=iuMWZbeVbEOjuAQGrjTMRbilasKD4s0TYflsMS6caqqfoK2YnuJx6P8PST59XDDC+Y
+         AOuKnDfpjrP3DC8T9v36+9bl+T/8b+S7DfuAOiIrKCilj6NCw/L1EZaSMhFaLYt4eEfv
+         vt+rNmAMewoniS+2qBCGj6QgRkH8BNzmBcog0xVse3PmAERToD0C+FHwGfmt/7dnluJt
+         fMFi6SRnJRPO4AS2ThjP0e5QxX6iHYuqtl/BaqEKZPK46U3qis1PF6SYF9BGfizPY2tC
+         UfMpd8naAhOdhQ3/+rG7LIZ7UC7gLaB//rH1BcqzElqQ50XwhieZpKZSgSKJdX/rV0He
+         /7OA==
+X-Gm-Message-State: AOAM532MseRNluNgpYdh52PiO+UNYyBFn4y/k7yAgZwyXzs+EDAtxcUx
+        5hCdulaJJwEgCQ3qvbRB6IDBePboHmA=
+X-Google-Smtp-Source: ABdhPJx7ARjT91eFlCLTxAhwxckE9bmFVuBIQ/DdJ1rWFJu6ewirNZFae+sNER3RAd3KBVJr45xHfw==
+X-Received: by 2002:adf:ab46:: with SMTP id r6mr15521614wrc.360.1602247899968;
+        Fri, 09 Oct 2020 05:51:39 -0700 (PDT)
+Received: from [192.168.1.82] (host109-152-100-164.range109-152.btcentralplus.com. [109.152.100.164])
+        by smtp.gmail.com with ESMTPSA id z6sm6691940wrs.2.2020.10.09.05.51.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Oct 2020 05:51:39 -0700 (PDT)
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     syzbot <syzbot+77efce558b2b9e6b6405@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+References: <0000000000001a684d05b1385e71@google.com>
+ <3a98a77a-a507-954a-f2ec-e38af18c168f@gmail.com>
+ <20201009121211.GQ20115@casper.infradead.org>
+ <6da35bc9-d072-c18b-2268-15d37fa786df@gmail.com>
+ <20201009123537.GR20115@casper.infradead.org>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ mQINBFmKBOQBEAC76ZFxLAKpDw0bKQ8CEiYJRGn8MHTUhURL02/7n1t0HkKQx2K1fCXClbps
+ bdwSHrhOWdW61pmfMbDYbTj6ZvGRvhoLWfGkzujB2wjNcbNTXIoOzJEGISHaPf6E2IQx1ik9
+ 6uqVkK1OMb7qRvKH0i7HYP4WJzYbEWVyLiAxUj611mC9tgd73oqZ2pLYzGTqF2j6a/obaqha
+ +hXuWTvpDQXqcOZJXIW43atprH03G1tQs7VwR21Q1eq6Yvy2ESLdc38EqCszBfQRMmKy+cfp
+ W3U9Mb1w0L680pXrONcnlDBCN7/sghGeMHjGKfNANjPc+0hzz3rApPxpoE7HC1uRiwC4et83
+ CKnncH1l7zgeBT9Oa3qEiBlaa1ZCBqrA4dY+z5fWJYjMpwI1SNp37RtF8fKXbKQg+JuUjAa9
+ Y6oXeyEvDHMyJYMcinl6xCqCBAXPHnHmawkMMgjr3BBRzODmMr+CPVvnYe7BFYfoajzqzq+h
+ EyXSl3aBf0IDPTqSUrhbmjj5OEOYgRW5p+mdYtY1cXeK8copmd+fd/eTkghok5li58AojCba
+ jRjp7zVOLOjDlpxxiKhuFmpV4yWNh5JJaTbwCRSd04sCcDNlJj+TehTr+o1QiORzc2t+N5iJ
+ NbILft19Izdn8U39T5oWiynqa1qCLgbuFtnYx1HlUq/HvAm+kwARAQABtDFQYXZlbCBCZWd1
+ bmtvdiAoc2lsZW5jZSkgPGFzbWwuc2lsZW5jZUBnbWFpbC5jb20+iQJOBBMBCAA4FiEE+6Ju
+ PTjTbx479o3OWt5b1Glr+6UFAlmKBOQCGwMFCwkIBwIGFQgJCgsCBBYCAwECHgECF4AACgkQ
+ Wt5b1Glr+6WxZA//QueaKHzgdnOikJ7NA/Vq8FmhRlwgtP0+E+w93kL+ZGLzS/cUCIjn2f4Q
+ Mcutj2Neg0CcYPX3b2nJiKr5Vn0rjJ/suiaOa1h1KzyNTOmxnsqE5fmxOf6C6x+NKE18I5Jy
+ xzLQoktbdDVA7JfB1itt6iWSNoOTVcvFyvfe5ggy6FSCcP+m1RlR58XxVLH+qlAvxxOeEr/e
+ aQfUzrs7gqdSd9zQGEZo0jtuBiB7k98t9y0oC9Jz0PJdvaj1NZUgtXG9pEtww3LdeXP/TkFl
+ HBSxVflzeoFaj4UAuy8+uve7ya/ECNCc8kk0VYaEjoVrzJcYdKP583iRhOLlZA6HEmn/+Gh9
+ 4orG67HNiJlbFiW3whxGizWsrtFNLsSP1YrEReYk9j1SoUHHzsu+ZtNfKuHIhK0sU07G1OPN
+ 2rDLlzUWR9Jc22INAkhVHOogOcc5ajMGhgWcBJMLCoi219HlX69LIDu3Y34uIg9QPZIC2jwr
+ 24W0kxmK6avJr7+n4o8m6sOJvhlumSp5TSNhRiKvAHB1I2JB8Q1yZCIPzx+w1ALxuoWiCdwV
+ M/azguU42R17IuBzK0S3hPjXpEi2sK/k4pEPnHVUv9Cu09HCNnd6BRfFGjo8M9kZvw360gC1
+ reeMdqGjwQ68o9x0R7NBRrtUOh48TDLXCANAg97wjPoy37dQE7e5Ag0EWYoE5AEQAMWS+aBV
+ IJtCjwtfCOV98NamFpDEjBMrCAfLm7wZlmXy5I6o7nzzCxEw06P2rhzp1hIqkaab1kHySU7g
+ dkpjmQ7Jjlrf6KdMP87mC/Hx4+zgVCkTQCKkIxNE76Ff3O9uTvkWCspSh9J0qPYyCaVta2D1
+ Sq5HZ8WFcap71iVO1f2/FEHKJNz/YTSOS/W7dxJdXl2eoj3gYX2UZNfoaVv8OXKaWslZlgqN
+ jSg9wsTv1K73AnQKt4fFhscN9YFxhtgD/SQuOldE5Ws4UlJoaFX/yCoJL3ky2kC0WFngzwRF
+ Yo6u/KON/o28yyP+alYRMBrN0Dm60FuVSIFafSqXoJTIjSZ6olbEoT0u17Rag8BxnxryMrgR
+ dkccq272MaSS0eOC9K2rtvxzddohRFPcy/8bkX+t2iukTDz75KSTKO+chce62Xxdg62dpkZX
+ xK+HeDCZ7gRNZvAbDETr6XI63hPKi891GeZqvqQVYR8e+V2725w+H1iv3THiB1tx4L2bXZDI
+ DtMKQ5D2RvCHNdPNcZeldEoJwKoA60yg6tuUquvsLvfCwtrmVI2rL2djYxRfGNmFMrUDN1Xq
+ F3xozA91q3iZd9OYi9G+M/OA01husBdcIzj1hu0aL+MGg4Gqk6XwjoSxVd4YT41kTU7Kk+/I
+ 5/Nf+i88ULt6HanBYcY/+Daeo/XFABEBAAGJAjYEGAEIACAWIQT7om49ONNvHjv2jc5a3lvU
+ aWv7pQUCWYoE5AIbDAAKCRBa3lvUaWv7pfmcEACKTRQ28b1y5ztKuLdLr79+T+LwZKHjX++P
+ 4wKjEOECCcB6KCv3hP+J2GCXDOPZvdg/ZYZafqP68Yy8AZqkfa4qPYHmIdpODtRzZSL48kM8
+ LRzV8Rl7J3ItvzdBRxf4T/Zseu5U6ELiQdCUkPGsJcPIJkgPjO2ROG/ZtYa9DvnShNWPlp+R
+ uPwPccEQPWO/NP4fJl2zwC6byjljZhW5kxYswGMLBwb5cDUZAisIukyAa8Xshdan6C2RZcNs
+ rB3L7vsg/R8UCehxOH0C+NypG2GqjVejNZsc7bgV49EOVltS+GmGyY+moIzxsuLmT93rqyII
+ 5rSbbcTLe6KBYcs24XEoo49Zm9oDA3jYvNpeYD8rDcnNbuZh9kTgBwFN41JHOPv0W2FEEWqe
+ JsCwQdcOQ56rtezdCJUYmRAt3BsfjN3Jn3N6rpodi4Dkdli8HylM5iq4ooeb5VkQ7UZxbCWt
+ UVMKkOCdFhutRmYp0mbv2e87IK4erwNHQRkHUkzbsuym8RVpAZbLzLPIYK/J3RTErL6Z99N2
+ m3J6pjwSJY/zNwuFPs9zGEnRO4g0BUbwGdbuvDzaq6/3OJLKohr5eLXNU3JkT+3HezydWm3W
+ OPhauth7W0db74Qd49HXK0xe/aPrK+Cp+kU1HRactyNtF8jZQbhMCC8vMGukZtWaAwpjWiiH bA==
+Subject: Re: KASAN: use-after-free Read in __io_uring_files_cancel
+Message-ID: <422ab1c5-b347-66a2-66e1-a3fb6b28f6e7@gmail.com>
+Date:   Fri, 9 Oct 2020 15:48:57 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201009143723.45609bfb@coco.lan>
+In-Reply-To: <20201009123537.GR20115@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 02:37:23PM +0200, Mauro Carvalho Chehab wrote:
+On 09/10/2020 15:35, Matthew Wilcox wrote:
+> On Fri, Oct 09, 2020 at 03:28:54PM +0300, Pavel Begunkov wrote:
+>> On 09/10/2020 15:12, Matthew Wilcox wrote:
+>>>> It seems this fails on "node->shift" in xas_next_entry(), that would
+>>>> mean that the node itself was freed while we're iterating on it.
+>>>>
+>>>> __io_uring_files_cancel() iterates with xas_next_entry() and creates
+>>>> XA_STATE once by hand, but it also removes entries in the loop with
+>>>> io_uring_del_task_file() -> xas_store(&xas, NULL); without updating
+>>>> the iterating XA_STATE. Could it be the problem? See a diff below
+>>>
+>>> No, the problem is that the lock is dropped after calling
+>>> xas_next_entry(), and at any point after calling xas_next_entry(),
+>>> the node that it's pointing to can be freed.
+>>
+>> Only the task itself clears/removes entries, others can only insert.
+>> So, could it be freed even though there are no parallel erases?
+> 
+> Not with today's implementation, but that's something that might
+> change in the future.  I agree it's probably the task itself that's
+> deleting the entry and causing the node to be deleted.
 
-> I'm not a mm/ expert, but, from what I understood from Daniel's patch
-> description is that this is unsafe *only if*  __GFP_MOVABLE is used.
+I see, then it looks like I narrowed it down right. But your
+approach is cleaner anyway.
 
-No, it is unconditionally unsafe. The CMA movable mappings are
-specific VMAs that will have bad issues here, but there are other
-types too.
-
-The only way to do something at a VMA level is to have a list of OK
-VMAs, eg because they were creatd via a special mmap helper from the
-media subsystem.
-
-> Well, no drivers inside the media subsystem uses such flag, although
-> they may rely on some infrastructure that could be using it behind
-> the bars.
-
-It doesn't matter, nothing prevents the user from calling media APIs
-on mmaps it gets from other subsystems.
-
-> If this is the case, the proper fix seems to have a GFP_NOT_MOVABLE
-> flag that it would be denying the core mm code to set __GFP_MOVABLE.
-
-We can't tell from the VMA these kinds of details..
-
-It has to go the other direction, evey mmap that might be used as a
-userptr here has to be found and the VMA specially created to allow
-its use. At least that is a kernel only change, but will need people
-with the HW to do this work.
-
-> Please let address the issue on this way, instead of broken an
-> userspace API that it is there since 1991.
-
-It has happened before :( It took 4 years for RDMA to undo the uAPI
-breakage caused by a security fix for something that was a 15 years
-old bug. 
-
-Jason
+-- 
+Pavel Begunkov
