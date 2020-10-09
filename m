@@ -2,149 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D67D2880CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 05:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9E062880D2
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 05:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731566AbgJIDrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 23:47:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47948 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727181AbgJIDrC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 23:47:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602215220;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ux54JNdDdEVnzLVcdf0BICEoj5Z4IXVy7u4NzlDD89k=;
-        b=bp74xLL/4Hifzvm9x//kosmf4/CUjXn1HVFolsqGPivUnfpnMUKAchEwVCztVBELJC6HTw
-        5uxCptHn221RPPiS49nTIYMUv7oc5SWfYuF6c+Z1C2sM+pDCe3FZmvsRMuud7UYOLtRUAB
-        7xIqAc8Y6H12C3M+svJUkiBW0yBUnvo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-399-CF7VmrsZN8Kp6ziGbLQnNw-1; Thu, 08 Oct 2020 23:46:59 -0400
-X-MC-Unique: CF7VmrsZN8Kp6ziGbLQnNw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8679884A61F;
-        Fri,  9 Oct 2020 03:46:57 +0000 (UTC)
-Received: from [10.72.13.133] (ovpn-13-133.pek2.redhat.com [10.72.13.133])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 534906EF63;
-        Fri,  9 Oct 2020 03:46:30 +0000 (UTC)
-Subject: Re: [RFC PATCH 06/24] vhost-vdpa: switch to use vhost-vdpa specific
- IOTLB
-To:     Eli Cohen <elic@nvidia.com>
-Cc:     mst@redhat.com, lulu@redhat.com, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rob.miller@broadcom.com,
-        lingshan.zhu@intel.com, eperezma@redhat.com, hanand@xilinx.com,
-        mhabets@solarflare.com, amorenoz@redhat.com,
-        maxime.coquelin@redhat.com, stefanha@redhat.com,
-        sgarzare@redhat.com
-References: <20200924032125.18619-1-jasowang@redhat.com>
- <20200924032125.18619-7-jasowang@redhat.com>
- <20200930120202.GA229518@mtl-vdi-166.wap.labs.mlnx>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <766420cf-09bc-fb3d-f83b-140f99bfc6e3@redhat.com>
-Date:   Fri, 9 Oct 2020 11:46:28 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200930120202.GA229518@mtl-vdi-166.wap.labs.mlnx>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        id S1731581AbgJIDrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 23:47:09 -0400
+Received: from mga07.intel.com ([134.134.136.100]:45050 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727181AbgJIDrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 23:47:04 -0400
+IronPort-SDR: F077Jr5OoVg0nqG/mvl27ElFGhSYWneGSNjw3OqKq9ZAr2gXQSRt8WKOM1gzpOznCR1ToUWVUe
+ UoZFx6ZKXuTQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="229624611"
+X-IronPort-AV: E=Sophos;i="5.77,353,1596524400"; 
+   d="scan'208";a="229624611"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 20:47:03 -0700
+IronPort-SDR: 8pzXGi/5bXFkGJAoJ22yWbHBmItVfVqSQt2Dh/be408N1Vo/492DiaQeDUwQqik80o7Bw85QBg
+ OCFyiAbwiWZA==
+X-IronPort-AV: E=Sophos;i="5.77,353,1596524400"; 
+   d="scan'208";a="519574637"
+Received: from unknown (HELO rzhang1-mobile) ([10.255.29.238])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 20:46:58 -0700
+Message-ID: <eb8dbbceb2252ebc36e3ed76f7a9efe1612ed2b7.camel@intel.com>
+Subject: Re: [PATCH v2 3/4] powercap: Add AMD Fam17h RAPL support
+From:   Zhang Rui <rui.zhang@intel.com>
+To:     Kim Phillips <kim.phillips@amd.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Victor Ding <victording@google.com>, linux-pm@vger.kernel.org
+Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Vineela Tummalapalli <vineela.tummalapalli@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org
+Date:   Fri, 09 Oct 2020 11:46:55 +0800
+In-Reply-To: <20201007161439.312534-4-kim.phillips@amd.com>
+References: <20201007161439.312534-1-kim.phillips@amd.com>
+         <20201007161439.312534-4-kim.phillips@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 2020-10-07 at 11:14 -0500, Kim Phillips wrote:
+> From: Victor Ding <victording@google.com>
+> 
+> This patch enables AMD Fam17h RAPL support for the power capping
+> framework. The support is as per AMD Fam17h Model31h (Zen2) and
+> model 00-ffh (Zen1) PPR.
+> 
+> Tested by comparing the results of following two sysfs entries and
+> the
+> values directly read from corresponding MSRs via /dev/cpu/[x]/msr:
+>   /sys/class/powercap/intel-rapl/intel-rapl:0/energy_uj
+>   /sys/class/powercap/intel-rapl/intel-rapl:0/intel-
+> rapl:0:0/energy_uj
+> 
+> Signed-off-by: Victor Ding <victording@google.com>
+> Acked-by: Kim Phillips <kim.phillips@amd.com>
+> Cc: Victor Ding <victording@google.com>
+> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+> Cc: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+> Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
+> Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+> Cc: Sean Christopherson <sean.j.christopherson@intel.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Tony Luck <tony.luck@intel.com>
+> Cc: Vineela Tummalapalli <vineela.tummalapalli@intel.com>
+> Cc: LKML <linux-kernel@vger.kernel.org>
+> Cc: linux-pm@vger.kernel.org
+> Cc: x86@kernel.org
+> ---
+> Kim's changes from Victor's original submission:
+> 
+> 
+https://lore.kernel.org/lkml/20200729205144.3.I01b89fb23d7498521c84cfdf417450cbbfca46bb@changeid/
+> 
+>  - Added my Acked-by.
+>  - Added Daniel Lezcano to Cc.
+> 
+>  arch/x86/include/asm/msr-index.h     |  1 +
+>  drivers/powercap/intel_rapl_common.c |  2 ++
+>  drivers/powercap/intel_rapl_msr.c    | 27
+> ++++++++++++++++++++++++++-
+>  3 files changed, 29 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/include/asm/msr-index.h
+> b/arch/x86/include/asm/msr-index.h
+> index f1b24f1b774d..c0646f69d2a5 100644
+> --- a/arch/x86/include/asm/msr-index.h
+> +++ b/arch/x86/include/asm/msr-index.h
+> @@ -324,6 +324,7 @@
+>  #define MSR_PP1_POLICY			0x00000642
+>  
+>  #define MSR_AMD_RAPL_POWER_UNIT		0xc0010299
+> +#define MSR_AMD_CORE_ENERGY_STATUS	0xc001029a
+>  #define MSR_AMD_PKG_ENERGY_STATUS	0xc001029b
+>  
+>  /* Config TDP MSRs */
+> diff --git a/drivers/powercap/intel_rapl_common.c
+> b/drivers/powercap/intel_rapl_common.c
+> index 983d75bd5bd1..6905ccffcec3 100644
+> --- a/drivers/powercap/intel_rapl_common.c
+> +++ b/drivers/powercap/intel_rapl_common.c
+> @@ -1054,6 +1054,8 @@ static const struct x86_cpu_id rapl_ids[]
+> __initconst = {
+>  
+>  	X86_MATCH_INTEL_FAM6_MODEL(XEON_PHI_KNL,	&rapl_defaults_hsw_se
+> rver),
+>  	X86_MATCH_INTEL_FAM6_MODEL(XEON_PHI_KNM,	&rapl_defaults_hsw_se
+> rver),
+> +
+> +	X86_MATCH_VENDOR_FAM(AMD, 0x17, &rapl_defaults_core),
 
-On 2020/9/30 下午8:02, Eli Cohen wrote:
-> On Thu, Sep 24, 2020 at 11:21:07AM +0800, Jason Wang wrote:
->> To ease the implementation of per group ASID support for vDPA
->> device. This patch switches to use a vhost-vdpa specific IOTLB to
->> avoid the unnecessary refactoring of the vhost core.
->>
->> Signed-off-by: Jason Wang <jasowang@redhat.com>
->> ---
->>   drivers/vhost/vdpa.c | 14 ++++++++------
->>   1 file changed, 8 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
->> index 74bef1c15a70..ec3c94f706c1 100644
->> --- a/drivers/vhost/vdpa.c
->> +++ b/drivers/vhost/vdpa.c
->> @@ -40,6 +40,7 @@ struct vhost_vdpa {
->>   	struct vhost_virtqueue *vqs;
->>   	struct completion completion;
->>   	struct vdpa_device *vdpa;
->> +	struct vhost_iotlb *iotlb;
->>   	struct device dev;
->>   	struct cdev cdev;
->>   	atomic_t opened;
->> @@ -514,12 +515,11 @@ static void vhost_vdpa_iotlb_unmap(struct vhost_vdpa *v,
->>   
->>   static void vhost_vdpa_iotlb_free(struct vhost_vdpa *v)
->>   {
->> -	struct vhost_dev *dev = &v->vdev;
->> -	struct vhost_iotlb *iotlb = dev->iotlb;
->> +	struct vhost_iotlb *iotlb = v->iotlb;
->>   
->>   	vhost_vdpa_iotlb_unmap(v, iotlb, 0ULL, 0ULL - 1);
->> -	kfree(dev->iotlb);
->> -	dev->iotlb = NULL;
->> +	kfree(v->iotlb);
->> +	v->iotlb = NULL;
->>   }
->>   
->>   static int perm_to_iommu_flags(u32 perm)
->> @@ -681,7 +681,7 @@ static int vhost_vdpa_process_iotlb_msg(struct vhost_dev *dev,
->>   	struct vhost_vdpa *v = container_of(dev, struct vhost_vdpa, vdev);
->>   	struct vdpa_device *vdpa = v->vdpa;
->>   	const struct vdpa_config_ops *ops = vdpa->config;
->> -	struct vhost_iotlb *iotlb = dev->iotlb;
->> +	struct vhost_iotlb *iotlb = v->iotlb;
->>   	int r = 0;
->>   
->>   	r = vhost_dev_check_owner(dev);
->> @@ -812,12 +812,14 @@ static int vhost_vdpa_open(struct inode *inode, struct file *filep)
->>   
->>   	r = vhost_vdpa_alloc_domain(v);
->>   	if (r)
->> -		goto err_init_iotlb;
->> +		goto err_alloc_domain;
-> You're still using this:
-> dev->iotlb = vhost_iotlb_alloc(0, 0);
->
-> Shouldn't you use
-> v->iotlb = host_iotlb_alloc(0, 0);
->
-> to set the vdpa device iotlb field?
+I double if we can use rapl_defaults_core here.
+
+static const struct rapl_defaults rapl_defaults_core = {
+        .floor_freq_reg_addr = 0,
+        .check_unit = rapl_check_unit_core,
+        .set_floor_freq = set_floor_freq_default,
+        .compute_time_window = rapl_compute_time_window_core,
+};
+
+        .floor_freq_reg_addr = 0,
+is redundant here, even for rapl_defaults_core, we can remove it.
+
+        .check_unit = rapl_check_unit_core,
+the Intel UNIT MSR supports three units including Energy/Power/Time.
+From the change below, only the energy counter is supported, so you may
+need to confirm if all the three units are supported or not.
+
+        .set_floor_freq = set_floor_freq_default,this function sets PL1_CLAMP bit on RAPL_DOMAIN_REG_LIMIT, but RAPL_DOMAIN_REG_LIMIT is not supported on the AMD cpus.
+
+        .compute_time_window = rapl_compute_time_window_core,
+this is used for setting the power limits, which is not supported on
+the AMD cpus.
+
+IMO, it's better to use a new rapl_defaults that contains valid
+callbacks for AMD cpus.
+
+>  	{}
+>  };
+>  MODULE_DEVICE_TABLE(x86cpu, rapl_ids);
+> diff --git a/drivers/powercap/intel_rapl_msr.c
+> b/drivers/powercap/intel_rapl_msr.c
+> index c68ef5e4e1c4..dcaef917f79d 100644
+> --- a/drivers/powercap/intel_rapl_msr.c
+> +++ b/drivers/powercap/intel_rapl_msr.c
+> @@ -48,6 +48,21 @@ static struct rapl_if_priv rapl_msr_priv_intel = {
+>  	.limits[RAPL_DOMAIN_PACKAGE] = 2,
+>  };
+>  
+> +static struct rapl_if_priv rapl_msr_priv_amd = {
+> +	.reg_unit = MSR_AMD_RAPL_POWER_UNIT,
+> +	.regs[RAPL_DOMAIN_PACKAGE] = {
+> +		0, MSR_AMD_PKG_ENERGY_STATUS, 0, 0, 0 },
+> +	.regs[RAPL_DOMAIN_PP0] = {
+> +		0, MSR_AMD_CORE_ENERGY_STATUS, 0, 0, 0 },
+> +	.regs[RAPL_DOMAIN_PP1] = {
+> +		0, 0, 0, 0, 0 },
+> +	.regs[RAPL_DOMAIN_DRAM] = {
+> +		0, 0, 0, 0, 0 },
+> +	.regs[RAPL_DOMAIN_PLATFORM] = {
+> +		0, 0, 0, 0, 0},
+
+I don't think you need to set the PP1/DRAM/PLATFORM registers to 0 explicitly if they are not supported.
+
+> +	.limits[RAPL_DOMAIN_PACKAGE] = 1,
 
 
-Yes, you're right.
+Is Pkg Domain PL1 really supported?
+At least according to this patch, I don't think so. So if power limit
+is supported, it is better to add the support in this patch altogether.
 
-Will fix.
+If no, we're actually exposing energy counters only. If this is the
+case, I'm not sure if it is proper to do this in powercap class because
+we can not do powercap actually. Or at least, if we want to support
+power zones with no power limits, we should enhance the code to
+support this rather than fake a power limit.
 
-Thanks
+thanks,
+rui
+> +};
+> +
+>  /* Handles CPU hotplug on multi-socket systems.
+>   * If a CPU goes online as the first CPU of the physical package
+>   * we add the RAPL package to the system. Similarly, when the last
+> @@ -137,7 +152,17 @@ static int rapl_msr_probe(struct platform_device
+> *pdev)
+>  	const struct x86_cpu_id *id = x86_match_cpu(pl4_support_ids);
+>  	int ret;
+>  
+> -	rapl_msr_priv = &rapl_msr_priv_intel;
+> +	switch (boot_cpu_data.x86_vendor) {
+> +	case X86_VENDOR_INTEL:
+> +		rapl_msr_priv = &rapl_msr_priv_intel;
+> +		break;
+> +	case X86_VENDOR_AMD:
+> +		rapl_msr_priv = &rapl_msr_priv_amd;
+> +		break;
+> +	default:
+> +		pr_err("intel-rapl does not support CPU vendor %d\n",
+> boot_cpu_data.x86_vendor);
+> +		return -ENODEV;
+> +	}
+>  	rapl_msr_priv->read_raw = rapl_msr_read_raw;
+>  	rapl_msr_priv->write_raw = rapl_msr_write_raw;
+>  
 
 
->
->>   
->>   	filep->private_data = v;
->>   
->>   	return 0;
->>   
->> +err_alloc_domain:
->> +	vhost_vdpa_iotlb_free(v);
->>   err_init_iotlb:
->>   	vhost_vdpa_cleanup(v);
->>   err:
->> -- 
->> 2.20.1
->>
+
+IF
+
+
 
