@@ -2,152 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EFAF28867B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 12:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3589228867F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 12:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387434AbgJIKAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 06:00:47 -0400
-Received: from esa3.microchip.iphmx.com ([68.232.153.233]:22548 "EHLO
-        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726357AbgJIKAr (ORCPT
+        id S2387492AbgJIKBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 06:01:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387436AbgJIKBw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 06:00:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1602237647; x=1633773647;
-  h=references:from:to:cc:subject:in-reply-to:date:
-   message-id:mime-version;
-  bh=r2koRF/+FoeVCXIcl1Bvk7ziipf1D2XLPT0qU0KHzDg=;
-  b=2DwIlA0r8iUFKi4mLfbIi6QaGcQU1l3ouWSbnan0dWqEZgoGgJtpRJCJ
-   4fzmt4fl2Y2z6BNz8/MYpu1eBzV7+U/trPXUWT2izMt03hqUD6JO2qUQA
-   gR0+wI+b0P1KnaMMjMEFBx1kLX5pO4hijeie4zI8qtNkmlz3BjHXPjA10
-   hZyd8WbjzhT0OSDoG0+OkwAGDMqUlN0m1eM+CGrwrQeu8GSzRiU93sCSN
-   jJ4q7c0FoRsHWdePPmxiCg67rAf6500qXpVDnHmXejeOFwnGP9x2KT14+
-   Qu+fyEw2fZJaa8zHuCAMHwJocpWPJKMR9RFI2A36hvJDWeq5DEQVFdxD0
-   w==;
-IronPort-SDR: ghWz0aIj1uzQaobiv50hrQZfGc7IJ/f3PL3i5LQhDEys5XsFRlnrIi+7kZiLbnd5AXjfDmE9rd
- YP6MzHCBmQmwy34XgxJyQ3Cp7nVWPiWIq+UFYwMLkuS6PF+XxEeoQa55iAMKRibOlYdeEXoj+E
- 0LbBvOhIqnHAGP424wZyndTw4SIFxAEUnZQZ/LdIBnHu7RuwL048bURNrCP+xXNmq+LGGgiWf0
- ssgBmBPG2Sb1rTegMzMayw69szmZd2+W70iXF7OSDVlYpOy/h13L11Y1bM/Meq0PLl1xB09gj5
- FSY=
-X-IronPort-AV: E=Sophos;i="5.77,354,1596524400"; 
-   d="scan'208";a="94773622"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 09 Oct 2020 03:00:46 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 9 Oct 2020 03:00:46 -0700
-Received: from soft-dev15.microsemi.net.microchip.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
- via Frontend Transport; Fri, 9 Oct 2020 03:00:12 -0700
-References: <20201008130515.2385825-1-lars.povlsen@microchip.com> <20201008130515.2385825-2-lars.povlsen@microchip.com> <CACRpkdaFYoXFUuWow5s9TitrRDhMW=wiaxgfMcY6sQkYYgC-Lw@mail.gmail.com>
-From:   Lars Povlsen <lars.povlsen@microchip.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-CC:     Lars Povlsen <lars.povlsen@microchip.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: Re: [PATCH v5 1/3] dt-bindings: pinctrl: Add bindings for pinctrl-microchip-sgpio driver
-In-Reply-To: <CACRpkdaFYoXFUuWow5s9TitrRDhMW=wiaxgfMcY6sQkYYgC-Lw@mail.gmail.com>
-Date:   Fri, 9 Oct 2020 12:00:43 +0200
-Message-ID: <87d01ryb04.fsf@soft-dev15.microsemi.net>
+        Fri, 9 Oct 2020 06:01:52 -0400
+Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CC25C0613D6
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 03:01:52 -0700 (PDT)
+Received: by mail-oo1-xc44.google.com with SMTP id o20so2240212ook.1
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 03:01:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ftHJzNt4bERnNP+SIXIGo56JCvpL8TcP22nYSQKOV5k=;
+        b=UzMeV+rwKkunQlHgHNSlVY990btw6GRORlFmsAYBx1gPA8SEXpEqpXIa8uGJFLzTQw
+         b8BMC7q8QXr1fDrrdZMhmylgPVoMLs2HnzRpCUYwl2q2F4u0Dr/m3fS3LlJ3o6+Ejdce
+         Wcj4zRQKhHrsGCyXRc5pfd4UfW1pvcEdIaWfc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ftHJzNt4bERnNP+SIXIGo56JCvpL8TcP22nYSQKOV5k=;
+        b=kkSbDjhCSS5KHEtFO9z33NqJYgDR3DD6ZPKOAsBKuELACJgRPg70AtcBJ4Od/5iP34
+         yr+MvYrElkkM24MGG0IsNHHR1CV9bhB9EHcS7x20+8nVdDEu1PF5klb5uAWUqFhPpdFN
+         kLwwgAi4XHtznpi3+SSl9VtD77tzhQBJAzET+Cj2IX/nw+8iRAW6oJI0JamTNKZNInOg
+         XV7/o5yJ95q/oa7kia/8vrQN2VmQhQfBm59eRIQDmDcqqZDvGnjZziMeIQxfNP5n5E8g
+         Uetv8yYUUMNaR4j0N/ALqC33L+ZTGVFnY7gBHf3OskTyC2elaTKKYVCemIh4AsHffxmA
+         G1Vw==
+X-Gm-Message-State: AOAM530f5GnBYZA5w8eZecJbkTwdY5qtcffUASzlg+v27+AJxXQwh5Vy
+        UhqA9q0WzOw9uFo2iIc22mYrNPSYnaa/3buvZlwmqg==
+X-Google-Smtp-Source: ABdhPJyck/sz2r8nAE1vOQ+mmU8ZRo9mJI1evvAL5G2Nq41icTgyJhGztZHNyIlc3HZk+r5jBb8vWdtCG7CV4AmWN/U=
+X-Received: by 2002:a4a:e592:: with SMTP id o18mr8337874oov.28.1602237711175;
+ Fri, 09 Oct 2020 03:01:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201009075934.3509076-1-daniel.vetter@ffwll.ch>
+ <20201009075934.3509076-18-daniel.vetter@ffwll.ch> <20201009094750.GQ6112@intel.com>
+In-Reply-To: <20201009094750.GQ6112@intel.com>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Fri, 9 Oct 2020 12:01:39 +0200
+Message-ID: <CAKMK7uH3o3hnRkTDqr93PR=wuRejpty+AbyMacoEFDDb6OgJeQ@mail.gmail.com>
+Subject: Re: [PATCH v2 17/17] drm/i915: Properly request PCI BARs
+To:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Kees Cook <keescook@chromium.org>,
+        KVM list <kvm@vger.kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Linus Walleij writes:
-
-> Hi Lars!
+On Fri, Oct 9, 2020 at 11:47 AM Ville Syrj=C3=A4l=C3=A4
+<ville.syrjala@linux.intel.com> wrote:
 >
-> This is overall looking fine. Except for the 3 cell business. I just can't
-> wrap my head around why that is needed.
+> On Fri, Oct 09, 2020 at 09:59:34AM +0200, Daniel Vetter wrote:
+> > When trying to test my CONFIG_IO_STRICT_DEVMEM changes I realized they
+> > do nothing for i915. Because i915 doesn't request any regions, like
+> > pretty much all drm pci drivers. I guess this is some very old
+> > remnants from the userspace modesetting days, when we wanted to
+> > co-exist with the fbdev driver. Which usually requested these
+> > resources.
+> >
+> > But makes me wonder why the pci subsystem doesn't just request
+> > resource automatically when we map a bar and a pci driver is bound?
+> >
+> > Knowledge about which pci bars we need kludged together from
+> > intel_uncore.c and intel_gtt.c from i915 and intel-gtt.c over in the
+> > fake agp driver.
+> >
+> > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> > Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> > Cc: Kees Cook <keescook@chromium.org>
+> > Cc: Dan Williams <dan.j.williams@intel.com>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: John Hubbard <jhubbard@nvidia.com>
+> > Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
+> > Cc: Jan Kara <jack@suse.cz>
+> > Cc: Dan Williams <dan.j.williams@intel.com>
+> > Cc: linux-mm@kvack.org
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > Cc: linux-samsung-soc@vger.kernel.org
+> > Cc: linux-media@vger.kernel.org
+> > Cc: Bjorn Helgaas <bhelgaas@google.com>
+> > Cc: linux-pci@vger.kernel.org
+> > ---
+> >  drivers/gpu/drm/i915/intel_uncore.c | 25 +++++++++++++++++++++++--
+> >  1 file changed, 23 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/i915/intel_uncore.c b/drivers/gpu/drm/i915=
+/intel_uncore.c
+> > index 54e201fdeba4..ce39049d8919 100644
+> > --- a/drivers/gpu/drm/i915/intel_uncore.c
+> > +++ b/drivers/gpu/drm/i915/intel_uncore.c
+> > @@ -1692,10 +1692,13 @@ static int uncore_mmio_setup(struct intel_uncor=
+e *uncore)
+> >       struct pci_dev *pdev =3D i915->drm.pdev;
+> >       int mmio_bar;
+> >       int mmio_size;
+> > +     int bar_selection;
 >
-> On Thu, Oct 8, 2020 at 3:05 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
+> Signed bitmasks always make me uneasy. But looks like
+> that's what it is in the pci api. So meh.
+
+Yeah it's surprising.
+
+> > +     int ret;
+> >
+> >       mmio_bar =3D IS_GEN(i915, 2) ? 1 : 0;
+> > +     bar_selection =3D BIT (2) | BIT(mmio_bar);
+>                            ^
+> spurious space
 >
->> +      '#gpio-cells':
->> +        const: 3
+> That's also not correct for gen2 I think.
 >
-> So at the very least needs a description making it crystal clear why each
-> cell is needed, and used for since the standard bindings are not used.
+> gen2:
+> 0 =3D GMADR
+> 1 =3D MMADR
+> 2 =3D IOBAR
 >
-> +      sgpio_in2: gpio@0 {
-> +        reg = <0>;
-> +        compatible = "microchip,sparx5-sgpio-bank";
-> +        gpio-controller;
-> +        #gpio-cells = <3>;
-> +        ngpios = <96>;
-> +      };
+> gen3:
+> 0 =3D MMADR
+> 1 =3D IOBAR
+> 2 =3D GMADR
+> 3 =3D GTTADR
 >
-> So here reg = 0 and the out port has reg 1. Isn't that what you also put
-> in the second cell of the GPIO phandle? Then why? The driver
-> can very well just parse its own reg property and fill that in.
+> gen4+:
+> 0+1 =3D GTTMMADR
+> 2+3 =3D GMADR
+> 4 =3D IOBAR
+>
+> Maybe we should just have an explicit list of bars like that in a
+> comment?
+>
+> I'd also suggest sucking this bitmask calculation into a small helper
+> so you can reuse it for the release.
 
-Linus,
+tbh I just hacked this up for testing. Given how almost no other drm
+driver does this, I'm wondering whether we should or not.
 
-NO! The second cell is the second dimension - NOT the direction. As I
-wrote previously, the direction is now inherent from the handle, ie. the
-"reg" value of the handle.
+Also the only reason why I didn't just use the pci_request_regions
+helper is to avoid the vga ioport range, since that's managed by
+vgaarbiter.
 
-The hardware describe a "port" and a "bit index" addressing, where the
-second cell in
+So I think if we go for this for real we should:
+- register the vga ioport range in the vgaarbiter
+- have a pci_request_iomem_regions helper that grabs all mem bars
+- roll that out to all drm pci drivers
 
-  gpios = <&sgpio_in2 11 0 GPIO_OUT_LOW>;
-
-is the "bit index" - not the "reg" from the phandle.
-
-In the example above, note
-
-  ngpios = <96>;
-
-As the "port" is [0; 31], this defines "bit index" to be [0; 2], so the
-(input) GPIO cells will be:
-
-p0b0, p0b1, p0b2
-...
-p31b0, p31b1, p31b2 
-
-being identical to 
-
-<&sgpio_inX 0 0 GPIO_OUT_LOW>
-<&sgpio_inX 0 1 GPIO_OUT_LOW>
-<&sgpio_inX 0 2 GPIO_OUT_LOW>
-...
-<&sgpio_inX 31 0 GPIO_OUT_LOW>
-<&sgpio_inX 31 1 GPIO_OUT_LOW>
-<&sgpio_inX 31 2 GPIO_OUT_LOW>
-
-('X' being the SGPIO controller instance).
-
-So no, there *really* is a need for a 3-cell GPIO specifier (or whatever
-its called).
-
-Hope this is clearer now...
-
----Lars
+Or something like that. The other complication is when we resize the
+iobar. So not really sure what to do here.
+-Daniel
 
 >
-> When you obtain a phandle like that:
+> >       /*
+> > -      * Before gen4, the registers and the GTT are behind different BA=
+Rs.
+> > +      * On gen3 the registers and the GTT are behind different BARs.
+> >        * However, from gen4 onwards, the registers and the GTT are shar=
+ed
+> >        * in the same BAR, so we want to restrict this ioremap from
+> >        * clobbering the GTT which we want ioremap_wc instead. Fortunate=
+ly,
+> > @@ -1703,6 +1706,8 @@ static int uncore_mmio_setup(struct intel_uncore =
+*uncore)
+> >        * generations up to Ironlake.
+> >        * For dgfx chips register range is expanded to 4MB.
+> >        */
+> > +     if (INTEL_GEN(i915) =3D=3D 3)
+> > +             bar_selection |=3D BIT(3);
+> >       if (INTEL_GEN(i915) < 5)
+> >               mmio_size =3D 512 * 1024;
+> >       else if (IS_DGFX(i915))
+> > @@ -1710,8 +1715,15 @@ static int uncore_mmio_setup(struct intel_uncore=
+ *uncore)
+> >       else
+> >               mmio_size =3D 2 * 1024 * 1024;
+> >
+> > +     ret =3D pci_request_selected_regions(pdev, bar_selection, "i915")=
+;
+> > +     if (ret < 0) {
+> > +             drm_err(&i915->drm, "failed to request pci bars\n");
+> > +             return ret;
+> > +     }
+> > +
+> >       uncore->regs =3D pci_iomap(pdev, mmio_bar, mmio_size);
+> >       if (uncore->regs =3D=3D NULL) {
+> > +             pci_release_selected_regions(pdev, bar_selection);
+> >               drm_err(&i915->drm, "failed to map registers\n");
+> >               return -EIO;
+> >       }
+> > @@ -1721,9 +1733,18 @@ static int uncore_mmio_setup(struct intel_uncore=
+ *uncore)
+> >
+> >  static void uncore_mmio_cleanup(struct intel_uncore *uncore)
+> >  {
+> > -     struct pci_dev *pdev =3D uncore->i915->drm.pdev;
+> > +     struct drm_i915_private *i915 =3D uncore->i915;
+> > +     struct pci_dev *pdev =3D i915->drm.pdev;
+> > +     int mmio_bar;
+> > +     int bar_selection;
+> > +
+> > +     mmio_bar =3D IS_GEN(i915, 2) ? 1 : 0;
+> > +     bar_selection =3D BIT (2) | BIT(mmio_bar);
+> > +     if (INTEL_GEN(i915) =3D=3D 3)
+> > +             bar_selection |=3D BIT(3);
+> >
+> >       pci_iounmap(pdev, uncore->regs);
+> > +     pci_release_selected_regions(pdev, bar_selection);
+> >  }
+> >
+> >  void intel_uncore_init_early(struct intel_uncore *uncore,
+> > --
+> > 2.28.0
+> >
+> > _______________________________________________
+> > dri-devel mailing list
+> > dri-devel@lists.freedesktop.org
+> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
 >
-> gpios = <&sgpio_in2 11 0 GPIO_OUT_LOW>;
->
-> Isn't that 0 just duplicating the "reg"? Just parse reg when you set up
-> your driver state and put it as variable in the state container for your
-> driver state for this particular gpio_chip. No need to get it from
-> the phandle.
->
-> Yours,
-> Linus Walleij
+> --
+> Ville Syrj=C3=A4l=C3=A4
+> Intel
 
--- 
-Lars Povlsen,
-Microchip
+
+
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
