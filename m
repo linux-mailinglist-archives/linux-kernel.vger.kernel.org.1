@@ -2,129 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE2F289C35
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 01:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1A21289C3B
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 01:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728268AbgJIXqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 19:46:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54120 "EHLO
+        id S1728446AbgJIXwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 19:52:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728004AbgJIXka (ORCPT
+        with ESMTP id S1727481AbgJIXk7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 19:40:30 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01DDFC0613D2;
-        Fri,  9 Oct 2020 16:40:12 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id f19so8131848pfj.11;
-        Fri, 09 Oct 2020 16:40:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MQ0KpWnDNeVxw8ddnKLR7x7PrOHy9mrx1gHHEVR4YTk=;
-        b=hDmBTJvLU+MIdtrIERvGrZtc+8C0P9oZrj1hYTssasKwOlKfF6VIa9dbL0mgxWU9w9
-         1+b5srOqfK9+VBMHs+kNLk3kQP8fhH/xwuJohUlgZF4iKjas0F8Mdam3nDoIk5i8Wts7
-         6Ney0/ge19sTB785apk8kXZpnEHrUyXocc6qIXmhJN6ZHN6xPXAPq2AY2PcW5rg+H2tj
-         d827grvw4cHpteJ9p0wKAaFYYvLIAtHTlETEK4Tc8JcH8FAyzhcWDRJwyCEY0p8VeuDj
-         JOa+o+Dg5+/hq+bcq4JNCjgzVcPUfEBaLy53AZXyougFBlMb8p7V7hhFRDvg2hcVGyuO
-         UWNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MQ0KpWnDNeVxw8ddnKLR7x7PrOHy9mrx1gHHEVR4YTk=;
-        b=ND92xUal7cUl2sBMtQowEWWyhwr0L3H+CK7pOfMtZlMpjKt5p1EQTBfGSdMhJ41ewy
-         8DbbMoeIrJ4IZBoqaRKGSBpXn54UhJCSQ7tfc+ulbtUPayC0QRMUALgqzeHyg8CnG/ku
-         4nDD48o7tO19oVal7cnp6O4IGoOCE92w337V+qv7ca8W53bS7yWsTUnt8IBVaUnJTENp
-         Aymxz0yGq9YS5dUpcok7WRcWpXAk9toSy+I0+Wfxwjg4Kis9ues/bb1I6ifeEGNFSbLE
-         b8Kw8lJEp6sWsLrmqaEiZvEAtTdnNIukmT6o0SSJZqDjDvM3kCc/RnttCjzBWx3wCzd7
-         AsvA==
-X-Gm-Message-State: AOAM531cdNreXd8LUmKpQ8Q7r2PvXVwlGkFAeL8W6pDL2ujFo/LKwFrx
-        p8hgKsiwabYfi7rD5wzdbIw=
-X-Google-Smtp-Source: ABdhPJwFQIBy/uYMt1NSfSfYgTEXiSJCzmSoTmkhClRQ3AbICj+NmlbuQ/4Npd8rPY1ODaGP3HOLnw==
-X-Received: by 2002:a17:90a:a394:: with SMTP id x20mr7043686pjp.213.1602286811513;
-        Fri, 09 Oct 2020 16:40:11 -0700 (PDT)
-Received: from [10.230.29.112] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id jx17sm12684399pjb.10.2020.10.09.16.40.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Oct 2020 16:40:10 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] usb: Add driver to allow any GPIO to be used for
- 7211 USB signals
-To:     Al Cooper <alcooperx@gmail.com>, linux-kernel@vger.kernel.org
-Cc:     bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-usb@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>
-References: <20201009190839.12612-1-alcooperx@gmail.com>
- <20201009190839.12612-3-alcooperx@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <134cbb66-6d46-bef5-fa4c-eeae78ec1b53@gmail.com>
-Date:   Fri, 9 Oct 2020 16:40:08 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.3.2
+        Fri, 9 Oct 2020 19:40:59 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04D18C0613D5;
+        Fri,  9 Oct 2020 16:40:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=c16hDea0Ubs5mAeuNDwrNNrLUpa7/zEsF/YXj/C0m1o=; b=C2S1Ayo8BnoSBhREoBkfbtTMGH
+        XB0qFPNUm1VjvcsRjyBC3fCuv7Yc1PVME5ercXezFEBkaeLCg7ubWRP3tPFZDWPFikSTzSF2FbOXp
+        gi1fDqg+ZVGvO3KQO/Ek5gnsUL5QPnYoR0uAEp39ZT5MLcpgn3pUA8WqZDZUzEt4xseng5o9zqCc3
+        cVYqJkoLa/N8uTuCgUs//eh6thTYLnmQ+2qwaIjmwH1BxWwMt/ZQ2S14HUpGCZMJxTly2Iih1swxg
+        22KnpAbgVOVQOTIsBB7CwowpZJfYSgBSps2/yRGdfxhThqU4pSTslKf3g4GBuckjYVMh3yNUpkEiV
+        R0xXdRsg==;
+Received: from [2601:1c0:6280:3f0::507c]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kR202-0001hb-TK; Fri, 09 Oct 2020 23:40:35 +0000
+Subject: Re: [PATCH] i2c: i2c-mux-gpio: Enable this driver in ACPI land
+To:     Evan Green <evgreen@chromium.org>, Peter Rosin <peda@axentia.se>
+Cc:     Wolfram Sang <wsa@kernel.org>,
+        Peter Korsgaard <peter.korsgaard@barco.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201009154235.1.Idef164c23d326f5e5edecfc5d3eb2a68fcf18be1@changeid>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <5aaa5dca-9f71-1b25-d02c-2a6be44fdae0@infradead.org>
+Date:   Fri, 9 Oct 2020 16:40:30 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201009190839.12612-3-alcooperx@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201009154235.1.Idef164c23d326f5e5edecfc5d3eb2a68fcf18be1@changeid>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/9/2020 12:08 PM, Al Cooper wrote:
-> The Broadcom 7211 has new functionality that allows some USB low
-> speed side band signals, that go from the XHCI host controller to
-> pins on the chip, to be remapped to use any GPIO pin instead of the
-> limited set selectable by hardware. This can be done without changing
-> the standard driver for the host controller. There is currently
-> support for three USB signals, PWRON, VBUS_PRESENT and PWRFLT. This
-> driver will allow the remapping of any of these three signals based
-> on settings in the Device Tree node for the driver. The driver was
-> written so that it could handle additional signals added in the
-> future by just adding the correct properties to the DT node.
+On 10/9/20 3:43 PM, Evan Green wrote:
+> Enable i2c-mux-gpio devices to be defined via ACPI. The idle-state
+> property translates directly to a fwnode_property_*() call. The child
+> reg property translates naturally into _ADR in ACPI.
 > 
-> Below is an example of a DT node that would remap all three
-> signals:
+> The i2c-parent is a little trickier, since of's phandle definition
+> suggests the i2c mux could live in a completely different part of
+> the tree than its upstream i2c controller. For now in ACPI,
+> just assume that the i2c-mux-gpio device will always be a direct
+> child of the i2c controller. If the additional flexibility of
+> defining muxes in wildly different locations from their parent
+> controllers is required, it can be added later.
 > 
-> usb_pinmap: usb-pinmap@22000d0 {
-> 	compatible = "brcm,usb-pinmap";
-> 	reg = <0x22000d0 0x4>;
-> 	in-gpios = <&gpio 18 0>, <&gpio 19 0>;
-> 	brcm,in-functions = "VBUS", "PWRFLT";
-> 	brcm,in-masks = <0x8000 0x40000 0x10000 0x80000>;
-> 	out-gpios = <&gpio 20 0>;
-> 	brcm,out-functions = "PWRON";
-> 	brcm,out-masks = <0x20000 0x800000 0x400000 0x200000>;
-> 	interrupts = <0x0 0xb2 0x4>;
-> };
-> 
-> Signed-off-by: Al Cooper <alcooperx@gmail.com>
+> Signed-off-by: Evan Green <evgreen@chromium.org>
 > ---
-
-[snip]
-
-> +config BRCM_USB_PINMAP
-> +	tristate "Broadcom pinmap driver support"
-> +	depends on (ARCH_BRCMSTB && PHY_BRCM_USB) || COMPILE_TEST
-> +	default y if (ARCH_BRCMSTB && PHY_BRCM_USB)
-
-default ARCH_BRCMSTB && PHY_BRCM_USB should work as well.
-
-
-> +static int __init brcmstb_usb_pinmap_init(void)
-> +{
-> +	return platform_driver_probe(&brcmstb_usb_pinmap_driver,
-> +				     brcmstb_usb_pinmap_probe);
-> +}
+> 
+>  drivers/i2c/muxes/i2c-mux-gpio.c | 77 +++++++++++++++++++++-----------
+>  1 file changed, 50 insertions(+), 27 deletions(-)
+> 
+> diff --git a/drivers/i2c/muxes/i2c-mux-gpio.c b/drivers/i2c/muxes/i2c-mux-gpio.c
+> index 4effe563e9e8d..f195e95e8a037 100644
+> --- a/drivers/i2c/muxes/i2c-mux-gpio.c
+> +++ b/drivers/i2c/muxes/i2c-mux-gpio.c
+> @@ -49,34 +49,46 @@ static int i2c_mux_gpio_deselect(struct i2c_mux_core *muxc, u32 chan)
+>  	return 0;
+>  }
+>  
+> -#ifdef CONFIG_OF
+> -static int i2c_mux_gpio_probe_dt(struct gpiomux *mux,
+> -					struct platform_device *pdev)
+> +static int i2c_mux_gpio_probe_fw(struct gpiomux *mux,
+> +				 struct platform_device *pdev)
+>  {
+> -	struct device_node *np = pdev->dev.of_node;
+> -	struct device_node *adapter_np, *child;
+> -	struct i2c_adapter *adapter;
+> +	struct device *dev = &pdev->dev;
+> +	struct device_node *np = dev->of_node;
+> +	acpi_handle dev_handle;
+> +	struct device_node *adapter_np;
+> +	struct i2c_adapter *adapter = NULL;
+> +	struct fwnode_handle *child = NULL;
+>  	unsigned *values;
+>  	int i = 0;
+>  
+> -	if (!np)
+> -		return -ENODEV;
+> +	if (is_of_node(dev->fwnode)) {
+> +		if (!np)
+> +			return -ENODEV;
+>  
+> -	adapter_np = of_parse_phandle(np, "i2c-parent", 0);
+> -	if (!adapter_np) {
+> -		dev_err(&pdev->dev, "Cannot parse i2c-parent\n");
+> -		return -ENODEV;
+> +		adapter_np = of_parse_phandle(np, "i2c-parent", 0);
+> +		if (!adapter_np) {
+> +			dev_err(&pdev->dev, "Cannot parse i2c-parent\n");
+> +			return -ENODEV;
+> +		}
+> +		adapter = of_find_i2c_adapter_by_node(adapter_np);
+> +		of_node_put(adapter_np);
 > +
-> +module_init(brcmstb_usb_pinmap_init);
+> +	} else if (is_acpi_node(dev->fwnode)) {
+> +		/*
+> +		 * In ACPI land the mux should be a direct child of the i2c
+> +		 * bus it muxes.
+> +		 */
+> +		dev_handle = ACPI_HANDLE(dev->parent);
+> +		adapter = i2c_acpi_find_adapter_by_handle(dev_handle);
+>  	}
+> -	adapter = of_find_i2c_adapter_by_node(adapter_np);
+> -	of_node_put(adapter_np);
+> +
+>  	if (!adapter)
+>  		return -EPROBE_DEFER;
+>  
+>  	mux->data.parent = i2c_adapter_id(adapter);
+>  	put_device(&adapter->dev);
+>  
+> -	mux->data.n_values = of_get_child_count(np);
+> -
+> +	mux->data.n_values = device_get_child_node_count(dev);
+>  	values = devm_kcalloc(&pdev->dev,
+>  			      mux->data.n_values, sizeof(*mux->data.values),
+>  			      GFP_KERNEL);
+> @@ -85,24 +97,35 @@ static int i2c_mux_gpio_probe_dt(struct gpiomux *mux,
+>  		return -ENOMEM;
+>  	}
+>  
+> -	for_each_child_of_node(np, child) {
+> -		of_property_read_u32(child, "reg", values + i);
+> +	device_for_each_child_node(dev, child) {
+> +		if (is_of_node(child)) {
+> +			fwnode_property_read_u32(child, "reg", values + i);
+> +
+> +		} else if (is_acpi_node(child)) {
+> +			unsigned long long adr;
+> +			acpi_status status;
+> +
+> +			status = acpi_evaluate_integer(ACPI_HANDLE_FWNODE(child),
+> +						       METHOD_NAME__ADR,
+> +						       NULL, &adr);
+> +			if (ACPI_SUCCESS(status)) {
+> +				*(values + i) = adr;
+> +
+> +			} else {
+> +				dev_err(dev, "Cannot get address");
+> +				return -EINVAL;
+> +			}
+> +		}
+> +
+>  		i++;
+>  	}
+>  	mux->data.values = values;
+>  
+> -	if (of_property_read_u32(np, "idle-state", &mux->data.idle))
+> +	if (fwnode_property_read_u32(dev->fwnode, "idle-state", &mux->data.idle))
+>  		mux->data.idle = I2C_MUX_GPIO_NO_IDLE;
+>  
+>  	return 0;
+>  }
+> -#else
+> -static int i2c_mux_gpio_probe_dt(struct gpiomux *mux,
+> -					struct platform_device *pdev)
+> -{
+> -	return 0;
+> -}
+> -#endif
+>  
+>  static int i2c_mux_gpio_probe(struct platform_device *pdev)
+>  {
+> @@ -118,7 +141,7 @@ static int i2c_mux_gpio_probe(struct platform_device *pdev)
+>  		return -ENOMEM;
+>  
+>  	if (!dev_get_platdata(&pdev->dev)) {
+> -		ret = i2c_mux_gpio_probe_dt(mux, pdev);
+> +		ret = i2c_mux_gpio_probe_fw(mux, pdev);
+>  		if (ret < 0)
+>  			return ret;
+>  	} else {
+> 
 
-You would need MODULE_AUTHOR(), LICENSE and DESCRIPTION() in case you 
-make this modular.
+Hi,
+
+
+When CONFIG_ACPI is not enabled:
+
+../drivers/i2c/muxes/i2c-mux-gpio.c: In function ‘i2c_mux_gpio_probe_fw’:
+../drivers/i2c/muxes/i2c-mux-gpio.c:108:13: error: implicit declaration of function ‘acpi_evaluate_integer’; did you mean ‘acpi_evaluate_object’? [-Werror=implicit-function-declaration]
+    status = acpi_evaluate_integer(ACPI_HANDLE_FWNODE(child),
+
 
 -- 
-Florian
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
