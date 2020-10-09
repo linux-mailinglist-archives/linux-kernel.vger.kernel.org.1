@@ -2,98 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E15D0289228
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 21:47:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A34F28922B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 21:48:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732579AbgJITrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 15:47:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52922 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729280AbgJITrz (ORCPT
+        id S1733282AbgJITsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 15:48:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726357AbgJITsN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 15:47:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602272874;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=lgXKGmJY8FuTXCXdpAoSLX4NBWkvEFcm38oteYITDlM=;
-        b=B/PrO2PP8cZgrPiIkUU3nlbGGnHQo87k6YMmSm3fcqgV0rVK20m5IrfThZGhIFXCle82Cx
-        8xS1KgEG3vfyoyxT/G3FHPMeSvEcbsBAC4+to03y4F6w7ER4OKiQkWVcw9y0e6Jteg2xgF
-        cxou2MHUiuhhO+p8we5y53BmZe9VAyA=
-Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com
- [209.85.161.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-372-jpYKowfDPlGdEG6AFjW4ag-1; Fri, 09 Oct 2020 15:47:44 -0400
-X-MC-Unique: jpYKowfDPlGdEG6AFjW4ag-1
-Received: by mail-oo1-f69.google.com with SMTP id g13so4453243ooo.20
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 12:47:44 -0700 (PDT)
+        Fri, 9 Oct 2020 15:48:13 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F453C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 12:48:13 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id a200so7715101pfa.10
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 12:48:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=H/2rA06sg5FxkAp5yy9qiPPIMqv8IB6ptWM+AFeYLtM=;
+        b=mzONLCWrhGPIbzbk9DDu33FPaLeeX7j1uDjZ/xIU3mkHpUuWFhmW25c5WKrvtj/44W
+         R+R+IyPQm/flAmAoeFchAQh/6PjBjCn40lv7rb/+i0GoG077SZF06xTDe2IUWUapEFzm
+         MhOvp017WcuTqJsE57YGzdHiCWyu2EGu2pqiGqTaVDnXRtByCzT6pMc1G/5bYbj7ZCDx
+         RI26XqbBaTGwnw+NACd6WT/xyjdXl0ozH58L0Pq7F5cEBlQPwsC8qLqGwxDBQHPDpfKi
+         plZJMYyidLhyTevl5MckygIo8oHOocjCCPWiL95I3lESLYHC2Ydum5JF0z5qLMqpIh+u
+         wciA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=lgXKGmJY8FuTXCXdpAoSLX4NBWkvEFcm38oteYITDlM=;
-        b=NNGqYf+C3xCAVDmEA9inCtVo1PcFYLJrNlSgV9oYuec23omPkHfRhtauFYjwaGFz9A
-         1fTHJ4W9hExGX7q6EJFr3CXIlvLlq1IdNUVqTF6XvcwV6rgVgOlDQ9H9cBERASK5P7Wz
-         lxdGgBQ5niMEYJ53rskG7aWu2nEh7q5ausRocyDlpjVghwZBj75+3BZS4rDpHnjkvv93
-         /+1lCh21w2l0DkWogwAoEhzhL1BAtnkVmd2O3f8NkaxiXQ+fzzEY2Zoku0AK0FZjwYLY
-         WoAPMByJEsxipNBzpK+AG9saPC7bWbZ+NHkXXdedInJvo8zOVJO1hWt+nH5UTeaV3iE1
-         e45A==
-X-Gm-Message-State: AOAM531BnYnPw/UEE4n7/7ioN9CFuj3ScjK/NHXc9D6DOXmk0nLjQhJE
-        Rcl6JV1XyAGASHCJpg/PzOpBpyh2aaU5NCgiY0rEnTHlWsfhGT93lD5XR4BIegSmYFN83O364lU
-        3dnX/XMrSJm23IAynXuLpdLut
-X-Received: by 2002:a4a:e08a:: with SMTP id w10mr10404069oos.18.1602272863906;
-        Fri, 09 Oct 2020 12:47:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxQflYEfbzuxtLITg+Up9jg2c8kNCLAPz8wTSQCn0w7U0e6jYxqCjicPoPfd05rsY6eO5cFCQ==
-X-Received: by 2002:a4a:e08a:: with SMTP id w10mr10404056oos.18.1602272863697;
-        Fri, 09 Oct 2020 12:47:43 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id s20sm8164861oot.15.2020.10.09.12.47.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 12:47:43 -0700 (PDT)
-From:   trix@redhat.com
-To:     dave@stgolabs.net, paulmck@kernel.org, josh@joshtriplett.org,
-        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, joel@joelfernandes.org,
-        natechancellor@gmail.com, ndesaulniers@google.com
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        clang-built-linux@googlegroups.com, Tom Rix <trix@redhat.com>
-Subject: [PATCH] rcutorture: remove unneeded check
-Date:   Fri,  9 Oct 2020 12:47:36 -0700
-Message-Id: <20201009194736.2364-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=H/2rA06sg5FxkAp5yy9qiPPIMqv8IB6ptWM+AFeYLtM=;
+        b=ikzMZgJ02wolmMu442v6UDP06DkeqOtzbEbPQrtkVdAOgcguwEVM+HW6UhxyeRkwNG
+         tRxlwZWTmyvp9PDm4Bb4fZhF751iR3tX9dY3Y+kPIeLHrs2EnphGxJvFjQwJ3JK1gOtn
+         9owbLAfAwX9LRkvUiwgNY8Rfp3YQ42H+X0VWllP5hSs/KpV3Xh8Ixg/aY1AFfZf7uvPp
+         7VdRbB/30XBFgE7KN/aVKfqzbWalrN8PJ7tSR3hTgJ+i4uNzFNN5LUuFOds4NeO5aWSe
+         XXfNm0+4rvG3yQZR7KSl/zMwxAX4H7mrpSVb3uHkEWLakRdUNMjVMr2bWrLMq9dXaN59
+         sKMA==
+X-Gm-Message-State: AOAM533veHrPBs+9JhSZF5qhxksmqnCZ8adZL4pZA+PPhmCUQpkyklPf
+        qjXf+JOgnqVfjKTg8ozPBqx2TQ==
+X-Google-Smtp-Source: ABdhPJwgtrYOHsz2AiwEc1Fq4CRSceqE7ska627cJL+yJwUjulYKZOW6zTxltN2clfFP8FUSMKiTWw==
+X-Received: by 2002:a62:6044:0:b029:151:1a04:895 with SMTP id u65-20020a6260440000b02901511a040895mr13465852pfb.34.1602272892739;
+        Fri, 09 Oct 2020 12:48:12 -0700 (PDT)
+Received: from [10.213.166.37] (fmdmzpr03-ext.fm.intel.com. [192.55.54.38])
+        by smtp.gmail.com with ESMTPSA id b127sm7481963pfb.143.2020.10.09.12.48.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 09 Oct 2020 12:48:11 -0700 (PDT)
+From:   "Sean V Kelley" <sean.v.kelley@intel.com>
+To:     "Bjorn Helgaas" <helgaas@kernel.org>
+Cc:     "Sean V Kelley" <seanvk.dev@oregontracks.org>, bhelgaas@google.com,
+        Jonathan.Cameron@huawei.com, rafael.j.wysocki@intel.com,
+        ashok.raj@intel.com, tony.luck@intel.com,
+        sathyanarayanan.kuppuswamy@intel.com, qiuxu.zhuo@intel.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 11/14] PCI/RCEC: Add RCiEP's linked RCEC to AER/ERR
+Date:   Fri, 09 Oct 2020 12:48:07 -0700
+X-Mailer: MailMate (1.13.2r5673)
+Message-ID: <5D41DFBA-CF5D-4DFD-A6B2-A28B621CB228@intel.com>
+In-Reply-To: <B3F01188-01A5-4807-B2C8-33AD5AD4A506@intel.com>
+References: <20201009175745.GA3489710@bjorn-Precision-5520>
+ <41B2B0A9-80B0-41DA-9FF3-A5D9465E6E08@intel.com>
+ <C3CF4A15-B00B-4347-89C7-B331E17ECF69@intel.com>
+ <B3F01188-01A5-4807-B2C8-33AD5AD4A506@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On 9 Oct 2020, at 11:53, Sean V Kelley wrote:
 
-clang static analysis reports this problem:
+> On 9 Oct 2020, at 11:34, Sean V Kelley wrote:
+>
+>> On 9 Oct 2020, at 11:26, Sean V Kelley wrote:
+>>
+>>> Hi Bjorn,
+>>>
+>>> On 9 Oct 2020, at 10:57, Bjorn Helgaas wrote:
+>>>
+>>>> On Fri, Oct 02, 2020 at 11:47:32AM -0700, Sean V Kelley wrote:
+>>>>> From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+>>>>>
+>>>>> When attempting error recovery for an RCiEP associated with an 
+>>>>> RCEC device,
+>>>>> there needs to be a way to update the Root Error Status, the 
+>>>>> Uncorrectable
+>>>>> Error Status and the Uncorrectable Error Severity of the parent 
+>>>>> RCEC.
+>>>>> In some non-native cases in which there is no OS visible device
+>>>>> associated with the RCiEP, there is nothing to act upon as the 
+>>>>> firmware
+>>>>> is acting before the OS. So add handling for the linked 'rcec' in 
+>>>>> AER/ERR
+>>>>> while taking into account non-native cases.
+>>>>>
+>>>>> Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
+>>>>> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+>>>>> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+>>>>> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+>>>>> ---
+>>>>>  drivers/pci/pcie/aer.c |  9 +++++----
+>>>>>  drivers/pci/pcie/err.c | 39 
+>>>>> ++++++++++++++++++++++++++++-----------
+>>>>>  2 files changed, 33 insertions(+), 15 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+>>>>> index 65dff5f3457a..dccdba60b5d9 100644
+>>>>> --- a/drivers/pci/pcie/aer.c
+>>>>> +++ b/drivers/pci/pcie/aer.c
+>>>>> @@ -1358,17 +1358,18 @@ static int aer_probe(struct pcie_device 
+>>>>> *dev)
+>>>>>  static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
+>>>>>  {
+>>>>>  	int aer = dev->aer_cap;
+>>>>> +	int rc = 0;
+>>>>>  	u32 reg32;
+>>>>> -	int rc;
+>>>>> -
+>>>>>
+>>>>>  	/* Disable Root's interrupt in response to error messages */
+>>>>>  	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
+>>>>>  	reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
+>>>>>  	pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
+>>>>>
+>>>>> -	rc = pci_bus_error_reset(dev);
+>>>>> -	pci_info(dev, "Root Port link has been reset\n");
+>>>>> +	if (pci_pcie_type(dev) != PCI_EXP_TYPE_RC_EC) {
+>>>>> +		rc = pci_bus_error_reset(dev);
+>>>>> +		pci_info(dev, "Root Port link has been reset\n");
+>>>>> +	}
+>>>>>
+>>>>>  	/* Clear Root Error Status */
+>>>>>  	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, &reg32);
+>>>>> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+>>>>> index 38abd7984996..956ad4c86d53 100644
+>>>>> --- a/drivers/pci/pcie/err.c
+>>>>> +++ b/drivers/pci/pcie/err.c
+>>>>> @@ -149,7 +149,8 @@ static int report_resume(struct pci_dev *dev, 
+>>>>> void *data)
+>>>>>  /**
+>>>>>   * pci_walk_bridge - walk bridges potentially AER affected
+>>>>>   * @bridge   bridge which may be an RCEC with associated RCiEPs,
+>>>>> - *           an RCiEP associated with an RCEC, or a Port.
+>>>>> + *           or a Port.
+>>>>> + * @dev      an RCiEP lacking an associated RCEC.
+>>>>>   * @cb       callback to be called for each device found
+>>>>>   * @userdata arbitrary pointer to be passed to callback.
+>>>>>   *
+>>>>> @@ -160,13 +161,20 @@ static int report_resume(struct pci_dev 
+>>>>> *dev, void *data)
+>>>>>   * If the device provided has no subordinate bus, call the 
+>>>>> provided
+>>>>>   * callback on the device itself.
+>>>>>   */
+>>>>> -static void pci_walk_bridge(struct pci_dev *bridge, int 
+>>>>> (*cb)(struct pci_dev *, void *),
+>>>>> +static void pci_walk_bridge(struct pci_dev *bridge, struct 
+>>>>> pci_dev *dev,
+>>>>> +			    int (*cb)(struct pci_dev *, void *),
+>>>>>  			    void *userdata)
+>>>>>  {
+>>>>> -	if (bridge->subordinate)
+>>>>> +	/*
+>>>>> +	 * In a non-native case where there is no OS-visible reporting
+>>>>> +	 * device the bridge will be NULL, i.e., no RCEC, no PORT.
+>>>>> +	 */
+>>>>> +	if (bridge && bridge->subordinate)
+>>>>>  		pci_walk_bus(bridge->subordinate, cb, userdata);
+>>>>> -	else
+>>>>> +	else if (bridge)
+>>>>>  		cb(bridge, userdata);
+>>>>> +	else
+>>>>> +		cb(dev, userdata);
+>>>>>  }
+>>>>>
+>>>>>  static pci_ers_result_t flr_on_rciep(struct pci_dev *dev)
+>>>>> @@ -196,16 +204,25 @@ pci_ers_result_t pcie_do_recovery(struct 
+>>>>> pci_dev *dev,
+>>>>>  	type = pci_pcie_type(dev);
+>>>>>  	if (type == PCI_EXP_TYPE_ROOT_PORT ||
+>>>>>  	    type == PCI_EXP_TYPE_DOWNSTREAM ||
+>>>>> -	    type == PCI_EXP_TYPE_RC_EC ||
+>>>>> -	    type == PCI_EXP_TYPE_RC_END)
+>>>>> +	    type == PCI_EXP_TYPE_RC_EC)
+>>>>>  		bridge = dev;
+>>>>> +	else if (type == PCI_EXP_TYPE_RC_END)
+>>>>> +		bridge = dev->rcec;
+>>>>>  	else
+>>>>>  		bridge = pci_upstream_bridge(dev);
+>>>>>
+>>>>>  	pci_dbg(dev, "broadcast error_detected message\n");
+>>>>>  	if (state == pci_channel_io_frozen) {
+>>>>> -		pci_walk_bridge(bridge, report_frozen_detected, &status);
+>>>>> +		pci_walk_bridge(bridge, dev, report_frozen_detected, &status);
+>>>>>  		if (type == PCI_EXP_TYPE_RC_END) {
+>>>>> +			/*
+>>>>> +			 * The callback only clears the Root Error Status
+>>>>> +			 * of the RCEC (see aer.c). Only perform this for the
+>>>>> +			 * native case, i.e., an RCEC is present.
+>>>>> +			 */
+>>>>> +			if (bridge)
+>>>>> +				reset_subordinate_devices(bridge);
+>>>>
+>>>> Help me understand this.  There are lots of callbacks in this 
+>>>> picture,
+>>>> but I guess this "callback only clears Root Error Status" must 
+>>>> refer
+>>>> to aer_root_reset(), i.e., the reset_subordinate_devices pointer?
+>>>
+>>> The ‘bridge’ in this case will always be dev->rcec, the event 
+>>> collector for the associated RC_END. And that’s what’s being 
+>>> cleared in aer.c via aer_root_reset() as the callback. It’s also 
+>>> being checked for native/non-native here.
+>>>
+>>>>
+>>>> Of course, the caller of pcie_do_recovery() supplied that pointer.
+>>>> And we can infer that it must be aer_root_reset(), not
+>>>> dpc_reset_link(), because RCECs and RCiEPs are not allowed to
+>>>> implement DPC.
+>>>
+>>> Correct.
+>>>
+>>>>
+>>>> I wish we didn't have either this assumption about what
+>>>> reset_subordinate_devices points to, or the assumption about what
+>>>> aer_root_reset() does.  They both seem a little bit tenuous.
+>>>
+>>> Agree. It’s the relationship between the RC_END and the RC_EC.
+>>>
+>>>>
+>>>> We already made aer_root_reset() smart enough to check for RCECs.  
+>>>> Can
+>>>> we put the FLR there, too?  Then we wouldn't have this weird 
+>>>> situation
+>>>> where reset_subordinate_devices() does a reset and clears error
+>>>> status, EXCEPT for this case where it only clears error status and 
+>>>> we
+>>>> do the reset here?
+>>>
+>>> We could add the smarts to aer_root_reset() to check for an RC_END 
+>>> in that callback and perform the clear there on its RC_EC. We just 
+>>> wouldn’t map ‘bridge’ to dev->rcec for RC_END in 
+>>> pcie_do_recovery() which would simplify things.
+>>>
+>>> Further, the FLR in the case of flr_on_rciep() below is specific to 
+>>> the RCiEP itself. So it could be performed either in 
+>>> aer_root_reset() or remain in the pcie_do_recovery().
+>>>
+>>> That should work.
+>>>
+>>> Sean
+>>
+>> Thinking more on this, you could still pass dev->rcec to the callback 
+>> (eventually aer_root_reset()), but you won’t have the ability to 
+>> handle the FLR there without the pointer to the RC_END. That’s why 
+>> I suggested passing the RC_END and checking for its RC_EC in 
+>> aer_root_reset() if you want to also handle FLR there too from below.
+>
+> Where you get into trouble is that you don’t want to do anything in 
+> the non-native case and shouldn’t be going to the callback. So this 
+> would add complexity to aer_root_reset() for checking on dev->rcec == 
+> NULL…where before you never would have invoked 
+> reset_subordinate_devices() in the non-native case.
+>
+>
 
-rcutorture.c:1999:2: warning: Called function pointer
-  is null (null dereference)
-        cur_ops->sync(); /* Later readers see above write. */
-        ^~~~~~~~~~~~~~~
+Unmapping of bridge to dev->rcec in pcie_do_recovery() also causes 
+problems for pci_walk_bridge() which pays attention to the non-native 
+case, even making available the dev for when there is no ‘bridge’ 
+like device.
 
-This is a false positive triggered by an earlier, later ignored
-NULL check of sync() op.  By inspection of the rcu_torture_ops,
-the sync() op is never uninitialized.  So this earlier check is
-not needed.
+I think we may be just shifting things elsewhere despite the constraints 
+remaining the same. So while it should work, I believe that I prefer the 
+current approach.
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- kernel/rcu/rcutorture.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Sean
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index beba9e7963c8..6efc03a1d623 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -1989,7 +1989,7 @@ static void rcu_torture_fwd_prog_nr(struct rcu_fwd *rfp,
- 	unsigned long stopat;
- 	static DEFINE_TORTURE_RANDOM(trs);
- 
--	if  (cur_ops->call && cur_ops->sync && cur_ops->cb_barrier) {
-+	if  (cur_ops->call && cur_ops->cb_barrier) {
- 		init_rcu_head_on_stack(&fcs.rh);
- 		selfpropcb = true;
- 	}
--- 
-2.18.1
 
+
+>>
+>> Sean
+>>
+>>>
+>>>
+>>>>
+>>>>>  			status = flr_on_rciep(dev);
+>>>>>  			if (status != PCI_ERS_RESULT_RECOVERED) {
+>>>>>  				pci_warn(dev, "function level reset failed\n");
+>>>>> @@ -219,13 +236,13 @@ pci_ers_result_t pcie_do_recovery(struct 
+>>>>> pci_dev *dev,
+>>>>>  			}
+>>>>>  		}
+>>>>>  	} else {
+>>>>> -		pci_walk_bridge(bridge, report_normal_detected, &status);
+>>>>> +		pci_walk_bridge(bridge, dev, report_normal_detected, &status);
+>>>>>  	}
+>>>>>
+>>>>>  	if (status == PCI_ERS_RESULT_CAN_RECOVER) {
+>>>>>  		status = PCI_ERS_RESULT_RECOVERED;
+>>>>>  		pci_dbg(dev, "broadcast mmio_enabled message\n");
+>>>>> -		pci_walk_bridge(bridge, report_mmio_enabled, &status);
+>>>>> +		pci_walk_bridge(bridge, dev, report_mmio_enabled, &status);
+>>>>>  	}
+>>>>>
+>>>>>  	if (status == PCI_ERS_RESULT_NEED_RESET) {
+>>>>> @@ -236,14 +253,14 @@ pci_ers_result_t pcie_do_recovery(struct 
+>>>>> pci_dev *dev,
+>>>>>  		 */
+>>>>>  		status = PCI_ERS_RESULT_RECOVERED;
+>>>>>  		pci_dbg(dev, "broadcast slot_reset message\n");
+>>>>> -		pci_walk_bridge(bridge, report_slot_reset, &status);
+>>>>> +		pci_walk_bridge(bridge, dev, report_slot_reset, &status);
+>>>>>  	}
+>>>>>
+>>>>>  	if (status != PCI_ERS_RESULT_RECOVERED)
+>>>>>  		goto failed;
+>>>>>
+>>>>>  	pci_dbg(dev, "broadcast resume message\n");
+>>>>> -	pci_walk_bridge(bridge, report_resume, &status);
+>>>>> +	pci_walk_bridge(bridge, dev, report_resume, &status);
+>>>>>
+>>>>>  	if (type == PCI_EXP_TYPE_ROOT_PORT ||
+>>>>>  	    type == PCI_EXP_TYPE_DOWNSTREAM ||
+>>>>> -- 
+>>>>> 2.28.0
+>>>>>
