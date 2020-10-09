@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B5FA289A77
+	by mail.lfdr.de (Postfix) with ESMTP id B9F9F289A78
 	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 23:13:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391302AbgJIVNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 17:13:54 -0400
+        id S2391340AbgJIVNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 17:13:55 -0400
 Received: from esa2.hgst.iphmx.com ([68.232.143.124]:50437 "EHLO
         esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388641AbgJIVNx (ORCPT
+        with ESMTP id S2388389AbgJIVNy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 17:13:53 -0400
+        Fri, 9 Oct 2020 17:13:54 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1602278538; x=1633814538;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=P6MToLoY21O2rZVwNli0IYzCJtAmEa+Tym9KCg1Gq3Q=;
-  b=R/r/6C8DCPa22svE2jVgOlj+g+TbAGjO+63d5ixlJK95XIQwUCZznczU
-   3rKgljAb0zJlBDfI9dnVMM5iPR+yzTJN7I4XFSDd+yizzZFuYYWZbUeLy
-   LjQOrDbxgyq8u888tXRAye47oOaKTRhKJSsenVCRPQfnBWUm3Jxg4JSSv
-   FCBdDzFk/yTtFZwvcx+yuR3bAoTkWMkpJYp/lznswc8+fQUPWHhTJiYff
-   3JjHGKC9sUazA6cujoxJH3/p2Xj+cYvHqPs3VmH/G8DxXyLI9Zfhxh261
-   Ze7n6BouqecyK87IlQZAwUVAt+aRtZkPE9Woq28Yglz+RQym0dEwZUfQT
-   A==;
-IronPort-SDR: GmHX556dJwDW7VosNh98DbgyWUy153trxuN/TBz5N54wQg7d/qCCVCtWfs96z9drlCSh9YKvW9
- ra0JjX6nNBKfkbqChQSGABn/s1Trl2DfCxgP548eyaOKUqur1JZPrZZDF8R/mdoY7kIm68TJ1x
- iqbXP84NM6B6+/68zhcYMaid/OyYVF6NJViK/P1A3lOcUY6X55uwPVuLXOhklunwO9PMzMQhOJ
- 4gcpXDEvjsjRb2TBWpA73iksQux+PBPYeoqDCLlKlILsv81MknEXUpxkJMqYBGimR6cr1vNBfR
- Y90=
+  t=1602278539; x=1633814539;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=/QbUqQmeMLjTwBzMbaBF9lCBuT7lct8fLe+m4vUDssY=;
+  b=OkzHqm/LS2JO3YxRHz3VisN3DjDbFKKlS812Z581lflTozBDTphiyFGd
+   p9SgWZcmmWP8E5hM1lrF3KTYCTh6Iq74kGrYhqNvazAYMMgcY7UPJ1API
+   xaoEQxlt8UsssBRtUNFRgI3ZJpoMjaiQqYM9jFKqFtXTHcqSpgvVI9tk3
+   2bfYGE1bdHVivfDFzmLOCRQ2AOkRuKAK9W89hat4X2UaMa8km5pmLXMf0
+   q2QqvNO1kKEPw8Jx663BSC3skyzRSd+OH+hxHEiR1PW5D1s6xtSaMHPNm
+   VCkWPR/DMOFr1GoGI+rd2FtuhG42DvdBVw7Q8tj8CzF5ob+dGxO6ELmsq
+   Q==;
+IronPort-SDR: 0RFAegzT2jT9Wc5Uhlq7VZlbcFEKCnBQyHnV404+xPZTMUcdavIZ+fxU5LLS0c8kFxuXlS+rNK
+ +v6/bMD1YnEUMUpwlTjdF740FICWKxet9aq4k2WEJcgktHO5JZpMwQOeZ8qlLExlJaxAWf6gxM
+ tIhqa8qorKRljw+NVFLQuUvXeysOswqYsVlH5xBFkR3ZrGmFjgKGuJ9lZPC1xR6NA8J87Ud4Uc
+ RAEwOnnBvLGdvUM48LsBo6MT05iQS/yvq6X+KBtEakYEavve5lMfWV+CmrKvS6Z0HiMPiCH9ed
+ JNE=
 X-IronPort-AV: E=Sophos;i="5.77,356,1596470400"; 
-   d="scan'208";a="252936922"
+   d="scan'208";a="252936927"
 Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 10 Oct 2020 05:22:18 +0800
-IronPort-SDR: yuXhJvhu+A9Erbj3H6fYT/B+vmb0TxXZlpw4h1vRZU5fkSrB4RcflkMmnuBODpGlmbUgP/iFwg
- i8FStXQDq+6om0ZkMcKPG3+SUex2cu04eUiAJhTWUmYF4BW0g/YC8eH+O+gsnjSLEfpRFHDuCt
- tTlK/ifFkVbIIwQMLL5AUJ1x18MlTTYwoEZllbwekcT/768FHJTu3lR7jtFUpYZQqJgWgNtpBO
- ltBRe+nSBc4Y6VjYhxIuEQnfyR90z65LeQ8znkMsuigLRBLHnkGeOEHb3d1wiVS1m9WC2V2Nlt
- SEkx8FXTQ6rftzRExRfWsQPn
+  by ob1.hgst.iphmx.com with ESMTP; 10 Oct 2020 05:22:19 +0800
+IronPort-SDR: uR8DGVkW+QNaR6d/oTL5/vGhDAdAUHaIAGqEld/cZXIKMYaXJOUj55WSW8Iu5kY6yrc/cx+HAG
+ 8iCzeCrz27MRmPXhjbXPDAm6Yjfvw7wn98QBviWvSR7NpjtuEujmZlG48JMysXiWGXlqEqIyEy
+ dFqxqaOFk2bdgnuWIqs4WpoeYE9Up+8FYy926zjszo/w4wnSY/B1A96c0A9Fd/2zCrJ0tnSfJ2
+ kWXBaiKHoNRVSkg8sBGuxvHq8kNrbbWjf5aj3dtRl9NW6i9PF0uoHQ32rzFyGcZsOkJXVFWKIC
+ sZ8yV0bC6RMUPkpMnOFZqViY
 Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 13:59:40 -0700
-IronPort-SDR: awzyS2FKyWwGRL2l9UN6x4T3nQsC2SFXYZlWDZBGgRgs9wdh/EUzSaXW6aAwGazTcEn3zVzUV4
- DXGWftDkcWrPmwbWdz6/9GoJEQA5JQkgjvzMAwgMGTxzrOPu0992/21TbYmVInH1zLtAQBqbFq
- Onl44KPAf9AfNWvzrtCPJ9zTPYjm1T1Y+3/ct1iaaqn0o8CJNsQHp1igR8Q2yuwsTylJaZ8ZBH
- eewJwyhKvOsLr9I4L+1dBvNSLtFb155iPBDs0Ma1h6ysErWop6/ZP3nLoLFh585JZi8Nw29CNR
- XCM=
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 13:59:41 -0700
+IronPort-SDR: DpNNZ5QX9GY5e4Dv4bfNJw2Zednqrf5wkbR/vJKlJyg8CCbe3aBt1YYFjjIY93YGNCX/Bv0hD6
+ OMi72XUnj78eYponFLeyS5CjqiV5CyauHbxPhIoGTODjsCGH4pu2DKx6MI6AWzyP17Q283EfiZ
+ s/xPfPLrNk3M5jA5RtoLPgHW6XEOFTW774UAKVo3TBIUzQ4wbOHWeLuH0ryZ43idOgBb7cI4AF
+ VBZoRioUS0iai5b8kyxfB3VVu4T8YtAeJFUAtqwAVlzkc/fl29HQl6TdpF6qqAkS717tWe5kkZ
+ s4c=
 WDCIronportException: Internal
 Received: from usa003000.ad.shared (HELO jedi-01.hgst.com) ([10.86.60.38])
-  by uls-op-cesaip01.wdc.com with ESMTP; 09 Oct 2020 14:13:52 -0700
+  by uls-op-cesaip01.wdc.com with ESMTP; 09 Oct 2020 14:13:53 -0700
 From:   Atish Patra <atish.patra@wdc.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Atish Patra <atish.patra@wdc.com>,
@@ -64,42 +64,42 @@ Cc:     Atish Patra <atish.patra@wdc.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Paul Walmsley <paul.walmsley@sifive.com>,
         Zong Li <zong.li@sifive.com>
-Subject: [PATCH 0/5] Improve kernel section protections
-Date:   Fri,  9 Oct 2020 14:13:39 -0700
-Message-Id: <20201009211344.2358688-1-atish.patra@wdc.com>
+Subject: [PATCH 1/5] RISC-V: Move __start_kernel to .head.text
+Date:   Fri,  9 Oct 2020 14:13:40 -0700
+Message-Id: <20201009211344.2358688-2-atish.patra@wdc.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201009211344.2358688-1-atish.patra@wdc.com>
+References: <20201009211344.2358688-1-atish.patra@wdc.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series aims at improving kernel permissions by doing following things.
+Currently, __start_kernel is kept in _init while _start is in head section.
+This may result in "relocation truncated to fit error" if _init section is
+moved far from head. It also makes sense to keep entire head.S in one
+section.
 
-1. Protect kernel sections early instead of after /init.
-2. Protect .init.text & .init.data sections with appropriate permissions.
-3. Move dynamic relocation section to _init.
+Keep __start_kernel in head section rather than _init.
 
-This series is based on Guo's static object fixes[1].
+Signed-off-by: Atish Patra <atish.patra@wdc.com>
+---
+ arch/riscv/kernel/head.S | 1 -
+ 1 file changed, 1 deletion(-)
 
-[1]https://patchwork.kernel.org/project/linux-riscv/list/?series=360951
-
-Atish Patra (5):
-RISC-V: Move __start_kernel to .head.text
-RISC-V: Initialize SBI early
-RISC-V: Enforce protections for kernel sections early
-RISC-V: Protect .init.text & .init.data
-RISC-V: Move dynamic relocation section under __init
-
-arch/riscv/include/asm/sections.h   |  2 ++
-arch/riscv/include/asm/set_memory.h |  4 ++++
-arch/riscv/kernel/head.S            |  1 -
-arch/riscv/kernel/setup.c           | 13 +++++++++----
-arch/riscv/kernel/vmlinux.lds.S     | 18 +++++++++++++-----
-arch/riscv/mm/init.c                | 17 +++++++++++++++--
-arch/riscv/mm/pageattr.c            |  6 ++++++
-7 files changed, 49 insertions(+), 12 deletions(-)
-
---
+diff --git a/arch/riscv/kernel/head.S b/arch/riscv/kernel/head.S
+index 3631147732ee..e820b0c09528 100644
+--- a/arch/riscv/kernel/head.S
++++ b/arch/riscv/kernel/head.S
+@@ -178,7 +178,6 @@ setup_trap_vector:
+ 
+ END(_start)
+ 
+-	__INIT
+ ENTRY(_start_kernel)
+ 	/* Mask all interrupts */
+ 	csrw CSR_IE, zero
+-- 
 2.25.1
 
