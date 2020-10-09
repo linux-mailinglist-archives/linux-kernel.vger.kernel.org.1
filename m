@@ -2,177 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A050E289A93
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 23:27:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 689D3289A9B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 23:29:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391505AbgJIV1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 17:27:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38784 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389123AbgJIV1Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 17:27:24 -0400
-Received: from localhost (170.sub-72-107-125.myvzw.com [72.107.125.170])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 12A91215A4;
-        Fri,  9 Oct 2020 21:27:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602278843;
-        bh=NwIKZ+f6HMeX/oLRxsIlvognVA13GEfEwW6Ct7aIaqM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=eW8l3AM7rf9hC2tqoamawjUHB+nTNgln6hqqfyORAUuj0HJlajVUPiI/NPQCDliBN
-         XUwJqTSuvZzeknHQwG+6Qo5E6GxR9kO/Ojyf7hQlAxLGa+NpW8lJlD6knmEJpB5/3e
-         6FQbj9v7VDJHAub0q/8241/9wgtTveA+AyX8UI4k=
-Date:   Fri, 9 Oct 2020 16:27:21 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Sean V Kelley <seanvk.dev@oregontracks.org>
-Cc:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
-        rafael.j.wysocki@intel.com, ashok.raj@intel.com,
-        tony.luck@intel.com, sathyanarayanan.kuppuswamy@intel.com,
-        qiuxu.zhuo@intel.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sean V Kelley <sean.v.kelley@intel.com>
-Subject: Re: [PATCH v8 08/14] PCI/AER: Extend AER error handling to RCECs
-Message-ID: <20201009212721.GA3503883@bjorn-Precision-5520>
+        id S2391542AbgJIV2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 17:28:44 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:40759 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731533AbgJIV2n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 17:28:43 -0400
+Received: by mail-pf1-f196.google.com with SMTP id w21so7918267pfc.7;
+        Fri, 09 Oct 2020 14:28:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HkS5betriYfUMMEyXyZ2TAxnZzhJKiHHjsPRgrF4ICM=;
+        b=TtxoXZjsTfAEv0uTh1LnCXdOiOHhz1Gb3G5p1huey1PdMZsOhdHFGVYNS/ycwCGBU9
+         C6vanpOE9fOLhVla+3leBimomHVqXS5SNtmFOSYG8xGs+Q1RzhcM8RjGb7DlDHNfu0St
+         v+6lLpUQngOnE8+3RKn0fdY0YsSqztaw8/59ds09kKTDFQgmL+4qrRxkVvtWJz967rX0
+         N/QgehHGAZMmFAyunPlNOXULIq398FvH54+zzfNjBSvWYvfpXAY/phQaBvHdnYgTcdj3
+         cOTpu3uAzG/a7esX2CmL7gs9YPcN46qc8oKDLQF3DrUVHun/9YocEZujWGzWB+IA8veq
+         51kw==
+X-Gm-Message-State: AOAM532ZvuYCLz0n/1FA4ExYaVY7IBtij6SlSvDVBj/mccGxicb5VcO0
+        zkTx+Fl/FQqaR7xCr3/JjFjdtpntMe8=
+X-Google-Smtp-Source: ABdhPJwT0vp/kDcTjxK3SKXBCOTGlW2J3tdSpO/dt5YBHSUMcAwtjbhKbuCGiijoLoEPJn1IFFmVxA==
+X-Received: by 2002:aa7:81d5:0:b029:142:2501:39fa with SMTP id c21-20020aa781d50000b0290142250139famr14236539pfn.73.1602278922186;
+        Fri, 09 Oct 2020 14:28:42 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id o17sm12579401pji.30.2020.10.09.14.28.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Oct 2020 14:28:41 -0700 (PDT)
+Date:   Fri, 9 Oct 2020 14:28:39 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Xu Yilun <yilun.xu@intel.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Moritz Fischer <mdf@kernel.org>, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
+        hao.wu@intel.com
+Subject: Re: [PATCH v3 1/5] fpga: dfl: rename the bus type "dfl" to "fpga-dfl"
+Message-ID: <20201009212839.GB2531@epycbox.lan>
+References: <20200926192219.GA18625@epycbox.lan>
+ <20200927055108.GA701198@kroah.com>
+ <20200927073754.GB16433@yilunxu-OptiPlex-7050>
+ <20200927075401.GA748141@kroah.com>
+ <20200927083647.GC16433@yilunxu-OptiPlex-7050>
+ <20200929012323.GD16433@yilunxu-OptiPlex-7050>
+ <20200929041900.GA113620@archbook>
+ <20201009062059.GB24324@yilunxu-OptiPlex-7050>
+ <20201009064118.GA655664@kroah.com>
+ <20201009073424.GA15377@yilunxu-OptiPlex-7050>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201002184735.1229220-9-seanvk.dev@oregontracks.org>
+In-Reply-To: <20201009073424.GA15377@yilunxu-OptiPlex-7050>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 11:47:29AM -0700, Sean V Kelley wrote:
-> From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> 
-> Currently the kernel does not handle AER errors for Root Complex
-> integrated End Points (RCiEPs)[0]. These devices sit on a root bus within
-> the Root Complex (RC). AER handling is performed by a Root Complex Event
-> Collector (RCEC) [1] which is a effectively a type of RCiEP on the same
-> root bus.
-> 
-> For an RCEC (technically not a Bridge), error messages "received" from
-> associated RCiEPs must be enabled for "transmission" in order to cause a
-> System Error via the Root Control register or (when the Advanced Error
-> Reporting Capability is present) reporting via the Root Error Command
-> register and logging in the Root Error Status register and Error Source
-> Identification register.
-> 
-> In addition to the defined OS level handling of the reset flow for the
-> associated RCiEPs of an RCEC, it is possible to also have non-native
-> handling. In that case there is no need to take any actions on the RCEC
-> because the firmware is responsible for them. This is true where APEI [2]
-> is used to report the AER errors via a GHES[v2] HEST entry [3] and
-> relevant AER CPER record [4] and non-native handling is in use.
-> 
-> We effectively end up with two different types of discovery for
-> purposes of handling AER errors:
-> 
-> 1) Normal bus walk - we pass the downstream port above a bus to which
-> the device is attached and it walks everything below that point.
-> 
-> 2) An RCiEP with no visible association with an RCEC as there is no need
-> to walk devices. In that case, the flow is to just call the callbacks for
-> the actual device, which in turn references its associated RCEC.
-> 
-> Modify pci_walk_bridge() to handle devices which lack a subordinate bus.
-> If the device does not then it will call the function on that device
-> alone.
-> 
-> [0] ACPI PCI Express Base Specification 5.0-1 1.3.2.3 Root Complex
-> Integrated Endpoint Rules.
-> [1] ACPI PCI Express Base Specification 5.0-1 6.2 Error Signalling and
-> Logging
-> [2] ACPI Specification 6.3 Chapter 18 ACPI Platform Error Interface (APEI)
-> [3] ACPI Specification 6.3 18.2.3.7 Generic Hardware Error Source
-> [4] UEFI Specification 2.8, N.2.7 PCI Express Error Section
-> 
-> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
-> ---
->  drivers/pci/pcie/err.c | 25 ++++++++++++++++++++-----
->  1 file changed, 20 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-> index 5ff1afa4763d..c4ceca42a3bf 100644
-> --- a/drivers/pci/pcie/err.c
-> +++ b/drivers/pci/pcie/err.c
-> @@ -148,19 +148,25 @@ static int report_resume(struct pci_dev *dev, void *data)
->  
->  /**
->   * pci_walk_bridge - walk bridges potentially AER affected
-> - * @bridge   bridge which may be a Port.
-> + * @bridge   bridge which may be an RCEC with associated RCiEPs,
-> + *           an RCiEP associated with an RCEC, or a Port.
->   * @cb       callback to be called for each device found
->   * @userdata arbitrary pointer to be passed to callback.
->   *
->   * If the device provided is a bridge, walk the subordinate bus,
->   * including any bridged devices on buses under this bus.
->   * Call the provided callback on each device found.
-> + *
-> + * If the device provided has no subordinate bus, call the provided
-> + * callback on the device itself.
->   */
->  static void pci_walk_bridge(struct pci_dev *bridge, int (*cb)(struct pci_dev *, void *),
->  			    void *userdata)
->  {
->  	if (bridge->subordinate)
->  		pci_walk_bus(bridge->subordinate, cb, userdata);
-> +	else
-> +		cb(bridge, userdata);
->  }
->  
->  pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
-> @@ -174,11 +180,13 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->  	/*
->  	 * Error recovery runs on all subordinates of the first downstream
->  	 * bridge. If the downstream bridge detected the error, it is
-> -	 * cleared at the end.
-> +	 * cleared at the end. For RCiEPs we should reset just the RCiEP itself.
->  	 */
->  	type = pci_pcie_type(dev);
->  	if (type == PCI_EXP_TYPE_ROOT_PORT ||
-> -	    type == PCI_EXP_TYPE_DOWNSTREAM)
-> +	    type == PCI_EXP_TYPE_DOWNSTREAM ||
-> +	    type == PCI_EXP_TYPE_RC_EC ||
+Hi Xu,
 
-What is the case where an RCEC is passed to pcie_do_recovery()?  I
-guess it's the case where an RCEC is reporting an error that it logged
-itself, i.e., no RCiEP is involved at all?  In that case I guess we
-should try an FLR on the RCEC and clear its status?
-
-(I don't think the current series attempts the FLR.)
-
-> +	    type == PCI_EXP_TYPE_RC_END)
->  		bridge = dev;
->  	else
->  		bridge = pci_upstream_bridge(dev);
-> @@ -186,7 +194,13 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->  	pci_dbg(dev, "broadcast error_detected message\n");
->  	if (state == pci_channel_io_frozen) {
->  		pci_walk_bridge(bridge, report_frozen_detected, &status);
-> -		status = reset_subordinate_device(bridge);
-> +		if (type == PCI_EXP_TYPE_RC_END) {
-> +			pci_warn(dev, "subordinate device reset not possible for RCiEP\n");
-> +			status = PCI_ERS_RESULT_NONE;
-> +			goto failed;
-> +		}
-> +
-> +		status = reset_subordinate_devices(bridge);
->  		if (status != PCI_ERS_RESULT_RECOVERED) {
->  			pci_warn(dev, "subordinate device reset failed\n");
->  			goto failed;
-> @@ -219,7 +233,8 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->  	pci_walk_bridge(bridge, report_resume, &status);
->  
->  	if (type == PCI_EXP_TYPE_ROOT_PORT ||
-> -	    type == PCI_EXP_TYPE_DOWNSTREAM) {
-> +	    type == PCI_EXP_TYPE_DOWNSTREAM ||
-> +	    type == PCI_EXP_TYPE_RC_EC) {
->  		if (pcie_aer_is_native(bridge))
->  			pcie_clear_device_status(bridge);
->  		pci_aer_clear_nonfatal_status(bridge);
-> -- 
-> 2.28.0
+On Fri, Oct 09, 2020 at 03:34:24PM +0800, Xu Yilun wrote:
+> On Fri, Oct 09, 2020 at 08:41:18AM +0200, Greg KH wrote:
+> > On Fri, Oct 09, 2020 at 02:20:59PM +0800, Xu Yilun wrote:
+> > > Hi Greg:
+> > > 
+> > > On Mon, Sep 28, 2020 at 09:19:00PM -0700, Moritz Fischer wrote:
+> > > > Hi Xu,
+> > > > 
+> > > > On Tue, Sep 29, 2020 at 09:23:23AM +0800, Xu Yilun wrote:
+> > > > > Hi moritz:
+> > > > > 
+> > > > > On Sun, Sep 27, 2020 at 04:36:47PM +0800, Xu Yilun wrote:
+> > > > > > Hi Greg,
+> > > > > > 
+> > > > > > On Sun, Sep 27, 2020 at 09:54:01AM +0200, Greg KH wrote:
+> > > > > > > On Sun, Sep 27, 2020 at 03:37:54PM +0800, Xu Yilun wrote:
+> > > > > > > > Hi Greg,
+> > > > > > > > 
+> > > > > > > > On Sun, Sep 27, 2020 at 07:51:08AM +0200, Greg KH wrote:
+> > > > > > > > > On Sat, Sep 26, 2020 at 12:22:19PM -0700, Moritz Fischer wrote:
+> > > > > > > > > > Hi Greg,
+> > > > > > > > > > 
+> > > > > > > > > > On Sat, Sep 26, 2020 at 08:09:13AM +0200, Greg KH wrote:
+> > > > > > > > > > > On Sat, Sep 26, 2020 at 10:23:46AM +0800, Xu Yilun wrote:
+> > > > > > > > > > > > Hi greg,
+> > > > > > > > > > > > 
+> > > > > > > > > > > > About the bus naming, I summarized some questions we've discussed to check
+> > > > > > > > > > > > with you. See inline.
+> > > > > > > > > > > > 
+> > > > > > > > > > > > On Thu, Sep 24, 2020 at 10:27:00AM -0700, Moritz Fischer wrote:
+> > > > > > > > > > > > > Hi Xu,
+> > > > > > > > > > > > > 
+> > > > > > > > > > > > > On Fri, Sep 25, 2020 at 12:59:57AM +0800, Xu Yilun wrote:
+> > > > > > > > > > > > > > Now the DFL device drivers could be made as independent modules and put
+> > > > > > > > > > > > > > in different subsystems according to their functionalities. So the name
+> > > > > > > > > > > > > > should be descriptive and unique in the whole kernel.
+> > > > > > > > > > > > > > 
+> > > > > > > > > > > > > > The patch changes the naming of dfl bus related structures, functions,
+> > > > > > > > > > > > > > APIs and documentations.
+> > > > > > > > > > > > > > 
+> > > > > > > > > > > > > > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> > > > > > > > > > > > > > ---
+> > > > > > > > > > > > > >  Documentation/ABI/testing/sysfs-bus-dfl      |  15 --
+> > > > > > > > > > > > > >  Documentation/ABI/testing/sysfs-bus-fpga-dfl |  15 ++
+> > > > > > > > > > > > > >  MAINTAINERS                                  |   2 +-
+> > > > > > > > > > > > > >  drivers/fpga/dfl.c                           | 254 ++++++++++++++-------------
+> > > > > > > > > > > > > >  drivers/fpga/dfl.h                           |  77 ++++----
+> > > > > > > > > > > > > >  5 files changed, 184 insertions(+), 179 deletions(-)
+> > > > > > > > > > > > > >  delete mode 100644 Documentation/ABI/testing/sysfs-bus-dfl
+> > > > > > > > > > > > > >  create mode 100644 Documentation/ABI/testing/sysfs-bus-fpga-dfl
+> > > > > > > > > > > > > > 
+> > > > > > > > > > > > > > diff --git a/Documentation/ABI/testing/sysfs-bus-dfl b/Documentation/ABI/testing/sysfs-bus-dfl
+> > > > > > > > > > > > > > deleted file mode 100644
+> > > > > > > > > > > > > > index 23543be..0000000
+> > > > > > > > > > > > > > --- a/Documentation/ABI/testing/sysfs-bus-dfl
+> > > > > > > > > > > > > > +++ /dev/null
+> > > > > > > > > > > > > > @@ -1,15 +0,0 @@
+> > > > > > > > > > > > > > -What:		/sys/bus/dfl/devices/dfl_dev.X/type
+> > > > > > > > > > > > > > -Date:		Aug 2020
+> > > > > > > > > > > > > > -KernelVersion:	5.10
+> > > > > > > > > > > > > > -Contact:	Xu Yilun <yilun.xu@intel.com>
+> > > > > > > > > > > > > > -Description:	Read-only. It returns type of DFL FIU of the device. Now DFL
+> > > > > > > > > > > > > > -		supports 2 FIU types, 0 for FME, 1 for PORT.
+> > > > > > > > > > > > > > -		Format: 0x%x
+> > > > > > > > > > > > > > -
+> > > > > > > > > > > > > > -What:		/sys/bus/dfl/devices/dfl_dev.X/feature_id
+> > > > > > > > > > > > > > -Date:		Aug 2020
+> > > > > > > > > > > > > > -KernelVersion:	5.10
+> > > > > > > > > > > > > > -Contact:	Xu Yilun <yilun.xu@intel.com>
+> > > > > > > > > > > > > > -Description:	Read-only. It returns feature identifier local to its DFL FIU
+> > > > > > > > > > > > > > -		type.
+> > > > > > > > > > > > > > -		Format: 0x%x
+> > > > > > > > > > > > > 
+> > > > > > > > > > > > > You're changing userland facing ABI. I think that's something to avoid,
+> > > > > > > > > > > > > please check with Greg on the rules since this hasn't been in a release yet.
+> > > > > > > > > > > > > 
+> > > > > > > > > > > > 
+> > > > > > > > > > > > I'm going to change the name of bus stuff for other subsystems, to be
+> > > > > > > > > > > > aligned, I also consider change the bus_type.name and dfl dev_name. But
+> > > > > > > > > > > > it will cause the changing of user ABIs. No user case for these user ABI
+> > > > > > > > > > > > now cause they are just queued, is it good I change them?
+> > > > > > > > > > > 
+> > > > > > > > > > > Why change the user name here?  No need for that, right?  Unless you
+> > > > > > > > > > > really want to, and think that no one will notice.  If so, fine, change
+> > > > > > > > > > > them :)
+> > > > > > > > > > 
+> > > > > > > > > > Let's leave it as is -- An FPGA is one possible implementation and as for
+> > > > > > > > > > other buses, you wouldn't call it fpga-usb or usb-fpga just because the
+> > > > > > > > > > USB bus is implemented in an FPGA if it behaves like a normal USB bus.
+> > > > > > > > > > Having an ASIC based DFL bus show up under dfl-fpga / fpga-dfl in sysfs
+> > > > > > > > > > would be super confusing.
+> > > > > > 
+> > > > > > I thought we have consensus that "dfl" could be used out of fpga domain.
+> > > > > > And we are all good that we keep the user ABIs & the bus name - "dfl", so "dfl"
+> > > > > > is good as a global name from linux user's point of view, is it?
+> > > > > > 
+> > > > > > But why we reject the "dfl" in kernel code domain? I thought it is very
+> > > > > > similar situation.
+> > > > > > 
+> > > > > > 
+> > > > > > I think we have 2 options, to make the dfl self-consistent:
+> > > > > > 
+> > > > > > 1. "dfl-fpga" for everything - bus name, user ABIs, structures & APIs for
+> > > > > >    other kernel subsystems. Then we lose the chance to support ASIC based DFL,
+> > > > > >    it would be hard if we change user ABIs later.
+> > > > > > 
+> > > > > > 2. "dfl" for everything.
+> > > > > > 
+> > > > > > BTW, no ASIC based DFL devices in kernel today.
+> > > > > > 
+> > > > > > I fully understand the word "naming is hard" now, help me :)
+> > > > > 
+> > > > > Seems now we have different opinions on this:
+> > > > > 
+> > > > > - Hao thinks self-consistent is important to dfl framework.
+> > > > Agreed. I mostly care about userspace facing ABI, though.
+> > > > 
+> > > > > - "dfl" for everything seems not preferable to Greg.
+> > > > Maybe now that we re-explained, we can take another look at that?
+> > > > 
+> > > > > - From your previous mail, I assume you prefer to keep the bus name as "dfl"
+> > > > > but change the stuff for other subsystem, is it?
+> > > > 
+> > > > I mostly think we should keep DFL generic where it touches userspace and
+> > > > defines ABI, since we cannot change it afterwards.
+> > > > 
+> > > > I rest my point with the bus being independent of FPGAs despite the FPGA
+> > > > being the (currently) only user.
+> > > > 
+> > > > > So I got a little stuck here.
+> > > > > 
+> > > > > Do you think "dfl-fpga" for everything would be an acceptable solution
+> > > > > for you?
+> > > > 
+> > > > I just think it doesn't make a lot of sense to call it fpga-dfl or
+> > > > dfl-fpga. But if everyone else disagrees ... naming is hard :-)
+> > > 
+> > > Hi Greg,
+> > > 
+> > > We made some re-explanation why "dfl" could be independent of the fpga
+> > > subsystem in this mail thread. And now the name "dfl" for all bus stuff is good
+> > > to Moritz, Hao & Yilun. Could you help take another look at this?
+> > 
+> > What is "this"?  I don't see any fpga patches in my inbox anywhere...
 > 
+> Sorry, the discussion lasts more than 2 weeks, so I'm trying to collect
+> the comments here.
+> 
+> We are trying to confirm if the new added bus name "dfl" should be
+> OK, instead of "fpga-dfl"? Cause dfl could be an enumeration method
+> independent of the fpga subsystem, although the FPGA is currently the
+> only user.
+> 
+> 
+> The first mail is
+> 	[GIT PULL] FPGA Manager additional changes for 5.10
+> 	https://lore.kernel.org/linux-fpga/20200921000855.GA15612@epycbox.lan/T/#u
+> 
+> In this mail you have some comments for this patch:
+> 
+> 	0002-fpga-dfl-move-dfl_device_id-to-mod_devicetable.h.patch
+> 	https://lore.kernel.org/linux-fpga/20200915035909.GA2217@epycbox.lan/T/#u
+> 
+> 	[Greg's comments]
+> 	- dfl_device_id is not descriptive, it means nothing to anyone outside
+> 	  of the fpga subsystem.
+> 	- fpga_dfl_device_id perhaps instead?  That gives people a chance to know
+> 	  where to look for this
+> 
+> 	[More Greg's comments]
+> 	You are now "playing in the namespace of the whole kernel", so yes, you
+> 	need to be as descriptive as possible so that everyone knows what is
+> 	happening as all subsystems touch these files.
+> 
+> 	No one knows what "dfl_" means.  Heck, I have no idea, I keep thinking
+> 	"Device Firmware Loader" or something like that.
+> 
+> 	So making it obvious, and unique, and "short enough" is the requirement.
+> 
+> 	Naming is hard :)
+> 
+> 
+> And then we are trying to explain "dfl" could be an enumeration method
+> independent of the fpga subsystem, so we want to keep the naming "dfl".
+> 
+> 	[Hao's comments]
+> 	Actually Device Feature List is introduced in FPGA, but it doesn't limit
+> 	the usage in FPGA only. It's just a method to discover features from a
+> 	device in case we don't have Device Tree, for sure it can be extended and used
+> 	in other devices too. So it can be bigger namespace than FPGA. This is the
+> 	reason we picked dfl_fpga (DFL based FPGA) before (suggested by Alan),
+> 	for sure it's possible to have "DFL based XXX" in the future, even
+> 	currently only FPGA uses DFL. This is the reason I think bus type "dfl" sounds ok
+> 	in bus code submission review, DFL based FPGA has its own dfl_fpga specific
+> 	ioctl definition, but bus for driver matching can be reused, so it seems
+> 	we fine, if we need to support other devices reusing DFL.
+> 
+> 	[Moritz's comments] in this mail thread:
+> 	Let's leave it as is -- An FPGA is one possible implementation and as for
+> 	other buses, you wouldn't call it fpga-usb or usb-fpga
+> 	just because the USB bus is implemented in an FPGA if it behaves like a
+> 	normal USB bus.
+> 	Having an ASIC based DFL bus show up under dfl-fpga /
+> 	fpga-dfl in sysfs would be super confusing.
+> 										
+> 	I mostly think we should keep DFL generic where it touches userspace and
+> 	defines ABI, since we cannot change it afterwards.
+> 
+> 	I rest my point with the bus being independent of FPGAs despite
+> 	the FPGA being the (currently) only user.
+> 
+> 	I just think it doesn't make a lot of sense to call it
+> 	fpga-dfl or dfl-fpga. But if everyone else disagrees ... naming is hard :-)
+> 
+> 
+> Also the main code for dfl bus (we name it "dfl" in this patch) is already merged to
+> linux-next, see this patch:
+> 
+> 	fpga: dfl: create a dfl bus type to support DFL devices
+> 	https://lore.kernel.org/linux-fpga/20200905003231.GB3157@epycbox.lan/T/#u	
+> 
+> So we also want to keep the naming of bus stuff aligned with the name of user
+> ABIs, to keep the driver self-consistent.
+> 
+> 
+> Hope I make things clear.
+> 
+> Thanks,
+> Yilun
+
+Can you resend your latest, and CC Greg?
+
+We're pretty late in the cycle, so this is gonna wait till the next cycle most likely.
+The one patch that introduces the bus doesn't collidee with the plan, so
+what is queued right now for 5.10 in Greg's tree is fine.
+
+Thanks,
+Moritz
