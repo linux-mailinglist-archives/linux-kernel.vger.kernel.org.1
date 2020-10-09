@@ -2,541 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CEFE28903A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 19:46:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B08F289041
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 19:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387920AbgJIRqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 13:46:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732037AbgJIRqF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 13:46:05 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C10E0C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 10:46:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=NfLuiWpiuHU0oAhMGr8qzcwwieL815Axda8e2Q3A81s=; b=M0KckyOuyxPS0nmB3LYN9sa48F
-        qyB9pKC2FUM0R5+tlsRWrebh0z8uEX3nYCT4ME6kelxOPCAD7J9mToQzVZSQcNGVB7/FbO7+LvfET
-        N+VMU2FDnWdpP5q+Ip50EJdJKHtddLkTZQwE7ifZ423WJdNTJDfz69eLnJ9wz/OxLXKtGl5qxjL8T
-        eib3OOTN6mGLlvW+Yv//n9DbPco3Sx0HtLVH2oYFTY1D4KYNwPy2wlLFz0SmYSapQ+0s/ZYtSLxog
-        kPG8EENOjs09L9BcApf3+OU/+eJPMQ1zUGt0vDe8SMuJu/F+FtCmdb2MdrjuzvmQgBII8KmJnZiyS
-        vl62PotA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kQwSr-0001mQ-E5; Fri, 09 Oct 2020 17:45:57 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BB1E930008D;
-        Fri,  9 Oct 2020 19:45:54 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A9BB3214324A9; Fri,  9 Oct 2020 19:45:54 +0200 (CEST)
-Date:   Fri, 9 Oct 2020 19:45:54 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Mel Gorman <mgorman@suse.de>,
-        Frederic Weisbecker <fweisbecker@suse.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [RFC PATCH v2 0/5] allow overriding default preempt mode from
- command line
-Message-ID: <20201009174554.GS2611@hirez.programming.kicks-ass.net>
-References: <20201009122926.29962-1-mhocko@kernel.org>
+        id S2388020AbgJIRuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 13:50:24 -0400
+Received: from mga17.intel.com ([192.55.52.151]:24259 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387948AbgJIRuX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 13:50:23 -0400
+IronPort-SDR: 6BRxpvNwmkixnA+JZuthsgsojwtBKJMe2cLQYhDnbOtbMlylWqQIBLUOKmZtBqCSker7x/aQgs
+ pEAVimiN68CA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9769"; a="145385041"
+X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
+   d="scan'208";a="145385041"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 10:50:21 -0700
+IronPort-SDR: vO/wiizu+Pd2mVSPLx29QrErg6qEl62RvBT88XWdx6svNgAirJwegnrrWbllyYKLG0WH6XzT7G
+ QRCpLCJfWytw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
+   d="scan'208";a="519806106"
+Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
+  by fmsmga005.fm.intel.com with ESMTP; 09 Oct 2020 10:50:21 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 9 Oct 2020 10:50:21 -0700
+Received: from fmsmsx604.amr.corp.intel.com (10.18.126.84) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 9 Oct 2020 10:50:20 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Fri, 9 Oct 2020 10:50:20 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.104)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Fri, 9 Oct 2020 10:50:19 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jo+Vd8u1vMyjy54QhpRF/f1TKQooLIPSFadZhvEJlEwODvOHfwdw2Mz3n6Dnh2jCZMsWObtsU6m0ooC/ow4NwVNUNfp6+s5P+LOTCZppjh8kxte1KJ1eRhXBaWZVwY20CwEgRxVhPE67G/vmSCfPtu5bSDu4ZanUFlGU1G4sx649u7L29QZuIanvw6AREEne9EG93gmY6MVHNX30QHD2ZpF2DnDGLG8iE9mqm/YNX41MI0l7+WAYNkWLgL+4JhqNW9nLFe91WMQhNeOPAvKk6De3rMz8yzRBJQYoIfauDWwUmNGq/yC9Ijs3CE8CS74Rz+EQ7FNZhKUPACXL9+rKvg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XaE57JD4LOzqFw/qrbafZ2PNYli+0b5RbUbzAQ6CSiw=;
+ b=WK4ZgzukJOOWb/N6vuanP2L2bDnemGFDSmRebf1/aKkTpQQ4zk02TnvJSym/WGRnKF1Y5nMbpt3+QOORqQ4iz1oToWulICWOToZni6VpUo4UCpV0CMBkpF6SOefGTdKgrQlVZR1z1pWNZvRmq12ZFjOSf3/4jeAw4Hs1Xou2RcycmCo7ZHT0oCv5+WfmeO9qIp7OjaAdh+L+c/JlUD/HI/tsiZxMhPeDh2G1ebRm+6WFFnhzDvBgJgK75AiWByY2nTp779y9XTHD0v5aUf7AbO+gkG59LVhla9vDYzKGZmzahue8aX6N79Lh5updAeue0nIzwWrg8LrU+W9lm9Lj8g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XaE57JD4LOzqFw/qrbafZ2PNYli+0b5RbUbzAQ6CSiw=;
+ b=uBhPmpWC/h6rvGWs7p7XML0EVWcFOsatKs8CvLAXl9dCU76Z1ZcXC2iIehnpYJETa07AaEEVLXqq9p1EgA5eWvrflztndrFi8kSzhvOIfI/CYsC/Sr1knKCaTKEgcpiGBuKNNvjkQD0s3FIfrG9PUjReFHW16yWm16byOj0TTjw=
+Received: from DM6PR11MB2876.namprd11.prod.outlook.com (2603:10b6:5:c1::16) by
+ DM5PR11MB1356.namprd11.prod.outlook.com (2603:10b6:3:14::17) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3455.26; Fri, 9 Oct 2020 17:50:16 +0000
+Received: from DM6PR11MB2876.namprd11.prod.outlook.com
+ ([fe80::c85a:d98e:fbf3:9f8c]) by DM6PR11MB2876.namprd11.prod.outlook.com
+ ([fe80::c85a:d98e:fbf3:9f8c%5]) with mapi id 15.20.3433.045; Fri, 9 Oct 2020
+ 17:50:16 +0000
+From:   "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+CC:     "Hunter, Adrian" <adrian.hunter@intel.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        "Shevchenko, Andriy" <andriy.shevchenko@intel.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Raja Subramanian, Lakshmi Bai" 
+        <lakshmi.bai.raja.subramanian@intel.com>,
+        "Wan Mohamad, Wan Ahmad Zainie" 
+        <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: RE: [PATCH v4 4/4] mmc: sdhci-of-arasan: Enable UHS-1 support for
+ Keem Bay SOC
+Thread-Topic: [PATCH v4 4/4] mmc: sdhci-of-arasan: Enable UHS-1 support for
+ Keem Bay SOC
+Thread-Index: AQHWnRiQsJ+XebQSo0uGE+XglmG5+KmNcEsAgAAYHQCAAEouAIAAIK+wgADlJYCAALSokA==
+Date:   Fri, 9 Oct 2020 17:50:16 +0000
+Message-ID: <DM6PR11MB2876DF701740F70FFD2B2D17B8080@DM6PR11MB2876.namprd11.prod.outlook.com>
+References: <20201008020936.19894-1-muhammad.husaini.zulkifli@intel.com>
+ <20201008020936.19894-5-muhammad.husaini.zulkifli@intel.com>
+ <CAPDyKFpUv8yeVrWVLRKvz4eKsSDdk0y4dKY2mYs07zpA2UqNdw@mail.gmail.com>
+ <DM6PR11MB28764EC5E1F89D417D700F29B80B0@DM6PR11MB2876.namprd11.prod.outlook.com>
+ <CAPDyKFptgKG8uvKUkN56sooFL4xqaBcNdbpo645xRQqPOH4BkQ@mail.gmail.com>
+ <DM6PR11MB28761F10936FF0D2695FAF19B80B0@DM6PR11MB2876.namprd11.prod.outlook.com>
+ <CAPDyKFoRHsOiz9BFJ5jWyKqvdmNW9eeEmCGKYn0Q1jUzNwJZNg@mail.gmail.com>
+In-Reply-To: <CAPDyKFoRHsOiz9BFJ5jWyKqvdmNW9eeEmCGKYn0Q1jUzNwJZNg@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [42.189.177.181]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f4474c00-71e7-4029-9b70-08d86c7bc7e2
+x-ms-traffictypediagnostic: DM5PR11MB1356:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM5PR11MB13568AC1E0C2F3DE3A12F992B8080@DM5PR11MB1356.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: bKUL+wNOu5ywgb3oYKujNQM0UFORPU7boSBrbNHcbk2z1jTzfwknDmgRw7M6Rzii6pBbU2apn+3Xm1di2AvFi537bL+pdeeIU/6cWPAJlESIjltt/io17f+LjVfUQ365OHcyOZHWo920cYBLQ9aAvNfzdQYq5rnlUdDs0OE1I5/7PE8W4HHW7Uwqg2GLQC3gmOvBNejum0QZSAV9COjYeNtkQk2e3cgZ3ZQScEosGNBczUyNgKCr7cfTo39PRSsrbY8JiAFSrV0dWqL0HZiUjVVGMLgPxRDOynSwCLaa3n/IjJtW74lZdjw8X/hkENNCVK1WvY5hflrraKT75USYFA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB2876.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(366004)(346002)(39860400002)(376002)(83380400001)(26005)(8676002)(8936002)(66476007)(6916009)(478600001)(66446008)(64756008)(66556008)(2906002)(76116006)(316002)(71200400001)(55016002)(66946007)(54906003)(86362001)(186003)(33656002)(9686003)(6506007)(52536014)(5660300002)(4326008)(7696005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: tLVz3g9ymcUF39cVXkTl0RsTn1I9AH420C4OB5SvhZUK8694bZouivFX4gS0l78/9LIQVfsJEsopL2Fn1AVGmtfwFxLFRZzoZApN9/PU4DZxl6vNjJihSqIhyPuWgL+k7XXCxAvDSg5wIFm3Dp7lzGQG7FWgHgs7pUgOSQ9n1ZxYZ1AbXqKvbvWEVdPnpbY5wNZRqJxux3fVxBiY97EhPr9SNIM4txMAHxRf/Jl0vdWdio9th9CbY+beiLXSFa8wXyrQJo6TnClEgboSlDUwhrTV+TwnDriO6xO9U1TsX8VepDrgb3QNcjnwGZ7jDJZj9veCFTf2jfCsbkLXwsDQayIVcVlECXsZEWb5VhRuCpkWcJ9PZcpyvujEFXJe9seK8UUhEFXZOnoGK6hNPhMA8RbAJU4Gg+ODzbPYGR9g9yf/MFQD+xT1xO631LdlCqF9HWavmFO2ROuAw1BYfiaxttXSAkc1BkkZKDMousL9MA2kujgxgWp2ObinVRy1zEx+TcNAERm+zftFjvwHu4omO6yZDH2c8O1fTA/25xhNstGGSPWYp5T3FiDcwqKIjvogDvXHqj/8WhuvOao6iZ+EGKVJR4BjOtE3Xkt5HHoRwXXmc3Adh+CdagePAV9JN1ZJIbA15rchFuy9tzPhXdmW3w==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201009122926.29962-1-mhocko@kernel.org>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB2876.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f4474c00-71e7-4029-9b70-08d86c7bc7e2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Oct 2020 17:50:16.0860
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: eVyQgYFelqIUmjPgZ65K1Oy4yaUI/oAb/8kdB+830gv3ejGK7xMX2vAiwnlZthlvYwKGq/e1NRP++YhMt5l+BRjAlAU+ZTSx6/7t/DvA9nbB0nxeuAuPSPbnYZY/EO2X
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB1356
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 02:29:21PM +0200, Michal Hocko wrote:
-> Hi,
-> let me repost the pile that has grown from the initial patch based on
-> the review feedback I have collected from Peter. I do realize that he
-> also suggested to go from the other direction and implement this for the
-> full preemption mode first. As I've said I believe this would require to
-> examine all CONFIG_PREEMPTION code paths and preempt_mode=[none,voluntary]
-> is already quite useful for distributions which are targeting high
-> throuhput and desktop environments. Adding full preemption on top is
-> definitely desirable and something we will be looking into. This is the
-> first step in that direction.
-
-Just for giggles, configure a x86_64-PREEMPT kernel and apply the below.
-It builds and boots here, except for "preempt=zero", which hangs
-somewhere early.
-
-It should be able to switch preemption mode at runtime too, but I've not
-bothered to wire that up.
-
-Also, some of it is utterly yuck ;-)
-
----
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 3bc9b3bb178c..0941dc919d35 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3894,6 +3894,11 @@
- 			Format: {"off"}
- 			Disable Hardware Transactional Memory
- 
-+	preempt={none,voluntary}
-+			Set the preemption mode.
-+			none - equivalent to CONFIG_PREEMPT_NONE
-+			voluntary - equivalent to CONFIG_PREEMPT_VOLUNTARY
-+
- 	print-fatal-signals=
- 			[KNL] debug: print fatal signals
- 
-diff --git a/arch/x86/include/asm/preempt.h b/arch/x86/include/asm/preempt.h
-index 69485ca13665..ca4f64229da9 100644
---- a/arch/x86/include/asm/preempt.h
-+++ b/arch/x86/include/asm/preempt.h
-@@ -5,6 +5,7 @@
- #include <asm/rmwcc.h>
- #include <asm/percpu.h>
- #include <linux/thread_info.h>
-+#include <linux/static_call_types.h>
- 
- DECLARE_PER_CPU(int, __preempt_count);
- 
-@@ -103,16 +104,27 @@ static __always_inline bool should_resched(int preempt_offset)
- }
- 
- #ifdef CONFIG_PREEMPTION
--  extern asmlinkage void preempt_schedule_thunk(void);
--# define __preempt_schedule() \
--	asm volatile ("call preempt_schedule_thunk" : ASM_CALL_CONSTRAINT)
- 
--  extern asmlinkage void preempt_schedule(void);
--  extern asmlinkage void preempt_schedule_notrace_thunk(void);
--# define __preempt_schedule_notrace() \
--	asm volatile ("call preempt_schedule_notrace_thunk" : ASM_CALL_CONSTRAINT)
-+extern asmlinkage void preempt_schedule(void);
-+extern asmlinkage void preempt_schedule_thunk(void);
-+DECLARE_STATIC_CALL(preempt_schedule, preempt_schedule_thunk);
-+
-+#define __preempt_schedule() \
-+do { \
-+	__ADDRESSABLE(STATIC_CALL_KEY(preempt_schedule)); \
-+	asm volatile ("call " STATIC_CALL_TRAMP_STR(preempt_schedule) : ASM_CALL_CONSTRAINT); \
-+} while (0)
-+
-+extern asmlinkage void preempt_schedule_notrace(void);
-+extern asmlinkage void preempt_schedule_notrace_thunk(void);
-+DECLARE_STATIC_CALL(preempt_schedule_notrace, preempt_schedule_notrace_thunk);
-+
-+#define __preempt_schedule_notrace() \
-+do { \
-+	__ADDRESSABLE(STATIC_CALL_KEY(preempt_schedule_notrace)); \
-+	asm volatile ("call " STATIC_CALL_TRAMP_STR(preempt_schedule_notrace) : ASM_CALL_CONSTRAINT); \
-+} while (0)
- 
--  extern asmlinkage void preempt_schedule_notrace(void);
- #endif
- 
- #endif /* __ASM_PREEMPT_H */
-diff --git a/arch/x86/kernel/static_call.c b/arch/x86/kernel/static_call.c
-index ca9a380d9c0b..0f19f4fefcf6 100644
---- a/arch/x86/kernel/static_call.c
-+++ b/arch/x86/kernel/static_call.c
-@@ -16,7 +16,12 @@ static void __ref __static_call_transform(void *insn, enum insn_type type, void
- 	int size = CALL_INSN_SIZE;
- 	const void *code;
- 
--	switch (type) {
-+	if (type < 2 && func == &__static_call_return0) {
-+
-+		static const u8 ret0[5] = { 0x66, 0x66, 0x48, 0x31, 0xc0 };
-+		code = ret0;
-+
-+	} else switch (type) {
- 	case CALL:
- 		code = text_gen_insn(CALL_INSN_OPCODE, insn, func);
- 		break;
-diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-index c25b8e41c0ea..88baab97a910 100644
---- a/include/linux/kernel.h
-+++ b/include/linux/kernel.h
-@@ -14,6 +14,7 @@
- #include <linux/typecheck.h>
- #include <linux/printk.h>
- #include <linux/build_bug.h>
-+#include <linux/static_call_types.h>
- #include <asm/byteorder.h>
- #include <asm/div64.h>
- #include <uapi/linux/kernel.h>
-@@ -192,12 +193,21 @@ struct completion;
- struct pt_regs;
- struct user;
- 
--#ifdef CONFIG_PREEMPT_VOLUNTARY
--extern int _cond_resched(void);
--# define might_resched() _cond_resched()
--#else
--# define might_resched() do { } while (0)
--#endif
-+extern int __cond_resched(void);
-+DECLARE_STATIC_CALL(cond_resched, __cond_resched);
-+
-+static __always_inline int _cond_resched(void)
-+{
-+	return static_call(cond_resched)();
-+}
-+
-+extern void __might_resched(void);
-+DECLARE_STATIC_CALL(might_resched, __might_resched);
-+
-+static __always_inline void might_resched(void)
-+{
-+	static_call(might_resched)();
-+}
- 
- #ifdef CONFIG_DEBUG_ATOMIC_SLEEP
- extern void ___might_sleep(const char *file, int line, int preempt_offset);
-diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
-index 59eb5cd567d7..483b015ac32f 100644
---- a/include/linux/rcutree.h
-+++ b/include/linux/rcutree.h
-@@ -64,9 +64,7 @@ extern int rcu_scheduler_active __read_mostly;
- void rcu_end_inkernel_boot(void);
- bool rcu_inkernel_boot_has_ended(void);
- bool rcu_is_watching(void);
--#ifndef CONFIG_PREEMPTION
- void rcu_all_qs(void);
--#endif
- 
- /* RCUtree hotplug events */
- int rcutree_prepare_cpu(unsigned int cpu);
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index d383cf09e78f..0443da7cca0c 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1820,11 +1820,6 @@ static inline int test_tsk_need_resched(struct task_struct *tsk)
-  * value indicates whether a reschedule was done in fact.
-  * cond_resched_lock() will drop the spinlock before scheduling,
-  */
--#ifndef CONFIG_PREEMPTION
--extern int _cond_resched(void);
--#else
--static inline int _cond_resched(void) { return 0; }
--#endif
- 
- #define cond_resched() ({			\
- 	___might_sleep(__FILE__, __LINE__, 0);	\
-diff --git a/include/linux/static_call.h b/include/linux/static_call.h
-index 695da4c9b338..f47b8f5ffa69 100644
---- a/include/linux/static_call.h
-+++ b/include/linux/static_call.h
-@@ -107,26 +107,11 @@ extern void arch_static_call_transform(void *site, void *tramp, void *func, bool
- 
- #define STATIC_CALL_TRAMP_ADDR(name) &STATIC_CALL_TRAMP(name)
- 
--/*
-- * __ADDRESSABLE() is used to ensure the key symbol doesn't get stripped from
-- * the symbol table so that objtool can reference it when it generates the
-- * .static_call_sites section.
-- */
--#define __static_call(name)						\
--({									\
--	__ADDRESSABLE(STATIC_CALL_KEY(name));				\
--	&STATIC_CALL_TRAMP(name);					\
--})
--
- #else
- #define STATIC_CALL_TRAMP_ADDR(name) NULL
- #endif
- 
- 
--#define DECLARE_STATIC_CALL(name, func)					\
--	extern struct static_call_key STATIC_CALL_KEY(name);		\
--	extern typeof(func) STATIC_CALL_TRAMP(name);
--
- #define static_call_update(name, func)					\
- ({									\
- 	BUILD_BUG_ON(!__same_type(*(func), STATIC_CALL_TRAMP(name)));	\
-@@ -136,6 +121,8 @@ extern void arch_static_call_transform(void *site, void *tramp, void *func, bool
- 
- #ifdef CONFIG_HAVE_STATIC_CALL_INLINE
- 
-+extern int __static_call_return0(void);
-+
- extern int __init static_call_init(void);
- 
- struct static_call_mod {
-@@ -174,7 +161,6 @@ extern int static_call_text_reserved(void *start, void *end);
- 	};								\
- 	ARCH_DEFINE_STATIC_CALL_NULL_TRAMP(name)
- 
--#define static_call(name)	__static_call(name)
- #define static_call_cond(name)	(void)__static_call(name)
- 
- #define EXPORT_STATIC_CALL(name)					\
-@@ -187,6 +173,8 @@ extern int static_call_text_reserved(void *start, void *end);
- 
- #elif defined(CONFIG_HAVE_STATIC_CALL)
- 
-+static inline int __static_call_return0(void) { return 0; }
-+
- static inline int static_call_init(void) { return 0; }
- 
- struct static_call_key {
-@@ -207,7 +195,6 @@ struct static_call_key {
- 	};								\
- 	ARCH_DEFINE_STATIC_CALL_NULL_TRAMP(name)
- 
--#define static_call(name)	__static_call(name)
- #define static_call_cond(name)	(void)__static_call(name)
- 
- static inline
-@@ -234,6 +221,8 @@ static inline int static_call_text_reserved(void *start, void *end)
- 
- #else /* Generic implementation */
- 
-+static inline int __static_call_return0(void) { return 0; }
-+
- static inline int static_call_init(void) { return 0; }
- 
- struct static_call_key {
-@@ -252,9 +241,6 @@ struct static_call_key {
- 		.func = NULL,						\
- 	}
- 
--#define static_call(name)						\
--	((typeof(STATIC_CALL_TRAMP(name))*)(STATIC_CALL_KEY(name).func))
--
- static inline void __static_call_nop(void) { }
- 
- /*
-diff --git a/include/linux/static_call_types.h b/include/linux/static_call_types.h
-index 89135bb35bf7..08f78b1b88b4 100644
---- a/include/linux/static_call_types.h
-+++ b/include/linux/static_call_types.h
-@@ -4,6 +4,7 @@
- 
- #include <linux/types.h>
- #include <linux/stringify.h>
-+#include <linux/compiler.h>
- 
- #define STATIC_CALL_KEY_PREFIX		__SCK__
- #define STATIC_CALL_KEY_PREFIX_STR	__stringify(STATIC_CALL_KEY_PREFIX)
-@@ -32,4 +33,30 @@ struct static_call_site {
- 	s32 key;
- };
- 
-+#define DECLARE_STATIC_CALL(name, func)					\
-+	extern struct static_call_key STATIC_CALL_KEY(name);		\
-+	extern typeof(func) STATIC_CALL_TRAMP(name);
-+
-+#ifdef CONFIG_HAVE_STATIC_CALL
-+
-+/*
-+ * __ADDRESSABLE() is used to ensure the key symbol doesn't get stripped from
-+ * the symbol table so that objtool can reference it when it generates the
-+ * .static_call_sites section.
-+ */
-+#define __static_call(name)						\
-+({									\
-+	__ADDRESSABLE(STATIC_CALL_KEY(name));				\
-+	&STATIC_CALL_TRAMP(name);					\
-+})
-+
-+#define static_call(name)	__static_call(name)
-+
-+#else
-+
-+#define static_call(name)						\
-+	((typeof(STATIC_CALL_TRAMP(name))*)(STATIC_CALL_KEY(name).func))
-+
-+#endif /* CONFIG_HAVE_STATIC_CALL */
-+
- #endif /* _STATIC_CALL_TYPES_H */
-diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-index 0a1e20f8d4e8..de0665b1890d 100644
---- a/kernel/entry/common.c
-+++ b/kernel/entry/common.c
-@@ -359,6 +359,8 @@ void irqentry_exit_cond_resched(void)
- 	}
- }
- 
-+DECLARE_STATIC_KEY_TRUE(irq_preemption_key);
-+
- noinstr void irqentry_exit(struct pt_regs *regs, irqentry_state_t state)
- {
- 	lockdep_assert_irqs_disabled();
-@@ -384,7 +386,7 @@ noinstr void irqentry_exit(struct pt_regs *regs, irqentry_state_t state)
- 		}
- 
- 		instrumentation_begin();
--		if (IS_ENABLED(CONFIG_PREEMPTION))
-+		if (static_branch_likely(&irq_preemption_key))
- 			irqentry_exit_cond_resched();
- 		/* Covers both tracing and lockdep */
- 		trace_hardirqs_on();
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 8160ab5263f8..f872fb0ac560 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -4709,6 +4709,9 @@ asmlinkage __visible void __sched notrace preempt_schedule(void)
- NOKPROBE_SYMBOL(preempt_schedule);
- EXPORT_SYMBOL(preempt_schedule);
- 
-+DEFINE_STATIC_CALL(preempt_schedule, preempt_schedule);
-+EXPORT_STATIC_CALL(preempt_schedule);
-+
- /**
-  * preempt_schedule_notrace - preempt_schedule called by tracing
-  *
-@@ -4761,6 +4764,9 @@ asmlinkage __visible void __sched notrace preempt_schedule_notrace(void)
- }
- EXPORT_SYMBOL_GPL(preempt_schedule_notrace);
- 
-+DEFINE_STATIC_CALL(preempt_schedule_notrace, preempt_schedule_notrace);
-+EXPORT_STATIC_CALL(preempt_schedule_notrace);
-+
- #endif /* CONFIG_PREEMPTION */
- 
- /*
-@@ -6111,18 +6117,29 @@ SYSCALL_DEFINE0(sched_yield)
- 	return 0;
- }
- 
--#ifndef CONFIG_PREEMPTION
--int __sched _cond_resched(void)
-+int __sched __cond_resched(void)
- {
- 	if (should_resched(0)) {
- 		preempt_schedule_common();
- 		return 1;
- 	}
-+#ifndef CONFIG_PREEMPT_RCU
- 	rcu_all_qs();
-+#endif
- 	return 0;
- }
--EXPORT_SYMBOL(_cond_resched);
--#endif
-+EXPORT_SYMBOL(__cond_resched);
-+
-+DEFINE_STATIC_CALL(cond_resched, __cond_resched);
-+EXPORT_STATIC_CALL(cond_resched);
-+
-+void __sched __might_resched(void)
-+{
-+	__cond_resched();
-+}
-+
-+DEFINE_STATIC_CALL(might_resched, __might_resched);
-+EXPORT_STATIC_CALL(might_resched);
- 
- /*
-  * __cond_resched_lock() - if a reschedule is pending, drop the given lock,
-@@ -8481,3 +8498,86 @@ void call_trace_sched_update_nr_running(struct rq *rq, int count)
- {
-         trace_sched_update_nr_running_tp(rq, count);
- }
-+
-+DEFINE_STATIC_KEY_TRUE(irq_preemption_key);
-+
-+/*
-+ * SC:cond_resched
-+ * SC:might_resched
-+ * SC:preempt_schedule
-+ * SC:preempt_schedule_notrace
-+ * SB:irq_preemption_key
-+ *
-+ *
-+ * ZERO
-+ *   cond_resched             <- RET0
-+ *   might_resched            <- NOP
-+ *   preempt_schedule         <- NOP
-+ *   preempt_schedule_notrace <- NOP
-+ *   irq_preemption_key       <- false
-+ *
-+ * NONE:
-+ *   cond_resched             <- __cond_resched
-+ *   might_resched            <- NOP
-+ *   preempt_schedule         <- NOP
-+ *   preempt_schedule_notrace <- NOP
-+ *   irq_preemption_key       <- false
-+ *
-+ * VOLUNTARY:
-+ *   cond_resched             <- __cond_resched
-+ *   might_resched            <- __might_resched
-+ *   preempt_schedule         <- NOP
-+ *   preempt_schedule_notrace <- NOP
-+ *   irq_preemption_key       <- false
-+ *
-+ * FULL:
-+ *   cond_resched             <- RET0
-+ *   might_resched            <- NOP
-+ *   preempt_schedule         <- preempt_schedule
-+ *   preempt_schedule_notrace <- preempt_schedule_notrace
-+ *   irq_preemption_key       <- true
-+ */
-+static int __init setup_preempt_mode(char *str)
-+{
-+	if (!strcmp(str, "zero")) {
-+		static_call_update(cond_resched, __static_call_return0);
-+		static_call_update(might_resched, (void (*)(void))NULL);
-+		static_call_update(preempt_schedule, (void (*)(void))NULL);
-+		static_call_update(preempt_schedule_notrace, (void (*)(void))NULL);
-+		static_branch_disable(&irq_preemption_key);
-+		printk("XXX PREEMPT: %s\n", str);
-+	} else if (!strcmp(str, "none")) {
-+		static_call_update(cond_resched, __cond_resched);
-+		static_call_update(might_resched, (void (*)(void))NULL);
-+		static_call_update(preempt_schedule, (void (*)(void))NULL);
-+		static_call_update(preempt_schedule_notrace, (void (*)(void))NULL);
-+		static_branch_disable(&irq_preemption_key);
-+		printk("XXX PREEMPT: %s\n", str);
-+	} else if (!strcmp(str, "voluntary")) {
-+		static_call_update(cond_resched, __cond_resched);
-+		static_call_update(might_resched, __might_resched);
-+		static_call_update(preempt_schedule, (void (*)(void))NULL);
-+		static_call_update(preempt_schedule_notrace, (void (*)(void))NULL);
-+		static_branch_disable(&irq_preemption_key);
-+		printk("XXX PREEMPT: %s\n", str);
-+	} else if (!strcmp(str, "ponies")) {
-+		static_call_update(cond_resched, __cond_resched);
-+		static_call_update(might_resched, (void (*)(void))NULL);
-+		static_call_update(preempt_schedule, preempt_schedule_thunk);
-+		static_call_update(preempt_schedule_notrace, preempt_schedule_notrace_thunk);
-+		static_branch_enable(&irq_preemption_key);
-+		printk("XXX PREEMPT: %s\n", str);
-+	} else if (!strcmp(str, "full")) {
-+		static_call_update(cond_resched, __static_call_return0);
-+		static_call_update(might_resched, (void (*)(void))NULL);
-+		static_call_update(preempt_schedule, preempt_schedule_thunk);
-+		static_call_update(preempt_schedule_notrace, preempt_schedule_notrace_thunk);
-+		static_branch_enable(&irq_preemption_key);
-+		printk("XXX PREEMPT: %s\n", str);
-+	} else {
-+		pr_warn("Unsupported preempt mode %s\n", str);
-+		return 1;
-+	}
-+	return 0;
-+}
-+__setup("preempt=", setup_preempt_mode);
-diff --git a/kernel/static_call.c b/kernel/static_call.c
-index 84565c2a41b8..1aa17e399448 100644
---- a/kernel/static_call.c
-+++ b/kernel/static_call.c
-@@ -438,6 +438,11 @@ int __init static_call_init(void)
- }
- early_initcall(static_call_init);
- 
-+int __static_call_return0(void)
-+{
-+	return 0;
-+}
-+
- #ifdef CONFIG_STATIC_CALL_SELFTEST
- 
- static int func_a(int x)
+SGksDQoNCj4tLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPkZyb206IFVsZiBIYW5zc29uIDx1
+bGYuaGFuc3NvbkBsaW5hcm8ub3JnPg0KPlNlbnQ6IEZyaWRheSwgT2N0b2JlciA5LCAyMDIwIDI6
+NTYgUE0NCj5UbzogWnVsa2lmbGksIE11aGFtbWFkIEh1c2FpbmkgPG11aGFtbWFkLmh1c2Fpbmku
+enVsa2lmbGlAaW50ZWwuY29tPg0KPkNjOiBIdW50ZXIsIEFkcmlhbiA8YWRyaWFuLmh1bnRlckBp
+bnRlbC5jb20+OyBNaWNoYWwgU2ltZWsNCj48bWljaGFsLnNpbWVrQHhpbGlueC5jb20+OyBTaGV2
+Y2hlbmtvLCBBbmRyaXkNCj48YW5kcml5LnNoZXZjaGVua29AaW50ZWwuY29tPjsgbGludXgtbW1j
+QHZnZXIua2VybmVsLm9yZzsgTGludXggQVJNDQo+PGxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5m
+cmFkZWFkLm9yZz47IExpbnV4IEtlcm5lbCBNYWlsaW5nIExpc3QgPGxpbnV4LQ0KPmtlcm5lbEB2
+Z2VyLmtlcm5lbC5vcmc+OyBSYWphIFN1YnJhbWFuaWFuLCBMYWtzaG1pIEJhaQ0KPjxsYWtzaG1p
+LmJhaS5yYWphLnN1YnJhbWFuaWFuQGludGVsLmNvbT47IFdhbiBNb2hhbWFkLCBXYW4gQWhtYWQN
+Cj5aYWluaWUgPHdhbi5haG1hZC56YWluaWUud2FuLm1vaGFtYWRAaW50ZWwuY29tPjsgQXJuZCBC
+ZXJnbWFubg0KPjxhcm5kQGFybmRiLmRlPg0KPlN1YmplY3Q6IFJlOiBbUEFUQ0ggdjQgNC80XSBt
+bWM6IHNkaGNpLW9mLWFyYXNhbjogRW5hYmxlIFVIUy0xIHN1cHBvcnQgZm9yDQo+S2VlbSBCYXkg
+U09DDQo+DQo+T24gVGh1LCA4IE9jdCAyMDIwIGF0IDE5OjIxLCBadWxraWZsaSwgTXVoYW1tYWQg
+SHVzYWluaQ0KPjxtdWhhbW1hZC5odXNhaW5pLnp1bGtpZmxpQGludGVsLmNvbT4gd3JvdGU6DQo+
+Pg0KPj4gSGksDQo+Pg0KPj4gPi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+PiA+RnJvbTog
+VWxmIEhhbnNzb24gPHVsZi5oYW5zc29uQGxpbmFyby5vcmc+DQo+PiA+U2VudDogVGh1cnNkYXks
+IE9jdG9iZXIgOCwgMjAyMCAxMToxOSBQTQ0KPj4gPlRvOiBadWxraWZsaSwgTXVoYW1tYWQgSHVz
+YWluaSA8bXVoYW1tYWQuaHVzYWluaS56dWxraWZsaUBpbnRlbC5jb20+DQo+PiA+Q2M6IEh1bnRl
+ciwgQWRyaWFuIDxhZHJpYW4uaHVudGVyQGludGVsLmNvbT47IE1pY2hhbCBTaW1law0KPj4gPjxt
+aWNoYWwuc2ltZWtAeGlsaW54LmNvbT47IFNoZXZjaGVua28sIEFuZHJpeQ0KPj4gPjxhbmRyaXku
+c2hldmNoZW5rb0BpbnRlbC5jb20+OyBsaW51eC1tbWNAdmdlci5rZXJuZWwub3JnOyBMaW51eCBB
+Uk0NCj4+ID48bGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnPjsgTGludXggS2Vy
+bmVsIE1haWxpbmcgTGlzdA0KPj4gPjxsaW51eC0ga2VybmVsQHZnZXIua2VybmVsLm9yZz47IFJh
+amEgU3VicmFtYW5pYW4sIExha3NobWkgQmFpDQo+PiA+PGxha3NobWkuYmFpLnJhamEuc3VicmFt
+YW5pYW5AaW50ZWwuY29tPjsgV2FuIE1vaGFtYWQsIFdhbiBBaG1hZA0KPj4gPlphaW5pZSA8d2Fu
+LmFobWFkLnphaW5pZS53YW4ubW9oYW1hZEBpbnRlbC5jb20+OyBBcm5kIEJlcmdtYW5uDQo+PiA+
+PGFybmRAYXJuZGIuZGU+DQo+PiA+U3ViamVjdDogUmU6IFtQQVRDSCB2NCA0LzRdIG1tYzogc2Ro
+Y2ktb2YtYXJhc2FuOiBFbmFibGUgVUhTLTENCj4+ID5zdXBwb3J0IGZvciBLZWVtIEJheSBTT0MN
+Cj4+ID4NCj4+ID5PbiBUaHUsIDggT2N0IDIwMjAgYXQgMTI6NTQsIFp1bGtpZmxpLCBNdWhhbW1h
+ZCBIdXNhaW5pDQo+PiA+PG11aGFtbWFkLmh1c2FpbmkuenVsa2lmbGlAaW50ZWwuY29tPiB3cm90
+ZToNCj4+ID4+DQo+PiA+PiBIaSwNCj4+ID4+DQo+PiA+PiA+LS0tLS1PcmlnaW5hbCBNZXNzYWdl
+LS0tLS0NCj4+ID4+ID5Gcm9tOiBVbGYgSGFuc3NvbiA8dWxmLmhhbnNzb25AbGluYXJvLm9yZz4N
+Cj4+ID4+ID5TZW50OiBUaHVyc2RheSwgT2N0b2JlciA4LCAyMDIwIDU6MjggUE0NCj4+ID4+ID5U
+bzogWnVsa2lmbGksIE11aGFtbWFkIEh1c2FpbmkNCj4+ID4+ID48bXVoYW1tYWQuaHVzYWluaS56
+dWxraWZsaUBpbnRlbC5jb20+DQo+PiA+PiA+Q2M6IEh1bnRlciwgQWRyaWFuIDxhZHJpYW4uaHVu
+dGVyQGludGVsLmNvbT47IE1pY2hhbCBTaW1law0KPj4gPj4gPjxtaWNoYWwuc2ltZWtAeGlsaW54
+LmNvbT47IFNoZXZjaGVua28sIEFuZHJpeQ0KPj4gPj4gPjxhbmRyaXkuc2hldmNoZW5rb0BpbnRl
+bC5jb20+OyBsaW51eC1tbWNAdmdlci5rZXJuZWwub3JnOyBMaW51eA0KPj4gPj4gPkFSTSA8bGlu
+dXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnPjsgTGludXggS2VybmVsIE1haWxpbmcN
+Cj4+ID4+ID5MaXN0DQo+PiA+PiA+PGxpbnV4LSBrZXJuZWxAdmdlci5rZXJuZWwub3JnPjsgUmFq
+YSBTdWJyYW1hbmlhbiwgTGFrc2htaSBCYWkNCj4+ID4+ID48bGFrc2htaS5iYWkucmFqYS5zdWJy
+YW1hbmlhbkBpbnRlbC5jb20+OyBXYW4gTW9oYW1hZCwgV2FuDQo+QWhtYWQNCj4+ID4+ID5aYWlu
+aWUgPHdhbi5haG1hZC56YWluaWUud2FuLm1vaGFtYWRAaW50ZWwuY29tPjsgQXJuZCBCZXJnbWFu
+bg0KPj4gPj4gPjxhcm5kQGFybmRiLmRlPg0KPj4gPj4gPlN1YmplY3Q6IFJlOiBbUEFUQ0ggdjQg
+NC80XSBtbWM6IHNkaGNpLW9mLWFyYXNhbjogRW5hYmxlIFVIUy0xDQo+PiA+PiA+c3VwcG9ydCBm
+b3IgS2VlbSBCYXkgU09DDQo+PiA+PiA+DQo+PiA+PiA+T24gVGh1LCA4IE9jdCAyMDIwIGF0IDA0
+OjEyLCA8bXVoYW1tYWQuaHVzYWluaS56dWxraWZsaUBpbnRlbC5jb20+DQo+PiA+d3JvdGU6DQo+
+PiA+PiA+Pg0KPj4gPj4gPj4gRnJvbTogTXVoYW1tYWQgSHVzYWluaSBadWxraWZsaQ0KPj4gPj4g
+Pj4gPG11aGFtbWFkLmh1c2FpbmkuenVsa2lmbGlAaW50ZWwuY29tPg0KPj4gPj4gPj4NCj4+ID4+
+ID4+IFZvbHRhZ2Ugc3dpdGNoaW5nIHNlcXVlbmNlIGlzIG5lZWRlZCB0byBzdXBwb3J0IFVIUy0x
+IGludGVyZmFjZS4NCj4+ID4+ID4+IFRoZXJlIGFyZSAyIHBsYWNlcyB0byBjb250cm9sIHRoZSB2
+b2x0YWdlLg0KPj4gPj4gPj4gMSkgQnkgc2V0dGluZyB0aGUgQU9OIHJlZ2lzdGVyIHVzaW5nIGZp
+cm13YXJlIGRyaXZlciBjYWxsaW5nDQo+PiA+PiA+PiBzeXN0ZW0tbGV2ZWwgcGxhdGZvcm0gbWFu
+YWdlbWVudCBsYXllciAoU01DKSB0byBzZXQgdGhlIHJlZ2lzdGVyLg0KPj4gPj4gPj4gMikgQnkg
+Y29udHJvbGxpbmcgdGhlIEdQSU8gZXhwYW5kZXIgdmFsdWUgdG8gZHJpdmUgZWl0aGVyIDEuOFYN
+Cj4+ID4+ID4+IG9yIDMuM1YgZm9yIHBvd2VyIG11eCBpbnB1dC4NCj4+ID4+ID4+DQo+PiA+PiA+
+PiBTaWduZWQtb2ZmLWJ5OiBNdWhhbW1hZCBIdXNhaW5pIFp1bGtpZmxpDQo+PiA+PiA+PiA8bXVo
+YW1tYWQuaHVzYWluaS56dWxraWZsaUBpbnRlbC5jb20+DQo+PiA+PiA+PiBSZXZpZXdlZC1ieTog
+QW5keSBTaGV2Y2hlbmtvIDxhbmRyaXkuc2hldmNoZW5rb0BpbnRlbC5jb20+DQo+PiA+PiA+PiBS
+ZXZpZXdlZC1ieTogQWRyaWFuIEh1bnRlciA8YWRyaWFuLmh1bnRlckBpbnRlbC5jb20+DQo+PiA+
+PiA+PiAtLS0NCj4+ID4+ID4+ICBkcml2ZXJzL21tYy9ob3N0L3NkaGNpLW9mLWFyYXNhbi5jIHwg
+MTI2DQo+PiA+PiA+PiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKw0KPj4gPj4gPj4gIDEg
+ZmlsZSBjaGFuZ2VkLCAxMjYgaW5zZXJ0aW9ucygrKQ0KPj4gPj4gPj4NCj4+ID4+ID4+IGRpZmYg
+LS1naXQgYS9kcml2ZXJzL21tYy9ob3N0L3NkaGNpLW9mLWFyYXNhbi5jDQo+PiA+PiA+PiBiL2Ry
+aXZlcnMvbW1jL2hvc3Qvc2RoY2ktb2YtYXJhc2FuLmMNCj4+ID4+ID4+IGluZGV4IDQ2YWVhNjUx
+NjEzMy4uZWEyNDY3YjAwNzNkIDEwMDY0NA0KPj4gPj4gPj4gLS0tIGEvZHJpdmVycy9tbWMvaG9z
+dC9zZGhjaS1vZi1hcmFzYW4uYw0KPj4gPj4gPj4gKysrIGIvZHJpdmVycy9tbWMvaG9zdC9zZGhj
+aS1vZi1hcmFzYW4uYw0KPj4gPj4gPj4gQEAgLTE2LDYgKzE2LDcgQEANCj4+ID4+ID4+ICAgKi8N
+Cj4+ID4+ID4+DQo+PiA+PiA+PiAgI2luY2x1ZGUgPGxpbnV4L2Nsay1wcm92aWRlci5oPg0KPj4g
+Pj4gPj4gKyNpbmNsdWRlIDxsaW51eC9ncGlvL2NvbnN1bWVyLmg+DQo+PiA+PiA+PiAgI2luY2x1
+ZGUgPGxpbnV4L21mZC9zeXNjb24uaD4NCj4+ID4+ID4+ICAjaW5jbHVkZSA8bGludXgvbW9kdWxl
+Lmg+DQo+PiA+PiA+PiAgI2luY2x1ZGUgPGxpbnV4L29mX2RldmljZS5oPg0KPj4gPj4gPj4gQEAg
+LTIzLDYgKzI0LDcgQEANCj4+ID4+ID4+ICAjaW5jbHVkZSA8bGludXgvcmVnbWFwLmg+DQo+PiA+
+PiA+PiAgI2luY2x1ZGUgPGxpbnV4L29mLmg+DQo+PiA+PiA+PiAgI2luY2x1ZGUgPGxpbnV4L2Zp
+cm13YXJlL3hsbngtenlucW1wLmg+DQo+PiA+PiA+PiArI2luY2x1ZGUgPGxpbnV4L2Zpcm13YXJl
+L2ludGVsL2tlZW1iYXlfZmlybXdhcmUuaD4NCj4+ID4+ID4+DQo+PiA+PiA+PiAgI2luY2x1ZGUg
+ImNxaGNpLmgiDQo+PiA+PiA+PiAgI2luY2x1ZGUgInNkaGNpLXBsdGZtLmgiDQo+PiA+PiA+PiBA
+QCAtMTM2LDYgKzEzOCw3IEBAIHN0cnVjdCBzZGhjaV9hcmFzYW5fY2xrX2RhdGEgew0KPj4gPj4g
+Pj4gICAqIEBzb2NfY3RsX2Jhc2U6ICAgICAgUG9pbnRlciB0byByZWdtYXAgZm9yIHN5c2NvbiBm
+b3Igc29jX2N0bCByZWdpc3RlcnMuDQo+PiA+PiA+PiAgICogQHNvY19jdGxfbWFwOiAgICAgICBN
+YXAgdG8gZ2V0IG9mZnNldHMgaW50byBzb2NfY3RsIHJlZ2lzdGVycy4NCj4+ID4+ID4+ICAgKiBA
+cXVpcmtzOiAgICAgICAgICAgIEFyYXNhbiBkZXZpYXRpb25zIGZyb20gc3BlYy4NCj4+ID4+ID4+
+ICsgKiBAdWhzX2dwaW86ICAgICAgICAgIFBvaW50ZXIgdG8gdGhlIHVocyBncGlvLg0KPj4gPj4g
+Pj4gICAqLw0KPj4gPj4gPj4gIHN0cnVjdCBzZGhjaV9hcmFzYW5fZGF0YSB7DQo+PiA+PiA+PiAg
+ICAgICAgIHN0cnVjdCBzZGhjaV9ob3N0ICpob3N0OyBAQCAtMTUwLDYgKzE1Myw3IEBAIHN0cnVj
+dA0KPj4gPj4gPj4gc2RoY2lfYXJhc2FuX2RhdGEgew0KPj4gPj4gPj4gICAgICAgICBzdHJ1Y3Qg
+cmVnbWFwICAgKnNvY19jdGxfYmFzZTsNCj4+ID4+ID4+ICAgICAgICAgY29uc3Qgc3RydWN0IHNk
+aGNpX2FyYXNhbl9zb2NfY3RsX21hcCAqc29jX2N0bF9tYXA7DQo+PiA+PiA+PiAgICAgICAgIHVu
+c2lnbmVkIGludCAgICBxdWlya3M7DQo+PiA+PiA+PiArICAgICAgIHN0cnVjdCBncGlvX2Rlc2Mg
+KnVoc19ncGlvOw0KPj4gPj4gPj4NCj4+ID4+ID4+ICAvKiBDb250cm9sbGVyIGRvZXMgbm90IGhh
+dmUgQ0Qgd2lyZWQgYW5kIHdpbGwgbm90IGZ1bmN0aW9uDQo+PiA+PiA+PiBub3JtYWxseSB3aXRo
+b3V0DQo+PiA+PiA+Ki8NCj4+ID4+ID4+ICAjZGVmaW5lIFNESENJX0FSQVNBTl9RVUlSS19GT1JD
+RV9DRFRFU1QgICAgICAgIEJJVCgwKQ0KPj4gPj4gPj4gQEAgLTM2MSw2ICszNjUsMTEyIEBAIHN0
+YXRpYyBpbnQNCj4+ID4+ID4+IHNkaGNpX2FyYXNhbl92b2x0YWdlX3N3aXRjaChzdHJ1Y3QNCj4+
+ID4+ID5tbWNfaG9zdCAqbW1jLA0KPj4gPj4gPj4gICAgICAgICByZXR1cm4gLUVJTlZBTDsNCj4+
+ID4+ID4+ICB9DQo+PiA+PiA+Pg0KPj4gPj4gPj4gK3N0YXRpYyBpbnQgc2RoY2lfYXJhc2FuX2tl
+ZW1iYXlfdm9sdGFnZV9zd2l0Y2goc3RydWN0IG1tY19ob3N0DQo+PiA+Km1tYywNCj4+ID4+ID4+
+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0cnVjdCBtbWNfaW9zICpp
+b3MpIHsNCj4+ID4+ID4+ICsgICAgICAgc3RydWN0IHNkaGNpX2hvc3QgKmhvc3QgPSBtbWNfcHJp
+dihtbWMpOw0KPj4gPj4gPj4gKyAgICAgICBzdHJ1Y3Qgc2RoY2lfcGx0Zm1faG9zdCAqcGx0Zm1f
+aG9zdCA9IHNkaGNpX3ByaXYoaG9zdCk7DQo+PiA+PiA+PiArICAgICAgIHN0cnVjdCBzZGhjaV9h
+cmFzYW5fZGF0YSAqc2RoY2lfYXJhc2FuID0NCj4+ID5zZGhjaV9wbHRmbV9wcml2KHBsdGZtX2hv
+c3QpOw0KPj4gPj4gPj4gKyAgICAgICB1MTYgY3RybF8yLCBjbGs7DQo+PiA+PiA+PiArICAgICAg
+IGludCByZXQ7DQo+PiA+PiA+PiArDQo+PiA+PiA+PiArICAgICAgIHN3aXRjaCAoaW9zLT5zaWdu
+YWxfdm9sdGFnZSkgew0KPj4gPj4gPj4gKyAgICAgICBjYXNlIE1NQ19TSUdOQUxfVk9MVEFHRV8x
+ODA6DQo+PiA+PiA+PiArICAgICAgICAgICAgICAgY2xrID0gc2RoY2lfcmVhZHcoaG9zdCwgU0RI
+Q0lfQ0xPQ0tfQ09OVFJPTCk7DQo+PiA+PiA+PiArICAgICAgICAgICAgICAgY2xrICY9IH5TREhD
+SV9DTE9DS19DQVJEX0VOOw0KPj4gPj4gPj4gKyAgICAgICAgICAgICAgIHNkaGNpX3dyaXRldyho
+b3N0LCBjbGssIFNESENJX0NMT0NLX0NPTlRST0wpOw0KPj4gPj4gPj4gKw0KPj4gPj4gPj4gKyAg
+ICAgICAgICAgICAgIGNsayA9IHNkaGNpX3JlYWR3KGhvc3QsIFNESENJX0NMT0NLX0NPTlRST0wp
+Ow0KPj4gPj4gPj4gKyAgICAgICAgICAgICAgIGlmIChjbGsgJiBTREhDSV9DTE9DS19DQVJEX0VO
+KQ0KPj4gPj4gPj4gKyAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIC1FQUdBSU47DQo+PiA+
+PiA+PiArDQo+PiA+PiA+PiArICAgICAgICAgICAgICAgc2RoY2lfd3JpdGViKGhvc3QsIFNESENJ
+X1BPV0VSX09OIHwgU0RIQ0lfUE9XRVJfMTgwLA0KPj4gPj4gPj4gKyAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICBTREhDSV9QT1dFUl9DT05UUk9MKTsNCj4+ID4+ID4+ICsNCj4+ID4+
+ID4+ICsgICAgICAgICAgICAgICAvKg0KPj4gPj4gPj4gKyAgICAgICAgICAgICAgICAqIFNldCBW
+RERJT19CIHZvbHRhZ2UgdG8gTG93IGZvciAxLjhWDQo+PiA+PiA+PiArICAgICAgICAgICAgICAg
+ICogd2hpY2ggaXMgY29udHJvbGxpbmcgYnkgR1BJTyBFeHBhbmRlci4NCj4+ID4+ID4+ICsgICAg
+ICAgICAgICAgICAgKi8NCj4+ID4+ID4+ICsgICAgICAgICAgICAgICBncGlvZF9zZXRfdmFsdWVf
+Y2Fuc2xlZXAoc2RoY2lfYXJhc2FuLT51aHNfZ3BpbywNCj4+ID4+ID4+ICsgMCk7DQo+PiA+PiA+
+PiArDQo+PiA+PiA+PiArICAgICAgICAgICAgICAgLyoNCj4+ID4+ID4+ICsgICAgICAgICAgICAg
+ICAgKiBUaGlzIGlzIGxpa2UgYSBmaW5hbCBnYXRla2VlcGVyLiBOZWVkIHRvDQo+PiA+PiA+PiAr
+IGVuc3VyZSBjaGFuZ2VkDQo+PiA+dm9sdGFnZQ0KPj4gPj4gPj4gKyAgICAgICAgICAgICAgICAq
+IGlzIHNldHRsZWQgYmVmb3JlIGFuZCBhZnRlciB0dXJuIG9uIHRoaXMgYml0Lg0KPj4gPj4gPj4g
+KyAgICAgICAgICAgICAgICAqLw0KPj4gPj4gPj4gKyAgICAgICAgICAgICAgIHVzbGVlcF9yYW5n
+ZSgxMDAwLCAxMTAwKTsNCj4+ID4+ID4+ICsNCj4+ID4+ID4+ICsgICAgICAgICAgICAgICByZXQg
+PQ0KPj4gPmtlZW1iYXlfc2Rfdm9sdGFnZV9zZWxlY3Rpb24oS0VFTUJBWV9TRVRfMVY4X1ZPTFQp
+Ow0KPj4gPj4gPj4gKyAgICAgICAgICAgICAgIGlmIChyZXQpDQo+PiA+PiA+PiArICAgICAgICAg
+ICAgICAgICAgICAgICByZXR1cm4gcmV0Ow0KPj4gPj4gPj4gKw0KPj4gPj4gPj4gKyAgICAgICAg
+ICAgICAgIHVzbGVlcF9yYW5nZSgxMDAwLCAxMTAwKTsNCj4+ID4+ID4NCj4+ID4+ID5Obywgc29y
+cnksIGJ1dCBJIGRvbid0IGxpa2UgdGhpcy4NCj4+ID4+ID4NCj4+ID4+ID5UaGlzIGxvb2tzIGxp
+a2UgYSBHUElPIHJlZ3VsYXRvciB3aXRoIGFuIGV4dGVuc2lvbiBvZiB1c2luZyB0aGUNCj4+ID4+
+ID5rZWVtYmF5X3NkX3ZvbHRhZ2Vfc2VsZWN0aW9uKCkgdGhpbmd5LiBJIHRoaW5rIHlvdSBjYW4g
+bW9kZWwgdGhlc2UNCj4+ID4+ID50aGluZ3MgYmVoaW5kIGEgcmVndWxhdG9yIGFuZCBob29rIGl0
+IHVwIGFzIGEgdnFtbWMgc3VwcGx5IGluIERUDQo+PiA+PiA+aW5zdGVhZC4gQlRXLCB0aGlzIGlz
+IHRoZSBjb21tb24gd2F5IHdlIGRlYWwgd2l0aCB0aGVzZSB0aGluZ3MgZm9yDQo+PiA+PiA+bW1j
+DQo+PiA+aG9zdCBkcml2ZXJzLg0KPj4gPj4NCj4+ID4+IFRoZSBTRGNhcmQgZm9yIEtlZW0gQmF5
+IFNPQyBkb2VzIG5vdCBoYXZlIGl0cyBvd24gdm9sdGFnZSByZWd1bGF0b3IuDQo+PiA+PiBUaGVy
+ZSBhcmUgMiBwbGFjZXMgdG8gY29udHJvbCB0aGUgdm9sdGFnZS4NCj4+ID4+IDEpIEJ5IHNldHRp
+bmcgdGhlIEFPTiByZWdpc3RlciBjYWxsaW5nIHN5c3RlbS1sZXZlbCBwbGF0Zm9ybQ0KPj4gPj4g
+bWFuYWdlbWVudA0KPj4gPmxheWVyIChTTUMpDQo+PiA+PiAgICB0byBzZXQgdGhlIEkvTyBwYWRz
+IHZvbHRhZ2UgZm9yIHBhcnRpY3VsYXIgR1BJT3MgbGluZSBmb3IgY2xrLGRhdGEgYW5kIGNtZC4N
+Cj4+ID4+ICAgIFRoZSByZWFzb24gd2h5IEkgdXNlIHRoaXMga2VlbWJheV9zZF92b2x0YWdlX3Nl
+bGVjdGlvbigpIHZpYQ0KPj4gPj4gc21jY2MNCj4+ID5pbnRlcmZhY2UgaXQgYmVjYXVzZSBkdXJp
+bmcgdm9sdGFnZSBzd2l0Y2hpbmcNCj4+ID4+ICAgIEkgbmVlZCB0byBhY2Nlc3MgdG8gQU9OIHJl
+Z2lzdGVyLiBPbiBhIHNlY3VyZSBzeXN0ZW0sIHdlIGNvdWxkDQo+PiA+PiBub3QNCj4+ID5kaXJl
+Y3RseSBhY2Nlc3MgdG8gQU9OIHJlZ2lzdGVyIGR1ZSB0byBzb21lIHNlY3VyaXR5IGNvbmNlcm4g
+ZnJvbQ0KPj4gPmRyaXZlciBzaWRlLCB0aHVzDQo+PiA+PiAgICBjYW5ub3QgZXhwb3NlZCBhbnkg
+cmVnaXN0ZXIgb3IgYWRkcmVzcy4NCj4+ID4+IDIpIEJ5IGNvbnRyb2xsaW5nIHRoZSBHUElPIGV4
+cGFuZGVyIHZhbHVlIHRvIGRyaXZlIGVpdGhlciAxLjhWIG9yDQo+PiA+PiAzLjNWIGZvcg0KPj4g
+PnBvd2VyIG11eCBpbnB1dC4NCj4+ID4NCj4+ID5JIHNlZSwgdGhhbmtzIGZvciBjbGFyaWZ5aW5n
+Lg0KPj4gPg0KPj4gPlRvIG1lLCBpdCBzb3VuZHMgbGlrZSB0aGUgYmVzdCBmaXQgaXMgdG8gaW1w
+bGVtZW50IGEgcGluY3RybCAodG8NCj4+ID5tYW5hZ2UgdGhlIEkvTw0KPj4gPnBhZHMpIGFuZCBh
+IEdQSU8gcmVndWxhdG9yLg0KPj4gPg0KPj4gRXZlbiB3aXRoIHBpbmN0cmwsIGkgc3RpbGwgbmVl
+ZCB0byB1c2UgdGhlIGtlZW1iYXlfc2Rfdm9sdGFnZV9zZWxlY3Rpb24oKQ0KPnRoaW5neSBmb3Ig
+QU9OIHJlZ2lzdGVyLg0KPg0KPlllcywgSSBhbSBmaW5lIGJ5IHRoYXQuDQo+DQo+QWx0aG91Z2gs
+IGFzIGl0J3MgcmVhbGx5IGEgcGluY3RybCwgaXQgZGVzZXJ2ZXMgdG8gYmUgbW9kZWxsZWQgbGlr
+ZSB0aGF0LiBOb3QgYXMgYQ0KPnNvYyBzcGVjaWZpYyBoYWNrIGluIGEgbW1jIGhvc3QgZHJpdmVy
+Lg0KPg0KPj4gUGx1cywgdGhlIEdQSU8gcGluIHRoYXQgY29udHJvbCB0aGUgc2Qtdm9sdGFnZSBp
+cyBpbiBHUElPIEV4cGFuZGVyIG5vdCB1c2luZw0KPktlZW1iYXkgU09DIEdQSU8gUGluLg0KPj4g
+VGhlIGJlc3Qgb3B0aW9uIGlzIHVzaW5nIHRoZSBncGlvIGNvbnN1bWVyIGZ1bmN0aW9uIHRvIHRv
+Z2dsZSB0aGUgcGluLg0KPg0KPkFzIEkgc2FpZCwgcGxlYXNlIG5vLg0KPg0KPlRoZSBjb21tb24g
+d2F5IHRvIG1vZGVsIHRoaXMgaXMgYXMgYSBHUElPIHJlZ3VsYXRvci4gSW4gdGhpcyB3YXksIHlv
+dSBjYW4gZXZlbg0KPnJlbHkgb24gZXhpc3RpbmcgbW1jIERUIGJpbmRpbmdzLiBBbGwgeW91IGhh
+dmUgdG8gZG8gaXMgdG8gaG9vayB1cCBhIHZxbW1jDQo+c3VwcGx5IHRvIHRoZSBtbWMgbm9kZS4N
+Cj4NCj5UbyBiZSBjbGVhciwgYXMgbG9uZyBhcyB0aGVyZSBhcmUgbm8gYXJndW1lbnRzIGZvciB3
+aHkgYSBwaW5jdHJsIGFuZCBHUElPDQo+cmVndWxhdG9yIGNhbid0IGJlIHVzZWQgLSBJIGFtIG5v
+dCBnb2luZyB0byBwaWNrIHVwIHRoZSBwYXRjaGVzLg0KQXMgSSBtZW50aW9uZWQgVGhlIFNEY2Fy
+ZCBkb2VzIG5vdCBoYXZlIGl0cyBvd24gdm9sdGFnZSByZWd1bGF0b3IuIA0KSXQgb25seSB1c2Vz
+IHRoZSB2b2x0YWdlIHJhaWxzIG9uIHRoZSBtdXggaW5wdXQuDQoNClRoZXJlIGFyZSAyIHRoaW5n
+cyBuZWVkIHRvIGJlIGNvbmZpZ3VyZWQgYmVmb3JlIGdldHRpbmcgdGhlIG91dHB1dCB2b2x0YWdl
+Og0KDQoxKSBWX1ZERElPX0IgOg0KU3VwcGxpZWQgdm9sdGFnZSBhcHBsaWVkIHRvIEkvTyBSYWls
+IHdoaWNoIGlzIGNvbnRyb2xsZWQgZnJvbSB0aGUgQWx3YXlzIG9uIGRvbWFpbiB1c2luZyBzcGVj
+aWZpYyBiaXRzIGluIEFPTl9DRkcxIHJlZ2lzdGVyLiANClRoaXMgaXMgd2hlcmUgd2Ugc2V0IGZv
+ciBWX1ZERElPX0IgdXNpbmcgdGhlIGtlZW1iYXlfc2Rfdm9sdGFnZV9zZWxlY3Rpb24oKSB0byBz
+ZXQgZWl0aGVyIDEuOHYgb3IgMy4zdiBkZXBlbmRpbmcgb24gdGhlIGJpdCB2YWx1ZS4NCklNSE8s
+IHdlIGRvIG5vdCBwaW5jdHJsIHRvIGRvIHRoaXMuDQoNCjIpIFZfVkRESU9fQl9NQUlOOg0KVGhl
+IG91dHB1dCBWX1ZERElPX0JfTUFJTiAoT1VUMSkgd2lsbCBiZSBlaXRoZXIgVl8zUDNfTUFJTiAo
+SU4xKSBvciBWXzFQOF9NQUlOIChJTjIpLCANCmRlcGVuZGluZyBvbiB0aGUgc3RhdGUgb2YgR1BJ
+TyBleHBhbmRlciBQaW4gdmFsdWUuIFRoZXJlIGlzIGEgUE9XRVIgTVVYIGludm9sdmluZyBoZXJl
+Lg0KSU1ITywgd2UgZG8gbm90IG5lZWQgYW55IGdwaW8gcmVndWxhdG9yL3JlZ3VsYXRvciBhcGkg
+aG9vayB1cCBmb3IgdGhpcy4NCk1vc3QgaW1wb3J0YW50IHRoaW5nLCB0aGVyZSBpcyBubyByZWd1
+bGF0b3IgaWMgYXQgYWxsLg0KV2Ugc3RpbGwgbmVlZCB0byBtYW51YWxseSBjb250cm9sIGFuZCB0
+b2dnbGUgdGhlIHBpbiB2YWx1ZS4NCg0KVGhlIGZpbmFsIElPIHZvbHRhZ2UgaXMgc2V0IGJ5IFZf
+VkRESU9fQiAoPSBWX1ZERElPX0JfTUFJTiBhZnRlciBwYXNzaW5nIHRocm91Z2ggdm9sdGFnZSBz
+ZW5zZSByZXNpc3RvcikuDQoNCkhvcGUgdGhpcyB3aWxsIGNsYXJpZnkuDQoNCj4NCj5LaW5kIHJl
+Z2FyZHMNCj5VZmZlDQo=
