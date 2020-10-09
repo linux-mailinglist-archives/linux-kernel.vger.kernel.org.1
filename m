@@ -2,138 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D640F287F70
+	by mail.lfdr.de (Postfix) with ESMTP id D0921287F6E
 	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 02:19:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729349AbgJIARv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 20:17:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725952AbgJIARv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 20:17:51 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09FBBC0613D2;
-        Thu,  8 Oct 2020 17:17:51 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id g29so5731179pgl.2;
-        Thu, 08 Oct 2020 17:17:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GfhHHR4pKbk7p2RCtudI48L9yccCmQn13QSmLqHOpqE=;
-        b=l+9ARLRb9oLSk2zBqP7Ye+thTIcpC9bxYPWNxSajiaetz6v3CgqO1xHoPTX03fErKa
-         QchKdmiUftQRFJ7jMHBLv4Nb8LACpVAlC32HvlYV26TEMUkuZgFDC8MiDZTOk5vU62g4
-         GuWs6HoiK5wGXRVFpMbqidU1nmW62b4arwFBI/lDjjRQTQF3vblCUv36QKmjciqYPyXS
-         gf0INfCeuAuKNFw4b0qBNdJGO6zsMZOI/RXdSOZObkutDnVNJ1jWEZZfS08DdtggAd+Z
-         v8nZiUExVcHkjkABs4GnC4XBLwf4rj40VYZMBEVU4j646xJoiaGib0LiCT0VO+LdU7eS
-         SGXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GfhHHR4pKbk7p2RCtudI48L9yccCmQn13QSmLqHOpqE=;
-        b=cpmj5mBK8MfzGjB2IEckIZYMuRmWP+Jk7G8WnMJGnUxtZZYGn+r5INmRnnJxjHVjW0
-         tLYOMO1xC9mhRE4qzIeBMVH+aBIun//xtX7ci6RsZJ5+jjw6PsMd8MtEZ3sBV0kj6zM+
-         WnsYAkYQKTjRxHw/OTMz7guvCYEW0YbmMEoVq/3dHocvMCiakxnghtErDNwxlAJYFkO3
-         z07gE0cDSDZV7oxvFM1EjIGDPwczC0gKvTtjiRZPrI3A2VK40gmNPDvq/8CKjO7ia10W
-         MlvTFp+C02jFvA3eeSguDRT7QgUgqXK4lYMYbBRSao/gOoOXrZkMkcgl1xtS31ShFpAN
-         1Lmw==
-X-Gm-Message-State: AOAM530UvbZejLuMwiS5hR+zYgSKq7CKlgTpCOoei9QG0kuOXg6zOBkI
-        8Y8dGrrQbIsZnKmdEt6qxxPvflO50AkOkwlkue4=
-X-Google-Smtp-Source: ABdhPJwcXfNIgKgm3YkQPIhlaT3JnMp3WueuSFA6XTYpyR/WEW0+W0BG2h4lGxp1o1UtTjbNnQYadnf5Ix3d1XgiBug=
-X-Received: by 2002:a63:1c19:: with SMTP id c25mr1245508pgc.66.1602202670500;
- Thu, 08 Oct 2020 17:17:50 -0700 (PDT)
+        id S1731193AbgJIASs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 20:18:48 -0400
+Received: from mga05.intel.com ([192.55.52.43]:61644 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725952AbgJIASM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 20:18:12 -0400
+IronPort-SDR: lQwk+2c6U8wDROwV/WWYQwmYfvQ8lKrgiKxEQ8fnOT2tNC5iMbijuMJe/qZHrbFs1tVaK9OTj/
+ FwDA3HJfyacA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="250117701"
+X-IronPort-AV: E=Sophos;i="5.77,353,1596524400"; 
+   d="scan'208";a="250117701"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 17:18:12 -0700
+IronPort-SDR: xGkoKYj6edt+3zDBVIF/CtpWiCILzKtBx554qkiD2ga8QMUVBwT0zlVeuA1FOVRh9vv8qbNMAW
+ EzQlMvnH3CQA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,352,1596524400"; 
+   d="scan'208";a="461990802"
+Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.65])
+  by orsmga004.jf.intel.com with ESMTP; 08 Oct 2020 17:18:10 -0700
+From:   "Huang\, Ying" <ying.huang@intel.com>
+To:     Rafael Aquini <aquini@redhat.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org
+Subject: Re: [PATCH] mm: swapfile: avoid split_swap_cluster() NULL pointer dereference
+References: <87sgb9oz1u.fsf@yhuang-dev.intel.com>
+        <20200923130138.GM795820@optiplex-lnx>
+        <87blhwng5f.fsf@yhuang-dev.intel.com>
+        <20200924020928.GC1023012@optiplex-lnx>
+        <877dsjessq.fsf@yhuang-dev.intel.com>
+        <20200924063038.GD1023012@optiplex-lnx>
+        <87tuvnd3db.fsf@yhuang-dev.intel.com>
+        <20200924150833.GE1023012@optiplex-lnx>
+        <87r1qqbkx5.fsf@yhuang-dev.intel.com>
+        <20201001143157.GA1530324@optiplex-lnx>
+        <20201005133907.GE1530324@optiplex-lnx>
+Date:   Fri, 09 Oct 2020 08:18:10 +0800
+In-Reply-To: <20201005133907.GE1530324@optiplex-lnx> (Rafael Aquini's message
+        of "Mon, 5 Oct 2020 09:39:07 -0400")
+Message-ID: <877ds09rr1.fsf@yhuang-dev.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-References: <cover.1601478774.git.yifeifz2@illinois.edu> <83c72471f9f79fa982508bd4db472686a67b8320.1601478774.git.yifeifz2@illinois.edu>
- <202009301422.D9F6E6A@keescook>
-In-Reply-To: <202009301422.D9F6E6A@keescook>
-From:   YiFei Zhu <zhuyifei1999@gmail.com>
-Date:   Thu, 8 Oct 2020 19:17:39 -0500
-Message-ID: <CABqSeASbRXLYgE=rbKO8g8Si9q7nKEGB2UZpi-BcYG5etWVcjA@mail.gmail.com>
-Subject: Re: [PATCH v3 seccomp 3/5] seccomp/cache: Lookup syscall allowlist
- for fast path
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 4:32 PM Kees Cook <keescook@chromium.org> wrote:
->
-> On Wed, Sep 30, 2020 at 10:19:14AM -0500, YiFei Zhu wrote:
-> > From: YiFei Zhu <yifeifz2@illinois.edu>
-> >
-> > The fast (common) path for seccomp should be that the filter permits
-> > the syscall to pass through, and failing seccomp is expected to be
-> > an exceptional case; it is not expected for userspace to call a
-> > denylisted syscall over and over.
-> >
-> > This first finds the current allow bitmask by iterating through
-> > syscall_arches[] array and comparing it to the one in struct
-> > seccomp_data; this loop is expected to be unrolled. It then
-> > does a test_bit against the bitmask. If the bit is set, then
-> > there is no need to run the full filter; it returns
-> > SECCOMP_RET_ALLOW immediately.
-> >
-> > Co-developed-by: Dimitrios Skarlatos <dskarlat@cs.cmu.edu>
-> > Signed-off-by: Dimitrios Skarlatos <dskarlat@cs.cmu.edu>
-> > Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
->
-> I'd like the content/ordering of this and the emulator patch to be reorganized a bit.
-> I'd like to see the infrastructure of the cache added first (along with
-> the "always allow" test logic in this patch), with the emulator missing:
-> i.e. the patch is a logical no-op: no behavior changes because nothing
-> ever changes the cache bits, but all the operational logic, structure
-> changes, etc, is in place. Then the next patch would be replacing the
-> no-op with the emulator.
->
-> > ---
-> >  kernel/seccomp.c | 52 ++++++++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 52 insertions(+)
-> >
-> > diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-> > index f09c9e74ae05..bed3b2a7f6c8 100644
-> > --- a/kernel/seccomp.c
-> > +++ b/kernel/seccomp.c
-> > @@ -172,6 +172,12 @@ struct seccomp_cache_filter_data { };
-> >  static inline void seccomp_cache_prepare(struct seccomp_filter *sfilter)
-> >  {
-> >  }
-> > +
-> > +static inline bool seccomp_cache_check(const struct seccomp_filter *sfilter,
->
-> bikeshedding: "cache check" doesn't tell me anything about what it's
-> actually checking for. How about calling this seccomp_is_constant_allow() or
-> something that reflects both the "bool" return ("is") and what that bool
-> means ("should always be allowed").
+Rafael Aquini <aquini@redhat.com> writes:
 
-We have a naming conflict here. I'm about to rename
-seccomp_emu_is_const_allow to seccomp_is_const_allow. Adding another
-seccomp_is_constant_allow is confusing. Suggestions?
+> On Thu, Oct 01, 2020 at 10:31:57AM -0400, Rafael Aquini wrote:
+>> On Fri, Sep 25, 2020 at 11:21:58AM +0800, Huang, Ying wrote:
+>> > Rafael Aquini <aquini@redhat.com> writes:
+>> > >> Or, can you help to run the test with a debug kernel based on upstream
+>> > >> kernel.  I can provide some debug patch.
+>> > >> 
+>> > >
+>> > > Sure, I can set your patches to run with the test cases we have that tend to 
+>> > > reproduce the issue with some degree of success.
+>> > 
+>> > Thanks!
+>> > 
+>> > I found a race condition.  During THP splitting, "head" may be unlocked
+>> > before calling split_swap_cluster(), because head != page during
+>> > deferred splitting.  So we should call split_swap_cluster() before
+>> > unlocking.  The debug patch to do that is as below.  Can you help to
+>> > test it?
+>> > 
+>> > Best Regards,
+>> > Huang, Ying
+>> > 
+>> > ------------------------8<----------------------------
+>> > From 24ce0736a9f587d2dba12f12491c88d3e296a491 Mon Sep 17 00:00:00 2001
+>> > From: Huang Ying <ying.huang@intel.com>
+>> > Date: Fri, 25 Sep 2020 11:10:56 +0800
+>> > Subject: [PATCH] dbg: Call split_swap_clsuter() before unlock page during
+>> >  split THP
+>> > 
+>> > ---
+>> >  mm/huge_memory.c | 13 +++++++------
+>> >  1 file changed, 7 insertions(+), 6 deletions(-)
+>> > 
+>> > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+>> > index faadc449cca5..8d79e5e6b46e 100644
+>> > --- a/mm/huge_memory.c
+>> > +++ b/mm/huge_memory.c
+>> > @@ -2444,6 +2444,12 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+>> >  
+>> >  	remap_page(head);
+>> >  
+>> > +	if (PageSwapCache(head)) {
+>> > +		swp_entry_t entry = { .val = page_private(head) };
+>> > +
+>> > +		split_swap_cluster(entry);
+>> > +	}
+>> > +
+>> >  	for (i = 0; i < HPAGE_PMD_NR; i++) {
+>> >  		struct page *subpage = head + i;
+>> >  		if (subpage == page)
+>> > @@ -2678,12 +2684,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+>> >  		}
+>> >  
+>> >  		__split_huge_page(page, list, end, flags);
+>> > -		if (PageSwapCache(head)) {
+>> > -			swp_entry_t entry = { .val = page_private(head) };
+>> > -
+>> > -			ret = split_swap_cluster(entry);
+>> > -		} else
+>> > -			ret = 0;
+>> > +		ret = 0;
+>> >  	} else {
+>> >  		if (IS_ENABLED(CONFIG_DEBUG_VM) && mapcount) {
+>> >  			pr_alert("total_mapcount: %u, page_count(): %u\n",
+>> > -- 
+>> > 2.28.0
+>> > 
+>> 
+>> I left it running for several days, on several systems that had seen the
+>> crash hitting before, and no crashes were observed for either the upstream
+>> kernel nor the distro build 4.18-based kernel.
+>> 
+>> I guess we can comfortably go with your patch. Thanks!
+>> 
+>>
+> Ping
+>
+> Are you going to post this patchfix soon? Or do you rather have me
+> posting it?
 
-I think I would prefer to change seccomp_cache_check to
-seccomp_cache_check_allow. While in this patch set seccomp_cache_check
-does imply the filter is "constant" allow, argument-processing cache
-may change this, and specifying an "allow" in the name specifies the
-'what that bool means ("should always be allowed")'.
+Sorry for late replying.  I just come back from a long local holiday.
+Thanks a lot for testing!  I will prepare the formal fixing patch.
 
-YiFei Zhu
+Best Regards,
+Huang, Ying
