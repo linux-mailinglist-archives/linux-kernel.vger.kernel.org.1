@@ -2,272 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3F2F288311
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 08:57:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4303E288312
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 08:57:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731127AbgJIG5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 02:57:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39770 "EHLO
+        id S1731330AbgJIG51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 02:57:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725908AbgJIG5D (ORCPT
+        with ESMTP id S1725908AbgJIG51 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 02:57:03 -0400
-Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DADABC0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 23:57:02 -0700 (PDT)
-Received: by mail-vk1-xa41.google.com with SMTP id a16so1908733vke.3
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 23:57:02 -0700 (PDT)
+        Fri, 9 Oct 2020 02:57:27 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C84DC0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 23:57:26 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id qp15so11571913ejb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 23:57:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LGENbSiXdikY8xCk7QudCEfpCSH3xLb69flirnqNdy4=;
-        b=TgRXC0FUg6KEW5490gN8X1zXIVYQBz/tRAOYnl/r/vgFNlWGr89/stPbRQHS686j0p
-         QoX1qklFHDIcZetPd/9CYaJ/pMZk59uI3XI3RJ4Hw8ouKg4q4IMo0iaZJ+8xF1YTg7Jq
-         8ZJyICYcntXRuEOkNYbkHeENuY1MB5Tx5BaZHcBQ5PKSDjFlgDuSOf8146CfXXXSNtMF
-         +qoNrnFZrUeqelNEPwYK6x8jwcXdxR3PFNwYV0eZX745T5ICjuNFWCjZU6R7odS+/Ita
-         6gYHF/KhETs0fUFoHAObF6Xf4Af6gqWOmtfXTXD2kW2eGJT6opwRwR69Ryzzx2V0oBxc
-         QkFg==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bOegIKAoFGpB3vfc8+JRask2/1430nKMGo1jpydR3AY=;
+        b=X49UIyq4cvy1anNdBJ7Ru0ERAdmgMFZVkebAFi9N0Ww30QBVOclXyUOCzW8cusvuPm
+         fUQhVVD7ho2QFZj2F9EBE/SOrAKX6p1rLXDpLpHl4l/nG1LLcXPFkBz9iFEgmaQzEoDv
+         BE6TnpoyIsXqe1nC5nu3a113p8TaTuNIBi6oAV3IH5vE+B4rEpQuY5odeWyiBvKFcmCq
+         gA4h1u0fZGUhXTc0kAb5/yoHKnea4mZI1Goq7K+nugOidwTgM0Qob18g/zQsuBC8AZho
+         MY+zZwoL1YHmgdVDE0x18edQhYH3UbqgEx0IQwg7+K3fcF+nxyFh19sI6U0gZzUKZbSg
+         8NqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LGENbSiXdikY8xCk7QudCEfpCSH3xLb69flirnqNdy4=;
-        b=ZjeG6mWDImUlL1kKyvF5I1hrUj+skVZWt2fWw3+DTur/5V14pcXs3+kidBLekcYE2r
-         5DvAHiqw7BdVdD7NtI9LZJVZ9m7+vLXgvSxyOL55SaGlSkMmuIi0ccjxy+KtGDR7plbV
-         dtm16qxUr+sZs1V2jBDpQGa6wwv+w62o4ZFN8UkYUTY5YYYvMdvB+Iu+n/PHgj3nvGtc
-         TW8wi3+SfmxSt3/X0VJi+XKSgjibJhvNxKqN9OhiPaPK9wjIGDd8U4qkONQI00akhmy0
-         cMJPutVstnCDY6Iy6g1m3uXG/TZoDMcZulhZBWk3Pbp/3smp58v2Vujrjv5VBHOnRIkE
-         7KHw==
-X-Gm-Message-State: AOAM531/ZkjT0jLHsbueN9YjiDmnLbf/fwIvugPYWL7KHBqWNm07LJud
-        LNMFx8Yxe9vXlqTRq3Ayp4gaYiKyZKqMpXhyMw3vzg==
-X-Google-Smtp-Source: ABdhPJzQO9FaAisEUKbsmsOPNfFLCZj/d3nFhE4e2c7GFcN+t7H8jAV0+K5z16Im53nCot1UHwHufPKqaC4YdTanis8=
-X-Received: by 2002:a1f:e186:: with SMTP id y128mr7082055vkg.6.1602226621987;
- Thu, 08 Oct 2020 23:57:01 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=bOegIKAoFGpB3vfc8+JRask2/1430nKMGo1jpydR3AY=;
+        b=DjmhN3jUsi6rrdtEAN//vzy89IgPZXdueXcPNe83FT0rnLou5lMn8yXxbhNR2VNcsi
+         9h4yagqCP0N5VPQd28yk0lRndsLqiEAaQnccESrJd+rmQJHfkaa5yEUFDd0vSMBNh7yN
+         Wpe8t3ssHXj3l6/vzmTnzaYMzCYaiV+TbuY76k3mh5wvEKAvhCa8LGgWnvD2y/LiJh8Z
+         SByomN3Qma0QI1REUtHYwBjnHvlYQP1GHKCHaWwEbuxuHGoCVdjI6I0yIYQSfk0y/K+u
+         QS8YseqZihcx24QQHDvdiM5MMrTGvRReJU4HFc+MntIZl9Qbhfz2E+aCxmLDOIetjuoG
+         4EIQ==
+X-Gm-Message-State: AOAM532iuq8z1wSGtHpz6y2tE8ZUVi/lE/bW/Ftkh/h+RFX48fuWnH4o
+        cebVfDFYp1yW/RM1i8rnCIW/ZV1WlpQ=
+X-Google-Smtp-Source: ABdhPJzkIgU3mo/0q3Vc35Bt/7uxEEHLiupNPZjxMxXb4No1P00Aor6AgXVgwvdn6nNIJyD3HOpcYQ==
+X-Received: by 2002:a17:906:280a:: with SMTP id r10mr10770914ejc.58.1602226644839;
+        Thu, 08 Oct 2020 23:57:24 -0700 (PDT)
+Received: from gmail.com (563BAB65.dsl.pool.telekom.hu. [86.59.171.101])
+        by smtp.gmail.com with ESMTPSA id q27sm5917012ejd.74.2020.10.08.23.57.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Oct 2020 23:57:24 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Fri, 9 Oct 2020 08:57:22 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, grandmaster@al2klimov.de,
+        kernel-team@fb.com, Peter Zijlstra <a.p.zijlstra@chello.nl>
+Subject: Re: [GIT PULL memory-model] LKMM commits for v5.10
+Message-ID: <20201009065722.GD9972@gmail.com>
+References: <20200914175609.GA14435@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-References: <20201008020936.19894-1-muhammad.husaini.zulkifli@intel.com>
- <20201008020936.19894-5-muhammad.husaini.zulkifli@intel.com>
- <CAPDyKFpUv8yeVrWVLRKvz4eKsSDdk0y4dKY2mYs07zpA2UqNdw@mail.gmail.com>
- <DM6PR11MB28764EC5E1F89D417D700F29B80B0@DM6PR11MB2876.namprd11.prod.outlook.com>
- <CAPDyKFptgKG8uvKUkN56sooFL4xqaBcNdbpo645xRQqPOH4BkQ@mail.gmail.com> <DM6PR11MB28761F10936FF0D2695FAF19B80B0@DM6PR11MB2876.namprd11.prod.outlook.com>
-In-Reply-To: <DM6PR11MB28761F10936FF0D2695FAF19B80B0@DM6PR11MB2876.namprd11.prod.outlook.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 9 Oct 2020 08:56:25 +0200
-Message-ID: <CAPDyKFoRHsOiz9BFJ5jWyKqvdmNW9eeEmCGKYn0Q1jUzNwJZNg@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] mmc: sdhci-of-arasan: Enable UHS-1 support for
- Keem Bay SOC
-To:     "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>
-Cc:     "Hunter, Adrian" <adrian.hunter@intel.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        "Shevchenko, Andriy" <andriy.shevchenko@intel.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Raja Subramanian, Lakshmi Bai" 
-        <lakshmi.bai.raja.subramanian@intel.com>,
-        "Wan Mohamad, Wan Ahmad Zainie" 
-        <wan.ahmad.zainie.wan.mohamad@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200914175609.GA14435@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 8 Oct 2020 at 19:21, Zulkifli, Muhammad Husaini
-<muhammad.husaini.zulkifli@intel.com> wrote:
->
-> Hi,
->
-> >-----Original Message-----
-> >From: Ulf Hansson <ulf.hansson@linaro.org>
-> >Sent: Thursday, October 8, 2020 11:19 PM
-> >To: Zulkifli, Muhammad Husaini <muhammad.husaini.zulkifli@intel.com>
-> >Cc: Hunter, Adrian <adrian.hunter@intel.com>; Michal Simek
-> ><michal.simek@xilinx.com>; Shevchenko, Andriy
-> ><andriy.shevchenko@intel.com>; linux-mmc@vger.kernel.org; Linux ARM
-> ><linux-arm-kernel@lists.infradead.org>; Linux Kernel Mailing List <linux-
-> >kernel@vger.kernel.org>; Raja Subramanian, Lakshmi Bai
-> ><lakshmi.bai.raja.subramanian@intel.com>; Wan Mohamad, Wan Ahmad
-> >Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>; Arnd Bergmann
-> ><arnd@arndb.de>
-> >Subject: Re: [PATCH v4 4/4] mmc: sdhci-of-arasan: Enable UHS-1 support for
-> >Keem Bay SOC
-> >
-> >On Thu, 8 Oct 2020 at 12:54, Zulkifli, Muhammad Husaini
-> ><muhammad.husaini.zulkifli@intel.com> wrote:
-> >>
-> >> Hi,
-> >>
-> >> >-----Original Message-----
-> >> >From: Ulf Hansson <ulf.hansson@linaro.org>
-> >> >Sent: Thursday, October 8, 2020 5:28 PM
-> >> >To: Zulkifli, Muhammad Husaini <muhammad.husaini.zulkifli@intel.com>
-> >> >Cc: Hunter, Adrian <adrian.hunter@intel.com>; Michal Simek
-> >> ><michal.simek@xilinx.com>; Shevchenko, Andriy
-> >> ><andriy.shevchenko@intel.com>; linux-mmc@vger.kernel.org; Linux ARM
-> >> ><linux-arm-kernel@lists.infradead.org>; Linux Kernel Mailing List
-> >> ><linux- kernel@vger.kernel.org>; Raja Subramanian, Lakshmi Bai
-> >> ><lakshmi.bai.raja.subramanian@intel.com>; Wan Mohamad, Wan Ahmad
-> >> >Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>; Arnd Bergmann
-> >> ><arnd@arndb.de>
-> >> >Subject: Re: [PATCH v4 4/4] mmc: sdhci-of-arasan: Enable UHS-1
-> >> >support for Keem Bay SOC
-> >> >
-> >> >On Thu, 8 Oct 2020 at 04:12, <muhammad.husaini.zulkifli@intel.com>
-> >wrote:
-> >> >>
-> >> >> From: Muhammad Husaini Zulkifli
-> >> >> <muhammad.husaini.zulkifli@intel.com>
-> >> >>
-> >> >> Voltage switching sequence is needed to support UHS-1 interface.
-> >> >> There are 2 places to control the voltage.
-> >> >> 1) By setting the AON register using firmware driver calling
-> >> >> system-level platform management layer (SMC) to set the register.
-> >> >> 2) By controlling the GPIO expander value to drive either 1.8V or
-> >> >> 3.3V for power mux input.
-> >> >>
-> >> >> Signed-off-by: Muhammad Husaini Zulkifli
-> >> >> <muhammad.husaini.zulkifli@intel.com>
-> >> >> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
-> >> >> Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
-> >> >> ---
-> >> >>  drivers/mmc/host/sdhci-of-arasan.c | 126
-> >> >> +++++++++++++++++++++++++++++
-> >> >>  1 file changed, 126 insertions(+)
-> >> >>
-> >> >> diff --git a/drivers/mmc/host/sdhci-of-arasan.c
-> >> >> b/drivers/mmc/host/sdhci-of-arasan.c
-> >> >> index 46aea6516133..ea2467b0073d 100644
-> >> >> --- a/drivers/mmc/host/sdhci-of-arasan.c
-> >> >> +++ b/drivers/mmc/host/sdhci-of-arasan.c
-> >> >> @@ -16,6 +16,7 @@
-> >> >>   */
-> >> >>
-> >> >>  #include <linux/clk-provider.h>
-> >> >> +#include <linux/gpio/consumer.h>
-> >> >>  #include <linux/mfd/syscon.h>
-> >> >>  #include <linux/module.h>
-> >> >>  #include <linux/of_device.h>
-> >> >> @@ -23,6 +24,7 @@
-> >> >>  #include <linux/regmap.h>
-> >> >>  #include <linux/of.h>
-> >> >>  #include <linux/firmware/xlnx-zynqmp.h>
-> >> >> +#include <linux/firmware/intel/keembay_firmware.h>
-> >> >>
-> >> >>  #include "cqhci.h"
-> >> >>  #include "sdhci-pltfm.h"
-> >> >> @@ -136,6 +138,7 @@ struct sdhci_arasan_clk_data {
-> >> >>   * @soc_ctl_base:      Pointer to regmap for syscon for soc_ctl registers.
-> >> >>   * @soc_ctl_map:       Map to get offsets into soc_ctl registers.
-> >> >>   * @quirks:            Arasan deviations from spec.
-> >> >> + * @uhs_gpio:          Pointer to the uhs gpio.
-> >> >>   */
-> >> >>  struct sdhci_arasan_data {
-> >> >>         struct sdhci_host *host;
-> >> >> @@ -150,6 +153,7 @@ struct sdhci_arasan_data {
-> >> >>         struct regmap   *soc_ctl_base;
-> >> >>         const struct sdhci_arasan_soc_ctl_map *soc_ctl_map;
-> >> >>         unsigned int    quirks;
-> >> >> +       struct gpio_desc *uhs_gpio;
-> >> >>
-> >> >>  /* Controller does not have CD wired and will not function
-> >> >> normally without
-> >> >*/
-> >> >>  #define SDHCI_ARASAN_QUIRK_FORCE_CDTEST        BIT(0)
-> >> >> @@ -361,6 +365,112 @@ static int sdhci_arasan_voltage_switch(struct
-> >> >mmc_host *mmc,
-> >> >>         return -EINVAL;
-> >> >>  }
-> >> >>
-> >> >> +static int sdhci_arasan_keembay_voltage_switch(struct mmc_host
-> >*mmc,
-> >> >> +                                      struct mmc_ios *ios) {
-> >> >> +       struct sdhci_host *host = mmc_priv(mmc);
-> >> >> +       struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
-> >> >> +       struct sdhci_arasan_data *sdhci_arasan =
-> >sdhci_pltfm_priv(pltfm_host);
-> >> >> +       u16 ctrl_2, clk;
-> >> >> +       int ret;
-> >> >> +
-> >> >> +       switch (ios->signal_voltage) {
-> >> >> +       case MMC_SIGNAL_VOLTAGE_180:
-> >> >> +               clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
-> >> >> +               clk &= ~SDHCI_CLOCK_CARD_EN;
-> >> >> +               sdhci_writew(host, clk, SDHCI_CLOCK_CONTROL);
-> >> >> +
-> >> >> +               clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
-> >> >> +               if (clk & SDHCI_CLOCK_CARD_EN)
-> >> >> +                       return -EAGAIN;
-> >> >> +
-> >> >> +               sdhci_writeb(host, SDHCI_POWER_ON | SDHCI_POWER_180,
-> >> >> +                                  SDHCI_POWER_CONTROL);
-> >> >> +
-> >> >> +               /*
-> >> >> +                * Set VDDIO_B voltage to Low for 1.8V
-> >> >> +                * which is controlling by GPIO Expander.
-> >> >> +                */
-> >> >> +               gpiod_set_value_cansleep(sdhci_arasan->uhs_gpio,
-> >> >> + 0);
-> >> >> +
-> >> >> +               /*
-> >> >> +                * This is like a final gatekeeper. Need to ensure changed
-> >voltage
-> >> >> +                * is settled before and after turn on this bit.
-> >> >> +                */
-> >> >> +               usleep_range(1000, 1100);
-> >> >> +
-> >> >> +               ret =
-> >keembay_sd_voltage_selection(KEEMBAY_SET_1V8_VOLT);
-> >> >> +               if (ret)
-> >> >> +                       return ret;
-> >> >> +
-> >> >> +               usleep_range(1000, 1100);
-> >> >
-> >> >No, sorry, but I don't like this.
-> >> >
-> >> >This looks like a GPIO regulator with an extension of using the
-> >> >keembay_sd_voltage_selection() thingy. I think you can model these
-> >> >things behind a regulator and hook it up as a vqmmc supply in DT
-> >> >instead. BTW, this is the common way we deal with these things for mmc
-> >host drivers.
-> >>
-> >> The SDcard for Keem Bay SOC does not have its own voltage regulator.
-> >> There are 2 places to control the voltage.
-> >> 1) By setting the AON register calling system-level platform management
-> >layer (SMC)
-> >>    to set the I/O pads voltage for particular GPIOs line for clk,data and cmd.
-> >>    The reason why I use this keembay_sd_voltage_selection() via smccc
-> >interface it because during voltage switching
-> >>    I need to access to AON register. On a secure system, we could not
-> >directly access to AON register due to some security concern from driver side,
-> >thus
-> >>    cannot exposed any register or address.
-> >> 2) By controlling the GPIO expander value to drive either 1.8V or 3.3V for
-> >power mux input.
-> >
-> >I see, thanks for clarifying.
-> >
-> >To me, it sounds like the best fit is to implement a pinctrl (to manage the I/O
-> >pads) and a GPIO regulator.
-> >
-> Even with pinctrl, i still need to use the keembay_sd_voltage_selection() thingy for AON register.
 
-Yes, I am fine by that.
+* Paul E. McKenney <paulmck@kernel.org> wrote:
 
-Although, as it's really a pinctrl, it deserves to be modelled like
-that. Not as a soc specific hack in a mmc host driver.
+> Hello, Ingo!
+> 
+> This pull request contains Linux-Kernel Memory-Model commits for v5.10.
+> These have been subjected to LKML review:
+> 
+> 	https://lore.kernel.org/lkml/20200831182012.GA1965@paulmck-ThinkPad-P72
+> 
+> All of these have also been subjected to the kbuild test robot and
+> -next testing.  The following changes since v5.9-rc1 are available in
+> the git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git lkmm
+> 
+> for you to fetch changes up to 0ce0c78eff7d22c8a261de6c4305a5abb638c200:
+> 
+>   tools/memory-model: Expand the cheatsheet.txt notion of relaxed (2020-09-04 11:58:15 -0700)
+> 
+> ----------------------------------------------------------------
+> Alexander A. Klimov (1):
+>       Replace HTTP links with HTTPS ones: LKMM
+> 
+> Paul E. McKenney (4):
+>       tools/memory-model: Update recipes.txt prime_numbers.c path
+>       tools/memory-model: Improve litmus-test documentation
+>       tools/memory-model: Add a simple entry point document
+>       tools/memory-model: Expand the cheatsheet.txt notion of relaxed
+> 
+>  tools/memory-model/Documentation/cheatsheet.txt   |   33 +-
+>  tools/memory-model/Documentation/litmus-tests.txt | 1074 +++++++++++++++++++++
+>  tools/memory-model/Documentation/recipes.txt      |    4 +-
+>  tools/memory-model/Documentation/references.txt   |    2 +-
+>  tools/memory-model/Documentation/simple.txt       |  271 ++++++
+>  tools/memory-model/README                         |  160 +--
+>  6 files changed, 1410 insertions(+), 134 deletions(-)
+>  create mode 100644 tools/memory-model/Documentation/litmus-tests.txt
+>  create mode 100644 tools/memory-model/Documentation/simple.txt
 
-> Plus, the GPIO pin that control the sd-voltage is in GPIO Expander not using Keembay SOC GPIO Pin.
-> The best option is using the gpio consumer function to toggle the pin.
+Pulled, thanks a lot Paul!
 
-As I said, please no.
-
-The common way to model this is as a GPIO regulator. In this way, you
-can even rely on existing mmc DT bindings. All you have to do is to
-hook up a vqmmc supply to the mmc node.
-
-To be clear, as long as there are no arguments for why a pinctrl and
-GPIO regulator can't be used - I am not going to pick up the patches.
-
-Kind regards
-Uffe
+	Ingo
