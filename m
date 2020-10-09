@@ -2,169 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C73D2288ACD
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F1B0288AD2
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:26:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388841AbgJIOZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 10:25:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52682 "EHLO
+        id S2388784AbgJIO0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 10:26:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388833AbgJIOZM (ORCPT
+        with ESMTP id S2388707AbgJIO0Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 10:25:12 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0B1BC0613D2;
-        Fri,  9 Oct 2020 07:25:12 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id w21so1773550plq.3;
-        Fri, 09 Oct 2020 07:25:12 -0700 (PDT)
+        Fri, 9 Oct 2020 10:26:25 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69852C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 07:26:25 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id b193so6408511pga.6
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 07:26:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=J7qE0GUuBpfv8UjMVWbZ0ncuDXglYrJh0hxvzENiZ/8=;
-        b=JBBVCTAcdPeVOeY24OObzt1FQFK/0dbrwcz8o15piYCM9wKumNVa25e+K0WRk1e38l
-         ldSw2BR8PbjpUuRJA2Bz36JvLnVrD7Vq7M1VCM+u8LrI4KpeenlEYs07H1+hecgnPaGz
-         oNeuxVJXAu9t2auQq9G9byyqlxa/0cLVweaCDuXYvi1AeUQJdmpjRfArYEzilqd8AQxX
-         t3kEw7+I1XyQ3SqSXCrb6yy2M290azWEdz1Qr2Il9Etl16bTsXMvxv35YJb8wDcNgNrK
-         c4Y19lv4jWcQWSzQpv8IfvLn3pqf9h9NrHPkk4iyHuj6bi09kdCVJvOnIjSGPX8fRdv9
-         K1JA==
+        bh=+6M2CF3GiS41kG7WeY/KYwPLrWKVHdZNxChB43/DhTw=;
+        b=Q2AcAH4iGqaV+vMhtejsQD+2MvhpXAemtmuAuzjuG4d6PD1fOIxvd6qOLFE91lKRtU
+         diw4KEtf0Uak97CjQctN0s6KIaoXRiN3YiHV1/aWHgASuGqeXZ0JegG7QxyLR7bQo5dL
+         8XuR34g3s8TkS3QyxgYyaGO8is0Hi15Az2Zifq8Y+LB2tL1M9qkdOhizmWPM81e51CxX
+         8rKO9G48xPD4FL38wtEroiQJi0ryyaGweveqXmBoVviIBxRS8a2aUECiDKnA8nuzIsRC
+         0Gp4PG19k12YKaLB2G08avMrtriQTK4EoUszGcI5wpQo0gBjdeZ/Hg2WATJ1cB+2IUii
+         bVCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=J7qE0GUuBpfv8UjMVWbZ0ncuDXglYrJh0hxvzENiZ/8=;
-        b=mG9+neVyh54J1Rw54bEivJCVg4lNToIlpB1I7svC92upJmQkEiBts6+e1mGW3EVaRQ
-         +ruUbAXwmv51xhWbH3RinsA/59YxsIIf4HKr+ldYsZaAW3oWwJCRgYCoORNg+Zc5PWzN
-         9aR1Qdd1LXHr8TNTX0H7pmAhDoIIixd55CQJyVwYH/QLa75IXWfWrws6qrPcFeykdLNz
-         iaNfm7mcob4MBIHqFJ9zZA9sa+iy4/S9Gri4Yrv/H7u4h8UVTpkY9T6ySUxoFzqtl1s4
-         emsvai3uwZwxCIPjyy6YggQH50t8ZyVhiC/KfBjV0J9JEjr8dYFHEhv3ZR5joXaJNkJ2
-         CCtw==
-X-Gm-Message-State: AOAM533LeG/St1bekbW9NGnTLk/AkW3bIbA+CZ1LYr5KBzi1CXO/WDLH
-        JgcnWnN/M9SRmHk/ULbVOx3fpBLNYry6W73dx6M=
-X-Google-Smtp-Source: ABdhPJyZg/PkK/hjqy/5vVWSOS1AXfLxmeEoMXE0Id1GSJWLrjE5E8Me834jLrcvXmHmwLx7Zy17XZG174r1FC4GYVw=
-X-Received: by 2002:a17:902:aa8a:b029:d3:c9dd:77d1 with SMTP id
- d10-20020a170902aa8ab02900d3c9dd77d1mr12650563plr.0.1602253512112; Fri, 09
- Oct 2020 07:25:12 -0700 (PDT)
+        bh=+6M2CF3GiS41kG7WeY/KYwPLrWKVHdZNxChB43/DhTw=;
+        b=Sqp2zknBFpxPSz05XMH95RMRCmYnAiGToi6oM3FJH86zuyoaFOb+fj/TpPzx8BabcT
+         NYI2lOxRxprEPgEMVeG1rwNabwVpjvkeUt+wksW2akCsvt/hkdkP2BR90qHiAh1c9qOG
+         W/K7XlUofvxNQ4bfxa+kNlK/+noD4ENQbhf7OzWWVOyaFiTl56pxvutqaqdpCaEqiQAj
+         pIhuHOe82kNpexeuUA2WVIZbN90Ao4nuNFt8uhC0Ydc2dZy0nFZXSYRK4UqhqNRwkBlC
+         QrMNbs1dV3EPYlDF78WgHn2+6WX4xVSZYAWV74zs/uYCOBDj+fzi2fw8JJrwitUMILOl
+         b3wg==
+X-Gm-Message-State: AOAM533COIlGtU+jzpY9L1WVrT/AbHVSGbG68ayGEV5VNsiYyM3USw1z
+        DPW4QPxGcyvjyUlzQI39ijEG0A4f+cSWdh+SHhLBHv4MLWjCtg==
+X-Google-Smtp-Source: ABdhPJwzEq4ugskmZfXDnj4WYNxgqNEiRNpMSgeyqBO+zq/GW8VbwN2Q+woPjNdBzoUjw7BNKS171CRizOTPEbwPzAI=
+X-Received: by 2002:a62:5e81:0:b029:152:2f99:d9e3 with SMTP id
+ s123-20020a625e810000b02901522f99d9e3mr12045455pfb.7.1602253584972; Fri, 09
+ Oct 2020 07:26:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201009141128.683254-1-luzmaximilian@gmail.com> <20201009141128.683254-3-luzmaximilian@gmail.com>
-In-Reply-To: <20201009141128.683254-3-luzmaximilian@gmail.com>
+References: <20201009133734.GE8133@xsang-OptiPlex-9020>
+In-Reply-To: <20201009133734.GE8133@xsang-OptiPlex-9020>
 From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 9 Oct 2020 17:26:01 +0300
-Message-ID: <CAHp75VfJNrJs3PFuH4+Cw5wZ8MB+hoeuZc-+2s1YD2wHYzf8pg@mail.gmail.com>
-Subject: Re: [PATCH v4 2/5] platform/surface: Move Surface 3 WMI driver to platform/surface
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-Cc:     Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        =?UTF-8?Q?Bla=C5=BE_Hrastnik?= <blaz@mxxn.io>,
-        Stephen Just <stephenjust@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Chen Yu <yu.c.chen@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Fri, 9 Oct 2020 17:27:14 +0300
+Message-ID: <CAHp75VdX_uxbrkX=XF11WDBcuXjpQYWjjOzVzJ8ffj46oGw_JA@mail.gmail.com>
+Subject: Re: drivers/power/supply/mp2629_charger.c:522:9: warning: %d in
+ format string (no. 1) requires 'int' but the argument type is 'unsigned int'.
+To:     kernel test robot <lkp@intel.com>
+Cc:     Saravanan Sekar <sravanhome@gmail.com>, kbuild-all@lists.01.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 9, 2020 at 5:11 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
+On Fri, Oct 9, 2020 at 4:23 PM kernel test robot <lkp@intel.com> wrote:
 >
-> Move the Surface 3 WMI driver from platform/x86 to the newly created
-> platform/surface directory.
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   549738f15da0e5a00275977623be199fbbf7df50
+> commit: 3bc6d790c39dfc4539c36525e6bcb617abbae467 power: supply: Add support for mps mp2629 battery charger
+> date:   4 months ago
+> :::::: branch date: 12 hours ago
+> :::::: commit date: 4 months ago
+> compiler: sh4-linux-gcc (GCC) 9.3.0
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+...
 
-> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
-> ---
->  drivers/platform/surface/Kconfig                 | 16 ++++++++++++++++
->  drivers/platform/surface/Makefile                |  2 ++
->  drivers/platform/{x86 => surface}/surface3-wmi.c |  0
->  drivers/platform/x86/Kconfig                     | 12 ------------
->  drivers/platform/x86/Makefile                    |  1 -
->  5 files changed, 18 insertions(+), 13 deletions(-)
->  rename drivers/platform/{x86 => surface}/surface3-wmi.c (100%)
->
-> diff --git a/drivers/platform/surface/Kconfig b/drivers/platform/surface/Kconfig
-> index b67926ece95f..326f7bbf83d7 100644
-> --- a/drivers/platform/surface/Kconfig
-> +++ b/drivers/platform/surface/Kconfig
-> @@ -12,3 +12,19 @@ menuconfig SURFACE_PLATFORMS
->           kernel code.
->
->           If you say N, all options in this submenu will be skipped and disabled.
-> +
-> +if SURFACE_PLATFORMS
-> +
-> +config SURFACE3_WMI
-> +       tristate "Surface 3 WMI Driver"
-> +       depends on ACPI_WMI
-> +       depends on DMI
-> +       depends on INPUT
-> +       depends on SPI
-> +       help
-> +         Say Y here if you have a Surface 3.
-> +
-> +         To compile this driver as a module, choose M here: the module will
-> +         be called surface3-wmi.
-> +
-> +endif # SURFACE_PLATFORMS
-> diff --git a/drivers/platform/surface/Makefile b/drivers/platform/surface/Makefile
-> index 3700f9e84299..f889d521420f 100644
-> --- a/drivers/platform/surface/Makefile
-> +++ b/drivers/platform/surface/Makefile
-> @@ -3,3 +3,5 @@
->  # Makefile for linux/drivers/platform/surface
->  # Microsoft Surface Platform-Specific Drivers
->  #
-> +
-> +obj-$(CONFIG_SURFACE3_WMI)             += surface3-wmi.o
-> diff --git a/drivers/platform/x86/surface3-wmi.c b/drivers/platform/surface/surface3-wmi.c
-> similarity index 100%
-> rename from drivers/platform/x86/surface3-wmi.c
-> rename to drivers/platform/surface/surface3-wmi.c
-> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-> index 0d91d136bc3b..0759913c9846 100644
-> --- a/drivers/platform/x86/Kconfig
-> +++ b/drivers/platform/x86/Kconfig
-> @@ -870,18 +870,6 @@ config INTEL_VBTN
->           To compile this driver as a module, choose M here: the module will
->           be called intel_vbtn.
->
-> -config SURFACE3_WMI
-> -       tristate "Surface 3 WMI Driver"
-> -       depends on ACPI_WMI
-> -       depends on DMI
-> -       depends on INPUT
-> -       depends on SPI
-> -       help
-> -         Say Y here if you have a Surface 3.
-> -
-> -         To compile this driver as a module, choose M here: the module will
-> -         be called surface3-wmi.
-> -
->  config SURFACE_3_BUTTON
->         tristate "Power/home/volume buttons driver for Microsoft Surface 3 tablet"
->         depends on ACPI && KEYBOARD_GPIO && I2C
-> diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-> index 5f823f7eff45..29563a32b3e3 100644
-> --- a/drivers/platform/x86/Makefile
-> +++ b/drivers/platform/x86/Makefile
-> @@ -82,7 +82,6 @@ obj-$(CONFIG_INTEL_OAKTRAIL)          += intel_oaktrail.o
->  obj-$(CONFIG_INTEL_VBTN)               += intel-vbtn.o
->
->  # Microsoft
-> -obj-$(CONFIG_SURFACE3_WMI)             += surface3-wmi.o
->  obj-$(CONFIG_SURFACE_3_BUTTON)         += surface3_button.o
->  obj-$(CONFIG_SURFACE_3_POWER_OPREGION) += surface3_power.o
->  obj-$(CONFIG_SURFACE_PRO3_BUTTON)      += surfacepro3_button.o
-> --
-> 2.28.0
->
+> 3bc6d790c39dfc Saravanan Sekar 2020-05-26  514          unsigned int rval;
+> 3bc6d790c39dfc Saravanan Sekar 2020-05-26  515          int ret;
+> 3bc6d790c39dfc Saravanan Sekar 2020-05-26  516
+> 3bc6d790c39dfc Saravanan Sekar 2020-05-26  517          ret = regmap_read(charger->regmap, MP2629_REG_IMPEDANCE_COMP, &rval);
+> 3bc6d790c39dfc Saravanan Sekar 2020-05-26  518          if (ret)
+> 3bc6d790c39dfc Saravanan Sekar 2020-05-26  519                  return ret;
+> 3bc6d790c39dfc Saravanan Sekar 2020-05-26  520
+> 3bc6d790c39dfc Saravanan Sekar 2020-05-26  521          rval = (rval >> 4) * 10;
+> 3bc6d790c39dfc Saravanan Sekar 2020-05-26 @522          return sprintf(buf, "%d mohm\n", rval);
+> 3bc6d790c39dfc Saravanan Sekar 2020-05-26  523  }
 
+Right, should be %u. Can LKP generate this type of patches?
 
 -- 
 With Best Regards,
