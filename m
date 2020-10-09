@@ -2,95 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD975289015
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 19:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7010A289016
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 19:37:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387619AbgJIRgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 13:36:36 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:38864 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732880AbgJIRgT (ORCPT
+        id S2387582AbgJIRgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 13:36:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732882AbgJIRgW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 13:36:19 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id B4C5D1C0B88; Fri,  9 Oct 2020 19:36:17 +0200 (CEST)
-Date:   Fri, 9 Oct 2020 19:36:17 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
-        linux-leds@vger.kernel.org, dmurphy@ti.com
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Subject: Re: [PATCH v2 3/3] ARM: dts: r8a7742-iwg21d-q7: Enable SD2 LED
- indication
-Message-ID: <20201009173617.GA31847@duo.ucw.cz>
-References: <20200907155541.2011-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20200907155541.2011-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20201009073349.GD10335@amd>
- <CA+V-a8tEtQwfz=NstFdBXdJiSy4-QJDoT5HjOh1kgUbuFpgs4g@mail.gmail.com>
+        Fri, 9 Oct 2020 13:36:22 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 942DFC0613D2;
+        Fri,  9 Oct 2020 10:36:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=fpwKpB0QRMQy9tLZQv1g7PmBUfEuKMv/BEO55MnQHTc=; b=epj475FdxE/6piVligw7f/O1Gg
+        C51sXJjusavAgwM0+vopbw1kAT6F8MeRMLuZqu9GF5kosFlBr0DMLgR2b+U5Cih/1Kg6WOrmU7ufb
+        ceowujvqt7mbx32fx0QHFLbrRyRmMZ7GHavqZM/eb1rc9k+kpVfntqs8R9aKVI/A+Mt1LLcmAHwJ3
+        pBzpV08VvjTAfGqihoUByDmRGPVtJNbnKEbbeYz9rCPLqWJ5x4g0YEHuNmtfXvgQ2Uy/yPxJF4E/c
+        7MtAAMQ8f8VyU2MrKUfpkE7D6wq4rWwqK3OU7ICBl31srqQhYEPyab/V682eiyCfvlN2kjP2Rcugr
+        SeLThKMA==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kQwJY-0001Eh-D3; Fri, 09 Oct 2020 17:36:20 +0000
+Date:   Fri, 9 Oct 2020 18:36:20 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Pavel Begunkov <asml.silence@gmail.com>
+Subject: Re: [PATCH 2/3] io_uring: Fix XArray usage in io_uring_add_task_file
+Message-ID: <20201009173620.GV20115@casper.infradead.org>
+References: <20201009124954.31830-1-willy@infradead.org>
+ <20201009124954.31830-2-willy@infradead.org>
+ <0746e0aa-cb81-0fde-5405-acb1e61b6854@kernel.dk>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="PNTmBPCT7hxwcZjr"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+V-a8tEtQwfz=NstFdBXdJiSy4-QJDoT5HjOh1kgUbuFpgs4g@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <0746e0aa-cb81-0fde-5405-acb1e61b6854@kernel.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 09, 2020 at 08:57:55AM -0600, Jens Axboe wrote:
+> > +	if (unlikely(!cur_uring)) {
+> >  		int ret;
+> >  
+> >  		ret = io_uring_alloc_task_context(current);
+> >  		if (unlikely(ret))
+> >  			return ret;
+> >  	}
+> 
+> I think this is missing a:
+> 
+> 	cur_uring = current->io_uring;
+> 
+> after the successful io_uring_alloc_task(). I'll also rename it to tctx
+> like what is used in other spots.
 
---PNTmBPCT7hxwcZjr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Quite right!  I should have woken up a little bit more before writing code.
 
-Hi!
+> Apart from that, series looks good to me, thanks Matthew!
 
-> Thank you for the review.
-
-Note I'm LED maintainer.
-
-> > > +     leds {
-> > > +             compatible =3D "gpio-leds";
-> > > +
-> > > +             sdhi2_led {
-> > > +                     label =3D "sdio-led";
-> >
-> > This should use appropriate label... probably mmc1:green:activity.
-> >
-> $ grep -nr mmc | grep -i activity
-> $ grep -nr  sd | grep -i activity
->=20
-> Results in 0 outputs in dts folder.
-
-Well, so does
-
-grep -ri label.*sdio-led arch/arm*
-
-:-). Feel free to suggest other name following documentation in
-Documentation/leds/leds-class.rst .
-
-(And yes, we have lot of work to get this to some kind of consistent
-state).
-
-								Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---PNTmBPCT7hxwcZjr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX4CfkQAKCRAw5/Bqldv6
-8vDQAKCmQ65JgESIKoQueOHDnt0GT/ed+wCeMw4yFiNFb92i8yk1tZxZ7oqqZFg=
-=d6V6
------END PGP SIGNATURE-----
-
---PNTmBPCT7hxwcZjr--
+NP.  At some point, I'd like to understand a bit better how you came
+to write the code the way you did, so I can improve the documentation.
+Maybe I just need to strengthen the warnings to stay away from the
+advanced API unless you absolutely need it.
