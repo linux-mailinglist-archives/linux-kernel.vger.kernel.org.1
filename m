@@ -2,191 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63EB0288EA7
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 18:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 020F2288EAA
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 18:20:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389679AbgJIQUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 12:20:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42504 "EHLO
+        id S2389687AbgJIQUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 12:20:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388719AbgJIQT7 (ORCPT
+        with ESMTP id S2389451AbgJIQUj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 12:19:59 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3777C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 09:19:59 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id 7so7545485pgm.11
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 09:19:59 -0700 (PDT)
+        Fri, 9 Oct 2020 12:20:39 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4F1AC0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 09:20:39 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id x22so7255262pfo.12
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 09:20:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=U/u6IHdRQ/psB0Xv6HRzOplGyp4wP5YucQVH0WzAC3M=;
-        b=I0+xez+8iYF8/Sopnaip3crOdzZHVQlHo62cgIHTppg1ennRqHwC/zF9ddKvbJOjj8
-         vpVnFs8S8wEYI06b7KXAGemrB8oU6AF3EY5YqDhv+5PdUnbWqu+OqLa7ytQGyGe7Yk/w
-         NlMwiv9KrectxTEUIDwTDmqooYDxEPOMEcuu5t64Taph7VAp9GjstAYctaySg1Myc86p
-         MSkbOaSQOJkJ8mM2YDz7WYor/BgS9o7Detf/EAVrRRJgqiGwTPzQI3hFyrpd6URVAu+k
-         hBVpfO3/N2PE2aLy/rgVP7uZDoX7NYgSk1N41D47tyFcPiUQYoCD3jj+OFeUROPV9lSN
-         09Bg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mP+aJbUAat0UV4esY+1JsE6q/zZ+Jt33VyknqBiKg6E=;
+        b=H8vtangYCZZ+rQo2KOQ7hhPSTvZztsIedGeLPsRZ1uamjVukb7XGoPTUeMIx+FIzRu
+         b6vFDbHC4nyU2AsQjT8sNUGWq2ZCcmSjFp3vw+lgMY5ATWNuQNZdAK2H/hjU8O3V9CtT
+         HallgOMsilAG0KHTairyYihZzET/881krznSKPcC/cjm0uz+ng1KI+JTtuj7oSJxuj/J
+         VzmK/OlUs+oT4QptXSWDbMgHNk0OIGU7ojpB9m7mwm31BM+AjreQhCPGeWr7sNZAzubO
+         wWfm3H2Ph4/Gno9/d/WoPQYybFh74inmjJDTI76qXPo42YHTlAuP7iv7pACAIj63B9Ds
+         CJvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=U/u6IHdRQ/psB0Xv6HRzOplGyp4wP5YucQVH0WzAC3M=;
-        b=PQy6wYiQFabe7esP+Fn9SHx07SpBUF0wOKiKtmRnQvpqqKPQbbDelCnrHaUKzX0Duu
-         pbeZosVeiSH5F6Cj3GMiofzVd30zly1xwRvPr+JF9HKEjLzpAIdqbfwsCpaq+OKNoFzq
-         x9mV7TJ0lNIl4dw+bTYQNKZZosU2rqLKE8aZfSWNltoFWHScnGDtPpZq5ULcTqxc25pE
-         CXItbmLRwOxA3UD/p1MkABu2F+uVuL9/qXUYz+NCqlsMtp05wy6Q2RykQFwwtru+wwGm
-         xDbl4yKRFOpQtXNa4zDakMN634Mrj9Z5pGiqvnWr/mqxniM66SmNQdOxkn2mriCzsJ4n
-         RH6w==
-X-Gm-Message-State: AOAM530MxcLa+07AZ4a4eNbK9YhJOkSPzLBC+hHP8jTQegi1dOEAzsg6
-        ma6z3fTkJbS2IKfZRhOVkdO7
-X-Google-Smtp-Source: ABdhPJyx//guo21NTcW8LEsh3wY15TneKjjvXe7IJNasC3G3AUEr2e/EtDeZJ1UKoW2KCoNo3VVy9w==
-X-Received: by 2002:a17:90a:248:: with SMTP id t8mr5961491pje.64.1602260398972;
-        Fri, 09 Oct 2020 09:19:58 -0700 (PDT)
-Received: from Mani-XPS-13-9360 ([2409:4072:6292:5a21:d5ff:f3e8:fcf2:ccc7])
-        by smtp.gmail.com with ESMTPSA id j6sm11032328pfi.129.2020.10.09.09.19.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 09 Oct 2020 09:19:58 -0700 (PDT)
-Date:   Fri, 9 Oct 2020 21:49:50 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 06/10] bus: mhi: core: Improve shutdown handling after
- link down detection
-Message-ID: <20201009161950.GG4810@Mani-XPS-13-9360>
-References: <1600480955-16827-1-git-send-email-bbhatt@codeaurora.org>
- <1600480955-16827-7-git-send-email-bbhatt@codeaurora.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mP+aJbUAat0UV4esY+1JsE6q/zZ+Jt33VyknqBiKg6E=;
+        b=qWaLMD6PQmNIS6jAGYMRLDALNsP0baJmT3ObO/GLxxSASd8JUUWa2cNAGKxAvouY5z
+         EZvpUjSOHTZ9RzQx0zxSP1Ho5EPd4FjRMQV3U66Z0F9fgMvRH48pwYMJohF0ogPxr//G
+         Va6FNM+nXq3dH3dlysrd03Qa9Nw7AOMGOyW2o+pIcR2UKJVJHOs1uRfUIR5crQNMCQwy
+         0j9iDA+3Tq3SVeO6mdrwaYikx5tGnTB7m7jwEmNm3zN56ORgcyhnbHgT6mWvqhnfykAY
+         mWks/OhT8yME3IFDFXsEMHizNqWTOXiYTD4NectblqTMnPIVyEn8xsnVL+ceJw1VxXWr
+         gE0A==
+X-Gm-Message-State: AOAM531SQRtDkFEpxKETVeKTEc4fg54aEGfIoOtDrQSe3F6BJWl3xjDi
+        V64vV7wgs/uFTnFqwuSAiho=
+X-Google-Smtp-Source: ABdhPJyARPOvuTSwMuRPOKozcnKxADEWGnflnK+0e+Bke7F1X7H6ejWfNx6wuvsaN93e4Q1NYAr2Lw==
+X-Received: by 2002:a17:90a:1861:: with SMTP id r88mr5337711pja.222.1602260439006;
+        Fri, 09 Oct 2020 09:20:39 -0700 (PDT)
+Received: from localhost.localdomain ([49.207.205.113])
+        by smtp.gmail.com with ESMTPSA id h31sm11163325pgh.71.2020.10.09.09.20.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Oct 2020 09:20:38 -0700 (PDT)
+From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        syzbot+009f546aa1370056b1c2@syzkaller.appspotmail.com,
+        Ian Abbott <abbotti@mev.co.uk>,
+        H Hartley Sweeten <hsweeten@visionengravers.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: comedi: check validity of wMaxPacketSize of usb endpoints found
+Date:   Fri,  9 Oct 2020 21:50:29 +0530
+Message-Id: <20201009162030.293781-1-anant.thazhemadam@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1600480955-16827-7-git-send-email-bbhatt@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 07:02:31PM -0700, Bhaumik Bhatt wrote:
-> If MHI were to attempt a device shutdown following an assumption
+While finding usb endpoints in vmk80xx_find_usb_endpoints(), check if 
+wMaxPacketSize = 0 for the endpoints found.
 
-MHI host? And is this really an assumption or it is definite that the
-link is inaccessible. Please clarify!
+Some devices have isochronous endpoints that have wMaxPacketSize = 0
+(as required by the USB-2 spec).
+However, since this doesn't apply here, wMaxPacketSize = 0 can be
+considered to be invalid.
 
-> that the device is inaccessible, the host currently moves to a state
-> where device register accesses are allowed when they should not be.
-> This would end up allowing accesses to the device register space when
-> the link is inaccessible and can result in bus errors observed on the
-> host. Improve shutdown handling to prevent these outcomes and do not
-> move the MHI PM state to a register accessible state after device is
-> assumed to be inaccessible.
->
+Reported-by: syzbot+009f546aa1370056b1c2@syzkaller.appspotmail.com
+Tested-by: syzbot+009f546aa1370056b1c2@syzkaller.appspotmail.com
+Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+---
+The error (as detected by syzbot) is generated in 
+vmk80xx_write_packet() (which is called in vmk80xx_reset_device()) when
+it tries to assign devpriv->usb_tx_buf[0] = cmd.
 
-Apparently you are introducing a new device transition state but your
-commit description doesn't state that :/
+This NULL pointer dereference issue arises because
+size = usb_endpoint_maxp(devpriv->ep_tx) = 0.
 
-Thanks,
-Mani
+This can be traced back to vmk80xx_find_usb_endpoints(), where the usb 
+endpoints are found, and assigned accordingly.
+(For some more insight, in vmk80xx_find_usb_endpoints(), 
+if one of intf->cur_altsetting->iface_desc->endpoints' desc value = 0, 
+and consequently this endpoint is assigned to devpriv->ep_tx,
+this issue gets triggered.)
+
+Checking if the wMaxPacketSize of an endpoint is invalid and returning
+an error value accordingly, seems to fix the error.
+
+We could also alternatively perform this checking (if the size is 0 or not) 
+in vmk80xx_reset_device() itself, but it only seemed like covering up the issue
+at that place, rather than fixing it, so I wasn't sure that was any better.
+
+However, if I'm not wrong, this might end up causing the probe to fail, and I'm 
+not sure if that's the right thing to do in cases like this, and if it isn't I'd
+like some input on what exactly is the required course of action in cases like this.
+
+ drivers/staging/comedi/drivers/vmk80xx.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/staging/comedi/drivers/vmk80xx.c b/drivers/staging/comedi/drivers/vmk80xx.c
+index 65dc6c51037e..cb0a965d3c37 100644
+--- a/drivers/staging/comedi/drivers/vmk80xx.c
++++ b/drivers/staging/comedi/drivers/vmk80xx.c
+@@ -667,6 +667,9 @@ static int vmk80xx_find_usb_endpoints(struct comedi_device *dev)
+ 	if (!devpriv->ep_rx || !devpriv->ep_tx)
+ 		return -ENODEV;
  
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> ---
->  drivers/bus/mhi/core/init.c     |  1 +
->  drivers/bus/mhi/core/internal.h |  1 +
->  drivers/bus/mhi/core/pm.c       | 18 +++++++++++++-----
->  3 files changed, 15 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-> index 9ae4c19..fa33dde 100644
-> --- a/drivers/bus/mhi/core/init.c
-> +++ b/drivers/bus/mhi/core/init.c
-> @@ -37,6 +37,7 @@ const char * const dev_state_tran_str[DEV_ST_TRANSITION_MAX] = {
->  	[DEV_ST_TRANSITION_MISSION_MODE] = "MISSION_MODE",
->  	[DEV_ST_TRANSITION_SYS_ERR] = "SYS_ERR",
->  	[DEV_ST_TRANSITION_DISABLE] = "DISABLE",
-> +	[DEV_ST_TRANSITION_FATAL] = "FATAL SHUTDOWN",
->  };
->  
->  const char * const mhi_state_str[MHI_STATE_MAX] = {
-> diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
-> index 7989269..f3b9e5a 100644
-> --- a/drivers/bus/mhi/core/internal.h
-> +++ b/drivers/bus/mhi/core/internal.h
-> @@ -388,6 +388,7 @@ enum dev_st_transition {
->  	DEV_ST_TRANSITION_MISSION_MODE,
->  	DEV_ST_TRANSITION_SYS_ERR,
->  	DEV_ST_TRANSITION_DISABLE,
-> +	DEV_ST_TRANSITION_FATAL,
->  	DEV_ST_TRANSITION_MAX,
->  };
->  
-> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-> index 3462d82..bce1f62 100644
-> --- a/drivers/bus/mhi/core/pm.c
-> +++ b/drivers/bus/mhi/core/pm.c
-> @@ -37,9 +37,10 @@
->   *     M0 -> FW_DL_ERR
->   *     M0 -> M3_ENTER -> M3 -> M3_EXIT --> M0
->   * L1: SYS_ERR_DETECT -> SYS_ERR_PROCESS --> POR
-> - * L2: SHUTDOWN_PROCESS -> DISABLE
-> + * L2: SHUTDOWN_PROCESS -> LD_ERR_FATAL_DETECT
-> + *     SHUTDOWN_PROCESS -> DISABLE
->   * L3: LD_ERR_FATAL_DETECT <--> LD_ERR_FATAL_DETECT
-> - *     LD_ERR_FATAL_DETECT -> SHUTDOWN_PROCESS
-> + *     LD_ERR_FATAL_DETECT -> DISABLE
->   */
->  static struct mhi_pm_transitions const dev_state_transitions[] = {
->  	/* L0 States */
-> @@ -72,7 +73,7 @@ static struct mhi_pm_transitions const dev_state_transitions[] = {
->  	{
->  		MHI_PM_M3,
->  		MHI_PM_M3_EXIT | MHI_PM_SYS_ERR_DETECT |
-> -		MHI_PM_SHUTDOWN_PROCESS | MHI_PM_LD_ERR_FATAL_DETECT
-> +		MHI_PM_LD_ERR_FATAL_DETECT
->  	},
->  	{
->  		MHI_PM_M3_EXIT,
-> @@ -103,7 +104,7 @@ static struct mhi_pm_transitions const dev_state_transitions[] = {
->  	/* L3 States */
->  	{
->  		MHI_PM_LD_ERR_FATAL_DETECT,
-> -		MHI_PM_LD_ERR_FATAL_DETECT | MHI_PM_SHUTDOWN_PROCESS
-> +		MHI_PM_LD_ERR_FATAL_DETECT | MHI_PM_DISABLE
->  	},
->  };
->  
-> @@ -670,6 +671,10 @@ void mhi_pm_st_worker(struct work_struct *work)
->  			mhi_pm_disable_transition
->  				(mhi_cntrl, MHI_PM_SHUTDOWN_PROCESS);
->  			break;
-> +		case DEV_ST_TRANSITION_FATAL:
-> +			mhi_pm_disable_transition
-> +				(mhi_cntrl, MHI_PM_LD_ERR_FATAL_DETECT);
-> +			break;
->  		default:
->  			break;
->  		}
-> @@ -1039,6 +1044,7 @@ EXPORT_SYMBOL_GPL(mhi_async_power_up);
->  void mhi_power_down(struct mhi_controller *mhi_cntrl, bool graceful)
->  {
->  	enum mhi_pm_state cur_state;
-> +	enum dev_st_transition next_state = DEV_ST_TRANSITION_DISABLE;
->  	struct device *dev = &mhi_cntrl->mhi_dev->dev;
->  
->  	/* If it's not a graceful shutdown, force MHI to linkdown state */
-> @@ -1053,9 +1059,11 @@ void mhi_power_down(struct mhi_controller *mhi_cntrl, bool graceful)
->  			dev_dbg(dev, "Failed to move to state: %s from: %s\n",
->  				to_mhi_pm_state_str(MHI_PM_LD_ERR_FATAL_DETECT),
->  				to_mhi_pm_state_str(mhi_cntrl->pm_state));
-> +		else
-> +			next_state = DEV_ST_TRANSITION_FATAL;
->  	}
->  
-> -	mhi_queue_state_transition(mhi_cntrl, DEV_ST_TRANSITION_DISABLE);
-> +	mhi_queue_state_transition(mhi_cntrl, next_state);
->  
->  	/* Wait for shutdown to complete */
->  	flush_work(&mhi_cntrl->st_worker);
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
++	if (!usb_endpoint_maxp(devpriv->ep_rx) || !usb_endpoint_maxp(devpriv->ep_tx))
++		return -EINVAL;
++
+ 	return 0;
+ }
+ 
+-- 
+2.25.1
+
