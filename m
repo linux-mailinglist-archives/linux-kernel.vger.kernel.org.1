@@ -2,143 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5222B28917C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 20:55:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06FB8289180
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 20:56:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388193AbgJISzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 14:55:50 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:46981 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S2388184AbgJISzt (ORCPT
+        id S2388294AbgJISz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 14:55:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388184AbgJISz7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 14:55:49 -0400
-Received: (qmail 547642 invoked by uid 1000); 9 Oct 2020 14:55:48 -0400
-Date:   Fri, 9 Oct 2020 14:55:48 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     syzbot <syzbot+f5378bcf0f0cab45c1c6@syzkaller.appspotmail.com>,
-        QCA ath9k Development <ath9k-devel@qca.qualcomm.com>
-Cc:     andreyknvl@google.com, eli.billauer@gmail.com,
-        gregkh@linuxfoundation.org, gustavoars@kernel.org,
-        ingrassia@epigenesys.com, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, oneukum@suse.com,
-        linux-wireless@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tiwai@suse.de
-Subject: Re: WARNING in hif_usb_send/usb_submit_urb
-Message-ID: <20201009185548.GA546075@rowland.harvard.edu>
-References: <000000000000021e6b05b0ea60bd@google.com>
- <00000000000069707b05b13da267@google.com>
+        Fri, 9 Oct 2020 14:55:59 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 325D7C0613D2;
+        Fri,  9 Oct 2020 11:55:59 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1kQxYW-0000rj-1m; Fri, 09 Oct 2020 20:55:52 +0200
+Date:   Fri, 9 Oct 2020 20:55:52 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Jozsef Kadlecsik <kadlec@netfilter.org>
+Cc:     Florian Westphal <fw@strlen.de>,
+        Francesco Ruggeri <fruggeri@arista.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, coreteam@netfilter.org,
+        netfilter-devel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@davemloft.net>, fw@strlen.org,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: [PATCH nf v2] netfilter: conntrack: connection timeout after
+ re-register
+Message-ID: <20201009185552.GF5723@breakpoint.cc>
+References: <20201007193252.7009D95C169C@us180.sjc.aristanetworks.com>
+ <CA+HUmGhBxBHU85oFfvoAyP=hG17DG2kgO67eawk1aXmSjehOWQ@mail.gmail.com>
+ <alpine.DEB.2.23.453.2010090838430.19307@blackhole.kfki.hu>
+ <20201009110323.GC5723@breakpoint.cc>
+ <alpine.DEB.2.23.453.2010092035550.19307@blackhole.kfki.hu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <00000000000069707b05b13da267@google.com>
+In-Reply-To: <alpine.DEB.2.23.453.2010092035550.19307@blackhole.kfki.hu>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To the ath9k_htc maintainers:
-
-This is an attempt to fix a bug detected by the syzbot fuzzer.  The bug 
-arises when a USB device claims to be an ATH9K but doesn't have the 
-expected endpoints.  (In this case there was a bulk endpoint where the 
-driver expected an interrupt endpoint.)  The kernel needs to be able to 
-handle such devices without getting an internal error.
-
-On Fri, Oct 09, 2020 at 07:19:19AM -0700, syzbot wrote:
-> syzbot has found a reproducer for the following issue on:
+Jozsef Kadlecsik <kadlec@netfilter.org> wrote:
+> > The repro clears all rules, waits 4 seconds, then restores the ruleset. 
+> > using iptables-restore < FOO; sleep 4; iptables-restore < FOO will not 
+> > result in any unregister ops.
+> >
+> > We could make kernel defer unregister via some work queue but i don't
+> > see what this would help/accomplish (and its questionable of how long it
+> > should wait).
 > 
-> HEAD commit:    6c8cf369 usb: typec: Add QCOM PMIC typec detection driver
+> Sorry, I can't put together the two paragraphs above: in the first you 
+> wrote that no (hook) unregister-register happens and in the second one 
+> that those could be derefed.
 
-Andrey, why doesn't syzbot put a 12-digit commit ID here?
+Sorry, my reply is confusing indeed.
 
-> git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-> console output: https://syzkaller.appspot.com/x/log.txt?x=14ea791b900000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=df3bb4023c36d114
-> dashboard link: https://syzkaller.appspot.com/bug?extid=f5378bcf0f0cab45c1c6
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1087bfe7900000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1327b010500000
+Matches/targets that need conntrack increment a refcount.
+So, when all rules are flushed, refcount goes down to 0 and conntrack is
+disabled because the hooks get removed..
+
+Just doing iptables-restore doesn't unregister as long as both the old
+and new rulesets need conntrack.
+
+The "delay unregister" remark was wrt. the "all rules were deleted"
+case, i.e. add a "grace period" rather than acting right away when
+conntrack use count did hit 0.
+
+> > We could disallow unregister, but that seems silly (forces reboot...).
+> > 
+> > I think the patch is fine.
 > 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+f5378bcf0f0cab45c1c6@syzkaller.appspotmail.com
-> 
-> usb 1-1: Manufacturer: syz
-> usb 1-1: SerialNumber: syz
-> usb 1-1: ath9k_htc: Firmware ath9k_htc/htc_9271-1.4.0.fw requested
-> usb 1-1: ath9k_htc: Transferred FW: ath9k_htc/htc_9271-1.4.0.fw, size: 51008
-> ------------[ cut here ]------------
-> usb 1-1: BOGUS urb xfer, pipe 1 != type 3
-> WARNING: CPU: 1 PID: 72 at drivers/usb/core/urb.c:493 usb_submit_urb+0xce2/0x14e0 drivers/usb/core/urb.c:493
-> Kernel panic - not syncing: panic_on_warn set ...
-> CPU: 1 PID: 72 Comm: kworker/1:2 Not tainted 5.9.0-rc8-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Workqueue: events request_firmware_work_func
-> Call Trace:
->  __dump_stack lib/dump_stack.c:77 [inline]
->  dump_stack+0x107/0x16e lib/dump_stack.c:118
->  panic+0x2cb/0x702 kernel/panic.c:231
->  __warn.cold+0x20/0x44 kernel/panic.c:600
->  report_bug+0x1bd/0x210 lib/bug.c:198
->  handle_bug+0x41/0x80 arch/x86/kernel/traps.c:234
->  exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
->  asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-> RIP: 0010:usb_submit_urb+0xce2/0x14e0 drivers/usb/core/urb.c:493
-> Code: 84 04 03 00 00 e8 3e 98 c6 fd 4c 89 ef e8 66 b6 12 ff 41 89 d8 44 89 e1 4c 89 f2 48 89 c6 48 c7 c7 20 b3 5d 86 e8 d0 ba 9a fd <0f> 0b e9 c6 f8 ff ff e8 12 98 c6 fd 48 81 c5 40 06 00 00 e9 f2 f7
-> RSP: 0018:ffff8881d4757808 EFLAGS: 00010286
-> RAX: 0000000000000000 RBX: 0000000000000003 RCX: 0000000000000000
-> RDX: ffff8881d4ffe500 RSI: ffffffff8129efa3 RDI: ffffed103a8eaef3
-> RBP: ffff8881cde7d800 R08: 0000000000000001 R09: ffff8881db32f50f
-> R10: 0000000000000000 R11: 0000000000003754 R12: 0000000000000001
-> R13: ffff8881d1edd0a0 R14: ffff8881d9bc9320 R15: ffff8881d9ba8600
->  hif_usb_send_regout drivers/net/wireless/ath/ath9k/hif_usb.c:127 [inline]
->  hif_usb_send+0x4c1/0xcf0 drivers/net/wireless/ath/ath9k/hif_usb.c:470
->  htc_issue_send drivers/net/wireless/ath/ath9k/htc_hst.c:34 [inline]
->  htc_connect_service+0x705/0xa00 drivers/net/wireless/ath/ath9k/htc_hst.c:275
->  ath9k_wmi_connect+0xc9/0x190 drivers/net/wireless/ath/ath9k/wmi.c:268
->  ath9k_init_htc_services.constprop.0+0xb3/0x640 drivers/net/wireless/ath/ath9k/htc_drv_init.c:146
->  ath9k_htc_probe_device+0x25f/0x1e10 drivers/net/wireless/ath/ath9k/htc_drv_init.c:962
->  ath9k_htc_hw_init+0x31/0x60 drivers/net/wireless/ath/ath9k/htc_hst.c:501
->  ath9k_hif_usb_firmware_cb+0x274/0x530 drivers/net/wireless/ath/ath9k/hif_usb.c:1220
->  request_firmware_work_func+0x126/0x250 drivers/base/firmware_loader/main.c:1006
->  process_one_work+0x94c/0x15f0 kernel/workqueue.c:2269
->  worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
->  kthread+0x392/0x470 kernel/kthread.c:292
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-> Kernel Offset: disabled
-> Rebooting in 86400 seconds..
+> The patch is fine, but why the packets are handled by conntrack (after the 
+> first restore and during the 4s sleep? And then again after the second 
+> restore?) as if all conntrack entries were removed?
 
-I don't know if all the devices used by the ath9k_htc driver are 
-expected to have all of these endpoints and no others.  I just added 
-checks for the ones listed in the hif_usb.h file.
+Conntrack entries are not removed, only the base hooks get unregistered.
+This is a problem for tcp window tracking.
 
-Alan Stern
-
-#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git 6c8cf369
-
-Index: usb-devel/drivers/net/wireless/ath/ath9k/hif_usb.c
-===================================================================
---- usb-devel.orig/drivers/net/wireless/ath/ath9k/hif_usb.c
-+++ usb-devel/drivers/net/wireless/ath/ath9k/hif_usb.c
-@@ -1307,6 +1307,20 @@ static int ath9k_hif_usb_probe(struct us
- 	struct usb_device *udev = interface_to_usbdev(interface);
- 	struct hif_device_usb *hif_dev;
- 	int ret = 0;
-+	struct usb_host_interface *alt;
-+	struct usb_endpoint_descriptor *epd;
-+
-+	/* Verify the expected endpoints are present */
-+	alt = interface->cur_altsetting;
-+	if (!usb_find_int_in_endpoint(alt, &epd) ||
-+			usb_endpoint_num(epd) != USB_REG_IN_PIPE ||
-+	    !usb_find_int_out_endpoint(alt, &epd) ||
-+			usb_endpoint_num(epd) != USB_REG_OUT_PIPE ||
-+	    !usb_find_bulk_in(endpoint(alt, &epd) ||
-+			usb_endpoint_num(epd) != USB_WLAN_RX_PIPE ||
-+	    !usb_find_bulk_out(endpoint(alt, &epd) ||
-+			usb_endpoint_num(epd) != USB_WLAN_TX_PIPE)
-+		return -ENODEV;
- 
- 	if (id->driver_info == STORAGE_DEVICE)
- 		return send_eject_command(interface);
-
-
+When re-register occurs, kernel is supposed to switch the existing
+entries to "loose" mode so window tracking won't flag packets as
+invalid, but apparently this isn't enough to handle keepalive case.
