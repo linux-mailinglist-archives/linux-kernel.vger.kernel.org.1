@@ -2,116 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C07F2884AE
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D2BD2884DB
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732902AbgJIIBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 04:01:47 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:55812 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732492AbgJIIAM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 04:00:12 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id E6128CA9D00C89EF206C;
-        Fri,  9 Oct 2020 16:00:09 +0800 (CST)
-Received: from use12-sp2.huawei.com (10.67.189.174) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 9 Oct 2020 16:00:02 +0800
-From:   Xiaoming Ni <nixiaoming@huawei.com>
-To:     <linux@armlinux.org.uk>, <dima@arista.com>, <will@kernel.org>,
-        <jpoimboe@redhat.com>, <akpm@linux-foundation.org>,
-        <christian.brauner@ubuntu.com>, <viro@zeniv.linux.org.uk>,
-        <ldufour@linux.ibm.com>, <amanieu@gmail.com>, <walken@google.com>,
-        <ben.dooks@codethink.co.uk>, <tglx@linutronix.de>,
-        <bigeasy@linutronix.de>, <mingo@kernel.org>,
-        <vincent.whitchurch@axis.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <nixiaoming@huawei.com>,
-        <wangle6@huawei.com>, <luohaizheng@huawei.com>
-Subject: [PATCH] arm:traps: Don't print stack or raw PC/LR values in backtraces
-Date:   Fri, 9 Oct 2020 15:59:57 +0800
-Message-ID: <20201009075957.110017-1-nixiaoming@huawei.com>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.189.174]
-X-CFilter-Loop: Reflected
+        id S1732478AbgJIIGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 04:06:07 -0400
+Received: from mail-m1271.qiye.163.com ([115.236.127.1]:51276 "EHLO
+        mail-m1271.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732337AbgJIIGG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 04:06:06 -0400
+X-Greylist: delayed 307 seconds by postgrey-1.27 at vger.kernel.org; Fri, 09 Oct 2020 04:06:05 EDT
+Received: from ubuntu.localdomain (unknown [157.0.31.125])
+        by mail-m1271.qiye.163.com (Hmail) with ESMTPA id BF05D581FBE;
+        Fri,  9 Oct 2020 16:00:56 +0800 (CST)
+From:   Yang Yang <yang.yang@vivo.com>
+To:     Jens Axboe <axboe@kernel.dk>, Bart Van Assche <bvanassche@acm.org>,
+        Hannes Reinecke <hare@suse.com>,
+        Ming Lei <ming.lei@redhat.com>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     onlyfever@icloud.com, yang.yang@vivo.com
+Subject: [PATCH] blk-mq: move cancel of hctx->run_work to the front of blk_exit_queue
+Date:   Fri,  9 Oct 2020 01:00:14 -0700
+Message-Id: <20201009080015.3217-1-yang.yang@vivo.com>
+X-Mailer: git-send-email 2.17.1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGE1NSktDHkIYTkhMVkpNS0lJSEtPTk1CTUhVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS09ISVVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PD46Khw6IT8vAkxMDQ4xNQER
+        Hh8wCj5VSlVKTUtJSUhLT05MSE1NVTMWGhIXVQIaFRxVAhoVHDsNEg0UVRgUFkVZV1kSC1lBWUpO
+        TFVLVUhKVUpJTllXWQgBWUFJT0hINwY+
+X-HM-Tid: 0a750c60924998b6kuuubf05d581fbe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Printing raw pointer values in backtraces has potential security
-implications and are of questionable value anyway.
+blk_exit_queue will free elevator_data, while blk_mq_run_work_fn
+will access it. Move cancel of hctx->run_work to the front of
+blk_exit_queue to avoid use-after-free.
 
-This patch follows x86 and arm64's lead and removes the "Exception stack:"
-dump from kernel backtraces:
-	commit a25ffd3a6302a6 ("arm64: traps: Don't print stack or raw
-	 PC/LR values in backtraces")
-	commit 0ee1dd9f5e7eae ("x86/dumpstack: Remove raw stack dump")
-	commit bb5e5ce545f203 ("x86/dumpstack: Remove kernel text
-	 addresses from stack dump")
-
-Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+Fixes: 1b97871b501f ("blk-mq: move cancel of hctx->run_work into blk_mq_hw_sysfs_release")
+Signed-off-by: Yang Yang <yang.yang@vivo.com>
 ---
- arch/arm/kernel/process.c |  3 +--
- arch/arm/kernel/traps.c   | 12 +++++-------
- 2 files changed, 6 insertions(+), 9 deletions(-)
+ block/blk-mq-sysfs.c | 2 --
+ block/blk-sysfs.c    | 9 ++++++++-
+ 2 files changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/kernel/process.c b/arch/arm/kernel/process.c
-index 8e6ace03e960..71c9e5597d39 100644
---- a/arch/arm/kernel/process.c
-+++ b/arch/arm/kernel/process.c
-@@ -121,8 +121,7 @@ void __show_regs(struct pt_regs *regs)
+diff --git a/block/blk-mq-sysfs.c b/block/blk-mq-sysfs.c
+index 062229395a50..7b52e7657b2d 100644
+--- a/block/blk-mq-sysfs.c
++++ b/block/blk-mq-sysfs.c
+@@ -36,8 +36,6 @@ static void blk_mq_hw_sysfs_release(struct kobject *kobj)
+ 	struct blk_mq_hw_ctx *hctx = container_of(kobj, struct blk_mq_hw_ctx,
+ 						  kobj);
  
- 	printk("PC is at %pS\n", (void *)instruction_pointer(regs));
- 	printk("LR is at %pS\n", (void *)regs->ARM_lr);
--	printk("pc : [<%08lx>]    lr : [<%08lx>]    psr: %08lx\n",
--	       regs->ARM_pc, regs->ARM_lr, regs->ARM_cpsr);
-+	printk("psr: %08lx\n", regs->ARM_cpsr);
- 	printk("sp : %08lx  ip : %08lx  fp : %08lx\n",
- 	       regs->ARM_sp, regs->ARM_ip, regs->ARM_fp);
- 	printk("r10: %08lx  r9 : %08lx  r8 : %08lx\n",
-diff --git a/arch/arm/kernel/traps.c b/arch/arm/kernel/traps.c
-index 17d5a785df28..b0b188e01070 100644
---- a/arch/arm/kernel/traps.c
-+++ b/arch/arm/kernel/traps.c
-@@ -60,23 +60,18 @@ static int __init user_debug_setup(char *str)
- __setup("user_debug=", user_debug_setup);
- #endif
- 
--static void dump_mem(const char *, const char *, unsigned long, unsigned long);
+-	cancel_delayed_work_sync(&hctx->run_work);
 -
- void dump_backtrace_entry(unsigned long where, unsigned long from,
- 			  unsigned long frame, const char *loglvl)
- {
- 	unsigned long end = frame + 4 + sizeof(struct pt_regs);
+ 	if (hctx->flags & BLK_MQ_F_BLOCKING)
+ 		cleanup_srcu_struct(hctx->srcu);
+ 	blk_free_flush_queue(hctx->fq);
+diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
+index 7dda709f3ccb..8c6bafc801dd 100644
+--- a/block/blk-sysfs.c
++++ b/block/blk-sysfs.c
+@@ -934,9 +934,16 @@ static void blk_release_queue(struct kobject *kobj)
  
- #ifdef CONFIG_KALLSYMS
--	printk("%s[<%08lx>] (%ps) from [<%08lx>] (%pS)\n",
--		loglvl, where, (void *)where, from, (void *)from);
-+	printk("%s (%ps) from (%pS)\n",
-+		loglvl, (void *)where, (void *)from);
- #else
- 	printk("%sFunction entered at [<%08lx>] from [<%08lx>]\n",
- 		loglvl, where, from);
- #endif
--
--	if (in_entry_text(from) && end <= ALIGN(frame, THREAD_SIZE))
--		dump_mem(loglvl, "Exception stack", frame + 4, end);
- }
+ 	blk_free_queue_stats(q->stats);
  
- void dump_backtrace_stm(u32 *stack, u32 instruction, const char *loglvl)
-@@ -125,6 +120,9 @@ static void dump_mem(const char *lvl, const char *str, unsigned long bottom,
- 	mm_segment_t fs;
- 	int i;
+-	if (queue_is_mq(q))
++	if (queue_is_mq(q)) {
++		struct blk_mq_hw_ctx *hctx;
++		int i;
++
+ 		cancel_delayed_work_sync(&q->requeue_work);
  
-+	/* Do not print virtual addresses in non-reset scenarios */
-+	if (!panic_on_oops)
-+		return;
- 	/*
- 	 * We need to switch to kernel mode so that we can use __get_user
- 	 * to safely read from kernel space.  Note that we now dump the
++		queue_for_each_hw_ctx(q, hctx, i)
++			cancel_delayed_work_sync(&hctx->run_work);
++	}
++
+ 	blk_exit_queue(q);
+ 
+ 	blk_queue_free_zone_bitmaps(q);
 -- 
-2.27.0
+2.17.1
 
