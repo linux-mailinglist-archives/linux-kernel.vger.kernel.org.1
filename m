@@ -2,47 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8065928841B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 09:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6911F288425
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 09:59:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732475AbgJIH6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 03:58:45 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:56102 "EHLO
+        id S1732526AbgJIH67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 03:58:59 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56126 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732455AbgJIH6o (ORCPT
+        with ESMTP id S1732457AbgJIH6q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 03:58:44 -0400
-Date:   Fri, 09 Oct 2020 07:58:41 -0000
+        Fri, 9 Oct 2020 03:58:46 -0400
+Date:   Fri, 09 Oct 2020 07:58:42 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602230322;
+        s=2020; t=1602230323;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=DoIKUCrUpDO+jYlgCdZV9sbw9sBoXnRKi3ttTUE223E=;
-        b=iKawG7B2EsK+eyP46QQylWgmlArmz9ObIO3cFXP4JtGsET3z6vtzxxJ3flQekJmhrI7SGM
-        IgPsF0HQk1eO5hnJjjwNovnKa8reEMlTL4UHanRAYnUMXd15HC1x9g6Eyh33N+oLyTAG3K
-        ePorbFDk4si5N1SRlhOTsPfJMGRN4wCfWF5/dnNa4BrTBk28K5VjfLiTC/dsbx7bIAi6Wr
-        zQz4xN7QxXoWg3QgwHLMDTdyROBKjCXzxCE6BiHNT7wDghEKDjfQc06ryiiifVNRGt9Iyk
-        MqvPJfNr/i/nmRyX40NASl7prps7puO1Gnt2/CaKQ7v9yuqjIflAFgapBKa2Qg==
+        bh=Bi2JMQ2mVZkBzKqOmBoJnjqDxPhGP90SkRiT0FH+LpQ=;
+        b=0BTSdGG1wuH7vg6Yx2+lOK/2Y2jZHT296PRCFtPhUF/PY0MxUbBrrOWfsQ+XGNkGbEAnR2
+        FKLjbkrnP/ShbBzixaFjjwwmMhvNCOCg1K5ED4pkJZlOXEYrBpHGHe8g4THAgudHOLmB8X
+        NwrRa9ZBl/k4na7pLjEQ5+1vb/XOLzSq0hWmHmsRjyYwdvsZ2oK8Uqq7Zu4Ta5+PMuxTMk
+        qgyERv7A2sZB4Lm2weC0jk8rOgmmRTEtNAgRLexrIoWVUlVLhtftLsJgCjEikCrzzNrmZr
+        xKH4FQBCgENvXOF9kVCLtX7WOv9NECRz7Bx+pcSJGsxV44Gqypgy+2EVQlYDhQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602230322;
+        s=2020e; t=1602230323;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=DoIKUCrUpDO+jYlgCdZV9sbw9sBoXnRKi3ttTUE223E=;
-        b=80w2vA2Pg9jFymsiH5n7/kSxiLiLDzMP8OiW4IU9I0nOEKkVfYH5Fp2nweN3/X7yTIpRNl
-        e27NI3ceKjD3wICg==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+        bh=Bi2JMQ2mVZkBzKqOmBoJnjqDxPhGP90SkRiT0FH+LpQ=;
+        b=uT5V8m8b7QiQ0pjCIYczIHqH1+XR5/CLaYbpTTWIxnVeO1RKxu9gWopFnQmasF4xbYAK9Q
+        5f1kCFUGsGLHWADg==
+From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] lockdep: Fix lockdep recursion
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
+Subject: [tip: locking/core] tools/memory-model: Add a simple entry point document
+Cc:     Dave Chinner <dchinner@redhat.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <160223032121.7002.1269740091547117869.tip-bot2@tip-bot2>
+Message-ID: <160223032275.7002.4415362018979035295.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -53,396 +52,344 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/core branch of tip:
 
-Commit-ID:     4d004099a668c41522242aa146a38cc4eb59cb1e
-Gitweb:        https://git.kernel.org/tip/4d004099a668c41522242aa146a38cc4eb59cb1e
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Fri, 02 Oct 2020 11:04:21 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Fri, 09 Oct 2020 08:53:30 +02:00
+Commit-ID:     0b8c06b75ea143f3c68aa419c36e82d9ab7454f8
+Gitweb:        https://git.kernel.org/tip/0b8c06b75ea143f3c68aa419c36e82d9ab7454f8
+Author:        Paul E. McKenney <paulmck@kernel.org>
+AuthorDate:    Tue, 04 Aug 2020 10:58:55 -07:00
+Committer:     Paul E. McKenney <paulmck@kernel.org>
+CommitterDate: Thu, 03 Sep 2020 09:51:01 -07:00
 
-lockdep: Fix lockdep recursion
+tools/memory-model: Add a simple entry point document
 
-Steve reported that lockdep_assert*irq*(), when nested inside lockdep
-itself, will trigger a false-positive.
+Current LKMM documentation assumes that the reader already understands
+concurrency in the Linux kernel, which won't necessarily always be the
+case.  This commit supplies a simple.txt file that provides a starting
+point for someone who is new to concurrency in the Linux kernel.
+That said, this file might also useful as a reminder to experienced
+developers of simpler approaches to dealing with concurrency.
 
-One example is the stack-trace code, as called from inside lockdep,
-triggering tracing, which in turn calls RCU, which then uses
-lockdep_assert_irqs_disabled().
-
-Fixes: a21ee6055c30 ("lockdep: Change hardirq{s_enabled,_context} to per-cpu variables")
-Reported-by: Steven Rostedt <rostedt@goodmis.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: Link: https://lwn.net/Articles/827180/
+[ paulmck: Apply feedback from Joel Fernandes. ]
+Co-developed-by: Dave Chinner <dchinner@redhat.com>
+Signed-off-by: Dave Chinner <dchinner@redhat.com>
+Co-developed-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/lockdep.h  |  13 +++--
- kernel/locking/lockdep.c |  99 ++++++++++++++++++++++----------------
- 2 files changed, 67 insertions(+), 45 deletions(-)
+ tools/memory-model/Documentation/litmus-tests.txt |   8 +-
+ tools/memory-model/Documentation/simple.txt       | 271 +++++++++++++-
+ tools/memory-model/README                         |   5 +-
+ 3 files changed, 282 insertions(+), 2 deletions(-)
+ create mode 100644 tools/memory-model/Documentation/simple.txt
 
-diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
-index 6a584b3..b1227be 100644
---- a/include/linux/lockdep.h
-+++ b/include/linux/lockdep.h
-@@ -534,6 +534,7 @@ do {									\
+diff --git a/tools/memory-model/Documentation/litmus-tests.txt b/tools/memory-model/Documentation/litmus-tests.txt
+index 289a38d..2f840dc 100644
+--- a/tools/memory-model/Documentation/litmus-tests.txt
++++ b/tools/memory-model/Documentation/litmus-tests.txt
+@@ -726,8 +726,12 @@ P0()'s line 10 initializes "x" to the value 1 then line 11 links to "x"
+ from "y", replacing "z".
  
- DECLARE_PER_CPU(int, hardirqs_enabled);
- DECLARE_PER_CPU(int, hardirq_context);
-+DECLARE_PER_CPU(unsigned int, lockdep_recursion);
+ P1()'s line 20 loads a pointer from "y", and line 21 dereferences that
+-pointer.  The RCU read-side critical section spanning lines 19-22 is
+-just for show in this example.
++pointer.  The RCU read-side critical section spanning lines 19-22 is just
++for show in this example.  Note that the address used for line 21's load
++depends on (in this case, "is exactly the same as") the value loaded by
++line 20.  This is an example of what is called an "address dependency".
++This particular address dependency extends from the load on line 20 to the
++load on line 21.  Address dependencies provide a weak form of ordering.
  
- /*
-  * The below lockdep_assert_*() macros use raw_cpu_read() to access the above
-@@ -543,25 +544,27 @@ DECLARE_PER_CPU(int, hardirq_context);
-  * read the value from our previous CPU.
-  */
+ Running this test results in the following:
  
-+#define __lockdep_enabled	(debug_locks && !raw_cpu_read(lockdep_recursion))
+diff --git a/tools/memory-model/Documentation/simple.txt b/tools/memory-model/Documentation/simple.txt
+new file mode 100644
+index 0000000..81e1a0e
+--- /dev/null
++++ b/tools/memory-model/Documentation/simple.txt
+@@ -0,0 +1,271 @@
++This document provides options for those wishing to keep their
++memory-ordering lives simple, as is necessary for those whose domain
++is complex.  After all, there are bugs other than memory-ordering bugs,
++and the time spent gaining memory-ordering knowledge is not available
++for gaining domain knowledge.  Furthermore Linux-kernel memory model
++(LKMM) is quite complex, with subtle differences in code often having
++dramatic effects on correctness.
 +
- #define lockdep_assert_irqs_enabled()					\
- do {									\
--	WARN_ON_ONCE(debug_locks && !raw_cpu_read(hardirqs_enabled));	\
-+	WARN_ON_ONCE(__lockdep_enabled && !raw_cpu_read(hardirqs_enabled)); \
- } while (0)
- 
- #define lockdep_assert_irqs_disabled()					\
- do {									\
--	WARN_ON_ONCE(debug_locks && raw_cpu_read(hardirqs_enabled));	\
-+	WARN_ON_ONCE(__lockdep_enabled && raw_cpu_read(hardirqs_enabled)); \
- } while (0)
- 
- #define lockdep_assert_in_irq()						\
- do {									\
--	WARN_ON_ONCE(debug_locks && !raw_cpu_read(hardirq_context));	\
-+	WARN_ON_ONCE(__lockdep_enabled && !raw_cpu_read(hardirq_context)); \
- } while (0)
- 
- #define lockdep_assert_preemption_enabled()				\
- do {									\
- 	WARN_ON_ONCE(IS_ENABLED(CONFIG_PREEMPT_COUNT)	&&		\
--		     debug_locks			&&		\
-+		     __lockdep_enabled			&&		\
- 		     (preempt_count() != 0		||		\
- 		      !raw_cpu_read(hardirqs_enabled)));		\
- } while (0)
-@@ -569,7 +572,7 @@ do {									\
- #define lockdep_assert_preemption_disabled()				\
- do {									\
- 	WARN_ON_ONCE(IS_ENABLED(CONFIG_PREEMPT_COUNT)	&&		\
--		     debug_locks			&&		\
-+		     __lockdep_enabled			&&		\
- 		     (preempt_count() == 0		&&		\
- 		      raw_cpu_read(hardirqs_enabled)));			\
- } while (0)
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index a430fbb..85d15f0 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -76,6 +76,23 @@ module_param(lock_stat, int, 0644);
- #define lock_stat 0
- #endif
- 
-+DEFINE_PER_CPU(unsigned int, lockdep_recursion);
-+EXPORT_PER_CPU_SYMBOL_GPL(lockdep_recursion);
++The options near the beginning of this list are quite simple.  The idea
++is not that kernel hackers don't already know about them, but rather
++that they might need the occasional reminder.
 +
-+static inline bool lockdep_enabled(void)
-+{
-+	if (!debug_locks)
-+		return false;
++Please note that this is a generic guide, and that specific subsystems
++will often have special requirements or idioms.  For example, developers
++of MMIO-based device drivers will often need to use mb(), rmb(), and
++wmb(), and therefore might find smp_mb(), smp_rmb(), and smp_wmb()
++to be more natural than smp_load_acquire() and smp_store_release().
++On the other hand, those coming in from other environments will likely
++be more familiar with these last two.
 +
-+	if (raw_cpu_read(lockdep_recursion))
-+		return false;
 +
-+	if (current->lockdep_recursion)
-+		return false;
++Single-threaded code
++====================
 +
-+	return true;
-+}
++In single-threaded code, there is no reordering, at least assuming
++that your toolchain and hardware are working correctly.  In addition,
++it is generally a mistake to assume your code will only run in a single
++threaded context as the kernel can enter the same code path on multiple
++CPUs at the same time.  One important exception is a function that makes
++no external data references.
 +
- /*
-  * lockdep_lock: protects the lockdep graph, the hashes and the
-  *               class/list/hash allocators.
-@@ -93,7 +110,7 @@ static inline void lockdep_lock(void)
- 
- 	arch_spin_lock(&__lock);
- 	__owner = current;
--	current->lockdep_recursion++;
-+	__this_cpu_inc(lockdep_recursion);
- }
- 
- static inline void lockdep_unlock(void)
-@@ -101,7 +118,7 @@ static inline void lockdep_unlock(void)
- 	if (debug_locks && DEBUG_LOCKS_WARN_ON(__owner != current))
- 		return;
- 
--	current->lockdep_recursion--;
-+	__this_cpu_dec(lockdep_recursion);
- 	__owner = NULL;
- 	arch_spin_unlock(&__lock);
- }
-@@ -393,10 +410,15 @@ void lockdep_init_task(struct task_struct *task)
- 	task->lockdep_recursion = 0;
- }
- 
-+static __always_inline void lockdep_recursion_inc(void)
-+{
-+	__this_cpu_inc(lockdep_recursion);
-+}
++In the general case, you will need to take explicit steps to ensure that
++your code really is executed within a single thread that does not access
++shared variables.  A simple way to achieve this is to define a global lock
++that you acquire at the beginning of your code and release at the end,
++taking care to ensure that all references to your code's shared data are
++also carried out under that same lock.  Because only one thread can hold
++this lock at a given time, your code will be executed single-threaded.
++This approach is called "code locking".
 +
- static __always_inline void lockdep_recursion_finish(void)
- {
--	if (WARN_ON_ONCE((--current->lockdep_recursion) & LOCKDEP_RECURSION_MASK))
--		current->lockdep_recursion = 0;
-+	if (WARN_ON_ONCE(__this_cpu_dec_return(lockdep_recursion)))
-+		__this_cpu_write(lockdep_recursion, 0);
- }
- 
- void lockdep_set_selftest_task(struct task_struct *task)
-@@ -3659,7 +3681,7 @@ void lockdep_hardirqs_on_prepare(unsigned long ip)
- 	if (unlikely(in_nmi()))
- 		return;
- 
--	if (unlikely(current->lockdep_recursion & LOCKDEP_RECURSION_MASK))
-+	if (unlikely(__this_cpu_read(lockdep_recursion)))
- 		return;
- 
- 	if (unlikely(lockdep_hardirqs_enabled())) {
-@@ -3695,7 +3717,7 @@ void lockdep_hardirqs_on_prepare(unsigned long ip)
- 
- 	current->hardirq_chain_key = current->curr_chain_key;
- 
--	current->lockdep_recursion++;
-+	lockdep_recursion_inc();
- 	__trace_hardirqs_on_caller();
- 	lockdep_recursion_finish();
- }
-@@ -3728,7 +3750,7 @@ void noinstr lockdep_hardirqs_on(unsigned long ip)
- 		goto skip_checks;
- 	}
- 
--	if (unlikely(current->lockdep_recursion & LOCKDEP_RECURSION_MASK))
-+	if (unlikely(__this_cpu_read(lockdep_recursion)))
- 		return;
- 
- 	if (lockdep_hardirqs_enabled()) {
-@@ -3781,7 +3803,7 @@ void noinstr lockdep_hardirqs_off(unsigned long ip)
- 	if (in_nmi()) {
- 		if (!IS_ENABLED(CONFIG_TRACE_IRQFLAGS_NMI))
- 			return;
--	} else if (current->lockdep_recursion & LOCKDEP_RECURSION_MASK)
-+	} else if (__this_cpu_read(lockdep_recursion))
- 		return;
- 
- 	/*
-@@ -3814,7 +3836,7 @@ void lockdep_softirqs_on(unsigned long ip)
- {
- 	struct irqtrace_events *trace = &current->irqtrace;
- 
--	if (unlikely(!debug_locks || current->lockdep_recursion))
-+	if (unlikely(!lockdep_enabled()))
- 		return;
- 
- 	/*
-@@ -3829,7 +3851,7 @@ void lockdep_softirqs_on(unsigned long ip)
- 		return;
- 	}
- 
--	current->lockdep_recursion++;
-+	lockdep_recursion_inc();
- 	/*
- 	 * We'll do an OFF -> ON transition:
- 	 */
-@@ -3852,7 +3874,7 @@ void lockdep_softirqs_on(unsigned long ip)
-  */
- void lockdep_softirqs_off(unsigned long ip)
- {
--	if (unlikely(!debug_locks || current->lockdep_recursion))
-+	if (unlikely(!lockdep_enabled()))
- 		return;
- 
- 	/*
-@@ -4233,11 +4255,11 @@ void lockdep_init_map_waits(struct lockdep_map *lock, const char *name,
- 	if (subclass) {
- 		unsigned long flags;
- 
--		if (DEBUG_LOCKS_WARN_ON(current->lockdep_recursion))
-+		if (DEBUG_LOCKS_WARN_ON(!lockdep_enabled()))
- 			return;
- 
- 		raw_local_irq_save(flags);
--		current->lockdep_recursion++;
-+		lockdep_recursion_inc();
- 		register_lock_class(lock, subclass, 1);
- 		lockdep_recursion_finish();
- 		raw_local_irq_restore(flags);
-@@ -4920,11 +4942,11 @@ void lock_set_class(struct lockdep_map *lock, const char *name,
- {
- 	unsigned long flags;
- 
--	if (unlikely(current->lockdep_recursion))
-+	if (unlikely(!lockdep_enabled()))
- 		return;
- 
- 	raw_local_irq_save(flags);
--	current->lockdep_recursion++;
-+	lockdep_recursion_inc();
- 	check_flags(flags);
- 	if (__lock_set_class(lock, name, key, subclass, ip))
- 		check_chain_key(current);
-@@ -4937,11 +4959,11 @@ void lock_downgrade(struct lockdep_map *lock, unsigned long ip)
- {
- 	unsigned long flags;
- 
--	if (unlikely(current->lockdep_recursion))
-+	if (unlikely(!lockdep_enabled()))
- 		return;
- 
- 	raw_local_irq_save(flags);
--	current->lockdep_recursion++;
-+	lockdep_recursion_inc();
- 	check_flags(flags);
- 	if (__lock_downgrade(lock, ip))
- 		check_chain_key(current);
-@@ -4979,7 +5001,7 @@ static void verify_lock_unused(struct lockdep_map *lock, struct held_lock *hlock
- 
- static bool lockdep_nmi(void)
- {
--	if (current->lockdep_recursion & LOCKDEP_RECURSION_MASK)
-+	if (raw_cpu_read(lockdep_recursion))
- 		return false;
- 
- 	if (!in_nmi())
-@@ -5000,7 +5022,10 @@ void lock_acquire(struct lockdep_map *lock, unsigned int subclass,
- 
- 	trace_lock_acquire(lock, subclass, trylock, read, check, nest_lock, ip);
- 
--	if (unlikely(current->lockdep_recursion)) {
-+	if (!debug_locks)
-+		return;
++Code locking can severely limit both performance and scalability, so it
++should be used with caution, and only on code paths that execute rarely.
++After all, a huge amount of effort was required to remove the Linux
++kernel's old "Big Kernel Lock", so let's please be very careful about
++adding new "little kernel locks".
 +
-+	if (unlikely(!lockdep_enabled())) {
- 		/* XXX allow trylock from NMI ?!? */
- 		if (lockdep_nmi() && !trylock) {
- 			struct held_lock hlock;
-@@ -5023,7 +5048,7 @@ void lock_acquire(struct lockdep_map *lock, unsigned int subclass,
- 	raw_local_irq_save(flags);
- 	check_flags(flags);
++One of the advantages of locking is that, in happy contrast with the
++year 1981, almost all kernel developers are very familiar with locking.
++The Linux kernel's lockdep (CONFIG_PROVE_LOCKING=y) is very helpful with
++the formerly feared deadlock scenarios.
++
++Please use the standard locking primitives provided by the kernel rather
++than rolling your own.  For one thing, the standard primitives interact
++properly with lockdep.  For another thing, these primitives have been
++tuned to deal better with high contention.  And for one final thing, it is
++surprisingly hard to correctly code production-quality lock acquisition
++and release functions.  After all, even simple non-production-quality
++locking functions must carefully prevent both the CPU and the compiler
++from moving code in either direction across the locking function.
++
++Despite the scalability limitations of single-threaded code, RCU
++takes this approach for much of its grace-period processing and also
++for early-boot operation.  The reason RCU is able to scale despite
++single-threaded grace-period processing is use of batching, where all
++updates that accumulated during one grace period are handled by the
++next one.  In other words, slowing down grace-period processing makes
++it more efficient.  Nor is RCU unique:  Similar batching optimizations
++are used in many I/O operations.
++
++
++Packaged code
++=============
++
++Even if performance and scalability concerns prevent your code from
++being completely single-threaded, it is often possible to use library
++functions that handle the concurrency nearly or entirely on their own.
++This approach delegates any LKMM worries to the library maintainer.
++
++In the kernel, what is the "library"?  Quite a bit.  It includes the
++contents of the lib/ directory, much of the include/linux/ directory along
++with a lot of other heavily used APIs.  But heavily used examples include
++the list macros (for example, include/linux/{,rcu}list.h), workqueues,
++smp_call_function(), and the various hash tables and search trees.
++
++
++Data locking
++============
++
++With code locking, we use single-threaded code execution to guarantee
++serialized access to the data that the code is accessing.  However,
++we can also achieve this by instead associating the lock with specific
++instances of the data structures.  This creates a "critical section"
++in the code execution that will execute as though it is single threaded.
++By placing all the accesses and modifications to a shared data structure
++inside a critical section, we ensure that the execution context that
++holds the lock has exclusive access to the shared data.
++
++The poster boy for this approach is the hash table, where placing a lock
++in each hash bucket allows operations on different buckets to proceed
++concurrently.  This works because the buckets do not overlap with each
++other, so that an operation on one bucket does not interfere with any
++other bucket.
++
++As the number of buckets increases, data locking scales naturally.
++In particular, if the amount of data increases with the number of CPUs,
++increasing the number of buckets as the number of CPUs increase results
++in a naturally scalable data structure.
++
++
++Per-CPU processing
++==================
++
++Partitioning processing and data over CPUs allows each CPU to take
++a single-threaded approach while providing excellent performance and
++scalability.  Of course, there is no free lunch:  The dark side of this
++excellence is substantially increased memory footprint.
++
++In addition, it is sometimes necessary to occasionally update some global
++view of this processing and data, in which case something like locking
++must be used to protect this global view.  This is the approach taken
++by the percpu_counter infrastructure. In many cases, there are already
++generic/library variants of commonly used per-cpu constructs available.
++Please use them rather than rolling your own.
++
++RCU uses DEFINE_PER_CPU*() declaration to create a number of per-CPU
++data sets.  For example, each CPU does private quiescent-state processing
++within its instance of the per-CPU rcu_data structure, and then uses data
++locking to report quiescent states up the grace-period combining tree.
++
++
++Packaged primitives: Sequence locking
++=====================================
++
++Lockless programming is considered by many to be more difficult than
++lock-based programming, but there are a few lockless design patterns that
++have been built out into an API.  One of these APIs is sequence locking.
++Although this APIs can be used in extremely complex ways, there are simple
++and effective ways of using it that avoid the need to pay attention to
++memory ordering.
++
++The basic keep-things-simple rule for sequence locking is "do not write
++in read-side code".  Yes, you can do writes from within sequence-locking
++readers, but it won't be so simple.  For example, such writes will be
++lockless and should be idempotent.
++
++For more sophisticated use cases, LKMM can guide you, including use
++cases involving combining sequence locking with other synchronization
++primitives.  (LKMM does not yet know about sequence locking, so it is
++currently necessary to open-code it in your litmus tests.)
++
++Additional information may be found in include/linux/seqlock.h.
++
++Packaged primitives: RCU
++========================
++
++Another lockless design pattern that has been baked into an API
++is RCU.  The Linux kernel makes sophisticated use of RCU, but the
++keep-things-simple rules for RCU are "do not write in read-side code"
++and "do not update anything that is visible to and accessed by readers",
++and "protect updates with locking".
++
++These rules are illustrated by the functions foo_update_a() and
++foo_get_a() shown in Documentation/RCU/whatisRCU.rst.  Additional
++RCU usage patterns maybe found in Documentation/RCU and in the
++source code.
++
++
++Packaged primitives: Atomic operations
++======================================
++
++Back in the day, the Linux kernel had three types of atomic operations:
++
++1.	Initialization and read-out, such as atomic_set() and atomic_read().
++
++2.	Operations that did not return a value and provided no ordering,
++	such as atomic_inc() and atomic_dec().
++
++3.	Operations that returned a value and provided full ordering, such as
++	atomic_add_return() and atomic_dec_and_test().  Note that some
++	value-returning operations provide full ordering only conditionally.
++	For example, cmpxchg() provides ordering only upon success.
++
++More recent kernels have operations that return a value but do not
++provide full ordering.  These are flagged with either a _relaxed()
++suffix (providing no ordering), or an _acquire() or _release() suffix
++(providing limited ordering).
++
++Additional information may be found in these files:
++
++Documentation/atomic_t.txt
++Documentation/atomic_bitops.txt
++Documentation/core-api/atomic_ops.rst
++Documentation/core-api/refcount-vs-atomic.rst
++
++Reading code using these primitives is often also quite helpful.
++
++
++Lockless, fully ordered
++=======================
++
++When using locking, there often comes a time when it is necessary
++to access some variable or another without holding the data lock
++that serializes access to that variable.
++
++If you want to keep things simple, use the initialization and read-out
++operations from the previous section only when there are no racing
++accesses.  Otherwise, use only fully ordered operations when accessing
++or modifying the variable.  This approach guarantees that code prior
++to a given access to that variable will be seen by all CPUs has having
++happened before any code following any later access to that same variable.
++
++Please note that per-CPU functions are not atomic operations and
++hence they do not provide any ordering guarantees at all.
++
++If the lockless accesses are frequently executed reads that are used
++only for heuristics, or if they are frequently executed writes that
++are used only for statistics, please see the next section.
++
++
++Lockless statistics and heuristics
++==================================
++
++Unordered primitives such as atomic_read(), atomic_set(), READ_ONCE(), and
++WRITE_ONCE() can safely be used in some cases.  These primitives provide
++no ordering, but they do prevent the compiler from carrying out a number
++of destructive optimizations (for which please see the next section).
++One example use for these primitives is statistics, such as per-CPU
++counters exemplified by the rt_cache_stat structure's routing-cache
++statistics counters.  Another example use case is heuristics, such as
++the jiffies_till_first_fqs and jiffies_till_next_fqs kernel parameters
++controlling how often RCU scans for idle CPUs.
++
++But be careful.  "Unordered" really does mean "unordered".  It is all
++too easy to assume ordering, and this assumption must be avoided when
++using these primitives.
++
++
++Don't let the compiler trip you up
++==================================
++
++It can be quite tempting to use plain C-language accesses for lockless
++loads from and stores to shared variables.  Although this is both
++possible and quite common in the Linux kernel, it does require a
++surprising amount of analysis, care, and knowledge about the compiler.
++Yes, some decades ago it was not unfair to consider a C compiler to be
++an assembler with added syntax and better portability, but the advent of
++sophisticated optimizing compilers mean that those days are long gone.
++Today's optimizing compilers can profoundly rewrite your code during the
++translation process, and have long been ready, willing, and able to do so.
++
++Therefore, if you really need to use C-language assignments instead of
++READ_ONCE(), WRITE_ONCE(), and so on, you will need to have a very good
++understanding of both the C standard and your compiler.  Here are some
++introductory references and some tooling to start you on this noble quest:
++
++Who's afraid of a big bad optimizing compiler?
++	https://lwn.net/Articles/793253/
++Calibrating your fear of big bad optimizing compilers
++	https://lwn.net/Articles/799218/
++Concurrency bugs should fear the big bad data-race detector (part 1)
++	https://lwn.net/Articles/816850/
++Concurrency bugs should fear the big bad data-race detector (part 2)
++	https://lwn.net/Articles/816854/
++
++
++More complex use cases
++======================
++
++If the alternatives above do not do what you need, please look at the
++recipes-pairs.txt file to peel off the next layer of the memory-ordering
++onion.
+diff --git a/tools/memory-model/README b/tools/memory-model/README
+index d2e03c4..c8144d4 100644
+--- a/tools/memory-model/README
++++ b/tools/memory-model/README
+@@ -177,6 +177,11 @@ Documentation/recipes.txt
+ Documentation/references.txt
+ 	Provides background reading.
  
--	current->lockdep_recursion++;
-+	lockdep_recursion_inc();
- 	__lock_acquire(lock, subclass, trylock, read, check,
- 		       irqs_disabled_flags(flags), nest_lock, ip, 0, 0);
- 	lockdep_recursion_finish();
-@@ -5037,13 +5062,13 @@ void lock_release(struct lockdep_map *lock, unsigned long ip)
- 
- 	trace_lock_release(lock, ip);
- 
--	if (unlikely(current->lockdep_recursion))
-+	if (unlikely(!lockdep_enabled()))
- 		return;
- 
- 	raw_local_irq_save(flags);
- 	check_flags(flags);
- 
--	current->lockdep_recursion++;
-+	lockdep_recursion_inc();
- 	if (__lock_release(lock, ip))
- 		check_chain_key(current);
- 	lockdep_recursion_finish();
-@@ -5056,13 +5081,13 @@ noinstr int lock_is_held_type(const struct lockdep_map *lock, int read)
- 	unsigned long flags;
- 	int ret = 0;
- 
--	if (unlikely(current->lockdep_recursion))
-+	if (unlikely(!lockdep_enabled()))
- 		return 1; /* avoid false negative lockdep_assert_held() */
- 
- 	raw_local_irq_save(flags);
- 	check_flags(flags);
- 
--	current->lockdep_recursion++;
-+	lockdep_recursion_inc();
- 	ret = __lock_is_held(lock, read);
- 	lockdep_recursion_finish();
- 	raw_local_irq_restore(flags);
-@@ -5077,13 +5102,13 @@ struct pin_cookie lock_pin_lock(struct lockdep_map *lock)
- 	struct pin_cookie cookie = NIL_COOKIE;
- 	unsigned long flags;
- 
--	if (unlikely(current->lockdep_recursion))
-+	if (unlikely(!lockdep_enabled()))
- 		return cookie;
- 
- 	raw_local_irq_save(flags);
- 	check_flags(flags);
- 
--	current->lockdep_recursion++;
-+	lockdep_recursion_inc();
- 	cookie = __lock_pin_lock(lock);
- 	lockdep_recursion_finish();
- 	raw_local_irq_restore(flags);
-@@ -5096,13 +5121,13 @@ void lock_repin_lock(struct lockdep_map *lock, struct pin_cookie cookie)
- {
- 	unsigned long flags;
- 
--	if (unlikely(current->lockdep_recursion))
-+	if (unlikely(!lockdep_enabled()))
- 		return;
- 
- 	raw_local_irq_save(flags);
- 	check_flags(flags);
- 
--	current->lockdep_recursion++;
-+	lockdep_recursion_inc();
- 	__lock_repin_lock(lock, cookie);
- 	lockdep_recursion_finish();
- 	raw_local_irq_restore(flags);
-@@ -5113,13 +5138,13 @@ void lock_unpin_lock(struct lockdep_map *lock, struct pin_cookie cookie)
- {
- 	unsigned long flags;
- 
--	if (unlikely(current->lockdep_recursion))
-+	if (unlikely(!lockdep_enabled()))
- 		return;
- 
- 	raw_local_irq_save(flags);
- 	check_flags(flags);
- 
--	current->lockdep_recursion++;
-+	lockdep_recursion_inc();
- 	__lock_unpin_lock(lock, cookie);
- 	lockdep_recursion_finish();
- 	raw_local_irq_restore(flags);
-@@ -5249,15 +5274,12 @@ void lock_contended(struct lockdep_map *lock, unsigned long ip)
- 
- 	trace_lock_acquired(lock, ip);
- 
--	if (unlikely(!lock_stat || !debug_locks))
--		return;
--
--	if (unlikely(current->lockdep_recursion))
-+	if (unlikely(!lock_stat || !lockdep_enabled()))
- 		return;
- 
- 	raw_local_irq_save(flags);
- 	check_flags(flags);
--	current->lockdep_recursion++;
-+	lockdep_recursion_inc();
- 	__lock_contended(lock, ip);
- 	lockdep_recursion_finish();
- 	raw_local_irq_restore(flags);
-@@ -5270,15 +5292,12 @@ void lock_acquired(struct lockdep_map *lock, unsigned long ip)
- 
- 	trace_lock_contended(lock, ip);
- 
--	if (unlikely(!lock_stat || !debug_locks))
--		return;
--
--	if (unlikely(current->lockdep_recursion))
-+	if (unlikely(!lock_stat || !lockdep_enabled()))
- 		return;
- 
- 	raw_local_irq_save(flags);
- 	check_flags(flags);
--	current->lockdep_recursion++;
-+	lockdep_recursion_inc();
- 	__lock_acquired(lock, ip);
- 	lockdep_recursion_finish();
- 	raw_local_irq_restore(flags);
++Documentation/simple.txt
++	Starting point for someone new to Linux-kernel concurrency.
++	And also for those needing a reminder of the simpler approaches
++	to concurrency!
++
+ linux-kernel.bell
+ 	Categorizes the relevant instructions, including memory
+ 	references, memory barriers, atomic read-modify-write operations,
