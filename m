@@ -2,82 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CF31288A10
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 15:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0BE82889FE
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 15:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387609AbgJINwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 09:52:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39724 "EHLO mail.kernel.org"
+        id S2387429AbgJINtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 09:49:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732456AbgJINwf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 09:52:35 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        id S1732677AbgJINtG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 09:49:06 -0400
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 06B14222B9;
-        Fri,  9 Oct 2020 13:52:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0304B222B9;
+        Fri,  9 Oct 2020 13:49:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602251554;
-        bh=cwk9i4KBau0qPm27KzJl3XXeYfNbSm1YHxXTzmMkdOY=;
+        s=default; t=1602251345;
+        bh=wl1fuI8lefh+3YsVxao7a3dyyLNUQhlLz4oNgzuFbLc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xYHb+/ddD3CKObc4tAlrPj2U8OIa+LavQ5ml/H3KzlNFr+FetR8wU/W4lEzql2ywb
-         9FTBXAY7aE7Ao54UCKQmnoTgMN2Gmd8ov1Xin4z8z1b3MJG7D7bVTD8f6VU63uo5K0
-         86m35/V0p1MGv251jWFKJei8tgsXP2s9qeP1ITQc=
-Date:   Fri, 9 Oct 2020 14:52:31 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Ajye Huang <ajye.huang@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, dianders@chromium.org,
-        devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-arm-msm@vger.kernel.org, Patrick Lai <plai@codeaurora.org>,
-        Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rohit kumar <rohitkr@codeaurora.org>, tzungbi@chromium.org,
-        linux-arm-kernel@lists.infradead.org, cychiang@chromium.org
-Subject: Re: [PATCH v1 1/2] ASoC: qcom: dt-bindings: Modify sc7180 machine
- bindings
-Message-ID: <20201009135231.GA6655@sirena.org.uk>
-References: <20200928063744.525700-1-ajye_huang@compal.corp-partner.google.com>
- <20200928063744.525700-2-ajye_huang@compal.corp-partner.google.com>
+        b=lVGWz6bscyAd1Q327E060Iz1w2Nr7nAKiIC7kTgVLRveWqIs/oKeRRovqVDW0jBJV
+         tTVFadyniJetltJn8E2xB4ij52UJMud3O6wIH21iOKxycc7XLZg+kvK9HzImLrXdU3
+         3WC9lAOb/e2eKvKZWOThK0VmDWL/eqUi7NhYl1wI=
+Date:   Fri, 9 Oct 2020 08:54:30 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] amd/amdgpu_ctx: Use struct_size() helper and
+ kmalloc()
+Message-ID: <20201009135430.GA31347@embeddedor>
+References: <20201008143450.GA23077@embeddedor>
+ <4fe00048-2612-39f3-29bb-c9424000f836@amd.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="pf9I7BMVVzbSWLtt"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200928063744.525700-2-ajye_huang@compal.corp-partner.google.com>
-X-Cookie: Please take note:
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4fe00048-2612-39f3-29bb-c9424000f836@amd.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 09, 2020 at 09:08:51AM +0200, Christian König wrote:
+> Am 08.10.20 um 16:34 schrieb Gustavo A. R. Silva:
+> > Make use of the new struct_size() helper instead of the offsetof() idiom.
+> > Also, use kmalloc() instead of kcalloc().
+> > 
+> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> > ---
+> >   drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
+> > index c80d8339f58c..5be125f3b92a 100644
+> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
+> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
+> > @@ -100,7 +100,7 @@ static int amdgpu_ctx_init_entity(struct amdgpu_ctx *ctx, u32 hw_ip,
+> >   	enum drm_sched_priority priority;
+> >   	int r;
+> > -	entity = kcalloc(1, offsetof(typeof(*entity), fences[amdgpu_sched_jobs]),
+> > +	entity = kmalloc(struct_size(entity, fences, amdgpu_sched_jobs),
+> 
+> NAK. You could use kzalloc() here, but kmalloc won't zero initialize the
+> memory which could result in unforeseen consequences.
 
---pf9I7BMVVzbSWLtt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Oh I see.. I certainly didn't take that into account.
 
-On Mon, Sep 28, 2020 at 02:37:43PM +0800, Ajye Huang wrote:
-> Add compatible "qcom,sc7180-sndcard-rt5682-m98357-2mic"
-> for 2mic case.
+I'll fix that up and respin.
 
-This doesn't apply against current code, please check and resend.
-
---pf9I7BMVVzbSWLtt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+Aax8ACgkQJNaLcl1U
-h9BLUgf/bL/7/DLssH7LN6HzEKNltT4ltao9sKdRmjuIPgTA9rwYf3cazWimkZoo
-ZbecRbpOKAPZ5ymsnWo1QAq9pNJ+ll5EwgqwiOmYPavfKpfNwULh10oE+wokLdJl
-+1SuMACMFIHvnKzcwSydpEupP7uFfO01XLpGNoMOvvHITC3vuAETk9AthXKTSD02
-N1TpmZdSCEbtfy81kvCk4NFFaTjmm4wB2MT93+uRKbwHVf/Xnv/hpXFsWo1glTfN
-1p1K3dQ8V2G2tjq7E7+nKFC5DObjE7wSG0HQHH+8wTt3F2axIuPX6P2Vhjy9ZjSR
-NEC32HzNHukUPp0j5dlyUr6izyD8Hg==
-=HyGA
------END PGP SIGNATURE-----
-
---pf9I7BMVVzbSWLtt--
+Thanks
+--
+Gustavo
