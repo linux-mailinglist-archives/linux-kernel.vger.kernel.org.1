@@ -2,135 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFFCA2882F6
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 08:48:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73A9C288316
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 08:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731646AbgJIGsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 02:48:14 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:9010 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731076AbgJIGsN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 02:48:13 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0996XFNH116259;
-        Fri, 9 Oct 2020 02:47:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=pp1;
- bh=7npiYY1G2FfggAYyTzA/cJHByVtE439s2uXTBc239oE=;
- b=qjM8f/zejSo3hgzFFDr/S09kFTEkbfIf6HMg6sbWAmn81tQDPgfg4IJME1T4/nWAzBLS
- wktlHR3CXTIp1CbbzlUmdGQNGH7MSceiueIyq6e2vhHgDXeB99K8MNJv6l1dCkj4v3bW
- dCyQupq8Sfq7I1QrHnWN+WXNyfqlRXlmOym3YoZh6cggmN9a8whyc/LdobjpOROi69xG
- 4D4HQ0iot+/GcccrX+kCfOC18VdFXWWNm7xj3y1Mbn3BzYm1ycMCRpQ4yJtVq/GThCq3
- 1SeJgOleKg2byl8FHF4J3Aw8toI3GBFqR1f/UjgoVEdA2Vl/Lw8/RFuIC+6nGCznE5RO pg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 342hk1swse-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Oct 2020 02:47:54 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0996XoYj118041;
-        Fri, 9 Oct 2020 02:47:53 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 342hk1swr2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Oct 2020 02:47:53 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0996S2Rr031925;
-        Fri, 9 Oct 2020 06:47:49 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03ams.nl.ibm.com with ESMTP id 3429hugccw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Oct 2020 06:47:49 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0996llI328442938
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 9 Oct 2020 06:47:47 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9B9DE11C054;
-        Fri,  9 Oct 2020 06:47:47 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DA2BD11C050;
-        Fri,  9 Oct 2020 06:47:46 +0000 (GMT)
-Received: from localhost (unknown [9.145.0.122])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Fri,  9 Oct 2020 06:47:46 +0000 (GMT)
-Date:   Fri, 9 Oct 2020 08:47:45 +0200
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: [PATCH 1/1] perf build: Allow nested externs to enable BUILD_BUG()
- usage
-Message-ID: <patch-1.thread-d92c35.git-d92c35ca4748.your-ad-here.call-01602224864-ext-8734@work.hours>
-References: <20201009152846.072e6bbf@canb.auug.org.au>
- <cover.thread-d92c35.your-ad-here.call-01602224864-ext-8734@work.hours>
+        id S1731501AbgJIG7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 02:59:35 -0400
+Received: from smtp-out.kfki.hu ([148.6.0.45]:55003 "EHLO smtp-out.kfki.hu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725908AbgJIG7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 02:59:34 -0400
+X-Greylist: delayed 411 seconds by postgrey-1.27 at vger.kernel.org; Fri, 09 Oct 2020 02:59:32 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by smtp0.kfki.hu (Postfix) with ESMTP id ED8B167400F2;
+        Fri,  9 Oct 2020 08:52:39 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at smtp0.kfki.hu
+Received: from smtp0.kfki.hu ([127.0.0.1])
+        by localhost (smtp0.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP; Fri,  9 Oct 2020 08:52:37 +0200 (CEST)
+Received: from blackhole.kfki.hu (blackhole.szhk.kfki.hu [148.6.240.2])
+        by smtp0.kfki.hu (Postfix) with ESMTP id 3F54B67400F1;
+        Fri,  9 Oct 2020 08:52:37 +0200 (CEST)
+Received: by blackhole.kfki.hu (Postfix, from userid 1000)
+        id 12613340D5C; Fri,  9 Oct 2020 08:52:37 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by blackhole.kfki.hu (Postfix) with ESMTP id 0D8E2340D07;
+        Fri,  9 Oct 2020 08:52:37 +0200 (CEST)
+Date:   Fri, 9 Oct 2020 08:52:37 +0200 (CEST)
+From:   Jozsef Kadlecsik <kadlec@netfilter.org>
+X-X-Sender: kadlec@blackhole.kfki.hu
+To:     Francesco Ruggeri <fruggeri@arista.com>
+cc:     open list <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, coreteam@netfilter.org,
+        netfilter-devel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@davemloft.net>, fw@strlen.org,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: [PATCH nf v2] netfilter: conntrack: connection timeout after
+ re-register
+In-Reply-To: <CA+HUmGhBxBHU85oFfvoAyP=hG17DG2kgO67eawk1aXmSjehOWQ@mail.gmail.com>
+Message-ID: <alpine.DEB.2.23.453.2010090838430.19307@blackhole.kfki.hu>
+References: <20201007193252.7009D95C169C@us180.sjc.aristanetworks.com> <CA+HUmGhBxBHU85oFfvoAyP=hG17DG2kgO67eawk1aXmSjehOWQ@mail.gmail.com>
+User-Agent: Alpine 2.23 (DEB 453 2020-06-18)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cover.thread-d92c35.your-ad-here.call-01602224864-ext-8734@work.hours>
-X-Patchwork-Bot: notify
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-09_02:2020-10-09,2020-10-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 adultscore=0 suspectscore=1 phishscore=0 impostorscore=0
- mlxscore=0 bulkscore=0 clxscore=1015 spamscore=0 mlxlogscore=999
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010090046
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently BUILD_BUG() macro is expanded to smth like the following:
-   do {
-           extern void __compiletime_assert_0(void)
-                   __attribute__((error("BUILD_BUG failed")));
-           if (!(!(1)))
-                   __compiletime_assert_0();
-   } while (0);
+Hi Francesco,
 
-If used in a function body this obviously would produce build errors
-with -Wnested-externs and -Werror.
+On Thu, 8 Oct 2020, Francesco Ruggeri wrote:
 
-To enable BUILD_BUG() usage in tools/arch/x86/lib/insn.c which perf
-includes in intel-pt-decoder, build perf without -Wnested-externs.
+> On Wed, Oct 7, 2020 at 12:32 PM Francesco Ruggeri <fruggeri@arista.com> wrote:
+> >
+> > If the first packet conntrack sees after a re-register is an outgoing 
+> > keepalive packet with no data (SEG.SEQ = SND.NXT-1), td_end is set to 
+> > SND.NXT-1. When the peer correctly acknowledges SND.NXT, tcp_in_window 
+> > fails check III (Upper bound for valid (s)ack: sack <= 
+> > receiver.td_end) and returns false, which cascades into 
+> > nf_conntrack_in setting skb->_nfct = 0 and in later conntrack iptables 
+> > rules not matching. In cases where iptables are dropping packets that 
+> > do not match conntrack rules this can result in idle tcp connections 
+> > to time out.
+> >
+> > v2: adjust td_end when getting the reply rather than when sending out
+> >     the keepalive packet.
+> >
+> 
+> Any comments?
+> Here is a simple reproducer. The idea is to show that keepalive packets 
+> in an idle tcp connection will be dropped (and the connection will time 
+> out) if conntrack hooks are de-registered and then re-registered. The 
+> reproducer has two files. client_server.py creates both ends of a tcp 
+> connection, bounces a few packets back and forth, and then blocks on a 
+> recv on the client side. The client's keepalive is configured to time 
+> out in 20 seconds. This connection should not time out. test is a bash 
+> script that creates a net namespace where it sets iptables rules for the 
+> connection, starts client_server.py, and then clears and restores the 
+> iptables rules (which causes conntrack hooks to be de-registered and 
+> re-registered).
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
----
- tools/perf/Makefile.config | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+In my opinion an iptables restore should not cause conntrack hooks to be 
+de-registered and re-registered, because important TCP initialization 
+parameters cannot be "restored" later from the packets. Therefore the 
+proper fix would be to prevent it to happen. Otherwise your patch looks OK 
+to handle the case when conntrack is intentionally restarted.
 
-diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-index 190be4fa5c21..8137a6046a47 100644
---- a/tools/perf/Makefile.config
-+++ b/tools/perf/Makefile.config
-@@ -16,7 +16,7 @@ $(shell printf "" > $(OUTPUT).config-detected)
- detected     = $(shell echo "$(1)=y"       >> $(OUTPUT).config-detected)
- detected_var = $(shell echo "$(1)=$($(1))" >> $(OUTPUT).config-detected)
+Best regards,
+Jozsef
  
--CFLAGS := $(EXTRA_CFLAGS) $(EXTRA_WARNINGS)
-+CFLAGS := $(EXTRA_CFLAGS) $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
- 
- include $(srctree)/tools/scripts/Makefile.arch
- 
--- 
-⣿⣿⣿⣿⢋⡀⣀⠹⣿⣿⣿⣿
-⣿⣿⣿⣿⠠⣶⡦⠀⣿⣿⣿⣿
-⣿⣿⣿⠏⣴⣮⣴⣧⠈⢿⣿⣿
-⣿⣿⡏⢰⣿⠖⣠⣿⡆⠈⣿⣿
-⣿⢛⣵⣄⠙⣶⣶⡟⣅⣠⠹⣿
-⣿⣜⣛⠻⢎⣉⣉⣀⠿⣫⣵⣿
+> ================ file client_server.py
+> #!/usr/bin/python
+> 
+> import socket
+> 
+> PORT=4446
+> 
+> # create server socket
+> sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+> sock.bind(('localhost', PORT))
+> sock.listen(1)
+> 
+> # create client socket
+> cl_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+> cl_sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+> cl_sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPIDLE, 2)
+> cl_sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPINTVL, 2)
+> cl_sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPCNT, 10)
+> cl_sock.connect(('localhost', PORT))
+> 
+> srv_sock, _ = sock.accept()
+> 
+> # Bounce a packet back and forth a few times
+> buf = 'aaaaaaaaaaaa'
+> for i in range(5):
+>    cl_sock.send(buf)
+>    buf = srv_sock.recv(100)
+>    srv_sock.send(buf)
+>    buf = cl_sock.recv(100)
+>    print buf
+> 
+> # idle the connection
+> try:
+>    buf = cl_sock.recv(100)
+> except socket.error, e:
+>    print "Error: %s" % e
+> 
+> sock.close()
+> cl_sock.close()
+> srv_sock.close()
+> 
+> ============== file test
+> #!/bin/bash
+> 
+> ip netns add dummy
+> ip netns exec dummy ip link set lo up
+> echo "Created namespace"
+> 
+> ip netns exec dummy iptables-restore <<END
+> *filter
+> :INPUT DROP [0:0]
+> :FORWARD ACCEPT [0:0]
+> :OUTPUT ACCEPT [0:0]
+> -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+> -A INPUT -p tcp -m tcp --dport 4446 -j ACCEPT
+> COMMIT
+> END
+> echo "Installed iptables rules"
+> 
+> ip netns exec dummy ./client_server.py &
+> echo "Created tcp connection"
+> sleep 2
+> 
+> ip netns exec dummy iptables-restore << END
+> *filter
+> :INPUT ACCEPT [0:0]
+> :FORWARD ACCEPT [0:0]
+> :OUTPUT ACCEPT [0:0]
+> COMMIT
+> END
+> echo "Cleared iptables rules"
+> sleep 4
+> 
+> ip netns exec dummy iptables-restore << END
+> *filter
+> :INPUT DROP [0:0]
+> :FORWARD ACCEPT [0:0]
+> :OUTPUT ACCEPT [0:0]
+> -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+> -A INPUT -p tcp -m tcp --dport 4446 -j ACCEPT
+> COMMIT
+> END
+> echo "Restored original iptables rules"
+> 
+> wait
+> ip netns del dummy
+> exit 0
+> 
+
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
+PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics
+          H-1525 Budapest 114, POB. 49, Hungary
