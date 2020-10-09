@@ -2,86 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06FB8289180
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 20:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DC3C289187
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 21:03:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388294AbgJISz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 14:55:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38444 "EHLO
+        id S2388336AbgJITDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 15:03:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388184AbgJISz7 (ORCPT
+        with ESMTP id S2388317AbgJITDB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 14:55:59 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 325D7C0613D2;
-        Fri,  9 Oct 2020 11:55:59 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1kQxYW-0000rj-1m; Fri, 09 Oct 2020 20:55:52 +0200
-Date:   Fri, 9 Oct 2020 20:55:52 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Jozsef Kadlecsik <kadlec@netfilter.org>
-Cc:     Florian Westphal <fw@strlen.de>,
-        Francesco Ruggeri <fruggeri@arista.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, coreteam@netfilter.org,
-        netfilter-devel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>, fw@strlen.org,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH nf v2] netfilter: conntrack: connection timeout after
- re-register
-Message-ID: <20201009185552.GF5723@breakpoint.cc>
-References: <20201007193252.7009D95C169C@us180.sjc.aristanetworks.com>
- <CA+HUmGhBxBHU85oFfvoAyP=hG17DG2kgO67eawk1aXmSjehOWQ@mail.gmail.com>
- <alpine.DEB.2.23.453.2010090838430.19307@blackhole.kfki.hu>
- <20201009110323.GC5723@breakpoint.cc>
- <alpine.DEB.2.23.453.2010092035550.19307@blackhole.kfki.hu>
+        Fri, 9 Oct 2020 15:03:01 -0400
+Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0E15C0613D6
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 12:03:01 -0700 (PDT)
+Received: by mail-oo1-xc44.google.com with SMTP id y127so2599729ooa.5
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 12:03:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=baW1j40oyrw0/DNHh12A7dHdJ/z3IBrTCGUzSy2Qt0U=;
+        b=LuV4RossWWWXsKmwY82qfvFub19Uko9+f82C66MWZzlHewluwlddL6Ng5uIlyVUujU
+         7he0hdbrv2QoTpWj/BjRl3+E8Fgqdqc9v+hiKB/oiiNO9/XGGP3Y5D+ijhz4yxfXBglR
+         8VWVsO7kW6GmEUCVWOwofF2kCvJG2GGJslM6Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=baW1j40oyrw0/DNHh12A7dHdJ/z3IBrTCGUzSy2Qt0U=;
+        b=bI2LFq9h1MglH1Aab/tgW98AEsZHvdxL0RBSeCQc/TteOkuNBshk+O3GVCBn1GMzxX
+         Ig6jQMJsSE5bIcEYYmClSU2mSSbVoCeoTNJMVz+Y/KGNcNc+Yx0XJLL0gnaK6K0ADlfm
+         pF/icDVtqZzzdMu3n3jQ8jDgo2a8ONqsxdz1pgXhFkxeIHv1TGOnLDHXoWpNsJcB5hCk
+         hvvWRcg4jQ+7ePZxq9CsaWiLUYwozYxoPNcfXKSJL92U2WZ0TCqkRy9vq1l11z+jDJ6f
+         QQMDBdSSB0hJXp8lcBmIImFzCQb00FOtnSQbI1k0bMSOu8RCCaL+KsMzgB717VpaLhdo
+         pDlg==
+X-Gm-Message-State: AOAM532/AcmCiE2DTcuPcM3dfN7H+xZMAI38ZwXGBj91AYP0pn6EavH0
+        Nee6wjauejpcLjwEvA0ysR+pxg==
+X-Google-Smtp-Source: ABdhPJxv030p5ja0y94Ai5/nITr9cpyq/0eTrPjpyWHsIwF3zqGECh6eEbU8oCnYLS5HMWOrAMlbbA==
+X-Received: by 2002:a4a:e758:: with SMTP id n24mr2076315oov.62.1602270180802;
+        Fri, 09 Oct 2020 12:03:00 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id o16sm7608048oic.27.2020.10.09.12.02.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Oct 2020 12:03:00 -0700 (PDT)
+Subject: Re: [PATCH v3 00/11] Introduce Simple atomic counters
+To:     Kees Cook <keescook@chromium.org>
+Cc:     corbet@lwn.net, gregkh@linuxfoundation.org, shuah@kernel.org,
+        rafael@kernel.org, johannes@sipsolutions.net, lenb@kernel.org,
+        james.morse@arm.com, tony.luck@intel.com, bp@alien8.de,
+        arve@android.com, tkjos@android.com, maco@android.com,
+        joel@joelfernandes.org, christian@brauner.io, hridya@google.com,
+        surenb@google.com, minyard@acm.org, arnd@arndb.de,
+        mchehab@kernel.org, rric@kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-acpi@vger.kernel.org, devel@driverdev.osuosl.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux-edac@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
+References: <cover.1602209970.git.skhan@linuxfoundation.org>
+ <202010091103.5E435B42@keescook>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <beca7980-9796-9b7b-3ae8-cdd0eb022bb6@linuxfoundation.org>
+Date:   Fri, 9 Oct 2020 13:02:58 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.23.453.2010092035550.19307@blackhole.kfki.hu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <202010091103.5E435B42@keescook>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jozsef Kadlecsik <kadlec@netfilter.org> wrote:
-> > The repro clears all rules, waits 4 seconds, then restores the ruleset. 
-> > using iptables-restore < FOO; sleep 4; iptables-restore < FOO will not 
-> > result in any unregister ops.
-> >
-> > We could make kernel defer unregister via some work queue but i don't
-> > see what this would help/accomplish (and its questionable of how long it
-> > should wait).
+On 10/9/20 12:03 PM, Kees Cook wrote:
+> On Fri, Oct 09, 2020 at 09:55:55AM -0600, Shuah Khan wrote:
+>> Note: Would like to get this into Linux 5.10-rc1 so we can continue
+>> updating drivers that can be updated to use this API. If this all looks
+>> good, Kees, would you like to take this through your tree or would you
+>> like to take this through mine.
 > 
-> Sorry, I can't put together the two paragraphs above: in the first you 
-> wrote that no (hook) unregister-register happens and in the second one 
-> that those could be derefed.
-
-Sorry, my reply is confusing indeed.
-
-Matches/targets that need conntrack increment a refcount.
-So, when all rules are flushed, refcount goes down to 0 and conntrack is
-disabled because the hooks get removed..
-
-Just doing iptables-restore doesn't unregister as long as both the old
-and new rulesets need conntrack.
-
-The "delay unregister" remark was wrt. the "all rules were deleted"
-case, i.e. add a "grace period" rather than acting right away when
-conntrack use count did hit 0.
-
-> > We could disallow unregister, but that seems silly (forces reboot...).
-> > 
-> > I think the patch is fine.
+> I'd mentioned this in the v2, but yes, please take via your trees. :)
 > 
-> The patch is fine, but why the packets are handled by conntrack (after the 
-> first restore and during the 4s sleep? And then again after the second 
-> restore?) as if all conntrack entries were removed?
 
-Conntrack entries are not removed, only the base hooks get unregistered.
-This is a problem for tcp window tracking.
+Sorry. I missed that. I will get take this through my trees.
 
-When re-register occurs, kernel is supposed to switch the existing
-entries to "loose" mode so window tracking won't flag packets as
-invalid, but apparently this isn't enough to handle keepalive case.
+> I'm glad to see this landing!
+> 
+
+Thanks for reviews and brainstorming ideas. It has been lot of fun
+doing this work.
+
+thanks,
+-- Shuah
