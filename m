@@ -2,319 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA68928901C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 19:38:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C78A288FE4
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 19:18:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733073AbgJIRQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 13:16:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732898AbgJIRPk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 13:15:40 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CCECC0613D2;
-        Fri,  9 Oct 2020 10:15:39 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id o18so9828202ill.2;
-        Fri, 09 Oct 2020 10:15:39 -0700 (PDT)
+        id S1733147AbgJIRSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 13:18:16 -0400
+Received: from mail-bn8nam11on2088.outbound.protection.outlook.com ([40.107.236.88]:64480
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729274AbgJIRRx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 13:17:53 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bItnSYuUlVIV1p9fn7MqU8p3bQfNIuLUCxJPTkopGuObYWOaIrixrdTyvBGmkJ0TOdRu6E+/zdXiaaLWh9mfVkqBqRR8H8A8hl44dcA+VVM2hyVYhDrTRUYRaV7wGfRUEQVfYKBXDhLftoRQtjFreuiuz+6div3q3+ZL3M6XyGY3OjW6yB784u2NtRPZegA5TCgUKh/IP6s/mVPb8c7V2sEQVyhRJ8eR223IlW4+z1LL9/zPHsdLlPd2IdvoR8o7QzV+1+SyBGcbVU/7nIKcXpocZ6AK/CaA6w+ZvNlAkUB5erlM71UcubHP/j6JEIFc1+7I+JIDL7/FaQHgnHO1cg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+WT+9aQfScymrxOESzFGe70PgnUnT1rT1TAlVIYzos4=;
+ b=K1uAeaf9lkXGzpXIML/iwS+QCSp7gp9SCM8aOt8SIbI/DKJ4KDK9Wx744BlhqecHMz8slDT2E7kkUbw5Rhzqm39xw/LQLY/8U+ZOL9pNLLyLAGPnQKXFbw0k9tGKT8/pd24+HrIRnICp397EObD6BSn0sdm0vSpe8Q3TCfB/pZyoHxseKaPDOSaBj89m4je30H13PhPibd9s2dQP+Ddg50MxeeNq05Dk88gi65BT8Dt4hc/Me/f1p4VjRiCo+1ag6WS4LCjg26INNBkGDkcOwV31o0UnVDF2gHWkZKEU+NnVzQo9N2qjbc68FcKh3V3k5pTX3YDdWKGKvv6C8pi/8g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5EyJ7IZKon/D0w6vOc5Cj9B1U+3aN4px6AxhT0P+zOw=;
-        b=PKtExl62LofXNm6pJVdPVZwFgi3+chh9iPWCAVuOymwzn4czSzaiiTiAMrtIjB70Dk
-         pDSw9pslrc/WEuw0afcdnUKwEZCScTlG315F82FEfTHRvLADjQqK/jUpOuCMlTY6EiBb
-         Z3tlhmalns7HThG57z0vhRZoxB61BxCmiwB5k1WfSoArWhYj5cpDYnBaKbnkbSZNLaN1
-         kqHSHgTcLnzjm9h5cMNqDOzZgpxf+kz5anKMVzXAbQRTodM6Y9vHWEqO/9+sCD9DiEbC
-         1E97U7PJY/m5pfu0ZRNHDElviIfVpF8bQzZCSQ3BJ49K/mKh36RH+u9jR0EgZkk7ESbR
-         mImg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5EyJ7IZKon/D0w6vOc5Cj9B1U+3aN4px6AxhT0P+zOw=;
-        b=UuSnwXnwFRwQunPTVR77yRf9FQUUm3npX/n+NQAZnbW507rhCp+fco27XcGeitrKVn
-         l7CYJ7NqQ5CpiIyMdbhmtE99UPSc2VLK6WB1LYfvX3zDWusiW/5i5QJudU8XjnuFBZYP
-         3ysh8flIDmauRMgsBfAHUl/6axgEAAhfg7RZm2K8bldx9cer/XPgiIPLTwx9Fei3Wi84
-         rX0vIPa3lgEc4JtjQwoXLjDhbDIj1rah9NjTgdgagE8KNEf6I8nCgN5nib2wtvRTXeQg
-         zpPdjQ8P4fMlozg4jCrOc/6wYvdCZtlWxsx1ms4vKM217tWOcIzf+ICclIctlS8c3i1Z
-         bEEQ==
-X-Gm-Message-State: AOAM532LlY/51OTe8B1oRmsD2ZupeOdt3jD02hK8e2Iz92e7SB6acOLl
-        NBU43bhQ8Ndt0w9p3OBP/Zg=
-X-Google-Smtp-Source: ABdhPJxC3XDLh+JSZnUh0Z4lr02UEB1fvKeGlRx77I+YH0RaP5DenMdqfSWrkA8007Mx19L/Skww3A==
-X-Received: by 2002:a92:9859:: with SMTP id l86mr11975537ili.167.1602263738394;
-        Fri, 09 Oct 2020 10:15:38 -0700 (PDT)
-Received: from localhost.localdomain (host-173-230-99-154.tnkngak.clients.pavlovmedia.com. [173.230.99.154])
-        by smtp.gmail.com with ESMTPSA id c2sm3762830iot.52.2020.10.09.10.15.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 10:15:37 -0700 (PDT)
-From:   YiFei Zhu <zhuyifei1999@gmail.com>
-To:     containers@lists.linux-foundation.org
-Cc:     YiFei Zhu <yifeifz2@illinois.edu>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Subject: [PATCH v4 seccomp 5/5] seccomp/cache: Report cache data through /proc/pid/seccomp_cache
-Date:   Fri,  9 Oct 2020 12:14:33 -0500
-Message-Id: <c2077b8a86c6d82d611007d81ce81d32f718ec59.1602263422.git.yifeifz2@illinois.edu>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <cover.1602263422.git.yifeifz2@illinois.edu>
-References: <cover.1602263422.git.yifeifz2@illinois.edu>
-MIME-Version: 1.0
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+WT+9aQfScymrxOESzFGe70PgnUnT1rT1TAlVIYzos4=;
+ b=vvt3nMDZGngosesFy7e6aaabWbxs7M8ha/xfNIMp9e8YjruG/+GI2I/n1VqhF2RMGCI6LUIBBwjAioq+Q6ttzHJl5NmMBsP1tHAJjWjNmmna6eQJrAXlk8tj23H1MU921vSn38tXHCrvig53P9kS2OoHUI0SdLcMyX3CMENOEjs=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
+ by BN6PR1201MB0209.namprd12.prod.outlook.com (2603:10b6:405:4d::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.21; Fri, 9 Oct
+ 2020 17:17:50 +0000
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::f9b2:c475:ea4c:7f07]) by BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::f9b2:c475:ea4c:7f07%3]) with mapi id 15.20.3455.027; Fri, 9 Oct 2020
+ 17:17:50 +0000
+From:   Yazen Ghannam <Yazen.Ghannam@amd.com>
+To:     linux-edac@vger.kernel.org
+Cc:     Yazen Ghannam <Yazen.Ghannam@amd.com>,
+        linux-kernel@vger.kernel.org, bp@alien8.de,
+        Smita.KoralahalliChannabasappa@amd.com
+Subject: [PATCH] EDAC/amd64: Set proper family type for Family 19h Models 20h-2Fh
+Date:   Fri,  9 Oct 2020 17:18:03 +0000
+Message-Id: <20201009171803.3214354-1-Yazen.Ghannam@amd.com>
+X-Mailer: git-send-email 2.25.1
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [165.204.78.2]
+X-ClientProxiedBy: SN2PR01CA0011.prod.exchangelabs.com (2603:10b6:804:2::21)
+ To BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from yaz-ethanolx.amd.com (165.204.78.2) by SN2PR01CA0011.prod.exchangelabs.com (2603:10b6:804:2::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.22 via Frontend Transport; Fri, 9 Oct 2020 17:17:49 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: fdfc4f9c-a1e5-45bb-3bcd-08d86c773fcd
+X-MS-TrafficTypeDiagnostic: BN6PR1201MB0209:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BN6PR1201MB0209FE4139C1C691016A587FF8080@BN6PR1201MB0209.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: w+6RYqhS6eggXm+Rxh+eXioEoTNimVU+YUXVF4n06y0Qk1apNDQYEnI9ywL5orp+IdiiqsFFv8rakgAaZQDiLOSds3mnEWm9xuux+/GQT1qNBRgv5FIDBNP3ho2CiywGgXdpMleDY9sjYKO47cPu6qgHu+NoGGbGHdMaQ8YA2Gi21PX4PZfzDsMPQxwfjOewnhgUn/ofAi9ExD+KPifdzPTsSY2EYccYW4HZq+E1E7Bv1x9/cqP0V6WsnQPGN/wpYmK+AvUusJm7fX+hoiUh6M6J3e+xaS52dvpMLGtXkk/Aa7cJl4XzOy+0OSjkRgboDILdBgS1TaRkmdiG8tYbRQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(346002)(136003)(376002)(396003)(7696005)(52116002)(36756003)(186003)(83380400001)(26005)(2616005)(6666004)(66556008)(478600001)(66476007)(86362001)(66946007)(16526019)(8676002)(6486002)(956004)(8936002)(6916009)(316002)(5660300002)(2906002)(4326008)(1076003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: QScxAy8/u+oWge3zdZouKNB3w99C/ouuls02Rte4CzLhXON7K+34goIAMxkI23YvWvq+Yp2JWKTT8T19C3aVAz+ogwHLPa8neaSZrdHhZHANALlMwPZdovHfGGavg6Og/Qq+7gl4ALz632/cCY0VkDa2vuSBkoE7iLJOrofVUSza3zXu2ItZau8dCk1cYbyCLxuPFa5Z4wcIemrQMNROxvM0gxeSUdFozzQNcYW2kwnnXGyfwb97Ovsqc9VEV5fhnH2Uqlgk0kxgXPPT4xcSiXDL4ZYye7A18X1dr+HIHhRImlVO2VcCu15ON5OGb365aRa4tiR52DUUCMpXSmV3tWEpv06t+lyMv8WTjqVokM03noIJ6TNWU8ctc94JvgYcKx9E5n9UbSiz+mpQaiFtigF542ps+5p8iQc5Is01mrwPq9pcfFu57OnK5qEywvuMZhyWjQ0FPxAX84SHpBIQ/LIrSusA2kTf5vA+O3tkC3jKeYvAjfLEbzPxvUb8tdM2eRvp677P5XoEciegQiprN1Y+zzznkd+3Ti9wzSBfoHDZ5IvS8ibX7ldjz6lZj0Sz5AU1zIJJEEVGoYA4hCFQK4b7Zh7/24Wbv+fqJrRq5HyAtIq8gKvlmIK/f+oXLtQvBUFGvQoQl5T3Xq8ywddfnA==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fdfc4f9c-a1e5-45bb-3bcd-08d86c773fcd
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2020 17:17:50.2736
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4YErdnuc36LN/PxKn08RuswupfA/jgCyN6hEw5mJvPd0fS7oAt+iJYYLggxnzm4qPHJ5bWJ5aHCAdhMr3f3wJg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1201MB0209
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: YiFei Zhu <yifeifz2@illinois.edu>
+From: Yazen Ghannam <yazen.ghannam@amd.com>
 
-Currently the kernel does not provide an infrastructure to translate
-architecture numbers to a human-readable name. Translating syscall
-numbers to syscall names is possible through FTRACE_SYSCALL
-infrastructure but it does not provide support for compat syscalls.
+AMD Family 19h Models 20h-2Fh use the same PCI IDs as Family 17h Models
+70h-7Fh. The same family ops and number of channels also apply.
 
-This will create a file for each PID as /proc/pid/seccomp_cache.
-The file will be empty when no seccomp filters are loaded, or be
-in the format of:
-<arch name> <decimal syscall number> <ALLOW | FILTER>
-where ALLOW means the cache is guaranteed to allow the syscall,
-and filter means the cache will pass the syscall to the BPF filter.
+Use the Family17h Model 70h family_type and ops for Family 19h Models
+20h-2Fh. Update the controller name to match the system.
 
-For the docker default profile on x86_64 it looks like:
-x86_64 0 ALLOW
-x86_64 1 ALLOW
-x86_64 2 ALLOW
-x86_64 3 ALLOW
-[...]
-x86_64 132 ALLOW
-x86_64 133 ALLOW
-x86_64 134 FILTER
-x86_64 135 FILTER
-x86_64 136 FILTER
-x86_64 137 ALLOW
-x86_64 138 ALLOW
-x86_64 139 FILTER
-x86_64 140 ALLOW
-x86_64 141 ALLOW
-[...]
-
-This file is guarded by CONFIG_SECCOMP_CACHE_DEBUG with a default
-of N because I think certain users of seccomp might not want the
-application to know which syscalls are definitely usable. For
-the same reason, it is also guarded by CAP_SYS_ADMIN.
-
-Suggested-by: Jann Horn <jannh@google.com>
-Link: https://lore.kernel.org/lkml/CAG48ez3Ofqp4crXGksLmZY6=fGrF_tWyUCg7PBkAetvbbOPeOA@mail.gmail.com/
-Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
+Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
 ---
- arch/Kconfig                   | 24 ++++++++++++++
- arch/x86/Kconfig               |  1 +
- arch/x86/include/asm/seccomp.h |  3 ++
- fs/proc/base.c                 |  6 ++++
- include/linux/seccomp.h        |  5 +++
- kernel/seccomp.c               | 59 ++++++++++++++++++++++++++++++++++
- 6 files changed, 98 insertions(+)
+ drivers/edac/amd64_edac.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 21a3675a7a3a..85239a974f04 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -471,6 +471,15 @@ config HAVE_ARCH_SECCOMP_FILTER
- 	    results in the system call being skipped immediately.
- 	  - seccomp syscall wired up
+diff --git a/drivers/edac/amd64_edac.c b/drivers/edac/amd64_edac.c
+index fcc08bbf6945..1362274d840b 100644
+--- a/drivers/edac/amd64_edac.c
++++ b/drivers/edac/amd64_edac.c
+@@ -3385,6 +3385,12 @@ static struct amd64_family_type *per_family_init(struct amd64_pvt *pvt)
+ 		break;
  
-+config HAVE_ARCH_SECCOMP_CACHE
-+	bool
-+	help
-+	  An arch should select this symbol if it provides all of these things:
-+	  - all the requirements for HAVE_ARCH_SECCOMP_FILTER
-+	  - SECCOMP_ARCH_NATIVE
-+	  - SECCOMP_ARCH_NATIVE_NR
-+	  - SECCOMP_ARCH_NATIVE_NAME
-+
- config SECCOMP
- 	prompt "Enable seccomp to safely execute untrusted bytecode"
- 	def_bool y
-@@ -498,6 +507,21 @@ config SECCOMP_FILTER
- 
- 	  See Documentation/userspace-api/seccomp_filter.rst for details.
- 
-+config SECCOMP_CACHE_DEBUG
-+	bool "Show seccomp filter cache status in /proc/pid/seccomp_cache"
-+	depends on SECCOMP
-+	depends on SECCOMP_FILTER
-+	depends on PROC_FS
-+	help
-+	  This is enables /proc/pid/seccomp_cache interface to monitor
-+	  seccomp cache data. The file format is subject to change. Reading
-+	  the file requires CAP_SYS_ADMIN.
-+
-+	  This option is for debugging only. Enabling present the risk that
-+	  an adversary may be able to infer the seccomp filter logic.
-+
-+	  If unsure, say N.
-+
- config HAVE_ARCH_STACKLEAK
- 	bool
- 	help
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 1ab22869a765..1a807f89ac77 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -150,6 +150,7 @@ config X86
- 	select HAVE_ARCH_COMPAT_MMAP_BASES	if MMU && COMPAT
- 	select HAVE_ARCH_PREL32_RELOCATIONS
- 	select HAVE_ARCH_SECCOMP_FILTER
-+	select HAVE_ARCH_SECCOMP_CACHE
- 	select HAVE_ARCH_THREAD_STRUCT_WHITELIST
- 	select HAVE_ARCH_STACKLEAK
- 	select HAVE_ARCH_TRACEHOOK
-diff --git a/arch/x86/include/asm/seccomp.h b/arch/x86/include/asm/seccomp.h
-index 03365af6165d..cd57c3eabab5 100644
---- a/arch/x86/include/asm/seccomp.h
-+++ b/arch/x86/include/asm/seccomp.h
-@@ -19,13 +19,16 @@
- #ifdef CONFIG_X86_64
- # define SECCOMP_ARCH_NATIVE		AUDIT_ARCH_X86_64
- # define SECCOMP_ARCH_NATIVE_NR		NR_syscalls
-+# define SECCOMP_ARCH_NATIVE_NAME	"x86_64"
- # ifdef CONFIG_COMPAT
- #  define SECCOMP_ARCH_COMPAT		AUDIT_ARCH_I386
- #  define SECCOMP_ARCH_COMPAT_NR	IA32_NR_syscalls
-+#  define SECCOMP_ARCH_COMPAT_NAME	"ia32"
- # endif
- #else /* !CONFIG_X86_64 */
- # define SECCOMP_ARCH_NATIVE		AUDIT_ARCH_I386
- # define SECCOMP_ARCH_NATIVE_NR	        NR_syscalls
-+# define SECCOMP_ARCH_NATIVE_NAME	"ia32"
- #endif
- 
- #include <asm-generic/seccomp.h>
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index 617db4e0faa0..a4990410ff05 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -3258,6 +3258,9 @@ static const struct pid_entry tgid_base_stuff[] = {
- #ifdef CONFIG_PROC_PID_ARCH_STATUS
- 	ONE("arch_status", S_IRUGO, proc_pid_arch_status),
- #endif
-+#ifdef CONFIG_SECCOMP_CACHE_DEBUG
-+	ONE("seccomp_cache", S_IRUSR, proc_pid_seccomp_cache),
-+#endif
- };
- 
- static int proc_tgid_base_readdir(struct file *file, struct dir_context *ctx)
-@@ -3587,6 +3590,9 @@ static const struct pid_entry tid_base_stuff[] = {
- #ifdef CONFIG_PROC_PID_ARCH_STATUS
- 	ONE("arch_status", S_IRUGO, proc_pid_arch_status),
- #endif
-+#ifdef CONFIG_SECCOMP_CACHE_DEBUG
-+	ONE("seccomp_cache", S_IRUSR, proc_pid_seccomp_cache),
-+#endif
- };
- 
- static int proc_tid_base_readdir(struct file *file, struct dir_context *ctx)
-diff --git a/include/linux/seccomp.h b/include/linux/seccomp.h
-index 02aef2844c38..1f028d55142a 100644
---- a/include/linux/seccomp.h
-+++ b/include/linux/seccomp.h
-@@ -121,4 +121,9 @@ static inline long seccomp_get_metadata(struct task_struct *task,
- 	return -EINVAL;
- }
- #endif /* CONFIG_SECCOMP_FILTER && CONFIG_CHECKPOINT_RESTORE */
-+
-+#ifdef CONFIG_SECCOMP_CACHE_DEBUG
-+int proc_pid_seccomp_cache(struct seq_file *m, struct pid_namespace *ns,
-+			   struct pid *pid, struct task_struct *task);
-+#endif
- #endif /* _LINUX_SECCOMP_H */
-diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index 51032b41fe59..a75746d259a5 100644
---- a/kernel/seccomp.c
-+++ b/kernel/seccomp.c
-@@ -548,6 +548,9 @@ void seccomp_filter_release(struct task_struct *tsk)
- {
- 	struct seccomp_filter *orig = tsk->seccomp.filter;
- 
-+	/* We are effectively holding the siglock by not having any sighand. */
-+	WARN_ON(tsk->sighand != NULL);
-+
- 	/* Detach task from its filter tree. */
- 	tsk->seccomp.filter = NULL;
- 	__seccomp_filter_release(orig);
-@@ -2308,3 +2311,59 @@ static int __init seccomp_sysctl_init(void)
- device_initcall(seccomp_sysctl_init)
- 
- #endif /* CONFIG_SYSCTL */
-+
-+#ifdef CONFIG_SECCOMP_CACHE_DEBUG
-+/* Currently CONFIG_SECCOMP_CACHE_DEBUG implies SECCOMP_ARCH_NATIVE */
-+static void proc_pid_seccomp_cache_arch(struct seq_file *m, const char *name,
-+					const void *bitmap, size_t bitmap_size)
-+{
-+	int nr;
-+
-+	for (nr = 0; nr < bitmap_size; nr++) {
-+		bool cached = test_bit(nr, bitmap);
-+		char *status = cached ? "ALLOW" : "FILTER";
-+
-+		seq_printf(m, "%s %d %s\n", name, nr, status);
-+	}
-+}
-+
-+int proc_pid_seccomp_cache(struct seq_file *m, struct pid_namespace *ns,
-+			   struct pid *pid, struct task_struct *task)
-+{
-+	struct seccomp_filter *f;
-+	unsigned long flags;
-+
-+	/*
-+	 * We don't want some sandboxed process know what their seccomp
-+	 * filters consist of.
-+	 */
-+	if (!file_ns_capable(m->file, &init_user_ns, CAP_SYS_ADMIN))
-+		return -EACCES;
-+
-+	if (!lock_task_sighand(task, &flags))
-+		return 0;
-+
-+	f = READ_ONCE(task->seccomp.filter);
-+	if (!f) {
-+		unlock_task_sighand(task, &flags);
-+		return 0;
-+	}
-+
-+	/* prevent filter from being freed while we are printing it */
-+	__get_seccomp_filter(f);
-+	unlock_task_sighand(task, &flags);
-+
-+	proc_pid_seccomp_cache_arch(m, SECCOMP_ARCH_NATIVE_NAME,
-+				    f->cache.allow_native,
-+				    SECCOMP_ARCH_NATIVE_NR);
-+
-+#ifdef SECCOMP_ARCH_COMPAT
-+	proc_pid_seccomp_cache_arch(m, SECCOMP_ARCH_COMPAT_NAME,
-+				    f->cache.allow_compat,
-+				    SECCOMP_ARCH_COMPAT_NR);
-+#endif /* SECCOMP_ARCH_COMPAT */
-+
-+	__put_seccomp_filter(f);
-+	return 0;
-+}
-+#endif /* CONFIG_SECCOMP_CACHE_DEBUG */
+ 	case 0x19:
++		if (pvt->model >= 0x20 && pvt->model <= 0x2f) {
++			fam_type = &family_types[F17_M70H_CPUS];
++			pvt->ops = &family_types[F17_M70H_CPUS].ops;
++			fam_type->ctl_name = "F19h_M20h";
++			break;
++		}
+ 		fam_type	= &family_types[F19_CPUS];
+ 		pvt->ops	= &family_types[F19_CPUS].ops;
+ 		family_types[F19_CPUS].ctl_name = "F19h";
 -- 
-2.28.0
+2.25.1
 
