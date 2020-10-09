@@ -2,77 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0BE82889FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 15:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B3B288A13
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 15:55:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387429AbgJINtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 09:49:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38898 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732677AbgJINtG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 09:49:06 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0304B222B9;
-        Fri,  9 Oct 2020 13:49:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602251345;
-        bh=wl1fuI8lefh+3YsVxao7a3dyyLNUQhlLz4oNgzuFbLc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lVGWz6bscyAd1Q327E060Iz1w2Nr7nAKiIC7kTgVLRveWqIs/oKeRRovqVDW0jBJV
-         tTVFadyniJetltJn8E2xB4ij52UJMud3O6wIH21iOKxycc7XLZg+kvK9HzImLrXdU3
-         3WC9lAOb/e2eKvKZWOThK0VmDWL/eqUi7NhYl1wI=
-Date:   Fri, 9 Oct 2020 08:54:30 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] amd/amdgpu_ctx: Use struct_size() helper and
- kmalloc()
-Message-ID: <20201009135430.GA31347@embeddedor>
-References: <20201008143450.GA23077@embeddedor>
- <4fe00048-2612-39f3-29bb-c9424000f836@amd.com>
+        id S2387657AbgJINzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 09:55:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732456AbgJINzI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 09:55:08 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82D0CC0613D5
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 06:55:06 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id l16so9178794ilt.13
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 06:55:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2S3D9iYx51A87Z/QbgZ/692gZHGuP26oR+0wJ2UbLg8=;
+        b=hX9UyplGhpPB5uZa13A2uK91raJ+XXjUWlWCULGthc4S0OtZCfMyA1Sc9MTHzTbgC4
+         msSG67tcHwpsaaHcIcBIxD//0F918iRlSssC5PR4njAqbOOYLyKqyC5a8bmRJ+42fVIX
+         m5szy0Q1jAgH4+eL9obnuOTNuNffxCrmelyiwXC67CEvoRL3Yl5tuCyUnJ8SRVUT/wwd
+         h1sLQ8miFedqdQqlUJXnL3yQoAhnGJv523s7udQLzJJ8AiSS3EpjHJGGcxtnuYqvMEPB
+         GokfmAsUWyD3jFdgVaVDlBKgdFPczycyRd6zaGtUR6Beyb3OEx622w4pKxPRyQvqURMf
+         1iJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2S3D9iYx51A87Z/QbgZ/692gZHGuP26oR+0wJ2UbLg8=;
+        b=plO1LZ5qx0jdtf3XQw/PqyzQvCp2+BkzgHE9P+8KgtEPodIh9WIVrCjkb35eb/RJUG
+         pdaq6o10Eaii/mWnUoJIRbzLoBzoPXzxqVHaFSMpSEisj96zmjXRakyK4ELQ8xCJzZhJ
+         I6FNOCGY+v6iCsFQ/swzQiICvyZ4pDe930Zw+sBu0BdLIz7I3qMgaA/HC1mJbsD9mZpx
+         0jWso4a8rBthXa9tGbE4U6KpBwtvaYWRiyB8xc6NDeeLTQSrZbtfHlXsdj8u909E2kdu
+         Ok/pOLnXdu0EF7oOqLbtDHJ7t66zPyKvznVl7xvBihcp90WbUNoIJPu+JFhUY98LmQfi
+         dP2Q==
+X-Gm-Message-State: AOAM531HQHU/rT01nny+247g2qrfFnqqX1avosDg/qQKPvKdcnvQg7rY
+        qleXZHy64NjpLgeLZhBTnz/Ldge9HDXwycKZ+8ZeGA==
+X-Google-Smtp-Source: ABdhPJwJSrz7eUwTvUf7DlETg6YMldEBYzcCV0k+8KYceSzIWftZL4GSM73AlaH1smsxWJNOo4qH2nJDd79/yrPumYg=
+X-Received: by 2002:a05:6e02:664:: with SMTP id l4mr11028746ilt.81.1602251705277;
+ Fri, 09 Oct 2020 06:55:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4fe00048-2612-39f3-29bb-c9424000f836@amd.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <CA+G9fYvuq58q+GsWnzni0sKSHbubuQz-UaK3TASX26V_a7yBVw@mail.gmail.com>
+ <20200924090349.GF27174@8bytes.org> <ecf71b34-a104-d42a-bfcd-9570e73520a7@arm.com>
+ <20200924092546.GJ27174@8bytes.org> <e2186418-d4d6-e1f4-5eb4-3bfafb5cebb2@arm.com>
+ <20200924095629.GL27174@8bytes.org>
+In-Reply-To: <20200924095629.GL27174@8bytes.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 9 Oct 2020 19:24:54 +0530
+Message-ID: <CA+G9fYu42j_B+Rg2nq+KKBiKLqxVEqabQ15CujyJ+o6jqRj2uQ@mail.gmail.com>
+Subject: Re: arm-smmu 5000000.iommu: Cannot accommodate DMA offset for IOMMU
+ page tables
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Poonam Aggrwal <poonam.aggrwal@nxp.com>,
+        Rob Herring <robh@kernel.org>, Joerg Roedel <jroedel@suse.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Richard Weinberger <richard@nod.at>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mtd@lists.infradead.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Suram Suram <suram@nxp.com>, masonccyang@mxic.com.tw,
+        Will Deacon <will@kernel.org>,
+        "Z.Q. Hou" <Zhiqiang.Hou@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 09:08:51AM +0200, Christian König wrote:
-> Am 08.10.20 um 16:34 schrieb Gustavo A. R. Silva:
-> > Make use of the new struct_size() helper instead of the offsetof() idiom.
-> > Also, use kmalloc() instead of kcalloc().
-> > 
-> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> > ---
-> >   drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
-> > index c80d8339f58c..5be125f3b92a 100644
-> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
-> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
-> > @@ -100,7 +100,7 @@ static int amdgpu_ctx_init_entity(struct amdgpu_ctx *ctx, u32 hw_ip,
-> >   	enum drm_sched_priority priority;
-> >   	int r;
-> > -	entity = kcalloc(1, offsetof(typeof(*entity), fences[amdgpu_sched_jobs]),
-> > +	entity = kmalloc(struct_size(entity, fences, amdgpu_sched_jobs),
-> 
-> NAK. You could use kzalloc() here, but kmalloc won't zero initialize the
-> memory which could result in unforeseen consequences.
+On Thu, 24 Sep 2020 at 15:26, Joerg Roedel <joro@8bytes.org> wrote:
+>
+> On Thu, Sep 24, 2020 at 10:36:47AM +0100, Robin Murphy wrote:
+> > Yes, the issue was introduced by one of the changes in "dma-mapping:
+> > introduce DMA range map, supplanting dma_pfn_offset", so it only existed in
+> > the dma-mapping/for-next branch anyway.
 
-Oh I see.. I certainly didn't take that into account.
-
-I'll fix that up and respin.
-
-Thanks
---
-Gustavo
+FYI,
+The reported problem still exists
+>
+> Okay, alright then.
+>
