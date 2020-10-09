@@ -2,190 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99635288519
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:20:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0143328851B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:21:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732694AbgJIIUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 04:20:34 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15199 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732547AbgJIIUe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 04:20:34 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 1AED2D3E59D5D3204E6D;
-        Fri,  9 Oct 2020 16:20:31 +0800 (CST)
-Received: from [127.0.0.1] (10.74.185.4) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Fri, 9 Oct 2020
- 16:20:25 +0800
-Subject: Re: [PATCH v3] ACPI / APEI: do memory failure on the physical address
- reported by ARM processor error section
-To:     James Morse <james.morse@arm.com>
-References: <1601258560-6658-1-git-send-email-tanxiaofei@huawei.com>
- <06ebead0-ffa5-5003-f0a7-0b38fcb0e702@arm.com>
-CC:     <rafael@kernel.org>, <rjw@rjwysocki.net>, <lenb@kernel.org>,
-        <tony.luck@intel.com>, <bp@alien8.de>, <akpm@linux-foundation.org>,
-        <jroedel@suse.de>, <peterz@infradead.org>,
-        <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>
-From:   Xiaofei Tan <tanxiaofei@huawei.com>
-Message-ID: <5F801D49.302@huawei.com>
-Date:   Fri, 9 Oct 2020 16:20:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.5.1
+        id S1732730AbgJIIVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 04:21:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732547AbgJIIVD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 04:21:03 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42D7AC0613D4
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 01:21:01 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id l2so9827089lfk.0
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 01:21:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=F1p8lcOc9v2xuW4LU+iaVDSBE7WFr+KfWRzRc7BHXDY=;
+        b=rpDXXyrrfosFnOf9GTHHzweLt53ZXhelBHex63dDvXuyFC6LtW66pMvLqsySf0OiyO
+         E5cy/Lj+6gmXH9WO977BftnM6y7dhe1vKqjMzA5y4pBVhTIHlPFDO13FqPitr0azQLIH
+         Lt/Q0kh79IFMwPkL5mzpPO8WeUFNwQtlKP7gNYX3MVI8lgl5tOWDxYP6SMzKQW/HPQuH
+         venyEaLYu8uNd//s38EEhyEmgpEFWcjnuHSaDHtRIFNbdzwzEbPHTIHYAv9ZF3bk7mJ7
+         pqXqiwfM6kJF1eCZygDVmIFThuGTzXzpP8UDF91gaAPeELK92fKxKcUZab/+qLF88HhC
+         FzhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=F1p8lcOc9v2xuW4LU+iaVDSBE7WFr+KfWRzRc7BHXDY=;
+        b=Ta4VN4mCVURUzZRfn0tETRQKeMxtcwAcvaEliq70/2YYO9fAaPs9+Wn4aedqBw3BW4
+         DRRC/9OZg1mraZVzgmdG7NK9MEB284V1HJMQiMDDWJzoQoJe05CZI5xl8q60GAPFgt/O
+         /YM6V43lJ6woqpSiMoPN5/P+ysqRJOz1Jeor1ASh5Mt33JgNoNkjrH7prAToaskwe9+e
+         lJMyBBh6F1xQa/vDdj7SVVCXpvX4qoRWbeHQJZLWs8Nn+FseZrZp/XIwTBu0kOKX7SVK
+         SpEMni93sLxUeCSjKvEiHDYnMvZSVj3LO+wGXj6f2Uhz0FZ9AVPGF/GLboMV7OZ43Psx
+         XN5g==
+X-Gm-Message-State: AOAM532XsuBSqXOCNX0R29r3vzwAnX5AQaP0h4BuwavPqv/dvckIAy3E
+        AAYfkZCBJil7ElqRw77tKs6CUT4SjQzzVVxsuFsWd/2wg19IJZCi
+X-Google-Smtp-Source: ABdhPJyumXXapH+JIFNDv3e4VC/Q+k+gafCJclzodbwPI9k7n4hYPERxQB8VpDRb3NOqvCj1uvycDHT2MOa8bwTF5gY=
+X-Received: by 2002:a19:824f:: with SMTP id e76mr2494555lfd.572.1602231659591;
+ Fri, 09 Oct 2020 01:20:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <06ebead0-ffa5-5003-f0a7-0b38fcb0e702@arm.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.185.4]
-X-CFilter-Loop: Reflected
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 9 Oct 2020 10:20:48 +0200
+Message-ID: <CACRpkdYLfx9qRb1hHi=u+hLxzYE=0aku+_8-KwYocHmPowMZbQ@mail.gmail.com>
+Subject: [GIT PULL] late GPIO fixes for v5.9
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James, Thanks for reviewing the patch.
+Hi Linus,
 
-On 2020/10/1 21:44, James Morse wrote:
-> Hi Tanxiaofei,
-> 
-> (sorry for the late reply)
-> 
-> On 28/09/2020 03:02, Xiaofei Tan wrote:
->> After the commit 8fcc4ae6faf8 ("arm64: acpi: Make apei_claim_sea()
->> synchronise with APEI's irq work") applied, do_sea() return directly
->> for user-mode if apei_claim_sea() handled any error record. Therefore,
->> each error record reported by the user-mode SEA must be effectively
->> processed in APEI GHES driver.
->>
->> Currently, GHES driver only processes Memory Error Section.(Ignore PCIe
->> Error Section, as it has nothing to do with SEA). It is not enough.
->> Because ARM Processor Error could also be used for SEA in some hardware
->> platforms, such as Kunpeng9xx series. We can't ask them to switch to
->> use Memory Error Section for two reasons:
->> 1)The server was delivered to customers, and it will introduce
->> compatibility issue.
-> 
->> 2)It make sense to use ARM Processor Error Section. Because either
->> cache or memory errors could generate SEA when consumed by a processor.
->>
->> Do memory failure handling for ARM Processor Error Section just like
->> for Memory Error Section.
-> 
-> 
->> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
->> index 99df00f..ca0aa97 100644
->> --- a/drivers/acpi/apei/ghes.
->> +++ b/drivers/acpi/apei/ghes.c
->> @@ -441,28 +441,35 @@ static void ghes_kick_task_work(struct callback_head *head)
-> 
->> +static bool ghes_handle_arm_hw_error(struct acpi_hest_generic_data *gdata, int sev)
->> +{
->> +	struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
->> +	struct cper_arm_err_info *err_info;
->> +	bool queued = false;
->> +	int sec_sev, i;
->> +
->> +	log_arm_hw_error(err);
->> +
->> +	sec_sev = ghes_severity(gdata->error_severity);
->> +	if (sev != GHES_SEV_RECOVERABLE || sec_sev != GHES_SEV_RECOVERABLE)
->> +		return false;
->> +
->> +	err_info = (struct cper_arm_err_info *) (err + 1);
->> +	for (i = 0; i < err->err_info_num; i++, err_info++) {
-> 
-> err_info has its own length, could we use that in case someone comes up with a new table
-> version? (like this, old versions of the kernel will read mis-aligned structures)
-> 
+some two late GPIO fixes: one IRQ issue and one compilation
+issue for UML.
 
-The length of err_info is hard written in "ARM Processor Error Section", always 32 bytes.
-If someone comes up with a new table version, must also be this length. It seems no much
-differences to change to use the fixed 32 bytes here.
+Please pull them in!
 
-> 
->> +		if (!(err_info->validation_bits & CPER_ARM_INFO_VALID_PHYSICAL_ADDR))
->> +			continue;
->> +
->> +		if (err_info->type != CPER_ARM_CACHE_ERROR) {
->> +			pr_warn_ratelimited(FW_WARN GHES_PFX
->> +			"Physical address should be invalid for %s\n",
-> 
-> Should? A bus-error could have a valid physical address. I can't see anything in the spec
-> that forbids this.
+Yours,
+Linus Walleij
 
-Really? Our platform can't physical address for bus-error.
-I remember you asked this in earlier version patch, which is why i skipped non-cache error.
+The following changes since commit 549738f15da0e5a00275977623be199fbbf7df50:
 
+  Linux 5.9-rc8 (2020-10-04 16:04:34 -0700)
 
- In general we shouldn't try to validate what firmware is doing.
-> 
-> 
->> +			err_info->type < ARRAY_SIZE(cper_proc_error_type_strs) ?
->> +			cper_proc_error_type_strs[err_info->type] : "unknown error type");
->> +			continue;
->> +		}
-> 
-> I think we should warn for the cases this handler doesn't cover, but we should try to
-> catch all of them. e.g:
-> 
-> |	bool is_cache = (err_info->type == CPER_ARM_CACHE_ERROR);
-> |	bool has_pa = (err_info->validation_bits & CPER_ARM_INFO_VALID_PHYSICAL_ADDR)
-> |
-> |	if (!is_cache || !has_pa) {
-> |		pr_warn_ratelimited(..."Unhandled processor error type %s\n", ...);
-> |		continue;
-> |	}
-> 
+are available in the Git repository at:
 
-OK
+  git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-gpio.git
+tags/gpio-v5.9-3
 
-> 
-> For cache errors, (err_info->error_info & BIT(26)) has its own corrected/uncorrected flag.
-> You filter out 'overall corrected' section types earlier, could you check this error
-> record before invoking memory_failure()?
-> 
+for you to fetch changes up to 8b81edd80baf12d64420daff1759380aa9a14998:
 
-Do you mean skip corrected error in a recoverable or fatal error section ?
-We only use the  severity type of section header, and this corrected/uncorrected flag
-may not be filled correctly in firmware.
+  gpio: pca953x: Survive spurious interrupts (2020-10-07 11:47:41 +0200)
 
-> (sections may contain a set of errors. I'm not convinced a 'corrected section' can't
-> contain latent uncorrected errors, it just means the machine didn't need that data yet)
-> 
+----------------------------------------------------------------
+Some late fixes for the v5.9 kernel:
 
-If contain uncorrected errors, then the error section should be defined as recoverable.
+- Fix a compilation issue with User Mode Linux.
 
-> 
-> 
->> +		if (ghes_do_memory_failure(err_info->physical_fault_addr, 0))
->> +			queued = true;
-> 
-> May as well:
-> |		return ghes_do_memory_failure(...);
-> 
+- Handle spurious interrupts properly in the PCA953x driver.
 
-We can't return directly from here, as other error info may not have been handled.
+----------------------------------------------------------------
+Andy Shevchenko (1):
+      gpiolib: Disable compat ->read() code in UML case
 
-> 
->> +	}
->> +
->> +	return queued;
-> 
-> (and make this:
-> |	return false
-> )
-> 
->> +}
-> 
-> 
-> 
-> Thanks,
-> 
-> James
-> 
-> .
-> 
+Marc Zyngier (1):
+      gpio: pca953x: Survive spurious interrupts
 
--- 
- thanks
-tanxiaofei
-
+ drivers/gpio/gpio-pca953x.c | 17 +++++++++++++++--
+ drivers/gpio/gpiolib-cdev.c |  2 +-
+ 2 files changed, 16 insertions(+), 3 deletions(-)
