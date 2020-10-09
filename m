@@ -2,396 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60739288EBF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 18:24:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0439288EC1
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 18:25:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389695AbgJIQYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 12:24:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43250 "EHLO
+        id S2389720AbgJIQYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 12:24:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389144AbgJIQYt (ORCPT
+        with ESMTP id S2389144AbgJIQYx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 12:24:49 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96718C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 09:24:48 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id e17so10889819wru.12
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 09:24:48 -0700 (PDT)
+        Fri, 9 Oct 2020 12:24:53 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E289CC0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 09:24:53 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id y14so7549353pgf.12
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 09:24:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=8A9JRNiHu6JNwMmochbxtTllf1xc/YR7bJPHBj6HZC4=;
-        b=I6CumvnuIAkhA36z8zFnx630UJjLpBoLMT8plEkX9/qH7tSx/yqdeC5/tETeteyHzv
-         LNaxb2Nwp7xj9hWALC7XpiM6HsSS4aHuOA8AY+E0/AIoKnjbCJ4MgFGItNN0yPA6D+1U
-         2GEHJy3T49qS37RelOiD/hpVfLV1msWKB+6ZQ=
+        d=gmail.com; s=20161025;
+        h=subject:cc:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-transfer-encoding:content-language;
+        bh=Jur5Bq54qriS0f641DZfn/1aFXoa3qoJ8oSWG2dKR9E=;
+        b=KnTl2YiXqu6kxvV/SiXf71ElLRsPogVU0Nuxn4Iw9xjXknnLTXVMrXCiB4Icr4tKGS
+         JxfB6gZAlefX7i66UCihpRBYz8xN0MjCD0AitIgSpibXrwzwVh1cqhRv3wIEdJ0mPMiC
+         636xzIVwXFe/ViO0wd0KQayuzDGmYK9d6oSkva474NyQXRI1drMIMYGPc+IycmiNxKPN
+         /d69sbKv/H6LJQH/igU/8ptOlIzHapHD3B3WtaVW31rKW/r2J8dXI91eM5UfSzc9+29S
+         KSxPDaQ0YEc3t8Vlo5Gz8NFrF2aanuoOHwl/3Fu56nfcu6oL4iSifVIKJzhQknJj4K4G
+         5rxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=8A9JRNiHu6JNwMmochbxtTllf1xc/YR7bJPHBj6HZC4=;
-        b=ZUkAu/e76n7TfeuaXNxeWjRpoJ4mK8A3Tl7th+AX+NugLrVlm1MZ4PY4frlRgpZHAG
-         um5e76OIByF631m+YN6GoTLito825z/wQo1tav3ocKvJU0QiWUqhOBY/oIMlqOqZRtq5
-         ncb3Ua2O9JPX0k/ShN2269Yi1N6E/akBi5dkvRP/TufBNB0RDC6DeLTKnKbrtX/Te1xu
-         RWNsBku7YELgOcdYPnL6VLw6xkWFHt4l30P97IISCuhAZOai8C1b17ek40ziSbvn8YpW
-         vo3T3F/gpu2233dJkqnpfmmiDc0L+7K+X5nZW6rrCAepIc7izlySep3KF6Mx2hmx2U4x
-         ko2Q==
-X-Gm-Message-State: AOAM531llaLFrzX3X6o13rfK00EseP3eFafsCt1lA03MozODHlN4+cZf
-        nyIa95l96UN/lpF6V21gw4/K+g==
-X-Google-Smtp-Source: ABdhPJzJ/E+dwPZ+qB2asDHJ4sUfbuVsUqXDSKeZekHXhRZqUh+hlziY6Yu/svpmF7pjjCgTY1Joww==
-X-Received: by 2002:a5d:6a0a:: with SMTP id m10mr7217354wru.189.1602260687177;
-        Fri, 09 Oct 2020 09:24:47 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id g83sm12224145wmf.15.2020.10.09.09.24.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 09:24:46 -0700 (PDT)
-Date:   Fri, 9 Oct 2020 18:24:44 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, chris@chris-wilson.co.uk,
-        airlied@redhat.com, akpm@linux-foundation.org, daniel@ffwll.ch,
-        sumit.semwal@linaro.org, willy@infradead.org, jhubbard@nvidia.com,
-        jgg@ziepe.ca
-Subject: Re: [PATCH 6/6] drm/prime: document that use the page array is
- deprecated v2
-Message-ID: <20201009162444.GO438822@phenom.ffwll.local>
-Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, chris@chris-wilson.co.uk,
-        airlied@redhat.com, akpm@linux-foundation.org,
-        sumit.semwal@linaro.org, willy@infradead.org, jhubbard@nvidia.com,
-        jgg@ziepe.ca
-References: <20201009150342.1979-1-christian.koenig@amd.com>
- <20201009150342.1979-6-christian.koenig@amd.com>
+        h=x-gm-message-state:subject:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=Jur5Bq54qriS0f641DZfn/1aFXoa3qoJ8oSWG2dKR9E=;
+        b=JmbVd71cCSzFaoMD9HkhUaLT45lgZi4ig1L0if9A3QSnGOTPwg4BAIPhReAsdiRYTo
+         HZXEhsZ/rd9O8N4rM6Wma9w/NcjkXPX+IidpCd4zr/VZQWvynztQ9T+CzZSc3VZm13xR
+         InvYizQwQAodCkz0+jOfhRKKWD+UURY5QFIzEBtQDUg8bQw9YqdCbZoIJGeVfeacwzhV
+         YOxSfHow4b24g1Djl1C3N5kelzORz7fGVxCjLN0hS4KsqDgGrIpOGDyyjdPRCXcldGfi
+         Ub7sOnWlCuGQWtY9KH1E3vO2OniQ33VUCvFvaJeGPv073Pf95+1b8FF+Cvr7KrQmBRO9
+         NFtA==
+X-Gm-Message-State: AOAM530tPgn1iuHtr7stW2NECEyruM5fZscL8z5kkDTW8ARe+0iyyiSg
+        Kvrc5ugc+WTdBRVR/v2Ia5qd1jKSNhzltpHD30c=
+X-Google-Smtp-Source: ABdhPJwX59dsYqV7LKdMHJ+iopNl3ggAeS1pu/x2L71uhzAnMQYFAiF2RMg5h9sMWuU5mLbFJF4Pvg==
+X-Received: by 2002:a17:90a:1861:: with SMTP id r88mr5359154pja.222.1602260692871;
+        Fri, 09 Oct 2020 09:24:52 -0700 (PDT)
+Received: from [192.168.0.104] ([49.207.205.113])
+        by smtp.gmail.com with ESMTPSA id o134sm11231313pfg.134.2020.10.09.09.24.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Oct 2020 09:24:52 -0700 (PDT)
+Subject: Re: [PATCH] staging: comedi: check validity of wMaxPacketSize of usb
+ endpoints found
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+009f546aa1370056b1c2@syzkaller.appspotmail.com,
+        Ian Abbott <abbotti@mev.co.uk>,
+        H Hartley Sweeten <hsweeten@visionengravers.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+References: <20201009161646.286286-1-anant.thazhemadam@gmail.com>
+From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Message-ID: <21e614cc-abf7-9332-81be-c969b0fd29b6@gmail.com>
+Date:   Fri, 9 Oct 2020 21:54:48 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201009150342.1979-6-christian.koenig@amd.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <20201009161646.286286-1-anant.thazhemadam@gmail.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 05:03:42PM +0200, Christian König wrote:
-> We have reoccurring requests on this so better document that
-> this approach doesn't work and dma_buf_mmap() needs to be used instead.
-> 
-> v2: split it into two functions
-> 
-> Signed-off-by: Christian König <christian.koenig@amd.com>
 
-Patches 3-5:
-
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-
-This one looks good, but you have it on a strange baseline. This doesn't
-contain the sg walking fixes from Marek, so reintroduces the bugs.
-Probably need to request a backmerge chain, first of -rc8 into drm-next,
-and then that into drm-misc-next.
-
-Everything else in here lgtm.
--Daniel
-
-
-
+On 09/10/20 9:46 pm, Anant Thazhemadam wrote:
+> While finding usb endpoints in vmk80xx_find_usb_endpoints(), check if 
+> wMaxPacketSize = 0 for the endpoints found.
+>
+> Some devices have isochronous endpoints that have wMaxPacketSize = 0
+> (as required by the USB-2 spec).
+> However, since this doesn't apply here, wMaxPacketSize = 0 can be
+> considered to be invalid.
+>
+> Reported-by: syzbot+009f546aa1370056b1c2@syzkaller.appspotmail.com
+> Tested-by: syzbot+009f546aa1370056b1c2@syzkaller.appspotmail.com
+> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
 > ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c     |  9 ++-
->  drivers/gpu/drm/drm_prime.c                 | 67 +++++++++++++++------
->  drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c |  3 +-
->  drivers/gpu/drm/msm/msm_gem.c               |  2 +-
->  drivers/gpu/drm/nouveau/nouveau_bo.c        |  5 +-
->  drivers/gpu/drm/radeon/radeon_ttm.c         |  9 ++-
->  drivers/gpu/drm/vgem/vgem_drv.c             |  3 +-
->  drivers/gpu/drm/vkms/vkms_gem.c             |  2 +-
->  drivers/gpu/drm/xen/xen_drm_front_gem.c     |  4 +-
->  include/drm/drm_prime.h                     |  7 ++-
->  10 files changed, 69 insertions(+), 42 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-> index ac463e706b19..6a65490de391 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-> @@ -1011,8 +1011,8 @@ static int amdgpu_ttm_tt_pin_userptr(struct ttm_bo_device *bdev,
->  		goto release_sg;
+> The error (as detected by syzbot) is generated in 
+> vmk80xx_write_packet() (which is called in vmk80xx_reset_device()) when
+> it tries to assign devpriv->usb_tx_buf[0] = cmd.
+>
+> This NULL pointer dereference issue arises because
+> size = usb_endpoint_maxp(devpriv->ep_tx) = 0.
+>
+> This can be traced back to vmk80xx_find_usb_endpoints(), where the usb 
+> endpoints are found, and assigned accordingly.
+> (For some more insight, in vmk80xx_find_usb_endpoints(), 
+> if one of intf->cur_altsetting->iface_desc->endpoints' desc value = 0, 
+> and consequently this endpoint is assigned to devpriv->ep_tx,
+> this issue gets triggered.)
+>
+> Checking if the wMaxPacketSize of an endpoint is invalid and returning
+> an error value accordingly, seems to fix the error.
+>
+> We could also alternatively perform this checking (if the size is 0 or not) 
+> in vmk80xx_reset_device() itself, but it only seemed like covering up the issue
+> at that place, rather than fixing it, so I wasn't sure that was any better.
+>
+> However, if I'm not wrong, this might end up causing the probe to fail, and I'm 
+> not sure if that's the right thing to do in cases like this, and if it isn't I'd
+> like some input on what exactly is the required course of action in cases like this.
+>
+>  drivers/staging/comedi/drivers/vmk80xx.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/drivers/staging/comedi/drivers/vmk80xx.c b/drivers/staging/comedi/drivers/vmk80xx.c
+> index 65dc6c51037e..cb0a965d3c37 100644
+> --- a/drivers/staging/comedi/drivers/vmk80xx.c
+> +++ b/drivers/staging/comedi/drivers/vmk80xx.c
+> @@ -667,6 +667,9 @@ static int vmk80xx_find_usb_endpoints(struct comedi_device *dev)
+>  	if (!devpriv->ep_rx || !devpriv->ep_tx)
+>  		return -ENODEV;
 >  
->  	/* convert SG to linear array of pages and dma addresses */
-> -	drm_prime_sg_to_page_addr_arrays(ttm->sg, NULL, gtt->ttm.dma_address,
-> -					 ttm->num_pages);
-> +	drm_prime_sg_to_dma_addr_array(ttm->sg, gtt->ttm.dma_address,
-> +				       ttm->num_pages);
->  
->  	return 0;
->  
-> @@ -1345,9 +1345,8 @@ static int amdgpu_ttm_tt_populate(struct ttm_bo_device *bdev,
->  			ttm->sg = sgt;
->  		}
->  
-> -		drm_prime_sg_to_page_addr_arrays(ttm->sg, NULL,
-> -						 gtt->ttm.dma_address,
-> -						 ttm->num_pages);
-> +		drm_prime_sg_to_dma_addr_array(ttm->sg, gtt->ttm.dma_address,
-> +					       ttm->num_pages);
->  		ttm_tt_set_populated(ttm);
->  		return 0;
->  	}
-> diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
-> index 4910c446db83..8b750c074494 100644
-> --- a/drivers/gpu/drm/drm_prime.c
-> +++ b/drivers/gpu/drm/drm_prime.c
-> @@ -954,27 +954,25 @@ struct drm_gem_object *drm_gem_prime_import(struct drm_device *dev,
->  EXPORT_SYMBOL(drm_gem_prime_import);
->  
->  /**
-> - * drm_prime_sg_to_page_addr_arrays - convert an sg table into a page array
-> + * drm_prime_sg_to_page_array - convert an sg table into a page array
->   * @sgt: scatter-gather table to convert
-> - * @pages: optional array of page pointers to store the page array in
-> - * @addrs: optional array to store the dma bus address of each page
-> - * @max_entries: size of both the passed-in arrays
-> + * @pages: array of page pointers to store the pages in
-> + * @max_entries: size of the passed-in array
->   *
-> - * Exports an sg table into an array of pages and addresses. This is currently
-> - * required by the TTM driver in order to do correct fault handling.
-> + * Exports an sg table into an array of pages.
->   *
-> - * Drivers can use this in their &drm_driver.gem_prime_import_sg_table
-> - * implementation.
-> + * This function is deprecated and strongly discouraged to be used.
-> + * The page array is only useful for page faults and those can corrupt fields
-> + * in the struct page if they are not handled by the exporting driver.
->   */
-> -int drm_prime_sg_to_page_addr_arrays(struct sg_table *sgt, struct page **pages,
-> -				     dma_addr_t *addrs, int max_entries)
-> +int __deprecated drm_prime_sg_to_page_array(struct sg_table *sgt,
-> +					    struct page **pages,
-> +					    int max_entries)
->  {
->  	unsigned count;
->  	struct scatterlist *sg;
->  	struct page *page;
->  	u32 page_len, page_index;
-> -	dma_addr_t addr;
-> -	u32 dma_len, dma_index;
->  
->  	/*
->  	 * Scatterlist elements contains both pages and DMA addresses, but
-> @@ -984,14 +982,11 @@ int drm_prime_sg_to_page_addr_arrays(struct sg_table *sgt, struct page **pages,
->  	 * described by the sg_dma_address(sg).
->  	 */
->  	page_index = 0;
-> -	dma_index = 0;
->  	for_each_sg(sgt->sgl, sg, sgt->nents, count) {
->  		page_len = sg->length;
->  		page = sg_page(sg);
-> -		dma_len = sg_dma_len(sg);
-> -		addr = sg_dma_address(sg);
->  
-> -		while (pages && page_len > 0) {
-> +		while (page_len > 0) {
->  			if (WARN_ON(page_index >= max_entries))
->  				return -1;
->  			pages[page_index] = page;
-> @@ -999,7 +994,43 @@ int drm_prime_sg_to_page_addr_arrays(struct sg_table *sgt, struct page **pages,
->  			page_len -= PAGE_SIZE;
->  			page_index++;
->  		}
-> -		while (addrs && dma_len > 0) {
-> +	}
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL(drm_prime_sg_to_page_array);
+> +	if(!usb_endpoint_maxp(devpriv->ep_rx) || !usb_endpoint_maxp(devpriv->ep_tx))
+> +		return -EINVAL;
 > +
-> +/**
-> + * drm_prime_sg_to_dma_addr_array - convert an sg table into a dma addr array
-> + * @sgt: scatter-gather table to convert
-> + * @addrs: array to store the dma bus address of each page
-> + * @max_entries: size of both the passed-in arrays
-> + *
-> + * Exports an sg table into an array of addresses.
-> + *
-> + * Drivers should use this in their &drm_driver.gem_prime_import_sg_table
-
-s/should/can/
-
-There's no requirement, if your driver just handles everything as an sgt
-there's no conversion needed.
-
-> + * implementation.
-> + */
-> +int drm_prime_sg_to_dma_addr_array(struct sg_table *sgt, dma_addr_t *addrs,
-> +				   int max_entries)
-> +{
-> +	struct scatterlist *sg;
-> +	u32 dma_len, dma_index;
-> +	dma_addr_t addr;
-> +	unsigned count;
-> +
-> +	/*
-> +	 * Scatterlist elements contains both pages and DMA addresses, but
-> +	 * one shoud not assume 1:1 relation between them. The sg->length is
-> +	 * the size of the physical memory chunk described by the sg->page,
-> +	 * while sg_dma_len(sg) is the size of the DMA (IO virtual) chunk
-> +	 * described by the sg_dma_address(sg).
-> +	 */
-> +	dma_index = 0;
-> +	for_each_sg(sgt->sgl, sg, sgt->nents, count) {
-> +		dma_len = sg_dma_len(sg);
-> +		addr = sg_dma_address(sg);
-> +
-> +		while (dma_len > 0) {
->  			if (WARN_ON(dma_index >= max_entries))
->  				return -1;
->  			addrs[dma_index] = addr;
-> @@ -1010,7 +1041,7 @@ int drm_prime_sg_to_page_addr_arrays(struct sg_table *sgt, struct page **pages,
->  	}
 >  	return 0;
 >  }
-> -EXPORT_SYMBOL(drm_prime_sg_to_page_addr_arrays);
-> +EXPORT_SYMBOL(drm_prime_sg_to_dma_addr_array);
 >  
->  /**
->   * drm_prime_gem_destroy - helper to clean up a PRIME-imported GEM object
-> diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c b/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
-> index 135fbff6fecf..8c04b8e8054c 100644
-> --- a/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
-> +++ b/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
-> @@ -133,8 +133,7 @@ struct drm_gem_object *etnaviv_gem_prime_import_sg_table(struct drm_device *dev,
->  		goto fail;
->  	}
->  
-> -	ret = drm_prime_sg_to_page_addr_arrays(sgt, etnaviv_obj->pages,
-> -					       NULL, npages);
-> +	ret = drm_prime_sg_to_page_array(sgt, etnaviv_obj->pages, npages);
->  	if (ret)
->  		goto fail;
->  
-> diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
-> index a71f42870d5e..616b87641740 100644
-> --- a/drivers/gpu/drm/msm/msm_gem.c
-> +++ b/drivers/gpu/drm/msm/msm_gem.c
-> @@ -1174,7 +1174,7 @@ struct drm_gem_object *msm_gem_import(struct drm_device *dev,
->  		goto fail;
->  	}
->  
-> -	ret = drm_prime_sg_to_page_addr_arrays(sgt, msm_obj->pages, NULL, npages);
-> +	ret = drm_prime_sg_to_page_array(sgt, msm_obj->pages, npages);
->  	if (ret) {
->  		mutex_unlock(&msm_obj->lock);
->  		goto fail;
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_bo.c b/drivers/gpu/drm/nouveau/nouveau_bo.c
-> index e378bb491688..835edd74ef59 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_bo.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_bo.c
-> @@ -1299,9 +1299,8 @@ nouveau_ttm_tt_populate(struct ttm_bo_device *bdev,
->  		return 0;
->  
->  	if (slave && ttm->sg) {
-> -		drm_prime_sg_to_page_addr_arrays(ttm->sg, NULL,
-> -						 ttm_dma->dma_address,
-> -						 ttm->num_pages);
-> +		drm_prime_sg_to_dma_addr_array(ttm->sg, ttm_dma->dma_address,
-> +					       ttm->num_pages);
->  		ttm_tt_set_populated(ttm);
->  		return 0;
->  	}
-> diff --git a/drivers/gpu/drm/radeon/radeon_ttm.c b/drivers/gpu/drm/radeon/radeon_ttm.c
-> index 4b92cdbcd29b..7997e4564576 100644
-> --- a/drivers/gpu/drm/radeon/radeon_ttm.c
-> +++ b/drivers/gpu/drm/radeon/radeon_ttm.c
-> @@ -474,8 +474,8 @@ static int radeon_ttm_tt_pin_userptr(struct ttm_bo_device *bdev, struct ttm_tt *
->  	if (r)
->  		goto release_sg;
->  
-> -	drm_prime_sg_to_page_addr_arrays(ttm->sg, NULL, gtt->ttm.dma_address,
-> -					 ttm->num_pages);
-> +	drm_prime_sg_to_dma_addr_array(ttm->sg, gtt->ttm.dma_address,
-> +				       ttm->num_pages);
->  
->  	return 0;
->  
-> @@ -642,9 +642,8 @@ static int radeon_ttm_tt_populate(struct ttm_bo_device *bdev,
->  	}
->  
->  	if (slave && ttm->sg) {
-> -		drm_prime_sg_to_page_addr_arrays(ttm->sg, NULL,
-> -						 gtt->ttm.dma_address,
-> -						 ttm->num_pages);
-> +		drm_prime_sg_to_dma_addr_array(ttm->sg, gtt->ttm.dma_address,
-> +					       ttm->num_pages);
->  		ttm_tt_set_populated(ttm);
->  		return 0;
->  	}
-> diff --git a/drivers/gpu/drm/vgem/vgem_drv.c b/drivers/gpu/drm/vgem/vgem_drv.c
-> index ea0eecae5153..e505e5a291b3 100644
-> --- a/drivers/gpu/drm/vgem/vgem_drv.c
-> +++ b/drivers/gpu/drm/vgem/vgem_drv.c
-> @@ -356,8 +356,7 @@ static struct drm_gem_object *vgem_prime_import_sg_table(struct drm_device *dev,
->  	}
->  
->  	obj->pages_pin_count++; /* perma-pinned */
-> -	drm_prime_sg_to_page_addr_arrays(obj->table, obj->pages, NULL,
-> -					npages);
-> +	drm_prime_sg_to_page_array(obj->table, obj->pages, npages);
->  	return &obj->base;
->  }
->  
-> diff --git a/drivers/gpu/drm/vkms/vkms_gem.c b/drivers/gpu/drm/vkms/vkms_gem.c
-> index 19a0e260a4df..a2ff21f47101 100644
-> --- a/drivers/gpu/drm/vkms/vkms_gem.c
-> +++ b/drivers/gpu/drm/vkms/vkms_gem.c
-> @@ -256,6 +256,6 @@ vkms_prime_import_sg_table(struct drm_device *dev,
->  		return ERR_PTR(-ENOMEM);
->  	}
->  
-> -	drm_prime_sg_to_page_addr_arrays(sg, obj->pages, NULL, npages);
-> +	drm_prime_sg_to_page_array(sg, obj->pages, npages);
->  	return &obj->gem;
->  }
-> diff --git a/drivers/gpu/drm/xen/xen_drm_front_gem.c b/drivers/gpu/drm/xen/xen_drm_front_gem.c
-> index f3830a0d1808..f4150ddfc5e2 100644
-> --- a/drivers/gpu/drm/xen/xen_drm_front_gem.c
-> +++ b/drivers/gpu/drm/xen/xen_drm_front_gem.c
-> @@ -220,8 +220,8 @@ xen_drm_front_gem_import_sg_table(struct drm_device *dev,
->  
->  	xen_obj->sgt_imported = sgt;
->  
-> -	ret = drm_prime_sg_to_page_addr_arrays(sgt, xen_obj->pages,
-> -					       NULL, xen_obj->num_pages);
-> +	ret = drm_prime_sg_to_page_array(sgt, xen_obj->pages,
-> +					 xen_obj->num_pages);
->  	if (ret < 0)
->  		return ERR_PTR(ret);
->  
-> diff --git a/include/drm/drm_prime.h b/include/drm/drm_prime.h
-> index 093f760cc131..4bda9ab3a3bb 100644
-> --- a/include/drm/drm_prime.h
-> +++ b/include/drm/drm_prime.h
-> @@ -103,8 +103,9 @@ struct drm_gem_object *drm_gem_prime_import(struct drm_device *dev,
->  
->  void drm_prime_gem_destroy(struct drm_gem_object *obj, struct sg_table *sg);
->  
-> -int drm_prime_sg_to_page_addr_arrays(struct sg_table *sgt, struct page **pages,
-> -				     dma_addr_t *addrs, int max_pages);
-> -
-> +int drm_prime_sg_to_page_array(struct sg_table *sgt, struct page **pages,
-> +			       int max_pages);
-> +int drm_prime_sg_to_dma_addr_array(struct sg_table *sgt, dma_addr_t *addrs,
-> +				   int max_pages);
->  
->  #endif /* __DRM_PRIME_H__ */
-> -- 
-> 2.17.1
-> 
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+The patch in this mail has a coding style issue (that I thought I had fixed), and was sent out by
+mistake.
+Please ignore this mail. Apologies.
+
+Thanks,
+Anant
