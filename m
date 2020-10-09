@@ -2,264 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C0F289C16
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 01:21:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 839A8289C23
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 01:34:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726986AbgJIXS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 19:18:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50786 "EHLO
+        id S1727319AbgJIXdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 19:33:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726120AbgJIXSL (ORCPT
+        with ESMTP id S1727031AbgJIXYt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 19:18:11 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE0F1C0613D5
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 16:18:10 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id e10so8124347pfj.1
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 16:18:10 -0700 (PDT)
+        Fri, 9 Oct 2020 19:24:49 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FC47C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 16:25:00 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id d15so10710796ybk.0
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 16:25:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=D744gDcHOWXajYrsEOce8eCK8+o4p+P+OG7A3xbJaOo=;
-        b=Lr1dfoHemJlX/RIX2hvL2D/L44xa5PQeU7QnVLpPhzAzEOQAlmblx8B40RmQGL/07E
-         VCSHsxo6VPYFWmSWRAxyjPtDbXNEFu1QxWriaykwo9hkwNCSPWr3lehsNnYMCBvsFPcq
-         5ZaxgqdbhnQ+j6kvffD/AwvtU0IQXPPK+WzIw=
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=OTHm9oO7gk347MFuW+OaDq2/vsm6e+aeSPuhn/LkcJw=;
+        b=Ku83pqzDHSiRYOrwEw/9LRjAXIFYt8qx5KWw2o53dxsZjBb21junI6XTHLqtqK8BiR
+         gnTnNU8zz2rQxMwEQql68FJCuS/uU3D0HhFGj/bEFtipb9lCGcTFW3empL9Nyo1PHXCT
+         D1dkMrmc32WHciqu2EnOSVP7iPd0y+qtFqi9g1P1PIqD3iqyvbXAXQ+rJExDCzYMECOl
+         C5nEn0GdUL0bEOn+PGWiGMcFUXPgG2zIQcGf4DaZRybHjF3LwOOibYcmUbdYxt9mFsGo
+         cBoxbwc19kEtojUjHFs0up80tozU9w3W9Si6Li3lVKSGT++V0gjwDtypkdJ735d+rtYN
+         YyJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=D744gDcHOWXajYrsEOce8eCK8+o4p+P+OG7A3xbJaOo=;
-        b=Xc+9aehgVtEK9uDBLeL5aDPriP1s/H/zm+sHhq8Plq/s/TOehrnz+suluvosPzDxD5
-         5XJg6vqK7ZGiAQsHaijY1ac8Ih/Ek5ohycqnznTlDxkxfcOolhiKBanc1bUMGeHcuhFC
-         yUseJ7XDyszapR+JP6LmUkoXXz7OXl5soWPRf+9nPuiVP25U+asJWB2HBBqwhSzkvoQF
-         /n1tVlon3pniU9sMkU6tyWyR6idJgmOIAudXHZOiYePp3hRdWsWFMBmi02TDu1O8zw0Y
-         y+bXu1G9Y3X+2iI2ghhSymXyDTk8jbJ9rhNOtpjJ+QeFHRraV0WSTvdJyRfprfNUjGjc
-         Zk4w==
-X-Gm-Message-State: AOAM530L4RoIpQ1SUEs8dK8SbOXeddC3F9vR+Y85Oj0aGop+iFjGTnA/
-        7R5bqAMVwYMflzr8HpZuP1OaGg==
-X-Google-Smtp-Source: ABdhPJx8ui/HzkhIAhu2rRwKn7Y9jfi9DolNG8cFk6RzmyJOjHiY9uQq6NzZY+18AB3NyWZTy5R5OQ==
-X-Received: by 2002:a17:90a:3fcb:: with SMTP id u11mr6950918pjm.128.1602285490320;
-        Fri, 09 Oct 2020 16:18:10 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 15sm11555731pgt.24.2020.10.09.16.18.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 16:18:09 -0700 (PDT)
-Date:   Fri, 9 Oct 2020 16:18:08 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     YiFei Zhu <zhuyifei1999@gmail.com>
-Cc:     containers@lists.linux-foundation.org,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Subject: Re: [PATCH v4 seccomp 1/5] seccomp/cache: Lookup syscall allowlist
- bitmap for fast path
-Message-ID: <202010091614.8BB0EB64@keescook>
-References: <cover.1602263422.git.yifeifz2@illinois.edu>
- <896cd9de97318d20c25edb1297db8c65e1cfdf84.1602263422.git.yifeifz2@illinois.edu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <896cd9de97318d20c25edb1297db8c65e1cfdf84.1602263422.git.yifeifz2@illinois.edu>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=OTHm9oO7gk347MFuW+OaDq2/vsm6e+aeSPuhn/LkcJw=;
+        b=en63qKu7HfDQ1wYyP47hAIrpQGLVpaohJ7ES9rH6Yn4OfAEkCJBVjWk5levhkDK1tk
+         LfzqU/9Wr96+Kwu3Pk/ixP6eeE3Op9DeyhFVsWtq3z2m4/VXxRhUt9SqsLFkNYipYR4y
+         D3t8AkzkGeKyTPjnuNSh2rP3AtesoUaVh7xXSOWCyenXbpzEYVCNFAXUQduR31D5gAuY
+         UwbXf69Fk5jogLgdWV9J1OElh6MoEiBHmRp/d7EBMEKUou8dy8myH3Hpf7P6vkT+YCrG
+         GRPxq/wEVy0YVewZoiCAbFlIKEOEPMbQxVBFtElDo2zgGzLMo9jmGv5Ti0PWR4WyrIpc
+         RNQg==
+X-Gm-Message-State: AOAM530JTlEuoVtXTJfei80mJC8M56TP7GEnPs4TXCBnkTiq3yS5loUD
+        gQqha/rRgxvi+J407WEK2udUl4vZTw==
+X-Google-Smtp-Source: ABdhPJxoHQ5YjsNwPzIMb6FhZkvn+yojwMJAoOU/IxEqLpXJKjKG+lu1V1MGdGcoHGvYRMl9hbgQVuxs7g==
+Sender: "tkjos via sendgmr" <tkjos@ava-linux2.mtv.corp.google.com>
+X-Received: from ava-linux2.mtv.corp.google.com ([2620:15c:211:0:cad3:ffff:feb3:bfed])
+ (user=tkjos job=sendgmr) by 2002:a25:c546:: with SMTP id v67mr22651787ybe.74.1602285899380;
+ Fri, 09 Oct 2020 16:24:59 -0700 (PDT)
+Date:   Fri,  9 Oct 2020 16:24:55 -0700
+Message-Id: <20201009232455.4054810-1-tkjos@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
+Subject: [PATCH] binder: fix UAF when releasing todo list
+From:   Todd Kjos <tkjos@google.com>
+To:     tkjos@google.com, gregkh@linuxfoundation.org, christian@brauner.io,
+        arve@android.com, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, maco@google.com
+Cc:     joel@joelfernandes.org, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 12:14:29PM -0500, YiFei Zhu wrote:
-> From: YiFei Zhu <yifeifz2@illinois.edu>
-> 
-> The overhead of running Seccomp filters has been part of some past
-> discussions [1][2][3]. Oftentimes, the filters have a large number
-> of instructions that check syscall numbers one by one and jump based
-> on that. Some users chain BPF filters which further enlarge the
-> overhead. A recent work [6] comprehensively measures the Seccomp
-> overhead and shows that the overhead is non-negligible and has a
-> non-trivial impact on application performance.
-> 
-> We observed some common filters, such as docker's [4] or
-> systemd's [5], will make most decisions based only on the syscall
-> numbers, and as past discussions considered, a bitmap where each bit
-> represents a syscall makes most sense for these filters.
-> 
-> The fast (common) path for seccomp should be that the filter permits
-> the syscall to pass through, and failing seccomp is expected to be
-> an exceptional case; it is not expected for userspace to call a
-> denylisted syscall over and over.
-> 
-> When it can be concluded that an allow must occur for the given
-> architecture and syscall pair (this determination is introduced in
-> the next commit), seccomp will immediately allow the syscall,
-> bypassing further BPF execution.
-> 
-> Each architecture number has its own bitmap. The architecture
-> number in seccomp_data is checked against the defined architecture
-> number constant before proceeding to test the bit against the
-> bitmap with the syscall number as the index of the bit in the
-> bitmap, and if the bit is set, seccomp returns allow. The bitmaps
-> are all clear in this patch and will be initialized in the next
-> commit.
-> 
-> [1] https://lore.kernel.org/linux-security-module/c22a6c3cefc2412cad00ae14c1371711@huawei.com/T/
-> [2] https://lore.kernel.org/lkml/202005181120.971232B7B@keescook/T/
-> [3] https://github.com/seccomp/libseccomp/issues/116
-> [4] https://github.com/moby/moby/blob/ae0ef82b90356ac613f329a8ef5ee42ca923417d/profiles/seccomp/default.json
-> [5] https://github.com/systemd/systemd/blob/6743a1caf4037f03dc51a1277855018e4ab61957/src/shared/seccomp-util.c#L270
-> [6] Draco: Architectural and Operating System Support for System Call Security
->     https://tianyin.github.io/pub/draco.pdf, MICRO-53, Oct. 2020
-> 
-> Co-developed-by: Dimitrios Skarlatos <dskarlat@cs.cmu.edu>
-> Signed-off-by: Dimitrios Skarlatos <dskarlat@cs.cmu.edu>
-> Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
-> ---
->  kernel/seccomp.c | 72 ++++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 72 insertions(+)
-> 
-> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-> index ae6b40cc39f4..73f6b6e9a3b0 100644
-> --- a/kernel/seccomp.c
-> +++ b/kernel/seccomp.c
-> @@ -143,6 +143,34 @@ struct notification {
->  	struct list_head notifications;
->  };
->  
-> +#ifdef SECCOMP_ARCH_NATIVE
-> +/**
-> + * struct action_cache - per-filter cache of seccomp actions per
-> + * arch/syscall pair
-> + *
-> + * @allow_native: A bitmap where each bit represents whether the
-> + *		  filter will always allow the syscall, for the
-> + *		  native architecture.
-> + * @allow_compat: A bitmap where each bit represents whether the
-> + *		  filter will always allow the syscall, for the
-> + *		  compat architecture.
-> + */
-> +struct action_cache {
-> +	DECLARE_BITMAP(allow_native, SECCOMP_ARCH_NATIVE_NR);
-> +#ifdef SECCOMP_ARCH_COMPAT
-> +	DECLARE_BITMAP(allow_compat, SECCOMP_ARCH_COMPAT_NR);
-> +#endif
-> +};
-> +#else
-> +struct action_cache { };
-> +
-> +static inline bool seccomp_cache_check_allow(const struct seccomp_filter *sfilter,
-> +					     const struct seccomp_data *sd)
-> +{
-> +	return false;
-> +}
-> +#endif /* SECCOMP_ARCH_NATIVE */
-> +
->  /**
->   * struct seccomp_filter - container for seccomp BPF programs
->   *
-> @@ -298,6 +326,47 @@ static int seccomp_check_filter(struct sock_filter *filter, unsigned int flen)
->  	return 0;
->  }
->  
-> +#ifdef SECCOMP_ARCH_NATIVE
-> +static inline bool seccomp_cache_check_allow_bitmap(const void *bitmap,
-> +						    size_t bitmap_size,
-> +						    int syscall_nr)
-> +{
-> +	if (unlikely(syscall_nr < 0 || syscall_nr >= bitmap_size))
-> +		return false;
-> +	syscall_nr = array_index_nospec(syscall_nr, bitmap_size);
-> +
-> +	return test_bit(syscall_nr, bitmap);
-> +}
-> +
-> +/**
-> + * seccomp_cache_check_allow - lookup seccomp cache
-> + * @sfilter: The seccomp filter
-> + * @sd: The seccomp data to lookup the cache with
-> + *
-> + * Returns true if the seccomp_data is cached and allowed.
-> + */
-> +static inline bool seccomp_cache_check_allow(const struct seccomp_filter *sfilter,
-> +					     const struct seccomp_data *sd)
-> +{
-> +	int syscall_nr = sd->nr;
-> +	const struct action_cache *cache = &sfilter->cache;
-> +
-> +	if (likely(sd->arch == SECCOMP_ARCH_NATIVE))
-> +		return seccomp_cache_check_allow_bitmap(cache->allow_native,
-> +							SECCOMP_ARCH_NATIVE_NR,
-> +							syscall_nr);
-> +#ifdef SECCOMP_ARCH_COMPAT
-> +	if (likely(sd->arch == SECCOMP_ARCH_COMPAT))
-> +		return seccomp_cache_check_allow_bitmap(cache->allow_compat,
-> +							SECCOMP_ARCH_COMPAT_NR,
-> +							syscall_nr);
-> +#endif /* SECCOMP_ARCH_COMPAT */
-> +
-> +	WARN_ON_ONCE(true);
-> +	return false;
-> +}
-> +#endif /* SECCOMP_ARCH_NATIVE */
+When releasing a thread todo list when tearing down
+a binder_proc, the following race was possible which
+could result in a use-after-free:
 
-An small optimization for the non-compat case might be to do this to
-avoid the sd->arch test (which should have no way to ever change in such
-builds):
+1.  Thread 1: enter binder_release_work from binder_thread_release
+2.  Thread 2: binder_update_ref_for_handle() -> binder_dec_node_ilocked()
+3.  Thread 2: dec nodeA --> 0 (will free node)
+4.  Thread 1: ACQ inner_proc_lock
+5.  Thread 2: block on inner_proc_lock
+6.  Thread 1: dequeue work (BINDER_WORK_NODE, part of nodeA)
+7.  Thread 1: REL inner_proc_lock
+8.  Thread 2: ACQ inner_proc_lock
+9.  Thread 2: todo list cleanup, but work was already dequeued
+10. Thread 2: free node
+11. Thread 2: REL inner_proc_lock
+12. Thread 1: deref w->type (UAF)
 
-static inline bool seccomp_cache_check_allow(const struct seccomp_filter *sfilter,
-                                             const struct seccomp_data *sd)
-{
-        const struct action_cache *cache = &sfilter->cache;
+The problem was that for a BINDER_WORK_NODE, the binder_work element
+must not be accessed after releasing the inner_proc_lock while
+processing the todo list elements since another thread might be
+handling a deref on the node containing the binder_work element
+leading to the node being freed.
 
-#ifndef SECCOMP_ARCH_COMPAT
-        /* A native-only architecture doesn't need to check sd->arch. */
-        return seccomp_cache_check_allow_bitmap(cache->allow_native,
-                                                SECCOMP_ARCH_NATIVE_NR,
-                                                sd->nr);
-#else /* SECCOMP_ARCH_COMPAT */
-        if (likely(sd->arch == SECCOMP_ARCH_NATIVE))
-                return seccomp_cache_check_allow_bitmap(cache->allow_native,
-                                                        SECCOMP_ARCH_NATIVE_NR,
-                                                        sd->nr);
-        if (likely(sd->arch == SECCOMP_ARCH_COMPAT))
-                return seccomp_cache_check_allow_bitmap(cache->allow_compat,
-                                                        SECCOMP_ARCH_COMPAT_NR,
-                                                        sd->nr);
-#endif
+Signed-off-by: Todd Kjos <tkjos@google.com>
+---
+ drivers/android/binder.c | 35 ++++++++++-------------------------
+ 1 file changed, 10 insertions(+), 25 deletions(-)
 
-        WARN_ON_ONCE(true);
-        return false;
-}
-
-> +
->  /**
->   * seccomp_run_filters - evaluates all seccomp filters against @sd
->   * @sd: optional seccomp data to be passed to filters
-> @@ -320,6 +389,9 @@ static u32 seccomp_run_filters(const struct seccomp_data *sd,
->  	if (WARN_ON(f == NULL))
->  		return SECCOMP_RET_KILL_PROCESS;
->  
-> +	if (seccomp_cache_check_allow(f, sd))
-> +		return SECCOMP_RET_ALLOW;
-> +
->  	/*
->  	 * All filters in the list are evaluated and the lowest BPF return
->  	 * value always takes priority (ignoring the DATA).
-> -- 
-> 2.28.0
-> 
-
-This is all looking good; thank you! I'm doing some test builds/runs
-now. :)
-
+diff --git a/drivers/android/binder.c b/drivers/android/binder.c
+index f936530a19b0..e8a1db4a86ed 100644
+--- a/drivers/android/binder.c
++++ b/drivers/android/binder.c
+@@ -223,7 +223,7 @@ static struct binder_transaction_log_entry *binder_transaction_log_add(
+ struct binder_work {
+ 	struct list_head entry;
+ 
+-	enum {
++	enum binder_work_type {
+ 		BINDER_WORK_TRANSACTION = 1,
+ 		BINDER_WORK_TRANSACTION_COMPLETE,
+ 		BINDER_WORK_RETURN_ERROR,
+@@ -885,27 +885,6 @@ static struct binder_work *binder_dequeue_work_head_ilocked(
+ 	return w;
+ }
+ 
+-/**
+- * binder_dequeue_work_head() - Dequeues the item at head of list
+- * @proc:         binder_proc associated with list
+- * @list:         list to dequeue head
+- *
+- * Removes the head of the list if there are items on the list
+- *
+- * Return: pointer dequeued binder_work, NULL if list was empty
+- */
+-static struct binder_work *binder_dequeue_work_head(
+-					struct binder_proc *proc,
+-					struct list_head *list)
+-{
+-	struct binder_work *w;
+-
+-	binder_inner_proc_lock(proc);
+-	w = binder_dequeue_work_head_ilocked(list);
+-	binder_inner_proc_unlock(proc);
+-	return w;
+-}
+-
+ static void
+ binder_defer_work(struct binder_proc *proc, enum binder_deferred_state defer);
+ static void binder_free_thread(struct binder_thread *thread);
+@@ -4587,13 +4566,17 @@ static void binder_release_work(struct binder_proc *proc,
+ 				struct list_head *list)
+ {
+ 	struct binder_work *w;
++	enum binder_work_type wtype;
+ 
+ 	while (1) {
+-		w = binder_dequeue_work_head(proc, list);
++		binder_inner_proc_lock(proc);
++		w = binder_dequeue_work_head_ilocked(list);
++		wtype = w ? w->type : 0;
++		binder_inner_proc_unlock(proc);
+ 		if (!w)
+ 			return;
+ 
+-		switch (w->type) {
++		switch (wtype) {
+ 		case BINDER_WORK_TRANSACTION: {
+ 			struct binder_transaction *t;
+ 
+@@ -4627,9 +4610,11 @@ static void binder_release_work(struct binder_proc *proc,
+ 			kfree(death);
+ 			binder_stats_deleted(BINDER_STAT_DEATH);
+ 		} break;
++		case BINDER_WORK_NODE:
++			break;
+ 		default:
+ 			pr_err("unexpected work type, %d, not freed\n",
+-			       w->type);
++			       wtype);
+ 			break;
+ 		}
+ 	}
 -- 
-Kees Cook
+2.28.0.1011.ga647a8990f-goog
+
