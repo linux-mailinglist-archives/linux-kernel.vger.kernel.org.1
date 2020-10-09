@@ -2,104 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0164E289073
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 20:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8892289084
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 20:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390288AbgJISBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 14:01:21 -0400
-Received: from smtprelay0021.hostedemail.com ([216.40.44.21]:33560 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730110AbgJISBV (ORCPT
+        id S2390379AbgJISDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 14:03:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390339AbgJISBs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 14:01:21 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 6CA43181D3030;
-        Fri,  9 Oct 2020 18:01:20 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 91,10,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3167:3315:3353:3622:3653:3865:3866:3868:3870:3871:3872:3874:4321:5007:7576:7903:10004:10400:10848:11026:11232:11473:11658:11914:12043:12297:12438:12740:12760:12895:13184:13229:13255:13439:14181:14659:14721:21080:21221:21433:21451:21627:21740:21741:21891:21990:30025:30034:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: boys36_610ce33271e2
-X-Filterd-Recvd-Size: 3039
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf19.hostedemail.com (Postfix) with ESMTPA;
-        Fri,  9 Oct 2020 18:01:19 +0000 (UTC)
-Message-ID: <b57a59bc80e432c7696b347a223eb12339013970.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: Check for .byte-spelled insn opcodes
- documentation on x86
-From:   Joe Perches <joe@perches.com>
-To:     Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andy Whitcroft <apw@canonical.com>,
+        Fri, 9 Oct 2020 14:01:48 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84818C0613D8
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 11:01:48 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id ev17so5179639qvb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 11:01:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JtTniNbWimQFTlPWxNfhtRJTUnIfWE2pIrRn0nLquTU=;
+        b=f/szaRC+vLdnDgqFvq8AOddrp6VSsc5+VOKHgdN1Blfz+Kdocq0LgJzoYOwFNRhbsb
+         R58LfaQQ3n9+kujlpK+dXsyPtLR7PpkdHaoMjpLP5dFUu9uKpYtIgwUv2SzANG3wJ4HI
+         uZ2jIrHb3l+wKyafHdJPZ5UpeQcq4bXudJq3VH1qWYsmCJKZjK3dkCknvRMRvHtmwEaJ
+         +C7ytvDBDqqX8xISydsOLSJIZQl1e2A9hJato/1mUA5uyCKy3VQWCdd1nWlOILZ9XItf
+         xtRqWEAdtlSCbEhxBM5pVhNugecQkdco1xNKTq95myZ76QxSJibw5Xyqk8ww4uW9rkwK
+         T0kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JtTniNbWimQFTlPWxNfhtRJTUnIfWE2pIrRn0nLquTU=;
+        b=g+5MHAKYebQXUGju7g2q+8pTOKLQEbUD4Lr1FAN6b0XgFQYEiZBTLmHP3wPA7RNEGL
+         kQuascmCNQD+zcxgPegWAJH4LmFQFUTMTvSrGoZUO3N6bDHT6lV5fiJoM+8cblnAnVHs
+         oEXPmA2whAvnZ5YMdVYn1yQQOFAvxPgSZK5UV/PdZzJDHtRIiHEvjQ/UVivz1o1uzdFd
+         2fVQU+qAz0Kzwry+OHR1r5pBGjAYkjoVBypjjmiEN+PxFy71FFp8zBtFpMiEHS80e8XP
+         8ivUdVTsXormrRH5dhoo/VcPfJIcvWgFonMCDfzUcn515r64oMjkZ21dtN3hSfvmVUOD
+         oWsA==
+X-Gm-Message-State: AOAM532hNvPnt5hf93YAQHMp+Z784n584hPQGZGHhmUPx/MdmnbxvUG+
+        i8ZLrQgRmufX7eJxXI2yUxHCdQ==
+X-Google-Smtp-Source: ABdhPJwGH8DcAarR0OMfhGw63SRnoeGEeh/DF4k79ebCsxHoTPcqFkl2Atp6g4SjeQTYysb9k3E+GQ==
+X-Received: by 2002:ad4:52c6:: with SMTP id p6mr12553168qvs.38.1602266507532;
+        Fri, 09 Oct 2020 11:01:47 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id 68sm6690974qkg.108.2020.10.09.11.01.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Oct 2020 11:01:46 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kQwi9-002b28-P5; Fri, 09 Oct 2020 15:01:45 -0300
+Date:   Fri, 9 Oct 2020 15:01:45 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Date:   Fri, 09 Oct 2020 11:01:18 -0700
-In-Reply-To: <20201009161423.14583-1-bp@alien8.de>
-References: <20201009161423.14583-1-bp@alien8.de>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v2 09/17] mm: Add unsafe_follow_pfn
+Message-ID: <20201009180145.GB5177@ziepe.ca>
+References: <20201009075934.3509076-1-daniel.vetter@ffwll.ch>
+ <20201009075934.3509076-10-daniel.vetter@ffwll.ch>
+ <20201009123421.67a80d72@coco.lan>
+ <20201009122111.GN5177@ziepe.ca>
+ <20201009143723.45609bfb@coco.lan>
+ <20201009124850.GP5177@ziepe.ca>
+ <CAKMK7uF-hrSwzFQkp6qEP88hM1Qg8TMQOunuRHh=f2+D8MaMRg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKMK7uF-hrSwzFQkp6qEP88hM1Qg8TMQOunuRHh=f2+D8MaMRg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-10-09 at 18:14 +0200, Borislav Petkov wrote:
-> From: Borislav Petkov <bp@suse.de>
+On Fri, Oct 09, 2020 at 07:52:05PM +0200, Daniel Vetter wrote:
+
+> > > If this is the case, the proper fix seems to have a GFP_NOT_MOVABLE
+> > > flag that it would be denying the core mm code to set __GFP_MOVABLE.
+> >
+> > We can't tell from the VMA these kinds of details..
+> >
+> > It has to go the other direction, evey mmap that might be used as a
+> > userptr here has to be found and the VMA specially created to allow
+> > its use. At least that is a kernel only change, but will need people
+> > with the HW to do this work.
 > 
-> Instruction opcode bytes spelled using the gas directive .byte should
-> carry a comment above them stating which binutils version has added
-> support for the instruction mnemonic so that they can be replaced with
-> the mnemonic when that binutils version is equal or less than the
-> minimum-supported version by the kernel.
-> 
-> Add a check for that.
+> I think the only reasonable way to keep this working is:
+> - add a struct dma_buf *vma_tryget_dma_buf(struct vm_area_struct *vma);
+> - add dma-buf export support to fbdev and v4l
+> - roll this out everywhere we still need it.
 
-OK but several notes:
+It seems to me there is a technical way forward to restore user
+compat, so it is really no different than RDMA/DRM pain we both
+suffered before.
 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> @@ -6858,6 +6858,18 @@ sub process {
->  			WARN("DUPLICATED_SYSCTL_CONST",
->  				"duplicated sysctl range checking value '$1', consider using the shared one in include/linux/sysctl.h\n" . $herecurr);
->  		}
-> +
-> +# document which binutils version supports the actual insn mnemonic so that the naked opcode bytes can be replaced.
-> +# x86-only.
-> +		if ($rawline =~ /(\.byte(?:0[xX][0-9a-fA-F]+0-9a-fx,]+)/ && $realfile =~ "^arch/x86/") {
+Thus no justification to NAK it. If media wants things to keep working
+they have to do the technical path like you outline above.
 
-Given the location, this only works on .c and .h files.
-It does not work on .S files.  Should it?
+> Realistically this just isn't going to happen. 
 
-No need for a capture group.
+If your series goes ahead it will get solved. Someone will take on the
+huge project to either add DMA buf to the drivers people still care
+about, or do the work above to transparently handle in kernel.
 
-Please use @ not " as all the other $realfile comparisons
-use that form when expecting a /
+If we allow things to keep working without consequence then nobody
+will do it.
 
-So it looks like the regex would be more complete as:
+The only reason we did the 4 years of work in RDMA was because Linus
+went in and broke the uABI for a security fix. It was hundreds of
+patches to fix it, so I don't have much sympathy for "it is too hard"
+here.
 
-	if ($realfile =~ m@^arch/x86/@ &&
-	    $rawline =~ /\.byte\s+(?:$Constant|(?:\\)?$Ident|"\s*$Ident)\b/) {
-
-etc...
-
-> +			my $comment = ctx_locate_comment(0, $linenr);
-
-A patch can modify any number of files.
-
-This should use ctx_locate_comment($file ? 0 : $first_line, $linenr)
-as checkpatch tests work on patch contexts not the entire
-file before this line.
-
-> +			if (! $comment || ($comment !~ /binutils version [0-9.]+/(ms)) {
-
-No need for the $!comment test
-
-> +				WARN("MISSING_BINUTILS_VERSION",
-> +				     "Please document which binutils version supports these .byte-spelled\n" .
-> +				     "\tinsn opcodes by adding \"binutils version <num>\" in a comment" .
-> +				     " above them.\n" . $herecurr);
-
-checkpatch uses only a single line output only before $herecurr
-Output line length doesn't matter.
-
-
+Jason
