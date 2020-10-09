@@ -2,118 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1BBA288CB5
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:33:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A05E288CB6
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389348AbgJIPbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 11:31:04 -0400
-Received: from mga11.intel.com ([192.55.52.93]:18325 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389338AbgJIPa5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 11:30:57 -0400
-IronPort-SDR: l0xFZVnpm6KTvg5QgAcBsFnPICCjjzj7JBqHesiE+KomvUrZCFZwnldIM17DJl32yrI0pwhaXQ
- MBEgDcfZOmuA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9769"; a="162037706"
-X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
-   d="scan'208";a="162037706"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 08:30:56 -0700
-IronPort-SDR: JmvrfZj2ui+ugzIgHxksMvKTgMJfteFSAMvlceYoMtmFxdAwUVwKXsKCyyFdj0wX4brrG3er/d
- WOTo2X+tLqxg==
-X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
-   d="scan'208";a="462228629"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 08:30:56 -0700
-Date:   Fri, 9 Oct 2020 08:30:55 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     stsp <stsp2@yandex.ru>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/6] KVM: x86: KVM_SET_SREGS.CR4 bug fixes and cleanup
-Message-ID: <20201009153053.GA16234@linux.intel.com>
-References: <20201007014417.29276-1-sean.j.christopherson@intel.com>
- <99334de1-ba3d-dfac-0730-e637d39b948f@yandex.ru>
- <20201008175951.GA9267@linux.intel.com>
- <7efe1398-24c0-139f-29fa-3d89b6013f34@yandex.ru>
- <20201009040453.GA10744@linux.intel.com>
- <5dfa55f3-ecdf-9f8d-2d45-d2e6e54f2daa@yandex.ru>
+        id S2389361AbgJIPbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 11:31:10 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:39501 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389144AbgJIPbJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 11:31:09 -0400
+X-Originating-IP: 90.65.88.165
+Received: from localhost (lfbn-lyo-1-1908-165.w90-65.abo.wanadoo.fr [90.65.88.165])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 164D51BF208;
+        Fri,  9 Oct 2020 15:31:06 +0000 (UTC)
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/4] rtc: rv3028: fix clock output support
+Date:   Fri,  9 Oct 2020 17:30:58 +0200
+Message-Id: <20201009153101.721149-1-alexandre.belloni@bootlin.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <5dfa55f3-ecdf-9f8d-2d45-d2e6e54f2daa@yandex.ru>
-User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 05:11:51PM +0300, stsp wrote:
-> 09.10.2020 07:04, Sean Christopherson пишет:
-> >>Hmm. But at least it was lying
-> >>similarly on AMD and Intel CPUs. :)
-> >>So I was able to reproduce the problems
-> >>myself.
-> >>Do you mean, any AMD tests are now useless, and we need to proceed with Intel
-> >>tests only?
-> >For anything VMXE related, yes.
-> 
-> What would be the expected behaviour on Intel, if it is set? Any difference
-> with AMD?
+rv3028_clkout_set_rate unconditionally sets RV3028_CLKOUT_CLKOE but
+clk_set_rate may be called with the clock disabled. Ensure the clock is
+kept disabled if it was not yet enabled.
 
-On Intel, userspace should be able to stuff CR4.VMXE=1 via KVM_SET_SREGS if
-the 'nested' module param is 1, e.g. if 'modprobe kvm_intel nested=1'.  Note,
-'nested' is enabled by default on kernel 5.0 and later.
+Also, the actual rate was overwritten when enabling the clock, properly
+write to the register only once.
 
-With AMD, setting CR4.VMXE=1 is never allowed as AMD doesn't support VMX,
-AMD's virtualization solution is called SVM (Secure Virtual Machine).  KVM
-doesn't support nesting VMX within SVM and vice versa.
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+---
+ drivers/rtc/rtc-rv3028.c | 19 +++++++++----------
+ 1 file changed, 9 insertions(+), 10 deletions(-)
 
-> >>Then additional question.
-> >>On old Intel CPUs we needed to set VMXE in guest to make it to work in
-> >>nested-guest mode.
-> >>Is it still needed even with your patches?
-> >>Or the nested-guest mode will work now even on older Intel CPUs and KVM will
-> >>set VMXE for us itself, when needed?
-> >I'm struggling to even come up with a theory as to how setting VMXE from
-> >userspace would have impacted KVM with unrestricted_guest=n, let alone fixed
-> >anything.
-> >
-> >CR4.VMXE must always be 1 in _hardware_ when VMX is on, including when running
-> >the guest.  But KVM forces vmcs.GUEST_CR4.VMXE=1 at all times, regardless of
-> >the guest's actual value (the guest sees a shadow value when it reads CR4).
-> >
-> >And unless I grossly misunderstand dosemu2, it's not doing anything related to
-> >nested virtualization, i.e. the stuffing VMXE=1 for the guest's shadow value
-> >should have absolutely zero impact.
-> >
-> >More than likely, VMXE was a red herring.
-> 
-> Yes, it was. :( (as you can see from the end of the github thread)
-> 
-> 
-> >   Given that the reporter is also
-> >seeing the same bug on bare metal after moving to kernel 5.4, odds are good
-> >the issue is related to unrestricted_guest=n and has nothing to do with nVMX.
-> 
-> But we do not use unrestricted guest.
-> We use v86 under KVM.
-
-Unrestricted guest can kick in even if CR0.PG=1 && CR0.PE=1, e.g. there are
-segmentation checks that apply if and only if unrestricted_guest=0.  Long story
-short, without a deep audit, it's basically impossible to rule out a dependency
-on unrestricted guest since you're playing around with v86.
+diff --git a/drivers/rtc/rtc-rv3028.c b/drivers/rtc/rtc-rv3028.c
+index ec84db0b3d7a..fcc21b1b07b4 100644
+--- a/drivers/rtc/rtc-rv3028.c
++++ b/drivers/rtc/rtc-rv3028.c
+@@ -619,24 +619,23 @@ static int rv3028_clkout_set_rate(struct clk_hw *hw, unsigned long rate,
+ 				  unsigned long parent_rate)
+ {
+ 	int i, ret;
++	u32 enabled;
+ 	struct rv3028_data *rv3028 = clkout_hw_to_rv3028(hw);
  
-> The only other effect of setting VMXE was clearing VME. Which shouldn't
-> affect anything either, right?
++	ret = regmap_read(rv3028->regmap, RV3028_CLKOUT, &enabled);
++	if (ret < 0)
++		return ret;
++
+ 	ret = regmap_write(rv3028->regmap, RV3028_CLKOUT, 0x0);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	for (i = 0; i < ARRAY_SIZE(clkout_rates); i++) {
+-		if (clkout_rates[i] == rate) {
+-			ret = regmap_update_bits(rv3028->regmap,
+-						 RV3028_CLKOUT,
+-						 RV3028_CLKOUT_FD_MASK, i);
+-			if (ret < 0)
+-				return ret;
++	enabled &= RV3028_CLKOUT_CLKOE;
+ 
++	for (i = 0; i < ARRAY_SIZE(clkout_rates); i++)
++		if (clkout_rates[i] == rate)
+ 			return regmap_write(rv3028->regmap, RV3028_CLKOUT,
+-				RV3028_CLKOUT_CLKSY | RV3028_CLKOUT_CLKOE);
+-		}
+-	}
++					    RV3028_CLKOUT_CLKSY | enabled | i);
+ 
+ 	return -EINVAL;
+ }
+-- 
+2.26.2
 
-Hmm, clearing VME would mean that exceptions/interrupts within the guest would
-trigger a switch out of v86 and into vanilla protected mode.  v86 and PM have
-different consistency checks, particularly for segmentation, so it's plausible
-that clearing CR4.VME inadvertantly worked around the bug by avoiding invalid
-guest state for v86.
