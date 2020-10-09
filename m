@@ -2,130 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC842882D9
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 08:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4F8F2882CE
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 08:40:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730985AbgJIGnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 02:43:37 -0400
-Received: from mail-mw2nam12on2041.outbound.protection.outlook.com ([40.107.244.41]:52193
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726510AbgJIGnh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 02:43:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=n9xdTIFnKK4m4uO6hwDHfMDdsteln9BLOOyVpPpgihIesSa7eeo3etYCdUJwyuuPtqR0a242CPpzDWbnbkJl9rzSKESNV6bBYwqTSrm3jTnzy+xmLJ78Zk1WO5CxG0N6Bbi15Vleqdv3BbqLxfQj7bbt/c212ICqd6nkxPpOMMQt9b6RyRUiYAL4VYUITc9ckcaIWMlHvXY5p4zEXLI6jkUkHdrPjk4lwsMteIwzaue/gXTUyIC+YT6Insj4qBzH3FrqeZ7OjgOxblB+nCy4Tp7B5onY8XEqFQRgNirb2lUInPGDOkFBKZzWyfACTd287dLZpmJxYlgS7OmdS6rDDg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=H48G7QfZnH9nUHuleRCrMY5vga6sx9XjnMa7GjkNdyg=;
- b=odyXNN2I8ooSTHit4hyGowMTw/F69mpSsozAk4znSJMwmYtC1PAFt2sGc3gMpZsE0GzR8wM2UIgNpIobt1/CwSW2Tsd/CyXmI25cRNbtjCyJTwfZx7swGIbLcBNJHAh3jcKBBuMaPCCP+tJclRJk3TdanS22+VMyEdYQT/bHVeuIBj7jHd+p1S97+JeOy/gm4Q4uW8y+HQNZQOxahzEVDlTR/EqGhRvsTzHd43mr7XXGbqXCXc/YS6caaTHLM7p2iEL77VrQ6/1vFBrv7ZOjpJdK2r3S1L4zjkgvrd2KtfiBF0PcZy5vycq9TUW656qzfZnREP2bknBCUzfWI7XHzg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=H48G7QfZnH9nUHuleRCrMY5vga6sx9XjnMa7GjkNdyg=;
- b=KEVdmXZXHx+a4iwzSymWrpemPdxTW5LoF9jI5h3D9oNWQ8tPf5s8gQ/KNMxecmqYputo+q3yKhoAg/zvBQKRg2bvX39grDGaGoCMituhkKPDLgXMmRZMfc/g7/zlUE/WjQ7ahy/2hyXKofVy9T32YtIeN6iIncEA6H502zK2rVM=
-Authentication-Results: ti.com; dkim=none (message not signed)
- header.d=none;ti.com; dmarc=none action=none header.from=synaptics.com;
-Received: from DM6PR03MB4555.namprd03.prod.outlook.com (2603:10b6:5:102::17)
- by DM5PR03MB3036.namprd03.prod.outlook.com (2603:10b6:3:11e::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.23; Fri, 9 Oct
- 2020 06:43:34 +0000
-Received: from DM6PR03MB4555.namprd03.prod.outlook.com
- ([fe80::e494:740f:155:4a38]) by DM6PR03MB4555.namprd03.prod.outlook.com
- ([fe80::e494:740f:155:4a38%7]) with mapi id 15.20.3433.046; Fri, 9 Oct 2020
- 06:43:34 +0000
-Date:   Fri, 9 Oct 2020 14:40:29 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-Cc:     linux-omap@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v6 0/2] PCI: dwc: fix two MSI issues
-Message-ID: <20201009144029.62f327a9@xhacker.debian>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [124.74.246.114]
-X-ClientProxiedBy: TYAPR03CA0016.apcprd03.prod.outlook.com
- (2603:1096:404:14::28) To DM6PR03MB4555.namprd03.prod.outlook.com
- (2603:10b6:5:102::17)
+        id S1730006AbgJIGki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 02:40:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35648 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726347AbgJIGkh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 02:40:37 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EC78922251;
+        Fri,  9 Oct 2020 06:40:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602225636;
+        bh=lqSG5go+7JmxZFOjn/W8DBmDwIQZ3JY5xAi8begoBks=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vDL0w9w6GzKo7xhMWhXG65CS3jHEszw++LbmOe2emOoWgY//93x5lFMnIgp/MwC4p
+         tLbPYO/izZ73KveGMX0ty6rjhVTyfk2lBw+NA49YEROWwg5K6BChRDVO/OAtatirgr
+         7/0RK3LncpqQ/Oo9SN9yvWqhzobTzdA4D4+hqbXc=
+Date:   Fri, 9 Oct 2020 08:41:18 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Xu Yilun <yilun.xu@intel.com>
+Cc:     Moritz Fischer <mdf@kernel.org>, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
+        hao.wu@intel.com
+Subject: Re: [PATCH v3 1/5] fpga: dfl: rename the bus type "dfl" to "fpga-dfl"
+Message-ID: <20201009064118.GA655664@kroah.com>
+References: <20200926022346.GA5623@yilunxu-OptiPlex-7050>
+ <20200926060913.GA637197@kroah.com>
+ <20200926192219.GA18625@epycbox.lan>
+ <20200927055108.GA701198@kroah.com>
+ <20200927073754.GB16433@yilunxu-OptiPlex-7050>
+ <20200927075401.GA748141@kroah.com>
+ <20200927083647.GC16433@yilunxu-OptiPlex-7050>
+ <20200929012323.GD16433@yilunxu-OptiPlex-7050>
+ <20200929041900.GA113620@archbook>
+ <20201009062059.GB24324@yilunxu-OptiPlex-7050>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (124.74.246.114) by TYAPR03CA0016.apcprd03.prod.outlook.com (2603:1096:404:14::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.11 via Frontend Transport; Fri, 9 Oct 2020 06:43:31 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: dbbedda9-72a9-4a81-92c4-08d86c1ea4ca
-X-MS-TrafficTypeDiagnostic: DM5PR03MB3036:
-X-Microsoft-Antispam-PRVS: <DM5PR03MB30368ACBF28BD4E4B7C71E9EED080@DM5PR03MB3036.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3383;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: //TXgtJe06VOfOPvWFGsMRmCW93Kj8+xf4TV1PBCIm5r8FTBNToz49DMDvSCQrsVUUtZ4zh/WweiTcvG8uuTgDQ2DsHau+dEAaYVXLP6kNDeiqf7NneHfvScZw7NNQjeQPiF9fMqv2e0Z7jN1IBH8/1w/04ZYz64aAiACaQobnTta1C7o3Zrqh6uT1onaiY9M/MXv1yuXqL9o1pzLXzYy2filByPQG0pp/sDLSP3GtOpZebRyGR/J7XCNTVHuF1u07tYyRYB99Yo69zmmp+bACbYA94BSTA9O3WkNPGA6WjG45kiAxFJNGDL1gFe8OL1I3b6VFYmqzjpII7vD4I6fg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR03MB4555.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39850400004)(376002)(396003)(366004)(136003)(5660300002)(66946007)(8676002)(66476007)(66556008)(55016002)(9686003)(2906002)(7416002)(110136005)(86362001)(83380400001)(956004)(1076003)(26005)(6506007)(316002)(7696005)(52116002)(4326008)(478600001)(186003)(16526019)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: mXCNIHF9P4fZu7xcIHwIWipfpUBOX585Q9x5tcH74yRrOOtwsaGesroqsoEXk/x/xD611/qDvHh5AV5clzdGTX4DtaRVknycaI/cyB1Rmg8d5Lllq6NtlwXkx9FTd7TcszMmOzOZS0fAtHTk7S6BGi4MCH24q1nyh/SGtQs8udzyhENCCfamoUsePnBlfv7pJmE/GrA+1uycItHJGHPPHD2RKt5I3f+QKs2eT0rwdaW/wm3suK96rTpLjR7Gf+Lj62CmTMbK4dDSnrL/QhxTbSVjKhcRA8/DHvVgQuab8ROF5CxidS43fykwdAWmcvg0luPGxaGxacsZpCAVSD1eoA496bfmcNfr7+00AyfuLI5MMGpIIN/hwYvWUbOWWDOqw1vWf3YYhQ8SD8dLBtMVrBJY4oDWd1iS98+FmDeTg6hcFCO7LNQKcUdaz3+Ohc9qOhGgBjjqIXkiT7aSsQSAnfK8/urfdNFdWSUr3+vlRDzrptCHROk97+I3Ko3VSZA+R2rWUSEvnhnIbfDRKVEaOKsuNuoONzrxlue7Hcbw75EtoSxu+EALjp1mUNILgcQiC0W1Xtku6KLCCkJcqs5mcMd7L2HNGiJL6y3gvnPEsQ/7qBFdSkMODIlDQ21RFzcRRfFMZ93IShPoQsiLkGkdjA==
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dbbedda9-72a9-4a81-92c4-08d86c1ea4ca
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR03MB4555.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2020 06:43:34.4711
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: EJMHGcIYOqmWJWkrOHtmHy/U0tqwaofpbRwkwmuabc7vFylhk4S177ptSsETz3XsN+M2XCNtTX+rluKaDL1N9w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR03MB3036
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201009062059.GB24324@yilunxu-OptiPlex-7050>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix two MSI issues. One to skip PCIE_MSI_INTR0* programming if MSI is
-disabled, another to use an address in the driver data for MSI address,
-to fix the MSI page leakage during suspend/resume.
+On Fri, Oct 09, 2020 at 02:20:59PM +0800, Xu Yilun wrote:
+> Hi Greg:
+> 
+> On Mon, Sep 28, 2020 at 09:19:00PM -0700, Moritz Fischer wrote:
+> > Hi Xu,
+> > 
+> > On Tue, Sep 29, 2020 at 09:23:23AM +0800, Xu Yilun wrote:
+> > > Hi moritz:
+> > > 
+> > > On Sun, Sep 27, 2020 at 04:36:47PM +0800, Xu Yilun wrote:
+> > > > Hi Greg,
+> > > > 
+> > > > On Sun, Sep 27, 2020 at 09:54:01AM +0200, Greg KH wrote:
+> > > > > On Sun, Sep 27, 2020 at 03:37:54PM +0800, Xu Yilun wrote:
+> > > > > > Hi Greg,
+> > > > > > 
+> > > > > > On Sun, Sep 27, 2020 at 07:51:08AM +0200, Greg KH wrote:
+> > > > > > > On Sat, Sep 26, 2020 at 12:22:19PM -0700, Moritz Fischer wrote:
+> > > > > > > > Hi Greg,
+> > > > > > > > 
+> > > > > > > > On Sat, Sep 26, 2020 at 08:09:13AM +0200, Greg KH wrote:
+> > > > > > > > > On Sat, Sep 26, 2020 at 10:23:46AM +0800, Xu Yilun wrote:
+> > > > > > > > > > Hi greg,
+> > > > > > > > > > 
+> > > > > > > > > > About the bus naming, I summarized some questions we've discussed to check
+> > > > > > > > > > with you. See inline.
+> > > > > > > > > > 
+> > > > > > > > > > On Thu, Sep 24, 2020 at 10:27:00AM -0700, Moritz Fischer wrote:
+> > > > > > > > > > > Hi Xu,
+> > > > > > > > > > > 
+> > > > > > > > > > > On Fri, Sep 25, 2020 at 12:59:57AM +0800, Xu Yilun wrote:
+> > > > > > > > > > > > Now the DFL device drivers could be made as independent modules and put
+> > > > > > > > > > > > in different subsystems according to their functionalities. So the name
+> > > > > > > > > > > > should be descriptive and unique in the whole kernel.
+> > > > > > > > > > > > 
+> > > > > > > > > > > > The patch changes the naming of dfl bus related structures, functions,
+> > > > > > > > > > > > APIs and documentations.
+> > > > > > > > > > > > 
+> > > > > > > > > > > > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> > > > > > > > > > > > ---
+> > > > > > > > > > > >  Documentation/ABI/testing/sysfs-bus-dfl      |  15 --
+> > > > > > > > > > > >  Documentation/ABI/testing/sysfs-bus-fpga-dfl |  15 ++
+> > > > > > > > > > > >  MAINTAINERS                                  |   2 +-
+> > > > > > > > > > > >  drivers/fpga/dfl.c                           | 254 ++++++++++++++-------------
+> > > > > > > > > > > >  drivers/fpga/dfl.h                           |  77 ++++----
+> > > > > > > > > > > >  5 files changed, 184 insertions(+), 179 deletions(-)
+> > > > > > > > > > > >  delete mode 100644 Documentation/ABI/testing/sysfs-bus-dfl
+> > > > > > > > > > > >  create mode 100644 Documentation/ABI/testing/sysfs-bus-fpga-dfl
+> > > > > > > > > > > > 
+> > > > > > > > > > > > diff --git a/Documentation/ABI/testing/sysfs-bus-dfl b/Documentation/ABI/testing/sysfs-bus-dfl
+> > > > > > > > > > > > deleted file mode 100644
+> > > > > > > > > > > > index 23543be..0000000
+> > > > > > > > > > > > --- a/Documentation/ABI/testing/sysfs-bus-dfl
+> > > > > > > > > > > > +++ /dev/null
+> > > > > > > > > > > > @@ -1,15 +0,0 @@
+> > > > > > > > > > > > -What:		/sys/bus/dfl/devices/dfl_dev.X/type
+> > > > > > > > > > > > -Date:		Aug 2020
+> > > > > > > > > > > > -KernelVersion:	5.10
+> > > > > > > > > > > > -Contact:	Xu Yilun <yilun.xu@intel.com>
+> > > > > > > > > > > > -Description:	Read-only. It returns type of DFL FIU of the device. Now DFL
+> > > > > > > > > > > > -		supports 2 FIU types, 0 for FME, 1 for PORT.
+> > > > > > > > > > > > -		Format: 0x%x
+> > > > > > > > > > > > -
+> > > > > > > > > > > > -What:		/sys/bus/dfl/devices/dfl_dev.X/feature_id
+> > > > > > > > > > > > -Date:		Aug 2020
+> > > > > > > > > > > > -KernelVersion:	5.10
+> > > > > > > > > > > > -Contact:	Xu Yilun <yilun.xu@intel.com>
+> > > > > > > > > > > > -Description:	Read-only. It returns feature identifier local to its DFL FIU
+> > > > > > > > > > > > -		type.
+> > > > > > > > > > > > -		Format: 0x%x
+> > > > > > > > > > > 
+> > > > > > > > > > > You're changing userland facing ABI. I think that's something to avoid,
+> > > > > > > > > > > please check with Greg on the rules since this hasn't been in a release yet.
+> > > > > > > > > > > 
+> > > > > > > > > > 
+> > > > > > > > > > I'm going to change the name of bus stuff for other subsystems, to be
+> > > > > > > > > > aligned, I also consider change the bus_type.name and dfl dev_name. But
+> > > > > > > > > > it will cause the changing of user ABIs. No user case for these user ABI
+> > > > > > > > > > now cause they are just queued, is it good I change them?
+> > > > > > > > > 
+> > > > > > > > > Why change the user name here?  No need for that, right?  Unless you
+> > > > > > > > > really want to, and think that no one will notice.  If so, fine, change
+> > > > > > > > > them :)
+> > > > > > > > 
+> > > > > > > > Let's leave it as is -- An FPGA is one possible implementation and as for
+> > > > > > > > other buses, you wouldn't call it fpga-usb or usb-fpga just because the
+> > > > > > > > USB bus is implemented in an FPGA if it behaves like a normal USB bus.
+> > > > > > > > Having an ASIC based DFL bus show up under dfl-fpga / fpga-dfl in sysfs
+> > > > > > > > would be super confusing.
+> > > > 
+> > > > I thought we have consensus that "dfl" could be used out of fpga domain.
+> > > > And we are all good that we keep the user ABIs & the bus name - "dfl", so "dfl"
+> > > > is good as a global name from linux user's point of view, is it?
+> > > > 
+> > > > But why we reject the "dfl" in kernel code domain? I thought it is very
+> > > > similar situation.
+> > > > 
+> > > > 
+> > > > I think we have 2 options, to make the dfl self-consistent:
+> > > > 
+> > > > 1. "dfl-fpga" for everything - bus name, user ABIs, structures & APIs for
+> > > >    other kernel subsystems. Then we lose the chance to support ASIC based DFL,
+> > > >    it would be hard if we change user ABIs later.
+> > > > 
+> > > > 2. "dfl" for everything.
+> > > > 
+> > > > BTW, no ASIC based DFL devices in kernel today.
+> > > > 
+> > > > I fully understand the word "naming is hard" now, help me :)
+> > > 
+> > > Seems now we have different opinions on this:
+> > > 
+> > > - Hao thinks self-consistent is important to dfl framework.
+> > Agreed. I mostly care about userspace facing ABI, though.
+> > 
+> > > - "dfl" for everything seems not preferable to Greg.
+> > Maybe now that we re-explained, we can take another look at that?
+> > 
+> > > - From your previous mail, I assume you prefer to keep the bus name as "dfl"
+> > > but change the stuff for other subsystem, is it?
+> > 
+> > I mostly think we should keep DFL generic where it touches userspace and
+> > defines ABI, since we cannot change it afterwards.
+> > 
+> > I rest my point with the bus being independent of FPGAs despite the FPGA
+> > being the (currently) only user.
+> > 
+> > > So I got a little stuck here.
+> > > 
+> > > Do you think "dfl-fpga" for everything would be an acceptable solution
+> > > for you?
+> > 
+> > I just think it doesn't make a lot of sense to call it fpga-dfl or
+> > dfl-fpga. But if everyone else disagrees ... naming is hard :-)
+> 
+> Hi Greg,
+> 
+> We made some re-explanation why "dfl" could be independent of the fpga
+> subsystem in this mail thread. And now the name "dfl" for all bus stuff is good
+> to Moritz, Hao & Yilun. Could you help take another look at this?
 
-Since v5:
-  - rebase on pci/dwc branch
-  - add Acked-by tag
-
-Since v4:
-  - fix pci-dra7xx.c
-
-Since v3:
-  - add Acked-by tag
-  - change patch2 commit msg to make it clear
-  - map the MSI msg with dma_map_single_attrs() for some platforms
-    which either has separate addrs for dma and phy or has mem access
-    limitation for the PCIe.
-
-Since v2:
-  - add Acked-by tag
-  - use an address in the driver data for MSI address. Thank Ard and Rob
-    for pointing out this correct direction.
-  - Since the MSI page has gone, the leak issue doesn't exist anymore,
-    remove unnecessary patches.
-  - Remove dw_pcie_free_msi rename and the last patch. They could be
-    targeted to next. So will send out patches in a separate series.
-
-Since v1:
-  - add proper error handling patches.
-  - solve the msi page leakage by moving dw_pcie_msi_init() from each
-    users to designware host
-
-Jisheng Zhang (2):
-  PCI: dwc: Skip PCIE_MSI_INTR0* programming if MSI is disabled
-  PCI: dwc: Fix MSI page leakage in suspend/resume
-
- drivers/pci/controller/dwc/pci-dra7xx.c       | 18 ++++++++-
- .../pci/controller/dwc/pcie-designware-host.c | 37 +++++++++----------
- drivers/pci/controller/dwc/pcie-designware.h  |  2 +-
- 3 files changed, 36 insertions(+), 21 deletions(-)
-
--- 
-2.28.0
-
+What is "this"?  I don't see any fpga patches in my inbox anywhere...
