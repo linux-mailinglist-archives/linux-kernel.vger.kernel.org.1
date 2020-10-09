@@ -2,112 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59D6E2899BE
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 22:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21B572899C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 22:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388250AbgJIU2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 16:28:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732244AbgJIU2x (ORCPT
+        id S2388195AbgJIUad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 16:30:33 -0400
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:57835 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732521AbgJIUac (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 16:28:53 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1782AC0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 13:28:53 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id t18so10371156ilo.12
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 13:28:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uT9ly7TYDXvoKw3E5mo8VQB1vHtS6L18zdPOqqqYv4A=;
-        b=L6sg3Q9mjrk/VQLo9OSXexDUrdFSR5THUe2/A0lJ/VXjem88X5a/Q+iO3/MbQehJA2
-         PHYlF2uJ1PGt1C7KxNhF7x+2r5/tc5WBZlSAL8sEdgiB81rDk5/PvnMCkEIEVETO6Oqq
-         X7R/9xB4b65QSrMUPjs4lJJ/M+j8GaiHew2ujTjEJe9WW0gAD4aOJcAGk7vjE4QdG/UB
-         FqH+dJeIkh2ZCFphiSjSdgUHlrRA4ibymt+fA1BXXNjxkXGv6XhusYnkgseUHuhO8L+k
-         cKn4Sbt1w0EuFdSJHGnvH7r0fRm1a9IwUOkGpzu+wRKc49UnXlwTkU4ZssN+cWP+ZT2S
-         PjeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uT9ly7TYDXvoKw3E5mo8VQB1vHtS6L18zdPOqqqYv4A=;
-        b=dwyTNvRKhiXNHYCUBYenkpqdN/PoQ9k3TMRg5pVyfsUDFABdawcdH+PqCL6qwB4zdA
-         RnIHpNhHPG/reI/QbsX3HhTH7O09EnmOvaY+6EFTuNvx3x1ZW44mq4HCwmz2lkUbI91u
-         cmPY6Wk4zBQ6w1KvBZIMMCaHe1TGh77cgxMVQ/frXAnrAnyLkr3TCQqHmZqmd3N2mUzJ
-         30t8s2GQp32Ski+9TzKvjGcMD44Cml4tnxwJLjjHgl8NL6L33S8UrQ0G+CFZ62UPNKiF
-         Ct5Rw9F+svMnmwjDClbS1k/W2zPXWgX1tJ2BRI2KG8hjS2lILL0O1cOvDM2VNAsZ7cES
-         WMgw==
-X-Gm-Message-State: AOAM531qneZANXxBkt8tJ7VkfgA12qSddJwxx7G1IuCP4IdblQ+5ravB
-        jByxWd29FTIrUy1Xwzy5sCCzag==
-X-Google-Smtp-Source: ABdhPJz2MvMclVY+MloIwHSMGKKurDv7fsoBVrX4M9zDs9F6tq3BHphsYsMO4RJlgaYW4aqt3u1iNA==
-X-Received: by 2002:a92:a307:: with SMTP id a7mr10506517ili.97.1602275332398;
-        Fri, 09 Oct 2020 13:28:52 -0700 (PDT)
-Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id e17sm4654235ile.60.2020.10.09.13.28.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 13:28:51 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     evgreen@chromium.org, subashab@codeaurora.org,
-        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
-        mka@chromium.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net v2] net: ipa: skip suspend/resume activities if not set up
-Date:   Fri,  9 Oct 2020 15:28:48 -0500
-Message-Id: <20201009202848.29341-1-elder@linaro.org>
-X-Mailer: git-send-email 2.20.1
+        Fri, 9 Oct 2020 16:30:32 -0400
+X-Originating-IP: 67.5.25.97
+Received: from localhost (unknown [67.5.25.97])
+        (Authenticated sender: josh@joshtriplett.org)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id A49D0E0002;
+        Fri,  9 Oct 2020 20:30:25 +0000 (UTC)
+Date:   Fri, 9 Oct 2020 13:30:22 -0700
+From:   Josh Triplett <josh@joshtriplett.org>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org
+Subject: Re: ext4 regression in v5.9-rc2 from e7bfb5c9bb3d on ro fs with
+ overlapped bitmaps
+Message-ID: <20201009203022.GD4649@localhost>
+References: <20201006025110.GJ49559@magnolia>
+ <20201006031834.GA5797@mit.edu>
+ <20201006050306.GA8098@localhost>
+ <20201006133533.GC5797@mit.edu>
+ <20201007080304.GB1112@localhost>
+ <20201007143211.GA235506@mit.edu>
+ <20201007201424.GB15049@localhost>
+ <20201008021017.GD235506@mit.edu>
+ <20201008222259.GA45658@localhost>
+ <20201009143732.GJ235506@mit.edu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201009143732.GJ235506@mit.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When processing a system suspend request we suspend modem endpoints
-if they are enabled, and call ipa_cmd_tag_process() (which issues
-IPA commands) to ensure the IPA pipeline is cleared.  It is an error
-to attempt to issue an IPA command before setup is complete, so this
-is clearly a bug.  But we also shouldn't suspend or resume any
-endpoints that have not been set up.
+On Fri, Oct 09, 2020 at 10:37:32AM -0400, Theodore Y. Ts'o wrote:
+> That being said, on the ext4 weekly video chat, we did discuss other
+> uses of an incompat feature flag that would allow the allocation
+> bitmap blocks and inode table block fields in the superblock to be
+> zero, which would mean that they are unallocated.
 
-Have ipa_endpoint_suspend() and ipa_endpoint_resume() immediately
-return if setup hasn't completed, to avoid any attempt to configure
-endpoints or issue IPA commands in that case.
+What do you mean by "allocation bitmap blocks and inode table block
+fields in the superblock"? Those are in the group descriptor, not the
+superblock. Or am I missing something there?
 
-Fixes: 84f9bd12d46d ("soc: qcom: ipa: IPA endpoints")
-Tested-by: Matthias Kaehlcke <mka@chromium.org>
-Signed-off-by: Alex Elder <elder@linaro.org>
----
-v2:  Patch posted alone (Jakub pointed out the other was unnecessary)
+> This would allow us
+> to dynamically grow the inode table by adding an extra block group
+> descriptor.  In fact, I'd probably use this as an opportunity to make
+> some other changes, such using inodes to store locations of the block
+> group descriptors, inode tables, and allocation bitmaps at the same
+> time.  Those details can be discussed later, but the point is that
+> this is why it's good to discuss format changes from a requirements
+> perspective, so that if we do need to make an incompat change, we can
+> kill multiple birds with a single stone.
 
- drivers/net/ipa/ipa_endpoint.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+I would be quite interested in that.
 
-diff --git a/drivers/net/ipa/ipa_endpoint.c b/drivers/net/ipa/ipa_endpoint.c
-index b7efd7c95e9c8..ed60fa5bcdaca 100644
---- a/drivers/net/ipa/ipa_endpoint.c
-+++ b/drivers/net/ipa/ipa_endpoint.c
-@@ -1471,6 +1471,9 @@ void ipa_endpoint_resume_one(struct ipa_endpoint *endpoint)
- 
- void ipa_endpoint_suspend(struct ipa *ipa)
- {
-+	if (!ipa->setup_complete)
-+		return;
-+
- 	if (ipa->modem_netdev)
- 		ipa_modem_suspend(ipa->modem_netdev);
- 
-@@ -1482,6 +1485,9 @@ void ipa_endpoint_suspend(struct ipa *ipa)
- 
- void ipa_endpoint_resume(struct ipa *ipa)
- {
-+	if (!ipa->setup_complete)
-+		return;
-+
- 	ipa_endpoint_resume_one(ipa->name_map[IPA_ENDPOINT_AP_COMMAND_TX]);
- 	ipa_endpoint_resume_one(ipa->name_map[IPA_ENDPOINT_AP_LAN_RX]);
- 
--- 
-2.20.1
+> On Thu, Oct 08, 2020 at 03:22:59PM -0700, Josh Triplett wrote:
+> > It's an arbitrary filesystem hierarchy, including directories, files of
+> > various sizes (hence using inline_data), and permissions. The problem
+> > isn't to get data from point A to point B; the problem is (in part) to
+> > turn a representation of a filesystem into an actual mounted filesystem
+> > as efficiently as possible, live-serving individual blocks on demand
+> > rather than generating the whole image in advance.
+> 
+> Ah, so you want to be able to let the other side "look at" the file
+> system in parallel with it being generated on demand?  The cache
+> coherency problems would seem to be... huge.  For example, how can you
+> add a file to directory after the reader has looked at the directory
+> inode and directory blocks?
 
+I don't. While the data is computed on demand for performance reasons,
+the nature and size of all the data is fully known in advance. I never
+add data to a filesystem, only create new filesystem images. The kernel
+*is* looking at the filesystem in parallel with it being generated,
+insofar as blocks aren't constructed until the kernel asks for them
+(which is a massive performance win, especially since the kernel may
+only want a small subset of the filesystem). But the block contents are
+fixed in advance, even if they haven't been generated yet. So the kernel
+can read ahead and cache any blocks it wants to, and they'll be valid.
+(Excessive readahead might be a performance problem, but not a
+correctness one.)
+
+I briefly considered ideas around adding new data after the filesystem
+was mounted, and dismissed those ideas just as quickly, for exactly
+these reasons (disk caching, filesystem caching, readahead). That would
+require a filesystem with at least some subset of cluster features. I
+don't plan to go there if I don't have to.
+
+If I do end up needing that, I'd consider proposing an ext4 change along
+the lines of making the root directory into a "super-root" directory
+under which multiple filesystem roots could live, and supporting a way
+to re-read that root to discover new filesystem roots and new block
+groups; then, it'd be possible to add a new root whose contents are
+*mostly* references to existing inodes (that the kernel would already
+have cached), and any modified directories or new/modified files would
+have new inodes added. That would isolate the "don't read ahead and
+cache" problem to the new inodes, which could potentially be isolated to
+new block groups for simplicity, and the "discover new roots" mechanism
+could also discover the newly added block groups and inode tables.
+
+But again, I'm not curently looking to do that, and *if* I were, I'd
+bring it up for architectural discussion and design on linux-ext4 first.
+There's also a balance there between a simple version that'd work for an
+append-only read-only filesystem, and a complex version that'd work for
+a writable filesystem, and I'd hope more for the former than the latter,
+but that'd be a topic for discussion.
+
+- Josh Triplett
