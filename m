@@ -2,65 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB87B288DC1
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 18:07:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D432D288DC5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 18:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389628AbgJIQHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 12:07:01 -0400
-Received: from mga04.intel.com ([192.55.52.120]:23760 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389278AbgJIQHB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 12:07:01 -0400
-IronPort-SDR: yHhWgsgS4UXsrCKGQQZsd2CuMpM7rEcpcRJ9DyYbpEiwTDqzzXd/1SN2MoXd154m2JX/+ath39
- M9CpNm5d8rNg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9769"; a="162865986"
-X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
-   d="scan'208";a="162865986"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 09:07:01 -0700
-IronPort-SDR: GQik6NGxQni81iP+KDGp5j5jzgwbibUgULP1+1SAFHWujWihi9dzmdDO867nPo3wpXZlA0oiS/
- m5gjBjjwC4ow==
-X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
-   d="scan'208";a="298471758"
-Received: from rgordani-mobl.ger.corp.intel.com (HELO localhost) ([10.249.34.105])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 09:06:57 -0700
-Date:   Fri, 9 Oct 2020 19:06:54 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>, tyhicks@linux.microsoft.com,
-        linux-integrity@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [Regression] "tpm: Require that all digests are present in
- TCG_PCR_EVENT2 structures" causes null pointer dereference
-Message-ID: <20201009160654.GA26881@linux.intel.com>
-References: <E1FDCCCB-CA51-4AEE-AC83-9CDE995EAE52@canonical.com>
- <20200928140623.GA69515@linux.intel.com>
- <BB63B86E-CA44-4EB7-A5D1-21B0E9EB2850@canonical.com>
- <846fe4da67d05f57fba33e38c9a6e394e657adc3.camel@linux.ibm.com>
- <20200930022040.GG808399@linux.intel.com>
- <A983BE2B-02A7-450B-9FD0-77B1470EF233@canonical.com>
+        id S2389630AbgJIQII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 12:08:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389296AbgJIQIH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 12:08:07 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19405C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 09:08:07 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id p15so10124954ljj.8
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 09:08:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4ZcCjxOSOpKZkXBVNu3kbvFlOdpYb4SLFZlWCNm3nvs=;
+        b=kId7MjgANOiI/+Ylv6Eml6mUz2V6UYpbbarNiIwU/UDg4WF/38W60P5M41wGBYulPN
+         h4U+CSvlkNQ/Tt9+LJWNrrglFYBsabT3y6nHC5C6mWvNSNhOlo1Aqm8vsN0RN/gHlFR6
+         yZOtGiJgvv5bJgkGP4tL/+Ss3MXE/9Ye/Yii2elzkRa5TgFjoblhIZU9pcNKXeXta8rH
+         J3o7OBD12f+xyvg5gNooMK3ZvAHW+DWehQt983JT4zie6kAKc2CzhHSbFtx8SyBZq5TR
+         zchrOYh+PkejeHYep3CLwBi/L39Zbp28sZ413MXMDogUKQ3SH94SSXIu3CP+4WdwgzLJ
+         EIJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4ZcCjxOSOpKZkXBVNu3kbvFlOdpYb4SLFZlWCNm3nvs=;
+        b=TMIFCW2/qHvT1jCvE7Fl5mdT1nAxQUgb1pAMZPOZTYiujHsV3T1WHC7a0Vd685Hwa8
+         zBSsZZqVB0zVuuQgJCgDvIZ4J0/31U7ODrb1ejIeJgkzgNiWqoQnElLLUtw/Ri6TZfv7
+         nvbv9GFjM86IY5LsctgqpOk/QmlWk03i6RypSa2QMha4abyW9O176s49zATYvogLMlb2
+         9tUPbsrsvRkC54U9yjw3o06xlTZ+N30eHa/CFZQUrWjwhxJpllzHoxrggpkHBuhd+QXU
+         +WZmXfZY9pdslifbkQXWt6GOAwsIxiuS+GIyB0iCy65rb4Qf4FaSzbp2US/LjT81y4Ti
+         wqDw==
+X-Gm-Message-State: AOAM531zNr/F3D/hoS1La3V6YvCfKu0GWyBjiJF/qNU3Ct7/4a9HCKAr
+        ZvkoO36+82zDYBeAV77o+PqcYrL4aMN0J7MzAAbYwKerl5G8WUj2ICA=
+X-Google-Smtp-Source: ABdhPJwFSo8884+HnefvGr5GaVc7mN7PXC03bxgHqIJryOslbYdT9kfJA9VLDlJsm2yN/L2vO5Fcn6GXV0aalX+i164=
+X-Received: by 2002:a05:651c:203:: with SMTP id y3mr5202695ljn.457.1602259685527;
+ Fri, 09 Oct 2020 09:08:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <A983BE2B-02A7-450B-9FD0-77B1470EF233@canonical.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20200928063744.525700-1-ajye_huang@compal.corp-partner.google.com>
+ <20200928063744.525700-2-ajye_huang@compal.corp-partner.google.com> <20201009135231.GA6655@sirena.org.uk>
+In-Reply-To: <20201009135231.GA6655@sirena.org.uk>
+From:   Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+Date:   Sat, 10 Oct 2020 00:07:54 +0800
+Message-ID: <CALprXBZAFCOpWP2186RaP++613qnjPY3D3NbXEN5CToYsLNsRw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] ASoC: qcom: dt-bindings: Modify sc7180 machine bindings
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Ajye Huang <ajye.huang@gmail.com>, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, devicetree@vger.kernel.org,
+        alsa-devel@alsa-project.org,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-arm-msm@vger.kernel.org, Patrick Lai <plai@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rohit kumar <rohitkr@codeaurora.org>, tzungbi@chromium.org,
+        linux-arm-kernel@lists.infradead.org,
+        Cheng-yi Chiang <cychiang@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 05:09:06PM +0800, Kai-Heng Feng wrote:
-> > I do not have yet any reasonable answer to this and my v5.10 PR is
-> > running late. Does everyone agree that I should revert the patch?
-> 
-> Given that there are multiple users confirmed reverting the commit
-> helps, can you please revert it and Cc: linux-stable?
+On Fri, Oct 9, 2020 at 9:52 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Mon, Sep 28, 2020 at 02:37:43PM +0800, Ajye Huang wrote:
+> > Add compatible "qcom,sc7180-sndcard-rt5682-m98357-2mic"
+> > for 2mic case.
+>
+> This doesn't apply against current code, please check and resend.
 
-I already sent the PR, but I schedule the revert to my rc2 PR.
+Hi, Mark
 
-> Thanks!
-> 
-> Kai-Heng
+Thank you for your reply,
+This patch depends on  Cheng-Yi's patch series
+https://patchwork.kernel.org/patch/11773221/.
 
-/Jarkko
+  If I misunderstand what you mean, please correct me,
+Thank you,
