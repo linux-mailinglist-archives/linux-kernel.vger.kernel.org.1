@@ -2,95 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F1B0288AD2
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:26:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B26C288ADE
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388784AbgJIO0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 10:26:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388707AbgJIO0Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 10:26:25 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69852C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 07:26:25 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id b193so6408511pga.6
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 07:26:25 -0700 (PDT)
+        id S2388710AbgJIOaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 10:30:05 -0400
+Received: from mail-eopbgr690065.outbound.protection.outlook.com ([40.107.69.65]:35747
+        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728934AbgJIOaE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 10:30:04 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PV84I/lm/EdmwwsdT6QwaaQHeuf9Fmk8OAWlxSyoXG0r1CiF+3yH/f1FuhEORAadc7/1Z3I4zbLBXp2Gf/jT+FgtiNr7mvjZpwUVeq4QzCszaO8SeHAZz8kA4ckTckVcThhoU3vnxkWEV8EYSPp8CCbT3etOM5K3a/o/DwV+BCwRyoAAwR8E+cIVgMu4JRtOvqoIeUV3yK3giN4DynzRCyG39vXYQNhDGDOSEjdyKmO42zVkwJaR+JoNHPZhfBFhRaWTav+8bG+6cnrFANkC1asbKUu8oNDhBGzZ1a6TsGO7/+wtVQEpT4CLM697Wq1hpQ2UATnvg1OeijEQF2ppsw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h8HRRhEx3lleKRTEQD7f8UhAoDHN+IiT4sBWXQMPlGM=;
+ b=MCgijlAsEYUa6A5hIAfok6CL6AZJLEg//vKuZXG4xQIMUxvaJF/CJLEhQfa5Gxq5BU3j9ZzmwQa3rEJMMoQ8seZ+Iy3lTA3jZb1tCSECBkvv2ByGTm+nMnQ3uqgrC75Hi+2hVxCXWE0PxP802jwDj0deD04i+fUHwx+cQnA3Rex41/RHgXetxsc1rkMtEhd7YfK8wodyjhaJeqENzXfWUPOm26LC2jeWk//KOJlfEF7vhu20VlSOsM2ftNuVxqRgs1UQpQI/IY7U2jgfzxHuUvF/s4iolOOXKRicnc7W5mqu9oT0azMGWU9BjPcmV/eobtHPfrh4FBHOKpfr9Xsi7A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+6M2CF3GiS41kG7WeY/KYwPLrWKVHdZNxChB43/DhTw=;
-        b=Q2AcAH4iGqaV+vMhtejsQD+2MvhpXAemtmuAuzjuG4d6PD1fOIxvd6qOLFE91lKRtU
-         diw4KEtf0Uak97CjQctN0s6KIaoXRiN3YiHV1/aWHgASuGqeXZ0JegG7QxyLR7bQo5dL
-         8XuR34g3s8TkS3QyxgYyaGO8is0Hi15Az2Zifq8Y+LB2tL1M9qkdOhizmWPM81e51CxX
-         8rKO9G48xPD4FL38wtEroiQJi0ryyaGweveqXmBoVviIBxRS8a2aUECiDKnA8nuzIsRC
-         0Gp4PG19k12YKaLB2G08avMrtriQTK4EoUszGcI5wpQo0gBjdeZ/Hg2WATJ1cB+2IUii
-         bVCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+6M2CF3GiS41kG7WeY/KYwPLrWKVHdZNxChB43/DhTw=;
-        b=Sqp2zknBFpxPSz05XMH95RMRCmYnAiGToi6oM3FJH86zuyoaFOb+fj/TpPzx8BabcT
-         NYI2lOxRxprEPgEMVeG1rwNabwVpjvkeUt+wksW2akCsvt/hkdkP2BR90qHiAh1c9qOG
-         W/K7XlUofvxNQ4bfxa+kNlK/+noD4ENQbhf7OzWWVOyaFiTl56pxvutqaqdpCaEqiQAj
-         pIhuHOe82kNpexeuUA2WVIZbN90Ao4nuNFt8uhC0Ydc2dZy0nFZXSYRK4UqhqNRwkBlC
-         QrMNbs1dV3EPYlDF78WgHn2+6WX4xVSZYAWV74zs/uYCOBDj+fzi2fw8JJrwitUMILOl
-         b3wg==
-X-Gm-Message-State: AOAM533COIlGtU+jzpY9L1WVrT/AbHVSGbG68ayGEV5VNsiYyM3USw1z
-        DPW4QPxGcyvjyUlzQI39ijEG0A4f+cSWdh+SHhLBHv4MLWjCtg==
-X-Google-Smtp-Source: ABdhPJwzEq4ugskmZfXDnj4WYNxgqNEiRNpMSgeyqBO+zq/GW8VbwN2Q+woPjNdBzoUjw7BNKS171CRizOTPEbwPzAI=
-X-Received: by 2002:a62:5e81:0:b029:152:2f99:d9e3 with SMTP id
- s123-20020a625e810000b02901522f99d9e3mr12045455pfb.7.1602253584972; Fri, 09
- Oct 2020 07:26:24 -0700 (PDT)
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h8HRRhEx3lleKRTEQD7f8UhAoDHN+IiT4sBWXQMPlGM=;
+ b=euOFN+Ypx5mKk3D2en6DeHvOLB3aZt3uJCO/bdCXOY3qsFIpsrYCDTkmEZhi+pxLULrObtlEXnk7tYkUpy+KcFlJCmQ5yOywbJWwbyV6C6p4umDZAy8gxYNtyylL48mBeg36c2DWqTWJiTv80O4/PZyz/fbuBKy9JTqv0aLxGXM=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB4302.namprd12.prod.outlook.com (2603:10b6:208:1de::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.26; Fri, 9 Oct
+ 2020 14:30:00 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::f8f7:7403:1c92:3a60]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::f8f7:7403:1c92:3a60%6]) with mapi id 15.20.3455.027; Fri, 9 Oct 2020
+ 14:30:00 +0000
+Subject: Re: [PATCH][next] amd/amdgpu_ctx: Use struct_size() helper and
+ kmalloc()
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <20201008143450.GA23077@embeddedor>
+ <4fe00048-2612-39f3-29bb-c9424000f836@amd.com>
+ <20201009135430.GA31347@embeddedor>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <de2282e7-7eb9-db79-1082-36d6508b05dd@amd.com>
+Date:   Fri, 9 Oct 2020 16:29:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20201009135430.GA31347@embeddedor>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+X-ClientProxiedBy: AM0PR02CA0107.eurprd02.prod.outlook.com
+ (2603:10a6:208:154::48) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
-References: <20201009133734.GE8133@xsang-OptiPlex-9020>
-In-Reply-To: <20201009133734.GE8133@xsang-OptiPlex-9020>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 9 Oct 2020 17:27:14 +0300
-Message-ID: <CAHp75VdX_uxbrkX=XF11WDBcuXjpQYWjjOzVzJ8ffj46oGw_JA@mail.gmail.com>
-Subject: Re: drivers/power/supply/mp2629_charger.c:522:9: warning: %d in
- format string (no. 1) requires 'int' but the argument type is 'unsigned int'.
-To:     kernel test robot <lkp@intel.com>
-Cc:     Saravanan Sekar <sravanhome@gmail.com>, kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM0PR02CA0107.eurprd02.prod.outlook.com (2603:10a6:208:154::48) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.23 via Frontend Transport; Fri, 9 Oct 2020 14:29:58 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: a1a5b6da-c9da-42d2-e554-08d86c5fcd69
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4302:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR12MB4302FC63E3E9A37971E2480383080@MN2PR12MB4302.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3044;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2CfiYDTmO1yMEFkGBPScVI18ylx6DHUNgRu5CsUBQkJ4wD83UydSAt5gdK98xP0aHliLzoFe+4ULjKY0cBqSPkOb4wC9GmEjz8H4cwBiUzdUgsgpbf1iJ5qHFe501XDgD5c8tmv1a7kcoMSyzttiejNa2Vvjxlf4gCd05aRYQE+8iASctXTsCn28kuKgNRTD8aAwI5j1t7yg/k4YW4xeu07tYb9fr7Ewf+ZhjjddUBilVZhM7u9FBAuV2MXpEswZlnYtbomU0B3CLUf0Xui17KYW3BpsnkzEm6w6DLoNA+Khw20xw5IYQYCALZljXbCb6gpjyXAVUn5jpNZUMw2AN5jY13Gmsy4X6drIuVXdG/1pMiLp8iA5KtSyiFX5Lwnu
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(366004)(396003)(39860400002)(31686004)(8936002)(2906002)(6666004)(83380400001)(6486002)(31696002)(54906003)(4326008)(66574015)(52116002)(2616005)(316002)(6916009)(5660300002)(8676002)(86362001)(186003)(16526019)(478600001)(66946007)(36756003)(66556008)(66476007)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: qyYR4unOw0SaE857F0W1DB2JBCPb1a992B5g2KJ6eOghue3lO6USOeDT7wU6CAot2pukB/OE3cL0Qxjw/sSpGRv4tIs2i0gziIQKNirbxj0zLD8+725oJygRb27SRdOg3u13sSJeH8PMy73QW9J9J7RTPz1HVrCZUftdOg6iSim/lPqdCu1yj+6qZllngQSQ7wo8jOgFolDi7D+1yqtJgf64p6h1kk+i1YYKS6rLKGOqkjmDxu0LzUxuJweKgFqb1ng1ZIUyGlf6/TA3A24/xnzLhLsCggjWxDEQsKLwwUwXjpqRwEbm2nXgzdA7s7/E5EtllS4PvxjRLAFw5/NfuqKCpltghIgnvCPOK7uTN89Xi/IXOLwDd4SIRQAOSnZBwu4XAJYfbjcq8Du4iVyKjnIJx4wT79uEwNgzZSV7Hmb+D69VxPD2Vds5huLAtW41ki8WR4CtxqL8EXhVLf2+IvZ0XtbRYa40miZGNUvEAvdyjt6Hqxi7mcgJY9KuXDWTvI5zr/Sv8fHZcrIKc80+9lMwyYMDBQKiWivNpsRdqN7F234ZAWywfFgy8arn1fJ216JTs2IRFx1Fm3oWzBPLR+Q+XcFihNhPh8m6gXzRUGNmvLw0I94f7lOwbxEbKFcgkcKI+IlhUpqv+CIZZbFz6gX/KgM6hlQTYisfU1KSRM1Azgs+/paiVeFOEii54rbD2OMloWPcLy1j4UIpZ15BwQ==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a1a5b6da-c9da-42d2-e554-08d86c5fcd69
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2020 14:29:59.9026
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 91tCQdavCY71BwONN0CY21PzO4dTT8+jp85NtsEEPhz82EQUELmAYo1rCWxmsaKC
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4302
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 9, 2020 at 4:23 PM kernel test robot <lkp@intel.com> wrote:
+Am 09.10.20 um 15:54 schrieb Gustavo A. R. Silva:
+> On Fri, Oct 09, 2020 at 09:08:51AM +0200, Christian König wrote:
+>> Am 08.10.20 um 16:34 schrieb Gustavo A. R. Silva:
+>>> Make use of the new struct_size() helper instead of the offsetof() idiom.
+>>> Also, use kmalloc() instead of kcalloc().
+>>>
+>>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>>> ---
+>>>    drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c | 2 +-
+>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
+>>> index c80d8339f58c..5be125f3b92a 100644
+>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
+>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
+>>> @@ -100,7 +100,7 @@ static int amdgpu_ctx_init_entity(struct amdgpu_ctx *ctx, u32 hw_ip,
+>>>    	enum drm_sched_priority priority;
+>>>    	int r;
+>>> -	entity = kcalloc(1, offsetof(typeof(*entity), fences[amdgpu_sched_jobs]),
+>>> +	entity = kmalloc(struct_size(entity, fences, amdgpu_sched_jobs),
+>> NAK. You could use kzalloc() here, but kmalloc won't zero initialize the
+>> memory which could result in unforeseen consequences.
+> Oh I see.. I certainly didn't take that into account.
 >
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   549738f15da0e5a00275977623be199fbbf7df50
-> commit: 3bc6d790c39dfc4539c36525e6bcb617abbae467 power: supply: Add support for mps mp2629 battery charger
-> date:   4 months ago
-> :::::: branch date: 12 hours ago
-> :::::: commit date: 4 months ago
-> compiler: sh4-linux-gcc (GCC) 9.3.0
+> I'll fix that up and respin.
+
+Shit happens, we already have a fix for this. Alex merged it and it 
+immediately broke our testing systems.
+
+So one of our engineers came up with a fix which should already have 
+been applied.
+
+Christian.
+
 >
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+> Thanks
+> --
+> Gustavo
 
-...
-
-> 3bc6d790c39dfc Saravanan Sekar 2020-05-26  514          unsigned int rval;
-> 3bc6d790c39dfc Saravanan Sekar 2020-05-26  515          int ret;
-> 3bc6d790c39dfc Saravanan Sekar 2020-05-26  516
-> 3bc6d790c39dfc Saravanan Sekar 2020-05-26  517          ret = regmap_read(charger->regmap, MP2629_REG_IMPEDANCE_COMP, &rval);
-> 3bc6d790c39dfc Saravanan Sekar 2020-05-26  518          if (ret)
-> 3bc6d790c39dfc Saravanan Sekar 2020-05-26  519                  return ret;
-> 3bc6d790c39dfc Saravanan Sekar 2020-05-26  520
-> 3bc6d790c39dfc Saravanan Sekar 2020-05-26  521          rval = (rval >> 4) * 10;
-> 3bc6d790c39dfc Saravanan Sekar 2020-05-26 @522          return sprintf(buf, "%d mohm\n", rval);
-> 3bc6d790c39dfc Saravanan Sekar 2020-05-26  523  }
-
-Right, should be %u. Can LKP generate this type of patches?
-
--- 
-With Best Regards,
-Andy Shevchenko
