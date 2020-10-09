@@ -2,134 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F9DF2881B9
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 07:32:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 472AE2881AF
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 07:26:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731463AbgJIFcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 01:32:25 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:37210 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730763AbgJIFcY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 01:32:24 -0400
-X-UUID: b4a58cf6fa7d43b6bbfb600144011178-20201009
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=vhoN8JHfBoZLmnGn0nppvBsmo0+bOu/+UMig7lHcRCE=;
-        b=FurCnAhQVATOPWkvRUBCwMvda5Ajtsgu3DrFIRi6yqkgHNfuvOPXIKzsyiP3BnajYM2Evg3+E6R97deb/TSaj/zXbiR1Deoyz9ZiAZq5yEDQXa6eZV7NtEBwE88xahJgsAizTJAe0HwijP/4QXVuGbGHdcZ02fQXZ+IsSY5i66U=;
-X-UUID: b4a58cf6fa7d43b6bbfb600144011178-20201009
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <lina.wang@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 123422327; Fri, 09 Oct 2020 13:32:09 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- MTKMBS32DR.mediatek.inc (172.27.6.104) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 9 Oct 2020 13:32:05 +0800
-Received: from localhost.localdomain (10.15.20.246) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 9 Oct 2020 13:32:05 +0800
-From:   Lina Wang <lina.wang@mediatek.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <kernel-team@android.com>,
-        Lina Wang <lina.wang@mediatek.com>
-Subject: xfrm:fragmented ipv4 tunnel packets in inner interface
-Date:   Fri, 9 Oct 2020 13:26:10 +0800
-Message-ID: <20201009052610.20945-1-lina.wang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        id S1731257AbgJIF0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 01:26:32 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:36635 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730468AbgJIF0c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 01:26:32 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602221191; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=Dm1gQgqm5mk4Lj3wkil3hGGUs9hIPNbWzWiJXJQXouU=; b=ILViN/kcT8IyGuwx4vXoOYkhqO6AftY2uS1saoX4Onm1W2f8c3GSB7drUmY5zZmPvyKK1QVA
+ FYD/B+Wfbjyceki96S7KAmTBmVs74MuUWCGj51H/0m3OXcjjtsYrXrRYTt8s12OU55OM8Xky
+ Npjgj2wTl2/aXcEkE6NfTH2sbXM=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5f7ff4874f8cc67c31061365 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 09 Oct 2020 05:26:31
+ GMT
+Sender: akashast=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BC1F4C43382; Fri,  9 Oct 2020 05:26:30 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.100] (unknown [47.9.88.3])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akashast)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 313B4C433FE;
+        Fri,  9 Oct 2020 05:26:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 313B4C433FE
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akashast@codeaurora.org
+Subject: Re: [PATCH 5/5] i2c: geni: sdm845: dont perform DMA for the oneplus6
+To:     Caleb Connolly <caleb@connolly.tech>,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mukesh Savaliya <msavaliy@codeaurora.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201007174736.292968-1-caleb@connolly.tech>
+ <20201007174736.292968-6-caleb@connolly.tech>
+From:   Akash Asthana <akashast@codeaurora.org>
+Message-ID: <bf04cb91-5b2a-c30e-ac85-0437b2aaad23@codeaurora.org>
+Date:   Fri, 9 Oct 2020 10:56:15 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 7D077DF188A4C60DDC0C08343E09E32D7087BECA44DB71AE7DAC3BA7C9366A672000:8
-Content-Transfer-Encoding: base64
+In-Reply-To: <20201007174736.292968-6-caleb@connolly.tech>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SW4gZXNwJ3MgdHVubmVsIG1vZGUsaWYgaW5uZXIgaW50ZXJmYWNlIGlzIGlwdjQsb3V0ZXIgaXMg
-aXB2NCxvbmUgYmlnIA0KcGFja2V0IHdoaWNoIHRyYXZlbHMgdGhyb3VnaCB0dW5uZWwgd2lsbCBi
-ZSBmcmFnbWVudGVkIHdpdGggb3V0ZXIgDQppbnRlcmZhY2UncyBtdHUscGVlciBzZXJ2ZXIgd2ls
-bCByZW1vdmUgdHVubmVsbGVkIGVzcCBoZWFkZXIgYW5kIGFzc2VtYmxlDQp0aGVtIGluIGJpZyBw
-YWNrZXQuQWZ0ZXIgZm9yd2FyZGluZyBzdWNoIHBhY2tldCB0byBuZXh0IGVuZHBvaW50LGl0IHdp
-bGwgDQpiZSBkcm9wcGVkIGJlY2F1c2Ugb2YgZXhjZWVkaW5nIG10dSBvciBiZSByZXR1cm5lZCBJ
-Q01QKHBhY2tldC10b28tYmlnKS4NCldoZW4gaW5uZXIgaW50ZXJmYWNlIGlzIGlwdjQsb3V0ZXIg
-aXMgaXB2Nix0aGUgZmxhZyBvZiB4ZnJtIHN0YXRlIGluIHR1bm5lbA0KbW9kZSBpcyBhZi11bnNw
-ZWMsIHRoaW5nIGlzIGRpZmZlcmVudC5PbmUgYmlnIHBhY2tldCB0aHJvdWdoIHR1bm5lbCB3aWxs
-IGJlDQpmcmFnbWVudGVkIHdpdGggb3V0ZXIgaW50ZXJmYWNlJ3MgbXR1IG1pbnVzIHR1bm5lbGVk
-IGhlYWRlciwgdGhlbiB0d28gb3IgDQptb3JlIGxlc3MgZnJhZ21lbnRlZCBwYWNrZXRzIHdpbGwg
-YmUgdHVubmVsZWQgYW5kIHRyYW5zbWl0dGVkIGluIG91dGVyIA0KaW50ZXJmYWNlLHRoYXQgaXMg
-d2hhdCB4ZnJtNl9vdXRwdXQgaGFzIGRvbmUuIElmIHBlZXIgc2VydmVyIHJlY2VpdmVzIHN1Y2gN
-CnBhY2tldHMsIGl0IHdpbGwgZm9yd2FyZCBzdWNjZXNzZnVsbHkgdG8gbmV4dCBiZWNhdXNlIGxl
-bmd0aCBpcyB2YWxpZC4NCg0KVGhpcyBwYXRjaCBoYXMgZm9sbG93ZWQgdXAgeGZybTZfb3V0cHV0
-J3MgbG9naWMsd2hpY2ggaW5jbHVkZXMgdHdvIGNoYW5nZXMsDQpvbmUgaXMgY2hvb3Npbmcgc3Vp
-dGFibGUgbXR1IHZhbHVlIHdoaWNoIGNvbnNpZGVyaW5nIGlubm5lci9vdXRlciANCmludGVyZmFj
-ZSdzIG10dSBhbmQgZHN0IHBhdGgsIHRoZSBvdGhlciBpcyBpZiBwYWNrZXQgaXMgdG9vIGJpZywg
-Y2FsbGluZyANCmlwX2ZyYWdtZW50IGZpcnN0LHRoZW4gdHVubmVsbGluZyBmcmFnbWVudGVkIHBh
-Y2tldHMgaW4gb3V0ZXIgaW50ZXJmYWNlIGFuZA0KdHJhbnNtaXR0aW5nIGZpbmFsbHkuDQoNClNp
-Z25lZC1vZmYtYnk6IExpbmEgV2FuZyA8bGluYS53YW5nQG1lZGlhdGVrLmNvbT4NCi0tLQ0KIGlu
-Y2x1ZGUvbmV0L2lwLmggICAgICAgIHwgIDMgKysrDQogbmV0L2lwdjQvaXBfb3V0cHV0LmMgICAg
-fCAxMCArKystLS0tLS0tDQogbmV0L2lwdjQveGZybTRfb3V0cHV0LmMgfCAzNyArKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrDQogMyBmaWxlcyBjaGFuZ2VkLCA0MyBpbnNlcnRp
-b25zKCspLCA3IGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9uZXQvaXAuaCBi
-L2luY2x1ZGUvbmV0L2lwLmgNCmluZGV4IGIwOWM0OGQ4NjJjYy4uMDVmOWM2NDU0ZmY1IDEwMDY0
-NA0KLS0tIGEvaW5jbHVkZS9uZXQvaXAuaA0KKysrIGIvaW5jbHVkZS9uZXQvaXAuaA0KQEAgLTE2
-Myw2ICsxNjMsOSBAQCBpbnQgaXBfb3V0cHV0KHN0cnVjdCBuZXQgKm5ldCwgc3RydWN0IHNvY2sg
-KnNrLCBzdHJ1Y3Qgc2tfYnVmZiAqc2tiKTsNCiBpbnQgaXBfbWNfb3V0cHV0KHN0cnVjdCBuZXQg
-Km5ldCwgc3RydWN0IHNvY2sgKnNrLCBzdHJ1Y3Qgc2tfYnVmZiAqc2tiKTsNCiBpbnQgaXBfZG9f
-ZnJhZ21lbnQoc3RydWN0IG5ldCAqbmV0LCBzdHJ1Y3Qgc29jayAqc2ssIHN0cnVjdCBza19idWZm
-ICpza2IsDQogCQkgICBpbnQgKCpvdXRwdXQpKHN0cnVjdCBuZXQgKiwgc3RydWN0IHNvY2sgKiwg
-c3RydWN0IHNrX2J1ZmYgKikpOw0KK2ludCBpcF9mcmFnbWVudChzdHJ1Y3QgbmV0ICpuZXQsIHN0
-cnVjdCBzb2NrICpzaywgc3RydWN0IHNrX2J1ZmYgKnNrYiwNCisJCXVuc2lnbmVkIGludCBtdHUs
-DQorCQlpbnQgKCpvdXRwdXQpKHN0cnVjdCBuZXQgKiwgc3RydWN0IHNvY2sgKiwgc3RydWN0IHNr
-X2J1ZmYgKikpOw0KIA0KIHN0cnVjdCBpcF9mcmFnbGlzdF9pdGVyIHsNCiAJc3RydWN0IHNrX2J1
-ZmYJKmZyYWc7DQpkaWZmIC0tZ2l0IGEvbmV0L2lwdjQvaXBfb3V0cHV0LmMgYi9uZXQvaXB2NC9p
-cF9vdXRwdXQuYw0KaW5kZXggNjFmODAyZDUzNTBjLi5mOTkyNDkxMzJhNzYgMTAwNjQ0DQotLS0g
-YS9uZXQvaXB2NC9pcF9vdXRwdXQuYw0KKysrIGIvbmV0L2lwdjQvaXBfb3V0cHV0LmMNCkBAIC04
-MiwxMCArODIsNiBAQA0KICNpbmNsdWRlIDxsaW51eC9uZXRsaW5rLmg+DQogI2luY2x1ZGUgPGxp
-bnV4L3RjcC5oPg0KIA0KLXN0YXRpYyBpbnQNCi1pcF9mcmFnbWVudChzdHJ1Y3QgbmV0ICpuZXQs
-IHN0cnVjdCBzb2NrICpzaywgc3RydWN0IHNrX2J1ZmYgKnNrYiwNCi0JICAgIHVuc2lnbmVkIGlu
-dCBtdHUsDQotCSAgICBpbnQgKCpvdXRwdXQpKHN0cnVjdCBuZXQgKiwgc3RydWN0IHNvY2sgKiwg
-c3RydWN0IHNrX2J1ZmYgKikpOw0KIA0KIC8qIEdlbmVyYXRlIGEgY2hlY2tzdW0gZm9yIGFuIG91
-dGdvaW5nIElQIGRhdGFncmFtLiAqLw0KIHZvaWQgaXBfc2VuZF9jaGVjayhzdHJ1Y3QgaXBoZHIg
-KmlwaCkNCkBAIC01NjksOSArNTY1LDkgQEAgc3RhdGljIHZvaWQgaXBfY29weV9tZXRhZGF0YShz
-dHJ1Y3Qgc2tfYnVmZiAqdG8sIHN0cnVjdCBza19idWZmICpmcm9tKQ0KIAlza2JfY29weV9zZWNt
-YXJrKHRvLCBmcm9tKTsNCiB9DQogDQotc3RhdGljIGludCBpcF9mcmFnbWVudChzdHJ1Y3QgbmV0
-ICpuZXQsIHN0cnVjdCBzb2NrICpzaywgc3RydWN0IHNrX2J1ZmYgKnNrYiwNCi0JCSAgICAgICB1
-bnNpZ25lZCBpbnQgbXR1LA0KLQkJICAgICAgIGludCAoKm91dHB1dCkoc3RydWN0IG5ldCAqLCBz
-dHJ1Y3Qgc29jayAqLCBzdHJ1Y3Qgc2tfYnVmZiAqKSkNCitpbnQgaXBfZnJhZ21lbnQoc3RydWN0
-IG5ldCAqbmV0LCBzdHJ1Y3Qgc29jayAqc2ssIHN0cnVjdCBza19idWZmICpza2IsDQorCQl1bnNp
-Z25lZCBpbnQgbXR1LA0KKwkJaW50ICgqb3V0cHV0KShzdHJ1Y3QgbmV0ICosIHN0cnVjdCBzb2Nr
-ICosIHN0cnVjdCBza19idWZmICopKQ0KIHsNCiAJc3RydWN0IGlwaGRyICppcGggPSBpcF9oZHIo
-c2tiKTsNCiANCmRpZmYgLS1naXQgYS9uZXQvaXB2NC94ZnJtNF9vdXRwdXQuYyBiL25ldC9pcHY0
-L3hmcm00X291dHB1dC5jDQppbmRleCAzY2ZmNTFiYTcyYmIuLjE0ODhiNzkxODZhZCAxMDA2NDQN
-Ci0tLSBhL25ldC9pcHY0L3hmcm00X291dHB1dC5jDQorKysgYi9uZXQvaXB2NC94ZnJtNF9vdXRw
-dXQuYw0KQEAgLTE0LDggKzE0LDI3IEBADQogI2luY2x1ZGUgPG5ldC94ZnJtLmg+DQogI2luY2x1
-ZGUgPG5ldC9pY21wLmg+DQogDQorc3RhdGljIGludCBfX3hmcm00X291dHB1dF9maW5pc2goc3Ry
-dWN0IG5ldCAqbmV0LCBzdHJ1Y3Qgc29jayAqc2ssDQorCQkJCSBzdHJ1Y3Qgc2tfYnVmZiAqc2ti
-KQ0KK3sNCisJcmV0dXJuIHhmcm1fb3V0cHV0KHNrLCBza2IpOw0KK30NCisNCitzdGF0aWMgaW5s
-aW5lIGludCBpcDRfc2tiX2RzdF9tdHUoc3RydWN0IHNrX2J1ZmYgKnNrYikNCit7DQorCXN0cnVj
-dCBpbmV0X3NvY2sgKm5wID0gc2tiLT5zayAmJiAhZGV2X3JlY3Vyc2lvbl9sZXZlbCgpID8NCisJ
-CQkJaW5ldF9zayhza2ItPnNrKSA6IE5VTEw7DQorDQorCXJldHVybiAobnAgJiBucC0+cG10dWRp
-c2MgPj0gSVBfUE1UVURJU0NfUFJPQkUpID8NCisJCXNrYl9kc3Qoc2tiKS0+ZGV2LT5tdHUgOiBk
-c3RfbXR1KHNrYl9kc3Qoc2tiKSk7DQorfQ0KKw0KIHN0YXRpYyBpbnQgX194ZnJtNF9vdXRwdXQo
-c3RydWN0IG5ldCAqbmV0LCBzdHJ1Y3Qgc29jayAqc2ssIHN0cnVjdCBza19idWZmICpza2IpDQog
-ew0KKwlpbnQgbXR1Ow0KKwlib29sIHRvb2JpZzsNCisJc3RydWN0IHhmcm1fc3RhdGUgKnggPSBz
-a2JfZHN0KHNrYiktPnhmcm07DQorDQogI2lmZGVmIENPTkZJR19ORVRGSUxURVINCiAJc3RydWN0
-IHhmcm1fc3RhdGUgKnggPSBza2JfZHN0KHNrYiktPnhmcm07DQogDQpAQCAtMjUsNiArNDQsMjQg
-QEAgc3RhdGljIGludCBfX3hmcm00X291dHB1dChzdHJ1Y3QgbmV0ICpuZXQsIHN0cnVjdCBzb2Nr
-ICpzaywgc3RydWN0IHNrX2J1ZmYgKnNrYikNCiAJfQ0KICNlbmRpZg0KIA0KKwlpZiAoeC0+cHJv
-cHMubW9kZSAhPSBYRlJNX01PREVfVFVOTkVMKQ0KKwkJZ290byBza2lwX2ZyYWc7DQorDQorCWlm
-IChza2ItPnByb3RvY29sID09IGh0b25zKEVUSF9QX0lQKSkNCisJCW10dSA9IGlwNF9za2JfZHN0
-X210dShza2IpOw0KKwllbHNlDQorCQlnb3RvIHNraXBfZnJhZzsNCisNCisJdG9vYmlnID0gc2ti
-LT5sZW4gPiBtdHUgJiYgIXNrYl9pc19nc28oc2tiKTsNCisJaWYgKCFza2ItPmlnbm9yZV9kZiAm
-JiB0b29iaWcgJiYgc2tiLT5zaykgew0KKwkJeGZybV9sb2NhbF9lcnJvcihza2IsIG10dSk7DQor
-CQlyZXR1cm4gLUVNU0dTSVpFOw0KKwl9DQorDQorCWlmICh0b29iaWcgfHwgZHN0X2FsbGZyYWco
-c2tiX2RzdChza2IpKSkNCisJCXJldHVybiBpcF9mcmFnbWVudChuZXQsIHNrLCBza2IsIG10dSwg
-X194ZnJtNF9vdXRwdXRfZmluaXNoKTsNCisNCitza2lwX2ZyYWc6DQogCXJldHVybiB4ZnJtX291
-dHB1dChzaywgc2tiKTsNCiB9DQogDQotLSANCjIuMTguMA0K
+On 10/7/2020 11:19 PM, Caleb Connolly wrote:
+> The OnePlus 6/T has the same issues as the c630 causing a crash when DMA
+> is used for i2c, so disable it.
+>
+> https://patchwork.kernel.org/patch/11133827
+
+Reviewed-by: Akash Asthana <akashast@codeaurora.org>
+
+> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
+> ---
+>   drivers/i2c/busses/i2c-qcom-geni.c | 6 ++++--
+>   1 file changed, 4 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
+> index dead5db3315a..50a0674a6553 100644
+> --- a/drivers/i2c/busses/i2c-qcom-geni.c
+> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
+> @@ -358,7 +358,8 @@ static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
+>   	struct geni_se *se = &gi2c->se;
+>   	size_t len = msg->len;
+>   
+> -	if (!of_machine_is_compatible("lenovo,yoga-c630"))
+> +	if (!of_machine_is_compatible("lenovo,yoga-c630") &&
+> +	    !of_machine_is_compatible("oneplus,oneplus6"))
+>   		dma_buf = i2c_get_dma_safe_msg_buf(msg, 32);
+>   
+>   	if (dma_buf)
+> @@ -400,7 +401,8 @@ static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
+>   	struct geni_se *se = &gi2c->se;
+>   	size_t len = msg->len;
+>   
+> -	if (!of_machine_is_compatible("lenovo,yoga-c630"))
+> +	if (!of_machine_is_compatible("lenovo,yoga-c630") &&
+> +	    !of_machine_is_compatible("oneplus,oneplus6"))
+>   		dma_buf = i2c_get_dma_safe_msg_buf(msg, 32);
+>   
+>   	if (dma_buf)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,\na Linux Foundation Collaborative Project
 
