@@ -2,45 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5834288345
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 09:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06F2B288347
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 09:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731781AbgJIHKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 03:10:18 -0400
-Received: from verein.lst.de ([213.95.11.211]:42681 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725908AbgJIHKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 03:10:17 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 33B1D68B02; Fri,  9 Oct 2020 09:10:14 +0200 (CEST)
-Date:   Fri, 9 Oct 2020 09:10:13 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        will@kernel.org, Frank Rowand <frowand.list@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        iommu@lists.linux-foundation.org,
-        linux-rpi-kernel@lists.infradead.org, robin.murphy@arm.com,
-        hch@lst.de, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/4] of/fdt: Update zone_dma_bits when running in
- bcm2711
-Message-ID: <20201009071013.GA12208@lst.de>
-References: <20201001161740.29064-1-nsaenzjulienne@suse.de> <20201001161740.29064-2-nsaenzjulienne@suse.de> <20201001171500.GN21544@gaia> <20201001172320.GQ21544@gaia> <b47232e2173e9e5ddf8f5be4c7b5a2f897f34eb7.camel@suse.de> <20201002115541.GC7034@gaia> <12f33d487eabd626db4c07ded5a1447795eed355.camel@suse.de>
+        id S1731818AbgJIHKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 03:10:50 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:48494 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725908AbgJIHKt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 03:10:49 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id E0D061C0B88; Fri,  9 Oct 2020 09:10:45 +0200 (CEST)
+Date:   Fri, 9 Oct 2020 09:10:45 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
+        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
+        luto@kernel.org, nhorman@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
+        mikko.ylinen@intel.com
+Subject: Re: [PATCH v39 11/24] x86/sgx: Add SGX enclave driver
+Message-ID: <20201009071045.GA10335@amd>
+References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
+ <20201003045059.665934-12-jarkko.sakkinen@linux.intel.com>
+ <20201003143925.GB800720@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="pWyiEgJYm5f9v55/"
 Content-Disposition: inline
-In-Reply-To: <12f33d487eabd626db4c07ded5a1447795eed355.camel@suse.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20201003143925.GB800720@kroah.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 12:05:25PM +0200, Nicolas Saenz Julienne wrote:
-> Sadly I just realised that the series is incomplete, we have RPi4 users that
-> want to boot unsing ACPI, and this series would break things for them. I'll
-> have a word with them to see what we can do for their use-case.
 
-Stupid question:  why do these users insist on a totally unsuitable
-interface?  And why would we as Linux developers care to support such
-a aims?
+--pWyiEgJYm5f9v55/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+> > new file mode 100644
+> > index 000000000000..f54da5f19c2b
+> > --- /dev/null
+> > +++ b/arch/x86/kernel/cpu/sgx/driver.c
+> > @@ -0,0 +1,173 @@
+> > +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
+>=20
+> You use gpl-only header files in this file, so how in the world can it
+> be bsd-3 licensed?
+>=20
+> Please get your legal department to agree with this, after you explain
+> to them how you are mixing gpl2-only code in with this file.
+
+This specifies license of driver.c, not of the headers included. Are
+you saying that it is impossible to have a kernel driver with anything
+else than GPL-2? That would be news to many, and that's not what
+current consensus is.
+
+									Pavel
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--pWyiEgJYm5f9v55/
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl+ADPQACgkQMOfwapXb+vKVEwCfY+JReb343qegPAGFFXefdckX
+DF4An0yKi+RyYbyEpzz/Me/hS45KZ+gP
+=5FhP
+-----END PGP SIGNATURE-----
+
+--pWyiEgJYm5f9v55/--
