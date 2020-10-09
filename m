@@ -2,156 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB42E288603
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 11:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B73B288606
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 11:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733109AbgJIJhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 05:37:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725978AbgJIJhJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 05:37:09 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E68ABC0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 02:37:08 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id c22so12189151ejx.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 02:37:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=cSEiJZUmKGV2L+qNQffmWmUhz6cfOEfnx9drTKYVJXY=;
-        b=CgzgYHZAFXxGWaahBEbp1dJVIqI1KF0t+zob3nWZ0l9whn1TlDJIN1kmUwrDfCxjpt
-         38Z/r2amWKIEVRbh/grwSQNrjD/nfaWfF91jow48WOzEz4h0qXgq9ID08SsYvmhp02CL
-         3apu+jT0rg6K9E5oMhgQswO9XpetGkgLEJFAvGN3AM+pJaNrMsr0GL9xU8fxHB+B8jqr
-         COp3j+p9yJQ7y8kcYS3534HaAZFA4sbt3tvs9noavrvnbkWVyFjh+XhtpfFu6KcehFuG
-         ucRUuI19keSpWs1zfxs5tItBGDuJQUqVAJAxW8YFXnuQo+5gv/9nqhEoQyVwuDFa3Arh
-         1ckQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=cSEiJZUmKGV2L+qNQffmWmUhz6cfOEfnx9drTKYVJXY=;
-        b=jY9gXz1cTKhoh4Yy49zQEDojAOU95yzseUmvv4DSar4uDxyLaZGdTpgaj+5dGNmZ9H
-         97rvGj1OW8t4OHh2nfBYv8ixvTfzk3c/lH79ercuAoUyQkT1FyusJ7Q76OHsRs+/aKeU
-         DswGOIImY+PK0cfHtDJFkJK/HTgLB4immHtJgAwHbBXRn+QuV5kt0nGL50Byq9BVRVDL
-         uykpfZdPdUN7UjjG8ER3PK+GJ9O5L3HcIxuhjHxbRJOaZIHfmHPQSgxbBx0mEEY70dqx
-         7XDiEJva2OksseEeIg4f6inzN6EJ4W+CylyVYJmBoIaSIjeC4F5sySkluOgOW+9QRrb5
-         NP4A==
-X-Gm-Message-State: AOAM5317tNt9qlrDByUxfE6Nh9EBYVTAZz8VaF75D14oUqy/XADs1Lqi
-        RHzZwkjZ1ll1eU+I9/z/LKLyq3TiucxbaEk2dFc=
-X-Google-Smtp-Source: ABdhPJzy4UYqxpTn9JQ3t51pBf4z6TWE+9AxxTF2qa4g0tGa/Nlyyt3NgDvd1RmxLJiWIgULtigNU84N5g3X5TJ6wJ4=
-X-Received: by 2002:a17:906:3092:: with SMTP id 18mr12990403ejv.43.1602236227376;
- Fri, 09 Oct 2020 02:37:07 -0700 (PDT)
+        id S1733121AbgJIJh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 05:37:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59878 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733111AbgJIJh6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 05:37:58 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EB15F22258;
+        Fri,  9 Oct 2020 09:37:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602236277;
+        bh=qKDWHZKc2QllAAp0MK7WBMA0uqYrzQj6Jk2nI8Ea0pI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YrhMPzARymQIZS5n3bb1V7YpdIkjja0LwIcZZFkdfCzI2Nio04DHrCOY0mCS1zXkv
+         5PvY+yhh5938AoR0j/ZaQzY03WcMv9Rg0Q6Wb/8kRVmyZf5u+B2aTP3B8zGCCCXt5l
+         mcNbBQdWw2vhC2U+Cw+DW1JoyhnjPCkZ2OzOJDFo=
+Date:   Fri, 9 Oct 2020 10:37:51 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     kan.liang@linux.intel.com, mingo@redhat.com, acme@kernel.org,
+        linux-kernel@vger.kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        eranian@google.com, ak@linux.intel.com, dave.hansen@intel.com,
+        kirill.shutemov@linux.intel.com, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org,
+        David Miller <davem@davemloft.net>
+Subject: Re: [PATCH V9 1/4] perf/core: Add PERF_SAMPLE_DATA_PAGE_SIZE
+Message-ID: <20201009093750.GD29594@willie-the-truck>
+References: <20201001135749.2804-1-kan.liang@linux.intel.com>
+ <20201001135749.2804-2-kan.liang@linux.intel.com>
+ <20201009090927.GQ2611@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <CADpTngV5uuDTxVOOOSxc3wh8pP64Gyjtt48HgWrhNrQDrnK3UQ@mail.gmail.com>
- <8c351a09-759a-62f3-1f8c-d61f53d991fc@canonical.com>
-In-Reply-To: <8c351a09-759a-62f3-1f8c-d61f53d991fc@canonical.com>
-From:   Fabio Coatti <fabio.coatti@gmail.com>
-Date:   Fri, 9 Oct 2020 11:36:56 +0200
-Message-ID: <CADpTngVptd9P14SXBXLiiYO7EYD0i4cYz2zpb45MzbfptjfFmA@mail.gmail.com>
-Subject: Re: Lenovo P50 headphone issue
-To:     Hui Wang <hui.wang@canonical.com>, oder_chiou@realtek.com
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201009090927.GQ2611@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks,
-I opened a bugzilla entry here:
-https://bugzilla.kernel.org/show_bug.cgi?id=3D209595
-and CC'ed current realtek maintainer.
+On Fri, Oct 09, 2020 at 11:09:27AM +0200, Peter Zijlstra wrote:
+> On Thu, Oct 01, 2020 at 06:57:46AM -0700, kan.liang@linux.intel.com wrote:
+> > +/*
+> > + * Return the MMU page size of a given virtual address
+> > + */
+> > +static u64 __perf_get_page_size(struct mm_struct *mm, unsigned long addr)
+> > +{
+> > +	pgd_t *pgd;
+> > +	p4d_t *p4d;
+> > +	pud_t *pud;
+> > +	pmd_t *pmd;
+> > +	pte_t *pte;
+> > +
+> > +	pgd = pgd_offset(mm, addr);
+> > +	if (pgd_none(*pgd))
+> > +		return 0;
+> > +
+> > +	p4d = p4d_offset(pgd, addr);
+> > +	if (!p4d_present(*p4d))
+> > +		return 0;
+> > +
+> > +	if (p4d_leaf(*p4d))
+> > +		return 1ULL << P4D_SHIFT;
+> > +
+> > +	pud = pud_offset(p4d, addr);
+> > +	if (!pud_present(*pud))
+> > +		return 0;
+> > +
+> > +	if (pud_leaf(*pud))
+> > +		return 1ULL << PUD_SHIFT;
+> > +
+> > +	pmd = pmd_offset(pud, addr);
+> > +	if (!pmd_present(*pmd))
+> > +		return 0;
+> > +
+> > +	if (pmd_leaf(*pmd))
+> > +		return 1ULL << PMD_SHIFT;
+> > +
+> > +	pte = pte_offset_map(pmd, addr);
+> > +	if (!pte_present(*pte)) {
+> > +		pte_unmap(pte);
+> > +		return 0;
+> > +	}
+> > +
+> > +	pte_unmap(pte);
+> > +	return PAGE_SIZE;
+> > +}
+> 
+> So this mostly works, but gets a number of hugetlb and arch specific
+> things wrong.
+> 
+> With the first 3 patches, this is only exposed to x86 and Power.
+> Michael, does the above work for you?
+> 
+> Looking at:
+> 
+> arch/powerpc/include/asm/book3s/64/hugetlb.h:check_and_get_huge_psize()
+> 
+> You seem to limit yourself to page-table sizes, however if I then look
+> at the same function in:
+> 
+> arch/powerpc/include/asm/nohash/32/hugetlb-8xx.h
+> arch/powerpc/include/asm/nohash/hugetlb-book3e.h
+> 
+> it doesn't seem to constrain itself so.
+> 
+> Patch 4 makes it all far worse by exposing it to pretty much everybody.
+> 
+> Now, I think we can fix at least the user mappings with the below delta,
+> but if archs are using non-page-table MMU sizes we'll need arch helpers.
+> 
+> ARM64 is in that last boat.
+> 
+> Will, can you live with the below, if not, what would you like to do,
+> make the entire function __weak so that you can override it, or hook
+> into it somewhere?
 
-Many thanks for the suggestion.
+Hmm, so I don't think we currently have any PMUs that set 'data->addr'
+on arm64, in which case maybe none of this currently matters for us.
 
-Il giorno ven 9 ott 2020 alle ore 10:06 Hui Wang
-<hui.wang@canonical.com> ha scritto:
->
-> Hi Fabio,
->
-> Looks like the P50 has a different codec, it is alc298, and I don't have
-> the P50 to debug. It is better to report a bug to bugzilla against the
-> upstream kernel and cc the realtek engineers to take a look.
->
-> Regards,
->
-> Hui.
->
-> On 2020/10/9 =E4=B8=8B=E5=8D=883:14, Fabio Coatti wrote:
-> > Hi All,
-> > I'm experiencing issues with a Lenovo P50 regarding headphones. It has
-> > some similarities with the issue fixed in 5.8.13 with
-> > commit ad0643252831ede7d6ab7b70a4f03768e032e6b4
-> > Author: Hui Wang <hui.wang@canonical.com>
-> > Date:   Mon Sep 14 14:51:18 2020 +0800
-> >
-> >      ALSA: hda/realtek - Couldn't detect Mic if booting with headset pl=
-ugged
-> >
-> > I've been seeing this behavior since some time and now I'm running 5.8.=
-14
-> > Description: sometimes when I start the laptop with headphones plugged
-> > in, no sound comes out of the headphones. The only thing I can hear is
-> > the "usual" click when the kernel boots. Sound config in the gui
-> > reports headphones plugged, nothing seems really wrong but no sound.
-> > Removing headphones does not help: sound can be heard from laptop
-> > loudspeakers but  to get back the sound on headphones I have to unplug
-> > the jack, reboot the laptop and once booted, inserting the headphones
-> > makes everything work as  expected. Gui tools report everything as
-> > expected: headphones inserted, volume is ok and so on.
-> > Below you can find the dmesg boot messages related to sound devices.
-> > If you need more details please let me know.
-> > If I picked the wrong address to report the issue please let me know,
-> > I'll try to contact the relevant sources.
-> > Please note that I'm not subscribed to this list even though I monitor
-> > it, so being in CC: will be really appreciated.
-> > Many thanks for any answer.
-> > [Fri Oct  9 08:20:05 2020] snd_hda_codec_realtek hdaudioC0D0:
-> > autoconfig for ALC298: line_outs=3D1 (0x14/0x0/0x0/0x0/0x0) type:speake=
-r
-> > [Fri Oct  9 08:20:05 2020] snd_hda_codec_realtek hdaudioC0D0:
-> > speaker_outs=3D0 (0x0/0x0/0x0/0x0/0x0)
-> > [Fri Oct  9 08:20:05 2020] snd_hda_codec_realtek hdaudioC0D0:
-> > hp_outs=3D2 (0x17/0x21/0x0/0x0/0x0)
-> > [Fri Oct  9 08:20:05 2020] snd_hda_codec_realtek hdaudioC0D0:    mono:
-> > mono_out=3D0x0
-> > [Fri Oct  9 08:20:05 2020] snd_hda_codec_realtek hdaudioC0D0:    inputs=
-:
-> > [Fri Oct  9 08:20:05 2020] snd_hda_codec_realtek hdaudioC0D0:      Mic=
-=3D0x18
-> > [Fri Oct  9 08:20:05 2020] snd_hda_codec_realtek hdaudioC0D0:      Dock=
- Mic=3D0x19
-> > [Fri Oct  9 08:20:05 2020] snd_hda_codec_realtek hdaudioC0D0:
-> > Internal Mic=3D0x12
-> > [Fri Oct  9 08:20:05 2020] videodev: Linux video capture interface: v2.=
-00
-> > [Fri Oct  9 08:20:05 2020] input: HDA NVidia HDMI/DP,pcm=3D3 as
-> > /devices/pci0000:00/0000:00:01.0/0000:01:00.1/sound/card1/input15
-> > [Fri Oct  9 08:20:05 2020] input: HDA NVidia HDMI/DP,pcm=3D7 as
-> > /devices/pci0000:00/0000:00:01.0/0000:01:00.1/sound/card1/input16
-> > [Fri Oct  9 08:20:05 2020] input: HDA NVidia HDMI/DP,pcm=3D8 as
-> > /devices/pci0000:00/0000:00:01.0/0000:01:00.1/sound/card1/input17
-> > [Fri Oct  9 08:20:05 2020] input: HDA NVidia HDMI/DP,pcm=3D9 as
-> > /devices/pci0000:00/0000:00:01.0/0000:01:00.1/sound/card1/input18
-> > [Fri Oct  9 08:20:05 2020] input: HDA NVidia HDMI/DP,pcm=3D10 as
-> > /devices/pci0000:00/0000:00:01.0/0000:01:00.1/sound/card1/input19
-> > [Fri Oct  9 08:20:05 2020] input: HDA NVidia HDMI/DP,pcm=3D11 as
-> > /devices/pci0000:00/0000:00:01.0/0000:01:00.1/sound/card1/input20
-> > [Fri Oct  9 08:20:05 2020] input: HDA Intel PCH Mic as
-> > /devices/pci0000:00/0000:00:1f.3/sound/card0/input22
-> > [Fri Oct  9 08:20:05 2020] input: HDA Intel PCH Dock Mic as
-> > /devices/pci0000:00/0000:00:1f.3/sound/card0/input23
-> > [Fri Oct  9 08:20:05 2020] input: HDA Intel PCH Dock Headphone as
-> > /devices/pci0000:00/0000:00:1f.3/sound/card0/input24
-> > [Fri Oct  9 08:20:05 2020] input: HDA Intel PCH Headphone as
-> > /devices/pci0000:00/0000:00:1f.3/sound/card0/input25
-> > --
-> > Fabio
+However, I must admit that I couldn't figure out exactly what gets exposed
+to userspace when the backend drivers don't look at the sample_type or
+do anything with the addr field.
 
-
-
---=20
-Fabio
+Will
