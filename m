@@ -2,288 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0335E289AA2
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 23:30:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 762FA289AA6
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 23:32:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391579AbgJIVaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 17:30:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39858 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391548AbgJIVaN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 17:30:13 -0400
-Received: from localhost (170.sub-72-107-125.myvzw.com [72.107.125.170])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3929721D41;
-        Fri,  9 Oct 2020 21:30:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602279012;
-        bh=3L1LEUvWoZd759ld2o3+wyhfDKcWBWBMEw6BL1ZOAJU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=kwB6BBW9yNH+Z9G2Wo6zITQFpsFsSNBMGo/lFfWqWW9iG602M03pm0gZcLq9TMt1c
-         8fNOAsXu+3fbPysY7JRV95x8Ovx88EoOWj+DVnJ4gnbI23JeNR+dWroKo1Vu72Z+33
-         93n40bBqwcs9LdC4zeZ0d7rRkLQqejzG56PYMDc8=
-Date:   Fri, 9 Oct 2020 16:30:11 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Sean V Kelley <seanvk.dev@oregontracks.org>
-Cc:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
-        rafael.j.wysocki@intel.com, ashok.raj@intel.com,
-        tony.luck@intel.com, sathyanarayanan.kuppuswamy@intel.com,
-        qiuxu.zhuo@intel.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sean V Kelley <sean.v.kelley@intel.com>
-Subject: Re: [PATCH v8 11/14] PCI/RCEC: Add RCiEP's linked RCEC to AER/ERR
-Message-ID: <20201009213011.GA3504871@bjorn-Precision-5520>
+        id S2391607AbgJIVar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 17:30:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391457AbgJIVar (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 17:30:47 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67040C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 14:30:46 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id qp15so15161952ejb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 14:30:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pbFcqf/DjvQ4JWXqdwx2qoDcjZm2i9Wcon6pZeNDz5o=;
+        b=ZG7/cR3DKUuQ/RPLGoR9GRiVD5sFiQY9qmvwtKGyjQ7dUx6cRoXQxPJrsofVX4GvT8
+         +bHrvlkc1QdE5fUuR+B4/jEqIhD96HiZRW7ovaFsuN3fEZ+QZA4WfW7Zoh4Ks3/JQ0EC
+         foiF78nQ6mvg4w1M98iFAIEqKbJDxwbcU0l389avKqsHHsxkP1F73Y3V7TTlMKHaLOCS
+         Dm4YqX7AZSogV5VQASZlZfU5CJKMZXVuwmHApTvWmqpz+YKzBi4/BWNPCESa5p7ZbAdQ
+         xYthw3ucPw0eXtEwmhEb7cEy71fk2ZQJ7DXR2iGsteCPu+HY7ggdx/mX75DxDqxJz9QQ
+         OIUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pbFcqf/DjvQ4JWXqdwx2qoDcjZm2i9Wcon6pZeNDz5o=;
+        b=TO54wliAuz53O0iCeVhxxFGJdZxGeBycrKxGP447Xvmim7xLqn8Jew+q8BsSoFnXnS
+         L4kzFRJO+IZmV7PGQNxWny0zjpRMxAe6XnAqX6y4soquK2SvXBX2LkmajY9oKweR4WSq
+         YKLapvtl4wHx9fp1q1u4u1BdMvyHP8+w3pdf04SDUptMG2xkC8JmoAdDTLB5R47G2FgL
+         +pMclPBQJUhikI4RAQC4yBUjLiTF9bp3J4trZO1EBAV84fmEwtuufk1ysCsW/ON3iDne
+         24MqOWyBaB17bJ6/lo3zzSFJatxkJsNZ5X15TebKa9nq6XBwFHLBIwkzhXCAj6mr9BfM
+         JGuA==
+X-Gm-Message-State: AOAM530G7V6IW9VNbEemkaemOGLmLf6u28xz9tlySs0ofimOHsr3tv5n
+        WyrSIbq0G4PiqRdvlZK46vjI7O9PbPW5GvrdAyNZUw==
+X-Google-Smtp-Source: ABdhPJyVuDxjo0a1CY6IfHFSG0IBKbx7nRGluOc+6dUadBRHkjJq4TYQS4jlWBBOaj1ul7WftAzGnhhHBZG2FVIDTO8=
+X-Received: by 2002:a17:906:86c3:: with SMTP id j3mr16811843ejy.493.1602279044763;
+ Fri, 09 Oct 2020 14:30:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201009175745.GA3489710@bjorn-Precision-5520>
+References: <cover.1602263422.git.yifeifz2@illinois.edu> <1a40458d081ce0d5423eb0282210055496e28774.1602263422.git.yifeifz2@illinois.edu>
+In-Reply-To: <1a40458d081ce0d5423eb0282210055496e28774.1602263422.git.yifeifz2@illinois.edu>
+From:   Jann Horn <jannh@google.com>
+Date:   Fri, 9 Oct 2020 23:30:18 +0200
+Message-ID: <CAG48ez1eUfjNPVKeYbk28On9WOaDBysR-=7sYDM-Q=nCzwXcDA@mail.gmail.com>
+Subject: Re: [PATCH v4 seccomp 2/5] seccomp/cache: Add "emulator" to check if
+ filter is constant allow
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 12:57:45PM -0500, Bjorn Helgaas wrote:
-> On Fri, Oct 02, 2020 at 11:47:32AM -0700, Sean V Kelley wrote:
-> > From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> > 
-> > When attempting error recovery for an RCiEP associated with an RCEC device,
-> > there needs to be a way to update the Root Error Status, the Uncorrectable
-> > Error Status and the Uncorrectable Error Severity of the parent RCEC.
-> > In some non-native cases in which there is no OS visible device
-> > associated with the RCiEP, there is nothing to act upon as the firmware
-> > is acting before the OS. So add handling for the linked 'rcec' in AER/ERR
-> > while taking into account non-native cases.
-> > 
-> > Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
-> > Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
-> > Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> > Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> > ---
-> >  drivers/pci/pcie/aer.c |  9 +++++----
-> >  drivers/pci/pcie/err.c | 39 ++++++++++++++++++++++++++++-----------
-> >  2 files changed, 33 insertions(+), 15 deletions(-)
-> > 
-> > diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-> > index 65dff5f3457a..dccdba60b5d9 100644
-> > --- a/drivers/pci/pcie/aer.c
-> > +++ b/drivers/pci/pcie/aer.c
-> > @@ -1358,17 +1358,18 @@ static int aer_probe(struct pcie_device *dev)
-> >  static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
-> >  {
-> >  	int aer = dev->aer_cap;
-> > +	int rc = 0;
-> >  	u32 reg32;
-> > -	int rc;
-> > -
-> >  
-> >  	/* Disable Root's interrupt in response to error messages */
-> >  	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
-> >  	reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
-> >  	pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
-> >  
-> > -	rc = pci_bus_error_reset(dev);
-> > -	pci_info(dev, "Root Port link has been reset\n");
-> > +	if (pci_pcie_type(dev) != PCI_EXP_TYPE_RC_EC) {
-> > +		rc = pci_bus_error_reset(dev);
-> > +		pci_info(dev, "Root Port link has been reset\n");
-> > +	}
-> >  
-> >  	/* Clear Root Error Status */
-> >  	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, &reg32);
-> > diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-> > index 38abd7984996..956ad4c86d53 100644
-> > --- a/drivers/pci/pcie/err.c
-> > +++ b/drivers/pci/pcie/err.c
-> > @@ -149,7 +149,8 @@ static int report_resume(struct pci_dev *dev, void *data)
-> >  /**
-> >   * pci_walk_bridge - walk bridges potentially AER affected
-> >   * @bridge   bridge which may be an RCEC with associated RCiEPs,
-> > - *           an RCiEP associated with an RCEC, or a Port.
-> > + *           or a Port.
-> > + * @dev      an RCiEP lacking an associated RCEC.
-> >   * @cb       callback to be called for each device found
-> >   * @userdata arbitrary pointer to be passed to callback.
-> >   *
-> > @@ -160,13 +161,20 @@ static int report_resume(struct pci_dev *dev, void *data)
-> >   * If the device provided has no subordinate bus, call the provided
-> >   * callback on the device itself.
-> >   */
-> > -static void pci_walk_bridge(struct pci_dev *bridge, int (*cb)(struct pci_dev *, void *),
-> > +static void pci_walk_bridge(struct pci_dev *bridge, struct pci_dev *dev,
-> > +			    int (*cb)(struct pci_dev *, void *),
-> >  			    void *userdata)
-> >  {
-> > -	if (bridge->subordinate)
-> > +	/*
-> > +	 * In a non-native case where there is no OS-visible reporting
-> > +	 * device the bridge will be NULL, i.e., no RCEC, no PORT.
-> > +	 */
-> > +	if (bridge && bridge->subordinate)
-> >  		pci_walk_bus(bridge->subordinate, cb, userdata);
-> > -	else
-> > +	else if (bridge)
-> >  		cb(bridge, userdata);
-> > +	else
-> > +		cb(dev, userdata);
-> >  }
-> >  
-> >  static pci_ers_result_t flr_on_rciep(struct pci_dev *dev)
-> > @@ -196,16 +204,25 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
-> >  	type = pci_pcie_type(dev);
-> >  	if (type == PCI_EXP_TYPE_ROOT_PORT ||
-> >  	    type == PCI_EXP_TYPE_DOWNSTREAM ||
-> > -	    type == PCI_EXP_TYPE_RC_EC ||
-> > -	    type == PCI_EXP_TYPE_RC_END)
-> > +	    type == PCI_EXP_TYPE_RC_EC)
-> >  		bridge = dev;
-> > +	else if (type == PCI_EXP_TYPE_RC_END)
-> > +		bridge = dev->rcec;
-> >  	else
-> >  		bridge = pci_upstream_bridge(dev);
-> >  
-> >  	pci_dbg(dev, "broadcast error_detected message\n");
-> >  	if (state == pci_channel_io_frozen) {
-> > -		pci_walk_bridge(bridge, report_frozen_detected, &status);
-> > +		pci_walk_bridge(bridge, dev, report_frozen_detected, &status);
-> >  		if (type == PCI_EXP_TYPE_RC_END) {
-> > +			/*
-> > +			 * The callback only clears the Root Error Status
-> > +			 * of the RCEC (see aer.c). Only perform this for the
-> > +			 * native case, i.e., an RCEC is present.
-> > +			 */
-> > +			if (bridge)
-> > +				reset_subordinate_devices(bridge);
-> 
-> Help me understand this.  There are lots of callbacks in this picture,
-> but I guess this "callback only clears Root Error Status" must refer
-> to aer_root_reset(), i.e., the reset_subordinate_devices pointer?
-> 
-> Of course, the caller of pcie_do_recovery() supplied that pointer.
-> And we can infer that it must be aer_root_reset(), not
-> dpc_reset_link(), because RCECs and RCiEPs are not allowed to
-> implement DPC.
-> 
-> I wish we didn't have either this assumption about what
-> reset_subordinate_devices points to, or the assumption about what
-> aer_root_reset() does.  They both seem a little bit tenuous.
-> 
-> We already made aer_root_reset() smart enough to check for RCECs.  Can
-> we put the FLR there, too?  Then we wouldn't have this weird situation
-> where reset_subordinate_devices() does a reset and clears error
-> status, EXCEPT for this case where it only clears error status and we
-> do the reset here?
+On Fri, Oct 9, 2020 at 7:15 PM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+>
+> From: YiFei Zhu <yifeifz2@illinois.edu>
+>
+> SECCOMP_CACHE will only operate on syscalls that do not access
+> any syscall arguments or instruction pointer. To facilitate
+> this we need a static analyser to know whether a filter will
+> return allow regardless of syscall arguments for a given
+> architecture number / syscall number pair. This is implemented
+> here with a pseudo-emulator, and stored in a per-filter bitmap.
+>
+> In order to build this bitmap at filter attach time, each filter is
+> emulated for every syscall (under each possible architecture), and
+> checked for any accesses of struct seccomp_data that are not the "arch"
+> nor "nr" (syscall) members. If only "arch" and "nr" are examined, and
+> the program returns allow, then we can be sure that the filter must
+> return allow independent from syscall arguments.
+>
+> Nearly all seccomp filters are built from these cBPF instructions:
+>
+> BPF_LD  | BPF_W    | BPF_ABS
+> BPF_JMP | BPF_JEQ  | BPF_K
+> BPF_JMP | BPF_JGE  | BPF_K
+> BPF_JMP | BPF_JGT  | BPF_K
+> BPF_JMP | BPF_JSET | BPF_K
+> BPF_JMP | BPF_JA
+> BPF_RET | BPF_K
+> BPF_ALU | BPF_AND  | BPF_K
+>
+> Each of these instructions are emulated. Any weirdness or loading
+> from a syscall argument will cause the emulator to bail.
+>
+> The emulation is also halted if it reaches a return. In that case,
+> if it returns an SECCOMP_RET_ALLOW, the syscall is marked as good.
+>
+> Emulator structure and comments are from Kees [1] and Jann [2].
+>
+> Emulation is done at attach time. If a filter depends on more
+> filters, and if the dependee does not guarantee to allow the
+> syscall, then we skip the emulation of this syscall.
+>
+> [1] https://lore.kernel.org/lkml/20200923232923.3142503-5-keescook@chromium.org/
+> [2] https://lore.kernel.org/lkml/CAG48ez1p=dR_2ikKq=xVxkoGg0fYpTBpkhJSv1w-6BG=76PAvw@mail.gmail.com/
+[...]
+> @@ -682,6 +693,150 @@ seccomp_prepare_user_filter(const char __user *user_filter)
+>         return filter;
+>  }
+>
+> +#ifdef SECCOMP_ARCH_NATIVE
+> +/**
+> + * seccomp_is_const_allow - check if filter is constant allow with given data
+> + * @fprog: The BPF programs
+> + * @sd: The seccomp data to check against, only syscall number are arch
+> + *      number are considered constant.
 
-Just as an example to make this concrete.  Doesn't even compile.
+nit: s/syscall number are arch number/syscall number and arch number/
 
+> + */
+> +static bool seccomp_is_const_allow(struct sock_fprog_kern *fprog,
+> +                                  struct seccomp_data *sd)
+> +{
+> +       unsigned int insns;
+> +       unsigned int reg_value = 0;
+> +       unsigned int pc;
+> +       bool op_res;
+> +
+> +       if (WARN_ON_ONCE(!fprog))
+> +               return false;
+> +
+> +       insns = bpf_classic_proglen(fprog);
 
-diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-index d6927e6535e5..e389db7cbba6 100644
---- a/drivers/pci/pcie/aer.c
-+++ b/drivers/pci/pcie/aer.c
-@@ -1372,28 +1372,45 @@ static int aer_probe(struct pcie_device *dev)
-  */
- static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
- {
--	int aer = dev->aer_cap;
-+	int type = pci_pcie_type(dev);
-+	struct pci_dev *root;
-+	int aer = 0;
- 	int rc = 0;
- 	u32 reg32;
- 
--	/* Disable Root's interrupt in response to error messages */
--	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
--	reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
--	pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
-+	if (type == PCI_EXP_TYPE_RC_END)
-+		root = dev->rcec;
-+	else
-+		root = dev;
-+
-+	if (root)
-+		aer = root->aer_cap;
- 
--	if (pci_pcie_type(dev) != PCI_EXP_TYPE_RC_EC) {
-+	if (aer) {
-+		/* Disable Root's interrupt in response to error messages */
-+		pci_read_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, &reg32);
-+		reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
-+		pci_write_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, reg32);
-+	}
-+
-+	if (type == PCI_EXP_TYPE_RC_EC || type == PCI_EXP_TYPE_RC_END) {
-+		rc = flr_on_rciep(dev);
-+		pci_info(dev, "has been reset (%d)\n", rc);
-+	} else {
- 		rc = pci_bus_error_reset(dev);
--		pci_info(dev, "Root Port link has been reset\n");
-+		pci_info(dev, "Root Port link has been reset (%d)\n", rc);
- 	}
- 
--	/* Clear Root Error Status */
--	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, &reg32);
--	pci_write_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, reg32);
-+	if (aer) {
-+		/* Clear Root Error Status */
-+		pci_read_config_dword(root, aer + PCI_ERR_ROOT_STATUS, &reg32);
-+		pci_write_config_dword(root, aer + PCI_ERR_ROOT_STATUS, reg32);
- 
--	/* Enable Root Port's interrupt in response to error messages */
--	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
--	reg32 |= ROOT_PORT_INTR_ON_MESG_MASK;
--	pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
-+		/* Enable Root Port's interrupt in response to error messages */
-+		pci_read_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, &reg32);
-+		reg32 |= ROOT_PORT_INTR_ON_MESG_MASK;
-+		pci_write_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, reg32);
-+	}
- 
- 	return rc ? PCI_ERS_RESULT_DISCONNECT : PCI_ERS_RESULT_RECOVERED;
- }
-diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-index 79ae1356141d..08976034a89c 100644
---- a/drivers/pci/pcie/err.c
-+++ b/drivers/pci/pcie/err.c
-@@ -203,36 +203,19 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
- 	 */
- 	if (type == PCI_EXP_TYPE_ROOT_PORT ||
- 	    type == PCI_EXP_TYPE_DOWNSTREAM ||
--	    type == PCI_EXP_TYPE_RC_EC)
-+	    type == PCI_EXP_TYPE_RC_EC ||
-+	    type == PCI_EXP_TYPE_RC_END)
- 		bridge = dev;
--	else if (type == PCI_EXP_TYPE_RC_END)
--		bridge = dev->rcec;
- 	else
- 		bridge = pci_upstream_bridge(dev);
- 
- 	pci_dbg(bridge, "broadcast error_detected message\n");
- 	if (state == pci_channel_io_frozen) {
- 		pci_walk_bridge(bridge, dev, report_frozen_detected, &status);
--		if (type == PCI_EXP_TYPE_RC_END) {
--			/*
--			 * The callback only clears the Root Error Status
--			 * of the RCEC (see aer.c). Only perform this for the
--			 * native case, i.e., an RCEC is present.
--			 */
--			if (bridge)
--				reset_subordinates(bridge);
--
--			status = flr_on_rciep(dev);
--			if (status != PCI_ERS_RESULT_RECOVERED) {
--				pci_warn(dev, "Function Level Reset failed\n");
--				goto failed;
--			}
--		} else {
--			status = reset_subordinates(bridge);
--			if (status != PCI_ERS_RESULT_RECOVERED) {
--				pci_warn(dev, "subordinate device reset failed\n");
--				goto failed;
--			}
-+		status = reset_subordinates(bridge);
-+		if (status != PCI_ERS_RESULT_RECOVERED) {
-+			pci_warn(bridge, "subordinate device reset failed\n");
-+			goto failed;
- 		}
- 	} else {
- 		pci_walk_bridge(bridge, dev, report_normal_detected, &status);
+bpf_classic_proglen() is defined as:
+
+#define bpf_classic_proglen(fprog) (fprog->len * sizeof(fprog->filter[0]))
+
+so this is wrong - what you want is the number of instructions in the
+program, what you actually have is the size of the program in bytes.
+Please instead check for `pc < fprog->len` in the loop condition.
+
+> +       for (pc = 0; pc < insns; pc++) {
+> +               struct sock_filter *insn = &fprog->filter[pc];
+> +               u16 code = insn->code;
+> +               u32 k = insn->k;
+[...]
+
+> +       }
+> +
+> +       /* ran off the end of the filter?! */
+> +       WARN_ON(1);
+> +       return false;
+> +}
