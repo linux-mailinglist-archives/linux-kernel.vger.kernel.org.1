@@ -2,160 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13B84288CF3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E986D288CFC
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:41:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389381AbgJIPj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 11:39:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36068 "EHLO
+        id S2389375AbgJIPlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 11:41:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389165AbgJIPj4 (ORCPT
+        with ESMTP id S2388696AbgJIPlS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 11:39:56 -0400
+        Fri, 9 Oct 2020 11:41:18 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82229C0613D2;
-        Fri,  9 Oct 2020 08:39:56 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C94C0613D2;
+        Fri,  9 Oct 2020 08:41:18 -0700 (PDT)
+Date:   Fri, 9 Oct 2020 17:41:16 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602257994;
+        s=2020; t=1602258077;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=DKIXFbRq/5saVEqi5e9AJzND0fz4fM2p8K38phy76Vg=;
-        b=Fc6iiw16D29AtwKBY60vWjppr2aupIpDaNl1hH2g77wDTT57xkgogSwE8P1rAOd5F2TEtQ
-        PzxaUcdtwE5DH1HRhXZgt0iXDB0LLDm4C11qukXlSXZy42d6EcU23o9VJT7beYXQmVFv0A
-        9j+O1lC3T6Hoz3VXegXfCoMNxbghrKjPs6Y8p6qO3X7U1QnzlwfEs9/z+3uCq7rcJL7qUz
-        PpCggkf6KUoCkA0g/+S2QdCcE/F3TSkWoSlcrVnaI7nlBPxnpMIXIyxaTcPI95Pn2DNjDl
-        DPonhCjXCL2jM1EA3KRNx64l3B5Rz7E2++f8INXwe9g/wh8AVLowQrwg8kuvLw==
+        bh=LzoqlKvnB0DJ8DXslRDdZXi+gnl9UDKfq4lWRVndgWk=;
+        b=EiO9Fxtc37/HKn+RtbL5Nc/7DbIqelxUy1uI8m9fQ+LMKkFamsCk6sCEaDB+6EhxRx/xfG
+        H7NzPQpdTomL357yGw7asvR9hqLqD5X9NUQM7BjZMGVfQnS79xrujfkxxpQLggD93RGP8o
+        j6DzPvH+RJzkM+AFNkQXoDeAeLizXMqU1BZtVuS8jRw48yKF3Ux4m0NvOL1CtSTjYbsdh7
+        wHL1B1JgbFKThAFnrZctV7l6KWcdMxnR7pc4Rp2uLpMOfiX10qKDvQWOF6O35ZX7mTpkK7
+        3SzO1TlJEEBAnhGDBRzM8sxOKsgmA8F/fLtri0v42asrAC3+Eas86VQLEHgZUw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602257994;
+        s=2020e; t=1602258077;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=DKIXFbRq/5saVEqi5e9AJzND0fz4fM2p8K38phy76Vg=;
-        b=laJxFen859ZoMvaXCNvBrCfBIVOaA1gIbWEPmNsDPChDjbgoucSBnnLQFHbvRMVgEXYxa1
-        XEQBSwcE9OFa+GBQ==
-To:     "Meisinger\, Andreas" <andreas.meisinger@siemens.com>,
-        "vinicius.gomes\@intel.com" <vinicius.gomes@intel.com>,
-        "Geva\, Erez" <erez.geva.ext@siemens.com>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
-        "xiyou.wangcong\@gmail.com" <xiyou.wangcong@gmail.com>,
-        "davem\@davemloft.net" <davem@davemloft.net>,
-        "kuba\@kernel.org" <kuba@kernel.org>,
-        "jhs\@mojatatu.com" <jhs@mojatatu.com>,
-        "jiri\@resnulli.us" <jiri@resnulli.us>,
-        "avagin\@gmail.com" <avagin@gmail.com>,
-        "0x7f454c46\@gmail.com" <0x7f454c46@gmail.com>,
-        "ebiederm\@xmission.com" <ebiederm@xmission.com>,
-        "mingo\@kernel.org" <mingo@kernel.org>,
-        "john.stultz\@linaro.org" <john.stultz@linaro.org>,
-        "mkubecek\@suse.cz" <mkubecek@suse.cz>,
-        "oleg\@redhat.com" <oleg@redhat.com>,
-        "peterz\@infradead.org" <peterz@infradead.org>,
-        "richardcochran\@gmail.com" <richardcochran@gmail.com>,
-        "sboyd\@kernel.org" <sboyd@kernel.org>,
-        "vdronov\@redhat.com" <vdronov@redhat.com>,
-        "bigeasy\@linutronix.de" <bigeasy@linutronix.de>,
-        "frederic\@kernel.org" <frederic@kernel.org>,
-        "edumazet\@google.com" <edumazet@google.com>
-Cc:     "jesus.sanchez-palencia\@intel.com" 
-        <jesus.sanchez-palencia@intel.com>,
-        "vedang.patel\@intel.com" <vedang.patel@intel.com>,
-        "Sudler\, Simon" <simon.sudler@siemens.com>,
-        "Bucher\, Andreas" <andreas.bucher@siemens.com>,
-        "henning.schild\@siemens.com" <henning.schild@siemens.com>,
-        "jan.kiszka\@siemens.com" <jan.kiszka@siemens.com>,
-        "Zirkler\, Andreas" <andreas.zirkler@siemens.com>,
-        "Sakic\, Ermin" <ermin.sakic@siemens.com>,
-        "anninh.nguyen\@siemens.com" <anninh.nguyen@siemens.com>,
-        "Saenger\, Michael" <michael.saenger@siemens.com>,
-        "Maehringer\, Bernd" <bernd.maehringer@siemens.com>,
-        "gisela.greinert\@siemens.com" <gisela.greinert@siemens.com>,
-        "Geva\, Erez" <erez.geva.ext@siemens.com>,
-        "ErezGeva2\@gmail.com" <ErezGeva2@gmail.com>,
-        "guenter.steindl\@siemens.com" <guenter.steindl@siemens.com>
-Subject: Re: AW: [PATCH 0/7] TC-ETF support PTP clocks series
-In-Reply-To: <AM0PR10MB30737E10A86AD50ECBB3A128FA080@AM0PR10MB3073.EURPRD10.PROD.OUTLOOK.COM>
-References: <20201001205141.8885-1-erez.geva.ext@siemens.com> <87eemg5u5i.fsf@intel.com> <87tuvccgpr.fsf@nanos.tec.linutronix.de> <AM0PR10MB30737E10A86AD50ECBB3A128FA080@AM0PR10MB3073.EURPRD10.PROD.OUTLOOK.COM>
-Date:   Fri, 09 Oct 2020 17:39:54 +0200
-Message-ID: <87ft6ntnlh.fsf@nanos.tec.linutronix.de>
+        bh=LzoqlKvnB0DJ8DXslRDdZXi+gnl9UDKfq4lWRVndgWk=;
+        b=tVjDY3vAW6eTHq/PXxf8DNSmv6tILey/tMm4YtDAqbONSoICd5Gx6e+8rN3Lt2fuCA/PpJ
+        mcvu91zCzsdTXaCw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Juri Lelli <juri.lelli@redhat.com>
+Cc:     tglx@linutronix.de, linux-rt-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bristot@redhat.com,
+        williams@redhat.com, echaudro@redhat.com, atheurer@redhat.com
+Subject: Re: [PATCH 5.9 RT] net: openvswitch: Fix using smp_processor_id() in
+ preemptible code
+Message-ID: <20201009154116.a4fcrrm7flxonidd@linutronix.de>
+References: <20201009124759.592550-1-juri.lelli@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201009124759.592550-1-juri.lelli@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andreas,
+On 2020-10-09 14:47:59 [+0200], Juri Lelli wrote:
+> This happens because openvswitch/flow_table::flow_lookup() accesses
+> per-cpu data while being preemptible (and migratable).
+> 
+> Fix it by adding get/put_cpu_light(), so that, even if preempted, the
+> task executing this code is not migrated (operation is also guarded by
+> ovs_mutex mutex).
 
-On Fri, Oct 09 2020 at 11:17, Andreas Meisinger wrote:
+This warning is not limited to PREEMPT_RT it also present upstream since
+commit
+   eac87c413bf97 ("net: openvswitch: reorder masks array based on usage")
 
-please do not top-post and trim your replies.
+You should be able to reproduce it there, too.
+The path ovs_flow_tbl_lookup() -> flow_lookup() is guarded by ovs_lock()
+I can't say that this true for
+   ovs_vport_receive() -> ovs_dp_process_packet() ->
+   ovs_flow_tbl_lookup_stats() -> flow_lookup()
 
-> Yet we do already have usecases where this can't be done. Additionally
-> a lot of discussions at this topic are ongoing in 60802 profile
-> creation too.  Some of our usecases do require a network which does
-> not depend on any external timesource. This might be due to the
-> network not being connected (to the internet) or just because the
-> network may not be able to rely on or trust an external
-> timesource. Some reasons for this might be safety, security,
-> availability or legal implications ( e.g. if a machine builder has to
-> guarantee operation of a machine which depends on an internal tsn
-> network).
+(means I don't know but it looks like coming from NAPI).
 
-I'm aware of the reasons for these kind of setups.
+Which means u64_stats_update_begin() could have two writers. This must
+not happen.
+There are two reader which do u64_stats_fetch_begin_irq(). Disabling
+interrupts makes no sense since they perform cross-CPU access.
 
-> About your question if an application needs to be able to sync to
-> multiple timescales. A small count of usecases even would require
-> multiple independent timesources to be used. At the moment they all
-> seem to be located in the area of extreme high availability. There's
-> ongoing evaluation about this issues and we're not sure if there's a
-> way to do this without special hardware so we didn't address it here.
+-> You need to ensure that there is only one writer at a time.
 
-Reading several raw PTP clocks is always possible through the existing
-interfaces and if the coordidation between real TAI and the raw PTP
-clocks is available, then these interfaces could be extended to provide
-time normalized to real TAI.
+If mask_array gains a spinlock_t for writer protection then you can
+acquire the lock prio grabbing ->masks_usage_cntr. But as of now there
+is one `ma->syncp'.
 
-But that does not allow to utilize the magic clocks for arming timers so
-these have to be based on some other clock and the application needs to do
-the conversion back and forth.
-
-Now I said that we could abuse time name spaces for providing access to
-_one_ magic TAI clock which lets the kernel do that work, but thinking
-more about it, it should be possible to do so for all of them even
-without name spaces.
-
-The user space daemon which does the correlation between these PTP
-domains and TAI is required in any case, so the magic clock TAI_PRIVATE
-is not having any advantage.
-
-If that correlation exists then at least clock_nanosleep() should be
-doable. So clock_nanosleep(clock PTP/$N) would convert the sleep time to
-TAI and queue a timer internally on the CLOCK_TAI base.
-
-Depending on the frequency drift between CLOCK_TAI and clock PTP/$N the
-timer expiry might be slightly inaccurate, but surely not more
-inaccurate than if that conversion is done purely in user space.
-
-The self rearming posix timers would work too, but the self rearming is
-based on CLOCK_TAI, so rounding errors and drift would be accumulative.
-So I'd rather stay away from them.
-
-If there is no deamon which manages the correlation then the syscall
-would fail.
-
-If such a coordination exists, then the whole problem in the TSN stack
-is gone. The core can always operate on TAI and the network device which
-runs in a different time universe would use the same conversion data
-e.g. to queue a packet for HW based time triggered transmission. Again
-subject to slight inaccuracy, but it does not come with all the problems
-of dynamic clocks, locking issues etc. As the frequency drift between
-PTP domains is neither fast changing nor randomly jumping around the
-inaccuracy might even be a mostly academic problem.
-
-Thoughts?
-
-Thanks,
-
-        tglx
+Sebastian
