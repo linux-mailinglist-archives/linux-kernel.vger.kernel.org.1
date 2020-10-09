@@ -2,66 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9741F288513
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0218F288526
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:24:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732727AbgJIITG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 04:19:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732337AbgJIITF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 04:19:05 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F989C0613D2;
-        Fri,  9 Oct 2020 01:19:05 -0700 (PDT)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1kQncE-0029Tg-Uc; Fri, 09 Oct 2020 10:19:03 +0200
-Message-ID: <1ec056cf3ec0953d2d1abaa05e37e89b29c7cc63.camel@sipsolutions.net>
-Subject: Re: [CRAZY-RFF] debugfs: track open files and release on remove
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, nstange@suse.de, ap420073@gmail.com,
-        David.Laight@aculab.com, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, rafael@kernel.org
-Date:   Fri, 09 Oct 2020 10:19:02 +0200
-In-Reply-To: <20201009081624.GA401030@kroah.com>
-References: <87v9fkgf4i.fsf@suse.de>
-         <20201009095306.0d87c3aa13db.Ib3a7019bff15bb6308f6d259473a1648312a4680@changeid>
-         <20201009080355.GA398994@kroah.com>
-         <be61c6a38d0f6ca1aa0bc3f0cb45bbb216a12982.camel@sipsolutions.net>
-         <20201009081624.GA401030@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        id S1732767AbgJIIYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 04:24:06 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2966 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1732644AbgJIIYF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 04:24:05 -0400
+Received: from lhreml715-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id 3ED5A84B8FB842474DD8;
+        Fri,  9 Oct 2020 09:24:04 +0100 (IST)
+Received: from DESKTOP-6T4S3DQ.china.huawei.com (10.47.90.75) by
+ lhreml715-chm.china.huawei.com (10.201.108.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Fri, 9 Oct 2020 09:24:03 +0100
+From:   Shiju Jose <shiju.jose@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <linuxarm@huawei.com>, <wangzhou1@hisilicon.com>,
+        <shiju.jose@huawei.com>
+Subject: [PATCH 1/1] crypto: hisilicon: Fix doc warnings in sgl.c and qm.c
+Date:   Fri, 9 Oct 2020 09:19:38 +0100
+Message-ID: <20201009081938.1526-1-shiju.jose@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.47.90.75]
+X-ClientProxiedBy: lhreml721-chm.china.huawei.com (10.201.108.72) To
+ lhreml715-chm.china.huawei.com (10.201.108.66)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-10-09 at 10:16 +0200, Greg KH wrote:
-> On Fri, Oct 09, 2020 at 10:06:14AM +0200, Johannes Berg wrote:
-> > We used to say the proxy_fops weren't needed and it wasn't an issue, and
-> > then still implemented it. Dunno. I'm not really too concerned about it
-> > myself, only root can hold the files open and remove modules ...
-> 
-> proxy_fops were needed because devices can be removed from the system at
-> any time, causing their debugfs files to want to also be removed.  It
-> wasn't because of unloading kernel code.
+Fix following warnings caused by mismatch between
+function parameters and function comments.
 
-Indeed, that's true. Still, we lived with it for years.
+drivers/crypto/hisilicon/sgl.c:256: warning: Excess function parameter 'hw_sgl_dma' description in 'hisi_acc_sg_buf_unmap'
+drivers/crypto/hisilicon/sgl.c:256: warning: Excess function parameter 'pool' description in 'hisi_acc_sg_buf_unmap'
+drivers/crypto/hisilicon/qm.c:1849: warning: Function parameter or member 'qp' not described in 'qm_drain_qp'
+drivers/crypto/hisilicon/qm.c:2420: warning: Function parameter or member 'qm' not described in 'hisi_qm_set_vft'
+drivers/crypto/hisilicon/qm.c:2420: warning: Function parameter or member 'fun_num' not described in 'hisi_qm_set_vft'
+drivers/crypto/hisilicon/qm.c:2420: warning: Function parameter or member 'base' not described in 'hisi_qm_set_vft'
+drivers/crypto/hisilicon/qm.c:2420: warning: Function parameter or member 'number' not described in 'hisi_qm_set_vft'
+drivers/crypto/hisilicon/qm.c:2620: warning: Function parameter or member 'qm' not described in 'qm_clear_queues'
 
-Anyway, like I said, I really just did this more to see that it _could_
-be done, not to suggest that it _should_ :-)
+Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
+Reviewed-by: Zhou Wang <wangzhou1@hisilicon.com>
+---
+ drivers/crypto/hisilicon/qm.c  | 13 +++++++++++++
+ drivers/crypto/hisilicon/sgl.c |  2 --
+ 2 files changed, 13 insertions(+), 2 deletions(-)
 
-I think adding the .owner everywhere would be good, and perhaps we can
-somehow put a check somewhere like
+diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
+index 530f23116d7c..050fe4e74523 100644
+--- a/drivers/crypto/hisilicon/qm.c
++++ b/drivers/crypto/hisilicon/qm.c
+@@ -1843,6 +1843,9 @@ int hisi_qm_start_qp(struct hisi_qp *qp, unsigned long arg)
+ EXPORT_SYMBOL_GPL(hisi_qm_start_qp);
+ 
+ /**
++ * qm_drain_qp() - Drain a qp.
++ * @qp: The qp we want to drain.
++ *
+  * Determine whether the queue is cleared by judging the tail pointers of
+  * sq and cq.
+  */
+@@ -2486,6 +2489,12 @@ int hisi_qm_get_vft(struct hisi_qm *qm, u32 *base, u32 *number)
+ EXPORT_SYMBOL_GPL(hisi_qm_get_vft);
+ 
+ /**
++ * hisi_qm_set_vft() - Set vft to a qm.
++ * @qm: The qm we want to set its vft.
++ * @fun_num: The function number.
++ * @base: The base number of queue in vft.
++ * @number: The number of queues in vft.
++ *
+  * This function is alway called in PF driver, it is used to assign queues
+  * among PF and VFs.
+  *
+@@ -2690,7 +2699,11 @@ static int qm_stop_started_qp(struct hisi_qm *qm)
+ 	return 0;
+ }
+ 
++
+ /**
++ * qm_clear_queues() - Clear all queues memory in a qm.
++ * @qm: The qm in which the queues will be cleared.
++ *
+  * This function clears all queues memory in a qm. Reset of accelerator can
+  * use this to clear queues.
+  */
+diff --git a/drivers/crypto/hisilicon/sgl.c b/drivers/crypto/hisilicon/sgl.c
+index 725a739800b0..3bff6394acaf 100644
+--- a/drivers/crypto/hisilicon/sgl.c
++++ b/drivers/crypto/hisilicon/sgl.c
+@@ -246,8 +246,6 @@ EXPORT_SYMBOL_GPL(hisi_acc_sg_buf_map_to_hw_sgl);
+  * @dev: The device which hw sgl belongs to.
+  * @sgl: Related scatterlist.
+  * @hw_sgl: Virtual address of hw sgl.
+- * @hw_sgl_dma: DMA address of hw sgl.
+- * @pool: Pool which hw sgl is allocated in.
+  *
+  * This function unmaps allocated hw sgl.
+  */
+-- 
+2.17.1
 
-	WARN_ON(is_module_address((unsigned long)fops) && !fops->owner);
-
-to prevent the issue in the future?
-
-johannes
 
