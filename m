@@ -2,118 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5238288675
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 12:00:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EFAF28867B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 12:00:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387424AbgJIJ7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 05:59:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726357AbgJIJ7z (ORCPT
+        id S2387434AbgJIKAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 06:00:47 -0400
+Received: from esa3.microchip.iphmx.com ([68.232.153.233]:22548 "EHLO
+        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726357AbgJIKAr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 05:59:55 -0400
-Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 338B4C0613D2;
-        Fri,  9 Oct 2020 02:59:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=metanate.com; s=stronger; h=Content-Transfer-Encoding:Content-Type:
-        References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID
-        :Content-Description; bh=lDxXbMg3sqgtLNJ8JfGfAKeSro7IxzBb9f7HzRAxIHc=; b=ivfM
-        1cQJ4LxPv3ygCYNCSQfpTsmHalnPEbYPC9Q54L16FXH+BSbYYaj7pwTfTnFC/SYgOUeS312lSs74k
-        FdNxGGwujXw9Um2TCdWYT4lggtLuCGU4+GqmuLaH38pENyF0eSWcprJr4CY9OD/vuPzGIwZfhUvkI
-        +aO/GVlaHxALQXIbf8EfJ9GvSEt9Ks/z2okKr3ORJP9LLYo0YaN901JEyUaHNGAX9/ZAWtmrGjALb
-        92sf1VxCC3cxeQJLi0COpeHCvqlBv/Bb3Koa/lD4uJuEdAc/r7RyyNHrsdTUlwHBhhBRnCJfjfY4w
-        cPGcwg/VRF3maSpEeQhdj5C5qEEUfg==;
-Received: from [81.174.171.191] (helo=donbot)
-        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <john@metanate.com>)
-        id 1kQpBj-0006U9-7D; Fri, 09 Oct 2020 10:59:47 +0100
-Date:   Fri, 9 Oct 2020 10:59:45 +0100
-From:   John Keeping <john@metanate.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     netdev@vger.kernel.org,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: stmmac: Don't call _irqoff() with hardirqs enabled
-Message-ID: <20201009105945.432de706.john@metanate.com>
-In-Reply-To: <20201008234609.x3iy65g445hmmt73@skbuf>
-References: <20201008162749.860521-1-john@metanate.com>
-        <20201008234609.x3iy65g445hmmt73@skbuf>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Fri, 9 Oct 2020 06:00:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1602237647; x=1633773647;
+  h=references:from:to:cc:subject:in-reply-to:date:
+   message-id:mime-version;
+  bh=r2koRF/+FoeVCXIcl1Bvk7ziipf1D2XLPT0qU0KHzDg=;
+  b=2DwIlA0r8iUFKi4mLfbIi6QaGcQU1l3ouWSbnan0dWqEZgoGgJtpRJCJ
+   4fzmt4fl2Y2z6BNz8/MYpu1eBzV7+U/trPXUWT2izMt03hqUD6JO2qUQA
+   gR0+wI+b0P1KnaMMjMEFBx1kLX5pO4hijeie4zI8qtNkmlz3BjHXPjA10
+   hZyd8WbjzhT0OSDoG0+OkwAGDMqUlN0m1eM+CGrwrQeu8GSzRiU93sCSN
+   jJ4q7c0FoRsHWdePPmxiCg67rAf6500qXpVDnHmXejeOFwnGP9x2KT14+
+   Qu+fyEw2fZJaa8zHuCAMHwJocpWPJKMR9RFI2A36hvJDWeq5DEQVFdxD0
+   w==;
+IronPort-SDR: ghWz0aIj1uzQaobiv50hrQZfGc7IJ/f3PL3i5LQhDEys5XsFRlnrIi+7kZiLbnd5AXjfDmE9rd
+ YP6MzHCBmQmwy34XgxJyQ3Cp7nVWPiWIq+UFYwMLkuS6PF+XxEeoQa55iAMKRibOlYdeEXoj+E
+ 0LbBvOhIqnHAGP424wZyndTw4SIFxAEUnZQZ/LdIBnHu7RuwL048bURNrCP+xXNmq+LGGgiWf0
+ ssgBmBPG2Sb1rTegMzMayw69szmZd2+W70iXF7OSDVlYpOy/h13L11Y1bM/Meq0PLl1xB09gj5
+ FSY=
+X-IronPort-AV: E=Sophos;i="5.77,354,1596524400"; 
+   d="scan'208";a="94773622"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 09 Oct 2020 03:00:46 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 9 Oct 2020 03:00:46 -0700
+Received: from soft-dev15.microsemi.net.microchip.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
+ via Frontend Transport; Fri, 9 Oct 2020 03:00:12 -0700
+References: <20201008130515.2385825-1-lars.povlsen@microchip.com> <20201008130515.2385825-2-lars.povlsen@microchip.com> <CACRpkdaFYoXFUuWow5s9TitrRDhMW=wiaxgfMcY6sQkYYgC-Lw@mail.gmail.com>
+From:   Lars Povlsen <lars.povlsen@microchip.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+CC:     Lars Povlsen <lars.povlsen@microchip.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: Re: [PATCH v5 1/3] dt-bindings: pinctrl: Add bindings for pinctrl-microchip-sgpio driver
+In-Reply-To: <CACRpkdaFYoXFUuWow5s9TitrRDhMW=wiaxgfMcY6sQkYYgC-Lw@mail.gmail.com>
+Date:   Fri, 9 Oct 2020 12:00:43 +0200
+Message-ID: <87d01ryb04.fsf@soft-dev15.microsemi.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Authenticated: YES
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 9 Oct 2020 02:46:09 +0300
-Vladimir Oltean <olteanv@gmail.com> wrote:
 
-> On Thu, Oct 08, 2020 at 05:27:49PM +0100, John Keeping wrote:
-> > With threadirqs, stmmac_interrupt() is called on a thread with hardirqs
-> > enabled so we cannot call __napi_schedule_irqoff().  Under lockdep it
-> > leads to:
-> > 
-> > 	------------[ cut here ]------------
-> > 	WARNING: CPU: 0 PID: 285 at kernel/softirq.c:598 __raise_softirq_irqoff+0x6c/0x1c8
-> > 	IRQs not disabled as expected
-> > 	Modules linked in: brcmfmac hci_uart btbcm cfg80211 brcmutil
-> > 	CPU: 0 PID: 285 Comm: irq/41-eth0 Not tainted 5.4.69-rt39 #1
-> > 	Hardware name: Rockchip (Device Tree)
-> > 	[<c0110d3c>] (unwind_backtrace) from [<c010c284>] (show_stack+0x10/0x14)
-> > 	[<c010c284>] (show_stack) from [<c0855504>] (dump_stack+0xa8/0xe0)
-> > 	[<c0855504>] (dump_stack) from [<c0120a9c>] (__warn+0xe0/0xfc)
-> > 	[<c0120a9c>] (__warn) from [<c0120e80>] (warn_slowpath_fmt+0x7c/0xa4)
-> > 	[<c0120e80>] (warn_slowpath_fmt) from [<c01278c8>] (__raise_softirq_irqoff+0x6c/0x1c8)
-> > 	[<c01278c8>] (__raise_softirq_irqoff) from [<c056bccc>] (stmmac_interrupt+0x388/0x4e0)
-> > 	[<c056bccc>] (stmmac_interrupt) from [<c0178714>] (irq_forced_thread_fn+0x28/0x64)
-> > 	[<c0178714>] (irq_forced_thread_fn) from [<c0178924>] (irq_thread+0x124/0x260)
-> > 	[<c0178924>] (irq_thread) from [<c0142ee8>] (kthread+0x154/0x164)
-> > 	[<c0142ee8>] (kthread) from [<c01010bc>] (ret_from_fork+0x14/0x38)
-> > 	Exception stack(0xeb7b5fb0 to 0xeb7b5ff8)
-> > 	5fa0:                                     00000000 00000000 00000000 00000000
-> > 	5fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-> > 	5fe0: 00000000 00000000 00000000 00000000 00000013 00000000
-> > 	irq event stamp: 48
-> > 	hardirqs last  enabled at (50): [<c085c200>] prb_unlock+0x7c/0x8c
-> > 	hardirqs last disabled at (51): [<c085c0dc>] prb_lock+0x58/0x100
-> > 	softirqs last  enabled at (0): [<c011e770>] copy_process+0x550/0x1654
-> > 	softirqs last disabled at (25): [<c01786ec>] irq_forced_thread_fn+0x0/0x64
-> > 	---[ end trace 0000000000000002 ]---
-> > 
-> > Use __napi_schedule() instead which will save & restore the interrupt
-> > state.
-> > 
-> > Fixes: 4ccb45857c2c ("net: stmmac: Fix NAPI poll in TX path when in multi-queue")
-> > Signed-off-by: John Keeping <john@metanate.com>
-> > ---  
-> 
-> Don't get me wrong, this is so cool that the new lockdep warning is really
-> helping out finding real bugs, but the patch that adds that warning
-> (https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=cdabce2e3dff7e4bcef73473987618569d178af3)
-> isn't in 5.4.69-rt39, is it?
+Linus Walleij writes:
 
-No, it's not, although I would have saved several days debugging if it
-was!  I backported the lockdep warning to prove that it caught this
-issue.
+> Hi Lars!
+>
+> This is overall looking fine. Except for the 3 cell business. I just can't
+> wrap my head around why that is needed.
+>
+> On Thu, Oct 8, 2020 at 3:05 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
+>
+>> +      '#gpio-cells':
+>> +        const: 3
+>
+> So at the very least needs a description making it crystal clear why each
+> cell is needed, and used for since the standard bindings are not used.
+>
+> +      sgpio_in2: gpio@0 {
+> +        reg = <0>;
+> +        compatible = "microchip,sparx5-sgpio-bank";
+> +        gpio-controller;
+> +        #gpio-cells = <3>;
+> +        ngpios = <96>;
+> +      };
+>
+> So here reg = 0 and the out port has reg 1. Isn't that what you also put
+> in the second cell of the GPIO phandle? Then why? The driver
+> can very well just parse its own reg property and fill that in.
 
-The evidence it is possible to see on vanilla 5.4.x is:
+Linus,
 
-	$ trace-cmd report -l
-	irq/43-e-280     0....2    74.017658: softirq_raise:        vec=3 [action=NET_RX]
+NO! The second cell is the second dimension - NOT the direction. As I
+wrote previously, the direction is now inherent from the handle, ie. the
+"reg" value of the handle.
 
-Note the missing "d" where this should be "0d...2" to indicate hardirqs
-disabled.
+The hardware describe a "port" and a "bit index" addressing, where the
+second cell in
 
+  gpios = <&sgpio_in2 11 0 GPIO_OUT_LOW>;
 
-Regards,
-John
+is the "bit index" - not the "reg" from the phandle.
+
+In the example above, note
+
+  ngpios = <96>;
+
+As the "port" is [0; 31], this defines "bit index" to be [0; 2], so the
+(input) GPIO cells will be:
+
+p0b0, p0b1, p0b2
+...
+p31b0, p31b1, p31b2 
+
+being identical to 
+
+<&sgpio_inX 0 0 GPIO_OUT_LOW>
+<&sgpio_inX 0 1 GPIO_OUT_LOW>
+<&sgpio_inX 0 2 GPIO_OUT_LOW>
+...
+<&sgpio_inX 31 0 GPIO_OUT_LOW>
+<&sgpio_inX 31 1 GPIO_OUT_LOW>
+<&sgpio_inX 31 2 GPIO_OUT_LOW>
+
+('X' being the SGPIO controller instance).
+
+So no, there *really* is a need for a 3-cell GPIO specifier (or whatever
+its called).
+
+Hope this is clearer now...
+
+---Lars
+
+>
+> When you obtain a phandle like that:
+>
+> gpios = <&sgpio_in2 11 0 GPIO_OUT_LOW>;
+>
+> Isn't that 0 just duplicating the "reg"? Just parse reg when you set up
+> your driver state and put it as variable in the state container for your
+> driver state for this particular gpio_chip. No need to get it from
+> the phandle.
+>
+> Yours,
+> Linus Walleij
+
+-- 
+Lars Povlsen,
+Microchip
