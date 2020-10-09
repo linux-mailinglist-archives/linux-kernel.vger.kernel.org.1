@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B1E0288060
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 04:29:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 050F3288062
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 04:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731311AbgJIC3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 22:29:44 -0400
-Received: from mga01.intel.com ([192.55.52.88]:51355 "EHLO mga01.intel.com"
+        id S1731332AbgJIC3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 22:29:49 -0400
+Received: from mga01.intel.com ([192.55.52.88]:51359 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731276AbgJIC3k (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 22:29:40 -0400
-IronPort-SDR: WJb0fhFhbYPvRffH3UVpC/rBrZHKitm6zDN+vGqT+2uwQCggRtoVgMZJKF9WcMSADwqksO+PJr
- lW5bPlp9CnUQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="182869967"
+        id S1729935AbgJIC3o (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 22:29:44 -0400
+IronPort-SDR: NCnAql+2BhTwW64w/Ws8HSR8YS3+pZX5s8Luvmf/Az4DkxCQYgLSLzUEDMyA7Blepp919cclrd
+ rOKTNjR2aW5A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="182869969"
 X-IronPort-AV: E=Sophos;i="5.77,353,1596524400"; 
-   d="scan'208";a="182869967"
+   d="scan'208";a="182869969"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 19:29:40 -0700
-IronPort-SDR: KBC5rTkhztxYVYYvPVHC4hCBHw4Xy00hnr4XVz3WrqP5mj28EfctbD5AwNgO0usSzcv5f0+inZ
- 3xIqG04KR9QA==
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 19:29:42 -0700
+IronPort-SDR: 50OckzDK5u0IV0REdd6Yqh+8t204hOjRPhTLb6kKu0hoWY0kNSkl3CgKQo3UEUv9dlejJ3jrnU
+ GPdLlQz660DA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,353,1596524400"; 
-   d="scan'208";a="354700022"
+   d="scan'208";a="354700030"
 Received: from kbl-ppc.sh.intel.com ([10.239.159.55])
-  by FMSMGA003.fm.intel.com with ESMTP; 08 Oct 2020 19:29:38 -0700
+  by FMSMGA003.fm.intel.com with ESMTP; 08 Oct 2020 19:29:40 -0700
 From:   Jin Yao <yao.jin@linux.intel.com>
 To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
         mingo@redhat.com, alexander.shishkin@linux.intel.com
 Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
         kan.liang@intel.com, yao.jin@intel.com,
         Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v8 6/7] perf util: Report hot streams
-Date:   Fri,  9 Oct 2020 10:28:44 +0800
-Message-Id: <20201009022845.13141-7-yao.jin@linux.intel.com>
+Subject: [PATCH v8 7/7] perf diff: Support hot streams comparison
+Date:   Fri,  9 Oct 2020 10:28:45 +0800
+Message-Id: <20201009022845.13141-8-yao.jin@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201009022845.13141-1-yao.jin@linux.intel.com>
 References: <20201009022845.13141-1-yao.jin@linux.intel.com>
@@ -43,22 +43,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We show the streams separately. They are divided into different sections.
+This patch enables perf-diff with "--stream" option.
 
-1. "Matched hot streams"
+"--stream": Enable hot streams comparison
 
-2. "Hot streams in old perf data only"
+Now let's see example.
 
-3. "Hot streams in new perf data only".
+perf record -b ...      Generate perf.data.old with branch data
+perf record -b ...      Generate perf.data with branch data
+perf diff --stream
 
-For each stream, we report the cycles and hot percent (hits%).
+[ Matched hot streams ]
 
-For example,
+hot chain pair 1:
+            cycles: 1, hits: 27.77%                  cycles: 1, hits: 9.24%
+        ---------------------------              --------------------------
+                      main div.c:39                           main div.c:39
+                      main div.c:44                           main div.c:44
 
-     cycles: 2, hits: 4.08%
- --------------------------
-              main div.c:42
-      compute_flag div.c:28
+hot chain pair 2:
+           cycles: 34, hits: 20.06%                cycles: 27, hits: 16.98%
+        ---------------------------              --------------------------
+          __random_r random_r.c:360               __random_r random_r.c:360
+          __random_r random_r.c:388               __random_r random_r.c:388
+          __random_r random_r.c:388               __random_r random_r.c:388
+          __random_r random_r.c:380               __random_r random_r.c:380
+          __random_r random_r.c:357               __random_r random_r.c:357
+              __random random.c:293                   __random random.c:293
+              __random random.c:293                   __random random.c:293
+              __random random.c:291                   __random random.c:291
+              __random random.c:291                   __random random.c:291
+              __random random.c:291                   __random random.c:291
+              __random random.c:288                   __random random.c:288
+                     rand rand.c:27                          rand rand.c:27
+                     rand rand.c:26                          rand rand.c:26
+                           rand@plt                                rand@plt
+                           rand@plt                                rand@plt
+              compute_flag div.c:25                   compute_flag div.c:25
+              compute_flag div.c:22                   compute_flag div.c:22
+                      main div.c:40                           main div.c:40
+                      main div.c:40                           main div.c:40
+                      main div.c:39                           main div.c:39
+
+hot chain pair 3:
+             cycles: 9, hits: 4.48%                  cycles: 6, hits: 4.51%
+        ---------------------------              --------------------------
+          __random_r random_r.c:360               __random_r random_r.c:360
+          __random_r random_r.c:388               __random_r random_r.c:388
+          __random_r random_r.c:388               __random_r random_r.c:388
+          __random_r random_r.c:380               __random_r random_r.c:380
+
+[ Hot streams in old perf data only ]
+
+hot chain 1:
+            cycles: 18, hits: 6.75%
+         --------------------------
+          __random_r random_r.c:360
+          __random_r random_r.c:388
+          __random_r random_r.c:388
+          __random_r random_r.c:380
+          __random_r random_r.c:357
+              __random random.c:293
+              __random random.c:293
+              __random random.c:291
+              __random random.c:291
+              __random random.c:291
+              __random random.c:288
+                     rand rand.c:27
+                     rand rand.c:26
+                           rand@plt
+                           rand@plt
+              compute_flag div.c:25
+              compute_flag div.c:22
+                      main div.c:40
+
+hot chain 2:
+            cycles: 29, hits: 2.78%
+         --------------------------
+              compute_flag div.c:22
+                      main div.c:40
+                      main div.c:40
+                      main div.c:39
+
+[ Hot streams in new perf data only ]
+
+hot chain 1:
+                                                     cycles: 4, hits: 4.54%
+                                                 --------------------------
+                                                              main div.c:42
+                                                      compute_flag div.c:28
+
+hot chain 2:
+                                                     cycles: 5, hits: 3.51%
+                                                 --------------------------
+                                                              main div.c:39
+                                                              main div.c:44
+                                                              main div.c:42
+                                                      compute_flag div.c:28
 
 Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 ---
@@ -66,199 +147,256 @@ Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
    - No change
 
  v7:
-   - Rename functions with 'evsel_streams__' prefix
+   - Use new struct evlist_streams in data__file.
+   - Free the streams in data__free.
 
  v6:
    - Rebase to perf/core
 
  v5:
+   - Remove enum stream_type
    - Rebase to perf/core
 
  v4:
-   - Remove "Hot chains in old perf data but source line changed
-     in new perf data"
+   - Remove the "--before" and "--after" options since they are for
+     source line based comparison. In this patchset, we will not
+     support source line based comparison.
 
- tools/perf/util/callchain.c |  13 ++++
- tools/perf/util/callchain.h |   2 +
- tools/perf/util/stream.c    | 123 ++++++++++++++++++++++++++++++++++++
- tools/perf/util/stream.h    |   3 +
- 4 files changed, 141 insertions(+)
+ tools/perf/Documentation/perf-diff.txt |   4 +
+ tools/perf/builtin-diff.c              | 119 ++++++++++++++++++++++---
+ 2 files changed, 110 insertions(+), 13 deletions(-)
 
-diff --git a/tools/perf/util/callchain.c b/tools/perf/util/callchain.c
-index 4f824bfcc072..1b60985690bb 100644
---- a/tools/perf/util/callchain.c
-+++ b/tools/perf/util/callchain.c
-@@ -1699,3 +1699,16 @@ u64 callchain_total_hits(struct hists *hists)
+diff --git a/tools/perf/Documentation/perf-diff.txt b/tools/perf/Documentation/perf-diff.txt
+index f50ca0fef0a4..be65bd55ab2a 100644
+--- a/tools/perf/Documentation/perf-diff.txt
++++ b/tools/perf/Documentation/perf-diff.txt
+@@ -182,6 +182,10 @@ OPTIONS
+ --tid=::
+ 	Only diff samples for given thread ID (comma separated list).
  
- 	return chain_hits;
- }
++--stream::
++	Enable hot streams comparison. Stream can be a callchain which is
++	aggregated by the branch records from samples.
 +
-+s64 callchain_avg_cycles(struct callchain_node *cnode)
-+{
-+	struct callchain_list *chain;
-+	s64 cycles = 0;
-+
-+	list_for_each_entry(chain, &cnode->val, list) {
-+		if (chain->srcline && chain->branch_count)
-+			cycles += chain->cycles_count / chain->branch_count;
-+	}
-+
-+	return cycles;
-+}
-diff --git a/tools/perf/util/callchain.h b/tools/perf/util/callchain.h
-index ac5bea9c1eb7..5824134f983b 100644
---- a/tools/perf/util/callchain.h
-+++ b/tools/perf/util/callchain.h
-@@ -305,4 +305,6 @@ bool callchain_cnode_matched(struct callchain_node *base_cnode,
+ COMPARISON
+ ----------
+ The comparison is governed by the baseline file. The baseline perf.data
+diff --git a/tools/perf/builtin-diff.c b/tools/perf/builtin-diff.c
+index f8c9bdd8269a..584e2e1a3793 100644
+--- a/tools/perf/builtin-diff.c
++++ b/tools/perf/builtin-diff.c
+@@ -25,6 +25,7 @@
+ #include "util/map.h"
+ #include "util/spark.h"
+ #include "util/block-info.h"
++#include "util/stream.h"
+ #include <linux/err.h>
+ #include <linux/zalloc.h>
+ #include <subcmd/pager.h>
+@@ -42,6 +43,7 @@ struct perf_diff {
+ 	int				 range_size;
+ 	int				 range_num;
+ 	bool				 has_br_stack;
++	bool				 stream;
+ };
  
- u64 callchain_total_hits(struct hists *hists);
+ /* Diff command specific HPP columns. */
+@@ -72,6 +74,7 @@ struct data__file {
+ 	struct perf_data	 data;
+ 	int			 idx;
+ 	struct hists		*hists;
++	struct evlist_streams	*evlist_streams;
+ 	struct diff_hpp_fmt	 fmt[PERF_HPP_DIFF__MAX_INDEX];
+ };
  
-+s64 callchain_avg_cycles(struct callchain_node *cnode);
+@@ -106,6 +109,7 @@ enum {
+ 	COMPUTE_DELTA_ABS,
+ 	COMPUTE_CYCLES,
+ 	COMPUTE_MAX,
++	COMPUTE_STREAM,	/* After COMPUTE_MAX to avoid use current compute arrays */
+ };
+ 
+ const char *compute_names[COMPUTE_MAX] = {
+@@ -393,6 +397,11 @@ static int diff__process_sample_event(struct perf_tool *tool,
+ 	struct perf_diff *pdiff = container_of(tool, struct perf_diff, tool);
+ 	struct addr_location al;
+ 	struct hists *hists = evsel__hists(evsel);
++	struct hist_entry_iter iter = {
++		.evsel	= evsel,
++		.sample	= sample,
++		.ops	= &hist_iter_normal,
++	};
+ 	int ret = -1;
+ 
+ 	if (perf_time__ranges_skip_sample(pdiff->ptime_range, pdiff->range_num,
+@@ -411,14 +420,8 @@ static int diff__process_sample_event(struct perf_tool *tool,
+ 		goto out_put;
+ 	}
+ 
+-	if (compute != COMPUTE_CYCLES) {
+-		if (!hists__add_entry(hists, &al, NULL, NULL, NULL, sample,
+-				      true)) {
+-			pr_warning("problem incrementing symbol period, "
+-				   "skipping event\n");
+-			goto out_put;
+-		}
+-	} else {
++	switch (compute) {
++	case COMPUTE_CYCLES:
+ 		if (!hists__add_entry_ops(hists, &block_hist_ops, &al, NULL,
+ 					  NULL, NULL, sample, true)) {
+ 			pr_warning("problem incrementing symbol period, "
+@@ -428,6 +431,23 @@ static int diff__process_sample_event(struct perf_tool *tool,
+ 
+ 		hist__account_cycles(sample->branch_stack, &al, sample, false,
+ 				     NULL);
++		break;
 +
- #endif	/* __PERF_CALLCHAIN_H */
-diff --git a/tools/perf/util/stream.c b/tools/perf/util/stream.c
-index 47c5956b3378..4bd5e5a00aa5 100644
---- a/tools/perf/util/stream.c
-+++ b/tools/perf/util/stream.c
-@@ -217,3 +217,126 @@ void evsel_streams__match(struct evsel_streams *es_base,
- 			stream__link(base_stream, pair_stream);
++	case COMPUTE_STREAM:
++		if (hist_entry_iter__add(&iter, &al, PERF_MAX_STACK_DEPTH,
++					 NULL)) {
++			pr_debug("problem adding hist entry, skipping event\n");
++			goto out_put;
++		}
++		break;
++
++	default:
++		if (!hists__add_entry(hists, &al, NULL, NULL, NULL, sample,
++				      true)) {
++			pr_warning("problem incrementing symbol period, "
++				   "skipping event\n");
++			goto out_put;
++		}
+ 	}
+ 
+ 	/*
+@@ -996,10 +1016,55 @@ static void data_process(void)
  	}
  }
-+
-+static void print_callchain_pair(struct stream *base_stream, int idx,
-+				 struct evsel_streams *es_base,
-+				 struct evsel_streams *es_pair)
-+{
-+	struct callchain_node *base_cnode = base_stream->cnode;
-+	struct callchain_node *pair_cnode = base_stream->pair_cnode;
-+	struct callchain_list *base_chain, *pair_chain;
-+	char buf1[512], buf2[512], cbuf1[256], cbuf2[256];
-+	char *s1, *s2;
-+	double pct;
-+
-+	printf("\nhot chain pair %d:\n", idx);
-+
-+	pct = (double)base_cnode->hit / (double)es_base->streams_hits;
-+	scnprintf(buf1, sizeof(buf1), "cycles: %ld, hits: %.2f%%",
-+		  callchain_avg_cycles(base_cnode), pct * 100.0);
-+
-+	pct = (double)pair_cnode->hit / (double)es_pair->streams_hits;
-+	scnprintf(buf2, sizeof(buf2), "cycles: %ld, hits: %.2f%%",
-+		  callchain_avg_cycles(pair_cnode), pct * 100.0);
-+
-+	printf("%35s\t%35s\n", buf1, buf2);
-+
-+	printf("%35s\t%35s\n",
-+	       "---------------------------",
-+	       "--------------------------");
-+
-+	pair_chain = list_first_entry(&pair_cnode->val,
-+				      struct callchain_list,
-+				      list);
-+
-+	list_for_each_entry(base_chain, &base_cnode->val, list) {
-+		if (&pair_chain->list == &pair_cnode->val)
-+			return;
-+
-+		s1 = callchain_list__sym_name(base_chain, cbuf1, sizeof(cbuf1),
-+					      false);
-+		s2 = callchain_list__sym_name(pair_chain, cbuf2, sizeof(cbuf2),
-+					      false);
-+
-+		scnprintf(buf1, sizeof(buf1), "%35s\t%35s", s1, s2);
-+		printf("%s\n", buf1);
-+		pair_chain = list_next_entry(pair_chain, list);
-+	}
-+}
-+
-+static void print_stream_callchain(struct stream *stream, int idx,
-+				   struct evsel_streams *es, bool pair)
-+{
-+	struct callchain_node *cnode = stream->cnode;
-+	struct callchain_list *chain;
-+	char buf[512], cbuf[256], *s;
-+	double pct;
-+
-+	printf("\nhot chain %d:\n", idx);
-+
-+	pct = (double)cnode->hit / (double)es->streams_hits;
-+	scnprintf(buf, sizeof(buf), "cycles: %ld, hits: %.2f%%",
-+		  callchain_avg_cycles(cnode), pct * 100.0);
-+
-+	if (pair) {
-+		printf("%35s\t%35s\n", "", buf);
-+		printf("%35s\t%35s\n",
-+		       "", "--------------------------");
-+	} else {
-+		printf("%35s\n", buf);
-+		printf("%35s\n", "--------------------------");
-+	}
-+
-+	list_for_each_entry(chain, &cnode->val, list) {
-+		s = callchain_list__sym_name(chain, cbuf, sizeof(cbuf), false);
-+
-+		if (pair)
-+			scnprintf(buf, sizeof(buf), "%35s\t%35s", "", s);
-+		else
-+			scnprintf(buf, sizeof(buf), "%35s", s);
-+
-+		printf("%s\n", buf);
-+	}
-+}
-+
-+static void callchain_streams_report(struct evsel_streams *es_base,
-+				     struct evsel_streams *es_pair)
-+{
-+	struct stream *base_stream;
-+	int i, idx = 0;
-+
-+	printf("[ Matched hot streams ]\n");
-+	for (i = 0; i < es_base->nr_streams; i++) {
-+		base_stream = &es_base->streams[i];
-+		if (base_stream->pair_cnode) {
-+			print_callchain_pair(base_stream, ++idx,
-+					     es_base, es_pair);
-+		}
-+	}
-+
-+	idx = 0;
-+	printf("\n[ Hot streams in old perf data only ]\n");
-+	for (i = 0; i < es_base->nr_streams; i++) {
-+		base_stream = &es_base->streams[i];
-+		if (!base_stream->pair_cnode) {
-+			print_stream_callchain(base_stream, ++idx,
-+					       es_base, false);
-+		}
-+	}
-+
-+	idx = 0;
-+	printf("\n[ Hot streams in new perf data only ]\n");
-+	for (i = 0; i < es_pair->nr_streams; i++) {
-+		base_stream = &es_pair->streams[i];
-+		if (!base_stream->pair_cnode) {
-+			print_stream_callchain(base_stream, ++idx,
-+					       es_pair, true);
-+		}
-+	}
-+}
-+
-+void evsel_streams__report(struct evsel_streams *es_base,
-+			   struct evsel_streams *es_pair)
-+{
-+	return callchain_streams_report(es_base, es_pair);
-+}
-diff --git a/tools/perf/util/stream.h b/tools/perf/util/stream.h
-index a61072eda64d..bee768874fea 100644
---- a/tools/perf/util/stream.h
-+++ b/tools/perf/util/stream.h
-@@ -35,4 +35,7 @@ struct evsel_streams *evsel_streams__entry(struct evlist_streams *els,
- void evsel_streams__match(struct evsel_streams *es_base,
- 			  struct evsel_streams *es_pair);
  
-+void evsel_streams__report(struct evsel_streams *es_base,
-+			   struct evsel_streams *es_pair);
++static int process_base_stream(struct data__file *data_base,
++			       struct data__file *data_pair,
++			       const char *title __maybe_unused)
++{
++	struct evlist *evlist_base = data_base->session->evlist;
++	struct evlist *evlist_pair = data_pair->session->evlist;
++	struct evsel *evsel_base, *evsel_pair;
++	struct evsel_streams *es_base, *es_pair;
 +
- #endif /* __PERF_STREAM_H */
++	evlist__for_each_entry(evlist_base, evsel_base) {
++		evsel_pair = evsel_match(evsel_base, evlist_pair);
++		if (!evsel_pair)
++			continue;
++
++		es_base = evsel_streams__entry(data_base->evlist_streams,
++					       evsel_base->idx);
++		if (!es_base)
++			return -1;
++
++		es_pair = evsel_streams__entry(data_pair->evlist_streams,
++					       evsel_pair->idx);
++		if (!es_pair)
++			return -1;
++
++		evsel_streams__match(es_base, es_pair);
++		evsel_streams__report(es_base, es_pair);
++	}
++
++	return 0;
++}
++
++static void stream_process(void)
++{
++	/*
++	 * Stream comparison only supports two data files.
++	 * perf.data.old and perf.data. data__files[0] is perf.data.old,
++	 * data__files[1] is perf.data.
++	 */
++	process_base_stream(&data__files[0], &data__files[1],
++			    "# Output based on old perf data:\n#\n");
++}
++
+ static void data__free(struct data__file *d)
+ {
+ 	int col;
+ 
++	if (d->evlist_streams)
++		evlist_streams__delete(d->evlist_streams);
++
+ 	for (col = 0; col < PERF_HPP_DIFF__MAX_INDEX; col++) {
+ 		struct diff_hpp_fmt *fmt = &d->fmt[col];
+ 
+@@ -1153,9 +1218,19 @@ static int __cmd_diff(void)
+ 
+ 		if (pdiff.ptime_range)
+ 			zfree(&pdiff.ptime_range);
++
++		if (compute == COMPUTE_STREAM) {
++			d->evlist_streams = evlist__create_streams(
++						d->session->evlist, 5);
++			if (!d->evlist_streams)
++				goto out_delete;
++		}
+ 	}
+ 
+-	data_process();
++	if (compute == COMPUTE_STREAM)
++		stream_process();
++	else
++		data_process();
+ 
+  out_delete:
+ 	data__for_each_file(i, d) {
+@@ -1228,6 +1303,8 @@ static const struct option options[] = {
+ 		   "only consider symbols in these pids"),
+ 	OPT_STRING(0, "tid", &symbol_conf.tid_list_str, "tid[,tid...]",
+ 		   "only consider symbols in these tids"),
++	OPT_BOOLEAN(0, "stream", &pdiff.stream,
++		    "Enable hot streams comparison."),
+ 	OPT_END()
+ };
+ 
+@@ -1887,6 +1964,9 @@ int cmd_diff(int argc, const char **argv)
+ 	if (cycles_hist && (compute != COMPUTE_CYCLES))
+ 		usage_with_options(diff_usage, options);
+ 
++	if (pdiff.stream)
++		compute = COMPUTE_STREAM;
++
+ 	symbol__annotation_init();
+ 
+ 	if (symbol__init(NULL) < 0)
+@@ -1898,13 +1978,26 @@ int cmd_diff(int argc, const char **argv)
+ 	if (check_file_brstack() < 0)
+ 		return -1;
+ 
+-	if (compute == COMPUTE_CYCLES && !pdiff.has_br_stack)
++	if ((compute == COMPUTE_CYCLES || compute == COMPUTE_STREAM)
++	    && !pdiff.has_br_stack) {
+ 		return -1;
++	}
+ 
+-	if (ui_init() < 0)
+-		return -1;
++	if (compute == COMPUTE_STREAM) {
++		symbol_conf.show_branchflag_count = true;
++		symbol_conf.disable_add2line_warn = true;
++		callchain_param.mode = CHAIN_FLAT;
++		callchain_param.key = CCKEY_SRCLINE;
++		callchain_param.branch_callstack = 1;
++		symbol_conf.use_callchain = true;
++		callchain_register_param(&callchain_param);
++		sort_order = "srcline,symbol,dso";
++	} else {
++		if (ui_init() < 0)
++			return -1;
+ 
+-	sort__mode = SORT_MODE__DIFF;
++		sort__mode = SORT_MODE__DIFF;
++	}
+ 
+ 	if (setup_sorting(NULL) < 0)
+ 		usage_with_options(diff_usage, options);
 -- 
 2.17.1
 
