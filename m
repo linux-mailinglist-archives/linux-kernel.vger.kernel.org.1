@@ -2,105 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FF672880DC
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 05:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 392652880E3
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 05:53:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727327AbgJIDwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 23:52:08 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:34179 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729195AbgJIDwG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 23:52:06 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1731631AbgJIDxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 23:53:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59129 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727181AbgJIDxJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 23:53:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602215588;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FU45aSUQ8dscwhSeXeB5RZOeAkKlMDXRAbcGeFJTPSY=;
+        b=hJ0SAcFU7L4PL5D09PEG3KlBSdQeLvpbQQ4ZqUMchiTLOYnLiE18tErojLQ1R9GxTb/6Cz
+        ULujzMpZPVXVfzmSv+ocR1I+qrPVLJWBDIIUbHuERd/OYKRoqFV4hFeIXFhG/x3yAKT5n4
+        RBoShbaP0cdyDRpUo1KsHZ3dWf+3ff0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-529-ZXpxE5hfMKO49E23RlPavw-1; Thu, 08 Oct 2020 23:53:06 -0400
+X-MC-Unique: ZXpxE5hfMKO49E23RlPavw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C6vJn0VVyz9sSG;
-        Fri,  9 Oct 2020 14:51:53 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1602215524;
-        bh=JJFHt0WKQB92kXQpvXVLk3zDAHuNVQpW9ACYB9X5JlY=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=IL6myVQYQiWcr+Iv/skn0UNuXCXKrjL/lFkXJplPrupeQL5g6E4tmNcJ7QDxNh36v
-         BfNhzZPKVdq55BmPZIztbw8JNGkI0X/TJbcEh4kXSiE8cmqpkbnFvHUdyWGz7Cu6pL
-         wy1oD7J+6au+seC5fwUleUJC09q038qMu/eZ3uKjr+18pyvYRg6gQ+UaMxdhP65pXm
-         FbIBpZ/5BY6AIUnsj57pCBjj2H3MVnlyeRvUnZABjjprmsERyEouWILv1q3tzMS4KZ
-         2HFp0KJvXzwFb9/mIVXbA62GFzyYe5BFnmE5MAok5rrmbrKbhagBX2Nl1OcSFZpBH4
-         omqtDTanxmmzQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Frank Rowand <frowand.list@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paul Mackerras <paulus@samba.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-mips@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-sh@vger.kernel.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: [PATCH 2/2] dt: Remove booting-without-of.rst
-In-Reply-To: <20201008142420.2083861-2-robh@kernel.org>
-References: <20201008142420.2083861-1-robh@kernel.org> <20201008142420.2083861-2-robh@kernel.org>
-Date:   Fri, 09 Oct 2020 14:51:51 +1100
-Message-ID: <87imbk12g8.fsf@mpe.ellerman.id.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 19B5F87950B;
+        Fri,  9 Oct 2020 03:53:05 +0000 (UTC)
+Received: from [10.72.13.133] (ovpn-13-133.pek2.redhat.com [10.72.13.133])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 42A3D6EF58;
+        Fri,  9 Oct 2020 03:52:40 +0000 (UTC)
+Subject: Re: [RFC PATCH 09/24] vdpa: multiple address spaces support
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     mst@redhat.com, lulu@redhat.com, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rob.miller@broadcom.com,
+        lingshan.zhu@intel.com, eperezma@redhat.com, hanand@xilinx.com,
+        mhabets@solarflare.com, eli@mellanox.com, amorenoz@redhat.com,
+        maxime.coquelin@redhat.com, stefanha@redhat.com,
+        sgarzare@redhat.com
+References: <20200924032125.18619-1-jasowang@redhat.com>
+ <20200924032125.18619-10-jasowang@redhat.com>
+ <20201001132331.GB32363@mtl-vdi-166.wap.labs.mlnx>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <671aa6b3-c26c-d94a-82a7-0d203ef5b409@redhat.com>
+Date:   Fri, 9 Oct 2020 11:52:39 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20201001132331.GB32363@mtl-vdi-166.wap.labs.mlnx>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rob Herring <robh@kernel.org> writes:
-> booting-without-of.rstt is an ancient document that first outlined
-                        ^
-                        nit
 
-> Flattened DeviceTree on PowerPC initially. The DT world has evolved a
-> lot in the 15 years since and booting-without-of.rst is pretty stale.
-> The name of the document itself is confusing if you don't understand the
-> evolution from real 'OpenFirmware'. Most of what booting-without-of.rst
-> contains is now in the DT specification (which evolved out of the
-> ePAPR). The few things that weren't documented in the DT specification
-> are now.
+On 2020/10/1 下午9:23, Eli Cohen wrote:
+>>   
+>> +	/* Only support 1 address space */
+>> +	if (vdpa->ngroups != 1)
+>> +		return -ENOTSUPP;
+> Checkpatch warning:  prefer EOPNOTSUPP
 >
-> All that remains is the boot entry details, so let's move these to arch
-> specific documents. The exception is arm which already has the same
-> details documented.
->
-> Cc: Frank Rowand <frowand.list@gmail.com>
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: Paul Mackerras <paulus@samba.org>
-> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-> Cc: Rich Felker <dalias@libc.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: x86@kernel.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: linux-mips@vger.kernel.org
-> Cc: linux-doc@vger.kernel.org
-> Cc: linux-sh@vger.kernel.org
-> Acked-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  .../devicetree/booting-without-of.rst         | 1585 -----------------
->  Documentation/devicetree/index.rst            |    1 -
->  Documentation/mips/booting.rst                |   28 +
->  Documentation/mips/index.rst                  |    1 +
->  Documentation/powerpc/booting.rst             |  110 ++
 
-LGTM.
+Will fix.
 
-Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+Thanks
 
-cheers
