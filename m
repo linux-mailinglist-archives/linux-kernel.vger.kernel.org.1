@@ -2,128 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06C0A2887DC
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 13:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E7162887DF
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 13:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388110AbgJILai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 07:30:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729986AbgJILai (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 07:30:38 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83D2AC0613D2;
-        Fri,  9 Oct 2020 04:30:37 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id l16so8989801eds.3;
-        Fri, 09 Oct 2020 04:30:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=cmzLh7799a8AwMknnddM1AHF6UxknT8ZEXggO3stiRM=;
-        b=HYYqpSAoSy4H1yNP56Um2CGJOZ14fsizdBwfpG5Kw+5vk46CFyLzekDdN74eaQEtat
-         xohHGmPtXgMjHCZD5nLd3viri39PfVUOnFn21Y/6wOUATYtJ5grJDUevR2e1SnzcPZOf
-         2w4nRL0+vlWDy6SdFdA3ZZzUewuewU8s/iRdgkkPUP49M1RvCebkjUCDfdlboarqSOKs
-         IzkZDRutIuwjTbom4Ty2NyXvdMephIFIXwfu7YZOrnrtFN/UN5FgRVvOsxcyuV280LE4
-         GWkzD1+Y6qp67mFwTDOZu/cCE8UesSyGH/6ECp3BMu7T8oKWgZtErBOXTXNMqvjTmEd9
-         aPFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=cmzLh7799a8AwMknnddM1AHF6UxknT8ZEXggO3stiRM=;
-        b=YjaH4tNOjQOnlDRMsS+RDK8US3g2eFwwZGRagjGeSdtUJbWLH8vOy77lVYNF1StjaB
-         eOm8ISxdZ8LWC5b1LpA6AufAtegCfouKbJ7qdVV0LQ58SceSeRYpWz1bcRI6bmNfcIor
-         POCLhqdJmoJSiM9e7Tep60lRzvB4rPGtY2tDzJQaHZtpPPU24Okk+XLh5MEDe6/R5Sqf
-         w2NUfXxPuHKANsjsZeazYivdU3VkbdbfresoJMhb/IhnMIF9qwg3rwr9L1O4cMRlv2Hv
-         Fxqtc+hmF7COccheiQbtqzCrgJCIrXNwPbbNwntj8KAOcc3cphjQq57pTtEJ6UMvGXD+
-         67iw==
-X-Gm-Message-State: AOAM533QO1KYD95GatTob/xtuDUNn1yQRnvSMcV4iAM2WSiDTYnT35S8
-        nlID37mPqHQDpvBRygbHoKc=
-X-Google-Smtp-Source: ABdhPJzpeqGvsfbEYNdmYNuLrq27oT7l7P8raftX0Mao/IlG/V/3jYwz8CDa4jcuxdFB0UsKNv5m/g==
-X-Received: by 2002:aa7:cb05:: with SMTP id s5mr13966105edt.363.1602243036219;
-        Fri, 09 Oct 2020 04:30:36 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id h12sm5994544eds.22.2020.10.09.04.30.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 04:30:33 -0700 (PDT)
-Date:   Fri, 9 Oct 2020 13:30:32 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: Re: [PATCH v2 0/2] dt-bindings: Document tpu, pwm support for R8A7742
-Message-ID: <20201009113032.GA447979@ulmo>
-References: <20201006081910.1238-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S2388119AbgJILbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 07:31:35 -0400
+Received: from foss.arm.com ([217.140.110.172]:48630 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729986AbgJILbe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 07:31:34 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 22299D6E;
+        Fri,  9 Oct 2020 04:31:34 -0700 (PDT)
+Received: from bogus (unknown [10.57.53.233])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 55B1A3F66B;
+        Fri,  9 Oct 2020 04:31:32 -0700 (PDT)
+Date:   Fri, 9 Oct 2020 12:31:29 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        ALKML <linux-arm-kernel@lists.infradead.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        DTML <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh@kernel.org>, Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v2 0/4] mailbox: arm_mhu: Add ARM MHU doorbell controller
+ driver
+Message-ID: <20201009113129.uqw5zrqztjgw6vga@bogus>
+References: <20201008191452.38672-1-sudeep.holla@arm.com>
+ <20201009042237.yuumlyoiougygoqs@vireshk-i7>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="pWyiEgJYm5f9v55/"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201006081910.1238-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+In-Reply-To: <20201009042237.yuumlyoiougygoqs@vireshk-i7>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 09, 2020 at 09:52:37AM +0530, Viresh Kumar wrote:
+> On 08-10-20, 20:14, Sudeep Holla wrote:
+> > Hi,
+> > 
+> > These series adds ARM MHU doorbell controller driver based on the
+> > discussion[1]. The DT patches are just repost from Viresh's last posting[2]
+> > 
+> > Regards,
+> > Sudeep
+> > 
+> > v1[3]->v2:
+> > 	- No updates to binding patches(1-2)
+> > 	- Fixed memory leak and improved logic to find free channel reusing
+> > 	  mhu_db_mbox_to_channel as suggested by Jassi
+> > 
+> > [1] https://lore.kernel.org/r/20200909044618.deyx37pzocxiga7u@vireshk-i7
+> > [2] https://lore.kernel.org/r/3874de094d193a08624a00a35067a3237e0b42b1.1600249102.git.viresh.kumar@linaro.org
+> > [3] https://lore.kernel.org/r/20200928114445.19689-1-sudeep.holla@arm.com
+> > 
+> > Sudeep Holla (3):
+> >   dt-bindings: mailbox: add doorbell support to ARM MHU
+> >   mailbox: arm_mhu: Match only if compatible is "arm,mhu"
+> >   mailbox: arm_mhu: Add ARM MHU doorbell driver
+> > 
+> > Viresh Kumar (1):
+> >   dt-bindings: mailbox : arm,mhu: Convert to Json-schema
+> > 
+> >  .../devicetree/bindings/mailbox/arm,mhu.yaml  | 135 +++++++
+> >  .../devicetree/bindings/mailbox/arm-mhu.txt   |  43 ---
+> >  drivers/mailbox/Makefile                      |   2 +-
+> >  drivers/mailbox/arm_mhu.c                     |   3 +
+> >  drivers/mailbox/arm_mhu_db.c                  | 354 ++++++++++++++++++
+> >  5 files changed, 493 insertions(+), 44 deletions(-)
+> >  create mode 100644 Documentation/devicetree/bindings/mailbox/arm,mhu.yaml
+> >  delete mode 100644 Documentation/devicetree/bindings/mailbox/arm-mhu.txt
+> >  create mode 100644 drivers/mailbox/arm_mhu_db.c
+> 
+> MAINTAINERS ?
 
---pWyiEgJYm5f9v55/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Duh ! Generated patches before I added and totally forgot to regenerate.
+Will wait for Jassi's response and then will post as addon if no comments
+or will respin the series. Sorry for that.
 
-On Tue, Oct 06, 2020 at 09:19:08AM +0100, Lad Prabhakar wrote:
-> Hi All,
->=20
-> This patches are part of series [1], where patch 1/2 was missed to be app=
-lied
-> before YAML conversation and patch 2/2 was never applied.
->=20
-> I have restored the Acks for patch 1/2 and patch 2/2 is unchanged.
->=20
-> [1] https://patchwork.kernel.org/project/linux-renesas-soc/list/?series=
-=3D329853
->=20
-> Cheers,
-> Prabhakar
->=20
-> Lad Prabhakar (2):
->   dt-bindings: pwm: renesas,tpu-pwm: Document r8a7742 support
->   dt-bindings: pwm: renesas,pwm-rcar: Add r8a7742 support
->=20
->  Documentation/devicetree/bindings/pwm/renesas,pwm-rcar.yaml | 1 +
->  Documentation/devicetree/bindings/pwm/renesas,tpu-pwm.yaml  | 1 +
->  2 files changed, 2 insertions(+)
-
-Applied, thanks.
-
-Thierry
-
---pWyiEgJYm5f9v55/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+ASdQACgkQ3SOs138+
-s6E2rQ//YrShguVFFG7u4sQvUa08ItxuFHT7b2pTJHkeLuSIdPAyCtQ5tpS6LAyJ
-pESS9NnrAdmFmLXEgXCZjx4G1XyeSCx6l9hRbBjxVgST1QjssS4R//LcgCe5CHiT
-A1iHikOlevX3YXRXLopsgVyZCcQtPIkpPu6BhRjAi/I4ePISMHnGHSVOsDZG1SMd
-PinfjCk+cmsGi2uHugcSz5A0wIx5ISuoNQ0hlBhqCChxeZggLRwbxmZXfi2A/Cv8
-AtCLlfwleIV7POILIlUHMuoOFKXxpe2IJqBEZOIFnn2spRvD6HCZCJ5rYD6OuI8P
-xLmzfPZi1KBkRiqIKWI79ipFihCA/99QUho9JrQEnxuD9lKjlgjH4BGxX8wVcc7l
-qk4VFmWFVtDzlIRWB82GpCphUYdTmw5WNthPZMyvoLQ/G92pKjKn11dO27LKkWMp
-NmVqdsmdOw0L9bz6uYzBNU4YsTZ7yR06np7UzlHpketfPxX2Kw3OFGuR1fF1uPUQ
-q2PnZ4nNnRTLBOweMkfszknbVnszQWPa3eQy8OUgBKEfuveHkoYl1AJDFbx4uc5f
-MRDNZ+DlZjQDtNdxQy19gtoo0dlDGph3cYQJGkUvpNf7663xgXkukMqCGF8jFsZO
-vnOP1xDwJF25Vbos84kQ/uT8Q5yPU2s7hczDzcmVN14UAynGuxk=
-=nKum
------END PGP SIGNATURE-----
-
---pWyiEgJYm5f9v55/--
+-- 
+Regards,
+Sudeep
