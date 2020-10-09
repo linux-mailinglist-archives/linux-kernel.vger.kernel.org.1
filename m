@@ -2,94 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A930288172
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 06:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81D66288177
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 06:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730865AbgJIEpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 00:45:10 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:59431 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725917AbgJIEpK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 00:45:10 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id D97495C0182;
-        Fri,  9 Oct 2020 00:45:08 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Fri, 09 Oct 2020 00:45:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=S4/5eZfqaYaOzO/YeHgD2mGbpT3
-        lW2T47+2f0JWAWZI=; b=pRhEWcT7KllZzKtVHmHyl+gJPE/br0RSkYako5P6vqV
-        xObmNDyeJYriFvPBMmERo6eCwluPvHvEDtllve8wx65XAXVnD1mYsTqZdYTZCDAV
-        j6S3XqMdslU+53E6G8E3D/zz8xekZSBRGFAjPnUJ0z8irrwD9LmXcf4hLmCeo12p
-        0KDK98bSXfohW2ntyfCLVrCbTw4C1xpGYHwCvOeQA4Cl/XW3tY6d6pHOse1VNH8l
-        wnKN+oaWAGAqlaZxJcufmq/ej7eN4DRZfOQ+Js5MikQlmXB7w/Yh+878UAB3FIf6
-        J+mrWXzL4j+bOwa7ZJNlJmDqcD4FEO6d/rBUsvFnt7g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=S4/5eZ
-        fqaYaOzO/YeHgD2mGbpT3lW2T47+2f0JWAWZI=; b=Qw9W9492QtF0bYh8C/s/4R
-        XyOuGclsmyzEnJfbOxA+1NBMfRf26XIqFVoA7j/Bj4SJ4Swm7GLmulUase3UWIWq
-        zU7snfPVp66TwSIO41hgqKz3vJP4piCL+XEgB7oM3050qxg/HJxed9yyiFValNRw
-        SE1CDy7YQVyioODCN7ju0BgbRtcBA3Bs/LkNkK78IAZXN7MWbsMOeauBhKIoEwVB
-        SnzIZANjw1ejztlDZYr4qEPO8QBgx5lmvfZiEx+E4Lr2zHzuKtfZ7l3SbUzi5DAW
-        BWuqs5Uw4MlobSvpire6taRLJH9TBYTiBHlGYUkwiTq7iNvMEg2xI4pNH+zj53YA
-        ==
-X-ME-Sender: <xms:0-p_X2H4WQXCAv1Lar7i5G07Yme-8xzRZXn9G3fGPR1R5MniSflyXA>
-    <xme:0-p_X3UD2HsnPoTMI3qqDa-2JUX1eaJAocU8EERIoHp-M3JJNL1c67U0h1xd_hnYH
-    RnJVKSFD8gR4Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrhedtgdekiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
-    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeekfedr
-    keeirdejgedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:0-p_XwLvUGtMH6SsBrNZuRCQ4l5KiyZwI9wutGi--2V3ERzsFkUpiA>
-    <xmx:0-p_XwH87L6RJf--u-suOApyPDtrz29jpM2ZbQmNZ2YQqJgJbhkRcA>
-    <xmx:0-p_X8X2f6DBPG46MS6ZREr_tFiMUtD9sFTJaheFgkpFX9rAubb70A>
-    <xmx:1Op_X-I3Kqd4GhCOq__lCtogIVOhXuZGJB-ccQoOLkWhq0P9-0vSCg>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 58B903280060;
-        Fri,  9 Oct 2020 00:45:07 -0400 (EDT)
-Date:   Fri, 9 Oct 2020 06:45:05 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Ryan Chen <ryan_chen@aspeedtech.com>
-Cc:     Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, bmc-sw@aspeedtech.com,
-        Alan Stern <stern@rowland.harvard.edu>
-Subject: Re: [PATCH v2 2/3] usb: host: add uhci compatible support for
- ast2600-uhci
-Message-ID: <20201009044505.GA111063@kroah.com>
-References: <20200930040823.26065-4-ryan_chen@aspeedtech.com>
- <20201009024937.11246-1-ryan_chen@aspeedtech.com>
- <20201009024937.11246-3-ryan_chen@aspeedtech.com>
+        id S1731454AbgJIEpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 00:45:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38722 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729225AbgJIEpW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 00:45:22 -0400
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CF1A12224A;
+        Fri,  9 Oct 2020 04:45:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602218721;
+        bh=bVXxzIKSpfH7ECr3TKrz6YAJfZpJOUC61PsdKmh6low=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tLGRqw/c8l7VleXD9L/rZ3NH1hiMpxaCGwyfM8OUESAor5SHU1IzGEn49FO4VpNJX
+         SwF8MnAjMl8lhBNOy33EtnG1PhrSD3MJ8h9OpQO3/fj39iAz3VzB2qBdgn6OyYKseq
+         j9T6NSBc1NXmWU/rFIhIWcWy6EjH3chjQEmcJo+Q=
+Date:   Thu, 8 Oct 2020 21:45:19 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Lokesh Gidra <lokeshgidra@google.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        James Morris <jmorris@namei.org>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Daniel Colascione <dancol@dancol.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        KP Singh <kpsingh@google.com>,
+        David Howells <dhowells@redhat.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Matthew Garrett <matthewgarrett@google.com>,
+        Aaron Goidel <acgoide@tycho.nsa.gov>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Adrian Reber <areber@redhat.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        kaleshsingh@google.com, calin@google.com, surenb@google.com,
+        nnk@google.com, jeffv@google.com, kernel-team@android.com,
+        Daniel Colascione <dancol@google.com>
+Subject: Re: [PATCH v9 1/3] Add a new LSM-supporting anonymous inode interface
+Message-ID: <20201009044519.GC854@sol.localdomain>
+References: <20200923193324.3090160-1-lokeshgidra@google.com>
+ <20200923193324.3090160-2-lokeshgidra@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201009024937.11246-3-ryan_chen@aspeedtech.com>
+In-Reply-To: <20200923193324.3090160-2-lokeshgidra@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 10:49:36AM +0800, Ryan Chen wrote:
-> v2:
->  - Fix continuation lines, align with "of_device"
-> v1:
->  - Add support for AST2600 SOC UHCI driver.
+On Wed, Sep 23, 2020 at 12:33:22PM -0700, Lokesh Gidra wrote:
+> +static struct file *_anon_inode_getfile(const char *name,
+> +					const struct file_operations *fops,
+> +					void *priv, int flags,
+> +					const struct inode *context_inode,
+> +					bool secure)
+> +{
 
-These all go below the --- line, as the kernel documentation asks for.
+Nit: in Linux kernel code, using double underscore function prefixes is much
+more common than single underscores.
 
-> Signed-off-by: Ryan Chen <ryan_chen@aspeedtech.com>
+> +/**
+> + * Like anon_inode_getfd(), but adds the @context_inode argument to
+> + * allow security modules to control creation of the new file. Once the
+> + * security module makes the decision, this inode is no longer needed
+> + * and hence reference to it is not held.
+> + */
+> +int anon_inode_getfd_secure(const char *name, const struct file_operations *fops,
+> +			    void *priv, int flags,
+> +			    const struct inode *context_inode)
+> +{
+> +	return _anon_inode_getfd(name, fops, priv, flags, context_inode, true);
+> +}
+> +EXPORT_SYMBOL_GPL(anon_inode_getfd_secure);
 
-You have no changelog text here at all, and I can't take that, sorry.
-Please fix this up and resend with a proper changelog text.
+This new function has two callers, one of which passes context_inode=NULL.
 
-thanks,
+But from the comment, it sounds like the purpose of this function is just to add
+the context_inode argument.  So one would expect anon_inode_getfd() to be
+equivalent to anon_inode_getfd_secure(..., NULL).
 
-greg k-h
+Apparently, that's not actually the case though.  Can you fix the comment to
+describe what the function actually does?
+
+- Eric
