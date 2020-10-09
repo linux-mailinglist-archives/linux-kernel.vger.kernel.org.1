@@ -2,146 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A1B32889E7
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 15:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2222889AD
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 15:24:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732021AbgJINha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 09:37:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48967 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731678AbgJINh3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 09:37:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602250645;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=x1qsye1PzZJmVZ4NeMP08Jte5iTc9p8avnaZ06vt4hA=;
-        b=SLRHN8EBfcb4hEUg8w/g53FbJTUwmEyABFE0x1u8KeY6mRaJXrGTcVnciQbV9fSFJh6BWZ
-        rDrmSs29UPyv5W7grhk7lCluLS18YlIyBjdPiHs3G/Wg5SqUHqBRYiBRM9qQK9nZ4J5E7g
-        VAzMGV5ksbuRQeg9aocfJlWqgVLRr7E=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-220-pGyVKoYQPZWi-E-Lwi__NA-1; Fri, 09 Oct 2020 09:37:23 -0400
-X-MC-Unique: pGyVKoYQPZWi-E-Lwi__NA-1
-Received: by mail-ej1-f70.google.com with SMTP id x12so3601707eju.22
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 06:37:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=x1qsye1PzZJmVZ4NeMP08Jte5iTc9p8avnaZ06vt4hA=;
-        b=ccoTPa7tEX2rK4Vl9X2Gyj/eAHcvpSQ84IVyUgteoZIhExu3I4aYFKlCpkpzd+RfCq
-         nlybx3jlnmXk2a+0DnH2hdlrF1QvPPznfvA0lpAD9m1I+CW5Z4y0cgrgA8HcnITNQOQb
-         Kne20wr+ZYcUaaCVyJsieEFuLKpOQZBnb/Vt9jUKbyez0HC8sM2jmLWlrRJvWVVYp8u1
-         8LVQrbgA4i0YLVO3n4+O5ynOocASwp+V90uLAS2XZ8IvRfIQD2WJbGy/ljntraYZWzPC
-         L540MiUrIThOdhb4McAJ2O5Sr8CqPayXHoTXG1naRyuoN+HZzZ3ykKrvhxWargiMn+r8
-         0S/A==
-X-Gm-Message-State: AOAM533h2UXr2ONZxQ5GjnFe2lWymFLXO9fhBGhxsrfGsMoZBNyBLM9l
-        Ccz0Bm+yKqLynwKK/J1RbMCfcdpwvL9B081K+aICW/yCP+IGhNlFmN5/DB3Zmf8Yun9qF9c9miw
-        hIO8IBaBCzSOA68LkXu3NZzYy
-X-Received: by 2002:a17:907:1042:: with SMTP id oy2mr13804210ejb.64.1602250642190;
-        Fri, 09 Oct 2020 06:37:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyjDRASl1SrPHlItgzc579TQKOKrfxm53XFwA9vXZ7WeJVfCVMdKa3NAHVVi+JadU/McrwRPw==
-X-Received: by 2002:a17:907:1042:: with SMTP id oy2mr13804186ejb.64.1602250641942;
-        Fri, 09 Oct 2020 06:37:21 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id cz11sm6138649edb.62.2020.10.09.06.37.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Oct 2020 06:37:21 -0700 (PDT)
-Subject: Re: [PATCH V6 RESEND] HID: ASUS: Add support for ASUS N-Key keyboard
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Mark Gross <mgross@linux.intel.com>
-Cc:     Luke D Jones <luke@ljones.dev>, benjamin.tissoires@redhat.com,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
-References: <20200923215633.209724-1-luke@ljones.dev>
- <nycvar.YFH.7.76.2010091137510.3336@cbobk.fhfr.pm>
- <20201009131435.GF4077@smile.fi.intel.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <46e870fa-ff64-73ca-9979-32c8a1b5b12a@redhat.com>
-Date:   Fri, 9 Oct 2020 15:37:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2388361AbgJINX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 09:23:57 -0400
+Received: from mga14.intel.com ([192.55.52.115]:46079 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729935AbgJINX5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 09:23:57 -0400
+IronPort-SDR: KfeAXzQI+rV8xx7uUyr6SQHVXv0dL/UVan2e4yGBuZx8jWVJKmC5OYzZndcxXPmJ1gh1lnQz2J
+ US81Y8JzH3Ig==
+X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="164693633"
+X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
+   d="scan'208";a="164693633"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 06:23:56 -0700
+IronPort-SDR: geQbGFMdRwREImRhiev463DqY7f4SNYSPUTboRfBzWAsQBRw2Zvky5GmHWSeSbURHiH8uSIiB8
+ 3G4FA4SmwuNg==
+X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
+   d="scan'208";a="298435646"
+Received: from xsang-optiplex-9020.sh.intel.com (HELO xsang-OptiPlex-9020) ([10.239.159.140])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 06:23:55 -0700
+Date:   Fri, 9 Oct 2020 21:37:34 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Saravanan Sekar <sravanhome@gmail.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Lee Jones <lee.jones@linaro.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+Subject: drivers/power/supply/mp2629_charger.c:522:9: warning: %d in format
+ string (no. 1) requires 'int' but the argument type is 'unsigned int'.
+Message-ID: <20201009133734.GE8133@xsang-OptiPlex-9020>
 MIME-Version: 1.0
-In-Reply-To: <20201009131435.GF4077@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   549738f15da0e5a00275977623be199fbbf7df50
+commit: 3bc6d790c39dfc4539c36525e6bcb617abbae467 power: supply: Add support for mps mp2629 battery charger
+date:   4 months ago
+:::::: branch date: 12 hours ago
+:::::: commit date: 4 months ago
+compiler: sh4-linux-gcc (GCC) 9.3.0
 
-On 10/9/20 3:14 PM, Andy Shevchenko wrote:
-> On Fri, Oct 09, 2020 at 11:38:55AM +0200, Jiri Kosina wrote:
->> On Thu, 24 Sep 2020, Luke D Jones wrote:
->>
->>> The ASUS N-Key keyboard uses the productId of 0x1866 and is used in
->>> almost all modern ASUS gaming laptops with slight changes to the
->>> firmware. This patch enables: Fn+key hotkeys, keyboard backlight
->>> brightness control, and notify asus-wmi to toggle "fan-mode".
->>>
->>> The keyboard has many of the same key outputs as the existing G752
->>> keyboard including a few extras, and varies a little between laptop
->>> models. The key-sets have been split and sub-grouped so that there
->>> will not be conflict between key event codes used.
->>>
->>> An existing key event used across some keyboards for "Mic Toggle"
->>> has been changed to emit "F20" as this is what all the main
->>> desktop environments are using.
->>>
->>> Additionally this keyboard requires the LED interface to be
->>> intitialised before such things as keyboard backlight control work.
->>>
->>> Misc changes in scope: update some hardcoded comparisons to use an
->>> available define.
->>>
->>> Signed-off-by: Luke D Jones <luke@ljones.dev>
->>
->> Thanks for the patch. Looks good to me in general, one small nit before
->> this can be merged as a whole ...
->>
->>> ---
->>>   drivers/hid/hid-asus.c                     | 188 ++++++++++++++++++---
->>>   drivers/hid/hid-ids.h                      |   1 +
->>>   include/linux/platform_data/x86/asus-wmi.h |   2 +
->>
->> ... I'd like to get Ack from Andy (CCing) on the addition below to
->> asus-wmi.h.
-> 
-> There is a new sheriff in town (Hans and Mark).
-> My personal opinion it is good to go.
-> 
-> Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-I'm afraid that a quick review by me has found multiple issues with
-this patch. I'm going to take a quick break now, I'll email a
-detailed review after that.
-
-Regards,
-
-Hans
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
 
-> 
->> [ ... snip ... ]
->>> diff --git a/include/linux/platform_data/x86/asus-wmi.h b/include/linux/platform_data/x86/asus-wmi.h
->>> index 897b8332a39f..05253cfe786c 100644
->>> --- a/include/linux/platform_data/x86/asus-wmi.h
->>> +++ b/include/linux/platform_data/x86/asus-wmi.h
->>> @@ -27,6 +27,8 @@
->>>   #define ASUS_WMI_METHODID_INIT		0x54494E49 /* INITialize */
->>>   #define ASUS_WMI_METHODID_HKEY		0x59454B48 /* Hot KEY ?? */
->>>
->>> +#define ASUS_WMI_METHODID_NOTIF		0x00100021 /* Notify method ?? */
->>> +
->>>   #define ASUS_WMI_UNSUPPORTED_METHOD	0xFFFFFFFE
->>>
->>>   /* Wireless */
-> 
+vim +522 drivers/power/supply/mp2629_charger.c
+
+3bc6d790c39dfc Saravanan Sekar 2020-05-26  508  
+3bc6d790c39dfc Saravanan Sekar 2020-05-26  509  static ssize_t batt_impedance_compensation_show(struct device *dev,
+3bc6d790c39dfc Saravanan Sekar 2020-05-26  510  					   struct device_attribute *attr,
+3bc6d790c39dfc Saravanan Sekar 2020-05-26  511  					   char *buf)
+3bc6d790c39dfc Saravanan Sekar 2020-05-26  512  {
+3bc6d790c39dfc Saravanan Sekar 2020-05-26  513  	struct mp2629_charger *charger = dev_get_drvdata(dev->parent);
+3bc6d790c39dfc Saravanan Sekar 2020-05-26  514  	unsigned int rval;
+3bc6d790c39dfc Saravanan Sekar 2020-05-26  515  	int ret;
+3bc6d790c39dfc Saravanan Sekar 2020-05-26  516  
+3bc6d790c39dfc Saravanan Sekar 2020-05-26  517  	ret = regmap_read(charger->regmap, MP2629_REG_IMPEDANCE_COMP, &rval);
+3bc6d790c39dfc Saravanan Sekar 2020-05-26  518  	if (ret)
+3bc6d790c39dfc Saravanan Sekar 2020-05-26  519  		return ret;
+3bc6d790c39dfc Saravanan Sekar 2020-05-26  520  
+3bc6d790c39dfc Saravanan Sekar 2020-05-26  521  	rval = (rval >> 4) * 10;
+3bc6d790c39dfc Saravanan Sekar 2020-05-26 @522  	return sprintf(buf, "%d mohm\n", rval);
+3bc6d790c39dfc Saravanan Sekar 2020-05-26  523  }
+3bc6d790c39dfc Saravanan Sekar 2020-05-26  524  
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
