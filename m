@@ -2,131 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2785B288869
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 14:15:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25E4128886F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 14:15:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388457AbgJIMP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 08:15:28 -0400
-Received: from mail-bn8nam11on2082.outbound.protection.outlook.com ([40.107.236.82]:18337
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732958AbgJIMP1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 08:15:27 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Yh2fI35e3f5w9txpBZWQkOQTICG/lZFBQ8whthE+vjOU2vs8LHsszXBwq9sMFgz85pM8FQFD8WEOaSxXXdw/UYId/hlduSlGiddwHGz0rNIsN2pmFBLYEIqZTGeQuCfLU12E+90WkahsI2xa8tJrgO73u5AK2aKMkqAnGB9qMWxtekfvHffoLGnfwGaGh0fNx1yrDOPQmJJB6zhHk6joOUA1EKmt3gK+8CCYOy1vYQMeCvjFtJWm+uec6sJPEJF6Bs3HOrBxM7w4s+FB0BaEW9OVS1cVChKXARuguOMVuSSsNJUZC35aYxbItgOup47v7rzX7ypfmXCsX6ymYfKWiw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=v+qVcC/axReaN9Ip09XBb3yKiJC2FhtpFWzzjw2kts4=;
- b=EVAIFdkljH9EadJUzT+S+5B8ldnoJuZGBnanIV4bi/Y/0JqbFyXp8tiWnjP2Tjg9FSmo6Y8HbuTjpMfBNgFXVb/BSff/Q/PgC4v71ThbnXOthDbSjyaJJRX3BoMqEzP3vSty8mTfgYiJMdwvqXAVOhbH6RRtLIeeSgy1hakQ58YIbP+4ti+blp4b4fxjsit+pkwPydPVotPndkkpDrScE3CTq9bsu8NtfN8+1lk9g70nIGjmjYXOFvOlkZAv5/Z3midD/jD0Njaotdv9cdnpBrGDhlDi7sw+vt+fsEzmsua5CNdL1eqK96wvsPxRGvcvK9REH8zePwAavYH/0nxeRQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=v+qVcC/axReaN9Ip09XBb3yKiJC2FhtpFWzzjw2kts4=;
- b=pvsnu2mZynGOVM5r4nb02cDv4uE43/V22pMXeZPQCCJv/XP+zalIZbwH0H+yAS4cpmWsNn8cKWo41J5a1FeSJ2Hlh+Pt8OSyU2FHZwchROr50jha5GaCAwGQqG1hYOPcEn2f4cXZbt/YL3hli7UVefyXKgyuRvZmDz3R+bQ8+o8=
-Authentication-Results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by BL0PR12MB2545.namprd12.prod.outlook.com (2603:10b6:207:4e::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.26; Fri, 9 Oct
- 2020 12:15:22 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::f8f7:7403:1c92:3a60]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::f8f7:7403:1c92:3a60%6]) with mapi id 15.20.3455.027; Fri, 9 Oct 2020
- 12:15:22 +0000
-Subject: Re: [PATCH 1/4] mm: introduce vma_set_file function v2
-To:     Jason Gunthorpe <jgg@ziepe.ca>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
-        chris@chris-wilson.co.uk, airlied@redhat.com,
-        akpm@linux-foundation.org, sumit.semwal@linaro.org
-References: <20201008112342.9394-1-christian.koenig@amd.com>
- <20201008141211.GG438822@phenom.ffwll.local>
- <8fc28dfa-4bae-bee1-5aca-4e3c6e88b994@gmail.com>
- <20201009073900.GL438822@phenom.ffwll.local> <20201009121220.GM5177@ziepe.ca>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <db073cdb-db29-0a3c-4295-4205c6ddfadc@amd.com>
-Date:   Fri, 9 Oct 2020 14:15:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20201009121220.GM5177@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
-X-ClientProxiedBy: AM0PR08CA0024.eurprd08.prod.outlook.com
- (2603:10a6:208:d2::37) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+        id S2388474AbgJIMPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 08:15:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40710 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388459AbgJIMPg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 08:15:36 -0400
+Received: from mail.kernel.org (ip5f5ad5d0.dynamic.kabel-deutschland.de [95.90.213.208])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2894820709;
+        Fri,  9 Oct 2020 12:15:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602245735;
+        bh=rTq2L7ADDGmC2aCG76C+N7crz/74z4eDGRcypwoL840=;
+        h=From:To:Cc:Subject:Date:From;
+        b=C5sH7wq7QFxHzbOtQD/FfMEkillGm3JuYzND+5IAX/Q1lBbqzqcyznKkoKzUVZv58
+         dAmSLBnMDSMdP5FHOHDVG2e6fHy5ZtXV/cIZMchTxnMZJwSewyY55WEqNrtDqwjp1D
+         4oZsmDmtIFN5JQqlkiTuoJi3nDN/POOyCsDLOQMA=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kQrJ6-003ksz-HO; Fri, 09 Oct 2020 14:15:32 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
+        <jerome.pouiller@silabs.com>, Chen-Yu Tsai <wens@csie.org>,
+        Corentin Labbe <clabbe.montjoie@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Maxime Ripard <mripard@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, devel@driverdev.osuosl.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org
+Subject: [PATCH 0/2] Fix new warnings at linux-next
+Date:   Fri,  9 Oct 2020 14:15:29 +0200
+Message-Id: <cover.1602245659.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM0PR08CA0024.eurprd08.prod.outlook.com (2603:10a6:208:d2::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.21 via Frontend Transport; Fri, 9 Oct 2020 12:15:20 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 1dfe88c0-0b3a-4929-cfcc-08d86c4cfec2
-X-MS-TrafficTypeDiagnostic: BL0PR12MB2545:
-X-Microsoft-Antispam-PRVS: <BL0PR12MB2545A76ECD1CEA577837042683080@BL0PR12MB2545.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: yDgKiMauZeDugPyLrs7NmsISFm0BZnJ8jq7N2GjOheVv3sQrmMN765vlzN6JjzJY0tm8m/R5brmzQsXD7/jFZMS/2AqqRj81lYTD6SaOncrqaRjWDn7HuddiUqGFrJ3yEd6jG+ruzi6ityaiic5x8hcXvL2ZaIGIrDU8DGAlIxEHe4BJ1eWJ9dNFml9ArJSKTaX6dsnP1iD7DNL4ikZ265V9vYq5odarWT6ge7t7cP41g1En24w8eb+8ger5Tp2bAHni7lTQaQ9T71m7fmPoIGz+B7f4roVpahKARFYKSvBNglicR53/kuI0bLlnMMiggVD6LmZL+yDKKv7esJALAKO2lia+aEiAwpVLg2pSr+ttgPWYB7/kB+SQCoioQi+vYi/owrQsqWwuvvRx557wRg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(376002)(366004)(346002)(396003)(66476007)(66556008)(6666004)(66946007)(2906002)(5660300002)(52116002)(316002)(478600001)(7416002)(16526019)(6486002)(31696002)(186003)(86362001)(36756003)(8676002)(31686004)(8936002)(2616005)(83380400001)(921003)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: Y6J49I1B1KLPXdyQEkgAghCRDAfhrP2tR//JqPF2e11iiaYJvrvp4NCArB6myWnkNdxL/Bzc1AIGMp/ch5fnGwKE+VgDyG07ZChH1alKnU4vU2J4hhSEFZ5NUwOmO/HjENwVHdQTVeATBa4qD3pukCNU4272T3LECgJkXuL/cGf/TaS9wonk4tjGbrf47zQ0fHuof+doZcBZSjIMwjd23G8fRzk3UD75eDhkUjLFel8gpHOQTRHEa5+vCecF+FxLWBsoWgfqQ4L79QUbl2i8Ax2Iv2RxdfaaAGgUk1c96YE7dd0h4SkvNQWLfg/5dUFUfwN6d1hben/ZC5L8N7x70VDe0jTAquTURy9ca8NljLHC8pKXzCzGiTyvhvdD26Ssc7CGgYkzJUj7+wvjbZODYVRDViRMF7GP9Hyt6XE71pas87SNZq5cpbNGkPyAV4IqSZHFcALs5SpY+Iaro+UAUkJEks6ksMyuerZG9DCfvtVGUcS88dqosP8Nlo0+Xeel3h2gUMA+1LR1QZoTNTWaM3ygqUjYqymDnbDDWz9yniFBhrhnA/VNPLiT9NuRSQPHuiM8XtxzoYrCAgb5IGwq70P4qj31MuwiHq6N/kz5uc0Uh59ufchunfIkqEFVopryd5GqZwEGWNitXtso29+NxacY681VqdMlqDbdOKlHUjHBCtZRvLFnJQey8onyxPssOAOUIZY43oe6pYGX8Jj+iw==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1dfe88c0-0b3a-4929-cfcc-08d86c4cfec2
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2020 12:15:22.3807
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0c3VChSHEZGkcxa28wQgdcF2P0EDXEwRHqhhfcU/yb6CSBZDCsIsYtNAmdbw6TiA
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2545
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 09.10.20 um 14:12 schrieb Jason Gunthorpe:
-> On Fri, Oct 09, 2020 at 09:39:00AM +0200, Daniel Vetter wrote:
->> I just noticed this here in the patch because everyone else does not do
->> this. But looking at the mmap_region() code in mmap.c we seem to indeed
->> have this problem for the error path:
->>
->> unmap_and_free_vma:
->> 	vma->vm_file = NULL;
->> 	fput(file);
->>
->> Note that the success path does things correctly (a bit above):
->>
->> 	file = vma->vm_file;
->> out:
->>
->> So it indeed looks like dma-buf is the only one that does this fully
->> correctly. So maybe we should do a follow-up patch to change the
->> mmap_region exit code to pick up whatever vma->vm_file was set instead,
->> and fput that?
-> Given that this new vma_set_file() should be the only way to
-> manipulate vm_file from the mmap op, I think this reflects a bug in
-> mm/mmap.c.. Should be:
->
-> unmap_and_free_vma:
->          fput(vma->vm_file);
->          vma->vm_file = NULL;
->
-> Then everything works the way you'd expect without tricky error
-> handling
+There are some file renames at linux-next that are causing some
+new documentation warnings. Address them.
 
-That's what Daniel suggested as well, yes.
+Mauro Carvalho Chehab (2):
+  MAINTAINERS: fix broken doc refs due to yaml conversion
+  crypto: sun8x-ce*: update entries to its documentation
 
-Going to craft a separate patch for this.
+ Documentation/devicetree/bindings/clock/hi6220-clock.txt | 2 +-
+ MAINTAINERS                                              | 9 ++++-----
+ drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c        | 2 +-
+ drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c        | 2 +-
+ drivers/crypto/allwinner/sun8i-ce/sun8i-ce-trng.c        | 2 +-
+ .../devicetree/bindings/net/wireless/silabs,wfx.yaml     | 2 +-
+ 6 files changed, 9 insertions(+), 10 deletions(-)
 
-Thanks,
-Christian.
+-- 
+2.26.2
 
->
-> Jason
 
