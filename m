@@ -2,81 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91FAB289C0C
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 01:14:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F9D5289C0E
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 01:16:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726410AbgJIXON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 19:14:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51268 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726000AbgJIXOM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 19:14:12 -0400
-Received: from localhost (unknown [176.164.200.234])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5EA0D222EB;
-        Fri,  9 Oct 2020 23:14:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602285251;
-        bh=l2U6CjZx9TygARxZeTvKgdT2J+ZVJfnAffaUI+8Mcl0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BkWm7XSkhPu3t6TfNTM6e+Ps02BvK52EEcJneG+zNGknefoB4ktuGpByNQ4EFzcEw
-         KFpIq3nrbL3zaS/TXM6QQHHbTjQbNngqq/H6qUUYQguTd1hs2f4Achc/IPcK5U9wUc
-         rTh42TGz5y4MRBLElKLZC1T2KAXVzmDP3PQzwVBs=
-Date:   Sat, 10 Oct 2020 01:14:09 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        neeraj.iitr10@gmail.com, "Paul E. McKenney" <paulmck@kernel.org>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Subject: Re: [PATCH v6 1/4] rcu/tree: Make rcu_do_batch count how many
- callbacks were executed
-Message-ID: <20201009231409.GA120772@lothringen>
-References: <20200923152211.2403352-1-joel@joelfernandes.org>
- <20200923152211.2403352-2-joel@joelfernandes.org>
+        id S1726615AbgJIXOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 19:14:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726216AbgJIXOv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 19:14:51 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22902C0613D5
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 16:14:51 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id o9so5190024plx.10
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 16:14:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=n8tMNPlt+WgOGWxVqUdEpRLjgaATmbfqGWdnlUKGm2w=;
+        b=iKYPQpxjWQDkWz+DPQGsFwsINVhn1zUNJnEVfUJUHTj6OrT2UeyVf1jFWu2VGG0Sd/
+         Q6eQgdzwWjj1nWOw0JUlCIXxYd/FtVriQRsOUwCsaFdBcNkPKi+2pbMPFtUj75Sr/tRe
+         8j88AH6f6bdBDPc15Bfpy6/ADirbyIrXuuiWY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=n8tMNPlt+WgOGWxVqUdEpRLjgaATmbfqGWdnlUKGm2w=;
+        b=LQiqI28/U5Lf75EwNHNUanmfcX9VIsVIM5v9mcbIRZVSaXEkldoSS/gYhOrR7yefUZ
+         fWedFu5jRRBNtl+1jjKZR5co/LWTJJRhNzCSQLh4vuET4lBgFDfY0RRgTh7FSpp7yCOi
+         ZnQdbYsTleKAMiUYeGUeJCsN+TnBIrjcz249EGfF5zyB3bG6vuJK6qrcIjr3KneQpIgw
+         njHOQoHtJUoyisvdnBWwXpQTWEXRK1TheH9cznx4dT41xBSomNAgbT9tZfOZ+/4emoBd
+         wkIWgHE4RqQziet+i1aaZbTBxq8pJ4hqvtPCh1q8WAd35AZtcB/HHiQsDfa94xiJ35yF
+         yINg==
+X-Gm-Message-State: AOAM5326sflBNtnM9arES0kdatAR+iVLDJftGQQtNafkM+qQtl1598lT
+        7cNdNg58uWHmTAcqqIWNYNMr3A==
+X-Google-Smtp-Source: ABdhPJwNBafddDMTu9v6aB/SdriCWv98crtqxIV19v6tjDbA0QjDMDvn6HIEfpx597XYVrlGXc/Prw==
+X-Received: by 2002:a17:902:8bc4:b029:d2:8cec:1fae with SMTP id r4-20020a1709028bc4b02900d28cec1faemr14566468plo.23.1602285290468;
+        Fri, 09 Oct 2020 16:14:50 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id g4sm12323939pgh.65.2020.10.09.16.14.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Oct 2020 16:14:49 -0700 (PDT)
+Date:   Fri, 9 Oct 2020 16:14:48 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     containers@lists.linux-foundation.org,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Subject: Re: [PATCH v4 seccomp 5/5] seccomp/cache: Report cache data through
+ /proc/pid/seccomp_cache
+Message-ID: <202010091613.B671C86@keescook>
+References: <cover.1602263422.git.yifeifz2@illinois.edu>
+ <c2077b8a86c6d82d611007d81ce81d32f718ec59.1602263422.git.yifeifz2@illinois.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200923152211.2403352-2-joel@joelfernandes.org>
+In-Reply-To: <c2077b8a86c6d82d611007d81ce81d32f718ec59.1602263422.git.yifeifz2@illinois.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 11:22:08AM -0400, Joel Fernandes (Google) wrote:
-> Currently, rcu_do_batch() depends on the unsegmented callback list's len field
-> to know how many CBs are executed. This fields counts down from 0 as CBs are
-> dequeued.  It is possible that all CBs could not be run because of reaching
-> limits in which case the remaining unexecuted callbacks are requeued in the
-> CPU's segcblist.
+On Fri, Oct 09, 2020 at 12:14:33PM -0500, YiFei Zhu wrote:
+> From: YiFei Zhu <yifeifz2@illinois.edu>
 > 
-> The number of callbacks that were not requeued are then the negative count (how
-> many CBs were run) stored in the rcl->len which has been counting down on every
-> dequeue. This negative count is then added to the per-cpu segmented callback
-> list's to correct its count.
+> Currently the kernel does not provide an infrastructure to translate
+> architecture numbers to a human-readable name. Translating syscall
+> numbers to syscall names is possible through FTRACE_SYSCALL
+> infrastructure but it does not provide support for compat syscalls.
 > 
-> Such a design works against future efforts to track the length of each segment
-> of the segmented callback list. The reason is because
-> rcu_segcblist_extract_done_cbs() will be populating the unsegmented callback
-> list's length field (rcl->len) during extraction.
-> Also, the design of counting down from 0 is confusing and error-prone IMHO.
-
-Right :)
-
+> This will create a file for each PID as /proc/pid/seccomp_cache.
+> The file will be empty when no seccomp filters are loaded, or be
+> in the format of:
+> <arch name> <decimal syscall number> <ALLOW | FILTER>
+> where ALLOW means the cache is guaranteed to allow the syscall,
+> and filter means the cache will pass the syscall to the BPF filter.
 > 
-> This commit therefore explicitly counts have many callbacks were executed in
-
-s/have/how
-
-> rcu_do_batch() itself, and uses that to update the per-CPU segcb list's ->len
-> field, without relying on the negativity of rcl->len.
+> For the docker default profile on x86_64 it looks like:
+> x86_64 0 ALLOW
+> x86_64 1 ALLOW
+> x86_64 2 ALLOW
+> x86_64 3 ALLOW
+> [...]
+> x86_64 132 ALLOW
+> x86_64 133 ALLOW
+> x86_64 134 FILTER
+> x86_64 135 FILTER
+> x86_64 136 FILTER
+> x86_64 137 ALLOW
+> x86_64 138 ALLOW
+> x86_64 139 FILTER
+> x86_64 140 ALLOW
+> x86_64 141 ALLOW
+> [...]
 > 
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> This file is guarded by CONFIG_SECCOMP_CACHE_DEBUG with a default
+> of N because I think certain users of seccomp might not want the
+> application to know which syscalls are definitely usable. For
+> the same reason, it is also guarded by CAP_SYS_ADMIN.
+> 
+> Suggested-by: Jann Horn <jannh@google.com>
+> Link: https://lore.kernel.org/lkml/CAG48ez3Ofqp4crXGksLmZY6=fGrF_tWyUCg7PBkAetvbbOPeOA@mail.gmail.com/
+> Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
+> ---
+>  arch/Kconfig                   | 24 ++++++++++++++
+>  arch/x86/Kconfig               |  1 +
+>  arch/x86/include/asm/seccomp.h |  3 ++
+>  fs/proc/base.c                 |  6 ++++
+>  include/linux/seccomp.h        |  5 +++
+>  kernel/seccomp.c               | 59 ++++++++++++++++++++++++++++++++++
+>  6 files changed, 98 insertions(+)
+> 
+> diff --git a/arch/Kconfig b/arch/Kconfig
+> index 21a3675a7a3a..85239a974f04 100644
+> --- a/arch/Kconfig
+> +++ b/arch/Kconfig
+> @@ -471,6 +471,15 @@ config HAVE_ARCH_SECCOMP_FILTER
+>  	    results in the system call being skipped immediately.
+>  	  - seccomp syscall wired up
+>  
+> +config HAVE_ARCH_SECCOMP_CACHE
+> +	bool
+> +	help
+> +	  An arch should select this symbol if it provides all of these things:
+> +	  - all the requirements for HAVE_ARCH_SECCOMP_FILTER
+> +	  - SECCOMP_ARCH_NATIVE
+> +	  - SECCOMP_ARCH_NATIVE_NR
+> +	  - SECCOMP_ARCH_NATIVE_NAME
+> +
+> [...]
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 1ab22869a765..1a807f89ac77 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -150,6 +150,7 @@ config X86
+>  	select HAVE_ARCH_COMPAT_MMAP_BASES	if MMU && COMPAT
+>  	select HAVE_ARCH_PREL32_RELOCATIONS
+>  	select HAVE_ARCH_SECCOMP_FILTER
+> +	select HAVE_ARCH_SECCOMP_CACHE
+>  	select HAVE_ARCH_THREAD_STRUCT_WHITELIST
+>  	select HAVE_ARCH_STACKLEAK
+>  	select HAVE_ARCH_TRACEHOOK
 
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+HAVE_ARCH_SECCOMP_CACHE isn't used any more. I think this was left over
+from before.
 
-Thanks.
+-- 
+Kees Cook
