@@ -2,138 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4503A2880E8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 05:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B44A2880ED
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 05:59:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726041AbgJID5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 23:57:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58670 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729845AbgJID5c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 23:57:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602215850;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Uo7BVuO5nWq7vRp+Q6BR8DRA9qJtxjDgxial76TpnbI=;
-        b=DxLqrmHqTmx7VLwDPpQI1/Eak5FmOvuP3OKzEHhjxu8Ky20mOLCfsDT89kKF2w9YspYLeT
-        +5uwf/UIVfox8+KCI09kAAJDLsid7f4t0YEeWJuzO9xq4Ez3tXzl1FK3Ab50KPogmNrx6/
-        2h2bBXdos2VAVRVdBMKtoJMgqT4Z0dQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-268-I6MnL823NTCeUzAiJitfyQ-1; Thu, 08 Oct 2020 23:57:27 -0400
-X-MC-Unique: I6MnL823NTCeUzAiJitfyQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A1AF387950C;
-        Fri,  9 Oct 2020 03:57:25 +0000 (UTC)
-Received: from [10.72.13.133] (ovpn-13-133.pek2.redhat.com [10.72.13.133])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 796DC5C1BD;
-        Fri,  9 Oct 2020 03:56:52 +0000 (UTC)
-Subject: Re: [RFC PATCH 10/24] vdpa: introduce config operations for
- associating ASID to a virtqueue group
-To:     Eli Cohen <elic@nvidia.com>
-Cc:     mst@redhat.com, lulu@redhat.com, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rob.miller@broadcom.com,
-        lingshan.zhu@intel.com, eperezma@redhat.com, hanand@xilinx.com,
-        mhabets@solarflare.com, amorenoz@redhat.com,
-        maxime.coquelin@redhat.com, stefanha@redhat.com,
-        sgarzare@redhat.com
-References: <20200924032125.18619-1-jasowang@redhat.com>
- <20200924032125.18619-11-jasowang@redhat.com>
- <20201001132927.GC32363@mtl-vdi-166.wap.labs.mlnx>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <70af3ff0-74ed-e519-56f5-d61e6a48767f@redhat.com>
-Date:   Fri, 9 Oct 2020 11:56:45 +0800
+        id S1730838AbgJID7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 23:59:18 -0400
+Received: from foss.arm.com ([217.140.110.172]:39258 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726567AbgJID7S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 23:59:18 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2B5AF1063;
+        Thu,  8 Oct 2020 20:59:17 -0700 (PDT)
+Received: from [192.168.122.166] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 996353F66B;
+        Thu,  8 Oct 2020 20:59:16 -0700 (PDT)
+Subject: Re: [PATCH 1/4] of/fdt: Update zone_dma_bits when running in bcm2711
+To:     Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        iommu@lists.linux-foundation.org, Rob Herring <robh+dt@kernel.org>,
+        linux-rpi-kernel@lists.infradead.org,
+        Will Deacon <will@kernel.org>, Christoph Hellwig <hch@lst.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Robin Murphy <robin.murphy@arm.com>
+References: <20201001161740.29064-1-nsaenzjulienne@suse.de>
+ <20201001161740.29064-2-nsaenzjulienne@suse.de> <20201001171500.GN21544@gaia>
+ <20201001172320.GQ21544@gaia>
+ <b47232e2173e9e5ddf8f5be4c7b5a2f897f34eb7.camel@suse.de>
+ <20201002115541.GC7034@gaia>
+ <12f33d487eabd626db4c07ded5a1447795eed355.camel@suse.de>
+ <20201008101353.GE7661@gaia>
+ <CAMj1kXFDEdEJ_eaB=jb1m=tKBpVdskrC0fW67NvGNZFS5PVL=Q@mail.gmail.com>
+From:   Jeremy Linton <jeremy.linton@arm.com>
+Message-ID: <978e01a1-71e6-7286-0876-bb10698ba1d2@arm.com>
+Date:   Thu, 8 Oct 2020 22:59:09 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20201001132927.GC32363@mtl-vdi-166.wap.labs.mlnx>
+In-Reply-To: <CAMj1kXFDEdEJ_eaB=jb1m=tKBpVdskrC0fW67NvGNZFS5PVL=Q@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2020/10/1 下午9:29, Eli Cohen wrote:
-> On Thu, Sep 24, 2020 at 11:21:11AM +0800, Jason Wang wrote:
->> This patch introduces a new bus operation to allow the vDPA bus driver
->> to associate an ASID to a virtqueue group.
+On 10/8/20 2:43 PM, Ard Biesheuvel wrote:
+> (+ Lorenzo)
+> 
+> On Thu, 8 Oct 2020 at 12:14, Catalin Marinas <catalin.marinas@arm.com> wrote:
 >>
-> So in case of virtio_net, I would expect that all the data virtqueues
-> will be associated with the same address space identifier.
-
-
-Right.
-
-I will add the codes to do this in the next version. It should be more 
-explicit than have this assumption by default.
-
-
-> Moreover,
-> this assignment should be provided before the set_map call that provides
-> the iotlb for the address space, correct?
-
-
-I think it's better not have this limitation, note that set_map() now 
-takes a asid argument.
-
-So for hardware if the associated as is changed, the driver needs to 
-program the hardware to switch to the new mapping.
-
-Does this work for mlx5?
-
-
->> Signed-off-by: Jason Wang <jasowang@redhat.com>
->> ---
->>   include/linux/vdpa.h | 10 ++++++++++
->>   1 file changed, 10 insertions(+)
+>> On Thu, Oct 08, 2020 at 12:05:25PM +0200, Nicolas Saenz Julienne wrote:
+>>> On Fri, 2020-10-02 at 12:55 +0100, Catalin Marinas wrote:
+>>>> On Thu, Oct 01, 2020 at 07:31:19PM +0200, Nicolas Saenz Julienne wrote:
+>>>>> On Thu, 2020-10-01 at 18:23 +0100, Catalin Marinas wrote:
+>>>>>> On Thu, Oct 01, 2020 at 06:15:01PM +0100, Catalin Marinas wrote:
+>>>>>>> On Thu, Oct 01, 2020 at 06:17:37PM +0200, Nicolas Saenz Julienne wrote:
+>>>>>>>> diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+>>>>>>>> index 4602e467ca8b..cd0d115ef329 100644
+>>>>>>>> --- a/drivers/of/fdt.c
+>>>>>>>> +++ b/drivers/of/fdt.c
+>>>>>>>> @@ -25,6 +25,7 @@
+>>>>>>>>   #include <linux/serial_core.h>
+>>>>>>>>   #include <linux/sysfs.h>
+>>>>>>>>   #include <linux/random.h>
+>>>>>>>> +#include <linux/dma-direct.h>      /* for zone_dma_bits */
+>>>>>>>>
+>>>>>>>>   #include <asm/setup.h>  /* for COMMAND_LINE_SIZE */
+>>>>>>>>   #include <asm/page.h>
+>>>>>>>> @@ -1198,6 +1199,14 @@ void __init early_init_dt_scan_nodes(void)
+>>>>>>>>      of_scan_flat_dt(early_init_dt_scan_memory, NULL);
+>>>>>>>>   }
+>>>>>>>>
+>>>>>>>> +void __init early_init_dt_update_zone_dma_bits(void)
+>>>>>>>> +{
+>>>>>>>> +   unsigned long dt_root = of_get_flat_dt_root();
+>>>>>>>> +
+>>>>>>>> +   if (of_flat_dt_is_compatible(dt_root, "brcm,bcm2711"))
+>>>>>>>> +           zone_dma_bits = 30;
+>>>>>>>> +}
+>>>>>>>
+>>>>>>> I think we could keep this entirely in the arm64 setup_machine_fdt() and
+>>>>>>> not pollute the core code with RPi4-specific code.
+>>>>>>
+>>>>>> Actually, even better, could we not move the check to
+>>>>>> arm64_memblock_init() when we initialise zone_dma_bits?
+>>>>>
+>>>>> I did it this way as I vaguely remembered Rob saying he wanted to centralise
+>>>>> all early boot fdt code in one place. But I'll be happy to move it there.
+>>>>
+>>>> I can see Rob replied and I'm fine if that's his preference. However,
+>>>> what I don't particularly like is that in the arm64 code, if
+>>>> zone_dma_bits == 24, we set it to 32 assuming that it wasn't touched by
+>>>> the early_init_dt_update_zone_dma_bits(). What if at some point we'll
+>>>> get a platform that actually needs 24 here (I truly hope not, but just
+>>>> the principle of relying on magic values)?
+>>>>
+>>>> So rather than guessing, I'd prefer if the arch code can override
+>>>> ZONE_DMA_BITS_DEFAULT. Then, in arm64, we'll just set it to 32 and no
+>>>> need to explicitly touch the zone_dma_bits variable.
+>>>
+>>> Yes, sonds like the way to go. TBH I wasn't happy with that solution either,
+>>> but couldn't think of a nicer alternative.
+>>>
+>>> Sadly I just realised that the series is incomplete, we have RPi4 users that
+>>> want to boot unsing ACPI, and this series would break things for them. I'll
+>>> have a word with them to see what we can do for their use-case.
 >>
->> diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
->> index 1e1163daa352..e2394995a3cd 100644
->> --- a/include/linux/vdpa.h
->> +++ b/include/linux/vdpa.h
->> @@ -160,6 +160,12 @@ struct vdpa_device {
->>    * @get_generation:		Get device config generation (optional)
->>    *				@vdev: vdpa device
->>    *				Returns u32: device generation
->> + * @set_group_asid:		Set address space identifier for a
->> + *				virtqueue group
->> + *				@vdev: vdpa device
->> + *				@group: virtqueue group
->> + *				@asid: address space id for this group
->> + *				Returns integer: success (0) or error (< 0)
->>    * @set_map:			Set device memory mapping (optional)
->>    *				Needed for device that using device
->>    *				specific DMA translation (on-chip IOMMU)
->> @@ -237,6 +243,10 @@ struct vdpa_config_ops {
->>   		       u64 iova, u64 size, u64 pa, u32 perm);
->>   	int (*dma_unmap)(struct vdpa_device *vdev, unsigned int asid,
->>   			 u64 iova, u64 size);
->> +	int (*set_group_asid)(struct vdpa_device *vdev, unsigned int group,
->> +			      unsigned int asid);
->> +
->> +
-> Extra space
-
-
-Will fix.
-
-Thanks
-
-
->>   
->>   	/* Free device resources */
->>   	void (*free)(struct vdpa_device *vdev);
->> -- 
->> 2.20.1
+>> Is there a way to get some SoC information from ACPI?
 >>
+> 
+> This is unfortunate. We used ACPI _DMA methods as they were designed
+> to communicate the DMA limit of the XHCI controller to the OS.
+> 
+> It shouldn't be too hard to match the OEM id field in the DSDT, and
+> switch to the smaller mask. But it sucks to have to add a quirk like
+> that.
+> It also requires delaying setting the arm64_dma_phy_limit a bit, but 
+that doesn't appear to be causing a problem. I've been boot/compiling 
+with a patch like:
+
+diff --git a/arch/arm64/kernel/acpi.c b/arch/arm64/kernel/acpi.c
+index cada0b816c8a..9dfe776c1c75 100644
+--- a/arch/arm64/kernel/acpi.c
++++ b/arch/arm64/kernel/acpi.c
+@@ -14,6 +14,7 @@
+
+  #include <linux/acpi.h>
+  #include <linux/cpumask.h>
++#include <linux/dma-direct.h>
+  #include <linux/efi.h>
+  #include <linux/efi-bgrt.h>
+  #include <linux/init.h>
+@@ -168,6 +169,11 @@ static int __init acpi_fadt_sanity_check(void)
+                 ret = -EINVAL;
+         }
+
++       if (!strncmp(table->oem_id, "RPIFDN", ACPI_OEM_ID_SIZE) &&
++           !strncmp(table->oem_table_id,  "RPI4    ", 
+ACPI_OEM_TABLE_ID_SIZE) &&
++           table->oem_revision <= 0x200)  {
++               zone_dma_bits = 30;
++       }
+  out:
+         /*
+          * acpi_get_table() creates FADT table mapping that
+diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+index cd5caca8a929..6c8aaf1570ce 100644
+--- a/arch/arm64/mm/init.c
++++ b/arch/arm64/mm/init.c
+@@ -195,6 +195,7 @@ static void __init zone_sizes_init(unsigned long 
+min, unsigned long max)
+         unsigned long max_zone_pfns[MAX_NR_ZONES]  = {0};
+
+  #ifdef CONFIG_ZONE_DMA
++       arm64_dma_phys_limit = max_zone_phys(zone_dma_bits);
+         max_zone_pfns[ZONE_DMA] = PFN_DOWN(arm64_dma_phys_limit);
+  #endif
+  #ifdef CONFIG_ZONE_DMA32
+@@ -393,7 +394,6 @@ void __init arm64_memblock_init(void)
+                  */
+                 if (zone_dma_bits == ZONE_DMA_BITS_DEFAULT)
+                         zone_dma_bits = 32;
+-               arm64_dma_phys_limit = max_zone_phys(zone_dma_bits);
+         }
+
+         if (IS_ENABLED(CONFIG_ZONE_DMA32))
+
 
