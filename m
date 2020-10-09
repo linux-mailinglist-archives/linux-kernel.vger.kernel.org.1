@@ -2,103 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01977288904
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 14:41:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9597928890C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 14:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387600AbgJIMlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 08:41:23 -0400
-Received: from foss.arm.com ([217.140.110.172]:50198 "EHLO foss.arm.com"
+        id S2387558AbgJIMnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 08:43:11 -0400
+Received: from mga09.intel.com ([134.134.136.24]:56440 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731643AbgJIMlW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 08:41:22 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 03B981063;
-        Fri,  9 Oct 2020 05:41:22 -0700 (PDT)
-Received: from e119603-lin.cambridge.arm.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7E4AA3F70D;
-        Fri,  9 Oct 2020 05:41:20 -0700 (PDT)
-Date:   Fri, 9 Oct 2020 13:42:48 +0100
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        robh@kernel.org, satyakim@qti.qualcomm.com, sudeep.holla@arm.com,
-        broonie@kernel.org, james.quinlan@broadcom.com,
-        Jonathan.Cameron@Huawei.com, etienne.carriere@linaro.org,
-        lukasz.luba@arm.com
-Subject: Re: [PATCH 0/4] Add support for SCMIv3.0 Voltage Domain Protocol and
- SCMI-Regulator
-Message-ID: <20201009124056.GB32363@e119603-lin.cambridge.arm.com>
-References: <20201005222623.1123-1-cristian.marussi@arm.com>
- <8483165a-e413-b2f8-bd33-6da07fe56d62@gmail.com>
+        id S1725852AbgJIMnL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 08:43:11 -0400
+IronPort-SDR: Dgz9NowuqHeyF2t5fvvpG8OdBX8+IxI8Wxhuzw7Or5bWtmgPg/7OH9j/0EopSqiHPY6v/43Z7C
+ 2ckPJYkbGTcA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="165592474"
+X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
+   d="scan'208";a="165592474"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 05:43:10 -0700
+IronPort-SDR: mbOaxvauxBcqkYS5cswFgFbzINe8QEqu5bJ/bWN0EeIwnWp6+4EEPaUUW5HzGvu1SGaneXGBVn
+ jYNQVCGl5L+A==
+X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
+   d="scan'208";a="354841361"
+Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 05:43:09 -0700
+Date:   Fri, 9 Oct 2020 05:43:07 -0700
+From:   "Raj, Ashok" <ashok.raj@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Dave Jiang <dave.jiang@intel.com>, vkoul@kernel.org,
+        megha.dey@intel.com, maz@kernel.org, bhelgaas@google.com,
+        alex.williamson@redhat.com, jacob.jun.pan@intel.com,
+        yi.l.liu@intel.com, baolu.lu@intel.com, kevin.tian@intel.com,
+        sanjay.k.kumar@intel.com, tony.luck@intel.com, jing.lin@intel.com,
+        dan.j.williams@intel.com, kwankhede@nvidia.com,
+        eric.auger@redhat.com, parav@mellanox.com, rafael@kernel.org,
+        netanelg@mellanox.com, shahafs@mellanox.com,
+        yan.y.zhao@linux.intel.com, pbonzini@redhat.com,
+        samuel.ortiz@intel.com, mona.hossain@intel.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-pci@vger.kernel.org, kvm@vger.kernel.org,
+        Ashok Raj <ashok.raj@intel.com>
+Subject: Re: [PATCH v3 11/18] dmaengine: idxd: ims setup for the vdcm
+Message-ID: <20201009124307.GA63643@otc-nc-03>
+References: <160021207013.67751.8220471499908137671.stgit@djiang5-desk3.ch.intel.com>
+ <160021253189.67751.12686144284999931703.stgit@djiang5-desk3.ch.intel.com>
+ <87mu17ghr1.fsf@nanos.tec.linutronix.de>
+ <0f9bdae0-73d7-1b4e-b478-3cbd05c095f4@intel.com>
+ <87r1q92mkx.fsf@nanos.tec.linutronix.de>
+ <44e19c5d-a0d2-0ade-442c-61727701f4d8@intel.com>
+ <87y2kgux2l.fsf@nanos.tec.linutronix.de>
+ <20201008233210.GH4734@nvidia.com>
+ <20201009012231.GA60263@otc-nc-03>
+ <20201009115737.GI4734@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8483165a-e413-b2f8-bd33-6da07fe56d62@gmail.com>
+In-Reply-To: <20201009115737.GI4734@nvidia.com>
 User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 05:38:52PM -0700, Florian Fainelli wrote:
+On Fri, Oct 09, 2020 at 08:57:37AM -0300, Jason Gunthorpe wrote:
+> On Thu, Oct 08, 2020 at 06:22:31PM -0700, Raj, Ashok wrote:
 > 
+> > Not randomly put there Jason :-).. There is a good reason for it. 
 > 
-> On 10/5/2020 3:26 PM, Cristian Marussi wrote:
-> >Hi,
-> >
-> >this series introduces the support for the new SCMI Voltage Domain Protocol
-> >defined by the upcoming SCMIv3.0 specification, whose BETA release is
-> >available at [1].
-> >
-> >Afterwards, a new generic SCMI Regulator driver is developed on top of the
-> >new SCMI VD Protocol.
-> >
-> >The series is currently based on for-next/scmi [2] on top of:
-> >
-> >commit 66d90f6ecee7 ("firmware: arm_scmi: Enable building as a single
-> >		     module")
-> >
-> >Any feedback welcome,
-> 
-> Well, this is just great! We were right about to develop a proprietary SCMI
-> protocol in order to control a locked down PMIC accessible behind a secured
-> firmware. We would have done essentially just that since the use case is to
-> control the various regulators exposed by this PMIC over SCMI. Thanks a lot!
-> 
+> Sure the PASID value being associated with the IRQ make sense, but
+> combining that register with the interrupt mask is just a compltely
+> random thing to do.
 
-You're welcome :D ... any feedback from your independent testing will be
-appreciated.
+Hummm... Not sure what you are complaining.. but in any case giving
+hardware a more efficient way to store interrupt entries breaking any
+boundaries that maybe implied by the spec is why IMS was defined.
 
-Thanks
-
-Cristian
-> >
-> >Thanks,
-> >
-> >Cristian
-> >
-> >[1]:https://developer.arm.com/documentation/den0056/c/
-> >[2]:https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git/log/?h=for-next/scmi
-> >
-> >
-> >Cristian Marussi (4):
-> >   firmware: arm_scmi: Add Voltage Domain Support
-> >   firmware: arm_scmi: add SCMI Voltage Domain devname
-> >   regulator: add SCMI driver
-> >   dt-bindings: arm: add support for SCMI Regulators
-> >
-> >  .../devicetree/bindings/arm/arm,scmi.txt      |  44 ++
-> >  drivers/firmware/arm_scmi/Makefile            |   2 +-
-> >  drivers/firmware/arm_scmi/common.h            |   1 +
-> >  drivers/firmware/arm_scmi/driver.c            |   3 +
-> >  drivers/firmware/arm_scmi/voltage.c           | 378 ++++++++++++++
-> >  drivers/regulator/Kconfig                     |   9 +
-> >  drivers/regulator/Makefile                    |   1 +
-> >  drivers/regulator/scmi-regulator.c            | 488 ++++++++++++++++++
-> >  include/linux/scmi_protocol.h                 |  64 +++
-> >  9 files changed, 989 insertions(+), 1 deletion(-)
-> >  create mode 100644 drivers/firmware/arm_scmi/voltage.c
-> >  create mode 100644 drivers/regulator/scmi-regulator.c
-> >
 > 
-> -- 
-> Florian
+> If this HW was using MSI-X PASID would have been given its own
+> register.
+
+Well there is no MSI-X PASID is there? 
