@@ -2,290 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFEF72881A7
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 07:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F9DF2881B9
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 07:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730270AbgJIFUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 01:20:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725917AbgJIFUT (ORCPT
+        id S1731463AbgJIFcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 01:32:25 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:37210 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730763AbgJIFcY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 01:20:19 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4FEBC0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 22:20:19 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id v123so9447248qkd.9
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 22:20:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OHMQLMz3Syo32cVKeDQGPXhppkCglOGf15fk972XTRA=;
-        b=j22ttq3xiZ6BuQCuCQQj8DedQ0tHQvHQzCoOG/PiYUwq930DZnCrTMSlstAxfo6hEb
-         2l7drBES1AqzZUv7qzgPSB9KGwNQm3lyzjRGGRozKQ9niHH7wyc/aeTFiEpg5vcHLqcF
-         KL8iNUDgpemYbgHCCL6eDxelwCVv/rlWGJJc0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OHMQLMz3Syo32cVKeDQGPXhppkCglOGf15fk972XTRA=;
-        b=LsagPFUzeR+bC91k9M8xl5+SZDeb2IdO/20ft7Cc6Jd4wrlO8mC5DCf88SDnLKiTDI
-         PVBwLJEMc+544XAvHK3ie2AJdUv/aeWyPEzXcZpei4Lge1L1HJRnNdreszsUUrWjTdKb
-         F1qJaUHVrpyvMWooncIfS5mddmq9RLRIfwQRTMreKpTubat46hyTfPCnIM1M75gLAuJM
-         pUYc2wMmB2v1W12TMnpfYPKorFmYhJOfAsT0HjKU0T37DpEOSHt6ghtx1QrQWLC45fL8
-         UcWh8jfit1I4bNkXy14mwITjOGaVMkrYNvpmGkjzxgbt0U6ZUNhMtQ/E9eAqT3lGQQUZ
-         uZOg==
-X-Gm-Message-State: AOAM530KFj0I4aAwgGaE3/qE8tu7MMfU1SKEs38Ao31Ivxl0fFes9yCW
-        0qys92+8IUjTNxSD33qQoohBABTrL+qsuKX/LMHwGhc1
-X-Google-Smtp-Source: ABdhPJzozuRP5anFLWGsrro1gNJ0/H/+EF7NjktL/m/kvRVTaHnE3SZ6fcUxuUt0DeihQOPJl3MSqfuFJFCRjsmiaMY=
-X-Received: by 2002:a37:48cc:: with SMTP id v195mr11986047qka.66.1602220818748;
- Thu, 08 Oct 2020 22:20:18 -0700 (PDT)
+        Fri, 9 Oct 2020 01:32:24 -0400
+X-UUID: b4a58cf6fa7d43b6bbfb600144011178-20201009
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=vhoN8JHfBoZLmnGn0nppvBsmo0+bOu/+UMig7lHcRCE=;
+        b=FurCnAhQVATOPWkvRUBCwMvda5Ajtsgu3DrFIRi6yqkgHNfuvOPXIKzsyiP3BnajYM2Evg3+E6R97deb/TSaj/zXbiR1Deoyz9ZiAZq5yEDQXa6eZV7NtEBwE88xahJgsAizTJAe0HwijP/4QXVuGbGHdcZ02fQXZ+IsSY5i66U=;
+X-UUID: b4a58cf6fa7d43b6bbfb600144011178-20201009
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <lina.wang@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 123422327; Fri, 09 Oct 2020 13:32:09 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ MTKMBS32DR.mediatek.inc (172.27.6.104) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 9 Oct 2020 13:32:05 +0800
+Received: from localhost.localdomain (10.15.20.246) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 9 Oct 2020 13:32:05 +0800
+From:   Lina Wang <lina.wang@mediatek.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <kernel-team@android.com>,
+        Lina Wang <lina.wang@mediatek.com>
+Subject: xfrm:fragmented ipv4 tunnel packets in inner interface
+Date:   Fri, 9 Oct 2020 13:26:10 +0800
+Message-ID: <20201009052610.20945-1-lina.wang@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-References: <20201001042927.2147800-1-andrew@aj.id.au>
-In-Reply-To: <20201001042927.2147800-1-andrew@aj.id.au>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Fri, 9 Oct 2020 05:20:06 +0000
-Message-ID: <CACPK8XcFhnnY8Q_DYRGo-AuRMxnVzUfCyjxRyAuFO=RSGyK=Sg@mail.gmail.com>
-Subject: Re: [PATCH v2] ARM: kprobes: Avoid fortify_panic() when copying
- optprobe template
-To:     Andrew Jeffery <andrew@aj.id.au>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        mhiramat@kernel.org, labbott@redhat.com,
-        Kees Cook <keescook@chromium.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Luka Oreskovic <luka.oreskovic@sartura.hr>,
-        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 7D077DF188A4C60DDC0C08343E09E32D7087BECA44DB71AE7DAC3BA7C9366A672000:8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 1 Oct 2020 at 04:30, Andrew Jeffery <andrew@aj.id.au> wrote:
->
-> Setting both CONFIG_KPROBES=y and CONFIG_FORTIFY_SOURCE=y on ARM leads
-> to a panic in memcpy() when injecting a kprobe despite the fixes found
-> in commit e46daee53bb5 ("ARM: 8806/1: kprobes: Fix false positive with
-> FORTIFY_SOURCE") and commit 0ac569bf6a79 ("ARM: 8834/1: Fix: kprobes:
-> optimized kprobes illegal instruction").
->
-> arch/arm/include/asm/kprobes.h effectively declares
-> the target type of the optprobe_template_entry assembly label as a u32
-> which leads memcpy()'s __builtin_object_size() call to determine that
-> the pointed-to object is of size four. However, the symbol is used as a handle
-> for the optimised probe assembly template that is at least 96 bytes in size.
-> The symbol's use despite its type blows up the memcpy() in ARM's
-> arch_prepare_optimized_kprobe() with a false-positive fortify_panic() when it
-> should instead copy the optimised probe template into place:
->
-> ```
-> $ sudo perf probe -a aspeed_g6_pinctrl_probe
-> [  158.457252] detected buffer overflow in memcpy
-> [  158.458069] ------------[ cut here ]------------
-> [  158.458283] kernel BUG at lib/string.c:1153!
-> [  158.458436] Internal error: Oops - BUG: 0 [#1] SMP ARM
-> [  158.458768] Modules linked in:
-> [  158.459043] CPU: 1 PID: 99 Comm: perf Not tainted 5.9.0-rc7-00038-gc53ebf8167e9 #158
-> [  158.459296] Hardware name: Generic DT based system
-> [  158.459529] PC is at fortify_panic+0x18/0x20
-> [  158.459658] LR is at __irq_work_queue_local+0x3c/0x74
-> [  158.459831] pc : [<8047451c>]    lr : [<8020ecd4>]    psr: 60000013
-> [  158.460032] sp : be2d1d50  ip : be2d1c58  fp : be2d1d5c
-> [  158.460174] r10: 00000006  r9 : 00000000  r8 : 00000060
-> [  158.460348] r7 : 8011e434  r6 : b9e0b800  r5 : 7f000000  r4 : b9fe4f0c
-> [  158.460557] r3 : 80c04cc8  r2 : 00000000  r1 : be7c03cc  r0 : 00000022
-> [  158.460801] Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
-> [  158.461037] Control: 10c5387d  Table: b9cd806a  DAC: 00000051
-> [  158.461251] Process perf (pid: 99, stack limit = 0x81c71a69)
-> [  158.461472] Stack: (0xbe2d1d50 to 0xbe2d2000)
-> [  158.461757] 1d40:                                     be2d1d84 be2d1d60 8011e724 80474510
-> [  158.462104] 1d60: b9e0b800 b9fe4f0c 00000000 b9fe4f14 80c8ec80 be235000 be2d1d9c be2d1d88
-> [  158.462436] 1d80: 801cee44 8011e57c b9fe4f0c 00000000 be2d1dc4 be2d1da0 801d0ad0 801cedec
-> [  158.462742] 1da0: 00000000 00000000 b9fe4f00 ffffffea 00000000 be235000 be2d1de4 be2d1dc8
-> [  158.463087] 1dc0: 80204604 801d0738 00000000 00000000 b9fe4004 ffffffea be2d1e94 be2d1de8
-> [  158.463428] 1de0: 80205434 80204570 00385c00 00000000 00000000 00000000 be2d1e14 be2d1e08
-> [  158.463880] 1e00: 802ba014 b9fe4f00 b9e718c0 b9fe4f84 b9e71ec8 be2d1e24 00000000 00385c00
-> [  158.464365] 1e20: 00000000 626f7270 00000065 802b905c be2d1e94 0000002e 00000000 802b9914
-> [  158.464829] 1e40: be2d1e84 be2d1e50 802b9914 8028ff78 804629d0 b9e71ec0 0000002e b9e71ec0
-> [  158.465141] 1e60: be2d1ea8 80c04cc8 00000cc0 b9e713c4 00000002 80205834 80205834 0000002e
-> [  158.465488] 1e80: be235000 be235000 be2d1ea4 be2d1e98 80205854 80204e94 be2d1ecc be2d1ea8
-> [  158.465806] 1ea0: 801ee4a0 80205840 00000002 80c04cc8 00000000 0000002e 0000002e 00000000
-> [  158.466110] 1ec0: be2d1f0c be2d1ed0 801ee5c8 801ee428 00000000 be2d0000 006b1fd0 00000051
-> [  158.466398] 1ee0: 00000000 b9eedf00 0000002e 80204410 006b1fd0 be2d1f60 00000000 00000004
-> [  158.466763] 1f00: be2d1f24 be2d1f10 8020442c 801ee4c4 80205834 802c613c be2d1f5c be2d1f28
-> [  158.467102] 1f20: 802c60ac 8020441c be2d1fac be2d1f38 8010c764 802e9888 be2d1f5c b9eedf00
-> [  158.467447] 1f40: b9eedf00 006b1fd0 0000002e 00000000 be2d1f94 be2d1f60 802c634c 802c5fec
-> [  158.467812] 1f60: 00000000 00000000 00000000 80c04cc8 006b1fd0 00000003 76f7a610 00000004
-> [  158.468155] 1f80: 80100284 be2d0000 be2d1fa4 be2d1f98 802c63ec 802c62e8 00000000 be2d1fa8
-> [  158.468508] 1fa0: 80100080 802c63e0 006b1fd0 00000003 00000003 006b1fd0 0000002e 00000000
-> [  158.468858] 1fc0: 006b1fd0 00000003 76f7a610 00000004 006b1fb0 0026d348 00000017 7ef2738c
-> [  158.469202] 1fe0: 76f3431c 7ef272d8 0014ec50 76f34338 60000010 00000003 00000000 00000000
-> [  158.469461] Backtrace:
-> [  158.469683] [<80474504>] (fortify_panic) from [<8011e724>] (arch_prepare_optimized_kprobe+0x1b4/0x1f8)
-> [  158.470021] [<8011e570>] (arch_prepare_optimized_kprobe) from [<801cee44>] (alloc_aggr_kprobe+0x64/0x70)
-> [  158.470287]  r9:be235000 r8:80c8ec80 r7:b9fe4f14 r6:00000000 r5:b9fe4f0c r4:b9e0b800
-> [  158.470478] [<801cede0>] (alloc_aggr_kprobe) from [<801d0ad0>] (register_kprobe+0x3a4/0x5a0)
-> [  158.470685]  r5:00000000 r4:b9fe4f0c
-> [  158.470790] [<801d072c>] (register_kprobe) from [<80204604>] (__register_trace_kprobe+0xa0/0xa4)
-> [  158.471001]  r9:be235000 r8:00000000 r7:ffffffea r6:b9fe4f00 r5:00000000 r4:00000000
-> [  158.471188] [<80204564>] (__register_trace_kprobe) from [<80205434>] (trace_kprobe_create+0x5ac/0x9ac)
-> [  158.471408]  r7:ffffffea r6:b9fe4004 r5:00000000 r4:00000000
-> [  158.471553] [<80204e88>] (trace_kprobe_create) from [<80205854>] (create_or_delete_trace_kprobe+0x20/0x3c)
-> [  158.471766]  r10:be235000 r9:be235000 r8:0000002e r7:80205834 r6:80205834 r5:00000002
-> [  158.471949]  r4:b9e713c4
-> [  158.472027] [<80205834>] (create_or_delete_trace_kprobe) from [<801ee4a0>] (trace_run_command+0x84/0x9c)
-> [  158.472255] [<801ee41c>] (trace_run_command) from [<801ee5c8>] (trace_parse_run_command+0x110/0x1f8)
-> [  158.472471]  r6:00000000 r5:0000002e r4:0000002e
-> [  158.472594] [<801ee4b8>] (trace_parse_run_command) from [<8020442c>] (probes_write+0x1c/0x28)
-> [  158.472800]  r10:00000004 r9:00000000 r8:be2d1f60 r7:006b1fd0 r6:80204410 r5:0000002e
-> [  158.472968]  r4:b9eedf00
-> [  158.473046] [<80204410>] (probes_write) from [<802c60ac>] (vfs_write+0xcc/0x1e8)
-> [  158.473226] [<802c5fe0>] (vfs_write) from [<802c634c>] (ksys_write+0x70/0xf8)
-> [  158.473400]  r8:00000000 r7:0000002e r6:006b1fd0 r5:b9eedf00 r4:b9eedf00
-> [  158.473567] [<802c62dc>] (ksys_write) from [<802c63ec>] (sys_write+0x18/0x1c)
-> [  158.473745]  r9:be2d0000 r8:80100284 r7:00000004 r6:76f7a610 r5:00000003 r4:006b1fd0
-> [  158.473932] [<802c63d4>] (sys_write) from [<80100080>] (ret_fast_syscall+0x0/0x54)
-> [  158.474126] Exception stack(0xbe2d1fa8 to 0xbe2d1ff0)
-> [  158.474305] 1fa0:                   006b1fd0 00000003 00000003 006b1fd0 0000002e 00000000
-> [  158.474573] 1fc0: 006b1fd0 00000003 76f7a610 00000004 006b1fb0 0026d348 00000017 7ef2738c
-> [  158.474811] 1fe0: 76f3431c 7ef272d8 0014ec50 76f34338
-> [  158.475171] Code: e24cb004 e1a01000 e59f0004 ebf40dd3 (e7f001f2)
-> [  158.475847] ---[ end trace 55a5b31c08a29f00 ]---
-> [  158.476088] Kernel panic - not syncing: Fatal exception
-> [  158.476375] CPU0: stopping
-> [  158.476709] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G      D           5.9.0-rc7-00038-gc53ebf8167e9 #158
-> [  158.477176] Hardware name: Generic DT based system
-> [  158.477411] Backtrace:
-> [  158.477604] [<8010dd28>] (dump_backtrace) from [<8010dfd4>] (show_stack+0x20/0x24)
-> [  158.477990]  r7:00000000 r6:60000193 r5:00000000 r4:80c2f634
-> [  158.478323] [<8010dfb4>] (show_stack) from [<8046390c>] (dump_stack+0xcc/0xe8)
-> [  158.478686] [<80463840>] (dump_stack) from [<80110750>] (handle_IPI+0x334/0x3a0)
-> [  158.479063]  r7:00000000 r6:00000004 r5:80b65cc8 r4:80c78278
-> [  158.479352] [<8011041c>] (handle_IPI) from [<801013f8>] (gic_handle_irq+0x88/0x94)
-> [  158.479757]  r10:10c5387d r9:80c01ed8 r8:00000000 r7:c0802000 r6:80c0537c r5:000003ff
-> [  158.480146]  r4:c080200c r3:fffffff4
-> [  158.480364] [<80101370>] (gic_handle_irq) from [<80100b6c>] (__irq_svc+0x6c/0x90)
-> [  158.480748] Exception stack(0x80c01ed8 to 0x80c01f20)
-> [  158.481031] 1ec0:                                                       000128bc 00000000
-> [  158.481499] 1ee0: be7b8174 8011d3a0 80c00000 00000000 80c04cec 80c04d28 80c5d7c2 80a026d4
-> [  158.482091] 1f00: 10c5387d 80c01f34 80c01f38 80c01f28 80109554 80109558 60000013 ffffffff
-> [  158.482621]  r9:80c00000 r8:80c5d7c2 r7:80c01f0c r6:ffffffff r5:60000013 r4:80109558
-> [  158.482983] [<80109518>] (arch_cpu_idle) from [<80818780>] (default_idle_call+0x38/0x120)
-> [  158.483360] [<80818748>] (default_idle_call) from [<801585a8>] (do_idle+0xd4/0x158)
-> [  158.483945]  r5:00000000 r4:80c00000
-> [  158.484237] [<801584d4>] (do_idle) from [<801588f4>] (cpu_startup_entry+0x28/0x2c)
-> [  158.484784]  r9:80c78000 r8:00000000 r7:80c78000 r6:80c78040 r5:80c04cc0 r4:000000d6
-> [  158.485328] [<801588cc>] (cpu_startup_entry) from [<80810a78>] (rest_init+0x9c/0xbc)
-> [  158.485930] [<808109dc>] (rest_init) from [<80b00ae4>] (arch_call_rest_init+0x18/0x1c)
-> [  158.486503]  r5:80c04cc0 r4:00000001
-> [  158.486857] [<80b00acc>] (arch_call_rest_init) from [<80b00fcc>] (start_kernel+0x46c/0x548)
-> [  158.487589] [<80b00b60>] (start_kernel) from [<00000000>] (0x0)
-> ```
->
-> Fixes: e46daee53bb5 ("ARM: 8806/1: kprobes: Fix false positive with FORTIFY_SOURCE")
-> Fixes: 0ac569bf6a79 ("ARM: 8834/1: Fix: kprobes: optimized kprobes illegal instruction")
-> Cc: Luka Oreskovic <luka.oreskovic@sartura.hr>
-> Cc: Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
-> Suggested-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+SW4gZXNwJ3MgdHVubmVsIG1vZGUsaWYgaW5uZXIgaW50ZXJmYWNlIGlzIGlwdjQsb3V0ZXIgaXMg
+aXB2NCxvbmUgYmlnIA0KcGFja2V0IHdoaWNoIHRyYXZlbHMgdGhyb3VnaCB0dW5uZWwgd2lsbCBi
+ZSBmcmFnbWVudGVkIHdpdGggb3V0ZXIgDQppbnRlcmZhY2UncyBtdHUscGVlciBzZXJ2ZXIgd2ls
+bCByZW1vdmUgdHVubmVsbGVkIGVzcCBoZWFkZXIgYW5kIGFzc2VtYmxlDQp0aGVtIGluIGJpZyBw
+YWNrZXQuQWZ0ZXIgZm9yd2FyZGluZyBzdWNoIHBhY2tldCB0byBuZXh0IGVuZHBvaW50LGl0IHdp
+bGwgDQpiZSBkcm9wcGVkIGJlY2F1c2Ugb2YgZXhjZWVkaW5nIG10dSBvciBiZSByZXR1cm5lZCBJ
+Q01QKHBhY2tldC10b28tYmlnKS4NCldoZW4gaW5uZXIgaW50ZXJmYWNlIGlzIGlwdjQsb3V0ZXIg
+aXMgaXB2Nix0aGUgZmxhZyBvZiB4ZnJtIHN0YXRlIGluIHR1bm5lbA0KbW9kZSBpcyBhZi11bnNw
+ZWMsIHRoaW5nIGlzIGRpZmZlcmVudC5PbmUgYmlnIHBhY2tldCB0aHJvdWdoIHR1bm5lbCB3aWxs
+IGJlDQpmcmFnbWVudGVkIHdpdGggb3V0ZXIgaW50ZXJmYWNlJ3MgbXR1IG1pbnVzIHR1bm5lbGVk
+IGhlYWRlciwgdGhlbiB0d28gb3IgDQptb3JlIGxlc3MgZnJhZ21lbnRlZCBwYWNrZXRzIHdpbGwg
+YmUgdHVubmVsZWQgYW5kIHRyYW5zbWl0dGVkIGluIG91dGVyIA0KaW50ZXJmYWNlLHRoYXQgaXMg
+d2hhdCB4ZnJtNl9vdXRwdXQgaGFzIGRvbmUuIElmIHBlZXIgc2VydmVyIHJlY2VpdmVzIHN1Y2gN
+CnBhY2tldHMsIGl0IHdpbGwgZm9yd2FyZCBzdWNjZXNzZnVsbHkgdG8gbmV4dCBiZWNhdXNlIGxl
+bmd0aCBpcyB2YWxpZC4NCg0KVGhpcyBwYXRjaCBoYXMgZm9sbG93ZWQgdXAgeGZybTZfb3V0cHV0
+J3MgbG9naWMsd2hpY2ggaW5jbHVkZXMgdHdvIGNoYW5nZXMsDQpvbmUgaXMgY2hvb3Npbmcgc3Vp
+dGFibGUgbXR1IHZhbHVlIHdoaWNoIGNvbnNpZGVyaW5nIGlubm5lci9vdXRlciANCmludGVyZmFj
+ZSdzIG10dSBhbmQgZHN0IHBhdGgsIHRoZSBvdGhlciBpcyBpZiBwYWNrZXQgaXMgdG9vIGJpZywg
+Y2FsbGluZyANCmlwX2ZyYWdtZW50IGZpcnN0LHRoZW4gdHVubmVsbGluZyBmcmFnbWVudGVkIHBh
+Y2tldHMgaW4gb3V0ZXIgaW50ZXJmYWNlIGFuZA0KdHJhbnNtaXR0aW5nIGZpbmFsbHkuDQoNClNp
+Z25lZC1vZmYtYnk6IExpbmEgV2FuZyA8bGluYS53YW5nQG1lZGlhdGVrLmNvbT4NCi0tLQ0KIGlu
+Y2x1ZGUvbmV0L2lwLmggICAgICAgIHwgIDMgKysrDQogbmV0L2lwdjQvaXBfb3V0cHV0LmMgICAg
+fCAxMCArKystLS0tLS0tDQogbmV0L2lwdjQveGZybTRfb3V0cHV0LmMgfCAzNyArKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrDQogMyBmaWxlcyBjaGFuZ2VkLCA0MyBpbnNlcnRp
+b25zKCspLCA3IGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9uZXQvaXAuaCBi
+L2luY2x1ZGUvbmV0L2lwLmgNCmluZGV4IGIwOWM0OGQ4NjJjYy4uMDVmOWM2NDU0ZmY1IDEwMDY0
+NA0KLS0tIGEvaW5jbHVkZS9uZXQvaXAuaA0KKysrIGIvaW5jbHVkZS9uZXQvaXAuaA0KQEAgLTE2
+Myw2ICsxNjMsOSBAQCBpbnQgaXBfb3V0cHV0KHN0cnVjdCBuZXQgKm5ldCwgc3RydWN0IHNvY2sg
+KnNrLCBzdHJ1Y3Qgc2tfYnVmZiAqc2tiKTsNCiBpbnQgaXBfbWNfb3V0cHV0KHN0cnVjdCBuZXQg
+Km5ldCwgc3RydWN0IHNvY2sgKnNrLCBzdHJ1Y3Qgc2tfYnVmZiAqc2tiKTsNCiBpbnQgaXBfZG9f
+ZnJhZ21lbnQoc3RydWN0IG5ldCAqbmV0LCBzdHJ1Y3Qgc29jayAqc2ssIHN0cnVjdCBza19idWZm
+ICpza2IsDQogCQkgICBpbnQgKCpvdXRwdXQpKHN0cnVjdCBuZXQgKiwgc3RydWN0IHNvY2sgKiwg
+c3RydWN0IHNrX2J1ZmYgKikpOw0KK2ludCBpcF9mcmFnbWVudChzdHJ1Y3QgbmV0ICpuZXQsIHN0
+cnVjdCBzb2NrICpzaywgc3RydWN0IHNrX2J1ZmYgKnNrYiwNCisJCXVuc2lnbmVkIGludCBtdHUs
+DQorCQlpbnQgKCpvdXRwdXQpKHN0cnVjdCBuZXQgKiwgc3RydWN0IHNvY2sgKiwgc3RydWN0IHNr
+X2J1ZmYgKikpOw0KIA0KIHN0cnVjdCBpcF9mcmFnbGlzdF9pdGVyIHsNCiAJc3RydWN0IHNrX2J1
+ZmYJKmZyYWc7DQpkaWZmIC0tZ2l0IGEvbmV0L2lwdjQvaXBfb3V0cHV0LmMgYi9uZXQvaXB2NC9p
+cF9vdXRwdXQuYw0KaW5kZXggNjFmODAyZDUzNTBjLi5mOTkyNDkxMzJhNzYgMTAwNjQ0DQotLS0g
+YS9uZXQvaXB2NC9pcF9vdXRwdXQuYw0KKysrIGIvbmV0L2lwdjQvaXBfb3V0cHV0LmMNCkBAIC04
+MiwxMCArODIsNiBAQA0KICNpbmNsdWRlIDxsaW51eC9uZXRsaW5rLmg+DQogI2luY2x1ZGUgPGxp
+bnV4L3RjcC5oPg0KIA0KLXN0YXRpYyBpbnQNCi1pcF9mcmFnbWVudChzdHJ1Y3QgbmV0ICpuZXQs
+IHN0cnVjdCBzb2NrICpzaywgc3RydWN0IHNrX2J1ZmYgKnNrYiwNCi0JICAgIHVuc2lnbmVkIGlu
+dCBtdHUsDQotCSAgICBpbnQgKCpvdXRwdXQpKHN0cnVjdCBuZXQgKiwgc3RydWN0IHNvY2sgKiwg
+c3RydWN0IHNrX2J1ZmYgKikpOw0KIA0KIC8qIEdlbmVyYXRlIGEgY2hlY2tzdW0gZm9yIGFuIG91
+dGdvaW5nIElQIGRhdGFncmFtLiAqLw0KIHZvaWQgaXBfc2VuZF9jaGVjayhzdHJ1Y3QgaXBoZHIg
+KmlwaCkNCkBAIC01NjksOSArNTY1LDkgQEAgc3RhdGljIHZvaWQgaXBfY29weV9tZXRhZGF0YShz
+dHJ1Y3Qgc2tfYnVmZiAqdG8sIHN0cnVjdCBza19idWZmICpmcm9tKQ0KIAlza2JfY29weV9zZWNt
+YXJrKHRvLCBmcm9tKTsNCiB9DQogDQotc3RhdGljIGludCBpcF9mcmFnbWVudChzdHJ1Y3QgbmV0
+ICpuZXQsIHN0cnVjdCBzb2NrICpzaywgc3RydWN0IHNrX2J1ZmYgKnNrYiwNCi0JCSAgICAgICB1
+bnNpZ25lZCBpbnQgbXR1LA0KLQkJICAgICAgIGludCAoKm91dHB1dCkoc3RydWN0IG5ldCAqLCBz
+dHJ1Y3Qgc29jayAqLCBzdHJ1Y3Qgc2tfYnVmZiAqKSkNCitpbnQgaXBfZnJhZ21lbnQoc3RydWN0
+IG5ldCAqbmV0LCBzdHJ1Y3Qgc29jayAqc2ssIHN0cnVjdCBza19idWZmICpza2IsDQorCQl1bnNp
+Z25lZCBpbnQgbXR1LA0KKwkJaW50ICgqb3V0cHV0KShzdHJ1Y3QgbmV0ICosIHN0cnVjdCBzb2Nr
+ICosIHN0cnVjdCBza19idWZmICopKQ0KIHsNCiAJc3RydWN0IGlwaGRyICppcGggPSBpcF9oZHIo
+c2tiKTsNCiANCmRpZmYgLS1naXQgYS9uZXQvaXB2NC94ZnJtNF9vdXRwdXQuYyBiL25ldC9pcHY0
+L3hmcm00X291dHB1dC5jDQppbmRleCAzY2ZmNTFiYTcyYmIuLjE0ODhiNzkxODZhZCAxMDA2NDQN
+Ci0tLSBhL25ldC9pcHY0L3hmcm00X291dHB1dC5jDQorKysgYi9uZXQvaXB2NC94ZnJtNF9vdXRw
+dXQuYw0KQEAgLTE0LDggKzE0LDI3IEBADQogI2luY2x1ZGUgPG5ldC94ZnJtLmg+DQogI2luY2x1
+ZGUgPG5ldC9pY21wLmg+DQogDQorc3RhdGljIGludCBfX3hmcm00X291dHB1dF9maW5pc2goc3Ry
+dWN0IG5ldCAqbmV0LCBzdHJ1Y3Qgc29jayAqc2ssDQorCQkJCSBzdHJ1Y3Qgc2tfYnVmZiAqc2ti
+KQ0KK3sNCisJcmV0dXJuIHhmcm1fb3V0cHV0KHNrLCBza2IpOw0KK30NCisNCitzdGF0aWMgaW5s
+aW5lIGludCBpcDRfc2tiX2RzdF9tdHUoc3RydWN0IHNrX2J1ZmYgKnNrYikNCit7DQorCXN0cnVj
+dCBpbmV0X3NvY2sgKm5wID0gc2tiLT5zayAmJiAhZGV2X3JlY3Vyc2lvbl9sZXZlbCgpID8NCisJ
+CQkJaW5ldF9zayhza2ItPnNrKSA6IE5VTEw7DQorDQorCXJldHVybiAobnAgJiBucC0+cG10dWRp
+c2MgPj0gSVBfUE1UVURJU0NfUFJPQkUpID8NCisJCXNrYl9kc3Qoc2tiKS0+ZGV2LT5tdHUgOiBk
+c3RfbXR1KHNrYl9kc3Qoc2tiKSk7DQorfQ0KKw0KIHN0YXRpYyBpbnQgX194ZnJtNF9vdXRwdXQo
+c3RydWN0IG5ldCAqbmV0LCBzdHJ1Y3Qgc29jayAqc2ssIHN0cnVjdCBza19idWZmICpza2IpDQog
+ew0KKwlpbnQgbXR1Ow0KKwlib29sIHRvb2JpZzsNCisJc3RydWN0IHhmcm1fc3RhdGUgKnggPSBz
+a2JfZHN0KHNrYiktPnhmcm07DQorDQogI2lmZGVmIENPTkZJR19ORVRGSUxURVINCiAJc3RydWN0
+IHhmcm1fc3RhdGUgKnggPSBza2JfZHN0KHNrYiktPnhmcm07DQogDQpAQCAtMjUsNiArNDQsMjQg
+QEAgc3RhdGljIGludCBfX3hmcm00X291dHB1dChzdHJ1Y3QgbmV0ICpuZXQsIHN0cnVjdCBzb2Nr
+ICpzaywgc3RydWN0IHNrX2J1ZmYgKnNrYikNCiAJfQ0KICNlbmRpZg0KIA0KKwlpZiAoeC0+cHJv
+cHMubW9kZSAhPSBYRlJNX01PREVfVFVOTkVMKQ0KKwkJZ290byBza2lwX2ZyYWc7DQorDQorCWlm
+IChza2ItPnByb3RvY29sID09IGh0b25zKEVUSF9QX0lQKSkNCisJCW10dSA9IGlwNF9za2JfZHN0
+X210dShza2IpOw0KKwllbHNlDQorCQlnb3RvIHNraXBfZnJhZzsNCisNCisJdG9vYmlnID0gc2ti
+LT5sZW4gPiBtdHUgJiYgIXNrYl9pc19nc28oc2tiKTsNCisJaWYgKCFza2ItPmlnbm9yZV9kZiAm
+JiB0b29iaWcgJiYgc2tiLT5zaykgew0KKwkJeGZybV9sb2NhbF9lcnJvcihza2IsIG10dSk7DQor
+CQlyZXR1cm4gLUVNU0dTSVpFOw0KKwl9DQorDQorCWlmICh0b29iaWcgfHwgZHN0X2FsbGZyYWco
+c2tiX2RzdChza2IpKSkNCisJCXJldHVybiBpcF9mcmFnbWVudChuZXQsIHNrLCBza2IsIG10dSwg
+X194ZnJtNF9vdXRwdXRfZmluaXNoKTsNCisNCitza2lwX2ZyYWc6DQogCXJldHVybiB4ZnJtX291
+dHB1dChzaywgc2tiKTsNCiB9DQogDQotLSANCjIuMTguMA0K
 
-Tested-by: Joel Stanley <joel@jms.id.au>
-Reviewed-by: Joel Stanley <joel@jms.id.au>
-
-Thanks Andrew.
-
-> ---
-> v1 was sent some time back, in May:
->
-> https://lore.kernel.org/linux-arm-kernel/20200517153959.293224-1-andrew@aj.id.au/
->
-> I've taken the patch that Kees' suggested in the replies and tested it.
-> ---
->  arch/arm/include/asm/kprobes.h    | 22 +++++++++++-----------
->  arch/arm/probes/kprobes/opt-arm.c | 18 +++++++++---------
->  2 files changed, 20 insertions(+), 20 deletions(-)
->
-> diff --git a/arch/arm/include/asm/kprobes.h b/arch/arm/include/asm/kprobes.h
-> index 213607a1f45c..e26a278d301a 100644
-> --- a/arch/arm/include/asm/kprobes.h
-> +++ b/arch/arm/include/asm/kprobes.h
-> @@ -44,20 +44,20 @@ int kprobe_exceptions_notify(struct notifier_block *self,
->                              unsigned long val, void *data);
->
->  /* optinsn template addresses */
-> -extern __visible kprobe_opcode_t optprobe_template_entry;
-> -extern __visible kprobe_opcode_t optprobe_template_val;
-> -extern __visible kprobe_opcode_t optprobe_template_call;
-> -extern __visible kprobe_opcode_t optprobe_template_end;
-> -extern __visible kprobe_opcode_t optprobe_template_sub_sp;
-> -extern __visible kprobe_opcode_t optprobe_template_add_sp;
-> -extern __visible kprobe_opcode_t optprobe_template_restore_begin;
-> -extern __visible kprobe_opcode_t optprobe_template_restore_orig_insn;
-> -extern __visible kprobe_opcode_t optprobe_template_restore_end;
-> +extern __visible kprobe_opcode_t optprobe_template_entry[];
-> +extern __visible kprobe_opcode_t optprobe_template_val[];
-> +extern __visible kprobe_opcode_t optprobe_template_call[];
-> +extern __visible kprobe_opcode_t optprobe_template_end[];
-> +extern __visible kprobe_opcode_t optprobe_template_sub_sp[];
-> +extern __visible kprobe_opcode_t optprobe_template_add_sp[];
-> +extern __visible kprobe_opcode_t optprobe_template_restore_begin[];
-> +extern __visible kprobe_opcode_t optprobe_template_restore_orig_insn[];
-> +extern __visible kprobe_opcode_t optprobe_template_restore_end[];
->
->  #define MAX_OPTIMIZED_LENGTH   4
->  #define MAX_OPTINSN_SIZE                               \
-> -       ((unsigned long)&optprobe_template_end -        \
-> -        (unsigned long)&optprobe_template_entry)
-> +       ((unsigned long)optprobe_template_end - \
-> +        (unsigned long)optprobe_template_entry)
->  #define RELATIVEJUMP_SIZE      4
->
->  struct arch_optimized_insn {
-> diff --git a/arch/arm/probes/kprobes/opt-arm.c b/arch/arm/probes/kprobes/opt-arm.c
-> index 7a449df0b359..c78180172120 100644
-> --- a/arch/arm/probes/kprobes/opt-arm.c
-> +++ b/arch/arm/probes/kprobes/opt-arm.c
-> @@ -85,21 +85,21 @@ asm (
->                         "optprobe_template_end:\n");
->
->  #define TMPL_VAL_IDX \
-> -       ((unsigned long *)&optprobe_template_val - (unsigned long *)&optprobe_template_entry)
-> +       ((unsigned long *)optprobe_template_val - (unsigned long *)optprobe_template_entry)
->  #define TMPL_CALL_IDX \
-> -       ((unsigned long *)&optprobe_template_call - (unsigned long *)&optprobe_template_entry)
-> +       ((unsigned long *)optprobe_template_call - (unsigned long *)optprobe_template_entry)
->  #define TMPL_END_IDX \
-> -       ((unsigned long *)&optprobe_template_end - (unsigned long *)&optprobe_template_entry)
-> +       ((unsigned long *)optprobe_template_end - (unsigned long *)optprobe_template_entry)
->  #define TMPL_ADD_SP \
-> -       ((unsigned long *)&optprobe_template_add_sp - (unsigned long *)&optprobe_template_entry)
-> +       ((unsigned long *)optprobe_template_add_sp - (unsigned long *)optprobe_template_entry)
->  #define TMPL_SUB_SP \
-> -       ((unsigned long *)&optprobe_template_sub_sp - (unsigned long *)&optprobe_template_entry)
-> +       ((unsigned long *)optprobe_template_sub_sp - (unsigned long *)optprobe_template_entry)
->  #define TMPL_RESTORE_BEGIN \
-> -       ((unsigned long *)&optprobe_template_restore_begin - (unsigned long *)&optprobe_template_entry)
-> +       ((unsigned long *)optprobe_template_restore_begin - (unsigned long *)optprobe_template_entry)
->  #define TMPL_RESTORE_ORIGN_INSN \
-> -       ((unsigned long *)&optprobe_template_restore_orig_insn - (unsigned long *)&optprobe_template_entry)
-> +       ((unsigned long *)optprobe_template_restore_orig_insn - (unsigned long *)optprobe_template_entry)
->  #define TMPL_RESTORE_END \
-> -       ((unsigned long *)&optprobe_template_restore_end - (unsigned long *)&optprobe_template_entry)
-> +       ((unsigned long *)optprobe_template_restore_end - (unsigned long *)optprobe_template_entry)
->
->  /*
->   * ARM can always optimize an instruction when using ARM ISA, except
-> @@ -234,7 +234,7 @@ int arch_prepare_optimized_kprobe(struct optimized_kprobe *op, struct kprobe *or
->         }
->
->         /* Copy arch-dep-instance from template. */
-> -       memcpy(code, (unsigned long *)&optprobe_template_entry,
-> +       memcpy(code, (unsigned long *)optprobe_template_entry,
->                         TMPL_END_IDX * sizeof(kprobe_opcode_t));
->
->         /* Adjust buffer according to instruction. */
-> --
-> 2.25.1
->
