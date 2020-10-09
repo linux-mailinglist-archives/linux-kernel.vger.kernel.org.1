@@ -2,109 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99A212886B4
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 12:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E34862886BE
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 12:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387561AbgJIKQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 06:16:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40952 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726357AbgJIKQt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 06:16:49 -0400
-Received: from gaia (unknown [95.149.105.49])
+        id S2387584AbgJIKUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 06:20:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726357AbgJIKUP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 06:20:15 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6773FC0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 03:20:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=eTSyiUWZ5oQl1uBbbkMfxU9sRHDp/kmy09nBobKLqcY=; b=RHb4Se19Z5mOyl7JH5QcXPosVV
+        KzRAsOGK1VdWHXSe8q5SSf6VzO+bOSf07HQsVXFQWSRZXyYOhFDbHy27aIGIiaZTCSb6k4VZVxZ/3
+        9zOywjuxd7o7kdh2ieGONwQk1Mrp64UybafsuFnULBvXtETlraSuSAFfFRMGfRo0ebgFsl24mhFGH
+        uenYiZAEn3hQ5Q5o+5MsglX8/wahyafibXzRrXxegtrGl4vj6AcxXEC4FNTfwr4ftQw6WXM/0Zl2L
+        qtctdUPYUt+CAY9tXP9TTnbnexMPfwxjOCqMDQGCLolF7/HKM2z0+fOI0Qpye9fPD9kCmNESZKUO3
+        gJqUXsUA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kQpVS-00015M-RB; Fri, 09 Oct 2020 10:20:10 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3CB2822276;
-        Fri,  9 Oct 2020 10:16:46 +0000 (UTC)
-Date:   Fri, 9 Oct 2020 11:16:43 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     Andrey Konovalov <andreyknvl@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 29/39] arm64: mte: Switch GCR_EL1 in kernel entry and
- exit
-Message-ID: <20201009101643.GG23638@gaia>
-References: <cover.1601593784.git.andreyknvl@google.com>
- <1f2681fdff1aa1096df949cb8634a9be6bf4acc4.1601593784.git.andreyknvl@google.com>
- <20201002140652.GG7034@gaia>
- <1b2327ee-5f30-e412-7359-32a7a38b4c8d@arm.com>
- <20201009081111.GA23638@gaia>
- <106f8670-3dd0-70ad-91ac-4f419585df50@arm.com>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7E575300B22;
+        Fri,  9 Oct 2020 12:20:09 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6CB9229AE66E9; Fri,  9 Oct 2020 12:20:09 +0200 (CEST)
+Date:   Fri, 9 Oct 2020 12:20:09 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Frederic Weisbecker <fweisbecker@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>
+Subject: Re: [RFC PATCH] kernel: allow to configure PREEMPT_NONE,
+ PREEMPT_VOLUNTARY on kernel command line
+Message-ID: <20201009102009.GK2628@hirez.programming.kicks-ass.net>
+References: <20201007120401.11200-1-mhocko@kernel.org>
+ <20201007122144.GF2628@hirez.programming.kicks-ass.net>
+ <20201007123553.GK29020@dhcp22.suse.cz>
+ <20201009094741.GH2628@hirez.programming.kicks-ass.net>
+ <20201009101405.GI4967@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <106f8670-3dd0-70ad-91ac-4f419585df50@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201009101405.GI4967@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 10:56:02AM +0100, Vincenzo Frascino wrote:
-> On 10/9/20 9:11 AM, Catalin Marinas wrote:
-> > On Thu, Oct 08, 2020 at 07:24:12PM +0100, Vincenzo Frascino wrote:
-> >> On 10/2/20 3:06 PM, Catalin Marinas wrote:
-> >>> On Fri, Oct 02, 2020 at 01:10:30AM +0200, Andrey Konovalov wrote:
-> >>>> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-> >>>> index 7c67ac6f08df..d1847f29f59b 100644
-> >>>> --- a/arch/arm64/kernel/mte.c
-> >>>> +++ b/arch/arm64/kernel/mte.c
-> >>>> @@ -23,6 +23,8 @@
-> >>>>  #include <asm/ptrace.h>
-> >>>>  #include <asm/sysreg.h>
-> >>>>  
-> >>>> +u64 gcr_kernel_excl __ro_after_init;
-> >>>> +
-> >>>>  static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap)
-> >>>>  {
-> >>>>  	pte_t old_pte = READ_ONCE(*ptep);
-> >>>> @@ -120,6 +122,13 @@ void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
-> >>>>  	return ptr;
-> >>>>  }
-> >>>>  
-> >>>> +void mte_init_tags(u64 max_tag)
-> >>>> +{
-> >>>> +	u64 incl = GENMASK(max_tag & MTE_TAG_MAX, 0);
-> >>>
-> >>> Nitpick: it's not obvious that MTE_TAG_MAX is a mask, so better write
-> >>> this as GENMASK(min(max_tag, MTE_TAG_MAX), 0).
-> >>
-> >> The two things do not seem equivalent because the format of the tags in KASAN is
-> >> 0xFF and in MTE is 0xF, hence if extract the minimum whatever is the tag passed
-> >> by KASAN it will always be MTE_TAG_MAX.
-> >>
-> >> To make it cleaner I propose: GENMASK(FIELD_GET(MTE_TAG_MAX, max_tag), 0);
-> > 
-> > I don't think that's any clearer since FIELD_GET still assumes that
-> > MTE_TAG_MAX is a mask. I think it's better to add a comment on why this
-> > is needed, as you explained above that the KASAN tags go to 0xff.
-> > 
-> > If you want to get rid of MTE_TAG_MAX altogether, just do a
-> > 
-> > 	max_tag &= (1 << MAX_TAG_SIZE) - 1;
-> > 
-> > before setting incl (a comment is still useful).
-> > 
-> 
-> Agree, but still think we should use FIELD_GET here since it is common language
-> in the kernel.
-> 
-> How about we get rid of MTE_TAG_MAX and we do something like:
-> 
-> GENMASK(FIELD_GET(MTE_TAG_MASK >> MTE_TAG_SHIFT, max_tag), 0);
+On Fri, Oct 09, 2020 at 12:14:05PM +0200, Michal Hocko wrote:
+> On Fri 09-10-20 11:47:41, Peter Zijlstra wrote:
 
-It works for me and you can drop the MTE_TAG_MAX definition (I think
-it's only used here).
+> > That is, work backwards (from PREEMPT back to VOLUNTARY) instead of the
+> > other way around.
+> 
+> My original idea was that the config would only define the default
+> preemption mode. preempt_none parameter would then just act as an
+> override. That would mean that CONFIG_PREEMPTION would be effectively
+> gone from the kernel. The reason being that any code outside of the
+> scheduler shouldn't really care about the preemption mode. I suspect
+> this will prevent from dubious hacks and provide a more robust code in
+> the end.
 
--- 
-Catalin
+Sure; but the way of arriving at that destination might be easier if
+you work backwards from PREEMPT=y, because while there _should_ not be
+dependencies outside of the scheduler, we both know there are.
+
+This also makes your patches independent of the series that makes
+CONFIG_PREEMPTION unconditional.
+
+It also gives Kconfig space to limit the dynamic thing to archs that
+have sufficient support (we'll be relying on static_call/static_branch,
+and not everybody has that implemented in a way that makes it the
+dynamic change worth-while).
