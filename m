@@ -2,143 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51E402888FC
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 14:39:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81207288906
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 14:41:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387594AbgJIMjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 08:39:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49180 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725852AbgJIMjz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 08:39:55 -0400
-Received: from coco.lan (ip5f5ad5d0.dynamic.kabel-deutschland.de [95.90.213.208])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2387615AbgJIMl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 08:41:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31538 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725852AbgJIMlX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 08:41:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602247281;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8iSaIMVSVQHr/JxIqXJ8Ng+pow+HPTQuFy/2lPul82w=;
+        b=fROop0BNQh3SRDftXs2ZPqW/LkLnPwLk2WoHyCLsh37uQR6d501RVWTEbp817yKh+j2F6U
+        FJDwmSsk+aa4Rb6z2nn4P1WRVJJ5ambw6WHgbfQM0YkZx1J9DSSuMEQVJEDDGEMMQRC4Te
+        ux7uAnJgqb0WdKtxOo2ngM1KzgXnufA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-108-Cqu0nr04MvioROAHMnDFuA-1; Fri, 09 Oct 2020 08:41:17 -0400
+X-MC-Unique: Cqu0nr04MvioROAHMnDFuA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 85AD3222B8;
-        Fri,  9 Oct 2020 12:39:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602247193;
-        bh=ruA15GjB/fFH2gJQRaoGIXfNQO5QPyDiPzMmJhWfrxQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ebPwE13hJTyu7GU7hqGujNTcQ3SJtz+JCoKsDWHQbhtRGSTdSLTjnjECptwHYqY3q
-         MKQ41Y6J0y7haidc1ZWrDQLUW0A2sUpIAG5O9TanLsaA0fGLcNuObliZM9g/MbS7s+
-         gKoB0ZuFxhI8SXftz7+Nxh4xSbD62xyIpNDeilOA=
-Date:   Fri, 9 Oct 2020 14:39:47 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-s390@vger.kernel.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?UTF-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v2 09/17] mm: Add unsafe_follow_pfn
-Message-ID: <20201009143947.751c5eb1@coco.lan>
-In-Reply-To: <20201009143723.45609bfb@coco.lan>
-References: <20201009075934.3509076-1-daniel.vetter@ffwll.ch>
-        <20201009075934.3509076-10-daniel.vetter@ffwll.ch>
-        <20201009123421.67a80d72@coco.lan>
-        <20201009122111.GN5177@ziepe.ca>
-        <20201009143723.45609bfb@coco.lan>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 757FE10E2180;
+        Fri,  9 Oct 2020 12:41:15 +0000 (UTC)
+Received: from krava (unknown [10.40.195.10])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 7C51B5D9E8;
+        Fri,  9 Oct 2020 12:41:12 +0000 (UTC)
+Date:   Fri, 9 Oct 2020 14:41:11 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Vasily Gorbik <gor@linux.ibm.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: [PATCH RESEND 1/1] perf build: Allow nested externs to enable
+ BUILD_BUG() usage
+Message-ID: <20201009124111.GD656950@krava>
+References: <20201009112327.GC656950@krava>
+ <cover.thread-251403.your-ad-here.call-01602244460-ext-7088@work.hours>
+ <patch-1.thread-251403.git-2514037e9477.your-ad-here.call-01602244460-ext-7088@work.hours>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <patch-1.thread-251403.git-2514037e9477.your-ad-here.call-01602244460-ext-7088@work.hours>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, 9 Oct 2020 14:37:23 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
+On Fri, Oct 09, 2020 at 02:25:23PM +0200, Vasily Gorbik wrote:
+> Currently BUILD_BUG() macro is expanded to smth like the following:
+>    do {
+>            extern void __compiletime_assert_0(void)
+>                    __attribute__((error("BUILD_BUG failed")));
+>            if (!(!(1)))
+>                    __compiletime_assert_0();
+>    } while (0);
+> 
+> If used in a function body this obviously would produce build errors
+> with -Wnested-externs and -Werror.
+> 
+> To enable BUILD_BUG() usage in tools/arch/x86/lib/insn.c which perf
+> includes in intel-pt-decoder, build perf without -Wnested-externs.
+> 
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 
-> Em Fri, 9 Oct 2020 09:21:11 -0300
-> Jason Gunthorpe <jgg@ziepe.ca> escreveu:
-> 
-> > On Fri, Oct 09, 2020 at 12:34:21PM +0200, Mauro Carvalho Chehab wrote:  
-> > > Hi,
-> > > 
-> > > Em Fri,  9 Oct 2020 09:59:26 +0200
-> > > Daniel Vetter <daniel.vetter@ffwll.ch> escreveu:
-> > >     
-> > > > Way back it was a reasonable assumptions that iomem mappings never
-> > > > change the pfn range they point at. But this has changed:
-> > > > 
-> > > > - gpu drivers dynamically manage their memory nowadays, invalidating
-> > > > ptes with unmap_mapping_range when buffers get moved
-> > > > 
-> > > > - contiguous dma allocations have moved from dedicated carvetouts to
-> > > > cma regions. This means if we miss the unmap the pfn might contain
-> > > > pagecache or anon memory (well anything allocated with GFP_MOVEABLE)
-> > > > 
-> > > > - even /dev/mem now invalidates mappings when the kernel requests that
-> > > > iomem region when CONFIG_IO_STRICT_DEVMEM is set, see 3234ac664a87
-> > > > ("/dev/mem: Revoke mappings when a driver claims the region")
-> > > > 
-> > > > Accessing pfns obtained from ptes without holding all the locks is
-> > > > therefore no longer a good idea.
-> > > > 
-> > > > Unfortunately there's some users where this is not fixable (like v4l
-> > > > userptr of iomem mappings) or involves a pile of work (vfio type1
-> > > > iommu). For now annotate these as unsafe and splat appropriately.
-> > > > 
-> > > > This patch adds an unsafe_follow_pfn, which later patches will then
-> > > > roll out to all appropriate places.    
-> > > 
-> > > NACK, as this breaks an existing userspace API on media.    
-> > 
-> > It doesn't break it. You get a big warning the thing is broken and it
-> > keeps working.
-> > 
-> > We can't leave such a huge security hole open - it impacts other
-> > subsystems, distros need to be able to run in a secure mode.  
-> 
-> Well, if distros disable it, then apps will break.
-> 
-> > > While I agree that using the userptr on media is something that
-> > > new drivers may not support, as DMABUF is a better way of
-> > > handling it, changing this for existing ones is a big no, 
-> > > as it may break usersapace.    
-> > 
-> > media community needs to work to fix this, not pretend it is OK to
-> > keep going as-is.  
-> 
-> > Dealing with security issues is the one case where an uABI break might
-> > be acceptable.
-> > 
-> > If you want to NAK it then you need to come up with the work to do
-> > something here correctly that will support the old drivers without the
-> > kernel taint.
-> > 
-> > Unfortunately making things uncomfortable for the subsystem is the big
-> > hammer the core kernel needs to use to actually get this security work
-> > done by those responsible.  
-> 
-> 
-> I'm not pretending that this is ok. Just pointing that the approach
-> taken is NOT OK.
-> 
-> I'm not a mm/ expert, but, from what I understood from Daniel's patch
-> description is that this is unsafe *only if*  __GFP_MOVABLE is used.
-> 
-> Well, no drivers inside the media subsystem uses such flag, although
-> they may rely on some infrastructure that could be using it behind
-> the bars.
-> 
-> If this is the case, the proper fix seems to have a GFP_NOT_MOVABLE 
-> flag that it would be denying the core mm code to set __GFP_MOVABLE.
-> 
-> Please let address the issue on this way, instead of broken an
-> userspace API that it is there since 1991.
+that one applied nicely ;-) thanks
 
-In time: I meant to say 1998.
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-Thanks,
-Mauro
+jirka
+
+> ---
+>  Resend with no fancy signatures.
+> 
+>  tools/perf/Makefile.config | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+> index 854da830b5ca..834061e94e7c 100644
+> --- a/tools/perf/Makefile.config
+> +++ b/tools/perf/Makefile.config
+> @@ -16,7 +16,7 @@ $(shell printf "" > $(OUTPUT).config-detected)
+>  detected     = $(shell echo "$(1)=y"       >> $(OUTPUT).config-detected)
+>  detected_var = $(shell echo "$(1)=$($(1))" >> $(OUTPUT).config-detected)
+>  
+> -CFLAGS := $(EXTRA_CFLAGS) $(EXTRA_WARNINGS)
+> +CFLAGS := $(EXTRA_CFLAGS) $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
+>  
+>  include $(srctree)/tools/scripts/Makefile.arch
+>  
+> -- 
+> 2.25.4
+> 
+
