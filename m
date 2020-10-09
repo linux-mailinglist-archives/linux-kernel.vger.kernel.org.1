@@ -2,141 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD076288CF8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:40:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13B84288CF3
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389426AbgJIPkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 11:40:36 -0400
-Received: from mail-dm6nam11on2050.outbound.protection.outlook.com ([40.107.223.50]:37593
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388736AbgJIPkf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 11:40:35 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZrHFeBSfogB/TT1y0rkokJbPBqXgPDZW8suxGcUYr4Mmx8x3FszONWMj/ql/DSsVnSNLRN9wvhZ17xwB6zC/7AvcpDWcAPmHGnRRs8xYXPw327Qqn4cSer/1IhXHcnI9UlLU7Csy5zSVUibv4tqIDOUsVbVxUeoJAM9L8CT8mgUTWNmDNEo6iOgjRAKwqvD1KD7+fj6icEBLwgzjTNatxwZSQ7584FvaZ1OOPMDzcMt7L9vKUiAVAwlCgKFd+jKh56+PFf/K5E9w/KmBUmTLMEHmt/KOyNIorqy2szBZ3Y48m5gmghsXC6xGCrEAf43rkRKxbcj65vGie1IoYwiYwg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MFlkY2l+Iqkz+3hDlhXUWudB6E4GF7OSVthEBGzCU94=;
- b=nobK7thWaWIHMQ6eoO9wLZ6Z4L2dVc/TCC/VNQs9WKcz5GfqiVdttADO7VEqrLP8txbNW0cgcMYqVk3yUm9GfOnQ0ONVCstraHQV1a9kjWrkRXmlSWPyG744A1/pvExE0FMmAAaPa0UyK/wP5UshAqj3QBMdoCAuGJ/seknVitqpXEHGelssNt7mxcXs+ZLefAZnpWegNcgpQuNVodK/8WVReNZMXYmOS4Fg0LzfuAMbovCK5wKzLmSXGFzYGHQUeLzLB/CkqUsXJg34iCINRhh2PPf9BJzH2dOXsUjnQad6gYQODFR+bWD3e9ho971h0A42qs+YoBEJk+9GpqfDqQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=openfive.com; dmarc=pass action=none header.from=sifive.com;
- dkim=pass header.d=sifive.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sifive.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MFlkY2l+Iqkz+3hDlhXUWudB6E4GF7OSVthEBGzCU94=;
- b=bfg5fdMYjw3I2ETcrozDnTI91bDqmsUOkdWuWGafOMdQ9vT4/bzym2qGnJ3xPAWg/1w43o5oF8EMg6HHgNbZk/6PWIFi72uJ/CP6h2jqH0nazGeq/z104TOYqZ/e5o4yZkNsl9+Jnj3PyrCPiN9phZi3otxLOEr/BjvvC8T3RRI=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=sifive.com;
-Received: from DM6PR13MB3451.namprd13.prod.outlook.com (2603:10b6:5:1c3::10)
- by DM6PR13MB4479.namprd13.prod.outlook.com (2603:10b6:5:20c::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.11; Fri, 9 Oct
- 2020 15:40:33 +0000
-Received: from DM6PR13MB3451.namprd13.prod.outlook.com
- ([fe80::f49f:d6d6:4c97:e5d5]) by DM6PR13MB3451.namprd13.prod.outlook.com
- ([fe80::f49f:d6d6:4c97:e5d5%7]) with mapi id 15.20.3477.013; Fri, 9 Oct 2020
- 15:40:33 +0000
-From:   Sagar Shrikant Kadam <sagar.kadam@sifive.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-riscv@lists.infradead.org, linux-i2c@vger.kernel.org,
-        peter@korsgaard.com, andrew@lunn.ch, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu,
-        Sagar Shrikant Kadam <sagar.kadam@sifive.com>
-Subject: [PATCH v2 1/1] i2c: ocores: fix polling mode workaround on FU540-C000 SoC
-Date:   Fri,  9 Oct 2020 08:39:40 -0700
-Message-Id: <1602257980-375157-2-git-send-email-sagar.kadam@sifive.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1602257980-375157-1-git-send-email-sagar.kadam@sifive.com>
-References: <1602257980-375157-1-git-send-email-sagar.kadam@sifive.com>
-Content-Type: text/plain
-X-Originating-IP: [64.62.193.194]
-X-ClientProxiedBy: BYAPR08CA0041.namprd08.prod.outlook.com
- (2603:10b6:a03:117::18) To DM6PR13MB3451.namprd13.prod.outlook.com
- (2603:10b6:5:1c3::10)
+        id S2389381AbgJIPj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 11:39:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389165AbgJIPj4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 11:39:56 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82229C0613D2;
+        Fri,  9 Oct 2020 08:39:56 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602257994;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DKIXFbRq/5saVEqi5e9AJzND0fz4fM2p8K38phy76Vg=;
+        b=Fc6iiw16D29AtwKBY60vWjppr2aupIpDaNl1hH2g77wDTT57xkgogSwE8P1rAOd5F2TEtQ
+        PzxaUcdtwE5DH1HRhXZgt0iXDB0LLDm4C11qukXlSXZy42d6EcU23o9VJT7beYXQmVFv0A
+        9j+O1lC3T6Hoz3VXegXfCoMNxbghrKjPs6Y8p6qO3X7U1QnzlwfEs9/z+3uCq7rcJL7qUz
+        PpCggkf6KUoCkA0g/+S2QdCcE/F3TSkWoSlcrVnaI7nlBPxnpMIXIyxaTcPI95Pn2DNjDl
+        DPonhCjXCL2jM1EA3KRNx64l3B5Rz7E2++f8INXwe9g/wh8AVLowQrwg8kuvLw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602257994;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DKIXFbRq/5saVEqi5e9AJzND0fz4fM2p8K38phy76Vg=;
+        b=laJxFen859ZoMvaXCNvBrCfBIVOaA1gIbWEPmNsDPChDjbgoucSBnnLQFHbvRMVgEXYxa1
+        XEQBSwcE9OFa+GBQ==
+To:     "Meisinger\, Andreas" <andreas.meisinger@siemens.com>,
+        "vinicius.gomes\@intel.com" <vinicius.gomes@intel.com>,
+        "Geva\, Erez" <erez.geva.ext@siemens.com>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
+        "xiyou.wangcong\@gmail.com" <xiyou.wangcong@gmail.com>,
+        "davem\@davemloft.net" <davem@davemloft.net>,
+        "kuba\@kernel.org" <kuba@kernel.org>,
+        "jhs\@mojatatu.com" <jhs@mojatatu.com>,
+        "jiri\@resnulli.us" <jiri@resnulli.us>,
+        "avagin\@gmail.com" <avagin@gmail.com>,
+        "0x7f454c46\@gmail.com" <0x7f454c46@gmail.com>,
+        "ebiederm\@xmission.com" <ebiederm@xmission.com>,
+        "mingo\@kernel.org" <mingo@kernel.org>,
+        "john.stultz\@linaro.org" <john.stultz@linaro.org>,
+        "mkubecek\@suse.cz" <mkubecek@suse.cz>,
+        "oleg\@redhat.com" <oleg@redhat.com>,
+        "peterz\@infradead.org" <peterz@infradead.org>,
+        "richardcochran\@gmail.com" <richardcochran@gmail.com>,
+        "sboyd\@kernel.org" <sboyd@kernel.org>,
+        "vdronov\@redhat.com" <vdronov@redhat.com>,
+        "bigeasy\@linutronix.de" <bigeasy@linutronix.de>,
+        "frederic\@kernel.org" <frederic@kernel.org>,
+        "edumazet\@google.com" <edumazet@google.com>
+Cc:     "jesus.sanchez-palencia\@intel.com" 
+        <jesus.sanchez-palencia@intel.com>,
+        "vedang.patel\@intel.com" <vedang.patel@intel.com>,
+        "Sudler\, Simon" <simon.sudler@siemens.com>,
+        "Bucher\, Andreas" <andreas.bucher@siemens.com>,
+        "henning.schild\@siemens.com" <henning.schild@siemens.com>,
+        "jan.kiszka\@siemens.com" <jan.kiszka@siemens.com>,
+        "Zirkler\, Andreas" <andreas.zirkler@siemens.com>,
+        "Sakic\, Ermin" <ermin.sakic@siemens.com>,
+        "anninh.nguyen\@siemens.com" <anninh.nguyen@siemens.com>,
+        "Saenger\, Michael" <michael.saenger@siemens.com>,
+        "Maehringer\, Bernd" <bernd.maehringer@siemens.com>,
+        "gisela.greinert\@siemens.com" <gisela.greinert@siemens.com>,
+        "Geva\, Erez" <erez.geva.ext@siemens.com>,
+        "ErezGeva2\@gmail.com" <ErezGeva2@gmail.com>,
+        "guenter.steindl\@siemens.com" <guenter.steindl@siemens.com>
+Subject: Re: AW: [PATCH 0/7] TC-ETF support PTP clocks series
+In-Reply-To: <AM0PR10MB30737E10A86AD50ECBB3A128FA080@AM0PR10MB3073.EURPRD10.PROD.OUTLOOK.COM>
+References: <20201001205141.8885-1-erez.geva.ext@siemens.com> <87eemg5u5i.fsf@intel.com> <87tuvccgpr.fsf@nanos.tec.linutronix.de> <AM0PR10MB30737E10A86AD50ECBB3A128FA080@AM0PR10MB3073.EURPRD10.PROD.OUTLOOK.COM>
+Date:   Fri, 09 Oct 2020 17:39:54 +0200
+Message-ID: <87ft6ntnlh.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from gamma15.internal.sifive.com (64.62.193.194) by BYAPR08CA0041.namprd08.prod.outlook.com (2603:10b6:a03:117::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3455.21 via Frontend Transport; Fri, 9 Oct 2020 15:40:32 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b09b4a8c-a13c-423f-4401-08d86c69a8b2
-X-MS-TrafficTypeDiagnostic: DM6PR13MB4479:
-X-LD-Processed: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1,ExtAddr
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR13MB4479C71EEF4555406E9CB95497080@DM6PR13MB4479.namprd13.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1751;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: V/pfvJgpb/7kuq9JLX9tsKMaazbdgtvw1047Kz1eZAyKRgOf0Kv8PucjOnrDBRrfp9EB9BwvlhJBUQsdibqFSsmhejwCx+sytC/Ode7arqBTCciE5dN4sc1sV1UVbOGtPO/jOUXTef4hixhyKOYj5pEqoaanZ9TrisqsdkjuYHYiL5XtYHZ36isXm/ofus5eOHr8lmo+a3zGhzqWvx0M/0CjgE+0DE0CE6yUn4kyu9xy1SZ1JeFaPQo2JsVl+vYuheJ/Y84P5e/QH/qPW6DAPCOtA4GXLRDhPSvtawQ8scLANERnM5ENjfczBhv4l5Gw
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR13MB3451.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(39850400004)(366004)(136003)(376002)(396003)(346002)(8936002)(478600001)(2616005)(83380400001)(83170400001)(4326008)(956004)(36756003)(6486002)(26005)(6666004)(2906002)(42882007)(107886003)(8676002)(52116002)(6916009)(5660300002)(7696005)(16526019)(66556008)(66476007)(316002)(186003)(66946007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: hVAt97YLTaojDVseOaU3+YbzhvV92vazZ77f44RMnUZLYlRbtXNFgZaf+JFRQNKUYNSJn41+3UZxy8MFG/q5v132VuAfl5XTcmSKL4iE4uUB7l1EUVqlP/HyfLurJk+A2Fa6ClW9Kk4lXt4eg34tt0qzNj7GpcaOYmNUA4UliGBi/T4KgTFDMynKwlpJqigwib5kp/wVb5Z0yvUcsVmxIemm63B8haAipbv8OuzV3LMhP5nqxU+9njcyGhhEb66UKa/oyAKGHO5zzmTxvl1lB8E9h3AYQXbyZULlNvCXwfgSGvGGAXC1naKklyIHp5EIlNfyd8mkcd0a3tI/raoWXxXmq0+iyEH7ujIGw/y4DVBtAuKDmT+XRxu2cHijyNV5bGz89yQePRd0tDVttkSzS5g9l/eaQcre3DDODtOoGBFfTpc7q+nyMOr3ba1BSWO/fAq6kVRY5tZK+h3zMioRVKkuLiejonbzscrP7mLeT8BkGDK0TzuKgdLeJCcVJJ4k6sHUzNbA0Ryxodz4bX6/k2IPK6f1i7v6pDIlve69fZaBzdpltXqtuJlKHHidpF1KlkTGqxa1NdKGVHBoPqXvjozHDBPrLKUKv5g4eV6VEECOpmiohDaXed1pDVCfNLC0uyEgYs5ddvvwV3MObavApw==
-X-OriginatorOrg: sifive.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b09b4a8c-a13c-423f-4401-08d86c69a8b2
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR13MB3451.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2020 15:40:33.2714
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: o/7F2L5JAy9zEaZysIMcTUzkpfUl02WnQLZ2vJ2oqw8OSDIpRQMH66rFH/nljS0l5Pi0zANUUK0Z5HCq9Zofag==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR13MB4479
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The FU540-C000 has a broken IRQ and support was added earlier
-so that it will operate in polling mode, but seems to work only
-in case interrupts property is missing from the i2c0 dt-node.
-This should not be the case and the driver should handle polling
-mode with the interrupt property present in i2c0 node of the
-device tree.
-So check if it's the FU540-C000 soc and enable polling mode master
-xfers, as the IRQ for this chip is broken.
+Andreas,
 
-Fixes commit c45d4ba86731 ("i2c: ocores: add polling mode workaround
-for Sifive FU540-C000 SoC")
+On Fri, Oct 09 2020 at 11:17, Andreas Meisinger wrote:
 
-Signed-off-by: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
----
- drivers/i2c/busses/i2c-ocores.c | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
+please do not top-post and trim your replies.
 
-diff --git a/drivers/i2c/busses/i2c-ocores.c b/drivers/i2c/busses/i2c-ocores.c
-index f5fc75b..9b3d1ab 100644
---- a/drivers/i2c/busses/i2c-ocores.c
-+++ b/drivers/i2c/busses/i2c-ocores.c
-@@ -686,17 +686,21 @@ static int ocores_i2c_probe(struct platform_device *pdev)
- 
- 	init_waitqueue_head(&i2c->wait);
- 
-+	/*
-+	 * Set OCORES_FLAG_BROKEN_IRQ to enable workaround for
-+	 * FU540-C000 SoC in polling mode.
-+	 * Since the SoC does have interrupt it's dt has the interrupt
-+	 * defined but it should be bypassed in driver as this SoC has
-+	 * a broken IRQ, hence update the master_xfer to use polling
-+	 * transfers.
-+	 */
-+	if (of_device_is_compatible(pdev->dev.of_node,
-+				    "sifive,fu540-c000-i2c"))
-+		i2c->flags |= OCORES_FLAG_BROKEN_IRQ;
-+
- 	irq = platform_get_irq(pdev, 0);
--	if (irq == -ENXIO) {
-+	if (i2c->flags & OCORES_FLAG_BROKEN_IRQ || irq == -ENXIO) {
- 		ocores_algorithm.master_xfer = ocores_xfer_polling;
--
--		/*
--		 * Set in OCORES_FLAG_BROKEN_IRQ to enable workaround for
--		 * FU540-C000 SoC in polling mode.
--		 */
--		match = of_match_node(ocores_i2c_match, pdev->dev.of_node);
--		if (match && (long)match->data == TYPE_SIFIVE_REV0)
--			i2c->flags |= OCORES_FLAG_BROKEN_IRQ;
- 	} else {
- 		if (irq < 0)
- 			return irq;
--- 
-2.7.4
+> Yet we do already have usecases where this can't be done. Additionally
+> a lot of discussions at this topic are ongoing in 60802 profile
+> creation too.  Some of our usecases do require a network which does
+> not depend on any external timesource. This might be due to the
+> network not being connected (to the internet) or just because the
+> network may not be able to rely on or trust an external
+> timesource. Some reasons for this might be safety, security,
+> availability or legal implications ( e.g. if a machine builder has to
+> guarantee operation of a machine which depends on an internal tsn
+> network).
 
+I'm aware of the reasons for these kind of setups.
+
+> About your question if an application needs to be able to sync to
+> multiple timescales. A small count of usecases even would require
+> multiple independent timesources to be used. At the moment they all
+> seem to be located in the area of extreme high availability. There's
+> ongoing evaluation about this issues and we're not sure if there's a
+> way to do this without special hardware so we didn't address it here.
+
+Reading several raw PTP clocks is always possible through the existing
+interfaces and if the coordidation between real TAI and the raw PTP
+clocks is available, then these interfaces could be extended to provide
+time normalized to real TAI.
+
+But that does not allow to utilize the magic clocks for arming timers so
+these have to be based on some other clock and the application needs to do
+the conversion back and forth.
+
+Now I said that we could abuse time name spaces for providing access to
+_one_ magic TAI clock which lets the kernel do that work, but thinking
+more about it, it should be possible to do so for all of them even
+without name spaces.
+
+The user space daemon which does the correlation between these PTP
+domains and TAI is required in any case, so the magic clock TAI_PRIVATE
+is not having any advantage.
+
+If that correlation exists then at least clock_nanosleep() should be
+doable. So clock_nanosleep(clock PTP/$N) would convert the sleep time to
+TAI and queue a timer internally on the CLOCK_TAI base.
+
+Depending on the frequency drift between CLOCK_TAI and clock PTP/$N the
+timer expiry might be slightly inaccurate, but surely not more
+inaccurate than if that conversion is done purely in user space.
+
+The self rearming posix timers would work too, but the self rearming is
+based on CLOCK_TAI, so rounding errors and drift would be accumulative.
+So I'd rather stay away from them.
+
+If there is no deamon which manages the correlation then the syscall
+would fail.
+
+If such a coordination exists, then the whole problem in the TSN stack
+is gone. The core can always operate on TAI and the network device which
+runs in a different time universe would use the same conversion data
+e.g. to queue a packet for HW based time triggered transmission. Again
+subject to slight inaccuracy, but it does not come with all the problems
+of dynamic clocks, locking issues etc. As the frequency drift between
+PTP domains is neither fast changing nor randomly jumping around the
+inaccuracy might even be a mostly academic problem.
+
+Thoughts?
+
+Thanks,
+
+        tglx
