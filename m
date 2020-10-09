@@ -2,116 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D3EB288352
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 09:15:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A225B288353
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 09:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731076AbgJIHPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 03:15:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42546 "EHLO
+        id S1731799AbgJIHQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 03:16:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725908AbgJIHPG (ORCPT
+        with ESMTP id S1725908AbgJIHQy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 03:15:06 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A449C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 00:15:06 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id h24so11604042ejg.9
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 00:15:06 -0700 (PDT)
+        Fri, 9 Oct 2020 03:16:54 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABE5CC0613D2;
+        Fri,  9 Oct 2020 00:16:53 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id x7so1480250eje.8;
+        Fri, 09 Oct 2020 00:16:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=8Oa68Dwvz/I7hc5gLl4a6ZH9ks7ayAb8wm2amPdlQxQ=;
-        b=gJw44XwxJU0QsCaJFLzOshUTwt15ZWENvi2dDVOdFyKlwYA6wzprqDBqEZPp8cYb9m
-         bkN39xT/72q9bqXgSHB99KP3AmCKAg5Zs6ApGKk5o6Yoy9N6AsiSQ0Lvy+SW2jyUc/tV
-         ai2xmKseCCvyzEdRtaeRCxTaKVL70SXI4b/SrXFO/fXAZ/WR+WhxFoGO6FDukq4G4UHm
-         iAinWCwEDb1ZHbV4JQicu4IrOvPZBk4F7eGJUeaWxTTjeY5fItCeTmNP5ddMyY7sUPmd
-         3xpd7PFYjOoCq222WzvYH4o16t1liaJ+tjiCSMffuyscSk1F4qZeLAEEH/jE6sPvkzPm
-         ne3A==
+        h=reply-to:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=5eq4Ar/6UjI/N5XgYhCiZtoWsUr9NhMRZnHycDLcVqI=;
+        b=G84d2ajc/5uMkZModl3vF9kd2jBQx+D9/3pJHmM6Rgay42BhSZSAi31U2WRJZH2KfH
+         z52u1UG6YpIzX+01kruZ6F14dUH60x97NqYO6/RXqjMN9IW1r1MAhjpuuC0lH6PRnGQf
+         p93WPSqMgA+O7AkADGbSHICO9DdmliRWpL3kGEf5jJaus+/Y+TmmdP3DOuboz6XOaLWC
+         dIt6PcWeE6JPM1U3hovXK65NAETmFjkGfurY+OhaPH6qRO4oRABK/I2buP7VvFgATM8o
+         PlbvIZVwnTU/iUDDSx/DvZZ/f9nNAGBkeYbiGlkLTd3IBmZQUHytx2gqJBjyQhLxt1Yp
+         KfSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=8Oa68Dwvz/I7hc5gLl4a6ZH9ks7ayAb8wm2amPdlQxQ=;
-        b=rEsj/dxBG8IYZMh4hY23r8mE1Ce/grrT+BMjyO+QqmbwBM1fTy74cHagNR91ZTxw5s
-         JZV9CIQDqZvReGREQ3e6FOTBOHkhh5IqkGE69rjVXPgrjZhXEIdTZqoKnixpwzyjzLtD
-         oica0rxLeOFXKCf5Ef+bjshHkFipd6PEXjBtwD0II66Vy6EV9IsmGzHnIR7l24TZX7DO
-         R/tjlo/zHrwckOORQgaKQfZ8QjQ761mKLdQ4Eq8CSbBTD5dmUPPX/8IzYoUF5+wAL2FI
-         w6aLv3IuisefZUviCzfu4rYFLLh9FhRN+m25qSF7petVT/O4dYH/CJD8HcKcklpiqsN4
-         t9Zg==
-X-Gm-Message-State: AOAM531+81fNGw4rf0RVAGdKHtuQz2v5iPdy/QqADASdRft2doKjMArs
-        RbiM+FnXE6MnWdbOPFv0jNB5Eldr1asqdhrPIvr5kDfu3660UQ==
-X-Google-Smtp-Source: ABdhPJzeBXij/GspUpa/5GfeNRPBThbO39tbmz31A1ZTEqRDC/QoVtRsReCbI0R5TMqmBBkDNhzYTJHkIyJjuh5p6WQ=
-X-Received: by 2002:a17:906:5613:: with SMTP id f19mr12610251ejq.441.1602227704761;
- Fri, 09 Oct 2020 00:15:04 -0700 (PDT)
+        h=x-gm-message-state:reply-to:subject:to:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=5eq4Ar/6UjI/N5XgYhCiZtoWsUr9NhMRZnHycDLcVqI=;
+        b=IDJMMuGahJZ792c06/3UeDEP/36bzI7ZbNxzBjLaizKstMILR/UMiA2vlVHRDpIPmA
+         J/C+rns54ZuIUxzZK41q/7oDiFJOGmMdT1+qzjnf2F24ZUdIRIRtnQ+yu7XSOg4UcEgz
+         tTlB/eNtEML+XP2biq9vVtA57+azq36jZ/4RXuuSDlCXeWosqfAFoTK+gNzaOKhMsq4V
+         uWlzt2SpckJiFbGVkUhP/P2uEwFdqc7XVSCcoDCBjlVeLJztGZh7gpryg5FO5e7WGClE
+         OEE2na4/1Xy/OkMB39gOi49bKeu5KGlig0fI/cIyQXe2jUI1TX1u4hlI9p+wXNBiPc2T
+         fDGw==
+X-Gm-Message-State: AOAM532UZUwXiqPUmMtaDlnjO7sKcmoxraKtjumsVfwGoTVRrfmrXLtK
+        +qN+xX2hjWNFg0jF6VOKkDY=
+X-Google-Smtp-Source: ABdhPJzpHKRuaxXV0iNYwD99THWlH6duPzIzfXxWGfzb72nTC+0HwpHy6g25AB7SG0/yyyLEpqBgrA==
+X-Received: by 2002:a17:906:4e16:: with SMTP id z22mr6743173eju.527.1602227812229;
+        Fri, 09 Oct 2020 00:16:52 -0700 (PDT)
+Received: from ?IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7? ([2a02:908:1252:fb60:be8a:bd56:1f94:86e7])
+        by smtp.gmail.com with ESMTPSA id gv10sm5795761ejb.46.2020.10.09.00.16.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Oct 2020 00:16:51 -0700 (PDT)
+Reply-To: christian.koenig@amd.com
+Subject: Re: [PATCH 1/4] mm: introduce vma_set_file function v2
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, chris@chris-wilson.co.uk,
+        airlied@redhat.com, akpm@linux-foundation.org,
+        sumit.semwal@linaro.org
+References: <20201008112342.9394-1-christian.koenig@amd.com>
+ <20201008141211.GG438822@phenom.ffwll.local>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+Message-ID: <8fc28dfa-4bae-bee1-5aca-4e3c6e88b994@gmail.com>
+Date:   Fri, 9 Oct 2020 09:16:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-From:   Fabio Coatti <fabio.coatti@gmail.com>
-Date:   Fri, 9 Oct 2020 09:14:53 +0200
-Message-ID: <CADpTngV5uuDTxVOOOSxc3wh8pP64Gyjtt48HgWrhNrQDrnK3UQ@mail.gmail.com>
-Subject: Lenovo P50 headphone issue
-To:     LKML <linux-kernel@vger.kernel.org>, hui.wang@canonical.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201008141211.GG438822@phenom.ffwll.local>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
-I'm experiencing issues with a Lenovo P50 regarding headphones. It has
-some similarities with the issue fixed in 5.8.13 with
-commit ad0643252831ede7d6ab7b70a4f03768e032e6b4
-Author: Hui Wang <hui.wang@canonical.com>
-Date:   Mon Sep 14 14:51:18 2020 +0800
+Am 08.10.20 um 16:12 schrieb Daniel Vetter:
+> On Thu, Oct 08, 2020 at 01:23:39PM +0200, Christian König wrote:
+>> Add the new vma_set_file() function to allow changing
+>> vma->vm_file with the necessary refcount dance.
+>>
+>> v2: add more users of this.
+>>
+>> Signed-off-by: Christian König <christian.koenig@amd.com>
+>> ---
+>>   drivers/dma-buf/dma-buf.c                  | 16 +++++-----------
+>>   drivers/gpu/drm/etnaviv/etnaviv_gem.c      |  4 +---
+>>   drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c |  3 +--
+>>   drivers/gpu/drm/i915/gem/i915_gem_mman.c   |  4 ++--
+>>   drivers/gpu/drm/msm/msm_gem.c              |  4 +---
+>>   drivers/gpu/drm/omapdrm/omap_gem.c         |  3 +--
+>>   drivers/gpu/drm/vgem/vgem_drv.c            |  3 +--
+>>   drivers/staging/android/ashmem.c           |  5 ++---
+>>   include/linux/mm.h                         |  2 ++
+>>   mm/mmap.c                                  | 16 ++++++++++++++++
+>>   10 files changed, 32 insertions(+), 28 deletions(-)
+>>
+>> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+>> index a6ba4d598f0e..e4316aa7e0f4 100644
+>> --- a/drivers/dma-buf/dma-buf.c
+>> +++ b/drivers/dma-buf/dma-buf.c
+>> @@ -1163,20 +1163,14 @@ int dma_buf_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma,
+>>   		return -EINVAL;
+>>   
+>>   	/* readjust the vma */
+>> -	get_file(dmabuf->file);
+>> -	oldfile = vma->vm_file;
+>> -	vma->vm_file = dmabuf->file;
+>> +	oldfile = vma_set_file(vma, dmabuf->file);
+>>   	vma->vm_pgoff = pgoff;
+>>   
+>>   	ret = dmabuf->ops->mmap(dmabuf, vma);
+>> -	if (ret) {
+>> -		/* restore old parameters on failure */
+>> -		vma->vm_file = oldfile;
+>> -		fput(dmabuf->file);
+>> -	} else {
+>> -		if (oldfile)
+>> -			fput(oldfile);
+>> -	}
+>> +	/* restore old parameters on failure */
+>> +	if (ret)
+>> +		vma_set_file(vma, oldfile);
+> I think these two lines here are cargo-cult: If this fails, the mmap fails
+> and therefore the vma structure is kfreed. No point at all in restoring
+> anything.
 
-    ALSA: hda/realtek - Couldn't detect Mic if booting with headset plugged
+This was explicitly added with this patch to fix a problem:
 
-I've been seeing this behavior since some time and now I'm running 5.8.14
-Description: sometimes when I start the laptop with headphones plugged
-in, no sound comes out of the headphones. The only thing I can hear is
-the "usual" click when the kernel boots. Sound config in the gui
-reports headphones plugged, nothing seems really wrong but no sound.
-Removing headphones does not help: sound can be heard from laptop
-loudspeakers but  to get back the sound on headphones I have to unplug
-the jack, reboot the laptop and once booted, inserting the headphones
-makes everything work as  expected. Gui tools report everything as
-expected: headphones inserted, volume is ok and so on.
-Below you can find the dmesg boot messages related to sound devices.
-If you need more details please let me know.
-If I picked the wrong address to report the issue please let me know,
-I'll try to contact the relevant sources.
-Please note that I'm not subscribed to this list even though I monitor
-it, so being in CC: will be really appreciated.
-Many thanks for any answer.
-[Fri Oct  9 08:20:05 2020] snd_hda_codec_realtek hdaudioC0D0:
-autoconfig for ALC298: line_outs=1 (0x14/0x0/0x0/0x0/0x0) type:speaker
-[Fri Oct  9 08:20:05 2020] snd_hda_codec_realtek hdaudioC0D0:
-speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
-[Fri Oct  9 08:20:05 2020] snd_hda_codec_realtek hdaudioC0D0:
-hp_outs=2 (0x17/0x21/0x0/0x0/0x0)
-[Fri Oct  9 08:20:05 2020] snd_hda_codec_realtek hdaudioC0D0:    mono:
-mono_out=0x0
-[Fri Oct  9 08:20:05 2020] snd_hda_codec_realtek hdaudioC0D0:    inputs:
-[Fri Oct  9 08:20:05 2020] snd_hda_codec_realtek hdaudioC0D0:      Mic=0x18
-[Fri Oct  9 08:20:05 2020] snd_hda_codec_realtek hdaudioC0D0:      Dock Mic=0x19
-[Fri Oct  9 08:20:05 2020] snd_hda_codec_realtek hdaudioC0D0:
-Internal Mic=0x12
-[Fri Oct  9 08:20:05 2020] videodev: Linux video capture interface: v2.00
-[Fri Oct  9 08:20:05 2020] input: HDA NVidia HDMI/DP,pcm=3 as
-/devices/pci0000:00/0000:00:01.0/0000:01:00.1/sound/card1/input15
-[Fri Oct  9 08:20:05 2020] input: HDA NVidia HDMI/DP,pcm=7 as
-/devices/pci0000:00/0000:00:01.0/0000:01:00.1/sound/card1/input16
-[Fri Oct  9 08:20:05 2020] input: HDA NVidia HDMI/DP,pcm=8 as
-/devices/pci0000:00/0000:00:01.0/0000:01:00.1/sound/card1/input17
-[Fri Oct  9 08:20:05 2020] input: HDA NVidia HDMI/DP,pcm=9 as
-/devices/pci0000:00/0000:00:01.0/0000:01:00.1/sound/card1/input18
-[Fri Oct  9 08:20:05 2020] input: HDA NVidia HDMI/DP,pcm=10 as
-/devices/pci0000:00/0000:00:01.0/0000:01:00.1/sound/card1/input19
-[Fri Oct  9 08:20:05 2020] input: HDA NVidia HDMI/DP,pcm=11 as
-/devices/pci0000:00/0000:00:01.0/0000:01:00.1/sound/card1/input20
-[Fri Oct  9 08:20:05 2020] input: HDA Intel PCH Mic as
-/devices/pci0000:00/0000:00:1f.3/sound/card0/input22
-[Fri Oct  9 08:20:05 2020] input: HDA Intel PCH Dock Mic as
-/devices/pci0000:00/0000:00:1f.3/sound/card0/input23
-[Fri Oct  9 08:20:05 2020] input: HDA Intel PCH Dock Headphone as
-/devices/pci0000:00/0000:00:1f.3/sound/card0/input24
-[Fri Oct  9 08:20:05 2020] input: HDA Intel PCH Headphone as
-/devices/pci0000:00/0000:00:1f.3/sound/card0/input25
---
-Fabio
+commit 495c10cc1c0c359871d5bef32dd173252fc17995
+Author: John Sheu <sheu@google.com>
+Date:   Mon Feb 11 17:50:24 2013 -0800
+
+     CHROMIUM: dma-buf: restore args on failure of dma_buf_mmap
+
+     Callers to dma_buf_mmap expect to fput() the vma struct's vm_file
+     themselves on failure.  Not restoring the struct's data on failure
+     causes a double-decrement of the vm_file's refcount.
+
+> With that: Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+
+Can I keep that even with the error handling working? :)
+
+Christian.
+
+>
+>> +
+>>   	return ret;
+>>   
+>>   }
+>> diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gem.c b/drivers/gpu/drm/etnaviv/etnaviv_gem.c
+>> index 312e9d58d5a7..10ce267c0947 100644
+>> --- a/drivers/gpu/drm/etnaviv/etnaviv_gem.c
+>> +++ b/drivers/gpu/drm/etnaviv/etnaviv_gem.c
+>> @@ -145,10 +145,8 @@ static int etnaviv_gem_mmap_obj(struct etnaviv_gem_object *etnaviv_obj,
+>>   		 * address_space (so unmap_mapping_range does what we want,
+>>   		 * in particular in the case of mmap'd dmabufs)
+>>   		 */
+>> -		fput(vma->vm_file);
+>> -		get_file(etnaviv_obj->base.filp);
+>>   		vma->vm_pgoff = 0;
+>> -		vma->vm_file  = etnaviv_obj->base.filp;
+>> +		vma_set_file(vma, etnaviv_obj->base.filp);
+>>   
+>>   		vma->vm_page_prot = vm_page_prot;
+>>   	}
+>> diff --git a/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c b/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
+>> index fec0e1e3dc3e..8ce4c9e28b87 100644
+>> --- a/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
+>> +++ b/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
+>> @@ -119,8 +119,7 @@ static int i915_gem_dmabuf_mmap(struct dma_buf *dma_buf, struct vm_area_struct *
+>>   	if (ret)
+>>   		return ret;
+>>   
+>> -	fput(vma->vm_file);
+>> -	vma->vm_file = get_file(obj->base.filp);
+>> +	vma_set_file(vma, obj->base.filp);
+>>   
+>>   	return 0;
+>>   }
+>> diff --git a/drivers/gpu/drm/i915/gem/i915_gem_mman.c b/drivers/gpu/drm/i915/gem/i915_gem_mman.c
+>> index 3d69e51f3e4d..c9d5f1a38af3 100644
+>> --- a/drivers/gpu/drm/i915/gem/i915_gem_mman.c
+>> +++ b/drivers/gpu/drm/i915/gem/i915_gem_mman.c
+>> @@ -893,8 +893,8 @@ int i915_gem_mmap(struct file *filp, struct vm_area_struct *vma)
+>>   	 * requires avoiding extraneous references to their filp, hence why
+>>   	 * we prefer to use an anonymous file for their mmaps.
+>>   	 */
+>> -	fput(vma->vm_file);
+>> -	vma->vm_file = anon;
+>> +	vma_set_file(vma, anon);
+>> +	fput(anon);
+>>   
+>>   	switch (mmo->mmap_type) {
+>>   	case I915_MMAP_TYPE_WC:
+>> diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
+>> index de915ff6f4b4..a71f42870d5e 100644
+>> --- a/drivers/gpu/drm/msm/msm_gem.c
+>> +++ b/drivers/gpu/drm/msm/msm_gem.c
+>> @@ -223,10 +223,8 @@ int msm_gem_mmap_obj(struct drm_gem_object *obj,
+>>   		 * address_space (so unmap_mapping_range does what we want,
+>>   		 * in particular in the case of mmap'd dmabufs)
+>>   		 */
+>> -		fput(vma->vm_file);
+>> -		get_file(obj->filp);
+>>   		vma->vm_pgoff = 0;
+>> -		vma->vm_file  = obj->filp;
+>> +		vma_set_file(vma, obj->filp);
+>>   
+>>   		vma->vm_page_prot = vm_get_page_prot(vma->vm_flags);
+>>   	}
+>> diff --git a/drivers/gpu/drm/omapdrm/omap_gem.c b/drivers/gpu/drm/omapdrm/omap_gem.c
+>> index 979d53a93c2b..0d4542ff1d7d 100644
+>> --- a/drivers/gpu/drm/omapdrm/omap_gem.c
+>> +++ b/drivers/gpu/drm/omapdrm/omap_gem.c
+>> @@ -564,9 +564,8 @@ int omap_gem_mmap_obj(struct drm_gem_object *obj,
+>>   		 * address_space (so unmap_mapping_range does what we want,
+>>   		 * in particular in the case of mmap'd dmabufs)
+>>   		 */
+>> -		fput(vma->vm_file);
+>>   		vma->vm_pgoff = 0;
+>> -		vma->vm_file  = get_file(obj->filp);
+>> +		vma_set_file(vma, obj->filp);
+>>   
+>>   		vma->vm_page_prot = vm_get_page_prot(vma->vm_flags);
+>>   	}
+>> diff --git a/drivers/gpu/drm/vgem/vgem_drv.c b/drivers/gpu/drm/vgem/vgem_drv.c
+>> index fa54a6d1403d..ea0eecae5153 100644
+>> --- a/drivers/gpu/drm/vgem/vgem_drv.c
+>> +++ b/drivers/gpu/drm/vgem/vgem_drv.c
+>> @@ -397,8 +397,7 @@ static int vgem_prime_mmap(struct drm_gem_object *obj,
+>>   	if (ret)
+>>   		return ret;
+>>   
+>> -	fput(vma->vm_file);
+>> -	vma->vm_file = get_file(obj->filp);
+>> +	vma_set_file(vma, obj->filp);
+>>   	vma->vm_flags |= VM_DONTEXPAND | VM_DONTDUMP;
+>>   	vma->vm_page_prot = pgprot_writecombine(vm_get_page_prot(vma->vm_flags));
+>>   
+>> diff --git a/drivers/staging/android/ashmem.c b/drivers/staging/android/ashmem.c
+>> index 10b4be1f3e78..a51dc089896e 100644
+>> --- a/drivers/staging/android/ashmem.c
+>> +++ b/drivers/staging/android/ashmem.c
+>> @@ -450,9 +450,8 @@ static int ashmem_mmap(struct file *file, struct vm_area_struct *vma)
+>>   		vma_set_anonymous(vma);
+>>   	}
+>>   
+>> -	if (vma->vm_file)
+>> -		fput(vma->vm_file);
+>> -	vma->vm_file = asma->file;
+>> +	vma_set_file(vma, asma->file);
+>> +	fput(asma->file);
+>>   
+>>   out:
+>>   	mutex_unlock(&ashmem_mutex);
+>> diff --git a/include/linux/mm.h b/include/linux/mm.h
+>> index ca6e6a81576b..a558602afe1b 100644
+>> --- a/include/linux/mm.h
+>> +++ b/include/linux/mm.h
+>> @@ -2693,6 +2693,8 @@ static inline void vma_set_page_prot(struct vm_area_struct *vma)
+>>   }
+>>   #endif
+>>   
+>> +struct file *vma_set_file(struct vm_area_struct *vma, struct file *file);
+>> +
+>>   #ifdef CONFIG_NUMA_BALANCING
+>>   unsigned long change_prot_numa(struct vm_area_struct *vma,
+>>   			unsigned long start, unsigned long end);
+>> diff --git a/mm/mmap.c b/mm/mmap.c
+>> index 40248d84ad5f..d3c3c510f643 100644
+>> --- a/mm/mmap.c
+>> +++ b/mm/mmap.c
+>> @@ -136,6 +136,22 @@ void vma_set_page_prot(struct vm_area_struct *vma)
+>>   	WRITE_ONCE(vma->vm_page_prot, vm_page_prot);
+>>   }
+>>   
+>> +/*
+>> + * Change backing file, only valid to use during initial VMA setup.
+>> + */
+>> +struct file *vma_set_file(struct vm_area_struct *vma, struct file *file)
+>> +{
+>> +	if (file)
+>> +	        get_file(file);
+>> +
+>> +	swap(vma->vm_file, file);
+>> +
+>> +	if (file)
+>> +		fput(file);
+>> +
+>> +	return file;
+>> +}
+>> +
+>>   /*
+>>    * Requires inode->i_mapping->i_mmap_rwsem
+>>    */
+>> -- 
+>> 2.17.1
+>>
+
