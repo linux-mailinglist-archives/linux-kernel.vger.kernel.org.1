@@ -2,56 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A118A288500
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17261288509
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:17:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732629AbgJIIPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 04:15:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40602 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732467AbgJIIPj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 04:15:39 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1BADA2222C;
-        Fri,  9 Oct 2020 08:15:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602231338;
-        bh=bS3V9uZo4PgOtJ1O8yC/OZ2Npybro8w45UriJBmph14=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AmEQoSqYkxoN7Bun525jzPHg4FMECofYVkMgf1RljW4VMfjMparKGTf6iTk5UI4xh
-         TBsiLIPs7Nv7bkQ8GwShvMmvy/R5exO4rSWqhy2jwoG2Xombp/KU5rUgwBdIgf+sTt
-         cV2YkUZux9zLw55XdPrc9ykH0sbJqyYGCQJGh6xQ=
-Date:   Fri, 9 Oct 2020 10:16:24 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     linux-kernel@vger.kernel.org, nstange@suse.de, ap420073@gmail.com,
-        David.Laight@aculab.com, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, rafael@kernel.org
-Subject: Re: [CRAZY-RFF] debugfs: track open files and release on remove
-Message-ID: <20201009081624.GA401030@kroah.com>
-References: <87v9fkgf4i.fsf@suse.de>
- <20201009095306.0d87c3aa13db.Ib3a7019bff15bb6308f6d259473a1648312a4680@changeid>
- <20201009080355.GA398994@kroah.com>
- <be61c6a38d0f6ca1aa0bc3f0cb45bbb216a12982.camel@sipsolutions.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <be61c6a38d0f6ca1aa0bc3f0cb45bbb216a12982.camel@sipsolutions.net>
+        id S1732674AbgJIIR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 04:17:29 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:63362 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732490AbgJIIR1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 04:17:27 -0400
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 09 Oct 2020 01:17:27 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 09 Oct 2020 01:17:25 -0700
+X-QCInternal: smtphost
+Received: from gokulsri-linux.qualcomm.com ([10.201.2.207])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 09 Oct 2020 13:47:06 +0530
+Received: by gokulsri-linux.qualcomm.com (Postfix, from userid 432570)
+        id E227B21C10; Fri,  9 Oct 2020 13:47:04 +0530 (IST)
+From:   Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
+To:     sboyd@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org,
+        manivannan.sadhasivam@linaro.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org
+Cc:     sricharan@codeaurora.org, gokulsri@codeaurora.org
+Subject: [PATCH v4 0/3] Add board support for HK10 board variants
+Date:   Fri,  9 Oct 2020 13:47:01 +0530
+Message-Id: <1602231424-22288-1-git-send-email-gokulsri@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 10:06:14AM +0200, Johannes Berg wrote:
-> We used to say the proxy_fops weren't needed and it wasn't an issue, and
-> then still implemented it. Dunno. I'm not really too concerned about it
-> myself, only root can hold the files open and remove modules ...
+Added support for HK10-C1 and HK10-C2 board variants based on IPQ8074 SoC.
+Both these variants support dual QCN9000 PCIe cards that uses MHI communication
+protocol over PCIe. In addition, HK10-C1 support on-chip radio.
+Both these variants slightly differ in clock configuation for ethernet.
 
-proxy_fops were needed because devices can be removed from the system at
-any time, causing their debugfs files to want to also be removed.  It
-wasn't because of unloading kernel code.
+This series depends on below series:
+[V2,0/7] Add PCIe support for IPQ8074
+[v7,0/9] remoteproc: qcom: q6v5-wcss: Add support for secure pil
 
-thanks,
+changes since v3:
+ - Addressed build failure reported by test robot
+   in patch 3
 
-greg k-h
+changes since v2:
+ - In patch 3, Moved pcie0_rp and pcie1_rp nodes and
+   removed unused members and subnodes
+
+Gokul Sriram Palanisamy (3):
+  dt-bindings: qcom: Add ipq8074 bindings
+  arm64: dts: Add board support for HK10
+  arm64: dts: Enabled MHI device over PCIe
+
+ Documentation/devicetree/bindings/arm/qcom.yaml |   4 +
+ arch/arm64/boot/dts/qcom/Makefile               |   2 +
+ arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dts    |  11 +++
+ arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dts    |  14 +++
+ arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi      | 122 ++++++++++++++++++++++++
+ 5 files changed, 153 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
+
+-- 
+2.7.4
+
