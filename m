@@ -2,58 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84F1A288D84
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74A36288D87
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:58:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389601AbgJIP6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 11:58:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51540 "EHLO mail.kernel.org"
+        id S2389606AbgJIP6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 11:58:21 -0400
+Received: from foss.arm.com ([217.140.110.172]:54474 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389380AbgJIP6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 11:58:07 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B12B222261;
-        Fri,  9 Oct 2020 15:58:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602259087;
-        bh=GIccIXTeOUkQO5mcfwWty2R6qImlNZ3E/Biu8uzF2Jw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=huvcr2uaG6zkbu0CTBPjcrAaGJTGsbbmzjJIjAensB3zmkYPy5stFz8FuZ0L0J7d3
-         wsuPNcnmTLxZ4CLeVgI6iebUIn6mFzMhqgkOJQg1a225707CTEzw4mNKq2DdHEj+TT
-         6wQN+YBrrir4B5p8Cel3orA8xmsQmzeX0DGgKN9U=
-Date:   Fri, 9 Oct 2020 08:58:05 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     John Keeping <john@metanate.com>, netdev@vger.kernel.org,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Eric Dumazet <edumazet@google.com>
-Subject: Re: [PATCH] net: stmmac: Don't call _irqoff() with hardirqs enabled
-Message-ID: <20201009085805.65f9877a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <8036d473-68bd-7ee7-e2e9-677ff4060bd3@gmail.com>
-References: <20201008162749.860521-1-john@metanate.com>
-        <8036d473-68bd-7ee7-e2e9-677ff4060bd3@gmail.com>
+        id S2389380AbgJIP6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 11:58:20 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3AB67D6E;
+        Fri,  9 Oct 2020 08:58:20 -0700 (PDT)
+Received: from bogus (unknown [10.57.53.233])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C96EA3F66B;
+        Fri,  9 Oct 2020 08:58:18 -0700 (PDT)
+Date:   Fri, 9 Oct 2020 16:58:16 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Etienne Carriere <etienne.carriere@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Souvik Chakravarty <Souvik.Chakravarty@arm.com>
+Subject: Re: [PATCH 3/5] firmware: arm_scmi: add config dependency for smc
+ transport
+Message-ID: <20201009155816.il56rbatvcagyosz@bogus>
+References: <20201008143722.21888-1-etienne.carriere@linaro.org>
+ <20201008143722.21888-3-etienne.carriere@linaro.org>
+ <20201008210839.6nnl2tvm2re2ckvu@bogus>
+ <CAN5uoS-t2De5OvawUSeK1NuskqpBEt-rWGVtJky-E=+RRpe+_Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAN5uoS-t2De5OvawUSeK1NuskqpBEt-rWGVtJky-E=+RRpe+_Q@mail.gmail.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 9 Oct 2020 16:54:06 +0200 Heiner Kallweit wrote:
-> I'm thinking about a __napi_schedule version that disables hard irq's
-> conditionally, based on variable force_irqthreads, exported by the irq
-> subsystem. This would allow to behave correctly with threadirqs set,
-> whilst not loosing the _irqoff benefit with threadirqs unset.
-> Let me come up with a proposal.
+On Fri, Oct 09, 2020 at 02:33:41PM +0200, Etienne Carriere wrote:
+> On Thu, 8 Oct 2020 at 23:08, Sudeep Holla <sudeep.holla@arm.com> wrote:
+> >
+> > On Thu, Oct 08, 2020 at 04:37:20PM +0200, Etienne Carriere wrote:
+> > > Fix dependencies for configuration switch ARM_SCMI_PROTOCOL that
+> > > is not exclusively dependent on MAILBOX since the alternate
+> > > smc transport that is depends on HAVE_ARM_SMCCC_DISCOVERY since [1].
+> > >
+> >
+> > Do you need any build issues ? I don't see why this is needed.
+> >
+> 
+> This change is for consistency of the kernel configuration.
+> Without this change, a kernel configured without CONFIG_MAILBOX
+> cannot embed SCMI support even is using only the SMC transport
+> enabled thanks to HAVE_ARM_SMCCC_DISCOVERY.
+> 
 
-I think you'd need to make napi_schedule_irqoff() behave like that,
-right?  Are there any uses of napi_schedule_irqoff() that are disabling
-irqs and not just running from an irq handler?
+Fair enough, however instead of adding to the list for each added transport
+we need to do better transport abstraction now that we have multiple.
+I don't see this as critical, let me know if you disagree.
+
+-- 
+Regards,
+Sudeep
