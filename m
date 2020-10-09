@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C0F28826C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 08:38:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05EB0288264
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 08:37:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732270AbgJIGg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 02:36:58 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:55580 "EHLO
+        id S1732254AbgJIGgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 02:36:43 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:55632 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732037AbgJIGfk (ORCPT
+        with ESMTP id S1732041AbgJIGfm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 02:35:40 -0400
-Date:   Fri, 09 Oct 2020 06:35:38 -0000
+        Fri, 9 Oct 2020 02:35:42 -0400
+Date:   Fri, 09 Oct 2020 06:35:39 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602225339;
+        s=2020; t=1602225340;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=7GAtStCTGUefVjtPLoM9spLu4k5e3/GFYGMOYiaPfek=;
-        b=ITWJMi+nq7XmSfllNv7TKyTn0jDalcn3IPn26JsMWpseW1cjqlCntBt+ORSVM9h4DhCYvJ
-        yiYEVwymv/jaIw1TPdoijTzHyv7zvhh9nkcMisDWiOiRx8zwQ9iSJc5YISKN7HKRRyv7AI
-        wj3kb7LwDom9QkC62piLRQTSSeYcjI1X0Mpw9FNdgcV4+pqg/dDROD+GzDNi1mBLZJNku1
-        r+Wza7R8IAvVrXESGVAsIl9Pyku2fsE+m5+tgwx6MrFVSu8x9f9JFG/nPcQcYGoQE+y3Q+
-        vWsGtjwjeuh6trYtEET3yMvvsYOLX8ZCGJ2ZguS4FHtQAkMvCI2XJ/xD69t8YA==
+        bh=mBju6gFrhxXhpVA6q7eC9oaHF6C6RPKeemP8tXdHcks=;
+        b=OlhAC6axKg0BqZ0m8bwzU4cIIwTKouiQFSAOuMFne7GofUj4TCmO6lOGuRpgxYyvrQHYLx
+        MsNxhS0J07RoalXad3etQg6e/i0QlTbMzXzWl657NJocPx50oILju89KrChOXMsuQrgl84
+        t00aoDFxsc+ytuuf0h6QSspryFzasOxGKTGyNgR4nH7n/SdKFYrCYTsqIZ9Lx5XvioxIDt
+        5a/nAP2nbfhIN9dAIKCbMG1nJZl9VoisepbgaPpQc8EgH4f/gp428TWB/2rHQbEZXResIm
+        /QgpHG7c5Gm3x01ys98uJP2mAr8+Gl6ZIkFztkO4QZ3sB5xCmC0wIS0QCtBA0A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602225339;
+        s=2020e; t=1602225340;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=7GAtStCTGUefVjtPLoM9spLu4k5e3/GFYGMOYiaPfek=;
-        b=q4gzT//Prv8eid37XeeICZ+eP6D7aGMDxtM6WK1k4aTobv2DCADE20qV+dvYCuj1m0NgxO
-        08cttsLwXjtvqwBQ==
+        bh=mBju6gFrhxXhpVA6q7eC9oaHF6C6RPKeemP8tXdHcks=;
+        b=/5P0aLk2JIeIm1Nsf3tFUomFZp332E+jY3peQAEktRIZ0Asr7gWi8cSfCdiYnVOv3Flqin
+        aA1/r+gQt8vW5hBw==
 From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
 Subject: [tip: core/rcu] rcu: Add READ_ONCE() to rcu_do_batch() access to
- rcu_kick_kthreads
+ rcu_resched_ns
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <160222533869.7002.1775214182693934335.tip-bot2@tip-bot2>
+Message-ID: <160222533918.7002.6310608201915925750.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -52,42 +52,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     fe63b723cc7ca3a91ea91274e0f2cba29452b3fa
-Gitweb:        https://git.kernel.org/tip/fe63b723cc7ca3a91ea91274e0f2cba29452b3fa
+Commit-ID:     a2b354b9950bb859d8d959f951dda26725b041fb
+Gitweb:        https://git.kernel.org/tip/a2b354b9950bb859d8d959f951dda26725b041fb
 Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Tue, 23 Jun 2020 18:04:45 -07:00
+AuthorDate:    Tue, 23 Jun 2020 17:49:40 -07:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
 CommitterDate: Mon, 24 Aug 2020 18:36:07 -07:00
 
-rcu: Add READ_ONCE() to rcu_do_batch() access to rcu_kick_kthreads
+rcu: Add READ_ONCE() to rcu_do_batch() access to rcu_resched_ns
 
-Given that sysfs can change the value of rcu_kick_kthreads at any time,
+Given that sysfs can change the value of rcu_resched_ns at any time,
 this commit adds a READ_ONCE() to the sole access to that variable.
+While in the area, this commit also adds bounds checking, clamping the
+value to at least a millisecond, but no longer than a second.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_stall.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/rcu/tree.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index b5d3b47..a1780a6 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -158,7 +158,7 @@ static void rcu_stall_kick_kthreads(void)
- {
- 	unsigned long j;
- 
--	if (!rcu_kick_kthreads)
-+	if (!READ_ONCE(rcu_kick_kthreads))
- 		return;
- 	j = READ_ONCE(rcu_state.jiffies_kick_kthreads);
- 	if (time_after(jiffies, j) && rcu_state.gp_kthread &&
-@@ -580,7 +580,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
- 	unsigned long js;
- 	struct rcu_node *rnp;
- 
--	if ((rcu_stall_is_suppressed() && !rcu_kick_kthreads) ||
-+	if ((rcu_stall_is_suppressed() && !READ_ONCE(rcu_kick_kthreads)) ||
- 	    !rcu_gp_in_progress())
- 		return;
- 	rcu_stall_kick_kthreads();
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 1dca14c..da05afc 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2394,8 +2394,12 @@ static void rcu_do_batch(struct rcu_data *rdp)
+ 	div = READ_ONCE(rcu_divisor);
+ 	div = div < 0 ? 7 : div > sizeof(long) * 8 - 2 ? sizeof(long) * 8 - 2 : div;
+ 	bl = max(rdp->blimit, pending >> div);
+-	if (unlikely(bl > 100))
+-		tlimit = local_clock() + rcu_resched_ns;
++	if (unlikely(bl > 100)) {
++		long rrn = READ_ONCE(rcu_resched_ns);
++
++		rrn = rrn < NSEC_PER_MSEC ? NSEC_PER_MSEC : rrn > NSEC_PER_SEC ? NSEC_PER_SEC : rrn;
++		tlimit = local_clock() + rrn;
++	}
+ 	trace_rcu_batch_start(rcu_state.name,
+ 			      rcu_segcblist_n_cbs(&rdp->cblist), bl);
+ 	rcu_segcblist_extract_done_cbs(&rdp->cblist, &rcl);
