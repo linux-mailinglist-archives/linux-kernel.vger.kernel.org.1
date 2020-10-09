@@ -2,157 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C5052883B7
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 09:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 481C82883B6
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 09:36:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732181AbgJIHhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 03:37:06 -0400
-Received: from mga03.intel.com ([134.134.136.65]:30796 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732087AbgJIHhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 03:37:05 -0400
-IronPort-SDR: VHabuWfFAoBZamhnxK73bHJqaSsHNE1e2KWgau/uNt4Ri8Mh+oLCcEbgqihKbh3wUVj9pit4sZ
- T6MT07/WzoUQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="165516332"
-X-IronPort-AV: E=Sophos;i="5.77,354,1596524400"; 
-   d="scan'208";a="165516332"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 00:37:04 -0700
-IronPort-SDR: MDJhdq95lbtKuXRxTvEgaUWRva3ZXx9xfAoO4FRwSYRuqtqbEihOfXNaSkAy/f7xelLYyPSwUb
- 2G1M/URwmWjg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,354,1596524400"; 
-   d="scan'208";a="518580128"
-Received: from yhuang-dev.sh.intel.com ([10.239.159.65])
-  by fmsmga006.fm.intel.com with ESMTP; 09 Oct 2020 00:37:01 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Huang Ying <ying.huang@intel.com>,
-        Rafael Aquini <aquini@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Subject: [PATCH] mm: Fix a race during split THP
-Date:   Fri,  9 Oct 2020 15:36:47 +0800
-Message-Id: <20201009073647.1531083-1-ying.huang@intel.com>
-X-Mailer: git-send-email 2.28.0
+        id S1732157AbgJIHg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 03:36:57 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:45153 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731328AbgJIHg5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 03:36:57 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 5FB2F5C00F9;
+        Fri,  9 Oct 2020 03:36:55 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Fri, 09 Oct 2020 03:36:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=DeUuxzkGc/PDj/8FcISImg2Zcr8
+        Rv/oPyJJNhor4yTE=; b=io9PCzXK2CVWFa7sdYVq7bB+4BEhyG/VbPai4R+XHho
+        /jlCWAG6JaZkYcj6lzdFNugxTdY9S3sZiuXvxNotc9fQr4UKaz9BPDNXAh82Xq6D
+        jW+vf5R1OV9LsbEQwIK9eCmxXBoaxlm8Rmp8CpTd/oBpdfEcTLz6846ZIua5mQD0
+        uYgpofnlu8nTdQ75/p9zhaqjGvLDCqyjxIz/IluSt4dfaf7uq2Y5xUqnKq/60VQF
+        unXAZqJe2GQZBQdlJo3h1bA0Zi7bOwIbm2NTe5kjZh0KkbD8+/4OvIBBfWYB5uls
+        8YPMdc4bbnnpb/nwHvgh25ljqnWmqMqZM38jIJroY/w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=DeUuxz
+        kGc/PDj/8FcISImg2Zcr8Rv/oPyJJNhor4yTE=; b=pX8GdSEpaNDx2S5DLroMLN
+        ppQP57mCcOxN0G6j9+h7Z21kR9R8qjvHsol5pcc6mwZbR74XjQ0/a3f7pg23/VSz
+        LxcMRfMaDOsKgFiPHKo/Lm2x87tqcF/SS3cO5HXYIYQH+m/mPZvwls4AblFXZkVa
+        CZMflrvQRIbHhHuOgt/Wh94Ftqvt+l0dmhM/UuCiRsFM7LRL/ygWf9HSlerA4Zm6
+        fj0XeX7Gq49oZnZeEBpHSCii4NHQeJL5Vh6mGJPL2fxph9L1yjU9Q4kt/Nn+lesA
+        g1Bvb9xyQe+DEXVfs04aQzfsg9SpMUpEMQQ931+Vh31plf+yQHAEMv+FYRNy1dcg
+        ==
+X-ME-Sender: <xms:FROAX8IhIEROl-SHwO8LtvJBXHt9Q4Jzcxyc_vtfGefhTef_viwWvQ>
+    <xme:FROAX8LH0ILCRzhBZUXarireS3oqGhIojuieqXM-fwYSIKsonpjqlVN76aArU8jlE
+    gyhwUF7DSNqXNIMBJk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrhedtgdduvdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddunecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnheptefgjedtleegffffiedthfdtvdefieejffetleekhfelvdevgffgudejgeei
+    gefhnecuffhomhgrihhnpehgihhthhhusgdrtghomhenucfkphepledtrdekledrieekrd
+    ejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehm
+    rgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:FROAX8uxlaCaIj11U5W_ibbb_44HdiAacW75P8Fzn5zODmJXBv9Exg>
+    <xmx:FROAX5aBgBNsDF2YQKNTcVEBCI0iQG6g5N9w-Zj4Xf8SJUdBtcUXhQ>
+    <xmx:FROAXza1r4jdGK2CuF4YRlkbViHKhGZX_UM0gu8TejSLVoXjJAVr_Q>
+    <xmx:FxOAX-weSkd4ywxrai7fBLNrZSOc6BXu7BxkmxIM7V7iNAhjRtUObA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 686B6328005E;
+        Fri,  9 Oct 2020 03:36:53 -0400 (EDT)
+Date:   Fri, 9 Oct 2020 09:36:51 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Subject: Re: [PATCH v2] arm64: dts: allwinner: h6: add eMMC voltage property
+ for Beelink GS1
+Message-ID: <20201009073651.izvvjpqiqiivhknl@gilmour.lan>
+References: <20201003092001.405238-1-peron.clem@gmail.com>
+ <20201005092145.wdu4m4pwxydv76ou@gilmour.lan>
+ <CAJiuCcfydz4GS3fUTampBLkDC4f6xVWmRpSRJ55TiDStdRCFmA@mail.gmail.com>
+ <20201008151022.ryhijbj42y7kgzvb@gilmour.lan>
+ <CAJiuCcf8rk4t2GrS3+ANEuCtRmXoCMyzP+-x_rKrAfR-FaMaWA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="cuc3il2vmfdnuxue"
+Content-Disposition: inline
+In-Reply-To: <CAJiuCcf8rk4t2GrS3+ANEuCtRmXoCMyzP+-x_rKrAfR-FaMaWA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huang Ying <ying.huang@intel.com>
 
-It is reported that the following bug is triggered if the HDD is used as swap
-device,
+--cuc3il2vmfdnuxue
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[ 5758.157556] BUG: kernel NULL pointer dereference, address: 0000000000000007
-[ 5758.165331] #PF: supervisor write access in kernel mode
-[ 5758.171161] #PF: error_code(0x0002) - not-present page
-[ 5758.176894] PGD 0 P4D 0
-[ 5758.179721] Oops: 0002 [#1] SMP PTI
-[ 5758.183614] CPU: 10 PID: 316 Comm: kswapd1 Kdump: loaded Tainted: G S               --------- ---  5.9.0-0.rc3.1.tst.el8.x86_64 #1
-[ 5758.196717] Hardware name: Intel Corporation S2600CP/S2600CP, BIOS SE5C600.86B.02.01.0002.082220131453 08/22/2013
-[ 5758.208176] RIP: 0010:split_swap_cluster+0x47/0x60
-[ 5758.213522] Code: c1 e3 06 48 c1 eb 0f 48 8d 1c d8 48 89 df e8 d0 20 6a 00 80 63 07 fb 48 85 db 74 16 48 89 df c6 07 00 66 66 66 90 31 c0 5b c3 <80> 24 25 07 00 00 00 fb 31 c0 5b c3 b8 f0 ff ff ff 5b c3 66 0f 1f
-[ 5758.234478] RSP: 0018:ffffb147442d7af0 EFLAGS: 00010246
-[ 5758.240309] RAX: 0000000000000000 RBX: 000000000014b217 RCX: ffffb14779fd9000
-[ 5758.248281] RDX: 000000000014b217 RSI: ffff9c52f2ab1400 RDI: 000000000014b217
-[ 5758.256246] RBP: ffffe00c51168080 R08: ffffe00c5116fe08 R09: ffff9c52fffd3000
-[ 5758.264208] R10: ffffe00c511537c8 R11: ffff9c52fffd3c90 R12: 0000000000000000
-[ 5758.272172] R13: ffffe00c51170000 R14: ffffe00c51170000 R15: ffffe00c51168040
-[ 5758.280134] FS:  0000000000000000(0000) GS:ffff9c52f2a80000(0000) knlGS:0000000000000000
-[ 5758.289163] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 5758.295575] CR2: 0000000000000007 CR3: 0000000022a0e003 CR4: 00000000000606e0
-[ 5758.303538] Call Trace:
-[ 5758.306273]  split_huge_page_to_list+0x88b/0x950
-[ 5758.311433]  deferred_split_scan+0x1ca/0x310
-[ 5758.316202]  do_shrink_slab+0x12c/0x2a0
-[ 5758.320491]  shrink_slab+0x20f/0x2c0
-[ 5758.324482]  shrink_node+0x240/0x6c0
-[ 5758.328469]  balance_pgdat+0x2d1/0x550
-[ 5758.332652]  kswapd+0x201/0x3c0
-[ 5758.336157]  ? finish_wait+0x80/0x80
-[ 5758.340147]  ? balance_pgdat+0x550/0x550
-[ 5758.344525]  kthread+0x114/0x130
-[ 5758.348126]  ? kthread_park+0x80/0x80
-[ 5758.352214]  ret_from_fork+0x22/0x30
-[ 5758.356203] Modules linked in: fuse zram rfkill sunrpc intel_rapl_msr intel_rapl_common sb_edac x86_pkg_temp_thermal intel_powerclamp coretemp mgag200 iTCO_wdt crct10dif_pclmul iTCO_vendor_support drm_kms_helper crc32_pclmul ghash_clmulni_intel syscopyarea sysfillrect sysimgblt fb_sys_fops cec rapl joydev intel_cstate ipmi_si ipmi_devintf drm intel_uncore i2c_i801 ipmi_msghandler pcspkr lpc_ich mei_me i2c_smbus mei ioatdma ip_tables xfs libcrc32c sr_mod sd_mod cdrom t10_pi sg igb ahci libahci i2c_algo_bit crc32c_intel libata dca wmi dm_mirror dm_region_hash dm_log dm_mod
-[ 5758.412673] CR2: 0000000000000007
-[    0.000000] Linux version 5.9.0-0.rc3.1.tst.el8.x86_64 (mockbuild@x86-vm-15.build.eng.bos.redhat.com) (gcc (GCC) 8.3.1 20191121 (Red Hat 8.3.1-5), GNU ld version 2.30-79.el8) #1 SMP Wed Sep 9 16:03:34 EDT 2020
+On Thu, Oct 08, 2020 at 10:00:06PM +0200, Cl=E9ment P=E9ron wrote:
+> Hi Maxime,
+>=20
+> Adding linux-sunxi and Jernej Skrabec to this discussion.
+>=20
+> On Thu, 8 Oct 2020 at 17:10, Maxime Ripard <maxime@cerno.tech> wrote:
+> >
+> > Hi Cl=E9ment,
+> >
+> > On Mon, Oct 05, 2020 at 08:47:19PM +0200, Cl=E9ment P=E9ron wrote:
+> > > On Mon, 5 Oct 2020 at 11:21, Maxime Ripard <maxime@cerno.tech> wrote:
+> > > >
+> > > > Hi Cl=E9ment,
+> > > >
+> > > > On Sat, Oct 03, 2020 at 11:20:01AM +0200, Cl=E9ment P=E9ron wrote:
+> > > > > Sunxi MMC driver can't distinguish at runtime what's the I/O volt=
+age
+> > > > > for HS200 mode.
+> > > >
+> > > > Unfortunately, that's not true (or at least, that's not related to =
+your patch).
+> > > >
+> > > > > Add a property in the device-tree to notify MMC core about this
+> > > > > configuration.
+> > > > >
+> > > > > Fixes: 089bee8dd119 ("arm64: dts: allwinner: h6: Introduce Beelin=
+k GS1 board")
+> > > > > Signed-off-by: Cl=E9ment P=E9ron <peron.clem@gmail.com>
+> > > > > ---
+> > > > >  arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts | 1 +
+> > > > >  1 file changed, 1 insertion(+)
+> > > > >
+> > > > > diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.=
+dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
+> > > > > index 049c21718846..3f20d2c9bbbb 100644
+> > > > > --- a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
+> > > > > +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
+> > > > > @@ -145,6 +145,7 @@ &mmc2 {
+> > > > >       vqmmc-supply =3D <&reg_bldo2>;
+> > > > >       non-removable;
+> > > > >       cap-mmc-hw-reset;
+> > > > > +     mmc-hs200-1_8v;
+> > > > >       bus-width =3D <8>;
+> > > > >       status =3D "okay";
+> > > > >  };
+> > > >
+> > > > I'm not really sure what you're trying to fix here, but as far as M=
+MC
+> > > > goes, eMMC's can support io voltage of 3.3, 1.8 and 1.2V. Modes up =
+until
+> > > > HS DDR (50MHz in DDR) will use an IO voltage of 3.3V, higher speed =
+modes
+> > > > (HS200 and HS400) supporting 1.8V and 1.2V.
+> > >
+> > > Some users report that the eMMC is not working properly on their
+> > > Beelink GS1 boards.
+> > >
+> > > > The mmc-hs200-1_8v property states that the MMC controller supports=
+ the
+> > > > HS200 mode at 1.8V. Now, I can only assume that since BLDO2 is set =
+up at
+> > > > 1.8V then otherwise, the MMC core will rightfully decide to use the
+> > > > highest supported mode. In this case, since the driver sets it, it =
+would
+> > > > be HS-DDR at 3.3V, which won't work with that fixed regulator.
+> > > >
+> > > > I can only assume that enabling HS200 at 1.8V only fixes the issue =
+you
+> > > > have because otherwise it would use HS-DDR at 3.3V, ie not actually
+> > > > fixing the issue but sweeping it under the rug.
+> > > >
+> > > > Trying to add mmc-ddr-1_8v would be a good idea
+> > >
+> > > Thanks for the explanation, this is indeed the correct one.
+> > > So It looks like the SDIO controller has an issue on some boards when
+> > > using HS-DDR mode.
+> > >
+> > > Is this patch acceptable with the proper commit log?
+> >
+> > If HS-DDR works, yes, but I assume it doesn't?
+>=20
+> After discussing with Jernej about this issue, I understood that:
+> - Automatic delay calibration is not implemented
+> - We also miss some handling of DDR related bits in control register
+>=20
+> So none of H5/H6 boards should actually work.
+> (Some 'lucky' boards seem to work enough to switch to HS200 mode...)
+>=20
+> To "fix" this the H5 disable the HS-DDR mode in sunxi mmc driver :
+> https://github.com/torvalds/linux/blob/master/drivers/mmc/host/sunxi-mmc.=
+c#L1409
 
-After further digging it's found that the following race condition exists in the
-original implementation,
+I find it suspicious that some boards would have traces not good enough
+for HS-DDR (50MHz in DDR) but would work fine in HS200 (200MHz in SDR).
+If there's some mismatch on the traces, it will only be worse in HS200.
 
-CPU1                                                             CPU2
-----                                                             ----
-deferred_split_scan()
-  split_huge_page(page) /* page isn't compound head */
-    split_huge_page_to_list(page, NULL)
-      __split_huge_page(page, )
-        ClearPageCompound(head)
-        /* unlock all subpages except page (not head) */
-                                                                 add_to_swap(head)  /* not THP */
-                                                                   get_swap_page(head)
-                                                                   add_to_swap_cache(head, )
-                                                                     SetPageSwapCache(head)
-     if PageSwapCache(head)
-       split_swap_cluster(/* swap entry of head */)
-         /* Deref sis->cluster_info: NULL accessing! */
+And for the delay calibration, iirc, that's only necessary for HS400
+that we don't support?
 
-So, in split_huge_page_to_list(), PageSwapCache() is called for the already
-split and unlocked "head", which may be added to swap cache in another CPU.  So
-split_swap_cluster() may be called wrongly.
+> I'm not sure about A64 but it looks like the property "mmc-hs200-1_8v"
+> for the PineBook shows the same issue.
+>=20
+> The proper way would of course be to implement the missing feature
+> mentioned above.
+> But this could take some time and as the eMMC driver is actually
+> broken wouldn't it be better to disable the HS-DDR for H6 in the mmc
+> driver like it's done for H5 ?
 
-To fix the race, the call to split_swap_cluster() is moved to
-__split_huge_page() before all subpages are unlocked.  So that the
-PageSwapCache() is stable.
+Have you tested with only the mmc-ddr-1_8v property?
 
-Fixes: 59807685a7e77 ("mm, THP, swap: support splitting THP for THP swap out")
-Reported-and-tested-by: Rafael Aquini <aquini@redhat.com>
-Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
----
- mm/huge_memory.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+Maxime
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index cba3812a5c3e..87b0389673dd 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2478,6 +2478,12 @@ static void __split_huge_page(struct page *page, struct list_head *list,
- 
- 	remap_page(head, nr);
- 
-+	if (PageSwapCache(head)) {
-+		swp_entry_t entry = { .val = page_private(head) };
-+
-+		split_swap_cluster(entry);
-+	}
-+
- 	for (i = 0; i < nr; i++) {
- 		struct page *subpage = head + i;
- 		if (subpage == page)
-@@ -2713,12 +2719,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
- 		}
- 
- 		__split_huge_page(page, list, end, flags);
--		if (PageSwapCache(head)) {
--			swp_entry_t entry = { .val = page_private(head) };
--
--			ret = split_swap_cluster(entry);
--		} else
--			ret = 0;
-+		ret = 0;
- 	} else {
- 		if (IS_ENABLED(CONFIG_DEBUG_VM) && mapcount) {
- 			pr_alert("total_mapcount: %u, page_count(): %u\n",
--- 
-2.28.0
+--cuc3il2vmfdnuxue
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX4ATEwAKCRDj7w1vZxhR
+xTVaAQCIC4GxG0AMpq4aBg6dskIOx+bHvQ1lIysXG++6SLpYiQEA8QTiPrmBS0bg
+fAqGPBKbgt3exqy0mc6357vdFILjggE=
+=kH8r
+-----END PGP SIGNATURE-----
+
+--cuc3il2vmfdnuxue--
