@@ -2,125 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B885288E94
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 18:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10B4B288E96
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 18:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389656AbgJIQRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 12:17:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42066 "EHLO
+        id S2389700AbgJIQRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 12:17:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389410AbgJIQRL (ORCPT
+        with ESMTP id S2389410AbgJIQRO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 12:17:11 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 616A4C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 09:17:11 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id bb1so4681719plb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 09:17:11 -0700 (PDT)
+        Fri, 9 Oct 2020 12:17:14 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9707C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 09:17:14 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id u126so10675340oif.13
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 09:17:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Bmx9gH8QKYILpVv8/AwBKiqUZ1W2aX/bT7meRLse05U=;
-        b=cPgy8ppfUqoug6Hor5S2QVmhFZWHFrqJXMkkIlCfoLjsNgIXVupZCDSidSxzpRprlj
-         rfjpDWTuGxujG0WGnuwCUd6DtrIqIe0Q4piEXyARszAGEaARe7MERlHX28vBE6rjBXwn
-         wmM+lgmATC9rUzbL/+UIHkSlNXi/qBUfCT9r6Mi6QAD4XJCyy6XEmUsTKED84w+Y3gj3
-         8j/Y8BiwF6GBByc7N15bCx8BOlnz2THm/VCh31ARuX6A4D//SleD+C8Zo0UXPmgVQdBI
-         mMt4n+Q+5NQjk4XxRrSDeY/BaUvWQymMw6xAi760bKR2bgDfqkEBy2f7SpGyHP+Vad6P
-         l0PA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Nv6hxgJE6F13m8yrGBTnSqZNZeOQ+Nxj6uvnt0DeaLw=;
+        b=EvqJ0t1jWB/MleGe/MtVqHEC19LuB4vdffCzjYJUI+lxhU9U54wbBOutBCe29gT+w4
+         ZNShBzOks2mhBhdFQSJR05pDUpm1H1IgkZS1vM4A3Cnp+vb36ohdzoM9byZGPc/MygcG
+         GAXx68ht3Cjkiuyg6pWky7O6QrRb/1exBUPXVKWw6FjYcc4KvxWnG5mtx6hSQDwODtnO
+         zJISoRNysIJ3KMpm9Q8opO0483kbLk2Xeala5PhHFcZvG8qHRj1DMYOI1q3w19b6Cv9P
+         w7FXz3OLrjbzGEnQz5eEwACyrvTl6BxIwjjLTDTSJaowwOQ4GXN2aY4oUvlYmzPmn1ti
+         zApg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Bmx9gH8QKYILpVv8/AwBKiqUZ1W2aX/bT7meRLse05U=;
-        b=r1TpF7/OYFNfHbrqHs0e3rJ7ouaxe2SCB9gil8Yx4vBJJCLIqsqxjZMzz+dBomQ0h/
-         KfvjZaihKH8pmjJAiew5z2OvigUesKaLpHaE6bn6MR+XC2wBFUmMcG5PJFdlAMhVcCsa
-         SI3H4KvokbpC/10xWU3b/zv0KhhktfdGdQ1HDKc8urNPAtIMXupazYZoPrlcD1iTSya3
-         9X9R4mIwajwibszVXazEcPqMR/ukYbdryIFq9C3XatlwBLclb2CeDSJJmWSKm4gbT+LM
-         Gc6Y/aBgiyKWZPAQ38YYYGMuz30V6vJi3/LzsHMaBYH2EvJDe6f7B6X6+qkdQKqouwhf
-         0ZLQ==
-X-Gm-Message-State: AOAM533Xz70xOmKx541vAhCx6VcXhpDBaY9Kkjgj/TSG8RKPRFba46wq
-        RllgfTi3phyFgRzl8Kzq/qM=
-X-Google-Smtp-Source: ABdhPJxAPI/0Ac3xxOCN4zvAfkmbcnL5mU1jLjyIiq9aO2HXzi8cW2Uw5SZniELgmxOPso9AYka+6A==
-X-Received: by 2002:a17:902:21:b029:d2:564a:5dc6 with SMTP id 30-20020a1709020021b02900d2564a5dc6mr12808284pla.14.1602260230641;
-        Fri, 09 Oct 2020 09:17:10 -0700 (PDT)
-Received: from localhost.localdomain ([49.207.205.113])
-        by smtp.gmail.com with ESMTPSA id s6sm9367662pfd.157.2020.10.09.09.17.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 09:17:09 -0700 (PDT)
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        syzbot+009f546aa1370056b1c2@syzkaller.appspotmail.com,
-        Ian Abbott <abbotti@mev.co.uk>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: comedi: check validity of wMaxPacketSize of usb endpoints found
-Date:   Fri,  9 Oct 2020 21:46:44 +0530
-Message-Id: <20201009161646.286286-1-anant.thazhemadam@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Nv6hxgJE6F13m8yrGBTnSqZNZeOQ+Nxj6uvnt0DeaLw=;
+        b=EZQSB7fiqYrG6GGqQuQ3j3TU8Yp5eO3AOMTsk664lAqzMtelz6Muo9WW/qthAxI4tI
+         Vh5J0OrG4a6d6iEDYbCedG8TTS62ZrbRTSnwzQdarzh9m8TrS32H8SE5Bf3rY5VIcZhU
+         4fM6nq4n55nKvvIeYZhBSpUxJL3uJqDOrpyLsivy9zzjmIBDGyBeUtq29kUUcgCqkQI7
+         Migpsx1SMukAJu62gYb0uo6y3e2ih3tZWA9aChDIPSzo/ZkPzxZcQ1anuZCXra+Mm8OQ
+         CQhykC9oIedwmmj4OTHC3vtUAxeKV/k0wMCgHDpmVwrKXlrezpGqhiTUoiUWEZxpCCFH
+         3Atg==
+X-Gm-Message-State: AOAM530cnZ6IAPTFRhsHIK0+Irjzd6ITO+JWlhJaJ/LkG7JqsPbUf9fF
+        4Asgl3RYU1wvK9MV7AsXiCfnWXqzzKITopDICoHA6w==
+X-Google-Smtp-Source: ABdhPJxxzc9zLpycYReAvd3jJ3fYqaypxWgmnH6JI44BhzCNS3bW9E+/wFhaW3h5AKLb8WYy5mcCWl1oF0+kmsPex5s=
+X-Received: by 2002:aca:5b05:: with SMTP id p5mr2779753oib.6.1602260233764;
+ Fri, 09 Oct 2020 09:17:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+References: <20200710154811.418214-1-mgamal@redhat.com> <20200710154811.418214-8-mgamal@redhat.com>
+In-Reply-To: <20200710154811.418214-8-mgamal@redhat.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Fri, 9 Oct 2020 09:17:02 -0700
+Message-ID: <CALMp9eSbY6FjZAXt7ojQrX_SC_Lyg24dTGFZdKZK7fARGA=3hg@mail.gmail.com>
+Subject: Re: [PATCH v3 7/9] KVM: VMX: Add guest physical address check in EPT
+ violation and misconfig
+To:     Mohammed Gamal <mgamal@redhat.com>
+Cc:     kvm list <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While finding usb endpoints in vmk80xx_find_usb_endpoints(), check if 
-wMaxPacketSize = 0 for the endpoints found.
+On Fri, Jul 10, 2020 at 8:48 AM Mohammed Gamal <mgamal@redhat.com> wrote:
+>
+> Check guest physical address against it's maximum physical memory. If
+> the guest's physical address exceeds the maximum (i.e. has reserved bits
+> set), inject a guest page fault with PFERR_RSVD_MASK set.
+>
+> This has to be done both in the EPT violation and page fault paths, as
+> there are complications in both cases with respect to the computation
+> of the correct error code.
+>
+> For EPT violations, unfortunately the only possibility is to emulate,
+> because the access type in the exit qualification might refer to an
+> access to a paging structure, rather than to the access performed by
+> the program.
+>
+> Trapping page faults instead is needed in order to correct the error code,
+> but the access type can be obtained from the original error code and
+> passed to gva_to_gpa.  The corrections required in the error code are
+> subtle. For example, imagine that a PTE for a supervisor page has a reserved
+> bit set.  On a supervisor-mode access, the EPT violation path would trigger.
+> However, on a user-mode access, the processor will not notice the reserved
+> bit and not include PFERR_RSVD_MASK in the error code.
+>
+> Co-developed-by: Mohammed Gamal <mgamal@redhat.com>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>  arch/x86/kvm/vmx/vmx.c | 24 +++++++++++++++++++++---
+>  arch/x86/kvm/vmx/vmx.h |  3 ++-
+>  2 files changed, 23 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 770b090969fb..de3f436b2d32 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -4790,9 +4790,15 @@ static int handle_exception_nmi(struct kvm_vcpu *vcpu)
+>
+>         if (is_page_fault(intr_info)) {
+>                 cr2 = vmx_get_exit_qual(vcpu);
+> -               /* EPT won't cause page fault directly */
+> -               WARN_ON_ONCE(!vcpu->arch.apf.host_apf_flags && enable_ept);
+> -               return kvm_handle_page_fault(vcpu, error_code, cr2, NULL, 0);
+> +               if (enable_ept && !vcpu->arch.apf.host_apf_flags) {
+> +                       /*
+> +                        * EPT will cause page fault only if we need to
+> +                        * detect illegal GPAs.
+> +                        */
+> +                       kvm_fixup_and_inject_pf_error(vcpu, cr2, error_code);
+> +                       return 1;
+> +               } else
+> +                       return kvm_handle_page_fault(vcpu, error_code, cr2, NULL, 0);
+>         }
+>
+>         ex_no = intr_info & INTR_INFO_VECTOR_MASK;
+> @@ -5308,6 +5314,18 @@ static int handle_ept_violation(struct kvm_vcpu *vcpu)
+>                PFERR_GUEST_FINAL_MASK : PFERR_GUEST_PAGE_MASK;
+>
+>         vcpu->arch.exit_qualification = exit_qualification;
+> +
+> +       /*
+> +        * Check that the GPA doesn't exceed physical memory limits, as that is
+> +        * a guest page fault.  We have to emulate the instruction here, because
+> +        * if the illegal address is that of a paging structure, then
+> +        * EPT_VIOLATION_ACC_WRITE bit is set.  Alternatively, if supported we
+> +        * would also use advanced VM-exit information for EPT violations to
+> +        * reconstruct the page fault error code.
+> +        */
+> +       if (unlikely(kvm_mmu_is_illegal_gpa(vcpu, gpa)))
+> +               return kvm_emulate_instruction(vcpu, 0);
+> +
 
-Some devices have isochronous endpoints that have wMaxPacketSize = 0
-(as required by the USB-2 spec).
-However, since this doesn't apply here, wMaxPacketSize = 0 can be
-considered to be invalid.
+Is kvm's in-kernel emulator up to the task? What if the instruction in
+question is AVX-512, or one of the myriad instructions that the
+in-kernel emulator can't handle? Ice Lake must support the advanced
+VM-exit information for EPT violations, so that would seem like a
+better choice.
 
-Reported-by: syzbot+009f546aa1370056b1c2@syzkaller.appspotmail.com
-Tested-by: syzbot+009f546aa1370056b1c2@syzkaller.appspotmail.com
-Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
----
-The error (as detected by syzbot) is generated in 
-vmk80xx_write_packet() (which is called in vmk80xx_reset_device()) when
-it tries to assign devpriv->usb_tx_buf[0] = cmd.
-
-This NULL pointer dereference issue arises because
-size = usb_endpoint_maxp(devpriv->ep_tx) = 0.
-
-This can be traced back to vmk80xx_find_usb_endpoints(), where the usb 
-endpoints are found, and assigned accordingly.
-(For some more insight, in vmk80xx_find_usb_endpoints(), 
-if one of intf->cur_altsetting->iface_desc->endpoints' desc value = 0, 
-and consequently this endpoint is assigned to devpriv->ep_tx,
-this issue gets triggered.)
-
-Checking if the wMaxPacketSize of an endpoint is invalid and returning
-an error value accordingly, seems to fix the error.
-
-We could also alternatively perform this checking (if the size is 0 or not) 
-in vmk80xx_reset_device() itself, but it only seemed like covering up the issue
-at that place, rather than fixing it, so I wasn't sure that was any better.
-
-However, if I'm not wrong, this might end up causing the probe to fail, and I'm 
-not sure if that's the right thing to do in cases like this, and if it isn't I'd
-like some input on what exactly is the required course of action in cases like this.
-
- drivers/staging/comedi/drivers/vmk80xx.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/staging/comedi/drivers/vmk80xx.c b/drivers/staging/comedi/drivers/vmk80xx.c
-index 65dc6c51037e..cb0a965d3c37 100644
---- a/drivers/staging/comedi/drivers/vmk80xx.c
-+++ b/drivers/staging/comedi/drivers/vmk80xx.c
-@@ -667,6 +667,9 @@ static int vmk80xx_find_usb_endpoints(struct comedi_device *dev)
- 	if (!devpriv->ep_rx || !devpriv->ep_tx)
- 		return -ENODEV;
- 
-+	if(!usb_endpoint_maxp(devpriv->ep_rx) || !usb_endpoint_maxp(devpriv->ep_tx))
-+		return -EINVAL;
-+
- 	return 0;
- }
- 
--- 
-2.25.1
-
+>         return kvm_mmu_page_fault(vcpu, gpa, error_code, NULL, 0);
+>  }
+>
+> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+> index b0e5e210f1c1..0d06951e607c 100644
+> --- a/arch/x86/kvm/vmx/vmx.h
+> +++ b/arch/x86/kvm/vmx/vmx.h
+> @@ -11,6 +11,7 @@
+>  #include "kvm_cache_regs.h"
+>  #include "ops.h"
+>  #include "vmcs.h"
+> +#include "cpuid.h"
+>
+>  extern const u32 vmx_msr_index[];
+>
+> @@ -552,7 +553,7 @@ static inline bool vmx_has_waitpkg(struct vcpu_vmx *vmx)
+>
+>  static inline bool vmx_need_pf_intercept(struct kvm_vcpu *vcpu)
+>  {
+> -       return !enable_ept;
+> +       return !enable_ept || cpuid_maxphyaddr(vcpu) < boot_cpu_data.x86_phys_bits;
+>  }
+>
+>  void dump_vmcs(void);
+> --
+> 2.26.2
+>
