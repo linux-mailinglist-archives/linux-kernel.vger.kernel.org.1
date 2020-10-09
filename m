@@ -2,308 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1E492897CE
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 22:05:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66F602897CB
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 22:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389150AbgJIUFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 16:05:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50478 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391260AbgJIUE1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 16:04:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602273864;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8jSo7UvyGR7s1DtAjGCNS9MuRdGwc8XEmp+yEY4/nYA=;
-        b=TTcbVgOYHCphhtYeaOh+INyr1GvoUd2Rpbzem89nejlC04/WRCLG5L3V+DTLLTelV4tAwq
-        inkcPH5Xjz5ed6RUsrMxRkzHkYY4zwRP05L5KAlWoGTdNiHqqDQHOlfxY7qvKrpx3qZJYI
-        j0PVtjwQX/LT7nXYZmuzHJUR36Cix6k=
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
- [209.85.161.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-452-805cH6rAO_6FRrZbk0C1ig-1; Fri, 09 Oct 2020 16:04:22 -0400
-X-MC-Unique: 805cH6rAO_6FRrZbk0C1ig-1
-Received: by mail-oo1-f71.google.com with SMTP id a192so4458601ooc.23
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 13:04:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=8jSo7UvyGR7s1DtAjGCNS9MuRdGwc8XEmp+yEY4/nYA=;
-        b=d3263WEVkZJZKfdF8ZVVGvp1lmE10SG4uWNE98K6K+7lf4R+H2LJ/l8WMCzFWkgqdN
-         4G402BhsRq+A3Fz7vOP6B7u11fyRpzUYjffHyAP1u5UuG3DaM7SEMRLqVV7XrDcpSXoF
-         PQ0oD0ZaM0mSzJFMlornWswavzx6mPMnV2YEmuH699Mvizc0pdUktNJskIu/tY1YMW5o
-         qY3SLILG12U4pNgP6EqYfiunZjCuNY7tILr1C3oZ1wkQ+lxWjyDP6pb0Xl4vutWDZL1m
-         N3pf26ckpZtRWPTfu+G+BognrbS9gOISVfB5c15DKg7vvggcCXyjiFEjv2/oAB0833hv
-         JDuA==
-X-Gm-Message-State: AOAM531AQkkuFw6nD1fRoGFyP/6eP08F9PKrYj9ubaD40d0Pc249Jzvg
-        DsqMpSyAznSl+oriyry5NTP+mP6xhr+sp13Jpe1t1mMH2/8FXJyi5yablPcraZH/Sx4k6ADjcEm
-        sEThnhh7pv007jNCvc3nfiGay
-X-Received: by 2002:aca:b607:: with SMTP id g7mr3344777oif.38.1602273861697;
-        Fri, 09 Oct 2020 13:04:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzm70L6kwpBUnuCBogJWUfOK2wId/IbF5GRWy0Rt5wZ7+2ZWshfIGo5rtGtokJNvOJPZHRKFg==
-X-Received: by 2002:aca:b607:: with SMTP id g7mr3344756oif.38.1602273861372;
-        Fri, 09 Oct 2020 13:04:21 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id l109sm6509057otc.10.2020.10.09.13.04.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Oct 2020 13:04:20 -0700 (PDT)
-Subject: Re: [PATCH v2 1/6] mfd: intel-m10-bmc: support for MAX10 BMC Security
- Engine
-To:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
-        lee.jones@linaro.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
-        matthew.gerlach@intel.com
-References: <20201003012412.16831-1-russell.h.weight@intel.com>
- <20201003012412.16831-2-russell.h.weight@intel.com>
- <6eef3a9a-ffc9-7e93-e3ef-69e755fbf8cc@redhat.com>
- <53a712e8-63e5-8b75-a2a4-6bf7fa327462@intel.com>
- <9e5b012d-c8e4-2c01-26e0-a6bf6dce6679@intel.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <8b43c654-f780-d2ca-33a1-4fa672d66b1a@redhat.com>
-Date:   Fri, 9 Oct 2020 13:04:19 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S2389118AbgJIUFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 16:05:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42930 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390349AbgJIUEp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 16:04:45 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6F83C2225B;
+        Fri,  9 Oct 2020 20:04:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602273885;
+        bh=P9rIsaGo8r5GHy8F04hfa1tm5nUMHfgAzkrVpuFy3o0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=fUUBTTR69gVck+KGJ4c+sf3iOjYxWQlVK7eYzFfUzqHDDxCWOPj2t34//gpCwuiZa
+         lqUcXouU2jmbNukBAT8lQxZvIebut/d75Su6nnZgmYd2b+0uXvo/jxCFSV2L680bSl
+         wpGqXKbq0386/8hM4jhejuskIr0ws5ofKcL9jhco=
+Date:   Fri, 9 Oct 2020 13:04:42 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Christian Eggers <ceggers@arri.de>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        George McCollister <george.mccollister@gmail.com>
+Subject: Re: [net v3] net: dsa: microchip: fix race condition
+Message-ID: <20201009130442.7f558756@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201007085523.11757-1-ceggers@arri.de>
+References: <20201007085523.11757-1-ceggers@arri.de>
 MIME-Version: 1.0
-In-Reply-To: <9e5b012d-c8e4-2c01-26e0-a6bf6dce6679@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 7 Oct 2020 10:55:23 +0200 Christian Eggers wrote:
+> Between queuing the delayed work and finishing the setup of the dsa
+> ports, the process may sleep in request_module() (via
+> phy_device_create()) and the queued work may be executed prior to the
+> switch net devices being registered. In ksz_mib_read_work(), a NULL
+> dereference will happen within netof_carrier_ok(dp->slave).
+> 
+> Not queuing the delayed work in ksz_init_mib_timer() makes things even
+> worse because the work will now be queued for immediate execution
+> (instead of 2000 ms) in ksz_mac_link_down() via
+> dsa_port_link_register_of().
+> 
+> Call tree:
+> ksz9477_i2c_probe()
+> \--ksz9477_switch_register()
+>    \--ksz_switch_register()
+>       +--dsa_register_switch()
+>       |  \--dsa_switch_probe()
+>       |     \--dsa_tree_setup()
+>       |        \--dsa_tree_setup_switches()
+>       |           +--dsa_switch_setup()
+>       |           |  +--ksz9477_setup()
+>       |           |  |  \--ksz_init_mib_timer()
+>       |           |  |     |--/* Start the timer 2 seconds later. */
+>       |           |  |     \--schedule_delayed_work(&dev->mib_read, msecs_to_jiffies(2000));
+>       |           |  \--__mdiobus_register()
+>       |           |     \--mdiobus_scan()
+>       |           |        \--get_phy_device()
+>       |           |           +--get_phy_id()
+>       |           |           \--phy_device_create()
+>       |           |              |--/* sleeping, ksz_mib_read_work() can be called meanwhile */
+>       |           |              \--request_module()
+>       |           |
+>       |           \--dsa_port_setup()
+>       |              +--/* Called for non-CPU ports */
+>       |              +--dsa_slave_create()
+>       |              |  +--/* Too late, ksz_mib_read_work() may be called beforehand */
+>       |              |  \--port->slave = ...
+>       |             ...
+>       |              +--Called for CPU port */
+>       |              \--dsa_port_link_register_of()
+>       |                 \--ksz_mac_link_down()
+>       |                    +--/* mib_read must be initialized here */
+>       |                    +--/* work is already scheduled, so it will be executed after 2000 ms */
+>       |                    \--schedule_delayed_work(&dev->mib_read, 0);
+>       \-- /* here port->slave is setup properly, scheduling the delayed work should be safe */
 
-On 10/8/20 4:03 PM, Russ Weight wrote:
-> I just realized that I missed a few questions on my first reply.
-> Please see my responses below.
->
-> On 10/7/20 5:52 PM, Russ Weight wrote:
->> On 10/6/20 9:34 AM, Tom Rix wrote:
->>> On 10/2/20 6:24 PM, Russ Weight wrote:
->>>> Add macros and definitions required by the MAX10 BMC
->>>> Security Engine driver.
->>>>
->>>> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
->>>> ---
->>>> v2:
->>>>   - These functions and macros were previously distributed among
->>>>     the patches that needed them. They are now grouped together
->>>>     in a single patch containing changes to the Intel MAX10 BMC
->>>>     driver.
->>>>   - Added DRBL_ prefix to some definitions
->>>>   - Some address definitions were moved here from the .c files that
->>>>     use them.
->>>> ---
->>>>  include/linux/mfd/intel-m10-bmc.h | 134 ++++++++++++++++++++++++++++++
->>>>  1 file changed, 134 insertions(+)
->>>>
->>>> diff --git a/include/linux/mfd/intel-m10-bmc.h b/include/linux/mfd/intel-m10-bmc.h
->>>> index c8ef2f1654a4..880f907302eb 100644
->>>> --- a/include/linux/mfd/intel-m10-bmc.h
->>>> +++ b/include/linux/mfd/intel-m10-bmc.h
->>>> @@ -13,6 +13,9 @@
->>>>  #define M10BMC_SYS_BASE			0x300800
->>>>  #define M10BMC_MEM_END			0x200000fc
->>>>  
->>>> +#define M10BMC_STAGING_BASE		0x18000000
->>>> +#define M10BMC_STAGING_SIZE		0x3800000
->>> The staging size is not used, please use it in m10bmc_sec_write_blk to
->>>
->>> check the input parameter 'size'
->> It is used to check the input size in the prepare function:
->> m10bmc_sec_prepare()
->>
->> Â Â Â Â Â Â Â  if (smgr->remaining_size > M10BMC_STAGING_SIZE)
->> Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  return FPGA_SEC_ERR_INVALID_SIZE;
-ok, i missing this.
->>
->> - Russ
->>
->>>> +
->>>>  /* Register offset of system registers */
->>>>  #define NIOS2_FW_VERSION		0x0
->>>>  #define M10BMC_TEST_REG			0x3c
->>>> @@ -21,6 +24,88 @@
->>>>  #define M10BMC_VER_PCB_INFO_MSK		GENMASK(31, 24)
->>>>  #define M10BMC_VER_LEGACY_INVALID	0xffffffff
->>>>  
->>>> +/* Secure update doorbell register, in system register region */
->>>> +#define M10BMC_DOORBELL			0x400
->>>> +
->>>> +/* Authorization Result register, in system register region */
->>>> +#define M10BMC_AUTH_RESULT		0x404
->>>> +
->>>> +/* Doorbell register fields */
->>>> +#define DRBL_RSU_REQUEST		BIT(0)
->>>> +#define DRBL_RSU_PROGRESS		GENMASK(7, 4)
->>>> +#define DRBL_HOST_STATUS		GENMASK(11, 8)
->>>> +#define DRBL_RSU_STATUS			GENMASK(23, 16)
->>>> +#define DRBL_PKVL_EEPROM_LOAD_SEC	BIT(24)
->>>> +#define DRBL_PKVL1_POLL_EN		BIT(25)
->>>> +#define DRBL_PKVL2_POLL_EN		BIT(26)
->>> PKVL seems like it would be n3000 specific.
->>>
->>> For this and similar it may be good to add a _N3000_ in the name.
-> I'm hoping Yilun and Hao might chime in here. We have substituted PKVL
-> for Retimer in some places in the code.
->>>> +#define DRBL_CONFIG_SEL			BIT(28)
->>>> +#define DRBL_REBOOT_REQ			BIT(29)
->>>> +#define DRBL_REBOOT_DISABLED		BIT(30)
->>>> +
->>>> +/* Progress states */
->>>> +#define RSU_PROG_IDLE			0x0
->>>> +#define RSU_PROG_PREPARE		0x1
->>>> +#define RSU_PROG_READY			0x3
->>>> +#define RSU_PROG_AUTHENTICATING		0x4
->>>> +#define RSU_PROG_COPYING		0x5
->>>> +#define RSU_PROG_UPDATE_CANCEL		0x6
->>>> +#define RSU_PROG_PROGRAM_KEY_HASH	0x7
->>>> +#define RSU_PROG_RSU_DONE		0x8
->>>> +#define RSU_PROG_PKVL_PROM_DONE		0x9
->>>> +
->>>> +/* Device and error states */
->>>> +#define RSU_STAT_NORMAL			0x0
->>>> +#define RSU_STAT_TIMEOUT		0x1
->>>> +#define RSU_STAT_AUTH_FAIL		0x2
->>>> +#define RSU_STAT_COPY_FAIL		0x3
->>>> +#define RSU_STAT_FATAL			0x4
->>>> +#define RSU_STAT_PKVL_REJECT		0x5
->>>> +#define RSU_STAT_NON_INC		0x6
->>>> +#define RSU_STAT_ERASE_FAIL		0x7
->>>> +#define RSU_STAT_WEAROUT		0x8
->>>> +#define RSU_STAT_NIOS_OK		0x80
->>>> +#define RSU_STAT_USER_OK		0x81
->>>> +#define RSU_STAT_FACTORY_OK		0x82
->>>> +#define RSU_STAT_USER_FAIL		0x83
->>>> +#define RSU_STAT_FACTORY_FAIL		0x84
->>>> +#define RSU_STAT_NIOS_FLASH_ERR		0x85
->>>> +#define RSU_STAT_FPGA_FLASH_ERR		0x86
->>>> +
->>>> +#define HOST_STATUS_IDLE		0x0
->>>> +#define HOST_STATUS_WRITE_DONE		0x1
->>>> +#define HOST_STATUS_ABORT_RSU		0x2
->>>> +
->>>> +#define rsu_prog(doorbell)	FIELD_GET(DRBL_RSU_PROGRESS, doorbell)
->>>> +#define rsu_stat(doorbell)	FIELD_GET(DRBL_RSU_STATUS, doorbell)
->>>> +
->>>> +/* interval 100ms and timeout 5s */
->>>> +#define NIOS_HANDSHAKE_INTERVAL_US	(100 * 1000)
->>>> +#define NIOS_HANDSHAKE_TIMEOUT_US	(5 * 1000 * 1000)
->>>> +
->>>> +/* RSU PREP Timeout (2 minutes) to erase flash staging area */
->>>> +#define RSU_PREP_INTERVAL_MS		100
->>>> +#define RSU_PREP_TIMEOUT_MS		(2 * 60 * 1000)
->>>> +
->>>> +/* RSU Complete Timeout (40 minutes) for full flash update */
->>>> +#define RSU_COMPLETE_INTERVAL_MS	1000
->>>> +#define RSU_COMPLETE_TIMEOUT_MS		(40 * 60 * 1000)
->>> minutes is an unusual timeout unit.
->>>
->>> It may be worthwhile to spell out MINUTES to avoid confusing with micro seconds.
-> The _MS at the end of the constants means milliseconds. That is pretty
-> standard, isn't it? Although the wait is 40 minutes, the constant is a
-> millisecond count that corresponds to 40 minutes. I expanded the definition
-> to make things more clear: 40 (minutes) * 60 (seconds) * 1000 milliseconds (40 minutes expressed in milliseconds).
+Thanks for this graph, very informative!
 
-sorry, my fault, i read this to fast.
+> Solution:
+> 1. Do not queue (only initialize) delayed work in ksz_init_mib_timer().
+> 2. Only queue delayed work in ksz_mac_link_down() if init is completed.
+> 3. Queue work once in ksz_switch_register(), after dsa_register_switch()
+> has completed.
+> 
+> Fixes: 7c6ff470aa86 ("net: dsa: microchip: add MIB counter reading support")
+> Signed-off-by: Christian Eggers <ceggers@arri.de>
 
-Tom
+You should add Florian's and Vladimir's review tags here, under your
+sign-off.
 
->>> Tom
->>>
->>>> +
->>>> +/* Addresses for security related data in FLASH */
->>>> +#define BMC_REH_ADDR	0x17ffc004
->>>> +#define BMC_PROG_ADDR	0x17ffc000
->>>> +#define BMC_PROG_MAGIC	0x5746
->>>> +
->>>> +#define SR_REH_ADDR	0x17ffd004
->>>> +#define SR_PROG_ADDR	0x17ffd000
->>>> +#define SR_PROG_MAGIC	0x5253
->>>> +
->>>> +#define PR_REH_ADDR	0x17ffe004
->>>> +#define PR_PROG_ADDR	0x17ffe000
->>>> +#define PR_PROG_MAGIC	0x5250
->>>> +
->>>> +/* Address of inverted bit vector containing user the image FLASH count */
->>>> +#define USER_FLASH_COUNT 0x17ffb000
->>>> +
->>>>  /**
->>>>   * struct intel_m10bmc - Intel MAX 10 BMC parent driver data structure
->>>>   * @dev: this device
->>>> @@ -35,7 +120,11 @@ struct intel_m10bmc {
->>>>   * register access helper functions.
->>>>   *
->>>>   * m10bmc_raw_read - read m10bmc register per addr
->>>> + * m10bmc_raw_bulk_read - bulk read max10 registers per addr
->>>> + * m10bmc_raw_bulk_write - bulk write max10 registers per addr
->>>> + * m10bmc_raw_update_bits - update max10 register per addr
->>>>   * m10bmc_sys_read - read m10bmc system register per offset
->>>> + * m10bmc_sys_update_bits - update max10 system register per offset
->>>>   */
->>>>  static inline int
->>>>  m10bmc_raw_read(struct intel_m10bmc *m10bmc, unsigned int addr,
->>>> @@ -51,6 +140,48 @@ m10bmc_raw_read(struct intel_m10bmc *m10bmc, unsigned int addr,
->>>>  	return ret;
->>>>  }
->>>>  
->>>> +static inline int
->>>> +m10bmc_raw_bulk_read(struct intel_m10bmc *m10bmc, unsigned int addr,
->>>> +		     void *val, size_t cnt)
->>>> +{
->>>> +	int ret;
->>>> +
->>>> +	ret = regmap_bulk_read(m10bmc->regmap, addr, val, cnt);
->>>> +	if (ret)
->>>> +		dev_err(m10bmc->dev, "fail to read raw reg %x cnt %zx: %d\n",
->>>> +			addr, cnt, ret);
->>>> +
->>>> +	return ret;
->>>> +}
->>>> +
->>>> +static inline int
->>>> +m10bmc_raw_bulk_write(struct intel_m10bmc *m10bmc, unsigned int addr,
->>>> +		      void *val, size_t cnt)
->>>> +{
->>>> +	int ret;
->>>> +
->>>> +	ret = regmap_bulk_write(m10bmc->regmap, addr, val, cnt);
->>>> +	if (ret)
->>>> +		dev_err(m10bmc->dev, "fail to write raw reg %x cnt %zx: %d\n",
->>>> +			addr, cnt, ret);
->>>> +
->>>> +	return ret;
->>>> +}
->>>> +
->>>> +static inline int
->>>> +m10bmc_raw_update_bits(struct intel_m10bmc *m10bmc, unsigned int addr,
->>>> +		       unsigned int msk, unsigned int val)
->>>> +{
->>>> +	int ret;
->>>> +
->>>> +	ret = regmap_update_bits(m10bmc->regmap, addr, msk, val);
->>>> +	if (ret)
->>>> +		dev_err(m10bmc->dev, "fail to update raw reg %x: %d\n",
->>>> +			addr, ret);
->>>> +
->>>> +	return ret;
->>>> +}
->>>> +
->>>>  /*
->>>>   * The base of the system registers could be configured by HW developers, and
->>>>   * in HW SPEC, the base is not added to the addresses of the system registers.
->>>> @@ -62,4 +193,7 @@ m10bmc_raw_read(struct intel_m10bmc *m10bmc, unsigned int addr,
->>>>  #define m10bmc_sys_read(m10bmc, offset, val) \
->>>>  	m10bmc_raw_read(m10bmc, M10BMC_SYS_BASE + (offset), val)
->>>>  
->>>> +#define m10bmc_sys_update_bits(m10bmc, offset, msk, val) \
->>>> +	m10bmc_raw_update_bits(m10bmc, M10BMC_SYS_BASE + (offset), msk, val)
->>>> +
->>>>  #endif /* __MFD_INTEL_M10_BMC_H */
+> @@ -143,7 +137,9 @@ void ksz_mac_link_down(struct dsa_switch *ds, int port, unsigned int mode,
+>  
+>  	/* Read all MIB counters when the link is going down. */
+>  	p->read = true;
+> -	schedule_delayed_work(&dev->mib_read, 0);
+> +	/* timer started */
+> +	if (dev->mib_read_interval)
+> +		schedule_delayed_work(&dev->mib_read, 0);
 
+Your patch seems fine, but I wonder what was the original author trying
+to achieve with this schedule_delayed_work(..., 0) call?
+
+The work is supposed to be scheduled at this point, right?
+In that case another call to schedule_delayed_work() is
+simply ignored. 
+
+Judging by the comment it seems like someone was under the impression
+this will reschedule the work to be run immediately, which is not the
+case.
+
+In fact looks like a separate bug introduced in:
+
+469b390e1ba3 ("net: dsa: microchip: use delayed_work instead of timer + work")
+
+>  }
+>  EXPORT_SYMBOL_GPL(ksz_mac_link_down);
+>  
