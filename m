@@ -2,201 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD0DC288218
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 08:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54007288211
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 08:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731512AbgJIGZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 02:25:56 -0400
-Received: from mga04.intel.com ([192.55.52.120]:47511 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726501AbgJIGZ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 02:25:56 -0400
-IronPort-SDR: CoD3wpGRik5Hxyf1LyNtia58g5x7FSzhI0+30o5QehERcf3NSXbIXkkjufNVFKbTU3LUy+59L5
- muE8JSkKKLRQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="162811016"
-X-IronPort-AV: E=Sophos;i="5.77,354,1596524400"; 
-   d="scan'208";a="162811016"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 23:25:56 -0700
-IronPort-SDR: TdIL5qb7OsXVeEs/gfqT47QXihrj6ncvpeVsYfpNfjNYNlRgdyatPL91xCPvFaLkAJFpFB3hQE
- in+sYPNt6Wvg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,354,1596524400"; 
-   d="scan'208";a="419325085"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by fmsmga001.fm.intel.com with ESMTP; 08 Oct 2020 23:25:54 -0700
-Date:   Fri, 9 Oct 2020 14:20:59 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     gregkh@linuxfoundation.org, Moritz Fischer <mdf@kernel.org>
-Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        trix@redhat.com, lgoncalv@redhat.com, hao.wu@intel.com,
-        yilun.xu@intel.com
-Subject: Re: [PATCH v3 1/5] fpga: dfl: rename the bus type "dfl" to "fpga-dfl"
-Message-ID: <20201009062059.GB24324@yilunxu-OptiPlex-7050>
-References: <20200924172700.GA79736@archbook>
- <20200926022346.GA5623@yilunxu-OptiPlex-7050>
- <20200926060913.GA637197@kroah.com>
- <20200926192219.GA18625@epycbox.lan>
- <20200927055108.GA701198@kroah.com>
- <20200927073754.GB16433@yilunxu-OptiPlex-7050>
- <20200927075401.GA748141@kroah.com>
- <20200927083647.GC16433@yilunxu-OptiPlex-7050>
- <20200929012323.GD16433@yilunxu-OptiPlex-7050>
- <20200929041900.GA113620@archbook>
+        id S1730952AbgJIGYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 02:24:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726104AbgJIGYg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 02:24:36 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD00CC0613D2;
+        Thu,  8 Oct 2020 23:24:35 -0700 (PDT)
+Date:   Fri, 09 Oct 2020 06:24:32 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602224673;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1nkbLu7hQZ47JlPjVe6Bgcpd1J54qsyfyMf79/3PLsI=;
+        b=JTj/NsO7xxQO1aqOjkanzrVgb90b2Je3tuYw4qlaKZ4BGGOlNZqLJRhGOMX/Awzywk0C9k
+        R/mOY3KhvlyLbSqMAo0bt3oTKAIj+A8tmIQfgGtHFyeE7rZ7VSFD9b99uqq8zlRdKZ1iy6
+        dGBiT07ydu979tm6othBvn/1LL9WtqFuNDrCARxPF+DrYLY7eItoiUwznd/HHEt8dz4gEY
+        y/QpBLCGNvhw+a8jfzUwPs/r1SjQsrgnk9q3N4qY7TvbNU9+2GDuqZkD4syUo/nwyqAiS5
+        3leE8oTcD1oHrDWcGaCScYIvCHMWBElWfGTewCYrk4QIHe7WudeRKMMgRKCnaQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602224673;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1nkbLu7hQZ47JlPjVe6Bgcpd1J54qsyfyMf79/3PLsI=;
+        b=wFH6lRtAO9ntx89saG0yT5qnZjRJL4MBLsLbLnQKU+DwQKl74p4dVB+vCShFLjuhMX9DzL
+        8OjryeU/0FP0OyBw==
+From:   "tip-bot2 for Kajol Jain" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/urgent] perf: Fix task_function_call() error handling
+Cc:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Barret Rhoden <brho@google.com>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200827064732.20860-1-kjain@linux.ibm.com>
+References: <20200827064732.20860-1-kjain@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929041900.GA113620@archbook>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Message-ID: <160222467221.7002.13972544073695390160.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg:
+The following commit has been merged into the perf/urgent branch of tip:
 
-On Mon, Sep 28, 2020 at 09:19:00PM -0700, Moritz Fischer wrote:
-> Hi Xu,
-> 
-> On Tue, Sep 29, 2020 at 09:23:23AM +0800, Xu Yilun wrote:
-> > Hi moritz:
-> > 
-> > On Sun, Sep 27, 2020 at 04:36:47PM +0800, Xu Yilun wrote:
-> > > Hi Greg,
-> > > 
-> > > On Sun, Sep 27, 2020 at 09:54:01AM +0200, Greg KH wrote:
-> > > > On Sun, Sep 27, 2020 at 03:37:54PM +0800, Xu Yilun wrote:
-> > > > > Hi Greg,
-> > > > > 
-> > > > > On Sun, Sep 27, 2020 at 07:51:08AM +0200, Greg KH wrote:
-> > > > > > On Sat, Sep 26, 2020 at 12:22:19PM -0700, Moritz Fischer wrote:
-> > > > > > > Hi Greg,
-> > > > > > > 
-> > > > > > > On Sat, Sep 26, 2020 at 08:09:13AM +0200, Greg KH wrote:
-> > > > > > > > On Sat, Sep 26, 2020 at 10:23:46AM +0800, Xu Yilun wrote:
-> > > > > > > > > Hi greg,
-> > > > > > > > > 
-> > > > > > > > > About the bus naming, I summarized some questions we've discussed to check
-> > > > > > > > > with you. See inline.
-> > > > > > > > > 
-> > > > > > > > > On Thu, Sep 24, 2020 at 10:27:00AM -0700, Moritz Fischer wrote:
-> > > > > > > > > > Hi Xu,
-> > > > > > > > > > 
-> > > > > > > > > > On Fri, Sep 25, 2020 at 12:59:57AM +0800, Xu Yilun wrote:
-> > > > > > > > > > > Now the DFL device drivers could be made as independent modules and put
-> > > > > > > > > > > in different subsystems according to their functionalities. So the name
-> > > > > > > > > > > should be descriptive and unique in the whole kernel.
-> > > > > > > > > > > 
-> > > > > > > > > > > The patch changes the naming of dfl bus related structures, functions,
-> > > > > > > > > > > APIs and documentations.
-> > > > > > > > > > > 
-> > > > > > > > > > > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> > > > > > > > > > > ---
-> > > > > > > > > > >  Documentation/ABI/testing/sysfs-bus-dfl      |  15 --
-> > > > > > > > > > >  Documentation/ABI/testing/sysfs-bus-fpga-dfl |  15 ++
-> > > > > > > > > > >  MAINTAINERS                                  |   2 +-
-> > > > > > > > > > >  drivers/fpga/dfl.c                           | 254 ++++++++++++++-------------
-> > > > > > > > > > >  drivers/fpga/dfl.h                           |  77 ++++----
-> > > > > > > > > > >  5 files changed, 184 insertions(+), 179 deletions(-)
-> > > > > > > > > > >  delete mode 100644 Documentation/ABI/testing/sysfs-bus-dfl
-> > > > > > > > > > >  create mode 100644 Documentation/ABI/testing/sysfs-bus-fpga-dfl
-> > > > > > > > > > > 
-> > > > > > > > > > > diff --git a/Documentation/ABI/testing/sysfs-bus-dfl b/Documentation/ABI/testing/sysfs-bus-dfl
-> > > > > > > > > > > deleted file mode 100644
-> > > > > > > > > > > index 23543be..0000000
-> > > > > > > > > > > --- a/Documentation/ABI/testing/sysfs-bus-dfl
-> > > > > > > > > > > +++ /dev/null
-> > > > > > > > > > > @@ -1,15 +0,0 @@
-> > > > > > > > > > > -What:		/sys/bus/dfl/devices/dfl_dev.X/type
-> > > > > > > > > > > -Date:		Aug 2020
-> > > > > > > > > > > -KernelVersion:	5.10
-> > > > > > > > > > > -Contact:	Xu Yilun <yilun.xu@intel.com>
-> > > > > > > > > > > -Description:	Read-only. It returns type of DFL FIU of the device. Now DFL
-> > > > > > > > > > > -		supports 2 FIU types, 0 for FME, 1 for PORT.
-> > > > > > > > > > > -		Format: 0x%x
-> > > > > > > > > > > -
-> > > > > > > > > > > -What:		/sys/bus/dfl/devices/dfl_dev.X/feature_id
-> > > > > > > > > > > -Date:		Aug 2020
-> > > > > > > > > > > -KernelVersion:	5.10
-> > > > > > > > > > > -Contact:	Xu Yilun <yilun.xu@intel.com>
-> > > > > > > > > > > -Description:	Read-only. It returns feature identifier local to its DFL FIU
-> > > > > > > > > > > -		type.
-> > > > > > > > > > > -		Format: 0x%x
-> > > > > > > > > > 
-> > > > > > > > > > You're changing userland facing ABI. I think that's something to avoid,
-> > > > > > > > > > please check with Greg on the rules since this hasn't been in a release yet.
-> > > > > > > > > > 
-> > > > > > > > > 
-> > > > > > > > > I'm going to change the name of bus stuff for other subsystems, to be
-> > > > > > > > > aligned, I also consider change the bus_type.name and dfl dev_name. But
-> > > > > > > > > it will cause the changing of user ABIs. No user case for these user ABI
-> > > > > > > > > now cause they are just queued, is it good I change them?
-> > > > > > > > 
-> > > > > > > > Why change the user name here?  No need for that, right?  Unless you
-> > > > > > > > really want to, and think that no one will notice.  If so, fine, change
-> > > > > > > > them :)
-> > > > > > > 
-> > > > > > > Let's leave it as is -- An FPGA is one possible implementation and as for
-> > > > > > > other buses, you wouldn't call it fpga-usb or usb-fpga just because the
-> > > > > > > USB bus is implemented in an FPGA if it behaves like a normal USB bus.
-> > > > > > > Having an ASIC based DFL bus show up under dfl-fpga / fpga-dfl in sysfs
-> > > > > > > would be super confusing.
-> > > 
-> > > I thought we have consensus that "dfl" could be used out of fpga domain.
-> > > And we are all good that we keep the user ABIs & the bus name - "dfl", so "dfl"
-> > > is good as a global name from linux user's point of view, is it?
-> > > 
-> > > But why we reject the "dfl" in kernel code domain? I thought it is very
-> > > similar situation.
-> > > 
-> > > 
-> > > I think we have 2 options, to make the dfl self-consistent:
-> > > 
-> > > 1. "dfl-fpga" for everything - bus name, user ABIs, structures & APIs for
-> > >    other kernel subsystems. Then we lose the chance to support ASIC based DFL,
-> > >    it would be hard if we change user ABIs later.
-> > > 
-> > > 2. "dfl" for everything.
-> > > 
-> > > BTW, no ASIC based DFL devices in kernel today.
-> > > 
-> > > I fully understand the word "naming is hard" now, help me :)
-> > 
-> > Seems now we have different opinions on this:
-> > 
-> > - Hao thinks self-consistent is important to dfl framework.
-> Agreed. I mostly care about userspace facing ABI, though.
-> 
-> > - "dfl" for everything seems not preferable to Greg.
-> Maybe now that we re-explained, we can take another look at that?
-> 
-> > - From your previous mail, I assume you prefer to keep the bus name as "dfl"
-> > but change the stuff for other subsystem, is it?
-> 
-> I mostly think we should keep DFL generic where it touches userspace and
-> defines ABI, since we cannot change it afterwards.
-> 
-> I rest my point with the bus being independent of FPGAs despite the FPGA
-> being the (currently) only user.
-> 
-> > So I got a little stuck here.
-> > 
-> > Do you think "dfl-fpga" for everything would be an acceptable solution
-> > for you?
-> 
-> I just think it doesn't make a lot of sense to call it fpga-dfl or
-> dfl-fpga. But if everyone else disagrees ... naming is hard :-)
+Commit-ID:     6d6b8b9f4fceab7266ca03d194f60ec72bd4b654
+Gitweb:        https://git.kernel.org/tip/6d6b8b9f4fceab7266ca03d194f60ec72bd4b654
+Author:        Kajol Jain <kjain@linux.ibm.com>
+AuthorDate:    Thu, 27 Aug 2020 12:17:32 +05:30
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Fri, 09 Oct 2020 08:18:33 +02:00
 
-Hi Greg,
+perf: Fix task_function_call() error handling
 
-We made some re-explanation why "dfl" could be independent of the fpga
-subsystem in this mail thread. And now the name "dfl" for all bus stuff is good
-to Moritz, Hao & Yilun. Could you help take another look at this?
+The error handling introduced by commit:
 
-Thanks,
-Yilun
+  2ed6edd33a21 ("perf: Add cond_resched() to task_function_call()")
 
-> 
-> Cheers,
-> Moritz
+looses any return value from smp_call_function_single() that is not
+{0, -EINVAL}. This is a problem because it will return -EXNIO when the
+target CPU is offline. Worse, in that case it'll turn into an infinite
+loop.
+
+Fixes: 2ed6edd33a21 ("perf: Add cond_resched() to task_function_call()")
+Reported-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Reviewed-by: Barret Rhoden <brho@google.com>
+Tested-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Link: https://lkml.kernel.org/r/20200827064732.20860-1-kjain@linux.ibm.com
+---
+ kernel/events/core.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 7ed5248..e8bf922 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -99,7 +99,7 @@ static void remote_function(void *data)
+  * retry due to any failures in smp_call_function_single(), such as if the
+  * task_cpu() goes offline concurrently.
+  *
+- * returns @func return value or -ESRCH when the process isn't running
++ * returns @func return value or -ESRCH or -ENXIO when the process isn't running
+  */
+ static int
+ task_function_call(struct task_struct *p, remote_function_f func, void *info)
+@@ -115,7 +115,8 @@ task_function_call(struct task_struct *p, remote_function_f func, void *info)
+ 	for (;;) {
+ 		ret = smp_call_function_single(task_cpu(p), remote_function,
+ 					       &data, 1);
+-		ret = !ret ? data.ret : -EAGAIN;
++		if (!ret)
++			ret = data.ret;
+ 
+ 		if (ret != -EAGAIN)
+ 			break;
