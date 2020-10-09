@@ -2,127 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FC43289A1C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 23:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA524289A27
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 23:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391166AbgJIVC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 17:02:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58172 "EHLO
+        id S2391096AbgJIVF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 17:05:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391149AbgJIVCG (ORCPT
+        with ESMTP id S1733176AbgJIVF4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 17:02:06 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2208FC0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 14:02:06 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id b26so7885237pff.3
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 14:02:06 -0700 (PDT)
+        Fri, 9 Oct 2020 17:05:56 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E50FEC0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 14:05:55 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id b26so7892729pff.3
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 14:05:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=YSgTQ4Pc6Kxt/1hh+W4bhI8Y4UAz1RySlrYjHTB/Q6g=;
-        b=TldjrPNHu3op8O3Smd/VV495GRLq/Pvi/HhrHepX6DWARPJiPdT+JSmZozhKa7wZAD
-         krbuiFWqQqZAZwmoskHUqw7p/TZK0CiSomXtngbrLN7peaEMUSKDMj239EjeuNOHabPH
-         Zfy/Fptt7BaEQjftWN/7VufBpAraFP6S6rZPU=
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QXQaBaNS7A6eVo/ydORo8r5bdU1C9Le836RTdHwCBbM=;
+        b=JoSdKxNwxsMfI2U0CjlTc5BwvhqCy714WkSi+WKKGJVkSxeS4A84NzKevK6CPn9KXt
+         luyi7jDs6nQbVyyVPeYM9mQUjAAefT+ScUKjFnKzQLP7hS1caTnxv6LwwjUOs1sG613o
+         Z1mfBp8CiisbR4rWjXF/lItpg0T+9m58kSN6ymcBrb9qx1Q5pE6/8rfEwDSOFoHPmLeK
+         ZOhU9su8JfRbkCsj5wTlpzUcuguhQKLNKVmqQEdIiT1RZKGFUwDcT20B3P+mB4B8pmtl
+         zOKoiM+eB3smbcYTz3v4uqlSVWDNijwAFgnLDRm8ha9grVnXIpZsyUDrdJ34aNugK5Zh
+         t79g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YSgTQ4Pc6Kxt/1hh+W4bhI8Y4UAz1RySlrYjHTB/Q6g=;
-        b=pmnknfuAMsmvfg7YyjNoIVCQ11C8rAY1MsLF2m/eRpGexxagBGQoM7YPlPducQ645L
-         sm3TzP1D3HOuGjPyOwLGc2IyhNfJti32NU6OpJEo//wG/OVeKMKzWhvJfbq+v3Vhsg3V
-         QW0UyKa5ABYW9dUp1lTMyvKAdLy/ME7ArkZV8TAX6iUjDW72Ci24+VctiLLtIhKKsFA+
-         0j35Xr9KKXlnEXJKLYfA8Ocfr4opzunpitBrZRAMSOMZ4DeRc4v+1KXCDTbbcU9Z2m2n
-         wChuc12d1YA52ghlT+pF01IDQyzMTYcFTgkuMpW+//FvyxKkrEoOAlnmOvP6kWSa169g
-         0Dkg==
-X-Gm-Message-State: AOAM531gg+W0uuOs6aIjFthOYhFKs+bQiBJrjLtD+hgdl/Tifu1qoAYF
-        f6ajNWOyYVu/wbQtw0UcJsfLM/7wXHzernbR
-X-Google-Smtp-Source: ABdhPJzGNSOJXqN50yb07YwZnVC2cP5SsfC99SXfdQo6vEd7yudKDXTm3pGqu7xoqaaFq+9k+rCviA==
-X-Received: by 2002:a63:1e5a:: with SMTP id p26mr4927209pgm.85.1602277325263;
-        Fri, 09 Oct 2020 14:02:05 -0700 (PDT)
-Received: from bhanumaiya-glaptop.hsd1.ca.comcast.net ([2601:646:9500:590:250:b6ff:fe8e:b459])
-        by smtp.gmail.com with ESMTPSA id g1sm11744573pfm.124.2020.10.09.14.02.03
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QXQaBaNS7A6eVo/ydORo8r5bdU1C9Le836RTdHwCBbM=;
+        b=Sfawn/g9DlyjOC+W3XiCO8KtOtkBMD3s4t7LOPmq9rZA5cfR+gNdG1HI7CR9J1VQmX
+         67wuD7TqtcJ1ZVSUfcskscPBe1qbXocDjTQXF98EBrUgydvN4x4cHORcojjqEQPKBBD4
+         PBdNS2eitbFbjp5654G9ETWkTncXNJkV2t56FTqW9ORkYyLj+JIIrFc/Bek1qwrm72Pk
+         n3fmEDTc89K0XgoM56LYDqRNeY0HycpBBSd/0V7KaCpmXsReucnPxV3v7RsxIDJ4jcIu
+         dus7nykhZcb5zVSfptwNG0sPfbrejJEwUpNKLebmGBUfn5wr4dXzZoPpBKqB4zHCey1z
+         2enA==
+X-Gm-Message-State: AOAM532j5O75t/c2ngkCcwZSic1z/4Fzl0lZHvGvdneyGLyJteH4rTwu
+        sKLSqUWQgm86X9W2XTXUmbwDAQ==
+X-Google-Smtp-Source: ABdhPJxjzJ92vFbxcRcoQJ+j6aZ4ui51r5YFp2dBuqEKUdI8vRCJOM24sn81H3xCAiwt33ZPrcU5Mg==
+X-Received: by 2002:a65:64cc:: with SMTP id t12mr5047545pgv.106.1602277555126;
+        Fri, 09 Oct 2020 14:05:55 -0700 (PDT)
+Received: from google.com ([2620:15c:201:2:f693:9fff:fef4:1b6d])
+        by smtp.gmail.com with ESMTPSA id t13sm12057753pfc.1.2020.10.09.14.05.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 14:02:04 -0700 (PDT)
-From:   Bhanu Prakash Maiya <bhanumaiya@chromium.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Raul E Rangel <rrangel@chromium.org>, devicetree@vger.kernel.org,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Benson Leung <bleung@chromium.org>,
-        Duncan Laurie <dlaurie@google.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Eric Peers <epeers@google.com>,
-        Furquan Shaikh <furquan@chromium.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Bhanu Prakash Maiya <bhanumaiya@chromium.org>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH v6 2/2] dt-bindings: mfd: Add DT compatible string "google,cros_ec_uart"
-Date:   Fri,  9 Oct 2020 14:01:55 -0700
-Message-Id: <20201009132732.v6.2.I8d7530d8372e4ef298ddaaaad612a2cdd24ed93e@changeid>
-X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
-In-Reply-To: <20201009132732.v6.1.Ic98067cd92a0b7fed9cd3dfb7b4e736e76551cda@changeid>
-References: <20201009132732.v6.1.Ic98067cd92a0b7fed9cd3dfb7b4e736e76551cda@changeid>
+        Fri, 09 Oct 2020 14:05:54 -0700 (PDT)
+Date:   Fri, 9 Oct 2020 14:05:48 -0700
+From:   Sami Tolvanen <samitolvanen@google.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [PATCH v5 00/29] Add support for Clang LTO
+Message-ID: <20201009210548.GB1448445@google.com>
+References: <20201009161338.657380-1-samitolvanen@google.com>
+ <20201009153512.1546446a@gandalf.local.home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201009153512.1546446a@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DT compatible string in
-Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
+On Fri, Oct 09, 2020 at 03:35:12PM -0400, Steven Rostedt wrote:
+> On Fri,  9 Oct 2020 09:13:09 -0700
+> Sami Tolvanen <samitolvanen@google.com> wrote:
+> 
+> > This patch series adds support for building x86_64 and arm64 kernels
+> > with Clang's Link Time Optimization (LTO).
+> > 
+> > In addition to performance, the primary motivation for LTO is
+> > to allow Clang's Control-Flow Integrity (CFI) to be used in the
+> > kernel. Google has shipped millions of Pixel devices running three
+> > major kernel versions with LTO+CFI since 2018.
+> > 
+> > Most of the patches are build system changes for handling LLVM
+> > bitcode, which Clang produces with LTO instead of ELF object files,
+> > postponing ELF processing until a later stage, and ensuring initcall
+> > ordering.
+> > 
+> > Note that this version is based on tip/master to reduce the number
+> > of prerequisite patches, and to make it easier to manage changes to
+> > objtool. Patch 1 is from Masahiro's kbuild tree, and while it's not
+> > directly related to LTO, it makes the module linker script changes
+> > cleaner.
+> > 
+> 
+> I went to test this, but it appears that the latest tip/master fails to
+> build for me. This error is on tip/master, before I even applied a single
+> patch.
+> 
+> (config attached)
 
-Signed-off-by: Bhanu Prakash Maiya <bhanumaiya@chromium.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
+Ah yes, X86_DECODER_SELFTEST seems to be broken in tip/master. If you
+prefer, I have these patches on top of mainline here:
 
-Changes in v6:
-- No change
+  https://github.com/samitolvanen/linux/tree/clang-lto
 
-Changes in v5:
-- No change
+Testing your config with LTO on this tree, it does build and boot for
+me, although I saw a couple of new objtool warnings, and with LLVM=1,
+one warning from llvm-objdump.
 
-Changes in v4:
-- Changes in commit message.
-
-Changes in v3:
-- Rebased changes on google,cros-ec.yaml
-
-Changes in v2:
-- No change
-
- Documentation/devicetree/bindings/mfd/google,cros-ec.yaml | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml b/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
-index 6a7279a85ec1c..552d1c9bf3de4 100644
---- a/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
-+++ b/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
-@@ -10,11 +10,12 @@ maintainers:
-   - Benson Leung <bleung@chromium.org>
-   - Enric Balletbo i Serra <enric.balletbo@collabora.com>
-   - Guenter Roeck <groeck@chromium.org>
-+  - Bhanu Prakash Maiya <bhanumaiya@chromium.org>
- 
- description:
-   Google's ChromeOS EC is a microcontroller which talks to the AP and
-   implements various functions such as keyboard and battery charging.
--  The EC can be connected through various interfaces (I2C, SPI, and others)
-+  The EC can be connected through various interfaces (I2C, SPI, UART and others)
-   and the compatible string specifies which interface is being used.
- 
- properties:
-@@ -29,6 +30,9 @@ properties:
-       - description:
-           For implementations of the EC is connected through RPMSG.
-         const: google,cros-ec-rpmsg
-+      - description:
-+          For implementations of the EC is connected through UART.
-+        const: google,cros-ec-uart
- 
-   google,cros-ec-spi-pre-delay:
-     description:
--- 
-2.26.2
-
+Sami
