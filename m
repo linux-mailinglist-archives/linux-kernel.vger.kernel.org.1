@@ -2,323 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D45DE288BC2
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08768288BCD
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:48:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388952AbgJIOob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 10:44:31 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58408 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387662AbgJIOob (ORCPT
+        id S2388825AbgJIOsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 10:48:08 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:58923 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732056AbgJIOsI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 10:44:31 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602254668;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JygW1fCWN1B+DwaBqcLYhEsiyZH5SP6AAs9rfTd3su0=;
-        b=IXP9Bq+XJCru4c+TmNDYcpotU9xYdweV7P4HKzcUFW8l8uKMmH4PBSYXL8GiAUdp4NPEPg
-        1LNUSxnsIca5EP3SSmNPfkJS2gVVS7MlKTyag66pHtI2Ag4JYwxpap61eZ18PJ5dw/oTa6
-        iUdyQ6SZ+N7EO5l4LLZE81h3iwAYXMXC/z6cTABQJrOqr9/lYeAtedyfRsoOMl+UcMENK/
-        u/SpRdo8zZH9werNQHKhd+KpYMcdGyW/L8voH5vydSmqcmT01R7f/ijY2LBtqvSYG7YCyD
-        ktV/aDj47BtoOon4u3+rzRVBBIn61ssQ5A41RcbS9xhepiOEnKPUj7OGCMDWMQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602254668;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JygW1fCWN1B+DwaBqcLYhEsiyZH5SP6AAs9rfTd3su0=;
-        b=zhtSqPew150Ep9bbnKUmKd9W9OOWz0QN69IbEu72rBCcXK6xSv+9TAGN2s8s8/9D40mUCG
-        sLul7won06nYCUDQ==
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Dave Jiang <dave.jiang@intel.com>, vkoul@kernel.org,
-        megha.dey@intel.com, maz@kernel.org, bhelgaas@google.com,
-        alex.williamson@redhat.com, jacob.jun.pan@intel.com,
-        ashok.raj@intel.com, yi.l.liu@intel.com, baolu.lu@intel.com,
-        kevin.tian@intel.com, sanjay.k.kumar@intel.com,
-        tony.luck@intel.com, jing.lin@intel.com, dan.j.williams@intel.com,
-        kwankhede@nvidia.com, eric.auger@redhat.com, parav@mellanox.com,
-        rafael@kernel.org, netanelg@mellanox.com, shahafs@mellanox.com,
-        yan.y.zhao@linux.intel.com, pbonzini@redhat.com,
-        samuel.ortiz@intel.com, mona.hossain@intel.com,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-pci@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v3 11/18] dmaengine: idxd: ims setup for the vdcm
-In-Reply-To: <20201008233210.GH4734@nvidia.com>
-References: <160021207013.67751.8220471499908137671.stgit@djiang5-desk3.ch.intel.com> <160021253189.67751.12686144284999931703.stgit@djiang5-desk3.ch.intel.com> <87mu17ghr1.fsf@nanos.tec.linutronix.de> <0f9bdae0-73d7-1b4e-b478-3cbd05c095f4@intel.com> <87r1q92mkx.fsf@nanos.tec.linutronix.de> <44e19c5d-a0d2-0ade-442c-61727701f4d8@intel.com> <87y2kgux2l.fsf@nanos.tec.linutronix.de> <20201008233210.GH4734@nvidia.com>
-Date:   Fri, 09 Oct 2020 16:44:27 +0200
-Message-ID: <87v9fjtq5w.fsf@nanos.tec.linutronix.de>
+        Fri, 9 Oct 2020 10:48:08 -0400
+Received: from bootlin.com (atoulouse-258-1-33-168.w90-55.abo.wanadoo.fr [90.55.104.168])
+        (Authenticated sender: maxime.chevallier@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 33E08240014;
+        Fri,  9 Oct 2020 14:47:59 +0000 (UTC)
+Date:   Fri, 9 Oct 2020 16:47:57 +0200
+From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Subject: Re: [PATCH 3/3] media: i2c: Introduce a driver for the Techwell
+ TW9900 decoder
+Message-ID: <20201009164757.33802bf2@bootlin.com>
+In-Reply-To: <57c93f63-2450-aa43-7616-e3a763c95e36@xs4all.nl>
+References: <20200918142422.1086555-1-maxime.chevallier@bootlin.com>
+        <20200918142422.1086555-4-maxime.chevallier@bootlin.com>
+        <57c93f63-2450-aa43-7616-e3a763c95e36@xs4all.nl>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08 2020 at 20:32, Jason Gunthorpe wrote:
-> On Fri, Oct 09, 2020 at 01:17:38AM +0200, Thomas Gleixner wrote:
->> Thinking more about it, that very same thing will be needed for any
->> other IMS device and of course this is not going to end well because
->> some driver will fiddle with the PASID at the wrong time.
+Hi Hans,
+
+On Fri, 25 Sep 2020 14:52:25 +0200
+Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
+
+>Hi Maxime,
 >
-> Why? This looks like some quirk of the IDXD HW where it just randomly
-> put PASID along with the IRQ mask register. Probably because PASID is
-> not the full 32 bits.
+>Some comments below, this driver needs to be changed:
+
+Thanks for the review !
+
+>On 18/09/2020 16:24, Maxime Chevallier wrote:
+>> The Techwell video decoder supports PAL, NTSC and SECAM input formats,
+>> and outputs a BT.656 signal.
+>> 
+>> This commit adds support for this device, based on an implementation
+>> made by Rockchip. This implemention adds basic support for NTSC and PAL,
+>> and some basic brightness and contrast controls.
+>> 
+>> Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
+
+ [ ... ]
+
+>> +static const struct v4l2_subdev_ops tw9900_subdev_ops = {
+>> +	.core	= &tw9900_core_ops,
+>> +	.video	= &tw9900_video_ops,
+>> +	.pad	= &tw9900_pad_ops,
+>> +	.sensor = &tw9900_sensor_ops,
+>> +};  
 >
-> AFAIK the PASID is not tagged on the MemWr TLP triggering the
-> interrupt, so it really is unrelated to the irq.
-
-Right you are. With brain awake this does not make sense.
-
-> I think the ioread to get the PASID is rather ugly, it should pluck
-> the PASID out of some driver specific data structure with proper
-> locking, and thus use the sleepable version of the irqchip?
+>This is wrong. This is not a sensor, so you don't set the format, instead
+>you set the TV standard (s_std).
 >
-> This is really not that different from what I was describing for queue
-> contexts - the queue context needs to be assigned to the irq # before
-> it can be used in the irq chip other wise there is no idea where to
-> write the msg to. Just like pasid here.
+>drivers/media/i2c/tw9910.c is a fairly OK template to use. The tw9910 supports
+>a simple scaler as well, but I don't know if the tw9900 has the same feature.
+>If not, then the format resolution is fixed based on the current selected
+>TV standard.
+>
+>There is definitely no need for g_skip_top_lines: 1) it's a sensor-only op,
+>and 2) that function always returns 0, so why keep it?
 
-Not really. In the IDXD case the storage is known when the host device
-and the irq domain is initialized which is not the case for your variant
-and it neither needs to send a magic command to the device to update the
-data.
+Thanks for the clarification. Indeed the TW9900 is simpler and doesn't
+have a scaler. I'll stick to the s_std / g_std ops then.
 
-Due to the already explained racy behaviour of MSI affinity changes when
-interrupt remapping is disabled, that async update would just not work
-and I really don't want to see the resulting tinkering to paper over the
-problem. TBH, even if that problem would not exist, my faith in driver
-writers getting any of this correct is close to zero and I rather spend
-a few brain cycles now than staring at the creative mess later.
+I'll also change the denomination from "sensor" to "decoder", you're
+right.
 
-So putting the brainfart of yesterday aside, we can simply treat this as
-auxiliary data.
+>> +
+>> +static const struct v4l2_ctrl_ops tw9900_ctrl_ops = {
+>> +	.s_ctrl = tw9900_s_ctrl,
+>> +};
+>> +
+>> +#ifdef CONFIG_VIDEO_V4L2_SUBDEV_API
+>> +static const struct v4l2_subdev_internal_ops tw9900_internal_ops = {
+>> +	.open = tw9900_open,
+>> +};
+>> +#endif
+>> +
+>> +static int tw9900_check_sensor_id(struct tw9900 *tw9900,  
+>
+>*Not* a sensor :-)
+>
+>> +				  struct i2c_client *client)
+>> +{
+>> +	struct device *dev = &tw9900->client->dev;
+>> +	u8 id;
+>> +
+>> +	id = tw9900_read_reg(client, TW9900_CHIP_ID);
+>> +
+>> +	if (id != TW9900_CHIP_ID) {
+>> +		dev_err(dev, "Wrong camera sensor id(%04x)\n", id);
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	dev_info(dev, "Detected TW9900 (%04x) sensor\n", TW9900_CHIP_ID);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int tw9900_configure_regulators(struct tw9900 *tw9900)
+>> +{
+>> +	u32 i;
+>> +
+>> +	for (i = 0; i < TW9900_NUM_SUPPLIES; i++)
+>> +		tw9900->supplies[i].supply = tw9900_supply_names[i];
+>> +
+>> +	return devm_regulator_bulk_get(&tw9900->client->dev,
+>> +				       TW9900_NUM_SUPPLIES,
+>> +				       tw9900->supplies);
+>> +}
+>> +
+>> +static int tw9900_probe(struct i2c_client *client,
+>> +			const struct i2c_device_id *id)
+>> +{
+>> +	struct device *dev = &client->dev;
+>> +	struct v4l2_ctrl_handler *hdl;
+>> +	struct tw9900 *tw9900;
+>> +	int ret;
+>> +
+>> +	tw9900 = devm_kzalloc(dev, sizeof(*tw9900), GFP_KERNEL);
+>> +	if (!tw9900)
+>> +		return -ENOMEM;
+>> +
+>> +	tw9900->client = client;
+>> +	tw9900->cur_mode = &supported_modes[0];
+>> +
+>> +	tw9900->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_LOW);
+>> +	if (IS_ERR(tw9900->reset_gpio))
+>> +		tw9900->reset_gpio = NULL;
+>> +
+>> +	ret = tw9900_configure_regulators(tw9900);
+>> +	if (ret) {
+>> +		dev_err(dev, "Failed to get power regulators\n");
+>> +		return ret;
+>> +	}
+>> +
+>> +	v4l2_i2c_subdev_init(&tw9900->subdev, client, &tw9900_subdev_ops);
+>> +	tw9900->subdev.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE | V4L2_SUBDEV_FL_HAS_EVENTS;
+>> +
+>> +	hdl = &tw9900->hdl;
+>> +
+>> +	v4l2_ctrl_handler_init(hdl, 2);
+>> +
+>> +	v4l2_ctrl_new_std(hdl, &tw9900_ctrl_ops, V4L2_CID_BRIGHTNESS,
+>> +			  -128, 127, 1, 0);
+>> +	v4l2_ctrl_new_std(hdl, &tw9900_ctrl_ops, V4L2_CID_CONTRAST,
+>> +			  0, 255, 1, 0x60);
+>> +
+>> +	tw9900->subdev.ctrl_handler = hdl;
+>> +	if (hdl->error) {
+>> +		int err = hdl->error;
+>> +
+>> +		v4l2_ctrl_handler_free(hdl);
+>> +		return err;
+>> +	}
+>> +
+>> +	ret = __tw9900_power_on(tw9900);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	ret = tw9900_check_sensor_id(tw9900, client);
+>> +	if (ret)
+>> +		goto err_power_off;
+>> +
+>> +#ifdef CONFIG_VIDEO_V4L2_SUBDEV_API
+>> +	tw9900->subdev.internal_ops = &tw9900_internal_ops;
+>> +	tw9900->subdev.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
+>> +#endif
+>> +#if defined(CONFIG_MEDIA_CONTROLLER)
+>> +	tw9900->pad.flags = MEDIA_PAD_FL_SOURCE;
+>> +	tw9900->subdev.entity.function = MEDIA_ENT_F_CAM_SENSOR;  
+>
+>Set to MEDIA_ENT_F_ATV_DECODER.
 
-The patch below implements an interface for that and adds support to the
-IMS driver. That interface is properly serialized and does not put any
-restrictions on when this is called. (I know another interrupt chip
-which could be simplified that way).
+Will do ! Thanks agains,
 
-All the IDXD driver has to do is:
+Maxime
 
-   auxval = ims_ctrl_pasid_aux(pasid, enabled);
-   irq_set_auxdata(irqnr, IMS_AUXDATA_CONTROL_WORD, auxval);
 
-I agree that irq_set_auxdata() is not the most elegant thing, but the
-alternative solutions I looked at are just worse.
 
-For now I just kept the data in the IMS storage which still requires an
-ioread(), but these interrupts are not frequently masked and unmasked
-during normal operation so performance is not a concern and caching that
-value is an orthogonal optimization if someone cares.
-
-Thanks,
-
-        tglx
-
-8<-------------
-
- drivers/irqchip/irq-ims-msi.c       |   35 +++++++++++++++++++++++++++++------
- include/linux/interrupt.h           |    2 ++
- include/linux/irq.h                 |    4 ++++
- include/linux/irqchip/irq-ims-msi.h |   25 ++++++++++++++++++++++++-
- kernel/irq/manage.c                 |   32 ++++++++++++++++++++++++++++++++
- 5 files changed, 91 insertions(+), 7 deletions(-)
-
---- a/drivers/irqchip/irq-ims-msi.c
-+++ b/drivers/irqchip/irq-ims-msi.c
-@@ -18,14 +18,19 @@ struct ims_array_data {
- 	unsigned long		map[0];
- };
- 
-+static inline void iowrite32_and_flush(u32 value, void __iomem *addr)
-+{
-+	iowrite32(value, addr);
-+	ioread32(addr);
-+}
-+
- static void ims_array_mask_irq(struct irq_data *data)
- {
- 	struct msi_desc *desc = irq_data_get_msi_desc(data);
- 	struct ims_slot __iomem *slot = desc->device_msi.priv_iomem;
- 	u32 __iomem *ctrl = &slot->ctrl;
- 
--	iowrite32(ioread32(ctrl) | IMS_VECTOR_CTRL_MASK, ctrl);
--	ioread32(ctrl); /* Flush write to device */
-+	iowrite32_and_flush(ioread32(ctrl) | IMS_CTRL_VECTOR_MASKBIT, ctrl);
- }
- 
- static void ims_array_unmask_irq(struct irq_data *data)
-@@ -34,7 +39,7 @@ static void ims_array_unmask_irq(struct
- 	struct ims_slot __iomem *slot = desc->device_msi.priv_iomem;
- 	u32 __iomem *ctrl = &slot->ctrl;
- 
--	iowrite32(ioread32(ctrl) & ~IMS_VECTOR_CTRL_MASK, ctrl);
-+	iowrite32_and_flush(ioread32(ctrl) & ~IMS_CTRL_VECTOR_MASKBIT, ctrl);
- }
- 
- static void ims_array_write_msi_msg(struct irq_data *data, struct msi_msg *msg)
-@@ -44,8 +49,24 @@ static void ims_array_write_msi_msg(stru
- 
- 	iowrite32(msg->address_lo, &slot->address_lo);
- 	iowrite32(msg->address_hi, &slot->address_hi);
--	iowrite32(msg->data, &slot->data);
--	ioread32(slot);
-+	iowrite32_and_flush(msg->data, &slot->data);
-+}
-+
-+static int ims_array_set_auxdata(struct irq_data *data, unsigned int which,
-+				 u64 auxval)
-+{
-+	struct msi_desc *desc = irq_data_get_msi_desc(data);
-+	struct ims_slot __iomem *slot = desc->device_msi.priv_iomem;
-+	u32 val, __iomem *ctrl = &slot->ctrl;
-+
-+	if (which != IMS_AUXDATA_CONTROL_WORD)
-+		return -EINVAL;
-+	if (auxval & ~(u64)IMS_CONTROL_WORD_AUXMASK)
-+		return -EINVAL;
-+
-+	val = ioread32(ctrl) & IMS_CONTROL_WORD_IRQMASK;
-+	iowrite32_and_flush(val | (u32) auxval, ctrl);
-+	return 0;
- }
- 
- static const struct irq_chip ims_array_msi_controller = {
-@@ -53,6 +74,7 @@ static const struct irq_chip ims_array_m
- 	.irq_mask		= ims_array_mask_irq,
- 	.irq_unmask		= ims_array_unmask_irq,
- 	.irq_write_msi_msg	= ims_array_write_msi_msg,
-+	.irq_set_auxdata	= ims_array_set_auxdata,
- 	.irq_retrigger		= irq_chip_retrigger_hierarchy,
- 	.flags			= IRQCHIP_SKIP_SET_WAKE,
- };
-@@ -62,7 +84,7 @@ static void ims_array_reset_slot(struct
- 	iowrite32(0, &slot->address_lo);
- 	iowrite32(0, &slot->address_hi);
- 	iowrite32(0, &slot->data);
--	iowrite32(0, &slot->ctrl);
-+	iowrite32_and_flush(IMS_CTRL_VECTOR_MASKBIT, &slot->ctrl);
- }
- 
- static void ims_array_free_msi_store(struct irq_domain *domain,
-@@ -97,6 +119,7 @@ static int ims_array_alloc_msi_store(str
- 			goto fail;
- 		set_bit(idx, ims->map);
- 		entry->device_msi.priv_iomem = &ims->info.slots[idx];
-+		ims_array_reset_slot(entry->device_msi.priv_iomem);
- 		entry->device_msi.hwirq = idx;
- 	}
- 	return 0;
---- a/include/linux/interrupt.h
-+++ b/include/linux/interrupt.h
-@@ -487,6 +487,8 @@ extern int irq_get_irqchip_state(unsigne
- extern int irq_set_irqchip_state(unsigned int irq, enum irqchip_irq_state which,
- 				 bool state);
- 
-+int irq_set_auxdata(unsigned int irq, unsigned int which, u64 val);
-+
- #ifdef CONFIG_IRQ_FORCED_THREADING
- # ifdef CONFIG_PREEMPT_RT
- #  define force_irqthreads	(true)
---- a/include/linux/irq.h
-+++ b/include/linux/irq.h
-@@ -481,6 +481,8 @@ static inline irq_hw_number_t irqd_to_hw
-  *				irq_request_resources
-  * @irq_compose_msi_msg:	optional to compose message content for MSI
-  * @irq_write_msi_msg:	optional to write message content for MSI
-+ * @irq_set_auxdata:	Optional function to update auxiliary data e.g. in
-+ *			shared registers
-  * @irq_get_irqchip_state:	return the internal state of an interrupt
-  * @irq_set_irqchip_state:	set the internal state of a interrupt
-  * @irq_set_vcpu_affinity:	optional to target a vCPU in a virtual machine
-@@ -528,6 +530,8 @@ struct irq_chip {
- 	void		(*irq_compose_msi_msg)(struct irq_data *data, struct msi_msg *msg);
- 	void		(*irq_write_msi_msg)(struct irq_data *data, struct msi_msg *msg);
- 
-+	int		(*irq_set_auxdata)(struct irq_data *data, unsigned int which, u64 auxval);
-+
- 	int		(*irq_get_irqchip_state)(struct irq_data *data, enum irqchip_irq_state which, bool *state);
- 	int		(*irq_set_irqchip_state)(struct irq_data *data, enum irqchip_irq_state which, bool state);
- 
---- a/include/linux/irqchip/irq-ims-msi.h
-+++ b/include/linux/irqchip/irq-ims-msi.h
-@@ -5,6 +5,7 @@
- #define _LINUX_IRQCHIP_IRQ_IMS_MSI_H
- 
- #include <linux/types.h>
-+#include <linux/bits.h>
- 
- /**
-  * ims_hw_slot - The hardware layout of an IMS based MSI message
-@@ -23,8 +24,30 @@ struct ims_slot {
- 	u32	ctrl;
- } __packed;
- 
-+/*
-+ * The IMS control word utilizes bit 0-2 for interrupt control. The remaining
-+ * bits can contain auxiliary data.
-+ */
-+#define IMS_CONTROL_WORD_IRQMASK	GENMASK(2, 0)
-+#define IMS_CONTROL_WORD_AUXMASK	GENMASK(31, 3)
-+
- /* Bit to mask the interrupt in ims_hw_slot::ctrl */
--#define IMS_VECTOR_CTRL_MASK	0x01
-+#define IMS_CTRL_VECTOR_MASKBIT		BIT(0)
-+
-+/* Auxiliary control word data related defines */
-+enum {
-+	IMS_AUXDATA_CONTROL_WORD,
-+};
-+
-+#define IMS_CTRL_PASID_ENABLE		BIT(3)
-+#define IMS_CTRL_PASID_SHIFT		12
-+
-+static inline u32 ims_ctrl_pasid_aux(unsigned int pasid, bool enable)
-+{
-+	u32 auxval = pasid << IMS_CTRL_PASID_SHIFT;
-+
-+	return enable ? auxval | IMS_CTRL_PASID_ENABLE : auxval;
-+}
- 
- /**
-  * struct ims_array_info - Information to create an IMS array domain
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -2752,3 +2752,35 @@ int irq_set_irqchip_state(unsigned int i
- 	return err;
- }
- EXPORT_SYMBOL_GPL(irq_set_irqchip_state);
-+
-+/**
-+ * irq_set_auxdata - Set auxiliary data
-+ * @irq:	Interrupt to update
-+ * @which:	Selector which data to update
-+ * @auxval:	Auxiliary data value
-+ *
-+ * Function to update auxiliary data for an interrupt, e.g. to update data
-+ * which is stored in a shared register or data storage (e.g. IMS).
-+ */
-+int irq_set_auxdata(unsigned int irq, unsigned int which, u64 val)
-+{
-+	struct irq_desc *desc;
-+	struct irq_data *data;
-+	unsigned long flags;
-+	int res = -ENODEV;
-+
-+	desc = irq_get_desc_buslock(irq, &flags, 0);
-+	if (!desc)
-+		return -EINVAL;
-+
-+	for (data = &desc->irq_data; data; data = irqd_get_parent_data(data)) {
-+		if (data->chip->irq_set_auxdata) {
-+			res = data->chip->irq_set_auxdata(data, which, val);
-+			break;
-+		}
-+	}
-+
-+	irq_put_desc_busunlock(desc, flags);
-+	return res;
-+}
-+EXPORT_SYMBOL_GPL(irq_set_auxdata);
+-- 
+Maxime Chevallier, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
