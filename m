@@ -2,64 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98FE02886A8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 12:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99A212886B4
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 12:16:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387551AbgJIKPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 06:15:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726357AbgJIKPT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 06:15:19 -0400
-X-Greylist: delayed 112 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 09 Oct 2020 03:15:19 PDT
-Received: from nbd.name (nbd.name [IPv6:2a01:4f8:221:3d45::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FDB0C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 03:15:19 -0700 (PDT)
-Received: from [2a04:4540:1402:cc00:2006:326b:997b:7e12]
-        by ds12 with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <john@phrozen.org>)
-        id 1kQpQj-0004jT-VT; Fri, 09 Oct 2020 12:15:18 +0200
-Subject: Re: [PATCH V4 0/4] mac80211: add multiple bssid support
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     linux-kernel@vger.kernel.org
-References: <20201009101317.4657-1-john@phrozen.org>
-From:   John Crispin <john@phrozen.org>
-Message-ID: <d14d2925-d1d7-d499-e91c-8a6b64444f52@phrozen.org>
-Date:   Fri, 9 Oct 2020 12:15:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2387561AbgJIKQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 06:16:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726357AbgJIKQt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 06:16:49 -0400
+Received: from gaia (unknown [95.149.105.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3CB2822276;
+        Fri,  9 Oct 2020 10:16:46 +0000 (UTC)
+Date:   Fri, 9 Oct 2020 11:16:43 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 29/39] arm64: mte: Switch GCR_EL1 in kernel entry and
+ exit
+Message-ID: <20201009101643.GG23638@gaia>
+References: <cover.1601593784.git.andreyknvl@google.com>
+ <1f2681fdff1aa1096df949cb8634a9be6bf4acc4.1601593784.git.andreyknvl@google.com>
+ <20201002140652.GG7034@gaia>
+ <1b2327ee-5f30-e412-7359-32a7a38b4c8d@arm.com>
+ <20201009081111.GA23638@gaia>
+ <106f8670-3dd0-70ad-91ac-4f419585df50@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20201009101317.4657-1-john@phrozen.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <106f8670-3dd0-70ad-91ac-4f419585df50@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-oops, CC'ed the wrong ML, sorry ...
+On Fri, Oct 09, 2020 at 10:56:02AM +0100, Vincenzo Frascino wrote:
+> On 10/9/20 9:11 AM, Catalin Marinas wrote:
+> > On Thu, Oct 08, 2020 at 07:24:12PM +0100, Vincenzo Frascino wrote:
+> >> On 10/2/20 3:06 PM, Catalin Marinas wrote:
+> >>> On Fri, Oct 02, 2020 at 01:10:30AM +0200, Andrey Konovalov wrote:
+> >>>> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+> >>>> index 7c67ac6f08df..d1847f29f59b 100644
+> >>>> --- a/arch/arm64/kernel/mte.c
+> >>>> +++ b/arch/arm64/kernel/mte.c
+> >>>> @@ -23,6 +23,8 @@
+> >>>>  #include <asm/ptrace.h>
+> >>>>  #include <asm/sysreg.h>
+> >>>>  
+> >>>> +u64 gcr_kernel_excl __ro_after_init;
+> >>>> +
+> >>>>  static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap)
+> >>>>  {
+> >>>>  	pte_t old_pte = READ_ONCE(*ptep);
+> >>>> @@ -120,6 +122,13 @@ void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
+> >>>>  	return ptr;
+> >>>>  }
+> >>>>  
+> >>>> +void mte_init_tags(u64 max_tag)
+> >>>> +{
+> >>>> +	u64 incl = GENMASK(max_tag & MTE_TAG_MAX, 0);
+> >>>
+> >>> Nitpick: it's not obvious that MTE_TAG_MAX is a mask, so better write
+> >>> this as GENMASK(min(max_tag, MTE_TAG_MAX), 0).
+> >>
+> >> The two things do not seem equivalent because the format of the tags in KASAN is
+> >> 0xFF and in MTE is 0xF, hence if extract the minimum whatever is the tag passed
+> >> by KASAN it will always be MTE_TAG_MAX.
+> >>
+> >> To make it cleaner I propose: GENMASK(FIELD_GET(MTE_TAG_MAX, max_tag), 0);
+> > 
+> > I don't think that's any clearer since FIELD_GET still assumes that
+> > MTE_TAG_MAX is a mask. I think it's better to add a comment on why this
+> > is needed, as you explained above that the KASAN tags go to 0xff.
+> > 
+> > If you want to get rid of MTE_TAG_MAX altogether, just do a
+> > 
+> > 	max_tag &= (1 << MAX_TAG_SIZE) - 1;
+> > 
+> > before setting incl (a comment is still useful).
+> > 
+> 
+> Agree, but still think we should use FIELD_GET here since it is common language
+> in the kernel.
+> 
+> How about we get rid of MTE_TAG_MAX and we do something like:
+> 
+> GENMASK(FIELD_GET(MTE_TAG_MASK >> MTE_TAG_SHIFT, max_tag), 0);
 
-On 09.10.20 12:13, John Crispin wrote:
-> Changes in V4
-> * move multiple bssid config from add_interface to start_ap
-> * add ema support
->
-> John Crispin (4):
->    nl80211: add basic multiple bssid support
->    mac80211: add multiple bssid support to interface handling
->    mac80211: add multiple bssid/EMA support to beacon handling
->    mac80211: don't allow CSA on non-transmitting interfaces
->
->   include/net/cfg80211.h       |  33 ++++++++
->   include/net/mac80211.h       | 118 +++++++++++++++++++++++++-
->   include/uapi/linux/nl80211.h |  21 +++++
->   net/mac80211/cfg.c           | 113 ++++++++++++++++++++++++-
->   net/mac80211/debugfs.c       |   1 +
->   net/mac80211/ieee80211_i.h   |   2 +
->   net/mac80211/iface.c         |   6 ++
->   net/mac80211/tx.c            | 157 +++++++++++++++++++++++++++++++----
->   net/wireless/nl80211.c       |  34 ++++++++
->   9 files changed, 464 insertions(+), 21 deletions(-)
->
+It works for me and you can drop the MTE_TAG_MAX definition (I think
+it's only used here).
+
+-- 
+Catalin
