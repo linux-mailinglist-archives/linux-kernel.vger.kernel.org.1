@@ -2,45 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D319B2882BA
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 08:39:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F8E82882C1
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 08:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731697AbgJIGjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 02:39:37 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:55416 "EHLO
+        id S1732212AbgJIGjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 02:39:31 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:55396 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731847AbgJIGfQ (ORCPT
+        with ESMTP id S1731856AbgJIGfR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 02:35:16 -0400
-Date:   Fri, 09 Oct 2020 06:35:13 -0000
+        Fri, 9 Oct 2020 02:35:17 -0400
+Date:   Fri, 09 Oct 2020 06:35:14 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602225314;
+        s=2020; t=1602225315;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=asd0KrTKSDxwIQMdHeW7AX76ynTzDaiSLlENDd72vJA=;
-        b=1hCy6PX52sWzHfWpJ6UREfcGu4Euw8CV/NIv3pfvvtPAqNVprq1N1qrlCkSPnS9zsVQFVw
-        AZqeGwjcgMmcHykRI6yE0tkhcO6SnUIvLYWnSsXjbiEqbLsbM56jeIZxt3jvv+kRefM5Ub
-        wpEDpWn9weO5+TV/8J2UvKiNNSlBia+pHH/m8yxBakhuAEItHQHkZ6+pHDRTkieG/bQfF7
-        miM2g52xaYoEScOoTmbnA9GSIyIpkP5MiqoVxotW15LXF8ZpgP3Atds+wnPz8FjPQULoPx
-        jcFaslPR/RD/gH9476ixvOMY21SQmMAczob0a/NW/K1+kTtuHRPFSZ/cf7M8YA==
+        bh=XJJJo1YD/SSqfzuRudPzIInOHQ5ecKd2ycIMbXNrTeg=;
+        b=z6scKyhHkIkO3JOl9k+mzFVuxE6hXFfPfvPnE6NWeZX5byEhAdudoVbWiCoHRoqth24bLy
+        y0Uphod2R66AI8+uw4qwRm6vEXw1/XzQ59oQtMElM696inXA7U7hJcreamSLn/e0aP7TKA
+        oQBnzPJFyqmK6tRGhyNNzYew6aiJ1SiCHr4LncvbX/ZvnGtY2Cos/OaJO9fLm9uabuXPI2
+        9PVJ0ux3aRg9/NXQfCcPjp3SLd/cmMuDC58F81ObI+IyaXPPg/Id6NX+iWZwyvIgY4k/W0
+        wONY2ZPhGnR+lw+Zkyow8VIKAMlPx2d9XUHWzAIECo+g/DQbqLMdjUB5cHAbzg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602225314;
+        s=2020e; t=1602225315;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=asd0KrTKSDxwIQMdHeW7AX76ynTzDaiSLlENDd72vJA=;
-        b=W0F5+hqT0L0MoV/A4cU1ikKrf8gcuw0IiiVjjfEj6A5PbBkD3UYL48qi2jcqvJQ/NEb29O
-        mM2lK4yk6Ck+SFDA==
-From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
+        bh=XJJJo1YD/SSqfzuRudPzIInOHQ5ecKd2ycIMbXNrTeg=;
+        b=766A9YW0AO/lJObgUksWWaHPRWVPbNKk+2JwOigeQc0uppTSixu+EDvSrvqLZrZFpG6rhf
+        1HRIACaA0Uw3noCQ==
+From:   "tip-bot2 for Alexander A. Klimov" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] torture: Add kvm.sh --help and update help message
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
+Subject: [tip: core/rcu] rcutorture: Replace HTTP links with HTTPS ones
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <160222531341.7002.18057789555792205484.tip-bot2@tip-bot2>
+Message-ID: <160222531490.7002.13094857774287502879.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -51,55 +52,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     5461808889405de254ab3370aa7f07ac0b6cb938
-Gitweb:        https://git.kernel.org/tip/5461808889405de254ab3370aa7f07ac0b6cb938
-Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Sun, 19 Jul 2020 12:17:53 -07:00
+Commit-ID:     afcdf2319d11e0d68e45babd5df65f79771074b5
+Gitweb:        https://git.kernel.org/tip/afcdf2319d11e0d68e45babd5df65f79771074b5
+Author:        Alexander A. Klimov <grandmaster@al2klimov.de>
+AuthorDate:    Mon, 13 Jul 2020 21:37:06 +02:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 24 Aug 2020 18:45:34 -07:00
+CommitterDate: Mon, 24 Aug 2020 18:45:32 -07:00
 
-torture: Add kvm.sh --help and update help message
+rcutorture: Replace HTTP links with HTTPS ones
 
-This commit adds a --help argument (along with its synonym -h) to display
-the help text.  While in the area, this commit also updates the help text.
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
+
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/kvm.sh | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ tools/testing/selftests/rcutorture/doc/rcu-test-image.txt | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index 0a08463..fc15b52 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -56,17 +56,18 @@ usage () {
- 	echo "       --defconfig string"
- 	echo "       --dryrun sched|script"
- 	echo "       --duration minutes"
-+	echo "       --help"
- 	echo "       --interactive"
- 	echo "       --jitter N [ maxsleep (us) [ maxspin (us) ] ]"
- 	echo "       --kconfig Kconfig-options"
- 	echo "       --kmake-arg kernel-make-arguments"
- 	echo "       --mac nn:nn:nn:nn:nn:nn"
--	echo "       --memory megabytes | nnnG"
-+	echo "       --memory megabytes|nnnG"
- 	echo "       --no-initrd"
- 	echo "       --qemu-args qemu-arguments"
- 	echo "       --qemu-cmd qemu-system-..."
- 	echo "       --results absolute-pathname"
--	echo "       --torture rcu"
-+	echo "       --torture lock|rcu|rcuperf|refscale|scf"
- 	echo "       --trust-make"
- 	exit 1
- }
-@@ -127,6 +128,9 @@ do
- 		dur=$(($2*60))
- 		shift
- 		;;
-+	--help|-h)
-+		usage
-+		;;
- 	--interactive)
- 		TORTURE_QEMU_INTERACTIVE=1; export TORTURE_QEMU_INTERACTIVE
- 		;;
+diff --git a/tools/testing/selftests/rcutorture/doc/rcu-test-image.txt b/tools/testing/selftests/rcutorture/doc/rcu-test-image.txt
+index 449cf57..cc280ba 100644
+--- a/tools/testing/selftests/rcutorture/doc/rcu-test-image.txt
++++ b/tools/testing/selftests/rcutorture/doc/rcu-test-image.txt
+@@ -36,7 +36,7 @@ References:
+ 	https://help.ubuntu.com/community/JeOSVMBuilder
+ 	http://wiki.libvirt.org/page/UbuntuKVMWalkthrough
+ 	http://www.moe.co.uk/2011/01/07/pci_add_option_rom-failed-to-find-romfile-pxe-rtl8139-bin/ -- "apt-get install kvm-pxe"
+-	http://www.landley.net/writing/rootfs-howto.html
+-	http://en.wikipedia.org/wiki/Initrd
+-	http://en.wikipedia.org/wiki/Cpio
++	https://www.landley.net/writing/rootfs-howto.html
++	https://en.wikipedia.org/wiki/Initrd
++	https://en.wikipedia.org/wiki/Cpio
+ 	http://wiki.libvirt.org/page/UbuntuKVMWalkthrough
