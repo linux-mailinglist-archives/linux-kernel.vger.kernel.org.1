@@ -2,175 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E61B42880AA
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 05:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEA1C2880B5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 05:29:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731492AbgJIDVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 23:21:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729593AbgJIDVj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 23:21:39 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38603C0613D2;
-        Thu,  8 Oct 2020 20:21:39 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id 144so5676230pfb.4;
-        Thu, 08 Oct 2020 20:21:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0n2V4MNRGwK1cK7V9UjFbAKsyNZxYNY7DcB/CQ3zBuc=;
-        b=FmR7r7WuUzf6gUGF6OFjv2dQL5leGw/lgwp81U2pADktuMUVBLv7fwGXphDnnbvyzB
-         QyOolcHzcRu4uPTA1p6DAvn/hTv/HX3v/XDXJmX/lGzsl8Mct2hd3NSIJyBgMLyNR/Lc
-         mE+X8NR4Us1Zx7B3D4mzGR4x566SJ8XB422YLPkIQYLmlrPGtv1X/fQ5f4uJGrRxm/rV
-         wZ/oiDyDEiaXaXCroTtEOzCqCXm8RPJNGYMIRXRN+pKFUMFeADBn4U23UzSsgFit/LIB
-         kvULcnWtjB8frMWwi/58Bsnk3GX+LToNHhM2FV4LNRiNu2+vBpQ7MboDHh77LVhmKtwg
-         wFKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0n2V4MNRGwK1cK7V9UjFbAKsyNZxYNY7DcB/CQ3zBuc=;
-        b=XynTTp8kct97y735f6bPt4ohPcJXaLGlGHIJoU6iI3qlIsZGnqLISHSdzr5Q07gVYd
-         apdPybabBWfRdWB/FV/zekfd5r3pQB/edHiIH6+edgwlYSDU2m9tIwyuiFZbAO0nUVpI
-         52EWfBROgA9xsiV8KZ65/G1f+k5qYaMcxKQLllHody49LOex9XKydYQxXVruyIDuPCQu
-         lUUzMqi12C2Xic8AhYPjA0TtK6RZn1tcpp6X4K2tC5BP5E9qj8eYzGMGU+Q/xM+L+J8Y
-         z9CLxKV8L2H/lD9B7QhMYX0ebB+1robDt9Lqo72B9IDin4BoRJ650vMc7q/y1xYRgCFB
-         HGzg==
-X-Gm-Message-State: AOAM531nNfo3V3TDIQuW6L17eARUKa3X7REBx8JKx3ZVlQCibRAImKjJ
-        TjwPuxJ1XVLqrzTQoNciCnL2uzR8udPB
-X-Google-Smtp-Source: ABdhPJxzqbUV/5/fLWGXY727cgDJb+dYic2DCum+KeYwdQN1029d1bqNe6L0CaPXNlAY0CvZLda1AA==
-X-Received: by 2002:a17:90a:248:: with SMTP id t8mr2458390pje.64.1602213698403;
-        Thu, 08 Oct 2020 20:21:38 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.39])
-        by smtp.gmail.com with ESMTPSA id gl24sm378241pjb.50.2020.10.08.20.21.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 08 Oct 2020 20:21:37 -0700 (PDT)
-From:   lihaiwei.kernel@gmail.com
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     pbonzini@redhat.com, sean.j.christopherson@intel.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, Haiwei Li <lihaiwei@tencent.com>
-Subject: [PATCH v2] KVM: x86: Add tracepoint for dr_write/dr_read
-Date:   Fri,  9 Oct 2020 11:21:30 +0800
-Message-Id: <20201009032130.6774-1-lihaiwei.kernel@gmail.com>
-X-Mailer: git-send-email 2.28.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1730413AbgJID3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 23:29:19 -0400
+Received: from mga05.intel.com ([192.55.52.43]:44241 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725852AbgJID3S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 23:29:18 -0400
+IronPort-SDR: aHCfDFZMHpVPbDeacdqyoa2jiH7IqLthMipOEaxh4y+d3q0g46VjzGsP8rb41Epb8JqIXNTxhN
+ byEL1M1J99UQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="250132281"
+X-IronPort-AV: E=Sophos;i="5.77,353,1596524400"; 
+   d="scan'208";a="250132281"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 20:29:18 -0700
+IronPort-SDR: Sf53ALl94+IwaR67cbc0mSNm0XFAkt30+MfErZGKG32nAe/wjl6gi3dfADAmxfAdkvL0PwA5Wr
+ 6aMsR5tDFLew==
+X-IronPort-AV: E=Sophos;i="5.77,353,1596524400"; 
+   d="scan'208";a="528751366"
+Received: from chenyu-office.sh.intel.com ([10.239.158.173])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 20:29:16 -0700
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Len Brown <lenb@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chen Yu <yu.c.chen@intel.com>
+Subject: [RFC][PATCH] cpufreq: intel_pstate: Delete intel_pstate sysfs if failed to register the driver
+Date:   Fri,  9 Oct 2020 11:30:38 +0800
+Message-Id: <20201009033038.23157-1-yu.c.chen@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Haiwei Li <lihaiwei@tencent.com>
+There is a corner case that if the intel_pstate driver failed to be
+registered(might be due to invalid MSR access) and with the acpi_cpufreq
+loaded, the intel_pstate sysfs might still be created, which makes the
+user confusing(turbostat for example):
 
-When vmexit occurs caused by accessing dr, there is no tracepoint to track
-this action. Add tracepoint for this on x86 kvm.
+grep . /sys/devices/system/cpu/cpu0/cpufreq/scaling_driver
+acpi-cpufreq
 
-Signed-off-by: Haiwei Li <lihaiwei@tencent.com>
+grep . /sys/devices/system/cpu/intel_pstate/*
+/sys/devices/system/cpu/intel_pstate/max_perf_pct:0
+/sys/devices/system/cpu/intel_pstate/min_perf_pct:0
+grep: /sys/devices/system/cpu/intel_pstate/no_turbo: Resource temporarily unavailable
+grep: /sys/devices/system/cpu/intel_pstate/num_pstates: Resource temporarily unavailable
+/sys/devices/system/cpu/intel_pstate/status:off
+grep: /sys/devices/system/cpu/intel_pstate/turbo_pct: Resource temporarily unavailable
+
+The existing of intel_pstate sysfs does not mean that the intel_pstate driver
+has been successfully loaded(for example, echo off to status), but the
+intel_pstate sysfs should not co-exist when acpi-cpufreq is also present.
+Fix this issue by deleting the intel_pstate sysfs if the driver failed
+to be loaded during bootup.
+
+Reported-by: Wendy Wang <wendy.wang@intel.com>
+Suggested-by: Zhang Rui <rui.zhang@intel.com>
+Signed-off-by: Chen Yu <yu.c.chen@intel.com>
 ---
-v1 -> v2:
- * Improve the changelog 
+ drivers/cpufreq/intel_pstate.c | 24 +++++++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
 
- arch/x86/kvm/svm/svm.c |  2 ++
- arch/x86/kvm/trace.h   | 27 +++++++++++++++++++++++++++
- arch/x86/kvm/vmx/vmx.c | 10 ++++++++--
- arch/x86/kvm/x86.c     |  1 +
- 4 files changed, 38 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 4f401fc6a05d..52c69551aea4 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -2423,12 +2423,14 @@ static int dr_interception(struct vcpu_svm *svm)
- 		if (!kvm_require_dr(&svm->vcpu, dr - 16))
- 			return 1;
- 		val = kvm_register_read(&svm->vcpu, reg);
-+		trace_kvm_dr_write(dr - 16, val);
- 		kvm_set_dr(&svm->vcpu, dr - 16, val);
- 	} else {
- 		if (!kvm_require_dr(&svm->vcpu, dr))
- 			return 1;
- 		kvm_get_dr(&svm->vcpu, dr, &val);
- 		kvm_register_write(&svm->vcpu, reg, val);
-+		trace_kvm_dr_read(dr, val);
+diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+index 9a515c460a00..8c5f9680de83 100644
+--- a/drivers/cpufreq/intel_pstate.c
++++ b/drivers/cpufreq/intel_pstate.c
+@@ -1420,6 +1420,26 @@ static void __init intel_pstate_sysfs_expose_params(void)
  	}
+ }
  
- 	return kvm_skip_emulated_instruction(&svm->vcpu);
-diff --git a/arch/x86/kvm/trace.h b/arch/x86/kvm/trace.h
-index aef960f90f26..b3bf54405862 100644
---- a/arch/x86/kvm/trace.h
-+++ b/arch/x86/kvm/trace.h
-@@ -405,6 +405,33 @@ TRACE_EVENT(kvm_cr,
- #define trace_kvm_cr_read(cr, val)		trace_kvm_cr(0, cr, val)
- #define trace_kvm_cr_write(cr, val)		trace_kvm_cr(1, cr, val)
- 
-+/*
-+ * Tracepoint for guest DR access.
-+ */
-+TRACE_EVENT(kvm_dr,
-+	TP_PROTO(unsigned int rw, unsigned int dr, unsigned long val),
-+	TP_ARGS(rw, dr, val),
++static void __init intel_pstate_sysfs_clean(void)
++{
++	if (!intel_pstate_kobject)
++		return;
 +
-+	TP_STRUCT__entry(
-+		__field(	unsigned int,	rw		)
-+		__field(	unsigned int,	dr		)
-+		__field(	unsigned long,	val		)
-+	),
++	sysfs_remove_group(intel_pstate_kobject, &intel_pstate_attr_group);
 +
-+	TP_fast_assign(
-+		__entry->rw		= rw;
-+		__entry->dr		= dr;
-+		__entry->val		= val;
-+	),
++	if (per_cpu_limits)
++		goto release_kobj;
 +
-+	TP_printk("dr_%s %x = 0x%lx",
-+		  __entry->rw ? "write" : "read",
-+		  __entry->dr, __entry->val)
-+);
++	sysfs_remove_file(intel_pstate_kobject, &max_perf_pct.attr);
++	sysfs_remove_file(intel_pstate_kobject, &min_perf_pct.attr);
 +
-+#define trace_kvm_dr_read(dr, val)		trace_kvm_dr(0, dr, val)
-+#define trace_kvm_dr_write(dr, val)		trace_kvm_dr(1, dr, val)
++	if (x86_match_cpu(intel_pstate_cpu_ee_disable_ids))
++		sysfs_remove_file(intel_pstate_kobject, &energy_efficiency.attr);
 +
- TRACE_EVENT(kvm_pic_set_irq,
- 	    TP_PROTO(__u8 chip, __u8 pin, __u8 elcr, __u8 imr, bool coalesced),
- 	    TP_ARGS(chip, pin, elcr, imr, coalesced),
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 4551a7e80ebc..f78fd297d51e 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -5091,10 +5091,16 @@ static int handle_dr(struct kvm_vcpu *vcpu)
- 
- 		if (kvm_get_dr(vcpu, dr, &val))
- 			return 1;
-+		trace_kvm_dr_read(dr, val);
- 		kvm_register_write(vcpu, reg, val);
--	} else
--		if (kvm_set_dr(vcpu, dr, kvm_register_readl(vcpu, reg)))
-+	} else {
-+		unsigned long val;
++release_kobj:
++	kobject_put(intel_pstate_kobject);
++}
 +
-+		val = kvm_register_readl(vcpu, reg);
-+		trace_kvm_dr_write(dr, val);
-+		if (kvm_set_dr(vcpu, dr, val))
- 			return 1;
+ static void intel_pstate_sysfs_expose_hwp_dynamic_boost(void)
+ {
+ 	int rc;
+@@ -3063,8 +3083,10 @@ static int __init intel_pstate_init(void)
+ 	mutex_lock(&intel_pstate_driver_lock);
+ 	rc = intel_pstate_register_driver(default_driver);
+ 	mutex_unlock(&intel_pstate_driver_lock);
+-	if (rc)
++	if (rc) {
++		intel_pstate_sysfs_clean();
+ 		return rc;
 +	}
  
- 	return kvm_skip_emulated_instruction(vcpu);
- }
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index c4015a43cc8a..68cb7b331324 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -11153,6 +11153,7 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_inj_virq);
- EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_page_fault);
- EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_msr);
- EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_cr);
-+EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_dr);
- EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_nested_vmrun);
- EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_nested_vmexit);
- EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_nested_vmexit_inject);
+ 	if (hwp_active) {
+ 		const struct x86_cpu_id *id;
 -- 
-2.18.4
+2.17.1
 
