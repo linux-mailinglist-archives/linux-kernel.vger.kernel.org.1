@@ -2,122 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21B572899C6
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 22:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DA872899C9
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 22:32:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388195AbgJIUad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 16:30:33 -0400
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:57835 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732521AbgJIUac (ORCPT
+        id S2388835AbgJIUcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 16:32:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733207AbgJIUcX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 16:30:32 -0400
-X-Originating-IP: 67.5.25.97
-Received: from localhost (unknown [67.5.25.97])
-        (Authenticated sender: josh@joshtriplett.org)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id A49D0E0002;
-        Fri,  9 Oct 2020 20:30:25 +0000 (UTC)
-Date:   Fri, 9 Oct 2020 13:30:22 -0700
-From:   Josh Triplett <josh@joshtriplett.org>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ext4@vger.kernel.org
-Subject: Re: ext4 regression in v5.9-rc2 from e7bfb5c9bb3d on ro fs with
- overlapped bitmaps
-Message-ID: <20201009203022.GD4649@localhost>
-References: <20201006025110.GJ49559@magnolia>
- <20201006031834.GA5797@mit.edu>
- <20201006050306.GA8098@localhost>
- <20201006133533.GC5797@mit.edu>
- <20201007080304.GB1112@localhost>
- <20201007143211.GA235506@mit.edu>
- <20201007201424.GB15049@localhost>
- <20201008021017.GD235506@mit.edu>
- <20201008222259.GA45658@localhost>
- <20201009143732.GJ235506@mit.edu>
+        Fri, 9 Oct 2020 16:32:23 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68B02C0613D5
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 13:32:23 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id g10so7812657pfc.8
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 13:32:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Q+2n+NyZ2VneHzUu3O2ZFqbFaH2GXP/g85/cyhLlDKI=;
+        b=A8XYNUW8Xe/wp8Aw5xuggIjNpSnLeh7BCaGlsN1cdwkCDjJ+bm3AodNUNMj4u7j+qC
+         Fw80OE29KjLbplTmCSepVJeFZrlKkr5wnjlULWeLMim0M4QlOaJ1Lv+qnsNa8Rw0ZGyo
+         v4AORhGBFeS2Bhvi5tEi9mS8B0/n6+tb1m5jI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Q+2n+NyZ2VneHzUu3O2ZFqbFaH2GXP/g85/cyhLlDKI=;
+        b=hQTlWNTqTxkzFLUwKAaf4hwDyPO73vdZfG/aOrbOzr42MH/8T+drHU9rt3ubgHiZTH
+         sgFLXE2/koDYl7PK1Qw7ZAzo2c5ksAm4MTebgbL6yeHwa3Dw5/39Og4RN1V3AdfQvqnK
+         yKxkNff10dG5AjaLxuMIsh3Ie/zT6yhv6TPnauINyzQK9xlYMeA9HHVpu1Zw8V37xQvA
+         A8cQGIVQmIgb/ScyIpvPAHg4oeBeNX0gh5iCXrXjxAn3x+uW+F+hXbO7hPzEBidjUzU/
+         HDe2Qx0ud1WozTK/HuKSnagGOj4Ne72TBnWrbt+Gn+utPYiuaR8j0QFf2jeetmlFVDlM
+         L2/A==
+X-Gm-Message-State: AOAM531yRMKAW98GZqrSdjxoN+GD5pqh4jFtIIfzED7g5HZMBJTR45w7
+        mqkl6jqn1XAdCGBbEMu72+i1Sg==
+X-Google-Smtp-Source: ABdhPJw6NQLrfDn2TZOVRhHaE/4OISnGsGiedt9Nbd2aFZ9b1GT5NT1UMOuE55luWmrtXwFD8Y2D8Q==
+X-Received: by 2002:a62:2546:0:b029:153:753e:68e3 with SMTP id l67-20020a6225460000b0290153753e68e3mr13234994pfl.61.1602275542760;
+        Fri, 09 Oct 2020 13:32:22 -0700 (PDT)
+Received: from apsdesk.mtv.corp.google.com ([2620:15c:202:1:7220:84ff:fe09:2b94])
+        by smtp.gmail.com with ESMTPSA id m22sm10952251pfk.214.2020.10.09.13.32.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Oct 2020 13:32:22 -0700 (PDT)
+From:   Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+To:     marcel@holtmann.org
+Cc:     chromeos-bluetooth-upstreaming@chromium.org, drinkcat@chromium.org,
+        linux-bluetooth@vger.kernel.org,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] Bluetooth: hci_h5: Add driver capabilities for RTL8822CS
+Date:   Fri,  9 Oct 2020 13:32:09 -0700
+Message-Id: <20201009133147.1.Ie792480ac24829a48669e83c0045157eb3d46775@changeid>
+X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201009143732.GJ235506@mit.edu>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 10:37:32AM -0400, Theodore Y. Ts'o wrote:
-> That being said, on the ext4 weekly video chat, we did discuss other
-> uses of an incompat feature flag that would allow the allocation
-> bitmap blocks and inode table block fields in the superblock to be
-> zero, which would mean that they are unallocated.
+Certain controller capabilities must be exposed by the driver because it
+can't be queried from HCI (wideband speech support, for example). Update
+the match data structure to set the supported capabilities and set the
+proper quirks on hdev after registering the device.
 
-What do you mean by "allocation bitmap blocks and inode table block
-fields in the superblock"? Those are in the group descriptor, not the
-superblock. Or am I missing something there?
+Also update the 8822CS capabilities to show it supports wideband speech
+and has valid le states (allows central peripheral role).
 
-> This would allow us
-> to dynamically grow the inode table by adding an extra block group
-> descriptor.  In fact, I'd probably use this as an opportunity to make
-> some other changes, such using inodes to store locations of the block
-> group descriptors, inode tables, and allocation bitmaps at the same
-> time.  Those details can be discussed later, but the point is that
-> this is why it's good to discuss format changes from a requirements
-> perspective, so that if we do need to make an incompat change, we can
-> kill multiple birds with a single stone.
+Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+---
 
-I would be quite interested in that.
+ drivers/bluetooth/hci_h5.c | 53 +++++++++++++++++++++++++++++++-------
+ 1 file changed, 44 insertions(+), 9 deletions(-)
 
-> On Thu, Oct 08, 2020 at 03:22:59PM -0700, Josh Triplett wrote:
-> > It's an arbitrary filesystem hierarchy, including directories, files of
-> > various sizes (hence using inline_data), and permissions. The problem
-> > isn't to get data from point A to point B; the problem is (in part) to
-> > turn a representation of a filesystem into an actual mounted filesystem
-> > as efficiently as possible, live-serving individual blocks on demand
-> > rather than generating the whole image in advance.
-> 
-> Ah, so you want to be able to let the other side "look at" the file
-> system in parallel with it being generated on demand?  The cache
-> coherency problems would seem to be... huge.  For example, how can you
-> add a file to directory after the reader has looked at the directory
-> inode and directory blocks?
+diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
+index a10d710fc3f13e..3833a2d276665f 100644
+--- a/drivers/bluetooth/hci_h5.c
++++ b/drivers/bluetooth/hci_h5.c
+@@ -97,6 +97,11 @@ struct h5 {
+ 	struct gpio_desc *device_wake_gpio;
+ };
+ 
++enum h5_capabilities {
++	H5_CAP_WIDEBAND_SPEECH = BIT(0),
++	H5_CAP_VALID_LE_STATES = BIT(1),
++};
++
+ struct h5_vnd {
+ 	int (*setup)(struct h5 *h5);
+ 	void (*open)(struct h5 *h5);
+@@ -106,6 +111,11 @@ struct h5_vnd {
+ 	const struct acpi_gpio_mapping *acpi_gpio_map;
+ };
+ 
++struct h5_device_data {
++	uint32_t capabilities;
++	struct h5_vnd *vnd;
++};
++
+ static void h5_reset_rx(struct h5 *h5);
+ 
+ static void h5_link_control(struct hci_uart *hu, const void *data, size_t len)
+@@ -791,7 +801,10 @@ static const struct hci_uart_proto h5p = {
+ static int h5_serdev_probe(struct serdev_device *serdev)
+ {
+ 	struct device *dev = &serdev->dev;
++	struct hci_dev *hdev;
+ 	struct h5 *h5;
++	const struct h5_device_data *data;
++	int err;
+ 
+ 	h5 = devm_kzalloc(dev, sizeof(*h5), GFP_KERNEL);
+ 	if (!h5)
+@@ -808,23 +821,21 @@ static int h5_serdev_probe(struct serdev_device *serdev)
+ 		if (!match)
+ 			return -ENODEV;
+ 
+-		h5->vnd = (const struct h5_vnd *)match->driver_data;
++		data = (const struct h5_device_data *)match->driver_data;
++		h5->vnd = data->vnd;
+ 		h5->id  = (char *)match->id;
+ 
+ 		if (h5->vnd->acpi_gpio_map)
+ 			devm_acpi_dev_add_driver_gpios(dev,
+ 						       h5->vnd->acpi_gpio_map);
+ 	} else {
+-		const void *data;
+-
+ 		data = of_device_get_match_data(dev);
+ 		if (!data)
+ 			return -ENODEV;
+ 
+-		h5->vnd = (const struct h5_vnd *)data;
++		h5->vnd = data->vnd;
+ 	}
+ 
+-
+ 	h5->enable_gpio = devm_gpiod_get_optional(dev, "enable", GPIOD_OUT_LOW);
+ 	if (IS_ERR(h5->enable_gpio))
+ 		return PTR_ERR(h5->enable_gpio);
+@@ -834,7 +845,20 @@ static int h5_serdev_probe(struct serdev_device *serdev)
+ 	if (IS_ERR(h5->device_wake_gpio))
+ 		return PTR_ERR(h5->device_wake_gpio);
+ 
+-	return hci_uart_register_device(&h5->serdev_hu, &h5p);
++	err = hci_uart_register_device(&h5->serdev_hu, &h5p);
++	if (err)
++		return err;
++
++	hdev = h5->serdev_hu.hdev;
++
++	/* Set match specific quirks */
++	if (data->capabilities & H5_CAP_WIDEBAND_SPEECH)
++		set_bit(HCI_QUIRK_WIDEBAND_SPEECH_SUPPORTED, &hdev->quirks);
++
++	if (data->capabilities & H5_CAP_VALID_LE_STATES)
++		set_bit(HCI_QUIRK_VALID_LE_STATES, &hdev->quirks);
++
++	return 0;
+ }
+ 
+ static void h5_serdev_remove(struct serdev_device *serdev)
+@@ -1000,12 +1024,21 @@ static struct h5_vnd rtl_vnd = {
+ 	.resume		= h5_btrtl_resume,
+ 	.acpi_gpio_map	= acpi_btrtl_gpios,
+ };
++
++static const struct h5_device_data h5_data_rtl8822cs = {
++	.capabilities = H5_CAP_WIDEBAND_SPEECH | H5_CAP_VALID_LE_STATES,
++	.vnd = &rtl_vnd,
++};
++
++static const struct h5_device_data h5_data_rtl8723bs = {
++	.vnd = &rtl_vnd,
++};
+ #endif
+ 
+ #ifdef CONFIG_ACPI
+ static const struct acpi_device_id h5_acpi_match[] = {
+ #ifdef CONFIG_BT_HCIUART_RTL
+-	{ "OBDA8723", (kernel_ulong_t)&rtl_vnd },
++	{ "OBDA8723", (kernel_ulong_t)&h5_data_rtl8723bs},
+ #endif
+ 	{ },
+ };
+@@ -1019,9 +1052,11 @@ static const struct dev_pm_ops h5_serdev_pm_ops = {
+ static const struct of_device_id rtl_bluetooth_of_match[] = {
+ #ifdef CONFIG_BT_HCIUART_RTL
+ 	{ .compatible = "realtek,rtl8822cs-bt",
+-	  .data = (const void *)&rtl_vnd },
++	  .data = &h5_data_rtl8822cs,
++	},
+ 	{ .compatible = "realtek,rtl8723bs-bt",
+-	  .data = (const void *)&rtl_vnd },
++	  .data = &h5_data_rtl8723bs,
++	},
+ #endif
+ 	{ },
+ };
+-- 
+2.28.0.1011.ga647a8990f-goog
 
-I don't. While the data is computed on demand for performance reasons,
-the nature and size of all the data is fully known in advance. I never
-add data to a filesystem, only create new filesystem images. The kernel
-*is* looking at the filesystem in parallel with it being generated,
-insofar as blocks aren't constructed until the kernel asks for them
-(which is a massive performance win, especially since the kernel may
-only want a small subset of the filesystem). But the block contents are
-fixed in advance, even if they haven't been generated yet. So the kernel
-can read ahead and cache any blocks it wants to, and they'll be valid.
-(Excessive readahead might be a performance problem, but not a
-correctness one.)
-
-I briefly considered ideas around adding new data after the filesystem
-was mounted, and dismissed those ideas just as quickly, for exactly
-these reasons (disk caching, filesystem caching, readahead). That would
-require a filesystem with at least some subset of cluster features. I
-don't plan to go there if I don't have to.
-
-If I do end up needing that, I'd consider proposing an ext4 change along
-the lines of making the root directory into a "super-root" directory
-under which multiple filesystem roots could live, and supporting a way
-to re-read that root to discover new filesystem roots and new block
-groups; then, it'd be possible to add a new root whose contents are
-*mostly* references to existing inodes (that the kernel would already
-have cached), and any modified directories or new/modified files would
-have new inodes added. That would isolate the "don't read ahead and
-cache" problem to the new inodes, which could potentially be isolated to
-new block groups for simplicity, and the "discover new roots" mechanism
-could also discover the newly added block groups and inode tables.
-
-But again, I'm not curently looking to do that, and *if* I were, I'd
-bring it up for architectural discussion and design on linux-ext4 first.
-There's also a balance there between a simple version that'd work for an
-append-only read-only filesystem, and a complex version that'd work for
-a writable filesystem, and I'd hope more for the former than the latter,
-but that'd be a topic for discussion.
-
-- Josh Triplett
