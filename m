@@ -2,106 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 055A9288867
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 14:15:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2785B288869
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 14:15:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388448AbgJIMPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 08:15:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388439AbgJIMPP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 08:15:15 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26987C0613D2;
-        Fri,  9 Oct 2020 05:15:15 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id l24so9107890edj.8;
-        Fri, 09 Oct 2020 05:15:15 -0700 (PDT)
+        id S2388457AbgJIMP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 08:15:28 -0400
+Received: from mail-bn8nam11on2082.outbound.protection.outlook.com ([40.107.236.82]:18337
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1732958AbgJIMP1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 08:15:27 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Yh2fI35e3f5w9txpBZWQkOQTICG/lZFBQ8whthE+vjOU2vs8LHsszXBwq9sMFgz85pM8FQFD8WEOaSxXXdw/UYId/hlduSlGiddwHGz0rNIsN2pmFBLYEIqZTGeQuCfLU12E+90WkahsI2xa8tJrgO73u5AK2aKMkqAnGB9qMWxtekfvHffoLGnfwGaGh0fNx1yrDOPQmJJB6zhHk6joOUA1EKmt3gK+8CCYOy1vYQMeCvjFtJWm+uec6sJPEJF6Bs3HOrBxM7w4s+FB0BaEW9OVS1cVChKXARuguOMVuSSsNJUZC35aYxbItgOup47v7rzX7ypfmXCsX6ymYfKWiw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=v+qVcC/axReaN9Ip09XBb3yKiJC2FhtpFWzzjw2kts4=;
+ b=EVAIFdkljH9EadJUzT+S+5B8ldnoJuZGBnanIV4bi/Y/0JqbFyXp8tiWnjP2Tjg9FSmo6Y8HbuTjpMfBNgFXVb/BSff/Q/PgC4v71ThbnXOthDbSjyaJJRX3BoMqEzP3vSty8mTfgYiJMdwvqXAVOhbH6RRtLIeeSgy1hakQ58YIbP+4ti+blp4b4fxjsit+pkwPydPVotPndkkpDrScE3CTq9bsu8NtfN8+1lk9g70nIGjmjYXOFvOlkZAv5/Z3midD/jD0Njaotdv9cdnpBrGDhlDi7sw+vt+fsEzmsua5CNdL1eqK96wvsPxRGvcvK9REH8zePwAavYH/0nxeRQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ATUnAdVI+/TfaTi/4Z/fh/a3Euzf/j0YG28GOxqTAhY=;
-        b=nnOt3zE6lcM6BESY8hPBGDdlfifdhY5gS/Hx61UlNYctRBuqOFMnf2rivnFB9aTIdw
-         bvUY2hhcheD0oUpXQ9LtA611gske/LLrWuk3Rs7K0SufEBLex36r3346qxWySwHQ5sUt
-         TxuFIM+zplVApmXG+n5J6yBr++xY9n+FZK6ZN9+Eb+ILs3eJizFP39A3QStaKbEDgRMp
-         4hZE4Xf4yg41Wt9r2DZ/r8ZJ9zvdfdMWpIxypa19pnEablqzePvx1zONh7MP3aKkfq67
-         3AA14awgszdnObEhuoxORISqVZH90mjM4KY71mTFxaXpvK0+wnDxSAU/LrVfOhRh8XU2
-         5nUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ATUnAdVI+/TfaTi/4Z/fh/a3Euzf/j0YG28GOxqTAhY=;
-        b=rMedSM1S686gXM7hBy82HSTCjoWhAG6GypilMLoXRT3GeDGlTkZg4vzGaEOQSNG3sV
-         6Jz39cvbfAcVK47vF3tNEosAr/hvxdXS5wL9gXre/vj2e12De694ZR2zqk5CSog1/FUp
-         Z4B7vcbjY9zm5Ake02u3i9QDL5wQ28GiQ5I42qaAd2FCEAuQJABZ7twZDOv0PvXf8P0I
-         B/FjhW5D+y+9rVk8uznQ+dgJTETwAC6MTy2wXTm+dDUIjS0S1kbzCbl+9lQcriwfC6EO
-         DguVHuzoI9si1gvOG7SB5+haNBQq/HrqXAtxTP61ICUg7DNX72m9CJ0WJE98lNAqHasc
-         /xSg==
-X-Gm-Message-State: AOAM530yy2fqlWqzB/9Iv85vK2bDKZ3rM1CRLnwBmS3sFRP4AY1ITjVX
-        lTVKA0UNkz7lOmtPzO+prDs=
-X-Google-Smtp-Source: ABdhPJxsVPvhAXWmbyjDkJU+Nka8Ve5QOVdux5ORAMBM3iiYpRMhg3Z2bejR3uN4ClqgD//hfmBpiQ==
-X-Received: by 2002:a05:6402:6d0:: with SMTP id n16mr14320527edy.133.1602245713879;
-        Fri, 09 Oct 2020 05:15:13 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id bv8sm6264812ejb.3.2020.10.09.05.15.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 05:15:12 -0700 (PDT)
-Date:   Fri, 9 Oct 2020 14:15:10 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     krzk@kernel.org, robh+dt@kernel.org, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/5] memory: tegra: Sort tegra210_swgroups by reg address
-Message-ID: <20201009121510.GC458338@ulmo>
-References: <20201008003746.25659-1-nicoleotsuka@gmail.com>
- <20201008003746.25659-4-nicoleotsuka@gmail.com>
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=v+qVcC/axReaN9Ip09XBb3yKiJC2FhtpFWzzjw2kts4=;
+ b=pvsnu2mZynGOVM5r4nb02cDv4uE43/V22pMXeZPQCCJv/XP+zalIZbwH0H+yAS4cpmWsNn8cKWo41J5a1FeSJ2Hlh+Pt8OSyU2FHZwchROr50jha5GaCAwGQqG1hYOPcEn2f4cXZbt/YL3hli7UVefyXKgyuRvZmDz3R+bQ8+o8=
+Authentication-Results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by BL0PR12MB2545.namprd12.prod.outlook.com (2603:10b6:207:4e::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.26; Fri, 9 Oct
+ 2020 12:15:22 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::f8f7:7403:1c92:3a60]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::f8f7:7403:1c92:3a60%6]) with mapi id 15.20.3455.027; Fri, 9 Oct 2020
+ 12:15:22 +0000
+Subject: Re: [PATCH 1/4] mm: introduce vma_set_file function v2
+To:     Jason Gunthorpe <jgg@ziepe.ca>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
+        chris@chris-wilson.co.uk, airlied@redhat.com,
+        akpm@linux-foundation.org, sumit.semwal@linaro.org
+References: <20201008112342.9394-1-christian.koenig@amd.com>
+ <20201008141211.GG438822@phenom.ffwll.local>
+ <8fc28dfa-4bae-bee1-5aca-4e3c6e88b994@gmail.com>
+ <20201009073900.GL438822@phenom.ffwll.local> <20201009121220.GM5177@ziepe.ca>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <db073cdb-db29-0a3c-4295-4205c6ddfadc@amd.com>
+Date:   Fri, 9 Oct 2020 14:15:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20201009121220.GM5177@ziepe.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+X-ClientProxiedBy: AM0PR08CA0024.eurprd08.prod.outlook.com
+ (2603:10a6:208:d2::37) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="E13BgyNx05feLLmH"
-Content-Disposition: inline
-In-Reply-To: <20201008003746.25659-4-nicoleotsuka@gmail.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM0PR08CA0024.eurprd08.prod.outlook.com (2603:10a6:208:d2::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.21 via Frontend Transport; Fri, 9 Oct 2020 12:15:20 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 1dfe88c0-0b3a-4929-cfcc-08d86c4cfec2
+X-MS-TrafficTypeDiagnostic: BL0PR12MB2545:
+X-Microsoft-Antispam-PRVS: <BL0PR12MB2545A76ECD1CEA577837042683080@BL0PR12MB2545.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yDgKiMauZeDugPyLrs7NmsISFm0BZnJ8jq7N2GjOheVv3sQrmMN765vlzN6JjzJY0tm8m/R5brmzQsXD7/jFZMS/2AqqRj81lYTD6SaOncrqaRjWDn7HuddiUqGFrJ3yEd6jG+ruzi6ityaiic5x8hcXvL2ZaIGIrDU8DGAlIxEHe4BJ1eWJ9dNFml9ArJSKTaX6dsnP1iD7DNL4ikZ265V9vYq5odarWT6ge7t7cP41g1En24w8eb+8ger5Tp2bAHni7lTQaQ9T71m7fmPoIGz+B7f4roVpahKARFYKSvBNglicR53/kuI0bLlnMMiggVD6LmZL+yDKKv7esJALAKO2lia+aEiAwpVLg2pSr+ttgPWYB7/kB+SQCoioQi+vYi/owrQsqWwuvvRx557wRg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(376002)(366004)(346002)(396003)(66476007)(66556008)(6666004)(66946007)(2906002)(5660300002)(52116002)(316002)(478600001)(7416002)(16526019)(6486002)(31696002)(186003)(86362001)(36756003)(8676002)(31686004)(8936002)(2616005)(83380400001)(921003)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: Y6J49I1B1KLPXdyQEkgAghCRDAfhrP2tR//JqPF2e11iiaYJvrvp4NCArB6myWnkNdxL/Bzc1AIGMp/ch5fnGwKE+VgDyG07ZChH1alKnU4vU2J4hhSEFZ5NUwOmO/HjENwVHdQTVeATBa4qD3pukCNU4272T3LECgJkXuL/cGf/TaS9wonk4tjGbrf47zQ0fHuof+doZcBZSjIMwjd23G8fRzk3UD75eDhkUjLFel8gpHOQTRHEa5+vCecF+FxLWBsoWgfqQ4L79QUbl2i8Ax2Iv2RxdfaaAGgUk1c96YE7dd0h4SkvNQWLfg/5dUFUfwN6d1hben/ZC5L8N7x70VDe0jTAquTURy9ca8NljLHC8pKXzCzGiTyvhvdD26Ssc7CGgYkzJUj7+wvjbZODYVRDViRMF7GP9Hyt6XE71pas87SNZq5cpbNGkPyAV4IqSZHFcALs5SpY+Iaro+UAUkJEks6ksMyuerZG9DCfvtVGUcS88dqosP8Nlo0+Xeel3h2gUMA+1LR1QZoTNTWaM3ygqUjYqymDnbDDWz9yniFBhrhnA/VNPLiT9NuRSQPHuiM8XtxzoYrCAgb5IGwq70P4qj31MuwiHq6N/kz5uc0Uh59ufchunfIkqEFVopryd5GqZwEGWNitXtso29+NxacY681VqdMlqDbdOKlHUjHBCtZRvLFnJQey8onyxPssOAOUIZY43oe6pYGX8Jj+iw==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1dfe88c0-0b3a-4929-cfcc-08d86c4cfec2
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2020 12:15:22.3807
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0c3VChSHEZGkcxa28wQgdcF2P0EDXEwRHqhhfcU/yb6CSBZDCsIsYtNAmdbw6TiA
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2545
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am 09.10.20 um 14:12 schrieb Jason Gunthorpe:
+> On Fri, Oct 09, 2020 at 09:39:00AM +0200, Daniel Vetter wrote:
+>> I just noticed this here in the patch because everyone else does not do
+>> this. But looking at the mmap_region() code in mmap.c we seem to indeed
+>> have this problem for the error path:
+>>
+>> unmap_and_free_vma:
+>> 	vma->vm_file = NULL;
+>> 	fput(file);
+>>
+>> Note that the success path does things correctly (a bit above):
+>>
+>> 	file = vma->vm_file;
+>> out:
+>>
+>> So it indeed looks like dma-buf is the only one that does this fully
+>> correctly. So maybe we should do a follow-up patch to change the
+>> mmap_region exit code to pick up whatever vma->vm_file was set instead,
+>> and fput that?
+> Given that this new vma_set_file() should be the only way to
+> manipulate vm_file from the mmap op, I think this reflects a bug in
+> mm/mmap.c.. Should be:
+>
+> unmap_and_free_vma:
+>          fput(vma->vm_file);
+>          vma->vm_file = NULL;
+>
+> Then everything works the way you'd expect without tricky error
+> handling
 
---E13BgyNx05feLLmH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+That's what Daniel suggested as well, yes.
 
-On Wed, Oct 07, 2020 at 05:37:44PM -0700, Nicolin Chen wrote:
-> This is a cleanup change to prepare for new swgroups.
->=20
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> ---
->  drivers/memory/tegra/tegra210.c | 20 ++++++++++----------
->  1 file changed, 10 insertions(+), 10 deletions(-)
+Going to craft a separate patch for this.
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+Thanks,
+Christian.
 
---E13BgyNx05feLLmH
-Content-Type: application/pgp-signature; name="signature.asc"
+>
+> Jason
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+AVE4ACgkQ3SOs138+
-s6EYLhAAgrKUs8Wi2zOoyT/bZ5dTJaKU/pJDV/OQo+eFduvJtx+G5+3GWIq5cIph
-lctgWIEw2Nb6p705bM/DJoR2WGyTQ/fec2N0RETk4Xac6mjzpS6fl2AfvtnFlcXN
-m+/rc4AzkRA9xIIXGVlb+zdb375iYsUyLh+W9hOliO3nlBXlZtRwTt7rE6o0vuX1
-CidKBw+f0k9eYPgGoPq0JLhhWvT8aKwupnytsACw197Vsq/Of4OryZwqcnTBJJRH
-sex6ebkNImBep6vgXM95tAYLOdXDMQ//d/eQbBuOpXgqAeKuRqBs6oA40g/A3+LC
-opP2uBV1kjIHXu3zfHI0sWGgG+NJUIUjLQRgvzTdwNhLD9tNOxnoZZQOi0ImmcK5
-rRfvqt+PgUe1NmKC4ebXlTcSYCET9/7pD76gMQcLut8QghTooDF+uxWmcfcf3uBz
-NqzSawjoHk1JQkCAWhaMbHPyrB09t7lFNeIWrB8Ury6y63gl0J8Jp9Z1dwS/NZLU
-FcW4COvhxz9m5US7Ur3+VZjhrdiQ2PkKuU7h8pJPMSO7b4nQstYvhksP1psRgiUa
-PjvKPhDeaoduraU31cBK9klitx0NxZ032KuJjJ+csv9YrQE8JnG/VMu2/ZVkb/GY
-ZDyl8skYGRTO/NXBGPe1xvIv4Rg+a0p4MZIICI7QE/W0Q12XcFQ=
-=k16H
------END PGP SIGNATURE-----
-
---E13BgyNx05feLLmH--
