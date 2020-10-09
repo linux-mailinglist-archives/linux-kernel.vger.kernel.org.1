@@ -2,65 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 344B4287FA8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 02:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF629287FAC
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 02:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730307AbgJIA40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 20:56:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40646 "EHLO mail.kernel.org"
+        id S1730451AbgJIA60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 20:58:26 -0400
+Received: from mga04.intel.com ([192.55.52.120]:23450 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725979AbgJIA4X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 20:56:23 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5D2B122254;
-        Fri,  9 Oct 2020 00:56:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602204982;
-        bh=3Geiek3bGZyHs7vQ54vLrLu+FKf5iDVmdbVNxhGi6IQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=m+Yav6H5w2KdvjsYIc8XPYHNZWsPRQmDyN1CjCWxj8UMDtHrWOEphomtdi0RmIqlh
-         x74piA6S0cY2w4BfFLAc9ttrf4C1+tMbEPP17JpzAcEyjmNDqDnaYY8sJptCygU4oD
-         55xzLEGUBoeQoTQ6w6Hp2xnh/mLAdVcrJ0CGF1Gg=
-Date:   Thu, 8 Oct 2020 17:56:21 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Paolo Abeni <pabeni@redhat.com>
-Cc:     Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
-        mptcp@lists.01.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] selftests: mptcp: interpret \n as a new line
-Message-ID: <20201008175621.6d2f2ddd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <c750c3256bec4ceab91a95f2725e4bc026f4b5dc.camel@redhat.com>
-References: <20201006160631.3987766-1-matthieu.baerts@tessares.net>
-        <c750c3256bec4ceab91a95f2725e4bc026f4b5dc.camel@redhat.com>
+        id S1725979AbgJIA6Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 20:58:25 -0400
+IronPort-SDR: mNat5ftlMF+/aWBh96+2/dYhPUUD6sngEFY7KAD/UadEp78eRPxpHSN4M8HwjPhjBUGjHDTAkF
+ MIKXSBnc74wQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="162789248"
+X-IronPort-AV: E=Sophos;i="5.77,353,1596524400"; 
+   d="scan'208";a="162789248"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 17:58:24 -0700
+IronPort-SDR: GltQmS+4InnTbci6lMsS7uuuC/Au3gBVh1CnYduQ9e/hpEY/YA5KVKJ92y8dtUlTQcMasbgIaH
+ +DhCc/+CdoIA==
+X-IronPort-AV: E=Sophos;i="5.77,353,1596524400"; 
+   d="scan'208";a="328742638"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 17:58:24 -0700
+Date:   Thu, 8 Oct 2020 17:58:23 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     yulei.kernel@gmail.com
+Cc:     akpm@linux-foundation.org, naoya.horiguchi@nec.com,
+        viro@zeniv.linux.org.uk, pbonzini@redhat.com,
+        linux-fsdevel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xiaoguangrong.eric@gmail.com,
+        kernellwp@gmail.com, lihaiwei.kernel@gmail.com,
+        Yulei Zhang <yuleixzhang@tencent.com>,
+        Chen Zhuo <sagazchen@tencent.com>
+Subject: Re: [PATCH 22/35] kvm, x86: Distinguish dmemfs page from mmio page
+Message-ID: <20201009005823.GA11151@linux.intel.com>
+References: <cover.1602093760.git.yuleixzhang@tencent.com>
+ <b2b6837785f6786575823c919788464373d3ee05.1602093760.git.yuleixzhang@tencent.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b2b6837785f6786575823c919788464373d3ee05.1602093760.git.yuleixzhang@tencent.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 06 Oct 2020 18:12:45 +0200 Paolo Abeni wrote:
-> On Tue, 2020-10-06 at 18:06 +0200, Matthieu Baerts wrote:
-> > In case of errors, this message was printed:
-> > 
-> >   (...)
-> >   balanced bwidth with unbalanced delay       5233 max 5005  [ fail ]
-> >   client exit code 0, server 0
-> >   \nnetns ns3-0-EwnkPH socket stat for 10003:
-> >   (...)
-> > 
-> > Obviously, the idea was to add a new line before the socket stat and not
-> > print "\nnetns".
-> > 
-> > The commit 8b974778f998 ("selftests: mptcp: interpret \n as a new line")
-> > is very similar to this one. But the modification in simult_flows.sh was
-> > missed because this commit above was done in parallel to one here below.
+On Thu, Oct 08, 2020 at 03:54:12PM +0800, yulei.kernel@gmail.com wrote:
+> From: Yulei Zhang <yuleixzhang@tencent.com>
 > 
-> Acked-by: Paolo Abeni <pabeni@redhat.com>
+> Dmem page is pfn invalid but not mmio. Support cacheable
+> dmem page for kvm.
+> 
+> Signed-off-by: Chen Zhuo <sagazchen@tencent.com>
+> Signed-off-by: Yulei Zhang <yuleixzhang@tencent.com>
+> ---
+>  arch/x86/kvm/mmu/mmu.c | 5 +++--
+>  include/linux/dmem.h   | 7 +++++++
+>  mm/dmem.c              | 7 +++++++
+>  3 files changed, 17 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 71aa3da2a0b7..0115c1767063 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -41,6 +41,7 @@
+>  #include <linux/hash.h>
+>  #include <linux/kern_levels.h>
+>  #include <linux/kthread.h>
+> +#include <linux/dmem.h>
+>  
+>  #include <asm/page.h>
+>  #include <asm/memtype.h>
+> @@ -2962,9 +2963,9 @@ static bool kvm_is_mmio_pfn(kvm_pfn_t pfn)
+>  			 */
+>  			(!pat_enabled() || pat_pfn_immune_to_uc_mtrr(pfn));
+>  
+> -	return !e820__mapped_raw_any(pfn_to_hpa(pfn),
+> +	return (!e820__mapped_raw_any(pfn_to_hpa(pfn),
+>  				     pfn_to_hpa(pfn + 1) - 1,
+> -				     E820_TYPE_RAM);
+> +				     E820_TYPE_RAM)) || (!is_dmem_pfn(pfn));
 
-Applied, thanks!
+This is wrong.  As is, the logic reads "A PFN is MMIO if it is INVALID &&
+(!RAM || !DMEM)".  The obvious fix would be to change it to "INVALID &&
+!RAM && !DMEM", but that begs the question of whether or DMEM is reported
+as RAM.  I don't see any e820 related changes in the series, i.e. no evidence
+that dmem yanks its memory out of the e820 tables, which makes me think this
+change is unnecessary.
+
+>  }
+>  
+>  /* Bits which may be returned by set_spte() */
