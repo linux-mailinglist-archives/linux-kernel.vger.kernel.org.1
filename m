@@ -2,83 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50EAA2882D5
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 08:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48D102882E5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 08:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730733AbgJIGma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 02:42:30 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:10173 "EHLO z5.mailgun.us"
+        id S1731388AbgJIGoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 02:44:34 -0400
+Received: from mga11.intel.com ([192.55.52.93]:42448 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729333AbgJIGm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 02:42:29 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602225749; h=Message-ID: Subject: To: From: Date:
- Content-Transfer-Encoding: Content-Type: MIME-Version: Sender;
- bh=eER3nzhN0ecfxmrTvJRASoFkdXeq9f/HfxlK3q45SPI=; b=shRA3wrJ7OELYPbrKU15kSxLAlxg///SayzXRYgvaF+q6vuqsIditSe7sWVR7r24HstHTEf6
- CqEPoIKSCAZAfOYC9BvOZG9ESVJ+eQOO+vZ0Why9sHyfqzIOcGiGB2SsfP0IHjbCAxLsvORO
- BLA/NwFMDKsaobknsnJJZfGWabE=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 5f80064952f4fccef02758d6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 09 Oct 2020 06:42:17
- GMT
-Sender: cgoldswo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 30571C433CB; Fri,  9 Oct 2020 06:42:17 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cgoldswo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 519ADC433FE;
-        Fri,  9 Oct 2020 06:42:16 +0000 (UTC)
+        id S1725908AbgJIGoe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 02:44:34 -0400
+IronPort-SDR: LE39SZeEM9U2OF07+jBN2Wq50RkfaouRxNbVBjBHxR511NrWaI3H2dRmojc9BB3ZmJIkuiAYMM
+ NZgDc9+OMkbw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="161987900"
+X-IronPort-AV: E=Sophos;i="5.77,354,1596524400"; 
+   d="scan'208";a="161987900"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 23:44:33 -0700
+IronPort-SDR: nWBjKdL7QJVZTuBJO2CmcW40pcRcMkvlGVs5Nlm1P5gbFESmwMNOsL4oeVSGlwMwz5dwRHeEns
+ ARpK4H9O1A7A==
+X-IronPort-AV: E=Sophos;i="5.77,354,1596524400"; 
+   d="scan'208";a="298346639"
+Received: from rgordani-mobl.ger.corp.intel.com (HELO localhost) ([10.249.34.105])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 23:44:17 -0700
+Date:   Fri, 9 Oct 2020 09:44:14 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Haitao Huang <haitao.huang@linux.intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
+        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
+        luto@kernel.org, nhorman@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
+        mikko.ylinen@intel.com
+Subject: Re: [PATCH v39 11/24] x86/sgx: Add SGX enclave driver
+Message-ID: <20201009064414.GA2744@linux.intel.com>
+References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
+ <20201003045059.665934-12-jarkko.sakkinen@linux.intel.com>
+ <20201003143925.GB800720@kroah.com>
+ <20201004143246.GA3561@linux.intel.com>
+ <20201005094246.GB151835@kroah.com>
+ <20201005124221.GA191854@linux.intel.com>
+ <op.0r4p1bn7wjvjmi@mqcpg7oapc828.gar.corp.intel.com>
+ <20201007192655.GA104072@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Thu, 08 Oct 2020 23:42:16 -0700
-From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Question regarding ext4_journalled_aops: lack of migrate_page
-Message-ID: <4296a311893a9173e6ba8b84a8ae16f4@codeaurora.org>
-X-Sender: cgoldswo@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201007192655.GA104072@kroah.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi there,
+On Wed, Oct 07, 2020 at 09:26:55PM +0200, Greg KH wrote:
+> On Wed, Oct 07, 2020 at 01:09:01PM -0500, Haitao Huang wrote:
+> > > > > There is a patch that adds "sgx/provision".
+> > > > 
+> > > > What number in this series?
+> > > 
+> > > It's 15/24.
+> > > 
+> > 
+> > Don't know if this is critical. I'd prefer to keep them as is. Directory
+> > seems natural to me and makes sense to add more under the same dir in case
+> > there are more to come.
+> 
+> Why is this so special that you need a subdirectory for a single driver
+> with a mere 2 device nodes?  Do any other misc drivers have a new
+> subdirectory in /dev/ for them?
 
-ext4_aops and ext4_da_aops both have a migratepage callback, whereas 
-ext4_journalled_aops lacks such a callback.  Why is this so?  I’m asking 
-this due to the following: when a page containing EXT4 journal buffer 
-heads ends up being migrated, fallback_migrate_page() is used, which 
-eventually calls try_to_free_buffers(), which will call drop_buffers().  
-Drop buffers() can fail for a page if that page is on the LRU list (see 
-https://elixir.bootlin.com/linux/v5.8.14/source/fs/buffer.c#L3225).   
-Now, if buffer_migrate_page() was supplied as the migratepage callback 
-for the journaled aops, this wouldn’t be problem since we ignore the LRU 
-lists altogether.
+Absolutely nothing as far as I'm concerned. Should have done that
+already at the time when I switched to misc based on your feedback. I
+was acting too reactive I guess. For sure I'll rename.
 
-Resolving this issue will benefit CMA allocations, which might have to 
-migrate movable pages that were allocated from a CMA region (the 
-assumption is that these pages can be migrated once the memory backing 
-these pages is needed).
+I also looked at encl->refcount with time. Instead of just "moving the
+garbage up to the correct waste pit", I'll address that one by
+refactoring it out and making the reclaimer thread to do the reaper's
+job.
 
-Thanks,
+> thanks,
+> 
+> greg k-h
 
-Chris.
-
--- 
-The Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+/Jarkko
