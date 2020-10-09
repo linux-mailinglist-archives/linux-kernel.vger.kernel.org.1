@@ -2,88 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA2CA288588
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03999288592
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:51:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732944AbgJIItM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 04:49:12 -0400
-Received: from foss.arm.com ([217.140.110.172]:45070 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730726AbgJIItM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 04:49:12 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 19159D6E;
-        Fri,  9 Oct 2020 01:49:11 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BBED43F66B;
-        Fri,  9 Oct 2020 01:49:09 -0700 (PDT)
-Date:   Fri, 9 Oct 2020 09:49:05 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        linux-omap@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 0/2] PCI: dwc: fix two MSI issues
-Message-ID: <20201009084904.GA16200@e121166-lin.cambridge.arm.com>
-References: <20201009155311.22d3caa5@xhacker.debian>
+        id S1732918AbgJIIvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 04:51:22 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:56292 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730726AbgJIIvV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 04:51:21 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 6E0C5FED773E5BDD649E;
+        Fri,  9 Oct 2020 16:51:19 +0800 (CST)
+Received: from use12-sp2.huawei.com (10.67.189.174) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 9 Oct 2020 16:51:09 +0800
+From:   Xiaoming Ni <nixiaoming@huawei.com>
+To:     <ardb@kernel.org>, <linux-efi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <nixiaoming@huawei.com>, <wangle6@huawei.com>
+Subject: [PATCH] efi:mokvar-table: fix build error
+Date:   Fri, 9 Oct 2020 16:51:06 +0800
+Message-ID: <20201009085106.125079-1-nixiaoming@huawei.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201009155311.22d3caa5@xhacker.debian>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.189.174]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 03:53:11PM +0800, Jisheng Zhang wrote:
-> Fix two MSI issues. One to skip PCIE_MSI_INTR0* programming if MSI is
-> disabled, another to use an address in the driver data for MSI address,
-> to fix the MSI page leakage during suspend/resume.
-> 
-> Since v6:
->   - Keep the IS_ENABLED(CONFIG_PCI_MSI) check in dw_pcie_msi_init().
-> 
-> Since v5:
->   - rebase on pci/dwc branch
->   - add Acked-by tag
-> 
-> Since v4:
->   - fix pci-dra7xx.c
-> 
-> Since v3:
->   - add Acked-by tag
->   - change patch2 commit msg to make it clear
->   - map the MSI msg with dma_map_single_attrs() for some platforms
->     which either has separate addrs for dma and phy or has mem access
->     limitation for the PCIe.
-> 
-> Since v2:
->   - add Acked-by tag
->   - use an address in the driver data for MSI address. Thank Ard and Rob
->     for pointing out this correct direction.
->   - Since the MSI page has gone, the leak issue doesn't exist anymore,
->     remove unnecessary patches.
->   - Remove dw_pcie_free_msi rename and the last patch. They could be
->     targeted to next. So will send out patches in a separate series.
-> 
-> Since v1:
->   - add proper error handling patches.
->   - solve the msi page leakage by moving dw_pcie_msi_init() from each
->     users to designware host
-> 
-> Jisheng Zhang (2):
->   PCI: dwc: Skip PCIE_MSI_INTR0* programming if MSI is disabled
->   PCI: dwc: Fix MSI page leakage in suspend/resume
-> 
->  drivers/pci/controller/dwc/pci-dra7xx.c       | 18 +++++++++-
->  .../pci/controller/dwc/pcie-designware-host.c | 35 ++++++++++---------
->  drivers/pci/controller/dwc/pcie-designware.h  |  2 +-
->  3 files changed, 37 insertions(+), 18 deletions(-)
+drivers/firmware/efi/mokvar-table.c:139:5: error: implicit declaration of
+ function 'early_memunmap'; did you mean 'devm_memunmap'?
+ [-Werror=implicit-function-declaration]
+drivers/firmware/efi/mokvar-table.c:148:9: error: implicit declaration of
+ function 'early_memremap'; did you mean 'devm_memremap'?
+ [-Werror=implicit-function-declaration]
 
-Applied to pci/dwc, thanks.
+add #include <asm/early_ioremap.h> to fix this build error
 
-Lorenzo
+Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+---
+ drivers/firmware/efi/mokvar-table.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/firmware/efi/mokvar-table.c b/drivers/firmware/efi/mokvar-table.c
+index 72a9e1736fef..c23d3686f1c7 100644
+--- a/drivers/firmware/efi/mokvar-table.c
++++ b/drivers/firmware/efi/mokvar-table.c
+@@ -39,6 +39,7 @@
+ #include <linux/kobject.h>
+ #include <linux/list.h>
+ #include <linux/slab.h>
++#include <asm/early_ioremap.h>
+ 
+ /*
+  * The LINUX_EFI_MOK_VARIABLE_TABLE_GUID config table is a packed
+-- 
+2.27.0
+
