@@ -2,103 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E60D288646
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 11:44:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65E3F28864D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 11:46:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733211AbgJIJou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 05:44:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733208AbgJIJos (ORCPT
+        id S1733225AbgJIJq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 05:46:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45239 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725917AbgJIJq5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 05:44:48 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EB8AC0613D6
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 02:44:47 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id a5so8953716ljj.11
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 02:44:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/LrU4HDUwe5Ja8OmdzeBEJH8weSMyd+EM1T0OFoAefs=;
-        b=K1ofWV6X5uMHY8OlF9e5/o0nQkR8+DSLkBFjXYTr5dbtbtAL6Pwq/xpz74m1YLvsfq
-         B0uYEQ2BDzzyahvpLbB3TO0QATgKcubo7mG5CNqgQsS5O5ORXzSQR7QKesLjHW4VqUPS
-         ymxtb+7+6vtpjJ+QhvJ+710zUkZUBmNF7yU2J/MgiuAdPORUFQKKN5c3CN6kmnUt/nix
-         dex1au+ZjBtzvLBadu1wSgKPMuwqXzZ/oAwhENu1lOdDsrpPr/1SyexZ8RPBlF+6B7nU
-         ZuZukMJfqcTyN5xbLG0BlPkyFGB7k3R02uQ/25pIxZbfRGBrHE4zgnaVoYfbCnYSdm7p
-         L5OQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/LrU4HDUwe5Ja8OmdzeBEJH8weSMyd+EM1T0OFoAefs=;
-        b=GkopWfdm7PedryxevafUdvAN95ZPcW3dhp2Gb5H2T4ulefLz4aoXJpx5s5T1odSqTm
-         53fVhA6sjdkeKhVztNehALEbXb4ZhAmNGZjJ0/XMpEY3ztoI1amD7DwZ2vYYBAXg8LLE
-         gacXt5Ukv5cRNijBlHXCI5kSoY8Njp2tp1HU4oRCTJhaXqKeBcBmpn3QjmSdjsgjOsgC
-         hoFfIsNHoemE7hr6L/WLPdSc6kBcoFbEtQNDr5VIKnVrSuTFZ6kTQPsrGBh68aq3XVXi
-         WiGitdnqwWWDQGnSNJHQKn1wwlNKMOXaIN/Ob/1pBPVDZLGpDIxb07zNBo2/ptp+fRqx
-         lrrw==
-X-Gm-Message-State: AOAM533BHE6M7t4wUKGsLqmt7rMxT04KrKm0rq0gnbQH3KNh/pIDPJNj
-        5k/t5QD29WkIMYp1w8olp7YvnqdR95jdB1ay3Vdr/A==
-X-Google-Smtp-Source: ABdhPJwtkHFBkATYIWMQv0CcvoFYf5KDv3EuMjA78eZclQ8SGUhRMetPMbZkX8dtJwt5mRbxYVIoAzQz0eSEVJCUgoE=
-X-Received: by 2002:a2e:a549:: with SMTP id e9mr2502953ljn.293.1602236685801;
- Fri, 09 Oct 2020 02:44:45 -0700 (PDT)
+        Fri, 9 Oct 2020 05:46:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602236816;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=a4XUeXXmXlqIj+XqwTZZwDnHthCD+pdCzaZWs+qGYP4=;
+        b=DNbByV2x8FPdM1ORiRHFF3HJ6vhN2WFNWSeAGyf6niy/GnYnpFDz4fLy+tzLaXZcHNncXX
+        7Zu358wBcethdBxuI9GccZbnvYhsAMRuuM9mdDWK7zH815fu4U/eeKDGb1gFsIPOS/8gCz
+        eyxOt/aJpoIKHhHp0S75GcvCMS6U7Bc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-103-S4eEBrtrOdWvJ9wbhG3QQA-1; Fri, 09 Oct 2020 05:46:52 -0400
+X-MC-Unique: S4eEBrtrOdWvJ9wbhG3QQA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BC6271007465;
+        Fri,  9 Oct 2020 09:46:50 +0000 (UTC)
+Received: from T590 (ovpn-13-88.pek2.redhat.com [10.72.13.88])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6006B6266E;
+        Fri,  9 Oct 2020 09:46:43 +0000 (UTC)
+Date:   Fri, 9 Oct 2020 17:46:40 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Yang Yang <yang.yang@vivo.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Bart Van Assche <bvanassche@acm.org>,
+        Hannes Reinecke <hare@suse.com>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, onlyfever@icloud.com
+Subject: Re: [PATCH] blk-mq: move cancel of hctx->run_work to the front of
+ blk_exit_queue
+Message-ID: <20201009094640.GA53552@T590>
+References: <20201009080015.3217-1-yang.yang@vivo.com>
 MIME-Version: 1.0
-References: <20201008130515.2385825-1-lars.povlsen@microchip.com> <20201008130515.2385825-2-lars.povlsen@microchip.com>
-In-Reply-To: <20201008130515.2385825-2-lars.povlsen@microchip.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 9 Oct 2020 11:44:35 +0200
-Message-ID: <CACRpkdaFYoXFUuWow5s9TitrRDhMW=wiaxgfMcY6sQkYYgC-Lw@mail.gmail.com>
-Subject: Re: [PATCH v5 1/3] dt-bindings: pinctrl: Add bindings for
- pinctrl-microchip-sgpio driver
-To:     Lars Povlsen <lars.povlsen@microchip.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201009080015.3217-1-yang.yang@vivo.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lars!
+On Fri, Oct 09, 2020 at 01:00:14AM -0700, Yang Yang wrote:
+> blk_exit_queue will free elevator_data, while blk_mq_run_work_fn
+> will access it. Move cancel of hctx->run_work to the front of
+> blk_exit_queue to avoid use-after-free.
+> 
+> Fixes: 1b97871b501f ("blk-mq: move cancel of hctx->run_work into blk_mq_hw_sysfs_release")
+> Signed-off-by: Yang Yang <yang.yang@vivo.com>
+> ---
+>  block/blk-mq-sysfs.c | 2 --
+>  block/blk-sysfs.c    | 9 ++++++++-
+>  2 files changed, 8 insertions(+), 3 deletions(-)
+> 
+> diff --git a/block/blk-mq-sysfs.c b/block/blk-mq-sysfs.c
+> index 062229395a50..7b52e7657b2d 100644
+> --- a/block/blk-mq-sysfs.c
+> +++ b/block/blk-mq-sysfs.c
+> @@ -36,8 +36,6 @@ static void blk_mq_hw_sysfs_release(struct kobject *kobj)
+>  	struct blk_mq_hw_ctx *hctx = container_of(kobj, struct blk_mq_hw_ctx,
+>  						  kobj);
+>  
+> -	cancel_delayed_work_sync(&hctx->run_work);
+> -
+>  	if (hctx->flags & BLK_MQ_F_BLOCKING)
+>  		cleanup_srcu_struct(hctx->srcu);
+>  	blk_free_flush_queue(hctx->fq);
+> diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
+> index 7dda709f3ccb..8c6bafc801dd 100644
+> --- a/block/blk-sysfs.c
+> +++ b/block/blk-sysfs.c
+> @@ -934,9 +934,16 @@ static void blk_release_queue(struct kobject *kobj)
+>  
+>  	blk_free_queue_stats(q->stats);
+>  
+> -	if (queue_is_mq(q))
+> +	if (queue_is_mq(q)) {
+> +		struct blk_mq_hw_ctx *hctx;
+> +		int i;
+> +
+>  		cancel_delayed_work_sync(&q->requeue_work);
+>  
+> +		queue_for_each_hw_ctx(q, hctx, i)
+> +			cancel_delayed_work_sync(&hctx->run_work);
+> +	}
+> +
 
-This is overall looking fine. Except for the 3 cell business. I just can't
-wrap my head around why that is needed.
+Looks fine:
 
-On Thu, Oct 8, 2020 at 3:05 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
 
-> +      '#gpio-cells':
-> +        const: 3
+Thanks,
+Ming
 
-So at the very least needs a description making it crystal clear why each
-cell is needed, and used for since the standard bindings are not used.
-
-+      sgpio_in2: gpio@0 {
-+        reg = <0>;
-+        compatible = "microchip,sparx5-sgpio-bank";
-+        gpio-controller;
-+        #gpio-cells = <3>;
-+        ngpios = <96>;
-+      };
-
-So here reg = 0 and the out port has reg 1. Isn't that what you also put
-in the second cell of the GPIO phandle? Then why? The driver
-can very well just parse its own reg property and fill that in.
-
-When you obtain a phandle like that:
-
-gpios = <&sgpio_in2 11 0 GPIO_OUT_LOW>;
-
-Isn't that 0 just duplicating the "reg"? Just parse reg when you set up
-your driver state and put it as variable in the state container for your
-driver state for this particular gpio_chip. No need to get it from
-the phandle.
-
-Yours,
-Linus Walleij
