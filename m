@@ -2,93 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 801FF288A35
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E55C288A38
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:01:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388140AbgJIOBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 10:01:41 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:34209 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729935AbgJIOBl (ORCPT
+        id S2388190AbgJIOBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 10:01:47 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:47086 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388143AbgJIOBp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 10:01:41 -0400
-Received: from mail-qv1-f43.google.com ([209.85.219.43]) by
- mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1Mm9NA-1k0ahf2Mca-00iGrh; Fri, 09 Oct 2020 16:01:39 +0200
-Received: by mail-qv1-f43.google.com with SMTP id s17so4778529qvr.11;
-        Fri, 09 Oct 2020 07:01:39 -0700 (PDT)
-X-Gm-Message-State: AOAM5302ERk7DEDG4Ujo23oAg3QFGVR/Y+x3p3UPxnOpQboQWZTlwAO1
-        VzcCI1Agl4pZyxsHHMkw7P67lwcsWVATKRF/VPo=
-X-Google-Smtp-Source: ABdhPJwjNmSCNPZJ7fvoFaz4dcFko8eQYPdZ2dZqQAjsZwcIZUcYPFriGUhRAzz2id1fnZeZYevCTfiUhQzeS2CbBRg=
-X-Received: by 2002:a0c:b39a:: with SMTP id t26mr13068697qve.19.1602252098321;
- Fri, 09 Oct 2020 07:01:38 -0700 (PDT)
+        Fri, 9 Oct 2020 10:01:45 -0400
+Received: by mail-ot1-f66.google.com with SMTP id m11so9031825otk.13;
+        Fri, 09 Oct 2020 07:01:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cH5Jy7jqvkfCKJUsuljnSzvtpIPq9+lrQngP0Px2a6Q=;
+        b=UZYGcr4KqeqabUfNBT3pie2cGrWHM8oXuWjaFLeGTBqj5/02p8j+T9Yjvt8Z0qxspn
+         NMqk46NvIdxElJbgaPQ1u2BvhMuhumB3ZyGYP3tbA4CPM0xhvaFsg/n5naKhihl7VHNc
+         lEf+5J1+NnpXAoTOvzQiSnqcyGFxAfvBx2L2/JBnYDVNhWs6nhkqy6TKsFSdeW9TL0Vr
+         x3G12ZS27bNJnbK/kjZZgcCAMDZldNN8omtjKIb4mC++269DcdSQFu+5+3MLga5QswXJ
+         eo4pin5qgLLR2cVVD6dnQV9Hgh/cPR1Tylv+u3cu/6RsOt77MUs+7GKKp8928cA/xCQD
+         DzCA==
+X-Gm-Message-State: AOAM532V/5MwGx6DLv6ZfJS+aFg6JTlFu34lqe7cwvd5TrRZTWXbgNaH
+        5y4xPq9c2T53MbKQQUN57g==
+X-Google-Smtp-Source: ABdhPJwM+8LgqTS+MCftCmGiU/RuYADbszxF5Z6NC4V/qMOtg48g1rU8VL1N8BeQ6vEmzL0QoGG7Nw==
+X-Received: by 2002:a05:6830:2012:: with SMTP id e18mr9388173otp.54.1602252103660;
+        Fri, 09 Oct 2020 07:01:43 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id o9sm7790090oop.1.2020.10.09.07.01.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Oct 2020 07:01:42 -0700 (PDT)
+Received: (nullmailer pid 4070846 invoked by uid 1000);
+        Fri, 09 Oct 2020 14:01:41 -0000
+Date:   Fri, 9 Oct 2020 09:01:41 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Nicola Mazzucato <nicola.mazzucato@arm.com>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        vireshk@kernel.org, daniel.lezcano@linaro.org, rjw@rjwysocki.net,
+        linux-kernel@vger.kernel.org, sudeep.holla@arm.com,
+        chris.redpath@arm.com, morten.rasmussen@arm.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 2/2] [RFC] CPUFreq: Add support for
+ cpu-perf-dependencies
+Message-ID: <20201009140141.GA4048593@bogus>
+References: <20200924095347.32148-1-nicola.mazzucato@arm.com>
+ <20200924095347.32148-3-nicola.mazzucato@arm.com>
+ <20201006071909.3cgz7i5v35dgnuzn@vireshk-i7>
+ <2417d7b5-bc58-fa30-192c-e5991ec22ce0@arm.com>
+ <20201008110241.dcyxdtqqj7slwmnc@vireshk-i7>
+ <20201008150317.GB20268@arm.com>
+ <56846759-e3a6-9471-827d-27af0c3d410d@arm.com>
+ <20201009053921.pkq4pcyrv4r7ylzu@vireshk-i7>
+ <42e3c8e9-cadc-d013-1e1f-fa06af4a45ff@arm.com>
 MIME-Version: 1.0
-References: <20200901141539.1757549-1-npiggin@gmail.com> <159965079776.3591084.10754647036857628984.b4-ty@arndb.de>
-In-Reply-To: <159965079776.3591084.10754647036857628984.b4-ty@arndb.de>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 9 Oct 2020 16:01:22 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1XqhV+7OVgWhGg3az4Y+_6V-mCjcJ1dBenwD+ZUaaT9g@mail.gmail.com>
-Message-ID: <CAK8P3a1XqhV+7OVgWhGg3az4Y+_6V-mCjcJ1dBenwD+ZUaaT9g@mail.gmail.com>
-Subject: Re: [PATCH v3 00/23] Use asm-generic for mmu_context no-op functions
-To:     Nicholas Piggin <npiggin@gmail.com>,
-        linux-arch <linux-arch@vger.kernel.org>
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:krlM9bfXGg2NhHGF91LtOYfERmZceSJnAfxV+3onQuKMBF5ymV4
- FT61q70WpWKC2m+mdHrPYJ+fzppalYWvTojy1dmcwU8mzsTN3cBk/+AzhnXX+OMsyIGv/AA
- xEcxtIXXyT1XCHYMAa0SukLT7q5I8r+K47Zl+mRqyF1ffnE/H7Z6VxiD4t0GeJVMVjX9GOw
- /hykiCRsoC/a7slx9Wtow==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:30IzcaTGSmk=:WvMtqoPqF6ME0vFdoyRi08
- 6bcVMeoRL2F4Wo+YYa58qKTSK0+kFFXhcYLwlI/OqcA0w0EFdosnMGQukJPo2mXFHGsAvpo80
- QiAuQaQsp15mG57beaMlbaw02iXMTYEP/JQp8ElaHhqoG9lybUn3/19T0TcvBZGPEvVYrCbGN
- uQk4UqhcDrm32TbnppSkf6ZA6t6Z3SEahkhLH3PpBmeh0xg/H2PMqmzg2nQ/kQkyxL6m5znuk
- 5ATavZciPbOSxCuIAoA9dF9dzcPtRqliRsZWf2lXNSMUFJmgXJjmVVowsPQEzPgu4zHbvTjtJ
- bpmvbzw6NvRDMnsJJqlPs3IgxWx+IRXG/XKtUTYik4+DuAlZDUM3ntxSwyT0J2saqlCxTik81
- ncoSFgBafbx5UQSE83g38t182eDSl/9U9qJcCr0Dl0Nu1A62veN/CiAg3Pfupux67Iz01CM89
- jfo5sR7dKz1PO4iAODHTmr/Qu41gQU7slbk+MbyyctFf35ZAZMvnKHP7RstfYWQktsayg3kLg
- RAayGUyguAdFkWxxluH1aDNPh8kt7/jsQOwVIbUXZmGNLjJG42VazNYMSeVa0SsPEEHNIL3BH
- U3mUBlV+iE61/wJadYmrbD0OmrV75MX6ddpLz3XsdWLTnUuMCKLbNUQmdluCDlszvqydfrBaQ
- hkFv1PHf4638jwIObKtiC2CRGgttyVwvRYTfksqbTos6AbQFJCZ9OYFkoGTatB6n4YoFVmZ9d
- +B3RqtbaNIAWOKELJrmcQpsCxhntMFThf3LZE4R8Y/JXWx3QCRb1UwrP9jCtOp2r+zB/S5idv
- TwYyVA9fvBbeLUCeFhn+DGdjuVBvNuF5gYAm7RQ4pXRD8buG1ErO8WSG7AmpP9+wC437XB5yM
- cLIREz+c6Cnmq509/N6kx8SOq4JoL8G9zlFVt3ADHSpW1YwmB5Ab0/ObS/qlsCWzWK0buWa9o
- h1jugmuRpBZwD75/ASHOiyHtNX2la5qA41kGOicJv5c0EejIaWX4V
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <42e3c8e9-cadc-d013-1e1f-fa06af4a45ff@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 9, 2020 at 1:27 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Wed, 2 Sep 2020 00:15:16 +1000, Nicholas Piggin wrote:
-> > It would be nice to be able to modify mmu_context functions or add a
-> > hook without updating all architectures, many of which will be no-ops.
-> >
-> > The motivation for this series is a change to lazy mmu handling, but
-> > this series stands on its own as a good cleanup whether or not we end
-> > up making that change.
-> >
-> > [...]
->
-> Applied to asm-generic, thanks!
+On Fri, Oct 09, 2020 at 12:10:03PM +0100, Nicola Mazzucato wrote:
+> Hi Viresh, I'm glad it helped.
+> 
+> Please find below my reply.
+> 
+> On 10/9/20 6:39 AM, Viresh Kumar wrote:
+> > On 08-10-20, 17:00, Nicola Mazzucato wrote:
+> >> On 10/8/20 4:03 PM, Ionela Voinescu wrote:
+> >>> Hi Viresh,
+> >>>
+> >>> On Thursday 08 Oct 2020 at 16:32:41 (+0530), Viresh Kumar wrote:
+> >>>> On 07-10-20, 13:58, Nicola Mazzucato wrote:
+> >>>>> Hi Viresh,
+> >>>>>
+> >>>>> performance controls is what is exposed by the firmware through a protocol that
+> >>>>> is not capable of describing hardware (say SCMI). For example, the firmware can
+> >>>>> tell that the platform has N controls, but it can't say to which hardware they
+> >>>>> are "wired" to. This is done in dt, where, for example, we map these controls
+> >>>>> to cpus, gpus, etc.
+> >>>>>
+> >>>>> Let's focus on cpus.
+> >>>>>
+> >>>>> Normally we would have N of performance controls (what comes from f/w)
+> >>>>> that that correspond to hardware clock/dvfs domains.
+> >>>>>
+> >>>>> However, some firmware implementations might benefit from having finer
+> >>>>> grained information about the performance requirements (e.g.
+> >>>>> per-CPU) and therefore choose to present M performance controls to the
+> >>>>> OS. DT would be adjusted accordingly to "wire" these controls to cpus
+> >>>>> or set of cpus.
+> >>>>> In this scenario, the f/w will make aggregation decisions based on the
+> >>>>> requests it receives on these M controls.
+> >>>>>
+> >>>>> Here we would have M cpufreq policies which do not necessarily reflect the
+> >>>>> underlying clock domains, thus some s/w components will underperform
+> >>>>> (EAS and thermal, for example).
+> >>>>>
+> >>>>> A real example would be a platform in which the firmware describes the system
+> >>>>> having M per-cpu control, and the cpufreq subsystem will have M policies while
+> >>>>> in fact these cpus are "performance-dependent" each other (e.g. are in the same
+> >>>>> clock domain).
+> >>>>
+> >>>> If the CPUs are in the same clock domain, they must be part of the
+> >>>> same cpufreq policy.
+> >>>
+> >>> But cpufreq does not currently support HW_ALL (I'm using the ACPI
+> >>> coordination type to describe the generic scenario of using hardware
+> >>> aggregation and coordination when establishing the clock rate of CPUs).
+> >>>
+> >>> Adding support for HW_ALL* will involve either bypassing some
+> >>> assumptions around cpufreq policies or making core cpufreq changes.
+> >>>
+> >>> In the way I see it, support for HW_ALL involves either:
+> >>>
+> >>>  - (a) Creating per-cpu policies in order to allow each of the CPUs to
+> >>>    send their own frequency request to the hardware which will do
+> >>>    aggregation and clock rate decision at the level of the clock
+> >>>    domain. The PSD domains (ACPI) and the new DT binding will tell
+> >>>    which CPUs are actually in the same clock domain for whomever is
+> >>>    interested, despite those CPUs not being in the same policy.
+> >>>    This requires the extra mask that Nicola introduced.
+> >>>
+> >>>  - (b) Making deep changes to cpufreq (core/governors/drivers) to allow:
+> >>>    - Governors to stop aggregating (usually max) the information
+> >>>      for each of the CPUs in the policy and convey to the core
+> >>>      information for each CPU.
+> >>>    - Cpufreq core to be able to receive and pass this information
+> >>>      down to the drivers.
+> >>>    - Drivers to be able to have some per cpu structures to hold
+> >>>      frequency control (let's say SCP fast channel addresses) for
+> >>>      each of the CPUs in the policy. Or have these structures in the
+> >>>      cpufreq core/policy, to avoid code duplication in drivers.
+> >>>
+> >>> Therefore (a) is the least invasive but we'll be bypassing the rule
+> >>> above. But to make that rule stick we'll have to make invasive cpufreq
+> >>> changes (b).
+> >>
+> >> Regarding the 'rule' above of one cpufreq policy per clock domain, I would like
+> >> to share my understanding on it. Perhaps it's a good opportunity to shed some light.
+> >>
+> >> Looking back in the history of CPUFreq, related_cpus was originally designed
+> >> to hold the map of cpus within the same clock. Later on, the meaning of this
+> >> cpumask changed [1].
+> >> This led to the introduction of a new cpumask 'freqdomain_cpus'
+> >> within acpi-cpufreq to keep the knowledge of hardware clock domains for
+> >> sysfs consumers since related_cpus was not suitable anymore for this.
+> >> Further on, this cpumask was assigned to online+offline cpus within the same clk
+> >> domain when sw coordination is in use [2].
+> >>
+> >> My interpretation is that there is no guarantee that related_cpus holds the
+> >> 'real' hardware clock implementation. As a consequence, it is not true anymore
+> >> that cpus that are in the same clock domain will be part of the same
+> >> policy.
+> >>
+> >> This guided me to think it would be better to have a cpumask which always holds
+> >> the real hw clock domains in the policy.
+> >>
+> >>>
+> >>> This is my current understanding and I'm leaning towards (a). What do
+> >>> you think?
+> >>>
+> >>> *in not so many words, this is what these patches are trying to propose,
+> >>> while also making sure it's supported for both ACPI and DT.
+> >>>
+> >>> BTW, thank you for your effort in making sense of this!
+> >>>
+> >>> Regards,
+> >>> Ionela.
+> >>>
+> >>
+> >> This could be a platform where per-cpu and perf-dependencies will be used:
+> >>
+> >> CPU:              0    1    2    3    4    5    6    7
+> >> Type:             A    A    A    A    B    B    B    B
+> >> Cluster:         [                                    ]
+> >> perf-controls:   [  ] [  ] [  ] [ ]  [ ]  [ ]  [ ]  [ ]
+> >> perf-dependency: [                ]  [                ]
+> >> HW clock:        [                ]  [                ]
+> >>
+> >> The firmware will present 8 controls to the OS and each control is mapped to a
+> >> cpu device via the standard dt. This is done so we can achieve hw coordination.
+> >> What is required in these systems is to present to OS the information of which
+> >> cpus belong to which clock domain. In other words, when hw coordinates we don't
+> >> have any way at present in dt to understand how these cpus are dependent
+> >> each other, from performance perspective (as opposed to ACPI where we have
+> >> _PSD). Hence my proposal for the new cpu-perf-dependencies.
+> >> This is regardless whether we decide to go for either a policy per-cpu or a
+> >> policy per-domain.
+> >>
+> >> Hope it helps.
+> > 
+> > Oh yes, I get it now. Finally. Thanks for helping me out :)
+> > 
+> > So if I can say all this stuff in simple terms, this is what it will
+> > be like:
+> > 
+> > - We don't want software aggregation of frequencies and so we need to
+> >   have per-cpu policies even when they share their clock lines.
+> > 
+> > - But we still need a way for other frameworks to know which CPUs
+> >   share the clock lines (that's what the perf-dependency is all about,
+> >   right ?).
+> > 
+> > - We can't get it from SCMI, but need a DT based solution.
+> > 
+> > - Currently for the cpufreq-case we relied for this on the way OPP
+> >   tables for the CPUs were described. i.e. the opp-table is marked as
+> >   "shared" and multiple CPUs point to it.
+> > 
+> > - I wonder if we can keep using that instead of creating new bindings
+> >   for exact same stuff ? Though the difference here would be that the
+> >   OPP may not have any other entries.
+> 
+> I thought about it and looked for other platforms' DT to see if can reuse
+> existing opp information. Unfortunately I don't think it is optimal. The reason
+> being that, because cpus have the same opp table it does not necessarily mean
+> that they share a clock wire. It just tells us that they have the same
+> capabilities (literally just tells us they have the same V/f op points).
+> Unless I am missing something?
+> 
+> When comparing with ACPI/_PSD it becomes more intuitive that there is no
+> equivalent way to reveal "perf-dependencies" in DT.
 
-Hi Nick,
+You should be able to by examining the clock tree. But perhaps SCMI 
+abstracts all that and just presents virtual clocks without parent 
+clocks available to determine what clocks are shared? Fix SCMI if that's 
+the case.
 
-I just noticed a fatal mistake I made when pushing it to the branch on
-kernel.org: I used to have both a 'master' and an 'asm-generic' branch
-in asm-generic.git but tried to remove the 'master' one as there is not
-really any point in having two.
-
-Unfortunately I forgot to check which one of the two was part of
-linux-next, and it was the other one, so none of the patches I picked
-up ever saw any wider testing aside from the 0day bot building it
-(successfully).
-
-Are there other changes that depend on this? If not, I would
-just wait until -rc1 and then either push the branch correctly or
-rebase the patches on that first, to avoid pushing something that
-did not see the necessary testing.
-
-      Arnd
+Rob
