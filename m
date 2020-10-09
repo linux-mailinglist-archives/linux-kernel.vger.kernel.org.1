@@ -2,83 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CBB62884EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5B052884E9
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:08:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732683AbgJIIJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 04:09:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732464AbgJIIJW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 04:09:22 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9276C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 01:09:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=kEaJrhB49jY9ylGi747PC2d3zrqsG3GTNHlV2nr1xSo=; b=ve8cCGYklFqGLKtG5GkwJljNv
-        a3hbBRQkLbNvUxGBvRLjfgm8UYZTG64wt/m0NgpJL8GTh+fmKL5e1YuiE6RUMJY5IHvRBitFMV07P
-        VuNeBlLoz8yJ1U/X7/zi8hIcCw40aQddMK62i2TCOL5Zfzf9AZm9SaKhMGUJ/L4wa/s+hpbT/geGr
-        6znwoJ9jU6CJGyPnlmntqiuNeh9en5i/iQG4MSe6taT2anM9hRQKfv7pj9V8W5032KYMHT69wpH8d
-        xZYErn38o1U5L5szCdPa0oEpo3tZl2PwQz13EyumuR3WeGrImdHMt1pDLD9Xu8UkpPKcV+audPxof
-        qWK9gP5hA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43798)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kQnSR-0007iv-PC; Fri, 09 Oct 2020 09:08:55 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kQnSM-0002VN-ES; Fri, 09 Oct 2020 09:08:50 +0100
-Date:   Fri, 9 Oct 2020 09:08:50 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Xiaoming Ni <nixiaoming@huawei.com>
-Cc:     dima@arista.com, will@kernel.org, jpoimboe@redhat.com,
-        akpm@linux-foundation.org, christian.brauner@ubuntu.com,
-        viro@zeniv.linux.org.uk, ldufour@linux.ibm.com, amanieu@gmail.com,
-        walken@google.com, ben.dooks@codethink.co.uk, tglx@linutronix.de,
-        bigeasy@linutronix.de, mingo@kernel.org,
-        vincent.whitchurch@axis.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, wangle6@huawei.com,
-        luohaizheng@huawei.com
-Subject: Re: [PATCH] arm:traps: Don't print stack or raw PC/LR values in
- backtraces
-Message-ID: <20201009080849.GM1551@shell.armlinux.org.uk>
-References: <20201009075957.110017-1-nixiaoming@huawei.com>
+        id S1732670AbgJIII6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 04:08:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38360 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732445AbgJIII5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 04:08:57 -0400
+Received: from pali.im (pali.im [31.31.79.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 61CB9221FC;
+        Fri,  9 Oct 2020 08:08:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602230936;
+        bh=KIWMTbdcl+R/AR1R/W9XGA1i5VIAs+lUecjjfIWMiNU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FbxaZ2piy1y28IDSENRyIKs8MY2HQMPSmVh8EFMPHKhChPa9Sa/ufQHv3oJclKNGB
+         CYg6o+9zaC23JXfCjTED687aM99ef6aS5aMUtyJTx/lg6yyO2f50l7naIxkjefKpQY
+         s3//eCdUlkY5G0m80tpCJZrGNuRvam78vqd04Uq0=
+Received: by pali.im (Postfix)
+        id C5CE1515; Fri,  9 Oct 2020 10:08:53 +0200 (CEST)
+Date:   Fri, 9 Oct 2020 10:08:53 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Oliver O'Halloran <oohall@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Yinghai Lu <yinghai@kernel.org>
+Subject: Re: PCI: Race condition in pci_create_sysfs_dev_files
+Message-ID: <20201009080853.bxzyirmaja6detk4@pali>
+References: <20201007161434.GA3247067@bjorn-Precision-5520>
+ <20201008195907.GA3359851@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201009075957.110017-1-nixiaoming@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201008195907.GA3359851@bjorn-Precision-5520>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 03:59:57PM +0800, Xiaoming Ni wrote:
-> Printing raw pointer values in backtraces has potential security
-> implications and are of questionable value anyway.
+On Thursday 08 October 2020 14:59:07 Bjorn Helgaas wrote:
+> On Wed, Oct 07, 2020 at 11:14:34AM -0500, Bjorn Helgaas wrote:
+> > On Wed, Oct 07, 2020 at 10:14:00AM +0200, Pali Rohár wrote:
+> > > On Wednesday 07 October 2020 12:47:40 Oliver O'Halloran wrote:
+> > > > On Wed, Oct 7, 2020 at 10:26 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > > > >
+> > > > > I'm not really a fan of this because pci_sysfs_init() is a bit of a
+> > > > > hack to begin with, and this makes it even more complicated.
+> > > > >
+> > > > > It's not obvious from the code why we need pci_sysfs_init(), but
+> > > > > Yinghai hinted [1] that we need to create sysfs after assigning
+> > > > > resources.  I experimented by removing pci_sysfs_init() and skipping
+> > > > > the ROM BAR sizing.  In that case, we create sysfs files in
+> > > > > pci_bus_add_device() and later assign space for the ROM BAR, so we
+> > > > > fail to create the "rom" sysfs file.
+> > > > >
+> > > > > The current solution to that is to delay the sysfs files until
+> > > > > pci_sysfs_init(), a late_initcall(), which runs after resource
+> > > > > assignments.  But I think it would be better if we could create the
+> > > > > sysfs file when we assign the BAR.  Then we could get rid of the
+> > > > > late_initcall() and that implicit ordering requirement.
+> > > > 
+> > > > You could probably fix that by using an attribute_group to control
+> > > > whether the attribute shows up in sysfs or not. The .is_visible() for
+> > > > the group can look at the current state of the device and hide the rom
+> > > > attribute if the BAR isn't assigned or doesn't exist. That way we
+> > > > don't need to care when the actual assignment occurs.
+> > > 
+> > > And cannot we just return e.g. -ENODATA (or other error code) for those
+> > > problematic sysfs nodes until late_initcall() is called?
+> > 
+> > I really like Oliver's idea and I think we should push on that to see
+> > if it can be made to work.  If so, we can remove the late_initcall()
+> > completely.
+> > 
+> > > > > But I haven't tried to code it up, so it's probably more complicated
+> > > > > than this.  I guess ideally we would assign all the resources before
+> > > > > pci_bus_add_device().  If we could do that, we could just remove
+> > > > > pci_sysfs_init() and everything would just work, but I think that's a
+> > > > > HUGE can of worms.
+> > > > 
+> > > > I was under the impression the whole point of pci_bus_add_device() was
+> > > > to handle any initialisation that needed to be done after resources
+> > > > were assigned. Is the ROM BAR being potentially unassigned an x86ism
+> > > > or is there some bigger point I'm missing?
+> > 
+> > We can't assign resources for each device as we enumerate it because
+> > we don't know what's in use by other devices yet to be enumerated.
+> > That part is generic, not x86-specific.
+> > 
+> > The part that is x86-specific (or at least specific to systems using
+> > ACPI) is that the ACPI core doesn't reserve resources used by ACPI
+> > devices.  Sometimes those resources are included in the PCI host
+> > bridge windows, and we don't want to assign them to PCI devices.
+> > 
+> > I didn't trace this all the way, but the pcibios_assign_resources()
+> > and pnp_system_init() comments look relevant.  It's a little concerning
+> > that they're both fs_initcalls() and the ordering looks important, but
+> > it would only be by accident of link ordering that pnp_system_init()
+> > happens first.
 > 
-> This patch follows x86 and arm64's lead and removes the "Exception stack:"
-> dump from kernel backtraces:
-> 	commit a25ffd3a6302a6 ("arm64: traps: Don't print stack or raw
-> 	 PC/LR values in backtraces")
-> 	commit 0ee1dd9f5e7eae ("x86/dumpstack: Remove raw stack dump")
-> 	commit bb5e5ce545f203 ("x86/dumpstack: Remove kernel text
-> 	 addresses from stack dump")
-> 
-> Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+> Pali, what's your thought on this?  Do you plan to work on this
+> yourself?  If not and if you can live with your workaround a while
+> longer, I think Krzysztof might be interested in taking a crack at it.
+> I would just hate to see you guys duplicate each others' work :)
 
-I am really not happy about this - it hurts at least my ability to
-debug the kernel when people post oopses to the mailing list. If
-people wish to make the kernel harder to debug, and are prepared
-to be told "your kernel is undebuggable" then this patch is fine.
+Hello Bjorn!
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+If Krzysztof wants and would be working on this issue I can let it as is
+for now.
+
+But we should think how to deliver fix for this issue also into stable
+kernels where this race condition is happening.
+
+I think that my workaround avoid those two race conditions and if proper
+fix (= removal of pci_sysfs_init function) would take a long, what about
+trying to workaround that race condition for now?
+
+My "fix" is relatively small and simple, so it should not be much hard
+to review it.
+
+Krzysztof, what do you think?
