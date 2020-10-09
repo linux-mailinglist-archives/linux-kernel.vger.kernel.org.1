@@ -2,83 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9597928890C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 14:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC177288913
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 14:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387558AbgJIMnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 08:43:11 -0400
-Received: from mga09.intel.com ([134.134.136.24]:56440 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725852AbgJIMnL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 08:43:11 -0400
-IronPort-SDR: Dgz9NowuqHeyF2t5fvvpG8OdBX8+IxI8Wxhuzw7Or5bWtmgPg/7OH9j/0EopSqiHPY6v/43Z7C
- 2ckPJYkbGTcA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="165592474"
-X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
-   d="scan'208";a="165592474"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 05:43:10 -0700
-IronPort-SDR: mbOaxvauxBcqkYS5cswFgFbzINe8QEqu5bJ/bWN0EeIwnWp6+4EEPaUUW5HzGvu1SGaneXGBVn
- jYNQVCGl5L+A==
-X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
-   d="scan'208";a="354841361"
-Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 05:43:09 -0700
-Date:   Fri, 9 Oct 2020 05:43:07 -0700
-From:   "Raj, Ashok" <ashok.raj@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Dave Jiang <dave.jiang@intel.com>, vkoul@kernel.org,
-        megha.dey@intel.com, maz@kernel.org, bhelgaas@google.com,
-        alex.williamson@redhat.com, jacob.jun.pan@intel.com,
-        yi.l.liu@intel.com, baolu.lu@intel.com, kevin.tian@intel.com,
-        sanjay.k.kumar@intel.com, tony.luck@intel.com, jing.lin@intel.com,
-        dan.j.williams@intel.com, kwankhede@nvidia.com,
-        eric.auger@redhat.com, parav@mellanox.com, rafael@kernel.org,
-        netanelg@mellanox.com, shahafs@mellanox.com,
-        yan.y.zhao@linux.intel.com, pbonzini@redhat.com,
-        samuel.ortiz@intel.com, mona.hossain@intel.com,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-pci@vger.kernel.org, kvm@vger.kernel.org,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [PATCH v3 11/18] dmaengine: idxd: ims setup for the vdcm
-Message-ID: <20201009124307.GA63643@otc-nc-03>
-References: <160021207013.67751.8220471499908137671.stgit@djiang5-desk3.ch.intel.com>
- <160021253189.67751.12686144284999931703.stgit@djiang5-desk3.ch.intel.com>
- <87mu17ghr1.fsf@nanos.tec.linutronix.de>
- <0f9bdae0-73d7-1b4e-b478-3cbd05c095f4@intel.com>
- <87r1q92mkx.fsf@nanos.tec.linutronix.de>
- <44e19c5d-a0d2-0ade-442c-61727701f4d8@intel.com>
- <87y2kgux2l.fsf@nanos.tec.linutronix.de>
- <20201008233210.GH4734@nvidia.com>
- <20201009012231.GA60263@otc-nc-03>
- <20201009115737.GI4734@nvidia.com>
+        id S2387635AbgJIMnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 08:43:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731579AbgJIMnp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 08:43:45 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22C0FC0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 05:43:45 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id 33so9140189edq.13
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 05:43:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HdsaQ+5hmLlCu2Re2BtPWdbinpVtOvRzC8Y1qZuR928=;
+        b=CYOKNBFCMhKH8JpvnAKBDpjFKN0z1QWMAwEdWi6DkVRIMuVviaf5gvtqJYxZhwE7sO
+         bnEGBkdg3EPxdGuAN5OGqVrvte0ELiQd70UDr1nVl28ifO5YZ8MIp7/iVpKpqwu0RR7n
+         KaSwUvYmVhKBpUpNA0QsyAtZUrstAGHq40qMRKMOaIMI2AOvwe/scSOMmXgb2Qo/+QCu
+         FJujTzivr7qL+ouOUjyhMjI7VKALiQSZjhVFJAPVTOHZx4JYa0tbyTtdXgVac1xqeexv
+         pf2pnF2SHbjztlP7IDsXby8CpFnfk17PoLVBlTFm/0kNa3CQhtJhDcC14hXiSk98AtDN
+         wWnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HdsaQ+5hmLlCu2Re2BtPWdbinpVtOvRzC8Y1qZuR928=;
+        b=n+1gZ2hX4EJVmDRE/0+4uJj53pDqb+ygiYl6NczpC5NPwX8uqp9XRMpyFnxZlFK3OW
+         Z2mQHEiQoWmJdoQprYbB3iuZusFBnt51tmGSAOkb5bbr9lHQBS0zb+XkJI+QQfJCjVZV
+         i+Vsx9W4TX2fXEi99NvZ5Qoa0Y00vzTyqZLOci5xJHpBNqeBzLCS7v25lUbPryd6r8BU
+         LGhUPsY4q9vqXAhHuyC2ejY7Ke3DrDnfxmJXIgc2lz9QgAHVbb1xESVeS3VLUGvDPyva
+         bklEgyXf7t8PK7pCotdfQDA13N1fnp1vYWHgJ7IZ0S9KcsKERTuEzLFe+G4n9xKqMje0
+         iKag==
+X-Gm-Message-State: AOAM533aHIVXxUAdsJ0MlKOyh3f49m+MXUEIAYM0MdzG/mHRdp+hn7Gu
+        TLUX8wqS4oYGkEm3PdsKPy5Pj6WlfjzuoYnphnJWkQ==
+X-Google-Smtp-Source: ABdhPJyV5z/4MNRNwBKKaXulRfevKZ7kBXZE9nXLW4WsoEhDfhLaKgN9iGEs0IUm8Qm7UNgpPdygGN/u2ty40MsIuSc=
+X-Received: by 2002:a50:8b62:: with SMTP id l89mr14693598edl.132.1602247423781;
+ Fri, 09 Oct 2020 05:43:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201009115737.GI4734@nvidia.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20201008143722.21888-1-etienne.carriere@linaro.org>
+ <20201008143722.21888-4-etienne.carriere@linaro.org> <20201008211116.l6gbym2ypb6lzlo7@bogus>
+In-Reply-To: <20201008211116.l6gbym2ypb6lzlo7@bogus>
+From:   Etienne Carriere <etienne.carriere@linaro.org>
+Date:   Fri, 9 Oct 2020 14:43:31 +0200
+Message-ID: <CAN5uoS8tz0wXkD1dtFbAYBWHvngHG8KeUD2JkK32siPa2MwgYA@mail.gmail.com>
+Subject: Re: [PATCH 4/5] firmware: arm_scmi: smc transport supports
+ multi-message pool
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Souvik Chakravarty <Souvik.Chakravarty@arm.com>,
+        Peng Fan <peng.fan@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 08:57:37AM -0300, Jason Gunthorpe wrote:
-> On Thu, Oct 08, 2020 at 06:22:31PM -0700, Raj, Ashok wrote:
-> 
-> > Not randomly put there Jason :-).. There is a good reason for it. 
-> 
-> Sure the PASID value being associated with the IRQ make sense, but
-> combining that register with the interrupt mask is just a compltely
-> random thing to do.
+On Thu, 8 Oct 2020 at 23:11, Sudeep Holla <sudeep.holla@arm.com> wrote:
+>
+> On Thu, Oct 08, 2020 at 04:37:21PM +0200, Etienne Carriere wrote:
+> > There is no reason for the smc transport to restrict itself to a 1
+> > message pool. More can be allocated, messages are copied from/to the
+> > shared memory only on SMC exit/entry hence SCMI driver can play with
+> > several messages.
+> >
+> > Use value of 20 to mimic mailbox transport implementation.
+>
+> What is the need to mimic ?
 
-Hummm... Not sure what you are complaining.. but in any case giving
-hardware a more efficient way to store interrupt entries breaking any
-boundaries that maybe implied by the spec is why IMS was defined.
+I had to pick a value. I can't say whether 2, 5 or 20 is better.
+I looks how the mailbox transport did and used the same value
+as it seemed reasonable regarding its memory cost.
 
-> 
-> If this HW was using MSI-X PASID would have been given its own
-> register.
+>
+> > Any high value could fit. This should be something configurable.
+>
+> Why not 10 or 100 ? I see any value other than 1 is useless as we lock
+> the channel in send_message and we don't maintain a queue like mailbox.
 
-Well there is no MSI-X PASID is there? 
+I'll check again.
+Playing with SCMI voltage domain [1], it happens that I needed several
+preallocated
+message buffers unless what regulators fail to be probed.
+
+[1] https://lkml.org/lkml/2020/10/5/1341
+
+Regards,
+etienne
+
+>
+> --
+> Regards,
+> Sudeep
