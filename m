@@ -2,75 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54719288609
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 11:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 374CB28860F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 11:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733129AbgJIJiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 05:38:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30295 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1733101AbgJIJiR (ORCPT
+        id S1733145AbgJIJiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 05:38:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733140AbgJIJip (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 05:38:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602236296;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6NBJSYlvfZHWze2N1l/klbUKCpQ65WesNQZgDHDHlo0=;
-        b=UUPhPfvOQOiY+HA6JCKlYare8I7Pp+Ne2eKPFqemRRWj97VnqwijiIB26xCJt2FH8qJPMD
-        84fV16ksEszH6tOc6K7rNTzbAdRPyaQxf4yEtMf5x7cqeMwmEUhKPF1YyLvEtEonq7NuWz
-        +g7kfItW6Vdh+bilk2Fjr1GqCK5eKKo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-480-H9ceGU0_O2qlXp24GhJ_7w-1; Fri, 09 Oct 2020 05:38:14 -0400
-X-MC-Unique: H9ceGU0_O2qlXp24GhJ_7w-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9491085EE94;
-        Fri,  9 Oct 2020 09:38:12 +0000 (UTC)
-Received: from gondolin (ovpn-113-40.ams2.redhat.com [10.36.113.40])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6983F60E1C;
-        Fri,  9 Oct 2020 09:38:07 +0000 (UTC)
-Date:   Fri, 9 Oct 2020 11:38:04 +0200
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Matthew Rosato <mjrosato@linux.ibm.com>
-Cc:     alex.williamson@redhat.com, schnelle@linux.ibm.com,
-        pmorel@linux.ibm.com, borntraeger@de.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, gerald.schaefer@linux.ibm.com,
-        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/5] vfio: Introduce capability definitions for
- VFIO_DEVICE_GET_INFO
-Message-ID: <20201009113804.6ccc9738.cohuck@redhat.com>
-In-Reply-To: <1602096984-13703-4-git-send-email-mjrosato@linux.ibm.com>
-References: <1602096984-13703-1-git-send-email-mjrosato@linux.ibm.com>
-        <1602096984-13703-4-git-send-email-mjrosato@linux.ibm.com>
-Organization: Red Hat GmbH
+        Fri, 9 Oct 2020 05:38:45 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F164EC0613D5
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 02:38:44 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id j22so4475042lfe.10
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 02:38:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wQZ85dJNsIyQtNjnJDTR2ihKmDYZl4o1wc+cD1p5Uys=;
+        b=EyBXWCuKn5Qfulspno0TqkUKWkmtsntf2WZ6aTm0tZypLd4Ah6UVqvyBZrfYrw6GC3
+         WIp1BqHp+4ACn92mT/zB7PHor5fdbk56BcW0Wj5dS6nelhlcD9LhtS9/8wSPEA7TQ0Za
+         23lJuLKWC6liqUXNRsqMQPBbZJ60Fd7YQW+SmmzHV1U93+juESSYcLseBKjKvTAMdMDa
+         owpSj+DJNBIOKN6aCuSWx4yPgN5rn7npeYJ6htvg9+kZTIy9j4gQG4DCOi4q/PLRGx7b
+         9ofFF7x+4XNaJK5r7q+Zi29ZhFqRf36GnKv6VWrvmwUH5oIRRhjFIIqIMTlLahRYR/cO
+         fWbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wQZ85dJNsIyQtNjnJDTR2ihKmDYZl4o1wc+cD1p5Uys=;
+        b=EGy6WP+b6rDVEZnaiQSfF1ECFKRhRNiqSQJhgpwipemw6VwlKuqOPmWpFcvkyvLsiF
+         Twc4E1t57oxYyFADUrkyM/WkQPyfU6PC38nUaz7/m9a2ckjyQZUB8ESt6jM8d1vy0+aT
+         7eLCaznY+AdqK+GnjTyb2uK1sBEju7629UxqkB1UfhcVMlIjJERJZANsthNMRWFEwDDD
+         ov/yfrmSc/S0F4SjnLgCf36U810FWQTtNBkfvEnSAwAvJLkeMTqGzujiGufWS4Kan8wc
+         motB5iHhdoAhklPHL1BIwfUzLOgZ++Lm0i27/HwgKwGaX7j7ultWnhwVgRzCOtpkyPOF
+         2FQQ==
+X-Gm-Message-State: AOAM530hslUGKDnQtKVicNxZlr0h5dA6wqMLkqWvRWHYkMpkljJbgnCH
+        7KQX1GM+QaHqXik4N+knmA7R40ZmDUF+5kKpBt68PQ==
+X-Google-Smtp-Source: ABdhPJw1Hr+9bP5FQEtUOU0p0RHYUw+Mo6ABI9TPDkRcxw0lXEEjdHuU++zVBajvD6EFYP2r4SQStnlEK25XtpZ3UuI=
+X-Received: by 2002:ac2:42d8:: with SMTP id n24mr3660836lfl.502.1602236323336;
+ Fri, 09 Oct 2020 02:38:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20201006142532.2247515-1-lars.povlsen@microchip.com>
+ <20201006142532.2247515-3-lars.povlsen@microchip.com> <CACRpkda+OSgma3E0XxXUk8a2yrn5Hpu3a47cBN50rOkoSMkiwQ@mail.gmail.com>
+ <87ft6px9wc.fsf@soft-dev15.microsemi.net>
+In-Reply-To: <87ft6px9wc.fsf@soft-dev15.microsemi.net>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 9 Oct 2020 11:38:32 +0200
+Message-ID: <CACRpkdYqKqqM8D0vrBWbo0=7OFthU2kcK2tjd45dD7DxEkaYWg@mail.gmail.com>
+Subject: Re: [RESEND PATCH v3 2/3] pinctrl: pinctrl-mchp-sgpio: Add pinctrl
+ driver for Microsemi Serial GPIO
+To:     Lars Povlsen <lars.povlsen@microchip.com>
+Cc:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  7 Oct 2020 14:56:22 -0400
-Matthew Rosato <mjrosato@linux.ibm.com> wrote:
+Hi Lars,
 
-> Allow the VFIO_DEVICE_GET_INFO ioctl to include a capability chain.
-> Add a flag indicating capability chain support, and introduce the
-> definitions for the first set of capabilities which are specified to
-> s390 zPCI devices.
-> 
-> Signed-off-by: Matthew Rosato <mjrosato@linux.ibm.com>
-> ---
->  include/uapi/linux/vfio.h      | 11 ++++++
->  include/uapi/linux/vfio_zdev.h | 78 ++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 89 insertions(+)
->  create mode 100644 include/uapi/linux/vfio_zdev.h
+I'm overall mostly happy with the latest posting (not the one I respond to here)
 
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+On Thu, Oct 8, 2020 at 12:57 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
+> > On Tue, Oct 6, 2020 at 4:25 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
 
+> >> +       gc->of_xlate            = microchip_sgpio_of_xlate;
+> >> +       gc->of_gpio_n_cells     = 3;
+> >
+> > So I'm sceptical to this.
+> >
+> > Why can't you just use the pin index in cell 0 directly
+> > and avoid cell 1?
+> >
+>
+> You scepticism has surfaced before :-). The (now) 2 indices relates to
+> how the hardware address signals.
+>
+> Each signal/pin is addressed by port, bit number and direction. We now
+> have the direction encoded in the bank/phandle.
+
+I'm sorry but I just don't get it, I suppose. To me it is pretty
+straight-forward
+that the cells indicate the pin and then the flags. I do understand you
+need the port at all, since this is implicit from the reg property
+of the DT node. Are these two different things?
+
+Yours,
+Linus Walleij
