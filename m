@@ -2,63 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D0CE288988
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 15:03:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D410C28898E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 15:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388067AbgJINDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 09:03:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39384 "EHLO mx2.suse.de"
+        id S2388145AbgJINFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 09:05:42 -0400
+Received: from foss.arm.com ([217.140.110.172]:50840 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732468AbgJINDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 09:03:45 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1602248624;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GK3coka4JKr5h6VaBUij/uP3o5nU+N7gnzjAysRtMAw=;
-        b=nrLxba9acrofSSN+o5K83yWYPgEkHW3hdUV/3YAAvgLYcq3w4XOPyoRe3DxxtscpIck6Ao
-        DIvIHdArLkj6o718W5GiXqyg4TQ2BpUGeNerMRDR03ldRRjSecHQISCL8L2/9TOPps1mIn
-        fo+S3+/M3WDYKgb9c9smVuw9UW6koC0=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C5574AC6C;
-        Fri,  9 Oct 2020 13:03:44 +0000 (UTC)
-Date:   Fri, 9 Oct 2020 15:03:44 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Mel Gorman <mgorman@suse.de>,
-        Frederic Weisbecker <fweisbecker@suse.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v2 0/5] allow overriding default preempt mode from
- command line
-Message-ID: <20201009130344.GN4967@dhcp22.suse.cz>
-References: <20201007120401.11200-1-mhocko@kernel.org>
- <20201009122926.29962-1-mhocko@kernel.org>
- <20201009125056.GN2628@hirez.programming.kicks-ass.net>
+        id S1732468AbgJINFl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 09:05:41 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2BAC21063;
+        Fri,  9 Oct 2020 06:05:41 -0700 (PDT)
+Received: from localhost (e108754-lin.cambridge.arm.com [10.1.199.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C0F0E3F70D;
+        Fri,  9 Oct 2020 06:05:40 -0700 (PDT)
+Date:   Fri, 9 Oct 2020 14:05:39 +0100
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        daniel.lezcano@linaro.org, amitk@kernel.org,
+        Dietmar.Eggemann@arm.com
+Subject: Re: [PATCH v2 1/2] thermal: power allocator: change the 'k_i'
+ coefficient estimation
+Message-ID: <20201009130539.GB5207@arm.com>
+References: <20201008170426.465-1-lukasz.luba@arm.com>
+ <20201008170426.465-2-lukasz.luba@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201009125056.GN2628@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201008170426.465-2-lukasz.luba@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 09-10-20 14:50:56, Peter Zijlstra wrote:
+On Thursday 08 Oct 2020 at 18:04:25 (+0100), Lukasz Luba wrote:
+> Intelligent Power Allocation (IPA) is built around the PID controller
+> concept. The initialization code tries to setup the environment based on
+> the information available in DT or estimate the value based on minimum
+> power reported by each of the cooling device. The estimation will have an
+> impact on the PID controller behaviour via the related 'k_po', 'k_pu',
+> 'k_i' coefficients and also on the power budget calculation.
 > 
-> Can you please not thread the new series onto the old one? That's some
-> seriously annoying behaviour that I see more and more... It makes me
-> loose whole patch-sets.
+> This change prevents the situation when 'k_i' is relatively big compared
+> to 'k_po' and 'k_pu' values. This might happen when the estimation for
+> 'sustainable_power' returned small value, thus 'k_po' and 'k_pu' are
+> small.
+> 
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
+>  drivers/thermal/gov_power_allocator.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
+> index e566806f1550..aa35aa6c561c 100644
+> --- a/drivers/thermal/gov_power_allocator.c
+> +++ b/drivers/thermal/gov_power_allocator.c
+> @@ -132,6 +132,7 @@ static void estimate_pid_constants(struct thermal_zone_device *tz,
+>  	int ret;
+>  	int switch_on_temp;
+>  	u32 temperature_threshold;
+> +	s32 k_i;
+>  
+>  	ret = tz->ops->get_trip_temp(tz, trip_switch_on, &switch_on_temp);
+>  	if (ret)
+> @@ -157,8 +158,11 @@ static void estimate_pid_constants(struct thermal_zone_device *tz,
+>  		tz->tzp->k_pu = int_to_frac(2 * sustainable_power) /
+>  			temperature_threshold;
+>  
+> -	if (!tz->tzp->k_i || force)
+> -		tz->tzp->k_i = int_to_frac(10) / 1000;
+> +	if (!tz->tzp->k_i || force) {
+> +		k_i = tz->tzp->k_pu / 10;
+> +		tz->tzp->k_i = k_i > 0 ? k_i : 1;
+> +	}
 
-Sure, no problem. This is not really unusual in mm and I personally
-prefer to have discussion in a single thread rather than separated in
-two or more. But I definitely do not insist of course. It is surprising
-that you are losing the whole patchset as the threading seems to be done
-properly. Mutt doesn't seem to have problems with that.
+I spent some time to understand how smaller or bigger values here impact
+the stability of the output and its closeness to the control temperature
+so I could give you and informed review :).
 
-Anyway, let me know if I should repost.
+I did observed that if the k_i value has the same order of magnitude as
+k_p, the output oscillates more, so I do believe this is a good change
+to have.
 
--- 
-Michal Hocko
-SUSE Labs
+What I also observed is that a small k_d value could be very beneficial
+in quicker stabilising the oscillation and saw that it's recommended to
+have for temperature, or in general for systems with measurement lag.
+
+It's probably worth experimenting with some real systems first, but I
+wonder if setting k_d to 1 as well is a good default. The risk is that
+we will end up too conservative and not take advantage of some power
+budget that's actually still left on the table. In any case, this is a
+story for another time :).
+
+For these changes:
+
+Reviewed-by: Ionela Voinescu <ionela.voinescu@arm.com>
+
+Regards,
+Ionela.
+
+> +
+>  	/*
+>  	 * The default for k_d and integral_cutoff is 0, so we can
+>  	 * leave them as they are.
+> -- 
+> 2.17.1
+> 
+
+
+
