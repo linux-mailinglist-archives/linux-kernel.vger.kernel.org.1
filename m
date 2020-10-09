@@ -2,126 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3794E288D47
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:48:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BBF4288D49
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:49:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389490AbgJIPs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 11:48:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37470 "EHLO
+        id S2389289AbgJIPtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 11:49:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389144AbgJIPs3 (ORCPT
+        with ESMTP id S2388745AbgJIPtK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 11:48:29 -0400
-Received: from forward105o.mail.yandex.net (forward105o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55277C0613D2;
-        Fri,  9 Oct 2020 08:48:28 -0700 (PDT)
-Received: from mxback14j.mail.yandex.net (mxback14j.mail.yandex.net [IPv6:2a02:6b8:0:1619::90])
-        by forward105o.mail.yandex.net (Yandex) with ESMTP id 308CA420191C;
-        Fri,  9 Oct 2020 18:48:24 +0300 (MSK)
-Received: from myt6-efff10c3476a.qloud-c.yandex.net (myt6-efff10c3476a.qloud-c.yandex.net [2a02:6b8:c12:13a3:0:640:efff:10c3])
-        by mxback14j.mail.yandex.net (mxback/Yandex) with ESMTP id WAnDOLR12X-mNkSxxve;
-        Fri, 09 Oct 2020 18:48:24 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1602258504;
-        bh=nE34g5pkiv+lyAv8KGYmFqhMePEwK7biDs9eZPxRsC4=;
-        h=In-Reply-To:From:To:Subject:Cc:Date:References:Message-ID;
-        b=sKY1w1KQeRWoVPIxkWPy2BuJ0QArwURKhswJVOWva5qLqdXebdWa+pyW98QiNsN0m
-         sUKGAFBlPX1kRAxyRI+3amc4syVHoDxt2jmtpyWnd4EYHo0WOMBJ/bHN2nN98/5cUT
-         Kfc0P0cZp0LSrM5QEtJe380YrynzJkSmrPHs4TGY=
-Authentication-Results: mxback14j.mail.yandex.net; dkim=pass header.i=@yandex.ru
-Received: by myt6-efff10c3476a.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id TnvO1WRrh9-mNIuqjPx;
-        Fri, 09 Oct 2020 18:48:23 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-Subject: Re: [PATCH 0/6] KVM: x86: KVM_SET_SREGS.CR4 bug fixes and cleanup
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201007014417.29276-1-sean.j.christopherson@intel.com>
- <99334de1-ba3d-dfac-0730-e637d39b948f@yandex.ru>
- <20201008175951.GA9267@linux.intel.com>
- <7efe1398-24c0-139f-29fa-3d89b6013f34@yandex.ru>
- <20201009040453.GA10744@linux.intel.com>
- <5dfa55f3-ecdf-9f8d-2d45-d2e6e54f2daa@yandex.ru>
- <20201009153053.GA16234@linux.intel.com>
-From:   stsp <stsp2@yandex.ru>
-Message-ID: <5bf99bdf-b16f-8caf-ba61-860457606b8e@yandex.ru>
-Date:   Fri, 9 Oct 2020 18:48:21 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Fri, 9 Oct 2020 11:49:10 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B58C4C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 08:49:09 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id g29so7513020pgl.2
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 08:49:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=h1HEHBOion93MLuzoQuc94mGi98U7sgqTmm3qL/oASo=;
+        b=CUqOzKTUgZsduo47Nq6rZCIV7/fJXfEyh3NmSl07zo2XBRvYtDRrydUi0XObgLoQVZ
+         m/1Xf6X6vVlpZ/TdHlCcNGBfTesExjRmycqh3+PJUtWRR/YBGhjhrfgZhnc0YpcMJ2xG
+         CQlbmGQ1SW1eZLZC25P0Z2HKSgTIfCNFcuIIxZEucTHza+PxpnTMrTlUyzC8NX808NAm
+         tJubWQw4aJ4s2TBT0JvmtF3cYhAIUWc4UC0j7iBDrO+y4jynVquPdpD6LYOMxIN+MOVo
+         23Tb2gUn+dBYqswqfyUjy8F/OkiT5maogQmKi+RLDs8fmbWjXs8pGrddYhqh7SNU3lVB
+         DL8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=h1HEHBOion93MLuzoQuc94mGi98U7sgqTmm3qL/oASo=;
+        b=TwuBeyZJm3IerG4tpNXB9hhI8xOl6FL37L5MHVqrQjh4A8JoGaRZ3CAn4yOWgPV96H
+         2UxAQT/suxkTmIqnPwFN0WHJyAHvm7OFL1emuph6k2ue8kCTr3JtOhJJ1T1qWySZEyUK
+         bHBEnefKz4Wi8BWcEU7CoVBhgcmYmqV8DwTnAIubTfoLysXYFDzWnmFcARx5azf+5/m/
+         VE1qF/QLpWTwrcnWXkBkctwtv+EY7FgyTbTZ9HN5osBpXo6NH1udUTe5eIIMcNyAcCxF
+         T47LfpmpgrqTn3X/gtvG0P+Hp0UqsGRr9/3BGEixw8+Fyz8THCsAruGMUFVw/1ZLDDoK
+         XmmA==
+X-Gm-Message-State: AOAM533RSje4cWVxBCixcrhzlOnkbsWe7NlfbRUZZl2L7PGq4axMzdFO
+        XYtAiSWK3QKB/8T2MmdKgAAy
+X-Google-Smtp-Source: ABdhPJwpZlC16EgeNKCHgUtx/cKKuyBarJpHuYUCv6vFzXwERsObz0AYRgEb2QmoxGr5CSbOwC1m5g==
+X-Received: by 2002:a63:f84f:: with SMTP id v15mr3827674pgj.180.1602258549020;
+        Fri, 09 Oct 2020 08:49:09 -0700 (PDT)
+Received: from Mani-XPS-13-9360 ([2409:4072:6292:5a21:d5ff:f3e8:fcf2:ccc7])
+        by smtp.gmail.com with ESMTPSA id y5sm12547501pge.62.2020.10.09.08.49.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 09 Oct 2020 08:49:08 -0700 (PDT)
+Date:   Fri, 9 Oct 2020 21:19:02 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 02/10] bus: mhi: core: Move to using high priority
+ workqueue
+Message-ID: <20201009154902.GC4810@Mani-XPS-13-9360>
+References: <1600480955-16827-1-git-send-email-bbhatt@codeaurora.org>
+ <1600480955-16827-3-git-send-email-bbhatt@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20201009153053.GA16234@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1600480955-16827-3-git-send-email-bbhatt@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-09.10.2020 18:30, Sean Christopherson пишет:
-> On Fri, Oct 09, 2020 at 05:11:51PM +0300, stsp wrote:
->> 09.10.2020 07:04, Sean Christopherson пишет:
->>>> Hmm. But at least it was lying
->>>> similarly on AMD and Intel CPUs. :)
->>>> So I was able to reproduce the problems
->>>> myself.
->>>> Do you mean, any AMD tests are now useless, and we need to proceed with Intel
->>>> tests only?
->>> For anything VMXE related, yes.
->> What would be the expected behaviour on Intel, if it is set? Any difference
->> with AMD?
-> On Intel, userspace should be able to stuff CR4.VMXE=1 via KVM_SET_SREGS if
-> the 'nested' module param is 1, e.g. if 'modprobe kvm_intel nested=1'.  Note,
-> 'nested' is enabled by default on kernel 5.0 and later.
+On Fri, Sep 18, 2020 at 07:02:27PM -0700, Bhaumik Bhatt wrote:
+> MHI work is currently scheduled on the global/system workqueue and can
+> encounter delays on a stressed system. To avoid those unforeseen
+> delays which can hamper bootup or shutdown times, use a dedicated high
+> priority workqueue instead of the global/system workqueue.
+> 
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> ---
+>  drivers/bus/mhi/core/init.c | 7 +++++++
+>  drivers/bus/mhi/core/pm.c   | 2 +-
+>  include/linux/mhi.h         | 2 ++
+>  3 files changed, 10 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+> index 1b4161e..ca32563 100644
+> --- a/drivers/bus/mhi/core/init.c
+> +++ b/drivers/bus/mhi/core/init.c
+> @@ -890,6 +890,11 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
+>  	INIT_WORK(&mhi_cntrl->st_worker, mhi_pm_st_worker);
+>  	init_waitqueue_head(&mhi_cntrl->state_event);
+>  
+> +	mhi_cntrl->hiprio_wq = alloc_ordered_workqueue
+> +				("mhi_hiprio_wq", WQ_MEM_RECLAIM | WQ_HIGHPRI);
+> +	if (!mhi_cntrl->hiprio_wq)
 
-So if I understand you correctly, we
-need to test that:
-- with nested=0 VMXE gives EINVAL
-- with nested=1 VMXE changes nothing
-visible, except probably to allow guest
-to read that value (we won't test guest
-reading though).
+Printing an error here would be helpful.
 
-Is this correct?
+> +		goto error_alloc_cmd;
+> +
+>  	mhi_cmd = mhi_cntrl->mhi_cmd;
+>  	for (i = 0; i < NR_OF_CMD_RINGS; i++, mhi_cmd++)
+>  		spin_lock_init(&mhi_cmd->lock);
+> @@ -977,10 +982,12 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
+>  
+>  error_alloc_dev:
+>  	kfree(mhi_cntrl->mhi_cmd);
+> +	destroy_workqueue(mhi_cntrl->hiprio_wq);
 
+So you're destroying the queue two times? You don't need it here.
 
-> With AMD, setting CR4.VMXE=1 is never allowed as AMD doesn't support VMX,
+>  
+>  error_alloc_cmd:
+>  	vfree(mhi_cntrl->mhi_chan);
+>  	kfree(mhi_cntrl->mhi_event);
+> +	destroy_workqueue(mhi_cntrl->hiprio_wq);
+>  
+>  	return ret;
+>  }
+> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+> index ce4d969..9d4789d 100644
+> --- a/drivers/bus/mhi/core/pm.c
+> +++ b/drivers/bus/mhi/core/pm.c
+> @@ -597,7 +597,7 @@ int mhi_queue_state_transition(struct mhi_controller *mhi_cntrl,
+>  	list_add_tail(&item->node, &mhi_cntrl->transition_list);
+>  	spin_unlock_irqrestore(&mhi_cntrl->transition_lock, flags);
+>  
+> -	schedule_work(&mhi_cntrl->st_worker);
+> +	queue_work(mhi_cntrl->hiprio_wq, &mhi_cntrl->st_worker);
+>  
+>  	return 0;
+>  }
+> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+> index fb45a0f..7677676 100644
+> --- a/include/linux/mhi.h
+> +++ b/include/linux/mhi.h
+> @@ -338,6 +338,7 @@ struct mhi_controller_config {
+>   * @wlock: Lock for protecting device wakeup
+>   * @mhi_link_info: Device bandwidth info
+>   * @st_worker: State transition worker
+> + * @hiprio_wq: High priority workqueue
 
-OK, for that I can give you a
-Tested-by: Stas Sergeev <stsp@users.sourceforge.net>
+For what? Please state the purpose.
 
-because I confirm that on AMD it now
-consistently returns EINVAL, whereas
-without your patches it did random crap,
-depending on whether it is a first call to
-KVM_SET_SREGS, or not first.
+Thanks,
+Mani
 
-
->> But we do not use unrestricted guest.
->> We use v86 under KVM.
-> Unrestricted guest can kick in even if CR0.PG=1 && CR0.PE=1, e.g. there are
-> segmentation checks that apply if and only if unrestricted_guest=0.  Long story
-> short, without a deep audit, it's basically impossible to rule out a dependency
-> on unrestricted guest since you're playing around with v86.
-
-You mean "unrestricted_guest" as a module
-parameter, rather than the similar named CPU
-feature, right? So we may depend on
-unrestricted_guest parameter, but not on a
-hardware feature, correct?
-
-
->> The only other effect of setting VMXE was clearing VME. Which shouldn't
->> affect anything either, right?
-> Hmm, clearing VME would mean that exceptions/interrupts within the guest would
-> trigger a switch out of v86 and into vanilla protected mode.  v86 and PM have
-> different consistency checks, particularly for segmentation, so it's plausible
-> that clearing CR4.VME inadvertantly worked around the bug by avoiding invalid
-> guest state for v86.
-
-Lets assume that was the case.
-With those github guys its not possible
-to do any consistent checks. :(
-
+>   * @state_event: State change event
+>   * @status_cb: CB function to notify power states of the device (required)
+>   * @wake_get: CB function to assert device wake (optional)
+> @@ -421,6 +422,7 @@ struct mhi_controller {
+>  	spinlock_t wlock;
+>  	struct mhi_link_info mhi_link_info;
+>  	struct work_struct st_worker;
+> +	struct workqueue_struct *hiprio_wq;
+>  	wait_queue_head_t state_event;
+>  
+>  	void (*status_cb)(struct mhi_controller *mhi_cntrl,
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
