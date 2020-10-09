@@ -2,98 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 374CB28860F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 11:38:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15D37288611
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 11:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733145AbgJIJiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 05:38:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733140AbgJIJip (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 05:38:45 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F164EC0613D5
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 02:38:44 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id j22so4475042lfe.10
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 02:38:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wQZ85dJNsIyQtNjnJDTR2ihKmDYZl4o1wc+cD1p5Uys=;
-        b=EyBXWCuKn5Qfulspno0TqkUKWkmtsntf2WZ6aTm0tZypLd4Ah6UVqvyBZrfYrw6GC3
-         WIp1BqHp+4ACn92mT/zB7PHor5fdbk56BcW0Wj5dS6nelhlcD9LhtS9/8wSPEA7TQ0Za
-         23lJuLKWC6liqUXNRsqMQPBbZJ60Fd7YQW+SmmzHV1U93+juESSYcLseBKjKvTAMdMDa
-         owpSj+DJNBIOKN6aCuSWx4yPgN5rn7npeYJ6htvg9+kZTIy9j4gQG4DCOi4q/PLRGx7b
-         9ofFF7x+4XNaJK5r7q+Zi29ZhFqRf36GnKv6VWrvmwUH5oIRRhjFIIqIMTlLahRYR/cO
-         fWbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wQZ85dJNsIyQtNjnJDTR2ihKmDYZl4o1wc+cD1p5Uys=;
-        b=EGy6WP+b6rDVEZnaiQSfF1ECFKRhRNiqSQJhgpwipemw6VwlKuqOPmWpFcvkyvLsiF
-         Twc4E1t57oxYyFADUrkyM/WkQPyfU6PC38nUaz7/m9a2ckjyQZUB8ESt6jM8d1vy0+aT
-         7eLCaznY+AdqK+GnjTyb2uK1sBEju7629UxqkB1UfhcVMlIjJERJZANsthNMRWFEwDDD
-         ov/yfrmSc/S0F4SjnLgCf36U810FWQTtNBkfvEnSAwAvJLkeMTqGzujiGufWS4Kan8wc
-         motB5iHhdoAhklPHL1BIwfUzLOgZ++Lm0i27/HwgKwGaX7j7ultWnhwVgRzCOtpkyPOF
-         2FQQ==
-X-Gm-Message-State: AOAM530hslUGKDnQtKVicNxZlr0h5dA6wqMLkqWvRWHYkMpkljJbgnCH
-        7KQX1GM+QaHqXik4N+knmA7R40ZmDUF+5kKpBt68PQ==
-X-Google-Smtp-Source: ABdhPJw1Hr+9bP5FQEtUOU0p0RHYUw+Mo6ABI9TPDkRcxw0lXEEjdHuU++zVBajvD6EFYP2r4SQStnlEK25XtpZ3UuI=
-X-Received: by 2002:ac2:42d8:: with SMTP id n24mr3660836lfl.502.1602236323336;
- Fri, 09 Oct 2020 02:38:43 -0700 (PDT)
+        id S1733154AbgJIJi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 05:38:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60154 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733139AbgJIJi7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 05:38:59 -0400
+Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 674C72225A;
+        Fri,  9 Oct 2020 09:38:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602236338;
+        bh=GW8nn9+XG0kj1tkIE4csBRiTl3rs/3EEgpOCfNTksPI=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=0kJwaSe9TuW6RP6C7pGHmG17L6oyi7cCTK7C++1eiKDyWXbFFh3UxjWTjgK3DJQFy
+         vqkGFbW13Avj8E4i3foELQ7bDYDWckG797nQ/0iJtHp0/Lj0ajpdbGnrxLsgxk+XIv
+         Jl8Qm4tcxluu7Gyk3Jqf5GsVXJYtRgy1Xiloays0=
+Date:   Fri, 9 Oct 2020 11:38:55 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Luke D Jones <luke@ljones.dev>
+cc:     benjamin.tissoires@redhat.com, linux-kernel@vger.kernel.org,
+        linux-input@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH V6 RESEND] HID: ASUS: Add support for ASUS N-Key
+ keyboard
+In-Reply-To: <20200923215633.209724-1-luke@ljones.dev>
+Message-ID: <nycvar.YFH.7.76.2010091137510.3336@cbobk.fhfr.pm>
+References: <20200923215633.209724-1-luke@ljones.dev>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-References: <20201006142532.2247515-1-lars.povlsen@microchip.com>
- <20201006142532.2247515-3-lars.povlsen@microchip.com> <CACRpkda+OSgma3E0XxXUk8a2yrn5Hpu3a47cBN50rOkoSMkiwQ@mail.gmail.com>
- <87ft6px9wc.fsf@soft-dev15.microsemi.net>
-In-Reply-To: <87ft6px9wc.fsf@soft-dev15.microsemi.net>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 9 Oct 2020 11:38:32 +0200
-Message-ID: <CACRpkdYqKqqM8D0vrBWbo0=7OFthU2kcK2tjd45dD7DxEkaYWg@mail.gmail.com>
-Subject: Re: [RESEND PATCH v3 2/3] pinctrl: pinctrl-mchp-sgpio: Add pinctrl
- driver for Microsemi Serial GPIO
-To:     Lars Povlsen <lars.povlsen@microchip.com>
-Cc:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lars,
+On Thu, 24 Sep 2020, Luke D Jones wrote:
 
-I'm overall mostly happy with the latest posting (not the one I respond to here)
+> The ASUS N-Key keyboard uses the productId of 0x1866 and is used in
+> almost all modern ASUS gaming laptops with slight changes to the
+> firmware. This patch enables: Fn+key hotkeys, keyboard backlight
+> brightness control, and notify asus-wmi to toggle "fan-mode".
+> 
+> The keyboard has many of the same key outputs as the existing G752
+> keyboard including a few extras, and varies a little between laptop
+> models. The key-sets have been split and sub-grouped so that there
+> will not be conflict between key event codes used.
+> 
+> An existing key event used across some keyboards for "Mic Toggle"
+> has been changed to emit "F20" as this is what all the main
+> desktop environments are using.
+> 
+> Additionally this keyboard requires the LED interface to be
+> intitialised before such things as keyboard backlight control work.
+> 
+> Misc changes in scope: update some hardcoded comparisons to use an
+> available define.
+> 
+> Signed-off-by: Luke D Jones <luke@ljones.dev>
 
-On Thu, Oct 8, 2020 at 12:57 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
-> > On Tue, Oct 6, 2020 at 4:25 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
+Thanks for the patch. Looks good to me in general, one small nit before 
+this can be merged as a whole ...
 
-> >> +       gc->of_xlate            = microchip_sgpio_of_xlate;
-> >> +       gc->of_gpio_n_cells     = 3;
-> >
-> > So I'm sceptical to this.
-> >
-> > Why can't you just use the pin index in cell 0 directly
-> > and avoid cell 1?
-> >
->
-> You scepticism has surfaced before :-). The (now) 2 indices relates to
-> how the hardware address signals.
->
-> Each signal/pin is addressed by port, bit number and direction. We now
-> have the direction encoded in the bank/phandle.
+> ---
+>  drivers/hid/hid-asus.c                     | 188 ++++++++++++++++++---
+>  drivers/hid/hid-ids.h                      |   1 +
+>  include/linux/platform_data/x86/asus-wmi.h |   2 +
 
-I'm sorry but I just don't get it, I suppose. To me it is pretty
-straight-forward
-that the cells indicate the pin and then the flags. I do understand you
-need the port at all, since this is implicit from the reg property
-of the DT node. Are these two different things?
+... I'd like to get Ack from Andy (CCing) on the addition below to 
+asus-wmi.h.
 
-Yours,
-Linus Walleij
+[ ... snip ... ]
+> diff --git a/include/linux/platform_data/x86/asus-wmi.h b/include/linux/platform_data/x86/asus-wmi.h
+> index 897b8332a39f..05253cfe786c 100644
+> --- a/include/linux/platform_data/x86/asus-wmi.h
+> +++ b/include/linux/platform_data/x86/asus-wmi.h
+> @@ -27,6 +27,8 @@
+>  #define ASUS_WMI_METHODID_INIT		0x54494E49 /* INITialize */
+>  #define ASUS_WMI_METHODID_HKEY		0x59454B48 /* Hot KEY ?? */
+> 
+> +#define ASUS_WMI_METHODID_NOTIF		0x00100021 /* Notify method ?? */
+> +
+>  #define ASUS_WMI_UNSUPPORTED_METHOD	0xFFFFFFFE
+> 
+>  /* Wireless */
+
+Thanks,
+
+-- 
+Jiri Kosina
+SUSE Labs
+
