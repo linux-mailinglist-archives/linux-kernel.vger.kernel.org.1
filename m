@@ -2,281 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A712890BF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 20:26:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED6ED289126
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 20:35:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390406AbgJIS0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 14:26:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388114AbgJIS0V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 14:26:21 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11A87C0613D5
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 11:26:21 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id y20so4838323pll.12
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 11:26:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=tXXPpZHJQ0wRrGaibo/iiYcPbewRYAUfJ4x3oxucUqk=;
-        b=UiAbnnn53s5H1As902luwcCycpN3MIYHCfm2tMeGf8dOel4RN/O31cUhpTA77+ogQF
-         Mq8Uh8CbLEzzUK9dslW6QmyBkw0AVfD0n4nAEree1Qk8Syy3kjNC2rp4ULYfMe+b6oka
-         xwURuLpSZrrrMea0cGuXPQT62BiJ1lOVXJcGMIt5911GKxsqIZCeK7Qy/Pwj1Sy+NoYL
-         sWqnDBfVcTm9VKP0MO4qu5lEMMW2QxixCV7EGr31+aqNBG/nPyHk7FQY64JUYpnnks1L
-         cUeR8YPgKFnuYIM4Nb/roHpvQwjXGvJJ+b7zKrNpiJPkxlSjSXHl2g+Y2rDvwEDpLIHS
-         qz2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=tXXPpZHJQ0wRrGaibo/iiYcPbewRYAUfJ4x3oxucUqk=;
-        b=fDC+lmsD3fzwxZuh8i1oJdicuE1bHuAlddKj1b8OVl6hYp7nZZDiCToiqVEE0/gWlq
-         YQdXB0gCgJMP/0WBLQxE0LwuMMpbeFTnYm6t8Sy3sat/ksUa8+XTwY2Wn60kDkPBYxjJ
-         W6g9wRWvB0MimQmb50Bmv29RwVZvn3srnb/ZnZbMgZGejQxCiDu2e6spn8tAl2vzXBEC
-         8zsv/2v9UrgYXrGUDildRKa4s7MLHR1D8F0vowWCXkqLcJFUp8B0sDyLMMqZf9NRQZOj
-         izfzARSv/6xZ9/Ua0dyp+lfDXMKRiC2l/3uLAW39FCwJi69gQLpWoW/T5TDwmf6MGTuG
-         HT+A==
-X-Gm-Message-State: AOAM530IsLkbbkxOnkEoYKMBEHC/Q1NxlB7ORo8rYq0w3jv4UDn9vYgK
-        70ZhjjGfVY14daN+nvOvkpz84Q==
-X-Google-Smtp-Source: ABdhPJwdW/vkRD9fKqVLIXSY2C2ab9lHl/am3M9a2IXTxRct4hTWWwIPvX2viyLp3i6ZEv++JXuxBg==
-X-Received: by 2002:a17:902:b718:b029:d4:ccbc:7f2b with SMTP id d24-20020a170902b718b02900d4ccbc7f2bmr11041pls.10.1602267980378;
-        Fri, 09 Oct 2020 11:26:20 -0700 (PDT)
-Received: from [10.213.166.37] (fmdmzpr03-ext.fm.intel.com. [192.55.54.38])
-        by smtp.gmail.com with ESMTPSA id e16sm12346661pfh.45.2020.10.09.11.26.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 09 Oct 2020 11:26:19 -0700 (PDT)
-From:   "Sean V Kelley" <sean.v.kelley@intel.com>
-To:     "Bjorn Helgaas" <helgaas@kernel.org>
-Cc:     "Sean V Kelley" <seanvk.dev@oregontracks.org>, bhelgaas@google.com,
-        Jonathan.Cameron@huawei.com, rafael.j.wysocki@intel.com,
-        ashok.raj@intel.com, tony.luck@intel.com,
-        sathyanarayanan.kuppuswamy@intel.com, qiuxu.zhuo@intel.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 11/14] PCI/RCEC: Add RCiEP's linked RCEC to AER/ERR
-Date:   Fri, 09 Oct 2020 11:26:14 -0700
-X-Mailer: MailMate (1.13.2r5673)
-Message-ID: <41B2B0A9-80B0-41DA-9FF3-A5D9465E6E08@intel.com>
-In-Reply-To: <20201009175745.GA3489710@bjorn-Precision-5520>
-References: <20201009175745.GA3489710@bjorn-Precision-5520>
+        id S2388430AbgJISfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 14:35:10 -0400
+Received: from mga11.intel.com ([192.55.52.93]:34539 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390444AbgJISdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 14:33:00 -0400
+IronPort-SDR: w5GTKjaVf4dLaVY3Y8m55HlQhrSBEtd2qstzeBZsslM+Rz8+tytnZ3Xsz2Yi7yg18ejQ8CqMQB
+ AK+LOTYuL6Jw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9769"; a="162060802"
+X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
+   d="scan'208";a="162060802"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 11:32:59 -0700
+IronPort-SDR: yZXJf3oCmwAj4Z47bBPhK287xdpXXW35jNQwBfwR2VishkrZYF1Jn6uYOM6WQJ/Fy3eRI51sB9
+ F6qQn4nFM1Eg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
+   d="scan'208";a="518780130"
+Received: from lkp-server02.sh.intel.com (HELO 80eb06af76cf) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 09 Oct 2020 11:32:58 -0700
+Received: from kbuild by 80eb06af76cf with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kQx7U-0000g1-JE; Fri, 09 Oct 2020 18:27:56 +0000
+Date:   Sat, 10 Oct 2020 02:27:20 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:perf/urgent] BUILD SUCCESS
+ 6d6b8b9f4fceab7266ca03d194f60ec72bd4b654
+Message-ID: <5f80ab88.R6fNWEP5ay26wud3%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  perf/urgent
+branch HEAD: 6d6b8b9f4fceab7266ca03d194f60ec72bd4b654  perf: Fix task_function_call() error handling
 
-On 9 Oct 2020, at 10:57, Bjorn Helgaas wrote:
+elapsed time: 724m
 
-> On Fri, Oct 02, 2020 at 11:47:32AM -0700, Sean V Kelley wrote:
->> From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
->>
->> When attempting error recovery for an RCiEP associated with an RCEC 
->> device,
->> there needs to be a way to update the Root Error Status, the 
->> Uncorrectable
->> Error Status and the Uncorrectable Error Severity of the parent RCEC.
->> In some non-native cases in which there is no OS visible device
->> associated with the RCiEP, there is nothing to act upon as the 
->> firmware
->> is acting before the OS. So add handling for the linked 'rcec' in 
->> AER/ERR
->> while taking into account non-native cases.
->>
->> Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
->> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
->> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
->> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
->> ---
->>  drivers/pci/pcie/aer.c |  9 +++++----
->>  drivers/pci/pcie/err.c | 39 ++++++++++++++++++++++++++++-----------
->>  2 files changed, 33 insertions(+), 15 deletions(-)
->>
->> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
->> index 65dff5f3457a..dccdba60b5d9 100644
->> --- a/drivers/pci/pcie/aer.c
->> +++ b/drivers/pci/pcie/aer.c
->> @@ -1358,17 +1358,18 @@ static int aer_probe(struct pcie_device *dev)
->>  static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
->>  {
->>  	int aer = dev->aer_cap;
->> +	int rc = 0;
->>  	u32 reg32;
->> -	int rc;
->> -
->>
->>  	/* Disable Root's interrupt in response to error messages */
->>  	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
->>  	reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
->>  	pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
->>
->> -	rc = pci_bus_error_reset(dev);
->> -	pci_info(dev, "Root Port link has been reset\n");
->> +	if (pci_pcie_type(dev) != PCI_EXP_TYPE_RC_EC) {
->> +		rc = pci_bus_error_reset(dev);
->> +		pci_info(dev, "Root Port link has been reset\n");
->> +	}
->>
->>  	/* Clear Root Error Status */
->>  	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, &reg32);
->> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
->> index 38abd7984996..956ad4c86d53 100644
->> --- a/drivers/pci/pcie/err.c
->> +++ b/drivers/pci/pcie/err.c
->> @@ -149,7 +149,8 @@ static int report_resume(struct pci_dev *dev, 
->> void *data)
->>  /**
->>   * pci_walk_bridge - walk bridges potentially AER affected
->>   * @bridge   bridge which may be an RCEC with associated RCiEPs,
->> - *           an RCiEP associated with an RCEC, or a Port.
->> + *           or a Port.
->> + * @dev      an RCiEP lacking an associated RCEC.
->>   * @cb       callback to be called for each device found
->>   * @userdata arbitrary pointer to be passed to callback.
->>   *
->> @@ -160,13 +161,20 @@ static int report_resume(struct pci_dev *dev, 
->> void *data)
->>   * If the device provided has no subordinate bus, call the provided
->>   * callback on the device itself.
->>   */
->> -static void pci_walk_bridge(struct pci_dev *bridge, int (*cb)(struct 
->> pci_dev *, void *),
->> +static void pci_walk_bridge(struct pci_dev *bridge, struct pci_dev 
->> *dev,
->> +			    int (*cb)(struct pci_dev *, void *),
->>  			    void *userdata)
->>  {
->> -	if (bridge->subordinate)
->> +	/*
->> +	 * In a non-native case where there is no OS-visible reporting
->> +	 * device the bridge will be NULL, i.e., no RCEC, no PORT.
->> +	 */
->> +	if (bridge && bridge->subordinate)
->>  		pci_walk_bus(bridge->subordinate, cb, userdata);
->> -	else
->> +	else if (bridge)
->>  		cb(bridge, userdata);
->> +	else
->> +		cb(dev, userdata);
->>  }
->>
->>  static pci_ers_result_t flr_on_rciep(struct pci_dev *dev)
->> @@ -196,16 +204,25 @@ pci_ers_result_t pcie_do_recovery(struct 
->> pci_dev *dev,
->>  	type = pci_pcie_type(dev);
->>  	if (type == PCI_EXP_TYPE_ROOT_PORT ||
->>  	    type == PCI_EXP_TYPE_DOWNSTREAM ||
->> -	    type == PCI_EXP_TYPE_RC_EC ||
->> -	    type == PCI_EXP_TYPE_RC_END)
->> +	    type == PCI_EXP_TYPE_RC_EC)
->>  		bridge = dev;
->> +	else if (type == PCI_EXP_TYPE_RC_END)
->> +		bridge = dev->rcec;
->>  	else
->>  		bridge = pci_upstream_bridge(dev);
->>
->>  	pci_dbg(dev, "broadcast error_detected message\n");
->>  	if (state == pci_channel_io_frozen) {
->> -		pci_walk_bridge(bridge, report_frozen_detected, &status);
->> +		pci_walk_bridge(bridge, dev, report_frozen_detected, &status);
->>  		if (type == PCI_EXP_TYPE_RC_END) {
->> +			/*
->> +			 * The callback only clears the Root Error Status
->> +			 * of the RCEC (see aer.c). Only perform this for the
->> +			 * native case, i.e., an RCEC is present.
->> +			 */
->> +			if (bridge)
->> +				reset_subordinate_devices(bridge);
->
-> Help me understand this.  There are lots of callbacks in this picture,
-> but I guess this "callback only clears Root Error Status" must refer
-> to aer_root_reset(), i.e., the reset_subordinate_devices pointer?
+configs tested: 147
+configs skipped: 3
 
-The ‘bridge’ in this case will always be dev->rcec, the event 
-collector for the associated RC_END. And that’s what’s being cleared 
-in aer.c via aer_root_reset() as the callback. It’s also being checked 
-for native/non-native here.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
->
-> Of course, the caller of pcie_do_recovery() supplied that pointer.
-> And we can infer that it must be aer_root_reset(), not
-> dpc_reset_link(), because RCECs and RCiEPs are not allowed to
-> implement DPC.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+riscv                    nommu_virt_defconfig
+powerpc                      katmai_defconfig
+mips                      loongson3_defconfig
+s390                                defconfig
+arm                            lart_defconfig
+m68k                          atari_defconfig
+powerpc                     pseries_defconfig
+mips                       rbtx49xx_defconfig
+arc                     nsimosci_hs_defconfig
+sh                        sh7757lcr_defconfig
+m68k                          hp300_defconfig
+arc                    vdk_hs38_smp_defconfig
+sparc64                          alldefconfig
+arm                     am200epdkit_defconfig
+arm                        magician_defconfig
+powerpc                      ppc44x_defconfig
+i386                             allyesconfig
+arm                           corgi_defconfig
+arc                      axs103_smp_defconfig
+arm                         s3c6400_defconfig
+arm                           efm32_defconfig
+powerpc                 mpc8560_ads_defconfig
+arm                             rpc_defconfig
+m68k                          sun3x_defconfig
+mips                      pistachio_defconfig
+powerpc                   motionpro_defconfig
+sparc64                             defconfig
+arc                        nsim_700_defconfig
+arm                        multi_v7_defconfig
+sh                           se7724_defconfig
+arm                       aspeed_g5_defconfig
+sh                           sh2007_defconfig
+sh                        sh7785lcr_defconfig
+sh                   rts7751r2dplus_defconfig
+arm                         cm_x300_defconfig
+powerpc                      walnut_defconfig
+mips                     loongson1b_defconfig
+powerpc                      obs600_defconfig
+riscv                               defconfig
+sh                             shx3_defconfig
+arm                       spear13xx_defconfig
+mips                 decstation_r4k_defconfig
+mips                           gcw0_defconfig
+nios2                         3c120_defconfig
+sh                          rsk7203_defconfig
+powerpc                 mpc832x_mds_defconfig
+sh                        dreamcast_defconfig
+xtensa                              defconfig
+arm                       mainstone_defconfig
+powerpc                     tqm5200_defconfig
+um                             i386_defconfig
+openrisc                 simple_smp_defconfig
+sh                        edosk7705_defconfig
+powerpc                      pcm030_defconfig
+xtensa                    xip_kc705_defconfig
+arm                          pcm027_defconfig
+sh                         microdev_defconfig
+arm                        mvebu_v5_defconfig
+arm                            xcep_defconfig
+parisc                generic-32bit_defconfig
+microblaze                    nommu_defconfig
+sh                 kfr2r09-romimage_defconfig
+mips                      pic32mzda_defconfig
+arc                            hsdk_defconfig
+arm                          lpd270_defconfig
+arc                        vdk_hs38_defconfig
+sh                   secureedge5410_defconfig
+arm                        trizeps4_defconfig
+arm                         nhk8815_defconfig
+mips                           ip28_defconfig
+powerpc                     powernv_defconfig
+m68k                         apollo_defconfig
+arm                         mv78xx0_defconfig
+h8300                     edosk2674_defconfig
+sh                             espt_defconfig
+arm                   milbeaut_m10v_defconfig
+mips                    maltaup_xpa_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20201009
+i386                 randconfig-a005-20201009
+i386                 randconfig-a001-20201009
+i386                 randconfig-a004-20201009
+i386                 randconfig-a002-20201009
+i386                 randconfig-a003-20201009
+x86_64               randconfig-a012-20201009
+x86_64               randconfig-a015-20201009
+x86_64               randconfig-a013-20201009
+x86_64               randconfig-a014-20201009
+x86_64               randconfig-a011-20201009
+x86_64               randconfig-a016-20201009
+i386                 randconfig-a015-20201009
+i386                 randconfig-a013-20201009
+i386                 randconfig-a014-20201009
+i386                 randconfig-a016-20201009
+i386                 randconfig-a011-20201009
+i386                 randconfig-a012-20201009
+riscv                    nommu_k210_defconfig
+riscv                          rv32_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-Correct.
+clang tested configs:
+x86_64               randconfig-a004-20201009
+x86_64               randconfig-a003-20201009
+x86_64               randconfig-a005-20201009
+x86_64               randconfig-a001-20201009
+x86_64               randconfig-a002-20201009
+x86_64               randconfig-a006-20201009
 
->
-> I wish we didn't have either this assumption about what
-> reset_subordinate_devices points to, or the assumption about what
-> aer_root_reset() does.  They both seem a little bit tenuous.
-
-Agree. It’s the relationship between the RC_END and the RC_EC.
-
->
-> We already made aer_root_reset() smart enough to check for RCECs.  Can
-> we put the FLR there, too?  Then we wouldn't have this weird situation
-> where reset_subordinate_devices() does a reset and clears error
-> status, EXCEPT for this case where it only clears error status and we
-> do the reset here?
-
-We could add the smarts to aer_root_reset() to check for an RC_END in 
-that callback and perform the clear there on its RC_EC. We just 
-wouldn’t map ‘bridge’ to dev->rcec for RC_END in 
-pcie_do_recovery() which would simplify things.
-
-Further, the FLR in the case of flr_on_rciep() below is specific to the 
-RCiEP itself. So it could be performed either in aer_root_reset() or 
-remain in the pcie_do_recovery().
-
-That should work.
-
-Sean
-
-
->
->>  			status = flr_on_rciep(dev);
->>  			if (status != PCI_ERS_RESULT_RECOVERED) {
->>  				pci_warn(dev, "function level reset failed\n");
->> @@ -219,13 +236,13 @@ pci_ers_result_t pcie_do_recovery(struct 
->> pci_dev *dev,
->>  			}
->>  		}
->>  	} else {
->> -		pci_walk_bridge(bridge, report_normal_detected, &status);
->> +		pci_walk_bridge(bridge, dev, report_normal_detected, &status);
->>  	}
->>
->>  	if (status == PCI_ERS_RESULT_CAN_RECOVER) {
->>  		status = PCI_ERS_RESULT_RECOVERED;
->>  		pci_dbg(dev, "broadcast mmio_enabled message\n");
->> -		pci_walk_bridge(bridge, report_mmio_enabled, &status);
->> +		pci_walk_bridge(bridge, dev, report_mmio_enabled, &status);
->>  	}
->>
->>  	if (status == PCI_ERS_RESULT_NEED_RESET) {
->> @@ -236,14 +253,14 @@ pci_ers_result_t pcie_do_recovery(struct 
->> pci_dev *dev,
->>  		 */
->>  		status = PCI_ERS_RESULT_RECOVERED;
->>  		pci_dbg(dev, "broadcast slot_reset message\n");
->> -		pci_walk_bridge(bridge, report_slot_reset, &status);
->> +		pci_walk_bridge(bridge, dev, report_slot_reset, &status);
->>  	}
->>
->>  	if (status != PCI_ERS_RESULT_RECOVERED)
->>  		goto failed;
->>
->>  	pci_dbg(dev, "broadcast resume message\n");
->> -	pci_walk_bridge(bridge, report_resume, &status);
->> +	pci_walk_bridge(bridge, dev, report_resume, &status);
->>
->>  	if (type == PCI_EXP_TYPE_ROOT_PORT ||
->>  	    type == PCI_EXP_TYPE_DOWNSTREAM ||
->> -- 
->> 2.28.0
->>
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
