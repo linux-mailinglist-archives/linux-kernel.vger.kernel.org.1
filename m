@@ -2,94 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EBC12884F4
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5E842884FD
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732564AbgJIILU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 04:11:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38982 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732522AbgJIILT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 04:11:19 -0400
-Received: from gaia (unknown [95.149.105.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2E2B221789;
-        Fri,  9 Oct 2020 08:11:16 +0000 (UTC)
-Date:   Fri, 9 Oct 2020 09:11:13 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     Andrey Konovalov <andreyknvl@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 29/39] arm64: mte: Switch GCR_EL1 in kernel entry and
- exit
-Message-ID: <20201009081111.GA23638@gaia>
-References: <cover.1601593784.git.andreyknvl@google.com>
- <1f2681fdff1aa1096df949cb8634a9be6bf4acc4.1601593784.git.andreyknvl@google.com>
- <20201002140652.GG7034@gaia>
- <1b2327ee-5f30-e412-7359-32a7a38b4c8d@arm.com>
+        id S1732509AbgJIIOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 04:14:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732337AbgJIIOm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 04:14:42 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F173C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 01:14:42 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kQnXn-0006kZ-A8; Fri, 09 Oct 2020 10:14:27 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kQnXl-00053q-Gt; Fri, 09 Oct 2020 10:14:25 +0200
+Date:   Fri, 9 Oct 2020 10:14:25 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Christian Eggers <ceggers@arri.de>
+Cc:     Oleksij Rempel <linux@rempel-privat.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        David Laight <David.Laight@ACULAB.COM>,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        stable@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-i2c@vger.kernel.org
+Subject: Re: [PATCH v5 3/3] i2c: imx: Don't generate STOP condition if
+ arbitration has been lost
+Message-ID: <20201009081425.GD817@pengutronix.de>
+References: <20201007084524.10835-1-ceggers@arri.de>
+ <20201007084524.10835-4-ceggers@arri.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1b2327ee-5f30-e412-7359-32a7a38b4c8d@arm.com>
+In-Reply-To: <20201007084524.10835-4-ceggers@arri.de>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 10:13:39 up 35 days, 22:21, 227 users,  load average: 10.92, 14.39,
+ 9.84
 User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 07:24:12PM +0100, Vincenzo Frascino wrote:
-> On 10/2/20 3:06 PM, Catalin Marinas wrote:
-> > On Fri, Oct 02, 2020 at 01:10:30AM +0200, Andrey Konovalov wrote:
-> >> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-> >> index 7c67ac6f08df..d1847f29f59b 100644
-> >> --- a/arch/arm64/kernel/mte.c
-> >> +++ b/arch/arm64/kernel/mte.c
-> >> @@ -23,6 +23,8 @@
-> >>  #include <asm/ptrace.h>
-> >>  #include <asm/sysreg.h>
-> >>  
-> >> +u64 gcr_kernel_excl __ro_after_init;
-> >> +
-> >>  static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap)
-> >>  {
-> >>  	pte_t old_pte = READ_ONCE(*ptep);
-> >> @@ -120,6 +122,13 @@ void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
-> >>  	return ptr;
-> >>  }
-> >>  
-> >> +void mte_init_tags(u64 max_tag)
-> >> +{
-> >> +	u64 incl = GENMASK(max_tag & MTE_TAG_MAX, 0);
-> > 
-> > Nitpick: it's not obvious that MTE_TAG_MAX is a mask, so better write
-> > this as GENMASK(min(max_tag, MTE_TAG_MAX), 0).
+On Wed, Oct 07, 2020 at 10:45:24AM +0200, Christian Eggers wrote:
+> If arbitration is lost, the master automatically changes to slave mode.
+> I2SR_IBB may or may not be reset by hardware. Raising a STOP condition
+> by resetting I2CR_MSTA has no effect and will not clear I2SR_IBB.
 > 
-> The two things do not seem equivalent because the format of the tags in KASAN is
-> 0xFF and in MTE is 0xF, hence if extract the minimum whatever is the tag passed
-> by KASAN it will always be MTE_TAG_MAX.
+> So calling i2c_imx_bus_busy() is not required and would busy-wait until
+> timeout.
 > 
-> To make it cleaner I propose: GENMASK(FIELD_GET(MTE_TAG_MAX, max_tag), 0);
+> Signed-off-by: Christian Eggers <ceggers@arri.de>
+> Tested (not extensively) on Vybrid VF500 (Toradex VF50):
+> Tested-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Cc: stable@vger.kernel.org # Requires trivial backporting, simple remove
+>                            # the 3rd argument from the calls to
+>                            # i2c_imx_bus_busy().
 
-I don't think that's any clearer since FIELD_GET still assumes that
-MTE_TAG_MAX is a mask. I think it's better to add a comment on why this
-is needed, as you explained above that the KASAN tags go to 0xff.
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Thank you!
 
-If you want to get rid of MTE_TAG_MAX altogether, just do a
 
-	max_tag &= (1 << MAX_TAG_SIZE) - 1;
-
-before setting incl (a comment is still useful).
+> ---
+>  drivers/i2c/busses/i2c-imx.c | 12 ++++++++++--
+>  1 file changed, 10 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
+> index 63575af41c09..5d8a79319b2b 100644
+> --- a/drivers/i2c/busses/i2c-imx.c
+> +++ b/drivers/i2c/busses/i2c-imx.c
+> @@ -615,6 +615,8 @@ static void i2c_imx_stop(struct imx_i2c_struct *i2c_imx, bool atomic)
+>  		/* Stop I2C transaction */
+>  		dev_dbg(&i2c_imx->adapter.dev, "<%s>\n", __func__);
+>  		temp = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2CR);
+> +		if (!(temp & I2CR_MSTA))
+> +			i2c_imx->stopped = 1;
+>  		temp &= ~(I2CR_MSTA | I2CR_MTX);
+>  		if (i2c_imx->dma)
+>  			temp &= ~I2CR_DMAEN;
+> @@ -778,9 +780,12 @@ static int i2c_imx_dma_read(struct imx_i2c_struct *i2c_imx,
+>  		 */
+>  		dev_dbg(dev, "<%s> clear MSTA\n", __func__);
+>  		temp = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2CR);
+> +		if (!(temp & I2CR_MSTA))
+> +			i2c_imx->stopped = 1;
+>  		temp &= ~(I2CR_MSTA | I2CR_MTX);
+>  		imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2CR);
+> -		i2c_imx_bus_busy(i2c_imx, 0, false);
+> +		if (!i2c_imx->stopped)
+> +			i2c_imx_bus_busy(i2c_imx, 0, false);
+>  	} else {
+>  		/*
+>  		 * For i2c master receiver repeat restart operation like:
+> @@ -905,9 +910,12 @@ static int i2c_imx_read(struct imx_i2c_struct *i2c_imx, struct i2c_msg *msgs,
+>  				dev_dbg(&i2c_imx->adapter.dev,
+>  					"<%s> clear MSTA\n", __func__);
+>  				temp = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2CR);
+> +				if (!(temp & I2CR_MSTA))
+> +					i2c_imx->stopped =  1;
+>  				temp &= ~(I2CR_MSTA | I2CR_MTX);
+>  				imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2CR);
+> -				i2c_imx_bus_busy(i2c_imx, 0, atomic);
+> +				if (!i2c_imx->stopped)
+> +					i2c_imx_bus_busy(i2c_imx, 0, atomic);
+>  			} else {
+>  				/*
+>  				 * For i2c master receiver repeat restart operation like:
+> -- 
+> Christian Eggers
+> Embedded software developer
+> 
+> Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+> Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
+> Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
+> Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
+> Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
 
 -- 
-Catalin
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
