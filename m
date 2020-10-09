@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CE70289BB0
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 00:19:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04448289BB3
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 00:21:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391068AbgJIWTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 18:19:00 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:39224 "EHLO
+        id S2391091AbgJIWVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 18:21:42 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:39342 "EHLO
         kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731594AbgJIWS6 (ORCPT
+        with ESMTP id S1732320AbgJIWVk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 18:18:58 -0400
+        Fri, 9 Oct 2020 18:21:40 -0400
 Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id DF3BA29EC3;
-        Fri,  9 Oct 2020 18:18:51 -0400 (EDT)
-Date:   Sat, 10 Oct 2020 09:18:53 +1100 (AEDT)
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 522E829EC7;
+        Fri,  9 Oct 2020 18:21:36 -0400 (EDT)
+Date:   Sat, 10 Oct 2020 09:21:38 +1100 (AEDT)
 From:   Finn Thain <fthain@telegraphics.com.au>
 To:     Arnd Bergmann <arnd@arndb.de>
 cc:     linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
@@ -36,10 +36,10 @@ cc:     linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
         linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
         linux-m68k@lists.linux-m68k.org,
         linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 01/13] timekeeping: add CONFIG_LEGACY_TIMER_TICK
-In-Reply-To: <20201008154651.1901126-2-arnd@arndb.de>
-Message-ID: <alpine.LNX.2.23.453.2010100820110.12@nippy.intranet>
-References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-2-arnd@arndb.de>
+Subject: Re: [RFC 13/13] m68k: mac: convert to generic clockevent
+In-Reply-To: <20201008154651.1901126-14-arnd@arndb.de>
+Message-ID: <alpine.LNX.2.23.453.2010091900150.12@nippy.intranet>
+References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-14-arnd@arndb.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
@@ -48,110 +48,52 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi Arnd,
 
+Perhaps patch 13 does not belong in this series (?).
+
+All m68k platforms will need conversion before the TODO can be removed 
+from Documentation/features/time/clockevents/arch-support.txt.
+
+On m68k, HZ is fixed at 100. Without addressing that, would there be any 
+benefit from adopting GENERIC_CLOCKEVENTS as per this RFC patch?
+
 On Thu, 8 Oct 2020, Arnd Bergmann wrote:
 
-> All platforms that currently do not use generic clockevents roughly call
-> the same set of functions in their timer interrupts: xtime_update(),
-> update_process_times() and profile_tick(), sometimes in a different
-> sequence.
+> Now that the infrastructure allows kernels to have both legacy timer 
+> ticks and clockevent drivers in the same image, start by moving one 
+> platform to generic clockevents.
 > 
-> Add a helper function that performs all three of them, to make the
-> callers more uniform and simplify the interface.
+> As qemu only supports the q800 platform among the classic m68k, use that 
+> as an example.
 > 
+
+Correct VIA emulation is suprisingly difficult, so this kind of work 
+should be tested on real hardware.
+
+I say that because when I did the clocksource conversion for m68k I ran 
+into a bug in QEMU (since fixed) and also because I once worked on some of 
+the bugs in the emulated VIA device used in MAME/MESS.
+
+> I also tried adding oneshot mode, which was successful but broke the 
+> clocksource. It's probably not hard to make it work properly, but this 
+> is where I've stopped.
+> 
+
+I'm not so sure that one timer is able to support both a clocksource 
+driver and a clockevent driver. In some cases we may have to drop the 
+clocksource driver (i.e. fall back on the jiffies clocksource).
+
+Anyway, even on Macs with only one VIA chip we still have two timers. So I 
+think we should try to use Timer 1 as a freerunning clocksource and Timer 
+2 as a oneshot clock event. This may result in better accuracy and simpler 
+code. This may require some experimentation though.
+
 > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  include/linux/timekeeping.h |  1 +
->  kernel/time/Kconfig         |  7 +++++++
->  kernel/time/Makefile        |  1 +
->  kernel/time/tick-legacy.c   | 19 +++++++++++++++++++
->  4 files changed, 28 insertions(+)
->  create mode 100644 kernel/time/tick-legacy.c
-> 
-> diff --git a/include/linux/timekeeping.h b/include/linux/timekeeping.h
-> index 7f7e4a3f4394..3670cb1670ff 100644
-> --- a/include/linux/timekeeping.h
-> +++ b/include/linux/timekeeping.h
-> @@ -12,6 +12,7 @@ extern int timekeeping_suspended;
->  /* Architecture timer tick functions: */
->  extern void update_process_times(int user);
->  extern void xtime_update(unsigned long ticks);
-> +extern void legacy_timer_tick(unsigned long ticks);
->  
->  /*
->   * Get and set timeofday
-> diff --git a/kernel/time/Kconfig b/kernel/time/Kconfig
-> index a09b1d61df6a..f2b0cfeade47 100644
-> --- a/kernel/time/Kconfig
-> +++ b/kernel/time/Kconfig
-> @@ -61,6 +61,13 @@ config POSIX_CPU_TIMERS_TASK_WORK
->  	bool
->  	default y if POSIX_TIMERS && HAVE_POSIX_CPU_TIMERS_TASK_WORK
->  
-> +config LEGACY_TIMER_TICK
-> +	bool
-> +	help
-> +	  The legacy timer tick helper is used by platforms that
-> +	  lack support for the generic clockevent framework.
-> +	  New platforms should use generic clockevents instead.
-> +
->  if GENERIC_CLOCKEVENTS
->  menu "Timers subsystem"
->  
-> diff --git a/kernel/time/Makefile b/kernel/time/Makefile
-> index c8f00168afe8..1fb1c1ef6a19 100644
-> --- a/kernel/time/Makefile
-> +++ b/kernel/time/Makefile
-> @@ -16,6 +16,7 @@ ifeq ($(CONFIG_GENERIC_CLOCKEVENTS_BROADCAST),y)
->  endif
->  obj-$(CONFIG_GENERIC_SCHED_CLOCK)		+= sched_clock.o
->  obj-$(CONFIG_TICK_ONESHOT)			+= tick-oneshot.o tick-sched.o
-> +obj-$(CONFIG_LEGACY_TIMER_TICK)			+= tick-legacy.o
->  obj-$(CONFIG_HAVE_GENERIC_VDSO)			+= vsyscall.o
->  obj-$(CONFIG_DEBUG_FS)				+= timekeeping_debug.o
->  obj-$(CONFIG_TEST_UDELAY)			+= test_udelay.o
-> diff --git a/kernel/time/tick-legacy.c b/kernel/time/tick-legacy.c
-> new file mode 100644
-> index 000000000000..73c5a0af4743
-> --- /dev/null
-> +++ b/kernel/time/tick-legacy.c
-> @@ -0,0 +1,19 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Timer tick function for architectures that lack generic clockevents,
-> + * consolidated here from m68k/ia64/parisc/arm.
-> + */
-> +
-> +#include <linux/irq.h>
-> +#include <linux/profile.h>
-> +#include <linux/timekeeper_internal.h>
-> +
-> +#include "tick-internal.h"
-> +
-> +void legacy_timer_tick(unsigned long ticks)
-> +{
-> +	if (ticks)
-> +		xtime_update(ticks);
-> +	update_process_times(user_mode(get_irq_regs()));
-> +	profile_tick(CPU_PROFILING);
-> +}
+> I have never tried implementing a clockevent or clocksource
+> driver in the past, so this is really just an experiment and
+> I expect I got something wrong.
 > 
 
-It's good to see this code refactored in this way because, as well as 
-de-duplication, it reveals the logic that's common to the relevant 
-platforms and may shed some light on the need for that logic.
-
-Yet it's not clear to me that the clockevents framework is able to replace 
-that logic on all of the affected hardware. I suppose it remains to be 
-seen.
-
-I hate to quibble about naming, but you seem to be using "legacy" here to 
-mean "deprecated" (?) Is it a good idea to prepend such adjectives to 
-symbol names?
-
-IMO, the term "legacy" is redundant in this context. That term covers a 
-large portion of kernel code, a large number of hardware features in 
-current silicon, a large portion of the userspace ABI, a large number of 
-production Linux systems, probably all "Unix" systems, etc.
-
-As a corollary, cutting edge ("non-legacy") code is often kept out of open 
-source projects by the owners of the intellectual property rights.
+Writing clockevent drivers is new to me too. I'm still trying to discover 
+what the implications might be if the only available clockevent device 
+offers oneshot mode or periodic mode but not both.
