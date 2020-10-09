@@ -2,84 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF0E2288C64
+	by mail.lfdr.de (Postfix) with ESMTP id 0006E288C65
 	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389222AbgJIPRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 11:17:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40722 "EHLO mail.kernel.org"
+        id S2389230AbgJIPRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 11:17:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40740 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387978AbgJIPRP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 11:17:15 -0400
+        id S2387978AbgJIPRQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 11:17:16 -0400
 Received: from localhost.localdomain (c-73-209-127-30.hsd1.il.comcast.net [73.209.127.30])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5C2AA222C2;
-        Fri,  9 Oct 2020 15:17:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C53FF222C3;
+        Fri,  9 Oct 2020 15:17:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602256634;
-        bh=C3voXAnVOVWTXwItSqn/8ESKA7Phe7brw1YHxvJYzkA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=QW5d9vCnP6o0oy3jfYbeeqVnmdNyaLlsSp4qA8P+L/3O8WbH14IQBBzv0diSCE9h7
-         C6WUKSzfu3lko9wX5lUuaKqT579S8MKChrE2RV3KEVCXXMaZbSeMU/tFNZhBZKcILN
-         1VW8R3opjSPsSGYAHlY614heOv8HeS5cWxoUU0dk=
+        s=default; t=1602256636;
+        bh=20EOdtXnWxOJ876IXC/aCEshOJ/JHm8zvad+Y0ixElM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:In-Reply-To:
+         References:From;
+        b=eWShpu4ucZTDc2T8SCVWasr9UxCOvXYPhz/JyCbl7Ih1azpEKGjmF2pl+o4yA2Rgz
+         hPEfqm8KThgLrDRMkl1O4vUpKoj/XabJMyR7W38M20rzNU2VB3YgNRG7IT92yhucds
+         QiXqWvny7YYPz6OyevP7T/pV4YguyxjibPEPu2ec=
 From:   Tom Zanussi <zanussi@kernel.org>
 To:     rostedt@goodmis.org, axelrasmussen@google.com
 Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/5] tracing: Synthetic event dynamic string fixes
-Date:   Fri,  9 Oct 2020 10:17:06 -0500
-Message-Id: <cover.1602255803.git.zanussi@kernel.org>
+Subject: [PATCH 1/5] tracing: Don't show dynamic string internals in synthetic event description
+Date:   Fri,  9 Oct 2020 10:17:07 -0500
+Message-Id: <b3b7baf7813298a5ede4ff02e2e837b91c05a724.1602255803.git.zanussi@kernel.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <cover.1602255803.git.zanussi@kernel.org>
+References: <cover.1602255803.git.zanussi@kernel.org>
+In-Reply-To: <cover.1602255803.git.zanussi@kernel.org>
+References: <cover.1602255803.git.zanussi@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These patches provide fixes for the problems observed by Masami in the
-new synthetic event dynamic string patchset.
+For synthetic event dynamic fields, the type contains "__data_loc",
+which is basically an internal part of the type which is only meant to
+be displayed in the format, not in the event description itself, which
+is confusing to users since they can't use __data_loc on the
+command-line to define an event field, which printing it would lead
+them to believe.
 
-The first patch (tracing: Don't show dynamic string internals in
-synthetic event description) removes the __data_loc from the event
-description but leaves it in the format.
+So filter it out from the description, while leaving it in the type.
 
-The patch (tracing: Add synthetic event error logging) addresses the
-lack of error messages when parse errors occur.
+Reported-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Tom Zanussi <zanussi@kernel.org>
+---
+ kernel/trace/trace_events_synth.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-The remaining three patches address the other problems Masami noted
-which result from allowing illegal characters in synthetic event and
-field names when defining an event.  The is_good_name() function is
-used to check that's not possible for the probe events, but should
-also be used for the synthetic events as well.
-
-(tracing: Move is_good_name() from trace_probe.h to trace.h) makes
-that function available to other trace subsystems by putting it in
-trace.h.  (tracing: Check that the synthetic event and field names are
-legal) applies it to the synthetic events, and (selftests/ftrace:
-Change synthetic event name for inter-event-combined test) changes a
-testcase that now fails because it uses an illegal name.
-
-The following changes since commit 848183553e431e6e9c2ea2f72421a7a1bbc6532e:
-
-  tracing: Fix synthetic print fmt check for use of __get_str() (2020-10-08 15:29:07 -0400)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/zanussi/linux-trace.git ftrace/dynstring-fixes-v1
-
-Tom Zanussi (5):
-  tracing: Don't show dynamic string internals in synthetic event
-    description
-  tracing: Move is_good_name() from trace_probe.h to trace.h
-  tracing: Check that the synthetic event and field names are legal
-  tracing: Add synthetic event error logging
-  selftests/ftrace: Change synthetic event name for inter-event-combined
-    test
-
- kernel/trace/trace.h                          |  13 ++
- kernel/trace/trace_events_synth.c             | 133 +++++++++++++++++-
- kernel/trace/trace_probe.h                    |  13 --
- .../trigger-inter-event-combined-hist.tc      |   8 +-
- 4 files changed, 147 insertions(+), 20 deletions(-)
-
+diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
+index 3b2dcc42b8ee..b19e2f4159ab 100644
+--- a/kernel/trace/trace_events_synth.c
++++ b/kernel/trace/trace_events_synth.c
+@@ -1867,14 +1867,22 @@ static int __synth_event_show(struct seq_file *m, struct synth_event *event)
+ {
+ 	struct synth_field *field;
+ 	unsigned int i;
++	char *type, *t;
+ 
+ 	seq_printf(m, "%s\t", event->name);
+ 
+ 	for (i = 0; i < event->n_fields; i++) {
+ 		field = event->fields[i];
+ 
++		type = field->type;
++		t = strstr(type, "__data_loc");
++		if (t) { /* __data_loc belongs in format but not event desc */
++			t += sizeof("__data_loc");
++			type = t;
++		}
++
+ 		/* parameter values */
+-		seq_printf(m, "%s %s%s", field->type, field->name,
++		seq_printf(m, "%s %s%s", type, field->name,
+ 			   i == event->n_fields - 1 ? "" : "; ");
+ 	}
+ 
 -- 
 2.17.1
 
