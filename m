@@ -2,45 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 517DF288290
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 08:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E504128828D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 08:38:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732310AbgJIGiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 02:38:08 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:55490 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731963AbgJIGfa (ORCPT
+        id S1731976AbgJIGiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 02:38:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731973AbgJIGfb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 02:35:30 -0400
-Date:   Fri, 09 Oct 2020 06:35:28 -0000
+        Fri, 9 Oct 2020 02:35:31 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33163C0613D4;
+        Thu,  8 Oct 2020 23:35:31 -0700 (PDT)
+Date:   Fri, 09 Oct 2020 06:35:29 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602225328;
+        s=2020; t=1602225329;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=JRmUZZ0zf12ZnnL2ziFqlOKGKubM3x7gxBhK/JkAb5Q=;
-        b=wyqBip/XUxhsm0V3gn51NZcB7IOGUuzDFjun344/IMtVMs3UEEgVjmXWKQKsiv+/qibEN6
-        vZn1CNUW/ykjtK+rc+Hgy0jx8eXg0hsdM0UV6N6xwX6TGYaMgpGdx7+J4SgQL4lLnlleno
-        pJf32QRjeUpyUhr+eE8CpxVSm22v9xgLSBVwGE6sUYKKGFp/mdAIKcB0eVJ9JTXEUXb/Qn
-        V4JUZQyAfmXmgnNotSQoW0fKcM1hk6kRyt+7rUUw9pN9yOvLC3U/aqN9eutbFdqk5C1XZw
-        3Jk/ozpjczH8UQlkWO1b1FPjnQlWGZdIwp4o9SjtJYheQuJHEKDs3peip1TDOw==
+        bh=NH7+qz70uuA7M/8J/NzK8S8LxVhvl7LNyP0PTc/zHRc=;
+        b=wC4Qo28tXXtLs+Y4Wsn8Foii5xIg8ffUYyA/UXzPBX1iKHZrM7WQpCuT1/01f3XtlsMB0U
+        9v1OgQnyNsmYJaF7FglgSqmJUfQ2i/aWdSpefyZOCWlNTFwlYNgufLVGUQIUohfAd0s8V+
+        0jtaA1/3kmy1pP3fWNjJ4+B8TKclZFvawW4jN6WyPFmpKK83MiDukPe4ak7xgq4HV3npjt
+        iag73poABfpdUBY7umhLCtmIXxuNnG0PzPZOy3vSrL3IiwJNcsUGbEyk0OuPdA1ksShras
+        61mNn5xNdFZXk++4QvfBgGfI9zLy2imMIcMBVdxksPE6MaHfcbPa1wNjmrdaIQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602225328;
+        s=2020e; t=1602225329;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=JRmUZZ0zf12ZnnL2ziFqlOKGKubM3x7gxBhK/JkAb5Q=;
-        b=LA6PGKbC2u0XYTZA5fMEgXYdPRzpPU5ANrDz7NSN8yEV6NQ6Ak5FpGji5yVv6LX71vjn3E
-        gHyTK0L2Y6AlXDAg==
+        bh=NH7+qz70uuA7M/8J/NzK8S8LxVhvl7LNyP0PTc/zHRc=;
+        b=G2tYAQJA57+NeN/cU1pMi3n8pG0D4+U7QrUoYUw+K7IRopePsQQR4STg/9t7qxDTsEjBDx
+        nqV9wTgnQLqP4+Aw==
 From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] scftorture: Flag errors in torture-compatible manner
+Subject: [tip: core/rcu] scftorture: Consolidate scftorture_invoke_one() check
+ and kfree()
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <160222532811.7002.8682460645631428163.tip-bot2@tip-bot2>
+Message-ID: <160222532907.7002.3852636641253580280.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -51,64 +55,81 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     dbf83b655a7853bc430af10e9a3e7eb1f4c90f86
-Gitweb:        https://git.kernel.org/tip/dbf83b655a7853bc430af10e9a3e7eb1f4c90f86
+Commit-ID:     676e5469643e716df7f39ef77ba8f09c85b0c4f8
+Gitweb:        https://git.kernel.org/tip/676e5469643e716df7f39ef77ba8f09c85b0c4f8
 Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Wed, 01 Jul 2020 16:06:22 -07:00
+AuthorDate:    Wed, 01 Jul 2020 14:13:02 -07:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
 CommitterDate: Mon, 24 Aug 2020 18:38:35 -07:00
 
-scftorture: Flag errors in torture-compatible manner
+scftorture: Consolidate scftorture_invoke_one() check and kfree()
 
-This commit prints error counts on the statistics line and also adds a
-"!!!" if any of the counters are non-zero.  Allocation failures are
-(somewhat) forgiven, but all other errors result in a "FAILURE" print
-at the end of the test.
+This commit moves checking of the ->scfc_out field and the freeing of
+the scf_check structure down below the end of switch statement, thus
+saving a few lines of code.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/scftorture.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ kernel/scftorture.c | 26 ++++++++------------------
+ 1 file changed, 8 insertions(+), 18 deletions(-)
 
 diff --git a/kernel/scftorture.c b/kernel/scftorture.c
-index 8ab72e5..880c2ce 100644
+index 0d7299d..f220cd3 100644
 --- a/kernel/scftorture.c
 +++ b/kernel/scftorture.c
-@@ -132,6 +132,7 @@ static atomic_t n_mb_in_errs;
- static atomic_t n_mb_out_errs;
- static atomic_t n_alloc_errs;
- static bool scfdone;
-+static char *bangstr = "";
+@@ -289,7 +289,7 @@ static void scf_handler_1(void *scfc_in)
+ static void scftorture_invoke_one(struct scf_statistics *scfp, struct torture_random_state *trsp)
+ {
+ 	uintptr_t cpu;
+-	int ret;
++	int ret = 0;
+ 	struct scf_check *scfcp = NULL;
+ 	struct scf_selector *scfsp = scf_sel_rand(trsp);
  
- DEFINE_TORTURE_RANDOM_PERCPU(scf_torture_rand);
- 
-@@ -156,12 +157,17 @@ static void scf_torture_stats_print(void)
- 		scfs.n_all += scf_stats_p[i].n_all;
- 		scfs.n_all_wait += scf_stats_p[i].n_all_wait;
+@@ -322,11 +322,7 @@ static void scftorture_invoke_one(struct scf_statistics *scfp, struct torture_ra
+ 			else
+ 				scfp->n_single_ofl++;
+ 			kfree(scfcp);
+-		} else if (scfcp && scfsp->scfs_wait) {
+-			if (WARN_ON_ONCE(!scfcp->scfc_out))
+-				atomic_inc(&n_mb_out_errs); // Leak rather than trash!
+-			else
+-				kfree(scfcp);
++			scfcp = NULL;
+ 		}
+ 		break;
+ 	case SCF_PRIM_MANY:
+@@ -341,12 +337,6 @@ static void scftorture_invoke_one(struct scf_statistics *scfp, struct torture_ra
+ 			scfcp->scfc_in = true;
+ 		}
+ 		smp_call_function_many(cpu_online_mask, scf_handler, scfcp, scfsp->scfs_wait);
+-		if (scfcp) {
+-			if (WARN_ON_ONCE(!scfcp->scfc_out))
+-				atomic_inc(&n_mb_out_errs);  // Leak rather than trash!
+-			else
+-				kfree(scfcp);
+-		}
+ 		break;
+ 	case SCF_PRIM_ALL:
+ 		if (scfsp->scfs_wait)
+@@ -360,14 +350,14 @@ static void scftorture_invoke_one(struct scf_statistics *scfp, struct torture_ra
+ 			scfcp->scfc_in = true;
+ 		}
+ 		smp_call_function(scf_handler, scfcp, scfsp->scfs_wait);
+-		if (scfcp) {
+-			if (WARN_ON_ONCE(!scfcp->scfc_out))
+-				atomic_inc(&n_mb_out_errs);  // Leak rather than trash!
+-			else
+-				kfree(scfcp);
+-		}
+ 		break;
  	}
--	pr_alert("%s scf_invoked_count %s: %lld single: %lld/%lld single_ofl: %lld/%lld many: %lld/%lld all: %lld/%lld ",
--		 SCFTORT_FLAG, isdone ? "VER" : "ver", invoked_count,
-+	if (atomic_read(&n_errs) || atomic_read(&n_mb_in_errs) ||
-+	    atomic_read(&n_mb_out_errs) || atomic_read(&n_alloc_errs))
-+		bangstr = "!!! ";
-+	pr_alert("%s %sscf_invoked_count %s: %lld single: %lld/%lld single_ofl: %lld/%lld many: %lld/%lld all: %lld/%lld ",
-+		 SCFTORT_FLAG, bangstr, isdone ? "VER" : "ver", invoked_count,
- 		 scfs.n_single, scfs.n_single_wait, scfs.n_single_ofl, scfs.n_single_wait_ofl,
- 		 scfs.n_many, scfs.n_many_wait, scfs.n_all, scfs.n_all_wait);
- 	torture_onoff_stats();
--	pr_cont("\n");
-+	pr_cont("ste: %d stnmie: %d stnmoe: %d staf: %d\n", atomic_read(&n_errs),
-+		atomic_read(&n_mb_in_errs), atomic_read(&n_mb_out_errs),
-+		atomic_read(&n_alloc_errs));
- }
- 
- // Periodically prints torture statistics, if periodic statistics printing
-@@ -431,7 +437,7 @@ static void scf_torture_cleanup(void)
- 	kfree(scf_stats_p);  // -After- the last stats print has completed!
- 	scf_stats_p = NULL;
- 
--	if (atomic_read(&n_errs))
-+	if (atomic_read(&n_errs) || atomic_read(&n_mb_in_errs) || atomic_read(&n_mb_out_errs))
- 		scftorture_print_module_parms("End of test: FAILURE");
- 	else if (torture_onoff_failures())
- 		scftorture_print_module_parms("End of test: LOCK_HOTPLUG");
++	if (scfcp && scfsp->scfs_wait) {
++		if (WARN_ON_ONCE(!scfcp->scfc_out))
++			atomic_inc(&n_mb_out_errs); // Leak rather than trash!
++		else
++			kfree(scfcp);
++	}
+ 	if (use_cpus_read_lock)
+ 		cpus_read_unlock();
+ 	else
