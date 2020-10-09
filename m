@@ -2,152 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FA1628815D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 06:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB56D288160
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 06:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731335AbgJIEaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 00:30:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731301AbgJIEaU (ORCPT
+        id S1731366AbgJIEbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 00:31:40 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:59602 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730733AbgJIEbj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 00:30:20 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C773C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 21:30:20 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id f10so7861272otb.6
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 21:30:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bQCRsRi8kNOo2aPGfc7lMNsOSErczm6II0z2jnbK/64=;
-        b=hOWJ7xYfYM+6d5Y3UGE81JEW30JgDfoQMe1Tn0bTzgehmm0gWfnBdkgQ7HuIXYBQB2
-         /tjbwY4uuJr6AXHAvxJsDIe/hODY461gREIMT00jtu90X+3zfGwdybMA4O/Q4aJNV1ay
-         z+8z3GXqz2BvyOqTty4J6/NVLV5vh7K0jy1gk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bQCRsRi8kNOo2aPGfc7lMNsOSErczm6II0z2jnbK/64=;
-        b=ClfyBZnznO4cYwMsov2+F4f3Hac+3xMNXafoWHkMmg+f46uADapdRqvbdv7kaQP8tn
-         rcqO0QCuG0F4WjIoftUQdHhXl05oXXsYOEEOx18GdM/GJAvFhTw9qDc3F+pFa9DxkVRp
-         tOEaAhSyPRRCdb3ZmcFbEgFSvXuDiONqJsl2PL2Wozvt+ZzIz8ra4f0DuUeAAXC0aFFi
-         4sN9uD8Tjq0zME16ctNEqqFcj8qbWohpbx0kw+tW6gnV5rSTVvB5nTQWMYzftlZR2vxZ
-         ldbtM9xZfQn7eBc8zibWOju1S949fsj51IjvdgH9YF4t98553F7DtvX1WVFIv3PfUqXc
-         tq0g==
-X-Gm-Message-State: AOAM533VdW/C4O1Ey/oTjkErtvvZvy9FCAhZXZjqZ1373LRAa7s7rrcl
-        PqoRnulJRrZlalCwOpCPhD/qrAmuxmZJjzut
-X-Google-Smtp-Source: ABdhPJyNnR0uqGMidzXSLyJGo46ttEqMyYTFzw/VXsQCJyeN8AhtDJT0zxXJ7nUXbn0iNvllNycF3g==
-X-Received: by 2002:a9d:23e2:: with SMTP id t89mr7824198otb.196.1602217819388;
-        Thu, 08 Oct 2020 21:30:19 -0700 (PDT)
-Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com. [209.85.210.47])
-        by smtp.gmail.com with ESMTPSA id n13sm6582442oic.14.2020.10.08.21.30.18
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Oct 2020 21:30:18 -0700 (PDT)
-Received: by mail-ot1-f47.google.com with SMTP id t15so7908855otk.0
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 21:30:18 -0700 (PDT)
-X-Received: by 2002:a9d:7a2:: with SMTP id 31mr7000765oto.141.1602217817599;
- Thu, 08 Oct 2020 21:30:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201004122234.802044-1-acourbot@chromium.org>
- <c3e1c20a-7729-9f48-ce66-41e67f195fc7@xs4all.nl> <cda40a8e-4dd2-5fd7-c5ff-8b048475164b@xs4all.nl>
- <CAPBb6MX8rFZU=9Pd5o0mqQ6pf+1oQYzk=D0WiR93_S3FUG7jJw@mail.gmail.com> <1bb71c21-0f03-5d8f-be2c-fdcb13dadcd6@xs4all.nl>
-In-Reply-To: <1bb71c21-0f03-5d8f-be2c-fdcb13dadcd6@xs4all.nl>
-From:   Alexandre Courbot <acourbot@chromium.org>
-Date:   Fri, 9 Oct 2020 13:30:06 +0900
-X-Gmail-Original-Message-ID: <CAPBb6MWf7bWkigMPUwx7g6dXjwMkttGhHwC9X_=e6=cz1K5J0w@mail.gmail.com>
-Message-ID: <CAPBb6MWf7bWkigMPUwx7g6dXjwMkttGhHwC9X_=e6=cz1K5J0w@mail.gmail.com>
-Subject: Re: [PATCH v2] media: mtk-vcodec: fix builds when remoteproc is disabled
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>
+        Fri, 9 Oct 2020 00:31:39 -0400
+X-UUID: 805c08d72c12478394b7a414d1468da5-20201009
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=YP+nDNjrZMZWHXp2PpX7EfCVxiPYWns32R0xLk03Kyw=;
+        b=sqx+Iw/ijllUffeErGZwKK0JKx8rSJKwuVMUh5tN3pIQl4t8VyaT9YJbPD1icNOaR2qiKxGALsu5tfBYEQaj1ZjSttFp26Vwq7r+Fzwq7I6i95DuuV+zCHnbQzN1y86Mm4Vq7mOGsQ39r2vverEeEn9ojkhosMB4EJ0DnJJQsPs=;
+X-UUID: 805c08d72c12478394b7a414d1468da5-20201009
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <hector.yuan@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1268273005; Fri, 09 Oct 2020 12:31:33 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 9 Oct 2020 12:31:26 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 9 Oct 2020 12:31:25 +0800
+Message-ID: <1602217886.21446.48.camel@mtkswgap22>
+Subject: Re: [PATCH v1 1/1] cpufreq: mediatek-hw: Register EM power table
+From:   Hector Yuan <hector.yuan@mediatek.com>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+CC:     <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>
+Date:   Fri, 9 Oct 2020 12:31:26 +0800
+In-Reply-To: <7e58516f-a6bf-eac4-9dfb-9a4d7efa7498@arm.com>
+References: <1602159204-13756-1-git-send-email-hector.yuan@mediatek.com>
+         <1602159204-13756-2-git-send-email-hector.yuan@mediatek.com>
+         <7e58516f-a6bf-eac4-9dfb-9a4d7efa7498@arm.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
+MIME-Version: 1.0
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 9, 2020 at 1:13 AM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
->
-> On 08/10/2020 16:02, Alexandre Courbot wrote:
-> > Hi Hans, thanks for taking the time to look at this!
-> >
-> > On Thu, Oct 8, 2020 at 10:12 PM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
-> >>
-> >> On 08/10/2020 15:07, Hans Verkuil wrote:
-> >>> Hi Alexandre,
-> >>>
-> >>> On 04/10/2020 14:22, Alexandre Courbot wrote:
-> >>>> The addition of MT8183 support added a dependency on the SCP remoteproc
-> >>>> module. However the initial patch used the "select" Kconfig directive,
-> >>>> which may result in the SCP module to not be compiled if remoteproc was
-> >>>> disabled. In such a case, mtk-vcodec would try to link against
-> >>>> non-existent SCP symbols. "select" was clearly misused here as explained
-> >>>> in kconfig-language.txt.
-> >>>>
-> >>>> Replace this by a "depends" directive on at least one of the VPU and
-> >>>> SCP modules, to allow the driver to be compiled as long as one of these
-> >>>> is enabled, and adapt the code to support this new scenario.
-> >>>>
-> >>>> Also adapt the Kconfig text to explain the extra requirements for MT8173
-> >>>> and MT8183.
-> >>>>
-> >>>> Reported-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> >>>> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
-> >>>> Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-> >>>> ---
-> >>>>  drivers/media/platform/Kconfig                | 10 +--
-> >>>>  .../media/platform/mtk-vcodec/mtk_vcodec_fw.c | 72 ++++++++++++-------
-> >>>>  2 files changed, 54 insertions(+), 28 deletions(-)
-> >>>>
-> >>>> diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
-> >>>> index a3cb104956d5..98eb62e49ec2 100644
-> >>>> --- a/drivers/media/platform/Kconfig
-> >>>> +++ b/drivers/media/platform/Kconfig
-> >>>> @@ -253,14 +253,16 @@ config VIDEO_MEDIATEK_VCODEC
-> >>>>      depends on MTK_IOMMU || COMPILE_TEST
-> >>>>      depends on VIDEO_DEV && VIDEO_V4L2
-> >>>>      depends on ARCH_MEDIATEK || COMPILE_TEST
-> >>>> +    depends on VIDEO_MEDIATEK_VPU || MTK_SCP
-> >>>
-> >>> Close, but no cigar.
-> >>>
-> >>> If VIDEO_MEDIATEK_VPU=y and MTK_SCP=m, then VIDEO_MEDIATEK_VCODEC can be configured
-> >>> to y, and then it won't be able to find the scp_ functions.
-> >>>
-> >>> To be honest, I'm not sure how to solve this.
-> >>
-> >> Found it. Add this:
-> >>
-> >>         depends on MTK_SCP || !MTK_SCP
-> >>         depends on VIDEO_MEDIATEK_VPU || !VIDEO_MEDIATEK_VPU
-> >>
-> >> Ugly as hell, but it appears to be the correct incantation for this.
-> >
-> > But doesn't it mean that the driver can be compiled if !MTK_SCP and
-> > !VIDEO_MEDIATEK_VPU? That's the one case we want to avoid.
->
-> No, because you still have:
->
->         depends on VIDEO_MEDIATEK_VPU || MTK_SCP
->
-> So at least one of these must be set.
->
-> Just try it :-)
+T24gVGh1LCAyMDIwLTEwLTA4IGF0IDEzOjU1ICswMTAwLCBMdWthc3ogTHViYSB3cm90ZToNCj4g
+SGkgSGVjdG9yLA0KPiANCj4gT24gMTAvOC8yMCAxOjEzIFBNLCBIZWN0b3IgWXVhbiB3cm90ZToN
+Cj4gPiBGcm9tOiAiSGVjdG9yLll1YW4iIDxoZWN0b3IueXVhbkBtZWRpYXRlay5jb20+DQo+ID4g
+DQo+ID4gUmVnaXN0ZXIgQ1BVIHBvd2VyIHRhYmxlIHRvIGVuZXJneSBtb2RlbCBmcmFtZXdvcmsN
+Cj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBIZWN0b3IuWXVhbiA8aGVjdG9yLnl1YW5AbWVkaWF0
+ZWsuY29tPg0KPiA+IC0tLQ0KPiA+ICAgZHJpdmVycy9jcHVmcmVxL21lZGlhdGVrLWNwdWZyZXEt
+aHcuYyB8ICAgNTAgKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tDQo+ID4gICAxIGZp
+bGUgY2hhbmdlZCwgMzggaW5zZXJ0aW9ucygrKSwgMTIgZGVsZXRpb25zKC0pDQo+ID4gDQo+ID4g
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvY3B1ZnJlcS9tZWRpYXRlay1jcHVmcmVxLWh3LmMgYi9kcml2
+ZXJzL2NwdWZyZXEvbWVkaWF0ZWstY3B1ZnJlcS1ody5jDQo+ID4gaW5kZXggOGZhMTJlNS4uMzgw
+OGVhMCAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL2NwdWZyZXEvbWVkaWF0ZWstY3B1ZnJlcS1o
+dy5jDQo+ID4gKysrIGIvZHJpdmVycy9jcHVmcmVxL21lZGlhdGVrLWNwdWZyZXEtaHcuYw0KPiA+
+IEBAIC01LDYgKzUsNyBAQA0KPiA+ICAgDQo+ID4gICAjaW5jbHVkZSA8bGludXgvYml0ZmllbGQu
+aD4NCj4gPiAgICNpbmNsdWRlIDxsaW51eC9jcHVmcmVxLmg+DQo+ID4gKyNpbmNsdWRlIDxsaW51
+eC9lbmVyZ3lfbW9kZWwuaD4NCj4gPiAgICNpbmNsdWRlIDxsaW51eC9pbml0Lmg+DQo+ID4gICAj
+aW5jbHVkZSA8bGludXgva2VybmVsLmg+DQo+ID4gICAjaW5jbHVkZSA8bGludXgvbW9kdWxlLmg+
+DQo+ID4gQEAgLTE3LDkgKzE4LDEwIEBADQo+ID4gICAjZGVmaW5lIExVVF9ST1dfU0laRQkJCTB4
+NA0KPiA+ICAgDQo+ID4gICBlbnVtIHsNCj4gPiAtCVJFR19MVVRfVEFCTEUsDQo+ID4gLQlSRUdf
+RU5BQkxFLA0KPiA+IC0JUkVHX1BFUkZfU1RBVEUsDQo+ID4gKwlSRUdfRlJFUV9MVVRfVEFCTEUs
+DQo+ID4gKwlSRUdfRlJFUV9FTkFCTEUsDQo+ID4gKwlSRUdfRlJFUV9QRVJGX1NUQVRFLA0KPiA+
+ICsJUkVHX0VNX1BPV0VSX1RCTCwNCj4gPiAgIA0KPiA+ICAgCVJFR19BUlJBWV9TSVpFLA0KPiA+
+ICAgfTsNCj4gPiBAQCAtMjcsMjMgKzI5LDQ0IEBAIGVudW0gew0KPiA+ICAgc3RydWN0IGNwdWZy
+ZXFfbXRrIHsNCj4gPiAgIAlzdHJ1Y3QgY3B1ZnJlcV9mcmVxdWVuY3lfdGFibGUgKnRhYmxlOw0K
+PiA+ICAgCXZvaWQgX19pb21lbSAqcmVnX2Jhc2VzW1JFR19BUlJBWV9TSVpFXTsNCj4gPiArCWlu
+dCBucl9vcHA7DQo+ID4gICAJY3B1bWFza190IHJlbGF0ZWRfY3B1czsNCj4gPiAgIH07DQo+ID4g
+ICANCj4gPiAgIHN0YXRpYyBjb25zdCB1MTYgY3B1ZnJlcV9tdGtfb2Zmc2V0c1tSRUdfQVJSQVlf
+U0laRV0gPSB7DQo+ID4gLQlbUkVHX0xVVF9UQUJMRV0JCT0gMHgwLA0KPiA+IC0JW1JFR19FTkFC
+TEVdCQk9IDB4ODQsDQo+ID4gLQlbUkVHX1BFUkZfU1RBVEVdCT0gMHg4OCwNCj4gPiArCVtSRUdf
+RlJFUV9MVVRfVEFCTEVdCT0gMHgwLA0KPiA+ICsJW1JFR19GUkVRX0VOQUJMRV0JPSAweDg0LA0K
+PiA+ICsJW1JFR19GUkVRX1BFUkZfU1RBVEVdCT0gMHg4OCwNCj4gPiArCVtSRUdfRU1fUE9XRVJf
+VEJMXQk9IDB4M0QwLA0KPiA+ICAgfTsNCj4gPiAgIA0KPiA+ICAgc3RhdGljIHN0cnVjdCBjcHVm
+cmVxX210ayAqbXRrX2ZyZXFfZG9tYWluX21hcFtOUl9DUFVTXTsNCj4gPiAgIA0KPiA+ICtzdGF0
+aWMgaW50IG10a19jcHVmcmVxX2dldF9jcHVfcG93ZXIodW5zaWduZWQgbG9uZyAqbVcsDQo+ID4g
+KwkJCQkgICAgIHVuc2lnbmVkIGxvbmcgKktIeiwgaW50IGNwdSkNCj4gPiArew0KPiA+ICsJc3Ry
+dWN0IGNwdWZyZXFfbXRrICpjID0gbXRrX2ZyZXFfZG9tYWluX21hcFtjcHVdOw0KPiA+ICsJaW50
+IGk7DQo+ID4gKw0KPiA+ICsJZm9yIChpID0gMDsgaSA8IGMtPm5yX29wcDsgaSsrKSB7DQo+ID4g
+KwkJaWYgKGMtPnRhYmxlW2ldLmZyZXF1ZW5jeSA8ICpLSHopDQo+ID4gKwkJCWJyZWFrOw0KPiA+
+ICsJfQ0KPiA+ICsJaS0tOw0KPiA+ICsNCj4gPiArCSpLSHogPSBjLT50YWJsZVtpXS5mcmVxdWVu
+Y3k7DQo+ID4gKwkqbVcgPSByZWFkbF9yZWxheGVkKGMtPnJlZ19iYXNlc1tSRUdfRU1fUE9XRVJf
+VEJMXSArDQo+ID4gKwkJCSAgICBpICogTFVUX1JPV19TSVpFKSAvIDEwMDA7DQo+ID4gKw0KPiA+
+ICsJcmV0dXJuIDA7DQo+ID4gK30NCj4gPiArDQo+ID4gICBzdGF0aWMgaW50IG10a19jcHVmcmVx
+X2h3X3RhcmdldF9pbmRleChzdHJ1Y3QgY3B1ZnJlcV9wb2xpY3kgKnBvbGljeSwNCj4gPiAgIAkJ
+CQkgICAgICAgdW5zaWduZWQgaW50IGluZGV4KQ0KPiA+ICAgew0KPiA+ICAgCXN0cnVjdCBjcHVm
+cmVxX210ayAqYyA9IHBvbGljeS0+ZHJpdmVyX2RhdGE7DQo+ID4gICANCj4gPiAtCXdyaXRlbF9y
+ZWxheGVkKGluZGV4LCBjLT5yZWdfYmFzZXNbUkVHX1BFUkZfU1RBVEVdKTsNCj4gPiArCXdyaXRl
+bF9yZWxheGVkKGluZGV4LCBjLT5yZWdfYmFzZXNbUkVHX0ZSRVFfUEVSRl9TVEFURV0pOw0KPiA+
+ICAgDQo+ID4gICAJcmV0dXJuIDA7DQo+ID4gICB9DQo+ID4gQEAgLTU1LDcgKzc4LDcgQEAgc3Rh
+dGljIHVuc2lnbmVkIGludCBtdGtfY3B1ZnJlcV9od19nZXQodW5zaWduZWQgaW50IGNwdSkNCj4g
+PiAgIA0KPiA+ICAgCWMgPSBtdGtfZnJlcV9kb21haW5fbWFwW2NwdV07DQo+ID4gICANCj4gPiAt
+CWluZGV4ID0gcmVhZGxfcmVsYXhlZChjLT5yZWdfYmFzZXNbUkVHX1BFUkZfU1RBVEVdKTsNCj4g
+PiArCWluZGV4ID0gcmVhZGxfcmVsYXhlZChjLT5yZWdfYmFzZXNbUkVHX0ZSRVFfUEVSRl9TVEFU
+RV0pOw0KPiA+ICAgCWluZGV4ID0gbWluKGluZGV4LCBMVVRfTUFYX0VOVFJJRVMgLSAxKTsNCj4g
+PiAgIA0KPiA+ICAgCXJldHVybiBjLT50YWJsZVtpbmRleF0uZnJlcXVlbmN5Ow0KPiA+IEBAIC02
+NCw2ICs4Nyw3IEBAIHN0YXRpYyB1bnNpZ25lZCBpbnQgbXRrX2NwdWZyZXFfaHdfZ2V0KHVuc2ln
+bmVkIGludCBjcHUpDQo+ID4gICBzdGF0aWMgaW50IG10a19jcHVmcmVxX2h3X2NwdV9pbml0KHN0
+cnVjdCBjcHVmcmVxX3BvbGljeSAqcG9saWN5KQ0KPiA+ICAgew0KPiA+ICAgCXN0cnVjdCBjcHVm
+cmVxX210ayAqYzsNCj4gPiArCXN0cnVjdCBlbV9kYXRhX2NhbGxiYWNrIGVtX2NiID0gRU1fREFU
+QV9DQihtdGtfY3B1ZnJlcV9nZXRfY3B1X3Bvd2VyKTsNCj4gPiAgIA0KPiA+ICAgCWMgPSBtdGtf
+ZnJlcV9kb21haW5fbWFwW3BvbGljeS0+Y3B1XTsNCj4gPiAgIAlpZiAoIWMpIHsNCj4gPiBAQCAt
+NzcsNyArMTAxLDggQEAgc3RhdGljIGludCBtdGtfY3B1ZnJlcV9od19jcHVfaW5pdChzdHJ1Y3Qg
+Y3B1ZnJlcV9wb2xpY3kgKnBvbGljeSkNCj4gPiAgIAlwb2xpY3ktPmRyaXZlcl9kYXRhID0gYzsN
+Cj4gPiAgIA0KPiA+ICAgCS8qIEhXIHNob3VsZCBiZSBpbiBlbmFibGVkIHN0YXRlIHRvIHByb2Nl
+ZWQgbm93ICovDQo+ID4gLQl3cml0ZWxfcmVsYXhlZCgweDEsIGMtPnJlZ19iYXNlc1tSRUdfRU5B
+QkxFXSk7DQo+ID4gKwl3cml0ZWxfcmVsYXhlZCgweDEsIGMtPnJlZ19iYXNlc1tSRUdfRlJFUV9F
+TkFCTEVdKTsNCj4gPiArCWVtX3JlZ2lzdGVyX3BlcmZfZG9tYWluKHBvbGljeS0+Y3B1cywgYy0+
+bnJfb3BwLCAmZW1fY2IpOw0KPiANCj4gDQo+IFRoZSBmdW5jdGlvbiBuYW1lIGhhcyBjaGFuZ2Vk
+IHJlY2VudGx5ICh2NS45LXJjMSkgdG86DQo+IGVtX2Rldl9yZWdpc3Rlcl9wZXJmX2RvbWFpbigp
+DQo+IA0KPiBQbGVhc2UgY2hlY2sgeW91ciBiYXNlIGtlcm5lbCB0cmVlIGFuZCB1cGRhdGUuDQo+
+IA0KPiBSZWdhcmRzLA0KPiBMdWthc3oNCj4gDQpPSywgd2lsbCBjaGVjayBteSBiYXNlIGtlcm5l
+bCBhbmQgdXBkYXRlIHRoaXMuDQpUaGFuayB5b3UuDQoNCg==
 
-Aha, I misread your message and thought you suggested replacing the
-dependencies with these two lines. In this case it would certainly
-work! Thanks for the suggestion, I'll send a v3 soon.
-
->
-> Regards,
->
->         Hans
