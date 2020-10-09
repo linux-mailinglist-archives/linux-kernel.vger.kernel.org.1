@@ -2,160 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4052288ED4
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 18:27:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63EB0288EA7
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 18:20:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389773AbgJIQ06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 12:26:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43586 "EHLO
+        id S2389679AbgJIQUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 12:20:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389674AbgJIQ04 (ORCPT
+        with ESMTP id S2388719AbgJIQT7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 12:26:56 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9699C0613D6;
-        Fri,  9 Oct 2020 09:26:55 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id 144so7296254pfb.4;
-        Fri, 09 Oct 2020 09:26:55 -0700 (PDT)
+        Fri, 9 Oct 2020 12:19:59 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3777C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 09:19:59 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id 7so7545485pgm.11
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 09:19:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=e2ontlidD6EdZ8raA0hQEJD/T47JB7SGf8j+YCwQsds=;
-        b=frsXM0EU7dTqXI6MRRBIjk/BetJeA6yGcDp1wrrbIzpbobYXcBVkP1q18NIRbGzH7A
-         3zE2Kf/Z2uYteZhZ7xk4d4yi3871gVqbwDCA0VPOGQdgMsBMu1zIxry/+ESB5oJk2BpX
-         S9V4wGfcmuy//G6+Bqh42zDjcwfV0ktBJJN+f9OJFzybFvexTCdESXSeEdMxqUJ5B9d9
-         RZTF6pq2TSP/5Z7HXCrFeghiDzos0cRst+9K4pVGaYD02WXahq5gOgiHJvOT4JRFkBdZ
-         Ut1ERXygUKRXMjMHw0rmRtSUUT8zNAh61UVzLrw7iPBNTZu2D3rdwOWoXFuzOGKmJLVp
-         rrBA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=U/u6IHdRQ/psB0Xv6HRzOplGyp4wP5YucQVH0WzAC3M=;
+        b=I0+xez+8iYF8/Sopnaip3crOdzZHVQlHo62cgIHTppg1ennRqHwC/zF9ddKvbJOjj8
+         vpVnFs8S8wEYI06b7KXAGemrB8oU6AF3EY5YqDhv+5PdUnbWqu+OqLa7ytQGyGe7Yk/w
+         NlMwiv9KrectxTEUIDwTDmqooYDxEPOMEcuu5t64Taph7VAp9GjstAYctaySg1Myc86p
+         MSkbOaSQOJkJ8mM2YDz7WYor/BgS9o7Detf/EAVrRRJgqiGwTPzQI3hFyrpd6URVAu+k
+         hBVpfO3/N2PE2aLy/rgVP7uZDoX7NYgSk1N41D47tyFcPiUQYoCD3jj+OFeUROPV9lSN
+         09Bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=e2ontlidD6EdZ8raA0hQEJD/T47JB7SGf8j+YCwQsds=;
-        b=n+7Okf7bqrXKylb0MCLwqViEdxfGDF+YNH2bo3hvyEPeFtzIeRxemXRUDwIUPrGF3h
-         e4wdUbA6LnOe6ZEhgEywxd924cRbbRRhA8q5pm7EidR5UVrGtkBhEHZM/6rQOwAkK+Cq
-         uBjl1nZIr9LtRiKUTsnYGZVzwQmeYlpS91MvHh7OQvn2iJsTRC4CJkIaz4zsduz55aZS
-         487sbTIltEKqyUzl4F4CKd/9tdPMczXjcqD83iThsmSHk/1FvItA3QhDuxtIHZJEuHte
-         tlKShRLLHkAMD/HYoCJ0s7dKOpSbWP/YPUwzBuAI6NHiWLnOeR6hA1QhQ7CZAYHsrXC9
-         qRMA==
-X-Gm-Message-State: AOAM533og3RcCpSIsI64SCCit0+F3Q/szVSrLryg9bls1CmQIqR8iCM8
-        0CVzm8b7HLXy+W1aJ/Kkm/k=
-X-Google-Smtp-Source: ABdhPJz4W1TQO+OAe1kcSo/OeZxeY2bAfv8aXkkP9TODAbIqPSTwEtOHPYjBpy4gf6v9To5giAGqog==
-X-Received: by 2002:a63:29c8:: with SMTP id p191mr3990445pgp.45.1602260815458;
-        Fri, 09 Oct 2020 09:26:55 -0700 (PDT)
-Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id q24sm9591229pgb.12.2020.10.09.09.26.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 09:26:55 -0700 (PDT)
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     thierry.reding@gmail.com, joro@8bytes.org, digetx@gmail.com
-Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v7 3/3] iommu/tegra-smmu: Add PCI support
-Date:   Fri,  9 Oct 2020 09:19:36 -0700
-Message-Id: <20201009161936.23122-4-nicoleotsuka@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201009161936.23122-1-nicoleotsuka@gmail.com>
-References: <20201009161936.23122-1-nicoleotsuka@gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=U/u6IHdRQ/psB0Xv6HRzOplGyp4wP5YucQVH0WzAC3M=;
+        b=PQy6wYiQFabe7esP+Fn9SHx07SpBUF0wOKiKtmRnQvpqqKPQbbDelCnrHaUKzX0Duu
+         pbeZosVeiSH5F6Cj3GMiofzVd30zly1xwRvPr+JF9HKEjLzpAIdqbfwsCpaq+OKNoFzq
+         x9mV7TJ0lNIl4dw+bTYQNKZZosU2rqLKE8aZfSWNltoFWHScnGDtPpZq5ULcTqxc25pE
+         CXItbmLRwOxA3UD/p1MkABu2F+uVuL9/qXUYz+NCqlsMtp05wy6Q2RykQFwwtru+wwGm
+         xDbl4yKRFOpQtXNa4zDakMN634Mrj9Z5pGiqvnWr/mqxniM66SmNQdOxkn2mriCzsJ4n
+         RH6w==
+X-Gm-Message-State: AOAM530MxcLa+07AZ4a4eNbK9YhJOkSPzLBC+hHP8jTQegi1dOEAzsg6
+        ma6z3fTkJbS2IKfZRhOVkdO7
+X-Google-Smtp-Source: ABdhPJyx//guo21NTcW8LEsh3wY15TneKjjvXe7IJNasC3G3AUEr2e/EtDeZJ1UKoW2KCoNo3VVy9w==
+X-Received: by 2002:a17:90a:248:: with SMTP id t8mr5961491pje.64.1602260398972;
+        Fri, 09 Oct 2020 09:19:58 -0700 (PDT)
+Received: from Mani-XPS-13-9360 ([2409:4072:6292:5a21:d5ff:f3e8:fcf2:ccc7])
+        by smtp.gmail.com with ESMTPSA id j6sm11032328pfi.129.2020.10.09.09.19.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 09 Oct 2020 09:19:58 -0700 (PDT)
+Date:   Fri, 9 Oct 2020 21:49:50 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 06/10] bus: mhi: core: Improve shutdown handling after
+ link down detection
+Message-ID: <20201009161950.GG4810@Mani-XPS-13-9360>
+References: <1600480955-16827-1-git-send-email-bbhatt@codeaurora.org>
+ <1600480955-16827-7-git-send-email-bbhatt@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1600480955-16827-7-git-send-email-bbhatt@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch simply adds support for PCI devices.
+On Fri, Sep 18, 2020 at 07:02:31PM -0700, Bhaumik Bhatt wrote:
+> If MHI were to attempt a device shutdown following an assumption
 
-Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
-Tested-by: Dmitry Osipenko <digetx@gmail.com>
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
+MHI host? And is this really an assumption or it is definite that the
+link is inaccessible. Please clarify!
 
-Changelog
-v6->v7
- * Renamed goto labels, suggested by Thierry.
-v5->v6
- * Added Dmitry's Reviewed-by and Tested-by.
-v4->v5
- * Added Dmitry's Reviewed-by
-v3->v4
- * Dropped !iommu_present() check
- * Added CONFIG_PCI check in the exit path
-v2->v3
- * Replaced ternary conditional operator with if-else in .device_group()
- * Dropped change in tegra_smmu_remove()
-v1->v2
- * Added error-out labels in tegra_smmu_probe()
- * Dropped pci_request_acs() since IOMMU core would call it.
+> that the device is inaccessible, the host currently moves to a state
+> where device register accesses are allowed when they should not be.
+> This would end up allowing accesses to the device register space when
+> the link is inaccessible and can result in bus errors observed on the
+> host. Improve shutdown handling to prevent these outcomes and do not
+> move the MHI PM state to a register accessible state after device is
+> assumed to be inaccessible.
+>
 
- drivers/iommu/tegra-smmu.c | 35 +++++++++++++++++++++++++----------
- 1 file changed, 25 insertions(+), 10 deletions(-)
+Apparently you are introducing a new device transition state but your
+commit description doesn't state that :/
 
-diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-index be29f5977145..2941d6459076 100644
---- a/drivers/iommu/tegra-smmu.c
-+++ b/drivers/iommu/tegra-smmu.c
-@@ -10,6 +10,7 @@
- #include <linux/kernel.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
-+#include <linux/pci.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/spinlock.h>
-@@ -865,7 +866,11 @@ static struct iommu_group *tegra_smmu_device_group(struct device *dev)
- 	group->smmu = smmu;
- 	group->soc = soc;
+Thanks,
+Mani
  
--	group->group = iommu_group_alloc();
-+	if (dev_is_pci(dev))
-+		group->group = pci_device_group(dev);
-+	else
-+		group->group = generic_device_group(dev);
-+
- 	if (IS_ERR(group->group)) {
- 		devm_kfree(smmu->dev, group);
- 		mutex_unlock(&smmu->lock);
-@@ -1075,22 +1080,32 @@ struct tegra_smmu *tegra_smmu_probe(struct device *dev,
- 	iommu_device_set_fwnode(&smmu->iommu, dev->fwnode);
- 
- 	err = iommu_device_register(&smmu->iommu);
--	if (err) {
--		iommu_device_sysfs_remove(&smmu->iommu);
--		return ERR_PTR(err);
--	}
-+	if (err)
-+		goto remove_sysfs;
- 
- 	err = bus_set_iommu(&platform_bus_type, &tegra_smmu_ops);
--	if (err < 0) {
--		iommu_device_unregister(&smmu->iommu);
--		iommu_device_sysfs_remove(&smmu->iommu);
--		return ERR_PTR(err);
--	}
-+	if (err < 0)
-+		goto unregister;
-+
-+#ifdef CONFIG_PCI
-+	err = bus_set_iommu(&pci_bus_type, &tegra_smmu_ops);
-+	if (err < 0)
-+		goto unset_platform_bus;
-+#endif
- 
- 	if (IS_ENABLED(CONFIG_DEBUG_FS))
- 		tegra_smmu_debugfs_init(smmu);
- 
- 	return smmu;
-+
-+unset_platform_bus: __maybe_unused;
-+	bus_set_iommu(&platform_bus_type, NULL);
-+unregister:
-+	iommu_device_unregister(&smmu->iommu);
-+remove_sysfs:
-+	iommu_device_sysfs_remove(&smmu->iommu);
-+
-+	return ERR_PTR(err);
- }
- 
- void tegra_smmu_remove(struct tegra_smmu *smmu)
--- 
-2.17.1
-
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> ---
+>  drivers/bus/mhi/core/init.c     |  1 +
+>  drivers/bus/mhi/core/internal.h |  1 +
+>  drivers/bus/mhi/core/pm.c       | 18 +++++++++++++-----
+>  3 files changed, 15 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+> index 9ae4c19..fa33dde 100644
+> --- a/drivers/bus/mhi/core/init.c
+> +++ b/drivers/bus/mhi/core/init.c
+> @@ -37,6 +37,7 @@ const char * const dev_state_tran_str[DEV_ST_TRANSITION_MAX] = {
+>  	[DEV_ST_TRANSITION_MISSION_MODE] = "MISSION_MODE",
+>  	[DEV_ST_TRANSITION_SYS_ERR] = "SYS_ERR",
+>  	[DEV_ST_TRANSITION_DISABLE] = "DISABLE",
+> +	[DEV_ST_TRANSITION_FATAL] = "FATAL SHUTDOWN",
+>  };
+>  
+>  const char * const mhi_state_str[MHI_STATE_MAX] = {
+> diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
+> index 7989269..f3b9e5a 100644
+> --- a/drivers/bus/mhi/core/internal.h
+> +++ b/drivers/bus/mhi/core/internal.h
+> @@ -388,6 +388,7 @@ enum dev_st_transition {
+>  	DEV_ST_TRANSITION_MISSION_MODE,
+>  	DEV_ST_TRANSITION_SYS_ERR,
+>  	DEV_ST_TRANSITION_DISABLE,
+> +	DEV_ST_TRANSITION_FATAL,
+>  	DEV_ST_TRANSITION_MAX,
+>  };
+>  
+> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+> index 3462d82..bce1f62 100644
+> --- a/drivers/bus/mhi/core/pm.c
+> +++ b/drivers/bus/mhi/core/pm.c
+> @@ -37,9 +37,10 @@
+>   *     M0 -> FW_DL_ERR
+>   *     M0 -> M3_ENTER -> M3 -> M3_EXIT --> M0
+>   * L1: SYS_ERR_DETECT -> SYS_ERR_PROCESS --> POR
+> - * L2: SHUTDOWN_PROCESS -> DISABLE
+> + * L2: SHUTDOWN_PROCESS -> LD_ERR_FATAL_DETECT
+> + *     SHUTDOWN_PROCESS -> DISABLE
+>   * L3: LD_ERR_FATAL_DETECT <--> LD_ERR_FATAL_DETECT
+> - *     LD_ERR_FATAL_DETECT -> SHUTDOWN_PROCESS
+> + *     LD_ERR_FATAL_DETECT -> DISABLE
+>   */
+>  static struct mhi_pm_transitions const dev_state_transitions[] = {
+>  	/* L0 States */
+> @@ -72,7 +73,7 @@ static struct mhi_pm_transitions const dev_state_transitions[] = {
+>  	{
+>  		MHI_PM_M3,
+>  		MHI_PM_M3_EXIT | MHI_PM_SYS_ERR_DETECT |
+> -		MHI_PM_SHUTDOWN_PROCESS | MHI_PM_LD_ERR_FATAL_DETECT
+> +		MHI_PM_LD_ERR_FATAL_DETECT
+>  	},
+>  	{
+>  		MHI_PM_M3_EXIT,
+> @@ -103,7 +104,7 @@ static struct mhi_pm_transitions const dev_state_transitions[] = {
+>  	/* L3 States */
+>  	{
+>  		MHI_PM_LD_ERR_FATAL_DETECT,
+> -		MHI_PM_LD_ERR_FATAL_DETECT | MHI_PM_SHUTDOWN_PROCESS
+> +		MHI_PM_LD_ERR_FATAL_DETECT | MHI_PM_DISABLE
+>  	},
+>  };
+>  
+> @@ -670,6 +671,10 @@ void mhi_pm_st_worker(struct work_struct *work)
+>  			mhi_pm_disable_transition
+>  				(mhi_cntrl, MHI_PM_SHUTDOWN_PROCESS);
+>  			break;
+> +		case DEV_ST_TRANSITION_FATAL:
+> +			mhi_pm_disable_transition
+> +				(mhi_cntrl, MHI_PM_LD_ERR_FATAL_DETECT);
+> +			break;
+>  		default:
+>  			break;
+>  		}
+> @@ -1039,6 +1044,7 @@ EXPORT_SYMBOL_GPL(mhi_async_power_up);
+>  void mhi_power_down(struct mhi_controller *mhi_cntrl, bool graceful)
+>  {
+>  	enum mhi_pm_state cur_state;
+> +	enum dev_st_transition next_state = DEV_ST_TRANSITION_DISABLE;
+>  	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+>  
+>  	/* If it's not a graceful shutdown, force MHI to linkdown state */
+> @@ -1053,9 +1059,11 @@ void mhi_power_down(struct mhi_controller *mhi_cntrl, bool graceful)
+>  			dev_dbg(dev, "Failed to move to state: %s from: %s\n",
+>  				to_mhi_pm_state_str(MHI_PM_LD_ERR_FATAL_DETECT),
+>  				to_mhi_pm_state_str(mhi_cntrl->pm_state));
+> +		else
+> +			next_state = DEV_ST_TRANSITION_FATAL;
+>  	}
+>  
+> -	mhi_queue_state_transition(mhi_cntrl, DEV_ST_TRANSITION_DISABLE);
+> +	mhi_queue_state_transition(mhi_cntrl, next_state);
+>  
+>  	/* Wait for shutdown to complete */
+>  	flush_work(&mhi_cntrl->st_worker);
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
