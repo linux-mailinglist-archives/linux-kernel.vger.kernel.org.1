@@ -2,111 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57F02288F1D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 18:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A417F288F23
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 18:47:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389851AbgJIQoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 12:44:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388745AbgJIQoy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 12:44:54 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70326C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 09:44:54 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id u24so7645375pgi.1
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 09:44:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=cWs84SqTxwa8ama3NQBlgQfKzF7xkpWKH/ORsqiAAHY=;
-        b=sBWxx2zxyXVDDqj7LQLC91NP4WZl2IijlnU1VqBHhEjONCt/4nRxelQ1SQKqfKfC4C
-         SbNgzoUZMhd6kDzmFUk0FmaJPEcxF5BKg3A7JwRp0ImKTICk/5wqJCA+8ApTFJxXApIJ
-         tHcxrL4RZT0/mVh4T6zIIBp4DyzH47aRcw7kriY37FvEziXScgPcnzvJCBAzKVbkYzZh
-         UW82OrJ01LFM9U5e5Cu0A3z96WxEC6ElBI5T7Gq5CTIuOwonfD+o1sjv733jewFrP2MN
-         dPCTFEeAvwPPxLyKfGYMtnT0DmTNW4f5NJUt4t8lq1sRoe/oseOc+6RJOK6PF6XU6T2y
-         f7gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=cWs84SqTxwa8ama3NQBlgQfKzF7xkpWKH/ORsqiAAHY=;
-        b=g1Dg2qK5CAjbb5mJb848zvM/pwOWAxj9eitszWBcpIFK2ndplrfwOfPPE4jXnRHb80
-         sx30RmNqI/Ck7kYj9PIHaIJeSSIm+GANI/4wblAeIhNVx/jw03Ixo+/Qssu28i8fgsNQ
-         rKdpxxc+zZ1ebKvSLd4R8/OwtJrCAUXh5i6a9uVyDh6p+TopBxbgd7iPXGsAklmtvGNY
-         P5yNgMc6Z/k3Ktmot3zVTgKz6eaTMjH3eYkqjA9sysH7yg52wNzRzDEzyHb5GKLkumVd
-         jv66ggXIj0dFzh7aFSilL8FaY8TNUoIXcKTm2RebzIs230VyRHvbBNCXPP8sWKpYpuV8
-         s4nQ==
-X-Gm-Message-State: AOAM532JlsI6J/zd8eNyPI2nG2f+LMPv2dyLGfD2x+GuAuPgAEnVpG+N
-        ziUWcXImo3hw0Pi6WkLbQdKa
-X-Google-Smtp-Source: ABdhPJztuoTLhqk/VCU2llwb2528WLSTViLzuMxU+lq9dIW2o4A7mCnwb/KC1X1moSIrnKipELTC1A==
-X-Received: by 2002:a62:1d57:0:b029:152:47a7:e04b with SMTP id d84-20020a621d570000b029015247a7e04bmr13233945pfd.48.1602261893875;
-        Fri, 09 Oct 2020 09:44:53 -0700 (PDT)
-Received: from Mani-XPS-13-9360 ([2409:4072:6292:5a21:d5ff:f3e8:fcf2:ccc7])
-        by smtp.gmail.com with ESMTPSA id z21sm11602246pfr.43.2020.10.09.09.44.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 09 Oct 2020 09:44:53 -0700 (PDT)
-Date:   Fri, 9 Oct 2020 22:14:45 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 09/10] bus: mhi: core: Move to an error state on
- mission mode failure
-Message-ID: <20201009164445.GJ4810@Mani-XPS-13-9360>
-References: <1600480955-16827-1-git-send-email-bbhatt@codeaurora.org>
- <1600480955-16827-10-git-send-email-bbhatt@codeaurora.org>
+        id S2389864AbgJIQr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 12:47:27 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:35599 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389431AbgJIQr0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 12:47:26 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602262046; h=Message-ID: References: In-Reply-To: Subject:
+ To: From: Date: Content-Transfer-Encoding: Content-Type: MIME-Version:
+ Sender; bh=R6nMem/qqKWaoZGmM9A/xjfe5EOsaO5tzupufqDbRbo=; b=OSZYDPoRcjPZUGUP+O3GdLcfQaGeTUZ+VQKio66o6UlcKqZtzNHrx8nEuZvQht1aVVEcI0WU
+ IH1ajB9AvVESOLNPjxsUPjk4DZYzzDzXwgYd/VOyKCQykoG3ECJBptXyUVEwDE5lj4ml3Lc1
+ JCFjo/cLTibGaHKwybBKxBJwHbM=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5f80940c588858a304b0e8d3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 09 Oct 2020 16:47:08
+ GMT
+Sender: cgoldswo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 44481C433FF; Fri,  9 Oct 2020 16:47:07 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cgoldswo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4EBCEC433C9;
+        Fri,  9 Oct 2020 16:47:06 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1600480955-16827-10-git-send-email-bbhatt@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Fri, 09 Oct 2020 09:47:06 -0700
+From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Question regarding ext4_journalled_aops: lack of migrate_page
+In-Reply-To: <4296a311893a9173e6ba8b84a8ae16f4@codeaurora.org>
+References: <4296a311893a9173e6ba8b84a8ae16f4@codeaurora.org>
+Message-ID: <5c68c087a39752370f9f4bbea8b2e769@codeaurora.org>
+X-Sender: cgoldswo@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 07:02:34PM -0700, Bhaumik Bhatt wrote:
-> If the host receives a mission mode event and by the time it can get
-> to processing it, the register accesses fail implying a connectivity
-> error, MHI should move to an error state. This helps avoid longer wait
-> times from a synchronous power up perspective and accurately reflects
-> the MHI execution environment and power management states.
+tOn 2020-10-08 23:42, Chris Goldsworthy wrote:
+> Hi there,
 > 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> ext4_aops and ext4_da_aops both have a migratepage callback, whereas
+> ext4_journalled_aops lacks such a callback.  Why is this so?  I’m
+> asking this due to the following: when a page containing EXT4 journal
+> buffer heads ends up being migrated, fallback_migrate_page() is used,
+> which eventually calls try_to_free_buffers(), which will call
+> drop_buffers().  Drop buffers() can fail for a page if that page is on
+> the LRU list (see
+> https://elixir.bootlin.com/linux/v5.8.14/source/fs/buffer.c#L3225).
+> Now, if buffer_migrate_page() was supplied as the migratepage callback
+> for the journaled aops, this wouldn’t be problem since we ignore the
+> LRU lists altogether.
+> 
+> Resolving this issue will benefit CMA allocations, which might have to
+> migrate movable pages that were allocated from a CMA region (the
+> assumption is that these pages can be migrated once the memory backing
+> these pages is needed).
+> 
+> Thanks,
+> 
+> Chris.
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+An alternative solution to to placing in a migratepage callback is to 
+actually remove the buffer heads from an LRU list in drop_buffers() - we 
+tried upstreaming such a patch some time ago: 
+https://lore.kernel.org/patchwork/patch/325406/ .  This would solve the 
+problem, and would avoid having to get a migratepage callback for any 
+other files systems that have aops without the callback.  This didn't 
+get off the ground however, I'm picking up the line of questioning left 
+in the previous thread, to determine why EXT4 doesn't have a migratepage 
+callback.
 
 Thanks,
-Mani
 
-> ---
->  drivers/bus/mhi/core/pm.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-> index bce1f62..16c04ab 100644
-> --- a/drivers/bus/mhi/core/pm.c
-> +++ b/drivers/bus/mhi/core/pm.c
-> @@ -384,10 +384,14 @@ static int mhi_pm_mission_mode_transition(struct mhi_controller *mhi_cntrl)
->  	write_lock_irq(&mhi_cntrl->pm_lock);
->  	if (MHI_REG_ACCESS_VALID(mhi_cntrl->pm_state))
->  		mhi_cntrl->ee = mhi_get_exec_env(mhi_cntrl);
-> -	write_unlock_irq(&mhi_cntrl->pm_lock);
->  
-> -	if (!MHI_IN_MISSION_MODE(mhi_cntrl->ee))
-> +	if (!MHI_IN_MISSION_MODE(mhi_cntrl->ee)) {
-> +		mhi_cntrl->pm_state = MHI_PM_LD_ERR_FATAL_DETECT;
-> +		write_unlock_irq(&mhi_cntrl->pm_lock);
-> +		wake_up_all(&mhi_cntrl->state_event);
->  		return -EIO;
-> +	}
-> +	write_unlock_irq(&mhi_cntrl->pm_lock);
->  
->  	wake_up_all(&mhi_cntrl->state_event);
->  
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+Chris.
+
+-- 
+The Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
