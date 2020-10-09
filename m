@@ -2,74 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9240A28806B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 04:40:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 553DC28806D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 04:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729021AbgJICkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 22:40:08 -0400
-Received: from mail-il1-f205.google.com ([209.85.166.205]:39997 "EHLO
-        mail-il1-f205.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725908AbgJICkI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 22:40:08 -0400
-Received: by mail-il1-f205.google.com with SMTP id f67so382170ilh.7
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 19:40:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=/vPsdNPBvKtbX2yFfD1uwNT/06XdsG2XB3HXtY9anCU=;
-        b=YPF3mIXdWVQ1ZIcEq+QlaY0jjcNIzlej1BaWUO+eb/aexLoMRu/sdNfFCE8eRvJnfK
-         qYRWzwCo2HuKym/GwXZjNwaS2YFCBno91NOdwqdl7x/joojrgHNw0fdahf7vUXmDtytd
-         QjuhUcM6oaLHFbKYzR2ZqlnLxmNCqLuMbq5pI8gKvJniKe180FR/szWuRleCBio1NCqf
-         4MqjzHt7KSbL1xYEI75bK6RzpsDrcbKtlt1LJkyFJzDLdd0/nM/+RHlYD1UbpaWFtXnu
-         Kd+Xh7wOjbYEJWPFMgcFbmM3TyL3JjJ2T/weiS/fyaNXNXlZWm9gQhkMLHjCKVQzbMCd
-         nemw==
-X-Gm-Message-State: AOAM532CoznN4e2+lFhswc570D31AgnKMtW2EaCCmuzWHzPf443uuM3j
-        MyC1+XajSWvtQc5q1sr42utjbKex/zrCrSzbwvejUhUmBNVa
-X-Google-Smtp-Source: ABdhPJwtkYMALivaBfrUViip7NgYrqa7K9OXqz214KzVWdtu39kWhABMAytxVEbDrR/IiTJNPDuHyM2I0Jvcf+BF+qyKKnXvhScE
+        id S1729363AbgJIClR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 22:41:17 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14754 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725908AbgJIClR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 22:41:17 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id D15DD647429D0F77E087;
+        Fri,  9 Oct 2020 10:41:14 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 9 Oct 2020 10:41:09 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH] f2fs: fix to set SBI_NEED_FSCK flag for inconsistent inode
+Date:   Fri, 9 Oct 2020 10:40:48 +0800
+Message-ID: <20201009024048.50089-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-Received: by 2002:a92:9a8d:: with SMTP id c13mr9258613ill.233.1602211204976;
- Thu, 08 Oct 2020 19:40:04 -0700 (PDT)
-Date:   Thu, 08 Oct 2020 19:40:04 -0700
-In-Reply-To: <00000000000085be6f05b12a1366@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bb48fb05b133ddf5@google.com>
-Subject: Re: general protection fault in utf8_casefold
-From:   syzbot <syzbot+05139c4039d0679e19ff@syzkaller.appspotmail.com>
-To:     Su.Chung@amd.com, alexander.deucher@amd.com, chao@kernel.org,
-        drosen@google.com, ebiggers@kernel.org, jaegeuk@kernel.org,
-        jun.lei@amd.com, krisman@collabora.com,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        su.chung@amd.com, sunpeng.li@amd.com,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
-        yuchao0@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+If compressed inode has inconsistent fields on i_compress_algorithm,
+i_compr_blocks and i_log_cluster_size, we missed to set SBI_NEED_FSCK
+to notice fsck to repair the inode, fix it.
 
-commit 91db9311945f01901ddb9813ce11364de214a156
-Author: Su Sung Chung <Su.Chung@amd.com>
-Date:   Mon Jul 8 15:31:39 2019 +0000
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+---
+ fs/f2fs/inode.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-    drm/amd/display: refactor gpio to allocate hw_container in constructor
+diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
+index d5664bc7d6c6..657db2fb6739 100644
+--- a/fs/f2fs/inode.c
++++ b/fs/f2fs/inode.c
+@@ -299,6 +299,7 @@ static bool sanity_check_inode(struct inode *inode, struct page *node_page)
+ 			F2FS_FITS_IN_INODE(ri, fi->i_extra_isize,
+ 						i_log_cluster_size)) {
+ 		if (ri->i_compress_algorithm >= COMPRESS_MAX) {
++			set_sbi_flag(sbi, SBI_NEED_FSCK);
+ 			f2fs_warn(sbi, "%s: inode (ino=%lx) has unsupported "
+ 				"compress algorithm: %u, run fsck to fix",
+ 				  __func__, inode->i_ino,
+@@ -307,6 +308,7 @@ static bool sanity_check_inode(struct inode *inode, struct page *node_page)
+ 		}
+ 		if (le64_to_cpu(ri->i_compr_blocks) >
+ 				SECTOR_TO_BLOCK(inode->i_blocks)) {
++			set_sbi_flag(sbi, SBI_NEED_FSCK);
+ 			f2fs_warn(sbi, "%s: inode (ino=%lx) has inconsistent "
+ 				"i_compr_blocks:%llu, i_blocks:%llu, run fsck to fix",
+ 				  __func__, inode->i_ino,
+@@ -316,6 +318,7 @@ static bool sanity_check_inode(struct inode *inode, struct page *node_page)
+ 		}
+ 		if (ri->i_log_cluster_size < MIN_COMPRESS_LOG_SIZE ||
+ 			ri->i_log_cluster_size > MAX_COMPRESS_LOG_SIZE) {
++			set_sbi_flag(sbi, SBI_NEED_FSCK);
+ 			f2fs_warn(sbi, "%s: inode (ino=%lx) has unsupported "
+ 				"log cluster size: %u, run fsck to fix",
+ 				  __func__, inode->i_ino,
+-- 
+2.26.2
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1012ee8b900000
-start commit:   c85fb28b Merge tag 'arm64-fixes' of git://git.kernel.org/p..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1212ee8b900000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1412ee8b900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=de7f697da23057c7
-dashboard link: https://syzkaller.appspot.com/bug?extid=05139c4039d0679e19ff
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12316e00500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16e80420500000
-
-Reported-by: syzbot+05139c4039d0679e19ff@syzkaller.appspotmail.com
-Fixes: 91db9311945f ("drm/amd/display: refactor gpio to allocate hw_container in constructor")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
