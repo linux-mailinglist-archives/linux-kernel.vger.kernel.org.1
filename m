@@ -2,150 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4ABA2887A3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 13:14:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCA9B2887AC
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 13:15:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387998AbgJILOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 07:14:21 -0400
-Received: from esa6.microchip.iphmx.com ([216.71.154.253]:38309 "EHLO
-        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727181AbgJILOU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 07:14:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1602242059; x=1633778059;
-  h=references:from:to:cc:subject:in-reply-to:date:
-   message-id:mime-version;
-  bh=vjKYfbc9s5PmZNG8hn4fzkf70oXwnDet2wCdajG+jWc=;
-  b=XNpqmPvRIkioT5HxPELU9cHjNN10TDXPgYpUvkvSb0avdXn/unpOmNIl
-   FULIIl+t84D4BZbgYF0aJt52teLzAjKbRm1IBLzXpJOPzsSSo96NcSgFj
-   jLy0Qta8FQRi/1Yln+biBHNJ3b+3t1cFGQ1aRBRWlMpESI3fR/t+2tEsd
-   nIeUMMilaERh5uip+R8Slcb3mHSTNGqSa6StGSjqf/3bUkNKiEXED7iOz
-   FJ4VtYng39GbZFK0C8haDHGUFuwQaIWFtHo0D329eVmB1Rsq/mEqosYqS
-   moDNagGjtpIM7fOA83bDO6QkMn4xNoMgV9F46uholvL/9CnwEZN6xP7n9
-   Q==;
-IronPort-SDR: Ifxxhy0xAWh2KaxW2iYDKqG+/gC0f0xqoVn69/hoK+fBjpiQabnargewF3GPamd7kMyunjKO5f
- 2xnkVWrljLfzh4O31eJOKRJw7rsGQ6hqrOWpofV1Q/Eb4EbTrfGrt5s8cLPT060E7HssZN836u
- 74nLMRrqzrnQxyEKdoVH7YSi0rIUKgITbXwUuvf+w3uwpnV1N3EvclXw6GuQwnBwIvKrd7eLnP
- jReMy6MXx0hVeFBnqQd5fOqjpBO9LNHc5QwjSxwdH6PfbUTPva8AKOgBzk+vjZpYsL0e5ZcbdT
- 7tU=
-X-IronPort-AV: E=Sophos;i="5.77,354,1596524400"; 
-   d="scan'208";a="29330444"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 09 Oct 2020 04:14:18 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 9 Oct 2020 04:13:45 -0700
-Received: from soft-dev15.microsemi.net.microchip.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
- via Frontend Transport; Fri, 9 Oct 2020 04:14:16 -0700
-References: <20201006142532.2247515-1-lars.povlsen@microchip.com> <20201006142532.2247515-3-lars.povlsen@microchip.com> <CACRpkda+OSgma3E0XxXUk8a2yrn5Hpu3a47cBN50rOkoSMkiwQ@mail.gmail.com> <87ft6px9wc.fsf@soft-dev15.microsemi.net> <CACRpkdYqKqqM8D0vrBWbo0=7OFthU2kcK2tjd45dD7DxEkaYWg@mail.gmail.com>
-From:   Lars Povlsen <lars.povlsen@microchip.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-CC:     Lars Povlsen <lars.povlsen@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: Re: [RESEND PATCH v3 2/3] pinctrl: pinctrl-mchp-sgpio: Add pinctrl driver for Microsemi Serial GPIO
-In-Reply-To: <CACRpkdYqKqqM8D0vrBWbo0=7OFthU2kcK2tjd45dD7DxEkaYWg@mail.gmail.com>
-Date:   Fri, 9 Oct 2020 13:14:15 +0200
-Message-ID: <87a6wvy7lk.fsf@soft-dev15.microsemi.net>
+        id S2388022AbgJILPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 07:15:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49396 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730660AbgJILPV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 07:15:21 -0400
+Received: from localhost (unknown [122.182.251.219])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5829922269;
+        Fri,  9 Oct 2020 11:15:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602242120;
+        bh=k6uaFEKd/nFzgD4ScYH6xfNS3bhBKlY2u9F/RvcymNI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ijRQptxkA5gWAk6lsRYj2aYknp99koRLvxsGj8/yZipBPJEtmvpsDtXna0V/ez6d0
+         RajF4Rd6uIQ/hw2qIjBT9MUM3BW6R+Yt57vH1e5yEq5oXPcdiBvutf9o4On7Rmcz8N
+         5CK4yiQ1gSfnNCiGNG67r2W647FDfEkPPjwYaYuc=
+Date:   Fri, 9 Oct 2020 16:45:15 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc:     dmaengine@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/3] dmaengine: add peripheral configuration
+Message-ID: <20201009111515.GF2968@vkoul-mobl>
+References: <20201008123151.764238-1-vkoul@kernel.org>
+ <20201008123151.764238-3-vkoul@kernel.org>
+ <e2c0323b-4f41-1926-5930-c63624fe1dd1@ti.com>
+ <20201009103019.GD2968@vkoul-mobl>
+ <a44af464-7d13-1254-54dd-f7783ccfaa0f@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a44af464-7d13-1254-54dd-f7783ccfaa0f@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 09-10-20, 13:45, Peter Ujfalusi wrote:
+> Hi Vinod,
+> 
+> On 09/10/2020 13.30, Vinod Koul wrote:
+> > Hi Peter,
+> > 
+> > On 09-10-20, 12:04, Peter Ujfalusi wrote:
+> >> On 08/10/2020 15.31, Vinod Koul wrote:
+> >>> Some complex dmaengine controllers have capability to program the
+> >>> peripheral device, so pass on the peripheral configuration as part of
+> >>> dma_slave_config
+> >>>
+> >>> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> >>> ---
+> >>>  include/linux/dmaengine.h | 5 +++++
+> >>>  1 file changed, 5 insertions(+)
+> >>>
+> >>> diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
+> >>> index 6fbd5c99e30c..a15dc2960f6d 100644
+> >>> --- a/include/linux/dmaengine.h
+> >>> +++ b/include/linux/dmaengine.h
+> >>> @@ -418,6 +418,9 @@ enum dma_slave_buswidth {
+> >>>   * @slave_id: Slave requester id. Only valid for slave channels. The dma
+> >>>   * slave peripheral will have unique id as dma requester which need to be
+> >>>   * pass as slave config.
+> >>> + * @peripheral_config: peripheral configuration for programming peripheral
+> >>> + * for dmaengine transfer
+> >>> + * @peripheral_size: peripheral configuration buffer size
+> >>>   *
+> >>>   * This struct is passed in as configuration data to a DMA engine
+> >>>   * in order to set up a certain channel for DMA transport at runtime.
+> >>> @@ -443,6 +446,8 @@ struct dma_slave_config {
+> >>>  	u32 dst_port_window_size;
+> >>>  	bool device_fc;
+> >>>  	unsigned int slave_id;
+> >>> +	void *peripheral_config;
+> >>> +	size_t peripheral_size;
+> >>
+> >> Do you foresee a need of src/dst pair of these?
+> >> If we do DEV_TO_DEV with different type of peripherals it is going to
+> >> cause issues.
+> > 
+> > Not really as the channel already has direction and this is per channel.
+> 
+> Yes, in case of DEV_TO_MEM or MEM_TO_DEV.
+> 
+> > If for any any reason subsequent txn is for different direction, I would
+> > expect that parameters are set again before prep_ calls
+> 
+> But in DEV_TO_DEV?
 
-Linus Walleij writes:
+Do we support that :D
 
-> Hi Lars,
->
-> I'm overall mostly happy with the latest posting (not the one I respond to here)
+> If we have two peripherals, both needs config:
+> p1_config and p2_config
+> 
+> What and how would one use the single peripheral_config?
 
-I'm glad we're getting there :-)
+Since the config is implementation specific, I do not think it limits.
+You may create
 
->
-> On Thu, Oct 8, 2020 at 12:57 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
->> > On Tue, Oct 6, 2020 at 4:25 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
->
->> >> +       gc->of_xlate            = microchip_sgpio_of_xlate;
->> >> +       gc->of_gpio_n_cells     = 3;
->> >
->> > So I'm sceptical to this.
->> >
->> > Why can't you just use the pin index in cell 0 directly
->> > and avoid cell 1?
->> >
->>
->> You scepticism has surfaced before :-). The (now) 2 indices relates to
->> how the hardware address signals.
->>
->> Each signal/pin is addressed by port, bit number and direction. We now
->> have the direction encoded in the bank/phandle.
->
-> I'm sorry but I just don't get it, I suppose. To me it is pretty
-> straight-forward
-> that the cells indicate the pin and then the flags. I do understand you
-> need the port at all, since this is implicit from the reg property
-> of the DT node. Are these two different things?
+struct peter_config {
+        struct p1_config;
+        struct p2_config;
+};
 
-I responded to this in your comments to the DT bindings.
-
-I just for got to offer to add a description for "#gpio-cells", I see
-that's missing. That should make it "crystal clear" - I hope!
-
-Something like:
-
---- a/Documentation/devicetree/bindings/pinctrl/microchip,sparx5-sgpio.yaml
-+++ b/Documentation/devicetree/bindings/pinctrl/microchip,sparx5-sgpio.yaml
-@@ -86,10 +86,17 @@ patternProperties:
-       gpio-controller: true
-
-       '#gpio-cells':
-+        description: |
-+         Specifies the pin (port and bit) and flags. Note that the
-+         SGIO pin is defined by *2* numbers, a port number between 0
-+         and 31, and a bit index, 0 to 3. The maximum bit number is
-+         controlled indirectly by the "ngpios" property: (ngpios/32).
-         const: 3
-
-       ngpios:
--        minimum: 1
-+        description: The numbers of GPIO's exposed. This must be a
-+          multiple of 32.
-+        minimum: 32
-         maximum: 128
-
-     required:
-
-Would that be adequate, or should this also be added as a comment in
-microchip_sgpio_of_xlate()?
-
-Like:
-
-    +       /* Note that the SGIO pin is defined by *2* numbers, a port
-    +        * number between 0 and 31, and a bit index, 0 to 3.
-    +        */
-            if (gpiospec->args[0] > SGPIO_BITS_PER_WORD ||
-                        gpiospec->args[1] > priv->bitcount)
-                                        return -EINVAL;
-
-I hope we can put this one to bed...
-
----Lars
-
->
-> Yours,
-> Linus Walleij
+> 
+> If only one of them needs config, then sure, the driver can pin-point
+> which one the single config might apply to.
+> 
+> Or you chain the same type of peripheral and you would need different
+> config for tx and rx?
+> 
+> - Péter
+> 
+> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
 -- 
-Lars Povlsen,
-Microchip
+~Vinod
