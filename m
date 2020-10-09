@@ -2,88 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D8A528855B
+	by mail.lfdr.de (Postfix) with ESMTP id 06BD328855A
 	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:34:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732851AbgJIIeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 04:34:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732758AbgJIIeU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1732438AbgJIIeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 9 Oct 2020 04:34:20 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A311BC0613D2;
-        Fri,  9 Oct 2020 01:34:18 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id 67so6635062ybt.6;
-        Fri, 09 Oct 2020 01:34:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2L4Z60y4H9EDAfsYotDNv8cFBrjpmybuc3nSYCgHVY4=;
-        b=vHw74wOeqHMUnWPc0RXBbjYyWBenl8fVoXSF3QKVpIpQ0hjBmmkvCL1FyyxWbNPLsU
-         SpCct8ZXFXM16eAoVeC1OqdSPOln3d1fz7TGBMErCHG2WIIPlESZvMkmGlm3/iAql6z7
-         dqdkuQh2KABglxNjTWHEYlHuaGsCiD63JHsZ82jGNhCiXMZLVg7ffBCEa/6SWolrRIBv
-         gGzdea4iP51r6Xa71G11bW9xW8diDFPKgTjKlK7R0gj9yFbxw9fJoRIw2bhwQN5S8EVb
-         HDWrtT0ZtVijbskBNsk96aKQBJqoCqiKk2DMBChvmQ/y4WVks/EAREklQyn4xL6J97KS
-         uiGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2L4Z60y4H9EDAfsYotDNv8cFBrjpmybuc3nSYCgHVY4=;
-        b=CmYhAX0Vxh3Z2Zg0Na231i9nFmLsxrw8LLYuHEAUGHcUeGGClkEWa3/3xgoL9+SjYG
-         scn7CnPk/XLcAbyxNiYNdYykHqnTcaB2sbSU8L8+LQ3drHQFa6bYD8v2omaL1XJrrkoD
-         lAM/g79CqrI9CczbavXraeslNPyojKCPnwJ62CZD54HiMBs3l1L3IhhTaWXwEuKUEGpr
-         jhXXFOAqfOh3t+ZyB7CDVPr1KT2ppbdSuCg3cSAUyQqqexXWD9jBR41FJ8gQt+ShPTvs
-         Ss6KgVTeQVXSk8vXKLEmXS4xyxfWiJkhBcs0amHGS3gZWUl1hbcPk3/AztuffmYThdDI
-         BXdQ==
-X-Gm-Message-State: AOAM532wJcX49VvPCBljj59ICr9TbJGof33OAIDx3C3bTPdtM9/8pZNQ
-        LvonZ55lraOknexX4jo/1pvo3WPqQlrsoOxyoZVW1tH06PApPe+P
-X-Google-Smtp-Source: ABdhPJz2T+pQRsbMSfuJSs2HYk5QGzEEgrESzEQ2ok/0t9NYX2jHwcUhnC1WN0DK629ULyE4VUUs52UXArEsEcMgNPM=
-X-Received: by 2002:a25:5507:: with SMTP id j7mr16662411ybb.214.1602232457859;
- Fri, 09 Oct 2020 01:34:17 -0700 (PDT)
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:37890 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732423AbgJIIeT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 04:34:19 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-45-6ee0yc2ZNTSKAf5vApMkGg-1; Fri, 09 Oct 2020 09:34:16 +0100
+X-MC-Unique: 6ee0yc2ZNTSKAf5vApMkGg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 9 Oct 2020 09:34:14 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 9 Oct 2020 09:34:14 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Johannes Berg' <johannes@sipsolutions.net>,
+        Greg KH <gregkh@linuxfoundation.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "nstange@suse.de" <nstange@suse.de>,
+        "ap420073@gmail.com" <ap420073@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "rafael@kernel.org" <rafael@kernel.org>
+Subject: RE: [CRAZY-RFF] debugfs: track open files and release on remove
+Thread-Topic: [CRAZY-RFF] debugfs: track open files and release on remove
+Thread-Index: AQHWnhTYAkCadt4V/kCnonv0tSsTz6mO7mnQ
+Date:   Fri, 9 Oct 2020 08:34:14 +0000
+Message-ID: <03c42bb5f57a4c3d9c782a023add28cd@AcuMS.aculab.com>
+References: <87v9fkgf4i.fsf@suse.de>
+         <20201009095306.0d87c3aa13db.Ib3a7019bff15bb6308f6d259473a1648312a4680@changeid>
+         <20201009080355.GA398994@kroah.com>
+         <be61c6a38d0f6ca1aa0bc3f0cb45bbb216a12982.camel@sipsolutions.net>
+         <20201009081624.GA401030@kroah.com>
+ <1ec056cf3ec0953d2d1abaa05e37e89b29c7cc63.camel@sipsolutions.net>
+In-Reply-To: <1ec056cf3ec0953d2d1abaa05e37e89b29c7cc63.camel@sipsolutions.net>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <20201006112701.11800-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20201006112701.11800-3-prabhakar.mahadev-lad.rj@bp.renesas.com> <20201009074809.GE10335@amd>
-In-Reply-To: <20201009074809.GE10335@amd>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Fri, 9 Oct 2020 09:33:51 +0100
-Message-ID: <CA+V-a8tLuC7j_rbvwVaJ3EDD4YtUc9CvQaZNYY7GUZbOt-yhyg@mail.gmail.com>
-Subject: Re: [PATCH 2/4] arm64: dts: renesas: Add support for MIPI Adapter
- V2.1 connected to HiHope RZ/G2H
-To:     Pavel Machek <pavel@denx.de>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
+RnJvbTogSm9oYW5uZXMgQmVyZw0KPiBTZW50OiAwOSBPY3RvYmVyIDIwMjAgMDk6MTkNCj4gDQo+
+IE9uIEZyaSwgMjAyMC0xMC0wOSBhdCAxMDoxNiArMDIwMCwgR3JlZyBLSCB3cm90ZToNCj4gPiBP
+biBGcmksIE9jdCAwOSwgMjAyMCBhdCAxMDowNjoxNEFNICswMjAwLCBKb2hhbm5lcyBCZXJnIHdy
+b3RlOg0KPiA+ID4gV2UgdXNlZCB0byBzYXkgdGhlIHByb3h5X2ZvcHMgd2VyZW4ndCBuZWVkZWQg
+YW5kIGl0IHdhc24ndCBhbiBpc3N1ZSwgYW5kDQo+ID4gPiB0aGVuIHN0aWxsIGltcGxlbWVudGVk
+IGl0LiBEdW5uby4gSSdtIG5vdCByZWFsbHkgdG9vIGNvbmNlcm5lZCBhYm91dCBpdA0KPiA+ID4g
+bXlzZWxmLCBvbmx5IHJvb3QgY2FuIGhvbGQgdGhlIGZpbGVzIG9wZW4gYW5kIHJlbW92ZSBtb2R1
+bGVzIC4uLg0KPiA+DQo+ID4gcHJveHlfZm9wcyB3ZXJlIG5lZWRlZCBiZWNhdXNlIGRldmljZXMg
+Y2FuIGJlIHJlbW92ZWQgZnJvbSB0aGUgc3lzdGVtIGF0DQo+ID4gYW55IHRpbWUsIGNhdXNpbmcg
+dGhlaXIgZGVidWdmcyBmaWxlcyB0byB3YW50IHRvIGFsc28gYmUgcmVtb3ZlZC4gIEl0DQo+ID4g
+d2Fzbid0IGJlY2F1c2Ugb2YgdW5sb2FkaW5nIGtlcm5lbCBjb2RlLg0KPiANCj4gSW5kZWVkLCB0
+aGF0J3MgdHJ1ZS4gU3RpbGwsIHdlIGxpdmVkIHdpdGggaXQgZm9yIHllYXJzLg0KPiANCj4gQW55
+d2F5LCBsaWtlIEkgc2FpZCwgSSByZWFsbHkganVzdCBkaWQgdGhpcyBtb3JlIHRvIHNlZSB0aGF0
+IGl0IF9jb3VsZF8NCj4gYmUgZG9uZSwgbm90IHRvIHN1Z2dlc3QgdGhhdCBpdCBfc2hvdWxkXyA6
+LSkNCj4gDQo+IEkgdGhpbmsgYWRkaW5nIHRoZSAub3duZXIgZXZlcnl3aGVyZSB3b3VsZCBiZSBn
+b29kLCBhbmQgcGVyaGFwcyB3ZSBjYW4NCj4gc29tZWhvdyBwdXQgYSBjaGVjayBzb21ld2hlcmUg
+bGlrZQ0KPiANCj4gCVdBUk5fT04oaXNfbW9kdWxlX2FkZHJlc3MoKHVuc2lnbmVkIGxvbmcpZm9w
+cykgJiYgIWZvcHMtPm93bmVyKTsNCj4gDQo+IHRvIHByZXZlbnQgdGhlIGlzc3VlIGluIHRoZSBm
+dXR1cmU/DQoNCkRvZXMgaXQgZXZlciBtYWtlIGFueSBzZW5zZSB0byBzZXQgLm93bmVyIHRvIGFu
+eXRoaW5nIG90aGVyIHRoYW4NClRISVNfTU9EVUxFPw0KDQpJZiBub3QgdGhlIGNvZGUgdGhhdCBz
+YXZlcyB0aGUgJ3N0cnVjdCBmaWxlX29wZXJhdGlvbnMnIGFkZHJlc3MNCm91Z2h0IHRvIGJlIGFi
+bGUgdG8gc2F2ZSB0aGUgYXNzb2NpYXRlZCBtb2R1bGUuDQoNCkkgd2FzIGFsc28gd29uZGVyaW5n
+IGlmIHRoaXMgYWZmZWN0cyBub3JtYWwgb3BlbnM/DQpUaGV5IHNob3VsZCBob2xkIGEgcmVmZXJl
+bmNlIG9uIHRoZSBtb2R1bGUgdG8gc3RvcCBpdCBiZWluZyB1bmxvYWRlZC4NCkRvZXMgdGhhdCBy
+ZWx5IG9uIC5vd25lciBiZWluZyBzZXQ/DQoNCkZvciBkZWJ1Z2ZzIHN1cmVseSBpdCBpcyBwb3Nz
+aWJsZSB0byBkZXRlcm1pbmUgYW5kIHNhdmUgVEhJU19NT0RVTEUNCndoZW4gaGUgbm9kZXMgYXJl
+IHJlZ2lzdGVycyBhbmQgZG8gYSB0cnlfbW9kdWxlX2dldCgpIGluIHRoZSBvcGVuPw0KDQoJRGF2
+aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50
+IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTcz
+ODYgKFdhbGVzKQ0K
 
-Thank you for the review.
-
-On Fri, Oct 9, 2020 at 8:48 AM Pavel Machek <pavel@denx.de> wrote:
->
-> Hi!
->
-> > index 000000000000..c62ddb9b2ba5
-> > --- /dev/null
-> > +++ b/arch/arm64/boot/dts/renesas/hihope-rzg2-ex-aistarvision-mipi-adapter-2.1.dtsi
-> > @@ -0,0 +1,109 @@
-> > +// SPDX-License-Identifier: GPL-2.0
->
-> dts files are normally dual-licensed...?
->
-All the Renesas dts files are GPL-2.0
-
-Cheers,
-Prabhakar
