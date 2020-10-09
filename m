@@ -2,127 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCA9B2887AC
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 13:15:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE2D12887A5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 13:14:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388022AbgJILPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 07:15:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49396 "EHLO mail.kernel.org"
+        id S2388017AbgJILOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 07:14:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730660AbgJILPV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 07:15:21 -0400
-Received: from localhost (unknown [122.182.251.219])
+        id S2388001AbgJILOb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 07:14:31 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5829922269;
-        Fri,  9 Oct 2020 11:15:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9517A22269;
+        Fri,  9 Oct 2020 11:14:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602242120;
-        bh=k6uaFEKd/nFzgD4ScYH6xfNS3bhBKlY2u9F/RvcymNI=;
+        s=default; t=1602242071;
+        bh=G9vzUMWmPTENaCSSrT+4scPL8T/yGBTjMpUFtYd6Vxs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ijRQptxkA5gWAk6lsRYj2aYknp99koRLvxsGj8/yZipBPJEtmvpsDtXna0V/ez6d0
-         RajF4Rd6uIQ/hw2qIjBT9MUM3BW6R+Yt57vH1e5yEq5oXPcdiBvutf9o4On7Rmcz8N
-         5CK4yiQ1gSfnNCiGNG67r2W647FDfEkPPjwYaYuc=
-Date:   Fri, 9 Oct 2020 16:45:15 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc:     dmaengine@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/3] dmaengine: add peripheral configuration
-Message-ID: <20201009111515.GF2968@vkoul-mobl>
-References: <20201008123151.764238-1-vkoul@kernel.org>
- <20201008123151.764238-3-vkoul@kernel.org>
- <e2c0323b-4f41-1926-5930-c63624fe1dd1@ti.com>
- <20201009103019.GD2968@vkoul-mobl>
- <a44af464-7d13-1254-54dd-f7783ccfaa0f@ti.com>
+        b=bWAlSh8fDVuAw/5bkQmgw6LUbZC3WgWqOAEsSr+hEOg/6L3UCLOk+oEjFHUoUKQ5N
+         /b5CpOf0TXNVPXBk14HcAurw7DUgsBtqMl7s5KaHtfVFoWI8E7lkpVQ+kz1gI0HKT2
+         3eZztaubRPkrx3EnJ2GCchsXLYbEU52sFXG/MScY=
+Date:   Fri, 9 Oct 2020 13:15:17 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     'Johannes Berg' <johannes@sipsolutions.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "nstange@suse.de" <nstange@suse.de>,
+        "ap420073@gmail.com" <ap420073@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "rafael@kernel.org" <rafael@kernel.org>
+Subject: Re: [RFC] debugfs: protect against rmmod while files are open
+Message-ID: <20201009111517.GA508813@kroah.com>
+References: <4a58caee3b6b8975f4ff632bf6d2a6673788157d.camel@sipsolutions.net>
+ <20201009124113.a723e46a677a.Ib6576679bb8db01eb34d3dce77c4c6899c28ce26@changeid>
+ <2a333c2a50c676c461c1e2da5847dd4024099909.camel@sipsolutions.net>
+ <8fe62082d9774a1fb21894c27e140318@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a44af464-7d13-1254-54dd-f7783ccfaa0f@ti.com>
+In-Reply-To: <8fe62082d9774a1fb21894c27e140318@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09-10-20, 13:45, Peter Ujfalusi wrote:
-> Hi Vinod,
-> 
-> On 09/10/2020 13.30, Vinod Koul wrote:
-> > Hi Peter,
+On Fri, Oct 09, 2020 at 10:56:16AM +0000, David Laight wrote:
+> From: Johannes Berg
+> > Sent: 09 October 2020 11:48
 > > 
-> > On 09-10-20, 12:04, Peter Ujfalusi wrote:
-> >> On 08/10/2020 15.31, Vinod Koul wrote:
-> >>> Some complex dmaengine controllers have capability to program the
-> >>> peripheral device, so pass on the peripheral configuration as part of
-> >>> dma_slave_config
-> >>>
-> >>> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> >>> ---
-> >>>  include/linux/dmaengine.h | 5 +++++
-> >>>  1 file changed, 5 insertions(+)
-> >>>
-> >>> diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
-> >>> index 6fbd5c99e30c..a15dc2960f6d 100644
-> >>> --- a/include/linux/dmaengine.h
-> >>> +++ b/include/linux/dmaengine.h
-> >>> @@ -418,6 +418,9 @@ enum dma_slave_buswidth {
-> >>>   * @slave_id: Slave requester id. Only valid for slave channels. The dma
-> >>>   * slave peripheral will have unique id as dma requester which need to be
-> >>>   * pass as slave config.
-> >>> + * @peripheral_config: peripheral configuration for programming peripheral
-> >>> + * for dmaengine transfer
-> >>> + * @peripheral_size: peripheral configuration buffer size
-> >>>   *
-> >>>   * This struct is passed in as configuration data to a DMA engine
-> >>>   * in order to set up a certain channel for DMA transport at runtime.
-> >>> @@ -443,6 +446,8 @@ struct dma_slave_config {
-> >>>  	u32 dst_port_window_size;
-> >>>  	bool device_fc;
-> >>>  	unsigned int slave_id;
-> >>> +	void *peripheral_config;
-> >>> +	size_t peripheral_size;
-> >>
-> >> Do you foresee a need of src/dst pair of these?
-> >> If we do DEV_TO_DEV with different type of peripherals it is going to
-> >> cause issues.
+> > On Fri, 2020-10-09 at 12:41 +0200, Johannes Berg wrote:
 > > 
-> > Not really as the channel already has direction and this is per channel.
+> > > If the fops doesn't have a release method, we don't even need
+> > > to keep a reference to the real_fops, we can just fops_put()
+> > > them already in debugfs remove, and a later full_proxy_release()
+> > > won't call anything anyway - this just crashed/UAFed because it
+> > > used real_fops, not because there was actually a (now invalid)
+> > > release() method.
+> > 
+> > I actually implemented something a bit better than what I described - we
+> > never need a reference to the real_fops for the release method alone,
+> > and that means if the release method is in the kernel image, rather than
+> > a module, it can still be called.
+> > 
+> > That together should reduce the ~117 places you changed in the large
+> > patchset to around a handful.
 > 
-> Yes, in case of DEV_TO_MEM or MEM_TO_DEV.
-> 
-> > If for any any reason subsequent txn is for different direction, I would
-> > expect that parameters are set again before prep_ calls
-> 
-> But in DEV_TO_DEV?
+> Is there an equivalent problem for normal cdev opens
+> in any modules?
 
-Do we support that :D
-
-> If we have two peripherals, both needs config:
-> p1_config and p2_config
-> 
-> What and how would one use the single peripheral_config?
-
-Since the config is implementation specific, I do not think it limits.
-You may create
-
-struct peter_config {
-        struct p1_config;
-        struct p2_config;
-};
-
-> 
-> If only one of them needs config, then sure, the driver can pin-point
-> which one the single config might apply to.
-> 
-> Or you chain the same type of peripheral and you would need different
-> config for tx and rx?
-> 
-> - Péter
-> 
-> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
-
--- 
-~Vinod
+What does cdev have to do with debugfs?
