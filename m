@@ -2,100 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEAD2288D11
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:45:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5951288D3C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:47:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389439AbgJIPpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 11:45:15 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:17787 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389224AbgJIPpO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 11:45:14 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602258314; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
- To: From: Sender; bh=Q2f38+nv4w/0orlGbJ8rfWKFOI1Z5V7YLrsAbG8VVVY=; b=vAjd5WgWzAVh+pCE9jam3R8sTbmLgQuZpwyCXNCff6kiTWoEKYbC7O4qGVaeNcbK3JdXim0I
- 50298Y+JoMj7XyYhReIhXWHECG35UIkGLWYnUJXiIhcCBVvbg4+5mNR1RDeydSBtRAn2DVS2
- McAcN2HYZXHNvuJzsAy5Spp0qJo=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 5f808589856d9308b53e8828 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 09 Oct 2020 15:45:13
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CD5B3C43395; Fri,  9 Oct 2020 15:45:13 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from tynnyri.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 32430C433FF;
-        Fri,  9 Oct 2020 15:45:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 32430C433FF
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     miaoqinglang <miaoqinglang@huawei.com>
-Cc:     Jakub Kicinski <kubakici@wp.pl>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-wireless@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next] mt7601u: Convert to DEFINE_SHOW_ATTRIBUTE
-References: <20200716085749.11105-1-miaoqinglang@huawei.com>
-        <20200716082036.76f47d2f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <d0817369-c884-981a-6dd7-2fef0f361e9e@huawei.com>
-        <87eem7s8wi.fsf@tynnyri.adurom.net>
-Date:   Fri, 09 Oct 2020 18:45:09 +0300
-In-Reply-To: <87eem7s8wi.fsf@tynnyri.adurom.net> (Kalle Valo's message of
-        "Fri, 09 Oct 2020 18:42:37 +0300")
-Message-ID: <87a6wvs8sa.fsf@tynnyri.adurom.net>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S2389359AbgJIPrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 11:47:02 -0400
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:18570 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389144AbgJIPrC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 11:47:02 -0400
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 099Fkdow031281;
+        Sat, 10 Oct 2020 00:46:39 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 099Fkdow031281
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1602258400;
+        bh=uPHqCtH8kBQ7ooTjgeJwJmEs8QwVySn7ud+lvCOesSw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=nrjlfyFUFt3jPXO/bY1d3TpLjsyP24l4TetE1EaFUPVS06e/LCFER9MbUClHx88Vp
+         5l8W5hj6Pon+XwVWPsezWmHqLk7zbqISpwyoYJHdUKFqygwbIzgd37Wm3Xm9TGWc1s
+         KSZDwFyI9DjtX1hYD12snc/09SphcSm1kXlwiAizLMcXzXNxmr4OytkPW9B8pb6+XT
+         /U8BAjaJdLb7T26H7LbcMW2XU2AoRUUQLQeJL9bQUdHi3F1GT+ZyPpc7WOLgq+1Yoo
+         VLWAgtqH8/7cgRIStTryQEVMPKV1L6H7E10KZcuZXdLk3QSCoyrD0Az6GMDevhZXzr
+         sOzrvx/Itwavg==
+X-Nifty-SrcIP: [209.85.214.173]
+Received: by mail-pl1-f173.google.com with SMTP id h2so4627166pll.11;
+        Fri, 09 Oct 2020 08:46:39 -0700 (PDT)
+X-Gm-Message-State: AOAM532FQ26RVAGPTjbtQECQWQKPB2tB4vVexaMka3NEfxSDSSvJXXXz
+        0hogTneEQ1FgAK46fsRSPYItUVLsAgwesKdHRwQ=
+X-Google-Smtp-Source: ABdhPJzp5vEo3+xl6wEj6qPaVl4cErLF6gu0zKH8TjHr4KR1KbxQsEK0tRKbguCjgRqc6IOjP4MSAk+n7esBZWo2YHY=
+X-Received: by 2002:a17:902:c3d4:b029:d3:df24:1619 with SMTP id
+ j20-20020a170902c3d4b02900d3df241619mr12143028plj.1.1602258398929; Fri, 09
+ Oct 2020 08:46:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20200920222556.10002-1-guillem@hadrons.org> <20200920222556.10002-5-guillem@hadrons.org>
+In-Reply-To: <20200920222556.10002-5-guillem@hadrons.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 10 Oct 2020 00:46:02 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARvmvBVa25=bgobTTnKr7VLOFPqEjtBMUiDRsPb97XMaw@mail.gmail.com>
+Message-ID: <CAK7LNARvmvBVa25=bgobTTnKr7VLOFPqEjtBMUiDRsPb97XMaw@mail.gmail.com>
+Subject: Re: [PATCH 4/7] builddeb: Add support for all required debian/rules targets
+To:     Guillem Jover <guillem@hadrons.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kalle Valo <kvalo@codeaurora.org> writes:
-
-> miaoqinglang <miaoqinglang@huawei.com> writes:
+On Mon, Sep 21, 2020 at 7:48 AM Guillem Jover <guillem@hadrons.org> wrote:
 >
->> =E5=9C=A8 2020/7/16 23:20, Jakub Kicinski =E5=86=99=E9=81=93:
->>> On Thu, 16 Jul 2020 16:57:49 +0800 Qinglang Miao wrote:
->>>> Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
->>>>
->>>> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
->>>
->>> Acked-by: Jakub Kicinski <kubakici@wp.pl>
->>>
->> Hi Jakub,
->>
->> I noticed that this patch has been acked by you and not patched into
->> linux-next. There's little difference now so resent a new patch
->> against linux-next(20200917), and it can be applied to mainline
->> cleanly now.
+> These have been required by the Debian policy for a while, even though
+> the tooling can detect and workaround their omission, but are a hard
+> requirement when using rootless builds.
 >
-> This patch didn't apply to wireless-drivers-next and my script sent you
-> an email about it:
+
+
+Applied to linux-kbuild. Thanks.
+
+
+I added a little more explanation about why this patch is needed.
+
+[masahiro:
+The following Debian policy is particularly important for rootless builds:
+"Both binary-* targets should depend on the build target, or on the
+ appropriate build-arch or build-indep target, so that the package is
+ built if it has not been already."
+]
+
+
+
+
+
+
+> Signed-off-by: Guillem Jover <guillem@hadrons.org>
+> ---
+>  scripts/package/mkdebian | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
 >
-> https://patchwork.kernel.org/patch/11666949/
+> diff --git a/scripts/package/mkdebian b/scripts/package/mkdebian
+> index 69f2a6d7f009..dae6c0ec0bd6 100755
+> --- a/scripts/package/mkdebian
+> +++ b/scripts/package/mkdebian
+> @@ -231,11 +231,15 @@ cat <<EOF > debian/rules
 >
-> Please rebase over latest wireless-drivers-next and resend as v2.
+>  srctree ?= .
+>
+> -build:
+> +build-indep:
+> +build-arch:
+>         \$(MAKE) KERNELRELEASE=${version} ARCH=${ARCH} \
+>         KBUILD_BUILD_VERSION=${revision} -f \$(srctree)/Makefile
+>
+> -binary-arch:
+> +build: build-arch
+> +
+> +binary-indep:
+> +binary-arch: build-arch
+>         \$(MAKE) KERNELRELEASE=${version} ARCH=${ARCH} \
+>         KBUILD_BUILD_VERSION=${revision} -f \$(srctree)/Makefile intdeb-pkg
+>
+> --
+> 2.28.0.297.g1956fa8f8d
+>
 
-Nevermind, I see that you sent v2 already and that was applied. Sorry
-for the noise.
 
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
+-- 
+Best Regards
+Masahiro Yamada
