@@ -2,198 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7759D288B03
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5442F288B14
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388924AbgJIOb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 10:31:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388879AbgJIObR (ORCPT
+        id S2388938AbgJIObm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 10:31:42 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:37527 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388908AbgJIObX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 10:31:17 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81B84C0613D5;
-        Fri,  9 Oct 2020 07:31:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=XENkUyBYEqQdDJViwbkj3PXnyvtkG9pwyINW5T48dY0=; b=ekyZ0RqHciHT6w0FRtBIb74RNP
-        ATW28QGWmqsNnH/vLrqBZaFXuDhEx3ApS3w+jFzpx2X/taHl+6rpgUjut8ndwr5pqa+DLjv4Gx50+
-        6+70qpWiZ3+++j70k/q90ALYSczVw6/4PCbVL3Y2U2L6Y23KLl4a3w8gd03srsRFuXNg/GmrWwXYN
-        vTNgqiQtCBrX8BYOQuu/fsNDHXqjKDBLsVhD/vQ09kXf7CReTOSNh1XplEPkeYBls5zfzru3+gi4I
-        EhS0MsH/dvccHF4LZQeeilzTBaCqLN8cLE90npHEUozqFLYE3kkEPktZ4a+EFwfYQ8aTrZOR6RQUm
-        0EdAxQ2A==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kQtQN-0005wc-Vg; Fri, 09 Oct 2020 14:31:12 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-mm@kvack.org, v9fs-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, linux-afs@lists.infradead.org,
-        ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ecryptfs@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
-        linux-xfs@vger.kernel.org
-Subject: [PATCH v2 16/16] iomap: Make readpage synchronous
-Date:   Fri,  9 Oct 2020 15:31:04 +0100
-Message-Id: <20201009143104.22673-17-willy@infradead.org>
-X-Mailer: git-send-email 2.21.3
-In-Reply-To: <20201009143104.22673-1-willy@infradead.org>
-References: <20201009143104.22673-1-willy@infradead.org>
+        Fri, 9 Oct 2020 10:31:23 -0400
+Received: by mail-oi1-f195.google.com with SMTP id t77so10410677oie.4;
+        Fri, 09 Oct 2020 07:31:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fSY177QCDHA506ltAJfX+pyNUH3460/blci6wiOpURg=;
+        b=Dz3C4A04lOAU2/DC7VW/OvzSNx9wH8P11EnW33vywHUiY1EGjN3G6AuwrNOn2DOBgJ
+         cgYclT0jTClNTOmCEmNBKWR8A+p1URBZ7Ir/cNpwGutO8FjonOk0oUMtdnS6hg5TV/te
+         X0d6G2oPvhp0CBve3bd4LdW0CZOValsvsWjHKBWY7FaDFicqqF+MFMb52Ov6CFEw4G70
+         xumNSpUwU/dcVj6Ohpp55kExGjRyEdFWbDSMhm8JIQhB1VOe+TbLVzpVFVf8uBp+f3aF
+         JhzqpBb/CxrLSMEyVe2yxe3TzVV+09b33QlAmRLFDDomH1EgwULjHP6fZBNuFReSdfpK
+         kKzw==
+X-Gm-Message-State: AOAM533bXiYLJC90T4RsQs7RRpvriDhRYi/mGzUsgTHreDoVqM2okjfa
+        K/weLJpM4esNPhi9+1ceEoM6G2IlHGL+
+X-Google-Smtp-Source: ABdhPJxyqYEZTKZUYGot+5w2hJJtIfWrX5UV1nuE4AmB8RyXv8PbfdnyYX0HugcKNhLpSLyxvRMYCA==
+X-Received: by 2002:aca:4188:: with SMTP id o130mr2424926oia.167.1602253880742;
+        Fri, 09 Oct 2020 07:31:20 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id y23sm8328527ooj.34.2020.10.09.07.31.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Oct 2020 07:31:20 -0700 (PDT)
+Received: (nullmailer pid 4109836 invoked by uid 1000);
+        Fri, 09 Oct 2020 14:31:19 -0000
+Date:   Fri, 9 Oct 2020 09:31:19 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     kholk11@gmail.com
+Cc:     martin.botka1@gmail.com, linux-pm@vger.kernel.org,
+        phone-devel@vger.kernel.org, georgi.djakov@linaro.org,
+        konradybcio@gmail.com, agross@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bjorn.andersson@linaro.org,
+        marijns95@gmail.com, robh+dt@kernel.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: interconnect: Add bindings for
+ Qualcomm SDM660 NoC
+Message-ID: <20201009143119.GA4109583@bogus>
+References: <20201008204515.695210-1-kholk11@gmail.com>
+ <20201008204515.695210-2-kholk11@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201008204515.695210-2-kholk11@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A synchronous readpage lets us report the actual errno instead of
-ineffectively setting PageError.
+On Thu, 08 Oct 2020 22:45:14 +0200, kholk11@gmail.com wrote:
+> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> 
+> Add the bindings for the Qualcomm SDM660-class NoC, valid for
+> SDM630, SDM636, SDM660 and SDA variants.
+> 
+> Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> ---
+>  .../bindings/interconnect/qcom,sdm660.yaml    | 147 ++++++++++++++++++
+>  .../dt-bindings/interconnect/qcom,sdm660.h    | 116 ++++++++++++++
+>  2 files changed, 263 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/interconnect/qcom,sdm660.yaml
+>  create mode 100644 include/dt-bindings/interconnect/qcom,sdm660.h
+> 
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- fs/iomap/buffered-io.c | 74 ++++++++++++++++++++++++------------------
- 1 file changed, 42 insertions(+), 32 deletions(-)
-
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index e60f572e1590..887bf871ca9b 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -150,9 +150,6 @@ static void iomap_set_range_uptodate(struct page *page, unsigned off,
- 	unsigned last = (off + len - 1) >> inode->i_blkbits;
- 	unsigned long flags;
- 
--	if (PageError(page))
--		return;
--
- 	if (!iop) {
- 		SetPageUptodate(page);
- 		return;
-@@ -165,42 +162,50 @@ static void iomap_set_range_uptodate(struct page *page, unsigned off,
- 	spin_unlock_irqrestore(&iop->uptodate_lock, flags);
- }
- 
--static void
--iomap_read_page_end_io(struct bio_vec *bvec, int error)
-+static void iomap_read_page_end_io(struct bio_vec *bvec,
-+		struct completion *done, bool error)
- {
- 	struct page *page = bvec->bv_page;
- 	struct iomap_page *iop = to_iomap_page(page);
- 
--	if (unlikely(error)) {
--		ClearPageUptodate(page);
--		SetPageError(page);
--	} else {
-+	if (!error)
- 		iomap_set_range_uptodate(page, bvec->bv_offset, bvec->bv_len);
--	}
- 
--	if (!iop || atomic_sub_and_test(bvec->bv_len, &iop->read_bytes_pending))
--		unlock_page(page);
-+	if (!iop ||
-+	    atomic_sub_and_test(bvec->bv_len, &iop->read_bytes_pending)) {
-+		if (done)
-+			complete(done);
-+		else
-+			unlock_page(page);
-+	}
- }
- 
-+struct iomap_readpage_ctx {
-+	struct page		*cur_page;
-+	bool			cur_page_in_bio;
-+	blk_status_t		status;
-+	struct bio		*bio;
-+	struct readahead_control *rac;
-+	struct completion	done;
-+};
-+
- static void
- iomap_read_end_io(struct bio *bio)
- {
--	int error = blk_status_to_errno(bio->bi_status);
-+	struct iomap_readpage_ctx *ctx = bio->bi_private;
- 	struct bio_vec *bvec;
- 	struct bvec_iter_all iter_all;
- 
-+	/* Capture the first error */
-+	if (ctx && ctx->status == BLK_STS_OK)
-+		ctx->status = bio->bi_status;
-+
- 	bio_for_each_segment_all(bvec, bio, iter_all)
--		iomap_read_page_end_io(bvec, error);
-+		iomap_read_page_end_io(bvec, ctx ? &ctx->done : NULL,
-+				bio->bi_status != BLK_STS_OK);
- 	bio_put(bio);
- }
- 
--struct iomap_readpage_ctx {
--	struct page		*cur_page;
--	bool			cur_page_in_bio;
--	struct bio		*bio;
--	struct readahead_control *rac;
--};
--
- static void
- iomap_read_inline_data(struct inode *inode, struct page *page,
- 		struct iomap *iomap)
-@@ -292,6 +297,8 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
- 		ctx->bio->bi_opf = REQ_OP_READ;
- 		if (ctx->rac)
- 			ctx->bio->bi_opf |= REQ_RAHEAD;
-+		else
-+			ctx->bio->bi_private = ctx;
- 		ctx->bio->bi_iter.bi_sector = sector;
- 		bio_set_dev(ctx->bio, iomap->bdev);
- 		ctx->bio->bi_end_io = iomap_read_end_io;
-@@ -318,15 +325,17 @@ iomap_readpage(struct page *page, const struct iomap_ops *ops)
- 
- 	trace_iomap_readpage(page->mapping->host, 1);
- 
-+	ctx.status = BLK_STS_OK;
-+	init_completion(&ctx.done);
-+
- 	for (poff = 0; poff < PAGE_SIZE; poff += ret) {
- 		ret = iomap_apply(inode, page_offset(page) + poff,
- 				PAGE_SIZE - poff, 0, ops, &ctx,
- 				iomap_readpage_actor);
--		if (ret <= 0) {
--			WARN_ON_ONCE(ret == 0);
--			SetPageError(page);
-+		if (WARN_ON_ONCE(ret == 0))
-+			ret = -EIO;
-+		if (ret < 0)
- 			break;
--		}
- 	}
- 
- 	if (ctx.bio) {
-@@ -334,15 +343,16 @@ iomap_readpage(struct page *page, const struct iomap_ops *ops)
- 		WARN_ON_ONCE(!ctx.cur_page_in_bio);
- 	} else {
- 		WARN_ON_ONCE(ctx.cur_page_in_bio);
--		unlock_page(page);
-+		complete(&ctx.done);
- 	}
- 
--	/*
--	 * Just like mpage_readahead and block_read_full_page we always
--	 * return 0 and just mark the page as PageError on errors.  This
--	 * should be cleaned up all through the stack eventually.
--	 */
--	return 0;
-+	wait_for_completion(&ctx.done);
-+	if (ret >= 0)
-+		ret = blk_status_to_errno(ctx.status);
-+	if (ret == 0)
-+		return AOP_UPDATED_PAGE;
-+	unlock_page(page);
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(iomap_readpage);
- 
--- 
-2.28.0
-
+Reviewed-by: Rob Herring <robh@kernel.org>
