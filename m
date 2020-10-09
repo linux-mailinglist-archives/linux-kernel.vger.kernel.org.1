@@ -2,128 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85F86288853
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 14:11:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC01288856
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 14:12:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388392AbgJIMLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 08:11:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732957AbgJIMLq (ORCPT
+        id S2388402AbgJIMMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 08:12:10 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:40182 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732957AbgJIMMJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 08:11:46 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 111ADC0613D2;
-        Fri,  9 Oct 2020 05:11:46 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id i5so9103450edr.5;
-        Fri, 09 Oct 2020 05:11:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Jk0rFDCpD3qSTy22hFQcdvZQOyHmddQwqnlhye5Yc0Y=;
-        b=XJdHOZtBcMJm3LWWIIugpmY5dlOwMxapGDSLOd25Xwn8zKs/BlDOSQpAIB7gvRJ2JB
-         E13PnG0Yw+QrkKa8XIh76Ky0n/EKThjkMVzhHy9L4BDDbM2UaDXntjfRwRY2avt7FOmz
-         f5GzgwKZ+eByPhpX+OYDg4oxS8wO4LK1J6M24BzIlBSyinw6xWnaUcozLUfJtkRcslAy
-         1pS3C8iVY+4D8fMgythYF2/r60zqFAWJPmDxn78byjl01hUcqAKFDnrNsUcZixosHwHj
-         HU++anqe0c7Bw715d7nPpGWTPlE3seLLU90lnpqJNL7+qNi4EQhwCc9NnEKnkluIFdr+
-         klzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Jk0rFDCpD3qSTy22hFQcdvZQOyHmddQwqnlhye5Yc0Y=;
-        b=S50ylAr/FyUf7xqZ/HPwKtm+4IZXrv0k3K14uJshkNlvJtZ651u46AcBpD0bp4UE5j
-         GYcJStqnm+9fIXXkJw4WAOwvgJ6DLihj1DcjLaPLv1ts0xkCHyGUd/KZMs1Mly8R9MHi
-         S5yZRYlDPrR4xgWEgb0+4Wj+SBhpvP+ulUqX6jwrn5iYNzaGa7qkGJq+yJbvMacazpzE
-         PAzbg7RKYctRh2MgdIIPpoRN6utma8JnHFgPbNjMgqwumPmyAkWKNtbgHWuP1KDQQ91W
-         Dk/5xE2JDERxpLrcKq+TTLfbsEJHO4Mey9B35xXfuPy1fKOqQAVGTNB9B9Qp8sWExg0q
-         gEcQ==
-X-Gm-Message-State: AOAM5328UFTvm67PmDBuWgvyadCMLnuSV58awAU0hKH8jASTS5LMdd8O
-        xY22Kq52f06nX967HDXzuIg=
-X-Google-Smtp-Source: ABdhPJxvPt/AAZpDaEx6NkpJGZ5qRZOyDzTTATPtRJDp9RA750NQOrbjTfZL7RInnOxLT5ohOsOOSw==
-X-Received: by 2002:a05:6402:1446:: with SMTP id d6mr14176591edx.244.1602245504723;
-        Fri, 09 Oct 2020 05:11:44 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id m7sm6931865edv.88.2020.10.09.05.11.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 05:11:43 -0700 (PDT)
-Date:   Fri, 9 Oct 2020 14:11:41 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     krzk@kernel.org, robh+dt@kernel.org, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] memory: tegra: Correct la.reg address of seswr
-Message-ID: <20201009121141.GA458338@ulmo>
-References: <20201008003746.25659-1-nicoleotsuka@gmail.com>
- <20201008003746.25659-2-nicoleotsuka@gmail.com>
+        Fri, 9 Oct 2020 08:12:09 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 099CC7NU071967;
+        Fri, 9 Oct 2020 07:12:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1602245527;
+        bh=sfIRZSYBuq+MnozQeCBK9PSbZtBv00OpSwHV6m/Zcv0=;
+        h=From:To:CC:Subject:Date;
+        b=Kgo558q1C7K20OGjWya28RrOuaKM485hETMvlu/0nTx7j/oQfaLPa/GvnmY3F67Lb
+         7zJY1JHZuH1QcwM/gc29ruvk80Rj4b8HgxWY1ikvdhsgFnaSXAI70fvqlbGxiu67Ln
+         l92Z40b2bukBwSyNjk96YxYw7+EOdTYKdbkKvOA4=
+Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 099CC7WG105005
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 9 Oct 2020 07:12:07 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 9 Oct
+ 2020 07:12:07 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 9 Oct 2020 07:12:07 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 099CC6Rv104538;
+        Fri, 9 Oct 2020 07:12:06 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <sre@kernel.org>
+CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <robh@kernel.org>,
+        Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH] power: supply: bq25980: Fix uninitialized wd_reg_val and overrun
+Date:   Fri, 9 Oct 2020 07:12:05 -0500
+Message-ID: <20201009121205.28178-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="3V7upXqbjpZ4EhLz"
-Content-Disposition: inline
-In-Reply-To: <20201008003746.25659-2-nicoleotsuka@gmail.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix the issue when 'i' is equal to array size then array index over
+runs the array when checking for the watch dog value.
 
---3V7upXqbjpZ4EhLz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This also fixes the uninitialized wd_reg_val if the for..loop was not
+successful in finding an appropriate match.
 
-On Wed, Oct 07, 2020 at 05:37:42PM -0700, Nicolin Chen wrote:
-> According to Tegra X1 TRM, ALLOWANCE_SESWR is located in field
-> [23:16] of register at address 0x3e0 with a reset value of 0x80
-> at register 0x3e0, while bit-1 of register 0xb98 is for enable
-> bit of seswr. So this patch fixes it.
->=20
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> ---
->  drivers/memory/tegra/tegra210.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/memory/tegra/tegra210.c b/drivers/memory/tegra/tegra=
-210.c
-> index 7fb8b5438bf4..088814279616 100644
-> --- a/drivers/memory/tegra/tegra210.c
-> +++ b/drivers/memory/tegra/tegra210.c
-> @@ -897,7 +897,7 @@ static const struct tegra_mc_client tegra210_mc_clien=
-ts[] =3D {
->  			.bit =3D 1,
->  		},
->  		.la =3D {
-> -			.reg =3D 0xb98,
-> +			.reg =3D 0x3e0,
->  			.shift =3D 16,
->  			.mask =3D 0xff,
->  			.def =3D 0x80,
+Fixes: 5069185fc18e ("power: supply: bq25980: Add support for the BQ259xx family")
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ drivers/power/supply/bq25980_charger.c | 29 +++++++++++++-------------
+ 1 file changed, 15 insertions(+), 14 deletions(-)
 
-Heh, indeed. Look like I copied the reg offset from the .smmu.reg by
-mistake.
+diff --git a/drivers/power/supply/bq25980_charger.c b/drivers/power/supply/bq25980_charger.c
+index 3995fb7cf060..e6a91e43ae5b 100644
+--- a/drivers/power/supply/bq25980_charger.c
++++ b/drivers/power/supply/bq25980_charger.c
+@@ -1099,28 +1099,29 @@ static int bq25980_power_supply_init(struct bq25980_device *bq,
+ static int bq25980_hw_init(struct bq25980_device *bq)
+ {
+ 	struct power_supply_battery_info bat_info = { };
+-	int wd_reg_val;
++	int wd_reg_val = BQ25980_WATCHDOG_DIS;
++	int wd_max_val = BQ25980_NUM_WD_VAL - 1;
+ 	int ret = 0;
+ 	int curr_val;
+ 	int volt_val;
+ 	int i;
+ 
+-	if (!bq->watchdog_timer) {
+-		ret = regmap_update_bits(bq->regmap, BQ25980_CHRGR_CTRL_3,
+-					 BQ25980_WATCHDOG_DIS,
+-					 BQ25980_WATCHDOG_DIS);
+-	} else {
+-		for (i = 0; i < BQ25980_NUM_WD_VAL; i++) {
+-			if (bq->watchdog_timer > bq25980_watchdog_time[i] &&
+-			    bq->watchdog_timer < bq25980_watchdog_time[i + 1]) {
+-				wd_reg_val = i;
+-				break;
++	if (bq->watchdog_timer) {
++		if (bq->watchdog_timer >= bq25980_watchdog_time[wd_max_val])
++			wd_reg_val = wd_max_val;
++		else {
++			for (i = 0; i < wd_max_val; i++) {
++				if (bq->watchdog_timer > bq25980_watchdog_time[i] &&
++				    bq->watchdog_timer < bq25980_watchdog_time[i + 1]) {
++					wd_reg_val = i;
++					break;
++				}
+ 			}
+ 		}
+-
+-		ret = regmap_update_bits(bq->regmap, BQ25980_CHRGR_CTRL_3,
+-					BQ25980_WATCHDOG_MASK, wd_reg_val);
+ 	}
++
++	ret = regmap_update_bits(bq->regmap, BQ25980_CHRGR_CTRL_3,
++				 BQ25980_WATCHDOG_MASK, wd_reg_val);
+ 	if (ret)
+ 		return ret;
+ 
+-- 
+2.28.0.585.ge1cfff676549
 
-Acked-by: Thierry Reding <treding@nvidia.com>
-
---3V7upXqbjpZ4EhLz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+AU30ACgkQ3SOs138+
-s6HLcw//f0rLGT0weUM22TjDoPlUvDuJdLz7knleQVQb4hOA5dQ982eMQ3N2Dxxv
-0vy3w4DwWguwe07XYwumkLE/jr4ExjKIoy+AUoiEZUb9u4vpuOPlqoKkeUKf+mlW
-dE6grD8rdTXqYyJHlQyRHPLSXyVqLahSAUQDceSbQYZo9uS695NC2y81nzITqNHd
-hgCW/f73CM2Mu3Zld3LQi9v6BpI4JmMLdJVKfGesCSaRxME1e3iCFp66U6dF6eU7
-lJ/oWvE4FqL/PO61xEgm8iL6MmFtuv5sWcS7CD4zL2ISeyLuML821cHshhbZ1MxZ
-VMCmaJtQ65Fm7eqfkSp7pEo8G9tyMrO8Rp+0n7TpmiHC7wdvVlr3eizgNUUW7/zu
-wf9ElokKFHTPYOzZe49cxBagSLhxqA8TZNW1qPy3hfglyFajQIuQ36rZ1sGyG+vR
-pGpeyIcmDdOAz5coUtA29gfS/4dGX11cW07DmvXnPxiA6BWDtWFzXeojY39/UvvQ
-/R8lYlnzXvPbDyyOaqzNi+FVK1xwZSoH7fhBJxCxvTUDil+xiIHGqyfnER3QTy+E
-JcNM3XJwQwT+udbuly/aslk8rMG0ZHvOV9Fv0W+bOyh9f5CF8hN8qcXjzwnnd2F1
-PAOPvBlQEXBburedRuFrhcSZPK51CzNLYCwk1bEOd+BxAfrUSJM=
-=PIGI
------END PGP SIGNATURE-----
-
---3V7upXqbjpZ4EhLz--
