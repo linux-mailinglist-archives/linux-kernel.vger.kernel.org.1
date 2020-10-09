@@ -2,92 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23EBF288324
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 09:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80A1128831F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 09:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731733AbgJIHAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 03:00:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731044AbgJIHAm (ORCPT
+        id S1731658AbgJIHAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 03:00:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43012 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729434AbgJIHAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 03:00:42 -0400
-Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B222BC0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 00:00:42 -0700 (PDT)
-Received: by mail-ua1-x942.google.com with SMTP id j20so1020879uaq.6
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 00:00:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6LxvX5EGSR5dzBeJZ4icU2Yz0a2U6qxuATeWZPemrZs=;
-        b=HlG3sqIPhShbJ5Cx3vwfnebC0xgxM/SxHaKUwe8bETaqPD5Z/NXCAWb89YCDemgs/R
-         ZBujRadVWfw/hFjUNCeWgO569J8i4SyBb+ukBZzrjCIAwUBEQ38OY5gjZGokBdt127oF
-         T0XuYvwEfXOprlg4MpgFi1yUMGp77gF8oIg2qe7UdMuUACeFH+aGe5Gmyu66slvG9bHH
-         EgnEa1K3sRE8xzC+f6wMrajp2abARwCz0rJzUaDG2wL6RfOVLQ4bf04Yyz/P8OaTVNT9
-         98UC0K1rY3tkH2qF5zbCvDPB4/4yzdI9qgRipqm5A70MBFy8hu7Dmq8CTs/ncYiFQd1J
-         wXVA==
+        Fri, 9 Oct 2020 03:00:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602226823;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GXty0grP7iFnbUH+QMsyFwyfvHHZk16B0G0LGpkyhew=;
+        b=Ger9pOhDnia8s7yfIm+kfxncHLhHreOblue2TMcm6+AclsIK9mySRmYlMCXgGOJtJnPK+H
+        kN9CjL5D45Dr+UD3+MeIGGqVI4CljoM1dZg3iCx0rWf3c1PacyKJPCVQSRQqtdXb1HtZ+C
+        7l6AcV0lGRUZ/rgNW7YNztGXx48wiB8=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-582-WhMfaTPeOT-zeD8HZSloNw-1; Fri, 09 Oct 2020 03:00:22 -0400
+X-MC-Unique: WhMfaTPeOT-zeD8HZSloNw-1
+Received: by mail-wm1-f69.google.com with SMTP id l15so3786929wmh.9
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 00:00:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6LxvX5EGSR5dzBeJZ4icU2Yz0a2U6qxuATeWZPemrZs=;
-        b=cqQHo5HigwVApCCuSxO3tXRCizAW9oA+RlT8xb6P2tAHy5QR5AJRKRrhn5cQtypxWu
-         QCYXE58Yxv4cE2cIogBTqNACiz8D82iTPBYq2hjZr6eYhiqjHy8glC0p4OKB4c+zIN0r
-         /YOewKd2MdBdccHmmPNCxk4VdwuxnPsNYuk7yqcN79m/UyVVrTxXAYB+EwTgsoCKcE/R
-         OKHkFQYCOtSPLARhqfXX/DdW6tvLL3EYBH4q1y9/F9u/iIA9SBvnNaexWTijBzczOoBr
-         fw/VuwWbuc8TebokMeCuWK/3CNnfA35xcFDAESY8ZO6hnqgUkizDSu8ogJ0keVwd2B6f
-         1Q6g==
-X-Gm-Message-State: AOAM530G+WVvtXFyY+OGDKdhctqVzPoJLeom59u8vQSDOmn7jQsX4AgK
-        8QhocHl7X2vrbimBTDbV29IbrImS8D44TdEIXZu6Qg==
-X-Google-Smtp-Source: ABdhPJxP48s9Fi3PvzMHTIKhwWE5xo6W5AMzluAvP/iw7yZfHQsSa0wuItjNoe6316/TEnRWyUg3tzmN+NBKagVDQq0=
-X-Received: by 2002:a9f:31ce:: with SMTP id w14mr7428678uad.104.1602226841942;
- Fri, 09 Oct 2020 00:00:41 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=GXty0grP7iFnbUH+QMsyFwyfvHHZk16B0G0LGpkyhew=;
+        b=ORQK9LlmQpUTizCSEoENku3RnLjb2vNbTTGcArdT82MIZcC6puBBC1aZGwCCBgGZuF
+         P9avDOdknffyLkmD47A/P18sXE/ITjf0ZmvLAeaPNFhCnaNr7ZaOXQPU2K3TgyooIlcV
+         kIZVSqiDjKLh/DUcgaqdzyHkwdO7k34tYkkz4c7wYC1Q7V2xHepzLRirnN3i+cQDw/9T
+         zy9l6zfqdonA99NP+9eiqE3yz4RX3EQV1X+wrqeQxyFwkiDnMyv6H5pCAhHvVIM/Mb+J
+         INgwkzEoYAA8LSNLX9NlNGIAqC979L7q9RKrzYAVFw0eQCpRIYsv8i3xM2aaqlCkDdkZ
+         DSoA==
+X-Gm-Message-State: AOAM532SkWM/101H2DKReFPE50mCXXE6P3EwZxhdOA9MrwQsW7laP8fb
+        10XBRtplGzemGnCOJtJTPse/jg4TF7XRZ2AXfXax25aP3tSnztFO7Xzve2zYToIl6FBqb5RW/Bz
+        HiCrd3Hf7kmUbbdi2OHSBlJ+0
+X-Received: by 2002:a05:600c:21c3:: with SMTP id x3mr12206028wmj.81.1602226820728;
+        Fri, 09 Oct 2020 00:00:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxp7Lu/KmOA3fdiMHtLHOVmduGD0Yzn7NZXzdIik47vcv/WVxJcCv5AZmkOtGRqoqzzsmlj5Q==
+X-Received: by 2002:a05:600c:21c3:: with SMTP id x3mr12205994wmj.81.1602226820381;
+        Fri, 09 Oct 2020 00:00:20 -0700 (PDT)
+Received: from steredhat (host-79-27-201-176.retail.telecomitalia.it. [79.27.201.176])
+        by smtp.gmail.com with ESMTPSA id k8sm10070788wrl.42.2020.10.09.00.00.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Oct 2020 00:00:19 -0700 (PDT)
+Date:   Fri, 9 Oct 2020 09:00:17 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     mst@redhat.com, kvm@vger.kernel.org, netdev@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Rusty Russell <rusty@rustcorp.com.au>
+Subject: Re: [PATCH v2] vringh: fix __vringh_iov() when riov and wiov are
+ different
+Message-ID: <20201009070017.shdcumaifllakfrb@steredhat>
+References: <20201008204256.162292-1-sgarzare@redhat.com>
+ <8d84abcb-2f2e-8f24-039f-447e8686b878@redhat.com>
 MIME-Version: 1.0
-References: <20201008100129.13917-1-faiz_abbas@ti.com>
-In-Reply-To: <20201008100129.13917-1-faiz_abbas@ti.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 9 Oct 2020 09:00:05 +0200
-Message-ID: <CAPDyKFpixCO35ARA9QBfhcdkhFpiqqWCxDrJnOF7g+AiY_P9Kg@mail.gmail.com>
-Subject: Re: [PATCH] mmc: sdhci_am654: Fix module autoload
-To:     Faiz Abbas <faiz_abbas@ti.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8d84abcb-2f2e-8f24-039f-447e8686b878@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 8 Oct 2020 at 12:01, Faiz Abbas <faiz_abbas@ti.com> wrote:
->
-> Add a MODULE_DEVICE_TABLE() entry so that the driver is autoloaded
-> when built as a module.
->
-> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+On Fri, Oct 09, 2020 at 12:05:15PM +0800, Jason Wang wrote:
+> 
+> On 2020/10/9 上午4:42, Stefano Garzarella wrote:
+> > If riov and wiov are both defined and they point to different
+> > objects, only riov is initialized. If the wiov is not initialized
+> > by the caller, the function fails returning -EINVAL and printing
+> > "Readable desc 0x... after writable" error message.
+> > 
+> > This issue happens when descriptors have both readable and writable
+> > buffers (eg. virtio-blk devices has virtio_blk_outhdr in the readable
+> > buffer and status as last byte of writable buffer) and we call
+> > __vringh_iov() to get both type of buffers in two different iovecs.
+> > 
+> > Let's replace the 'else if' clause with 'if' to initialize both
+> > riov and wiov if they are not NULL.
+> > 
+> > As checkpatch pointed out, we also avoid crashing the kernel
+> > when riov and wiov are both NULL, replacing BUG() with WARN_ON()
+> > and returning -EINVAL.
+> 
+> 
+> It looks like I met the exact similar issue when developing ctrl vq support
+> (which requires both READ and WRITE descriptor).
+> 
+> While I was trying to fix the issue I found the following comment:
+> 
+>  * Note that you may need to clean up riov and wiov, even on error!
+>  */
+> int vringh_getdesc_iotlb(struct vringh *vrh,
 
-Applied for next, thanks!
+Thank you for pointing that out, I didn't see it!
 
-Kind regards
-Uffe
+> 
+> I saw some driver call vringh_kiov_cleanup().
+> 
+> So I just follow to use that.
+> 
+> I'm not quite sure which one is better.
 
-> ---
->  drivers/mmc/host/sdhci_am654.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/mmc/host/sdhci_am654.c b/drivers/mmc/host/sdhci_am654.c
-> index 2bce962bf7e4..a64ea143d185 100644
-> --- a/drivers/mmc/host/sdhci_am654.c
-> +++ b/drivers/mmc/host/sdhci_am654.c
-> @@ -739,6 +739,7 @@ static const struct of_device_id sdhci_am654_of_match[] = {
->         },
->         { /* sentinel */ }
->  };
-> +MODULE_DEVICE_TABLE(of, sdhci_am654_of_match);
->
->  static int sdhci_am654_probe(struct platform_device *pdev)
->  {
-> --
-> 2.17.1
->
+Me too, but in both cases the 'else if' is wrong.
+
+Either we completely remove the reset in the function or we merge this patch.
+In the first case, we should also fix drivers that don't call
+vringh_kiov_cleanup() (e.g. vdpa_sim).
+
+I'm fine with both.
+
+Thanks,
+Stefano
+
+> 
+> Thanks
+> 
+> 
+> > 
+> > Fixes: f87d0fbb5798 ("vringh: host-side implementation of virtio rings.")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+> > ---
+> >   drivers/vhost/vringh.c | 9 +++++----
+> >   1 file changed, 5 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
+> > index e059a9a47cdf..8bd8b403f087 100644
+> > --- a/drivers/vhost/vringh.c
+> > +++ b/drivers/vhost/vringh.c
+> > @@ -284,13 +284,14 @@ __vringh_iov(struct vringh *vrh, u16 i,
+> >   	desc_max = vrh->vring.num;
+> >   	up_next = -1;
+> > +	/* You must want something! */
+> > +	if (WARN_ON(!riov && !wiov))
+> > +		return -EINVAL;
+> > +
+> >   	if (riov)
+> >   		riov->i = riov->used = 0;
+> > -	else if (wiov)
+> > +	if (wiov)
+> >   		wiov->i = wiov->used = 0;
+> > -	else
+> > -		/* You must want something! */
+> > -		BUG();
+> >   	for (;;) {
+> >   		void *addr;
+> 
+
