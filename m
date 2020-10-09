@@ -2,92 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06BD328855A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:34:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15A6E288562
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:36:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732438AbgJIIeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 04:34:20 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:37890 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732423AbgJIIeT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 04:34:19 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-45-6ee0yc2ZNTSKAf5vApMkGg-1; Fri, 09 Oct 2020 09:34:16 +0100
-X-MC-Unique: 6ee0yc2ZNTSKAf5vApMkGg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 9 Oct 2020 09:34:14 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 9 Oct 2020 09:34:14 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Johannes Berg' <johannes@sipsolutions.net>,
-        Greg KH <gregkh@linuxfoundation.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "nstange@suse.de" <nstange@suse.de>,
-        "ap420073@gmail.com" <ap420073@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "rafael@kernel.org" <rafael@kernel.org>
-Subject: RE: [CRAZY-RFF] debugfs: track open files and release on remove
-Thread-Topic: [CRAZY-RFF] debugfs: track open files and release on remove
-Thread-Index: AQHWnhTYAkCadt4V/kCnonv0tSsTz6mO7mnQ
-Date:   Fri, 9 Oct 2020 08:34:14 +0000
-Message-ID: <03c42bb5f57a4c3d9c782a023add28cd@AcuMS.aculab.com>
-References: <87v9fkgf4i.fsf@suse.de>
-         <20201009095306.0d87c3aa13db.Ib3a7019bff15bb6308f6d259473a1648312a4680@changeid>
-         <20201009080355.GA398994@kroah.com>
-         <be61c6a38d0f6ca1aa0bc3f0cb45bbb216a12982.camel@sipsolutions.net>
-         <20201009081624.GA401030@kroah.com>
- <1ec056cf3ec0953d2d1abaa05e37e89b29c7cc63.camel@sipsolutions.net>
-In-Reply-To: <1ec056cf3ec0953d2d1abaa05e37e89b29c7cc63.camel@sipsolutions.net>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1732819AbgJIIgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 04:36:09 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58156 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732613AbgJIIgI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 04:36:08 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2F7D6AC7D;
+        Fri,  9 Oct 2020 08:36:06 +0000 (UTC)
+Message-ID: <513833810c15b5efeab7c3cbae1963a78c71a79f.camel@suse.de>
+Subject: Re: [PATCH 1/4] of/fdt: Update zone_dma_bits when running in bcm2711
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Ard Biesheuvel <ardb@kernel.org>, Christoph Hellwig <hch@lst.de>
+Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        iommu@lists.linux-foundation.org, Rob Herring <robh+dt@kernel.org>,
+        linux-rpi-kernel@lists.infradead.org,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Robin Murphy <robin.murphy@arm.com>
+Date:   Fri, 09 Oct 2020 10:36:02 +0200
+In-Reply-To: <CAMj1kXG+7Lq=rgUfyU_XS9LrJwpUiC8nKsRPom+R0=phuXioHQ@mail.gmail.com>
+References: <20201001161740.29064-1-nsaenzjulienne@suse.de>
+         <20201001161740.29064-2-nsaenzjulienne@suse.de>
+         <20201001171500.GN21544@gaia> <20201001172320.GQ21544@gaia>
+         <b47232e2173e9e5ddf8f5be4c7b5a2f897f34eb7.camel@suse.de>
+         <20201002115541.GC7034@gaia>
+         <12f33d487eabd626db4c07ded5a1447795eed355.camel@suse.de>
+         <20201009071013.GA12208@lst.de>
+         <CAMj1kXG+7Lq=rgUfyU_XS9LrJwpUiC8nKsRPom+R0=phuXioHQ@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-HZps7YTW5opz4O9P41Ik"
+User-Agent: Evolution 3.36.5 
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogSm9oYW5uZXMgQmVyZw0KPiBTZW50OiAwOSBPY3RvYmVyIDIwMjAgMDk6MTkNCj4gDQo+
-IE9uIEZyaSwgMjAyMC0xMC0wOSBhdCAxMDoxNiArMDIwMCwgR3JlZyBLSCB3cm90ZToNCj4gPiBP
-biBGcmksIE9jdCAwOSwgMjAyMCBhdCAxMDowNjoxNEFNICswMjAwLCBKb2hhbm5lcyBCZXJnIHdy
-b3RlOg0KPiA+ID4gV2UgdXNlZCB0byBzYXkgdGhlIHByb3h5X2ZvcHMgd2VyZW4ndCBuZWVkZWQg
-YW5kIGl0IHdhc24ndCBhbiBpc3N1ZSwgYW5kDQo+ID4gPiB0aGVuIHN0aWxsIGltcGxlbWVudGVk
-IGl0LiBEdW5uby4gSSdtIG5vdCByZWFsbHkgdG9vIGNvbmNlcm5lZCBhYm91dCBpdA0KPiA+ID4g
-bXlzZWxmLCBvbmx5IHJvb3QgY2FuIGhvbGQgdGhlIGZpbGVzIG9wZW4gYW5kIHJlbW92ZSBtb2R1
-bGVzIC4uLg0KPiA+DQo+ID4gcHJveHlfZm9wcyB3ZXJlIG5lZWRlZCBiZWNhdXNlIGRldmljZXMg
-Y2FuIGJlIHJlbW92ZWQgZnJvbSB0aGUgc3lzdGVtIGF0DQo+ID4gYW55IHRpbWUsIGNhdXNpbmcg
-dGhlaXIgZGVidWdmcyBmaWxlcyB0byB3YW50IHRvIGFsc28gYmUgcmVtb3ZlZC4gIEl0DQo+ID4g
-d2Fzbid0IGJlY2F1c2Ugb2YgdW5sb2FkaW5nIGtlcm5lbCBjb2RlLg0KPiANCj4gSW5kZWVkLCB0
-aGF0J3MgdHJ1ZS4gU3RpbGwsIHdlIGxpdmVkIHdpdGggaXQgZm9yIHllYXJzLg0KPiANCj4gQW55
-d2F5LCBsaWtlIEkgc2FpZCwgSSByZWFsbHkganVzdCBkaWQgdGhpcyBtb3JlIHRvIHNlZSB0aGF0
-IGl0IF9jb3VsZF8NCj4gYmUgZG9uZSwgbm90IHRvIHN1Z2dlc3QgdGhhdCBpdCBfc2hvdWxkXyA6
-LSkNCj4gDQo+IEkgdGhpbmsgYWRkaW5nIHRoZSAub3duZXIgZXZlcnl3aGVyZSB3b3VsZCBiZSBn
-b29kLCBhbmQgcGVyaGFwcyB3ZSBjYW4NCj4gc29tZWhvdyBwdXQgYSBjaGVjayBzb21ld2hlcmUg
-bGlrZQ0KPiANCj4gCVdBUk5fT04oaXNfbW9kdWxlX2FkZHJlc3MoKHVuc2lnbmVkIGxvbmcpZm9w
-cykgJiYgIWZvcHMtPm93bmVyKTsNCj4gDQo+IHRvIHByZXZlbnQgdGhlIGlzc3VlIGluIHRoZSBm
-dXR1cmU/DQoNCkRvZXMgaXQgZXZlciBtYWtlIGFueSBzZW5zZSB0byBzZXQgLm93bmVyIHRvIGFu
-eXRoaW5nIG90aGVyIHRoYW4NClRISVNfTU9EVUxFPw0KDQpJZiBub3QgdGhlIGNvZGUgdGhhdCBz
-YXZlcyB0aGUgJ3N0cnVjdCBmaWxlX29wZXJhdGlvbnMnIGFkZHJlc3MNCm91Z2h0IHRvIGJlIGFi
-bGUgdG8gc2F2ZSB0aGUgYXNzb2NpYXRlZCBtb2R1bGUuDQoNCkkgd2FzIGFsc28gd29uZGVyaW5n
-IGlmIHRoaXMgYWZmZWN0cyBub3JtYWwgb3BlbnM/DQpUaGV5IHNob3VsZCBob2xkIGEgcmVmZXJl
-bmNlIG9uIHRoZSBtb2R1bGUgdG8gc3RvcCBpdCBiZWluZyB1bmxvYWRlZC4NCkRvZXMgdGhhdCBy
-ZWx5IG9uIC5vd25lciBiZWluZyBzZXQ/DQoNCkZvciBkZWJ1Z2ZzIHN1cmVseSBpdCBpcyBwb3Nz
-aWJsZSB0byBkZXRlcm1pbmUgYW5kIHNhdmUgVEhJU19NT0RVTEUNCndoZW4gaGUgbm9kZXMgYXJl
-IHJlZ2lzdGVycyBhbmQgZG8gYSB0cnlfbW9kdWxlX2dldCgpIGluIHRoZSBvcGVuPw0KDQoJRGF2
-aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50
-IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTcz
-ODYgKFdhbGVzKQ0K
+
+--=-HZps7YTW5opz4O9P41Ik
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, 2020-10-09 at 09:37 +0200, Ard Biesheuvel wrote:
+> On Fri, 9 Oct 2020 at 09:11, Christoph Hellwig <hch@lst.de> wrote:
+> > On Thu, Oct 08, 2020 at 12:05:25PM +0200, Nicolas Saenz Julienne wrote:
+> > > Sadly I just realised that the series is incomplete, we have RPi4 use=
+rs that
+> > > want to boot unsing ACPI, and this series would break things for them=
+. I'll
+> > > have a word with them to see what we can do for their use-case.
+> >=20
+> > Stupid question:  why do these users insist on a totally unsuitable
+> > interface? And why would we as Linux developers care to support such
+> > a aims?
+>
+> The point is really whether we want to revert changes in Linux that
+> made both DT and ACPI boot work without quirks on RPi4.
+
+Well, and broke a big amount of devices that were otherwise fine.
+
+> Having to check the RPi4 compatible string or OEM id in core init code is
+> awful, regardless of whether you boot via ACPI or via DT.
+>
+> The problem with this hardware is that it uses a DMA mask which is
+> narrower than 32, and the arm64 kernel is simply not set up to deal
+> with that at all. On DT, we have DMA ranges properties and the likes
+> to describe such limitations, on ACPI we have _DMA methods as well as
+> DMA range attributes in the IORT, both of which are now handled
+> correctly. So all the information is there, we just have to figure out
+> how to consume it early on.
+
+Is it worth the effort just for a single board? I don't know about ACPI but
+parsing dma-ranges that early at boot time is not trivial. My intuition tel=
+ls
+me that it'd be even harder for ACPI, being a more complex data structure.
+
+> Interestingly, this limitation always existed in the SoC, but it
+> wasn't until they started shipping it with more than 1 GB of DRAM that
+> it became a problem. This means issues like this could resurface in
+> the future with existing SoCs when they get shipped with more memory,
+> and so I would prefer fixing this in a generic way.
+
+Actually what I proposed here is pretty generic. Specially from arm64's
+perspective. We call early_init_dt_scan(), which sets up zone_dma_bits base=
+d on
+whatever it finds in DT. Both those operations are architecture independent=
+.
+arm64 arch code doesn't care about the logic involved in ascertaining
+zone_dma_bits. I get that the last step isn't generic. But it's all setup s=
+o as
+to make it as such whenever it's worth the effort.
+
+> Also, I assume papering over the issue like this does not fix the
+> kdump issue fundamentally, it just works around it, and so we might
+> run into this again in the future.
+
+Any ideas? The way I understand it the kdump issue is just a shortcoming of
+the memory zones design.
+
+Regards,
+Nicolas
+
+
+--=-HZps7YTW5opz4O9P41Ik
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl+AIPIACgkQlfZmHno8
+x/7ixwgArMPUc2i51aFQ1Vewm9MoFEcZuXJtOXO+kufsCRa58yp7GAAVBhH6IBHb
+QfxFIDcQrHnSeOcYjCYeFjT1fH8Hg0NusddHoN+1A0dcFJltSmn6We+abDhmHj8M
+xtBmhNjGmlvNqZrJdhqqhvT421GIj0cSZZX9ZVfGmFVLb8ALsmRiNaNAzmhkitzI
+QMcbZEoCn9M76MC+EsRI6pwpTQsXkuN3XWKqNE8hXVtqXQEBkGqZgZcc6I3OY4MX
+mj6kolVLJ/mr785/1E/8qehLDT6J1lg/lH0G6GtMCBagDRfU4cKj/LXr8L/UXtIm
+lRJY0eAY18TiA9o655u+JyGxXFqeuQ==
+=shiA
+-----END PGP SIGNATURE-----
+
+--=-HZps7YTW5opz4O9P41Ik--
 
