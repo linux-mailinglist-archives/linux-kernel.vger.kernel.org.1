@@ -2,216 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5308288797
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 13:09:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B1F328879F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 13:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732375AbgJILI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 07:08:59 -0400
-Received: from foss.arm.com ([217.140.110.172]:48166 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727181AbgJILI5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 07:08:57 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1A4BED6E;
-        Fri,  9 Oct 2020 04:08:56 -0700 (PDT)
-Received: from [10.57.17.201] (unknown [10.57.17.201])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 136AC3F66B;
-        Fri,  9 Oct 2020 04:08:53 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] [RFC] CPUFreq: Add support for
- cpu-perf-dependencies
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Ionela Voinescu <ionela.voinescu@arm.com>,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        vireshk@kernel.org, daniel.lezcano@linaro.org, rjw@rjwysocki.net,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        sudeep.holla@arm.com, chris.redpath@arm.com,
-        morten.rasmussen@arm.com, linux-arm-kernel@lists.infradead.org
-References: <20200924095347.32148-1-nicola.mazzucato@arm.com>
- <20200924095347.32148-3-nicola.mazzucato@arm.com>
- <20201006071909.3cgz7i5v35dgnuzn@vireshk-i7>
- <2417d7b5-bc58-fa30-192c-e5991ec22ce0@arm.com>
- <20201008110241.dcyxdtqqj7slwmnc@vireshk-i7> <20201008150317.GB20268@arm.com>
- <56846759-e3a6-9471-827d-27af0c3d410d@arm.com>
- <20201009053921.pkq4pcyrv4r7ylzu@vireshk-i7>
-From:   Nicola Mazzucato <nicola.mazzucato@arm.com>
-Message-ID: <42e3c8e9-cadc-d013-1e1f-fa06af4a45ff@arm.com>
-Date:   Fri, 9 Oct 2020 12:10:03 +0100
+        id S2387984AbgJILNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 07:13:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727181AbgJILNe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 07:13:34 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBF60C0613D2;
+        Fri,  9 Oct 2020 04:13:33 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id 13so9451464wmf.0;
+        Fri, 09 Oct 2020 04:13:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:references:from:autocrypt:cc:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xQGmikQ6qE8XE7CIqs+7KCZpNNncfn6RoV4oeJtNd1E=;
+        b=tHuzqDahggSxCagXgsRx7GQ9PIos54VEPcXFVyperxa8+8cQfK2hxVkIZiyT/2aNjl
+         GJU8xtjGUzwYdV4QW8iyMz3kidj97b+SzNJf9jcz5ZJGpwFvrtojMVbC5+azfo1L1shf
+         VBPwnTB5U7J/0QNVEDh4jVk3AG1SuYAkieRb/G4XJyJGC8ZMqzNZq3ozTgEg3xiC3me3
+         MWPbO20gFBY0N9bL5HHFa/0Kh1FeVg5eT5kMTRh3FNAO9jQGsx3Mq30PEyNCMadgvG4f
+         jPySw8VAw8hsnvC5MnDzrcZTkimvWi/B+E76FqTn0gYM4ZIX7sDFwwdruvw0f13NUNzE
+         2Nrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:references:from:autocrypt:cc:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=xQGmikQ6qE8XE7CIqs+7KCZpNNncfn6RoV4oeJtNd1E=;
+        b=Vi8CyTMNXjJVu55Ne49oHdwMKU1ixMX8lUEt0bazoP9Br5O+DDZNCmP3lcpt1dtnlh
+         OMsZXAWjgL5RbMOA9yBo/JSSZljDf6bUnRCj7YW8VviNcIC+gOtoJ1wTGaqGVwIA/GA/
+         /OL20t4tlI9oiNT14UwhC0bwlaxwibxmE+UHnVftbvN95l2GsoPmcSWt/5TLnLOW19nz
+         vP3reYPZwTXQzqbGWKbmngpwceUyxGDSYfyb3C/8G9hfHJ/s+rgXhuo/cDVKxYEHZ0qj
+         pHcIU2EVCZheUjwTGYekkeZS4yNKdnQHRFg9JpBJ61rn8QZIotJU1UgV+f2/CaVabQqs
+         jJIQ==
+X-Gm-Message-State: AOAM530FRjUHNFriTcO8cvtIoEiWfbAOItHJ1gOXa7ahFtZwih3CJiI6
+        V7qrHPrj6SRsTFaPIpR8nO4=
+X-Google-Smtp-Source: ABdhPJzJDh/o2qCZD+v9/3/UHjs6FXi2S5xnbOHJ0uYyV9bHi0n3nNvSfAs6vygzGCdLIo3vX6GPgw==
+X-Received: by 2002:a7b:cd9a:: with SMTP id y26mr13489092wmj.101.1602242012463;
+        Fri, 09 Oct 2020 04:13:32 -0700 (PDT)
+Received: from [192.168.1.73] (host109-152-100-164.range109-152.btcentralplus.com. [109.152.100.164])
+        by smtp.gmail.com with ESMTPSA id d9sm10724326wmb.30.2020.10.09.04.13.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Oct 2020 04:13:31 -0700 (PDT)
+To:     syzbot <syzbot+77efce558b2b9e6b6405@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        Matthew Wilcox <willy@infradead.org>
+References: <0000000000001a684d05b1385e71@google.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ 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 bA==
+Cc:     viro@zeniv.linux.org.uk
+Subject: Re: KASAN: use-after-free Read in __io_uring_files_cancel
+Message-ID: <3a98a77a-a507-954a-f2ec-e38af18c168f@gmail.com>
+Date:   Fri, 9 Oct 2020 14:10:49 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-In-Reply-To: <20201009053921.pkq4pcyrv4r7ylzu@vireshk-i7>
+In-Reply-To: <0000000000001a684d05b1385e71@google.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Viresh, I'm glad it helped.
+On 09/10/2020 11:02, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    e4fb79c7 Add linux-next specific files for 20201008
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1592ee1b900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=568d41fe4341ed0f
+> dashboard link: https://syzkaller.appspot.com/bug?extid=77efce558b2b9e6b6405
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+77efce558b2b9e6b6405@syzkaller.appspotmail.com
+> 
+> ==================================================================
+> BUG: KASAN: use-after-free in xas_next_entry include/linux/xarray.h:1630 [inline]
+> BUG: KASAN: use-after-free in __io_uring_files_cancel+0x417/0x440 fs/io_uring.c:8681
+> Read of size 1 at addr ffff888033631880 by task syz-executor.1/8477
+> 
+> CPU: 1 PID: 8477 Comm: syz-executor.1 Not tainted 5.9.0-rc8-next-20201008-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x198/0x1fb lib/dump_stack.c:118
+>  print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:385
+>  __kasan_report mm/kasan/report.c:545 [inline]
+>  kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
+>  xas_next_entry include/linux/xarray.h:1630 [inline]
+>  __io_uring_files_cancel+0x417/0x440 fs/io_uring.c:8681
+>  io_uring_files_cancel include/linux/io_uring.h:35 [inline]
+>  exit_files+0xe4/0x170 fs/file.c:456
+>  do_exit+0xae9/0x2930 kernel/exit.c:801
+>  do_group_exit+0x125/0x310 kernel/exit.c:903
+>  get_signal+0x428/0x1f00 kernel/signal.c:2757
+>  arch_do_signal+0x82/0x2470 arch/x86/kernel/signal.c:811
+>  exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+>  exit_to_user_mode_prepare+0x194/0x1f0 kernel/entry/common.c:192
+>  syscall_exit_to_user_mode+0x7a/0x2c0 kernel/entry/common.c:267
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Please find below my reply.
+It seems this fails on "node->shift" in xas_next_entry(), that would
+mean that the node itself was freed while we're iterating on it.
 
-On 10/9/20 6:39 AM, Viresh Kumar wrote:
-> On 08-10-20, 17:00, Nicola Mazzucato wrote:
->> On 10/8/20 4:03 PM, Ionela Voinescu wrote:
->>> Hi Viresh,
->>>
->>> On Thursday 08 Oct 2020 at 16:32:41 (+0530), Viresh Kumar wrote:
->>>> On 07-10-20, 13:58, Nicola Mazzucato wrote:
->>>>> Hi Viresh,
->>>>>
->>>>> performance controls is what is exposed by the firmware through a protocol that
->>>>> is not capable of describing hardware (say SCMI). For example, the firmware can
->>>>> tell that the platform has N controls, but it can't say to which hardware they
->>>>> are "wired" to. This is done in dt, where, for example, we map these controls
->>>>> to cpus, gpus, etc.
->>>>>
->>>>> Let's focus on cpus.
->>>>>
->>>>> Normally we would have N of performance controls (what comes from f/w)
->>>>> that that correspond to hardware clock/dvfs domains.
->>>>>
->>>>> However, some firmware implementations might benefit from having finer
->>>>> grained information about the performance requirements (e.g.
->>>>> per-CPU) and therefore choose to present M performance controls to the
->>>>> OS. DT would be adjusted accordingly to "wire" these controls to cpus
->>>>> or set of cpus.
->>>>> In this scenario, the f/w will make aggregation decisions based on the
->>>>> requests it receives on these M controls.
->>>>>
->>>>> Here we would have M cpufreq policies which do not necessarily reflect the
->>>>> underlying clock domains, thus some s/w components will underperform
->>>>> (EAS and thermal, for example).
->>>>>
->>>>> A real example would be a platform in which the firmware describes the system
->>>>> having M per-cpu control, and the cpufreq subsystem will have M policies while
->>>>> in fact these cpus are "performance-dependent" each other (e.g. are in the same
->>>>> clock domain).
->>>>
->>>> If the CPUs are in the same clock domain, they must be part of the
->>>> same cpufreq policy.
->>>
->>> But cpufreq does not currently support HW_ALL (I'm using the ACPI
->>> coordination type to describe the generic scenario of using hardware
->>> aggregation and coordination when establishing the clock rate of CPUs).
->>>
->>> Adding support for HW_ALL* will involve either bypassing some
->>> assumptions around cpufreq policies or making core cpufreq changes.
->>>
->>> In the way I see it, support for HW_ALL involves either:
->>>
->>>  - (a) Creating per-cpu policies in order to allow each of the CPUs to
->>>    send their own frequency request to the hardware which will do
->>>    aggregation and clock rate decision at the level of the clock
->>>    domain. The PSD domains (ACPI) and the new DT binding will tell
->>>    which CPUs are actually in the same clock domain for whomever is
->>>    interested, despite those CPUs not being in the same policy.
->>>    This requires the extra mask that Nicola introduced.
->>>
->>>  - (b) Making deep changes to cpufreq (core/governors/drivers) to allow:
->>>    - Governors to stop aggregating (usually max) the information
->>>      for each of the CPUs in the policy and convey to the core
->>>      information for each CPU.
->>>    - Cpufreq core to be able to receive and pass this information
->>>      down to the drivers.
->>>    - Drivers to be able to have some per cpu structures to hold
->>>      frequency control (let's say SCP fast channel addresses) for
->>>      each of the CPUs in the policy. Or have these structures in the
->>>      cpufreq core/policy, to avoid code duplication in drivers.
->>>
->>> Therefore (a) is the least invasive but we'll be bypassing the rule
->>> above. But to make that rule stick we'll have to make invasive cpufreq
->>> changes (b).
->>
->> Regarding the 'rule' above of one cpufreq policy per clock domain, I would like
->> to share my understanding on it. Perhaps it's a good opportunity to shed some light.
->>
->> Looking back in the history of CPUFreq, related_cpus was originally designed
->> to hold the map of cpus within the same clock. Later on, the meaning of this
->> cpumask changed [1].
->> This led to the introduction of a new cpumask 'freqdomain_cpus'
->> within acpi-cpufreq to keep the knowledge of hardware clock domains for
->> sysfs consumers since related_cpus was not suitable anymore for this.
->> Further on, this cpumask was assigned to online+offline cpus within the same clk
->> domain when sw coordination is in use [2].
->>
->> My interpretation is that there is no guarantee that related_cpus holds the
->> 'real' hardware clock implementation. As a consequence, it is not true anymore
->> that cpus that are in the same clock domain will be part of the same
->> policy.
->>
->> This guided me to think it would be better to have a cpumask which always holds
->> the real hw clock domains in the policy.
->>
->>>
->>> This is my current understanding and I'm leaning towards (a). What do
->>> you think?
->>>
->>> *in not so many words, this is what these patches are trying to propose,
->>> while also making sure it's supported for both ACPI and DT.
->>>
->>> BTW, thank you for your effort in making sense of this!
->>>
->>> Regards,
->>> Ionela.
->>>
->>
->> This could be a platform where per-cpu and perf-dependencies will be used:
->>
->> CPU:              0    1    2    3    4    5    6    7
->> Type:             A    A    A    A    B    B    B    B
->> Cluster:         [                                    ]
->> perf-controls:   [  ] [  ] [  ] [ ]  [ ]  [ ]  [ ]  [ ]
->> perf-dependency: [                ]  [                ]
->> HW clock:        [                ]  [                ]
->>
->> The firmware will present 8 controls to the OS and each control is mapped to a
->> cpu device via the standard dt. This is done so we can achieve hw coordination.
->> What is required in these systems is to present to OS the information of which
->> cpus belong to which clock domain. In other words, when hw coordinates we don't
->> have any way at present in dt to understand how these cpus are dependent
->> each other, from performance perspective (as opposed to ACPI where we have
->> _PSD). Hence my proposal for the new cpu-perf-dependencies.
->> This is regardless whether we decide to go for either a policy per-cpu or a
->> policy per-domain.
->>
->> Hope it helps.
-> 
-> Oh yes, I get it now. Finally. Thanks for helping me out :)
-> 
-> So if I can say all this stuff in simple terms, this is what it will
-> be like:
-> 
-> - We don't want software aggregation of frequencies and so we need to
->   have per-cpu policies even when they share their clock lines.
-> 
-> - But we still need a way for other frameworks to know which CPUs
->   share the clock lines (that's what the perf-dependency is all about,
->   right ?).
-> 
-> - We can't get it from SCMI, but need a DT based solution.
-> 
-> - Currently for the cpufreq-case we relied for this on the way OPP
->   tables for the CPUs were described. i.e. the opp-table is marked as
->   "shared" and multiple CPUs point to it.
-> 
-> - I wonder if we can keep using that instead of creating new bindings
->   for exact same stuff ? Though the difference here would be that the
->   OPP may not have any other entries.
+__io_uring_files_cancel() iterates with xas_next_entry() and creates
+XA_STATE once by hand, but it also removes entries in the loop with
+io_uring_del_task_file() -> xas_store(&xas, NULL); without updating
+the iterating XA_STATE. Could it be the problem? See a diff below
 
-I thought about it and looked for other platforms' DT to see if can reuse
-existing opp information. Unfortunately I don't think it is optimal. The reason
-being that, because cpus have the same opp table it does not necessarily mean
-that they share a clock wire. It just tells us that they have the same
-capabilities (literally just tells us they have the same V/f op points).
-Unless I am missing something?
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 824ed4e01562..356313c7aec2 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -8617,10 +8617,9 @@ static int io_uring_add_task_file(struct file *file)
+ /*
+  * Remove this io_uring_file -> task mapping.
+  */
+-static void io_uring_del_task_file(struct file *file)
++static void io_uring_del_task_file(struct file *file, struct xa_state *xas)
+ {
+ 	struct io_uring_task *tctx = current->io_uring;
+-	XA_STATE(xas, &tctx->xa, (unsigned long) file);
+ 
+ 	if (tctx->last == file)
+ 		tctx->last = NULL;
+@@ -8643,7 +8642,7 @@ static void __io_uring_attempt_task_drop(struct file *file)
+ 	rcu_read_unlock();
+ 
+ 	if (old == file)
+-		io_uring_del_task_file(file);
++		io_uring_del_task_file(file, &xas);
+ }
+ 
+ /*
+@@ -8687,7 +8686,7 @@ void __io_uring_files_cancel(struct files_struct *files)
+ 
+ 		io_uring_cancel_task_requests(ctx, files);
+ 		if (files)
+-			io_uring_del_task_file(file);
++			io_uring_del_task_file(file, &xas);
+ 	} while (1);
+ }
 
-When comparing with ACPI/_PSD it becomes more intuitive that there is no
-equivalent way to reveal "perf-dependencies" in DT.
-
-Thank you for time on this.
-
-Regards
-Nicola
-
-> 
+-- 
+Pavel Begunkov
