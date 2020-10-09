@@ -2,88 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F069B288115
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 06:17:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2DFA288117
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 06:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729635AbgJIERU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 00:17:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59648 "EHLO mail.kernel.org"
+        id S1729825AbgJIES2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 00:18:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725900AbgJIERT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 00:17:19 -0400
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        id S1725900AbgJIES2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 00:18:28 -0400
+Received: from localhost (unknown [122.182.251.219])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AD8A522248;
-        Fri,  9 Oct 2020 04:17:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A3F6322227;
+        Fri,  9 Oct 2020 04:18:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602217039;
-        bh=6HzeqdBIfVdvyZk6B7RpcfY+6wxw2GL9NoatG6xmzKs=;
+        s=default; t=1602217107;
+        bh=PnFnJOf9+5DLfEfUAdKBJ/7+3TNHhSqul2nI4kiD7gs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dD56mhdY8U+eRBjGbi+EGx+ZnFeHXPfrEHEPb7vS3cPUV7mX9bow2Ui4kHI05CUs0
-         SnGPeMJVlzEIbqYwo7BOC++emtF9x4YEa+unrqys2lM7MxJMWslDf2zizmI59sAgBb
-         HB4syT/6knjOm3WQXnEGxeoo2k25BO2i6gSW619o=
-Date:   Thu, 8 Oct 2020 21:17:17 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc:     Jessica Yu <jeyu@kernel.org>,
-        Corentin Labbe <clabbe.montjoie@gmail.com>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] module: statically initialize init section freeing data
-Message-ID: <20201009041717.GA854@sol.localdomain>
-References: <20201008173220.923671-1-daniel.m.jordan@oracle.com>
+        b=mKvvbufcBaL632eNjLw6EHox+m2lGwZweAkLYSpeBGcsKI+dP+MagI+vXkeNnFpn1
+         nqN8RIZqOTQijT6z5br9m9CVNi4E3+z248Uo17EbYeUo+HVj78cdyhGpIHePBk1O/J
+         +Ghg9ygCJ8nvmpFp0ESqxWazMIciKN8/aaKOu2JY=
+Date:   Fri, 9 Oct 2020 09:48:22 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     dmaengine@vger.kernel.org, Allen Pais <allen.lkml@gmail.com>,
+        Romain Perier <romain.perier@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>
+Subject: Re: [PATCH 5/5] dmaengine: owl-dma: fix kernel-doc style for enum
+Message-ID: <20201009041822.GC2968@vkoul-mobl>
+References: <20201007083113.567559-1-vkoul@kernel.org>
+ <20201007083113.567559-6-vkoul@kernel.org>
+ <20201008140403.GB23649@linux>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201008173220.923671-1-daniel.m.jordan@oracle.com>
+In-Reply-To: <20201008140403.GB23649@linux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 01:32:20PM -0400, Daniel Jordan wrote:
-> Corentin hit the following workqueue warning when running with
-> CRYPTO_MANAGER_EXTRA_TESTS:
+On 08-10-20, 19:34, Manivannan Sadhasivam wrote:
+> On Wed, Oct 07, 2020 at 02:01:13PM +0530, Vinod Koul wrote:
+> > Driver doesn't use keyword enum for enum owl_dmadesc_offsets resulting
+> > in warning:
+> > 
+> > drivers/dma/owl-dma.c:139: warning: cannot understand function prototype:
+> > 'enum owl_dmadesc_offsets '
+> > 
+> > So add the keyword to fix it and also add documentation for missing
+> > OWL_DMADESC_SIZE
+> > 
 > 
->   WARNING: CPU: 2 PID: 147 at kernel/workqueue.c:1473 __queue_work+0x3b8/0x3d0
->   Modules linked in: ghash_generic
->   CPU: 2 PID: 147 Comm: modprobe Not tainted
->       5.6.0-rc1-next-20200214-00068-g166c9264f0b1-dirty #545
->   Hardware name: Pine H64 model A (DT)
->   pc : __queue_work+0x3b8/0x3d0
->   Call trace:
->    __queue_work+0x3b8/0x3d0
->    queue_work_on+0x6c/0x90
->    do_init_module+0x188/0x1f0
->    load_module+0x1d00/0x22b0
-> 
-> I wasn't able to reproduce on x86 or rpi 3b+.
-> 
-> This is
-> 
->   WARN_ON(!list_empty(&work->entry))
-> 
-> from __queue_work(), and it happens because the init_free_wq work item
-> isn't initialized in time for a crypto test that requests the gcm
-> module.  Some crypto tests were recently moved earlier in boot as
-> explained in commit c4741b230597 ("crypto: run initcalls for generic
-> implementations earlier"), which went into mainline less than two weeks
-> before the Fixes commit.
-> 
-> Avoid the warning by statically initializing init_free_wq and the
-> corresponding llist.
-> 
-> Link: https://lore.kernel.org/lkml/20200217204803.GA13479@Red/
-> Fixes: 1a7b7d922081 ("modules: Use vmalloc special flag")
-> Reported-by: Corentin Labbe <clabbe.montjoie@gmail.com>
-> Tested-by: Corentin Labbe <clabbe.montjoie@gmail.com>
-> Tested-on: sun50i-h6-pine-h64
-> Tested-on: imx8mn-ddr4-evk
-> Tested-on: sun50i-a64-bananapi-m64
-> Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+> Do we really need to document the max value? Does it produce any warning?
 
-Looks good,
+It does.. Once you add the enum, it will treat is as such and look at
+members and complain that the OWL_DMADESC_SIZE is not documented ;)
 
-Reviewed-by: Eric Biggers <ebiggers@google.com>
+-- 
+~Vinod
