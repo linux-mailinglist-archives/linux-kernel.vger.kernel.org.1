@@ -2,144 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A257288153
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 06:28:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB636288155
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 06:29:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731225AbgJIE2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 00:28:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45224 "EHLO
+        id S1731239AbgJIE3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 00:29:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727816AbgJIE2x (ORCPT
+        with ESMTP id S1726386AbgJIE3a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 00:28:53 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C77CC0613D2;
-        Thu,  8 Oct 2020 21:28:53 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C6w7M2Lrhz9sRk;
-        Fri,  9 Oct 2020 15:28:47 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1602217728;
-        bh=2Xg2v30A+wUoQbYA2psCGm28W1qa14kbfkT/zV+rz0I=;
-        h=Date:From:To:Cc:Subject:From;
-        b=E+bKGryPGAXmECCxQLY4lwH0BdzDmPuJS3yvg3B+lRie6e+btkaYGeLkoeucToOBy
-         H1JsXeFePr7opGMey4wX4/opTCHL+mibhM37TW7s1Uw5t4+oO6UT5cktGzH0Xn3k2i
-         637WaXDO4EK895sR9ZyjH3E01ogdl8SiY+iwHugjQZtB27RfKpeJA6LglHKMnMbjK7
-         dTH+0mTdT0Zltq+XE2nqhvsL9XpHW3vlR9j4rTHlFneAczPUAh7JSXI7huzTce6J8+
-         B83JHXihbATcwVbHKllhTDlytH9zxfokHzUX328fu0PEwX5Quw4CKLf/tZywtLe8Ck
-         P3FECmvQ939NQ==
-Date:   Fri, 9 Oct 2020 15:28:46 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the tip tree
-Message-ID: <20201009152846.072e6bbf@canb.auug.org.au>
+        Fri, 9 Oct 2020 00:29:30 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E1E4C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 21:29:30 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id lw21so11179963ejb.6
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 21:29:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=HDOEMZJ1iJUDawkzsd6EJs2p6R7I3avbJFeF5Kk04rI=;
+        b=E1fxnykXu5SuBbCy7jL9XNrfSWR/aHJa/kUXc7duEbL8II561wlxMxkMqfskOaXPaD
+         mAo/vP7AUxf17/jUTX8Ydau/JtP5smxgnxpY3IUmSDPFUnbHGk07yfQWagJByHg8un4G
+         RL8oC38HIq/NiU1nK669pKz3rfm+GlXUga6npM7bZMyu4voKZqZGxe65JW4qP6W0i3Tb
+         CbbgnnaWrlqcbZkCYcZ3KKKxpDVPDmYL9Wy40Q3Nk3Jzu47h8zHHcYI4pHNRs8mI6iuh
+         GKtUH3wLemdLUG3xbdDP5wgRoV2XqB4NVQbDat3oMyHKvNQR5nt6eiq+t5ZZ4dvRxSAn
+         611A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=HDOEMZJ1iJUDawkzsd6EJs2p6R7I3avbJFeF5Kk04rI=;
+        b=AJCPExEmP37CaW3Q2SyNNJkyP0NsU27l6OpTvqZlh8P4JPkvmzgJQvp7cLkGc7qQyi
+         hTLytcfV53Rzt3MpJHDYoPNo97BBGTBzoykjcNIbJQlLwsYpEGN+zFHjg3z4YzBWcE7G
+         sIhjsQhrNm8ak04LiQOiF3SAQuQm+nFc3Ux1qf1YAIM9ignFqNcK9i5hQR0mF2wVxoqg
+         VdwnJ5NCHy7oHeNdtMjTH/y93B31R3q3f4exVaPiNFdNcnu2YodRx2MeP67BCEyoiSn9
+         UIwcAr4+lE3FQC17rehHeDZxwYHoUA/EcxVYnZH8riDJqa9YoYLZEC1RrzLTH9ejeIh8
+         I2Og==
+X-Gm-Message-State: AOAM5334u+R9nWSfofn/KupfFEc0O3xxpNP5BE0vh8YLTY/EOpoj0ZXz
+        Y+ZO8Y1DbmED7DWOh3d0piKsSrBObHsbv7cg+OAhBrR3pqw=
+X-Google-Smtp-Source: ABdhPJy4V9ovDJkkp+I+JIwk2btygwFc179EQv+3NzkavRWXfk6broysUpKrBqF97YRL4lUy+Owj/I4LkDx6y+gG+As=
+X-Received: by 2002:a17:906:38c9:: with SMTP id r9mr12922751ejd.9.1602217767821;
+ Thu, 08 Oct 2020 21:29:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/D8pWvJ1NJO5SiQ1GCGu+IE4";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Fri, 9 Oct 2020 14:29:16 +1000
+Message-ID: <CAPM=9tywYP9zfkWJ6ad-+Eg51WgD0efM+CUc_wCmE-jmHEGTYA@mail.gmail.com>
+Subject: [git pull] drm amdgpu fixes for 5.9 final
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/D8pWvJ1NJO5SiQ1GCGu+IE4
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Linus,
 
-Hi all,
+Fixes trickling in this week, Alex had a final fix for the newest GPU
+they introduced in rc1, along with one build regression and one
+crasher fix.
 
-After merging the tip tree, today's linux-next build (perf) failed
-like this:
+Cross my fingers that's it for 5.9.
 
-In file included from tools/include/linux/build_bug.h:5,
-                 from tools/include/linux/kernel.h:8,
-                 from util/intel-pt-decoder/intel-pt-insn-decoder.c:7:
-util/intel-pt-decoder/../../../arch/x86/lib/insn.c: In function '__insn_get=
-_emulate_prefix':
-tools/include/linux/compiler.h:37:38: error: nested extern declaration of '=
-__compiletime_assert_0' [-Werror=3Dnested-externs]
-   37 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNT=
-ER__)
-      |                                      ^~~~~~~~~~~~~~~~~~~~~
-tools/include/linux/compiler.h:16:15: note: in definition of macro '__compi=
-letime_assert'
-   16 |   extern void prefix ## suffix(void) __compiletime_error(msg); \
-      |               ^~~~~~
-tools/include/linux/compiler.h:37:2: note: in expansion of macro '_compilet=
-ime_assert'
-   37 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNT=
-ER__)
-      |  ^~~~~~~~~~~~~~~~~~~
-tools/include/linux/build_bug.h:39:37: note: in expansion of macro 'compile=
-time_assert'
-   39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-      |                                     ^~~~~~~~~~~~~~~~~~
-tools/include/linux/build_bug.h:59:21: note: in expansion of macro 'BUILD_B=
-UG_ON_MSG'
-   59 | #define BUILD_BUG() BUILD_BUG_ON_MSG(1, "BUILD_BUG failed")
-      |                     ^~~~~~~~~~~~~~~~
-util/intel-pt-decoder/../../../arch/x86/lib/insn.c:27:3: note: in expansion=
- of macro 'BUILD_BUG'
-   27 |   BUILD_BUG(); break;     \
-      |   ^~~~~~~~~
-util/intel-pt-decoder/../../../arch/x86/lib/insn.c:40:41: note: in expansio=
-n of macro 'leXX_to_cpu'
-   40 |  ({ t r =3D *(t*)((insn)->next_byte + n); leXX_to_cpu(t, r); })
-      |                                         ^~~~~~~~~~~
-util/intel-pt-decoder/../../../arch/x86/lib/insn.c:46:61: note: in expansio=
-n of macro '__peek_nbyte_next'
-   46 |  ({ if (unlikely(!validate_next(t, insn, n))) goto err_out; __peek_=
-nbyte_next(t, insn, n); })
-      |                                                             ^~~~~~~=
-~~~~~~~~~~
-util/intel-pt-decoder/../../../arch/x86/lib/insn.c:86:7: note: in expansion=
- of macro 'peek_nbyte_next'
-   86 |   if (peek_nbyte_next(insn_byte_t, insn, i) !=3D prefix[i])
-      |       ^~~~~~~~~~~~~~~
+Dave.
 
-Caused by commit
+drm-fixes-2020-10-09:
+drm amdgpu fixes for 5.9 final
 
-  2a522b53c470 ("x86/insn: Support big endian cross-compiles")
+amdgpu:
+- Fix a crash on renoir if you override the IP discovery parameter
+- Fix the build on ARC platforms
+- Display fix for Sienna Cichlid
+The following changes since commit d10285a25e29f13353bbf7760be8980048c1ef2f:
 
-I have reverted commits
+  drm/nouveau/mem: guard against NULL pointer access in mem_del
+(2020-10-07 15:33:09 +1000)
 
-a23b701ae9b3 objtool: Rework header include paths
-1b4998c364bc objtool: Fix x86 orc generation on big endian cross compiles
-317664a7fcc9 objtool: Fix reloc generation on big endian cross compiles
-2a522b53c470 x86/insn: Support big endian cross-compiles
-2486baae2cf6 objtool: Allow nested externs to enable BUILD_BUG()
+are available in the Git repository at:
 
-for today.
+  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2020-10-09
 
-This is a PowerPC LE native build of tools/perf.
+for you to fetch changes up to dded93ffbb8c4a578adf13b54cd62519908a23f8:
 
---=20
-Cheers,
-Stephen Rothwell
+  Merge tag 'amd-drm-fixes-5.9-2020-10-08' of
+git://people.freedesktop.org/~agd5f/linux into drm-fixes (2020-10-09
+13:02:49 +1000)
 
---Sig_/D8pWvJ1NJO5SiQ1GCGu+IE4
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+----------------------------------------------------------------
+drm amdgpu fixes for 5.9 final
 
------BEGIN PGP SIGNATURE-----
+amdgpu:
+- Fix a crash on renoir if you override the IP discovery parameter
+- Fix the build on ARC platforms
+- Display fix for Sienna Cichlid
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9/5v4ACgkQAVBC80lX
-0GwuHgf/bNF770bTmccxD7Bb7XHLgwE9t50XM5TA1Rh3qyoosyt4D2I1EfyJQhuJ
-Nq3uOMRMQyqWyYu53sbHZhyb4rMFdcZzrG0iewDFHLKw7pZ/BCxzsO1GGaJC4h6v
-QKOF5IQJOX+Lj3Iu55+rSXycSmfJpur5ECa6BaNfWGZVfrXf8Zba14eloWScmNvb
-UknSJtNK4ftW6tEpy/EeKUPvCIMlMO9yJ9ho6kwNTT4znRTBs7ltdu4KbMUSHZB6
-+VJwRPQ+0ParZW0QGwjjHkdBgO/sSBCx9Mj1P9pw9lCj2cVtepIyaggYevkJnMhG
-fe8i5FbZbYA/4r2T3kTc07S2WqLHCA==
-=QJTb
------END PGP SIGNATURE-----
+----------------------------------------------------------------
+Alex Deucher (1):
+      drm/amdgpu/swsmu: fix ARC build errors
 
---Sig_/D8pWvJ1NJO5SiQ1GCGu+IE4--
+Dave Airlie (1):
+      Merge tag 'amd-drm-fixes-5.9-2020-10-08' of
+git://people.freedesktop.org/~agd5f/linux into drm-fixes
+
+Dirk Gouders (1):
+      drm/amdgpu: fix NULL pointer dereference for Renoir
+
+Yongqiang Sun (1):
+      drm/amd/display: Change ABM config init interface
+
+ drivers/gpu/drm/amd/amdgpu/soc15.c                    | 10 +++++-----
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c     |  2 +-
+ .../gpu/drm/amd/display/modules/power/power_helpers.c | 19 +++++++++++++++----
+ .../gpu/drm/amd/display/modules/power/power_helpers.h |  4 +++-
+ drivers/gpu/drm/amd/powerplay/navi10_ppt.c            | 14 ++++++++++++--
+ drivers/gpu/drm/amd/powerplay/sienna_cichlid_ppt.c    | 14 ++++++++++++--
+ 6 files changed, 48 insertions(+), 15 deletions(-)
