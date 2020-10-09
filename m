@@ -2,168 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E414288CBD
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F565288CC0
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 17:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389389AbgJIPbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 11:31:16 -0400
-Received: from relay12.mail.gandi.net ([217.70.178.232]:59527 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389358AbgJIPbM (ORCPT
+        id S2389400AbgJIPbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 11:31:20 -0400
+Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:46783 "EHLO
+        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389297AbgJIPbP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 11:31:12 -0400
-Received: from localhost (lfbn-lyo-1-1908-165.w90-65.abo.wanadoo.fr [90.65.88.165])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id C385E200005;
-        Fri,  9 Oct 2020 15:31:09 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] rtc: rv3028: ensure ram configuration registers are saved
-Date:   Fri,  9 Oct 2020 17:31:01 +0200
-Message-Id: <20201009153101.721149-4-alexandre.belloni@bootlin.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201009153101.721149-1-alexandre.belloni@bootlin.com>
-References: <20201009153101.721149-1-alexandre.belloni@bootlin.com>
+        Fri, 9 Oct 2020 11:31:15 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id AA1E28237C;
+        Fri,  9 Oct 2020 18:31:10 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1602257470;
+        bh=2gRguZvslDbvDmw+4neit2s7CulV++0qJe6qZPb8o10=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=PTeEIpwbX9rPpu9Svi+FnlvBVLf5tKNIZrVNVY9KY+zjWNOobNBKun6wMANEwjNQM
+         ZhXjFjc/2CfnIKSTpP7A1DHk2meWAIAA5KVM9/d7aCwrGm+Xs9/7u99+lYbyf0dA/c
+         9oA7DiNmzm9uO+sJi5GERwB3iOtkm3wXscd//Uqc=
+Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Fri, 9 Oct 2020 18:31:10 +0300
+Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
+ by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%6]) with mapi
+ id 15.01.1847.003; Fri, 9 Oct 2020 18:31:10 +0300
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     =?utf-8?B?UGFsaSBSb2jDoXI=?= <pali@kernel.org>
+CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dsterba@suse.cz" <dsterba@suse.cz>,
+        "aaptel@suse.com" <aaptel@suse.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "joe@perches.com" <joe@perches.com>,
+        "mark@harmstone.com" <mark@harmstone.com>,
+        "nborisov@suse.com" <nborisov@suse.com>
+Subject: RE: [PATCH v5 08/10] fs/ntfs3: Add Kconfig, Makefile and doc
+Thread-Topic: [PATCH v5 08/10] fs/ntfs3: Add Kconfig, Makefile and doc
+Thread-Index: AQHWiEVMa6NNOPBUmU2lQbRIYYQ96qly8s2AgAaqUoCAANymAIAVDx/Q
+Date:   Fri, 9 Oct 2020 15:31:10 +0000
+Message-ID: <940ff3bbce3e4c8b9cb5666c3f5c113f@paragon-software.com>
+References: <20200911141018.2457639-1-almaz.alexandrovich@paragon-software.com>
+ <20200911141018.2457639-9-almaz.alexandrovich@paragon-software.com>
+ <20200921132631.q6jfmbhqf6j6ay5t@pali>
+ <7facb550be6449c2b35f467ab1716224@paragon-software.com>
+ <20200926082324.npbljzb3ydkfbswy@pali>
+In-Reply-To: <20200926082324.npbljzb3ydkfbswy@pali>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.30.8.36]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If RV3028_CTRL1_EERD is not set (this is the default), the RTC will refresh
-the RAM configuration registers from the EEPROM at midnight. It is
-necessary to save the RAM registers back to EEPROM after modifying them.
-
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
----
- drivers/rtc/rtc-rv3028.c | 76 +++++++++++++++++++++++++++++++++++-----
- 1 file changed, 67 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/rtc/rtc-rv3028.c b/drivers/rtc/rtc-rv3028.c
-index 7b8823f43626..fa226f0fe67d 100644
---- a/drivers/rtc/rtc-rv3028.c
-+++ b/drivers/rtc/rtc-rv3028.c
-@@ -71,6 +71,7 @@
- 
- #define RV3028_EVT_CTRL_TSR		BIT(2)
- 
-+#define RV3028_EEPROM_CMD_UPDATE	0x11
- #define RV3028_EEPROM_CMD_WRITE		0x21
- #define RV3028_EEPROM_CMD_READ		0x22
- 
-@@ -209,6 +210,50 @@ static int rv3028_enter_eerd(struct rv3028_data *rv3028, u32 *eerd)
- 	return 0;
- }
- 
-+static int rv3028_update_eeprom(struct rv3028_data *rv3028, u32 eerd)
-+{
-+	u32 status;
-+	int ret;
-+
-+	ret = regmap_write(rv3028->regmap, RV3028_EEPROM_CMD, 0x0);
-+	if (ret)
-+		goto exit_eerd;
-+
-+	ret = regmap_write(rv3028->regmap, RV3028_EEPROM_CMD, RV3028_EEPROM_CMD_UPDATE);
-+	if (ret)
-+		goto exit_eerd;
-+
-+	usleep_range(63000, RV3028_EEBUSY_TIMEOUT);
-+
-+	ret = regmap_read_poll_timeout(rv3028->regmap, RV3028_STATUS, status,
-+				       !(status & RV3028_STATUS_EEBUSY),
-+				       RV3028_EEBUSY_POLL, RV3028_EEBUSY_TIMEOUT);
-+
-+exit_eerd:
-+	rv3028_exit_eerd(rv3028, eerd);
-+
-+	return ret;
-+}
-+
-+static int rv3028_update_cfg(struct rv3028_data *rv3028, unsigned int reg,
-+			     unsigned int mask, unsigned int val)
-+{
-+	u32 eerd;
-+	int ret;
-+
-+	ret = rv3028_enter_eerd(rv3028, &eerd);
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_update_bits(rv3028->regmap, reg, mask, val);
-+	if (ret) {
-+		rv3028_exit_eerd(rv3028, eerd);
-+		return ret;
-+	}
-+
-+	return rv3028_update_eeprom(rv3028, eerd);
-+}
-+
- static irqreturn_t rv3028_handle_irq(int irq, void *dev_id)
- {
- 	struct rv3028_data *rv3028 = dev_id;
-@@ -442,17 +487,32 @@ static int rv3028_read_offset(struct device *dev, long *offset)
- static int rv3028_set_offset(struct device *dev, long offset)
- {
- 	struct rv3028_data *rv3028 = dev_get_drvdata(dev);
-+	u32 eerd;
- 	int ret;
- 
- 	offset = clamp(offset, -244141L, 243187L) * 1000;
- 	offset = DIV_ROUND_CLOSEST(offset, OFFSET_STEP_PPT);
- 
-+	ret = rv3028_enter_eerd(rv3028, &eerd);
-+	if (ret)
-+		return ret;
-+
- 	ret = regmap_write(rv3028->regmap, RV3028_OFFSET, offset >> 1);
- 	if (ret < 0)
--		return ret;
-+		goto exit_eerd;
-+
-+	ret = regmap_update_bits(rv3028->regmap, RV3028_BACKUP, BIT(7),
-+				 offset << 7);
-+	if (ret < 0)
-+		goto exit_eerd;
-+
-+	return rv3028_update_eeprom(rv3028, eerd);
-+
-+exit_eerd:
-+	rv3028_exit_eerd(rv3028, eerd);
-+
-+	return ret;
- 
--	return regmap_update_bits(rv3028->regmap, RV3028_BACKUP, BIT(7),
--				  offset << 7);
- }
- 
- static int rv3028_ioctl(struct device *dev, unsigned int cmd, unsigned long arg)
-@@ -634,8 +694,8 @@ static int rv3028_clkout_set_rate(struct clk_hw *hw, unsigned long rate,
- 
- 	for (i = 0; i < ARRAY_SIZE(clkout_rates); i++)
- 		if (clkout_rates[i] == rate)
--			return regmap_write(rv3028->regmap, RV3028_CLKOUT,
--					    RV3028_CLKOUT_CLKSY | enabled | i);
-+			return rv3028_update_cfg(rv3028, RV3028_CLKOUT, 0xff,
-+						 RV3028_CLKOUT_CLKSY | enabled | i);
- 
- 	return -EINVAL;
- }
-@@ -810,10 +870,8 @@ static int rv3028_probe(struct i2c_client *client)
- 				break;
- 
- 		if (i < ARRAY_SIZE(rv3028_trickle_resistors)) {
--			ret = regmap_update_bits(rv3028->regmap, RV3028_BACKUP,
--						 RV3028_BACKUP_TCE |
--						 RV3028_BACKUP_TCR_MASK,
--						 RV3028_BACKUP_TCE | i);
-+			ret = rv3028_update_cfg(rv3028, RV3028_BACKUP, RV3028_BACKUP_TCE |
-+						 RV3028_BACKUP_TCR_MASK, RV3028_BACKUP_TCE | i);
- 			if (ret)
- 				return ret;
- 		} else {
--- 
-2.26.2
-
+RnJvbTogUGFsaSBSb2jDoXIgPHBhbGlAa2VybmVsLm9yZz4NClNlbnQ6IFNhdHVyZGF5LCBTZXB0
+ZW1iZXIgMjYsIDIwMjAgMTE6MjMgQU0NCj4gVG86IEtvbnN0YW50aW4gS29tYXJvdiA8YWxtYXou
+YWxleGFuZHJvdmljaEBwYXJhZ29uLXNvZnR3YXJlLmNvbT4NCj4gQ2M6IGxpbnV4LWZzZGV2ZWxA
+dmdlci5rZXJuZWwub3JnOyB2aXJvQHplbml2LmxpbnV4Lm9yZy51azsgbGludXgta2VybmVsQHZn
+ZXIua2VybmVsLm9yZzsgZHN0ZXJiYUBzdXNlLmN6OyBhYXB0ZWxAc3VzZS5jb207DQo+IHdpbGx5
+QGluZnJhZGVhZC5vcmc7IHJkdW5sYXBAaW5mcmFkZWFkLm9yZzsgam9lQHBlcmNoZXMuY29tOyBt
+YXJrQGhhcm1zdG9uZS5jb207IG5ib3Jpc292QHN1c2UuY29tDQo+IFN1YmplY3Q6IFJlOiBbUEFU
+Q0ggdjUgMDgvMTBdIGZzL250ZnMzOiBBZGQgS2NvbmZpZywgTWFrZWZpbGUgYW5kIGRvYw0KPiAN
+Cj4gT24gRnJpZGF5IDI1IFNlcHRlbWJlciAyMDIwIDE2OjMwOjE5IEtvbnN0YW50aW4gS29tYXJv
+diB3cm90ZToNCj4gPiBGcm9tOiBQYWxpIFJvaMOhciA8cGFsaUBrZXJuZWwub3JnPg0KPiA+IFNl
+bnQ6IE1vbmRheSwgU2VwdGVtYmVyIDIxLCAyMDIwIDQ6MjcgUE0NCj4gPiA+IFRvOiBLb25zdGFu
+dGluIEtvbWFyb3YgPGFsbWF6LmFsZXhhbmRyb3ZpY2hAcGFyYWdvbi1zb2Z0d2FyZS5jb20+DQo+
+ID4gPiBDYzogbGludXgtZnNkZXZlbEB2Z2VyLmtlcm5lbC5vcmc7IHZpcm9AemVuaXYubGludXgu
+b3JnLnVrOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBkc3RlcmJhQHN1c2UuY3o7IGFh
+cHRlbEBzdXNlLmNvbTsNCj4gPiA+IHdpbGx5QGluZnJhZGVhZC5vcmc7IHJkdW5sYXBAaW5mcmFk
+ZWFkLm9yZzsgam9lQHBlcmNoZXMuY29tOyBtYXJrQGhhcm1zdG9uZS5jb207IG5ib3Jpc292QHN1
+c2UuY29tDQo+ID4gPiBTdWJqZWN0OiBSZTogW1BBVENIIHY1IDA4LzEwXSBmcy9udGZzMzogQWRk
+IEtjb25maWcsIE1ha2VmaWxlIGFuZCBkb2MNCj4gPiA+DQo+ID4gPiBPbiBGcmlkYXkgMTEgU2Vw
+dGVtYmVyIDIwMjAgMTc6MTA6MTYgS29uc3RhbnRpbiBLb21hcm92IHdyb3RlOg0KPiA+ID4gPiAr
+TW91bnQgT3B0aW9ucw0KPiA+ID4gPiArPT09PT09PT09PT09PQ0KPiA+ID4gPiArDQo+ID4gPiA+
+ICtUaGUgbGlzdCBiZWxvdyBkZXNjcmliZXMgbW91bnQgb3B0aW9ucyBzdXBwb3J0ZWQgYnkgTlRG
+UzMgZHJpdmVyIGluIGFkZGl0aW9uIHRvDQo+ID4gPiA+ICtnZW5lcmljIG9uZXMuDQo+ID4gPiA+
+ICsNCj4gPiA+ID4gKz09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCj4gPiA+ID4gKw0KPiA+ID4gPiAr
+bmxzPW5hbWUJCVRoaXMgb3B0aW9uIGluZm9ybXMgdGhlIGRyaXZlciBob3cgdG8gaW50ZXJwcmV0
+IHBhdGgNCj4gPiA+ID4gKwkJCXN0cmluZ3MgYW5kIHRyYW5zbGF0ZSB0aGVtIHRvIFVuaWNvZGUg
+YW5kIGJhY2suIElmDQo+ID4gPiA+ICsJCQl0aGlzIG9wdGlvbiBpcyBub3Qgc2V0LCB0aGUgZGVm
+YXVsdCBjb2RlcGFnZSB3aWxsIGJlDQo+ID4gPiA+ICsJCQl1c2VkIChDT05GSUdfTkxTX0RFRkFV
+TFQpLg0KPiA+ID4gPiArCQkJRXhhbXBsZXM6DQo+ID4gPiA+ICsJCQkJJ25scz11dGY4Jw0KPiA+
+ID4gPiArDQo+ID4gPiA+ICtubHNfYWx0PW5hbWUJCVRoaXMgb3B0aW9uIGV4dGVuZHMgIm5scyIu
+IEl0IHdpbGwgYmUgdXNlZCB0byB0cmFuc2xhdGUNCj4gPiA+ID4gKwkJCXBhdGggc3RyaW5nIHRv
+IFVuaWNvZGUgaWYgcHJpbWFyeSBubHMgZmFpbGVkLg0KPiA+ID4gPiArCQkJRXhhbXBsZXM6DQo+
+ID4gPiA+ICsJCQkJJ25sc19hbHQ9Y3AxMjUxJw0KPiA+ID4NCj4gPiA+IEhlbGxvISBJJ20gbG9v
+a2luZyBhdCBvdGhlciBmaWxlc3lzdGVtIGRyaXZlcnMgYW5kIG5vIG90aGVyIHdpdGggVU5JQ09E
+RQ0KPiA+ID4gc2VtYW50aWMgKHZmYXQsIHVkZiwgaXNvZnMpIGhhcyBzb21ldGhpbmcgbGlrZSBu
+bHNfYWx0IG9wdGlvbi4NCj4gPiA+DQo+ID4gPiBTbyBkbyB3ZSByZWFsbHkgbmVlZCBpdD8gQW5k
+IGlmIHllcywgaXQgc2hvdWxkIGJlIGFkZGVkIHRvIGFsbCBvdGhlcg0KPiA+ID4gVU5JQ09ERSBm
+aWxlc3lzdGVtIGRyaXZlcnMgZm9yIGNvbnNpc3RlbmN5Lg0KPiA+ID4NCj4gPiA+IEJ1dCBJJ20g
+dmVyeSBzY2VwdGljYWwgaWYgc3VjaCB0aGluZyBpcyByZWFsbHkgbmVlZGVkLiBubHM9IG9wdGlv
+biBqdXN0DQo+ID4gPiBzYWlkIGhvdyB0byBjb252ZXJ0IFVOSUNPREUgY29kZSBwb2ludHMgZm9y
+IHVzZXJwYWNlLiBUaGlzIG9wdGlvbiBpcw0KPiA+ID4gcGFzc2VkIGJ5IHVzZXJzcGFjZSAod2hl
+biBtb3VudGluZyBkaXNrKSwgc28gdXNlcnNwYWNlIGFscmVhZHkga25vdyB3aGF0DQo+ID4gPiBp
+dCB3YW50ZWQuIEFuZCBpdCBzaG91bGQgcmVhbGx5IHVzZSB0aGlzIGVuY29kaW5nIGZvciBmaWxl
+bmFtZXMgKGUuZy4NCj4gPiA+IHV0Zjggb3IgY3AxMjUxKSB3aGljaCBhbHJlYWR5IHRvbGQgdG8g
+a2VybmVsLg0KPiA+DQo+ID4gSGkgUGFsaSEgVGhhbmtzIGZvciB0aGUgZmVlZGJhY2suIFdlIGRv
+IG5vdCBjb25zaWRlciB0aGUgbmxzX2FsdCBvcHRpb24gYXMgdGhlIG11c3QgaGF2ZQ0KPiA+IG9u
+ZS4gQnV0IGl0IGlzIHZlcnkgbmljZSAiUU9MLXR5cGUiIG1vdW50IG9wdGlvbiwgd2hpY2ggbWF5
+IGhlbHAgc29tZSBhbW91bnQgb2YNCj4gPiBkdWFsLWJvb3RlcnMvV2luZG93cyB1c2VycyB0byBh
+dm9pZCB0cmlja3kgZmFpbHMgd2l0aCBmaWxlcyBvcmlnaW5hdGVkIG9uIG5vbi1FbmdsaXNoDQo+
+ID4gV2luZG93cyBzeXN0ZW1zLiBPbmUgb2YgdGhlIGNhc2VzIHdoZXJlIHRoaXMgb25lIG1heSBi
+ZSB1c2VmdWwgaXMgdGhlIGNhc2Ugb2YgemlwcGluZw0KPiA+IGZpbGVzIHdpdGggbm9uLUVuZ2xp
+c2ggbmFtZXMgKGUuZy4gUG9saXNoIGV0YykgdW5kZXIgV2luZG93cyBhbmQgdGhlbiB1bnppcHBp
+bmcgdGhlIGFyY2hpdmUNCj4gPiB1bmRlciBMaW51eC4gSW4gdGhpcyBjYXNlIHVuemlwIHdpbGwg
+bGlrZWx5IHRvIGZhaWwgb24gdGhvc2UgZmlsZXMsIGFzIGFyY2hpdmUgc3RvcmVzIGZpbGVuYW1l
+cyBub3QNCj4gPiBpbiB1dGYuDQo+IA0KPiBIZWxsbyENCj4gDQo+IFRoYW5rIHlvdSBmb3IgcHJv
+dmlkaW5nIGV4YW1wbGUuIE5vdyBJIGNhbiBpbWFnaW5lIHRoZSBwcm9ibGVtIHdoaWNoDQo+IHRo
+aXMgb3B0aW9uIGlzIHRyeWluZyB0byAid29ya2Fyb3VuZCIuDQo+IA0KPiBQZXJzb25hbGx5LCBJ
+IHRoaW5rIHRoYXQgdGhpcyBpcyB0aGUgaXNzdWUgb2YgdGhlIHByb2dyYW0gd2hpY2ggaXMNCj4g
+dW56aXBwaW5nIGNvbnRlbnQgb2YgdGhlIGFyY2hpdmUuIElmIGZpbGVzIGFyZSBpbiBhcmNoaXZl
+IGFyZSBzdG9yZWQgaW4NCj4gZGlmZmVyZW50IGVuY29kaW5nLCB0aGVuIHVzZXIgbmVlZHMgdG8g
+cHJvdmlkZSBpbmZvcm1hdGlvbiBpbiB3aGljaCBpdA0KPiBpcyBzdG9yZWQuIE90aGVyd2lzZSBp
+dCB3b3VsZCBiZSBicm9rZW4uDQo+IA0KDQpIaSBQYWxpISBQYXJ0aWFsbHkgaXQgaXMgdGhlIGlz
+c3VlIG9mIHRoZSBwcm9ncmFtLiBCdXQgc3VjaCBpc3N1ZSBtYXkgYWZmZWN0DQphIGxvdCBvZiBw
+cm9ncmFtcywgZXNwLiBnaXZlbiB0aGF0IHRoaXMgY2FzZSBpcyBzb21laHdhdCBuaWNoZSBmb3Ig
+dGhlIExpbnV4LA0KYmVjYXVzZSBpdCBvcmlnaW5zIGluIFdpbmRvd3MuIFdlIG1heSBhc3N1bWUg
+aXQgaXMgdW5saWtlbHkgYSBsb3Qgb2YgcHJvZ3JhbXMNCndpbGwgdHJ5L2FyZSB0cnlpbmcgdG8g
+c3VwcG9ydCB0aGlzIGNhc2UuIFRoZSBtb3VudCBvcHRpb24sIG9uIHRoZSBvdGhlciBoYW5kLA0K
+Z2l2ZXMgdGhpcyBhYmlsaXR5IHdpdGhvdXQgcmVseWluZyBvbiB0aGUgYXBwbGljYXRpb24gaXRz
+ZWxmLg0KDQo+IEFsc28gdGhpcyB5b3VyIGFwcHJvYWNoIHdpdGggbmxzPXV0Zi04IGFuZCBubHNf
+YWx0PWNwMTI1MSBpcyBicm9rZW4uIEkNCj4gY2FuIHByb3ZpZGUgeW91IHN0cmluZyBlbmNvZGVk
+IGluIGNwMTI1MSB3aGljaCBpcyBhbHNvIHZhbGlkIFVURi04DQo+IHNlcXVlbmNlLg0KPiANCj4g
+Rm9yIGV4YW1wbGU6IHNlcXVlbmNlIG9mIGJ5dGVzICJkMCA5MyIuDQo+IA0KPiBJbiBjcDEyNTEg
+aXQgaXMg0KDigJwsIGJ1dCBhbHNvIGl0IGlzIHZhbGlkIFVURi04IHNlcXVlbmNlIGZvciDQkyAo
+Q1lSSUxMSUMNCj4gQ0FQSVRBTCBMRVRURVIgR0hFKS4NCj4gDQo+IEJlY2F1c2UgY3AxMjUxIGlz
+IHNldCBhcyBubHNfYWx0LCB5b3Ugd291bGQgZ2V0IFVURi04IGludGVycHJldGF0aW9uLg0KPiBB
+bmQgZm9yIGFsbCBvdGhlciBpbnZhbGlkIFVURi04IHNlcXVlbmNlcyB5b3Ugd291bGQgZ2V0IGNw
+MTI1MS4NCj4gDQo+IEZvciBtZSBpdCBsb29rcyBsaWtlIHlvdSBhcmUgdHJ5aW5nIHRvIGltcGxl
+bWVudCB3b3JrYXJvdW5kIGJhc2VkIG9uDQo+IHNvbWUgaGV1cmlzdGljIGluIGtlcm5lbCBmb3Ig
+dXNlcnNwYWNlIGFwcGxpY2F0aW9uIHdoaWNoIGhhbmRsZXMNCj4gZW5jb2RpbmcgaW5jb3JyZWN0
+bHkuIEFuZCBiZWNhdXNlIGFsbCBDUD8/Pz8gZW5jb2RpbmdzIGFyZSBkZWZpbmVkIGF0DQo+IGZ1
+bGwgOGJpdCBzcGFjZSBhbmQgVVRGLTggaXMgc3Vic2V0IG9mIDhiaXQgc3BhY2UsIGl0IHdvdWxk
+IG5ldmVyIHdvcmsNCj4gY29ycmVjdGx5Lg0KPiANCg0KSW4gdGhpcyBjYXNlLCB0aGUgd2hvbGUg
+c3RyaW5nIHdpbGwgYmUgdHJlYXRlZCBhcyBVVEYtOCBzdHJpbmcsIG5vIG1hdHRlciBvZg0Kd2hh
+dCdzIHRoZSB2YWx1ZSBvZiAibmxzX2FsdCIgb3B0aW9uLiBUaGUgb3B0aW9uJ3MgcmVsYXRlZCBs
+b2dpYyBzdGFydHMgdG8gYmUgYXBwbGllZA0Kb25seSBmb3IgdGhvc2Ugc3RyaW5ncyB3aGljaCBj
+b250YWluICJpbnZhbGlkIiBVVEYtOCBjaGFyYWN0ZXIuIEFuZCBpdCB3b3JrcyBub3QgaW4NCnN5
+bWJvbC1ieS1zeW1ib2wgd2F5LCBidXQgYXBwbGllcyB0byB0aGUgd2hvbGUgc3RyaW5nLiBTbyBp
+ZiBhIHN0cmluZyBkb2VzIG5vdA0KY29udGFpbiBpbnZhbGlkIFVURi04LCB0aGUgIm5sc19hbHQi
+IHdvbid0IGJlIGFwcGxpZWQsIGV2ZW4gaWYgc2V0LiBBbmQgaWYgdGhlIHN0cmluZw0KY29udGFp
+bnMgaW52YWxpZCBVVEYtOCBBTkQgIm5sc19hbHQiIGlzIHNldCwgdGhlbiB0aGUgbG9naWMgd2ls
+bCBiZSBhcHBsaWVkIHdpdGggYXNzdW1wdGlvbg0KdGhhdCB1c2VyLCB3aGVuIHNldCB0aGUgIm5s
+c19hbHQiIGhhZCBpbiBtaW5kIHRoYXQgaGUgbWF5IGJlIGluIHN1Y2ggc2l0dWF0aW9uLg0KDQpX
+aGVuIGl0IGlzIGNvbWluZyB0byB2YWxpZCBVVEYtOCBzZXF1ZW5jZXMsIHdoaWNoIGFyZSBhY3R1
+YWxseSBtZWFudCB0byByZXByZXNlbnQgYW5vdGhlcg0KZW5jb2RpbmcsIHRoZXJlIGlzIGFtYmln
+dWl0eSwgd2hpY2ggc2VlbXMgdW5hYmxlIHRvIGJlIHJlc29sdmVkIGJvdGggd2l0aCBhbmQgd2l0
+aG91dA0KdGhlICJubHNfYWx0Ii4gQnV0IGF0IGxlYXN0IHRob3NlIGNhc2VzLCB3aGVuIHRoZSBz
+ZXF1ZW5jZSBpcyBpbmNvcnJlY3QgVVRGLTgsIGJ1dCBjb3JyZWN0DQplLmcuIENQLTEyNTEsIG1h
+eSBiZSBzb2x2ZWQgd2l0aCB0aGUgIm5sc19hbHQiLCBidXQgbm90IHdpdGhvdXQgaXQuIA0KDQpJ
+dCBpcyBub3QgY292ZXJpbmcgYWxsIHRoZSBjYXNlcywgYnV0IGNvdmVycyBhdCBsZWFzdCB0aG9z
+ZSwgd2hpY2ggb3RoZXJ3aXNlIGxlYWQgdG8gaW5hYmlsaXR5DQpvcGVyYXRpbmcgd2l0aCB0aGUg
+ZmlsZSAoZS5nLiBlcnJvciBkdXJpbmcgdW56aXApLiBBbHNvIGl0IGlzIHNldCBvbmx5IGV4cGxp
+Y2l0bHkgYnkgdGhlIHVzZXIuDQoNCldlJ2xsIGZvbGxvdyB0aGUgY29tbXVuaXR5IG9waW5pb24g
+aW4gb3VyIGltcGxlbWVudGF0aW9uLCBqdXN0IHdhbnQgdG8gbWFrZSBzdXJlIHRoZQ0Kc29sdXRp
+b24gaXMgdW5kZXJzdG9vZCBjb3JyZWN0bHkuIFJlZ2FyZGluZyB0aGUgIm5sc19hbHQiLCBpdCBk
+b2Vzbid0IHNlZW0NCnRvIGJlIGhhcm1mdWwgaW4gYW55IHdheSwgYnV0IG1heSBoZWxwIHNvbWUg
+YW1vdW50IG9mIHVzZXJzIHRvIG92ZXJjb21lIGludGVyb3BlcmFiaWxpdHkNCmlzc3Vlcy4NCg0K
+PiBBbHNvIEkgZG8gbm90IHRoaW5rIHRoYXQga2VybmVsIGlzIGNvcnJlY3QgcGxhY2UgZm9yIHdv
+cmthcm91bmRpbmcNCj4gdXNlcnNwYWNlIGFwcGxpY2F0aW9ucyB3aGljaCBoYW5kbGVzIGVuY29k
+aW5nIGluY29ycmVjdGx5Lg0KPiANCj4gPiBXaW5kb3dzIGhhdmUgdGhhdCAiTGFuZ3VhZ2UgZm9y
+IG5vbi1Vbmljb2RlIHByb2dyYW1zIiBzZXR0aW5nLCB3aGljaCBjb250cm9scyB0aGUNCj4gPiBl
+bmNvZGluZyB1c2VkIGZvciB0aGUgZGVzY3JpYmVkIChhbmQgc2ltaWxhcikgY2FzZXMuDQo+IA0K
+PiBUaGlzIHdpbmRvd3Mgc2V0dGluZyBpcyBzb21ldGhpbmcgZGlmZmVyZW50LiBJdCBpcyBzeXN0
+ZW0gd2lkZSBvcHRpb24NCj4gd2hpY2ggYWZmZWN0cyAtQSBXSU5BUEkgZnVuY3Rpb25zIGFuZCBk
+ZWZpbmVzIG9uZSBmaXhlZCA4Yml0IGVuY29kaW5nDQo+IChBQ1ApIHdoaWNoIHNob3VsZCBiZSB1
+c2VkIGZvciBjb252ZXJ0aW5nIFVURi0xNiBzdHJpbmdzICh3Y2hhcl90KikgaW50bw0KPiA4Yml0
+IChjaGFyKikgQUNQIGVuY29kaW5nLg0KPiANCj4gSXQgaXMgc29tZXRoaW5nIHNpbWlsYXIgdG8g
+VW5peCBDT0RFU0VUIHNldCBpbiBMQ19DVFlQRSBmcm9tIGxvY2FsZS4gQnV0DQo+IG5vdCB0aGUg
+c2FtZS4NCj4gDQo+ID4gT3ZlcmFsbCwgaXQncyBraW5kYSBuaWNoZSBtb3VudCBvcHRpb24sIGJ1
+dCB3ZSBzdXBwb3NlIGl0J3MgbGVnaXQgZm9yIFdpbmRvd3Mtb3JpZ2luYXRlZCBmaWxlc3lzdGVt
+cy4NCj4gPiBXaGF0IGRvIHlvdSB0aGluayBvbiB0aGlzLCBQYWxpPw0KPiANCj4gSSB0aGluayB0
+aGlzIGlzIG5vdCBvbmx5IGZvciBXaW5kb3dzLW9yaWVudGF0ZWQgRlMsIGJ1dCByYXRoZXIgZm9y
+IGFsbA0KPiBmaWxlc3lzdGVtcyB3aGljaCBzdG9yZSBmaWxlbmFtZXMgaW4gVU5JQ09ERSAoYXMg
+b3Bwb3NpdGUgb2Ygc2VxdWVuY2Ugb2YNCj4gYnl0ZXMpLg0KPiANCj4gRS5nLiBleHQ0IG5vdyBo
+YXMgZXh0ZW5zaW9uIGZvciBzdG9yaW5nIChhbmQgdmFsaWRhdGluZykgdGhhdCBmaWxlbmFtZXMN
+Cj4gYXJlIGFsc28gaW4gVU5JQ09ERSAob24gZGlzayBpdCBpcyBpbiBVVEYtOCkuDQo+IA0KPiBT
+YW1lIGZvciBCZW9zIEZTIG9yIFVERiBmcyAob24gRFZEL0JELVIpLiBJbiBtb3N0IGNhc2VzIHRo
+ZXNlIGZzIGFyZQ0KPiBtb3VudGVkIHdpdGggbmxzPXV0Zi04IHRvIGludGVycHJldCBVTklDT0RF
+IGFzIHV0Zi04Lg0KPiANCj4gQW5kIG5vbmUgb2YgdGhlc2UgZnMgaGF2ZSBzdWNoIG5sc19hbHQg
+b3B0aW9uIGFzIEkgc2hvdyBhYm92ZSwgaXQgY2Fubm90DQo+IHdvcmsgcmVsaWFibGUuDQoNClRo
+YW5rcy4NCg==
