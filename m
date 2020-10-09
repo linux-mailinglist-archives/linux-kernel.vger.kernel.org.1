@@ -2,88 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED532890AF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 20:21:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 002A22890B5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 20:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390344AbgJISVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 14:21:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60776 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390337AbgJISVv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 14:21:51 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        id S2390390AbgJISYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 14:24:40 -0400
+Received: from mail-out.m-online.net ([212.18.0.10]:39371 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731198AbgJISYj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 14:24:39 -0400
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4C7Ggl6dbdz1rsMq;
+        Fri,  9 Oct 2020 20:24:35 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4C7Ggl5Rsxz1qrDV;
+        Fri,  9 Oct 2020 20:24:35 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id 2mbYlDZWbOcq; Fri,  9 Oct 2020 20:24:34 +0200 (CEST)
+X-Auth-Info: LZoooTdPUM9XaQoDhU03clxRO+LEeX6w/lImTE/OmOPPBdMcRJILnzkfJa/RlVrk
+Received: from igel.home (ppp-46-244-168-131.dynamic.mnet-online.de [46.244.168.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4E9B522284;
-        Fri,  9 Oct 2020 18:21:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602267710;
-        bh=lZeKmEBYOFSPyXXAEhd82JvzWUbzSvGCdC+F4wT6yGk=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ZwRpWKODPUQmv/XpL7UIxEsk9FGD5WINOwMfvs7Ws3h1vhZFZyNVXqJjJehioJgJl
-         pvl5a4yETlhqP9KJxgRsltYcR1QaZ+yL5xpmzpqzBG3TWXZUvw4232yYdon8nPgjuc
-         t7A/AN8shitzAWTjPRoPE5LVvCNr1EVuLNKbnu+I=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 0E9CC35227D5; Fri,  9 Oct 2020 11:21:50 -0700 (PDT)
-Date:   Fri, 9 Oct 2020 11:21:50 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Qian Cai <cai@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Boqun Feng <boqun.feng@gmail.com>
-Subject: Re: [tip: locking/core] lockdep: Fix lockdep recursion
-Message-ID: <20201009182150.GK29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <160223032121.7002.1269740091547117869.tip-bot2@tip-bot2>
- <e438b231c5e1478527af6c3e69bf0b37df650110.camel@redhat.com>
- <20201009135837.GD29330@paulmck-ThinkPad-P72>
- <20201009162352.GR2611@hirez.programming.kicks-ass.net>
- <e8fce9c0db7985e132262fd508a519ade656bdd8.camel@redhat.com>
- <942e0ffb37a4580982206d72404c521d72d38314.camel@redhat.com>
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Fri,  9 Oct 2020 20:24:34 +0200 (CEST)
+Received: by igel.home (Postfix, from userid 1000)
+        id 17F1F2C2864; Fri,  9 Oct 2020 20:24:34 +0200 (CEST)
+From:   Andreas Schwab <schwab@linux-m68k.org>
+To:     Sagar Shrikant Kadam <sagar.kadam@sifive.com>
+Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-i2c@vger.kernel.org, peter@korsgaard.com, andrew@lunn.ch,
+        paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu
+Subject: Re: [PATCH v2 1/1] i2c: ocores: fix polling mode workaround on
+ FU540-C000 SoC
+References: <1602257980-375157-1-git-send-email-sagar.kadam@sifive.com>
+        <1602257980-375157-2-git-send-email-sagar.kadam@sifive.com>
+X-Yow:  Dehydrated EGGS are STREWN across ROULETTE TABLES..
+Date:   Fri, 09 Oct 2020 20:24:34 +0200
+In-Reply-To: <1602257980-375157-2-git-send-email-sagar.kadam@sifive.com>
+        (Sagar Shrikant Kadam's message of "Fri, 9 Oct 2020 08:39:40 -0700")
+Message-ID: <87pn5rp89p.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <942e0ffb37a4580982206d72404c521d72d38314.camel@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 01:54:34PM -0400, Qian Cai wrote:
-> On Fri, 2020-10-09 at 13:36 -0400, Qian Cai wrote:
-> > Back to x86, we have:
-> > 
-> > start_secondary()
-> >   smp_callin()
-> >     apic_ap_setup()
-> >       setup_local_APIC()
-> >         printk() in certain conditions.
-> > 
-> > which is before smp_store_cpu_info().
-> > 
-> > Can't we add a rcu_cpu_starting() at the very top for each start_secondary(),
-> > secondary_start_kernel(), smp_start_secondary() etc, so we don't worry about
-> > any printk() later?
-> 
-> This is rather irony. rcu_cpu_starting() is taking a lock and then reports
-> itself.
-> 
-> [    8.826732][    T0]  __lock_acquire.cold.76+0x2ad/0x3e0
-> [    8.826732][    T0]  lock_acquire+0x1c8/0x820
-> [    8.826732][    T0]  _raw_spin_lock_irqsave+0x30/0x50
-> [    8.826732][    T0]  rcu_cpu_starting+0xd0/0x2c0
-> [    8.826732][    T0]  start_secondary+0x10/0x2a0
-> [    8.826732][    T0]  secondary_startup_64_no_verify+0xb8/0xbb
+On Okt 09 2020, Sagar Shrikant Kadam wrote:
 
-Fun!!!
+> diff --git a/drivers/i2c/busses/i2c-ocores.c b/drivers/i2c/busses/i2c-ocores.c
+> index f5fc75b..9b3d1ab 100644
+> --- a/drivers/i2c/busses/i2c-ocores.c
+> +++ b/drivers/i2c/busses/i2c-ocores.c
+> @@ -686,17 +686,21 @@ static int ocores_i2c_probe(struct platform_device *pdev)
+>  
+>  	init_waitqueue_head(&i2c->wait);
+>  
+> +	/*
+> +	 * Set OCORES_FLAG_BROKEN_IRQ to enable workaround for
+> +	 * FU540-C000 SoC in polling mode.
+> +	 * Since the SoC does have interrupt it's dt has the interrupt
 
-There should be some way around this.  I cannot safely record the
-offline-to-online transition without acquiring a lock.  I suppose
-I could trick lockdep into thinking that it was a recursive lockdep
-report.  Any other approaches?
+Typo: its
 
-						Thanx, Paul
+Andreas.
+
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
