@@ -2,73 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8D432885E3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 11:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 581782885EA
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 11:24:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733076AbgJIJWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 05:22:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56238 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731262AbgJIJWw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 05:22:52 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BF27C20782;
-        Fri,  9 Oct 2020 09:22:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602235370;
-        bh=9QDbQhMPmGQEhEsMut7dl1bPrUJtCAztPvmny1cCtMA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AFe+vqsB3QPkMjrCCaRz9Q4xFhFIVVNGBHQDq1oKY3HO0BlgLsTHZG7Kisx9QL9PV
-         Lm8FML7/l5jjyWi8yGKq+SJFyKul92+40Ik9P2sm/Wnzmg3iomhBBcCTwM7eCTnqDG
-         6EQEOhrtJMvQOpxT8t4HyI6J30/V80gCyLNGFHP8=
-Date:   Fri, 9 Oct 2020 11:23:36 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Wen Yang <wenyang@linux.alibaba.com>
-Cc:     Sasha Levin <sashal@kernel.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        stable@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Stable backport request for fixing the issue of not being able
- to create a new pid_ns
-Message-ID: <20201009092336.GA415570@kroah.com>
-References: <20201008130021.79829-1-wenyang@linux.alibaba.com>
+        id S1733090AbgJIJYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 05:24:39 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:59963 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731262AbgJIJYi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 05:24:38 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R941e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0UBQ5Qni_1602235473;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0UBQ5Qni_1602235473)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 09 Oct 2020 17:24:34 +0800
+Date:   Fri, 9 Oct 2020 17:24:33 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     david@redhat.com, akpm@linux-foundation.org, ardb@kernel.org,
+        bhe@redhat.com, dan.j.williams@intel.com, jgg@ziepe.ca,
+        keescook@chromium.org, linux-acpi@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-nvdimm@lists.01.org,
+        linux-s390@vger.kernel.org, mhocko@suse.com,
+        pankaj.gupta.linux@gmail.com, richardw.yang@linux.intel.com,
+        virtualization@lists.linux-foundation.org,
+        xen-devel@lists.xenproject.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] kernel/resource: Fix use of ternary condition in
+ release_mem_region_adjustable
+Message-ID: <20201009092433.GA56924@L-31X9LVDL-1304.local>
+Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <20200911103459.10306-2-david@redhat.com>
+ <20200922060748.2452056-1-natechancellor@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201008130021.79829-1-wenyang@linux.alibaba.com>
+In-Reply-To: <20200922060748.2452056-1-natechancellor@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 09:00:21PM +0800, Wen Yang wrote:
-> After the process exits, the following three dentries still refer to the pid:
-> /proc/<pid>
-> /proc/<pid>/ns
-> /proc/<pid>/ns/pid
-> 
-> https://bugzilla.kernel.org/show_bug.cgi?id=208613
-> 
-> According to the commit f333c700c610 ("pidns: Add a limit on the number of
-> pid namespaces"), if the pid cannot be released, it may result in the
-> inability to create a new pid_ns.
-> 
-> Please backport the following patches to the kernel stable trees (from 4.9.y
-> to 5.6.y):
-> 7bc3e6e55acf ("proc: Use a list of inodes to flush from proc")
-> 26dbc60f385f ("proc: Generalize proc_sys_prune_dcache into proc_prune_siblings_dcache")
-> f90f3cafe8d5 ("proc: Use d_invalidate in proc_prune_siblings_dcache")
-> 
-> Signed-off-by: Wen Yang <wenyang@linux.alibaba.com>
-> Cc: Eric W. Biederman <ebiederm@xmission.com>
-> Cc: stable@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
+On Mon, Sep 21, 2020 at 11:07:48PM -0700, Nathan Chancellor wrote:
+>Clang warns:
+>
+>kernel/resource.c:1281:53: warning: operator '?:' has lower precedence
+>than '|'; '|' will be evaluated first
+>[-Wbitwise-conditional-parentheses]
+>        new_res = alloc_resource(GFP_KERNEL | alloc_nofail ? __GFP_NOFAIL : 0);
+>                                 ~~~~~~~~~~~~~~~~~~~~~~~~~ ^
+>kernel/resource.c:1281:53: note: place parentheses around the '|'
+>expression to silence this warning
+>        new_res = alloc_resource(GFP_KERNEL | alloc_nofail ? __GFP_NOFAIL : 0);
+>                                 ~~~~~~~~~~~~~~~~~~~~~~~~~ ^
+>kernel/resource.c:1281:53: note: place parentheses around the '?:'
+>expression to evaluate it first
+>        new_res = alloc_resource(GFP_KERNEL | alloc_nofail ? __GFP_NOFAIL : 0);
+>                                                           ^
+>                                              (                              )
+>1 warning generated.
+>
+>Add the parentheses as it was clearly intended for the ternary condition
+>to be evaluated first.
+>
+>Fixes: 5fd23bd0d739 ("kernel/resource: make release_mem_region_adjustable() never fail")
+>Link: https://github.com/ClangBuiltLinux/linux/issues/1159
+>Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 
-How well did you test these backports?  I see at least one fix for them
-that you missed, odds are there might have been more.  Please verify
-that the above list of patches _really_ is what you want to have
-applied, and that you have tested it properly.
+Reviewed-by: Wei Yang <richard.weiyang@linux.alibaba.com>
 
-thanks,
+>---
+>
+>Presumably, this will be squashed but I included a fixes tag
+>nonetheless. Apologies if this has already been noticed and fixed
+>already, I did not find anything on LKML.
+>
+> kernel/resource.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+>diff --git a/kernel/resource.c b/kernel/resource.c
+>index ca2a666e4317..3ae2f56cc79d 100644
+>--- a/kernel/resource.c
+>+++ b/kernel/resource.c
+>@@ -1278,7 +1278,7 @@ void release_mem_region_adjustable(resource_size_t start, resource_size_t size)
+> 	 * similarly).
+> 	 */
+> retry:
+>-	new_res = alloc_resource(GFP_KERNEL | alloc_nofail ? __GFP_NOFAIL : 0);
+>+	new_res = alloc_resource(GFP_KERNEL | (alloc_nofail ? __GFP_NOFAIL : 0));
+> 
+> 	p = &parent->child;
+> 	write_lock(&resource_lock);
+>
+>base-commit: 40ee82f47bf297e31d0c47547cd8f24ede52415a
+>-- 
+>2.28.0
 
-greg k-h
+-- 
+Wei Yang
+Help you, Help me
