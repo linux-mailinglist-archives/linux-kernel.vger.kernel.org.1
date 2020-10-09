@@ -2,50 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F98288F73
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 19:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA4F7288F6C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 19:03:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390054AbgJIRCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 13:02:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48938 "EHLO
+        id S2390026AbgJIRBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 13:01:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389958AbgJIRBa (ORCPT
+        with ESMTP id S2389969AbgJIRBb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 13:01:30 -0400
+        Fri, 9 Oct 2020 13:01:31 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D83CEC0613D2;
-        Fri,  9 Oct 2020 10:01:29 -0700 (PDT)
-Date:   Fri, 09 Oct 2020 17:01:27 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA8F9C0613D6;
+        Fri,  9 Oct 2020 10:01:30 -0700 (PDT)
+Date:   Fri, 09 Oct 2020 17:01:28 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602262887;
+        s=2020; t=1602262889;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=DsUXCFgB0t8Uz1s66Xv3x9K3h5PRL9+85GNO1gQyCNw=;
-        b=uqPQ0lq9j159dwjEitmbe3g3lMgvIvEjwtLwA/ttHqk4wHgdPKaSOScbJabe2VyKa3tpr3
-        HlCaU0ZiMW6i/OC0V+QqzLnZcHPJVQIl2bx4/LPQjGazo5jpIqaKCLcT/ClcTT+yb/FJfc
-        8KRxyE1g+Y51M+jwNnVcorDpN7TzFTa1G/5aKzaCVK/blAxWHHHFAHbUncgphngKczMrWS
-        ZVFqwKVFXFAKVYiH3riOwoof75KGutyBSd8LLxop9gInIeP0yE7gVinf1+OSaaiN94kuFr
-        tpaPL7j+JlRED9hIe+h4Yqu1uUaYsMNuukUW9eK+3caTmF/so6z6fcXyDDm+CA==
+        bh=XzG/VJ/wBWTfygtSwUZc9phblyLmB/v5SKSJmnX8If0=;
+        b=h94zFaTntDV+9efccfKEKpBgmuqHL84T8XPc2eJLgpVnsPPrKEzMdS0ELHl5R8pb6Z/pt2
+        9a0mDbUvTbfve+zzF6vfcP4EtxM/2NQRbSx79EvcPvo5LLm0/N8tXRtjFlUKnkK2fxhSIF
+        KGf+wfb5NI3bpnZRj194PO50uPJBl+9SC5sj+byWjRZ+mdawlWNBfETyDu82XohDCAu3WC
+        G40XNMf0IuQZVCoSjtTXcfMDjt4rJuNkzZO5c9DeKLws9l44eMzwDDW/PXzA+MAVnP9e2u
+        zjQ2UDbeyyjY3AnWH4Zlly4iiw4/m32rU420jTlHDqw0JeCjtHmG4zik7aAnIg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602262887;
+        s=2020e; t=1602262889;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=DsUXCFgB0t8Uz1s66Xv3x9K3h5PRL9+85GNO1gQyCNw=;
-        b=tsyJjwYX+hZAptY3Vdx0hr6DroEAXAq4MekM8lAnKONvUELxb6KIaD+GYLAWr0IzN1F/dk
-        Ef3w0E+2kWmi6qCw==
+        bh=XzG/VJ/wBWTfygtSwUZc9phblyLmB/v5SKSJmnX8If0=;
+        b=rhwITZDpP3xsWlab3rj0ICIHPsQhhQoN2pCNW5U+cGyvCx9t9oVg4aPGz1DFPs7rZuDeIE
+        5QKZ8VuVOvRih0Bg==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] mm/pagemap: Cleanup PREEMPT_COUNT leftovers
+Subject: [tip: core/rcu] preempt: Make preempt count unconditional
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <160226288705.7002.3287677624087065789.tip-bot2@tip-bot2>
+Message-ID: <160226288864.7002.5923312832863889974.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -56,39 +55,73 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     1aba898d50dd0dc18d418bf66b2eea0028b2fbd6
-Gitweb:        https://git.kernel.org/tip/1aba898d50dd0dc18d418bf66b2eea0028b2fbd6
+Commit-ID:     7681205ba49d8b0dcb3a0f55d97f71e1da93e972
+Gitweb:        https://git.kernel.org/tip/7681205ba49d8b0dcb3a0f55d97f71e1da93e972
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Mon, 14 Sep 2020 19:25:00 +02:00
+AuthorDate:    Mon, 14 Sep 2020 19:18:06 +02:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 28 Sep 2020 16:03:19 -07:00
+CommitterDate: Mon, 28 Sep 2020 16:02:49 -07:00
 
-mm/pagemap: Cleanup PREEMPT_COUNT leftovers
+preempt: Make preempt count unconditional
 
-CONFIG_PREEMPT_COUNT is now unconditionally enabled and will be
-removed. Cleanup the leftovers before doing so.
+The handling of preempt_count() is inconsistent across kernel
+configurations. On kernels which have PREEMPT_COUNT=n
+preempt_disable/enable() and the lock/unlock functions are not affecting
+the preempt count, only local_bh_disable/enable() and _bh variants of
+locking, soft interrupt delivery, hard interrupt and NMI context affect it.
+
+It's therefore impossible to have a consistent set of checks which provide
+information about the context in which a function is called. In many cases
+it makes sense to have separate functions for separate contexts, but there
+are valid reasons to avoid that and handle different calling contexts
+conditionally.
+
+The lack of such indicators which work on all kernel configuratios is a
+constant source of trouble because developers either do not understand the
+implications or try to work around this inconsistency in weird
+ways. Neither seem these issues be catched by reviewers and testing.
+
+Recently merged code does:
+
+	 gfp = preemptible() ? GFP_KERNEL : GFP_ATOMIC;
+
+Looks obviously correct, except for the fact that preemptible() is
+unconditionally false for CONFIF_PREEMPT_COUNT=n, i.e. all allocations in
+that code use GFP_ATOMIC on such kernels.
+
+Attempts to make preempt count unconditional and consistent have been
+rejected in the past with handwaving performance arguments.
+
+Freshly conducted benchmarks did not reveal any measurable impact from
+enabling preempt count unconditionally. On kernels with CONFIG_PREEMPT_NONE
+or CONFIG_PREEMPT_VOLUNTARY the preempt count is only incremented and
+decremented but the result of the decrement is not tested. Contrary to that
+enabling CONFIG_PREEMPT which tests the result has a small but measurable
+impact due to the conditional branch/call.
+
+It's about time to make essential functionality of the kernel consistent
+across the various preemption models.
+
+Enable CONFIG_PREEMPT_COUNT unconditionally. Follow up changes will remove
+the #ifdeffery and remove the config option at the end.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org
-[ paulmck: Fix !SMP build error per kernel test robot feedback. ]
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/pagemap.h | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ kernel/Kconfig.preempt | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index 7de11dc..b3d9d92 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -168,9 +168,7 @@ void release_pages(struct page **pages, int nr);
- static inline int __page_cache_add_speculative(struct page *page, int count)
- {
- #ifdef CONFIG_TINY_RCU
--# ifdef CONFIG_PREEMPT_COUNT
--	VM_BUG_ON(!in_atomic() && !irqs_disabled());
--# endif
-+	VM_BUG_ON(preemptible());
- 	/*
- 	 * Preempt must be disabled here - we rely on rcu_read_lock doing
- 	 * this for us.
+diff --git a/kernel/Kconfig.preempt b/kernel/Kconfig.preempt
+index bf82259..3f4712f 100644
+--- a/kernel/Kconfig.preempt
++++ b/kernel/Kconfig.preempt
+@@ -75,8 +75,7 @@ config PREEMPT_RT
+ endchoice
+ 
+ config PREEMPT_COUNT
+-       bool
++       def_bool y
+ 
+ config PREEMPTION
+        bool
+-       select PREEMPT_COUNT
