@@ -2,246 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCCB7289157
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 20:44:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 332E728915E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 20:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733111AbgJISok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 14:44:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30177 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731820AbgJISok (ORCPT
+        id S2387462AbgJISqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 14:46:30 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:12690 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1733050AbgJISq3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 14:44:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602269077;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vPS9EFQjAPbTsE1U1KE86YkQyoDT5CB+n90O8Fl9QaY=;
-        b=ghQCjOZJxh0gqBwWP5pS4Xo0NM/pw4ob4mG8Yb8gdNMmOpk4JE13fhCvenrZZm/80YsWZU
-        +kLxJgxlzXWFWx3QxO/yPCkFkELEpDSktEjUt0OrRPiuXjaLfY59XAAsmIrOqgPmVul0HZ
-        ErRXP6hDh4sknPn8aqMzKirxThLRwA8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-388--yVRXHxjMnKfq6k9hXLnzQ-1; Fri, 09 Oct 2020 14:44:35 -0400
-X-MC-Unique: -yVRXHxjMnKfq6k9hXLnzQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 19C5E107B477;
-        Fri,  9 Oct 2020 18:44:34 +0000 (UTC)
-Received: from x1.home (ovpn-113-35.phx2.redhat.com [10.3.113.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D7D376266E;
-        Fri,  9 Oct 2020 18:44:24 +0000 (UTC)
-Date:   Fri, 9 Oct 2020 12:44:23 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     gchen chen <gchen.guomin@gmail.com>
-Cc:     guomin_chen@sina.com, Cornelia Huck <cohuck@redhat.com>,
-        Jiang Yi <giangyi@amazon.com>, Marc Zyngier <maz@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] irqbypass: fix error handle when
- irq_bypass_register_producer() return fails
-Message-ID: <20201009124423.2a8603f7@x1.home>
-In-Reply-To: <CAEEwsfRZt=r54SWOqbKvF60zPKu2tiTeQtFcFW14Hp92kT6M9Q@mail.gmail.com>
-References: <1601470479-26848-1-git-send-email-guomin_chen@sina.com>
-        <20200930080919.1a9c66f8@x1.home>
-        <CAEEwsfRZt=r54SWOqbKvF60zPKu2tiTeQtFcFW14Hp92kT6M9Q@mail.gmail.com>
-Organization: Red Hat
+        Fri, 9 Oct 2020 14:46:29 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 099IeNkB018038;
+        Fri, 9 Oct 2020 11:46:18 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : in-reply-to : mime-version :
+ content-type : content-transfer-encoding; s=facebook;
+ bh=kaxKW0gVB8sBccIM0Vre7+2dVByNdinpsgWrBezwNPo=;
+ b=XxMuHwVGMLZS2ZQTh1ehh59/RGTPzDYSLjjwN7t35BoLTdWUa/o6ugoWsywbyiQA4CxE
+ ETx8fxZK34pcITEdU7jvEch61k89WNGxEWuX/XonzC9mkag6aqOnlLm5W9x1K6zwQISm
+ bzfcz+V3ghPx+GVO+bgyQuWlhLJ4ERNIggQ= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3429h8n92q-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 09 Oct 2020 11:46:18 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 9 Oct 2020 11:45:58 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZYdHCOLYsqRh0+yiDYG3Mfa9YL5n2nChCdce6BIAIqt2XuxgCeZrTyKuR6/TDlRJ1B987w+fzxWaRr5jdDs3tvl16vg2H4C8ZO8xYfbwb9oYnv+Lo+rmreT192NDTvWE0oAgrP5xrmlFrvqNBJhyOCjGArRRRiU1qKPpY8slUIwRxI3btC1DoEFv9qMLhGkgSkhijsEE91tA6NMNqk4O/T/ezCGdZxkG7jk94zpPOY4FJCN+zudBF9zWvIfdltumNRy+PVtyD5WghcDRSw43gPOWORKntDZ2YonC0rAK6MVOtq07JqFBvgig265cRjd4MbROi4jPwz0syz6NHsA9gQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kaxKW0gVB8sBccIM0Vre7+2dVByNdinpsgWrBezwNPo=;
+ b=nYrVT7yKb5YcqcZG1+EXGrxOWF6hDmAiek92D0M/EJzs3pVrQmuY0PSZDeBjcnfNUCtFSa1HBHaUbRUfW5WPTdMCbPQci7Z6YkhpD5xlijO6uwH0SaugfMPMm5CCCgFfZ/V6cis6lEo+/5RgFbE2OjrdrWu5DZkcH8ZUjGcZ2/0OusFiQPuNUZYXHqUjDEpSeF0gxzQTM622XiodcTyE2OWD76ne09JR1iwtxfTzUsUSK7+6R1OKceteFKQTO7exBpG5i08U9I7a2sFtvnvUF9RfWuhzdkd1PtVPsBkvaZTp3dNfwjDwMCqvscGUyak9hezj5BiztcgbqDQUfP53hA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kaxKW0gVB8sBccIM0Vre7+2dVByNdinpsgWrBezwNPo=;
+ b=hZB+PYqNm5teZjgWkMh2/d2FBG9eWnpL0ABfNI8Eco+tJs1XYpMCkoTAuR8o57vbHIVYGoZ8AcNquaD5IvhFsUwxqzX5J2p7VDRnVHdNaIQVdBRjP87pD/+zf06GN0+Cf9K6rxjQn8l7vSuGnRBmW3WBmoYHaUSCOiPz1E+QUg4=
+Authentication-Results: linux.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.ibm.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB2869.namprd15.prod.outlook.com (2603:10b6:a03:b3::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.22; Fri, 9 Oct
+ 2020 18:45:56 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::d834:4987:4916:70f2]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::d834:4987:4916:70f2%5]) with mapi id 15.20.3455.023; Fri, 9 Oct 2020
+ 18:45:56 +0000
+Date:   Fri, 9 Oct 2020 11:45:51 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Bharata B Rao <bharata@linux.ibm.com>
+CC:     <linux-kernel@vger.kernel.org>, <cl@linux.com>,
+        <rientjes@google.com>, <iamjoonsoo.kim@lge.com>,
+        <akpm@linux-foundation.org>, <linux-mm@kvack.org>
+Subject: Re: [PATCH FIX v0] mm: memcg/slab: Uncharge during
+ kmem_cache_free_bulk()
+Message-ID: <20201009184551.GA3128977@carbon.dhcp.thefacebook.com>
+References: <20201009060423.390479-1-bharata@linux.ibm.com>
+In-Reply-To: <20201009060423.390479-1-bharata@linux.ibm.com>
+X-Originating-IP: [2620:10d:c090:400::5:b43d]
+X-ClientProxiedBy: CO2PR05CA0066.namprd05.prod.outlook.com
+ (2603:10b6:102:2::34) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:b43d) by CO2PR05CA0066.namprd05.prod.outlook.com (2603:10b6:102:2::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.6 via Frontend Transport; Fri, 9 Oct 2020 18:45:55 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d318168a-9c14-48ff-035b-08d86c838e80
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2869:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB286966CAC394513701064001BE080@BYAPR15MB2869.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:1060;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: KFpg525PctMtwgrEAjxgBq+mhDzbPEN3xCJp0RaTQttktC7WDM9q+2R3xvwltPM5sCKK3lorfI+UKPc0ZytagRkJSm0oZnshnnz86EhVz0RoxqQ74rFjXWVL+3UXd+1ntJUkF2BnOHu5daDxPQMsOAStqvNOBFEolCOsZww3roiPOJu2YlrC3AzF/FHjipZaDy/8NpeIg3Zrc6pcBYnzDt3qH75BUzjSI0wooNuN5WNkvCTFRMfOHs+48KKw7tvF79SYAmyxg3WQsH9b0Sy8BXJejTiiQPZl57QIdxUuO6B0RvjGHfSd+Rt8bIM7z6lfzeTmuGXrZkZWusGPLDPt3Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(346002)(376002)(366004)(396003)(7696005)(52116002)(478600001)(8936002)(83380400001)(5660300002)(316002)(2906002)(1076003)(6666004)(186003)(16526019)(6506007)(4326008)(33656002)(9686003)(66946007)(66476007)(66556008)(86362001)(8676002)(55016002)(6916009);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: xMhVJooCXWVmS7zVn608x7aSuplw/dhcN7BdER74uBCi5Rgwy5UYIRR31OUbLKU6yvrdGOETfAxptI2j1KZaBOLjAaJEs++KzMTI6U2B+hjOE3z4fbBaMNkSKWkXWjWJL5vpw/FREfSFtongLJbGDaCSLTKgpj2bCpiil98nmHy4xgbCOUvwXKf2xsb00leXMglsn5ilMuUQwh6C0vVOata5FiC2WQk4z6psCOiCmxBg3xbtwZB0G7jS8vwQk1wtWpcBjyNdidCS0n+ZvdXbzY74PZPm7gEVTLxxD5hcWto5Q2iuhoyX1CRFezh6Y87cqXBiP4GJF9EIbTYs8Way8zLP+h3srhEz/AhAvYsggbqsB39+j8YDFP+XIjPplaFO3OuFli+cQKpLXFnC2znv570GM/jMEFhFr7HetlcX76piiUqx4Q6ZZFiHTRF+xIatq2gXX6BSmRMifLHcVF77q+0Guq+DApbhqIfvsc24jqoj6EK7C3PgqArV1nasq9acBak4V6oZ2FirbahwV/rbwXmcjQ5tdzhuZ3dvvBAB5+RhZF6/QDc5wD4xjqORoAdeQyIWR8+qx1KCmWhNfiDJLVBswdqJlaChZvHuKaRTSlALZptU3f8CHSLWzwbkxwVdzTqvo6ZzaCCCHqzmw7/4RrBDDrrjV7eeb+k7RBsGF9s=
+X-MS-Exchange-CrossTenant-Network-Message-Id: d318168a-9c14-48ff-035b-08d86c838e80
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2020 18:45:56.3083
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oRGH+CnkmOnwjmIMK6M2if4hFMvpaWL9vd4dRf4QyoSoLWJ9VIZF6j4PMy8sv+I5
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2869
+X-OriginatorOrg: fb.com
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-09_09:2020-10-09,2020-10-09 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ clxscore=1011 impostorscore=0 priorityscore=1501 mlxscore=0
+ mlxlogscore=999 lowpriorityscore=0 malwarescore=0 suspectscore=5
+ bulkscore=0 spamscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2010090134
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 9 Oct 2020 12:30:04 +0800
-gchen chen <gchen.guomin@gmail.com> wrote:
+On Fri, Oct 09, 2020 at 11:34:23AM +0530, Bharata B Rao wrote:
 
-> Alex Williamson <alex.williamson@redhat.com> =E4=BA=8E2020=E5=B9=B49=E6=
-=9C=8830=E6=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=8810:09=E5=86=99=E9=81=
-=93=EF=BC=9A
-> >
-> >
-> > Please version your postings so we know which one to consider as the
-> > current proposal.
-> >
-> > On Wed, 30 Sep 2020 20:54:39 +0800
-> > guomin_chen@sina.com wrote:
-> > =20
-> > > From: guomin chen <guomin_chen@sina.com>
-> > >
-> > > When the producer object registration fails,In the future, due to
-> > > incorrect matching when unregistering, list_del(&producer->node)
-> > > may still be called, then trigger a BUG:
-> > >
-> > >     vfio-pci 0000:db:00.0: irq bypass producer (token 0000000060c8cda=
-5) registration fails: -16
-> > >     vfio-pci 0000:db:00.0: irq bypass producer (token 0000000060c8cda=
-5) registration fails: -16
-> > >     vfio-pci 0000:db:00.0: irq bypass producer (token 0000000060c8cda=
-5) registration fails: -16
-> > >     ...
-> > >     list_del corruption, ffff8f7fb8ba0828->next is LIST_POISON1 (dead=
-000000000100)
-> > >     ------------[ cut here ]------------
-> > >     kernel BUG at lib/list_debug.c:47!
-> > >     invalid opcode: 0000 [#1] SMP NOPTI
-> > >     CPU: 29 PID: 3914 Comm: qemu-kvm Kdump: loaded Tainted: G      E
-> > >     -------- - -4.18.0-193.6.3.el8.x86_64 #1
-> > >     Hardware name: Lenovo ThinkSystem SR650 -[7X06CTO1WW]-/-[7X06CTO1=
-WW]-,
-> > >     BIOS -[IVE636Z-2.13]- 07/18/2019
-> > >     RIP: 0010:__list_del_entry_valid.cold.1+0x12/0x4c
-> > >     Code: ce ff 0f 0b 48 89 c1 4c 89 c6 48 c7 c7 40 85 4d 88 e8 8c bc
-> > >           ce ff 0f 0b 48 89 fe 48 89 c2 48 c7 c7 d0 85 4d 88 e8 78 bc
-> > >           ce ff <0f> 0b 48 c7 c7 80 86 4d 88 e8 6a bc ce ff 0f 0b 48
-> > >           89 f2 48 89 fe
-> > >     RSP: 0018:ffffaa9d60197d20 EFLAGS: 00010246
-> > >     RAX: 000000000000004e RBX: ffff8f7fb8ba0828 RCX: 0000000000000000
-> > >     RDX: 0000000000000000 RSI: ffff8f7fbf4d6a08 RDI: ffff8f7fbf4d6a08
-> > >     RBP: 0000000000000000 R08: 000000000000084b R09: 000000000000005d
-> > >     R10: 0000000000000000 R11: ffffaa9d60197bd0 R12: ffff8f4fbe863000
-> > >     R13: 00000000000000c2 R14: 0000000000000000 R15: 0000000000000000
-> > >     FS:  00007f7cb97fa700(0000) GS:ffff8f7fbf4c0000(0000)
-> > >     knlGS:0000000000000000
-> > >     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > >     CR2: 00007fcf31da4000 CR3: 0000005f6d404001 CR4: 00000000007626e0
-> > >     DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > >     DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > >     PKRU: 55555554
-> > >     Call Trace:
-> > >         irq_bypass_unregister_producer+0x9b/0xf0 [irqbypass]
-> > >         vfio_msi_set_vector_signal+0x8c/0x290 [vfio_pci]
-> > >         ? load_fixmap_gdt+0x22/0x30
-> > >         vfio_msi_set_block+0x6e/0xd0 [vfio_pci]
-> > >         vfio_pci_ioctl+0x218/0xbe0 [vfio_pci]
-> > >         ? kvm_vcpu_ioctl+0xf2/0x5f0 [kvm]
-> > >         do_vfs_ioctl+0xa4/0x630
-> > >         ? syscall_trace_enter+0x1d3/0x2c0
-> > >         ksys_ioctl+0x60/0x90
-> > >         __x64_sys_ioctl+0x16/0x20
-> > >         do_syscall_64+0x5b/0x1a0
-> > >         entry_SYSCALL_64_after_hwframe+0x65/0xca
-> > >
-> > > Cc: Alex Williamson <alex.williamson@redhat.com>
-> > > Cc: Cornelia Huck <cohuck@redhat.com>
-> > > Cc: Jiang Yi <giangyi@amazon.com>
-> > > Cc: Marc Zyngier <maz@kernel.org>
-> > > Cc: Peter Xu <peterx@redhat.com>
-> > > Cc: Eric Auger <eric.auger@redhat.com>
-> > > Cc: "Michael S. Tsirkin" <mst@redhat.com>
-> > > Cc: Jason Wang <jasowang@redhat.com>
-> > > Cc: kvm@vger.kernel.org
-> > > Cc: linux-kernel@vger.kernel.org
-> > > Signed-off-by: guomin chen <guomin_chen@sina.com>
-> > > ---
-> > >  drivers/vfio/pci/vfio_pci_intrs.c | 13 +++++++++++--
-> > >  drivers/vhost/vdpa.c              |  7 +++++++
-> > >  2 files changed, 18 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/drivers/vfio/pci/vfio_pci_intrs.c b/drivers/vfio/pci/vfi=
-o_pci_intrs.c
-> > > index 1d9fb25..c371943 100644
-> > > --- a/drivers/vfio/pci/vfio_pci_intrs.c
-> > > +++ b/drivers/vfio/pci/vfio_pci_intrs.c
-> > > @@ -352,12 +352,21 @@ static int vfio_msi_set_vector_signal(struct vf=
-io_pci_device *vdev,
-> > >       vdev->ctx[vector].producer.token =3D trigger;
-> > >       vdev->ctx[vector].producer.irq =3D irq;
-> > >       ret =3D irq_bypass_register_producer(&vdev->ctx[vector].produce=
-r);
-> > > -     if (unlikely(ret))
-> > > +     if (unlikely(ret)) {
-> > >               dev_info(&pdev->dev,
-> > >               "irq bypass producer (token %p) registration fails: %d\=
-n",
-> > >               vdev->ctx[vector].producer.token, ret);
-> > >
-> > > -     vdev->ctx[vector].trigger =3D trigger;
-> > > +             kfree(vdev->ctx[vector].name);
-> > > +             eventfd_ctx_put(trigger);
-> > > +
-> > > +             cmd =3D vfio_pci_memory_lock_and_enable(vdev);
-> > > +             free_irq(irq, trigger);
-> > > +             vfio_pci_memory_unlock_and_restore(vdev, cmd);
-> > > +
-> > > +             vdev->ctx[vector].trigger =3D NULL;
-> > > +     } else
-> > > +             vdev->ctx[vector].trigger =3D trigger;
-> > >
-> > >       return 0;
-> > >  } =20
-> >
-> > Once again, the irq bypass registration cannot cause the vector setup
-> > to fail, either by returning an error code or failing to configure the
-> > vector while returning success.  It's my assertion that we simply need
-> > to set the producer.token to NULL on failure such that unregistering
-> > the producer will not generate a match, as you've done below.  The
-> > vector still works even if this registration fails.
-> > =20
-> Yes,  the irq bypass registration cannot cause the vector setup to fail.
-> But if I simply set producer.token to NULL when fails, instead of
-> cleaning up vector, it will trigger the following BUG:
->=20
-> vfio_ecap_init: 0000:db:00.0 hiding ecap 0x1e@0x310
-> vfio-pci 0000:db:00.0: irq bypass producer (token 000000004409229f)
-> registration fails: -16
-> ------------[ cut here ]------------
-> kernel BUG at drivers/pci/msi.c:352!
-> invalid opcode: 0000 [#1] SMP NOPTI
-> CPU: 55 PID: 9389 Comm: qemu-kvm Kdump: loaded Tainted: G
-> E    --------- -  - 4.18.0-193.irqb.r1.el8.x86_64 #1
-> Hardware name: Lenovo ThinkSystem SR650 -[7X06CTO1WW]-/-[7X06CTO1WW]-,
->   BIOS -[IVE636Z-2.13]- 07/18/2019
-> RIP: 0010:free_msi_irqs+0x180/0x1b0
-> Code: 14 85 c0 0f 84 d5 fe ff ff 31 ed eb 0f 83 c5 01 39 6b 14 0f 86
->       c5 fe ff ff 8b 7b 10 01 ef e8 d7 4a c9 ff 48 83 78 70 00 74 e3
->   <0f> 0b 49 8d b5 b0 00 00 00 e8 e2 e3 c9 ff e9 c7 fe ff ff 48
->   8b 7b
-> RSP: 0018:ffffaeca4f4bfcd8 EFLAGS: 00010286
-> RAX: ffff8bec77441600 RBX: ffff8bbcdb637e40 RCX: 0000000000000000
-> RDX: 0000000000000000 RSI: 00000000000001ab RDI: ffffffff8ea5b2a0
-> RBP: 0000000000000000 R08: ffff8bec7e746828 R09: ffff8bec7e7466a8
-> R10: 0000000000000000 R11: 0000000000000000 R12: ffff8bbcde921308
-> R13: ffff8bbcde921000 R14: 000000000000000b R15: 0000000000000021
-> FS:  00007fd18d7fa700(0000) GS:ffff8bec7f6c0000(0000) knlGS:0000000000000=
-000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f83650024a0 CR3: 000000476e70c001 CR4: 00000000007626e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> PKRU: 55555554
-> Call Trace:
->  pci_disable_msix+0xf3/0x120
->  pci_free_irq_vectors+0xe/0x20
->  vfio_msi_disable+0x89/0xd0 [vfio_pci]
->  vfio_pci_set_msi_trigger+0x229/0x2d0 [vfio_pci]
->  vfio_pci_ioctl+0x24f/0xdb0 [vfio_pci]
->  ? pollwake+0x74/0x90
->  ? wake_up_q+0x70/0x70
->  do_vfs_ioctl+0xa4/0x630
->  ? __alloc_fd+0x33/0x140
->  ? syscall_trace_enter+0x1d3/0x2c0
->  ksys_ioctl+0x60/0x90
->  __x64_sys_ioctl+0x16/0x20
->  do_syscall_64+0x5b/0x1a0
->  entry_SYSCALL_64_after_hwframe+0x65/0xca
+Hi Bharata,
 
-Please post the patch that triggers this, I'm not yet convinced we're
-speaking of the same solution.  The user ioctl cannot fail due to the
-failure to setup a bypass accelerator, nor can the ioctl return success
-without configuring all of the user requested vectors, which is what I
-understand the v2 patch above to do.  We simply want to configure the
-failed producer such that when we unregister it at user request, we
-avoid creating a bogus match.  It's not apparent to me why doing that
-would cause any changes to the setup or teardown of the MSI vector in
-PCI code.  Thanks,
+> Object cgroup charging is done for all the objects during
+> allocation, but during freeing, uncharging ends up happening
+> for only one object in the case of bulk allocation/freeing.
 
-Alex
+Yes, it's definitely a problem. Thank you for catching it!
 
+I'm curious, did you find it in the wild or by looking into the code?
+
+> 
+> Fix this by having a separate call to uncharge all the
+> objects from kmem_cache_free_bulk() and by modifying
+> memcg_slab_free_hook() to take care of bulk uncharging.
+>
+> Signed-off-by: Bharata B Rao <bharata@linux.ibm.com>
+
+Please, add:
+
+Fixes: 964d4bd370d5 ("mm: memcg/slab: save obj_cgroup for non-root slab objects")
+Cc: stable@vger.kernel.org
+
+> ---
+>  mm/slab.c |  2 +-
+>  mm/slab.h | 42 +++++++++++++++++++++++++++---------------
+>  mm/slub.c |  3 ++-
+>  3 files changed, 30 insertions(+), 17 deletions(-)
+> 
+> diff --git a/mm/slab.c b/mm/slab.c
+> index f658e86ec8cee..5c70600d8b1cc 100644
+> --- a/mm/slab.c
+> +++ b/mm/slab.c
+> @@ -3440,7 +3440,7 @@ void ___cache_free(struct kmem_cache *cachep, void *objp,
+>  		memset(objp, 0, cachep->object_size);
+>  	kmemleak_free_recursive(objp, cachep->flags);
+>  	objp = cache_free_debugcheck(cachep, objp, caller);
+> -	memcg_slab_free_hook(cachep, virt_to_head_page(objp), objp);
+> +	memcg_slab_free_hook(cachep, &objp, 1);
+>  
+>  	/*
+>  	 * Skip calling cache_free_alien() when the platform is not numa.
+> diff --git a/mm/slab.h b/mm/slab.h
+> index 6cc323f1313af..6dd4b702888a7 100644
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -345,30 +345,42 @@ static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
+>  	obj_cgroup_put(objcg);
+>  }
+>  
+> -static inline void memcg_slab_free_hook(struct kmem_cache *s, struct page *page,
+> -					void *p)
+> +static inline void memcg_slab_free_hook(struct kmem_cache *s_orig,
+> +					void **p, int objects)
+>  {
+> +	struct kmem_cache *s;
+>  	struct obj_cgroup *objcg;
+> +	struct page *page;
+>  	unsigned int off;
+> +	int i;
+>  
+>  	if (!memcg_kmem_enabled())
+>  		return;
+>  
+> -	if (!page_has_obj_cgroups(page))
+> -		return;
+> +	for (i = 0; i < objects; i++) {
+> +		if (unlikely(!p[i]))
+> +			continue;
+>  
+> -	off = obj_to_index(s, page, p);
+> -	objcg = page_obj_cgroups(page)[off];
+> -	page_obj_cgroups(page)[off] = NULL;
+> +		page = virt_to_head_page(p[i]);
+> +		if (!page_has_obj_cgroups(page))
+> +			continue;
+>  
+> -	if (!objcg)
+> -		return;
+> +		if (!s_orig)
+> +			s = page->slab_cache;
+> +		else
+> +			s = s_orig;
+>  
+> -	obj_cgroup_uncharge(objcg, obj_full_size(s));
+> -	mod_objcg_state(objcg, page_pgdat(page), cache_vmstat_idx(s),
+> -			-obj_full_size(s));
+> +		off = obj_to_index(s, page, p[i]);
+> +		objcg = page_obj_cgroups(page)[off];
+> +		if (!objcg)
+> +			continue;
+>  
+> -	obj_cgroup_put(objcg);
+> +		page_obj_cgroups(page)[off] = NULL;
+> +		obj_cgroup_uncharge(objcg, obj_full_size(s));
+> +		mod_objcg_state(objcg, page_pgdat(page), cache_vmstat_idx(s),
+> +				-obj_full_size(s));
+> +		obj_cgroup_put(objcg);
+> +	}
+>  }
+>  
+>  #else /* CONFIG_MEMCG_KMEM */
+> @@ -406,8 +418,8 @@ static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
+>  {
+>  }
+>  
+> -static inline void memcg_slab_free_hook(struct kmem_cache *s, struct page *page,
+> -					void *p)
+> +static inline void memcg_slab_free_hook(struct kmem_cache *s,
+> +					void **p, int objects)
+>  {
+>  }
+>  #endif /* CONFIG_MEMCG_KMEM */
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 6d3574013b2f8..0cbe67f13946e 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -3091,7 +3091,7 @@ static __always_inline void do_slab_free(struct kmem_cache *s,
+>  	struct kmem_cache_cpu *c;
+>  	unsigned long tid;
+>  
+> -	memcg_slab_free_hook(s, page, head);
+> +	memcg_slab_free_hook(s, &head, 1);
+
+Hm, I wonder if it's better to teach do_slab_free() to handle the (cnt > 1) case correctly?
+
+>  redo:
+>  	/*
+>  	 * Determine the currently cpus per cpu slab.
+> @@ -3253,6 +3253,7 @@ void kmem_cache_free_bulk(struct kmem_cache *s, size_t size, void **p)
+>  	if (WARN_ON(!size))
+>  		return;
+>  
+> +	memcg_slab_free_hook(s, p, size);
+
+Then you don't need this change.
+
+Otherwise memcg_slab_free_hook() can be called twice for the same object. It's ok from
+accounting correctness perspective, because the first call will zero out the objcg pointer,
+but still much better to be avoided.
+
+Thanks!
