@@ -2,76 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C20A9289A0F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 22:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D224B289A19
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 23:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391012AbgJIU5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 16:57:49 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:49063 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389072AbgJIU5t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 16:57:49 -0400
-X-Originating-IP: 90.65.88.165
-Received: from localhost (lfbn-lyo-1-1908-165.w90-65.abo.wanadoo.fr [90.65.88.165])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id D28B460004;
-        Fri,  9 Oct 2020 20:57:44 +0000 (UTC)
-Date:   Fri, 9 Oct 2020 22:57:44 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     dinghao.liu@zju.edu.cn
-Cc:     Chen-Yu Tsai <wens@csie.org>, Kangjie Lu <kjlu@umn.edu>,
-        linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: Re: Re: [PATCH] rtc: sun6i: Fix memleak in sun6i_rtc_clk_init
-Message-ID: <20201009205744.GA849573@piout.net>
-References: <20200823075815.23457-1-dinghao.liu@zju.edu.cn>
- <CAGb2v640zTha1tzjOo3L+=T=N3hDRG+8qf2xu+bD8BMUnkhORQ@mail.gmail.com>
- <6de4a430.8e03.17429fa786d.Coremail.dinghao.liu@zju.edu.cn>
+        id S2391032AbgJIU7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 16:59:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57712 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389072AbgJIU7p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 16:59:45 -0400
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF7EE223AB
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 20:59:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602277185;
+        bh=K2FMVcPnwpnFdFTH0nWKguSV5alJGPLhcP/xaLhn8SY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=0WbDWoyJhSvlQ/9KmhcYAraUDQn9/GNW1Dgw0FK6r6Kx9ocUAq9ltOKxoWihM/jJM
+         9+PDgGyjK9I7t+Oag/P2EdOyb2jiNSR0r7uB4kouuLpmbA2wzxPexcXryPXXZBpSlp
+         STMGl7CsXcGiTdduLMw4vkXoQtfsyhpJ6E0mJsgQ=
+Received: by mail-wr1-f48.google.com with SMTP id e18so11639509wrw.9
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 13:59:44 -0700 (PDT)
+X-Gm-Message-State: AOAM533slwap3q/431/B5GyFdDGJSaFvZ5/X9oqaPUSDS7d6q1HxDZaQ
+        110+YnZgyPAZjHIDJ0GaSAW0Nj+U4wra7o4djXAUZg==
+X-Google-Smtp-Source: ABdhPJxJKqPctdujsV6zYIcj1iFFsZubnKUTdB+gOUvULrurNfsxzHCDMX9gfPQHrqmvwfwZlZHma48kDaamaiRKqbs=
+X-Received: by 2002:a05:6000:1202:: with SMTP id e2mr16591334wrx.75.1602277183196;
+ Fri, 09 Oct 2020 13:59:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6de4a430.8e03.17429fa786d.Coremail.dinghao.liu@zju.edu.cn>
+References: <cover.1602263422.git.yifeifz2@illinois.edu> <122e3e70cf775e461ebdfadb5fbb4b6813cca3dd.1602263422.git.yifeifz2@illinois.edu>
+ <CALCETrUD7z3-zL_rATzTyDUzgerOzXJHdn-hntNMG=vnX8ZF2w@mail.gmail.com> <CABqSeAS0WdkLHGMg3TRKkzsUE=JJYwY4iuBgYpdp-kLd9ASOfg@mail.gmail.com>
+In-Reply-To: <CABqSeAS0WdkLHGMg3TRKkzsUE=JJYwY4iuBgYpdp-kLd9ASOfg@mail.gmail.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Fri, 9 Oct 2020 13:59:31 -0700
+X-Gmail-Original-Message-ID: <CALCETrUcsQhYM3+y+geFNmVzscv30Rg=8P50zNtEpLBgEwf9Pg@mail.gmail.com>
+Message-ID: <CALCETrUcsQhYM3+y+geFNmVzscv30Rg=8P50zNtEpLBgEwf9Pg@mail.gmail.com>
+Subject: Re: [PATCH v4 seccomp 3/5] x86: Enable seccomp architecture tracking
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/08/2020 16:55:14+0800, dinghao.liu@zju.edu.cn wrote:
-> > On Sun, Aug 23, 2020 at 3:59 PM Dinghao Liu <dinghao.liu@zju.edu.cn> wrote:
-> > >
-> > > When clk_hw_register_fixed_rate_with_accuracy() fails,
-> > > clk_data should be freed. It's the same for the subsequent
-> > > error paths.
-> > 
-> > I suppose you should also unregister the already registered clocks
-> > in the latter two error paths?
-> > 
-> 
-> Sounds reasonable. But I find that the existing kernel code takes different
-> strategies for this case. of_sama5d4_sckc_setup() uses clk_hw_unregister() 
-> after clk_hw_register_fixed_rate_with_accuracy(), while _of_fixed_clk_setup()
-> uses clk_hw_unregister_fixed_rate(). But at91sam926x_pmc_setup() just does
-> nothing in this case.
+On Fri, Oct 9, 2020 at 11:32 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+>
+> On Fri, Oct 9, 2020 at 12:25 PM Andy Lutomirski <luto@amacapital.net> wrote:
+> > Is the idea that any syscall that's out of range for this (e.g. all of
+> > the x32 syscalls) is unoptimized?  I'm okay with this, but I think it
+> > could use a comment.
+>
+> Yes, any syscall number that is out of range is unoptimized. Where do
+> you think I should put a comment? seccomp_cache_check_allow_bitmap
+> above `if (unlikely(syscall_nr < 0 || syscall_nr >= bitmap_size))`,
+> with something like "any syscall number out of range is unoptimized"?
+>
 
-I guess you should use clk_hw_unregister_fixed_rate after
-clk_hw_register_fixed_rate_with_accuracy. clk_hw_unregister will leak
-the struct clk_fixed_rate. It doesn't matter too much for
-of_sama5d4_sckc_setup and at91sam926x_pmc_setup because if th clock
-can't be registered, the platform will not boot.
+I was imagining a comment near the new macros explaining that this is
+the range of syscalls that seccomp will optimize, that behavior is
+still correct (albeit slower) for out of range syscalls, and that x32
+is intentionally not optimized.
 
-> 
-> Also, tcon_ch1_setup() uses clk_unregister() after clk_register(), while
-> clk_register_vco_pll() just does nothing. 
-> 
-> So I'm not sure if we should register here and which unregister function to 
-> use. Would you please give me more specific advice about this problem?
-> 
-> Regards,
-> Dinghao
-
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+This avoids people like future me reading this code, not remembering
+the context, and thinking it looks buggy.
