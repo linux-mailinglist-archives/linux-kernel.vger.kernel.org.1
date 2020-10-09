@@ -2,215 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 529F6289A7F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 23:16:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BAEE289A83
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 23:18:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388906AbgJIVQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 17:16:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388506AbgJIVQN (ORCPT
+        id S2388985AbgJIVSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 17:18:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32474 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388799AbgJIVSt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 17:16:13 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69D4EC0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 14:16:13 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id u19so11681047ion.3
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 14:16:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Cj0AOr19taccvBKtxwBkDF7KCRmextTNA9u4OCHvj9Q=;
-        b=M34auMKs1ahm9/p7uy8MqFSqqP2PLqC63j1cWuQCZWPpbX6wNNNN+jxwm8y+pyRdIC
-         w1S682tD9Xbr+GEBUqWoUXSgv5RHFuhL4/Wd9y4Pa2vP38/F796ZyRCwdkJmvkBVTuan
-         qApwUd+FVK2QnEoTMQzE9ooT/IV1JqJpv0FCU=
+        Fri, 9 Oct 2020 17:18:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602278327;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3QDABfjQ7mFtWSIvWu7QzsPLKaUIpGA23N/8EAqsvcQ=;
+        b=X7ZUv9URW6d9ANq8RImpJrnQz5/YhhblDI1sVdv6seskEGy1r3u8963x8q3WiWOJEj1pkU
+        F3R9FETJ88WnIfohRXjIAC4qCDXEeFppmh9QEX2Pxnakm4tE5kiEEJoaVjnuBYK2EI9TVx
+        WE5ESu5ZKWjKaZyIEdNnEtpx/9fWbOs=
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
+ [209.85.210.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-383-gOoXApSaPC-raQTNj-OXkQ-1; Fri, 09 Oct 2020 17:18:45 -0400
+X-MC-Unique: gOoXApSaPC-raQTNj-OXkQ-1
+Received: by mail-ot1-f69.google.com with SMTP id 32so3419508ott.21
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 14:18:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Cj0AOr19taccvBKtxwBkDF7KCRmextTNA9u4OCHvj9Q=;
-        b=pEkOu0bgBsU8P08/VTuRp1hl1RJsAnF8CUKqr91xyNY6iIcFQcRGZhNNZtqFQAawzM
-         TfJztFCSRNfycgXAHtkNLO4GKfD522SkeucVawxLIagdWJiP1FlsGE0dk9Yw7YzmZI/K
-         CIxi00v33o6E8TFeLZC8N9yVqpa4ABsuziIEpix9YTg82s1S+0P7l3yAmoP72dxKgMNy
-         tIhZz7nb5TU6pa8oNVzos7eqkXkCBcUNLEuU6Rh/beAUyKq5tjZt2CSmeZd8xX49jrco
-         fiBX7Yw9eWFURD7xt23sT/ghr3PyOjclTX1B3yUbmUhFvPgP0tU1yXrXG2rf/aw0vMY0
-         n1vg==
-X-Gm-Message-State: AOAM533ZVwsZUFv/0A8epmtTfTIxjKPBLI9nNChCY0nukCJGraAaifw9
-        SvTW8x+7Vg/lUKhS3w1nNOVVQieZXh9kBK9+DbYKT6MbZR8h
-X-Google-Smtp-Source: ABdhPJxkgl4vNLERrb5Gargj+UTG7edsH7GwiClpb5zouGJfu70iqMCIbxTYFwjIxcS2AXtopjJktwQch75NBz+Jn4Q=
-X-Received: by 2002:a05:6638:2b3:: with SMTP id d19mr12269215jaq.141.1602278172649;
- Fri, 09 Oct 2020 14:16:12 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=3QDABfjQ7mFtWSIvWu7QzsPLKaUIpGA23N/8EAqsvcQ=;
+        b=ROTgNMubzCHZ3iMfqtT7QxokvytgTO6WuSvMD5W6nOI8sAcuzepknp9Jr3EUWcP3LE
+         NDFddPokfk0bTv5cte3qBtV7Jo5Dc7go8J51ZEaIx9c2IvFED4eyjrFyiCWsES4/8TVg
+         t6LpIS7bqNHWH3tPn7AkxHyCZm4OH3+cTxWiz1jnaWgunVS0rde4BSaKPez+/Gl1DVTX
+         JcpIMre5i56KX2OLUK4xsJ587R+AbuxChyLaxZQyVIBdXfn+w9b7TBWrWzdAav7O4Y4Y
+         Ab/OHRhjoptFqAtmSyTEg2dSuKSx4rW4tFRy/Tdpqp68uyV6COXQQXJQTdkjU7wS/tZp
+         r6FQ==
+X-Gm-Message-State: AOAM531E4a8fPneCmFPhqpDtdDskAFYc/AYrbwrwEalbn8TcE8ZjOWPz
+        OUEuTNXu//FRo9rteQLDwTFcGm9AaaTXPZU0P1lYCt8R+YTWGRCd6G/mW1pOwT3q05cplKclIsy
+        XrrhQ9An3CYor5gM04WqaeMua
+X-Received: by 2002:a4a:db6f:: with SMTP id o15mr10587133ood.36.1602278325010;
+        Fri, 09 Oct 2020 14:18:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzorAB0Y9J5973wxtLozHzUjB55pfvofrMrK+S93/GKeY+Sg8+RfGwWuVwOD43u+1F90CHy5Q==
+X-Received: by 2002:a4a:db6f:: with SMTP id o15mr10587111ood.36.1602278324691;
+        Fri, 09 Oct 2020 14:18:44 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id s66sm6809547oib.16.2020.10.09.14.18.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Oct 2020 14:18:44 -0700 (PDT)
+Subject: Re: [PATCH] rcutorture: remove unneeded check
+To:     paulmck@kernel.org
+Cc:     dave@stgolabs.net, josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, natechancellor@gmail.com,
+        ndesaulniers@google.com, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org, clang-built-linux@googlegroups.com
+References: <20201009194736.2364-1-trix@redhat.com>
+ <20201009201825.GL29330@paulmck-ThinkPad-P72>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <03e3eeed-6072-ccb8-a9c6-c79a99c701b8@redhat.com>
+Date:   Fri, 9 Oct 2020 14:18:41 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <1602083313-19239-2-git-send-email-guoren@kernel.org>
- <mhng-81dee5c2-f8ee-4ab5-92d7-0e46dc952e87@palmerdabbelt-glaptop1> <CAJF2gTS2fTQNYAtK=FfVHR8g49vfm7mQPe72xD+RRpa4C3T9Dw@mail.gmail.com>
-In-Reply-To: <CAJF2gTS2fTQNYAtK=FfVHR8g49vfm7mQPe72xD+RRpa4C3T9Dw@mail.gmail.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Fri, 9 Oct 2020 14:16:00 -0700
-Message-ID: <CAOnJCUKcs8quZdHDx6SZ0USbOifE1D_zeL7XaGqMr+-DuN1MwQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] riscv: Fixup static_obj() fail v2
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Palmer Dabbelt <palmerdabbelt@google.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andreas Schwab <schwab@linux-m68k.org>, aurelien@aurel32.net,
-        Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201009201825.GL29330@paulmck-ThinkPad-P72>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 8, 2020 at 6:53 PM Guo Ren <guoren@kernel.org> wrote:
+
+On 10/9/20 1:18 PM, Paul E. McKenney wrote:
+> On Fri, Oct 09, 2020 at 12:47:36PM -0700, trix@redhat.com wrote:
+>> From: Tom Rix <trix@redhat.com>
+>>
+>> clang static analysis reports this problem:
+>>
+>> rcutorture.c:1999:2: warning: Called function pointer
+>>   is null (null dereference)
+>>         cur_ops->sync(); /* Later readers see above write. */
+>>         ^~~~~~~~~~~~~~~
+>>
+>> This is a false positive triggered by an earlier, later ignored
+>> NULL check of sync() op.  By inspection of the rcu_torture_ops,
+>> the sync() op is never uninitialized.  So this earlier check is
+>> not needed.
+> You lost me on this one.  This check is at the very beginning of
+> rcu_torture_fwd_prog_nr().  Or are you saying that clang is seeing an
+> earlier check in one of rcu_torture_fwd_prog_nr()'s callers?  If so,
+> where exactly is this check?
 >
-> On Thu, Oct 8, 2020 at 11:54 AM Palmer Dabbelt <palmerdabbelt@google.com> wrote:
-> >
-> > On Wed, 07 Oct 2020 08:08:33 PDT (-0700), guoren@kernel.org wrote:
-> > > From: Guo Ren <guoren@linux.alibaba.com>
-> > >
-> > > v1 is commit: 6184358da0004c8fd940afda6c0a0fa4027dc911 which has
-> > > been reverted.
-> > >
-> > > When enable LOCKDEP, static_obj() will cause error:
-> > >
-> > > [    0.067192] INFO: trying to register non-static key.
-> > > [    0.067325] the code is fine but needs lockdep annotation.
-> > > [    0.067449] turning off the locking correctness validator.
-> > > [    0.067718] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.7.0-rc7-dirty #44
-> > > [    0.067945] Call Trace:
-> > > [    0.068369] [<ffffffe00020323c>] walk_stackframe+0x0/0xa4
-> > > [    0.068506] [<ffffffe000203422>] show_stack+0x2a/0x34
-> > > [    0.068631] [<ffffffe000521e4e>] dump_stack+0x94/0xca
-> > > [    0.068757] [<ffffffe000255a4e>] register_lock_class+0x5b8/0x5bc
-> > > [    0.068969] [<ffffffe000255abe>] __lock_acquire+0x6c/0x1d5c
-> > > [    0.069101] [<ffffffe0002550fe>] lock_acquire+0xae/0x312
-> > > [    0.069228] [<ffffffe000989a8e>] _raw_spin_lock_irqsave+0x40/0x5a
-> > > [    0.069357] [<ffffffe000247c64>] complete+0x1e/0x50
-> > > [    0.069479] [<ffffffe000984c38>] rest_init+0x1b0/0x28a
-> > > [    0.069660] [<ffffffe0000016a2>] 0xffffffe0000016a2
-> > > [    0.069779] [<ffffffe000001b84>] 0xffffffe000001b84
-> > > [    0.069953] [<ffffffe000001092>] 0xffffffe000001092
-> > >
-> > > Because some __initdata static variables is before _stext:
-> > >
-> > > static int static_obj(const void *obj)
-> > > {
-> > >         unsigned long start = (unsigned long) &_stext,
-> > >                       end   = (unsigned long) &_end,
-> > >                       addr  = (unsigned long) obj;
-> > >
-> > >         /*
-> > >          * static variable?
-> > >          */
-> > >         if ((addr >= start) && (addr < end))
-> > >                 return 1;
-> > >
-> > >       if (arch_is_kernel_data(addr))
-> > >               return 1;
-> > >
-> > > We could implement arch_is_kernel_data to fixup it.
-> > >
-> > > Link: https://lore.kernel.org/linux-riscv/1593266228-61125-1-git-send-email-guoren@kernel.org/T/#t
-> > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > > Reported-by: Aurelien Jarno <aurelien@aurel32.net>
-> > > Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-> > > Cc: Atish Patra <atishp@atishpatra.org>
-> > > Cc: Andreas Schwab <schwab@linux-m68k.org>
-> > > Cc: Aurelien Jarno <aurelien@aurel32.net>
-> > > ---
-> > >  arch/riscv/include/asm/sections.h | 20 ++++++++++++++++++++
-> > >  arch/riscv/kernel/setup.c         |  9 +++++++++
-> > >  2 files changed, 29 insertions(+)
-> > >  create mode 100644 arch/riscv/include/asm/sections.h
-> > >
-> > > diff --git a/arch/riscv/include/asm/sections.h b/arch/riscv/include/asm/sections.h
-> > > new file mode 100644
-> > > index 00000000..2317b9e
-> > > --- /dev/null
-> > > +++ b/arch/riscv/include/asm/sections.h
-> > > @@ -0,0 +1,20 @@
-> > > +/* SPDX-License-Identifier: GPL-2.0-only */
-> > > +
-> > > +#ifndef _ASM_RISCV_SECTIONS_H
-> > > +#define _ASM_RISCV_SECTIONS_H
-> > > +
-> > > +#define arch_is_kernel_data arch_is_kernel_data
-> > > +
-> > > +#include <asm-generic/sections.h>
-> > > +
-> > > +extern bool init_mem_is_free;
-> > > +
-> > > +static inline int arch_is_kernel_data(unsigned long addr)
-> > > +{
-> > > +     if (init_mem_is_free)
-> > > +             return 0;
-> > > +
-> > > +     return addr >= (unsigned long)__init_begin &&
-> > > +             addr < (unsigned long)__init_end;
-> > > +}
-> > > +#endif /* _ASM_RISCV_SECTIONS_H */
-> > > diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
-> > > index 2c6dd32..9ebd5eb4 100644
-> > > --- a/arch/riscv/kernel/setup.c
-> > > +++ b/arch/riscv/kernel/setup.c
-> > > @@ -17,6 +17,7 @@
-> > >  #include <linux/sched/task.h>
-> > >  #include <linux/swiotlb.h>
-> > >  #include <linux/smp.h>
-> > > +#include <linux/poison.h>
-> > >
-> > >  #include <asm/cpu_ops.h>
-> > >  #include <asm/setup.h>
-> > > @@ -112,3 +113,11 @@ static int __init topology_init(void)
-> > >       return 0;
-> > >  }
-> > >  subsys_initcall(topology_init);
-> > > +
-> > > +bool init_mem_is_free = false;
-> > > +
-> > > +void free_initmem(void)
-> > > +{
-> > > +     free_initmem_default(POISON_FREE_INITMEM);
-> > > +     init_mem_is_free = true;
-> > > +}
-> >
-> > I'm a bit confused as to what you're trying to do here.  Yesterday I got
-> > another version of this patch set that moves init data around, today a
-> > different one.  Yesterday's is tested and simpler, and given it's so late in
-> > the process I'm inclined to take that as I don't want to break anything.
-> >
-> > Right now I have
-> >
-> > 84814460eef9 ("riscv: Fixup bootup failure with HARDENED_USERCOPY")
-> > a78c6f5956a9 ("RISC-V: Make sure memblock reserves the memory containing DT")
-> > 549738f15da0 ("Linux 5.9-rc8")
-> >
-> > Unless there's some functional bug, that's what I'm going to send out for 5.9
-> > -- I'm not all that worried about lacking the ability to free init data.  The
-> > above seems like fine 5.10 material.
-> >
-> > Let me know if I'm missing something here.
-> 84814460eef9 could resolve the problem and Atish ask for any other
-> idea? So It's another choice, I forgot RFC in prefix.
+> In any case, the check is needed because all three functions are invoked
+> if there is a self-propagating RCU callback that ensures that there is
+> always an RCU grace period outstanding.
 >
-
-I prefer this fix as it is cleaner and doesn't waste memory. I have
-sent another series
-on top of this fix, that addresses the init section protections we
-talked about. All of these are definitely
-next merge window material.
-
-> 6184358da0004c8fd940afda6c0a0fa4027dc911("riscv: Fixup static_obj()
-> fail") is a sloppy patch that introduces another problem. Sorry about
-> that.
+> Ah.  Is clang doing local analysis and assuming that because there was
+> a NULL check earlier, then the pointer might be NULL later?  That does
+> not seem to me to be a sound check.
 >
-> --
-> Best Regards
->  Guo Ren
+> So please let me know exactly what is causing clang to emit this
+> diagnostic.  It might or might not be worth fixing this, but either way
+> I need to understand the situation so as to be able to understand the
+> set of feasible fixes.
 >
-> ML: https://lore.kernel.org/linux-csky/
+> 						Thanx, Paul
 
+In rcu_prog_nr() there is check for for sync.
 
+if ( ... cur_op->sync ...
 
--- 
-Regards,
-Atish
+   do something
+
+This flags in clang's static analyzer as 'could be null'
+
+later in the function, in a reachable block it is used
+
+cur_ops->sync()
+
+I agree this is not a good check that's why i said is was a false positive.
+
+However when looking closer at how cur_ops is set, it is never uninitialized.
+
+So the check is not needed.
+
+This is not a fix, the code works fine.  It is a small optimization.
+
+Tom
+
+>
+>> Signed-off-by: Tom Rix <trix@redhat.com>
+>> ---
+>>  kernel/rcu/rcutorture.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+>> index beba9e7963c8..6efc03a1d623 100644
+>> --- a/kernel/rcu/rcutorture.c
+>> +++ b/kernel/rcu/rcutorture.c
+>> @@ -1989,7 +1989,7 @@ static void rcu_torture_fwd_prog_nr(struct rcu_fwd *rfp,
+>>  	unsigned long stopat;
+>>  	static DEFINE_TORTURE_RANDOM(trs);
+>>  
+>> -	if  (cur_ops->call && cur_ops->sync && cur_ops->cb_barrier) {
+>> +	if  (cur_ops->call && cur_ops->cb_barrier) {
+>>  		init_rcu_head_on_stack(&fcs.rh);
+>>  		selfpropcb = true;
+>>  	}
+>> -- 
+>> 2.18.1
+>>
+
