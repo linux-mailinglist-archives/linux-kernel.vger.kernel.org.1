@@ -2,96 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0143328851B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:21:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F7E928851E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 10:21:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732730AbgJIIVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 04:21:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732547AbgJIIVD (ORCPT
+        id S1732740AbgJIIVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 04:21:51 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:55756 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732337AbgJIIVu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 04:21:03 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42D7AC0613D4
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 01:21:01 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id l2so9827089lfk.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 01:21:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=F1p8lcOc9v2xuW4LU+iaVDSBE7WFr+KfWRzRc7BHXDY=;
-        b=rpDXXyrrfosFnOf9GTHHzweLt53ZXhelBHex63dDvXuyFC6LtW66pMvLqsySf0OiyO
-         E5cy/Lj+6gmXH9WO977BftnM6y7dhe1vKqjMzA5y4pBVhTIHlPFDO13FqPitr0azQLIH
-         Lt/Q0kh79IFMwPkL5mzpPO8WeUFNwQtlKP7gNYX3MVI8lgl5tOWDxYP6SMzKQW/HPQuH
-         venyEaLYu8uNd//s38EEhyEmgpEFWcjnuHSaDHtRIFNbdzwzEbPHTIHYAv9ZF3bk7mJ7
-         pqXqiwfM6kJF1eCZygDVmIFThuGTzXzpP8UDF91gaAPeELK92fKxKcUZab/+qLF88HhC
-         FzhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=F1p8lcOc9v2xuW4LU+iaVDSBE7WFr+KfWRzRc7BHXDY=;
-        b=Ta4VN4mCVURUzZRfn0tETRQKeMxtcwAcvaEliq70/2YYO9fAaPs9+Wn4aedqBw3BW4
-         DRRC/9OZg1mraZVzgmdG7NK9MEB284V1HJMQiMDDWJzoQoJe05CZI5xl8q60GAPFgt/O
-         /YM6V43lJ6woqpSiMoPN5/P+ysqRJOz1Jeor1ASh5Mt33JgNoNkjrH7prAToaskwe9+e
-         lJMyBBh6F1xQa/vDdj7SVVCXpvX4qoRWbeHQJZLWs8Nn+FseZrZp/XIwTBu0kOKX7SVK
-         SpEMni93sLxUeCSjKvEiHDYnMvZSVj3LO+wGXj6f2Uhz0FZ9AVPGF/GLboMV7OZ43Psx
-         XN5g==
-X-Gm-Message-State: AOAM532XsuBSqXOCNX0R29r3vzwAnX5AQaP0h4BuwavPqv/dvckIAy3E
-        AAYfkZCBJil7ElqRw77tKs6CUT4SjQzzVVxsuFsWd/2wg19IJZCi
-X-Google-Smtp-Source: ABdhPJyumXXapH+JIFNDv3e4VC/Q+k+gafCJclzodbwPI9k7n4hYPERxQB8VpDRb3NOqvCj1uvycDHT2MOa8bwTF5gY=
-X-Received: by 2002:a19:824f:: with SMTP id e76mr2494555lfd.572.1602231659591;
- Fri, 09 Oct 2020 01:20:59 -0700 (PDT)
+        Fri, 9 Oct 2020 04:21:50 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id A9C211C0B88; Fri,  9 Oct 2020 10:21:48 +0200 (CEST)
+Date:   Fri, 9 Oct 2020 10:21:47 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Pavel Machek <pavel@denx.de>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
+        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
+        luto@kernel.org, nhorman@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
+        mikko.ylinen@intel.com
+Subject: Re: [PATCH v39 11/24] x86/sgx: Add SGX enclave driver
+Message-ID: <20201009082146.GA15188@amd>
+References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
+ <20201003045059.665934-12-jarkko.sakkinen@linux.intel.com>
+ <20201003143925.GB800720@kroah.com>
+ <20201009071045.GA10335@amd>
+ <20201009072141.GA12545@kroah.com>
 MIME-Version: 1.0
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 9 Oct 2020 10:20:48 +0200
-Message-ID: <CACRpkdYLfx9qRb1hHi=u+hLxzYE=0aku+_8-KwYocHmPowMZbQ@mail.gmail.com>
-Subject: [GIT PULL] late GPIO fixes for v5.9
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="5mCyUwZo2JvN/JJP"
+Content-Disposition: inline
+In-Reply-To: <20201009072141.GA12545@kroah.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-some two late GPIO fixes: one IRQ issue and one compilation
-issue for UML.
+--5mCyUwZo2JvN/JJP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Please pull them in!
+On Fri 2020-10-09 09:21:41, Greg KH wrote:
+> On Fri, Oct 09, 2020 at 09:10:45AM +0200, Pavel Machek wrote:
+> > Hi!
+> >=20
+> > > > new file mode 100644
+> > > > index 000000000000..f54da5f19c2b
+> > > > --- /dev/null
+> > > > +++ b/arch/x86/kernel/cpu/sgx/driver.c
+> > > > @@ -0,0 +1,173 @@
+> > > > +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
+> > >=20
+> > > You use gpl-only header files in this file, so how in the world can it
+> > > be bsd-3 licensed?
+> > >=20
+> > > Please get your legal department to agree with this, after you explain
+> > > to them how you are mixing gpl2-only code in with this file.
+> >=20
+> > This specifies license of driver.c, not of the headers included. Are
+> > you saying that it is impossible to have a kernel driver with anything
+> > else than GPL-2? That would be news to many, and that's not what
+> > current consensus is.
+>=20
+> If you want to write any non-GPL-2-only kernel code, you had better be
+> consulting your lawyers and get very explicit instructions on how to do
+> this in a way that does not violate any licenses.
+>=20
+> I am not a lawyer, and will not be giving you any such advice, as I
+> think it's not something that people should be doing.
 
-Yours,
-Linus Walleij
+You are pushing view that is well outside accepted community
+consensus, then try to hide it by claiming that you are not a lawyer.
 
-The following changes since commit 549738f15da0e5a00275977623be199fbbf7df50:
+Stop it.
 
-  Linux 5.9-rc8 (2020-10-04 16:04:34 -0700)
+Dual licensed drivers are common in the kernel, and are considered
+okay by everyone but you. Author is free to select license for his
+work.
 
-are available in the Git repository at:
+								Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-gpio.git
-tags/gpio-v5.9-3
+--5mCyUwZo2JvN/JJP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-for you to fetch changes up to 8b81edd80baf12d64420daff1759380aa9a14998:
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
-  gpio: pca953x: Survive spurious interrupts (2020-10-07 11:47:41 +0200)
+iEYEARECAAYFAl+AHZoACgkQMOfwapXb+vKOjACgl9a8pvMx5bpSZjOeW06bWO7I
+Z6oAniRaZ5xNHGC/MQ/hB3c/rW5oYhGI
+=jELf
+-----END PGP SIGNATURE-----
 
-----------------------------------------------------------------
-Some late fixes for the v5.9 kernel:
-
-- Fix a compilation issue with User Mode Linux.
-
-- Handle spurious interrupts properly in the PCA953x driver.
-
-----------------------------------------------------------------
-Andy Shevchenko (1):
-      gpiolib: Disable compat ->read() code in UML case
-
-Marc Zyngier (1):
-      gpio: pca953x: Survive spurious interrupts
-
- drivers/gpio/gpio-pca953x.c | 17 +++++++++++++++--
- drivers/gpio/gpiolib-cdev.c |  2 +-
- 2 files changed, 16 insertions(+), 3 deletions(-)
+--5mCyUwZo2JvN/JJP--
