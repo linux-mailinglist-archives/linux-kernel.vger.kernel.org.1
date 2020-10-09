@@ -2,94 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D9F5288BBB
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:43:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49534288BBF
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388913AbgJIOng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 10:43:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59468 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388812AbgJIOng (ORCPT
+        id S2389028AbgJIOnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 10:43:45 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:35681 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387662AbgJIOno (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 10:43:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602254615;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2YtzdHcUrgnGAZg77pGxmadi1QZznT8bseJbL6oBoTA=;
-        b=Bca5jZRU+n3uZsy6/2R9NB+DznscqeO1eKaJ6cmTWQpa3zdTzSaRdALwpn/rCRALyY0DJC
-        ttPRZZ4Q9Cn6RQGghwfpdWGV37qj6eR7R4nrmT9newJOALq1QAudb36cMUoJnvp7VOyZ3k
-        4ZlH/lxoHgPUJLvxFvtUCC/RRIjiaGk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-281-oHku6ZAIMKCXoavSg-EiLg-1; Fri, 09 Oct 2020 10:43:33 -0400
-X-MC-Unique: oHku6ZAIMKCXoavSg-EiLg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0123D80401F;
-        Fri,  9 Oct 2020 14:43:32 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.195.138])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 6B3656EF75;
-        Fri,  9 Oct 2020 14:43:30 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Fri,  9 Oct 2020 16:43:31 +0200 (CEST)
-Date:   Fri, 9 Oct 2020 16:43:29 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-        peterz@infradead.org, tglx@linutronix.de
-Subject: Re: [PATCH 3/4] kernel: add support for TIF_NOTIFY_SIGNAL
-Message-ID: <20201009144328.GB14523@redhat.com>
-References: <20201008152752.218889-1-axboe@kernel.dk>
- <20201008152752.218889-4-axboe@kernel.dk>
+        Fri, 9 Oct 2020 10:43:44 -0400
+Received: by mail-ot1-f67.google.com with SMTP id s66so9219529otb.2;
+        Fri, 09 Oct 2020 07:43:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dOsE09lqg8xfhaENVLTYfHrMNxg+wDtzzAMabberaGg=;
+        b=VDhQGQRin/BrFzeeqiFlp3ngq1mJ+4w2r0WzxIzsarigXYVTfMFo+oBuITWTuonSXH
+         C+lt8RgC74NdvgotKPUx4OLfXXJRHVUet9ube7LEUbjeqtr8iJrmlSue+XNWtkTgdZao
+         uMCZYlsIGxJ42WY7y3m+I7FzXJX6JYbHB+cqABBUu0ApIoxtdouBbWiXbcqNCjvOgq5j
+         tmw7OqthIpW+oeL0Oyl3fFpjapwasUIaMKH2Hi7gxDOJUQ8dkhdh5oUEi3ZHDyvdcS5M
+         XrRG1gwazp4Qm3T2J/dZ8ADhG6PE6qAS0efg10GkwangXU2GToPwN437S/LpSgJi+zzb
+         nW3Q==
+X-Gm-Message-State: AOAM530rMxoYmNsnVcg5uxsfXjfDfBOw5SZvOGM3Rq1/4N2q+9Xc8nq9
+        lTCVeW2U26TR27aoYmkjymvznVOET8b1
+X-Google-Smtp-Source: ABdhPJzObzDE04JdzjIoWiLq5wi7qtxuGZGqWS590nHGfuia4F0wRI98fv8oDheNIT007JEFjKtwyA==
+X-Received: by 2002:a9d:6847:: with SMTP id c7mr8586668oto.134.1602254623404;
+        Fri, 09 Oct 2020 07:43:43 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 8sm7456921oii.45.2020.10.09.07.43.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Oct 2020 07:43:42 -0700 (PDT)
+Received: (nullmailer pid 4128777 invoked by uid 1000);
+        Fri, 09 Oct 2020 14:43:42 -0000
+Date:   Fri, 9 Oct 2020 09:43:42 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Mike Looijmans <mike.looijmans@topic.nl>
+Cc:     linux-gpio@vger.kernel.org, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, devicetree@vger.kernel.org
+Subject: Re: [PATCH v3] dt-bindings: gpio: pca953x: Add support for the NXP
+ PCAL9554B/C
+Message-ID: <20201009144342.GA4128628@bogus>
+References: <20201009060302.6220-1-mike.looijmans@topic.nl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201008152752.218889-4-axboe@kernel.dk>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20201009060302.6220-1-mike.looijmans@topic.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Once again, I am fine with this patch, just a minor comment...
-
-On 10/08, Jens Axboe wrote:
->
-> --- a/arch/x86/kernel/signal.c
-> +++ b/arch/x86/kernel/signal.c
-> @@ -808,7 +808,10 @@ void arch_do_signal(struct pt_regs *regs)
->  {
->  	struct ksignal ksig;
->
-> -	if (get_signal(&ksig)) {
-> +	if (test_thread_flag(TIF_NOTIFY_SIGNAL))
-> +		tracehook_notify_signal();
-> +
-> +	if (task_sigpending(current) && get_signal(&ksig)) {
-
-I suggested to change arch_do_signal() because somehow I like it this way ;)
-
-And because we can easily pass the "ti_work" mask to arch_do_signal() and
-avoid test_thread_flag/task_sigpending.
-
-Hmm. I just noticed that only x86 uses arch_do_signal(), so perhaps you can
-add this change to this patch right now? Up to you.
+On Fri, 09 Oct 2020 08:03:02 +0200, Mike Looijmans wrote:
+> The NXP PCAL9554B is a variant of the PCA953x GPIO expander,
+> with 8 GPIOs, latched interrupts and some advanced configuration
+> options. The "C" version only differs in I2C address.
+> 
+> This adds the entry to the devicetree bindings.
+> 
+> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
+> ---
+> v2: Split devicetree and code into separate patches
+> v3: Devicetree bindings in yaml format
+> 
+>  Documentation/devicetree/bindings/gpio/gpio-pca95xx.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
 
+Please add Acked-by/Reviewed-by tags when posting new versions. However,
+there's no need to repost patches *only* to add the tags. The upstream
+maintainer will do that for acks received on the version they apply.
 
-On the other hand, we could add
-
-	if (test_thread_flag(TIF_NOTIFY_SIGNAL))
-		tracehook_notify_signal();
-
-	if (!task_sigpending(current))
-		return 0;
-
-at the start of get_signal() instead. Somehow I don't really like this, but
-this way we do need less changes in arch-dependant code. Again, up to you.
-
-Oleg.
+If a tag was not added on purpose, please state why and what changed.
 
