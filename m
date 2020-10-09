@@ -2,95 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 107DA2880FF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 06:05:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3070288104
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 06:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726468AbgJIEFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 00:05:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35510 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725978AbgJIEFo (ORCPT
+        id S1727109AbgJIEHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 00:07:09 -0400
+Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:17364 "EHLO
+        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725900AbgJIEHI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 00:05:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602216343;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0LJZLfN1evxEALdYZ+iKwkAO+jzveYCVlDmJws2G9/M=;
-        b=gshiYZyB/VenNcMmQITYFdsQHpyK09ZlZvlZ0Y8oFLOHQrdQoKbw09oOBZonaMNqA7phY+
-        kBEQ2tb+O0ASjV0iUKdtfC1fdi4c5VldfGnKdoYoWEyVPW97pSC37mg3XVRNAB0SXY7Mra
-        OWTguRg+7tG8tGFjNHHe8/mnQb8PA74=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-456-xglw9SF9NZWwo7f1JWlwBg-1; Fri, 09 Oct 2020 00:05:39 -0400
-X-MC-Unique: xglw9SF9NZWwo7f1JWlwBg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 299D457083;
-        Fri,  9 Oct 2020 04:05:37 +0000 (UTC)
-Received: from T590 (ovpn-13-88.pek2.redhat.com [10.72.13.88])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 851FC10013C1;
-        Fri,  9 Oct 2020 04:05:29 +0000 (UTC)
-Date:   Fri, 9 Oct 2020 12:05:25 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     syzbot <syzbot+fd15ff734dace9e16437@syzkaller.appspotmail.com>,
-        bcrl@kvack.org, hch@lst.de, linux-aio@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tj@kernel.org,
-        viro@zeniv.linux.org.uk, vkabatov@redhat.com
-Subject: Re: general protection fault in percpu_ref_exit
-Message-ID: <20201009040525.GB27356@T590>
-References: <000000000000b1412b05b12eab0a@google.com>
- <165db20c-bfc5-fca8-1ecf-45d85ea5d9e2@kernel.dk>
+        Fri, 9 Oct 2020 00:07:08 -0400
+Received: from pps.filterd (m0150242.ppops.net [127.0.0.1])
+        by mx0a-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09943Abs011829;
+        Fri, 9 Oct 2020 04:05:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pps0720; bh=8lY9zHD49arnbGH+DnXZD8UONONwPBRNxpxm5YDmoBs=;
+ b=mad81/sU/ekKeERRsRj44WBUbLy+TKr0V4ien5YB/gZdvLfHR3B3+QznIBYid9IN1man
+ 3D3tgGBbG1pQscQDfMrMDE1dGuJiF8ibSBTMe+1gCPzf3YxNj6ZBpOZuGjAJc5HR7gO5
+ hLEnt473Ze8kZKoUAGybFtmU9uq1tA4YBWGqrMdvOfYqJJqvuFcES5Gurw9P+ND2+OOl
+ o7jYuQms/YbqXh2vPkPoY7/q8ZseGepfYxM34yTcfC1r5Uq32cJiPWRx0LpZsivW+s+Z
+ zOeUcl7e4CZcN1VMROpbFrfD9xxko2o9BMxYjbHoMpKU9Ix6C47J+sMWesptBQvwA2bL Gg== 
+Received: from g4t3427.houston.hpe.com (g4t3427.houston.hpe.com [15.241.140.73])
+        by mx0a-002e3701.pphosted.com with ESMTP id 342ekq0pxh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 09 Oct 2020 04:05:58 +0000
+Received: from g4t3433.houston.hpecorp.net (g4t3433.houston.hpecorp.net [16.208.49.245])
+        by g4t3427.houston.hpe.com (Postfix) with ESMTP id 5D4D566;
+        Fri,  9 Oct 2020 04:05:57 +0000 (UTC)
+Received: from sarge.linuxathome.me (unknown [16.29.167.198])
+        by g4t3433.houston.hpecorp.net (Postfix) with ESMTP id 6F43B45;
+        Fri,  9 Oct 2020 04:05:55 +0000 (UTC)
+Date:   Fri, 9 Oct 2020 05:05:54 +0100
+From:   Hedi Berriche <hedi.berriche@hpe.com>
+To:     "Raj, Ashok" <ashok.raj@intel.com>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Russ Anderson <rja@hpe.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Joerg Roedel <jroedel@suse.com>, stable@kernel.org
+Subject: Re: [PATCH v1 1/1] PCI/ERR: don't clobber status after reset_link()
+Message-ID: <20201009040554.GB2365427@sarge.linuxathome.me>
+Mail-Followup-To: "Raj, Ashok" <ashok.raj@intel.com>,
+        Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Russ Anderson <rja@hpe.com>, Bjorn Helgaas <bhelgaas@google.com>,
+        Joerg Roedel <jroedel@suse.com>, stable@kernel.org
+References: <20201009025251.2360659-1-hedi.berriche@hpe.com>
+ <20201009034614.GB60852@otc-nc-03>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Disposition: inline
-In-Reply-To: <165db20c-bfc5-fca8-1ecf-45d85ea5d9e2@kernel.dk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20201009034614.GB60852@otc-nc-03>
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-09_01:2020-10-09,2020-10-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ suspectscore=1 clxscore=1015 impostorscore=0 mlxlogscore=999
+ lowpriorityscore=0 priorityscore=1501 adultscore=0 spamscore=0
+ phishscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010090027
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 07:23:02PM -0600, Jens Axboe wrote:
-> On 10/8/20 2:28 PM, syzbot wrote:
-> > syzbot has bisected this issue to:
-> > 
-> > commit 2b0d3d3e4fcfb19d10f9a82910b8f0f05c56ee3e
-> > Author: Ming Lei <ming.lei@redhat.com>
-> > Date:   Thu Oct 1 15:48:41 2020 +0000
-> > 
-> >     percpu_ref: reduce memory footprint of percpu_ref in fast path
-> > 
-> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=126930d0500000
-> > start commit:   8b787da7 Add linux-next specific files for 20201007
-> > git tree:       linux-next
-> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=116930d0500000
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=166930d0500000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=aac055e9c8fbd2b8
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=fd15ff734dace9e16437
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=119a0568500000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=106c0a8b900000
-> > 
-> > Reported-by: syzbot+fd15ff734dace9e16437@syzkaller.appspotmail.com
-> > Fixes: 2b0d3d3e4fcf ("percpu_ref: reduce memory footprint of percpu_ref in fast path")
-> > 
-> > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-> 
-> Ming, this looks like a call of percpu_ref_exit() on a zeroed refs (that
-> hasn't been initialized). Really a caller error imho, but might make sense
-> to be a bit safer there.
+On Fri, Oct 09, 2020 at 04:46 Raj, Ashok wrote:
 
-Hello Jens,
+Hi Ashok,
 
-The fix is sent out as:
+Thanks for looking into this.
 
-https://lore.kernel.org/linux-block/20201009040356.43802-1-ming.lei@redhat.com/T/#u
+>On Fri, Oct 09, 2020 at 03:52:51AM +0100, Hedi Berriche wrote:
+>> Commit 6d2c89441571 ("PCI/ERR: Update error status after reset_link()")
+>> changed pcie_do_recovery() so that status is updated with the return
+>> value from reset_link(); this was to fix the problem where we would
+>> wrongly report recovery failure, despite a successful reset_link(),
+>> whenever the initial error status is PCI_ERS_RESULT_DISCONNECT or
+>> PCI_ERS_RESULT_NO_AER_DRIVER.
+>>
+>> Unfortunately this breaks the flow of pcie_do_recovery() as it prevents
+>
+>What is the reference to "this breaks" above?
 
-Sorry for making the trouble.
+The code change introduced by commit 6d2c89441571; would
 
-Thanks,
-Ming
+     "this code change" instead of "this breaks"
 
+work better? If not, I can also rephrase the whole paragraph along the following lines:
+
+Commit 6d2c89441571 ("PCI/ERR: Update error status after reset_link()") breaks the flow
+of pcie_do_recovery() as it prevents the actions needed when the initial error is
+PCI_ERS_RESULT_CAN_RECOVER or PCI_ERS_RESULT_NEED_RESET from taking place which causes
+error recovery to fail.
+
+... and do away with the first paragraph.
+
+>> the actions needed when the initial error is PCI_ERS_RESULT_CAN_RECOVER
+>> or PCI_ERS_RESULT_NEED_RESET from taking place which causes error
+>> recovery to fail.
+>>
+>> Don't clobber status after reset_link() to restore the intended flow in
+>> pcie_do_recovery().
+>>
+>> Fix the original problem by saving the return value from reset_link()
+>> and use it later on to decide whether error recovery should be deemed
+>> successful in the scenarios where the initial error status is
+>> PCI_ERS_RESULT_{DISCONNECT,NO_AER_DRIVER}.
+>
+>I would rather rephrase the above to make it clear what is being proposed.
+>Since the description seems to talk about the old problem and new solution
+>all mixed up.
+
+OK; will do that to clarify that what's being proposed here is:
+
+     1. fix the regression introduced by commit 6d2c89441571
+     2. address the problem that commit 6d2c89441571 aimed to fix
+
+>> Fixes: 6d2c89441571 ("PCI/ERR: Update error status after reset_link()")
+>> Signed-off-by: Hedi Berriche <hedi.berriche@hpe.com>
+>> Cc: Russ Anderson <rja@hpe.com>
+>> Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>> Cc: Bjorn Helgaas <bhelgaas@google.com>
+>> Cc: Ashok Raj <ashok.raj@intel.com>
+>> Cc: Keith Busch <keith.busch@intel.com>
+>> Cc: Joerg Roedel <jroedel@suse.com>
+>>
+>> Cc: stable@kernel.org # v5.7+
+>> ---
+>>  drivers/pci/pcie/err.c | 13 ++++++++++---
+>>  1 file changed, 10 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+>> index c543f419d8f9..dbd0b56bd6c1 100644
+>> --- a/drivers/pci/pcie/err.c
+>> +++ b/drivers/pci/pcie/err.c
+>> @@ -150,7 +150,7 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>>  			pci_channel_state_t state,
+>>  			pci_ers_result_t (*reset_link)(struct pci_dev *pdev))
+>>  {
+>> -	pci_ers_result_t status = PCI_ERS_RESULT_CAN_RECOVER;
+>> +	pci_ers_result_t post_reset_status, status = PCI_ERS_RESULT_CAN_RECOVER;
+>
+>why call it post_reset_status?
+
+Perhaps post_reset_status is not a great choice; would reset_result or reset_link_result be better?
+
+Cheers,
+Hedi.
+
+>
+>>  	struct pci_bus *bus;
+>>
+>>  	/*
+>> @@ -165,8 +165,8 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>>  	pci_dbg(dev, "broadcast error_detected message\n");
+>>  	if (state == pci_channel_io_frozen) {
+>>  		pci_walk_bus(bus, report_frozen_detected, &status);
+>> -		status = reset_link(dev);
+>> -		if (status != PCI_ERS_RESULT_RECOVERED) {
+>> +		post_reset_status = reset_link(dev);
+>> +		if (post_reset_status != PCI_ERS_RESULT_RECOVERED) {
+>>  			pci_warn(dev, "link reset failed\n");
+>>  			goto failed;
+>>  		}
+>> @@ -174,6 +174,13 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>>  		pci_walk_bus(bus, report_normal_detected, &status);
+>>  	}
+>>
+>> +	if ((status == PCI_ERS_RESULT_DISCONNECT ||
+>> +	     status == PCI_ERS_RESULT_NO_AER_DRIVER) &&
+>> +	     post_reset_status == PCI_ERS_RESULT_RECOVERED) {
+>> +		/* error recovery succeeded thanks to reset_link() */
+>> +		status = PCI_ERS_RESULT_RECOVERED;
+>> +	}
+>> +
+>>  	if (status == PCI_ERS_RESULT_CAN_RECOVER) {
+>>  		status = PCI_ERS_RESULT_RECOVERED;
+>>  		pci_dbg(dev, "broadcast mmio_enabled message\n");
+>> --
+>> 2.28.0
+>>
+
+-- 
+Be careful of reading health books, you might die of a misprint.
+	-- Mark Twain
