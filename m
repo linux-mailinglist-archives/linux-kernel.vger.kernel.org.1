@@ -2,152 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB1CC289C09
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 01:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91FAB289C0C
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 01:14:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726164AbgJIXNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 19:13:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725966AbgJIXNr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 19:13:47 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D52C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 16:13:46 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id a200so8093260pfa.10
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 16:13:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=R6gKWk0XgYJ+bRnJwNiMBZzjtd7hCRQG5lPlBLNpIXg=;
-        b=SvBHuBUELCUejxiMecoCCc4s6g/H5gNRiExeY5Is+T+5LzTbZxIEgmCj9P6gp9rWzN
-         /kVobTkY+otVFfZ6XhrktP3GuZVzkcodQU4FnXs464qkoOVPELG4L9FfHo1yk42cjJk5
-         EnMK8Oympvig2CRehaT+Oium1B2tLhdyhCa3Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=R6gKWk0XgYJ+bRnJwNiMBZzjtd7hCRQG5lPlBLNpIXg=;
-        b=eG69nurM/XcB3nm8Hl5mn/CFdrSMqd2VLlw4X9vrbEnYz7asnxTpguwUeJUJQgcDbZ
-         rwAJK/wBKBDZjCZtq9/9SDWTYfAarJKs1N/JcrdfVmDdW0HCXzfkgx5Owl7FvoCjZrtr
-         n5+ye+ZW7Gpk8RQiVrVnloN6A6ZRyN4namAMwQq5GN8cMAA6r92zD84/K7QAvXu5FpMK
-         nfTD9SSWki4tacvKuQ67zEfvaUABkeyXLLIF+1dL1rE920NjCVEEAYR5Zt3lGi9f1Ph6
-         GhGz3iYuFf5NbuKRk+QrZBepkqajexZfPLAHwRS60xYe9kbZljA6cRgVTdhBHnv5T4IR
-         ayJQ==
-X-Gm-Message-State: AOAM530IqFqLgUmfZh70pNuR15uwbbQD20G1sitRHUoPtSiYCS8TDc0W
-        nfNLq9zFUw+ss+fKvB7gf84hkA==
-X-Google-Smtp-Source: ABdhPJzy8dpSt4depYawxqjmWVuoIHMAgsxXHG0jJxI96tFDpbhg+3/cQEJxcqVr55/jRvbazfFHrQ==
-X-Received: by 2002:a63:dd4e:: with SMTP id g14mr5038012pgj.44.1602285226319;
-        Fri, 09 Oct 2020 16:13:46 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
-        by smtp.gmail.com with ESMTPSA id y5sm13316996pge.62.2020.10.09.16.13.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Oct 2020 16:13:45 -0700 (PDT)
-Date:   Fri, 9 Oct 2020 16:13:43 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Doug Anderson <dianders@chromium.org>,
-        Rob Herring <robh@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Peter Chen <peter.chen@nxp.com>
-Subject: Re: [PATCH v4 1/2] dt-bindings: usb: Add binding for discrete
- onboard USB hubs
-Message-ID: <20201009231343.GC1292413@google.com>
-References: <20201006192536.GB191572@google.com>
- <20201007010023.GA438733@rowland.harvard.edu>
- <20201007160336.GA620323@google.com>
- <20201007163838.GA457977@rowland.harvard.edu>
- <20201007172847.GB620323@google.com>
- <20201007192542.GA468921@rowland.harvard.edu>
- <20201007194229.GC620323@google.com>
- <20201007201732.GE468921@rowland.harvard.edu>
- <20201007214226.GA669360@google.com>
- <20201008140927.GB495091@rowland.harvard.edu>
+        id S1726410AbgJIXON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 19:14:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51268 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726000AbgJIXOM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 19:14:12 -0400
+Received: from localhost (unknown [176.164.200.234])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5EA0D222EB;
+        Fri,  9 Oct 2020 23:14:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602285251;
+        bh=l2U6CjZx9TygARxZeTvKgdT2J+ZVJfnAffaUI+8Mcl0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BkWm7XSkhPu3t6TfNTM6e+Ps02BvK52EEcJneG+zNGknefoB4ktuGpByNQ4EFzcEw
+         KFpIq3nrbL3zaS/TXM6QQHHbTjQbNngqq/H6qUUYQguTd1hs2f4Achc/IPcK5U9wUc
+         rTh42TGz5y4MRBLElKLZC1T2KAXVzmDP3PQzwVBs=
+Date:   Sat, 10 Oct 2020 01:14:09 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        neeraj.iitr10@gmail.com, "Paul E. McKenney" <paulmck@kernel.org>,
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Subject: Re: [PATCH v6 1/4] rcu/tree: Make rcu_do_batch count how many
+ callbacks were executed
+Message-ID: <20201009231409.GA120772@lothringen>
+References: <20200923152211.2403352-1-joel@joelfernandes.org>
+ <20200923152211.2403352-2-joel@joelfernandes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201008140927.GB495091@rowland.harvard.edu>
+In-Reply-To: <20200923152211.2403352-2-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 10:09:27AM -0400, Alan Stern wrote:
-> On Wed, Oct 07, 2020 at 02:42:26PM -0700, Matthias Kaehlcke wrote:
-> > On Wed, Oct 07, 2020 at 04:17:32PM -0400, Alan Stern wrote:
-> > > The peering relation goes both ways, so it should be included in the 
-> > > hub_2_0 description too.  Given that, the driver could check hub_2_0's 
-> > > peer's DT description for the appropriate resources.
-> > 
-> > That mitigates the issue somewhat, however we still have to convince Rob that
-> > both references are needed.
+On Wed, Sep 23, 2020 at 11:22:08AM -0400, Joel Fernandes (Google) wrote:
+> Currently, rcu_do_batch() depends on the unsegmented callback list's len field
+> to know how many CBs are executed. This fields counts down from 0 as CBs are
+> dequeued.  It is possible that all CBs could not be run because of reaching
+> limits in which case the remaining unexecuted callbacks are requeued in the
+> CPU's segcblist.
 > 
-> Strictly speaking, the peering relation applies to ports, not
-> devices.  The representation in DT doesn't have to be symmetrical; as
-> long as the kernel understands it, the kernel can set up its own
-> internal symmetrical respresentation.
+> The number of callbacks that were not requeued are then the negative count (how
+> many CBs were run) stored in the rcl->len which has been counting down on every
+> dequeue. This negative count is then added to the per-cpu segmented callback
+> list's to correct its count.
 > 
-> > > > All this mess can be avoided by having a single instance in control of the
-> > > > resources which is guaranteed to suspend after the USB devices.
-> > > 
-> > > Yes.  At the cost of registering, adding a driver for, and making users 
-> > > aware of a fictitious platform device.
-> > 
-> > Registration is trivial and the driver code will be needed anyway, I'm
-> > pretty convinced that a separate platform driver will be simpler than
-> > plumbing things into the hub driver, with the additional checks of who is
-> > suspended or not, etc. If other resources like resets are involved there
-> > could be further possible race conditions at probe time. Another issue is
-> > the sysfs attribute. We said to attach it to the primary hub. What happens
-> > when the primary hub goes away? I guess we could force unbinding the peers
-> > as we did in the driver under discussion to avoid confusion/inconsistencies,
-> > but it's another tradeoff.
-> > 
-> > My view of the pros and cons of extending the hub driver vs. having a platform
-> > driver:
-> > 
-> > - pros
-> >   - sysfs attribute is attached to a USB hub device
-> >   - no need to register a platform device (trivial)
-> >   - potentially more USB awareness (not clear if needed)
-> > 
-> > - cons
-> >   - possible races involving resources between peer hubs during initialization
-> >   - increased complexity from keeping track of peers, checking suspend order
-> >     and avoiding races
-> >   - peers are forced to unbind when primary goes away
-> >   - need DT links to peers for all USB hubs, not only in the primary
-> >   - pollution of the generic hub code with device specific stuff instead
-> >     of keeping it in a self contained driver
-> >   - sysfs attribute is attached to only one of the hubs, which is better than
-> >     having it on both, but not necessarily better than attaching it to the
-> >     platform device with the 'control logic'
-> > 
-> > So yes, there are tradeoffs, IMO balance isn't as clear as your comment
-> > suggests.
+> Such a design works against future efforts to track the length of each segment
+> of the segmented callback list. The reason is because
+> rcu_segcblist_extract_done_cbs() will be populating the unsegmented callback
+> list's length field (rcl->len) during extraction.
+> Also, the design of counting down from 0 is confusing and error-prone IMHO.
+
+Right :)
+
 > 
-> Well, I guess I'm okay with either approach.
+> This commit therefore explicitly counts have many callbacks were executed in
 
-Thanks for being flexible.
+s/have/how
 
-I'm also open to the other approach, if you or others are convinced that a
-platform device is a really bad idea.
+> rcu_do_batch() itself, and uses that to update the per-CPU segcb list's ->len
+> field, without relying on the negativity of rcl->len.
+> 
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-> One more thing to keep in mind, though: With the platform device,
-> there should be symlinks from the hubs' sysfs directories to the
-> platform device (and possibly symlinks going the other way as well).
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
-Ok, I hoped we could get away with no USB driver at all, but I think it will
-be needed to create the symlinks (on its own the platform driver wouldn't notice
-when the USB devices come and go). Anyway, it's a relatively thin layer of code,
-so it's not too bad. With the new binding the USB devices still should be able
-to find the platform device if it uses the same DT node as the primary USB hub.
+Thanks.
