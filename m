@@ -2,130 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7794028889E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 14:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8862888A1
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 14:26:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733080AbgJIMZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 08:25:55 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:7498 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729272AbgJIMZx (ORCPT
+        id S2388512AbgJIM0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 08:26:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388452AbgJIM0B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 08:25:53 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 099C2rmb125001;
-        Fri, 9 Oct 2020 08:25:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=a8tRcmxAyP73hI260eI4ug23S3jRSyJFhEOxcGgUnHw=;
- b=Donau3tQm2QcSkh0kF1KHdX482YfD0rVYGcU8EcsMU13PydiKdF4m2QySrZGJJLuZAQ1
- KNnzxrI2x2Nxj434D4lCsn6Z6c5lQWTXwFw2PbVpYYlpIIfAYWxyCYM1Y7tXaFbJJ9AT
- NQvcJNrR3Zc7PzLwopG1OuMXeSr21f7VFvmg493vaG+JS8hsRvTYGXxVuaqZfC8ZeYUZ
- uTH/KjrIE7xLkQ/T9cvrSyJL4Ues4W7CSPVJscmzpEtNhmaihpKCRZvAbrW1t9q9+/S9
- DZzQVb46LbocA/q+3qlAl5b9l8m4mPRfskEEMuz9nMzRLerbOWGewnKmR82BqVwxsjpO 7A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 342mb4f8um-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Oct 2020 08:25:31 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 099C4ntg133564;
-        Fri, 9 Oct 2020 08:25:31 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 342mb4f8th-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Oct 2020 08:25:31 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 099CBY7L015780;
-        Fri, 9 Oct 2020 12:25:28 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 3429hm0n3m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Oct 2020 12:25:28 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 099CPQce32637210
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 9 Oct 2020 12:25:26 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 18DD34C044;
-        Fri,  9 Oct 2020 12:25:26 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4E1A24C058;
-        Fri,  9 Oct 2020 12:25:25 +0000 (GMT)
-Received: from localhost (unknown [9.145.0.122])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Fri,  9 Oct 2020 12:25:25 +0000 (GMT)
-Date:   Fri, 9 Oct 2020 14:25:23 +0200
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: [PATCH RESEND 1/1] perf build: Allow nested externs to enable
- BUILD_BUG() usage
-Message-ID: <patch-1.thread-251403.git-2514037e9477.your-ad-here.call-01602244460-ext-7088@work.hours>
-References: <20201009112327.GC656950@krava>
- <cover.thread-251403.your-ad-here.call-01602244460-ext-7088@work.hours>
+        Fri, 9 Oct 2020 08:26:01 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F37DC0613D2;
+        Fri,  9 Oct 2020 05:26:01 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id lw21so12790278ejb.6;
+        Fri, 09 Oct 2020 05:26:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=vxWvga10iK++hQGsOFVlXKsQyXZ7GztSMmrf028ztk4=;
+        b=NwXhEoXGxC+R37EfS1lfuy3g8wbdrNmU1E77zfyzc9D/fJwROKORSsZfAQKLCnnOMk
+         d5vWXwQRNB4Bi+3zTINWBL0LgydS59ZKZRYp40cKQvY8QiUfAY73FMiBfEWBIGw56R8y
+         iS4a2hSi7xRdR5vj0D+RFTrOaiYJ7evxpNryiOknzByilQ9uNIGR+y0R5FUhcVptSfMM
+         63P7nk78F1hZKMy+TR1hNm9QyO+zYqHIC3cstDV2l2kqtjSuIyCxdIXx5aF63qupP1vn
+         P+WHmPHGzAyyA1lXVqWwtitoHl7b4GiR/PsPmEYg76+c2mfqCWA9pNAP7fV4/QKiLCux
+         D0BQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=vxWvga10iK++hQGsOFVlXKsQyXZ7GztSMmrf028ztk4=;
+        b=YiyqUlnI1I0zl45UYfE7v7cQue5MEKbEdMFKr91gA8aNwVHgFsaFd9gYJy690CiNua
+         Ma2gk7z7j9E1l//6NtSuM5TsoXjpTLZTGBKwPGOobEi4aT2U4AG6dE0SnMMAuLIaX9Hi
+         Vy6lbFCKILDFCNXSpm+ENr8iTInjA0FpaDfKyzHalJoQGCXp6oM8qwBSLKnqoQayPe/q
+         chHixuBZPDA9r9NVV5Rrwu+7LDXyTLXLQVVHUMNhcFyThciPqc34sD03pbe7/lNpyqJY
+         8uUCayWdESuOnLgAVpJB3ihPyv0igybF5T+8dm2Z7Kijf1gUBokbtgtkh2YNBPgfL+KX
+         h5yw==
+X-Gm-Message-State: AOAM531nLT6aqERUVNUryoCzrQe/iEXp2bw7g+2hwgcG98WSEzAFbKF/
+        KDYRfsQYe26WMmhPofDpiYA=
+X-Google-Smtp-Source: ABdhPJxkD3KtJ6bfK9EwnyjmX+Fl4PJjDDa08bzc4YEJmViDgYAtnI0ithJ1zzW1tf+4J5V2VWMRNQ==
+X-Received: by 2002:a17:906:490d:: with SMTP id b13mr13800241ejq.122.1602246359881;
+        Fri, 09 Oct 2020 05:25:59 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id lb11sm6271626ejb.27.2020.10.09.05.25.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Oct 2020 05:25:58 -0700 (PDT)
+Date:   Fri, 9 Oct 2020 14:25:56 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     Dmitry Osipenko <digetx@gmail.com>, joro@8bytes.org,
+        vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/3] iommu/tegra-smmu: Rework tegra_smmu_probe_device()
+Message-ID: <20201009122556.GE458338@ulmo>
+References: <20201002060807.32138-1-nicoleotsuka@gmail.com>
+ <20201002060807.32138-3-nicoleotsuka@gmail.com>
+ <5542b314-f414-1e83-8cf6-2bf22a41ae9c@gmail.com>
+ <20201002185828.GC29706@Asurada-Nvidia>
+ <20201005095754.GJ425362@ulmo>
+ <20201006010546.GB28640@Asurada-Nvidia>
+ <20201008095343.GA2349275@ulmo>
+ <20201008211209.GC32140@Asurada-Nvidia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="TD8GDToEDw0WLGOL"
 Content-Disposition: inline
-In-Reply-To: <cover.thread-251403.your-ad-here.call-01602244460-ext-7088@work.hours>
-X-Patchwork-Bot: notify
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-09_06:2020-10-09,2020-10-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- mlxlogscore=999 spamscore=0 adultscore=0 mlxscore=0 suspectscore=1
- lowpriorityscore=0 priorityscore=1501 malwarescore=0 clxscore=1015
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010090086
+In-Reply-To: <20201008211209.GC32140@Asurada-Nvidia>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently BUILD_BUG() macro is expanded to smth like the following:
-   do {
-           extern void __compiletime_assert_0(void)
-                   __attribute__((error("BUILD_BUG failed")));
-           if (!(!(1)))
-                   __compiletime_assert_0();
-   } while (0);
 
-If used in a function body this obviously would produce build errors
-with -Wnested-externs and -Werror.
+--TD8GDToEDw0WLGOL
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-To enable BUILD_BUG() usage in tools/arch/x86/lib/insn.c which perf
-includes in intel-pt-decoder, build perf without -Wnested-externs.
+On Thu, Oct 08, 2020 at 02:12:10PM -0700, Nicolin Chen wrote:
+> On Thu, Oct 08, 2020 at 11:53:43AM +0200, Thierry Reding wrote:
+> > On Mon, Oct 05, 2020 at 06:05:46PM -0700, Nicolin Chen wrote:
+> > > On Mon, Oct 05, 2020 at 11:57:54AM +0200, Thierry Reding wrote:
+> > > > On Fri, Oct 02, 2020 at 11:58:29AM -0700, Nicolin Chen wrote:
+> > > > > On Fri, Oct 02, 2020 at 06:02:18PM +0300, Dmitry Osipenko wrote:
+> > > > > > 02.10.2020 09:08, Nicolin Chen =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > > > > > >  static int tegra_smmu_of_xlate(struct device *dev,
+> > > > > > >  			       struct of_phandle_args *args)
+> > > > > > >  {
+> > > > > > > +	struct platform_device *iommu_pdev =3D of_find_device_by_no=
+de(args->np);
+> > > > > > > +	struct tegra_mc *mc =3D platform_get_drvdata(iommu_pdev);
+> > > > > > >  	u32 id =3D args->args[0];
+> > > > > > > =20
+> > > > > > > +	of_node_put(args->np);
+> > > > > >=20
+> > > > > > of_find_device_by_node() takes device reference and not the np
+> > > > > > reference. This is a bug, please remove of_node_put().
+> > > > >=20
+> > > > > Looks like so. Replacing it with put_device(&iommu_pdev->dev);
+> > > >=20
+> > > > Putting the put_device() here is wrong, though. You need to make su=
+re
+> > > > you keep a reference to it as long as you keep accessing the data t=
+hat
+> > > > is owned by it.
+> > >=20
+> > > I am confused. You said in the other reply (to Dmitry) that we do
+> > > need to put_device(mc->dev), where mc->dev should be the same as
+> > > iommu_pdev->dev. But here your comments sounds that we should not
+> > > put_device at all since ->probe_device/group_device/attach_dev()
+> > > will use it later.
+> >=20
+> > You need to call put_device() at some point to release the reference
+> > that you acquired by calling of_find_device_by_node(). If you don't
+> > release it, you're leaking the reference and the kernel isn't going to
+> > know when it's safe to delete the device.
+> >=20
+> > So what I'm saying is that we either release it here, which isn't quite
+> > right because we do reference data relating to the device later on. And
+>=20
+> I see. A small question here by the way: By looking at other IOMMU
+> drivers that are calling driver_find_device_by_fwnode() function,
+> I found that most of them put_device right after the function call,
+> and dev_get_drvdata() after putting the device..
+>=20
+> Feels like they are doing it wrongly?
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
----
- Resend with no fancy signatures.
+Well, like I said this is somewhat academic because these are all
+referencing the IOMMU that by definition still needs to be around
+when this code is called, and there's locks in place to ensure
+these don't go away. So it's not like these drivers are doing it
+wrong, they're just not doing it pedantically right.
 
- tools/perf/Makefile.config | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> > because it isn't quite right there should be a reason to justify it,
+> > which is that the SMMU parent device is the same as the MC, so the
+> > reference count isn't strictly necessary. But that's not quite obvious,
+> > so highlighting it in a comment makes sense.
+> >=20
+> > The other alternative is to not call put_device() here and keep on to
+> > the reference as long as you keep using "mc". This might be difficult to
+> > implement because it may not be obvious where to release it. I think
+> > this is the better alternative, but if it's too complicated to implement
+> > it might not be worth it.
+>=20
+> I feel so too. The dev is got at of_xlate() that does not have an
+> obvious counterpart function. So I'll just remove put_device() and
+> put a line of comments, as you suggested.
 
-diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-index 854da830b5ca..834061e94e7c 100644
---- a/tools/perf/Makefile.config
-+++ b/tools/perf/Makefile.config
-@@ -16,7 +16,7 @@ $(shell printf "" > $(OUTPUT).config-detected)
- detected     = $(shell echo "$(1)=y"       >> $(OUTPUT).config-detected)
- detected_var = $(shell echo "$(1)=$($(1))" >> $(OUTPUT).config-detected)
- 
--CFLAGS := $(EXTRA_CFLAGS) $(EXTRA_WARNINGS)
-+CFLAGS := $(EXTRA_CFLAGS) $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
- 
- include $(srctree)/tools/scripts/Makefile.arch
- 
--- 
-2.25.4
+I think you misunderstood. Not calling put_device() would be wrong
+because that leaks a reference to the SMMU that you can't get back. My
+suggestion was rather to keep put_device() here, but add a comment as to
+why it's okay to call the put_device() here, even though you keep using
+its private data later beyond this point, which typically would be wrong
+to do.
+
+Thierry
+
+--TD8GDToEDw0WLGOL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+AVtQACgkQ3SOs138+
+s6FyaRAAkt3dP2DNCS6TI3/NevoBQ2IpMYqF1ex7aH/lNxsI1ES7OlWIkSvq7Nbp
+OdGJxPgxHA9kvYKCwk6u97yR8TX8erODLYov8YWeIYT4j5QcSS/axChfZJwYScEy
+TPMyMZrSoQz89AbZjJ1nXF7pafhPzc+9VI9oyouFL2kwJ5nG7oCmHM+oIswYy5gO
+ek1ARsPvwoQu1hBT19wRzaQMgE9TVc/HzaRtjaCbWBAXZSNlScjn3MxuWW4Teo6P
+5lG3qhBCof7r374RLMz/7bq5MUndj3R5MuwX1eOVzcJgxVYV+94fjTs4ysawaG7f
+vqetJ3RBUHia+rXWZx09T3F0ax+EErEs9cQ94OysiDqdnvMSxb/av8yS0j+rYN2u
+ZLOBqTMgfQaVLiTZgehSSYU1wGyId93lWNvH8oQ9VZ032x5ys37j8y5+9IOtufM7
+ebDWZwobYybBpr8qVA/odW6gStS5qj7gbUE9GBg06y+VB74UdN8K7YLzr4nYNFgz
+HEatjuW3kEIAB/Si2fB/yTBm62HAL7pZ2eGeIDxhFr9d0An5mhTkkUF4eN3GPIyA
+gfOkKq+Vfq+0JOFF4GJj1nGB5kV7CON90yy/lZ5Snt5ru2SdQNhhreFAo3v6QhgH
+IdtXPzcQLz/qJ+QceSHsqujPWojzkVLkGTJVkzojRKwOv6B1vVw=
+=8opr
+-----END PGP SIGNATURE-----
+
+--TD8GDToEDw0WLGOL--
