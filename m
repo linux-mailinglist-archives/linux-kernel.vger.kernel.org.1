@@ -2,209 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9739288AC4
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:24:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F4C288ACB
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 16:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388820AbgJIOYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 10:24:30 -0400
-Received: from foss.arm.com ([217.140.110.172]:52300 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388790AbgJIOXu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 10:23:50 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 385511063;
-        Fri,  9 Oct 2020 07:23:49 -0700 (PDT)
-Received: from localhost (e108754-lin.cambridge.arm.com [10.1.199.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CF5143F70D;
-        Fri,  9 Oct 2020 07:23:48 -0700 (PDT)
-Date:   Fri, 9 Oct 2020 15:23:47 +0100
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        daniel.lezcano@linaro.org, amitk@kernel.org,
-        Dietmar.Eggemann@arm.com
-Subject: Re: [PATCH v3 2/2] thermal: power allocator: change how estimation
- code is called
-Message-ID: <20201009142347.GA3269@arm.com>
-References: <20201009135850.14727-1-lukasz.luba@arm.com>
- <20201009135850.14727-3-lukasz.luba@arm.com>
+        id S2388830AbgJIOZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 10:25:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387598AbgJIOY6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 10:24:58 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9B8BC0613D8
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 07:24:57 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id t77so10390056oie.4
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 07:24:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4j8VU4wpGDl6YV4vbFDWVWHEZCZz4TBGhbt0uuUGdBg=;
+        b=YLM0g/4oQLD0hu/Oa87scm3scHf+vbiPkLbDqUAnyXk3ER+QRam40zaijXvFBD6PRA
+         nzSbXcW7hn805lQbe6AX68hG76VYbA+coTzGsCT/QWJIzeeROcYpI8QHsxV9QNKX8ew0
+         Dn833fe+dPzpkngPWmhP7pgAZbKyHIAe+x52Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4j8VU4wpGDl6YV4vbFDWVWHEZCZz4TBGhbt0uuUGdBg=;
+        b=bhz7iz56JF5aoWOMZ2iPByvys6Q5lmn8/qoEYPTGpno8xw/LQA38AkTyWVjSM4w/2m
+         Zym1kQUByEsX2tcIAG5d/nk8MoImfLUbBq8Ej8+WPPgmw+Jom1JlgjIWkx7vUTpKKVHR
+         zpuA+sqQbyhrxt8dDoXZilGyF7Mys0/tX+EN3xPa/Hu3ZtKtC8wpH63RM6D9Twua6hwZ
+         pkCeMZ99BpLMpBFoEeo/hJiBkm9Mch0S0Y+m4rQi0JcWOa+b7wC/tsdZjVUN5I0Y1TYN
+         MSnWWVbjgu0YqJ1LWE5+2hFpt0py8A4kTT8dB0nNb4TOyQvqlGEB4ehEQnxS7JSyzI3l
+         KVkg==
+X-Gm-Message-State: AOAM5329vEqTrDD8HIT0C/x3le6Upw8EuyCOXhwyoBjwdwiux/1H9Kk7
+        NybXiQH+7EiIc3gDj8/QFAo0wNYKooU8A2EVlDY3QA==
+X-Google-Smtp-Source: ABdhPJyHxT/6NZr88G54H2j+X8AAqjyafUNpDVmVkQQPYeZ/EXQjiOmXOOdqJRKMWvSSWVU71sVuY9YK0QkcwCetmpo=
+X-Received: by 2002:aca:6083:: with SMTP id u125mr2688783oib.14.1602253497033;
+ Fri, 09 Oct 2020 07:24:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201009135850.14727-3-lukasz.luba@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20201009075934.3509076-1-daniel.vetter@ffwll.ch>
+ <20201009075934.3509076-15-daniel.vetter@ffwll.ch> <20201009123109.GO5177@ziepe.ca>
+In-Reply-To: <20201009123109.GO5177@ziepe.ca>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Fri, 9 Oct 2020 16:24:45 +0200
+Message-ID: <CAKMK7uFpPP-Q0jC0vM7vYPEcg0m4NzTw+Ld=swdTF3BgMX5Qug@mail.gmail.com>
+Subject: Re: [PATCH v2 14/17] resource: Move devmem revoke code to resource framework
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 09 Oct 2020 at 14:58:50 (+0100), Lukasz Luba wrote:
-> The sustainable power value might come from the Device Tree or can be
-> estimated in run time. There is no need to estimate every time when the
-> governor is called and temperature is high. Instead, store the estimated
-> value and make it available via standard sysfs interface so it can be
-> checked from the user-space. Re-invoke the estimation only in case the
-> sustainable power was set to 0. Apart from that the PID coefficients
-> are not going to be force updated thus can better handle sysfs settings.
-> 
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-> ---
-> 
-> v3:
-> - changed estimate_pid_constants to estimate_tzp_constants and related comments
-> - estimate the PID coefficients always together with sust. power
-> - added print indicating that we are estimating sust. power and PID const.
-> - don't use local variable 'sustainable_power'
-> 
-> 
->  drivers/thermal/gov_power_allocator.c | 65 ++++++++++++---------------
->  1 file changed, 29 insertions(+), 36 deletions(-)
-> 
-> diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
-> index aa35aa6c561c..e92a8d3ca5d4 100644
-> --- a/drivers/thermal/gov_power_allocator.c
-> +++ b/drivers/thermal/gov_power_allocator.c
-> @@ -96,6 +96,9 @@ static u32 estimate_sustainable_power(struct thermal_zone_device *tz)
->  		if (instance->trip != params->trip_max_desired_temperature)
->  			continue;
->  
-> +		if (!cdev_is_power_actor(cdev))
-> +			continue;
-> +
->  		if (cdev->ops->state2power(cdev, tz, instance->upper,
->  					   &min_power))
->  			continue;
-> @@ -107,40 +110,37 @@ static u32 estimate_sustainable_power(struct thermal_zone_device *tz)
->  }
->  
->  /**
-> - * estimate_pid_constants() - Estimate the constants for the PID controller
-> + * estimate_tzp_constants() - Estimate sustainable power and PID constants
->   * @tz:		thermal zone for which to estimate the constants
-> - * @sustainable_power:	sustainable power for the thermal zone
->   * @trip_switch_on:	trip point number for the switch on temperature
->   * @control_temp:	target temperature for the power allocator governor
-> - * @force:	whether to force the update of the constants
->   *
-> - * This function is used to update the estimation of the PID
-> - * controller constants in struct thermal_zone_parameters.
-> - * Sustainable power is provided in case it was estimated.  The
-> - * estimated sustainable_power should not be stored in the
-> - * thermal_zone_parameters so it has to be passed explicitly to this
-> - * function.
-> - *
-> - * If @force is not set, the values in the thermal zone's parameters
-> - * are preserved if they are not zero.  If @force is set, the values
-> - * in thermal zone's parameters are overwritten.
-> + * This function is used to estimate the sustainable power and PID controller
-> + * constants in struct thermal_zone_parameters. These estimations will then be
-> + * available in the sysfs.
->   */
-> -static void estimate_pid_constants(struct thermal_zone_device *tz,
-> -				   u32 sustainable_power, int trip_switch_on,
-> -				   int control_temp, bool force)
-> +static void estimate_tzp_constants(struct thermal_zone_device *tz,
-> +				   int trip_switch_on, int control_temp)
->  {
-> -	int ret;
-> -	int switch_on_temp;
->  	u32 temperature_threshold;
-> +	int switch_on_temp;
-> +	bool force = false;
-> +	int ret;
->  	s32 k_i;
->  
-> +	if (!tz->tzp->sustainable_power) {
-> +		tz->tzp->sustainable_power = estimate_sustainable_power(tz);
-> +		force = true;
-> +		dev_info(&tz->device, "power_allocator: estimating sust. power and PID constants\n");
-> +	}
-> +
->  	ret = tz->ops->get_trip_temp(tz, trip_switch_on, &switch_on_temp);
->  	if (ret)
->  		switch_on_temp = 0;
->  
->  	temperature_threshold = control_temp - switch_on_temp;
->  	/*
-> -	 * estimate_pid_constants() tries to find appropriate default
-> +	 * estimate_tzp_constants() tries to find appropriate default
->  	 * values for thermal zones that don't provide them. If a
->  	 * system integrator has configured a thermal zone with two
->  	 * passive trip points at the same temperature, that person
-> @@ -151,11 +151,11 @@ static void estimate_pid_constants(struct thermal_zone_device *tz,
->  		return;
->  
->  	if (!tz->tzp->k_po || force)
-> -		tz->tzp->k_po = int_to_frac(sustainable_power) /
-> +		tz->tzp->k_po = int_to_frac(tz->tzp->sustainable_power) /
->  			temperature_threshold;
->  
->  	if (!tz->tzp->k_pu || force)
-> -		tz->tzp->k_pu = int_to_frac(2 * sustainable_power) /
-> +		tz->tzp->k_pu = int_to_frac(2 * tz->tzp->sustainable_power) /
->  			temperature_threshold;
->  
->  	if (!tz->tzp->k_i || force) {
-> @@ -193,19 +193,13 @@ static u32 pid_controller(struct thermal_zone_device *tz,
->  {
->  	s64 p, i, d, power_range;
->  	s32 err, max_power_frac;
-> -	u32 sustainable_power;
->  	struct power_allocator_params *params = tz->governor_data;
->  
->  	max_power_frac = int_to_frac(max_allocatable_power);
->  
-> -	if (tz->tzp->sustainable_power) {
-> -		sustainable_power = tz->tzp->sustainable_power;
-> -	} else {
-> -		sustainable_power = estimate_sustainable_power(tz);
-> -		estimate_pid_constants(tz, sustainable_power,
-> -				       params->trip_switch_on, control_temp,
-> -				       true);
-> -	}
-> +	if (!tz->tzp->sustainable_power)
-> +		estimate_tzp_constants(tz, params->trip_switch_on,
-> +				       control_temp);
->  
->  	err = control_temp - tz->temperature;
->  	err = int_to_frac(err);
-> @@ -244,7 +238,7 @@ static u32 pid_controller(struct thermal_zone_device *tz,
->  	power_range = p + i + d;
->  
->  	/* feed-forward the known sustainable dissipatable power */
-> -	power_range = sustainable_power + frac_to_int(power_range);
-> +	power_range = tz->tzp->sustainable_power + frac_to_int(power_range);
->  
->  	power_range = clamp(power_range, (s64)0, (s64)max_allocatable_power);
->  
-> @@ -603,20 +597,19 @@ static int power_allocator_bind(struct thermal_zone_device *tz)
->  
->  	get_governor_trips(tz, params);
->  
-> +	tz->governor_data = params;
-> +
->  	if (tz->trips > 0) {
->  		ret = tz->ops->get_trip_temp(tz,
->  					params->trip_max_desired_temperature,
->  					&control_temp);
->  		if (!ret)
-> -			estimate_pid_constants(tz, tz->tzp->sustainable_power,
-> -					       params->trip_switch_on,
-> -					       control_temp, false);
-> +			estimate_tzp_constants(tz, params->trip_switch_on,
-> +					       control_temp);
->  	}
->  
->  	reset_pid_controller(params);
->  
-> -	tz->governor_data = params;
-> -
->  	return 0;
->  
->  free_params:
-> -- 
-> 2.17.1
-> 
+On Fri, Oct 9, 2020 at 2:31 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Fri, Oct 09, 2020 at 09:59:31AM +0200, Daniel Vetter wrote:
+>
+> > +struct address_space *iomem_get_mapping(void)
+> > +{
+> > +     return iomem_inode->i_mapping;
+>
+> This should pair an acquire with the release below
+>
+> > +     /*
+> > +      * Publish /dev/mem initialized.
+> > +      * Pairs with smp_load_acquire() in revoke_iomem().
+> > +      */
+> > +     smp_store_release(&iomem_inode, inode);
+>
+> However, this seems abnormal, initcalls rarely do this kind of stuff
+> with global data..
+>
+> The kernel crashes if this fs_initcall is raced with
+> iomem_get_mapping() due to the unconditional dereference, so I think
+> it can be safely switched to a simple assignment.
 
-Awesome!
+Ah yes I checked this all, but forgot to correctly annotate the
+iomem_get_mapping access. For reference, see b34e7e298d7a ("/dev/mem:
+Add missing memory barriers for devmem_inode").
 
-Reviewed-by: Ionela Voinescu <ionela.voinescu@arm.com>
+The reasons for the annotations is that iomem requests can happen
+fairly early, way before fs_initcalls happen. That means revoke_iomem
+needs to check for that and bail out if we race - nothing bad can
+happen since userspace isn't running at this point anyway. And
+apparently it needs to be a full acquire fence since we don't just
+write a value, but need a barrier for the struct stuff.
+
+Now iomem_get_mapping otoh can only be called after userspace is up &
+running, so way after all the fs_initcalls are guaranteed to have
+fininshed. Hence we don't really need anything there. But I expect the
+kernel race checker thing to complain, plus that then gives me a good
+spot to explain why we can't race and don't have to check for a NULL
+iomem_inode.
+
+I'll add that in v3.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
