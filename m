@@ -2,351 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B17B2880DD
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 05:52:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF672880DC
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 05:52:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731629AbgJIDwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 23:52:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20719 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727181AbgJIDwG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727327AbgJIDwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 23:52:08 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:34179 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729195AbgJIDwG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 8 Oct 2020 23:52:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602215524;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=g9LAqk/O85gzZQ3p2RqjqQYBnBCvUajGWYz9K36nbcY=;
-        b=hMRNB/6uphnQeBZMLTk+kK8Up9spRH9vICJFzBSTOFHWUtCKHIy/vMJFHQ+PZ2w0X7TvMu
-        WuHzIVbNi43Y9cS70ii+SUsUj5upuc7c2nNBAT82EDn8r0axmka1xip/KuHTu59ALsnPuq
-        p3X7FcZ4PouJxghs5K5TSSQ+L7aq34I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-482-sSapyru6OaSNf8hltvfC2A-1; Thu, 08 Oct 2020 23:52:02 -0400
-X-MC-Unique: sSapyru6OaSNf8hltvfC2A-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E8D36425D7;
-        Fri,  9 Oct 2020 03:52:00 +0000 (UTC)
-Received: from [10.72.13.133] (ovpn-13-133.pek2.redhat.com [10.72.13.133])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5D6E26EF66;
-        Fri,  9 Oct 2020 03:51:46 +0000 (UTC)
-Subject: Re: [RFC PATCH 09/24] vdpa: multiple address spaces support
-To:     Eli Cohen <elic@nvidia.com>
-Cc:     mst@redhat.com, lulu@redhat.com, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rob.miller@broadcom.com,
-        lingshan.zhu@intel.com, eperezma@redhat.com, hanand@xilinx.com,
-        mhabets@solarflare.com, amorenoz@redhat.com,
-        maxime.coquelin@redhat.com, stefanha@redhat.com,
-        sgarzare@redhat.com
-References: <20200924032125.18619-1-jasowang@redhat.com>
- <20200924032125.18619-10-jasowang@redhat.com>
- <20201001132124.GA32363@mtl-vdi-166.wap.labs.mlnx>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <028ebad8-2106-0ea9-4092-4c14f1e2fdfe@redhat.com>
-Date:   Fri, 9 Oct 2020 11:51:44 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C6vJn0VVyz9sSG;
+        Fri,  9 Oct 2020 14:51:53 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1602215524;
+        bh=JJFHt0WKQB92kXQpvXVLk3zDAHuNVQpW9ACYB9X5JlY=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=IL6myVQYQiWcr+Iv/skn0UNuXCXKrjL/lFkXJplPrupeQL5g6E4tmNcJ7QDxNh36v
+         BfNhzZPKVdq55BmPZIztbw8JNGkI0X/TJbcEh4kXSiE8cmqpkbnFvHUdyWGz7Cu6pL
+         wy1oD7J+6au+seC5fwUleUJC09q038qMu/eZ3uKjr+18pyvYRg6gQ+UaMxdhP65pXm
+         FbIBpZ/5BY6AIUnsj57pCBjj2H3MVnlyeRvUnZABjjprmsERyEouWILv1q3tzMS4KZ
+         2HFp0KJvXzwFb9/mIVXbA62GFzyYe5BFnmE5MAok5rrmbrKbhagBX2Nl1OcSFZpBH4
+         omqtDTanxmmzQ==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Frank Rowand <frowand.list@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paul Mackerras <paulus@samba.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-mips@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-sh@vger.kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: Re: [PATCH 2/2] dt: Remove booting-without-of.rst
+In-Reply-To: <20201008142420.2083861-2-robh@kernel.org>
+References: <20201008142420.2083861-1-robh@kernel.org> <20201008142420.2083861-2-robh@kernel.org>
+Date:   Fri, 09 Oct 2020 14:51:51 +1100
+Message-ID: <87imbk12g8.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-In-Reply-To: <20201001132124.GA32363@mtl-vdi-166.wap.labs.mlnx>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Rob Herring <robh@kernel.org> writes:
+> booting-without-of.rstt is an ancient document that first outlined
+                        ^
+                        nit
 
-On 2020/10/1 下午9:21, Eli Cohen wrote:
-> On Thu, Sep 24, 2020 at 11:21:10AM +0800, Jason Wang wrote:
->> This patches introduces the multiple address spaces support for vDPA
->> device. This idea is to identify a specific address space via an
->> dedicated identifier - ASID.
->>
->> During vDPA device allocation, vDPA device driver needs to report the
->> number of address spaces supported by the device then the DMA mapping
->> ops of the vDPA device needs to be extended to support ASID.
->>
->> This helps to isolate the DMA among the virtqueues. E.g in the case of
->> virtio-net, the control virtqueue will not be assigned directly to
->> guest.
->>
->> This RFC patch only converts for the device that wants its own
->> IOMMU/DMA translation logic. So it will rejects the device with more
->> that 1 address space that depends on platform IOMMU. The plan to
-> This is not apparent from the code. Instead you enforce number of groups
-> to 1.
-
-
-Yes, will fix.
-
-
+> Flattened DeviceTree on PowerPC initially. The DT world has evolved a
+> lot in the 15 years since and booting-without-of.rst is pretty stale.
+> The name of the document itself is confusing if you don't understand the
+> evolution from real 'OpenFirmware'. Most of what booting-without-of.rst
+> contains is now in the DT specification (which evolved out of the
+> ePAPR). The few things that weren't documented in the DT specification
+> are now.
 >
->> moving all the DMA mapping logic to the vDPA device driver instead of
->> doing it in vhost-vDPA (otherwise it could result a very complicated
->> APIs and actually vhost-vDPA doesn't care about how the actual
->> composition/emulation were done in the device driver).
->>
->> Signed-off-by: Jason Wang <jasowang@redhat.com>
->> ---
->>   drivers/vdpa/ifcvf/ifcvf_main.c   |  2 +-
->>   drivers/vdpa/mlx5/net/mlx5_vnet.c |  5 +++--
->>   drivers/vdpa/vdpa.c               |  4 +++-
->>   drivers/vdpa/vdpa_sim/vdpa_sim.c  | 10 ++++++----
->>   drivers/vhost/vdpa.c              | 14 +++++++++-----
->>   include/linux/vdpa.h              | 23 ++++++++++++++++-------
->>   6 files changed, 38 insertions(+), 20 deletions(-)
->>
->> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
->> index e6a0be374e51..86cdf5f8bcae 100644
->> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
->> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
->> @@ -440,7 +440,7 @@ static int ifcvf_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->>   
->>   	adapter = vdpa_alloc_device(struct ifcvf_adapter, vdpa,
->>   				    dev, &ifc_vdpa_ops,
->> -				    IFCVF_MAX_QUEUE_PAIRS * 2, 1);
->> +				    IFCVF_MAX_QUEUE_PAIRS * 2, 1, 1);
->>   
->>   	if (adapter == NULL) {
->>   		IFCVF_ERR(pdev, "Failed to allocate vDPA structure");
->> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
->> index 4e480f4f754e..db7404e121bf 100644
->> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
->> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
->> @@ -1788,7 +1788,8 @@ static u32 mlx5_vdpa_get_generation(struct vdpa_device *vdev)
->>   	return mvdev->generation;
->>   }
->>   
->> -static int mlx5_vdpa_set_map(struct vdpa_device *vdev, struct vhost_iotlb *iotlb)
->> +static int mlx5_vdpa_set_map(struct vdpa_device *vdev, unsigned int asid,
->> +			     struct vhost_iotlb *iotlb)
->>   {
->>   	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
->>   	struct mlx5_vdpa_net *ndev = to_mlx5_vdpa_ndev(mvdev);
->> @@ -1931,7 +1932,7 @@ void *mlx5_vdpa_add_dev(struct mlx5_core_dev *mdev)
->>   	max_vqs = min_t(u32, max_vqs, MLX5_MAX_SUPPORTED_VQS);
->>   
->>   	ndev = vdpa_alloc_device(struct mlx5_vdpa_net, mvdev.vdev, mdev->device, &mlx5_vdpa_ops,
->> -				 2 * mlx5_vdpa_max_qps(max_vqs), 1);
->> +				 2 * mlx5_vdpa_max_qps(max_vqs), 1, 1);
->>   	if (IS_ERR(ndev))
->>   		return ndev;
->>   
->> diff --git a/drivers/vdpa/vdpa.c b/drivers/vdpa/vdpa.c
->> index 46399746ec7c..05195fa7865d 100644
->> --- a/drivers/vdpa/vdpa.c
->> +++ b/drivers/vdpa/vdpa.c
->> @@ -63,6 +63,7 @@ static void vdpa_release_dev(struct device *d)
->>    * @config: the bus operations that is supported by this device
->>    * @nvqs: number of virtqueues supported by this device
->>    * @ngroups: number of groups supported by this device
->> + * @nas: number of address spaces supported by this device
->>    * @size: size of the parent structure that contains private data
->>    *
->>    * Driver should use vdpa_alloc_device() wrapper macro instead of
->> @@ -74,7 +75,7 @@ static void vdpa_release_dev(struct device *d)
->>   struct vdpa_device *__vdpa_alloc_device(struct device *parent,
->>   					const struct vdpa_config_ops *config,
->>   					int nvqs, unsigned int ngroups,
->> -					size_t size)
->> +					unsigned int nas, size_t size)
->>   {
->>   	struct vdpa_device *vdev;
->>   	int err = -EINVAL;
->> @@ -102,6 +103,7 @@ struct vdpa_device *__vdpa_alloc_device(struct device *parent,
->>   	vdev->features_valid = false;
->>   	vdev->nvqs = nvqs;
->>   	vdev->ngroups = ngroups;
->> +	vdev->nas = nas;
->>   
->>   	err = dev_set_name(&vdev->dev, "vdpa%u", vdev->index);
->>   	if (err)
->> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
->> index 6669c561bc6e..5dc04ec271bb 100644
->> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
->> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
->> @@ -354,7 +354,7 @@ static struct vdpasim *vdpasim_create(void)
->>   		ops = &vdpasim_net_config_ops;
->>   
->>   	vdpasim = vdpa_alloc_device(struct vdpasim, vdpa, NULL, ops,
->> -				    VDPASIM_VQ_NUM, 1);
->> +				    VDPASIM_VQ_NUM, 1, 1);
->>   	if (!vdpasim)
->>   		goto err_alloc;
->>   
->> @@ -581,7 +581,7 @@ static u32 vdpasim_get_generation(struct vdpa_device *vdpa)
->>   	return vdpasim->generation;
->>   }
->>   
->> -static int vdpasim_set_map(struct vdpa_device *vdpa,
->> +static int vdpasim_set_map(struct vdpa_device *vdpa, unsigned int asid,
->>   			   struct vhost_iotlb *iotlb)
->>   {
->>   	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
->> @@ -608,7 +608,8 @@ static int vdpasim_set_map(struct vdpa_device *vdpa,
->>   	return ret;
->>   }
->>   
->> -static int vdpasim_dma_map(struct vdpa_device *vdpa, u64 iova, u64 size,
->> +static int vdpasim_dma_map(struct vdpa_device *vdpa, unsigned int asid,
->> +			   u64 iova, u64 size,
->>   			   u64 pa, u32 perm)
->>   {
->>   	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
->> @@ -622,7 +623,8 @@ static int vdpasim_dma_map(struct vdpa_device *vdpa, u64 iova, u64 size,
->>   	return ret;
->>   }
->>   
->> -static int vdpasim_dma_unmap(struct vdpa_device *vdpa, u64 iova, u64 size)
->> +static int vdpasim_dma_unmap(struct vdpa_device *vdpa, unsigned int asid,
->> +			     u64 iova, u64 size)
->>   {
->>   	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
->>   
->> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
->> index ec3c94f706c1..eeefcd971e3f 100644
->> --- a/drivers/vhost/vdpa.c
->> +++ b/drivers/vhost/vdpa.c
->> @@ -557,10 +557,10 @@ static int vhost_vdpa_map(struct vhost_vdpa *v, struct vhost_iotlb *iotlb,
->>   		return r;
->>   
->>   	if (ops->dma_map) {
->> -		r = ops->dma_map(vdpa, iova, size, pa, perm);
->> +		r = ops->dma_map(vdpa, 0, iova, size, pa, perm);
->>   	} else if (ops->set_map) {
->>   		if (!v->in_batch)
->> -			r = ops->set_map(vdpa, iotlb);
->> +			r = ops->set_map(vdpa, 0, iotlb);
->>   	} else {
->>   		r = iommu_map(v->domain, iova, pa, size,
->>   			      perm_to_iommu_flags(perm));
->> @@ -579,10 +579,10 @@ static void vhost_vdpa_unmap(struct vhost_vdpa *v,
->>   	vhost_vdpa_iotlb_unmap(v, iotlb, iova, iova + size - 1);
->>   
->>   	if (ops->dma_map) {
->> -		ops->dma_unmap(vdpa, iova, size);
->> +		ops->dma_unmap(vdpa, 0, iova, size);
->>   	} else if (ops->set_map) {
->>   		if (!v->in_batch)
->> -			ops->set_map(vdpa, iotlb);
->> +			ops->set_map(vdpa, 0, iotlb);
->>   	} else {
->>   		iommu_unmap(v->domain, iova, size);
->>   	}
->> @@ -700,7 +700,7 @@ static int vhost_vdpa_process_iotlb_msg(struct vhost_dev *dev,
->>   		break;
->>   	case VHOST_IOTLB_BATCH_END:
->>   		if (v->in_batch && ops->set_map)
->> -			ops->set_map(vdpa, iotlb);
->> +			ops->set_map(vdpa, 0, iotlb);
->>   		v->in_batch = false;
->>   		break;
->>   	default:
->> @@ -949,6 +949,10 @@ static int vhost_vdpa_probe(struct vdpa_device *vdpa)
->>   	int minor;
->>   	int r;
->>   
->> +	/* Only support 1 address space */
->> +	if (vdpa->ngroups != 1)
->> +		return -ENOTSUPP;
->> +
-> Did you mean to check agains vdpa->nas?
-
-
-I think we should check both.
-
-Thanks
-
-
+> All that remains is the boot entry details, so let's move these to arch
+> specific documents. The exception is arm which already has the same
+> details documented.
 >
->>   	/* Currently, we only accept the network devices. */
->>   	if (ops->get_device_id(vdpa) != VIRTIO_ID_NET)
->>   		return -ENOTSUPP;
->> diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
->> index d829512efd27..1e1163daa352 100644
->> --- a/include/linux/vdpa.h
->> +++ b/include/linux/vdpa.h
->> @@ -43,6 +43,8 @@ struct vdpa_vq_state {
->>    * @index: device index
->>    * @features_valid: were features initialized? for legacy guests
->>    * @nvqs: the number of virtqueues
->> + * @ngroups: the number of virtqueue groups
->> + * @nas: the number of address spaces
->>    */
->>   struct vdpa_device {
->>   	struct device dev;
->> @@ -52,6 +54,7 @@ struct vdpa_device {
->>   	bool features_valid;
->>   	int nvqs;
->>   	unsigned int ngroups;
->> +	unsigned int nas;
->>   };
->>   
->>   /**
->> @@ -161,6 +164,7 @@ struct vdpa_device {
->>    *				Needed for device that using device
->>    *				specific DMA translation (on-chip IOMMU)
->>    *				@vdev: vdpa device
->> + *				@asid: address space identifier
->>    *				@iotlb: vhost memory mapping to be
->>    *				used by the vDPA
->>    *				Returns integer: success (0) or error (< 0)
->> @@ -169,6 +173,7 @@ struct vdpa_device {
->>    *				specific DMA translation (on-chip IOMMU)
->>    *				and preferring incremental map.
->>    *				@vdev: vdpa device
->> + *				@asid: address space identifier
->>    *				@iova: iova to be mapped
->>    *				@size: size of the area
->>    *				@pa: physical address for the map
->> @@ -180,6 +185,7 @@ struct vdpa_device {
->>    *				specific DMA translation (on-chip IOMMU)
->>    *				and preferring incremental unmap.
->>    *				@vdev: vdpa device
->> + *				@asid: address space identifier
->>    *				@iova: iova to be unmapped
->>    *				@size: size of the area
->>    *				Returns integer: success (0) or error (< 0)
->> @@ -225,10 +231,12 @@ struct vdpa_config_ops {
->>   	u32 (*get_generation)(struct vdpa_device *vdev);
->>   
->>   	/* DMA ops */
->> -	int (*set_map)(struct vdpa_device *vdev, struct vhost_iotlb *iotlb);
->> -	int (*dma_map)(struct vdpa_device *vdev, u64 iova, u64 size,
->> -		       u64 pa, u32 perm);
->> -	int (*dma_unmap)(struct vdpa_device *vdev, u64 iova, u64 size);
->> +	int (*set_map)(struct vdpa_device *vdev, unsigned int asid,
->> +		       struct vhost_iotlb *iotlb);
->> +	int (*dma_map)(struct vdpa_device *vdev, unsigned int asid,
->> +		       u64 iova, u64 size, u64 pa, u32 perm);
->> +	int (*dma_unmap)(struct vdpa_device *vdev, unsigned int asid,
->> +			 u64 iova, u64 size);
->>   
->>   	/* Free device resources */
->>   	void (*free)(struct vdpa_device *vdev);
->> @@ -237,11 +245,12 @@ struct vdpa_config_ops {
->>   struct vdpa_device *__vdpa_alloc_device(struct device *parent,
->>   					const struct vdpa_config_ops *config,
->>   					int nvqs, unsigned int ngroups,
->> -					size_t size);
->> +					unsigned int nas, size_t size);
->>   
->> -#define vdpa_alloc_device(dev_struct, member, parent, config, nvqs, ngroups) \
->> +#define vdpa_alloc_device(dev_struct, member, parent, config, nvqs, \
->> +			  ngroups, nas)				    \
->>   			  container_of(__vdpa_alloc_device( \
->> -				       parent, config, nvqs, ngroups, \
->> +				       parent, config, nvqs, ngroups, nas,  \
->>   				       sizeof(dev_struct) + \
->>   				       BUILD_BUG_ON_ZERO(offsetof( \
->>   				       dev_struct, member))), \
->> -- 
->> 2.20.1
->>
+> Cc: Frank Rowand <frowand.list@gmail.com>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+> Cc: Rich Felker <dalias@libc.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: x86@kernel.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-mips@vger.kernel.org
+> Cc: linux-doc@vger.kernel.org
+> Cc: linux-sh@vger.kernel.org
+> Acked-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  .../devicetree/booting-without-of.rst         | 1585 -----------------
+>  Documentation/devicetree/index.rst            |    1 -
+>  Documentation/mips/booting.rst                |   28 +
+>  Documentation/mips/index.rst                  |    1 +
+>  Documentation/powerpc/booting.rst             |  110 ++
 
+LGTM.
+
+Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+
+cheers
