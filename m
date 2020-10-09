@@ -2,139 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1CBD288890
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 14:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3DA128888C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 14:21:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733042AbgJIMVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 08:21:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33496 "EHLO
+        id S1733018AbgJIMVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 08:21:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732974AbgJIMVP (ORCPT
+        with ESMTP id S1731081AbgJIMVP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 9 Oct 2020 08:21:15 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8CBDC0613D2;
-        Fri,  9 Oct 2020 05:21:14 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id ce10so12778441ejc.5;
-        Fri, 09 Oct 2020 05:21:14 -0700 (PDT)
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 874DBC0613D7
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 05:21:13 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id d1so7717852qtr.6
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 05:21:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=wqW8tLiDohXCRPeIW2J1lirrHi6UIgJCyYAWG9nSsGw=;
-        b=pZ2oP5rfYx1WSdVSTXAOLi7JIksRbP3W2mUtEUFh5x3bGY39SZ4zLnvFOmRb9ozutM
-         OMKWIZPk9qWDHqbuP1ZfST2Hx1Pf31leUu43PAKCDq0mVHFD8eNMKQBPfKBPCx/XG0Sj
-         bAhMU5pP4Gq9L6XjZ8/i9FpCGY4N5hYqPalYjJHj8y5z9a4DRFSz8qOmWsDxatEbU2SN
-         DhLS/9mCClwJB+JxI6BRb3LFUDCaNmGyrF/j7d8Nt96yVVrnqOOeUzSwti9W3CMqFU4S
-         RwOlKLOnrghzS/cEc64fEpMcA8gch/hRBSqS524zjrvwHDVi07bRZj6LWiZ/JIT2MxP+
-         KapQ==
+         :content-disposition:in-reply-to;
+        bh=GEBFnNzCc2Aa+VvpaaWfqgqAphuQOGzaQHxTmQfOeXI=;
+        b=dRexUDY3H8MczQ4QLPjINl81RcewsEJoOwrcRnS/wdN6+1ahY+3vJqHFQSRB3AKEat
+         Z5ZaXXZPosq4Wbd2jnV/U3qSyNEiSVNzFD8cJAswQl5FTJES+qJJJxPuS2/N1xstVsKE
+         DmLKmIoNq1PULtGkiX9+m6e1iqZaCGoeY5Z+TbjwSmpmk3vladKQnD3eC3IjfehfAuWk
+         OAoO3ZuMd+rz9DNMaLq4YRdS5/enCBHoI5KrUmpa+3FN6vqOFl+XYKf3xsXAEqCHUZGe
+         a3qzy4AHPVKLKT9jFp2Z0TSDspqDK1w0Z9U5mPCKkR2TBx/oNoqCaY/YIuclFEo3wtty
+         CzGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=wqW8tLiDohXCRPeIW2J1lirrHi6UIgJCyYAWG9nSsGw=;
-        b=jzOkWG93VwVGSbVzo+6/WhUK084ZjhdeFPciQcU+bofrdhdJtQZPEJpY8lT6SEt6Bt
-         +QwSg8ShD5iPAn5uUqDFMxIbivHy+DVMxT5vBwzkR/c5i8yr7arghJPc5F7zGU6iXAXk
-         yeWzbGN9wT5ZjY1qbV0sjYlMMgXSavIh7pJBzAuZCPWBmRjARXJaS1ePHNR9n8l92Fs+
-         yaqyFvnOMYur8gGVPOCVRZ3541lR126S3xz+n0iQhtnorH15t1qXj1i1UFlpYBDZ035Z
-         gPAfcHxhRp/dWSPL43TxzN4MOLYr7tY9rc6jWBI3Z6gnWkco+oGl2I6eMQtgcNhDnhp9
-         ALnA==
-X-Gm-Message-State: AOAM530JamE9qoKuO8HZcOLtTyoDpThHJmyzbSKtiHJePwbeUbBltrq7
-        HYtgRsZq3zAJptxWNvsfPWM=
-X-Google-Smtp-Source: ABdhPJw+iNVHcU/8xFz64o6lEQtVQ3Zwrk6X3Hl6RtS7BHWq3UuQGfKXLZa5khMX/UUNf9wiW0cSfQ==
-X-Received: by 2002:a17:906:d8e:: with SMTP id m14mr14407722eji.448.1602246073460;
-        Fri, 09 Oct 2020 05:21:13 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id j18sm6256432ejc.111.2020.10.09.05.21.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+         :mime-version:content-disposition:in-reply-to;
+        bh=GEBFnNzCc2Aa+VvpaaWfqgqAphuQOGzaQHxTmQfOeXI=;
+        b=IyOM2vsHRj5SN7Htrd0OcMqIYRZ0u1QP7cN1M5VUXLiyuwkkGflEK+nfFWa6LZF7+Z
+         unzfgRK+k6+vP4J4XNQSzAifmZav4E9qCdxXoBqJtcXR8rsytmWifkjXJZ+tcDUEYNyt
+         JLCWeFq9z/9OD8goqFy9kcCwa8IXkVN7tqvFagBQGliknimCBryHAmCyLTebFmq13jCo
+         RBF6rVgn5mKgrWYrJ7xRcenOuhDwUsbUAWacynD5UDtLYNHofwM8c7y5RDJL7p/5T23g
+         DYbNzC1w/j9vWi9Kz+VM7jRPH05nd9cKipiFId6KK00iAKJ50DluCAvvAQLeSFbL+ASg
+         MqIQ==
+X-Gm-Message-State: AOAM530ICz/EenoXcZwc+CkqdBusjrSZWmXXE7PhOSVONUV9xbqsGRw5
+        KZ39HyXQj9XOPME+EMAASXuOGg==
+X-Google-Smtp-Source: ABdhPJxabis31V1ruCjg81xS+awnWmlIxScXs/iSYcl2LZthnsEHjAadouQof92mVKkzbF3fOMDQng==
+X-Received: by 2002:ac8:1910:: with SMTP id t16mr12554428qtj.351.1602246072505;
         Fri, 09 Oct 2020 05:21:12 -0700 (PDT)
-Date:   Fri, 9 Oct 2020 14:21:10 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     krzk@kernel.org, robh+dt@kernel.org, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/5] dt-bindings: memory: tegra: Add missing swgroups
-Message-ID: <20201009122110.GD458338@ulmo>
-References: <20201008003746.25659-1-nicoleotsuka@gmail.com>
- <20201008003746.25659-5-nicoleotsuka@gmail.com>
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id x7sm3318061qkc.24.2020.10.09.05.21.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Oct 2020 05:21:11 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kQrOZ-001xjJ-2z; Fri, 09 Oct 2020 09:21:11 -0300
+Date:   Fri, 9 Oct 2020 09:21:11 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-s390@vger.kernel.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v2 09/17] mm: Add unsafe_follow_pfn
+Message-ID: <20201009122111.GN5177@ziepe.ca>
+References: <20201009075934.3509076-1-daniel.vetter@ffwll.ch>
+ <20201009075934.3509076-10-daniel.vetter@ffwll.ch>
+ <20201009123421.67a80d72@coco.lan>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="k4f25fnPtRuIRUb3"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201008003746.25659-5-nicoleotsuka@gmail.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+In-Reply-To: <20201009123421.67a80d72@coco.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 09, 2020 at 12:34:21PM +0200, Mauro Carvalho Chehab wrote:
+> Hi,
+> 
+> Em Fri,  9 Oct 2020 09:59:26 +0200
+> Daniel Vetter <daniel.vetter@ffwll.ch> escreveu:
+> 
+> > Way back it was a reasonable assumptions that iomem mappings never
+> > change the pfn range they point at. But this has changed:
+> > 
+> > - gpu drivers dynamically manage their memory nowadays, invalidating
+> > ptes with unmap_mapping_range when buffers get moved
+> > 
+> > - contiguous dma allocations have moved from dedicated carvetouts to
+> > cma regions. This means if we miss the unmap the pfn might contain
+> > pagecache or anon memory (well anything allocated with GFP_MOVEABLE)
+> > 
+> > - even /dev/mem now invalidates mappings when the kernel requests that
+> > iomem region when CONFIG_IO_STRICT_DEVMEM is set, see 3234ac664a87
+> > ("/dev/mem: Revoke mappings when a driver claims the region")
+> > 
+> > Accessing pfns obtained from ptes without holding all the locks is
+> > therefore no longer a good idea.
+> > 
+> > Unfortunately there's some users where this is not fixable (like v4l
+> > userptr of iomem mappings) or involves a pile of work (vfio type1
+> > iommu). For now annotate these as unsafe and splat appropriately.
+> > 
+> > This patch adds an unsafe_follow_pfn, which later patches will then
+> > roll out to all appropriate places.
+> 
+> NACK, as this breaks an existing userspace API on media.
 
---k4f25fnPtRuIRUb3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It doesn't break it. You get a big warning the thing is broken and it
+keeps working.
 
-On Wed, Oct 07, 2020 at 05:37:45PM -0700, Nicolin Chen wrote:
-> According to Tegra X1 TRM, there are missing swgroups in the
-> tegra210_swgroups list. So this patch adds them in bindings.
->=20
-> Note that the TEGRA_SWGROUP_GPU (in list) should be actually
-> TEGRA_SWGROUP_GPUB (in TRM), yet TEGRA_SWGROUP_GPU (in TRM)
-> is not being used -- only TEGRA_SWGROUP_GPUB (in TRM) is. So
-> this patch does not add TEGRA_SWGROUP_GPU (in TRM) and keeps
-> TEGRA_SWGROUP_GPU (in list) as it is.
->=20
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> ---
->  include/dt-bindings/memory/tegra210-mc.h | 10 ++++++++++
->  1 file changed, 10 insertions(+)
->=20
-> diff --git a/include/dt-bindings/memory/tegra210-mc.h b/include/dt-bindin=
-gs/memory/tegra210-mc.h
-> index c226cba9e077..f9fcb18a6d9b 100644
-> --- a/include/dt-bindings/memory/tegra210-mc.h
-> +++ b/include/dt-bindings/memory/tegra210-mc.h
-> @@ -33,6 +33,16 @@
->  #define TEGRA_SWGROUP_AXIAP	28
->  #define TEGRA_SWGROUP_ETR	29
->  #define TEGRA_SWGROUP_TSECB	30
-> +#define TEGRA_SWGROUP_NV	31
-> +#define TEGRA_SWGROUP_NV2	32
-> +#define TEGRA_SWGROUP_PPCS1	33
-> +#define TEGRA_SWGROUP_DC1	34
-> +#define TEGRA_SWGROUP_PPCS2	35
-> +#define TEGRA_SWGROUP_HC1	36
-> +#define TEGRA_SWGROUP_SE1	37
-> +#define TEGRA_SWGROUP_TSEC1	38
-> +#define TEGRA_SWGROUP_TSECB1	39
-> +#define TEGRA_SWGROUP_NVDEC1	40
+We can't leave such a huge security hole open - it impacts other
+subsystems, distros need to be able to run in a secure mode.
 
-I'm not sure this is right. The existing list is based on "Table 4:
-Client to Software Name Mapping" from page 28 of the Tegra X1 TRM, and
-none of these new swgroups seem to be present in that table.
+> While I agree that using the userptr on media is something that
+> new drivers may not support, as DMABUF is a better way of
+> handling it, changing this for existing ones is a big no, 
+> as it may break usersapace.
 
-Where exactly did you get those from?
+media community needs to work to fix this, not pretend it is OK to
+keep going as-is.
 
-Thierry
+Dealing with security issues is the one case where an uABI break might
+be acceptable.
 
---k4f25fnPtRuIRUb3
-Content-Type: application/pgp-signature; name="signature.asc"
+If you want to NAK it then you need to come up with the work to do
+something here correctly that will support the old drivers without the
+kernel taint.
 
------BEGIN PGP SIGNATURE-----
+Unfortunately making things uncomfortable for the subsystem is the big
+hammer the core kernel needs to use to actually get this security work
+done by those responsible.
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+AVbYACgkQ3SOs138+
-s6EjYw//d7rFLljg4uUz0GAYrWkU+KA1cHfZKLDjjJMNLRm6osUpTfew22WmLk5r
-UupPbHAWPLRE6JEmRvd+YZo9woJR6PENh90tv05ZeyzT17OyqEhIcdwF6tvO+ToQ
-4k1uvcuG2PIC1Ea7a9Q+jpi2H4g60bocm1StHVN0WCj5HzkmIXlK8rlgA7TkXNGC
-eNvIYHq7orAhlk2OMgTzloYk0FcoJgykE3HuJhXbL4k5kO2c65F5Nf07TUyklK3y
-2S2pZcGa7Qs1ztKWB8gHrhai9o6er4v+l2KGN/XNeyaDEzOIMqmfDxbSSyQPnTBL
-IKHvWLLsDijohAT2FJpJkOOl8yDKDWD8Poi9S81JBEIhQzzWavy7X9vY4kfJqRhc
-C2bUVvLswzKbiST2zSGuR7g38yqdW3JPa7yiKBjCIca+MYo0N2DZ+lvFoXvBWvOC
-p6T5uVFBd7qhz/jWfcDD3n2hCcFEIXaljoLPNTEU3OhaoAymwPpgZFQuKlZrHuOK
-/U1SkTGphPxLNf29TJiCeCfPUHmFCOY7QpJCcDeQ+gyB9dfXf9TZqwxSJE5341uo
-PP2P86/Kiv/f/x0AnHFkDs7A41CgDEVX87y3x6lzCrUGHJOZH4VK21urVt1HwzVD
-jrkTX4VOKj825TFTgY9ck/vxiuk/YkKlfReKqlzbbiTVxlvAkK0=
-=C4t1
------END PGP SIGNATURE-----
-
---k4f25fnPtRuIRUb3--
+Jason
