@@ -2,68 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46C082889A8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 15:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5AEA2889A7
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 15:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388284AbgJINVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 09:21:34 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:59831 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729935AbgJINVe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 09:21:34 -0400
-Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1kQsKw-0005qq-I7; Fri, 09 Oct 2020 13:21:30 +0000
-Date:   Fri, 9 Oct 2020 15:21:29 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Michael =?utf-8?B?V2Vpw58=?= <michael.weiss@aisec.fraunhofer.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Andrei Vagin <avagin@gmail.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v2 0/4] time namespace aware system boot time
-Message-ID: <20201009132129.3vzdgzyy7gloou6v@wittgenstein>
-References: <20201008053944.32718-1-michael.weiss@aisec.fraunhofer.de>
+        id S2388214AbgJINUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 09:20:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60804 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730978AbgJINUx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 09:20:53 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC3CD22276;
+        Fri,  9 Oct 2020 13:20:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602249653;
+        bh=/rI2I9G6H8suPrKWaTp5fCH2s71sZxapXKIUS+xTw6Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LdFkAjpziK5B2T/04d7Por4gdi6bBa0ZHvESEnlFUHej65WhpQ+KzEcJ/g2EUKduH
+         o0KhMe8Tm+YjcmR3nG8MfzSWRXMtckLT2x/DMEUeIceQa/PQ/63wQsGc/hTU4NQ8kO
+         k4mIgaUVvHMsSZiRaqk3OCQVyAwhDN3UsiOu1GWo=
+Date:   Fri, 9 Oct 2020 15:21:39 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     "Rantala, Tommi T. (Nokia - FI/Espoo)" <tommi.t.rantala@nokia.com>
+Cc:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: LTS couple perf test and perf top fixes
+Message-ID: <20201009132139.GB561744@kroah.com>
+References: <f471ab5f93cd97af4eddebbc78d047289cc55888.camel@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201008053944.32718-1-michael.weiss@aisec.fraunhofer.de>
+In-Reply-To: <f471ab5f93cd97af4eddebbc78d047289cc55888.camel@nokia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 07:39:40AM +0200, Michael Weiß wrote:
-> Time namespaces make it possible to virtualize time inside of
-> containers, e.g., it is feasible to reset the uptime of a container
-> to zero by setting the time namespace offset for boottime to the
-> negated current value of the CLOCK_BOOTTIME.
+On Fri, Oct 09, 2020 at 11:28:09AM +0000, Rantala, Tommi T. (Nokia - FI/Espoo) wrote:
+> Hi Greg, Sasha,
 > 
-> However, the boot time stamp provided by getboottime64() does not
-> take care of time namespaces. The resulting boot time stamp 'btime'
-> provided by /proc/stat does not show a plausible time stamp inside
-> the time namespace of a container.
+> Can you pick this to 5.4:
 > 
-> We address this by shifting the value returned by getboottime64()
-> by subtracting the boottime offset of the time namespace.
-> (A selftest to check the expected /proc/stat 'btime' inside the
-> namespace is provided.)
+> commit dbd660e6b2884b864d2642d930a163d3bcebe4be
+> Author: Tommi Rantala <tommi.t.rantala@nokia.com>
+> Date:   Thu Apr 23 14:53:40 2020 +0300
 > 
-> Further, to avoid to show processes as time travelers inside of the
-> time namespace the boottime offset then needs to be added to the
-> start_bootime provided by the task_struct.
+>     perf test session topology: Fix data path
 > 
-> v2 Changes:
-> Fixed compile errors with TIME_NS not set in config
-> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> And this to 5.4 and older LTS trees too:
+> 
+> commit 29b4f5f188571c112713c35cc87eefb46efee612
+> Author: Tommi Rantala <tommi.t.rantala@nokia.com>
+> Date:   Thu Mar 5 10:37:12 2020 +0200
+> 
+>     perf top: Fix stdio interface input handling with glibc 2.28+
+> 
 
-Hey Michael,
+Now queued up, thanks.
 
-Thanks for the patches. This looks like a good idea to me. Since
-/proc/uptime is now virtualized according to the timens the caller is in
-btime has to be virtualized too.
-
-Christian
+greg k-h
