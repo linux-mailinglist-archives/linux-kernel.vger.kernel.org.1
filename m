@@ -2,74 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B5C228A28D
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:58:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02A7228A404
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:12:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390610AbgJJW6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:58:03 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:14003 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730620AbgJJTvz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:51:55 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4C7sRQ6nGwzB09ZY;
-        Sat, 10 Oct 2020 19:30:58 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id M0OXNRI91eu1; Sat, 10 Oct 2020 19:30:58 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4C7sRQ3vnkzB09ZX;
-        Sat, 10 Oct 2020 19:30:58 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 75A7F8B77D;
-        Sat, 10 Oct 2020 19:31:00 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id QlNDzOYQ_dmU; Sat, 10 Oct 2020 19:31:00 +0200 (CEST)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3FF4F8B75B;
-        Sat, 10 Oct 2020 19:31:00 +0200 (CEST)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id F3B5C663C6; Sat, 10 Oct 2020 17:30:59 +0000 (UTC)
-Message-Id: <ceede82fadf37f3b8275e61fcf8cf29a3e2ec7fe.1602351011.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc/mm: Fix verification of MMU_FTR_TYPE_44x
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Alastair D'Silva <alastair@d-silva.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Sat, 10 Oct 2020 17:30:59 +0000 (UTC)
+        id S2389206AbgJJWz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:55:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731431AbgJJTVv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 15:21:51 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6164C08EA7F
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 10:31:13 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id p15so17567186ejm.7
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 10:31:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xsOZOc5wUkDsyS+q4XR7sRY+/Nw08dWS4rH9PR3SdYM=;
+        b=K43vYuvFf4p0HKwpNNYM8EVjuArTRuuNWIw2q4YLC5jyws5WqABCqrRlB8L6Kw/ga/
+         9pb07pav9vu70DJL9+qIG+8WZUav68UhLbRS2hY3VnFfDpqam6GcqIBnDSm/T02riaI0
+         bK3Q77l+IKqRqvdVTvJ6gEi/4zr+9omw8Jdkw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xsOZOc5wUkDsyS+q4XR7sRY+/Nw08dWS4rH9PR3SdYM=;
+        b=gvMfm0wF/HiaJzTl+gqo5RpmTjdVlJYd+A475p1yFbZPU4U1Ip3F9YBnHc5HqAPox7
+         0lNGyLgqGmN20MzU7fS3D0rqPqDNC6IxL0yvMuCvRP/2fMlKB6x3D9XdjMfW6uQC7aLH
+         6RJWHrP/54rnKyXMAz0h0QTUZrtJKUfYW2tVFZj8ujynjA+0a47jJE+2pwsnnrdIcL8K
+         Vehd3zt0ofPz7JjgxmDD1+TqQOoW/cGRb3CmMW10Fb3hkFu0fA4jHTa6lmfYMqKl2UDk
+         64Hm1yqPxzPpZWOr2BQR3ArYLH1Fqs2ISBgRsO97WQDd70t8udKI9le9tRKpxaYY+NFy
+         cxEw==
+X-Gm-Message-State: AOAM531Ya9/MMXkGxpdz6JeMlqyVBKaoB43t6KVYShS+sM95jOV7wJ+o
+        OJfvObURVJi6c7npZQ+c38Sn+mL3D1tATw==
+X-Google-Smtp-Source: ABdhPJwKXhLdQGeLYmAXsYirqNNKfvdzrAnAa/6Tyo7zQL+qO9j55lUFiG55WWG5BPHICGRcNvj1gg==
+X-Received: by 2002:a17:906:f11a:: with SMTP id gv26mr19702198ejb.13.1602351071664;
+        Sat, 10 Oct 2020 10:31:11 -0700 (PDT)
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com. [209.85.128.44])
+        by smtp.gmail.com with ESMTPSA id b25sm7978387eds.66.2020.10.10.10.31.10
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 10 Oct 2020 10:31:10 -0700 (PDT)
+Received: by mail-wm1-f44.google.com with SMTP id p15so12875504wmi.4
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 10:31:10 -0700 (PDT)
+X-Received: by 2002:a1c:8057:: with SMTP id b84mr3433695wmd.116.1602351069766;
+ Sat, 10 Oct 2020 10:31:09 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201009075934.3509076-1-daniel.vetter@ffwll.ch>
+ <20201009075934.3509076-10-daniel.vetter@ffwll.ch> <20201009123421.67a80d72@coco.lan>
+ <20201009122111.GN5177@ziepe.ca> <20201009143723.45609bfb@coco.lan>
+In-Reply-To: <20201009143723.45609bfb@coco.lan>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Sat, 10 Oct 2020 19:30:59 +0200
+X-Gmail-Original-Message-ID: <CAAFQd5CVqa4o0W32FE_NsSheN906uE7uA5gctHr=Z-PeU=1wuw@mail.gmail.com>
+Message-ID: <CAAFQd5CVqa4o0W32FE_NsSheN906uE7uA5gctHr=Z-PeU=1wuw@mail.gmail.com>
+Subject: Re: [PATCH v2 09/17] mm: Add unsafe_follow_pfn
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MMU_FTR_TYPE_44x cannot be checked by cpu_has_feature()
+Hi Mauro,
 
-Use mmu_has_feature() instead
+On Fri, Oct 9, 2020 at 2:37 PM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
+>
+> Em Fri, 9 Oct 2020 09:21:11 -0300
+> Jason Gunthorpe <jgg@ziepe.ca> escreveu:
+>
+> > On Fri, Oct 09, 2020 at 12:34:21PM +0200, Mauro Carvalho Chehab wrote:
+> > > Hi,
+> > >
+> > > Em Fri,  9 Oct 2020 09:59:26 +0200
+> > > Daniel Vetter <daniel.vetter@ffwll.ch> escreveu:
+> > >
+> > > > Way back it was a reasonable assumptions that iomem mappings never
+> > > > change the pfn range they point at. But this has changed:
+> > > >
+> > > > - gpu drivers dynamically manage their memory nowadays, invalidating
+> > > > ptes with unmap_mapping_range when buffers get moved
+> > > >
+> > > > - contiguous dma allocations have moved from dedicated carvetouts to
+> > > > cma regions. This means if we miss the unmap the pfn might contain
+> > > > pagecache or anon memory (well anything allocated with GFP_MOVEABLE)
+> > > >
+> > > > - even /dev/mem now invalidates mappings when the kernel requests that
+> > > > iomem region when CONFIG_IO_STRICT_DEVMEM is set, see 3234ac664a87
+> > > > ("/dev/mem: Revoke mappings when a driver claims the region")
+> > > >
+> > > > Accessing pfns obtained from ptes without holding all the locks is
+> > > > therefore no longer a good idea.
+> > > >
+> > > > Unfortunately there's some users where this is not fixable (like v4l
+> > > > userptr of iomem mappings) or involves a pile of work (vfio type1
+> > > > iommu). For now annotate these as unsafe and splat appropriately.
+> > > >
+> > > > This patch adds an unsafe_follow_pfn, which later patches will then
+> > > > roll out to all appropriate places.
+> > >
+> > > NACK, as this breaks an existing userspace API on media.
+> >
+> > It doesn't break it. You get a big warning the thing is broken and it
+> > keeps working.
+> >
+> > We can't leave such a huge security hole open - it impacts other
+> > subsystems, distros need to be able to run in a secure mode.
+>
+> Well, if distros disable it, then apps will break.
+>
 
-Fixes: 23eb7f560a2a ("powerpc: Convert flush_icache_range & friends to C")
-Cc: stable@vger.kernel.org
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/mm/mem.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Do we have any information on userspace that actually needs this functionality?
 
-diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
-index ddc32cc1b6cf..b7586d8c835b 100644
---- a/arch/powerpc/mm/mem.c
-+++ b/arch/powerpc/mm/mem.c
-@@ -530,7 +530,7 @@ void __flush_dcache_icache(void *p)
- 	 * space occurs, before returning to user space.
- 	 */
- 
--	if (cpu_has_feature(MMU_FTR_TYPE_44x))
-+	if (mmu_has_feature(MMU_FTR_TYPE_44x))
- 		return;
- 
- 	invalidate_icache_range(addr, addr + PAGE_SIZE);
--- 
-2.25.0
+Note that we're _not_ talking here about the complete USERPTR
+functionality, but rather just the very corner case of carveout memory
+not backed by struct pages.
 
+Given that the current in-tree ways of reserving carveout memory, such
+as shared-dma-pool, actually give memory backed by struct pages, do we
+even have a source of such legacy memory in the kernel today?
+
+I think that given that this is a very niche functionality, we could
+have it disabled by default for security reasons and if someone
+_really_ (i.e. there is no replacement) needs it, they probably need
+to use a custom kernel build anyway for their exotic hardware setup
+(with PFN-backed carveout memory), so they can enable it.
+
+> > > While I agree that using the userptr on media is something that
+> > > new drivers may not support, as DMABUF is a better way of
+> > > handling it, changing this for existing ones is a big no,
+> > > as it may break usersapace.
+> >
+> > media community needs to work to fix this, not pretend it is OK to
+> > keep going as-is.
+>
+> > Dealing with security issues is the one case where an uABI break might
+> > be acceptable.
+> >
+> > If you want to NAK it then you need to come up with the work to do
+> > something here correctly that will support the old drivers without the
+> > kernel taint.
+> >
+> > Unfortunately making things uncomfortable for the subsystem is the big
+> > hammer the core kernel needs to use to actually get this security work
+> > done by those responsible.
+>
+>
+> I'm not pretending that this is ok. Just pointing that the approach
+> taken is NOT OK.
+>
+> I'm not a mm/ expert, but, from what I understood from Daniel's patch
+> description is that this is unsafe *only if*  __GFP_MOVABLE is used.
+>
+> Well, no drivers inside the media subsystem uses such flag, although
+> they may rely on some infrastructure that could be using it behind
+> the bars.
+>
+> If this is the case, the proper fix seems to have a GFP_NOT_MOVABLE
+> flag that it would be denying the core mm code to set __GFP_MOVABLE.
+>
+> Please let address the issue on this way, instead of broken an
+> userspace API that it is there since 1991.
+
+Note that USERPTR as a whole generally has been considered deprecated
+in V4L2 for many years and people have been actively discouraged to
+use it. And, still, we're just talking here about the very rare corner
+case, not the whole USERPTR API.
+
+Best regards,
+Tomasz
