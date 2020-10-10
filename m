@@ -2,127 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA52928A315
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:07:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29D1428A44C
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:15:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729302AbgJJW61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:58:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56970 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731094AbgJJTxO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:53:14 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9F91C223B0;
-        Sat, 10 Oct 2020 16:12:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602346329;
-        bh=/o6kc0w86AtQfZwMUUuejermsLWKUUm141TautCeueA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=QthZT2Jf/4kVucgsha/eb8a9anw9MgY337YSbEsYgzCE2ZzgZUeJctUooOyDX2UUq
-         9vElLjcUKvplOqDAwRQuZEjB2BRkKwEMxtPWw3WWZn6X4Kx5nKk2yxw5kyZb3b8QKh
-         Am7IGbh6YH3KxHnzOX2YZe+86lQ7o/YVmVSIzbDU=
-Date:   Sat, 10 Oct 2020 17:12:05 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] iio: adc: ad7887: invert/rework external ref logic
-Message-ID: <20201010171205.56890964@archlinux>
-In-Reply-To: <20201002082723.184810-1-alexandru.ardelean@analog.com>
-References: <20201001141143.925-1-alexandru.ardelean@analog.com>
-        <20201002082723.184810-1-alexandru.ardelean@analog.com>
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1729096AbgJJWxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:53:09 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:44291 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731284AbgJJTFt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 15:05:49 -0400
+X-IronPort-AV: E=Sophos;i="5.77,359,1596492000"; 
+   d="scan'208";a="471929582"
+Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Oct 2020 18:14:23 +0200
+Date:   Sat, 10 Oct 2020 18:14:23 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Valentin Schneider <valentin.schneider@arm.com>
+cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        Gilles Muller <Gilles.Muller@inria.fr>
+Subject: Re: SD_LOAD_BALANCE
+In-Reply-To: <jhj7dtaokxe.mognet@arm.com>
+Message-ID: <alpine.DEB.2.22.394.2010101740290.2691@hadrien>
+References: <alpine.DEB.2.22.394.2009031605190.2496@hadrien> <jhj7dtaokxe.mognet@arm.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2 Oct 2020 11:27:23 +0300
-Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+Hello,
 
-> This change inverts/reworks the logic to use an external reference via a
-> provided regulator.
-> 
-> Now the driver tries to obtain a regulator. If one is found, then it is
-> used. The rest of the driver logic already checks if there is a non-NULL
-> reference to a regulator, so it should be fine.
-> 
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-Applied to the togreg branch of iio.git and pushed out as testing for
-all the normal reasons.
+Previously, I was wondering about why starting in Linux v5.8 my unblocking
+threads were moving to different sockets more frequently than in previous
+releases.  Now, I think that I have found the reason.
 
-Interestingly it seems something odd happened to my email and I was missing
-random threads/part threads.  I've pulled them off lore.kernel.org but if
-I seem to have lost anything let me know.
+The first issue is the change from runnable load average to load average
+in computing wake_affine_weight:
 
-If anyone has a bounce message from me, please send it over as I'm curious
-as to what went wrong!
+---
 
-Thanks,
+commit 11f10e5420f6cecac7d4823638bff040c257aba9
+Author: Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri Oct 18 15:26:36 2019 +0200
 
-Jonathan
- 
-> ---
-> 
-> Changelog v1 -> v2:
-> * remove omitted '!pdata->use_onchip_ref' check; the field was removed from
->   the platform data, but was still used
-> 
->  drivers/iio/adc/ad7887.c             | 12 ++++++++----
->  include/linux/platform_data/ad7887.h |  4 ----
->  2 files changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/ad7887.c b/drivers/iio/adc/ad7887.c
-> index 037bcb47693c..99a480ad3985 100644
-> --- a/drivers/iio/adc/ad7887.c
-> +++ b/drivers/iio/adc/ad7887.c
-> @@ -246,11 +246,15 @@ static int ad7887_probe(struct spi_device *spi)
->  
->  	st = iio_priv(indio_dev);
->  
-> -	if (!pdata || !pdata->use_onchip_ref) {
-> -		st->reg = devm_regulator_get(&spi->dev, "vref");
-> -		if (IS_ERR(st->reg))
-> +	st->reg = devm_regulator_get_optional(&spi->dev, "vref");
-> +	if (IS_ERR(st->reg)) {
-> +		if (PTR_ERR(st->reg) != -ENODEV)
->  			return PTR_ERR(st->reg);
->  
-> +		st->reg = NULL;
-> +	}
-> +
-> +	if (st->reg) {
->  		ret = regulator_enable(st->reg);
->  		if (ret)
->  			return ret;
-> @@ -269,7 +273,7 @@ static int ad7887_probe(struct spi_device *spi)
->  	/* Setup default message */
->  
->  	mode = AD7887_PM_MODE4;
-> -	if (!pdata || !pdata->use_onchip_ref)
-> +	if (!st->reg)
->  		mode |= AD7887_REF_DIS;
->  	if (pdata && pdata->en_dual)
->  		mode |= AD7887_DUAL;
-> diff --git a/include/linux/platform_data/ad7887.h b/include/linux/platform_data/ad7887.h
-> index 732af46b2d16..9b4dca6ae70b 100644
-> --- a/include/linux/platform_data/ad7887.h
-> +++ b/include/linux/platform_data/ad7887.h
-> @@ -13,13 +13,9 @@
->   *	second input channel, and Vref is internally connected to Vdd. If set to
->   *	false the device is used in single channel mode and AIN1/Vref is used as
->   *	VREF input.
-> - * @use_onchip_ref: Whether to use the onchip reference. If set to true the
-> - *	internal 2.5V reference is used. If set to false a external reference is
-> - *	used.
->   */
->  struct ad7887_platform_data {
->  	bool en_dual;
-> -	bool use_onchip_ref;
->  };
->  
->  #endif /* IIO_ADC_AD7887_H_ */
+    sched/fair: Use load instead of runnable load in wakeup path
 
+    Runnable load was originally introduced to take into account the case where
+    blocked load biases the wake up path which may end to select an overloaded
+    CPU with a large number of runnable tasks instead of an underutilized
+    CPU with a huge blocked load.
+
+    Tha wake up path now starts looking for idle CPUs before comparing
+    runnable load and it's worth aligning the wake up path with the
+    load_balance() logic.
+
+---
+
+The unfortunate case is illustrated by the following trace (*** on the
+important lines):
+
+       trace-cmd-8006  [118]   451.444751: sched_migrate_task:   comm=containerd pid=2481 prio=120 orig_cpu=114 dest_cpu=118
+          ua.B.x-8007  [105]   451.444752: sched_switch:         ua.B.x:8007 [120] S ==> swapper/105:0 [120]
+       trace-cmd-8006  [118]   451.444769: sched_switch:         ua.B.x:8006 [120] S ==> containerd:2481 [120] ***
+      containerd-2481  [118]   451.444859: sched_switch:         containerd:2481 [120] S ==> swapper/118:0 [120] ***
+          ua.B.x-8148  [016]   451.444910: sched_switch:         ua.B.x:8148 [120] S ==> swapper/16:0 [120]
+          ua.B.x-8154  [127]   451.445186: sched_switch:         ua.B.x:8154 [120] S ==> swapper/127:0 [120]
+          ua.B.x-8145  [047]   451.445199: sched_switch:         ua.B.x:8145 [120] S ==> swapper/47:0 [120]
+          ua.B.x-8138  [147]   451.445200: sched_switch:         ua.B.x:8138 [120] S ==> swapper/147:0 [120]
+          ua.B.x-8152  [032]   451.445210: sched_switch:         ua.B.x:8152 [120] S ==> swapper/32:0 [120]
+          ua.B.x-8144  [067]   451.445215: sched_switch:         ua.B.x:8144 [120] S ==> swapper/67:0 [120]
+          ua.B.x-8137  [000]   451.445219: sched_switch:         ua.B.x:8137 [120] S ==> swapper/0:0 [120]
+          ua.B.x-8140  [075]   451.445225: sched_switch:         ua.B.x:8140 [120] S ==> swapper/75:0 [120]
+          ua.B.x-8155  [084]   451.445229: sched_switch:         ua.B.x:8155 [120] S ==> swapper/84:0 [120]
+          ua.B.x-8161  [155]   451.445232: sched_switch:         ua.B.x:8161 [120] S ==> swapper/155:0 [120]
+          ua.B.x-8156  [095]   451.445261: sched_switch:         ua.B.x:8156 [120] S ==> swapper/95:0 [120]
+          ua.B.x-8153  [134]   451.445268: sched_switch:         ua.B.x:8153 [120] S ==> swapper/134:0 [120]
+          ua.B.x-8151  [154]   451.445268: sched_switch:         ua.B.x:8151 [120] S ==> swapper/154:0 [120]
+          ua.B.x-8141  [107]   451.445273: sched_switch:         ua.B.x:8141 [120] S ==> swapper/107:0 [120]
+          ua.B.x-8146  [131]   451.445275: sched_switch:         ua.B.x:8146 [120] S ==> swapper/131:0 [120]
+          ua.B.x-8160  [035]   451.445286: sched_switch:         ua.B.x:8160 [120] S ==> swapper/35:0 [120]
+          ua.B.x-8136  [088]   451.445286: sched_switch:         ua.B.x:8136 [120] S ==> swapper/88:0 [120]
+          ua.B.x-8159  [056]   451.445290: sched_switch:         ua.B.x:8159 [120] S ==> swapper/56:0 [120]
+          ua.B.x-8147  [036]   451.445294: sched_switch:         ua.B.x:8147 [120] S ==> swapper/36:0 [120]
+          ua.B.x-8150  [150]   451.445298: sched_switch:         ua.B.x:8150 [120] S ==> swapper/150:0 [120]
+          ua.B.x-8142  [159]   451.445300: sched_switch:         ua.B.x:8142 [120] S ==> swapper/159:0 [120]
+          ua.B.x-8157  [058]   451.445309: sched_switch:         ua.B.x:8157 [120] S ==> swapper/58:0 [120]
+          ua.B.x-8149  [123]   451.445311: sched_switch:         ua.B.x:8149 [120] S ==> swapper/123:0 [120]
+          ua.B.x-8162  [156]   451.445313: sched_switch:         ua.B.x:8162 [120] S ==> swapper/156:0 [120]
+          ua.B.x-8164  [019]   451.445317: sched_switch:         ua.B.x:8164 [120] S ==> swapper/19:0 [120]
+          ua.B.x-8139  [068]   451.445319: sched_switch:         ua.B.x:8139 [120] S ==> swapper/68:0 [120]
+          ua.B.x-8143  [126]   451.445335: sched_switch:         ua.B.x:8143 [120] S ==> swapper/126:0 [120]
+          ua.B.x-8163  [062]   451.445361: sched_switch:         ua.B.x:8163 [120] S ==> swapper/62:0 [120]
+          ua.B.x-8158  [129]   451.445371: sched_switch:         ua.B.x:8158 [120] S ==> swapper/129:0 [120]
+          ua.B.x-8040  [043]   451.445413: sched_wake_idle_without_ipi: cpu=0
+          ua.B.x-8165  [098]   451.445451: sched_switch:         ua.B.x:8165 [120] S ==> swapper/98:0 [120]
+          ua.B.x-8069  [009]   451.445622: sched_waking:         comm=ua.B.x pid=8007 prio=120 target_cpu=105
+          ua.B.x-8069  [009]   451.445635: sched_wake_idle_without_ipi: cpu=105
+          ua.B.x-8069  [009]   451.445638: sched_wakeup:         ua.B.x:8007 [120] success=1 CPU:105
+          ua.B.x-8069  [009]   451.445639: sched_waking:         comm=ua.B.x pid=8006 prio=120 target_cpu=118
+          <idle>-0     [105]   451.445641: sched_switch:         swapper/105:0 [120] R ==> ua.B.x:8007 [120]
+          ua.B.x-8069  [009]   451.445645: bprint:               select_task_rq_fair: wake_affine_weight2 returning this_cpu: 614400 < 2981888
+          ua.B.x-8069  [009]   451.445650: sched_migrate_task:   comm=ua.B.x pid=8006 prio=120 orig_cpu=118 dest_cpu=129 ***
+
+Basically, core 118 has run both a thread of the NAS UA benchmark and a
+containerd, and so it seems to have a higher load average than this_cpu, ie
+9, when it wakes up.  The commit says "The wake up path now starts looking
+for idle CPUs", but this is not always the case.  Here the target and prev
+are not on the same socket, and in that case cpus_share_cache(prev, target)
+fails and there is no check as to whether prev is idle.  The result is that
+an idle core is left idle and the thread is migrated to another socket,
+perhaps impacting locality.
+
+Prior to v5.8 on my machine this was a rare event, because there were not
+many of these background processes.  But in v5.8, the default governor for
+Intel machines without the HWP feature was changed from intel_pstate to
+intel_cpufreq.  The use of intel_cpufreq triggers very frequent kworkers on
+all cores, which makes it much more likely that cores that are currently
+idle, and are overall not at all overloaded, will have a higher load
+average even with the waking thread deducted, than the core managing the
+wakeup of the threads.
+
+Would it be useful to always check whether prev is idle, perhaps in
+wake_affine_idle or perhaps in select_idle_sibling?
+
+Traces from various versions are available at
+https://pages.lip6.fr/Julia.Lawall/uas.pdf.  5.8 and 5.9-rc7 are toward the
+end of the file.  In these versions, all the threads systematically move
+around at synchronization points in the program.
+
+thanks,
+julia
