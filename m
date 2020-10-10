@@ -2,146 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B43128A309
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F4528A385
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732112AbgJJW7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:59:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57032 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731620AbgJJTyL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:54:11 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5926720776;
-        Sat, 10 Oct 2020 15:03:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602342228;
-        bh=xGydme+UTV4NKZi6UvEPEeCFfn0iIC8Oj9EpAiXdy5Q=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=EezBVq+qYtujYEV7awQcPBPp7Se6Ebzh9AuAq56e5AOD3lzLp6VlNBENcOjxOl6PD
-         UUouMBBQqZ3ZAUi52rzSHqc5/DyvlNQuxwkezscH1M+7RweUdByJjjr3XZZrx8qDHm
-         sz26hp80dilYI+0HsuV5v5TkCBaACy1B7N//qluA=
-Date:   Sun, 11 Oct 2020 00:03:44 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Tom Zanussi <zanussi@kernel.org>
-Cc:     rostedt@goodmis.org, axelrasmussen@google.com, mhiramat@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] tracing: Don't show dynamic string internals in
- synthetic event description
-Message-Id: <20201011000344.4056fd1b0e8a7e48f2677ac0@kernel.org>
-In-Reply-To: <b3b7baf7813298a5ede4ff02e2e837b91c05a724.1602255803.git.zanussi@kernel.org>
-References: <cover.1602255803.git.zanussi@kernel.org>
-        <b3b7baf7813298a5ede4ff02e2e837b91c05a724.1602255803.git.zanussi@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1729531AbgJJW46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:56:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52911 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732120AbgJJTkK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 15:40:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602358807;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lScSHb5GRh2T45yUL3D8Nuv4fLYCBkJXmfkPANcLZ0g=;
+        b=NYVIOVV4VW8r9DiQo8/O8YrsGMux6TnhUUlxHzv8wNllMHHM5lxcrVXIIjAQvsy92RjY+Q
+        /u1EVrsXchB3feMX4PKHusJpZBzI+44n8pb2qg7FUCLWIQ7bzcTNARR19XrViJ8BopDqLW
+        nMFrwF5gJ4wa7bUVpcmlgWRf7TocEDU=
+Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
+ [209.85.161.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-45-hUw22CS7MwWL2XiF0E2yIQ-1; Sat, 10 Oct 2020 11:07:11 -0400
+X-MC-Unique: hUw22CS7MwWL2XiF0E2yIQ-1
+Received: by mail-oo1-f72.google.com with SMTP id o74so5269076ooo.4
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 08:07:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=lScSHb5GRh2T45yUL3D8Nuv4fLYCBkJXmfkPANcLZ0g=;
+        b=maaVRz4E7MceuSsocDBW7raOpgkM+8AEgLE6YHuNi2lr0Wx08TsmvBpBKtWs3GWaf3
+         WEwyQNzqH6uDlgPeVi34d9K/72dqm1Hwgwa5KWv5OJV0Ue78B7cwRsaRNDDj+H7Szp72
+         Vj7SWAM4JLIb0lcOERJlAZyoNnZhsJkKs/gjap86irH3WhZ0C5+P2Gg96bSrKmJ38geL
+         ZhWnCE4AU1hoyIIPt81hq6GYDCfZ0R3RqoiNDe9LtxWRQcn2RHbNnlB14Ma5LXDY8zCO
+         YX3JsM4G/Q5XNHzmLU/kb6dGasrFia5GVGXCo6vbX8dbLLWwk/4sEA8jKxMEVSNqCp4C
+         NPrQ==
+X-Gm-Message-State: AOAM5327YmDQ3wNk5GkmOSTw9dLDTw1BQZUHS0qHb5bEznM0C15Lf7lt
+        hA/AsArIUGX4wqHrxV2DLmu1rJ7J8WPP0uH+p5p/5OuePjSyqjEn3Usd2rFN4KRlGQGxOjEe3q7
+        jzslD8LkjyQXIfLGW9BYElWOC
+X-Received: by 2002:a9d:3a64:: with SMTP id j91mr12166063otc.207.1602342430974;
+        Sat, 10 Oct 2020 08:07:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzh7nJmECAqmKKTRnHbW9vZsSCDKSoZMOAeBdsZ+p66fOBHFuqLBgjCWEN5eSrDmBz2yZ4aiQ==
+X-Received: by 2002:a9d:3a64:: with SMTP id j91mr12166054otc.207.1602342430696;
+        Sat, 10 Oct 2020 08:07:10 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id h3sm8936617oom.18.2020.10.10.08.07.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 10 Oct 2020 08:07:10 -0700 (PDT)
+Subject: Re: [PATCH v9 1/6] fpga: dfl: fix the definitions of type &
+ feature_id for dfl devices
+To:     Xu Yilun <yilun.xu@intel.com>, mdf@kernel.org, krzk@kernel.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     gregkh@linuxfoundation.org, lgoncalv@redhat.com, hao.wu@intel.com
+References: <1602313793-21421-1-git-send-email-yilun.xu@intel.com>
+ <1602313793-21421-2-git-send-email-yilun.xu@intel.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <8786ca8f-7edd-d7b1-7eca-6447814c6e5e@redhat.com>
+Date:   Sat, 10 Oct 2020 08:07:07 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <1602313793-21421-2-git-send-email-yilun.xu@intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tom,
 
-On Fri,  9 Oct 2020 10:17:07 -0500
-Tom Zanussi <zanussi@kernel.org> wrote:
-
-> For synthetic event dynamic fields, the type contains "__data_loc",
-> which is basically an internal part of the type which is only meant to
-> be displayed in the format, not in the event description itself, which
-> is confusing to users since they can't use __data_loc on the
-> command-line to define an event field, which printing it would lead
-> them to believe.
-> 
-> So filter it out from the description, while leaving it in the type.
-> 
-
-OK, I confirmed this removes __data_loc from synth_events interface.
-However, I also found another issue.
-
-  /sys/kernel/debug/tracing # echo "myevent char str[]; int v" >> synthetic_events  
-  /sys/kernel/debug/tracing # cat synthetic_events 
-  myevent	char[]; str; int v
-
-It seems that the type "char[]" includes ";" as a type, this results
-
-
-  /sys/kernel/debug/tracing # cat events/synthetic/myevent/format 
-  name: myevent
-  ID: 1220
-  format:
-	field:unsigned short common_type;	offset:0;	size:2;	signed:0;
-	field:unsigned char common_flags;	offset:2;	size:1;	signed:0;
-	field:unsigned char common_preempt_count;	offset:3;	size:1;	signed:0;
-	field:int common_pid;	offset:4;	size:4;	signed:1;
-
-	field:__data_loc char[]; str;	offset:8;	size:8;	signed:1;
-	field:int v;	offset:16;	size:4;	signed:1;
-
-  print fmt: "str=%.*s, v=%d", __get_str(str), REC->v
-
-
-As you can see, the field type has ";" in format file too. This will prevent
-parsing event information correctly.
-I also try to remove ";" as below, it seems to work correctly.
-
-  /sys/kernel/debug/tracing # echo "myevent char[] str; int v" >> synthetic_events 
-  /sys/kernel/debug/tracing # cat events/synthetic/myevent/format 
-  name: myevent
-  ID: 1221
-  format:
-	field:unsigned short common_type;	offset:0;	size:2;	signed:0;
-	field:unsigned char common_flags;	offset:2;	size:1;	signed:0;
-	field:unsigned char common_preempt_count;	offset:3;	size:1;	signed:0;
-	field:int common_pid;	offset:4;	size:4;	signed:1;
-
-	field:__data_loc char[] str;	offset:8;	size:8;	signed:1;
-	field:int v;	offset:16;	size:4;	signed:1;
-
-  print fmt: "str=%.*s, v=%d", __get_str(str), REC->v
-
-
-Thank you,
-
-> Reported-by: Masami Hiramatsu <mhiramat@kernel.org>
-> Signed-off-by: Tom Zanussi <zanussi@kernel.org>
+On 10/10/20 12:09 AM, Xu Yilun wrote:
+> The value of the field dfl_device.type comes from the 12 bits register
+> field DFH_ID according to DFL spec. So this patch changes the definition
+> of the type field to u16.
+>
+> Also it is not necessary to illustrate the valid bits of the type field
+> in comments. Instead we should explicitly define the possible values in
+> the enumeration type for it, because they are shared by hardware spec.
+> We should not let the compiler decide these values.
+>
+> Similar changes are also applied to dfl_device.feature_id.
+>
+> This patch also fixed the MODALIAS format according to the changes
+> above.
+>
+> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
 > ---
->  kernel/trace/trace_events_synth.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
-> index 3b2dcc42b8ee..b19e2f4159ab 100644
-> --- a/kernel/trace/trace_events_synth.c
-> +++ b/kernel/trace/trace_events_synth.c
-> @@ -1867,14 +1867,22 @@ static int __synth_event_show(struct seq_file *m, struct synth_event *event)
+> v9: no change
+> ---
+>  drivers/fpga/dfl.c |  3 +--
+>  drivers/fpga/dfl.h | 14 +++++++-------
+>  2 files changed, 8 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/fpga/dfl.c b/drivers/fpga/dfl.c
+> index b450870..5a6ba3b 100644
+> --- a/drivers/fpga/dfl.c
+> +++ b/drivers/fpga/dfl.c
+> @@ -298,8 +298,7 @@ static int dfl_bus_uevent(struct device *dev, struct kobj_uevent_env *env)
 >  {
->  	struct synth_field *field;
->  	unsigned int i;
-> +	char *type, *t;
+>  	struct dfl_device *ddev = to_dfl_dev(dev);
 >  
->  	seq_printf(m, "%s\t", event->name);
+> -	/* The type has 4 valid bits and feature_id has 12 valid bits */
+> -	return add_uevent_var(env, "MODALIAS=dfl:t%01Xf%03X",
+> +	return add_uevent_var(env, "MODALIAS=dfl:t%04Xf%04X",
+>  			      ddev->type, ddev->feature_id);
+>  }
 >  
->  	for (i = 0; i < event->n_fields; i++) {
->  		field = event->fields[i];
->  
-> +		type = field->type;
-> +		t = strstr(type, "__data_loc");
-> +		if (t) { /* __data_loc belongs in format but not event desc */
-> +			t += sizeof("__data_loc");
-> +			type = t;
-> +		}
-> +
->  		/* parameter values */
-> -		seq_printf(m, "%s %s%s", field->type, field->name,
-> +		seq_printf(m, "%s %s%s", type, field->name,
->  			   i == event->n_fields - 1 ? "" : "; ");
->  	}
->  
-> -- 
-> 2.17.1
-> 
+> diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
+> index 5dc758f..ac373b1 100644
+> --- a/drivers/fpga/dfl.h
+> +++ b/drivers/fpga/dfl.h
+> @@ -520,19 +520,19 @@ long dfl_feature_ioctl_set_irq(struct platform_device *pdev,
+>   * enum dfl_id_type - define the DFL FIU types
+>   */
+>  enum dfl_id_type {
+> -	FME_ID,
+> -	PORT_ID,
+> +	FME_ID = 0,
+> +	PORT_ID = 1,
 
+This is redundant, why make this change ?
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Tom
+
+>  	DFL_ID_MAX,
+>  };
+>  
+>  /**
+>   * struct dfl_device_id -  dfl device identifier
+> - * @type: contains 4 bits DFL FIU type of the device. See enum dfl_id_type.
+> - * @feature_id: contains 12 bits feature identifier local to its DFL FIU type.
+> + * @type: DFL FIU type of the device. See enum dfl_id_type.
+> + * @feature_id: feature identifier local to its DFL FIU type.
+>   * @driver_data: driver specific data.
+>   */
+>  struct dfl_device_id {
+> -	u8 type;
+> +	u16 type;
+>  	u16 feature_id;
+>  	unsigned long driver_data;
+>  };
+> @@ -543,7 +543,7 @@ struct dfl_device_id {
+>   * @dev: generic device interface.
+>   * @id: id of the dfl device.
+>   * @type: type of DFL FIU of the device. See enum dfl_id_type.
+> - * @feature_id: 16 bits feature identifier local to its DFL FIU type.
+> + * @feature_id: feature identifier local to its DFL FIU type.
+>   * @mmio_res: mmio resource of this dfl device.
+>   * @irqs: list of Linux IRQ numbers of this dfl device.
+>   * @num_irqs: number of IRQs supported by this dfl device.
+> @@ -553,7 +553,7 @@ struct dfl_device_id {
+>  struct dfl_device {
+>  	struct device dev;
+>  	int id;
+> -	u8 type;
+> +	u16 type;
+>  	u16 feature_id;
+>  	struct resource mmio_res;
+>  	int *irqs;
+
