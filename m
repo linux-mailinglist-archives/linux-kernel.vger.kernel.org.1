@@ -2,60 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96AD028A449
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC29F28A441
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388116AbgJJWxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:53:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49566 "EHLO mail.kernel.org"
+        id S2388480AbgJJWyA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 10 Oct 2020 18:54:00 -0400
+Received: from aposti.net ([89.234.176.197]:47164 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731294AbgJJTH0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:07:26 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B013D2074D;
-        Sat, 10 Oct 2020 19:07:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602356844;
-        bh=U//J7oK8UOvI+D3yYVqvuZsZOskMm+fI+U2rL182sTE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=zO/7fm+tmtpjVXBtWZu7GdMo1g0G71c6zWEX+4cEPdDvG054tHdomukeUVNp2cFBd
-         jSfNS3YVuan1EZx7zuCM6aqPs9uuAS6Ft/dNCsDwO7cRnglDcqGoZ4R1GR/3FOujcq
-         qVcu9TXo5hESVWiZ6rtXrX3EguaDicCmEX/+aCaI=
-Date:   Sat, 10 Oct 2020 12:07:23 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Krzysztof Halasa <khc@pm.waw.pl>
-Subject: Re: [PATCH net-next] drivers/net/wan/hdlc_fr: Move the skb_headroom
- check out of fr_hard_header
-Message-ID: <20201010120723.1558558a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201007183203.445775-1-xie.he.0141@gmail.com>
-References: <20201007183203.445775-1-xie.he.0141@gmail.com>
+        id S1731325AbgJJTKj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 15:10:39 -0400
+Date:   Sat, 10 Oct 2020 21:10:14 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v4 0/3] pinctrl: Ingenic: Add support for SSI and I2S
+ pins.
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>,
+        linux-kernel@vger.kernel.org,
+        GPIO SUBSYSTEM <linux-gpio@vger.kernel.org>,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
+        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
+Message-Id: <2L20IQ.FYURHZYQ6ZCT3@crapouillou.net>
+In-Reply-To: <CACRpkda1B3LcGWc1PhXNgi-6JxapiKY4F_94c6dk4eBLgVGBJg@mail.gmail.com>
+References: <20200913065836.12156-1-zhouyanjie@wanyeetech.com>
+        <CACRpkda1B3LcGWc1PhXNgi-6JxapiKY4F_94c6dk4eBLgVGBJg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  7 Oct 2020 11:32:03 -0700 Xie He wrote:
-> Move the skb_headroom check out of fr_hard_header and into pvc_xmit.
-> This has two benefits:
-> 
-> 1. Originally we only do this check for skbs sent by users on Ethernet-
-> emulating PVC devices. After the change we do this check for skbs sent on
-> normal PVC devices, too.
-> (Also add a comment to make it clear that this is only a protection
-> against upper layers that don't take dev->needed_headroom into account.
-> Such upper layers should be rare and I believe they should be fixed.)
-> 
-> 2. After the change we can simplify the parameter list of fr_hard_header.
-> We no longer need to use a pointer to pointers (skb_p) because we no
-> longer need to replace the skb inside fr_hard_header.
-> 
-> Cc: Krzysztof Halasa <khc@pm.waw.pl>
-> Signed-off-by: Xie He <xie.he.0141@gmail.com>
+Hi Linus, Zhou,
 
-Applied, thanks!
+The first patch is bogus. Half of the SSI pins are wrong (GPIO chip D/E 
+start at 0x60/0x80 respectively).
+
+Sorry for not catching that before.
+
+-Paul
+
+
+Le mar. 29 sept. 2020 à 14:48, Linus Walleij 
+<linus.walleij@linaro.org> a écrit :
+> On Sun, Sep 13, 2020 at 8:59 AM 周琰杰 (Zhou Yanjie)
+> <zhouyanjie@wanyeetech.com> wrote:
+> 
+>>  1.Add SSI pins support for JZ4770 and JZ4780.
+>>  2.Correct the pullup and pulldown parameters of JZ4780.
+>>  3.Add I2S pins support for JZ4780, X1000, X1500, and X1830.
+>> 
+>>  v2->v3:
+>>  1.Add Paul Cercueil's Reviewed-by.
+>>  2.Fix bug about PE15's pull-up parameter.
+> 
+> This v3 patch set applied!
+> 
+> Thank you so much for your hard work!
+> 
+> Yours,
+> Linus Walleij
+
+
