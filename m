@@ -2,116 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1347528A43D
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD11B28A3FF
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388535AbgJJWyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:54:05 -0400
-Received: from smtprelay0061.hostedemail.com ([216.40.44.61]:51882 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731333AbgJJTKz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:10:55 -0400
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave02.hostedemail.com (Postfix) with ESMTP id C279B1800BEB6
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 16:48:02 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 471D98384367;
-        Sat, 10 Oct 2020 16:48:02 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:1801:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3167:3353:3622:3653:3865:3867:3868:3870:3871:3872:3873:3874:4321:4605:5007:6117:7903:10004:10400:10848:11232:11658:11914:12043:12297:12740:12760:12895:13255:13439:14093:14097:14659:14721:21080:21451:21611:21627:30054:30055:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: car31_1c18000271ea
-X-Filterd-Recvd-Size: 4032
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf20.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 10 Oct 2020 16:48:00 +0000 (UTC)
-Message-ID: <a534ed57c23ff35f6b84057ba3c0d1b55f0b03b9.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: Check for .byte-spelled insn opcodes
- documentation on x86
-From:   Joe Perches <joe@perches.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     X86 ML <x86@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
-        Andy Whitcroft <apw@canonical.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Date:   Sat, 10 Oct 2020 09:47:59 -0700
-In-Reply-To: <20201010161112.GC24674@zn.tnic>
-References: <20201009161423.14583-1-bp@alien8.de>
-         <b57a59bc80e432c7696b347a223eb12339013970.camel@perches.com>
-         <20201010105421.GA24674@zn.tnic>
-         <4147e49c0b1251343181b5580d946c2273247927.camel@perches.com>
-         <20201010161112.GC24674@zn.tnic>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        id S2389339AbgJJWzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:55:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52034 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731436AbgJJTW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 15:22:26 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2FCF922404;
+        Sat, 10 Oct 2020 16:51:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602348663;
+        bh=QORHMnmWSEjYd8YMjB0g1v/EbTLN970fmst2j2tRPfM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BdKZKSbB1/KZzKiQy9HRaLRagU6gYw2wZ5P6B9weBcPigsRhwQOIICIdR+6NY93de
+         XdM5Kv70uWNgDWyVqa+haOBaVGxc+W6lZw+MhTYHD7WvAH7c58WFcO6yBjiB3V21Sj
+         hNj6td5defmDaHkzhGk173Vrz4v1ZmJ8miquhqM0=
+Date:   Sat, 10 Oct 2020 17:50:57 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     dmitry.torokhov@gmail.com
+Cc:     Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        linux-iio@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] iio: adc: exynos: do not rely on 'users' counter in
+ ISR
+Message-ID: <20201010175057.768fe3b3@archlinux>
+In-Reply-To: <20201006215509.GA2556081@dtor-ws>
+References: <20201006215509.GA2556081@dtor-ws>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-10-10 at 18:11 +0200, Borislav Petkov wrote:
-> On Sat, Oct 10, 2020 at 08:27:20AM -0700, Joe Perches wrote:
-> > Then this could use:
-> > 
-> > /"\s*\.byte\s+(?:0x[0-9a-fA-F]{1,2}\s*,\s*){2,4}/
-> 
-> Yes, this is getting close.
-> 
-> I've tweaked it a bit to:
-> 
-> '/\s*\.byte\s+(?:0x[0-9a-f]{1,2}[\s,]*){2,}/i'
-    ^^^                                       ^
-now useless without the "                     matches .BYTE
+On Tue, 6 Oct 2020 14:55:09 -0700
+dmitry.torokhov@gmail.com wrote:
 
-you probably want (?i:0x[etc...]
+> The order in which 'users' counter is decremented vs calling drivers'
+> close() method is implementation specific, and we should not rely on
+> it. Let's introduce driver private flag and use it to signal ISR
+> to exit when device is being closed.
+>=20
+> This has a side-effect of fixing issue of accessing inut->users
+> outside of input->mutex protection.
+>=20
+> Reported-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+> Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Reviewed-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
+> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Applied to the togreg branch of iio.git and pushed out as testing
+for the autobuilders to work their magic.
 
-I'd prefer to add an upper bound to the {m,n} use.
-Unbounded multiple
-matches {m,} can cause perl aborts.
+Given this doesn't have a fixes tag etc I'm assuming it isn't
+high priority etc.  Let me know if it is!
 
-This regex would also match
+Thanks,
 
-.byte 0x020x02
-
-(which admittedly wouldn't compile, but I've seen really
- bad patches submitted too)
-
-> which assumes at least 2 opcode bytes; upper limit can be more than 4.
-> It still has some false positives in crypto but I'd say that's good
-> enough. I'll play more with it later
-
-A readability convenience would be to add and use:
-
-our $Hex_byte	= qr{(?i)0x[0-9a-f]{1,2}\b};
-
-So if the minimum length if the isns .byte block is 2,
-with a separating comma then the regex could be:
-
-/\.byte\s+$Hex_byte\s*,\s*$Hex_byte\b/
-
-which I think is pretty readable.
-
-$ git grep -P '\.byte\s+(?i:0x[0-9a-f]{1,2}\s*,\s*0x[0-9a-f]{1,2})\b' -- 'arch/x86/*.[ch]'
-arch/x86/include/asm/bug.h:#define ASM_UD0              ".byte 0x0f, 0xff" /* + ModRM (for Intel) */
-arch/x86/include/asm/bug.h:#define ASM_UD1              ".byte 0x0f, 0xb9" /* + ModRM */
-arch/x86/include/asm/bug.h:#define ASM_UD2              ".byte 0x0f, 0x0b"
-arch/x86/include/asm/inst.h:    .byte 0x0f, 0xc7
-arch/x86/include/asm/intel_pconfig.h:#define PCONFIG ".byte 0x0f, 0x01, 0xc5"
-arch/x86/include/asm/mwait.h:   asm volatile(".byte 0x0f, 0x01, 0xc8;"
-arch/x86/include/asm/mwait.h:   asm volatile(".byte 0x0f, 0x01, 0xfa;"
-arch/x86/include/asm/mwait.h:   asm volatile(".byte 0x0f, 0x01, 0xc9;"
-arch/x86/include/asm/mwait.h:   asm volatile(".byte 0x0f, 0x01, 0xfb;"
-arch/x86/include/asm/mwait.h:   asm volatile("sti; .byte 0x0f, 0x01, 0xc9;"
-arch/x86/include/asm/mwait.h:   asm volatile(".byte 0x66, 0x0f, 0xae, 0xf1\t\n"
-arch/x86/include/asm/segment.h:                 ".byte 0xf3,0x0f,0xc7,0xf8", /* RDPID %eax/rax */
-arch/x86/include/asm/smap.h:#define __ASM_CLAC  ".byte 0x0f,0x01,0xca"
-arch/x86/include/asm/smap.h:#define __ASM_STAC  ".byte 0x0f,0x01,0xcb"
-arch/x86/include/asm/special_insns.h:   asm volatile(".byte 0x0f,0x01,0xee\n\t"
-arch/x86/include/asm/special_insns.h:   asm volatile(".byte 0x0f,0x01,0xef\n\t"
-arch/x86/include/asm/special_insns.h:           ".byte 0x66, 0x0f, 0xae, 0x30",  /* clwb (%%rax) */
-arch/x86/include/asm/special_insns.h:   asm volatile(".byte 0x66, 0x0f, 0x38, 0xf8, 0x02"
-arch/x86/include/asm/special_insns.h:   asm volatile(".byte 0xf3, 0x0f, 0x38, 0xf8, 0x02, 0x66, 0x90"
-arch/x86/include/asm/special_insns.h:   asm volatile(".byte 0xf, 0x1, 0xe8" ::: "memory");
-
+Jonathan
+> ---
+>=20
+> v3: fixed typo in exynos_adc_ts_close() per Micha=C5=82 Miros=C5=82aw
+> v2: switched from ordinary read/write to READ_ONCE/WRITE_ONCE per Micha=
+=C5=82
+> Miros=C5=82aw
+>=20
+>  drivers/iio/adc/exynos_adc.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/iio/adc/exynos_adc.c b/drivers/iio/adc/exynos_adc.c
+> index 22131a677445..908df4b9b93c 100644
+> --- a/drivers/iio/adc/exynos_adc.c
+> +++ b/drivers/iio/adc/exynos_adc.c
+> @@ -7,6 +7,7 @@
+>   *  Copyright (C) 2013 Naveen Krishna Chatradhi <ch.naveen@samsung.com>
+>   */
+> =20
+> +#include <linux/compiler.h>
+>  #include <linux/module.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/interrupt.h>
+> @@ -135,6 +136,8 @@ struct exynos_adc {
+>  	u32			value;
+>  	unsigned int            version;
+> =20
+> +	bool			ts_enabled;
+> +
+>  	bool			read_ts;
+>  	u32			ts_x;
+>  	u32			ts_y;
+> @@ -633,7 +636,7 @@ static irqreturn_t exynos_ts_isr(int irq, void *dev_i=
+d)
+>  	bool pressed;
+>  	int ret;
+> =20
+> -	while (info->input->users) {
+> +	while (READ_ONCE(info->ts_enabled)) {
+>  		ret =3D exynos_read_s3c64xx_ts(dev, &x, &y);
+>  		if (ret =3D=3D -ETIMEDOUT)
+>  			break;
+> @@ -712,6 +715,7 @@ static int exynos_adc_ts_open(struct input_dev *dev)
+>  {
+>  	struct exynos_adc *info =3D input_get_drvdata(dev);
+> =20
+> +	WRITE_ONCE(info->ts_enabled, true);
+>  	enable_irq(info->tsirq);
+> =20
+>  	return 0;
+> @@ -721,6 +725,7 @@ static void exynos_adc_ts_close(struct input_dev *dev)
+>  {
+>  	struct exynos_adc *info =3D input_get_drvdata(dev);
+> =20
+> +	WRITE_ONCE(info->ts_enabled, false);
+>  	disable_irq(info->tsirq);
+>  }
+> =20
 
