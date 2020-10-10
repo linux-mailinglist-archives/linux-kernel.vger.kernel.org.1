@@ -2,123 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53AA928A475
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EF9D28A47C
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:41:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387411AbgJJXkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 19:40:15 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:35552 "EHLO loongson.cn"
+        id S2387546AbgJJXlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 19:41:00 -0400
+Received: from mail-eopbgr70043.outbound.protection.outlook.com ([40.107.7.43]:55877
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727274AbgJJXkL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 19:40:11 -0400
-Received: from [10.130.0.80] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxmMVWRoJfAPobAA--.2986S3;
-        Sun, 11 Oct 2020 07:40:06 +0800 (CST)
-Subject: Re: [PATCH 3/3] MIPS: Loongson64: Add /proc/boardinfo
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>
-References: <1602241050-24051-1-git-send-email-yangtiezhu@loongson.cn>
- <1602241050-24051-4-git-send-email-yangtiezhu@loongson.cn>
- <9f0e4f45-dc8b-8351-8a40-8a4b8a86940f@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <786f7ce7-a567-5d85-0946-bab36bbcf84a@loongson.cn>
-Date:   Sun, 11 Oct 2020 07:40:05 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S1726989AbgJJXlA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 19:41:00 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eArVUn3kI1vY2opaWDngT6NK1B4QECBV8EjEAOOZK5ipevUPzrmu4x06BzjL48Wf3atRMI1A/VvgJ38CdctjQ4VpNQs+Fy263dMGwn+g6liORcmUesoCa2GQ3VCqPxEWUcMuqOF5PH3NcCFCMvqGpXQipsZM3CFGMAMAbNmIzIzBIZf/fzWzSw6Iil+IzZpMo8+wPh1Oo33sOWjOWs9SZe2vlOB94w5DGf4euKpRQAL+wbu0CeEoKQzUxPLyarhIyETk4NUydYLo81D2QwiEx4QWfEovb7BbaqZ28mbkWshlZEM9A74sbHjhOXrWlfbEsygFSmF+naLZkGxzZtANgg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=b5wAntxq+9TE0g7PNZNxBuXDLYdS4G25ouLpHBEhLxA=;
+ b=IXQsy4uuAZ6fs9YwzTaUNEuDM/vxuCL/ttjimVNWfJcCnaYEZb6d6zE7uu9A9813eh0Mxe2m9q2JTeKAgty1DI53t9ZNyO0YtiGAzg//IHyl/ggDTmhHJ8MH2xmq3w7PK4ehBCgAZcxiOPSaGP2CJ9hsNAvkw54KRsCTBl/mkoZ9xWpJbwAlRjMefueHkoLJZfHB2sPGduM1xBFYu7fLNoMdiCSy7gcSC5iK5htySt4c2LCV1KVGP7+i6yRxnfMP6PhXtD7+X+5UPlVmTYdQ5fqdnC3CPNlY3FZznffVEab2e14MjCxj4UASyYT01IKMkWbAFv77Nb4PzcrS9qtOxQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=b5wAntxq+9TE0g7PNZNxBuXDLYdS4G25ouLpHBEhLxA=;
+ b=UWbzy3rpPNgaOydYdFce+9RI2pMX99hgqMpBqw9CFYQ00YS4lHWGNw+GlfLzGtF39X29XLKI2/pGMD/ySXyKXLxtrxqBKp1o5qLkUtz01dqKvOp5WDG5H841D7UvUeU1KTI5RZszuh4otK74pTB5bh3tWR9fKVkEtcSCE1ikwus=
+Received: from AM8PR04MB7300.eurprd04.prod.outlook.com (2603:10a6:20b:1c7::12)
+ by AM0PR04MB4417.eurprd04.prod.outlook.com (2603:10a6:208:76::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.26; Sat, 10 Oct
+ 2020 23:40:56 +0000
+Received: from AM8PR04MB7300.eurprd04.prod.outlook.com
+ ([fe80::ad01:9b1c:3b4b:3a77]) by AM8PR04MB7300.eurprd04.prod.outlook.com
+ ([fe80::ad01:9b1c:3b4b:3a77%7]) with mapi id 15.20.3455.028; Sat, 10 Oct 2020
+ 23:40:55 +0000
+From:   Peter Chen <peter.chen@nxp.com>
+To:     Ran Wang <ran.wang_1@nxp.com>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jun Li <jun.li@nxp.com>,
+        "open list:USB SUBSYSTEM" <linux-usb@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] usb: host: fsl-mph-dr-of: check return of dma_set_mask()
+Thread-Topic: [PATCH] usb: host: fsl-mph-dr-of: check return of dma_set_mask()
+Thread-Index: AQHWnsxMafGOyChLpEqh4ZaQKTdKaqmRf+CA
+Date:   Sat, 10 Oct 2020 23:40:55 +0000
+Message-ID: <20201010234028.GA16433@b29397-desktop>
+References: <20201010060308.33693-1-ran.wang_1@nxp.com>
+In-Reply-To: <20201010060308.33693-1-ran.wang_1@nxp.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.67]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 0fe317c8-1728-4a2b-678a-08d86d75eeeb
+x-ms-traffictypediagnostic: AM0PR04MB4417:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM0PR04MB4417C14C7BE712A1903A9DC08B090@AM0PR04MB4417.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:792;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: qtvIQPxtNy7UFnSCbuIb9xD7fRd2VPOVFAVeR8YxaIVYxhoa7YiLaVWoM3MTFLe2PP9wfhNljfE45gjfvUNUwpOkShJAqSaV5UWYkLgjCW1N0PMZaMVSxSVvgTUPVadZgeh/bqRgLpAOlCelJcOUBlpJWB/JcbdQn/HTsSArZgjZGbvzpQQSTF6fWkYkyrKml4btaWDOv/BcmbVIH0nRj4qb6clMeyO8sLqATORBgJN2gdxsSOxxYtCmiS++F2mfdI7go6dLPN2rFdpsviXPfhDOQCu2LJ2Mcm1W0JeIxEf24CWYIzFg/ISuPhR8ZNe5TnedCcw1GOZI6R9CVcZy9Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM8PR04MB7300.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(39860400002)(376002)(136003)(366004)(346002)(396003)(91956017)(9686003)(8936002)(66946007)(86362001)(71200400001)(64756008)(6512007)(66556008)(66446008)(76116006)(66476007)(54906003)(186003)(316002)(53546011)(6506007)(6636002)(44832011)(8676002)(478600001)(6486002)(83380400001)(1076003)(33716001)(5660300002)(33656002)(4326008)(26005)(2906002)(6862004);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: NxEWXVuIyUFpDp0IxQEmPiQ2ZxTvw/4t05qGmC6IibcOnRK04b1BdYn6Pp8/d6XRsr92hQkSqYUD+0p1/qly9e+HkJLxjQp9CnBX+l6Bp4xntFOWaSyi8malCxQx9cPnuW6yW9xy8qjko4fXydPFDjar+zjfHGDoKRCWKKO53gn2y3+cbVaDswElwVTaZmRmIJAHRJUY/A3a1hB9mAuW7q0oeiWvASwy3bdH89Htfs8weJOhH0EvmWy08VG8ePrVrdMnqTmt03V9Y+6mjlnoxeIc8dzh3jYfvd/5x/Uts03e7d/mNV5g6WW84PacfWDsd2j1LWzN6bj++9B9//xyixOssx6cg5TIqGX8SqlDvHs8fVujtsUFIuKDBgBDeZFUeogBzcSVD28OX7jREU3WGKurgmjAW+lh+6tY8IZG5fRpBPyGokPfIqrNoB7K211dvgVYNTNCyrWSn0PrmI1Kdd1b5XzSvsK6IE4ENhY/rq1NE/JvO9WbkV7FA4XheInMKJaXkOb2HfJazAApCBXYNnxsZmfltJqqKjELgvDTNUcglOch0hsfBUmS1MtxCA6cx7djh/ed6/qeSLuKMtYnmjzQldEnJ7icJ8lJfRfNugPY7Ujk2swiVPabGtb8357QBSS2P7jxIFzkU4ahhl/xNw==
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <B7AD5C457915104989BE8079B8DAEF0E@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <9f0e4f45-dc8b-8351-8a40-8a4b8a86940f@flygoat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9DxmMVWRoJfAPobAA--.2986S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Ar43AFW5JFyfCF48AF1kZrb_yoW8WryxpF
-        43ta1xCr1rJr17CFn7Wr1xurWSyrZ5WF1qkrsxZ397Cr90kFn3Xr1kuayv9Fn7ur4xGFyj
-        qF4xKr43ua4j9aDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvq14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r1j
-        6r4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4j6r
-        4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE67vI
-        Y487MxkIecxEwVAFwVWfMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
-        8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
-        xVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI
-        8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E
-        87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0x
-        ZFpf9x0JUFJP_UUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM8PR04MB7300.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0fe317c8-1728-4a2b-678a-08d86d75eeeb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Oct 2020 23:40:55.8527
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ZDsb81wKufnrdp4VC1r82nR5x2W8jMIIlWtR7GSmJ7IBW/mrl1abhouH7C5A/ccgscVWSt1O2pmNsShK8o+KMw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB4417
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/10/2020 04:01 PM, Jiaxun Yang wrote:
->
->
-> 在 2020/10/9 下午6:57, Tiezhu Yang 写道:
->> Add /proc/boardinfo to get mainboard and BIOS info easily on the 
->> Loongson
->> platform, this is useful to point out the current used mainboard type 
->> and
->> BIOS version when there exists problems related with hardware or 
->> firmware.
->
-> Hi Tiezhu,
->
-> You're touching Kernel userspace API and I believe it should be 
-> documented. Also linux-api list
-> should be informed.
+On 20-10-10 14:03:08, Ran Wang wrote:
+> fsl_usb2_device_register() should stop init if dma_set_mask() return
+> error.
+>=20
+> Fixes: cae058610465 ("drivers/usb/host: fsl: Set DMA_MASK of usb platform=
+ device")
+> Signed-off-by: Ran Wang <ran.wang_1@nxp.com>
+> ---
+>  drivers/usb/host/fsl-mph-dr-of.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/usb/host/fsl-mph-dr-of.c b/drivers/usb/host/fsl-mph-=
+dr-of.c
+> index ae8f60f..44a7e58 100644
+> --- a/drivers/usb/host/fsl-mph-dr-of.c
+> +++ b/drivers/usb/host/fsl-mph-dr-of.c
+> @@ -94,10 +94,13 @@ static struct platform_device *fsl_usb2_device_regist=
+er(
+> =20
+>  	pdev->dev.coherent_dma_mask =3D ofdev->dev.coherent_dma_mask;
+> =20
+> -	if (!pdev->dev.dma_mask)
+> +	if (!pdev->dev.dma_mask) {
+>  		pdev->dev.dma_mask =3D &ofdev->dev.coherent_dma_mask;
+> -	else
+> -		dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
+> +	} else {
+> +		retval =3D dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
+> +		if (retval)
+> +			goto error;
+> +	}
+> =20
+>  	retval =3D platform_device_add_data(pdev, pdata, sizeof(*pdata));
+>  	if (retval)
+> --=20
+> 2.7.4
+>=20
 
-[RESEND due to the following reason:
-Can not connect to recipient's server because of unstable
-network or firewall filter. rcpt handle timeout,last handle
-info: Host vger.kernel.org(23.128.96.18) command RCPT TO
-respond timeout or disconnected]
+Reviewed-by: Peter Chen <peter.chen@nxp.com>
 
-Hi Jiaxun,
+One more place need to fix, if platform_device_alloc returns NULL,
+it should not call platform_device_put to release platform
+device memory.
 
-Thanks for your suggestion. I will do it as soon as possible and then 
-send v2.
-
->
-> Also I'd like to know if it's really useful for mainline kernel.
-> For user who wants to check board information, dmidecode is already 
-> useful enough.
-
-There is no SMBIOS and dmidecode can see nothing on some machines, like 
-this:
-[root@linux loongson]# dmidecode
-# dmidecode 2.12
-# No SMBIOS nor DMI entry point found, sorry.
-
-So I think it is useful.
+	pdev =3D platform_device_alloc(name, id);
+	if (!pdev) {
+		retval =3D -ENOMEM;
+		goto error;
+	}
+	...
+error:
+	platform_device_put(pdev);
+	return ERR_PTR(retval);
+--=20
 
 Thanks,
-Tiezhu Yang
-
->
-> Thanks.
->
-> - Jiaxun
->
->>
->> E.g. with this patch:
->>
->> [loongson@linux ~]$ cat /proc/boardinfo
->> Board Info
->> Manufacturer            : LEMOTE
->> Board Name              : LEMOTE-LS3A4000-7A1000-1w-V01-pc
->> Family                  : LOONGSON3
->>
->> BIOS Info
->> Vendor                  : Kunlun
->> Version                 : Kunlun-A1901-V4.1.3-20200414093938
->> ROM Size                : 4 KB
->> Release Date            : 2020-04-14
->>
->> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
->> ---
->>
-
+Peter Chen=
