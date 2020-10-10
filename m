@@ -2,106 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27533289CD8
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 03:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED511289CE1
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 03:10:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729296AbgJJA6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 20:58:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34342 "EHLO
+        id S1729279AbgJJBJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 21:09:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729086AbgJJAfr (ORCPT
+        with ESMTP id S1729114AbgJJAjs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 20:35:47 -0400
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E57FEC0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 17:35:21 -0700 (PDT)
-Received: by mail-vs1-xe43.google.com with SMTP id d4so334034vsk.13
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 17:35:21 -0700 (PDT)
+        Fri, 9 Oct 2020 20:39:48 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3C51C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 17:39:46 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id b26so8266489pff.3
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 17:39:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=o9rKXSF/+hOI03cJwnGoLbAyTG21JC0lh29VXlgWeNs=;
-        b=aeRxJRaUwpmvk5KWcdoE6rCvPblB+M7cGALUmirIFb2WcDkLHUl3aBF+cUpmmebMw9
-         FJxsJxSN/AAwru+LtKja/qluYuOJCx3j9VCOGFr27IWqr6i26YEU0/YJacFKrNG+RQ/L
-         ppl1QfsuEAxcA7gZ975bhR2K/nVMdd9+WmubC6Wu3eHUpfwZpJnmeci3RmnsO2JrKMFt
-         u0E0Dzu0PgaY+5FPPWDhqkkkyQln4+43KWfJmTHJKMck6xrkBDQrNSO8xSVRgjm6xoYV
-         793yzgNreu3G0EW+XuBI59zylCcomR+aGWHofbcv4eFVYz1QUXPPODhv+YtmCXfteAbC
-         qo9w==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=O+5V9QDwFxJ7ahxHSMiTSLRJZJxgHbRSoJpPCEuMsXA=;
+        b=hq7Cd16U9/1SOQcDCdv9YNvPC7JhIGnkNGGueEofc/BYpYTAsLbg3FUdu3c0vZ6cIT
+         fE7R+9BQswBqjrbi4byGqhFIuJNUO2ECwrw2Nrdo5PmbHAZxV9vq4YoX9UUAAs6v1K/1
+         aBLAow1EtvP2m/jbkxDqgnN8ZguFq05erQOCU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o9rKXSF/+hOI03cJwnGoLbAyTG21JC0lh29VXlgWeNs=;
-        b=eKv8sRq30i5u4cpgc2xMTV5y5+P1p71LndreUnPvlwjvBlJSEJQmOob8C/4RQOutoA
-         N5lqRDQkuCyPngDKyd6fKjaswqNxzkSL0jFR2vBKjAfZUxGbg6qIOPoys1LQrI54Iz7K
-         0Va7wu7SwU70fflQC5f+M+3ox25X5mwCcXCIRMw1Y2ezS6zHUwYq2bq94/RRbzayeVaa
-         ofab7fYFqwvfNjE3m+UJMCLIzA2gzH6+NlBmgQlTaWNqp1BGcdk6ZE5/JRoVgpMeWreB
-         B3XdDAlAjfoIVwrBJ7rJ29Sbe2vx2FuhNKT6JoGWJQrqLI3ksMuj3CaCkQleEBVVl3tX
-         UgDw==
-X-Gm-Message-State: AOAM531xxUe6dUDx7zDcjTqMroZ+81ur1CUFFgQJm2ZRMgcTEal+Fgcm
-        NKQelDVszoYH5GbUOdcqE/QKJL5x4Hc=
-X-Google-Smtp-Source: ABdhPJwuSfQl2jztLDABm+OLX+/qk65TYS+gNMLezZgZDpmSAy9snZ3oFmecHOwRpP0gEG0z8WlJrQ==
-X-Received: by 2002:a67:eb50:: with SMTP id x16mr9217599vso.6.1602290119938;
-        Fri, 09 Oct 2020 17:35:19 -0700 (PDT)
-Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com. [209.85.222.50])
-        by smtp.gmail.com with ESMTPSA id m1sm537691vsd.14.2020.10.09.17.35.18
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Oct 2020 17:35:18 -0700 (PDT)
-Received: by mail-ua1-f50.google.com with SMTP id c7so3655711uaq.4
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 17:35:18 -0700 (PDT)
-X-Received: by 2002:ab0:76cd:: with SMTP id w13mr9533714uaq.37.1602290117899;
- Fri, 09 Oct 2020 17:35:17 -0700 (PDT)
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=O+5V9QDwFxJ7ahxHSMiTSLRJZJxgHbRSoJpPCEuMsXA=;
+        b=h+gsXIRb91DTc7Z3V9Fhx80vJId7f3HTR45p9kaGg+Cm7uVC2NhOkbuZxutbhZth4y
+         Ox2OKA91PJI3j2c31onjuR9gz/cVS7IWWNjQP35qC0KxaaI8LuLSJWd/9j6ALS8UEyGy
+         TpgHkswizg9I/x7v//fO9mG3pVko/Hs6NFDP6kBpUQi+HMxNULDZXh3w9zd8i7MNxvq+
+         5duOiB9LTOcd0gVtX8dw+l3XZWWhykOGRb7WpoFBNvWO6hJlItKl7fVrbiXMdSbqWdGs
+         6qWo1wGK7Z8sFno8PAZYJRrnSjQVqmwAEmvPQ0yUPPYqHt/bzDHqOh5TJbjlvo4ILF35
+         58aw==
+X-Gm-Message-State: AOAM5330ALRDywhjCzN4W5qdEycV59yfMBZvy31y4wohApG+8CD3DLAv
+        hqz0guSPbeAeW0Jl9qGX9TTq/A==
+X-Google-Smtp-Source: ABdhPJz2qqP7cSX9dhKSmvxzLnkygtn1R3KcUZKY2RHdPx9iB5G/9QC8OWwngasxGqKYf1GKG5+KBg==
+X-Received: by 2002:a17:90a:348e:: with SMTP id p14mr7431223pjb.75.1602290386061;
+        Fri, 09 Oct 2020 17:39:46 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id z18sm11642238pfn.158.2020.10.09.17.39.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Oct 2020 17:39:45 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20201009103121.1004-1-ceggers@arri.de> <20201009103121.1004-2-ceggers@arri.de>
-In-Reply-To: <20201009103121.1004-2-ceggers@arri.de>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Fri, 9 Oct 2020 20:34:40 -0400
-X-Gmail-Original-Message-ID: <CA+FuTSfjZL-AMQy5PvVs6f3K8SEkWzdUrXz_4LniWFezVdfL8A@mail.gmail.com>
-Message-ID: <CA+FuTSfjZL-AMQy5PvVs6f3K8SEkWzdUrXz_4LniWFezVdfL8A@mail.gmail.com>
-Subject: Re: [PATCH net 2/2] socket: don't clear SOCK_TSTAMP_NEW when
- SO_TIMESTAMPNS is disabled
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Deepa Dinamani <deepa.kernel@gmail.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201008155154.1.Ifdb1b69fa3367b81118e16e9e4e63299980ca798@changeid>
+References: <20201008225235.2035820-1-dianders@chromium.org> <20201008155154.1.Ifdb1b69fa3367b81118e16e9e4e63299980ca798@changeid>
+Subject: Re: [PATCH 1/3] soc: qcom: geni: More properly switch to DMA mode
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Girish Mahadevan <girishm@codeaurora.org>,
+        Karthikeyan Ramasubramanian <kramasub@codeaurora.org>,
+        Mukesh Kumar Savaliya <msavaliy@codeaurora.org>,
+        linux-kernel@vger.kernel.org
+To:     Akash Asthana <akashast@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Wolfram Sang <wsa@kernel.org>
+Date:   Fri, 09 Oct 2020 17:39:43 -0700
+Message-ID: <160229038385.310579.7502548054994849649@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 9, 2020 at 6:32 AM Christian Eggers <ceggers@arri.de> wrote:
->
-> SOCK_TSTAMP_NEW (timespec64 instead of timespec) is also used for
-> hardware time stamps (configured via SO_TIMESTAMPING_NEW).
->
-> User space (ptp4l) first configures hardware time stamping via
-> SO_TIMESTAMPING_NEW which sets SOCK_TSTAMP_NEW. In the next step, ptp4l
-> disables SO_TIMESTAMPNS(_NEW) (software time stamps), but this must not
-> switch hardware time stamps back to "32 bit mode".
->
-> This problem happens on 32 bit platforms were the libc has already
-> switched to struct timespec64 (from SO_TIMExxx_OLD to SO_TIMExxx_NEW
-> socket options). ptp4l complains with "missing timestamp on transmitted
-> peer delay request" because the wrong format is received (and
-> discarded).
->
-> Fixes: 887feae36aee ("socket: Add SO_TIMESTAMP[NS]_NEW")
-> Fixes: 783da70e8396 ("net: add sock_enable_timestamps")
-> Signed-off-by: Christian Eggers <ceggers@arri.de>
+Quoting Douglas Anderson (2020-10-08 15:52:33)
+> On geni-i2c transfers using DMA, it was seen that if you program the
+> command (I2C_READ) before calling geni_se_rx_dma_prep() that it could
+> cause interrupts to fire.  If we get unlucky, these interrupts can
+> just keep firing (and not be handled) blocking further progress and
+> hanging the system.
+>=20
+> In commit 02b9aec59243 ("i2c: i2c-qcom-geni: Fix DMA transfer race")
+> we avoided that by making sure we didn't program the command until
+> after geni_se_rx_dma_prep() was called.  While that avoided the
+> problems, it also turns out to be invalid.  At least in the TX case we
+> started seeing sporadic corrupted transfers.  This is easily seen by
+> adding an msleep() between the DMA prep and the writing of the
+> command, which makes the problem worse.  That means we need to revert
+> that commit and find another way to fix the bogus IRQs.
+>=20
+> Specifically, after reverting commit 02b9aec59243 ("i2c:
+> i2c-qcom-geni: Fix DMA transfer race"), I put some traces in.  I found
+> that the when the interrupts were firing like crazy:
+> - "m_stat" had bits for M_RX_IRQ_EN, M_RX_FIFO_WATERMARK_EN set.
+> - "dma" was set.
+>=20
+> Further debugging showed that I could make the problem happen more
+> reliably by adding an "msleep(1)" any time after geni_se_setup_m_cmd()
+> ran up until geni_se_rx_dma_prep() programmed the length.
+>=20
+> A rather simple fix is to change geni_se_select_dma_mode() so it's a
+> true inverse of geni_se_select_fifo_mode() and disables all the FIFO
+> related interrupts.  Now the problematic interrupts can't fire and we
+> can program things in the correct order without worrying.
+>=20
+> As part of this, let's also change the writel_relaxed() in the prepare
+> function to a writel() so that our DMA is guaranteed to be prepared
+> now that we can't rely on geni_se_setup_m_cmd()'s writel().
+>=20
+> NOTE: the only current user of GENI_SE_DMA in mainline is i2c.
+>=20
+> Fixes: 37692de5d523 ("i2c: i2c-qcom-geni: Add bus driver for the Qualcomm=
+ GENI I2C controller")
+> Fixes: 02b9aec59243 ("i2c: i2c-qcom-geni: Fix DMA transfer race")
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
 
-Acked-by: Willem de Bruijn <willemb@google.com>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 
-Yes, we should just select SOCK_TSTAMP_NEW based on which of the two
-syscall variants the process uses.
+>=20
+>  drivers/soc/qcom/qcom-geni-se.c | 17 +++++++++++++++--
+>  1 file changed, 15 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/soc/qcom/qcom-geni-se.c b/drivers/soc/qcom/qcom-geni=
+-se.c
+> index d0e4f520cff8..751a49f6534f 100644
+> --- a/drivers/soc/qcom/qcom-geni-se.c
+> +++ b/drivers/soc/qcom/qcom-geni-se.c
+> @@ -289,10 +289,23 @@ static void geni_se_select_fifo_mode(struct geni_se=
+ *se)
+> =20
+>  static void geni_se_select_dma_mode(struct geni_se *se)
+>  {
+> +       u32 proto =3D geni_se_read_proto(se);
+>         u32 val;
+> =20
+>         geni_se_irq_clear(se);
+> =20
+> +       val =3D readl_relaxed(se->base + SE_GENI_M_IRQ_EN);
+> +       if (proto !=3D GENI_SE_UART) {
 
-There is no need to reset on timestamp disable: in the common case the
-selection is immaterial as timestamping is disabled.
+Not a problem with this patch but it would be great if there was a
+comment here (and probably in geni_se_select_fifo_mode() too) indicating
+why GENI_SE_UART is special. Is it because GENI_SE_UART doesn't use the
+main sequencer? I think that is the reason, but I forgot and reading
+this code doesn't tell me that.
 
-As this commit message shows, with SO_TIMESTAMP(NS) and
-SO_TIMESTAMPING that can be independently turned on and off, disabling
-one can incorrectly switch modes while the other is still active.
+Splitting the driver in this way where the logic is in the geni wrapper
+and in the engine driver leads to this confusion.
+
+> +               val &=3D ~(M_CMD_DONE_EN | M_TX_FIFO_WATERMARK_EN);
+> +               val &=3D ~(M_RX_FIFO_WATERMARK_EN | M_RX_FIFO_LAST_EN);
+> +       }
+> +       writel_relaxed(val, se->base + SE_GENI_M_IRQ_EN);
+> +
+> +       val =3D readl_relaxed(se->base + SE_GENI_S_IRQ_EN);
+> +       if (proto !=3D GENI_SE_UART)
+> +               val &=3D ~S_CMD_DONE_EN;
+> +       writel_relaxed(val, se->base + SE_GENI_S_IRQ_EN);
+> +
+>         val =3D readl_relaxed(se->base + SE_GENI_DMA_MODE_EN);
+>         val |=3D GENI_DMA_MODE_EN;
+>         writel_relaxed(val, se->base + SE_GENI_DMA_MODE_EN);
