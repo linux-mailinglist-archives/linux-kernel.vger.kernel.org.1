@@ -2,136 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A30F928A283
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 437FD28A390
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728590AbgJJW5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:57:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40824 "EHLO
+        id S2390312AbgJJW4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:56:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732228AbgJJTo3 (ORCPT
+        with ESMTP id S1732057AbgJJTj4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:44:29 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE414C05BD1E
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 07:11:04 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id n9so9750393pgf.9
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 07:11:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=aFdk5pHcczHboDQ4Z0dkuXj5cJClEARqjSldQajbuVE=;
-        b=NQMgUYL3XpOeE8p6KkyvlM2h8/YjxRGpI5X7NjnkwhpHMX3CAJNNxHRetViP6u58z+
-         z5Pgr0wrAtK7JBODFZvSIe0gbMTatabpy2GRP9L7rM3MaVkBERJGt+vYVKPHldqROqce
-         MNwKS8cao7wLaRkrStMgtV3QQurJeB2f/BSR96tVJHxK0PZA2rdes4WYHaGngc1yFaAb
-         RpIB4XA4EOSlgJpYA5RhS+mjqG46AQ5+aEYMxUoBGdyUhlqgyEXLuZFh9upnhd5QMuB7
-         sMYI0hI8QUsizR6Ib9zZEba1pDdCxr3sKrcFgsRMqCkmFWftQUBhxIkzAo0wRBf313E9
-         k17g==
+        Sat, 10 Oct 2020 15:39:56 -0400
+Received: from mail-il1-x14e.google.com (mail-il1-x14e.google.com [IPv6:2607:f8b0:4864:20::14e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0418EC05BD1F
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 07:16:24 -0700 (PDT)
+Received: by mail-il1-x14e.google.com with SMTP id m1so9129337iln.19
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 07:16:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=aFdk5pHcczHboDQ4Z0dkuXj5cJClEARqjSldQajbuVE=;
-        b=TAI6x4fVMJv7z6+6Lq3qFFHMZT0JlXOyOsnCuEcDrKeJ50KjtSO7CAOOUxGMYOt71e
-         YTSb7MThwBLTaPH77E5hNlBJLFj9lIckAaGynY3x7k6SARbI/48a6eX10ygTkkAj7Wdy
-         /aXSN0JfH8DJY4WDKK0gXW+j/8lMCtiK4erH/x/RZHGljggr5vC/dTq9KGcDHEzD7TGv
-         KceATXb+52aWbJgMbxrpGxuvXCvr+QXz51FTLbb7cD3fs6wUoW3K/KiIzD/j8tsrKuUk
-         bKz+e3tUmz6+DtaXrqX3VUJIfXaOMxlOFiVPWmh9xbxAmjmNEFVLg7KLHOQ6cFl8FORU
-         +LlA==
-X-Gm-Message-State: AOAM531OvX03TdQSSu4VoVGkUjEfekntjn6S14SksBucQss+W3evf9v5
-        2ry4chFJwKWRGftuo6NLGfQ=
-X-Google-Smtp-Source: ABdhPJzUp2TaF2aGU9Vqb8JmbmH4wR+sCSiRw1AkINCd1dXGXkktRPGPBmTuxWQcARCbNGVn0ZsuLg==
-X-Received: by 2002:a17:90b:902:: with SMTP id bo2mr10042504pjb.169.1602339064394;
-        Sat, 10 Oct 2020 07:11:04 -0700 (PDT)
-Received: from localhost ([13.94.42.177])
-        by smtp.gmail.com with ESMTPSA id s16sm14138547pgl.78.2020.10.10.07.11.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 10 Oct 2020 07:11:03 -0700 (PDT)
-From:   Qiujun Huang <hqjagain@gmail.com>
-To:     rostedt@goodmis.org, mingo@redhat.com, linux-kernel@vger.kernel.org
-Cc:     Qiujun Huang <hqjagain@gmail.com>
-Subject: [PATCH] trace: Fix some typos in comment
-Date:   Sat, 10 Oct 2020 22:09:24 +0800
-Message-Id: <20201010140924.3809-1-hqjagain@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Qo/18ovbHtyHs2tyDnL9a08ag04DhvXqumP6uahafHs=;
+        b=Pmto/ILG+Js6jeaYqEFCNOut9otT3f0UYr3Hd7qKpGaP8Bwfy5Pv7TLdzce37NobM9
+         y9JQOxw/hCPD9F6IzkL5v0WeHtocg3vFTCJlDQDHe3L7p/0loN1zVdyDmIboJTjdqfTj
+         saxLBichNNNb7s0rAGk/RQXYfOjkJqDydyKFPOAy+4SnnVYvOSaujNjS+QjCN0IBRWxx
+         jxFHuVJN2wBzCrIKK2vnWT5U5TjgK1GTY+ch/ELHSLuZfRrNQ1NxETqAFYob2t5iZ0Td
+         KPHT71Q207sD69HrDXD8h2SFSRaias7tUcxjF03gAP86cSFoRfg0WUvLjVJG3KSGmJmi
+         QYdA==
+X-Gm-Message-State: AOAM533GbSj76t10FMsf4flccwLnNnFzyZ/hxvEMATGtpNOLWdvP9vl0
+        Dl/LmTgdJYmlAUfGPOJvEA6DiRgOaNknYTN9Szz2I2gwmuao
+X-Google-Smtp-Source: ABdhPJwGzIrtCqzF4y294kumyrrFkE08AONpsEFLWCOZLsarl5WjdiJupXX6Ic5iVOKEbV+X9cXxlpbjHXm/Uv5kky5HKYVmZVX+
+MIME-Version: 1.0
+X-Received: by 2002:a92:5e42:: with SMTP id s63mr14101501ilb.205.1602339084196;
+ Sat, 10 Oct 2020 07:11:24 -0700 (PDT)
+Date:   Sat, 10 Oct 2020 07:11:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ec608805b151a3df@google.com>
+Subject: INFO: task can't die in congestion_wait
+From:   syzbot <syzbot+9d67ed950b326f4f35c3@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/wihin/within/
-s/retrieven/retrieved/
-s/suppport/support/
-s/wil/will/
-s/accidently/accidentally/
-s/if the if the/if the/
+Hello,
 
-Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+syzbot found the following issue on:
+
+HEAD commit:    a804ab08 Add linux-next specific files for 20201006
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=141b7afb900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=26c1b4cc4a62ccb
+dashboard link: https://syzkaller.appspot.com/bug?extid=9d67ed950b326f4f35c3
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9d67ed950b326f4f35c3@syzkaller.appspotmail.com
+
+INFO: task syz-executor.0:8666 can't die for more than 143 seconds.
+task:syz-executor.0  state:D stack:26592 pid: 8666 ppid:  6885 flags:0x00004006
+Call Trace:
+ context_switch kernel/sched/core.c:3772 [inline]
+ __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+ schedule+0xcf/0x270 kernel/sched/core.c:4599
+ schedule_timeout+0x148/0x250 kernel/time/timer.c:1881
+ io_schedule_timeout+0xc6/0x140 kernel/sched/core.c:6281
+ congestion_wait+0xff/0x450 mm/backing-dev.c:960
+ f2fs_get_meta_page_nofail+0x60/0x70 fs/f2fs/checkpoint.c:117
+ get_current_nat_page fs/f2fs/node.c:112 [inline]
+ __f2fs_build_free_nids+0x46f/0xe10 fs/f2fs/node.c:2403
+ f2fs_build_free_nids fs/f2fs/node.c:2446 [inline]
+ f2fs_build_node_manager+0x2549/0x3310 fs/f2fs/node.c:3180
+ f2fs_fill_super+0x3b7b/0x7410 fs/f2fs/super.c:3695
+ mount_bdev+0x32e/0x3f0 fs/super.c:1419
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1549
+ do_new_mount fs/namespace.c:2896 [inline]
+ path_mount+0x12ae/0x1e70 fs/namespace.c:3227
+ __do_sys_mount fs/namespace.c:3438 [inline]
+ __se_sys_mount fs/namespace.c:3411 [inline]
+ __x64_sys_mount+0x278/0x2f0 fs/namespace.c:3411
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x46087a
+Code: Unable to access opcode bytes at RIP 0x460850.
+RSP: 002b:00007f4166abba88 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007f4166abbb20 RCX: 000000000046087a
+RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007f4166abbae0
+RBP: 00007f4166abbae0 R08: 00007f4166abbb20 R09: 0000000020000000
+R10: 0000000000000000 R11: 0000000000000202 R12: 0000000020000000
+R13: 0000000020000100 R14: 0000000020000200 R15: 0000000020012400
+
+Showing all locks held in the system:
+3 locks held by kworker/u4:3/39:
+ #0: ffff8880ae436058 (&rq->lock){-.-.}-{2:2}, at: rq_lock kernel/sched/sched.h:1292 [inline]
+ #0: ffff8880ae436058 (&rq->lock){-.-.}-{2:2}, at: __schedule+0x284/0x2200 kernel/sched/core.c:4439
+ #1: ffff8880ae420ec8 (&per_cpu_ptr(group->pcpu, cpu)->seq){-.-.}-{0:0}, at: psi_task_switch+0x305/0x440 kernel/sched/psi.c:833
+ #2: ffffffff8a554da0 (rcu_read_lock){....}-{1:2}, at: batadv_nc_purge_orig_hash net/batman-adv/network-coding.c:405 [inline]
+ #2: ffffffff8a554da0 (rcu_read_lock){....}-{1:2}, at: batadv_nc_worker+0xf3/0xe50 net/batman-adv/network-coding.c:718
+1 lock held by khungtaskd/1181:
+ #0: ffffffff8a554da0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6242
+1 lock held by in:imklog/6770:
+ #0: ffff8880a75216b0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:930
+2 locks held by agetty/6781:
+ #0: ffff8880973f4098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:266
+ #1: ffffc900010cc2e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x223/0x1a70 drivers/tty/n_tty.c:2156
+3 locks held by syz-executor.0/8666:
+
+=============================================
+
+
+
 ---
- kernel/trace/trace.c | 4 ++--
- kernel/trace/trace.h | 8 ++++----
- 2 files changed, 6 insertions(+), 6 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index d3e5de717df2..2fae027a9fe5 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -9432,7 +9432,7 @@ __init static int tracer_alloc_buffers(void)
- 	}
- 
- 	/*
--	 * Make sure we don't accidently add more trace options
-+	 * Make sure we don't accidentally add more trace options
- 	 * than we have bits for.
- 	 */
- 	BUILD_BUG_ON(TRACE_ITER_LAST_BIT > TRACE_FLAGS_MAX_SIZE);
-@@ -9461,7 +9461,7 @@ __init static int tracer_alloc_buffers(void)
- 
- 	/*
- 	 * The prepare callbacks allocates some memory for the ring buffer. We
--	 * don't free the buffer if the if the CPU goes down. If we were to free
-+	 * don't free the buffer if the CPU goes down. If we were to free
- 	 * the buffer, then the user would lose any trace that was in the
- 	 * buffer. The memory will be removed once the "instance" is removed.
- 	 */
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index 610d21355526..d7d0764af062 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -246,7 +246,7 @@ typedef bool (*cond_update_fn_t)(struct trace_array *tr, void *cond_data);
-  * tracing_snapshot_cond(tr, cond_data), the cond_data passed in is
-  * passed in turn to the cond_snapshot.update() function.  That data
-  * can be compared by the update() implementation with the cond_data
-- * contained wihin the struct cond_snapshot instance associated with
-+ * contained within the struct cond_snapshot instance associated with
-  * the trace_array.  Because the tr->max_lock is held throughout the
-  * update() call, the update() function can directly retrieve the
-  * cond_snapshot and cond_data associated with the per-instance
-@@ -271,7 +271,7 @@ typedef bool (*cond_update_fn_t)(struct trace_array *tr, void *cond_data);
-  *	take the snapshot, by returning 'true' if so, 'false' if no
-  *	snapshot should be taken.  Because the max_lock is held for
-  *	the duration of update(), the implementation is safe to
-- *	directly retrieven and save any implementation data it needs
-+ *	directly retrieved and save any implementation data it needs
-  *	to in association with the snapshot.
-  */
- struct cond_snapshot {
-@@ -573,7 +573,7 @@ struct tracer {
-  *   The function callback, which can use the FTRACE bits to
-  *    check for recursion.
-  *
-- * Now if the arch does not suppport a feature, and it calls
-+ * Now if the arch does not support a feature, and it calls
-  * the global list function which calls the ftrace callback
-  * all three of these steps will do a recursion protection.
-  * There's no reason to do one if the previous caller already
-@@ -1472,7 +1472,7 @@ __trace_event_discard_commit(struct trace_buffer *buffer,
- /*
-  * Helper function for event_trigger_unlock_commit{_regs}().
-  * If there are event triggers attached to this event that requires
-- * filtering against its fields, then they wil be called as the
-+ * filtering against its fields, then they will be called as the
-  * entry already holds the field information of the current event.
-  *
-  * It also checks if the event should be discarded or not.
--- 
-2.17.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
