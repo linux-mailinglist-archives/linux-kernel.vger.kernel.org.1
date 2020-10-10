@@ -2,100 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A7ED289F08
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 09:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28938289F17
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 10:03:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729693AbgJJH4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 03:56:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45012 "EHLO
+        id S1729580AbgJJICs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 04:02:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729329AbgJJHzK (ORCPT
+        with ESMTP id S1728994AbgJJIBd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 03:55:10 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74CB5C0613D0
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 00:55:10 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id c2so13067215qkf.10
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 00:55:10 -0700 (PDT)
+        Sat, 10 Oct 2020 04:01:33 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D752AC0613CF;
+        Sat, 10 Oct 2020 01:01:32 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id 132so2292123pfz.5;
+        Sat, 10 Oct 2020 01:01:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FIbfa8CnKY7IkW3rParF9jXfx9AUSNx+WkfiE3ixDLU=;
-        b=K74AqtWTCzeJ3fHFsLhU28oHxZJ+TBfWXN0ajy3/k79H47kIb6MQDZ9nJQCyC7X1FQ
-         tr6uLNZQBBPRT+S6uqbkjrpuJdO3XjwIxeDqOGwnGiO7ZtFx3PGlnbSpe/ewrpp7dpmA
-         6yM6plNwn4lhupl/UBahvQezEoGzNs3DkYzamN5bJXG5KgZ3aRevOBWopKO2nKx5gcdh
-         wrxutUi4qd2RDt9iHtSgJIroiijkuyHseBKYyMkxv2dBGNmX45+SzDmE+11usmet2Y3C
-         B9ycpdjwSsWETinivuhVzm/zmT56SoTeMaLwEoQRLw8++vWysmVZQwgYvmFoF0KUJnBc
-         IhwQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KSgS/yaA0WF+r8iYDZJ1qn48JHFSJ548EMw3n9b8mbU=;
+        b=LssJWxpoRbxx7KVR2+T5gSPxakRpYk6ThunpIt+Ve3cPrj5sgsz/qaoCTHtsNkj3HT
+         4xfTln987yLxtBF9PIfnNjeaQcHir7T4LoSGNVAL1UYj+1WcPU3gdvS5mZTYlE072oph
+         ipJ6quiW3LuChTwlIlHeHy4rOFT7kO6tS4T9+Q972sLdjyxHTG+yIkAVO6G4tEiQw+9B
+         PzgafSNPQsXLYKU0ngebl7SaUu44t3KYiA9P/KjygNRwcGGIAqcxdEca4GrJN0e1L3y+
+         no5gO6j8h9Dp/yHYFf6/RKnF8ySQjiT+a36TkMzJOLegLjxACtDcIFWTnijcyaLzQOOA
+         6DBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FIbfa8CnKY7IkW3rParF9jXfx9AUSNx+WkfiE3ixDLU=;
-        b=AlIPBjgdswY9UjqBPwtQu0s0rvUM9HX+mL0H0/biSN4YybQgK1x0MncG6QWSI2am0x
-         tJT9BX6s8apqLazGJpePitSAy4nIZHHyT4d+ml1HuAkyA01QM+/CE1i+D6dwsHiHQbLP
-         yBk05FMzjFfnzHCgJw0us7wbS36nmQskobJmtf2Mwv6gruA9RUb51KbHgKz7JlXAYXv4
-         gyl0OVTbt26Y83Rudb+I39Y0rFpKLuvG9GH+ZyYIXVKBiL2TupRZp9spryT4L1Ddve0L
-         RkGKqWeRVBxDgL6KbVyWHgNSvjM8k70tIEryC2ch7NNvInJvgI98TLLHH8WWJ5Zrpf40
-         n3iQ==
-X-Gm-Message-State: AOAM530XrdDkkyRwwkxIaGpJwFcSkwzJ2WAZ72TizBr1Sp38/B6KFsRY
-        Nv3Qn2GuTKSaZdp6wGghsuXGvM/3rOOKMreFg3TiOw==
-X-Google-Smtp-Source: ABdhPJyGZIeP/r5j1IxcIHRQMZhGLZo7w7MDc8zflXTalRA5Cb9Of04dAcnojeKE3/QoqUcIaXbsjr/CPBqlOjWL7RA=
-X-Received: by 2002:a37:5684:: with SMTP id k126mr1356621qkb.43.1602316509213;
- Sat, 10 Oct 2020 00:55:09 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KSgS/yaA0WF+r8iYDZJ1qn48JHFSJ548EMw3n9b8mbU=;
+        b=RoxJr+rCTfJrZXIldAnKN2HSRhnCgXIDuHL9AH/XNekQxA3bh9/VHtuRwdLrAgDxGg
+         AqBKrU/7ViA2/pH5R03M7zOLVeoXJRei2ZTbf3OGOFEeiBA7h9nvvL9TjV2WhloiyDiE
+         gkbAEdt7cmaP4YUWmjxxRzTDumaQy50y8mTC5cv6QgzoHqMAcxLQqK5NSYf+CSdirdfG
+         g9qgzp0fp6ZTwKWR3DEDbWMkyhrOr7kbJBa2tXstsMx9dQyb+3M0qlrzEq/Outz1TRD0
+         xNCABva034Rn1qX/IdxEx2JVXCIO3ycBz4HGgseTRD2OzJ6Dk6jqRZckTQnZuQFRika+
+         Ovmw==
+X-Gm-Message-State: AOAM5302TXNn/TxrPQrotLwnLR/XCuzxWARmyamu42rUa4NfFvJ5FAml
+        jSuLKH8ZDnzlrQ/CBUyxMbk=
+X-Google-Smtp-Source: ABdhPJzG0ttUOIjGPCl8WvqSp8YIkg1fTjAgioAxSxWF5XuiRy+45rzLYEYO6JrWt5Dl9mBgeP7rfQ==
+X-Received: by 2002:a65:60d0:: with SMTP id r16mr6494572pgv.348.1602316892230;
+        Sat, 10 Oct 2020 01:01:32 -0700 (PDT)
+Received: from f3 (ae055068.dynamic.ppp.asahi-net.or.jp. [14.3.55.68])
+        by smtp.gmail.com with ESMTPSA id 84sm12866551pfx.120.2020.10.10.01.01.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 10 Oct 2020 01:01:31 -0700 (PDT)
+Date:   Sat, 10 Oct 2020 17:01:26 +0900
+From:   Benjamin Poirier <benjamin.poirier@gmail.com>
+To:     Coiby Xu <coiby.xu@gmail.com>
+Cc:     devel@driverdev.osuosl.org, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+        Manish Chopra <manishc@marvell.com>,
+        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
+        <GR-Linux-NIC-Dev@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:QLOGIC QLGE 10Gb ETHERNET DRIVER" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 5/6] staging: qlge: clean up debugging code in the
+ QL_ALL_DUMP ifdef land
+Message-ID: <20201010080126.GC14495@f3>
+References: <20201008115808.91850-1-coiby.xu@gmail.com>
+ <20201008115808.91850-6-coiby.xu@gmail.com>
 MIME-Version: 1.0
-References: <20201007101726.3149375-1-a.nogikh@gmail.com> <20201007101726.3149375-2-a.nogikh@gmail.com>
- <20201009161558.57792e1a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201009161558.57792e1a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Sat, 10 Oct 2020 09:54:57 +0200
-Message-ID: <CACT4Y+ZF_umjBpyJiCb8YPQOOSofG-M9h0CB=xn3bCgK=Kr=9w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] net: store KCOV remote handle in sk_buff
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Aleksandr Nogikh <a.nogikh@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Marco Elver <elver@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Aleksandr Nogikh <nogikh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201008115808.91850-6-coiby.xu@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 10, 2020 at 1:16 AM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Wed,  7 Oct 2020 10:17:25 +0000 Aleksandr Nogikh wrote:
-> > From: Aleksandr Nogikh <nogikh@google.com>
-> >
-> > Remote KCOV coverage collection enables coverage-guided fuzzing of the
-> > code that is not reachable during normal system call execution. It is
-> > especially helpful for fuzzing networking subsystems, where it is
-> > common to perform packet handling in separate work queues even for the
-> > packets that originated directly from the user space.
-> >
-> > Enable coverage-guided frame injection by adding a kcov_handle
-> > parameter to sk_buff structure. Initialization in __alloc_skb ensures
-> > that no socket buffer that was generated during a system call will be
-> > missed.
-> >
-> > Code that is of interest and that performs packet processing should be
-> > annotated with kcov_remote_start()/kcov_remote_stop().
-> >
-> > An alternative approach is to determine kcov_handle solely on the
-> > basis of the device/interface that received the specific socket
-> > buffer. However, in this case it would be impossible to distinguish
-> > between packets that originated from normal background network
-> > processes and those that were intentionally injected from the user
-> > space.
-> >
-> > Signed-off-by: Aleksandr Nogikh <nogikh@google.com>
->
-> Could you use skb_extensions for this?
+On 2020-10-08 19:58 +0800, Coiby Xu wrote:
+> The debugging code in the following ifdef land
+>  - QL_ALL_DUMP
+>  - QL_REG_DUMP
+>  - QL_DEV_DUMP
+>  - QL_CB_DUMP
+>  - QL_IB_DUMP
+>  - QL_OB_DUMP
+> 
+> becomes unnecessary because,
+>  - Device status and general registers can be obtained by ethtool.
+>  - Coredump can be done via devlink health reporter.
+>  - Structure related to the hardware (struct ql_adapter) can be obtained
+>    by crash or drgn.
+> 
+> Suggested-by: Benjamin Poirier <benjamin.poirier@gmail.com>
+> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+> ---
+>  drivers/staging/qlge/qlge.h         |  82 ----
+>  drivers/staging/qlge/qlge_dbg.c     | 688 ----------------------------
+>  drivers/staging/qlge/qlge_ethtool.c |   2 -
+>  drivers/staging/qlge/qlge_main.c    |   7 +-
 
-Why? If for space, this is already under a non-production ifdef.
+Please also update drivers/staging/qlge/TODO accordingly. There is still
+a lot of debugging code IMO (the netif_printk statements - kernel
+tracing can be used instead of those) but this patch is a substantial
+improvement.
