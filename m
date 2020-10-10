@@ -2,379 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69F3228A447
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:15:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B4728A307
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731021AbgJJWxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:53:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58970 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731286AbgJJTHK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:07:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602356821;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1h/nRBk2arluNdKPAJW+4TdB6cCxCnlxIzgG9iIxYr4=;
-        b=TlP67YD5x+pPNnvkgGiv96bG22ytJLjj7pEPqh4oq7u5jtqN05FlQ8wf/7T0/zAQOFWXAi
-        zr+jD1gn+xiq3IyElqTguQ6L52vHNsD4lMEdK+SuVsOAusQoeZ7CT+hXb+3OlG5aPlckvk
-        VUNdKKlwM9cEFre8j8UfCdQ83taxws8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-245-5UcgNiA4PvyZVop1_vzfXA-1; Sat, 10 Oct 2020 10:26:15 -0400
-X-MC-Unique: 5UcgNiA4PvyZVop1_vzfXA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1732089AbgJJW7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:59:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57030 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731904AbgJJTyL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 15:54:11 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E55F051B1;
-        Sat, 10 Oct 2020 14:26:13 +0000 (UTC)
-Received: from x1.home (ovpn-113-35.phx2.redhat.com [10.3.113.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6728C7665D;
-        Sat, 10 Oct 2020 14:26:03 +0000 (UTC)
-Date:   Sat, 10 Oct 2020 08:26:03 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     gchen chen <gchen.guomin@gmail.com>
-Cc:     guomin_chen@sina.com, Cornelia Huck <cohuck@redhat.com>,
-        Jiang Yi <giangyi@amazon.com>, Marc Zyngier <maz@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>, kvm@vger.kernel.org,
+        by mail.kernel.org (Postfix) with ESMTPSA id 50376222B8;
+        Sat, 10 Oct 2020 14:39:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602340744;
+        bh=VKttiuENtiWHH3T6V9S6RmhCbu0RiQwdS2O9eY84YMc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ynh8xWT2d+PyrCHPtPN5G2l9stBhUIS0W7QPOeNDyhFYu/7J5K7Z7wqP6Vjv3c9w7
+         jPwjmj7ZepWTE7xhdFO7xbl2myPnAh0ofPaTVhOgwSeiKtIl4d24XSGEaC4h/eHBTv
+         4k1m+wLuen+otB9vGZQopMKO9HHeQPlEob5KzHzE=
+Date:   Sat, 10 Oct 2020 23:39:00 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Tom Zanussi <zanussi@kernel.org>
+Cc:     rostedt@goodmis.org, axelrasmussen@google.com, mhiramat@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] irqbypass: fix error handle when
- irq_bypass_register_producer() return fails
-Message-ID: <20201010082603.1658be16@x1.home>
-In-Reply-To: <CAEEwsfRDLFxkV5ZwNy9+3N3u9RtiCtErC6CK3k+ft0=jQtTv_A@mail.gmail.com>
-References: <1601470479-26848-1-git-send-email-guomin_chen@sina.com>
-        <20200930080919.1a9c66f8@x1.home>
-        <CAEEwsfRZt=r54SWOqbKvF60zPKu2tiTeQtFcFW14Hp92kT6M9Q@mail.gmail.com>
-        <20201009124423.2a8603f7@x1.home>
-        <CAEEwsfRDLFxkV5ZwNy9+3N3u9RtiCtErC6CK3k+ft0=jQtTv_A@mail.gmail.com>
-Organization: Red Hat
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Subject: Re: [PATCH 2/5] tracing: Move is_good_name() from trace_probe.h to
+ trace.h
+Message-Id: <20201010233900.8a8e0e3c4f2e5e897cfe14ef@kernel.org>
+In-Reply-To: <235fe1ca3bac2ab40f069f3e62788fc3ec768fea.1602255803.git.zanussi@kernel.org>
+References: <cover.1602255803.git.zanussi@kernel.org>
+        <235fe1ca3bac2ab40f069f3e62788fc3ec768fea.1602255803.git.zanussi@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 10 Oct 2020 19:01:30 +0800
-gchen chen <gchen.guomin@gmail.com> wrote:
+On Fri,  9 Oct 2020 10:17:08 -0500
+Tom Zanussi <zanussi@kernel.org> wrote:
 
-> Alex Williamson <alex.williamson@redhat.com> =E4=BA=8E2020=E5=B9=B410=E6=
-=9C=8810=E6=97=A5=E5=91=A8=E5=85=AD =E4=B8=8A=E5=8D=882:44=E5=86=99=E9=81=
-=93=EF=BC=9A
-> >
-> > On Fri, 9 Oct 2020 12:30:04 +0800
-> > gchen chen <gchen.guomin@gmail.com> wrote:
-> > =20
-> > > Alex Williamson <alex.williamson@redhat.com> =E4=BA=8E2020=E5=B9=B49=
-=E6=9C=8830=E6=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=8810:09=E5=86=99=E9=
-=81=93=EF=BC=9A =20
-> > > >
-> > > >
-> > > > Please version your postings so we know which one to consider as the
-> > > > current proposal.
-> > > >
-> > > > On Wed, 30 Sep 2020 20:54:39 +0800
-> > > > guomin_chen@sina.com wrote:
-> > > > =20
-> > > > > From: guomin chen <guomin_chen@sina.com>
-> > > > >
-> > > > > When the producer object registration fails,In the future, due to
-> > > > > incorrect matching when unregistering, list_del(&producer->node)
-> > > > > may still be called, then trigger a BUG:
-> > > > >
-> > > > >     vfio-pci 0000:db:00.0: irq bypass producer (token 0000000060c=
-8cda5) registration fails: -16
-> > > > >     vfio-pci 0000:db:00.0: irq bypass producer (token 0000000060c=
-8cda5) registration fails: -16
-> > > > >     vfio-pci 0000:db:00.0: irq bypass producer (token 0000000060c=
-8cda5) registration fails: -16
-> > > > >     ...
-> > > > >     list_del corruption, ffff8f7fb8ba0828->next is LIST_POISON1 (=
-dead000000000100)
-> > > > >     ------------[ cut here ]------------
-> > > > >     kernel BUG at lib/list_debug.c:47!
-> > > > >     invalid opcode: 0000 [#1] SMP NOPTI
-> > > > >     CPU: 29 PID: 3914 Comm: qemu-kvm Kdump: loaded Tainted: G    =
-  E
-> > > > >     -------- - -4.18.0-193.6.3.el8.x86_64 #1
-> > > > >     Hardware name: Lenovo ThinkSystem SR650 -[7X06CTO1WW]-/-[7X06=
-CTO1WW]-,
-> > > > >     BIOS -[IVE636Z-2.13]- 07/18/2019
-> > > > >     RIP: 0010:__list_del_entry_valid.cold.1+0x12/0x4c
-> > > > >     Code: ce ff 0f 0b 48 89 c1 4c 89 c6 48 c7 c7 40 85 4d 88 e8 8=
-c bc
-> > > > >           ce ff 0f 0b 48 89 fe 48 89 c2 48 c7 c7 d0 85 4d 88 e8 7=
-8 bc
-> > > > >           ce ff <0f> 0b 48 c7 c7 80 86 4d 88 e8 6a bc ce ff 0f 0b=
- 48
-> > > > >           89 f2 48 89 fe
-> > > > >     RSP: 0018:ffffaa9d60197d20 EFLAGS: 00010246
-> > > > >     RAX: 000000000000004e RBX: ffff8f7fb8ba0828 RCX: 000000000000=
-0000
-> > > > >     RDX: 0000000000000000 RSI: ffff8f7fbf4d6a08 RDI: ffff8f7fbf4d=
-6a08
-> > > > >     RBP: 0000000000000000 R08: 000000000000084b R09: 000000000000=
-005d
-> > > > >     R10: 0000000000000000 R11: ffffaa9d60197bd0 R12: ffff8f4fbe86=
-3000
-> > > > >     R13: 00000000000000c2 R14: 0000000000000000 R15: 000000000000=
-0000
-> > > > >     FS:  00007f7cb97fa700(0000) GS:ffff8f7fbf4c0000(0000)
-> > > > >     knlGS:0000000000000000
-> > > > >     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > > >     CR2: 00007fcf31da4000 CR3: 0000005f6d404001 CR4: 000000000076=
-26e0
-> > > > >     DR0: 0000000000000000 DR1: 0000000000000000 DR2: 000000000000=
-0000
-> > > > >     DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 000000000000=
-0400
-> > > > >     PKRU: 55555554
-> > > > >     Call Trace:
-> > > > >         irq_bypass_unregister_producer+0x9b/0xf0 [irqbypass]
-> > > > >         vfio_msi_set_vector_signal+0x8c/0x290 [vfio_pci]
-> > > > >         ? load_fixmap_gdt+0x22/0x30
-> > > > >         vfio_msi_set_block+0x6e/0xd0 [vfio_pci]
-> > > > >         vfio_pci_ioctl+0x218/0xbe0 [vfio_pci]
-> > > > >         ? kvm_vcpu_ioctl+0xf2/0x5f0 [kvm]
-> > > > >         do_vfs_ioctl+0xa4/0x630
-> > > > >         ? syscall_trace_enter+0x1d3/0x2c0
-> > > > >         ksys_ioctl+0x60/0x90
-> > > > >         __x64_sys_ioctl+0x16/0x20
-> > > > >         do_syscall_64+0x5b/0x1a0
-> > > > >         entry_SYSCALL_64_after_hwframe+0x65/0xca
-> > > > >
-> > > > > Cc: Alex Williamson <alex.williamson@redhat.com>
-> > > > > Cc: Cornelia Huck <cohuck@redhat.com>
-> > > > > Cc: Jiang Yi <giangyi@amazon.com>
-> > > > > Cc: Marc Zyngier <maz@kernel.org>
-> > > > > Cc: Peter Xu <peterx@redhat.com>
-> > > > > Cc: Eric Auger <eric.auger@redhat.com>
-> > > > > Cc: "Michael S. Tsirkin" <mst@redhat.com>
-> > > > > Cc: Jason Wang <jasowang@redhat.com>
-> > > > > Cc: kvm@vger.kernel.org
-> > > > > Cc: linux-kernel@vger.kernel.org
-> > > > > Signed-off-by: guomin chen <guomin_chen@sina.com>
-> > > > > ---
-> > > > >  drivers/vfio/pci/vfio_pci_intrs.c | 13 +++++++++++--
-> > > > >  drivers/vhost/vdpa.c              |  7 +++++++
-> > > > >  2 files changed, 18 insertions(+), 2 deletions(-)
-> > > > >
-> > > > > diff --git a/drivers/vfio/pci/vfio_pci_intrs.c b/drivers/vfio/pci=
-/vfio_pci_intrs.c
-> > > > > index 1d9fb25..c371943 100644
-> > > > > --- a/drivers/vfio/pci/vfio_pci_intrs.c
-> > > > > +++ b/drivers/vfio/pci/vfio_pci_intrs.c
-> > > > > @@ -352,12 +352,21 @@ static int vfio_msi_set_vector_signal(struc=
-t vfio_pci_device *vdev,
-> > > > >       vdev->ctx[vector].producer.token =3D trigger;
-> > > > >       vdev->ctx[vector].producer.irq =3D irq;
-> > > > >       ret =3D irq_bypass_register_producer(&vdev->ctx[vector].pro=
-ducer);
-> > > > > -     if (unlikely(ret))
-> > > > > +     if (unlikely(ret)) {
-> > > > >               dev_info(&pdev->dev,
-> > > > >               "irq bypass producer (token %p) registration fails:=
- %d\n",
-> > > > >               vdev->ctx[vector].producer.token, ret);
-> > > > >
-> > > > > -     vdev->ctx[vector].trigger =3D trigger;
-> > > > > +             kfree(vdev->ctx[vector].name);
-> > > > > +             eventfd_ctx_put(trigger);
-> > > > > +
-> > > > > +             cmd =3D vfio_pci_memory_lock_and_enable(vdev);
-> > > > > +             free_irq(irq, trigger);
-> > > > > +             vfio_pci_memory_unlock_and_restore(vdev, cmd);
-> > > > > +
-> > > > > +             vdev->ctx[vector].trigger =3D NULL;
-> > > > > +     } else
-> > > > > +             vdev->ctx[vector].trigger =3D trigger;
-> > > > >
-> > > > >       return 0;
-> > > > >  } =20
-> > > >
-> > > > Once again, the irq bypass registration cannot cause the vector set=
-up
-> > > > to fail, either by returning an error code or failing to configure =
-the
-> > > > vector while returning success.  It's my assertion that we simply n=
-eed
-> > > > to set the producer.token to NULL on failure such that unregistering
-> > > > the producer will not generate a match, as you've done below.  The
-> > > > vector still works even if this registration fails.
-> > > > =20
-> > > Yes,  the irq bypass registration cannot cause the vector setup to fa=
-il.
-> > > But if I simply set producer.token to NULL when fails, instead of
-> > > cleaning up vector, it will trigger the following BUG:
-> > >
-> > > vfio_ecap_init: 0000:db:00.0 hiding ecap 0x1e@0x310
-> > > vfio-pci 0000:db:00.0: irq bypass producer (token 000000004409229f)
-> > > registration fails: -16
-> > > ------------[ cut here ]------------
-> > > kernel BUG at drivers/pci/msi.c:352!
-> > > invalid opcode: 0000 [#1] SMP NOPTI
-> > > CPU: 55 PID: 9389 Comm: qemu-kvm Kdump: loaded Tainted: G
-> > > E    --------- -  - 4.18.0-193.irqb.r1.el8.x86_64 #1
-> > > Hardware name: Lenovo ThinkSystem SR650 -[7X06CTO1WW]-/-[7X06CTO1WW]-,
-> > >   BIOS -[IVE636Z-2.13]- 07/18/2019
-> > > RIP: 0010:free_msi_irqs+0x180/0x1b0
-> > > Code: 14 85 c0 0f 84 d5 fe ff ff 31 ed eb 0f 83 c5 01 39 6b 14 0f 86
-> > >       c5 fe ff ff 8b 7b 10 01 ef e8 d7 4a c9 ff 48 83 78 70 00 74 e3
-> > >   <0f> 0b 49 8d b5 b0 00 00 00 e8 e2 e3 c9 ff e9 c7 fe ff ff 48
-> > >   8b 7b
-> > > RSP: 0018:ffffaeca4f4bfcd8 EFLAGS: 00010286
-> > > RAX: ffff8bec77441600 RBX: ffff8bbcdb637e40 RCX: 0000000000000000
-> > > RDX: 0000000000000000 RSI: 00000000000001ab RDI: ffffffff8ea5b2a0
-> > > RBP: 0000000000000000 R08: ffff8bec7e746828 R09: ffff8bec7e7466a8
-> > > R10: 0000000000000000 R11: 0000000000000000 R12: ffff8bbcde921308
-> > > R13: ffff8bbcde921000 R14: 000000000000000b R15: 0000000000000021
-> > > FS:  00007fd18d7fa700(0000) GS:ffff8bec7f6c0000(0000) knlGS:000000000=
-0000000
-> > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > CR2: 00007f83650024a0 CR3: 000000476e70c001 CR4: 00000000007626e0
-> > > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > > PKRU: 55555554
-> > > Call Trace:
-> > >  pci_disable_msix+0xf3/0x120
-> > >  pci_free_irq_vectors+0xe/0x20
-> > >  vfio_msi_disable+0x89/0xd0 [vfio_pci]
-> > >  vfio_pci_set_msi_trigger+0x229/0x2d0 [vfio_pci]
-> > >  vfio_pci_ioctl+0x24f/0xdb0 [vfio_pci]
-> > >  ? pollwake+0x74/0x90
-> > >  ? wake_up_q+0x70/0x70
-> > >  do_vfs_ioctl+0xa4/0x630
-> > >  ? __alloc_fd+0x33/0x140
-> > >  ? syscall_trace_enter+0x1d3/0x2c0
-> > >  ksys_ioctl+0x60/0x90
-> > >  __x64_sys_ioctl+0x16/0x20
-> > >  do_syscall_64+0x5b/0x1a0
-> > >  entry_SYSCALL_64_after_hwframe+0x65/0xca =20
-> >
-> > Please post the patch that triggers this, I'm not yet convinced we're
-> > speaking of the same solution.  The user ioctl cannot fail due to the
-> > failure to setup a bypass accelerator, nor can the ioctl return success
-> > without configuring all of the user requested vectors, which is what I
-> > understand the v2 patch above to do.  We simply want to configure the
-> > failed producer such that when we unregister it at user request, we
-> > avoid creating a bogus match.  It's not apparent to me why doing that
-> > would cause any changes to the setup or teardown of the MSI vector in
-> > PCI code.  Thanks,
-> >
-> > Alex
-> > =20
-> Hi Alex, as you said before, I only need to set the producer.token
-> to NULL on failure such that unregistering the producer will not
-> generate a match.
->=20
-> So I wrote a patch (As you said patch v2), as follows:
->=20
-> diff --git a/drivers/vfio/pci/vfio_pci_intrs.c
-> b/drivers/vfio/pci/vfio_pci_intrs.c
-> index 1d9fb25..1969cd0 100644
-> --- a/drivers/vfio/pci/vfio_pci_intrs.c
-> +++ b/drivers/vfio/pci/vfio_pci_intrs.c
-> @@ -352,12 +352,15 @@ static int vfio_msi_set_vector_signal(struct
-> vfio_pci_device *vdev,
->         vdev->ctx[vector].producer.token =3D trigger;
->         vdev->ctx[vector].producer.irq =3D irq;
->         ret =3D irq_bypass_register_producer(&vdev->ctx[vector].producer);
-> -       if (unlikely(ret))
-> +       if (unlikely(ret)) {
->                 dev_info(&pdev->dev,
->                 "irq bypass producer (token %p) registration fails: %d\n",
->                 vdev->ctx[vector].producer.token, ret);
->=20
-> -       vdev->ctx[vector].trigger =3D trigger;
-> +               eventfd_ctx_put(trigger);
-> +               vdev->ctx[vector].trigger =3D NULL;
-> +       } else
-> +               vdev->ctx[vector].trigger =3D trigger;
->=20
->         return 0;
+> is_good_name() is useful for other trace infrastructure, such as
+> synthetic events, so make it available via trace.h.
+> 
+
+This looks good to me.
+
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Thanks!
+
+> Signed-off-by: Tom Zanussi <zanussi@kernel.org>
+> ---
+>  kernel/trace/trace.h       | 13 +++++++++++++
+>  kernel/trace/trace_probe.h | 13 -------------
+>  2 files changed, 13 insertions(+), 13 deletions(-)
+> 
+> diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+> index 5b0e797cacdd..a94852838491 100644
+> --- a/kernel/trace/trace.h
+> +++ b/kernel/trace/trace.h
+> @@ -19,6 +19,7 @@
+>  #include <linux/glob.h>
+>  #include <linux/irq_work.h>
+>  #include <linux/workqueue.h>
+> +#include <linux/ctype.h>
+>  
+>  #ifdef CONFIG_FTRACE_SYSCALLS
+>  #include <asm/unistd.h>		/* For NR_SYSCALLS	     */
+> @@ -2090,4 +2091,16 @@ static __always_inline void trace_iterator_reset(struct trace_iterator *iter)
+>  	iter->pos = -1;
 >  }
+>  
+> +/* Check the name is good for event/group/fields */
+> +static inline bool is_good_name(const char *name)
+> +{
+> +	if (!isalpha(*name) && *name != '_')
+> +		return false;
+> +	while (*++name != '\0') {
+> +		if (!isalpha(*name) && !isdigit(*name) && *name != '_')
+> +			return false;
+> +	}
+> +	return true;
+> +}
+> +
+>  #endif /* _LINUX_KERNEL_TRACE_H */
+> diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
+> index 04d00987da69..2f703a20c724 100644
+> --- a/kernel/trace/trace_probe.h
+> +++ b/kernel/trace/trace_probe.h
+> @@ -16,7 +16,6 @@
+>  #include <linux/tracefs.h>
+>  #include <linux/types.h>
+>  #include <linux/string.h>
+> -#include <linux/ctype.h>
+>  #include <linux/ptrace.h>
+>  #include <linux/perf_event.h>
+>  #include <linux/kprobes.h>
+> @@ -348,18 +347,6 @@ bool trace_probe_match_command_args(struct trace_probe *tp,
+>  #define trace_probe_for_each_link_rcu(pos, tp)	\
+>  	list_for_each_entry_rcu(pos, &(tp)->event->files, list)
+>  
+> -/* Check the name is good for event/group/fields */
+> -static inline bool is_good_name(const char *name)
+> -{
+> -	if (!isalpha(*name) && *name != '_')
+> -		return false;
+> -	while (*++name != '\0') {
+> -		if (!isalpha(*name) && !isdigit(*name) && *name != '_')
+> -			return false;
+> -	}
+> -	return true;
+> -}
+> -
+>  #define TPARG_FL_RETURN BIT(0)
+>  #define TPARG_FL_KERNEL BIT(1)
+>  #define TPARG_FL_FENTRY BIT(2)
+> -- 
+> 2.17.1
+> 
 
-How does this remotely match "only need to set the producer.token to
-NULL on failure"?  What I'm suggesting is:
 
---- a/drivers/vfio/pci/vfio_pci_intrs.c
-+++ b/drivers/vfio/pci/vfio_pci_intrs.c
-@@ -352,10 +352,12 @@ static int vfio_msi_set_vector_signal(struct vfio_pci=
-_device *vdev,
-        vdev->ctx[vector].producer.token =3D trigger;
-        vdev->ctx[vector].producer.irq =3D irq;
-        ret =3D irq_bypass_register_producer(&vdev->ctx[vector].producer);
--       if (unlikely(ret))
-+       if (unlikely(ret)) {
-                dev_info(&pdev->dev,
-                "irq bypass producer (token %p) registration fails: %d\n",
-                vdev->ctx[vector].producer.token, ret);
-+               vdev->ctx[vector].producer.token =3D NULL;
-+       }
-=20
-        vdev->ctx[vector].trigger =3D trigger;
-=20
-This is exactly what you proposed for vhost/vdpa.c, so I don't see why
-you're playing with the trigger context, which will clearly cause
-problems.  Thanks,
-
-Alex
-
-> --
->=20
-> However, when I use this patch to testing, the following bugs are
-> triggered when vfio_msi_disable() called because the msi vector
-> is not cleaned up:
->=20
-> vfio_ecap_init: 0000:db:00.0 hiding ecap 0x1e@0x310
-> vfio-pci 0000:db:00.0: irq bypass producer (token 000000004409229f)
-> registration fails: -16
-> ------------[ cut here ]------------
-> kernel BUG at drivers/pci/msi.c:352!
-> invalid opcode: 0000 [#1] SMP NOPTI
-> CPU: 55 PID: 9389 Comm: qemu-kvm Kdump: loaded Tainted: G
-> E    --------- -  - 4.18.0-193.irqb.r1.el8.x86_64 #1
-> Hardware name: Lenovo ThinkSystem SR650 -[7X06CTO1WW]-/-[7X06CTO1WW]-,
->   BIOS -[IVE636Z-2.13]- 07/18/2019
-> RIP: 0010:free_msi_irqs+0x180/0x1b0
-> Code: 14 85 c0 0f 84 d5 fe ff ff 31 ed eb 0f 83 c5 01 39 6b 14 0f 86
->       c5 fe ff ff 8b 7b 10 01 ef e8 d7 4a c9 ff 48 83 78 70 00 74 e3
->   <0f> 0b 49 8d b5 b0 00 00 00 e8 e2 e3 c9 ff e9 c7 fe ff ff 48
->   8b 7b
-> RSP: 0018:ffffaeca4f4bfcd8 EFLAGS: 00010286
-> RAX: ffff8bec77441600 RBX: ffff8bbcdb637e40 RCX: 0000000000000000
-> RDX: 0000000000000000 RSI: 00000000000001ab RDI: ffffffff8ea5b2a0
-> RBP: 0000000000000000 R08: ffff8bec7e746828 R09: ffff8bec7e7466a8
-> R10: 0000000000000000 R11: 0000000000000000 R12: ffff8bbcde921308
-> R13: ffff8bbcde921000 R14: 000000000000000b R15: 0000000000000021
-> FS:  00007fd18d7fa700(0000) GS:ffff8bec7f6c0000(0000) knlGS:0000000000000=
-000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f83650024a0 CR3: 000000476e70c001 CR4: 00000000007626e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> PKRU: 55555554
-> Call Trace:
->  pci_disable_msix+0xf3/0x120
->  pci_free_irq_vectors+0xe/0x20
->  vfio_msi_disable+0x89/0xd0 [vfio_pci]
->  vfio_pci_set_msi_trigger+0x229/0x2d0 [vfio_pci]
->  vfio_pci_ioctl+0x24f/0xdb0 [vfio_pci]
->  ? pollwake+0x74/0x90
->  ? wake_up_q+0x70/0x70
->  do_vfs_ioctl+0xa4/0x630
->  ? __alloc_fd+0x33/0x140
->  ? syscall_trace_enter+0x1d3/0x2c0
->  ksys_ioctl+0x60/0x90
->  __x64_sys_ioctl+0x16/0x20
->  do_syscall_64+0x5b/0x1a0
->  entry_SYSCALL_64_after_hwframe+0x65/0xca
->=20
-
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
