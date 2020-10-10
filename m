@@ -2,89 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF97628A36D
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:08:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C37328A1D2
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:52:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390367AbgJJW5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:57:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54888 "EHLO mail.kernel.org"
+        id S1732050AbgJJW1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:27:02 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:38856 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732187AbgJJTmt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:42:49 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 146F22227F;
-        Sat, 10 Oct 2020 15:14:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602342873;
-        bh=Wm+2t5Tn8HAfRb+NiT1DGYzcTM4re5k/zB2Fox6sQ0Q=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=jGQcodPHlLmCZfKRkUuKRLDJOZBM5RKr1mBTJm64M/HtmdiglIKVDToo4Z1Z5fUzw
-         qxH43hZq5SIJ4ytU+fO/QFVNKwcEhnWDpODXgdSBwpimM/dg7iZck5h52Z61hnwFTo
-         LYtS4npwciM6z7mTBCOArmovHmlpQo1acSGihoWU=
-Date:   Sat, 10 Oct 2020 08:14:31 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Aleksandr Nogikh <a.nogikh@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Marco Elver <elver@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Aleksandr Nogikh <nogikh@google.com>
-Subject: Re: [PATCH 1/2] net: store KCOV remote handle in sk_buff
-Message-ID: <20201010081431.1f2d9d0d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <CACT4Y+ZF_umjBpyJiCb8YPQOOSofG-M9h0CB=xn3bCgK=Kr=9w@mail.gmail.com>
-References: <20201007101726.3149375-1-a.nogikh@gmail.com>
-        <20201007101726.3149375-2-a.nogikh@gmail.com>
-        <20201009161558.57792e1a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CACT4Y+ZF_umjBpyJiCb8YPQOOSofG-M9h0CB=xn3bCgK=Kr=9w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1730379AbgJJSvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 14:51:09 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4C7pPz39mQz9v1Jb;
+        Sat, 10 Oct 2020 17:14:31 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id Uwe96daOGMmu; Sat, 10 Oct 2020 17:14:31 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4C7pPz26YDz9v1JX;
+        Sat, 10 Oct 2020 17:14:31 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id D73B48B77D;
+        Sat, 10 Oct 2020 17:14:32 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id vVWSgFGYsEqT; Sat, 10 Oct 2020 17:14:32 +0200 (CEST)
+Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7D0E18B75B;
+        Sat, 10 Oct 2020 17:14:32 +0200 (CEST)
+Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 18A35663C3; Sat, 10 Oct 2020 15:14:32 +0000 (UTC)
+Message-Id: <3f2386f94fada00b541be76d6bc4b6409746a72d.1602342819.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH 1/4] powerpc/8xx: Fix instruction TLB miss exception with perf
+ enabled
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Sat, 10 Oct 2020 15:14:32 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 10 Oct 2020 09:54:57 +0200 Dmitry Vyukov wrote:
-> On Sat, Oct 10, 2020 at 1:16 AM Jakub Kicinski <kuba@kernel.org> wrote:
-> > On Wed,  7 Oct 2020 10:17:25 +0000 Aleksandr Nogikh wrote:  
-> > > From: Aleksandr Nogikh <nogikh@google.com>
-> > >
-> > > Remote KCOV coverage collection enables coverage-guided fuzzing of the
-> > > code that is not reachable during normal system call execution. It is
-> > > especially helpful for fuzzing networking subsystems, where it is
-> > > common to perform packet handling in separate work queues even for the
-> > > packets that originated directly from the user space.
-> > >
-> > > Enable coverage-guided frame injection by adding a kcov_handle
-> > > parameter to sk_buff structure. Initialization in __alloc_skb ensures
-> > > that no socket buffer that was generated during a system call will be
-> > > missed.
-> > >
-> > > Code that is of interest and that performs packet processing should be
-> > > annotated with kcov_remote_start()/kcov_remote_stop().
-> > >
-> > > An alternative approach is to determine kcov_handle solely on the
-> > > basis of the device/interface that received the specific socket
-> > > buffer. However, in this case it would be impossible to distinguish
-> > > between packets that originated from normal background network
-> > > processes and those that were intentionally injected from the user
-> > > space.
-> > >
-> > > Signed-off-by: Aleksandr Nogikh <nogikh@google.com>  
-> >
-> > Could you use skb_extensions for this?  
-> 
-> Why? If for space, this is already under a non-production ifdef.
+When perf is enabled, r11 must also be restored when CONFIG_HUGETLBFS
+is selected.
 
-I understand, but the skb_ext infra is there for uncommon use cases
-like this one. Any particular reason you don't want to use it? 
-The slight LoC increase?
+Fixes: a891c43b97d3 ("powerpc/8xx: Prepare handlers for _PAGE_HUGE for 512k pages.")
+Cc: stable@vger.kernel.org
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/kernel/head_8xx.S | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Is there any precedent for adding the kcov field to other performance
-critical structures?
+diff --git a/arch/powerpc/kernel/head_8xx.S b/arch/powerpc/kernel/head_8xx.S
+index 9f359d3fba74..32d85387bdc5 100644
+--- a/arch/powerpc/kernel/head_8xx.S
++++ b/arch/powerpc/kernel/head_8xx.S
+@@ -268,7 +268,7 @@ InstructionTLBMiss:
+ 	addi	r10, r10, 1
+ 	stw	r10, (itlb_miss_counter - PAGE_OFFSET)@l(0)
+ 	mfspr	r10, SPRN_SPRG_SCRATCH0
+-#if defined(ITLB_MISS_KERNEL) || defined(CONFIG_SWAP)
++#if defined(ITLB_MISS_KERNEL) || defined(CONFIG_SWAP) || defined(CONFIG_HUGETLBFS)
+ 	mfspr	r11, SPRN_SPRG_SCRATCH1
+ #endif
+ 	rfi
+-- 
+2.25.0
+
