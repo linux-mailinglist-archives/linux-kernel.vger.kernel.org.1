@@ -2,292 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51C4128A2D6
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:03:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43A6B28A2D8
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732459AbgJJW7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:59:36 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:22109 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728487AbgJJVbf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 17:31:35 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602365492; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=++PfaktQtqZUoZFwJpMwbqOFzMy3ofIWwLzgFnK9zpo=;
- b=UQwzeh/ZQyZ9LhPr334MQg31d7TZ0WojvTnxXHhtSvydIbH9xu+7wmpAtNfr7bHCoLOOONaw
- J9UlX+loG2nIuwlBhxGKk9jJcVWYiij4llZTYv6gUVo7AZdXbrvs3V03FPykJIwIXQPQZBJA
- csTy9zvflT02y9L3ACS8m024AsY=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5f82283457b88ccb5636a3bb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 10 Oct 2020 21:31:32
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0FC7BC43382; Sat, 10 Oct 2020 21:31:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id AE4C8C433CB;
-        Sat, 10 Oct 2020 21:31:30 +0000 (UTC)
+        id S1732504AbgJJW7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:59:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728491AbgJJVcW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 17:32:22 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E559C0613D5
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 14:32:15 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id t77so14306983oie.4
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 14:32:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=eOErpfOgEHvqoynno+X7K2KGQQjqKpNf/4DLHM6VCxI=;
+        b=bkgteCVxwM6kN0aEzNJYsf26mAIxhPv2McdrAdqiyH+C70JfkVfDt7/M5rR+rAdLhG
+         cuhWtQlVsFvREMMLlMZEjS9TQsBb7WZQ8UggkyE4P+OvWApOlJjAa2toOrzS1mKuBYLH
+         D1CUxJYWqX5UONNm+6mBvlB1DGdxP0Yv9uoBY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=eOErpfOgEHvqoynno+X7K2KGQQjqKpNf/4DLHM6VCxI=;
+        b=HDxw8uo9Rznu7bPmIqu3xnnxSEDlx7kzdEUGv4dJa4O9G1U4rYKs8bZRYfj/DUaVOA
+         RC0fnNh+dZgLXRBeOQV2q/4a1u8QQ+y5jcGOrORT3W0Ps9Ho7NOjVyrwqyqHeggY8s+W
+         NLeSwCc9mEkDWEiw57l1c97T5gC+yzEC8a7niCsAs3gRVmRNB2775UePtC/rWFmhHMc9
+         zXw64g7TEBwBlogeqYSpUFMkYNajyWADFWBEjT8SEIO/FVDD9JEJf5BNMdS0BHFDu/8U
+         mBp3Yp4qxd7a0Khcu2LQ/R3JG+UpcoMD/MgWcayJNO6ZHZPCz7wO+RUjG2pcljleP+oc
+         dygA==
+X-Gm-Message-State: AOAM530ylb7xHqkWoNz1A27y4TR0oMkvA1bnpok8U35NJAJOKI4KqyDY
+        cnsbDSlTrVM+9VaL/Gz+7sGIjqw4DGgfGzgTwsRqJA==
+X-Google-Smtp-Source: ABdhPJwlD9CwC0x8+4UqvunFmEbVtlxEXubTPmLCcFCqoFw+1d9HsFP/HM5IpzpxeQb5drq3ZcEO6Uh7XOBwl3Gjidk=
+X-Received: by 2002:aca:52c4:: with SMTP id g187mr6142563oib.101.1602365534555;
+ Sat, 10 Oct 2020 14:32:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Sat, 10 Oct 2020 14:31:30 -0700
-From:   khsieh@codeaurora.org
-To:     Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
-        tanmay@codeaurora.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, airlied@linux.ie, daniel@ffwll.ch,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] drm/msm/dp: add opp_table corner voting support base
- on dp_ink_clk rate
-In-Reply-To: <717f90f2-4148-9fc0-c772-13f101f916a8@codeaurora.org>
-References: <20201003222652.32671-1-khsieh@codeaurora.org>
- <717f90f2-4148-9fc0-c772-13f101f916a8@codeaurora.org>
-Message-ID: <9978d4f12e7943b8223e2618f5fbb998@codeaurora.org>
-X-Sender: khsieh@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20201009075934.3509076-1-daniel.vetter@ffwll.ch>
+ <20201009075934.3509076-4-daniel.vetter@ffwll.ch> <CAFCwf1194Ce98y8tWxKzXT1rsdHDkzEcnERiaU=3-=t7hygmXg@mail.gmail.com>
+In-Reply-To: <CAFCwf1194Ce98y8tWxKzXT1rsdHDkzEcnERiaU=3-=t7hygmXg@mail.gmail.com>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Sat, 10 Oct 2020 23:32:03 +0200
+Message-ID: <CAKMK7uG_kBpmuQDRgKdyh8SycFDhE7kuB2MEOsx+D5wRmerWKA@mail.gmail.com>
+Subject: Re: [PATCH v2 03/17] misc/habana: Stop using frame_vector helpers
+To:     Oded Gabbay <oded.gabbay@gmail.com>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Omer Shpigelman <oshpigelman@habana.ai>,
+        Ofir Bitton <obitton@habana.ai>,
+        Tomer Tayar <ttayar@habana.ai>,
+        Moti Haimovski <mhaimovski@habana.ai>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pawel Piskorski <ppiskorski@habana.ai>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-06 00:31, Rajendra Nayak wrote:
-> On 10/4/2020 3:56 AM, Kuogee Hsieh wrote:
->> Set link rate by using OPP set rate api so that CX level will be set
->> accordingly based on the link rate.
->> 
->> Changes in v2:
->> -- remove dev from dp_ctrl_put() parameters
->> -- address review comments
-> 
-> This needs to go below '---' and should not be part of the
-> change log.
-> 
->> 
->> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
->> ---
->>   drivers/gpu/drm/msm/dp/dp_ctrl.c    | 26 +++++++++++++++++
->>   drivers/gpu/drm/msm/dp/dp_display.c |  2 +-
->>   drivers/gpu/drm/msm/dp/dp_power.c   | 44 
->> ++++++++++++++++++++++++++---
->>   drivers/gpu/drm/msm/dp/dp_power.h   |  2 +-
->>   4 files changed, 68 insertions(+), 6 deletions(-)
->> 
->> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c 
->> b/drivers/gpu/drm/msm/dp/dp_ctrl.c
->> index 2e3e1917351f..6eb9cdad1421 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
->> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
->> @@ -10,6 +10,7 @@
->>   #include <linux/delay.h>
->>   #include <linux/phy/phy.h>
->>   #include <linux/phy/phy-dp.h>
->> +#include <linux/pm_opp.h>
->>   #include <drm/drm_fixed.h>
->>   #include <drm/drm_dp_helper.h>
->>   #include <drm/drm_print.h>
->> @@ -76,6 +77,8 @@ struct dp_ctrl_private {
->>   	struct dp_parser *parser;
->>   	struct dp_catalog *catalog;
->>   +	struct opp_table *opp_table;
->> +
->>   	struct completion idle_comp;
->>   	struct completion video_comp;
->>   };
->> @@ -1836,6 +1839,7 @@ struct dp_ctrl *dp_ctrl_get(struct device *dev, 
->> struct dp_link *link,
->>   			struct dp_parser *parser)
->>   {
->>   	struct dp_ctrl_private *ctrl;
->> +	int ret;
->>     	if (!dev || !panel || !aux ||
->>   	    !link || !catalog) {
->> @@ -1849,6 +1853,19 @@ struct dp_ctrl *dp_ctrl_get(struct device *dev, 
->> struct dp_link *link,
->>   		return ERR_PTR(-ENOMEM);
->>   	}
->>   +	ctrl->opp_table = dev_pm_opp_set_clkname(dev, "ctrl_link");
->> +	if (IS_ERR(ctrl->opp_table)) {
->> +		dev_err(dev, "invalid DP OPP table in device tree\n");
-> 
-> You do this regardless of an OPP table in DT, so for starters the error
-> message is wrong. Secondly this can return you a -EPROBE_DEFER if the
-> clock driver isn't ready yet.
-> So the ideal thing to do here, is return a PTR_ERR(ctrl->opp_table)
-> 
->> +		ctrl->opp_table = NULL;
->> +	} else {
->> +		/* OPP table is optional */
->> +		ret = dev_pm_opp_of_add_table(dev);
->> +		if (ret && ret != -ENODEV) {
->> +			dev_pm_opp_put_clkname(ctrl->opp_table);
->> +			ctrl->opp_table = NULL;
->> +		}
->> +	}
->> +
->>   	init_completion(&ctrl->idle_comp);
->>   	init_completion(&ctrl->video_comp);
->>   @@ -1866,4 +1883,13 @@ struct dp_ctrl *dp_ctrl_get(struct device 
->> *dev, struct dp_link *link,
->>     void dp_ctrl_put(struct dp_ctrl *dp_ctrl)
->>   {
->> +	struct dp_ctrl_private *ctrl;
->> +
->> +	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
->> +
->> +	if (ctrl->opp_table) {
->> +		dev_pm_opp_of_remove_table(ctrl->dev);
->> +		dev_pm_opp_put_clkname(ctrl->opp_table);
->> +		ctrl->opp_table = NULL;
->> +	}
->>   }
->> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c 
->> b/drivers/gpu/drm/msm/dp/dp_display.c
->> index e175aa3fd3a9..269f83550b46 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_display.c
->> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
->> @@ -698,7 +698,7 @@ static int dp_init_sub_modules(struct 
->> dp_display_private *dp)
->>   		goto error;
->>   	}
->>   -	dp->power = dp_power_get(dp->parser);
->> +	dp->power = dp_power_get(dev, dp->parser);
->>   	if (IS_ERR(dp->power)) {
->>   		rc = PTR_ERR(dp->power);
->>   		DRM_ERROR("failed to initialize power, rc = %d\n", rc);
->> diff --git a/drivers/gpu/drm/msm/dp/dp_power.c 
->> b/drivers/gpu/drm/msm/dp/dp_power.c
->> index 17c1fc6a2d44..9c4ea00a5f2a 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_power.c
->> +++ b/drivers/gpu/drm/msm/dp/dp_power.c
->> @@ -8,12 +8,14 @@
->>   #include <linux/clk.h>
->>   #include <linux/clk-provider.h>
->>   #include <linux/regulator/consumer.h>
->> +#include <linux/pm_opp.h>
->>   #include "dp_power.h"
->>   #include "msm_drv.h"
->>     struct dp_power_private {
->>   	struct dp_parser *parser;
->>   	struct platform_device *pdev;
->> +	struct device *dev;
->>   	struct clk *link_clk_src;
->>   	struct clk *pixel_provider;
->>   	struct clk *link_provider;
->> @@ -148,18 +150,51 @@ static int dp_power_clk_deinit(struct 
->> dp_power_private *power)
->>   	return 0;
->>   }
->>   +static int dp_power_clk_set_link_rate(struct dp_power_private 
->> *power,
->> +			struct dss_clk *clk_arry, int num_clk, int enable)
->> +{
->> +	u32 rate;
->> +	int i, rc = 0;
->> +
->> +	for (i = 0; i < num_clk; i++) {
->> +		if (clk_arry[i].clk) {
->> +			if (clk_arry[i].type == DSS_CLK_PCLK) {
->> +				if (enable)
->> +					rate = clk_arry[i].rate;
->> +				else
->> +					rate = 0;
->> +
->> +				rc = dev_pm_opp_set_rate(power->dev, rate);
-> 
-> I am not sure how this is expected to work when you have multiple link 
-> clocks,
-> since you can only associate one of them with the OPP table which ends 
-> up
-> getting scaled when you do a dev_pm_opp_set_rate()
-> Do you really have platforms which will have multiple link clocks?
-this clk_arry[] contains two entries, dp_link_clk and dp_link_intf_clk.
-only dp_link_clk with DSS_CLK_PCLK type, hence only dp_link_clk use 
-dev_pm_opp_set_rate()
-to set link rate.
+On Sat, Oct 10, 2020 at 10:27 PM Oded Gabbay <oded.gabbay@gmail.com> wrote:
+>
+> On Fri, Oct 9, 2020 at 10:59 AM Daniel Vetter <daniel.vetter@ffwll.ch> wr=
+ote:
+> >
+> > All we need are a pages array, pin_user_pages_fast can give us that
+> > directly. Plus this avoids the entire raw pfn side of get_vaddr_frames.
+> >
+> Thanks for the patch Daniel.
+>
+> > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> > Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: John Hubbard <jhubbard@nvidia.com>
+> > Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
+> > Cc: Jan Kara <jack@suse.cz>
+> > Cc: Dan Williams <dan.j.williams@intel.com>
+> > Cc: linux-mm@kvack.org
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > Cc: linux-samsung-soc@vger.kernel.org
+> > Cc: linux-media@vger.kernel.org
+> > Cc: Oded Gabbay <oded.gabbay@gmail.com>
+> > Cc: Omer Shpigelman <oshpigelman@habana.ai>
+> > Cc: Ofir Bitton <obitton@habana.ai>
+> > Cc: Tomer Tayar <ttayar@habana.ai>
+> > Cc: Moti Haimovski <mhaimovski@habana.ai>
+> > Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Cc: Pawel Piskorski <ppiskorski@habana.ai>
+> > --
+> > v2: Use unpin_user_pages_dirty_lock (John)
+> > ---
+> >  drivers/misc/habanalabs/Kconfig             |  1 -
+> >  drivers/misc/habanalabs/common/habanalabs.h |  3 +-
+> >  drivers/misc/habanalabs/common/memory.c     | 49 ++++++++-------------
+> >  3 files changed, 20 insertions(+), 33 deletions(-)
+> >
+> > diff --git a/drivers/misc/habanalabs/Kconfig b/drivers/misc/habanalabs/=
+Kconfig
+> > index 8eb5d38c618e..2f04187f7167 100644
+> > --- a/drivers/misc/habanalabs/Kconfig
+> > +++ b/drivers/misc/habanalabs/Kconfig
+> > @@ -6,7 +6,6 @@
+> >  config HABANA_AI
+> >         tristate "HabanaAI accelerators (habanalabs)"
+> >         depends on PCI && HAS_IOMEM
+> > -       select FRAME_VECTOR
+> >         select DMA_SHARED_BUFFER
+> >         select GENERIC_ALLOCATOR
+> >         select HWMON
+> > diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc=
+/habanalabs/common/habanalabs.h
+> > index edbd627b29d2..c1b3ad613b15 100644
+> > --- a/drivers/misc/habanalabs/common/habanalabs.h
+> > +++ b/drivers/misc/habanalabs/common/habanalabs.h
+> > @@ -881,7 +881,8 @@ struct hl_ctx_mgr {
+> >  struct hl_userptr {
+> >         enum vm_type_t          vm_type; /* must be first */
+> >         struct list_head        job_node;
+> > -       struct frame_vector     *vec;
+> > +       struct page             **pages;
+> > +       unsigned int            npages;
+> Can you please update the kerneldoc comment section of this structure
+> according to your changes ?
 
-> 
->> +				if (rc)
->> +					break;
->> +			}
->> +
->> +		}
->> +	}
->> +	return rc;
->> +}
->> +
->>   static int dp_power_clk_set_rate(struct dp_power_private *power,
->>   		enum dp_pm_type module, bool enable)
->>   {
->>   	int rc = 0;
->>   	struct dss_module_power *mp = &power->parser->mp[module];
->>   -	if (enable) {
->> -		rc = msm_dss_clk_set_rate(mp->clk_config, mp->num_clk);
->> +	if (module == DP_CTRL_PM) {
->> +		rc = dp_power_clk_set_link_rate(power, mp->clk_config, mp->num_clk, 
->> enable);
->>   		if (rc) {
->> -			DRM_ERROR("failed to set clks rate.\n");
->> +			DRM_ERROR("failed to set link clks rate\n");
->>   			return rc;
->>   		}
->> +	} else {
->> +
-> 
-> extra blank line
-> 
->> +		if (enable) {
->> +			rc = msm_dss_clk_set_rate(mp->clk_config, mp->num_clk);
->> +			if (rc) {
->> +				DRM_ERROR("failed to set clks rate\n");
->> +				return rc;
->> +			}
->> +		}
->>   	}
->>     	rc = msm_dss_enable_clk(mp->clk_config, mp->num_clk, enable);
->> @@ -349,7 +384,7 @@ int dp_power_deinit(struct dp_power *dp_power)
->>   	return 0;
->>   }
->>   -struct dp_power *dp_power_get(struct dp_parser *parser)
->> +struct dp_power *dp_power_get(struct device *dev, struct dp_parser 
->> *parser)
->>   {
->>   	struct dp_power_private *power;
->>   	struct dp_power *dp_power;
->> @@ -365,6 +400,7 @@ struct dp_power *dp_power_get(struct dp_parser 
->> *parser)
->>     	power->parser = parser;
->>   	power->pdev = parser->pdev;
->> +	power->dev = dev;
->>     	dp_power = &power->dp_power;
->>   diff --git a/drivers/gpu/drm/msm/dp/dp_power.h 
->> b/drivers/gpu/drm/msm/dp/dp_power.h
->> index 76743d755833..7d0327bbc0d5 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_power.h
->> +++ b/drivers/gpu/drm/msm/dp/dp_power.h
->> @@ -102,6 +102,6 @@ void dp_power_client_deinit(struct dp_power 
->> *power);
->>    * methods to be called by the client to configure the power related
->>    * modueles.
->>    */
->> -struct dp_power *dp_power_get(struct dp_parser *parser);
->> +struct dp_power *dp_power_get(struct device *dev, struct dp_parser 
->> *parser);
->>     #endif /* _DP_POWER_H_ */
->> 
->> base-commit: d1ea914925856d397b0b3241428f20b945e31434
-> 
-> ??
+Apologies I missed the nice kerneldoc. I'll fix that in the next round.
+
+
+> >         struct sg_table         *sgt;
+> >         enum dma_data_direction dir;
+> >         struct list_head        debugfs_list;
+> > diff --git a/drivers/misc/habanalabs/common/memory.c b/drivers/misc/hab=
+analabs/common/memory.c
+> > index 5ff4688683fd..327b64479f97 100644
+> > --- a/drivers/misc/habanalabs/common/memory.c
+> > +++ b/drivers/misc/habanalabs/common/memory.c
+> > @@ -1281,45 +1281,41 @@ static int get_user_memory(struct hl_device *hd=
+ev, u64 addr, u64 size,
+> >                 return -EFAULT;
+> >         }
+> >
+> > -       userptr->vec =3D frame_vector_create(npages);
+> > -       if (!userptr->vec) {
+> > +       userptr->pages =3D kvmalloc_array(npages, sizeof(*userptr->page=
+s),
+> > +                                       GFP_KERNEL);
+> > +       if (!userptr->pages) {
+> >                 dev_err(hdev->dev, "Failed to create frame vector\n");
+> >                 return -ENOMEM;
+> >         }
+> >
+> > -       rc =3D get_vaddr_frames(start, npages, FOLL_FORCE | FOLL_WRITE,
+> > -                               userptr->vec);
+> > +       rc =3D pin_user_pages_fast(start, npages, FOLL_FORCE | FOLL_WRI=
+TE,
+> > +                                userptr->pages);
+> >
+> >         if (rc !=3D npages) {
+> >                 dev_err(hdev->dev,
+> >                         "Failed to map host memory, user ptr probably w=
+rong\n");
+> >                 if (rc < 0)
+> > -                       goto destroy_framevec;
+> > +                       goto destroy_pages;
+> > +               npages =3D rc;
+> >                 rc =3D -EFAULT;
+> > -               goto put_framevec;
+> > -       }
+> > -
+> > -       if (frame_vector_to_pages(userptr->vec) < 0) {
+> > -               dev_err(hdev->dev,
+> > -                       "Failed to translate frame vector to pages\n");
+> > -               rc =3D -EFAULT;
+> > -               goto put_framevec;
+> > +               goto put_pages;
+> >         }
+> > +       userptr->npages =3D npages;
+> >
+> >         rc =3D sg_alloc_table_from_pages(userptr->sgt,
+> > -                                       frame_vector_pages(userptr->vec=
+),
+> > -                                       npages, offset, size, GFP_ATOMI=
+C);
+> > +                                      userptr->pages,
+> > +                                      npages, offset, size, GFP_ATOMIC=
+);
+> I think that because the call to kvmalloc_array() is done with
+> GFP_KERNEL, there is no point in using GFP_ATOMIC here.
+> And actually, this path only needs to avoid yielding when using a
+> special debug mode.
+> So I suggest putting here GFP_KERNEL.
+
+Huh, I didn't even notice the GFP_ATOMIC here. This looks indeed
+strange and GFP_KERNEL should be perfectly fine in a function that
+also calls pin_user_pages (since that one can allocate and do worse
+stuff like userspace pagefaults).
+
+But since that GFP_ATOMIC is there already I'll do that in a separate patch=
+.
+
+> In the meanwhile, I'll run this patch (coupled with the next patch) in
+> our C/I to make sure there are no regressions.
+
+Excellent. I'll wait with v3 until that's done, just in case you hit a
+snag I need to fix.
+
+Cheers, Daniel
+
+> Thanks,
+> Oded
+>
+> >         if (rc < 0) {
+> >                 dev_err(hdev->dev, "failed to create SG table from page=
+s\n");
+> > -               goto put_framevec;
+> > +               goto put_pages;
+> >         }
+> >
+> >         return 0;
+> >
+> > -put_framevec:
+> > -       put_vaddr_frames(userptr->vec);
+> > -destroy_framevec:
+> > -       frame_vector_destroy(userptr->vec);
+> > +put_pages:
+> > +       unpin_user_pages(userptr->pages, npages);
+> > +destroy_pages:
+> > +       kvfree(userptr->pages);
+> >         return rc;
+> >  }
+> >
+> > @@ -1405,8 +1401,6 @@ int hl_pin_host_memory(struct hl_device *hdev, u6=
+4 addr, u64 size,
+> >   */
+> >  void hl_unpin_host_memory(struct hl_device *hdev, struct hl_userptr *u=
+serptr)
+> >  {
+> > -       struct page **pages;
+> > -
+> >         hl_debugfs_remove_userptr(hdev, userptr);
+> >
+> >         if (userptr->dma_mapped)
+> > @@ -1414,15 +1408,8 @@ void hl_unpin_host_memory(struct hl_device *hdev=
+, struct hl_userptr *userptr)
+> >                                                         userptr->sgt->n=
+ents,
+> >                                                         userptr->dir);
+> >
+> > -       pages =3D frame_vector_pages(userptr->vec);
+> > -       if (!IS_ERR(pages)) {
+> > -               int i;
+> > -
+> > -               for (i =3D 0; i < frame_vector_count(userptr->vec); i++=
+)
+> > -                       set_page_dirty_lock(pages[i]);
+> > -       }
+> > -       put_vaddr_frames(userptr->vec);
+> > -       frame_vector_destroy(userptr->vec);
+> > +       unpin_user_pages_dirty_lock(userptr->pages, userptr->npages, tr=
+ue);
+> > +       kvfree(userptr->pages);
+> >
+> >         list_del(&userptr->job_node);
+> >
+> > --
+> > 2.28.0
+> >
+
+
+
+--
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
