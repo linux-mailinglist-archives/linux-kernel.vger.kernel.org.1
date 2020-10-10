@@ -2,107 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF7BD28A301
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5801828A2FE
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:03:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732268AbgJJW7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:59:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57000 "EHLO mail.kernel.org"
+        id S2390802AbgJJW7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:59:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731907AbgJJTyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:54:15 -0400
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1732632AbgJJTyj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 15:54:39 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 044D82173E;
-        Sat, 10 Oct 2020 10:36:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BC9082145D;
+        Sat, 10 Oct 2020 10:36:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602326202;
-        bh=drBUl94hJDiJbg7EAVxrflroZLL9cGY6sJkpslPiZ5s=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=rKy3ckBBBgFebn68RQgydnukpiggooqY/F0UdxKn+PD4vBKQFsw9OUH0z/Br8qzHL
-         vqXLEt7HvxX5ixXoMa6fe3GoyAotCaowYAzljQILgN2nuY+ugEd4yxrmWqTA8qruKo
-         /9s7DKu5OmwTNMIx2nhbM/00epBYdkcLbPkrKE5w=
-Received: by mail-ot1-f53.google.com with SMTP id t15so11384074otk.0;
-        Sat, 10 Oct 2020 03:36:41 -0700 (PDT)
-X-Gm-Message-State: AOAM531/rG6LPQrqOxjVBKIVhE2Av8dXVvs63RBl0ahzfOuczDXaT0FR
-        x5c2mSSNBIy/Oa+qSD2JbfgRlSYodiryUiaMJl0=
-X-Google-Smtp-Source: ABdhPJyRUmME/uNQCpEvmy5TmuigC5HqxkAmy4br3cKJSuYPDqK1iFTDzWqlHrlHAracvofdjaHYJW7dOhpWJoeIxWo=
-X-Received: by 2002:a9d:6a85:: with SMTP id l5mr12561956otq.77.1602326201362;
- Sat, 10 Oct 2020 03:36:41 -0700 (PDT)
+        s=default; t=1602326199;
+        bh=j0TSYo+wdbpDZVAjxfjrxIVjno3BzV9rBoWhNlRLMsQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=r+fsp40bKSGqmoi6O9PC15qHKyIUNTSjoj2MHJ6xIfjV4QTIoOEql0hS/Xu0JDHFV
+         h/c0D1HsPh7Bm3DfLm0bEtCFsrMa/mT2OAbRFq9ZqydBa1uBQJw7ZwvaDlDG0EwlZu
+         GRgCTKHVMxmGZObCCjRutmM3rw6Yrsoprxk3tP/8=
+Date:   Sat, 10 Oct 2020 12:37:23 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     devel@driverdev.osuosl.org,
+        syzbot+009f546aa1370056b1c2@syzkaller.appspotmail.com,
+        Ian Abbott <abbotti@mev.co.uk>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] staging: comedi: check validity of wMaxPacketSize of
+ usb endpoints found
+Message-ID: <20201010103723.GA1456353@kroah.com>
+References: <20201010082933.5417-1-anant.thazhemadam@gmail.com>
+ <20201010093519.GA981987@kroah.com>
 MIME-Version: 1.0
-References: <20201001172320.GQ21544@gaia> <b47232e2173e9e5ddf8f5be4c7b5a2f897f34eb7.camel@suse.de>
- <20201002115541.GC7034@gaia> <12f33d487eabd626db4c07ded5a1447795eed355.camel@suse.de>
- <20201009071013.GA12208@lst.de> <CAMj1kXG+7Lq=rgUfyU_XS9LrJwpUiC8nKsRPom+R0=phuXioHQ@mail.gmail.com>
- <513833810c15b5efeab7c3cbae1963a78c71a79f.camel@suse.de> <CAMj1kXGP_OTKgqMT0-+t3=7EKDY26y9n9xjLodSF1E-mUCe9tg@mail.gmail.com>
- <20201009152433.GA19953@e121166-lin.cambridge.arm.com> <CAMj1kXFuqw3qNRAB78OzvMws+t7=B6L8pASA36D2fxXobbvpUA@mail.gmail.com>
- <20201009171051.GL23638@gaia>
-In-Reply-To: <20201009171051.GL23638@gaia>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sat, 10 Oct 2020 12:36:30 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXEWeqGVr=QV7zQ+dXBK=t_Lh+W9q1+kLLdBw8=Pj798Ng@mail.gmail.com>
-Message-ID: <CAMj1kXEWeqGVr=QV7zQ+dXBK=t_Lh+W9q1+kLLdBw8=Pj798Ng@mail.gmail.com>
-Subject: Re: [PATCH 1/4] of/fdt: Update zone_dma_bits when running in bcm2711
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        iommu@lists.linux-foundation.org, Rob Herring <robh+dt@kernel.org>,
-        linux-rpi-kernel@lists.infradead.org,
-        Frank Rowand <frowand.list@gmail.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Robin Murphy <robin.murphy@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201010093519.GA981987@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 9 Oct 2020 at 19:10, Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> On Fri, Oct 09, 2020 at 06:23:06PM +0200, Ard Biesheuvel wrote:
-> > On Fri, 9 Oct 2020 at 17:24, Lorenzo Pieralisi
-> > <lorenzo.pieralisi@arm.com> wrote:
-> > > We can move this check to IORT code and call it from arm64 if it
-> > > can be made to work.
-> >
-> > Finding the smallest value in the IORT, and assigning it to
-> > zone_dma_bits if it is < 32 should be easy. But as I understand it,
-> > having these separate DMA and DMA32 zones is what breaks kdump, no? So
-> > how is this going to fix the underlying issue?
->
-> If zone_dma_bits is 32, ZONE_DMA32 disappears into ZONE_DMA (GFP_DMA32
-> allocations fall back to ZONE_DMA).
->
-> kdump wants DMA-able memory and, without a 30-bit ZONE_DMA, that would
-> be the bottom 32-bit. With the introduction of ZONE_DMA, this suddenly
-> became 1GB. We could change kdump to allocate ZONE_DMA32 but this one
-> may also be small as it lost 1GB to ZONE_DMA. However, the kdump kernel
-> would need to be rebuilt without ZONE_DMA since it won't have any. IIRC
-> (it's been a while since I looked), the kdump allocation couldn't span
-> multiple zones.
->
-> In a separate thread, we try to fix kdump to use allocations above 4G as
-> a fallback but this only fixes platforms with enough RAM (and maybe it's
-> only those platforms that care about kdump).
->
+On Sat, Oct 10, 2020 at 11:35:19AM +0200, Greg Kroah-Hartman wrote:
+> On Sat, Oct 10, 2020 at 01:59:32PM +0530, Anant Thazhemadam wrote:
+> > While finding usb endpoints in vmk80xx_find_usb_endpoints(), check if 
+> > wMaxPacketSize = 0 for the endpoints found.
+> > 
+> > Some devices have isochronous endpoints that have wMaxPacketSize = 0
+> > (as required by the USB-2 spec).
+> > However, since this doesn't apply here, wMaxPacketSize = 0 can be
+> > considered to be invalid.
+> > 
+> > Reported-by: syzbot+009f546aa1370056b1c2@syzkaller.appspotmail.com
+> > Tested-by: syzbot+009f546aa1370056b1c2@syzkaller.appspotmail.com
+> > Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+> > ---
+> > Changes in v3:
+> > 	* Correctly list version information
+> > 
+> > Changes in v2:
+> > 	* Fix coding style issue
+> > 
+> > The error (as detected by syzbot) is generated in 
+> > vmk80xx_write_packet() (which is called in vmk80xx_reset_device()) when
+> > it tries to assign devpriv->usb_tx_buf[0] = cmd.
+> > 
+> > This NULL pointer dereference issue arises because
+> > size = usb_endpoint_maxp(devpriv->ep_tx) = 0.
+> > 
+> > This can be traced back to vmk80xx_find_usb_endpoints(), where the usb 
+> > endpoints are found, and assigned accordingly.
+> > (For some more insight, in vmk80xx_find_usb_endpoints(), 
+> > if one of intf->cur_altsetting->iface_desc->endpoints' desc value = 0, 
+> > and consequently this endpoint is assigned to devpriv->ep_tx,
+> > this issue gets triggered.)
+> > 
+> > Checking if the wMaxPacketSize of an endpoint is invalid and returning
+> > an error value accordingly, seems to fix the error.
+> > 
+> > We could also alternatively perform this checking (if the size is 0 or not) 
+> > in vmk80xx_reset_device() itself, but it only seemed like covering up the issue
+> > at that place, rather than fixing it, so I wasn't sure that was any better.
+> > 
+> > However, if I'm not wrong, this might end up causing the probe to fail, and I'm 
+> > not sure if that's the right thing to do in cases like this, and if it isn't I'd
+> > like some input on what exactly is the required course of action in cases like this.
+> > 
+> >  drivers/staging/comedi/drivers/vmk80xx.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/drivers/staging/comedi/drivers/vmk80xx.c b/drivers/staging/comedi/drivers/vmk80xx.c
+> > index 65dc6c51037e..cb0a965d3c37 100644
+> > --- a/drivers/staging/comedi/drivers/vmk80xx.c
+> > +++ b/drivers/staging/comedi/drivers/vmk80xx.c
+> > @@ -667,6 +667,9 @@ static int vmk80xx_find_usb_endpoints(struct comedi_device *dev)
+> >  	if (!devpriv->ep_rx || !devpriv->ep_tx)
+> >  		return -ENODEV;
+> >  
+> > +	if (!usb_endpoint_maxp(devpriv->ep_rx) || !usb_endpoint_maxp(devpriv->ep_tx))
+> > +		return -EINVAL;
+> > +
+> >  	return 0;
+> >  }
+> 
+> Why not just rewrite vmk80xx_find_usb_endpoints() to use the
+> usb_find_common_endpoints() or other helper functions like
+> usb_find_bulk_in_endpoint() or others, so that this type of thing is
+> checked there?
+> 
+> Ah, wait, no, the packet size is not checked there, sorry, maybe that
+> will not help out here.  Is a bulk urb allowed to have a 0 size?  If
+> not, maybe we should just forbid that in the core?  Time to go read the
+> USB spec...
 
-One thing that strikes me as odd is that we are applying the same
-shifting logic to ZONE_DMA as we are applying to ZONE_DMA32, i.e., if
-DRAM starts outside of the zone, it is shifted upwards.
+That being said, this patch is correct, I'll go queue it up now so that
+it gets into 5.10-rc1.
 
-On a typical ARM box, this gives me
+thanks,
 
-[    0.000000] Zone ranges:
-[    0.000000]   DMA      [mem 0x0000000080000000-0x00000000bfffffff]
-[    0.000000]   DMA32    [mem 0x00000000c0000000-0x00000000ffffffff]
-[    0.000000]   Normal   [mem 0x0000000100000000-0x0000000fffffffff]
-
-i.e., the 30-bit addressable range has bit 31 set, which is weird.
-
-I wonder if it wouldn't be better (and less problematic in the general
-case) to drop this logic for ZONE_DMA, and simply let it remain empty
-unless there is really some memory there.
+greg k-h
