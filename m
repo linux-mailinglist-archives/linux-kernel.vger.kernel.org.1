@@ -2,67 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8555C289D2A
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 03:45:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B70E289CEB
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 03:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729750AbgJJBmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 21:42:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729481AbgJJBJd (ORCPT
+        id S1729567AbgJJBOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 21:14:23 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:52135 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729357AbgJJBEV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 21:09:33 -0400
-Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60DCEC0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 17:43:26 -0700 (PDT)
-Received: by mail-ua1-x942.google.com with SMTP id c7so3659671uaq.4
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 17:43:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=4AsHudnHcuLoeyDNm34q/beQGAPv3myAbdiJ4abIBI8=;
-        b=jqykdVtQz0zrn+erQQaCySnb5AkBC66ixzheUwp38yUG4QkGgXaBLy2pfGX9EUnTzO
-         3YCgAuQtCJv+qHHikFHJ+XQAPN/oyNoFFlcVF6oSE0zJ8HIMhelC9Sc1frRlnZxeq7Fv
-         k0152KJ3lhAheoFaRz3pLBRiQVEJjS3Gwq+/3VCHydhNLNOInhufRy7YN8aMFQ0Og0ro
-         Sxer1Ha6CUSBH4ku0pboO7G1TvXdF+CzME6VcHYdn3o048UlLCtNvwdeRD+09EJ0Dk+t
-         cSsO5yLVeHbcuEput8M05c5EqtUQz4uQXY66Sfji+8GAaziMugX0IAh3lM0usBWUpRPY
-         76Gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=4AsHudnHcuLoeyDNm34q/beQGAPv3myAbdiJ4abIBI8=;
-        b=jKSXDawBIjxJIDEJ/UOYgPSa/MSSSh5dS528iimuKF0a5TjgZWB3JV8vmEY3q5jvIa
-         uyEDHhMhjOxC8nXf1UiKD7LzQQ/Pb9FUA89GqKxEFtnZFCE7xpn4SzRYxuLWGwSJIzFA
-         fhQRa86h6amSG1SvmSC650SbQVX5LTmsZq3wmqJ1UswHe44sXhN/XEfkYMinucC/5SFz
-         U/KWhD7fJos5VygCcs+UlB9eBBfi+2eaxquLgEo2i5jlwIwWF3l81+BCZSACurdZNBBs
-         J6/i04ORO2zHnhVDE1evj+FSMicxbBAFAbdjWkFz62GcIrLhTd2Qahy2wwNLIhuNruju
-         32Tw==
-X-Gm-Message-State: AOAM530npANGNCRig8/XBiOjwSJg4oXniN7gh9CBaw043jw45RvJZGW4
-        TSADzKX6nB15ZBJxQ3NYC6uSv8xEOEWx5NoApTI=
-X-Google-Smtp-Source: ABdhPJx7nnsMmxl3reVTiNbp9G4OVL3xXnNF2yaK07arlHiUlyIY0h6egcVkPmg0HIQ1ED5yAUC7Wyk1hxVrhTmj7qo=
-X-Received: by 2002:ab0:6988:: with SMTP id t8mr10383916uaq.18.1602290605453;
- Fri, 09 Oct 2020 17:43:25 -0700 (PDT)
+        Fri, 9 Oct 2020 21:04:21 -0400
+Received: from localhost.localdomain ([82.252.141.186]) by
+ mrelayeu.kundenserver.de (mreue107 [212.227.15.183]) with ESMTPSA (Nemesis)
+ id 1MHFwM-1keIa71mAC-00DCX7; Sat, 10 Oct 2020 02:47:51 +0200
+From:   Laurent Vivier <laurent@vivier.eu>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        iodrag Dinic <miodrag.dinic@mips.com>,
+        Laurent Vivier <laurent@vivier.eu>
+Subject: [PATCH] tty: goldfish: use __raw_writel()/__raw_readl()
+Date:   Sat, 10 Oct 2020 02:47:49 +0200
+Message-Id: <20201010004749.1201695-1-laurent@vivier.eu>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Received: by 2002:a67:1087:0:0:0:0:0 with HTTP; Fri, 9 Oct 2020 17:43:24 -0700 (PDT)
-Reply-To: mrs.chantala2055@gmail.com
-From:   mrs chantal <mrs.chantalas1@gmail.com>
-Date:   Fri, 9 Oct 2020 17:43:24 -0700
-Message-ID: <CAMdkyyAhLq6xmRPep__pek4DMTNwsamoOr3LKyTr8E-baS6JNg@mail.gmail.com>
-Subject: Dear Friend
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:gNFiRYCaBQv2xEKenmq4Ysj9NIb+7hVQxHtpWwjy93rJizPcGBy
+ eW5+DzCJqbdp61HtR0Ol7QBz/jTCSP3hm0417pnNnd2hkADMp8ySyfnj1qedqdjwa3T5uP4
+ LsrRZBJeKlUzt0ABqVGB/LqN3pFoXfWyfgAiVDsZs1JZSRWkPhlV9BTjf0TaE7rnKdtI+kh
+ sei8fnsnGlCG9+YzGIXrw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:LkwGeuBpmns=:/WkCJkjUME2xYvfYMBRXqT
+ x56hVVbNrUf8I1FzxPMCOUhRA1xqkgS/IXmP3ia142j2CjVRWFRik4Alab7R6WEFcB+ikxokT
+ ux8pQ7uUBqJSpLjaOlOMnIkyaxVXEr9l8oo/7aqNxw0VmG31aXEaoLT3OYOXXOzFa78ODSly5
+ ZtvA0v4je/TIqMWfSV6ZQmXBHRssujHOwlb7jGwpmqbhz2MXyoADg1PT0blvjHLFlDP4gOAfB
+ 1SMrXZcmEEykCbSYU/A5jqyan1BPNMZ6p4jrq1Eu1ScgEx56kn+qQFnXsitnzdo8uRtXWZSeY
+ ZAMAlNrO4l6pOVp59xmwz2iW0jO5VwsvVRlkNwt2ajP4L/fxtKZowzVr0Pra8209ZhWtjYels
+ NBYRSoCVRO4ELpXTF3Bx0JFnDy7lWQQND46fzqXX28bgDYfCw4iXE/BrWwMXosm9c2SnSULTG
+ 2jqaM+b0j49IlHKEa+qS8uFnyR4a6jffD+FJjRuUr+wjmMIf2c4J9BNJ0CtB7hK8jLihx2Wq8
+ CNsdCTHttYiJRT+xmA5gJPaGLHPEpm2Y8PNz5/Xzmy80fOD81mjbHNq8maKotDotLr2XqVuqe
+ zsPnql9dZ5Yr3yjXPOvdktq96dIBYtoZvUIEWVq23ogo+Mm8McN3REH9ydqsFXb4BXiD2gyGu
+ cZsnWLpKOTllV4sj3cHA6DU19ta90gd6BKJY7NfVMouCxgYu58Atru8lQjpvRccE8ZwWcqCmi
+ Pke7OLSd+g43nkuGO/TijciHiZARFHxQJPG6rpAaEsxsw37N+Vxx/SJFI3cwctCMlvcs97xFq
+ 2dauQnW+35gdD8F9O2QuJ4qkNVLIEfBYqiC0nXctzeQe6AwMQAX9RPJmAY9qpcYb7qgLgqo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGVsbG8gRnJpZW5kLknCoGFtwqBNcnMuQ0hBTlRBTMKgScKgYW3CoHNlbmRpbmfCoHRoaXPCoGJy
-aWVmDQrCoMKgwqDCoGxldHRlcsKgdG/CoHNvbGljaXTCoHlvdXLCoHBhcnRuZXJzaGlwwqB0b8Kg
-dHJhbnNmZXLCoCQ3LjLCoE1pbGxpb27CoFVTDQrCoMKgwqDCoERvbGxhcnMuScKgc2hhbGzCoHNl
-bmTCoHlvdcKgbW9yZcKgaW5mb3JtYXRpb27CoGFuZMKgcHJvY2VkdXJlc8Kgd2hlbsKgScKgcmVj
-ZWl2ZQ0KwqDCoMKgwqBwb3NpdGl2ZcKgcmVzcG9uc2XCoEZyb23CoHlvdS7CoFBsZWFzZcKgc2Vu
-ZMKgbWXCoGHCoG1lc3NhZ2XCoGluwqBNecKgcHJpdmF0ZQ0KwqDCoMKgwqBlbWFpbMKgYWRkcmVz
-c8KgaXPCoCjCoG1yc2NoYW50YWw2QGdtYWlsLmNvbcKgKQ0KDQrCoMKgwqDCoEJlc3TCoFJlZ2Fy
-ZHMNCg0KwqDCoMKgwqBNcnMuQ2hhbnRhbA0K
+gf_early_console_putchar() uses __raw_writel() but the standard driver
+uses writel()/readl(). This means we can't use both on the same machine
+as the device is either big-endian, little-endian or native-endian.
+
+As android implementation defines the endianness of the device is the one
+of the architecture replace all writel()/readl() by
+__raw_writel()/__raw_readl()
+
+https://android.googlesource.com/platform/external/qemu/+/refs/heads/emu-master-dev/hw/char/goldfish_tty.c#222
+
+Signed-off-by: Laurent Vivier <laurent@vivier.eu>
+---
+ drivers/tty/goldfish.c   | 18 +++++++++---------
+ include/linux/goldfish.h |  8 ++++----
+ 2 files changed, 13 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/tty/goldfish.c b/drivers/tty/goldfish.c
+index c8c5cdfc5e19..cd23a4b05c8f 100644
+--- a/drivers/tty/goldfish.c
++++ b/drivers/tty/goldfish.c
+@@ -61,13 +61,13 @@ static void do_rw_io(struct goldfish_tty *qtty,
+ 	spin_lock_irqsave(&qtty->lock, irq_flags);
+ 	gf_write_ptr((void *)address, base + GOLDFISH_TTY_REG_DATA_PTR,
+ 		     base + GOLDFISH_TTY_REG_DATA_PTR_HIGH);
+-	writel(count, base + GOLDFISH_TTY_REG_DATA_LEN);
++	__raw_writel(count, base + GOLDFISH_TTY_REG_DATA_LEN);
+ 
+ 	if (is_write)
+-		writel(GOLDFISH_TTY_CMD_WRITE_BUFFER,
++		__raw_writel(GOLDFISH_TTY_CMD_WRITE_BUFFER,
+ 		       base + GOLDFISH_TTY_REG_CMD);
+ 	else
+-		writel(GOLDFISH_TTY_CMD_READ_BUFFER,
++		__raw_writel(GOLDFISH_TTY_CMD_READ_BUFFER,
+ 		       base + GOLDFISH_TTY_REG_CMD);
+ 
+ 	spin_unlock_irqrestore(&qtty->lock, irq_flags);
+@@ -142,7 +142,7 @@ static irqreturn_t goldfish_tty_interrupt(int irq, void *dev_id)
+ 	unsigned char *buf;
+ 	u32 count;
+ 
+-	count = readl(base + GOLDFISH_TTY_REG_BYTES_READY);
++	count = __raw_readl(base + GOLDFISH_TTY_REG_BYTES_READY);
+ 	if (count == 0)
+ 		return IRQ_NONE;
+ 
+@@ -159,7 +159,7 @@ static int goldfish_tty_activate(struct tty_port *port, struct tty_struct *tty)
+ {
+ 	struct goldfish_tty *qtty = container_of(port, struct goldfish_tty,
+ 									port);
+-	writel(GOLDFISH_TTY_CMD_INT_ENABLE, qtty->base + GOLDFISH_TTY_REG_CMD);
++	__raw_writel(GOLDFISH_TTY_CMD_INT_ENABLE, qtty->base + GOLDFISH_TTY_REG_CMD);
+ 	return 0;
+ }
+ 
+@@ -167,7 +167,7 @@ static void goldfish_tty_shutdown(struct tty_port *port)
+ {
+ 	struct goldfish_tty *qtty = container_of(port, struct goldfish_tty,
+ 									port);
+-	writel(GOLDFISH_TTY_CMD_INT_DISABLE, qtty->base + GOLDFISH_TTY_REG_CMD);
++	__raw_writel(GOLDFISH_TTY_CMD_INT_DISABLE, qtty->base + GOLDFISH_TTY_REG_CMD);
+ }
+ 
+ static int goldfish_tty_open(struct tty_struct *tty, struct file *filp)
+@@ -202,7 +202,7 @@ static int goldfish_tty_chars_in_buffer(struct tty_struct *tty)
+ {
+ 	struct goldfish_tty *qtty = &goldfish_ttys[tty->index];
+ 	void __iomem *base = qtty->base;
+-	return readl(base + GOLDFISH_TTY_REG_BYTES_READY);
++	return __raw_readl(base + GOLDFISH_TTY_REG_BYTES_READY);
+ }
+ 
+ static void goldfish_tty_console_write(struct console *co, const char *b,
+@@ -357,7 +357,7 @@ static int goldfish_tty_probe(struct platform_device *pdev)
+ 	 * on Ranchu emulator (qemu2) returns 1 here and
+ 	 * driver will use physical addresses.
+ 	 */
+-	qtty->version = readl(base + GOLDFISH_TTY_REG_VERSION);
++	qtty->version = __raw_readl(base + GOLDFISH_TTY_REG_VERSION);
+ 
+ 	/*
+ 	 * Goldfish TTY device on Ranchu emulator (qemu2)
+@@ -376,7 +376,7 @@ static int goldfish_tty_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
+-	writel(GOLDFISH_TTY_CMD_INT_DISABLE, base + GOLDFISH_TTY_REG_CMD);
++	__raw_writel(GOLDFISH_TTY_CMD_INT_DISABLE, base + GOLDFISH_TTY_REG_CMD);
+ 
+ 	ret = request_irq(irq, goldfish_tty_interrupt, IRQF_SHARED,
+ 			  "goldfish_tty", qtty);
+diff --git a/include/linux/goldfish.h b/include/linux/goldfish.h
+index 265a099cd3b8..12be1601fd84 100644
+--- a/include/linux/goldfish.h
++++ b/include/linux/goldfish.h
+@@ -13,9 +13,9 @@ static inline void gf_write_ptr(const void *ptr, void __iomem *portl,
+ {
+ 	const unsigned long addr = (unsigned long)ptr;
+ 
+-	writel(lower_32_bits(addr), portl);
++	__raw_writel(lower_32_bits(addr), portl);
+ #ifdef CONFIG_64BIT
+-	writel(upper_32_bits(addr), porth);
++	__raw_writel(upper_32_bits(addr), porth);
+ #endif
+ }
+ 
+@@ -23,9 +23,9 @@ static inline void gf_write_dma_addr(const dma_addr_t addr,
+ 				     void __iomem *portl,
+ 				     void __iomem *porth)
+ {
+-	writel(lower_32_bits(addr), portl);
++	__raw_writel(lower_32_bits(addr), portl);
+ #ifdef CONFIG_ARCH_DMA_ADDR_T_64BIT
+-	writel(upper_32_bits(addr), porth);
++	__raw_writel(upper_32_bits(addr), porth);
+ #endif
+ }
+ 
+-- 
+2.26.2
+
