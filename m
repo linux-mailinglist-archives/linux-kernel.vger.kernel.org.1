@@ -2,112 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF73C28A445
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:15:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A556F28A1BD
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:51:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388134AbgJJWx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:53:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51471 "EHLO
+        id S1731669AbgJJWQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:16:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43141 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731295AbgJJTHa (ORCPT
+        by vger.kernel.org with ESMTP id S1728877AbgJJSnl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:07:30 -0400
+        Sat, 10 Oct 2020 14:43:41 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602356849;
+        s=mimecast20190719; t=1602355399;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=bpTY/19B0CDH9zVrgG82JXhZ+L19dEoW0NN8qYH+ph0=;
-        b=Y3HaPF7b4HIFtRLgmxnTUC1YCTOH2Xr+JifWgUgzpJIpmlwblGcQm2KfGDeEGT869vGbrC
-        2XR8mWCHJ5lXeGmnSBMt7pxRaWVJ7TSapZMu3lZYc/1gT4JDjQB2x5LVqHsVN6PpUjO0YS
-        QhlD+OMYOYuzD2gfscVv/gmyEBPFrsI=
+        bh=b3T/uhWZZo1nQKpbMvJVb5wVVBmliojws1bKYVeo/nA=;
+        b=b1hW6Up9na9/H5QYsySMZXAmYKOeq5tCcSFnjREqpaz8YLhsNIw/HIZ+B4P766Jdw3ieT7
+        7bPVnZwK8KfEnv49tjdY4EEheK3GbisdPxH0J81j6avg4FtmbOfU0nCC5hJDDnRNt5kVVG
+        xf28Vh5c9e3l5ZDnePtJts9hYrb7qpc=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-302-Uu6AbL9YPpihCWJcaW9g0A-1; Sat, 10 Oct 2020 13:50:44 -0400
-X-MC-Unique: Uu6AbL9YPpihCWJcaW9g0A-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+ us-mta-339-QYmtt5OlNiau9SIU8B6cBg-1; Sat, 10 Oct 2020 13:55:34 -0400
+X-MC-Unique: QYmtt5OlNiau9SIU8B6cBg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 624FC107ACF6;
-        Sat, 10 Oct 2020 17:50:43 +0000 (UTC)
-Received: from [10.36.113.210] (ovpn-113-210.ams2.redhat.com [10.36.113.210])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E82BF5C1D0;
-        Sat, 10 Oct 2020 17:50:38 +0000 (UTC)
-Subject: Re: [PATCH v6 10/10] vfio/fsl-mc: Add support for device reset
-To:     Diana Craciun <diana.craciun@oss.nxp.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, bharatb.linux@gmail.com,
-        laurentiu.tudor@nxp.com
-References: <20201005173654.31773-1-diana.craciun@oss.nxp.com>
- <20201005173654.31773-11-diana.craciun@oss.nxp.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <829321cf-0d95-c72a-dbd6-8fc034d8bba8@redhat.com>
-Date:   Sat, 10 Oct 2020 19:50:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B63AF1005E5D;
+        Sat, 10 Oct 2020 17:55:31 +0000 (UTC)
+Received: from treble (ovpn-112-146.rdu2.redhat.com [10.10.112.146])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5036F60C13;
+        Sat, 10 Oct 2020 17:55:23 +0000 (UTC)
+Date:   Sat, 10 Oct 2020 12:55:20 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Xiaoming Ni <nixiaoming@huawei.com>, dima@arista.com,
+        will@kernel.org, akpm@linux-foundation.org,
+        christian.brauner@ubuntu.com, viro@zeniv.linux.org.uk,
+        ldufour@linux.ibm.com, amanieu@gmail.com, walken@google.com,
+        ben.dooks@codethink.co.uk, tglx@linutronix.de,
+        bigeasy@linutronix.de, mingo@kernel.org,
+        vincent.whitchurch@axis.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, wangle6@huawei.com,
+        luohaizheng@huawei.com
+Subject: Re: [PATCH] arm:traps: Don't print stack or raw PC/LR values in
+ backtraces
+Message-ID: <20201010175520.fczgnp66ey2vghkr@treble>
+References: <20201009075957.110017-1-nixiaoming@huawei.com>
+ <20201009080849.GM1551@shell.armlinux.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20201005173654.31773-11-diana.craciun@oss.nxp.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Disposition: inline
+In-Reply-To: <20201009080849.GM1551@shell.armlinux.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Diana,
+On Fri, Oct 09, 2020 at 09:08:50AM +0100, Russell King - ARM Linux admin wrote:
+> On Fri, Oct 09, 2020 at 03:59:57PM +0800, Xiaoming Ni wrote:
+> > Printing raw pointer values in backtraces has potential security
+> > implications and are of questionable value anyway.
+> > 
+> > This patch follows x86 and arm64's lead and removes the "Exception stack:"
+> > dump from kernel backtraces:
+> > 	commit a25ffd3a6302a6 ("arm64: traps: Don't print stack or raw
+> > 	 PC/LR values in backtraces")
+> > 	commit 0ee1dd9f5e7eae ("x86/dumpstack: Remove raw stack dump")
+> > 	commit bb5e5ce545f203 ("x86/dumpstack: Remove kernel text
+> > 	 addresses from stack dump")
+> > 
+> > Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+> 
+> I am really not happy about this - it hurts at least my ability to
+> debug the kernel when people post oopses to the mailing list. If
+> people wish to make the kernel harder to debug, and are prepared
+> to be told "your kernel is undebuggable" then this patch is fine.
 
-On 10/5/20 7:36 PM, Diana Craciun wrote:
-> Currently only resetting the DPRC container is supported which
-> will reset all the objects inside it. Resetting individual
-> objects is possible from the userspace by issueing commands
-> towards MC firmware.
-> 
-> Signed-off-by: Diana Craciun <diana.craciun@oss.nxp.com>
-Reviewed-by: Eric Auger <eric.auger@redhat.com>
+At least on x86 we've had this for four years now, without any apparent
+harm to debugability.  scripts/faddr2line helps.
 
-Eric
-> ---
->  drivers/vfio/fsl-mc/vfio_fsl_mc.c | 18 +++++++++++++++++-
->  1 file changed, 17 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc.c b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-> index d95568cd8021..d009f873578c 100644
-> --- a/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-> +++ b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-> @@ -217,6 +217,10 @@ static long vfio_fsl_mc_ioctl(void *device_data, unsigned int cmd,
->  			return -EINVAL;
->  
->  		info.flags = VFIO_DEVICE_FLAGS_FSL_MC;
-> +
-> +		if (is_fsl_mc_bus_dprc(mc_dev))
-> +			info.flags |= VFIO_DEVICE_FLAGS_RESET;
-> +
->  		info.num_regions = mc_dev->obj_desc.region_count;
->  		info.num_irqs = mc_dev->obj_desc.irq_count;
->  
-> @@ -299,7 +303,19 @@ static long vfio_fsl_mc_ioctl(void *device_data, unsigned int cmd,
->  	}
->  	case VFIO_DEVICE_RESET:
->  	{
-> -		return -ENOTTY;
-> +		int ret;
-> +		struct fsl_mc_device *mc_dev = vdev->mc_dev;
-> +
-> +		/* reset is supported only for the DPRC */
-> +		if (!is_fsl_mc_bus_dprc(mc_dev))
-> +			return -ENOTTY;
-> +
-> +		ret = dprc_reset_container(mc_dev->mc_io, 0,
-> +					   mc_dev->mc_handle,
-> +					   mc_dev->obj_desc.id,
-> +					   DPRC_RESET_OPTION_NON_RECURSIVE);
-> +		return ret;
-> +
->  	}
->  	default:
->  		return -ENOTTY;
-> 
+-- 
+Josh
 
