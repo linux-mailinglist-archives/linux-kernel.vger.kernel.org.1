@@ -2,107 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD38E28A28F
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C59D528A28C
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:58:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390647AbgJJW6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:58:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41768 "EHLO
+        id S2390592AbgJJW6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:58:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730875AbgJJTwD (ORCPT
+        with ESMTP id S1730606AbgJJTvB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:52:03 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFAB7C05BD43;
-        Sat, 10 Oct 2020 06:08:22 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id u21so17025623eja.2;
-        Sat, 10 Oct 2020 06:08:22 -0700 (PDT)
+        Sat, 10 Oct 2020 15:51:01 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21744C05BD0A
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 06:16:54 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id a15so12297946ljk.2
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 06:16:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IRzgnkzL+y6KxGnUDl6KgaiE0a2YhOVgP91PfZHg4Jo=;
-        b=byvw0Fy4HVNaP4n7smhkuDqjTWMOiaFJVMkeRiZ3ec2F2chtyzQnuMP0wAlP3i+Pn2
-         phJpF74wVI6sccENkGwj9rueqnRXQ/jl4aTHLB+8wqpm/+L5yVgbAOa3pQSsp+cK1pG1
-         ftZm36sv696d5/c/iL7qbsxcglHZpjm4AilrMRrZyo2QEDOjAtAJQ0tUnQKevwGXOPr+
-         7n/19bs7ClEXbaWInlMsQfTLf5Dbur8Ls0TqTXNQ5KYqijuvicyoqKCr2d4FsV0nJDUt
-         W7cJpFY6AQ0TfOMZ7CEX7witi82v0jv7tJE82bwVSWTbTQbyiLVnMhGgqTc2w0ltbBF6
-         jZrg==
+        bh=I6GLcoUpo4y0TA4rpDhzzmDcBN9KGSF4okvjQ/EzDKw=;
+        b=dbKFu/0xJ40OfYyUCpMPFDakjxp7Gl3QQfRQVZsLYZNvGaWowfCN/6WvlDkeEAmWan
+         jvQt5imfuiC/aVURtOcyCsXiXsq/1kbEwQpScyw2EuhftRmlh8iB2kda1PREabWBc4V2
+         Hz4d8KO59WUp7xGIIdoJu8CIXq1XoVwfo6KqMCrhOhEuc4go3z30AXBpfHaNTcCcXjiX
+         cPUrkdy3K5IgGSIFp3Os75jomspfFSK3TPBFMOO4oU/6hMz1r+/kMfAuZZtsPcgKqH8F
+         04i+q5IQFeuNq9CKIq0sLl0nuTY82X1iLKxZmiHw9g3guAcKB663xEleDUrU93OdCBZk
+         szTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=IRzgnkzL+y6KxGnUDl6KgaiE0a2YhOVgP91PfZHg4Jo=;
-        b=QSWma9SKvUGCq19lpKIQigZDj11wJfuw52/KtFbvpijCjMH65kUe1iWktzEwIyjUr5
-         Oe3cHPSPsVCmrnuPoH5kQEgHDcM7ALSM0l+a7epnqAxTuCIwyQA8hCJr92WjLdDGyJ6J
-         0EtnJ/LQkjrzHutwhYOICKOvEcuhh9R5k8fMzMs3DE98gVGDrj7WIP5j+pqT0OoLUsth
-         KL8WBeDIpylQwgLq+QxnFLsHeNEVHodl+HZgguHmucD+lIAWTH8mSxmZS2wbKZKFEdlL
-         /6zwekcICbqA8wR5RN4DBb/WO8lotDXi2WVFjI4L3BxJojS1lso0kVpKOWBYSWRTK50u
-         nK8g==
-X-Gm-Message-State: AOAM5313ckUZ1HRFURoq8R/blOledTBdOVxM/5o1w8rMhs1SuIm38m34
-        2cB7FB4OpGyVpidobAaOUwmB++V4LILfsw==
-X-Google-Smtp-Source: ABdhPJxzUGEzr8/XiZNnjXysIPZx6Ugs44w2gLiyH/uHXdxmPOdrI+o1ulKAbcwE/CaIuoc86J7qfw==
-X-Received: by 2002:a17:906:39ce:: with SMTP id i14mr20143131eje.170.1602335301421;
-        Sat, 10 Oct 2020 06:08:21 -0700 (PDT)
-Received: from ?IPv6:2003:ea:8f00:6a00:14e2:2617:c2db:d1c8? (p200300ea8f006a0014e22617c2dbd1c8.dip0.t-ipconnect.de. [2003:ea:8f00:6a00:14e2:2617:c2db:d1c8])
-        by smtp.googlemail.com with ESMTPSA id gv10sm7888810ejb.46.2020.10.10.06.08.20
+        bh=I6GLcoUpo4y0TA4rpDhzzmDcBN9KGSF4okvjQ/EzDKw=;
+        b=EqaWUgwT5r9D2TH/6VbygKttNONWmEUz+yY1TEEvqibBRrEdY7qU+q1Yhyc3uDxg3O
+         l0cgHSLNEJ70L3LO9uV3JtNVDjmVMohbhSgAyLA3RREMeQAU5lLFK2fPbU3oIqu4SRql
+         g5f/slLAIR3YU+yx9lHpTJ8tGsmI0j4kW3qzi69vXLj1O0/GfiGWaScbpez+c4RifK/4
+         VFcuI7LaJPKalFLEMbw96vTk9YwhoPM29SkQRo34TsaK/bPsqdlcYNJceSa3fXRhQH4Z
+         hHPKqsZfNhof7V0fMaFbev1w5gqr6/GN+VOuBL+DHIMcSXLbBv5Gt8eeFqnzt3QmgrQP
+         +oxQ==
+X-Gm-Message-State: AOAM530cx1PL7lZ9d9tSNU2cWPygQhXfkMvnvl7+JStwb+EGGEEblCFO
+        m8svMok3M+Hhn108lav1hPpVCJ4f0C7YyKZt
+X-Google-Smtp-Source: ABdhPJwlXMQJxFWBfenbvdcBiEfKPnu9TbzWaGCDysOHjfEB50KaSJXJjYDYWKf6ptVKsw0kUEvQMA==
+X-Received: by 2002:a2e:9d8d:: with SMTP id c13mr6464279ljj.339.1602335812137;
+        Sat, 10 Oct 2020 06:16:52 -0700 (PDT)
+Received: from [192.168.1.211] ([188.162.65.231])
+        by smtp.gmail.com with ESMTPSA id w20sm67086lfl.220.2020.10.10.06.16.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 10 Oct 2020 06:08:20 -0700 (PDT)
-Subject: Re: [PATCH] net: stmmac: Don't call _irqoff() with hardirqs enabled
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     John Keeping <john@metanate.com>, netdev@vger.kernel.org,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Eric Dumazet <edumazet@google.com>
-References: <20201008162749.860521-1-john@metanate.com>
- <8036d473-68bd-7ee7-e2e9-677ff4060bd3@gmail.com>
- <20201009085805.65f9877a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <725ba7ca-0818-074b-c380-15abaa5d037b@gmail.com>
-Message-ID: <070b2b87-f38c-088d-4aaf-12045dbd92f7@gmail.com>
-Date:   Sat, 10 Oct 2020 15:08:15 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Sat, 10 Oct 2020 06:16:51 -0700 (PDT)
+Subject: Re: [PATCH 0/3] i2c: i2c-qcom-geni: More properly fix the DMA race
+To:     Douglas Anderson <dianders@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Wolfram Sang <wsa@kernel.org>,
+        Akash Asthana <akashast@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
+        linux-i2c@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Girish Mahadevan <girishm@codeaurora.org>,
+        Karthikeyan Ramasubramanian <kramasub@codeaurora.org>,
+        Mukesh Kumar Savaliya <msavaliy@codeaurora.org>,
+        linux-kernel@vger.kernel.org
+References: <20201008225235.2035820-1-dianders@chromium.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <4dcdc8b3-94aa-8e68-934d-70542897db6a@linaro.org>
+Date:   Sat, 10 Oct 2020 16:16:48 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-In-Reply-To: <725ba7ca-0818-074b-c380-15abaa5d037b@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201008225235.2035820-1-dianders@chromium.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.10.2020 18:06, Heiner Kallweit wrote:
-> On 09.10.2020 17:58, Jakub Kicinski wrote:
->> On Fri, 9 Oct 2020 16:54:06 +0200 Heiner Kallweit wrote:
->>> I'm thinking about a __napi_schedule version that disables hard irq's
->>> conditionally, based on variable force_irqthreads, exported by the irq
->>> subsystem. This would allow to behave correctly with threadirqs set,
->>> whilst not loosing the _irqoff benefit with threadirqs unset.
->>> Let me come up with a proposal.
->>
->> I think you'd need to make napi_schedule_irqoff() behave like that,
->> right?  Are there any uses of napi_schedule_irqoff() that are disabling
->> irqs and not just running from an irq handler?
->>
-> Right, the best approach depends on the answer to the latter question.
-> I didn't check this yet, therefore I described the least intrusive approach.
+On 09/10/2020 01:52, Douglas Anderson wrote:
+> Previously I landed commit 02b9aec59243 ("i2c: i2c-qcom-geni: Fix DMA
+> transfer race") to fix a race we were seeing.  While that most
+> definitely fixed the race we were seeing, it looks like it causes
+> problems in the TX path, which we didn't stress test until we started
+> trying to update firmware on devices.
 > 
+> Let's revert that patch and try another way: fix the original problem
+> by disabling the interrupts that aren't relevant to DMA transfers.
+> Now we can stress both TX and RX cases and see no problems.  I also
+> can't find any place to put an msleep() that causes problems anymore.
+> 
+> Since this problem only affects i2c, I'm hoping for an Ack from Bjorn
+> and then all these patches can go through the i2c tree.  However, if
+> maintainers want to work a different way out to land that's OK too.
 
-With some help from coccinelle I identified the following functions that
-call napi_schedule_irqoff() or __napi_schedule_irqoff() and do not run
-from an irq handler (at least not at the first glance).
+These patches fix I2C DMA issues on SM8250 we were observing
+Tested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-dpaa2_caam_fqdan_cb
-qede_simd_fp_handler
-mlx4_en_rx_irq
-mlx4_en_tx_irq
-qeth_qdio_poll
-netvsc_channel_cb
-napi_watchdog
+
+-- 
+With best wishes
+Dmitry
