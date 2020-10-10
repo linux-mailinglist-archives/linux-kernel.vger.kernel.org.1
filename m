@@ -2,131 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD11B28A3FF
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A4428A396
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389339AbgJJWzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:55:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52034 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731436AbgJJTW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:22:26 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2FCF922404;
-        Sat, 10 Oct 2020 16:51:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602348663;
-        bh=QORHMnmWSEjYd8YMjB0g1v/EbTLN970fmst2j2tRPfM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BdKZKSbB1/KZzKiQy9HRaLRagU6gYw2wZ5P6B9weBcPigsRhwQOIICIdR+6NY93de
-         XdM5Kv70uWNgDWyVqa+haOBaVGxc+W6lZw+MhTYHD7WvAH7c58WFcO6yBjiB3V21Sj
-         hNj6td5defmDaHkzhGk173Vrz4v1ZmJ8miquhqM0=
-Date:   Sat, 10 Oct 2020 17:50:57 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     dmitry.torokhov@gmail.com
-Cc:     Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        linux-iio@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] iio: adc: exynos: do not rely on 'users' counter in
- ISR
-Message-ID: <20201010175057.768fe3b3@archlinux>
-In-Reply-To: <20201006215509.GA2556081@dtor-ws>
-References: <20201006215509.GA2556081@dtor-ws>
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2390267AbgJJW4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:56:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732034AbgJJTj0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 15:39:26 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F859C08E8AE
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 09:53:47 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id e7so613040pfn.12
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 09:53:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=U5tstZmbDyXUeuyJdKt9QDTRSJ8ywOxt/350RTralow=;
+        b=fV2CRHhh/jZjFZgK1JZuqdHlALHsMbDSgonO53L3hZcF/PBA+ICKWfJkPo3keOU4hs
+         HQPwmPc/yBBPsyQRlgbiwL4BH+znU5JatWtHIroIGIs96L4fYlo9m28zkxA9iHn3cNKA
+         yEGWqWdG2ve28AgxSbipJv1NR5+3HwVoX4oqmA5wAgFJSg9XEkxmkwBtQXGCg1q40V29
+         VSDXj/Ono/DPDFSiyyqiqfVUS0WmTj+Cv0EqL597Vj8BhVNqKg39PvRntNY+1a64prAE
+         Rc2S2CZDVgUUFyNLe3uA7vgnVyOMqNmKSBciIXUX4mCr+zpXTLmXblcIhwR2PhgJtpjj
+         /gkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=U5tstZmbDyXUeuyJdKt9QDTRSJ8ywOxt/350RTralow=;
+        b=CcwWbZIKrAiDxnzjVxYa+ns2RZjFzF8ONhgDnMc4+fIyRHhkxtxKJc4iD6cGAk3X2h
+         uS878JwNApJcYdPamBHNdAwXGq2xmpdS0TMR0Yfxg+JnGjAt/WHoxkAKpZxmAz7/2pmk
+         PsTPUl4qwqM1r0LpVliQCooUqMSCEiN3LjMxX9C64fDhmrLDvGx7Cgh6+drCBaRZj5II
+         w+EFaDLY/3Lh+rIZ5QEhnwQ1A4QxIAi6B8chk3PVVlZdmoydluZGVpJsgRzm6Nph7jY7
+         Y/I/QdCAvhPrEGcZ3VAR9ckKc/MyYMIxb8RYslTKl7RLBgkQtEJMYQ6orA80ScCjRULF
+         sFiQ==
+X-Gm-Message-State: AOAM531WpXmi35An81YZ9/Ni/AqP1Kr7XODqTDlg7vNBT/KN/yp+z5x2
+        B3ETwxN5VupRtaLW32rJQvIZAA==
+X-Google-Smtp-Source: ABdhPJyx7x8Hz+dyaDtDo4bWS5tG2lI8kBMcU772SoKNz7qVPfAHzTMep5GdpnoIgKhgRgKeqJ8TdA==
+X-Received: by 2002:a17:90a:62c2:: with SMTP id k2mr10477618pjs.78.1602348826635;
+        Sat, 10 Oct 2020 09:53:46 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id m34sm14606722pgl.94.2020.10.10.09.53.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 10 Oct 2020 09:53:45 -0700 (PDT)
+Subject: Re: [PATCHSET RFC v3 0/6] Add support for TIF_NOTIFY_SIGNAL
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Miroslav Benes <mbenes@suse.cz>, Oleg Nesterov <oleg@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+        peterz@infradead.org, tglx@linutronix.de,
+        live-patching@vger.kernel.org
+References: <20201005150438.6628-1-axboe@kernel.dk>
+ <20201008145610.GK9995@redhat.com>
+ <alpine.LSU.2.21.2010090959260.23400@pobox.suse.cz>
+ <e33ec671-3143-d720-176b-a8815996fd1c@kernel.dk>
+Message-ID: <9a01ab10-3140-3fa6-0fcf-07d3179973f2@kernel.dk>
+Date:   Sat, 10 Oct 2020 10:53:44 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <e33ec671-3143-d720-176b-a8815996fd1c@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 6 Oct 2020 14:55:09 -0700
-dmitry.torokhov@gmail.com wrote:
+On 10/9/20 9:21 AM, Jens Axboe wrote:
+> On 10/9/20 2:01 AM, Miroslav Benes wrote:
+>> On Thu, 8 Oct 2020, Oleg Nesterov wrote:
+>>
+>>> On 10/05, Jens Axboe wrote:
+>>>>
+>>>> Hi,
+>>>>
+>>>> The goal is this patch series is to decouple TWA_SIGNAL based task_work
+>>>> from real signals and signal delivery.
+>>>
+>>> I think TIF_NOTIFY_SIGNAL can have more users. Say, we can move
+>>> try_to_freeze() from get_signal() to tracehook_notify_signal(), kill
+>>> fake_signal_wake_up(), and remove freezing() from recalc_sigpending().
+>>>
+>>> Probably the same for TIF_PATCH_PENDING, klp_send_signals() can use
+>>> set_notify_signal() rather than signal_wake_up().
+>>
+>> Yes, that was my impression from the patch set too, when I accidentally 
+>> noticed it.
+>>
+>> Jens, could you CC our live patching ML when you submit v4, please? It 
+>> would be a nice cleanup.
+> 
+> Definitely, though it'd be v5 at this point. But we really need to get
+> all archs supporting TIF_NOTIFY_SIGNAL first. Once we have that, there's
+> a whole slew of cleanups that'll fall out naturally:
+> 
+> - Removal of JOBCTL_TASK_WORK
+> - Removal of special path for TWA_SIGNAL in task_work
+> - TIF_PATCH_PENDING can be converted and then removed
+> - try_to_freeze() cleanup that Oleg mentioned
+> 
+> And probably more I'm not thinking of right now :-)
 
-> The order in which 'users' counter is decremented vs calling drivers'
-> close() method is implementation specific, and we should not rely on
-> it. Let's introduce driver private flag and use it to signal ISR
-> to exit when device is being closed.
->=20
-> This has a side-effect of fixing issue of accessing inut->users
-> outside of input->mutex protection.
->=20
-> Reported-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-> Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
-> Reviewed-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
-> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Applied to the togreg branch of iio.git and pushed out as testing
-for the autobuilders to work their magic.
+Here's the current series, I took a stab at converting all archs to
+support TIF_NOTIFY_SIGNAL so we have a base to build on top of. Most
+of them were straight forward, but I need someone to fixup powerpc,
+verify arm and s390.
 
-Given this doesn't have a fixes tag etc I'm assuming it isn't
-high priority etc.  Let me know if it is!
+But it's a decent start I think, and means that we can drop various
+bits as is done at the end of the series. I could swap things around
+a bit and avoid having the intermediate step, but I envision that
+getting this in all archs will take a bit longer than just signing off
+on the generic/x86 bits. So probably best to keep the series as it is
+for now, and work on getting the arch bits verified/fixed/tested.
 
-Thanks,
+https://git.kernel.dk/cgit/linux-block/log/?h=tif-task_work
 
-Jonathan
-> ---
->=20
-> v3: fixed typo in exynos_adc_ts_close() per Micha=C5=82 Miros=C5=82aw
-> v2: switched from ordinary read/write to READ_ONCE/WRITE_ONCE per Micha=
-=C5=82
-> Miros=C5=82aw
->=20
->  drivers/iio/adc/exynos_adc.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/iio/adc/exynos_adc.c b/drivers/iio/adc/exynos_adc.c
-> index 22131a677445..908df4b9b93c 100644
-> --- a/drivers/iio/adc/exynos_adc.c
-> +++ b/drivers/iio/adc/exynos_adc.c
-> @@ -7,6 +7,7 @@
->   *  Copyright (C) 2013 Naveen Krishna Chatradhi <ch.naveen@samsung.com>
->   */
-> =20
-> +#include <linux/compiler.h>
->  #include <linux/module.h>
->  #include <linux/platform_device.h>
->  #include <linux/interrupt.h>
-> @@ -135,6 +136,8 @@ struct exynos_adc {
->  	u32			value;
->  	unsigned int            version;
-> =20
-> +	bool			ts_enabled;
-> +
->  	bool			read_ts;
->  	u32			ts_x;
->  	u32			ts_y;
-> @@ -633,7 +636,7 @@ static irqreturn_t exynos_ts_isr(int irq, void *dev_i=
-d)
->  	bool pressed;
->  	int ret;
-> =20
-> -	while (info->input->users) {
-> +	while (READ_ONCE(info->ts_enabled)) {
->  		ret =3D exynos_read_s3c64xx_ts(dev, &x, &y);
->  		if (ret =3D=3D -ETIMEDOUT)
->  			break;
-> @@ -712,6 +715,7 @@ static int exynos_adc_ts_open(struct input_dev *dev)
->  {
->  	struct exynos_adc *info =3D input_get_drvdata(dev);
-> =20
-> +	WRITE_ONCE(info->ts_enabled, true);
->  	enable_irq(info->tsirq);
-> =20
->  	return 0;
-> @@ -721,6 +725,7 @@ static void exynos_adc_ts_close(struct input_dev *dev)
->  {
->  	struct exynos_adc *info =3D input_get_drvdata(dev);
-> =20
-> +	WRITE_ONCE(info->ts_enabled, false);
->  	disable_irq(info->tsirq);
->  }
-> =20
+-- 
+Jens Axboe
 
