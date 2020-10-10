@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4646C289E7F
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 07:03:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBFF0289E7E
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 07:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729856AbgJJFCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 01:02:47 -0400
-Received: from mga02.intel.com ([134.134.136.20]:32015 "EHLO mga02.intel.com"
+        id S1729366AbgJJFB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 01:01:27 -0400
+Received: from mga06.intel.com ([134.134.136.31]:64225 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727964AbgJJFAZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 01:00:25 -0400
-IronPort-SDR: YQO5MuY4orfyEdxCRRIxM46NBLdHWGiaONLVDcskjy1foYbsbOod/Qm0J11T6n/S7Q5oSZ4lB8
- OzsdO9rxnIbw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9769"; a="152483328"
+        id S1727556AbgJJFAX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 01:00:23 -0400
+IronPort-SDR: 5/MG/jRXkneyB+KJrxt+HURqBVkq26f7B0RMsjayv5FeTH6sLe+Seqj+Rxa0+yKbXwQYhL5XNn
+ OBIXNIbCZE1Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9769"; a="227209836"
 X-IronPort-AV: E=Sophos;i="5.77,357,1596524400"; 
-   d="scan'208";a="152483328"
+   d="scan'208";a="227209836"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 22:00:18 -0700
-IronPort-SDR: PkgSzthoJ5/yO9sPywzWkB8DhPZQzVny3PUHM5MyZIeRs9Bf8MEdwaIKry6exemd+YYEklct8d
- GNFdD3n6X9rw==
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 22:00:19 -0700
+IronPort-SDR: FzlwOFTprddyINm+vld6Me7DMFGdP3fF6LHrfiRftTooy2uY8kDxFK2Opt040dumcQkvb4AT1e
+ nhhKrjS0vVlQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,357,1596524400"; 
-   d="scan'208";a="344100411"
+   d="scan'208";a="317267446"
 Received: from lkp-server02.sh.intel.com (HELO 3104d2c277ac) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 09 Oct 2020 22:00:17 -0700
+  by orsmga006.jf.intel.com with ESMTP; 09 Oct 2020 22:00:17 -0700
 Received: from kbuild by 3104d2c277ac with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1kR6zR-00001K-0Z; Sat, 10 Oct 2020 05:00:17 +0000
-Date:   Sat, 10 Oct 2020 12:59:44 +0800
+        id 1kR6zR-00001M-0v; Sat, 10 Oct 2020 05:00:17 +0000
+Date:   Sat, 10 Oct 2020 12:59:47 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:core/rcu] BUILD SUCCESS
- c6de896fa0a4546c799c86513d99bd011b4a6177
-Message-ID: <5f813fc0.oewl4xOCesW0z7ZH%lkp@intel.com>
+Subject: [tip:master] BUILD SUCCESS
+ f3c8abf68068b0b183d55fb013a82bc799896699
+Message-ID: <5f813fc3.cH73Sd3tILjF+iXZ%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -45,12 +45,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  core/rcu
-branch HEAD: c6de896fa0a4546c799c86513d99bd011b4a6177  Merge branch 'rcu/fix-rt' of git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu into core/rcu
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
+branch HEAD: f3c8abf68068b0b183d55fb013a82bc799896699  Merge branch 'core/rcu'
 
 elapsed time: 720m
 
-configs tested: 142
+configs tested: 131
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -83,12 +83,6 @@ ia64                        generic_defconfig
 sparc                       sparc64_defconfig
 arm                          pxa910_defconfig
 sh                           se7721_defconfig
-powerpc                      tqm8xx_defconfig
-mips                      fuloong2e_defconfig
-sh                          sdk7780_defconfig
-m68k                          atari_defconfig
-mips                     loongson1c_defconfig
-powerpc                     mpc83xx_defconfig
 arm                           corgi_defconfig
 arm                         s3c6400_defconfig
 mips                          rm200_defconfig
@@ -127,11 +121,6 @@ arm                     davinci_all_defconfig
 powerpc                      bamboo_defconfig
 m68k                         amcore_defconfig
 arm                             ezx_defconfig
-powerpc                     akebono_defconfig
-sh                          rsk7269_defconfig
-c6x                              alldefconfig
-sh                            migor_defconfig
-sh                           se7780_defconfig
 i386                             alldefconfig
 xtensa                  audio_kc705_defconfig
 arm                       spear13xx_defconfig
@@ -141,9 +130,6 @@ ia64                             allyesconfig
 m68k                             allmodconfig
 m68k                                defconfig
 m68k                             allyesconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
 nds32                               defconfig
 nios2                            allyesconfig
 csky                                defconfig
@@ -155,6 +141,9 @@ parisc                              defconfig
 s390                             allyesconfig
 parisc                           allyesconfig
 s390                                defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
 i386                             allyesconfig
 sparc                            allyesconfig
 sparc                               defconfig
