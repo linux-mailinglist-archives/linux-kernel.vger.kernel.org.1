@@ -2,179 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82B6D289DBC
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 05:04:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5A5F289DBD
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 05:08:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730521AbgJJDD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 23:03:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55202 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730365AbgJJC5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 22:57:49 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1341E2076B;
-        Sat, 10 Oct 2020 02:57:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602298664;
-        bh=eVc2LNjDgAxspVc+VPD9v9TKMZoHeBScs7c2MoWawVU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=T9/9xBB/PoG7a+O4eRl3644fcjQmkcEQ4b5TXnb2DeITulAb3QKzJfRPWt+bP4hnF
-         F2NjStCuyAl1M4Yz8FwddsFTYM90KHOkG4TvLxuLG4/igS/MxhDp9Ky4etCcUIEsF9
-         awGJzH/QOndOeX7kmjjzWiyF7YhpYDjT+DKDb/34=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id D38AE3522837; Fri,  9 Oct 2020 19:57:43 -0700 (PDT)
-Date:   Fri, 9 Oct 2020 19:57:43 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Tom Rix <trix@redhat.com>
-Cc:     dave@stgolabs.net, josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, natechancellor@gmail.com,
-        ndesaulniers@google.com, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] rcutorture: remove unneeded check
-Message-ID: <20201010025743.GN29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201009194736.2364-1-trix@redhat.com>
- <20201009201825.GL29330@paulmck-ThinkPad-P72>
- <03e3eeed-6072-ccb8-a9c6-c79a99c701b8@redhat.com>
- <20201009235033.GM29330@paulmck-ThinkPad-P72>
- <92f82632-adbd-ca85-d516-6540a49f01ab@redhat.com>
+        id S1730556AbgJJDHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 23:07:22 -0400
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:57374 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730251AbgJJC74 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 22:59:56 -0400
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 09A2xUAl005630;
+        Sat, 10 Oct 2020 11:59:31 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 09A2xUAl005630
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1602298771;
+        bh=WWDM+o/wL6A812KwHUZbKNpAETbnnn+w7BV/JJ86H8k=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=1tL8Qokml2GcAc/4rKCb2deYlB5nRlYF5l2qFWYF0NdhrYeV6gJJuP2mhX0OeqM58
+         KRJFV5FRF6GgODXzVCq5PO+gikKFtxO36sL+z/aqfOIAiQq+k8nbWhSaBhMFMs9Y7x
+         xRp3ChKa7vRLu99dySfDNEofB9acA8BU2Z+FE7M1CydYzhF1yL1boXoFXTW7dfoK5p
+         woPQtiz1xuOtXyZUbeXU2WeF/9g3E7SxK76GeGC6CmLW6GmpU2a1T8gXx9vRJO6gCG
+         gZtHmHEGH1DFLDZeIRKaqS0fXo8O1j/TYgkiPYgwUIE30ISHx9ySmWXiRxnFRe5vdA
+         NatIcfNllpNQg==
+X-Nifty-SrcIP: [209.85.215.170]
+Received: by mail-pg1-f170.google.com with SMTP id h6so8797111pgk.4;
+        Fri, 09 Oct 2020 19:59:31 -0700 (PDT)
+X-Gm-Message-State: AOAM531nH7klLdgqpdL+n4BYaPTouFjzWR6CfbWCKhw99kaYrK11NiCr
+        csXDoljrUEFXzxdkWDhVJ0dyPGKBcGQ9E+XN4Mc=
+X-Google-Smtp-Source: ABdhPJwphC6cuOTQtA14yFr11HstFwMCUogPzJ6fyu1fi9MD3elUuZvTP88pEo/pxJLAHAMo2xeIoKY0Ako0OB9SqcY=
+X-Received: by 2002:a17:90a:aa91:: with SMTP id l17mr7675532pjq.198.1602298770233;
+ Fri, 09 Oct 2020 19:59:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <92f82632-adbd-ca85-d516-6540a49f01ab@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <1602199588-24468-1-git-send-email-victor.erminpour@oracle.com>
+In-Reply-To: <1602199588-24468-1-git-send-email-victor.erminpour@oracle.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 10 Oct 2020 11:58:53 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASWnCn3=iXFrQ=kj4eRcE+5SDyob-oqOMUzTLCMRut7BQ@mail.gmail.com>
+Message-ID: <CAK7LNASWnCn3=iXFrQ=kj4eRcE+5SDyob-oqOMUzTLCMRut7BQ@mail.gmail.com>
+Subject: Re: [PATCH] merge_config.sh: Add switch to specify ARCH variable
+To:     Victor Erminpour <victor.erminpour@oracle.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 05:24:37PM -0700, Tom Rix wrote:
-> 
-> On 10/9/20 4:50 PM, Paul E. McKenney wrote:
-> > On Fri, Oct 09, 2020 at 02:18:41PM -0700, Tom Rix wrote:
-> >> On 10/9/20 1:18 PM, Paul E. McKenney wrote:
-> >>> On Fri, Oct 09, 2020 at 12:47:36PM -0700, trix@redhat.com wrote:
-> >>>> From: Tom Rix <trix@redhat.com>
-> >>>>
-> >>>> clang static analysis reports this problem:
-> >>>>
-> >>>> rcutorture.c:1999:2: warning: Called function pointer
-> >>>>   is null (null dereference)
-> >>>>         cur_ops->sync(); /* Later readers see above write. */
-> >>>>         ^~~~~~~~~~~~~~~
-> >>>>
-> >>>> This is a false positive triggered by an earlier, later ignored
-> >>>> NULL check of sync() op.  By inspection of the rcu_torture_ops,
-> >>>> the sync() op is never uninitialized.  So this earlier check is
-> >>>> not needed.
-> >>> You lost me on this one.  This check is at the very beginning of
-> >>> rcu_torture_fwd_prog_nr().  Or are you saying that clang is seeing an
-> >>> earlier check in one of rcu_torture_fwd_prog_nr()'s callers?  If so,
-> >>> where exactly is this check?
-> >>>
-> >>> In any case, the check is needed because all three functions are invoked
-> >>> if there is a self-propagating RCU callback that ensures that there is
-> >>> always an RCU grace period outstanding.
-> >>>
-> >>> Ah.  Is clang doing local analysis and assuming that because there was
-> >>> a NULL check earlier, then the pointer might be NULL later?  That does
-> >>> not seem to me to be a sound check.
-> >>>
-> >>> So please let me know exactly what is causing clang to emit this
-> >>> diagnostic.  It might or might not be worth fixing this, but either way
-> >>> I need to understand the situation so as to be able to understand the
-> >>> set of feasible fixes.
-> >>>
-> >>> 						Thanx, Paul
-> >> In rcu_prog_nr() there is check for for sync.
-> >>
-> >> if ( ... cur_op->sync ...
-> >>
-> >>    do something
-> >>
-> >> This flags in clang's static analyzer as 'could be null'
-> >>
-> >> later in the function, in a reachable block it is used
-> >>
-> >> cur_ops->sync()
-> >>
-> >> I agree this is not a good check that's why i said is was a false positive.
-> >>
-> >> However when looking closer at how cur_ops is set, it is never uninitialized.
-> >>
-> >> So the check is not needed.
-> > OK, got it, and thank you for the explanation.
-> >
-> >> This is not a fix, the code works fine.  It is a small optimization.
-> > Well, there really is a bug.  Yes, right now all ->sync pointers are
-> > non-NULL, but they have not been in the past and might not be in the
-> > future.  So if ->sync is NULL, rcu_torture_fwd_prog_nr() either should
-> > not be called or it should return immediately without doing anything.
-> >
-> > My current thought is something like the (untested) patch below, of
-> > course with your Reported-by.
-> >
-> > Thoughts?
-> 
-> Yes that would be fine.
-> 
-> In in review these other cases need to be been take care of.
+On Fri, Oct 9, 2020 at 8:25 AM Victor Erminpour
+<victor.erminpour@oracle.com> wrote:
+>
+> Add a switch to merge_config.sh to specify the ARCH variable
+> which defines the target architecture.
+>
+> Set x86 as the default architecture.
+>
+> Signed-off-by: Victor Erminpour <victor.erminpour@oracle.com>
+> ---
 
-I am having a difficult time interpreting this sentence, but will
-optimistically assume that it means that you are good with this approach.
-If my optimism is unwarranted, please let me know so I can fix whatever
-might be broken.
 
-> Reported-by: Tom Rix <trix@redhat.com>
+You can do
 
-How does the commit below look?
+ARCH=arm ./scripts/kconfig/merge_config.sh
 
-							Thanx, Paul
 
-------------------------------------------------------------------------
 
-commit 75c79a5dd72c1bb59f6bd6c5ec36f3a6516795cd
-Author: Paul E. McKenney <paulmck@kernel.org>
-Date:   Fri Oct 9 19:51:55 2020 -0700
 
-    rcutorture: Don't do need_resched() testing if ->sync is NULL
-    
-    If cur_ops->sync is NULL, rcu_torture_fwd_prog_nr() will nevertheless
-    attempt to call through it.  This commit therefore flags cases where
-    neither need_resched() nor call_rcu() forward-progress testing
-    can be performed due to NULL function pointers, and also causes
-    rcu_torture_fwd_prog_nr() to take an early exit if cur_ops->sync()
-    is NULL.
-    
-    Reported-by: Tom Rix <trix@redhat.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index beba9e7..44749be 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -1989,7 +1989,9 @@ static void rcu_torture_fwd_prog_nr(struct rcu_fwd *rfp,
- 	unsigned long stopat;
- 	static DEFINE_TORTURE_RANDOM(trs);
- 
--	if  (cur_ops->call && cur_ops->sync && cur_ops->cb_barrier) {
-+	if (!cur_ops->sync) 
-+		return; // Cannot do need_resched() forward progress testing without ->sync.
-+	if (cur_ops->call && cur_ops->cb_barrier) {
- 		init_rcu_head_on_stack(&fcs.rh);
- 		selfpropcb = true;
- 	}
-@@ -2215,8 +2217,8 @@ static int __init rcu_torture_fwd_prog_init(void)
- 
- 	if (!fwd_progress)
- 		return 0; /* Not requested, so don't do it. */
--	if (!cur_ops->stall_dur || cur_ops->stall_dur() <= 0 ||
--	    cur_ops == &rcu_busted_ops) {
-+	if ((!cur_ops->sync && !cur_ops->call) ||
-+	    !cur_ops->stall_dur || cur_ops->stall_dur() <= 0 || cur_ops == &rcu_busted_ops) {
- 		VERBOSE_TOROUT_STRING("rcu_torture_fwd_prog_init: Disabled, unsupported by RCU flavor under test");
- 		return 0;
- 	}
+
+>  scripts/kconfig/merge_config.sh | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+>
+> diff --git a/scripts/kconfig/merge_config.sh b/scripts/kconfig/merge_config.sh
+> index 63c8565206a4..b7a687f093f0 100755
+> --- a/scripts/kconfig/merge_config.sh
+> +++ b/scripts/kconfig/merge_config.sh
+> @@ -22,6 +22,7 @@ clean_up() {
+>
+>  usage() {
+>         echo "Usage: $0 [OPTIONS] [CONFIG [...]]"
+> +       echo "  -a    set ARCH variable to define the target architecture"
+>         echo "  -h    display this help text"
+>         echo "  -m    only merge the fragments, do not execute the make command"
+>         echo "  -n    use allnoconfig instead of alldefconfig"
+> @@ -34,6 +35,7 @@ usage() {
+>
+>  RUNMAKE=true
+>  ALLTARGET=alldefconfig
+> +ARCH=x86
+>  WARNREDUN=false
+>  BUILTIN=false
+>  OUTPUT=.
+> @@ -46,6 +48,11 @@ while true; do
+>                 shift
+>                 continue
+>                 ;;
+> +       "-a")
+> +               ARCH=$2
+> +               shift 2
+> +               continue
+> +               ;;
+>         "-m")
+>                 RUNMAKE=false
+>                 shift
+> @@ -172,7 +179,7 @@ fi
+>  # Use the merged file as the starting point for:
+>  # alldefconfig: Fills in any missing symbols with Kconfig default
+>  # allnoconfig: Fills in any missing symbols with # CONFIG_* is not set
+> -make KCONFIG_ALLCONFIG=$TMP_FILE $OUTPUT_ARG $ALLTARGET
+> +make ARCH=$ARCH KCONFIG_ALLCONFIG=$TMP_FILE $OUTPUT_ARG $ALLTARGET
+>
+>
+>  # Check all specified config values took (might have missed-dependency issues)
+> --
+> 1.8.3.1
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
