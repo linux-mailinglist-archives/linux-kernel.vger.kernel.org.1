@@ -2,103 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AF9428A1E8
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8084728A3D1
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:11:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733163AbgJJWn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:43:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48682 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731123AbgJJTCW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:02:22 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 112712242B;
-        Sat, 10 Oct 2020 16:57:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602349041;
-        bh=tvRSA9R+WFrxxVwgdjd4mNTVYdF+H8JAqH74nfC64co=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZgbF8bwi2UcwgQkisyGyNYTjjBlwqldV4vgAnD3Jv5bGIF2p9LtXEWQc1F+78JT0D
-         xY4+fZfeFRbH0/40ELyQHlLcLjTNDdVRKOYQhEiTuNQ+liidwbYO0y4f7u9DpGQ5lN
-         EVgZQalZesICskJ4Xb2cFQ0mX0R9DnjdXxYF+l3c=
-Date:   Sat, 10 Oct 2020 17:57:14 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Gene Chen <gene.chen.richtek@gmail.com>
-Cc:     robh+dt@kernel.org, matthias.bgg@gmail.com, knaack.h@gmx.de,
-        lars@metafoo.de, pmeerw@pmeerw.net, devicetree@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
-Subject: Re: [PATCH v6 0/3] iio: adc: mt6360: Add ADC driver for MT6360
-Message-ID: <20201010175714.0fb968ab@archlinux>
-In-Reply-To: <1601542448-7433-1-git-send-email-gene.chen.richtek@gmail.com>
-References: <1601542448-7433-1-git-send-email-gene.chen.richtek@gmail.com>
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2389910AbgJJWzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:55:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731484AbgJJT31 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 15:29:27 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D83AFC08EA70
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 09:59:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=XlmsX7ftEhCmpFmdh7a7209h+fCu8xVMQN4NDEvg3m4=; b=L+gBIYErdSwYIOs+QwVKQNHivY
+        M0O/TYXItMukhCeIkNIrsRcgVzMPZfWTnuv4tVL/VrACx+ddnsAGdTiMJroGXFQYGh1PDdP8iMB2B
+        lwyogCKsBNzgNBo+jnvpnJKRxxjIi69ENcAedyzHWDd/6cM4YdcM2CCP/T6+jHofS/j9nH0OXck5p
+        7XEl1RoWVcn/GnLxRJhkjjK84E0qbDuOhKpnPqn6mbQcDFZgrKBT8yP3T+OAjUnrwhlrh9HWP/Bgq
+        kMVnXVroFdSoEAoA2CVooilNPLoyJhslt3dwW9lrLwOmVundKuDYmYirTymQVLWcqqryTcvqHGcQH
+        wYBBSPZQ==;
+Received: from [2601:1c0:6280:3f0::507c]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kRID8-0003bD-QR; Sat, 10 Oct 2020 16:59:11 +0000
+Subject: Re: [kbuild-all] Re: arceb-elf-ld: include/linux/leds.h:193:
+ undefined reference to `devm_led_classdev_register_ext'
+To:     Rong Chen <rong.a.chen@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        kernel test robot <lkp@intel.com>
+Cc:     Dan Murphy <dmurphy@ti.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org
+References: <202010081415.2R50UmDQ-lkp@intel.com> <20201008071507.GA29893@amd>
+ <a400ff82-e36f-346c-fd57-e1a0a75acd4e@intel.com>
+ <19af5277-6705-4900-ad70-cb9b674caf5c@infradead.org>
+ <61365b1a-5e73-14c9-ab90-4eaaf456eda8@intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <47922c0f-ba68-3c24-50e7-777783901fe2@infradead.org>
+Date:   Sat, 10 Oct 2020 09:59:06 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <61365b1a-5e73-14c9-ab90-4eaaf456eda8@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  1 Oct 2020 16:54:05 +0800
-Gene Chen <gene.chen.richtek@gmail.com> wrote:
+On 10/10/20 12:13 AM, Rong Chen wrote:
+> 
+> 
+> On 10/10/20 11:49 AM, Randy Dunlap wrote:
+>> On 10/9/20 8:19 PM, Rong Chen wrote:
+>>>
+>>> On 10/8/20 3:15 PM, Pavel Machek wrote:
+>>>> Hi!
+>>>>
+>>>>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>>>>> head:   c85fb28b6f999db9928b841f63f1beeb3074eeca
+>>>>> commit: 92a81562e695628086acb92f95090ab09d9b9ec0 leds: lp55xx: Add multicolor framework support to lp55xx
+>>>>> date:   3 months ago
+>>>>> config: arc-randconfig-r035-20201008 (attached as .config)
+>>>>> compiler: arceb-elf-gcc (GCC) 9.3.0
+>>>>> reproduce (this is a W=1 build):
+>>>>>           wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>>>>>           chmod +x ~/bin/make.cross
+>>>>>           # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=92a81562e695628086acb92f95090ab09d9b9ec0
+>>>>>           git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>>>>>           git fetch --no-tags linus master
+>>>>>           git checkout 92a81562e695628086acb92f95090ab09d9b9ec0
+>>>>>           # save the attached .config to linux build tree
+>>>>>           COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=arc
+>>>>>
+>>>>> If you fix the issue, kindly add following tag as appropriate
+>>>>> Reported-by: kernel test robot <lkp@intel.com>
+>>>> Hi robot. Do you have human around to talk to?
+>>>>
+>>>>> All errors (new ones prefixed by >>):
+>>>>>
+>>>>>      arceb-elf-ld: lib/stackdepot.o: in function `filter_irq_stacks':
+>>>>>      lib/stackdepot.c:331: undefined reference to `__irqentry_text_start'
+>>>>>      arceb-elf-ld: lib/stackdepot.c:331: undefined reference to `__irqentry_text_start'
+>>>>>      arceb-elf-ld: lib/stackdepot.o: in function `in_irqentry_text':
+>>>>>      lib/stackdepot.c:323: undefined reference to `__irqentry_text_end'
+>>>>>      arceb-elf-ld: lib/stackdepot.c:323: undefined reference to `__irqentry_text_end'
+>>>>>      arceb-elf-ld: lib/stackdepot.c:324: undefined reference to `__softirqentry_text_start'
+>>>>>      arceb-elf-ld: lib/stackdepot.c:324: undefined reference to `__softirqentry_text_start'
+>>>>>      arceb-elf-ld: lib/stackdepot.c:325: undefined reference to `__softirqentry_text_end'
+>>>>>      arceb-elf-ld: lib/stackdepot.c:325: undefined reference to
+>>>> What is going on here? Did you just start testing arc? The commit
+>>>> is... really old.
+>>>>
+>>> Hi Pavel,
+>>>
+>>> Only this error "arceb-elf-ld: include/linux/leds.h:193: undefined reference to `devm_led_classdev_register_ext'" was found in this commit,
+>>> other errors are for reference only, and the test config is a rand config, so it's discovered by chance.
+>> Hi,
+>> Just for the record, I could not reproduce the build error
+>> with the config file that was provided.
+>>
+> 
+> Hi Randy,
+> 
+> I can reproduce it with the above reproduce steps:
+> 
+> ➜  linux git:(92a81562e695) ✗ make CROSS_COMPILE=/home/nfs/0day/gcc-9.3.0-nolibc/arceb-elf/bin/arceb-elf- ARCH=arc
+>   CALL    scripts/checksyscalls.sh
+>   CALL    scripts/atomic/check-atomics.sh
+>   CHK     include/generated/compile.h
+>   GEN     .version
+>   CHK     include/generated/compile.h
+>   UPD     include/generated/compile.h
+>   CC      init/version.o
+>   AR      init/built-in.a
+>   LD      vmlinux.o
+>   MODPOST vmlinux.symvers
+>   MODINFO modules.builtin.modinfo
+>   GEN     modules.builtin
+>   LD      .tmp_vmlinux.kallsyms1
+> /home/nfs/0day/gcc-9.3.0-nolibc/arceb-elf/bin/arceb-elf-ld: lib/stackdepot.o: in function `filter_irq_stacks':
+> /home/nfs/linux/lib/stackdepot.c:331: undefined reference to `__irqentry_text_start'
+> /home/nfs/0day/gcc-9.3.0-nolibc/arceb-elf/bin/arceb-elf-ld: /home/nfs/linux/lib/stackdepot.c:331: undefined reference to `__irqentry_text_start'
+> /home/nfs/0day/gcc-9.3.0-nolibc/arceb-elf/bin/arceb-elf-ld: lib/stackdepot.o: in function `in_irqentry_text':
+> /home/nfs/linux/lib/stackdepot.c:323: undefined reference to `__irqentry_text_end'
+> /home/nfs/0day/gcc-9.3.0-nolibc/arceb-elf/bin/arceb-elf-ld: /home/nfs/linux/lib/stackdepot.c:323: undefined reference to `__irqentry_text_end'
+> /home/nfs/0day/gcc-9.3.0-nolibc/arceb-elf/bin/arceb-elf-ld: /home/nfs/linux/lib/stackdepot.c:324: undefined reference to `__softirqentry_text_start'
+> /home/nfs/0day/gcc-9.3.0-nolibc/arceb-elf/bin/arceb-elf-ld: /home/nfs/linux/lib/stackdepot.c:324: undefined reference to `__softirqentry_text_start'
+> /home/nfs/0day/gcc-9.3.0-nolibc/arceb-elf/bin/arceb-elf-ld: /home/nfs/linux/lib/stackdepot.c:325: undefined reference to `__softirqentry_text_end'
+> /home/nfs/0day/gcc-9.3.0-nolibc/arceb-elf/bin/arceb-elf-ld: /home/nfs/linux/lib/stackdepot.c:325: undefined reference to `__softirqentry_text_end'
+> /home/nfs/0day/gcc-9.3.0-nolibc/arceb-elf/bin/arceb-elf-ld: drivers/leds/leds-lp55xx-common.o: in function `devm_led_classdev_register':
+> /home/nfs/linux/./include/linux/leds.h:193: undefined reference to `devm_led_classdev_register_ext'
+> /home/nfs/0day/gcc-9.3.0-nolibc/arceb-elf/bin/arceb-elf-ld: /home/nfs/linux/./include/linux/leds.h:193: undefined reference to `devm_led_classdev_register_ext'
+> make: *** [Makefile:1139: vmlinux] Error 1
 
-> This patch series add MT6360 ADC support contains driver, testing document
-> and binding document
-> 
-> Gene Chen (2)
->   dt-bindings: iio: adc: add bindings doc for MT6360 ADC
->   Documentation: ABI: testing: mt6360: Add ADC sysfs guideline
->   iio: adc: mt6360: Add ADC driver for MT6360
+Oh, I guess I see the difference. The bot is checking out a commit
+that is 3 months old:
 
-Hi Gene
+        git fetch --no-tags linus master
+        git checkout 92a81562e695628086acb92f95090ab09d9b9ec0
 
-This looks good to me.  I'm just waiting now on some final
-reviews for the patch that adds the label attribute support.
-Once those are in I'll pick your driver up as well.
 
-If I seem to have lost it, feel free to poke me!
+So it's a bit like Pavel said, that commit is old. I can't say that I care
+as long as current mainline builds, and I have already verified that it does.
 
-Thanks,
 
-Jonathan
-
-> 
->  Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360                 |   78 ++
->  Documentation/devicetree/bindings/iio/adc/mediatek,mt6360-adc.yaml |   34 
->  drivers/iio/adc/Kconfig                                            |   11 
->  drivers/iio/adc/Makefile                                           |    1 
->  drivers/iio/adc/mt6360-adc.c                                       |  362 ++++++++++
->  5 files changed, 486 insertions(+)
-> 
-> changelogs between v1 & v2
->  - adc: use IIO_CHAN_INFO_PROCESSED only
->  - adc: use devm_iio_triggered_buffer_setup
->  - adc: use use s64 to record timestamp
-> 
-> changelogs between v2 & v3
->  - Rearrange include file order by alphabet
->  - Set line length constraint below 100
->  - Add Document for testing adc sysfs node guideline
->  - Set compiler 64 bit aligned when handle iio timestamp
-> 
-> changelogs between v3 & v4
->  - Fix sysfs guideline description
->  - Replace iio channel processed by raw/scale/offset
->  - Add comment of read adc flow for special HW design
-> 
-> changelogs between v4 & v5
->  - Rename dt-bindings aligned to file name
->  - Aligned sysfs node name with driver and add VBUSDIVX description
->  - Add ADC channel sysfs node "*_labels"
-> 
-> changelogs between v5 & v6
->  - Memset aligned adc data
->  - Remove strong casting void pointer
-> 
+cheers.
+-- 
+~Randy
 
