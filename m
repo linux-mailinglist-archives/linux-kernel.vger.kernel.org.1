@@ -2,93 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A93289D27
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 03:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8555C289D2A
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 03:45:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729704AbgJJBlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 21:41:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39550 "EHLO
+        id S1729750AbgJJBmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 21:42:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729485AbgJJBJd (ORCPT
+        with ESMTP id S1729481AbgJJBJd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 9 Oct 2020 21:09:33 -0400
-Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4870C0613D5
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 17:43:47 -0700 (PDT)
-Received: by mail-ua1-x941.google.com with SMTP id x11so2333333uav.1
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 17:43:47 -0700 (PDT)
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60DCEC0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 17:43:26 -0700 (PDT)
+Received: by mail-ua1-x942.google.com with SMTP id c7so3659671uaq.4
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 17:43:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=O+T6J3hzgOr+sfqzPyYNT2JLTYVihzKsAyiTnBxS+wo=;
-        b=R2GUDGgapHD/0U0DkOG4nn6rwNC0rWOcgW0DWpSp+kfYtfXrEO+lBSUC2XO24MLBcQ
-         h6QunDzPLf9N0FDr2Z1Evvxf+YRmMXR1jqsFp0wXkwb28jQ0bbegI6RGycYwLF04tHN2
-         B3L9GNPVAtJoMSui7Y5sX+GKrz8QjFLOCyMvgjPrDZmrvvm1oZcMLM1f0hBKiSz6CBPb
-         cUIe5gEVkBuBs3f8Gn9ZUMMcFFFLAaGyA5hDhvEGw9nQuBzyNADxEyAi+AEo3HAkk48T
-         JlG27xcih5pDUo+Mh6xTLhO+4yeyN/zxUhKuZ3zJ9NePRdZyjysvhuFX+38vAd/F5zud
-         sR1w==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=4AsHudnHcuLoeyDNm34q/beQGAPv3myAbdiJ4abIBI8=;
+        b=jqykdVtQz0zrn+erQQaCySnb5AkBC66ixzheUwp38yUG4QkGgXaBLy2pfGX9EUnTzO
+         3YCgAuQtCJv+qHHikFHJ+XQAPN/oyNoFFlcVF6oSE0zJ8HIMhelC9Sc1frRlnZxeq7Fv
+         k0152KJ3lhAheoFaRz3pLBRiQVEJjS3Gwq+/3VCHydhNLNOInhufRy7YN8aMFQ0Og0ro
+         Sxer1Ha6CUSBH4ku0pboO7G1TvXdF+CzME6VcHYdn3o048UlLCtNvwdeRD+09EJ0Dk+t
+         cSsO5yLVeHbcuEput8M05c5EqtUQz4uQXY66Sfji+8GAaziMugX0IAh3lM0usBWUpRPY
+         76Gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=O+T6J3hzgOr+sfqzPyYNT2JLTYVihzKsAyiTnBxS+wo=;
-        b=jhrL//ILMLVkCb4DS/eMAmg1ZkaKRigPjY1kW6WWD08ZWluBv7EjfT2mWZrK3SQMdw
-         vnEG7VR+3LYo5VTnCp+ULO17KRBXgsZeelo/xSkzSenFpoRPKSUTol59vbvnN0mK9G6Q
-         T2YJPcycQtVMWFAfDNErRJwd43V0aXgpq3EfiHMyUF3Nv/lq3p0w2sGm5ETHvIW73tkm
-         iftxBuEzT2BF2k01W+HJlHBbY2jdrP0z2GDcCbQocfFMuEjcl+WePtv8AqmowfOXHGfH
-         0zta381A2G4Jo/s6aIK4mkoLxAWYqxOnw0JU/kmcBMTRwkGUMg4XztUrJLVFI16ujDdR
-         OdEw==
-X-Gm-Message-State: AOAM5327Z6SqFPqnq2YyWhtm2C2bJztJGBzhrntkxOu6A44htGjs9Uno
-        RsIMeCbDT/yydr2RiP01PweSO5+6xfQlNHPeqSy0/w==
-X-Google-Smtp-Source: ABdhPJz2EWv35VtaXdfAgtI6hsZ4m4ljsGsezwO7sf3Ku0Y1O+bdmkQebYdRgdDsc7bTa7joJ+rKyisXmitexkLjmoc=
-X-Received: by 2002:ab0:2a43:: with SMTP id p3mr9502803uar.122.1602290626762;
- Fri, 09 Oct 2020 17:43:46 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=4AsHudnHcuLoeyDNm34q/beQGAPv3myAbdiJ4abIBI8=;
+        b=jKSXDawBIjxJIDEJ/UOYgPSa/MSSSh5dS528iimuKF0a5TjgZWB3JV8vmEY3q5jvIa
+         uyEDHhMhjOxC8nXf1UiKD7LzQQ/Pb9FUA89GqKxEFtnZFCE7xpn4SzRYxuLWGwSJIzFA
+         fhQRa86h6amSG1SvmSC650SbQVX5LTmsZq3wmqJ1UswHe44sXhN/XEfkYMinucC/5SFz
+         U/KWhD7fJos5VygCcs+UlB9eBBfi+2eaxquLgEo2i5jlwIwWF3l81+BCZSACurdZNBBs
+         J6/i04ORO2zHnhVDE1evj+FSMicxbBAFAbdjWkFz62GcIrLhTd2Qahy2wwNLIhuNruju
+         32Tw==
+X-Gm-Message-State: AOAM530npANGNCRig8/XBiOjwSJg4oXniN7gh9CBaw043jw45RvJZGW4
+        TSADzKX6nB15ZBJxQ3NYC6uSv8xEOEWx5NoApTI=
+X-Google-Smtp-Source: ABdhPJx7nnsMmxl3reVTiNbp9G4OVL3xXnNF2yaK07arlHiUlyIY0h6egcVkPmg0HIQ1ED5yAUC7Wyk1hxVrhTmj7qo=
+X-Received: by 2002:ab0:6988:: with SMTP id t8mr10383916uaq.18.1602290605453;
+ Fri, 09 Oct 2020 17:43:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201009103121.1004-1-ceggers@arri.de> <CABeXuvpg4EkuWyOUEU-4F5Hd_iF7pjGX=K8KmMVZGWTt0P_EkQ@mail.gmail.com>
-In-Reply-To: <CABeXuvpg4EkuWyOUEU-4F5Hd_iF7pjGX=K8KmMVZGWTt0P_EkQ@mail.gmail.com>
-From:   Willem de Bruijn <willemb@google.com>
-Date:   Fri, 9 Oct 2020 20:43:09 -0400
-Message-ID: <CA+FuTScqLoAQTVwEJ+OcyTpQ-bbns6G5xq+p-Swc4hR7Hf5RLQ@mail.gmail.com>
-Subject: Re: [PATCH net 1/2] socket: fix option SO_TIMESTAMPING_NEW
-To:     Deepa Dinamani <deepa.kernel@gmail.com>
-Cc:     Christian Eggers <ceggers@arri.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Network Devel Mailing List <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>
+Received: by 2002:a67:1087:0:0:0:0:0 with HTTP; Fri, 9 Oct 2020 17:43:24 -0700 (PDT)
+Reply-To: mrs.chantala2055@gmail.com
+From:   mrs chantal <mrs.chantalas1@gmail.com>
+Date:   Fri, 9 Oct 2020 17:43:24 -0700
+Message-ID: <CAMdkyyAhLq6xmRPep__pek4DMTNwsamoOr3LKyTr8E-baS6JNg@mail.gmail.com>
+Subject: Dear Friend
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 9, 2020 at 8:30 PM Deepa Dinamani <deepa.kernel@gmail.com> wrote:
->
-> On Fri, Oct 9, 2020 at 3:32 AM Christian Eggers <ceggers@arri.de> wrote:
-> >
-> > The comparison of optname with SO_TIMESTAMPING_NEW is wrong way around,
-> > so SOCK_TSTAMP_NEW will first be set and than reset again. Additionally
-> > move it out of the test for SOF_TIMESTAMPING_RX_SOFTWARE as this seems
-> > unrelated.
->
-> The SOCK_TSTAMP_NEW is reset only in the case when
-> SOF_TIMESTAMPING_RX_SOFTWARE is not set.
-> Note that we only call sock_enable_timestamp() at that time.
->
-> Why would SOCK_TSTAMP_NEW be relevant otherwise?
-
-Other timestamps can be configured, such as hardware timestamps.
-
-As the follow-on patch shows, there is also the issue of overlap
-between SO_TIMESTAMP(NS) and SO_TIMESTAMPING.
-
-Don't select OLD on timestamp disable, which may only disable
-some of the ongoing timestamping.
-
-Setting based on the syscall is simpler, too. __sock_set_timestamps
-already uses for SO_TIMESTAMP(NS) the valbool approach I
-suggest for SO_TIMESTAMPING.
-
-The fallthrough can also be removed. My rough patch missed that.
+SGVsbG8gRnJpZW5kLknCoGFtwqBNcnMuQ0hBTlRBTMKgScKgYW3CoHNlbmRpbmfCoHRoaXPCoGJy
+aWVmDQrCoMKgwqDCoGxldHRlcsKgdG/CoHNvbGljaXTCoHlvdXLCoHBhcnRuZXJzaGlwwqB0b8Kg
+dHJhbnNmZXLCoCQ3LjLCoE1pbGxpb27CoFVTDQrCoMKgwqDCoERvbGxhcnMuScKgc2hhbGzCoHNl
+bmTCoHlvdcKgbW9yZcKgaW5mb3JtYXRpb27CoGFuZMKgcHJvY2VkdXJlc8Kgd2hlbsKgScKgcmVj
+ZWl2ZQ0KwqDCoMKgwqBwb3NpdGl2ZcKgcmVzcG9uc2XCoEZyb23CoHlvdS7CoFBsZWFzZcKgc2Vu
+ZMKgbWXCoGHCoG1lc3NhZ2XCoGluwqBNecKgcHJpdmF0ZQ0KwqDCoMKgwqBlbWFpbMKgYWRkcmVz
+c8KgaXPCoCjCoG1yc2NoYW50YWw2QGdtYWlsLmNvbcKgKQ0KDQrCoMKgwqDCoEJlc3TCoFJlZ2Fy
+ZHMNCg0KwqDCoMKgwqBNcnMuQ2hhbnRhbA0K
