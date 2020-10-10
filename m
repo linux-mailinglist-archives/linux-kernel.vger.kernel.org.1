@@ -2,165 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48ACD289DEF
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 05:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E3FE289DFC
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 05:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730794AbgJJD0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 23:26:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57722 "EHLO
+        id S1730639AbgJJDhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 23:37:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730572AbgJJDIT (ORCPT
+        with ESMTP id S1730593AbgJJDKH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 23:08:19 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D7E1C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 20:08:18 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id w141so12337858oia.2
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 20:08:18 -0700 (PDT)
+        Fri, 9 Oct 2020 23:10:07 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97ACEC0613D0;
+        Fri,  9 Oct 2020 20:09:56 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id p15so11416737ljj.8;
+        Fri, 09 Oct 2020 20:09:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:user-agent:mime-version;
-        bh=fZ9ooXmn2GQKpm0k8FtJCZVXBPaGul3wh0cIHpiIF2U=;
-        b=oG4sK3F6KhXNCzBLglOUojErBNiB00LZjENdEH/udSgzvBUZ3hDhcJayWMBVGnL5uS
-         duPcpjpimRgSfhPKLGaiPZ5zEAwED8Ct4SOo4ozv3TwUQj0dZXZv7aMjyTvHfBJp8JET
-         RKrLpdZgtxNkPG2UxGyhrT0cZ0CiNaGZp3gEzvXsN4zoxM/j6H2Rho3WWKSBFYmRs0cJ
-         sZAST+Nkcxv8GlOYB6DsdDTZG+kB1qz3BoET++tVraZkT8xqIi6jTlYeXYrE7obko2ew
-         mgGevB8NqsdjiEusXPr9upxJM7b5gdUhs+GqEMhx3agPlvFZRDgmxeXHyfMYPTf6/IuG
-         AppQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=boOxhSTKvuA6vO6wuUXDhR47z04re8mQZXd9X7sgCr8=;
+        b=PD2tnD3HyQjTglqnXFxm251pj8OGL1yLJP2r+fMHM1WFKD9rG0yop3oUDYF1De/wqW
+         KN03y1Yn6lZI8Pd6n5/AsUaQTc0e3YMDeTeSlOfIVkF88IcDs3u3WiS+9i9QJg266IEg
+         gfpfKwsFiMGpoggqgsULFownHcdYY+UDXCYLblsBvD1GnPM5csk6g2CubiExuER2emmG
+         yvGK2gdNnHGG3VVlWErRwPjmyrJiNOVSmB8414biEct8SReDNcenCl6mNZtHcIxYoN4N
+         tvzk/vN/ORFyf02ETp/o9p84sOLIeKqmye2PXTU31FM9oV8sOnIzxXfzrV2yFnGpPQZy
+         HWTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:user-agent
-         :mime-version;
-        bh=fZ9ooXmn2GQKpm0k8FtJCZVXBPaGul3wh0cIHpiIF2U=;
-        b=P59Q8EJ9FPqf7I/QES1ePfxZdl3PDOvo/eNSzgstKGwzTI5/6x2U0XzK+KjYTradZu
-         lV6AVrjDuMsUYPaalR9snOs+CAB2x+AAhKzkvYBON+jzC6n90Qkl5D39Pr15EV2BB1ln
-         4mJxgwnd7rwJBZIro+aBmridF42zZZxKxTYsRnLcnmR9lkI3NiZZBMjqxyZM04pSxhNE
-         gQSX5ayzvDGw5p0RuldB5q5UUROJgU7jxdR551cB7jDM4y+EuCVggiEFwq4bFww5I7rk
-         BjeMJS0L4QYqEhVGpyaRN+WypzL80ImOg3YAhtl5q6EozYN00BhuNVIpaZf9jXjEC+RG
-         EF9A==
-X-Gm-Message-State: AOAM530Uc4FCEFNmEqKWOrhFFlUZ1s+YeILDoYv8q3VfC63ai0Aac2aH
-        6ECfTljzGGBAHmzQkgg2nAIN/w==
-X-Google-Smtp-Source: ABdhPJzctLhVCjZFt53I0JGs7dx8LueATe7Ud2mcJyLwvDuyDQMHnGK1okhRXwWmiHh71l7M4InFIg==
-X-Received: by 2002:aca:ea44:: with SMTP id i65mr4213710oih.117.1602299296924;
-        Fri, 09 Oct 2020 20:08:16 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id j83sm7979078oia.19.2020.10.09.20.08.13
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Fri, 09 Oct 2020 20:08:15 -0700 (PDT)
-Date:   Fri, 9 Oct 2020 20:07:59 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Song Liu <songliubraving@fb.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Denis Lisov <dennis.lissov@gmail.com>, Qian Cai <cai@lca.pw>,
-        Suren Baghdasaryan <surenb@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Minchan Kim <minchan@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH] mm/khugepaged: fix filemap page_to_pgoff(page) != offset
-Message-ID: <alpine.LSU.2.11.2010091943300.13335@eggly.anvils>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=boOxhSTKvuA6vO6wuUXDhR47z04re8mQZXd9X7sgCr8=;
+        b=rLQNrEzXmIGAXchSM7dc+MMlkampXwyvXwl3rhcDMFS4jod2aC3g3pno4eglF2CA6V
+         0Uom1hPjSRKJVVpK+nFL4l1sJm2JZuN5vTxKpUAJBgWUozyU8qIaOb0aTH++yh2MByc3
+         cYb46Z7iHK+XLqMFU+sLSqPAVui7IQwdpRu7oqSauvMUqqElDE0SjImtwyUm2lFj1yBr
+         Drv6l0tPARKgVCFrAsifdTzZcFAfBxslrxe+pY73STPzcLFpdMPrsmFNUCCeVcE28bx1
+         HwiX88mIDXps6TwlUCXIscb1LQOcOd8YF5UdOfY/9diGNebbPZJImPdZ1C+uWoXYmEzc
+         POUQ==
+X-Gm-Message-State: AOAM531M4WuM+FuLIeme6P+8Q76lrgjpUY/B2tKyaAl1kQG+40buCulJ
+        pFw75wO/9yiRU/Cv+J+/x/EaSKW7Pj0nOkvL5Ho=
+X-Google-Smtp-Source: ABdhPJw+PZXbP8hvBhTJBQ+BtI29CQw6myRhG/Ka1Ztyn/U9C782aag732wKZiGOF4PdZ0YziDGhXtAq3tiyanOA9zc=
+X-Received: by 2002:a2e:2d09:: with SMTP id t9mr4720098ljt.51.1602299395028;
+ Fri, 09 Oct 2020 20:09:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+References: <20201009103121.1004-1-ceggers@arri.de> <CABeXuvpg4EkuWyOUEU-4F5Hd_iF7pjGX=K8KmMVZGWTt0P_EkQ@mail.gmail.com>
+ <CA+FuTScqLoAQTVwEJ+OcyTpQ-bbns6G5xq+p-Swc4hR7Hf5RLQ@mail.gmail.com>
+In-Reply-To: <CA+FuTScqLoAQTVwEJ+OcyTpQ-bbns6G5xq+p-Swc4hR7Hf5RLQ@mail.gmail.com>
+From:   Deepa Dinamani <deepa.kernel@gmail.com>
+Date:   Fri, 9 Oct 2020 20:09:43 -0700
+Message-ID: <CABeXuvofXme9y92mmOuWmqEhNWSBD7ja7G2pKAJnryCkrHeYAg@mail.gmail.com>
+Subject: Re: [PATCH net 1/2] socket: fix option SO_TIMESTAMPING_NEW
+To:     Willem de Bruijn <willemb@google.com>
+Cc:     Christian Eggers <ceggers@arri.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Network Devel Mailing List <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There have been elusive reports of filemap_fault() hitting its
-VM_BUG_ON_PAGE(page_to_pgoff(page) != offset, page) on kernels built
-with CONFIG_READ_ONLY_THP_FOR_FS=y.
+On Fri, Oct 9, 2020 at 5:43 PM Willem de Bruijn <willemb@google.com> wrote:
+>
+> On Fri, Oct 9, 2020 at 8:30 PM Deepa Dinamani <deepa.kernel@gmail.com> wrote:
+> >
+> > On Fri, Oct 9, 2020 at 3:32 AM Christian Eggers <ceggers@arri.de> wrote:
+> > >
+> > > The comparison of optname with SO_TIMESTAMPING_NEW is wrong way around,
+> > > so SOCK_TSTAMP_NEW will first be set and than reset again. Additionally
+> > > move it out of the test for SOF_TIMESTAMPING_RX_SOFTWARE as this seems
+> > > unrelated.
+> >
+> > The SOCK_TSTAMP_NEW is reset only in the case when
+> > SOF_TIMESTAMPING_RX_SOFTWARE is not set.
+> > Note that we only call sock_enable_timestamp() at that time.
+> >
+> > Why would SOCK_TSTAMP_NEW be relevant otherwise?
+>
+> Other timestamps can be configured, such as hardware timestamps.
+>
+> As the follow-on patch shows, there is also the issue of overlap
+> between SO_TIMESTAMP(NS) and SO_TIMESTAMPING.
 
-Suren has hit it on a kernel with CONFIG_READ_ONLY_THP_FOR_FS=y and
-CONFIG_NUMA is not set: and he has analyzed it down to how khugepaged
-without NUMA reuses the same huge page after collapse_file() failed
-(whereas NUMA targets its allocation to the respective node each time).
-And most of us were usually testing with CONFIG_NUMA=y kernels.
+I see. Thanks for clarification. I think I had missed that you could
+have both software and hardware timestamps enabled at the same time.
 
-collapse_file(old start)
-  new_page = khugepaged_alloc_page(hpage)
-  __SetPageLocked(new_page)
-  new_page->index = start // hpage->index=old offset
-  new_page->mapping = mapping
-  xas_store(&xas, new_page)
+> Don't select OLD on timestamp disable, which may only disable
+> some of the ongoing timestamping.
+>
+> Setting based on the syscall is simpler, too. __sock_set_timestamps
+> already uses for SO_TIMESTAMP(NS) the valbool approach I
+> suggest for SO_TIMESTAMPING.
+>
+> The fallthrough can also be removed. My rough patch missed that.
 
-                          filemap_fault
-                            page = find_get_page(mapping, offset)
-                            // if offset falls inside hpage then
-                            // compound_head(page) == hpage
-                            lock_page_maybe_drop_mmap()
-                              __lock_page(page)
+Sounds good.
 
-  // collapse fails
-  xas_store(&xas, old page)
-  new_page->mapping = NULL
-  unlock_page(new_page)
-
-collapse_file(new start)
-  new_page = khugepaged_alloc_page(hpage)
-  __SetPageLocked(new_page)
-  new_page->index = start // hpage->index=new offset
-  new_page->mapping = mapping // mapping becomes valid again
-
-                            // since compound_head(page) == hpage
-                            // page_to_pgoff(page) got changed
-                            VM_BUG_ON_PAGE(page_to_pgoff(page) != offset)
-
-An initial patch replaced __SetPageLocked() by lock_page(), which did
-fix the race which Suren illustrates above.  But testing showed that it's
-not good enough: if the racing task's __lock_page() gets delayed long
-after its find_get_page(), then it may follow collapse_file(new start)'s
-successful final unlock_page(), and crash on the same VM_BUG_ON_PAGE.
-
-It could be fixed by relaxing filemap_fault()'s VM_BUG_ON_PAGE to a
-check and retry (as is done for mapping), with similar relaxations in
-find_lock_entry() and pagecache_get_page(): but it's not obvious what
-else might get caught out; and khugepaged non-NUMA appears to be unique
-in exposing a page to page cache, then revoking, without going through
-a full cycle of freeing before reuse.
-
-Instead, non-NUMA khugepaged_prealloc_page() release the old page
-if anyone else has a reference to it (1% of cases when I tested).
-
-Although never reported on huge tmpfs, I believe its find_lock_entry()
-has been at similar risk; but huge tmpfs does not rely on khugepaged
-for its normal working nearly so much as READ_ONLY_THP_FOR_FS does.
-
-Reported-by: Denis Lisov <dennis.lissov@gmail.com>
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=206569
-Link: https://lore.kernel.org/linux-mm/?q=20200219144635.3b7417145de19b65f258c943%40linux-foundation.org
-Reported-by: Qian Cai <cai@lca.pw>
-Link: https://lore.kernel.org/linux-xfs/?q=20200616013309.GB815%40lca.pw
-Reported-and-analyzed-by: Suren Baghdasaryan <surenb@google.com>
-Fixes: 87c460a0bded ("mm/khugepaged: collapse_shmem() without freezing new_page")
-Signed-off-by: Hugh Dickins <hughd@google.com>
-Cc: stable@vger.kernel.org # v4.9+
----
-
- mm/khugepaged.c |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
---- 5.9-rc8/mm/khugepaged.c	2020-09-06 17:34:46.939306972 -0700
-+++ linux/mm/khugepaged.c	2020-10-08 16:19:42.999765534 -0700
-@@ -914,6 +914,18 @@ static struct page *khugepaged_alloc_hug
- 
- static bool khugepaged_prealloc_page(struct page **hpage, bool *wait)
- {
-+	/*
-+	 * If the hpage allocated earlier was briefly exposed in page cache
-+	 * before collapse_file() failed, it is possible that racing lookups
-+	 * have not yet completed, and would then be unpleasantly surprised by
-+	 * finding the hpage reused for the same mapping at a different offset.
-+	 * Just release the previous allocation if there is any danger of that.
-+	 */
-+	if (*hpage && page_count(*hpage) > 1) {
-+		put_page(*hpage);
-+		*hpage = NULL;
-+	}
-+
- 	if (!*hpage)
- 		*hpage = khugepaged_alloc_hugepage(wait);
- 
+-Deepa
