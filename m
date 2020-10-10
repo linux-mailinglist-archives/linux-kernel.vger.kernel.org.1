@@ -2,77 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5694A28A361
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A7C228A245
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:56:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390407AbgJJW5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:57:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54884 "EHLO mail.kernel.org"
+        id S1731352AbgJJW4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:56:07 -0400
+Received: from mail.teknik.io ([5.79.72.163]:56540 "EHLO mail.teknik.io"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732189AbgJJTmt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:42:49 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2BDFA2222C;
-        Sat, 10 Oct 2020 17:05:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602349554;
-        bh=RK3mSg3UX4zTOJGirJtJfigfLFSX4tQ66YyfihKPWq0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lgdNQBBm5Q9DALcBRX7i049IJoFS9PHAlvQlT1JDOXB4LjoIJQXpexfaKTizLimoS
-         TtFS/Fu3aXeQ59n+2IisrhBfKa0ISjqJEwMgxlcNW8wRmqgYNSPPkYnqS2NRkga+qJ
-         zGwmtffYKUtZ12r7ConXt+NYk7kGHPr4ifuP/Cqg=
-Date:   Sat, 10 Oct 2020 18:05:49 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iio: accel: mma8452: Constify static struct
- attribute_group
-Message-ID: <20201010180549.629f8102@archlinux>
-In-Reply-To: <20200930232939.31131-1-rikard.falkeborn@gmail.com>
-References: <20200930232939.31131-1-rikard.falkeborn@gmail.com>
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1731502AbgJJTaq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 15:30:46 -0400
+X-Greylist: delayed 3067 seconds by postgrey-1.27 at vger.kernel.org; Sat, 10 Oct 2020 15:30:45 EDT
+dkim-signature: v=1; a=rsa-sha256; d=teknik.io; s=dkim;
+        c=relaxed/relaxed; q=dns/txt; h=From:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Transfer-Encoding;
+        bh=9J/Xx1xk+63xPy4JqmRp6MYQEE6DY0yvVWSnsb8siCo=;
+        b=IjFQpjEg3uUx11+IOqUqaX638+ha4ghGwGOyALNxRKZM9+SWusUG4Mb8ONH7qd2WREFylM/7TxjOMhXD7ytcgj1Q/Ja1y0IWeLyv4SWBpJ+3ndtJxKAaTyIg806mJnFj4Kakj+GCziiQyCjmPdqpCv5cnozH5txhCy3p2eqO5V24tKxfoqGm3mIkIiIec4NLH3MkiYp65UrhkvX6DpzDB3EmiuFAwRZGFdKm4cI/4hfLqWow//BFPRR8KZ
+        8161UuLMviahmKnnILOwMO8awXyx+Y9Z5MrQU4Ol1sq4NPdae9GwOzNFLSQ34sz5LJMS5IF63aNvEbh3IwgrE8a/2PkA==
+Received: from pop-os (89.239.213.172.dhcp.fibianet.dk [89.239.213.172])
+        by mail.teknik.io with ESMTPSA
+        (version=TLSv1.2 cipher=ECDHE-ECDSA-AES256-GCM-SHA384 bits=256)
+        ; Sat, 10 Oct 2020 10:08:25 -0700
+From:   Vasily Utkin <vautkin@teknik.io>
+To:     gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Vasily Utkin <vautkin@teknik.io>
+Subject: [PATCH] staging: comedi: ni_mio_common: Fix newline after dereference operator
+Date:   Sat, 10 Oct 2020 19:07:22 +0200
+Message-Id: <20201010170721.98595-1-vautkin@teknik.io>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  1 Oct 2020 01:29:39 +0200
-Rikard Falkeborn <rikard.falkeborn@gmail.com> wrote:
+Fix newline after dereference operator detected by checkpatch.
 
-> The only usage of mma8452_event_attribute_group is to assign its address
-> to the event_attrs field in the iio_info struct, which is a const
-> pointer. Make it const to allow the compiler to put it in read-only
-> memory. This was the only non-const static struct in drivers/iio.
-> 
-> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
-applied.
+Signed-off-by: Vasily Utkin <vautkin@teknik.io>
+---
+ drivers/staging/comedi/drivers/ni_mio_common.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Thanks,
+diff --git a/drivers/staging/comedi/drivers/ni_mio_common.c b/drivers/staging/comedi/drivers/ni_mio_common.c
+index 9266e13f6271..4f80a4991f95 100644
+--- a/drivers/staging/comedi/drivers/ni_mio_common.c
++++ b/drivers/staging/comedi/drivers/ni_mio_common.c
+@@ -723,8 +723,7 @@ static void ni_release_gpct_mite_channel(struct comedi_device *dev,
+ 
+ 		ni_set_bitfield(dev, NI_E_DMA_G0_G1_SEL_REG,
+ 				NI_E_DMA_G0_G1_SEL_MASK(gpct_index), 0);
+-		ni_tio_set_mite_channel(&devpriv->
+-					counter_dev->counters[gpct_index],
++		ni_tio_set_mite_channel(&devpriv->counter_dev->counters[gpct_index],
+ 					NULL);
+ 		mite_release_channel(mite_chan);
+ 	}
+-- 
+2.25.1
 
-Jonathan
-
-> ---
->  drivers/iio/accel/mma8452.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iio/accel/mma8452.c b/drivers/iio/accel/mma8452.c
-> index bf1d2c8afdbd..b0176d936423 100644
-> --- a/drivers/iio/accel/mma8452.c
-> +++ b/drivers/iio/accel/mma8452.c
-> @@ -1187,7 +1187,7 @@ static struct attribute *mma8452_event_attributes[] = {
->  	NULL,
->  };
->  
-> -static struct attribute_group mma8452_event_attribute_group = {
-> +static const struct attribute_group mma8452_event_attribute_group = {
->  	.attrs = mma8452_event_attributes,
->  };
->  
 
