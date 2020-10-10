@@ -2,74 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F6E628A3CC
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:11:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA52928A315
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389974AbgJJWz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:55:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731489AbgJJT3i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:29:38 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59F52C05BD36
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 09:16:23 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f1bdf00ce147181cc3ed261.dip0.t-ipconnect.de [IPv6:2003:ec:2f1b:df00:ce14:7181:cc3e:d261])
+        id S1729302AbgJJW61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:58:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56970 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731094AbgJJTxO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 15:53:14 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 308C31EC02C1;
-        Sat, 10 Oct 2020 18:11:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1602346280;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=UoyZM+DcLuyJWqGDtXwL5mcUJFE4ZqJWlnLiDWhzhg4=;
-        b=fBkr2geYMoyKNkdAgkV+Uz1Bh2tKv8W2IAOQTpGm/pz+H0RwXYEiVrnR+4iiQW5crbQb/w
-        RaQ4AQEGUUlXh6XSHrTZ+QajBphQHpxi/KDJ7m1nthkfbu6ck+3JKuBQ7IaXXEeOKtBYtR
-        Gp2RLkOruVO2Dua4P6tj10WrFG8eJiI=
-Date:   Sat, 10 Oct 2020 18:11:12 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Joe Perches <joe@perches.com>
-Cc:     X86 ML <x86@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
-        Andy Whitcroft <apw@canonical.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] checkpatch: Check for .byte-spelled insn opcodes
- documentation on x86
-Message-ID: <20201010161112.GC24674@zn.tnic>
-References: <20201009161423.14583-1-bp@alien8.de>
- <b57a59bc80e432c7696b347a223eb12339013970.camel@perches.com>
- <20201010105421.GA24674@zn.tnic>
- <4147e49c0b1251343181b5580d946c2273247927.camel@perches.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 9F91C223B0;
+        Sat, 10 Oct 2020 16:12:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602346329;
+        bh=/o6kc0w86AtQfZwMUUuejermsLWKUUm141TautCeueA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=QthZT2Jf/4kVucgsha/eb8a9anw9MgY337YSbEsYgzCE2ZzgZUeJctUooOyDX2UUq
+         9vElLjcUKvplOqDAwRQuZEjB2BRkKwEMxtPWw3WWZn6X4Kx5nKk2yxw5kyZb3b8QKh
+         Am7IGbh6YH3KxHnzOX2YZe+86lQ7o/YVmVSIzbDU=
+Date:   Sat, 10 Oct 2020 17:12:05 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] iio: adc: ad7887: invert/rework external ref logic
+Message-ID: <20201010171205.56890964@archlinux>
+In-Reply-To: <20201002082723.184810-1-alexandru.ardelean@analog.com>
+References: <20201001141143.925-1-alexandru.ardelean@analog.com>
+        <20201002082723.184810-1-alexandru.ardelean@analog.com>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <4147e49c0b1251343181b5580d946c2273247927.camel@perches.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 10, 2020 at 08:27:20AM -0700, Joe Perches wrote:
-> Then this could use:
+On Fri, 2 Oct 2020 11:27:23 +0300
+Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+
+> This change inverts/reworks the logic to use an external reference via a
+> provided regulator.
 > 
-> /"\s*\.byte\s+(?:0x[0-9a-fA-F]{1,2}\s*,\s*){2,4}/
+> Now the driver tries to obtain a regulator. If one is found, then it is
+> used. The rest of the driver logic already checks if there is a non-NULL
+> reference to a regulator, so it should be fine.
+> 
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+Applied to the togreg branch of iio.git and pushed out as testing for
+all the normal reasons.
 
-Yes, this is getting close.
+Interestingly it seems something odd happened to my email and I was missing
+random threads/part threads.  I've pulled them off lore.kernel.org but if
+I seem to have lost anything let me know.
 
-I've tweaked it a bit to:
+If anyone has a bounce message from me, please send it over as I'm curious
+as to what went wrong!
 
-'/\s*\.byte\s+(?:0x[0-9a-f]{1,2}[\s,]*){2,}/i'
+Thanks,
 
-which assumes at least 2 opcode bytes; upper limit can be more than 4.
-It still has some false positives in crypto but I'd say that's good
-enough. I'll play more with it later.
+Jonathan
+ 
+> ---
+> 
+> Changelog v1 -> v2:
+> * remove omitted '!pdata->use_onchip_ref' check; the field was removed from
+>   the platform data, but was still used
+> 
+>  drivers/iio/adc/ad7887.c             | 12 ++++++++----
+>  include/linux/platform_data/ad7887.h |  4 ----
+>  2 files changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/ad7887.c b/drivers/iio/adc/ad7887.c
+> index 037bcb47693c..99a480ad3985 100644
+> --- a/drivers/iio/adc/ad7887.c
+> +++ b/drivers/iio/adc/ad7887.c
+> @@ -246,11 +246,15 @@ static int ad7887_probe(struct spi_device *spi)
+>  
+>  	st = iio_priv(indio_dev);
+>  
+> -	if (!pdata || !pdata->use_onchip_ref) {
+> -		st->reg = devm_regulator_get(&spi->dev, "vref");
+> -		if (IS_ERR(st->reg))
+> +	st->reg = devm_regulator_get_optional(&spi->dev, "vref");
+> +	if (IS_ERR(st->reg)) {
+> +		if (PTR_ERR(st->reg) != -ENODEV)
+>  			return PTR_ERR(st->reg);
+>  
+> +		st->reg = NULL;
+> +	}
+> +
+> +	if (st->reg) {
+>  		ret = regulator_enable(st->reg);
+>  		if (ret)
+>  			return ret;
+> @@ -269,7 +273,7 @@ static int ad7887_probe(struct spi_device *spi)
+>  	/* Setup default message */
+>  
+>  	mode = AD7887_PM_MODE4;
+> -	if (!pdata || !pdata->use_onchip_ref)
+> +	if (!st->reg)
+>  		mode |= AD7887_REF_DIS;
+>  	if (pdata && pdata->en_dual)
+>  		mode |= AD7887_DUAL;
+> diff --git a/include/linux/platform_data/ad7887.h b/include/linux/platform_data/ad7887.h
+> index 732af46b2d16..9b4dca6ae70b 100644
+> --- a/include/linux/platform_data/ad7887.h
+> +++ b/include/linux/platform_data/ad7887.h
+> @@ -13,13 +13,9 @@
+>   *	second input channel, and Vref is internally connected to Vdd. If set to
+>   *	false the device is used in single channel mode and AIN1/Vref is used as
+>   *	VREF input.
+> - * @use_onchip_ref: Whether to use the onchip reference. If set to true the
+> - *	internal 2.5V reference is used. If set to false a external reference is
+> - *	used.
+>   */
+>  struct ad7887_platform_data {
+>  	bool en_dual;
+> -	bool use_onchip_ref;
+>  };
+>  
+>  #endif /* IIO_ADC_AD7887_H_ */
 
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
