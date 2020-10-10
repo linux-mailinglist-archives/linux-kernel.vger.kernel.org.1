@@ -2,174 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6B328A3C4
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52BDF28A312
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390049AbgJJW43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:56:29 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:59418 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731516AbgJJTcI (ORCPT
+        id S2390636AbgJJW6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:58:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730938AbgJJTwD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:32:08 -0400
-Received: from fsav302.sakura.ne.jp (fsav302.sakura.ne.jp [153.120.85.133])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 09ACwE6u074439;
-        Sat, 10 Oct 2020 21:58:14 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav302.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav302.sakura.ne.jp);
- Sat, 10 Oct 2020 21:58:14 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav302.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 09ACwEaG074433
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Sat, 10 Oct 2020 21:58:14 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: [PATCH v3] lockdep: Allow tuning tracing capacity constants.
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <1595640639-9310-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp>
- <384ce711-25c5-553b-8d22-965847132fbd@i-love.sakura.ne.jp>
-Message-ID: <0eb519fa-e77b-b655-724a-4e9eecc64626@i-love.sakura.ne.jp>
-Date:   Sat, 10 Oct 2020 21:58:12 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Sat, 10 Oct 2020 15:52:03 -0400
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [IPv6:2001:67c:2050::465:202])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D96B1C05BD41
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 06:07:26 -0700 (PDT)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:105:465:1:2:0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4C7lbF33r8zQlQv;
+        Sat, 10 Oct 2020 15:07:21 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
+        content-disposition:content-type:content-type:mime-version
+        :message-id:subject:subject:from:from:date:date:received; s=
+        mail20150812; t=1602335238; bh=eCb88D5mCUgJI97N3SFHjW9CDr5Al9NBC
+        UdsiYBWemI=; b=p0EIgiGCXJxA3vNxWxjaVTn+IS2CL0TwYE0L9KzxLuI21SoOx
+        d3MxwowyWSCpGXQdqYdh1oSIe5aZLBqeZ+XLVHooExAsZFBqIA5n1pge2LWFOvFg
+        5dIH/eokjX+QuduIPWxJNHLzvtdzgBOJCwXXHdl/KECxRmiP4wIKR8bPlsvdH4ED
+        0OhTv1EIp3yclXANvdJn/k4HZQLszIuPDxXVTwa2q0aR0K5bbybaZGtDkXnG+oOI
+        CqxOmiJT0CgaoCZWJyqoPaGV4odUoR2invSfkyZM0StCT4MpsaCywcJkvTuPnL0u
+        awRev5IXVcLN3nletT2IJqJhYJraJq1wrGB2g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1602335239;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=RIcBrNJIPly+xj6tVxYjqisWN/wTEfbudXy2NuO1oGI=;
+        b=CAq3OtlFNUO+44EhEyParmTO964nBqR2NERmicfDry8pA8DL0IoDLmm0PkUwT4lKi4waMG
+        6V1HJ/mBReWePIB8m7sIhgoz1OqYB2Qzdylvlu0igYrWhDTq1Hnk9b6rfqnKDG5j6vIfRJ
+        1bsEEwIKr9iWrBycET2ZkIrZvFL1uPtC5Nz4cfd68+ILxSgVrlCucsY8VXv85ZrrdtPSV3
+        dM0p2HMEt0rUsGI+xvhdMWHXkF5Gv4r3OAyMagXcin2rEk3ILuW+I/K56Ag4iuS+cUXqFX
+        2ouMmi/FjApH1v9Vldd7LQp0sFH0Cq1g7h2qZ5iUUthOmLCA/HQHmD5ORzCxIw==
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp2.mailbox.org ([80.241.60.241])
+        by spamfilter05.heinlein-hosting.de (spamfilter05.heinlein-hosting.de [80.241.56.123]) (amavisd-new, port 10030)
+        with ESMTP id pGSX-yWu0LxW; Sat, 10 Oct 2020 15:07:18 +0200 (CEST)
+Date:   Sat, 10 Oct 2020 15:07:16 +0200
+From:   Wilken Gottwalt <wilken.gottwalt@mailbox.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH] watchdog: via_wdt: add VX900 support
+Message-ID: <20201010130716.GA84929@monster.powergraphx.local>
 MIME-Version: 1.0
-In-Reply-To: <384ce711-25c5-553b-8d22-965847132fbd@i-love.sakura.ne.jp>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -4.51 / 15.00 / 15.00
+X-Rspamd-Queue-Id: 7CABF1707
+X-Rspamd-UID: 53ea1a
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since syzkaller continues various test cases until the kernel crashes,
-syzkaller tends to examine more locking dependencies than normal systems.
-As a result, syzbot is reporting that the fuzz testing was terminated
-due to hitting upper limits lockdep can track [1] [2] [3].
+Adds watchdog support for the VIA VX900 chip-set, which is fully
+backwards compatible to the older VIA chip-set watchdogs.
 
-Peter Zijlstra does not want to allow tuning these limits via kernel
-config options, for such change discourages thinking. But currently we
-are not actionable, for lockdep does not report the culprit for hitting
-these limits [4].
-
-Therefore, I propose this patch again, with a caveat that this patch is
-expected to be reverted after lockdep becomes capable of reporting the
-culprit, for I consider that "postpone fixing lock related problems in
-existing code" is less painful than "not detecting lock related problems
-introduced by new patches".
-
-[1] https://syzkaller.appspot.com/bug?id=3d97ba93fb3566000c1c59691ea427370d33ea1b
-[2] https://syzkaller.appspot.com/bug?id=381cb436fe60dc03d7fd2a092b46d7f09542a72a
-[3] https://syzkaller.appspot.com/bug?id=a588183ac34c1437fc0785e8f220e88282e5a29f
-[4] https://lkml.kernel.org/r/CACT4Y+agTiEF-1i9LbAgp-q_02oYF0kAPZGAAJ==-wx2Xh7xzQ@mail.gmail.com
-
-Reported-by: syzbot <syzbot+cd0ec5211ac07c18c049@syzkaller.appspotmail.com>
-Reported-by: syzbot <syzbot+91fd909b6e62ebe06131@syzkaller.appspotmail.com>
-Reported-by: syzbot <syzbot+62ebe501c1ce9a91f68c@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Acked-by: Dmitry Vyukov <dvyukov@google.com>
+Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
 ---
- kernel/locking/lockdep.c           |  2 +-
- kernel/locking/lockdep_internals.h |  8 +++---
- lib/Kconfig.debug                  | 40 ++++++++++++++++++++++++++++++
- 3 files changed, 45 insertions(+), 5 deletions(-)
+ drivers/watchdog/via_wdt.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index 2facbbd146ec..2144708a867c 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -1349,7 +1349,7 @@ static int add_lock_to_list(struct lock_class *this,
- /*
-  * For good efficiency of modular, we use power of 2
-  */
--#define MAX_CIRCULAR_QUEUE_SIZE		4096UL
-+#define MAX_CIRCULAR_QUEUE_SIZE		(1UL << CONFIG_LOCKDEP_CIRCULAR_QUEUE_BITS)
- #define CQ_MASK				(MAX_CIRCULAR_QUEUE_SIZE-1)
+diff --git a/drivers/watchdog/via_wdt.c b/drivers/watchdog/via_wdt.c
+index eeb39f96e72e..b452ab253ac7 100644
+--- a/drivers/watchdog/via_wdt.c
++++ b/drivers/watchdog/via_wdt.c
+@@ -244,6 +244,7 @@ static const struct pci_device_id wdt_pci_table[] = {
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_CX700) },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_VX800) },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_VX855) },
++	{ PCI_DEVICE(PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_VX900) },
+ 	{ 0 }
+ };
  
- /*
-diff --git a/kernel/locking/lockdep_internals.h b/kernel/locking/lockdep_internals.h
-index b0be1560ed17..cf7752847eb7 100644
---- a/kernel/locking/lockdep_internals.h
-+++ b/kernel/locking/lockdep_internals.h
-@@ -96,16 +96,16 @@ static const unsigned long LOCKF_USED_IN_IRQ_READ =
- #define MAX_STACK_TRACE_ENTRIES	262144UL
- #define STACK_TRACE_HASH_SIZE	8192
- #else
--#define MAX_LOCKDEP_ENTRIES	32768UL
-+#define MAX_LOCKDEP_ENTRIES	(1UL << CONFIG_LOCKDEP_BITS)
- 
--#define MAX_LOCKDEP_CHAINS_BITS	16
-+#define MAX_LOCKDEP_CHAINS_BITS	CONFIG_LOCKDEP_CHAINS_BITS
- 
- /*
-  * Stack-trace: tightly packed array of stack backtrace
-  * addresses. Protected by the hash_lock.
-  */
--#define MAX_STACK_TRACE_ENTRIES	524288UL
--#define STACK_TRACE_HASH_SIZE	16384
-+#define MAX_STACK_TRACE_ENTRIES	(1UL << CONFIG_LOCKDEP_STACK_TRACE_BITS)
-+#define STACK_TRACE_HASH_SIZE	(1 << CONFIG_LOCKDEP_STACK_TRACE_HASH_BITS)
- #endif
- 
- /*
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 0c781f912f9f..41d083be7ec3 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -1311,6 +1311,46 @@ config LOCKDEP
- config LOCKDEP_SMALL
- 	bool
- 
-+config LOCKDEP_BITS
-+	int "Bitsize for MAX_LOCKDEP_ENTRIES"
-+	depends on LOCKDEP && !LOCKDEP_SMALL
-+	range 10 30
-+	default 15
-+	help
-+	  Try increasing this value if you hit "BUG: MAX_LOCKDEP_ENTRIES too low!" message.
-+
-+config LOCKDEP_CHAINS_BITS
-+	int "Bitsize for MAX_LOCKDEP_CHAINS"
-+	depends on LOCKDEP && !LOCKDEP_SMALL
-+	range 10 30
-+	default 16
-+	help
-+	  Try increasing this value if you hit "BUG: MAX_LOCKDEP_CHAINS too low!" message.
-+
-+config LOCKDEP_STACK_TRACE_BITS
-+	int "Bitsize for MAX_STACK_TRACE_ENTRIES"
-+	depends on LOCKDEP && !LOCKDEP_SMALL
-+	range 10 30
-+	default 19
-+	help
-+	  Try increasing this value if you hit "BUG: MAX_STACK_TRACE_ENTRIES too low!" message.
-+
-+config LOCKDEP_STACK_TRACE_HASH_BITS
-+	int "Bitsize for STACK_TRACE_HASH_SIZE"
-+	depends on LOCKDEP && !LOCKDEP_SMALL
-+	range 10 30
-+	default 14
-+	help
-+	  Try increasing this value if you need large MAX_STACK_TRACE_ENTRIES.
-+
-+config LOCKDEP_CIRCULAR_QUEUE_BITS
-+	int "Bitsize for elements in circular_queue struct"
-+	depends on LOCKDEP
-+	range 10 30
-+	default 12
-+	help
-+	  Try increasing this value if you hit "lockdep bfs error:-1" warning due to __cq_enqueue() failure.
-+
- config DEBUG_LOCKDEP
- 	bool "Lock dependency engine debugging"
- 	depends on DEBUG_KERNEL && LOCKDEP
 -- 
-2.18.4
-
+2.28.0
 
