@@ -2,125 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95A4428A396
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FD5F28A213
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390267AbgJJW4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:56:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732034AbgJJTj0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:39:26 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F859C08E8AE
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 09:53:47 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id e7so613040pfn.12
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 09:53:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=U5tstZmbDyXUeuyJdKt9QDTRSJ8ywOxt/350RTralow=;
-        b=fV2CRHhh/jZjFZgK1JZuqdHlALHsMbDSgonO53L3hZcF/PBA+ICKWfJkPo3keOU4hs
-         HQPwmPc/yBBPsyQRlgbiwL4BH+znU5JatWtHIroIGIs96L4fYlo9m28zkxA9iHn3cNKA
-         yEGWqWdG2ve28AgxSbipJv1NR5+3HwVoX4oqmA5wAgFJSg9XEkxmkwBtQXGCg1q40V29
-         VSDXj/Ono/DPDFSiyyqiqfVUS0WmTj+Cv0EqL597Vj8BhVNqKg39PvRntNY+1a64prAE
-         Rc2S2CZDVgUUFyNLe3uA7vgnVyOMqNmKSBciIXUX4mCr+zpXTLmXblcIhwR2PhgJtpjj
-         /gkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=U5tstZmbDyXUeuyJdKt9QDTRSJ8ywOxt/350RTralow=;
-        b=CcwWbZIKrAiDxnzjVxYa+ns2RZjFzF8ONhgDnMc4+fIyRHhkxtxKJc4iD6cGAk3X2h
-         uS878JwNApJcYdPamBHNdAwXGq2xmpdS0TMR0Yfxg+JnGjAt/WHoxkAKpZxmAz7/2pmk
-         PsTPUl4qwqM1r0LpVliQCooUqMSCEiN3LjMxX9C64fDhmrLDvGx7Cgh6+drCBaRZj5II
-         w+EFaDLY/3Lh+rIZ5QEhnwQ1A4QxIAi6B8chk3PVVlZdmoydluZGVpJsgRzm6Nph7jY7
-         Y/I/QdCAvhPrEGcZ3VAR9ckKc/MyYMIxb8RYslTKl7RLBgkQtEJMYQ6orA80ScCjRULF
-         sFiQ==
-X-Gm-Message-State: AOAM531WpXmi35An81YZ9/Ni/AqP1Kr7XODqTDlg7vNBT/KN/yp+z5x2
-        B3ETwxN5VupRtaLW32rJQvIZAA==
-X-Google-Smtp-Source: ABdhPJyx7x8Hz+dyaDtDo4bWS5tG2lI8kBMcU772SoKNz7qVPfAHzTMep5GdpnoIgKhgRgKeqJ8TdA==
-X-Received: by 2002:a17:90a:62c2:: with SMTP id k2mr10477618pjs.78.1602348826635;
-        Sat, 10 Oct 2020 09:53:46 -0700 (PDT)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id m34sm14606722pgl.94.2020.10.10.09.53.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 10 Oct 2020 09:53:45 -0700 (PDT)
-Subject: Re: [PATCHSET RFC v3 0/6] Add support for TIF_NOTIFY_SIGNAL
-From:   Jens Axboe <axboe@kernel.dk>
-To:     Miroslav Benes <mbenes@suse.cz>, Oleg Nesterov <oleg@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-        peterz@infradead.org, tglx@linutronix.de,
-        live-patching@vger.kernel.org
-References: <20201005150438.6628-1-axboe@kernel.dk>
- <20201008145610.GK9995@redhat.com>
- <alpine.LSU.2.21.2010090959260.23400@pobox.suse.cz>
- <e33ec671-3143-d720-176b-a8815996fd1c@kernel.dk>
-Message-ID: <9a01ab10-3140-3fa6-0fcf-07d3179973f2@kernel.dk>
-Date:   Sat, 10 Oct 2020 10:53:44 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729547AbgJJWyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:54:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50688 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731361AbgJJTMW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 15:12:22 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B695422400;
+        Sat, 10 Oct 2020 16:54:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602348861;
+        bh=Yd+Ts5zV4Imhr2dlD4CN2STzRAnre/8W1ZiC+y6m/NU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kNWySn40Fc1xgX/LG2i+iwLibfi85Qh8i5IV/OCvtrv/F/ydOQitt1DlIBy4zHPVZ
+         iNLKuXTBkFLTB6E2vpilcsc5UZj6jGXofy0/Cmw1S0yDCmt+7rJpMKTQ2j1CnixEA7
+         67m5Z0bhjNvdDa78h/RXjXj4uJCNsnc3SzG/jcME=
+Date:   Sat, 10 Oct 2020 17:54:15 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>
+Cc:     knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net,
+        michal.simek@xilinx.com, git@xilinx.com, linux-iio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        anandash@xilinx.com
+Subject: Re: [LINUX PATCH v3] iio: core: Fix IIO_VAL_FRACTIONAL calculation
+ for negative values
+Message-ID: <20201010175415.6e51d873@archlinux>
+In-Reply-To: <1601910316-24111-1-git-send-email-anand.ashok.dumbre@xilinx.com>
+References: <1601910316-24111-1-git-send-email-anand.ashok.dumbre@xilinx.com>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <e33ec671-3143-d720-176b-a8815996fd1c@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/9/20 9:21 AM, Jens Axboe wrote:
-> On 10/9/20 2:01 AM, Miroslav Benes wrote:
->> On Thu, 8 Oct 2020, Oleg Nesterov wrote:
->>
->>> On 10/05, Jens Axboe wrote:
->>>>
->>>> Hi,
->>>>
->>>> The goal is this patch series is to decouple TWA_SIGNAL based task_work
->>>> from real signals and signal delivery.
->>>
->>> I think TIF_NOTIFY_SIGNAL can have more users. Say, we can move
->>> try_to_freeze() from get_signal() to tracehook_notify_signal(), kill
->>> fake_signal_wake_up(), and remove freezing() from recalc_sigpending().
->>>
->>> Probably the same for TIF_PATCH_PENDING, klp_send_signals() can use
->>> set_notify_signal() rather than signal_wake_up().
->>
->> Yes, that was my impression from the patch set too, when I accidentally 
->> noticed it.
->>
->> Jens, could you CC our live patching ML when you submit v4, please? It 
->> would be a nice cleanup.
+On Mon,  5 Oct 2020 08:05:16 -0700
+Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com> wrote:
+
+> Fixes IIO_VAL_FRACTIONAL for case when the result is negative and
+> exponent is 0.
 > 
-> Definitely, though it'd be v5 at this point. But we really need to get
-> all archs supporting TIF_NOTIFY_SIGNAL first. Once we have that, there's
-> a whole slew of cleanups that'll fall out naturally:
+> example: if the result is -0.75, tmp0 will be 0 and tmp1 = 75
+> This causes the output to lose sign because of %d in snprintf
+> which works for tmp0 <= -1.
 > 
-> - Removal of JOBCTL_TASK_WORK
-> - Removal of special path for TWA_SIGNAL in task_work
-> - TIF_PATCH_PENDING can be converted and then removed
-> - try_to_freeze() cleanup that Oleg mentioned
+> Signed-off-by: Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>
+> Reported-by: kernel test robot <lkp@intel.com> #error: uninitialized symbol tmp
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+As this doesn't have a fixes tag etc and from v2 discussion was only hit
+with a new driver, I'm not currently taking this a a fix.
+If people want me to rush it in / backport to stable then let me know
+
+Applied to the togreg branch of iio.git and pushed out as testing for
+the autobuilders to poke at it.
+
+Thanks,
+
+Jonathan
+
+> ---
 > 
-> And probably more I'm not thinking of right now :-)
-
-Here's the current series, I took a stab at converting all archs to
-support TIF_NOTIFY_SIGNAL so we have a base to build on top of. Most
-of them were straight forward, but I need someone to fixup powerpc,
-verify arm and s390.
-
-But it's a decent start I think, and means that we can drop various
-bits as is done at the end of the series. I could swap things around
-a bit and avoid having the intermediate step, but I envision that
-getting this in all archs will take a bit longer than just signing off
-on the generic/x86 bits. So probably best to keep the series as it is
-for now, and work on getting the arch bits verified/fixed/tested.
-
-https://git.kernel.dk/cgit/linux-block/log/?h=tif-task_work
-
--- 
-Jens Axboe
+> Changes in v3:
+> 	Fixed a bug caught by kernel test robot and used correct variable
+> 
+> ---
+>  drivers/iio/industrialio-core.c | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+> index cdcd16f1..ffd5176 100644
+> --- a/drivers/iio/industrialio-core.c
+> +++ b/drivers/iio/industrialio-core.c
+> @@ -592,6 +592,7 @@ static ssize_t __iio_format_value(char *buf, size_t len, unsigned int type,
+>  {
+>  	unsigned long long tmp;
+>  	int tmp0, tmp1;
+> +	s64 tmp2;
+>  	bool scale_db = false;
+>  
+>  	switch (type) {
+> @@ -614,10 +615,13 @@ static ssize_t __iio_format_value(char *buf, size_t len, unsigned int type,
+>  		else
+>  			return scnprintf(buf, len, "%d.%09u", vals[0], vals[1]);
+>  	case IIO_VAL_FRACTIONAL:
+> -		tmp = div_s64((s64)vals[0] * 1000000000LL, vals[1]);
+> +		tmp2 = div_s64((s64)vals[0] * 1000000000LL, vals[1]);
+>  		tmp1 = vals[1];
+> -		tmp0 = (int)div_s64_rem(tmp, 1000000000, &tmp1);
+> -		return scnprintf(buf, len, "%d.%09u", tmp0, abs(tmp1));
+> +		tmp0 = (int)div_s64_rem(tmp2, 1000000000, &tmp1);
+> +		if ((tmp2 < 0) && (tmp0 == 0))
+> +			return snprintf(buf, len, "-0.%09u", abs(tmp1));
+> +		else
+> +			return snprintf(buf, len, "%d.%09u", tmp0, abs(tmp1));
+>  	case IIO_VAL_FRACTIONAL_LOG2:
+>  		tmp = shift_right((s64)vals[0] * 1000000000LL, vals[1]);
+>  		tmp0 = (int)div_s64_rem(tmp, 1000000000LL, &tmp1);
 
