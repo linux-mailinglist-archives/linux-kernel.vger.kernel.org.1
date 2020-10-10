@@ -2,74 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8604028A02B
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 13:26:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46614289F82
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 11:18:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730118AbgJJLYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 07:24:17 -0400
-Received: from smtp.h3c.com ([60.191.123.50]:52185 "EHLO h3cspam02-ex.h3c.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727172AbgJJKZ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 06:25:28 -0400
-X-Greylist: delayed 4237 seconds by postgrey-1.27 at vger.kernel.org; Sat, 10 Oct 2020 06:24:59 EDT
-Received: from h3cspam02-ex.h3c.com (localhost [127.0.0.2] (may be forged))
-        by h3cspam02-ex.h3c.com with ESMTP id 09A99kEg079319;
-        Sat, 10 Oct 2020 17:09:46 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
-        by h3cspam02-ex.h3c.com with ESMTPS id 09A97Cki074737
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 10 Oct 2020 17:07:13 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from localhost.localdomain (10.99.212.201) by
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Sat, 10 Oct 2020 17:07:15 +0800
-From:   Xianting Tian <tian.xianting@h3c.com>
-To:     <mike.marciniszyn@intel.com>, <dennis.dalessandro@intel.com>,
-        <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Xianting Tian <tian.xianting@h3c.com>
-Subject: [PATCH] IB/hfi1: Avoid allocing memory on memoryless numa node
-Date:   Sat, 10 Oct 2020 16:57:32 +0800
-Message-ID: <20201010085732.20708-1-tian.xianting@h3c.com>
-X-Mailer: git-send-email 2.17.1
+        id S1728741AbgJJJQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 05:16:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728491AbgJJJEn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 05:04:43 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 341A0C0613D0;
+        Sat, 10 Oct 2020 02:04:36 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id q5so12002760wmq.0;
+        Sat, 10 Oct 2020 02:04:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=obzmRsA49+kN9nLLhhuvco3Uy76XSh6EQ8QxAczkyH4=;
+        b=UrufEpvAYBZDtrrcoVOX9u4Pa8c9JgWK9jAKhwQTprgcMonbFk7+1RbceT8lkr9kIP
+         fuYTOjjvCMYDqJAhfkfTRmeC7Zc24xCU0nUPruSBeKcsfxCOEtGvyxfXjxy5jmR5lwkc
+         4IHuLX5zzEcBwqiI9DYmt7Pnvio6PlgU1NAglSmkpujqdrFo/ydqKh+ij/ZepBzukj84
+         hEjvDSIdfZEXIbNilmASTz0RkWI01lmk4of//xPRrWpPaQkU/TMtBkX2spLA4s/Um91P
+         2ocQRU5XcfHhddSN2aL7H10MrzrCho9B6bdiky5yTbOlyEYG0NheJgihs109l6jO1/yV
+         gJlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=obzmRsA49+kN9nLLhhuvco3Uy76XSh6EQ8QxAczkyH4=;
+        b=YjaiUOs1/OWZ3WY9TC7xIpMt8gcA+XyC1k8P+0o76GMLBDmqme222zi/MRZyaRHKLV
+         vsJHQjM8uI4fpRX98KhYx5eu/cPcnOGkeHItG4o2vk6OEVPjgJ6HDoueQRAxuYqMQUYx
+         sZbuR8oD7WHoMm5aV3oh2HsQrGpg8FGnJmQmr5bNzMpbfxPwGSgYNYLSCroXWY972vi3
+         ODK3JavlK2GhaWDLZa6uN8jrVPkITmTLOufY6Q3sGnf2VQZhV97paA1RDwKqkxook65A
+         zC0GUzs0lgiMnM3ugc2oiSvyxezOwUoM9f2gnZQL2e6H1A3F1oiOGTKsnMPq7qCdt6ta
+         Fkyg==
+X-Gm-Message-State: AOAM5305Hwy2X5j7APvYoaUdg4s2lMGFrDal5eiJEwe5UMs27UZXYEeX
+        uKthH9xfGb/ttRynDfIT884=
+X-Google-Smtp-Source: ABdhPJyOWCYq8HTIrJ10s9a6rJjjy3r0hgPGOb9G/M5AN/JBrJ/WFJZVlbpWRluU+DZIwA/MsjWUNQ==
+X-Received: by 2002:a1c:2c0a:: with SMTP id s10mr1920266wms.103.1602320673727;
+        Sat, 10 Oct 2020 02:04:33 -0700 (PDT)
+Received: from [192.168.0.66] (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id j17sm15700595wrw.68.2020.10.10.02.04.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 10 Oct 2020 02:04:33 -0700 (PDT)
+Subject: Re: [PATCH v2] PCI: keystone: Enable compile-testing on !ARM
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Murali Karicheri <m-karicheri2@ti.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Dilip Kota <eswara.kota@linux.intel.com>,
+        linux-pci@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        Thierry Reding <treding@nvidia.com>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Jonathan Chocron <jonnyc@amazon.com>,
+        linux-riscv@lists.infradead.org,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Vidya Sagar <vidyas@nvidia.com>, linux-kernel@vger.kernel.org,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>
+References: <20200906194850.63glbnehjcuw356k@lenovo-laptop>
+ <20200906195128.279342-1-alex.dewar90@gmail.com>
+ <20200930182138.GA3176461@bogus>
+From:   Alex Dewar <alex.dewar90@gmail.com>
+Message-ID: <91c7c7b5-fc97-325c-7cba-520d99eede9a@gmail.com>
+Date:   Sat, 10 Oct 2020 10:04:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.99.212.201]
-X-ClientProxiedBy: BJSMTP01-EX.srv.huawei-3com.com (10.63.20.132) To
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
-X-DNSRBL: 
-X-MAIL: h3cspam02-ex.h3c.com 09A97Cki074737
+In-Reply-To: <20200930182138.GA3176461@bogus>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In architecture like powerpc, we can have cpus without any local memory
-attached to it. In such cases the node does not have real memory.
+On 30/09/2020 19:21, Rob Herring wrote:
+> On Sun, 06 Sep 2020 20:51:27 +0100, Alex Dewar wrote:
+>> Currently the Keystone driver can only be compile-tested on ARM, but
+>> this restriction seems unnecessary. Get rid of it to increase test
+>> coverage.
+>>
+>> Build-tested with allyesconfig on x86, ppc, mips and riscv.
+>>
+>> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+>> ---
+>>   drivers/pci/controller/dwc/Kconfig | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+> Acked-by: Rob Herring <robh@kernel.org>
 
-Use local_memory_node(), which is guaranteed to have memory.
-local_memory_node is a noop in other architectures that does not support
-memoryless nodes.
-
-Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
----
- drivers/infiniband/hw/hfi1/file_ops.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/hw/hfi1/file_ops.c b/drivers/infiniband/hw/hfi1/file_ops.c
-index 8ca51e43c..79fa22cc7 100644
---- a/drivers/infiniband/hw/hfi1/file_ops.c
-+++ b/drivers/infiniband/hw/hfi1/file_ops.c
-@@ -965,7 +965,7 @@ static int allocate_ctxt(struct hfi1_filedata *fd, struct hfi1_devdata *dd,
- 	 */
- 	fd->rec_cpu_num = hfi1_get_proc_affinity(dd->node);
- 	if (fd->rec_cpu_num != -1)
--		numa = cpu_to_node(fd->rec_cpu_num);
-+		numa = local_memory_node(cpu_to_node(fd->rec_cpu_num));
- 	else
- 		numa = numa_node_id();
- 	ret = hfi1_create_ctxtdata(dd->pport, numa, &uctxt);
--- 
-2.17.1
-
+Ping ping? :-)
