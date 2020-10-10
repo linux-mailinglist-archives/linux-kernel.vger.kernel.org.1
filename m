@@ -2,104 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CA5328A1E7
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96AD028A449
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733084AbgJJWmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:42:53 -0400
-Received: from ozlabs.org ([203.11.71.1]:47073 "EHLO ozlabs.org"
+        id S2388116AbgJJWxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:53:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730933AbgJJTBN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:01:13 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1731294AbgJJTH0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 15:07:26 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C7vRJ1RQwz9sSn;
-        Sun, 11 Oct 2020 06:01:00 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1602356460;
-        bh=9Mo+fNHM3G6Ny1Gfh76bA35x/o/SeYtWfZ501dVJD1w=;
+        by mail.kernel.org (Postfix) with ESMTPSA id B013D2074D;
+        Sat, 10 Oct 2020 19:07:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602356844;
+        bh=U//J7oK8UOvI+D3yYVqvuZsZOskMm+fI+U2rL182sTE=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=qbYj5/OqDvB+tmkZjGXA+ZjJPdufN0ZSM0jLTuQdcj0U4ZEdGOXsUf4x6BtiXwPqJ
-         TEbZbem0dxHcT1I/balVwh1sBBPPkVvhZR9fREL+yuEtEitWEv9MrDogvBxDlKKa2L
-         udl0dX518XrJoad/W+Iblca6s3WbNiEoFs87lQMJIJp9oeGx5piXoAQNXClZIlpHLS
-         7vfcAX4z6yBvV7+3OtQTA5GSoCLoQByMSaHIddGamZrd9KhM/eIjK8sKl9Vvrnh1zP
-         mJzIQIa+QXDYqhmrKpOn516nh/ykQuNc84HcBffCrRGrhj6l7EMZmr4rqfWFw1vjPN
-         TBneZlNkOGDww==
-Date:   Sun, 11 Oct 2020 06:00:59 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 00/23] Use asm-generic for mmu_context no-op
- functions
-Message-ID: <20201011060059.3e2db5f8@canb.auug.org.au>
-In-Reply-To: <CAK8P3a0EgaGEtOQzsjR8YhALAaSxScsAhaQLMqU9UmEdhKQ+-Q@mail.gmail.com>
-References: <20200901141539.1757549-1-npiggin@gmail.com>
-        <159965079776.3591084.10754647036857628984.b4-ty@arndb.de>
-        <CAK8P3a1XqhV+7OVgWhGg3az4Y+_6V-mCjcJ1dBenwD+ZUaaT9g@mail.gmail.com>
-        <20201010130230.69e5c1a5@canb.auug.org.au>
-        <CAK8P3a0EgaGEtOQzsjR8YhALAaSxScsAhaQLMqU9UmEdhKQ+-Q@mail.gmail.com>
+        b=zO/7fm+tmtpjVXBtWZu7GdMo1g0G71c6zWEX+4cEPdDvG054tHdomukeUVNp2cFBd
+         jSfNS3YVuan1EZx7zuCM6aqPs9uuAS6Ft/dNCsDwO7cRnglDcqGoZ4R1GR/3FOujcq
+         qVcu9TXo5hESVWiZ6rtXrX3EguaDicCmEX/+aCaI=
+Date:   Sat, 10 Oct 2020 12:07:23 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Krzysztof Halasa <khc@pm.waw.pl>
+Subject: Re: [PATCH net-next] drivers/net/wan/hdlc_fr: Move the skb_headroom
+ check out of fr_hard_header
+Message-ID: <20201010120723.1558558a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201007183203.445775-1-xie.he.0141@gmail.com>
+References: <20201007183203.445775-1-xie.he.0141@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/=Dpubf2JgjUd0vIrjIspISL";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/=Dpubf2JgjUd0vIrjIspISL
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed,  7 Oct 2020 11:32:03 -0700 Xie He wrote:
+> Move the skb_headroom check out of fr_hard_header and into pvc_xmit.
+> This has two benefits:
+> 
+> 1. Originally we only do this check for skbs sent by users on Ethernet-
+> emulating PVC devices. After the change we do this check for skbs sent on
+> normal PVC devices, too.
+> (Also add a comment to make it clear that this is only a protection
+> against upper layers that don't take dev->needed_headroom into account.
+> Such upper layers should be rare and I believe they should be fixed.)
+> 
+> 2. After the change we can simplify the parameter list of fr_hard_header.
+> We no longer need to use a pointer to pointers (skb_p) because we no
+> longer need to replace the skb inside fr_hard_header.
+> 
+> Cc: Krzysztof Halasa <khc@pm.waw.pl>
+> Signed-off-by: Xie He <xie.he.0141@gmail.com>
 
-Hi Arnd,
-
-On Sat, 10 Oct 2020 10:25:11 +0200 Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Sat, Oct 10, 2020 at 4:02 AM Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
-> > On Fri, 9 Oct 2020 16:01:22 +0200 Arnd Bergmann <arnd@arndb.de> wrote:
-> > =20
-> > > Are there other changes that depend on this? If not, I would
-> > > just wait until -rc1 and then either push the branch correctly or
-> > > rebase the patches on that first, to avoid pushing something that
-> > > did not see the necessary testing. =20
-> >
-> > If it is useful enough (or important enough), then put in in your
-> > linux-next included branch, but don't ask Linus to merge it until the
-> > second week of the merge window ... no worse than some other stuff I
-> > see :-( =20
->=20
-> By itself, it's a nice cleanup, but it doesn't provide any immediate
-> benefit over the previous state, while potentially introducing a
-> regression in one of the less tested architectures.
-
-OK.
-
-> The question to me is really whether Nick has any pending work
-> that he would like to submit after this branch is merged into
-> mainline.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/=Dpubf2JgjUd0vIrjIspISL
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+CBOsACgkQAVBC80lX
-0GyKaQf9FzCxcpdhGS52PVKxDHwAAK67sUfj1EFa071yFeYzwaAmvvHvOf2P7HUf
-szlwvwDekQQny623qnZu0Ar4Yen0sG/+t6aZyZeCk0z6WvXJ7JarmdpMs09rxQ4o
-2aqCAFfT/KDBHaj9Ra3vW9y/QxNT7ZMxL8lw4s7xr/ghc8Si93xdToXGFzG2gNiI
-K1XD/jx7EVPBS9o9RbY7Rf09o0gVHR7XaoQqpJsEN5cZVHR+OvUubDuSaiiam0u0
-A9fAt1UKZ4e4hNTA6hyWA887n4qAj9cmXVjRAQoG16H5MaE4fzBi+TRKFodPtM9j
-9isKcdGCKwWy/FjvEpwvVT8HcGIb2Q==
-=IcY2
------END PGP SIGNATURE-----
-
---Sig_/=Dpubf2JgjUd0vIrjIspISL--
+Applied, thanks!
