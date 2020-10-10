@@ -2,273 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 059A528A43A
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A36D289FF2
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 12:12:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388831AbgJJWyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:54:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731374AbgJJTO1 (ORCPT
+        id S1726259AbgJJKIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 06:08:11 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:31154 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726720AbgJJJva (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:14:27 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2062f.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e8a::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96469C05BD32;
-        Sat, 10 Oct 2020 09:05:25 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gXG+cNwLfyVSfC8gT1gv0Mx88x65a8tyreEZ+7vRGr+k4S97xkEIflkp0D5hk9VqcbaOr9OWik3gYVY4PQ/NNLsJ+raaNlngCC+WuOMfYn5UAgZx4hWMmpvVQNOGE4kBuJ1d7We/0WOXNsfYiKaN0ypy9fDg4DSuTx/XOAGJFwUAqoB/2WSzNrsPXuaXZH+HPA1INN3MNGESfThkaq+Wurce1/HT5KGggWFKixZUeN4L+1B/GC36qiyrzG0lDHfGPj+/NMhNzONvy6NS8b0i32XmvaOgCQ1u0uzS/CasLnDXEv0Zyjxpi+CI6Dq7eQHhKRv4V06SZ9p7zs2Gqben7g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7Fokc3QKxUEYoY554QDyIqtEXA2X2sskN7Gg4ef3DFk=;
- b=gqSTmXpr9SLz1dJOLH1sam1JoY9eruXrVA1C+Uhny6IRnEr/x8lNd/zRA+IiMZOB4NOlhWLyhcdMrl5o3rYRkIwGL4DcgJGKZse+6iAxkj9JQE/wtB7xpMA3fG47OMq8zmaAKa0Z9shQj7bC6LKq6q19D518+jGEhEqfhhPfFVcsMmqJqDYNSgVfVcKZnASjorAsx2PnHEkaNPi/Z+atrFQJVkKhbjEvGtgQFJvHriUfXCCjioE7BR75+kC2rLq8q1JI0Mh2TfFaLP2iWoiR7bQGMyBvJa1lO602EADg4UjRd8tDF3JY686wIEzu00knPAevM95HnTDIoQdJvDQLiw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7Fokc3QKxUEYoY554QDyIqtEXA2X2sskN7Gg4ef3DFk=;
- b=CTG0lx52DOdqs/rjUgX3oQokUjoeHGQWvA7hYlaU8gbNL+BEpx3b8jwN6OMnDf3u721s1FwCf2eX3N3DfN/sGHGFiWh9WO6WDNH4VdqAlBmIEME1OUPl0GZFmgARUG2Tlam67O0DfuXs1/TkQZCOVs61imNZ9E8usf3VSKqUOkE=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from BY5PR11MB4241.namprd11.prod.outlook.com (2603:10b6:a03:1ca::13)
- by BYAPR11MB3766.namprd11.prod.outlook.com (2603:10b6:a03:b5::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.23; Sat, 10 Oct
- 2020 09:14:34 +0000
-Received: from BY5PR11MB4241.namprd11.prod.outlook.com
- ([fe80::3581:4d13:b613:eb81]) by BY5PR11MB4241.namprd11.prod.outlook.com
- ([fe80::3581:4d13:b613:eb81%7]) with mapi id 15.20.3455.028; Sat, 10 Oct 2020
- 09:14:33 +0000
-From:   "Xu, Yanfei" <yanfei.xu@windriver.com>
-Subject: Re: inconsistent lock state in sco_conn_del
-To:     marcel@holtmann.org, johan.hedberg@gmail.com, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org
-Message-ID: <a54395a1-1c76-a0c3-431a-5bf9f4de1a39@windriver.com>
-Date:   Sat, 10 Oct 2020 17:14:28 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: BYAPR01CA0059.prod.exchangelabs.com (2603:10b6:a03:94::36)
- To BY5PR11MB4241.namprd11.prod.outlook.com (2603:10b6:a03:1ca::13)
+        Sat, 10 Oct 2020 05:51:30 -0400
+X-UUID: 57ab3f1bf93346f1a6dffb2710ec11ac-20201010
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=H+ln7qIH6WhzfS8WeSevzwzddMMkN7urwrkqmKBrJkk=;
+        b=TMP0Xzqg0/AlemBSuJbg5oKE+XfYCJoLmsNfSo+jgOzTpRQQwdADzJwvVzI5vUU/BNmlkuMmT2Zov6Z/thCmhCmCm1cafqEZktorabDhtHuC80/Kd3+yFTAigynxbwcztn+ZgEcSOUDxCG+bx4AiOHgZj6wuoG34NGZZ37sON3k=;
+X-UUID: 57ab3f1bf93346f1a6dffb2710ec11ac-20201010
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <wenbin.mei@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1974926838; Sat, 10 Oct 2020 17:18:20 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
+ (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sat, 10 Oct
+ 2020 17:18:18 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sat, 10 Oct 2020 17:18:18 +0800
+Message-ID: <1602321500.11947.6.camel@mhfsdcap03>
+Subject: Re: [PATCH v3 4/4] mmc: mediatek: Add subsys clock control for
+ MT8192 msdc
+From:   Wenbin Mei <wenbin.mei@mediatek.com>
+To:     Nicolas Boichat <drinkcat@chromium.org>
+CC:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-mmc@vger.kernel.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>
+Date:   Sat, 10 Oct 2020 17:18:20 +0800
+In-Reply-To: <CANMq1KCQ9x1kgME3dAQmGzjUoqkNLuWGS4dG07qhNKQ3N=o_dw@mail.gmail.com>
+References: <20200930083120.11971-1-wenbin.mei@mediatek.com>
+         <20200930083120.11971-5-wenbin.mei@mediatek.com>
+         <CANMq1KCQ9x1kgME3dAQmGzjUoqkNLuWGS4dG07qhNKQ3N=o_dw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [128.224.162.160] (60.247.85.82) by BYAPR01CA0059.prod.exchangelabs.com (2603:10b6:a03:94::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.24 via Frontend Transport; Sat, 10 Oct 2020 09:14:31 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d90b022b-895a-4da1-572d-08d86cfce702
-X-MS-TrafficTypeDiagnostic: BYAPR11MB3766:
-X-Microsoft-Antispam-PRVS: <BYAPR11MB376628EB7FAC00D44C0DBE08E4090@BYAPR11MB3766.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qTkDHa73BGxIKBEAeoB2f7hExmYVtMYXty7KhUNMQGhBY0gWBT5v+V37Dz+UdiOzerII7apfmpPQUxhIbRlLpdjpmn/8haLYcxMWUq+MpY+CYdz263VhAAoW6L66OupngxZ4gihEqoKRIzG5mUqMZoMvYtXD1fGRkywGlyYe3EUovX36AUGoUd5kpPOSAlcxDPP4qSJv4dfbf/G0PqQeNoCLcexLx8blBKttNjJCf7lLcJIqK4ywOUMKVL79efzXye9Btzp/4EiHlhHUy5E4xilSX20mn3+HmwAuAilzoExgm4c8MAsKE35eYhj85krWKDr0o5rZwl7N64Qm9K+Ww+nytJqNilMpYnF89MkH8A7u9lk5qOmf9shO97GYmBjQneGBbWOTj3SCRmpaLy/gudiD7gVFwmkYgmiLKbUHD1NAoyj8X+wecotcHS+FEDafFeamAftzdV/kOF8Ud14iDBGINt44EqbzPJiTA2Ay6Kw7NtBy4F9PJIqRf8opZqYu
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4241.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(396003)(366004)(346002)(39850400004)(8676002)(83380400001)(83080400001)(478600001)(966005)(6666004)(8936002)(2616005)(52116002)(16526019)(26005)(16576012)(186003)(956004)(66556008)(4326008)(66476007)(316002)(86362001)(6706004)(6486002)(36756003)(83730400001)(31686004)(2906002)(31696002)(5660300002)(66946007)(99710200001)(78286007)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: wDhnjE3uyr8E+ZxrS4t5uraxS69wNhMRbhhv7QE0c7DhgH3piqXmV/v10kQiysUQJUiiao0L7l5/4nd9OUDlfnp0bvSHG9u30OFze0q7YSojtXaVg707Qaq9N7Rhy/i7Egl1kVxXNjP2akIVraI2i8j2hhdtvsMCf60dLd+TMeE/mbBbSKJNBWhOcvikuKlZ0rH1Mdf+PDaU8oarZ1vtILwMevv1WtfZJJKCYs5siWM6xDCMJvFyNufp4Z9/7Ers7qIlhNtp2raQTYkWWMQR1RUDlSj700D+N40pHWNEKRVaRujz79Qv122FaOSSthV8HIAQPLC2Vvi1oINQb3AdUqfpdy79xT0vEigYyY9eTpN5fDq6ovdp8AvbBWDOsfXJF0K5dbKVW9AXgGcZMhg/Lxwj9tn2Qqohpy9T8SUokqsm0JNTGVzOUyY3VNhGiqZZFQ+byXtuBmI277Mpg8YG4Yqmxl5f0jdwGVvhOw0eL8a80kkwON9WaWecOiZroi+i/y14JJ0IfNVw0g/2pkr/MH0yRhfmZbAQq8sNiOOILhkNLpTyi3wQCGlR/Fr3mvrPTdjRt3HXyeXYKS3Z8rriDHpdzDG5+6MZRUPO/fMK2qkOMTjdbTv71dxsOVr2XBb1oJrL+2MLDv3eYoz1Ukemfg==
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d90b022b-895a-4da1-572d-08d86cfce702
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4241.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2020 09:14:33.8432
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: k6204H1H/NjvZlyb9LOCI1VDz5nfZEkPOZ6MPm45+ix8/UvURCLaUfn02YPxeSxi25fXAfmgk30v5VDXmH7Fng==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3766
+X-TM-SNTS-SMTP: 28E61ED4929A78886AAEC66E902D7BDF49F75B5965520A77CC1E21997464EA852000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- > syzbot has found a reproducer for the following issue on:
- >
- > HEAD commit:    e8878ab8 Merge tag 'spi-fix-v5.9-rc4' of 
-git://git.kernel...
- > git tree:       upstream
- > console output: https://syzkaller.appspot.com/x/log.txt?x=12130759900000
- > kernel config: 
-https://syzkaller.appspot.com/x/.config?x=c61610091f4ca8c4
- > dashboard link: 
-https://syzkaller.appspot.com/bug?extid=65684128cd7c35bc66a1
- > compiler:       gcc (GCC) 10.1.0-syz 20200507
- > syz repro: 
-https://syzkaller.appspot.com/x/repro.syz?x=121ef0fd900000
- > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16c3a853900000
- >
- > IMPORTANT: if you fix the issue, please add the following tag to the 
-commit:
- > Reported-by: syzbot+65684128cd7c35bc66a1@syzkaller.appspotmail.com
- >
- > ================================
- > WARNING: inconsistent lock state
- > 5.9.0-rc4-syzkaller #0 Not tainted
- > --------------------------------
- > inconsistent {IN-SOFTIRQ-W} -> {SOFTIRQ-ON-W} usage.
- > syz-executor675/31233 [HC0[0]:SC0[0]:HE1:SE1] takes:
- > ffff8880a75c50a0 (slock-AF_BLUETOOTH-BTPROTO_SCO){+.?.}-{2:2}, at: 
-spin_lock include/linux/spinlock.h:354 [inline]
- > ffff8880a75c50a0 (slock-AF_BLUETOOTH-BTPROTO_SCO){+.?.}-{2:2}, at: 
-sco_conn_del+0x128/0x270 net/bluetooth/sco.c:176
- > {IN-SOFTIRQ-W} state was registered at:
- >    lock_acquire+0x1f3/0xae0 kernel/locking/lockdep.c:5006
- >    __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
- >    _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
- >    spin_lock include/linux/spinlock.h:354 [inline]
- >    sco_sock_timeout+0x24/0x140 net/bluetooth/sco.c:83
- >    call_timer_fn+0x1ac/0x760 kernel/time/timer.c:1413
- >    expire_timers kernel/time/timer.c:1458 [inline]
- >    __run_timers.part.0+0x67c/0xaa0 kernel/time/timer.c:1755
- >    __run_timers kernel/time/timer.c:1736 [inline]
- >    run_timer_softirq+0xae/0x1a0 kernel/time/timer.c:1768
- >    __do_softirq+0x1f7/0xa91 kernel/softirq.c:298
- >    asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:706
- >    __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
- >    run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
- >    do_softirq_own_stack+0x9d/0xd0 arch/x86/kernel/irq_64.c:77
- >    invoke_softirq kernel/softirq.c:393 [inline]
- >    __irq_exit_rcu kernel/softirq.c:423 [inline]
- >    irq_exit_rcu+0x235/0x280 kernel/softirq.c:435
- >    sysvec_apic_timer_interrupt+0x51/0xf0 arch/x86/kernel/apic/apic.c:1091
- >    asm_sysvec_apic_timer_interrupt+0x12/0x20 
-arch/x86/include/asm/idtentry.h:581
- >    unwind_next_frame+0x139a/0x1f90 arch/x86/kernel/unwind_orc.c:607
- >    arch_stack_walk+0x81/0xf0 arch/x86/kernel/stacktrace.c:25
- >    stack_trace_save+0x8c/0xc0 kernel/stacktrace.c:123
- >    kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- >    kasan_set_track mm/kasan/common.c:56 [inline]
- >    __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
- >    slab_post_alloc_hook mm/slab.h:518 [inline]
- >    slab_alloc mm/slab.c:3312 [inline]
- >    kmem_cache_alloc+0x13a/0x3a0 mm/slab.c:3482
- >    __d_alloc+0x2a/0x950 fs/dcache.c:1709
- >    d_alloc+0x4a/0x230 fs/dcache.c:1788
- >    d_alloc_parallel+0xe9/0x18e0 fs/dcache.c:2540
- >    lookup_open.isra.0+0x9ac/0x1350 fs/namei.c:3030
- >    open_last_lookups fs/namei.c:3177 [inline]
- >    path_openat+0x96d/0x2730 fs/namei.c:3365
- >    do_filp_open+0x17e/0x3c0 fs/namei.c:3395
- >    do_sys_openat2+0x16d/0x420 fs/open.c:1168
- >    do_sys_open fs/open.c:1184 [inline]
- >    __do_sys_open fs/open.c:1192 [inline]
- >    __se_sys_open fs/open.c:1188 [inline]
- >    __x64_sys_open+0x119/0x1c0 fs/open.c:1188
- >    do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- >    entry_SYSCALL_64_after_hwframe+0x44/0xa9
- > irq event stamp: 853
- > hardirqs last  enabled at (853): [<ffffffff87f733af>] 
-__raw_spin_unlock_irq include/linux/spinlock_api_smp.h:168 [inline]
- > hardirqs last  enabled at (853): [<ffffffff87f733af>] 
-_raw_spin_unlock_irq+0x1f/0x80 kernel/locking/spinlock.c:199
- > hardirqs last disabled at (852): [<ffffffff87f73764>] 
-__raw_spin_lock_irq include/linux/spinlock_api_smp.h:126 [inline]
- > hardirqs last disabled at (852): [<ffffffff87f73764>] 
-_raw_spin_lock_irq+0xa4/0xd0 kernel/locking/spinlock.c:167
- > softirqs last  enabled at (0): [<ffffffff8144c929>] 
-copy_process+0x1a99/0x6920 kernel/fork.c:2018
- > softirqs last disabled at (0): [<0000000000000000>] 0x0
- >
- > other info that might help us debug this:
- >   Possible unsafe locking scenario:
- >
- >         CPU0
- >         ----
- >    lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
- >    <Interrupt>
- >      lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
- >
- >   *** DEADLOCK ***
- >
- > 3 locks held by syz-executor675/31233:
- >   #0: ffff88809f104f40 (&hdev->req_lock){+.+.}-{3:3}, at: 
-hci_dev_do_close+0xf5/0x1080 net/bluetooth/hci_core.c:1720
- >   #1: ffff88809f104078 (&hdev->lock){+.+.}-{3:3}, at: 
-hci_dev_do_close+0x253/0x1080 net/bluetooth/hci_core.c:1757
- >   #2: ffffffff8a9188c8 (hci_cb_list_lock){+.+.}-{3:3}, at: 
-hci_disconn_cfm include/net/bluetooth/hci_core.h:1435 [inline]
- >   #2: ffffffff8a9188c8 (hci_cb_list_lock){+.+.}-{3:3}, at: 
-hci_conn_hash_flush+0xc7/0x220 net/bluetooth/hci_conn.c:1557
- >
- > stack backtrace:
- > CPU: 1 PID: 31233 Comm: syz-executor675 Not tainted 
-5.9.0-rc4-syzkaller #0
- > Hardware name: Google Google Compute Engine/Google Compute Engine, 
-BIOS Google 01/01/2011
- > Call Trace:
- >   __dump_stack lib/dump_stack.c:77 [inline]
- >   dump_stack+0x198/0x1fd lib/dump_stack.c:118
- >   print_usage_bug kernel/locking/lockdep.c:4020 [inline]
- >   valid_state kernel/locking/lockdep.c:3361 [inline]
- >   mark_lock_irq kernel/locking/lockdep.c:3560 [inline]
- >   mark_lock.cold+0x7a/0x7f kernel/locking/lockdep.c:4006
- >   mark_usage kernel/locking/lockdep.c:3923 [inline]
- >   __lock_acquire+0x876/0x5570 kernel/locking/lockdep.c:4380
- >   lock_acquire+0x1f3/0xae0 kernel/locking/lockdep.c:5006
- >   __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
- >   _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
- >   spin_lock include/linux/spinlock.h:354 [inline]
- >   sco_conn_del+0x128/0x270 net/bluetooth/sco.c:176
+T24gVGh1LCAyMDIwLTEwLTAxIGF0IDE0OjE0ICswODAwLCBOaWNvbGFzIEJvaWNoYXQgd3JvdGU6
+DQo+IE9uIFdlZCwgU2VwIDMwLCAyMDIwIGF0IDQ6MzEgUE0gV2VuYmluIE1laSA8d2VuYmluLm1l
+aUBtZWRpYXRlay5jb20+IHdyb3RlOg0KPiA+DQo+ID4gTVQ4MTkyIG1zZGMgaXMgYW4gaW5kZXBl
+bmRlbnQgc3ViIHN5c3RlbSwgd2UgbmVlZCBjb250cm9sIG1vcmUgYnVzDQo+ID4gY2xvY2tzIGZv
+ciBpdC4NCj4gPiBBZGQgc3VwcG9ydCBmb3IgdGhlIGFkZGl0aW9uYWwgc3Vic3lzIGNsb2NrcyB0
+byBhbGxvdyBpdCB0byBiZQ0KPiA+IGNvbmZpZ3VyZWQgYXBwcm9wcmlhdGVseS4NCj4gPg0KPiA+
+IFNpZ25lZC1vZmYtYnk6IFdlbmJpbiBNZWkgPHdlbmJpbi5tZWlAbWVkaWF0ZWsuY29tPg0KPiA+
+IC0tLQ0KPiA+ICBkcml2ZXJzL21tYy9ob3N0L210ay1zZC5jIHwgNzcgKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrLS0tLS0tLS0tDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCA1OSBpbnNlcnRp
+b25zKCspLCAxOCBkZWxldGlvbnMoLSkNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL21t
+Yy9ob3N0L210ay1zZC5jIGIvZHJpdmVycy9tbWMvaG9zdC9tdGstc2QuYw0KPiA+IGluZGV4IGE3
+MDQ3NDVlNTg4Mi4uOWExNDIyOTU1NTkzIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvbW1jL2hv
+c3QvbXRrLXNkLmMNCj4gPiArKysgYi9kcml2ZXJzL21tYy9ob3N0L210ay1zZC5jDQo+ID4gQEAg
+LTQyNSw2ICs0MjUsOCBAQCBzdHJ1Y3QgbXNkY19ob3N0IHsNCj4gPiAgICAgICAgIHN0cnVjdCBj
+bGsgKmhfY2xrOyAgICAgIC8qIG1zZGMgaF9jbGsgKi8NCj4gPiAgICAgICAgIHN0cnVjdCBjbGsg
+KmJ1c19jbGs7ICAgIC8qIGJ1cyBjbG9jayB3aGljaCB1c2VkIHRvIGFjY2VzcyByZWdpc3RlciAq
+Lw0KPiA+ICAgICAgICAgc3RydWN0IGNsayAqc3JjX2Nsa19jZzsgLyogbXNkYyBzb3VyY2UgY2xv
+Y2sgY29udHJvbCBnYXRlICovDQo+ID4gKyAgICAgICBzdHJ1Y3QgY2xrICpzeXNfY2xrX2NnOyAv
+KiBtc2RjIHN1YnN5cyBjbG9jayBjb250cm9sIGdhdGUgKi8NCj4gPiArICAgICAgIHN0cnVjdCBj
+bGtfYnVsa19kYXRhIGJ1bGtfY2xrc1szXTsgICAgICAvKiBwY2xrLCBheGksIGFoYiBjbG9jayBj
+b250cm9sIGdhdGUgKi8NCj4gPiAgICAgICAgIHUzMiBtY2xrOyAgICAgICAgICAgICAgIC8qIG1t
+YyBzdWJzeXN0ZW0gY2xvY2sgZnJlcXVlbmN5ICovDQo+ID4gICAgICAgICB1MzIgc3JjX2Nsa19m
+cmVxOyAgICAgICAvKiBzb3VyY2UgY2xvY2sgZnJlcXVlbmN5ICovDQo+ID4gICAgICAgICB1bnNp
+Z25lZCBjaGFyIHRpbWluZzsNCj4gPiBAQCAtNzg0LDYgKzc4Niw4IEBAIHN0YXRpYyB2b2lkIG1z
+ZGNfc2V0X2J1c3lfdGltZW91dChzdHJ1Y3QgbXNkY19ob3N0ICpob3N0LCB1NjQgbnMsIHU2NCBj
+bGtzKQ0KPiA+DQo+ID4gIHN0YXRpYyB2b2lkIG1zZGNfZ2F0ZV9jbG9jayhzdHJ1Y3QgbXNkY19o
+b3N0ICpob3N0KQ0KPiA+ICB7DQo+ID4gKyAgICAgICBjbGtfYnVsa19kaXNhYmxlX3VucHJlcGFy
+ZShBUlJBWV9TSVpFKGhvc3QtPmJ1bGtfY2xrcyksDQo+ID4gKyAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICBob3N0LT5idWxrX2Nsa3MpOw0KPiA+ICAgICAgICAgY2xrX2Rpc2FibGVf
+dW5wcmVwYXJlKGhvc3QtPnNyY19jbGtfY2cpOw0KPiA+ICAgICAgICAgY2xrX2Rpc2FibGVfdW5w
+cmVwYXJlKGhvc3QtPnNyY19jbGspOw0KPiA+ICAgICAgICAgY2xrX2Rpc2FibGVfdW5wcmVwYXJl
+KGhvc3QtPmJ1c19jbGspOw0KPiA+IEBAIC03OTIsMTAgKzc5NiwxNyBAQCBzdGF0aWMgdm9pZCBt
+c2RjX2dhdGVfY2xvY2soc3RydWN0IG1zZGNfaG9zdCAqaG9zdCkNCj4gPg0KPiA+ICBzdGF0aWMg
+dm9pZCBtc2RjX3VuZ2F0ZV9jbG9jayhzdHJ1Y3QgbXNkY19ob3N0ICpob3N0KQ0KPiA+ICB7DQo+
+ID4gKyAgICAgICBpbnQgcmV0Ow0KPiA+ICsNCj4gPiAgICAgICAgIGNsa19wcmVwYXJlX2VuYWJs
+ZShob3N0LT5oX2Nsayk7DQo+ID4gICAgICAgICBjbGtfcHJlcGFyZV9lbmFibGUoaG9zdC0+YnVz
+X2Nsayk7DQo+ID4gICAgICAgICBjbGtfcHJlcGFyZV9lbmFibGUoaG9zdC0+c3JjX2Nsayk7DQo+
+ID4gICAgICAgICBjbGtfcHJlcGFyZV9lbmFibGUoaG9zdC0+c3JjX2Nsa19jZyk7DQo+ID4gKyAg
+ICAgICByZXQgPSBjbGtfYnVsa19wcmVwYXJlX2VuYWJsZShBUlJBWV9TSVpFKGhvc3QtPmJ1bGtf
+Y2xrcyksDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBob3N0LT5i
+dWxrX2Nsa3MpOw0KPiA+ICsgICAgICAgaWYgKHJldCkNCj4gPiArICAgICAgICAgICAgICAgZGV2
+X2RiZyhob3N0LT5kZXYsICJlbmFibGUgY2xrcyBmYWlsZWQhXG4iKTsNCj4gDQo+IGRldl9lcnIg
+bG9va3MgYSBsb3QgbW9yZSBhcHByb3ByaWF0ZS4gQWxzbywgZG9uJ3QgeW91IHdhbnQgdG8gZXhp
+dCB0aGUNCj4gZnVuY3Rpb24gaW4gdGhhdCBjYXNlLCByYXRoZXIgdGhhbiBnb2luZyB0byB0aGUg
+d2hpbGUgbG9vcCBiZWxvdyB3aGVyZQ0KPiB5b3UgbWF5IGdldCBzdHVjaz8NCj4gDQpJIHdpbGwg
+Y2hhbmdlIGl0IGluIHRoZSBuZXh0IHZlcnNpb24uDQo+ID4gKw0KPiA+ICAgICAgICAgd2hpbGUg
+KCEocmVhZGwoaG9zdC0+YmFzZSArIE1TRENfQ0ZHKSAmIE1TRENfQ0ZHX0NLU1RCKSkNCj4gPiAg
+ICAgICAgICAgICAgICAgY3B1X3JlbGF4KCk7DQo+ID4gIH0NCj4gPiBAQCAtMjM2Niw2ICsyMzc3
+LDUyIEBAIHN0YXRpYyB2b2lkIG1zZGNfb2ZfcHJvcGVydHlfcGFyc2Uoc3RydWN0IHBsYXRmb3Jt
+X2RldmljZSAqcGRldiwNCj4gPiAgICAgICAgICAgICAgICAgaG9zdC0+Y3FoY2kgPSBmYWxzZTsN
+Cj4gPiAgfQ0KPiA+DQo+ID4gK3N0YXRpYyBpbnQgbXNkY19vZl9jbG9ja19wYXJzZShzdHJ1Y3Qg
+cGxhdGZvcm1fZGV2aWNlICpwZGV2LA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICBzdHJ1Y3QgbXNkY19ob3N0ICpob3N0KQ0KPiA+ICt7DQo+ID4gKyAgICAgICBzdHJ1Y3QgY2xr
+ICpjbGs7DQo+ID4gKw0KPiA+ICsgICAgICAgaG9zdC0+c3JjX2NsayA9IGRldm1fY2xrX2dldCgm
+cGRldi0+ZGV2LCAic291cmNlIik7DQo+ID4gKyAgICAgICBpZiAoSVNfRVJSKGhvc3QtPnNyY19j
+bGspKQ0KPiA+ICsgICAgICAgICAgICAgICByZXR1cm4gUFRSX0VSUihob3N0LT5zcmNfY2xrKTsN
+Cj4gPiArDQo+ID4gKyAgICAgICBob3N0LT5oX2NsayA9IGRldm1fY2xrX2dldCgmcGRldi0+ZGV2
+LCAiaGNsayIpOw0KPiA+ICsgICAgICAgaWYgKElTX0VSUihob3N0LT5oX2NsaykpDQo+ID4gKyAg
+ICAgICAgICAgICAgIHJldHVybiBQVFJfRVJSKGhvc3QtPmhfY2xrKTsNCj4gPiArDQo+ID4gKyAg
+ICAgICBob3N0LT5idXNfY2xrID0gZGV2bV9jbGtfZ2V0KCZwZGV2LT5kZXYsICJidXNfY2xrIik7
+DQo+ID4gKyAgICAgICBpZiAoSVNfRVJSKGhvc3QtPmJ1c19jbGspKQ0KPiA+ICsgICAgICAgICAg
+ICAgICBob3N0LT5idXNfY2xrID0gTlVMTDsNCj4gDQo+IFVzZSBkZXZtX2Nsa19nZXRfb3B0aW9u
+YWwgaW5zdGVhZCAoZGl0dG8gZm9yIHRoZSBuZXh0IDIpLg0KPiANCj4gPiArDQo+ID4gKyAgICAg
+ICAvKnNvdXJjZSBjbG9jayBjb250cm9sIGdhdGUgaXMgb3B0aW9uYWwgY2xvY2sqLw0KPiA+ICsg
+ICAgICAgaG9zdC0+c3JjX2Nsa19jZyA9IGRldm1fY2xrX2dldCgmcGRldi0+ZGV2LCAic291cmNl
+X2NnIik7DQo+ID4gKyAgICAgICBpZiAoSVNfRVJSKGhvc3QtPnNyY19jbGtfY2cpKQ0KPiA+ICsg
+ICAgICAgICAgICAgICBob3N0LT5zcmNfY2xrX2NnID0gTlVMTDsNCj4gPiArDQo+ID4gKyAgICAg
+ICBob3N0LT5zeXNfY2xrX2NnID0gZGV2bV9jbGtfZ2V0KCZwZGV2LT5kZXYsICJzeXNfY2ciKTsN
+Cj4gPiArICAgICAgIGlmIChJU19FUlIoaG9zdC0+c3lzX2Nsa19jZykpDQo+ID4gKyAgICAgICAg
+ICAgICAgIGhvc3QtPnN5c19jbGtfY2cgPSBOVUxMOw0KPiA+ICsgICAgICAgZWxzZQ0KPiA+ICsg
+ICAgICAgICAgICAgICBjbGtfcHJlcGFyZV9lbmFibGUoaG9zdC0+c3lzX2Nsa19jZyk7DQo+IA0K
+PiBUaGlzIGRvZXNuJ3QgbmVlZCB0byBiZSBpbiBhbiBlbHNlIGJyYW5jaCwgY2FsbGluZyBjbGtf
+cHJlcGFyZV9lbmFibGUNCj4gb24gYSBOVUxMIGNsb2NrIGlzIGZpbmUuDQpJIHdpbGwgY2hhbmdl
+IGl0IGluIHRoZSBuZXh0IHZlcnNpb24uDQo+IA0KPiBIb3dldmVyLCBpcyBpdCBleHBlY3RlZCB0
+aGF0IHRoaXMgY2xvY2sgaXMgdHVybmVkIG9uIGZvcmV2ZXIgYWZ0ZXINCj4gcHJvYmU/ISBBdCB0
+aGUgdmVyeSBsZWFzdCwgdGhlIGNsb2NrIHNob3VsZCBiZSBkaXNhYmxlZCBpbg0KPiBtc2RjX2Ry
+dl9yZW1vdmUsIGJ1dCwgcmVhbGx5LCBJIHRoaW5rIGl0IHNob3VsZCBiZSBlbmFibGVkIGFzIG5l
+ZWRlZCwNCj4gbGlrZSB0aGUgb3RoZXIgY2xvY2tzLCBpbiBtc2RjX2dhdGVfY2xvY2s/DQo+IA0K
+VGhpcyBjbG9jayBnYXRlIGNhbiBub3QgYmUgY2xvc2VkLCBpZiBpdCBpcyBjbG9zZWQsIGl0IGNh
+biBub3QgYmUNCmFjY2Vzc2VkIGFuZCBjYW4gbm90IGJlIG9wZW5lZCBhZ2Fpbi4NClNvIGl0IGlz
+IGV4cGVjdGVkIHRoYXQgdGhpcyBjbG9jayBpcyB0dXJuZWQgb24gZm9yZXZlciBhZnRlciBwcm9i
+ZS4NCj4gPiArDQo+ID4gKyAgICAgICBjbGsgPSBkZXZtX2Nsa19nZXQoJnBkZXYtPmRldiwgInBj
+bGtfY2ciKTsNCj4gPiArICAgICAgIGlmIChJU19FUlIoY2xrKSkNCj4gPiArICAgICAgICAgICAg
+ICAgY2xrID0gTlVMTDsNCj4gPiArICAgICAgIGhvc3QtPmJ1bGtfY2xrc1swXS5jbGsgPSBjbGs7
+DQo+ID4gKw0KPiA+ICsgICAgICAgY2xrID0gZGV2bV9jbGtfZ2V0KCZwZGV2LT5kZXYsICJheGlf
+Y2ciKTsNCj4gPiArICAgICAgIGlmIChJU19FUlIoY2xrKSkNCj4gPiArICAgICAgICAgICAgICAg
+Y2xrID0gTlVMTDsNCj4gPiArICAgICAgIGhvc3QtPmJ1bGtfY2xrc1sxXS5jbGsgPSBjbGs7DQo+
+ID4gKw0KPiA+ICsgICAgICAgY2xrID0gZGV2bV9jbGtfZ2V0KCZwZGV2LT5kZXYsICJhaGJfY2ci
+KTsNCj4gPiArICAgICAgIGlmIChJU19FUlIoY2xrKSkNCj4gPiArICAgICAgICAgICAgICAgY2xr
+ID0gTlVMTDsNCj4gPiArICAgICAgIGhvc3QtPmJ1bGtfY2xrc1syXS5jbGsgPSBjbGs7DQo+IA0K
+PiBVc2UgZGV2bV9jbGtfYnVsa19nZXRfb3B0aW9uYWwgZm9yIHRoZXNlIDMuDQo+IA0KSSB3aWxs
+IGNoYW5nZSBpdCBpbiB0aGUgbmV4dCB2ZXJzaW9uLg0KPiA+ICsNCj4gPiArICAgICAgIHJldHVy
+biAwOw0KPiA+ICt9DQo+ID4gKw0KPiA+ICBzdGF0aWMgaW50IG1zZGNfZHJ2X3Byb2JlKHN0cnVj
+dCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQo+ID4gIHsNCj4gPiAgICAgICAgIHN0cnVjdCBtbWNf
+aG9zdCAqbW1jOw0KPiA+IEBAIC0yNDA1LDI1ICsyNDYyLDkgQEAgc3RhdGljIGludCBtc2RjX2Ry
+dl9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KPiA+ICAgICAgICAgaWYgKHJl
+dCkNCj4gPiAgICAgICAgICAgICAgICAgZ290byBob3N0X2ZyZWU7DQo+ID4NCj4gPiAtICAgICAg
+IGhvc3QtPnNyY19jbGsgPSBkZXZtX2Nsa19nZXQoJnBkZXYtPmRldiwgInNvdXJjZSIpOw0KPiA+
+IC0gICAgICAgaWYgKElTX0VSUihob3N0LT5zcmNfY2xrKSkgew0KPiA+IC0gICAgICAgICAgICAg
+ICByZXQgPSBQVFJfRVJSKGhvc3QtPnNyY19jbGspOw0KPiA+IC0gICAgICAgICAgICAgICBnb3Rv
+IGhvc3RfZnJlZTsNCj4gPiAtICAgICAgIH0NCj4gPiAtDQo+ID4gLSAgICAgICBob3N0LT5oX2Ns
+ayA9IGRldm1fY2xrX2dldCgmcGRldi0+ZGV2LCAiaGNsayIpOw0KPiA+IC0gICAgICAgaWYgKElT
+X0VSUihob3N0LT5oX2NsaykpIHsNCj4gPiAtICAgICAgICAgICAgICAgcmV0ID0gUFRSX0VSUiho
+b3N0LT5oX2Nsayk7DQo+ID4gKyAgICAgICByZXQgPSBtc2RjX29mX2Nsb2NrX3BhcnNlKHBkZXYs
+IGhvc3QpOw0KPiA+ICsgICAgICAgaWYgKHJldCkNCj4gPiAgICAgICAgICAgICAgICAgZ290byBo
+b3N0X2ZyZWU7DQo+ID4gLSAgICAgICB9DQo+ID4gLQ0KPiA+IC0gICAgICAgaG9zdC0+YnVzX2Ns
+ayA9IGRldm1fY2xrX2dldCgmcGRldi0+ZGV2LCAiYnVzX2NsayIpOw0KPiA+IC0gICAgICAgaWYg
+KElTX0VSUihob3N0LT5idXNfY2xrKSkNCj4gPiAtICAgICAgICAgICAgICAgaG9zdC0+YnVzX2Ns
+ayA9IE5VTEw7DQo+ID4gLSAgICAgICAvKnNvdXJjZSBjbG9jayBjb250cm9sIGdhdGUgaXMgb3B0
+aW9uYWwgY2xvY2sqLw0KPiA+IC0gICAgICAgaG9zdC0+c3JjX2Nsa19jZyA9IGRldm1fY2xrX2dl
+dCgmcGRldi0+ZGV2LCAic291cmNlX2NnIik7DQo+ID4gLSAgICAgICBpZiAoSVNfRVJSKGhvc3Qt
+PnNyY19jbGtfY2cpKQ0KPiA+IC0gICAgICAgICAgICAgICBob3N0LT5zcmNfY2xrX2NnID0gTlVM
+TDsNCj4gPg0KPiA+ICAgICAgICAgaG9zdC0+cmVzZXQgPSBkZXZtX3Jlc2V0X2NvbnRyb2xfZ2V0
+X29wdGlvbmFsX2V4Y2x1c2l2ZSgmcGRldi0+ZGV2LA0KPiA+ICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiaHJzdCIpOw0KPiA+
+IC0tDQo+ID4gMi4xOC4wDQoNCg==
 
-Locking slock-AF_BLUETOOTH-BTPROTO_SCO may happen in process context or 
-BH context. If in process context, we should use lock_sock(). 
-sco_conn_del() is called in process context here, so how about using
-lock_sock() instead of bh_lock_sock()
-
-changes as:
-diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
-index dcf7f96ff417..559b883c815f 100644
---- a/net/bluetooth/sco.c
-+++ b/net/bluetooth/sco.c
-@@ -173,10 +173,10 @@ static void sco_conn_del(struct hci_conn *hcon, 
-int err)
-
-         if (sk) {
-                 sock_hold(sk);
--               bh_lock_sock(sk);
-+               lock_sock(sk);
-                 sco_sock_clear_timer(sk);
-                 sco_chan_del(sk, err);
--               bh_unlock_sock(sk);
-+               release_sock(sk);
-                 sco_sock_kill(sk);
-                 sock_put(sk);
-         }
--- 
-
-Regards,
-
-Yanfei
-
- >   sco_disconn_cfm net/bluetooth/sco.c:1178 [inline]
- >   sco_disconn_cfm+0x62/0x80 net/bluetooth/sco.c:1171
- >   hci_disconn_cfm include/net/bluetooth/hci_core.h:1438 [inline]
- >   hci_conn_hash_flush+0x114/0x220 net/bluetooth/hci_conn.c:1557
- >   hci_dev_do_close+0x5c6/0x1080 net/bluetooth/hci_core.c:1770
- >   hci_unregister_dev+0x1bd/0xe30 net/bluetooth/hci_core.c:3790
- >   vhci_release+0x70/0xe0 drivers/bluetooth/hci_vhci.c:340
- >   __fput+0x285/0x920 fs/file_table.c:281
- >   task_work_run+0xdd/0x190 kernel/task_work.c:141
- >   exit_task_work include/linux/task_work.h:25 [inline]
- >   do_exit+0xb7d/0x29f0 kernel/exit.c:806
- >   do_group_exit+0x125/0x310 kernel/exit.c:903
- >   get_signal+0x428/0x1f00 kernel/signal.c:2757
- >   arch_do_signal+0x82/0x2520 arch/x86/kernel/signal.c:811
- >   exit_to_user_mode_loop kernel/entry/common.c:159 [inline]
- >   exit_to_user_mode_prepare+0x1ae/0x200 kernel/entry/common.c:190
- >   syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:265
- >   entry_SYSCALL_64_after_hwframe+0x44/0xa9
- > RIP: 0033:0x447279
- > Code: Bad RIP value.
- > RSP: 002b:00007fd19f624d88 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
- > RAX: fffffffffffffe00 RBX: 00000000006dcc28 RCX: 0000000000447279
- > RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00000000006dcc28
- > RBP: 00000000006dcc20 R08: 0000000000000000 R09: 0000000000000000
- > R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dcc2c
- > R13: 0000000000000004 R14: 0000000000000003 R15: 00007fd19f6256d0
- >
