@@ -2,154 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8084728A3D1
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:11:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 412F928A300
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389910AbgJJWzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:55:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731484AbgJJT31 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:29:27 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D83AFC08EA70
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 09:59:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=XlmsX7ftEhCmpFmdh7a7209h+fCu8xVMQN4NDEvg3m4=; b=L+gBIYErdSwYIOs+QwVKQNHivY
-        M0O/TYXItMukhCeIkNIrsRcgVzMPZfWTnuv4tVL/VrACx+ddnsAGdTiMJroGXFQYGh1PDdP8iMB2B
-        lwyogCKsBNzgNBo+jnvpnJKRxxjIi69ENcAedyzHWDd/6cM4YdcM2CCP/T6+jHofS/j9nH0OXck5p
-        7XEl1RoWVcn/GnLxRJhkjjK84E0qbDuOhKpnPqn6mbQcDFZgrKBT8yP3T+OAjUnrwhlrh9HWP/Bgq
-        kMVnXVroFdSoEAoA2CVooilNPLoyJhslt3dwW9lrLwOmVundKuDYmYirTymQVLWcqqryTcvqHGcQH
-        wYBBSPZQ==;
-Received: from [2601:1c0:6280:3f0::507c]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kRID8-0003bD-QR; Sat, 10 Oct 2020 16:59:11 +0000
-Subject: Re: [kbuild-all] Re: arceb-elf-ld: include/linux/leds.h:193:
- undefined reference to `devm_led_classdev_register_ext'
-To:     Rong Chen <rong.a.chen@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        kernel test robot <lkp@intel.com>
-Cc:     Dan Murphy <dmurphy@ti.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org
-References: <202010081415.2R50UmDQ-lkp@intel.com> <20201008071507.GA29893@amd>
- <a400ff82-e36f-346c-fd57-e1a0a75acd4e@intel.com>
- <19af5277-6705-4900-ad70-cb9b674caf5c@infradead.org>
- <61365b1a-5e73-14c9-ab90-4eaaf456eda8@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <47922c0f-ba68-3c24-50e7-777783901fe2@infradead.org>
-Date:   Sat, 10 Oct 2020 09:59:06 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S2389734AbgJJW7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:59:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57036 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732255AbgJJTyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 15:54:15 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 082792242F;
+        Sat, 10 Oct 2020 16:59:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602349173;
+        bh=zdnFps3CzCUlnTgfjVcd7CjD9ds3BSlytH52crD8Aa0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=VhD7iw2pL3eWIbAuUi4Q+/Bz8VIxfgPZqMk4f68r5HNAL7VdOoLfiP+OEe4p6KFFZ
+         O/kbQyaPj6QGBJBTktsu9nPYPZup87CdfK5mWzexa4gtdjUVJi3p06r3mfUEHdGp9o
+         yIkoxThpm9buzGfsaOY7ygGCcNB3d/VX9pFe5Alc=
+Date:   Sat, 10 Oct 2020 09:59:31 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        Petko Manolov <petkan@nucleusys.com>,
+        "David S. Miller" <davem@davemloft.net>, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: usb: rtl8150: don't incorrectly assign random MAC
+ addresses
+Message-ID: <20201010095302.5309c118@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201010064459.6563-1-anant.thazhemadam@gmail.com>
+References: <20201010064459.6563-1-anant.thazhemadam@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <61365b1a-5e73-14c9-ab90-4eaaf456eda8@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/10/20 12:13 AM, Rong Chen wrote:
+On Sat, 10 Oct 2020 12:14:59 +0530 Anant Thazhemadam wrote:
+> get_registers() directly returns the return value of
+> usb_control_msg_recv() - 0 if successful, and negative error number 
+> otherwise.
+
+Are you expecting Greg to take this as a part of some USB subsystem
+changes? I don't see usb_control_msg_recv() in my tree, and the
+semantics of usb_control_msg() are not what you described.
+
+> However, in set_ethernet_addr(), this return value is incorrectly 
+> checked.
 > 
+> Since this return value will never be equal to sizeof(node_id), a 
+> random MAC address will always be generated and assigned to the 
+> device; even in cases when get_registers() is successful.
 > 
-> On 10/10/20 11:49 AM, Randy Dunlap wrote:
->> On 10/9/20 8:19 PM, Rong Chen wrote:
->>>
->>> On 10/8/20 3:15 PM, Pavel Machek wrote:
->>>> Hi!
->>>>
->>>>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->>>>> head:   c85fb28b6f999db9928b841f63f1beeb3074eeca
->>>>> commit: 92a81562e695628086acb92f95090ab09d9b9ec0 leds: lp55xx: Add multicolor framework support to lp55xx
->>>>> date:   3 months ago
->>>>> config: arc-randconfig-r035-20201008 (attached as .config)
->>>>> compiler: arceb-elf-gcc (GCC) 9.3.0
->>>>> reproduce (this is a W=1 build):
->>>>>           wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>>>>           chmod +x ~/bin/make.cross
->>>>>           # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=92a81562e695628086acb92f95090ab09d9b9ec0
->>>>>           git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>>>>           git fetch --no-tags linus master
->>>>>           git checkout 92a81562e695628086acb92f95090ab09d9b9ec0
->>>>>           # save the attached .config to linux build tree
->>>>>           COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=arc
->>>>>
->>>>> If you fix the issue, kindly add following tag as appropriate
->>>>> Reported-by: kernel test robot <lkp@intel.com>
->>>> Hi robot. Do you have human around to talk to?
->>>>
->>>>> All errors (new ones prefixed by >>):
->>>>>
->>>>>      arceb-elf-ld: lib/stackdepot.o: in function `filter_irq_stacks':
->>>>>      lib/stackdepot.c:331: undefined reference to `__irqentry_text_start'
->>>>>      arceb-elf-ld: lib/stackdepot.c:331: undefined reference to `__irqentry_text_start'
->>>>>      arceb-elf-ld: lib/stackdepot.o: in function `in_irqentry_text':
->>>>>      lib/stackdepot.c:323: undefined reference to `__irqentry_text_end'
->>>>>      arceb-elf-ld: lib/stackdepot.c:323: undefined reference to `__irqentry_text_end'
->>>>>      arceb-elf-ld: lib/stackdepot.c:324: undefined reference to `__softirqentry_text_start'
->>>>>      arceb-elf-ld: lib/stackdepot.c:324: undefined reference to `__softirqentry_text_start'
->>>>>      arceb-elf-ld: lib/stackdepot.c:325: undefined reference to `__softirqentry_text_end'
->>>>>      arceb-elf-ld: lib/stackdepot.c:325: undefined reference to
->>>> What is going on here? Did you just start testing arc? The commit
->>>> is... really old.
->>>>
->>> Hi Pavel,
->>>
->>> Only this error "arceb-elf-ld: include/linux/leds.h:193: undefined reference to `devm_led_classdev_register_ext'" was found in this commit,
->>> other errors are for reference only, and the test config is a rand config, so it's discovered by chance.
->> Hi,
->> Just for the record, I could not reproduce the build error
->> with the config file that was provided.
->>
+> Correctly modifying the condition that checks if get_registers() was 
+> successful or not fixes this problem, and copies the ethernet address
+> appropriately.
 > 
-> Hi Randy,
-> 
-> I can reproduce it with the above reproduce steps:
-> 
-> ➜  linux git:(92a81562e695) ✗ make CROSS_COMPILE=/home/nfs/0day/gcc-9.3.0-nolibc/arceb-elf/bin/arceb-elf- ARCH=arc
->   CALL    scripts/checksyscalls.sh
->   CALL    scripts/atomic/check-atomics.sh
->   CHK     include/generated/compile.h
->   GEN     .version
->   CHK     include/generated/compile.h
->   UPD     include/generated/compile.h
->   CC      init/version.o
->   AR      init/built-in.a
->   LD      vmlinux.o
->   MODPOST vmlinux.symvers
->   MODINFO modules.builtin.modinfo
->   GEN     modules.builtin
->   LD      .tmp_vmlinux.kallsyms1
-> /home/nfs/0day/gcc-9.3.0-nolibc/arceb-elf/bin/arceb-elf-ld: lib/stackdepot.o: in function `filter_irq_stacks':
-> /home/nfs/linux/lib/stackdepot.c:331: undefined reference to `__irqentry_text_start'
-> /home/nfs/0day/gcc-9.3.0-nolibc/arceb-elf/bin/arceb-elf-ld: /home/nfs/linux/lib/stackdepot.c:331: undefined reference to `__irqentry_text_start'
-> /home/nfs/0day/gcc-9.3.0-nolibc/arceb-elf/bin/arceb-elf-ld: lib/stackdepot.o: in function `in_irqentry_text':
-> /home/nfs/linux/lib/stackdepot.c:323: undefined reference to `__irqentry_text_end'
-> /home/nfs/0day/gcc-9.3.0-nolibc/arceb-elf/bin/arceb-elf-ld: /home/nfs/linux/lib/stackdepot.c:323: undefined reference to `__irqentry_text_end'
-> /home/nfs/0day/gcc-9.3.0-nolibc/arceb-elf/bin/arceb-elf-ld: /home/nfs/linux/lib/stackdepot.c:324: undefined reference to `__softirqentry_text_start'
-> /home/nfs/0day/gcc-9.3.0-nolibc/arceb-elf/bin/arceb-elf-ld: /home/nfs/linux/lib/stackdepot.c:324: undefined reference to `__softirqentry_text_start'
-> /home/nfs/0day/gcc-9.3.0-nolibc/arceb-elf/bin/arceb-elf-ld: /home/nfs/linux/lib/stackdepot.c:325: undefined reference to `__softirqentry_text_end'
-> /home/nfs/0day/gcc-9.3.0-nolibc/arceb-elf/bin/arceb-elf-ld: /home/nfs/linux/lib/stackdepot.c:325: undefined reference to `__softirqentry_text_end'
-> /home/nfs/0day/gcc-9.3.0-nolibc/arceb-elf/bin/arceb-elf-ld: drivers/leds/leds-lp55xx-common.o: in function `devm_led_classdev_register':
-> /home/nfs/linux/./include/linux/leds.h:193: undefined reference to `devm_led_classdev_register_ext'
-> /home/nfs/0day/gcc-9.3.0-nolibc/arceb-elf/bin/arceb-elf-ld: /home/nfs/linux/./include/linux/leds.h:193: undefined reference to `devm_led_classdev_register_ext'
-> make: *** [Makefile:1139: vmlinux] Error 1
+> Fixes: f45a4248ea4c ("set random MAC address when set_ethernet_addr() fails")
+> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
 
-Oh, I guess I see the difference. The bot is checking out a commit
-that is 3 months old:
+The fixes tag does not follow the standard format:
 
-        git fetch --no-tags linus master
-        git checkout 92a81562e695628086acb92f95090ab09d9b9ec0
+Fixes tag: Fixes: f45a4248ea4c ("set random MAC address when set_ethernet_addr() fails")
+Has these problem(s):
+	- Subject does not match target commit subject
+	  Just use
+		git log -1 --format='Fixes: %h ("%s")'
 
 
-So it's a bit like Pavel said, that commit is old. I can't say that I care
-as long as current mainline builds, and I have already verified that it does.
-
-
-cheers.
--- 
-~Randy
-
+Please put the relevant maintainer in the To: field of the email, and
+even better - also mark the patch as [PATCH net], since it's a
+networking fix.
