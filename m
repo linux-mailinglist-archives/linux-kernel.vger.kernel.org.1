@@ -2,126 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8E9D28A2BB
+	by mail.lfdr.de (Postfix) with ESMTP id 5BF4528A2BA
 	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:01:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390986AbgJJW7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2391000AbgJJW7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sat, 10 Oct 2020 18:59:45 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:57248 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731921AbgJJW0A (ORCPT
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732003AbgJJW0n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 18:26:00 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id C0F7D8030833;
-        Sat, 10 Oct 2020 22:23:56 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id SvYALCWbsivP; Sun, 11 Oct 2020 01:23:56 +0300 (MSK)
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <felipe.balbi@linux.intel.com>,
-        David Cohen <david.a.cohen@linux.intel.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 3/3] usb: dwc3: ulpi: Fix USB2.0 HS/FS/LS PHY suspend regression
-Date:   Sun, 11 Oct 2020 01:23:51 +0300
-Message-ID: <20201010222351.7323-4-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20201010222351.7323-1-Sergey.Semin@baikalelectronics.ru>
-References: <20201010222351.7323-1-Sergey.Semin@baikalelectronics.ru>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+        Sat, 10 Oct 2020 18:26:43 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAF7EC0613D0
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 15:26:36 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id n14so10051393pff.6
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 15:26:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=d33hZfar/K98+yMiku6CtFMQQTBXDdROIGBCH7bwLzQ=;
+        b=WTb7XDqiFuLnj1UF7bqKWWklVxe/J/BU4claofQJMBkSgaHv6W8dAD3s+KluHk56oX
+         NUabJcqrvomJGn34/fH7CbV7t2ZYvIkJSyV2xAsDh/6AwfSIHi9W+zYjpmJNXn2TAC7b
+         EHWF0GjnrPpPD528B9ItVYy2kRHcIadqXaAI36ls/Ru9RJaRRzm1fkKZb6y7UUjACyhP
+         ssKAS9p4/9GZb7pwElW8uxNt5DdsHJm9uFUvT42pBbDkIFLp+EoCxwUt/RhJw9rK9r6W
+         lU7TN9Rfn9xP1jyNJoNFpsWyz+zJF3oGX5EPB3IcdYRVRuOhzh+AS3bG3/sUKPTW1TtQ
+         +TUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=d33hZfar/K98+yMiku6CtFMQQTBXDdROIGBCH7bwLzQ=;
+        b=p2kiY9bpl0S7Q+N19wBtCgnO1xTvJFawymae8xEk6HbFDH88TKJrAqXq5g7D9++xrM
+         Ca1h7ccNz8mq05SjNUSE700zqxzrDSLyfNvLjZZYyW8vmC5UTZqinBebKKaLF19pKFSp
+         fShzA1L0sQKB4UYcr0NucqP5sbHnopMBEucS1g5e3fmImYE2EQorw1E7FfKf4MAnvC+A
+         tAedprrP/dLearrvlBfXG3MGAS9q6gvYET1PRsD5ArdrGzI190XedTZhomQehXRHH91Z
+         dxm5jQVIl6XlUZgqxrErxE0E1YEc71lOVRdoDRWcAGl/IQBuDeyvLWrLXWxgJavVNwOS
+         3HzQ==
+X-Gm-Message-State: AOAM533qjG5/N5s7ceyR2PzH7XFt2ItiHtgPeZOmv9GUxLt3S2pe8S4c
+        irhjWTVQABSHXilmyN53x8S31w==
+X-Google-Smtp-Source: ABdhPJxTc9oJhhm0uITnqgN+Za2bvX71araGYar+clIyakjpcMn9Fn6EOUSwc7nwBV+G3yrmSRB+bQ==
+X-Received: by 2002:a17:90b:8c:: with SMTP id bb12mr11972197pjb.48.1602368795490;
+        Sat, 10 Oct 2020 15:26:35 -0700 (PDT)
+Received: from ?IPv6:2601:646:c200:1ef2:2981:6602:c037:1f66? ([2601:646:c200:1ef2:2981:6602:c037:1f66])
+        by smtp.gmail.com with ESMTPSA id z6sm15596247pfg.12.2020.10.10.15.26.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 10 Oct 2020 15:26:34 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: i386: CONFIG_HIGHMEM4G only detects 3 GB out of 4 GB of memory
+Date:   Sat, 10 Oct 2020 15:26:32 -0700
+Message-Id: <BC8FECF1-7703-435A-BA60-F0B45D3CC940@amacapital.net>
+References: <321879b2-d7f4-b1f7-8f5b-f757500e43a8@molgen.mpg.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <321879b2-d7f4-b1f7-8f5b-f757500e43a8@molgen.mpg.de>
+To:     Paul Menzel <pmenzel@molgen.mpg.de>
+X-Mailer: iPhone Mail (18A393)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-First of all the commit e0082698b689 ("usb: dwc3: ulpi: conditionally
-resume ULPI PHY") introduced the Suspend USB2.0 HS/FS/LS PHY regression,
-as by design of the fix any attempt to read/write from/to the PHY control
-registers will completely disable the PHY suspension, which consequently
-will increase the USB bus power consumption. Secondly the fix won't work
-well for the very first attempt of the ULPI PHY control registers IO,
-because after disabling the USB2.0 PHY suspension functionality it will
-still take some time for the bus to resume from the sleep state if one has
-been reached before it. So the very first PHY register read/write
-operation will take more time than the busy-loop provides and the IO
-timeout error might be returned anyway.
 
-Here we suggest to fix the denoted problems in the following way. First of
-all let's not disable the Suspend USB2.0 HS/FS/LS PHY functionality so to
-make the controller and the USB2.0 bus more power efficient. Secondly
-instead of that we'll extend the PHY IO op wait procedure with 1 - 1.2 ms
-sleep if the PHY suspension is enabled (1ms should be enough as by LPM
-specification it is at most how long it takes for the USB2.0 bus to resume
-from L1 (Sleep) state). Finally in case if the USB2.0 PHY suspension
-functionality has been disabled on the DWC USB3 controller setup procedure
-we'll compensate the USB bus resume process latency by extending the
-busy-loop attempts counter.
 
-Fixes: e0082698b689 ("usb: dwc3: ulpi: conditionally resume ULPI PHY")
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
----
- drivers/usb/dwc3/ulpi.c | 18 +++++-------------
- 1 file changed, 5 insertions(+), 13 deletions(-)
+> On Oct 10, 2020, at 2:50 PM, Paul Menzel <pmenzel@molgen.mpg.de> wrote:
+>=20
+> =EF=BB=BFDear Linux folks,
+>=20
+>=20
+> On an Asus F2A85-M PRO with two 2 GB RAM modules installed, and an APU dev=
+ice, building Linux with `ARCH=3Di386` and `CONFIG_HIGHMEM4G=3Dy` only 3 GB s=
+eem to be detected: 2.2 GB according to `free -h` plus the 768 MB for APU gr=
+aphics memory).
+>=20
+>> [    0.065059] Memory: 2285148K/2324512K available (11785K kernel code, 8=
+92K rwdata, 2748K rodata, 668K init, 544K bss, 39364K reserved, 0K cma-reser=
+ved, 1423796K highmem)
+>=20
+>> [    0.402082] calling  populate_rootfs+0x0/0xa1 @ 1
+>=20
+>=20
+>> $ free -h
+>>              total        used        free      shared  buff/cache   avai=
+lable
+>> Mem:          2,2Gi        72Mi       2,0Gi        13Mi       130Mi      =
+ 2,0Gi
+>> Swap:            0B          0B          0B
+>=20
+> With `CONFIG_HIGHMEM64G=3Dy` the whole 4 GB are used (3.1 GB + 768 MB for A=
+PU graphics memory).
+>=20
+>> [    0.121036] Memory: 3229952K/3356700K available (10301K kernel code, 8=
+21K rwdata, 2700K rodata, 708K init, 540K bss, 126748K reserved, 0K cma-rese=
+rved, 2449840K highmem)
+>=20
+>> [    0.450668] calling  populate_rootfs+0x0/0xa1 @ 1
+>=20
+> The Kconfig help text for `HIGHMEM4G` says:
+>=20
+>> Select this if you have a 32-bit processor and between 1 and 4           =
+                                                                     =E2=94=82=
+   gigabytes of physical RAM.
+>=20
+> As I only have 4 GB, I chose that to save 50 ms (maybe only due to less me=
+mory detected), and thought non-PAE kernels can use 4 GB of memory.
+>=20
 
-diff --git a/drivers/usb/dwc3/ulpi.c b/drivers/usb/dwc3/ulpi.c
-index 0dbc826355a5..f23f4c9a557e 100644
---- a/drivers/usb/dwc3/ulpi.c
-+++ b/drivers/usb/dwc3/ulpi.c
-@@ -24,7 +24,7 @@
- static int dwc3_ulpi_busyloop(struct dwc3 *dwc, u8 addr, bool read)
- {
- 	unsigned long ns = 5L * DWC3_ULPI_BASE_DELAY;
--	unsigned count = 1000;
-+	unsigned int count = 10000;
- 	u32 reg;
- 
- 	if (addr >= ULPI_EXT_VENDOR_SPECIFIC)
-@@ -33,6 +33,10 @@ static int dwc3_ulpi_busyloop(struct dwc3 *dwc, u8 addr, bool read)
- 	if (read)
- 		ns += DWC3_ULPI_BASE_DELAY;
- 
-+	reg = dwc3_readl(dwc->regs, DWC3_GUSB2PHYCFG(0));
-+	if (reg & DWC3_GUSB2PHYCFG_SUSPHY)
-+		usleep_range(1000, 1200);
-+
- 	while (count--) {
- 		ndelay(ns);
- 		reg = dwc3_readl(dwc->regs, DWC3_GUSB2PHYACC(0));
-@@ -50,12 +54,6 @@ static int dwc3_ulpi_read(struct device *dev, u8 addr)
- 	u32 reg;
- 	int ret;
- 
--	reg = dwc3_readl(dwc->regs, DWC3_GUSB2PHYCFG(0));
--	if (reg & DWC3_GUSB2PHYCFG_SUSPHY) {
--		reg &= ~DWC3_GUSB2PHYCFG_SUSPHY;
--		dwc3_writel(dwc->regs, DWC3_GUSB2PHYCFG(0), reg);
--	}
--
- 	reg = DWC3_GUSB2PHYACC_NEWREGREQ | DWC3_ULPI_ADDR(addr);
- 	dwc3_writel(dwc->regs, DWC3_GUSB2PHYACC(0), reg);
- 
-@@ -73,12 +71,6 @@ static int dwc3_ulpi_write(struct device *dev, u8 addr, u8 val)
- 	struct dwc3 *dwc = dev_get_drvdata(dev);
- 	u32 reg;
- 
--	reg = dwc3_readl(dwc->regs, DWC3_GUSB2PHYCFG(0));
--	if (reg & DWC3_GUSB2PHYCFG_SUSPHY) {
--		reg &= ~DWC3_GUSB2PHYCFG_SUSPHY;
--		dwc3_writel(dwc->regs, DWC3_GUSB2PHYCFG(0), reg);
--	}
--
- 	reg = DWC3_GUSB2PHYACC_NEWREGREQ | DWC3_ULPI_ADDR(addr);
- 	reg |= DWC3_GUSB2PHYACC_WRITE | val;
- 	dwc3_writel(dwc->regs, DWC3_GUSB2PHYACC(0), reg);
--- 
-2.27.0
+Your memory map contains:
 
+BIOS-e820: [mem 0x0000000100001000-0x000000013effffff] usable
+
+That=E2=80=99s 0x3effffff bytes mapped at a physical address above 4G.
+
+The 4G limit without PAE isn=E2=80=99t, strictly speaking, about how much RA=
+M can be used; it=E2=80=99s about the maximum usable physical address.  One m=
+ight wonder why your firmware set up your memory map like this.
+
+But there=E2=80=99s a much bigger issue: why on Earth are you running a 32-b=
+it kernel on a relatively new machine like this?=
