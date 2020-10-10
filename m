@@ -2,89 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15299289CDF
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 03:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC23289CDE
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 03:08:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729428AbgJJBIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 21:08:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35040 "EHLO
+        id S1729412AbgJJBH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 21:07:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729121AbgJJAjy (ORCPT
+        with ESMTP id S1729044AbgJJAkf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 20:39:54 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEDCDC0613D7
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 17:39:54 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id 144so8255820pfb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 17:39:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=F5/qH043zEuGeatUEpHVuXqbPsOkFkmiSQ+O0T+kgNI=;
-        b=OY0/mr8FkN7fSU5zYf/x9oHuQmQYqIF3NZteXcH28gcYzCSf5+MT4y49z8aUjOjqBv
-         lha3BSSjRHKCiX9eo/5oSgg3mzkB27HCrpXBOvuU8f2fnOZ/YBvY6fZmuOjh//FvW6kL
-         O7ol4CBYBbsd7yhoCo0gpIi6aDg3ajTAUIbi4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=F5/qH043zEuGeatUEpHVuXqbPsOkFkmiSQ+O0T+kgNI=;
-        b=ot5soRVSBjDb2oOVO05UHIjT7KM8UXKEzQtH4B752QeOn5RNaGea/RAocnuFmeDYdx
-         /AhMB1PrUr9FZVNIjqSt1UzXhs5wzpJlqtRFZF4qOKeteRuWekSnrGBdhU3ohovRYhyv
-         ai4J1G4Qd8aoENqUmcxCFX+oHGJ2g712Sm3l523XigaVl9ReslwKyRtkS1tDbuskRAut
-         9yDhFD8ivVk++Zfj5b6ELg0wLXwooA2RLJ4KbnA9abw3K6HhmXYWgD4a78AzivOp37X0
-         uQgnLZY7n1CCuR4RUP9Oa54sh/s7m4ZfmPMgUylyeUd+i2wfFaYjZ5eRMAZRO8ioS2nM
-         6Wmw==
-X-Gm-Message-State: AOAM533cisqWeLS6J/OeT0ZxFehv9lOZOLJ5sIN4ERkFibIy2uSgEUwB
-        LTgIo9dRbRRHMGl+tBg3hriXnw==
-X-Google-Smtp-Source: ABdhPJzE8O8QFPi4at6QU9iWZO8FPHQ/o/AIuLT2fpJQ9Opv/aO707p4HOAAU7mEUsaVWB5etuwZ6g==
-X-Received: by 2002:aa7:9009:0:b029:154:f822:27c9 with SMTP id m9-20020aa790090000b0290154f82227c9mr14645151pfo.48.1602290394214;
-        Fri, 09 Oct 2020 17:39:54 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id m4sm11572541pgv.87.2020.10.09.17.39.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 17:39:53 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Fri, 9 Oct 2020 20:40:35 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37EE0C0613D9;
+        Fri,  9 Oct 2020 17:40:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wylOEgAZGPAkxCdlobMzyIfu/ZrVv1Os6TQldUFLziM=; b=F41ki3gR7FBgwnVausn+Ym7HP1
+        XlPOrKIoC49hpvUE9/aWBoH68sW9nzN+roolJxog6JtW0hinw+GJGJQweM2tJ1u8x4huOElOun4HX
+        OLG5RHoBoAf3CSIzFNHpVgsRU+TgTIZh4srysDUduyMdIIxPlPK5JA/amN/knuZnCqa9Zv6UObB0o
+        hZnMFz1K/YCtH1pW7cz6Th6CIA0I8ero69lmDRA42tDkhymN2BfqXsEeqYlbw/xTqpsZhH92AuKGR
+        +ciamleDZuZCDFfE/FcJg9XsXU418hEml49KDOM/rl5J3rO0lFNTAWXDAV5Z24k3Ay+VgEnmqYlhx
+        rI3nBVLQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kR2vS-0004My-FJ; Sat, 10 Oct 2020 00:39:54 +0000
+Date:   Sat, 10 Oct 2020 01:39:54 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     ira.weiny@intel.com, Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, linux-aio@kvack.org,
+        linux-efi@vger.kernel.org, kvm@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mmc@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
+        target-devel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-kselftest@vger.kernel.org, samba-technical@lists.samba.org,
+        ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com,
+        devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org,
+        x86@kernel.org, amd-gfx@lists.freedesktop.org,
+        linux-afs@lists.infradead.org, cluster-devel@redhat.com,
+        linux-cachefs@redhat.com, intel-wired-lan@lists.osuosl.org,
+        xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org,
+        Fenghua Yu <fenghua.yu@intel.com>, ecryptfs@vger.kernel.org,
+        linux-um@lists.infradead.org, intel-gfx@lists.freedesktop.org,
+        linux-erofs@lists.ozlabs.org, reiserfs-devel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        io-uring@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, netdev@vger.kernel.org,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH RFC PKS/PMEM 22/58] fs/f2fs: Utilize new kmap_thread()
+Message-ID: <20201010003954.GW20115@casper.infradead.org>
+References: <20201009195033.3208459-1-ira.weiny@intel.com>
+ <20201009195033.3208459-23-ira.weiny@intel.com>
+ <20201009213434.GA839@sol.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201008155154.2.I7b22281453b8a18ab16ef2bfd4c641fb1cc6a92c@changeid>
-References: <20201008225235.2035820-1-dianders@chromium.org> <20201008155154.2.I7b22281453b8a18ab16ef2bfd4c641fb1cc6a92c@changeid>
-Subject: Re: [PATCH 2/3] Revert "i2c: i2c-qcom-geni: Fix DMA transfer race"
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Mukesh Savaliya <msavaliy@codeaurora.org>,
-        linux-kernel@vger.kernel.org
-To:     Akash Asthana <akashast@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Wolfram Sang <wsa@kernel.org>
-Date:   Fri, 09 Oct 2020 17:39:52 -0700
-Message-ID: <160229039221.310579.11648298092136196056@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201009213434.GA839@sol.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Douglas Anderson (2020-10-08 15:52:34)
-> This reverts commit 02b9aec59243c6240fc42884acc958602146ddf6.
->=20
-> As talked about in the patch ("soc: qcom: geni: More properly switch
-> to DMA mode"), swapping the order of geni_se_setup_m_cmd() and
-> geni_se_xx_dma_prep() can sometimes cause corrupted transfers.  Thus
-> we traded one problem for another.  Now that we've debugged the
-> problem further and fixed the geni helper functions to more disable
-> FIFO interrupts when we move to DMA mode we can revert it and end up
-> with (hopefully) zero problems!
->=20
-> To be explicit, the patch ("soc: qcom: geni: More properly switch
-> to DMA mode") is a prerequisite for this one.
->=20
-> Fixes: 02b9aec59243 ("i2c: i2c-qcom-geni: Fix DMA transfer race")
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
+On Fri, Oct 09, 2020 at 02:34:34PM -0700, Eric Biggers wrote:
+> On Fri, Oct 09, 2020 at 12:49:57PM -0700, ira.weiny@intel.com wrote:
+> > The kmap() calls in this FS are localized to a single thread.  To avoid
+> > the over head of global PKRS updates use the new kmap_thread() call.
+> >
+> > @@ -2410,12 +2410,12 @@ static inline struct page *f2fs_pagecache_get_page(
+> >  
+> >  static inline void f2fs_copy_page(struct page *src, struct page *dst)
+> >  {
+> > -	char *src_kaddr = kmap(src);
+> > -	char *dst_kaddr = kmap(dst);
+> > +	char *src_kaddr = kmap_thread(src);
+> > +	char *dst_kaddr = kmap_thread(dst);
+> >  
+> >  	memcpy(dst_kaddr, src_kaddr, PAGE_SIZE);
+> > -	kunmap(dst);
+> > -	kunmap(src);
+> > +	kunmap_thread(dst);
+> > +	kunmap_thread(src);
+> >  }
+> 
+> Wouldn't it make more sense to switch cases like this to kmap_atomic()?
+> The pages are only mapped to do a memcpy(), then they're immediately unmapped.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Maybe you missed the earlier thread from Thomas trying to do something
+similar for rather different reasons ...
+
+https://lore.kernel.org/lkml/20200919091751.011116649@linutronix.de/
