@@ -2,131 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD80E289F8A
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 11:29:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD411289F77
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 11:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728954AbgJJJ1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 05:27:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbgJJIyY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 04:54:24 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39935C0613D5
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 01:29:43 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id a200so8903255pfa.10
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 01:29:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ujl0XMo+P2qPzI898K3phXYWEBycnuuMtmf0dkiRFm4=;
-        b=hEQ4o52s/F1ZVoAggS29VtGDMZDIdG6bVDIOeyJS6dOmt1JlEwrS39DBQl1HR85b1t
-         XWtgMhHfwiUum/ivKsrgwpGWqkRFcBKQAkZdGsG910kGaxF3cYOWs3wYwUsHDGxGmptE
-         mWcwOWi/RVH4x/aHn+a5PlsSSx7Et1tRI+ItP4JsJUSn9CZd5Ln52SFSMicOJl0Df+lM
-         glb58Msd5Ow+M93wFye0MCgkdJKJIsDIFM0aIUXdoKQhhvBToEF/bbe8TmLaNm8aA0aM
-         mappevSsOGzb70suuoiIe38J/rZukwVqojWS0YULTkGsjInzm/wHWS7W8iuZBxu/ORMt
-         ggYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ujl0XMo+P2qPzI898K3phXYWEBycnuuMtmf0dkiRFm4=;
-        b=p5Nr1CEGYnQCePhKZwtoFcCYrmilgMLRxwAGapS8HLZwIFSitfKu7iXp5Gja1UiFHe
-         N11I8cQHHfod/yntCXbkbWodzgF3CPW2BIuvxzVQNW/YJPm+b9eGgRZLV91l3nz5BfHn
-         nwO7ubU643mtbHF1L5i7EdiVa5E0dI7x/eMmCV2TG0UrXQj9LkM+5B1MvERZlkjMJ1Jj
-         oejLL6GVKpeMOWJBkecnpEAQyevbXU/DmIHhxFrAvgt5higJ4eaU67BoEI0ct2fwHYQK
-         5sbe8kFPrKtUrfTGAsDE0hwlOXDzfZ2I8ZeYJQQ9rNRd88OcXHCkAJ6FEcCimWryByU7
-         Zzdg==
-X-Gm-Message-State: AOAM532r8QHe6Guuep1ymL23NWGNTTCNEOrsKlSGoQbxn05Qqny4drpE
-        jdwQpuEHkpodCyCmgk5lAho=
-X-Google-Smtp-Source: ABdhPJzFAobmdRLZl/VDshqghj1XOTtQifHi3qfxvI/4/S3GKV3QBrbxn36Te3/przQmxHOrcCU1Vg==
-X-Received: by 2002:a62:1851:0:b029:154:8ed7:bf5d with SMTP id 78-20020a6218510000b02901548ed7bf5dmr15563861pfy.66.1602318582487;
-        Sat, 10 Oct 2020 01:29:42 -0700 (PDT)
-Received: from localhost.localdomain ([49.207.200.2])
-        by smtp.gmail.com with ESMTPSA id g13sm12991877pgd.82.2020.10.10.01.29.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Oct 2020 01:29:41 -0700 (PDT)
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        syzbot+009f546aa1370056b1c2@syzkaller.appspotmail.com,
-        Ian Abbott <abbotti@mev.co.uk>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] staging: comedi: check validity of wMaxPacketSize of usb endpoints found
-Date:   Sat, 10 Oct 2020 13:59:32 +0530
-Message-Id: <20201010082933.5417-1-anant.thazhemadam@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S1729735AbgJJJFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 05:05:50 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:59352 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728466AbgJJI7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 04:59:07 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id B5ADD2E292EE0F96B498;
+        Sat, 10 Oct 2020 16:41:16 +0800 (CST)
+Received: from [10.174.179.106] (10.174.179.106) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 10 Oct 2020 16:41:10 +0800
+Subject: Re: Patch "spi: Fix controller unregister order" has been added to
+ the 4.4-stable tree
+To:     <linux-kernel@vger.kernel.org>, <lukas@wunner.de>,
+        <sashal@kernel.org>, <chenwenyong2@huawei.com>
+CC:     <stable-commits@vger.kernel.org>,
+        "zhangyi (F)" <yi.zhang@huawei.com>
+References: <20200616015646.AC54E2074D@mail.kernel.org>
+From:   yangerkun <yangerkun@huawei.com>
+Message-ID: <8c7683cc-ca73-6883-8e45-613de68fa665@huawei.com>
+Date:   Sat, 10 Oct 2020 16:41:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <20200616015646.AC54E2074D@mail.kernel.org>
+Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+X-Originating-IP: [10.174.179.106]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While finding usb endpoints in vmk80xx_find_usb_endpoints(), check if 
-wMaxPacketSize = 0 for the endpoints found.
 
-Some devices have isochronous endpoints that have wMaxPacketSize = 0
-(as required by the USB-2 spec).
-However, since this doesn't apply here, wMaxPacketSize = 0 can be
-considered to be invalid.
 
-Reported-by: syzbot+009f546aa1370056b1c2@syzkaller.appspotmail.com
-Tested-by: syzbot+009f546aa1370056b1c2@syzkaller.appspotmail.com
-Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
----
-Changes in v3:
-	* Correctly list version information
+ÔÚ 2020/6/16 9:56, Sasha Levin Ð´µÀ:
+> This is a note to let you know that I've just added the patch titled
+> 
+>      spi: Fix controller unregister order
+> 
+> to the 4.4-stable tree which can be found at:
+>      http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
+> 
+> The filename of the patch is:
+>       spi-fix-controller-unregister-order.patch
+> and it can be found in the queue-4.4 subdirectory.
+> 
+> If you, or anyone else, feels it should not be added to the stable tree,
+> please let <stable@vger.kernel.org> know about it.
+> 
+> 
+> 
+> commit af9adff04d45f726c49bc1be4a401877e627adf3
+> Author: Lukas Wunner <lukas@wunner.de>
+> Date:   Fri May 15 17:58:01 2020 +0200
+> 
+>      spi: Fix controller unregister order
+>      
+>      [ Upstream commit 84855678add8aba927faf76bc2f130a40f94b6f7 ]
+>      
+>      When an SPI controller unregisters, it unbinds all its slave devices.
+>      For this, their drivers may need to access the SPI bus, e.g. to quiesce
+>      interrupts.
+>      
+>      However since commit ffbbdd21329f ("spi: create a message queueing
+>      infrastructure"), spi_destroy_queue() is executed before unbinding the
+>      slaves.  It sets ctlr->running = false, thereby preventing SPI bus
+>      access and causing unbinding of slave devices to fail.
+>      
+>      Fix by unbinding slaves before calling spi_destroy_queue().
+>      
+>      Fixes: ffbbdd21329f ("spi: create a message queueing infrastructure")
+>      Signed-off-by: Lukas Wunner <lukas@wunner.de>
+>      Cc: stable@vger.kernel.org # v3.4+
+>      Cc: Linus Walleij <linus.walleij@linaro.org>
+>      Link: https://lore.kernel.org/r/8aaf9d44c153fe233b17bc2dec4eb679898d7e7b.1589557526.git.lukas@wunner.de
+>      Signed-off-by: Mark Brown <broonie@kernel.org>
+>      Signed-off-by: Sasha Levin <sashal@kernel.org>
+> 
+> diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+> index e5460d84ed08..57001f8f727a 100644
+> --- a/drivers/spi/spi.c
+> +++ b/drivers/spi/spi.c
+> @@ -1922,11 +1922,12 @@ void spi_unregister_master(struct spi_master *master)
+>   			dev_err(&master->dev, "queue remove failed\n");
+>   	}
+>   
+> +	device_for_each_child(&master->dev, NULL, __unregister);
+> +
 
-Changes in v2:
-	* Fix coding style issue
+Hi,
 
-The error (as detected by syzbot) is generated in 
-vmk80xx_write_packet() (which is called in vmk80xx_reset_device()) when
-it tries to assign devpriv->usb_tx_buf[0] = cmd.
+This is a wrong patch. We should move this line before
+spi_destroy_queue, but we didn't. 4.9 stable exists this
+problem too.
 
-This NULL pointer dereference issue arises because
-size = usb_endpoint_maxp(devpriv->ep_tx) = 0.
+Thanks,
+Kun.
 
-This can be traced back to vmk80xx_find_usb_endpoints(), where the usb 
-endpoints are found, and assigned accordingly.
-(For some more insight, in vmk80xx_find_usb_endpoints(), 
-if one of intf->cur_altsetting->iface_desc->endpoints' desc value = 0, 
-and consequently this endpoint is assigned to devpriv->ep_tx,
-this issue gets triggered.)
 
-Checking if the wMaxPacketSize of an endpoint is invalid and returning
-an error value accordingly, seems to fix the error.
 
-We could also alternatively perform this checking (if the size is 0 or not) 
-in vmk80xx_reset_device() itself, but it only seemed like covering up the issue
-at that place, rather than fixing it, so I wasn't sure that was any better.
-
-However, if I'm not wrong, this might end up causing the probe to fail, and I'm 
-not sure if that's the right thing to do in cases like this, and if it isn't I'd
-like some input on what exactly is the required course of action in cases like this.
-
- drivers/staging/comedi/drivers/vmk80xx.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/staging/comedi/drivers/vmk80xx.c b/drivers/staging/comedi/drivers/vmk80xx.c
-index 65dc6c51037e..cb0a965d3c37 100644
---- a/drivers/staging/comedi/drivers/vmk80xx.c
-+++ b/drivers/staging/comedi/drivers/vmk80xx.c
-@@ -667,6 +667,9 @@ static int vmk80xx_find_usb_endpoints(struct comedi_device *dev)
- 	if (!devpriv->ep_rx || !devpriv->ep_tx)
- 		return -ENODEV;
- 
-+	if (!usb_endpoint_maxp(devpriv->ep_rx) || !usb_endpoint_maxp(devpriv->ep_tx))
-+		return -EINVAL;
-+
- 	return 0;
- }
- 
--- 
-2.25.1
-
+>   	mutex_lock(&board_lock);
+>   	list_del(&master->list);
+>   	mutex_unlock(&board_lock);
+>   
+> -	device_for_each_child(&master->dev, NULL, __unregister);
+>   	device_unregister(&master->dev);
+>   }
+>   EXPORT_SYMBOL_GPL(spi_unregister_master);
+> 
+> .
+> 
