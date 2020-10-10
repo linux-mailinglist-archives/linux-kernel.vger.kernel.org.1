@@ -2,188 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC70289EB1
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 08:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A737289EB2
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 08:28:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726805AbgJJGS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 02:18:58 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:29630 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725802AbgJJGS0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 02:18:26 -0400
-X-UUID: 4cbb3f6428a4490d8d4c9f57e03b12d2-20201010
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=61F5Tl8G56sPcS7KsAwbgCO83qs6Yq3c4B1Tn8qYWKc=;
-        b=WYYJhsYIVVxypsuFEv489DssqpGZY5q/ViiyFiYFzpF397nRMxQgaEUuRvC+/vwCJXGrZaFwGTSJWLr2ZqvslF4YhXOBkJtao72m7S9nFXkCW8MQY1JgNflC7xcG3uWRPDtZpkGWe3BHq6VHH3PzU6wHVzGwQrymNnSUaOwNjKo=;
-X-UUID: 4cbb3f6428a4490d8d4c9f57e03b12d2-20201010
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <yong.wu@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1548687958; Sat, 10 Oct 2020 14:18:11 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N2.mediatek.inc
- (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sat, 10 Oct
- 2020 14:18:09 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sat, 10 Oct 2020 14:18:08 +0800
-Message-ID: <1602310691.26323.39.camel@mhfsdcap03>
-Subject: Re: [PATCH v3 02/24] dt-bindings: memory: mediatek: Convert SMI to
- DT schema
-From:   Yong Wu <yong.wu@mediatek.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-CC:     Joerg Roedel <joro@8bytes.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Tomasz Figa <tfiga@google.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <youlin.pei@mediatek.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        <anan.sun@mediatek.com>, <chao.hao@mediatek.com>,
-        <ming-fan.chen@mediatek.com>,
-        Greg Kroah-Hartman <gregkh@google.com>,
-        <kernel-team@android.com>
-Date:   Sat, 10 Oct 2020 14:18:11 +0800
-In-Reply-To: <CAJKOXPfOOGnJeNCa58WEZqbzaAFdLHSm-7pyMyGkYgCBEt0+RA@mail.gmail.com>
-References: <20200930070647.10188-1-yong.wu@mediatek.com>
-         <20200930070647.10188-3-yong.wu@mediatek.com> <20201002110831.GD6888@pi3>
-         <1601958428.26323.26.camel@mhfsdcap03>
-         <CAJKOXPfOOGnJeNCa58WEZqbzaAFdLHSm-7pyMyGkYgCBEt0+RA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S1727046AbgJJG16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 02:27:58 -0400
+Received: from mga18.intel.com ([134.134.136.126]:6481 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726743AbgJJG1S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 02:27:18 -0400
+IronPort-SDR: xtfdqlvVmQBzMID0y4O2ibXwe30xpWmRg8uUo5hNYggqycUliAHSe/eXqZ/wRRYYYmGH1bSVYD
+ kox0E1/8fCkA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9769"; a="153396977"
+X-IronPort-AV: E=Sophos;i="5.77,358,1596524400"; 
+   d="scan'208";a="153396977"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 23:27:17 -0700
+IronPort-SDR: s42ETAtsqVVX/aqma/5vYaroIcbV1vKMVboUEXchHUBizeBfHCh2okae5c9AB1muX1Hjbia10o
+ WF7iRnzzvHbA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,358,1596524400"; 
+   d="scan'208";a="298652070"
+Received: from lkp-server02.sh.intel.com (HELO d5d245f0dec0) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 09 Oct 2020 23:27:16 -0700
+Received: from kbuild by d5d245f0dec0 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kR8Lb-00001W-E1; Sat, 10 Oct 2020 06:27:15 +0000
+Date:   Sat, 10 Oct 2020 14:27:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:testing/next-20201009-clang-ft] BUILD SUCCESS
+ WITH WARNING e964f799eda444f3bb28ca19310dfec1fc903f88
+Message-ID: <5f815437.q1dbhYx2y0VK1WQT%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 2F5B50D45BFEE5DEAF980977B4B60D0C1CC732DEAB64F85D93BF6AB7D84D9C0F2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIwLTEwLTA2IGF0IDA5OjE1ICswMjAwLCBLcnp5c3p0b2YgS296bG93c2tpIHdy
-b3RlOg0KPiBPbiBUdWUsIDYgT2N0IDIwMjAgYXQgMDY6MjcsIFlvbmcgV3UgPHlvbmcud3VAbWVk
-aWF0ZWsuY29tPiB3cm90ZToNCj4gPg0KPiA+IE9uIEZyaSwgMjAyMC0xMC0wMiBhdCAxMzowOCAr
-MDIwMCwgS3J6eXN6dG9mIEtvemxvd3NraSB3cm90ZToNCj4gPiA+IE9uIFdlZCwgU2VwIDMwLCAy
-MDIwIGF0IDAzOjA2OjI1UE0gKzA4MDAsIFlvbmcgV3Ugd3JvdGU6DQo+ID4gPiA+IENvbnZlcnQg
-TWVkaWFUZWsgU01JIHRvIERUIHNjaGVtYS4NCj4gPiA+ID4NCj4gPiA+ID4gU2lnbmVkLW9mZi1i
-eTogWW9uZyBXdSA8eW9uZy53dUBtZWRpYXRlay5jb20+DQo+ID4gPiA+IC0tLQ0KPiA+ID4gPiAg
-Li4uL21lZGlhdGVrLHNtaS1jb21tb24udHh0ICAgICAgICAgICAgICAgICAgIHwgIDQ5IC0tLS0t
-LS0tLQ0KPiA+ID4gPiAgLi4uL21lZGlhdGVrLHNtaS1jb21tb24ueWFtbCAgICAgICAgICAgICAg
-ICAgIHwgMTAwICsrKysrKysrKysrKysrKysrKw0KPiA+ID4gPiAgLi4uL21lbW9yeS1jb250cm9s
-bGVycy9tZWRpYXRlayxzbWktbGFyYi50eHQgIHwgIDQ5IC0tLS0tLS0tLQ0KPiA+ID4gPiAgLi4u
-L21lbW9yeS1jb250cm9sbGVycy9tZWRpYXRlayxzbWktbGFyYi55YW1sIHwgIDkxICsrKysrKysr
-KysrKysrKysNCj4gPiA+ID4gIDQgZmlsZXMgY2hhbmdlZCwgMTkxIGluc2VydGlvbnMoKyksIDk4
-IGRlbGV0aW9ucygtKQ0KPiA+ID4gPiAgZGVsZXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24v
-ZGV2aWNldHJlZS9iaW5kaW5ncy9tZW1vcnktY29udHJvbGxlcnMvbWVkaWF0ZWssc21pLWNvbW1v
-bi50eHQNCj4gPiA+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRy
-ZWUvYmluZGluZ3MvbWVtb3J5LWNvbnRyb2xsZXJzL21lZGlhdGVrLHNtaS1jb21tb24ueWFtbA0K
-PiA+ID4gPiAgZGVsZXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
-aW5ncy9tZW1vcnktY29udHJvbGxlcnMvbWVkaWF0ZWssc21pLWxhcmIudHh0DQo+ID4gPiA+ICBj
-cmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL21lbW9y
-eS1jb250cm9sbGVycy9tZWRpYXRlayxzbWktbGFyYi55YW1sDQo+ID4gLi4uDQo+ID4gPiA+ICtw
-cm9wZXJ0aWVzOg0KPiA+ID4gPiArICBjb21wYXRpYmxlOg0KPiA+ID4gPiArICAgIG9uZU9mOg0K
-PiA+ID4gPiArICAgICAgLSBlbnVtOg0KPiA+ID4gPiArICAgICAgICAgIC0gbWVkaWF0ZWssbXQy
-NzAxLXNtaS1jb21tb24NCj4gPiA+ID4gKyAgICAgICAgICAtIG1lZGlhdGVrLG10MjcxMi1zbWkt
-Y29tbW9uDQo+ID4gPiA+ICsgICAgICAgICAgLSBtZWRpYXRlayxtdDY3Nzktc21pLWNvbW1vbg0K
-PiA+ID4gPiArICAgICAgICAgIC0gbWVkaWF0ZWssbXQ4MTczLXNtaS1jb21tb24NCj4gPiA+ID4g
-KyAgICAgICAgICAtIG1lZGlhdGVrLG10ODE4My1zbWktY29tbW9uDQo+ID4gPiA+ICsNCj4gPiA+
-ID4gKyAgICAgIC0gZGVzY3JpcHRpb246IGZvciBtdDc2MjMNCj4gPiA+ID4gKyAgICAgICAgaXRl
-bXM6DQo+ID4gPiA+ICsgICAgICAgICAgLSBjb25zdDogbWVkaWF0ZWssbXQ3NjIzLXNtaS1jb21t
-b24NCj4gPiA+ID4gKyAgICAgICAgICAtIGNvbnN0OiBtZWRpYXRlayxtdDI3MDEtc21pLWNvbW1v
-bg0KPiA+ID4gPiArDQo+ID4gPiA+ICsgIHJlZzoNCj4gPiA+ID4gKyAgICBtYXhJdGVtczogMQ0K
-PiA+ID4gPiArDQo+ID4gPiA+ICsgIGNsb2NrczoNCj4gPiA+ID4gKyAgICBkZXNjcmlwdGlvbjog
-fA0KPiA+ID4gPiArICAgICAgYXBiIGFuZCBzbWkgYXJlIG1hbmRhdG9yeS4gdGhlIGFzeW5jIGlz
-IG9ubHkgZm9yIGdlbmVyYXRpb24gMSBzbWkgSFcuDQo+ID4gPiA+ICsgICAgICBnYWxzKGdsb2Jh
-bCBhc3luYyBsb2NhbCBzeW5jKSBhbHNvIGlzIG9wdGlvbmFsLCBoZXJlIGlzIHRoZSBsaXN0IHdo
-aWNoDQo+ID4gPiA+ICsgICAgICByZXF1aXJlIGdhbHM6IG10Njc3OSBhbmQgbXQ4MTgzLg0KPiA+
-ID4gPiArICAgIG1pbkl0ZW1zOiAyDQo+ID4gPiA+ICsgICAgbWF4SXRlbXM6IDQNCj4gPiA+ID4g
-KyAgICBpdGVtczoNCj4gPiA+ID4gKyAgICAgIC0gZGVzY3JpcHRpb246IGFwYiBpcyBBZHZhbmNl
-ZCBQZXJpcGhlcmFsIEJ1cyBjbG9jaywgSXQncyB0aGUgY2xvY2sgZm9yDQo+ID4gPiA+ICsgICAg
-ICAgICAgc2V0dGluZyB0aGUgcmVnaXN0ZXIuDQo+ID4gPiA+ICsgICAgICAtIGRlc2NyaXB0aW9u
-OiBzbWkgaXMgdGhlIGNsb2NrIGZvciB0cmFuc2ZlciBkYXRhIGFuZCBjb21tYW5kLg0KPiA+ID4g
-PiArICAgICAgLSBkZXNjcmlwdGlvbjogYXN5bmMgaXMgYXN5bmNocm9ub3VzIGNsb2NrLCBpdCBo
-ZWxwIHRyYW5zZm9ybSB0aGUgc21pIGNsb2NrDQo+ID4gPiA+ICsgICAgICAgICAgaW50byB0aGUg
-ZW1pIGNsb2NrIGRvbWFpbi4NCj4gPiA+ID4gKyAgICAgIC0gZGVzY3JpcHRpb246IGdhbHMwIGlz
-IHRoZSBwYXRoMCBjbG9jayBvZiBnYWxzLg0KPiA+ID4gPiArICAgICAgLSBkZXNjcmlwdGlvbjog
-Z2FsczEgaXMgdGhlIHBhdGgxIGNsb2NrIG9mIGdhbHMuDQo+ID4gPiA+ICsNCj4gPiA+ID4gKyAg
-Y2xvY2stbmFtZXM6DQo+ID4gPiA+ICsgICAgb25lT2Y6DQo+ID4gPiA+ICsgICAgICAtIGl0ZW1z
-Og0KPiA+ID4gPiArICAgICAgICAgIC0gY29uc3Q6IGFwYg0KPiA+ID4gPiArICAgICAgICAgIC0g
-Y29uc3Q6IHNtaQ0KPiA+ID4gPiArICAgICAgLSBpdGVtczoNCj4gPiA+ID4gKyAgICAgICAgICAt
-IGNvbnN0OiBhcGINCj4gPiA+ID4gKyAgICAgICAgICAtIGNvbnN0OiBzbWkNCj4gPiA+ID4gKyAg
-ICAgICAgICAtIGNvbnN0OiBhc3luYw0KPiA+ID4gPiArICAgICAgLSBpdGVtczoNCj4gPiA+ID4g
-KyAgICAgICAgICAtIGNvbnN0OiBhcGINCj4gPiA+ID4gKyAgICAgICAgICAtIGNvbnN0OiBzbWkN
-Cj4gPiA+ID4gKyAgICAgICAgICAtIGNvbnN0OiBnYWxzMA0KPiA+ID4gPiArICAgICAgICAgIC0g
-Y29uc3Q6IGdhbHMxDQo+ID4gPg0KPiA+ID4gU2ltaWxhcmx5IHRvIG15IGNvbW1lbnQgdG8gb3Ro
-ZXIgcHJvcGVydGllcywgdGhpcyByZXF1aXJlbWVudCBwZXINCj4gPiA+IGNvbXBhdGlibGUgc2hv
-dWxkIGJlIHBhcnQgb2YgdGhlIHNjaGVtYSB3aXRoaW4gJ2lmLXRoZW4nLg0KPiA+DQo+ID4gSSdt
-IG5vdCBzbyBmYW1pbGlhciB3aXRoIHRoaXMgZm9ybWF0LiBEbyB0aGlzIGhhcyAiaWYtdGhlbi0n
-ZWxzZQ0KPiA+IGlmJy10aGVuLWVsc2UiPw0KPiANCj4gVGhlc2UgYXJlIG11dHVhbGx5IGV4Y2x1
-c2l2ZSBjb25kaXRpb25zLCBzbyB5b3UgY2FuIHNraXAgZWxzZToNCj4gIC0gaWYtdGhlbg0KPiAg
-LSBpZi10aGVuDQo+ICAtIGlmLXRoZW4NCj4gSXQgd2lsbCBiZSBtb3JlIHJlYWRhYmxlIHRoZW4g
-c3RhY2tpbmcgJ2lmJyB1bmRlciAnZWxzZScNCg0KVGhhbmtzLiBJIHdpbGwgdXNlIHNvbWV0aGlu
-ZyBsaWtlIHRoaXM6DQoNCiBhbnlPZjoNCiAgIC0gaWY6ICNnZW4xIGh3DQogICAgIHRoZW46DQog
-ICAgICAgdXNlIGFwYi9zbWkvYXN5bmMgY2xvY2tzDQoNCiAgIC0gaWY6ICNnZW4yIGh3IHRoYXQg
-aGFzIGdhbHMuDQogICAgIHRoZW46DQogICAgICAgdXNlIGFwYi9zbWkvZ2FsczAvZ2FsczEgY2xv
-Y2tzDQogICAgIGVsc2U6ICMgZ2VuMiBodyB0aGF0IGRvZXNuJ3QgaGF2ZSBnYWxzLg0KICAgICAg
-IHVzZSBhcGIvc21pIGNsb2Nrcy4NCg0KPiANCj4gPg0KPiA+IEkgdHJpZWQgYmVsb3cgaW5zdGVh
-ZCBvZiB0aGUgY2xvY2tzIHNlZ21lbnQgYWJvdmU6DQo+ID4NCj4gPiA9PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PQ0KPiA+IGlmOg0KPiA+ICAgcHJvcGVydGllczoNCj4gPiAgICAg
-Y29tcGF0aWJsZToNCj4gDQo+IE1pc3NpbmcgY29udGFpbnMuIEp1c3QgdGFrZSBhbiBleGFtcGxl
-IGZyb20gc29tZSBleGlzdGluZyBzY2hlbWEuDQoNCg0KTGlrZSB0aGUgZXhhbXBsZSB5b3UgZ2F2
-ZSBiZWxvdw0KKERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9jbG9jay9pZHQsdmVy
-c2FjbG9jazUueWFtbCksIEl0IGFsc28NCmRvZXNuJ3QgaGF2ZSAiY29udGFpbnMiIGluICJpZiIu
-IEkgZ3Vlc3MgaXQgaXMgdW5uZWNlc3NhcnkgaWYgdGhlcmUgaXMNCm9ubHkgb25lIGNvbXBhdGli
-bGUgc3RyaW5nLiBpdCBtYXkgYmUgbmVjZXNzYXJ5IHdoZW4gaXQgaGFzIGJhY2t3YXJkDQpjb21w
-YXRpYmxlIHN0cmluZy4NCg0KPiANCj4gPiAgICAgICBlbnVtOg0KPiA+ICAgICAgICAgLSBtZWRp
-YXRlayxtdDY3Nzktc21pLWNvbW1vbg0KPiA+ICAgICAgICAgLSBtZWRpYXRlayxtdDgxODMtc21p
-LWNvbW1vbg0KPiA+DQo+ID4gdGhlbjoNCj4gPiAgIHByb3BlcnRpZXM6DQo+ID4gICAgIGNsb2Nr
-Og0KPiA+ICAgICAgIGl0ZW1zOg0KPiA+ICAgICAgICAgLSBkZXNjcmlwdGlvbjogYXBiIGlzIHRo
-ZSBjbG9jayBmb3Igc2V0dGluZyB0aGUgcmVnaXN0ZXIuLg0KPiA+ICAgICAgICAgLSBkZXNjcmlw
-dGlvbjogc21pIGlzIHRoZSBjbG9jayBmb3IgdHJhbnNmZXIgZGF0YSBhbmQgY29tbWFuZC4NCj4g
-PiAgICAgICAgIC0gZGVzY3JpcHRpb246IGdhbHMwIGlzIHRoZSBwYXRoMCBjbG9jayBvZiBnYWxz
-KGdsb2JhbCBhc3luYw0KPiA+IGxvY2FsIHN5bmMpLg0KPiA+ICAgICAgICAgLSBkZXNjcmlwdGlv
-bjogZ2FsczEgaXMgdGhlIHBhdGgxIGNsb2NrIG9mIGdhbHMuDQo+ID4gICAgIGNsb2NrLW5hbWVz
-Og0KPiA+ICAgICAgIGl0ZW1zOg0KPiA+ICAgICAgICAgLSBjb25zdDogYXBiDQo+ID4gICAgICAg
-ICAtIGNvbnN0OiBzbWkNCj4gPiAgICAgICAgIC0gY29uc3Q6IGdhbHMwDQo+ID4gICAgICAgICAt
-IGNvbnN0OiBnYWxzMQ0KPiA+IGVsc2U6DQo+ID4gICBpZjoNCj4gPiAgICAgcHJvcGVydGllczoN
-Cj4gPiAgICAgICBjb21wYXRpYmxlOg0KPiA+ICAgICAgICAgY29udGFpbnM6DQo+ID4gICAgICAg
-ICAgIGVudW06DQo+ID4gICAgICAgICAgICAgLSBtZWRpYXRlayxtdDI3MDEtc21pLWNvbW1vbg0K
-PiA+DQo+ID4gICB0aGVuOg0KPiA+ICAgICBwcm9wZXJ0aWVzOg0KPiA+ICAgICAgIGNsb2NrczoN
-Cj4gPiAgICAgICAgIGl0ZW1zOg0KPiA+ICAgICAgICAgICAtIGRlc2NyaXB0aW9uOiBhcGIgaXMg
-dGhlIGNsb2NrIGZvciBzZXR0aW5nIHRoZSByZWdpc3Rlci4NCj4gPiAgICAgICAgICAgLSBkZXNj
-cmlwdGlvbjogc21pIGlzIHRoZSBjbG9jayBmb3IgdHJhbnNmZXIgZGF0YSBhbmQgY29tbWFuZC4N
-Cj4gPiAgICAgICAgICAgLSBkZXNjcmlwdGlvbjogYXN5bmMgaXMgYXN5bmNocm9ub3VzIGNsb2Nr
-LCBpdCBoZWxwIHRyYW5zZm9ybQ0KPiA+IHRoZSBzbWkgY2xvY2sNCj4gPiAgICAgICAgICAgICAg
-IGludG8gdGhlIGVtaSBjbG9jayBkb21haW4uDQo+ID4gICAgICAgY2xvY2stbmFtZXM6DQo+ID4g
-ICAgICAgICBpdGVtczoNCj4gPiAgICAgICAgICAgLSBjb25zdDogYXBiDQo+ID4gICAgICAgICAg
-IC0gY29uc3Q6IHNtaQ0KPiA+ICAgICAgICAgICAtIGNvbnN0OiBhc3luYw0KPiA+ICAgZWxzZToN
-Cj4gPiAgICAgcHJvcGVydGllczoNCj4gPiAgICAgICBjbG9ja3M6DQo+ID4gICAgICAgICBpdGVt
-czoNCj4gPiAgICAgICAgICAgLSBkZXNjcmlwdGlvbjogYXBiIGlzIHRoZSBjbG9jayBmb3Igc2V0
-dGluZyB0aGUgcmVnaXN0ZXIuDQo+ID4gICAgICAgICAgIC0gZGVzY3JpcHRpb246IHNtaSBpcyB0
-aGUgY2xvY2sgZm9yIHRyYW5zZmVyIGRhdGEgYW5kDQo+ID4gY29tbWFuZC4NCj4gPiAgICAgICBj
-bG9jay1uYW1lczoNCj4gPiAgICAgICAgIGl0ZW1zOg0KPiA+ICAgICAgICAgICAtIGNvbnN0OiBh
-cGINCj4gPiAgICAgICAgICAgLSBjb25zdDogc21pDQo+ID4gPT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT0NCj4gPg0KPiA+IEJ1dCBJIGdvdCBhIHdhcm5pbmcgd2hlbiBkdF9iaW5kaW5n
-X2NoZWNrOg0KPiA+DQo+ID4gQ0hLRFQNCj4gPiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
-ZGluZ3MvbWVtb3J5LWNvbnRyb2xsZXJzL21lZGlhdGVrLHNtaS1jb21tb24ueWFtbA0KPiA+ICAg
-U0NIRU1BDQo+ID4gRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3Byb2Nlc3NlZC1z
-Y2hlbWEtZXhhbXBsZXMueWFtbA0KPiA+ICAgRFRDDQo+ID4gRG9jdW1lbnRhdGlvbi9kZXZpY2V0
-cmVlL2JpbmRpbmdzL21lbW9yeS1jb250cm9sbGVycy9tZWRpYXRlayxzbWktY29tbW9uLmV4YW1w
-bGUuZHQueWFtbA0KPiA+ICAgQ0hFQ0sNCj4gPiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
-ZGluZ3MvbWVtb3J5LWNvbnRyb2xsZXJzL21lZGlhdGVrLHNtaS1jb21tb24uZXhhbXBsZS5kdC55
-YW1sDQo+ID4gLi4uL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZW1vcnktY29u
-dHJvbGxlcnMvbWVkaWF0ZWssc21pLWNvbW1vbi5leGFtcGxlLmR0LnlhbWw6IHNtaUAxNDAyMjAw
-MDogJ2Nsb2NrLW5hbWVzJywgJ2Nsb2NrcycgZG8gbm90IG1hdGNoIGFueSBvZiB0aGUgcmVnZXhl
-czogJ3BpbmN0cmwtWzAtOV0rJw0KPiANCj4gVGhlcmUgYXJlIHNldmVyYWwgZmlsZXMgd2hpY2gg
-YWxyZWFkeSBjaG9vc2UgZGlmZmVyZW50IGNsb2NrcyBiYXNlZCBvbg0KPiBjb21wYXRpYmxlLCBz
-aW1wbGUgZ3JlcCBzaG93cyB0aGVtOg0KPiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGlu
-Z3MvaWlvL2FkYy9zYW1zdW5nLGV4eW5vcy1hZGMueWFtbA0KPiBEb2N1bWVudGF0aW9uL2Rldmlj
-ZXRyZWUvYmluZGluZ3MvY2xvY2svaWR0LHZlcnNhY2xvY2s1LnlhbWwNCg0KVGhhbmtzIGZvciB0
-aGUgcmV2aWV3LiBJIHdpbGwgc2VuZCB0aGUgbmV4dCB2ZXJzaW9uIGFmdGVyIHY1LjEwLg0KDQo+
-IA0KPiBCZXN0IHJlZ2FyZHMsDQo+IEtyenlzenRvZg0KDQo=
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git  testing/next-20201009-clang-ft
+branch HEAD: e964f799eda444f3bb28ca19310dfec1fc903f88  treewide: Fix fall-through warnings for Clang
 
+Warning in current branch:
+
+arch/x86/events/core.c:1178:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c:382:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+sound/soc/codecs/cs42l52.c:947:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+sound/soc/codecs/cs42l56.c:1011:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+
+Warning ids grouped by kconfigs:
+
+clang_recent_errors
+|-- arm64-randconfig-r006-20201009
+|   |-- drivers-iommu-arm-arm-smmu-v3-arm-smmu-v3.c:warning:unannotated-fall-through-between-switch-labels
+|   |-- sound-soc-codecs-cs42l52.c:warning:unannotated-fall-through-between-switch-labels
+|   `-- sound-soc-codecs-cs42l56.c:warning:unannotated-fall-through-between-switch-labels
+|-- x86_64-randconfig-a001-20201009
+|   `-- arch-x86-events-core.c:warning:unannotated-fall-through-between-switch-labels
+|-- x86_64-randconfig-a001-20201010
+|   |-- arch-x86-events-core.c:warning:unannotated-fall-through-between-switch-labels
+|   `-- sound-soc-codecs-cs42l56.c:warning:unannotated-fall-through-between-switch-labels
+|-- x86_64-randconfig-a002-20201010
+|   `-- arch-x86-events-core.c:warning:unannotated-fall-through-between-switch-labels
+|-- x86_64-randconfig-a003-20201009
+|   |-- arch-x86-events-core.c:warning:unannotated-fall-through-between-switch-labels
+|   `-- sound-soc-codecs-cs42l56.c:warning:unannotated-fall-through-between-switch-labels
+|-- x86_64-randconfig-a003-20201010
+|   `-- arch-x86-events-core.c:warning:unannotated-fall-through-between-switch-labels
+|-- x86_64-randconfig-a004-20201009
+|   `-- arch-x86-events-core.c:warning:unannotated-fall-through-between-switch-labels
+|-- x86_64-randconfig-a004-20201010
+|   `-- arch-x86-events-core.c:warning:unannotated-fall-through-between-switch-labels
+|-- x86_64-randconfig-a005-20201009
+|   `-- arch-x86-events-core.c:warning:unannotated-fall-through-between-switch-labels
+|-- x86_64-randconfig-a005-20201010
+|   `-- arch-x86-events-core.c:warning:unannotated-fall-through-between-switch-labels
+`-- x86_64-randconfig-a006-20201010
+    `-- arch-x86-events-core.c:warning:unannotated-fall-through-between-switch-labels
+
+elapsed time: 723m
+
+configs tested: 109
+configs skipped: 2
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                     pq2fads_defconfig
+arm                        spear6xx_defconfig
+arm                          ep93xx_defconfig
+ia64                             alldefconfig
+powerpc                      tqm8xx_defconfig
+mips                      fuloong2e_defconfig
+sh                          sdk7780_defconfig
+m68k                          atari_defconfig
+mips                     loongson1c_defconfig
+powerpc                     mpc83xx_defconfig
+mips                malta_qemu_32r6_defconfig
+powerpc                       ppc64_defconfig
+arm                       mainstone_defconfig
+powerpc                     tqm5200_defconfig
+um                             i386_defconfig
+sparc64                             defconfig
+openrisc                 simple_smp_defconfig
+sh                        edosk7705_defconfig
+arc                         haps_hs_defconfig
+sh                           se7712_defconfig
+mips                        bcm47xx_defconfig
+arm                         s3c2410_defconfig
+sh                           sh2007_defconfig
+powerpc                 mpc8315_rdb_defconfig
+sh                           se7705_defconfig
+arm                     davinci_all_defconfig
+powerpc                      bamboo_defconfig
+m68k                         amcore_defconfig
+arm                             ezx_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20201009
+i386                 randconfig-a005-20201009
+i386                 randconfig-a001-20201009
+i386                 randconfig-a004-20201009
+i386                 randconfig-a002-20201009
+i386                 randconfig-a003-20201009
+x86_64               randconfig-a012-20201009
+x86_64               randconfig-a015-20201009
+x86_64               randconfig-a013-20201009
+x86_64               randconfig-a014-20201009
+x86_64               randconfig-a011-20201009
+x86_64               randconfig-a016-20201009
+i386                 randconfig-a015-20201009
+i386                 randconfig-a013-20201009
+i386                 randconfig-a014-20201009
+i386                 randconfig-a016-20201009
+i386                 randconfig-a011-20201009
+i386                 randconfig-a012-20201009
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a004-20201010
+x86_64               randconfig-a002-20201010
+x86_64               randconfig-a006-20201010
+x86_64               randconfig-a001-20201010
+x86_64               randconfig-a003-20201010
+x86_64               randconfig-a005-20201010
+x86_64               randconfig-a004-20201009
+x86_64               randconfig-a003-20201009
+x86_64               randconfig-a005-20201009
+x86_64               randconfig-a001-20201009
+x86_64               randconfig-a002-20201009
+x86_64               randconfig-a006-20201009
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
