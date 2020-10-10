@@ -2,148 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C0CC28A1BF
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:51:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98B7228A1DA
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:52:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731682AbgJJWTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:19:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726923AbgJJSoN (ORCPT
+        id S1732547AbgJJWde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:33:34 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:51207 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730399AbgJJSwZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 14:44:13 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41008C08EC69;
-        Sat, 10 Oct 2020 11:44:12 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id b193so9246562pga.6;
-        Sat, 10 Oct 2020 11:44:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=gynpyUuQDJw4i2zEOnQ/TzhcGgZ8EQ2u4/0CzfNkcPA=;
-        b=PP8wruc20jQM8T83GoLi/Knij4+w2yw9tO1aTlXlcIsTYNXpJyAV8Kfeq2zkxwSHFu
-         bJDH3Qv2ziU1I6RrSFSyCujLEyo1GAEqoODxL5gwNVaoMfCnBiRtxcH4g2izXFZy90bz
-         1H+su+nHeimqvt98MprOMJPquTyyWz8CvfnGRRA5c9IIK4Mt1AJ3FoCPRbPo2Mw4KqDh
-         J7B1rv7L5U42qX78zV9UA0H34TrmKTnFd08PecGMaqX90TyN7ZCqc35JMAnp912MJYRC
-         IZ1hIE4V68kwMSeFOAvcz6t+T5DpRNLf69Z97oh3HkMoO4VFhbye5je/i1dBWIjRjyxQ
-         p4jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=gynpyUuQDJw4i2zEOnQ/TzhcGgZ8EQ2u4/0CzfNkcPA=;
-        b=hxfwg8v9AYYxFsiG8q6lhr8Lkt1zzQjsWSx4viPqmO2S7zSa9kdjPkCw2kIzs1RW+h
-         Le5UfXjiEJBhiZuFKuC91OOq/UdJYvrcDXZuGnGhc1a9MscVQCLbVk0xhzyVLVIamkIa
-         VHa2PL78d4bcBlwD++5NKAsOw4ZKz/5m6FKEB54SsOlSjKOowHsf6JEubDhNhaDI1scw
-         ds4Eeow9/6gqQA8pKVNaJX+6qpS7C2RFJ41ryov9lKT8XOqXW6sPI/6x5wk7NxUWTxMk
-         4laNkuUneJNVropi25MYt/UwN6AjoQsHqTBmOO1QQn3DBhD3cXvavABCeUHt0eh/Pd32
-         61zg==
-X-Gm-Message-State: AOAM530cFcoNDqnMIBbV55xcxRml2tJRo9z8V1eo6AXT6mzHoqsaoPwT
-        evLYo8DzBNpyUYUT1bkTbsAOe2/R3iejbl6M0nw=
-X-Google-Smtp-Source: ABdhPJxb3+zbTfMJcsyP1PxCgumZYXS1XW5ek5s8hcWpHWs2UUAnHPFE+FPOSUMIZEmMuR/zho2IAQ==
-X-Received: by 2002:a17:90a:c297:: with SMTP id f23mr8599068pjt.72.1602355451020;
-        Sat, 10 Oct 2020 11:44:11 -0700 (PDT)
-Received: from [192.168.0.104] ([49.207.200.2])
-        by smtp.gmail.com with ESMTPSA id u69sm16023601pfc.27.2020.10.10.11.44.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 10 Oct 2020 11:44:10 -0700 (PDT)
-Subject: Re: [PATCH] net: usb: rtl8150: don't incorrectly assign random MAC
- addresses
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Petko Manolov <petkan@nucleusys.com>,
-        "David S. Miller" <davem@davemloft.net>, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201010064459.6563-1-anant.thazhemadam@gmail.com>
- <20201010095302.5309c118@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <0de8e509-7ca5-7faf-70bf-5880ce0fc15c@gmail.com>
- <20201010111645.334647af@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Message-ID: <e772b9f0-f5cd-c50b-86a7-fde22b6e13e3@gmail.com>
-Date:   Sun, 11 Oct 2020 00:14:05 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sat, 10 Oct 2020 14:52:25 -0400
+Received: from mail-qk1-f171.google.com ([209.85.222.171]) by
+ mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1Mq2vU-1k4xW42QHy-00nAAc; Sat, 10 Oct 2020 20:52:18 +0200
+Received: by mail-qk1-f171.google.com with SMTP id s4so14062039qkf.7;
+        Sat, 10 Oct 2020 11:52:18 -0700 (PDT)
+X-Gm-Message-State: AOAM531TjP10XUVHyhHvga/GBzubonVntEPI0GTwOJXYLyiQbofMycph
+        ulv7lPAq83cDPxrll7sgmbLdIEGaicanWLSCG04=
+X-Google-Smtp-Source: ABdhPJyHb97asLXMVebqtlWTvKZgLrTtP/hgQ4nxOJVaC7ZPWU+ccFfq4hg78Uvv2vpNcQYhAbXFOff6pGfcfHymFNw=
+X-Received: by 2002:a05:620a:b13:: with SMTP id t19mr3306996qkg.3.1602355937246;
+ Sat, 10 Oct 2020 11:52:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201010111645.334647af@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-14-arnd@arndb.de>
+ <alpine.LNX.2.23.453.2010091900150.12@nippy.intranet>
+In-Reply-To: <alpine.LNX.2.23.453.2010091900150.12@nippy.intranet>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Sat, 10 Oct 2020 20:52:01 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3rM7gJjdTtcKzr6yi15n6xs-yhEpmSOf3QHfahQwxqkw@mail.gmail.com>
+Message-ID: <CAK8P3a3rM7gJjdTtcKzr6yi15n6xs-yhEpmSOf3QHfahQwxqkw@mail.gmail.com>
+Subject: Re: [RFC 13/13] m68k: mac: convert to generic clockevent
+To:     Finn Thain <fthain@telegraphics.com.au>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Philip Blundell <philb@gnu.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Sam Creasey <sammy@sammy.net>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-ia64@vger.kernel.org,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:otRuftNbB3lBySqwtS51xx3yn/t60U7b7y5rmpRvR+Mrfy+Wj+l
+ DRYaNPPxivp2vURRNzBwUZYeyUieC6P6mg4LTACfQQgWXaWn4cKcV4PjyalR0KlYarDEukU
+ SHmocmeKbLalNUv/mWh+nwh+GbX+XXxdhl0LS94xIqNufD4rlg4VFEY+BPwNgtl2znaCjuo
+ Dkh5af7HVd+/VE2bjZGFw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:0q4XvGn00f8=:Zejixq+2uSJ3eN+rQC46jy
+ Cr09I9ImfBiqPmSSdKuj0GeUejVHklaeu2HyUiRc4F5nN0jKx21L/Uf/3xVdI/Pa0zXHIKoBt
+ I8U7nEfGrfTU+bW3s3hehX7zxLMbOiB4Niuc36iuaii0YXTw12PjXDLwlQBzaCqs7eqT+nR/D
+ kgZV6SqQq7u0MUVOFyIJbpmAckcckT3d423us+V09bGADbCs+WYsEffSKzM9BmJlqMsGTTowl
+ vsN+cU9kpjJRr8j79tlaM/IWfV+6s09plA0en+JgMa9/UXDi/gjJiteufY6Weuf8GDsktCdLg
+ a04sqbSQqZuR1NZ8seeq8MKjgjmtZi+rXEh2pstr2fHoeb2jXx+v6ZOO3eA80NrkpzuwIS4le
+ /NvSsRuaLD91BEwpeZUQ4y6rTA6U9vOUA6npm4E9ud0fj+/9aLvDYJjdjmdh36i/yXvHDNCSh
+ NRmO5AD5ToaOY4483ZR6Q6J6wyecJKaGA8+3vaxEgK+HDC156DMdxtENC119ViQcXus2Zuh4I
+ EYo2BfCIX8HtB9XIYDmCMxl8HMagrCiLfhnIRMJ45ku3gkOGT4J4Vl+uwSRklKCbTt4+gWDRm
+ SS0ZoNf+BoNvAsnp342Sv2knX5qzw4RuVDzkjUQF4YrFJt+UVWLorYtkoUvwT67ZnORGLxakb
+ zc64zAZao8Jisq1weYALu1rB+wKyFFX14vFz/MDIoO0z6Ys8FC04bA8ciR5Ey2gCj3TK3gwYG
+ mXQ1jGTMw+0vIdJsrcuFIUGkBM8XBhiJWXBxK3rO7lnOK3VLcgxYTzzUb6ShX62XgvUzrMVXW
+ lmKCaiTCCm+crK7wodaXIuswAKEWD0bnQAceO3dz9/l7kD/k044MlADJR7x47TYxaPw625K
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 10/10/20 11:46 pm, Jakub Kicinski wrote:
-> On Sat, 10 Oct 2020 23:34:51 +0530 Anant Thazhemadam wrote:
->> On 10/10/20 10:29 pm, Jakub Kicinski wrote:
->>> On Sat, 10 Oct 2020 12:14:59 +0530 Anant Thazhemadam wrote:  
->>>> get_registers() directly returns the return value of
->>>> usb_control_msg_recv() - 0 if successful, and negative error number 
->>>> otherwise.  
->>> Are you expecting Greg to take this as a part of some USB subsystem
->>> changes? I don't see usb_control_msg_recv() in my tree, and the
->>> semantics of usb_control_msg() are not what you described.  
->> No, I'm not. usb_control_msg_recv() is an API that was recently
->> introduced, and get_registers() in rtl8150.c was also modified to
->> use it in order to prevent partial reads.
->>
->> By your tree, I assume you mean
->>     https://git.kernel.org/pub/scm/linux/kernel/git/kuba/linux.git/
->> (it was the only one I could find).
->>
->> I don't see the commit that this patch is supposed to fix in your
->> tree either... :/
->>
->> Nonetheless, this commit fixes an issue that was applied to the
->> networking tree, and has made its way into linux-next as well, if
->> I'm not mistaken.
-> I mean the networking tree, what's the commit ID in linux-next?
+On Sat, Oct 10, 2020 at 12:21 AM Finn Thain <fthain@telegraphics.com.au> wrote:
 >
-> Your fixes tag points to f45a4248ea4c, but looks like the code was
-> quite correct at that point.
+> Hi Arnd,
+>
+> Perhaps patch 13 does not belong in this series (?).
+>
+> All m68k platforms will need conversion before the TODO can be removed
+> from Documentation/features/time/clockevents/arch-support.txt.
 
+Yes, correct. I marked this patch as RFC instead of PATCH, as I'm
+just trying to find out where it should be headed. I would hope the
+other patches can just get merged.
 
-Ah, my apologies. You're right. It doesn't look like those helpers have made
-their way into the networking tree yet.
+> On m68k, HZ is fixed at 100. Without addressing that, would there be any
+> benefit from adopting GENERIC_CLOCKEVENTS as per this RFC patch?
 
-(This gets mentioned here as well,
-    https://www.mail-archive.com/netdev@vger.kernel.org/msg357843.html)
+I don't think so, I mainly did it to see if there is a problem with mixing
+the two modes, and I couldn't find any. The behavior seems unchanged
+before and after my patch, the main difference being a few extra kilobytes
+in kernel .text for the generic clockevents code.
 
-The commit ID pointed to by the fixes tag is correct.
-The change introduced by said commit looks right, but is logically incorrect.
+> On Thu, 8 Oct 2020, Arnd Bergmann wrote:
+>
+> > Now that the infrastructure allows kernels to have both legacy timer
+> > ticks and clockevent drivers in the same image, start by moving one
+> > platform to generic clockevents.
+> >
+> > As qemu only supports the q800 platform among the classic m68k, use that
+> > as an example.
+> >
+>
+> Correct VIA emulation is suprisingly difficult, so this kind of work
+> should be tested on real hardware.
+>
+> I say that because when I did the clocksource conversion for m68k I ran
+> into a bug in QEMU (since fixed) and also because I once worked on some of
+> the bugs in the emulated VIA device used in MAME/MESS.
 
-get_registers() directly returns the return value of usb_control_msg_recv(),
-and usb_control_msg_recv() returns 0 on success and negative error number
-otherwise.
+Good point, though I would be surprised if anything went wrong with
+this patch on real hardware but not in emulation, as all the register-level
+interactions with the timer are the same.
 
-(You can find more about the new helpers here
-    https://lore.kernel.org/alsa-devel/20200914153756.3412156-1-gregkh@linuxfoundation.org/ )
+Adding oneshot mode is a completely different matter though, that
+clearly needs to be tested on real hardware.
 
-The commit ID mentioned introduces a change that is supposed to copy over
-the ethernet only when get_registers() succeeds, i.e., a complete read occurs,
-and generate and set a random ethernet address otherwise (reading the
-commit message should give some more insight).
+> > I also tried adding oneshot mode, which was successful but broke the
+> > clocksource. It's probably not hard to make it work properly, but this
+> > is where I've stopped.
+> >
+>
+> I'm not so sure that one timer is able to support both a clocksource
+> driver and a clockevent driver. In some cases we may have to drop the
+> clocksource driver (i.e. fall back on the jiffies clocksource).
+>
+> Anyway, even on Macs with only one VIA chip we still have two timers. So I
+> think we should try to use Timer 1 as a freerunning clocksource and Timer
+> 2 as a oneshot clock event. This may result in better accuracy and simpler
+> code. This may require some experimentation though.
 
-The condition that checks if get_registers() succeeds (as specified in f45a4248ea4c)
-was,
-    ret == sizeof(node_id)
-where ret is the return value of get_registers().
+Ah, good. This is partly what I had been hoping for, as my patch
+can be used as a starting point for that if you want to give it a go.
 
-However, ret will never equal sizeof(node_id), since ret can only be equal to 0
-or a negative number.
-
-Thus, even in case where get_registers() succeeds, a randomly generated MAC
-address would get copied over, instead of copying the appropriate ethernet
-address, which is logically incorrect and not optimal.
-
-Hence, we need to modify this to check if (ret == 0), and copy over the correct
-ethernet address in that case, instead of randomly generating one and assigning
-that.
-Hope this helps.
-
-Thanks,
-Anant
-
-
+     Arnd
