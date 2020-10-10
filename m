@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA9828A08A
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 15:28:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E440C28A004
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 12:26:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730871AbgJJNYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 09:24:01 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:54216 "EHLO huawei.com"
+        id S1729427AbgJJKZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 06:25:28 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:54218 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727035AbgJJKQM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 06:16:12 -0400
+        id S1727043AbgJJKQO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 06:16:14 -0400
 Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id D3954681641ED91839EE;
+        by Forcepoint Email with ESMTP id DB3CA956F32200E28D24;
         Sat, 10 Oct 2020 17:57:46 +0800 (CST)
 Received: from thunder-town.china.huawei.com (10.174.177.134) by
  DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 10 Oct 2020 17:57:36 +0800
+ 14.3.487.0; Sat, 10 Oct 2020 17:57:37 +0800
 From:   Zhen Lei <thunder.leizhen@huawei.com>
 To:     Wei Xu <xuwei5@hisilicon.com>, Rob Herring <robh+dt@kernel.org>,
         devicetree <devicetree@vger.kernel.org>,
         linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
 CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 05/10] ARM: dts: hisilicon: fix errors detected by root-node.yaml
-Date:   Sat, 10 Oct 2020 17:57:04 +0800
-Message-ID: <20201010095709.1340-6-thunder.leizhen@huawei.com>
+Subject: [PATCH 06/10] ARM: dts: hisilicon: fix errors detected by synopsys-dw-mshc.yaml
+Date:   Sat, 10 Oct 2020 17:57:05 +0800
+Message-ID: <20201010095709.1340-7-thunder.leizhen@huawei.com>
 X-Mailer: git-send-email 2.26.0.windows.1
 In-Reply-To: <20201010095709.1340-1-thunder.leizhen@huawei.com>
 References: <20201010095709.1340-1-thunder.leizhen@huawei.com>
@@ -38,73 +38,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make the momory node name match the regex "^memory(@[0-9a-f]+)?$" which
-is described in memory.yaml. Otherwise, it will be treated as root node,
-and misreported by root-node.yaml.
+Look at the clock-names schema defined in synopsys-dw-mshc.yaml:
+  clock-names:
+    items:
+      - const: biu
+      - const: ciu
 
-Errors misreported by root-node.yaml:
-/: memory: False schema does not allow {'device_type': ['memory'], 'reg':
+The "biu" needs to be placed before the "ciu".
 
 Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 ---
- arch/arm/boot/dts/hi3519-demb.dts    | 2 +-
- arch/arm/boot/dts/hi3620-hi4511.dts  | 2 +-
- arch/arm/boot/dts/hip01-ca9x2.dts    | 2 +-
- arch/arm/boot/dts/hisi-x5hd2-dkb.dts | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+ arch/arm/boot/dts/hisi-x5hd2.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/hi3519-demb.dts b/arch/arm/boot/dts/hi3519-demb.dts
-index 64f8ed126931099..f473fa22e9ce56a 100644
---- a/arch/arm/boot/dts/hi3519-demb.dts
-+++ b/arch/arm/boot/dts/hi3519-demb.dts
-@@ -14,7 +14,7 @@
- 		serial0 = &uart0;
- 	};
- 
--	memory {
-+	memory@80000000 {
- 		device_type = "memory";
- 		reg = <0x80000000 0x40000000>;
- 	};
-diff --git a/arch/arm/boot/dts/hi3620-hi4511.dts b/arch/arm/boot/dts/hi3620-hi4511.dts
-index 29eedc7fef9861e..ce356c469e1e13e 100644
---- a/arch/arm/boot/dts/hi3620-hi4511.dts
-+++ b/arch/arm/boot/dts/hi3620-hi4511.dts
-@@ -17,7 +17,7 @@
- 		stdout-path = "serial0:115200n8";
- 	};
- 
--	memory {
-+	memory@40000000 {
- 		device_type = "memory";
- 		reg = <0x40000000 0x20000000>;
- 	};
-diff --git a/arch/arm/boot/dts/hip01-ca9x2.dts b/arch/arm/boot/dts/hip01-ca9x2.dts
-index f05e74eacfe0bf2..031476304d94614 100644
---- a/arch/arm/boot/dts/hip01-ca9x2.dts
-+++ b/arch/arm/boot/dts/hip01-ca9x2.dts
-@@ -37,7 +37,7 @@
+diff --git a/arch/arm/boot/dts/hisi-x5hd2.dtsi b/arch/arm/boot/dts/hisi-x5hd2.dtsi
+index 8fdfde492919407..9a513893758bf89 100644
+--- a/arch/arm/boot/dts/hisi-x5hd2.dtsi
++++ b/arch/arm/boot/dts/hisi-x5hd2.dtsi
+@@ -423,7 +423,7 @@
+ 			interrupts = <0 35 4>;
+ 			clocks = <&clock HIX5HD2_MMC_CIU_RST>,
+ 				 <&clock HIX5HD2_MMC_BIU_CLK>;
+-			clock-names = "ciu", "biu";
++			clock-names = "biu", "ciu";
  		};
- 	};
  
--	memory {
-+	memory@80000000 {
- 		device_type = "memory";
- 		reg = <0x80000000 0x80000000>;
- 	};
-diff --git a/arch/arm/boot/dts/hisi-x5hd2-dkb.dts b/arch/arm/boot/dts/hisi-x5hd2-dkb.dts
-index d55e9cd3b12b420..22b122d3f514e43 100644
---- a/arch/arm/boot/dts/hisi-x5hd2-dkb.dts
-+++ b/arch/arm/boot/dts/hisi-x5hd2-dkb.dts
-@@ -35,7 +35,7 @@
+ 		sd: mmc@1820000 {
+@@ -432,7 +432,7 @@
+ 			interrupts = <0 34 4>;
+ 			clocks = <&clock HIX5HD2_SD_CIU_RST>,
+ 				 <&clock HIX5HD2_SD_BIU_CLK>;
+-			clock-names = "ciu","biu";
++			clock-names = "biu", "ciu";
  		};
- 	};
  
--	memory {
-+	memory@0 {
- 		device_type = "memory";
- 		reg = <0x00000000 0x80000000>;
- 	};
+ 		gmac0: ethernet@1840000 {
 -- 
 1.8.3
 
