@@ -2,71 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A80B289D24
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 03:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C9F4289D2C
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 03:45:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729667AbgJJBja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 21:39:30 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:47183 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1729436AbgJJBIT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 21:08:19 -0400
-Received: (qmail 557695 invoked by uid 1000); 9 Oct 2020 21:08:17 -0400
-Date:   Fri, 9 Oct 2020 21:08:17 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     syzbot <syzbot+f5378bcf0f0cab45c1c6@syzkaller.appspotmail.com>
-Cc:     andreyknvl@google.com, ath9k-devel@qca.qualcomm.com,
-        eli.billauer@gmail.com, gregkh@linuxfoundation.org,
-        gustavoars@kernel.org, ingrassia@epigenesys.com,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-wireless@vger.kernel.org, oneukum@suse.com,
-        syzkaller-bugs@googlegroups.com, tiwai@suse.de
-Subject: Re: WARNING in hif_usb_send/usb_submit_urb
-Message-ID: <20201010010817.GA557391@rowland.harvard.edu>
-References: <20201010004944.GB557008@rowland.harvard.edu>
- <000000000000ef564605b1468771@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000ef564605b1468771@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1729782AbgJJBor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 21:44:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53016 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729546AbgJJBNv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 21:13:51 -0400
+Subject: Re: [GIT PULL] SPI fixes for v5.9-rc8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602292430;
+        bh=Q5DpkwDbVZBYh2r2KbXAqxaPBMcrtDUKChWniXx1vUE=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=RBlcwzxCSdVRbYdAAqCfEDEXdN7x6T9XiDixE9Rf5i0qIYd20u0+RL2KU7YGaYNR0
+         NnTToQfwzcFBVX+ZBeedQOmwK+zdgezEhgbBYDGRj9UephKd2YyS3AHKVTr+GEC2MX
+         suhwPHqAYQ4BB98q5PYIcbF4+Qtqatj5xMUdyr4Y=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20201009234428.3827A2072C@mail.kernel.org>
+References: <20201009234428.3827A2072C@mail.kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201009234428.3827A2072C@mail.kernel.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.9-rc8
+X-PR-Tracked-Commit-Id: 1c33524f79853f41e80390b1a223254aadd30bd4
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 6f2f486d57c4d562cdf4932320b66fbb878ab1c4
+Message-Id: <160229243062.25674.17343889976744594182.pr-tracker-bot@kernel.org>
+Date:   Sat, 10 Oct 2020 01:13:50 +0000
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 05:56:09PM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot tried to test the proposed patch but the build/boot failed:
+The pull request you sent on Sat, 10 Oct 2020 00:44:23 +0100:
 
-Oops.  One more try, with the typos fixed.
+> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.9-rc8
 
-#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git v5.9-rc8
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/6f2f486d57c4d562cdf4932320b66fbb878ab1c4
 
-Index: usb-devel/drivers/net/wireless/ath/ath9k/hif_usb.c
-===================================================================
---- usb-devel.orig/drivers/net/wireless/ath/ath9k/hif_usb.c
-+++ usb-devel/drivers/net/wireless/ath/ath9k/hif_usb.c
-@@ -1307,6 +1307,20 @@ static int ath9k_hif_usb_probe(struct us
- 	struct usb_device *udev = interface_to_usbdev(interface);
- 	struct hif_device_usb *hif_dev;
- 	int ret = 0;
-+	struct usb_host_interface *alt;
-+	struct usb_endpoint_descriptor *epd;
-+
-+	/* Verify the expected endpoints are present */
-+	alt = interface->cur_altsetting;
-+	if (!usb_find_int_in_endpoint(alt, &epd) ||
-+			usb_endpoint_num(epd) != USB_REG_IN_PIPE ||
-+	    !usb_find_int_out_endpoint(alt, &epd) ||
-+			usb_endpoint_num(epd) != USB_REG_OUT_PIPE ||
-+	    !usb_find_bulk_in_endpoint(alt, &epd) ||
-+			usb_endpoint_num(epd) != USB_WLAN_RX_PIPE ||
-+	    !usb_find_bulk_out_endpoint(alt, &epd) ||
-+			usb_endpoint_num(epd) != USB_WLAN_TX_PIPE)
-+		return -ENODEV;
- 
- 	if (id->driver_info == STORAGE_DEVICE)
- 		return send_eject_command(interface);
+Thank you!
 
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
