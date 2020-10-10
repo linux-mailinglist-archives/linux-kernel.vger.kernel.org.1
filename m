@@ -2,90 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C95C28A287
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15BBF28A2C3
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390545AbgJJW5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:57:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730460AbgJJTvA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:51:00 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8507BC0613DE
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 02:37:38 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id e7so2484pfn.12
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 02:37:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uY6vICbjDw3/Nue8pip9A8mVoEd17wpGPbuSUfwpgAU=;
-        b=ZExhGn5E7TXEAkrOuICsp54Kn74Ct9cwsfd90HFmv+XN2tQ942iV3ILHBfOgo08WlT
-         ZoWJnvomag6+gHkPcheBZq5Y9Ejh62rC8TuDG5Dj/iD0wEvxoNuVNyNlnAyEb6JK23z6
-         CKXSW6YBgYNkxycXtKeQPWhTn7zYA1XMV7Hi+yme7WdIY+mEFE5G4CorQZcGVsNpWNEg
-         UJr7cgxW7hHfgrH87WpxmuWPhJs45PfR4AJsLlWLG8bHsrpEIwb6VtJr+xUTeZg3n2LA
-         7MScPliDIpMr8goqp62304++kV062l+BRt469hSNLwqb4Q1mXDZxOVJJ2hz76ebmsgU4
-         akqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uY6vICbjDw3/Nue8pip9A8mVoEd17wpGPbuSUfwpgAU=;
-        b=j28denXNLJ4aCNW1W88GygkI38wJyEukrsV9sz5qtukVhmKQJp4GHl7HZT+mb77B6Y
-         ZiyLNQ53ygkFVJA1aSt7J0Sch0B/WzNRGSQuqgraoYNBYj2Ld+4vOXy5QIm+9oJBKolI
-         x+pB3Rb6IaM1HZU0s3L9uIbJtIlVYjpOfx9TRvB6vf2o6c5cN/JTPbCHCgMSnzvWf6dE
-         L9cu+NubhkYVRXc3mfdY80tA/AWkJ3v9pfYr7MyjFGWwgNPsLxtY4gTv4oCPFHVTZglX
-         yS+WsgzNHdjUwMV2JX2p84ffqR0lTKDwurX97BRUzApC14Vxiwuuf3PtJHoEZSrlm4Yt
-         bkRg==
-X-Gm-Message-State: AOAM5304AQmLC1a+AUmpWmtADptBfKKrv7rDmizAbbbU+2E5d7JpQIue
-        H87FJqBq68FkccRS2iPzBF1HIGmm/dHWz3ED
-X-Google-Smtp-Source: ABdhPJyytESe/AHRO3S9jwTuCwjstQ6JjoCgGo3kxsZX9PXWwayWGDrEuzzbG6UuArzf20PBChrRiA==
-X-Received: by 2002:a62:1851:0:b029:154:8ed7:bf5d with SMTP id 78-20020a6218510000b02901548ed7bf5dmr15732802pfy.66.1602322657935;
-        Sat, 10 Oct 2020 02:37:37 -0700 (PDT)
-Received: from Zs-MacBook-Pro.local.net ([103.136.220.68])
-        by smtp.gmail.com with ESMTPSA id d128sm13793124pfd.94.2020.10.10.02.37.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 10 Oct 2020 02:37:37 -0700 (PDT)
-From:   zangchunxin@bytedance.com
-To:     corbet@lwn.net
-Cc:     andre.azevedo@gmail.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chunxin Zang <zangchunxin@bytedance.com>
-Subject: [PATCH] Documentation/scheduler: Modify the description of sched-stats column 9
-Date:   Sat, 10 Oct 2020 17:37:30 +0800
-Message-Id: <20201010093730.28567-1-zangchunxin@bytedance.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+        id S2390832AbgJJW7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:59:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57068 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732643AbgJJTyp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 15:54:45 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8C811206D4;
+        Sat, 10 Oct 2020 09:37:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602322660;
+        bh=qEv/8rJuvBzSsznkGBS33zRs2V4OUf+87LXb5YdX2+I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dtZ9I9J0vKwRPkDwHW8WBmWGDTM10AY88wBp3bLQBuvUHQRud+qp5DiL/ceFF3ejE
+         3t7EPsC9kSZrsPO4mLwzAZTLmL8lRTvvvL3XCoWcyWWjN6hT3DuccOjsbqg7DAZPv0
+         DSvR4/Tzh8rM1ajkCHEPzQzfwI5evgrJY9vwENbU=
+Date:   Sat, 10 Oct 2020 11:38:24 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     linux-kernel@vger.kernel.org, nstange@suse.de, ap420073@gmail.com,
+        David.Laight@aculab.com, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, rafael@kernel.org
+Subject: Re: [CRAZY-RFF] debugfs: track open files and release on remove
+Message-ID: <20201010093824.GA986556@kroah.com>
+References: <87v9fkgf4i.fsf@suse.de>
+ <20201009095306.0d87c3aa13db.Ib3a7019bff15bb6308f6d259473a1648312a4680@changeid>
+ <20201009080355.GA398994@kroah.com>
+ <be61c6a38d0f6ca1aa0bc3f0cb45bbb216a12982.camel@sipsolutions.net>
+ <20201009081624.GA401030@kroah.com>
+ <1ec056cf3ec0953d2d1abaa05e37e89b29c7cc63.camel@sipsolutions.net>
+ <20201009084729.GA406522@kroah.com>
+ <01fcaf4985f57d97ac03fc0b7deb2c225a2fbca1.camel@sipsolutions.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <01fcaf4985f57d97ac03fc0b7deb2c225a2fbca1.camel@sipsolutions.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunxin Zang <zangchunxin@bytedance.com>
+On Fri, Oct 09, 2020 at 10:48:09AM +0200, Johannes Berg wrote:
+> On Fri, 2020-10-09 at 10:47 +0200, Greg KH wrote:
+> 
+> > > I think adding the .owner everywhere would be good, and perhaps we can
+> > > somehow put a check somewhere like
+> > > 
+> > > 	WARN_ON(is_module_address((unsigned long)fops) && !fops->owner);
+> > > 
+> > > to prevent the issue in the future?
+> > 
+> > That will fail for all of the debugfs_create_* operations, as there is
+> > only one set of file operations for all of the different files created
+> > with these calls.
+> 
+> Why would it fail? Those have their fops in the core debugfs code, which
+> might have a .owner assigned but is probably built-in anyway?
 
-The column 9 get datas from sched_info->pcount. It's update
-when context_switch only. So it meaning 'times' not 'timeslices'.
+Bad choice of terms, it would "fail" in that this type of check would
+never actually work because the debugfs code is built into the kernel,
+and there is no module owner for it.  But the value it is referencing is
+an address in a module.
 
-Signed-off-by: Chunxin Zang <zangchunxin@bytedance.com>
----
- Documentation/scheduler/sched-stats.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > Which, now that I remember it, is why we went down the proxy "solution"
+> > in the first place :(
+> 
+> Not sure I understand. That was related more to (arbitrary) files having
+> to be disappeared rather than anything else?
 
-diff --git a/Documentation/scheduler/sched-stats.rst b/Documentation/scheduler/sched-stats.rst
-index dd9b99a025f7..5fd17a85e7fd 100644
---- a/Documentation/scheduler/sched-stats.rst
-+++ b/Documentation/scheduler/sched-stats.rst
-@@ -59,7 +59,7 @@ Next three are statistics describing scheduling latency:
-      7) sum of all time spent running by tasks on this processor (in jiffies)
-      8) sum of all time spent waiting to run by tasks on this processor (in
-         jiffies)
--     9) # of timeslices run on this cpu
-+     9) # of times task hits this cpu
- 
- 
- Domain statistics
--- 
-2.11.0
+Isn't this the same issue?
 
+thanks,
+
+greg k-h
