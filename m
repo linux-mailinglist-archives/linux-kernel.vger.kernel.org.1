@@ -2,76 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1154728A29F
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B40D28A298
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:58:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728412AbgJJW6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:58:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41594 "EHLO
+        id S2390768AbgJJW6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:58:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731206AbgJJTxc (ORCPT
+        with ESMTP id S1731204AbgJJTxO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:53:32 -0400
+        Sat, 10 Oct 2020 15:53:14 -0400
 Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59598C0613D0
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 03:39:20 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id g9so9453533pgh.8
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 03:39:20 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77997C061787
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 03:45:34 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id y14so9438269pgf.12
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 03:45:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=u0rkVm7C5Ne19ttZslnktIRDYT2Kn1UpPsAG5EcqOzk=;
-        b=nldkqHE8cd6nALAOIPmeXXa4lxSehpssrliInfwNUW6Hb+5AQUJqdY1lIPTMQ6GhSC
-         bNzY2yFALQ55yAPmV5/4OpkoS7Qxwcj/YUT5Oj5i9lNzl9jecn4rrsC7JXX9l2e74ImO
-         cJrwW3fD48Oz0BKuJkv+BX5P4MtW/5+lC59ohp8iD3SZuNoyFMebf73oGrnKCE0Yvu3A
-         XOgUEFfxab3XYcCK8qOUOXalHYT5GixnEluc7WjZJUD1eYMRtoTU89QqQsf9E0GIIZ9q
-         qB9nij5cQMCDcDus00QS4NHfq/KCsRWHwombRIrYkQPhxQSNvOqD8XT1glRLgL7P399O
-         Eq0w==
+        bh=7kDyicVnemf+97vSMnHND6q/0cC3Faf1x64wHvnAiYU=;
+        b=TGfDZ8tSvIy6s6P5gNA6zgwo5FFiBrWoF2vxRAiZn7HCZ7OZYpifmSrWAviXxnIkpI
+         c5Y81F5fc4Znxu6s5nR+c+uiPeZR75Vga+byGDz+SKCwQsDISBCpXpbcBYDjlr8deIPP
+         xlhn/dQzRe3381p3Iq5u7T5ELgIo2IGl+EZSjaoTosWKeP338QoEWm4dLdCpEpU46rap
+         VbD3NIS9+BoSBKXR/F45VvwGJj5upbp2iGylge1QfCBpGP4MdV98f2ygzKCYXgBErq7I
+         pB+6aHbDPQoVfvNysor5hVC2kCiocrHCdKn1RuHaPB6JSPOIZDXQ+Bar48GSN0cTm4ou
+         Uj6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=u0rkVm7C5Ne19ttZslnktIRDYT2Kn1UpPsAG5EcqOzk=;
-        b=cESzDdZukaI/s5phLM/m9YgwqGpfg73FaDAycurtNurVjQU5cgx2E4RbS4kPIjWEJV
-         6/Zcq+p8DOo/u0EWOf04NxuxdZDlR0lfmiPSfRM/7qjjLSt1WXSeHTVAHCiXdu5RZGO2
-         INYh6+sbjKNsxVnyGsmrfNjWLTS4jo9PpPBqpZaKSrq9H68hYdIYmLkt8+XuCh6sSJOE
-         pLgzV26dq3reF2VaPJEMYyWzhejF3NqjVeHgS7LaRrWM7meRGWEo+SF7v0bJdlh5PLZ3
-         2r3WR2Wxpc2AD0pHF72nk2Jwv705KJ8JmkM64BeIVZ286wOyU3p+QkJqhAXoVqYo1X2q
-         A27w==
-X-Gm-Message-State: AOAM5328Pyir+V10q7trBiMvsatVM0AsHbEEVJbN7jVKic68HdSNslS9
-        5GTsGqVDzq1TznlGhLvPUqx8Fg==
-X-Google-Smtp-Source: ABdhPJxZnwM7IyP5/gKorplHLzpJGDDwce8ks6RVhogeGwaAYPaE9QFMriDfyYZjDuze5VAmX/L0QA==
-X-Received: by 2002:a63:e:: with SMTP id 14mr6928456pga.426.1602326359642;
-        Sat, 10 Oct 2020 03:39:19 -0700 (PDT)
+        bh=7kDyicVnemf+97vSMnHND6q/0cC3Faf1x64wHvnAiYU=;
+        b=Dzob2Dg6PBycvEjL1N/WKEh5OU4A1GitQqP2U3ZQtF/STkrjZlK9AtQ3getuQaiNR/
+         xv8ARlOK5yVI2qZPoSKgxGHxCMQ0L5ZEqh03GvFSi9Wubehypc1ppHOmlpF8pqd62fO1
+         vtvXVmYekwcqT9nizPcbpEepUI+a9QEyU4xJIvFndAwILKZSmn4PQHsFq8OW/XIDeZ66
+         dsf6mFoxOEdeVisU1VzpxduJ6fUIMsKIyZ/Ny0rgCNPlcpfRX8y4QgW6X3FK8R7D5+Ds
+         pFbQCn/Q6onJ55nbvCYGQ5ioRwo473SDzvaLJr8JRX9s5htEC5/GlK3eaqNdQJYXVNKa
+         egyA==
+X-Gm-Message-State: AOAM533B9qF7NP6K/G07t4vgmui1q0/xx0xf0arq/erbpfzDvmEs2qTh
+        10FXEdaKbMB62oUYhliT9fpAjw==
+X-Google-Smtp-Source: ABdhPJwW+myip0mhMxOVtzbe4oquIgi1etPLX4AHjdj0ApW1SIKkEvVWACBRFWgZrck8ueAf4VQlnw==
+X-Received: by 2002:a17:90a:1bc3:: with SMTP id r3mr9767091pjr.196.1602326733948;
+        Sat, 10 Oct 2020 03:45:33 -0700 (PDT)
 Received: from Smcdef-MBP.local.net ([103.136.220.73])
-        by smtp.gmail.com with ESMTPSA id v3sm1450830pfu.165.2020.10.10.03.39.04
+        by smtp.gmail.com with ESMTPSA id p4sm11096891pgp.83.2020.10.10.03.45.25
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 10 Oct 2020 03:39:18 -0700 (PDT)
+        Sat, 10 Oct 2020 03:45:33 -0700 (PDT)
 From:   Muchun Song <songmuchun@bytedance.com>
-To:     gregkh@linuxfoundation.org, rafael@kernel.org, mst@redhat.com,
-        jasowang@redhat.com, davem@davemloft.net, kuba@kernel.org,
-        adobriyan@gmail.com, akpm@linux-foundation.org,
-        edumazet@google.com, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
-        steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
-        shakeelb@google.com, will@kernel.org, mhocko@suse.com, guro@fb.com,
-        neilb@suse.de, rppt@kernel.org, songmuchun@bytedance.com,
-        samitolvanen@google.com, kirill.shutemov@linux.intel.com,
-        feng.tang@intel.com, pabeni@redhat.com, willemb@google.com,
-        rdunlap@infradead.org, fw@strlen.de, gustavoars@kernel.org,
-        pablo@netfilter.org, decui@microsoft.com, jakub@cloudflare.com,
-        peterz@infradead.org, christian.brauner@ubuntu.com,
-        ebiederm@xmission.com, tglx@linutronix.de, dave@stgolabs.net,
-        walken@google.com, jannh@google.com, chenqiwu@xiaomi.com,
-        christophe.leroy@c-s.fr, minchan@kernel.org, kafai@fb.com,
-        ast@kernel.org, daniel@iogearbox.net, linmiaohe@huawei.com,
-        keescook@chromium.org
-Cc:     linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH] mm: proc: add Sock to /proc/meminfo
-Date:   Sat, 10 Oct 2020 18:38:54 +0800
-Message-Id: <20201010103854.66746-1-songmuchun@bytedance.com>
+To:     davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
+        hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, kuznet@ms2.inr.ac.ru,
+        yoshfuji@linux-ipv6.org, shakeelb@google.com, guro@fb.com,
+        iamjoonsoo.kim@lge.com, laoar.shao@gmail.com, chris@chrisdown.name,
+        daniel@iogearbox.net, kafai@fb.com, ast@kernel.org,
+        jakub@cloudflare.com, linmiaohe@huawei.com, keescook@chromium.org
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH] mm: memcontrol: localize mem_cgroup_sockets_enabled() check
+Date:   Sat, 10 Oct 2020 18:45:21 +0800
+Message-Id: <20201010104521.67262-1-songmuchun@bytedance.com>
 X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -79,310 +69,334 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The amount of memory allocated to sockets buffer can become significant.
-However, we do not display the amount of memory consumed by sockets
-buffer. In this case, knowing where the memory is consumed by the kernel
-is very difficult. On our server with 500GB RAM, sometimes we can see
-25GB disappear through /proc/meminfo. After our analysis, we found the
-following memory allocation path which consumes the memory with page_owner
-enabled.
+Move the mem_cgroup_sockets_enabled() checks into memcg socket charge
+or uncharge functions, so the users don't have to explicitly check that
+condition.
 
-  849698 times:
-  Page allocated via order 3, mask 0x4052c0(GFP_NOWAIT|__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP)
-   __alloc_pages_nodemask+0x11d/0x290
-   skb_page_frag_refill+0x68/0xf0
-   sk_page_frag_refill+0x19/0x70
-   tcp_sendmsg_locked+0x2f4/0xd10
-   tcp_sendmsg+0x29/0xa0
-   sock_sendmsg+0x30/0x40
-   sock_write_iter+0x8f/0x100
-   __vfs_write+0x10b/0x190
-   vfs_write+0xb0/0x190
-   ksys_write+0x5a/0xd0
-   do_syscall_64+0x5d/0x110
-   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+This is purely code cleanup patch without any functional change. But
+move the sk_memcg member of the sock structure to the CONFIG_MEMCG
+scope.
 
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 ---
- drivers/base/node.c      |  2 ++
- drivers/net/virtio_net.c |  3 +--
- fs/proc/meminfo.c        |  1 +
- include/linux/mmzone.h   |  1 +
- include/linux/skbuff.h   | 43 ++++++++++++++++++++++++++++++++++++++--
- kernel/exit.c            |  3 +--
- mm/page_alloc.c          |  7 +++++--
- mm/vmstat.c              |  1 +
- net/core/sock.c          |  8 ++++----
- net/ipv4/tcp.c           |  3 +--
- net/xfrm/xfrm_state.c    |  3 +--
- 11 files changed, 59 insertions(+), 16 deletions(-)
+ include/linux/memcontrol.h      | 78 ++++++++++++++++++++++++++-------
+ include/net/sock.h              |  5 ++-
+ include/net/tcp.h               |  3 +-
+ mm/memcontrol.c                 | 43 +++++++++++++-----
+ net/core/sock.c                 | 15 +++----
+ net/ipv4/inet_connection_sock.c |  6 +--
+ net/ipv4/tcp_output.c           |  3 +-
+ 7 files changed, 111 insertions(+), 42 deletions(-)
 
-diff --git a/drivers/base/node.c b/drivers/base/node.c
-index 508b80f6329b..6f92775da85c 100644
---- a/drivers/base/node.c
-+++ b/drivers/base/node.c
-@@ -418,6 +418,7 @@ static ssize_t node_read_meminfo(struct device *dev,
- #ifdef CONFIG_SHADOW_CALL_STACK
- 		       "Node %d ShadowCallStack:%8lu kB\n"
- #endif
-+		       "Node %d Sock:           %8lu kB\n"
- 		       "Node %d PageTables:     %8lu kB\n"
- 		       "Node %d NFS_Unstable:   %8lu kB\n"
- 		       "Node %d Bounce:         %8lu kB\n"
-@@ -441,6 +442,7 @@ static ssize_t node_read_meminfo(struct device *dev,
- 		       nid, K(node_page_state(pgdat, NR_ANON_MAPPED)),
- 		       nid, K(i.sharedram),
- 		       nid, node_page_state(pgdat, NR_KERNEL_STACK_KB),
-+		       nid, K(node_page_state(pgdat, NR_SOCK)),
- #ifdef CONFIG_SHADOW_CALL_STACK
- 		       nid, node_page_state(pgdat, NR_KERNEL_SCS_KB),
- #endif
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 263b005981bd..e7183f67ae4a 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -2646,8 +2646,7 @@ static void free_receive_page_frags(struct virtnet_info *vi)
- {
- 	int i;
- 	for (i = 0; i < vi->max_queue_pairs; i++)
--		if (vi->rq[i].alloc_frag.page)
--			put_page(vi->rq[i].alloc_frag.page);
-+		put_page_frag(&vi->rq[i].alloc_frag);
- }
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 924177502479..a1395b584947 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -1460,21 +1460,48 @@ static inline void mem_cgroup_flush_foreign(struct bdi_writeback *wb)
+ #endif	/* CONFIG_CGROUP_WRITEBACK */
  
- static void free_unused_bufs(struct virtnet_info *vi)
-diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
-index 887a5532e449..1dcf3120d831 100644
---- a/fs/proc/meminfo.c
-+++ b/fs/proc/meminfo.c
-@@ -106,6 +106,7 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
- 	seq_printf(m, "ShadowCallStack:%8lu kB\n",
- 		   global_node_page_state(NR_KERNEL_SCS_KB));
- #endif
-+	show_val_kb(m, "Sock:           ", global_node_page_state(NR_SOCK));
- 	show_val_kb(m, "PageTables:     ",
- 		    global_zone_page_state(NR_PAGETABLE));
- 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 31712bb61f7f..1996713d2c6b 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -207,6 +207,7 @@ enum node_stat_item {
- #if IS_ENABLED(CONFIG_SHADOW_CALL_STACK)
- 	NR_KERNEL_SCS_KB,	/* measured in KiB */
- #endif
-+	NR_SOCK,                /* Count of socket buffer pages */
- 	NR_VM_NODE_STAT_ITEMS
- };
- 
-diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-index fcd53f97c186..7e5108da4d84 100644
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -19,7 +19,8 @@
- #include <linux/rbtree.h>
- #include <linux/socket.h>
- #include <linux/refcount.h>
--
-+#include <linux/memcontrol.h>
-+#include <linux/mm.h>
- #include <linux/atomic.h>
- #include <asm/types.h>
- #include <linux/spinlock.h>
-@@ -3003,6 +3004,25 @@ static inline void skb_frag_ref(struct sk_buff *skb, int f)
- 	__skb_frag_ref(&skb_shinfo(skb)->frags[f]);
- }
- 
-+static inline void inc_sock_node_page_state(struct page *page)
+ struct sock;
+-bool mem_cgroup_charge_skmem(struct mem_cgroup *memcg, unsigned int nr_pages);
+-void mem_cgroup_uncharge_skmem(struct mem_cgroup *memcg, unsigned int nr_pages);
+ #ifdef CONFIG_MEMCG
++bool __mem_cgroup_charge_skmem(struct sock *sk, unsigned int nr_pages);
++void __mem_cgroup_uncharge_skmem(struct sock *sk, unsigned int nr_pages);
++
+ extern struct static_key_false memcg_sockets_enabled_key;
+-#define mem_cgroup_sockets_enabled static_branch_unlikely(&memcg_sockets_enabled_key)
+-void mem_cgroup_sk_alloc(struct sock *sk);
++
++static inline bool mem_cgroup_sockets_enabled(void)
 +{
-+	mod_node_page_state(page_pgdat(page), NR_SOCK, compound_nr(page));
-+	/*
-+	 * Indicate that we need to decrease the Sock page state when
-+	 * the page freed.
-+	 */
-+	SetPagePrivate(page);
++	return static_branch_unlikely(&memcg_sockets_enabled_key);
 +}
 +
-+static inline void dec_sock_node_page_state(struct page *page)
++static inline bool mem_cgroup_charge_skmem(struct sock *sk,
++					   unsigned int nr_pages)
 +{
-+	if (PagePrivate(page)) {
-+		ClearPagePrivate(page);
-+		mod_node_page_state(page_pgdat(page), NR_SOCK,
-+				    -compound_nr(page));
-+	}
++	if (mem_cgroup_sockets_enabled())
++		return __mem_cgroup_charge_skmem(sk, nr_pages);
++	return true;
 +}
 +
- /**
-  * __skb_frag_unref - release a reference on a paged fragment.
-  * @frag: the paged fragment
-@@ -3011,7 +3031,12 @@ static inline void skb_frag_ref(struct sk_buff *skb, int f)
-  */
- static inline void __skb_frag_unref(skb_frag_t *frag)
- {
--	put_page(skb_frag_page(frag));
-+	struct page *page = skb_frag_page(frag);
-+
-+	if (put_page_testzero(page)) {
-+		dec_sock_node_page_state(page);
-+		__put_page(page);
-+	}
- }
- 
- /**
-@@ -3091,6 +3116,20 @@ static inline void skb_frag_set_page(struct sk_buff *skb, int f,
- 	__skb_frag_set_page(&skb_shinfo(skb)->frags[f], page);
- }
- 
-+static inline bool put_page_frag(struct page_frag *pfrag)
++static inline void mem_cgroup_uncharge_skmem(struct sock *sk,
++					     unsigned int nr_pages)
 +{
-+	struct page *page = pfrag->page;
++	if (mem_cgroup_sockets_enabled())
++		__mem_cgroup_uncharge_skmem(sk, nr_pages);
++}
 +
-+	if (page) {
-+		if (put_page_testzero(page)) {
-+			dec_sock_node_page_state(page);
-+			__put_page(page);
-+		}
-+		return true;
-+	}
++void __mem_cgroup_sk_alloc(struct sock *sk);
++
++static inline void mem_cgroup_sk_alloc(struct sock *sk)
++{
++	if (mem_cgroup_sockets_enabled())
++		__mem_cgroup_sk_alloc(sk);
++}
++
+ void mem_cgroup_sk_free(struct sock *sk);
+-static inline bool mem_cgroup_under_socket_pressure(struct mem_cgroup *memcg)
++
++bool __mem_cgroup_under_socket_pressure(const struct sock *sk);
++
++static inline bool mem_cgroup_under_socket_pressure(const struct sock *sk)
+ {
+-	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && memcg->tcpmem_pressure)
+-		return true;
+-	do {
+-		if (time_before(jiffies, memcg->socket_pressure))
+-			return true;
+-	} while ((memcg = parent_mem_cgroup(memcg)));
++	if (mem_cgroup_sockets_enabled())
++		return __mem_cgroup_under_socket_pressure(sk);
+ 	return false;
+ }
+ 
+@@ -1483,10 +1510,31 @@ extern int memcg_expand_shrinker_maps(int new_id);
+ extern void memcg_set_shrinker_bit(struct mem_cgroup *memcg,
+ 				   int nid, int shrinker_id);
+ #else
+-#define mem_cgroup_sockets_enabled 0
+-static inline void mem_cgroup_sk_alloc(struct sock *sk) { };
+-static inline void mem_cgroup_sk_free(struct sock *sk) { };
+-static inline bool mem_cgroup_under_socket_pressure(struct mem_cgroup *memcg)
++static inline bool mem_cgroup_sockets_enabled(void)
++{
 +	return false;
 +}
 +
- bool skb_page_frag_refill(unsigned int sz, struct page_frag *pfrag, gfp_t prio);
++static inline bool mem_cgroup_charge_skmem(struct sock *sk,
++					   unsigned int nr_pages)
++{
++	return true;
++}
++
++static inline void mem_cgroup_uncharge_skmem(struct sock *sk,
++					     unsigned int nr_pages)
++{
++}
++
++static inline void mem_cgroup_sk_alloc(struct sock *sk)
++{
++}
++
++static inline void mem_cgroup_sk_free(struct sock *sk)
++{
++}
++
++static inline bool mem_cgroup_under_socket_pressure(const struct sock *sk)
+ {
+ 	return false;
+ }
+diff --git a/include/net/sock.h b/include/net/sock.h
+index 7dd3051551fb..f486a121fb99 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -502,7 +502,9 @@ struct sock {
+ 	void			*sk_security;
+ #endif
+ 	struct sock_cgroup_data	sk_cgrp_data;
++#ifdef CONFIG_MEMCG
+ 	struct mem_cgroup	*sk_memcg;
++#endif
+ 	void			(*sk_state_change)(struct sock *sk);
+ 	void			(*sk_data_ready)(struct sock *sk);
+ 	void			(*sk_write_space)(struct sock *sk);
+@@ -1311,8 +1313,7 @@ static inline bool sk_under_memory_pressure(const struct sock *sk)
+ 	if (!sk->sk_prot->memory_pressure)
+ 		return false;
+ 
+-	if (mem_cgroup_sockets_enabled && sk->sk_memcg &&
+-	    mem_cgroup_under_socket_pressure(sk->sk_memcg))
++	if (mem_cgroup_under_socket_pressure(sk))
+ 		return true;
+ 
+ 	return !!*sk->sk_prot->memory_pressure;
+diff --git a/include/net/tcp.h b/include/net/tcp.h
+index e85d564446c6..c2efcf3c1495 100644
+--- a/include/net/tcp.h
++++ b/include/net/tcp.h
+@@ -257,8 +257,7 @@ extern unsigned long tcp_memory_pressure;
+ /* optimized version of sk_under_memory_pressure() for TCP sockets */
+ static inline bool tcp_under_memory_pressure(const struct sock *sk)
+ {
+-	if (mem_cgroup_sockets_enabled && sk->sk_memcg &&
+-	    mem_cgroup_under_socket_pressure(sk->sk_memcg))
++	if (mem_cgroup_under_socket_pressure(sk))
+ 		return true;
+ 
+ 	return READ_ONCE(tcp_memory_pressure);
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 4d722f4eaba8..331d7cd92e3d 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -7012,13 +7012,10 @@ void mem_cgroup_migrate(struct page *oldpage, struct page *newpage)
+ DEFINE_STATIC_KEY_FALSE(memcg_sockets_enabled_key);
+ EXPORT_SYMBOL(memcg_sockets_enabled_key);
+ 
+-void mem_cgroup_sk_alloc(struct sock *sk)
++void __mem_cgroup_sk_alloc(struct sock *sk)
+ {
+ 	struct mem_cgroup *memcg;
+ 
+-	if (!mem_cgroup_sockets_enabled)
+-		return;
+-
+ 	/* Do not associate the sock with unrelated interrupted task's memcg. */
+ 	if (in_interrupt())
+ 		return;
+@@ -7041,18 +7038,39 @@ void mem_cgroup_sk_free(struct sock *sk)
+ 		css_put(&sk->sk_memcg->css);
+ }
+ 
++bool __mem_cgroup_under_socket_pressure(const struct sock *sk)
++{
++	struct mem_cgroup *memcg = sk->sk_memcg;
++
++	if (!memcg)
++		return false;
++
++	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && memcg->tcpmem_pressure)
++		return true;
++	do {
++		if (time_before(jiffies, memcg->socket_pressure))
++			return true;
++	} while ((memcg = parent_mem_cgroup(memcg)));
++	return false;
++}
++EXPORT_SYMBOL(__mem_cgroup_under_socket_pressure);
++
+ /**
+- * mem_cgroup_charge_skmem - charge socket memory
+- * @memcg: memcg to charge
++ * __mem_cgroup_charge_skmem - charge socket memory
++ * @sk: socket to charge
+  * @nr_pages: number of pages to charge
+  *
+  * Charges @nr_pages to @memcg. Returns %true if the charge fit within
+  * @memcg's configured limit, %false if the charge had to be forced.
+  */
+-bool mem_cgroup_charge_skmem(struct mem_cgroup *memcg, unsigned int nr_pages)
++bool __mem_cgroup_charge_skmem(struct sock *sk, unsigned int nr_pages)
+ {
++	struct mem_cgroup *memcg = sk->sk_memcg;
+ 	gfp_t gfp_mask = GFP_KERNEL;
+ 
++	if (!memcg)
++		return true;
++
+ 	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys)) {
+ 		struct page_counter *fail;
+ 
+@@ -7079,12 +7097,17 @@ bool mem_cgroup_charge_skmem(struct mem_cgroup *memcg, unsigned int nr_pages)
+ }
  
  /**
-diff --git a/kernel/exit.c b/kernel/exit.c
-index 62912406d74a..58d373767d16 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -841,8 +841,7 @@ void __noreturn do_exit(long code)
- 	if (tsk->splice_pipe)
- 		free_pipe_info(tsk->splice_pipe);
- 
--	if (tsk->task_frag.page)
--		put_page(tsk->task_frag.page);
-+	put_page_frag(&tsk->task_frag);
- 
- 	validate_creds_for_do_exit(tsk);
- 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index cefbef32bf4a..6c543158aa06 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -5379,7 +5379,7 @@ void show_free_areas(unsigned int filter, nodemask_t *nodemask)
- 		" unevictable:%lu dirty:%lu writeback:%lu\n"
- 		" slab_reclaimable:%lu slab_unreclaimable:%lu\n"
- 		" mapped:%lu shmem:%lu pagetables:%lu bounce:%lu\n"
--		" free:%lu free_pcp:%lu free_cma:%lu\n",
-+		" free:%lu free_pcp:%lu free_cma:%lu sock:%lu\n",
- 		global_node_page_state(NR_ACTIVE_ANON),
- 		global_node_page_state(NR_INACTIVE_ANON),
- 		global_node_page_state(NR_ISOLATED_ANON),
-@@ -5397,7 +5397,8 @@ void show_free_areas(unsigned int filter, nodemask_t *nodemask)
- 		global_zone_page_state(NR_BOUNCE),
- 		global_zone_page_state(NR_FREE_PAGES),
- 		free_pcp,
--		global_zone_page_state(NR_FREE_CMA_PAGES));
-+		global_zone_page_state(NR_FREE_CMA_PAGES),
-+		global_node_page_state(NR_SOCK));
- 
- 	for_each_online_pgdat(pgdat) {
- 		if (show_mem_node_skip(filter, pgdat->node_id, nodemask))
-@@ -5425,6 +5426,7 @@ void show_free_areas(unsigned int filter, nodemask_t *nodemask)
- #ifdef CONFIG_SHADOW_CALL_STACK
- 			" shadow_call_stack:%lukB"
- #endif
-+			" sock:%lukB"
- 			" all_unreclaimable? %s"
- 			"\n",
- 			pgdat->node_id,
-@@ -5450,6 +5452,7 @@ void show_free_areas(unsigned int filter, nodemask_t *nodemask)
- #ifdef CONFIG_SHADOW_CALL_STACK
- 			node_page_state(pgdat, NR_KERNEL_SCS_KB),
- #endif
-+			K(node_page_state(pgdat, NR_SOCK)),
- 			pgdat->kswapd_failures >= MAX_RECLAIM_RETRIES ?
- 				"yes" : "no");
- 	}
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index b05dec387557..ceaf6f85c155 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -1220,6 +1220,7 @@ const char * const vmstat_text[] = {
- #if IS_ENABLED(CONFIG_SHADOW_CALL_STACK)
- 	"nr_shadow_call_stack",
- #endif
-+	"nr_sock",
- 
- 	/* enum writeback_stat_item counters */
- 	"nr_dirty_threshold",
+- * mem_cgroup_uncharge_skmem - uncharge socket memory
+- * @memcg: memcg to uncharge
++ * __mem_cgroup_uncharge_skmem - uncharge socket memory
++ * @sk: socket to uncharge
+  * @nr_pages: number of pages to uncharge
+  */
+-void mem_cgroup_uncharge_skmem(struct mem_cgroup *memcg, unsigned int nr_pages)
++void __mem_cgroup_uncharge_skmem(struct sock *sk, unsigned int nr_pages)
+ {
++	struct mem_cgroup *memcg = sk->sk_memcg;
++
++	if (!memcg)
++		return;
++
+ 	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys)) {
+ 		page_counter_uncharge(&memcg->tcpmem, nr_pages);
+ 		return;
 diff --git a/net/core/sock.c b/net/core/sock.c
-index 5972d26f03ae..1661b423802b 100644
+index ba9e7d91e2ef..5972d26f03ae 100644
 --- a/net/core/sock.c
 +++ b/net/core/sock.c
-@@ -1780,10 +1780,8 @@ static void __sk_destruct(struct rcu_head *head)
- 		pr_debug("%s: optmem leakage (%d bytes) detected\n",
- 			 __func__, atomic_read(&sk->sk_omem_alloc));
+@@ -1901,9 +1901,10 @@ struct sock *sk_clone_lock(const struct sock *sk, const gfp_t priority)
  
--	if (sk->sk_frag.page) {
--		put_page(sk->sk_frag.page);
-+	if (put_page_frag(&sk->sk_frag))
- 		sk->sk_frag.page = NULL;
--	}
+ 		sock_reset_flag(newsk, SOCK_DONE);
  
- 	if (sk->sk_peer_cred)
- 		put_cred(sk->sk_peer_cred);
-@@ -2456,7 +2454,7 @@ bool skb_page_frag_refill(unsigned int sz, struct page_frag *pfrag, gfp_t gfp)
- 		}
- 		if (pfrag->offset + sz <= pfrag->size)
- 			return true;
--		put_page(pfrag->page);
-+		put_page_frag(pfrag);
- 	}
++#ifdef CONFIG_MEMCG
+ 		/* sk->sk_memcg will be populated at accept() time */
+ 		newsk->sk_memcg = NULL;
+-
++#endif
+ 		cgroup_sk_clone(&newsk->sk_cgrp_data);
  
- 	pfrag->offset = 0;
-@@ -2469,12 +2467,14 @@ bool skb_page_frag_refill(unsigned int sz, struct page_frag *pfrag, gfp_t gfp)
- 					  SKB_FRAG_PAGE_ORDER);
- 		if (likely(pfrag->page)) {
- 			pfrag->size = PAGE_SIZE << SKB_FRAG_PAGE_ORDER;
-+			inc_sock_node_page_state(pfrag->page);
- 			return true;
- 		}
- 	}
- 	pfrag->page = alloc_page(gfp);
- 	if (likely(pfrag->page)) {
- 		pfrag->size = PAGE_SIZE;
-+		inc_sock_node_page_state(pfrag->page);
- 		return true;
- 	}
- 	return false;
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index 57a568875539..583761844b4f 100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -2751,8 +2751,7 @@ int tcp_disconnect(struct sock *sk, int flags)
+ 		rcu_read_lock();
+@@ -2587,10 +2588,10 @@ int __sk_mem_raise_allocated(struct sock *sk, int size, int amt, int kind)
+ {
+ 	struct proto *prot = sk->sk_prot;
+ 	long allocated = sk_memory_allocated_add(sk, amt);
+-	bool charged = true;
++	bool charged;
  
- 	WARN_ON(inet->inet_num && !icsk->icsk_bind_hash);
+-	if (mem_cgroup_sockets_enabled && sk->sk_memcg &&
+-	    !(charged = mem_cgroup_charge_skmem(sk->sk_memcg, amt)))
++	charged = mem_cgroup_charge_skmem(sk, amt);
++	if (!charged)
+ 		goto suppress_allocation;
  
--	if (sk->sk_frag.page) {
--		put_page(sk->sk_frag.page);
-+	if (put_page_frag(&sk->sk_frag)) {
- 		sk->sk_frag.page = NULL;
- 		sk->sk_frag.offset = 0;
+ 	/* Under limit. */
+@@ -2653,8 +2654,7 @@ int __sk_mem_raise_allocated(struct sock *sk, int size, int amt, int kind)
+ 
+ 	sk_memory_allocated_sub(sk, amt);
+ 
+-	if (mem_cgroup_sockets_enabled && sk->sk_memcg)
+-		mem_cgroup_uncharge_skmem(sk->sk_memcg, amt);
++	mem_cgroup_uncharge_skmem(sk, amt);
+ 
+ 	return 0;
+ }
+@@ -2693,8 +2693,7 @@ void __sk_mem_reduce_allocated(struct sock *sk, int amount)
+ {
+ 	sk_memory_allocated_sub(sk, amount);
+ 
+-	if (mem_cgroup_sockets_enabled && sk->sk_memcg)
+-		mem_cgroup_uncharge_skmem(sk->sk_memcg, amount);
++	mem_cgroup_uncharge_skmem(sk, amount);
+ 
+ 	if (sk_under_memory_pressure(sk) &&
+ 	    (sk_memory_allocated(sk) < sk_prot_mem_limits(sk, 0)))
+diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
+index b457dd2d6c75..06959f4ec70e 100644
+--- a/net/ipv4/inet_connection_sock.c
++++ b/net/ipv4/inet_connection_sock.c
+@@ -511,7 +511,7 @@ struct sock *inet_csk_accept(struct sock *sk, int flags, int *err, bool kern)
+ 
+ out:
+ 	release_sock(sk);
+-	if (newsk && mem_cgroup_sockets_enabled) {
++	if (newsk && mem_cgroup_sockets_enabled()) {
+ 		int amt;
+ 
+ 		/* atomically get the memory usage, set and charge the
+@@ -525,8 +525,8 @@ struct sock *inet_csk_accept(struct sock *sk, int flags, int *err, bool kern)
+ 		amt = sk_mem_pages(newsk->sk_forward_alloc +
+ 				   atomic_read(&newsk->sk_rmem_alloc));
+ 		mem_cgroup_sk_alloc(newsk);
+-		if (newsk->sk_memcg && amt)
+-			mem_cgroup_charge_skmem(newsk->sk_memcg, amt);
++		if (amt)
++			mem_cgroup_charge_skmem(newsk, amt);
+ 
+ 		release_sock(newsk);
  	}
-diff --git a/net/xfrm/xfrm_state.c b/net/xfrm/xfrm_state.c
-index 69520ad3d83b..0f7c16679e49 100644
---- a/net/xfrm/xfrm_state.c
-+++ b/net/xfrm/xfrm_state.c
-@@ -495,8 +495,7 @@ static void ___xfrm_state_destroy(struct xfrm_state *x)
- 		x->type->destructor(x);
- 		xfrm_put_type(x->type);
- 	}
--	if (x->xfrag.page)
--		put_page(x->xfrag.page);
-+	put_page_frag(&x->xfrag);
- 	xfrm_dev_state_free(x);
- 	security_xfrm_state_free(x);
- 	xfrm_state_free(x);
+diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
+index ab79d36ed07f..ce235cc02b7e 100644
+--- a/net/ipv4/tcp_output.c
++++ b/net/ipv4/tcp_output.c
+@@ -3369,8 +3369,7 @@ void sk_forced_mem_schedule(struct sock *sk, int size)
+ 	sk->sk_forward_alloc += amt * SK_MEM_QUANTUM;
+ 	sk_memory_allocated_add(sk, amt);
+ 
+-	if (mem_cgroup_sockets_enabled && sk->sk_memcg)
+-		mem_cgroup_charge_skmem(sk->sk_memcg, amt);
++	mem_cgroup_charge_skmem(sk, amt);
+ }
+ 
+ /* Send a FIN. The caller locks the socket for us.
 -- 
 2.20.1
 
