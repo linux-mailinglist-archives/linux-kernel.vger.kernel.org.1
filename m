@@ -2,80 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47C14289CA1
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 02:18:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF2F8289CA7
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 02:20:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728853AbgJJAQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 20:16:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728484AbgJJAIx (ORCPT
+        id S1728929AbgJJAUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 20:20:14 -0400
+Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:40080 "EHLO
+        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728696AbgJJALH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 20:08:53 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4100CC0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 17:08:51 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id 67so8523131ybt.6
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 17:08:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jUg3JbgQNsYOFU1vKd/KouziNbar+YKHV7L5J9gfUGc=;
-        b=N3avCwbsWqbjK3ZU6ECcmPOJ8k2N2DR/11gWYRotupBwLINWkeUeuwOchOnpJq0p3u
-         rwzlgu2TDrmht1ove2uqCBD6sZZvZUmPLRWjlG9r2QzgEaePMEBRD9VhoeAawmpWXWMG
-         FBdb6l9jg7ulK8pV6aTQcz06H2y+6oLQEOcSNkUPPZIhBo5QI0plKlvWbYS3OycudbOg
-         JBa06G4q23O4Kuv4eTvgFWnPt93YJulhCSUACAEVdrJnGdBvRyAh+lXqT0sreCFv/XCo
-         ZkACuz4lP4MSE2+0oPeLNFeDc1nT/QynhDmyQiAPDuK7yYc2HpavIvs0CTKZPRiCt3dB
-         hQWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jUg3JbgQNsYOFU1vKd/KouziNbar+YKHV7L5J9gfUGc=;
-        b=gnCYihS0jgNytErrIgwTb4H01jyYBE3OheaqxrrMGDx/VD+89f809sgWoDFq9CD0/a
-         SAejKGOzfIKtdDVkNiZE5daXQKR0H/8kwgobtdv9JTXII1sFg+/PHZ7C6nIhrkRpRJlk
-         u1erk49SDR4HoS21U87+ER+W3JdBV58drJDDPYcblFzjrZkqll2JZisEzFyeB6Oo4i76
-         jedCsJPLHnwljKztxVzXX5KvWceLbPtDEW+dhanaLS8guxeiVg81jujc2zXcgPbxVuww
-         QwgMwt1LkS4Hg+d4oxTqIXu2wwGgsS3Cu6beikTYrymdBMaUMt571P0hWi0LarAlz+k1
-         Qfig==
-X-Gm-Message-State: AOAM530R6wDDG/i3wZzyt5OOq5mHNzP7keg1GLZUg8cba0ncyy0DHCbR
-        dWy5LqrQuiBqHi/pYwy1s25HRxqJNFvsiHeg0H8=
-X-Google-Smtp-Source: ABdhPJxy2qz4GgYkLrsGNQmcCzJiYnxxf5VaLF7EBiVVyalokVWpNDRinYJahQ+uuJwc3cGl0S5U88Otp/WF/opzm6M=
-X-Received: by 2002:a25:b88d:: with SMTP id w13mr435792ybj.39.1602288530270;
- Fri, 09 Oct 2020 17:08:50 -0700 (PDT)
+        Fri, 9 Oct 2020 20:11:07 -0400
+Received: from pps.filterd (m0134423.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09A08t2l016461;
+        Sat, 10 Oct 2020 00:09:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pps0720;
+ bh=s6G6YLhuQ8YhUBsYDzQjuCrO5rTHLw9HuFyhEDF1ae0=;
+ b=hbzoONbNgv1IfWMe6VwhKAE0f/2ph0f40vq57EpLpFdo5g8R4dhlpOhyDtAEwWOEoZQf
+ JZhV968xKRM6+4agzUR/SWPyeUgkPH7y8HbPXWNDXV07rJd/LUBY6pCM90bB/sool4Ce
+ eXmvO9V4CVVLjR3XigdbXkjHnq+SYwAgETA4XodIkYjtbpbyhwGVc0xzk+5jSsszyBBQ
+ Xs1djC6tpA0nzT742LQtf6zHFhIKPKs5YEimzPtJb30J8zI/eWz8nD1EvuwB+uS41qpH
+ Gu1TdO+7Oqd6Rw8wX+3yBlAmrvdKTcB+HfuxgrloAUfIoqpVthLXRJBG6uqSTBq89WMW 3w== 
+Received: from g9t5008.houston.hpe.com (g9t5008.houston.hpe.com [15.241.48.72])
+        by mx0b-002e3701.pphosted.com with ESMTP id 342nqcdd02-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 10 Oct 2020 00:09:30 +0000
+Received: from g9t2301.houston.hpecorp.net (g9t2301.houston.hpecorp.net [16.220.97.129])
+        by g9t5008.houston.hpe.com (Postfix) with ESMTP id 838F462;
+        Sat, 10 Oct 2020 00:09:29 +0000 (UTC)
+Received: from sarge.linuxathome.me (unknown [16.29.167.198])
+        by g9t2301.houston.hpecorp.net (Postfix) with ESMTP id 8E03D4A;
+        Sat, 10 Oct 2020 00:09:27 +0000 (UTC)
+From:   Hedi Berriche <hedi.berriche@hpe.com>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hedi Berriche <hedi.berriche@hpe.com>,
+        Russ Anderson <rja@hpe.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Joerg Roedel <jroedel@suse.com>, stable@kernel.org
+Subject: [PATCH v2 0/1] PCI/ERR: fix regression introduced by 6d2c89441571 ("PCI/ERR: Update error status after reset_link()")
+Date:   Sat, 10 Oct 2020 01:09:15 +0100
+Message-Id: <20201010000916.2572432-1-hedi.berriche@hpe.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20201008182713.2764-1-harshalchau04@gmail.com> <20201009045734.GA112189@kroah.com>
-In-Reply-To: <20201009045734.GA112189@kroah.com>
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Date:   Sat, 10 Oct 2020 01:08:14 +0100
-Message-ID: <CADVatmONWsfsj4-WKhNAcXjKXbUrgyD6UpK+ML6TNpqtp8be9A@mail.gmail.com>
-Subject: Re: [PATCH] char: ppdev: check if ioctl argument is present and valid
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Harshal Chaudhari <harshalchau04@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-09_14:2020-10-09,2020-10-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ phishscore=0 clxscore=1015 adultscore=0 spamscore=0 impostorscore=0
+ bulkscore=0 priorityscore=1501 suspectscore=0 lowpriorityscore=0
+ mlxlogscore=664 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010090182
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 9, 2020 at 5:57 AM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Thu, Oct 08, 2020 at 11:57:13PM +0530, Harshal Chaudhari wrote:
-> > Checking the argument passed to the ioctl is valid
-> > or not. if not then return -EINVAL.
->
-> Along the the comments that Arnd made, this is not the correct value to
-> be returning from an ioctl when you don't pass in the correct command.
->
-> And it doesn't match what your patch says, please be consistent.
->
-> And do you have this device to be able to test your changes?
+- Changes since v1:
 
-I will test this tomorrow. But from an initial look, its going to
-break ppdev. There are few ioctls which don't need any arguments.
+ * changed the commit message to clarify what broke post commit 6d2c89441571
+ * dropped the misnomer post_reset_status variable in favour of a more natural
+   approach that relies on a boolean to keep track of the outcome of reset_link()
+
+After commit 6d2c89441571 ("PCI/ERR: Update error status after reset_link()")
+pcie_do_recovery() no longer calls ->slot_reset() in the case of a successful
+reset which breaks error recovery by breaking driver (re)initialisation.
+
+Cc: Russ Anderson <rja@hpe.com>
+Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+Cc: Ashok Raj <ashok.raj@intel.com>
+Cc: Joerg Roedel <jroedel@suse.com>
+
+Cc: stable@kernel.org # v5.7+
+
+---
+Hedi Berriche (1):
+  PCI/ERR: don't clobber status after reset_link()
+
+ drivers/pci/pcie/err.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
 -- 
-Regards
-Sudip
+2.28.0
+
