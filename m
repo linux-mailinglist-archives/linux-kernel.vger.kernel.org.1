@@ -2,107 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63DC128A467
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:31:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53AA928A475
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726761AbgJJXbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 19:31:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40176 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726120AbgJJXbA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 19:31:00 -0400
-Received: from earth.universe (unknown [185.213.155.232])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DB7E52078D;
-        Sat, 10 Oct 2020 23:30:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602372660;
-        bh=37d/LidKjvY0cD+ouqOyVb5R8tfno1hd9g+Ti8C101c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yFjrwLMA7fs7byRYZQ9Oj4Et9nbTZP+oqf6sQy2bhlzgICTmyxLE6QZmBXcqHpTiV
-         PMu23uBbgKZt5R3nOvbY0527ebnSJ7XnoH75E0SkmjB51MR2igWgos2lQ8EoBa2QR7
-         pbYXZ0zKxxLnHtmZJEAUDi5IynNxKj/YcfKXhhUM=
-Received: by earth.universe (Postfix, from userid 1000)
-        id E74233C0C87; Sun, 11 Oct 2020 01:30:57 +0200 (CEST)
-Date:   Sun, 11 Oct 2020 01:30:57 +0200
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Iskren Chernev <iskren.chernev@gmail.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH] power: supply: ltc2941: Fix ptr to enum cast
-Message-ID: <20201010233057.5gdelhmobcvctkwl@earth.universe>
-References: <20201010065526.2466583-1-iskren.chernev@gmail.com>
+        id S2387411AbgJJXkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 19:40:15 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:35552 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727274AbgJJXkL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 19:40:11 -0400
+Received: from [10.130.0.80] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxmMVWRoJfAPobAA--.2986S3;
+        Sun, 11 Oct 2020 07:40:06 +0800 (CST)
+Subject: Re: [PATCH 3/3] MIPS: Loongson64: Add /proc/boardinfo
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>
+References: <1602241050-24051-1-git-send-email-yangtiezhu@loongson.cn>
+ <1602241050-24051-4-git-send-email-yangtiezhu@loongson.cn>
+ <9f0e4f45-dc8b-8351-8a40-8a4b8a86940f@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <786f7ce7-a567-5d85-0946-bab36bbcf84a@loongson.cn>
+Date:   Sun, 11 Oct 2020 07:40:05 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="sh4ll5ysvwoxq4hx"
-Content-Disposition: inline
-In-Reply-To: <20201010065526.2466583-1-iskren.chernev@gmail.com>
+In-Reply-To: <9f0e4f45-dc8b-8351-8a40-8a4b8a86940f@flygoat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9DxmMVWRoJfAPobAA--.2986S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ar43AFW5JFyfCF48AF1kZrb_yoW8WryxpF
+        43ta1xCr1rJr17CFn7Wr1xurWSyrZ5WF1qkrsxZ397Cr90kFn3Xr1kuayv9Fn7ur4xGFyj
+        qF4xKr43ua4j9aDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvq14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r1j
+        6r4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4j6r
+        4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE67vI
+        Y487MxkIecxEwVAFwVWfMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
+        8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
+        xVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI
+        8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E
+        87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0x
+        ZFpf9x0JUFJP_UUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/10/2020 04:01 PM, Jiaxun Yang wrote:
+>
+>
+> 在 2020/10/9 下午6:57, Tiezhu Yang 写道:
+>> Add /proc/boardinfo to get mainboard and BIOS info easily on the 
+>> Loongson
+>> platform, this is useful to point out the current used mainboard type 
+>> and
+>> BIOS version when there exists problems related with hardware or 
+>> firmware.
+>
+> Hi Tiezhu,
+>
+> You're touching Kernel userspace API and I believe it should be 
+> documented. Also linux-api list
+> should be informed.
 
---sh4ll5ysvwoxq4hx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+[RESEND due to the following reason:
+Can not connect to recipient's server because of unstable
+network or firewall filter. rcpt handle timeout,last handle
+info: Host vger.kernel.org(23.128.96.18) command RCPT TO
+respond timeout or disconnected]
 
-Hi,
+Hi Jiaxun,
 
-On Sat, Oct 10, 2020 at 09:55:26AM +0300, Iskren Chernev wrote:
-> clang complains about casting pointers to smaller enum types.
->=20
-> Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
-> ---
+Thanks for your suggestion. I will do it as soon as possible and then 
+send v2.
 
-Thanks, queued.
+>
+> Also I'd like to know if it's really useful for mainline kernel.
+> For user who wants to check board information, dmidecode is already 
+> useful enough.
 
--- Sebastian
+There is no SMBIOS and dmidecode can see nothing on some machines, like 
+this:
+[root@linux loongson]# dmidecode
+# dmidecode 2.12
+# No SMBIOS nor DMI entry point found, sorry.
 
->  drivers/power/supply/ltc2941-battery-gauge.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/power/supply/ltc2941-battery-gauge.c b/drivers/power=
-/supply/ltc2941-battery-gauge.c
-> index 30a9014b2f95e..10cd617516ec2 100644
-> --- a/drivers/power/supply/ltc2941-battery-gauge.c
-> +++ b/drivers/power/supply/ltc2941-battery-gauge.c
-> @@ -473,7 +473,8 @@ static int ltc294x_i2c_probe(struct i2c_client *clien=
-t,
-> =20
->  	np =3D of_node_get(client->dev.of_node);
-> =20
-> -	info->id =3D (enum ltc294x_id)of_device_get_match_data(&client->dev);
-> +	info->id =3D (enum ltc294x_id) (uintptr_t) of_device_get_match_data(
-> +							&client->dev);
->  	info->supply_desc.name =3D np->name;
-> =20
->  	/* r_sense can be negative, when sense+ is connected to the battery
->=20
-> base-commit: 411643e949f4e616f758e2c6079f333b0e704c49
-> --=20
-> 2.28.0
->=20
+So I think it is useful.
 
---sh4ll5ysvwoxq4hx
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Tiezhu Yang
 
------BEGIN PGP SIGNATURE-----
+>
+> Thanks.
+>
+> - Jiaxun
+>
+>>
+>> E.g. with this patch:
+>>
+>> [loongson@linux ~]$ cat /proc/boardinfo
+>> Board Info
+>> Manufacturer            : LEMOTE
+>> Board Name              : LEMOTE-LS3A4000-7A1000-1w-V01-pc
+>> Family                  : LOONGSON3
+>>
+>> BIOS Info
+>> Vendor                  : Kunlun
+>> Version                 : Kunlun-A1901-V4.1.3-20200414093938
+>> ROM Size                : 4 KB
+>> Release Date            : 2020-04-14
+>>
+>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>> ---
+>>
 
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl+CRC4ACgkQ2O7X88g7
-+pq3dRAAqMBUbN7E1UWOIfDfDuU+sFXPnQmOTg7C9lkU/73FSG1Ka1uwdZlQz8SP
-GJwbJV7I4Cbaymd4jCTcnJOzkpKF8I4dCRt4TIC4wpjbUkoYRmWhkwigre9t0u4S
-5lsr/0ZcrlQbWyOjcf8iEshXRcBGsiur0MgZlLz6ubZzi/otfuJ3tT4827OAgQCo
-/qa7LE2mivbYyBOFgQDbUoX5me//rAOGwy2/HA/jeAcu+87KdZcPDUqtCa1XABG2
-Lb2+QVqdZpAYgBYhEjf1qEQYoNUon1ggtT8a0ygBcFbLk3PA+AHyWN35KiuPqMAD
-FWzu52fYinkbFsQxeBLym/pvyMKnIS8ypYNqrGw1ijto8+466CTUW8yCS2jTcG1k
-UDyVtJGX5bhd8nIIBzZl85FXS22qiibQztIxHjy4dYk2a0UDVH47QSYmboX9VA5d
-gBx63Lr3z/Lt+KAnlw0upc+V25kCTWkqEt1uOawy8nHOm6EIL8XPu+N1J/kBulJ5
-oKuc6hDuDYXLjrunssaIgF/b14hARo2C9ECTK73wdxgA+NrnIHCdY13iARQtCEYA
-eyeguuFPOl0OQPuMJ7//+9dAAbqHR0Ykip5ZrbS+gn+WyjiNPdaXDmrvZcMwSDOW
-y1UBiX1wfEdKsr1jRRLH8NLfFNsJinX6NVKQT9xJ8epydE2/3rs=
-=YIFo
------END PGP SIGNATURE-----
-
---sh4ll5ysvwoxq4hx--
