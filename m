@@ -2,122 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1E8928A23B
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:56:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC5328A3AA
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389483AbgJJWzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:55:44 -0400
-Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:61168 "EHLO
-        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731456AbgJJTXQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:23:16 -0400
-Received: from pps.filterd (m0148664.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09AFGhlb023141;
-        Sat, 10 Oct 2020 15:17:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pps0720;
- bh=wSRn6DStJQfrwSTDj+DfXKvQUD8C1Q/aQBRYMzWuv7I=;
- b=NCoBl+Kc3r3M1kI5Tf+OiPMK2jerC073U7v7rK6SsaWfT36y1gNZJqjvMlGl+cdXdKnN
- 5ZKDV8NlN8h+Pp2qccw4fqURlBTC9M86I0E2D6b+kgpMEfgCwmZNoyxpv+u2oyphPvHN
- DOOqhkN9tiUmXvt0WEkIjC5FJcr+4wHjw4q7pPqQl3FGWj7lkzDSIaTDZA3P8wkQ5WdJ
- HNSAZisK6UzL/6eqyhUu0PV8c0Dyfihy3LNXqTZM5EvSBSEhv4BWatFkwZb6hglQNagF
- knTtOpwt0zRpDRKoPRSbvweK7AVqOsNg8UJ3Ox/KOnamzuPo4pPtXnn57iCEgZgHQF8A Pg== 
-Received: from g4t3426.houston.hpe.com (g4t3426.houston.hpe.com [15.241.140.75])
-        by mx0b-002e3701.pphosted.com with ESMTP id 34342ujnvs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 10 Oct 2020 15:17:25 +0000
-Received: from g4t3433.houston.hpecorp.net (g4t3433.houston.hpecorp.net [16.208.49.245])
-        by g4t3426.houston.hpe.com (Postfix) with ESMTP id 175FF61;
-        Sat, 10 Oct 2020 15:17:25 +0000 (UTC)
-Received: from sarge.linuxathome.me (unknown [16.29.167.198])
-        by g4t3433.houston.hpecorp.net (Postfix) with ESMTP id 4A78D45;
-        Sat, 10 Oct 2020 15:17:23 +0000 (UTC)
-From:   Hedi Berriche <hedi.berriche@hpe.com>
-To:     sathyanarayanan.kuppuswamy@linux.intel.com
-Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Hedi Berriche <hedi.berriche@hpe.com>,
-        Russ Anderson <rja@hpe.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Joerg Roedel <jroedel@suse.com>, stable@kernel.org
-Subject: [PATCH v3 1/1] PCI/ERR: don't clobber status after reset_link()
-Date:   Sat, 10 Oct 2020 16:16:54 +0100
-Message-Id: <20201010151654.2707914-2-hedi.berriche@hpe.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201010151654.2707914-1-hedi.berriche@hpe.com>
-References: <20201010151654.2707914-1-hedi.berriche@hpe.com>
+        id S2390192AbgJJW4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:56:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53930 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731823AbgJJTh1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 15:37:27 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C760522314;
+        Sat, 10 Oct 2020 15:22:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602343370;
+        bh=qcgYt92nQkQECI+HSkkYIfU5hZxl0DXeMxKwadsTjS4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=P2znDrM/eqI7D3XAYTGy+DDuXoYOsarn/0w5SeAeyGMDJuOc3oJ5A9w8cZQR809Wm
+         ZVn8r62q0eG1jkIdrYAmzpw98cz3ABmuA8euZAR8Wl2RUzIRmtN1cLYKpa2eY1s887
+         dgtgpnjl+iQrP2ufB5ThOwYF7vKbV0N7T7a6G/Ik=
+Date:   Sat, 10 Oct 2020 08:22:48 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     John Keeping <john@metanate.com>, netdev@vger.kernel.org,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Eric Dumazet <edumazet@google.com>
+Subject: Re: [PATCH] net: stmmac: Don't call _irqoff() with hardirqs enabled
+Message-ID: <20201010082248.22cc7656@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <070b2b87-f38c-088d-4aaf-12045dbd92f7@gmail.com>
+References: <20201008162749.860521-1-john@metanate.com>
+        <8036d473-68bd-7ee7-e2e9-677ff4060bd3@gmail.com>
+        <20201009085805.65f9877a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <725ba7ca-0818-074b-c380-15abaa5d037b@gmail.com>
+        <070b2b87-f38c-088d-4aaf-12045dbd92f7@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-10_07:2020-10-09,2020-10-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
- clxscore=1015 mlxscore=0 lowpriorityscore=0 adultscore=0 malwarescore=0
- suspectscore=1 spamscore=0 bulkscore=0 priorityscore=1501 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010100143
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 6d2c89441571 ("PCI/ERR: Update error status after reset_link()")
-broke pcie_do_recovery(): updating status after reset_link() has the ill
-side effect of causing recovery to fail if the error status is
-PCI_ERS_RESULT_CAN_RECOVER or PCI_ERS_RESULT_NEED_RESET as the following
-code will *never* run in the case of a successful reset_link()
+On Sat, 10 Oct 2020 15:08:15 +0200 Heiner Kallweit wrote:
+> On 09.10.2020 18:06, Heiner Kallweit wrote:
+> > On 09.10.2020 17:58, Jakub Kicinski wrote:  
+> >> On Fri, 9 Oct 2020 16:54:06 +0200 Heiner Kallweit wrote:  
+> >>> I'm thinking about a __napi_schedule version that disables hard irq's
+> >>> conditionally, based on variable force_irqthreads, exported by the irq
+> >>> subsystem. This would allow to behave correctly with threadirqs set,
+> >>> whilst not loosing the _irqoff benefit with threadirqs unset.
+> >>> Let me come up with a proposal.  
+> >>
+> >> I think you'd need to make napi_schedule_irqoff() behave like that,
+> >> right?  Are there any uses of napi_schedule_irqoff() that are disabling
+> >> irqs and not just running from an irq handler?
+> >>  
+> > Right, the best approach depends on the answer to the latter question.
+> > I didn't check this yet, therefore I described the least intrusive approach.
+> >   
+> 
+> With some help from coccinelle I identified the following functions that
+> call napi_schedule_irqoff() or __napi_schedule_irqoff() and do not run
+> from an irq handler (at least not at the first glance).
+> 
+> dpaa2_caam_fqdan_cb
+> qede_simd_fp_handler
+> mlx4_en_rx_irq
+> mlx4_en_tx_irq
 
-   177         if (status == PCI_ERS_RESULT_CAN_RECOVER) {
-   ...
-   181         }
+Don't know the others but FWIW the mlx4 ones run from an IRQ handler,
+AFAICT:
 
-   183         if (status == PCI_ERS_RESULT_NEED_RESET) {
-   ...
-   192         }
+static irqreturn_t mlx4_interrupt(int irq, void *dev_ptr)
+static irqreturn_t mlx4_msi_x_interrupt(int irq, void *eq_ptr)
+  mlx4_eq_int()
+    mlx4_cq_completion
+      cq->comp()
 
-For instance in the case of PCI_ERS_RESULT_NEED_RESET we end up not
-calling ->slot_reset() (because we skip report_slot_reset()) thus
-breaking driver (re)initialisation.
+> qeth_qdio_poll
+> netvsc_channel_cb
+> napi_watchdog
 
-Don't clobber status with the return value of reset_link(); set status
-to PCI_ERS_RESULT_RECOVERED, in case of successful link reset, if and
-only if the initial value of error status is PCI_ERS_RESULT_DISCONNECT
-or PCI_ERS_RESULT_NO_AER_DRIVER.
-
-Fixes: 6d2c89441571 ("PCI/ERR: Update error status after reset_link()")
-Signed-off-by: Hedi Berriche <hedi.berriche@hpe.com>
-Cc: Russ Anderson <rja@hpe.com>
-Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Ashok Raj <ashok.raj@intel.com>
-Cc: Joerg Roedel <jroedel@suse.com>
-
-Cc: stable@kernel.org # v5.7+
----
- drivers/pci/pcie/err.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-index c543f419d8f9..2730826cfd8a 100644
---- a/drivers/pci/pcie/err.c
-+++ b/drivers/pci/pcie/err.c
-@@ -165,10 +165,13 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
- 	pci_dbg(dev, "broadcast error_detected message\n");
- 	if (state == pci_channel_io_frozen) {
- 		pci_walk_bus(bus, report_frozen_detected, &status);
--		status = reset_link(dev);
--		if (status != PCI_ERS_RESULT_RECOVERED) {
-+		if (reset_link(dev) != PCI_ERS_RESULT_RECOVERED) {
- 			pci_warn(dev, "link reset failed\n");
- 			goto failed;
-+		} else {
-+			if (status == PCI_ERS_RESULT_DISCONNECT ||
-+			    status == PCI_ERS_RESULT_NO_AER_DRIVER)
-+				status = PCI_ERS_RESULT_RECOVERED;
- 		}
- 	} else {
- 		pci_walk_bus(bus, report_normal_detected, &status);
--- 
-2.28.0
-
+This one runs from a hrtimer, which I believe will be a hard irq
+context on anything but RT. I could be wrong.
