@@ -2,176 +2,349 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A36D289FF2
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 12:12:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A153D28A2C4
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726259AbgJJKIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 06:08:11 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:31154 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726720AbgJJJva (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 05:51:30 -0400
-X-UUID: 57ab3f1bf93346f1a6dffb2710ec11ac-20201010
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=H+ln7qIH6WhzfS8WeSevzwzddMMkN7urwrkqmKBrJkk=;
-        b=TMP0Xzqg0/AlemBSuJbg5oKE+XfYCJoLmsNfSo+jgOzTpRQQwdADzJwvVzI5vUU/BNmlkuMmT2Zov6Z/thCmhCmCm1cafqEZktorabDhtHuC80/Kd3+yFTAigynxbwcztn+ZgEcSOUDxCG+bx4AiOHgZj6wuoG34NGZZ37sON3k=;
-X-UUID: 57ab3f1bf93346f1a6dffb2710ec11ac-20201010
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <wenbin.mei@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1974926838; Sat, 10 Oct 2020 17:18:20 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
- (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sat, 10 Oct
- 2020 17:18:18 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sat, 10 Oct 2020 17:18:18 +0800
-Message-ID: <1602321500.11947.6.camel@mhfsdcap03>
-Subject: Re: [PATCH v3 4/4] mmc: mediatek: Add subsys clock control for
- MT8192 msdc
-From:   Wenbin Mei <wenbin.mei@mediatek.com>
-To:     Nicolas Boichat <drinkcat@chromium.org>
-CC:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-mmc@vger.kernel.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>
-Date:   Sat, 10 Oct 2020 17:18:20 +0800
-In-Reply-To: <CANMq1KCQ9x1kgME3dAQmGzjUoqkNLuWGS4dG07qhNKQ3N=o_dw@mail.gmail.com>
-References: <20200930083120.11971-1-wenbin.mei@mediatek.com>
-         <20200930083120.11971-5-wenbin.mei@mediatek.com>
-         <CANMq1KCQ9x1kgME3dAQmGzjUoqkNLuWGS4dG07qhNKQ3N=o_dw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S2390854AbgJJW70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:59:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57072 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732647AbgJJTyq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 15:54:46 -0400
+Received: from coco.lan (ip5f5ad5ce.dynamic.kabel-deutschland.de [95.90.213.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E7E03207C4;
+        Sat, 10 Oct 2020 09:21:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602321690;
+        bh=d3mTSqxjmIVv8pvjDnUxuO/wR4Ywg3sH+xwYDg3gKUY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GvHeRr3ZUEwZJUKG634fF9Md5DIz1b6g+GzjmK/SnMBCaTfKY/Nv+1CfBU6hrZYex
+         JiYJ3TI4ntgmxVwSgIfd0LVLdi9AM0cRnqK4eOJqIWNfAQ2EIpbNiM2Z3niSGk9MmJ
+         mFn0WP4KLtQX9HyBi/TdwG6kikR3GKtxtj5/JmG8=
+Date:   Sat, 10 Oct 2020 11:21:22 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v2 09/17] mm: Add unsafe_follow_pfn
+Message-ID: <20201010112122.587f9945@coco.lan>
+In-Reply-To: <CAKMK7uF-hrSwzFQkp6qEP88hM1Qg8TMQOunuRHh=f2+D8MaMRg@mail.gmail.com>
+References: <20201009075934.3509076-1-daniel.vetter@ffwll.ch>
+        <20201009075934.3509076-10-daniel.vetter@ffwll.ch>
+        <20201009123421.67a80d72@coco.lan>
+        <20201009122111.GN5177@ziepe.ca>
+        <20201009143723.45609bfb@coco.lan>
+        <20201009124850.GP5177@ziepe.ca>
+        <CAKMK7uF-hrSwzFQkp6qEP88hM1Qg8TMQOunuRHh=f2+D8MaMRg@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 28E61ED4929A78886AAEC66E902D7BDF49F75B5965520A77CC1E21997464EA852000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIwLTEwLTAxIGF0IDE0OjE0ICswODAwLCBOaWNvbGFzIEJvaWNoYXQgd3JvdGU6
-DQo+IE9uIFdlZCwgU2VwIDMwLCAyMDIwIGF0IDQ6MzEgUE0gV2VuYmluIE1laSA8d2VuYmluLm1l
-aUBtZWRpYXRlay5jb20+IHdyb3RlOg0KPiA+DQo+ID4gTVQ4MTkyIG1zZGMgaXMgYW4gaW5kZXBl
-bmRlbnQgc3ViIHN5c3RlbSwgd2UgbmVlZCBjb250cm9sIG1vcmUgYnVzDQo+ID4gY2xvY2tzIGZv
-ciBpdC4NCj4gPiBBZGQgc3VwcG9ydCBmb3IgdGhlIGFkZGl0aW9uYWwgc3Vic3lzIGNsb2NrcyB0
-byBhbGxvdyBpdCB0byBiZQ0KPiA+IGNvbmZpZ3VyZWQgYXBwcm9wcmlhdGVseS4NCj4gPg0KPiA+
-IFNpZ25lZC1vZmYtYnk6IFdlbmJpbiBNZWkgPHdlbmJpbi5tZWlAbWVkaWF0ZWsuY29tPg0KPiA+
-IC0tLQ0KPiA+ICBkcml2ZXJzL21tYy9ob3N0L210ay1zZC5jIHwgNzcgKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrLS0tLS0tLS0tDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCA1OSBpbnNlcnRp
-b25zKCspLCAxOCBkZWxldGlvbnMoLSkNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL21t
-Yy9ob3N0L210ay1zZC5jIGIvZHJpdmVycy9tbWMvaG9zdC9tdGstc2QuYw0KPiA+IGluZGV4IGE3
-MDQ3NDVlNTg4Mi4uOWExNDIyOTU1NTkzIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvbW1jL2hv
-c3QvbXRrLXNkLmMNCj4gPiArKysgYi9kcml2ZXJzL21tYy9ob3N0L210ay1zZC5jDQo+ID4gQEAg
-LTQyNSw2ICs0MjUsOCBAQCBzdHJ1Y3QgbXNkY19ob3N0IHsNCj4gPiAgICAgICAgIHN0cnVjdCBj
-bGsgKmhfY2xrOyAgICAgIC8qIG1zZGMgaF9jbGsgKi8NCj4gPiAgICAgICAgIHN0cnVjdCBjbGsg
-KmJ1c19jbGs7ICAgIC8qIGJ1cyBjbG9jayB3aGljaCB1c2VkIHRvIGFjY2VzcyByZWdpc3RlciAq
-Lw0KPiA+ICAgICAgICAgc3RydWN0IGNsayAqc3JjX2Nsa19jZzsgLyogbXNkYyBzb3VyY2UgY2xv
-Y2sgY29udHJvbCBnYXRlICovDQo+ID4gKyAgICAgICBzdHJ1Y3QgY2xrICpzeXNfY2xrX2NnOyAv
-KiBtc2RjIHN1YnN5cyBjbG9jayBjb250cm9sIGdhdGUgKi8NCj4gPiArICAgICAgIHN0cnVjdCBj
-bGtfYnVsa19kYXRhIGJ1bGtfY2xrc1szXTsgICAgICAvKiBwY2xrLCBheGksIGFoYiBjbG9jayBj
-b250cm9sIGdhdGUgKi8NCj4gPiAgICAgICAgIHUzMiBtY2xrOyAgICAgICAgICAgICAgIC8qIG1t
-YyBzdWJzeXN0ZW0gY2xvY2sgZnJlcXVlbmN5ICovDQo+ID4gICAgICAgICB1MzIgc3JjX2Nsa19m
-cmVxOyAgICAgICAvKiBzb3VyY2UgY2xvY2sgZnJlcXVlbmN5ICovDQo+ID4gICAgICAgICB1bnNp
-Z25lZCBjaGFyIHRpbWluZzsNCj4gPiBAQCAtNzg0LDYgKzc4Niw4IEBAIHN0YXRpYyB2b2lkIG1z
-ZGNfc2V0X2J1c3lfdGltZW91dChzdHJ1Y3QgbXNkY19ob3N0ICpob3N0LCB1NjQgbnMsIHU2NCBj
-bGtzKQ0KPiA+DQo+ID4gIHN0YXRpYyB2b2lkIG1zZGNfZ2F0ZV9jbG9jayhzdHJ1Y3QgbXNkY19o
-b3N0ICpob3N0KQ0KPiA+ICB7DQo+ID4gKyAgICAgICBjbGtfYnVsa19kaXNhYmxlX3VucHJlcGFy
-ZShBUlJBWV9TSVpFKGhvc3QtPmJ1bGtfY2xrcyksDQo+ID4gKyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICBob3N0LT5idWxrX2Nsa3MpOw0KPiA+ICAgICAgICAgY2xrX2Rpc2FibGVf
-dW5wcmVwYXJlKGhvc3QtPnNyY19jbGtfY2cpOw0KPiA+ICAgICAgICAgY2xrX2Rpc2FibGVfdW5w
-cmVwYXJlKGhvc3QtPnNyY19jbGspOw0KPiA+ICAgICAgICAgY2xrX2Rpc2FibGVfdW5wcmVwYXJl
-KGhvc3QtPmJ1c19jbGspOw0KPiA+IEBAIC03OTIsMTAgKzc5NiwxNyBAQCBzdGF0aWMgdm9pZCBt
-c2RjX2dhdGVfY2xvY2soc3RydWN0IG1zZGNfaG9zdCAqaG9zdCkNCj4gPg0KPiA+ICBzdGF0aWMg
-dm9pZCBtc2RjX3VuZ2F0ZV9jbG9jayhzdHJ1Y3QgbXNkY19ob3N0ICpob3N0KQ0KPiA+ICB7DQo+
-ID4gKyAgICAgICBpbnQgcmV0Ow0KPiA+ICsNCj4gPiAgICAgICAgIGNsa19wcmVwYXJlX2VuYWJs
-ZShob3N0LT5oX2Nsayk7DQo+ID4gICAgICAgICBjbGtfcHJlcGFyZV9lbmFibGUoaG9zdC0+YnVz
-X2Nsayk7DQo+ID4gICAgICAgICBjbGtfcHJlcGFyZV9lbmFibGUoaG9zdC0+c3JjX2Nsayk7DQo+
-ID4gICAgICAgICBjbGtfcHJlcGFyZV9lbmFibGUoaG9zdC0+c3JjX2Nsa19jZyk7DQo+ID4gKyAg
-ICAgICByZXQgPSBjbGtfYnVsa19wcmVwYXJlX2VuYWJsZShBUlJBWV9TSVpFKGhvc3QtPmJ1bGtf
-Y2xrcyksDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBob3N0LT5i
-dWxrX2Nsa3MpOw0KPiA+ICsgICAgICAgaWYgKHJldCkNCj4gPiArICAgICAgICAgICAgICAgZGV2
-X2RiZyhob3N0LT5kZXYsICJlbmFibGUgY2xrcyBmYWlsZWQhXG4iKTsNCj4gDQo+IGRldl9lcnIg
-bG9va3MgYSBsb3QgbW9yZSBhcHByb3ByaWF0ZS4gQWxzbywgZG9uJ3QgeW91IHdhbnQgdG8gZXhp
-dCB0aGUNCj4gZnVuY3Rpb24gaW4gdGhhdCBjYXNlLCByYXRoZXIgdGhhbiBnb2luZyB0byB0aGUg
-d2hpbGUgbG9vcCBiZWxvdyB3aGVyZQ0KPiB5b3UgbWF5IGdldCBzdHVjaz8NCj4gDQpJIHdpbGwg
-Y2hhbmdlIGl0IGluIHRoZSBuZXh0IHZlcnNpb24uDQo+ID4gKw0KPiA+ICAgICAgICAgd2hpbGUg
-KCEocmVhZGwoaG9zdC0+YmFzZSArIE1TRENfQ0ZHKSAmIE1TRENfQ0ZHX0NLU1RCKSkNCj4gPiAg
-ICAgICAgICAgICAgICAgY3B1X3JlbGF4KCk7DQo+ID4gIH0NCj4gPiBAQCAtMjM2Niw2ICsyMzc3
-LDUyIEBAIHN0YXRpYyB2b2lkIG1zZGNfb2ZfcHJvcGVydHlfcGFyc2Uoc3RydWN0IHBsYXRmb3Jt
-X2RldmljZSAqcGRldiwNCj4gPiAgICAgICAgICAgICAgICAgaG9zdC0+Y3FoY2kgPSBmYWxzZTsN
-Cj4gPiAgfQ0KPiA+DQo+ID4gK3N0YXRpYyBpbnQgbXNkY19vZl9jbG9ja19wYXJzZShzdHJ1Y3Qg
-cGxhdGZvcm1fZGV2aWNlICpwZGV2LA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICBzdHJ1Y3QgbXNkY19ob3N0ICpob3N0KQ0KPiA+ICt7DQo+ID4gKyAgICAgICBzdHJ1Y3QgY2xr
-ICpjbGs7DQo+ID4gKw0KPiA+ICsgICAgICAgaG9zdC0+c3JjX2NsayA9IGRldm1fY2xrX2dldCgm
-cGRldi0+ZGV2LCAic291cmNlIik7DQo+ID4gKyAgICAgICBpZiAoSVNfRVJSKGhvc3QtPnNyY19j
-bGspKQ0KPiA+ICsgICAgICAgICAgICAgICByZXR1cm4gUFRSX0VSUihob3N0LT5zcmNfY2xrKTsN
-Cj4gPiArDQo+ID4gKyAgICAgICBob3N0LT5oX2NsayA9IGRldm1fY2xrX2dldCgmcGRldi0+ZGV2
-LCAiaGNsayIpOw0KPiA+ICsgICAgICAgaWYgKElTX0VSUihob3N0LT5oX2NsaykpDQo+ID4gKyAg
-ICAgICAgICAgICAgIHJldHVybiBQVFJfRVJSKGhvc3QtPmhfY2xrKTsNCj4gPiArDQo+ID4gKyAg
-ICAgICBob3N0LT5idXNfY2xrID0gZGV2bV9jbGtfZ2V0KCZwZGV2LT5kZXYsICJidXNfY2xrIik7
-DQo+ID4gKyAgICAgICBpZiAoSVNfRVJSKGhvc3QtPmJ1c19jbGspKQ0KPiA+ICsgICAgICAgICAg
-ICAgICBob3N0LT5idXNfY2xrID0gTlVMTDsNCj4gDQo+IFVzZSBkZXZtX2Nsa19nZXRfb3B0aW9u
-YWwgaW5zdGVhZCAoZGl0dG8gZm9yIHRoZSBuZXh0IDIpLg0KPiANCj4gPiArDQo+ID4gKyAgICAg
-ICAvKnNvdXJjZSBjbG9jayBjb250cm9sIGdhdGUgaXMgb3B0aW9uYWwgY2xvY2sqLw0KPiA+ICsg
-ICAgICAgaG9zdC0+c3JjX2Nsa19jZyA9IGRldm1fY2xrX2dldCgmcGRldi0+ZGV2LCAic291cmNl
-X2NnIik7DQo+ID4gKyAgICAgICBpZiAoSVNfRVJSKGhvc3QtPnNyY19jbGtfY2cpKQ0KPiA+ICsg
-ICAgICAgICAgICAgICBob3N0LT5zcmNfY2xrX2NnID0gTlVMTDsNCj4gPiArDQo+ID4gKyAgICAg
-ICBob3N0LT5zeXNfY2xrX2NnID0gZGV2bV9jbGtfZ2V0KCZwZGV2LT5kZXYsICJzeXNfY2ciKTsN
-Cj4gPiArICAgICAgIGlmIChJU19FUlIoaG9zdC0+c3lzX2Nsa19jZykpDQo+ID4gKyAgICAgICAg
-ICAgICAgIGhvc3QtPnN5c19jbGtfY2cgPSBOVUxMOw0KPiA+ICsgICAgICAgZWxzZQ0KPiA+ICsg
-ICAgICAgICAgICAgICBjbGtfcHJlcGFyZV9lbmFibGUoaG9zdC0+c3lzX2Nsa19jZyk7DQo+IA0K
-PiBUaGlzIGRvZXNuJ3QgbmVlZCB0byBiZSBpbiBhbiBlbHNlIGJyYW5jaCwgY2FsbGluZyBjbGtf
-cHJlcGFyZV9lbmFibGUNCj4gb24gYSBOVUxMIGNsb2NrIGlzIGZpbmUuDQpJIHdpbGwgY2hhbmdl
-IGl0IGluIHRoZSBuZXh0IHZlcnNpb24uDQo+IA0KPiBIb3dldmVyLCBpcyBpdCBleHBlY3RlZCB0
-aGF0IHRoaXMgY2xvY2sgaXMgdHVybmVkIG9uIGZvcmV2ZXIgYWZ0ZXINCj4gcHJvYmU/ISBBdCB0
-aGUgdmVyeSBsZWFzdCwgdGhlIGNsb2NrIHNob3VsZCBiZSBkaXNhYmxlZCBpbg0KPiBtc2RjX2Ry
-dl9yZW1vdmUsIGJ1dCwgcmVhbGx5LCBJIHRoaW5rIGl0IHNob3VsZCBiZSBlbmFibGVkIGFzIG5l
-ZWRlZCwNCj4gbGlrZSB0aGUgb3RoZXIgY2xvY2tzLCBpbiBtc2RjX2dhdGVfY2xvY2s/DQo+IA0K
-VGhpcyBjbG9jayBnYXRlIGNhbiBub3QgYmUgY2xvc2VkLCBpZiBpdCBpcyBjbG9zZWQsIGl0IGNh
-biBub3QgYmUNCmFjY2Vzc2VkIGFuZCBjYW4gbm90IGJlIG9wZW5lZCBhZ2Fpbi4NClNvIGl0IGlz
-IGV4cGVjdGVkIHRoYXQgdGhpcyBjbG9jayBpcyB0dXJuZWQgb24gZm9yZXZlciBhZnRlciBwcm9i
-ZS4NCj4gPiArDQo+ID4gKyAgICAgICBjbGsgPSBkZXZtX2Nsa19nZXQoJnBkZXYtPmRldiwgInBj
-bGtfY2ciKTsNCj4gPiArICAgICAgIGlmIChJU19FUlIoY2xrKSkNCj4gPiArICAgICAgICAgICAg
-ICAgY2xrID0gTlVMTDsNCj4gPiArICAgICAgIGhvc3QtPmJ1bGtfY2xrc1swXS5jbGsgPSBjbGs7
-DQo+ID4gKw0KPiA+ICsgICAgICAgY2xrID0gZGV2bV9jbGtfZ2V0KCZwZGV2LT5kZXYsICJheGlf
-Y2ciKTsNCj4gPiArICAgICAgIGlmIChJU19FUlIoY2xrKSkNCj4gPiArICAgICAgICAgICAgICAg
-Y2xrID0gTlVMTDsNCj4gPiArICAgICAgIGhvc3QtPmJ1bGtfY2xrc1sxXS5jbGsgPSBjbGs7DQo+
-ID4gKw0KPiA+ICsgICAgICAgY2xrID0gZGV2bV9jbGtfZ2V0KCZwZGV2LT5kZXYsICJhaGJfY2ci
-KTsNCj4gPiArICAgICAgIGlmIChJU19FUlIoY2xrKSkNCj4gPiArICAgICAgICAgICAgICAgY2xr
-ID0gTlVMTDsNCj4gPiArICAgICAgIGhvc3QtPmJ1bGtfY2xrc1syXS5jbGsgPSBjbGs7DQo+IA0K
-PiBVc2UgZGV2bV9jbGtfYnVsa19nZXRfb3B0aW9uYWwgZm9yIHRoZXNlIDMuDQo+IA0KSSB3aWxs
-IGNoYW5nZSBpdCBpbiB0aGUgbmV4dCB2ZXJzaW9uLg0KPiA+ICsNCj4gPiArICAgICAgIHJldHVy
-biAwOw0KPiA+ICt9DQo+ID4gKw0KPiA+ICBzdGF0aWMgaW50IG1zZGNfZHJ2X3Byb2JlKHN0cnVj
-dCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQo+ID4gIHsNCj4gPiAgICAgICAgIHN0cnVjdCBtbWNf
-aG9zdCAqbW1jOw0KPiA+IEBAIC0yNDA1LDI1ICsyNDYyLDkgQEAgc3RhdGljIGludCBtc2RjX2Ry
-dl9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KPiA+ICAgICAgICAgaWYgKHJl
-dCkNCj4gPiAgICAgICAgICAgICAgICAgZ290byBob3N0X2ZyZWU7DQo+ID4NCj4gPiAtICAgICAg
-IGhvc3QtPnNyY19jbGsgPSBkZXZtX2Nsa19nZXQoJnBkZXYtPmRldiwgInNvdXJjZSIpOw0KPiA+
-IC0gICAgICAgaWYgKElTX0VSUihob3N0LT5zcmNfY2xrKSkgew0KPiA+IC0gICAgICAgICAgICAg
-ICByZXQgPSBQVFJfRVJSKGhvc3QtPnNyY19jbGspOw0KPiA+IC0gICAgICAgICAgICAgICBnb3Rv
-IGhvc3RfZnJlZTsNCj4gPiAtICAgICAgIH0NCj4gPiAtDQo+ID4gLSAgICAgICBob3N0LT5oX2Ns
-ayA9IGRldm1fY2xrX2dldCgmcGRldi0+ZGV2LCAiaGNsayIpOw0KPiA+IC0gICAgICAgaWYgKElT
-X0VSUihob3N0LT5oX2NsaykpIHsNCj4gPiAtICAgICAgICAgICAgICAgcmV0ID0gUFRSX0VSUiho
-b3N0LT5oX2Nsayk7DQo+ID4gKyAgICAgICByZXQgPSBtc2RjX29mX2Nsb2NrX3BhcnNlKHBkZXYs
-IGhvc3QpOw0KPiA+ICsgICAgICAgaWYgKHJldCkNCj4gPiAgICAgICAgICAgICAgICAgZ290byBo
-b3N0X2ZyZWU7DQo+ID4gLSAgICAgICB9DQo+ID4gLQ0KPiA+IC0gICAgICAgaG9zdC0+YnVzX2Ns
-ayA9IGRldm1fY2xrX2dldCgmcGRldi0+ZGV2LCAiYnVzX2NsayIpOw0KPiA+IC0gICAgICAgaWYg
-KElTX0VSUihob3N0LT5idXNfY2xrKSkNCj4gPiAtICAgICAgICAgICAgICAgaG9zdC0+YnVzX2Ns
-ayA9IE5VTEw7DQo+ID4gLSAgICAgICAvKnNvdXJjZSBjbG9jayBjb250cm9sIGdhdGUgaXMgb3B0
-aW9uYWwgY2xvY2sqLw0KPiA+IC0gICAgICAgaG9zdC0+c3JjX2Nsa19jZyA9IGRldm1fY2xrX2dl
-dCgmcGRldi0+ZGV2LCAic291cmNlX2NnIik7DQo+ID4gLSAgICAgICBpZiAoSVNfRVJSKGhvc3Qt
-PnNyY19jbGtfY2cpKQ0KPiA+IC0gICAgICAgICAgICAgICBob3N0LT5zcmNfY2xrX2NnID0gTlVM
-TDsNCj4gPg0KPiA+ICAgICAgICAgaG9zdC0+cmVzZXQgPSBkZXZtX3Jlc2V0X2NvbnRyb2xfZ2V0
-X29wdGlvbmFsX2V4Y2x1c2l2ZSgmcGRldi0+ZGV2LA0KPiA+ICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiaHJzdCIpOw0KPiA+
-IC0tDQo+ID4gMi4xOC4wDQoNCg==
+Em Fri, 9 Oct 2020 19:52:05 +0200
+Daniel Vetter <daniel.vetter@ffwll.ch> escreveu:
 
+> On Fri, Oct 9, 2020 at 2:48 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >
+> > On Fri, Oct 09, 2020 at 02:37:23PM +0200, Mauro Carvalho Chehab wrote:
+> >  
+> > > I'm not a mm/ expert, but, from what I understood from Daniel's patch
+> > > description is that this is unsafe *only if*  __GFP_MOVABLE is used.  
+> >
+> > No, it is unconditionally unsafe. The CMA movable mappings are
+> > specific VMAs that will have bad issues here, but there are other
+> > types too.
+
+I didn't check the mm dirty details, but I strongly suspect that the mm
+code has a way to prevent moving a mmapped page while it is still in usage.
+
+If not, then the entire movable pages concept sounds broken to me, and
+has to be fixed at mm subsystem.
+
+> >
+> > The only way to do something at a VMA level is to have a list of OK
+> > VMAs, eg because they were creatd via a special mmap helper from the
+> > media subsystem.
+
+I'm not sure if I'm following you on that. The media API can work with
+different ways of sending buffers to userspace:
+
+	- read();
+
+	- using the overlay mode. This interface is deprecated in
+	  practice, being replaced by DMABUF. Only a few older hardware
+	  supports it, and it depends on an special X11 helper driver
+	  for it to work.
+
+	- via DMABUF:
+		https://linuxtv.org/downloads/v4l-dvb-apis-new/userspace-api/v4l/dmabuf.html
+
+	- via mmap, using a mmap helper:
+		https://linuxtv.org/downloads/v4l-dvb-apis-new/userspace-api/v4l/mmap.html
+
+	- via mmap, using userspace-provided pointers:
+		https://linuxtv.org/downloads/v4l-dvb-apis-new/userspace-api/v4l/userp.html
+
+The existing open-source programs usually chose one or more of the above
+modes. if the Kernel driver returns -EINVAL when an mmapped streaming I/O
+mode is not supported, userspace has to select a different method.
+
+Most userspace open source programs have fallback support: if one
+mmap I/O method fails, it selects another one, although this is not
+a mandatory requirement. I found (and fixed) a few ones that were
+relying exclusively on userptr support, but I didn't make a 
+comprehensive check.
+
+Also there are a number of relevant closed-source apps that we have no 
+idea about what methods they use, like Skype, and other similar
+videoconferencing programs. Breaking support for those, specially at
+a time where people are relying on it in order to participate on
+conferences and doing internal meetings is a **very bad** idea.
+
+So, whatever solution is taken, it should not be dumping warning
+messages at the system and tainting the Kernel, but, instead, checking
+if the userspace request is valid or not. If it is invalid, return the
+proper error code via the right V4L2 ioctl, in order to let userspace
+choose a different method. I the request is valid, refcount the pages 
+for them to not be moved while they're still in usage.
+
+-
+
+Let me provide some background about how things work at the media
+subsytem. If you want to know more, the userspace-provided memory 
+mapped pointers work is described here:
+
+	https://linuxtv.org/downloads/v4l-dvb-apis-new/userspace-api/v4l/userp.html#userp
+
+Basically, userspace calls either one of those ioctls:
+
+	VIDIOC_CREATE_BUFS:
+		https://linuxtv.org/downloads/v4l-dvb-apis-new/userspace-api/v4l/vidioc-create-bufs.html
+
+Which is translated into a videobuf2 call to: vb2_ioctl_create_bufs()
+
+	VIDIOC_REQBUFS
+		https://linuxtv.org/downloads/v4l-dvb-apis-new/userspace-api/v4l/vidioc-reqbufs.html#vidioc-reqbufs
+
+Which is translated into a videobuf2 call to: vb2_ioctl_reqbufs()
+
+Both internally calls vb2_verify_memory_type(), which is responsible
+for checking if the provided pointers are OK for the usage and/or do
+all necessary page allocations, and taking care of any special 
+requirements. This could easily have some additional checks to
+verify if the requested VMA address has pages that are movable or
+not, ensuring that ensure that the VMA is OK, and locking them in
+order to prevent the mm code to move such pages while they are in
+usage by the media subsystem.
+
+Now, as I said before, I don't know the dirty details about how
+to lock those pages at the mm subsystem in order to avoid it
+to move the used pages. Yet, when vb2_create_framevec()
+is called, the check if VMA is OK should already be happened
+at vb2_verify_memory_type().
+
+-
+
+It should be noticed that the dirty hack added by patch 09/17
+and 10/17 affects *all* types of memory allocations at V4L2, 
+as this kAPI is called by the 3 different memory models
+supported at the media subsystem:
+
+	drivers/media/common/videobuf2/videobuf2-vmalloc.c
+	drivers/media/common/videobuf2/videobuf2-dma-contig.c
+	drivers/media/common/videobuf2/videobuf2-dma-sg.c
+
+In other words, with this code:
+
+	int unsafe_follow_pfn(struct vm_area_struct *vma, unsigned long address,
+		unsigned long *pfn)
+	{
+	#ifdef CONFIG_STRICT_FOLLOW_PFN
+		pr_info("unsafe follow_pfn usage rejected, see CONFIG_STRICT_FOLLOW_PFN\n");
+		return -EINVAL;
+	#else
+		WARN_ONCE(1, "unsafe follow_pfn usage\n");
+		add_taint(TAINT_USER, LOCKDEP_STILL_OK);
+
+		return follow_pfn(vma, address, pfn);
+	#endif
+
+you're unconditionally breaking the media userspace API support not
+only for embedded systems that could be using userptr instead of
+DMA_BUF, but also for *all* video devices, including USB cameras.
+
+This is **NOT** an acceptable solution. 
+
+So, I stand my NACK to this approach.
+
+> > > Well, no drivers inside the media subsystem uses such flag, although
+> > > they may rely on some infrastructure that could be using it behind
+> > > the bars.  
+> >
+> > It doesn't matter, nothing prevents the user from calling media APIs
+> > on mmaps it gets from other subsystems.  
+> 
+> I think a good first step would be to disable userptr of non struct
+> page backed storage going forward for any new hw support. Even on
+> existing drivers. dma-buf sharing has been around for long enough now
+> that this shouldn't be a problem. Unfortunately right now this doesn't
+> seem to exist, so the entire problem keeps getting perpetuated.
+
+Well, the media uAPI does support DMABUF (both import and export):
+
+	https://linuxtv.org/downloads/v4l-dvb-apis-new/userspace-api/v4l/dmabuf.html
+	https://linuxtv.org/downloads/v4l-dvb-apis-new/userspace-api/v4l/vidioc-expbuf.html#vidioc-expbuf
+
+And I fully agree that newer programs should use DMABUF when sharing
+buffers with DRM subsystem, but that's not my main concern.
+
+What I do want is to not break userspace support nor to taint the Kernel
+due to a valid uAPI call.
+
+A valid uAPI call should check if the parameters passed though it are
+valid. If they are, it should handle. Otherwise, it should return
+-EINVAL, without tainting the Kernel or printing warning messages.
+
+The approach took by patches 09/17 and 10/17 doesn't do that.
+Instead, they just unconditionally breaks the media uAPI.
+
+What should be done, instead, is to drop patch 10/17, and work on
+a way for the code inside vb2_create_framevec() to ensure that, if
+USERPTR is used, the memory pages will be properly locked while the
+driver is using, returning -EINVAL only if there's no way to proceed,
+without tainting the Kernel.
+
+> 
+> > > If this is the case, the proper fix seems to have a GFP_NOT_MOVABLE
+> > > flag that it would be denying the core mm code to set __GFP_MOVABLE.  
+> >
+> > We can't tell from the VMA these kinds of details..
+> >
+> > It has to go the other direction, evey mmap that might be used as a
+> > userptr here has to be found and the VMA specially created to allow
+> > its use. At least that is a kernel only change, but will need people
+> > with the HW to do this work.  
+> 
+> I think the only reasonable way to keep this working is:
+> - add a struct dma_buf *vma_tryget_dma_buf(struct vm_area_struct *vma);
+
+Not sure how an userspace buffer could be mapped to be using it,
+specially since the buffer may not even be imported/exported
+from the DRM subsystem, but it could simply be allocated
+via glibc calloc()/malloc().
+
+> - add dma-buf export support to fbdev and v4l
+
+V4L has support for it already.
+
+> - roll this out everywhere we still need it.
+
+That's where things are hard. This is not like DRM, where the APIs
+are called via some open source libraries that are also managed
+by DRM upstream developers.
+
+In the case of the media subsystem, while we added a libv4l sometime
+ago, not all userspace apps use it, as a large part of them used
+to exist before the addition of the libraries. Also, we're currently 
+trying to deprecate libv4l, at least for embedded systems, in favor
+of libcamera.
+
+On media, there are lots of closed source apps that uses the media API
+directly. Even talking about open source ones, there are lots of
+different apps, including not only media-specific apps, but also
+generic ones, like web browsers, which don't use the libraries we
+wrote.
+
+An userspace API breakage would take *huge* efforts and will take
+lots of time to have it merged everywhere. It will cause lots of
+troubles everywhere.
+
+> Realistically this just isn't going to happen. 
+
+Why not? Any app developer could already use DMA-BUF if required,
+as the upstream support was added several years ago.
+
+> And anything else just
+> reimplements half of dma-buf, 
+
+It is just the opposite: those uAPIs came years before dma-buf.
+In other words, it was dma-buf that re-implemented it ;-)
+
+Now, I agree with you that dma-buf is a way cooler than the past
+alternatives.
+
+-
+
+It sounds to me that you're considering on only one use case of 
+USERPTR: to pass a buffer created from DRM. As far as I'm aware,
+only embedded userspace applications actually do that.
+
+Yet, there are a number of other applications that do something like
+the userptr_capture() function on this code:
+
+	https://git.linuxtv.org/v4l-utils.git/tree/contrib/test/v4l2grab.c
+
+E. g. using glibc alloc functions like calloc() to allocate memory, 
+passing the user-allocated data to the Kernel via something like this:
+
+	struct v4l2_requestbuffers req;
+	struct v4l2_buffer buf;
+	int n_buffers = 2;
+
+	req.count  = 2;
+	req.type   = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+	req.memory = V4L2_MEMORY_USERPTR;
+	if (ioctl(fd, VIDIOC_REQBUFS, &req))
+		return errno;
+
+	for (i = 0; i < req.count; ++i) {
+		buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+		buf.memory = V4L2_MEMORY_USERPTR;
+		buf.index = i;
+		buf.m.userptr = (unsigned long)buffers[i].start;
+		buf.length = buffers[i].length;
+		if (ioctl(fd, VIDIOC_QBUF, &buf))
+			return errno;
+	}
+	if (ioctl(fd, VIDIOC_STREAMON, &req.type))
+		return errno;
+
+	/* some capture loop */
+
+	ioctl(fd, VIDIOC_STREAMOFF, &req.type);
+
+I can't possibly see *any* security issues with the above code.
+
+As I said before, VIDIOC_REQBUFS should be checking if the userspace
+buffers are OK and ensure that their refcounts will be incremented,
+in order to avoid mm to move the pages used there, freeing the 
+refconts when VIDIOC_STREAMOFF - or close(fd) - is called.
+
+> which is kinda pointless (you need
+> minimally refcounting and some way to get at a promise of a permanent
+> sg list for dma. Plus probably the vmap for kernel cpu access.
+
+Yeah, refcounting needs to happen. 
+
+Thanks,
+Mauro
