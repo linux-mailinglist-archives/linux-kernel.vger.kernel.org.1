@@ -2,86 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12B1228A304
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4752B28A29C
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:58:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732190AbgJJW7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:59:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57042 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732268AbgJJTyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:54:15 -0400
-Received: from localhost (p5486c996.dip0.t-ipconnect.de [84.134.201.150])
+        id S1730620AbgJJW6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:58:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731185AbgJJTxO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 15:53:14 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 713B0C0613B4;
+        Sat, 10 Oct 2020 04:10:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6cV+tWxBY2tCvh0w9RakejaDPboIY9tCeHrHg2GCiPA=; b=eBUno4bXjQVLTMDPOm+sW25Lwv
+        cowKD724NzwUh0wGoDX2eG2v9P5KJVKb8dHlTaXOU5VS9yonxo5dacyZ9QBDrEL6/NHu9yrFDVlul
+        uJaKEt4lT+vM8kcKN1F9biakAjn/UcusJA6djK/yyy9on5fKvTsxSO+3sp/2KlZsoUnoiEKzwrMB4
+        7TSBcjnZnVEnKSgMC/MZVlM/dgfJ6XN++gsUwy/SxMYtctBJGqU5CSC+MXoSkcGbzs6L+g82bBhNO
+        Y/Lg46iD7UQGhyO+fwbJTDWyUte30Cln331o8ECV+9e4trlBM1tLfDi1pnpFFiEEQbQZdIxL/9tRX
+        HbGqIARQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kRCkg-00026L-PN; Sat, 10 Oct 2020 11:09:27 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 30DD4206E9;
-        Sat, 10 Oct 2020 11:07:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602328025;
-        bh=OhiXebBRx8Rwbg2KldieQ1pJi0vUNsaPUawJWNFRIrE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dbdOdhsqfqvFpcp7uWLq89PmR60s0gXqn3TtPMkzBgHhb4noKNOROcOr2nTuQG+WM
-         EO3wOcn9pdnRovQPAVvbmnk3iHvEo7sjngIJBwcSSTw/P6DGa/sozIbNE0cb9/n3oq
-         ZzdJ3SmqkdgpVGqzcdrZtnohwsRSrxjivK3tvG44=
-Date:   Sat, 10 Oct 2020 13:06:58 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     Oleksij Rempel <linux@rempel-privat.de>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        David Laight <David.Laight@aculab.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH v6 0/3] i2c: imx: Fix handling of arbitration loss
-Message-ID: <20201010110658.GA4669@ninjato>
-References: <20201009110320.20832-1-ceggers@arri.de>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3BEED3003E5;
+        Sat, 10 Oct 2020 13:09:21 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 017E52010B5FA; Sat, 10 Oct 2020 13:09:20 +0200 (CEST)
+Date:   Sat, 10 Oct 2020 13:09:20 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>, corbet@lwn.net,
+        gregkh@linuxfoundation.org, shuah@kernel.org, rafael@kernel.org,
+        johannes@sipsolutions.net, lenb@kernel.org, james.morse@arm.com,
+        tony.luck@intel.com, bp@alien8.de, arve@android.com,
+        tkjos@android.com, maco@android.com, joel@joelfernandes.org,
+        christian@brauner.io, hridya@google.com, surenb@google.com,
+        minyard@acm.org, arnd@arndb.de, mchehab@kernel.org,
+        rric@kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-acpi@vger.kernel.org, devel@driverdev.osuosl.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux-edac@vger.kernel.org, Will Deacon <will@kernel.org>
+Subject: Re: [PATCH v3 00/11] Introduce Simple atomic counters
+Message-ID: <20201010110920.GQ2628@hirez.programming.kicks-ass.net>
+References: <cover.1602209970.git.skhan@linuxfoundation.org>
+ <20201009193746.GA1073957@hirez.programming.kicks-ass.net>
+ <202010091255.246395A6@keescook>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="dDRMvlgZJXvWKvBx"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201009110320.20832-1-ceggers@arri.de>
+In-Reply-To: <202010091255.246395A6@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 09, 2020 at 01:45:43PM -0700, Kees Cook wrote:
+> On Fri, Oct 09, 2020 at 09:37:46PM +0200, Peter Zijlstra wrote:
+> > On Fri, Oct 09, 2020 at 09:55:55AM -0600, Shuah Khan wrote:
+> > > Simple atomic counters api provides interfaces for simple atomic counters
+> > > that just count, and don't guard resource lifetimes. The interfaces are
+> > > built on top of atomic_t api, providing a smaller subset of atomic_t
+> > > interfaces necessary to support simple counters.
+> > 
+> > To what actual purpose?!? AFACIT its pointless wrappery, it gets us
+> > nothing.
+> 
+> It's not pointless. There is value is separating types for behavioral
+> constraint to avoid flaws. atomic_t provides a native operation. We gained
+> refcount_t for the "must not wrap" type, and this gets us the other side
+> of that behavioral type, which is "wrapping is expected". Separating the
+> atomic_t uses allows for a clearer path to being able to reason about
+> code flow, whether it be a human or a static analyzer.
 
---dDRMvlgZJXvWKvBx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+refcount_t got us actual rutime exceptions that atomic_t doesn't. This
+propsal gets us nothing.
 
+atomic_t is very much expected to wrap.
 
-> Changes in v5:
+> The counter wrappers add nothing to the image size, and only serve to
+> confine the API to one that cannot be used for lifetime management.
 
-Changes in v6 were missing... Because patch 1 was updated, I reverted it
-=66rom for-current and will apply this series to for-next instead to give
-it some more time for testing.
+It doesn't add anything period. It doesn't get us new behaviour, it
+splits a 'can wrap' use-case from a 'can wrap' type. That's sodding
+pointless.
 
+Worse, it mixes 2 unrelated cases into one type, which just makes a
+mockery of things (all the inc_return users are not statistics, some
+might even mis-behave if they wrap).
 
---dDRMvlgZJXvWKvBx
-Content-Type: application/pgp-signature; name="signature.asc"
+> Once conversions are done, we have a clean line between refcounting
+> and statistical atomics, which means we have a much lower chance of
+> introducing new flaws (and maybe we'll fix flaws during the conversion,
+> which we've certainly seen before when doing this stricter type/language
+> changes).
+> 
+> I don't see why this is an objectionable goal.
 
------BEGIN PGP SIGNATURE-----
+People can and will always find a way to mess things up.
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl+Blc4ACgkQFA3kzBSg
-KbaokA/+OH8pJeBlEf2ZMBAFVh+s8Dd1uVh5pyrEHmJ6zX6p8sJeSBnicetzeLdu
-r4GtmZiOIChX885ANS+zAWsvfZpxoW2ltN7OCk7ZPugYSD1TOICrHwwyKAw2hr/2
-MEs3OEeCYpR9kPAf9l7RBQvTAZEGezhIUkiKHNZ70QVZeE0ASd+ozlGD9Sx3s0aa
-3ayPcsis8aYIFrioZfZIqT51mxv3Sz4c8KKpt6hs98End++5HoP3k5YNgEJslwuX
-HHmG+Mh3YPSMxbAJEAeJPCFOw4a5LwH3A+y8OL4/WmUY0qwckZiAxFDYNNjKmUdV
-11gRXC7k80IlfDoG2/tymleKMj49pL4OYKtZrb+vuOBnf2riwd3jI/SBcpxqGsre
-wKSAAeM1xMy/62UVRIU1OnWkMWDkzTlKgrbPwwYT6r+fsVH2xRJ8Ug6OXeu12pKl
-1G6LNa2y3pI82gubBWoChwATnAoPFqKcElDnoQYl5RlTcUFolJEXRwRcOSEvR1Sh
-qJ52U4jVy1Wd5/CF0mnfduo7aDd/XQLCNVW7xHcxO9yLJz13TqFAaJE+dVuc9FqE
-LrLEbULC7D9/RE75LQdn02Xv+e14z4O2aZnsq8zvWfYd5PdnjPVf5NP2HYCe4x07
-1U/237cIyy2jSrJtKEi5+K+J8p9uBPyWZqZA0N6j13EZBpuKmTc=
-=PkoP
------END PGP SIGNATURE-----
+Only add types when you get behavioural changes, otherwise it's
+pointless noise.
 
---dDRMvlgZJXvWKvBx--
+My NAK stands.
