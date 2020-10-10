@@ -2,144 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2175428A210
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EE6128A422
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:13:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388618AbgJJWyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:54:16 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:39130 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731351AbgJJTLX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:11:23 -0400
-Received: by mail-qk1-f194.google.com with SMTP id w12so14106591qki.6
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 12:11:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=NUbUkTRREx+PjiF00QjT8cbgbNV3OaCOjufHzqKs7do=;
-        b=JQzw085EnvVFeBMbSjWsqRMY2lqoDPQLAelgqo/tC7P/ZXlVDaCqeGQAWbEE+/WSaf
-         5FY+0VxVit613Yhv5BCKMNSyU7uGGGuUSFG301XMM6OP8ZVvYcGM/hXjzHxSq2FIvCpT
-         6qoNgJZc3F3skQUr3s7ezxJEAfHxbeExUaTr7wl6rtz90mVT/bQSAo+VzLLJ2J0CxiWp
-         c9994cxZvKJEsXcy9kNKiurKfrbnCqVMnpK1tTlnahDh+DYNmaIcYmu44l6kORsKr4fG
-         axZG2LZIu1vpyLlH9M5Sj/JXS6cx5mLsmPRWQhdnwfkyaiKCk8dPu9azz3vBfNmapqnI
-         osfA==
-X-Gm-Message-State: AOAM5303bXNr8KSNsrT+lc+YR5rbREVAHarr7ykazI15tJlXWchpuoKS
-        sa0OMtfsBqou0dbBsgWtUAs=
-X-Google-Smtp-Source: ABdhPJw9834ECABkejeFmGTtDHHvZrzDsYrJhPhoEbweilPTyVN8caLuN25aVOeNBX706YiikB+QcQ==
-X-Received: by 2002:a37:aa10:: with SMTP id t16mr3561819qke.320.1602357072078;
-        Sat, 10 Oct 2020 12:11:12 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id r64sm9132278qkf.119.2020.10.10.12.11.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Oct 2020 12:11:11 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-To:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>,
-        Borislav Petkov <bp@alien8.de>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/boot/64: Initialize 5-level paging variables earlier
-Date:   Sat, 10 Oct 2020 15:11:10 -0400
-Message-Id: <20201010191110.4060905-1-nivedita@alum.mit.edu>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201008191623.2881677-1-nivedita@alum.mit.edu>
-References: <20201008191623.2881677-1-nivedita@alum.mit.edu>
+        id S2389170AbgJJWzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:55:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731406AbgJJTU1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 15:20:27 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D56B22258;
+        Sat, 10 Oct 2020 19:20:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602357626;
+        bh=1rFFenx5YaOoyjN6AOp5kOMJV7iSmN0ey8iVvvT9Ck0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=u1uXILE4wH+0QAJm6IeD5VwS/QkS3cEJnyAbweMQ2CZGsWfc1JVZHAL9qTYl/K+Fa
+         ZBu/bchAgrF/5CmgDG3BM/ajQaUBEbepcDnZGCLlSAZtSQpTg2f8wpmeJOsqKXixhy
+         cRBEorT0By3F6D1EY3DuANtfFgrE53GazWxPUNTc=
+Date:   Sat, 10 Oct 2020 12:20:24 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        Petko Manolov <petkan@nucleusys.com>,
+        "David S. Miller" <davem@davemloft.net>, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: [PATCH] net: usb: rtl8150: don't incorrectly assign random MAC
+ addresses
+Message-ID: <20201010122024.0ec7c2f1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <e772b9f0-f5cd-c50b-86a7-fde22b6e13e3@gmail.com>
+References: <20201010064459.6563-1-anant.thazhemadam@gmail.com>
+        <20201010095302.5309c118@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <0de8e509-7ca5-7faf-70bf-5880ce0fc15c@gmail.com>
+        <20201010111645.334647af@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <e772b9f0-f5cd-c50b-86a7-fde22b6e13e3@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit
-  ca0e22d4f011 ("x86/boot/compressed/64: Always switch to own page table")
-started using a new set of pagetables even without KASLR.
+On Sun, 11 Oct 2020 00:14:05 +0530 Anant Thazhemadam wrote:
+> Ah, my apologies. You're right. It doesn't look like those helpers have m=
+ade
+> their way into the networking tree yet.
+>=20
+> (This gets mentioned here as well,
+> =C2=A0=C2=A0=C2=A0 https://www.mail-archive.com/netdev@vger.kernel.org/ms=
+g357843.html)
+>=20
+> The commit ID pointed to by the fixes tag is correct.
+> The change introduced by said commit looks right, but is logically incorr=
+ect.
+>=20
+> get_registers() directly returns the return value of usb_control_msg_recv=
+(),
+> and usb_control_msg_recv() returns 0 on success and negative error number
+> otherwise.
+>=20
+> (You can find more about the new helpers here
+> =C2=A0=C2=A0=C2=A0 https://lore.kernel.org/alsa-devel/20200914153756.3412=
+156-1-gregkh@linuxfoundation.org/ )
+>=20
+> The commit ID mentioned introduces a change that is supposed to copy over
+> the ethernet only when get_registers() succeeds, i.e., a complete read oc=
+curs,
+> and generate and set a random ethernet address otherwise (reading the
+> commit message should give some more insight).
+>=20
+> The condition that checks if get_registers() succeeds (as specified in f4=
+5a4248ea4c)
+> was,
+> =C2=A0=C2=A0=C2=A0 ret =3D=3D sizeof(node_id)
+> where ret is the return value of get_registers().
+>=20
+> However, ret will never equal sizeof(node_id), since ret can only be equa=
+l to 0
+> or a negative number.
+>=20
+> Thus, even in case where get_registers() succeeds, a randomly generated M=
+AC
+> address would get copied over, instead of copying the appropriate ethernet
+> address, which is logically incorrect and not optimal.
+>=20
+> Hence, we need to modify this to check if (ret =3D=3D 0), and copy over t=
+he correct
+> ethernet address in that case, instead of randomly generating one and ass=
+igning
+> that.
 
-After that commit, initialize_identity_maps() is called before the
-5-level paging variables are setup in choose_random_location(), which
-will not work if 5-level paging is actually enabled.
+I see... so we ended up with your fix applied to net, and Petko's
+rework applied to the usb/usb-next tree.
 
-Fix this by moving the initialization of __pgtable_l5_enabled,
-pgdir_shift and ptrs_per_p4d into cleanup_trampoline(), which is called
-immediately after the finalization of whether the kernel is executing
-with 4- or 5-level paging. This will be earlier than anything that might
-require those variables, and keeps the 4- vs 5-level paging code all in
-one place.
+What you're actually fixing is the improper resolution of the resulting
+conflict in linux-next!
 
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
----
- arch/x86/boot/compressed/ident_map_64.c |  6 ------
- arch/x86/boot/compressed/kaslr.c        |  8 --------
- arch/x86/boot/compressed/pgtable_64.c   | 16 ++++++++++++++++
- 3 files changed, 16 insertions(+), 14 deletions(-)
-
-diff --git a/arch/x86/boot/compressed/ident_map_64.c b/arch/x86/boot/compressed/ident_map_64.c
-index a3613857c532..505d6299b76e 100644
---- a/arch/x86/boot/compressed/ident_map_64.c
-+++ b/arch/x86/boot/compressed/ident_map_64.c
-@@ -34,12 +34,6 @@
- #define __PAGE_OFFSET __PAGE_OFFSET_BASE
- #include "../../mm/ident_map.c"
- 
--#ifdef CONFIG_X86_5LEVEL
--unsigned int __pgtable_l5_enabled;
--unsigned int pgdir_shift = 39;
--unsigned int ptrs_per_p4d = 1;
--#endif
--
- /* Used by PAGE_KERN* macros: */
- pteval_t __default_kernel_pte_mask __read_mostly = ~0;
- 
-diff --git a/arch/x86/boot/compressed/kaslr.c b/arch/x86/boot/compressed/kaslr.c
-index 489fabc051d7..9eabd8bc7673 100644
---- a/arch/x86/boot/compressed/kaslr.c
-+++ b/arch/x86/boot/compressed/kaslr.c
-@@ -835,14 +835,6 @@ void choose_random_location(unsigned long input,
- 		return;
- 	}
- 
--#ifdef CONFIG_X86_5LEVEL
--	if (__read_cr4() & X86_CR4_LA57) {
--		__pgtable_l5_enabled = 1;
--		pgdir_shift = 48;
--		ptrs_per_p4d = 512;
--	}
--#endif
--
- 	boot_params->hdr.loadflags |= KASLR_FLAG;
- 
- 	if (IS_ENABLED(CONFIG_X86_32))
-diff --git a/arch/x86/boot/compressed/pgtable_64.c b/arch/x86/boot/compressed/pgtable_64.c
-index 46d761f7faa6..0976c2d2ab2f 100644
---- a/arch/x86/boot/compressed/pgtable_64.c
-+++ b/arch/x86/boot/compressed/pgtable_64.c
-@@ -9,6 +9,13 @@
- #define BIOS_START_MIN		0x20000U	/* 128K, less than this is insane */
- #define BIOS_START_MAX		0x9f000U	/* 640K, absolute maximum */
- 
-+#ifdef CONFIG_X86_5LEVEL
-+/* __pgtable_l5_enabled needs to be in .data to avoid being cleared along with .bss */
-+unsigned int __section(.data) __pgtable_l5_enabled;
-+unsigned int __section(.data) pgdir_shift = 39;
-+unsigned int __section(.data) ptrs_per_p4d = 1;
-+#endif
-+
- struct paging_config {
- 	unsigned long trampoline_start;
- 	unsigned long l5_required;
-@@ -195,4 +202,13 @@ void cleanup_trampoline(void *pgtable)
- 
- 	/* Restore trampoline memory */
- 	memcpy(trampoline_32bit, trampoline_save, TRAMPOLINE_32BIT_SIZE);
-+
-+	/* Initialize variables for 5-level paging */
-+#ifdef CONFIG_X86_5LEVEL
-+	if (__read_cr4() & X86_CR4_LA57) {
-+		__pgtable_l5_enabled = 1;
-+		pgdir_shift = 48;
-+		ptrs_per_p4d = 512;
-+	}
-+#endif
- }
--- 
-2.26.2
-
+CCing Stephen and linux-next.
