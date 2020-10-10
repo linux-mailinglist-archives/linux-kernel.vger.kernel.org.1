@@ -2,132 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E03428A1D1
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:52:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8035728A306
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:04:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731983AbgJJW0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:26:09 -0400
-Received: from esa5.microchip.iphmx.com ([216.71.150.166]:52950 "EHLO
-        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730297AbgJJStS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 14:49:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1602355757; x=1633891757;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=rdOJnTBbA7t79OkULJCMQPqkvHgSa0VE6JCs4NmyIPk=;
-  b=H2OCq1hBCmP2WABLDpjM64IwfEs9oy+8tgjuO3nFEX0kLZVJKswIXQX1
-   U9u/SwSHLsgMfdFck56QLKFIPkXIU1M1qF56w38I+/PFdvJIIZ7Bso+CN
-   5K9Fc672yF7L2Md8Z+Gx/GzHhBueEMGOhaTMufF4XXFQzjASGxwC9b9O8
-   oV3om/GIVE9NKSAoAjEXuezVZuCjCW2RH/d4vQ7908PyfxZ3BORKjkbzH
-   3Z104XKRdeGvOQN3R0fMShayWnR/lApGOGS7JGTHr3KpgMcWJkM9nKYKJ
-   vhKZmCpH+7cCDS+XLhfrLNO3QRZWyZoPfBDnDoUBAPYEq3yiXBTmoSpcP
-   Q==;
-IronPort-SDR: Xb/KXgqMkNLe/hxM5RG/9ZQM4+SpExadgpmyMbjsgAH90DwG6+z8cleZy+Tq+Q6yaMlFRL692/
- OvMFPWltJm95sZ3skl/mQ/wwFbraxP0OTLc9EZPHNF2nmnmelLLDhwCHUsDppJxKCs/JRML5I+
- qBjxGMOpJ0amtQ7O8wgDzKCAWyyjF/2w7yeifTN1S7PW8oNsa8y2JGsUxwy6UgvgpIrjX+2sJT
- vMF3GXKA+ogOTFxpRKlw001rd1GFeTuyimLrrEFenAhKqcb951MpMvid/5L1OjAvf8IKP9ZNTA
- NLw=
-X-IronPort-AV: E=Sophos;i="5.77,358,1596524400"; 
-   d="scan'208";a="94123941"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Oct 2020 05:28:40 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Sat, 10 Oct 2020 05:28:38 -0700
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.72) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
- Transport; Sat, 10 Oct 2020 05:28:38 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k3Keq8fOatEsVu57t+ySuiybvf4FH9KpEBm3fLowL3G0nwQ2mceuukBcsv9PESdSFbxL+Tqfm0yQHyoUYH2YgyOcdQsD224kazCT1OR/8fAivjBOAC9P0BX5uAJlfMP51TXioSzm7WYhoz249aEqEaV1PYe7vjpgAsyTSq0T5wy9mBJo+lDRXiXsHN0rFNTYw0+oePTQhw06wUnnNUMH5+CrNMyMQ5H59MQ4aUtdaeoTKhudW0esbT+GpurAKuiQ8Ig/rA0vSNAjQDa0oKfjEXGOZKyDVCfldkBw3Sg+Xf6A+ESxC/5LRfiFh8UKQbA+K9pfjeIZ+PlK8OyReswKWA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rdOJnTBbA7t79OkULJCMQPqkvHgSa0VE6JCs4NmyIPk=;
- b=nPkBEM1StL31oR+H1DqFozcvZMyINyjf9gqpmOkqkD8RLd+mc7TMvQkCTsETgRr4OafCecLF6PHU1hC3akV8AE/bzxRYHyehH6qzIBSP+xilgkVqQOePx/EB6b7YGDvCa4LKKgHvbefXMoVyYU9To47qpWzgqxM0BjEebDHig1YIAWnKCRPwU9qFt7Y3uR3Gnvr5wWI/fPA8rZ2bm1F6aNl/h7Ysdo/inoVrxzzlKVO/eaN2mHD9wTftWQdQ8Yg880eoKHy5VMuQObvN7bfB4ZAIw55ITsklfhahM0HoYWzq9QILpDdBi5/Jfq0p+r3WqG6yXZ0dJckmDPb30JDyFQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rdOJnTBbA7t79OkULJCMQPqkvHgSa0VE6JCs4NmyIPk=;
- b=HbPpXDD4EbQiJS43NYctz3SpReZSeSx/ajUm2ktEt56Y7s1AJUj2mRhB+TN83LLXQ+8GtCSVlmiulmYILo4urlDN88g0Kcungbm25UIXN/WFWW+vz9hQ7jldfEAxVbC5rDWNuKn28U+Z7VIYc3Ut77uHn2EBr4Jqqc8RZ9/um5k=
-Received: from CY4PR1101MB2341.namprd11.prod.outlook.com
- (2603:10b6:903:b1::22) by CY4PR1101MB2344.namprd11.prod.outlook.com
- (2603:10b6:903:b4::8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.22; Sat, 10 Oct
- 2020 12:28:36 +0000
-Received: from CY4PR1101MB2341.namprd11.prod.outlook.com
- ([fe80::908:a628:69ca:d62e]) by CY4PR1101MB2341.namprd11.prod.outlook.com
- ([fe80::908:a628:69ca:d62e%7]) with mapi id 15.20.3455.023; Sat, 10 Oct 2020
- 12:28:36 +0000
-From:   <Codrin.Ciubotariu@microchip.com>
-To:     <alexandre.belloni@bootlin.com>, <wsa@kernel.org>,
-        <Nicolas.Ferre@microchip.com>, <Ludovic.Desroches@microchip.com>
-CC:     <linux-i2c@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] i2c: aT91: remove legacy DMA left overs
-Thread-Topic: [PATCH] i2c: aT91: remove legacy DMA left overs
-Thread-Index: AQHWlzn5NHk2l72zNEC7iGZiPhBr5qmQ00kA
-Date:   Sat, 10 Oct 2020 12:28:36 +0000
-Message-ID: <15861d85-9381-31a2-40c5-179973f99277@microchip.com>
-References: <20200930145655.3044490-1-alexandre.belloni@bootlin.com>
-In-Reply-To: <20200930145655.3044490-1-alexandre.belloni@bootlin.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-authentication-results: bootlin.com; dkim=none (message not signed)
- header.d=none;bootlin.com; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [86.121.164.182]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f95170be-0054-4efb-e837-08d86d1802bd
-x-ms-traffictypediagnostic: CY4PR1101MB2344:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CY4PR1101MB2344CABB36A73CE55C50E873E7090@CY4PR1101MB2344.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:4502;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: l98zZvZYia1y7sOX7N9L4vuQX/DWdoQcxl+ado2KMjdwBbdQlltoKqj8KlkqJaSQMH/pqYzlf891w9ZFqISvnSHF0b+rO8IRp2A/TyfVgXy0+66CbfZLa+3Lrvw2Rjf3lTNUJI5MQtJ/+CU1Quzld25eeJWIuNGEIuO973y80m0NlXRxTope1S429z0q5BnmzXXJJomxBT0epVyyF0g/KS4LBgoA4dsnKQS5ZNf/DjGxJIVinhnUBSMaUCo5wD2CJyFZGIygEVwVNujqiy8PC6uGAUbl8i5a1Kew6+e/5cHa5Bkkv/TcLLCk3/3hF1GDT7Yyjy1th9eYTXPfWKjvJT89tcJBxZElxB3tA2q1VtDKh3Ce3xVAeasda4Td83JE
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1101MB2341.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(346002)(366004)(376002)(39860400002)(71200400001)(31686004)(110136005)(478600001)(6486002)(91956017)(6506007)(76116006)(4744005)(54906003)(2906002)(8676002)(8936002)(2616005)(66946007)(64756008)(66446008)(6512007)(86362001)(6636002)(316002)(186003)(36756003)(26005)(31696002)(4326008)(53546011)(66476007)(66556008)(5660300002)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: l4XeT0IZxKXxL/DqumU61JxPj3ugiSDXm8xYlxNoK93nINif6Bkcl2y3CI1JT4byCYDEp3z87zFZ10Rk8S5EgPHYii1vK2Bd/YNQogguGgGvXDpb3G+6GrJb65Vg3EyLTJwP1b+mYdfOCUeDyqTlT/GMlLDGoeqRuFYvmYEFGlWJMPyl7ZR47u+rdZWIQxHriTEbxbL2FIxN/S9Arjy21RVaWRAq/K61XuyG2womukS8Yh+77S1ywMzeXEZ/zjvnG5HTPH2QJT7xB0AqIi6P/dUr2Hvrfifac48zVFRTKcFQndG9sB0NpGe7Aa8Lui5F1tOtIyCjDKshK69s4EytZlgHIdNIYqraIkPhsbPIfiFK+yEZwILhq2rde9hx7wN08l1VXvx5KlQtZx2COxOoXzhs9/WRxCGZeqtghOaJTZ9Za8QiObttx6NcftKL4TrNyYTsva9WygXIYijRGuo/97sD1TZIlf8ud+Qh/pY2jijTQe3W9tF44LmVD08rXeGt1YVNyhZ0Mi0cMOKqtGOCNPMIp9H+rKF+PCZjxRyKHrpFFOHSFMWjaQ4St/n+GkPwLQm8FApgN6ImkqBRByDGXh1W+FyxUcI6RzQ4gUUU0jODUfFQlVIUzIGuQiOcjMtNOxbU+bnL+cbRR6Kf5cVuOQ==
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <3B271F7AADE03743872C0E60BCA49A1B@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1732059AbgJJW7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:59:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57034 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732262AbgJJTyK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 15:54:10 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 012AA2076C;
+        Sat, 10 Oct 2020 12:31:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602333067;
+        bh=lZ/vwg//HPLDReKiam1rjfyw35GSoEviWw4JNQJZow4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=uktZk8sUczuBh20siZr7gDLrYpVU8omHkyuC2+mp67cj9ZgSYRDJvzimN9alqjinO
+         sXNrBC5jviKZgyLih8iPKNdM0vO4YthMbJsTsuvtA+y3YrRejV6OWFEIG8Rt2268YI
+         ToO1NE7aqHsNLYsW200Vge/94s2gDBXuO4HdZIx0=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kRE1g-001Hf0-Vb; Sat, 10 Oct 2020 13:31:05 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chris Paterson <Chris.Paterson2@renesas.com>,
+        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
+        Daniel Palmer <daniel@thingy.jp>,
+        David Lechner <david@lechnology.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
+        Guillaume Tucker <guillaume.tucker@collabora.com>,
+        Haoyu Lv <lvhaoyu@huawei.com>, Huacai Chen <chenhc@lemote.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Mark-PK Tsai <mark-pk.tsai@mediatek.com>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Parthiban Nallathambi <pn@denx.de>,
+        Rob Herring <robh@kernel.org>, Roger Quadros <rogerq@ti.com>,
+        Saravanan Sekar <sravanhome@gmail.com>,
+        Stephen Boyd <swboyd@chromium.org>, Suman Anna <s-anna@ti.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Jason Cooper <jason@lakedaemon.net>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] irqchip updates for 5.10
+Date:   Sat, 10 Oct 2020 13:30:39 +0100
+Message-Id: <20201010123040.1406783-1-maz@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR1101MB2341.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f95170be-0054-4efb-e837-08d86d1802bd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Oct 2020 12:28:36.3538
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: vk/33hJc4MEh0BkwNsiZIcWNwWtjuuLQ/lcnyOvWcuOkBHrtvxSxu0OMC/a9tnZXinZCRCBD8yQpcIa6XcR3PMwDBAV8NyZPa1oOJWuyr+M=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1101MB2344
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: tglx@linutronix.de, alexandru.elisei@arm.com, Anson.Huang@nxp.com, bjorn.andersson@linaro.org, catalin.marinas@arm.com, Chris.Paterson2@renesas.com, cristian.ciocaltea@gmail.com, daniel@thingy.jp, david@lechnology.com, dianders@chromium.org, grzegorz.jaszczyk@linaro.org, guillaume.tucker@collabora.com, lvhaoyu@huawei.com, chenhc@lemote.com, krzk@kernel.org, prabhakar.mahadev-lad.rj@bp.renesas.com, lee.jones@linaro.org, linus.walleij@linaro.org, lokeshvutla@ti.com, m.szyprowski@samsung.com, mark-pk.tsai@mediatek.com, mkshah@codeaurora.org, pn@denx.de, robh@kernel.org, rogerq@ti.com, sravanhome@gmail.com, swboyd@chromium.org, s-anna@ti.com, valentin.schneider@arm.com, yuehaibing@huawei.com, thunder.leizhen@huawei.com, thierry.reding@gmail.com, jonathanh@nvidia.com, jason@lakedaemon.net, kernel-team@android.com, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMzAuMDkuMjAyMCAxNzo1NiwgQWxleGFuZHJlIEJlbGxvbmkgd3JvdGU6DQo+IEVYVEVSTkFM
-IEVNQUlMOiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1bmxlc3MgeW91
-IGtub3cgdGhlIGNvbnRlbnQgaXMgc2FmZQ0KPiANCj4gQ29tbWl0IGRjNmRmNmU5MGRlOSAoImky
-YzogYXQ5MTogcmVtb3ZlIGxlZ2FjeSBETUEgc3VwcG9ydCIpIHJlbW92ZWQgbGVnY3kNCj4gRE1B
-IHN1cHBvcnQgZnJvbSB0aGUgZHJpdmVyLiBSZW1vdmUgdGhlIGxhc3QgdXNlIG9mIHRoZSBkZWZp
-bml0aW9ucyBmcm9tDQo+IGxpbnV4L3BsYXRmb3JtX2RhdGEvZG1hLWF0bWVsLmggYW5kIHN0b3Ag
-aW5jbHVkaW5nIHRoaXMgaGVhZGVyLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogQWxleGFuZHJlIEJl
-bGxvbmkgPGFsZXhhbmRyZS5iZWxsb25pQGJvb3RsaW4uY29tPg0KDQpUaGVyZSBpcyBhIGNhcGl0
-YWwgJ1QnIGluIHRoZSBzdWJqZWN0LCBub3Qgc3VyZSBpdCBtYXR0ZXJzLiBPdGhlcndpc2U6DQoN
-ClJldmlld2VkLWJ5OiBDb2RyaW4gQ2l1Ym90YXJpdSA8Y29kcmluLmNpdWJvdGFyaXVAbWljcm9j
-aGlwLmNvbT4NCg0KVGhhbmtzIQ0K
+Hi Thomas,
+
+This is the rather large set of irqchip updates for 5.10.
+
+This time around, we have three new drivers (MStar, Owl SIRQ and
+PRUSS), some cross-architecture updates (the arm/arm64 switch to
+standard IRQs for IPIs and the corresponding changes to their primary
+irqchip drivers), a number of fixes as the fallout from these updates
+(the Tegra bug is tasty), some driver updates (QC PDC, WD APB ICTL,
+GIC...), and a couple of mundane bug fixes.
+
+Please pull,
+
+	M.
+
+The following changes since commit f4d51dffc6c01a9e94650d95ce0104964f8ae822:
+
+  Linux 5.9-rc4 (2020-09-06 17:11:40 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git tags/irqchip-5.10
+
+for you to fetch changes up to 63ea38a402213d8c9c16e58ee4901ff51bc8fe3c:
+
+  Merge branch 'irq/mstar' into irq/irqchip-next (2020-10-10 12:46:54 +0100)
+
+----------------------------------------------------------------
+irqchip updates for Linux 5.10
+
+Core changes:
+- Allow irq retriggering to follow a hierarchy
+- Allow interrupt hierarchies to be trimmed at allocation time
+- Allow interrupts to be hidden from /proc/interrupts (IPIs)
+- Introduce stub for set_handle_irq() when !GENERIC_IRQ_MULTI_HANDLER
+- New per-cpu IPI handling flow
+
+Architecture changes:
+- Move arm/arm64 IPI handling to the core interrupt code, removing
+  the home brewed accounting
+
+Driver updates:
+- New driver for the MStar (and more recently Mediatek) platforms
+- New driver for the Actions Owl SIRQ controller
+- New driver for the TI PRUSS infrastructure
+- Wake-up support for the Qualcomm PDC controller
+- Primary interrupt controller support for the Designware APB ICTL
+- Convert the IPI code for GIC, GICv3, hip04, armada-270-xp and bcm2836
+  to using standard interrupts
+- Improve GICv3 pseudo-NMI support to deal with both non-secure and secure
+  priorities on arm64
+- Convert the GIC/GICv3 drivers to using HW-based irq retrigger
+- A sprinkling of dev_err_probe() conversion
+- A set of NVIDIA Tegra fixes for interrupt hierarchy corruption
+- A reset fix for the Loongson HTVEC driver
+- A couple of error handling fixes in the TI SCI drivers
+
+----------------------------------------------------------------
+Alexandru Elisei (2):
+      irqchip/gic-v3: Spell out when pseudo-NMIs are enabled
+      irqchip/gic-v3: Support pseudo-NMIs when SCR_EL3.FIQ == 0
+
+Anson Huang (2):
+      irqchip/imx-intmux: Use dev_err_probe() to simplify error handling
+      irqchip/imx-irqsteer: Use dev_err_probe() to simplify error handling
+
+Cristian Ciocaltea (3):
+      dt-bindings: interrupt-controller: Add Actions SIRQ controller binding
+      irqchip: Add Actions Semi Owl SIRQ controller
+      MAINTAINERS: Add entries for Actions Semi Owl SIRQ controller
+
+David Lechner (1):
+      irqchip/irq-pruss-intc: Implement irq_{get, set}_irqchip_state ops
+
+Grzegorz Jaszczyk (1):
+      irqchip/irq-pruss-intc: Add a PRUSS irqchip driver for PRUSS interrupts
+
+Huacai Chen (1):
+      irqchip/loongson-htvec: Fix initial interrupt clearing
+
+Krzysztof Kozlowski (1):
+      irqchip/ti-sci: Simplify with dev_err_probe()
+
+Lad Prabhakar (1):
+      irqchip: Kconfig: Update description for RENESAS_IRQC config
+
+Marc Zyngier (36):
+      genirq: Walk the irq_data hierarchy when resending an interrupt
+      irqchip/git-v3-its: Implement irq_retrigger callback for device-triggered LPIs
+      genirq: Add fasteoi IPI flow
+      genirq: Allow interrupts to be excluded from /proc/interrupts
+      arm64: Allow IPIs to be handled as normal interrupts
+      ARM: Allow IPIs to be handled as normal interrupts
+      irqchip/gic-v3: Describe the SGI range
+      irqchip/gic-v3: Configure SGIs as standard interrupts
+      irqchip/gic: Refactor SMP configuration
+      irqchip/gic: Configure SGIs as standard interrupts
+      irqchip/gic-common: Don't enable SGIs by default
+      irqchip/bcm2836: Configure mailbox interrupts as standard interrupts
+      irqchip/hip04: Configure IPIs as standard interrupts
+      irqchip/armada-370-xp: Configure IPIs as standard interrupts
+      arm64: Kill __smp_cross_call and co
+      arm64: Remove custom IRQ stat accounting
+      ARM: Kill __smp_cross_call and co
+      ARM: Remove custom IRQ stat accounting
+      irqchip/bcm2836: Provide mask/unmask dummy methods for IPIs
+      irqchip/gic: Cleanup Franken-GIC handling
+      Merge remote-tracking branch 'origin/irq/misc-5.10' into irq/irqchip-next
+      Merge remote-tracking branch 'origin/irq/dev_err_probe' into irq/irqchip-next
+      Merge remote-tracking branch 'origin/irq/gic-v3-nmi-ns' into irq/irqchip-next
+      Merge remote-tracking branch 'origin/irq/ipi-as-irq' into irq/irqchip-next
+      Merge remote-tracking branch 'origin/irq/gic-retrigger' into irq/irqchip-next
+      arm: Move ipi_teardown() to a CONFIG_HOTPLUG_CPU section
+      ARM: Handle no IPI being registered in show_ipi_list()
+      Merge branch 'irq/ipi-as-irq', remote-tracking branches 'origin/irq/dw' and 'origin/irq/owl' into irq/irqchip-next
+      Merge branch 'irq/qcom-pdc-wakeup' into irq/irqchip-next
+      genirq/irqdomain: Allow partial trimming of irq_data hierarchy
+      gpio: tegra186: Allow optional irq parent callbacks
+      soc/tegra: pmc: Allow optional irq parent callbacks
+      soc/tegra: pmc: Don't create fake interrupt hierarchy levels
+      Merge branch 'irq/tegra-pmc' into irq/irqchip-next
+      Merge branch 'irq/irqchip-fixes' into irq/irqchip-next
+      Merge branch 'irq/mstar' into irq/irqchip-next
+
+Mark-PK Tsai (2):
+      irqchip/irq-mst: Add MStar interrupt controller support
+      dt-bindings: interrupt-controller: Add MStar interrupt controller
+
+Maulik Shah (6):
+      pinctrl: qcom: Set IRQCHIP_SET_TYPE_MASKED and IRQCHIP_MASK_ON_SUSPEND flags
+      pinctrl: qcom: Use return value from irq_set_wake() call
+      genirq/PM: Introduce IRQCHIP_ENABLE_WAKEUP_ON_SUSPEND flag
+      pinctrl: qcom: Set IRQCHIP_ENABLE_WAKEUP_ON_SUSPEND flag
+      irqchip/qcom-pdc: Set IRQCHIP_ENABLE_WAKEUP_ON_SUSPEND flag
+      irqchip/qcom-pdc: Reset PDC interrupts during init
+
+Suman Anna (3):
+      dt-bindings: irqchip: Add PRU-ICSS interrupt controller bindings
+      irqchip/irq-pruss-intc: Add logic for handling reserved interrupts
+      irqchip/irq-pruss-intc: Add support for ICSSG INTC on K3 SoCs
+
+Valentin Schneider (2):
+      irqchip/gic-v2, v3: Implement irq_chip->irq_retrigger()
+      irqchip/gic-v2, v3: Prevent SW resends entirely
+
+YueHaibing (3):
+      irqchip/ti-sci-inta: Fix unsigned comparison to zero
+      irqchip/ti-sci-intr: Fix unsigned comparison to zero
+      arm64: Fix -Wunused-function warning when !CONFIG_HOTPLUG_CPU
+
+Zhen Lei (4):
+      genirq: Add stub for set_handle_irq() when !GENERIC_IRQ_MULTI_HANDLER
+      irqchip/dw-apb-ictl: Refactor priot to introducing hierarchical irq domains
+      irqchip/dw-apb-ictl: Add primary interrupt controller support
+      dt-bindings: dw-apb-ictl: Update binding to describe use as primary interrupt controller
+
+ .../interrupt-controller/actions,owl-sirq.yaml     |  65 ++
+ .../interrupt-controller/mstar,mst-intc.yaml       |  64 ++
+ .../interrupt-controller/snps,dw-apb-ictl.txt      |  14 +-
+ .../interrupt-controller/ti,pruss-intc.yaml        | 158 +++++
+ MAINTAINERS                                        |   9 +
+ arch/arm/Kconfig                                   |   1 +
+ arch/arm/include/asm/hardirq.h                     |  17 -
+ arch/arm/include/asm/smp.h                         |   5 +-
+ arch/arm/kernel/irq.c                              |   1 -
+ arch/arm/kernel/smp.c                              | 140 +++--
+ arch/arm64/Kconfig                                 |   1 +
+ arch/arm64/include/asm/arch_gicv3.h                |   8 +-
+ arch/arm64/include/asm/hardirq.h                   |   9 -
+ arch/arm64/include/asm/irq_work.h                  |   4 +-
+ arch/arm64/include/asm/ptrace.h                    |  14 +-
+ arch/arm64/include/asm/smp.h                       |  16 +-
+ arch/arm64/kernel/image-vars.h                     |   2 +
+ arch/arm64/kernel/irq.c                            |  11 +-
+ arch/arm64/kernel/smp.c                            | 129 ++--
+ drivers/gpio/gpio-tegra186.c                       |  15 +-
+ drivers/irqchip/Kconfig                            |  24 +-
+ drivers/irqchip/Makefile                           |   3 +
+ drivers/irqchip/irq-armada-370-xp.c                | 262 +++++---
+ drivers/irqchip/irq-bcm2836.c                      | 153 ++++-
+ drivers/irqchip/irq-dw-apb-ictl.c                  |  81 ++-
+ drivers/irqchip/irq-gic-common.c                   |   3 -
+ drivers/irqchip/irq-gic-v3-its.c                   |   6 +
+ drivers/irqchip/irq-gic-v3.c                       | 184 ++++--
+ drivers/irqchip/irq-gic.c                          | 247 ++++----
+ drivers/irqchip/irq-hip04.c                        |  89 ++-
+ drivers/irqchip/irq-imx-intmux.c                   |   9 +-
+ drivers/irqchip/irq-imx-irqsteer.c                 |   9 +-
+ drivers/irqchip/irq-loongson-htvec.c               |   4 +-
+ drivers/irqchip/irq-mst-intc.c                     | 199 ++++++
+ drivers/irqchip/irq-owl-sirq.c                     | 359 +++++++++++
+ drivers/irqchip/irq-pruss-intc.c                   | 664 +++++++++++++++++++++
+ drivers/irqchip/irq-ti-sci-inta.c                  |  14 +-
+ drivers/irqchip/irq-ti-sci-intr.c                  |  14 +-
+ drivers/irqchip/qcom-pdc.c                         |  14 +-
+ drivers/pinctrl/qcom/pinctrl-msm.c                 |  11 +-
+ drivers/soc/tegra/pmc.c                            |  91 ++-
+ include/linux/irq.h                                |  60 +-
+ include/linux/irqdomain.h                          |   3 +
+ kernel/irq/chip.c                                  |  27 +
+ kernel/irq/debugfs.c                               |   4 +
+ kernel/irq/irqdomain.c                             |  99 ++-
+ kernel/irq/pm.c                                    |  34 +-
+ kernel/irq/proc.c                                  |   2 +-
+ kernel/irq/resend.c                                |  15 +-
+ kernel/irq/settings.h                              |   7 +
+ 50 files changed, 2761 insertions(+), 613 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/actions,owl-sirq.yaml
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/mstar,mst-intc.yaml
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/ti,pruss-intc.yaml
+ create mode 100644 drivers/irqchip/irq-mst-intc.c
+ create mode 100644 drivers/irqchip/irq-owl-sirq.c
+ create mode 100644 drivers/irqchip/irq-pruss-intc.c
