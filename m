@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2547728A2B3
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:00:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B3DD28A2AF
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:00:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391111AbgJJW7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:59:51 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:57460 "EHLO
+        id S2391103AbgJJW7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:59:50 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:57486 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733016AbgJJWm5 (ORCPT
+        with ESMTP id S1733020AbgJJWmx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 18:42:57 -0400
+        Sat, 10 Oct 2020 18:42:53 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 4DAEE8030866;
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 9E3F5803202B;
         Sat, 10 Oct 2020 22:41:28 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id pFacclicVXNm; Sun, 11 Oct 2020 01:41:27 +0300 (MSK)
+        with ESMTP id 1vI9s3Fw8Nc2; Sun, 11 Oct 2020 01:41:28 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Mathias Nyman <mathias.nyman@intel.com>,
         Felipe Balbi <balbi@kernel.org>,
@@ -38,9 +38,9 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Kevin Hilman <khilman@baylibre.com>,
         <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH 03/18] dt-bindings: usb: usb-hcd: Add "otg-rev" property restriction
-Date:   Sun, 11 Oct 2020 01:41:06 +0300
-Message-ID: <20201010224121.12672-4-Sergey.Semin@baikalelectronics.ru>
+Subject: [PATCH 04/18] dt-bindings: usb: usb-hcd: Add "ulpi/serial/hsic" PHY types
+Date:   Sun, 11 Oct 2020 01:41:07 +0300
+Message-ID: <20201010224121.12672-5-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20201010224121.12672-1-Sergey.Semin@baikalelectronics.ru>
 References: <20201010224121.12672-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -51,27 +51,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are only four OTG revisions are currently supported by the kernel:
-0x0100, 0x0120, 0x0130, 0x0200. Any another value is considered as
-invalid.
+Aside from the UTMI+ there are also ULPI, Serial and HSIC PHY types
+can be specified in the phy_type HCD property. Add them to the
+enumeration of the acceptable values.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 ---
- Documentation/devicetree/bindings/usb/usb-hcd.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/devicetree/bindings/usb/usb-hcd.yaml | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
 diff --git a/Documentation/devicetree/bindings/usb/usb-hcd.yaml b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
-index e1a82a2b3295..39e90147dfcc 100644
+index 39e90147dfcc..1eddcbf0a9d8 100644
 --- a/Documentation/devicetree/bindings/usb/usb-hcd.yaml
 +++ b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
-@@ -56,6 +56,7 @@ properties:
-       features (HNP/SRP/ADP) is enabled. If ADP is required, otg-rev should be
-       0x0200 or above.
-     $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [0x0100, 0x0120, 0x0130, 0x0200]
+@@ -42,11 +42,13 @@ properties:
+   phy_type:
+     description: |
+       Tells USB controllers that we want to configure the core to support a
+-      UTMI+ PHY with an 8- or 16-bit interface if UTMI+ is selected. In case
+-      this isn't passed via DT, USB controllers should default to HW
+-      capability.
++      UTMI+ PHY with an 8- or 16-bit interface if UTMI+ is selected, UTMI+ low
++      pin interface if ULPI is specified, Serial core/PHY interconnect if
++      serial is specified and High-Speed Inter-Chip feature if HSIC is
++      selected. In case this isn't passed via DT, USB controllers should
++      default to HW capability.
+     $ref: /schemas/types.yaml#/definitions/string
+-    enum: ["utmi", "utmi_wide"]
++    enum: ["utmi", "utmi_wide", "ulpi", "serial", "hsic"]
  
-   companion:
-     description: Phandle of a companion device
+   otg-rev:
+     description: |
 -- 
 2.27.0
 
