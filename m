@@ -2,188 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E32928A1E9
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:52:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E41428A40E
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:13:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733189AbgJJWo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:44:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48684 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731113AbgJJTCX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:02:23 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C0406224B0;
-        Sat, 10 Oct 2020 17:57:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602352671;
-        bh=FERYGj39R6l6EZJxDuK7UmyVwM31uASPWiVprTEV/1E=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Ij3EzWpW2WmqIyWGcdwZSPxLiJXUejt0V7TCmuPLyunAXWXR47YptR0VT/F5Bm8l4
-         F3NObqqfh0zWfT2O1l6S2g61nz4+7xgOlnPhbxDUDM8h0/VV/YEuiNDkOMAGl8Yekc
-         b9umrY1oKZJjgDikOtwmJT2Hth7c43MEI7wqrc8c=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 860C4352261C; Sat, 10 Oct 2020 10:57:51 -0700 (PDT)
-Date:   Sat, 10 Oct 2020 10:57:51 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Tom Rix <trix@redhat.com>
-Cc:     dave@stgolabs.net, josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, natechancellor@gmail.com,
-        ndesaulniers@google.com, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] rcutorture: remove unneeded check
-Message-ID: <20201010175751.GA5714@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201009194736.2364-1-trix@redhat.com>
- <20201009201825.GL29330@paulmck-ThinkPad-P72>
- <03e3eeed-6072-ccb8-a9c6-c79a99c701b8@redhat.com>
- <20201009235033.GM29330@paulmck-ThinkPad-P72>
- <92f82632-adbd-ca85-d516-6540a49f01ab@redhat.com>
- <20201010025743.GN29330@paulmck-ThinkPad-P72>
+        id S2389017AbgJJWzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:55:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731402AbgJJTT1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 15:19:27 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A81BC08EC3B
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 11:02:19 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id 34so10057492pgo.13
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 11:02:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KHJ0OmfqVbDcuyKc17afvXjM3ddyTaCnk0goaZMLWNk=;
+        b=dSSADXfSgODXfERpRj2rYpCuetEBefp5wRKDz4bFoF8Ydkyu50cJFN/ThGSn/Y+eFy
+         cYZfr4Mk+XCGhT0rPdxpgFmGgL+mViztcbhGlgT590Q1yZCuuy8AYwNr5TC8oOgr0gPe
+         mSR3LSaMcBWG19POYLaJIBmIH2CRK+rFZtfOPYmww10YnhJD8yq0xW5BPgWDx8O10l82
+         7sH6yYVp6uj9+b7B3v43iXuJAhnDfCKXpRQ4uVhFWSKLkZPqQtrrDG0GcCMyCW45AYLN
+         ldRdqY9rguk15MExW/yOHjxkNOmXamAZjV4hNo9I2JRh5PnBprXr2Ok13iGkmOtkyrja
+         uA+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KHJ0OmfqVbDcuyKc17afvXjM3ddyTaCnk0goaZMLWNk=;
+        b=qoy1Ipaj5blcl3zKa03l5NxwgvOUBDOeVS5zyMF453PK3b1jHJGLHLMRoxZYxM+DpU
+         Vwhn/iWfI39EtEupeok8+HAYKIE2DelzFvzSHZ4zGmkEsFW/UDRvB74VqqmDKKkNPXpP
+         MJ1OCO0D19gNoUwlkzB3jyU1Ofev+pi8bM5/yr7gs8G4BMUqBzbffuM0T0gCW3Od4YvZ
+         jSvmrdUcJkyFMHeMKXtW0RIrO/89l8LnuhszDvlafK2WeeBlCINj+WMc1/H81zAzlYMX
+         euA1nW6FhvaMt5UiHMhrPwfyU6UFjAyIZXlDLHl+RhwRC70Tu1BF6kwJLj7Z/hg5Q+8L
+         uWXA==
+X-Gm-Message-State: AOAM532TeA/SOkQ09WK1EGMe0ZQKKUHgJsEb+pWPkxJtI6LR7PJ8V7HP
+        h3Yor/tlLEfyF7ZzF7GODWPo3SFPmLq82w==
+X-Google-Smtp-Source: ABdhPJxoP3h85r9EBn+e3C9OMQvQZH2U+FznmQDsvhGARlHkCbbbnRfRFLhbbDfEWX/XfVRsV3Napg==
+X-Received: by 2002:a17:90a:6343:: with SMTP id v3mr11269010pjs.109.1602352937795;
+        Sat, 10 Oct 2020 11:02:17 -0700 (PDT)
+Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
+        by smtp.gmail.com with ESMTPSA id d128sm14983464pfd.94.2020.10.10.11.02.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 10 Oct 2020 11:02:16 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Rob Clark <robdclark@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Ilias Stamatis <stamatis.iliass@gmail.com>,
+        Liang Chen <cl@rock-chips.com>,
+        Ben Dooks <ben.dooks@codethink.co.uk>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        "J. Bruce Fields" <bfields@redhat.com>
+Subject: [PATCH] kthread: Add kthread_work tracepoints
+Date:   Sat, 10 Oct 2020 11:03:22 -0700
+Message-Id: <20201010180323.126634-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201010025743.GN29330@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 07:57:43PM -0700, Paul E. McKenney wrote:
-> On Fri, Oct 09, 2020 at 05:24:37PM -0700, Tom Rix wrote:
-> > 
-> > On 10/9/20 4:50 PM, Paul E. McKenney wrote:
-> > > On Fri, Oct 09, 2020 at 02:18:41PM -0700, Tom Rix wrote:
-> > >> On 10/9/20 1:18 PM, Paul E. McKenney wrote:
-> > >>> On Fri, Oct 09, 2020 at 12:47:36PM -0700, trix@redhat.com wrote:
-> > >>>> From: Tom Rix <trix@redhat.com>
-> > >>>>
-> > >>>> clang static analysis reports this problem:
-> > >>>>
-> > >>>> rcutorture.c:1999:2: warning: Called function pointer
-> > >>>>   is null (null dereference)
-> > >>>>         cur_ops->sync(); /* Later readers see above write. */
-> > >>>>         ^~~~~~~~~~~~~~~
-> > >>>>
-> > >>>> This is a false positive triggered by an earlier, later ignored
-> > >>>> NULL check of sync() op.  By inspection of the rcu_torture_ops,
-> > >>>> the sync() op is never uninitialized.  So this earlier check is
-> > >>>> not needed.
-> > >>> You lost me on this one.  This check is at the very beginning of
-> > >>> rcu_torture_fwd_prog_nr().  Or are you saying that clang is seeing an
-> > >>> earlier check in one of rcu_torture_fwd_prog_nr()'s callers?  If so,
-> > >>> where exactly is this check?
-> > >>>
-> > >>> In any case, the check is needed because all three functions are invoked
-> > >>> if there is a self-propagating RCU callback that ensures that there is
-> > >>> always an RCU grace period outstanding.
-> > >>>
-> > >>> Ah.  Is clang doing local analysis and assuming that because there was
-> > >>> a NULL check earlier, then the pointer might be NULL later?  That does
-> > >>> not seem to me to be a sound check.
+From: Rob Clark <robdclark@chromium.org>
 
-In this case, the diagnostic was clearly pointing out a latent bug, so
-my bad.  So more of a code-review comment than a diagnostic.  Therefore,
-if clang really wants to be in the code-review space, I suggest that it
-more clearly explain its code-review feedback.  ;-)
+While migrating some code from wq to kthread_worker, I found that I
+missed the execute_start/end tracepoints.  So add similar tracepoints
+for kthread_work.  And for completeness, queue_work tracepoint (although
+this one differs slightly from the matching workqueue tracepoint).
 
-							Thanx, Paul
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+---
+ include/trace/events/sched.h | 84 ++++++++++++++++++++++++++++++++++++
+ kernel/kthread.c             |  9 ++++
+ 2 files changed, 93 insertions(+)
 
-> > >>> So please let me know exactly what is causing clang to emit this
-> > >>> diagnostic.  It might or might not be worth fixing this, but either way
-> > >>> I need to understand the situation so as to be able to understand the
-> > >>> set of feasible fixes.
-> > >>>
-> > >>> 						Thanx, Paul
-> > >> In rcu_prog_nr() there is check for for sync.
-> > >>
-> > >> if ( ... cur_op->sync ...
-> > >>
-> > >>    do something
-> > >>
-> > >> This flags in clang's static analyzer as 'could be null'
-> > >>
-> > >> later in the function, in a reachable block it is used
-> > >>
-> > >> cur_ops->sync()
-> > >>
-> > >> I agree this is not a good check that's why i said is was a false positive.
-> > >>
-> > >> However when looking closer at how cur_ops is set, it is never uninitialized.
-> > >>
-> > >> So the check is not needed.
-> > > OK, got it, and thank you for the explanation.
-> > >
-> > >> This is not a fix, the code works fine.  It is a small optimization.
-> > > Well, there really is a bug.  Yes, right now all ->sync pointers are
-> > > non-NULL, but they have not been in the past and might not be in the
-> > > future.  So if ->sync is NULL, rcu_torture_fwd_prog_nr() either should
-> > > not be called or it should return immediately without doing anything.
-> > >
-> > > My current thought is something like the (untested) patch below, of
-> > > course with your Reported-by.
-> > >
-> > > Thoughts?
-> > 
-> > Yes that would be fine.
-> > 
-> > In in review these other cases need to be been take care of.
-> 
-> I am having a difficult time interpreting this sentence, but will
-> optimistically assume that it means that you are good with this approach.
-> If my optimism is unwarranted, please let me know so I can fix whatever
-> might be broken.
-> 
-> > Reported-by: Tom Rix <trix@redhat.com>
-> 
-> How does the commit below look?
-> 
-> 							Thanx, Paul
-> 
-> ------------------------------------------------------------------------
-> 
-> commit 75c79a5dd72c1bb59f6bd6c5ec36f3a6516795cd
-> Author: Paul E. McKenney <paulmck@kernel.org>
-> Date:   Fri Oct 9 19:51:55 2020 -0700
-> 
->     rcutorture: Don't do need_resched() testing if ->sync is NULL
->     
->     If cur_ops->sync is NULL, rcu_torture_fwd_prog_nr() will nevertheless
->     attempt to call through it.  This commit therefore flags cases where
->     neither need_resched() nor call_rcu() forward-progress testing
->     can be performed due to NULL function pointers, and also causes
->     rcu_torture_fwd_prog_nr() to take an early exit if cur_ops->sync()
->     is NULL.
->     
->     Reported-by: Tom Rix <trix@redhat.com>
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> index beba9e7..44749be 100644
-> --- a/kernel/rcu/rcutorture.c
-> +++ b/kernel/rcu/rcutorture.c
-> @@ -1989,7 +1989,9 @@ static void rcu_torture_fwd_prog_nr(struct rcu_fwd *rfp,
->  	unsigned long stopat;
->  	static DEFINE_TORTURE_RANDOM(trs);
->  
-> -	if  (cur_ops->call && cur_ops->sync && cur_ops->cb_barrier) {
-> +	if (!cur_ops->sync) 
-> +		return; // Cannot do need_resched() forward progress testing without ->sync.
-> +	if (cur_ops->call && cur_ops->cb_barrier) {
->  		init_rcu_head_on_stack(&fcs.rh);
->  		selfpropcb = true;
->  	}
-> @@ -2215,8 +2217,8 @@ static int __init rcu_torture_fwd_prog_init(void)
->  
->  	if (!fwd_progress)
->  		return 0; /* Not requested, so don't do it. */
-> -	if (!cur_ops->stall_dur || cur_ops->stall_dur() <= 0 ||
-> -	    cur_ops == &rcu_busted_ops) {
-> +	if ((!cur_ops->sync && !cur_ops->call) ||
-> +	    !cur_ops->stall_dur || cur_ops->stall_dur() <= 0 || cur_ops == &rcu_busted_ops) {
->  		VERBOSE_TOROUT_STRING("rcu_torture_fwd_prog_init: Disabled, unsupported by RCU flavor under test");
->  		return 0;
->  	}
+diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
+index fec25b9cfbaf..349d9872e807 100644
+--- a/include/trace/events/sched.h
++++ b/include/trace/events/sched.h
+@@ -5,6 +5,7 @@
+ #if !defined(_TRACE_SCHED_H) || defined(TRACE_HEADER_MULTI_READ)
+ #define _TRACE_SCHED_H
+ 
++#include <linux/kthread.h>
+ #include <linux/sched/numa_balancing.h>
+ #include <linux/tracepoint.h>
+ #include <linux/binfmts.h>
+@@ -51,6 +52,89 @@ TRACE_EVENT(sched_kthread_stop_ret,
+ 	TP_printk("ret=%d", __entry->ret)
+ );
+ 
++/**
++ * sched_kthread_work_queue_work - called when a work gets queued
++ * @worker:	pointer to the kthread_worker
++ * @work:	pointer to struct kthread_work
++ *
++ * This event occurs when a work is queued immediately or once a
++ * delayed work is actually queued (ie: once the delay has been
++ * reached).
++ */
++TRACE_EVENT(sched_kthread_work_queue_work,
++
++	TP_PROTO(struct kthread_worker *worker,
++		 struct kthread_work *work),
++
++	TP_ARGS(worker, work),
++
++	TP_STRUCT__entry(
++		__field( void *,	work	)
++		__field( void *,	function)
++		__field( void *,	worker)
++	),
++
++	TP_fast_assign(
++		__entry->work		= work;
++		__entry->function	= work->func;
++		__entry->worker		= worker;
++	),
++
++	TP_printk("work struct=%p function=%ps worker=%p",
++		  __entry->work, __entry->function, __entry->worker)
++);
++
++/**
++ * sched_kthread_work_execute_start - called immediately before the work callback
++ * @work:	pointer to struct kthread_work
++ *
++ * Allows to track kthread work execution.
++ */
++TRACE_EVENT(sched_kthread_work_execute_start,
++
++	TP_PROTO(struct kthread_work *work),
++
++	TP_ARGS(work),
++
++	TP_STRUCT__entry(
++		__field( void *,	work	)
++		__field( void *,	function)
++	),
++
++	TP_fast_assign(
++		__entry->work		= work;
++		__entry->function	= work->func;
++	),
++
++	TP_printk("work struct %p: function %ps", __entry->work, __entry->function)
++);
++
++/**
++ * sched_kthread_work_execute_end - called immediately after the work callback
++ * @work:	pointer to struct work_struct
++ * @function:   pointer to worker function
++ *
++ * Allows to track workqueue execution.
++ */
++TRACE_EVENT(sched_kthread_work_execute_end,
++
++	TP_PROTO(struct kthread_work *work, kthread_work_func_t function),
++
++	TP_ARGS(work, function),
++
++	TP_STRUCT__entry(
++		__field( void *,	work	)
++		__field( void *,	function)
++	),
++
++	TP_fast_assign(
++		__entry->work		= work;
++		__entry->function	= function;
++	),
++
++	TP_printk("work struct %p: function %ps", __entry->work, __entry->function)
++);
++
+ /*
+  * Tracepoint for waking up a task:
+  */
+diff --git a/kernel/kthread.c b/kernel/kthread.c
+index 3edaa380dc7b..c1e59d6bf802 100644
+--- a/kernel/kthread.c
++++ b/kernel/kthread.c
+@@ -704,8 +704,15 @@ int kthread_worker_fn(void *worker_ptr)
+ 	raw_spin_unlock_irq(&worker->lock);
+ 
+ 	if (work) {
++		kthread_work_func_t func = work->func;
+ 		__set_current_state(TASK_RUNNING);
++		trace_sched_kthread_work_execute_start(work);
+ 		work->func(work);
++		/*
++		 * Avoid dereferencing work after this point.  The trace
++		 * event only cares about the address.
++		 */
++		trace_sched_kthread_work_execute_end(work, func);
+ 	} else if (!freezing(current))
+ 		schedule();
+ 
+@@ -834,6 +841,8 @@ static void kthread_insert_work(struct kthread_worker *worker,
+ {
+ 	kthread_insert_work_sanity_check(worker, work);
+ 
++	trace_sched_kthread_work_queue_work(worker, work);
++
+ 	list_add_tail(&work->node, pos);
+ 	work->worker = worker;
+ 	if (!worker->current_work && likely(worker->task))
+-- 
+2.26.2
+
