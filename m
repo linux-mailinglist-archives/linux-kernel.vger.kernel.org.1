@@ -2,99 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C59D528A28C
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:58:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7B9C28A1FB
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:53:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390592AbgJJW6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:58:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730606AbgJJTvB (ORCPT
+        id S2387968AbgJJWw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:52:59 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:39374 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731277AbgJJTFZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:51:01 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21744C05BD0A
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 06:16:54 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id a15so12297946ljk.2
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 06:16:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=I6GLcoUpo4y0TA4rpDhzzmDcBN9KGSF4okvjQ/EzDKw=;
-        b=dbKFu/0xJ40OfYyUCpMPFDakjxp7Gl3QQfRQVZsLYZNvGaWowfCN/6WvlDkeEAmWan
-         jvQt5imfuiC/aVURtOcyCsXiXsq/1kbEwQpScyw2EuhftRmlh8iB2kda1PREabWBc4V2
-         Hz4d8KO59WUp7xGIIdoJu8CIXq1XoVwfo6KqMCrhOhEuc4go3z30AXBpfHaNTcCcXjiX
-         cPUrkdy3K5IgGSIFp3Os75jomspfFSK3TPBFMOO4oU/6hMz1r+/kMfAuZZtsPcgKqH8F
-         04i+q5IQFeuNq9CKIq0sLl0nuTY82X1iLKxZmiHw9g3guAcKB663xEleDUrU93OdCBZk
-         szTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=I6GLcoUpo4y0TA4rpDhzzmDcBN9KGSF4okvjQ/EzDKw=;
-        b=EqaWUgwT5r9D2TH/6VbygKttNONWmEUz+yY1TEEvqibBRrEdY7qU+q1Yhyc3uDxg3O
-         l0cgHSLNEJ70L3LO9uV3JtNVDjmVMohbhSgAyLA3RREMeQAU5lLFK2fPbU3oIqu4SRql
-         g5f/slLAIR3YU+yx9lHpTJ8tGsmI0j4kW3qzi69vXLj1O0/GfiGWaScbpez+c4RifK/4
-         VFcuI7LaJPKalFLEMbw96vTk9YwhoPM29SkQRo34TsaK/bPsqdlcYNJceSa3fXRhQH4Z
-         hHPKqsZfNhof7V0fMaFbev1w5gqr6/GN+VOuBL+DHIMcSXLbBv5Gt8eeFqnzt3QmgrQP
-         +oxQ==
-X-Gm-Message-State: AOAM530cx1PL7lZ9d9tSNU2cWPygQhXfkMvnvl7+JStwb+EGGEEblCFO
-        m8svMok3M+Hhn108lav1hPpVCJ4f0C7YyKZt
-X-Google-Smtp-Source: ABdhPJwlXMQJxFWBfenbvdcBiEfKPnu9TbzWaGCDysOHjfEB50KaSJXJjYDYWKf6ptVKsw0kUEvQMA==
-X-Received: by 2002:a2e:9d8d:: with SMTP id c13mr6464279ljj.339.1602335812137;
-        Sat, 10 Oct 2020 06:16:52 -0700 (PDT)
-Received: from [192.168.1.211] ([188.162.65.231])
-        by smtp.gmail.com with ESMTPSA id w20sm67086lfl.220.2020.10.10.06.16.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 10 Oct 2020 06:16:51 -0700 (PDT)
-Subject: Re: [PATCH 0/3] i2c: i2c-qcom-geni: More properly fix the DMA race
-To:     Douglas Anderson <dianders@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        Akash Asthana <akashast@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        linux-i2c@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Girish Mahadevan <girishm@codeaurora.org>,
-        Karthikeyan Ramasubramanian <kramasub@codeaurora.org>,
-        Mukesh Kumar Savaliya <msavaliy@codeaurora.org>,
-        linux-kernel@vger.kernel.org
-References: <20201008225235.2035820-1-dianders@chromium.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <4dcdc8b3-94aa-8e68-934d-70542897db6a@linaro.org>
-Date:   Sat, 10 Oct 2020 16:16:48 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        Sat, 10 Oct 2020 15:05:25 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09ADBttA106263;
+        Sat, 10 Oct 2020 13:18:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
+ bh=teUTVOba2iGBVDpvjfpiEVZNYULjl/b3B311LmBLjHA=;
+ b=fU4ehnUoC/0KczFjZe5afevFBI459x9ARKCtf0XgZuF/nRHZefu8d2mdi+2F7nyK/nUZ
+ GpxyzZVdHeazyaXzxPfuBm4y+/SCUJO510/6GU4iYgaubIl6pzp+T9Kx8Tv1IJUD131j
+ Y38MjH1FQL6hkihC8TLQ9NrfskZBcVeEdPZ5SyGrQj+8atpx6ksJ6JyY8EvDmjFQym0j
+ BtvFvCM6WkTcp8PL6GR0AfdodzhrBds3hAHM07fmT0DuuKSdfoQPwYUzWzwqzhbrSCB+
+ qHFi67EYyAv/WsQXrimnTIOOCoWq6OMGHVuuQw0txI2TeQ77l54IsWw2NNSTF6pBeBdj 1w== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 3432fa8v55-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 10 Oct 2020 13:18:22 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09ADFTqJ017203;
+        Sat, 10 Oct 2020 13:18:22 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 343309jjk4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 10 Oct 2020 13:18:22 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09ADIIHf030406;
+        Sat, 10 Oct 2020 13:18:20 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sat, 10 Oct 2020 06:18:17 -0700
+Date:   Sat, 10 Oct 2020 16:18:11 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     =?iso-8859-1?B?Suly9G1l?= Pouiller <jerome.pouiller@silabs.com>
+Cc:     Kalle Valo <kvalo@codeaurora.org>, devel@driverdev.osuosl.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 2/8] staging: wfx: check memory allocation
+Message-ID: <20201010131810.GS18329@kadam>
+References: <20201009171307.864608-1-Jerome.Pouiller@silabs.com>
+ <20201009171307.864608-3-Jerome.Pouiller@silabs.com>
+ <874kn31be2.fsf@codeaurora.org>
+ <2852079.TFTgQsWz4P@pc-42>
 MIME-Version: 1.0
-In-Reply-To: <20201008225235.2035820-1-dianders@chromium.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2852079.TFTgQsWz4P@pc-42>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9769 signatures=668681
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 adultscore=0
+ bulkscore=0 mlxlogscore=999 suspectscore=2 malwarescore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010100125
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9769 signatures=668681
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 impostorscore=0
+ priorityscore=1501 bulkscore=0 phishscore=0 clxscore=1015 malwarescore=0
+ spamscore=0 adultscore=0 mlxscore=0 mlxlogscore=999 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010100124
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/10/2020 01:52, Douglas Anderson wrote:
-> Previously I landed commit 02b9aec59243 ("i2c: i2c-qcom-geni: Fix DMA
-> transfer race") to fix a race we were seeing.  While that most
-> definitely fixed the race we were seeing, it looks like it causes
-> problems in the TX path, which we didn't stress test until we started
-> trying to update firmware on devices.
+On Sat, Oct 10, 2020 at 02:07:13PM +0200, Jérôme Pouiller wrote:
+> On Friday 9 October 2020 20:51:01 CEST Kalle Valo wrote:
+> > CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you recognize the sender and know the content is safe.
+> > 
+> > 
+> > Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
+> > 
+> > > From: Jérôme Pouiller <jerome.pouiller@silabs.com>
+> > >
+> > > Smatch complains:
+> > >
+> > >    main.c:228 wfx_send_pdata_pds() warn: potential NULL parameter dereference 'tmp_buf'
+> > >    227          tmp_buf = kmemdup(pds->data, pds->size, GFP_KERNEL);
+> > >    228          ret = wfx_send_pds(wdev, tmp_buf, pds->size);
+> > >                                          ^^^^^^^
+> > >    229          kfree(tmp_buf);
+> > >
+> > > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > > Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
+> > > ---
+> > >  drivers/staging/wfx/main.c | 8 +++++++-
+> > >  1 file changed, 7 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/staging/wfx/main.c b/drivers/staging/wfx/main.c
+> > > index df11c091e094..a8dc2c033410 100644
+> > > --- a/drivers/staging/wfx/main.c
+> > > +++ b/drivers/staging/wfx/main.c
+> > > @@ -222,12 +222,18 @@ static int wfx_send_pdata_pds(struct wfx_dev *wdev)
+> > >       if (ret) {
+> > >               dev_err(wdev->dev, "can't load PDS file %s\n",
+> > >                       wdev->pdata.file_pds);
+> > > -             return ret;
+> > > +             goto err1;
+> > >       }
+> > >       tmp_buf = kmemdup(pds->data, pds->size, GFP_KERNEL);
+> > > +     if (!tmp_buf) {
+> > > +             ret = -ENOMEM;
+> > > +             goto err2;
+> > > +     }
+> > >       ret = wfx_send_pds(wdev, tmp_buf, pds->size);
+> > >       kfree(tmp_buf);
+> > > +err2:
+> > >       release_firmware(pds);
+> > > +err1:
+> > >       return ret;
+> > >  }
+> > 
+> > A minor style issue but using more descriptive error labels make the
+> > code more readable and maintainable, especially in a bigger function.
+> > For example, err2 could be called err_release_firmware.
+> > 
+> > And actually err1 could be removed and the goto replaced with just
+> > "return ret;". Then err2 could be renamed to a simple err.
 > 
-> Let's revert that patch and try another way: fix the original problem
-> by disabling the interrupts that aren't relevant to DMA transfers.
-> Now we can stress both TX and RX cases and see no problems.  I also
-> can't find any place to put an msleep() that causes problems anymore.
-> 
-> Since this problem only affects i2c, I'm hoping for an Ack from Bjorn
-> and then all these patches can go through the i2c tree.  However, if
-> maintainers want to work a different way out to land that's OK too.
+> It was the case in the initial code. However, I have preferred to not
+> mix 'return' and 'goto' inside the same function. Probably a matter of
+> taste.
+>
 
-These patches fix I2C DMA issues on SM8250 we were observing
-Tested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Ideally you can read a function from top to bottom and understand with
+out skipping around.  Imagine if novels were written like that "goto
+bottom_of_page;" but then at the bottom it just said "Just kidding".
+"return ret;" is more readable than "goto err;"
 
+These sorts of rules where "there is only one return per function" are
+meant to make people think about cleanup before returning.  But most of
+my work is in error handling code and it doesn't help.  If people don't
+think about cleanup, changing the style won't make them start thinking
+about it.  There was one driver which was written with locked code
+indented one tab and the inventor of that style still introduced a
+locking bug in his code.
 
--- 
-With best wishes
-Dmitry
+	spin_lock(); {
+		frob();
+		frob();
+		if (ret)
+			return ret;  // <-- forgot to unlock;
+		frob();
+	} spin_unlock();
+
+Btw, I have created a new Smatch check to find unwind bugs.  It's called
+check_unwind.c and it's easy to add new alloc/free pairings to that
+code.  This is the best way to prevent unwind bugs.  The style changes
+don't make a measurable difference in real life and they make the code
+messy.
+
+And GW-BASIC label names are a pox upon the earth.
+
+regards,
+dan carpenter
