@@ -2,94 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D6F28A220
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6664528A1F6
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:53:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729033AbgJJWzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:55:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36512 "EHLO
+        id S2387844AbgJJWwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:52:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731386AbgJJTQ1 (ORCPT
+        with ESMTP id S1731259AbgJJTFU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:16:27 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13611C05BD2E
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 08:47:23 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id l85so13601212oih.10
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 08:47:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=AKYfmmabE8KOoTAXGrClJCoRVz0CjdSEkOQL4jxspvU=;
-        b=TMcXAZrRfYPUlVVMqLHurJyxKYO7uLfZdqiy/dQdWJBKlajqOsxPBpzmWfWUpNve1H
-         PABd4y6TAUg2tSZ6vLlfZEbrfUp7L0iQ7LdwmebfjDpqwFxU7VROgPA5t8IrBZoNRZ2Q
-         je6cwwQ6KTL23vyQYXTZ6Sm2+CZqiq3o4DvGS73jjiZf213IgvmbKdhsKpq7WguuVWAz
-         JzEEAXjfdGJ1tdp6lc0u2sXf53xg864s+P6sFrJohT8HK4vmBMz3GIn6/WhBvrGDmagV
-         ByvNRoSclRqE2tEiII5O8EdREJ8ga4s7o0UG/wgaPXeMAB1fVeuXz/DjOb+Pv4t6bO0s
-         hPng==
+        Sat, 10 Oct 2020 15:05:20 -0400
+Received: from mail-pl1-x64f.google.com (mail-pl1-x64f.google.com [IPv6:2607:f8b0:4864:20::64f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 174F2C05BD3A
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 09:38:12 -0700 (PDT)
+Received: by mail-pl1-x64f.google.com with SMTP id h20so8483086plr.9
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 09:38:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=AKYfmmabE8KOoTAXGrClJCoRVz0CjdSEkOQL4jxspvU=;
-        b=trCl7F7ViMC07q1mkYKupodwFgp5lUhKH2u55pjjHJ+h0kA5P4PJ+HIaGclNs+8MKP
-         hTQ/GyoLDjXLwRtk6Ijb6WWhQrpwq020SLVyUnZxoxdOWKcS2Fxjov4J3klajFK/wy+y
-         VToS1sPu24lsba3TQpcowJBVvNR+GUpj4ZOuPc18CAGojkqT+Wb8sgi52T+cgc1Z4lrv
-         W3thDgCd679VCxuFQy2Jv8QPY2jF/AMiDS7Nkpwvq2sFVMekoLD+rAftzAuEozsohgx1
-         izWM7l22tQMk4TxUZPIZnUmHAVtLq2o+qDU9KzSp8zxpbQ1Dn/gGVbOq5j2N3CWg1y4s
-         uFJw==
-X-Gm-Message-State: AOAM5336Wk59pRS3iMrSK5equ/TF4SXSnir27jRBJfRR+RWDK+B1c3iJ
-        w5qiDEJefEYyc+t55mkqBxo=
-X-Google-Smtp-Source: ABdhPJzTUQelH4fbTvHgpdzJXuB1btp4s+BO8ILt2x6I8u+q/CkUot2GYZ2WYhHzu9r45kO2TgMdfw==
-X-Received: by 2002:aca:2301:: with SMTP id e1mr6159156oie.177.1602344842523;
-        Sat, 10 Oct 2020 08:47:22 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u2sm8186515oig.48.2020.10.10.08.47.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 10 Oct 2020 08:47:22 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sat, 10 Oct 2020 08:47:21 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Wim Van Sebroeck <wim@linux-watchdog.org>
-Subject: Re: [PATCH] watchdog: via_wdt: add VX900 support
-Message-ID: <20201010154721.GB248582@roeck-us.net>
-References: <20201010130716.GA84929@monster.powergraphx.local>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=j31NhuPOHM2geZWaaQJv3ikYyVsGXqVbWelRycz+tD0=;
+        b=XN5sxKHVYxhjwnTvEvhl4CNobtqSLXE0Z9xY+r4U5NRBesrhOF9B88Tak2ApjTWTxr
+         a78rN3/Hltrh+uL9O9dcVas2BEhm7OnR7KNf6uuEiTq2M6BeEAY/wDE629AWhvD8Xwmt
+         oKEt3jshtcEwzT68TsXAP/mg9tXPLkTfDjlrmMJuqr1V6DU3xOvtDhB/OE5WoSnt8n5l
+         /J6ncCjriEWqPObhm+FdsQDIWlMH2uSSknXeOyNSeLywzsPV15kIWvhByzQelmyXSwas
+         jsN+U+pGrxQP098JwF40ia6B8CurfnbkUTGWoJMAA5yo8kNU5fv8lx6d6Loj/KA0epML
+         vQpw==
+X-Gm-Message-State: AOAM531HENS2B9jnbupLoAy0D8daAo3nMTjByy1aK8dDeF6H7CyGE1mH
+        VAjboTv0DfG1ec3WaVC+nDaZbsjxiK3o1VPXWTEhl4aStyEi
+X-Google-Smtp-Source: ABdhPJx0qf2gnVvR85VmXRDohn+cNhIC1jhkMLDhwNno11joOtr/W5u8fdFcI6aYLOLSV77D+vz4P6E2n6OED0dp3fa5TZJ1Lnm4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201010130716.GA84929@monster.powergraphx.local>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Received: by 2002:a92:874a:: with SMTP id d10mr13835218ilm.163.1602345365166;
+ Sat, 10 Oct 2020 08:56:05 -0700 (PDT)
+Date:   Sat, 10 Oct 2020 08:56:05 -0700
+In-Reply-To: <0000000000004a624a05b05a756d@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004c5e7e05b1531ab0@google.com>
+Subject: Re: INFO: task hung in nbd_ioctl (3)
+From:   syzbot <syzbot+fe03c50d25c0188f7487@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, josef@toxicpanda.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mchristi@redhat.com,
+        nbd@other.debian.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 10, 2020 at 03:07:16PM +0200, Wilken Gottwalt wrote:
-> Adds watchdog support for the VIA VX900 chip-set, which is fully
-> backwards compatible to the older VIA chip-set watchdogs.
-> 
-> Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
+syzbot has bisected this issue to:
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+commit e9e006f5fcf2bab59149cb38a48a4817c1b538b4
+Author: Mike Christie <mchristi@redhat.com>
+Date:   Sun Aug 4 19:10:06 2019 +0000
 
-> ---
->  drivers/watchdog/via_wdt.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/watchdog/via_wdt.c b/drivers/watchdog/via_wdt.c
-> index eeb39f96e72e..b452ab253ac7 100644
-> --- a/drivers/watchdog/via_wdt.c
-> +++ b/drivers/watchdog/via_wdt.c
-> @@ -244,6 +244,7 @@ static const struct pci_device_id wdt_pci_table[] = {
->  	{ PCI_DEVICE(PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_CX700) },
->  	{ PCI_DEVICE(PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_VX800) },
->  	{ PCI_DEVICE(PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_VX855) },
-> +	{ PCI_DEVICE(PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_VX900) },
->  	{ 0 }
->  };
->  
-> -- 
-> 2.28.0
-> 
+    nbd: fix max number of supported devs
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=171556f0500000
+start commit:   fb0155a0 Merge tag 'nfs-for-5.9-3' of git://git.linux-nfs...
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=149556f0500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=109556f0500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=41b736b7ce1b3ea4
+dashboard link: https://syzkaller.appspot.com/bug?extid=fe03c50d25c0188f7487
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=173d9b17900000
+
+Reported-by: syzbot+fe03c50d25c0188f7487@syzkaller.appspotmail.com
+Fixes: e9e006f5fcf2 ("nbd: fix max number of supported devs")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
