@@ -2,71 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B7EC289CBF
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 02:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74BD2289CC6
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 02:46:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729130AbgJJAkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 20:40:09 -0400
-Received: from mga02.intel.com ([134.134.136.20]:14878 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729037AbgJJA0f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 20:26:35 -0400
-IronPort-SDR: S65T5W2vE9EfbT5UW6GA1PoJYZZlle+qsGKnPj8LUjSqn0J1kW+tRBACaf9n/uZXf48KS8lKld
- axQY2HgeCBWA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9769"; a="152471864"
-X-IronPort-AV: E=Sophos;i="5.77,357,1596524400"; 
-   d="scan'208";a="152471864"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 17:26:28 -0700
-IronPort-SDR: 5ePig7T99IXUzWtaUC9ICLZ7NtCQnvXRIXwwjMvIVfN6FJI/cfVIFsk/SetacBKMYJQuwx9UUl
- /otEad6RQUWg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,357,1596524400"; 
-   d="scan'208";a="317208202"
-Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.65])
-  by orsmga006.jf.intel.com with ESMTP; 09 Oct 2020 17:26:26 -0700
-From:   "Huang\, Ying" <ying.huang@intel.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Rafael Aquini <aquini@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [PATCH] mm: Fix a race during split THP
-References: <20201009073647.1531083-1-ying.huang@intel.com>
-        <20201009132704.GS20115@casper.infradead.org>
-Date:   Sat, 10 Oct 2020 08:26:26 +0800
-In-Reply-To: <20201009132704.GS20115@casper.infradead.org> (Matthew Wilcox's
-        message of "Fri, 9 Oct 2020 14:27:04 +0100")
-Message-ID: <87362n7wp9.fsf@yhuang-dev.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        id S1729144AbgJJAm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 20:42:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728956AbgJJA0l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 20:26:41 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58913C0613D5
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 17:26:41 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id b26so8245036pff.3
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 17:26:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=931+7FHZXAAV0rm1idrhZ1WwOql8Y19KgPOMFI4H7xQ=;
+        b=EMKUv+0Yt3Tdmuj9FPYqLLkhAnTXo8ttooKPYhl5WbecohuCJPwMsZ9bHTvp0gPCTz
+         QnVDkw6cef84BxPu/4TZW2RN9hfCYB3fViNggPvllqAcfI3se+HZBmA53wow3R7sTJ+V
+         jHKxfWJiQizpDyF4tHwNhrHI6HfiIIn91SBg4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=931+7FHZXAAV0rm1idrhZ1WwOql8Y19KgPOMFI4H7xQ=;
+        b=E8gRuW6F5RYBJuhVBEjqpelUOwIoxreiGle0S5B14jh7h49YTe5WLUoU7cNKb7PST4
+         EGFddI2jkHBBUhOYHhuxT338L9m2N9muka7avSj6Zo18z8hQrmOaEGwb6McoqP0HmYOg
+         HSZ0fR/WreN6U7AR7X9vwBodKsqSkYjbnWhZQ4auXhG36T70V/KHWLv5KVF93EX2ozeX
+         Wkyb9DIQjpvA/HlE9vb8TMoVj0psiXRgK6K2psGtKYNbPJDXFRVX1K92ABAALcfH/e6w
+         MG13/MXLDD58vlr7kt/uDGumriSd5QVLAsY3szvhB0m3NywQzcS/7LT0VQANyfrl2BXt
+         z9AA==
+X-Gm-Message-State: AOAM530Z1vDr0WcBlHNLbJhgXYme1XXLG1qixc14s1HHUPTxdvp71e87
+        p8LRUcnqu2l07HRRYVEDVT4ehQ==
+X-Google-Smtp-Source: ABdhPJxCNtNYBWgGnGMesDhbQSNpl7RdGdCmB5U0BdvhbWAVdok6SHme4WK0I4s6nm+x5MhGrLxDqg==
+X-Received: by 2002:a62:bd05:0:b029:142:2501:3a02 with SMTP id a5-20020a62bd050000b029014225013a02mr13726318pff.81.1602289600806;
+        Fri, 09 Oct 2020 17:26:40 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id 8sm4556029pge.7.2020.10.09.17.26.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Oct 2020 17:26:39 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201008225235.2035820-1-dianders@chromium.org>
+References: <20201008225235.2035820-1-dianders@chromium.org>
+Subject: Re: [PATCH 0/3] i2c: i2c-qcom-geni: More properly fix the DMA race
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Girish Mahadevan <girishm@codeaurora.org>,
+        Karthikeyan Ramasubramanian <kramasub@codeaurora.org>,
+        Mukesh Kumar Savaliya <msavaliy@codeaurora.org>,
+        linux-kernel@vger.kernel.org,
+        Roja Rani Yarubandi <rojay@codeaurora.org>
+To:     Akash Asthana <akashast@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Wolfram Sang <wsa@kernel.org>
+Date:   Fri, 09 Oct 2020 17:26:37 -0700
+Message-ID: <160228959768.310579.3696247619283748151@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> writes:
++Roja
 
-> On Fri, Oct 09, 2020 at 03:36:47PM +0800, Huang, Ying wrote:
->> +	if (PageSwapCache(head)) {
->> +		swp_entry_t entry = { .val = page_private(head) };
->> +
->> +		split_swap_cluster(entry);
->> +	}
-> ...
->> -		if (PageSwapCache(head)) {
->> -			swp_entry_t entry = { .val = page_private(head) };
->> -
->> -			ret = split_swap_cluster(entry);
+Quoting Douglas Anderson (2020-10-08 15:52:32)
+> Previously I landed commit 02b9aec59243 ("i2c: i2c-qcom-geni: Fix DMA
+> transfer race") to fix a race we were seeing.  While that most
+> definitely fixed the race we were seeing, it looks like it causes
+> problems in the TX path, which we didn't stress test until we started
+> trying to update firmware on devices.
+>=20
+> Let's revert that patch and try another way: fix the original problem
+> by disabling the interrupts that aren't relevant to DMA transfers.
+> Now we can stress both TX and RX cases and see no problems.  I also
+> can't find any place to put an msleep() that causes problems anymore.
+>=20
+> Since this problem only affects i2c, I'm hoping for an Ack from Bjorn
+> and then all these patches can go through the i2c tree.  However, if
+> maintainers want to work a different way out to land that's OK too.
+>=20
+> NOTE: the 3rd patch in the series could certianly be squashed with
+> patch #1 or I could re-order / rejigger.  To me it seemed like a good
+> idea to first fix the probelm (and make the two functions as much of
+> an inverse as possible) and later try to clean things up.  Yell if you
+> want something different.
+>=20
+>=20
+> Douglas Anderson (3):
+>   soc: qcom: geni: More properly switch to DMA mode
+>   Revert "i2c: i2c-qcom-geni: Fix DMA transfer race"
+>   soc: qcom: geni: Optimize select fifo/dma mode
+>=20
+>  drivers/i2c/busses/i2c-qcom-geni.c |  6 ++--
+>  drivers/soc/qcom/qcom-geni-se.c    | 47 ++++++++++++++++++++----------
+>  2 files changed, 34 insertions(+), 19 deletions(-)
+>=20
+> --=20
+> 2.28.0.1011.ga647a8990f-goog
 >
-> Are we sure split_swap_cluster() can't fail?  Or if it does fail, it's
-> OK to continue with the split and not report the error?
-
-split_swap_cluster() can only fail for invalid swap entry.  Which isn't
-expected to happen in this situation.
-
-Best Regards,
-Huang, Ying
