@@ -2,121 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD64F28A2CE
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:03:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9799228A2D0
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390933AbgJJW7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:59:31 -0400
-Received: from wildebeest.demon.nl ([212.238.236.112]:40750 "EHLO
-        gnu.wildebeest.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388243AbgJJU7c (ORCPT
+        id S1732286AbgJJW7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:59:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726211AbgJJVJm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 16:59:32 -0400
-Received: from librem (deer0x15.wildebeest.org [172.31.17.151])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by gnu.wildebeest.org (Postfix) with ESMTPSA id 14B693000661;
-        Sat, 10 Oct 2020 22:59:23 +0200 (CEST)
-Received: by librem (Postfix, from userid 1000)
-        id 1973CC0289; Sat, 10 Oct 2020 22:58:36 +0200 (CEST)
-Date:   Sat, 10 Oct 2020 22:58:36 +0200
-From:   Mark Wielaard <mark@klomp.org>
-To:     Andi Kleen <andi@firstfloor.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        linux-toolchains@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        "Phillips, Kim" <kim.phillips@amd.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: Additional debug info to aid cacheline analysis
-Message-ID: <20201010205836.GA2666@wildebeest.org>
-References: <20201006131703.GR2628@hirez.programming.kicks-ass.net>
- <CABPqkBSkdqXjm6QuF9j6AO8MUnt1yZ_cA2PV=Qo8e4wKmK_6Ug@mail.gmail.com>
- <20201008070231.GS2628@hirez.programming.kicks-ass.net>
- <50338de81b34031db8637337f08b89b588476211.camel@klomp.org>
- <20201008212259.gdhlwdswn5pu4zos@two.firstfloor.org>
+        Sat, 10 Oct 2020 17:09:42 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FDB0C0613D0;
+        Sat, 10 Oct 2020 14:09:42 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id a200so9948555pfa.10;
+        Sat, 10 Oct 2020 14:09:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ec9PVwrrG4wt31+D6ewlM+AL+7A9A3Y/2wI9lVyXaLI=;
+        b=jzBLA5pYP9ANRRty0Q2tPknfb4dcy7phjo7KoXG1ZJJFd45CUUNcxRmYFUz1pLnCfV
+         6sKUhukAL5MToZ7+aE4myHQkmSGoZ6SJAtpyeMu9Gjqjsa1Cmnk50/yVca6AqKZR3NVx
+         e9jY7mL8fjZATbr+aG0jeYpsQFsVFELgN/h8TeSkpSy6yD3J1NisKVwagSNO5i6KTwSF
+         7wohsTYBjgoYzb/nr3RJxZKmu7Rgv//KLEa/Z6hJtyQYP0JSQTyNpdYAbkSmQ3Y92X05
+         RXju+uBSSWrSsVqxepYTniHCyuQQh9an4He6FPTXn+2/YZ7SZTc7SSEitqJMlSheUwtE
+         eQFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ec9PVwrrG4wt31+D6ewlM+AL+7A9A3Y/2wI9lVyXaLI=;
+        b=He1JTsm6nqeNImxuiIKtXFtcY3twZsHEE1YIaZh+Js4wYbaYaU0mfudJl44BsLBjjt
+         vw031Wa4Kulh3OfkLnsm4nh4HFS6/dRdz9QPVibhsrUD4kefMteCs/5hbsR2DphHQR7x
+         GFwWFEjhKO3Lx21SPSY6D6MhnwHfXL2HzAuZtcQMi3l/nsHUQ7NdhPz4dtQdHIOZ/yFU
+         agYMsyRljF0LrHaW4rBI5jKc6bZsomZN954tTQ/WSFcC20VTcimbAu3bPTLMbTglUs5P
+         z3ERSAHVr9i+cuf7Q9Z4PRPq15Zt7IKtm18URfsuc+IY8jXmWlS8djstkilOtUCQoTdV
+         Wg4w==
+X-Gm-Message-State: AOAM5332YiwIsWnB7dafx8CellpVMRUU5ktE+GAA1XnrXqsv0VaQdKjT
+        lvup0sKTUL+kA5foxsIppOU=
+X-Google-Smtp-Source: ABdhPJz9oa00UL45KYiP8Ed4JXeDj4BGCSkwo3hNV7y7qhN6uBnwfYk7/qq6ElDlcYQi8McRJQDdZw==
+X-Received: by 2002:a17:90a:3486:: with SMTP id p6mr12198245pjb.23.1602364181401;
+        Sat, 10 Oct 2020 14:09:41 -0700 (PDT)
+Received: from localhost.localdomain ([45.118.167.204])
+        by smtp.googlemail.com with ESMTPSA id c10sm520701pgl.92.2020.10.10.14.09.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 10 Oct 2020 14:09:40 -0700 (PDT)
+From:   Anmol Karn <anmol.karan123@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     mkubecek@suse.cz, andrew@lunn.ch, f.fainelli@gmail.com,
+        dan.carpenter@oracle.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzkaller-bugs@googlegroups.com, anmol.karan123@gmail.com,
+        syzbot+9d1389df89299fa368dc@syzkaller.appspotmail.com
+Subject: [Linux-kernel-mentees] [PATCH net] ethtool: strset: Fix out of bound read in strset_parse_request()
+Date:   Sun, 11 Oct 2020 02:39:29 +0530
+Message-Id: <20201010210929.620244-1-anmol.karan123@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="TB36FDmn/VVEgNH/"
-Content-Disposition: inline
-In-Reply-To: <20201008212259.gdhlwdswn5pu4zos@two.firstfloor.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Flag: NO
-X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.0
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on gnu.wildebeest.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Flag ``ETHTOOL_A_STRSET_COUNTS_ONLY`` tells the kernel to only return the string 
+counts of the sets, but, when req_info->counts_only tries to read the 
+tb[ETHTOOL_A_STRSET_COUNTS_ONLY] it gets out of bound. 
 
---TB36FDmn/VVEgNH/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+- net/ethtool/strset.c
+The bug seems to trigger in this line:
 
-On Thu, Oct 08, 2020 at 02:23:00PM -0700, Andi Kleen wrote:
-> > Basically you simply want to remove this line in the top-level
-> > Makefile:
-> > 
-> > DEBUG_CFLAGS    := $(call cc-option, -fno-var-tracking-assignments)
-> 
-> It looks like this was needed as a workaround for a gcc bug that was there
-> from 4.5 to 4.9.
-> 
-> So I guess could disable it for 5.0+ only. 
+req_info->counts_only = tb[ETHTOOL_A_STRSET_COUNTS_ONLY];
 
-Yes, that would work. I don't know what the lowest supported GCC
-version is, but technically it was definitely fixed in 4.10.0, 4.8.4
-and 4.9.2. And various distros would probably have backported the
-fix. But checking for 5.0+ would certainly give you a good version.
+Fix it by NULL checking for req_info->counts_only while 
+reading from tb[ETHTOOL_A_STRSET_COUNTS_ONLY].
 
-How about the attached?
-
-Cheers,
-
-Mark
---TB36FDmn/VVEgNH/
-Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: attachment; filename="0001-Only-add-fno-var-tracking-assignments-workaround-for.patch"
-
-From 48628d3cf2d829a90cd6622355eada1b30cb10c1 Mon Sep 17 00:00:00 2001
-From: Mark Wielaard <mark@klomp.org>
-Date: Sat, 10 Oct 2020 22:47:21 +0200
-Subject: [PATCH] Only add -fno-var-tracking-assignments workaround for old GCC
- versions.
-
-Some old GCC versions between 4.5.0 and 4.9.1 might miscompile code
-with -fvar-tracking-assingments (which is enabled by default with -g -O2).
-commit 2062afb4f added -fno-var-tracking-assignments unconditionally to
-workaround this. But newer versions of GCC no longer have this bug, so
-only add it for versions of GCC before 5.0.
-
-Signed-off-by: Mark Wielaard <mark@klomp.org>
+Reported-by: syzbot+9d1389df89299fa368dc@syzkaller.appspotmail.com 
+Link: https://syzkaller.appspot.com/bug?id=730deff8fe9954a5e317924d9acff98d9c64a770 
+Signed-off-by: Anmol Karn <anmol.karan123@gmail.com>
 ---
- Makefile | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+When I tried to reduce the index of tb[] by 1, the crash reproducer was not working anymore,
+hence it's probably reading from tb[ETHTOOL_A_STRSET_STRINGSETS], but this won't give the 
+strset 'count' and hence is not a plausible fix. But checking for the req_info->counts_only 
+seems legit.
 
-diff --git a/Makefile b/Makefile
-index f84d7e4ca0be..4f4a9416a87a 100644
---- a/Makefile
-+++ b/Makefile
-@@ -813,7 +813,9 @@ KBUILD_CFLAGS	+= -ftrivial-auto-var-init=zero
- KBUILD_CFLAGS	+= -enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang
- endif
+If I have missed something please let me know, and I will work towards fixing it in next version.
+
+ net/ethtool/strset.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/net/ethtool/strset.c b/net/ethtool/strset.c
+index 82707b662fe4..20a7b36698f3 100644
+--- a/net/ethtool/strset.c
++++ b/net/ethtool/strset.c
+@@ -174,7 +174,8 @@ static int strset_parse_request(struct ethnl_req_info *req_base,
+ 	if (ret < 0)
+ 		return ret;
  
--DEBUG_CFLAGS	:= $(call cc-option, -fno-var-tracking-assignments)
-+# Workaround https://gcc.gnu.org/bugzilla/show_bug.cgi?id=61801
-+# for old versions of GCC.
-+DEBUG_CFLAGS	:= $(call cc-ifversion, -lt, 0500, $(call cc-option, -fno-var-tracking-assignments))
+-	req_info->counts_only = tb[ETHTOOL_A_STRSET_COUNTS_ONLY];
++	if (req_info->counts_only)
++		req_info->counts_only = tb[ETHTOOL_A_STRSET_COUNTS_ONLY];
+ 	nla_for_each_nested(attr, nest, rem) {
+ 		u32 id;
  
- ifdef CONFIG_DEBUG_INFO
- ifdef CONFIG_DEBUG_INFO_SPLIT
 -- 
-2.18.4
-
-
---TB36FDmn/VVEgNH/--
+2.28.0
