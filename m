@@ -2,60 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50F78289D5C
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 04:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A67C8289D60
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 04:09:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730063AbgJJCG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 22:06:28 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:3976 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729994AbgJJBxh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 21:53:37 -0400
-Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.55])
-        by Forcepoint Email with ESMTP id 6AD04EA7C68F19C08B60;
-        Sat, 10 Oct 2020 09:53:14 +0800 (CST)
-Received: from dggeme753-chm.china.huawei.com (10.3.19.99) by
- dggeme752-chm.china.huawei.com (10.3.19.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Sat, 10 Oct 2020 09:53:14 +0800
-Received: from dggeme753-chm.china.huawei.com ([10.7.64.70]) by
- dggeme753-chm.china.huawei.com ([10.7.64.70]) with mapi id 15.01.1913.007;
- Sat, 10 Oct 2020 09:53:14 +0800
-From:   linmiaohe <linmiaohe@huawei.com>
-To:     David Hildenbrand <david@redhat.com>
-CC:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "ziy@nvidia.com" <ziy@nvidia.com>,
-        "alexander.h.duyck@linux.intel.com" 
-        <alexander.h.duyck@linux.intel.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "osalvador@suse.de" <osalvador@suse.de>,
-        "steven.price@arm.com" <steven.price@arm.com>,
-        "ying.huang@intel.com" <ying.huang@intel.com>,
-        "yang.shi@linux.alibaba.com" <yang.shi@linux.alibaba.com>
-Subject: Re: [PATCH] page-flags: Remove unused __[Set|Clear]PagePrivate
-Thread-Topic: [PATCH] page-flags: Remove unused __[Set|Clear]PagePrivate
-Thread-Index: AdaeqBvI5kgdhoQYAEiMEx4wSjEs+w==
-Date:   Sat, 10 Oct 2020 01:53:13 +0000
-Message-ID: <e8b85ab4a7ff4a84b4081ba05ce76061@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.177.16]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1730093AbgJJCIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 22:08:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36869 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730030AbgJJBzh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Oct 2020 21:55:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602294931;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZEq+9RUNCLcUowlY3rNV2I+fdNX5VdqF7iThjTKHAYU=;
+        b=Zsjr9QjSBcUNNd4xyMv3oCnmSdfItWDhAMRt+KF2IX+ynuZS0ifDJQIVc+ZaTRu04e010n
+        wf59G1JjISYuLbp+QQD59WYIb/li4NhgrMcUoPbFzx/i6q3yEyeUTVL/4S6i1U3C8MfNvo
+        PJ5R656jxEmWLQ/GEMf2Zu+JjjKyOLo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-66-iD51xsXWOkmoDtx0CE8sLQ-1; Fri, 09 Oct 2020 21:55:27 -0400
+X-MC-Unique: iD51xsXWOkmoDtx0CE8sLQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9583C1005513;
+        Sat, 10 Oct 2020 01:55:25 +0000 (UTC)
+Received: from shell-el7.hosts.prod.upshift.rdu2.redhat.com (shell-el7.hosts.prod.upshift.rdu2.redhat.com [10.0.15.68])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F36285D9FC;
+        Sat, 10 Oct 2020 01:55:24 +0000 (UTC)
+Received: by shell-el7.hosts.prod.upshift.rdu2.redhat.com (Postfix, from userid 2518)
+        id 888946000432; Sat, 10 Oct 2020 01:55:24 +0000 (UTC)
+Date:   Sat, 10 Oct 2020 01:55:24 +0000
+From:   Alexander Viro <aviro@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        Alexander Viro <aviro@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH 05/14] fs: don't allow kernel reads and writes without
+ iter ops
+Message-ID: <20201010015524.GB101464@shell-el7.hosts.prod.upshift.rdu2.redhat.com>
+References: <20200903142242.925828-1-hch@lst.de>
+ <20200903142242.925828-6-hch@lst.de>
+ <20201001223852.GA855@sol.localdomain>
+ <20201001224051.GI3421308@ZenIV.linux.org.uk>
+ <CAHk-=wgj=mKeN-EfV5tKwJNeHPLG0dybq+R5ZyGuc4WeUnqcmA@mail.gmail.com>
+ <20201009220633.GA1122@sol.localdomain>
+ <CAHk-=whcEzYjkqdpZciHh+iAdUttvfWZYoiHiF67XuTXB1YJLw@mail.gmail.com>
+ <20201010011919.GC1122@sol.localdomain>
+ <CAHk-=wigvcmp-jcgoNCbx45W7j3=0jA320CfpskwuoEjefM7nQ@mail.gmail.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wigvcmp-jcgoNCbx45W7j3=0jA320CfpskwuoEjefM7nQ@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RGF2aWQgSGlsZGVuYnJhbmQgPGRhdmlkQHJlZGhhdC5jb20+IHdyb3RlOg0KPiBPbiAwOS4xMC4y
-MCAxNTo1OSwgTWlhb2hlIExpbiB3cm90ZToNCj4+IFRoZXkgYXJlIHVudXNlZCBhbnltb3JlLg0K
-Pg0KPi1FSU5WQUwsIHNlbnRlbmNlIGRvZXMgbm90IG1ha2Ugc2Vuc2UgOikNCj4NCj4iVGhleSBh
-cmUgbm90IHVzZWQgYW55bW9yZS4iDQo+IlRoZXkgYXJlIHVudXNlZCAuIg0KDQpNeSBwb29yIEVu
-Z2xpc2guIDspIFdpbGwgY2hhbmdlIGl0IGluIHYyIHNvb24uIE1hbnkgVGhhbmtzLg0KDQo+DQo+
-UmV2aWV3ZWQtYnk6IERhdmlkIEhpbGRlbmJyYW5kIDxkYXZpZEByZWRoYXQuY29tPg0KPg0K
+On Fri, Oct 09, 2020 at 06:29:13PM -0700, Linus Torvalds wrote:
+> On Fri, Oct 9, 2020 at 6:19 PM Eric Biggers <ebiggers@kernel.org> wrote:
+> >
+> > Okay, that makes more sense.  So the patchset from Matthew
+> > https://lkml.kernel.org/linux-fsdevel/20201003025534.21045-1-willy@infradead.org/T/#u
+> > isn't what you had in mind.
+> 
+> No.
+> 
+> That first patch makes sense - it's just the "ppos can be NULL" patch.
+> 
+> But as mentioned, NULL isn't "shorthand for zero". It's just "pipes
+> don't _have_ a pos, trying to pass in some explicit position is
+> crazy".
+> 
+> So no, the other patches in that set are a bit odd, I think.
+> 
+> SOME of them look potentially fine - the bpfilter one seems to be
+> valid, for example, because it's literally about reading/writing a
+> pipe. And maybe the sysctl one is similarly sensible - I didn't check
+> the context of that one.
+
+FWIW, I hadn't pushed that branch out (or merged it into #for-next yet);
+for one thing, uml part (mconsole) is simply broken, for another...
+IMO ##5--8 are asking for kernel_pread() and if you look at binfmt_elf.c,
+you'll see elf_read() being pretty much that.  acct.c, keys and usermode
+parts are asking for kernel_pwrite() as well.
+
+I've got stuck looking through the drivers/target stuff - it would've
+been another kernel_pwrite() candidate, but it smells like its use of
+filp_open() is really asking for trouble, starting with symlink attacks.
+Not sure - I'm not familiar with the area, but...
+
