@@ -2,100 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46614289F82
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 11:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DC1628A284
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:58:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728741AbgJJJQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 05:16:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55656 "EHLO
+        id S1731854AbgJJW5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:57:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728491AbgJJJEn (ORCPT
+        with ESMTP id S1730247AbgJJTtc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 05:04:43 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 341A0C0613D0;
-        Sat, 10 Oct 2020 02:04:36 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id q5so12002760wmq.0;
-        Sat, 10 Oct 2020 02:04:36 -0700 (PDT)
+        Sat, 10 Oct 2020 15:49:32 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B5F5C0613D9
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 02:11:14 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id o70so5366456ybc.1
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 02:11:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=obzmRsA49+kN9nLLhhuvco3Uy76XSh6EQ8QxAczkyH4=;
-        b=UrufEpvAYBZDtrrcoVOX9u4Pa8c9JgWK9jAKhwQTprgcMonbFk7+1RbceT8lkr9kIP
-         fuYTOjjvCMYDqJAhfkfTRmeC7Zc24xCU0nUPruSBeKcsfxCOEtGvyxfXjxy5jmR5lwkc
-         4IHuLX5zzEcBwqiI9DYmt7Pnvio6PlgU1NAglSmkpujqdrFo/ydqKh+ij/ZepBzukj84
-         hEjvDSIdfZEXIbNilmASTz0RkWI01lmk4of//xPRrWpPaQkU/TMtBkX2spLA4s/Um91P
-         2ocQRU5XcfHhddSN2aL7H10MrzrCho9B6bdiky5yTbOlyEYG0NheJgihs109l6jO1/yV
-         gJlw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8CGf/YBV8az+8bFiKJZW7WiV6wKvy1BTDhazpaywPDs=;
+        b=IOEJUYCHKYD7bySIoRwRvxLSFTSd59I+ROKAKETIAGxJPrL7nksEakThHDYhs6+0n2
+         FvIIWHw3cw8mXs5i0PpGx13X4gtfaVnLYBQr5xPECtvF59JhOnYHGf6OXljS3219+ntn
+         5CFAFO3dpig1Cb+25UzViGNRFOQRrhBegTLgXq9FhJqI0vV53vZp7OsF8836HgMnKotp
+         Cwnt/lBBYisR631A766kgQ1wd9jt3Ln8kyf6oHJYj86zcKVr9b/X5Cz7jKNh61oTVYrX
+         X2cAIhpaRSpGvq+HYcKzqKTHRTfAHzV72M9q6aFa3694jLV6FwOh7pw83oPPlGJ3Mlsv
+         PC1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=obzmRsA49+kN9nLLhhuvco3Uy76XSh6EQ8QxAczkyH4=;
-        b=YjaiUOs1/OWZ3WY9TC7xIpMt8gcA+XyC1k8P+0o76GMLBDmqme222zi/MRZyaRHKLV
-         vsJHQjM8uI4fpRX98KhYx5eu/cPcnOGkeHItG4o2vk6OEVPjgJ6HDoueQRAxuYqMQUYx
-         sZbuR8oD7WHoMm5aV3oh2HsQrGpg8FGnJmQmr5bNzMpbfxPwGSgYNYLSCroXWY972vi3
-         ODK3JavlK2GhaWDLZa6uN8jrVPkITmTLOufY6Q3sGnf2VQZhV97paA1RDwKqkxook65A
-         zC0GUzs0lgiMnM3ugc2oiSvyxezOwUoM9f2gnZQL2e6H1A3F1oiOGTKsnMPq7qCdt6ta
-         Fkyg==
-X-Gm-Message-State: AOAM5305Hwy2X5j7APvYoaUdg4s2lMGFrDal5eiJEwe5UMs27UZXYEeX
-        uKthH9xfGb/ttRynDfIT884=
-X-Google-Smtp-Source: ABdhPJyOWCYq8HTIrJ10s9a6rJjjy3r0hgPGOb9G/M5AN/JBrJ/WFJZVlbpWRluU+DZIwA/MsjWUNQ==
-X-Received: by 2002:a1c:2c0a:: with SMTP id s10mr1920266wms.103.1602320673727;
-        Sat, 10 Oct 2020 02:04:33 -0700 (PDT)
-Received: from [192.168.0.66] (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id j17sm15700595wrw.68.2020.10.10.02.04.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 10 Oct 2020 02:04:33 -0700 (PDT)
-Subject: Re: [PATCH v2] PCI: keystone: Enable compile-testing on !ARM
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Murali Karicheri <m-karicheri2@ti.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Dilip Kota <eswara.kota@linux.intel.com>,
-        linux-pci@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Thierry Reding <treding@nvidia.com>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Jonathan Chocron <jonnyc@amazon.com>,
-        linux-riscv@lists.infradead.org,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Vidya Sagar <vidyas@nvidia.com>, linux-kernel@vger.kernel.org,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-References: <20200906194850.63glbnehjcuw356k@lenovo-laptop>
- <20200906195128.279342-1-alex.dewar90@gmail.com>
- <20200930182138.GA3176461@bogus>
-From:   Alex Dewar <alex.dewar90@gmail.com>
-Message-ID: <91c7c7b5-fc97-325c-7cba-520d99eede9a@gmail.com>
-Date:   Sat, 10 Oct 2020 10:04:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8CGf/YBV8az+8bFiKJZW7WiV6wKvy1BTDhazpaywPDs=;
+        b=E0sFb4Oxkxs3PtQslvTIOq1xNHuRl3QOl1loXv1/9PTSly0cfBuNMXaLK3VNDuDng0
+         Z49vk14BtvPXuhej+MEL4toLQWdJcxeyKlTAckh+9mWcnlLCgE3Rg5dTIGKtt6J/Pbsc
+         tb6NSGQxRnA/DczAZLlhyAz7siHqC/OXqQvgh8/9lq1Y+VQDRR5d3FFvZpJzohxOKcry
+         mpG6njbzejfeb9nhpTURW9Magqa/vuXkkuNPV+a/1qUOOTmpozww1Ods2a22WMMIDd9F
+         rhuyiKmVTW3B4DQlXAE01Lf3qezAFEMNek+dosYdcimoynRHufj5d46Q5vAmDHkD+/b9
+         +x/w==
+X-Gm-Message-State: AOAM532xipRIo4XOOiqA0Z+UlRn1elolpszHek5NUpkylHZFibqYQq29
+        vIctY/z/njkUunSKYGYIM945VjIhCm72VZRhMRc=
+X-Google-Smtp-Source: ABdhPJy3LvR5vMjiWYkK17OnfirKSzwFprNXlAlNWkdo4psUDosS+qZEokywyzfGxRtCsMoPOIb97yM7l4D4brEGYak=
+X-Received: by 2002:a25:7405:: with SMTP id p5mr23241699ybc.19.1602321073821;
+ Sat, 10 Oct 2020 02:11:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200930182138.GA3176461@bogus>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20201008182713.2764-1-harshalchau04@gmail.com>
+ <20201009045734.GA112189@kroah.com> <CADVatmONWsfsj4-WKhNAcXjKXbUrgyD6UpK+ML6TNpqtp8be9A@mail.gmail.com>
+In-Reply-To: <CADVatmONWsfsj4-WKhNAcXjKXbUrgyD6UpK+ML6TNpqtp8be9A@mail.gmail.com>
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Date:   Sat, 10 Oct 2020 10:10:37 +0100
+Message-ID: <CADVatmOf18xUEvjWFzenut=KsHtoEZ5OSZF1oCqFJsbkx_Mb9g@mail.gmail.com>
+Subject: Re: [PATCH] char: ppdev: check if ioctl argument is present and valid
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Harshal Chaudhari <harshalchau04@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/09/2020 19:21, Rob Herring wrote:
-> On Sun, 06 Sep 2020 20:51:27 +0100, Alex Dewar wrote:
->> Currently the Keystone driver can only be compile-tested on ARM, but
->> this restriction seems unnecessary. Get rid of it to increase test
->> coverage.
->>
->> Build-tested with allyesconfig on x86, ppc, mips and riscv.
->>
->> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
->> ---
->>   drivers/pci/controller/dwc/Kconfig | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
-> Acked-by: Rob Herring <robh@kernel.org>
+On Sat, Oct 10, 2020 at 1:08 AM Sudip Mukherjee
+<sudipm.mukherjee@gmail.com> wrote:
+>
+> On Fri, Oct 9, 2020 at 5:57 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Thu, Oct 08, 2020 at 11:57:13PM +0530, Harshal Chaudhari wrote:
+> > > Checking the argument passed to the ioctl is valid
+> > > or not. if not then return -EINVAL.
+> >
+> > Along the the comments that Arnd made, this is not the correct value to
+> > be returning from an ioctl when you don't pass in the correct command.
+> >
+> > And it doesn't match what your patch says, please be consistent.
+> >
+> > And do you have this device to be able to test your changes?
+>
+> I will test this tomorrow. But from an initial look, its going to
+> break ppdev. There are few ioctls which don't need any arguments.
 
-Ping ping? :-)
+No, sorry. I missed the check for _IOC_NONE.
+Tested on a desktop which has a parallel port with a very basic test
+code of open->claim->write->release->close and it still works.
+
+
+-- 
+Regards
+Sudip
