@@ -2,99 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DB8628A25B
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:57:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA6B328A3C4
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731510AbgJJW5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:57:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59549 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732150AbgJJTk3 (ORCPT
+        id S2390049AbgJJW43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:56:29 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:59418 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731516AbgJJTcI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:40:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602358828;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9wwQE5/V+tTnlQFbR3/c5B+uBVj5zhNMofQYLJJXLZM=;
-        b=jRuFZPQU7+RANTn9J3EZ/oIh08RQ4oHV0gzPpTmTKf6OETJWGMvzi9gwEBMaJ8AgbvFEPO
-        jFwgT4ZS6pKsq5lIfBnsyY0CAmIV7aMzs87f9Ph6N9vsd6hgKqF/Z9v4itj5UZ21NulYgs
-        KtN8bs6wOyAJ94BQsaUurC7l3GId7Xs=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-431-tAX3cr5cOyqPjKObzOKM8w-1; Sat, 10 Oct 2020 08:56:10 -0400
-X-MC-Unique: tAX3cr5cOyqPjKObzOKM8w-1
-Received: by mail-ej1-f71.google.com with SMTP id z25so4786255ejd.2
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 05:56:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=9wwQE5/V+tTnlQFbR3/c5B+uBVj5zhNMofQYLJJXLZM=;
-        b=bFH9OHA34yAttwsZDgCjKcBJMOCEu2odlVGSd+Iu8SvJtnqw99z6gBDMr1SZ+oszqx
-         q7QGjxSI6VmbPuJLYvWM5yIJPytLgDrjH2AlGe+qdYpxgB4pcM0Qe7U7gsjBPWOFIl0a
-         AmM0l9v8ljgPMZKqjD1B4FWm2+mptLTAn3U+1lVilTEYGGZp8ZtN1hyL41PsYuMvp/3F
-         EqjerTVke6p/1a3Ot0yK526KzcZvitKE9CnzotID5bWoDOS9w/VPVIbo3Rc2b5wmq3Mc
-         mqd0INMj4hhaBerYJS/D4PHfRfvUpU1Oh16dAd1JEk3hEluNMesSRv8EhV8i/ZZU5vpw
-         aW9Q==
-X-Gm-Message-State: AOAM531ep4t25H6E9OzUDXcNS5JXEcR6ZhavkV1QxQH5rpUKmlSPki2H
-        PGQJJ/tcdfNpJxMZxbMiFo/Rlv7UKYXf4AbILqD6R1T2ny5yi8+Lt3hpgPFRLbL/yp1XmvVP8Dg
-        6zGS+61uHyVtvFpD8AiZXs9II
-X-Received: by 2002:a17:906:3e48:: with SMTP id t8mr18688301eji.104.1602334568808;
-        Sat, 10 Oct 2020 05:56:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxqGeOno+BRBV/rlg+E0aBfjPQLf1z7K/9GnhxG9dgxP1+VtVJne21zT5kM6ItQDINM3N3XdQ==
-X-Received: by 2002:a17:906:3e48:: with SMTP id t8mr18688280eji.104.1602334568601;
-        Sat, 10 Oct 2020 05:56:08 -0700 (PDT)
-Received: from [10.149.91.9] (tmo-096-9.customers.d1-online.com. [80.187.96.9])
-        by smtp.gmail.com with ESMTPSA id vr3sm1929820ejb.124.2020.10.10.05.56.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 10 Oct 2020 05:56:08 -0700 (PDT)
+        Sat, 10 Oct 2020 15:32:08 -0400
+Received: from fsav302.sakura.ne.jp (fsav302.sakura.ne.jp [153.120.85.133])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 09ACwE6u074439;
+        Sat, 10 Oct 2020 21:58:14 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav302.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav302.sakura.ne.jp);
+ Sat, 10 Oct 2020 21:58:14 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav302.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 09ACwEaG074433
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Sat, 10 Oct 2020 21:58:14 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: [PATCH v3] lockdep: Allow tuning tracing capacity constants.
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <1595640639-9310-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp>
+ <384ce711-25c5-553b-8d22-965847132fbd@i-love.sakura.ne.jp>
+Message-ID: <0eb519fa-e77b-b655-724a-4e9eecc64626@i-love.sakura.ne.jp>
+Date:   Sat, 10 Oct 2020 21:58:12 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
+MIME-Version: 1.0
+In-Reply-To: <384ce711-25c5-553b-8d22-965847132fbd@i-love.sakura.ne.jp>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   David Hildenbrand <david@redhat.com>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH] page-flags: Remove unused __[Set|Clear]PagePrivate
-Date:   Sat, 10 Oct 2020 14:56:07 +0200
-Message-Id: <95A41DBA-4ED2-4049-A94D-E07E9DAF174E@redhat.com>
-References: <e8b85ab4a7ff4a84b4081ba05ce76061@huawei.com>
-Cc:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        sfr@canb.auug.org.au, ziy@nvidia.com,
-        alexander.h.duyck@linux.intel.com, willy@infradead.org,
-        osalvador@suse.de, steven.price@arm.com, ying.huang@intel.com,
-        yang.shi@linux.alibaba.com
-In-Reply-To: <e8b85ab4a7ff4a84b4081ba05ce76061@huawei.com>
-To:     linmiaohe <linmiaohe@huawei.com>
-X-Mailer: iPhone Mail (18A393)
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Since syzkaller continues various test cases until the kernel crashes,
+syzkaller tends to examine more locking dependencies than normal systems.
+As a result, syzbot is reporting that the fuzz testing was terminated
+due to hitting upper limits lockdep can track [1] [2] [3].
 
+Peter Zijlstra does not want to allow tuning these limits via kernel
+config options, for such change discourages thinking. But currently we
+are not actionable, for lockdep does not report the culprit for hitting
+these limits [4].
 
-> Am 10.10.2020 um 03:53 schrieb linmiaohe <linmiaohe@huawei.com>:
->=20
-> =EF=BB=BFDavid Hildenbrand <david@redhat.com> wrote:
->>> On 09.10.20 15:59, Miaohe Lin wrote:
->>> They are unused anymore.
->>=20
->> -EINVAL, sentence does not make sense :)
->>=20
->> "They are not used anymore."
->> "They are unused ."
->=20
-> My poor English. ;) Will change it in v2 soon. Many Thanks.
+Therefore, I propose this patch again, with a caveat that this patch is
+expected to be reverted after lockdep becomes capable of reporting the
+culprit, for I consider that "postpone fixing lock related problems in
+existing code" is less painful than "not detecting lock related problems
+introduced by new patches".
 
-You got it right in the subject :)
+[1] https://syzkaller.appspot.com/bug?id=3d97ba93fb3566000c1c59691ea427370d33ea1b
+[2] https://syzkaller.appspot.com/bug?id=381cb436fe60dc03d7fd2a092b46d7f09542a72a
+[3] https://syzkaller.appspot.com/bug?id=a588183ac34c1437fc0785e8f220e88282e5a29f
+[4] https://lkml.kernel.org/r/CACT4Y+agTiEF-1i9LbAgp-q_02oYF0kAPZGAAJ==-wx2Xh7xzQ@mail.gmail.com
 
-No need to resend - Andrew can fixup when applying!
+Reported-by: syzbot <syzbot+cd0ec5211ac07c18c049@syzkaller.appspotmail.com>
+Reported-by: syzbot <syzbot+91fd909b6e62ebe06131@syzkaller.appspotmail.com>
+Reported-by: syzbot <syzbot+62ebe501c1ce9a91f68c@syzkaller.appspotmail.com>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Acked-by: Dmitry Vyukov <dvyukov@google.com>
+---
+ kernel/locking/lockdep.c           |  2 +-
+ kernel/locking/lockdep_internals.h |  8 +++---
+ lib/Kconfig.debug                  | 40 ++++++++++++++++++++++++++++++
+ 3 files changed, 45 insertions(+), 5 deletions(-)
 
-Cheers!
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index 2facbbd146ec..2144708a867c 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -1349,7 +1349,7 @@ static int add_lock_to_list(struct lock_class *this,
+ /*
+  * For good efficiency of modular, we use power of 2
+  */
+-#define MAX_CIRCULAR_QUEUE_SIZE		4096UL
++#define MAX_CIRCULAR_QUEUE_SIZE		(1UL << CONFIG_LOCKDEP_CIRCULAR_QUEUE_BITS)
+ #define CQ_MASK				(MAX_CIRCULAR_QUEUE_SIZE-1)
+ 
+ /*
+diff --git a/kernel/locking/lockdep_internals.h b/kernel/locking/lockdep_internals.h
+index b0be1560ed17..cf7752847eb7 100644
+--- a/kernel/locking/lockdep_internals.h
++++ b/kernel/locking/lockdep_internals.h
+@@ -96,16 +96,16 @@ static const unsigned long LOCKF_USED_IN_IRQ_READ =
+ #define MAX_STACK_TRACE_ENTRIES	262144UL
+ #define STACK_TRACE_HASH_SIZE	8192
+ #else
+-#define MAX_LOCKDEP_ENTRIES	32768UL
++#define MAX_LOCKDEP_ENTRIES	(1UL << CONFIG_LOCKDEP_BITS)
+ 
+-#define MAX_LOCKDEP_CHAINS_BITS	16
++#define MAX_LOCKDEP_CHAINS_BITS	CONFIG_LOCKDEP_CHAINS_BITS
+ 
+ /*
+  * Stack-trace: tightly packed array of stack backtrace
+  * addresses. Protected by the hash_lock.
+  */
+-#define MAX_STACK_TRACE_ENTRIES	524288UL
+-#define STACK_TRACE_HASH_SIZE	16384
++#define MAX_STACK_TRACE_ENTRIES	(1UL << CONFIG_LOCKDEP_STACK_TRACE_BITS)
++#define STACK_TRACE_HASH_SIZE	(1 << CONFIG_LOCKDEP_STACK_TRACE_HASH_BITS)
+ #endif
+ 
+ /*
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 0c781f912f9f..41d083be7ec3 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1311,6 +1311,46 @@ config LOCKDEP
+ config LOCKDEP_SMALL
+ 	bool
+ 
++config LOCKDEP_BITS
++	int "Bitsize for MAX_LOCKDEP_ENTRIES"
++	depends on LOCKDEP && !LOCKDEP_SMALL
++	range 10 30
++	default 15
++	help
++	  Try increasing this value if you hit "BUG: MAX_LOCKDEP_ENTRIES too low!" message.
++
++config LOCKDEP_CHAINS_BITS
++	int "Bitsize for MAX_LOCKDEP_CHAINS"
++	depends on LOCKDEP && !LOCKDEP_SMALL
++	range 10 30
++	default 16
++	help
++	  Try increasing this value if you hit "BUG: MAX_LOCKDEP_CHAINS too low!" message.
++
++config LOCKDEP_STACK_TRACE_BITS
++	int "Bitsize for MAX_STACK_TRACE_ENTRIES"
++	depends on LOCKDEP && !LOCKDEP_SMALL
++	range 10 30
++	default 19
++	help
++	  Try increasing this value if you hit "BUG: MAX_STACK_TRACE_ENTRIES too low!" message.
++
++config LOCKDEP_STACK_TRACE_HASH_BITS
++	int "Bitsize for STACK_TRACE_HASH_SIZE"
++	depends on LOCKDEP && !LOCKDEP_SMALL
++	range 10 30
++	default 14
++	help
++	  Try increasing this value if you need large MAX_STACK_TRACE_ENTRIES.
++
++config LOCKDEP_CIRCULAR_QUEUE_BITS
++	int "Bitsize for elements in circular_queue struct"
++	depends on LOCKDEP
++	range 10 30
++	default 12
++	help
++	  Try increasing this value if you hit "lockdep bfs error:-1" warning due to __cq_enqueue() failure.
++
+ config DEBUG_LOCKDEP
+ 	bool "Lock dependency engine debugging"
+ 	depends on DEBUG_KERNEL && LOCKDEP
+-- 
+2.18.4
 
->=20
->>=20
->> Reviewed-by: David Hildenbrand <david@redhat.com>
->>=20
 
