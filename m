@@ -2,108 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE9C528A2A2
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D21DC28A30B
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731930AbgJJW7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:59:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41798 "EHLO
+        id S1732022AbgJJW7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:59:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731590AbgJJTyJ (ORCPT
+        with ESMTP id S1731589AbgJJTyJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 10 Oct 2020 15:54:09 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D3EC05BD0E;
-        Sat, 10 Oct 2020 06:22:36 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id r10so9676838pgb.10;
-        Sat, 10 Oct 2020 06:22:36 -0700 (PDT)
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5552BC05BD0F;
+        Sat, 10 Oct 2020 06:26:29 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id x13so6730193pfa.9;
+        Sat, 10 Oct 2020 06:26:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iPYmzILO99gWQ7KmTRCw8HqpXWlZMMEv9MgwDntuYfI=;
-        b=Gw8bu7YbCE7B1Uazh09OPacu+3M9+9er0UlkwZG3KBiuR21iWSsVfiPxnmhBVUj5Ka
-         bUH4RJPVe3EXtdlNv9f9Ymiaafh0Rb0A32U1Z2Vvcm1I7R/4rNqNwzzz6II3xe42bA+R
-         jnEKchK2eQOmusHphedK8luW/CNukfLM3YDJ7XTcFDJVbh/rohI80LmVzkUBhKFzKCAr
-         cHbxY0P8x9gQZ+XzrGNQK8QXlw7ujPRC/LOZMnMqpT97op87oRjecDtToQ2HoOyB01TH
-         1zGe/hWa77lcPqdUmpdWemQ0XypVB5x8pNpsRcW5eHDelCOnGrc7F03lgKSeo6dZJwL2
-         n+2g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bVFCs8xXG3UZzqj41Vd+QbKEjQvzFTw086//8JQkmAk=;
+        b=nRqb4ZE058ecg0wB9M928Xcs3pdAmmYenHmHIKwtKIeDBkj22u265jtqAy+oGUqTuP
+         3Kbtl4e9BhdhDhLaIKfzGQmiDJ8fyWCLLoVOHFAs7/Pq7T+C36pd8cHKZlwBFA3qG4sj
+         i6qhyFyFCo6wA+30BWi4e3TqjdPphXZ5bEb+GGtWhrP+9adNgfvwcF8q5v0Bs/5qU2Fj
+         F6lZwCXDnXRBt18iSeRVgmmLm8WKb4d3WaJq60FL2G6W9xhs49E0qR8Pv3V9NGNnFjnK
+         CRfPAGtZ0lJ/fQ9SXWWGbPSaoIDJRq9tVGbgJ8OFLdz4GCUrvQQELdFrYIWPdhJg3T6r
+         isyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iPYmzILO99gWQ7KmTRCw8HqpXWlZMMEv9MgwDntuYfI=;
-        b=IyanyqnmTCMKB4RqbQSFHPjDGVvmzphtNi714G7xbuBqtTJl8J/hGsc5qRph0VDM/g
-         FwyN/ZEBAQ56D12UXd4gvrfn8DKlc0jhjUZTMKj4iV1GRokdpQmlt3bGTgCmIq0MwgLN
-         syOLWwcs0J0adkKtdyKUsBLB39o2EP4R7CNOMfM0OD1aoQXjdSl24GpmhmjXt0bQoI92
-         0ex1RLfOxjbbA124Czs7C4NqONbb1Ft+7/dS/HJbODVjPX+aZSLB5bxVd52EDakerF9x
-         kB2yNgFonVqw28/IQgGZ0S2x1KLI2ib5mm8+ZXxYq2aGEh0sOJtpMmaax0lNkbOPgNKu
-         7teg==
-X-Gm-Message-State: AOAM530/8sElxmpvTdtvaTSjJpG6JfMIitdfdJxerMMBHswrQmCiROLj
-        7lFUBznVS34TrESMfm6Fw2Q=
-X-Google-Smtp-Source: ABdhPJyibHMnihiC0574sNDxXNrOcHiaAMIMFa3z4Ekl5pG/R2BSC8trht8IPOHPY1KSgB3OhyKv7A==
-X-Received: by 2002:a17:90a:dd46:: with SMTP id u6mr10740023pjv.67.1602336156275;
-        Sat, 10 Oct 2020 06:22:36 -0700 (PDT)
-Received: from f3 (ae055068.dynamic.ppp.asahi-net.or.jp. [14.3.55.68])
-        by smtp.gmail.com with ESMTPSA id in6sm14805090pjb.42.2020.10.10.06.22.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Oct 2020 06:22:35 -0700 (PDT)
-Date:   Sat, 10 Oct 2020 22:22:30 +0900
-From:   Benjamin Poirier <benjamin.poirier@gmail.com>
-To:     Coiby Xu <coiby.xu@gmail.com>
-Cc:     devel@driverdev.osuosl.org, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-        Manish Chopra <manishc@marvell.com>,
-        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
-        <GR-Linux-NIC-Dev@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:QLOGIC QLGE 10Gb ETHERNET DRIVER" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 2/6] staging: qlge: coredump via devlink health
- reporter
-Message-ID: <20201010132230.GA17351@f3>
-References: <20201008115808.91850-1-coiby.xu@gmail.com>
- <20201008115808.91850-3-coiby.xu@gmail.com>
- <20201010074809.GB14495@f3>
- <20201010100258.px2go6nugsfbwoq7@Rk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bVFCs8xXG3UZzqj41Vd+QbKEjQvzFTw086//8JQkmAk=;
+        b=dmVYu1eGmaSNM4SxB9avI/op8LObx9M70kByOZRwn1eyHDzydF8POfbO8aeJuteUW2
+         KeuE7ptTuj2pAXddZaN9+BlfZ7ejfdyQvMKfxmBWkGvPjm404RQ75QolYIYk/UcNUT26
+         hMARH+UDP2xlF8VpliewIduy4GngqAXJoJnTlTyfQRGbG4LHDzD7WD7aHvLyMpNQZ5l4
+         vX8xKXk+coldejvgaTOBNtMoibP6kcKgwPKZaBdlfCsY8H8IcX2+TPlNRTiNMeNA8oPJ
+         k4TtNfLtks5W1udSJGDPj7K3ZtacJPxlmAVu6ci6f1Ij7v3aQdYD099Jpenm1ACZT08K
+         xY4w==
+X-Gm-Message-State: AOAM5305xjxWyMfVPs6G/GGG3zzrkH4U6eOR4im8fIzB09vnyu+jR/py
+        djbZ/kuhYNSYqHoaJJG/Lkc89HFH/W5YkDWlUkQ=
+X-Google-Smtp-Source: ABdhPJxJZH4rfHRGX8OWQzzQRKi6l0cfQ8gJdZhGHNFZtth6oqmXK/1KFPFUYgnj0yT0dLv9Ky3MZHKlrHUdMvDhlFM=
+X-Received: by 2002:a62:750a:0:b029:152:4d07:aec6 with SMTP id
+ q10-20020a62750a0000b02901524d07aec6mr16211235pfc.48.1602336387840; Sat, 10
+ Oct 2020 06:26:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201010100258.px2go6nugsfbwoq7@Rk>
+References: <cover.1602263422.git.yifeifz2@illinois.edu> <c2077b8a86c6d82d611007d81ce81d32f718ec59.1602263422.git.yifeifz2@illinois.edu>
+ <202010091613.B671C86@keescook>
+In-Reply-To: <202010091613.B671C86@keescook>
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+Date:   Sat, 10 Oct 2020 08:26:16 -0500
+Message-ID: <CABqSeARZWBQrLkzd3ozF16ghkADQqcN4rUoJS2MKkd=73g4nVA@mail.gmail.com>
+Subject: Re: [PATCH v4 seccomp 5/5] seccomp/cache: Report cache data through /proc/pid/seccomp_cache
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-10 18:02 +0800, Coiby Xu wrote:
-[...]
-> > > +	do {                                                           \
-> > > +		err = fill_seg_(fmsg, &dump->seg_hdr, dump->seg_regs); \
-> > > +		if (err) {					       \
-> > > +			kvfree(dump);                                  \
-> > > +			return err;				       \
-> > > +		}                                                      \
-> > > +	} while (0)
-> > > +
-> > > +static int qlge_reporter_coredump(struct devlink_health_reporter *reporter,
-> > > +				  struct devlink_fmsg *fmsg, void *priv_ctx,
-> > > +				  struct netlink_ext_ack *extack)
-> > > +{
-> > > +	int err = 0;
-> > > +
-> > > +	struct qlge_devlink *dev = devlink_health_reporter_priv(reporter);
-> > 
-> > Please name this variable ql_devlink, like in qlge_probe().
-> 
-> I happened to find the following text in drivers/staging/qlge/TODO
-> > * in terms of namespace, the driver uses either qlge_, ql_ (used by
-> >  other qlogic drivers, with clashes, ex: ql_sem_spinlock) or nothing (with
-> >  clashes, ex: struct ob_mac_iocb_req). Rename everything to use the "qlge_"
-> >  prefix.
+On Fri, Oct 9, 2020 at 6:14 PM Kees Cook <keescook@chromium.org> wrote:
+> HAVE_ARCH_SECCOMP_CACHE isn't used any more. I think this was left over
+> from before.
 
-This comment applies to global identifiers, not local variables.
+Oh, I was meant to add this to the dependencies of
+SECCOMP_CACHE_DEBUG. Is this something that would make sense?
 
-> 
-> So I will adopt qlge_ instead. Besides I prefer qlge_dl to ql_devlink.
-
-Up to you but personally, I think ql_devlink is better. In any case,
-"dev" is too general and often used for struct net_device pointers
-instead.
+YiFei Zhu
