@@ -2,136 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C051B289CB6
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 02:26:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E3D6289CB7
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 02:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728947AbgJJA01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Oct 2020 20:26:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728956AbgJJAXw (ORCPT
+        id S1729066AbgJJA3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Oct 2020 20:29:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46352 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728992AbgJJAYo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Oct 2020 20:23:52 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F31BFC0613D2
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 17:23:50 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id s15so5956756vsm.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 17:23:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=avBDTcm5gU0Af/+YPoKt2EvMb/tJEqNyS5fFLJ2/b0M=;
-        b=Y/NhiiS+Zfn8VRdPyWWuSGBztlV2QZZ8b9SZ3Ndlma9YNNzdn6p4llK/RR1GQxHmzF
-         1ZAiZl0NoZM/5+yZH4GDCMKNENX9/IqoSNEaohoXAizPxcESjgrZt6V92ekyuS72gR8d
-         skP7cwBRzmU50ynTIlkWM9RiGssU0QSmV/wX/6Q64pLtFtn8R10Mz4O2zDGUhR3JOWBh
-         33fbh1kzK5MPp/G68q3m+OHVoRkanTMMus0iU0oEBGzeBcPVaco871cSFPf1m62pIEpS
-         1Huk2Whx1qDY7piCBqsG8qmOnkfPcbHnLXKexkTYQZos6o1WiwjAWhZdw9Sfv5WpWoid
-         h+7w==
+        Fri, 9 Oct 2020 20:24:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602289482;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=j1n5KeMHBgg75rXfWx16VkrJqv8CwDfWMRJRvhBV9wg=;
+        b=ivBrvVrfxZDRTbh2ORHFgAgrnPoPbsycDAerMsE62+CWD1kdD6JzTh0mEtGk7YeHVNHIKI
+        fWHv0EvJCPLrik2/d3dCx/sWmKxm6K9VWOAHRf5IelLgVKRwtBRoSdgXxvFSvHF86xW8+W
+        u27aZbXX09UmafzIzppL240sqMGJIyE=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-259-U6yaZZUyOB-aDou3YUPVHQ-1; Fri, 09 Oct 2020 20:24:41 -0400
+X-MC-Unique: U6yaZZUyOB-aDou3YUPVHQ-1
+Received: by mail-qv1-f72.google.com with SMTP id dd7so7050085qvb.6
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 17:24:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=avBDTcm5gU0Af/+YPoKt2EvMb/tJEqNyS5fFLJ2/b0M=;
-        b=saqQu8bFtqHaKIOPRT2UuFPl0ML97M6UMDs1jWFFbmTGCRsdHoIVFLiTM4ui2aUy2d
-         WdXpbF9j6z/2JKEMZa/3kRH9fqXyECZ4uMbjyp5A7T7lq5neZAvNIgcQgsoqlJ8o0pQV
-         a0niO8WroTfyhLfZ+xAEwhIZMyKw2opSLnffIIIlYil2y/Annvtz4F0hhSEfp9LRMnx4
-         DyK9ie2zlpYHYqlZd9R7u7j8eVy5LGF+cWB6nBkI9obnfZXfyu8L7EPLwIwu2sOpqyoe
-         SWfGR8sWoLGSRhJgkMeoMV+K0C7GpMNU6XthB+5xgWv6GJNb9GUC+a1s56XjZf9zA4od
-         gZ1g==
-X-Gm-Message-State: AOAM5324oBeAMqgxr8tjDjM92LLijxyzDufIQeLt4GDAyAvdGvzaxrUX
-        hoVFdIBxuxEDnna6b58mhGRl7EvnMos=
-X-Google-Smtp-Source: ABdhPJyErvFXfzV/V3RkRZ9cD68L7S2AwnNLO7JGKyELNaASefUdS3jINnQ++Y2lKMzVDNHyk/gOPA==
-X-Received: by 2002:a67:89c9:: with SMTP id l192mr2571677vsd.36.1602289429504;
-        Fri, 09 Oct 2020 17:23:49 -0700 (PDT)
-Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com. [209.85.222.48])
-        by smtp.gmail.com with ESMTPSA id s8sm1389413vke.48.2020.10.09.17.23.47
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=j1n5KeMHBgg75rXfWx16VkrJqv8CwDfWMRJRvhBV9wg=;
+        b=HK3DV0vL7pSi+efXJO57odQsgL2Ar6XNBPXfGvlVoDjSuUZBFpx+VKthHuw/OFlUp9
+         rsmqVqE4FW0i1cilzR9Vn8AEL7DEW3X7E9wJbuGbsC5Vo+2wrbapC8gqGKEOdUqujG2c
+         OAHxHgFzPp+Q+XE3M22FxGdQOJ98BqdRZ3OBzkorAr8xJxmB2iwhwaFgiroGPOVKR47U
+         8jdQYitenvxLDRbZJsg8P/hg4I4F/17m/zuoJem/9cjKtE57bkFg8RJhENczAzFgJvTe
+         Yn8ccGm5xruH/67RcUHM0BktMKU9LTbX7RzPQw5irWxYqMkpx8V10mKHTEU4zrqAyT3X
+         fUsA==
+X-Gm-Message-State: AOAM531K7Yqn/CdYcaRZP5lMmjZOVm8ZLY2l3frAM5bdcGCTpzymZ9X3
+        C/s9+yJLNPpcVIkgGvuiKZJTyndX2k4U2tkKPNrjfH4dp1ZRDkp8dx0LdkELLi3HANkdLrs2s62
+        gFNJRFpaXMtyt9ZbslCGD6m0f
+X-Received: by 2002:a05:620a:809:: with SMTP id s9mr534404qks.57.1602289480540;
+        Fri, 09 Oct 2020 17:24:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyZgPf78o39U4kPoIYqNBD3TsfW/QS30rya6KA328k4K6mos+3yKATAPfF55eeaoDm8w1ACrw==
+X-Received: by 2002:a05:620a:809:: with SMTP id s9mr534381qks.57.1602289480187;
+        Fri, 09 Oct 2020 17:24:40 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id i205sm7478724qke.70.2020.10.09.17.24.38
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Oct 2020 17:23:48 -0700 (PDT)
-Received: by mail-ua1-f48.google.com with SMTP id x26so3638841uan.11
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 17:23:47 -0700 (PDT)
-X-Received: by 2002:ab0:7718:: with SMTP id z24mr9365648uaq.92.1602289427332;
- Fri, 09 Oct 2020 17:23:47 -0700 (PDT)
+        Fri, 09 Oct 2020 17:24:39 -0700 (PDT)
+Subject: Re: [PATCH] rcutorture: remove unneeded check
+To:     paulmck@kernel.org
+Cc:     dave@stgolabs.net, josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, natechancellor@gmail.com,
+        ndesaulniers@google.com, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org, clang-built-linux@googlegroups.com
+References: <20201009194736.2364-1-trix@redhat.com>
+ <20201009201825.GL29330@paulmck-ThinkPad-P72>
+ <03e3eeed-6072-ccb8-a9c6-c79a99c701b8@redhat.com>
+ <20201009235033.GM29330@paulmck-ThinkPad-P72>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <92f82632-adbd-ca85-d516-6540a49f01ab@redhat.com>
+Date:   Fri, 9 Oct 2020 17:24:37 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <20201009103121.1004-1-ceggers@arri.de>
-In-Reply-To: <20201009103121.1004-1-ceggers@arri.de>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Fri, 9 Oct 2020 20:23:10 -0400
-X-Gmail-Original-Message-ID: <CA+FuTSfkHkyBarmp-wi-zo-04fPWAOu_6fxwGPVAo7S5xP6c8w@mail.gmail.com>
-Message-ID: <CA+FuTSfkHkyBarmp-wi-zo-04fPWAOu_6fxwGPVAo7S5xP6c8w@mail.gmail.com>
-Subject: Re: [PATCH net 1/2] socket: fix option SO_TIMESTAMPING_NEW
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Deepa Dinamani <deepa.kernel@gmail.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201009235033.GM29330@paulmck-ThinkPad-P72>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 9, 2020 at 6:32 AM Christian Eggers <ceggers@arri.de> wrote:
->
-> The comparison of optname with SO_TIMESTAMPING_NEW is wrong way around,
-> so SOCK_TSTAMP_NEW will first be set and than reset again. Additionally
-> move it out of the test for SOF_TIMESTAMPING_RX_SOFTWARE as this seems
-> unrelated.
->
-> This problem happens on 32 bit platforms were the libc has already
-> switched to struct timespec64 (from SO_TIMExxx_OLD to SO_TIMExxx_NEW
-> socket options). ptp4l complains with "missing timestamp on transmitted
-> peer delay request" because the wrong format is received (and
-> discarded).
->
-> Fixes: 9718475e6908 ("socket: Add SO_TIMESTAMPING_NEW")
-> Signed-off-by: Christian Eggers <ceggers@arri.de>
-> ---
->  net/core/sock.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
->
-> diff --git a/net/core/sock.c b/net/core/sock.c
-> index 34a8d12e38d7..3926804702c1 100644
-> --- a/net/core/sock.c
-> +++ b/net/core/sock.c
-> @@ -1024,16 +1024,15 @@ int sock_setsockopt(struct socket *sock, int level, int optname,
->                 }
->
->                 sk->sk_tsflags = val;
-> +               if (optname != SO_TIMESTAMPING_NEW)
-> +                       sock_reset_flag(sk, SOCK_TSTAMP_NEW);
-> +
->                 if (val & SOF_TIMESTAMPING_RX_SOFTWARE)
->                         sock_enable_timestamp(sk,
->                                               SOCK_TIMESTAMPING_RX_SOFTWARE);
-> -               else {
-> -                       if (optname == SO_TIMESTAMPING_NEW)
-> -                               sock_reset_flag(sk, SOCK_TSTAMP_NEW);
-> -
 
-The idea is to select new vs old behavior depending on which of the
-two setsockopts is called.
+On 10/9/20 4:50 PM, Paul E. McKenney wrote:
+> On Fri, Oct 09, 2020 at 02:18:41PM -0700, Tom Rix wrote:
+>> On 10/9/20 1:18 PM, Paul E. McKenney wrote:
+>>> On Fri, Oct 09, 2020 at 12:47:36PM -0700, trix@redhat.com wrote:
+>>>> From: Tom Rix <trix@redhat.com>
+>>>>
+>>>> clang static analysis reports this problem:
+>>>>
+>>>> rcutorture.c:1999:2: warning: Called function pointer
+>>>>   is null (null dereference)
+>>>>         cur_ops->sync(); /* Later readers see above write. */
+>>>>         ^~~~~~~~~~~~~~~
+>>>>
+>>>> This is a false positive triggered by an earlier, later ignored
+>>>> NULL check of sync() op.  By inspection of the rcu_torture_ops,
+>>>> the sync() op is never uninitialized.  So this earlier check is
+>>>> not needed.
+>>> You lost me on this one.  This check is at the very beginning of
+>>> rcu_torture_fwd_prog_nr().  Or are you saying that clang is seeing an
+>>> earlier check in one of rcu_torture_fwd_prog_nr()'s callers?  If so,
+>>> where exactly is this check?
+>>>
+>>> In any case, the check is needed because all three functions are invoked
+>>> if there is a self-propagating RCU callback that ensures that there is
+>>> always an RCU grace period outstanding.
+>>>
+>>> Ah.  Is clang doing local analysis and assuming that because there was
+>>> a NULL check earlier, then the pointer might be NULL later?  That does
+>>> not seem to me to be a sound check.
+>>>
+>>> So please let me know exactly what is causing clang to emit this
+>>> diagnostic.  It might or might not be worth fixing this, but either way
+>>> I need to understand the situation so as to be able to understand the
+>>> set of feasible fixes.
+>>>
+>>> 						Thanx, Paul
+>> In rcu_prog_nr() there is check for for sync.
+>>
+>> if ( ... cur_op->sync ...
+>>
+>>    do something
+>>
+>> This flags in clang's static analyzer as 'could be null'
+>>
+>> later in the function, in a reachable block it is used
+>>
+>> cur_ops->sync()
+>>
+>> I agree this is not a good check that's why i said is was a false positive.
+>>
+>> However when looking closer at how cur_ops is set, it is never uninitialized.
+>>
+>> So the check is not needed.
+> OK, got it, and thank you for the explanation.
+>
+>> This is not a fix, the code works fine.  It is a small optimization.
+> Well, there really is a bug.  Yes, right now all ->sync pointers are
+> non-NULL, but they have not been in the past and might not be in the
+> future.  So if ->sync is NULL, rcu_torture_fwd_prog_nr() either should
+> not be called or it should return immediately without doing anything.
+>
+> My current thought is something like the (untested) patch below, of
+> course with your Reported-by.
+>
+> Thoughts?
 
-This suggested fix still sets and clears the flag if calling
-SO_TIMESTAMPING_NEW to disable timestamping. Instead, how about
+Yes that would be fine.
 
-        case SO_TIMESTAMPING_NEW:
--               sock_set_flag(sk, SOCK_TSTAMP_NEW);
-                fallthrough;
-        case SO_TIMESTAMPING_OLD:
-[..]
-+               sock_valbool_flag(sk, SOCK_TSTAMP_NEW,
-+                                 optname == SO_TIMESTAMPING_NEW);
-+
-                if (val & SOF_TIMESTAMPING_OPT_ID &&
+In in review these other cases need to be been take care of.
 
-That is a subtle behavioral change, because it now leaves
-SOCK_TSTAMP_NEW set also when timestamping is turned off. But this is
-harmless, as in that case the versioning does not matter. A more
-pedantic version would be
+Thanks,
 
-+               sock_valbool_flag(sk, SOCK_TSTAMP_NEW,
-+                                 optname == SO_TIMESTAMPING_NEW &&
-+                                 val & SOF_TIMESTAMPING_TX_RECORD_MASK);
+Reported-by: Tom Rix <trix@redhat.com>
+
+> 							Thanx, Paul
+>
+> ------------------------------------------------------------------------
+>
+> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> index beba9e7..44749be 100644
+> --- a/kernel/rcu/rcutorture.c
+> +++ b/kernel/rcu/rcutorture.c
+> @@ -1989,7 +1989,9 @@ static void rcu_torture_fwd_prog_nr(struct rcu_fwd *rfp,
+>  	unsigned long stopat;
+>  	static DEFINE_TORTURE_RANDOM(trs);
+>  
+> -	if  (cur_ops->call && cur_ops->sync && cur_ops->cb_barrier) {
+> +	if (!cur_ops->sync) 
+> +		return; // Cannot do need_resched() forward progress testing without ->sync.
+> +	if (cur_ops->call && cur_ops->cb_barrier) {
+>  		init_rcu_head_on_stack(&fcs.rh);
+>  		selfpropcb = true;
+>  	}
+> @@ -2215,8 +2217,8 @@ static int __init rcu_torture_fwd_prog_init(void)
+>  
+>  	if (!fwd_progress)
+>  		return 0; /* Not requested, so don't do it. */
+> -	if (!cur_ops->stall_dur || cur_ops->stall_dur() <= 0 ||
+> -	    cur_ops == &rcu_busted_ops) {
+> +	if ((!cur_ops->sync && !cur_ops->call) ||
+> +	    !cur_ops->stall_dur || cur_ops->stall_dur() <= 0 || cur_ops == &rcu_busted_ops) {
+>  		VERBOSE_TOROUT_STRING("rcu_torture_fwd_prog_init: Disabled, unsupported by RCU flavor under test");
+>  		return 0;
+>  	}
+>
+
