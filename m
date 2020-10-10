@@ -2,67 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD1D28A3B6
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC1B289FE1
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 12:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390147AbgJJW4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:56:42 -0400
-Received: from smtp.h3c.com ([60.191.123.50]:54159 "EHLO h3cspam02-ex.h3c.com"
+        id S1726058AbgJJJ7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 05:59:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58274 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731649AbgJJTfq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:35:46 -0400
-Received: from h3cspam02-ex.h3c.com (localhost [127.0.0.2] (may be forged))
-        by h3cspam02-ex.h3c.com with ESMTP id 09A9tYf2054223;
-        Sat, 10 Oct 2020 17:55:34 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
-        by h3cspam02-ex.h3c.com with ESMTPS id 09A9rAde051217
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 10 Oct 2020 17:53:10 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from localhost.localdomain (10.99.212.201) by
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Sat, 10 Oct 2020 17:53:13 +0800
-From:   Xianting Tian <tian.xianting@h3c.com>
-To:     <jack@suse.com>
-CC:     <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Xianting Tian <tian.xianting@h3c.com>
-Subject: [PATCH] ext2: Remove unnecessary blank
-Date:   Sat, 10 Oct 2020 17:43:35 +0800
-Message-ID: <20201010094335.39797-1-tian.xianting@h3c.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726384AbgJJJuJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 05:50:09 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C05622184D;
+        Sat, 10 Oct 2020 09:50:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602323408;
+        bh=RXC5xfWPGap97Kf/8w9E8um1wI1s4p6TDrC8nncf/W8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gE+R6o0WgK+hfLUR6OQqXr8LKb9PIamD5KL6oqMOvRkPZaNzPy8vGdhdPh6t/UhVi
+         h7bVtfOrwctRlEiv5bGHWvS8Qe702zkL3CrGxTrzmdIX3D6X4hILxg29c+qOo1F8wV
+         syyPaWy543VBm7D2tBfb4b0ba+xMexpCi+PCROFQ=
+Date:   Sat, 10 Oct 2020 11:50:52 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v2 4/4] dt-bindings: usb: use preferred license tag
+Message-ID: <20201010095052.GA989257@kroah.com>
+References: <3db52d534065dcf28e9a10b8129bea3eced0193e.1602318869.git.chunfeng.yun@mediatek.com>
+ <d76ca8b2d64c7c017e3ddaca8497eb38ee514204.1602318869.git.chunfeng.yun@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.99.212.201]
-X-ClientProxiedBy: BJSMTP01-EX.srv.huawei-3com.com (10.63.20.132) To
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
-X-DNSRBL: 
-X-MAIL: h3cspam02-ex.h3c.com 09A9rAde051217
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d76ca8b2d64c7c017e3ddaca8497eb38ee514204.1602318869.git.chunfeng.yun@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unnecessary blank when calling kmalloc_array().
+On Sat, Oct 10, 2020 at 04:43:14PM +0800, Chunfeng Yun wrote:
+> This is used to fix the checkpach.pl WARNING:SPDX_LICENSE_TAG
+> 
+> See bindings/submitting-patches.rst:
+> "DT binding files should be dual licensed. The preferred license tag is
+>  (GPL-2.0-only OR BSD-2-Clause)."
+> 
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+> v2: new patch
+> ---
+>  Documentation/devicetree/bindings/usb/usb-hcd.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/usb-hcd.yaml b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
+> index 42b295afdf32..11b9b9ee2b54 100644
+> --- a/Documentation/devicetree/bindings/usb/usb-hcd.yaml
+> +++ b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
+> @@ -1,4 +1,4 @@
+> -# SPDX-License-Identifier: GPL-2.0
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 
-Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
----
- fs/ext2/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Are you sure you are allowed to change the license of this file?  Last I
+checked, you did not write this file, and so, you can't change the
+license of it.  You need to get the owners of the file to do so.
 
-diff --git a/fs/ext2/super.c b/fs/ext2/super.c
-index 7fab2b3b5..551e69755 100644
---- a/fs/ext2/super.c
-+++ b/fs/ext2/super.c
-@@ -1070,7 +1070,7 @@ static int ext2_fill_super(struct super_block *sb, void *data, int silent)
- 					/ EXT2_BLOCKS_PER_GROUP(sb)) + 1;
- 	db_count = (sbi->s_groups_count + EXT2_DESC_PER_BLOCK(sb) - 1) /
- 		   EXT2_DESC_PER_BLOCK(sb);
--	sbi->s_group_desc = kmalloc_array (db_count,
-+	sbi->s_group_desc = kmalloc_array(db_count,
- 					   sizeof(struct buffer_head *),
- 					   GFP_KERNEL);
- 	if (sbi->s_group_desc == NULL) {
--- 
-2.17.1
+thanks,
 
+greg k-h
