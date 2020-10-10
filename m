@@ -2,106 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A17628A2A9
+	by mail.lfdr.de (Postfix) with ESMTP id EABA128A2AB
 	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:00:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391035AbgJJW7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:59:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732282AbgJJW3w (ORCPT
+        id S2391044AbgJJW7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:59:48 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:57326 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732477AbgJJWdS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 18:29:52 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97630C0613D2
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 15:21:41 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id p15so13488237wmi.4
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 15:21:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Kqs4kFgxacimQ3ef+Mpd9AqyRzkCpK/qY0CT2NxygDo=;
-        b=S3BARRlpS4ZhGea3IaZv87MuotaIiMFFzTuLc6KFNYEE0YonnKzRFD2YP5I7xyN4L0
-         KeVrkXhVhKLTjRidwhm/HyOVSFVaZA4pbkUR//y9vZoyI8m0OBgDe08CpEqkf4DW63uZ
-         B1iu2dTfjcO/IMk62nxNiCZWbwKfirlMv6OfpAoi2caJY+0vL5nTSANe/LOHNIs2uqVi
-         yEvMSBuSgDZp3YSMfOq6I4ly11JW/jlU0EudS95QgTKur531XMb/e4IzgFPEyNrSxKzs
-         Y0oqtJBdELm85XUUMqhXQ6sA+HEaynBZLDscpdyzoENHUGQWphX+IUsket6BRr/d5uDK
-         x7Vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Kqs4kFgxacimQ3ef+Mpd9AqyRzkCpK/qY0CT2NxygDo=;
-        b=qVJlF/r+yyKI+cDitAMy62ykNnO1M6aIMncwY44nL5UJWzY5yL4NZCrYW3BwUOdqg9
-         t0DmtlRZhNSN6Zj4QldqI4rSarrgL1I3pR7fwL59ifz8APJD1gKBLwP3P6nSMIvKlR9P
-         4wN/k7K9WQK0ZSpFy842a3cX6fIKNsremBBvgU6g0HqaxqU+4JXkN7UN4TmmnuMLIV2d
-         DLBWOcfrGai1uPASWszF93P1rDrUX8liitvhDU5T41ot2WeRweMwekRDhdYANSBnP9Ly
-         iwOAFUyOQW2onhbiPp0IIKX3iYyepDtVTiSNzyvY+nm+1ZiMEHjV644XYW9oByB3WTvc
-         rSQw==
-X-Gm-Message-State: AOAM533MWUS3/eKWbGfBy1TFg8rGN5TySkCHbhvJ+y+1HGWhAJxug3/z
-        FqaOIRzE71VunLMToUCsBWySsP9+Ef2FQy0Qc2I8AA==
-X-Google-Smtp-Source: ABdhPJz8W70r8j9DDHJB8JNQXU9Kizb01d47zuwiTAkpqy9P3R9p3MQEho8UWaT6TYZez/gCDXvm1JVeoFwO1PSkJr0=
-X-Received: by 2002:a7b:cb4a:: with SMTP id v10mr4109447wmj.87.1602368500027;
- Sat, 10 Oct 2020 15:21:40 -0700 (PDT)
+        Sat, 10 Oct 2020 18:33:18 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 6E1A18030867;
+        Sat, 10 Oct 2020 22:23:55 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id K1YEw3OG7d1Q; Sun, 11 Oct 2020 01:23:54 +0300 (MSK)
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <felipe.balbi@linux.intel.com>,
+        David Cohen <david.a.cohen@linux.intel.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/3] usb: dwc3: ulpi: Fix UPLI registers read/write ops
+Date:   Sun, 11 Oct 2020 01:23:48 +0300
+Message-ID: <20201010222351.7323-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-References: <20201010215135.GB2666@wildebeest.org> <20201010220712.5352-1-mark@klomp.org>
-In-Reply-To: <20201010220712.5352-1-mark@klomp.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Sat, 10 Oct 2020 15:21:28 -0700
-Message-ID: <CAP-5=fUT-1-CR-KMMsrpzgw9b3nBooeY05=YU9XKa5enO9SK+A@mail.gmail.com>
-Subject: Re: [PATCH] Only add -fno-var-tracking-assignments workaround for old
- GCC versions.
-To:     Mark Wielaard <mark@klomp.org>
-Cc:     Andi Kleen <andi@firstfloor.org>, linux-toolchains@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "Phillips, Kim" <kim.phillips@amd.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 10, 2020 at 3:08 PM Mark Wielaard <mark@klomp.org> wrote:
->
-> Some old GCC versions between 4.5.0 and 4.9.1 might miscompile code
-> with -fvar-tracking-assingments (which is enabled by default with -g -O2).
-> commit 2062afb4f added -fno-var-tracking-assignments unconditionally to
-> work around this. But newer versions of GCC no longer have this bug, so
-> only add it for versions of GCC before 5.0.
->
-> Signed-off-by: Mark Wielaard <mark@klomp.org>
+Our Baikal-T1 SoC is equipped with DWC USB3 IP core as a USB2.0 bus
+controller. In general the DWC USB3 driver is working well for it except
+the ULPI-bus part. We've found out that the DWC USB3 ULPI-bus driver detected
+PHY with VID:PID tuple as 0x0000:0x0000, which of course wasn't true since
+it was supposed to be 0x0424:0x0006. After a short digging inside the
+ulpi.c code and studying the DWC USB3 documentation, it has been
+discovered that the ULPI bus IO ops didn't work quite correct. The
+busy-loop had stopped waiting before the actual operation was finished. We
+found out that the problem was caused by several bugs hidden in the DWC
+USB3 ULPI-bus IO implementation.
 
-Acked-by: Ian Rogers <irogers@google.com>
+First of all in accordance with the DWC USB3 databook [1] the ULPI IO
+busy-loop is supposed to use the GUSB2PHYACCn.VStsDone flag as an
+indication of the PHY vendor control access completion. Instead it polled
+the GUSB2PHYACCn.VStsBsy flag, which as we discovered can be cleared a
+bit before the VStsDone flag.
 
-Thanks,
-Ian
+Secondly having the simple counter-based loop in the modern kernel is
+really a weak design of the busy-looping pattern especially seeing the
+ULPI operations delay can be easily estimated [2], since the bus clock is
+fixed to 60MHz.
 
-> ---
->  Makefile | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/Makefile b/Makefile
-> index f84d7e4ca0be..4f4a9416a87a 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -813,7 +813,9 @@ KBUILD_CFLAGS       += -ftrivial-auto-var-init=zero
->  KBUILD_CFLAGS  += -enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang
->  endif
->
-> -DEBUG_CFLAGS   := $(call cc-option, -fno-var-tracking-assignments)
-> +# Workaround https://gcc.gnu.org/bugzilla/show_bug.cgi?id=61801
-> +# for old versions of GCC.
-> +DEBUG_CFLAGS   := $(call cc-ifversion, -lt, 0500, $(call cc-option, -fno-var-tracking-assignments))
->
->  ifdef CONFIG_DEBUG_INFO
->  ifdef CONFIG_DEBUG_INFO_SPLIT
-> --
-> 2.18.4
->
+Finally the root cause of the denoted in the prologue problem was due to
+the Suspend PHY DWC USB3 feature perception. The commit e0082698b689
+("usb: dwc3: ulpi: conditionally resume ULPI PHY") introduced the Suspend
+USB2.0 HS/FS/LS PHY regression as the Low-power consumption mode would be
+disable after a first attempt to read/write from the ULPI PHY control
+registers, and still didn't fix the problem it was originally intended for
+since the very first attempt of the ULPI PHY control registers IO would
+need much more time than the busy-loop provided. So instead of disabling
+the Suspend USB2.0 HS/FS/LS PHY feature we suggest to just extend the
+busy-loop delay in case if the GUSB2PHYCFGn.SusPHY flag set to 1. By doing
+so we'll eliminate the regression and the fix the false busy-loop timeout
+problem.
+
+[1] Synopsys DesignWare Cores SuperSpeed USB 3.0 xHCI Host Controller
+    Databook, 2.70a, December 2013, p.388
+
+[1] UTMI+ Low Pin Interface (ULPI) Specification, Revision 1.1,
+    October 20, 2004, pp. 30 - 36.
+
+Fixes: e0082698b689 ("usb: dwc3: ulpi: conditionally resume ULPI PHY")
+Fixes: 88bc9d194ff6 ("usb: dwc3: add ULPI interface support")
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
+Cc: linux-usb@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+Serge Semin (3):
+  usb: dwc3: ulpi: Use VStsDone to detect PHY regs access completion
+  usb: dwc3: ulpi: Replace CPU-based busyloop with Protocol-based one
+  usb: dwc3: ulpi: Fix USB2.0 HS/FS/LS PHY suspend regression
+
+ drivers/usb/dwc3/core.h |  1 +
+ drivers/usb/dwc3/ulpi.c | 38 +++++++++++++++++++++-----------------
+ 2 files changed, 22 insertions(+), 17 deletions(-)
+
+-- 
+2.27.0
+
