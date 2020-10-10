@@ -2,101 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F35E28A482
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FC5328A486
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:48:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387597AbgJJXpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 19:45:18 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:10162 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387399AbgJJXpR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 19:45:17 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602373517; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=+sjzZxdSz1OxaSjQtFwsicElknUm3wlBG4uyjUVXudw=; b=IGlKwZf/uqoAKVMddfkvlZ+SCCh9pdZymcm6mAPqFx+nKPwVHLaaIs/SbVWban5Q08dBmlm3
- wbrg5WLGqwjDm1Zuhk0Jxi0aV4BBC+B3fROvWkFiIYVv+su/s4MaNjF7faIET9/c21vx2a5G
- C51c413NaBSZaWjHG/MmeKDpBg4=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5f824783856d9308b5e16c83 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 10 Oct 2020 23:45:07
- GMT
-Sender: mgautam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A2DC9C433FF; Sat, 10 Oct 2020 23:45:07 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.8] (unknown [223.230.69.105])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mgautam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 230EAC433C9;
-        Sat, 10 Oct 2020 23:45:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 230EAC433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mgautam@codeaurora.org
-Subject: Re: [PATCH v1 05/10] bus: mhi: core: Disable IRQs when powering down
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org
-References: <1600480955-16827-1-git-send-email-bbhatt@codeaurora.org>
- <1600480955-16827-6-git-send-email-bbhatt@codeaurora.org>
-From:   Manu Gautam <mgautam@codeaurora.org>
-Message-ID: <2c77a164-db22-16c8-ebce-21a028fc1ed6@codeaurora.org>
-Date:   Sun, 11 Oct 2020 05:15:00 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <1600480955-16827-6-git-send-email-bbhatt@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        id S1729192AbgJJXsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 19:48:01 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:36514 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726098AbgJJXsB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 19:48:01 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxGMQrSIJfLfobAA--.13680S2;
+        Sun, 11 Oct 2020 07:47:55 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH v2 0/4 RESEND] Avoid build error, clean up numa.c and add /proc/boardinfo
+Date:   Sun, 11 Oct 2020 07:47:50 +0800
+Message-Id: <1602373674-4579-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9DxGMQrSIJfLfobAA--.13680S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZr1DJrW8uF1xuF4kGr18AFb_yoWDKFXEkF
+        ZFya48KryrAa4xJayxZF4fWFW7WayUW3ZxCF15XrWavas3ZFZxGFW8A3yjgF1kZ3Wjvrs5
+        XFW8Cr1kZFs2kjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbcxFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr0_Gr
+        1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVWfMxAI
+        w28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
+        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxG
+        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJw
+        CI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
+        cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjS_M3UUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+[RESEND due to the following reason:
+Can not connect to recipient's server because of unstable
+network or firewall filter. rcpt handle timeout,last handle
+info: Host vger.kernel.org(23.128.96.18) command RCPT TO
+respond timeout or disconnected]
 
-On 9/19/2020 7:32 AM, Bhaumik Bhatt wrote:
-> While powering down, the device may or may not acknowledge the MHI
-> RESET issued by host for graceful shutdown scenario which can lead
-> to a rogue device sending an interrupt after the clean-up has been
-> done. This can result in a tasklet being scheduled after it has
-> been killed and access already freed memory causing a NULL pointer
-> exception. Avoid this corner case by disabling the interrupts as a
-> part of host clean up.
->
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> ---
->  drivers/bus/mhi/core/pm.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-> index 1862960..3462d82 100644
-> --- a/drivers/bus/mhi/core/pm.c
-> +++ b/drivers/bus/mhi/core/pm.c
-> @@ -517,6 +517,7 @@ static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl,
->  	for (i = 0; i < mhi_cntrl->total_ev_rings; i++, mhi_event++) {
->  		if (mhi_event->offload_ev)
->  			continue;
-> +		disable_irq(mhi_cntrl->irq[mhi_event->irq]);
->  		tasklet_kill(&mhi_event->task);
->  	}
->  
+v2: add patch #4 suggested by Jiaxun 
 
-What about sys_err handling? IRQ may be left disabled?
+Tiezhu Yang (4):
+  MIPS: Loongson64: Select SMP in Kconfig to avoid build error
+  MIPS: Loongson64: Clean up numa.c
+  MIPS: Loongson64: Add /proc/boardinfo
+  docs: fs: proc.rst: Add boardinfo description for Loongson64
 
+ Documentation/filesystems/proc.rst                 |  1 +
+ arch/mips/Kconfig                                  |  1 +
+ arch/mips/configs/loongson3_defconfig              |  1 -
+ arch/mips/include/asm/mach-loongson64/boot_param.h |  4 +++
+ arch/mips/include/asm/mach-loongson64/mmzone.h     |  6 +---
+ arch/mips/loongson64/Makefile                      |  2 +-
+ arch/mips/loongson64/boardinfo.c                   | 40 ++++++++++++++++++++++
+ arch/mips/loongson64/env.c                         | 10 ++++++
+ arch/mips/loongson64/numa.c                        | 29 ++--------------
+ 9 files changed, 61 insertions(+), 33 deletions(-)
+ create mode 100644 arch/mips/loongson64/boardinfo.c
 
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.1.0
 
