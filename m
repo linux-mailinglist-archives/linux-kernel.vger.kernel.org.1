@@ -2,143 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F8E328A1F1
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7039C28A3E9
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:12:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730770AbgJJWvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:51:38 -0400
-Received: from o1.b.az.sendgrid.net ([208.117.55.133]:14372 "EHLO
-        o1.b.az.sendgrid.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731242AbgJJTFJ (ORCPT
+        id S2389434AbgJJWzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:55:41 -0400
+Received: from smtprelay0086.hostedemail.com ([216.40.44.86]:52502 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731446AbgJJTXM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:05:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
-        h=from:subject:in-reply-to:references:to:cc:content-type:
-        content-transfer-encoding;
-        s=001; bh=nAJZakghzr7JwdXt31dydBHC6AGXJnAIYTAyCKaQf5U=;
-        b=PC35notrsluMKEtXrx+00hA/7mdLEP0dYlDe5YZ4F97AxB2FbB1c+8wCFl2DT/ypo8SJ
-        lktfdkzCJKjCzl6ik8zAmz7ahPHYTYZbHZAUJ/VCbQDdzWzpDWDvovYpuhFxqqZFIH7ARr
-        liinpjGwGy/EmEckcg2tKrDKhnMhEQcwo=
-Received: by filterdrecv-p3mdw1-6685f47d68-ckbbx with SMTP id filterdrecv-p3mdw1-6685f47d68-ckbbx-20-5F81D403-62
-        2020-10-10 15:32:19.989765983 +0000 UTC m=+233779.068193756
-Received: from bionic.localdomain (unknown)
-        by ismtpd0005p1lon1.sendgrid.net (SG) with ESMTP
-        id svU4HSZBQumIlycPppIvOg
-        Sat, 10 Oct 2020 15:32:19.702 +0000 (UTC)
-From:   Jonas Karlman <jonas@kwiboo.se>
-Subject: [PATCH v3 5/6] phy/rockchip: inno-hdmi: force set_rate on power_on
-Date:   Sat, 10 Oct 2020 15:32:20 +0000 (UTC)
-Message-Id: <20201010153214.19722-6-jonas@kwiboo.se>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201010153214.19722-1-jonas@kwiboo.se>
-References: <20200108210740.28769-1-jonas@kwiboo.se>
- <20201010153214.19722-1-jonas@kwiboo.se>
-X-SG-EID: =?us-ascii?Q?TdbjyGynYnRZWhH+7lKUQJL+ZxmxpowvO2O9SQF5CwCVrYgcwUXgU5DKUU3QxA?=
- =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0hyyYIFNv1tq5H+1qU?=
- =?us-ascii?Q?NYBOeobs=2FkbfAS1O=2Fyl8F4W63ETW0ZJQ8LdMpvZ?=
- =?us-ascii?Q?Xyiq4Ios7vQDZpdGL3Mwe6lFjuXN1joLZH8IGtl?=
- =?us-ascii?Q?mCzWhgIW9FS5VY78glB=2FH4sy=2FqfUu8YCOdDElAo?=
- =?us-ascii?Q?zoEZ7hwOMT7MB1ajMJUA7zqvt9i5Rq9fxR5fjUF?=
- =?us-ascii?Q?hRcD=2FqWbBOfWiOucUlMyg=3D=3D?=
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Heiko Stuebner <heiko@sntech.de>
-Cc:     Jonas Karlman <jonas@kwiboo.se>, Vinod Koul <vkoul@kernel.org>,
-        Zheng Yang <zhengyang@rock-chips.com>,
-        Algea Cao <algea.cao@rock-chips.com>,
-        Huicong Xu <xhc@rock-chips.com>,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-X-Entity-ID: wSPGWgGSXUap++qShBI+ag==
-Content-Type: text/plain; charset=us-ascii
+        Sat, 10 Oct 2020 15:23:12 -0400
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave01.hostedemail.com (Postfix) with ESMTP id 852E41801669A
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 15:44:04 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id A22061802912A;
+        Sat, 10 Oct 2020 15:38:56 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3167:3352:3622:3653:3870:3871:3872:3876:4321:4605:5007:7903:10004:10400:10848:11026:11232:11473:11658:11914:12043:12297:12438:12740:12760:12895:13069:13255:13311:13357:13439:14659:14721:21080:21451:21611:21627:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: join88_5a1154d271ea
+X-Filterd-Recvd-Size: 2124
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf13.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 10 Oct 2020 15:38:55 +0000 (UTC)
+Message-ID: <e81ed20fbec7a90fc195237c0d2c4d8748f3a906.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: Check for .byte-spelled insn opcodes
+ documentation on x86
+From:   Joe Perches <joe@perches.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     X86 ML <x86@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
+        Andy Whitcroft <apw@canonical.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Date:   Sat, 10 Oct 2020 08:38:54 -0700
+In-Reply-To: <20201010105421.GA24674@zn.tnic>
+References: <20201009161423.14583-1-bp@alien8.de>
+         <b57a59bc80e432c7696b347a223eb12339013970.camel@perches.com>
+         <20201010105421.GA24674@zn.tnic>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
+MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huicong Xu <xhc@rock-chips.com>
+On Sat, 2020-10-10 at 12:54 +0200, Borislav Petkov wrote:
+> > checkpatch uses only a single line output only before $herecurr
+> > Output line length doesn't matter.
+[]
+> WARNING: Please document which binutils version supports these .byte-spelled
+>         insn opcodes by adding "binutils version <num>" in a comment above them.
+> #90: FILE: arch/x86/include/asm/special_insns.h:254:
+> +       asm volatile(".byte 0x66, 0x0f, 0x38, 0xf8, 0x02"
+> 
+> 
+> is easier readable than this:
+> 
+> WARNING: Please document which binutils version supports these .byte-spelledinsn opcodes by adding "binutils version <num>" in a comment above them.
+> #90: FILE: arch/x86/include/asm/special_insns.h:254:
+> +       asm volatile(".byte 0x66, 0x0f, 0x38, 0xf8, 0x02"
 
-Regular 8-bit and Deep Color video formats mainly differ in TMDS rate and
-not in pixel clock rate.
-When the hdmiphy clock is configured with the same pixel clock rate using
-clk_set_rate() the clock framework do not signal the hdmi phy driver
-to set_rate when switching between 8-bit and Deep Color.
-This result in pre/post pll not being re-configured when switching between
-regular 8-bit and Deep Color video formats.
+Readability is a consideration but it still must be a single line.
 
-Fix this by calling set_rate in power_on to force pre pll re-configuration.
+using --terse requires single line error output
 
-Signed-off-by: Huicong Xu <xhc@rock-chips.com>
-Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
----
- drivers/phy/rockchip/phy-rockchip-inno-hdmi.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/drivers/phy/rockchip/phy-rockchip-inno-hdmi.c b/drivers/phy/rockchip/phy-rockchip-inno-hdmi.c
-index 3a59a6da0440..3719309ad0d0 100644
---- a/drivers/phy/rockchip/phy-rockchip-inno-hdmi.c
-+++ b/drivers/phy/rockchip/phy-rockchip-inno-hdmi.c
-@@ -245,6 +245,7 @@ struct inno_hdmi_phy {
- 	struct clk_hw hw;
- 	struct clk *phyclk;
- 	unsigned long pixclock;
-+	unsigned long tmdsclock;
- };
- 
- struct pre_pll_config {
-@@ -485,6 +486,8 @@ static int inno_hdmi_phy_power_on(struct phy *phy)
- 
- 	dev_dbg(inno->dev, "Inno HDMI PHY Power On\n");
- 
-+	inno->plat_data->clk_ops->set_rate(&inno->hw, inno->pixclock, 24000000);
-+
- 	ret = clk_prepare_enable(inno->phyclk);
- 	if (ret)
- 		return ret;
-@@ -509,6 +512,8 @@ static int inno_hdmi_phy_power_off(struct phy *phy)
- 
- 	clk_disable_unprepare(inno->phyclk);
- 
-+	inno->tmdsclock = 0;
-+
- 	dev_dbg(inno->dev, "Inno HDMI PHY Power Off\n");
- 
- 	return 0;
-@@ -628,6 +633,9 @@ static int inno_hdmi_phy_rk3228_clk_set_rate(struct clk_hw *hw,
- 	dev_dbg(inno->dev, "%s rate %lu tmdsclk %lu\n",
- 		__func__, rate, tmdsclock);
- 
-+	if (inno->pixclock == rate && inno->tmdsclock == tmdsclock)
-+		return 0;
-+
- 	cfg = inno_hdmi_phy_get_pre_pll_cfg(inno, rate);
- 	if (IS_ERR(cfg))
- 		return PTR_ERR(cfg);
-@@ -670,6 +678,7 @@ static int inno_hdmi_phy_rk3228_clk_set_rate(struct clk_hw *hw,
- 	}
- 
- 	inno->pixclock = rate;
-+	inno->tmdsclock = tmdsclock;
- 
- 	return 0;
- }
-@@ -781,6 +790,9 @@ static int inno_hdmi_phy_rk3328_clk_set_rate(struct clk_hw *hw,
- 	dev_dbg(inno->dev, "%s rate %lu tmdsclk %lu\n",
- 		__func__, rate, tmdsclock);
- 
-+	if (inno->pixclock == rate && inno->tmdsclock == tmdsclock)
-+		return 0;
-+
- 	cfg = inno_hdmi_phy_get_pre_pll_cfg(inno, rate);
- 	if (IS_ERR(cfg))
- 		return PTR_ERR(cfg);
-@@ -820,6 +832,7 @@ static int inno_hdmi_phy_rk3328_clk_set_rate(struct clk_hw *hw,
- 	}
- 
- 	inno->pixclock = rate;
-+	inno->tmdsclock = tmdsclock;
- 
- 	return 0;
- }
--- 
-2.17.1
+Perhaps:
+			if ($comment !~ /\bbinutils version [0-9.]+/ms) {
+				WARN("MISSING_BINUTILS_VERSION",
+				     "Please add a comment for .byte-spelled insn opcodes with \"binutils version <minimum_required_version>\"\n" . $herecurr);
 
