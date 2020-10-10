@@ -2,93 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A9AC28A319
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71AA928A243
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:56:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390702AbgJJW63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:58:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57002 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731191AbgJJTxO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:53:14 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2E618221E9;
-        Sat, 10 Oct 2020 14:43:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602340992;
-        bh=GWFhMPGzdDt2r4FY4tLJKaBiauA0MwBtH4ivN0f+JYw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=pqvs3LO3urnFDlsoMkBHc/UXx6qfTsXhgrEV53wTDUCSG5e+UQdGosC45zyZipJxp
-         mX1KvjXeGT7gr60SoD7kuA7NbdqM5cXujkSCqWrjpgCYtVBXVYSk1pWWJJMesn6J5U
-         2de1t4kACkM9ZhpHcyC9v5YM6XOnk8c1IkQLHRyw=
-Date:   Sat, 10 Oct 2020 23:43:08 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Tom Zanussi <zanussi@kernel.org>
-Cc:     rostedt@goodmis.org, axelrasmussen@google.com, mhiramat@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/5] selftests/ftrace: Change synthetic event name for
- inter-event-combined test
-Message-Id: <20201010234308.a4e4181beb90f7c7fe7221db@kernel.org>
-In-Reply-To: <58a991068a6fb8c03aa0755dfd72c9b8e83ee536.1602255803.git.zanussi@kernel.org>
-References: <cover.1602255803.git.zanussi@kernel.org>
-        <58a991068a6fb8c03aa0755dfd72c9b8e83ee536.1602255803.git.zanussi@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1730697AbgJJWz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:55:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731493AbgJJT3p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 15:29:45 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 681A0C05BD23;
+        Sat, 10 Oct 2020 07:54:45 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id d1so1061953pfc.0;
+        Sat, 10 Oct 2020 07:54:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/krkgGWRLPwrBOotoEiPAuKzZC5AWMQrtjDnDpAK2FI=;
+        b=pDMCrxd/zMBAJCqjki45oqVCT+zX55BDa9Ycymnp0lMpeZBUVnoSz8ksHcktrZKRq7
+         lcOeufePSzUUMeU3fzBGlYBph5pcUaZQqt87oykxn6idISuIc7fhlRTpWA+RU5alacTr
+         4iegTO4ybojBhElULXjQToX8+ifPswiUXZ+drmKsH0JC6K16Ovy8cc+/Vyh+Lt9D+pr6
+         AsQ0CFbyOm1uvljB+Ej8t+Dufxz3p+heCtLN4ENRcAh3rtwWPkSWV8MalbKb96YHx6Qz
+         Ygf3wFXOniHOUUoBDezcXXWwH+8Ot4HyVlxYYjg+UrVlZ2zYq0WM+MeLZFY3rgRr71Zi
+         i7cQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/krkgGWRLPwrBOotoEiPAuKzZC5AWMQrtjDnDpAK2FI=;
+        b=ov1p1FO0LlXRApD/Y2ED73vo7wtir3Dmo2g8HvO32wdn2oSVacf4MQkWBNVz7g8QE+
+         Qjm9/s5HALYU1gEzU5QR1Lfx3Vk0uY9TUfLjfgRstAKPgyLuQj5ewhEX1qfHqLVyJweD
+         4US07FEzG8nUyBamQWO63SDc4eZ8C1QTGrNTVygWpx8SwK7zLZpL0ZYASlquS8dQCG9Z
+         ln4ZOVsaGKUKCDrECLfxY9wz8c+3mv91nnIxTQGPqtBkuSAkM4GIRcweg9OKCg0Vj13r
+         r0513OZvPjV91epuDncC/cLTNcewAtIGM0sT+jeHNGIYGDi1Rx9JfDMORxHhxaFjxGQG
+         zZKw==
+X-Gm-Message-State: AOAM530XkHF2two3IVCkOjvv4GdPIXUBL4CK3ZfHvzz/Umx8LCwsXZGJ
+        xBDl5gXxOPS+RncOKMtwkSY=
+X-Google-Smtp-Source: ABdhPJwkQW2le5RVdC4V9Sn8fTVfqQ39bAof6kT8+Bi38tuJ+vH393jZam3QMTBaK9swjMMH5rg9Zw==
+X-Received: by 2002:a63:3193:: with SMTP id x141mr7266188pgx.254.1602341684887;
+        Sat, 10 Oct 2020 07:54:44 -0700 (PDT)
+Received: from arpitha-Inspiron-7570.lan ([106.51.240.187])
+        by smtp.gmail.com with ESMTPSA id gg24sm15772806pjb.44.2020.10.10.07.54.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 10 Oct 2020 07:54:44 -0700 (PDT)
+From:   Arpitha Raghunandan <98.arpi@gmail.com>
+To:     brendanhiggins@google.com, skhan@linuxfoundation.org,
+        yzaikin@google.com, elver@google.com, tytso@mit.edu,
+        adilger.kernel@dilger.ca
+Cc:     Arpitha Raghunandan <98.arpi@gmail.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] kunit: Support for Parameterized Testing
+Date:   Sat, 10 Oct 2020 20:23:57 +0530
+Message-Id: <20201010145357.60886-1-98.arpi@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  9 Oct 2020 10:17:11 -0500
-Tom Zanussi <zanussi@kernel.org> wrote:
+Implementation of support for parameterized testing in KUnit.
 
-> This test uses waking+wakeup_latency as an event name, which doesn't
-> make sense since it includes an operator.  Illegal names are now
-> detected by the synthetic event command parsing, which causes this
-> test to fail.  Change the name to 'waking_plus_wakeup_latency' to
-> prevent this.
+Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+---
+ include/kunit/test.h | 29 +++++++++++++++++++++++++++++
+ lib/kunit/test.c     | 44 +++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 72 insertions(+), 1 deletion(-)
 
-Good catch!
-
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-
-Thanks!
-
-> 
-> Fixes: f06eec4d0f2c (selftests: ftrace: Add inter-event hist triggers testcases)
-> Signed-off-by: Tom Zanussi <zanussi@kernel.org>
-> ---
->  .../inter-event/trigger-inter-event-combined-hist.tc      | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-inter-event-combined-hist.tc b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-inter-event-combined-hist.tc
-> index 7449a4b8f1f9..9098f1e7433f 100644
-> --- a/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-inter-event-combined-hist.tc
-> +++ b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-inter-event-combined-hist.tc
-> @@ -25,12 +25,12 @@ echo 'wakeup_latency u64 lat pid_t pid' >> synthetic_events
->  echo 'hist:keys=pid:ts1=common_timestamp.usecs if comm=="ping"' >> events/sched/sched_wakeup/trigger
->  echo 'hist:keys=next_pid:wakeup_lat=common_timestamp.usecs-$ts1:onmatch(sched.sched_wakeup).wakeup_latency($wakeup_lat,next_pid) if next_comm=="ping"' > events/sched/sched_switch/trigger
->  
-> -echo 'waking+wakeup_latency u64 lat; pid_t pid' >> synthetic_events
-> -echo 'hist:keys=pid,lat:sort=pid,lat:ww_lat=$waking_lat+$wakeup_lat:onmatch(synthetic.wakeup_latency).waking+wakeup_latency($ww_lat,pid)' >> events/synthetic/wakeup_latency/trigger
-> -echo 'hist:keys=pid,lat:sort=pid,lat' >> events/synthetic/waking+wakeup_latency/trigger
-> +echo 'waking_plus_wakeup_latency u64 lat; pid_t pid' >> synthetic_events
-> +echo 'hist:keys=pid,lat:sort=pid,lat:ww_lat=$waking_lat+$wakeup_lat:onmatch(synthetic.wakeup_latency).waking_plus_wakeup_latency($ww_lat,pid)' >> events/synthetic/wakeup_latency/trigger
-> +echo 'hist:keys=pid,lat:sort=pid,lat' >> events/synthetic/waking_plus_wakeup_latency/trigger
->  
->  ping $LOCALHOST -c 3
-> -if ! grep -q "pid:" events/synthetic/waking+wakeup_latency/hist; then
-> +if ! grep -q "pid:" events/synthetic/waking_plus_wakeup_latency/hist; then
->      fail "Failed to create combined histogram"
->  fi
->  
-> -- 
-> 2.17.1
-> 
-
-
+diff --git a/include/kunit/test.h b/include/kunit/test.h
+index 59f3144f009a..4740d66269b4 100644
+--- a/include/kunit/test.h
++++ b/include/kunit/test.h
+@@ -140,10 +140,14 @@ struct kunit;
+ struct kunit_case {
+ 	void (*run_case)(struct kunit *test);
+ 	const char *name;
++	void* (*get_params)(void);
++	int max_parameters_count;
++	int parameter_size;
+ 
+ 	/* private: internal use only. */
+ 	bool success;
+ 	char *log;
++	bool parameterized;
+ };
+ 
+ static inline char *kunit_status_to_string(bool status)
+@@ -162,6 +166,11 @@ static inline char *kunit_status_to_string(bool status)
+  */
+ #define KUNIT_CASE(test_name) { .run_case = test_name, .name = #test_name }
+ 
++#define KUNIT_CASE_PARAM(test_name, getparams, count, size)				\
++		{ .run_case = test_name, .name = #test_name,				\
++		  .parameterized = true, .get_params = (void* (*)(void))getparams,	\
++		  .max_parameters_count = count, .parameter_size = size }
++
+ /**
+  * struct kunit_suite - describes a related collection of &struct kunit_case
+  *
+@@ -206,6 +215,23 @@ struct kunit {
+ 	/* private: internal use only. */
+ 	const char *name; /* Read only after initialization! */
+ 	char *log; /* Points at case log after initialization */
++	bool parameterized; /* True for parameterized tests */
++	/* param_values stores the test parameters
++	 * for parameterized tests.
++	 */
++	void *param_values;
++	/* max_parameters_count indicates maximum number of
++	 * parameters for parameterized tests.
++	 */
++	int max_parameters_count;
++	/* iterator_count is used by the iterator method
++	 * for parameterized tests.
++	 */
++	int iterator_count;
++	/* parameter_size indicates size of a single test case
++	 * for parameterized tests.
++	 */
++	int parameter_size;
+ 	struct kunit_try_catch try_catch;
+ 	/*
+ 	 * success starts as true, and may only be set to false during a
+@@ -225,6 +251,7 @@ struct kunit {
+ };
+ 
+ void kunit_init_test(struct kunit *test, const char *name, char *log);
++void kunit_init_param_test(struct kunit *test, struct kunit_case *test_case);
+ 
+ int kunit_run_tests(struct kunit_suite *suite);
+ 
+@@ -237,6 +264,8 @@ int __kunit_test_suites_init(struct kunit_suite **suites);
+ 
+ void __kunit_test_suites_exit(struct kunit_suite **suites);
+ 
++void *get_test_case_parameters(struct kunit *test);
++
+ /**
+  * kunit_test_suites() - used to register one or more &struct kunit_suite
+  *			 with KUnit.
+diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+index c36037200310..ab9e13c81d4a 100644
+--- a/lib/kunit/test.c
++++ b/lib/kunit/test.c
+@@ -142,6 +142,11 @@ unsigned int kunit_test_case_num(struct kunit_suite *suite,
+ }
+ EXPORT_SYMBOL_GPL(kunit_test_case_num);
+ 
++static void kunit_print_failed_param(struct kunit *test)
++{
++	kunit_err(test, "\n\tTest failed at parameter: %d\n", test->iterator_count);
++}
++
+ static void kunit_print_string_stream(struct kunit *test,
+ 				      struct string_stream *stream)
+ {
+@@ -182,6 +187,9 @@ static void kunit_fail(struct kunit *test, struct kunit_assert *assert)
+ 
+ 	assert->format(assert, stream);
+ 
++	if (test->parameterized)
++		kunit_print_failed_param(test);
++
+ 	kunit_print_string_stream(test, stream);
+ 
+ 	WARN_ON(string_stream_destroy(stream));
+@@ -236,6 +244,18 @@ void kunit_init_test(struct kunit *test, const char *name, char *log)
+ }
+ EXPORT_SYMBOL_GPL(kunit_init_test);
+ 
++void kunit_init_param_test(struct kunit *test, struct kunit_case *test_case)
++{
++	spin_lock_init(&test->lock);
++	INIT_LIST_HEAD(&test->resources);
++	test->parameterized = true;
++	test->param_values = (void *)(test_case->get_params());
++	test->max_parameters_count = test_case->max_parameters_count;
++	test->parameter_size = test_case->parameter_size;
++	test->iterator_count = 0;
++}
++EXPORT_SYMBOL_GPL(kunit_init_param_test);
++
+ /*
+  * Initializes and runs test case. Does not clean up or do post validations.
+  */
+@@ -254,7 +274,14 @@ static void kunit_run_case_internal(struct kunit *test,
+ 		}
+ 	}
+ 
+-	test_case->run_case(test);
++	if (!test->parameterized) {
++		test_case->run_case(test);
++	} else {
++		int i;
++
++		for (i = 0; i < test->max_parameters_count; i++)
++			test_case->run_case(test);
++	}
+ }
+ 
+ static void kunit_case_internal_cleanup(struct kunit *test)
+@@ -343,6 +370,8 @@ static void kunit_run_case_catch_errors(struct kunit_suite *suite,
+ 	struct kunit test;
+ 
+ 	kunit_init_test(&test, test_case->name, test_case->log);
++	if (test_case->parameterized)
++		kunit_init_param_test(&test, test_case);
+ 	try_catch = &test.try_catch;
+ 
+ 	kunit_try_catch_init(try_catch,
+@@ -407,6 +436,19 @@ void __kunit_test_suites_exit(struct kunit_suite **suites)
+ }
+ EXPORT_SYMBOL_GPL(__kunit_test_suites_exit);
+ 
++/*
++ * Iterator method for the parameterized test cases
++ */
++void *get_test_case_parameters(struct kunit *test)
++{
++	int index = test->iterator_count * test->parameter_size;
++
++	if (test->iterator_count != test->max_parameters_count)
++		test->iterator_count++;
++	return (test->param_values + index);
++}
++EXPORT_SYMBOL_GPL(get_test_case_parameters);
++
+ /*
+  * Used for static resources and when a kunit_resource * has been created by
+  * kunit_alloc_resource().  When an init function is supplied, @data is passed
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.25.1
+
