@@ -2,102 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04BDA28A286
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BE7228A444
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390533AbgJJW5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:57:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730453AbgJJTu2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:50:28 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F6F6C0613AF
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 03:57:22 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f1bdf00c1046aa2c3de4fbe.dip0.t-ipconnect.de [IPv6:2003:ec:2f1b:df00:c104:6aa2:c3de:4fbe])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6A2051EC03C1;
-        Sat, 10 Oct 2020 12:55:50 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1602327350;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=eX9k78SiB9uywyyffjjSXxNZ7jpkkqSmnZRh6G0aYDg=;
-        b=Exuo+KUbilRBfjXzzMhFDHuc2eNucTwuPAw1bijtQpEo8CofYWpb9bOQIAkCp7Uu7YiLlt
-        MhCvo+1wrJSXuCbIDd62KmptyytKKpy2cnu1y+HT3o1B0gB7PJd1En47UxS2qqVweEHxuT
-        /z/2LmGcKJykg6bcqtDWyqDHws3rpC8=
-Date:   Sat, 10 Oct 2020 12:55:47 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Joe Perches <joe@perches.com>
-Cc:     X86 ML <x86@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
-        Andy Whitcroft <apw@canonical.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH -v2] checkpatch: Check for .byte-spelled insn opcodes
- documentation on x86
-Message-ID: <20201010105547.GB24674@zn.tnic>
-References: <20201009161423.14583-1-bp@alien8.de>
- <b57a59bc80e432c7696b347a223eb12339013970.camel@perches.com>
- <20201010105421.GA24674@zn.tnic>
+        id S2388366AbgJJWxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:53:50 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:44348 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731308AbgJJTIR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 15:08:17 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id C63C1A7FBBDFF02DE59F;
+        Sat, 10 Oct 2020 18:56:51 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.134) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Sat, 10 Oct 2020
+ 18:56:41 +0800
+Subject: Re: [PATCH v6 16/17] dt-bindings: arm: hisilicon: convert
+ hisilicon,hi3798cv200-perictrl bindings to json-schema
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+CC:     Wei Xu <xuwei5@hisilicon.com>, Rob Herring <robh+dt@kernel.org>,
+        "Jonathan Cameron" <Jonathan.Cameron@Huawei.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Libin <huawei.libin@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+References: <20200930031712.2365-1-thunder.leizhen@huawei.com>
+ <20200930031712.2365-17-thunder.leizhen@huawei.com>
+ <20201001063517.GC3018@kozik-lap>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <8c6b5b55-967c-f582-9781-dd8cf0034dee@huawei.com>
+Date:   Sat, 10 Oct 2020 18:56:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201010105421.GA24674@zn.tnic>
+In-Reply-To: <20201001063517.GC3018@kozik-lap>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.134]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---
-From: Borislav Petkov <bp@suse.de>
-
-Instruction opcode bytes spelled using the gas directive .byte should
-carry a comment above them stating which binutils version has added
-support for the instruction mnemonic so that they can be replaced with
-the mnemonic when that binutils version is equal or less than the
-minimum-supported version by the kernel.
-
-Add a check for that.
-
-Requested-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
----
- scripts/checkpatch.pl | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 504d2e431c60..d9065ef5d4fe 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -6858,6 +6858,20 @@ sub process {
- 			WARN("DUPLICATED_SYSCTL_CONST",
- 				"duplicated sysctl range checking value '$1', consider using the shared one in include/linux/sysctl.h\n" . $herecurr);
- 		}
-+
-+# document which binutils version supports the actual insn mnemonic so that the naked opcode bytes can be replaced.
-+# x86-only.
-+		if ($realfile =~ m@^arch/x86/@ &&
-+		    $rawline =~ /\.byte[\s0-9a-fx,]+/) {
-+
-+			my $comment = ctx_locate_comment($file ? 0 : $first_line, $linenr);
-+			if ($comment !~ /binutils version [0-9.]+/ms) {
-+				WARN("MISSING_BINUTILS_VERSION",
-+				     "Please document which binutils version supports these .byte-spelled\n" .
-+				     "\tinsn opcodes by adding \"binutils version <num>\" in a comment" .
-+				     " above them.\n" . $herecurr);
-+			}
-+		}
- 	}
- 
- 	# If we have no input at all, then there is nothing to report on
--- 
-2.21.0
 
 
--- 
-Regards/Gruss,
-    Boris.
+On 2020/10/1 14:35, Krzysztof Kozlowski wrote:
+> On Wed, Sep 30, 2020 at 11:17:11AM +0800, Zhen Lei wrote:
+>> Convert the Hisilicon Hi3798CV200 Peripheral Controller binding to DT
+>> schema format using json-schema.
+>>
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>> ---
+>>  .../hisilicon/controller/hi3798cv200-perictrl.yaml | 64 ++++++++++++++++++++++
+>>  .../controller/hisilicon,hi3798cv200-perictrl.txt  | 21 -------
+>>  2 files changed, 64 insertions(+), 21 deletions(-)
+>>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hi3798cv200-perictrl.yaml
+>>  delete mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi3798cv200-perictrl.txt
+>>
+>> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hi3798cv200-perictrl.yaml b/Documentation/devicetree/bindings/arm/hisilicon/controller/hi3798cv200-perictrl.yaml
+>> new file mode 100644
+>> index 000000000000000..cba1937aad9a8d3
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/arm/hisilicon/controller/hi3798cv200-perictrl.yaml
+>> @@ -0,0 +1,64 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/arm/hisilicon/controller/hi3798cv200-perictrl.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Hisilicon Hi3798CV200 Peripheral Controller
+>> +
+>> +maintainers:
+>> +  - Wei Xu <xuwei5@hisilicon.com>
+>> +
+>> +description: |
+>> +  The Hi3798CV200 Peripheral Controller controls peripherals, queries
+>> +  their status, and configures some functions of peripherals.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    items:
+>> +      - const: hisilicon,hi3798cv200-perictrl
+>> +      - const: syscon
+>> +      - const: simple-mfd
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  "#address-cells":
+>> +    const: 1
+>> +
+>> +  "#size-cells":
+>> +    const: 1
+>> +
+>> +  ranges: true
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +  - "#address-cells"
+>> +  - "#size-cells"
+>> +  - ranges
+>> +
+>> +additionalProperties:
+>> +  type: object
+> 
+> You need to describe all additional properties or objects.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+OK, I will do it in v5.11
+
+> 
+> Best regards,
+> Krzysztof
+> 
+> .
+> 
+
