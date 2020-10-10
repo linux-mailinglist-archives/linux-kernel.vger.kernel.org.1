@@ -2,104 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07F8028A2CB
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:03:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DEDA28A2C9
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390899AbgJJW73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2390909AbgJJW73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sat, 10 Oct 2020 18:59:29 -0400
-Received: from mout.kundenserver.de ([212.227.126.131]:46769 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730537AbgJJUcT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 16:32:19 -0400
-Received: from mail-qt1-f180.google.com ([209.85.160.180]) by
- mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1MX00X-1kyhJq071V-00XMKB; Sat, 10 Oct 2020 22:31:31 +0200
-Received: by mail-qt1-f180.google.com with SMTP id h12so9264033qtu.1;
-        Sat, 10 Oct 2020 13:31:30 -0700 (PDT)
-X-Gm-Message-State: AOAM533eN2eySj5rRpvevKWxYmzN6dCTRGLbyc+GD48GX5lgS6NHkLOz
-        5n1jkDXwvyGsvaH501YfP/vZCesNPvRAcgcICF4=
-X-Google-Smtp-Source: ABdhPJzxmcGED0Ih/YBu2mHf0R3P6/nMSvbjeQBBLgW8fw7gYjKUZesdCzOPFtlYkIUUYLLkZBj1PG5Q6+okNjhwAiM=
-X-Received: by 2002:ac8:4808:: with SMTP id g8mr3749519qtq.18.1602361889612;
- Sat, 10 Oct 2020 13:31:29 -0700 (PDT)
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:35431 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730629AbgJJUcy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 16:32:54 -0400
+Received: from [192.168.1.11] (dynamic-089-014-081-185.89.14.pool.telefonica.de [89.14.81.185])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 079D720645E93;
+        Sat, 10 Oct 2020 22:32:11 +0200 (CEST)
+Subject: Re: i8042_init: PS/2 mouse not detected with ACPIPnP/PnPBIOS
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>
+Cc:     linux-input@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        linux-acpi@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>
+References: <1a69c5bc-ccc4-68db-7871-af05a70052c9@molgen.mpg.de>
+ <20201007221628.GW1009802@dtor-ws>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Message-ID: <bbb70981-1242-0aea-01c9-f9507f8eae3b@molgen.mpg.de>
+Date:   Sat, 10 Oct 2020 22:32:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-2-arnd@arndb.de>
- <alpine.LNX.2.23.453.2010100820110.12@nippy.intranet>
-In-Reply-To: <alpine.LNX.2.23.453.2010100820110.12@nippy.intranet>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Sat, 10 Oct 2020 22:31:13 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3ZBHJag7MUDNL+hrZQLiJfc8JyZzOtAuarOVwo_GcmmA@mail.gmail.com>
-Message-ID: <CAK8P3a3ZBHJag7MUDNL+hrZQLiJfc8JyZzOtAuarOVwo_GcmmA@mail.gmail.com>
-Subject: Re: [PATCH 01/13] timekeeping: add CONFIG_LEGACY_TIMER_TICK
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Philip Blundell <philb@gnu.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Sam Creasey <sammy@sammy.net>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-ia64@vger.kernel.org,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:bx+MU4rriWLgVvyWeRF64JfoyzOmlLz74UO8fNe+f7WeGaMedgw
- A2fua+Q6ChbYhr0tJ/sWLFiwuAr4PRD/R8ZJ2St8O8ySRYKgV1BXuWx6OKjJD6j8KZEqGBU
- QuH8zzQYnK/OjnsRUDmt8rWmqalpr/81DhoIikWERTEjUzBK8GcaAf7w3RSTV5Zpo8jwnTL
- 7syRLbsW6/Oin/66wt9eA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:nOXGlKZwRYw=:AC+ita+16+XxGmd2+XJ1BI
- 3idAHYIAH8vIGOvA/79i+6F888Rg8kHgRybXRYz8zNlUlQXNZooA1W6VcXezU+uLHTtHKjk32
- H0ehwPOS7rORqKj4Mx8m5D3I1NOJ1ksSIVE2akPSNPkrQBVbBNrG5IxmLCFYzJnzUZ04qDuq2
- MrYtl5RCDIwJjqIRRu1RCJ7V5iBuPWdei47LR3r+Hyc3RRDsaCz6+qjbfwtU7ci950eYC0fb3
- 2rGKKBQJ7djJYBOyltlnpf5keqxs85dKVLCE7LktJbLjh1F5XieXlHGAq9F/wtRGD7RJ4F468
- clcynRkHVtcVG79A935S+pziNDIyCMtjjpy0U4CXteyUUnzWyI/A1IPMEKLXyt0jG1fPaTibY
- Ee8FjDNuoHrV8rX9gTRlCGuP5cR8AWzX32nMdSF2Bb3+cUKaudRZGldnRA3BWkFXKDRfGKDxz
- jesceABs2cIY27lvm5mss3P9gvHaGbcvgkmRCo0Z4bTEevmrugNvbTMRmJteLqOdhRvs6UI2u
- oj9daWcyQuv3G/Sz/aN2LXpc2UcuI/XqvByoxMDxQaA6NTdePtIgz2JnjwLy1o2CSc8gM1nUb
- ygIsBiDmDjrW9AibqvfMz06Jumnf6WKJH0FzKDULoSSUaUTPGl/onUTqRizcVbUqySALejOVm
- mhGAnZGwv89ct/Bv2Ld83yC+uLQpKJiwMn1hCJL4oeD6qzs6MWqJsiP0+ftXzvC+ntQzCRas4
- 22/2TUCul/x/6D52jDxd/+33HbIyr0QE5cE9JSqYy0yFpluTY6dy9CbooZnPTsc72CN+ZWQ9i
- 3cKftU9gDMdreer2/rYwid0uaUbz+4/KxTL9nnF4mIloWRdSUC/UNtMe3SNJX6yq0en5GDYsy
- efncQnKJTIXTu278KV1LVpVcxdo7eWuuo7urhlM6vQPgQdl5NLNH7GdvszkDmYXCvvr8o7gn1
- USOQXDloNjAfsp/yd/6vejqZQfB752rr0lPMbz/TprlTPAYoMj4uL
+In-Reply-To: <20201007221628.GW1009802@dtor-ws>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 10, 2020 at 12:18 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> On Thu, 8 Oct 2020, Arnd Bergmann wrote:
->
-> It's good to see this code refactored in this way because, as well as
-> de-duplication, it reveals the logic that's common to the relevant
-> platforms and may shed some light on the need for that logic.
->
-> Yet it's not clear to me that the clockevents framework is able to replace
-> that logic on all of the affected hardware. I suppose it remains to be
-> seen.
+Dear Dmitry, dear Rafael, dear Len,
 
-I suspect that the change I did for one platform in patch 13/13 could be
-duplicated for all 16 platforms, adding lots of trivial clockevent drivers that
-only support periodic ticks, but any platform that can instead support
-oneshot timers should probably do that, or it won't provide any better
-behavior.
 
-What do others think we should do here?
+Am 08.10.20 um 00:16 schrieb Dmitry Torokhov:
 
-> As a corollary, cutting edge ("non-legacy") code is often kept out of open
-> source projects by the owners of the intellectual property rights.
+> On Wed, Oct 07, 2020 at 11:18:41PM +0200, Paul Menzel wrote:
 
-I'm happy to change the name in any way if you have a suggestion
-that the clock event maintainers (Daniel and Thomas) like.
+>> On the Asus F2A85-M PRO Linux 5.9-rc8 (and previous versions) does not
+>> recognize a plugged in PS/2 mouse using the Plug & Play method. The PS/2
+>> keyboard is detected fine, and using `i8042.nopnp`, the PS/2 mouse also
+>> works.
+>>
+>>> [    1.035915] calling  i8042_init+0x0/0x42d @ 1
+>>> [    1.035947] i8042: PNP: PS/2 Controller [PNP0303:PS2K] at 0x60,0x64 irq 1
+>>> [    1.035948] i8042: PNP: PS/2 appears to have AUX port disabled, if this is incorrect please boot with i8042.nopnp
+>>> [    1.036589] serio: i8042 KBD port at 0x60,0x64 irq 1
+>>> [    1.036621] initcall i8042_init+0x0/0x42d returned 0 after 687 usecs
+>>
+>> But, the DSDT includes the “mouse device”. From
+>>
+>>      acpidump > dump.bin; acpixtract dump.bin; iasl -d *dat; more dsdt.dsl
+>>
+>> we get
+>>
+>>                  Device (PS2M)
+>>                  {
+>>                      Name (_HID, EisaId ("PNP0F03") /* Microsoft PS/2-style Mouse */)  // _HID: Hardware ID
+>>                      Name (_CID, EisaId ("PNP0F13") /* PS/2 Mouse */) // _CID: Compatible ID
+>>                      Method (_STA, 0, NotSerialized)  // _STA: Status
+>>                      {
+>>                          If ((IOST & 0x4000))
+>>                          {
+>>                              Return (0x0F)
+>>                          }
+>>                          Else
+>>                          {
+>>                              Return (Zero)
+>>                          }
+>>                      }
+>>
+>> and the identifiers PNP0F03 and PNP0F13 are both listed in the array
+>> `pnp_aux_devids[]`. But adding print statements to `i8042_pnp_aux_probe()`,
+>> I do not see them, so the function does not seem to be called.
+> 
+> My guess is that _STA returns 0 indicating that the device is not
+> present. I would try tracking where IOST is being set and figuring out
+> why it does not have mouse bit enabled.
 
-      Arnd
+Does the ACPI subsystem allow to track, how ACPI variables(?) like IOST 
+are read and set?
+
+
+Kind regards,
+
+Paul
