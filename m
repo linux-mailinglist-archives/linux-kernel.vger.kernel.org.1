@@ -2,105 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7580289F76
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 11:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8604028A02B
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 13:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729629AbgJJJDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 05:03:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727698AbgJJI4y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 04:56:54 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BEBCC0613D6;
-        Sat, 10 Oct 2020 01:56:45 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id j22so7659578lfe.10;
-        Sat, 10 Oct 2020 01:56:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=g9vSkxIGlaWSB7biANoG1xKU0aKQl4aNdR2oDLnv0+k=;
-        b=lgTnXkjU9AtLrHaVxu1evzcLrvkMvPcdEG1OQYJZdFvptxqF4XLHy1iZWGGT7t6EZg
-         nrLR2C4FzLeMXMLv0U7Kkn231OG8dZRaSRTdRVOeICFw2uTnvSGzCTBuqusgQ1XP9JFJ
-         aXKpOcHDgzakO2EseHKoe/lvdsLsCq//VPBya35mdUaQh0jD0waooNqHkaf+AKMePJV3
-         dNv58cHb6HjNHlBBPf38gwEno3QRK20g4v66pazHHhUlMWcy+LUw66IMFc3+0375YHgN
-         u3nYlR8haqMnu2Vec9iHOaI6+KlBBc6alXCZi7ndTB+in9nUw3pXFMFfZqXvjZkbuYwQ
-         D5Zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=g9vSkxIGlaWSB7biANoG1xKU0aKQl4aNdR2oDLnv0+k=;
-        b=DAzyVOii2tG0mCZB6AgOnj8hHmbh/wsjN8eSU+ofqx4fwjyARsREAX0AIAHNfS0F/w
-         C4Y/4n8/uvTxV5MjP/3I55gNiiIa/uO/HkNGD/HczDBFi0U42m3wjJZXA1iTBZWZJjl3
-         xUJUmVJQRiJYWNMzwH/eFMdzT/0dj0KHq48dHvKbMkD8utQT80ftt21MncFPQOiR9TD4
-         UfEqHqa8w8hkG19bRU3e7zlRjYdAtc1nreP8kL21jqhy+WzvQh/yvya5OKw56TJKu0FJ
-         IKyeTwQ9xt1hufj6chc4ESm57zMWHIT53/MZZSObQPe/NQZeJAv9OYjA/zTFAMMwG2ra
-         QvOw==
-X-Gm-Message-State: AOAM533theUCNI5+SGiDbpmrNE8OGu85uNDoEGdE8hcbY770L/dxQQBI
-        tAtMJnwVXcHIXNl7+MutbEEuO5P/mSE=
-X-Google-Smtp-Source: ABdhPJylVSzzVjZcAJsm3hy10uswdeQCyh8b3CermKL+5uCrzklmn/BCo6y8Lss7b0TC//27Vg1+Yg==
-X-Received: by 2002:a19:9143:: with SMTP id y3mr6038466lfj.104.1602320203660;
-        Sat, 10 Oct 2020 01:56:43 -0700 (PDT)
-Received: from [192.168.1.100] ([213.87.133.206])
-        by smtp.gmail.com with ESMTPSA id 27sm1952993lfy.109.2020.10.10.01.56.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 10 Oct 2020 01:56:43 -0700 (PDT)
-Subject: Re: [PATCH v2 1/2] MIPS: cpu-probe: move fpu probing/handling into
- its own file
-To:     "Maciej W. Rozycki" <macro@linux-mips.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201008213327.11603-1-tsbogend@alpha.franken.de>
- <alpine.LFD.2.21.2010100128110.866917@eddie.linux-mips.org>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <0d87a08c-3ae3-fc32-8e96-5692944b8289@gmail.com>
-Date:   Sat, 10 Oct 2020 11:56:42 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S1730118AbgJJLYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 07:24:17 -0400
+Received: from smtp.h3c.com ([60.191.123.50]:52185 "EHLO h3cspam02-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727172AbgJJKZ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 06:25:28 -0400
+X-Greylist: delayed 4237 seconds by postgrey-1.27 at vger.kernel.org; Sat, 10 Oct 2020 06:24:59 EDT
+Received: from h3cspam02-ex.h3c.com (localhost [127.0.0.2] (may be forged))
+        by h3cspam02-ex.h3c.com with ESMTP id 09A99kEg079319;
+        Sat, 10 Oct 2020 17:09:46 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
+        by h3cspam02-ex.h3c.com with ESMTPS id 09A97Cki074737
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 10 Oct 2020 17:07:13 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from localhost.localdomain (10.99.212.201) by
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Sat, 10 Oct 2020 17:07:15 +0800
+From:   Xianting Tian <tian.xianting@h3c.com>
+To:     <mike.marciniszyn@intel.com>, <dennis.dalessandro@intel.com>,
+        <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Xianting Tian <tian.xianting@h3c.com>
+Subject: [PATCH] IB/hfi1: Avoid allocing memory on memoryless numa node
+Date:   Sat, 10 Oct 2020 16:57:32 +0800
+Message-ID: <20201010085732.20708-1-tian.xianting@h3c.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <alpine.LFD.2.21.2010100128110.866917@eddie.linux-mips.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.99.212.201]
+X-ClientProxiedBy: BJSMTP01-EX.srv.huawei-3com.com (10.63.20.132) To
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
+X-DNSRBL: 
+X-MAIL: h3cspam02-ex.h3c.com 09A97Cki074737
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+In architecture like powerpc, we can have cpus without any local memory
+attached to it. In such cases the node does not have real memory.
 
-On 10.10.2020 3:30, Maciej W. Rozycki wrote:
+Use local_memory_node(), which is guaranteed to have memory.
+local_memory_node is a noop in other architectures that does not support
+memoryless nodes.
 
->> +			/*
->> +			 * MAC2008 toolchain never landed in real world, so we're only
->> +			 * testing whether it can be disabled and don't try to enabled
->> +			 * it.
->> +			 */
->> +			fcsr0 = fcsr & ~(FPU_CSR_ABS2008 | FPU_CSR_NAN2008 | FPU_CSR_MAC2008);
->> +			write_32bit_cp1_register(CP1_STATUS, fcsr0);
->> +			fcsr0 = read_32bit_cp1_register(CP1_STATUS);
->> +
->> +			fcsr1 = fcsr | FPU_CSR_ABS2008 | FPU_CSR_NAN2008;
->> +			write_32bit_cp1_register(CP1_STATUS, fcsr1);
->> +			fcsr1 = read_32bit_cp1_register(CP1_STATUS);
->> +
->> +			write_32bit_cp1_register(CP1_STATUS, fcsr);
->> +
->> +			if (c->isa_level & (MIPS_CPU_ISA_M32R2 | MIPS_CPU_ISA_M64R2)) {
->> +				/*
->> +				 * The bit for MAC2008 might be reused by R6 in future,
->> +				 * so we only test for R2-R5.
->> +				 */
-> 
->   Umm, this has formatting issues with lines extending beyond column #80.
+Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+---
+ drivers/infiniband/hw/hfi1/file_ops.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-    80 columns are no longer a line length limit -- 100 is, IIRC.
+diff --git a/drivers/infiniband/hw/hfi1/file_ops.c b/drivers/infiniband/hw/hfi1/file_ops.c
+index 8ca51e43c..79fa22cc7 100644
+--- a/drivers/infiniband/hw/hfi1/file_ops.c
++++ b/drivers/infiniband/hw/hfi1/file_ops.c
+@@ -965,7 +965,7 @@ static int allocate_ctxt(struct hfi1_filedata *fd, struct hfi1_devdata *dd,
+ 	 */
+ 	fd->rec_cpu_num = hfi1_get_proc_affinity(dd->node);
+ 	if (fd->rec_cpu_num != -1)
+-		numa = cpu_to_node(fd->rec_cpu_num);
++		numa = local_memory_node(cpu_to_node(fd->rec_cpu_num));
+ 	else
+ 		numa = numa_node_id();
+ 	ret = hfi1_create_ctxtdata(dd->pport, numa, &uctxt);
+-- 
+2.17.1
 
->    Maciej
-
-MBR, Sergei
