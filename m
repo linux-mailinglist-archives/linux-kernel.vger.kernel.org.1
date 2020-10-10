@@ -2,66 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A0E289ECF
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 09:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0064A289ED1
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 09:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728630AbgJJHC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 03:02:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50694 "EHLO mail.kernel.org"
+        id S1728700AbgJJHFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 03:05:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728618AbgJJHAY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 03:00:24 -0400
+        id S1728667AbgJJHD6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 03:03:58 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 34B76207E8;
-        Sat, 10 Oct 2020 07:00:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B9A3E207CD;
+        Sat, 10 Oct 2020 07:03:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602313210;
-        bh=pe+4amqH5ukXnmBdCIgLvkVQzzJBofYyjsBk6c7UY18=;
+        s=default; t=1602313436;
+        bh=F0F1LNuYml8C7KaYrbieRMB8KjT0b0KlbGLcN90ywNI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CfnpH+QDa+0haYKPm4ZDZpqqK2ywi8pwQm5jJfbJgTcdnzRQZnH5/HJ6dDF7Q/MZA
-         pnRhMrdi9IBl6F8PjxY4qk5zBEOOFGlhBM+e7CGRPgw65vIW0nOHcWuBYcn1naZp5P
-         oAJed6uVvEeg4gOlEYdcsi5tsz0/ZLwAYkxq0yzw=
-Date:   Sat, 10 Oct 2020 09:00:08 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Ian Abbott <abbotti@mev.co.uk>,
-        syzbot+009f546aa1370056b1c2@syzkaller.appspotmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH] staging: comedi: check validity of wMaxPacketSize of usb
- endpoints found
-Message-ID: <20201010070007.GB132110@kroah.com>
-References: <20201009162030.293781-1-anant.thazhemadam@gmail.com>
+        b=Eq64n3c6/mcINekdYRdy0LlhY+O91416Mz+Nbeyj0rJtgnuUPmkgoYyiHuy1LrniM
+         pzI9/y8VgeYuagAs1cfG+gN7zwwuU5sEoThf0HokKCUbcADQCcOKi0ne/mT4vIChhP
+         l4OpEG+EREIvpzOnWAUinB4ospIHYaB2LkYJ2qhQ=
+Date:   Sat, 10 Oct 2020 09:03:52 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Moritz Fischer <mdf@kernel.org>
+Cc:     Xu Yilun <yilun.xu@intel.com>, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
+        hao.wu@intel.com
+Subject: Re: [PATCH v3 1/5] fpga: dfl: rename the bus type "dfl" to "fpga-dfl"
+Message-ID: <20201010070352.GA133012@kroah.com>
+References: <20200927055108.GA701198@kroah.com>
+ <20200927073754.GB16433@yilunxu-OptiPlex-7050>
+ <20200927075401.GA748141@kroah.com>
+ <20200927083647.GC16433@yilunxu-OptiPlex-7050>
+ <20200929012323.GD16433@yilunxu-OptiPlex-7050>
+ <20200929041900.GA113620@archbook>
+ <20201009062059.GB24324@yilunxu-OptiPlex-7050>
+ <20201009064118.GA655664@kroah.com>
+ <20201009073424.GA15377@yilunxu-OptiPlex-7050>
+ <20201009212839.GB2531@epycbox.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201009162030.293781-1-anant.thazhemadam@gmail.com>
+In-Reply-To: <20201009212839.GB2531@epycbox.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 09:50:29PM +0530, Anant Thazhemadam wrote:
-> While finding usb endpoints in vmk80xx_find_usb_endpoints(), check if 
-> wMaxPacketSize = 0 for the endpoints found.
-> 
-> Some devices have isochronous endpoints that have wMaxPacketSize = 0
-> (as required by the USB-2 spec).
-> However, since this doesn't apply here, wMaxPacketSize = 0 can be
-> considered to be invalid.
-> 
-> Reported-by: syzbot+009f546aa1370056b1c2@syzkaller.appspotmail.com
-> Tested-by: syzbot+009f546aa1370056b1c2@syzkaller.appspotmail.com
-> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-> ---
+On Fri, Oct 09, 2020 at 02:28:39PM -0700, Moritz Fischer wrote:
+> We're pretty late in the cycle, so this is gonna wait till the next cycle most likely.
 
-You sent 2 patches with the same subject, which one is the "latest" one?
-Please always version your patches and put below the --- line what
-changed from the previous version, so that maintainers have a chance to
-know which to accept...
+My trees are closed for new stuff for 5.10-rc1, so yes, it has to be for
+the next round.
 
-Can you fix this up and send a v3?
+I'll try to get to the "wall of text" next week...
 
-thanks,
 greg k-h
