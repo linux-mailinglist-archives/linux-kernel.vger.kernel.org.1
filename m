@@ -2,105 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EE6128A422
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:13:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2743A28A23E
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389170AbgJJWzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:55:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51952 "EHLO mail.kernel.org"
+        id S2389551AbgJJWzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:55:48 -0400
+Received: from aposti.net ([89.234.176.197]:48068 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731406AbgJJTU1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:20:27 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D56B22258;
-        Sat, 10 Oct 2020 19:20:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602357626;
-        bh=1rFFenx5YaOoyjN6AOp5kOMJV7iSmN0ey8iVvvT9Ck0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=u1uXILE4wH+0QAJm6IeD5VwS/QkS3cEJnyAbweMQ2CZGsWfc1JVZHAL9qTYl/K+Fa
-         ZBu/bchAgrF/5CmgDG3BM/ajQaUBEbepcDnZGCLlSAZtSQpTg2f8wpmeJOsqKXixhy
-         cRBEorT0By3F6D1EY3DuANtfFgrE53GazWxPUNTc=
-Date:   Sat, 10 Oct 2020 12:20:24 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Petko Manolov <petkan@nucleusys.com>,
-        "David S. Miller" <davem@davemloft.net>, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: [PATCH] net: usb: rtl8150: don't incorrectly assign random MAC
- addresses
-Message-ID: <20201010122024.0ec7c2f1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <e772b9f0-f5cd-c50b-86a7-fde22b6e13e3@gmail.com>
-References: <20201010064459.6563-1-anant.thazhemadam@gmail.com>
-        <20201010095302.5309c118@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <0de8e509-7ca5-7faf-70bf-5880ce0fc15c@gmail.com>
-        <20201010111645.334647af@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <e772b9f0-f5cd-c50b-86a7-fde22b6e13e3@gmail.com>
+        id S1731467AbgJJTZa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 15:25:30 -0400
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Zhou Yanjie <zhouyanjie@wanyeetech.com>,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Paul Cercueil <paul@crapouillou.net>,
+        Artur Rojek <contact@artur-rojek.eu>
+Subject: [PATCH] pinctrl: ingenic: Fix invalid SSI pins
+Date:   Sat, 10 Oct 2020 21:25:09 +0200
+Message-Id: <20201010192509.9098-1-paul@crapouillou.net>
+In-Reply-To: <CACRpkda1B3LcGWc1PhXNgi-6JxapiKY4F_94c6dk4eBLgVGBJg@mail.gmail.com>
+References: <CACRpkda1B3LcGWc1PhXNgi-6JxapiKY4F_94c6dk4eBLgVGBJg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 11 Oct 2020 00:14:05 +0530 Anant Thazhemadam wrote:
-> Ah, my apologies. You're right. It doesn't look like those helpers have m=
-ade
-> their way into the networking tree yet.
->=20
-> (This gets mentioned here as well,
-> =C2=A0=C2=A0=C2=A0 https://www.mail-archive.com/netdev@vger.kernel.org/ms=
-g357843.html)
->=20
-> The commit ID pointed to by the fixes tag is correct.
-> The change introduced by said commit looks right, but is logically incorr=
-ect.
->=20
-> get_registers() directly returns the return value of usb_control_msg_recv=
-(),
-> and usb_control_msg_recv() returns 0 on success and negative error number
-> otherwise.
->=20
-> (You can find more about the new helpers here
-> =C2=A0=C2=A0=C2=A0 https://lore.kernel.org/alsa-devel/20200914153756.3412=
-156-1-gregkh@linuxfoundation.org/ )
->=20
-> The commit ID mentioned introduces a change that is supposed to copy over
-> the ethernet only when get_registers() succeeds, i.e., a complete read oc=
-curs,
-> and generate and set a random ethernet address otherwise (reading the
-> commit message should give some more insight).
->=20
-> The condition that checks if get_registers() succeeds (as specified in f4=
-5a4248ea4c)
-> was,
-> =C2=A0=C2=A0=C2=A0 ret =3D=3D sizeof(node_id)
-> where ret is the return value of get_registers().
->=20
-> However, ret will never equal sizeof(node_id), since ret can only be equa=
-l to 0
-> or a negative number.
->=20
-> Thus, even in case where get_registers() succeeds, a randomly generated M=
-AC
-> address would get copied over, instead of copying the appropriate ethernet
-> address, which is logically incorrect and not optimal.
->=20
-> Hence, we need to modify this to check if (ret =3D=3D 0), and copy over t=
-he correct
-> ethernet address in that case, instead of randomly generating one and ass=
-igning
-> that.
+The values for the SSI pins on GPIO chips D and E were off by 0x20.
 
-I see... so we ended up with your fix applied to net, and Petko's
-rework applied to the usb/usb-next tree.
+Fixes: d3ef8c6b2286 ("pinctrl: Ingenic: Add SSI pins support for JZ4770 and JZ4780.")
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Reported-by: Artur Rojek <contact@artur-rojek.eu>
+---
+ drivers/pinctrl/pinctrl-ingenic.c | 72 +++++++++++++++----------------
+ 1 file changed, 36 insertions(+), 36 deletions(-)
 
-What you're actually fixing is the improper resolution of the resulting
-conflict in linux-next!
+diff --git a/drivers/pinctrl/pinctrl-ingenic.c b/drivers/pinctrl/pinctrl-ingenic.c
+index c8e50a58a5e5..621909b01deb 100644
+--- a/drivers/pinctrl/pinctrl-ingenic.c
++++ b/drivers/pinctrl/pinctrl-ingenic.c
+@@ -635,44 +635,44 @@ static int jz4770_uart3_data_pins[] = { 0x6c, 0x85, };
+ static int jz4770_uart3_hwflow_pins[] = { 0x88, 0x89, };
+ static int jz4770_ssi0_dt_a_pins[] = { 0x15, };
+ static int jz4770_ssi0_dt_b_pins[] = { 0x35, };
+-static int jz4770_ssi0_dt_d_pins[] = { 0x55, };
+-static int jz4770_ssi0_dt_e_pins[] = { 0x71, };
++static int jz4770_ssi0_dt_d_pins[] = { 0x75, };
++static int jz4770_ssi0_dt_e_pins[] = { 0x91, };
+ static int jz4770_ssi0_dr_a_pins[] = { 0x14, };
+ static int jz4770_ssi0_dr_b_pins[] = { 0x34, };
+-static int jz4770_ssi0_dr_d_pins[] = { 0x54, };
+-static int jz4770_ssi0_dr_e_pins[] = { 0x6e, };
++static int jz4770_ssi0_dr_d_pins[] = { 0x74, };
++static int jz4770_ssi0_dr_e_pins[] = { 0x8e, };
+ static int jz4770_ssi0_clk_a_pins[] = { 0x12, };
+ static int jz4770_ssi0_clk_b_pins[] = { 0x3c, };
+-static int jz4770_ssi0_clk_d_pins[] = { 0x58, };
+-static int jz4770_ssi0_clk_e_pins[] = { 0x6f, };
++static int jz4770_ssi0_clk_d_pins[] = { 0x78, };
++static int jz4770_ssi0_clk_e_pins[] = { 0x8f, };
+ static int jz4770_ssi0_gpc_b_pins[] = { 0x3e, };
+-static int jz4770_ssi0_gpc_d_pins[] = { 0x56, };
+-static int jz4770_ssi0_gpc_e_pins[] = { 0x73, };
++static int jz4770_ssi0_gpc_d_pins[] = { 0x76, };
++static int jz4770_ssi0_gpc_e_pins[] = { 0x93, };
+ static int jz4770_ssi0_ce0_a_pins[] = { 0x13, };
+ static int jz4770_ssi0_ce0_b_pins[] = { 0x3d, };
+-static int jz4770_ssi0_ce0_d_pins[] = { 0x59, };
+-static int jz4770_ssi0_ce0_e_pins[] = { 0x70, };
++static int jz4770_ssi0_ce0_d_pins[] = { 0x79, };
++static int jz4770_ssi0_ce0_e_pins[] = { 0x90, };
+ static int jz4770_ssi0_ce1_b_pins[] = { 0x3f, };
+-static int jz4770_ssi0_ce1_d_pins[] = { 0x57, };
+-static int jz4770_ssi0_ce1_e_pins[] = { 0x72, };
++static int jz4770_ssi0_ce1_d_pins[] = { 0x77, };
++static int jz4770_ssi0_ce1_e_pins[] = { 0x92, };
+ static int jz4770_ssi1_dt_b_pins[] = { 0x35, };
+-static int jz4770_ssi1_dt_d_pins[] = { 0x55, };
+-static int jz4770_ssi1_dt_e_pins[] = { 0x71, };
++static int jz4770_ssi1_dt_d_pins[] = { 0x75, };
++static int jz4770_ssi1_dt_e_pins[] = { 0x91, };
+ static int jz4770_ssi1_dr_b_pins[] = { 0x34, };
+-static int jz4770_ssi1_dr_d_pins[] = { 0x54, };
+-static int jz4770_ssi1_dr_e_pins[] = { 0x6e, };
++static int jz4770_ssi1_dr_d_pins[] = { 0x74, };
++static int jz4770_ssi1_dr_e_pins[] = { 0x8e, };
+ static int jz4770_ssi1_clk_b_pins[] = { 0x3c, };
+-static int jz4770_ssi1_clk_d_pins[] = { 0x58, };
+-static int jz4770_ssi1_clk_e_pins[] = { 0x6f, };
++static int jz4770_ssi1_clk_d_pins[] = { 0x78, };
++static int jz4770_ssi1_clk_e_pins[] = { 0x8f, };
+ static int jz4770_ssi1_gpc_b_pins[] = { 0x3e, };
+-static int jz4770_ssi1_gpc_d_pins[] = { 0x56, };
+-static int jz4770_ssi1_gpc_e_pins[] = { 0x73, };
++static int jz4770_ssi1_gpc_d_pins[] = { 0x76, };
++static int jz4770_ssi1_gpc_e_pins[] = { 0x93, };
+ static int jz4770_ssi1_ce0_b_pins[] = { 0x3d, };
+-static int jz4770_ssi1_ce0_d_pins[] = { 0x59, };
+-static int jz4770_ssi1_ce0_e_pins[] = { 0x70, };
++static int jz4770_ssi1_ce0_d_pins[] = { 0x79, };
++static int jz4770_ssi1_ce0_e_pins[] = { 0x90, };
+ static int jz4770_ssi1_ce1_b_pins[] = { 0x3f, };
+-static int jz4770_ssi1_ce1_d_pins[] = { 0x57, };
+-static int jz4770_ssi1_ce1_e_pins[] = { 0x72, };
++static int jz4770_ssi1_ce1_d_pins[] = { 0x77, };
++static int jz4770_ssi1_ce1_e_pins[] = { 0x92, };
+ static int jz4770_mmc0_1bit_a_pins[] = { 0x12, 0x13, 0x14, };
+ static int jz4770_mmc0_4bit_a_pins[] = { 0x15, 0x16, 0x17, };
+ static int jz4770_mmc0_1bit_e_pins[] = { 0x9c, 0x9d, 0x94, };
+@@ -1050,35 +1050,35 @@ static int jz4780_ssi0_dt_a_19_pins[] = { 0x13, };
+ static int jz4780_ssi0_dt_a_21_pins[] = { 0x15, };
+ static int jz4780_ssi0_dt_a_28_pins[] = { 0x1c, };
+ static int jz4780_ssi0_dt_b_pins[] = { 0x3d, };
+-static int jz4780_ssi0_dt_d_pins[] = { 0x59, };
++static int jz4780_ssi0_dt_d_pins[] = { 0x79, };
+ static int jz4780_ssi0_dr_a_20_pins[] = { 0x14, };
+ static int jz4780_ssi0_dr_a_27_pins[] = { 0x1b, };
+ static int jz4780_ssi0_dr_b_pins[] = { 0x34, };
+-static int jz4780_ssi0_dr_d_pins[] = { 0x54, };
++static int jz4780_ssi0_dr_d_pins[] = { 0x74, };
+ static int jz4780_ssi0_clk_a_pins[] = { 0x12, };
+ static int jz4780_ssi0_clk_b_5_pins[] = { 0x25, };
+ static int jz4780_ssi0_clk_b_28_pins[] = { 0x3c, };
+-static int jz4780_ssi0_clk_d_pins[] = { 0x58, };
++static int jz4780_ssi0_clk_d_pins[] = { 0x78, };
+ static int jz4780_ssi0_gpc_b_pins[] = { 0x3e, };
+-static int jz4780_ssi0_gpc_d_pins[] = { 0x56, };
++static int jz4780_ssi0_gpc_d_pins[] = { 0x76, };
+ static int jz4780_ssi0_ce0_a_23_pins[] = { 0x17, };
+ static int jz4780_ssi0_ce0_a_25_pins[] = { 0x19, };
+ static int jz4780_ssi0_ce0_b_pins[] = { 0x3f, };
+-static int jz4780_ssi0_ce0_d_pins[] = { 0x57, };
++static int jz4780_ssi0_ce0_d_pins[] = { 0x77, };
+ static int jz4780_ssi0_ce1_b_pins[] = { 0x35, };
+-static int jz4780_ssi0_ce1_d_pins[] = { 0x55, };
++static int jz4780_ssi0_ce1_d_pins[] = { 0x75, };
+ static int jz4780_ssi1_dt_b_pins[] = { 0x3d, };
+-static int jz4780_ssi1_dt_d_pins[] = { 0x59, };
++static int jz4780_ssi1_dt_d_pins[] = { 0x79, };
+ static int jz4780_ssi1_dr_b_pins[] = { 0x34, };
+-static int jz4780_ssi1_dr_d_pins[] = { 0x54, };
++static int jz4780_ssi1_dr_d_pins[] = { 0x74, };
+ static int jz4780_ssi1_clk_b_pins[] = { 0x3c, };
+-static int jz4780_ssi1_clk_d_pins[] = { 0x58, };
++static int jz4780_ssi1_clk_d_pins[] = { 0x78, };
+ static int jz4780_ssi1_gpc_b_pins[] = { 0x3e, };
+-static int jz4780_ssi1_gpc_d_pins[] = { 0x56, };
++static int jz4780_ssi1_gpc_d_pins[] = { 0x76, };
+ static int jz4780_ssi1_ce0_b_pins[] = { 0x3f, };
+-static int jz4780_ssi1_ce0_d_pins[] = { 0x57, };
++static int jz4780_ssi1_ce0_d_pins[] = { 0x77, };
+ static int jz4780_ssi1_ce1_b_pins[] = { 0x35, };
+-static int jz4780_ssi1_ce1_d_pins[] = { 0x55, };
++static int jz4780_ssi1_ce1_d_pins[] = { 0x75, };
+ static int jz4780_mmc0_8bit_a_pins[] = { 0x04, 0x05, 0x06, 0x07, 0x18, };
+ static int jz4780_i2c3_pins[] = { 0x6a, 0x6b, };
+ static int jz4780_i2c4_e_pins[] = { 0x8c, 0x8d, };
+-- 
+2.28.0
 
-CCing Stephen and linux-next.
