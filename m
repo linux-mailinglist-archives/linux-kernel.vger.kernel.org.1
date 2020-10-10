@@ -2,44 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EBCB28A00F
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 12:42:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8825228A039
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 13:39:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726436AbgJJKhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 06:37:01 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15264 "EHLO huawei.com"
+        id S1730182AbgJJLhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 07:37:45 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:33306 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728877AbgJJKUG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 06:20:06 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 2F995A09A6775A450419;
-        Sat, 10 Oct 2020 18:01:24 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.134) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Sat, 10 Oct 2020
- 18:01:16 +0800
-Subject: Re: [PATCH v6 01/17] dt-bindings: mfd: syscon: add some compatible
- strings for Hisilicon
-To:     Lee Jones <lee.jones@linaro.org>
-CC:     devicetree <devicetree@vger.kernel.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Libin <huawei.libin@huawei.com>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-References: <20200930031712.2365-1-thunder.leizhen@huawei.com>
- <20200930031712.2365-2-thunder.leizhen@huawei.com>
- <20200930071110.GH6148@dell>
- <3045a295-928a-eae6-c887-e34446a170e0@huawei.com>
- <20201001065917.GJ6148@dell>
+        id S1728618AbgJJKUD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 06:20:03 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 18B378A4D91A19AD4512;
+        Sat, 10 Oct 2020 18:01:52 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.134) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Sat, 10 Oct 2020
+ 18:01:48 +0800
+Subject: Re: linux-next: manual merge of the devicetree tree with the mfd tree
+To:     Rob Herring <robherring2@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+CC:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Lee Jones <lee.jones@linaro.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+References: <20201001162237.633d6043@canb.auug.org.au>
+ <CAJKOXPdyCYkSE1ie_t5G5X4JStU0zxxuoovLFnUxJP4aQbvM=g@mail.gmail.com>
+ <CAL_JsqKKaStNsDxfJw0UOzU6rTyeeJtVkaE4-nJXKHA5A1pOLg@mail.gmail.com>
 From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <e2fb074b-7a83-ac4c-9941-ca6ade12bd29@huawei.com>
-Date:   Sat, 10 Oct 2020 18:01:16 +0800
+Message-ID: <4ecdefed-c047-a318-a3bf-14bc4bc50b23@huawei.com>
+Date:   Sat, 10 Oct 2020 18:01:47 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <20201001065917.GJ6148@dell>
+In-Reply-To: <CAL_JsqKKaStNsDxfJw0UOzU6rTyeeJtVkaE4-nJXKHA5A1pOLg@mail.gmail.com>
 Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -51,35 +45,71 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 2020/10/1 14:59, Lee Jones wrote:
-> On Wed, 30 Sep 2020, Leizhen (ThunderTown) wrote:
+On 2020/10/1 20:31, Rob Herring wrote:
+> On Thu, Oct 1, 2020 at 1:26 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>>
+>> On Thu, 1 Oct 2020 at 08:22, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>>>
+>>> Hi all,
+>>>
+>>> Today's linux-next merge of the devicetree tree got a conflict in:
+>>>
+>>>   Documentation/devicetree/bindings/mfd/syscon.yaml
+>>>
+>>> between commit:
+>>>
+>>>   18394297562a ("dt-bindings: mfd: syscon: Merge Samsung Exynos Sysreg bindings")
+>>>   05027df1b94f ("dt-bindings: mfd: syscon: Document Exynos3 and Exynos5433 compatibles")
+>>>
+>>> from the mfd tree and commit:
+>>>
+>>>   35b096dd6353 ("dt-bindings: mfd: syscon: add some compatible strings for Hisilicon")
+>>>
+>>> from the devicetree tree.
+>>>
+>>> I fixed it up (see below) and can carry the fix as necessary. This
+>>> is now fixed as far as linux-next is concerned, but any non trivial
+>>> conflicts should be mentioned to your upstream maintainer when your tree
+>>> is submitted for merging.  You may also want to consider cooperating
+>>> with the maintainer of the conflicting tree to minimise any particularly
+>>> complex conflicts.
+>>>
+>>> --
+>>> Cheers,
+>>> Stephen Rothwell
+>>>
+>>> diff --cc Documentation/devicetree/bindings/mfd/syscon.yaml
+>>> index 0f21943dea28,fc2e85004d36..000000000000
+>>> --- a/Documentation/devicetree/bindings/mfd/syscon.yaml
+>>> +++ b/Documentation/devicetree/bindings/mfd/syscon.yaml
+>>> @@@ -40,11 -40,10 +40,14 @@@ properties
+>>>                 - allwinner,sun50i-a64-system-controller
+>>>                 - microchip,sparx5-cpu-syscon
+>>>                 - mstar,msc313-pmsleep
+>>>  +              - samsung,exynos3-sysreg
+>>>  +              - samsung,exynos4-sysreg
+>>>  +              - samsung,exynos5-sysreg
+>>>  +              - samsung,exynos5433-sysreg
+>>> -
+>>> +               - hisilicon,hi6220-sramctrl
+>>> +               - hisilicon,pcie-sas-subctrl
+>>> +               - hisilicon,peri-subctrl
+>>> +               - hisilicon,dsa-subctrl
+>>
+>> Thanks Stephen, looks good.
+>>
+>> Zhei,
+>> However the Huawei compatibles in the original patch were added not
+>> alphabetically which messes the order and increases the possibility of
+>> conflicts. It would be better if the entries were kept ordered.
 > 
->>
->>
->> On 2020/9/30 15:11, Lee Jones wrote:
->>> On Wed, 30 Sep 2020, Zhen Lei wrote:
->>>
->>>> Add some compatible strings for Hisilicon controllers:
->>>> hisilicon,hi6220-sramctrl  --> Hi6220 SRAM controller
->>>> hisilicon,pcie-sas-subctrl --> HiP05/HiP06 PCIe-SAS subsystem controller
->>>> hisilicon,peri-subctrl     --> HiP05/HiP06 PERI subsystem controller
->>>> hisilicon,dsa-subctrl      --> HiP05/HiP06 DSA subsystem controller
->>>>
->>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->>>> ---
->>>>  Documentation/devicetree/bindings/mfd/syscon.yaml | 5 ++++-
->>>>  1 file changed, 4 insertions(+), 1 deletion(-)
->>>
->>> This was already applied by the time you re-sent it.
->>>
->>> Any reason for sending it again?
->>
->> Path 15 are modified. The Document patches except Patch 15 are applied,
->> but the config/DTS patches are not applied(They are applied after I re-sent).
+> I've fixed up the order.
+
+Thanks.
+
 > 
-> Could you please only send patches which have not been applied.
-
-No experience. I'll pay attention next time.
-
+> Rob
+> 
+> .
 > 
 
