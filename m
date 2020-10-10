@@ -2,98 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C43A6289EBE
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 08:53:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE57A289EC3
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 08:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728036AbgJJGvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 02:51:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35300 "EHLO
+        id S1728479AbgJJG5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 02:57:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727698AbgJJGvT (ORCPT
+        with ESMTP id S1728291AbgJJGzt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 02:51:19 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F3D3C0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Oct 2020 23:51:19 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id t77so12674867oie.4
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Oct 2020 23:51:19 -0700 (PDT)
+        Sat, 10 Oct 2020 02:55:49 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7B8BC0613CF;
+        Fri,  9 Oct 2020 23:55:48 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id u21so16263961eja.2;
+        Fri, 09 Oct 2020 23:55:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
-        b=gQT8IlD7oQ6tQxlVdDbgVXFfWicJYkR7FYSawurArJpOEaSeDdsmAB/P+Pz7F03KDL
-         mO/sX2PzzwWaE5017Ef9ceVFUoEJlT9C+1ip18+HBd8eYrbC8466+NU0dMlYzhvOWwJm
-         fECfPE0Uu0PWmiAtbL1CRiA8eXMaREBVnrq41UqWQSuuvQEjJY5ktGSIMrOaILI6O7ne
-         MuONfVQnyb7HRiMZ8LCtcigtSK1czcpzQ/4ADkUih3DaVKo2AIx5qN7FyG/zQy78h9tL
-         3yHsMV6o6oVPrxCgBk74zhJKKFR2De8GWWvVN7n2LCBMducKYGc2ANcRFjJxncmYcp3+
-         14eQ==
+        bh=H+UaYBmG6QYTuuQvyVH4FZK0dvrXTjPLq4147N3N0R0=;
+        b=hM92vKB2P3oKkzy0rP8iaW5jGAI+dLc4MXcm7wk7/R5PJAXGRmNpEwwypesQTCuyoG
+         6waZ3CdomQtPoYFIMretQdXNLJzLyLcxKtRs+aZ0Xb89bxQOtM8TrPC2nwqIszj5MnqT
+         ZbALvZfRI0hfY7Qnv3GbNs1ei+TncQWnuL+SvAi1CvT7LKrH6tlJVaUBVCHHh4QsPtJz
+         nXrVojE11swRWj3mWbN8kXbZ12hed+5gijO2figaY2iNBF0Jtd4MM705ixQkO212+D2K
+         OHkGBYAm5KV8dOOCG+Tb3VUaXCf5qietX5HJHG3nkRI7wXroCrBFniMIbLzHeBS4csVE
+         eONA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
-        b=HHmAF7163RFswTd5SJjG5Los4RvHHKjPAZs38r3EdxzQkCKMxQcGZJ5+itd4nbBR4/
-         TcmxrLTO2ZAUEVn0fEbqgHQMnigKkUvYa5lcMYIqHWPmFeXzq+Up7CAYXFsdWcbKGmYO
-         a/W48TUUGeAImo65d9tR5dYXhgbDHw/4MQXIKk7s9QHOxUGDSSGG4ZQ+phpEnzpNNFLP
-         W8JgwohaaywStl15lCraq3dGFiSGHn5IpuBjHJxZkE2H1IsqDR7sNqEd07HBCu7Q6MVI
-         oyqLvgD2ct4v0A8ZryAzXjz3pSFM0dp33VjcsG4TBhdoK56hi2e9PlqDZxr0b4PvMMqx
-         JD3Q==
-X-Gm-Message-State: AOAM533yKnwdcnS0k+Ap5s1mfPYquNboS+eiy2ia/wBvhRZeU/TD5E/R
-        mwhVT7uhN77ucD6z4RA5GmDetBiFYtK5xzE0CPg=
-X-Google-Smtp-Source: ABdhPJyOIDIsVgrawtME5q27UU3Dyr427ZVGEPnHgHSKZHrOzjbHpxS/txeH7LamvmeXJmISgMMRzGmyCRzNIC3Gw+M=
-X-Received: by 2002:aca:4e05:: with SMTP id c5mr5040761oib.99.1602312678653;
- Fri, 09 Oct 2020 23:51:18 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=H+UaYBmG6QYTuuQvyVH4FZK0dvrXTjPLq4147N3N0R0=;
+        b=nfVyNFN9VHW+1KCgR0CdQK6FS/PYTeaqhksAY6//VfD7ZarMcDb1KAr4Lz9xo6FppE
+         v0BdMT2Sn8RgcUwZUxG/7nTh0gGXyZ4PKf04xoctO6dIsksXBawReGKnsChp0MSZogag
+         rY4eDCk9jLlrF/RBxcils46OavPuw+ZM70D6BFuFkbLfbQo6YncU/ZaNP86KHrotQNFS
+         FLxTjCG9RFDUEMj6GxiLRy8ytIN8Ym5WlPHlzEWGgZfKxbSOIrCgTkxF/jWz5SacddiC
+         lyULZWBbEAqLnG58kNrv4s115PXYUJqqkjNaK/5M9ScEknLO0eo/icyE4JJibG3kI6GJ
+         brug==
+X-Gm-Message-State: AOAM531jrd4pey+yLUM6CWVPbL/tdseE73D6Rr+opZ0wvGBMAJ7xkRjx
+        bjBF0zEfs9f9JYpv/jIlSPw=
+X-Google-Smtp-Source: ABdhPJwwyrV4a4dzIqmCetFfyccLCe+JBc6nYT4k/y4gl5LS33u093R5QSHGsuTyRO+3izvxlC5HqA==
+X-Received: by 2002:a17:906:b004:: with SMTP id v4mr18958102ejy.156.1602312947303;
+        Fri, 09 Oct 2020 23:55:47 -0700 (PDT)
+Received: from localhost ([91.92.14.102])
+        by smtp.gmail.com with ESMTPSA id g9sm7540825ejz.23.2020.10.09.23.55.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Oct 2020 23:55:46 -0700 (PDT)
+From:   Iskren Chernev <iskren.chernev@gmail.com>
+To:     Sebastian Reichel <sre@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Iskren Chernev <iskren.chernev@gmail.com>
+Subject: [PATCH] power: supply: ltc2941: Fix ptr to enum cast
+Date:   Sat, 10 Oct 2020 09:55:26 +0300
+Message-Id: <20201010065526.2466583-1-iskren.chernev@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Received: by 2002:a05:6838:fb13:0:0:0:0 with HTTP; Fri, 9 Oct 2020 23:51:18
- -0700 (PDT)
-Reply-To: ayishagddafio@mail.ru
-From:   Aisha Gaddafi <aishagadafi0030@gmail.com>
-Date:   Fri, 9 Oct 2020 23:51:18 -0700
-Message-ID: <CAL3MLxt4g===yw9Qm7QZakN20eDH=9tCtYSLWr7ZgdsS7w+YeA@mail.gmail.com>
-Subject: Lieber Freund (Assalamu Alaikum),
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=20
-Lieber Freund (Assalamu Alaikum),
+clang complains about casting pointers to smaller enum types.
 
-Ich bin vor einer privaten Suche auf Ihren E-Mail-Kontakt gesto=C3=9Fen
-Ihre Hilfe. Mein Name ist Aisha Al-Qaddafi, eine alleinerziehende
-Mutter und eine Witwe
-mit drei Kindern. Ich bin die einzige leibliche Tochter des Sp=C3=A4tlibysc=
-hen
-Pr=C3=A4sident (verstorbener Oberst Muammar Gaddafi).
+Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
+---
+ drivers/power/supply/ltc2941-battery-gauge.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Ich habe Investmentfonds im Wert von siebenundzwanzig Millionen
-f=C3=BCnfhunderttausend
-United State Dollar ($ 27.500.000.00) und ich brauche eine
-vertrauensw=C3=BCrdige Investition
-Manager / Partner aufgrund meines aktuellen Fl=C3=BCchtlingsstatus bin ich =
-jedoch
-M=C3=B6glicherweise interessieren Sie sich f=C3=BCr die Unterst=C3=BCtzung =
-von
-Investitionsprojekten in Ihrem Land
-Von dort aus k=C3=B6nnen wir in naher Zukunft Gesch=C3=A4ftsbeziehungen auf=
-bauen.
+diff --git a/drivers/power/supply/ltc2941-battery-gauge.c b/drivers/power/supply/ltc2941-battery-gauge.c
+index 30a9014b2f95e..10cd617516ec2 100644
+--- a/drivers/power/supply/ltc2941-battery-gauge.c
++++ b/drivers/power/supply/ltc2941-battery-gauge.c
+@@ -473,7 +473,8 @@ static int ltc294x_i2c_probe(struct i2c_client *client,
+ 
+ 	np = of_node_get(client->dev.of_node);
+ 
+-	info->id = (enum ltc294x_id)of_device_get_match_data(&client->dev);
++	info->id = (enum ltc294x_id) (uintptr_t) of_device_get_match_data(
++							&client->dev);
+ 	info->supply_desc.name = np->name;
+ 
+ 	/* r_sense can be negative, when sense+ is connected to the battery
 
-Ich bin bereit, mit Ihnen =C3=BCber das Verh=C3=A4ltnis zwischen Investitio=
-n und
-Unternehmensgewinn zu verhandeln
-Basis f=C3=BCr die zuk=C3=BCnftige Investition Gewinne zu erzielen.
+base-commit: 411643e949f4e616f758e2c6079f333b0e704c49
+-- 
+2.28.0
 
-Wenn Sie bereit sind, dieses Projekt in meinem Namen zu bearbeiten,
-antworten Sie bitte dringend
-Damit ich Ihnen mehr Informationen =C3=BCber die Investmentfonds geben kann=
-.
-
-Ihre dringende Antwort wird gesch=C3=A4tzt. schreibe mir an diese email adr=
-esse (
-ayishagddafio@mail.ru ) zur weiteren Diskussion.
-
-Freundliche Gr=C3=BC=C3=9Fe
-Frau Aisha Al-Qaddafi
