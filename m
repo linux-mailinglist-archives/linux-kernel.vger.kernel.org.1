@@ -2,100 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C9F428A2C2
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B08E328A308
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390846AbgJJW7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:59:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57040 "EHLO mail.kernel.org"
+        id S1729230AbgJJW7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:59:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732646AbgJJTyp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:54:45 -0400
-Received: from localhost (p5486c996.dip0.t-ipconnect.de [84.134.201.150])
+        id S1731615AbgJJTyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 15:54:15 -0400
+Received: from gaia (unknown [95.149.105.49])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4FAFF221FC;
-        Sat, 10 Oct 2020 11:09:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602328185;
-        bh=uQHAiDa6UwVzkeCNcXIht55Jnp6noC/hcJNuIPqmHCI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0z0W8fNw4fEhhciSCnPL+grc2lVTijBpwyFLBjDvdKH1g6Hsfviwtw9WzcLRa8erQ
-         iz5uYhPXdUa49k98N/TQOkCKLoULKVqwnSWpSLfxlJLrkTynwPe1yrBx+nC9AYyhWL
-         80JkjDpLcPpXIy8QCbKnQl0xJqEPFoxyRL0Pj0lM=
-Date:   Sat, 10 Oct 2020 13:09:37 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     Oleksij Rempel <linux@rempel-privat.de>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        David Laight <David.Laight@aculab.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        by mail.kernel.org (Postfix) with ESMTPSA id 7E49B22227;
+        Sat, 10 Oct 2020 11:09:52 +0000 (UTC)
+Date:   Sat, 10 Oct 2020 12:09:50 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Khalid Aziz <khalid.aziz@oracle.com>
+Cc:     Jann Horn <jannh@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        sparclinux@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>, stable@vger.kernel.org
-Subject: Re: [PATCH v6 3/3] i2c: imx: Don't generate STOP condition if
- arbitration has been lost
-Message-ID: <20201010110937.GD4669@ninjato>
-References: <20201009110320.20832-1-ceggers@arri.de>
- <20201009110320.20832-4-ceggers@arri.de>
+        Christoph Hellwig <hch@infradead.org>,
+        Anthony Yznaga <anthony.yznaga@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 1/2] mm/mprotect: Call arch_validate_prot under mmap_lock
+ and with length
+Message-ID: <20201010110949.GA32545@gaia>
+References: <20201007073932.865218-1-jannh@google.com>
+ <d5332a7b-c300-6d28-18b9-4b7d4110ef86@oracle.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Km1U/tdNT/EmXiR1"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201009110320.20832-4-ceggers@arri.de>
+In-Reply-To: <d5332a7b-c300-6d28-18b9-4b7d4110ef86@oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Khalid,
 
---Km1U/tdNT/EmXiR1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Wed, Oct 07, 2020 at 02:14:09PM -0600, Khalid Aziz wrote:
+> On 10/7/20 1:39 AM, Jann Horn wrote:
+> > arch_validate_prot() is a hook that can validate whether a given set of
+> > protection flags is valid in an mprotect() operation. It is given the set
+> > of protection flags and the address being modified.
+> > 
+> > However, the address being modified can currently not actually be used in
+> > a meaningful way because:
+> > 
+> > 1. Only the address is given, but not the length, and the operation can
+> >    span multiple VMAs. Therefore, the callee can't actually tell which
+> >    virtual address range, or which VMAs, are being targeted.
+> > 2. The mmap_lock is not held, meaning that if the callee were to check
+> >    the VMA at @addr, that VMA would be unrelated to the one the
+> >    operation is performed on.
+> > 
+> > Currently, custom arch_validate_prot() handlers are defined by
+> > arm64, powerpc and sparc.
+> > arm64 and powerpc don't care about the address range, they just check the
+> > flags against CPU support masks.
+> > sparc's arch_validate_prot() attempts to look at the VMA, but doesn't take
+> > the mmap_lock.
+> > 
+> > Change the function signature to also take a length, and move the
+> > arch_validate_prot() call in mm/mprotect.c down into the locked region.
+[...]
+> As Chris pointed out, the call to arch_validate_prot() from do_mmap2()
+> is made without holding mmap_lock. Lock is not acquired until
+> vm_mmap_pgoff(). This variance is uncomfortable but I am more
+> uncomfortable forcing all implementations of validate_prot to require
+> mmap_lock be held when non-sparc implementations do not have such need
+> yet. Since do_mmap2() is in powerpc specific code, for now this patch
+> solves a current problem.
 
-On Fri, Oct 09, 2020 at 01:03:20PM +0200, Christian Eggers wrote:
-> If arbitration is lost, the master automatically changes to slave mode.
-> I2SR_IBB may or may not be reset by hardware. Raising a STOP condition
-> by resetting I2CR_MSTA has no effect and will not clear I2SR_IBB.
->=20
-> So calling i2c_imx_bus_busy() is not required and would busy-wait until
-> timeout.
->=20
-> Signed-off-by: Christian Eggers <ceggers@arri.de>
-> Tested (not extensively) on Vybrid VF500 (Toradex VF50):
-> Tested-by: Krzysztof Kozlowski <krzk@kernel.org>
-> Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> Cc: stable@vger.kernel.org # Requires trivial backporting, simple remove
->                            # the 3rd argument from the calls to
->                            # i2c_imx_bus_busy().
+I still think sparc should avoid walking the vmas in
+arch_validate_prot(). The core code already has the vmas, though not
+when calling arch_validate_prot(). That's one of the reasons I added
+arch_validate_flags() with the MTE patches. For sparc, this could be
+(untested, just copied the arch_validate_prot() code):
 
-Applied to for-next, thanks!
+static inline bool arch_validate_flags(unsigned long vm_flags)
+{
+	if (!(vm_flags & VM_SPARC_ADI))
+		return true;
 
+	if (!adi_capable())
+		return false;
 
---Km1U/tdNT/EmXiR1
-Content-Type: application/pgp-signature; name="signature.asc"
+	/* ADI can not be enabled on PFN mapped pages */
+	if (vma->vm_flags & (VM_PFNMAP | VM_MIXEDMAP))
+		return false;
 
------BEGIN PGP SIGNATURE-----
+	/*
+	 * Mergeable pages can become unmergeable if ADI is enabled on
+	 * them even if they have identical data on them. This can be
+	 * because ADI enabled pages with identical data may still not
+	 * have identical ADI tags on them. Disallow ADI on mergeable
+	 * pages.
+	 */
+	if (vma->vm_flags & VM_MERGEABLE)
+		return false;
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl+BlnEACgkQFA3kzBSg
-KbZqtw//b4hEFkfLFb1etf0/EeQm4uXhVbUaXFusSVs5rfpiSQo73CrMk4DoL2uv
-K3QyXs4hXYVx9n976MRbAHGF3Epo74HnVyij6RxIgdQYLzmYHdy5XnDRJCvFFZIm
-nQzSPaQ67CNOgxn4+r7tpFeX9Ap094ewIpms/OjJbv0JKDuBWuoBf52e+UAuqtpw
-FnfKMJtA6zsC/cbWW1O7kwJylxVdExChZ2x+yByeDV+p4y+M4xL6dUGkz13uVorX
-OTxnCfQgsgouhwrxC+cWvb7y37hbu4zGwmTjTsKHYSR/IhQ/NRCDq6x94nXauYT6
-CpaqqikT+aqeq6reO5wCd/ci3IiZOlAwAXBQdsaJav0N9dsvzxOetggM/uXAvkIH
-C+HDyMiZJib2pFGkdmmF4P+mdgmqCuXwWdvnOO2mqnk17VHva8js/FhJPgW84bA+
-O4bMbofkVJNeOLTnXvnikVwXNVz02C/XUiAPq4PEhMPWNGLgaoHuBngDwghxQR2K
-8GaGrQ968GAkimnTsMl8wIsimxUkFiwGTxHKm6p1cs4Ekmr14aeiVmXOmFzRKmLa
-aJQ/uy/U+mo+YMoBobROlomjAZP/GfplxgWtCIu79apQg6fZZ5ivnG8XEG/CD3zX
-KS9MkYPdTSd7fXqBMUkIoIUa+sllE87Yr6prvHiRaxrAPVf2tKg=
-=+4FV
------END PGP SIGNATURE-----
+	return true;
+}
 
---Km1U/tdNT/EmXiR1--
+> That leaves open the question of should
+> generic mmap call arch_validate_prot and return EINVAL for invalid
+> combination of protection bits, but that is better addressed in a
+> separate patch.
+
+The above would cover mmap() as well.
+
+The current sparc_validate_prot() relies on finding the vma for the
+corresponding address. However, if you call this early in the mmap()
+path, there's no such vma. It is only created later in mmap_region()
+which no longer has the original PROT_* flags (all converted to VM_*
+flags).
+
+Calling arch_validate_flags() on mmap() has a small side-effect on the
+user ABI: if the CPU is not adi_capable(), PROT_ADI is currently ignored
+on mmap() but rejected by sparc_validate_prot(). Powerpc already does
+this already and I think it should be fine for arm64 (it needs checking
+though as we have another flag, PROT_BTI, hopefully dynamic loaders
+don't pass this flag unconditionally).
+
+However, as I said above, it doesn't solve the mmap() PROT_ADI checking
+for sparc since there's no vma yet. I'd strongly recommend the
+arch_validate_flags() approach and reverting the "start" parameter added
+to arch_validate_prot() if you go for the flags route.
+
+Thanks.
+
+-- 
+Catalin
