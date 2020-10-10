@@ -2,109 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D55C28A029
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 13:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EBCB28A00F
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 12:42:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729376AbgJJLTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 07:19:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729310AbgJJKZ2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 06:25:28 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61F1EC0613E4;
-        Sat, 10 Oct 2020 03:00:11 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id g29so9419311pgl.2;
-        Sat, 10 Oct 2020 03:00:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=I9AHl5bp5WPLKmxh/1O3ggN7nM3m0zYYXn5K7tm55Tg=;
-        b=Fzygsyj9HGxWtMq/RnjXUGsalngSdHOTFRRv+WAKcop2NmXGD03TrHiPfZHCHfeSDj
-         Efo2CQmVRt1E+BCn/R7xqsYlcdwDw3T+mQMHkfGT0IT7CRQAlRU3XJgDF34dSdmX68w/
-         4x7yc0HAy/DoCMBsX1GUZHI+PjHFvqllqb08dR6dpWbH/bjA0dXsWlUMsA6ZLImftgI3
-         Q0cxevsy4k8VoUU73jYD0qOaJbwUu7MosYtF5W+8wZ3/FjLYF+0RmRrzq69YYPSjepIa
-         FGYGwVmkzWctVC9XNcpGzZepguKSNWe1WgEOqZ8GX9gBVWc+UfFJfVazbsBxcVyu4tdy
-         I0zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=I9AHl5bp5WPLKmxh/1O3ggN7nM3m0zYYXn5K7tm55Tg=;
-        b=XCZtqU3qYfUqY5XxboS0GAiIyI4OG5/VzoVPKJcKk54Y3EAXZZwfsvR5FHLIGNJmt/
-         yAX/EtX/5yIZNjPhksTGP9Bqrea7nI+QbnD8KnCC6OOH49DWBRonkkuRB7HkcvtEeUwG
-         Kta6xoeUsvTH0N1rRJf7gaIvbhS3/yCoEndz+DAN4d5defKanv2ouV7Xq6HRncGwogoV
-         cxYRTkDRIZjXrZMGmVSGZCPktcBNhfqY7SLQtbTxujmoMq1cafNpODgxRc6KNpG8B00A
-         usiT5P1LvrmDxZL6RjLtjJe7D0SWIPYbjm5T0JgdAp3yhKGD4O8MSJ502xJzzyVbXjok
-         DwmQ==
-X-Gm-Message-State: AOAM530QJ5oBNEv3zXxitjaBOAlibJ4Ug33Vg7NFWJfZRj59aWfPASIO
-        lEI3GogadQ5oYjYMOnUm4Y4=
-X-Google-Smtp-Source: ABdhPJy99sRp2/6FtliyUxTv0c9pvD+eJMJ2dVrAf4fS97haV/vaZ/6lN2mDWGt7h8WXIc2rlbswyg==
-X-Received: by 2002:aa7:9358:0:b029:152:b349:8af7 with SMTP id 24-20020aa793580000b0290152b3498af7mr15526536pfn.18.1602324010493;
-        Sat, 10 Oct 2020 03:00:10 -0700 (PDT)
-Received: from localhost ([2001:e42:102:1532:160:16:113:140])
-        by smtp.gmail.com with ESMTPSA id b4sm6961319pjz.51.2020.10.10.03.00.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Oct 2020 03:00:10 -0700 (PDT)
-From:   Coiby Xu <coiby.xu@gmail.com>
-X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
-Date:   Sat, 10 Oct 2020 18:00:02 +0800
-To:     Benjamin Poirier <benjamin.poirier@gmail.com>
-Cc:     devel@driverdev.osuosl.org, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-        Manish Chopra <manishc@marvell.com>,
-        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
-        <GR-Linux-NIC-Dev@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:QLOGIC QLGE 10Gb ETHERNET DRIVER" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 5/6] staging: qlge: clean up debugging code in the
- QL_ALL_DUMP ifdef land
-Message-ID: <20201010100002.6v54yiojnscnuxqv@Rk>
-References: <20201008115808.91850-1-coiby.xu@gmail.com>
- <20201008115808.91850-6-coiby.xu@gmail.com>
- <20201010080126.GC14495@f3>
+        id S1726436AbgJJKhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 06:37:01 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15264 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728877AbgJJKUG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 06:20:06 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 2F995A09A6775A450419;
+        Sat, 10 Oct 2020 18:01:24 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.134) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Sat, 10 Oct 2020
+ 18:01:16 +0800
+Subject: Re: [PATCH v6 01/17] dt-bindings: mfd: syscon: add some compatible
+ strings for Hisilicon
+To:     Lee Jones <lee.jones@linaro.org>
+CC:     devicetree <devicetree@vger.kernel.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Libin <huawei.libin@huawei.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+References: <20200930031712.2365-1-thunder.leizhen@huawei.com>
+ <20200930031712.2365-2-thunder.leizhen@huawei.com>
+ <20200930071110.GH6148@dell>
+ <3045a295-928a-eae6-c887-e34446a170e0@huawei.com>
+ <20201001065917.GJ6148@dell>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <e2fb074b-7a83-ac4c-9941-ca6ade12bd29@huawei.com>
+Date:   Sat, 10 Oct 2020 18:01:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201010080126.GC14495@f3>
+In-Reply-To: <20201001065917.GJ6148@dell>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.134]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 10, 2020 at 05:01:26PM +0900, Benjamin Poirier wrote:
->On 2020-10-08 19:58 +0800, Coiby Xu wrote:
->> The debugging code in the following ifdef land
->>  - QL_ALL_DUMP
->>  - QL_REG_DUMP
->>  - QL_DEV_DUMP
->>  - QL_CB_DUMP
->>  - QL_IB_DUMP
->>  - QL_OB_DUMP
->>
->> becomes unnecessary because,
->>  - Device status and general registers can be obtained by ethtool.
->>  - Coredump can be done via devlink health reporter.
->>  - Structure related to the hardware (struct ql_adapter) can be obtained
->>    by crash or drgn.
->>
->> Suggested-by: Benjamin Poirier <benjamin.poirier@gmail.com>
->> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
->> ---
->>  drivers/staging/qlge/qlge.h         |  82 ----
->>  drivers/staging/qlge/qlge_dbg.c     | 688 ----------------------------
->>  drivers/staging/qlge/qlge_ethtool.c |   2 -
->>  drivers/staging/qlge/qlge_main.c    |   7 +-
->
->Please also update drivers/staging/qlge/TODO accordingly. There is still
->a lot of debugging code IMO (the netif_printk statements - kernel
->tracing can be used instead of those) but this patch is a substantial
->improvement.
 
-Thank you for the reminding! To move qlge out of staging tree would be
-interesting exercise for me:)
 
---
-Best regards,
-Coiby
+On 2020/10/1 14:59, Lee Jones wrote:
+> On Wed, 30 Sep 2020, Leizhen (ThunderTown) wrote:
+> 
+>>
+>>
+>> On 2020/9/30 15:11, Lee Jones wrote:
+>>> On Wed, 30 Sep 2020, Zhen Lei wrote:
+>>>
+>>>> Add some compatible strings for Hisilicon controllers:
+>>>> hisilicon,hi6220-sramctrl  --> Hi6220 SRAM controller
+>>>> hisilicon,pcie-sas-subctrl --> HiP05/HiP06 PCIe-SAS subsystem controller
+>>>> hisilicon,peri-subctrl     --> HiP05/HiP06 PERI subsystem controller
+>>>> hisilicon,dsa-subctrl      --> HiP05/HiP06 DSA subsystem controller
+>>>>
+>>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>>>> ---
+>>>>  Documentation/devicetree/bindings/mfd/syscon.yaml | 5 ++++-
+>>>>  1 file changed, 4 insertions(+), 1 deletion(-)
+>>>
+>>> This was already applied by the time you re-sent it.
+>>>
+>>> Any reason for sending it again?
+>>
+>> Path 15 are modified. The Document patches except Patch 15 are applied,
+>> but the config/DTS patches are not applied(They are applied after I re-sent).
+> 
+> Could you please only send patches which have not been applied.
+
+No experience. I'll pay attention next time.
+
+> 
+
