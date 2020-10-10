@@ -2,87 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52BDF28A312
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:07:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD38E28A28F
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:58:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390636AbgJJW6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:58:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42012 "EHLO
+        id S2390647AbgJJW6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:58:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730938AbgJJTwD (ORCPT
+        with ESMTP id S1730875AbgJJTwD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 10 Oct 2020 15:52:03 -0400
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [IPv6:2001:67c:2050::465:202])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D96B1C05BD41
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 06:07:26 -0700 (PDT)
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:105:465:1:2:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4C7lbF33r8zQlQv;
-        Sat, 10 Oct 2020 15:07:21 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
-        content-disposition:content-type:content-type:mime-version
-        :message-id:subject:subject:from:from:date:date:received; s=
-        mail20150812; t=1602335238; bh=eCb88D5mCUgJI97N3SFHjW9CDr5Al9NBC
-        UdsiYBWemI=; b=p0EIgiGCXJxA3vNxWxjaVTn+IS2CL0TwYE0L9KzxLuI21SoOx
-        d3MxwowyWSCpGXQdqYdh1oSIe5aZLBqeZ+XLVHooExAsZFBqIA5n1pge2LWFOvFg
-        5dIH/eokjX+QuduIPWxJNHLzvtdzgBOJCwXXHdl/KECxRmiP4wIKR8bPlsvdH4ED
-        0OhTv1EIp3yclXANvdJn/k4HZQLszIuPDxXVTwa2q0aR0K5bbybaZGtDkXnG+oOI
-        CqxOmiJT0CgaoCZWJyqoPaGV4odUoR2invSfkyZM0StCT4MpsaCywcJkvTuPnL0u
-        awRev5IXVcLN3nletT2IJqJhYJraJq1wrGB2g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1602335239;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=RIcBrNJIPly+xj6tVxYjqisWN/wTEfbudXy2NuO1oGI=;
-        b=CAq3OtlFNUO+44EhEyParmTO964nBqR2NERmicfDry8pA8DL0IoDLmm0PkUwT4lKi4waMG
-        6V1HJ/mBReWePIB8m7sIhgoz1OqYB2Qzdylvlu0igYrWhDTq1Hnk9b6rfqnKDG5j6vIfRJ
-        1bsEEwIKr9iWrBycET2ZkIrZvFL1uPtC5Nz4cfd68+ILxSgVrlCucsY8VXv85ZrrdtPSV3
-        dM0p2HMEt0rUsGI+xvhdMWHXkF5Gv4r3OAyMagXcin2rEk3ILuW+I/K56Ag4iuS+cUXqFX
-        2ouMmi/FjApH1v9Vldd7LQp0sFH0Cq1g7h2qZ5iUUthOmLCA/HQHmD5ORzCxIw==
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp2.mailbox.org ([80.241.60.241])
-        by spamfilter05.heinlein-hosting.de (spamfilter05.heinlein-hosting.de [80.241.56.123]) (amavisd-new, port 10030)
-        with ESMTP id pGSX-yWu0LxW; Sat, 10 Oct 2020 15:07:18 +0200 (CEST)
-Date:   Sat, 10 Oct 2020 15:07:16 +0200
-From:   Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH] watchdog: via_wdt: add VX900 support
-Message-ID: <20201010130716.GA84929@monster.powergraphx.local>
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFAB7C05BD43;
+        Sat, 10 Oct 2020 06:08:22 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id u21so17025623eja.2;
+        Sat, 10 Oct 2020 06:08:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IRzgnkzL+y6KxGnUDl6KgaiE0a2YhOVgP91PfZHg4Jo=;
+        b=byvw0Fy4HVNaP4n7smhkuDqjTWMOiaFJVMkeRiZ3ec2F2chtyzQnuMP0wAlP3i+Pn2
+         phJpF74wVI6sccENkGwj9rueqnRXQ/jl4aTHLB+8wqpm/+L5yVgbAOa3pQSsp+cK1pG1
+         ftZm36sv696d5/c/iL7qbsxcglHZpjm4AilrMRrZyo2QEDOjAtAJQ0tUnQKevwGXOPr+
+         7n/19bs7ClEXbaWInlMsQfTLf5Dbur8Ls0TqTXNQ5KYqijuvicyoqKCr2d4FsV0nJDUt
+         W7cJpFY6AQ0TfOMZ7CEX7witi82v0jv7tJE82bwVSWTbTQbyiLVnMhGgqTc2w0ltbBF6
+         jZrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IRzgnkzL+y6KxGnUDl6KgaiE0a2YhOVgP91PfZHg4Jo=;
+        b=QSWma9SKvUGCq19lpKIQigZDj11wJfuw52/KtFbvpijCjMH65kUe1iWktzEwIyjUr5
+         Oe3cHPSPsVCmrnuPoH5kQEgHDcM7ALSM0l+a7epnqAxTuCIwyQA8hCJr92WjLdDGyJ6J
+         0EtnJ/LQkjrzHutwhYOICKOvEcuhh9R5k8fMzMs3DE98gVGDrj7WIP5j+pqT0OoLUsth
+         KL8WBeDIpylQwgLq+QxnFLsHeNEVHodl+HZgguHmucD+lIAWTH8mSxmZS2wbKZKFEdlL
+         /6zwekcICbqA8wR5RN4DBb/WO8lotDXi2WVFjI4L3BxJojS1lso0kVpKOWBYSWRTK50u
+         nK8g==
+X-Gm-Message-State: AOAM5313ckUZ1HRFURoq8R/blOledTBdOVxM/5o1w8rMhs1SuIm38m34
+        2cB7FB4OpGyVpidobAaOUwmB++V4LILfsw==
+X-Google-Smtp-Source: ABdhPJxzUGEzr8/XiZNnjXysIPZx6Ugs44w2gLiyH/uHXdxmPOdrI+o1ulKAbcwE/CaIuoc86J7qfw==
+X-Received: by 2002:a17:906:39ce:: with SMTP id i14mr20143131eje.170.1602335301421;
+        Sat, 10 Oct 2020 06:08:21 -0700 (PDT)
+Received: from ?IPv6:2003:ea:8f00:6a00:14e2:2617:c2db:d1c8? (p200300ea8f006a0014e22617c2dbd1c8.dip0.t-ipconnect.de. [2003:ea:8f00:6a00:14e2:2617:c2db:d1c8])
+        by smtp.googlemail.com with ESMTPSA id gv10sm7888810ejb.46.2020.10.10.06.08.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 10 Oct 2020 06:08:20 -0700 (PDT)
+Subject: Re: [PATCH] net: stmmac: Don't call _irqoff() with hardirqs enabled
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     John Keeping <john@metanate.com>, netdev@vger.kernel.org,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Eric Dumazet <edumazet@google.com>
+References: <20201008162749.860521-1-john@metanate.com>
+ <8036d473-68bd-7ee7-e2e9-677ff4060bd3@gmail.com>
+ <20201009085805.65f9877a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <725ba7ca-0818-074b-c380-15abaa5d037b@gmail.com>
+Message-ID: <070b2b87-f38c-088d-4aaf-12045dbd92f7@gmail.com>
+Date:   Sat, 10 Oct 2020 15:08:15 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -4.51 / 15.00 / 15.00
-X-Rspamd-Queue-Id: 7CABF1707
-X-Rspamd-UID: 53ea1a
+In-Reply-To: <725ba7ca-0818-074b-c380-15abaa5d037b@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds watchdog support for the VIA VX900 chip-set, which is fully
-backwards compatible to the older VIA chip-set watchdogs.
+On 09.10.2020 18:06, Heiner Kallweit wrote:
+> On 09.10.2020 17:58, Jakub Kicinski wrote:
+>> On Fri, 9 Oct 2020 16:54:06 +0200 Heiner Kallweit wrote:
+>>> I'm thinking about a __napi_schedule version that disables hard irq's
+>>> conditionally, based on variable force_irqthreads, exported by the irq
+>>> subsystem. This would allow to behave correctly with threadirqs set,
+>>> whilst not loosing the _irqoff benefit with threadirqs unset.
+>>> Let me come up with a proposal.
+>>
+>> I think you'd need to make napi_schedule_irqoff() behave like that,
+>> right?  Are there any uses of napi_schedule_irqoff() that are disabling
+>> irqs and not just running from an irq handler?
+>>
+> Right, the best approach depends on the answer to the latter question.
+> I didn't check this yet, therefore I described the least intrusive approach.
+> 
 
-Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
----
- drivers/watchdog/via_wdt.c | 1 +
- 1 file changed, 1 insertion(+)
+With some help from coccinelle I identified the following functions that
+call napi_schedule_irqoff() or __napi_schedule_irqoff() and do not run
+from an irq handler (at least not at the first glance).
 
-diff --git a/drivers/watchdog/via_wdt.c b/drivers/watchdog/via_wdt.c
-index eeb39f96e72e..b452ab253ac7 100644
---- a/drivers/watchdog/via_wdt.c
-+++ b/drivers/watchdog/via_wdt.c
-@@ -244,6 +244,7 @@ static const struct pci_device_id wdt_pci_table[] = {
- 	{ PCI_DEVICE(PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_CX700) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_VX800) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_VX855) },
-+	{ PCI_DEVICE(PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_VX900) },
- 	{ 0 }
- };
- 
--- 
-2.28.0
-
+dpaa2_caam_fqdan_cb
+qede_simd_fp_handler
+mlx4_en_rx_irq
+mlx4_en_tx_irq
+qeth_qdio_poll
+netvsc_channel_cb
+napi_watchdog
