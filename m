@@ -2,90 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE57A289EC3
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 08:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B77A289EC1
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 08:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728479AbgJJG5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 02:57:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728291AbgJJGzt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 02:55:49 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7B8BC0613CF;
-        Fri,  9 Oct 2020 23:55:48 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id u21so16263961eja.2;
-        Fri, 09 Oct 2020 23:55:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=H+UaYBmG6QYTuuQvyVH4FZK0dvrXTjPLq4147N3N0R0=;
-        b=hM92vKB2P3oKkzy0rP8iaW5jGAI+dLc4MXcm7wk7/R5PJAXGRmNpEwwypesQTCuyoG
-         6waZ3CdomQtPoYFIMretQdXNLJzLyLcxKtRs+aZ0Xb89bxQOtM8TrPC2nwqIszj5MnqT
-         ZbALvZfRI0hfY7Qnv3GbNs1ei+TncQWnuL+SvAi1CvT7LKrH6tlJVaUBVCHHh4QsPtJz
-         nXrVojE11swRWj3mWbN8kXbZ12hed+5gijO2figaY2iNBF0Jtd4MM705ixQkO212+D2K
-         OHkGBYAm5KV8dOOCG+Tb3VUaXCf5qietX5HJHG3nkRI7wXroCrBFniMIbLzHeBS4csVE
-         eONA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=H+UaYBmG6QYTuuQvyVH4FZK0dvrXTjPLq4147N3N0R0=;
-        b=nfVyNFN9VHW+1KCgR0CdQK6FS/PYTeaqhksAY6//VfD7ZarMcDb1KAr4Lz9xo6FppE
-         v0BdMT2Sn8RgcUwZUxG/7nTh0gGXyZ4PKf04xoctO6dIsksXBawReGKnsChp0MSZogag
-         rY4eDCk9jLlrF/RBxcils46OavPuw+ZM70D6BFuFkbLfbQo6YncU/ZaNP86KHrotQNFS
-         FLxTjCG9RFDUEMj6GxiLRy8ytIN8Ym5WlPHlzEWGgZfKxbSOIrCgTkxF/jWz5SacddiC
-         lyULZWBbEAqLnG58kNrv4s115PXYUJqqkjNaK/5M9ScEknLO0eo/icyE4JJibG3kI6GJ
-         brug==
-X-Gm-Message-State: AOAM531jrd4pey+yLUM6CWVPbL/tdseE73D6Rr+opZ0wvGBMAJ7xkRjx
-        bjBF0zEfs9f9JYpv/jIlSPw=
-X-Google-Smtp-Source: ABdhPJwwyrV4a4dzIqmCetFfyccLCe+JBc6nYT4k/y4gl5LS33u093R5QSHGsuTyRO+3izvxlC5HqA==
-X-Received: by 2002:a17:906:b004:: with SMTP id v4mr18958102ejy.156.1602312947303;
-        Fri, 09 Oct 2020 23:55:47 -0700 (PDT)
-Received: from localhost ([91.92.14.102])
-        by smtp.gmail.com with ESMTPSA id g9sm7540825ejz.23.2020.10.09.23.55.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Oct 2020 23:55:46 -0700 (PDT)
-From:   Iskren Chernev <iskren.chernev@gmail.com>
-To:     Sebastian Reichel <sre@kernel.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Iskren Chernev <iskren.chernev@gmail.com>
-Subject: [PATCH] power: supply: ltc2941: Fix ptr to enum cast
-Date:   Sat, 10 Oct 2020 09:55:26 +0300
-Message-Id: <20201010065526.2466583-1-iskren.chernev@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        id S1728334AbgJJG4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 02:56:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47212 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728109AbgJJGzb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 02:55:31 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9FA2A207CD;
+        Sat, 10 Oct 2020 06:55:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602312930;
+        bh=dUv7VgWxKZNcHWA7B66+/MTaE7fFnLkKpOgX0imlPKg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=duDr0cstUgfyaR2b7RPNciasrgIcyJbBrP+w/HC+tR9JMlajRVOxvnJysNERodBY+
+         oSG4kx/XUcy6MHEqprMk2Bi3YtW31m1iGvWBBqmshPCWYaDwnhKkvZ/x+0aTECw0Ap
+         5Pfuz8pVAXboQ3N6asm9ipJmVgmcl5opnHBoG9vU=
+Date:   Sat, 10 Oct 2020 08:55:27 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     NazimeHandeHarputluogluhandeharput@gmail.com
+Cc:     Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Hande Harputluoglu <handeharput@gmail.com>,
+        Nazime Hande Harputluoglu <handeharputlu@google.com>
+Subject: Re: [PATCH] usbip, kcov: collect coverage from usbip client
+Message-ID: <20201010065527.GA130900@kroah.com>
+References: <dfb5eee2b1bdff14508100ee7c427596de384cd3.1602237653.git.handeharputlu@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dfb5eee2b1bdff14508100ee7c427596de384cd3.1602237653.git.handeharputlu@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-clang complains about casting pointers to smaller enum types.
+On Fri, Oct 09, 2020 at 03:22:55PM +0000, NazimeHandeHarputluogluhandeharput@gmail.com wrote:
+> From: Nazime Hande Harputluoglu <handeharputlu@google.com>
+> 
+> Add kcov_remote_start()/kcov_remote_stop() annotations to the
+> vhci_rx_loop() function, which is responsible for parsing USB/IP packets
+> in USB/IP client.
+> 
+> Since vhci_rx_loop() threads are spawned per usbip device instance, the
+> common kcov handle is used for kcov_remote_start()/stop() annotations
+> (see Documentation/dev-tools/kcov.rst for details). As the result kcov
+> can now be used to collect coverage from vhci_rx_loop() threads.
+> 
+> Signed-off-by: Nazime Hande Harputluoglu <handeharputlu@google.com>
+> ---
+>  drivers/usb/usbip/usbip_common.h | 2 ++
+>  drivers/usb/usbip/vhci_rx.c      | 6 ++++--
+>  drivers/usb/usbip/vhci_sysfs.c   | 2 ++
+>  3 files changed, 8 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/usb/usbip/usbip_common.h b/drivers/usb/usbip/usbip_common.h
+> index 8be857a4fa13..cbbf2aa8ac73 100644
+> --- a/drivers/usb/usbip/usbip_common.h
+> +++ b/drivers/usb/usbip/usbip_common.h
+> @@ -277,6 +277,8 @@ struct usbip_device {
+>  		void (*reset)(struct usbip_device *);
+>  		void (*unusable)(struct usbip_device *);
+>  	} eh_ops;
+> +
+> +        u64 kcov_handle;
+>  };
+>  
+>  #define kthread_get_run(threadfn, data, namefmt, ...)			   \
+> diff --git a/drivers/usb/usbip/vhci_rx.c b/drivers/usb/usbip/vhci_rx.c
+> index 266024cbb64f..b2eb3e8c04b9 100644
+> --- a/drivers/usb/usbip/vhci_rx.c
+> +++ b/drivers/usb/usbip/vhci_rx.c
+> @@ -260,8 +260,10 @@ int vhci_rx_loop(void *data)
+>  	while (!kthread_should_stop()) {
+>  		if (usbip_event_happened(ud))
+>  			break;
+> -
+> -		vhci_rx_pdu(ud);
+> +                
+> +                kcov_remote_start_common(ud->kcov_handle);
+> +                vhci_rx_pdu(ud);
+> +                kcov_remote_stop();
+>  	}
+>  
+>  	return 0;
+> diff --git a/drivers/usb/usbip/vhci_sysfs.c b/drivers/usb/usbip/vhci_sysfs.c
+> index be37aec250c2..4dfe3809ebbb 100644
+> --- a/drivers/usb/usbip/vhci_sysfs.c
+> +++ b/drivers/usb/usbip/vhci_sysfs.c
+> @@ -9,6 +9,7 @@
+>  #include <linux/net.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/slab.h>
+> +#include <linux/kcov.h>
+>  
+>  /* Hardening for Spectre-v1 */
+>  #include <linux/nospec.h>
+> @@ -383,6 +384,7 @@ static ssize_t attach_store(struct device *dev, struct device_attribute *attr,
+>  	vdev->ud.sockfd     = sockfd;
+>  	vdev->ud.tcp_socket = socket;
+>  	vdev->ud.status     = VDEV_ST_NOTASSIGNED;
+> +        vdev->ud.kcov_handle = kcov_common_handle();
+>  
+>  	spin_unlock(&vdev->ud.lock);
+>  	spin_unlock_irqrestore(&vhci->lock, flags);
+> -- 
+> 2.28.0.1011.ga647a8990f-goog
+> 
 
-Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
----
- drivers/power/supply/ltc2941-battery-gauge.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Please run checkpatch.pl on your patches before sending them out, so you
+don't get grumpy maintainers telling you to run checkpatch.pl on your
+patch...
 
-diff --git a/drivers/power/supply/ltc2941-battery-gauge.c b/drivers/power/supply/ltc2941-battery-gauge.c
-index 30a9014b2f95e..10cd617516ec2 100644
---- a/drivers/power/supply/ltc2941-battery-gauge.c
-+++ b/drivers/power/supply/ltc2941-battery-gauge.c
-@@ -473,7 +473,8 @@ static int ltc294x_i2c_probe(struct i2c_client *client,
- 
- 	np = of_node_get(client->dev.of_node);
- 
--	info->id = (enum ltc294x_id)of_device_get_match_data(&client->dev);
-+	info->id = (enum ltc294x_id) (uintptr_t) of_device_get_match_data(
-+							&client->dev);
- 	info->supply_desc.name = np->name;
- 
- 	/* r_sense can be negative, when sense+ is connected to the battery
+thanks,
 
-base-commit: 411643e949f4e616f758e2c6079f333b0e704c49
--- 
-2.28.0
-
+greg k-h
