@@ -2,89 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DFA0289E82
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 07:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F663289E8F
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 07:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730174AbgJJFSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 01:18:34 -0400
-Received: from sp3.canonet.ne.jp ([210.134.165.90]:49983 "EHLO
-        sp3.canonet.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726913AbgJJFRy (ORCPT
+        id S1730231AbgJJFfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 01:35:07 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:18434 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730349AbgJJFcN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 01:17:54 -0400
-Received: from cmcheck3.canonet.ne.jp (unknown [172.21.160.143])
-        by sp3.canonet.ne.jp (Postfix) with ESMTP id AD4F91E0318;
-        Sat, 10 Oct 2020 14:17:30 +0900 (JST)
-Received: from echeck3.canonet.ne.jp ([172.21.160.33])
-        by cmcheck3 with ESMTP
-        id R7G6kgO04xlcsR7G6kVyW7; Sat, 10 Oct 2020 14:17:30 +0900
-X-CNT-CMCheck-Reason: "undefined", "v=2.2 cv=ff7d8wYF c=1 sm=1 tr=0
- cx=t_eml:g_jp p=S-GZ_DMjYrAA:10 a=xyT3al3xnjtl1zci1KSAEw==:117
- a=xbyLVnzfAZw6kvha8NeemA==:17 a=PlGk70OYzacA:10 a=kj9zAlcOel0A:10
- a=afefHYAZSVUA:10 a=jnh2Xw_HqDrOUXRx6aMA:9 a=id4sslXUZ5pHY6gm:21
- a=Vbc_3M2ReCI5aM_o:21 a=CjuIK1q_8ugA:10 a=XbIs2LVfIpdT2DxFNmcI:22"
-X-CNT-CMCheck-Score: 96.00
-Received: from echeck3.canonet.ne.jp (localhost [127.0.0.1])
-        by esets.canonet.ne.jp (Postfix) with ESMTP id 71A481C021E;
-        Sat, 10 Oct 2020 14:17:30 +0900 (JST)
-X-Virus-Scanner: This message was checked by ESET Mail Security
-        for Linux/BSD. For more information on ESET Mail Security,
-        please, visit our website: http://www.eset.com/.
-Received: from smtp3.canonet.ne.jp (smtp3.canonet.ne.jp [172.21.160.23])
-        by echeck3.canonet.ne.jp (Postfix) with ESMTP id 61FF01C0255;
-        Sat, 10 Oct 2020 14:17:30 +0900 (JST)
-Received: from chikousha.co.jp (webmail.canonet.ne.jp [210.134.164.250])
-        by smtp3.canonet.ne.jp (Postfix) with ESMTPA id 5DC6215F962;
-        Sat, 10 Oct 2020 14:17:29 +0900 (JST)
-MIME-Version: 1.0
-Message-ID: <20201010051729.00004794.0507@chikousha.co.jp>
-Date:   Sat, 10 Oct 2020 14:17:29 +0900
-From:   "Dawuda Usman" <info@chikousha.co.jp>
-To:     <dawudausm@gmail.com>
-Reply-To: <dawuda.usman1@gmail.com>
-Subject: Hello....
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-ORGANIZATION: Dawuda Usman
-X-MAILER: Active! mail
-X-EsetResult: clean, %VIRUSNAME%
-X-ESET-AS: R=SPAM;S=100;OP=CALC;TIME=1602307050;VERSION=7863;MC=2329509065;TRN=15;CRV=0;IPC=210.134.164.250;SP=0;SIPS=1;PI=5;F=0
-X-I-ESET-AS: RN=442,624:0;RNP=dawudausman1@gmail.com
-X-ESET-Antispam: SPAM
+        Sat, 10 Oct 2020 01:32:13 -0400
+Received: from ironmsg07-lv.qualcomm.com (HELO ironmsg07-lv.qulacomm.com) ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 09 Oct 2020 22:32:08 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg07-lv.qulacomm.com with ESMTP/TLS/AES256-SHA; 09 Oct 2020 22:32:06 -0700
+X-QCInternal: smtphost
+Received: from mdalam-linux.qualcomm.com ([10.201.2.71])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 10 Oct 2020 11:01:44 +0530
+Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
+        id B9926217BA; Sat, 10 Oct 2020 11:01:42 +0530 (IST)
+From:   Md Sadre Alam <mdalam@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     mdalam@codeaurora.org, sricharan@codeaurora.org
+Subject: [PATCH 0/5] mtd: rawnand: qcom: Add support for QSPI nand
+Date:   Sat, 10 Oct 2020 11:01:37 +0530
+Message-Id: <1602307902-16761-1-git-send-email-mdalam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+QPIC 2.0 supports Serial NAND support in addition to all features and
+commands in QPIC 1.0 for parallel NAND. Parallel and Serial NAND cannot
+operate simultaneously. QSPI nand devices will connect to QPIC IO_MACRO
+block of QPIC controller. There is a separate IO_MACRO clock for IO_MACRO
+block. Default IO_MACRO block divide the input clock by 4. so if IO_MACRO
+input clock is 320MHz then on bus it will be 80MHz, so QSPI nand device
+should also support this frequency.
 
-I am Mr. Dawuda Usman working with the department of Audit and 
-accounting manager here in the Bank,
+QPIC provides 4 data pins to QSPI nand. In standard SPI mode (x1 mode) data
+transfer will occur on only 2 pins one pin for Serial data in and one for
+serial data out. In QUAD SPI mode (x4 mode) data transfer will occur at all
+the four data lines. QPIC controller supports command for x1 mode and x4 mode.
 
-There is this fund that was kept  in my custody years ago,please I need 
-your assistance for the transferring of this fund to your bank account 
-for both of us benefit for life time investment and the amount is (US$4.
-5M DOLLARS).
+Md Sadre Alam (5):
+  dt-bindings: qcom_nandc: IPQ5018 QPIC NAND documentation
+  mtd: rawnand: qcom: Add initial support for qspi nand
+  mtd: rawnand: qcom: Read QPIC version
+  mtd: rawnand: qcom: Enable support for erase,read & write for serial
+    nand.
+  mtd: rawnand: qcom: Add support for serial training.
 
-I have every inquiry details to make the bank believe you and release 
-the fund in within 5 banking working days with your full co-operation 
-with me after success.
+ .../devicetree/bindings/mtd/qcom_nandc.txt         |   3 +
+ drivers/mtd/nand/raw/nand_ids.c                    |  13 +
+ drivers/mtd/nand/raw/qcom_nandc.c                  | 502 ++++++++++++++++++++-
+ 3 files changed, 494 insertions(+), 24 deletions(-)
 
-Note/ 50% for you why 50% for me after success of the transfer to your 
-bank account.
-
-Below information is what I need from you so will can be reaching each 
-other .
-
-1)Private telephone number...
-2)Age...
-3)Nationality...
-4)Occupation ...
-5)Full name ...
-
-Thanks.
-
-Mr. Dawuda Usman
-
-
+-- 
+2.7.4
 
