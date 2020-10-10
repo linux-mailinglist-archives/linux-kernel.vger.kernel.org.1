@@ -2,117 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EAB828A059
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 14:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C95C28A287
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729967AbgJJMRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 08:17:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37134 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726817AbgJJKRc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 06:17:32 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 36CFA208C7;
-        Sat, 10 Oct 2020 09:34:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602322475;
-        bh=8G56kfNsKN2o+qwV8vuB+SUXCDERhQbqnXbs1jkx5yc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YyfjRMFzoI8iBbEwupEs+h0rwJrqBDmuYxRIp40itCm9pFPhRx/M5C45rvN/IkzBl
-         gPnOtJ++HEF4aCOQWyJf05y6ZPBk/dToQPjI4TNLuiT9VMOfmk843soS2P2BfFRnXs
-         EleVu+VBEezmhC+6F+gREWOObJXDCuxhPmEkRxqk=
-Date:   Sat, 10 Oct 2020 11:35:19 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Ian Abbott <abbotti@mev.co.uk>,
-        syzbot+009f546aa1370056b1c2@syzkaller.appspotmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH v3] staging: comedi: check validity of wMaxPacketSize of
- usb endpoints found
-Message-ID: <20201010093519.GA981987@kroah.com>
-References: <20201010082933.5417-1-anant.thazhemadam@gmail.com>
+        id S2390545AbgJJW5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:57:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730460AbgJJTvA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 15:51:00 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8507BC0613DE
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 02:37:38 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id e7so2484pfn.12
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 02:37:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uY6vICbjDw3/Nue8pip9A8mVoEd17wpGPbuSUfwpgAU=;
+        b=ZExhGn5E7TXEAkrOuICsp54Kn74Ct9cwsfd90HFmv+XN2tQ942iV3ILHBfOgo08WlT
+         ZoWJnvomag6+gHkPcheBZq5Y9Ejh62rC8TuDG5Dj/iD0wEvxoNuVNyNlnAyEb6JK23z6
+         CKXSW6YBgYNkxycXtKeQPWhTn7zYA1XMV7Hi+yme7WdIY+mEFE5G4CorQZcGVsNpWNEg
+         UJr7cgxW7hHfgrH87WpxmuWPhJs45PfR4AJsLlWLG8bHsrpEIwb6VtJr+xUTeZg3n2LA
+         7MScPliDIpMr8goqp62304++kV062l+BRt469hSNLwqb4Q1mXDZxOVJJ2hz76ebmsgU4
+         akqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uY6vICbjDw3/Nue8pip9A8mVoEd17wpGPbuSUfwpgAU=;
+        b=j28denXNLJ4aCNW1W88GygkI38wJyEukrsV9sz5qtukVhmKQJp4GHl7HZT+mb77B6Y
+         ZiyLNQ53ygkFVJA1aSt7J0Sch0B/WzNRGSQuqgraoYNBYj2Ld+4vOXy5QIm+9oJBKolI
+         x+pB3Rb6IaM1HZU0s3L9uIbJtIlVYjpOfx9TRvB6vf2o6c5cN/JTPbCHCgMSnzvWf6dE
+         L9cu+NubhkYVRXc3mfdY80tA/AWkJ3v9pfYr7MyjFGWwgNPsLxtY4gTv4oCPFHVTZglX
+         yS+WsgzNHdjUwMV2JX2p84ffqR0lTKDwurX97BRUzApC14Vxiwuuf3PtJHoEZSrlm4Yt
+         bkRg==
+X-Gm-Message-State: AOAM5304AQmLC1a+AUmpWmtADptBfKKrv7rDmizAbbbU+2E5d7JpQIue
+        H87FJqBq68FkccRS2iPzBF1HIGmm/dHWz3ED
+X-Google-Smtp-Source: ABdhPJyytESe/AHRO3S9jwTuCwjstQ6JjoCgGo3kxsZX9PXWwayWGDrEuzzbG6UuArzf20PBChrRiA==
+X-Received: by 2002:a62:1851:0:b029:154:8ed7:bf5d with SMTP id 78-20020a6218510000b02901548ed7bf5dmr15732802pfy.66.1602322657935;
+        Sat, 10 Oct 2020 02:37:37 -0700 (PDT)
+Received: from Zs-MacBook-Pro.local.net ([103.136.220.68])
+        by smtp.gmail.com with ESMTPSA id d128sm13793124pfd.94.2020.10.10.02.37.35
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 10 Oct 2020 02:37:37 -0700 (PDT)
+From:   zangchunxin@bytedance.com
+To:     corbet@lwn.net
+Cc:     andre.azevedo@gmail.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chunxin Zang <zangchunxin@bytedance.com>
+Subject: [PATCH] Documentation/scheduler: Modify the description of sched-stats column 9
+Date:   Sat, 10 Oct 2020 17:37:30 +0800
+Message-Id: <20201010093730.28567-1-zangchunxin@bytedance.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201010082933.5417-1-anant.thazhemadam@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 10, 2020 at 01:59:32PM +0530, Anant Thazhemadam wrote:
-> While finding usb endpoints in vmk80xx_find_usb_endpoints(), check if 
-> wMaxPacketSize = 0 for the endpoints found.
-> 
-> Some devices have isochronous endpoints that have wMaxPacketSize = 0
-> (as required by the USB-2 spec).
-> However, since this doesn't apply here, wMaxPacketSize = 0 can be
-> considered to be invalid.
-> 
-> Reported-by: syzbot+009f546aa1370056b1c2@syzkaller.appspotmail.com
-> Tested-by: syzbot+009f546aa1370056b1c2@syzkaller.appspotmail.com
-> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-> ---
-> Changes in v3:
-> 	* Correctly list version information
-> 
-> Changes in v2:
-> 	* Fix coding style issue
-> 
-> The error (as detected by syzbot) is generated in 
-> vmk80xx_write_packet() (which is called in vmk80xx_reset_device()) when
-> it tries to assign devpriv->usb_tx_buf[0] = cmd.
-> 
-> This NULL pointer dereference issue arises because
-> size = usb_endpoint_maxp(devpriv->ep_tx) = 0.
-> 
-> This can be traced back to vmk80xx_find_usb_endpoints(), where the usb 
-> endpoints are found, and assigned accordingly.
-> (For some more insight, in vmk80xx_find_usb_endpoints(), 
-> if one of intf->cur_altsetting->iface_desc->endpoints' desc value = 0, 
-> and consequently this endpoint is assigned to devpriv->ep_tx,
-> this issue gets triggered.)
-> 
-> Checking if the wMaxPacketSize of an endpoint is invalid and returning
-> an error value accordingly, seems to fix the error.
-> 
-> We could also alternatively perform this checking (if the size is 0 or not) 
-> in vmk80xx_reset_device() itself, but it only seemed like covering up the issue
-> at that place, rather than fixing it, so I wasn't sure that was any better.
-> 
-> However, if I'm not wrong, this might end up causing the probe to fail, and I'm 
-> not sure if that's the right thing to do in cases like this, and if it isn't I'd
-> like some input on what exactly is the required course of action in cases like this.
-> 
->  drivers/staging/comedi/drivers/vmk80xx.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/staging/comedi/drivers/vmk80xx.c b/drivers/staging/comedi/drivers/vmk80xx.c
-> index 65dc6c51037e..cb0a965d3c37 100644
-> --- a/drivers/staging/comedi/drivers/vmk80xx.c
-> +++ b/drivers/staging/comedi/drivers/vmk80xx.c
-> @@ -667,6 +667,9 @@ static int vmk80xx_find_usb_endpoints(struct comedi_device *dev)
->  	if (!devpriv->ep_rx || !devpriv->ep_tx)
->  		return -ENODEV;
->  
-> +	if (!usb_endpoint_maxp(devpriv->ep_rx) || !usb_endpoint_maxp(devpriv->ep_tx))
-> +		return -EINVAL;
-> +
->  	return 0;
->  }
+From: Chunxin Zang <zangchunxin@bytedance.com>
 
-Why not just rewrite vmk80xx_find_usb_endpoints() to use the
-usb_find_common_endpoints() or other helper functions like
-usb_find_bulk_in_endpoint() or others, so that this type of thing is
-checked there?
+The column 9 get datas from sched_info->pcount. It's update
+when context_switch only. So it meaning 'times' not 'timeslices'.
 
-Ah, wait, no, the packet size is not checked there, sorry, maybe that
-will not help out here.  Is a bulk urb allowed to have a 0 size?  If
-not, maybe we should just forbid that in the core?  Time to go read the
-USB spec...
+Signed-off-by: Chunxin Zang <zangchunxin@bytedance.com>
+---
+ Documentation/scheduler/sched-stats.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-thanks,
+diff --git a/Documentation/scheduler/sched-stats.rst b/Documentation/scheduler/sched-stats.rst
+index dd9b99a025f7..5fd17a85e7fd 100644
+--- a/Documentation/scheduler/sched-stats.rst
++++ b/Documentation/scheduler/sched-stats.rst
+@@ -59,7 +59,7 @@ Next three are statistics describing scheduling latency:
+      7) sum of all time spent running by tasks on this processor (in jiffies)
+      8) sum of all time spent waiting to run by tasks on this processor (in
+         jiffies)
+-     9) # of timeslices run on this cpu
++     9) # of times task hits this cpu
+ 
+ 
+ Domain statistics
+-- 
+2.11.0
 
-greg k-h
