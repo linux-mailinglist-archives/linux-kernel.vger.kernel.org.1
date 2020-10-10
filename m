@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68D0928A001
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 12:23:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5772928A067
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 14:39:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729293AbgJJKW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 06:22:58 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:54206 "EHLO huawei.com"
+        id S1729207AbgJJM1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 08:27:00 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15258 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727172AbgJJKQa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 06:16:30 -0400
+        id S1726923AbgJJKQM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 06:16:12 -0400
 Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id B6F2CEA0387CB9B93677;
+        by Forcepoint Email with ESMTP id A0795FA2F258C4B7956E;
         Sat, 10 Oct 2020 17:57:46 +0800 (CST)
 Received: from thunder-town.china.huawei.com (10.174.177.134) by
  DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 10 Oct 2020 17:57:38 +0800
+ 14.3.487.0; Sat, 10 Oct 2020 17:57:39 +0800
 From:   Zhen Lei <thunder.leizhen@huawei.com>
 To:     Wei Xu <xuwei5@hisilicon.com>, Rob Herring <robh+dt@kernel.org>,
         devicetree <devicetree@vger.kernel.org>,
         linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
 CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 09/10] dt-bindings: arm: hisilicon: add missing properties into sysctrl.yaml
-Date:   Sat, 10 Oct 2020 17:57:08 +0800
-Message-ID: <20201010095709.1340-10-thunder.leizhen@huawei.com>
+Subject: [PATCH 10/10] dt-bindings: arm: hisilicon: add missing properties into cpuctrl.yaml
+Date:   Sat, 10 Oct 2020 17:57:09 +0800
+Message-ID: <20201010095709.1340-11-thunder.leizhen@huawei.com>
 X-Mailer: git-send-email 2.26.0.windows.1
 In-Reply-To: <20201010095709.1340-1-thunder.leizhen@huawei.com>
 References: <20201010095709.1340-1-thunder.leizhen@huawei.com>
@@ -39,27 +39,28 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Add properties: #address-cells, #size-cells and ranges. Due to the
-Hisilicon system controller node may contains child nodes, change the
-value of "additionalProperties" from "false" to "type: object". The
-examples have also been updated.
+Hisilicon CPU controller node may contains child nodes, change the value
+of "additionalProperties" from "false" to "type: object".
+
+The corresponding examples are also added.
 
 Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 ---
- .../bindings/arm/hisilicon/controller/sysctrl.yaml | 25 +++++++++++++++++++---
- 1 file changed, 22 insertions(+), 3 deletions(-)
+ .../bindings/arm/hisilicon/controller/cpuctrl.yaml | 27 +++++++++++++++++++++-
+ 1 file changed, 26 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/sysctrl.yaml b/Documentation/devicetree/bindings/arm/hisilicon/controller/sysctrl.yaml
-index 449140f89ddbc3b..a27b79694e9883f 100644
---- a/Documentation/devicetree/bindings/arm/hisilicon/controller/sysctrl.yaml
-+++ b/Documentation/devicetree/bindings/arm/hisilicon/controller/sysctrl.yaml
-@@ -71,21 +71,40 @@ properties:
-   '#clock-cells':
-     const: 1
+diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/cpuctrl.yaml b/Documentation/devicetree/bindings/arm/hisilicon/controller/cpuctrl.yaml
+index f6a314db3a59416..528dad4cde3cd19 100644
+--- a/Documentation/devicetree/bindings/arm/hisilicon/controller/cpuctrl.yaml
++++ b/Documentation/devicetree/bindings/arm/hisilicon/controller/cpuctrl.yaml
+@@ -21,9 +21,34 @@ properties:
+   reg:
+     maxItems: 1
  
-+  '#address-cells':
++  "#address-cells":
 +    const: 1
 +
-+  '#size-cells':
++  "#size-cells":
 +    const: 1
 +
 +  ranges: true
@@ -71,31 +72,23 @@ index 449140f89ddbc3b..a27b79694e9883f 100644
 -additionalProperties: false
 +additionalProperties:
 +  type: object
- 
- examples:
-   - |
-     /* Hisilicon system controller */
--    system-controller@fc802000 {
-+    system-controller@802000 {
-         compatible = "hisilicon,sysctrl", "syscon";
--        reg = <0xfc802000 0x1000>;
++
++examples:
++  - |
++    cpuctrl@a22000 {
++        compatible = "hisilicon,cpuctrl";
 +        #address-cells = <1>;
 +        #size-cells = <1>;
-+        ranges = <0 0x802000 0x1000>;
-+        reg = <0x802000 0x1000>;
-+
-         smp-offset = <0x31c>;
-         resume-offset = <0x308>;
-         reboot-offset = <0x4>;
++        reg = <0x00a22000 0x2000>;
++        ranges = <0 0x00a22000 0x2000>;
 +
 +        clock: clock@0 {
-+            compatible = "hisilicon,hi3620-clock";
-+            reg = <0 0x10000>;
++            compatible = "hisilicon,hix5hd2-clock";
++            reg = <0 0x2000>;
 +            #clock-cells = <1>;
 +        };
-     };
- 
-     /* HiP01 system controller */
++    };
+ ...
 -- 
 1.8.3
 
