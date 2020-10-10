@@ -2,116 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26FFC28A202
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7580289F76
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Oct 2020 11:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388178AbgJJWxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:53:33 -0400
-Received: from hosting.gsystem.sk ([212.5.213.30]:49252 "EHLO
-        hosting.gsystem.sk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731302AbgJJTIA (ORCPT
+        id S1729629AbgJJJDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 05:03:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727698AbgJJI4y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:08:00 -0400
-Received: from [192.168.0.2] (188-167-68-178.dynamic.chello.sk [188.167.68.178])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by hosting.gsystem.sk (Postfix) with ESMTPSA id DB18A7A02C5;
-        Sat, 10 Oct 2020 10:49:39 +0200 (CEST)
-From:   Ondrej Zary <linux@zary.sk>
-To:     Ilia Mirkin <imirkin@alum.mit.edu>
-Subject: Re: [Nouveau] nouveau broken on Riva TNT2 in 5.9.0-rc8: GPU not supported on big-endian
-Date:   Sat, 10 Oct 2020 10:49:37 +0200
-User-Agent: KMail/1.9.10
-Cc:     Karol Herbst <kherbst@redhat.com>,
-        nouveau <nouveau@lists.freedesktop.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        "dri-devel" <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <202010092326.20482.linux@zary.sk> <CACO55tuj_=PUYuBnJLZgCEize_8Po0VnuDVPtkHLEZxL3RgF7Q@mail.gmail.com> <CAKb7UvggVn2c=jUNSfjf6r529n89xfNgVBpn3jnXznVh8Gs4+w@mail.gmail.com>
-In-Reply-To: <CAKb7UvggVn2c=jUNSfjf6r529n89xfNgVBpn3jnXznVh8Gs4+w@mail.gmail.com>
-X-KMail-QuotePrefix: > 
+        Sat, 10 Oct 2020 04:56:54 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BEBCC0613D6;
+        Sat, 10 Oct 2020 01:56:45 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id j22so7659578lfe.10;
+        Sat, 10 Oct 2020 01:56:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=g9vSkxIGlaWSB7biANoG1xKU0aKQl4aNdR2oDLnv0+k=;
+        b=lgTnXkjU9AtLrHaVxu1evzcLrvkMvPcdEG1OQYJZdFvptxqF4XLHy1iZWGGT7t6EZg
+         nrLR2C4FzLeMXMLv0U7Kkn231OG8dZRaSRTdRVOeICFw2uTnvSGzCTBuqusgQ1XP9JFJ
+         aXKpOcHDgzakO2EseHKoe/lvdsLsCq//VPBya35mdUaQh0jD0waooNqHkaf+AKMePJV3
+         dNv58cHb6HjNHlBBPf38gwEno3QRK20g4v66pazHHhUlMWcy+LUw66IMFc3+0375YHgN
+         u3nYlR8haqMnu2Vec9iHOaI6+KlBBc6alXCZi7ndTB+in9nUw3pXFMFfZqXvjZkbuYwQ
+         D5Zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=g9vSkxIGlaWSB7biANoG1xKU0aKQl4aNdR2oDLnv0+k=;
+        b=DAzyVOii2tG0mCZB6AgOnj8hHmbh/wsjN8eSU+ofqx4fwjyARsREAX0AIAHNfS0F/w
+         C4Y/4n8/uvTxV5MjP/3I55gNiiIa/uO/HkNGD/HczDBFi0U42m3wjJZXA1iTBZWZJjl3
+         xUJUmVJQRiJYWNMzwH/eFMdzT/0dj0KHq48dHvKbMkD8utQT80ftt21MncFPQOiR9TD4
+         UfEqHqa8w8hkG19bRU3e7zlRjYdAtc1nreP8kL21jqhy+WzvQh/yvya5OKw56TJKu0FJ
+         IKyeTwQ9xt1hufj6chc4ESm57zMWHIT53/MZZSObQPe/NQZeJAv9OYjA/zTFAMMwG2ra
+         QvOw==
+X-Gm-Message-State: AOAM533theUCNI5+SGiDbpmrNE8OGu85uNDoEGdE8hcbY770L/dxQQBI
+        tAtMJnwVXcHIXNl7+MutbEEuO5P/mSE=
+X-Google-Smtp-Source: ABdhPJylVSzzVjZcAJsm3hy10uswdeQCyh8b3CermKL+5uCrzklmn/BCo6y8Lss7b0TC//27Vg1+Yg==
+X-Received: by 2002:a19:9143:: with SMTP id y3mr6038466lfj.104.1602320203660;
+        Sat, 10 Oct 2020 01:56:43 -0700 (PDT)
+Received: from [192.168.1.100] ([213.87.133.206])
+        by smtp.gmail.com with ESMTPSA id 27sm1952993lfy.109.2020.10.10.01.56.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 10 Oct 2020 01:56:43 -0700 (PDT)
+Subject: Re: [PATCH v2 1/2] MIPS: cpu-probe: move fpu probing/handling into
+ its own file
+To:     "Maciej W. Rozycki" <macro@linux-mips.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201008213327.11603-1-tsbogend@alpha.franken.de>
+ <alpine.LFD.2.21.2010100128110.866917@eddie.linux-mips.org>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Organization: Brain-dead Software
+Message-ID: <0d87a08c-3ae3-fc32-8e96-5692944b8289@gmail.com>
+Date:   Sat, 10 Oct 2020 11:56:42 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
+In-Reply-To: <alpine.LFD.2.21.2010100128110.866917@eddie.linux-mips.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <202010101049.37663.linux@zary.sk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Saturday 10 October 2020 00:23:38 Ilia Mirkin wrote:
-> On Fri, Oct 9, 2020 at 5:54 PM Karol Herbst <kherbst@redhat.com> wrote:
-> >
-> > On Fri, Oct 9, 2020 at 11:35 PM Ondrej Zary <linux@zary.sk> wrote:
-> > >
-> > > Hello,
-> > > I'm testing 5.9.0-rc8 and found that Riva TNT2 stopped working:
-> > > [    0.000000] Linux version 5.9.0-rc8+ (zary@gsql) (gcc (Debian 8.3.0-6) 8.3.0, GNU ld (GNU Binutils for Debian) 2.31.1) #326 SMP Fri Oct 9 22:31:40 CEST 2020
-> > > ...
-> > > [   14.771464] nouveau 0000:01:00.0: GPU not supported on big-endian
-> > > [   14.771782] nouveau: probe of 0000:01:00.0 failed with error -38
-> > >
-> > > big-endian? WTF? The machine is x86.
-> > >
-> >
-> > mhh, we reworked the endianess checks a bit and apparently that broke
-> > something... I will give it some thoughts, but could you be so kind
-> > and create an mmiotrace under 5.9 with nouveau? You won't need to
-> > start X or anything while doing it. Just enable the trace and modprobe
-> > nouveau and collect the trace.
+Hello!
+
+On 10.10.2020 3:30, Maciej W. Rozycki wrote:
+
+>> +			/*
+>> +			 * MAC2008 toolchain never landed in real world, so we're only
+>> +			 * testing whether it can be disabled and don't try to enabled
+>> +			 * it.
+>> +			 */
+>> +			fcsr0 = fcsr & ~(FPU_CSR_ABS2008 | FPU_CSR_NAN2008 | FPU_CSR_MAC2008);
+>> +			write_32bit_cp1_register(CP1_STATUS, fcsr0);
+>> +			fcsr0 = read_32bit_cp1_register(CP1_STATUS);
+>> +
+>> +			fcsr1 = fcsr | FPU_CSR_ABS2008 | FPU_CSR_NAN2008;
+>> +			write_32bit_cp1_register(CP1_STATUS, fcsr1);
+>> +			fcsr1 = read_32bit_cp1_register(CP1_STATUS);
+>> +
+>> +			write_32bit_cp1_register(CP1_STATUS, fcsr);
+>> +
+>> +			if (c->isa_level & (MIPS_CPU_ISA_M32R2 | MIPS_CPU_ISA_M64R2)) {
+>> +				/*
+>> +				 * The bit for MAC2008 might be reused by R6 in future,
+>> +				 * so we only test for R2-R5.
+>> +				 */
 > 
-> Looks like nvkm_device_endianness unconditionally reads out 0x4. I
-> don't think that reg is there pre-NV11. At least NV4, NV5, NV10 and
-> maybe NV15 (which is logically pre-NV11) don't support big-endian
-> mode. Not sure about NV1A, which was the IGP of the series and IIRC
-> logically pre-NV11 as well (but clearly could only be used with x86
-> chips, since it was part of the motherboard).
+>   Umm, this has formatting issues with lines extending beyond column #80.
 
-Yes, you're right. Forcing nvkm_device_endianness to return true allows
-5.9.0-rc8 to work:
-[    0.000000] Linux version 5.9.0-rc8+ (zary@gsql) (gcc (Debian 8.3.0-6) 8.3.0, GNU ld (GNU Binutils for Debian) 2.31.1) #326 SMP Fri Oct 9 22:31:40 CEST 2020
-...
-[   12.311258] nouveau 0000:01:00.0: bios: DCB table not found
-[   12.311583] nouveau 0000:01:00.0: bios: DCB table not found
-[   12.311834] nouveau 0000:01:00.0: bios: DCB table not found
-[   12.311847] nouveau 0000:01:00.0: bios: DCB table not found
-[   12.311989] agpgart-intel 0000:00:00.0: AGP 3.0 bridge
-[   12.312017] agpgart-intel 0000:00:00.0: bridge is in legacy mode, falling back to 2.x
-[   12.312031] agpgart-intel 0000:00:00.0: putting AGP V2 device into 4x mode
-[   12.312066] nouveau 0000:01:00.0: putting AGP V2 device into 4x mode
-[   12.312162] agpgart-intel 0000:00:00.0: AGP 3.0 bridge
-[   12.312182] agpgart-intel 0000:00:00.0: bridge is in legacy mode, falling back to 2.x
-[   12.312195] agpgart-intel 0000:00:00.0: putting AGP V2 device into 4x mode
-[   12.312230] nouveau 0000:01:00.0: putting AGP V2 device into 4x mode
-[   12.312247] nouveau 0000:01:00.0: tmr: unknown input clock freq
-[   12.318341] nouveau 0000:01:00.0: fb: 32 MiB SDRAM
-[   12.333376] [TTM] Zone  kernel: Available graphics memory: 385048 KiB
-[   12.333392] [TTM] Initializing pool allocator
-[   12.333434] nouveau 0000:01:00.0: DRM: VRAM: 31 MiB
-[   12.333443] nouveau 0000:01:00.0: DRM: GART: 128 MiB
-[   12.333453] nouveau 0000:01:00.0: DRM: BMP version 5.6
-[   12.333460] nouveau 0000:01:00.0: DRM: No DCB data found in VBIOS
-[   12.335355] nouveau 0000:01:00.0: DRM: MM: using M2MF for buffer copies
-[   12.335443] nouveau 0000:01:00.0: bios: DCB table not found
-[   12.336033] nouveau 0000:01:00.0: DRM: Saving VGA fonts
-[   12.376420] nouveau 0000:01:00.0: DRM: No DCB data found in VBIOS
-[   12.410397] nouveau 0000:01:00.0: DRM: allocated 1280x1024 fb: 0x4000, bo b68d2ac4
-[   12.441217] fbcon: nouveaudrmfb (fb0) is primary device
-[   12.591964] Console: switching to colour frame buffer device 160x64
-[   12.593876] nouveau 0000:01:00.0: [drm] fb0: nouveaudrmfb frame buffer device
-[   12.594944] [drm] Initialized nouveau 1.3.1 20120801 for 0000:01:00.0 on minor 0
+    80 columns are no longer a line length limit -- 100 is, IIRC.
 
-BTW. 5.8 kernel (that appeared today in Debian packports) is broken the same way.
+>    Maciej
 
-> Aha, it's documented in rnndb:
-> 
-> https://github.com/envytools/envytools/blob/master/rnndb/bus/pmc.xml
-> <reg32 offset="0x004" name="ENDIAN" variants="NV1A-"/>
-> 
->   -ilia
-> 
-
-
--- 
-Ondrej Zary
+MBR, Sergei
