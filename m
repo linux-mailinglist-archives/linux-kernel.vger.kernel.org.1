@@ -2,121 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F047E28A2B7
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 924C128A2A8
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391193AbgJJW7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:59:54 -0400
-Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:3182 "EHLO
-        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730327AbgJJWvQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 18:51:16 -0400
-Received: from pps.filterd (m0148664.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09AMGas7000639;
-        Sat, 10 Oct 2020 22:17:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pps0720;
- bh=wSRn6DStJQfrwSTDj+DfXKvQUD8C1Q/aQBRYMzWuv7I=;
- b=ZC0j+TY6SR3d9IWNkIYCeIwiq3JGaGNyfOYPLiCK29kLsC4llj6tnYK8tsFQF4e+4RmV
- 6SDLM1kEKvyRDUjVF5iILf7QBH+J59DaAyFrdDtUV1iILeqfGtLEAVWgNdbfeGvAg8OP
- S1zhjTHuFTw+IbLOfseC1fH8UagAwTh+jgGHg58uWpMWFr6V7rIV8DzVRJzmodJ+gZn5
- Yu+CbMeHPM73Hf2OwSru7GZtOIAJFRLTYCAQAv7X+XAm2a7rJVPbJQSQ0rPd1eH5ylYv
- otjcCWsx4ssLydxq59+37kmmTBrxuKbic8vy1LgbvfWaQN1WFsXRts1fHYyEBnGQh/xa HQ== 
-Received: from g9t5008.houston.hpe.com (g9t5008.houston.hpe.com [15.241.48.72])
-        by mx0b-002e3701.pphosted.com with ESMTP id 34342ukybj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 10 Oct 2020 22:17:08 +0000
-Received: from sarge.linuxathome.me (unknown [16.29.167.198])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by g9t5008.houston.hpe.com (Postfix) with ESMTPS id 173FD4F;
-        Sat, 10 Oct 2020 22:17:05 +0000 (UTC)
-From:   Hedi Berriche <hedi.berriche@hpe.com>
-To:     sathyanarayanan.kuppuswamy@linux.intel.com
-Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Hedi Berriche <hedi.berriche@hpe.com>,
-        Russ Anderson <rja@hpe.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Joerg Roedel <jroedel@suse.com>, stable@kernel.org
-Subject: [RESEND PATCH v3 1/1] PCI/ERR: don't clobber status after reset_link()
-Date:   Sat, 10 Oct 2020 23:16:53 +0100
-Message-Id: <20201010221653.2782993-2-hedi.berriche@hpe.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201010221653.2782993-1-hedi.berriche@hpe.com>
-References: <20201010221653.2782993-1-hedi.berriche@hpe.com>
+        id S2391019AbgJJW7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:59:46 -0400
+Received: from mail.ispras.ru ([83.149.199.84]:52594 "EHLO mail.ispras.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732091AbgJJW2i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 18:28:38 -0400
+Received: from localhost.localdomain (unknown [46.188.10.168])
+        by mail.ispras.ru (Postfix) with ESMTPSA id A81E440A1DA0;
+        Sat, 10 Oct 2020 22:18:13 +0000 (UTC)
+From:   Alexander Monakov <amonakov@ispras.ru>
+To:     linux-pm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Alexander Monakov <amonakov@ispras.ru>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH] intel_idle: mention assumption that wbinvd is not needed
+Date:   Sun, 11 Oct 2020 01:18:06 +0300
+Message-Id: <20201010221806.2106-1-amonakov@ispras.ru>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-10_07:2020-10-09,2020-10-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
- clxscore=1015 mlxscore=0 lowpriorityscore=0 adultscore=0 malwarescore=0
- suspectscore=1 spamscore=0 bulkscore=0 priorityscore=1501 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010100210
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 6d2c89441571 ("PCI/ERR: Update error status after reset_link()")
-broke pcie_do_recovery(): updating status after reset_link() has the ill
-side effect of causing recovery to fail if the error status is
-PCI_ERS_RESULT_CAN_RECOVER or PCI_ERS_RESULT_NEED_RESET as the following
-code will *never* run in the case of a successful reset_link()
+Intel SDM does not explicitly say that entering a C-state via MWAIT will
+implicitly flush CPU caches as appropriate for that C-state. However,
+documentation for individual Intel CPU generations does mention this
+behavior.
 
-   177         if (status == PCI_ERS_RESULT_CAN_RECOVER) {
-   ...
-   181         }
+Since intel_idle binds to any Intel CPU with MWAIT, mention this
+assumption on MWAIT behavior. In passing, reword opening comment
+to make it clear that driver can load on any future Intel CPU with MWAIT.
 
-   183         if (status == PCI_ERS_RESULT_NEED_RESET) {
-   ...
-   192         }
-
-For instance in the case of PCI_ERS_RESULT_NEED_RESET we end up not
-calling ->slot_reset() (because we skip report_slot_reset()) thus
-breaking driver (re)initialisation.
-
-Don't clobber status with the return value of reset_link(); set status
-to PCI_ERS_RESULT_RECOVERED, in case of successful link reset, if and
-only if the initial value of error status is PCI_ERS_RESULT_DISCONNECT
-or PCI_ERS_RESULT_NO_AER_DRIVER.
-
-Fixes: 6d2c89441571 ("PCI/ERR: Update error status after reset_link()")
-Signed-off-by: Hedi Berriche <hedi.berriche@hpe.com>
-Cc: Russ Anderson <rja@hpe.com>
-Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Ashok Raj <ashok.raj@intel.com>
-Cc: Joerg Roedel <jroedel@suse.com>
-
-Cc: stable@kernel.org # v5.7+
+Signed-off-by: Alexander Monakov <amonakov@ispras.ru>
+Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 ---
- drivers/pci/pcie/err.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+Hi,
 
-diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-index c543f419d8f9..2730826cfd8a 100644
---- a/drivers/pci/pcie/err.c
-+++ b/drivers/pci/pcie/err.c
-@@ -165,10 +165,13 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
- 	pci_dbg(dev, "broadcast error_detected message\n");
- 	if (state == pci_channel_io_frozen) {
- 		pci_walk_bus(bus, report_frozen_detected, &status);
--		status = reset_link(dev);
--		if (status != PCI_ERS_RESULT_RECOVERED) {
-+		if (reset_link(dev) != PCI_ERS_RESULT_RECOVERED) {
- 			pci_warn(dev, "link reset failed\n");
- 			goto failed;
-+		} else {
-+			if (status == PCI_ERS_RESULT_DISCONNECT ||
-+			    status == PCI_ERS_RESULT_NO_AER_DRIVER)
-+				status = PCI_ERS_RESULT_RECOVERED;
- 		}
- 	} else {
- 		pci_walk_bus(bus, report_normal_detected, &status);
+I noticed that one of significant optimizations of intel_idle over
+acpi_idle is elision of explicit wbinvd: ACPI requires the OS to flush
+caches when entering C3, and Linux issues an explicit wbinvd to do that,
+but intel_idle simply issues mwait with the expectation that the CPU
+will automatically flush caches if needed.
+
+To me this is a fairly subtle point that became even more subtle
+following the update to intel_idle that made it capable to bind to old
+and future Intel CPUs with MWAIT (by the way, thanks for that!)
+
+Can you take this patch to spell out the assumption?
+
+ drivers/idle/intel_idle.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
+index f4495841bf68..1e5666cf8763 100644
+--- a/drivers/idle/intel_idle.c
++++ b/drivers/idle/intel_idle.c
+@@ -8,7 +8,7 @@
+  */
+ 
+ /*
+- * intel_idle is a cpuidle driver that loads on specific Intel processors
++ * intel_idle is a cpuidle driver that loads on all Intel CPUs with MWAIT
+  * in lieu of the legacy ACPI processor_idle driver.  The intent is to
+  * make Linux more efficient on these processors, as intel_idle knows
+  * more than ACPI, as well as make Linux more immune to ACPI BIOS bugs.
+@@ -20,7 +20,11 @@
+  * All CPUs have same idle states as boot CPU
+  *
+  * Chipset BM_STS (bus master status) bit is a NOP
+- *	for preventing entry into deep C-stats
++ *	for preventing entry into deep C-states
++ *
++ * CPU will flush caches as needed when entering a C-state via MWAIT
++ *	(in contrast to entering ACPI C3, where acpi_idle driver is
++ *	itself responsible for flushing, via WBINVD)
+  */
+ 
+ /*
 -- 
-2.28.0
+2.26.2
 
