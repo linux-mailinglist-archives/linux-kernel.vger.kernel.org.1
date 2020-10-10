@@ -2,332 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4CDA28A2D9
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:03:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C16E28A2DB
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:03:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390960AbgJJW7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 18:59:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728687AbgJJVlt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 17:41:49 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 133CAC0613D0
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 14:41:42 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id t15so12369359otk.0
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 14:41:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=iNxwDH5u5TrRQqiTxTiC507fsoXAo+Ear9Qr1cSCDXM=;
-        b=cODuj2bzo2AO+NtsSDmK+GM+IH6Wb2aQIdPJNZwsWPVwppiG83SSt1UXXIp6hTsgX4
-         TEoJk6lOuTqWZaWdYBoSJlxxzz9Lz3t/mbTiz7Ayr4xGvQyHkg9c04lcUmYMfoSQJIZQ
-         sxhzwWcw4CIeNF13coxREsRH2lgZbzvzGnLIk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=iNxwDH5u5TrRQqiTxTiC507fsoXAo+Ear9Qr1cSCDXM=;
-        b=Sbjnfpefr/HF/PfLSPhmR7nlcB/qx68piPD/z30Qz7scAWtcMmvJI2t/Peil8uYbmL
-         U9jooYEdcsXCfHu9rR3NspytmslseHGe4BpqeA4ePNbvDgSBzZyIriuxWHTuLTFOdLs0
-         +WTy3ZiQaYWrwPkIUhMp5WcVHkCplFYnEHA+EUPQkIXe/T7bRNsls7ZnuhypDCaNBDhE
-         yIN+WUYVXvfQPaa5n6d/rcqveW2ahSDCAF1hNaro94R8WeSVCyAisV1jpgT4HuNC7cGw
-         ScaaOroYPq3FFKht7N2qvZEQETF+fuzx1ByzJq6jaF0p6uVfPY4BrGRMSrfcafkJzeeb
-         HvPQ==
-X-Gm-Message-State: AOAM530RBSyjYR0zyY2qT2a0ZLIUuORCk/qm/UPWq4QEUxL9hXEaVJo0
-        OVBFt7zLNGniTpQ70hTb0HfxSJGiyR40pnXYpUwvGg==
-X-Google-Smtp-Source: ABdhPJysptysEsT0jSmsHNKPWkJOs+Pv1LX5DB7//lfpdyBsRnuaRszTMCaD3Je1nsfqA1Sk2kecuUszSEGAlMPDXc0=
-X-Received: by 2002:a05:6830:1c3c:: with SMTP id f28mr14253407ote.188.1602366101323;
- Sat, 10 Oct 2020 14:41:41 -0700 (PDT)
+        id S1732580AbgJJW7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 18:59:39 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3567 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728007AbgJJVnv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 17:43:51 -0400
+Received: from DGGEMM403-HUB.china.huawei.com (unknown [172.30.72.53])
+        by Forcepoint Email with ESMTP id 745D1FA298D53854FCAE;
+        Sun, 11 Oct 2020 05:43:26 +0800 (CST)
+Received: from dggemi710-chm.china.huawei.com (10.3.20.109) by
+ DGGEMM403-HUB.china.huawei.com (10.3.20.211) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Sun, 11 Oct 2020 05:43:26 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggemi710-chm.china.huawei.com (10.3.20.109) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Sun, 11 Oct 2020 05:43:25 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.1913.007;
+ Sun, 11 Oct 2020 05:43:25 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+CC:     Mel Gorman <mgorman@suse.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Phil Auld <pauld@redhat.com>, Hillf Danton <hdanton@sina.com>,
+        Ingo Molnar <mingo@kernel.org>, Linuxarm <linuxarm@huawei.com>,
+        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>
+Subject: RE: [RFC] sched/numa: don't move tasks to idle numa nodes while src
+ node has very light load?
+Thread-Topic: [RFC] sched/numa: don't move tasks to idle numa nodes while src
+ node has very light load?
+Thread-Index: AdaFDgJxar2HSiPxTFetuIpaUOKfaP//hSIA/8sLeaA=
+Date:   Sat, 10 Oct 2020 21:43:25 +0000
+Message-ID: <af133ea713b640518bd0b7cde370e773@hisilicon.com>
+References: <e7b7462375de4175a83ece3b60bab899@hisilicon.com>
+ <CAKfTPtDoL34u3bteN+DckHTcZc7vczf1xeZRiKk6RCev6-Gh3w@mail.gmail.com>
+In-Reply-To: <CAKfTPtDoL34u3bteN+DckHTcZc7vczf1xeZRiKk6RCev6-Gh3w@mail.gmail.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.202.104]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20201009075934.3509076-1-daniel.vetter@ffwll.ch>
- <20201009075934.3509076-4-daniel.vetter@ffwll.ch> <CAFCwf1194Ce98y8tWxKzXT1rsdHDkzEcnERiaU=3-=t7hygmXg@mail.gmail.com>
- <CAKMK7uG_kBpmuQDRgKdyh8SycFDhE7kuB2MEOsx+D5wRmerWKA@mail.gmail.com>
-In-Reply-To: <CAKMK7uG_kBpmuQDRgKdyh8SycFDhE7kuB2MEOsx+D5wRmerWKA@mail.gmail.com>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Sat, 10 Oct 2020 23:41:30 +0200
-Message-ID: <CAKMK7uFUtkd7j1WZZoSmeO3mKG2zZ9SpwEO08EFJKromU0LV4Q@mail.gmail.com>
-Subject: Re: [PATCH v2 03/17] misc/habana: Stop using frame_vector helpers
-To:     Oded Gabbay <oded.gabbay@gmail.com>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Omer Shpigelman <oshpigelman@habana.ai>,
-        Ofir Bitton <obitton@habana.ai>,
-        Tomer Tayar <ttayar@habana.ai>,
-        Moti Haimovski <mhaimovski@habana.ai>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pawel Piskorski <ppiskorski@habana.ai>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 10, 2020 at 11:32 PM Daniel Vetter <daniel.vetter@ffwll.ch> wro=
-te:
->
-> On Sat, Oct 10, 2020 at 10:27 PM Oded Gabbay <oded.gabbay@gmail.com> wrot=
-e:
-> >
-> > On Fri, Oct 9, 2020 at 10:59 AM Daniel Vetter <daniel.vetter@ffwll.ch> =
-wrote:
-> > >
-> > > All we need are a pages array, pin_user_pages_fast can give us that
-> > > directly. Plus this avoids the entire raw pfn side of get_vaddr_frame=
-s.
-> > >
-> > Thanks for the patch Daniel.
-> >
-> > > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> > > Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> > > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > > Cc: John Hubbard <jhubbard@nvidia.com>
-> > > Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
-> > > Cc: Jan Kara <jack@suse.cz>
-> > > Cc: Dan Williams <dan.j.williams@intel.com>
-> > > Cc: linux-mm@kvack.org
-> > > Cc: linux-arm-kernel@lists.infradead.org
-> > > Cc: linux-samsung-soc@vger.kernel.org
-> > > Cc: linux-media@vger.kernel.org
-> > > Cc: Oded Gabbay <oded.gabbay@gmail.com>
-> > > Cc: Omer Shpigelman <oshpigelman@habana.ai>
-> > > Cc: Ofir Bitton <obitton@habana.ai>
-> > > Cc: Tomer Tayar <ttayar@habana.ai>
-> > > Cc: Moti Haimovski <mhaimovski@habana.ai>
-> > > Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-> > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > Cc: Pawel Piskorski <ppiskorski@habana.ai>
-> > > --
-> > > v2: Use unpin_user_pages_dirty_lock (John)
-> > > ---
-> > >  drivers/misc/habanalabs/Kconfig             |  1 -
-> > >  drivers/misc/habanalabs/common/habanalabs.h |  3 +-
-> > >  drivers/misc/habanalabs/common/memory.c     | 49 ++++++++-----------=
---
-> > >  3 files changed, 20 insertions(+), 33 deletions(-)
-> > >
-> > > diff --git a/drivers/misc/habanalabs/Kconfig b/drivers/misc/habanalab=
-s/Kconfig
-> > > index 8eb5d38c618e..2f04187f7167 100644
-> > > --- a/drivers/misc/habanalabs/Kconfig
-> > > +++ b/drivers/misc/habanalabs/Kconfig
-> > > @@ -6,7 +6,6 @@
-> > >  config HABANA_AI
-> > >         tristate "HabanaAI accelerators (habanalabs)"
-> > >         depends on PCI && HAS_IOMEM
-> > > -       select FRAME_VECTOR
-> > >         select DMA_SHARED_BUFFER
-> > >         select GENERIC_ALLOCATOR
-> > >         select HWMON
-> > > diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/mi=
-sc/habanalabs/common/habanalabs.h
-> > > index edbd627b29d2..c1b3ad613b15 100644
-> > > --- a/drivers/misc/habanalabs/common/habanalabs.h
-> > > +++ b/drivers/misc/habanalabs/common/habanalabs.h
-> > > @@ -881,7 +881,8 @@ struct hl_ctx_mgr {
-> > >  struct hl_userptr {
-> > >         enum vm_type_t          vm_type; /* must be first */
-> > >         struct list_head        job_node;
-> > > -       struct frame_vector     *vec;
-> > > +       struct page             **pages;
-> > > +       unsigned int            npages;
-> > Can you please update the kerneldoc comment section of this structure
-> > according to your changes ?
->
-> Apologies I missed the nice kerneldoc. I'll fix that in the next round.
->
->
-> > >         struct sg_table         *sgt;
-> > >         enum dma_data_direction dir;
-> > >         struct list_head        debugfs_list;
-> > > diff --git a/drivers/misc/habanalabs/common/memory.c b/drivers/misc/h=
-abanalabs/common/memory.c
-> > > index 5ff4688683fd..327b64479f97 100644
-> > > --- a/drivers/misc/habanalabs/common/memory.c
-> > > +++ b/drivers/misc/habanalabs/common/memory.c
-> > > @@ -1281,45 +1281,41 @@ static int get_user_memory(struct hl_device *=
-hdev, u64 addr, u64 size,
-> > >                 return -EFAULT;
-> > >         }
-> > >
-> > > -       userptr->vec =3D frame_vector_create(npages);
-> > > -       if (!userptr->vec) {
-> > > +       userptr->pages =3D kvmalloc_array(npages, sizeof(*userptr->pa=
-ges),
-> > > +                                       GFP_KERNEL);
-> > > +       if (!userptr->pages) {
-> > >                 dev_err(hdev->dev, "Failed to create frame vector\n")=
-;
-> > >                 return -ENOMEM;
-> > >         }
-> > >
-> > > -       rc =3D get_vaddr_frames(start, npages, FOLL_FORCE | FOLL_WRIT=
-E,
-> > > -                               userptr->vec);
-> > > +       rc =3D pin_user_pages_fast(start, npages, FOLL_FORCE | FOLL_W=
-RITE,
-> > > +                                userptr->pages);
-> > >
-> > >         if (rc !=3D npages) {
-> > >                 dev_err(hdev->dev,
-> > >                         "Failed to map host memory, user ptr probably=
- wrong\n");
-> > >                 if (rc < 0)
-> > > -                       goto destroy_framevec;
-> > > +                       goto destroy_pages;
-> > > +               npages =3D rc;
-> > >                 rc =3D -EFAULT;
-> > > -               goto put_framevec;
-> > > -       }
-> > > -
-> > > -       if (frame_vector_to_pages(userptr->vec) < 0) {
-> > > -               dev_err(hdev->dev,
-> > > -                       "Failed to translate frame vector to pages\n"=
-);
-> > > -               rc =3D -EFAULT;
-> > > -               goto put_framevec;
-> > > +               goto put_pages;
-> > >         }
-> > > +       userptr->npages =3D npages;
-> > >
-> > >         rc =3D sg_alloc_table_from_pages(userptr->sgt,
-> > > -                                       frame_vector_pages(userptr->v=
-ec),
-> > > -                                       npages, offset, size, GFP_ATO=
-MIC);
-> > > +                                      userptr->pages,
-> > > +                                      npages, offset, size, GFP_ATOM=
-IC);
-> > I think that because the call to kvmalloc_array() is done with
-> > GFP_KERNEL, there is no point in using GFP_ATOMIC here.
-> > And actually, this path only needs to avoid yielding when using a
-> > special debug mode.
-> > So I suggest putting here GFP_KERNEL.
->
-> Huh, I didn't even notice the GFP_ATOMIC here. This looks indeed
-> strange and GFP_KERNEL should be perfectly fine in a function that
-> also calls pin_user_pages (since that one can allocate and do worse
-> stuff like userspace pagefaults).
->
-> But since that GFP_ATOMIC is there already I'll do that in a separate pat=
-ch.
-
-Ok I read up on your usage of GFP_ATOMIC in habanalabs, and I'm not
-going to touch this. But I'm pretty sure it's broken.
-
-You seem to have some requirement of not allocating memory with
-blocking (see hl_cb_alloc()), and that seems to be way you allocate
-tons of structures with GFP_ATOMIC. There's 2 pretty tough problems
-with that:
-- GFP_ATOMIC can fail, even when the system hasn't run out of memory
-yet. You _must_ have a fallback back to handle allocation failures for
-these. Quick survey shows you a ton of GFP_ATOMIC callsites, and very
-little fallback code - I've found none, but I didn't check the failure
-handlers all going up the possible callchains.
-- pin_user_pages can allocate memory, so you're breaking your own "no
-sleeping in these paths" rules.
-
-This isn't going to get fixed with a quick oneliner patch, depending
-what's needed you're looking at a driver rearchitecture here :-/ Hence
-I'm not going to touch this in the next patch, but leave it all as-is.
-
-Cheers, Daniel
-
->
-> > In the meanwhile, I'll run this patch (coupled with the next patch) in
-> > our C/I to make sure there are no regressions.
->
-> Excellent. I'll wait with v3 until that's done, just in case you hit a
-> snag I need to fix.
->
-> Cheers, Daniel
->
-> > Thanks,
-> > Oded
-> >
-> > >         if (rc < 0) {
-> > >                 dev_err(hdev->dev, "failed to create SG table from pa=
-ges\n");
-> > > -               goto put_framevec;
-> > > +               goto put_pages;
-> > >         }
-> > >
-> > >         return 0;
-> > >
-> > > -put_framevec:
-> > > -       put_vaddr_frames(userptr->vec);
-> > > -destroy_framevec:
-> > > -       frame_vector_destroy(userptr->vec);
-> > > +put_pages:
-> > > +       unpin_user_pages(userptr->pages, npages);
-> > > +destroy_pages:
-> > > +       kvfree(userptr->pages);
-> > >         return rc;
-> > >  }
-> > >
-> > > @@ -1405,8 +1401,6 @@ int hl_pin_host_memory(struct hl_device *hdev, =
-u64 addr, u64 size,
-> > >   */
-> > >  void hl_unpin_host_memory(struct hl_device *hdev, struct hl_userptr =
-*userptr)
-> > >  {
-> > > -       struct page **pages;
-> > > -
-> > >         hl_debugfs_remove_userptr(hdev, userptr);
-> > >
-> > >         if (userptr->dma_mapped)
-> > > @@ -1414,15 +1408,8 @@ void hl_unpin_host_memory(struct hl_device *hd=
-ev, struct hl_userptr *userptr)
-> > >                                                         userptr->sgt-=
->nents,
-> > >                                                         userptr->dir)=
-;
-> > >
-> > > -       pages =3D frame_vector_pages(userptr->vec);
-> > > -       if (!IS_ERR(pages)) {
-> > > -               int i;
-> > > -
-> > > -               for (i =3D 0; i < frame_vector_count(userptr->vec); i=
-++)
-> > > -                       set_page_dirty_lock(pages[i]);
-> > > -       }
-> > > -       put_vaddr_frames(userptr->vec);
-> > > -       frame_vector_destroy(userptr->vec);
-> > > +       unpin_user_pages_dirty_lock(userptr->pages, userptr->npages, =
-true);
-> > > +       kvfree(userptr->pages);
-> > >
-> > >         list_del(&userptr->job_node);
-> > >
-> > > --
-> > > 2.28.0
-> > >
->
->
->
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
-
-
-
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogVmluY2VudCBHdWl0dG90
+IFttYWlsdG86dmluY2VudC5ndWl0dG90QGxpbmFyby5vcmddDQo+IFNlbnQ6IFR1ZXNkYXksIFNl
+cHRlbWJlciA4LCAyMDIwIDEyOjM3IEFNDQo+IFRvOiBTb25nIEJhbyBIdWEgKEJhcnJ5IFNvbmcp
+IDxzb25nLmJhby5odWFAaGlzaWxpY29uLmNvbT4NCj4gQ2M6IE1lbCBHb3JtYW4gPG1nb3JtYW5A
+c3VzZS5kZT47IG1pbmdvQHJlZGhhdC5jb207DQo+IHBldGVyekBpbmZyYWRlYWQub3JnOyBqdXJp
+LmxlbGxpQHJlZGhhdC5jb207IGRpZXRtYXIuZWdnZW1hbm5AYXJtLmNvbTsNCj4gYnNlZ2FsbEBn
+b29nbGUuY29tOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBNZWwgR29ybWFuDQo+IDxt
+Z29ybWFuQHRlY2hzaW5ndWxhcml0eS5uZXQ+OyBQZXRlciBaaWpsc3RyYSA8YS5wLnppamxzdHJh
+QGNoZWxsby5ubD47DQo+IFZhbGVudGluIFNjaG5laWRlciA8dmFsZW50aW4uc2NobmVpZGVyQGFy
+bS5jb20+OyBQaGlsIEF1bGQNCj4gPHBhdWxkQHJlZGhhdC5jb20+OyBIaWxsZiBEYW50b24gPGhk
+YW50b25Ac2luYS5jb20+OyBJbmdvIE1vbG5hcg0KPiA8bWluZ29Aa2VybmVsLm9yZz47IExpbnV4
+YXJtIDxsaW51eGFybUBodWF3ZWkuY29tPjsgTGlndW96aHUgKEtlbm5ldGgpDQo+IDxsaWd1b3po
+dUBoaXNpbGljb24uY29tPg0KPiBTdWJqZWN0OiBSZTogW1JGQ10gc2NoZWQvbnVtYTogZG9uJ3Qg
+bW92ZSB0YXNrcyB0byBpZGxlIG51bWEgbm9kZXMgd2hpbGUgc3JjDQo+IG5vZGUgaGFzIHZlcnkg
+bGlnaHQgbG9hZD8NCj4gDQo+IE9uIE1vbiwgNyBTZXAgMjAyMCBhdCAxNDowMCwgU29uZyBCYW8g
+SHVhIChCYXJyeSBTb25nKQ0KPiA8c29uZy5iYW8uaHVhQGhpc2lsaWNvbi5jb20+IHdyb3RlOg0K
+PiA+DQo+ID4gSGkgQWxsLA0KPiA+IEluIGNhc2Ugd2UgaGF2ZSBhIG51bWEgc3lzdGVtIHdpdGgg
+NCBub2RlcyBhbmQgaW4gZWFjaCBub2RlIHdlIGhhdmUgMjQNCj4gY3B1cywgYW5kIGFsbCBvZiB0
+aGUgOTYgY29yZXMgYXJlIGlkbGUuDQo+ID4gVGhlbiB3ZSBzdGFydCBhIHByb2Nlc3Mgd2l0aCA0
+IHRocmVhZHMgaW4gdGhpcyB0b3RhbGx5IGlkbGUgc3lzdGVtLg0KPiA+IEFjdHVhbGx5IGFueSBv
+bmUgb2YgdGhlIGZvdXIgbnVtYSBub2RlcyBzaG91bGQgaGF2ZSBlbm91Z2ggY2FwYWJpbGl0eSB0
+bw0KPiBydW4gdGhlIDQgdGhyZWFkcyB3aGlsZSB0aGV5IGNhbiBzdGlsbCBoYXZlIDIwIGlkbGUg
+Q1BVUyBhZnRlciB0aGF0Lg0KPiA+IEJ1dCByaWdodCBub3cgdGhlIGV4aXN0aW5nIGNvZGUgaW4g
+Q0ZTIGxvYWQgYmFsYW5jZSB3aWxsIHNwcmVhZCB0aGUgNCB0aHJlYWRzDQo+IHRvIG11bHRpcGxl
+IG5vZGVzLg0KPiA+IFRoaXMgcmVzdWx0cyBpbiB0d28gbmVnYXRpdmUgc2lkZSBlZmZlY3RzOg0K
+PiA+IDEuIG1vcmUgbnVtYSBub2RlcyBhcmUgYXdha2VuIHdoaWxlIHRoZXkgY2FuIHNhdmUgcG93
+ZXIgaW4gbG93ZXN0DQo+IGZyZXF1ZW5jeSBhbmQgaGFsdCBzdGF0dXMNCj4gPiAyLiBjYWNoZSBj
+b2hlcmVuY3kgb3ZlcmhlYWQgYmV0d2VlbiBudW1hIG5vZGVzDQo+ID4NCj4gPiBBIHByb29mLW9m
+LWNvbmNlcHQgcGF0Y2ggSSBtYWRlIHRvICJmaXgiIHRoaXMgaXNzdWUgdG8gc29tZSBleHRlbnQg
+aXMgbGlrZToNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9rZXJuZWwvc2NoZWQvZmFpci5jIGIva2Vy
+bmVsL3NjaGVkL2ZhaXIuYw0KPiA+IGluZGV4IDFhNjhhMDUuLmY2NzFlMTUgMTAwNjQ0DQo+ID4g
+LS0tIGEva2VybmVsL3NjaGVkL2ZhaXIuYw0KPiA+ICsrKyBiL2tlcm5lbC9zY2hlZC9mYWlyLmMN
+Cj4gPiBAQCAtOTA2OCw5ICs5MDY4LDIwIEBAIHN0YXRpYyBpbmxpbmUgdm9pZCBjYWxjdWxhdGVf
+aW1iYWxhbmNlKHN0cnVjdA0KPiBsYl9lbnYgKmVudiwgc3RydWN0IHNkX2xiX3N0YXRzICpzDQo+
+ID4gICAgICAgICAgICAgICAgIH0NCj4gPg0KPiA+ICAgICAgICAgICAgICAgICAvKiBDb25zaWRl
+ciBhbGxvd2luZyBhIHNtYWxsIGltYmFsYW5jZSBiZXR3ZWVuIE5VTUENCj4gZ3JvdXBzICovDQo+
+ID4gLSAgICAgICAgICAgICAgIGlmIChlbnYtPnNkLT5mbGFncyAmIFNEX05VTUEpDQo+ID4gKyAg
+ICAgICAgICAgICAgIGlmIChlbnYtPnNkLT5mbGFncyAmIFNEX05VTUEpIHsNCj4gPiArICAgICAg
+ICAgICAgICAgICAgICAgICAvKiBpZiB0aGUgc3JjIGdyb3VwIHVzZXMgb25seSAxLzQgY2FwYWJp
+bGl0eSBhbmQNCj4gZHN0IGlzIGlkbGUNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgKiBk
+b24ndCBtb3ZlIHRhc2sNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgKi8NCj4gPiArICAg
+ICAgICAgICAgICAgICAgICAgICBpZiAoYnVzaWVzdC0+c3VtX25yX3J1bm5pbmcgPD0NCj4gYnVz
+aWVzdC0+Z3JvdXBfd2VpZ2h0LzQgJiYNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgbG9jYWwtPnN1bV9ucl9ydW5uaW5nID09IDApIHsNCj4gPiArICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIGVudi0+aW1iYWxhbmNlID0gMDsNCj4gPiArICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIHJldHVybjsNCj4gDQo+IFdpdGhvdXQgY29uc2lkZXJpbmcg
+aWYgdGhhdCBtYWtlcyBzZW5zZSBvciBub3QsIHN1Y2ggdGVzdHMgc2hvdWxkIGJlDQo+IGluIGFk
+anVzdF9udW1hX2ltYmFsYW5jZSgpIHdoaWNoIGlzIHRoZXJlIHRvIGRlY2lkZSBpZiBpdCdzIHdv
+cnRoDQo+ICJmaXhpbmciIHRoZSBpbWJhbGFuY2UgYmV0d2VlbiBudW1hIG5vZGUgb3Igbm90Lg0K
+DQpJIHdhcyBhd2FyZSB0aGF0IGFkanVzdF9udW1hX2ltYmFsYW5jZSgpIGlzIHRoZSBiZXR0ZXIg
+cGxhY2UgdG8gbWFrZSB0aGlzIGFkanVzdG1lbnQNCmZvciBOVU1BIHdoaWxlIHNlbmRpbmcgdGhp
+cyBSRkMuIEhvd2V2ZXIsIGZvciBQb0MsIEkganVzdCB3YW50ZWQgdG8gcHJlc2VudCB0aGUgaWRl
+YSB0bw0KZ2V0IHNvbWUgZ2VuZXJhbCBhZ3JlZW1lbnQgb3IgZGlzYWdyZWVtZW50Lg0KDQpPbiB0
+aGUgb3RoZXIgaGFuZCwgVGhpcyBhZGp1c3RtZW50IG1heSBiZSBiZW5lZmljaWFsIG5vdCBvbmx5
+IGZvciBOVU1BLCBidXQgYWxzbyBmb3INCm90aGVyIHNjaGVkdWxpbmcgbGV2ZWxzIGxpa2UgU0NI
+RURfTUMuIEZvciBleGFtcGxlLCBDUFVzIG1pZ2h0IGJlIG9yZ2FuaXplZCBpbiBhDQpjb3VwbGUg
+b2YgZ3JvdXBzIGluc2lkZSBzaW5nbGUgb25lIE5VTUEgbm9kZS4NCg0KPiANCj4gVGhlIGRlZmF1
+bHQgYmVoYXZpb3Igb2YgbG9hZCBiYWxhbmNlciBpcyBhbGwgYWJvdXQgc3ByZWFkaW5nIHRhc2tz
+Lg0KPiBUaGVuIHdlIGhhdmUgMiBOVU1BIGhvb2tzIHRvIHByZXZlbnQgdGhpcyB0byBoYXBwZW4g
+aWYgaXQgZG9lc24ndCBtYWtlDQo+IHNlbnNlOg0KPiAtVGhpcyBhZGp1c3RfbnVtYV9pbWJhbGFu
+Y2UoKQ0KPiAtVGhlIGZicV90eXBlIHdoaWNoIGlzIHVzZWQgdG8gc2tpcCBzb21lIHJxcw0KPiAN
+Cj4gRmluYWxseSwgdGhlcmUgd2VyZSBzZXZlcmFsIGRpc2N1c3Npb25zIGFyb3VuZCBhZGp1c3Rf
+bnVtYV9pbWJhbGFuY2UoKQ0KPiB3aGVuIGl0IHdhcyBpbnRyb2R1Y2VkIGFuZCBvbmUgd2FzIGhv
+dyB0byBkZWZpbmUgaG93IG11Y2ggaW1iYWxhbmNlIGlzDQo+IGFsbG93ZWQgdGhhdCB3aWxsIG5v
+dCByZWdyZXNzIHRoZSBwZXJmb3JtYW5jZS4gVGhlIGNvbmNsdXNpb24gd2FzIHRoYXQNCj4gaXQg
+ZGVwZW5kcyBvZiBhIGxvdCBvZiBpbnB1dHMgYWJvdXQgdGhlIHRvcG9sb2d5IGxpa2UgdGhlIG51
+bWJlciBvZg0KPiBDUFVzLCB0aGUgbnVtYmVyIG9mIG5vZGVzLCB0aGUgZGlzdGFuY2UgYmV0d2Vl
+biBub2RlcyBhbmQgc2V2ZXJhbA0KPiBvdGhlcnMgdGhpbmdzLiBTbyBhcyBhIDFzdCBzdGVwLCBp
+dCB3YXMgZGVjaWRlZCB0byB1c2UgdGhlIHNpbXBsZSBhbmQNCj4gY3VycmVudCBpbXBsZW1lbnRh
+dGlvbi4NCg0KSXQgc2VlbXMgeW91IG1lYW4gd2UgY2FuIGZpZ3VyZSBvdXQgYSBmb3JtdWxhIHRv
+IGdldCB0aGUgaW1iYWxhbmNlIHZhbHVlIGJhc2VkDQpvbiB0aGUgbnVtYmVyIG9mIGNwdSwgdGhl
+IG51bWJlciBvZiBub2RlcywgdGhlIGRpc3RhbmNlIGJldHdlZW4gbm9kZXM/DQoNClgxOiB0aGUg
+bnVtYmVyIG9mIGNwdSBpbiBlYWNoIG5vZGUNClgyOiB0aGUgbnVtYmVyIG9mIG5vZGVzDQpYMzog
+dGhlIGRpc3RhbmNlIGJldHdlZW4gbm9kZXMNClg0OiAuLi4gLy9vdGhlciBmYWN0b3JzDQpZOiBp
+bWJhbGFuY2UgdmFsdWUNCg0KWSA9IGYoWDEsIFgyLCBYMywgWDQpDQoNClRoYXQgaXMgd2hhdCB5
+b3UgbWVhbj8NCg0KPiANCj4gVGhlIDEvNCB0aHJlc2hvbGQgdGhhdCB5b3UgdXNlIGFib3ZlIG1h
+eSB3b3JrIGZvciBzb21lIHVzZWQgY2FzZXMgb24NCj4geW91ciBzeXN0ZW0gYnV0IHdpbGwgbW9z
+dCBwcm9iYWJseSBiZSB3cm9uZyBmb3Igb3RoZXJzLiBXZSBtdXN0IGZpbmQNCj4gc29tZXRoaW5n
+IHRoYXQgaXMgbm90IGp1c3QgYSBoZXVyaXN0aWMgYW5kIGNhbiB3b3JrIG9mIG90aGVyIHN5c3Rl
+bQ0KPiB0b28NCj4gDQo+IA0KPiANCj4gPiArICAgICAgICAgICAgICAgICAgICAgICB9DQo+ID4g
+ICAgICAgICAgICAgICAgICAgICAgICAgZW52LT5pbWJhbGFuY2UgPQ0KPiBhZGp1c3RfbnVtYV9p
+bWJhbGFuY2UoZW52LT5pbWJhbGFuY2UsDQo+ID4NCj4gYnVzaWVzdC0+c3VtX25yX3J1bm5pbmcp
+Ow0KPiA+ICsgICAgICAgICAgICAgICB9DQo+ID4NCj4gPiAgICAgICAgICAgICAgICAgcmV0dXJu
+Ow0KPiA+ICAgICAgICAgfQ0KPiA+DQo+ID4gQW5kIEkgd3JvdGUgYSBzaW1wbGUgcHJvY2VzcyB3
+aXRoIDQgdGhyZWFkcyB0byBtZWFzdXJlIHRoZSBleGVjdXRpb24gdGltZToNCj4gPg0KPiA+ICNp
+bmNsdWRlIDxzdGRpby5oPg0KPiA+ICNpbmNsdWRlIDxwdGhyZWFkLmg+DQo+ID4gI2luY2x1ZGUg
+PHN5cy90eXBlcy5oPg0KPiA+DQo+ID4gc3RydWN0IGZvbyB7DQo+ID4gICAgIGludCB4Ow0KPiA+
+ICAgICBpbnQgeTsNCj4gPiB9IGYxOw0KPiA+DQo+ID4gdm9pZCogdGhyZWFkX2Z1bjEodm9pZCog
+cGFyYW0pDQo+ID4gew0KPiA+ICAgICBpbnQgcyA9IDA7DQo+ID4gICAgIGZvciAoaW50IGkgPSAw
+OyBpIDwgMTAwMDAwMDAwMDsgKytpKQ0KPiA+ICAgICAgICAgcyArPSBmMS54Ow0KPiA+ICAgICAg
+ICAgcmV0dXJuIE5VTEw7DQo+ID4gfQ0KPiA+DQo+ID4gdm9pZCogdGhyZWFkX2Z1bjIodm9pZCog
+cGFyYW0pDQo+ID4gew0KPiA+ICAgICBmb3IgKGludCBpID0gMDsgaSA8IDEwMDAwMDAwMDA7ICsr
+aSkNCj4gPiAgICAgICAgICsrZjEueTsNCj4gPiAgICAgICAgIHJldHVybiBOVUxMOw0KPiA+IH0N
+Cj4gPg0KPiA+IGRvdWJsZSBkaWZmdGltZXZhbChjb25zdCBzdHJ1Y3QgdGltZXZhbCAqc3RhcnQs
+IGNvbnN0IHN0cnVjdCB0aW1ldmFsICplbmQpDQo+ID4gew0KPiA+ICAgICAgICAgZG91YmxlIGQ7
+DQo+ID4gICAgICAgICB0aW1lX3QgczsNCj4gPiAgICAgICAgIHN1c2Vjb25kc190IHU7DQo+ID4N
+Cj4gPiAgICAgICAgIHMgPSBzdGFydC0+dHZfc2VjIC0gZW5kLT50dl9zZWM7DQo+ID4gICAgICAg
+ICB1ID0gc3RhcnQtPnR2X3VzZWMgLSBlbmQtPnR2X3VzZWM7DQo+ID4NCj4gPiAgICAgICAgIGQg
+PSBzOw0KPiA+ICAgICAgICAgZCArPSB1LzEwMDAwMDAuMDsNCj4gPg0KPiA+ICAgICAgICAgcmV0
+dXJuIGQ7DQo+ID4gfQ0KPiA+DQo+ID4gaW50IG1haW4odm9pZCkNCj4gPiB7DQo+ID4gICAgICAg
+ICBwdGhyZWFkX3QgdGlkMSx0aWQyLHRpZDMsdGlkNDsNCj4gPiAgICAgICAgIHN0cnVjdCB0aW1l
+dmFsIHN0YXJ0LGVuZDsNCj4gPg0KPiA+ICAgICAgICAgZ2V0dGltZW9mZGF5KCZzdGFydCwgTlVM
+TCk7DQo+ID4NCj4gPiAgICAgICAgIHB0aHJlYWRfY3JlYXRlKCZ0aWQxLE5VTEwsdGhyZWFkX2Z1
+bjEsTlVMTCk7DQo+ID4gICAgICAgICBwdGhyZWFkX2NyZWF0ZSgmdGlkMixOVUxMLHRocmVhZF9m
+dW4yLE5VTEwpOw0KPiA+ICAgICAgICAgcHRocmVhZF9jcmVhdGUoJnRpZDMsTlVMTCx0aHJlYWRf
+ZnVuMSxOVUxMKTsNCj4gPiAgICAgICAgIHB0aHJlYWRfY3JlYXRlKCZ0aWQ0LE5VTEwsdGhyZWFk
+X2Z1bjIsTlVMTCk7DQo+ID4NCj4gPiAgICAgICAgIHB0aHJlYWRfam9pbih0aWQxLE5VTEwpOw0K
+PiA+ICAgICAgICAgcHRocmVhZF9qb2luKHRpZDIsTlVMTCk7DQo+ID4gICAgICAgICBwdGhyZWFk
+X2pvaW4odGlkMyxOVUxMKTsNCj4gPiAgICAgICAgIHB0aHJlYWRfam9pbih0aWQ0LE5VTEwpOw0K
+PiA+DQo+ID4gICAgICAgICBnZXR0aW1lb2ZkYXkoJmVuZCwgTlVMTCk7DQo+ID4NCj4gPiAgICAg
+ICAgIHByaW50ZigiZXhlY3V0aW9uIHRpbWU6JWZcbiIsIGRpZmZ0aW1ldmFsKCZlbmQsICZzdGFy
+dCkpOw0KPiA+IH0NCj4gPg0KPiA+IEJlZm9yZSB0aGUgUG9DIHBhdGNoLCB0aGUgdGVzdCByZXN1
+bHQ6DQo+ID4gJCAuL2Eub3V0DQo+ID4gZXhlY3V0aW9uIHRpbWU6MTAuNzM0NTgxDQo+ID4NCj4g
+PiBBZnRlciB0aGUgUG9DIHBhdGNoLCB0aGUgdGVzdCByZXN1bHQ6DQo+ID4gJCAuL2Eub3V0DQo+
+ID4gZXhlY3V0aW9uIHRpbWU6Ni43NzUxNTANCj4gPg0KPiA+IFRoZSBleGVjdXRpb24gdGltZSBy
+ZWR1Y2VzIGFyb3VuZCAzMC00MCUgYmVjYXVzZSA0IHRocmVhZHMgYXJlIHB1dCBpbg0KPiBzaW5n
+bGUgb25lIG51bWEgbm9kZS4NCj4gPg0KPiA+IE9uIHRoZSBvdGhlciBoYW5kLCB0aGUgcGF0Y2gg
+ZG9lc24ndCBoYXZlIHRvIGRlcGVuZCBvbiBOVU1BLCBpdCBjYW4gYWxzbw0KPiBhcHBseSB0byBT
+Q0hFRF9NQyB3aXRoIHNvbWUgY2hhbmdlcy4gSWYgb25lIENQVSBjYW4gYmUgc3RpbGwgaWRsZSBh
+ZnRlciB0aGV5DQo+IGhhbmRsZSBhbGwgdGFza3MgaW4gdGhlIHN5c3RlbSwgd2UgbWF5YmUgbm90
+IG5lZWQgdG8gd2FrZSB1cCB0aGUgMm5kIENQVSBhdA0KPiBhbGw/DQo+ID4NCj4gPiBJIHVuZGVy
+c3RhbmQgdGhpcyBQb0MgcGF0Y2ggY291bGQgaGF2ZSBuZWdhdGl2ZSBzaWRlIGVmZmVjdCBpbiBz
+b21lIGNvcm5lcg0KPiBjYXNlcywgZm9yIGV4YW1wbGUsIGlmIHRoZSBmb3VyIHRocmVhZHMgcnVu
+bmluZyBpbiBvbmUgcHJvY2VzcyB3YW50IG1vcmUNCj4gbWVtb3J5IGJhbmR3aWR0aCBieSBydW5u
+aW5nIGluIG11bHRpcGxlIG5vZGVzLiBCdXQgZ2VuZXJhbGx5IHNwZWFraW5nLCB3ZQ0KPiBkbyBh
+IHRyYWRlb2ZmIGJldHdlZW4gY2FjaGUgbG9jYWxpdHkgYW5kIGJldHRlciBDUFUgdXRpbGl6YXRp
+b24gYXMgdGhleSBhcmUgdGhlDQo+IG1haW4gY29uY2VybnMuIElmIG9uZSBwcm9jZXNzIGhpZ2hs
+eSBkZXBlbmRzIG9uIG1lbW9yeSBiYW5kd2lkdGgsIHRoZXkNCj4gbWF5IGNoYW5nZSB0aGVpciBt
+ZW1wb2xpY3k/DQoNClRoYW5rcw0KQmFycnkNCg==
