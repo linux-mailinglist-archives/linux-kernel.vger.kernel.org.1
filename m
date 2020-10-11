@@ -2,71 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BBD628A7D6
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 16:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C3F28A7DA
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 16:53:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388070AbgJKOpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 10:45:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35478 "EHLO mail.kernel.org"
+        id S1730174AbgJKOxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 10:53:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53634 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388019AbgJKOpZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 10:45:25 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A080C2078B;
-        Sun, 11 Oct 2020 14:45:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602427525;
-        bh=vNCbxLl9Gr6BpMkpxMUmtZ4tHw70QAR6+ZwOOIXagz0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=a40xISPPyXLStVVrSfNh0f5nWONhK4KbfGT1Tbd2n/lCPhfScnA40Mr3/Qg8tYJEn
-         h5PamBNgikRqAivH/5Qd1lcGDUZp52kreNWEjBqWCi3/tZZ2o0+x9i4Lt9Om2ag4tR
-         d+TMNpC87FKLFWYr2Y2bBJ7B6WaRt+ZcVqVxfUYw=
-Date:   Sun, 11 Oct 2020 16:45:22 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     mdf@kernel.org, krzk@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
-        hao.wu@intel.com
-Subject: Re: [PATCH v9 4/6] fpga: dfl: move dfl bus related APIs to
- include/linux/fpga/dfl.h
-Message-ID: <20201011144522.GB271501@kroah.com>
-References: <1602313793-21421-1-git-send-email-yilun.xu@intel.com>
- <1602313793-21421-5-git-send-email-yilun.xu@intel.com>
+        id S1725863AbgJKOxZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Oct 2020 10:53:25 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9EE40AC3F;
+        Sun, 11 Oct 2020 14:53:23 +0000 (UTC)
+Subject: Re: [PATCH] block: switch to pr_warn() in __device_add_disk()
+To:     Rustam Kovhaev <rkovhaev@gmail.com>, axboe@kernel.dk,
+        linux-block@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+References: <20201011130347.562264-1-rkovhaev@gmail.com>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <745dd869-00ba-19fd-3643-27a92326f424@suse.de>
+Date:   Sun, 11 Oct 2020 16:53:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1602313793-21421-5-git-send-email-yilun.xu@intel.com>
+In-Reply-To: <20201011130347.562264-1-rkovhaev@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 10, 2020 at 03:09:51PM +0800, Xu Yilun wrote:
-> Now the dfl drivers could be made as independent modules and put in
-> different folders according to their functionalities. In order for
-> scattered dfl device drivers to include dfl bus APIs, move the
-> dfl bus APIs to a new header file in the public folder.
+On 10/11/20 3:03 PM, Rustam Kovhaev wrote:
+> syzbot triggered a warning while fuzzing with failslab fault injection
+> enabled
+> let's convert WARN_ON() to pr_warn()
 > 
-> [mdf@kernel.org: Fixed up MAINTAINERS entry merge]
-> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> Reviewed-by: Tom Rix <trix@redhat.com>
-> Acked-by: Wu Hao <hao.wu@intel.com>
-> Signed-off-by: Moritz Fischer <mdf@kernel.org>
+> Reported-and-tested-by: syzbot+f41893bb8c45cd18cf08@syzkaller.appspotmail.com
+> Link: https://syzkaller.appspot.com/bug?extid=f41893bb8c45cd18cf08
+> Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
 > ---
-> v2: updated the MAINTAINERS under FPGA DFL DRIVERS
->     improve the comments
->     rename the dfl-bus.h to dfl.h
-> v3: rebase the patch for previous changes
-> v9: rebase the patch for bus name changes back to "dfl"
-> ---
->  MAINTAINERS              |  1 +
->  drivers/fpga/dfl.c       |  1 +
->  drivers/fpga/dfl.h       | 72 ----------------------------------------
->  include/linux/fpga/dfl.h | 86 ++++++++++++++++++++++++++++++++++++++++++++++++
+>   block/genhd.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/block/genhd.c b/block/genhd.c
+> index 99c64641c314..be9ce35cf0fe 100644
+> --- a/block/genhd.c
+> +++ b/block/genhd.c
+> @@ -822,7 +822,8 @@ static void __device_add_disk(struct device *parent, struct gendisk *disk,
+>   		/* Register BDI before referencing it from bdev */
+>   		dev->devt = devt;
+>   		ret = bdi_register(bdi, "%u:%u", MAJOR(devt), MINOR(devt));
+> -		WARN_ON(ret);
+> +		if (ret)
+> +			pr_warn("%s: failed to register backing dev info\n", disk->disk_name);
+>   		bdi_set_owner(bdi, dev);
+>   		blk_register_region(disk_devt(disk), disk->minors, NULL,
+>   				    exact_match, exact_lock, disk);
+> 
+Please, don't. Where is the point in continuing here?
+I'd rather have it fixed up properly, either by having a return value to 
+__device_add_disk() or by allowing the caller to check (eg by checking 
+GENHD_FL_UP) if the call succeeded.
 
-Why in the fpga directory?
+Cheers,
 
-thanks,
-
-greg k-h
+Hannes
+-- 
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
