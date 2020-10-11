@@ -2,87 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5B1928A93D
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 20:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F9A028A93C
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 20:23:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727694AbgJKSXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 14:23:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50738 "EHLO
+        id S1727274AbgJKSXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 14:23:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727322AbgJKSXi (ORCPT
+        with ESMTP id S1725995AbgJKSXV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 14:23:38 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEA5CC0613CE
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 11:23:38 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id f21so2949532qko.5
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 11:23:38 -0700 (PDT)
+        Sun, 11 Oct 2020 14:23:21 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40EC8C0613CE
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 11:23:21 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id o8so7224801pll.4
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 11:23:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=m0BP0WWNBc1kPJXyCU75zbEA8DVMOc+8VoH03e5lNmc=;
-        b=LtWKMuz6P+DE0umPczhi0z+awwBlfeX7mYquTJdHMBzI2l6DhuqaNtswgW0EXIpW1t
-         FrqNzm84B5G+9UXdZ8YXV/NLkexMrUvnY8VgpHO3Ffy4Er9lnlpdj8JWxIKOvF3feyQC
-         MP3IcJd83eWozW5O+KARYKs8ZyyH0c9nTv/5X+IO6lTCfHHB05fex5CqHILk0yyh1xEU
-         43D0bj83cmCpsizk8cgn1cwmPx8a9EFYdklQIAPh3EeKmW9X34X/nIt/A/zCHiZeEc1y
-         dwrcX68TDkEMTnQ3tJZ3RPrNxDjPAY5iTkurPCPGvcd/+mr1Y4Tzs4OwJJDLxLnPghDp
-         6sIQ==
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=t3AZiOshU75xFxVhKtOPpxCB0MdjE/5cVCluYGhjylk=;
+        b=Mqs2jjFdzr9yb119/grQyek6pYmLuM2wwyPBt7Z3D4CNX3Pu1Zda6yE9RY0HwCLe7V
+         wKN1xcrreoGdJgh4YRuAAyVk9x9pBem5o5JDDaipsXdunMWH6GMdHAFACJh3IjOm4/ed
+         CKG3E/QdGoHhcrm8pdf0UcSUVZEPYXUdUAnbk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=m0BP0WWNBc1kPJXyCU75zbEA8DVMOc+8VoH03e5lNmc=;
-        b=Lytcn1BdLgnvSlh7uKWTeSwvKOq4veGlDBTHlyWQWc1QbwT4nvTbf7iXPcF3TpgGu5
-         k+39cbGgxLO0tTXD1k4X5uDjRpJFi3I71Bt+5ZxHhbaR/rcMhvtraEMNw8E6C4lDR27x
-         egd7ywPYlFP81T04/HxPvObEeTgXjeQ2zZdstPxCqT9Nujq4ZJXv4aOgoKeCp9L68MCg
-         k9ZhNR0gEu+hSoBQgNLCESkpXNuEHvepl1sLMoBidgVVW/ecyqZ0SlimT/TAXbL63AOp
-         AnzyhTWDb7Q582q620JckYgOmfRlBiVjqVjfvdDndjuCg59QSrobsLYFRUQAF88GEgq7
-         qiag==
-X-Gm-Message-State: AOAM533BkvFSAcoXBRcAYZL2p46uGb/iD7CQ33qYfeysjDGdlUGbuEVO
-        pxZVeirzBBtqqnhIz+eY/F91xE77sB2j
-X-Google-Smtp-Source: ABdhPJxrviZdh2A/zK6dCqnQ3OiXnqOQ6cEcIdHbmBspQASoQBUnNCitdgI1nx3AK0VnqmHnHChR0w==
-X-Received: by 2002:a05:620a:2442:: with SMTP id h2mr6577467qkn.225.1602440617736;
-        Sun, 11 Oct 2020 11:23:37 -0700 (PDT)
-Received: from localhost (ool-2f10a155.dyn.optonline.net. [47.16.161.85])
-        by smtp.gmail.com with ESMTPSA id t35sm4250136qtc.80.2020.10.11.11.23.36
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=t3AZiOshU75xFxVhKtOPpxCB0MdjE/5cVCluYGhjylk=;
+        b=i8Dng2aCVqOFs8NclL4nKkU6gb3MnTWYAAmEUFBEOQ0q/oDiFZPpEbejerd6tNazwS
+         qwxq0c6O6bxkDeF7hBLsq/83hmSLMs7oDWE8PBcw/TdKgS/91szwWsL+qztgpJHh6V/v
+         jaG8dUvijoaggy5qUPlnasL9vfYUA/X1pwHvjuhrHOkdMPZi2O8E/nmGz9TNqrzLWSDI
+         qUTOXiuJy/x4h5Z+qKn7mDqzMVjFrcaXGlWWGTsSwZeyJClbxRJ0Okd/yHciwwKhTSn7
+         VMy0Xl0fnmVbpEjCZRpd7u0qsul/h/Dc9iUR5Eu0rD/JC/YlPnm3YNCKM1Q/OSbyFcHe
+         iTSg==
+X-Gm-Message-State: AOAM530H1DBn7BB8ofXKBC4pqxRbajORJeyXU/qP0blJcUcLJPMSZkx5
+        Ku1REj3xMSo3NpP8KNAL6D9kbA==
+X-Google-Smtp-Source: ABdhPJyVudpWgpDE0cKIeBLsacfiNIcPOyeah1iXQJw2brUTLX3uocdnN019tbB++nvsYO1vNA2ZQQ==
+X-Received: by 2002:a17:902:326:b029:d1:e5e7:be04 with SMTP id 35-20020a1709020326b02900d1e5e7be04mr21001195pld.55.1602440600447;
+        Sun, 11 Oct 2020 11:23:20 -0700 (PDT)
+Received: from rayagonda.dhcp.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id g1sm21977807pjj.3.2020.10.11.11.23.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Oct 2020 11:23:37 -0700 (PDT)
-From:   Samuel Hernandez <sam.hernandez.amador@gmail.com>
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     linux-kernel@vger.kernel.org,
-        Samuel Hernandez <sam.hernandez.amador@gmail.com>
-Subject: [PATCH] rcutorture/nolibc: Fix a typo in header file
-Date:   Sun, 11 Oct 2020 14:22:31 -0400
-Message-Id: <20201011182230.25602-1-sam.hernandez.amador@gmail.com>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sun, 11 Oct 2020 11:23:19 -0700 (PDT)
+From:   Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
+To:     Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Wolfram Sang <wsa@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Lori Hikichi <lori.hikichi@broadcom.com>,
+        Dhananjay Phadke <dphadke@linux.microsoft.com>,
+        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
+Subject: [PATCH v1 0/6] fix iproc driver to handle master read request
+Date:   Sun, 11 Oct 2020 23:52:48 +0530
+Message-Id: <20201011182254.17776-1-rayagonda.kokatanur@broadcom.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000cb002505b16946a3"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Samuel Hernandez <sam.hernandez.amador@gmail.com>
----
-This fixes a supposed typo. Before this, the AT_FDCWD macro would be defined
-regardless of whether or not it's been defined before.
+--000000000000cb002505b16946a3
 
- tools/include/nolibc/nolibc.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This series of patches adds the following,
+- Handle master abort error
+- Fix support for single/multi byte master read request with/without
+repeated start.
+- Handle rx fifo full interrupt
+- Fix typo
 
-diff --git a/tools/include/nolibc/nolibc.h b/tools/include/nolibc/nolibc.h
-index 2551e9b71167..d6d2623c99ad 100644
---- a/tools/include/nolibc/nolibc.h
-+++ b/tools/include/nolibc/nolibc.h
-@@ -231,7 +231,7 @@ struct rusage {
- #define DT_SOCK   12
- 
- /* all the *at functions */
--#ifndef AT_FDWCD
-+#ifndef AT_FDCWD
- #define AT_FDCWD             -100
- #endif
- 
+Rayagonda Kokatanur (6):
+  i2c: iproc: handle Master aborted error
+  i2c: iproc: handle only slave interrupts which are enabled
+  i2c: iproc: update slave isr mask (ISR_MASK_SLAVE)
+  i2c: iproc: fix typo in slave_isr function
+  i2c: iproc: handle master read request
+  i2c: iproc: handle rx fifo full interrupt
+
+ drivers/i2c/busses/i2c-bcm-iproc.c | 254 +++++++++++++++++++++++------
+ 1 file changed, 200 insertions(+), 54 deletions(-)
+
 -- 
-2.26.2
+2.17.1
 
+
+--000000000000cb002505b16946a3
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+xVUYGnc0GLrYeHC2X4wJbUsgi+UFM/rVW0RKe5Sg4xmLXWc/rBhXDBVPeFVdN2dYsk5MyDRM/fXj
+cAA+xTX+SQGoND8CAwEAAaOCAdcwggHTMA4GA1UdDwEB/wQEAwIFoDCBngYIKwYBBQUHAQEEgZEw
+gY4wTQYIKwYBBQUHMAKGQWh0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzcGVy
+c29uYWxzaWduMnNoYTJnM29jc3AuY3J0MD0GCCsGAQUFBzABhjFodHRwOi8vb2NzcDIuZ2xvYmFs
+c2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hhMmczME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0
+MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNV
+HRMEAjAAMEQGA1UdHwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJz
+b25hbHNpZ24yc2hhMmczLmNybDArBgNVHREEJDAigSByYXlhZ29uZGEua29rYXRhbnVyQGJyb2Fk
+Y29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJ
+nXsLYTAdBgNVHQ4EFgQU1rE7oQJ7FiSTADFOqokePoGwIq4wDQYJKoZIhvcNAQELBQADggEBAD8I
+VcITGu1E61LQLR1zygqFw8ByKPgiiprMuQB74Viskl7pAZigzYJB8H3Mpd2ljve+GRo8yvbBC76r
+Gi5WdS06XI5vuImDJ2g6QUt754rj7xEYftM5Gy9ZMslKNvSiPPh1/ACx5w7ecD1ZK0YLMKGATeBD
+XybduRFIEPZBAjgJ5LOYT2ax3ZesfAkan1XJ97yLA93edgTTO2cbUAADTIMFWm4lI/e14wdGmK0I
+FtqJWw6DATg5ePiAAn+S0JoIL1xqKsZi2ioNqm02QMFb7RbB3yEGb/7ZLAGcPW666o5GSLsUnPPq
+YOfL/3X6tVfGeoi3IgfI+z76/lXk8vOQzQQxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkw
+FwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2ln
+biAyIENBIC0gU0hBMjU2IC0gRzMCDDw+ri+StHzo6PJZ/DANBglghkgBZQMEAgEFAKCB1DAvBgkq
+hkiG9w0BCQQxIgQgrLCSpwm8csJWkY0OIuKRIj46XP9Da0/VpZovBp1j9NgwGAYJKoZIhvcNAQkD
+MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAxMDExMTgyMzIwWjBpBgkqhkiG9w0BCQ8x
+XDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsG
+CSqGSIb3DQEBCjALBgkqhkiG9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBANxm
+VYiZHCLRQNvkIu0kxan0yUIgW4kTa/lsQpseJYcuf+7TFK4PHFQHkLiPtlNNOUHpUEwyFwT8KQkb
+F1Uc+0bPbVAjnTCT/ldPbSn4m9DBgcBAdscUrJn3B/+keP99DpH8A/puFOf24aoVZ2u08QPXficq
+Rg//n+ZcunTQOCSYDOT0RnNTRe5piG1aTvpWPr1oJYjzbypthoHL02/lOaNvX9w6Png4Jr2oog3V
+TJGFmzDh4sJ+Vhx90TcY78xC8uvIf3fONO2H0y9c0g2Lg1Ak6QKPbljmimVGaIoE5Od1FEQbgsmw
+s3h2smYoITDJIfxYFvWUoc6sm3Ena09tdxI=
+--000000000000cb002505b16946a3--
