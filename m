@@ -2,88 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB8A28A4C9
+	by mail.lfdr.de (Postfix) with ESMTP id EBB0D28A4CA
 	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 02:18:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387613AbgJKAPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 20:15:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387435AbgJKAPT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 20:15:19 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CF47C0613D0
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 17:15:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Date:Message-ID:Subject:From:To:Sender:Reply-To:Cc:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=La+hgOGsGMA3Kx+VM0lI4dSj89AujdojmWxtXn2mHKA=; b=jJ8X+331yYT4zhgG8vaA/dKgOi
-        ErJOowD+ny7HBeWVvjuD1WHj5SIlfwKmCOjqjdqcrKEkKWP243c/5WVslXlU9i81i68HDEe9BVWjk
-        mD1z0H6E/TmnIISbh+/S6d2r1OrGmoy3NY7c8o/CRoozHFtGcq4y7Oq02767cKIHpw+UAXyzMD0rj
-        HXH+vBAAsZlWC8PTHNR4ZC1oNCcs2NHeFzQdLe8BtX+2HJkPwGYfDMdV8QfWkqIfNVB9Qcm61TdCW
-        rz6Yns/MDlonvNChGX4pCWNcIEQabsXZVVwFeYM09lce4mbUOuMpN1gZNVDo0PYWH1YFVAkBXF5el
-        Dh/q+fGw==;
-Received: from [2601:1c0:6280:3f0::507c]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kRP19-0003Ve-6m; Sun, 11 Oct 2020 00:15:15 +0000
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@ZenIV.linux.org.uk>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH] kernel: acct.c: fix some kernel-doc nits
-Message-ID: <b4c33e5d-98e8-0c47-77b6-ac1859f94d7f@infradead.org>
-Date:   Sat, 10 Oct 2020 17:15:12 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1730107AbgJKAS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 20:18:26 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:50576 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726473AbgJKAS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 20:18:26 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602375504; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=GQIDbu7+fq9cMGVT0omtkeQCnmv9hNu0TbjGuYauBis=; b=FzaJlrOzNB4ZxrqAYc/wuTVqcUX4hOaKI9KQ/a6VBwPGv1S830SSG4bfVTajBUp+ju3IndSP
+ NYgZ9hi7/cptHNFl1a1NoRCvXHD5AK9gBTa+DjxkFhWbdMbfndwXwQRslkQj7hf9b46iMWCH
+ SlkbAnJu03p1wMG3Y0k7Q1JNy8c=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5f824f36aad2c3cd1c8e7fc1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 11 Oct 2020 00:17:58
+ GMT
+Sender: mgautam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C2C59C433FF; Sun, 11 Oct 2020 00:17:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.8] (unknown [223.230.69.105])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mgautam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CBB27C433CB;
+        Sun, 11 Oct 2020 00:17:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CBB27C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mgautam@codeaurora.org
+Subject: Re: [PATCH v1 10/10] bus: mhi: core: Mark device inactive soon after
+ host issues a shutdown
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org
+References: <1600480955-16827-1-git-send-email-bbhatt@codeaurora.org>
+ <1600480955-16827-11-git-send-email-bbhatt@codeaurora.org>
+From:   Manu Gautam <mgautam@codeaurora.org>
+Message-ID: <0bdbe5b1-d26c-1bab-14d3-95015ee96e51@codeaurora.org>
+Date:   Sun, 11 Oct 2020 05:47:49 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
+In-Reply-To: <1600480955-16827-11-git-send-email-bbhatt@codeaurora.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
 
-Fix kernel-doc notation to use the documented Returns: syntax
-and place the function description for acct_process() on the
-first line where it should be.
+On 9/19/2020 7:32 AM, Bhaumik Bhatt wrote:
+> Clients on the host may see the device in an active state for a short
+> period of time after the host detects a device error or power down.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
----
- kernel/acct.c |    8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+What scenario is referred as 'device error' here?
+And power down is the non-graceful power_down by controller?
 
---- linux-next-20201009.orig/kernel/acct.c
-+++ linux-next-20201009/kernel/acct.c
-@@ -263,12 +263,12 @@ static DEFINE_MUTEX(acct_on_mutex);
-  * sys_acct - enable/disable process accounting
-  * @name: file name for accounting records or NULL to shutdown accounting
-  *
-- * Returns 0 for success or negative errno values for failure.
-- *
-  * sys_acct() is the only system call needed to implement process
-  * accounting. It takes the name of the file where accounting records
-  * should be written. If the filename is NULL, accounting will be
-  * shutdown.
-+ *
-+ * Returns: 0 for success or negative errno values for failure.
-  */
- SYSCALL_DEFINE1(acct, const char __user *, name)
- {
-@@ -586,9 +586,7 @@ static void slow_acct_process(struct pid
- }
- 
- /**
-- * acct_process
-- *
-- * handles process accounting for an exiting task
-+ * acct_process - handles process accounting for an exiting task
-  */
- void acct_process(void)
- {
+> Prevent any further host activity which could lead to race conditions
+> or multiple callbacks to the controller or any timeouts seen by
+> clients attempting to push data as they must be notified of the host
+> intent sooner rather than later. This also allows the host and device
+> states to be in sync with one another and prevents unnecessary host
+> operations.
+>
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> ---
+>  drivers/bus/mhi/core/main.c |  4 ++++
+>  drivers/bus/mhi/core/pm.c   | 31 +++++++++++++++++++------------
+>  2 files changed, 23 insertions(+), 12 deletions(-)
+>
+> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+> index 1c8e332..5ec89e9 100644
+> --- a/drivers/bus/mhi/core/main.c
+> +++ b/drivers/bus/mhi/core/main.c
+> @@ -400,6 +400,10 @@ irqreturn_t mhi_intvec_threaded_handler(int irq_number, void *priv)
+>  
+>  	 /* If device supports RDDM don't bother processing SYS error */
+>  	if (mhi_cntrl->rddm_image) {
+> +		/* host may be performing a device power down already */
+> +		if (!mhi_is_active(mhi_cntrl))
+> +			goto exit_intvec;
+> +
+>  		if (mhi_cntrl->ee == MHI_EE_RDDM && mhi_cntrl->ee != ee) {
+>  			/* prevent clients from queueing any more packets */
+>  			write_lock_irq(&mhi_cntrl->pm_lock);
+> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+> index 16c04ab..4e2cb41 100644
+> --- a/drivers/bus/mhi/core/pm.c
+> +++ b/drivers/bus/mhi/core/pm.c
+> @@ -469,15 +469,10 @@ static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl,
+>  	write_lock_irq(&mhi_cntrl->pm_lock);
+>  	prev_state = mhi_cntrl->pm_state;
+>  	cur_state = mhi_tryset_pm_state(mhi_cntrl, transition_state);
+> -	if (cur_state == transition_state) {
+> -		mhi_cntrl->ee = MHI_EE_DISABLE_TRANSITION;
+> +	if (cur_state == MHI_PM_SYS_ERR_PROCESS)
+>  		mhi_cntrl->dev_state = MHI_STATE_RESET;
+> -	}
+>  	write_unlock_irq(&mhi_cntrl->pm_lock);
+>  
+> -	/* Wake up threads waiting for state transition */
+> -	wake_up_all(&mhi_cntrl->state_event);
+> -
+>  	if (cur_state != transition_state) {
+>  		dev_err(dev, "Failed to transition to state: %s from: %s\n",
+>  			to_mhi_pm_state_str(transition_state),
+> @@ -486,6 +481,11 @@ static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl,
+>  		return;
+>  	}
+>  
+> +	mhi_cntrl->ee = MHI_EE_DISABLE_TRANSITION;
+> +
+> +	/* Wake up threads waiting for state transition */
+> +	wake_up_all(&mhi_cntrl->state_event);
+> +
+>  	/* Trigger MHI RESET so that the device will not access host memory */
+>  	if (MHI_REG_ACCESS_VALID(prev_state)) {
+>  		u32 in_reset = -1;
+> @@ -1051,22 +1051,29 @@ void mhi_power_down(struct mhi_controller *mhi_cntrl, bool graceful)
+>  	enum dev_st_transition next_state = DEV_ST_TRANSITION_DISABLE;
+>  	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+>  
+> +	mutex_lock(&mhi_cntrl->pm_mutex);
+> +	write_lock_irq(&mhi_cntrl->pm_lock);
+> +
+>  	/* If it's not a graceful shutdown, force MHI to linkdown state */
+>  	if (!graceful) {
+> -		mutex_lock(&mhi_cntrl->pm_mutex);
+> -		write_lock_irq(&mhi_cntrl->pm_lock);
+>  		cur_state = mhi_tryset_pm_state(mhi_cntrl,
+>  						MHI_PM_LD_ERR_FATAL_DETECT);
+> -		write_unlock_irq(&mhi_cntrl->pm_lock);
+> -		mutex_unlock(&mhi_cntrl->pm_mutex);
+> -		if (cur_state != MHI_PM_LD_ERR_FATAL_DETECT)
+> +		if (cur_state != MHI_PM_LD_ERR_FATAL_DETECT) {
+>  			dev_dbg(dev, "Failed to move to state: %s from: %s\n",
+>  				to_mhi_pm_state_str(MHI_PM_LD_ERR_FATAL_DETECT),
+>  				to_mhi_pm_state_str(mhi_cntrl->pm_state));
+> -		else
+> +		} else {
+>  			next_state = DEV_ST_TRANSITION_FATAL;
+> +			wake_up_all(&mhi_cntrl->state_event);
+> +		}
+>  	}
+>  
+> +	/* mark device inactive to avoid any further host processing */
+> +	mhi_cntrl->dev_state = MHI_STATE_RESET;
+> +
+> +	write_unlock_irq(&mhi_cntrl->pm_lock);
+> +	mutex_unlock(&mhi_cntrl->pm_mutex);
+> +
+>  	mhi_queue_state_transition(mhi_cntrl, next_state);
+>  
+>  	/* Wait for shutdown to complete */
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
