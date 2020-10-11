@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63FE028A66C
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 10:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C07228A66E
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 10:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387397AbgJKIxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 04:53:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48410 "EHLO
+        id S2387434AbgJKI43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 04:56:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727904AbgJKIxO (ORCPT
+        with ESMTP id S2387397AbgJKI42 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 04:53:14 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E50BCC0613CE;
-        Sun, 11 Oct 2020 01:53:12 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id j22so9667285lfe.10;
-        Sun, 11 Oct 2020 01:53:12 -0700 (PDT)
+        Sun, 11 Oct 2020 04:56:28 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04684C0613CE;
+        Sun, 11 Oct 2020 01:56:26 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id f21so13846841ljh.7;
+        Sun, 11 Oct 2020 01:56:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:organization:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=FAtN4FsQD2DA1DwQ31xS/hb71H89jw4lOSPGVhG6ZKk=;
-        b=CnNFq616C6vUUuLJMFi9VOiTB/8tRBRLIBUUqgfdrmZ5R54PuiUgEuSOr4M87HP+Nl
-         j3IUrQioPIfXuSRhXntmi6iiCDOUWPUmNaSykrBPhp3327sVAvk63NmRjdM0E970S9C9
-         ciltBulid4LZ+muj7r78q7tA91AWwaYt1AM6SailS4BvdYWYCecyEdIDjjYfddeAkUpj
-         5nIyUtroww12dd4XcPTcTsRdkF9Am9FmL07HAQSPJPBXqmQ4LTKjY7bAAVt5VjGKt9fT
-         LFCtEyc3ntY3hOfg8VRjxscj8S6wp9xjw9wfldjUgf5CuB+3xvseR1o6F7C7+9oQWV3k
-         muxQ==
+        bh=Av8iAeeJxUiyFO/5WdyIDg1zCHvYHT1L81w3SGv8akA=;
+        b=kOgDEeS6BoOVfPvzdy+8ZqJ4Dw0PYzHZzdDTfdSjH+RnAcpJg6HNcLeppjjocH2af2
+         ttICfqYhuH+XpMqcpXFJU+feojPisEiqHBCvdMsV5pOc331p9/wMLJVOUvExwTw8Js8S
+         bRf/9c9FJ+lZhjeYASAAmPReoUFosLjbJnlK0Xped+o7R8s+KlOzyWCBEYK+NiYTqcBL
+         ZGqL+GISx2gaRFc1b3cFpLWpCW38SfLa3rmHfIck9T4w3h16xOIEOk8BKE+GwWBFz1fr
+         xapxoIU94QwUYcqqTKd6tWGrKFUVvgrfD5/vfQql8ENZg8h6LdLVOdCrK9Pj2L7eR1/f
+         DEWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:organization
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=FAtN4FsQD2DA1DwQ31xS/hb71H89jw4lOSPGVhG6ZKk=;
-        b=mPn3Ry4mmsTA6dD5cNVDFc7zWNIw6Bxj9IzYFdM/xFHrRTTaE4UTCigsYtub89JaKC
-         T1tmYBV8kQZiFF6adcir6EiNpZEPdi7P3l2OvAX0v+1M9+iIKCyPrCUbrIZYLo5wOWk/
-         ++OHVeBwFsIR3dhd4h9uzUea/hnH0mk0ZvR0Xzos0ikLBrrWio9zIuhwvZJdQcxAbBV4
-         tAObMnVr5SjtcD1T3KDU+MgwhuOkEOaA+EWFEDl3YpeGZ2KN6RzmNC/QmrDitm0aUROC
-         oA7Yuo23V092p91sQIrzhnDIsCV7KDmY+l86Gcx633s5E81v1HxdXkAut9sz1fKQl56g
-         8GEA==
-X-Gm-Message-State: AOAM532hhmbbfph4sKfVqt32b3DO4amr8JfBWU+eTWHdbFH6ASW92Q1h
-        BaCza0Ncw1d1b4tn6PdkREnyH9TSEUtnkw==
-X-Google-Smtp-Source: ABdhPJzNgceZ2FFEEC2FwjqBWprWdldvW/fLhToS10xhGVdBEz1qRDZaG2r+sJxNUsdpyqPKYyaI9A==
-X-Received: by 2002:a19:c3cf:: with SMTP id t198mr6228526lff.461.1602406391253;
-        Sun, 11 Oct 2020 01:53:11 -0700 (PDT)
+        bh=Av8iAeeJxUiyFO/5WdyIDg1zCHvYHT1L81w3SGv8akA=;
+        b=fiXgAKV4ZGMPf4mDA/+7klAV08dg0KOg7nr5w3g9kaYld3+oc3utlx5vEhdQ5PzG+R
+         omohWUR78sga4gSgy0VvGAG6nMYVCmdAPUJR4ToA7HlYa3Nn9KUOiPETOBpZJNFz1vmk
+         kIqeZR7fG9/yRsI+/ZmlraaNKRrPUTm9M0SP0GNyaKDXrcwkKA4MNqWQ60WgFmwBawTE
+         7rzFGceFU6i73kf2sAGlXDn259WZyhGg7C02D1zLPGAG0enIE+lO71LcZ9PF2NdL6qCb
+         vh7zFcTxWW+oilqz9FD6Xk3vYMYagP7lHPxZRv6tC6n9goQUpzQnGJUEVcUjoD0FWPce
+         X53A==
+X-Gm-Message-State: AOAM533O/g7Mv5mWYjUpUFoaNrJ52OBL6U0ICkf1jQUq3VxMPNyWRWy3
+        CcAgegfIDTGowmrD2oxtV2eKHE+nfcXKww==
+X-Google-Smtp-Source: ABdhPJx35lBDessle3fqVVBE1Qxfco3IimdGm/48RbiIgMJQXQhamZwV+P2ukrfdUZCsu91d7rbhVw==
+X-Received: by 2002:a2e:681a:: with SMTP id c26mr8685853lja.56.1602406585182;
+        Sun, 11 Oct 2020 01:56:25 -0700 (PDT)
 Received: from ?IPv6:2a00:1fa0:4275:c0a:6554:d910:ceb:9024? ([2a00:1fa0:4275:c0a:6554:d910:ceb:9024])
-        by smtp.gmail.com with ESMTPSA id p20sm2171292ljg.13.2020.10.11.01.53.09
+        by smtp.gmail.com with ESMTPSA id g9sm2450350lfd.1.2020.10.11.01.56.23
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 11 Oct 2020 01:53:10 -0700 (PDT)
-Subject: Re: [PATCH 11/18] dt-bindings: usb: dwc3: Add interrupt-names
- property support
+        Sun, 11 Oct 2020 01:56:24 -0700 (PDT)
+Subject: Re: [PATCH 13/18] dt-bindings: usb: dwc3: Add Tx De-emphasis
+ restrictions
 To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Mathias Nyman <mathias.nyman@intel.com>,
         Felipe Balbi <balbi@kernel.org>,
@@ -70,15 +70,15 @@ Cc:     Serge Semin <fancer.lancer@gmail.com>,
         Kevin Hilman <khilman@baylibre.com>, linux-usb@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20201010224121.12672-1-Sergey.Semin@baikalelectronics.ru>
- <20201010224121.12672-12-Sergey.Semin@baikalelectronics.ru>
+ <20201010224121.12672-14-Sergey.Semin@baikalelectronics.ru>
 From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
 Organization: Brain-dead Software
-Message-ID: <a2850dee-6c6b-2ae9-eed4-a13b3f8e532f@gmail.com>
-Date:   Sun, 11 Oct 2020 11:53:07 +0300
+Message-ID: <4b256e47-d058-a74f-0ad1-677886a03e74@gmail.com>
+Date:   Sun, 11 Oct 2020 11:56:21 +0300
 User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <20201010224121.12672-12-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20201010224121.12672-14-Sergey.Semin@baikalelectronics.ru>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -88,12 +88,17 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 11.10.2020 1:41, Serge Semin wrote:
 
-> The controller driver supports two types of DWC USB3 devices: with a
-> common interrupt lane and with individual interrupts for each mode. Add
-> both of these cases support to the DWC USB3 DT schema.
+> In accordance with the driver comments the PIPE3 de-emphasis can be tunned
 
-    Add support for both these cases?
+    Tuned.
 
+> to be either -6dB, or -2.5dB or disabled. Let's add the de-emphasis
+
+    Either -6dB, -2.5dB, or disabled?
+
+> property restriction so the DT schema would make sure the controller DT
+> node is equipped with correct values.
+> 
 > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 [...]
 
