@@ -2,96 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D7B028AAD3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 00:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC3F428AAD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 00:03:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387611AbgJKWDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 18:03:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387413AbgJKWDw (ORCPT
+        id S2387568AbgJKWDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 18:03:41 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:54376 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387413AbgJKWDk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 18:03:52 -0400
-Received: from valentin-vidic.from.hr (valentin-vidic.from.hr [IPv6:2001:470:1f0b:3b7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01DEAC0613CE;
-        Sun, 11 Oct 2020 15:03:51 -0700 (PDT)
-X-Virus-Scanned: Debian amavisd-new at valentin-vidic.from.hr
-Received: by valentin-vidic.from.hr (Postfix, from userid 1000)
-        id 8B0BC3FF6; Mon, 12 Oct 2020 00:03:48 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=valentin-vidic.from.hr; s=2020; t=1602453828;
-        bh=hSs9rp0gRrGMiv6Fn2XmzIuoSpKz2lOe6leFqgPnLsY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zaqQw42ZM37C7GEj2x9tV6tiF0613gorGmtqzf+/+25aTTS/hOB22r5ixC/eo2rT3
-         N7x5BqBZkQOr+jEtVY7FOm3raYr+cWLQcrtIzJy6o7pfqmzAgvl9FonZjaS2MqheDg
-         aLpHmZUs9TDHAJrzL5mDtVq9rRuoDqkeovXziGk/fkFMullfuzs0noqnlhEfFgViSY
-         9DXTUhT6kWYLM61YB4mWCPiHC9bKqOznDZPjE3NlrYmJLkbmEp2+xUaaehbfPJyDzN
-         C0pkkYp7WREkQ5Xsqajbz0jRcgg5VNGYCqsvFGupBDVTEO9T4WmCWPcF5ljpI+fm4H
-         fm0QZ5mw3DzPUeyVpgRvBeSh/I+CF1mSKgjwhz7NEp+eR+9vp9GrIH12crL58klK5R
-         uZM6LYWJYgsj5v99w7Ne0ak9Uwn840x4unb+SkZIGCxdt34t/nelyCtgumu5NDzqdm
-         rf0kku+ucdC+Gz6iTNEeHUcuZmJ4DZ9QJ3SQ444L/bejBkgsCiXoqF1L86n5/43Crz
-         5m4Kk3sUjAmPWZHqBHr0aO6tr9RptJF9UnPkHVTRPHvwheeNAGMteppCzBoTRCBRAd
-         08nO5KQ0kqGZzuQ6FswP+DQGrQFC5RjIWP0Wy6530Gxt6rhYHT1U6xpmYhjw0vJXw8
-         5D6sGiBxphRCr9g/TnqMOY7A=
-From:   Valentin Vidic <vvidic@valentin-vidic.from.hr>
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Philip Rischel <rischelp@idt.com>,
-        Florian Fainelli <florian@openwrt.org>,
-        Roman Yeryomin <roman@advem.lv>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Martin Habets <mhabets@solarflare.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Valentin Vidic <vvidic@valentin-vidic.from.hr>
-Subject: [PATCH v2] net: korina: fix kfree of rx/tx descriptor array
-Date:   Mon, 12 Oct 2020 00:03:29 +0200
-Message-Id: <20201011220329.13038-1-vvidic@valentin-vidic.from.hr>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201011212135.GD8773@valentin-vidic.from.hr>
-References: <20201011212135.GD8773@valentin-vidic.from.hr>
+        Sun, 11 Oct 2020 18:03:40 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 5813A1C0B77; Mon, 12 Oct 2020 00:03:38 +0200 (CEST)
+Date:   Mon, 12 Oct 2020 00:03:37 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc:     Pavel Machek <pavel@denx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 4.19 21/38] spi: fsl-espi: Only process interrupts for
+ expected events
+Message-ID: <20201011220337.GA21317@amd>
+References: <20201005142108.650363140@linuxfoundation.org>
+ <20201005142109.694666032@linuxfoundation.org>
+ <20201006193634.GB8771@duo.ucw.cz>
+ <e96519d3-8b58-4715-1ada-6139749e6da3@alliedtelesis.co.nz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="vtzGhvizbBRQ85DL"
+Content-Disposition: inline
+In-Reply-To: <e96519d3-8b58-4715-1ada-6139749e6da3@alliedtelesis.co.nz>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kmalloc returns KSEG0 addresses so convert back from KSEG1
-in kfree. Also make sure array is freed when the driver is
-unloaded from the kernel.
 
-Fixes: ef11291bcd5f ("Add support the Korina (IDT RC32434) Ethernet MAC")
-Signed-off-by: Valentin Vidic <vvidic@valentin-vidic.from.hr>
----
- v2: convert kfree address back to KSEG0
+--vtzGhvizbBRQ85DL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- drivers/net/ethernet/korina.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Hi!
 
-diff --git a/drivers/net/ethernet/korina.c b/drivers/net/ethernet/korina.c
-index 03e034918d14..af441d699a57 100644
---- a/drivers/net/ethernet/korina.c
-+++ b/drivers/net/ethernet/korina.c
-@@ -1113,7 +1113,7 @@ static int korina_probe(struct platform_device *pdev)
- 	return rc;
- 
- probe_err_register:
--	kfree(lp->td_ring);
-+	kfree(KSEG0ADDR(lp->td_ring));
- probe_err_td_ring:
- 	iounmap(lp->tx_dma_regs);
- probe_err_dma_tx:
-@@ -1133,6 +1133,7 @@ static int korina_remove(struct platform_device *pdev)
- 	iounmap(lp->eth_regs);
- 	iounmap(lp->rx_dma_regs);
- 	iounmap(lp->tx_dma_regs);
-+	kfree(KSEG0ADDR(lp->td_ring));
- 
- 	unregister_netdev(bif->dev);
- 	free_netdev(bif->dev);
--- 
-2.20.1
+> >> [ Upstream commit b867eef4cf548cd9541225aadcdcee644669b9e1 ]
+> >>
+> >> The SPIE register contains counts for the TX FIFO so any time the irq
+> >> handler was invoked we would attempt to process the RX/TX fifos. Use t=
+he
+> >> SPIM value to mask the events so that we only process interrupts that
+> >> were expected.
+> >>
+> >> This was a latent issue exposed by commit 3282a3da25bd ("powerpc/64:
+> >> Implement soft interrupt replay in C").
+> > We don't seem to have commit 3282... in 4.19, so we don't need this
+> > one in 4.19-stable according to the changelog.
+> Technically 3282... exposed the issue by making it more likely to happen=
+=20
+> so 4.19 might just have a really low probability of seeing the issue (I=
+=20
+> think I did try reproducing it on kernels of that vintage). Personally=20
+> I'm not too fussed the kernel versions I care about have the fix. Maybe=
+=20
+> someone from NXP cares enough to pursue it.
 
+Okay, I guess low-probability bugs are still fair game for
+-stable. The commit was not dropped from 4.19, so nothing needs to be
+done here.
+
+Sorry for the noise,
+								Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--vtzGhvizbBRQ85DL
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl+DgTkACgkQMOfwapXb+vJkNgCgjq6ULenHyb9JLZZNXtmSMQBD
+jW0An0L/u8/KrR5KDde+rGieiXyNeQf/
+=W3dM
+-----END PGP SIGNATURE-----
+
+--vtzGhvizbBRQ85DL--
