@@ -2,150 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 913B328A63E
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 10:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53FA028A647
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 10:29:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729123AbgJKIJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 04:09:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41634 "EHLO
+        id S1729222AbgJKI3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 04:29:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725844AbgJKIJD (ORCPT
+        with ESMTP id S1729192AbgJKI3m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 04:09:03 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A557C0613CE
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 01:09:03 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id u21so19013927eja.2
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 01:09:02 -0700 (PDT)
+        Sun, 11 Oct 2020 04:29:42 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA02CC0613D0
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 01:29:40 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id m62so10424571ybb.6
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 01:29:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=QeJKHKFo1+oYE4cAjCsIuxgUdsxnX+NLFnzJ98hrfSg=;
-        b=gX5nqTv1RmW0bev3cCkDv++p6kk92lF0eZa94OFDD13gxCmaSSMdTa1qMXAyiBtihp
-         SefLlfiJlwSVOWtPQoRG3CoQcPAaU23YWlczaItO/JeDECAooO0wbDn8A8+OdzAHIvf5
-         /vkseHQU+RMwS8VdcaKrqPYe8QbMDg+FZev/Stc3ytWgAobLKoyP2hhASx5WRYdsOA4H
-         4Ng5f+2y83RJaEjDCRjri1JEaolXneOdh1dIZXkP9k3Goxh87xblFfnI19sFw1BefLxP
-         QPRqIpH0mnan7ZExTpz2lLhDDZ1vmkr4uPhFE85ZUg/jp36reswy3RjNt2w4cNC+oXn5
-         Ulqg==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=0y7LeAQ9NHAeCjBB9f+BCZL8bpbABLEfm+/TZuUzjwI=;
+        b=P/8oZtrKfZFy8Ts2UxpZQAjixDV02pYNluizK8Xze/QVGnZ7Fw0f0AsF2wyJsYEZKO
+         jr4XQvuOaAStlzQOSTBDH4dpQ+NIYOCurxPIwoJjDhdnoUApWY9IHK1mUssePS90a/tU
+         cFVP4/9Bf/0HZCHjDkVPkEzkJtP0MWq0iP6rw4aAR+I0ZPn6h5F4Q+yD9PH7prBMS6Ew
+         45YMMQZQD+QLfOBJpylWxvfBF/Nw6hvsxuFwjZGFaGXDc6a33Kt8enlIo1TJ+dNEbZCP
+         l9DskxWobk1uKD3WliBxqUqbfpK1kfMXAHQ+11Ag4n4CK0CpFYdXcxW3j+bp0FP+bcxc
+         nR5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=QeJKHKFo1+oYE4cAjCsIuxgUdsxnX+NLFnzJ98hrfSg=;
-        b=SM9+Zn3e9AZ1pzlhnDe+/P///67W2JjRm7IHxPV914Iwq/l3tNKKX3Mn6oDBh7aQ2y
-         9y+LlHyJdDxDuAiC8MuD6yN6SsXfBcXLqgfG5DEmTNJp/E6KvX96C9BqoNgfRVPhRrkw
-         MYW+VuFfif34XeL20+EH5tXyhKTbCc1LQflOv7J+95roZC8e/XZfat8Hp/BUi0uBqZEs
-         zc/Ld4MGRDq/Xpj0dHauVcVum+Fve7AyFp7R8MbdrIWOpvRf9+hG8Fe56993RHIP5RQe
-         pS1z3UNikEggdfsRx3g1m20GX5S8jftAC006bF5jQZw4u2Uya6JTg7rjiCuWhrIbif9H
-         e1vw==
-X-Gm-Message-State: AOAM531G91jq1J1ZUUGqVz2p97BD4IrCz+mo348hVQGWsUFA2Por8cvq
-        ke5EonRLX7nXx0bAM1C11to=
-X-Google-Smtp-Source: ABdhPJzdVd06iBfiCtLcuoEX1VtR1A1kZDlU83LJIfzp8JTlCHJ5nHFgo4TXNOpaJ1yoowtm9D3+qw==
-X-Received: by 2002:a17:907:43c0:: with SMTP id ok24mr22510837ejb.385.1602403741556;
-        Sun, 11 Oct 2020 01:09:01 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id jw9sm9003407ejb.33.2020.10.11.01.09.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Oct 2020 01:09:00 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Sun, 11 Oct 2020 10:08:59 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [GIT PULL] x86 fixes
-Message-ID: <20201011080859.GA3598074@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=0y7LeAQ9NHAeCjBB9f+BCZL8bpbABLEfm+/TZuUzjwI=;
+        b=ExV1+tZ60oHtZWZJEsYtsHxrF+B39o6jH+AZPK7JAZ5Guap4wyFN1/w4swMWnB0If9
+         UaPRWOcCJLN4h6SuLtuMb0Zb9pWlVmGOynD5DaRxlU68rxUDOF/sJJQbt/skDe0dR2yW
+         bMqk3cU8s9G0G6WzBe57r6XQzKr8hq9kM5Xm67/HGUJlQtijVtIDcilfTyG8YSiErwAI
+         mq+LJMKBp95ljbBdmNNHRWJ3ymcD+hRGEau3JDEyIjsrvd8UyDYzGBRovhrRjmpKZJGD
+         xKw7CvCmgP/VcGweVE75Yop6xBwOy+pv2PdNGunaekgcSgpnABw5IT4G1ahw5LlSySRR
+         DQIQ==
+X-Gm-Message-State: AOAM531UYAHa8PI0Ojukx5IuthLixX/Q1GX9gn6QMnCPYRXoLqKgxiFk
+        us7T6HssLP5po47bY6XFS2r5xcQ9Pu+NRSBXiA==
+X-Google-Smtp-Source: ABdhPJzcncc25xTQGT8cFLuvaInzCQtWuU9s/fijZtfJXoG1pobn0SwPsDkDnjExXggyijE9n5tIroXB9qmdmStzHg==
+Sender: "lokeshgidra via sendgmr" <lokeshgidra@lg.mtv.corp.google.com>
+X-Received: from lg.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:29dd])
+ (user=lokeshgidra job=sendgmr) by 2002:a25:d9c8:: with SMTP id
+ q191mr19972156ybg.475.1602404979671; Sun, 11 Oct 2020 01:29:39 -0700 (PDT)
+Date:   Sun, 11 Oct 2020 01:29:33 -0700
+Message-Id: <20201011082936.4131726-1-lokeshgidra@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
+Subject: [PATCH v10 0/3] SELinux support for anonymous inodes and UFFD
+From:   Lokesh Gidra <lokeshgidra@google.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        James Morris <jmorris@namei.org>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Eric Biggers <ebiggers@kernel.org>
+Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Daniel Colascione <dancol@dancol.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        KP Singh <kpsingh@google.com>,
+        David Howells <dhowells@redhat.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Matthew Garrett <matthewgarrett@google.com>,
+        Aaron Goidel <acgoide@tycho.nsa.gov>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Adrian Reber <areber@redhat.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        kaleshsingh@google.com, calin@google.com, surenb@google.com,
+        nnk@google.com, jeffv@google.com, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+Userfaultfd in unprivileged contexts could be potentially very
+useful. We'd like to harden userfaultfd to make such unprivileged use
+less risky. This patch series allows SELinux to manage userfaultfd
+file descriptors and in the future, other kinds of
+anonymous-inode-based file descriptor.  SELinux policy authors can
+apply policy types to anonymous inodes by providing name-based
+transition rules keyed off the anonymous inode internal name (
+"[userfaultfd]" in the case of userfaultfd(2) file descriptors) and
+applying policy to the new SIDs thus produced.
 
-Please pull the latest x86/urgent git tree from:
+With SELinux managed userfaultfd, an admin can control creation and
+movement of the file descriptors. In particular, handling of
+a userfaultfd descriptor by a different process is essentially a
+ptrace access into the process, without any of the corresponding
+security_ptrace_access_check() checks. For privacy, the admin may
+want to deny such accesses, which is possible with SELinux support.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-urgent-2020-10-11
+Inside the kernel, a new anon_inode interface, anon_inode_getfd_secure,
+allows callers to opt into this SELinux management. In this new "secure"
+mode, anon_inodes create new ephemeral inodes for anonymous file objects
+instead of reusing the normal anon_inodes singleton dummy inode. A new
+LSM hook gives security modules an opportunity to configure and veto
+these ephemeral inodes.
 
-   # HEAD: 0c7689830e907668288a1a1da84dca66dbdb4728 Documentation/x86: Fix incorrect references to zero-page.txt
+This patch series is one of two fork of [1] and is an
+alternative to [2].
 
-Two fixes:
+The primary difference between the two patch series is that this
+partch series creates a unique inode for each "secure" anonymous
+inode, while the other patch series ([2]) continues using the
+singleton dummy anonymous inode and adds a way to attach SELinux
+security information directly to file objects.
 
- - Fix a (hopefully final) IRQ state tracking bug vs. MCE handling
- - Fix a documentation link
+I prefer the approach in this patch series because 1) it's a smaller
+patch than [2], and 2) it produces a more regular security
+architecture: in this patch series, secure anonymous inodes aren't
+S_PRIVATE and they maintain the SELinux property that the label for a
+file is in its inode. We do need an additional inode per anonymous
+file, but per-struct-file inode creation doesn't seem to be a problem
+for pipes and sockets.
 
- Thanks,
+The previous version of this feature ([1]) created a new SELinux
+security class for userfaultfd file descriptors. This version adopts
+the generic transition-based approach of [2].
 
-	Ingo
+This patch series also differs from [2] in that it doesn't affect all
+anonymous inodes right away --- instead requiring anon_inodes callers
+to opt in --- but this difference isn't one of basic approach. The
+important question to resolve is whether we should be creating new
+inodes or enhancing per-file data.
 
------------------->
-Heinrich Schuchardt (1):
-      Documentation/x86: Fix incorrect references to zero-page.txt
+Changes from the first version of the patch:
 
-Thomas Gleixner (1):
-      x86/mce: Use idtentry_nmi_enter/exit()
+  - Removed some error checks
+  - Defined a new anon_inode SELinux class to resolve the
+    ambiguity in [3]
+  - Inherit sclass as well as descriptor from context inode
 
+Changes from the second version of the patch:
 
- Documentation/x86/boot.rst     | 6 +++---
- arch/x86/kernel/cpu/mce/core.c | 6 ++++--
- 2 files changed, 7 insertions(+), 5 deletions(-)
+  - Fixed example policy in the commit message to reflect the use of
+    the new anon_inode class.
 
-diff --git a/Documentation/x86/boot.rst b/Documentation/x86/boot.rst
-index 7fafc7ac00d7..abb9fc164657 100644
---- a/Documentation/x86/boot.rst
-+++ b/Documentation/x86/boot.rst
-@@ -1342,8 +1342,8 @@ follow::
- 
- In addition to read/modify/write the setup header of the struct
- boot_params as that of 16-bit boot protocol, the boot loader should
--also fill the additional fields of the struct boot_params as that
--described in zero-page.txt.
-+also fill the additional fields of the struct boot_params as
-+described in chapter :doc:`zero-page`.
- 
- After setting up the struct boot_params, the boot loader can load the
- 32/64-bit kernel in the same way as that of 16-bit boot protocol.
-@@ -1379,7 +1379,7 @@ can be calculated as follows::
- In addition to read/modify/write the setup header of the struct
- boot_params as that of 16-bit boot protocol, the boot loader should
- also fill the additional fields of the struct boot_params as described
--in zero-page.txt.
-+in chapter :doc:`zero-page`.
- 
- After setting up the struct boot_params, the boot loader can load
- 64-bit kernel in the same way as that of 16-bit boot protocol, but
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index f43a78bde670..fc4f8c04bdb5 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -1904,6 +1904,8 @@ void (*machine_check_vector)(struct pt_regs *) = unexpected_machine_check;
- 
- static __always_inline void exc_machine_check_kernel(struct pt_regs *regs)
- {
-+	bool irq_state;
-+
- 	WARN_ON_ONCE(user_mode(regs));
- 
- 	/*
-@@ -1914,7 +1916,7 @@ static __always_inline void exc_machine_check_kernel(struct pt_regs *regs)
- 	    mce_check_crashing_cpu())
- 		return;
- 
--	nmi_enter();
-+	irq_state = idtentry_enter_nmi(regs);
- 	/*
- 	 * The call targets are marked noinstr, but objtool can't figure
- 	 * that out because it's an indirect call. Annotate it.
-@@ -1925,7 +1927,7 @@ static __always_inline void exc_machine_check_kernel(struct pt_regs *regs)
- 	if (regs->flags & X86_EFLAGS_IF)
- 		trace_hardirqs_on_prepare();
- 	instrumentation_end();
--	nmi_exit();
-+	idtentry_exit_nmi(regs, irq_state);
- }
- 
- static __always_inline void exc_machine_check_user(struct pt_regs *regs)
+Changes from the third version of the patch:
+
+  - Dropped the fops parameter to the LSM hook
+  - Documented hook parameters
+  - Fixed incorrect class used for SELinux transition
+  - Removed stray UFFD changed early in the series
+  - Removed a redundant ERR_PTR(PTR_ERR())
+
+Changes from the fourth version of the patch:
+
+  - Removed an unused parameter from an internal function
+  - Fixed function documentation
+
+Changes from the fifth version of the patch:
+
+  - Fixed function documentation in fs/anon_inodes.c and
+    include/linux/lsm_hooks.h
+  - Used anon_inode_getfd_secure() in userfaultfd() syscall and removed
+    owner from userfaultfd_ctx.
+
+Changes from the sixth version of the patch:
+
+  - Removed definition of anon_inode_getfile_secure() as there are no
+    callers.
+  - Simplified function description of anon_inode_getfd_secure().
+  - Elaborated more on the purpose of 'context_inode' in commit message.
+
+Changes from the seventh version of the patch:
+
+  - Fixed error handling in _anon_inode_getfile().
+  - Fixed minor comment and indentation related issues.
+
+Changes from the eighth version of the patch:
+
+  - Replaced selinux_state.initialized with selinux_state.initialized
+
+Changes from the ninth version of the patch:
+
+  - Fixed function names in fs/anon_inodes.c
+  - Fixed comment of anon_inode_getfd_secure()
+  - Fixed name of the patch wherein userfaultfd code uses
+    anon_inode_getfd_secure()
+
+[1] https://lore.kernel.org/lkml/20200211225547.235083-1-dancol@google.com/
+[2] https://lore.kernel.org/linux-fsdevel/20200213194157.5877-1-sds@tycho.nsa.gov/
+[3] https://lore.kernel.org/lkml/23f725ca-5b5a-5938-fcc8-5bbbfc9ba9bc@tycho.nsa.gov/
+
+Daniel Colascione (3):
+  Add a new LSM-supporting anonymous inode interface
+  Teach SELinux about anonymous inodes
+  Use secure anon inodes for userfaultfd
+
+ fs/anon_inodes.c                    | 148 ++++++++++++++++++++--------
+ fs/userfaultfd.c                    |  19 ++--
+ include/linux/anon_inodes.h         |   8 ++
+ include/linux/lsm_hook_defs.h       |   2 +
+ include/linux/lsm_hooks.h           |   9 ++
+ include/linux/security.h            |  10 ++
+ security/security.c                 |   8 ++
+ security/selinux/hooks.c            |  53 ++++++++++
+ security/selinux/include/classmap.h |   2 +
+ 9 files changed, 210 insertions(+), 49 deletions(-)
+
+-- 
+2.28.0.1011.ga647a8990f-goog
+
