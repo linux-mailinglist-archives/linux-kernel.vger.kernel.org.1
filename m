@@ -2,79 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E5A428A741
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 13:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFFBF28A740
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 13:43:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387714AbgJKLqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 07:46:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387489AbgJKLqS (ORCPT
+        id S2387690AbgJKLns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 07:43:48 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:60456 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387489AbgJKLns (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 07:46:18 -0400
-X-Greylist: delayed 344 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 11 Oct 2020 04:46:16 PDT
-Received: from valentin-vidic.from.hr (valentin-vidic.from.hr [IPv6:2001:470:1f0b:3b7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5A0EC0613CE;
-        Sun, 11 Oct 2020 04:46:16 -0700 (PDT)
-X-Virus-Scanned: Debian amavisd-new at valentin-vidic.from.hr
-Received: by valentin-vidic.from.hr (Postfix, from userid 1000)
-        id DA40A3FDF; Sun, 11 Oct 2020 13:40:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=valentin-vidic.from.hr; s=2020; t=1602416424;
-        bh=kLUtzGm/mOxFRk7ierRj4MOQrCli4dPiEbdR2LcWxqQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=VO6MnSAqm52dlNEvak1+TarsFGx++KHwe8G77UO/GINYWz/HdyMa/AX/vg1ax5mvJ
-         r4CaUeakpPDerkySy8MlUWeFT+WA03ra1eDS8n9z6Fi/ez+Lsmbg6GoSZ/gBbz8Rl0
-         C0lzn2hBLlcOBpKt30RPRiwXvv5myNsE/fTPW39YxmKpvyv54OYuz5SNQoIK+Yz7xy
-         +vrSmtngv1SHBr9oUDUy+Au1zwWCr/l8XiY8QOxHlhHGRpCV5xXanVGv8cghMTvFZ2
-         OR1chuKQwEoP+eN0lBUt9qIKzg4fqFgNUyNWF1wW54Ml9XOy3pH+3iv5pD9c9YRXru
-         MZ3cn2er1CYnrg3YVTv/sBLwXF6eaUbT/OnwpsXBbF3eXjWOfHN2IRA+6SL3R20BcD
-         WtMgTsM1fj4l/WbYY2iDv5OYnqfFukSZWDXh17AszFyW+C+7XLgwwP3phdrxmsg00+
-         EjXYGVV73tXzgv/hI/q2qTme+DVvVv1rpcPYkN4+mtp2FddtDR9m/rU19qu95wr5YI
-         VA6rA/l38++n5JpQ9pZgSeI3Z8nnDEejJw9ht8q3E8qsco/KryHCWnjPqPdX/t8THj
-         ydps+fgAihbOe0EsOA865TXFSy9hmQpV8P67LZKEyiuNygXmFjSqMa3R9LkBsWtOLU
-         VmvHIqu4NgpmcptE98ZG0/nU=
-From:   Valentin Vidic <vvidic@valentin-vidic.from.hr>
-To:     "David S. Miller" <davem@davemloft.net>
-Cc:     Philip Rischel <rischelp@idt.com>, Felix Fietkau <nbd@openwrt.org>,
-        Florian Fainelli <florian@openwrt.org>,
-        Roman Yeryomin <roman@advem.lv>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Martin Habets <mhabets@solarflare.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Valentin Vidic <vvidic@valentin-vidic.from.hr>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] net: korina: free array used for rx/tx descriptors
-Date:   Sun, 11 Oct 2020 13:39:55 +0200
-Message-Id: <20201011113955.19511-1-vvidic@valentin-vidic.from.hr>
-X-Mailer: git-send-email 2.20.1
+        Sun, 11 Oct 2020 07:43:48 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 16EBE1F4102B
+Subject: Re: [PATCH] x86/x86_64_defconfig: Enable the serial console
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        =?UTF-8?Q?Diego_Elio_Petten=c3=b2?= <flameeyes@flameeyes.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Willy Tarreau <w@1wt.eu>
+References: <20201008162206.862203-1-enric.balletbo@collabora.com>
+ <20201008164044.GE5505@zn.tnic>
+ <4162cfa4-7bf2-3e6e-1b8c-e19187e6fa10@infradead.org>
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <2538da14-0f4b-5d4a-c7bf-6fdb46ba2796@collabora.com>
+Date:   Sun, 11 Oct 2020 13:43:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <4162cfa4-7bf2-3e6e-1b8c-e19187e6fa10@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Memory was not freed when driver is unloaded from the kernel.
+Hi Borislav and Randy,
 
-Signed-off-by: Valentin Vidic <vvidic@valentin-vidic.from.hr>
----
- drivers/net/ethernet/korina.c | 1 +
- 1 file changed, 1 insertion(+)
+Thank you for your comments.
 
-diff --git a/drivers/net/ethernet/korina.c b/drivers/net/ethernet/korina.c
-index 03e034918d14..99146145f020 100644
---- a/drivers/net/ethernet/korina.c
-+++ b/drivers/net/ethernet/korina.c
-@@ -1133,6 +1133,7 @@ static int korina_remove(struct platform_device *pdev)
- 	iounmap(lp->eth_regs);
- 	iounmap(lp->rx_dma_regs);
- 	iounmap(lp->tx_dma_regs);
-+	kfree(lp->td_ring);
- 
- 	unregister_netdev(bif->dev);
- 	free_netdev(bif->dev);
--- 
-2.20.1
+On 8/10/20 20:31, Randy Dunlap wrote:
+> On 10/8/20 9:40 AM, Borislav Petkov wrote:
+>> On Thu, Oct 08, 2020 at 06:22:06PM +0200, Enric Balletbo i Serra wrote:
+>>> As part of KernelCI, we added a bunch of different x86 based Chromebooks
+>>> to do test booting and runtime testing. It will be useful have serial
+>>> support for these platforms in the default defconfig, as this, is the
+>>> defconfig used by default for the different maintainer's tree.
+>>>
+>>> SERIAL_8250_DW is the actual support for the console, but to have
+>>> support we need to enable X86_AMD_PLATFORM_DEVICE for specific AMD
+>>> boards and MFD_INTEL for specific Intel boards.
+>>>
+>>> While here, also enable USB_RTL8152 config which enables a common
+>>> USB-Ethernet adapter used very commonly in the KernelCI labs.
+>>
+>> To me defconfig sounds like the config which contains items which are
+>> needed on the majority of x86 hardware out there.
+> 
+> to run in normal (or common) user mode(s).
+> 
+> Nothing to do with automated testing like syzbot or CI IMO.
+> 
+>> Are those which you enable that common and if not, why can't your build
+>> supply a custom .config instead?
+> 
+> I suppose that we are lacking a definition of a defconfig, but again, IMO,
+> these Kconfig symbols don't meet the need for normal users.
+> 
+> 
 
+We're also probably lacking a definition of what normal users mean, because I
+don't think normal users build their own kernel. I think that at least
+X86_AMD_PLATFORM_DEVICE and MFD_INTEL_LPSS_PCI could be common enough to match
+within the category of needed to run in normal (or common) user mode(s). I can
+send a patch with only these two options.
+
+But, yes, the main purpose after this patch is the serial console for CI. I saw
+that there are already some configs with a specific purpose (tiny.config and
+xen.config). So, I am wondering if would be acceptable support another specific
+config for CI (i.e kernelci.config). Will it be acceptable?
+
+Thanks,
+ Enric
