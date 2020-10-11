@@ -2,181 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8548828A656
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 10:30:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70E2128A665
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 10:47:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729308AbgJKIaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 04:30:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44838 "EHLO
+        id S1729358AbgJKIrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 04:47:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729230AbgJKI3t (ORCPT
+        with ESMTP id S1728968AbgJKIro (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 04:29:49 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 173D4C0613D9
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 01:29:49 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id w3so10369479qtn.16
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 01:29:49 -0700 (PDT)
+        Sun, 11 Oct 2020 04:47:44 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C92ADC0613CE;
+        Sun, 11 Oct 2020 01:47:43 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id i2so13848012ljg.4;
+        Sun, 11 Oct 2020 01:47:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=5MfBywdxMmsLRrplRDwjfeuNu4Dz7M8KwUBLUxZj6xM=;
-        b=hBpVS7uF0dFqV+usm5krJoTk8tnGXulcNhG8ZJQffqmJqiN/AvtuYAFH4gdM7krAf4
-         5Ib1hQdSL0DUZPWL/z++LUKJy8IxhRA2w+QAOv+LfPQ+YYpRjzQJCwvNAhRpalFO4xOi
-         G1z50NqD9K8274QcDS0hen8+XCV+tHgIznVBklGHdqiIPwoQxL5C0i7MkxNIwkRG22U6
-         Ij6bvdO2B1/sNNhUACdwbsUxlVO81o2w0f/1AnH0QaUZztaPK6x/m8VnhMqW9Z1mKI0J
-         BpTIQ9S8uKzPLmbXjTbUkvX2IRP7yrhbXvxq1icfcGr1nkiWu5ZAhEt7iMG4AaDY3q2/
-         VvUg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WEkmoWmE+gfjv5nQomkH8CsqwBmk68jyUS3urfyycVc=;
+        b=Ruc2iQFm/qaEgiNba39zG6wMu9GysWNq+KjcUmDta3BB+jPIxuITMJH8kbq846WP+D
+         zKwR79dL5vdHwgA5SYQ3dGqCqIcjHaSEnM6iV5hMTCxEIu0P0VxCbaB5CSmXDG77OQsE
+         l24zWkM2QYXZtxVPppGc825JyEcDErTXFLotoRYg9fnSPimaV+jkfJr+Uf4saExnLf/8
+         Y1J0U8EVaXyHQWWgJbtpBliDcb787Jyp+KZWtTdXFGnDTy79YZ9sBLU/Us1l0IdVwado
+         vZ3Qkfb9KUOTUYsa0zG/WNmOmhrfBfLiDtUEvr1GarMznT9pR4ItoQOJUreiONzDGtN5
+         obHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=5MfBywdxMmsLRrplRDwjfeuNu4Dz7M8KwUBLUxZj6xM=;
-        b=LUoJI1fUOol1iHINB+NnGQVPf7F9UFv+LOo3iylnjF+vBQp6A1Q040faj8iXHwtgYy
-         1jYh085ixDD/gvXrPffsJtHVCRqD1Kh6FamauTxwZThl4h7FqvGPW0nY8L7o2m5Idojv
-         UotQHo0NZqpPT5BYeO0IFO6ytcG9T96yE21Ft+dTYeoh6OM8w3OGdvNNduSUH7vnw+Gq
-         7+4cEutYbKFGx2AKpDFfRGeRAzaSxi3fGa7XEfpcPMvZqd55NTVKhCpKZo93vNSdiKZ2
-         0XPgcexhqqqpsvFe+nurZiH+MTobvBfJwxYJQ2l+bw4rt6+m4tTlHs3HKrHq51fVf3cH
-         N/oQ==
-X-Gm-Message-State: AOAM532UcO2ITb06nmur0s9T0iNru6YUnoG2+6jfHhPXrqD4fGKEfN+H
-        CRKPLfJeNEgAK+5VFbtnAvgQln25bgDinGr3aA==
-X-Google-Smtp-Source: ABdhPJyXMlomivJVMqBM7X/DtGr65xVnyJaAqT/5gaTPmnqZk1jHkrChs/crGvAIfh7DexwBcSTGjZePaDlyt9H15Q==
-Sender: "lokeshgidra via sendgmr" <lokeshgidra@lg.mtv.corp.google.com>
-X-Received: from lg.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:29dd])
- (user=lokeshgidra job=sendgmr) by 2002:a0c:b6d7:: with SMTP id
- h23mr20732427qve.17.1602404988144; Sun, 11 Oct 2020 01:29:48 -0700 (PDT)
-Date:   Sun, 11 Oct 2020 01:29:36 -0700
-In-Reply-To: <20201011082936.4131726-1-lokeshgidra@google.com>
-Message-Id: <20201011082936.4131726-4-lokeshgidra@google.com>
-Mime-Version: 1.0
-References: <20201011082936.4131726-1-lokeshgidra@google.com>
-X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
-Subject: [PATCH v10 3/3] Use secure anon inodes for userfaultfd
-From:   Lokesh Gidra <lokeshgidra@google.com>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        James Morris <jmorris@namei.org>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Eric Biggers <ebiggers@kernel.org>
-Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Daniel Colascione <dancol@dancol.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        KP Singh <kpsingh@google.com>,
-        David Howells <dhowells@redhat.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Matthew Garrett <matthewgarrett@google.com>,
-        Aaron Goidel <acgoide@tycho.nsa.gov>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Adrian Reber <areber@redhat.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        kaleshsingh@google.com, calin@google.com, surenb@google.com,
-        nnk@google.com, jeffv@google.com, kernel-team@android.com,
-        Daniel Colascione <dancol@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=WEkmoWmE+gfjv5nQomkH8CsqwBmk68jyUS3urfyycVc=;
+        b=XN8JdmHGdzq6G+EBLnsMh+CA8m2kTpJUDI1pYZo3BkGCM/drNhUzAe6AyQjBAOvKqB
+         s96jUJdT7TEKPWOB0Z6RErWN4EdS51/OS4likrm4vepAf82+wOPoweKhxF5+IQX1OB1J
+         chwnO4LodRKOeRh2sEX1xqKd4GuQQ4N+JvR8F3VM1QFvX7ufQVrtJwQdWk2NasJH99sM
+         D6akqEylgHRyLSfNhbNydlMG10UxtE1aL+TOSeCJxELzrqSs3yq2Afl3eHN7mrzjXh7N
+         /pMZha0KnpWvBgLpmPVY7UiujWQkhDr2aYFK4pOAqD3xk8nkcL2mimT/YItlEXTC2ryL
+         bhIg==
+X-Gm-Message-State: AOAM532AnMN6HwwJA2OM/rPdauPuRQL5q3EEUMmIWo/duzrdYjOYw9DG
+        tbEei0CR0Aj1QxwdOM9DX0eF3S4of2jdJg==
+X-Google-Smtp-Source: ABdhPJwSgU7ysJDeHsLirDGNOmlQUApyMQ/5mDZGew1EJYrQpXM3jMOlk9GY11NrqVqkatJTnRuxPA==
+X-Received: by 2002:a2e:8e8f:: with SMTP id z15mr8821138ljk.238.1602406061600;
+        Sun, 11 Oct 2020 01:47:41 -0700 (PDT)
+Received: from ?IPv6:2a00:1fa0:4275:c0a:6554:d910:ceb:9024? ([2a00:1fa0:4275:c0a:6554:d910:ceb:9024])
+        by smtp.gmail.com with ESMTPSA id e28sm15242ljp.28.2020.10.11.01.47.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 11 Oct 2020 01:47:41 -0700 (PDT)
+Subject: Re: [PATCH 05/18] dt-bindings: usb: usb-hcd: Add "tpl-support"
+ property
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Roger Quadros <rogerq@ti.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201010224121.12672-1-Sergey.Semin@baikalelectronics.ru>
+ <20201010224121.12672-6-Sergey.Semin@baikalelectronics.ru>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Organization: Brain-dead Software
+Message-ID: <ada3becf-ab69-6bac-9459-c9fb076b3bf4@gmail.com>
+Date:   Sun, 11 Oct 2020 11:47:37 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
+MIME-Version: 1.0
+In-Reply-To: <20201010224121.12672-6-Sergey.Semin@baikalelectronics.ru>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Colascione <dancol@google.com>
+Hello!
 
-This change gives userfaultfd file descriptors a real security
-context, allowing policy to act on them.
+On 11.10.2020 1:41, Serge Semin wrote:
 
-Signed-off-by: Daniel Colascione <dancol@google.com>
+> The host controller device might be designed to work for the particular
+> products or applications. In that case it' DT node is supposed to be
+                                          ^^^
+    Its?
 
-[Remove owner inode from userfaultfd_ctx]
-[Use anon_inode_getfd_secure() instead of anon_inode_getfile_secure()
- in userfaultfd syscall]
-[Use inode of file in userfaultfd_read() in resolve_userfault_fork()]
+> equipped with the tpl-support property.
+> 
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+[...]
 
-Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
----
- fs/userfaultfd.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
-
-diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-index 0e4a3837da52..918535b49475 100644
---- a/fs/userfaultfd.c
-+++ b/fs/userfaultfd.c
-@@ -978,14 +978,14 @@ static __poll_t userfaultfd_poll(struct file *file, poll_table *wait)
- 
- static const struct file_operations userfaultfd_fops;
- 
--static int resolve_userfault_fork(struct userfaultfd_ctx *ctx,
--				  struct userfaultfd_ctx *new,
-+static int resolve_userfault_fork(struct userfaultfd_ctx *new,
-+				  struct inode *inode,
- 				  struct uffd_msg *msg)
- {
- 	int fd;
- 
--	fd = anon_inode_getfd("[userfaultfd]", &userfaultfd_fops, new,
--			      O_RDWR | (new->flags & UFFD_SHARED_FCNTL_FLAGS));
-+	fd = anon_inode_getfd_secure("[userfaultfd]", &userfaultfd_fops, new,
-+			O_RDWR | (new->flags & UFFD_SHARED_FCNTL_FLAGS), inode);
- 	if (fd < 0)
- 		return fd;
- 
-@@ -995,7 +995,7 @@ static int resolve_userfault_fork(struct userfaultfd_ctx *ctx,
- }
- 
- static ssize_t userfaultfd_ctx_read(struct userfaultfd_ctx *ctx, int no_wait,
--				    struct uffd_msg *msg)
-+				    struct uffd_msg *msg, struct inode *inode)
- {
- 	ssize_t ret;
- 	DECLARE_WAITQUEUE(wait, current);
-@@ -1106,7 +1106,7 @@ static ssize_t userfaultfd_ctx_read(struct userfaultfd_ctx *ctx, int no_wait,
- 	spin_unlock_irq(&ctx->fd_wqh.lock);
- 
- 	if (!ret && msg->event == UFFD_EVENT_FORK) {
--		ret = resolve_userfault_fork(ctx, fork_nctx, msg);
-+		ret = resolve_userfault_fork(fork_nctx, inode, msg);
- 		spin_lock_irq(&ctx->event_wqh.lock);
- 		if (!list_empty(&fork_event)) {
- 			/*
-@@ -1166,6 +1166,7 @@ static ssize_t userfaultfd_read(struct file *file, char __user *buf,
- 	ssize_t _ret, ret = 0;
- 	struct uffd_msg msg;
- 	int no_wait = file->f_flags & O_NONBLOCK;
-+	struct inode *inode = file_inode(file);
- 
- 	if (ctx->state == UFFD_STATE_WAIT_API)
- 		return -EINVAL;
-@@ -1173,7 +1174,7 @@ static ssize_t userfaultfd_read(struct file *file, char __user *buf,
- 	for (;;) {
- 		if (count < sizeof(msg))
- 			return ret ? ret : -EINVAL;
--		_ret = userfaultfd_ctx_read(ctx, no_wait, &msg);
-+		_ret = userfaultfd_ctx_read(ctx, no_wait, &msg, inode);
- 		if (_ret < 0)
- 			return ret ? ret : _ret;
- 		if (copy_to_user((__u64 __user *) buf, &msg, sizeof(msg)))
-@@ -1995,8 +1996,8 @@ SYSCALL_DEFINE1(userfaultfd, int, flags)
- 	/* prevent the mm struct to be freed */
- 	mmgrab(ctx->mm);
- 
--	fd = anon_inode_getfd("[userfaultfd]", &userfaultfd_fops, ctx,
--			      O_RDWR | (flags & UFFD_SHARED_FCNTL_FLAGS));
-+	fd = anon_inode_getfd_secure("[userfaultfd]", &userfaultfd_fops, ctx,
-+			O_RDWR | (flags & UFFD_SHARED_FCNTL_FLAGS), NULL);
- 	if (fd < 0) {
- 		mmdrop(ctx->mm);
- 		kmem_cache_free(userfaultfd_ctx_cachep, ctx);
--- 
-2.28.0.1011.ga647a8990f-goog
-
+MBR, Sergei
