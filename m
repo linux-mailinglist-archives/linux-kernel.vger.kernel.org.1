@@ -2,70 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86EC228A999
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 21:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0E8A28A9A8
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 21:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728829AbgJKTSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 15:18:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52868 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgJKTSF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 15:18:05 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CEBD62078A;
-        Sun, 11 Oct 2020 19:18:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602443885;
-        bh=HhlBchMur5+dR0BQIrVbePlgVQWliYk8BEnEPi2xzLA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ycxvxyjEAlRr3NUMTzWuXph28DNOB/LCA9i+XOyWvL/n4gP6ZkXh1QPXUOqKpJmwZ
-         wccrPrD1m18L0j6kWuwNCaDU1FlpwIxdi/NOZWXmBQ+DEzMiy8DXf1UGHMFf6CjBmG
-         tN3/PCiMcj7H+mZvlrq2D0JKUWp73syzncXMyeHQ=
-Date:   Sun, 11 Oct 2020 12:18:03 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Xianting Tian <tian.xianting@h3c.com>
-Cc:     <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] net: Avoid allocing memory on memoryless numa node
-Message-ID: <20201011121803.2c003c7e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201011041140.8945-1-tian.xianting@h3c.com>
-References: <20201011041140.8945-1-tian.xianting@h3c.com>
+        id S1728890AbgJKTbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 15:31:38 -0400
+Received: from lan.nucleusys.com ([92.247.61.126]:36238 "EHLO
+        zztop.nucleusys.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726333AbgJKTbi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Oct 2020 15:31:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=nucleusys.com; s=x; h=In-Reply-To:Content-Type:MIME-Version:References:
+        Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=lfk8Bx8ZAaoT2rdzuE84wdKCTPTT1fgZZGAXDO2auPE=; b=nPqyL0SK9P/XrtyKOaMoUKTbsZ
+        xRYgVjG8lNxwEy1FVQuILLK6LVFkNT/94RWWgrAA/k77UvxU3yrKlBY9HOozL6Qf5vZF6+nFO0Pce
+        KyKp6tbXGyNRzOl/OpmTfvS/Bw+c79ZjIMEqJyenZ8b5RTfuh1hNzw75fV1Cxn1Da/pU=;
+Received: from 78-83-68-78.spectrumnet.bg ([78.83.68.78] helo=p310)
+        by zztop.nucleusys.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <petkan@nucleusys.com>)
+        id 1kRh3v-0007ru-He; Sun, 11 Oct 2020 22:31:19 +0300
+Date:   Sun, 11 Oct 2020 22:31:19 +0300
+From:   Petko Manolov <petkan@nucleusys.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        davem@davemloft.net, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-next@vger.kernel.org, sfr@canb.auug.org.au
+Subject: Re: [PATCH v2] net: usb: rtl8150: don't incorrectly assign random
+ MAC addresses
+Message-ID: <20201011193119.GA4061@p310>
+References: <20201010064459.6563-1-anant.thazhemadam@gmail.com>
+ <20201011173030.141582-1-anant.thazhemadam@gmail.com>
+ <20201011105934.5c988cd3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <6307397bd43636fea2e7341d24417cbbc3aaf922.camel@perches.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6307397bd43636fea2e7341d24417cbbc3aaf922.camel@perches.com>
+X-Spam-Score: -1.0 (-)
+X-Spam-Report: Spam detection software, running on the system "zztop.nucleusys.com",
+ has NOT identified this incoming email as spam.  The original
+ message has been attached to this so you can view it or label
+ similar future email.  If you have any questions, see
+ the administrator of that system for details.
+ Content preview:  On 20-10-11 11:33:00, Joe Perches wrote: > On Sun, 2020-10-11
+    at 10:59 -0700, Jakub Kicinski wrote: > > On Sun, 11 Oct 2020 23:00:30 +0530
+    Anant Thazhemadam wrote: > > > In set_ethernet_addr(), if get [...] 
+ Content analysis details:   (-1.0 points, 5.0 required)
+  pts rule name              description
+ ---- ---------------------- --------------------------------------------------
+ -1.0 ALL_TRUSTED            Passed through trusted hosts only via SMTP
+  0.0 TVD_RCVD_IP            Message was received from an IP address
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 11 Oct 2020 12:11:40 +0800 Xianting Tian wrote:
-> In architecture like powerpc, we can have cpus without any local memory
-> attached to it. In such cases the node does not have real memory.
+On 20-10-11 11:33:00, Joe Perches wrote:
+> On Sun, 2020-10-11 at 10:59 -0700, Jakub Kicinski wrote:
+> > On Sun, 11 Oct 2020 23:00:30 +0530 Anant Thazhemadam wrote:
+> > > In set_ethernet_addr(), if get_registers() succeeds, the ethernet address
+> > > that was read must be copied over. Otherwise, a random ethernet address
+> > > must be assigned.
+> > > 
+> > > get_registers() returns 0 if successful, and negative error number
+> > > otherwise. However, in set_ethernet_addr(), this return value is
+> > > incorrectly checked.
+> > > 
+> > > Since this return value will never be equal to sizeof(node_id), a
+> > > random MAC address will always be generated and assigned to the
+> > > device; even in cases when get_registers() is successful.
+> > > 
+> > > Correctly modifying the condition that checks if get_registers() was
+> > > successful or not fixes this problem, and copies the ethernet address
+> > > appropriately.
 > 
-> Use local_memory_node(), which is guaranteed to have memory.
-> local_memory_node is a noop in other architectures that does not support
-> memoryless nodes.
+> There are many unchecked uses of set_registers and get_registers
+>  in this file.
 > 
-> Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
-> ---
->  net/core/dev.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index 266073e30..dcb4533ef 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -2590,7 +2590,7 @@ static struct xps_map *expand_xps_map(struct xps_map *map, int attr_index,
->  		new_map = kzalloc(XPS_MAP_SIZE(alloc_len), GFP_KERNEL);
->  	else
->  		new_map = kzalloc_node(XPS_MAP_SIZE(alloc_len), GFP_KERNEL,
-> -				       cpu_to_node(attr_index));
-> +				       local_memory_node(cpu_to_node(attr_index)));
->  	if (!new_map)
->  		return NULL;
->  
+> If failures are really expected, then it might be better to fix
+> them up too.
 
-Are we going to patch all kmalloc_node() callers now to apply
-local_memory_node()?  Can't the allocator take care of this?
+Checking the return value of each get/set_registers() is going to be a PITA and
+not very helpful.  Doing so when setting the MAC address _does_ make sense as in
+that case it is not a hard error.
 
+In almost all other occasions if usb_control_msg_send/recv() return an error i'd
+rather dump an error message (from within get/set_registers()) and let the user
+decide whether to get rid of this adapter or start debugging it.
+
+
+cheers,
+Petko
+
+
+> $ git grep -w '[gs]et_registers' drivers/net/usb/rtl8150.c
+> drivers/net/usb/rtl8150.c:static int get_registers(rtl8150_t * dev, u16 indx, u16 size, void *data)
+> drivers/net/usb/rtl8150.c:static int set_registers(rtl8150_t * dev, u16 indx, u16 size, const void *data)
+> drivers/net/usb/rtl8150.c:      set_registers(dev, PHYADD, sizeof(data), data);
+> drivers/net/usb/rtl8150.c:      set_registers(dev, PHYCNT, 1, &tmp);
+> drivers/net/usb/rtl8150.c:              get_registers(dev, PHYCNT, 1, data);
+> drivers/net/usb/rtl8150.c:              get_registers(dev, PHYDAT, 2, data);
+> drivers/net/usb/rtl8150.c:      set_registers(dev, PHYADD, sizeof(data), data);
+> drivers/net/usb/rtl8150.c:      set_registers(dev, PHYCNT, 1, &tmp);
+> drivers/net/usb/rtl8150.c:              get_registers(dev, PHYCNT, 1, data);
+> drivers/net/usb/rtl8150.c:      ret = get_registers(dev, IDR, sizeof(node_id), node_id);
+> drivers/net/usb/rtl8150.c:      set_registers(dev, IDR, netdev->addr_len, netdev->dev_addr);
+> drivers/net/usb/rtl8150.c:      get_registers(dev, CR, 1, &cr);
+> drivers/net/usb/rtl8150.c:      set_registers(dev, CR, 1, &cr);
+> drivers/net/usb/rtl8150.c:              set_registers(dev, IDR_EEPROM + (i * 2), 2,
+> drivers/net/usb/rtl8150.c:      set_registers(dev, CR, 1, &cr);
+> drivers/net/usb/rtl8150.c:      set_registers(dev, CR, 1, &data);
+> drivers/net/usb/rtl8150.c:              get_registers(dev, CR, 1, &data);
+> drivers/net/usb/rtl8150.c:      set_registers(dev, RCR, 1, &rcr);
+> drivers/net/usb/rtl8150.c:      set_registers(dev, TCR, 1, &tcr);
+> drivers/net/usb/rtl8150.c:      set_registers(dev, CR, 1, &cr);
+> drivers/net/usb/rtl8150.c:      get_registers(dev, MSR, 1, &msr);
+> drivers/net/usb/rtl8150.c:      get_registers(dev, CR, 1, &cr);
+> drivers/net/usb/rtl8150.c:      set_registers(dev, CR, 1, &cr);
+> drivers/net/usb/rtl8150.c:      get_registers(dev, CSCR, 2, &tmp);
+> drivers/net/usb/rtl8150.c:      set_registers(dev, IDR, 6, netdev->dev_addr);
+> drivers/net/usb/rtl8150.c:      get_registers(dev, BMCR, 2, &bmcr);
+> drivers/net/usb/rtl8150.c:      get_registers(dev, ANLP, 2, &lpa);
+> 
+> 
+> 
