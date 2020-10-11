@@ -2,100 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E004E28AAA5
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 23:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64A0928AAA4
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 23:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387495AbgJKVPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 17:15:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48818 "EHLO
+        id S2387471AbgJKVPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 17:15:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387457AbgJKVP3 (ORCPT
+        with ESMTP id S2387457AbgJKVPU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 17:15:29 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94EC6C0613CE;
-        Sun, 11 Oct 2020 14:15:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Message-ID:From:CC:To:Subject:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:
-        Date:Sender:Reply-To:Content-ID:Content-Description;
-        bh=HaNvNJNqShxRibbaAVJtLOGl045COY2jHpkwhNWQ1O8=; b=r8zg1sCeWkNKE7gc7C+e+At4lA
-        bdH0jciNm36VvbZ6MEuKXmbGcb8NaOaAQD3vfDn30e6roeFhDmvCz2AXFfYxZ8YMpCK4xKnYSCcG/
-        m35HTKIOvnsjNQoAXnWPEkKlgr/Ob8DCkeQLdh44yx/enLT8fSA8ttHEN1iwgXT9caFJOki3c1uyR
-        2xPfeg4UQqy17CHYPbYOQwH8B/9kRe5C58LYSG2F6KsDMwFQAzXf6DJRH98IXEt/0PilDDw8Jx8pF
-        wxgvCahUwzEbaAw2m0whT9IDFgRDdE97DQzjnEy/nBQ23oYBbT8EkO/tPsYr+TbVI0Q/TPpxzVCVl
-        j8FhJB8Q==;
-Received: from [2001:8b0:10b:1:ad95:471b:fe64:9cc3]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kRigX-0002Jt-Hz; Sun, 11 Oct 2020 21:15:18 +0000
-Date:   Sun, 11 Oct 2020 22:15:13 +0100
-User-Agent: K-9 Mail for Android
-In-Reply-To: <87pn5or8k7.fsf@nanos.tec.linutronix.de>
-References: <803bb6b2212e65c568c84ff6882c2aa8a0ee03d5.camel@infradead.org> <20201007122046.1113577-1-dwmw2@infradead.org> <20201007122046.1113577-5-dwmw2@infradead.org> <87blhcx6qz.fsf@nanos.tec.linutronix.de> <f27b17cf4ab64fdb4f14a056bd8c6a93795d9a85.camel@infradead.org> <95625dfce360756b99641c31212634c1bf80a69a.camel@infradead.org> <87362owhcb.fsf@nanos.tec.linutronix.de> <c6f21628733cac23fd28679842c20423df2dd423.camel@infradead.org> <87tuv4uwmt.fsf@nanos.tec.linutronix.de> <958f0d5c9844f94f2ce47a762c5453329b9e737e.camel@infradead.org> <874kn2s3ud.fsf@nanos.tec.linutronix.de> <0E51DAB1-5973-4226-B127-65D77DC46CB5@infradead.org> <87pn5or8k7.fsf@nanos.tec.linutronix.de>
+        Sun, 11 Oct 2020 17:15:20 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34F4FC0613CE;
+        Sun, 11 Oct 2020 14:15:20 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id t20so7535202qvv.8;
+        Sun, 11 Oct 2020 14:15:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KK+gbmrPjMAsykJDPuKd1IbU0bhX6bbdgu1ougohE4Q=;
+        b=TsrwuuH73tKylQhfnyT5gC8YKYGWqgDpxxdx1gD89B9nWNsvL5VJ3EA/bZsXyev9nJ
+         pYvXE088k/5LGk6M7WPDTX27KVyicdxMRMwMRiR4ZLnMJp2ioh0KNQvjIc/0AhwOylEE
+         mUKU74njjXiljLa71bq+1WEAi3wTsSkxftGgbqTcOu8ezOTRk+g/0esDjW3B99S3Vx7x
+         clLqzxThy3bCFhDjFc33wndgGfyNMqpZNJj5h7lsJ/vXj3bcPXJFPcD1XF3/RAw6Ul0n
+         uW2bs5lIS2IFwsxsLWxzdbwME60AaYRfdkoTLJoGNwqHJoi6V2C2hpbCzx++5MExGnRN
+         oj4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KK+gbmrPjMAsykJDPuKd1IbU0bhX6bbdgu1ougohE4Q=;
+        b=jxOP0T9suWLsPIWN637tkU6jTlj9D/osiDBxQSDQfsX1i/Oixa03qO1nCaBU3FPcSM
+         A8arjhE2JI7rOT6xKCbhrhSEM51d0jjDF+CznRFUH6EXvw42G0TR6AtPA7l0NtGPILPy
+         tWqmY3gYA5xtlhiXbVRSn7wRmBf9f2gEQdhNQMbj80exVYeT7jKqtw4ay/WEifCwjU3Y
+         EsBo+Z+nBw52Q2qCadbVUDx6EQpGNPpoRGvzxMbHgbShCo7n/1xayziQULuNtxYnERkC
+         ZgR0hYFoxMTFL87cFeKQBXSeH3NCfNfyhdaBcJaglHCwOqIDtjcxHZjfn37yYy4qhGG7
+         nrfw==
+X-Gm-Message-State: AOAM532kyYpBq5AJ58+UenarP1JFJ5gAisB4N0YGgulEsuGzPvRzB05T
+        zRiYcMTg+wl1OCnPmkjpeiK+AJ/ujjcynQ==
+X-Google-Smtp-Source: ABdhPJwXN0hmh/jcqvx2GaHhWxa3BvM+uklZSkQvHLxoBrJVBT86IfR166TELCOQgrPjxtTQoCqQ4A==
+X-Received: by 2002:ad4:50c9:: with SMTP id e9mr13293592qvq.52.1602450919330;
+        Sun, 11 Oct 2020 14:15:19 -0700 (PDT)
+Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
+        by smtp.gmail.com with ESMTPSA id g5sm3029955qto.39.2020.10.11.14.15.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Oct 2020 14:15:18 -0700 (PDT)
+From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: allwinner: pinetab: Drop unnecessary address/size-cells information
+Date:   Sun, 11 Oct 2020 23:15:14 +0200
+Message-Id: <20201011211514.155266-1-peron.clem@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH 5/5] x86/kvm: Add KVM_FEATURE_MSI_EXT_DEST_ID
-To:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
-CC:     kvm <kvm@vger.kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-From:   David Woodhouse <dwmw2@infradead.org>
-Message-ID: <F0F0A646-8DBA-4448-933F-993A3335BD59@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+make dtbs_check warm about unknown address/size-cells property in the
+pinetab device-tree.
 
+This is because these information are not necessary.
 
-On 11 October 2020 18:12:08 BST, Thomas Gleixner <tglx@linutronix=2Ede> wr=
-ote:
->On Sat, Oct 10 2020 at 12:58, David Woodhouse wrote:
->> On 10 October 2020 12:44:10 BST, Thomas Gleixner <tglx@linutronix=2Ede>
->wrote:
->>>On Sat, Oct 10 2020 at 11:06, David Woodhouse wrote:
->
->>>> The IRQ remapping drivers already plug into the device-add notifier
->>>> and can fill in the appropriate MSI domain just like they do=C2=B9 fo=
-r
->>>> PCI and ACPI devices=2E
->>>> Using platform_add_bundle() for HPET looks trivial enough; I'll
->have
->>>> a play with that and then do IOAPIC too if/when the initialisation
->>>> order and hotplug handling all works out OK to install the correct
->>>> msi_domain=2E
->>>
->>> Yes, I was wondering about that when I made PCI at least use that
->>> mechanism, but had not had time to actually look at it=2E
->>
->> Yeah=2E There's some muttering to be done for HPET about whether it's
->> *its* MSI domain or whether it's the parent domain=2E But I'll have a
->> play=2E I think we'll be able to drop the whole
->> irq_remapping_get_irq_domain() thing=2E
->
->That would be really nice=2E
+Drop them.
 
-I can make it work for HPET if I fix up the point at which the IRQ remappi=
-ng code registers a notifier on the platform bus=2E (At IRQ remap setup tim=
-e is too early; when it registers the PCI bus notifier is too late=2E)
+Signed-off-by: Clément Péron <peron.clem@gmail.com>
+---
+ arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab.dts | 3 ---
+ 1 file changed, 3 deletions(-)
 
-IOAPIC is harder though as the platform bus doesn't even exist that early=
-=2E Maybe an early platform bus is possible but it would have to turn out p=
-articularly simple to do, or I'd need to find another use case too, to just=
-ify it=2E Will continue to play=2E=2E=2E=2E
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab.dts
+index 3ab0f0347bc9..0494bfaf2ffa 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab.dts
+@@ -122,9 +122,6 @@ &csi {
+ 	status = "okay";
+ 
+ 	port {
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-
+ 		csi_ep: endpoint {
+ 			remote-endpoint = <&ov5640_ep>;
+ 			bus-width = <8>;
+-- 
+2.25.1
 
->> Either way, it's a separate cleanup and the 15-bit APIC ID series I
->> posted yesterday should be fine as it is=2E
->
->I go over it in the next days once more and stick it into my devel tree
->until rc1=2E Need to get some conflicts sorted with that Device MSI
->stuff=2E
-
-While playing with HPET I noticed I need s/CONFIG_PCI_MSI/CONFIG_IRQ_GENER=
-IC_MSI/ where the variables are declared at the top of msi=2Ec to match the=
- change I made later on=2E Can post v3 of the series or you can silently fi=
-x it up as you go; please advise=2E
-
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
