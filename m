@@ -2,134 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0E8A28A9A8
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 21:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D38328A9C3
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 21:43:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728890AbgJKTbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 15:31:38 -0400
-Received: from lan.nucleusys.com ([92.247.61.126]:36238 "EHLO
-        zztop.nucleusys.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726333AbgJKTbi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 15:31:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=nucleusys.com; s=x; h=In-Reply-To:Content-Type:MIME-Version:References:
-        Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=lfk8Bx8ZAaoT2rdzuE84wdKCTPTT1fgZZGAXDO2auPE=; b=nPqyL0SK9P/XrtyKOaMoUKTbsZ
-        xRYgVjG8lNxwEy1FVQuILLK6LVFkNT/94RWWgrAA/k77UvxU3yrKlBY9HOozL6Qf5vZF6+nFO0Pce
-        KyKp6tbXGyNRzOl/OpmTfvS/Bw+c79ZjIMEqJyenZ8b5RTfuh1hNzw75fV1Cxn1Da/pU=;
-Received: from 78-83-68-78.spectrumnet.bg ([78.83.68.78] helo=p310)
-        by zztop.nucleusys.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <petkan@nucleusys.com>)
-        id 1kRh3v-0007ru-He; Sun, 11 Oct 2020 22:31:19 +0300
-Date:   Sun, 11 Oct 2020 22:31:19 +0300
-From:   Petko Manolov <petkan@nucleusys.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        davem@davemloft.net, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-next@vger.kernel.org, sfr@canb.auug.org.au
-Subject: Re: [PATCH v2] net: usb: rtl8150: don't incorrectly assign random
- MAC addresses
-Message-ID: <20201011193119.GA4061@p310>
-References: <20201010064459.6563-1-anant.thazhemadam@gmail.com>
- <20201011173030.141582-1-anant.thazhemadam@gmail.com>
- <20201011105934.5c988cd3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <6307397bd43636fea2e7341d24417cbbc3aaf922.camel@perches.com>
+        id S1726536AbgJKTnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 15:43:43 -0400
+Received: from mout.gmx.net ([212.227.15.18]:53013 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726363AbgJKTnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Oct 2020 15:43:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1602445368;
+        bh=IX/vFdROSTvDBI48dTw6a2ZRF/rMQ74xIWcc6kNdH84=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=jwIrdzfiYQduz/+zIF36bBdfI9cCW6/SDJvsOTevfNlcODKCr6bH+OF55ZhYbTbfF
+         U9CuDeXAfiNkgLSB1NHu0KiDGTVS9fiQSr2bbTrWw3cOSNUdFSUqnCNqOZ06/EPES8
+         VRlvlVbp0GyNyENfGLYj/Ub3iGiLXu1m99ly/JLM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.214.162]) by mail.gmx.com (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1N2E1M-1kLhGo1TQs-013hnb; Sun, 11
+ Oct 2020 21:42:48 +0200
+Date:   Sun, 11 Oct 2020 21:42:41 +0200
+From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Heiko Stuebner <heiko@sntech.de>,
+        Josua Mayer <josua.mayer@jm0.eu>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v3 7/7] ARM: dts: imx50-kobo-aura: Add Netronix embedded
+ controller
+Message-ID: <20201011194241.GF500800@latitude>
+References: <20200924192455.2484005-1-j.neuschaefer@gmx.net>
+ <20200925050818.2512375-1-j.neuschaefer@gmx.net>
+ <CAJKOXPfRh4vyJ21ACM3Bf5+HtWZUy+anV47VBAmtitfLuAeUjw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="aZoGpuMECXJckB41"
 Content-Disposition: inline
-In-Reply-To: <6307397bd43636fea2e7341d24417cbbc3aaf922.camel@perches.com>
-X-Spam-Score: -1.0 (-)
-X-Spam-Report: Spam detection software, running on the system "zztop.nucleusys.com",
- has NOT identified this incoming email as spam.  The original
- message has been attached to this so you can view it or label
- similar future email.  If you have any questions, see
- the administrator of that system for details.
- Content preview:  On 20-10-11 11:33:00, Joe Perches wrote: > On Sun, 2020-10-11
-    at 10:59 -0700, Jakub Kicinski wrote: > > On Sun, 11 Oct 2020 23:00:30 +0530
-    Anant Thazhemadam wrote: > > > In set_ethernet_addr(), if get [...] 
- Content analysis details:   (-1.0 points, 5.0 required)
-  pts rule name              description
- ---- ---------------------- --------------------------------------------------
- -1.0 ALL_TRUSTED            Passed through trusted hosts only via SMTP
-  0.0 TVD_RCVD_IP            Message was received from an IP address
+In-Reply-To: <CAJKOXPfRh4vyJ21ACM3Bf5+HtWZUy+anV47VBAmtitfLuAeUjw@mail.gmail.com>
+X-Provags-ID: V03:K1:8uBU2XblVeoVLjVuw2nVyWSoG0MatCsL9xXa3s67RioQG8LCerN
+ G3cjXgjI+c1IhPfhQ8nbCAA73xeV6UWuEfUyjrLv1//EoUQM4TDRW2AUNizmtmmGrXrp+3z
+ cpe9fVbO/Bwf4uavG9/19ZWLcXGumfOwy4hoylcUqO24X3zJ+EuvY8E0+EqpHzwyb97TJq8
+ /BteoTMlknqPattvPSwSQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:rFhHjenenQY=:EJonwYSKnq432w+kmFsFQB
+ no+f5JW1J1g7pNm9e1/fEFed0KoR4We1yM/PtyNR9LER88IDPs1waOBV72exdh3O3QWLz5WA4
+ TeqeyiTm11xHCV9wg/UR8glOlcQuK4KaSUFOoNa7h6dmcygXUW4FTTHhODjc+hj05q9YRC8UL
+ gvpOI0KZrt17WGx1ewTPR1HlrdD4DrmdVOeFvyVZ6o3OnLiInE961Yvn3tLyXs9GzbDg3+YEs
+ zl1wqVK3ykjUkVM7iCK9L1mX7BfB/MCACwD4bB7uDcOzuIEMPySYfWznXVexHaVwscHZW0hXB
+ HN94LELS/gO6+fmDiAjvopGq03+nBnqQhX6LENTIbX4Lg/zrfLse/9Mu6rwDMZ6Fr63Gy5WKb
+ bxbQ1Pg1shar/gAGgUPwXRhJYJ+/JZaQXpJc8TdAsFjI573kEZ7WtwCmMyUXsZssfv90cY+3Z
+ C6Gbt6i1DK9+SeQ6ClyItMo1JoIVXQ/AFxGNcN7Bh6kxc56/1VPe8NjYubyFMkxOJZguhILgm
+ 2qMErhdEZGvfhD+bI3BsRqOBEvxmi48jLYlZB76nR/KNYOMVgSqr6Ci8ID/3S9B/NWc6/iggn
+ 5CMR6my+bHQU9MOgblHVbA/7SrG93ZROPQ04utyC9suNO1HWDJPwJjYZ8AXwnHcoET8TAKzAI
+ 8gO/qWFdoUD/fwkuw/o6VR0Mfc9oYJufaYZxRlUCI/g4LkVOlIIO1KNeLSE2/RU7tAcxEkXIc
+ B4gi3DXhNfo0ZGvFhme2FDEBDZeFu1RgATzgv3klUTgSM3hbfTkYz0rjtn1i74SKTx+mle+j+
+ m3AIRlIkubTsUBg1e+ngHd0gFB8NTWCcTpfUnI2dpqodUTrGJcggeTS4ti7jXXCN+MUa5jF2z
+ pp/Aynm3ISF0hAnNdn46KTpf/tlIte4RhapZhny/fqOiKdpeCfkvNQ4golrW8MkcSdAR2oQNy
+ 0/URJKZ62Nw2L7gQYuQIsqr/otHlc/aPjUBmU+4+b5SM3EZ30mWQqAont2J5X/UkoLpL9t8/K
+ OaEZfFKAMeXrmFpDt0A5qtnfwa80Jw46Pi43nKubLvPW7Vr3CX9xTg3FFFEgo0vKCuXwc/qYy
+ l5i1st5do1o+vJ8C9tVGkuIW7JIy4rXApkLzfwYsj92GP2u7fhJPPgHQfWsARVffJadA3PbMe
+ q8W/4tpQBBT4J6cDcty27GWb7hsXOiP8afK778gbl4gYVkoe2NthwlUfL9vRQnwC/Y8Mjrqie
+ IAz1hrGaKEVm1VANWaIgWH+3KOdnJXMbRcS9CRA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-10-11 11:33:00, Joe Perches wrote:
-> On Sun, 2020-10-11 at 10:59 -0700, Jakub Kicinski wrote:
-> > On Sun, 11 Oct 2020 23:00:30 +0530 Anant Thazhemadam wrote:
-> > > In set_ethernet_addr(), if get_registers() succeeds, the ethernet address
-> > > that was read must be copied over. Otherwise, a random ethernet address
-> > > must be assigned.
-> > > 
-> > > get_registers() returns 0 if successful, and negative error number
-> > > otherwise. However, in set_ethernet_addr(), this return value is
-> > > incorrectly checked.
-> > > 
-> > > Since this return value will never be equal to sizeof(node_id), a
-> > > random MAC address will always be generated and assigned to the
-> > > device; even in cases when get_registers() is successful.
-> > > 
-> > > Correctly modifying the condition that checks if get_registers() was
-> > > successful or not fixes this problem, and copies the ethernet address
-> > > appropriately.
-> 
-> There are many unchecked uses of set_registers and get_registers
->  in this file.
-> 
-> If failures are really expected, then it might be better to fix
-> them up too.
 
-Checking the return value of each get/set_registers() is going to be a PITA and
-not very helpful.  Doing so when setting the MAC address _does_ make sense as in
-that case it is not a hard error.
+--aZoGpuMECXJckB41
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-In almost all other occasions if usb_control_msg_send/recv() return an error i'd
-rather dump an error message (from within get/set_registers()) and let the user
-decide whether to get rid of this adapter or start debugging it.
+On Wed, Oct 07, 2020 at 09:46:30AM +0200, Krzysztof Kozlowski wrote:
+> On Fri, 25 Sep 2020 at 07:10, Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx=
+=2Enet> wrote:
+> >
+> > Enable the Netronix EC on the Kobo Aura ebook reader.
+=2E..
+> >  &iomuxc {
+> > +       pinctrl_ec: ec {
+>=20
+> This should fail on dtschema check - pinctrl groups should end with "grp".
+
+I missed that requirement. I think it's only stated in the i.MX pinctrl
+bindings that have been converted to YAML.
+
+I'll fix the names.
 
 
-cheers,
-Petko
+Thanks,
+Jonathan Neusch=C3=A4fer
 
+--aZoGpuMECXJckB41
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> $ git grep -w '[gs]et_registers' drivers/net/usb/rtl8150.c
-> drivers/net/usb/rtl8150.c:static int get_registers(rtl8150_t * dev, u16 indx, u16 size, void *data)
-> drivers/net/usb/rtl8150.c:static int set_registers(rtl8150_t * dev, u16 indx, u16 size, const void *data)
-> drivers/net/usb/rtl8150.c:      set_registers(dev, PHYADD, sizeof(data), data);
-> drivers/net/usb/rtl8150.c:      set_registers(dev, PHYCNT, 1, &tmp);
-> drivers/net/usb/rtl8150.c:              get_registers(dev, PHYCNT, 1, data);
-> drivers/net/usb/rtl8150.c:              get_registers(dev, PHYDAT, 2, data);
-> drivers/net/usb/rtl8150.c:      set_registers(dev, PHYADD, sizeof(data), data);
-> drivers/net/usb/rtl8150.c:      set_registers(dev, PHYCNT, 1, &tmp);
-> drivers/net/usb/rtl8150.c:              get_registers(dev, PHYCNT, 1, data);
-> drivers/net/usb/rtl8150.c:      ret = get_registers(dev, IDR, sizeof(node_id), node_id);
-> drivers/net/usb/rtl8150.c:      set_registers(dev, IDR, netdev->addr_len, netdev->dev_addr);
-> drivers/net/usb/rtl8150.c:      get_registers(dev, CR, 1, &cr);
-> drivers/net/usb/rtl8150.c:      set_registers(dev, CR, 1, &cr);
-> drivers/net/usb/rtl8150.c:              set_registers(dev, IDR_EEPROM + (i * 2), 2,
-> drivers/net/usb/rtl8150.c:      set_registers(dev, CR, 1, &cr);
-> drivers/net/usb/rtl8150.c:      set_registers(dev, CR, 1, &data);
-> drivers/net/usb/rtl8150.c:              get_registers(dev, CR, 1, &data);
-> drivers/net/usb/rtl8150.c:      set_registers(dev, RCR, 1, &rcr);
-> drivers/net/usb/rtl8150.c:      set_registers(dev, TCR, 1, &tcr);
-> drivers/net/usb/rtl8150.c:      set_registers(dev, CR, 1, &cr);
-> drivers/net/usb/rtl8150.c:      get_registers(dev, MSR, 1, &msr);
-> drivers/net/usb/rtl8150.c:      get_registers(dev, CR, 1, &cr);
-> drivers/net/usb/rtl8150.c:      set_registers(dev, CR, 1, &cr);
-> drivers/net/usb/rtl8150.c:      get_registers(dev, CSCR, 2, &tmp);
-> drivers/net/usb/rtl8150.c:      set_registers(dev, IDR, 6, netdev->dev_addr);
-> drivers/net/usb/rtl8150.c:      get_registers(dev, BMCR, 2, &bmcr);
-> drivers/net/usb/rtl8150.c:      get_registers(dev, ANLP, 2, &lpa);
-> 
-> 
-> 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAl+DYCAACgkQCDBEmo7z
+X9s8/A//ZXamPTUzHqAqGfLG3IETakiVj/jzL/ROS+aDhNMh5Ulg+6ijWGAml02V
+EuG5G4x6ShKbe2XcBxTsJsE5DUs18gxGbJ0B/nzElExtyN3Lr1Nw7Byz/jYlzMJC
+UbwwO9MBJ/kRGlQxqucJxpluLDWPZ7wB9TMvypRM6hEA/3KV3zpvIL1R5klDJRIm
+JaY0DWXSeX1AHS+DEwHdexK8pytJoYoQEHOIuOeaaOrZGIBEmGk7+2CKUlQmQMTv
+TOtOMx3NQ1cfey5akMKUrV3sdio0dd60zL+YLMVQrr6zljS4eqHD2duECqqG3LN8
+cd/xin+qFJbyKJEwa3SAiI54VLBXM3Oj1ONQODwzg8tyZg0YoX2o4c9C0UJy1V+0
+FauiU7eQfEvYlcwpalIe8GoM4kdcJXQMaJIeMrD2MDXyXixj5HWQm/4/7L1FEfjf
+yxqcgAT4Lf7aJwu+ng1flsnarNEoctZNgfkc01HyZ8rNtKPH2VEJGhptVOhf3kT3
+ggJT0aSBSL3wYV0wi56OxmyISgS2c7inbZaMNxNtFEFkJnYy2nCxsuAYyx4Eu1Lz
+ZBOFWEdqr0opv1rrd/w+WTdyt1L0R2gcdTpb5cVJyzv3FZ/feaWSDennXjl967e2
+zyuCm0sVbC+oE9C33iGmnVSO5fiXLAXe1xw2VNoM73vjdrUw8Y8=
+=bucB
+-----END PGP SIGNATURE-----
+
+--aZoGpuMECXJckB41--
