@@ -2,177 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 255BF28A83E
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 18:30:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79CE828A843
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 18:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388148AbgJKQaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 12:30:20 -0400
-Received: from out28-148.mail.aliyun.com ([115.124.28.148]:59082 "EHLO
-        out28-148.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388091AbgJKQaU (ORCPT
+        id S2388209AbgJKQft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 12:35:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388148AbgJKQft (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 12:30:20 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436282|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.613643-0.000133524-0.386224;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047212;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.Ihpxocg_1602433813;
-Received: from 192.168.1.6(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.Ihpxocg_1602433813)
-          by smtp.aliyun-inc.com(10.147.41.137);
-          Mon, 12 Oct 2020 00:30:14 +0800
-Subject: Re: [PATCH] pinctrl: ingenic: Fix invalid SSI pins
-To:     Paul Cercueil <paul@crapouillou.net>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Artur Rojek <contact@artur-rojek.eu>
-References: <CACRpkda1B3LcGWc1PhXNgi-6JxapiKY4F_94c6dk4eBLgVGBJg@mail.gmail.com>
- <20201010192509.9098-1-paul@crapouillou.net>
-From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Message-ID: <f9834433-8905-c9a3-ac97-fc13ecc44a54@wanyeetech.com>
-Date:   Mon, 12 Oct 2020 00:30:13 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Sun, 11 Oct 2020 12:35:49 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 089DDC0613D0
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 09:35:48 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id m17so15284051ioo.1
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 09:35:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dnAx+CMTWtccZoKo+7pJcGq4TFecPqxUqhMCcO/A1/I=;
+        b=cqEJYWuwEM1wKqoR8MtOGNWkuTiZOeOubU7UCLM5TLYhOUrOBYY/iNWozxx7s7NZrp
+         BYYhtvqaNJXJZmOM+6lJp+D+AftUShJPH1CDcl6kXqtJLV81D4Bcy/AAy3tY3/5TOZE6
+         s2/MbUgnUWulLg+qD2aaRG9sEeP3AoIHhpgq0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dnAx+CMTWtccZoKo+7pJcGq4TFecPqxUqhMCcO/A1/I=;
+        b=Tm7RhQwN2ySxitR2pzCWpu7dQ4Q/bf6gI5ZCg2p27pQBKij9TougqEOeJKFBc8lb/h
+         IOv1bIh0rHZFXy8O+V1EVAUo2F2UOqVJ24tQpzc8lDsgYt3dHnLupapuyrFSROwpQ8Pl
+         B73uKiJlKL5CbPI8nWQuSsS/C5lYsBQS7fhDWG56tWY2PPYZWbG6uRKwJOFgF/9cc9wT
+         C8DBT3RR7K0xPsgIoYzl/bRgvbsMPmZ9z7Ev91/S9y7S1tF5qCYvV64uTmcjgysJsDgP
+         mfCZDEgIBZ8D9KEVBmJzPG9ca+ZrN1s9kVidTIBF9Pf6Gs36062dQUOKKMeeW6D03oqE
+         2KdA==
+X-Gm-Message-State: AOAM532zkUHljMFGqWgdVDn2DdOE7H21iXmUweynZyHnhqsAke2LN6J0
+        o9bFBd9GNbTLvZkYdjyeF3bQiE+I30wThnQUmZEMMw==
+X-Google-Smtp-Source: ABdhPJyDKLD3OzLZr0zfGpxZPtYDNRDMeu31N4+Ga/xKGYNkKAUSfyMCi88QYCSgSybenInsZH9W4377NNtfLIdnYNo=
+X-Received: by 2002:a02:110a:: with SMTP id 10mr16886097jaf.23.1602434148107;
+ Sun, 11 Oct 2020 09:35:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201010192509.9098-1-paul@crapouillou.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20200923152211.2403352-1-joel@joelfernandes.org>
+ <20200923152211.2403352-2-joel@joelfernandes.org> <20201009231409.GA120772@lothringen>
+In-Reply-To: <20201009231409.GA120772@lothringen>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Sun, 11 Oct 2020 09:35:37 -0700
+Message-ID: <CAEXW_YQPFM81EXi+7c6ed9b2ULw4YmtfGzmT1GKUGVu5v6CyGg@mail.gmail.com>
+Subject: Re: [PATCH v6 1/4] rcu/tree: Make rcu_do_batch count how many
+ callbacks were executed
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu <rcu@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
-
-On 2020/10/11 上午3:25, Paul Cercueil wrote:
-> The values for the SSI pins on GPIO chips D and E were off by 0x20.
-
-
-My bad, I missed a group when calculating the offset. Thanks for fix that.
-
-Reviewed-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-
-
-> Fixes: d3ef8c6b2286 ("pinctrl: Ingenic: Add SSI pins support for JZ4770 and JZ4780.")
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> Reported-by: Artur Rojek <contact@artur-rojek.eu>
-> ---
->   drivers/pinctrl/pinctrl-ingenic.c | 72 +++++++++++++++----------------
->   1 file changed, 36 insertions(+), 36 deletions(-)
+On Fri, Oct 9, 2020 at 4:14 PM Frederic Weisbecker <frederic@kernel.org> wrote:
 >
-> diff --git a/drivers/pinctrl/pinctrl-ingenic.c b/drivers/pinctrl/pinctrl-ingenic.c
-> index c8e50a58a5e5..621909b01deb 100644
-> --- a/drivers/pinctrl/pinctrl-ingenic.c
-> +++ b/drivers/pinctrl/pinctrl-ingenic.c
-> @@ -635,44 +635,44 @@ static int jz4770_uart3_data_pins[] = { 0x6c, 0x85, };
->   static int jz4770_uart3_hwflow_pins[] = { 0x88, 0x89, };
->   static int jz4770_ssi0_dt_a_pins[] = { 0x15, };
->   static int jz4770_ssi0_dt_b_pins[] = { 0x35, };
-> -static int jz4770_ssi0_dt_d_pins[] = { 0x55, };
-> -static int jz4770_ssi0_dt_e_pins[] = { 0x71, };
-> +static int jz4770_ssi0_dt_d_pins[] = { 0x75, };
-> +static int jz4770_ssi0_dt_e_pins[] = { 0x91, };
->   static int jz4770_ssi0_dr_a_pins[] = { 0x14, };
->   static int jz4770_ssi0_dr_b_pins[] = { 0x34, };
-> -static int jz4770_ssi0_dr_d_pins[] = { 0x54, };
-> -static int jz4770_ssi0_dr_e_pins[] = { 0x6e, };
-> +static int jz4770_ssi0_dr_d_pins[] = { 0x74, };
-> +static int jz4770_ssi0_dr_e_pins[] = { 0x8e, };
->   static int jz4770_ssi0_clk_a_pins[] = { 0x12, };
->   static int jz4770_ssi0_clk_b_pins[] = { 0x3c, };
-> -static int jz4770_ssi0_clk_d_pins[] = { 0x58, };
-> -static int jz4770_ssi0_clk_e_pins[] = { 0x6f, };
-> +static int jz4770_ssi0_clk_d_pins[] = { 0x78, };
-> +static int jz4770_ssi0_clk_e_pins[] = { 0x8f, };
->   static int jz4770_ssi0_gpc_b_pins[] = { 0x3e, };
-> -static int jz4770_ssi0_gpc_d_pins[] = { 0x56, };
-> -static int jz4770_ssi0_gpc_e_pins[] = { 0x73, };
-> +static int jz4770_ssi0_gpc_d_pins[] = { 0x76, };
-> +static int jz4770_ssi0_gpc_e_pins[] = { 0x93, };
->   static int jz4770_ssi0_ce0_a_pins[] = { 0x13, };
->   static int jz4770_ssi0_ce0_b_pins[] = { 0x3d, };
-> -static int jz4770_ssi0_ce0_d_pins[] = { 0x59, };
-> -static int jz4770_ssi0_ce0_e_pins[] = { 0x70, };
-> +static int jz4770_ssi0_ce0_d_pins[] = { 0x79, };
-> +static int jz4770_ssi0_ce0_e_pins[] = { 0x90, };
->   static int jz4770_ssi0_ce1_b_pins[] = { 0x3f, };
-> -static int jz4770_ssi0_ce1_d_pins[] = { 0x57, };
-> -static int jz4770_ssi0_ce1_e_pins[] = { 0x72, };
-> +static int jz4770_ssi0_ce1_d_pins[] = { 0x77, };
-> +static int jz4770_ssi0_ce1_e_pins[] = { 0x92, };
->   static int jz4770_ssi1_dt_b_pins[] = { 0x35, };
-> -static int jz4770_ssi1_dt_d_pins[] = { 0x55, };
-> -static int jz4770_ssi1_dt_e_pins[] = { 0x71, };
-> +static int jz4770_ssi1_dt_d_pins[] = { 0x75, };
-> +static int jz4770_ssi1_dt_e_pins[] = { 0x91, };
->   static int jz4770_ssi1_dr_b_pins[] = { 0x34, };
-> -static int jz4770_ssi1_dr_d_pins[] = { 0x54, };
-> -static int jz4770_ssi1_dr_e_pins[] = { 0x6e, };
-> +static int jz4770_ssi1_dr_d_pins[] = { 0x74, };
-> +static int jz4770_ssi1_dr_e_pins[] = { 0x8e, };
->   static int jz4770_ssi1_clk_b_pins[] = { 0x3c, };
-> -static int jz4770_ssi1_clk_d_pins[] = { 0x58, };
-> -static int jz4770_ssi1_clk_e_pins[] = { 0x6f, };
-> +static int jz4770_ssi1_clk_d_pins[] = { 0x78, };
-> +static int jz4770_ssi1_clk_e_pins[] = { 0x8f, };
->   static int jz4770_ssi1_gpc_b_pins[] = { 0x3e, };
-> -static int jz4770_ssi1_gpc_d_pins[] = { 0x56, };
-> -static int jz4770_ssi1_gpc_e_pins[] = { 0x73, };
-> +static int jz4770_ssi1_gpc_d_pins[] = { 0x76, };
-> +static int jz4770_ssi1_gpc_e_pins[] = { 0x93, };
->   static int jz4770_ssi1_ce0_b_pins[] = { 0x3d, };
-> -static int jz4770_ssi1_ce0_d_pins[] = { 0x59, };
-> -static int jz4770_ssi1_ce0_e_pins[] = { 0x70, };
-> +static int jz4770_ssi1_ce0_d_pins[] = { 0x79, };
-> +static int jz4770_ssi1_ce0_e_pins[] = { 0x90, };
->   static int jz4770_ssi1_ce1_b_pins[] = { 0x3f, };
-> -static int jz4770_ssi1_ce1_d_pins[] = { 0x57, };
-> -static int jz4770_ssi1_ce1_e_pins[] = { 0x72, };
-> +static int jz4770_ssi1_ce1_d_pins[] = { 0x77, };
-> +static int jz4770_ssi1_ce1_e_pins[] = { 0x92, };
->   static int jz4770_mmc0_1bit_a_pins[] = { 0x12, 0x13, 0x14, };
->   static int jz4770_mmc0_4bit_a_pins[] = { 0x15, 0x16, 0x17, };
->   static int jz4770_mmc0_1bit_e_pins[] = { 0x9c, 0x9d, 0x94, };
-> @@ -1050,35 +1050,35 @@ static int jz4780_ssi0_dt_a_19_pins[] = { 0x13, };
->   static int jz4780_ssi0_dt_a_21_pins[] = { 0x15, };
->   static int jz4780_ssi0_dt_a_28_pins[] = { 0x1c, };
->   static int jz4780_ssi0_dt_b_pins[] = { 0x3d, };
-> -static int jz4780_ssi0_dt_d_pins[] = { 0x59, };
-> +static int jz4780_ssi0_dt_d_pins[] = { 0x79, };
->   static int jz4780_ssi0_dr_a_20_pins[] = { 0x14, };
->   static int jz4780_ssi0_dr_a_27_pins[] = { 0x1b, };
->   static int jz4780_ssi0_dr_b_pins[] = { 0x34, };
-> -static int jz4780_ssi0_dr_d_pins[] = { 0x54, };
-> +static int jz4780_ssi0_dr_d_pins[] = { 0x74, };
->   static int jz4780_ssi0_clk_a_pins[] = { 0x12, };
->   static int jz4780_ssi0_clk_b_5_pins[] = { 0x25, };
->   static int jz4780_ssi0_clk_b_28_pins[] = { 0x3c, };
-> -static int jz4780_ssi0_clk_d_pins[] = { 0x58, };
-> +static int jz4780_ssi0_clk_d_pins[] = { 0x78, };
->   static int jz4780_ssi0_gpc_b_pins[] = { 0x3e, };
-> -static int jz4780_ssi0_gpc_d_pins[] = { 0x56, };
-> +static int jz4780_ssi0_gpc_d_pins[] = { 0x76, };
->   static int jz4780_ssi0_ce0_a_23_pins[] = { 0x17, };
->   static int jz4780_ssi0_ce0_a_25_pins[] = { 0x19, };
->   static int jz4780_ssi0_ce0_b_pins[] = { 0x3f, };
-> -static int jz4780_ssi0_ce0_d_pins[] = { 0x57, };
-> +static int jz4780_ssi0_ce0_d_pins[] = { 0x77, };
->   static int jz4780_ssi0_ce1_b_pins[] = { 0x35, };
-> -static int jz4780_ssi0_ce1_d_pins[] = { 0x55, };
-> +static int jz4780_ssi0_ce1_d_pins[] = { 0x75, };
->   static int jz4780_ssi1_dt_b_pins[] = { 0x3d, };
-> -static int jz4780_ssi1_dt_d_pins[] = { 0x59, };
-> +static int jz4780_ssi1_dt_d_pins[] = { 0x79, };
->   static int jz4780_ssi1_dr_b_pins[] = { 0x34, };
-> -static int jz4780_ssi1_dr_d_pins[] = { 0x54, };
-> +static int jz4780_ssi1_dr_d_pins[] = { 0x74, };
->   static int jz4780_ssi1_clk_b_pins[] = { 0x3c, };
-> -static int jz4780_ssi1_clk_d_pins[] = { 0x58, };
-> +static int jz4780_ssi1_clk_d_pins[] = { 0x78, };
->   static int jz4780_ssi1_gpc_b_pins[] = { 0x3e, };
-> -static int jz4780_ssi1_gpc_d_pins[] = { 0x56, };
-> +static int jz4780_ssi1_gpc_d_pins[] = { 0x76, };
->   static int jz4780_ssi1_ce0_b_pins[] = { 0x3f, };
-> -static int jz4780_ssi1_ce0_d_pins[] = { 0x57, };
-> +static int jz4780_ssi1_ce0_d_pins[] = { 0x77, };
->   static int jz4780_ssi1_ce1_b_pins[] = { 0x35, };
-> -static int jz4780_ssi1_ce1_d_pins[] = { 0x55, };
-> +static int jz4780_ssi1_ce1_d_pins[] = { 0x75, };
->   static int jz4780_mmc0_8bit_a_pins[] = { 0x04, 0x05, 0x06, 0x07, 0x18, };
->   static int jz4780_i2c3_pins[] = { 0x6a, 0x6b, };
->   static int jz4780_i2c4_e_pins[] = { 0x8c, 0x8d, };
+> On Wed, Sep 23, 2020 at 11:22:08AM -0400, Joel Fernandes (Google) wrote:
+> > Currently, rcu_do_batch() depends on the unsegmented callback list's len field
+> > to know how many CBs are executed. This fields counts down from 0 as CBs are
+> > dequeued.  It is possible that all CBs could not be run because of reaching
+> > limits in which case the remaining unexecuted callbacks are requeued in the
+> > CPU's segcblist.
+> >
+> > The number of callbacks that were not requeued are then the negative count (how
+> > many CBs were run) stored in the rcl->len which has been counting down on every
+> > dequeue. This negative count is then added to the per-cpu segmented callback
+> > list's to correct its count.
+> >
+> > Such a design works against future efforts to track the length of each segment
+> > of the segmented callback list. The reason is because
+> > rcu_segcblist_extract_done_cbs() will be populating the unsegmented callback
+> > list's length field (rcl->len) during extraction.
+> > Also, the design of counting down from 0 is confusing and error-prone IMHO.
+>
+> Right :)
+
+:)
+
+> > This commit therefore explicitly counts have many callbacks were executed in
+>
+> s/have/how
+>
+> > rcu_do_batch() itself, and uses that to update the per-CPU segcb list's ->len
+> > field, without relying on the negativity of rcl->len.
+> >
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+>
+> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+
+Thanks! Paul would be Ok to make the minor fixup s/have/how/ that
+Frederic pointed?
+
+- Joel
+(Due to COVID issues at home, I'm intermittently working so advance
+apologies for slow replies.)
