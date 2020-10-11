@@ -2,50 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B7328A8E4
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 19:59:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9E0928A8E3
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 19:59:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726293AbgJKR7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 13:59:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46750 "EHLO
+        id S1729492AbgJKR7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 13:59:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388478AbgJKR5l (ORCPT
+        with ESMTP id S2388479AbgJKR5l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 11 Oct 2020 13:57:41 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E502AC0613DC;
-        Sun, 11 Oct 2020 10:57:38 -0700 (PDT)
-Date:   Sun, 11 Oct 2020 17:57:36 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80788C0613DD;
+        Sun, 11 Oct 2020 10:57:39 -0700 (PDT)
+Date:   Sun, 11 Oct 2020 17:57:37 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1602439057;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=Tfpvc+uDRk5yfDkc1+lPh5naYsChNzUBApEMmjftadY=;
-        b=cmVp9TLNNFXpxXuwIHOu1w+iPIOV3A6yZMf3WN68bjRkk1LMKK9CTrLwbmEk0fhgSxKLO7
-        BuE1lk2ID+7cATX8siQdkTg11lsjlyrk4nawZ1rQ3ozCSigG0PIa46kSi1xvl0Dtn1BFFy
-        6DmpxqT0AVmyIlMaT+hiStpnbbhtrXiTthU8FSWEDTjapR5IoTfth5CjxtrYcMkxFGC5yq
-        oRFucdBYDiI8Ls5Jc7dUXj+TYfuOB4P2xPSE+4ACxb473Ruyc/7FVyR3DED1GiOux9APcV
-        xLEJkr0CgacRlxFTyhqNK2zKrMfRQoa3kxW59IV7gzCCTGyDgxWMBqHEb4jf9w==
+        bh=+whYw7Z5fzSEVbDgHm6cKYL3EqMbzhILPOJwhMOjxzg=;
+        b=yIMw67rSYzMMnrUfTP7M9OF8BIlTJB/IjLdw1EXu28pwWrhKIi8sdjOoDZ37DU02AQ3vk0
+        1eCLhg6T62wf8bNuNs4P+nkbVoBy38VQ35oAfS+F6L0sfXyzXjh/t6sFsvkihlqXnL3ott
+        y6tLkfGrZ1F5VM8w4kokHogFM4KrMeoNw24noBClGe6mzX2y0v0jyRl6asfpn4C/ch4ugR
+        p3oj3nJqSKxCyDSqm7zITHHfookoqsDFP+C3b5oYs+dikpKhd+c4liQgkXdkZ8m1QrxuqB
+        gYEmIsFUvC9guropJgTs94PdE6dqouFbGA42pCIxEKKbIrwYQ4ubdPHr1FihDQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1602439057;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=Tfpvc+uDRk5yfDkc1+lPh5naYsChNzUBApEMmjftadY=;
-        b=9Fda3rJtUgz86U49NX2Yyputd2aU+oLDNKwF8g1ZBy1+2v0rxlrew0xsecjc7IbEo/oInW
-        3spXMKd6XtS9N0CA==
-From:   "tip-bot2 for Suman Anna" <tip-bot2@linutronix.de>
+        bh=+whYw7Z5fzSEVbDgHm6cKYL3EqMbzhILPOJwhMOjxzg=;
+        b=dcRyhuTUg8zJeDEEmYWCukFvmpf2FuobnT9ZG1zCv2b7AoWwCCgwO3vFxA1m5nLkV25t+r
+        JN5CIEm+brn8G4Cg==
+From:   "tip-bot2 for David Lechner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] irqchip/irq-pruss-intc: Add support for ICSSG INTC on K3 SoCs
-Cc:     Suman Anna <s-anna@ti.com>,
+Subject: [tip: irq/core] irqchip/irq-pruss-intc: Implement irq_{get,
+ set}_irqchip_state ops
+Cc:     Suman Anna <s-anna@ti.com>, David Lechner <david@lechnology.com>,
         Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
         Marc Zyngier <maz@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <160243905657.7002.9340747357886501183.tip-bot2@tip-bot2>
+Message-ID: <160243905711.7002.4674488860526950145.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -56,72 +58,92 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/core branch of tip:
 
-Commit-ID:     7e92dee60cba51f8a5c7637bac815e70c85935f7
-Gitweb:        https://git.kernel.org/tip/7e92dee60cba51f8a5c7637bac815e70c85935f7
-Author:        Suman Anna <s-anna@ti.com>
-AuthorDate:    Wed, 16 Sep 2020 18:36:38 +02:00
+Commit-ID:     b1026e8a95e430e615579f14f0f73c94f9690468
+Gitweb:        https://git.kernel.org/tip/b1026e8a95e430e615579f14f0f73c94f9690468
+Author:        David Lechner <david@lechnology.com>
+AuthorDate:    Wed, 16 Sep 2020 18:36:37 +02:00
 Committer:     Marc Zyngier <maz@kernel.org>
 CommitterDate: Thu, 17 Sep 2020 12:20:32 +01:00
 
-irqchip/irq-pruss-intc: Add support for ICSSG INTC on K3 SoCs
+irqchip/irq-pruss-intc: Implement irq_{get, set}_irqchip_state ops
 
-The K3 AM65x and J721E SoCs have the next generation of the PRU-ICSS IP,
-commonly called ICSSG. The PRUSS INTC present within the ICSSG supports
-more System Events (160 vs 64), more Interrupt Channels and Host Interrupts
-(20 vs 10) compared to the previous generation PRUSS INTC instances. The
-first 2 and the last 10 of these host interrupt lines are used by the
-PRU and other auxiliary cores and sub-modules within the ICSSG, with 8
-host interrupts connected to MPU. The host interrupts 5, 6, 7 are also
-connected to the other ICSSG instances within the SoC and can be
-partitioned as per system integration through the board dts files.
+This implements the irq_get_irqchip_state and irq_set_irqchip_state
+callbacks for the TI PRUSS INTC driver. The set callback can be used
+by drivers to "kick" a PRU by injecting a PRU system event.
 
-Enhance the PRUSS INTC driver to add support for this ICSSG INTC
-instance.
-
+Co-developed-by: Suman Anna <s-anna@ti.com>
 Co-developed-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
 Signed-off-by: Suman Anna <s-anna@ti.com>
+Signed-off-by: David Lechner <david@lechnology.com>
 Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+Reviewed-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- drivers/irqchip/Kconfig          |  2 +-
- drivers/irqchip/irq-pruss-intc.c |  9 +++++++++
- 2 files changed, 10 insertions(+), 1 deletion(-)
+ drivers/irqchip/irq-pruss-intc.c | 40 +++++++++++++++++++++++++++++++-
+ 1 file changed, 40 insertions(+)
 
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index 733e59f..25c8944 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -495,7 +495,7 @@ config TI_SCI_INTA_IRQCHIP
- 
- config TI_PRUSS_INTC
- 	tristate "TI PRU-ICSS Interrupt Controller"
--	depends on ARCH_DAVINCI || SOC_AM33XX || SOC_AM43XX || SOC_DRA7XX || ARCH_KEYSTONE
-+	depends on ARCH_DAVINCI || SOC_AM33XX || SOC_AM43XX || SOC_DRA7XX || ARCH_KEYSTONE || ARCH_K3
- 	select IRQ_DOMAIN
- 	help
- 	  This enables support for the PRU-ICSS Local Interrupt Controller
 diff --git a/drivers/irqchip/irq-pruss-intc.c b/drivers/irqchip/irq-pruss-intc.c
-index bfe529a..92fb578 100644
+index e7ba358..bfe529a 100644
 --- a/drivers/irqchip/irq-pruss-intc.c
 +++ b/drivers/irqchip/irq-pruss-intc.c
-@@ -628,11 +628,20 @@ static const struct pruss_intc_match_data pruss_intc_data = {
- 	.num_host_events = 10,
+@@ -12,6 +12,7 @@
+  * Copyright (C) 2019 David Lechner <david@lechnology.com>
+  */
+ 
++#include <linux/interrupt.h>
+ #include <linux/irq.h>
+ #include <linux/irqchip/chained_irq.h>
+ #include <linux/irqdomain.h>
+@@ -323,6 +324,43 @@ static void pruss_intc_irq_relres(struct irq_data *data)
+ 	module_put(THIS_MODULE);
+ }
+ 
++static int pruss_intc_irq_get_irqchip_state(struct irq_data *data,
++					    enum irqchip_irq_state which,
++					    bool *state)
++{
++	struct pruss_intc *intc = irq_data_get_irq_chip_data(data);
++	u32 reg, mask, srsr;
++
++	if (which != IRQCHIP_STATE_PENDING)
++		return -EINVAL;
++
++	reg = PRU_INTC_SRSR(data->hwirq / 32);
++	mask = BIT(data->hwirq % 32);
++
++	srsr = pruss_intc_read_reg(intc, reg);
++
++	*state = !!(srsr & mask);
++
++	return 0;
++}
++
++static int pruss_intc_irq_set_irqchip_state(struct irq_data *data,
++					    enum irqchip_irq_state which,
++					    bool state)
++{
++	struct pruss_intc *intc = irq_data_get_irq_chip_data(data);
++
++	if (which != IRQCHIP_STATE_PENDING)
++		return -EINVAL;
++
++	if (state)
++		pruss_intc_write_reg(intc, PRU_INTC_SISR, data->hwirq);
++	else
++		pruss_intc_write_reg(intc, PRU_INTC_SICR, data->hwirq);
++
++	return 0;
++}
++
+ static struct irq_chip pruss_irqchip = {
+ 	.name			= "pruss-intc",
+ 	.irq_ack		= pruss_intc_irq_ack,
+@@ -330,6 +368,8 @@ static struct irq_chip pruss_irqchip = {
+ 	.irq_unmask		= pruss_intc_irq_unmask,
+ 	.irq_request_resources	= pruss_intc_irq_reqres,
+ 	.irq_release_resources	= pruss_intc_irq_relres,
++	.irq_get_irqchip_state	= pruss_intc_irq_get_irqchip_state,
++	.irq_set_irqchip_state	= pruss_intc_irq_set_irqchip_state,
  };
  
-+static const struct pruss_intc_match_data icssg_intc_data = {
-+	.num_system_events = 160,
-+	.num_host_events = 20,
-+};
-+
- static const struct of_device_id pruss_intc_of_match[] = {
- 	{
- 		.compatible = "ti,pruss-intc",
- 		.data = &pruss_intc_data,
- 	},
-+	{
-+		.compatible = "ti,icssg-intc",
-+		.data = &icssg_intc_data,
-+	},
- 	{ /* sentinel */ },
- };
- MODULE_DEVICE_TABLE(of, pruss_intc_of_match);
+ static int pruss_intc_validate_mapping(struct pruss_intc *intc, int event,
