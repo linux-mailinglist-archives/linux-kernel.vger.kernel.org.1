@@ -2,126 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C27928A96A
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 20:39:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 207C928A970
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 20:42:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727218AbgJKSjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 14:39:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53154 "EHLO
+        id S1727550AbgJKSmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 14:42:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725909AbgJKSjO (ORCPT
+        with ESMTP id S1726688AbgJKSmi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 14:39:14 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8EF5C0613CE;
-        Sun, 11 Oct 2020 11:39:14 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id n6so15408703ioc.12;
-        Sun, 11 Oct 2020 11:39:14 -0700 (PDT)
+        Sun, 11 Oct 2020 14:42:38 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2ABDC0613CE
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 11:42:37 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id 184so16089518lfd.6
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 11:42:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ihDBvmS0ut4DSKeE1V92ZLXhV60yzQeKm7MqEH3UbkE=;
-        b=omOg9nngjeH2F9Dbb/TM0VIWCX3UYpHtX8QXXKU6Wi49Z7HBxoh8JJj0LrEs6V21k+
-         IDFr+Xql22OeBgc7PX013oOTHyG9DTA2sG9CSgHvHnB9jsA58+YS0h7p91sSzydfrlN9
-         1RZg0onwhTMveQ1nYGOEpbpcfcowZoubULaRr9Q2fJ4t7bFGKDA9nAFjNnsyvFl151K9
-         q9wsmMGQoFNeUcKJ37tVf5HEUTY1JmYRc29u+gu6eT7BvYCiSBC12GxBgiIvtnSF8sOr
-         JxSb58k1ZrKUUBSJmZDLdEWidS8VzAeUftUUbacInWRnlXcz3yxhcwzbam9z9Ks1E/rG
-         M+rQ==
+        bh=Bv4yr1zd3oAgKGx/Y9Gfo9WCWv5ck5Zpi/t3B3m+xNI=;
+        b=b+ZQBWCms04b5LpZCD5ErQiNvoQjpsnhRSNoVzN8K3oQ8LE2/9vVkkglylj9w+cXy6
+         JLaATxwhlXSJKvnsuNMM574Dl2ErqnrMAgVw8ChUWI1RUl27CzMiBciFRk82jSJKNTNh
+         3K2xy41zC02voPckdoU/HIltfJ5ZUNv3p1qLM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ihDBvmS0ut4DSKeE1V92ZLXhV60yzQeKm7MqEH3UbkE=;
-        b=D+EAFSUk3J51UIdkkq3UkZPSDDTjY2/IblHALbwE+PiISRa6LtRA6TKuQcnYmqN3TB
-         05zhewBOJwNwjhem1D+aRIXNdsr2grfkRKC5Yi7/QsOB3PUg/oZE2B6y35zP1uj2Sh+s
-         F//Vrp92fQNh/zmfusPsyuUF9cshQDfD/n+mgSiT0Pi0gJgheIiqIRIATWqU8MvrXi5i
-         cNABOR9Ze5leObSH9HyR7+lj1uUKFJnSlWlEnhh3meVOCdKdjPVhZQ4eu3PplH9hLdmZ
-         cQwCiHNrUB/AzADULoZy+2JVdp5ELKG/6tx43k7jrNdU/3YotoE1AOR4f+Se3ZyOggW6
-         mFJA==
-X-Gm-Message-State: AOAM531Pal6LIqdUgYuKzZYOfmNFagpifflmi284He1d1RxHTQJW+Ruu
-        VT+OcdW8cAEEa44EcVDxd6M7lIiBvXGszslyzg8=
-X-Google-Smtp-Source: ABdhPJxTF0j2v/9fJi8BunRtQlxMSiClZGK5c3sE9XRmWV7VBvPIX40VOP59eN5kOLWvuAg4icWlgLsDpVCM1/QHaos=
-X-Received: by 2002:a02:94cd:: with SMTP id x71mr16450243jah.124.1602441553813;
- Sun, 11 Oct 2020 11:39:13 -0700 (PDT)
+        bh=Bv4yr1zd3oAgKGx/Y9Gfo9WCWv5ck5Zpi/t3B3m+xNI=;
+        b=RQmuvVRfLgAablnkrdf1u1VUyV6rSkLtx+6v8I28sYxigXweI9qzcBsrxSP9UODTnv
+         VrTc8UZFuEUfMen0pe6jRHD0E8RagIOAkRI9bZVZ22gYA2x+YpKaQllzT8/P0YQ4MBYI
+         1jRQTAMBYV0JQmcUKXYglz0c/0RKhMQZ4ZPrYUlnQ6cWp/4O+7TR32D4BY0err3dmvKT
+         vmsAnOW2LH58i1wKWtDx3SDxBcOdqCI6O080wNr59tN8U3F5BAMhuZrsduriDTJ+WbRL
+         FeqD/daW4WoyegdMBm3HyWarrJGCjFYLdlW4Ar6qLVjwCxh307ShgZtyrnMT0Nh5g5fU
+         J5sA==
+X-Gm-Message-State: AOAM533Kvvcte4Y3hbHVmOrjxHWSIGrDwlPIrDe5x1Ew47PUi7380hzO
+        lR1qGCCvgFcRWVvSDsDTUIrCivga6/i4sQ==
+X-Google-Smtp-Source: ABdhPJytTCqqxESyUI10EipOfB1YBLSwC76qSsQ4ELUQs21QJLRLS4zGj2kuOx2WcWb5452SO2s86Q==
+X-Received: by 2002:a19:ece:: with SMTP id 197mr387445lfo.474.1602441755981;
+        Sun, 11 Oct 2020 11:42:35 -0700 (PDT)
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
+        by smtp.gmail.com with ESMTPSA id x4sm2666383lfn.280.2020.10.11.11.42.34
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 11 Oct 2020 11:42:34 -0700 (PDT)
+Received: by mail-lj1-f171.google.com with SMTP id f29so859853ljo.3
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 11:42:34 -0700 (PDT)
+X-Received: by 2002:a2e:8092:: with SMTP id i18mr8544266ljg.314.1602441754158;
+ Sun, 11 Oct 2020 11:42:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201010103854.66746-1-songmuchun@bytedance.com>
-In-Reply-To: <20201010103854.66746-1-songmuchun@bytedance.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Sun, 11 Oct 2020 11:39:02 -0700
-Message-ID: <CAM_iQpUQXctR8UBNRP6td9dWTA705tP5fWKj4yZe9gOPTn_8oQ@mail.gmail.com>
-Subject: Re: [PATCH] mm: proc: add Sock to /proc/meminfo
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, rafael@kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>, shakeelb@google.com,
-        will@kernel.org, Michal Hocko <mhocko@suse.com>,
-        Roman Gushchin <guro@fb.com>, Neil Brown <neilb@suse.de>,
-        rppt@kernel.org, samitolvanen@google.com,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Florian Westphal <fw@strlen.de>, gustavoars@kernel.org,
-        Pablo Neira Ayuso <pablo@netfilter.org>, decui@microsoft.com,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Thomas Gleixner <tglx@linutronix.de>, dave@stgolabs.net,
-        walken@google.com, Jann Horn <jannh@google.com>,
-        chenqiwu@xiaomi.com, christophe.leroy@c-s.fr,
-        Minchan Kim <minchan@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>
+References: <307a7581abe24135ac243c3080d4ab9e7c044cbf.camel@perches.com>
+In-Reply-To: <307a7581abe24135ac243c3080d4ab9e7c044cbf.camel@perches.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 11 Oct 2020 11:42:18 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiKT9j821qfbb7cs10RPcoaWTtHCjuQzgmaMLk+zZeOOA@mail.gmail.com>
+Message-ID: <CAHk-=wiKT9j821qfbb7cs10RPcoaWTtHCjuQzgmaMLk+zZeOOA@mail.gmail.com>
+Subject: Re: git grep/sed to standardize "/* SPDX-License-Identifier: <license>"
+To:     Joe Perches <joe@perches.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Jiri Kosina <trivial@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 10, 2020 at 3:39 AM Muchun Song <songmuchun@bytedance.com> wrote:
+On Tue, Oct 6, 2020 at 4:13 PM Joe Perches <joe@perches.com> wrote:
 >
-> The amount of memory allocated to sockets buffer can become significant.
-> However, we do not display the amount of memory consumed by sockets
-> buffer. In this case, knowing where the memory is consumed by the kernel
+> Almost all source files in the kernel use a standardized SPDX header
+> at line 1 with a comment /* initiator and terminator */:
+>
+> /* SPDX-License-Identifier: <license> */
+>
+> $ git grep -PHn '^/\* SPDX-License-Identifier:.*\*/\s*$' | \
+>   wc -l
+> 17847
 
-We do it via `ss -m`. Is it not sufficient? And if not, why not adding it there
-rather than /proc/meminfo?
+That grep pattern makes zero sense.
 
->  static inline void __skb_frag_unref(skb_frag_t *frag)
->  {
-> -       put_page(skb_frag_page(frag));
-> +       struct page *page = skb_frag_page(frag);
-> +
-> +       if (put_page_testzero(page)) {
-> +               dec_sock_node_page_state(page);
-> +               __put_page(page);
-> +       }
->  }
+Why would */ be special at all? It isn't.
 
-You mix socket page frag with skb frag at least, not sure this is exactly
-what you want, because clearly skb page frags are frequently used
-by network drivers rather than sockets.
+  $ git grep SPDX-License-Identifier: | wc -l
+  52418
 
-Also, which one matches this dec_sock_node_page_state()? Clearly
-not skb_fill_page_desc() or __skb_frag_ref().
+and a *LOT* of those are shell scripts and use "#", or are C sources
+and use "//" etc.
 
-Thanks.
+So your "standardization" is completely pointless. Anybody who expects
+that pattern just doing something fundamentally wrong, because the
+pattern you want to standardize around is simply not valid.
+
+             Linus
