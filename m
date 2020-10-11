@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 587B828A6CE
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 12:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15AE828A6C9
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 12:02:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387658AbgJKKDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 06:03:06 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:27418 "EHLO
+        id S2387565AbgJKKCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 06:02:52 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:50836 "EHLO
         mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387572AbgJKKCt (ORCPT
+        by vger.kernel.org with ESMTP id S2387577AbgJKKCt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 11 Oct 2020 06:02:49 -0400
 X-IronPort-AV: E=Sophos;i="5.77,362,1596492000"; 
-   d="scan'208";a="471981624"
+   d="scan'208";a="471981625"
 Received: from palace.rsr.lip6.fr (HELO palace.lip6.fr) ([132.227.105.202])
   by mail2-relais-roc.national.inria.fr with ESMTP/TLS/AES256-SHA256; 11 Oct 2020 12:02:41 +0200
 From:   Julia Lawall <Julia.Lawall@inria.fr>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
+To:     Charles Keepax <ckeepax@opensource.cirrus.com>
 Cc:     =?UTF-8?q?Valdis=20Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
         Joe Perches <joe@perches.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         kernel-janitors@vger.kernel.org,
-        Sangbeom Kim <sbkim73@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
         Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
         Jaroslav Kysela <perex@perex.cz>,
         Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 6/8] ASoC: samsung: snow: use semicolons rather than commas to separate statements
-Date:   Sun, 11 Oct 2020 11:19:37 +0200
-Message-Id: <1602407979-29038-7-git-send-email-Julia.Lawall@inria.fr>
+        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org
+Subject: [PATCH 7/8] ASoC: madera: use semicolons rather than commas to separate statements
+Date:   Sun, 11 Oct 2020 11:19:38 +0200
+Message-Id: <1602407979-29038-8-git-send-email-Julia.Lawall@inria.fr>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1602407979-29038-1-git-send-email-Julia.Lawall@inria.fr>
 References: <1602407979-29038-1-git-send-email-Julia.Lawall@inria.fr>
@@ -54,20 +53,25 @@ e2
 Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 
 ---
- sound/soc/samsung/snow.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/madera.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/samsung/snow.c b/sound/soc/samsung/snow.c
-index 07163f07c6d5..989af624dd11 100644
---- a/sound/soc/samsung/snow.c
-+++ b/sound/soc/samsung/snow.c
-@@ -189,7 +189,7 @@ static int snow_probe(struct platform_device *pdev)
- 			return PTR_ERR(priv->clk_i2s_bus);
- 		}
- 	} else {
--		link->codecs->dai_name = "HiFi",
-+		link->codecs->dai_name = "HiFi";
- 
- 		link->cpus->of_node = of_parse_phandle(dev->of_node,
- 						"samsung,i2s-controller", 0);
+diff --git a/sound/soc/codecs/madera.c b/sound/soc/codecs/madera.c
+index 680f31a6493a..f4ed7e04673f 100644
+--- a/sound/soc/codecs/madera.c
++++ b/sound/soc/codecs/madera.c
+@@ -3019,11 +3019,11 @@ static int madera_hw_params_rate(struct snd_pcm_substream *substream,
+ 		tar = 2 << MADERA_AIF1_RATE_SHIFT;
+ 		break;
+ 	case MADERA_CLK_ASYNCCLK_1:
+-		reg = MADERA_ASYNC_SAMPLE_RATE_1,
++		reg = MADERA_ASYNC_SAMPLE_RATE_1;
+ 		tar = 8 << MADERA_AIF1_RATE_SHIFT;
+ 		break;
+ 	case MADERA_CLK_ASYNCCLK_2:
+-		reg = MADERA_ASYNC_SAMPLE_RATE_2,
++		reg = MADERA_ASYNC_SAMPLE_RATE_2;
+ 		tar = 9 << MADERA_AIF1_RATE_SHIFT;
+ 		break;
+ 	default:
 
