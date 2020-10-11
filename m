@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8277028A63B
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 10:00:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 913B328A63E
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 10:11:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729110AbgJKIAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 04:00:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40316 "EHLO
+        id S1729123AbgJKIJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 04:09:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725844AbgJKIAU (ORCPT
+        with ESMTP id S1725844AbgJKIJD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 04:00:20 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B238EC0613CE
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 01:00:19 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id u21so18998324eja.2
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 01:00:19 -0700 (PDT)
+        Sun, 11 Oct 2020 04:09:03 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A557C0613CE
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 01:09:03 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id u21so19013927eja.2
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 01:09:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:mime-version
          :content-disposition;
-        bh=kbuC7ekcH2sE0v2mfTiLeLX4xW0n9HdQ2x9bjk8D20s=;
-        b=Fl/8gAYT+n/4czsi0djmP61vHLsmkrq85x77day8s0HKf1GMWsnbootrynLMEfd43m
-         5Vh78gZDWjap1OOE3zRkKWDC8k1zjxkJ6X08fqXRKW59Wc0yTHyRP/OKHHybsWx4PgH1
-         hstvT0oKP61TFfVIqcPY28pDMkUI8l4LtX8h75Zc+Kny92xFTZQnTgn5GidxYFbFxn6f
-         Hrnmfe/lXmveri2qHByaXkbyplAhD7Ny31Uau9HmznLt+4EyQ8yK48lAf6or375+58BS
-         xsvPBut10pJb5ibZGomLosK5opVp3OkFjdYR+estAJxPLU5nET+verRazY2vRjt1G7H0
-         2pZw==
+        bh=QeJKHKFo1+oYE4cAjCsIuxgUdsxnX+NLFnzJ98hrfSg=;
+        b=gX5nqTv1RmW0bev3cCkDv++p6kk92lF0eZa94OFDD13gxCmaSSMdTa1qMXAyiBtihp
+         SefLlfiJlwSVOWtPQoRG3CoQcPAaU23YWlczaItO/JeDECAooO0wbDn8A8+OdzAHIvf5
+         /vkseHQU+RMwS8VdcaKrqPYe8QbMDg+FZev/Stc3ytWgAobLKoyP2hhASx5WRYdsOA4H
+         4Ng5f+2y83RJaEjDCRjri1JEaolXneOdh1dIZXkP9k3Goxh87xblFfnI19sFw1BefLxP
+         QPRqIpH0mnan7ZExTpz2lLhDDZ1vmkr4uPhFE85ZUg/jp36reswy3RjNt2w4cNC+oXn5
+         Ulqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :mime-version:content-disposition;
-        bh=kbuC7ekcH2sE0v2mfTiLeLX4xW0n9HdQ2x9bjk8D20s=;
-        b=UZ0mlK0q/BEUXgcjBW/VByY4WNjHNvonBWU3ALlcvrnNVxa4c6EB6YDu+bStdAhNdk
-         qYULBis9cn9TJ7d1lmP+dkiDpXSaNUFDtG5uVZ8ONcRYTWHIf8EeizY/aKo2gaLEehYX
-         0osK9UB7Yxr8hbkx5z/YqMMjj76hlfvtPWoTn75UP3il+Eq6/OF09o7qCil78fIJzbA5
-         36l5MeTxR56K6gwemKvDpYcIWAQk/X7qDQigUfEp0pXGGCcODNGg22VzIuALkfimLkH4
-         ywkWNoxosuQ7NyM/TUIpkiAMGBnRCELCGQjIQ2BnonjdvVY7zZ83Upr9LxDDMXHH/DXY
-         P4hA==
-X-Gm-Message-State: AOAM531hBO8yPhwHYV4KDS8UNntCOOaRDFBcuZC4TyjE3uwpQq7OvY2h
-        6ARSW2cEqTZVKETKQruaWcI=
-X-Google-Smtp-Source: ABdhPJwnV5yyheuV+yhBvtic1VyRko29Zzd/ux4+7rDTBdGMdMJ3QzLei0LrMImzeJbpYCNuElWfrA==
-X-Received: by 2002:a17:906:8297:: with SMTP id h23mr21859961ejx.383.1602403218128;
-        Sun, 11 Oct 2020 01:00:18 -0700 (PDT)
+        bh=QeJKHKFo1+oYE4cAjCsIuxgUdsxnX+NLFnzJ98hrfSg=;
+        b=SM9+Zn3e9AZ1pzlhnDe+/P///67W2JjRm7IHxPV914Iwq/l3tNKKX3Mn6oDBh7aQ2y
+         9y+LlHyJdDxDuAiC8MuD6yN6SsXfBcXLqgfG5DEmTNJp/E6KvX96C9BqoNgfRVPhRrkw
+         MYW+VuFfif34XeL20+EH5tXyhKTbCc1LQflOv7J+95roZC8e/XZfat8Hp/BUi0uBqZEs
+         zc/Ld4MGRDq/Xpj0dHauVcVum+Fve7AyFp7R8MbdrIWOpvRf9+hG8Fe56993RHIP5RQe
+         pS1z3UNikEggdfsRx3g1m20GX5S8jftAC006bF5jQZw4u2Uya6JTg7rjiCuWhrIbif9H
+         e1vw==
+X-Gm-Message-State: AOAM531G91jq1J1ZUUGqVz2p97BD4IrCz+mo348hVQGWsUFA2Por8cvq
+        ke5EonRLX7nXx0bAM1C11to=
+X-Google-Smtp-Source: ABdhPJzdVd06iBfiCtLcuoEX1VtR1A1kZDlU83LJIfzp8JTlCHJ5nHFgo4TXNOpaJ1yoowtm9D3+qw==
+X-Received: by 2002:a17:907:43c0:: with SMTP id ok24mr22510837ejb.385.1602403741556;
+        Sun, 11 Oct 2020 01:09:01 -0700 (PDT)
 Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id q26sm8893485ejr.97.2020.10.11.01.00.16
+        by smtp.gmail.com with ESMTPSA id jw9sm9003407ejb.33.2020.10.11.01.09.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Oct 2020 01:00:16 -0700 (PDT)
+        Sun, 11 Oct 2020 01:09:00 -0700 (PDT)
 Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Sun, 11 Oct 2020 10:00:15 +0200
+Date:   Sun, 11 Oct 2020 10:08:59 +0200
 From:   Ingo Molnar <mingo@kernel.org>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
         Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnaldo Carvalho de Melo <acme@infradead.org>
-Subject: [GIT PULL] perf fix
-Message-ID: <20201011080015.GA3530982@gmail.com>
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [GIT PULL] x86 fixes
+Message-ID: <20201011080859.GA3598074@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -68,46 +67,85 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Linus,
 
-Please pull the latest perf/urgent git tree from:
+Please pull the latest x86/urgent git tree from:
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf-urgent-2020-10-11
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-urgent-2020-10-11
 
-   # HEAD: 6d6b8b9f4fceab7266ca03d194f60ec72bd4b654 perf: Fix task_function_call() error handling
+   # HEAD: 0c7689830e907668288a1a1da84dca66dbdb4728 Documentation/x86: Fix incorrect references to zero-page.txt
 
-Fix an error handling bug that can cause a lockup if a CPU is offline. (doh ...)
+Two fixes:
+
+ - Fix a (hopefully final) IRQ state tracking bug vs. MCE handling
+ - Fix a documentation link
 
  Thanks,
 
 	Ingo
 
 ------------------>
-Kajol Jain (1):
-      perf: Fix task_function_call() error handling
+Heinrich Schuchardt (1):
+      Documentation/x86: Fix incorrect references to zero-page.txt
+
+Thomas Gleixner (1):
+      x86/mce: Use idtentry_nmi_enter/exit()
 
 
- kernel/events/core.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ Documentation/x86/boot.rst     | 6 +++---
+ arch/x86/kernel/cpu/mce/core.c | 6 ++++--
+ 2 files changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 7ed5248f0445..e8bf92202542 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -99,7 +99,7 @@ static void remote_function(void *data)
-  * retry due to any failures in smp_call_function_single(), such as if the
-  * task_cpu() goes offline concurrently.
-  *
-- * returns @func return value or -ESRCH when the process isn't running
-+ * returns @func return value or -ESRCH or -ENXIO when the process isn't running
-  */
- static int
- task_function_call(struct task_struct *p, remote_function_f func, void *info)
-@@ -115,7 +115,8 @@ task_function_call(struct task_struct *p, remote_function_f func, void *info)
- 	for (;;) {
- 		ret = smp_call_function_single(task_cpu(p), remote_function,
- 					       &data, 1);
--		ret = !ret ? data.ret : -EAGAIN;
-+		if (!ret)
-+			ret = data.ret;
+diff --git a/Documentation/x86/boot.rst b/Documentation/x86/boot.rst
+index 7fafc7ac00d7..abb9fc164657 100644
+--- a/Documentation/x86/boot.rst
++++ b/Documentation/x86/boot.rst
+@@ -1342,8 +1342,8 @@ follow::
  
- 		if (ret != -EAGAIN)
- 			break;
+ In addition to read/modify/write the setup header of the struct
+ boot_params as that of 16-bit boot protocol, the boot loader should
+-also fill the additional fields of the struct boot_params as that
+-described in zero-page.txt.
++also fill the additional fields of the struct boot_params as
++described in chapter :doc:`zero-page`.
+ 
+ After setting up the struct boot_params, the boot loader can load the
+ 32/64-bit kernel in the same way as that of 16-bit boot protocol.
+@@ -1379,7 +1379,7 @@ can be calculated as follows::
+ In addition to read/modify/write the setup header of the struct
+ boot_params as that of 16-bit boot protocol, the boot loader should
+ also fill the additional fields of the struct boot_params as described
+-in zero-page.txt.
++in chapter :doc:`zero-page`.
+ 
+ After setting up the struct boot_params, the boot loader can load
+ 64-bit kernel in the same way as that of 16-bit boot protocol, but
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index f43a78bde670..fc4f8c04bdb5 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -1904,6 +1904,8 @@ void (*machine_check_vector)(struct pt_regs *) = unexpected_machine_check;
+ 
+ static __always_inline void exc_machine_check_kernel(struct pt_regs *regs)
+ {
++	bool irq_state;
++
+ 	WARN_ON_ONCE(user_mode(regs));
+ 
+ 	/*
+@@ -1914,7 +1916,7 @@ static __always_inline void exc_machine_check_kernel(struct pt_regs *regs)
+ 	    mce_check_crashing_cpu())
+ 		return;
+ 
+-	nmi_enter();
++	irq_state = idtentry_enter_nmi(regs);
+ 	/*
+ 	 * The call targets are marked noinstr, but objtool can't figure
+ 	 * that out because it's an indirect call. Annotate it.
+@@ -1925,7 +1927,7 @@ static __always_inline void exc_machine_check_kernel(struct pt_regs *regs)
+ 	if (regs->flags & X86_EFLAGS_IF)
+ 		trace_hardirqs_on_prepare();
+ 	instrumentation_end();
+-	nmi_exit();
++	idtentry_exit_nmi(regs, irq_state);
+ }
+ 
+ static __always_inline void exc_machine_check_user(struct pt_regs *regs)
