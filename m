@@ -2,91 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB50228A5DC
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 08:08:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A34528A5E5
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 08:25:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726532AbgJKGI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 02:08:57 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:37870 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725882AbgJKGI5 (ORCPT
+        id S1726847AbgJKGZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 02:25:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726719AbgJKGZB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 02:08:57 -0400
-Date:   Sun, 11 Oct 2020 06:08:54 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602396535;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=NFDWvJrrqrrvlMJ5O9iZKUufRiraLZ8NQC5ILvCEisg=;
-        b=Y2uRPlaRXioURdH8ME9LD63HCQvqSOFmgjK8+gewtdxDnOu48SV+wID4YHtReMuiLbTaFe
-        mLgRfwRXOQHcYjda8lBdrsUwzzJX6F/1ynPeYvrialJ2y339KSWskatPJ1WlYe1B8s4Cae
-        L+g0FIX/ZLHteN0dVhFtPuGQwx4ns/b6CYO2Sa+zOv5b2izTQq1v1NngYKG1gERUk8LWK3
-        StgQf0wmB/UPuS9nshDKEzyqsLnLyYa5aDAh1BIe4Y/csamt6dLk23cliF1FboKAzMD3cO
-        GULgTDZzZJNdX9leX5mrrNDS0aNn7pbHHOA1/ope3SX7mLIeJdOeNWMacyONxQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602396535;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=NFDWvJrrqrrvlMJ5O9iZKUufRiraLZ8NQC5ILvCEisg=;
-        b=ZpEBZSAV38SRQwYehOOO3Z//tb1+MD6f59EZo65Ls+9IykuqzOkTIQZ8CJ2jAdYOC8+5dE
-        HDwvAoN9fRqAE1CA==
-From:   "tip-bot2 for Ard Biesheuvel" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: efi/core] efi: mokvar: add missing include of asm/early_ioremap.h
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-MIME-Version: 1.0
-Message-ID: <160239653434.7002.15806482622522996212.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Sun, 11 Oct 2020 02:25:01 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E266BC0613D2
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 23:25:00 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id y53so10321567qth.2
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 23:25:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=UJx97gIPGIXFXkRks4Wo0vV6Q6PxKBpX120vcE6WJsg=;
+        b=sWYTJbGOpsmE70syYCNzGsAplxbAsaDGvmNcakNaECKP+Ez8bD3Rdi6wI3rU59lXC9
+         6gfqTcuW9qjebxjGoE/SlnfNpby5Lx9LohoeIR0wNuoONARjym5sepDDSAAzRvXJTOvh
+         jWgsUd7YnS0HYTD/FqQ5fTCIc4Egy70KtDZFi4GTlSgAJR+du+MoKKkmnVxmYz+VjXsm
+         /LRCyixeYm3wQkxoj7oL5e4ruFzoYKC/W4hO6hQ+Fby9VjHr2ghxh2G+ODkOMtdkOl2L
+         n/3z5bO46TzAHYpXmxMlyLX3xSV5i+mcGQEM8lPmKs5wXtRt8EL6d6bXbmBDWTELZFnI
+         Xcjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=UJx97gIPGIXFXkRks4Wo0vV6Q6PxKBpX120vcE6WJsg=;
+        b=WTMIhB+fTEksAxnosQggCcpM6lh/B8Tf+TSwcoDoYpLCuWc+G6BH0ZSgafrXF4uswX
+         gqXiR8ERN6qjH+Y4wegaUvlCe7AumENIdyCUnOw2gvXXK6EeARzplYU9VhDjTMLOSTRL
+         jGAtfNXkHuUrWEGoDMf/BqbkFt8Nhbu6FRq7sNgc1EWMgXMwWOSpiWb4EMRlu4fRNKGc
+         CzeC97mrbsdXuI9E+6GjMpFoN7FBCm+XobcwsEc7RQMJW6QuE2XHYXGTB5bVkyGxHfQ9
+         UY0SO43VVHw+uCNJ9HNuWoEO/jNaewiOXZtXgN6pGeehZ9QLB5unsaOi3kEykAyxfMK7
+         Lg2g==
+X-Gm-Message-State: AOAM5311glPUGSsJSuKF2ydrEn2P+oCZFS96QTd3TngAMBnO2VGAcCdB
+        d7gZ8LPice5xjbj2kkGvXosiz+CZKvmzJ6bD8g==
+X-Google-Smtp-Source: ABdhPJwwuHEwTJas51CDs0CXwMgtZ6GF8BpLVVQwMWpZxEVKux8CKK116qNPOrQYZazm9+cW7Nre45/LrKMgXOFtEA==
+Sender: "lokeshgidra via sendgmr" <lokeshgidra@lg.mtv.corp.google.com>
+X-Received: from lg.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:29dd])
+ (user=lokeshgidra job=sendgmr) by 2002:a0c:a203:: with SMTP id
+ f3mr20270612qva.33.1602397499810; Sat, 10 Oct 2020 23:24:59 -0700 (PDT)
+Date:   Sat, 10 Oct 2020 23:24:54 -0700
+Message-Id: <20201011062456.4065576-1-lokeshgidra@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
+Subject: [PATCH v5 0/2] Control over userfaultfd kernel-fault handling
+From:   Lokesh Gidra <lokeshgidra@google.com>
+To:     Kees Cook <keescook@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>, Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Daniel Colascione <dancol@dancol.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, kaleshsingh@google.com,
+        calin@google.com, surenb@google.com, nnk@google.com,
+        jeffv@google.com, kernel-team@android.com,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Shaohua Li <shli@fb.com>, Jerome Glisse <jglisse@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Nitin Gupta <nigupta@nvidia.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the efi/core branch of tip:
+This patch series is split from [1]. The other series enables SELinux
+support for userfaultfd file descriptors so that its creation and
+movement can be controlled.
 
-Commit-ID:     cc383a9e245c527d3175e2cf4cced9dbbedbbac6
-Gitweb:        https://git.kernel.org/tip/cc383a9e245c527d3175e2cf4cced9dbbedbbac6
-Author:        Ard Biesheuvel <ardb@kernel.org>
-AuthorDate:    Fri, 02 Oct 2020 10:01:23 +02:00
-Committer:     Ard Biesheuvel <ardb@kernel.org>
-CommitterDate: Fri, 02 Oct 2020 10:08:29 +02:00
+It has been demonstrated on various occasions that suspending kernel
+code execution for an arbitrary amount of time at any access to
+userspace memory (copy_from_user()/copy_to_user()/...) can be exploited
+to change the intended behavior of the kernel. For instance, handling
+page faults in kernel-mode using userfaultfd has been exploited in [2, 3].
+Likewise, FUSE, which is similar to userfaultfd in this respect, has been
+exploited in [4, 5] for similar outcome.
 
-efi: mokvar: add missing include of asm/early_ioremap.h
+This small patch series adds a new flag to userfaultfd(2) that allows
+callers to give up the ability to handle kernel-mode faults with the
+resulting UFFD file object. It then adds a 'user-mode only' option to
+the unprivileged_userfaultfd sysctl knob to require unprivileged
+callers to use this new flag.
 
-Nathan reports that building the new mokvar table code for 32-bit
-ARM fails with errors such as
+The purpose of this new interface is to decrease the chance of an
+unprivileged userfaultfd user taking advantage of userfaultfd to
+enhance security vulnerabilities by lengthening the race window in
+kernel code.
 
-  error: implicit declaration of function 'early_memunmap'
-  error: implicit declaration of function 'early_memremap'
+[1] https://lore.kernel.org/lkml/20200211225547.235083-1-dancol@google.com/
+[2] https://duasynt.com/blog/linux-kernel-heap-spray
+[3] https://duasynt.com/blog/cve-2016-6187-heap-off-by-one-exploit
+[4] https://googleprojectzero.blogspot.com/2016/06/exploiting-recursion-in-linux-kernel_20.html
+[5] https://bugs.chromium.org/p/project-zero/issues/detail?id=808
 
-This is caused by the lack of an explicit #include of the appropriate
-header, and ARM apparently does not inherit that inclusion via another
-header file. So add the #include.
+Changes since v4:
 
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- drivers/firmware/efi/mokvar-table.c | 2 ++
- 1 file changed, 2 insertions(+)
+  - Added warning when bailing out from handling kernel fault.
 
-diff --git a/drivers/firmware/efi/mokvar-table.c b/drivers/firmware/efi/mokvar-table.c
-index 72a9e17..d8bc013 100644
---- a/drivers/firmware/efi/mokvar-table.c
-+++ b/drivers/firmware/efi/mokvar-table.c
-@@ -40,6 +40,8 @@
- #include <linux/list.h>
- #include <linux/slab.h>
- 
-+#include <asm/early_ioremap.h>
-+
- /*
-  * The LINUX_EFI_MOK_VARIABLE_TABLE_GUID config table is a packed
-  * sequence of struct efi_mokvar_table_entry, one for each named
+Changes since v3:
+
+  - Modified the meaning of value '0' of unprivileged_userfaultfd
+    sysctl knob. Setting this knob to '0' now allows unprivileged users
+    to use userfaultfd, but can handle page faults in user-mode only.
+  - The default value of unprivileged_userfaultfd sysctl knob is changed
+    to '0'.
+
+Changes since v2:
+
+  - Removed 'uffd_flags' and directly used 'UFFD_USER_MODE_ONLY' in
+    userfaultfd().
+
+Changes since v1:
+
+  - Added external references to the threats from allowing unprivileged
+    users to handle page faults from kernel-mode.
+  - Removed the new sysctl knob restricting handling of page
+    faults from kernel-mode, and added an option for the same
+    in the existing 'unprivileged_userfaultfd' knob.
+
+Lokesh Gidra (2):
+  Add UFFD_USER_MODE_ONLY
+  Add user-mode only option to unprivileged_userfaultfd sysctl knob
+
+ Documentation/admin-guide/sysctl/vm.rst | 15 ++++++++++-----
+ fs/userfaultfd.c                        | 16 +++++++++++++---
+ include/uapi/linux/userfaultfd.h        |  9 +++++++++
+ 3 files changed, 32 insertions(+), 8 deletions(-)
+
+-- 
+2.28.0.1011.ga647a8990f-goog
+
