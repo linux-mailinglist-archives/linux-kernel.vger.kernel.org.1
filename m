@@ -2,111 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11DD528A7B6
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 16:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84CA728A7BC
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 16:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387995AbgJKOOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 10:14:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40984 "EHLO
+        id S1730133AbgJKORz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 10:17:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387963AbgJKOOu (ORCPT
+        with ESMTP id S1725863AbgJKORv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 10:14:50 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7945DC0613CE
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 07:14:50 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id m11so13383195otk.13
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 07:14:50 -0700 (PDT)
+        Sun, 11 Oct 2020 10:17:51 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42007C0613CE;
+        Sun, 11 Oct 2020 07:17:51 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id e20so12983353otj.11;
+        Sun, 11 Oct 2020 07:17:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=muNZenS0Km4uODESvAwS5JDriZubFvXedophlc0fbss=;
-        b=A0RUJIwW3Jw6VGrIbIvCBWuwW5gvVIwwQJYWVuawgwMv3dGud3GX5Chla8ZJVapU6w
-         Xa+NMOll4AFRj9wwRwB60L7G4B7JTpmWyfmISu7gyFMcpnMAa1DawZS9JA1OhSkvu0DU
-         djvRvm68GeZE6//I2X/ozENdB+3Gshe7c6odbn6S8NnW1kwpyjHyXhbGhIB7aqH+h4sg
-         6EwpjsBXVG0oowGP8JiqgSH9RgpVYSO2FOB9Gt1d+rK9fMNDVuyG7RfDPUsROJnnkSnE
-         UShx0n7O5mOEiBA4Z5A67ybRVI5wdFASYbUIIO3rMZbrdhuKkiWFJwUz47BXMBvnn3Lc
-         k3iA==
+        bh=NdWG6HCrBS/BqpXsmrdRoBMmy2SE7zJ+cxa45t7HGkU=;
+        b=u7fdlAaoi3vd2v0oil89YhSyuhGN03RvfKfu8uPhPrYDJKIbu6RA/RCz6M0kSyunDx
+         Rsx30SR+5snZkMgMB2UnkXJr9FX1exLz8GPiQGEMNoyJditwfzHQdcWyMkzMXRxnjpAt
+         2dCkewn0f1Mk5cbAgllG0C4Q4zfyW5BzFAIxMSo9baOzp8tJgv3MYeWwu8YeltkgGbSW
+         cl7YltHO8oSr0IKjYlnGTn95a7QiynGPNif6MVBSSskZifX9O2QguQHvtcP7oWel3bTy
+         R8NFllUCA8xQcNYSuLWdlP4EkrF9kX9m1ApfxcTb//Et3oIS1UqmnA2gw3/cPTdxf2GS
+         ZAlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=muNZenS0Km4uODESvAwS5JDriZubFvXedophlc0fbss=;
-        b=A5Zgj5ND34emXRcMjTw+vDP0dIkjO/0Cy+1X8QR7JUD9Xck3z/Uy63TY0sRISwXNiD
-         550IsdcWXp5oXqY+usR5o7sG4LanXF0OzTeRaOJRJgPQosXsXK9jnVDiErlgZGxVLa5p
-         jU2wGbk/4YnUxj3Oj+NmT8UyZferPqHMfbroQTah6BftL4qJDm3sG8d/sQiuc+uHmvg2
-         ca1abFuyvp0qyRcRF+NXFPNLRCzmjOKaEX+BtXgkQvYD+dHVQMFYoyKiq6ONlRfhi1pQ
-         +cbb6d3vDbq9GEKenJE/9MRzrsj2YeZvimSKdjsafj9tgWCTQntAHn6AbwUW0nBg3I5e
-         fwPw==
-X-Gm-Message-State: AOAM530qBi891xhVdurpxEBcw4yH/oq3WTR6sC9cqHf/W2mw9n6sN7TU
-        Y58S2WKUfOa1YBVJ+e1L1IA=
-X-Google-Smtp-Source: ABdhPJyy8ExgRMDlYsTYkkLhCw077p/PR6MvHl6/JCxGySg6X+QX+Psbr0XLNu2GjHmuxyCOcwjOsw==
-X-Received: by 2002:a9d:7085:: with SMTP id l5mr7653164otj.159.1602425689809;
-        Sun, 11 Oct 2020 07:14:49 -0700 (PDT)
+        bh=NdWG6HCrBS/BqpXsmrdRoBMmy2SE7zJ+cxa45t7HGkU=;
+        b=LjGvvMp7yiFk12oqX3UpP62rt2izN+Z3ItQzWaBfhL8FraMK2i9fnkAL7Z4TX1cIri
+         OCuJCLmwbAfeiWpUQ+wIS2Q4OMWPgqMV1aFMm//e4dPfK+fAgG/+BS7WAQQS9ImfrIDo
+         8m4izvR/uNPW1eGe5HDmW8Vo6gwG7B8zgeeC4LBEgiTLDNtb1/s3aO8vEdOv5bSm4rSW
+         E7sw8SJxutcQ2BuhRDK4um9yqZzaSIe6Hro5udK7ikGF5eOPEZ1nz5BChOK37eW0D0VW
+         haGFFD5mYxbGbAnTYkw+l7Qn9p9CN6xEDgXBdF2YoPRpiiHcYr0nXalkWV2vtb2DZLiX
+         XXMw==
+X-Gm-Message-State: AOAM532B5WAAho7ze3JBq4ZWtvodOg8zmH9LAB36OkAx1jubwHHiC1Dy
+        zOiNqaRy7IecK2oXPwcSqM4=
+X-Google-Smtp-Source: ABdhPJwh0CzOzOXiaqN853RXzNjuJjTXpKKVDhUVCllzPGkwKg5MXYxGtGSWqkRmatUw2Pn3e+WstA==
+X-Received: by 2002:a9d:62d4:: with SMTP id z20mr14460245otk.109.1602425870543;
+        Sun, 11 Oct 2020 07:17:50 -0700 (PDT)
 Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id z8sm8813278oic.11.2020.10.11.07.14.48
+        by smtp.gmail.com with ESMTPSA id 42sm2253445otv.35.2020.10.11.07.17.49
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 11 Oct 2020 07:14:49 -0700 (PDT)
+        Sun, 11 Oct 2020 07:17:50 -0700 (PDT)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sun, 11 Oct 2020 07:14:47 -0700
+Date:   Sun, 11 Oct 2020 07:17:49 -0700
 From:   Guenter Roeck <linux@roeck-us.net>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     linux-mtd@lists.infradead.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mtd: parsers: bcm63xx: Do not make it modular
-Message-ID: <20201011141447.GA9215@roeck-us.net>
-References: <20200928161617.2a1b2244@xps13>
- <20200929172726.30469-1-f.fainelli@gmail.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org
+Subject: Re: [PATCH 5/5] fs: remove do_mounts
+Message-ID: <20201011141749.GA126978@roeck-us.net>
+References: <20200917082236.2518236-1-hch@lst.de>
+ <20200917082236.2518236-6-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200929172726.30469-1-f.fainelli@gmail.com>
+In-Reply-To: <20200917082236.2518236-6-hch@lst.de>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 10:27:21AM -0700, Florian Fainelli wrote:
-> With commit 91e81150d388 ("mtd: parsers: bcm63xx: simplify CFE
-> detection"), we generate a reference to fw_arg3 which is the fourth
-> firmware/command line argument on MIPS platforms. That symbol is not
-> exported and would cause a linking failure.
+On Thu, Sep 17, 2020 at 10:22:36AM +0200, Christoph Hellwig wrote:
+> There are only two callers left, one of which is is in the alpha-specific
+> OSF/1 compat code.  Just open code it in both.
 > 
-> The parser is typically necessary to boot a BCM63xx-based system anyway
-> so having it be part of the kernel image makes sense, therefore make it
-> 'bool' instead of 'tristate'.
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  arch/alpha/kernel/osf_sys.c |  7 ++++++-
+>  fs/namespace.c              | 25 ++++++++-----------------
+>  include/linux/fs.h          |  2 --
+>  3 files changed, 14 insertions(+), 20 deletions(-)
 > 
-> Fixes: 91e81150d388 ("mtd: parsers: bcm63xx: simplify CFE detection")
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> diff --git a/arch/alpha/kernel/osf_sys.c b/arch/alpha/kernel/osf_sys.c
+> index 5fd155b13503b5..8acd5101097576 100644
+> --- a/arch/alpha/kernel/osf_sys.c
+> +++ b/arch/alpha/kernel/osf_sys.c
+> @@ -434,6 +434,7 @@ SYSCALL_DEFINE4(osf_mount, unsigned long, typenr, const char __user *, path,
+                                                                                             ^^^^
+>  	struct osf_mount_args tmp;
+>  	struct filename *devname;
+>  	const char *fstype;
+> +	struct path path;
+        ^^^^^^^^^^^^^^^^
 
-What happened with this patch ? The build failure is still seen in mainline
-and in next-20201009.
+Someone didn't bother test building this patch.
+
+arch/alpha/kernel/osf_sys.c: In function '__do_sys_osf_mount':
+arch/alpha/kernel/osf_sys.c:437:14: error: 'path' redeclared as different kind of symbol
 
 Guenter
 
-> ---
->  drivers/mtd/parsers/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/parsers/Kconfig b/drivers/mtd/parsers/Kconfig
-> index f98363c9b363..e72354322f62 100644
-> --- a/drivers/mtd/parsers/Kconfig
-> +++ b/drivers/mtd/parsers/Kconfig
-> @@ -12,7 +12,7 @@ config MTD_BCM47XX_PARTS
->  	  boards.
+>  	int retval;
 >  
->  config MTD_BCM63XX_PARTS
-> -	tristate "BCM63XX CFE partitioning parser"
-> +	bool "BCM63XX CFE partitioning parser"
->  	depends on BCM63XX || BMIPS_GENERIC || COMPILE_TEST
->  	select CRC32
->  	select MTD_PARSER_IMAGETAG
-> -- 
-> 2.25.1
-> 
+>  	if (copy_from_user(&tmp, args, sizeof(tmp)))
+> @@ -467,7 +468,11 @@ SYSCALL_DEFINE4(osf_mount, unsigned long, typenr, const char __user *, path,
+>  
+>  	if (IS_ERR(devname))
+>  		return PTR_ERR(devname);
+> -	retval = do_mount(devname.name, dirname, fstype, flags, NULL);
+> +	retval = user_path_at(AT_FDCWD, dirname, LOOKUP_FOLLOW, &path);
+> +	if (!retval) {
+> +		ret = path_mount(devname.name, &path, fstype, flags, NULL);
+> +		path_put(&path);
+> +	}
+>  	putname(devname);
+>  	return retval;
+>  }
+> diff --git a/fs/namespace.c b/fs/namespace.c
+> index 12b431b61462b9..2ff373ebeaf27f 100644
+> --- a/fs/namespace.c
+> +++ b/fs/namespace.c
+> @@ -3193,20 +3193,6 @@ int path_mount(const char *dev_name, struct path *path,
+>  			    data_page);
+>  }
+>  
+> -long do_mount(const char *dev_name, const char __user *dir_name,
+> -		const char *type_page, unsigned long flags, void *data_page)
+> -{
+> -	struct path path;
+> -	int ret;
+> -
+> -	ret = user_path_at(AT_FDCWD, dir_name, LOOKUP_FOLLOW, &path);
+> -	if (ret)
+> -		return ret;
+> -	ret = path_mount(dev_name, &path, type_page, flags, data_page);
+> -	path_put(&path);
+> -	return ret;
+> -}
+> -
+>  static struct ucounts *inc_mnt_namespaces(struct user_namespace *ns)
+>  {
+>  	return inc_ucount(ns, current_euid(), UCOUNT_MNT_NAMESPACES);
+> @@ -3390,10 +3376,11 @@ EXPORT_SYMBOL(mount_subtree);
+>  SYSCALL_DEFINE5(mount, char __user *, dev_name, char __user *, dir_name,
+>  		char __user *, type, unsigned long, flags, void __user *, data)
+>  {
+> -	int ret;
+> +	struct path path;
+>  	char *kernel_type;
+>  	char *kernel_dev;
+>  	void *options;
+> +	int ret;
+>  
+>  	kernel_type = copy_mount_string(type);
+>  	ret = PTR_ERR(kernel_type);
+> @@ -3410,8 +3397,12 @@ SYSCALL_DEFINE5(mount, char __user *, dev_name, char __user *, dir_name,
+>  	if (IS_ERR(options))
+>  		goto out_data;
+>  
+> -	ret = do_mount(kernel_dev, dir_name, kernel_type, flags, options);
+> -
+> +	ret = user_path_at(AT_FDCWD, dir_name, LOOKUP_FOLLOW, &path);
+> +	if (ret)
+> +		goto out_options;
+> +	ret = path_mount(kernel_dev, &path, kernel_type, flags, options);
+> +	path_put(&path);
+> +out_options:
+>  	kfree(options);
+>  out_data:
+>  	kfree(kernel_dev);
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 7519ae003a082c..bd9878bdd4bfe9 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -2292,8 +2292,6 @@ extern struct vfsmount *kern_mount(struct file_system_type *);
+>  extern void kern_unmount(struct vfsmount *mnt);
+>  extern int may_umount_tree(struct vfsmount *);
+>  extern int may_umount(struct vfsmount *);
+> -extern long do_mount(const char *, const char __user *,
+> -		     const char *, unsigned long, void *);
+>  extern struct vfsmount *collect_mounts(const struct path *);
+>  extern void drop_collected_mounts(struct vfsmount *);
+>  extern int iterate_mounts(int (*)(struct vfsmount *, void *), void *,
