@@ -2,96 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34A8C28A704
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 12:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 744A628A727
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 13:18:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729736AbgJKKbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 06:31:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729624AbgJKKbN (ORCPT
+        id S1729944AbgJKLSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 07:18:07 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:24850 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729809AbgJKLSE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 06:31:13 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43421C0613CE;
-        Sun, 11 Oct 2020 03:31:13 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id o9so6858829plx.10;
-        Sun, 11 Oct 2020 03:31:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qUbbonkvmJI/PJT7XYEgXBBQWmM8xuj/vukAq6acOQg=;
-        b=atsoKcpA55UYV64jggSZrb3ULedRugy+lwNE37vqe1BPXujehi9wIVO6s5gtd1aAjQ
-         1MQS2/rZxlgFbxPlefPOvfzfppp35hW7slcDPoQEpR2Vvvws9ZOS2aFckB5PlEBU5UJS
-         JexYM7AyCjrDzwRy0m5HmpiUxJeeMBll8VJ58tlVf6/Lpv7Y82EeUeIRUmxXF4t/rZLe
-         BI4tovth7mP+qWSdG1heminPKTiq81HpeGMbagfXaB9AA/7xkIVnvHis/UD033ArHl0N
-         mywJmKyowxhfA7H9Ovl8dECZPBZeOEaypg57/D37Ho/lzdUokDRpAOaigniDMMHfHe3O
-         rYzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qUbbonkvmJI/PJT7XYEgXBBQWmM8xuj/vukAq6acOQg=;
-        b=gpSmiibc4vg+8og8fT+NaEZZX4e5S0QZZzHMKZzEWI1y5qPbZea4D7x4BA0RfmNk25
-         JfqOaWtL+A4AxFXymaNQNVR6r9S5Viu89Fw/+TXd3IPpqeqNowMHPBGwBDzYJ2wKKZWo
-         Ci9qx6RksYUiaHwhsb0lhA4Hcq1jciF45TRa3CQs2s+hHbvAK7fv9oei29I/jn7kuh41
-         u/y565o6S+DezOcJiXM2HUzS6m22K8fpKUJo1ZCK1ZGyWLG3qLM97NesWHTK6PccMw54
-         1Ww/5/bglZwWxsyPPl4sjaKx4M0BKrj8j361gKPYh2UpU/TqjIGTknwPezzMKygWJh2h
-         qz3g==
-X-Gm-Message-State: AOAM531ZHgkpUHzZjC7lMM88KUdcGU4y2cXRXWigICB8+UzdxS1FQHTl
-        qiODNYnVtAQo1YkSOwBPviQ=
-X-Google-Smtp-Source: ABdhPJxzk0tcJh/JkNlmWArqX0vyYcSVvNqk7B169R1YAufNKFrOqTA7nPOqA4jjTG49STxQWhmFSw==
-X-Received: by 2002:a17:902:8202:b029:d2:2f2a:6712 with SMTP id x2-20020a1709028202b02900d22f2a6712mr19441292pln.15.1602412272824;
-        Sun, 11 Oct 2020 03:31:12 -0700 (PDT)
-Received: from adolin ([49.207.215.73])
-        by smtp.gmail.com with ESMTPSA id o4sm4394694pjj.38.2020.10.11.03.31.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Oct 2020 03:31:12 -0700 (PDT)
-Date:   Sun, 11 Oct 2020 16:01:07 +0530
-From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
-To:     Julia.Lawall@lip6.fr
-Cc:     corbet@lwn.net, Gilles.Muller@lip6.fr, nicolas.palix@imag.fr,
-        michal.lkml@markovi.net, cocci@systeme.lip6.fr,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: [PATCH v4 3/3] Documentation: Coccinelle: Modify Parallelisation
- information in docs
-Message-ID: <15c5f36aea99a8947847a31cc0f982f9e829a12b.1602410019.git.sylphrenadin@gmail.com>
-References: <cover.1602410019.git.sylphrenadin@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1602410019.git.sylphrenadin@gmail.com>
+        Sun, 11 Oct 2020 07:18:04 -0400
+X-IronPort-AV: E=Sophos;i="5.77,362,1596492000"; 
+   d="scan'208";a="471985689"
+Received: from palace.rsr.lip6.fr (HELO palace.lip6.fr) ([132.227.105.202])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/AES256-SHA256; 11 Oct 2020 13:18:00 +0200
+From:   Julia Lawall <Julia.Lawall@inria.fr>
+To:     linux-security-module@vger.kernel.org
+Cc:     =?UTF-8?q?Valdis=20Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
+        Joe Perches <joe@perches.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kernel-janitors@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-afs@lists.infradead.org
+Subject: [PATCH 0/5] net: use semicolons rather than commas to separate statements
+Date:   Sun, 11 Oct 2020 12:34:53 +0200
+Message-Id: <1602412498-32025-1-git-send-email-Julia.Lawall@inria.fr>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset modifies coccicheck to use at most one thread per core by
-default in machines with more than 4 hyperthreads for optimal performance.
-Modify documentation in coccinelle.rst to reflect the same.
+These patches replace commas by semicolons.  Commas introduce
+unnecessary variability in the code structure and are hard to see.
+This was done using the Coccinelle semantic patch
+(http://coccinelle.lip6.fr/) shown below.
 
-Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
+This semantic patch ensures that commas inside for loop headers will
+not be transformed.  It also doesn't touch macro definitions.
+
+Coccinelle ensures that braces are added as needed when a
+single-statement branch turns into a multi-statement one.
+
+This semantic patch has a few false positives, for variable
+delcarations such as:
+
+LIST_HEAD(x), *y;
+
+The semantic patch could be improved to avoid these, but for the
+moment they have been removed manually (2 occurrences).
+
+// <smpl>
+@initialize:ocaml@
+@@
+
+let infunction p =
+  (* avoid macros *)
+  (List.hd p).current_element <> "something_else"
+
+let combined p1 p2 =
+  (List.hd p1).line_end = (List.hd p2).line ||
+  (((List.hd p1).line_end < (List.hd p2).line) &&
+   ((List.hd p1).col < (List.hd p2).col))
+
+@bad@
+statement S;
+declaration d;
+position p;
+@@
+
+S@p
+d
+
+// special cases where newlines are needed (hope for no more than 5)
+@@
+expression e1,e2;
+statement S;
+position p != bad.p;
+position p1;
+position p2 :
+    script:ocaml(p1) { infunction p1 && combined p1 p2 };
+@@
+
+- e1@p1,@S@p e2@p2;
++ e1; e2;
+
+@@
+expression e1,e2;
+statement S;
+position p != bad.p;
+position p1;
+position p2 :
+    script:ocaml(p1) { infunction p1 && combined p1 p2 };
+@@
+
+- e1@p1,@S@p e2@p2;
++ e1; e2;
+
+@@
+expression e1,e2;
+statement S;
+position p != bad.p;
+position p1;
+position p2 :
+    script:ocaml(p1) { infunction p1 && combined p1 p2 };
+@@
+
+- e1@p1,@S@p e2@p2;
++ e1; e2;
+
+@@
+expression e1,e2;
+statement S;
+position p != bad.p;
+position p1;
+position p2 :
+    script:ocaml(p1) { infunction p1 && combined p1 p2 };
+@@
+
+- e1@p1,@S@p e2@p2;
++ e1; e2;
+
+@@
+expression e1,e2;
+statement S;
+position p != bad.p;
+position p1;
+position p2 :
+    script:ocaml(p1) { infunction p1 && combined p1 p2 };
+@@
+
+- e1@p1,@S@p e2@p2;
++ e1; e2;
+
+@r@
+expression e1,e2;
+statement S;
+position p != bad.p;
+@@
+
+e1 ,@S@p e2;
+
+@@
+expression e1,e2;
+position p1;
+position p2 :
+    script:ocaml(p1) { infunction p1 && not(combined p1 p2) };
+statement S;
+position r.p;
+@@
+
+e1@p1
+-,@S@p
++;
+e2@p2
+... when any
+// </smpl>
+
 ---
- Documentation/dev-tools/coccinelle.rst | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/dev-tools/coccinelle.rst b/Documentation/dev-tools/coccinelle.rst
-index 74c5e6aeeff5..530d8d313601 100644
---- a/Documentation/dev-tools/coccinelle.rst
-+++ b/Documentation/dev-tools/coccinelle.rst
-@@ -130,8 +130,10 @@ To enable verbose messages set the V= variable, for example::
- Coccinelle parallelization
- --------------------------
- 
--By default, coccicheck tries to run as parallel as possible. To change
--the parallelism, set the J= variable. For example, to run across 4 CPUs::
-+By default, coccicheck uses at most 1 thread per core in a machine
-+with more than 4 hyperthreads. In a machine with upto 4 threads,
-+all threads are used. To change the parallelism, set the J= variable.
-+For example, to run across 4 CPUs::
- 
-    make coccicheck MODE=report J=4
- 
--- 
-2.25.1
-
+ net/ipv4/tcp_input.c       |    3 ++-
+ net/ipv4/tcp_vegas.c       |    8 ++++----
+ net/ipv6/calipso.c         |    2 +-
+ net/mac80211/debugfs_sta.c |    2 +-
+ net/rxrpc/recvmsg.c        |    2 +-
+ net/tls/tls_main.c         |    2 +-
+ 6 files changed, 10 insertions(+), 9 deletions(-)
