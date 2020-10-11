@@ -2,48 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9AB728A949
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 20:24:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6063228A946
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 20:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728687AbgJKSYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 14:24:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55862 "EHLO mail.kernel.org"
+        id S1728526AbgJKSX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 14:23:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727904AbgJKSX5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727197AbgJKSX5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 11 Oct 2020 14:23:57 -0400
-Subject: Re: [git pull] vfs.git fixes
+Subject: Re: [GIT PULL] x86 fixes
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1602440637;
-        bh=gqyPtCSAjTL8q5TwOjjx6uDvnEf8I7XYijlLdgXdOCQ=;
+        bh=D2HL/T5GT7lO4h+h/nTx4VtdlA4OQezXxu4t/GvpSlY=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=cQ1HqULxAIQLTa4UwNrq6pDwL1zccpHb9tJUkqAcAz+iLCDE/e6s9SFS+vMbfvPB5
-         dPI1OzrSFDmAj5hi9mcMOmzQkQfzqKBD3xG8qiyaVm7PlHrzXP0m5wFGtxljmGziDZ
-         Q6iu49jHxiP0IsnKj7AzlDQolRGQHN4IRqtqN8ts=
+        b=nV4pDoT+E2rS5yMe28p5C1oBwncKf6C8QqNJjQ0D4DQ9KRdb7+7Xr4rFdkgjniJ6U
+         f1c6hxCxdWszOxjiMpm2aFdigOM9EgskO6pn3esSOgyiftsusyWP265qRw9VQkGZyq
+         SwxCYbP7lkEPrDpBYm4jTSoegNyQNTz+wz3roopY=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201011180609.GC3576660@ZenIV.linux.org.uk>
-References: <20201011180609.GC3576660@ZenIV.linux.org.uk>
+In-Reply-To: <20201011080859.GA3598074@gmail.com>
+References: <20201011080859.GA3598074@gmail.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201011180609.GC3576660@ZenIV.linux.org.uk>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git fixes
-X-PR-Tracked-Commit-Id: 8a018eb55e3ac033592afbcb476b0ffe64465b12
+X-PR-Tracked-Message-Id: <20201011080859.GA3598074@gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-urgent-2020-10-11
+X-PR-Tracked-Commit-Id: 0c7689830e907668288a1a1da84dca66dbdb4728
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 5b697f86f9f136d200c9827d6eca0437b7eb96cf
-Message-Id: <160244063723.8522.4923464775170530284.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: c120ec12e216225f7536cc1b924fe428ff64b5bd
+Message-Id: <160244063702.8522.8900971040891011022.pr-tracker-bot@kernel.org>
 Date:   Sun, 11 Oct 2020 18:23:57 +0000
-To:     Al Viro <viro@zeniv.linux.org.uk>
+To:     Ingo Molnar <mingo@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Andrew Morton <akpm@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 11 Oct 2020 19:06:09 +0100:
+The pull request you sent on Sun, 11 Oct 2020 10:08:59 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git fixes
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-urgent-2020-10-11
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/5b697f86f9f136d200c9827d6eca0437b7eb96cf
+https://git.kernel.org/torvalds/c/c120ec12e216225f7536cc1b924fe428ff64b5bd
 
 Thank you!
 
