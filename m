@@ -2,132 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DABA628A81B
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 17:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C26328A81E
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 17:59:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387610AbgJKP4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 11:56:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54490 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730174AbgJKP42 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 11:56:28 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
+        id S2387661AbgJKP6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 11:58:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729764AbgJKP6H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Oct 2020 11:58:07 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D73D6C0613CE
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 08:58:06 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f235400d5b33892b03486f9.dip0.t-ipconnect.de [IPv6:2003:ec:2f23:5400:d5b3:3892:b034:86f9])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 693C72223C;
-        Sun, 11 Oct 2020 15:56:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602431787;
-        bh=pqoA6wkSIxse6OFFBq+N4TiZpT55U12SAaPD59TIWIs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=AIE3Sg6Ey+hhdmnuXTo7IVTvffCxtk0GV5yAXPUYzjJDxLHHhr2C1XDeLKa/rsuiv
-         hKMJXkil72xrDpSNF6jHRzpTwwWONo7wd1r4eavuvMOKowlrdyBXDqYyTYZYJH/UnX
-         J8/H4gEoaybf2hqarkomcmesA38JqRQU7AP6U4Wo=
-Date:   Sun, 11 Oct 2020 08:56:26 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     John Keeping <john@metanate.com>, netdev@vger.kernel.org,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Eric Dumazet <edumazet@google.com>
-Subject: Re: [PATCH] net: stmmac: Don't call _irqoff() with hardirqs enabled
-Message-ID: <20201011085626.6bec051f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <04d10b06-ca1c-3bfa-0a5f-730a9c8a2744@gmail.com>
-References: <20201008162749.860521-1-john@metanate.com>
-        <8036d473-68bd-7ee7-e2e9-677ff4060bd3@gmail.com>
-        <20201009085805.65f9877a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <725ba7ca-0818-074b-c380-15abaa5d037b@gmail.com>
-        <070b2b87-f38c-088d-4aaf-12045dbd92f7@gmail.com>
-        <20201010082248.22cc7656@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <04d10b06-ca1c-3bfa-0a5f-730a9c8a2744@gmail.com>
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E2D271EC038E;
+        Sun, 11 Oct 2020 17:58:02 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1602431883;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=oM+nZFjp3WYiWouKHZCaZYK4Gv2WS94tsYKM21OZ8Ew=;
+        b=ZcPhRQMT9l0aRBVYcFrTOqBJGKM/a0siaEB1OEKDN1vecOs7vxB/RUAEuND/ZBUxTrgOm+
+        XE5NAJbQP09Rjy9HWMlGgTJ5bLw8UxdZH88dNiiTYNE7e1mUG5nV6XX4gxYklbVyPScO8d
+        bL9UKzDSV29RoJvHjOquoXiWWntlKRs=
+Date:   Sun, 11 Oct 2020 17:57:54 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, Collabora Kernel ML <kernel@collabora.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Diego Elio =?utf-8?Q?Petten=C3=B2?= <flameeyes@flameeyes.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Willy Tarreau <w@1wt.eu>
+Subject: Re: [PATCH] x86/x86_64_defconfig: Enable the serial console
+Message-ID: <20201011155754.GC15925@zn.tnic>
+References: <20201008162206.862203-1-enric.balletbo@collabora.com>
+ <20201008164044.GE5505@zn.tnic>
+ <4162cfa4-7bf2-3e6e-1b8c-e19187e6fa10@infradead.org>
+ <2538da14-0f4b-5d4a-c7bf-6fdb46ba2796@collabora.com>
+ <20201011122020.GA15925@zn.tnic>
+ <107a6fb0-a667-2f30-d1f4-640e3fee193a@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <107a6fb0-a667-2f30-d1f4-640e3fee193a@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 11 Oct 2020 15:42:24 +0200 Heiner Kallweit wrote:
-> On 10.10.2020 17:22, Jakub Kicinski wrote:
-> > On Sat, 10 Oct 2020 15:08:15 +0200 Heiner Kallweit wrote:  
-> >> On 09.10.2020 18:06, Heiner Kallweit wrote:  
-> >>> On 09.10.2020 17:58, Jakub Kicinski wrote:    
-> >>>> On Fri, 9 Oct 2020 16:54:06 +0200 Heiner Kallweit wrote:    
-> >>>>> I'm thinking about a __napi_schedule version that disables hard irq's
-> >>>>> conditionally, based on variable force_irqthreads, exported by the irq
-> >>>>> subsystem. This would allow to behave correctly with threadirqs set,
-> >>>>> whilst not loosing the _irqoff benefit with threadirqs unset.
-> >>>>> Let me come up with a proposal.    
-> >>>>
-> >>>> I think you'd need to make napi_schedule_irqoff() behave like that,
-> >>>> right?  Are there any uses of napi_schedule_irqoff() that are disabling
-> >>>> irqs and not just running from an irq handler?
-> >>>>    
-> >>> Right, the best approach depends on the answer to the latter question.
-> >>> I didn't check this yet, therefore I described the least intrusive approach.
-> >>>     
-> >>
-> >> With some help from coccinelle I identified the following functions that
-> >> call napi_schedule_irqoff() or __napi_schedule_irqoff() and do not run
-> >> from an irq handler (at least not at the first glance).
-> >>
-> >> dpaa2_caam_fqdan_cb
-> >> qede_simd_fp_handler
-> >> mlx4_en_rx_irq
-> >> mlx4_en_tx_irq  
-> > 
-> > Don't know the others but FWIW the mlx4 ones run from an IRQ handler,
-> > AFAICT:
-> > 
-> > static irqreturn_t mlx4_interrupt(int irq, void *dev_ptr)
-> > static irqreturn_t mlx4_msi_x_interrupt(int irq, void *eq_ptr)
-> >   mlx4_eq_int()
-> >     mlx4_cq_completion
-> >       cq->comp()
-> >   
-> >> qeth_qdio_poll
-> >> netvsc_channel_cb
-> >> napi_watchdog  
-> > 
-> > This one runs from a hrtimer, which I believe will be a hard irq
-> > context on anything but RT. I could be wrong.
-> >   
-> 
-> Typically forced irq threading will not be enabled, therefore going
-> back to use napi_schedule() in drivers in most cases will cause
-> losing the benefit of the irqoff version. Something like the following
-> should be better. Only small drawback I see is that in case of forced
-> irq threading hrtimers will still run in hardirq context and we lose
-> the benefit of the irqoff version in napi_watchdog().
-> 
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index a146bac84..7d18560b2 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -6393,7 +6393,11 @@ EXPORT_SYMBOL(napi_schedule_prep);
->   */
->  void __napi_schedule_irqoff(struct napi_struct *n)
->  {
-> -	____napi_schedule(this_cpu_ptr(&softnet_data), n);
-> +	/* hard irqs may not be masked in case of forced irq threading */
-> +	if (force_irqthreads)
-> +		__napi_schedule(n);
-> +	else
-> +		____napi_schedule(this_cpu_ptr(&softnet_data), n);
->  }
->  EXPORT_SYMBOL(__napi_schedule_irqoff);
+On Sun, Oct 11, 2020 at 05:40:27PM +0200, Enric Balletbo i Serra wrote:
+> How do you quantify those things are NOT common enough? Do you have a number?
 
-Does
+I don't want to change the defconfig - you do. So quantifying is in your
+court - not mine.
 
-	if (force_irqthreads)
-		local_irq_save(flags);
-	____napi_schedule(this_cpu_ptr(&softnet_data), n);
-	if (force_irqthreads)
-		local_irq_restore(flags);
+> I don't have a number, the only I can tell is that both symbols enable support
+> for I2C, SPI an HS-UART. The AMD one, is found on AMD Carrizo and later
+> chipsets, the Intel one, is found on Intel Skylake and later. I.e Lots of
+> laptops need these to have support for the touchpad.
 
-not produce more concise assembly?
+That sounds like a step in the right direction.
+
+> KernelCI is focused on upstream kernel development. KernelCI builds lots of
+> different versions of the kernel, including stable kernels, and maintainers
+> trees. It does tests on real hardware, so having a config supporting as much as
+> possible the x86 hardware that we have in the KernelCI labs will help us to
+> increase the test coverage and catch more issues.
+
+So those issues - where do you guys report them? Because I've never seen
+one reported by kernelCI, AFAIR. I see 0day bot and syzbot doing such
+reports on a regular basis but none from kernelCI AFAIK. Do you send
+your bug reports to lkml and Cc the relevant parties?
+
+> Yes, it can. As I said, is a matter of maintenance, if we do this we
+> will have a different workflow for x86 hardware.
+
+Lemme get this straight - your workflow would do:
+
+$ make defconfig
+
+and now here you'd have to add a single command:
+
+$ .scripts/kconfig/merge_config.sh -m .config .kernelci.config.snippet
+
+in order to get the symbols you want, enabled.
+
+I've shown this one because this is how those other configs like
+kvm_guest.config and xen.config work - they're config snippets and they
+get merged with a preexisting config, see scripts/kconfig/Makefile.
+
+Now, is that additional single command worth "hours of maintenance time"
+or is it something you can do easily? As in:
+
+	if (x86)
+		<command>
+
+?
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
