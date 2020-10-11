@@ -2,65 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A72D128A84A
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 18:54:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B8FC28A887
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 19:31:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730254AbgJKQyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 12:54:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46018 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729764AbgJKQyi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 12:54:38 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF3E321655;
-        Sun, 11 Oct 2020 16:54:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602435278;
-        bh=4zVGZfkfDuY637X0Q4hSpEFjVbRI9H7278GF/Bv9XmI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=JpW78wvBb7iHONUXHd/t/YcDsDNgaWLHk1NdI7Hu7D/OTwU4QdvuKe8Lj619mfh3X
-         GcIhwdgp6nHHtsC9obVC48zXg949YwaoC50ZhkXmNocIot2ddR3zzlRvKx+jA+JCGS
-         DboGB2xxjjK2CcuRspFEU/qdGb2ovX9swSneNoFY=
-Date:   Sun, 11 Oct 2020 09:54:36 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Anmol Karn <anmol.karan123@gmail.com>
-Cc:     davem@davemloft.net, mkubecek@suse.cz, andrew@lunn.ch,
-        f.fainelli@gmail.com, dan.carpenter@oracle.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzkaller-bugs@googlegroups.com,
-        syzbot+9d1389df89299fa368dc@syzkaller.appspotmail.com
-Subject: Re: [Linux-kernel-mentees] [PATCH net] ethtool: strset: Fix out of
- bound read in strset_parse_request()
-Message-ID: <20201011095436.06131ff3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201010210929.620244-1-anmol.karan123@gmail.com>
-References: <20201010210929.620244-1-anmol.karan123@gmail.com>
+        id S2388312AbgJKRbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 13:31:35 -0400
+Received: from www381.your-server.de ([78.46.137.84]:59638 "EHLO
+        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726319AbgJKRbe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Oct 2020 13:31:34 -0400
+X-Greylist: delayed 1611 seconds by postgrey-1.27 at vger.kernel.org; Sun, 11 Oct 2020 13:31:33 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
+         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=ZHKg+MjGa0j1+rV6Y9+svUnYM6ktJkBSOZrPnXxDJSk=; b=YsJbRBAIcDXjKl1zhuQvq+oat3
+        BVQSQaXQC0xlxM+2ElqCoWJlQiAi/iMpPFuTRcJcz6ZuM4cyJpvdGC9iGBLEz0HUDLVjjMyZOsdUF
+        BMlYPXXDfnawZ+Tr4RPhjMsPzamWXTu2KkuhKdtz1k7l9ygOCHl3yab7x0vgH7YsoL9gg6ODO9E0a
+        47o2M+jPzodCte05Y2QngXrAudTtyNrTz6+yvBxVYGdwj983+d4AhLtJ8+MX7fj/7II3Eo8WfXZWj
+        PKeteagXGPGekjQMWpPIqkMjNZBPg0X/zgreSv82kxlc51O5oQ7ybzyhCChsbgwBwcCCGIj3/4h4J
+        Zp705dvg==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <lars@metafoo.de>)
+        id 1kRelx-00027x-Df; Sun, 11 Oct 2020 19:04:37 +0200
+Received: from [2001:a61:2478:ca01:9e5c:8eff:fe01:8578]
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <lars@metafoo.de>)
+        id 1kRelx-000KES-7J; Sun, 11 Oct 2020 19:04:37 +0200
+Subject: Re: [PATCH] dt-bindings: clock: adi,axi-clkgen: convert old binding
+ to yaml format
+To:     "Ardelean, Alexandru" <alexandru.Ardelean@analog.com>,
+        Rob Herring <robh@kernel.org>
+Cc:     "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        "sboyd@kernel.org" <sboyd@kernel.org>,
+        "mturquette@baylibre.com" <mturquette@baylibre.com>,
+        "mdf@kernel.org" <mdf@kernel.org>,
+        "ardeleanalex@gmail.com" <ardeleanalex@gmail.com>
+References: <20201001085035.82938-1-alexandru.ardelean@analog.com>
+ <20201006202449.GA2769322@bogus>
+ <DM6PR03MB441199FB58D492BE288D3E6CF90B0@DM6PR03MB4411.namprd03.prod.outlook.com>
+From:   Lars-Peter Clausen <lars@metafoo.de>
+Message-ID: <b8262dc4-2c35-fdbe-7639-38a9e6970564@metafoo.de>
+Date:   Sun, 11 Oct 2020 19:04:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <DM6PR03MB441199FB58D492BE288D3E6CF90B0@DM6PR03MB4411.namprd03.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Authenticated-Sender: lars@metafoo.de
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25954/Sun Oct 11 15:58:33 2020)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 11 Oct 2020 02:39:29 +0530 Anmol Karn wrote:
-> Flag ``ETHTOOL_A_STRSET_COUNTS_ONLY`` tells the kernel to only return the string 
-> counts of the sets, but, when req_info->counts_only tries to read the 
-> tb[ETHTOOL_A_STRSET_COUNTS_ONLY] it gets out of bound. 
-> 
-> - net/ethtool/strset.c
-> The bug seems to trigger in this line:
-> 
-> req_info->counts_only = tb[ETHTOOL_A_STRSET_COUNTS_ONLY];
-> 
-> Fix it by NULL checking for req_info->counts_only while 
-> reading from tb[ETHTOOL_A_STRSET_COUNTS_ONLY].
-> 
-> Reported-by: syzbot+9d1389df89299fa368dc@syzkaller.appspotmail.com 
-> Link: https://syzkaller.appspot.com/bug?id=730deff8fe9954a5e317924d9acff98d9c64a770 
-> Signed-off-by: Anmol Karn <anmol.karan123@gmail.com>
+On 10/8/20 11:28 AM, Ardelean, Alexandru wrote:
+>
+>> -----Original Message-----
+>> From: Rob Herring <robh@kernel.org>
+>> Sent: Tuesday, October 6, 2020 11:25 PM
+>> To: Ardelean, Alexandru <alexandru.Ardelean@analog.com>
+>> Cc: linux-clk@vger.kernel.org; devicetree@vger.kernel.org; linux-
+>> kernel@vger.kernel.org; Hennerich, Michael
+>> <Michael.Hennerich@analog.com>; lars@metafoo.de; sboyd@kernel.org;
+>> mturquette@baylibre.com; mdf@kernel.org
+>> Subject: Re: [PATCH] dt-bindings: clock: adi,axi-clkgen: convert old binding to
+>> yaml format
+>>
+>> On Thu, Oct 01, 2020 at 11:50:35AM +0300, Alexandru Ardelean wrote:
+>>> This change converts the old binding for the AXI clkgen driver to a
+>>> yaml format.
+>>>
+>>> As maintainers, added:
+>>>   - Lars-Peter Clausen <lars@metafoo.de> - as original author of driver &
+>>>     binding
+>> Do you have permission for relicensing? The default was GPL-2.0.
+> I talked to Michael Hennerich [he's cc-ed], and we have permission from his side.
+> I think Lars would need to provide permission as well, as the author.
+> If we won't have a reply from him [after by some time-frame] I'll leave it as GPL-2.0.
+> I'm a bit clumsy about licensing in general; and I don't care about it all that much.
 
-I think the correct fix for this was already applied to net-next as:
+I guess you could argue that the yaml description is original work. 
+Either way
 
- commit db972e532518 ("ethtool: strset: allow ETHTOOL_A_STRSET_COUNTS_ONLY attr")
+Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+
+
