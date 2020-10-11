@@ -2,75 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C35D28A494
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 01:48:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E26F428A4B9
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 02:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729575AbgJJXsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Oct 2020 19:48:11 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:36530 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727043AbgJJXsD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 19:48:03 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxGMQrSIJfLfobAA--.13680S6;
-        Sun, 11 Oct 2020 07:47:57 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH v2 4/4 RESEND] docs: fs: proc.rst: Add boardinfo description for Loongson64
-Date:   Sun, 11 Oct 2020 07:47:54 +0800
-Message-Id: <1602373674-4579-5-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1602373674-4579-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1602373674-4579-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9DxGMQrSIJfLfobAA--.13680S6
-X-Coremail-Antispam: 1UD129KBjvdXoWrKF47WF4xAFWrtF4rWF4DJwb_yoWfJwc_Za
-        47XF48Zr4xZr1rJ3WUtF45WF17ArZ3Kw1UAa13JryUJw15J398JFWDAr17Ar48JrW2kryr
-        CFWkXrnxZF13WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbh8FF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2
-        IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28E
-        F7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJw
-        A2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVW8JVW8Jr1l
-        e2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI
-        8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwAC
-        jcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6FWl42xK82
-        IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC2
-        0s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMI
-        IF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF
-        0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87
-        Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU0xhLUUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S2387537AbgJKAGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Oct 2020 20:06:51 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:42731 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726473AbgJKAGv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Oct 2020 20:06:51 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602374810; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=PLm07gyenvFKE2hyldXmWi5Ay9GONIO+F6L66GYVDeg=; b=tSVPme0Pf89jG3CQDAgAhLYY3p1oJAWMWjqifwkYssVaqbG/akZ3PnSUE8CScKPk0rEzmvRL
+ P4a/l1Ew7wADQHyUp5P0LxjS9BumMcthrSFDITvdNRfgGYKs+OZsc3eDz7ka6LrNvZiQkBlC
+ Jwh7wg+DDUyTYFNJaEWxvzElb3E=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5f824c993711fec7b1a37258 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 11 Oct 2020 00:06:49
+ GMT
+Sender: mgautam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CF262C433C9; Sun, 11 Oct 2020 00:06:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.8] (unknown [223.230.69.105])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mgautam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E371BC433F1;
+        Sun, 11 Oct 2020 00:06:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E371BC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mgautam@codeaurora.org
+Subject: Re: [PATCH v1 06/10] bus: mhi: core: Improve shutdown handling after
+ link down detection
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org
+References: <1600480955-16827-1-git-send-email-bbhatt@codeaurora.org>
+ <1600480955-16827-7-git-send-email-bbhatt@codeaurora.org>
+From:   Manu Gautam <mgautam@codeaurora.org>
+Message-ID: <9aee66af-fcd2-9e25-f0b6-c4abbc4a4f63@codeaurora.org>
+Date:   Sun, 11 Oct 2020 05:36:40 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <1600480955-16827-7-git-send-email-bbhatt@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a description for /proc/boardinfo on the Loongson platform.
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
+On 9/19/2020 7:32 AM, Bhaumik Bhatt wrote:
+> If MHI were to attempt a device shutdown following an assumption
+> that the device is inaccessible, the host currently moves to a state
+> where device register accesses are allowed when they should not be.
+> This would end up allowing accesses to the device register space when
+> the link is inaccessible and can result in bus errors observed on the
+> host. Improve shutdown handling to prevent these outcomes and do not
+> move the MHI PM state to a register accessible state after device is
 
-v2: new added patch
+Which state are you referring to when you say 'register accessible state'?
+Would it be possible to provide more details on current handling here?
 
- Documentation/filesystems/proc.rst | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-index 533c79e..3c4cb65 100644
---- a/Documentation/filesystems/proc.rst
-+++ b/Documentation/filesystems/proc.rst
-@@ -664,6 +664,7 @@ files are there, and which are missing.
-  File         Content
-  ============ ===============================================================
-  apm          Advanced power management info
-+ boardinfo    Mainboard and BIOS info for Loongson64
-  buddyinfo    Kernel memory allocator information (see text)	(2.5)
-  bus          Directory containing bus specific information
-  cmdline      Kernel command line
+> assumed to be inaccessible.
+>
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> ---
+>  drivers/bus/mhi/core/init.c     |  1 +
+>  drivers/bus/mhi/core/internal.h |  1 +
+>  drivers/bus/mhi/core/pm.c       | 18 +++++++++++++-----
+>  3 files changed, 15 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+> index 9ae4c19..fa33dde 100644
+> --- a/drivers/bus/mhi/core/init.c
+> +++ b/drivers/bus/mhi/core/init.c
+> @@ -37,6 +37,7 @@ const char * const dev_state_tran_str[DEV_ST_TRANSITION_MAX] = {
+>  	[DEV_ST_TRANSITION_MISSION_MODE] = "MISSION_MODE",
+>  	[DEV_ST_TRANSITION_SYS_ERR] = "SYS_ERR",
+>  	[DEV_ST_TRANSITION_DISABLE] = "DISABLE",
+> +	[DEV_ST_TRANSITION_FATAL] = "FATAL SHUTDOWN",
+>  };
+>  
+>  const char * const mhi_state_str[MHI_STATE_MAX] = {
+> diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
+> index 7989269..f3b9e5a 100644
+> --- a/drivers/bus/mhi/core/internal.h
+> +++ b/drivers/bus/mhi/core/internal.h
+> @@ -388,6 +388,7 @@ enum dev_st_transition {
+>  	DEV_ST_TRANSITION_MISSION_MODE,
+>  	DEV_ST_TRANSITION_SYS_ERR,
+>  	DEV_ST_TRANSITION_DISABLE,
+> +	DEV_ST_TRANSITION_FATAL,
+>  	DEV_ST_TRANSITION_MAX,
+>  };
+>  
+> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+> index 3462d82..bce1f62 100644
+> --- a/drivers/bus/mhi/core/pm.c
+> +++ b/drivers/bus/mhi/core/pm.c
+> @@ -37,9 +37,10 @@
+>   *     M0 -> FW_DL_ERR
+>   *     M0 -> M3_ENTER -> M3 -> M3_EXIT --> M0
+>   * L1: SYS_ERR_DETECT -> SYS_ERR_PROCESS --> POR
+> - * L2: SHUTDOWN_PROCESS -> DISABLE
+> + * L2: SHUTDOWN_PROCESS -> LD_ERR_FATAL_DETECT
+> + *     SHUTDOWN_PROCESS -> DISABLE
+>   * L3: LD_ERR_FATAL_DETECT <--> LD_ERR_FATAL_DETECT
+> - *     LD_ERR_FATAL_DETECT -> SHUTDOWN_PROCESS
+> + *     LD_ERR_FATAL_DETECT -> DISABLE
+>   */
+>  static struct mhi_pm_transitions const dev_state_transitions[] = {
+>  	/* L0 States */
+> @@ -72,7 +73,7 @@ static struct mhi_pm_transitions const dev_state_transitions[] = {
+>  	{
+>  		MHI_PM_M3,
+>  		MHI_PM_M3_EXIT | MHI_PM_SYS_ERR_DETECT |
+> -		MHI_PM_SHUTDOWN_PROCESS | MHI_PM_LD_ERR_FATAL_DETECT
+> +		MHI_PM_LD_ERR_FATAL_DETECT
+>  	},
+>  	{
+>  		MHI_PM_M3_EXIT,
+> @@ -103,7 +104,7 @@ static struct mhi_pm_transitions const dev_state_transitions[] = {
+>  	/* L3 States */
+>  	{
+>  		MHI_PM_LD_ERR_FATAL_DETECT,
+> -		MHI_PM_LD_ERR_FATAL_DETECT | MHI_PM_SHUTDOWN_PROCESS
+> +		MHI_PM_LD_ERR_FATAL_DETECT | MHI_PM_DISABLE
+>  	},
+>  };
+>  
+> @@ -670,6 +671,10 @@ void mhi_pm_st_worker(struct work_struct *work)
+>  			mhi_pm_disable_transition
+>  				(mhi_cntrl, MHI_PM_SHUTDOWN_PROCESS);
+>  			break;
+> +		case DEV_ST_TRANSITION_FATAL:
+> +			mhi_pm_disable_transition
+> +				(mhi_cntrl, MHI_PM_LD_ERR_FATAL_DETECT);
+> +			break;
+>  		default:
+>  			break;
+>  		}
+> @@ -1039,6 +1044,7 @@ EXPORT_SYMBOL_GPL(mhi_async_power_up);
+>  void mhi_power_down(struct mhi_controller *mhi_cntrl, bool graceful)
+>  {
+>  	enum mhi_pm_state cur_state;
+> +	enum dev_st_transition next_state = DEV_ST_TRANSITION_DISABLE;
+>  	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+>  
+>  	/* If it's not a graceful shutdown, force MHI to linkdown state */
+> @@ -1053,9 +1059,11 @@ void mhi_power_down(struct mhi_controller *mhi_cntrl, bool graceful)
+>  			dev_dbg(dev, "Failed to move to state: %s from: %s\n",
+>  				to_mhi_pm_state_str(MHI_PM_LD_ERR_FATAL_DETECT),
+>  				to_mhi_pm_state_str(mhi_cntrl->pm_state));
+> +		else
+> +			next_state = DEV_ST_TRANSITION_FATAL;
+>  	}
+>  
+> -	mhi_queue_state_transition(mhi_cntrl, DEV_ST_TRANSITION_DISABLE);
+> +	mhi_queue_state_transition(mhi_cntrl, next_state);
+>  
+>  	/* Wait for shutdown to complete */
+>  	flush_work(&mhi_cntrl->st_worker);
+
 -- 
-2.1.0
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
