@@ -2,92 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EE3228A9F6
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 21:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EAD928AA08
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 22:01:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726536AbgJKTrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 15:47:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726068AbgJKTrd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 15:47:33 -0400
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33EEAC0613CE
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 12:47:33 -0700 (PDT)
-Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727077AbgJKUA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 16:00:58 -0400
+Received: from hydra.sdinet.de ([136.243.3.21]:43646 "EHLO mail.sdinet.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726335AbgJKUA5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Oct 2020 16:00:57 -0400
+X-Greylist: delayed 514 seconds by postgrey-1.27 at vger.kernel.org; Sun, 11 Oct 2020 16:00:57 EDT
+Received: from aurora.sdinet.de (aurora.sdinet.de [193.103.159.39])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 28FE4891B0;
-        Mon, 12 Oct 2020 08:47:28 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1602445648;
-        bh=yzuM1AbYaSkislsBsctNJQYk00rOwZXZwalvzT3mozk=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=jiCrZKdAJqwubTld1g+3Onr8HdibTa7Gq+LVvwVAR2veDV0bWbBK4T7pe2bYkPDXf
-         glMvnJyb8bq4AGG0CF2QwYnHy2WDT3MTxpZG+Q+Xvg4YGQJPVfYRiDZWGMwJJ0k8km
-         Ee+jMeJejDreUhBJWxuBtOmbrHR9lmvbEJgeKwKknEqa68nPPpP6oUwEXC+uwT4SOy
-         rAGZPWuPQgkrwFG0me5Vu+Yuju6g8Jgdr6MfP7KmpMRUpJdLnzVkFwzgFC4Uq1/HqO
-         Fd4XIKOVDxHGPdkFR8VXa/UUsNYN9OhndEYjx3yVKh4kDTqS6ZBAhOnew2XzIWjLor
-         Rz7UGYyceOAwg==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[10.32.16.77]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
-        id <B5f83614f0000>; Mon, 12 Oct 2020 08:47:27 +1300
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
- svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Mon, 12 Oct 2020 08:47:26 +1300
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.006; Mon, 12 Oct 2020 08:47:26 +1300
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 4.19 21/38] spi: fsl-espi: Only process interrupts for
- expected events
-Thread-Topic: [PATCH 4.19 21/38] spi: fsl-espi: Only process interrupts for
- expected events
-Thread-Index: AQHWmywHvuJcZBywGkuaEhHbg7KTCKmKH7kAgAfesQA=
-Date:   Sun, 11 Oct 2020 19:47:26 +0000
-Message-ID: <e96519d3-8b58-4715-1ada-6139749e6da3@alliedtelesis.co.nz>
-References: <20201005142108.650363140@linuxfoundation.org>
- <20201005142109.694666032@linuxfoundation.org>
- <20201006193634.GB8771@duo.ucw.cz>
-In-Reply-To: <20201006193634.GB8771@duo.ucw.cz>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.1.11]
-Content-Type: text/plain; charset="Windows-1252"
-Content-ID: <671A07B30930C44EAA974C62F10976BB@atlnz.lc>
-Content-Transfer-Encoding: quoted-printable
+        (Authenticated sender: haegar)
+        by mail.sdinet.de (bofa-smtpd) with ESMTPSA id 9C3DE34028F;
+        Sun, 11 Oct 2020 21:52:21 +0200 (CEST)
+Date:   Sun, 11 Oct 2020 21:52:20 +0200 (CEST)
+From:   Sven-Haegar Koch <haegar@sdinet.de>
+To:     Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+cc:     Linux List Kernel Mailing <linux-kernel@vger.kernel.org>
+Subject: Re: [question] What happens when dd writes data to a missing
+ device?
+In-Reply-To: <CABXGCsOVXh89h2e4EuNbDKiCNwKm8599UE-h0GN-jPhpfyoCVA@mail.gmail.com>
+Message-ID: <alpine.DEB.2.23.453.2010112150070.3140856@aurora.sdinet.de>
+References: <CABXGCsOVXh89h2e4EuNbDKiCNwKm8599UE-h0GN-jPhpfyoCVA@mail.gmail.com>
+User-Agent: Alpine 2.23 (DEB 453 2020-06-18)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 12 Oct 2020, Mikhail Gavrilov wrote:
 
-On 7/10/20 8:36 am, Pavel Machek wrote:
-> Hi!
->
->> [ Upstream commit b867eef4cf548cd9541225aadcdcee644669b9e1 ]
->>
->> The SPIE register contains counts for the TX FIFO so any time the irq
->> handler was invoked we would attempt to process the RX/TX fifos. Use the
->> SPIM value to mask the events so that we only process interrupts that
->> were expected.
->>
->> This was a latent issue exposed by commit 3282a3da25bd ("powerpc/64:
->> Implement soft interrupt replay in C").
-> We don't seem to have commit 3282... in 4.19, so we don't need this
-> one in 4.19-stable according to the changelog.
-Technically 3282... exposed the issue by making it more likely to happen=20
-so 4.19 might just have a really low probability of seeing the issue (I=20
-think I did try reproducing it on kernels of that vintage). Personally=20
-I'm not too fussed the kernel versions I care about have the fix. Maybe=20
-someone from NXP cares enough to pursue it.=
+> I have a question.
+> What happens when dd writes data to a missing device?
+> 
+> For example:
+> # dd if=/home/mikhail/Downloads/Fedora-Workstation-Live-x86_64-Rawhide-20201010.n.0.iso
+> of=/dev/adb
+> 
+> Today I and wrongly entered /dev/adb instead of /dev/sdb,
+> and what my surprise was when the data began to be written to the
+> /dev/adb device without errors.
+> 
+> But my surprise was even greater when cat /dev/adb started to display
+> the written data.
+> 
+> I have a question:
+> Where the data was written and could it damage the stored data in
+> memory or on disk?
+
+If the device node /dev/adb does not exist (most likely udev case when 
+you don't have the device/no module loaded for it) then dd as root will 
+just create a normal file inside the /dev ramdisk.
+
+Only if the device node exists but is not handled then something else 
+like an open error will happen.
+
+c'ya
+sven-haegar
+
+-- 
+Three may keep a secret, if two of them are dead.
+- Ben F.
