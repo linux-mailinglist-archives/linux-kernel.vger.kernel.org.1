@@ -2,102 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CA5628A95C
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 20:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F4728A968
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 20:38:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726486AbgJKSdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 14:33:05 -0400
-Received: from smtprelay0166.hostedemail.com ([216.40.44.166]:60868 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725909AbgJKSdF (ORCPT
+        id S1727050AbgJKSiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 14:38:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725909AbgJKSiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 14:33:05 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 72AC518224D6B;
-        Sun, 11 Oct 2020 18:33:03 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1543:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2693:2828:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3870:3871:3872:3874:4250:4321:4605:5007:8603:10004:10400:10848:10967:11026:11232:11658:11914:12043:12296:12297:12740:12760:12895:13161:13229:13439:13972:14096:14097:14659:14721:21080:21451:21627:21990:30003:30034:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:21,LUA_SUMMARY:none
-X-HE-Tag: smell48_4f01435271f4
-X-Filterd-Recvd-Size: 4300
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf04.hostedemail.com (Postfix) with ESMTPA;
-        Sun, 11 Oct 2020 18:33:01 +0000 (UTC)
-Message-ID: <6307397bd43636fea2e7341d24417cbbc3aaf922.camel@perches.com>
-Subject: Re: [PATCH v2] net: usb: rtl8150: don't incorrectly assign random
- MAC addresses
-From:   Joe Perches <joe@perches.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Cc:     petkan@nucleusys.com, davem@davemloft.net,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-next@vger.kernel.org, sfr@canb.auug.org.au
-Date:   Sun, 11 Oct 2020 11:33:00 -0700
-In-Reply-To: <20201011105934.5c988cd3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20201010064459.6563-1-anant.thazhemadam@gmail.com>
-         <20201011173030.141582-1-anant.thazhemadam@gmail.com>
-         <20201011105934.5c988cd3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Sun, 11 Oct 2020 14:38:14 -0400
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48220C0613CE
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 11:38:14 -0700 (PDT)
+Received: by mail-ua1-x944.google.com with SMTP id w12so4757016uao.12
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 11:38:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/LE5+6X44Ua2bvmzUcaKfhMsht1eiuM/FlyTObIJojA=;
+        b=PJ2GRWYt81lzLhvYB2TcbhTZLHq1zgnXFVPb45QhgZbLCGR6qi9PjP7BPvbcGYbN57
+         /ct8nsW5Fl9cKSIhDkcfxUjZ+OHrKJCqwga+j8iNXXDqz6G+cCsr1+eQLDcg9XbxDJLr
+         JhXn/du2kEA5AQTSEjmQAXameh7vMkbMESYcZjhbPfsrnl3W2HjegQN4BMpSiH9YkHYj
+         RO/birE2JMFGAfKhmIC7XPjO5Pv1IHQapMCrGyyiEOk2SGenkgn2LcqkWojVi2Jo6Viy
+         QXMHInvDBrL6WMjFoyc+29r14CHC5SY4wSh9NuEy3vaRmuFQEiEFjBMHuh6Ydj0E/jWb
+         hvRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/LE5+6X44Ua2bvmzUcaKfhMsht1eiuM/FlyTObIJojA=;
+        b=FDWpXxkeObCg3e0T3JVbGj6oPbVZj8Opkkr2AZtn2fuIn2IyslSzRvIHUbswIDXxWB
+         uro2OnbgpQGgZDW5P4gEsX1PB+k5I9bB7VCMiGsf2nz0koagLF8peKfNyeAxEU592yra
+         5hpOZvZtKqwSaRBrW69AWeHbVZfbzAIhdBbusWsMIuDPe3BERKOAOFWV5OEAypyLl9Dq
+         MuNypgkGojlnxNHl0c5B6B5O0XTmn9pWPMRuVOR5yw+XYmk/yqPLZSrAbBQuWtjTVXOP
+         /mxfjWabBPh5O79mk1Nlyx1lYqFcKPyFq9mOsY9lEbloP68i5zQKs94rOYhGUrIZPIOz
+         syGQ==
+X-Gm-Message-State: AOAM531caQWb3JTambAovVPADvBjocgK4uAIYn5ZtcLvRJfXNS5HNko2
+        MJ1d0kcelcXxaORnM4HmXwi3W6vcOu8=
+X-Google-Smtp-Source: ABdhPJwNJ0A1RwE4N0sTNDPYGzhZvnZ+fA3FM0dfsqIGSfmBPXnh4PMpthDxMTMemQKfQTJxEkMp/Q==
+X-Received: by 2002:ab0:614f:: with SMTP id w15mr5140907uan.116.1602441492621;
+        Sun, 11 Oct 2020 11:38:12 -0700 (PDT)
+Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com. [209.85.221.177])
+        by smtp.gmail.com with ESMTPSA id k10sm1881238vsp.23.2020.10.11.11.38.10
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 11 Oct 2020 11:38:11 -0700 (PDT)
+Received: by mail-vk1-f177.google.com with SMTP id r78so3332044vke.11
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 11:38:10 -0700 (PDT)
+X-Received: by 2002:a1f:ae85:: with SMTP id x127mr8696215vke.8.1602441489893;
+ Sun, 11 Oct 2020 11:38:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20201011113955.19511-1-vvidic@valentin-vidic.from.hr>
+In-Reply-To: <20201011113955.19511-1-vvidic@valentin-vidic.from.hr>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Sun, 11 Oct 2020 14:37:33 -0400
+X-Gmail-Original-Message-ID: <CA+FuTScdX+kN_XHJiY9YCst6JTQHZ0g28XYakhcK92Oo2Kp5vw@mail.gmail.com>
+Message-ID: <CA+FuTScdX+kN_XHJiY9YCst6JTQHZ0g28XYakhcK92Oo2Kp5vw@mail.gmail.com>
+Subject: Re: [PATCH] net: korina: free array used for rx/tx descriptors
+To:     Valentin Vidic <vvidic@valentin-vidic.from.hr>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Philip Rischel <rischelp@idt.com>,
+        Felix Fietkau <nbd@openwrt.org>,
+        Florian Fainelli <florian@openwrt.org>,
+        Roman Yeryomin <roman@advem.lv>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Martin Habets <mhabets@solarflare.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-10-11 at 10:59 -0700, Jakub Kicinski wrote:
-> On Sun, 11 Oct 2020 23:00:30 +0530 Anant Thazhemadam wrote:
-> > In set_ethernet_addr(), if get_registers() succeeds, the ethernet address
-> > that was read must be copied over. Otherwise, a random ethernet address
-> > must be assigned.
-> > 
-> > get_registers() returns 0 if successful, and negative error number
-> > otherwise. However, in set_ethernet_addr(), this return value is
-> > incorrectly checked.
-> > 
-> > Since this return value will never be equal to sizeof(node_id), a
-> > random MAC address will always be generated and assigned to the
-> > device; even in cases when get_registers() is successful.
-> > 
-> > Correctly modifying the condition that checks if get_registers() was
-> > successful or not fixes this problem, and copies the ethernet address
-> > appropriately.
+On Sun, Oct 11, 2020 at 7:46 AM Valentin Vidic
+<vvidic@valentin-vidic.from.hr> wrote:
+>
+> Memory was not freed when driver is unloaded from the kernel.
+>
+> Signed-off-by: Valentin Vidic <vvidic@valentin-vidic.from.hr>
 
-There are many unchecked uses of set_registers and get_registers
- in this file.
+Makes sense.
 
-If failures are really expected, then it might be better to fix
-them up too.
+Fixes: ef11291bcd5f ("Add support the Korina (IDT RC32434) Ethernet MAC")
 
-$ git grep -w '[gs]et_registers' drivers/net/usb/rtl8150.c
-drivers/net/usb/rtl8150.c:static int get_registers(rtl8150_t * dev, u16 indx, u16 size, void *data)
-drivers/net/usb/rtl8150.c:static int set_registers(rtl8150_t * dev, u16 indx, u16 size, const void *data)
-drivers/net/usb/rtl8150.c:      set_registers(dev, PHYADD, sizeof(data), data);
-drivers/net/usb/rtl8150.c:      set_registers(dev, PHYCNT, 1, &tmp);
-drivers/net/usb/rtl8150.c:              get_registers(dev, PHYCNT, 1, data);
-drivers/net/usb/rtl8150.c:              get_registers(dev, PHYDAT, 2, data);
-drivers/net/usb/rtl8150.c:      set_registers(dev, PHYADD, sizeof(data), data);
-drivers/net/usb/rtl8150.c:      set_registers(dev, PHYCNT, 1, &tmp);
-drivers/net/usb/rtl8150.c:              get_registers(dev, PHYCNT, 1, data);
-drivers/net/usb/rtl8150.c:      ret = get_registers(dev, IDR, sizeof(node_id), node_id);
-drivers/net/usb/rtl8150.c:      set_registers(dev, IDR, netdev->addr_len, netdev->dev_addr);
-drivers/net/usb/rtl8150.c:      get_registers(dev, CR, 1, &cr);
-drivers/net/usb/rtl8150.c:      set_registers(dev, CR, 1, &cr);
-drivers/net/usb/rtl8150.c:              set_registers(dev, IDR_EEPROM + (i * 2), 2,
-drivers/net/usb/rtl8150.c:      set_registers(dev, CR, 1, &cr);
-drivers/net/usb/rtl8150.c:      set_registers(dev, CR, 1, &data);
-drivers/net/usb/rtl8150.c:              get_registers(dev, CR, 1, &data);
-drivers/net/usb/rtl8150.c:      set_registers(dev, RCR, 1, &rcr);
-drivers/net/usb/rtl8150.c:      set_registers(dev, TCR, 1, &tcr);
-drivers/net/usb/rtl8150.c:      set_registers(dev, CR, 1, &cr);
-drivers/net/usb/rtl8150.c:      get_registers(dev, MSR, 1, &msr);
-drivers/net/usb/rtl8150.c:      get_registers(dev, CR, 1, &cr);
-drivers/net/usb/rtl8150.c:      set_registers(dev, CR, 1, &cr);
-drivers/net/usb/rtl8150.c:      get_registers(dev, CSCR, 2, &tmp);
-drivers/net/usb/rtl8150.c:      set_registers(dev, IDR, 6, netdev->dev_addr);
-drivers/net/usb/rtl8150.c:      get_registers(dev, BMCR, 2, &bmcr);
-drivers/net/usb/rtl8150.c:      get_registers(dev, ANLP, 2, &lpa);
+Slightly off-topic, but I don't fully fathom what goes on with this
+pointer straight after the initial kmalloc.
 
+        lp->td_ring = (struct dma_desc *)KSEG1ADDR(lp->td_ring);
 
+> ---
+>  drivers/net/ethernet/korina.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/net/ethernet/korina.c b/drivers/net/ethernet/korina.c
+> index 03e034918d14..99146145f020 100644
+> --- a/drivers/net/ethernet/korina.c
+> +++ b/drivers/net/ethernet/korina.c
+> @@ -1133,6 +1133,7 @@ static int korina_remove(struct platform_device *pdev)
+>         iounmap(lp->eth_regs);
+>         iounmap(lp->rx_dma_regs);
+>         iounmap(lp->tx_dma_regs);
+> +       kfree(lp->td_ring);
+>
+>         unregister_netdev(bif->dev);
+>         free_netdev(bif->dev);
+
+In general it is nice to release in reverse of acquire. But the driver
+already does not follow this practice.
