@@ -2,100 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEC9028AAA8
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 23:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8158328AAAC
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 23:22:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387516AbgJKVPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 17:15:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48866 "EHLO
+        id S2387558AbgJKVVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 17:21:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387503AbgJKVPt (ORCPT
+        with ESMTP id S2387413AbgJKVVn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 17:15:49 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 362C0C0613CE;
-        Sun, 11 Oct 2020 14:15:49 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id f21so3274457qko.5;
-        Sun, 11 Oct 2020 14:15:49 -0700 (PDT)
+        Sun, 11 Oct 2020 17:21:43 -0400
+Received: from valentin-vidic.from.hr (valentin-vidic.from.hr [IPv6:2001:470:1f0b:3b7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F245DC0613CE;
+        Sun, 11 Oct 2020 14:21:41 -0700 (PDT)
+X-Virus-Scanned: Debian amavisd-new at valentin-vidic.from.hr
+Received: by valentin-vidic.from.hr (Postfix, from userid 1000)
+        id 553363FEE; Sun, 11 Oct 2020 23:21:35 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BGMwpCPny3RgndL/RIfUXJU62LlywzivkVat0IltLS0=;
-        b=jdC+7BpTtu+cTAPkIlP5w1k/ZxUanuqPnx+HTUIFtDadlji8eC41pYfxEtZqOMGNIc
-         7iyS8Lyp9M/aFuKXpl3pROF1WVIkl1svN3Gp1p9P+UJhntOvgxhIHvC0ulGpqVgFG4qD
-         qj3KaHMRt8HK/vHilc2UUpaeAqpK5dOuHn2Jp6M4nd4DPlq+qF2DyePKxdJI/wGJZjli
-         gqhcqOZCLHolUs9LwZI0uBUg3JDv0wou/A8NJTbKn15NI8YaIRVUj+ZfKThTg1MVA+2o
-         nGVneKa/qXI1Ppn+eq8Fd0wKFKK3LS33YPwdyQTxQmvSohYXl98KZK0iC17YTN49yDZI
-         6b5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BGMwpCPny3RgndL/RIfUXJU62LlywzivkVat0IltLS0=;
-        b=Y9QFEm3TySc5B50PHzsG/X95Q98Gooke8oJ3lApnW7D6uPwWyG1hhUVAklli5qd2EK
-         EHi7r0UcQyUq1H1Gup4TS15+z+fUpPh6dGtD8MaSvsbg6uaSJchwdr5DX+6eB9rPGjkj
-         Z8lNua5IWm7/DkmJSd6A3/Tc1VzxI7DiipIeYw2yUSo9XmEvJmJei3I5WNoWZtTYh3bG
-         ptOC4T9gsAhZEu73kd+1yJg013P5te0XzIc9XihmUZaIt5laW11kqLpedKxqsq2BqZnb
-         /XlN513mEjerk3mH2G+ODXGBEvDHcxXTGs+tzB4yHT8a2Y03+G5V2P4wWyrKi1oWm7ZW
-         +/Ow==
-X-Gm-Message-State: AOAM532TKBZqn3Z1yI24CjlU2BGZE2IyG44W0gu1ZWr8dRVcTJPNvtfR
-        ctsMyW2hYKS5PF5ZYfBHYfw=
-X-Google-Smtp-Source: ABdhPJwF+SsHvmQPe51fldj5gcTyxH6Xvw9hwU6GdQyA5xDUVx06mCaJcjs3HYhYKH1bE3w1tY6wDA==
-X-Received: by 2002:a05:620a:1212:: with SMTP id u18mr7304858qkj.434.1602450948374;
-        Sun, 11 Oct 2020 14:15:48 -0700 (PDT)
-Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
-        by smtp.gmail.com with ESMTPSA id z69sm11606403qkb.7.2020.10.11.14.15.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Oct 2020 14:15:47 -0700 (PDT)
-From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: sound: sun8i-a33-codec: Add Allwinner A64 codec compatible fallback
-Date:   Sun, 11 Oct 2020 23:15:42 +0200
-Message-Id: <20201011211543.155561-1-peron.clem@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        d=valentin-vidic.from.hr; s=2020; t=1602451295;
+        bh=DWSdWIEFcj59lt2Dg2oaxr8ttrmTzhkrS26U+qIS/Ks=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=3D12xxrIHVU0FmvNsrY5ormL7Pu69SbMGOD+gUWYA30k0XbfV8LQdUZY9kkPFzAUi
+         Fv1FL0bphwaFFx8Sg3YckaaSwUwM/SYp3ffadbXsrpuVZm2/8poPEmIcvlA/oK//Zl
+         SttL+yYij3xrDDHMF1cjrS1dZW5qgWPuveFQxjGKu8sesOZrdcRo7ud746hSKwQkDP
+         ThEq2NLe6vCQ7ctrLRXh0tCb5ljf7NKoeuYeRt77ccanpETHe7f1bvUAIcspaM73cL
+         vjAuvQcBNFz+lx3F+HdWTRHF+dSN2+fJtNkR/dLCQWJHwBVC+hdDcJ/vOqioJ27PDb
+         yo1OwT6Zw0A2On+bA4KwlFltlHnt8uE+hFM/U1AylRnXDf3MtOHYmFA5UH/Ng9oUrJ
+         XfRmc/SDKbFyfrmdXQD5GjOelEJhdq63oLNb0jM4ehXQGQ5kFEF0pZeoZVjI9J1CzF
+         VFSSur6PH0qyQg0K2KCuOMvPzqPpKVLKDQlF9/OweNG7H4KTw3Wh9GQODOXqrG75WT
+         GMrTA3m0/8Ye1hp4lX1wdBegZLFJ1fqDUeCXkv6IziM9xa7jJcM4OhbiTLPjGC/TD+
+         p/XVU9s9e4kh9MvS3FwRt/4tFrzBHYfV4hNJEyzVq3coxnqifUvWSPEiQ5Oiu0MV86
+         Dr7x2E3zw2Tl2fNMgobX3Y8A=
+Date:   Sun, 11 Oct 2020 23:21:35 +0200
+From:   Valentin =?utf-8?B?VmlkacSH?= <vvidic@valentin-vidic.from.hr>
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Philip Rischel <rischelp@idt.com>,
+        Florian Fainelli <florian@openwrt.org>,
+        Roman Yeryomin <roman@advem.lv>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Martin Habets <mhabets@solarflare.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] net: korina: free array used for rx/tx descriptors
+Message-ID: <20201011212135.GD8773@valentin-vidic.from.hr>
+References: <20201011113955.19511-1-vvidic@valentin-vidic.from.hr>
+ <CA+FuTScdX+kN_XHJiY9YCst6JTQHZ0g28XYakhcK92Oo2Kp5vw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+FuTScdX+kN_XHJiY9YCst6JTQHZ0g28XYakhcK92Oo2Kp5vw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-make dtbs_check report a warning because the documentation
-for the A64 codec compatible is missing.
+On Sun, Oct 11, 2020 at 02:37:33PM -0400, Willem de Bruijn wrote:
+> Slightly off-topic, but I don't fully fathom what goes on with this
+> pointer straight after the initial kmalloc.
+> 
+>         lp->td_ring = (struct dma_desc *)KSEG1ADDR(lp->td_ring);
 
-The A64 codec compatible is actually a simple fallback to the A33.
+KSEG1ADDR should rewrite the memory address into the uncached region
+for memory mapped I/O. Not sure if this would case problems for kfree
+since there is another kfree on the fail path:
 
-Reflect this in the dt-bindings Documentation.
+probe_err_register:
+        kfree(lp->td_ring);
 
-Signed-off-by: Clément Péron <peron.clem@gmail.com>
----
- .../bindings/sound/allwinner,sun8i-a33-codec.yaml           | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml
-index 55d28268d2f4..e78a22496e7c 100644
---- a/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml
-+++ b/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml
-@@ -15,7 +15,11 @@ properties:
-     const: 0
- 
-   compatible:
--    const: allwinner,sun8i-a33-codec
-+    oneOf:
-+      - const: allwinner,sun8i-a33-codec
-+      - items:
-+        - const: allwinner,sun50i-a64-codec
-+        - const: allwinner,sun8i-a33-codec
- 
-   reg:
-     maxItems: 1
 -- 
-2.25.1
-
+Valentin
