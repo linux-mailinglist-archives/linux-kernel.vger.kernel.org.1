@@ -2,104 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E95DE28A7A1
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 15:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E1E28A7AE
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 16:07:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387949AbgJKNxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 09:53:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45900 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387885AbgJKNxC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 09:53:02 -0400
-Received: from kernel.org (unknown [87.71.73.56])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D931A20781;
-        Sun, 11 Oct 2020 13:52:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602424381;
-        bh=2Z3/Dy7FEwrXfEg2TjMmQHOqWceXblc0T+c5Wxpj1U8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UAw/nF8aokc1l4l36U/F7cHL2FRVa52GO2I1c+bjqrpYD6A4QERDCFghM+VOvbFg/
-         2IfNrSJOcz5zaPQKqECb88Gc7lvuqurNhQGFphzM87mvTDm6p38Ze7ofZr56Gqv7II
-         hpuOunWqeWcakghdfenflbfcBgmRzso0JM6XKOJA=
-Date:   Sun, 11 Oct 2020 16:52:44 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     gregkh@linuxfoundation.org, rafael@kernel.org, mst@redhat.com,
-        jasowang@redhat.com, davem@davemloft.net, kuba@kernel.org,
-        adobriyan@gmail.com, akpm@linux-foundation.org,
-        edumazet@google.com, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
-        steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
-        shakeelb@google.com, will@kernel.org, mhocko@suse.com, guro@fb.com,
-        neilb@suse.de, samitolvanen@google.com,
-        kirill.shutemov@linux.intel.com, feng.tang@intel.com,
-        pabeni@redhat.com, willemb@google.com, rdunlap@infradead.org,
-        fw@strlen.de, gustavoars@kernel.org, pablo@netfilter.org,
-        decui@microsoft.com, jakub@cloudflare.com, peterz@infradead.org,
-        christian.brauner@ubuntu.com, ebiederm@xmission.com,
-        tglx@linutronix.de, dave@stgolabs.net, walken@google.com,
-        jannh@google.com, chenqiwu@xiaomi.com, christophe.leroy@c-s.fr,
-        minchan@kernel.org, kafai@fb.com, ast@kernel.org,
-        daniel@iogearbox.net, linmiaohe@huawei.com, keescook@chromium.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH] mm: proc: add Sock to /proc/meminfo
-Message-ID: <20201011135244.GC4251@kernel.org>
-References: <20201010103854.66746-1-songmuchun@bytedance.com>
+        id S2387961AbgJKOG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 10:06:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387885AbgJKOG5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Oct 2020 10:06:57 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA843C0613CE
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 07:06:55 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id u24so11512893pgi.1
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 07:06:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=4+10aIg0LY5QAFNAEfhIEK2HTC8CvBMQh8TDi3Ta15g=;
+        b=U4k1uUk58Z1nR8RuU6oY/B6VajK+wYVdouZOe90lFioapLR8w2XhFo9kvBOEB81su/
+         uRMhMtUzQ7Dv/kTEnTR3Vne5ivWTGVDNAs+m7YO1v0HrdLHhR9/46xjmBQv6EqaDKsWM
+         EojcvA5wi0FyFvP8gOlgxK/um+xMfsdoB8A1ppoKmIu7oN/+NONFV1j11/rvpcaWBWhS
+         E+nI0GctxBRFPmYUstGrZi+LryM1CziGe81PiDyo6eIwomotyl9VFRiyKYYPhVx9zBgN
+         fzRUySBVEtF9gbMLCR2Men6iBa45e9ZKoXL87Q9CbF7lNqP72mUfL9Cl435ChTBMA70j
+         MuHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=4+10aIg0LY5QAFNAEfhIEK2HTC8CvBMQh8TDi3Ta15g=;
+        b=mVlOz/4+AnIX4cdtu8RxlkGQl8Mrz4VjNAC+6cJcBAmxLp1IBHM9+n3WPi/sfRMuvL
+         rE26WMUaSvp+7m4nlnIOx04O3ASw8C4v1Ch35MIXqxYT/1cZ34Cah3ysQiQG+WiC/+uq
+         mOFEew/TJhy6sG6YF7QpIE931YcAV54VosG4I8MPo1VV1NbxYdaS5PONelmbKktBM1A0
+         hyGp4myBMlfTmXyI62f5LjMZ7hKG++O0uTSZ4hrCXWBVKjhqFlmrvgkix1g7reSPscS8
+         J5kzA1lPnnNN3/eHkAvChzBdikk6pOon5OEw6x2Se7X4hF7rP4xQna1ejDOpWYJh/I6Q
+         9s8Q==
+X-Gm-Message-State: AOAM530b6i90Nb5Ed0oYCeMvGqGwS6K+7TOBW8GxJvBkz9z3zKV+aGCq
+        3KQW0p0/BKsoACRCpVgWekVE
+X-Google-Smtp-Source: ABdhPJzUC2gi2ueJb96QvQxo1BNhkGYEBWHO1rWrZi4GSflNVuTbwnyy0DIufn3AcEOSjc0OPHHNGQ==
+X-Received: by 2002:a62:ed11:0:b029:155:4bd9:6ade with SMTP id u17-20020a62ed110000b02901554bd96ademr15393025pfh.6.1602425214953;
+        Sun, 11 Oct 2020 07:06:54 -0700 (PDT)
+Received: from Mani-XPS-13-9360 ([2409:4072:28d:c562:841e:ecfd:8468:c018])
+        by smtp.gmail.com with ESMTPSA id b21sm9403865pfb.97.2020.10.11.07.06.49
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 11 Oct 2020 07:06:54 -0700 (PDT)
+Date:   Sun, 11 Oct 2020 19:36:45 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Cc:     Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        Wolfram Sang <wsa@kernel.org>, Peter Rosin <peda@axentia.se>,
+        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-actions@lists.infradead.org
+Subject: Re: [PATCH 3/3] i2c: owl: Enable asynchronous probing
+Message-ID: <20201011140645.GA4971@Mani-XPS-13-9360>
+References: <cover.1602190168.git.cristian.ciocaltea@gmail.com>
+ <f343802a4b1a8ab6fc78e5db6d24a350b2319495.1602190168.git.cristian.ciocaltea@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201010103854.66746-1-songmuchun@bytedance.com>
+In-Reply-To: <f343802a4b1a8ab6fc78e5db6d24a350b2319495.1602190168.git.cristian.ciocaltea@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 10, 2020 at 06:38:54PM +0800, Muchun Song wrote:
-> The amount of memory allocated to sockets buffer can become significant.
-> However, we do not display the amount of memory consumed by sockets
-> buffer. In this case, knowing where the memory is consumed by the kernel
-> is very difficult. On our server with 500GB RAM, sometimes we can see
-> 25GB disappear through /proc/meminfo. After our analysis, we found the
-> following memory allocation path which consumes the memory with page_owner
-> enabled.
- 
-I have a high lelel question.
-There is accounting of the socket memory for memcg that gets called from
-the networking layer. Did you check if the same call sites can be used
-for the system-wide accounting as well?
-
->   849698 times:
->   Page allocated via order 3, mask 0x4052c0(GFP_NOWAIT|__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP)
->    __alloc_pages_nodemask+0x11d/0x290
->    skb_page_frag_refill+0x68/0xf0
->    sk_page_frag_refill+0x19/0x70
->    tcp_sendmsg_locked+0x2f4/0xd10
->    tcp_sendmsg+0x29/0xa0
->    sock_sendmsg+0x30/0x40
->    sock_write_iter+0x8f/0x100
->    __vfs_write+0x10b/0x190
->    vfs_write+0xb0/0x190
->    ksys_write+0x5a/0xd0
->    do_syscall_64+0x5d/0x110
->    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+On Fri, Oct 09, 2020 at 12:44:41AM +0300, Cristian Ciocaltea wrote:
+> Speed up the boot process by using the asynchronous probing feature
+> supported by the recent kernels.
 > 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> For SBCs based on the Actions Semi S500 SoC, the overall boot time is
+> expected to be reduced by 200-300 ms.
+> 
+> Suggested-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
+Thanks,
+Mani
+
 > ---
->  drivers/base/node.c      |  2 ++
->  drivers/net/virtio_net.c |  3 +--
-
-Is virtio-net the only dirver that requred an update?
-
->  fs/proc/meminfo.c        |  1 +
->  include/linux/mmzone.h   |  1 +
->  include/linux/skbuff.h   | 43 ++++++++++++++++++++++++++++++++++++++--
->  kernel/exit.c            |  3 +--
->  mm/page_alloc.c          |  7 +++++--
->  mm/vmstat.c              |  1 +
->  net/core/sock.c          |  8 ++++----
->  net/ipv4/tcp.c           |  3 +--
->  net/xfrm/xfrm_state.c    |  3 +--
->  11 files changed, 59 insertions(+), 16 deletions(-)
+>  drivers/i2c/busses/i2c-owl.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/i2c/busses/i2c-owl.c b/drivers/i2c/busses/i2c-owl.c
+> index 547132768119..ed3942051845 100644
+> --- a/drivers/i2c/busses/i2c-owl.c
+> +++ b/drivers/i2c/busses/i2c-owl.c
+> @@ -521,6 +521,7 @@ static struct platform_driver owl_i2c_driver = {
+>  	.driver		= {
+>  		.name	= "owl-i2c",
+>  		.of_match_table = of_match_ptr(owl_i2c_of_match),
+> +		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
+>  	},
+>  };
+>  module_platform_driver(owl_i2c_driver);
+> -- 
+> 2.28.0
 > 
