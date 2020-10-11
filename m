@@ -2,105 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA1728AAB1
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 23:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3828428AAB4
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 23:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387584AbgJKVWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 17:22:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49938 "EHLO
+        id S2387529AbgJKVZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 17:25:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387570AbgJKVWn (ORCPT
+        with ESMTP id S2387413AbgJKVZ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 17:22:43 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CA9BC0613CE;
-        Sun, 11 Oct 2020 14:22:43 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id o21so12314560qtp.2;
-        Sun, 11 Oct 2020 14:22:43 -0700 (PDT)
+        Sun, 11 Oct 2020 17:25:29 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAC20C0613CE;
+        Sun, 11 Oct 2020 14:25:28 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id d81so15473047wmc.1;
+        Sun, 11 Oct 2020 14:25:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=v1SI67RBBtDiSYCd7igvyTTY/wfEnfAVpHIYHQEDBdk=;
-        b=o4RtIxrlPXh79GWZ1nNuQZXpnwKphNXfdGSumWnQzcxLNLzdtlHf0ACSeT1KaaYl+4
-         HLtVlcRjqrIBqGCMOvEiXwr0mQOPhY3V5cQzXSmr8nnmrOgwWHXn/HKQYanNoV6WCkRY
-         iXNoxHP5g7/gqTiNHNNkqE0/7siy0HqiJca4Z95Y1TKYCE2qo5qOuwZGX7vabc4/8L70
-         +cEYZfYdDeaMO70ZECZ5kt3THjSKnu0NUuOQFQGl3n8QAhMKdHEptlCEh/Df9MnIAgLC
-         dQHcyQRs/OJ05UGjJaXIaeXlQ/ZjNWXxW+wRNoxkDFQ6zDdMkQKNPNDy4R8K5s5Z8dEh
-         BuCw==
+        h=from:to:cc:subject:date:message-id;
+        bh=FNN9OqkWHxkI2/FsUjbbTqtGt1jNhP9w+BKvnMiIIQI=;
+        b=s+LGa/kT4lkSTkks6KB0yAW55qco2n1RBE7rjb9RfNzn5g6MQ7tRlgP/xN/qNO94jE
+         qsad0x8X1jVeIUGGb9Nd7dg6MTksGtwW13Zqrp9m96R92Re98bkroi1LAq1YJLFjBATh
+         hFaRlRFqIAtJezVPS1KPsla9ZONLsImKQQ6rtGJ6H2s+L3x755cOk3+gRwptvml+EckS
+         3xO57Wxta5H38FmRXsK97p9EUhVkxX5APREzgGbpFI3Fo1W6umgDOTrLNC1kuCo4GTQh
+         okIdRI/ycFYDwZd49CDW/MRlZE33SoggqfMxcrIlHnEpAE8SOJUzMFlqZWLYNmJZQ9UD
+         nMqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=v1SI67RBBtDiSYCd7igvyTTY/wfEnfAVpHIYHQEDBdk=;
-        b=ro8vYhiS5XqYZOHytqa3Qny29PuB+4atbySLIkWTpPf+F7h+Otq9T0F1iXPCZZM9aK
-         sSYBEtuVyNDnWF98STTjMZSiqo5OVxQW3Q3A33FE0Yipx5l+iT9EAvLE3chOT/99Yb65
-         7BXlTvLx1hT/TChMe0SmXP6QPqj3TW3Pl25oxE8RX7X6ASbC0dS2x1abiIaZp3CXEGnu
-         cMBwJC/9S0HToJYCmTOlGnFUfix8Q5vsJ6fc7rsOCQBSFHWyL12Vjs/2cHXDUpbu3Mv3
-         zJcyn2K27CRt9qIKeOi+jrJ04F5akmYTfjsds1JmkHjgFHlKUsQcRip7AEQm281A8scz
-         PBmQ==
-X-Gm-Message-State: AOAM533LBn/MPPQqklMF8qTcglNGpWQGvDvWjFK08wAbMRP2+lQ4XSxQ
-        9GzSwXh/g4JoGssnZjIDFOhVqs/YWeUWEg==
-X-Google-Smtp-Source: ABdhPJwq/vY+A+tu9stmwLntgGUCCnOhT/fgZUY+Oyg7gAteUDF40lRNIdZJH8F/LawsigqDCkT58w==
-X-Received: by 2002:ac8:5cc1:: with SMTP id s1mr7263061qta.379.1602451362784;
-        Sun, 11 Oct 2020 14:22:42 -0700 (PDT)
-Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
-        by smtp.gmail.com with ESMTPSA id n57sm11526658qtf.52.2020.10.11.14.22.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Oct 2020 14:22:42 -0700 (PDT)
-From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] arm64: dts: allwinner: beelink-gs1: Update LED power node
-Date:   Sun, 11 Oct 2020 23:22:37 +0200
-Message-Id: <20201011212238.174792-1-peron.clem@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=FNN9OqkWHxkI2/FsUjbbTqtGt1jNhP9w+BKvnMiIIQI=;
+        b=M+LvCzwrIq/WybNIY3l6TtyFd0arM2U0wuHhG2/+RnTEfvOVpoalzEBBJwDgyYc6dg
+         1As2bxrLMzZrHnYLj3g7CD+Dbq2usp9uxi4cBTDwhD9HAikFKJnMeQFkWO61IaXhwXxT
+         MARgtLUTO9YDslQMk3Tw4Gm3Al8VvrZrRVyHPdsIlhJCuTv4MBS+4Lq5aC6EjTePWrTN
+         K8AJke0GUHhKBhP6ts34r0/Oe/QPvouOIvT/VyuWqV0V2WJQ8XBpXwEIT3YS1UqfhIcs
+         lVZRZAlaPB7DCJXIRWiMpbc4cRlrQuNRLdUsYLZIw5+wXdeTiZw9D1ttAwYCba9LN9ih
+         vHyQ==
+X-Gm-Message-State: AOAM531Rh/6e++Qn/MqJA6uAzzha/Dh3i0NK1GNxwIGNbyE3tFiLiEeS
+        iCVPBEEY6OzSODAs+XH+SDbtsY8A8QYyzg==
+X-Google-Smtp-Source: ABdhPJxNEUKo2W9hGeuoPkuyK6LDZibfcvoGmM+X2LpblcY0/MsoiH5sox5Bs66Yf3mxRQU74EO8AQ==
+X-Received: by 2002:a1c:2e0d:: with SMTP id u13mr7862095wmu.179.1602451527531;
+        Sun, 11 Oct 2020 14:25:27 -0700 (PDT)
+Received: from localhost.localdomain (host-92-5-241-147.as43234.net. [92.5.241.147])
+        by smtp.gmail.com with ESMTPSA id z17sm8908722wrr.93.2020.10.11.14.25.26
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 11 Oct 2020 14:25:27 -0700 (PDT)
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-safety@lists.elisa.tech,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH] e1000: drop unneeded assignment in e1000_set_itr()
+Date:   Sun, 11 Oct 2020 22:23:26 +0100
+Message-Id: <20201011212326.2758-1-sudipm.mukherjee@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Beelink GS1 LED trigger a warning when running dtbs_check.
+The variable 'current_itr' is assigned to 0 before jumping to
+'set_itr_now' but it has not been used after the jump. So, remove the
+unneeded assignement.
 
-Update the node with a valid pattern property.
-
-Also add the function and the color of the LED and drop the
-label which is deprecated.
-
-Signed-off-by: Clément Péron <peron.clem@gmail.com>
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 ---
- arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/intel/e1000/e1000_main.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-index 3f7ceeb1a767..a364cb4e5b3f 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-@@ -7,6 +7,7 @@
- #include "sun50i-h6-cpu-opp.dtsi"
+diff --git a/drivers/net/ethernet/intel/e1000/e1000_main.c b/drivers/net/ethernet/intel/e1000/e1000_main.c
+index 5e28cf4fa2cd..042de276e632 100644
+--- a/drivers/net/ethernet/intel/e1000/e1000_main.c
++++ b/drivers/net/ethernet/intel/e1000/e1000_main.c
+@@ -2632,7 +2632,6 @@ static void e1000_set_itr(struct e1000_adapter *adapter)
  
- #include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/leds/common.h>
- 
- / {
- 	model = "Beelink GS1";
-@@ -43,8 +44,9 @@ ext_osc32k: ext_osc32k_clk {
- 	leds {
- 		compatible = "gpio-leds";
- 
--		power {
--			label = "beelink:white:power";
-+		led-0 {
-+			function = LED_FUNCTION_POWER;
-+			color = <LED_COLOR_ID_WHITE>;
- 			gpios = <&r_pio 0 4 GPIO_ACTIVE_HIGH>; /* PL4 */
- 			default-state = "on";
- 		};
+ 	/* for non-gigabit speeds, just fix the interrupt rate at 4000 */
+ 	if (unlikely(adapter->link_speed != SPEED_1000)) {
+-		current_itr = 0;
+ 		new_itr = 4000;
+ 		goto set_itr_now;
+ 	}
 -- 
-2.25.1
+2.11.0
 
