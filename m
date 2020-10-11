@@ -2,145 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B53CA28A574
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 06:43:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB50228A5DC
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 08:08:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726184AbgJKEnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 00:43:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725882AbgJKEnQ (ORCPT
+        id S1726532AbgJKGI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 02:08:57 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:37870 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725882AbgJKGI5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 00:43:16 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FBD4C0613D2
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 21:43:14 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id a200so10429413pfa.10
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 21:43:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TW9KMm6OrgwSQSQ2ZasuwFiv2daX2uTGOG3qcoUMv5w=;
-        b=AnJ2qoD5K4gRsDV2GJqxk0P/F2E7jo8rtGu952jzmVjnBt2KP9bl3aJ9JTFYGg7rqR
-         SetWwDLPKamShb8Gwhchi78tPzG491wTQ4L/NdMLdd7bgL9/koS1faeeDbJH7HUjmO0L
-         2wO5oym9VV5mc8kQB0OYBN97GqdTqlZ6dyniakEy4obZPAXAf5w6redGYXQuYQD7vQ1t
-         Mz0by5XxDlUiaD4z1KZFMaMLyc86ETL6ks6p/zjkXpmix0MvTummVGOamE17jD2RlBTx
-         qYNf8xEl39T7D879PWYx6fO0ImO2wg/s1cVCK/yj2N5kLY15fBJtTKalwrrL4oiY1wiS
-         2BBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TW9KMm6OrgwSQSQ2ZasuwFiv2daX2uTGOG3qcoUMv5w=;
-        b=L7RxMAKkF+x7AVSvJsJ+xQ1hHOIEkwXcAD18af10NV+LgIAWkxOWHXBdtwUPLyB47T
-         fB0RScSAxNLa53CgEPiIgtjpFe90rXTLxg5PH5c22FwbdCD84Aa28oQWJ4H1PyWjFKqg
-         R/QHoDlF3FWanTld/LQfUjrWyl4IllYEYDPhrEsPywxoPjF2q+Y8shP80zOQWGqASNRz
-         L3hpUTvtHLfGEfkUMM1RPQMBz9AthQeqV28uI4IJJbJ2hkKcg86vUhxwR0gg9nh2QsNr
-         jwI9GczySGgqmyggtA7R1yJczKe1pCBKY6mu/G1c3o+IyhOZwB8H1Jc82HcJprAVgRUO
-         QRkA==
-X-Gm-Message-State: AOAM533nZGet4KvcGcmOlJyJbmjAcglzPVG3NlAeATSXdfZfDcfE2hLt
-        2DGEjPE/Fa9OplXx3JVghzbKPeJvFJU0i0J5KQCUjQ==
-X-Google-Smtp-Source: ABdhPJyX5zE5edIE4wAqcFOL3tIX1HCwgBxHGADIZGwbL/1HpgjGMf2Sb1l/deaG+f2s3p39mIbnOHH/kLvxzOrAV+E=
-X-Received: by 2002:a17:90a:890f:: with SMTP id u15mr13407412pjn.147.1602391393656;
- Sat, 10 Oct 2020 21:43:13 -0700 (PDT)
+        Sun, 11 Oct 2020 02:08:57 -0400
+Date:   Sun, 11 Oct 2020 06:08:54 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602396535;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=NFDWvJrrqrrvlMJ5O9iZKUufRiraLZ8NQC5ILvCEisg=;
+        b=Y2uRPlaRXioURdH8ME9LD63HCQvqSOFmgjK8+gewtdxDnOu48SV+wID4YHtReMuiLbTaFe
+        mLgRfwRXOQHcYjda8lBdrsUwzzJX6F/1ynPeYvrialJ2y339KSWskatPJ1WlYe1B8s4Cae
+        L+g0FIX/ZLHteN0dVhFtPuGQwx4ns/b6CYO2Sa+zOv5b2izTQq1v1NngYKG1gERUk8LWK3
+        StgQf0wmB/UPuS9nshDKEzyqsLnLyYa5aDAh1BIe4Y/csamt6dLk23cliF1FboKAzMD3cO
+        GULgTDZzZJNdX9leX5mrrNDS0aNn7pbHHOA1/ope3SX7mLIeJdOeNWMacyONxQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602396535;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=NFDWvJrrqrrvlMJ5O9iZKUufRiraLZ8NQC5ILvCEisg=;
+        b=ZpEBZSAV38SRQwYehOOO3Z//tb1+MD6f59EZo65Ls+9IykuqzOkTIQZ8CJ2jAdYOC8+5dE
+        HDwvAoN9fRqAE1CA==
+From:   "tip-bot2 for Ard Biesheuvel" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: efi/core] efi: mokvar: add missing include of asm/early_ioremap.h
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-References: <20201010103854.66746-1-songmuchun@bytedance.com> <f6dfa37f-5991-3e96-93b8-737f60128151@infradead.org>
-In-Reply-To: <f6dfa37f-5991-3e96-93b8-737f60128151@infradead.org>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Sun, 11 Oct 2020 12:42:37 +0800
-Message-ID: <CAMZfGtWo0m+6zxG-XWh5fxcV3d4k77P-e37ZAj1f5oDhvZGqUQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm: proc: add Sock to /proc/meminfo
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, rafael@kernel.org,
-        mst@redhat.com, jasowang@redhat.com,
-        David Miller <davem@davemloft.net>, kuba@kernel.org,
-        adobriyan@gmail.com, Andrew Morton <akpm@linux-foundation.org>,
-        Eric Dumazet <edumazet@google.com>, kuznet@ms2.inr.ac.ru,
-        yoshfuji@linux-ipv6.org, steffen.klassert@secunet.com,
-        herbert@gondor.apana.org.au, Shakeel Butt <shakeelb@google.com>,
-        Will Deacon <will@kernel.org>, Michal Hocko <mhocko@suse.com>,
-        Roman Gushchin <guro@fb.com>, neilb@suse.de, rppt@kernel.org,
-        Sami Tolvanen <samitolvanen@google.com>,
-        kirill.shutemov@linux.intel.com, feng.tang@intel.com,
-        pabeni@redhat.com, Willem de Bruijn <willemb@google.com>,
-        fw@strlen.de, gustavoars@kernel.org, pablo@netfilter.org,
-        decui@microsoft.com, jakub@cloudflare.com,
-        Peter Zijlstra <peterz@infradead.org>,
-        christian.brauner@ubuntu.com, ebiederm@xmission.com,
-        Thomas Gleixner <tglx@linutronix.de>, dave@stgolabs.net,
-        Michel Lespinasse <walken@google.com>,
-        Jann Horn <jannh@google.com>, chenqiwu@xiaomi.com,
-        christophe.leroy@c-s.fr, minchan@kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, linmiaohe@huawei.com,
-        Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Networking <netdev@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <160239653434.7002.15806482622522996212.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 11, 2020 at 12:37 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> Hi,
->
-> On 10/10/20 3:38 AM, Muchun Song wrote:
-> > The amount of memory allocated to sockets buffer can become significant.
-> > However, we do not display the amount of memory consumed by sockets
-> > buffer. In this case, knowing where the memory is consumed by the kernel
-> > is very difficult. On our server with 500GB RAM, sometimes we can see
-> > 25GB disappear through /proc/meminfo. After our analysis, we found the
-> > following memory allocation path which consumes the memory with page_owner
-> > enabled.
-> >
-> >   849698 times:
-> >   Page allocated via order 3, mask 0x4052c0(GFP_NOWAIT|__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP)
-> >    __alloc_pages_nodemask+0x11d/0x290
-> >    skb_page_frag_refill+0x68/0xf0
-> >    sk_page_frag_refill+0x19/0x70
-> >    tcp_sendmsg_locked+0x2f4/0xd10
-> >    tcp_sendmsg+0x29/0xa0
-> >    sock_sendmsg+0x30/0x40
-> >    sock_write_iter+0x8f/0x100
-> >    __vfs_write+0x10b/0x190
-> >    vfs_write+0xb0/0x190
-> >    ksys_write+0x5a/0xd0
-> >    do_syscall_64+0x5d/0x110
-> >    entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  drivers/base/node.c      |  2 ++
-> >  drivers/net/virtio_net.c |  3 +--
-> >  fs/proc/meminfo.c        |  1 +
-> >  include/linux/mmzone.h   |  1 +
-> >  include/linux/skbuff.h   | 43 ++++++++++++++++++++++++++++++++++++++--
-> >  kernel/exit.c            |  3 +--
-> >  mm/page_alloc.c          |  7 +++++--
-> >  mm/vmstat.c              |  1 +
-> >  net/core/sock.c          |  8 ++++----
-> >  net/ipv4/tcp.c           |  3 +--
-> >  net/xfrm/xfrm_state.c    |  3 +--
-> >  11 files changed, 59 insertions(+), 16 deletions(-)
->
-> Thanks for finding that.
->
-> Please update Documentation/filesystems/proc.rst "meminfo" section also.
+The following commit has been merged into the efi/core branch of tip:
 
-Will do. Thanks for your suggestions.
+Commit-ID:     cc383a9e245c527d3175e2cf4cced9dbbedbbac6
+Gitweb:        https://git.kernel.org/tip/cc383a9e245c527d3175e2cf4cced9dbbedbbac6
+Author:        Ard Biesheuvel <ardb@kernel.org>
+AuthorDate:    Fri, 02 Oct 2020 10:01:23 +02:00
+Committer:     Ard Biesheuvel <ardb@kernel.org>
+CommitterDate: Fri, 02 Oct 2020 10:08:29 +02:00
 
->
-> --
-> ~Randy
->
+efi: mokvar: add missing include of asm/early_ioremap.h
 
+Nathan reports that building the new mokvar table code for 32-bit
+ARM fails with errors such as
 
--- 
-Yours,
-Muchun
+  error: implicit declaration of function 'early_memunmap'
+  error: implicit declaration of function 'early_memremap'
+
+This is caused by the lack of an explicit #include of the appropriate
+header, and ARM apparently does not inherit that inclusion via another
+header file. So add the #include.
+
+Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+---
+ drivers/firmware/efi/mokvar-table.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/firmware/efi/mokvar-table.c b/drivers/firmware/efi/mokvar-table.c
+index 72a9e17..d8bc013 100644
+--- a/drivers/firmware/efi/mokvar-table.c
++++ b/drivers/firmware/efi/mokvar-table.c
+@@ -40,6 +40,8 @@
+ #include <linux/list.h>
+ #include <linux/slab.h>
+ 
++#include <asm/early_ioremap.h>
++
+ /*
+  * The LINUX_EFI_MOK_VARIABLE_TABLE_GUID config table is a packed
+  * sequence of struct efi_mokvar_table_entry, one for each named
