@@ -2,50 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D078728A8BB
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 19:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF8528A8B9
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 19:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388628AbgJKR6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 13:58:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388527AbgJKR5t (ORCPT
+        id S2388608AbgJKR6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 13:58:16 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:40270 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388531AbgJKR5u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 13:57:49 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20A82C0613D5;
-        Sun, 11 Oct 2020 10:57:49 -0700 (PDT)
-Date:   Sun, 11 Oct 2020 17:57:46 -0000
+        Sun, 11 Oct 2020 13:57:50 -0400
+Date:   Sun, 11 Oct 2020 17:57:47 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602439067;
+        s=2020; t=1602439068;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=s8e8UFJrZTURyupWOH6QNRYNc5WyivmpknEr1ijwTn8=;
-        b=MduGnISJFsNuMQCb5gblN3WW7iNn3VFvN9ktEJw1JVopXKLYvruILA3MR5YiwDm/Bea6QN
-        PW33fxWhbC7ksAWpR7TEVpnAhC1jJKf2PSDKtSWmL99oPjqf60o+TQgSpvsqk5kM1uUbbr
-        fvtEahoSIo3nK9SRHJE5drFm4J7O3pKmW7Af4++Byo1CDkiCRLMexbgjb0TDkLyi/P+YxS
-        xn+5K4TBDmExg0N7l7Bl2Oh/h3BoE/FzwD1+d6P//qOSlblrbn3qVcLe+YOsShWVWozDFZ
-        ALYmS9MPLlLPL5d78j+wX1RnnDLqxiaNQBNI0BDOj2GgPTS7ghFc/W0czzmuQA==
+        bh=8DudYgSkM2D0VuamNCrK3pYx1IForzwit4mo4/gaACA=;
+        b=0l06sRemV7ct9IiXV4GIUw/47uNEEbCPKZFJ/1OuNyL3X/JVFonoc4y3gz5ETa+KCeomaD
+        NO8k9iTHtwygl7D0S3Ty3Gx48xgVMDiMLbLk8ym7bS2KsWP42nLvIOZM5dQpX+MPRZaSr/
+        C8qS43+WGZO3tvg/gvOllOs4oOn6/sln3os9cW3woHiFOBeEakMOhd2wvwQxsWglk0CmlK
+        o8dqMRnGcvnQhgHICrbo1husxiv4T5/wiERgiqF6Z8YlbX+E/GHezCLrdw9pXtloWJwBdX
+        xlYXwVT4ZaeOT+uI/9zO87NX9olOi9Im1ahIUQQBey8MDfnWsHBmNlSpQcjGGQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602439067;
+        s=2020e; t=1602439068;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=s8e8UFJrZTURyupWOH6QNRYNc5WyivmpknEr1ijwTn8=;
-        b=DNlB3ivJytVM5L4ASFKWR4Ww5bUCS/H/H48yT4WEXTO409FzI96bAgmY71cbxujdUCaHJL
-        W4OzU5DhFx6vDJBQ==
+        bh=8DudYgSkM2D0VuamNCrK3pYx1IForzwit4mo4/gaACA=;
+        b=vovOB/cdbHrBjXjXO7AChNmdSwiYfvSXQZcw7MeI6HQ5RuOQcrRjkwX/oZCavEmrbtlpGc
+        /3xILrQWHFQhxqBw==
 From:   "tip-bot2 for Marc Zyngier" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] irqchip/git-v3-its: Implement irq_retrigger callback
- for device-triggered LPIs
+Subject: [tip: irq/core] genirq: Walk the irq_data hierarchy when resending an
+ interrupt
 Cc:     Valentin Schneider <valentin.schneider@arm.com>,
         Marc Zyngier <maz@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <160243906684.7002.567141069091288481.tip-bot2@tip-bot2>
+Message-ID: <160243906784.7002.10488063746795323213.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -56,50 +53,55 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/core branch of tip:
 
-Commit-ID:     5f774f5e12512b850a611aa99b4601d7eac50edb
-Gitweb:        https://git.kernel.org/tip/5f774f5e12512b850a611aa99b4601d7eac50edb
+Commit-ID:     cd1752d34ef33d68d82ef9dcc699b4eaa17c07fc
+Gitweb:        https://git.kernel.org/tip/cd1752d34ef33d68d82ef9dcc699b4eaa17c07fc
 Author:        Marc Zyngier <maz@kernel.org>
-AuthorDate:    Fri, 31 Jul 2020 11:33:13 +01:00
+AuthorDate:    Wed, 26 Aug 2020 18:37:50 +01:00
 Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Sun, 06 Sep 2020 18:26:13 +01:00
+CommitterDate: Sun, 06 Sep 2020 18:25:23 +01:00
 
-irqchip/git-v3-its: Implement irq_retrigger callback for device-triggered LPIs
+genirq: Walk the irq_data hierarchy when resending an interrupt
 
-It is pretty easy to provide a retrigger callback for the ITS,
-as it we already have the required support in terms of
-irq_set_irqchip_state().
-
-Note that this only works for device-generated LPIs, and not
-the GICv4 doorbells, which should never have to be retriggered
-anyway.
+On resending an interrupt, we only check the outermost irqchip for
+a irq_retrigger callback. However, this callback could be implemented
+at an inner level. Use irq_chip_retrigger_hierarchy() in this case.
 
 Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- drivers/irqchip/irq-gic-v3-its.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ kernel/irq/resend.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-index 95f0974..2808545 100644
---- a/drivers/irqchip/irq-gic-v3-its.c
-+++ b/drivers/irqchip/irq-gic-v3-its.c
-@@ -1720,6 +1720,11 @@ static int its_irq_set_irqchip_state(struct irq_data *d,
- 	return 0;
+diff --git a/kernel/irq/resend.c b/kernel/irq/resend.c
+index c48ce19..8ccd32a 100644
+--- a/kernel/irq/resend.c
++++ b/kernel/irq/resend.c
+@@ -86,6 +86,18 @@ static int irq_sw_resend(struct irq_desc *desc)
  }
+ #endif
  
-+static int its_irq_retrigger(struct irq_data *d)
++static int try_retrigger(struct irq_desc *desc)
 +{
-+	return !its_irq_set_irqchip_state(d, IRQCHIP_STATE_PENDING, true);
++	if (desc->irq_data.chip->irq_retrigger)
++		return desc->irq_data.chip->irq_retrigger(&desc->irq_data);
++
++#ifdef CONFIG_IRQ_DOMAIN_HIERARCHY
++	return irq_chip_retrigger_hierarchy(&desc->irq_data);
++#else
++	return 0;
++#endif
 +}
 +
  /*
-  * Two favourable cases:
+  * IRQ resend
   *
-@@ -1971,6 +1976,7 @@ static struct irq_chip its_irq_chip = {
- 	.irq_set_affinity	= its_set_affinity,
- 	.irq_compose_msi_msg	= its_irq_compose_msi_msg,
- 	.irq_set_irqchip_state	= its_irq_set_irqchip_state,
-+	.irq_retrigger		= its_irq_retrigger,
- 	.irq_set_vcpu_affinity	= its_irq_set_vcpu_affinity,
- };
+@@ -113,8 +125,7 @@ int check_irq_resend(struct irq_desc *desc, bool inject)
  
+ 	desc->istate &= ~IRQS_PENDING;
+ 
+-	if (!desc->irq_data.chip->irq_retrigger ||
+-	    !desc->irq_data.chip->irq_retrigger(&desc->irq_data))
++	if (!try_retrigger(desc))
+ 		err = irq_sw_resend(desc);
+ 
+ 	/* If the retrigger was successfull, mark it with the REPLAY bit */
