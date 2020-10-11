@@ -2,84 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DD3228A875
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 19:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4691328A87C
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 19:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388279AbgJKRML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 13:12:11 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39752 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729634AbgJKRML (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 13:12:11 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602436329;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JGag+uiqb/LGv/l0AA6JDsfzfRJnBglwKI/AjMPRXoY=;
-        b=uq8zJ61Ut/9czRp3JdqW4G3m8ksX8GS3+WskWgRinSZnYRDlU3xjBzSfNmHFlJZNqKpD0n
-        laCvZ1BgWRQUlZWJIXfDVWUmZSYahqnm3kBT0jWRWdXEe0Eb3nWiZ70iFpMxf8Y0mnZw90
-        OGy1kKLWiO67EdO2LRskzjf/VtdmXf8E61O/EUiNYpFC315aj2yqExB+/+3VdJdY54z7uK
-        iyKTfEsxQ8xbI8P6as3vR7gGOouu667h5bzCn56frjHnYf7zpnB725ku+Yi1mjboqqbVNk
-        9P1e+IH7S2uPo8NJMbmz3twlCriRNo0F3glV6UVYNkCuiE+vy3tVyMXwbO58KQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602436329;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JGag+uiqb/LGv/l0AA6JDsfzfRJnBglwKI/AjMPRXoY=;
-        b=WY5DKdIbrXfo8t+NmA9ppRR9SZznzPu7hyLknc3RQfjiVq2AObl7lila7aypUxLFuuac+Q
-        07yWqk1/hQGkRZDA==
-To:     David Woodhouse <dwmw2@infradead.org>, x86@kernel.org
-Cc:     kvm <kvm@vger.kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 5/5] x86/kvm: Add KVM_FEATURE_MSI_EXT_DEST_ID
-In-Reply-To: <0E51DAB1-5973-4226-B127-65D77DC46CB5@infradead.org>
-References: <803bb6b2212e65c568c84ff6882c2aa8a0ee03d5.camel@infradead.org> <20201007122046.1113577-1-dwmw2@infradead.org> <20201007122046.1113577-5-dwmw2@infradead.org> <87blhcx6qz.fsf@nanos.tec.linutronix.de> <f27b17cf4ab64fdb4f14a056bd8c6a93795d9a85.camel@infradead.org> <95625dfce360756b99641c31212634c1bf80a69a.camel@infradead.org> <87362owhcb.fsf@nanos.tec.linutronix.de> <c6f21628733cac23fd28679842c20423df2dd423.camel@infradead.org> <87tuv4uwmt.fsf@nanos.tec.linutronix.de> <958f0d5c9844f94f2ce47a762c5453329b9e737e.camel@infradead.org> <874kn2s3ud.fsf@nanos.tec.linutronix.de> <0E51DAB1-5973-4226-B127-65D77DC46CB5@infradead.org>
-Date:   Sun, 11 Oct 2020 19:12:08 +0200
-Message-ID: <87pn5or8k7.fsf@nanos.tec.linutronix.de>
+        id S2388283AbgJKRVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 13:21:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387501AbgJKRVw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Oct 2020 13:21:52 -0400
+Received: from pali.im (pali.im [31.31.79.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 216E82222C;
+        Sun, 11 Oct 2020 17:21:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602436912;
+        bh=egoaTI9L6s7RDJ3I2dZ0mDKGJjOCX3sRwpwy62GfCrw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=q2XsCTauGQY/crKt3QTrwthpTfZlzL1ZCfM1a82cDLC4aDSGqiXs1d1Gsf+h306Ea
+         rqoBnNpxRZOKybwqTa9xptak/os+CYXAIq2fPoip2pkAfBTGgo7sVAbRJIBbIl9d8b
+         azGjYll4neMFz/sluwu4iT8+zuYkA70v8+59qrgE=
+Received: by pali.im (Postfix)
+        id 960A9862; Sun, 11 Oct 2020 19:21:49 +0200 (CEST)
+Date:   Sun, 11 Oct 2020 19:21:49 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: aardvark: Update comment about disabling link
+ training
+Message-ID: <20201011172149.x7crspugv2xne6ui@pali>
+References: <20200924084618.12442-1-pali@kernel.org>
+ <20200924151106.GA2319992@bjorn-Precision-5520>
+ <20200924152232.ecoxpmxdc5iyrz76@pali>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200924152232.ecoxpmxdc5iyrz76@pali>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 10 2020 at 12:58, David Woodhouse wrote:
-> On 10 October 2020 12:44:10 BST, Thomas Gleixner <tglx@linutronix.de> wro=
-te:
->>On Sat, Oct 10 2020 at 11:06, David Woodhouse wrote:
+On Thursday 24 September 2020 17:22:32 Pali Rohár wrote:
+> On Thursday 24 September 2020 10:11:06 Bjorn Helgaas wrote:
+> > On Thu, Sep 24, 2020 at 10:46:18AM +0200, Pali Rohár wrote:
+> > > It is not HW bug or workaround for some cards but it is requirement by PCI
+> > > Express spec. After fundamental reset is needed 100ms delay prior enabling
+> > > link training. So update comment in code to reflect this requirement.
+> > > 
+> > > Signed-off-by: Pali Rohár <pali@kernel.org>
+> > > ---
+> > >  drivers/pci/controller/pci-aardvark.c | 7 ++++++-
+> > >  1 file changed, 6 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
+> > > index 50ab6d7519ae..19b9b79226e5 100644
+> > > --- a/drivers/pci/controller/pci-aardvark.c
+> > > +++ b/drivers/pci/controller/pci-aardvark.c
+> > > @@ -259,7 +259,12 @@ static void advk_pcie_issue_perst(struct advk_pcie *pcie)
+> > >  	if (!pcie->reset_gpio)
+> > >  		return;
+> > >  
+> > > -	/* PERST does not work for some cards when link training is enabled */
+> > > +	/*
+> > > +	 * As required by PCI Express spec a delay for at least 100ms after
+> > > +	 * de-asserting PERST# signal is needed before link training is enabled.
+> > > +	 * So ensure that link training is disabled prior de-asserting PERST#
+> > > +	 * signal to fulfill that PCI Express spec requirement.
+> > 
+> > Can you please include the spec citation here?  In the PCIe base spec,
+> > PERST# is only mentioned in PCIe r5.0, sec 6.6.1, and I don't see the
+> > connection there to 100ms between de-assert of PERST# and enabling
+> > link training.
+> 
+> Hello! I copied this "comment" from other place in pci-aardvark.c where
+> that timeout 100ms is already applied. Timeout with explanation comment
+> was introduced in following commit:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f4c7d053d7f7
+> 
+> Here are links to discussions about that patch:
+> 
+> https://lore.kernel.org/linux-pci/20190313213752.1246-1-repk@triplefau.lt/T/#u
+> https://lore.kernel.org/linux-pci/20190522213351.21366-2-repk@triplefau.lt/T/#u
 
->>> The IRQ remapping drivers already plug into the device-add notifier
->>> and can fill in the appropriate MSI domain just like they do=C2=B9 for
->>> PCI and ACPI devices.
->>> Using platform_add_bundle() for HPET looks trivial enough; I'll have
->>> a play with that and then do IOAPIC too if/when the initialisation
->>> order and hotplug handling all works out OK to install the correct
->>> msi_domain.
->>
->> Yes, I was wondering about that when I made PCI at least use that
->> mechanism, but had not had time to actually look at it.
->
-> Yeah. There's some muttering to be done for HPET about whether it's
-> *its* MSI domain or whether it's the parent domain. But I'll have a
-> play. I think we'll be able to drop the whole
-> irq_remapping_get_irq_domain() thing.
+Bjorn or Lorenzo, do you need something else for this patch? It just
+updates comment and basically clarify why PERST does not work for some
+cards when link training is enabled.
 
-That would be really nice.
-
-> Either way, it's a separate cleanup and the 15-bit APIC ID series I
-> posted yesterday should be fine as it is.
-
-I go over it in the next days once more and stick it into my devel tree
-until rc1. Need to get some conflicts sorted with that Device MSI stuff.
-
-Thanks,
-
-        tglx
-
-
+> > Sec 6.1.1 does talk about 100ms before sending config requests (for
+> > ports that support <= 5 GT/s), and 100ms after link training completes
+> > (for ports that support > 5 GT/s).
+> > 
+> > Maybe there's more language in a form-factor spec or something?
+> > 
+> > > +	 */
+> > >  	reg = advk_readl(pcie, PCIE_CORE_CTRL0_REG);
+> > >  	reg &= ~LINK_TRAINING_EN;
+> > >  	advk_writel(pcie, reg, PCIE_CORE_CTRL0_REG);
+> > > -- 
+> > > 2.20.1
+> > > 
