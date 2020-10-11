@@ -2,131 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A96528A73A
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 13:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E5A428A741
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 13:46:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387620AbgJKLc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 07:32:56 -0400
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:45003 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387467AbgJKLc4 (ORCPT
+        id S2387714AbgJKLqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 07:46:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387489AbgJKLqS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 07:32:56 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 6916258C;
-        Sun, 11 Oct 2020 07:32:54 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Sun, 11 Oct 2020 07:32:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-         h=date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=+ebymQySiF7n21UOcFO9mizXixa
-        NxwiZj2RVBB0uKW4=; b=IpVVD/o91q9rAPnu5miR6RQPgMLz4TobuQNkmO1/VxB
-        0WAARCx1Qtvv8AvdqUB+Gtr2Kk+uXbGjvcUfTI5d9/xp23c5fiwhQ/63+X9v6X8T
-        k8dNSXF4XllngQBL3Zock6eSJE5TUki34jFY0NhsstdArkAeeW36FbKtjhcbyVKq
-        KUasJeAj9nXrco6fT6ntBZhJQe9eNOyyQk4eocvuxm3drKGpSvPZJdnTYcC4iIos
-        NDMWm55NbgizmGeICFnd25FeDkJTFPgnb+egtVL4rPqT6/ooeRjLXvF/qYs4MS0F
-        vXZ/2Ng3FhOXebraad8sHRv9iBDHcS/IeIbRCpWmmsw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=+ebymQ
-        ySiF7n21UOcFO9mizXixaNxwiZj2RVBB0uKW4=; b=Ceo6vjeG1gvNM+jX+sY8eq
-        fQdktd4m/Z125EdbtnQf2vVHxa/AE/xmMOvwbYTDFmdK7ixvCUQQIjWowVRDvidz
-        AjpCivDnG4LUIhuMpC9aQiY9nRKbTpLPKFr+KxzZUjV85ChjJxa5ktASs7Lb97Hp
-        oNVtABg7mWwsSLeHW4q1a9c2Il3LjtzZXiN5l9HiNxXJ4RrnV1daDFLw3m35G+oD
-        o7mheeO7RerCyovBv3+hmuCa9i48CG5kjKdZPxn4pDC16t+Sh1y04s2C4cfVUWDt
-        5OaT/XPyRpa9o4Mpl+HNf4CxOGk/NCNH2NMWDtHImeyjis+NWhgICAF4XQIfpUdw
-        ==
-X-ME-Sender: <xms:Y-2CX8wYszKA2GLZn5UN7zjMIFxWelt_9Wv-hrmJjRpWO5xs62Lz-g>
-    <xme:Y-2CXwTzjorHYjaGzLbjH2JiL5NuoBDZBBAT6GFQjTT6CvapiDcx0U27IElAc3xId
-    _TWv-yhogEzByMviNs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrheehgdegvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgrshhh
-    ihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-    eqnecuggftrfgrthhtvghrnhepvdetfeevffeftdetuddtudegfeevleettdetiedujefh
-    jefhkedvieeltdehuddunecuffhomhgrihhnpehlihhpiedrfhhrnecukfhppedugedrfe
-    drieegrddvtdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhf
-    rhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:Y-2CX-VoQ-RdDaC9yqqL_qSVhRNVEjpn0M0G83S9UwK8YoCjEwm1mg>
-    <xmx:Y-2CX6jT8E6jo6lSYjRvKbQFKygIAD44SM9mg2QWz3TtZ-S3oIXutA>
-    <xmx:Y-2CX-DS1gU5vd5TiJ_ApoDd_S_VU_pP_HcfGqYZhsDFCKQ3lqY5uA>
-    <xmx:Zu2CX0BGa9yQUKuV0G0w6HonCm_ZMqJyWSa3fTfo9vFFLh2JrBiOTg>
-Received: from workstation (ae064207.dynamic.ppp.asahi-net.or.jp [14.3.64.207])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 6437A3064610;
-        Sun, 11 Oct 2020 07:32:49 -0400 (EDT)
-Date:   Sun, 11 Oct 2020 20:32:47 +0900
-From:   Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To:     Julia Lawall <Julia.Lawall@inria.fr>
-Cc:     Clemens Ladisch <clemens@ladisch.de>,
-        Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        Joe Perches <joe@perches.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kernel-janitors@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/8] ALSA: fireworks: use semicolons rather than commas
- to separate statements
-Message-ID: <20201011113247.GA333010@workstation>
-Mail-Followup-To: Julia Lawall <Julia.Lawall@inria.fr>,
-        Clemens Ladisch <clemens@ladisch.de>,
-        Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        Joe Perches <joe@perches.com>, Thomas Gleixner <tglx@linutronix.de>,
-        kernel-janitors@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-References: <1602407979-29038-1-git-send-email-Julia.Lawall@inria.fr>
- <1602407979-29038-5-git-send-email-Julia.Lawall@inria.fr>
+        Sun, 11 Oct 2020 07:46:18 -0400
+X-Greylist: delayed 344 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 11 Oct 2020 04:46:16 PDT
+Received: from valentin-vidic.from.hr (valentin-vidic.from.hr [IPv6:2001:470:1f0b:3b7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5A0EC0613CE;
+        Sun, 11 Oct 2020 04:46:16 -0700 (PDT)
+X-Virus-Scanned: Debian amavisd-new at valentin-vidic.from.hr
+Received: by valentin-vidic.from.hr (Postfix, from userid 1000)
+        id DA40A3FDF; Sun, 11 Oct 2020 13:40:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=valentin-vidic.from.hr; s=2020; t=1602416424;
+        bh=kLUtzGm/mOxFRk7ierRj4MOQrCli4dPiEbdR2LcWxqQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=VO6MnSAqm52dlNEvak1+TarsFGx++KHwe8G77UO/GINYWz/HdyMa/AX/vg1ax5mvJ
+         r4CaUeakpPDerkySy8MlUWeFT+WA03ra1eDS8n9z6Fi/ez+Lsmbg6GoSZ/gBbz8Rl0
+         C0lzn2hBLlcOBpKt30RPRiwXvv5myNsE/fTPW39YxmKpvyv54OYuz5SNQoIK+Yz7xy
+         +vrSmtngv1SHBr9oUDUy+Au1zwWCr/l8XiY8QOxHlhHGRpCV5xXanVGv8cghMTvFZ2
+         OR1chuKQwEoP+eN0lBUt9qIKzg4fqFgNUyNWF1wW54Ml9XOy3pH+3iv5pD9c9YRXru
+         MZ3cn2er1CYnrg3YVTv/sBLwXF6eaUbT/OnwpsXBbF3eXjWOfHN2IRA+6SL3R20BcD
+         WtMgTsM1fj4l/WbYY2iDv5OYnqfFukSZWDXh17AszFyW+C+7XLgwwP3phdrxmsg00+
+         EjXYGVV73tXzgv/hI/q2qTme+DVvVv1rpcPYkN4+mtp2FddtDR9m/rU19qu95wr5YI
+         VA6rA/l38++n5JpQ9pZgSeI3Z8nnDEejJw9ht8q3E8qsco/KryHCWnjPqPdX/t8THj
+         ydps+fgAihbOe0EsOA865TXFSy9hmQpV8P67LZKEyiuNygXmFjSqMa3R9LkBsWtOLU
+         VmvHIqu4NgpmcptE98ZG0/nU=
+From:   Valentin Vidic <vvidic@valentin-vidic.from.hr>
+To:     "David S. Miller" <davem@davemloft.net>
+Cc:     Philip Rischel <rischelp@idt.com>, Felix Fietkau <nbd@openwrt.org>,
+        Florian Fainelli <florian@openwrt.org>,
+        Roman Yeryomin <roman@advem.lv>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Martin Habets <mhabets@solarflare.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Valentin Vidic <vvidic@valentin-vidic.from.hr>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net: korina: free array used for rx/tx descriptors
+Date:   Sun, 11 Oct 2020 13:39:55 +0200
+Message-Id: <20201011113955.19511-1-vvidic@valentin-vidic.from.hr>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1602407979-29038-5-git-send-email-Julia.Lawall@inria.fr>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Memory was not freed when driver is unloaded from the kernel.
 
-On Sun, Oct 11, 2020 at 11:19:35AM +0200, Julia Lawall wrote:
-> Replace commas with semicolons.  What is done is essentially described by
-> the following Coccinelle semantic patch (http://coccinelle.lip6.fr/):
-> 
-> // <smpl>
-> @@ expression e1,e2; @@
-> e1
-> -,
-> +;
-> e2
-> ... when any
-> // </smpl>
-> 
-> Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
-> 
-> ---
->  sound/firewire/fireworks/fireworks_pcm.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/firewire/fireworks/fireworks_pcm.c b/sound/firewire/fireworks/fireworks_pcm.c
-> index 980580dfbb39..a0d5db1d8eb2 100644
-> --- a/sound/firewire/fireworks/fireworks_pcm.c
-> +++ b/sound/firewire/fireworks/fireworks_pcm.c
-> @@ -148,7 +148,7 @@ pcm_init_hw_params(struct snd_efw *efw,
->  	}
->  
->  	/* limit rates */
-> -	runtime->hw.rates = efw->supported_sampling_rate,
-> +	runtime->hw.rates = efw->supported_sampling_rate;
->  	snd_pcm_limit_hw_rates(runtime);
->  
->  	limit_channels(&runtime->hw, pcm_channels);
+Signed-off-by: Valentin Vidic <vvidic@valentin-vidic.from.hr>
+---
+ drivers/net/ethernet/korina.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/ethernet/korina.c b/drivers/net/ethernet/korina.c
+index 03e034918d14..99146145f020 100644
+--- a/drivers/net/ethernet/korina.c
++++ b/drivers/net/ethernet/korina.c
+@@ -1133,6 +1133,7 @@ static int korina_remove(struct platform_device *pdev)
+ 	iounmap(lp->eth_regs);
+ 	iounmap(lp->rx_dma_regs);
+ 	iounmap(lp->tx_dma_regs);
++	kfree(lp->td_ring);
  
-Oops. It seems to be my typo added at the commit aa02bb6e6078
-("ALSA: fireworks: Add PCM interface")...
+ 	unregister_netdev(bif->dev);
+ 	free_netdev(bif->dev);
+-- 
+2.20.1
 
-Acked-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-
-
-Thanks
-
-Takashi Sakamoto
