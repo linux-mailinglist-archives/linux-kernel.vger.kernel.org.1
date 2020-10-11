@@ -2,52 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECB1428A5FC
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 08:33:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3438728A600
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 08:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728227AbgJKGdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 02:33:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726342AbgJKGdy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 02:33:54 -0400
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D5AAC0613CE
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Oct 2020 23:33:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=bit-web.eu;
-         s=ds202010; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-        Message-ID:Subject:From:To:Sender:Reply-To:Cc:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=k1jntqFqc9x+3RD1nBXdRpa/Pn8AVJQq3x28zOeNwWs=; b=k+rPakqYqti8RG/pCXzC/kgKft
-        W7ehKgrcCMUjR5u6qbdR9aV5YJyXEc6K94z/sctm6Hf3IlkQJVQyxcBFGBgVLwDiaK1vmfh2VPyfL
-        VEd6aDjFtBx0yKYeBob1WWsv/7Nt0dKV9ECYaizI6hyy2txIFIadYCx6oUyX+cLrhGLyyPlW6MnyE
-        u5Uxh+tkCaXqzIasbxDcPyUSBYOwIEY89lj7/HdXxkPWeuq4PLS0+bFftyENRfnrtEM8Xw/UpsdRN
-        imomneJeZUfxS2RMULYuIHiGMyMaGrnp5d7otPKwC0OQ8fZ5hzn8QJWwFz4ejooFmAAmFR4WILnxd
-        AbXbmmQg==;
-Received: from [2a02:fe0:c700:2:687c:e90d:da70:b07d] (port=59644)
-        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <ywe_c@bit-web.eu>)
-        id 1kRUvX-0004F0-J1
-        for linux-kernel@vger.kernel.org; Sun, 11 Oct 2020 08:33:51 +0200
-To:     linux-kernel@vger.kernel.org
-From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <ywe_c@bit-web.eu>
-Subject: Fair Pay - Further putting concepts in the right place:
-Message-ID: <383b60aa-cdfb-1b41-bb27-2fc76268f5d5@bit-web.eu>
-Date:   Sun, 11 Oct 2020 08:33:39 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S1728434AbgJKGgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 02:36:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50790 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726342AbgJKGgv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Oct 2020 02:36:51 -0400
+Received: from coco.lan (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 85DE0207F7;
+        Sun, 11 Oct 2020 06:36:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602398210;
+        bh=MR/RMyKCclUPPVflq9R7vQAnP0HHAB+V0k+M/bUhRS4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=jvBUfU4lcFH5iYVZHi3aofMRqu0bNvwHTxzGNNkxsyXYWj1btiksG20/jfbPQvvqv
+         dVJGVqnV9hei4ZzzcKLtrrL3N/xYb6tuVCokS0XC+GSZbVjKBxNL+vnz8aAokYiVaa
+         RWkpl0Kn6+L8/zgpVMrCrzOooLkal8LZO9av0isI=
+Date:   Sun, 11 Oct 2020 08:36:42 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Kees Cook <keescook@chromium.org>,
+        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>, Hans Verkuil <hverkuil@xs4all.nl>,
+        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Subject: Re: [PATCH v2 09/17] mm: Add unsafe_follow_pfn
+Message-ID: <20201011083642.06ea8062@coco.lan>
+In-Reply-To: <20201011082741.6bed4d71@coco.lan>
+References: <20201009075934.3509076-1-daniel.vetter@ffwll.ch>
+        <20201009075934.3509076-10-daniel.vetter@ffwll.ch>
+        <20201009123421.67a80d72@coco.lan>
+        <20201009122111.GN5177@ziepe.ca>
+        <20201009143723.45609bfb@coco.lan>
+        <20201009124850.GP5177@ziepe.ca>
+        <CAKMK7uF-hrSwzFQkp6qEP88hM1Qg8TMQOunuRHh=f2+D8MaMRg@mail.gmail.com>
+        <CAAFQd5CTT0re4ssj9NNTxhejFX_v_rCjy6=mX7C+dc=Lw9GOHw@mail.gmail.com>
+        <20201010213554.GD3939@pendragon.ideasonboard.com>
+        <CAKMK7uGhq+BiaJ5jD+bkO4VOaCPuUZ_empA3Ojr1AsvwNef6QQ@mail.gmail.com>
+        <20201011082741.6bed4d71@coco.lan>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It seems the norwegian Tor idol is part of the linux lore.
-One should know now that this really is much replaced by Gay Jehova, and 
-christian church LGBT accept.
+Em Sun, 11 Oct 2020 08:27:41 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
 
+> Em Sat, 10 Oct 2020 23:50:27 +0200
+> Daniel Vetter <daniel.vetter@ffwll.ch> escreveu:
+> 
+> > On Sat, Oct 10, 2020 at 11:36 PM Laurent Pinchart
+> > <laurent.pinchart@ideasonboard.com> wrote:
+> > >
+> 
+> > > > We probably still have a few legacy drivers using videobuf (non-2),
+> > > > but IMHO those should be safe to put behind some disabled-by-default
+> > > > Kconfig symbol or even completely drop, as the legacy framework has
+> > > > been deprecated for many years already.  
+> > >
+> > > There's 8 drivers left, and they support a very large number of devices.
+> > > I expect unhappy users distros stop shipping them. On the other hand,
+> > > videobuf has been deprecated for a loooooooong time, so there has been
+> > > plenty of time to convert the remaining drivers to videobuf2. If nobody
+> > > can do it, then we'll have to drop support for these devices given the
+> > > security issues.  
+> > 
+> > Again, the issue here is _only_ with follow_pfn. For videobuf1 this
+> > means videbuf-dma-contig.c userptr support is broken. Unlike videobuf2
+> > it means it's broken for all usage (not just zero-copy userptr),
+> > because videbuf-dma-contig.c lacks the pin_user_pages path.
+> 
+> Well, follow_pfn() is used only by videbuf-dma-contig.c. If this is 
+> the only part of VB1 that will have userptr broken, then there's
+> just one driver that might be affected: davinci.
+> 
+> Yet, taking a deeper look:
+> 
+> 	$ git grep include drivers/media/platform/davinci/|grep -i videobuf
+> 	drivers/media/platform/davinci/vpif_capture.h:#include <media/videobuf2-dma-contig.h>
+> 	drivers/media/platform/davinci/vpif_display.h:#include <media/videobuf2-dma-contig.h>
+> 
+> It sounds to me that it was already converted to VB2, but some VB1
+> symbols were not converted at its Kconfig.
+> 
+> It sounds to me that there are other drivers with some VB1 left overs
+> at Kconfig, as those are the only ones using VB1 those days:
+> 
+> 	$ for i in $(git grep media/videobuf drivers |grep -v videobuf2 |grep -v v4l2-core|cut -d: -f1); do dirname $i; done|sort|uniq
+> 	drivers/media/pci/bt8xx
+> 	drivers/media/pci/cx18
+> 	drivers/media/platform
+> 	drivers/media/usb/tm6000
+> 	drivers/media/usb/zr364xx
+> 	drivers/staging/media/atomisp/pci
+
+This is incomplete. There are two drivers that include videobuf
+indirectly:
+
+	include/media/davinci/vpfe_capture.h
+	include/media/drv-intf/saa7146_vv.h
+
+I double-checked that DaVinci still uses VB1. There are 
+actually two clients for videbuf-dma-contig.c: davinci and fsl-viu.
+
+Those two will be affected, if we don't add pin_user_pages_fast()
+support to VB1 or convert them to VB2.
+
+> 
+> > But that
+> > would be easy to add if this poses a  problem I think - we just need
+> > to carry over the pin_user_pages_fast logic from videbuf2, no driver
+> > changes required. But of course I don't think we should do that before
+> > someone reports the regression, since videobuf1 userptr is doubly
+> > deprecated :-)
+> 
+> I think otherwise. Keeping a broken component at the Kernel is 
+> a bad idea. 
+> 
+> Yet, from my quick search above, it sounds to me that it is time for 
+> us to retire the VB1 DMA contig support as a hole, as there's no client 
+> for it anymore.
+> 
+> I'll work on some patches cleaning up the VB1 left overs at
+> Kconfig and removing videbuf-dma-contig.c for good, if there's
+> no hidden dependency on it.
+> 
+> 
+> Thanks,
+> Mauro
+
+
+
+Thanks,
+Mauro
