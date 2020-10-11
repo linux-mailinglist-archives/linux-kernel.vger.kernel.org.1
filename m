@@ -2,105 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B79E728AAA2
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 23:14:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E004E28AAA5
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 23:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387449AbgJKVOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 17:14:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48698 "EHLO
+        id S2387495AbgJKVPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 17:15:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387413AbgJKVOr (ORCPT
+        with ESMTP id S2387457AbgJKVP3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 17:14:47 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2436C0613CE;
-        Sun, 11 Oct 2020 14:14:46 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id bl9so7518659qvb.10;
-        Sun, 11 Oct 2020 14:14:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QhmDxxDGKX1YozmvjqVq9UocysPhEwMN1IelbdsB+sI=;
-        b=qTPnI04EOSkJ8gdcT9/cztv6OnMi1OI7pj3npgvjpUMkObZPDxF3XHxJVMFO222+K/
-         oAj8yg/0z/iOkqLfd4E293ESSo/PDy6uD13jIH8MqbDL4MbFt7e9vZ8geG/A6a4MgMV5
-         t/GVZlsd0l9cxbTsbZ5HlIJtbpeaOtAc4EZJQ5QWs2cZV47baYddsXOKe/WbXtfdceV6
-         Pg+bzd70S65XDYE4LbmEdkWZYiWk5tg8PkvhVDFESwTUyUOQST4Fovsp2BfDqLu7LtO/
-         2qKRUxNrcptDno0GCzppHArVXLM+ukrf464gnohl1jhwHf9LJK4uutdeeGAwTDE2UW7c
-         KBbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QhmDxxDGKX1YozmvjqVq9UocysPhEwMN1IelbdsB+sI=;
-        b=pvVISEdQNODYGHOkG1N+HYul0YDY7+X7wUIU/cDmImXZrYvNfa7ayUAUNmgxZ0SYnP
-         K7BPsbazC1P6f/Z9JTEgFzeBsbeDUWdN9hB/r0MoGuLbY8lgg9cCrdSP9T7rtPXuzhhK
-         9K744KLMZLIM9Jpka3xGLB2aahYDeEvQZidEUoBVVEL2mP3EqSP0YKtE5NBxD/SofGvQ
-         mk2HUTZ+Xt5qyuOwmaQeE1FLUvn5o4j2UoAWfhz5Eztb24XlOxdDM6LctPMJKItM71hh
-         Zy/fVdJL+dNmlHm0gh8+lSvRLRUfIslRGptGZhQCPV7ZqPLdKR/QFYl1X+aoFe8wlEd7
-         P2CA==
-X-Gm-Message-State: AOAM532K+d1rhUvg5kCdwSDeyFBhuRfQchR2CpHODYyfk7Xxbk63K8vq
-        9ScmsTPc7QowuQaTfjY3lak=
-X-Google-Smtp-Source: ABdhPJyD3QF/g7iKXbXNBhbFQ7ULA4RT1EdBH2X4tnmWJKiXzsHxThXG7vWtEenVh6rGuSMZxqKCJw==
-X-Received: by 2002:ad4:4e73:: with SMTP id ec19mr21177629qvb.58.1602450885985;
-        Sun, 11 Oct 2020 14:14:45 -0700 (PDT)
-Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
-        by smtp.gmail.com with ESMTPSA id t186sm11252818qkf.48.2020.10.11.14.14.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Oct 2020 14:14:45 -0700 (PDT)
-From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: allwinner: beelink-gs1: Update LED power node
-Date:   Sun, 11 Oct 2020 23:14:28 +0200
-Message-Id: <20201011211428.154793-1-peron.clem@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sun, 11 Oct 2020 17:15:29 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94EC6C0613CE;
+        Sun, 11 Oct 2020 14:15:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Message-ID:From:CC:To:Subject:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:
+        Date:Sender:Reply-To:Content-ID:Content-Description;
+        bh=HaNvNJNqShxRibbaAVJtLOGl045COY2jHpkwhNWQ1O8=; b=r8zg1sCeWkNKE7gc7C+e+At4lA
+        bdH0jciNm36VvbZ6MEuKXmbGcb8NaOaAQD3vfDn30e6roeFhDmvCz2AXFfYxZ8YMpCK4xKnYSCcG/
+        m35HTKIOvnsjNQoAXnWPEkKlgr/Ob8DCkeQLdh44yx/enLT8fSA8ttHEN1iwgXT9caFJOki3c1uyR
+        2xPfeg4UQqy17CHYPbYOQwH8B/9kRe5C58LYSG2F6KsDMwFQAzXf6DJRH98IXEt/0PilDDw8Jx8pF
+        wxgvCahUwzEbaAw2m0whT9IDFgRDdE97DQzjnEy/nBQ23oYBbT8EkO/tPsYr+TbVI0Q/TPpxzVCVl
+        j8FhJB8Q==;
+Received: from [2001:8b0:10b:1:ad95:471b:fe64:9cc3]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kRigX-0002Jt-Hz; Sun, 11 Oct 2020 21:15:18 +0000
+Date:   Sun, 11 Oct 2020 22:15:13 +0100
+User-Agent: K-9 Mail for Android
+In-Reply-To: <87pn5or8k7.fsf@nanos.tec.linutronix.de>
+References: <803bb6b2212e65c568c84ff6882c2aa8a0ee03d5.camel@infradead.org> <20201007122046.1113577-1-dwmw2@infradead.org> <20201007122046.1113577-5-dwmw2@infradead.org> <87blhcx6qz.fsf@nanos.tec.linutronix.de> <f27b17cf4ab64fdb4f14a056bd8c6a93795d9a85.camel@infradead.org> <95625dfce360756b99641c31212634c1bf80a69a.camel@infradead.org> <87362owhcb.fsf@nanos.tec.linutronix.de> <c6f21628733cac23fd28679842c20423df2dd423.camel@infradead.org> <87tuv4uwmt.fsf@nanos.tec.linutronix.de> <958f0d5c9844f94f2ce47a762c5453329b9e737e.camel@infradead.org> <874kn2s3ud.fsf@nanos.tec.linutronix.de> <0E51DAB1-5973-4226-B127-65D77DC46CB5@infradead.org> <87pn5or8k7.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH 5/5] x86/kvm: Add KVM_FEATURE_MSI_EXT_DEST_ID
+To:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
+CC:     kvm <kvm@vger.kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+From:   David Woodhouse <dwmw2@infradead.org>
+Message-ID: <F0F0A646-8DBA-4448-933F-993A3335BD59@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Beelink GS1 LED trigger a warning when running dtbs_check.
 
-Update the node with a valid pattern property.
 
-Also add the function and the color of the LED and drop the
-label which is deprecated.
+On 11 October 2020 18:12:08 BST, Thomas Gleixner <tglx@linutronix=2Ede> wr=
+ote:
+>On Sat, Oct 10 2020 at 12:58, David Woodhouse wrote:
+>> On 10 October 2020 12:44:10 BST, Thomas Gleixner <tglx@linutronix=2Ede>
+>wrote:
+>>>On Sat, Oct 10 2020 at 11:06, David Woodhouse wrote:
+>
+>>>> The IRQ remapping drivers already plug into the device-add notifier
+>>>> and can fill in the appropriate MSI domain just like they do=C2=B9 fo=
+r
+>>>> PCI and ACPI devices=2E
+>>>> Using platform_add_bundle() for HPET looks trivial enough; I'll
+>have
+>>>> a play with that and then do IOAPIC too if/when the initialisation
+>>>> order and hotplug handling all works out OK to install the correct
+>>>> msi_domain=2E
+>>>
+>>> Yes, I was wondering about that when I made PCI at least use that
+>>> mechanism, but had not had time to actually look at it=2E
+>>
+>> Yeah=2E There's some muttering to be done for HPET about whether it's
+>> *its* MSI domain or whether it's the parent domain=2E But I'll have a
+>> play=2E I think we'll be able to drop the whole
+>> irq_remapping_get_irq_domain() thing=2E
+>
+>That would be really nice=2E
 
-Signed-off-by: Clément Péron <peron.clem@gmail.com>
----
- arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+I can make it work for HPET if I fix up the point at which the IRQ remappi=
+ng code registers a notifier on the platform bus=2E (At IRQ remap setup tim=
+e is too early; when it registers the PCI bus notifier is too late=2E)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-index 3f7ceeb1a767..f506d6fa8017 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-@@ -7,6 +7,7 @@
- #include "sun50i-h6-cpu-opp.dtsi"
- 
- #include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/leds/common.h>
- 
- / {
- 	model = "Beelink GS1";
-@@ -43,8 +44,9 @@ ext_osc32k: ext_osc32k_clk {
- 	leds {
- 		compatible = "gpio-leds";
- 
--		power {
--			label = "beelink:white:power";
-+		led-0 {
-+			function = LED_FUNCTION_POWER;
-+			color = LED_COLOR_ID_WHITE;
- 			gpios = <&r_pio 0 4 GPIO_ACTIVE_HIGH>; /* PL4 */
- 			default-state = "on";
- 		};
--- 
-2.25.1
+IOAPIC is harder though as the platform bus doesn't even exist that early=
+=2E Maybe an early platform bus is possible but it would have to turn out p=
+articularly simple to do, or I'd need to find another use case too, to just=
+ify it=2E Will continue to play=2E=2E=2E=2E
 
+>> Either way, it's a separate cleanup and the 15-bit APIC ID series I
+>> posted yesterday should be fine as it is=2E
+>
+>I go over it in the next days once more and stick it into my devel tree
+>until rc1=2E Need to get some conflicts sorted with that Device MSI
+>stuff=2E
+
+While playing with HPET I noticed I need s/CONFIG_PCI_MSI/CONFIG_IRQ_GENER=
+IC_MSI/ where the variables are declared at the top of msi=2Ec to match the=
+ change I made later on=2E Can post v3 of the series or you can silently fi=
+x it up as you go; please advise=2E
+
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
