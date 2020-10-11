@@ -2,129 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3059E28A6A4
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 11:24:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 588F428A6B3
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 11:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387480AbgJKJYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 05:24:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725863AbgJKJYu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 05:24:50 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 958BFC0613CE;
-        Sun, 11 Oct 2020 02:24:49 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id dg9so11451329edb.12;
-        Sun, 11 Oct 2020 02:24:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tH45RmioYS3HtwVDfkOZiUgyPKcw48joPJkjW+p/y2k=;
-        b=I4BNsrv8kdOI9zLwYOShUS1WC28NH3JI55NT2p/R4GoG25X77zYu41TfPUjpWfK6L6
-         CrN6+FYr6UsHfBU4nIA9q6XK+rrTxwC4FnJmbJI0rd1+7H2LHgBg5xpGA0iYB25niYES
-         FsQi5hJrI/bc+7I2jObKzCpJFmVJQtrehfT0Y2u72mJhg0vwaDFIdyPn2uIBTS7NJxEO
-         IHlwwgq6UNSg7WxdILIFu+16IHfzt+PXp+N021PMWPGl3eg9bxmyqtCUOJpa3TTBMq0A
-         m50PD5Nks8px8WuVvot4h3YfBFwasRL6kpgQn6xzaRNAKQmOn3tclYQ1dCyRzLg1y1/J
-         J38Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tH45RmioYS3HtwVDfkOZiUgyPKcw48joPJkjW+p/y2k=;
-        b=mnkcH8P9qYZtfcMB8A4Ta9xIB7YAY26IuTJI8YZR040ui4RmqKlvnkJ1TgNGgM/YqX
-         6Xr6bRKEXHRECzpofe0J1Q+dZTA+sMnDLHfcWkIHv/FkrTl3eZ9d5wQpWX9Mnn+NPHOP
-         k6CPlEMeQaNBneK+fnPd/krynkeTS/iNckdxXf7mszwkDN6/3XnC97D7+/6nx6cxdoaS
-         p7F7OxlEXYjjSVVA3P8tT9EIPAiWgzzlFOjTY8jjFuoBmPHEonuZfpS8xfox+JDnvomF
-         ky6mzhzTNU0H96ZQmLVh6HPT8ZH+FtEvBx3N/JZ56Doo/pdKCYS2HGjsefSqvF0Y8tyg
-         afPg==
-X-Gm-Message-State: AOAM532xVZ6Ne28zXSUIriC/AHdZJdvFwZakDGxRfsMdPRKLGTtFtMJ/
-        Jg9rnvQFzkez14p6Eo+1XtjjYfOh5Hgdsg==
-X-Google-Smtp-Source: ABdhPJzyinaKYsOUUr1JqCSL+yUoSM495atqvyfqafzGj+nvUDOiolEyh+13nkTGbyhXnvqIykjMIg==
-X-Received: by 2002:aa7:c948:: with SMTP id h8mr6689859edt.171.1602408287443;
-        Sun, 11 Oct 2020 02:24:47 -0700 (PDT)
-Received: from ?IPv6:2003:ea:8f00:6a00:51b7:bf4f:604:7d3d? (p200300ea8f006a0051b7bf4f06047d3d.dip0.t-ipconnect.de. [2003:ea:8f00:6a00:51b7:bf4f:604:7d3d])
-        by smtp.googlemail.com with ESMTPSA id x2sm8855899edr.65.2020.10.11.02.24.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 11 Oct 2020 02:24:47 -0700 (PDT)
-Subject: Re: [PATCH] net: stmmac: Don't call _irqoff() with hardirqs enabled
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     John Keeping <john@metanate.com>, netdev@vger.kernel.org,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Eric Dumazet <edumazet@google.com>
-References: <20201008162749.860521-1-john@metanate.com>
- <8036d473-68bd-7ee7-e2e9-677ff4060bd3@gmail.com>
- <20201009085805.65f9877a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <725ba7ca-0818-074b-c380-15abaa5d037b@gmail.com>
- <070b2b87-f38c-088d-4aaf-12045dbd92f7@gmail.com>
- <20201010082248.22cc7656@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <c73866a9-2ee8-b549-f578-75d62b9263b4@gmail.com>
-Date:   Sun, 11 Oct 2020 11:24:41 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S1729510AbgJKJnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 05:43:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48610 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725863AbgJKJnM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Oct 2020 05:43:12 -0400
+Received: from kernel.org (unknown [87.71.73.56])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0CC9D207FB;
+        Sun, 11 Oct 2020 09:42:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602409392;
+        bh=JEb/p0JIeDwreayr/694lmHvSiZFhmLJTNKc6RgoUB0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GyVAztyffWGroLTBwFkigZ5sS434B8V3s8XU67kyKeRb2YvnrpxN1017L7nppODmP
+         HOneZWpbWwQWUpDOo1rOsiJ1syiGbCKA8zOTjnkbk43GyDZ5DFJ6mzTbvMJFiwGbka
+         Re+K4LSoEoUz5cn+1C6SOXqPmDeAvZpRR5Sz0gkM=
+Date:   Sun, 11 Oct 2020 12:42:55 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "david@redhat.com" <david@redhat.com>,
+        "cl@linux.com" <cl@linux.com>, "hpa@zytor.com" <hpa@zytor.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "idan.yaniv@ibm.com" <idan.yaniv@ibm.com>,
+        "kirill@shutemov.name" <kirill@shutemov.name>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "rppt@linux.ibm.com" <rppt@linux.ibm.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "Reshetova, Elena" <elena.reshetova@intel.com>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "mtk.manpages@gmail.com" <mtk.manpages@gmail.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "tycho@tycho.ws" <tycho@tycho.ws>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>
+Subject: Re: [PATCH v6 3/6] mm: introduce memfd_secret system call to create
+ "secret" memory areas
+Message-ID: <20201011094255.GB4251@kernel.org>
+References: <20200924132904.1391-1-rppt@kernel.org>
+ <20200924132904.1391-4-rppt@kernel.org>
+ <d466e1f13ff615332fe1f513f6c1d763db28bd9a.camel@intel.com>
+ <20200929130602.GF2142832@kernel.org>
+ <839fbb26254dc9932dcff3c48a3a4ab038c016ea.camel@intel.com>
+ <20200930103507.GK2142832@kernel.org>
+ <b5d8e90c5366a42e7ad0a337fba5f2b1bcfe52c2.camel@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20201010082248.22cc7656@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b5d8e90c5366a42e7ad0a337fba5f2b1bcfe52c2.camel@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.10.2020 17:22, Jakub Kicinski wrote:
-> On Sat, 10 Oct 2020 15:08:15 +0200 Heiner Kallweit wrote:
->> On 09.10.2020 18:06, Heiner Kallweit wrote:
->>> On 09.10.2020 17:58, Jakub Kicinski wrote:  
->>>> On Fri, 9 Oct 2020 16:54:06 +0200 Heiner Kallweit wrote:  
->>>>> I'm thinking about a __napi_schedule version that disables hard irq's
->>>>> conditionally, based on variable force_irqthreads, exported by the irq
->>>>> subsystem. This would allow to behave correctly with threadirqs set,
->>>>> whilst not loosing the _irqoff benefit with threadirqs unset.
->>>>> Let me come up with a proposal.  
->>>>
->>>> I think you'd need to make napi_schedule_irqoff() behave like that,
->>>> right?  Are there any uses of napi_schedule_irqoff() that are disabling
->>>> irqs and not just running from an irq handler?
->>>>  
->>> Right, the best approach depends on the answer to the latter question.
->>> I didn't check this yet, therefore I described the least intrusive approach.
->>>   
->>
->> With some help from coccinelle I identified the following functions that
->> call napi_schedule_irqoff() or __napi_schedule_irqoff() and do not run
->> from an irq handler (at least not at the first glance).
->>
->> dpaa2_caam_fqdan_cb
->> qede_simd_fp_handler
->> mlx4_en_rx_irq
->> mlx4_en_tx_irq
+On Wed, Sep 30, 2020 at 08:11:28PM +0000, Edgecombe, Rick P wrote:
+> On Wed, 2020-09-30 at 13:35 +0300, Mike Rapoport wrote:
+> > 
+> > Our thinking was that copy_*user() would work in the context of the
+> > process that "owns" the secretmem and gup() would not allow access in
+> > general, unless requested with certail (yet another) FOLL_ flag.
 > 
-> Don't know the others but FWIW the mlx4 ones run from an IRQ handler,
-> AFAICT:
+> Hmm, yes. I think one easier thing about this design over the series
+> Kirill sent out is that the actual page will never transition to and
+> from unmapped while it's mapped in userspace. If it could transition,
+> you'd have to worry about a race window between
+> get_user_pages(FOLL_foo) and the kmap() where the page might get
+> unmapped.
 > 
-> static irqreturn_t mlx4_interrupt(int irq, void *dev_ptr)
-> static irqreturn_t mlx4_msi_x_interrupt(int irq, void *eq_ptr)
->   mlx4_eq_int()
->     mlx4_cq_completion
->       cq->comp()
-> 
->> qeth_qdio_poll
->> netvsc_channel_cb
->> napi_watchdog
-> 
-> This one runs from a hrtimer, which I believe will be a hard irq
-> context on anything but RT. I could be wrong.
-> 
+> Without the ability to transition pages though, using this for KVM
+> guests memory remains a not completely worked through problem since it
+> has the get_user_pages()/kmap() pattern quite a bit. Did you have an
+> idea for that? (I thought I saw that use case mentioned somewhere).
+ 
+I've mentioned the KVM usecase because it was dicussed at the hallway
+track at KVM Forum last year and also after looking at Kirill's patches
+I though that "KVM protected" memory could be implemented on top of
+secretmem. Can't say I have enough expertise in KVM to have a completely
+worked through solution for that.
 
-A similar discussion can be found e.g. here:
-https://lore.kernel.org/netdev/20191126222013.1904785-1-bigeasy@linutronix.de/
-However I don't see any actual outcome.
+-- 
+Sincerely yours,
+Mike.
