@@ -2,232 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1832628A677
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 11:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B41A28A67B
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 11:04:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729437AbgJKJB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 05:01:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49740 "EHLO
+        id S2387448AbgJKJEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 05:04:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725844AbgJKJB5 (ORCPT
+        with ESMTP id S1725844AbgJKJEO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 05:01:57 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87982C0613CE;
-        Sun, 11 Oct 2020 02:01:57 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 47C461F44213
-Subject: Re: [PATCH v3] dt-bindings: power: rockchip: Convert to json-schema
-To:     Rob Herring <robh@kernel.org>,
-        Enric Balletbo Serra <eballetbo@gmail.com>
-Cc:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Doug Anderson <dianders@chromium.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Caesar Wang <wxt@rock-chips.com>
-References: <20200921092951.945382-1-enric.balletbo@collabora.com>
- <20201007151159.GA221754@bogus>
- <CAFqH_531fkh_gZbOMuzhsRj-72NeWsPyxWoFQh9bAF3CZwTfNw@mail.gmail.com>
- <CAL_JsqL7ej3o_qzb7r+Nmdp=YkuYciqRYYcFo4Z21OGOvkn-3A@mail.gmail.com>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <2623f12e-aca6-59ea-5f5e-0cd61a229004@collabora.com>
-Date:   Sun, 11 Oct 2020 11:01:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Sun, 11 Oct 2020 05:04:14 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D27FC0613CE;
+        Sun, 11 Oct 2020 02:04:14 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id l2so15255634lfk.0;
+        Sun, 11 Oct 2020 02:04:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=op4C1dyWec2MNa3n2GiL3r5ejlKfwUOPFae3SX3BS8g=;
+        b=O0Zh2Agmj9c2F6bcDOpxYHA0I1hTC5fcHKvfoW9Z1KjYaqRh0LetmEjRf0Lv590+pb
+         tEGg2Av318WMZ/P9KhjD3GAuyApXIqh8RwErMIuLWDUEHI8nERnEQMntA7zUj8Oguyui
+         +57mxemkp5I/ztJm/KgXSliTowi/ayeHsb07L8SOwJ7ft40qMNZPRtLxCd2CoPTcMvV7
+         +QaABO0hI2dDYWtagDwlTlBz0aQ9/JtL9uWT14l3KRQGH01926DEr/txlbN3U5K/Jy8h
+         LV+vtyupb6FhTq7/CI9q3E63fLsAuDn0XimEm7IBIkC7hmwBTb9wU/bRXnanSWfimdjO
+         GgKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=op4C1dyWec2MNa3n2GiL3r5ejlKfwUOPFae3SX3BS8g=;
+        b=DS1ouHgFeSVMK6tVfUFWorhvLu7+U2rY9zDc2N7xMqhs+VpFXIKw7GPzDz/T51K0/e
+         5H6Z/bI4RM3f+JnoYsiDKdKfnmKZmV0orIzbz10TLKBZHAjRgys89UfNbfmgCqku63nN
+         eRg+E2ykRYIm03NmK1lSjWvMlHwlKx+KA2Aic1++dXqQZHZDEWmiWJ8QeNYIl8uDsbEG
+         cpfmx9c7JxGFifWM0vexjomvWpCAs7NgohoGCpkPt4JkSycYyTyEIRjkhWnzrpmCHoLx
+         ls1gWQoixz7lPCfbZkXZyxeG2u/6jHp+9FhtVdtatEj7eUcEXfmsdGfM+lbiy1JVkWqu
+         byMQ==
+X-Gm-Message-State: AOAM5306jyN5IYmqc2ffSQCJG10hArT6R0Aw8lV7zdLbGA+VPIZvZjFs
+        5bl/KVUHoqM+r2wXHJ+I7Prnh8EbXiznYg==
+X-Google-Smtp-Source: ABdhPJz9EE8xjySHoMmnUEBpfYu6Ux45Y8E7ZtSK9JIWShZAxJR5+2GBYjtFb14je8t8HABotww5MQ==
+X-Received: by 2002:ac2:5294:: with SMTP id q20mr6756421lfm.538.1602407051227;
+        Sun, 11 Oct 2020 02:04:11 -0700 (PDT)
+Received: from ?IPv6:2a00:1fa0:4275:c0a:6554:d910:ceb:9024? ([2a00:1fa0:4275:c0a:6554:d910:ceb:9024])
+        by smtp.gmail.com with ESMTPSA id r17sm2441887lff.239.2020.10.11.02.04.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 11 Oct 2020 02:04:10 -0700 (PDT)
+Subject: Re: [PATCH 17/18] dt-bindings: usb: keystone-dwc3: Validate DWC3
+ sub-node
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>, Roger Quadros <rogerq@ti.com>
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201010224121.12672-1-Sergey.Semin@baikalelectronics.ru>
+ <20201010224121.12672-18-Sergey.Semin@baikalelectronics.ru>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Organization: Brain-dead Software
+Message-ID: <874c8ba6-bd0c-4f4e-f4ee-29c7f6ae563a@gmail.com>
+Date:   Sun, 11 Oct 2020 12:04:06 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqL7ej3o_qzb7r+Nmdp=YkuYciqRYYcFo4Z21OGOvkn-3A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201010224121.12672-18-Sergey.Semin@baikalelectronics.ru>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On 11.10.2020 1:41, Serge Semin wrote:
 
-On 8/10/20 21:47, Rob Herring wrote:
-> On Wed, Oct 7, 2020 at 3:57 PM Enric Balletbo Serra <eballetbo@gmail.com> wrote:
->>
->> Hi Rob,
->>
->> Missatge de Rob Herring <robh@kernel.org> del dia dc., 7 d’oct. 2020 a
->> les 17:12:
->>>
->>> On Mon, Sep 21, 2020 at 11:29:51AM +0200, Enric Balletbo i Serra wrote:
->>>> Convert the soc/rockchip/power_domain.txt binding document to json-schema
->>>> and move to the power bindings directory.
->>>>
->>>> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
->>>> ---
->>>>
->>>> Changes in v3:
->>>> - Fixed tab errors found by bot
->>>>
->>>> Changes in v2:
->>>> - Fixed a warning that says that 'syscon' should not be used alone.
->>>> - Use patternProperties to define a new level for power-domains.
->>>> - Add const values for power-domain-cells, address-cells, etc.
->>>>
->>>>  .../power/rockchip,power-controller.yaml      | 207 ++++++++++++++++++
->>>>  .../bindings/soc/rockchip/power_domain.txt    | 136 ------------
->>>>  2 files changed, 207 insertions(+), 136 deletions(-)
->>>>  create mode 100644 Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
->>>>  delete mode 100644 Documentation/devicetree/bindings/soc/rockchip/power_domain.txt
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/power/rockchip,power-controller.yaml b/Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
->>>> new file mode 100644
->>>> index 000000000000..b23ea37e2a08
->>>> --- /dev/null
->>>> +++ b/Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
->>>> @@ -0,0 +1,207 @@
->>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->>>> +%YAML 1.2
->>>> +---
->>>> +$id: http://devicetree.org/schemas/power/rockchip,power-controller.yaml#
->>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>>> +
->>>> +title: Rockchip Power Domains
->>>> +
->>>> +maintainers:
->>>> +  - Caesar Wang <wxt@rock-chips.com>
->>>> +  - Heiko Stuebner <heiko@sntech.de>
->>>> +
->>>> +description: |
->>>> +  Rockchip processors include support for multiple power domains which can be
->>>> +  powered up/down by software based on different application scenes to save power.
->>>> +
->>>> +  Power domains contained within power-controller node are generic power domain
->>>> +  providers documented in Documentation/devicetree/bindings/power/power-domain.yaml.
->>>> +
->>>> +  IP cores belonging to a power domain should contain a 'power-domains'
->>>> +  property that is a phandle for the power domain node representing the domain.
->>>> +
->>>> +properties:
->>>> +  $nodename:
->>>> +    const: power-controller
->>>> +
->>>> +  compatible:
->>>> +    enum:
->>>> +      - rockchip,px30-power-controller
->>>> +      - rockchip,rk3036-power-controller
->>>> +      - rockchip,rk3066-power-controller
->>>> +      - rockchip,rk3128-power-controller
->>>> +      - rockchip,rk3188-power-controller
->>>> +      - rockchip,rk3228-power-controller
->>>> +      - rockchip,rk3288-power-controller
->>>> +      - rockchip,rk3328-power-controller
->>>> +      - rockchip,rk3366-power-controller
->>>> +      - rockchip,rk3368-power-controller
->>>> +      - rockchip,rk3399-power-controller
->>>> +
->>>> +  '#power-domain-cells':
->>>> +    const: 1
->>>> +
->>>> +  '#address-cells':
->>>> +    const: 1
->>>> +
->>>> +  '#size-cells':
->>>> +    const: 0
->>>> +
->>>> +patternProperties:
->>>> +  "^power-domain@[0-9]+$":
->>>
->>> unit-addresses are hex.
->>>
->>>> +    type: object
->>>> +    description: |
->>>> +      Represents the power domains within the power controller node as documented
->>>> +      in Documentation/devicetree/bindings/power/power-domain.yaml.
->>>> +
->>>> +    properties:
->>>> +
->>>> +      '#power-domain-cells':
->>>> +        description:
->>>> +            Must be 0 for nodes representing a single PM domain and 1 for nodes
->>>> +            providing multiple PM domains.
->>>> +
->>>> +      '#address-cells':
->>>> +        const: 1
->>>> +
->>>> +      '#size-cells':
->>>> +        const: 0
->>>> +
->>>> +      reg:
->>>> +        description: |
->>>> +          Power domain index. Valid values are defined in:
->>>> +          "include/dt-bindings/power/px30-power.h" - for PX30 type power domain.
->>>> +          "include/dt-bindings/power/rk3036-power.h" - for RK3036 type power domain.
->>>> +          "include/dt-bindings/power/rk3066-power.h" - for RK3066 type power domain.
->>>> +          "include/dt-bindings/power/rk3128-power.h" - for RK3128 type power domain.
->>>> +          "include/dt-bindings/power/rk3188-power.h" - for RK3188 type power domain.
->>>> +          "include/dt-bindings/power/rk3228-power.h" - for RK3228 type power domain.
->>>> +          "include/dt-bindings/power/rk3288-power.h" - for RK3288 type power domain.
->>>> +          "include/dt-bindings/power/rk3328-power.h" - for RK3328 type power domain.
->>>> +          "include/dt-bindings/power/rk3366-power.h" - for RK3366 type power domain.
->>>> +          "include/dt-bindings/power/rk3368-power.h" - for RK3368 type power domain.
->>>> +          "include/dt-bindings/power/rk3399-power.h" - for RK3399 type power domain.
->>>> +        maxItems: 1
->>>
->>> Range of values?
->>>
->>>> +
->>>> +      clocks:
->>>> +        description: |
->>>> +          A number of phandles to clocks that need to be enabled while power domain
->>>> +          switches state.
->>>
->>> Can you at least put a range of how many clocks?
->>>
->>>> +
->>>> +      pm_qos:
->>>> +        description: |
->>>> +          A number of phandles to qos blocks which need to be saved and restored
->>>> +          while power domain switches state.
->>>
->>> And here.
->>>
->>>> +
->>>> +    required:
->>>> +      - reg
->>>
->>>        additionalProperties: false
->>>
->>> Which in turn means the nested power domains will throw an error, so you
->>> can do:
->>>
->>>        patternProperties:
->>>          "^power-domain@[0-9a-f]+$":
->>>            $ref: '#/patternProperties/^power-domain@[0-9a-f]+$'
->>>
->>
->> When I tried this I got the following error:
->>
->> rockchip,power-controller.yaml:
->> patternProperties:^power-domain@[0-9a-f]+$:patternProperties:^power-domain@[0-9a-f]+$:$ref:
->> '#/patternProperties/^power-domain@[0-9a-f]+$' is not a
->> 'uri-reference'
->>
->> Not sure if is my environment or I am still doing something silly, can
->> you confirm that this works for you? It doesn't seem to be any binding
->> doing this actually.
-> 
-> I think the regex would have to be escaped to be a valid URI:
-> 
-> $ref: '%23/patternProperties/%5Epower-domain@%5B0-9a-f%5D+%24'
-> 
-> That's not the most readable nor am I sure it would get translated
-> back to the right path, so it's probably going to be best to just
-> define the child nodes even if duplicated.
-> 
+> TI Keystone DWC3 compatible DT node is supposed to have a DWC USB3
+> compatible sub-node to describe a fully functioning USB interface.
+> Since DWC USB3 has now got a DT schema describing it' DT node, let's make
+                                                     ^^^ its?
 
-Ok, I'll define the child node then. Thank you for your support.
-
-Cheers,
-  Enric
-
-> Rob
+> sure the TI Keystone DWC3 sub-node passes validation against it.
 > 
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+[...]
+
+MBR, Sergei
