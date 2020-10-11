@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D313928A8FA
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 20:00:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EDD828A8F7
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 20:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730666AbgJKSAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 14:00:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46714 "EHLO
+        id S1730645AbgJKSAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 14:00:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388432AbgJKR5c (ORCPT
+        with ESMTP id S2388439AbgJKR5d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 13:57:32 -0400
+        Sun, 11 Oct 2020 13:57:33 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAD1EC0613D0;
-        Sun, 11 Oct 2020 10:57:31 -0700 (PDT)
-Date:   Sun, 11 Oct 2020 17:57:29 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6029C0613D2;
+        Sun, 11 Oct 2020 10:57:32 -0700 (PDT)
+Date:   Sun, 11 Oct 2020 17:57:30 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602439050;
+        s=2020; t=1602439051;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=lt9hbjdmHPfPZbQljoPRJY2wZCbN+IyAnoiP7ndOiR8=;
-        b=P9WpJYjl1yIB9jWIljwFy66aDdIpxKRFWsOP4sxW71XsNXxqXXi80aX3YEt2VAgJaekgVg
-        peucUv7asZ75oJ5x/pGAmYbxEuFWgWyUPpMWzFDEFu8tZZTact1ubw4eZdmvjPkJJhAyA2
-        P8/mpnR6tiSwJkJhSxskKUPa38eM399fi2nxWkQRyMK9Q0qwwV6Rv0CPa4ldCENk3c7gBA
-        BYyNhd/uEiyABL1yVgKdbelghnnILyNaImQfk2TfGKAKmb6Ju8dEZs0aaXvko6favCvFCA
-        1bDUF1UcvKZHxIfdp8RWEzOuMCjO3o04gr6TUAKW3HEkC+Ub2wgw+VUlybVdyQ==
+        bh=fBlGnrnLKjuAyfJNBgHXoVij86HOqkbpXd/LbTXqXDY=;
+        b=bzOslkJ6EgGYENJzjYXLHkTKrp5LNDuba7poiCDtVIkRl67I7if6D6moSktsSuxbnKlyJ4
+        5/5M2/9OcpWAWQXtNp34F7xmq20KHT5n5nf1IyI8kFeBJvLfRXoN0wSGaiobiEFHYnaT5R
+        OenNfnhuGuaVyMFHraeUyRHjxEgM1n7d0BtrbOWvfzyNgBFYGAIWxkWcTRSPyVWA3iQWkt
+        Y58Mof6kpRAdXq/rYU6U1WRJNqsVfsj1zW1N8WJ7S29Lzxe4yO2Lqscs3Fgjg+dZm23cRz
+        NilI+kItUjo4GbwF4AJ8//BfaO4ufXIeSbSN2vfbXqF6e8QpZm+/BrGEIhQ1KA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602439050;
+        s=2020e; t=1602439051;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=lt9hbjdmHPfPZbQljoPRJY2wZCbN+IyAnoiP7ndOiR8=;
-        b=gKy7ZZfBAO+PIlYA1rPqHbWb0oYFhKp+9JkptzfyiMZiojq24T1x4Y8MYvsxCSMupOl/nx
-        lIRvoTm2sfMUPMBg==
+        bh=fBlGnrnLKjuAyfJNBgHXoVij86HOqkbpXd/LbTXqXDY=;
+        b=XeblVcCOm3gjrEp/DeOd6XFohY0YRsahX3pXUbbsF5QMwaaQ0QVbmnIrAgge226Aev/NPa
+        /+Oq/WrS3J0q1WDg==
 From:   "tip-bot2 for Marc Zyngier" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] irqchip/gic: Cleanup Franken-GIC handling
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+Subject: [tip: irq/core] ARM: Remove custom IRQ stat accounting
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
         Marc Zyngier <maz@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <160243904951.7002.4149665170568132503.tip-bot2@tip-bot2>
+Message-ID: <160243905059.7002.17153359299383090494.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -55,122 +55,131 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/core branch of tip:
 
-Commit-ID:     8594c3b85171b6f68e34e07b533ec2f1bf7fb065
-Gitweb:        https://git.kernel.org/tip/8594c3b85171b6f68e34e07b533ec2f1bf7fb065
+Commit-ID:     5ebf353af22c89d18964bb3b877a95200dfe07b9
+Gitweb:        https://git.kernel.org/tip/5ebf353af22c89d18964bb3b877a95200dfe07b9
 Author:        Marc Zyngier <maz@kernel.org>
-AuthorDate:    Tue, 15 Sep 2020 14:03:51 +01:00
+AuthorDate:    Tue, 23 Jun 2020 21:15:00 +01:00
 Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Thu, 17 Sep 2020 16:37:29 +01:00
+CommitterDate: Thu, 17 Sep 2020 16:37:28 +01:00
 
-irqchip/gic: Cleanup Franken-GIC handling
+ARM: Remove custom IRQ stat accounting
 
-Introduce a static key identifying Samsung's unique creation, allowing
-to replace the indirect call to compute the base addresses with
-a simple test on the static key.
+Let's switch the arm code to the core accounting, which already
+does everything we need.
 
-Faster, cheaper, negative diffstat.
-
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- drivers/irqchip/irq-gic.c | 41 +++++++++++---------------------------
- 1 file changed, 12 insertions(+), 29 deletions(-)
+ arch/arm/include/asm/hardirq.h | 17 -----------------
+ arch/arm/kernel/irq.c          |  1 -
+ arch/arm/kernel/smp.c          | 21 +++++----------------
+ 3 files changed, 5 insertions(+), 34 deletions(-)
 
-diff --git a/drivers/irqchip/irq-gic.c b/drivers/irqchip/irq-gic.c
-index 66671e1..30edcca 100644
---- a/drivers/irqchip/irq-gic.c
-+++ b/drivers/irqchip/irq-gic.c
-@@ -83,9 +83,6 @@ struct gic_chip_data {
- #endif
- 	struct irq_domain *domain;
- 	unsigned int gic_irqs;
--#ifdef CONFIG_GIC_NON_BANKED
--	void __iomem *(*get_base)(union gic_base *);
+diff --git a/arch/arm/include/asm/hardirq.h b/arch/arm/include/asm/hardirq.h
+index 7a88f16..b95848e 100644
+--- a/arch/arm/include/asm/hardirq.h
++++ b/arch/arm/include/asm/hardirq.h
+@@ -6,29 +6,12 @@
+ #include <linux/threads.h>
+ #include <asm/irq.h>
+ 
+-/* number of IPIS _not_ including IPI_CPU_BACKTRACE */
+-#define NR_IPI	7
+-
+ typedef struct {
+ 	unsigned int __softirq_pending;
+-#ifdef CONFIG_SMP
+-	unsigned int ipi_irqs[NR_IPI];
 -#endif
- };
+ } ____cacheline_aligned irq_cpustat_t;
  
- #ifdef CONFIG_BL_SWITCHER
-@@ -127,35 +124,27 @@ static struct gic_kvm_info gic_v2_kvm_info;
- static DEFINE_PER_CPU(u32, sgi_intid);
+ #include <linux/irq_cpustat.h>	/* Standard mappings for irq_cpustat_t above */
  
- #ifdef CONFIG_GIC_NON_BANKED
--static void __iomem *gic_get_percpu_base(union gic_base *base)
--{
--	return raw_cpu_read(*base->percpu_base);
--}
-+static DEFINE_STATIC_KEY_FALSE(frankengic_key);
- 
--static void __iomem *gic_get_common_base(union gic_base *base)
-+static void enable_frankengic(void)
- {
--	return base->common_base;
-+	static_branch_enable(&frankengic_key);
- }
- 
--static inline void __iomem *gic_data_dist_base(struct gic_chip_data *data)
-+static inline void __iomem *__get_base(union gic_base *base)
- {
--	return data->get_base(&data->dist_base);
--}
-+	if (static_branch_unlikely(&frankengic_key))
-+		return raw_cpu_read(*base->percpu_base);
- 
--static inline void __iomem *gic_data_cpu_base(struct gic_chip_data *data)
--{
--	return data->get_base(&data->cpu_base);
-+	return base->common_base;
- }
- 
--static inline void gic_set_base_accessor(struct gic_chip_data *data,
--					 void __iomem *(*f)(union gic_base *))
--{
--	data->get_base = f;
--}
-+#define gic_data_dist_base(d)	__get_base(&(d)->dist_base)
-+#define gic_data_cpu_base(d)	__get_base(&(d)->cpu_base)
- #else
- #define gic_data_dist_base(d)	((d)->dist_base.common_base)
- #define gic_data_cpu_base(d)	((d)->cpu_base.common_base)
--#define gic_set_base_accessor(d, f)
-+#define enable_frankengic()	do { } while(0)
- #endif
- 
- static inline void __iomem *gic_dist_base(struct irq_data *d)
-@@ -307,7 +296,7 @@ static int gic_set_type(struct irq_data *d, unsigned int type)
- 
- 	/* Interrupt configuration for SGIs can't be changed */
- 	if (gicirq < 16)
--		return type == IRQ_TYPE_EDGE_RISING ? 0 : -EINVAL;
-+		return type != IRQ_TYPE_EDGE_RISING ? -EINVAL : 0;
- 
- 	/* SPIs have restrictions on the supported types */
- 	if (gicirq >= 32 && type != IRQ_TYPE_LEVEL_HIGH &&
-@@ -720,11 +709,6 @@ static int gic_notifier(struct notifier_block *self, unsigned long cmd,	void *v)
- 	int i;
- 
- 	for (i = 0; i < CONFIG_ARM_GIC_MAX_NR; i++) {
--#ifdef CONFIG_GIC_NON_BANKED
--		/* Skip over unused GICs */
--		if (!gic_data[i].get_base)
--			continue;
+-#define __inc_irq_stat(cpu, member)	__IRQ_STAT(cpu, member)++
+-#define __get_irq_stat(cpu, member)	__IRQ_STAT(cpu, member)
+-
+-#ifdef CONFIG_SMP
+-u64 smp_irq_stat_cpu(unsigned int cpu);
+-#else
+-#define smp_irq_stat_cpu(cpu)	0
 -#endif
- 		switch (cmd) {
- 		case CPU_PM_ENTER:
- 			gic_cpu_save(&gic_data[i]);
-@@ -1165,7 +1149,7 @@ static int gic_init_bases(struct gic_chip_data *gic,
- 				gic->raw_cpu_base + offset;
- 		}
+-
+-#define arch_irq_stat_cpu	smp_irq_stat_cpu
+-
+ #define __ARCH_IRQ_EXIT_IRQS_DISABLED	1
  
--		gic_set_base_accessor(gic, gic_get_percpu_base);
-+		enable_frankengic();
- 	} else {
- 		/* Normal, sane GIC... */
- 		WARN(gic->percpu_offset,
-@@ -1173,7 +1157,6 @@ static int gic_init_bases(struct gic_chip_data *gic,
- 		     gic->percpu_offset);
- 		gic->dist_base.common_base = gic->raw_dist_base;
- 		gic->cpu_base.common_base = gic->raw_cpu_base;
--		gic_set_base_accessor(gic, gic_get_common_base);
- 	}
+ #endif /* __ASM_HARDIRQ_H */
+diff --git a/arch/arm/kernel/irq.c b/arch/arm/kernel/irq.c
+index ee51403..698b6f6 100644
+--- a/arch/arm/kernel/irq.c
++++ b/arch/arm/kernel/irq.c
+@@ -18,7 +18,6 @@
+  *  IRQ's are in fact implemented a bit like signal handlers for the kernel.
+  *  Naturally it's not a 1:1 relation, but there are similarities.
+  */
+-#include <linux/kernel_stat.h>
+ #include <linux/signal.h>
+ #include <linux/ioport.h>
+ #include <linux/interrupt.h>
+diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
+index d51e649..00327fa 100644
+--- a/arch/arm/kernel/smp.c
++++ b/arch/arm/kernel/smp.c
+@@ -26,6 +26,7 @@
+ #include <linux/completion.h>
+ #include <linux/cpufreq.h>
+ #include <linux/irq_work.h>
++#include <linux/kernel_stat.h>
  
+ #include <linux/atomic.h>
+ #include <asm/bugs.h>
+@@ -65,6 +66,7 @@ enum ipi_msg_type {
+ 	IPI_CPU_STOP,
+ 	IPI_IRQ_WORK,
+ 	IPI_COMPLETION,
++	NR_IPI,
  	/*
+ 	 * CPU_BACKTRACE is special and not included in NR_IPI
+ 	 * or tracable with trace_ipi_*
+@@ -529,27 +531,16 @@ void show_ipi_list(struct seq_file *p, int prec)
+ 	unsigned int cpu, i;
+ 
+ 	for (i = 0; i < NR_IPI; i++) {
++		unsigned int irq = irq_desc_get_irq(ipi_desc[i]);
+ 		seq_printf(p, "%*s%u: ", prec - 1, "IPI", i);
+ 
+ 		for_each_online_cpu(cpu)
+-			seq_printf(p, "%10u ",
+-				   __get_irq_stat(cpu, ipi_irqs[i]));
++			seq_printf(p, "%10u ", kstat_irqs_cpu(irq, cpu));
+ 
+ 		seq_printf(p, " %s\n", ipi_types[i]);
+ 	}
+ }
+ 
+-u64 smp_irq_stat_cpu(unsigned int cpu)
+-{
+-	u64 sum = 0;
+-	int i;
+-
+-	for (i = 0; i < NR_IPI; i++)
+-		sum += __get_irq_stat(cpu, ipi_irqs[i]);
+-
+-	return sum;
+-}
+-
+ void arch_send_call_function_ipi_mask(const struct cpumask *mask)
+ {
+ 	smp_cross_call(mask, IPI_CALL_FUNC);
+@@ -630,10 +621,8 @@ static void do_handle_IPI(int ipinr)
+ {
+ 	unsigned int cpu = smp_processor_id();
+ 
+-	if ((unsigned)ipinr < NR_IPI) {
++	if ((unsigned)ipinr < NR_IPI)
+ 		trace_ipi_entry_rcuidle(ipi_types[ipinr]);
+-		__inc_irq_stat(cpu, ipi_irqs[ipinr]);
+-	}
+ 
+ 	switch (ipinr) {
+ 	case IPI_WAKEUP:
