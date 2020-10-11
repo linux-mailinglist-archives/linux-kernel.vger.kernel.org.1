@@ -2,179 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5661928A62D
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 09:42:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90F0828A633
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 09:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728974AbgJKHmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 03:42:25 -0400
-Received: from mail-il1-f206.google.com ([209.85.166.206]:33464 "EHLO
-        mail-il1-f206.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726461AbgJKHmZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 03:42:25 -0400
-Received: by mail-il1-f206.google.com with SMTP id e73so10273441ill.0
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 00:42:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=7PbN+9cIdIGVhAv/w+zEBq3PXtiMVM6PcDD03VAAMBg=;
-        b=C9Xj33RDoju1/hmyhGNEC2Gfe/gYjlmvay0rqaQ8uLuN1G2jHg/Bg8WwArla4S51LE
-         hzqsdrs2js0XdOexdds4bq3ts5apzoHUquDsqImgRqopG6fXoHcBJjEdArjS34KnhxQG
-         wecxWwHVYcdfz2jbzQvr3LL0/Jlt5FXW3T2612x2ujo9+Qd52s77gc21E5bhWH+NDeyB
-         NBBiN3XK68HLZzSMi8aWzPTSwesH10Jeqw6E9EB6ZUQHvk8gCdrbraPbL2VBfP5f+MPi
-         MSx5MwQuNifeOz2SXPLX42U2goHvKYr6y3K+gR8BK6DbQfKxw+O1mvywMQPW2+AEM/dX
-         v5pg==
-X-Gm-Message-State: AOAM531oddDZ2u7AqaUFbj+eniwhqUmlse55tZQab2UaOGi6h+2kMRqW
-        FYuY5pxo/A0y8qQWRHxcVCx9Pedu3e7CcFHTxXPZa/oouw4a
-X-Google-Smtp-Source: ABdhPJyfm97kuiDrvOvrC4MEWpb5dQ4Z3AEAoLbN5ZLjqzf9moIGtcQnvOdZaAHkHdu05MBr3uc0j9ba3ktrZfUJIOWxbuzyioC4
+        id S1729032AbgJKHrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 03:47:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46852 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726492AbgJKHrT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Oct 2020 03:47:19 -0400
+Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4E90721655;
+        Sun, 11 Oct 2020 07:47:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602402438;
+        bh=LeMk4xJlrd34ez5NF8BLWNvKsm7wmDmT9qOElPmUWJE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=v/c/sPXgnEOq4jJilWSpg55W4tKtlomIYm1wAbddQ2HT95xbpKy1cqZuTe19B0HXa
+         vXtH1ypj1myh2B5wxSb07CcHyn/W0XRokJ8BC/2+18WZAtTserlel3yq1lSoDlkCya
+         siAgTAnuorrjI5JTy0j7BmFwcMGRtGYCNnXGXOu4=
+Received: by mail-oi1-f176.google.com with SMTP id c13so15217421oiy.6;
+        Sun, 11 Oct 2020 00:47:18 -0700 (PDT)
+X-Gm-Message-State: AOAM5316OYFJQBItAJwUum5moAVDWxtXLuNal9MS+I6KNN8Ah4O+7iFF
+        Bj1ZblS/5FRRyY3AZCzLNVYhMmOzRagb0zZQMkw=
+X-Google-Smtp-Source: ABdhPJzehloTufc7iRScDFdIAGd9rllMxSjs4e6a5wOBu7xWhcMoE7AB1Xcx7jsGo6uja6Hkh8/PgItFqPjyPS/T9s4=
+X-Received: by 2002:aca:d845:: with SMTP id p66mr7029591oig.47.1602402437582;
+ Sun, 11 Oct 2020 00:47:17 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:d45:: with SMTP id h5mr6241432ilj.307.1602402144037;
- Sun, 11 Oct 2020 00:42:24 -0700 (PDT)
-Date:   Sun, 11 Oct 2020 00:42:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009530b805b1605237@google.com>
-Subject: KASAN: use-after-free Read in sco_chan_del
-From:   syzbot <syzbot+1df6a63e69a359c8b517@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+References: <20201010151235.20585-1-nsaenzjulienne@suse.de> <20201010151235.20585-3-nsaenzjulienne@suse.de>
+In-Reply-To: <20201010151235.20585-3-nsaenzjulienne@suse.de>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Sun, 11 Oct 2020 09:47:06 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXF26z54XA-eMz76eJKuK1T8mZmDfibt+6SQw9bR=RFS_Q@mail.gmail.com>
+Message-ID: <CAMj1kXF26z54XA-eMz76eJKuK1T8mZmDfibt+6SQw9bR=RFS_Q@mail.gmail.com>
+Subject: Re: [PATCH v2 2/5] of/address: Introduce of_dma_lower_bus_limit()
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-rpi-kernel@lists.infradead.org,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        iommu@lists.linux-foundation.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Nicolas,
 
-syzbot found the following issue on:
+$SUBJECT is out of sync with the patch below. Also, for legibility, it
+helps if the commit log is intelligible by itself, rather than relying
+on $SUBJECT being the first line of the first paragraph.
 
-HEAD commit:    a804ab08 Add linux-next specific files for 20201006
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1073270b900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=26c1b4cc4a62ccb
-dashboard link: https://syzkaller.appspot.com/bug?extid=1df6a63e69a359c8b517
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+On Sat, 10 Oct 2020 at 17:12, Nicolas Saenz Julienne
+<nsaenzjulienne@suse.de> wrote:
+>
+> The function provides the CPU physical address addressable by the most
+> constrained bus in the system. It might be useful in order to
+> dynamically set up memory zones during boot.
+>
+> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> ---
+>  drivers/of/address.c | 34 ++++++++++++++++++++++++++++++++++
+>  include/linux/of.h   |  7 +++++++
+>  2 files changed, 41 insertions(+)
+>
+> diff --git a/drivers/of/address.c b/drivers/of/address.c
+> index eb9ab4f1e80b..755e97b65096 100644
+> --- a/drivers/of/address.c
+> +++ b/drivers/of/address.c
+> @@ -1024,6 +1024,40 @@ int of_dma_get_range(struct device_node *np, const struct bus_dma_region **map)
+>  }
+>  #endif /* CONFIG_HAS_DMA */
+>
+> +/**
+> + * of_dma_safe_phys_limit - Get system wide DMA safe address space
+> + *
+> + * Gets the CPU physical address limit for safe DMA addressing system wide by
+> + * searching for the most constraining dma-range. Otherwise it returns ~0ULL.
+> + */
+> +u64 __init of_dma_safe_phys_limit(void)
 
-Unfortunately, I don't have any reproducer for this issue yet.
+I don't think 'safe' strikes the right tone here. You are looking for
+the highest CPU address that is addressable by all DMA masters in the
+system.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+1df6a63e69a359c8b517@syzkaller.appspotmail.com
+Something like
 
-==================================================================
-BUG: KASAN: use-after-free in hci_conn_drop include/net/bluetooth/hci_core.h:1145 [inline]
-BUG: KASAN: use-after-free in hci_conn_drop include/net/bluetooth/hci_core.h:1115 [inline]
-BUG: KASAN: use-after-free in sco_chan_del+0x400/0x430 net/bluetooth/sco.c:149
-Read of size 8 at addr ffff88804d29c918 by task syz-executor.2/27575
+of_dma_get_max_cpu_address(void)
 
-CPU: 0 PID: 27575 Comm: syz-executor.2 Not tainted 5.9.0-rc8-next-20201006-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fb lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:385
- __kasan_report mm/kasan/report.c:545 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
- hci_conn_drop include/net/bluetooth/hci_core.h:1145 [inline]
- hci_conn_drop include/net/bluetooth/hci_core.h:1115 [inline]
- sco_chan_del+0x400/0x430 net/bluetooth/sco.c:149
- __sco_sock_close+0x16e/0x5b0 net/bluetooth/sco.c:434
- sco_sock_close net/bluetooth/sco.c:448 [inline]
- sco_sock_release+0x69/0x290 net/bluetooth/sco.c:1059
- __sock_release+0xcd/0x280 net/socket.c:596
- sock_close+0x18/0x20 net/socket.c:1277
- __fput+0x285/0x920 fs/file_table.c:281
- task_work_run+0xdd/0x190 kernel/task_work.c:141
- get_signal+0xd89/0x1f00 kernel/signal.c:2561
- arch_do_signal+0x82/0x2470 arch/x86/kernel/signal.c:811
- exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
- exit_to_user_mode_prepare+0x194/0x1f0 kernel/entry/common.c:192
- syscall_exit_to_user_mode+0x7a/0x2c0 kernel/entry/common.c:267
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45de29
-Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fabeda51c78 EFLAGS: 00000246 ORIG_RAX: 000000000000002a
-RAX: fffffffffffffffc RBX: 0000000000002200 RCX: 000000000045de29
-RDX: 0000000000000008 RSI: 0000000020000080 RDI: 0000000000000006
-RBP: 000000000118c158 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118c124
-R13: 00007ffdb3c9529f R14: 00007fabeda529c0 R15: 000000000118c124
-
-Allocated by task 27575:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
- kmem_cache_alloc_trace+0x1a0/0x480 mm/slab.c:3552
- kmalloc include/linux/slab.h:554 [inline]
- kzalloc include/linux/slab.h:666 [inline]
- hci_conn_add+0x53/0x1330 net/bluetooth/hci_conn.c:525
- hci_connect_sco+0x356/0x860 net/bluetooth/hci_conn.c:1283
- sco_connect net/bluetooth/sco.c:241 [inline]
- sco_sock_connect+0x308/0x980 net/bluetooth/sco.c:588
- __sys_connect_file+0x155/0x1a0 net/socket.c:1852
- __sys_connect+0x161/0x190 net/socket.c:1869
- __do_sys_connect net/socket.c:1879 [inline]
- __se_sys_connect net/socket.c:1876 [inline]
- __x64_sys_connect+0x6f/0xb0 net/socket.c:1876
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Freed by task 26665:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
- kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
- __kasan_slab_free+0xd8/0x120 mm/kasan/common.c:422
- __cache_free mm/slab.c:3420 [inline]
- kfree+0x10e/0x2a0 mm/slab.c:3758
- device_release+0x9f/0x240 drivers/base/core.c:1808
- kobject_cleanup lib/kobject.c:705 [inline]
- kobject_release lib/kobject.c:736 [inline]
- kref_put include/linux/kref.h:65 [inline]
- kobject_put+0x171/0x270 lib/kobject.c:753
- put_device+0x1b/0x30 drivers/base/core.c:3037
- hci_conn_del+0x27e/0x6a0 net/bluetooth/hci_conn.c:645
- hci_conn_hash_flush+0x189/0x220 net/bluetooth/hci_conn.c:1558
- hci_dev_do_close+0x5c6/0x1080 net/bluetooth/hci_core.c:1770
- hci_unregister_dev+0x214/0xe90 net/bluetooth/hci_core.c:3827
- vhci_release+0x70/0xe0 drivers/bluetooth/hci_vhci.c:340
- __fput+0x285/0x920 fs/file_table.c:281
- task_work_run+0xdd/0x190 kernel/task_work.c:141
- exit_task_work include/linux/task_work.h:25 [inline]
- do_exit+0xb23/0x2930 kernel/exit.c:806
- do_group_exit+0x125/0x310 kernel/exit.c:903
- get_signal+0x428/0x1f00 kernel/signal.c:2757
- arch_do_signal+0x82/0x2470 arch/x86/kernel/signal.c:811
- exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
- exit_to_user_mode_prepare+0x194/0x1f0 kernel/entry/common.c:192
- syscall_exit_to_user_mode+0x7a/0x2c0 kernel/entry/common.c:267
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-The buggy address belongs to the object at ffff88804d29c000
- which belongs to the cache kmalloc-4k of size 4096
-The buggy address is located 2328 bytes inside of
- 4096-byte region [ffff88804d29c000, ffff88804d29d000)
-The buggy address belongs to the page:
-page:0000000084eedba7 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x4d29c
-head:0000000084eedba7 order:1 compound_mapcount:0
-flags: 0xfffe0000010200(slab|head)
-raw: 00fffe0000010200 ffffea00012af708 ffffea0001001308 ffff8880aa040900
-raw: 0000000000000000 ffff88804d29c000 0000000100000001 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff88804d29c800: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88804d29c880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff88804d29c900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                            ^
- ffff88804d29c980: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88804d29ca00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
+perhaps? Also, since this is generic code, phys_addr_t is probably a
+better type to return.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> +{
+> +       struct device_node *np = NULL;
+> +       struct of_range_parser parser;
+> +       const __be32 *ranges = NULL;
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+I think you can drop these NULL initializers.
+
+> +       u64 phys_dma_limit = ~0ULL;
+
+PHYS_ADDR_MAX
+
+> +       struct of_range range;
+> +       int len;
+> +
+> +       for_each_of_allnodes(np) {
+> +               dma_addr_t cpu_end = 0;
+> +
+> +               ranges = of_get_property(np, "dma-ranges", &len);
+> +               if (!ranges || !len)
+> +                       continue;
+> +
+> +               of_dma_range_parser_init(&parser, np);
+> +               for_each_of_range(&parser, &range)
+> +                       if (range.cpu_addr + range.size > cpu_end)
+> +                               cpu_end = range.cpu_addr + range.size;
+> +
+> +               if (phys_dma_limit > cpu_end)
+> +                       phys_dma_limit = cpu_end;
+> +       }
+> +
+> +       return phys_dma_limit;
+> +}
+> +
+>  /**
+>   * of_dma_is_coherent - Check if device is coherent
+>   * @np:        device node
+> diff --git a/include/linux/of.h b/include/linux/of.h
+> index 481ec0467285..958c64cffa92 100644
+> --- a/include/linux/of.h
+> +++ b/include/linux/of.h
+> @@ -558,6 +558,8 @@ int of_map_id(struct device_node *np, u32 id,
+>                const char *map_name, const char *map_mask_name,
+>                struct device_node **target, u32 *id_out);
+>
+> +u64 of_dma_safe_phys_limit(void);
+> +
+>  #else /* CONFIG_OF */
+>
+>  static inline void of_core_init(void)
+> @@ -995,6 +997,11 @@ static inline int of_map_id(struct device_node *np, u32 id,
+>         return -EINVAL;
+>  }
+>
+> +static inline u64 of_dma_safe_phys_limit(void)
+> +{
+> +       return ~0ULL;
+> +}
+> +
+>  #define of_match_ptr(_ptr)     NULL
+>  #define of_match_node(_matches, _node) NULL
+>  #endif /* CONFIG_OF */
+> --
+> 2.28.0
+>
