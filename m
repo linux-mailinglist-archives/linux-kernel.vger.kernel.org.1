@@ -2,111 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF1228A98B
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 21:06:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86F6528A98C
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 21:08:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728421AbgJKTGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 15:06:32 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:42626 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727197AbgJKTGc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 15:06:32 -0400
-Received: from zn.tnic (p200300ec2f235400da461b0b2cbca2d5.dip0.t-ipconnect.de [IPv6:2003:ec:2f23:5400:da46:1b0b:2cbc:a2d5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E20021EC0407;
-        Sun, 11 Oct 2020 21:06:30 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1602443191;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=mDBvvNkTEmEIc1rgmGJ+DMSXW8TQIiaUaad2vdSqBbY=;
-        b=RGXXiXQy1I00Qn9c5Knu1YuZX0+dqACHd6C0GnR+IizDEVZnkono2gpbRG7hatiGz+1Gf+
-        RwJ8K4hjQgnoivFtpMraHCKIhQgb9gaXNZHTKkJRRztCnf8cPr0YKakJTW2t+sMq5FL2Y5
-        nYQDpfZ6pfOqBS66KJucXda/KmpI9/w=
-Date:   Sun, 11 Oct 2020 21:06:22 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
-        x86@kernel.org, Collabora Kernel ML <kernel@collabora.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Diego Elio =?utf-8?Q?Petten=C3=B2?= <flameeyes@flameeyes.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Willy Tarreau <w@1wt.eu>
-Subject: Re: [PATCH] x86/x86_64_defconfig: Enable the serial console
-Message-ID: <20201011190622.GD15925@zn.tnic>
-References: <20201008162206.862203-1-enric.balletbo@collabora.com>
- <20201008164044.GE5505@zn.tnic>
- <4162cfa4-7bf2-3e6e-1b8c-e19187e6fa10@infradead.org>
- <2538da14-0f4b-5d4a-c7bf-6fdb46ba2796@collabora.com>
- <20201011122020.GA15925@zn.tnic>
- <107a6fb0-a667-2f30-d1f4-640e3fee193a@collabora.com>
- <20201011155754.GC15925@zn.tnic>
- <1dfdf163-9b54-ceae-b178-c566e6109263@collabora.com>
+        id S1728673AbgJKTIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 15:08:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726151AbgJKTIK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Oct 2020 15:08:10 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87873C0613CE;
+        Sun, 11 Oct 2020 12:08:10 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id u8so16127948lff.1;
+        Sun, 11 Oct 2020 12:08:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GGPf0Ai+cdZzA8pg4bWhAmqLseFTaZSi05u7rjNimbU=;
+        b=NGOJ/SWRY4H7gbvG6VzGLMX3GsPv/LWyxJN6wSy0KX5rKiYtswKKK6IDwzpY2gRpqv
+         4cQwPMy1BjhPeGkQdiCsGtBwt5AHWBuK1B0yZFSwb/Yn8w/WOSjj8ja8o4d6q4CDKqoJ
+         6EdtSXuMetdBIpVEp0DRk8BKUB9q+h+VFiVaX65beZoFfWxJIN1pjUvfy/TznWWkHKud
+         XIpUPmacyVBl8QrVkAULFsWe9nUXiCXK9sdMsW66aBQramyBnDgtUaxWTjrqab54Mvcm
+         eezM22QunvYG7KqLNE0INkyoYM22fG1rvX+NwsTK9rpO4m5Rh1Nk+mOpUXeFqKN6LfUR
+         58yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GGPf0Ai+cdZzA8pg4bWhAmqLseFTaZSi05u7rjNimbU=;
+        b=nwONFst3GvQGKYlr169dZP7e9aA9Kt0yQ6dMWLjk17z3Pl8w7JEoO1qLXHqj1ARgG3
+         rVmsjCHVp+Q8krDy/ztVSpAEjmflflQn8WiZIpnDY0Ehy3DYiDlHEtIPjiM2EbNLV3XU
+         X/4QOQBSt3eTaHtC1FYiBGH+AbxwdwQYIEU8B40VVmAV1JZ4aPGfT8WjLDccq7qnHRVB
+         uO/x5CWQhColwOJpYBsM4mhu8MDT/G/OaTkaoS057cLbQdSqftLs9Y87hVH2DNvQbem2
+         upD7kR1yZ6uLrVuKJuN7rl71PQNhZveErWvnCL3Ak2j7kjlNCrlY9/Hz0gtzmBdbIic0
+         fo/A==
+X-Gm-Message-State: AOAM530ET2dEUWzXRQRbzdyZveD084+mHwrN8NNBPndvH9iSCdKgjK5u
+        PbrXiR0f0W/xoSy78wXgf32rHXr5EJvcyz3mvrI=
+X-Google-Smtp-Source: ABdhPJyLSLt7KFipNUuTUDAvQzA7yv8F0RnrRzO0D6BvjarI40PRbp8W9O5OGB458/Lsjmxt6IF24FLEgnphbXwq1Wc=
+X-Received: by 2002:a19:c68a:: with SMTP id w132mr6710919lff.106.1602443288614;
+ Sun, 11 Oct 2020 12:08:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1dfdf163-9b54-ceae-b178-c566e6109263@collabora.com>
+References: <20201010210929.620244-1-anmol.karan123@gmail.com> <20201011095436.06131ff3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201011095436.06131ff3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Anmol karn <anmol.karan123@gmail.com>
+Date:   Mon, 12 Oct 2020 00:37:56 +0530
+Message-ID: <CAC+yH-YgC1r+-J50TFSkK=NvSE0eHiXNkvgVFuLRQq4daeQZJw@mail.gmail.com>
+Subject: Re: [Linux-kernel-mentees] [PATCH net] ethtool: strset: Fix out of
+ bound read in strset_parse_request()
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>, mkubecek@suse.cz,
+        andrew@lunn.ch, f.fainelli@gmail.com,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzkaller-bugs@googlegroups.com,
+        syzbot+9d1389df89299fa368dc@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 11, 2020 at 07:05:55PM +0200, Enric Balletbo i Serra wrote:
-> For x86:
->    1. You send a patch to list enabling the CONFIG_YOUR_V4L2_DEVICE=m
->    2. The patch is rejected because doesn't fit the requirements (is not common
-> enough)
+Hello sir,
+On Sun, Oct 11, 2020 at 10:24 PM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Sun, 11 Oct 2020 02:39:29 +0530 Anmol Karn wrote:
+> > Flag ``ETHTOOL_A_STRSET_COUNTS_ONLY`` tells the kernel to only return the string
+> > counts of the sets, but, when req_info->counts_only tries to read the
+> > tb[ETHTOOL_A_STRSET_COUNTS_ONLY] it gets out of bound.
+> >
+> > - net/ethtool/strset.c
+> > The bug seems to trigger in this line:
+> >
+> > req_info->counts_only = tb[ETHTOOL_A_STRSET_COUNTS_ONLY];
+> >
+> > Fix it by NULL checking for req_info->counts_only while
+> > reading from tb[ETHTOOL_A_STRSET_COUNTS_ONLY].
+> >
+> > Reported-by: syzbot+9d1389df89299fa368dc@syzkaller.appspotmail.com
+> > Link: https://syzkaller.appspot.com/bug?id=730deff8fe9954a5e317924d9acff98d9c64a770
+> > Signed-off-by: Anmol Karn <anmol.karan123@gmail.com>
+>
+> I think the correct fix for this was already applied to net-next as:
+>
+>  commit db972e532518 ("ethtool: strset: allow ETHTOOL_A_STRSET_COUNTS_ONLY attr")
 
-Well, what if that config option enables hardware which is ARM-only.
-Then it doesn't make any sense to enable it in the x86 defconfig.
+I am glad that it's fixed now.
 
->    3. If you're lucky someone will tell you to send the patch, to the specific
-> KernelCI x86 fragment project.
-
-You lost me here: there's a specific fragment project?!?
-
->    4. You send a patch to the separate KernelCI x86 project.
->    5. The patch is accepted and merged.
->    6. KernelCI builds linux-next, boots the kernel on the hardware, detects a
-> new v4l2 device, and runs the v4l2-compliance tests.
-> 
-> 
-> Of course you can skip 1-3 if you know already that. Another example:
-
-So this second example confused me even more. Looking at your original
-patch, you want this enabled in the defconfig:
-
-config SERIAL_8250_DW
-        tristate "Support for Synopsys DesignWare 8250 quirks"
-        depends on SERIAL_8250
-        select SERIAL_8250_DWLIB
-        help
-          Selecting this option will enable handling of the extra features
-          present in the Synopsys DesignWare APB UART.
-
-and for that you need those other two: X86_AMD_PLATFORM_DEVICE and
-MFD_INTEL.
-
-What I don't get is why can't you have a .config.snippet which enables
-what you need on the chromebooks and you can have all the serial you
-want. And the net card driver for that matter.
-
-And in all that, I still don't get why this is relevant for the upstream
-kernel.
-
-By this logic, other projects would start wanting to add more to
-defconfig and which would slowly turn into an allmodconfig. So you can
-simply build an allmodconfig kernel and do *all* your testing with it,
-just like the distros ship an allmodconfig-like kernel. Problem solved.
-
-/me is more confused.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks,
+Anmol
