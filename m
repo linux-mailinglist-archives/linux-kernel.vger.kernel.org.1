@@ -2,83 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4504528A74F
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 14:21:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 625F728A750
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 14:24:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387781AbgJKMVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 08:21:46 -0400
-Received: from ec2-3-21-30-127.us-east-2.compute.amazonaws.com ([3.21.30.127]:50178
-        "EHLO www.teo-en-ming.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387744AbgJKMVq (ORCPT
+        id S2387793AbgJKMYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 08:24:31 -0400
+Received: from wildebeest.demon.nl ([212.238.236.112]:55642 "EHLO
+        gnu.wildebeest.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387744AbgJKMYa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 08:21:46 -0400
-Received: from localhost (localhost [IPv6:::1])
-        by www.teo-en-ming.com (Postfix) with ESMTPA id D809644DD90;
-        Sun, 11 Oct 2020 20:21:44 +0800 (+08)
+        Sun, 11 Oct 2020 08:24:30 -0400
+Received: from librem (deer0x15.wildebeest.org [172.31.17.151])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by gnu.wildebeest.org (Postfix) with ESMTPSA id 1EE5530291AC;
+        Sun, 11 Oct 2020 14:24:24 +0200 (CEST)
+Received: by librem (Postfix, from userid 1000)
+        id 783EAC1BBF; Sun, 11 Oct 2020 14:23:36 +0200 (CEST)
+Date:   Sun, 11 Oct 2020 14:23:36 +0200
+From:   Mark Wielaard <mark@klomp.org>
+To:     Florian Weimer <fw@deneb.enyo.de>
+Cc:     Andi Kleen <andi@firstfloor.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stephane Eranian <eranian@google.com>,
+        linux-toolchains@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        "Phillips, Kim" <kim.phillips@amd.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: Additional debug info to aid cacheline analysis
+Message-ID: <20201011122336.GC2666@wildebeest.org>
+References: <20201006131703.GR2628@hirez.programming.kicks-ass.net>
+ <CABPqkBSkdqXjm6QuF9j6AO8MUnt1yZ_cA2PV=Qo8e4wKmK_6Ug@mail.gmail.com>
+ <20201008070231.GS2628@hirez.programming.kicks-ass.net>
+ <50338de81b34031db8637337f08b89b588476211.camel@klomp.org>
+ <20201008212259.gdhlwdswn5pu4zos@two.firstfloor.org>
+ <20201010205836.GA2666@wildebeest.org>
+ <87h7r1x8kp.fsf@mid.deneb.enyo.de>
 MIME-Version: 1.0
-Date:   Sun, 11 Oct 2020 20:21:44 +0800
-From:   Turritopsis Dohrnii Teo En Ming <ceo@teo-en-ming.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     ceo@teo-en-ming-corp.com
-Subject: =?UTF-8?Q?Renew_90-day_free_Let=E2=80=99s_Encrypt_SSL_Certificat?=
- =?UTF-8?Q?e_for_SSL_VPN_on_Cisco_ASA_5506-X_Firewall?=
-Message-ID: <e74b898d82cea7f4007729ba3b8c32a0@teo-en-ming.com>
-X-Sender: ceo@teo-en-ming.com
-User-Agent: Roundcube Webmail/1.2.3
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87h7r1x8kp.fsf@mid.deneb.enyo.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Flag: NO
+X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on gnu.wildebeest.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Subject: Renew 90-day free Let’s Encrypt SSL Certificate for SSL VPN on 
-Cisco ASA 5506-X Firewall
+On Sun, Oct 11, 2020 at 02:15:18PM +0200, Florian Weimer wrote:
+> * Mark Wielaard:
+> 
+> > Yes, that would work. I don't know what the lowest supported GCC
+> > version is, but technically it was definitely fixed in 4.10.0, 4.8.4
+> > and 4.9.2. And various distros would probably have backported the
+> > fix. But checking for 5.0+ would certainly give you a good version.
+> >
+> > How about the attached?
+> 
+> Would it be possible to test for the actual presence of the bug, using
+> -fcompare-debug?
 
-SSL Certificate Renewal Completed By: Mr. Turritopsis Dohrnii Teo En 
-Ming
-Date of Renewal: 9 Oct 2020 Friday Singapore Time
-Date of Expiry: 8 Jan 2021 Singapore Time
-Country: Singapore
+Yes, that was discussed in the original commit message, but it was decided
+that disabling it unconditionaly was easier. See commit 2062afb4f.
 
-Simply follow the renewal instructions at the following link.
+Cheers,
 
-[ARTICLE] ASA 8.x: Renew and Install the SSL Certificate with ASDM
-
-Link: 
-https://www.cisco.com/c/en/us/support/docs/security/asa-5500-x-series-next-generation-firewalls/107956-renew-ssl.html
-
-Get your ***FREE*** 90-day SSL certificates at
-
-https://zerossl.com/
-
-
-
-
-
--- 
------BEGIN EMAIL SIGNATURE-----
-
-The Gospel for all Targeted Individuals (TIs):
-
-[The New York Times] Microwave Weapons Are Prime Suspect in Ills of
-U.S. Embassy Workers
-
-Link: 
-https://www.nytimes.com/2018/09/01/science/sonic-attack-cuba-microwave.html
-
-********************************************************************************************
-
-Singaporean Targeted Individual Mr. Turritopsis Dohrnii Teo En Ming's 
-Academic
-Qualifications as at 14 Feb 2019 and refugee seeking attempts at the 
-United Nations Refugee Agency Bangkok (21 Mar 2017), in Taiwan (5 Aug 
-2019) and Australia (25 Dec 2019 to 9 Jan 2020):
-
-[1] https://tdtemcerts.wordpress.com/
-
-[2] https://tdtemcerts.blogspot.sg/
-
-[3] https://www.scribd.com/user/270125049/Teo-En-Ming
-
------END EMAIL SIGNATURE-----
+Mark
