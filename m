@@ -2,166 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91EFF28A624
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 09:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5661928A62D
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 09:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728928AbgJKHcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 03:32:15 -0400
-Received: from mga12.intel.com ([192.55.52.136]:26901 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726461AbgJKHcP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 03:32:15 -0400
-IronPort-SDR: R9LCJUXMh3bScrxclMaIm3arzKRscWa1AJStQfO8Q5P2MNTvXO01bwYO1QNnc9uJQ1lpEZJ2m9
- tnJD01mEfMzw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9770"; a="144949470"
-X-IronPort-AV: E=Sophos;i="5.77,362,1596524400"; 
-   d="scan'208";a="144949470"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2020 00:32:14 -0700
-IronPort-SDR: UalNmMuD9P9X6cEG3PmnhPaDA466463KrE117OCip7abGlSAJeVcfJT1hF5Fdc2AJpGqTtPMtw
- Bq9s5qbRezyg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,362,1596524400"; 
-   d="scan'208";a="298948776"
-Received: from lkp-server02.sh.intel.com (HELO 92b3fbfaed90) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 11 Oct 2020 00:32:14 -0700
-Received: from kbuild by 92b3fbfaed90 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kRVq1-0000V5-Fg; Sun, 11 Oct 2020 07:32:13 +0000
-Date:   Sun, 11 Oct 2020 15:31:13 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:rcu/next] BUILD SUCCESS
- 75c79a5dd72c1bb59f6bd6c5ec36f3a6516795cd
-Message-ID: <5f82b4c1.NQvl8fAEPBBHBWfJ%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1728974AbgJKHmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 03:42:25 -0400
+Received: from mail-il1-f206.google.com ([209.85.166.206]:33464 "EHLO
+        mail-il1-f206.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726461AbgJKHmZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Oct 2020 03:42:25 -0400
+Received: by mail-il1-f206.google.com with SMTP id e73so10273441ill.0
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 00:42:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=7PbN+9cIdIGVhAv/w+zEBq3PXtiMVM6PcDD03VAAMBg=;
+        b=C9Xj33RDoju1/hmyhGNEC2Gfe/gYjlmvay0rqaQ8uLuN1G2jHg/Bg8WwArla4S51LE
+         hzqsdrs2js0XdOexdds4bq3ts5apzoHUquDsqImgRqopG6fXoHcBJjEdArjS34KnhxQG
+         wecxWwHVYcdfz2jbzQvr3LL0/Jlt5FXW3T2612x2ujo9+Qd52s77gc21E5bhWH+NDeyB
+         NBBiN3XK68HLZzSMi8aWzPTSwesH10Jeqw6E9EB6ZUQHvk8gCdrbraPbL2VBfP5f+MPi
+         MSx5MwQuNifeOz2SXPLX42U2goHvKYr6y3K+gR8BK6DbQfKxw+O1mvywMQPW2+AEM/dX
+         v5pg==
+X-Gm-Message-State: AOAM531oddDZ2u7AqaUFbj+eniwhqUmlse55tZQab2UaOGi6h+2kMRqW
+        FYuY5pxo/A0y8qQWRHxcVCx9Pedu3e7CcFHTxXPZa/oouw4a
+X-Google-Smtp-Source: ABdhPJyfm97kuiDrvOvrC4MEWpb5dQ4Z3AEAoLbN5ZLjqzf9moIGtcQnvOdZaAHkHdu05MBr3uc0j9ba3ktrZfUJIOWxbuzyioC4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:d45:: with SMTP id h5mr6241432ilj.307.1602402144037;
+ Sun, 11 Oct 2020 00:42:24 -0700 (PDT)
+Date:   Sun, 11 Oct 2020 00:42:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009530b805b1605237@google.com>
+Subject: KASAN: use-after-free Read in sco_chan_del
+From:   syzbot <syzbot+1df6a63e69a359c8b517@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        marcel@holtmann.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/next
-branch HEAD: 75c79a5dd72c1bb59f6bd6c5ec36f3a6516795cd  rcutorture: Don't do need_resched() testing if ->sync is NULL
+Hello,
 
-elapsed time: 721m
+syzbot found the following issue on:
 
-configs tested: 102
-configs skipped: 2
+HEAD commit:    a804ab08 Add linux-next specific files for 20201006
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1073270b900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=26c1b4cc4a62ccb
+dashboard link: https://syzkaller.appspot.com/bug?extid=1df6a63e69a359c8b517
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                   motionpro_defconfig
-sh                               alldefconfig
-powerpc                    klondike_defconfig
-mips                           jazz_defconfig
-mips                            gpr_defconfig
-arm                        oxnas_v6_defconfig
-m68k                          sun3x_defconfig
-m68k                         amcore_defconfig
-arm                          ep93xx_defconfig
-sh                           se7780_defconfig
-x86_64                              defconfig
-sh                          urquell_defconfig
-m68k                          atari_defconfig
-arm                          exynos_defconfig
-powerpc                     mpc83xx_defconfig
-arm                           tegra_defconfig
-arm                  colibri_pxa300_defconfig
-powerpc                     tqm8541_defconfig
-xtensa                         virt_defconfig
-powerpc                          g5_defconfig
-powerpc                   currituck_defconfig
-mips                        nlm_xlp_defconfig
-arm                     am200epdkit_defconfig
-mips                          ath25_defconfig
-mips                        bcm63xx_defconfig
-sh                      rts7751r2d1_defconfig
-sh                          rsk7269_defconfig
-arm                         assabet_defconfig
-powerpc                     kilauea_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20201011
-x86_64               randconfig-a002-20201011
-x86_64               randconfig-a006-20201011
-x86_64               randconfig-a001-20201011
-x86_64               randconfig-a003-20201011
-x86_64               randconfig-a005-20201011
-i386                 randconfig-a005-20201011
-i386                 randconfig-a006-20201011
-i386                 randconfig-a001-20201011
-i386                 randconfig-a003-20201011
-i386                 randconfig-a004-20201011
-i386                 randconfig-a002-20201011
-i386                 randconfig-a016-20201011
-i386                 randconfig-a015-20201011
-i386                 randconfig-a013-20201011
-i386                 randconfig-a012-20201011
-i386                 randconfig-a011-20201011
-i386                 randconfig-a014-20201011
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                                  kexec
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1df6a63e69a359c8b517@syzkaller.appspotmail.com
 
-clang tested configs:
-x86_64               randconfig-a016-20201011
-x86_64               randconfig-a015-20201011
-x86_64               randconfig-a012-20201011
-x86_64               randconfig-a013-20201011
-x86_64               randconfig-a014-20201011
-x86_64               randconfig-a011-20201011
+==================================================================
+BUG: KASAN: use-after-free in hci_conn_drop include/net/bluetooth/hci_core.h:1145 [inline]
+BUG: KASAN: use-after-free in hci_conn_drop include/net/bluetooth/hci_core.h:1115 [inline]
+BUG: KASAN: use-after-free in sco_chan_del+0x400/0x430 net/bluetooth/sco.c:149
+Read of size 8 at addr ffff88804d29c918 by task syz-executor.2/27575
+
+CPU: 0 PID: 27575 Comm: syz-executor.2 Not tainted 5.9.0-rc8-next-20201006-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fb lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
+ hci_conn_drop include/net/bluetooth/hci_core.h:1145 [inline]
+ hci_conn_drop include/net/bluetooth/hci_core.h:1115 [inline]
+ sco_chan_del+0x400/0x430 net/bluetooth/sco.c:149
+ __sco_sock_close+0x16e/0x5b0 net/bluetooth/sco.c:434
+ sco_sock_close net/bluetooth/sco.c:448 [inline]
+ sco_sock_release+0x69/0x290 net/bluetooth/sco.c:1059
+ __sock_release+0xcd/0x280 net/socket.c:596
+ sock_close+0x18/0x20 net/socket.c:1277
+ __fput+0x285/0x920 fs/file_table.c:281
+ task_work_run+0xdd/0x190 kernel/task_work.c:141
+ get_signal+0xd89/0x1f00 kernel/signal.c:2561
+ arch_do_signal+0x82/0x2470 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0x194/0x1f0 kernel/entry/common.c:192
+ syscall_exit_to_user_mode+0x7a/0x2c0 kernel/entry/common.c:267
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45de29
+Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fabeda51c78 EFLAGS: 00000246 ORIG_RAX: 000000000000002a
+RAX: fffffffffffffffc RBX: 0000000000002200 RCX: 000000000045de29
+RDX: 0000000000000008 RSI: 0000000020000080 RDI: 0000000000000006
+RBP: 000000000118c158 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118c124
+R13: 00007ffdb3c9529f R14: 00007fabeda529c0 R15: 000000000118c124
+
+Allocated by task 27575:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
+ kmem_cache_alloc_trace+0x1a0/0x480 mm/slab.c:3552
+ kmalloc include/linux/slab.h:554 [inline]
+ kzalloc include/linux/slab.h:666 [inline]
+ hci_conn_add+0x53/0x1330 net/bluetooth/hci_conn.c:525
+ hci_connect_sco+0x356/0x860 net/bluetooth/hci_conn.c:1283
+ sco_connect net/bluetooth/sco.c:241 [inline]
+ sco_sock_connect+0x308/0x980 net/bluetooth/sco.c:588
+ __sys_connect_file+0x155/0x1a0 net/socket.c:1852
+ __sys_connect+0x161/0x190 net/socket.c:1869
+ __do_sys_connect net/socket.c:1879 [inline]
+ __se_sys_connect net/socket.c:1876 [inline]
+ __x64_sys_connect+0x6f/0xb0 net/socket.c:1876
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 26665:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0xd8/0x120 mm/kasan/common.c:422
+ __cache_free mm/slab.c:3420 [inline]
+ kfree+0x10e/0x2a0 mm/slab.c:3758
+ device_release+0x9f/0x240 drivers/base/core.c:1808
+ kobject_cleanup lib/kobject.c:705 [inline]
+ kobject_release lib/kobject.c:736 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ kobject_put+0x171/0x270 lib/kobject.c:753
+ put_device+0x1b/0x30 drivers/base/core.c:3037
+ hci_conn_del+0x27e/0x6a0 net/bluetooth/hci_conn.c:645
+ hci_conn_hash_flush+0x189/0x220 net/bluetooth/hci_conn.c:1558
+ hci_dev_do_close+0x5c6/0x1080 net/bluetooth/hci_core.c:1770
+ hci_unregister_dev+0x214/0xe90 net/bluetooth/hci_core.c:3827
+ vhci_release+0x70/0xe0 drivers/bluetooth/hci_vhci.c:340
+ __fput+0x285/0x920 fs/file_table.c:281
+ task_work_run+0xdd/0x190 kernel/task_work.c:141
+ exit_task_work include/linux/task_work.h:25 [inline]
+ do_exit+0xb23/0x2930 kernel/exit.c:806
+ do_group_exit+0x125/0x310 kernel/exit.c:903
+ get_signal+0x428/0x1f00 kernel/signal.c:2757
+ arch_do_signal+0x82/0x2470 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0x194/0x1f0 kernel/entry/common.c:192
+ syscall_exit_to_user_mode+0x7a/0x2c0 kernel/entry/common.c:267
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff88804d29c000
+ which belongs to the cache kmalloc-4k of size 4096
+The buggy address is located 2328 bytes inside of
+ 4096-byte region [ffff88804d29c000, ffff88804d29d000)
+The buggy address belongs to the page:
+page:0000000084eedba7 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x4d29c
+head:0000000084eedba7 order:1 compound_mapcount:0
+flags: 0xfffe0000010200(slab|head)
+raw: 00fffe0000010200 ffffea00012af708 ffffea0001001308 ffff8880aa040900
+raw: 0000000000000000 ffff88804d29c000 0000000100000001 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff88804d29c800: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88804d29c880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88804d29c900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                            ^
+ ffff88804d29c980: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88804d29ca00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
 
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
