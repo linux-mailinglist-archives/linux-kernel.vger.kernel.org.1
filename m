@@ -2,83 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C14028A6E5
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 12:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA1628A6F8
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 12:27:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728945AbgJKKTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 06:19:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47250 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727035AbgJKKTS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 06:19:18 -0400
-Received: from localhost (pop.92-184-102-180.mobile.abo.orange.fr [92.184.102.180])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 95343207F7;
-        Sun, 11 Oct 2020 10:19:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602411558;
-        bh=E80FqfqRXRL4++0Ml+FlpdDwAKsno997KrBJ1rNmCSQ=;
-        h=In-Reply-To:References:Subject:Cc:To:From:Date:From;
-        b=Hmeuo20eDt1ccuObCbtaRLqtUJtZ/RSoYdy9vMnE+wboS/MLVi47ODeEVkxHWZETU
-         PUctPHQxfaGFZ0NDz/W7dy/0QLd34JPyCW+a69WPdzSP1cOKFWf60+gOmaVEw8WrO2
-         isz6sz/KNqijdMoGBVUkBTqUW/hdC03BmtxdHEaw=
-Content-Type: text/plain; charset="utf-8"
+        id S1729624AbgJKK1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 06:27:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726222AbgJKK1D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Oct 2020 06:27:03 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8795CC0613CE;
+        Sun, 11 Oct 2020 03:27:03 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id x16so11254028pgj.3;
+        Sun, 11 Oct 2020 03:27:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=sZ4u0IYX+prhPTXd0MVIePeS5ONiOotzisA3LcVKmGs=;
+        b=NVS7Zyk+rjxHS3Fim/isNHWuIprg+c2HM+wV+yaIh9E7EihNDRfTuLYfDV41xq9uwi
+         uOy69v3QR0MakTzpXeOHvayM4QZM8Yo53iwXh6iUN0gxncfE5J6OfSrEU+NP09tRfsWy
+         azWSanp94VlkodpfsZAnL9oSYSL4iL8BYLySvy9LD/FO9r1yLEeOgr3fC8nztbDP92LQ
+         G9S08ezRghlNaq9pE2mf0ctDyLhd7f2fihyM5OedkNQJ752yk40uE/lSP9QBk7aUs0gX
+         K6vACT9vq9wS/+UZL+nxX8nEPzVWqh1jqZZbpMgWLfScV0dWp03Lp2DZ7IN6lHis/pB/
+         YY7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=sZ4u0IYX+prhPTXd0MVIePeS5ONiOotzisA3LcVKmGs=;
+        b=WV3qU6torSkNfRD4JLqvYaAzec/KidRzk7X4KAaPOxuf+J+l4sOh8IVfCqgbkAqx02
+         RBgOZJVTBxrHVUPIhEhIEoNfZs6qddDOU+fxModQPsSthuQ2zPhtL0dd//BoooNFFfJp
+         8n0HF/02Yd22bVERP32B7GlK8ajFs9Ez8Kuo0YS6pdVMxz50KsbY0u4Omc+n+LKtOmv3
+         K1ZG5UuDE4LBwEHKz0OEOTRAOc8dhJ/RzswLyE7MOkqaQBysn0TXVuV0hyL3yOZdiump
+         8OURpDPmPktUxWD0cO8ejLPPiqeXWOM5LYZk5D/ehTCampGgm/s4W2Ak8dARKPsOgF6N
+         86sA==
+X-Gm-Message-State: AOAM533RS0r4jWmfDSG4nAp53DsNIPdr9DO19tcjmy2Qpqt8S8QBc5t6
+        4wkI2OqrqThWpT9E33OqMSQ=
+X-Google-Smtp-Source: ABdhPJxSlKHZz4nogWT9Nt3kZILi1+8lgygZc0KhYqgDj9p1Hb85VG4EdeKLcxVdM5B7uicpX/BFwA==
+X-Received: by 2002:a17:90a:6301:: with SMTP id e1mr14656301pjj.131.1602412022680;
+        Sun, 11 Oct 2020 03:27:02 -0700 (PDT)
+Received: from adolin ([49.207.215.73])
+        by smtp.gmail.com with ESMTPSA id y4sm741762pgs.0.2020.10.11.03.26.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Oct 2020 03:27:02 -0700 (PDT)
+Date:   Sun, 11 Oct 2020 15:56:57 +0530
+From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
+To:     Julia.Lawall@lip6.fr
+Cc:     corbet@lwn.net, Gilles.Muller@lip6.fr, nicolas.palix@imag.fr,
+        michal.lkml@markovi.net, cocci@systeme.lip6.fr,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: [PATCH v4 0/3] Improve Coccinelle Parallelisation
+Message-ID: <cover.1602410019.git.sylphrenadin@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201010164736.12871-1-colin.king@canonical.com>
-References: <20201010164736.12871-1-colin.king@canonical.com>
-Subject: Re: [PATCH] crypto: inside-secure: Fix sizeof() mismatch
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-To:     "David S . Miller" <davem@davemloft.net>,
-        Colin King <colin.king@canonical.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Ofer Heifetz <oferh@marvell.com>, linux-crypto@vger.kernel.org
-From:   Antoine Tenart <atenart@kernel.org>
-Message-ID: <160241154768.6233.86808650362778908@surface>
-Date:   Sun, 11 Oct 2020 12:19:12 +0200
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Presently, Coccinelle uses at most one thread per core to improve
+performance in machines with more than 2 hyperthreads. Modify
+coccicheck to use all available threads in machines upto 4 hyperthreads.
+Further, modify the coccicheck script to improve portability.
 
-Quoting Colin King (2020-10-10 18:47:36)
-> From: Colin Ian King <colin.king@canonical.com>
->=20
-> An incorrect sizeof() is being used, sizeof(priv->ring[i].rdr_req) is
-> not correct, it should be sizeof(*priv->ring[i].rdr_req). Note that
-> since the size of ** is the same size as * this is not causing any
-> issues.
->=20
-> Addresses-Coverity: ("Sizeof not portable (SIZEOF_MISMATCH)")
-> Fixes: 9744fec95f06 ("crypto: inside-secure - remove request list to impr=
-ove performance")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Modify documentation to reflect the same. 
 
-Acked-by: Antoine Tenart <atenart@kernel.org>
+Sumera Priyadarsini (3):
+  scripts: coccicheck: Add quotes to improve portability
+  scripts: coccicheck: Change default condition for parallelism
+  Documentation: Coccinelle: Modify Parallelisation information in docs
 
-Thanks!
-Antoine
+ Documentation/dev-tools/coccinelle.rst | 6 ++++--
+ scripts/coccicheck                     | 4 ++--
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
-> ---
->  drivers/crypto/inside-secure/safexcel.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/crypto/inside-secure/safexcel.c b/drivers/crypto/ins=
-ide-secure/safexcel.c
-> index eb2418450f12..2e1562108a85 100644
-> --- a/drivers/crypto/inside-secure/safexcel.c
-> +++ b/drivers/crypto/inside-secure/safexcel.c
-> @@ -1639,7 +1639,7 @@ static int safexcel_probe_generic(void *pdev,
-> =20
->                 priv->ring[i].rdr_req =3D devm_kcalloc(dev,
->                         EIP197_DEFAULT_RING_SIZE,
-> -                       sizeof(priv->ring[i].rdr_req),
-> +                       sizeof(*priv->ring[i].rdr_req),
->                         GFP_KERNEL);
->                 if (!priv->ring[i].rdr_req)
->                         return -ENOMEM;
-> --=20
-> 2.27.0
->=20
+-- 
+2.25.1
+
