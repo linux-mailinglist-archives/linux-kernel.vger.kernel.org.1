@@ -2,55 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9E5628A8C4
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 19:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A83E28A8BC
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 19:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726353AbgJKR6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 13:58:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388518AbgJKR5r (ORCPT
+        id S1727894AbgJKR6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 13:58:22 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:40252 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388521AbgJKR5t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 13:57:47 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FC1DC0613D2;
-        Sun, 11 Oct 2020 10:57:47 -0700 (PDT)
-Date:   Sun, 11 Oct 2020 17:57:45 -0000
+        Sun, 11 Oct 2020 13:57:49 -0400
+Date:   Sun, 11 Oct 2020 17:57:46 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602439066;
+        s=2020; t=1602439067;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=nuA9yPmW+AM30j9wVeq18M7ezL6cMjkDFqsu3JXLtYY=;
-        b=QkxiWVLozevQhngGHenblDp+abDkqVj1r8bivwmrQTg7V3G0gG5SD905NGaQVAFwblcdbF
-        OIDKri0EdGH0bahVQV2h4XLPEhR5g9C6Pmcz11Jqh45FCLCGRA9L9O/EE4uC6kOUBKAan3
-        ib4g8BPv8IvJObQdH0Nh2fQHd4jqQLvOrM9Ql3CjisDegoQct2zmBnJGqteTyb7mMBUteq
-        t6myLCgMMLfZhRtqr1aYBaYAtI8nmJUefY2nJqRduoMWy4lzyNClrEUq9tL3OPmqVkwVPe
-        ER47uDBzj3ww67oF4LhA9c02QBHJIScp0eR4gsZk7b2C5MjNpetDe7gXyQqHpQ==
+        bh=zSLQIo6GDvVU/JIB1rfnuu11ZNIA+FwpxQPi1tYrvYY=;
+        b=ak99HN0WU0xPwbis+iw7HVJ6S8gtnBzN1Sdiy3+E5PJmxSe7a1a+x/zuGjHNko6jS4s0IH
+        PEe+2VEJbFrrAe5ppm4eje66FWwWFaxHFsWpbh8zFcKrcsGa8k4rRwZs2+baLA/xL3DPY9
+        QXTiLV5jVDGGfVrf15TXuS1GJWTw+xtEItSBa7A+XHj1PZ7u9PVFSmmmK463mJmODxo5Os
+        nqEr494DiuHsSwTEdTko6Ei12y2M+/s/Gwx2wW8ZnFk2WHb7WjUG6+wWx1r7PJO96pjAOD
+        JgzpYa2cXMmah8/goGQraQHrmJ9LF2dC+BczkU66QyQ9epZOnfUc/Vf/dgHmyw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602439066;
+        s=2020e; t=1602439067;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=nuA9yPmW+AM30j9wVeq18M7ezL6cMjkDFqsu3JXLtYY=;
-        b=7PqV4M/Ouy6InVuYRfd3476ZPDi3QOMryYRuOaE8mw4GKcT1TVlSV7JzrBB0HOt4zTgr0s
-        7D0X8FVtVQ1aglBw==
-From:   "tip-bot2 for YueHaibing" <tip-bot2@linutronix.de>
+        bh=zSLQIo6GDvVU/JIB1rfnuu11ZNIA+FwpxQPi1tYrvYY=;
+        b=oxSKT8UOPIOdsAjmP4qDbfXst1CxJy9WUZDQqCDDex67dj/VpjBWFhEh+EaudAu7jQ0DtR
+        wZmtVif2BJPfSiAA==
+From:   "tip-bot2 for Valentin Schneider" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] irqchip/ti-sci-intr: Fix unsigned comparison to zero
-Cc:     YueHaibing <yuehaibing@huawei.com>, Marc Zyngier <maz@kernel.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>, x86 <x86@kernel.org>,
+Subject: [tip: irq/core] irqchip/gic-v2, v3: Prevent SW resends entirely
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        Marc Zyngier <maz@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200826035321.18620-1-yuehaibing@huawei.com>
-References: <20200826035321.18620-1-yuehaibing@huawei.com>
+In-Reply-To: <20200730170321.31228-3-valentin.schneider@arm.com>
+References: <20200730170321.31228-3-valentin.schneider@arm.com>
 MIME-Version: 1.0
-Message-ID: <160243906530.7002.8301252740397767336.tip-bot2@tip-bot2>
+Message-ID: <160243906633.7002.16746873464528215330.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,39 +58,86 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/core branch of tip:
 
-Commit-ID:     8ddf1905a904ca86d71ca1c435e4b0b2a0b70df8
-Gitweb:        https://git.kernel.org/tip/8ddf1905a904ca86d71ca1c435e4b0b2a0b70df8
-Author:        YueHaibing <yuehaibing@huawei.com>
-AuthorDate:    Wed, 26 Aug 2020 11:53:21 +08:00
+Commit-ID:     1b57d91b969cda1d2c3530f2e829ca366a9c7df7
+Gitweb:        https://git.kernel.org/tip/1b57d91b969cda1d2c3530f2e829ca366a9c7df7
+Author:        Valentin Schneider <valentin.schneider@arm.com>
+AuthorDate:    Thu, 30 Jul 2020 18:03:21 +01:00
 Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Sun, 13 Sep 2020 15:30:00 +01:00
+CommitterDate: Sun, 06 Sep 2020 18:26:13 +01:00
 
-irqchip/ti-sci-intr: Fix unsigned comparison to zero
+irqchip/gic-v2, v3: Prevent SW resends entirely
 
-ti_sci_intr_xlate_irq() return -ENOENT on fail, p_hwirq
-should be int type.
+The GIC irqchips can now use a HW resend when a retrigger is invoked by
+check_irq_resend(). However, should the HW resend fail, check_irq_resend()
+will still attempt to trigger a SW resend, which is still a bad idea for
+the GICs.
 
-Fixes: a5b659bd4bc7 ("irqchip/ti-sci-intr: Add support for INTR being a parent to INTR")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Prevent this from happening by setting IRQD_HANDLE_ENFORCE_IRQCTX on all
+GIC IRQs. Technically per-cpu IRQs do not need this, as their flow handlers
+never set IRQS_PENDING, but this aligns all IRQs wrt context enforcement:
+this also forces all GIC IRQ handling to happen in IRQ context (as defined
+by in_irq()).
+
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Acked-by: Lokesh Vutla <lokeshvutla@ti.com>
-Link: https://lore.kernel.org/r/20200826035321.18620-1-yuehaibing@huawei.com
+Link: https://lore.kernel.org/r/20200730170321.31228-3-valentin.schneider@arm.com
 ---
- drivers/irqchip/irq-ti-sci-intr.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/irqchip/irq-gic-v3.c | 5 ++++-
+ drivers/irqchip/irq-gic.c    | 6 +++++-
+ 2 files changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/irqchip/irq-ti-sci-intr.c b/drivers/irqchip/irq-ti-sci-intr.c
-index cbc1758..85a72b5 100644
---- a/drivers/irqchip/irq-ti-sci-intr.c
-+++ b/drivers/irqchip/irq-ti-sci-intr.c
-@@ -137,8 +137,8 @@ static int ti_sci_intr_alloc_parent_irq(struct irq_domain *domain,
- 	struct ti_sci_intr_irq_domain *intr = domain->host_data;
- 	struct device_node *parent_node;
- 	struct irq_fwspec fwspec;
--	u16 out_irq, p_hwirq;
--	int err = 0;
-+	int p_hwirq, err = 0;
-+	u16 out_irq;
+diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+index b507bc7..4e9387a 100644
+--- a/drivers/irqchip/irq-gic-v3.c
++++ b/drivers/irqchip/irq-gic-v3.c
+@@ -1279,6 +1279,7 @@ static int gic_irq_domain_map(struct irq_domain *d, unsigned int irq,
+ 			      irq_hw_number_t hw)
+ {
+ 	struct irq_chip *chip = &gic_chip;
++	struct irq_data *irqd = irq_desc_get_irq_data(irq_to_desc(irq));
  
- 	out_irq = ti_sci_get_free_resource(intr->out_irqs);
- 	if (out_irq == TI_SCI_RESOURCE_NULL)
+ 	if (static_branch_likely(&supports_deactivate_key))
+ 		chip = &gic_eoimode1_chip;
+@@ -1296,7 +1297,7 @@ static int gic_irq_domain_map(struct irq_domain *d, unsigned int irq,
+ 		irq_domain_set_info(d, irq, hw, chip, d->host_data,
+ 				    handle_fasteoi_irq, NULL, NULL);
+ 		irq_set_probe(irq);
+-		irqd_set_single_target(irq_desc_get_irq_data(irq_to_desc(irq)));
++		irqd_set_single_target(irqd);
+ 		break;
+ 
+ 	case LPI_RANGE:
+@@ -1310,6 +1311,8 @@ static int gic_irq_domain_map(struct irq_domain *d, unsigned int irq,
+ 		return -EPERM;
+ 	}
+ 
++	/* Prevents SW retriggers which mess up the ACK/EOI ordering */
++	irqd_set_handle_enforce_irqctx(irqd);
+ 	return 0;
+ }
+ 
+diff --git a/drivers/irqchip/irq-gic.c b/drivers/irqchip/irq-gic.c
+index e92ee2b..b59bcef 100644
+--- a/drivers/irqchip/irq-gic.c
++++ b/drivers/irqchip/irq-gic.c
+@@ -975,6 +975,7 @@ static int gic_irq_domain_map(struct irq_domain *d, unsigned int irq,
+ 				irq_hw_number_t hw)
+ {
+ 	struct gic_chip_data *gic = d->host_data;
++	struct irq_data *irqd = irq_desc_get_irq_data(irq_to_desc(irq));
+ 
+ 	if (hw < 32) {
+ 		irq_set_percpu_devid(irq);
+@@ -984,8 +985,11 @@ static int gic_irq_domain_map(struct irq_domain *d, unsigned int irq,
+ 		irq_domain_set_info(d, irq, hw, &gic->chip, d->host_data,
+ 				    handle_fasteoi_irq, NULL, NULL);
+ 		irq_set_probe(irq);
+-		irqd_set_single_target(irq_desc_get_irq_data(irq_to_desc(irq)));
++		irqd_set_single_target(irqd);
+ 	}
++
++	/* Prevents SW retriggers which mess up the ACK/EOI ordering */
++	irqd_set_handle_enforce_irqctx(irqd);
+ 	return 0;
+ }
+ 
