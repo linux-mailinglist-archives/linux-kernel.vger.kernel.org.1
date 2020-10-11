@@ -2,110 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A861D28A7F1
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 17:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D1828A7F9
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 17:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388162AbgJKPZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 11:25:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51754 "EHLO
+        id S2388190AbgJKPcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 11:32:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388154AbgJKPZf (ORCPT
+        with ESMTP id S2388153AbgJKPcA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 11:25:35 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30353C0613D0
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 08:25:35 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id c23so11816925qtp.0
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 08:25:35 -0700 (PDT)
+        Sun, 11 Oct 2020 11:32:00 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF63C0613CE;
+        Sun, 11 Oct 2020 08:32:00 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id q21so376125pgi.13;
+        Sun, 11 Oct 2020 08:32:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mGEksLvJBorAum0Eg2LkfQURApI/RYBperS6Phu5I0I=;
-        b=MqGhnaMFfjF44Q19jKunraF6dqyDzXyHADq9GnBKu2Jn9/FGqElIC3zwlMFK4J1Mdv
-         /oN/++G9uBO6ms3mpCE6i2JTLMFuC+VgiGZxUclTZFvvGErS5zeAn2aMcygAYQr/kUaH
-         LmFWgMVGRtSv4HsrYF+1hv8KuOGgMfqMnBKmyx6Z7EAZP+q0/6O9F0wG7194wkhPF8rh
-         hc7liYa58o1+6A60AHgh4zSERIYtfqr8fyWd/JB0Y2E9Rl5wEQufLPDD8gu5YW15ruMl
-         ONWmLHQtkZzQrYnYR+qsQLO+cfyBBN4CpaoUzz2yN60V96y4IBJIx4RRwQNztLMq+eUT
-         Mz4w==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tV+5GpsNqToqnCOxQczbib4Ix1QZL4pyiVZswc1zNmY=;
+        b=gtkcVwfXSYZAO6NPh9g9WmwCFwgM/oFH7KCiujvPqgwkcJ5ayWdryzmnNsY6byiyeL
+         cxC+drvrZrtqxB8QtIGcu7kKO7ePOwvYEwW2iAwngCidlo40i6eczOoJBIQMctKd6YxM
+         eUaMz96YX4iC8ErPHG2DmONIdoc6BeSaPsVkF8M9btBS/Jw7ppPKp5331yKAjrCXuwTx
+         HdvQNYdNU+6oaFiGHldO6DEeWBibxTj0JQDObwxzUl+UUwoF2d5ctLnPQHMRSCm+X+S3
+         ov8fUkz7njagUUthRxwYYb9YkQJ+r93/mEdiZwGsA5d4POJZp+v8Ok7EjRwqA2/HurZ7
+         WwGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mGEksLvJBorAum0Eg2LkfQURApI/RYBperS6Phu5I0I=;
-        b=Dl8MU/kagDkUAeZWVkXQGUz6wnMe+gJAlRqIBdWubAVRFLxB3NXcrNqiQwZW3ftSDt
-         gAAxhoyWDh5x7ftXPxxNpEhfBlf6k3+AbFALs9xluVyJ1N3AsSfc1EuK6BH2Bw2qX4U+
-         EYceE65VtpHcqZamSQmJMkMD0Jh/eYgdun/XWZgRhSP5ZCPJFc7g8UIIUlBXjkwD70H0
-         sFkEr0YEjEI/LL99eeSCVxPJXC9wiALV61bKfm9P+sEN5XzYDn2bscWSyVJZjK+8QsNR
-         s6nJIShNrwCfi//jcLg9e+kPFVEllMsmm+l/hna7c29AUA6DsJRg5DVdfVz5JtBClVej
-         d8iQ==
-X-Gm-Message-State: AOAM530mYlTZLRyxEmvpAiM7hUHc549fiAjERNn9AcuN8OG+gVxUICdn
-        AvTl/olGJrqJW4Y6vlP7OmeLqi2bGWCsB8AltyDKV1s0hBHyYQ==
-X-Google-Smtp-Source: ABdhPJy+hAh5Q/SslIBt8l2bF/IWajPg9z1EuHB9Omzsu39O4mjN85e/do3gycWS56FTghnGu+6RDKd/cePYkO1PiF4=
-X-Received: by 2002:ac8:738c:: with SMTP id t12mr6241994qtp.257.1602429933815;
- Sun, 11 Oct 2020 08:25:33 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tV+5GpsNqToqnCOxQczbib4Ix1QZL4pyiVZswc1zNmY=;
+        b=ZhIbNlVEgmcb5wyqvWj7S+tdKS2GPPVhMTNgeRbHYJc+OGD6DpitPD6Oj3TAVu+x8h
+         Qn7usJKVI47LuL2zxpGatYRD2PhRE1muMJYcfG3AXDoujcbhsdQ5LftvvUwaYMBA8Nek
+         wA/T9L68c4d2qLJYoa55o5SewxYo1fxavUZ611EOfiSzFjb5oDPClW9wof4hqmYRamiz
+         30SMdNnK7EsN4sicRq4MKYAH8jSumpna/dBOGT/z9LHmzbFgTBS5ulM6kQMCfpZu+sak
+         CDJ1wwi6sc17OWMyNYE0wH91pkW2INdzkR04N4c79Yqmz48Vds2ymJDP9Hxm1BNIap7g
+         LPGw==
+X-Gm-Message-State: AOAM531UJlJ6sEWvt6tuBsK7qLuLTRMc+haoJXhx/5euxIDXAs/1v/Wh
+        kLqpiuei7QrD1f4hSsqPmJ8=
+X-Google-Smtp-Source: ABdhPJwugLkcnUlFDLEfQH3juQ22J68Ph+fbRc+CGW3xrPjyEQRjkSeMWEnNlVU3U6Ju57NjmJdbmw==
+X-Received: by 2002:a63:2406:: with SMTP id k6mr10195695pgk.366.1602430319884;
+        Sun, 11 Oct 2020 08:31:59 -0700 (PDT)
+Received: from thinkpad (104.36.148.139.aurocloud.com. [104.36.148.139])
+        by smtp.gmail.com with ESMTPSA id 137sm17529102pfu.149.2020.10.11.08.31.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Oct 2020 08:31:59 -0700 (PDT)
+Date:   Sun, 11 Oct 2020 08:32:59 -0700
+From:   Rustam Kovhaev <rkovhaev@gmail.com>
+To:     Hannes Reinecke <hare@suse.de>
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] block: switch to pr_warn() in __device_add_disk()
+Message-ID: <20201011153259.GA637021@thinkpad>
+References: <20201011130347.562264-1-rkovhaev@gmail.com>
+ <745dd869-00ba-19fd-3643-27a92326f424@suse.de>
 MIME-Version: 1.0
-References: <20200505134904.663914713@linutronix.de> <158991831479.17951.17390452716048622271.tip-bot2@tip-bot2>
-In-Reply-To: <158991831479.17951.17390452716048622271.tip-bot2@tip-bot2>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Sun, 11 Oct 2020 17:25:22 +0200
-Message-ID: <CACT4Y+bTZFkuZd7+bPArowOv-7Die+WZpfOWnEO_Wgs3U59+oA@mail.gmail.com>
-Subject: Re: [tip: x86/entry] x86/entry: Convert Divide Error to IDTENTRY
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@google.com>,
-        Marco Elver <elver@google.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        syzkaller <syzkaller@googlegroups.com>
-Cc:     linux-tip-commits <linux-tip-commits@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>, x86 <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <745dd869-00ba-19fd-3643-27a92326f424@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 9:59 PM tip-bot2 for Thomas Gleixner
-<tip-bot2@linutronix.de> wrote:
->
-> The following commit has been merged into the x86/entry branch of tip:
->
-> -DO_ERROR(X86_TRAP_DE,     SIGFPE,  FPE_INTDIV,   IP, "divide error",        divide_error)
->
-> +DEFINE_IDTENTRY(exc_divide_error)
-> +{
-> +       do_error_trap(regs, 0, "divide_error", X86_TRAP_DE, SIGFPE,
-> +                     FPE_INTDIV, error_get_trap_addr(regs));
-> +}
+On Sun, Oct 11, 2020 at 04:53:22PM +0200, Hannes Reinecke wrote:
+> On 10/11/20 3:03 PM, Rustam Kovhaev wrote:
+> > syzbot triggered a warning while fuzzing with failslab fault injection
+> > enabled
+> > let's convert WARN_ON() to pr_warn()
+> > 
+> > Reported-and-tested-by: syzbot+f41893bb8c45cd18cf08@syzkaller.appspotmail.com
+> > Link: https://syzkaller.appspot.com/bug?extid=f41893bb8c45cd18cf08
+> > Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
+> > ---
+> >   block/genhd.c | 3 ++-
+> >   1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/block/genhd.c b/block/genhd.c
+> > index 99c64641c314..be9ce35cf0fe 100644
+> > --- a/block/genhd.c
+> > +++ b/block/genhd.c
+> > @@ -822,7 +822,8 @@ static void __device_add_disk(struct device *parent, struct gendisk *disk,
+> >   		/* Register BDI before referencing it from bdev */
+> >   		dev->devt = devt;
+> >   		ret = bdi_register(bdi, "%u:%u", MAJOR(devt), MINOR(devt));
+> > -		WARN_ON(ret);
+> > +		if (ret)
+> > +			pr_warn("%s: failed to register backing dev info\n", disk->disk_name);
+> >   		bdi_set_owner(bdi, dev);
+> >   		blk_register_region(disk_devt(disk), disk->minors, NULL,
+> >   				    exact_match, exact_lock, disk);
+> > 
+> Please, don't. Where is the point in continuing here?
+> I'd rather have it fixed up properly, either by having a return value to
+> __device_add_disk() or by allowing the caller to check (eg by checking
+> GENHD_FL_UP) if the call succeeded.
+thank you for the review, it makes sense.
 
-I suppose this is a copy-paste typo and was supposed to be "divide
-error", right?
-Otherwise it changes how kernel oopses look like and breaks syzkaller
-crash parsing, and probably of every other kernel testing system that
-looks for kernel crashes.
-
-syzkaller now says just the following for divide errors, without
-attribution to function/file/maintainers:
-
-kernel panic: Fatal exception (3)
-FS:  0000000000000000(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000004c9428 CR3: 0000000009e8d000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Kernel panic - not syncing: Fatal exception in interrupt
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-I will fix it up in syzkaller. It is now required anyway since this
-new crash mode is in git history, so needed for bisection and testing
-of older releases.
-
-It is not the first time kernel crash output changes
-intentionally/unintentionally breaking kernel testing.
-But I wonder if LKDTM can be turned into actual executable tests that
-produce pass/fail and fix crash output for different oopses?
-Marco, you implemented some "output tests" for KCSAN. Can that be
-extended to other crash types? With some KUnit help? However, I am not
-sure about hard panics, they may not play well with unit-testing...
