@@ -2,64 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B53828A74C
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 14:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79EE928A74E
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 14:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387758AbgJKMPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 08:15:34 -0400
-Received: from albireo.enyo.de ([37.24.231.21]:59692 "EHLO albireo.enyo.de"
+        id S2387767AbgJKMUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 08:20:31 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:44014 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387410AbgJKMPe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 08:15:34 -0400
-Received: from [172.17.203.2] (helo=deneb.enyo.de)
-        by albireo.enyo.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1kRaFy-0007Zg-Qw; Sun, 11 Oct 2020 12:15:18 +0000
-Received: from fw by deneb.enyo.de with local (Exim 4.92)
-        (envelope-from <fw@deneb.enyo.de>)
-        id 1kRaFy-0004Bc-OA; Sun, 11 Oct 2020 14:15:18 +0200
-From:   Florian Weimer <fw@deneb.enyo.de>
-To:     Mark Wielaard <mark@klomp.org>
-Cc:     Andi Kleen <andi@firstfloor.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        linux-toolchains@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        "Phillips\, Kim" <kim.phillips@amd.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: Additional debug info to aid cacheline analysis
-References: <20201006131703.GR2628@hirez.programming.kicks-ass.net>
-        <CABPqkBSkdqXjm6QuF9j6AO8MUnt1yZ_cA2PV=Qo8e4wKmK_6Ug@mail.gmail.com>
-        <20201008070231.GS2628@hirez.programming.kicks-ass.net>
-        <50338de81b34031db8637337f08b89b588476211.camel@klomp.org>
-        <20201008212259.gdhlwdswn5pu4zos@two.firstfloor.org>
-        <20201010205836.GA2666@wildebeest.org>
-Date:   Sun, 11 Oct 2020 14:15:18 +0200
-In-Reply-To: <20201010205836.GA2666@wildebeest.org> (Mark Wielaard's message
-        of "Sat, 10 Oct 2020 22:58:36 +0200")
-Message-ID: <87h7r1x8kp.fsf@mid.deneb.enyo.de>
+        id S2387744AbgJKMUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Oct 2020 08:20:30 -0400
+Received: from zn.tnic (p200300ec2f2354003014631d5e977466.dip0.t-ipconnect.de [IPv6:2003:ec:2f23:5400:3014:631d:5e97:7466])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 866481EC0407;
+        Sun, 11 Oct 2020 14:20:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1602418829;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=jixq01sMsKGEAuLRIcsPbYfdp2qRTUaRSujjQkfZrD4=;
+        b=QJrngtxmGccgncJieutzXRRgh57jYJFX2eqlkYb2a5zwJuL34vTzGCdSwEuuYZKY/4+mqn
+        6TprJpeAoiTSq/L1zA9oDlbNU1Rbyk7V6JqJ6SYUN/A+5kHZkyuRVwZrB8UA0d+MoFJDr/
+        7IqqZ7vW8a5NoTR9qVDilY+ORY93Om0=
+Date:   Sun, 11 Oct 2020 14:20:20 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, Collabora Kernel ML <kernel@collabora.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Diego Elio =?utf-8?Q?Petten=C3=B2?= <flameeyes@flameeyes.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Willy Tarreau <w@1wt.eu>
+Subject: Re: [PATCH] x86/x86_64_defconfig: Enable the serial console
+Message-ID: <20201011122020.GA15925@zn.tnic>
+References: <20201008162206.862203-1-enric.balletbo@collabora.com>
+ <20201008164044.GE5505@zn.tnic>
+ <4162cfa4-7bf2-3e6e-1b8c-e19187e6fa10@infradead.org>
+ <2538da14-0f4b-5d4a-c7bf-6fdb46ba2796@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <2538da14-0f4b-5d4a-c7bf-6fdb46ba2796@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Mark Wielaard:
+On Sun, Oct 11, 2020 at 01:43:44PM +0200, Enric Balletbo i Serra wrote:
+> We're also probably lacking a definition of what normal users mean, because I
+> don't think normal users build their own kernel.
 
-> Yes, that would work. I don't know what the lowest supported GCC
-> version is, but technically it was definitely fixed in 4.10.0, 4.8.4
-> and 4.9.2. And various distros would probably have backported the
-> fix. But checking for 5.0+ would certainly give you a good version.
->
-> How about the attached?
+You'd be surprised.
 
-Would it be possible to test for the actual presence of the bug, using
--fcompare-debug?
+> I think that at least X86_AMD_PLATFORM_DEVICE and MFD_INTEL_LPSS_PCI
+> could be common enough to match within the category of needed to run
+> in normal (or common) user mode(s). I can send a patch with only these
+> two options.
 
-(But it seems to me that the treatment of this particular compiler bug
-is an outlier: other equally tricky bugs do not receive this kind of
-attention.)
+How do you quantify those things are common enough?
+
+> But, yes, the main purpose after this patch is the serial console for CI. I saw
+> that there are already some configs with a specific purpose (tiny.config and
+> xen.config). So, I am wondering if would be acceptable support another specific
+> config for CI (i.e kernelci.config). Will it be acceptable?
+
+Why does this config have to be upstream? Can't your build process
+supply it? Also, can your config be of any use outside of kernel CI?
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
