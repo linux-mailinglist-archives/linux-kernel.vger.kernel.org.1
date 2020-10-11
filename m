@@ -2,132 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7C9028AB00
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 00:52:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2856528AB01
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 00:54:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387771AbgJKWwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 18:52:04 -0400
-Received: from ozlabs.org ([203.11.71.1]:41801 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387708AbgJKWwD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 18:52:03 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C8cWM6R68z9sSG;
-        Mon, 12 Oct 2020 09:51:59 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1602456721;
-        bh=fIRvN6W5v39OZV/PI6qLoNzqSNymGAo8vtLl7AfgHr8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=TRBSxgmAIqWxlUZfKB4DPCnxRBEs9iqHeJAaQol+PswBHQTgIixo3YYiJlv1cpO66
-         0d67Qu/4tzzSMmj9I/55TvEkP04tCE+e+eBzthaQIGEM2JMigw1SQ6SXa/kwbO+2n4
-         k4SmlwK524RVleJDbLDYTKfPQZeT1v1PatAm8h+SL2mwHEFVA+4Egv2rJw6FAhdUpz
-         nlYPtdV43icja9gRA4HGPJEF9gf7q9Ot9g86Lt3uOS1SQE3vuSKM3rAU+TkKXOqTua
-         rr+zxAZOnYbajBe3zQ2yzM5QcX1HY02muWNWNVwNLtrES/bw0+0ZR9v9BnP/9UR04f
-         4MP4EkAWn00Kg==
-Date:   Mon, 12 Oct 2020 09:51:58 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>
-Subject: linux-next: manual merge of the arm64 tree with the asm-generic
- tree
-Message-ID: <20201012095158.779c6d9d@canb.auug.org.au>
+        id S2387779AbgJKWyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 18:54:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387708AbgJKWyM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Oct 2020 18:54:12 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37DABC0613CE
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 15:54:12 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id s15so8178712vsm.0
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 15:54:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z0a8rirJkNGvDXYf+j+cPb4Z4egwrNP6SKqObG7YZso=;
+        b=nKlwcYj9jtQSorax14eeeSYvAS1DzamxIgZPL7HgqNL7sd9bRIZJzkIwAYx1J7OOQA
+         3IJIZAZfO65Aj+Yu2nJVcoRnj9pdiuASpBg22Xj1SBOzpoYxejIoAD9I8+Ho/yW7V2C8
+         06S8oooG7FF6qU90jA2Ip3AGKtdGOl5yEKDk4f541+FnoakTOqr6rGNSFz1szOxBejyq
+         XCoPBr6VvS3wYG1bgmhRVHx5uKJs/3mvRJOifJ2f6iQVq9n/3muIdtxRy+O8PKSLuPsw
+         L9qX+qRoYScDq7ZBaGOce9NLwsnRAuoPrlOznVwbt3nsga12kY6l8viapeaSXiCuatXK
+         TiSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z0a8rirJkNGvDXYf+j+cPb4Z4egwrNP6SKqObG7YZso=;
+        b=ImMjCiHUO3AkSirJgkhDKEQvHIkRCe9r81oqWfxlA44CeljJ0z1DVXWDrj51Di2FPW
+         gDV1o74ZfElpy9s/3cZ24MdtSsBPtSovdfh5gDQv0N9Oc5gvG0K1otn+QLvMw8qMaP29
+         mUjUSGwGfLrdXzoy7e7Wee9qbT5+xF7Cnn8ApNErBhkZ2gvmeHqm7EFGXO3rfIna6kZl
+         hyv/tdu5wP7fk0Ice8KTxT8Y8V6W3LimNQWf6lfXX/1soUXi0lPlQriqP/Ljxf1Nnocc
+         ketg75zUINUpsFAwrqlSrJcZbrsYZqvLTH8rb/5Hl/vZh5Yy7lhyh42WS6uVDpKi6/dp
+         toXQ==
+X-Gm-Message-State: AOAM531MeGtxd+TEP2rv1MXgr2EX0puEG2ujOGzGT+YmgLFeGQH/+GRG
+        wfzSQtQKae/W8LrC9N9OSrOchlkbDbw=
+X-Google-Smtp-Source: ABdhPJw2c+D/Q7eJpWDO6a+pcBm5oZ1su32okHaRDzb7tZxNtTa69GUcN3q8VP1Xu/jse/3L3pidsw==
+X-Received: by 2002:a67:bc0d:: with SMTP id t13mr12621677vsn.4.1602456850160;
+        Sun, 11 Oct 2020 15:54:10 -0700 (PDT)
+Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com. [209.85.217.44])
+        by smtp.gmail.com with ESMTPSA id o11sm982058vko.31.2020.10.11.15.54.08
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 11 Oct 2020 15:54:09 -0700 (PDT)
+Received: by mail-vs1-f44.google.com with SMTP id r1so7127375vsi.12
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 15:54:08 -0700 (PDT)
+X-Received: by 2002:a67:d84:: with SMTP id 126mr11971002vsn.51.1602456848320;
+ Sun, 11 Oct 2020 15:54:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/lN7TGM5Qqm/+r7wgw9jm1l8";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20201011212135.GD8773@valentin-vidic.from.hr> <20201011220329.13038-1-vvidic@valentin-vidic.from.hr>
+In-Reply-To: <20201011220329.13038-1-vvidic@valentin-vidic.from.hr>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Sun, 11 Oct 2020 18:53:31 -0400
+X-Gmail-Original-Message-ID: <CA+FuTSfFcyVPd3Tr=wFSfSFBojpXPMZGmPvS0m+iM4TiRpsM5w@mail.gmail.com>
+Message-ID: <CA+FuTSfFcyVPd3Tr=wFSfSFBojpXPMZGmPvS0m+iM4TiRpsM5w@mail.gmail.com>
+Subject: Re: [PATCH v2] net: korina: fix kfree of rx/tx descriptor array
+To:     Valentin Vidic <vvidic@valentin-vidic.from.hr>
+Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Philip Rischel <rischelp@idt.com>,
+        Florian Fainelli <florian@openwrt.org>,
+        Roman Yeryomin <roman@advem.lv>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Martin Habets <mhabets@solarflare.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/lN7TGM5Qqm/+r7wgw9jm1l8
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sun, Oct 11, 2020 at 6:04 PM Valentin Vidic
+<vvidic@valentin-vidic.from.hr> wrote:
+>
+> kmalloc returns KSEG0 addresses so convert back from KSEG1
+> in kfree. Also make sure array is freed when the driver is
+> unloaded from the kernel.
+>
+> Fixes: ef11291bcd5f ("Add support the Korina (IDT RC32434) Ethernet MAC")
+> Signed-off-by: Valentin Vidic <vvidic@valentin-vidic.from.hr>
 
-Hi all,
+Ah, this a MIPS architecture feature, both KSEGs mapping the same
+region, just cachable vs non-cachable.
 
-Today's linux-next merge of the arm64 tree got a conflict in:
+Acked-by: Willem de Bruijn <willemb@google.com>
 
-  arch/arm64/include/asm/mmu_context.h
 
-between commit:
-
-  f911c2a7c096 ("arm64: use asm-generic/mmu_context.h for no-op implementat=
-ions")
-
-from the asm-generic tree and commit:
-
-  48118151d8cc ("arm64: mm: Pin down ASIDs for sharing mm with devices")
-
-from the arm64 tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/arm64/include/asm/mmu_context.h
-index fe2862aa1dad,0672236e1aea..000000000000
---- a/arch/arm64/include/asm/mmu_context.h
-+++ b/arch/arm64/include/asm/mmu_context.h
-@@@ -174,9 -174,16 +174,15 @@@ static inline void cpu_replace_ttbr1(pg
-   * Setting a reserved TTBR0 or EPD0 would work, but it all gets ugly when=
- you
-   * take CPU migration into account.
-   */
- -#define destroy_context(mm)		do { } while(0)
-  void check_and_switch_context(struct mm_struct *mm);
- =20
-- #define init_new_context(tsk,mm)	({ atomic64_set(&(mm)->context.id, 0); 0=
-; })
-+ static inline int
-+ init_new_context(struct task_struct *tsk, struct mm_struct *mm)
-+ {
-+ 	atomic64_set(&mm->context.id, 0);
-+ 	refcount_set(&mm->context.pinned, 0);
-+ 	return 0;
-+ }
- =20
-  #ifdef CONFIG_ARM64_SW_TTBR0_PAN
-  static inline void update_saved_ttbr0(struct task_struct *tsk,
-@@@ -245,8 -251,12 +251,11 @@@ switch_mm(struct mm_struct *prev, struc
-  void verify_cpu_asid_bits(void);
-  void post_ttbr_update_workaround(void);
- =20
-+ unsigned long arm64_mm_context_get(struct mm_struct *mm);
-+ void arm64_mm_context_put(struct mm_struct *mm);
-+=20
- +#include <asm-generic/mmu_context.h>
- +
-  #endif /* !__ASSEMBLY__ */
- =20
-  #endif /* !__ASM_MMU_CONTEXT_H */
-
---Sig_/lN7TGM5Qqm/+r7wgw9jm1l8
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+DjI4ACgkQAVBC80lX
-0GxFHAf7Bdi6RDISnaXZnrhn+rc6pobGbLcoahUYwnkk/DgpX4t34PRcYnbB5o2k
-XIJyXzEREqdmEHixrNv/Lro1XgINjIFHs7kH8TYebLAeoIgDUr4N2YLJ/sP8hFgf
-ZaM+/Kvw8NJA77/56GcDYYNrVp5REnUrMMTztaJ17S/+zm65d084sy81wFvKnGAU
-OQmWkQBdboyen2yDiG7mUKazaAGJvXF64qyr/U0MGZqntLPlBg3/Vu9UW0A2eYIg
-zhYHZBfZOYGi2HzOPVVYy0G4EGJIlmDkt0F1DKd4lEAVOK6lBfv7YKaNS1Ax/XNN
-+UqyGKyI8lsIYVox7tm+9voe50YkLQ==
-=7BKA
------END PGP SIGNATURE-----
-
---Sig_/lN7TGM5Qqm/+r7wgw9jm1l8--
+> ---
+>  v2: convert kfree address back to KSEG0
+>
+>  drivers/net/ethernet/korina.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/ethernet/korina.c b/drivers/net/ethernet/korina.c
+> index 03e034918d14..af441d699a57 100644
+> --- a/drivers/net/ethernet/korina.c
+> +++ b/drivers/net/ethernet/korina.c
+> @@ -1113,7 +1113,7 @@ static int korina_probe(struct platform_device *pdev)
+>         return rc;
+>
+>  probe_err_register:
+> -       kfree(lp->td_ring);
+> +       kfree(KSEG0ADDR(lp->td_ring));
+>  probe_err_td_ring:
+>         iounmap(lp->tx_dma_regs);
+>  probe_err_dma_tx:
+> @@ -1133,6 +1133,7 @@ static int korina_remove(struct platform_device *pdev)
+>         iounmap(lp->eth_regs);
+>         iounmap(lp->rx_dma_regs);
+>         iounmap(lp->tx_dma_regs);
+> +       kfree(KSEG0ADDR(lp->td_ring));
+>
+>         unregister_netdev(bif->dev);
+>         free_netdev(bif->dev);
+> --
+> 2.20.1
+>
