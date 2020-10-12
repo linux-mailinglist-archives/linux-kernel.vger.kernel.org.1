@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDA4328B533
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 14:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 130AB28B53B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 14:56:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730166AbgJLM4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 08:56:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53280 "EHLO
+        id S1726745AbgJLM4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 08:56:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57969 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726640AbgJLM4C (ORCPT
+        by vger.kernel.org with ESMTP id S1730205AbgJLM4L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 08:56:02 -0400
+        Mon, 12 Oct 2020 08:56:11 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602507360;
+        s=mimecast20190719; t=1602507368;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=7P2vBNnGvTj7ryjZqgBDKBivuPaDY4fI99105fL53IE=;
-        b=iha3NUocjIstH/s/P2w9AXO3G+rmtnxSPyZuCNro1hV4+49+Op6lUBCVYuti4OCl7cVJTK
-        iHAJjqFUfIgUp4x7dtdhfmU7yQNJrMv9KDwvDrZ5gBtVqpaDKUj+IMRO+GEy2sB5wMpJTm
-        IettSAzmnUJY8/+eRRqQzNmLyF8yV2s=
+        bh=f8Nusm9Q3UIodGmd2qdyty+RAJQgSi+pxy/2Ikrm7wc=;
+        b=elEpkFzPIUbi8eORtu2KJNtlcKRoR5iYqwQSX1hr8djZWdPT+4u5W75covo7mxUsJ4YAaF
+        53yJY7vQN9ffbblijKO/F+GXmTEx2sGkmT+ZU3B3vFSwtlZ8y4SbvKWbf+mtRY1CCZMwLA
+        HM9n7qvWFJsRDL+PCxoT4X6z6LGC1v4=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-437-5FQdEEU9MSCnx-uOaL-vSw-1; Mon, 12 Oct 2020 08:55:58 -0400
-X-MC-Unique: 5FQdEEU9MSCnx-uOaL-vSw-1
+ us-mta-212-4DVPmcraN3m3e7Ga8dg-Bw-1; Mon, 12 Oct 2020 08:56:03 -0400
+X-MC-Unique: 4DVPmcraN3m3e7Ga8dg-Bw-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 692ED801FD4;
-        Mon, 12 Oct 2020 12:55:57 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 87222107AD64;
+        Mon, 12 Oct 2020 12:56:02 +0000 (UTC)
 Received: from t480s.redhat.com (ovpn-113-251.ams2.redhat.com [10.36.113.251])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B1B1460C07;
-        Mon, 12 Oct 2020 12:55:49 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6A39860C07;
+        Mon, 12 Oct 2020 12:55:57 +0000 (UTC)
 From:   David Hildenbrand <david@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-mm@kvack.org, virtualization@lists.linux-foundation.org,
@@ -42,9 +42,9 @@ Cc:     linux-mm@kvack.org, virtualization@lists.linux-foundation.org,
         David Hildenbrand <david@redhat.com>,
         Jason Wang <jasowang@redhat.com>,
         Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Subject: [PATCH v1 18/29] virtio-mem: factor out calculation of the bit number within the sb_states bitmap
-Date:   Mon, 12 Oct 2020 14:53:12 +0200
-Message-Id: <20201012125323.17509-19-david@redhat.com>
+Subject: [PATCH v1 19/29] virito-mem: existing (un)plug functions are specific to Sub Block Mode (SBM)
+Date:   Mon, 12 Oct 2020 14:53:13 +0200
+Message-Id: <20201012125323.17509-20-david@redhat.com>
 In-Reply-To: <20201012125323.17509-1-david@redhat.com>
 References: <20201012125323.17509-1-david@redhat.com>
 MIME-Version: 1.0
@@ -54,83 +54,298 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The calculation is already complicated enough, let's limit it to one
-location.
+Let's rename them accordingly. virtio_mem_plug_request() and
+virtio_mem_unplug_request() will be handled separately.
 
 Cc: "Michael S. Tsirkin" <mst@redhat.com>
 Cc: Jason Wang <jasowang@redhat.com>
 Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- drivers/virtio/virtio_mem.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+ drivers/virtio/virtio_mem.c | 90 ++++++++++++++++++-------------------
+ 1 file changed, 43 insertions(+), 47 deletions(-)
 
 diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
-index 2cc497ad8298..73ff6e9ba839 100644
+index 73ff6e9ba839..fc2b1ff3beed 100644
 --- a/drivers/virtio/virtio_mem.c
 +++ b/drivers/virtio/virtio_mem.c
-@@ -327,6 +327,16 @@ static int virtio_mem_sbm_mb_states_prepare_next_mb(struct virtio_mem *vm)
- 	     _mb_id--) \
- 		if (virtio_mem_sbm_get_mb_state(_vm, _mb_id) == _state)
- 
-+/*
-+ * Calculate the bit number in the sb_states bitmap for the given subblock
-+ * inside the given memory block.
-+ */
-+static int virtio_mem_sbm_sb_state_bit_nr(struct virtio_mem *vm,
-+					  unsigned long mb_id, int sb_id)
-+{
-+	return (mb_id - vm->first_mb_id) * vm->nb_sb_per_mb + sb_id;
-+}
-+
- /*
-  * Mark all selected subblocks plugged.
+@@ -1075,8 +1075,8 @@ static int virtio_mem_send_unplug_all_request(struct virtio_mem *vm)
+  * Plug selected subblocks. Updates the plugged state, but not the state
+  * of the memory block.
+  */
+-static int virtio_mem_mb_plug_sb(struct virtio_mem *vm, unsigned long mb_id,
+-				 int sb_id, int count)
++static int virtio_mem_sbm_plug_sb(struct virtio_mem *vm, unsigned long mb_id,
++				  int sb_id, int count)
+ {
+ 	const uint64_t addr = virtio_mem_mb_id_to_phys(mb_id) +
+ 			      sb_id * vm->subblock_size;
+@@ -1096,8 +1096,8 @@ static int virtio_mem_mb_plug_sb(struct virtio_mem *vm, unsigned long mb_id,
+  * Unplug selected subblocks. Updates the plugged state, but not the state
+  * of the memory block.
+  */
+-static int virtio_mem_mb_unplug_sb(struct virtio_mem *vm, unsigned long mb_id,
+-				   int sb_id, int count)
++static int virtio_mem_sbm_unplug_sb(struct virtio_mem *vm, unsigned long mb_id,
++				    int sb_id, int count)
+ {
+ 	const uint64_t addr = virtio_mem_mb_id_to_phys(mb_id) +
+ 			      sb_id * vm->subblock_size;
+@@ -1122,8 +1122,8 @@ static int virtio_mem_mb_unplug_sb(struct virtio_mem *vm, unsigned long mb_id,
   *
-@@ -336,7 +346,7 @@ static void virtio_mem_sbm_set_sb_plugged(struct virtio_mem *vm,
- 					  unsigned long mb_id, int sb_id,
- 					  int count)
+  * Note: can fail after some subblocks were unplugged.
+  */
+-static int virtio_mem_mb_unplug_any_sb(struct virtio_mem *vm,
+-				       unsigned long mb_id, uint64_t *nb_sb)
++static int virtio_mem_sbm_unplug_any_sb(struct virtio_mem *vm,
++					unsigned long mb_id, uint64_t *nb_sb)
  {
--	const int bit = (mb_id - vm->first_mb_id) * vm->nb_sb_per_mb + sb_id;
-+	const int bit = virtio_mem_sbm_sb_state_bit_nr(vm, mb_id, sb_id);
+ 	int sb_id, count;
+ 	int rc;
+@@ -1144,7 +1144,7 @@ static int virtio_mem_mb_unplug_any_sb(struct virtio_mem *vm,
+ 			sb_id--;
+ 		}
  
- 	__bitmap_set(vm->sbm.sb_states, bit, count);
+-		rc = virtio_mem_mb_unplug_sb(vm, mb_id, sb_id, count);
++		rc = virtio_mem_sbm_unplug_sb(vm, mb_id, sb_id, count);
+ 		if (rc)
+ 			return rc;
+ 		*nb_sb -= count;
+@@ -1161,18 +1161,18 @@ static int virtio_mem_mb_unplug_any_sb(struct virtio_mem *vm,
+  *
+  * Note: can fail after some subblocks were unplugged.
+  */
+-static int virtio_mem_mb_unplug(struct virtio_mem *vm, unsigned long mb_id)
++static int virtio_mem_sbm_unplug_mb(struct virtio_mem *vm, unsigned long mb_id)
+ {
+ 	uint64_t nb_sb = vm->nb_sb_per_mb;
+ 
+-	return virtio_mem_mb_unplug_any_sb(vm, mb_id, &nb_sb);
++	return virtio_mem_sbm_unplug_any_sb(vm, mb_id, &nb_sb);
  }
-@@ -350,7 +360,7 @@ static void virtio_mem_sbm_set_sb_unplugged(struct virtio_mem *vm,
- 					    unsigned long mb_id, int sb_id,
- 					    int count)
- {
--	const int bit = (mb_id - vm->first_mb_id) * vm->nb_sb_per_mb + sb_id;
-+	const int bit = virtio_mem_sbm_sb_state_bit_nr(vm, mb_id, sb_id);
  
- 	__bitmap_clear(vm->sbm.sb_states, bit, count);
- }
-@@ -362,7 +372,7 @@ static bool virtio_mem_sbm_test_sb_plugged(struct virtio_mem *vm,
- 					   unsigned long mb_id, int sb_id,
- 					   int count)
+ /*
+  * Prepare tracking data for the next memory block.
+  */
+-static int virtio_mem_prepare_next_mb(struct virtio_mem *vm,
+-				      unsigned long *mb_id)
++static int virtio_mem_sbm_prepare_next_mb(struct virtio_mem *vm,
++					  unsigned long *mb_id)
  {
--	const int bit = (mb_id - vm->first_mb_id) * vm->nb_sb_per_mb + sb_id;
-+	const int bit = virtio_mem_sbm_sb_state_bit_nr(vm, mb_id, sb_id);
+ 	int rc;
  
- 	if (count == 1)
- 		return test_bit(bit, vm->sbm.sb_states);
-@@ -379,7 +389,7 @@ static bool virtio_mem_sbm_test_sb_unplugged(struct virtio_mem *vm,
- 					     unsigned long mb_id, int sb_id,
- 					     int count)
+@@ -1200,9 +1200,8 @@ static int virtio_mem_prepare_next_mb(struct virtio_mem *vm,
+  *
+  * Will modify the state of the memory block.
+  */
+-static int virtio_mem_mb_plug_and_add(struct virtio_mem *vm,
+-				      unsigned long mb_id,
+-				      uint64_t *nb_sb)
++static int virtio_mem_sbm_plug_and_add_mb(struct virtio_mem *vm,
++					  unsigned long mb_id, uint64_t *nb_sb)
  {
--	const int bit = (mb_id - vm->first_mb_id) * vm->nb_sb_per_mb + sb_id;
-+	const int bit = virtio_mem_sbm_sb_state_bit_nr(vm, mb_id, sb_id);
+ 	const int count = min_t(int, *nb_sb, vm->nb_sb_per_mb);
+ 	int rc;
+@@ -1214,7 +1213,7 @@ static int virtio_mem_mb_plug_and_add(struct virtio_mem *vm,
+ 	 * Plug the requested number of subblocks before adding it to linux,
+ 	 * so that onlining will directly online all plugged subblocks.
+ 	 */
+-	rc = virtio_mem_mb_plug_sb(vm, mb_id, 0, count);
++	rc = virtio_mem_sbm_plug_sb(vm, mb_id, 0, count);
+ 	if (rc)
+ 		return rc;
  
- 	/* TODO: Helper similar to bitmap_set() */
- 	return find_next_bit(vm->sbm.sb_states, bit + count, bit) >=
-@@ -393,7 +403,7 @@ static bool virtio_mem_sbm_test_sb_unplugged(struct virtio_mem *vm,
- static int virtio_mem_sbm_first_unplugged_sb(struct virtio_mem *vm,
- 					    unsigned long mb_id)
+@@ -1241,7 +1240,7 @@ static int virtio_mem_mb_plug_and_add(struct virtio_mem *vm,
+ 		 * TODO: Linux MM does not properly clean up yet in all cases
+ 		 * where adding of memory failed - especially on -ENOMEM.
+ 		 */
+-		if (virtio_mem_mb_unplug_sb(vm, mb_id, 0, count))
++		if (virtio_mem_sbm_unplug_sb(vm, mb_id, 0, count))
+ 			new_state = VIRTIO_MEM_SBM_MB_PLUGGED;
+ 		virtio_mem_sbm_set_mb_state(vm, mb_id, new_state);
+ 		return rc;
+@@ -1259,8 +1258,9 @@ static int virtio_mem_mb_plug_and_add(struct virtio_mem *vm,
+  *
+  * Note: Can fail after some subblocks were successfully plugged.
+  */
+-static int virtio_mem_mb_plug_any_sb(struct virtio_mem *vm, unsigned long mb_id,
+-				     uint64_t *nb_sb, bool online)
++static int virtio_mem_sbm_plug_any_sb(struct virtio_mem *vm,
++				      unsigned long mb_id, uint64_t *nb_sb,
++				      bool online)
  {
--	const int bit = (mb_id - vm->first_mb_id) * vm->nb_sb_per_mb;
-+	const int bit = virtio_mem_sbm_sb_state_bit_nr(vm, mb_id, 0);
+ 	unsigned long pfn, nr_pages;
+ 	int sb_id, count;
+@@ -1279,7 +1279,7 @@ static int virtio_mem_mb_plug_any_sb(struct virtio_mem *vm, unsigned long mb_id,
+ 		       !virtio_mem_sbm_test_sb_plugged(vm, mb_id, sb_id + count, 1))
+ 			count++;
  
- 	return find_next_zero_bit(vm->sbm.sb_states,
- 				  bit + vm->nb_sb_per_mb, bit) - bit;
+-		rc = virtio_mem_mb_plug_sb(vm, mb_id, sb_id, count);
++		rc = virtio_mem_sbm_plug_sb(vm, mb_id, sb_id, count);
+ 		if (rc)
+ 			return rc;
+ 		*nb_sb -= count;
+@@ -1323,7 +1323,7 @@ static int virtio_mem_plug_request(struct virtio_mem *vm, uint64_t diff)
+ 	/* Try to plug subblocks of partially plugged online blocks. */
+ 	virtio_mem_sbm_for_each_mb(vm, mb_id,
+ 				   VIRTIO_MEM_SBM_MB_ONLINE_PARTIAL) {
+-		rc = virtio_mem_mb_plug_any_sb(vm, mb_id, &nb_sb, true);
++		rc = virtio_mem_sbm_plug_any_sb(vm, mb_id, &nb_sb, true);
+ 		if (rc || !nb_sb)
+ 			goto out_unlock;
+ 		cond_resched();
+@@ -1332,7 +1332,7 @@ static int virtio_mem_plug_request(struct virtio_mem *vm, uint64_t diff)
+ 	/* Try to plug subblocks of partially plugged offline blocks. */
+ 	virtio_mem_sbm_for_each_mb(vm, mb_id,
+ 				   VIRTIO_MEM_SBM_MB_OFFLINE_PARTIAL) {
+-		rc = virtio_mem_mb_plug_any_sb(vm, mb_id, &nb_sb, false);
++		rc = virtio_mem_sbm_plug_any_sb(vm, mb_id, &nb_sb, false);
+ 		if (rc || !nb_sb)
+ 			goto out_unlock;
+ 		cond_resched();
+@@ -1349,7 +1349,7 @@ static int virtio_mem_plug_request(struct virtio_mem *vm, uint64_t diff)
+ 		if (!virtio_mem_could_add_memory(vm, memory_block_size_bytes()))
+ 			return -ENOSPC;
+ 
+-		rc = virtio_mem_mb_plug_and_add(vm, mb_id, &nb_sb);
++		rc = virtio_mem_sbm_plug_and_add_mb(vm, mb_id, &nb_sb);
+ 		if (rc || !nb_sb)
+ 			return rc;
+ 		cond_resched();
+@@ -1360,10 +1360,10 @@ static int virtio_mem_plug_request(struct virtio_mem *vm, uint64_t diff)
+ 		if (!virtio_mem_could_add_memory(vm, memory_block_size_bytes()))
+ 			return -ENOSPC;
+ 
+-		rc = virtio_mem_prepare_next_mb(vm, &mb_id);
++		rc = virtio_mem_sbm_prepare_next_mb(vm, &mb_id);
+ 		if (rc)
+ 			return rc;
+-		rc = virtio_mem_mb_plug_and_add(vm, mb_id, &nb_sb);
++		rc = virtio_mem_sbm_plug_and_add_mb(vm, mb_id, &nb_sb);
+ 		if (rc)
+ 			return rc;
+ 		cond_resched();
+@@ -1384,13 +1384,13 @@ static int virtio_mem_plug_request(struct virtio_mem *vm, uint64_t diff)
+  *
+  * Note: Can fail after some subblocks were successfully unplugged.
+  */
+-static int virtio_mem_mb_unplug_any_sb_offline(struct virtio_mem *vm,
+-					       unsigned long mb_id,
+-					       uint64_t *nb_sb)
++static int virtio_mem_sbm_unplug_any_sb_offline(struct virtio_mem *vm,
++						unsigned long mb_id,
++						uint64_t *nb_sb)
+ {
+ 	int rc;
+ 
+-	rc = virtio_mem_mb_unplug_any_sb(vm, mb_id, nb_sb);
++	rc = virtio_mem_sbm_unplug_any_sb(vm, mb_id, nb_sb);
+ 
+ 	/* some subblocks might have been unplugged even on failure */
+ 	if (!virtio_mem_sbm_test_sb_plugged(vm, mb_id, 0, vm->nb_sb_per_mb))
+@@ -1422,9 +1422,9 @@ static int virtio_mem_mb_unplug_any_sb_offline(struct virtio_mem *vm,
+  *
+  * Will modify the state of the memory block.
+  */
+-static int virtio_mem_mb_unplug_sb_online(struct virtio_mem *vm,
+-					  unsigned long mb_id, int sb_id,
+-					  int count)
++static int virtio_mem_sbm_unplug_sb_online(struct virtio_mem *vm,
++					   unsigned long mb_id, int sb_id,
++					   int count)
+ {
+ 	const unsigned long nr_pages = PFN_DOWN(vm->subblock_size) * count;
+ 	unsigned long start_pfn;
+@@ -1438,7 +1438,7 @@ static int virtio_mem_mb_unplug_sb_online(struct virtio_mem *vm,
+ 		return rc;
+ 
+ 	/* Try to unplug the allocated memory */
+-	rc = virtio_mem_mb_unplug_sb(vm, mb_id, sb_id, count);
++	rc = virtio_mem_sbm_unplug_sb(vm, mb_id, sb_id, count);
+ 	if (rc) {
+ 		/* Return the memory to the buddy. */
+ 		virtio_mem_fake_online(start_pfn, nr_pages);
+@@ -1460,17 +1460,17 @@ static int virtio_mem_mb_unplug_sb_online(struct virtio_mem *vm,
+  * Note: Can fail after some subblocks were successfully unplugged. Can
+  *       return 0 even if subblocks were busy and could not get unplugged.
+  */
+-static int virtio_mem_mb_unplug_any_sb_online(struct virtio_mem *vm,
+-					      unsigned long mb_id,
+-					      uint64_t *nb_sb)
++static int virtio_mem_sbm_unplug_any_sb_online(struct virtio_mem *vm,
++					       unsigned long mb_id,
++					       uint64_t *nb_sb)
+ {
+ 	int rc, sb_id;
+ 
+ 	/* If possible, try to unplug the complete block in one shot. */
+ 	if (*nb_sb >= vm->nb_sb_per_mb &&
+ 	    virtio_mem_sbm_test_sb_plugged(vm, mb_id, 0, vm->nb_sb_per_mb)) {
+-		rc = virtio_mem_mb_unplug_sb_online(vm, mb_id, 0,
+-						    vm->nb_sb_per_mb);
++		rc = virtio_mem_sbm_unplug_sb_online(vm, mb_id, 0,
++						     vm->nb_sb_per_mb);
+ 		if (!rc) {
+ 			*nb_sb -= vm->nb_sb_per_mb;
+ 			goto unplugged;
+@@ -1487,7 +1487,7 @@ static int virtio_mem_mb_unplug_any_sb_online(struct virtio_mem *vm,
+ 		if (sb_id < 0)
+ 			break;
+ 
+-		rc = virtio_mem_mb_unplug_sb_online(vm, mb_id, sb_id, 1);
++		rc = virtio_mem_sbm_unplug_sb_online(vm, mb_id, sb_id, 1);
+ 		if (rc == -EBUSY)
+ 			continue;
+ 		else if (rc)
+@@ -1535,8 +1535,7 @@ static int virtio_mem_unplug_request(struct virtio_mem *vm, uint64_t diff)
+ 	/* Try to unplug subblocks of partially plugged offline blocks. */
+ 	virtio_mem_sbm_for_each_mb_rev(vm, mb_id,
+ 				       VIRTIO_MEM_SBM_MB_OFFLINE_PARTIAL) {
+-		rc = virtio_mem_mb_unplug_any_sb_offline(vm, mb_id,
+-							 &nb_sb);
++		rc = virtio_mem_sbm_unplug_any_sb_offline(vm, mb_id, &nb_sb);
+ 		if (rc || !nb_sb)
+ 			goto out_unlock;
+ 		cond_resched();
+@@ -1544,8 +1543,7 @@ static int virtio_mem_unplug_request(struct virtio_mem *vm, uint64_t diff)
+ 
+ 	/* Try to unplug subblocks of plugged offline blocks. */
+ 	virtio_mem_sbm_for_each_mb_rev(vm, mb_id, VIRTIO_MEM_SBM_MB_OFFLINE) {
+-		rc = virtio_mem_mb_unplug_any_sb_offline(vm, mb_id,
+-							 &nb_sb);
++		rc = virtio_mem_sbm_unplug_any_sb_offline(vm, mb_id, &nb_sb);
+ 		if (rc || !nb_sb)
+ 			goto out_unlock;
+ 		cond_resched();
+@@ -1559,8 +1557,7 @@ static int virtio_mem_unplug_request(struct virtio_mem *vm, uint64_t diff)
+ 	/* Try to unplug subblocks of partially plugged online blocks. */
+ 	virtio_mem_sbm_for_each_mb_rev(vm, mb_id,
+ 				       VIRTIO_MEM_SBM_MB_ONLINE_PARTIAL) {
+-		rc = virtio_mem_mb_unplug_any_sb_online(vm, mb_id,
+-							&nb_sb);
++		rc = virtio_mem_sbm_unplug_any_sb_online(vm, mb_id, &nb_sb);
+ 		if (rc || !nb_sb)
+ 			goto out_unlock;
+ 		mutex_unlock(&vm->hotplug_mutex);
+@@ -1570,8 +1567,7 @@ static int virtio_mem_unplug_request(struct virtio_mem *vm, uint64_t diff)
+ 
+ 	/* Try to unplug subblocks of plugged online blocks. */
+ 	virtio_mem_sbm_for_each_mb_rev(vm, mb_id, VIRTIO_MEM_SBM_MB_ONLINE) {
+-		rc = virtio_mem_mb_unplug_any_sb_online(vm, mb_id,
+-							&nb_sb);
++		rc = virtio_mem_sbm_unplug_any_sb_online(vm, mb_id, &nb_sb);
+ 		if (rc || !nb_sb)
+ 			goto out_unlock;
+ 		mutex_unlock(&vm->hotplug_mutex);
+@@ -1596,7 +1592,7 @@ static int virtio_mem_unplug_pending_mb(struct virtio_mem *vm)
+ 	int rc;
+ 
+ 	virtio_mem_sbm_for_each_mb(vm, mb_id, VIRTIO_MEM_SBM_MB_PLUGGED) {
+-		rc = virtio_mem_mb_unplug(vm, mb_id);
++		rc = virtio_mem_sbm_unplug_mb(vm, mb_id);
+ 		if (rc)
+ 			return rc;
+ 		virtio_mem_sbm_set_mb_state(vm, mb_id,
 -- 
 2.26.2
 
