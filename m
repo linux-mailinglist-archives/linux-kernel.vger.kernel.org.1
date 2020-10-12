@@ -2,178 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3B6C28BE12
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56DFC28BE15
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:35:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403882AbgJLQfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 12:35:00 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:10786 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403815AbgJLQfA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 12:35:00 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f8485a70000>; Mon, 12 Oct 2020 09:34:47 -0700
-Received: from [10.41.23.128] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 12 Oct
- 2020 16:34:53 +0000
-Subject: Re: [PATCH v2 1/2] cpufreq: tegra194: get consistent cpuinfo_cur_freq
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-CC:     <rjw@rjwysocki.net>, <sudeep.holla@arm.com>,
-        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <linux-pm@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <ksitaraman@nvidia.com>,
-        <bbasu@nvidia.com>, Sumit Gupta <sumitg@nvidia.com>
-References: <1602162066-26442-1-git-send-email-sumitg@nvidia.com>
- <1602162066-26442-2-git-send-email-sumitg@nvidia.com>
- <20201012052227.x3bigztr7fit4jdz@vireshk-i7>
-From:   Sumit Gupta <sumitg@nvidia.com>
-Message-ID: <20018a6a-e230-c39c-e801-5a3d0dd4c0ec@nvidia.com>
-Date:   Mon, 12 Oct 2020 22:04:50 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S2403889AbgJLQfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 12:35:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36238 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390442AbgJLQfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 12:35:45 -0400
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A743C2087E;
+        Mon, 12 Oct 2020 16:35:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602520545;
+        bh=YcQkpt6LAikAkB8QxaNKH7LeylYY9QtLEPxQqeO6Opc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=h3CNKfqwIHPV7BZ9hlGFurPVOoV3tPc0rsL8zhSQ3bYNeva/1gL1LMR6EgvNgZ1ky
+         Iue96vWauoxpSjbJ0nTKmHeG1rslzfbYWaB/Mq5x5OWvhn/dOTTQ8G9m+BlO9Y3Tp0
+         Y7SUutsnxm/64ZLRdP9PVhAzUFjaKyM+162FzfvU=
+Date:   Mon, 12 Oct 2020 09:35:43 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Daniel Rosenberg <drosen@google.com>
+Subject: [GIT PULL] fscrypt updates for 5.10
+Message-ID: <20201012163543.GB858@sol.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <20201012052227.x3bigztr7fit4jdz@vireshk-i7>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1602520487; bh=n1qI8h6lolczD6I+nv4TVNxGO/CQlyYt+0RLcmOfUxM=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=LO+ZSK6aVPbJ/RX5N3pqGWeA342HMfx8yq9HeTcYCC9ooOqIUyE0s3+i02ZnpMuQq
-         Oj+rPJLlQv/pPJr/wanp5gJNH9k+cuRcKr+en8UgAiMB8S1BMiXWEmOKIMibGxby1K
-         kzCz3faX4NtG+fXpaeDwzLLnz7222ByJc6lIqej5K8ZLP7X0Tnmkaj1YEEz4GdCQXh
-         agYSlsVL1rktF6KNHoeQ/f23wnB5GMpZyQXDed/2yqgwGnCaBY66oDVpo+1/4eD/x6
-         VLyZBV4uqpUTBpwLinzLsOCOgjm2MkUeKef5llH9vi/cRBeve0IU8BulDo7gNsAOB2
-         6TmnXlhoEIPXw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> Frequency returned by 'cpuinfo_cur_freq' using counters is not fixed
->> and keeps changing slightly. This change returns a consistent value
->> from freq_table. If the reconstructed frequency has acceptable delta
->> from the last written value, then return the frequency corresponding
->> to the last written ndiv value from freq_table. Otherwise, print a
->> warning and return the reconstructed freq.
->>
->> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
->> ---
->>   drivers/cpufreq/tegra194-cpufreq.c | 71 +++++++++++++++++++++++++++++++++-----
->>   1 file changed, 62 insertions(+), 9 deletions(-)
->>
->> diff --git a/drivers/cpufreq/tegra194-cpufreq.c b/drivers/cpufreq/tegra194-cpufreq.c
->> index e1d931c..d250e49 100644
->> --- a/drivers/cpufreq/tegra194-cpufreq.c
->> +++ b/drivers/cpufreq/tegra194-cpufreq.c
->> @@ -180,9 +180,70 @@ static unsigned int tegra194_get_speed_common(u32 cpu, u32 delay)
->>        return (rate_mhz * KHZ); /* in KHz */
->>   }
->>
->> +static void get_cpu_ndiv(void *ndiv)
->> +{
->> +     u64 ndiv_val;
->> +
->> +     asm volatile("mrs %0, s3_0_c15_c0_4" : "=r" (ndiv_val) : );
->> +
->> +     *(u64 *)ndiv = ndiv_val;
->> +}
->> +
->> +static void set_cpu_ndiv(void *data)
-> 
-> You weren't required to do this unnecessary change.
-> 
-ya, moved the function up to keep both {get_|set_} calls together.
+The following changes since commit f4d51dffc6c01a9e94650d95ce0104964f8ae822:
 
->> +{
->> +     struct cpufreq_frequency_table *tbl = data;
->> +     u64 ndiv_val = (u64)tbl->driver_data;
->> +
->> +     asm volatile("msr s3_0_c15_c0_4, %0" : : "r" (ndiv_val));
->> +}
->> +
->>   static unsigned int tegra194_get_speed(u32 cpu)
->>   {
->> -     return tegra194_get_speed_common(cpu, US_DELAY);
->> +     struct tegra194_cpufreq_data *data = cpufreq_get_driver_data();
->> +     struct cpufreq_frequency_table *pos;
->> +     unsigned int rate;
->> +     u64 ndiv;
->> +     int ret;
->> +     u32 cl;
->> +
->> +     if (!cpu_online(cpu))
-> 
-> This isn't required. The CPU is guaranteed to be online here.
-> 
-OK, will remove this in next version.
+  Linux 5.9-rc4 (2020-09-06 17:11:40 -0700)
 
->> +             return -EINVAL;
->> +
->> +     smp_call_function_single(cpu, get_cpu_cluster, &cl, true);
->> +
->> +     if (cl >= data->num_clusters)
-> 
-> Is it really possible here ? I meant you must have already checked
-> this at cpufreq-init level already. Else mark it unlikely at least.
-> 
-Ya, will remove the check here.
+are available in the Git repository at:
 
->> +             return -EINVAL;
->> +
->> +     /* reconstruct actual cpu freq using counters */
->> +     rate = tegra194_get_speed_common(cpu, US_DELAY);
->> +
->> +     /* get last written ndiv value */
->> +     ret = smp_call_function_single(cpu, get_cpu_ndiv, &ndiv, true);
->> +     if (ret) {
-> 
-> What exactly can fail here ? get_cpu_ndiv() can't fail. Do we really
-> need this check ? What about WARN_ON_ONCE() ?
-> 
-OK.
+  https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
 
->> +             pr_err("cpufreq: Failed to get ndiv for CPU%d, ret:%d\n",
->> +                    cpu, ret);
->> +             return rate;
->> +     }
->> +
->> +     /*
->> +      * If the reconstructed frequency has acceptable delta from
->> +      * the last written value, then return freq corresponding
->> +      * to the last written ndiv value from freq_table. This is
->> +      * done to return consistent value.
->> +      */
->> +     cpufreq_for_each_valid_entry(pos, data->tables[cl]) {
->> +             if (pos->driver_data != ndiv)
->> +                     continue;
->> +
->> +             if (abs(pos->frequency - rate) > 115200) {
-> 
-> where does this 115200 comes from ? Strange that it matches tty's baud
-> rate :)
->The value is equal to one freq step size.
+for you to fetch changes up to 5b2a828b98ec1872799b1b4d82113c76a12d594f:
 
-> This is 115 MHz, right ? Isn't that too big of a delta ?
-> 
-The is the acceptable delta used during our testing keeping some margin.
+  fscrypt: export fscrypt_d_revalidate() (2020-09-28 14:44:51 -0700)
 
->> +                     pr_warn("cpufreq: cpu%d,cur:%u,set:%u,set ndiv:%llu\n",
->> +                             cpu, rate, pos->frequency, ndiv);
->> +             } else {
->> +                     rate = pos->frequency;
->> +             }
->> +             break;
->> +     }
->> +     return rate;
->>   }
-> 
-> --
-> viresh
-> 
+----------------------------------------------------------------
+
+This release, we rework the implementation of creating new encrypted
+files in order to fix some deadlocks and prepare for adding fscrypt
+support to CephFS, which Jeff Layton is working on.
+
+We also export a symbol in preparation for the above-mentioned CephFS
+support and also for ext4/f2fs encrypt+casefold support.
+
+Finally, there are a few other small cleanups.
+
+As usual, all these patches have been in linux-next with no reported
+issues, and I've tested them with xfstests.
+
+----------------------------------------------------------------
+Eric Biggers (18):
+      fscrypt: restrict IV_INO_LBLK_32 to ino_bits <= 32
+      fscrypt: add fscrypt_prepare_new_inode() and fscrypt_set_context()
+      ext4: factor out ext4_xattr_credits_for_new_inode()
+      ext4: use fscrypt_prepare_new_inode() and fscrypt_set_context()
+      f2fs: use fscrypt_prepare_new_inode() and fscrypt_set_context()
+      ubifs: use fscrypt_prepare_new_inode() and fscrypt_set_context()
+      fscrypt: adjust logging for in-creation inodes
+      fscrypt: remove fscrypt_inherit_context()
+      fscrypt: require that fscrypt_encrypt_symlink() already has key
+      fscrypt: stop pretending that key setup is nofs-safe
+      fscrypt: make "#define fscrypt_policy" user-only
+      fscrypt: move fscrypt_prepare_symlink() out-of-line
+      fscrypt: handle test_dummy_encryption in more logical way
+      fscrypt: make fscrypt_set_test_dummy_encryption() take a 'const char *'
+      fscrypt: use sha256() instead of open coding
+      fscrypt: don't call no-key names "ciphertext names"
+      fscrypt: rename DCACHE_ENCRYPTED_NAME to DCACHE_NOKEY_NAME
+      fscrypt: export fscrypt_d_revalidate()
+
+Jeff Layton (1):
+      fscrypt: drop unused inode argument from fscrypt_fname_alloc_buffer
+
+ fs/crypto/crypto.c           |   4 +-
+ fs/crypto/fname.c            |  60 ++++++-------
+ fs/crypto/fscrypt_private.h  |  10 ++-
+ fs/crypto/hooks.c            |  80 +++++++++++------
+ fs/crypto/inline_crypt.c     |   7 +-
+ fs/crypto/keyring.c          |   9 +-
+ fs/crypto/keysetup.c         | 182 +++++++++++++++++++++++++++----------
+ fs/crypto/keysetup_v1.c      |   8 +-
+ fs/crypto/policy.c           | 209 ++++++++++++++++++++++++-------------------
+ fs/ext4/dir.c                |   2 +-
+ fs/ext4/ext4.h               |   6 +-
+ fs/ext4/ialloc.c             | 119 ++++++++++++------------
+ fs/ext4/namei.c              |   7 +-
+ fs/ext4/super.c              |  16 ++--
+ fs/f2fs/dir.c                |   6 +-
+ fs/f2fs/f2fs.h               |  25 +-----
+ fs/f2fs/namei.c              |   7 +-
+ fs/f2fs/super.c              |  15 ++--
+ fs/ubifs/dir.c               |  40 ++++-----
+ include/linux/dcache.h       |   2 +-
+ include/linux/fscrypt.h      | 159 +++++++++++++-------------------
+ include/uapi/linux/fscrypt.h |   6 +-
+ 22 files changed, 535 insertions(+), 444 deletions(-)
