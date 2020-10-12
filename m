@@ -2,80 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85C5F28B600
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:21:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 449CB28B5DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388949AbgJLNTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:19:50 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15279 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388892AbgJLNTh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:19:37 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id C9C39797ABAAB2713AE6;
-        Mon, 12 Oct 2020 21:19:35 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.177.134) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 12 Oct 2020 21:19:29 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Wei Xu <xuwei5@hisilicon.com>, Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 11/11] arm64: dts: hisilicon: list all clocks required by snps-dw-apb-uart.yaml
-Date:   Mon, 12 Oct 2020 21:17:39 +0800
-Message-ID: <20201012131739.1655-12-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20201012131739.1655-1-thunder.leizhen@huawei.com>
-References: <20201012131739.1655-1-thunder.leizhen@huawei.com>
+        id S2388835AbgJLNRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:17:52 -0400
+Received: from foss.arm.com ([217.140.110.172]:45322 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387906AbgJLNRv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:17:51 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 28B05D6E;
+        Mon, 12 Oct 2020 06:17:51 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3DB4E3F66B;
+        Mon, 12 Oct 2020 06:17:50 -0700 (PDT)
+References: <20200424135657.32519-1-valentin.schneider@arm.com> <20200603170511.GA23722@bogus> <jhjimg8hwvf.mognet@arm.com>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Lorenzo Pieralisi <Lorenzo.Pieralisi@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 0/2] firmware/psci: PSCI checker cleanup
+In-reply-to: <jhjimg8hwvf.mognet@arm.com>
+Date:   Mon, 12 Oct 2020 14:17:44 +0100
+Message-ID: <jhj7drveg7b.mognet@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.134]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The snps,dw-apb-uart binding need to specify two clocks: "baudclk",
-"apb_pclk". But only "apb_pclk" is specified now. Because the driver
-preferentially matches the first clock. Otherwise, it matches the second
-clock instead of both clocks. So both of them use the same clock don't
-change the function.
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- arch/arm64/boot/dts/hisilicon/hip05.dtsi | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Hi,
 
-diff --git a/arch/arm64/boot/dts/hisilicon/hip05.dtsi b/arch/arm64/boot/dts/hisilicon/hip05.dtsi
-index 26caf09e9511b3c..c073d6d8b55c0b4 100644
---- a/arch/arm64/boot/dts/hisilicon/hip05.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hip05.dtsi
-@@ -300,8 +300,8 @@
- 			compatible = "snps,dw-apb-uart";
- 			reg = <0x0 0x80300000 0x0 0x10000>;
- 			interrupts = <GIC_SPI 317 IRQ_TYPE_LEVEL_HIGH>;
--			clocks = <&refclk200mhz>;
--			clock-names = "apb_pclk";
-+			clocks = <&refclk200mhz>, <&refclk200mhz>;
-+			clock-names = "baudclk", "apb_pclk";
- 			reg-shift = <2>;
- 			reg-io-width = <4>;
- 			status = "disabled";
-@@ -311,8 +311,8 @@
- 			compatible = "snps,dw-apb-uart";
- 			reg = <0x0 0x80310000 0x0 0x10000>;
- 			interrupts = <GIC_SPI 318 IRQ_TYPE_LEVEL_HIGH>;
--			clocks = <&refclk200mhz>;
--			clock-names = "apb_pclk";
-+			clocks = <&refclk200mhz>, <&refclk200mhz>;
-+			clock-names = "baudclk", "apb_pclk";
- 			reg-shift = <2>;
- 			reg-io-width = <4>;
- 			status = "disabled";
--- 
-1.8.3
+On 03/06/20 18:39, Valentin Schneider wrote:
+> On 03/06/20 18:05, Sudeep Holla wrote:
+>> On Fri, Apr 24, 2020 at 02:56:55PM +0100, Valentin Schneider wrote:
+>>> Hi folks,
+>>>
+>>> This is a small cleanup of the PSCI checker following Peter's objections
+>>> to its homegrown do_idle() implementation. It is based on his
+>>> sched_setscheduler() unexport series at [1].
+>>>
+>>> I've never really used the thing before, but it still seems to behave
+>>> correctly on my Juno r0 & HiKey960.
+>>>
+>>
+>> Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
+>> Tested-by: Sudeep Holla <sudeep.holla@arm.com>
+>
+> Thanks!
+>
+> AIUI the plan is to have the base in for the following version, so we
+> can wait until then - or I can rebase this on top of mainline, and
+> whoever will be on the receiving end of the merge conflict will be
+> slightly annoyed :-)
+>
+> I'm in no particular rush, and this isn't very hot code, so up to you.
+>
 
+The sched_setscheduler() series is in 5.9. Patches apply cleanly atop 5.9,
+and I double-checked on my Juno that they still actually work :-)
 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
