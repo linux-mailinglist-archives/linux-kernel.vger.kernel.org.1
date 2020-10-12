@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7E8828B100
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 10:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC8C828B10C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 11:01:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728783AbgJLI74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 04:59:56 -0400
-Received: from mga06.intel.com ([134.134.136.31]:2608 "EHLO mga06.intel.com"
+        id S1728821AbgJLJBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 05:01:55 -0400
+Received: from mga05.intel.com ([192.55.52.43]:28728 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728269AbgJLI7z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 04:59:55 -0400
-IronPort-SDR: 0IyCp11gaMmaqStOTLip1CMvdzgSWDBKFxjh/eJ72YFW0qWx7gac74ddhL+65EETpU1agV+QFB
- ZnofzUoDEJtg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="227355796"
+        id S1727121AbgJLJBy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 05:01:54 -0400
+IronPort-SDR: MDjwfYEo/Qb+6vCEHSV/ci2yxw0hlvGsN8ab7On7Ivgv9cLZZF6wmIJCHjdRid0T7lULJZv9dU
+ xrA88hmAgrhQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="250403829"
 X-IronPort-AV: E=Sophos;i="5.77,366,1596524400"; 
-   d="scan'208";a="227355796"
+   d="scan'208";a="250403829"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 01:59:55 -0700
-IronPort-SDR: oUe4XakV58n0uj0WbKD26dCGGM/iSGw9XnRz4rspEpfYFI879IiqaK9AMwIQQ3YzqccjWAEDEm
- f5L5dhG06m7Q==
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 02:01:54 -0700
+IronPort-SDR: 2m6Tg1BaJ4CE+U8ZZuPIQJWYDs1aeHRWSBbX6zd9OFixxWBpRcMcK7XkRkjb14Kk0vzp9hG/6t
+ ZE+KjMajww0g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,366,1596524400"; 
-   d="scan'208";a="329676643"
+   d="scan'208";a="356553768"
 Received: from linux.intel.com ([10.54.29.200])
-  by orsmga002.jf.intel.com with ESMTP; 12 Oct 2020 01:59:55 -0700
+  by orsmga007.jf.intel.com with ESMTP; 12 Oct 2020 02:01:53 -0700
 Received: from [10.249.225.186] (abudanko-mobl.ccr.corp.intel.com [10.249.225.186])
-        by linux.intel.com (Postfix) with ESMTP id B248A580814;
-        Mon, 12 Oct 2020 01:59:52 -0700 (PDT)
-Subject: [PATCH v1 07/15] perf record: introduce trace file, compressor and
- stats in mmap object
+        by linux.intel.com (Postfix) with ESMTP id 531E15805EC;
+        Mon, 12 Oct 2020 02:01:51 -0700 (PDT)
+Subject: [PATCH v1 08/15] perf record: write trace data into mmap trace files
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@redhat.com>
 Cc:     Namhyung Kim <namhyung@kernel.org>,
@@ -44,8 +43,8 @@ Cc:     Namhyung Kim <namhyung@kernel.org>,
 References: <810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com>
 From:   Alexey Budankov <alexey.budankov@linux.intel.com>
 Organization: Intel Corp.
-Message-ID: <781092bf-8b1d-9d01-367b-b83d88bccf7b@linux.intel.com>
-Date:   Mon, 12 Oct 2020 11:59:51 +0300
+Message-ID: <0652b8dd-e753-7c10-27e9-af9524e7ccc5@linux.intel.com>
+Date:   Mon, 12 Oct 2020 12:01:50 +0300
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.1
 MIME-Version: 1.0
@@ -58,188 +57,136 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Introduce trace file and compressor objects into mmap object so
-they could be used to process and store data stream from the
-corresponding kernel data buffer. Introduce bytes_transferred
-and bytes_compressed stats so they would capture statistics for
-the related data buffer transfers. Make use of the introduced
-per mmap file, compressor and stats when they are initialized
-and available.
+Write trace data into per mmap trace files located
+at data directory. Streaming thread adjusts its affinity
+according to mask of the buffer being processed.
 
 Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
 ---
- tools/perf/builtin-record.c | 47 +++++++++++++++++++++++++++----------
- tools/perf/util/mmap.c      |  6 +++++
- tools/perf/util/mmap.h      |  5 ++++
- 3 files changed, 46 insertions(+), 12 deletions(-)
+ tools/perf/builtin-record.c | 44 ++++++++++++++++++++++++++++++++-----
+ tools/perf/util/record.h    |  1 +
+ 2 files changed, 39 insertions(+), 6 deletions(-)
 
 diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index adf311d15d3d..619aaee11231 100644
+index 619aaee11231..ba26d75c51d6 100644
 --- a/tools/perf/builtin-record.c
 +++ b/tools/perf/builtin-record.c
-@@ -150,11 +150,17 @@ static int record__write(struct record *rec, struct mmap *map __maybe_unused,
- {
- 	struct perf_data_file *file = &rec->session->data->file;
- 
-+	if (map && map->file)
-+		file = map->file;
-+
- 	if (perf_data_file__write(file, bf, size) < 0) {
- 		pr_err("failed to write perf data, error: %m\n");
- 		return -1;
- 	}
- 
-+	if (file != &rec->session->data->file)
-+		return 0;
-+
- 	rec->bytes_written += size;
- 
- 	if (record__output_max_size_exceeded(rec) && !done) {
-@@ -172,8 +178,8 @@ static int record__write(struct record *rec, struct mmap *map __maybe_unused,
- 
- static int record__aio_enabled(struct record *rec);
- static int record__comp_enabled(struct record *rec);
--static size_t zstd_compress(struct perf_session *session, void *dst, size_t dst_size,
--			    void *src, size_t src_size);
-+static size_t zstd_compress(struct zstd_data *data,
-+			    void *dst, size_t dst_size, void *src, size_t src_size);
- 
- #ifdef HAVE_AIO_SUPPORT
- static int record__aio_write(struct aiocb *cblock, int trace_fd,
-@@ -291,6 +297,7 @@ struct record_aio {
- static int record__aio_pushfn(struct mmap *map, void *to, void *buf, size_t size)
- {
- 	struct record_aio *aio = to;
-+	size_t compressed = size;
- 
- 	/*
- 	 * map->core.base data pointed by buf is copied into free map->aio.data[] buffer
-@@ -307,9 +314,14 @@ static int record__aio_pushfn(struct mmap *map, void *to, void *buf, size_t size
- 	 */
- 
- 	if (record__comp_enabled(aio->rec)) {
--		size = zstd_compress(aio->rec->session, aio->data + aio->size,
--				     mmap__mmap_len(map) - aio->size,
-+		struct zstd_data *zstd_data = &(aio->rec->session->zstd_data);
-+
-+		compressed = zstd_compress(zstd_data,
-+				     aio->data + aio->size, mmap__mmap_len(map) - aio->size,
- 				     buf, size);
-+
-+		aio->rec->session->bytes_transferred += size;
-+		aio->rec->session->bytes_compressed  += compressed;
- 	} else {
- 		memcpy(aio->data + aio->size, buf, size);
- 	}
-@@ -328,7 +340,7 @@ static int record__aio_pushfn(struct mmap *map, void *to, void *buf, size_t size
- 		perf_mmap__get(&map->core);
- 	}
- 
--	aio->size += size;
-+	aio->size += compressed;
- 
- 	return size;
- }
-@@ -532,14 +544,28 @@ static int process_locked_synthesized_event(struct perf_tool *tool,
- static int record__pushfn(struct mmap *map, void *to, void *bf, size_t size)
- {
- 	struct record *rec = to;
-+	size_t compressed = size;
- 
- 	if (record__comp_enabled(rec)) {
--		size = zstd_compress(rec->session, map->data, mmap__mmap_len(map), bf, size);
-+		struct zstd_data *zstd_data = &rec->session->zstd_data;
-+
-+		if (map->file)
-+			zstd_data = &map->zstd_data;
-+
-+		compressed = zstd_compress(zstd_data, map->data, mmap__mmap_len(map), bf, size);
- 		bf   = map->data;
-+
-+		if (map->file) {
-+			map->bytes_transferred += size;
-+			map->bytes_compressed  += compressed;
-+		} else {
-+			rec->session->bytes_transferred += size;
-+			rec->session->bytes_compressed  += compressed;
-+		}
- 	}
- 
- 	rec->samples++;
--	return record__write(rec, map, bf, size);
-+	return record__write(rec, map, bf, compressed);
- }
- 
- static volatile int signr = -1;
-@@ -1079,18 +1105,15 @@ static size_t process_comp_header(void *record, size_t increment)
- 	return size;
- }
- 
--static size_t zstd_compress(struct perf_session *session, void *dst, size_t dst_size,
-+static size_t zstd_compress(struct zstd_data *zstd_data, void *dst, size_t dst_size,
- 			    void *src, size_t src_size)
- {
- 	size_t compressed;
- 	size_t max_record_size = PERF_SAMPLE_MAX_SIZE - sizeof(struct perf_record_compressed) - 1;
- 
--	compressed = zstd_compress_stream_to_records(&session->zstd_data, dst, dst_size, src, src_size,
-+	compressed = zstd_compress_stream_to_records(zstd_data, dst, dst_size, src, src_size,
- 						     max_record_size, process_comp_header);
- 
--	session->bytes_transferred += src_size;
--	session->bytes_compressed  += compressed;
--
- 	return compressed;
- }
- 
-diff --git a/tools/perf/util/mmap.c b/tools/perf/util/mmap.c
-index ab7108d22428..a2c5e4237592 100644
---- a/tools/perf/util/mmap.c
-+++ b/tools/perf/util/mmap.c
-@@ -230,6 +230,8 @@ void mmap__munmap(struct mmap *map)
- {
- 	bitmap_free(map->affinity_mask.bits);
- 
-+	zstd_fini(&map->zstd_data);
-+
- 	perf_mmap__aio_munmap(map);
- 	if (map->data != NULL) {
- 		munmap(map->data, mmap__mmap_len(map));
-@@ -291,6 +293,10 @@ int mmap__mmap(struct mmap *map, struct mmap_params *mp, int fd, int cpu)
- 	map->core.flush = mp->flush;
- 
- 	map->comp_level = mp->comp_level;
-+	if (zstd_init(&map->zstd_data, map->comp_level)) {
-+		pr_debug2("failed to init mmap commpressor, error %d\n", errno);
-+		return -1;
-+	}
- 
- 	if (map->comp_level && !perf_mmap__aio_enabled(map)) {
- 		map->data = mmap(NULL, mmap__mmap_len(map), PROT_READ|PROT_WRITE,
-diff --git a/tools/perf/util/mmap.h b/tools/perf/util/mmap.h
-index 9d5f589f02ae..d98b0bdedeac 100644
---- a/tools/perf/util/mmap.h
-+++ b/tools/perf/util/mmap.h
-@@ -13,6 +13,7 @@
- #endif
- #include "auxtrace.h"
- #include "event.h"
-+#include "util/compress.h"
- 
- struct aiocb;
- 
-@@ -43,6 +44,10 @@ struct mmap {
- 	struct mmap_cpu_mask	affinity_mask;
- 	void		*data;
- 	int		comp_level;
-+	struct perf_data_file *file;
-+	struct zstd_data      zstd_data;
-+	u64		      bytes_transferred;
-+	u64		      bytes_compressed;
+@@ -120,6 +120,11 @@ static const char *affinity_tags[PERF_AFFINITY_MAX] = {
+ 	"SYS", "NODE", "CPU"
  };
  
- struct mmap_params {
++static int record__threads_enabled(struct record *rec)
++{
++	return rec->opts.threads;
++}
++
+ static bool switch_output_signal(struct record *rec)
+ {
+ 	return rec->switch_output.signal &&
+@@ -894,6 +899,20 @@ static int record__mmap_evlist(struct record *rec,
+ 				return -EINVAL;
+ 		}
+ 	}
++
++	if (record__threads_enabled(rec)) {
++		int i, ret, nr = evlist->core.nr_mmaps;
++		struct mmap *mmaps = rec->opts.overwrite ?
++				     evlist->overwrite_mmap : evlist->mmap;
++
++		ret = perf_data__create_dir(&rec->data, evlist->core.nr_mmaps);
++		if (ret)
++			return ret;
++
++		for (i = 0; i < nr; i++)
++			mmaps[i].file = &rec->data.dir.files[i];
++	}
++
+ 	return 0;
+ }
+ 
+@@ -1184,8 +1203,12 @@ static int record__mmap_read_evlist(struct record *rec, struct evlist *evlist,
+ 	/*
+ 	 * Mark the round finished in case we wrote
+ 	 * at least one event.
++	 *
++	 * No need for round events in directory mode,
++	 * because per-cpu maps and files have data
++	 * sorted by kernel.
+ 	 */
+-	if (bytes_written != rec->bytes_written)
++	if (!record__threads_enabled(rec) && bytes_written != rec->bytes_written)
+ 		rc = record__write(rec, NULL, &finished_round_event, sizeof(finished_round_event));
+ 
+ 	if (overwrite)
+@@ -1231,7 +1254,9 @@ static void record__init_features(struct record *rec)
+ 	if (!rec->opts.use_clockid)
+ 		perf_header__clear_feat(&session->header, HEADER_CLOCK_DATA);
+ 
+-	perf_header__clear_feat(&session->header, HEADER_DIR_FORMAT);
++	if (!record__threads_enabled(rec))
++		perf_header__clear_feat(&session->header, HEADER_DIR_FORMAT);
++
+ 	if (!record__comp_enabled(rec))
+ 		perf_header__clear_feat(&session->header, HEADER_COMPRESSED);
+ 
+@@ -1242,15 +1267,21 @@ static void
+ record__finish_output(struct record *rec)
+ {
+ 	struct perf_data *data = &rec->data;
+-	int fd = perf_data__fd(data);
++	int i, fd = perf_data__fd(data);
+ 
+ 	if (data->is_pipe)
+ 		return;
+ 
+ 	rec->session->header.data_size += rec->bytes_written;
+ 	data->file.size = lseek(perf_data__fd(data), 0, SEEK_CUR);
++	if (record__threads_enabled(rec)) {
++		for (i = 0; i < data->dir.nr; i++)
++			data->dir.files[i].size = lseek(data->dir.files[i].fd, 0, SEEK_CUR);
++	}
+ 
+ 	if (!rec->no_buildid) {
++		/* this will be recalculated during process_buildids() */
++		rec->samples = 0;
+ 		process_buildids(rec);
+ 
+ 		if (rec->buildid_all)
+@@ -2041,8 +2072,6 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 		status = err;
+ 
+ 	record__synthesize(rec, true);
+-	/* this will be recalculated during process_buildids() */
+-	rec->samples = 0;
+ 
+ 	if (!err) {
+ 		if (!rec->timestamp_filename) {
+@@ -2680,9 +2709,12 @@ int cmd_record(int argc, const char **argv)
+ 
+ 	}
+ 
+-	if (rec->opts.kcore)
++	if (rec->opts.kcore || record__threads_enabled(rec))
+ 		rec->data.is_dir = true;
+ 
++	if (record__threads_enabled(rec))
++		rec->opts.affinity = PERF_AFFINITY_CPU;
++
+ 	if (rec->opts.comp_level != 0) {
+ 		pr_debug("Compression enabled, disabling build id collection at the end of the session.\n");
+ 		rec->no_buildid = true;
+diff --git a/tools/perf/util/record.h b/tools/perf/util/record.h
+index 266760ac9143..aeda3cdaa3e9 100644
+--- a/tools/perf/util/record.h
++++ b/tools/perf/util/record.h
+@@ -74,6 +74,7 @@ struct record_opts {
+ 	int	      ctl_fd;
+ 	int	      ctl_fd_ack;
+ 	bool	      ctl_fd_close;
++	bool	      threads;
+ };
+ 
+ extern const char * const *record_usage;
 -- 
 2.24.1
-
 
