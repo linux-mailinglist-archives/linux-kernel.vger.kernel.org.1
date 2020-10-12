@@ -2,138 +2,412 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE51128C523
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 01:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3494728C524
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 01:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731361AbgJLXUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 19:20:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39748 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726744AbgJLXUM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 19:20:12 -0400
-Received: from localhost (unknown [176.164.225.223])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2F0002076D;
-        Mon, 12 Oct 2020 23:20:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602544811;
-        bh=FR/XhIiRDNVQjTauUtYXk48qWpsYZADdnNm8X2ctaWQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qq5ShvRN7W/05X85qGJqqh5KHoOF31TRFGWcqUMU7hCKTS+z7FNw/lrg0QDfyPbgZ
-         kAGfva6WKdEFbW4jKxwqCP2zXQw8WC18mjuVnaBBNuoy9Zr+JugOpGLA4xsYKHwL6m
-         JS93CChPZh5NbdhSG6hIn/uOJT8EWNupH12A9O4Q=
-Date:   Tue, 13 Oct 2020 01:20:08 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        neeraj.iitr10@gmail.com, "Paul E. McKenney" <paulmck@kernel.org>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Subject: Re: [PATCH v6 2/4] rcu/segcblist: Add counters to segcblist
- datastructure
-Message-ID: <20201012232008.GA47577@lothringen>
-References: <20200923152211.2403352-1-joel@joelfernandes.org>
- <20200923152211.2403352-3-joel@joelfernandes.org>
+        id S1732270AbgJLX0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 19:26:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732248AbgJLX0x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 19:26:53 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EF24C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 16:26:53 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id q7so17831373ile.8
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 16:26:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=yZ1XgYKQi74c3LzUZlQBx6s8XwXYzrwvLZYJvrQ0Zhc=;
+        b=JdDAYJiDTYdWdQyoQN34Dnl30bJ+9iSY5Ibs6p5/UJQaRSmeg4/6u8zQrRN+bUJf87
+         DUcqph9usEVA45IKz2rXTVHOr8Gn/QegRLdZlY1GF6lopbeNgDzIsu9R3JFX48Wo9JgI
+         fw/aTQZwwdu/RrY8GC5Mt3/g70Ico+3LTnnag=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=yZ1XgYKQi74c3LzUZlQBx6s8XwXYzrwvLZYJvrQ0Zhc=;
+        b=rGxWSAgCanhFWWgtu1MzLywpjz73srdAuuTBPIqIJb6U8qStYQ8wki08ZdAtejFHw3
+         kZdCdyZsaUR16EUyeqgnWMOFI7bd0xLrSvERNB04vdDZE7WLJrZ30Ap5SzWDS4lV2/o1
+         WR6wO27WH3viZipfU7pK9e9a4AF2U168mLoVCuoHfu5T1cLHF+oW+q6e2P05SeriTc1W
+         GRC+aEeeJnxESQ51+Of/f/b2m431FUhFXXURJ8UXMO/D8dfJX1G804g+wseKVhAwe/Kg
+         zjOHKCIGHWHYOwrmJabQpYH1rm6sh6O4bcpI8KjQFbw7Gi5r6gX+5UW70TCVDdwsrecm
+         LCPQ==
+X-Gm-Message-State: AOAM531QCPGtHuQXDokiLcOtpLgRpvD9QC4CaEP1TdG3mC6wcAcrNwSG
+        lNYtUGXLrLbJfS27fQ3nktNr4N1fC2uRQFLuHipU
+X-Google-Smtp-Source: ABdhPJxB5b2y5tqwcU3Hvh0JGy0KeYziPyUwVoaZZ3ckmtAFQqVVXAvjoIURiDf7TyMZtmq4zyUaqynhmQ3yMltyIpQ=
+X-Received: by 2002:a05:6e02:54d:: with SMTP id i13mr854195ils.219.1602545212336;
+ Mon, 12 Oct 2020 16:26:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200923152211.2403352-3-joel@joelfernandes.org>
+References: <20201009211344.2358688-1-atish.patra@wdc.com> <20201009211344.2358688-5-atish.patra@wdc.com>
+ <CAHCEehJvMv=CYD1+QXb0uB36Hv4pvO36BAKSLOcxTXvmADZFbA@mail.gmail.com>
+In-Reply-To: <CAHCEehJvMv=CYD1+QXb0uB36Hv4pvO36BAKSLOcxTXvmADZFbA@mail.gmail.com>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Mon, 12 Oct 2020 16:26:41 -0700
+Message-ID: <CAOnJCUKPjkm_=5eHn6=GjVGr67okZkVzqP7-ciphn986BQoc9w@mail.gmail.com>
+Subject: Re: [PATCH 4/5] RISC-V: Protect .init.text & .init.data
+To:     Greentime Hu <greentime.hu@sifive.com>
+Cc:     Atish Patra <atish.patra@wdc.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Anup Patel <anup@brainfault.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Zong Li <zong.li@sifive.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Borislav Petkov <bp@suse.de>,
+        Michel Lespinasse <walken@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 11:22:09AM -0400, Joel Fernandes (Google) wrote:
-> +/* Return number of callbacks in a segment of the segmented callback list. */
-> +static void rcu_segcblist_add_seglen(struct rcu_segcblist *rsclp, int seg, long v)
-> +{
-> +#ifdef CONFIG_RCU_NOCB_CPU
-> +	smp_mb__before_atomic(); /* Up to the caller! */
-> +	atomic_long_add(v, &rsclp->seglen[seg]);
-> +	smp_mb__after_atomic(); /* Up to the caller! */
-> +#else
-> +	smp_mb(); /* Up to the caller! */
-> +	WRITE_ONCE(rsclp->seglen[seg], rsclp->seglen[seg] + v);
-> +	smp_mb(); /* Up to the caller! */
-> +#endif
-> +}
+On Mon, Oct 12, 2020 at 6:15 AM Greentime Hu <greentime.hu@sifive.com> wrot=
+e:
+>
+> Atish Patra <atish.patra@wdc.com> =E6=96=BC 2020=E5=B9=B410=E6=9C=8810=E6=
+=97=A5 =E9=80=B1=E5=85=AD =E4=B8=8A=E5=8D=885:13=E5=AF=AB=E9=81=93=EF=BC=9A
+> >
+> > Currently, .init.text & .init.data are intermixed which makes it imposs=
+ible
+> > apply different permissions to them. .init.data shouldn't need exec
+> > permissions while .init.text shouldn't have write permission.
+> >
+> > Keep them in separate sections so that different permissions are applie=
+d to
+> > each section. This improves the kernel protection under
+> > CONFIG_STRICT_KERNEL_RWX. We also need to restore the permissions for t=
+he
+> > entire _init section after it is freed so that those pages can be used =
+for
+> > other purpose.
+> >
+> > Signed-off-by: Atish Patra <atish.patra@wdc.com>
+> > ---
+> >  arch/riscv/include/asm/sections.h   |  2 ++
+> >  arch/riscv/include/asm/set_memory.h |  2 ++
+> >  arch/riscv/kernel/setup.c           |  4 ++++
+> >  arch/riscv/kernel/vmlinux.lds.S     | 10 +++++++++-
+> >  arch/riscv/mm/init.c                |  6 ++++++
+> >  arch/riscv/mm/pageattr.c            |  6 ++++++
+> >  6 files changed, 29 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/arch/riscv/include/asm/sections.h b/arch/riscv/include/asm=
+/sections.h
+> > index d60802bfafbc..730d2c4a844d 100644
+> > --- a/arch/riscv/include/asm/sections.h
+> > +++ b/arch/riscv/include/asm/sections.h
+> > @@ -10,6 +10,8 @@
+> >  #include <asm-generic/sections.h>
+> >  extern char _start[];
+> >  extern char _start_kernel[];
+> > +extern char __init_data_begin[], __init_data_end[];
+> > +extern char __init_text_begin[], __init_text_end[];
+> >
+> >  extern bool init_mem_is_free;
+> >
+> > diff --git a/arch/riscv/include/asm/set_memory.h b/arch/riscv/include/a=
+sm/set_memory.h
+> > index 4cc3a4e2afd3..913429c9c1ae 100644
+> > --- a/arch/riscv/include/asm/set_memory.h
+> > +++ b/arch/riscv/include/asm/set_memory.h
+> > @@ -15,6 +15,7 @@ int set_memory_ro(unsigned long addr, int numpages);
+> >  int set_memory_rw(unsigned long addr, int numpages);
+> >  int set_memory_x(unsigned long addr, int numpages);
+> >  int set_memory_nx(unsigned long addr, int numpages);
+> > +int set_memory_default(unsigned long addr, int numpages);
+> >  void protect_kernel_text_data(void);
+> >  #else
+> >  static inline int set_memory_ro(unsigned long addr, int numpages) { re=
+turn 0; }
+> > @@ -22,6 +23,7 @@ static inline int set_memory_rw(unsigned long addr, i=
+nt numpages) { return 0; }
+> >  static inline int set_memory_x(unsigned long addr, int numpages) { ret=
+urn 0; }
+> >  static inline int set_memory_nx(unsigned long addr, int numpages) { re=
+turn 0; }
+> >  static inline void protect_kernel_text_data(void) {};
+> > +static inline int set_memory_default(unsigned long addr, int numpages)=
+ { return 0; }
+> >  #endif
+> >
+> >  int set_direct_map_invalid_noflush(struct page *page);
+> > diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
+> > index 4176a2affd1d..b8a35ef0eab0 100644
+> > --- a/arch/riscv/kernel/setup.c
+> > +++ b/arch/riscv/kernel/setup.c
+> > @@ -129,6 +129,10 @@ bool init_mem_is_free =3D false;
+> >
+> >  void free_initmem(void)
+> >  {
+> > +       unsigned long init_begin =3D (unsigned long)__init_begin;
+> > +       unsigned long init_end =3D (unsigned long)__init_end;
+> > +
+> > +       set_memory_default(init_begin, (init_end - init_begin) >> PAGE_=
+SHIFT);
+> >         free_initmem_default(POISON_FREE_INITMEM);
+> >         init_mem_is_free =3D true;
+> >  }
+> > diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinu=
+x.lds.S
+> > index 0807633f0dc8..15b9882588ae 100644
+> > --- a/arch/riscv/kernel/vmlinux.lds.S
+> > +++ b/arch/riscv/kernel/vmlinux.lds.S
+> > @@ -30,8 +30,8 @@ SECTIONS
+> >         . =3D ALIGN(PAGE_SIZE);
+> >
+> >         __init_begin =3D .;
+> > +       __init_text_begin =3D .;
+> >         INIT_TEXT_SECTION(PAGE_SIZE)
+> > -       INIT_DATA_SECTION(16)
+> >         . =3D ALIGN(8);
+> >         __soc_early_init_table : {
+> >                 __soc_early_init_table_start =3D .;
+> > @@ -48,11 +48,19 @@ SECTIONS
+> >         {
+> >                 EXIT_TEXT
+> >         }
+> > +
+> > +       __init_text_end =3D .;
+> > +       . =3D ALIGN(SECTION_ALIGN);
+> > +       /* Start of init data section */
+> > +       __init_data_begin =3D .;
+> > +       INIT_DATA_SECTION(16)
+> >         .exit.data :
+> >         {
+> >                 EXIT_DATA
+> >         }
+> >         PERCPU_SECTION(L1_CACHE_BYTES)
+> > +
+> > +       __init_data_end =3D .;
+> >         __init_end =3D .;
+> >
+> >         . =3D ALIGN(SECTION_ALIGN);
+> > diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> > index 7859a1d1b34d..3ef0eafcc7c7 100644
+> > --- a/arch/riscv/mm/init.c
+> > +++ b/arch/riscv/mm/init.c
+> > @@ -627,11 +627,17 @@ void protect_kernel_text_data(void)
+> >  {
+> >         unsigned long text_start =3D (unsigned long)_text;
+> >         unsigned long text_end =3D (unsigned long)_etext;
+> > +       unsigned long init_text_start =3D (unsigned long)__init_text_be=
+gin;
+> > +       unsigned long init_text_end =3D (unsigned long)__init_text_end;
+> > +       unsigned long init_data_start =3D (unsigned long)__init_data_be=
+gin;
+> > +       unsigned long init_data_end =3D (unsigned long)__init_data_end;
+> >         unsigned long rodata_start =3D (unsigned long)__start_rodata;
+> >         unsigned long data_start =3D (unsigned long)_data;
+> >         unsigned long max_low =3D (unsigned long)(__va(PFN_PHYS(max_low=
+_pfn)));
+> >
+> > +       set_memory_ro(init_text_start, (init_text_end - init_text_start=
+) >> PAGE_SHIFT);
+> >         set_memory_ro(text_start, (text_end - text_start) >> PAGE_SHIFT=
+);
+> > +       set_memory_nx(init_data_start, (init_data_end - init_data_start=
+) >> PAGE_SHIFT);
+> >         set_memory_nx(rodata_start, (data_start - rodata_start) >> PAGE=
+_SHIFT);
+> >         set_memory_nx(data_start, (max_low - data_start) >> PAGE_SHIFT)=
+;
+> >  }
+> > diff --git a/arch/riscv/mm/pageattr.c b/arch/riscv/mm/pageattr.c
+> > index 19fecb362d81..aecedaf086ab 100644
+> > --- a/arch/riscv/mm/pageattr.c
+> > +++ b/arch/riscv/mm/pageattr.c
+> > @@ -128,6 +128,12 @@ static int __set_memory(unsigned long addr, int nu=
+mpages, pgprot_t set_mask,
+> >         return ret;
+> >  }
+> >
+> > +int set_memory_default(unsigned long addr, int numpages)
+> > +{
+> > +       return __set_memory(addr, numpages, __pgprot(_PAGE_KERNEL | _PA=
+GE_EXEC),
+> > +                           __pgprot(0));
+> > +}
+> > +
+> >  int set_memory_ro(unsigned long addr, int numpages)
+> >  {
+> >         return __set_memory(addr, numpages, __pgprot(_PAGE_READ),
+>
+>
+> Hi Atish,
+>
+> I tested this patchset and CONFIG_DEBUG_WX=3Dy
+>
 
-I know that these "Up to the caller" comments come from the existing len
-functions but perhaps we should explain a bit more against what it is ordering
-and what it pairs to.
+Thanks for testing the patch.
 
-Also why do we need one before _and_ after?
+> [    2.664012] Freeing unused kernel memory: 114420K
+> [    2.666081] ------------[ cut here ]------------
+> [    2.666779] riscv/mm: Found insecure W+X mapping at address
+> (____ptrval____)/0xffffffe000000000
+> [    2.668004] WARNING: CPU: 0 PID: 1 at arch/riscv/mm/ptdump.c:200
+> note_page+0xc2/0x238
+> [    2.669147] Modules linked in:
+> [    2.669735] CPU: 0 PID: 1 Comm: swapper/0 Not tainted
+> 5.9.0-rc8-00033-gfacf070a80ea #153
+> [    2.670466] epc: ffffffe00700697c ra : ffffffe00700697c sp : ffffffe0f=
+ba9bc10
+> [    2.671054]  gp : ffffffe007e73078 tp : ffffffe0fba90000 t0 :
+> ffffffe007e861d0
+> [    2.671683]  t1 : 0000000000000064 t2 : ffffffe007801664 s0 :
+> ffffffe0fba9bc60
+> [    2.672499]  s1 : ffffffe0fba9bde8 a0 : 0000000000000053 a1 :
+> 0000000000000020
+> [    2.673119]  a2 : 0000000000000000 a3 : 00000000000000f4 a4 :
+> d4328dc070ccb100
+> [    2.673729]  a5 : d4328dc070ccb100 a6 : 0000000000000000 a7 :
+> ffffffe007851e98
+> [    2.674333]  s2 : ffffffe007000000 s3 : ffffffe0fba9bde8 s4 :
+> 0000000087200000
+> [    2.674963]  s5 : 00000000000000cb s6 : 0000000000000003 s7 :
+> ffffffe007e7ac00
+> [    2.675564]  s8 : ffffffe000000000 s9 : ffffffe007000000 s10:
+> ffffffe000000000
+> [    2.676392]  s11: ffffffe040000000 t3 : 000000000001da48 t4 :
+> 000000000001da48
+> [    2.676992]  t5 : ffffffe007e74490 t6 : ffffffe007e81432
+> [    2.677449] status: 0000000000000120 badaddr: 0000000000000000
+> cause: 0000000000000003
+> [    2.678128] ---[ end trace 5f0a86dbe986db9b ]---
+> [    2.678952] Checked W+X mappings: failed, 28672 W+X pages found
+> [    2.679737] Run /init as init process
+>
 
-And finally do we have the same ordering requirements than the unsegmented len
-field?
+This would be triggered for the current kernel as well as we don't
+protect the permission for __init section at all. As you correctly
+pointed out, __init & .head sections are mapped with same permissions
+because of 2MB mappings.
 
-> +
-> +/* Move from's segment length to to's segment. */
-> +static void rcu_segcblist_move_seglen(struct rcu_segcblist *rsclp, int from, int to)
-> +{
-> +	long len;
-> +
-> +	if (from == to)
-> +		return;
-> +
-> +	len = rcu_segcblist_get_seglen(rsclp, from);
-> +	if (!len)
-> +		return;
-> +
-> +	rcu_segcblist_add_seglen(rsclp, to, len);
-> +	rcu_segcblist_set_seglen(rsclp, from, 0);
-> +}
-> +
-[...]
-> @@ -245,6 +283,7 @@ void rcu_segcblist_enqueue(struct rcu_segcblist *rsclp,
->  			   struct rcu_head *rhp)
->  {
->  	rcu_segcblist_inc_len(rsclp);
-> +	rcu_segcblist_inc_seglen(rsclp, RCU_NEXT_TAIL);
->  	smp_mb(); /* Ensure counts are updated before callback is enqueued. */
+Currently, the entire head.text & init section have RWX permission.
+This patch is trying remove the write permission from .init.text &
+.head.text and execute permission from .init.data until kernel is
+booted.
+It doesn't provide full protection but better than the current scheme.
 
-Since inc_len and even now inc_seglen have two full barriers embracing the add up,
-we can probably spare the above smp_mb()?
+To remove the write permission of .head.txt only, we have to keep
+.head.txt & .init.text section in separate sections. The linear
+mapping would look like this in that case.
+There are no issues as such but kernel size would increase by another 2M.
 
->  	rhp->next = NULL;
->  	WRITE_ONCE(*rsclp->tails[RCU_NEXT_TAIL], rhp);
-> @@ -274,27 +313,13 @@ bool rcu_segcblist_entrain(struct rcu_segcblist *rsclp,
->  	for (i = RCU_NEXT_TAIL; i > RCU_DONE_TAIL; i--)
->  		if (rsclp->tails[i] != rsclp->tails[i - 1])
->  			break;
-> +	rcu_segcblist_inc_seglen(rsclp, i);
->  	WRITE_ONCE(*rsclp->tails[i], rhp);
->  	for (; i <= RCU_NEXT_TAIL; i++)
->  		WRITE_ONCE(rsclp->tails[i], &rhp->next);
->  	return true;
->  }
->  
-> @@ -403,6 +437,7 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq)
->  		if (ULONG_CMP_LT(seq, rsclp->gp_seq[i]))
->  			break;
->  		WRITE_ONCE(rsclp->tails[RCU_DONE_TAIL], rsclp->tails[i]);
-> +		rcu_segcblist_move_seglen(rsclp, i, RCU_DONE_TAIL);
+---[ Linear mapping ]---
+0xffffffe000000000-0xffffffe000200000    0x0000000080200000         2M
+PMD     D A . . X . R V
+0xffffffe000200000-0xffffffe000600000    0x0000000080400000         4M
+PMD     D A . . . W R V
+0xffffffe000600000-0xffffffe000e00000    0x0000000080800000         8M
+PMD     D A . . X . R V
+0xffffffe000e00000-0xffffffe001400000    0x0000000081000000         6M
+PMD     D A . . . . R V
+0xffffffe001400000-0xffffffe03fe00000    0x0000000081600000      1002M
+PMD     D A . . . W R V
 
-Do we still need the same amount of full barriers contained in add() called by move() here?
-It's called in the reverse order (write queue then len) than usual. If I trust the comment
-in rcu_segcblist_enqueue(), the point of the barrier is to make the length visible before
-the new callback for rcu_barrier() (although that concerns len and not seglen). But here
-above, the unsegmented length doesn't change. I could understand a write barrier between
-add_seglen(x, i) and set_seglen(0, RCU_DONE_TAIL) but I couldn't find a paired couple either.
+The other solution would be move init section below text. Keep text &
+head in one section.
+The .init.text & .init.data will be in separate sections after that.
+Here is the mapping in that case.
 
->  	}
->  
->  	/* If no callbacks moved, nothing more need be done. */
-> @@ -423,6 +458,7 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq)
->  		if (rsclp->tails[j] == rsclp->tails[RCU_NEXT_TAIL])
->  			break;  /* No more callbacks. */
->  		WRITE_ONCE(rsclp->tails[j], rsclp->tails[i]);
-> +		rcu_segcblist_move_seglen(rsclp, i, j);
+---[ Linear mapping ]---
+0xffffffe000000000-0xffffffe000800000    0x0000000080200000         8M
+PMD     D A . . X . R V
+0xffffffe000800000-0xffffffe000c00000    0x0000000080a00000         4M
+PMD     D A . . . W R V
+0xffffffe000c00000-0xffffffe001200000    0x0000000080e00000         6M
+PMD     D A . . . . R V
+0xffffffe001200000-0xffffffe03fe00000    0x0000000081400000      1004M
+PMD     D A . . . W R V
 
-Same question here (feel free to reply "same answer" :o)
+I prefer the 2nd approach compared to the first one as it saves memory
+and we can fix lockdep issue without adding arch_is_kernel_data
+to sections.h (Guo's patch).
 
-Thanks!
+However, the 2nd approach throws this problem if
+CONFIG_HARDENED_USERCOPY is enabled.
+
+net/ipv4/ipconfig.o: in function `ic_setup_routes':
+/home/atish/workspace/linux/net/ipv4/ipconfig.c:400:(.init.text+0x1c4):
+relocation truncated to fit: R_RISCV_JAL against symbol `ip_rt_ioctl'
+defined in .text section in net/ipv4/fib_frontend.o
+make: *** [Makefile:1162: vmlinux] Error 1
+
+I am currently looking into this to understand why R_RISCV_JAL is
+generated a generic function invocation
+where auipc + jalr should have been used.
+
+> After debugging, I found it is because
+> set_memory_ro()/set_memory_nx()/... can't handle the 4KB-aligned
+> address if it is a 2MB mapping address.
+> For example, if we gave 0xffffffe000001000 and this address is in a
+> PMD mapping which is 2MB mapping, it will set the page attributes from
+> 0xffffffe000000000.
+> And this caused the CPU hotplug failed because it is in head.text section=
+.
+>
+> #0  pageattr_pmd_entry (pmd=3D0xffffffe0ffdff000,
+> addr=3D18446743936270602240, next=3D18446743936270766080,
+>     walk=3D0xffffffe007e03e98) at arch/riscv/mm/pageattr.c:70
+> 70              pmd_t val =3D READ_ONCE(*pmd);
+> =3D> 0xffffffe007005e96 <pageattr_pmd_entry+0>:   41 11   addi    sp,sp,-=
+16
+>    0xffffffe007005e98 <pageattr_pmd_entry+2>:   22 e4   sd      s0,8(sp)
+>    0xffffffe007005e9a <pageattr_pmd_entry+4>:   00 08   addi    s0,sp,16
+>    0xffffffe007005e9c <pageattr_pmd_entry+6>:   1c 61   ld      a5,0(a0)
+> (gdb) p/x addr
+> $21 =3D 0xffffffe000001000
+>
+> # cat /sys/kernel/debug/kernel_page_tables
+> ---[ Fixmap start ]---
+> 0xffffffcefef00000-0xffffffceff000000    0x0000000082200000         1M
+> PTE     D A . . . W R V
+> ---[ Fixmap end ]---
+> ---[ PCI I/O start ]---
+> ---[ PCI I/O end ]---
+> ---[ vmalloc() area ]---
+> 0xffffffd000090000-0xffffffd000093000    0x00000001741bb000        12K
+> PTE     D A . . . W R V
+> 0xffffffdffffbb000-0xffffffdffffbe000    0x0000000175f97000        12K
+> PTE     D A . . . W R V
+> 0xffffffdffffcc000-0xffffffdffffcf000    0x0000000175f9a000        12K
+> PTE     D A . . . W R V
+> 0xffffffdffffdd000-0xffffffdffffe0000    0x0000000175f9d000        12K
+> PTE     D A . . . W R V
+> 0xffffffdffffee000-0xffffffdfffff1000    0x0000000175fa0000        12K
+> PTE     D A . . . W R V
+> ---[ vmalloc() end ]---
+> ---[ Linear mapping ]---
+> 0xffffffe000000000-0xffffffe007000000    0x0000000080200000       112M
+> PMD     D A . . X W R V
+> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^=
+^^^^^^^^^^^^^^^^^^^
+> 0xffffffe007000000-0xffffffe007800000    0x0000000087200000         8M
+> PMD     D A . . X . R V
+> 0xffffffe007800000-0xffffffe007e00000    0x0000000087a00000         6M
+> PMD     D A . . . . R V
+> 0xffffffe007e00000-0xffffffe0ffe00000    0x0000000088000000      3968M
+> PMD     D A . . . W R V
+> #
+>
+> Any idea?
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+
+
+
+--
+Regards,
+Atish
