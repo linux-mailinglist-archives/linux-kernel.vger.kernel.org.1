@@ -2,99 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9590928BE0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3B6C28BE12
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:35:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403842AbgJLQd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 12:33:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726742AbgJLQdz (ORCPT
+        id S2403882AbgJLQfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 12:35:00 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:10786 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403815AbgJLQfA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 12:33:55 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FCDBC0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 09:33:55 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id c141so12362117lfg.5
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 09:33:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uHRkgCXS/4kxgwy5q4bUq99hC9D3+OYqvz8yqO31CzI=;
-        b=ZG06AiX+/49KCe0Q2TW4r9V4eXQ0gGkyb0bb/WaPWbnz+WFQ0ciDtrjvJrwTmUQ2P/
-         32Ml5rL9ANglmIiAcAIXYFihJXMYikuPWU4C1Jdy8sUSXJlVd6uebWfgpQZgT2Jj4WoT
-         aOjbpwpe1n/ribdKRRHRDGJdUOqqzWzQ16B5k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uHRkgCXS/4kxgwy5q4bUq99hC9D3+OYqvz8yqO31CzI=;
-        b=p+xcW6F0jd2LfGMVXVKcyUQgfPtlytQgCkGpqqa/LaxHbN65YOyRPdOAfv0AbPi+qc
-         f9wfRYznNJ2M6KJC/+GPLfUbBykn7591I8P6MJxiTcu/ZKLdUT1D2ROBi1nrEkU0LgL8
-         +XmO6DfGafu1+5wnV9zaEl62HUccmlCBHL6u47ePMTxyt2vmuXJ8ajy4PhqUliUdH65e
-         3k6323GuJSnZHV307f4UjPzAHMVJwxbGtWiIUXPvyfxLtqaDgc7hvzxPBGtwo1G525wj
-         yehhC+k7IV4aYNm6lYNHofPunnkhp93Pg0flMvCGn4bYXnAtbA2vK+J6ABwy3l4b2Tnx
-         nVeg==
-X-Gm-Message-State: AOAM530tPj8l2qbY/iOxjHDT3cHcV6n85xiZ+BYtvoq0i7uMFYSSsYVi
-        eMGlRzgA6nMVk+ko6G2g/JrcRR0zcz3TxA==
-X-Google-Smtp-Source: ABdhPJzQBUVwsQ+Qli/o2mmaXpz6g8wKzLwVvMpB07Uln/ErUqKRrAx2j+vlGeKIsoe6i+vpXHKHAQ==
-X-Received: by 2002:a19:4186:: with SMTP id o128mr7735244lfa.148.1602520433587;
-        Mon, 12 Oct 2020 09:33:53 -0700 (PDT)
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
-        by smtp.gmail.com with ESMTPSA id d24sm1720590ljl.58.2020.10.12.09.33.49
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Oct 2020 09:33:50 -0700 (PDT)
-Received: by mail-lf1-f50.google.com with SMTP id r127so18947591lff.12
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 09:33:49 -0700 (PDT)
-X-Received: by 2002:a19:cbcb:: with SMTP id b194mr1888495lfg.133.1602520429420;
- Mon, 12 Oct 2020 09:33:49 -0700 (PDT)
+        Mon, 12 Oct 2020 12:35:00 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f8485a70000>; Mon, 12 Oct 2020 09:34:47 -0700
+Received: from [10.41.23.128] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 12 Oct
+ 2020 16:34:53 +0000
+Subject: Re: [PATCH v2 1/2] cpufreq: tegra194: get consistent cpuinfo_cur_freq
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+CC:     <rjw@rjwysocki.net>, <sudeep.holla@arm.com>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <linux-pm@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <ksitaraman@nvidia.com>,
+        <bbasu@nvidia.com>, Sumit Gupta <sumitg@nvidia.com>
+References: <1602162066-26442-1-git-send-email-sumitg@nvidia.com>
+ <1602162066-26442-2-git-send-email-sumitg@nvidia.com>
+ <20201012052227.x3bigztr7fit4jdz@vireshk-i7>
+From:   Sumit Gupta <sumitg@nvidia.com>
+Message-ID: <20018a6a-e230-c39c-e801-5a3d0dd4c0ec@nvidia.com>
+Date:   Mon, 12 Oct 2020 22:04:50 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-References: <20200921092355.GI13157@shao2-debian> <4376a51f-a0f4-5615-edc9-2105b57f550a@linux.intel.com>
-In-Reply-To: <4376a51f-a0f4-5615-edc9-2105b57f550a@linux.intel.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 12 Oct 2020 09:33:33 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjEd58q7Seh18w9S0+UWAGRYgjTiOahAyYiHCrc1N6YZw@mail.gmail.com>
-Message-ID: <CAHk-=wjEd58q7Seh18w9S0+UWAGRYgjTiOahAyYiHCrc1N6YZw@mail.gmail.com>
-Subject: Re: [LKP] [mm] 5ef64cc898: vm-scalability.throughput -20.6% regression
-To:     Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Cc:     kernel test robot <rong.a.chen@intel.com>,
-        Michael Larabel <Michael@michaellarabel.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Dave Chinner <david@fromorbit.com>,
-        Matthew Wilcox <willy@infradead.org>, Chris Mason <clm@fb.com>,
-        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel test robot <lkp@intel.com>, zhengjun.xing@intel.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201012052227.x3bigztr7fit4jdz@vireshk-i7>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1602520487; bh=n1qI8h6lolczD6I+nv4TVNxGO/CQlyYt+0RLcmOfUxM=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=LO+ZSK6aVPbJ/RX5N3pqGWeA342HMfx8yq9HeTcYCC9ooOqIUyE0s3+i02ZnpMuQq
+         Oj+rPJLlQv/pPJr/wanp5gJNH9k+cuRcKr+en8UgAiMB8S1BMiXWEmOKIMibGxby1K
+         kzCz3faX4NtG+fXpaeDwzLLnz7222ByJc6lIqej5K8ZLP7X0Tnmkaj1YEEz4GdCQXh
+         agYSlsVL1rktF6KNHoeQ/f23wnB5GMpZyQXDed/2yqgwGnCaBY66oDVpo+1/4eD/x6
+         VLyZBV4uqpUTBpwLinzLsOCOgjm2MkUeKef5llH9vi/cRBeve0IU8BulDo7gNsAOB2
+         6TmnXlhoEIPXw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 11, 2020 at 11:57 PM Xing Zhengjun
-<zhengjun.xing@linux.intel.com> wrote:
->
-> Hi Linus,
->
->    Do you have time to look at this? Thanks. I re-test it in v5.9-rc8,
-> the regression still existed.
+>> Frequency returned by 'cpuinfo_cur_freq' using counters is not fixed
+>> and keeps changing slightly. This change returns a consistent value
+>> from freq_table. If the reconstructed frequency has acceptable delta
+>> from the last written value, then return the frequency corresponding
+>> to the last written ndiv value from freq_table. Otherwise, print a
+>> warning and return the reconstructed freq.
+>>
+>> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+>> ---
+>>   drivers/cpufreq/tegra194-cpufreq.c | 71 +++++++++++++++++++++++++++++++++-----
+>>   1 file changed, 62 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/drivers/cpufreq/tegra194-cpufreq.c b/drivers/cpufreq/tegra194-cpufreq.c
+>> index e1d931c..d250e49 100644
+>> --- a/drivers/cpufreq/tegra194-cpufreq.c
+>> +++ b/drivers/cpufreq/tegra194-cpufreq.c
+>> @@ -180,9 +180,70 @@ static unsigned int tegra194_get_speed_common(u32 cpu, u32 delay)
+>>        return (rate_mhz * KHZ); /* in KHz */
+>>   }
+>>
+>> +static void get_cpu_ndiv(void *ndiv)
+>> +{
+>> +     u64 ndiv_val;
+>> +
+>> +     asm volatile("mrs %0, s3_0_c15_c0_4" : "=r" (ndiv_val) : );
+>> +
+>> +     *(u64 *)ndiv = ndiv_val;
+>> +}
+>> +
+>> +static void set_cpu_ndiv(void *data)
+> 
+> You weren't required to do this unnecessary change.
+> 
+ya, moved the function up to keep both {get_|set_} calls together.
 
-This is one of the series vm-scalability tests that got a huge
-improvement (up to 160%) when I did the complete page fairness patch
-(ie commit 2a9127fcf229).
+>> +{
+>> +     struct cpufreq_frequency_table *tbl = data;
+>> +     u64 ndiv_val = (u64)tbl->driver_data;
+>> +
+>> +     asm volatile("msr s3_0_c15_c0_4, %0" : : "r" (ndiv_val));
+>> +}
+>> +
+>>   static unsigned int tegra194_get_speed(u32 cpu)
+>>   {
+>> -     return tegra194_get_speed_common(cpu, US_DELAY);
+>> +     struct tegra194_cpufreq_data *data = cpufreq_get_driver_data();
+>> +     struct cpufreq_frequency_table *pos;
+>> +     unsigned int rate;
+>> +     u64 ndiv;
+>> +     int ret;
+>> +     u32 cl;
+>> +
+>> +     if (!cpu_online(cpu))
+> 
+> This isn't required. The CPU is guaranteed to be online here.
+> 
+OK, will remove this in next version.
 
-But since that fairness thing caused regressions elsewhere, it got
-mostly limited, so we are likely back in the same ballpark as before
-(although hopefully without some of the absolute _worst_ latency
-peaks, who knows).
+>> +             return -EINVAL;
+>> +
+>> +     smp_call_function_single(cpu, get_cpu_cluster, &cl, true);
+>> +
+>> +     if (cl >= data->num_clusters)
+> 
+> Is it really possible here ? I meant you must have already checked
+> this at cpufreq-init level already. Else mark it unlikely at least.
+> 
+Ya, will remove the check here.
 
-All these vm-scalability tests seem to be very noisy and unreliable,
-and the exact details of the page locking can cause huge differences
-for almost random reasons.
+>> +             return -EINVAL;
+>> +
+>> +     /* reconstruct actual cpu freq using counters */
+>> +     rate = tegra194_get_speed_common(cpu, US_DELAY);
+>> +
+>> +     /* get last written ndiv value */
+>> +     ret = smp_call_function_single(cpu, get_cpu_ndiv, &ndiv, true);
+>> +     if (ret) {
+> 
+> What exactly can fail here ? get_cpu_ndiv() can't fail. Do we really
+> need this check ? What about WARN_ON_ONCE() ?
+> 
+OK.
 
-I think the main issue is just that bad timing luck and the fact that
-the page lock is too contended under some loads makes for test cases
-that can show fairly bi-modal behavior.
+>> +             pr_err("cpufreq: Failed to get ndiv for CPU%d, ret:%d\n",
+>> +                    cpu, ret);
+>> +             return rate;
+>> +     }
+>> +
+>> +     /*
+>> +      * If the reconstructed frequency has acceptable delta from
+>> +      * the last written value, then return freq corresponding
+>> +      * to the last written ndiv value from freq_table. This is
+>> +      * done to return consistent value.
+>> +      */
+>> +     cpufreq_for_each_valid_entry(pos, data->tables[cl]) {
+>> +             if (pos->driver_data != ndiv)
+>> +                     continue;
+>> +
+>> +             if (abs(pos->frequency - rate) > 115200) {
+> 
+> where does this 115200 comes from ? Strange that it matches tty's baud
+> rate :)
+>The value is equal to one freq step size.
 
-                  Linus
+> This is 115 MHz, right ? Isn't that too big of a delta ?
+> 
+The is the acceptable delta used during our testing keeping some margin.
+
+>> +                     pr_warn("cpufreq: cpu%d,cur:%u,set:%u,set ndiv:%llu\n",
+>> +                             cpu, rate, pos->frequency, ndiv);
+>> +             } else {
+>> +                     rate = pos->frequency;
+>> +             }
+>> +             break;
+>> +     }
+>> +     return rate;
+>>   }
+> 
+> --
+> viresh
+> 
