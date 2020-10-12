@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64AB328BA5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B832128B9CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731733AbgJLOId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:08:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35602 "EHLO mail.kernel.org"
+        id S2403772AbgJLODx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:03:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730459AbgJLNd2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:33:28 -0400
+        id S1729253AbgJLNgb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:36:31 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 04EB42087E;
-        Mon, 12 Oct 2020 13:33:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6679420838;
+        Mon, 12 Oct 2020 13:36:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509607;
-        bh=IaFkkKqz+j+4058K/qo2yULq6Tsf1e3p8QUKOnugrO4=;
+        s=default; t=1602509787;
+        bh=UWhmj8GHc6VZOaMpPuA9cuxbuD9HzZ/qL4BKknaSMQk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZYjSXYkvx0IoDYr1zlp/G7eGDYca3yfYMs0blaRYIMsC/gPPrRHlzKxIJJ+42R0cv
-         vEkGdTKiMvPvn5Cb3xABhSJtCkvEDGsirecLZswLey907Xegn4FwMoKdq7UWJwqZBU
-         AllkQB35AcEMLriLDMz3uV7v0S/cdDEiOJNsNB6w=
+        b=Efif56Yj/VfTiuUT/M0uIhspTVZmTz4eQXvRX0jWavn/Hi+9aFRqYTIi2SvpANDwD
+         43kHi7wm5ovqAdM13f6uVcBcs49ItQg6PBDhUDwryj5rzQOy1anwTpL3AHpvGRRMCY
+         pdpqY+eBs1XHOkwCbOtzF2Dgf5cFo+/miUoPLeRY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Will McVicker <willmcvicker@google.com>,
         Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 4.4 16/39] netfilter: ctnetlink: add a range check for l3/l4 protonum
+Subject: [PATCH 4.14 30/70] netfilter: ctnetlink: add a range check for l3/l4 protonum
 Date:   Mon, 12 Oct 2020 15:26:46 +0200
-Message-Id: <20201012132628.896589178@linuxfoundation.org>
+Message-Id: <20201012132631.635692684@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132628.130632267@linuxfoundation.org>
-References: <20201012132628.130632267@linuxfoundation.org>
+In-Reply-To: <20201012132630.201442517@linuxfoundation.org>
+References: <20201012132630.201442517@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -91,7 +91,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/net/netfilter/nf_conntrack_netlink.c
 +++ b/net/netfilter/nf_conntrack_netlink.c
-@@ -1022,6 +1022,8 @@ ctnetlink_parse_tuple(const struct nlatt
+@@ -1043,6 +1043,8 @@ ctnetlink_parse_tuple(const struct nlatt
  	if (!tb[CTA_TUPLE_IP])
  		return -EINVAL;
  
