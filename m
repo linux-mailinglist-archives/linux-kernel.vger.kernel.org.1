@@ -2,102 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66E4128BAC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 893B328BAC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389582AbgJLOYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:24:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51414 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726631AbgJLOX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 10:23:59 -0400
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 000E9208B6;
-        Mon, 12 Oct 2020 14:23:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602512639;
-        bh=mkV3zHZdLWkkkiotMkWaHSfgaeAhT3IEqlhrwfXJLpw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=0rXs3HhXixR1Sr37VrUEPvUFG1NCTuJpfMTLxVMP92+0rAz5djPDI+ROp0ZyKO0xl
-         3S9JxTOG3bQA1KMy3Ynj60I3PBNyAG4ehU+u927VFzGinJ7Eofns7pBdP7py3rMWyl
-         A/Cfj22OgdukPF1xOzZyrZAF81y+S2lUL/io4i7w=
-Received: by mail-ot1-f53.google.com with SMTP id l4so15969929ota.7;
-        Mon, 12 Oct 2020 07:23:58 -0700 (PDT)
-X-Gm-Message-State: AOAM530IGnyID9T/B1WQ73MCBaZyPFVjEqSwH4m9BmtkjQyKBql9ogIk
-        xYMHAm6WGCwD/ZtEXytm+sH0ut6vXkw/aHpKP20=
-X-Google-Smtp-Source: ABdhPJxdPTaQgCziNQnn1xG1IdFeKsHKlCipNToXN2Mp8aZ6g8wZ+Ii9TOczjjBJ/F+8iATwtdtq/fW0RpyMunMLK3M=
-X-Received: by 2002:a9d:6c92:: with SMTP id c18mr9080953otr.108.1602512638334;
- Mon, 12 Oct 2020 07:23:58 -0700 (PDT)
+        id S2389679AbgJLOYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:24:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389328AbgJLOYp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 10:24:45 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C3AFC0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 07:24:45 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id b2so16132643ilr.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 07:24:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KXjyEZ75Pe4z4wSYrGbLTLW5aWcGXSPk3cloYXZRaQ4=;
+        b=rDqNIIj/4RCVrCTL8/M7nsY1rbeEAMaUOaH858YqkKmjLup7HNaJas+bWUE8scDgMY
+         WRgvGnWGk9gwIlxRrR1MKsaI1xyQbLtdsyiTaBFxunHI6UD73d/WqpJlABKqG9B8R1GX
+         yttwsR7L2CXJ6PmPLUUCC3VNQ3704dbZ+fRx+ZpTJjhIKHGAvPOeKJ+nemH8b8zWVnYm
+         AxPjX3mq06Z731A5VzfA2BLMaHqLrtUibfXqQtf32Zh1c7YkNJ/tEApnlk3dfDlTQ82l
+         vIiwKheyCCeFVuWiON8Gq9fRnzlG8AziqZW4w/LBoSgyTcVHf6bAm63v6uoixd2JZxSZ
+         75kQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KXjyEZ75Pe4z4wSYrGbLTLW5aWcGXSPk3cloYXZRaQ4=;
+        b=sOB+fAe50XUsXPfYd+sGezF68iiC18iu2xq5ibMhd8uw0HxBQYlbRCWEYeizJMSpyL
+         Bv8ZetUepJEveoM+UqSSIjCMOLqJFR3OfjZKnSKDRbmY2f/S0fQQvkOneqFbYBHNagVs
+         ehWWOi+07chV42RRgsVrAkVzgzToUFsTAwBZwDCQXFMpT8/T2lur7jlYSKcFnrwHZl7V
+         m8IaGiNnvpOlWfukSoDsvOc3uhlnWwqY+fnKJp/fUNX+u2suKPenLQQiptmzw3pR4FPq
+         beW4nzYt7cpg73kEq28sdlC9Qy708szdG0lBCV7vll1VUZEcFpkK1YJpGSSPMkO9vXA0
+         +UDA==
+X-Gm-Message-State: AOAM531MnfeNl+l0+Tx6J1u0uMXuC5k53lQsfZgKryJOE8kqW+YTKZQm
+        FlGzLWTTh1b2hyvnbIbvFTDKu1EI4oH6uQ==
+X-Google-Smtp-Source: ABdhPJznZRNU9a15R8WfJMyAoMmQCUgRYZZ8MpyOl67bGNCEGVilcETpNqOifTaQIWKqwq05Rl0odw==
+X-Received: by 2002:a92:ae0a:: with SMTP id s10mr19507476ilh.289.1602512683984;
+        Mon, 12 Oct 2020 07:24:43 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id c2sm7405690ioc.29.2020.10.12.07.24.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Oct 2020 07:24:43 -0700 (PDT)
+Subject: Re: [PATCH][next] io_uring: Fix sizeof() mismatch
+To:     Colin King <colin.king@canonical.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201012140341.77412-1-colin.king@canonical.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <871e585c-06ca-17cb-f082-fec576bb75e1@kernel.dk>
+Date:   Mon, 12 Oct 2020 08:24:42 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201010151235.20585-1-nsaenzjulienne@suse.de>
- <20201010151235.20585-2-nsaenzjulienne@suse.de> <20201012113748.GE9844@gaia>
-In-Reply-To: <20201012113748.GE9844@gaia>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 12 Oct 2020 16:23:47 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXFUH7gv-dPVNM8xa5SBHhSndCQu4QFy5os2vAkaO_yecg@mail.gmail.com>
-Message-ID: <CAMj1kXFUH7gv-dPVNM8xa5SBHhSndCQu4QFy5os2vAkaO_yecg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/5] arm64: mm: Move zone_dma_bits initialization into zone_sizes_init()
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-rpi-kernel@lists.infradead.org,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        iommu@lists.linux-foundation.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Will Deacon <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201012140341.77412-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Oct 2020 at 13:37, Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> On Sat, Oct 10, 2020 at 05:12:31PM +0200, Nicolas Saenz Julienne wrote:
-> > diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-> > index f6902a2b4ea6..0eca5865dcb1 100644
-> > --- a/arch/arm64/mm/init.c
-> > +++ b/arch/arm64/mm/init.c
-> > @@ -196,14 +196,16 @@ static void __init zone_sizes_init(unsigned long min, unsigned long max)
-> >       unsigned long max_zone_pfns[MAX_NR_ZONES]  = {0};
-> >
-> >  #ifdef CONFIG_ZONE_DMA
-> > +     zone_dma_bits = ARM64_ZONE_DMA_BITS;
-> > +
-> >       if (IS_ENABLED(CONFIG_ACPI)) {
-> >               extern unsigned int acpi_iort_get_zone_dma_size(void);
-> >
-> >               zone_dma_bits = min(zone_dma_bits,
-> >                                   acpi_iort_get_zone_dma_size());
-> > -             arm64_dma_phys_limit = max_zone_phys(zone_dma_bits);
-> >       }
-> >
-> > +     arm64_dma_phys_limit = max_zone_phys(zone_dma_bits);
-> >       max_zone_pfns[ZONE_DMA] = PFN_DOWN(arm64_dma_phys_limit);
-> >  #endif
-> >  #ifdef CONFIG_ZONE_DMA32
-> > @@ -394,11 +396,6 @@ void __init arm64_memblock_init(void)
-> >
-> >       early_init_fdt_scan_reserved_mem();
-> >
-> > -     if (IS_ENABLED(CONFIG_ZONE_DMA)) {
-> > -             zone_dma_bits = ARM64_ZONE_DMA_BITS;
-> > -             arm64_dma_phys_limit = max_zone_phys(ARM64_ZONE_DMA_BITS);
-> > -     }
->
-> arm64_dma_phys_limit is used by memblock_alloc_low() (via
-> ARCH_LOW_ADDRESS_LIMIT). I think it's too late to leave its
-> initialisation to zone_sizes_init().
->
+On 10/12/20 8:03 AM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> An incorrect sizeof() is being used, sizeof(file_data->table) is not
+> correct, it should be sizeof(*file_data->table).
 
-The only generic caller of memblock_alloc_low() is swiotlb_init(),
-which is called much later. So at that point, we definitely need
-ARCH_LOW_ADDRESS_LIMIT to be set correctly, but that means doing it in
-zone_sizes_init() is early enough.
+Thanks, should be a no-op, which is why KASAN didn't complain in my
+testing. I'll queue this up, thanks.
 
-So the only problematic reference seems to be crashkernel_reserve() afaict.
+-- 
+Jens Axboe
+
