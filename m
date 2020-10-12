@@ -2,113 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C962628B07E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 10:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B4F28B080
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 10:45:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727031AbgJLIok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 04:44:40 -0400
-Received: from mga04.intel.com ([192.55.52.120]:30363 "EHLO mga04.intel.com"
+        id S1727320AbgJLIpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 04:45:19 -0400
+Received: from mga17.intel.com ([192.55.52.151]:64772 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726335AbgJLIok (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 04:44:40 -0400
-IronPort-SDR: 3gDHK1qGACO3L1qL5uV6KuaX5gzcslfS/ledostsqGM4JzkZ1XcaNWNhM5fHcjtT3CHgYLHxQu
- SEYlC7qpjzag==
-X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="163069460"
+        id S1726335AbgJLIpS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 04:45:18 -0400
+IronPort-SDR: Z59PLv9H4LP2olv+udnMbFR2xitxw/S3uQDEyM+m1E38T04Gjq86FqR0/i3xlX3azxi0deycz5
+ 1SfQt+8MKjrA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="145573271"
 X-IronPort-AV: E=Sophos;i="5.77,366,1596524400"; 
-   d="scan'208";a="163069460"
+   d="scan'208";a="145573271"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 01:44:39 -0700
-IronPort-SDR: Oeag/SldKSVjyU84dfSbkKvpiGqRhgH37KUfOhMm/VNrUaPbQh16cOaqf8bt/dHP5jEJou3n3l
- rkz5gKScE6IA==
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 01:45:17 -0700
+IronPort-SDR: dRqT+ZMfCQGeam5bOf0lovKBjTKZDVf3sJIcKcMjl1w0YRl6x9nU3ddhqLbiHDWO03k4U53lr/
+ YOCXdKC8ds6w==
 X-IronPort-AV: E=Sophos;i="5.77,366,1596524400"; 
-   d="scan'208";a="529872518"
-Received: from shuo-intel.sh.intel.com (HELO localhost) ([10.239.154.30])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 01:44:33 -0700
-Date:   Mon, 12 Oct 2020 16:44:31 +0800
-From:   Shuo A Liu <shuo.a.liu@intel.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Yakui Zhao <yakui.zhao@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Fengwei Yin <fengwei.yin@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: Re: [PATCH v4 04/17] x86/acrn: Introduce hypercall interfaces
-Message-ID: <20201012084431.GK1057@shuo-intel.sh.intel.com>
-References: <20200922114311.38804-1-shuo.a.liu@intel.com>
- <20200922114311.38804-5-shuo.a.liu@intel.com>
- <20200927105152.GG88650@kroah.com>
- <6f9a2b83-6904-2290-6c4f-526672390beb@intel.com>
- <20200930111612.GZ2628@hirez.programming.kicks-ass.net>
- <20200930161036.GY28786@gate.crashing.org>
- <20200930171346.GC2628@hirez.programming.kicks-ass.net>
- <CAKwvOdnpU=w4uStcP+UUr9wfoE5U-hW0cMt1bizcX4zQ4=-gOg@mail.gmail.com>
+   d="scan'208";a="529872823"
+Received: from ereuven9-mobl1.ger.corp.intel.com (HELO [10.252.38.175]) ([10.252.38.175])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 01:45:15 -0700
+Subject: Re: [PATCH v4 0/7] Convert the intel iommu driver to the dma-iommu
+ api
+To:     Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Tom Murphy <murphyt7@tcd.ie>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     Ashok Raj <ashok.raj@intel.com>, Intel-gfx@lists.freedesktop.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+References: <20200927063437.13988-1-baolu.lu@linux.intel.com>
+ <e999e371-6d36-ffea-542f-a5f4b230b0ed@linux.intel.com>
+ <c2af9a9d-1cae-b8f7-a0b3-880574060a23@linux.intel.com>
+From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Organization: Intel Corporation UK Plc
+Message-ID: <8bac9e91-36a0-c1d6-a887-4d60567ac75a@linux.intel.com>
+Date:   Mon, 12 Oct 2020 09:44:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CAKwvOdnpU=w4uStcP+UUr9wfoE5U-hW0cMt1bizcX4zQ4=-gOg@mail.gmail.com>
-User-Agent: Mutt/1.8.3 (2017-05-23)
+In-Reply-To: <c2af9a9d-1cae-b8f7-a0b3-880574060a23@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 30.Sep'20 at 12:14:03 -0700, Nick Desaulniers wrote:
->On Wed, Sep 30, 2020 at 10:13 AM Peter Zijlstra <peterz@infradead.org> wrote:
->>
->> On Wed, Sep 30, 2020 at 11:10:36AM -0500, Segher Boessenkool wrote:
->>
->> > Since this variable is a local register asm, on entry to the asm the
->> > compiler guarantees that the value lives in the assigned register (the
->> > "r8" hardware register in this case).  This all works completely fine.
->> > This is the only guaranteed behaviour for local register asm (well,
->> > together with analogous behaviour for outputs).
->>
->> Right, that's what they're trying to achieve. The hypervisor calling
->> convention needs that variable in %r8 (which is somewhat unfortunate).
->>
->> AFAIK this is the first such use in the kernel, but at least the gcc-4.9
->> (our oldest supported version) claims to support this.
->>
->> So now we need to know if clang will actually do this too..
->
->Does clang support register local storage? Let's use godbolt.org to find out:
->https://godbolt.org/z/YM45W5
->Looks like yes. You can even check different GCC versions via the
->dropdown in the top right.
->
->The -ffixed-* flags are less well supported in Clang; they need to be
->reimplemented on a per-backend basis. aarch64 is relatively well
->supported, but other arches not so much IME.
->
->Do we need register local storage here?
->
->static inline long bar(unsigned long hcall_id)
->{
->  long result;
->  asm volatile("movl %1, %%r8d\n\t"
->  "vmcall\n\t"
->    : "=a" (result)
->    : "ir" (hcall_id)
->    : );
->  return result;
->}
 
-Yeah, this approach is also mentioned in the changelog. I will change to
-this way to follow your preference. With an addtional "r8" clobber what
-Arvind mentioned.
+On 29/09/2020 01:11, Lu Baolu wrote:
+> Hi Tvrtko,
+> 
+> On 9/28/20 5:44 PM, Tvrtko Ursulin wrote:
+>>
+>> On 27/09/2020 07:34, Lu Baolu wrote:
+>>> Hi,
+>>>
+>>> The previous post of this series could be found here.
+>>>
+>>> https://lore.kernel.org/linux-iommu/20200912032200.11489-1-baolu.lu@linux.intel.com/ 
+>>>
+>>>
+>>> This version introduce a new patch [4/7] to fix an issue reported here.
+>>>
+>>> https://lore.kernel.org/linux-iommu/51a1baec-48d1-c0ac-181b-1fba92aa428d@linux.intel.com/ 
+>>>
+>>>
+>>> There aren't any other changes.
+>>>
+>>> Please help to test and review.
+>>>
+>>> Best regards,
+>>> baolu
+>>>
+>>> Lu Baolu (3):
+>>>    iommu: Add quirk for Intel graphic devices in map_sg
+>>
+>> Since I do have patches to fix i915 to handle this, do we want to 
+>> co-ordinate the two and avoid having to add this quirk and then later 
+>> remove it? Or you want to go the staged approach?
+> 
+> I have no preference. It depends on which patch goes first. Let the
+> maintainers help here.
 
-Thanks
-shuo
+FYI we have merged the required i915 patches to out tree last week or 
+so. I *think* this means they will go into 5.11. So the i915 specific 
+workaround patch will not be needed in Intel IOMMU.
+
+Regards,
+
+Tvrtko
