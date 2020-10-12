@@ -2,121 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41A5728AC6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 05:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B412228AC6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 05:25:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727132AbgJLDVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 23:21:19 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:52115 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726525AbgJLDVS (ORCPT
+        id S1727155AbgJLDZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 23:25:06 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:53220 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726371AbgJLDZG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 23:21:18 -0400
-Received: by mail-io1-f71.google.com with SMTP id o7so9679984iof.18
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 20:21:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=+U6xw7/8ON4woYVIBq+0uaUno5+F1gZw1bRpeBwjUHw=;
-        b=gntFGK427qungLQRKFTaPUmH0dqIAikgEOuUvDjR82oxiEbrwZ5qswDFC1OVqNokdY
-         Km3eBkRdcnfpVt5vcUBiAy6Feqq+t5bqf5CZnnAtR63sm7p591xkmiBuSbTTyg8jvE5A
-         qzwiEfVbQ3GeB5GS5WDlJK8IVyuVY6pyi3zZt+jMNrrC0lWtrJa9muwv+sMdqSCdIYo/
-         bXaFz1wOxSSNSdXxbdULEgoW1Q4IDrIADphpC2BfkDEjC1eviZ16OMZpmzF6f44YskGS
-         4ZyFzL2P9stvIO06+kD+3/IqClWbEjVpEocHOGtEkFkvOaKSgKx2tfAzvYvAZ1/4R1j4
-         UxGA==
-X-Gm-Message-State: AOAM532zAoqcC1uDERpcPJow1j3b/jIji6KxslokcWgH2TOsEEmw621b
-        ftjylRxJJydjVyXL3QA3EB+pPuEOA8o72hZ3tzNqpKqcxBnm
-X-Google-Smtp-Source: ABdhPJw2/KuZF58Z4FqjPjXGeLKEZHUu5rQcTLXqYiJenCGkWumNfn7bW0swkRZY9/zY1OLNdMgJ2LxtQot4GdmXz+tgTX1VjMtg
-MIME-Version: 1.0
-X-Received: by 2002:a02:ca03:: with SMTP id i3mr17788897jak.50.1602472876006;
- Sun, 11 Oct 2020 20:21:16 -0700 (PDT)
-Date:   Sun, 11 Oct 2020 20:21:16 -0700
-In-Reply-To: <000000000000eba11705afd3d759@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000895ec305b170ca9a@google.com>
-Subject: Re: kernel BUG at fs/reiserfs/prints.c:LINE!
-From:   syzbot <syzbot+1541a3226994c0781b29@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        zhengbin13@huawei.com
+        Sun, 11 Oct 2020 23:25:06 -0400
+X-UUID: bdfb87fcbd6a45d0944ca2cfad11dd11-20201012
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=Bm72sr6Ouy/aEnxVTOQTJVItEbE2HZ45eGSUlY3+1i4=;
+        b=iHV97fO7VS8aMf3ROYlU++JLJjIQsfA5n5ZaaYPFHZanI88tjH4NgEBLV0cNbGaLVhF2pQi281WgwsnOvCRYZTgcg8j3Q+Ll/rrvVEis9js4hUo3EHAmCIINN4uiq3blb/Nzty8xaYzSYD5SFcgXOo+ANpSeO1r3UB7/3K8wL+Y=;
+X-UUID: bdfb87fcbd6a45d0944ca2cfad11dd11-20201012
+Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw02.mediatek.com
+        (envelope-from <neal.liu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1833974140; Mon, 12 Oct 2020 11:25:00 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 12 Oct 2020 11:24:57 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 12 Oct 2020 11:24:57 +0800
+Message-ID: <1602473098.26774.5.camel@mtkswgap22>
+Subject: Re: [PATCH v7 2/2] soc: mediatek: add mt6779 devapc driver
+From:   Neal Liu <neal.liu@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Neal Liu <neal.liu@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>
+Date:   Mon, 12 Oct 2020 11:24:58 +0800
+In-Reply-To: <0ece983b-2e55-cf06-aca8-02a014fce090@gmail.com>
+References: <1598497593-15781-1-git-send-email-neal.liu@mediatek.com>
+         <1598497593-15781-3-git-send-email-neal.liu@mediatek.com>
+         <c41ec664-73a0-3c63-a31c-48c89028dfac@gmail.com>
+         <1602124514.28301.17.camel@mtkswgap22>
+         <d8aec3a3-10b6-8c9e-6b2d-f9d9c0418b33@gmail.com>
+         <1602149965.8784.6.camel@mtkswgap22>
+         <0ece983b-2e55-cf06-aca8-02a014fce090@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: A57CB5B722B96A24B6BC4E4DA5FC2FE3FA559752A9CF0861603F1BE94AA214DC2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
-
-HEAD commit:    3dd0130f Merge branch 'akpm' (patches from Andrew)
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1107d078500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c06bcf3cc963d91c
-dashboard link: https://syzkaller.appspot.com/bug?extid=1541a3226994c0781b29
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=134aa19f900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=149f6fbf900000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+1541a3226994c0781b29@syzkaller.appspotmail.com
-
-REISERFS panic (device loop0): journal-2332 do_journal_end: Trying to log block 8211, which is a log block
-------------[ cut here ]------------
-kernel BUG at fs/reiserfs/prints.c:390!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 6887 Comm: syz-executor832 Not tainted 5.9.0-rc8-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__reiserfs_panic.cold+0x37/0x8a fs/reiserfs/prints.c:390
-Code: 9c 88 74 6d e8 cf 7c 7a ff 4c 89 e9 4c 89 f2 4c 89 e6 49 c7 c0 60 f2 4f 8d 48 c7 c7 20 b7 9c 88 e8 b2 85 63 ff e8 ae 7c 7a ff <0f> 0b e8 a7 7c 7a ff 4d 85 e4 49 c7 c6 60 b5 9c 88 75 0a 49 c7 c6
-RSP: 0018:ffffc90000f07b00 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff88809dd2c000 RCX: 0000000000000000
-RDX: ffff8880a6a7e080 RSI: ffffffff81fbc262 RDI: fffff520001e0f52
-RBP: ffffc90000f07bd0 R08: 000000000000006a R09: ffff8880ae5318e7
-R10: 0000000000000000 R11: 0000000000000000 R12: ffffffff889d1d60
-R13: ffffffff889d2560 R14: ffffffff889cb560 R15: 0000000000002016
-FS:  0000000001815880(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000181e8b8 CR3: 00000000a26de000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- do_journal_end+0x3d85/0x4950 fs/reiserfs/journal.c:4135
- reiserfs_sync_fs+0xf8/0x120 fs/reiserfs/super.c:78
- __sync_filesystem fs/sync.c:39 [inline]
- sync_filesystem fs/sync.c:64 [inline]
- sync_filesystem+0x105/0x260 fs/sync.c:48
- generic_shutdown_super+0x70/0x370 fs/super.c:448
- kill_block_super+0x97/0xf0 fs/super.c:1444
- deactivate_locked_super+0x94/0x160 fs/super.c:335
- deactivate_super+0xad/0xd0 fs/super.c:366
- cleanup_mnt+0x3a3/0x530 fs/namespace.c:1118
- task_work_run+0xdd/0x190 kernel/task_work.c:141
- tracehook_notify_resume include/linux/tracehook.h:188 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:165 [inline]
- exit_to_user_mode_prepare+0x1e1/0x200 kernel/entry/common.c:192
- syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:267
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x448177
-Code: 00 00 00 b8 08 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 8d a2 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 6d a2 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fff2be25a58 EFLAGS: 00000206 ORIG_RAX: 00000000000000a6
-RAX: 0000000000000000 RBX: 00007fff2be26bd0 RCX: 0000000000448177
-RDX: 0000000000400cf7 RSI: 0000000000000002 RDI: 00007fff2be25b00
-RBP: 00000000000211c2 R08: 0000000000000000 R09: 0000000000000009
-R10: 0000000000000005 R11: 0000000000000206 R12: 00007fff2be26b70
-R13: 0000000001816880 R14: 0000000000000000 R15: 0000000000000000
-Modules linked in:
----[ end trace c00fc6b0fe3e7e74 ]---
-RIP: 0010:__reiserfs_panic.cold+0x37/0x8a fs/reiserfs/prints.c:390
-Code: 9c 88 74 6d e8 cf 7c 7a ff 4c 89 e9 4c 89 f2 4c 89 e6 49 c7 c0 60 f2 4f 8d 48 c7 c7 20 b7 9c 88 e8 b2 85 63 ff e8 ae 7c 7a ff <0f> 0b e8 a7 7c 7a ff 4d 85 e4 49 c7 c6 60 b5 9c 88 75 0a 49 c7 c6
-RSP: 0018:ffffc90000f07b00 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff88809dd2c000 RCX: 0000000000000000
-RDX: ffff8880a6a7e080 RSI: ffffffff81fbc262 RDI: fffff520001e0f52
-RBP: ffffc90000f07bd0 R08: 000000000000006a R09: ffff8880ae5318e7
-R10: 0000000000000000 R11: 0000000000000000 R12: ffffffff889d1d60
-R13: ffffffff889d2560 R14: ffffffff889cb560 R15: 0000000000002016
-FS:  0000000001815880(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000181e8b8 CR3: 00000000a26de000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+T24gRnJpLCAyMDIwLTEwLTA5IGF0IDE0OjM0ICswMjAwLCBNYXR0aGlhcyBCcnVnZ2VyIHdyb3Rl
+Og0KPiANCj4gT24gMDgvMTAvMjAyMCAxMTozOSwgTmVhbCBMaXUgd3JvdGU6DQo+ID4gT24gVGh1
+LCAyMDIwLTEwLTA4IGF0IDEwOjQ1ICswMjAwLCBNYXR0aGlhcyBCcnVnZ2VyIHdyb3RlOg0KPiA+
+Pg0KPiA+PiBPbiAwOC8xMC8yMDIwIDA0OjM1LCBOZWFsIExpdSB3cm90ZToNCj4gPj4+IE9uIFdl
+ZCwgMjAyMC0xMC0wNyBhdCAxMjo0NCArMDIwMCwgTWF0dGhpYXMgQnJ1Z2dlciB3cm90ZToNCj4g
+Pj4+Pg0KPiA+Pj4+IE9uIDI3LzA4LzIwMjAgMDU6MDYsIE5lYWwgTGl1IHdyb3RlOg0KPiBbLi4u
+XQ0KPiANCj4gPj4+Pj4gK3N0YXRpYyBpbnQgbXRrX2RldmFwY19wcm9iZShzdHJ1Y3QgcGxhdGZv
+cm1fZGV2aWNlICpwZGV2KQ0KPiA+Pj4+PiArew0KPiA+Pj4+PiArCXN0cnVjdCBkZXZpY2Vfbm9k
+ZSAqbm9kZSA9IHBkZXYtPmRldi5vZl9ub2RlOw0KPiA+Pj4+PiArCXN0cnVjdCBtdGtfZGV2YXBj
+X2NvbnRleHQgKmN0eDsNCj4gPj4+Pj4gKwl1MzIgZGV2YXBjX2lycTsNCj4gPj4+Pj4gKwlpbnQg
+cmV0Ow0KPiA+Pj4+PiArDQo+ID4+Pj4+ICsJaWYgKElTX0VSUihub2RlKSkNCj4gPj4+Pj4gKwkJ
+cmV0dXJuIC1FTk9ERVY7DQo+ID4+Pj4+ICsNCj4gPj4+Pj4gKwljdHggPSBkZXZtX2t6YWxsb2Mo
+JnBkZXYtPmRldiwgc2l6ZW9mKCpjdHgpLCBHRlBfS0VSTkVMKTsNCj4gPj4+Pj4gKwlpZiAoIWN0
+eCkNCj4gPj4+Pj4gKwkJcmV0dXJuIC1FTk9NRU07DQo+ID4+Pj4+ICsNCj4gPj4+Pj4gKwljdHgt
+PmRhdGEgPSBvZl9kZXZpY2VfZ2V0X21hdGNoX2RhdGEoJnBkZXYtPmRldik7DQo+ID4+Pj4+ICsJ
+Y3R4LT5kZXYgPSAmcGRldi0+ZGV2Ow0KPiA+Pj4+PiArDQo+ID4+Pj4+ICsJY3R4LT5pbmZyYV9i
+YXNlID0gb2ZfaW9tYXAobm9kZSwgMCk7DQo+ID4+Pj4NCj4gPj4+PiBEb2VzIHRoaXMgbWVhbiB0
+aGUgZGV2aWNlIGlzIHBhcnQgb2YgdGhlIGluZnJhY2ZnIGJsb2NrPw0KPiA+Pj4+IEkgd2Fzbid0
+IGFibGUgdG8gZmluZCBhbnkgaW5mb3JtYXRpb24gYWJvdXQgaXQuDQo+ID4+Pg0KPiA+Pj4gSSdt
+IG5vdCBzdXJlIHdoeSB5b3Ugd291bGQgYXNrIGluZnJhY2ZnIGJsb2NrLiBkZXZhcGMgaXMgcGFy
+dHMgb2Ygb3VyDQo+ID4+PiBTb0MgaW5mcmEsIGl0J3MgZGlmZmVyZW50IHdpdGggaW5mcmFjZmcu
+DQo+ID4+Pg0KPiA+Pg0KPiA+PiBJJ20gYXNraW5nIGJlY2F1c2UgSSB3YW50IHRvIHVuZGVyc3Rh
+bmQgdGhlIEhXIGJldHRlci4gSSdtIG5vdCBhYmxlIHRvIGZpbmQgYW55DQo+ID4+IGluZm9ybWF0
+aW9uIGluIHRoZSBkYXRhc2hlZXRzLiBJIHdhbnQgdG8gYXZvaWQgYSBzaXR1YXRpb24gYXMgd2Ug
+aGFkIHdpdGggdGhlDQo+ID4+IE1NU1lTIHdoZXJlIGEgY2xvY2sgZHJpdmVyIHdhcyBzdWJtaXR0
+ZWQgZmlyc3QgYW5kIGxhdGVyIG9uIHdlIHJlYWxpemVkIHRoYXQNCj4gPj4gTU1TWVMgaXMgbXVj
+aCBtb3JlIHRoZW4gdGhhdCBhbmQgd2UgaGFkIHRvIHdvcmsgaGFyZCB0byBnZXQgdGhlIGRyaXZl
+ciByaWdodC4NCj4gPj4NCj4gPj4gTm93IGl0J3MgaGFwcGVuaW5nIHdpdGggU0NQU1lTLCB3aGVy
+ZSBhIGRyaXZlciB3aXRoIHRoZSBzY3BzeXMgY29tcGF0aWJsZSB3YXMNCj4gPj4gc2VuZCB5ZWFy
+cyBhZ28uIEJ1dCBTQ1BTWVMgaXMgbXVjaCBtb3JlIHRoZW4gdGhlIGRyaXZlciBzdWJtaXR0ZWQu
+IEluIHRoaXMgY2FzZQ0KPiA+PiB3ZSBvcHRlZCB0byB3cml0ZSBhIG5ldyBkcml2ZXIsIGJ1dCBt
+b3ZpbmcgZnJvbSBvbmUgZHJpdmVyIHRvIGFub3RoZXIgb25lIGlzDQo+ID4+IHBhaW5mdWxsIGFu
+ZCBmdWxsIG9mIHByb2JsZW1zLiBGb3IgdGhhdCBJIHdhbnQgdG8gbWFrZSBzdXJlIHdlIGZ1bGx5
+IHVuZGVyc3RhbmQNCj4gPj4gRGV2aWNlIEFQQyAoYnkgdGhlIHdheSwgd2hhdCBkb2VzIEFQQyBz
+dGFuZHMgZm9yPykuIElzIGl0IGEgdG90YWxseSBpbmRlcGVuZGVudA0KPiA+PiBIVyBibG9jayBv
+ciBpcyBpdCBwYXJ0IG9mIGEgc3Vic3lzdGVtLCBsaWtlIGZvciBleGFtcGxlIFNDUD8NCj4gPj4N
+Cj4gPj4gUmVnYXJkcywNCj4gPj4gTWF0dGhpYXMNCj4gPiANCj4gPiBJdCdzIGEgdG90YWxseSBp
+bmRlcGVuZGVudCBIVyBibG9jayBpbnN0ZWFkIG9mIGEgc3Vic3lzdGVtLg0KPiA+IEkgdGhpbmsg
+aXQncyBtb3JlIHNpbXBsZSB0aGFuIE1NU1lTIG9yIFNDUFNZUy4gQnV0IGlmIHlvdSB3b3VsZCBs
+aWtlIHRvDQo+ID4gdW5kZXJzdGFuZCBtb3JlIGFib3V0IHRoaXMgSFcsIHdlIGNvdWxkIGZpbmQg
+YW5vdGhlciB3YXkvY2hhbm5lbCB0bw0KPiA+IGludHJvZHVjZSBpdC4NCj4gPiANCj4gDQo+IElm
+IGl0J3MgYSBpbmRlcGVuZGVudCBIVyBibG9jaywgdGhlbiB3ZSBhcmUgZ29vZC4gTm8gZnVydGhl
+ciBpbmZvcm1hdGlvbiBuZWVkZWQgDQo+IGJ5IG1lLiBJJ2QganVzdCBhZHZpc2UgdG8gcmVuYW1l
+IHRoZSBpbmZyYV9iYXNlIHRvIHNvbWV0aGluZyBsaWtlIGJhc2UsIGFzIGl0IA0KPiBtYWRlIG1l
+IGNvbmZ1c2UuDQo+IA0KPiBUaGFua3MhDQo+IE1hdHRoaWFzDQoNCllvdSBjYW4gaW1hZ2luZSB0
+aGF0IGluZnJhX2Jhc2UgbWVhbnMgaW5mcmEgZGV2YXBjIGJhc2UgYWRkcmVzcyBmb3INCk1UNjc3
+OS4gSW4gNUcgcGxhdGZvcm1zLCBNZWRpYVRlayBpbmZyYXN0cnVjdHVyZSB3b3VsZCBzZXBhcmF0
+ZSBpbnRvDQptdWx0aXBsZSBwYXJ0cywgc28gZG9lcyBkZXZhcGMgSFcuIEFuZCBkZXZhcGMgd291
+bGQgYmUgbGlrZToNCmluZnJhX2Jhc2UsIHBlcmlfYmFzZSwgcGVyaTJfYmFzZSwgLi4uDQoNClRo
+YW5rcy4NCg0K
 
