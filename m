@@ -2,52 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB59728B263
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 12:38:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10E2128B24A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 12:34:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387736AbgJLKin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 06:38:43 -0400
-Received: from elvis.franken.de ([193.175.24.41]:58417 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387569AbgJLKiS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 06:38:18 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kRvDc-0008KW-06; Mon, 12 Oct 2020 12:38:16 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 39336C1140; Mon, 12 Oct 2020 12:31:43 +0200 (CEST)
-Date:   Mon, 12 Oct 2020 12:31:43 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: cpu-probe: remove MIPS_CPU_BP_GHIST option bit
-Message-ID: <20201012103143.GF7765@alpha.franken.de>
-References: <20201009122649.85490-1-tsbogend@alpha.franken.de>
+        id S2387567AbgJLKef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 06:34:35 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:39474 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387463AbgJLKed (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 06:34:33 -0400
+Received: by mail-oi1-f196.google.com with SMTP id c13so18243769oiy.6;
+        Mon, 12 Oct 2020 03:34:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Jvl1uNpai0+Z9/xkkl9P1c4uC5A00NigHSFBn2BljHM=;
+        b=dYgdmI+A3jiryNepEr/LSkszwyxINfx3FRiJu8Gaeeb4eQKOeszbslwkCqvp5BdRWD
+         hyoGxAK9cNX4T2/B29c1Scg5oeyyzknItLb63BqpYWtO1hYM8IPENzWGhiIgTV9v/ySa
+         2+X4h4Gvoebcu8Fme4Z4CEsA9MIcArHQLez9aQlg2B5BjhL/OxPNVN0ZHg2j37OLOY7T
+         57nhzXfZhO5N244B62dpn9t7hdiykm3z7oCMUBzXOPPOi6M06QwCMNiyzOrJwFs5PJFf
+         kGS5lpN3eohArMijI4jNj0U/BqEyZIs69QxEF53q9W3up/hIQx2veKtiaRsrmnSFjSZh
+         Bw/Q==
+X-Gm-Message-State: AOAM530DdjpQ/LZ1YG8PpUz/rYTJagoT+LhDGJViBurht5mK/akMQ2wR
+        04Vxxl7ot87459mNAl0/gNdgQdpwxuUoipllUIQ=
+X-Google-Smtp-Source: ABdhPJx6uN7tu4QRGeMwub0VWq2S/xcIycEV9s+wBnNitxuxv9EtDYCkFI5lWj+m90/kr6Rv/9Sq0ZLFFLh8XmdQgy0=
+X-Received: by 2002:aca:5256:: with SMTP id g83mr5839116oib.71.1602498871268;
+ Mon, 12 Oct 2020 03:34:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201009122649.85490-1-tsbogend@alpha.franken.de>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <9c499a132d06f31e81a516c91bd92d619eb118ba.1602478204.git.viresh.kumar@linaro.org>
+In-Reply-To: <9c499a132d06f31e81a516c91bd92d619eb118ba.1602478204.git.viresh.kumar@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 12 Oct 2020 12:34:16 +0200
+Message-ID: <CAJZ5v0iC7hs7jEdm0q3wnFycEr-WAZSKhiYkwPwGgkGDew3ZEw@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: stats: Fix string format specifier mismatch
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel test robot <lkp@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 02:26:48PM +0200, Thomas Bogendoerfer wrote:
-> MIPS_CPU_BP_GHIST is only set two times and more or less immediately
-> used in cpu-probe.c itself. Remove this option to make room in options
-> word.
-> 
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+On Mon, Oct 12, 2020 at 6:50 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> Fix following warning:
+>
+> drivers/cpufreq/cpufreq_stats.c:63:10: warning: %d in format string (no.
+> 1) requires 'int' but the argument type is 'unsigned int'
+>
+> Fixes: 40c3bd4cfa6f ("cpufreq: stats: Defer stats update to cpufreq_stats_record_transition()")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 > ---
->  arch/mips/include/asm/cpu-features.h                      |  3 ---
->  arch/mips/include/asm/cpu.h                               |  1 -
->  arch/mips/include/asm/mach-au1x00/cpu-feature-overrides.h |  1 -
->  arch/mips/kernel/cpu-probe.c                              | 10 ++++------
->  4 files changed, 4 insertions(+), 11 deletions(-)
+>  drivers/cpufreq/cpufreq_stats.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/cpufreq/cpufreq_stats.c b/drivers/cpufreq/cpufreq_stats.c
+> index 1b1389face85..6cd5c8ab5d49 100644
+> --- a/drivers/cpufreq/cpufreq_stats.c
+> +++ b/drivers/cpufreq/cpufreq_stats.c
+> @@ -62,7 +62,7 @@ static ssize_t show_total_trans(struct cpufreq_policy *policy, char *buf)
+>         if (READ_ONCE(stats->reset_pending))
+>                 return sprintf(buf, "%d\n", 0);
+>         else
+> -               return sprintf(buf, "%d\n", stats->total_trans);
+> +               return sprintf(buf, "%u\n", stats->total_trans);
+>  }
+>  cpufreq_freq_attr_ro(total_trans);
+>
+> --
 
-applied to mips-next.
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Applied, thanks!
