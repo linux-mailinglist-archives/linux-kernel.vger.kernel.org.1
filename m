@@ -2,113 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0BA428B39B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 13:19:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 729CA28B3A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 13:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388027AbgJLLTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 07:19:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387597AbgJLLS7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 07:18:59 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 862F8C0613CE;
-        Mon, 12 Oct 2020 04:18:59 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id 67so17290987iob.8;
-        Mon, 12 Oct 2020 04:18:59 -0700 (PDT)
+        id S2388004AbgJLLUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 07:20:08 -0400
+Received: from mail-dm6nam08on2046.outbound.protection.outlook.com ([40.107.102.46]:24993
+        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2387597AbgJLLUH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 07:20:07 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ACpqRtIIfPoIjEeNw8LH7+o3SpL8IAj8L380dphD77Tnzdt9dxhP484dkG0eoD/yZ5VxCSmx6VdHnnw9cC2uONK8gEpKSLot5RRNKV1k9MfxiNDGXYHkCksOINV/yFfFeVR0/llTaWGpK5n59ClY2rHzRIUjHzi8GbUzyZcYhOAB7l4NdW25Lo3SUg4nubgcWpnldX8ZR/m2Elua9rX8AasIlYcMprQZHmvUJLsD9p9mDmYpKKVv0uwjGlQbCmqtRMhD/ZOkum8INLX+SQWomxr0tIlIz4q7kqnJVsuy9jxLuWkysFXGhDI0/rFSTquPtnWE5ysGNsWrk8Wd9uOqlA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yRlfhH3iOHxdXD8HCHt5GFPUXLJVeqngPb/3q4S6Gd4=;
+ b=PCSTxd4ZZ2QSYs28GWbnFJKZqZUteiuJQ7KjKneBOGy+p+o8bbyCO/M3OZtx+bFh3R9uj2jt0OdxsC35IPLCmLeRyh3RCiZgkTKcdSz+ONcNzlEqXZ5LvbpmfkmIizGqr9hFxVNSmAvvR4PTXxxz0Hj803MxhS6EqhpCu+Gqs0MIi7MWJImaT/vJFDTppq5C07ov3xKIDCx2pwoZ834M9Pe6CGanHGCalV3bWXFVwLxsK2etoCRbP6PO/sm6JREbyUqqQeD82FVyiw1nSUOt19zzbRQkAEUph9rD9g+jq+NIZ7EdUfz1+GEOy3dIPNfTbbBzF9NvFkJ8a3yjJ3XK8g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0yEH5NGaTBdVWHmTtAwxYSII40my+xheRGVAOZ2FIJ0=;
-        b=s0zYX1Gtb6a7R4xVptYRoP2DcUZbCLyqwpeX8O2s08CM4/OazzTr7bvPHlEA2QVbQR
-         dxlGk1LinaNF6E6X5EOF9IdXI9sFzrEz8wfsTq0OyhLXM9LDXoStJNLaomQLKE93AFpb
-         RZEwoys22kOh+llg+4kVa7E/V1/6jzT4px7RwyoSbq8J0ury5eznjgjnRTd2QkOf9CTW
-         U3oSGVTmjLHw1CkBCbXuLa2nJ7JN7iEAGEdRX8pWMma2hU/Hv+yf0VALmR5yQaOXqCjM
-         NlWoYtPBOFZF52fACDVdx2AfhPNBXS/EgZyuSAbyp5zHQ1Nzm3oXPX8bRnDFl4SDLq/n
-         4YEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0yEH5NGaTBdVWHmTtAwxYSII40my+xheRGVAOZ2FIJ0=;
-        b=WyKeDzLfMThrvUsyL5gqmuWlR/W/RUBcqYujxPAdLSIDXalTz96gvjwv5Y85UQAE0q
-         QI+C+vOcHL4vtV7HbADtnvoOqdlhlsUBue9bsazK5aUkK0XiwDlg5eZqAUZtx0pNcSZg
-         05x7eUdSyl4S+c+3OZZ5OpN8TSVS2bz/F3unqGtOBsxW6KpUMjayIHjlqUIcz/KDFGYT
-         FV2CuvHBfc272ebFXQQCwBFYH1EGYqgHivtHXURBFM4rM9j8JLWUqJQLSuOhdTU8X/dd
-         LdNGRLbchzVeWbzZkl42/PKVt97a2rS6W2PZ28hTfA96HMUI7HzEQmxQ0fze7fQPko5J
-         EcDg==
-X-Gm-Message-State: AOAM531xqOfdjDCX3fQ6u+dp10uzIbWMgOP9r8argvM+UZkYI2xHZTPM
-        x4Yf0SgePIOaK0z9tz9myfmTzv+BDHgF9QGM4fY=
-X-Google-Smtp-Source: ABdhPJyT6N7/YaHLwHPytf6aOAnxfOXQHBo/t0K69MA8144BlECWnhlqEQoLWsvX9dX3yxLy17u+z83tcVMaPZ2//LA=
-X-Received: by 2002:a05:6602:224a:: with SMTP id o10mr15968219ioo.168.1602501538870;
- Mon, 12 Oct 2020 04:18:58 -0700 (PDT)
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yRlfhH3iOHxdXD8HCHt5GFPUXLJVeqngPb/3q4S6Gd4=;
+ b=TRRE+rWe9fA2e5lKEl57R0hExxwp5+wYMiSWi9qszbSVQAT7ZlJ4ck2QzslSEg+ZUfj4v+FhnifJMjWAq7GQcOx3verskOcxiewZzuzG9Fi8HrbldD4/4klvh2xy1ugHKCxZ0cS830xzevgvBO/oVJZ4bolZmUAIC6Lht7Qgkn8=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3540.namprd12.prod.outlook.com (2603:10b6:408:6c::33)
+ by BN8PR12MB2979.namprd12.prod.outlook.com (2603:10b6:408:66::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.24; Mon, 12 Oct
+ 2020 11:19:59 +0000
+Received: from BN8PR12MB3540.namprd12.prod.outlook.com
+ ([fe80::9d06:595:4be5:3af7]) by BN8PR12MB3540.namprd12.prod.outlook.com
+ ([fe80::9d06:595:4be5:3af7%7]) with mapi id 15.20.3455.029; Mon, 12 Oct 2020
+ 11:19:59 +0000
+From:   Sanjay R Mehta <Sanju.Mehta@amd.com>
+To:     vkoul@kernel.org
+Cc:     gregkh@linuxfoundation.org, dan.j.williams@intel.com,
+        Thomas.Lendacky@amd.com, Shyam-sundar.S-k@amd.com,
+        Nehal-bakulchandra.Shah@amd.com, robh@kernel.org,
+        mchehab+samsung@kernel.org, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
+        Sanjay R Mehta <sanju.mehta@amd.com>
+Subject: [PATCH v6 0/3] Add support for AMD PTDMA controller driver
+Date:   Mon, 12 Oct 2020 06:19:16 -0500
+Message-Id: <1602501559-67927-1-git-send-email-Sanju.Mehta@amd.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [165.204.156.251]
+X-ClientProxiedBy: MAXPR01CA0115.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a00:5d::33) To BN8PR12MB3540.namprd12.prod.outlook.com
+ (2603:10b6:408:6c::33)
 MIME-Version: 1.0
-References: <20201009170202.103512-1-a.nogikh@gmail.com> <5d71472dcef4d88786ea6e8f30f0816f8b920bb7.camel@sipsolutions.net>
-In-Reply-To: <5d71472dcef4d88786ea6e8f30f0816f8b920bb7.camel@sipsolutions.net>
-From:   Aleksandr Nogikh <a.nogikh@gmail.com>
-Date:   Mon, 12 Oct 2020 14:18:47 +0300
-Message-ID: <CADpXja8NZDZ_3AMHUMnj90nbQbW2pA_aP=_Y2w2tSfy8EcRZkw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] [PATCH v2 0/3] [PATCH v2 0/3] net, mac80211,
- kernel: enable KCOV remote coverage collection for 802.11 frame handling
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     davem@davemloft.net, kuba@kernel.org, akpm@linux-foundation.org,
-        Eric Dumazet <edumazet@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        nogikh@google.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from sanjuamdntb2.amd.com (165.204.156.251) by MAXPR01CA0115.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:5d::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3455.21 via Frontend Transport; Mon, 12 Oct 2020 11:19:55 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: a3a12bbd-15ab-48f2-61eb-08d86ea0c13d
+X-MS-TrafficTypeDiagnostic: BN8PR12MB2979:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BN8PR12MB2979A5C38F7BEA5F8A85E3B7E5070@BN8PR12MB2979.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: v2Pl2yR6gbFpo4XlR8UKOFFxOjvxQaLEM6nYGP9QtqBaDzrpW12neeiHThrmOvij6ilmcp0eZZyU84EC+Bd6Tfxg3iQzxl//dur3lBAdaZi+Yc6f5LO+q1GgPSEnWOed+SkEOa2VbVBeEQbKJmKHYo4RaDPHBYWtE20J+hLOgX52GaBrUQhv5ciIE+YPYtdC07KI/ob7ccusMKi91DJGicDVEcsqmbTD7qHxNw6LbBNZaZXeTTLKwisNHSrC5jra0MAuQ2TaXhHuYbAyUKdaa8G+Opj7+xWQj7xiVEbBPhU0FFK1t+XMzd/aR+Ahw5KM//c5NrHBI/hZTY21QEsqzdA+EPVZOgLabl8qd7Dq4Plz1dW+GWYCgF+qoO0d5rZDn8nde+Enbiic05uWfsMKAA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3540.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(366004)(136003)(346002)(396003)(16526019)(52116002)(186003)(7696005)(26005)(2616005)(316002)(956004)(478600001)(36756003)(966005)(4326008)(6486002)(2906002)(83080400001)(5660300002)(86362001)(6916009)(66476007)(66946007)(66556008)(8936002)(83380400001)(6666004)(8676002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: EOaBoAG6CQq4L4oWfpP4SRiV1HUHMBD0hTOjWEn8WV4362T39uAr9soi9mlz96SEhbOeCdMA8JZGXMZoEPTENBg+luJ9L4qJUDsKMPeLihVp8zePNffh9uksX6vNbge9MLzcD/6mphDEVZVCyK/vvcEZrZCCEdi0I2I53CaJ3oZvK9Yso6nF16RFgnmr3xunQ6Fv6gQcRHb76LFPc0LjQEVbyaqfySo0Di4zCpIb8zL3aAbBRR2Dkj9ZXHkD3LBTzIxh9IHET8Pgc+2K+yU45tK5MSvPizAJlVK1Gtxum2ly8A1fhoZT60bdTjDB4voRSOddyUzL253t2dVthLKZoiuuARQtgGLd0QlnqWCYbylkAshRXU0Wgrbfj2xUJxNr0QDoQVHvN9qqdQ28mL63FQR8GarNBPsklXYiRiFcIaeG6aWMVApuTkEd8IsWTzesqftrvwz0Xinjhttu3omlxzHa9grtDl+gLEwqIH8LC/mfV/ndjbsAkmOB5GpYoAogkoQJ46aqBfDe8GB5UQA26KOxeEuOpDTf9gaPD4m8o5VsySD4TLYI25KaEQeKE9cFDGBq0phFa/dEXHccIt+2UDeRd8zqVms+urzRZIDrPhyr9o2C7TUDZAcaGdZjA480euTnptN1JJWl0u5xvvooow==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a3a12bbd-15ab-48f2-61eb-08d86ea0c13d
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3540.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2020 11:19:59.3520
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dCjxIXAxncssJhi2sEzbhtJ0ONjlBWpu9TeUUqSrxG0LqpXuOIL1uyVeD/rRDxOuojegM56bTW7m5c+9ygvx1w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB2979
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 11 Oct 2020 at 21:50, Johannes Berg <johannes@sipsolutions.net> wrote:
-[...]
-> Also, unrelated to that (but I see Dmitry CC'ed), I started wondering if
-> it'd be helpful to have an easier raw 802.11 inject path on top of say
-> hwsim0; I noticed some syzbot reports where it created raw sockets, but
-> that only gets you into the *data* plane of the wifi stack, not into the
-> *management* plane. Theoretically you could add a monitor interface, but
-> right now the wifi setup (according to the current docs on github) is
-> using two IBSS interfaces.
->
-> Perhaps an inject path on the mac80211-hwsim "hwsim0" interface would be
-> something to consider? Or simply adding a third radio that's in
-> "monitor" mode, so that a raw socket bound to *that* interface can
-> inject with a radiotap header followed by an 802.11 frame, getting to
-> arbitrary frame handling code, not just data frames.
->
-> Any thoughts?
->
-> johannes
->
-*sending it again as I forgot to include Cc list*
+From: Sanjay R Mehta <sanju.mehta@amd.com>
 
-Hi Johannes,
+This patch series adds support for AMD PTDMA controller which
+performs high bandwidth memory-to-memory and IO copy operation,
+performs DMA transfer through queue based descriptor management.
 
-Thank you for sharing these ideas.
+AMD Processor has multiple ptdma device instances with each controller
+having single queue. The driver also adds support for for multiple PTDMA
+instances, each device will get an unique identifier and uniquely
+named resources.
 
-Currently we're injecting frames via mac80211_hwsim (by pretenting to
-be wmediumd -
-https://github.com/google/syzkaller/blob/4a77ae0bdc5cd75ebe88ce7c896aae6bbf457a29/executor/common_linux.h#L4922).
-Injecting via RAW sockets would definitely be a much cleaner way, but
-to do that we need to keep a separate monitor interface. That's pretty
-hard as the fuzzer is constantly trying to break things, and direct
-injection via mac80211_hwsim seems to be a much more robust way - it
-will work as long as the virtual device is alive. hwsim0 is
-unfortunately not available as fuzzer processes are run in separate
-network namespaces, while this one is created during mac80211_hwsim
-initialization.
+v6:
+	- Removed debug artifacts and made the suggested cosmetic changes.
+	- implemented and used to_pt_chan and to_pt_desc inline functions.
+	- Removed src and dst address check as framework does this.
+	- Removed devm_kcalloc() usage and used devm_kzalloc() api.
+	- Using framework debugfs directory to store dma info.
 
-The current approach seems to work fine for management frames - I was
-able to create seed programs that inject valid management frames and
-these frames have the expected effect on the subsystem (e.g. injecting
-AP responses during scan/authentication/authorization forces a station
-to believe that it has successfully connected to an AP).
+v5:
+	- modified code to submit next tranction in ISR itself and removed the tasklet.
+	- implemented .device_synchronize API.
+	- converted debugfs code by using DEFINE_SHOW_ATTRIBUTE()
+	- using dbg_dev_root for debugfs root directory.
+	- removed dma_status from pt_dma_chan
+	- removed module parameter cmd_queue_lenght.
+	- removed global device list for multiple devics.
+	- removed code related to dynamic adding/deleting to device list
+	- removed pt_add_device and pt_del_device functions
 
---
-Best Regards,
-Aleksandr
+v4:
+	- modified DMA channel and descriptor management using virt-dma layer
+	  instead of list based management.
+	- return only status of the cookie from pt_tx_status
+	- copyright year changed from 2019 to 2020
+	- removed dummy code for suspend & resume
+	- used bitmask and genmask
+
+v3:
+        - Fixed the sparse warnings.
+
+v2:
+        - Added controller description in cover letter
+        - Removed "default m" from Kconfig
+        - Replaced low_address() and high_address() functions with kernel
+          API's lower_32_bits & upper_32_bits().
+        - Removed the BH handler function pt_core_irq_bh() and instead
+          handling transaction in irq handler itself.
+        - Moved presetting of command queue registers into new function
+          "init_cmdq_regs()"
+        - Removed the kernel thread dependency to submit transaction.
+        - Increased the hardware command queue size to 32 and adding it
+          as a module parameter.
+        - Removed backlog command queue handling mechanism.
+        - Removed software command queue handling and instead submitting
+          transaction command directly to
+          hardware command queue.
+        - Added tasklet structure variable in "struct pt_device".
+          This is used to invoke pt_do_cmd_complete() upon receiving interrupt
+          for command completion.
+        - pt_core_perform_passthru() function parameters are modified and it is
+          now used to submit command directly to hardware from dmaengine framew
+        - Removed below structures, enums, macros and functions, as these value
+          constants. Making command submission simple,
+           - Removed "union pt_function"  and several macros like PT_VERSION,
+             PT_BYTESWAP, PT_CMD_* etc..
+           - enum pt_passthru_bitwise, enum pt_passthru_byteswap, enum pt_memty
+             struct pt_dma_info, struct pt_data, struct pt_mem, struct pt_passt
+             struct pt_op,
+
+Links of the review comments for v5:
+1. https://lkml.org/lkml/2020/7/3/154
+2. https://lkml.org/lkml/2020/8/25/431
+3. https://lkml.org/lkml/2020/7/3/177
+4. https://lkml.org/lkml/2020/7/3/186
+
+Links of the review comments for v5:
+1. https://lkml.org/lkml/2020/5/4/42
+2. https://lkml.org/lkml/2020/5/4/45
+3. https://lkml.org/lkml/2020/5/4/38
+4. https://lkml.org/lkml/2020/5/26/70
+
+Links of the review comments for v4:
+1. https://lkml.org/lkml/2020/1/24/12
+2. https://lkml.org/lkml/2020/1/24/17
+
+Links of the review comments for v2:
+1https://lkml.org/lkml/2019/12/27/630
+2. https://lkml.org/lkml/2020/1/3/23
+3. https://lkml.org/lkml/2020/1/3/314
+4. https://lkml.org/lkml/2020/1/10/100
+
+Links of the review comments for v1:
+1. https://lkml.org/lkml/2019/9/24/490
+2. https://lkml.org/lkml/2019/9/24/399
+3. https://lkml.org/lkml/2019/9/24/862
+4. https://lkml.org/lkml/2019/9/24/122
+
+Sanjay R Mehta (3):
+  dmaengine: ptdma: Initial driver for the AMD PTDMA
+  dmaengine: ptdma: register PTDMA controller as a DMA resource
+  dmaengine: ptdma: Add debugfs entries for PTDMA information
+
+ MAINTAINERS                         |   6 +
+ drivers/dma/Kconfig                 |   2 +
+ drivers/dma/Makefile                |   1 +
+ drivers/dma/ptdma/Kconfig           |  13 +
+ drivers/dma/ptdma/Makefile          |  10 +
+ drivers/dma/ptdma/ptdma-debugfs.c   | 116 ++++++++
+ drivers/dma/ptdma/ptdma-dev.c       | 339 ++++++++++++++++++++++
+ drivers/dma/ptdma/ptdma-dmaengine.c | 562 ++++++++++++++++++++++++++++++++++++
+ drivers/dma/ptdma/ptdma-pci.c       | 251 ++++++++++++++++
+ drivers/dma/ptdma/ptdma.h           | 358 +++++++++++++++++++++++
+ 10 files changed, 1658 insertions(+)
+ create mode 100644 drivers/dma/ptdma/Kconfig
+ create mode 100644 drivers/dma/ptdma/Makefile
+ create mode 100644 drivers/dma/ptdma/ptdma-debugfs.c
+ create mode 100644 drivers/dma/ptdma/ptdma-dev.c
+ create mode 100644 drivers/dma/ptdma/ptdma-dmaengine.c
+ create mode 100644 drivers/dma/ptdma/ptdma-pci.c
+ create mode 100644 drivers/dma/ptdma/ptdma.h
+
+-- 
+2.7.4
+
