@@ -2,129 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE7F28AF12
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 09:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 924F228AF15
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 09:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727371AbgJLHbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 03:31:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54430 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726413AbgJLHbs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 03:31:48 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2018C20790;
-        Mon, 12 Oct 2020 07:31:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602487907;
-        bh=ti7dARSubUADrR1c07/IAIywnspN6KHT1BN7cGBTwGE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=vn+aRm4A0BOsjKcZeOXpBsCm5Vtz4YR0liPBiA4KLz88Hga9tBBIG3WstLzDs+et8
-         ABlmOSZ6KtJG4w8oCZB0pKdZVJiBQpX/iAGktEqb/OYzdNn8SKDX0VYV4QV2acX/aR
-         asOHvBGQ/LnKe2EqSJ6DCVDcT/pBowaP/xts1/H0=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kRsJ7-000R4b-3x; Mon, 12 Oct 2020 08:31:45 +0100
+        id S1727429AbgJLHb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 03:31:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727392AbgJLHb6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 03:31:58 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C098C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 00:31:56 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id x1so15861111eds.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 00:31:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CzDxLaDLFJzWcap/ARMkfpBesRsQ6cFDLsAfzEHhwNg=;
+        b=b0UFofGey9MHN4SSKeWJne/jISh0kZ4rKs08Umat1GtUhptcnknv3VsZFMe74YDxK8
+         +JFbEMLjSb3QLuIDhnLOtzA8nFoFEAtB07cpzErKshtf7030J2/yyB2L8QDfIJM6IFMG
+         wOgjFRhEoC0PoIJ1v5e52Av5WQBBAKNAChPIDSvM3CHvCIEEA1uWvjmJ9cXZJvrc70R2
+         DbQR1JXv2jr8nGlgyMO1cZ1JtR6tayglpD8EwubGrKVXQgUgRCvptXMtyhJBm+3VbHFc
+         qPo/L0Y73MO+zXoSQ+VKiA4TKFVoReqFKJE9CBqM6095iH22+gT3A2xMNboe/ZQxGfxl
+         uF3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CzDxLaDLFJzWcap/ARMkfpBesRsQ6cFDLsAfzEHhwNg=;
+        b=XvOEXAuXKgRrt4DC4edclmH8+H4syRWInOFUgY7IejAvzWWTjWscU0U2ktBYIrUdol
+         tmPkdzsFyPAQSVsVJgOlDUXOV4Xm3ol42vA/0ASgvnb4juEEY+TYMv9vqWMLi0xk9IWj
+         onnYvpxr5q2YIsmERP5Vd3xRCVdd5lpDlFXNQv9eMiWAd2Ae+LwCqBxgamEjh26HWfJ7
+         M0cu2WPj42vho0oe13MHrFGsxyC5UtmAsUoWrJHkMfxhOHC/Gh5ZSNHj91pioo3/yWuK
+         kNbt07znARYKRgAgLnAMCSherC3l9hG+G4tBu/kwPU6XGPWgCWuHqIx+K/g3qsZQDsd7
+         Sz6w==
+X-Gm-Message-State: AOAM533bNVFrtVFPiOBVComrOqzN9oA+MGaRlri1eLZHFffHN97hxrWD
+        dGMHdWN3LhvvXo52dXoaQNHY8A==
+X-Google-Smtp-Source: ABdhPJxaZ45/LGCB6zLJp30ygGXXJGsXRsI9tcD8xqo9itEMOS9n1yfi201ECa1UI9OmrMS8rBHpBg==
+X-Received: by 2002:aa7:dcc7:: with SMTP id w7mr12914876edu.80.1602487914471;
+        Mon, 12 Oct 2020 00:31:54 -0700 (PDT)
+Received: from yoga ([194.182.8.81])
+        by smtp.gmail.com with ESMTPSA id n22sm10021525eji.106.2020.10.12.00.31.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 00:31:53 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 09:31:52 +0200
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v3 6/8] iommu/arm-smmu: Add impl hook for inherit boot
+ mappings
+Message-ID: <20201012073152.GA2998@yoga>
+References: <20200904155513.282067-1-bjorn.andersson@linaro.org>
+ <20200904155513.282067-7-bjorn.andersson@linaro.org>
+ <0bfcc8f7-d054-616b-834b-319461b1ecb9@arm.com>
+ <20200913032559.GT3715@yoga>
+ <20200921210814.GE3811@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 12 Oct 2020 08:31:45 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc:     nm@ti.com, devicetree@vger.kernel.org, jason@lakedaemon.net,
-        lokeshvutla@ti.com, linux-kernel@vger.kernel.org, t-kristo@ti.com,
-        robh+dt@kernel.org, ssantosh@kernel.org, tglx@linutronix.de,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 2/2] irqchip/ti-sci-inta: Add support for unmapped
- event handling
-In-Reply-To: <3e9974b8-c0ab-9de4-9b51-541c2093c42a@ti.com>
-References: <20200930074559.18028-1-peter.ujfalusi@ti.com>
- <20200930074559.18028-3-peter.ujfalusi@ti.com>
- <af9ce252820bab9a21207ef2173da9fd@kernel.org>
- <3dc2f27f-0a41-b538-11ac-970ad4310ccb@ti.com>
- <714738536a5566c511e83dc424e94bf7@kernel.org>
- <d3180011-d9b4-3d3d-555c-3d81e1302028@ti.com>
- <3e9974b8-c0ab-9de4-9b51-541c2093c42a@ti.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <7e66c03285db40c6ce38b951b87bcb45@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: peter.ujfalusi@ti.com, nm@ti.com, devicetree@vger.kernel.org, jason@lakedaemon.net, lokeshvutla@ti.com, linux-kernel@vger.kernel.org, t-kristo@ti.com, robh+dt@kernel.org, ssantosh@kernel.org, tglx@linutronix.de, linux-arm-kernel@lists.infradead.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200921210814.GE3811@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-09 09:58, Peter Ujfalusi wrote:
-> Marc,
+On Mon 21 Sep 23:08 CEST 2020, Will Deacon wrote:
+
+> On Sat, Sep 12, 2020 at 10:25:59PM -0500, Bjorn Andersson wrote:
+> > On Fri 11 Sep 12:13 CDT 2020, Robin Murphy wrote:
+> > > On 2020-09-04 16:55, Bjorn Andersson wrote:
+> > > > Add a new operation to allow platform implementations to inherit any
+> > > > stream mappings from the boot loader.
+> > > 
+> > > Is there a reason we need an explicit step for this? The aim of the
+> > > cfg_probe hook is that the SMMU software state should all be set up by then,
+> > > and you can mess about with it however you like before arm_smmu_reset()
+> > > actually commits anything to hardware. I would have thought you could
+> > > permanently steal a context bank, configure it as your bypass hole, read out
+> > > the previous SME configuration and tweak smmu->smrs and smmu->s2crs
+> > > appropriately all together "invisibly" at that point.
+> > 
+> > I did this because as of 6a79a5a3842b ("iommu/arm-smmu: Call
+> > configuration impl hook before consuming features") we no longer have
+> > setup pgsize_bitmap as we hit cfg_probe, which means that I need to
+> > replicate this logic to set up the iommu_domain.
+> > 
+> > If I avoid setting up an iommu_domain for the identity context, as you
+> > request in patch 8, this shouldn't be needed anymore.
+> > 
+> > > If that can't work, I'm very curious as to what I've overlooked.
+> > > 
+> > 
+> > I believe that will work, I will rework the patches and try it out.
+> 
+> Did you get a chance to rework this?
 > 
 
-[...]
+Finally got a chance to dig through this properly.
 
-> The design of irqchip/irq-ti-sci-inta.c, soc/ti/ti_sci_inta_msi.c and
-> irqchip/irq-ti-sci-intr.c created to handle the interrupt needs present
-> in K3 devices with NAVSS.
-> DMSS of newer K3 devices extends and simplifies the NAVSS components 
-> and
-> a big part of that change was done with the INTA and DMAs.
-> System Firmware also changed to adopt to these changes.
-> 
-> As an example, let's assume that we want an interrupt from a ring.
-> The high level of the events in this case are:
-> 
-> NAVSS:
-> 1.1 ring generates an internal signal (up or down)
-> 1.2 the ringacc will send a (mapped) Global Event to INTA
-> 1.3 When INTA receives the global event, it will signal it's outgoing
->     VINT to INTR
-> 1.4 INTR will trigger a host interrupt.
-> 
-> DMSS
-> 1.1 ring generates an internal signal (up or down)
-> 1.2 the DMA (ring is now part of the DMA) will send an unmapped event 
-> to
->     INTA
-> 1.3 When INTA receives the unmapped event, it will send a (mapped)
->     Global Event to itself
-> 1.4 When INTA receives the global event, it will signal it's outgoing
->     VINT to INTR
-> 1.5 INTR will trigger a host interrupt.
-> 
-> The API from sysfw is the same to configure the global events and VINT,
-> but we need to use the INTA's tisci device identification number to let
-> sysfw know that the Global event number can be programmed into INTA's
-> unmapped event steering register. The DMA no longer have this register,
-> it sends unmapped event to INTA.
-> 
-> The unmapped event number is fixed per sources, they will arrive at the
-> specific unmapped event configuration register of INTA.
-> 
-> INTA itself does not know which source are allocated to be used by
-> Linux, the allocation is for the DMA resources and only the DMA driver
-> knows which channels, rings, flows can be used and can ask the INTA MSI
-> domain to create interrupts for those.
-> 
-> By handling the ti,unmapped-event-sources the INTA driver can make
-> decision on the correct tisci dev_id to be used for the sysfw API to
-> where the global event must be configured and the client drivers does
-> not need to know how things are working under the hood.
-> 
-> There are components in DMSS which use is exactly how they worked 
-> within
-> NAVSS, they are not using unmapped events. Ringacc comes to mind first.
-> 
-> I can add a comment block to explain the nature of unmapped events and
-> the reason why we need to do what we do.
-> 
-> Would this be acceptable?
+Initial results where positive and with an implementation of cfg_probe
+in qcom_smmu_impl I'm able to probe the arm-smmu driver just fine - and
+display (e.g. efifb) stays alive.
 
-That'd be useful, as long as it is shorter than the above.
+Unfortunately as the display driver (drivers/gpu/drm/msm) is about to
+probe a new iommu domain is created, which due to its match against
+qcom_smmu_client_of_match[] becomes of type IOMMU_DOMAIN_IDENTITY.
+This results in a S2CR of BYPASS type, which the firmware intercepts and
+turns the stream into a type FAULT.
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+So while the cfg_probe looks very reasonable we're still in need of a
+mechanism to use the fake identity context for the iommu domain
+associated with the display controller.
+
+
+The workings of the display driver is that it gets the iommu domain
+setup for byass and then after that creates a translation context for
+this same stream where it maps the framebuffer.
+
+For testing purposes I made def_domain_type always return 0 in the qcom
+impl and the result is that we get a few page faults while probing the
+display driver, but these are handled somewhat gracefully and the
+initialization did proceed and the system comes up nicely (but in the
+case that the display driver would probe defer this leads to an storm of
+faults as the screen continues to be refreshed).
+
+TL;DR I think we still need to have a way to get the arm-smmu driver to
+allow the qcom implementation to configure identity domains to use
+translation - but we can make the setup of the identity context a detail
+of the qcom driver.
+
+Regards,
+Bjorn
