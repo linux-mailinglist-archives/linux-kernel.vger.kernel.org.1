@@ -2,63 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBCFD28B21D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 12:21:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF8A828B222
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 12:22:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729432AbgJLKVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 06:21:15 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:34081 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726104AbgJLKVP (ORCPT
+        id S1729474AbgJLKV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 06:21:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43110 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726658AbgJLKV5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 06:21:15 -0400
-X-UUID: 722f8c1187c74785bba0a5e09f268b67-20201012
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=sV7v6zcBR17fd0+AW0xQOpWr/elRpG4GNvg37vzsCsg=;
-        b=CoPRnWTpTkGDwcsJ3xupDsz2ATlpeXOHy5wk+g4WHCiCinJziwDtJgHGPEMCoU/LXJPXJe8JN1YVXMBbqev4IR2JL/LsRZTl1gUjcrIYR+nL0pxz/IFOp91YYEr9e7s+Ycp9pw+Tyze5Tff9O/Q8yGG3gf6uwbG7vovbFL3JhF4=;
-X-UUID: 722f8c1187c74785bba0a5e09f268b67-20201012
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <mark-pk.tsai@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 104157862; Mon, 12 Oct 2020 18:21:08 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 12 Oct 2020 18:20:58 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 12 Oct 2020 18:20:58 +0800
-From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-To:     <marc.zyngier@arm.com>
-CC:     <tglx@linutronix.de>, <jason@lakedaemon.net>,
-        <matthias.bgg@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <yj.chiang@mediatek.com>,
-        <wc.shih@mediatek.com>, <alix.wu@mediatek.com>,
-        Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-Subject: [PATCH] irqchip/irq-mst-intc: Declare mst_intc_of_init static
-Date:   Mon, 12 Oct 2020 18:20:56 +0800
-Message-ID: <20201012102056.4156-1-mark-pk.tsai@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Mon, 12 Oct 2020 06:21:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602498114;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HDBTeWKsR+WSz7ogWTP5+7xq7Zt2sJLi3yvneC+dgKU=;
+        b=ZDyn4qeA0D7Nm3Eh+gNlxdcFss0DC4CAreyxvGgOjUYieEnfEtrcivrsZTRIvrdcD8x5r0
+        mELbauB4yPqUjHuUoX74EG7jCgP3PjWdIahmSksboe8mkYe9vi1eD3jxQtaEq0Ee0pripA
+        8DZUdkEAtulfWW1WnxMAk5y2JtwImR8=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-370-aNieVUP5P6KEHqZ_OhDyCw-1; Mon, 12 Oct 2020 06:21:52 -0400
+X-MC-Unique: aNieVUP5P6KEHqZ_OhDyCw-1
+Received: by mail-wm1-f69.google.com with SMTP id y83so5088213wmc.8
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 03:21:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HDBTeWKsR+WSz7ogWTP5+7xq7Zt2sJLi3yvneC+dgKU=;
+        b=kAJsJcUOdu/aKUTGxXWzLNV08JYoayqdRqsaTzjTRMWIv3jM00yhhCQt4S906oMZF3
+         DfXYTP6lNws6fKhLfb0yk6hM3ghDnJvSAvXnt0YEvo7+dEDniU9OrTXu12asAR2z4b02
+         ZOPrNUliNUqEeimBN8UAXTovgGIfVgLg77u18RUK6VU3+YnvVPEYrrIIe99gfc+73z0W
+         /4cE3Ehk1iyJgVO0qC9+VrJl47PbjLGzc0nfNsWE2VIAtN02jD8FtHhLXQtik0bbGLu0
+         gQNc4pq822wIKNgWbbvHZhsX1x6xHAyOeApgyh7955SPqIWU72UjdcuB4V0fYthqgSB8
+         M1TQ==
+X-Gm-Message-State: AOAM531D8YF+4KW3CR2bGyU+w4QD4eaZdrEUPb2t1i9ssv8qkSvdpjZP
+        i8bBcB+G1c36q1/wEq0Z/ORwBnODuELdtF3kZpW3wj06Q47LBF4cX4tjGWmj4TP3kc5dFlXNMaj
+        639vmOOIf95tp6UcB1I6CugtJ
+X-Received: by 2002:a7b:cf13:: with SMTP id l19mr10136825wmg.74.1602498111628;
+        Mon, 12 Oct 2020 03:21:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxbPNrVCw0L+LujyGpdebn7NEu9NDzfwj9obaxewRDDCTN5D74qfCH1bHBww39ekC+QJX24Ag==
+X-Received: by 2002:a7b:cf13:: with SMTP id l19mr10136804wmg.74.1602498111412;
+        Mon, 12 Oct 2020 03:21:51 -0700 (PDT)
+Received: from ?IPv6:2a01:cb14:499:3d00:cd47:f651:9d80:157a? ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
+        by smtp.gmail.com with ESMTPSA id u15sm22035308wml.21.2020.10.12.03.21.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Oct 2020 03:21:50 -0700 (PDT)
+Subject: Re: [PATCH v2 1/3] objtool: check: Fully validate the stack frame
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org, mbenes@suse.cz,
+        raphael.gault@arm.com, benh@kernel.crashing.org
+References: <20200928093631.210610-1-jthierry@redhat.com>
+ <20200928093631.210610-2-jthierry@redhat.com>
+ <20200929191834.7daofidv6b5aef3y@treble>
+From:   Julien Thierry <jthierry@redhat.com>
+Message-ID: <5540c2a9-db13-e05e-713c-22ec00f21aa6@redhat.com>
+Date:   Mon, 12 Oct 2020 11:21:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20200929191834.7daofidv6b5aef3y@treble>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-bXN0X2ludGNfb2ZfaW5pdCBpcyBub3QgaW50ZW5kZWQgdG8gYmUgdXNlZCBvdXNpZGUgb2YgaXJx
-LW1zdC1pbnRjLmMsDQpkZWNsYXJlIGl0IHN0YXRpYy4NCg0KUmVwb3J0ZWQtYnk6IGtlcm5lbCB0
-ZXN0IHJvYm90IDxsa3BAaW50ZWwuY29tPg0KU2lnbmVkLW9mZi1ieTogTWFyay1QSyBUc2FpIDxt
-YXJrLXBrLnRzYWlAbWVkaWF0ZWsuY29tPg0KLS0tDQogZHJpdmVycy9pcnFjaGlwL2lycS1tc3Qt
-aW50Yy5jIHwgMiArLQ0KIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlv
-bigtKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9pcnFjaGlwL2lycS1tc3QtaW50Yy5jIGIvZHJp
-dmVycy9pcnFjaGlwL2lycS1tc3QtaW50Yy5jDQppbmRleCA0YmUwNzc1OTE4OTguLmNmNmRlMDRh
-NzNiNCAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvaXJxY2hpcC9pcnEtbXN0LWludGMuYw0KKysrIGIv
-ZHJpdmVycy9pcnFjaGlwL2lycS1tc3QtaW50Yy5jDQpAQCAtMTU0LDcgKzE1NCw3IEBAIHN0YXRp
-YyBjb25zdCBzdHJ1Y3QgaXJxX2RvbWFpbl9vcHMgbXN0X2ludGNfZG9tYWluX29wcyA9IHsNCiAJ
-LmZyZWUJCT0gaXJxX2RvbWFpbl9mcmVlX2lycXNfY29tbW9uLA0KIH07DQogDQotaW50IF9faW5p
-dA0KK3N0YXRpYyBpbnQgX19pbml0DQogbXN0X2ludGNfb2ZfaW5pdChzdHJ1Y3QgZGV2aWNlX25v
-ZGUgKmRuLCBzdHJ1Y3QgZGV2aWNlX25vZGUgKnBhcmVudCkNCiB7DQogCXN0cnVjdCBpcnFfZG9t
-YWluICpkb21haW4sICpkb21haW5fcGFyZW50Ow0KLS0gDQoyLjE4LjANCg==
+
+
+On 9/29/20 8:18 PM, Josh Poimboeuf wrote:
+> On Mon, Sep 28, 2020 at 10:36:29AM +0100, Julien Thierry wrote:
+>> +++ b/tools/objtool/arch/x86/include/cfi_regs.h
+>> @@ -22,4 +22,7 @@
+>>   #define CFI_RA			16
+>>   #define CFI_NUM_REGS		17
+> 
+> A few more naming nitpicks:
+> 
+>> +#define STACKFRAME_BP_OFFSET	-16
+>> +#define STACKFRAME_RA_OFFSET	-8
+> 
+> "Stack frame" has more than one meaning now, I suppose.  i.e. it could
+> also include the callee-saved registers and any other stack space
+> allocated by the function.
+> 
+> Would "call frame" be clearer?
+> 
+>    CALL_FRAME_BP_OFFSET
+>    CALL_FRAME_RA_OFFSET
+> 
+> ?
+
+I would've thought that the call-frame could include the stackframe + 
+other callee saved regs. Whereas stackframe tends to used for the 
+caller's frame pointer + return address (i.e. what allows unwinding). 
+Unless I'm getting lost with things.
+
+And if call frame is associated with the region starting from the stack 
+pointer at the parent call point (since this is what CFA is), then it 
+shouldn't be associated with the framepointer + return address structure 
+since this could be anywhere on the call frame (not at a fixed offset) 
+as long as the new frame pointer points to the structure.
+
+> 
+>> +++ b/tools/objtool/cfi.h
+>> @@ -35,4 +35,6 @@ struct cfi_state {
+>>   	bool end;
+>>   };
+>>   
+>> +#define STACKFRAME_SIZE	16
+> 
+> CALL_FRAME_SIZE ?
+> 
+> I'm sort of contradicting my previous comment here, but even though this
+> value may be generic, it's also very much intertwined with the
+> CALL_FRAME_{BP|RA}_OFFSET values.  So I get the feeling it really
+> belongs in the arch-specific cfi_regs.h next to the other defines after
+> all.
+> 
+
+Agreed.
+
+-- 
+Julien Thierry
 
