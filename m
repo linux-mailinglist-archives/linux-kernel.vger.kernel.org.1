@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6ED428B96F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CDEC28B967
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390762AbgJLOA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:00:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40660 "EHLO mail.kernel.org"
+        id S2390541AbgJLOAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:00:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728130AbgJLNjm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:39:42 -0400
+        id S1731441AbgJLNjp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:39:45 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 148CE21D81;
-        Mon, 12 Oct 2020 13:39:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 650CD206D9;
+        Mon, 12 Oct 2020 13:39:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509981;
-        bh=ualpSjygNXqURRiZsGyee47tHeQIYsGssVDS2IJdcE0=;
+        s=default; t=1602509984;
+        bh=5qbW2pw6CK3ZE8lib06+Srj0tLsoRJpS6HEI/WGpEkw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H9TJtPdvT3Ki3/Y5x2NtFd9gOUkudh5IVcgHTCw8S2w/RYO5lNtIo2akrWV4YvYnE
-         6QyYG46NcVaqkD5geLviXY/iRhwRuLXpcQrtzw55ZRgggeub2AsxBun68L6Otr1SEt
-         11DkHKwfvGi+yeM7z5izWD8OqBP2f8qEmvU9lGJ0=
+        b=2pAm6dbMA1md4R3lbOTyfZQK/D0b4rLn2sAQs9ldsGHOCXlsMJxSGMbDUp6LAMSk/
+         TQkmOU1L+jBLoNWmkweNk8u0/ZRvD6XviadXx+K3xGG7YYnLeVcJHDbFxwYuuFr7Jt
+         qZWizcS6nXDmMzYWM1ec7/vWSFMcZ3T3C/W1FwZo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aya Levin <ayal@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
+        stable@vger.kernel.org, Marc Dionne <marc.dionne@auristor.com>,
+        David Howells <dhowells@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 41/49] net/mlx5e: Fix VLAN create flow
-Date:   Mon, 12 Oct 2020 15:27:27 +0200
-Message-Id: <20201012132631.312190140@linuxfoundation.org>
+Subject: [PATCH 4.19 42/49] rxrpc: Fix rxkad token xdr encoding
+Date:   Mon, 12 Oct 2020 15:27:28 +0200
+Message-Id: <20201012132631.346293520@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201012132629.469542486@linuxfoundation.org>
 References: <20201012132629.469542486@linuxfoundation.org>
@@ -44,53 +43,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aya Levin <ayal@nvidia.com>
+From: Marc Dionne <marc.dionne@auristor.com>
 
-[ Upstream commit d4a16052bccdd695982f89d815ca075825115821 ]
+[ Upstream commit 56305118e05b2db8d0395bba640ac9a3aee92624 ]
 
-When interface is attached while in promiscuous mode and with VLAN
-filtering turned off, both configurations are not respected and VLAN
-filtering is performed.
-There are 2 flows which add the any-vid rules during interface attach:
-VLAN creation table and set rx mode. Each is relaying on the other to
-add any-vid rules, eventually non of them does.
+The session key should be encoded with just the 8 data bytes and
+no length; ENCODE_DATA precedes it with a 4 byte length, which
+confuses some existing tools that try to parse this format.
 
-Fix this by adding any-vid rules on VLAN creation regardless of
-promiscuous mode.
+Add an ENCODE_BYTES macro that does not include a length, and use
+it for the key.  Also adjust the expected length.
 
-Fixes: 9df30601c843 ("net/mlx5e: Restore vlan filter after seamless reset")
-Signed-off-by: Aya Levin <ayal@nvidia.com>
-Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Note that commit 774521f353e1d ("rxrpc: Fix an assertion in
+rxrpc_read()") had fixed a BUG by changing the length rather than
+fixing the encoding.  The original length was correct.
+
+Fixes: 99455153d067 ("RxRPC: Parse security index 5 keys (Kerberos 5)")
+Signed-off-by: Marc Dionne <marc.dionne@auristor.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_fs.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ net/rxrpc/key.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c b/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
-index b8c3ceaed585b..7ddacc9e4fe40 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
-@@ -217,6 +217,9 @@ static int __mlx5e_add_vlan_rule(struct mlx5e_priv *priv,
- 		break;
- 	}
+diff --git a/net/rxrpc/key.c b/net/rxrpc/key.c
+index ad9d1b21cb0ba..fead67b42a993 100644
+--- a/net/rxrpc/key.c
++++ b/net/rxrpc/key.c
+@@ -1075,7 +1075,7 @@ static long rxrpc_read(const struct key *key,
  
-+	if (WARN_ONCE(*rule_p, "VLAN rule already exists type %d", rule_type))
-+		return 0;
-+
- 	*rule_p = mlx5_add_flow_rules(ft, spec, &flow_act, &dest, 1);
- 
- 	if (IS_ERR(*rule_p)) {
-@@ -397,8 +400,7 @@ static void mlx5e_add_vlan_rules(struct mlx5e_priv *priv)
- 	for_each_set_bit(i, priv->fs.vlan.active_svlans, VLAN_N_VID)
- 		mlx5e_add_vlan_rule(priv, MLX5E_VLAN_RULE_TYPE_MATCH_STAG_VID, i);
- 
--	if (priv->fs.vlan.cvlan_filter_disabled &&
--	    !(priv->netdev->flags & IFF_PROMISC))
-+	if (priv->fs.vlan.cvlan_filter_disabled)
- 		mlx5e_add_any_vid_rules(priv);
- }
- 
+ 		switch (token->security_index) {
+ 		case RXRPC_SECURITY_RXKAD:
+-			toksize += 9 * 4;	/* viceid, kvno, key*2 + len, begin,
++			toksize += 8 * 4;	/* viceid, kvno, key*2, begin,
+ 						 * end, primary, tktlen */
+ 			toksize += RND(token->kad->ticket_len);
+ 			break;
+@@ -1141,6 +1141,14 @@ static long rxrpc_read(const struct key *key,
+ 			memcpy((u8 *)xdr + _l, &zero, 4 - (_l & 3));	\
+ 		xdr += (_l + 3) >> 2;					\
+ 	} while(0)
++#define ENCODE_BYTES(l, s)						\
++	do {								\
++		u32 _l = (l);						\
++		memcpy(xdr, (s), _l);					\
++		if (_l & 3)						\
++			memcpy((u8 *)xdr + _l, &zero, 4 - (_l & 3));	\
++		xdr += (_l + 3) >> 2;					\
++	} while(0)
+ #define ENCODE64(x)					\
+ 	do {						\
+ 		__be64 y = cpu_to_be64(x);		\
+@@ -1168,7 +1176,7 @@ static long rxrpc_read(const struct key *key,
+ 		case RXRPC_SECURITY_RXKAD:
+ 			ENCODE(token->kad->vice_id);
+ 			ENCODE(token->kad->kvno);
+-			ENCODE_DATA(8, token->kad->session_key);
++			ENCODE_BYTES(8, token->kad->session_key);
+ 			ENCODE(token->kad->start);
+ 			ENCODE(token->kad->expiry);
+ 			ENCODE(token->kad->primary_flag);
 -- 
 2.25.1
 
