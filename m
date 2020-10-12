@@ -2,85 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 948C028C480
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 00:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC34828C481
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 00:08:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732200AbgJLWIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 18:08:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53652 "EHLO
+        id S1732247AbgJLWIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 18:08:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727457AbgJLWIG (ORCPT
+        with ESMTP id S1729530AbgJLWIO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 18:08:06 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEFF6C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 15:08:05 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id h6so19902925lfj.3
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 15:08:05 -0700 (PDT)
+        Mon, 12 Oct 2020 18:08:14 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 957C1C0613D0;
+        Mon, 12 Oct 2020 15:08:14 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id c5so14670396qtw.3;
+        Mon, 12 Oct 2020 15:08:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=X34KQs/vcigGhxxV+79zHkAyVLY+dd5sS45uXaBNNnM=;
-        b=K8mmayY1C8A3OlP7xuyLFiwDjU2CtJdTyFLrtI2i7KGl30eLu3tWr7gNXvwnGxt4V+
-         5MeO5h51wBP+rl832pi5/0tBVKjrPmMisTkPYyw7701B2XeYK4nMbvbwCCqeKDlbSMiL
-         q46EKkAsbOegX7aCeT1BOUgyyT4yt9hizqel4=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DkY+sUcOMAoS8nmckdVu9ASZTsctr9JsclEB9QDzMZs=;
+        b=dg9cc6KLh7u4/QUK+hoO6KysUdgwblYObfJISGOIyj61fm6AUV55007j4Z+7o5jOoR
+         OVGdAUMrZFwsYd5QlOAmKXNTbKXEXPKZwUzt6Yt7EC8Md6pBPb1rXPcr0M0c5bM0Y5+L
+         Q0FrHB+AquFrhrlBsuLFBW8NCFAxwlcIG9ygHynQIj+NaHdkgHIjieS2m2HxX0mgG2aB
+         zxMc4IIjKgqkTyIKGndsweKYNGnow2U71G4KFtajwQM7KOBpa+pNMRM+IldlMv8cq4dR
+         7WhZUTF7TF4BxhUghxVsKn4QsFd4OzOsD7ikiz0K/yVfTH65D18xbQUVAN6ZGs4yLh6+
+         v6vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=X34KQs/vcigGhxxV+79zHkAyVLY+dd5sS45uXaBNNnM=;
-        b=HIdn5TLmcl31mT7sbSxqxMzZqZBT4UfC8RC6oKr9YQz9XvFmhhz9U7qKDMsB85Bnec
-         4WJm0Goy15vhOUdyg+ZlmeMhe8K+om0m4JuXYiyzLTa9Smx3alSdgmCa8d+t8JDT5WAb
-         Qtp/KLjKO0XnliHQnQF85JvY5hkmHZevbqG7J/Xw6KdHk80QXIm+8EcwFwt4fc/0U1RD
-         dOvY8sqvJxVnr6ICTfTHf2/66V9I1/dDp3nXd4a+QFlS5+nwPC3pLXCxJ/991/hVBwtM
-         ovtj6i2856wAYcYWUt2IcLFNpAna8CneAmTHaz5KERgbYvDiSanXyTihgqsamZZIm+5L
-         M6EA==
-X-Gm-Message-State: AOAM532uJsE4TVua7Qdp/kF46bLay3EWpMo5Yeg14mLOItb6AhLNzSPe
-        S6dm7rXnIOIXJPZc7Pv9fMfaHiYknGlOWg==
-X-Google-Smtp-Source: ABdhPJyFZ/KfMxIJAIOAI530SOX8Y8+jkB0Bb+B4ncREYR7xVhSarbD6E1kkHRXI2V3zZX5OkDICGw==
-X-Received: by 2002:a19:7d0b:: with SMTP id y11mr9431232lfc.305.1602540483650;
-        Mon, 12 Oct 2020 15:08:03 -0700 (PDT)
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
-        by smtp.gmail.com with ESMTPSA id y143sm2117109lff.160.2020.10.12.15.08.02
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Oct 2020 15:08:02 -0700 (PDT)
-Received: by mail-lj1-f182.google.com with SMTP id a5so18311944ljj.11
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 15:08:02 -0700 (PDT)
-X-Received: by 2002:a05:651c:514:: with SMTP id o20mr3735821ljp.312.1602540481791;
- Mon, 12 Oct 2020 15:08:01 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DkY+sUcOMAoS8nmckdVu9ASZTsctr9JsclEB9QDzMZs=;
+        b=Mcq7iGrgzSZRpOzaGdVgqZ72Qf5oT3zskkRZ8Ryd4blbacY8forkVF1VA1Jd+Zps7S
+         Hjd+pNoFzdySwEbKg7VdNkq8XX43brkhIab7SRBh2JonCVWhRY1WJVGkXIw+ZvpQg/J9
+         vROf5RdJkf+21R80YR3FU1ACLlPeYlRjkeGKhJg0T34pIb7uyo7GfWKI9pSIW1/nKcHl
+         W4Fx2CQf3X4JB5rdTgMHbAOnUPm61xWBFgikMndMaGGTJ94uyujtF6N1b+RXRlFviRiq
+         ZQ0BULM1v5wjPSobTXk9o2rtf36y/TISkJ4h48rE7ZkhpK6EB3JPksozcfy5TOeoOm63
+         whMA==
+X-Gm-Message-State: AOAM532MjXxlF3iKIYVYTnwqfHe3K03fXOcSSGCprSc73jZKj34PtS/8
+        uDsCOqqZjRcmbegQEQDKmyo=
+X-Google-Smtp-Source: ABdhPJzhVtIcabyjjJ3556879wfhjKCVG2+80lefxf4s6oMwfMzVA0WDiICjqGGU1ruyjvTnFnW9TA==
+X-Received: by 2002:ac8:5343:: with SMTP id d3mr12690143qto.357.1602540493434;
+        Mon, 12 Oct 2020 15:08:13 -0700 (PDT)
+Received: from seraph.myfiosgateway.com (pool-173-75-208-99.phlapa.fios.verizon.net. [173.75.208.99])
+        by smtp.gmail.com with ESMTPSA id u90sm13467096qtd.29.2020.10.12.15.08.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 15:08:12 -0700 (PDT)
+From:   Brooke Basile <brookebasile@gmail.com>
+To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Brooke Basile <brookebasile@gmail.com>
+Subject: [PATCH] ath9k: revert "ath9k: hif_usb: fix race condition between usb_get_urb() and usb_kill_anchored_urbs()"
+Date:   Mon, 12 Oct 2020 18:08:09 -0400
+Message-Id: <20201012220809.23225-1-brookebasile@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20201012172415.GA2962950@gmail.com>
-In-Reply-To: <20201012172415.GA2962950@gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 12 Oct 2020 15:07:45 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgf8ko=b-F74+Qc+EX6M36kHx5wEBCS8nJK1WSod9UO0w@mail.gmail.com>
-Message-ID: <CAHk-=wgf8ko=b-F74+Qc+EX6M36kHx5wEBCS8nJK1WSod9UO0w@mail.gmail.com>
-Subject: Re: [GIT PULL] x86/mm changes for v5.10
-To:     Ingo Molnar <mingo@kernel.org>, Joerg Roedel <jroedel@suse.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 10:24 AM Ingo Molnar <mingo@kernel.org> wrote:
->
-> Do not sync vmalloc/ioremap mappings on x86-64 kernels.
->
-> Hopefully now without the bugs!
+A bug in USB/IP previously caused all syzkaller USB fuzzing instances to
+return false positives when testing crash reproducers.
+This patch reverts changes made in commit 03fb92a432ea which, due to
+this bug, returned false positives when tested and introduced new
+regressions.
 
-Let's hope so.
+Fixes: 03fb92a432ea ("ath9k: hif_usb: fix race condition between usb_get_urb() and usb_kill_anchored_urbs()")
+Signed-off-by: Brooke Basile <brookebasile@gmail.com>
+---
+ drivers/net/wireless/ath/ath9k/hif_usb.c | 19 -------------------
+ 1 file changed, 19 deletions(-)
 
-If this turns out to work this time, can we do a similar preallocation
-of the page directories on 32-bit? Because I think now x86-32 is the
-only remaining case of doing that arch_sync_kernel_mappings() thing.
+diff --git a/drivers/net/wireless/ath/ath9k/hif_usb.c b/drivers/net/wireless/ath/ath9k/hif_usb.c
+index 860da13bfb6a..38f07420f4f9 100644
+--- a/drivers/net/wireless/ath/ath9k/hif_usb.c
++++ b/drivers/net/wireless/ath/ath9k/hif_usb.c
+@@ -449,19 +449,10 @@ static void hif_usb_stop(void *hif_handle)
+ 	spin_unlock_irqrestore(&hif_dev->tx.tx_lock, flags);
+ 
+ 	/* The pending URBs have to be canceled. */
+-	spin_lock_irqsave(&hif_dev->tx.tx_lock, flags);
+ 	list_for_each_entry_safe(tx_buf, tx_buf_tmp,
+ 				 &hif_dev->tx.tx_pending, list) {
+-		usb_get_urb(tx_buf->urb);
+-		spin_unlock_irqrestore(&hif_dev->tx.tx_lock, flags);
+ 		usb_kill_urb(tx_buf->urb);
+-		list_del(&tx_buf->list);
+-		usb_free_urb(tx_buf->urb);
+-		kfree(tx_buf->buf);
+-		kfree(tx_buf);
+-		spin_lock_irqsave(&hif_dev->tx.tx_lock, flags);
+ 	}
+-	spin_unlock_irqrestore(&hif_dev->tx.tx_lock, flags);
+ 
+ 	usb_kill_anchored_urbs(&hif_dev->mgmt_submitted);
+ }
+@@ -771,37 +762,27 @@ static void ath9k_hif_usb_dealloc_tx_urbs(struct hif_device_usb *hif_dev)
+ 	struct tx_buf *tx_buf = NULL, *tx_buf_tmp = NULL;
+ 	unsigned long flags;
+ 
+-	spin_lock_irqsave(&hif_dev->tx.tx_lock, flags);
+ 	list_for_each_entry_safe(tx_buf, tx_buf_tmp,
+ 				 &hif_dev->tx.tx_buf, list) {
+-		usb_get_urb(tx_buf->urb);
+-		spin_unlock_irqrestore(&hif_dev->tx.tx_lock, flags);
+ 		usb_kill_urb(tx_buf->urb);
+ 		list_del(&tx_buf->list);
+ 		usb_free_urb(tx_buf->urb);
+ 		kfree(tx_buf->buf);
+ 		kfree(tx_buf);
+-		spin_lock_irqsave(&hif_dev->tx.tx_lock, flags);
+ 	}
+-	spin_unlock_irqrestore(&hif_dev->tx.tx_lock, flags);
+ 
+ 	spin_lock_irqsave(&hif_dev->tx.tx_lock, flags);
+ 	hif_dev->tx.flags |= HIF_USB_TX_FLUSH;
+ 	spin_unlock_irqrestore(&hif_dev->tx.tx_lock, flags);
+ 
+-	spin_lock_irqsave(&hif_dev->tx.tx_lock, flags);
+ 	list_for_each_entry_safe(tx_buf, tx_buf_tmp,
+ 				 &hif_dev->tx.tx_pending, list) {
+-		usb_get_urb(tx_buf->urb);
+-		spin_unlock_irqrestore(&hif_dev->tx.tx_lock, flags);
+ 		usb_kill_urb(tx_buf->urb);
+ 		list_del(&tx_buf->list);
+ 		usb_free_urb(tx_buf->urb);
+ 		kfree(tx_buf->buf);
+ 		kfree(tx_buf);
+-		spin_lock_irqsave(&hif_dev->tx.tx_lock, flags);
+ 	}
+-	spin_unlock_irqrestore(&hif_dev->tx.tx_lock, flags);
+ 
+ 	usb_kill_anchored_urbs(&hif_dev->mgmt_submitted);
+ }
+-- 
+2.28.0
 
-Or is there some reason that won't work that I've lost sight of?
-
-                   Linus
