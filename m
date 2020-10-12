@@ -2,112 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2782F28B558
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 14:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E78D128B55D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 14:58:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730291AbgJLM5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 08:57:46 -0400
-Received: from mail.efficios.com ([167.114.26.124]:56968 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726631AbgJLM5q (ORCPT
+        id S1727482AbgJLM6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 08:58:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726468AbgJLM6r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 08:57:46 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 6E2192E94B0;
-        Mon, 12 Oct 2020 08:57:44 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id zzgRLQsjls-3; Mon, 12 Oct 2020 08:57:44 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 1A3C52E96B3;
-        Mon, 12 Oct 2020 08:57:44 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 1A3C52E96B3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1602507464;
-        bh=A7Rs+UibZx15eSVRAKpSHr4WZP1M49/vcRp0vVovGQE=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=mx9tJeTXxXGIBVdYITPoojY6Y8AcD8qt0TrV7qxV5r/vARMhY3lD77wzJMBGtvn88
-         gg/0jboTI8kYb+161Gu9Dj7YO0JcSQ7xYYUmbZ5wumHLS4wjjAe+Z1Pljwk9xtXz95
-         3e0uUS3n6p9u/PR01xiz20KqwwhDdZyZFPeeUag+aYU4vOOLGrt3RWQ/cb4INuxY/y
-         YHtFe/tvQpBdgh2OHSuYp6rVjEKyA9URsj1sNeBN20bdgKHRbwLG8WcOjMthGD4XHy
-         G7BhD+QpxdEuAz/8xOxVt6NijLcEuGZgEEvVgPSSsw2D+S6TOsymrKkYGBx08KW9dq
-         WS34XRsWWVkXg==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id B8Oa4iypHn8U; Mon, 12 Oct 2020 08:57:44 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 0DA8B2E96B2;
-        Mon, 12 Oct 2020 08:57:44 -0400 (EDT)
-Date:   Mon, 12 Oct 2020 08:57:43 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     David Ahern <dsahern@gmail.com>
-Cc:     David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        Michael Jeanson <mjeanson@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <2056270363.16428.1602507463959.JavaMail.zimbra@efficios.com>
-In-Reply-To: <19cf586d-4c4e-e18c-cd9e-3fde3717a9e1@gmail.com>
-References: <20200925200452.2080-1-mathieu.desnoyers@efficios.com> <fd970150-f214-63a3-953c-769fa2787bc0@gmail.com> <19cf586d-4c4e-e18c-cd9e-3fde3717a9e1@gmail.com>
-Subject: Re: [RFC PATCH 0/3] l3mdev icmp error route lookup fixes
+        Mon, 12 Oct 2020 08:58:47 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A370C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 05:58:46 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id r10so14154118pgb.10
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 05:58:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=reOzyJrsniBO2nwMi3H/mkrdDD6NcedCHzoL76QyI30=;
+        b=La1neubO+tx9bEnVOlpDUmfBRHHhLp9sb+Oicr1ibu621uEe1hJd3y2dvPnIRrmI0M
+         S7RAssOCZn6vzaYsb2mF23fwiVWjRfdtpqQima9oXIQgXkry4GucEW8powsj3J7ftmD9
+         dbuofS/NjlxfZvRCxJ86pGkSJKIdXaY2NcTDtXEmREJITL4dugSf2i/cCPI/L6rMG7Qx
+         monPLjbsolWgPlB6LvUWHzBxmHrQoS+gnzDzpi1BfGPQW4qnaZ7KRMZnCyTtVyZxK7Y0
+         uRMhYEgssAKF2aaoImsx82hUmyBZMSriAAb/WBy1NLF4/iDoyGmDAATpptK/VEauk2hT
+         zmFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=reOzyJrsniBO2nwMi3H/mkrdDD6NcedCHzoL76QyI30=;
+        b=oPFv77MrCi1wC2p5KpTzEikOH5NnN5O8h6cnQJqQPhy8cS+BcJ/E5OuzIMCKPkXjvc
+         Z2vLlv7bv7l2xuDBh7U1F23GdD8aoo9D253q39B3kbJ5xK/vwav4/eBAJlCI+pIwVau4
+         6C6AtnBlKnCIOVRI/dOJkAvxNficpFGq5JBt8wCtmtoacfUmJ/14tiUXHiBfI4a0478z
+         b6hDg6QjCu4rNsihy4k1X9tMgbQno0FDrbXtogMWt30FM2uZwOCk81cOwKF0M3M6f3VM
+         l1tqnQT5/Fnv57NYXWVfidG5j5EY12vkYj/r0yZJwKht97SX1FHFrGkmBbWS0vit1DLy
+         CqiA==
+X-Gm-Message-State: AOAM531IIHnQoskQ+YZtW9SPRPMgOW1kPYJ9mS4UIW3n08vOj7MRYAlu
+        +K6iuegIzaHbB2ZmHTR6vhQ7yz4CmuSGFxtdd4VbPw==
+X-Google-Smtp-Source: ABdhPJyx/a16f8RYypyz+PcykMTRZXqibrYFsGfunl+c7L1RzS1MMiV4cKON1GpMX0uXpXFSaCEJWSCF7/ZXbThan4A=
+X-Received: by 2002:a63:1906:: with SMTP id z6mr3520215pgl.286.1602507525514;
+ Mon, 12 Oct 2020 05:58:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3968 (ZimbraWebClient - FF81 (Linux)/8.8.15_GA_3968)
-Thread-Topic: l3mdev icmp error route lookup fixes
-Thread-Index: Hsh0Bfwvay1HJAuoIUEeMWW53XzqkA==
+References: <000000000000021e6b05b0ea60bd@google.com> <00000000000069707b05b13da267@google.com>
+ <20201009185548.GA546075@rowland.harvard.edu>
+In-Reply-To: <20201009185548.GA546075@rowland.harvard.edu>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Mon, 12 Oct 2020 14:58:34 +0200
+Message-ID: <CAAeHK+y11k5rj9n=+Z7Y9bYjsWBoqaXfsystF3pCWgTPaRxrjg@mail.gmail.com>
+Subject: Re: WARNING in hif_usb_send/usb_submit_urb
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     syzbot <syzbot+f5378bcf0f0cab45c1c6@syzkaller.appspotmail.com>,
+        QCA ath9k Development <ath9k-devel@qca.qualcomm.com>,
+        eli.billauer@gmail.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        gustavoars@kernel.org, ingrassia@epigenesys.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        Oliver Neukum <oneukum@suse.com>,
+        linux-wireless@vger.kernel.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Oct 11, 2020, at 7:56 PM, David Ahern dsahern@gmail.com wrote:
+On Fri, Oct 9, 2020 at 8:55 PM Alan Stern <stern@rowland.harvard.edu> wrote:
+>
+> To the ath9k_htc maintainers:
+>
+> This is an attempt to fix a bug detected by the syzbot fuzzer.  The bug
+> arises when a USB device claims to be an ATH9K but doesn't have the
+> expected endpoints.  (In this case there was a bulk endpoint where the
+> driver expected an interrupt endpoint.)  The kernel needs to be able to
+> handle such devices without getting an internal error.
+>
+> On Fri, Oct 09, 2020 at 07:19:19AM -0700, syzbot wrote:
+> > syzbot has found a reproducer for the following issue on:
+> >
+> > HEAD commit:    6c8cf369 usb: typec: Add QCOM PMIC typec detection driver
+>
+> Andrey, why doesn't syzbot put a 12-digit commit ID here?
 
-> On 10/5/20 9:30 AM, David Ahern wrote:
->> On 9/25/20 1:04 PM, Mathieu Desnoyers wrote:
->>> Hi,
->>>
->>> Here is an updated series of fixes for ipv4 and ipv6 which which ensure
->>> the route lookup is performed on the right routing table in VRF
->>> configurations when sending TTL expired icmp errors (useful for
->>> traceroute).
->>>
->>> It includes tests for both ipv4 and ipv6.
->>>
->>> These fixes address specifically address the code paths involved in
->>> sending TTL expired icmp errors. As detailed in the individual commit
->>> messages, those fixes do not address similar icmp errors related to
->>> network namespaces and unreachable / fragmentation needed messages,
->>> which appear to use different code paths.
->>>
->>> The main changes since the last round are updates to the selftests.
->>>
->> 
->> This looks fine to me. I noticed the IPv6 large packet test case is
->> failing; the fib6 tracepoint is showing the loopback as the iif which is
->> wrong:
->> 
->> ping6  8488 [004]   502.015817: fib6:fib6_table_lookup: table 255 oif 0
->> iif 1 proto 58 ::/0 -> 2001:db8:16:1::1/0 tos 0 scope 0 flags 0 ==> dev
->> lo gw :: err -113
->> 
->> I will dig into it later this week.
->> 
-> 
-> I see the problem here -- source address selection is picking ::1. I do
-> not have a solution to the problem yet, but its resolution is
-> independent of the change in this set so I think this one is good to go.
+No particular reason, I think. Makes sense to change it to 12, as it's
+the recommended minimum AFAIU. I've a bug to track this here:
+https://github.com/google/syzkaller/issues/2184
 
-OK, do you want to pick up the RFC patch series, or should I re-send it
-without RFC tag ?
-
-Thanks,
-
-Mathieu
-
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Thank you!
