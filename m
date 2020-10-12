@@ -2,65 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C0F28BE60
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0105328BE5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:46:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404006AbgJLQqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 12:46:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390541AbgJLQqB (ORCPT
+        id S2403941AbgJLQp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 12:45:58 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:46226 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390541AbgJLQp5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 12:46:01 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA411C0613D0;
-        Mon, 12 Oct 2020 09:46:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=h5j4wcpVtXZLGhNpJo9+h3r4FuiBGt0jGJAE34cafXY=; b=Y1zprB7JIZn1TSp93/8jvbop3Y
-        lr3nQrOeisTRQp34205+WklIZoerz74CTIU8V5N3/5/aNs30MmrVglt7ha40qBBu+h5XBl6zqyUxP
-        UHivng0mQmJFEivw5XXi+q2jbvXySVQYg9mLXsfud/P9so1HbRcCFYltmN2CIsOsEV/45SdQq1DPq
-        /hwNZspPBW/rsjDLBsNDqnHqhBxXXG0CPB0b6Q7DJLPvKC3V4VS9csViwUJOg8R3bYqzrJjjeDU6S
-        BQXfecuOpFq50xcc8E0egYCNM5M/Bxz+2GS/BjzWaxtsnTjcVYPAjz2lgniv7nPlCcXzpLkYmFebP
-        9YpcNFiQ==;
-Received: from [2601:1c0:6280:3f0::507c]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kS0xP-000538-Rx; Mon, 12 Oct 2020 16:45:56 +0000
-Subject: Re: [PATCH v2 01/22] mpool: add utility routines and ioctl
- definitions
-To:     Nabeel M Mohamed <nmeeramohide@micron.com>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-mm@kvack.org,
-        linux-nvdimm@lists.01.org
-Cc:     smoyer@micron.com, gbecker@micron.com, plabat@micron.com,
-        jgroves@micron.com
-References: <20201012162736.65241-1-nmeeramohide@micron.com>
- <20201012162736.65241-2-nmeeramohide@micron.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <954153c4-ee2f-2a2f-8643-8ff67d8cd649@infradead.org>
-Date:   Mon, 12 Oct 2020 09:45:52 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 12 Oct 2020 12:45:57 -0400
+Date:   Mon, 12 Oct 2020 18:45:53 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602521155;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Mw0frYjEmcHy+lH8fPEzgAzJHGlzJuO9p7Ascemyq/w=;
+        b=r6nJb6mVGzNtSCCau9CHqK1EcFwlaoiWjGI6MoHFQV8nBsOIngm9C7rLQa/QzksrZj0Ud9
+        GLYv/4eeytJQK0gCpM3mSwmuxtpjTFKnu9Kkmk1fbByJH98yPPR49HenmrHltl7yVk4yvr
+        lYrOHTWUo2aKxrkPIJe4zCmT6XAelfayfNvLEmV0k6S1MRhVODVn1wNeIJs7NSHTTXfoql
+        4Req1DjUan3zts+TStoGUC9p9RW2USsuL3ZPZ3CYrHVk18uwkr0wWuwUv1b/UVMdxjI1be
+        0OWt3Lbghjo4IT4PH+wsD7Vmydkzqkkg0KURJseOxWPqBml5agG0ZiWHyJWmjg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602521155;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Mw0frYjEmcHy+lH8fPEzgAzJHGlzJuO9p7Ascemyq/w=;
+        b=fAr5FcJKsAqePv/01EfutuKixjyghotjPEhnnb7UEv8ifeRDe9FqypZ5iz9TAWtiZu+irM
+        1MLGREPg1O0mkjCQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Mike Galbraith <efault@gmx.de>
+Cc:     tglx@linutronix.de, linux-rt-users@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [RT] 5.9-rt14  softirq_ctrl.lock vs listening_hash[i].lock
+ lockdep splat
+Message-ID: <20201012164553.kkk7aaeyb3y4wvyh@linutronix.de>
+References: <12d6f9879a97cd56c09fb53dee343cbb14f7f1f7.camel@gmx.de>
 MIME-Version: 1.0
-In-Reply-To: <20201012162736.65241-2-nmeeramohide@micron.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <12d6f9879a97cd56c09fb53dee343cbb14f7f1f7.camel@gmx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/20 9:27 AM, Nabeel M Mohamed wrote:
-> +#define MPIOC_MAGIC             ('2')
+On 2020-10-10 06:31:57 [+0200], Mike Galbraith wrote:
 
-Hi,
+so this then. Do you have more of these?
 
-That value should be documented in
-Documentation/userspace-api/ioctl/ioctl-number.rst.
+----------->8--------------------
+Subject: [PATCH] tcp: Remove superfluous BH-disable around listening_hash
 
-thanks.
+Commit
+   9652dc2eb9e40 ("tcp: relax listening_hash operations")
+
+removed the need to disable bottom half while acquiring
+listening_hash.lock. There are still two callers left which disable
+bottom half before the lock is acquired.
+
+Drop local_bh_disable() around __inet_hash() which acquires
+listening_hash->lock, invoke inet_ehash_nolisten() with disabled BH.
+inet_unhash() conditionally acquires listening_hash->lock.
+
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+ net/ipv4/inet_hashtables.c  | 19 ++++++++++++-------
+ net/ipv6/inet6_hashtables.c |  5 +----
+ 2 files changed, 13 insertions(+), 11 deletions(-)
+
+diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
+index 239e54474b653..fcb105cbb5465 100644
+--- a/net/ipv4/inet_hashtables.c
++++ b/net/ipv4/inet_hashtables.c
+@@ -585,7 +585,9 @@ int __inet_hash(struct sock *sk, struct sock *osk)
+ 	int err = 0;
+ 
+ 	if (sk->sk_state != TCP_LISTEN) {
++		local_bh_disable();
+ 		inet_ehash_nolisten(sk, osk);
++		local_bh_enable();
+ 		return 0;
+ 	}
+ 	WARN_ON(!sk_unhashed(sk));
+@@ -617,11 +619,8 @@ int inet_hash(struct sock *sk)
+ {
+ 	int err = 0;
+ 
+-	if (sk->sk_state != TCP_CLOSE) {
+-		local_bh_disable();
++	if (sk->sk_state != TCP_CLOSE)
+ 		err = __inet_hash(sk, NULL);
+-		local_bh_enable();
+-	}
+ 
+ 	return err;
+ }
+@@ -632,17 +631,20 @@ void inet_unhash(struct sock *sk)
+ 	struct inet_hashinfo *hashinfo = sk->sk_prot->h.hashinfo;
+ 	struct inet_listen_hashbucket *ilb = NULL;
+ 	spinlock_t *lock;
++	bool state_listen;
+ 
+ 	if (sk_unhashed(sk))
+ 		return;
+ 
+ 	if (sk->sk_state == TCP_LISTEN) {
++		state_listen = true;
+ 		ilb = &hashinfo->listening_hash[inet_sk_listen_hashfn(sk)];
+-		lock = &ilb->lock;
++		spin_lock(&ilb->lock);
+ 	} else {
++		state_listen = false;
+ 		lock = inet_ehash_lockp(hashinfo, sk->sk_hash);
++		spin_lock_bh(lock);
+ 	}
+-	spin_lock_bh(lock);
+ 	if (sk_unhashed(sk))
+ 		goto unlock;
+ 
+@@ -655,7 +657,10 @@ void inet_unhash(struct sock *sk)
+ 	__sk_nulls_del_node_init_rcu(sk);
+ 	sock_prot_inuse_add(sock_net(sk), sk->sk_prot, -1);
+ unlock:
+-	spin_unlock_bh(lock);
++	if (state_listen)
++		spin_unlock(&ilb->lock);
++	else
++		spin_unlock_bh(lock);
+ }
+ EXPORT_SYMBOL_GPL(inet_unhash);
+ 
+diff --git a/net/ipv6/inet6_hashtables.c b/net/ipv6/inet6_hashtables.c
+index 2d3add9e61162..50fd17cbf3ec7 100644
+--- a/net/ipv6/inet6_hashtables.c
++++ b/net/ipv6/inet6_hashtables.c
+@@ -335,11 +335,8 @@ int inet6_hash(struct sock *sk)
+ {
+ 	int err = 0;
+ 
+-	if (sk->sk_state != TCP_CLOSE) {
+-		local_bh_disable();
++	if (sk->sk_state != TCP_CLOSE)
+ 		err = __inet_hash(sk, NULL);
+-		local_bh_enable();
+-	}
+ 
+ 	return err;
+ }
 -- 
-~Randy
+2.28.0
 
