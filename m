@@ -2,97 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26D928B1A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 11:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C39F728B1A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 11:33:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387429AbgJLJc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 05:32:26 -0400
-Received: from foss.arm.com ([217.140.110.172]:33004 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726104AbgJLJc0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 05:32:26 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 71F7D31B;
-        Mon, 12 Oct 2020 02:32:25 -0700 (PDT)
-Received: from bogus (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 58E223F66B;
-        Mon, 12 Oct 2020 02:32:24 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 10:32:12 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Etienne Carriere <etienne.carriere@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Souvik Chakravarty <Souvik.Chakravarty@arm.com>
-Subject: Re: [PATCH 1/5] firmware: arm_scmi: always initialize protocols
-Message-ID: <20201012092827.GB16519@bogus>
-References: <20201008143722.21888-1-etienne.carriere@linaro.org>
- <20201008191727.ht26r5dnh3iwqj5n@bogus>
- <CAN5uoS9YffDZa6YOnJ_35ueMbkvCPuQ1=0KAuX5=k=kQYm+_Ng@mail.gmail.com>
+        id S1729450AbgJLJdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 05:33:15 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:44042 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726104AbgJLJdP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 05:33:15 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602495192;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JSsfdVS/IXadTB6/3l+nuddk+n+p1R2MMBOm9Inb64s=;
+        b=H3HlfgaQNs8IPvfPMYH0nPsaTXtZqh/iGC4VBnqHO6UbChs4028O8I4kPkrLn6BwOHbfeW
+        4EETQsPdvWPyxnwi+8IkXLKPsPJTCevNtdQe4Cbst+mGduYia1fMmrhbxdqxEecDXyg4cI
+        xp1m7uSgI2V6+xAtiDaD3P+uhzTB7kO7uPUbPs/BsZscHSapHHYlNGQGXmSWOoz9QyaWau
+        /W/ISRBEFZt8X/lyZJyXJLQSaHCpCnFKbA3NTnRibkHVqzrDocGEGD76a6TOx8mHU9tjTR
+        lQuHByo+qp7qyEj9L6HHNqed7DXv902hkwf1YogblQLsT5rNgDiUSqAkWUyK+A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602495192;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JSsfdVS/IXadTB6/3l+nuddk+n+p1R2MMBOm9Inb64s=;
+        b=pdch0IHL06sUes3CadNLSh1RGp6TomTF8WLrXtqVOqDHAuHlizNeespRoVIoxDHIWDGKZW
+        N6FYVdl1q3C9e6Aw==
+To:     David Woodhouse <dwmw2@infradead.org>, x86@kernel.org
+Cc:     kvm <kvm@vger.kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 5/5] x86/kvm: Add KVM_FEATURE_MSI_EXT_DEST_ID
+In-Reply-To: <F0F0A646-8DBA-4448-933F-993A3335BD59@infradead.org>
+References: <803bb6b2212e65c568c84ff6882c2aa8a0ee03d5.camel@infradead.org> <20201007122046.1113577-1-dwmw2@infradead.org> <20201007122046.1113577-5-dwmw2@infradead.org> <87blhcx6qz.fsf@nanos.tec.linutronix.de> <f27b17cf4ab64fdb4f14a056bd8c6a93795d9a85.camel@infradead.org> <95625dfce360756b99641c31212634c1bf80a69a.camel@infradead.org> <87362owhcb.fsf@nanos.tec.linutronix.de> <c6f21628733cac23fd28679842c20423df2dd423.camel@infradead.org> <87tuv4uwmt.fsf@nanos.tec.linutronix.de> <958f0d5c9844f94f2ce47a762c5453329b9e737e.camel@infradead.org> <874kn2s3ud.fsf@nanos.tec.linutronix.de> <0E51DAB1-5973-4226-B127-65D77DC46CB5@infradead.org> <87pn5or8k7.fsf@nanos.tec.linutronix.de> <F0F0A646-8DBA-4448-933F-993A3335BD59@infradead.org>
+Date:   Mon, 12 Oct 2020 11:33:11 +0200
+Message-ID: <87ft6jrdpk.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAN5uoS9YffDZa6YOnJ_35ueMbkvCPuQ1=0KAuX5=k=kQYm+_Ng@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 02:31:55PM +0200, Etienne Carriere wrote:
-> On Thu, 8 Oct 2020 at 21:17, Sudeep Holla <sudeep.holla@arm.com> wrote:
-> >
-> > On Thu, Oct 08, 2020 at 04:37:18PM +0200, Etienne Carriere wrote:
-> > > Remove the IDR replacement that prevent initializing an SCMI protocol
-> > > when it has already been initialized. This is needed when there are
-> > > several SCMI agents that do implement a given SCMI protocol unless
-> > > what only the related SCMI protocol communication is initialized only
-> > > for first probed agent.
-> > >
-> >
-> > Can you please elaborate on your usecase please. What do you mean by several
-> > SCMI agents here. OSPM is the only agent we are interested here. What
-> > other agents is this driver supposed to handle here. We allocate memory
-> > in init and calling init multiple times messes up the allocated and
-> > initialised structures.
-> >
-> > So NACK for this patch as it needs more work if we need this at all.
-> >
+On Sun, Oct 11 2020 at 22:15, David Woodhouse wrote:
+> On 11 October 2020 18:12:08 BST, Thomas Gleixner <tglx@linutronix.de> wrote:
+>> On Sat, Oct 10 2020 at 12:58, David Woodhouse wrote:
+>>> On 10 October 2020 12:44:10 BST, Thomas Gleixner <tglx@linutronix.de>
+>> wrote:
+>>> Yeah. There's some muttering to be done for HPET about whether it's
+>>> *its* MSI domain or whether it's the parent domain. But I'll have a
+>>> play. I think we'll be able to drop the whole
+>>> irq_remapping_get_irq_domain() thing.
+>>
+>> That would be really nice.
 >
-> Hello Sudeep,
+> I can make it work for HPET if I fix up the point at which the IRQ
+> remapping code registers a notifier on the platform bus. (At IRQ remap
+> setup time is too early; when it registers the PCI bus notifier is too
+> late.)
 >
-> Considering a device with several SCMI servers spread over several co-processor
-> and possibly also in the Arm TZ secure world, each of these servers
-> uses a specific SCMI channel. Without this change, each SCMI protocol gets
-> initialized only for the first agent device that is probed.
+> IOAPIC is harder though as the platform bus doesn't even exist that
+> early. Maybe an early platform bus is possible but it would have to
+> turn out particularly simple to do, or I'd need to find another use
+> case too, to justify it. Will continue to play....
+
+You might want to look into using irq_find_matching_fwspec() instead for
+both HPET and IOAPIC. That needs a select() callback implemented in the
+remapping domains.
+
+>> I go over it in the next days once more and stick it into my devel tree
+>> until rc1. Need to get some conflicts sorted with that Device MSI
+>> stuff.
 >
+> While playing with HPET I noticed I need
+> s/CONFIG_PCI_MSI/CONFIG_IRQ_GENERIC_MSI/ where the variables are
+> declared at the top of msi.c to match the change I made later on. Can
+> post v3 of the series or you can silently fix it up as you go; please
+> advise.
 
-Fair enough, but it also adds complexity. Do you have a master SCMI server
-implementation in that case. As some protocols like system might need to
-be broadcast to all servers and master server needs to take appropriate
-action.
+I think I might be able to handle that on my own :)
 
-> My setup is also a bit specific. My device has several secure configuration
-> features that can individually be enabled or not. For example, configuring
-> domain X as secure makes some clocks reachable by Linux only through SCMI,
-> and configuring domain Y as secure makes other clocks reachable by Linux
-> only through SCMI. For flexibility, I expose domain X resources (here clocks)
-> to an Linux agent whereas domain Y resources (here clocks also) are
-> exposed to another agent, each agent with its specific transport/channel.
-> Enabling each agent node in the Linux FDT allows to define which SCMI clocks
-> get exposed and hence registered in the kernel.
-> Without the change proposed here, I cannot get the clocks exposed to both
-> agents when enabled as the SCMI clock protocol is initialized only for the 1st
-> probbed agent device.
->
+Thanks,
 
-OK, as Cristian has already mentioned we need to clean up a bit on these
-initcalls and Cristian has some WIP patches, I would like to wait and look
-at them instead of breaking other usecases with patch(multiple devices
-per protocol within one scmi server)
-
--- 
-Regards,
-Sudeep
+        tglx
