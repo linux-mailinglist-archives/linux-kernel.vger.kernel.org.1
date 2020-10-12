@@ -2,81 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C3C828C18B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 21:37:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFD6F28C18E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 21:39:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387656AbgJLThk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 15:37:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727198AbgJLThk (ORCPT
+        id S2387810AbgJLTjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 15:39:40 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:59519 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727198AbgJLTjk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 15:37:40 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B940C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 12:37:40 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602531459;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zAGBr8RcuoICd4qF7JmAt3GQy9qhOMrKg4+LZEzCs7I=;
-        b=em/+enAgv/TMh+3ZDFKKaxCtVfPiQLPgMx8GGm4uGPeRlerT3cvcwHDBBeFcIe1opya7Pw
-        gNrUe/kX32EDSTCd4SlUpZBtYbGyMiNPd9sLSwfOX+0TwyhckDi0WtQEUwyhjLJYRVb63t
-        4rpaCRH6eGdNzNGltRqldjiVhOn1buTfJYI6l3QTCk7wqvLGt7MKTC449O255p7/OCIVps
-        vBhD3QSbXuX7egIcei0QjshLtr/OWbkqjCaYmCNwkWVXEk2RM6vk6VjxHO9j4qqQ0EWngR
-        atGFi0cF7IrMDn3TPD4Lcrj3/dW6WfMeZh4vpS/ia6MwhlGRCc7G+iHr2/pn4w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602531459;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zAGBr8RcuoICd4qF7JmAt3GQy9qhOMrKg4+LZEzCs7I=;
-        b=tta8OF6ktH1HopKhNPtT0t0oKAT66+2IavD/noxJAULo5Jv30IwUCytC6RfCEuZXUu6S6N
-        zsjSeY2VJHB2b6DQ==
-To:     Chris Friesen <chris.friesen@windriver.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: IRQs in /proc/irq/* that aren't listed in /proc/interrupts?
-In-Reply-To: <c74773ba-10ff-ba3a-b144-da5c2a34c74e@windriver.com>
-References: <c74773ba-10ff-ba3a-b144-da5c2a34c74e@windriver.com>
-Date:   Mon, 12 Oct 2020 21:37:38 +0200
-Message-ID: <87wnzvp75p.fsf@nanos.tec.linutronix.de>
+        Mon, 12 Oct 2020 15:39:40 -0400
+Received: from [192.168.1.155] ([77.2.5.48]) by mrelayeu.kundenserver.de
+ (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MLAF0-1kkHGz2KfK-00IBSC; Mon, 12 Oct 2020 21:39:31 +0200
+Subject: Re: [PATCH 1/2] x86: Remove led/gpio setup from pcengines platform
+ driver
+To:     Ed W <lists@wildgooses.com>, linux-kernel@vger.kernel.org
+Cc:     fe@dev.tdt.de, "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        platform-driver-x86@vger.kernel.org
+References: <20200921215919.3072-1-lists@wildgooses.com>
+ <d4b2045c-769b-4998-64cc-682c01c105fb@wildgooses.com>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <8058a804-a793-a5f8-d086-0bb0f600aef9@metux.net>
+Date:   Mon, 12 Oct 2020 21:39:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <d4b2045c-769b-4998-64cc-682c01c105fb@wildgooses.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:2ccd+HPdvvkssdLpfI7hV7NC7mJ+qYRLJuKjRhJ2yCkArI0+JFV
+ yMd4q8+LVMp1g0WJmARd0aqQQC1ht8gWS0VaUP4psg+XnUjPYl6VjBY5cI+dKHJGSZkdj3r
+ /B7LKh2i5U1tEMGpa30ILEcVx5ysMwvmUnnuINTjKqRyOf66fiLW/g//rqYbi0DI+8dc/Uo
+ Yfyhnu/l9nbhAfyZdbbMQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:uEtuSCtEiJY=:frRXq3Gq8VuA7Hhyq5PjRN
+ /o7ka3UW2Qc3Ls4//UaRqX2HKeY+RphLZ/XSsTpO8grsZZ0NLPCQaz0iDfEWu+IhBRs2Q+A3y
+ 0+OwuHhG3MiRzC80C7jERrqAMVnC6wHF5DeRXZ5WSTKCukwFWTMgyixm5YEhuje4tfhy89e9N
+ dV2rM3MITRv8ltuVhXP2byF4aHg8A95Bn8hNs2O1Bhg/YxRnX53rcx9XhCDt3s21F3vFTFpHR
+ PEuGKvDgXEvh6sDU9ispAE81CBzvJC424DXXYe86Y7ZDiGj1cU3voK8T7maxSIO0+gvpl+3qS
+ wDieo04YYfRijcatrFYnwtz3vRLt1O3TxEDC/I4fJyJGRtjLjO3K7lABqwBBWsTT5ibKn8/EZ
+ O2HgAJa7yfORdCx97x5s3rjPJj07/VIsAtiQMGfjOSTnHgezEX/bvvWkMjaPQWcLU7z1b+2qj
+ TQ5KTqhWOBHgQ7BLEGgjGmAzrxwCLnfBDLVoslOLqCGdChUGZ/mDtxbR0Sy1BEEATGrdgDzb8
+ jTqYwXyjjQLArlxT3Dt1vvcLDObGbBuFnabacfUsvrn6dVo4EUpUsaYAf1d52zLUePM/PL7lf
+ AzljI49MTHOe6cJtNxKRhzao0pxW06k0yTW+/XBUdZtNh/0/Fr7hRwTmNZxajLlG4YeL0MGFo
+ aA0n2oa9p+vHh9jy9yCVsPXwPZYv6DSKMYMI0yGoC+Y6v21sE6nx4o+098NttaJ2hlIE4c9zS
+ nezcPaIfARIVVw5M7fJz7P1Xp8/HchSx/ghGuSIOPvRVEHtokbs3YnxdHNolJEiBGrbIXnV7P
+ dkK+e05SZFwpWOUN5hDFk6XwwiLXAa8zt86HIew3xs2oYNfPTOKoduYeuqI6S79HsFCRJws
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Chris,
+On 22.09.20 00:17, Ed W wrote:
+> Hi, I've been adding support for the PC Engines APU5 board, which is a variant of the APU 2-4 boards
+> with some nice features. The current platform driver for pcengines boards has some redundant
+> features with regards to recent bios/firmware packages for the board as they now set the ACPI tables
+> to indicate GPIOs for keys and leds. 
 
-On Mon, Oct 12 2020 at 12:40, Chris Friesen wrote:
-> On one of my X86-64 systems /proc/interrupts starts with the following 
-> interrupts (per-cpu info snipped):
->
->    0:      IR-IO-APIC-edge      timer
->     4:      IR-IO-APIC-edge      serial
->     8:      IR-IO-APIC-edge      rtc0
->     9:      IR-IO-APIC-fasteoi   acpi
->    17:      IR-IO-APIC-fasteoi   ehci_hcd:usb1, hpilo
->
->
-> On this same system /proc/irq shows these interrupts:
->
-> 0-15, 17
->
-> Is there any way to determine what the interrupts are that aren't listed 
-> in /proc/interrupts?
+NAK. Breaks existing userlands in the field (literally field), forcing
+users to fw upgrade is not an option (field roll would be realy expensive).
 
-They are simply unused.
+> So I've submitted a patch to eliminate this. It could be argued
+> that it's useful to support older firmware versions, but there is also a 'leds-apu' driver which a)
+> probably ought to be marked deprecated with a view to removing it and b) implements the leds even on
+> antique firmware versions.
 
-> Six of them are affined to all CPUs, and I'm trying to affine as many
-> interrupts as possible to housekeeping CPUs to free up application
-> CPUs for low-latency operations.
+leds-apu is only for *OLD* apu1 - it does *not* work with v2/3/4,
+completely different chipset.
 
-Affining unused and therefore disabled interrupts is a pretty pointless
-exercise.
+> In implementing the APU5 I changed some of the exported gpio names to make them more closely match
+> functionality across all the boards. > For example APU2 vs APU4 both support 2x LTE options, but in
+> different mpcie slots and this affects the numbering of options, but not the sense of them (so I
+> renamed them based on the intention of the option). This is particularly true on APU5 which supports
+> 3x LTE cards
 
-Thanks,
+Dont break existing userlands.
 
-        tglx
+> Can I get some advice: It would be helpful if the kernel would export the GPIOs to user-space
+> automatically since toggling SIM slots is fairly useful task in userspace. 
+
+This is planned to be moved to either an own subsystem or into rfkill
+(which would have to be extended for such things).
+
+Using raw gpio's isn't a good idea - it's not portable.
+
+> At least for me the gpio
+> numbers seem to jump around depending on the order of module loading, so doing something involving
+> /sys/class/gpio/export isn't obviously an easy process. 
+
+Exactly. That's why they should be bound to more high level drivers.
+Gpio numbers are anything but stable.
+
+
+--mtx
+
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
