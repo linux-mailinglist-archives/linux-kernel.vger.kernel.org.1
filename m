@@ -2,124 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9526228BACB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60D2128BACE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389092AbgJLO0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:26:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51768 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388589AbgJLO0Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 10:26:16 -0400
-Received: from tzanussi-mobl (c-73-209-127-30.hsd1.il.comcast.net [73.209.127.30])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B565A2076C;
-        Mon, 12 Oct 2020 14:26:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602512775;
-        bh=T18qq6n77M14K4aDgEWW3a4aROVcFCp95O5Tl5EbYQc=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=n4e71GzUhq2ZKR3S5av77GyaGXDfHFRFkw0jQkSk6tAb32pDCstgvo6DyxrCxiwct
-         LqbP1Efhrb4dvE+e7Cutt+Ig6bQ/ngsm1LKZfOy+WvVO42BveT75+a4pX5EPBNJbvE
-         E/KlVDyTCfc8L7rgbD9rZbCkUpb+dyLqM4ZaQ1bA=
-Message-ID: <43b10ad23a80ee5ae9f10b6d47d7944b6b14a25d.camel@kernel.org>
-Subject: Re: [PATCH v3 1/2] tracing: support "bool" type in synthetic trace
- events
-From:   Tom Zanussi <zanussi@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michel Lespinasse <walken@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Jann Horn <jannh@google.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Date:   Mon, 12 Oct 2020 09:26:13 -0500
-In-Reply-To: <20201012101527.6df53dda@gandalf.local.home>
-References: <20201009220524.485102-1-axelrasmussen@google.com>
-         <20201009220524.485102-2-axelrasmussen@google.com>
-         <20201012101527.6df53dda@gandalf.local.home>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
+        id S2389613AbgJLO0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:26:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726963AbgJLO0i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 10:26:38 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C2FCC0613D0;
+        Mon, 12 Oct 2020 07:26:38 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id o9so11600015ilo.0;
+        Mon, 12 Oct 2020 07:26:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2UGvpwgDLlhT03caF2+q4zHAkpypU3+fNgL0xUTdtrU=;
+        b=mvGDqrP9p3tL3W4TJfbU6XV0+zwqkmq/1MfYM7JhbEObjrTw5Zw5P/eYnL+XpYzkyE
+         nS2hgsKS5ZRslWOisN0FZGFBqF4bo5ygZwR7SpvMKgRxLThq6IfBelusaWlc60Kiav7E
+         ad0EbNGDAd3QWbcivPaFGKzrbLN1KP4wynVw5rdbgEJ4g1jxzsAD5ps6iDfHtC571b2Y
+         4CQeGS3NnLyhTha9LvPKb06GA1OVtVTUkdAquPDuWkFQfMp/aJcsX5dtW5Tk0ZMYvSDz
+         hvi9KCP2jo32kcQU7b9sn+V+nauyZmbhTFXYf6TYdjf1aRAamz22T6tdBINxlTGWF442
+         Nm/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2UGvpwgDLlhT03caF2+q4zHAkpypU3+fNgL0xUTdtrU=;
+        b=O5rNNSztgBKXhwWCRL/U5xyq25q6x/XXcQpev609xDWTgZfLwC7XyGDKpxEUnoB62W
+         JqCGXiUcK8VHWLMBta2iy9TzY2yFws2vI4zMuZvb1fThANer4XsHxFlNwlzwgMWo6iw2
+         sNpxDmdKQKdTir0lDWv739Hfv3EJUhSt1TnKbu6Td0AKo8i+JeXCNC7ixCzU6NGcIHRz
+         qEw1v9Rs5LaFG889tO1fCTIEPBKOQB0F8DX07BHQO6wzJvEVG8XXDP8OEy7p+zAifoSv
+         BlsAcFH4AdODQl68gqER6C3uNAKBYAipGknT07wNmKt+tLUrJrPQjUjb0XgdDNXGL4E1
+         OJpg==
+X-Gm-Message-State: AOAM53322eIF+ZDSYegVzvPITLCXg2YyAxQVZT6GHQBZfTRGVwcpYmJG
+        +vUZ45xLmce0d82VzfjHt2QTtseKMUw=
+X-Google-Smtp-Source: ABdhPJyLqqAbLWcjb+L34SpOrIQudGp7Mdq+GZREaVG9wf1YFQ7rfFAYSz88cCa/hqISyS5ggRBjAg==
+X-Received: by 2002:a05:6e02:dea:: with SMTP id m10mr4192057ilj.208.1602512797401;
+        Mon, 12 Oct 2020 07:26:37 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([2601:282:803:7700:85e0:a5a2:ceeb:837])
+        by smtp.googlemail.com with ESMTPSA id g8sm7471796ioh.54.2020.10.12.07.26.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Oct 2020 07:26:36 -0700 (PDT)
+Subject: Re: [RFC PATCH 0/3] l3mdev icmp error route lookup fixes
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>,
+        Michael Jeanson <mjeanson@efficios.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20200925200452.2080-1-mathieu.desnoyers@efficios.com>
+ <fd970150-f214-63a3-953c-769fa2787bc0@gmail.com>
+ <19cf586d-4c4e-e18c-cd9e-3fde3717a9e1@gmail.com>
+ <2056270363.16428.1602507463959.JavaMail.zimbra@efficios.com>
+ <74f254cb-b274-48f7-6271-4056f531f9fa@gmail.com>
+ <90427402.16599.1602511802505.JavaMail.zimbra@efficios.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <ea9e3f3a-9974-7970-5025-33987af7456b@gmail.com>
+Date:   Mon, 12 Oct 2020 08:26:36 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.1
+MIME-Version: 1.0
+In-Reply-To: <90427402.16599.1602511802505.JavaMail.zimbra@efficios.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steve,
-
-Looks ok to me.
-
-Acked-by: Tom Zanussi <zanussi@kernel.org>
-
-Thanks,
-
-Tom
-
-
-On Mon, 2020-10-12 at 10:15 -0400, Steven Rostedt wrote:
-> Tom,
+On 10/12/20 7:10 AM, Mathieu Desnoyers wrote:
+> ----- On Oct 12, 2020, at 9:45 AM, David Ahern dsahern@gmail.com wrote:
 > 
-> Can you ack this patch for me?
+>> On 10/12/20 5:57 AM, Mathieu Desnoyers wrote:
+>>> OK, do you want to pick up the RFC patch series, or should I re-send it
+>>> without RFC tag ?
+>>
+>> you need to re-send for Dave or Jakub to pick them up via patchworks
 > 
-> -- Steve
-> 
-> 
-> On Fri,  9 Oct 2020 15:05:23 -0700
-> Axel Rasmussen <axelrasmussen@google.com> wrote:
-> 
-> > It's common [1] to define tracepoint fields as "bool" when they
-> > contain
-> > a true / false value. Currently, defining a synthetic event with a
-> > "bool" field yields EINVAL. It's possible to work around this by
-> > using
-> > e.g. u8 (assuming sizeof(bool) is 1, and bool is unsigned; if
-> > either of
-> > these properties don't match, you get EINVAL [2]).
-> > 
-> > Supporting "bool" explicitly makes hooking this up easier and more
-> > portable for userspace.
-> > 
-> > [1]: grep -r "bool" include/trace/events/
-> > [2]: check_synth_field() in kernel/trace/trace_events_hist.c
-> > 
-> > Acked-by: Michel Lespinasse <walken@google.com>
-> > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-> > ---
-> >  kernel/trace/trace_events_synth.c | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> > 
-> > diff --git a/kernel/trace/trace_events_synth.c
-> > b/kernel/trace/trace_events_synth.c
-> > index 8e1974fbad0e..8f94c84349a6 100644
-> > --- a/kernel/trace/trace_events_synth.c
-> > +++ b/kernel/trace/trace_events_synth.c
-> > @@ -234,6 +234,8 @@ static int synth_field_size(char *type)
-> >  		size = sizeof(long);
-> >  	else if (strcmp(type, "unsigned long") == 0)
-> >  		size = sizeof(unsigned long);
-> > +	else if (strcmp(type, "bool") == 0)
-> > +		size = sizeof(bool);
-> >  	else if (strcmp(type, "pid_t") == 0)
-> >  		size = sizeof(pid_t);
-> >  	else if (strcmp(type, "gfp_t") == 0)
-> > @@ -276,6 +278,8 @@ static const char *synth_field_fmt(char *type)
-> >  		fmt = "%ld";
-> >  	else if (strcmp(type, "unsigned long") == 0)
-> >  		fmt = "%lu";
-> > +	else if (strcmp(type, "bool") == 0)
-> > +		fmt = "%d";
-> >  	else if (strcmp(type, "pid_t") == 0)
-> >  		fmt = "%d";
-> >  	else if (strcmp(type, "gfp_t") == 0)
-> > --
-> > 2.28.0.1011.ga647a8990f-goog
-> 
+> OK. Can I have your Acked-by or Reviewed-by for all three patches ?
 > 
 
+
+sure.
+Reviewed-by: David Ahern <dsahern@gmail.com>
