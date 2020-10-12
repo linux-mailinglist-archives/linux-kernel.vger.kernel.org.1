@@ -2,208 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAE4928B13E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 11:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1FAD28B13F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 11:14:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729450AbgJLJNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 05:13:14 -0400
-Received: from mga17.intel.com ([192.55.52.151]:3102 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728974AbgJLJNO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 05:13:14 -0400
-IronPort-SDR: bK4+wi6JdIQrMMsNEyBthbCgJ19ccAsgBLqoQtU4WizTmOL0LTCB43Ag74lrnpX6kWzPXtY18h
- r2m/1r6aBy/g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="145576199"
-X-IronPort-AV: E=Sophos;i="5.77,366,1596524400"; 
-   d="scan'208";a="145576199"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 02:13:14 -0700
-IronPort-SDR: psgKl0Knbyt6pfh6q8QTVKMEwvzsisu80mVeNGQnPEV5GNbJ54JvNQlRUqxL6Cv7RLAsQB/kDc
- INPk1B6WjUHg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,366,1596524400"; 
-   d="scan'208";a="313382848"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga003.jf.intel.com with ESMTP; 12 Oct 2020 02:13:13 -0700
-Received: from [10.249.225.186] (abudanko-mobl.ccr.corp.intel.com [10.249.225.186])
-        by linux.intel.com (Postfix) with ESMTP id 78BB45805EC;
-        Mon, 12 Oct 2020 02:13:11 -0700 (PDT)
-Subject: [PATCH v1 15/15] perf record: introduce --threads command line option
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
+        id S1729288AbgJLJN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 05:13:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51093 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728859AbgJLJN6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 05:13:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602494037;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LfzBE/FgwUq1m0i5a1nd7eVANIytGnMHpB7MFKJjIkQ=;
+        b=Bb6D8qBFu1xLHRLWUJtQmYjOJYcjrKMFm/HJ+HNugPtXh4ooqgbePvm+0UfgfPvAhTxYUY
+        M7wUSk//pC8X1j1YZeZAKxwLVeZiwd6CaoYk3HQjbPxy+TB3YE2P+y5JHtlF52fBBKBXzX
+        pi/SjylsbxShUuQoKhvzqz8GwhGIAuQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-310-EaTJdbepMOyZRJxCadIPIw-1; Mon, 12 Oct 2020 05:13:52 -0400
+X-MC-Unique: EaTJdbepMOyZRJxCadIPIw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 29FFB802B46;
+        Mon, 12 Oct 2020 09:13:51 +0000 (UTC)
+Received: from krava (unknown [10.40.195.81])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 40F5C10013BD;
+        Mon, 12 Oct 2020 09:13:49 +0000 (UTC)
+Date:   Mon, 12 Oct 2020 11:13:48 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com>
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <83f29027-0a6e-78f1-a85d-dab57dfa9dfc@linux.intel.com>
-Date:   Mon, 12 Oct 2020 12:13:10 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf c2c: Update usage for showing memory events
+Message-ID: <20201012091348.GC1099489@krava>
+References: <20201011121022.22409-1-leo.yan@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201011121022.22409-1-leo.yan@linaro.org>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Oct 11, 2020 at 08:10:22PM +0800, Leo Yan wrote:
+> Since commit b027cc6fdf1b ("perf c2c: Fix 'perf c2c record -e list' to
+> show the default events used"), "perf c2c" tool can show the memory
+> events properly, it's no reason to still suggest user to use the
+> command "perf mem record -e list" for showing events.
+> 
+> This patch updates the usage for showing memory events with command
+> "perf c2c record -e list".
+> 
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
 
-Provide --threads option in perf record command line interface.
-Threaded streaming mode mitigates profiling data losses and
-resolves scalability issues of serial and asynchronous (--aio) trace
-streaming modes on multicore server systems. The implementation is
-based on the prototype [1], [2] and the most closely relates to mode 3)
-"mode that creates thread for every monitored memory map".
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-Threaded streaming mode is available with Zstd compression/decompression
-(--compression-level) and handling of external commands (--control).
-AUX area tracing, related and derived modes like --snapshot or
---aux-sample are not enabled. --switch-output, --switch-output-event,
---switch-max-files and --timestamp-filename options are not enabled.
-Threaded trace streaming is not enabled for pipe mode. Asynchronous
-(--aio) trace streaming and affinity (--affinity) modes are mutually
-exclusive to the exposed threaded streaming mode.
+thanks,
+jirka
 
-[1] git clone https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git -b perf/record_threads
-[2] https://lore.kernel.org/lkml/20180913125450.21342-1-jolsa@kernel.org/
-
-Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
----
- tools/perf/Documentation/perf-record.txt |  7 ++++
- tools/perf/builtin-record.c              | 45 +++++++++++++++++++++---
- 2 files changed, 48 insertions(+), 4 deletions(-)
-
-diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
-index 768888b9326a..d8fa387da973 100644
---- a/tools/perf/Documentation/perf-record.txt
-+++ b/tools/perf/Documentation/perf-record.txt
-@@ -671,6 +671,13 @@ Example of bash shell script to enable and disable events during measurements:
-  wait -n ${perf_pid}
-  exit $?
- 
-+--threads::
-+Write collected trace data into per-CPU trace files using parallel threads.
-+List of monitored CPUs can be configured by a mask provided via --cpu option.
-+Trace writing threads correspond one-to-one to mapped data buffers. Threads
-+and buffers are affined to monitored CPUs and NUMA nodes according to system
-+topology. Threaded trace streaming mode is mutually exclusive to asynchronous
-+trace streaming (--aio) and affinity (--affinity) modes.
- 
- SEE ALSO
- --------
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index 1d41e996a994..575b0b595081 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -780,6 +780,12 @@ static int record__auxtrace_init(struct record *rec)
- {
- 	int err;
- 
-+	if ((rec->opts.auxtrace_snapshot_opts || rec->opts.auxtrace_sample_opts)
-+	    && record__threads_enabled(rec)) {
-+		pr_err("AUX area tracing options are not available in threaded streaming mode.\n");
-+		return -EINVAL;
-+	}
-+
- 	if (!rec->itr) {
- 		rec->itr = auxtrace_record__init(rec->evlist, &err);
- 		if (err)
-@@ -2008,6 +2014,11 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 		return PTR_ERR(session);
- 	}
- 
-+	if (record__threads_enabled(rec) && perf_data__is_pipe(&rec->data)) {
-+		pr_err("Threaded trace streaming is not available in pipe mode.\n");
-+		return -1;
-+	}
-+
- 	fd = perf_data__fd(data);
- 	rec->session = session;
- 
-@@ -2680,12 +2691,22 @@ static int switch_output_setup(struct record *rec)
- 	 * --switch-output=signal, as we'll send a SIGUSR2 from the side band
- 	 *  thread to its parent.
- 	 */
--	if (rec->switch_output_event_set)
-+	if (rec->switch_output_event_set) {
-+		if (record__threads_enabled(rec)) {
-+			pr_warning("WARNING: --switch-output-event option is not available in threaded streaming mode.\n");
-+			return 0;
-+		}
- 		goto do_signal;
-+	}
- 
- 	if (!s->set)
- 		return 0;
- 
-+	if (record__threads_enabled(rec)) {
-+		pr_warning("WARNING: --switch-output option is not available in threaded streaming mode.\n");
-+		return 0;
-+	}
-+
- 	if (!strcmp(s->str, "signal")) {
- do_signal:
- 		s->signal = true;
-@@ -2964,8 +2985,8 @@ static struct option __record_options[] = {
- 		     "Set affinity mask of trace reading thread to NUMA node cpu mask or cpu of processed mmap buffer",
- 		     record__parse_affinity),
- #ifdef HAVE_ZSTD_SUPPORT
--	OPT_CALLBACK_OPTARG('z', "compression-level", &record.opts, &comp_level_default,
--			    "n", "Compressed records using specified level (default: 1 - fastest compression, 22 - greatest compression)",
-+	OPT_CALLBACK_OPTARG('z', "compression-level", &record.opts, &comp_level_default, "n",
-+			    "Compress records using specified level (default: 1 - fastest compression, 22 - greatest compression)",
- 			    record__parse_comp_level),
- #endif
- 	OPT_CALLBACK(0, "max-size", &record.output_max_size,
-@@ -2984,6 +3005,8 @@ static struct option __record_options[] = {
- 		     "\t\t\t  Optionally send control command completion ('ack\\n') to ack-fd descriptor.\n"
- 		     "\t\t\t  Alternatively, ctl-fifo / ack-fifo will be opened and used as ctl-fd / ack-fd.",
- 		      parse_control_option),
-+	OPT_BOOLEAN(0, "threads", &record.opts.threads,
-+		    "write collected trace data into per-CPU trace files using parallel threads"),
- 	OPT_END()
- };
- 
-@@ -3046,8 +3069,17 @@ int cmd_record(int argc, const char **argv)
- 	if (rec->opts.kcore || record__threads_enabled(rec))
- 		rec->data.is_dir = true;
- 
--	if (record__threads_enabled(rec))
-+	if (record__threads_enabled(rec)) {
-+		if (rec->opts.affinity != PERF_AFFINITY_SYS) {
-+			pr_err("--affinity option is mutually exclusive to threaded streaming mode.\n");
-+			goto out_opts;
-+		}
- 		rec->opts.affinity = PERF_AFFINITY_CPU;
-+		if (record__aio_enabled(rec)) {
-+			pr_err("Asynchronous streaming mode (--aio) is mutually exclusive to threaded streaming mode.\n");
-+			goto out_opts;
-+		}
-+	}
- 
- 	if (rec->opts.comp_level != 0) {
- 		pr_debug("Compression enabled, disabling build id collection at the end of the session.\n");
-@@ -3082,6 +3114,11 @@ int cmd_record(int argc, const char **argv)
- 		}
- 	}
- 
-+	if (rec->timestamp_filename && record__threads_enabled(rec)) {
-+		rec->timestamp_filename = false;
-+		pr_warning("WARNING: --timestamp-filename option is not available in threaded streaming mode.\n");
-+	}
-+
- 	/*
- 	 * Allow aliases to facilitate the lookup of symbols for address
- 	 * filters. Refer to auxtrace_parse_filters().
--- 
-2.24.1
+> ---
+>  tools/perf/builtin-c2c.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
+> index 5938b100eaf4..57bb6cce43e3 100644
+> --- a/tools/perf/builtin-c2c.c
+> +++ b/tools/perf/builtin-c2c.c
+> @@ -2916,7 +2916,7 @@ static int perf_c2c__record(int argc, const char **argv)
+>  	bool event_set = false;
+>  	struct option options[] = {
+>  	OPT_CALLBACK('e', "event", &event_set, "event",
+> -		     "event selector. Use 'perf mem record -e list' to list available events",
+> +		     "event selector. Use 'perf c2c record -e list' to list available events",
+>  		     parse_record_events),
+>  	OPT_BOOLEAN('u', "all-user", &all_user, "collect only user level data"),
+>  	OPT_BOOLEAN('k', "all-kernel", &all_kernel, "collect only kernel level data"),
+> -- 
+> 2.17.1
+> 
 
