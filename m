@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFC5328B97E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DD7228B65D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:34:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390820AbgJLOBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:01:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40154 "EHLO mail.kernel.org"
+        id S2389086AbgJLNdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:33:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731238AbgJLNio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:38:44 -0400
+        id S2388663AbgJLNce (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:32:34 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB70A22227;
-        Mon, 12 Oct 2020 13:38:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 674502078E;
+        Mon, 12 Oct 2020 13:32:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509905;
-        bh=65OatsPb62h7nFuZTN2/8uWClJo9QVTyxauDWcLOAzg=;
+        s=default; t=1602509553;
+        bh=OzOTN8jKo7kNhY9MZajRoUo7sdMGGo9dIRe98N8tscs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zNqEqdUUzYPO7IKnE7ZEe2ceyVmzvUjc3xU4FaegajdesfzterTaUDpBC7MM9KgsX
-         YHO2tlAicj9K/AhnnxNULJiT4vM9h+dTDhobXLx8quYKPRthDzqqpC8lTJTEiApkXQ
-         ToXSa3UspmHvU0nxHg9hBh528AMxl8Zi5fU8eqaM=
+        b=X0mof9CgiClCvUhHVIuAXDHNUU3oOn1FbB1GBknNwhMFcXXFtvaQzw7M7i90CoEwT
+         huGVzEjIB+oi9d005Z151rEuSaH97iTdNJWfvjs8nmz8aP4EP9rzICm89LywDVYNIB
+         MHRZzb/T3rWcxIu3GT1P4HLl4q2g2Cgh45tcuwyA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Peilin Ye <yepeilin.cs@gmail.com>,
         Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: [PATCH 4.19 01/49] fbdev, newport_con: Move FONT_EXTRA_WORDS macros into linux/font.h
+Subject: [PATCH 4.4 17/39] fbdev, newport_con: Move FONT_EXTRA_WORDS macros into linux/font.h
 Date:   Mon, 12 Oct 2020 15:26:47 +0200
-Message-Id: <20201012132629.530016562@linuxfoundation.org>
+Message-Id: <20201012132628.945606515@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132629.469542486@linuxfoundation.org>
-References: <20201012132629.469542486@linuxfoundation.org>
+In-Reply-To: <20201012132628.130632267@linuxfoundation.org>
+References: <20201012132628.130632267@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -63,13 +61,39 @@ Link: https://patchwork.freedesktop.org/patch/msgid/7fb8bc9b0abc676ada6b7ac0e0bd
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/video/console/newport_con.c     |    7 +------
- drivers/video/fbdev/core/fbcon.h        |    7 -------
- drivers/video/fbdev/core/fbcon_rotate.c |    1 +
- drivers/video/fbdev/core/tileblit.c     |    1 +
- include/linux/font.h                    |    8 ++++++++
+ drivers/video/console/fbcon.h        |    7 -------
+ drivers/video/console/fbcon_rotate.c |    1 +
+ drivers/video/console/newport_con.c  |    7 +------
+ drivers/video/console/tileblit.c     |    1 +
+ include/linux/font.h                 |    8 ++++++++
  5 files changed, 11 insertions(+), 13 deletions(-)
 
+--- a/drivers/video/console/fbcon.h
++++ b/drivers/video/console/fbcon.h
+@@ -151,13 +151,6 @@ static inline int attr_col_ec(int shift,
+ #define attr_bgcol_ec(bgshift, vc, info) attr_col_ec(bgshift, vc, info, 0)
+ #define attr_fgcol_ec(fgshift, vc, info) attr_col_ec(fgshift, vc, info, 1)
+ 
+-/* Font */
+-#define REFCOUNT(fd)	(((int *)(fd))[-1])
+-#define FNTSIZE(fd)	(((int *)(fd))[-2])
+-#define FNTCHARCNT(fd)	(((int *)(fd))[-3])
+-#define FNTSUM(fd)	(((int *)(fd))[-4])
+-#define FONT_EXTRA_WORDS 4
+-
+     /*
+      *  Scroll Method
+      */
+--- a/drivers/video/console/fbcon_rotate.c
++++ b/drivers/video/console/fbcon_rotate.c
+@@ -14,6 +14,7 @@
+ #include <linux/fb.h>
+ #include <linux/vt_kern.h>
+ #include <linux/console.h>
++#include <linux/font.h>
+ #include <asm/types.h>
+ #include "fbcon.h"
+ #include "fbcon_rotate.h"
 --- a/drivers/video/console/newport_con.c
 +++ b/drivers/video/console/newport_con.c
 @@ -35,12 +35,6 @@
@@ -93,34 +117,8 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  
  	p = new_data;
  	for (i = 0; i < op->charcount; i++) {
---- a/drivers/video/fbdev/core/fbcon.h
-+++ b/drivers/video/fbdev/core/fbcon.h
-@@ -152,13 +152,6 @@ static inline int attr_col_ec(int shift,
- #define attr_bgcol_ec(bgshift, vc, info) attr_col_ec(bgshift, vc, info, 0)
- #define attr_fgcol_ec(fgshift, vc, info) attr_col_ec(fgshift, vc, info, 1)
- 
--/* Font */
--#define REFCOUNT(fd)	(((int *)(fd))[-1])
--#define FNTSIZE(fd)	(((int *)(fd))[-2])
--#define FNTCHARCNT(fd)	(((int *)(fd))[-3])
--#define FNTSUM(fd)	(((int *)(fd))[-4])
--#define FONT_EXTRA_WORDS 4
--
-     /*
-      *  Scroll Method
-      */
---- a/drivers/video/fbdev/core/fbcon_rotate.c
-+++ b/drivers/video/fbdev/core/fbcon_rotate.c
-@@ -14,6 +14,7 @@
- #include <linux/fb.h>
- #include <linux/vt_kern.h>
- #include <linux/console.h>
-+#include <linux/font.h>
- #include <asm/types.h>
- #include "fbcon.h"
- #include "fbcon_rotate.h"
---- a/drivers/video/fbdev/core/tileblit.c
-+++ b/drivers/video/fbdev/core/tileblit.c
+--- a/drivers/video/console/tileblit.c
++++ b/drivers/video/console/tileblit.c
 @@ -13,6 +13,7 @@
  #include <linux/fb.h>
  #include <linux/vt_kern.h>
