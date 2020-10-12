@@ -2,204 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C56928BE98
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 19:03:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8DB228BEA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 19:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390741AbgJLRDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 13:03:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59454 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390681AbgJLRDa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 13:03:30 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 99DCDAC6C;
-        Mon, 12 Oct 2020 17:03:27 +0000 (UTC)
-Date:   Mon, 12 Oct 2020 19:03:25 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: sun8i: h2+: Enable optional SPI flash on
- Orange Pi Zero board
-Message-ID: <20201012170325.GS29778@kitsune.suse.cz>
-References: <20200929083025.2089-1-msuchanek@suse.de>
- <20201008151315.v3geykbs6musl4wq@gilmour.lan>
- <20201008160219.GM29778@kitsune.suse.cz>
- <20201008171454.qixrcjmhzko766su@gilmour.lan>
- <20201008174044.GN29778@kitsune.suse.cz>
- <20201012153507.ft77jgaprpendpne@gilmour.lan>
+        id S2404008AbgJLRGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 13:06:33 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:48388 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403884AbgJLRGc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 13:06:32 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09CH4c1G151548;
+        Mon, 12 Oct 2020 17:05:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=sywnCTUjXc0lgO6A0ChBIso9TIkehj97usAO1+Lal8Q=;
+ b=uPKtTS/YINpOjTaWw9jnRSV83/rKY472HZDieah3yaran7QM/V/al7+Gds48t95MPzcO
+ 9bnSBJhYFsPozprJC+ok7TsurtToZbuhqmm6HNXokyN5lq3b7MJEgis+9Kg8RMDSCErr
+ Mh4q0uO48c4qpRGnW1XcdnudfyLjnieZEkR3geUmP1XeBisKNxocUp+/Jv0h7B4oY4wP
+ Bd3vmcFBZQohPQfD04AybaCNhPv6DHzlz5iIr1ru758jqYzgAqD/6v7RFVxhAmd54mLP
+ 2OrmrlPlQ/DsZXgeJZ9sLx7YAcw45vZ/EaUParlLZ7+xniBxGQy/u+FWYWESVsfzNU44 Rw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 343pajmuvx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 12 Oct 2020 17:05:45 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09CGjbn0025656;
+        Mon, 12 Oct 2020 17:03:45 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 343phm2uyt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 12 Oct 2020 17:03:45 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09CH3e61010418;
+        Mon, 12 Oct 2020 17:03:40 GMT
+Received: from [10.65.146.162] (/10.65.146.162)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 12 Oct 2020 10:03:40 -0700
+Subject: Re: [PATCH 1/2] mm/mprotect: Call arch_validate_prot under mmap_lock
+ and with length
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Jann Horn <jannh@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        sparclinux@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>,
+        Anthony Yznaga <anthony.yznaga@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org
+References: <20201007073932.865218-1-jannh@google.com>
+ <d5332a7b-c300-6d28-18b9-4b7d4110ef86@oracle.com>
+ <20201010110949.GA32545@gaia>
+From:   Khalid Aziz <khalid.aziz@oracle.com>
+Organization: Oracle Corp
+X-Pep-Version: 2.0
+Message-ID: <af207cf8-3049-85eb-349d-5fed6b9be49c@oracle.com>
+Date:   Mon, 12 Oct 2020 11:03:33 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201012153507.ft77jgaprpendpne@gilmour.lan>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201010110949.GA32545@gaia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9772 signatures=668681
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 adultscore=0
+ bulkscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010120130
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9772 signatures=668681
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0
+ impostorscore=0 priorityscore=1501 clxscore=1015 malwarescore=0
+ adultscore=0 lowpriorityscore=0 spamscore=0 phishscore=0 mlxscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010120131
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 05:35:07PM +0200, Maxime Ripard wrote:
-> On Thu, Oct 08, 2020 at 07:40:44PM +0200, Michal Suchánek wrote:
-> > On Thu, Oct 08, 2020 at 07:14:54PM +0200, Maxime Ripard wrote:
-> > > On Thu, Oct 08, 2020 at 06:02:19PM +0200, Michal Suchánek wrote:
-> > > > On Thu, Oct 08, 2020 at 05:13:15PM +0200, Maxime Ripard wrote:
-> > > > > Hi,
-> > > > > 
-> > > > > On Tue, Sep 29, 2020 at 10:30:25AM +0200, Michal Suchanek wrote:
-> > > > > > The flash is present on all new boards and users went out of their way
-> > > > > > to add it on the old ones.
-> > > > > > 
-> > > > > > Enabling it makes a more reasonable default.
-> > > > > > 
-> > > > > > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-> > > > > > ---
-> > > > > >  arch/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dts | 4 ++--
-> > > > > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > > > > 
-> > > > > > diff --git a/arch/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dts b/arch/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dts
-> > > > > > index f19ed981da9d..061d295bbba7 100644
-> > > > > > --- a/arch/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dts
-> > > > > > +++ b/arch/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dts
-> > > > > > @@ -163,8 +163,8 @@ &ohci1 {
-> > > > > >  };
-> > > > > >  
-> > > > > >  &spi0 {
-> > > > > > -	/* Disable SPI NOR by default: it optional on Orange Pi Zero boards */
-> > > > > > -	status = "disabled";
-> > > > > > +	/* Enable optional SPI NOR by default */
-> > > > > > +	status = "okay";
-> > > > > >  
-> > > > > >  	flash@0 {
-> > > > > >  		#address-cells = <1>;
-> > > > > 
-> > > > > Unfortunately, it's optional, so there's really no reason to enable it
-> > > > > all the time. If it's troublesome to users, then the distros or vendors
-> > > > > should make the changes necessary to the hardware, bootloader or their
-> > > > > documentation to make it easier for those users.
-> > > > 
-> > > > I don't understand the reasoning. Why must it be disabled when optional?
-> > > 
-> > > Think about it the other way around. If we enable everything that is
-> > > optional, we're going to have a multitude of conflicts everywhere, and
-> > > without a clear decision as to who is "best" and thus how we should
-> > > resolve it.
-> > Conflicts with what?
-> > 
-> > The SPI0 bus is routed the the flash memory pads. Either there is the
-> > flash mounted or there are free pads. Nothing else on the board uses
-> > these pins. You could possily solder something else there but that's
-> > definitely not part of the board.
-> > > 
-> > > On a separate platform, recently I've been using a VGA bridge for the
-> > > RaspberryPi that takes the UART pins as well. It's definitely optional,
-> > > should I enable it by default? At the same time, enabling by default the
-> > > UART is just as arbitrary and will result in people using the VGA bridge
-> > > to complain about their regression (rightfully so).
-> > 
-> > That's completely different situation. That bridge is probably not even
-> > part of the board.
-> > 
-> > > 
-> > > So, really, if it's optional, it means that it not always there. If it's
-> > > not always there, it's meant to be supported by an overlay.
-> > > 
-> > > > By the same reasoning there is no reason to disable it all the time.
-> > > 
-> > > I'm not sure I follow you here. The least common denominator is that
-> > > it's not there, so it's not enabled.
-> > 
-> > You have two options - have a flash mounted or not. You ask why enable
-> > flash when it is not always present. By the same logic I can ask why
-> > disable it when it is not always absent. Enabling is the more useful
-> > option because it degrades gracefully in the case it is not present. It
-> > does not work the other way around.
-> > 
-> > > 
-> > > > Also the boards that do not have the flsh are either broken or
-> > > > obsolete.
-> > > 
-> > > Making general statements without arguments doesn't really make it true
-> > > though. Plenty of boards to have flash and are neither broken nor
-> > > obsolete.
-> >
-> > Cannot parse this.
-> 
-> "Plenty of boards do not have flash and are neither broken nor obsolete"
-The product description of Orange Pi Zero clearly states there is a
-flash memory: http://www.orangepi.org/orangepizero/
+On 10/10/20 5:09 AM, Catalin Marinas wrote:
+> Hi Khalid,
+>=20
+> On Wed, Oct 07, 2020 at 02:14:09PM -0600, Khalid Aziz wrote:
+>> On 10/7/20 1:39 AM, Jann Horn wrote:
+>>> arch_validate_prot() is a hook that can validate whether a given set =
+of
+>>> protection flags is valid in an mprotect() operation. It is given the=
+ set
+>>> of protection flags and the address being modified.
+>>>
+>>> However, the address being modified can currently not actually be use=
+d in
+>>> a meaningful way because:
+>>>
+>>> 1. Only the address is given, but not the length, and the operation c=
+an
+>>>    span multiple VMAs. Therefore, the callee can't actually tell whic=
+h
+>>>    virtual address range, or which VMAs, are being targeted.
+>>> 2. The mmap_lock is not held, meaning that if the callee were to chec=
+k
+>>>    the VMA at @addr, that VMA would be unrelated to the one the
+>>>    operation is performed on.
+>>>
+>>> Currently, custom arch_validate_prot() handlers are defined by
+>>> arm64, powerpc and sparc.
+>>> arm64 and powerpc don't care about the address range, they just check=
+ the
+>>> flags against CPU support masks.
+>>> sparc's arch_validate_prot() attempts to look at the VMA, but doesn't=
+ take
+>>> the mmap_lock.
+>>>
+>>> Change the function signature to also take a length, and move the
+>>> arch_validate_prot() call in mm/mprotect.c down into the locked regio=
+n.
+> [...]
+>> As Chris pointed out, the call to arch_validate_prot() from do_mmap2()=
 
-When you order an Orange Pi Zero it comes with a flash memory. That is
-not what the device tree describes. The device tree is supposed to
-descrbe the hardware. If it does not it is broken.
+>> is made without holding mmap_lock. Lock is not acquired until
+>> vm_mmap_pgoff(). This variance is uncomfortable but I am more
+>> uncomfortable forcing all implementations of validate_prot to require
+>> mmap_lock be held when non-sparc implementations do not have such need=
 
-If you have a board without a flash memory I do not know what it is but
-it is clearly not an Orange Pi Zero because it comes with one.
-> 
-> > > 
-> > > > So most of the time enabling the flash chip is the right thing.
-> > > > 
-> > > > Or do we need two DTBs like sun8i-h2-plus-orangepi-zero.dts and
-> > > > sun8i-h2-plus-orangepi-zero-no-spi-nor.dts
-> > > 
-> > > No, you need sun8i-h2-plus-orangepi-zero plus an overlay for the
-> > > SPI-NOR.
-> >
-> > The flash is part of the board.
-> 
-> Not always though.
-No, it always comes with one. You must be speaking of a different board
-then.
-> 
-> > There is no need for an overlay.
-> 
-> Overlays are here to deal with the "not always though" situation...
-There are no overlays in the kernel. Please show me tho code in the
-kernel for handling overlays.
-> 
-> > And overlays don't exist.
-> 
-> If you want to believe that, please go ahead.
-> 
-> But there's support for it in libfdt, and you can either apply them
-> directly through the U-Boot command line, or bundle them in a FIT image.
-And as you state the user ususally does not know which version of the Pi
-they have. How are they supposed to know that they should apply an
-overlay through u-boot commandline (if they even get to see one) or
-bundle them in a FIT image (if they are even using a FIT image).
+>> yet. Since do_mmap2() is in powerpc specific code, for now this patch
+>> solves a current problem.
+>=20
+> I still think sparc should avoid walking the vmas in
+> arch_validate_prot(). The core code already has the vmas, though not
+> when calling arch_validate_prot(). That's one of the reasons I added
+> arch_validate_flags() with the MTE patches. For sparc, this could be
+> (untested, just copied the arch_validate_prot() code):
 
-I am doing neither. I boot a standard distribution kernel from EFI grub.
+I am little uncomfortable with the idea of validating protection bits
+inside the VMA walk loop in do_mprotect_pkey(). When ADI is being
+enabled across multiple VMAs and arch_validate_flags() fails on a VMA
+later, do_mprotect_pkey() will bail out with error leaving ADI enabled
+on earlier VMAs. This will apply to protection bits other than ADI as
+well of course. This becomes a partial failure of mprotect() call. I
+think it should be all or nothing with mprotect() - when one calls
+mprotect() from userspace, either the entire address range passed in
+gets its protection bits updated or none of it does. That requires
+validating protection bits upfront or undoing what earlier iterations of
+VMA walk loop might have done.
 
-I understand that it would be nice to support two almost identical
-boards with a single device tree. However, if an error about missing
-flash memory is not acceptable, and the kernel does not support enabling
-the flash memory dynamically we need two device trees then.
-> 
-> Plenty of support for something that doesn't exist.
-> 
-> > > 
-> > > > There is no way to change the setting on a runnig system, the pins are
-> > > > routed to the flash pads anyway so are not usable for anything else. The
-> > > > only thing that happens on boards that do not have the flash is kernel
-> > > > probing it and complaining that the ID 00 00 00 is not valid SPI NOR
-> > > > flash memory ID.
-> > > 
-> > > We have people reporting bugs about completely innocuous error messages
-> > > without any side effects already. An error about a missing or broken
-> > > storage device will surely raise some eyebrows.
-> > 
-> > I am sure poeple who have an old Orange Pi Zero know that it is missing
-> > the flash memory.
-> 
-> Do you really expect every single user on an Orange Pi Zero to know
-> exactly the revision it has and whether or not it's been bundled with a
-> SPI flash if it's the older ones (with the proper definition of older
-> ones)?
+--
+Khalid
 
-And how is the user supposed to tell when the flash is disabled and thre
-is no way to enable it?
+>=20
+> static inline bool arch_validate_flags(unsigned long vm_flags)
+> {
+> 	if (!(vm_flags & VM_SPARC_ADI))
+> 		return true;
+>=20
+> 	if (!adi_capable())
+> 		return false;
+>=20
+> 	/* ADI can not be enabled on PFN mapped pages */
+> 	if (vma->vm_flags & (VM_PFNMAP | VM_MIXEDMAP))
+> 		return false;
+>=20
+> 	/*
+> 	 * Mergeable pages can become unmergeable if ADI is enabled on
+> 	 * them even if they have identical data on them. This can be
+> 	 * because ADI enabled pages with identical data may still not
+> 	 * have identical ADI tags on them. Disallow ADI on mergeable
+> 	 * pages.
+> 	 */
+> 	if (vma->vm_flags & VM_MERGEABLE)
+> 		return false;
+>=20
+> 	return true;
+> }
+>=20
+>> That leaves open the question of should
+>> generic mmap call arch_validate_prot and return EINVAL for invalid
+>> combination of protection bits, but that is better addressed in a
+>> separate patch.
+>=20
+> The above would cover mmap() as well.
+>=20
+> The current sparc_validate_prot() relies on finding the vma for the
+> corresponding address. However, if you call this early in the mmap()
+> path, there's no such vma. It is only created later in mmap_region()
+> which no longer has the original PROT_* flags (all converted to VM_*
+> flags).
+>=20
+> Calling arch_validate_flags() on mmap() has a small side-effect on the
+> user ABI: if the CPU is not adi_capable(), PROT_ADI is currently ignore=
+d
+> on mmap() but rejected by sparc_validate_prot(). Powerpc already does
+> this already and I think it should be fine for arm64 (it needs checking=
 
-Thanks
+> though as we have another flag, PROT_BTI, hopefully dynamic loaders
+> don't pass this flag unconditionally).
+>=20
+> However, as I said above, it doesn't solve the mmap() PROT_ADI checking=
 
-Michal
+> for sparc since there's no vma yet. I'd strongly recommend the
+> arch_validate_flags() approach and reverting the "start" parameter adde=
+d
+> to arch_validate_prot() if you go for the flags route.
+>=20
+> Thanks.
+>=20
+
+
