@@ -2,89 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DB2A28BD10
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B18928BD13
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389555AbgJLQAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 12:00:14 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:33111 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1726742AbgJLQAO (ORCPT
+        id S2390046AbgJLQAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 12:00:41 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:40950 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389771AbgJLQAl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 12:00:14 -0400
-Received: (qmail 634439 invoked by uid 1000); 12 Oct 2020 12:00:13 -0400
-Date:   Mon, 12 Oct 2020 12:00:13 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Mon, 12 Oct 2020 12:00:41 -0400
+Received: by mail-ot1-f65.google.com with SMTP id l4so16261663ota.7;
+        Mon, 12 Oct 2020 09:00:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sKQvgCFfoUK383C3nmDjkaV64Iaz4htqCFpPTHjis94=;
+        b=DVGuDgmr7+LBzZaET5scApmNjHjps1RWmBneflL8cIMP36vBlb4m88JvD1NrjbSbN7
+         2e8hRxt6Fue9Z30muGGYssHYDSIJ2wzoPrJe9OmrCCXW8ChuiJ5s8xX8oEcDF0SvKM1W
+         m4WNy2CcYnP3gL/9rCGnX0WeeH3+97SSfzjrRMze1DXpBOQUEb9M7frQBET8EfHqC4/w
+         lvfJrKhGRfKWqeDq5L2Gr/7aUQ3bSRYf03k5Bdzmcscmrn6Mw7UGblXAZEhmo0NlZrXY
+         QJ5uxjyntzkOeZf7PrqeJb4mGb3+QBqSslIzxyJjMhhQXPf/UEJ5Kxa2lZB3yB2+3a6i
+         CUEA==
+X-Gm-Message-State: AOAM533m2fRE2pMWHgqg35MZTdz4V8Ex0bGVKP5JRbQ6eriKayMPVBG9
+        0XbqAQs45UNinatFOpWQFQ==
+X-Google-Smtp-Source: ABdhPJxkLahxePnE9AL27oE1+P/rxoCNJR5P+a+QdCW4mRzABSit5agAwmV+5vq3bUnnU+pwFw6YXg==
+X-Received: by 2002:a9d:3e4:: with SMTP id f91mr20173294otf.244.1602518440260;
+        Mon, 12 Oct 2020 09:00:40 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id k73sm8849333otk.63.2020.10.12.09.00.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 09:00:39 -0700 (PDT)
+Received: (nullmailer pid 1622059 invoked by uid 1000);
+        Mon, 12 Oct 2020 16:00:38 -0000
+Date:   Mon, 12 Oct 2020 11:00:38 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-safety@lists.elisa.tech,
-        linux-usb@vger.kernel.org
-Subject: Re: [linux-safety] [PATCH] usb: host: ehci-sched: add comment about
- find_tt() not returning error
-Message-ID: <20201012160013.GA632789@rowland.harvard.edu>
-References: <20201011205008.24369-1-sudipm.mukherjee@gmail.com>
- <alpine.DEB.2.21.2010121550300.6487@felia>
- <20201012145710.GA631710@rowland.harvard.edu>
- <alpine.DEB.2.21.2010121659040.6487@felia>
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v2 2/4] dt-bindings: usb: add properties for hard wired
+ devices
+Message-ID: <20201012160038.GA1618651@bogus>
+References: <3db52d534065dcf28e9a10b8129bea3eced0193e.1602318869.git.chunfeng.yun@mediatek.com>
+ <bd71ed260efd162d25e0491988d61fcf1e589bc0.1602318869.git.chunfeng.yun@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.21.2010121659040.6487@felia>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <bd71ed260efd162d25e0491988d61fcf1e589bc0.1602318869.git.chunfeng.yun@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 05:10:21PM +0200, Lukas Bulwahn wrote:
+On Sat, Oct 10, 2020 at 04:43:12PM +0800, Chunfeng Yun wrote:
+> Add some optional properties which are needed for hard wired devices
 > 
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+> v2 changes suggested by Rob:
+>    1. modify pattern to support any USB class
+>    2. refer to usb-device.yaml instead of usb-device.txt
+> ---
+>  .../devicetree/bindings/usb/usb-hcd.yaml      | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+
+You can fold this into the first patch. While not explicit before, it 
+was implied.
+
+Rob
+
 > 
-> On Mon, 12 Oct 2020, Alan Stern wrote:
-> > Real code contains so many assumptions, especially if you include ones 
-> > which are obvious to everybody, that such a tool seems impractical.
-> >
-> 
-> I fear that problem applies to all static code analysis tools I have seen; 
-> at some point, the remaining findings are simply obviously wrong to 
-> everybody but the tool does not get those assumptions and continues 
-> complaining, making the tool seem impractical.
+> diff --git a/Documentation/devicetree/bindings/usb/usb-hcd.yaml b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
+> index 7263b7f2b510..42b295afdf32 100644
+> --- a/Documentation/devicetree/bindings/usb/usb-hcd.yaml
+> +++ b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
+> @@ -22,9 +22,28 @@ properties:
+>      description:
+>        Name specifier for the USB PHY
+>  
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+> +patternProperties:
+> +  "^[a-f]+@[0-9a-f]+$":
 
-Indeed, it is well known that the problem of finding all errors or bugs 
-by static code analysis is Turing complete.
+Just define the unit-address here: "@[0-9a-f]+$"
+> +    type: object
+> +    $ref: /usb/usb-device.yaml
+> +    description: The hard wired USB devices
 
-> Alan, so would you be willing to take patches where _anyone_ simply adds 
-> comments on what functions returns, depending on what this person might 
-> consider just not obvious enough?
+Need to also define 'reg' and 'compatible' here.
 
-No.  I would take such patches from anyone, but depending on what _I_ 
-consider not obvious enough.
-
-> Or are you going to simply reject this 'added a comment' patch here?
-
-I have already accepted it.  In fact, the patch was my suggestion in the 
-first place.
-
-When I originally wrote this code, I was aware that it was somewhat 
-subtle, but at the time it didn't seem to warrant a comment or 
-explanation.  Sudip's patch has changed my mind.
-
-> I am not arguing either way, it is just that it is unclear to me what the 
-> added value of the comment really is here.
-
-As with many other comments, its purpose is to explain a somewhat 
-obscure aspect of the code -- something which is there by design but 
-isn't immediately obvious to the reader.  That is the added value.
-
-> And for the static analysis finding, we need to find a way to ignore this 
-> finding without simply ignoring all findings or new findings that just 
-> look very similar to the original finding, but which are valid.
-
-Agreed.  In this case, the new comment does a pretty good job of telling 
-people using the tool that the finding is unjustified.
-
-If you are suggesting some sort of special code annotation that the tool 
-would understand, I am open to that.  But I'm not aware of any even 
-vaguely standard way of marking up a particular function call to 
-indicate it will not return an error.
-
-Alan Stern
+> +
+>  examples:
+>    - |
+>      usb {
+>          phys = <&usb2_phy1>, <&usb3_phy1>;
+>          phy-names = "usb";
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        hub@1 {
+> +            compatible = "usb5e3,610";
+> +            reg = <1>;
+> +        };
+>      };
+> -- 
+> 2.18.0
