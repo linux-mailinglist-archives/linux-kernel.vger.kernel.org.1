@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4805F28B750
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:42:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A742028B9BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:04:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389261AbgJLNm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:42:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46214 "EHLO mail.kernel.org"
+        id S2388982AbgJLODB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:03:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40114 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731077AbgJLNlh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:41:37 -0400
+        id S1731239AbgJLNio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:38:44 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 81DDF221FC;
-        Mon, 12 Oct 2020 13:41:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7B5B0221FF;
+        Mon, 12 Oct 2020 13:38:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602510087;
-        bh=S+YFtUA5XDumNX/F9yPoBb0FU8aoU0vSWe/PnjTLB2Y=;
+        s=default; t=1602509910;
+        bh=t7UcJzs0lJA9TKsNXLWavn7gjoQpqohjZOzFMNgpw5A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=axl+PVe0dAuJa1xMc5/mUkzcK85QXTz09UbuxNzErx2nvnEu9YYTFWKtrdxoOYdPy
-         swzrDb9T0palA014EZG5MAsWdBu9QjNXPV0jo/qAFtE6czONY6VhQb4MSTMhxGJJ/E
-         trsXULNK5UzaLHsw7V+kVHGumqjDoKm2xIXLEyTM=
+        b=KMDMz5xkhG2rD02F9TRr91osjONSUayR0qcmi17SYEbqVgfi1buLTZpYurLAbxnck
+         4lpQfWMdOjm1qjNubuaJCyXjZRM+LcqSTmiPC+g3o9P6vd75nmVbD+DwmkA7TzOSLj
+         fzRCs5QOEDq/K/2SO9giAVudhfX4N0KDANOATKxw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Denis Lisov <dennis.lissov@gmail.com>,
-        Qian Cai <cai@lca.pw>, Hugh Dickins <hughd@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Suren Baghdasaryan <surenb@google.com>
-Subject: [PATCH 5.4 34/85] mm/khugepaged: fix filemap page_to_pgoff(page) != offset
+        stable@vger.kernel.org, Aaron Ma <aaron.ma@canonical.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH 4.19 11/49] platform/x86: thinkpad_acpi: re-initialize ACPI buffer size when reuse
 Date:   Mon, 12 Oct 2020 15:26:57 +0200
-Message-Id: <20201012132634.499402561@linuxfoundation.org>
+Message-Id: <20201012132629.954989195@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
-References: <20201012132632.846779148@linuxfoundation.org>
+In-Reply-To: <20201012132629.469542486@linuxfoundation.org>
+References: <20201012132629.469542486@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,106 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hugh Dickins <hughd@google.com>
+From: Aaron Ma <aaron.ma@canonical.com>
 
-commit 033b5d77551167f8c24ca862ce83d3e0745f9245 upstream.
+commit 720ef73d1a239e33c3ad8fac356b9b1348e68aaf upstream.
 
-There have been elusive reports of filemap_fault() hitting its
-VM_BUG_ON_PAGE(page_to_pgoff(page) != offset, page) on kernels built
-with CONFIG_READ_ONLY_THP_FOR_FS=y.
+Evaluating ACPI _BCL could fail, then ACPI buffer size will be set to 0.
+When reuse this ACPI buffer, AE_BUFFER_OVERFLOW will be triggered.
 
-Suren has hit it on a kernel with CONFIG_READ_ONLY_THP_FOR_FS=y and
-CONFIG_NUMA is not set: and he has analyzed it down to how khugepaged
-without NUMA reuses the same huge page after collapse_file() failed
-(whereas NUMA targets its allocation to the respective node each time).
-And most of us were usually testing with CONFIG_NUMA=y kernels.
+Re-initialize buffer size will make ACPI evaluate successfully.
 
-collapse_file(old start)
-  new_page = khugepaged_alloc_page(hpage)
-  __SetPageLocked(new_page)
-  new_page->index = start // hpage->index=old offset
-  new_page->mapping = mapping
-  xas_store(&xas, new_page)
-
-                          filemap_fault
-                            page = find_get_page(mapping, offset)
-                            // if offset falls inside hpage then
-                            // compound_head(page) == hpage
-                            lock_page_maybe_drop_mmap()
-                              __lock_page(page)
-
-  // collapse fails
-  xas_store(&xas, old page)
-  new_page->mapping = NULL
-  unlock_page(new_page)
-
-collapse_file(new start)
-  new_page = khugepaged_alloc_page(hpage)
-  __SetPageLocked(new_page)
-  new_page->index = start // hpage->index=new offset
-  new_page->mapping = mapping // mapping becomes valid again
-
-                            // since compound_head(page) == hpage
-                            // page_to_pgoff(page) got changed
-                            VM_BUG_ON_PAGE(page_to_pgoff(page) != offset)
-
-An initial patch replaced __SetPageLocked() by lock_page(), which did
-fix the race which Suren illustrates above.  But testing showed that it's
-not good enough: if the racing task's __lock_page() gets delayed long
-after its find_get_page(), then it may follow collapse_file(new start)'s
-successful final unlock_page(), and crash on the same VM_BUG_ON_PAGE.
-
-It could be fixed by relaxing filemap_fault()'s VM_BUG_ON_PAGE to a
-check and retry (as is done for mapping), with similar relaxations in
-find_lock_entry() and pagecache_get_page(): but it's not obvious what
-else might get caught out; and khugepaged non-NUMA appears to be unique
-in exposing a page to page cache, then revoking, without going through
-a full cycle of freeing before reuse.
-
-Instead, non-NUMA khugepaged_prealloc_page() release the old page
-if anyone else has a reference to it (1% of cases when I tested).
-
-Although never reported on huge tmpfs, I believe its find_lock_entry()
-has been at similar risk; but huge tmpfs does not rely on khugepaged
-for its normal working nearly so much as READ_ONLY_THP_FOR_FS does.
-
-Reported-by: Denis Lisov <dennis.lissov@gmail.com>
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=206569
-Link: https://lore.kernel.org/linux-mm/?q=20200219144635.3b7417145de19b65f258c943%40linux-foundation.org
-Reported-by: Qian Cai <cai@lca.pw>
-Link: https://lore.kernel.org/linux-xfs/?q=20200616013309.GB815%40lca.pw
-Reported-and-analyzed-by: Suren Baghdasaryan <surenb@google.com>
-Fixes: 87c460a0bded ("mm/khugepaged: collapse_shmem() without freezing new_page")
-Signed-off-by: Hugh Dickins <hughd@google.com>
-Cc: stable@vger.kernel.org # v4.9+
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 46445b6b896fd ("thinkpad-acpi: fix handle locate for video and query of _BCL")
+Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- mm/khugepaged.c |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/platform/x86/thinkpad_acpi.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -832,6 +832,18 @@ static struct page *khugepaged_alloc_hug
+--- a/drivers/platform/x86/thinkpad_acpi.c
++++ b/drivers/platform/x86/thinkpad_acpi.c
+@@ -6879,8 +6879,10 @@ static int __init tpacpi_query_bcl_level
+ 	list_for_each_entry(child, &device->children, node) {
+ 		acpi_status status = acpi_evaluate_object(child->handle, "_BCL",
+ 							  NULL, &buffer);
+-		if (ACPI_FAILURE(status))
++		if (ACPI_FAILURE(status)) {
++			buffer.length = ACPI_ALLOCATE_BUFFER;
+ 			continue;
++		}
  
- static bool khugepaged_prealloc_page(struct page **hpage, bool *wait)
- {
-+	/*
-+	 * If the hpage allocated earlier was briefly exposed in page cache
-+	 * before collapse_file() failed, it is possible that racing lookups
-+	 * have not yet completed, and would then be unpleasantly surprised by
-+	 * finding the hpage reused for the same mapping at a different offset.
-+	 * Just release the previous allocation if there is any danger of that.
-+	 */
-+	if (*hpage && page_count(*hpage) > 1) {
-+		put_page(*hpage);
-+		*hpage = NULL;
-+	}
-+
- 	if (!*hpage)
- 		*hpage = khugepaged_alloc_hugepage(wait);
- 
+ 		obj = (union acpi_object *)buffer.pointer;
+ 		if (!obj || (obj->type != ACPI_TYPE_PACKAGE)) {
 
 
