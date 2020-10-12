@@ -2,131 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7A1828B3E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 13:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA0B28B3E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 13:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388228AbgJLLhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 07:37:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387617AbgJLLhQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 07:37:16 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B956EC0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 04:37:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=zPpLP0+NUwOV83nO78HF3zKSAodWhkOtBFlzeTD80SY=; b=mB7iNleTXBwzo2fgSU/la+h9f+
-        F5jbgvZl+wvtzJA2mlrKOBODwSLumwpM9ZPulYMUePvavTBpIKMiZ9kpb4lY3sS/LhqTO04SsysCZ
-        VAu9uRGF/TyaFzkPfNhNCVJTodAseQbpduzLwdH7xWCFwi7OYE/6K6RXfIx5IjWdwi76D3FD2Km3x
-        MZauwMOazYugadvYverJe0UxUCZzZRLJgbGw4o4zSsATPiHbZThSXfJhIDJ1edFO77dzRMFuQVA8r
-        d6CTtDHq1JQI/dvH53UxImyh5OrSCRSPwDJf37sQ/xV5fL3Ri2p72Ra7a3d4eBNX0NkLRycAX2l5c
-        AQjBQ7/w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kRw8Q-0000eq-To; Mon, 12 Oct 2020 11:36:59 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5F586304BAE;
-        Mon, 12 Oct 2020 13:36:57 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 447E420A2950F; Mon, 12 Oct 2020 13:36:57 +0200 (CEST)
-Date:   Mon, 12 Oct 2020 13:36:57 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Tao Zhou <ouwen210@hotmail.com>
-Cc:     tglx@linutronix.de, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
-        valentin.schneider@arm.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vincent.donnefort@arm.com, tj@kernel.org
-Subject: Re: [PATCH -v2 10/17] sched: Fix migrate_disable() vs
- set_cpus_allowed_ptr()
-Message-ID: <20201012113657.GV2628@hirez.programming.kicks-ass.net>
-References: <20201005145717.346020688@infradead.org>
- <20201005150921.960169379@infradead.org>
- <CH2PR14MB41833F828B4D3BA5A7B6CE7B9A0B0@CH2PR14MB4183.namprd14.prod.outlook.com>
+        id S2388235AbgJLLhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 07:37:50 -0400
+Received: from foss.arm.com ([217.140.110.172]:39736 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387617AbgJLLhs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 07:37:48 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3C1F0D6E;
+        Mon, 12 Oct 2020 04:37:47 -0700 (PDT)
+Received: from [10.57.48.76] (unknown [10.57.48.76])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B4ACA3F719;
+        Mon, 12 Oct 2020 04:37:41 -0700 (PDT)
+Subject: Re: [PATCH v7 2/2] PCI: dwc: Fix MSI page leakage in suspend/resume
+To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>
+Cc:     linux-pci@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20201009155311.22d3caa5@xhacker.debian>
+ <20201009155505.5a580ef5@xhacker.debian>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <38a00dde-598f-b6de-ecf3-5d012bd7594a@arm.com>
+Date:   Mon, 12 Oct 2020 12:37:34 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CH2PR14MB41833F828B4D3BA5A7B6CE7B9A0B0@CH2PR14MB4183.namprd14.prod.outlook.com>
+In-Reply-To: <20201009155505.5a580ef5@xhacker.debian>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 01:22:00AM +0800, Tao Zhou wrote:
-> On Mon, Oct 05, 2020 at 04:57:27PM +0200, Peter Zijlstra wrote:
-> > +/*
-> > + * This function is wildly self concurrent, consider at least 3 times.
-> > + */
+On 2020-10-09 08:55, Jisheng Zhang wrote:
+> Currently, dw_pcie_msi_init() allocates and maps page for msi, then
+> program the PCIE_MSI_ADDR_LO and PCIE_MSI_ADDR_HI. The Root Complex
+> may lose power during suspend-to-RAM, so when we resume, we want to
+> redo the latter but not the former. If designware based driver (for
+> example, pcie-tegra194.c) calls dw_pcie_msi_init() in resume path, the
+> msi page will be leaked.
 > 
-> More than that
-
-Probably. I meant to write a coherent comment, but it got very long and
-not so very coherent.
-
-It should probably enumerate all the various cases with diagrams like
-those in this email:
-
-  https://lkml.kernel.org/r/jhj3637lzdm.mognet@arm.com
-
-So we have:
-
- - set_affinity() vs migrate_disable()
- - set_affinity() + N*set_affinity() vs migrate_disable()
-   (ie. N additional waiters)
- - set_affinity() vs migrate_disable() vs set_affinity()
-   (ie. the case from the above email)
-
-And possibly some others.
-
-If you have cycles to spend on writing that comment, that'd be great,
-otherwise it'll stay on the todo list for a little while longer.
-
-> > +static int affine_move_task(struct rq *rq, struct rq_flags *rf,
-> > +			    struct task_struct *p, int dest_cpu, unsigned int flags)
-> > +{
-> > +	struct set_affinity_pending my_pending = { }, *pending = NULL;
-> > +	struct migration_arg arg = {
-> > +		.task = p,
-> > +		.dest_cpu = dest_cpu,
-> > +	};
-> > +	bool complete = false;
-> > +
-> > +	/* Can the task run on the task's current CPU? If so, we're done */
-> > +	if (cpumask_test_cpu(task_cpu(p), &p->cpus_mask)) {
-> > +		pending = p->migration_pending;
-> > +		if (pending) {
-> > +			p->migration_pending = NULL;
-> > +			complete = true;
-> > +		}
-> > +		task_rq_unlock(rq, p, rf);
-> > +
-> > +		if (complete)
-> > +			goto do_complete;
-> > +
-> > +		return 0;
-> > +	}
-> > +
-> > +	if (!(flags & SCA_MIGRATE_ENABLE)) {
-> > +		/* serialized by p->pi_lock */
-> > +		if (!p->migration_pending) {
-> > +			refcount_set(&my_pending.refs, 1);
-> > +			init_completion(&my_pending.done);
-> > +			p->migration_pending = &my_pending;
-> > +		} else {
-> > +			pending = p->migration_pending;
+> As pointed out by Rob and Ard, there's no need to allocate a page for
+> the MSI address, we could use an address in the driver data.
 > 
-> The above load can be omited, no ?
+> To avoid map the MSI msg again during resume, we move the map MSI msg
+> from dw_pcie_msi_init() to dw_pcie_host_init().
+
+You should move the unmap there as well. As soon as you know what the 
+relevant address would be if you *were* to do DMA to this location, then 
+the exercise is complete. Leaving it mapped for the lifetime of the 
+device in order to do not-DMA to it seems questionable (and represents 
+technically incorrect API usage without at least a sync_for_cpu call 
+before any other access to the data).
+
+Another point of note is that using streaming DMA mappings at all is a 
+bit fragile (regardless of this change). If the host controller itself 
+has a limited DMA mask relative to physical memory (which integrators 
+still seem to keep doing...) then you could end up punching your MSI 
+hole right in the middle of the SWIOTLB bounce buffer, where it's then 
+almost *guaranteed* to interfere with real DMA :(
+
+If no DWC users have that problem and the current code is working well 
+enough, then I see little reason not to make this partucular change to 
+tidy up the implementation, just bear in mind that there's always the 
+possibility of having to come back and change it yet again in future to 
+make it more robust. I had it in mind that this trick was done with a 
+coherent DMA allocation, which would be safe from addressing problems 
+but would need to be kept around for the lifetime of the device, but 
+maybe that was a different driver :/
+
+Robin.
+
+> Suggested-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> ---
+>   drivers/pci/controller/dwc/pci-dra7xx.c       | 18 +++++++++-
+>   .../pci/controller/dwc/pcie-designware-host.c | 33 ++++++++++---------
+>   drivers/pci/controller/dwc/pcie-designware.h  |  2 +-
+>   3 files changed, 36 insertions(+), 17 deletions(-)
 > 
-> > +			refcount_inc(&pending->refs);
-
-That would put ^ in trouble...
-
-> > +		}
-> > +	}
-> > +	pending = p->migration_pending;
+> diff --git a/drivers/pci/controller/dwc/pci-dra7xx.c b/drivers/pci/controller/dwc/pci-dra7xx.c
+> index 8f0b6d644e4b..6d012d2b1e90 100644
+> --- a/drivers/pci/controller/dwc/pci-dra7xx.c
+> +++ b/drivers/pci/controller/dwc/pci-dra7xx.c
+> @@ -466,7 +466,9 @@ static struct irq_chip dra7xx_pci_msi_bottom_irq_chip = {
+>   static int dra7xx_pcie_msi_host_init(struct pcie_port *pp)
+>   {
+>   	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> +	struct device *dev = pci->dev;
+>   	u32 ctrl, num_ctrls;
+> +	int ret;
+>   
+>   	pp->msi_irq_chip = &dra7xx_pci_msi_bottom_irq_chip;
+>   
+> @@ -482,7 +484,21 @@ static int dra7xx_pcie_msi_host_init(struct pcie_port *pp)
+>   				    ~0);
+>   	}
+>   
+> -	return dw_pcie_allocate_domains(pp);
+> +	ret = dw_pcie_allocate_domains(pp);
+> +	if (ret)
+> +		return ret;
+> +
+> +	pp->msi_data = dma_map_single_attrs(dev, &pp->msi_msg,
+> +					   sizeof(pp->msi_msg),
+> +					   DMA_FROM_DEVICE,
+> +					   DMA_ATTR_SKIP_CPU_SYNC);
+> +	ret = dma_mapping_error(dev, pp->msi_data);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to map MSI data\n");
+> +		pp->msi_data = 0;
+> +		dw_pcie_free_msi(pp);
+> +	}
+> +	return ret;
+>   }
+>   
+>   static const struct dw_pcie_host_ops dra7xx_pcie_host_ops = {
+> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+> index d3e9ea11ce9e..d02c7e74738d 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+> @@ -266,30 +266,23 @@ void dw_pcie_free_msi(struct pcie_port *pp)
+>   	irq_domain_remove(pp->msi_domain);
+>   	irq_domain_remove(pp->irq_domain);
+>   
+> -	if (pp->msi_page)
+> -		__free_page(pp->msi_page);
+> +	if (pp->msi_data) {
+> +		struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> +		struct device *dev = pci->dev;
+> +
+> +		dma_unmap_single_attrs(dev, pp->msi_data, sizeof(pp->msi_msg),
+> +				       DMA_FROM_DEVICE, DMA_ATTR_SKIP_CPU_SYNC);
+> +	}
+>   }
+>   
+>   void dw_pcie_msi_init(struct pcie_port *pp)
+>   {
+>   	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> -	struct device *dev = pci->dev;
+> -	u64 msi_target;
+> +	u64 msi_target = (u64)pp->msi_data;
+>   
+>   	if (!IS_ENABLED(CONFIG_PCI_MSI))
+>   		return;
+>   
+> -	pp->msi_page = alloc_page(GFP_KERNEL);
+> -	pp->msi_data = dma_map_page(dev, pp->msi_page, 0, PAGE_SIZE,
+> -				    DMA_FROM_DEVICE);
+> -	if (dma_mapping_error(dev, pp->msi_data)) {
+> -		dev_err(dev, "Failed to map MSI data\n");
+> -		__free_page(pp->msi_page);
+> -		pp->msi_page = NULL;
+> -		return;
+> -	}
+> -	msi_target = (u64)pp->msi_data;
+> -
+>   	/* Program the msi_data */
+>   	dw_pcie_writel_dbi(pci, PCIE_MSI_ADDR_LO, lower_32_bits(msi_target));
+>   	dw_pcie_writel_dbi(pci, PCIE_MSI_ADDR_HI, upper_32_bits(msi_target));
+> @@ -394,6 +387,16 @@ int dw_pcie_host_init(struct pcie_port *pp)
+>   				irq_set_chained_handler_and_data(pp->msi_irq,
+>   							    dw_chained_msi_isr,
+>   							    pp);
+> +
+> +			pp->msi_data = dma_map_single_attrs(pci->dev, &pp->msi_msg,
+> +						      sizeof(pp->msi_msg),
+> +						      DMA_FROM_DEVICE,
+> +						      DMA_ATTR_SKIP_CPU_SYNC);
+> +			if (dma_mapping_error(pci->dev, pp->msi_data)) {
+> +				dev_err(pci->dev, "Failed to map MSI data\n");
+> +				pp->msi_data = 0;
+> +				goto err_free_msi;
+> +			}
+>   		} else {
+>   			ret = pp->ops->msi_host_init(pp);
+>   			if (ret < 0)
+> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
+> index 97c7063b9e89..9d2f511f13fa 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware.h
+> +++ b/drivers/pci/controller/dwc/pcie-designware.h
+> @@ -190,8 +190,8 @@ struct pcie_port {
+>   	int			msi_irq;
+>   	struct irq_domain	*irq_domain;
+>   	struct irq_domain	*msi_domain;
+> +	u16			msi_msg;
+>   	dma_addr_t		msi_data;
+> -	struct page		*msi_page;
+>   	struct irq_chip		*msi_irq_chip;
+>   	u32			num_vectors;
+>   	u32			irq_mask[MAX_MSI_CTRLS];
+> 
