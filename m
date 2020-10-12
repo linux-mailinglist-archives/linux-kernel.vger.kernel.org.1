@@ -2,120 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4991428AFF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 10:20:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B1028AFFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 10:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726753AbgJLIUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 04:20:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51904 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726098AbgJLIU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 04:20:29 -0400
-Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com [209.85.161.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AE3872173E;
-        Mon, 12 Oct 2020 08:20:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602490828;
-        bh=EyzO8tMJTCC+XyN3KqgvVYGrtb1TyCbmbp+zSz7Ppb8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=MK0Oh3MqDgB9koAAuMRnltl0pM4teX6nvEbpJ8eTuCY4Ggb6RJkrfQuKryQEnkujO
-         cRs9QYAesP58e8cpB3x/UynzJ84dbIIpfCCvp8guHgBATm5jFZRQ4TIaa11tnHce83
-         LO5hd35DYO0JYp4pgONIK9qaZz8LdV3m0ec96GxY=
-Received: by mail-oo1-f49.google.com with SMTP id w25so3875330oos.10;
-        Mon, 12 Oct 2020 01:20:28 -0700 (PDT)
-X-Gm-Message-State: AOAM531feG3SP0ZMvNpwJpBG+8ZKzOx2k9CeB3eBm+qY/9hMbIFtEtWc
-        2cRg6O5g7KmyEHZUJli/AmfwYA/bGdoBURldPyY=
-X-Google-Smtp-Source: ABdhPJz18oAbSZB6d6XIsdsJGA0aS3dlg/rVP/cn+P035DH9wUktgzqk1T3Vckd4dT99S0gHURmYGdxdLHe5gZ9haKc=
-X-Received: by 2002:a4a:c3ca:: with SMTP id e10mr17802185ooq.41.1602490827863;
- Mon, 12 Oct 2020 01:20:27 -0700 (PDT)
+        id S1726825AbgJLIVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 04:21:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726098AbgJLIVc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 04:21:32 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF06EC0613CE;
+        Mon, 12 Oct 2020 01:21:32 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 10:21:29 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602490891;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Oc6GxNvZyhzVd+sRQ9Lj/+rIXB/pm2oFr0J0wwuGklo=;
+        b=AaPfabCd3W3r8sV3ghr//kbp8XY3foRNl/BjtxKdUcSW/7jKk5x3dwXzPzn/N2QevJ5FAr
+        j4KmUq9KnbAmzve34Uolyp8WyejFF2t1oHtMbQt+WuFbxGD7LURYct+3p4hKquDgS4XLrr
+        +FfJrP5PtLXIiCdq9scAwVG6j++nOs1Cro8YaRK1HeMgsU1DG+A3XQE3lXJwsRGSYXq+qT
+        p0oqrUeQuRCkPbEQaVvhuoAnJ/iisoHh8kXuuJY43PlJQtGchTbmfSDW9/aJHdEPYVKRlD
+        mKTDX75kZFboQrnAowFAMXtohQ2fENix9sCKNC7OL1EiZ7+0I7CIaABh+UtbyA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602490891;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Oc6GxNvZyhzVd+sRQ9Lj/+rIXB/pm2oFr0J0wwuGklo=;
+        b=U1x2dRRGH0h9hNdzp5x/VIgX+WDIWaZ6rACrBk1Ekkn0UzNwaCjOA/SOXkEvP/aO2rrhd3
+        OSm00B2OiAt/+PAA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Eelco Chaudron <echaudro@redhat.com>
+Cc:     Juri Lelli <juri.lelli@redhat.com>, tglx@linutronix.de,
+        linux-rt-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bristot@redhat.com, williams@redhat.com, atheurer@redhat.com
+Subject: Re: [PATCH 5.9 RT] net: openvswitch: Fix using smp_processor_id() in
+ preemptible code
+Message-ID: <20201012082129.ocod2dlftwais65a@linutronix.de>
+References: <20201009124759.592550-1-juri.lelli@redhat.com>
+ <20201009154116.a4fcrrm7flxonidd@linutronix.de>
+ <65BBD0B4-2A74-421A-BF81-357CD5F84747@redhat.com>
 MIME-Version: 1.0
-References: <20200904072905.25332-1-clin@suse.com> <20200904072905.25332-2-clin@suse.com>
- <CAMj1kXEXvmO5mrTcKpqYUASBAQB-1=xLa0vg7KwmvOHMjaQ34w@mail.gmail.com>
- <20200914080522.GA26718@linux-8mug> <20201005022014.GA5112@linux-8mug>
-In-Reply-To: <20201005022014.GA5112@linux-8mug>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 12 Oct 2020 10:20:15 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXErMjbvwuP6YhgaZ4M47vzhYkFJb2kYC+h7Odr4Zu3eSA@mail.gmail.com>
-Message-ID: <CAMj1kXErMjbvwuP6YhgaZ4M47vzhYkFJb2kYC+h7Odr4Zu3eSA@mail.gmail.com>
-Subject: Re: [PATCH 1/6] efistub: pass uefi secureboot flag via fdt params
-To:     Chester Lin <clin@suse.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>, dmitry.kasatkin@gmail.com,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "Lee, Chun-Yi" <jlee@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <65BBD0B4-2A74-421A-BF81-357CD5F84747@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 5 Oct 2020 at 04:20, Chester Lin <clin@suse.com> wrote:
->
-> On Mon, Sep 14, 2020 at 04:05:22PM +0800, Chester Lin wrote:
-> > Hi Ard,
-> >
-> > On Fri, Sep 11, 2020 at 06:01:09PM +0300, Ard Biesheuvel wrote:
-> > > On Fri, 4 Sep 2020 at 10:29, Chester Lin <clin@suse.com> wrote:
-> > > >
-> > > > Add a new UEFI parameter: "linux,uefi-secure-boot" in fdt boot params
-> > > > as other architectures have done in their own boot data. For example,
-> > > > the boot_params->secure_boot in x86.
-> > > >
-> > > > Signed-off-by: Chester Lin <clin@suse.com>
-> > >
-> > > Why do we need this flag? Can't the OS simply check the variable directly?
-> > >
-> >
-> > In fact, there's a difficulty to achieve this.
-> >
-> > When linux kernel is booting on ARM, the runtime services are enabled later on.
-> > It's done by arm_enable_runtime_services(), which is registered as an early_initcall.
-> > Before it calls efi_native_runtime_setup(), all EFI runtime callbacks are still
-> > NULL so calling efi.get_variable() will cause NULL pointer dereference.
-> >
-> > There's a case that arch_ima_get_secureboot() can be called in early boot stage.
-> > For example, when you try to set "ima_appraise=off" in kernel command line, it's
-> > actually handled early:
-> >
-> > [    0.000000] Kernel command line: BOOT_IMAGE=/boot/Image-5.9.0-rc3-9.gdd61cda-
-> > vanilla root=UUID=a88bfb80-8abb-425c-a0f3-ad317465c28b splash=silent mitigations
-> > =auto ignore_loglevel earlycon=pl011,mmio,0x9000000 console=ttyAMA0 ima_appraise=off
-> > [    0.000000] ima: Secure boot enabled: ignoring ima_appraise=off boot parameter option
-> > [    0.000000] Dentry cache hash table entries: 1048576 (order: 11, 8388608 bytes, linear)
-> >
-> > However EFI services are remapped and enabled afterwards.
-> >
-> > [    0.082286] rcu: Hierarchical SRCU implementation.
-> > [    0.089592] Remapping and enabling EFI services.
-> > [    0.097509] smp: Bringing up secondary CPUs ...
-> >
-> > Another problem is that efi_rts_wq is created in subsys_initcall so we have to
-> > wait for both EFI services mapping and the workqueue get initiated before calling
-> > efi.get_variable() on ARM.
-> >
-> > The only way I can think of is to put a flag via fdt params. May I have your
-> > suggestions? I will appreciate if there's any better approach.
-> >
-> > Thanks,
-> > Chester
->
-> Ping. May I have some suggestions here?
->
+On 2020-10-12 10:14:42 [+0200], Eelco Chaudron wrote:
+>=20
+>=20
+> On 9 Oct 2020, at 17:41, Sebastian Andrzej Siewior wrote:
+>=20
+> > On 2020-10-09 14:47:59 [+0200], Juri Lelli wrote:
+> > > This happens because openvswitch/flow_table::flow_lookup() accesses
+> > > per-cpu data while being preemptible (and migratable).
+> > >=20
+> > > Fix it by adding get/put_cpu_light(), so that, even if preempted, the
+> > > task executing this code is not migrated (operation is also guarded
+> > > by
+> > > ovs_mutex mutex).
+> >=20
+> > This warning is not limited to PREEMPT_RT it also present upstream since
+> > commit
+> >    eac87c413bf97 ("net: openvswitch: reorder masks array based on
+> > usage")
+> >=20
+> > You should be able to reproduce it there, too.
+> > The path ovs_flow_tbl_lookup() -> flow_lookup() is guarded by ovs_lock()
+> > I can't say that this true for
+> >    ovs_vport_receive() -> ovs_dp_process_packet() ->
+> >    ovs_flow_tbl_lookup_stats() -> flow_lookup()
+> >=20
+> > (means I don't know but it looks like coming from NAPI).
+> >=20
+> > Which means u64_stats_update_begin() could have two writers. This must
+> > not happen.
+> > There are two reader which do u64_stats_fetch_begin_irq(). Disabling
+> > interrupts makes no sense since they perform cross-CPU access.
+> >=20
+> > -> You need to ensure that there is only one writer at a time.
+> >=20
+> > If mask_array gains a spinlock_t for writer protection then you can
+> > acquire the lock prio grabbing ->masks_usage_cntr. But as of now there
+> > is one `ma->syncp'.
+>=20
+> I=E2=80=99m not too familiar with the RT kernel, but in the none RT kerne=
+l, this
+> function is called in run to completion parts only, hence does not need a
+> lock. Actually, this was designed in such a way that it does not need a l=
+ock
+> at all.
 
-IMA itself is initialized as a late initcall. The only reason you see
-this message early is because this is where the parsing of the command
-line parameter happens.
+_no_ As explained above, this is not RT specific.
+What guaranties that you don't have two flow_lookup() invocations on the
+same CPU? You are using u64_stats_update_begin() which must not be
+preempted. This means even if preemption is disabled you must not have
+another invocation in BH context. This is due to the
+write_seqcount_begin() in u64_stats_update_begin().
+If preemption / CPU migration is not a problem in the above part, you
+can use annotation to disable the warning that led to the warning. But
+the u64_stats invocation looks still problematic.
 
-I'll send out a patch with a proposed solution for this issue.
+> So maybe this needs a get_cpu() instead of the light variant in the RT ca=
+se?
+
+> //Eelco
+
+Sebastian
