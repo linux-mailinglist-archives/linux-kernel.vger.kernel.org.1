@@ -2,108 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 514F128BF71
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 20:12:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB7E428BF73
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 20:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404157AbgJLSL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 14:11:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730322AbgJLSLz (ORCPT
+        id S2404162AbgJLSNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 14:13:04 -0400
+Received: from sonic317-38.consmr.mail.ne1.yahoo.com ([66.163.184.49]:38222
+        "EHLO sonic317-38.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2403994AbgJLSND (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 14:11:55 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7675AC0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 11:11:55 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id a9so19277180lfc.7
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 11:11:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=APvCR81d2hsCRE8d93iR5IJ6VoWmDP6Sd07Qtx7ztAY=;
-        b=ajA6jGFD1565DLMI9D7lePL4+erBlXYH85Kb8ZIKS24mHntwKMM2MNwB+Bk43dV0J/
-         Z4uwxRRP2mU2qpcp8tGxyq+ja7Xgq8yQVEigbbjwTeNASrTyUiYD95F6DbH7duMnpbU6
-         QGa6k+bTMqNOi/QQDOgDAnwsRMEfkBE/942GM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=APvCR81d2hsCRE8d93iR5IJ6VoWmDP6Sd07Qtx7ztAY=;
-        b=VSc/haBMXeFSiqT+9xHeeJ84XJXbalRIVmQgFZdiYLeR4dinnrTugXk7RMUNOfvu3F
-         LKCZRZsVWPGh19yAH6ufKxV2P/t2o9oFoSBzB8p1/YfHwreVTfUB/hTxQx75jKGrFYnh
-         ljzSi9XhRShibF2HvSguHjvwimh1pJn0aR3FGnpUtc33nEelO9IDjEKg0kTsKW6bOeWg
-         h3wf/vVTwIV7589yt+MIYEgdswl4jYXIKLfyreQbrVrRI6DiLI2j/AUKA45jPLrMB+YL
-         NHxRppToVjFb46ttG6jvsakqBs/sTOFhijvU+m9N+acD6EogesnwyvBH9VGXJWcAKlBY
-         p61w==
-X-Gm-Message-State: AOAM533tJWgPmT5vsVKdDCSrNRnYtSdIEB7ykJxyDvRhzGG3+XUoK0lq
-        /6GKTDZzZuC/dSzt5XvMw56oEMbAM9pQbg==
-X-Google-Smtp-Source: ABdhPJxieFN+G/UCDa7fFOdvQcfv6sSph91eGi5+zDmpxVIuoY9i8qoZN0ZwdwPlAAnZ4kZEmK629g==
-X-Received: by 2002:a05:6512:3b1:: with SMTP id v17mr7982622lfp.262.1602526313261;
-        Mon, 12 Oct 2020 11:11:53 -0700 (PDT)
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
-        by smtp.gmail.com with ESMTPSA id m132sm2104913lfa.34.2020.10.12.11.11.51
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Oct 2020 11:11:51 -0700 (PDT)
-Received: by mail-lf1-f43.google.com with SMTP id a7so18187736lfk.9
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 11:11:51 -0700 (PDT)
-X-Received: by 2002:ac2:5f48:: with SMTP id 8mr2531215lfz.344.1602526311213;
- Mon, 12 Oct 2020 11:11:51 -0700 (PDT)
+        Mon, 12 Oct 2020 14:13:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1602526383; bh=8eCM6LJOT79n5bc3w/IODElEbZRQS2hX2XQQTIO4KUg=; h=To:Cc:From:Subject:Date:References:From:Subject; b=mSQtq3KD6hSl1oKnofc8Dh5HKSuTVX9IkLYp1dDVjyLviaNM04hIWksZqlkDrRhVBc1HCVdwXx6qq2D8sEAMYZz5Fq130fwovrU+jXy99X6eBKITgIg8XN/fbQ2rxQkSPo/PUqHBe5KBDfGPwqcxcVVewyeOMBBxDaFp0RaSfcpWjnXhkMRJzHSpnPDjDNaonMmHhIUiBLT9jCHvZyeevDlMWYRoOjCezuVR6t3Vnj1gZku1ZW1NoimEbhfvtZflMbRwD4Nlw5LTrj1CUDaBe2rGu2a9fy3tBKreX1lTwFnZp8LH4136yLB2KS6aQaH2y7xd3u0kEiQQymempuihNQ==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1602526383; bh=S4CNXjO0spr+ubMrBBm4yOz2sU+DLHlfPng3wUcO6IV=; h=To:From:Subject:Date; b=TivhR5OjQ73+59gDAffRWdltkhjs7K8Xfjx3w/6UCqKvXOIv/ZJLae8EzXkUhuREC5i4STuAp3ULZiDz4hqrduwzPKVrYKlgRxzPog5W8wpm3CoyLYYvg5Eoth64FlkvoFx+q5XiM4OT3i1wKDeZjkMNnxJgBJOirjTTlzi7RDjWdqxNjdlPbVAQC16BmUejJyztQRX9vXRqh2/183tl3sLSCTFsDvzHz5Xaiw6YHO+YsadShF/X17uMT634Lp0XjNiWTJ01tvbFXd5O8DH8P4gF44lfowJT9M1CuAlSIFAdK4bgMOSrpqM7w8ir4RFWmimxGBjNhyqvi6fYzOoz9A==
+X-YMail-OSG: QVF40qQVM1l1Fohy4ZIJkIuNCxxWVedEjcQXGWOF741phpL1LuBHvjgVV8ktIw8
+ DHeFCImvzaYEYZrnizJpAQeljwsfya1ewy5Ht8gwk7HDLYPu8eKKGHzXdKptJae435qgSFe.ncOI
+ Lq6FL53puMEP3.sUG4UEyCnubZzFbUWSXA_wELTLzlEBi4jVENhmPgTum.KW0VK3v_zglAt_qYev
+ rSowmLwBrsFodxLLNQcdFFYKVIKrp7lb3UWhsZpK_3e79I54v0RFxwTxnpdL.7v4lTll6MPjHa0Q
+ 9ixGnbmqxNTWegG2GIvI.K_4ga7tp87V3pU6Aigp7ND6Ch0vrISFowhghLyJaRAOzxxYV4f7beZT
+ D7Y378qku_WQ3I4Dc70Yrl0VGJy.SyA21bZaKJIWW4pIuzeKrEB1hStQ.VxpVLjwCKYlwYVYOqJN
+ 3jt357OJGzXgNML.xVfLS1hBT9kD3aVIkd_nGE347u_RGawGLz5jlLFctAy7v6k7FKpP.cWxIpzr
+ 8OnOl13PTyB.6SjMNT3ZybTh5bFQ8kEu01sD_F5FywRygtyrnWqdajh37pMrqZAQCqg3Mp502vzN
+ TXCIBByHd2cIQYxVcCIWhAAcNcvtMHnrWqBv3NzfbIji2J0L65S2ngKWvRcgubdvGgSgeikVIlnC
+ s7202tAnDsbUDg.vUb7iTMLAno0l9mg3HorEjYci5TRMq3Pm_QQTjhYuLitW3brZR3Rjshdgia0i
+ YQsWro3UxOE6gNPA49NMNdhgNpMw7_VPPl3IkM0zXWIxnYT7wbvA9WoanvSCVlfQb6bN5YyamoFa
+ ESW57HjjoGeWUjHYWNSJ4BBVsjNQIYOEzJsberS8ZxEylYNVXY.LY2YFzJJ15zJUoG9kT5v3z8K6
+ 3grIOjCB1tX.K1MPD0a_Tvpt_g_kWoRCS9PAmGDn0_YwSJxpmd4GiU3PwLBnMzkCD9nDlLeuMMrl
+ QetiRhTISnBSUq_KTdWo5LOMjO3Bbs58GdF20_Kttyy87_AAofODlvC3XCbrFyCTbfx1IGry6khY
+ cptHN0O7S_3qLADGeC64GIYc_VnkSePpHD2U75ZSjI6JU7kO3qVJeD_2LRFpW_abxy6hOkhbBRyB
+ EFPdC_jejq6NhGqsFoktQzQuziqrFT6YuYRVkon8hOmd6ls2r64V1yfxwP9bkPn1iNhRZR33.wRs
+ EM886PhQ8oM4V3V7BUWrMOZquJA2xSb8enj9ukvRSYeWj5yqNikYHSspR05QDCgMiaIxG0rZxWhm
+ 1MIkkrWK47b7pooNNIjJqcCFvi_sVakaWZ0hSBeXjQnzZ.lwCC3784z2w8B64UZcMJBiUdWI.Dir
+ uD7IeOgboKlP2yYBjRESLKJMMdrIPAHgv2sgItZwJG3g4pT3hoPUjwYrFsThAj.AoO8uD.aRF60E
+ UA2dcUBFrEyv2709rHSdmVFA_io0XxPMa2ANJiKqT68hB4oHfR9YWXBMRBLm9LS.Rdr14egngqNu
+ o_5G5sPgU87mEQ0QeZ9gKZZOwfRTDz381maQDXnrXIIj8TUw7Bjb95qzagmOYbiGmAkHFeRoQVHh
+ sf_BQp8rYAPuGcmMOxtgCirtgyCVjBXdz4McO
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic317.consmr.mail.ne1.yahoo.com with HTTP; Mon, 12 Oct 2020 18:13:03 +0000
+Received: by smtp415.mail.bf1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID b3e8df5906594d7e7f20b6689795e967;
+          Mon, 12 Oct 2020 18:13:02 +0000 (UTC)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+Subject: [GIT PULL] Smack patches for v5.10
+Message-ID: <efb97951-c946-8511-a6c3-b8aa340ebf8f@schaufler-ca.com>
+Date:   Mon, 12 Oct 2020 11:13:01 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-References: <20201012110557.GK25311@zn.tnic>
-In-Reply-To: <20201012110557.GK25311@zn.tnic>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 12 Oct 2020 11:11:35 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiVoLoZS1v9SCQzH4mkpz6akE3pPrHPxM2hamOXPcaW9w@mail.gmail.com>
-Message-ID: <CAHk-=wiVoLoZS1v9SCQzH4mkpz6akE3pPrHPxM2hamOXPcaW9w@mail.gmail.com>
-Subject: Re: [GIT PULL] x86/asm updates for v5.10
-To:     Borislav Petkov <bp@suse.de>, Uros Bizjak <ubizjak@gmail.com>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+References: <efb97951-c946-8511-a6c3-b8aa340ebf8f.ref@schaufler-ca.com>
+X-Mailer: WebService/1.1.16795 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.7)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 4:06 AM Borislav Petkov <bp@suse.de> wrote:
->
-> * Use XORL instead of XORQ to avoid a REX prefix and save some bytes in
-> the .fixup section, by Uros Bizjak.
+Hello Linus
 
-I think this one is actually buggy.
+Here are two minor fixes and one performance enhancement to Smack
+for the v5.10 release. The netlabel cache changes have been in linux-next=
 
-For the 1-byte case, it does this:
+for several weeks. The performance improvement is significant and the
+new code is more like its counterpart in SELinux.
 
-     __get_user_asm(x_u8__, ptr, retval, "b", "=q");
 
-and ends up doing "xorl" on a register that we told the compiler is a
-byte register (with that "=q")
+--
+The following changes since commit d012a7190fc1fd72ed48911e77ca97ba4521bc=
+cd:
 
-Yes, it uses "%k[output]" to turn that byte register into the word
-version of the register, but there's no fundamental reason why the
-register might not be something like "%ah".
+  Linux 5.9-rc2 (2020-08-23 14:08:43 -0700)
 
-Does the "xorl" work? Does it build? Yes, and yes.
+are available in the Git repository at:
 
-But maybe %al contains SOMETHING ELSE, and it now clears that too,
-because the asm is basically doing something completely different than
-what we told the compiler it would do.
+  https://github.com/cschaufler/smack-next tags/Smack-for-5.10
 
-Now, afaik, gcc (and presumably clang) basically almost never use the
-high byte registers. But I still think this patch is fundamentally
-wrong and conceptually completely buggy, even if it might work in
-practice.
+for you to fetch changes up to edd615371b668404d06699c04f5f90c4f438814a:
 
-Also, I'm going to uninline this nasty __get_user() function anyway
-for 5.10, so the patch ends up being not just wrong, but pointless.
-This is not some kind of hot code that should be optimized, and the
-extra byte is not a lot to worry about.
+  Smack: Remove unnecessary variable initialization (2020-10-05 14:20:51 =
+-0700)
 
-Annoying. Because the other patch in this pull request is fine, and
-people want it.
+----------------------------------------------------------------
+Smack LSM changes for Linux 5.10
 
-But I'm going to skip this pull request, because I really think it's
-dangerously and subtly buggy even if there might not be any case that
-matters in reality.
+Two kernel test robot suggested clean-ups.
+Teach Smack to use the IPv4 netlabel cache.
+This results in a 12-14% improvement on TCP benchmarks.
 
-                   Linus
+----------------------------------------------------------------
+Casey Schaufler (5):
+      Smack: Consolidate uses of secmark into a function
+      Smack: Set socket labels only once
+      Smack: Use the netlabel cache
+      Smack: Fix build when NETWORK_SECMARK is not set
+      Smack: Remove unnecessary variable initialization
+
+ security/smack/smack.h        |  19 +---
+ security/smack/smack_access.c |  55 ++++++---
+ security/smack/smack_lsm.c    | 252 +++++++++++++++++++++++++-----------=
+------
+ security/smack/smackfs.c      |  23 ++--
+ 4 files changed, 200 insertions(+), 149 deletions(-)
+
+
