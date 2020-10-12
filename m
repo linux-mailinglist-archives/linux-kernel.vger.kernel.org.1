@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A8CC28B763
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4189328BA19
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389291AbgJLNnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:43:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46754 "EHLO mail.kernel.org"
+        id S2390805AbgJLOFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:05:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37512 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731503AbgJLNms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:42:48 -0400
+        id S1730198AbgJLNe7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:34:59 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BD9C62222C;
-        Mon, 12 Oct 2020 13:42:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 098822074F;
+        Mon, 12 Oct 2020 13:34:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602510150;
-        bh=u1OySPcaotgKE1T1leil2PbA46WBXofxQknpYJSVmmY=;
+        s=default; t=1602509698;
+        bh=UGayOPVXU2WO+bnlcd+OVub1MOJYYtQTVKEkBtaRuHM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SMBGd122cKTw+0bDiCHAzlx317HnVLZh2bJD3TNAEkjaAso0X7IvpdySWU6OZacWw
-         Fknjp6bpHvZ3BhlLJwxuDOS/o66fI2Pc+JJ+2rnodbh9UkzqHztfK9+fPIWeAW5Rxk
-         BqPWlhFDYv9gBth9oMk9AAq/iz93EGUeCvjnm6gg=
+        b=BUlKeSa2NRrfH6ya9fs/Ec604V2ub/d34BN9GhYBopltpzOIeRQVI8uhxiz651WU2
+         H2vWlEQiwb4gQQaQDUQ+3q5SrJxAtGy4teQ2bz9D2LtvTSujD+ulufgRR+2QKNqLvY
+         QjBGbcNQ3IcI4Zeuxb/3k2/IKEMXWWM8suFPeDxc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 44/85] team: set dev->needed_headroom in team_setup_by_port()
+        stable@vger.kernel.org,
+        syzbot+577fbac3145a6eb2e7a5@syzkaller.appspotmail.com,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 45/54] xfrm: Use correct address family in xfrm_state_find
 Date:   Mon, 12 Oct 2020 15:27:07 +0200
-Message-Id: <20201012132634.975885361@linuxfoundation.org>
+Message-Id: <20201012132631.653483848@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
-References: <20201012132632.846779148@linuxfoundation.org>
+In-Reply-To: <20201012132629.585664421@linuxfoundation.org>
+References: <20201012132629.585664421@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,32 +45,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Herbert Xu <herbert@gondor.apana.org.au>
 
-commit 89d01748b2354e210b5d4ea47bc25a42a1b42c82 upstream.
+[ Upstream commit e94ee171349db84c7cfdc5fefbebe414054d0924 ]
 
-Some devices set needed_headroom. If we ignore it, we might
-end up crashing in various skb_push() for example in ipgre_header()
-since some layers assume enough headroom has been reserved.
+The struct flowi must never be interpreted by itself as its size
+depends on the address family.  Therefore it must always be grouped
+with its original family value.
 
-Fixes: 1d76efe1577b ("team: add support for non-ethernet devices")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+In this particular instance, the original family value is lost in
+the function xfrm_state_find.  Therefore we get a bogus read when
+it's coupled with the wrong family which would occur with inter-
+family xfrm states.
 
+This patch fixes it by keeping the original family value.
+
+Note that the same bug could potentially occur in LSM through
+the xfrm_state_pol_flow_match hook.  I checked the current code
+there and it seems to be safe for now as only secid is used which
+is part of struct flowi_common.  But that API should be changed
+so that so that we don't get new bugs in the future.  We could
+do that by replacing fl with just secid or adding a family field.
+
+Reported-by: syzbot+577fbac3145a6eb2e7a5@syzkaller.appspotmail.com
+Fixes: 48b8d78315bf ("[XFRM]: State selection update to use inner...")
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/team/team.c |    1 +
- 1 file changed, 1 insertion(+)
+ net/xfrm/xfrm_state.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
---- a/drivers/net/team/team.c
-+++ b/drivers/net/team/team.c
-@@ -2111,6 +2111,7 @@ static void team_setup_by_port(struct ne
- 	dev->header_ops	= port_dev->header_ops;
- 	dev->type = port_dev->type;
- 	dev->hard_header_len = port_dev->hard_header_len;
-+	dev->needed_headroom = port_dev->needed_headroom;
- 	dev->addr_len = port_dev->addr_len;
- 	dev->mtu = port_dev->mtu;
- 	memcpy(dev->broadcast, port_dev->broadcast, port_dev->addr_len);
+diff --git a/net/xfrm/xfrm_state.c b/net/xfrm/xfrm_state.c
+index e210d9b77de18..0eb85765d35a1 100644
+--- a/net/xfrm/xfrm_state.c
++++ b/net/xfrm/xfrm_state.c
+@@ -761,7 +761,8 @@ static void xfrm_state_look_at(struct xfrm_policy *pol, struct xfrm_state *x,
+ 	 */
+ 	if (x->km.state == XFRM_STATE_VALID) {
+ 		if ((x->sel.family &&
+-		     !xfrm_selector_match(&x->sel, fl, x->sel.family)) ||
++		     (x->sel.family != family ||
++		      !xfrm_selector_match(&x->sel, fl, family))) ||
+ 		    !security_xfrm_state_pol_flow_match(x, pol, fl))
+ 			return;
+ 
+@@ -774,7 +775,9 @@ static void xfrm_state_look_at(struct xfrm_policy *pol, struct xfrm_state *x,
+ 		*acq_in_progress = 1;
+ 	} else if (x->km.state == XFRM_STATE_ERROR ||
+ 		   x->km.state == XFRM_STATE_EXPIRED) {
+-		if (xfrm_selector_match(&x->sel, fl, x->sel.family) &&
++		if ((!x->sel.family ||
++		     (x->sel.family == family &&
++		      xfrm_selector_match(&x->sel, fl, family))) &&
+ 		    security_xfrm_state_pol_flow_match(x, pol, fl))
+ 			*error = -ESRCH;
+ 	}
+@@ -813,7 +816,7 @@ xfrm_state_find(const xfrm_address_t *daddr, const xfrm_address_t *saddr,
+ 		    tmpl->mode == x->props.mode &&
+ 		    tmpl->id.proto == x->id.proto &&
+ 		    (tmpl->id.spi == x->id.spi || !tmpl->id.spi))
+-			xfrm_state_look_at(pol, x, fl, encap_family,
++			xfrm_state_look_at(pol, x, fl, family,
+ 					   &best, &acquire_in_progress, &error);
+ 	}
+ 	if (best || acquire_in_progress)
+@@ -829,7 +832,7 @@ xfrm_state_find(const xfrm_address_t *daddr, const xfrm_address_t *saddr,
+ 		    tmpl->mode == x->props.mode &&
+ 		    tmpl->id.proto == x->id.proto &&
+ 		    (tmpl->id.spi == x->id.spi || !tmpl->id.spi))
+-			xfrm_state_look_at(pol, x, fl, encap_family,
++			xfrm_state_look_at(pol, x, fl, family,
+ 					   &best, &acquire_in_progress, &error);
+ 	}
+ 
+-- 
+2.25.1
+
 
 
