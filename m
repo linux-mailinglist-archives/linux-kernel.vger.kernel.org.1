@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D744628B97C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0568728B7A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731655AbgJLOBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:01:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40660 "EHLO mail.kernel.org"
+        id S1731358AbgJLNp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:45:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731237AbgJLNin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:38:43 -0400
+        id S2389289AbgJLNnP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:43:15 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C68C422203;
-        Mon, 12 Oct 2020 13:38:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BFEB721D81;
+        Mon, 12 Oct 2020 13:43:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509898;
-        bh=RfuSN0CYEh4oojDPhHRz7Tt45yQDJvi6iWf2+2azS9E=;
+        s=default; t=1602510194;
+        bh=NAMGh12AMVvn72LzdUDV6g8w9N4PLdldcf1Bd4jNMB8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=javoQrK5mUlsV7v3oyJ5smGwUi+jSvsk5r8AC1x/nNgoh4EPm7bK+rk6OtTm3u9yR
-         /AUIvOZ/g8vjQRlt4FZsd3UJR+tV2iNp56i6aFM3dNEwJpSjUXcln5J+R7Lpis2t+D
-         yQ9b++OV5rd2SwgczJEVKvuM6UlDg7fe1UukDHL0=
+        b=lPboFW4EMMUgae8QkUvqNv+PCGvBxodYXu++vQpmuBU02eWeEEhHH3Uhp3eimbo2Z
+         MKbyNZNnM8vkzcRUIVgr9mX1D53qKYclzypJlOTcqh7C9ftg37D7CI+f7bHnVMHASk
+         6B9wVs+2wWarxMnKx9ZayISIqMi8NUoxs21Vx8rg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Antony Antony <antony.antony@secunet.com>,
         Steffen Klassert <steffen.klassert@secunet.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 56/70] xfrm: clone whole liftime_cur structure in xfrm_do_migrate
-Date:   Mon, 12 Oct 2020 15:27:12 +0200
-Message-Id: <20201012132632.873988755@linuxfoundation.org>
+Subject: [PATCH 5.4 50/85] xfrm: clone XFRMA_REPLAY_ESN_VAL in xfrm_do_migrate
+Date:   Mon, 12 Oct 2020 15:27:13 +0200
+Message-Id: <20201012132635.272819536@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132630.201442517@linuxfoundation.org>
-References: <20201012132630.201442517@linuxfoundation.org>
+In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
+References: <20201012132632.846779148@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,35 +45,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Antony Antony <antony.antony@secunet.com>
 
-[ Upstream commit 8366685b2883e523f91e9816d7be371eb1144749 ]
+[ Upstream commit 91a46c6d1b4fcbfa4773df9421b8ad3e58088101 ]
 
-When we clone state only add_time was cloned. It missed values like
-bytes, packets.  Now clone the all members of the structure.
+XFRMA_REPLAY_ESN_VAL was not cloned completely from the old to the new.
+Migrate this attribute during XFRMA_MSG_MIGRATE
 
-v1->v3:
- - use memcpy to copy the entire structure
+v1->v2:
+ - move curleft cloning to a separate patch
 
-Fixes: 80c9abaabf42 ("[XFRM]: Extension for dynamic update of endpoint address(es)")
+Fixes: af2f464e326e ("xfrm: Assign esn pointers when cloning a state")
 Signed-off-by: Antony Antony <antony.antony@secunet.com>
 Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/xfrm/xfrm_state.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/net/xfrm.h | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
-diff --git a/net/xfrm/xfrm_state.c b/net/xfrm/xfrm_state.c
-index 37104258808a8..3f21d34833cf0 100644
---- a/net/xfrm/xfrm_state.c
-+++ b/net/xfrm/xfrm_state.c
-@@ -1427,7 +1427,7 @@ static struct xfrm_state *xfrm_state_clone(struct xfrm_state *orig,
- 	x->tfcpad = orig->tfcpad;
- 	x->replay_maxdiff = orig->replay_maxdiff;
- 	x->replay_maxage = orig->replay_maxage;
--	x->curlft.add_time = orig->curlft.add_time;
-+	memcpy(&x->curlft, &orig->curlft, sizeof(x->curlft));
- 	x->km.state = orig->km.state;
- 	x->km.seq = orig->km.seq;
- 	x->replay = orig->replay;
+diff --git a/include/net/xfrm.h b/include/net/xfrm.h
+index 12aa6e15e43f6..c00b9ae71ae40 100644
+--- a/include/net/xfrm.h
++++ b/include/net/xfrm.h
+@@ -1773,21 +1773,17 @@ static inline unsigned int xfrm_replay_state_esn_len(struct xfrm_replay_state_es
+ static inline int xfrm_replay_clone(struct xfrm_state *x,
+ 				     struct xfrm_state *orig)
+ {
+-	x->replay_esn = kzalloc(xfrm_replay_state_esn_len(orig->replay_esn),
++
++	x->replay_esn = kmemdup(orig->replay_esn,
++				xfrm_replay_state_esn_len(orig->replay_esn),
+ 				GFP_KERNEL);
+ 	if (!x->replay_esn)
+ 		return -ENOMEM;
+-
+-	x->replay_esn->bmp_len = orig->replay_esn->bmp_len;
+-	x->replay_esn->replay_window = orig->replay_esn->replay_window;
+-
+-	x->preplay_esn = kmemdup(x->replay_esn,
+-				 xfrm_replay_state_esn_len(x->replay_esn),
++	x->preplay_esn = kmemdup(orig->preplay_esn,
++				 xfrm_replay_state_esn_len(orig->preplay_esn),
+ 				 GFP_KERNEL);
+-	if (!x->preplay_esn) {
+-		kfree(x->replay_esn);
++	if (!x->preplay_esn)
+ 		return -ENOMEM;
+-	}
+ 
+ 	return 0;
+ }
 -- 
 2.25.1
 
