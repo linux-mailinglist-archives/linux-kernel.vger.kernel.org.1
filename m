@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E65A28B71C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:41:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D1028B78E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388870AbgJLNkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:40:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42814 "EHLO mail.kernel.org"
+        id S2389526AbgJLNoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:44:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729324AbgJLNjG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:39:06 -0400
+        id S1730666AbgJLNnL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:43:11 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C8F002074F;
-        Mon, 12 Oct 2020 13:39:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1880920678;
+        Mon, 12 Oct 2020 13:43:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509945;
-        bh=SsXV/3Tgczlm4ujGq+3IEE9kL5FFUvUf4MJ126vaJ/A=;
+        s=default; t=1602510189;
+        bh=9jf8/2pMdLGUD/SuF7vDmhqV2XjIPuHv9JsZXVZ+gzo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W731QndBq4LdEd5ht4eHtfVjR2tYyrH8CD91evgYYjuIgY51nS/Qw5lIqkGxfa1HI
-         e2jjKmgC7eFM7CafjCk24ITPbBHruGcZcN9uhpdwulgDbygIXizjRok+ZQnCXgrahb
-         LDHd+GhM4QUwth61xEMw14sc/RLd5uVRzpsN0FZk=
+        b=GeMTLIcgIPtlZdah33jk57+5QbGAhi/mKiGiTsbtbrIOhGjrN2iaXJ8Fqfkn+96CW
+         juHMqcYncYcjT7VL+qi4OrLt9TeKklR4FQPWBXhpKTuCyQwLu942OfhRlZLLjQDEcK
+         TcAPVbEAS95QnfY8A/oKPplw7eQPukeRFZsKG57c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Vlad Yasevich <vyasevich@gmail.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 25/49] sctp: fix sctp_auth_init_hmacs() error path
+        stable@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 48/85] iommu/vt-d: Fix lockdep splat in iommu_flush_dev_iotlb()
 Date:   Mon, 12 Oct 2020 15:27:11 +0200
-Message-Id: <20201012132630.624884335@linuxfoundation.org>
+Message-Id: <20201012132635.176466904@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132629.469542486@linuxfoundation.org>
-References: <20201012132629.469542486@linuxfoundation.org>
+In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
+References: <20201012132632.846779148@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,121 +42,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Lu Baolu <baolu.lu@linux.intel.com>
 
-commit d42ee76ecb6c49d499fc5eb32ca34468d95dbc3e upstream.
+[ Upstream commit 1a3f2fd7fc4e8f24510830e265de2ffb8e3300d2 ]
 
-After freeing ep->auth_hmacs we have to clear the pointer
-or risk use-after-free as reported by syzbot:
+Lock(&iommu->lock) without disabling irq causes lockdep warnings.
 
-BUG: KASAN: use-after-free in sctp_auth_destroy_hmacs net/sctp/auth.c:509 [inline]
-BUG: KASAN: use-after-free in sctp_auth_destroy_hmacs net/sctp/auth.c:501 [inline]
-BUG: KASAN: use-after-free in sctp_auth_free+0x17e/0x1d0 net/sctp/auth.c:1070
-Read of size 8 at addr ffff8880a8ff52c0 by task syz-executor941/6874
+[   12.703950] ========================================================
+[   12.703962] WARNING: possible irq lock inversion dependency detected
+[   12.703975] 5.9.0-rc6+ #659 Not tainted
+[   12.703983] --------------------------------------------------------
+[   12.703995] systemd-udevd/284 just changed the state of lock:
+[   12.704007] ffffffffbd6ff4d8 (device_domain_lock){..-.}-{2:2}, at:
+               iommu_flush_dev_iotlb.part.57+0x2e/0x90
+[   12.704031] but this lock took another, SOFTIRQ-unsafe lock in the past:
+[   12.704043]  (&iommu->lock){+.+.}-{2:2}
+[   12.704045]
 
-CPU: 0 PID: 6874 Comm: syz-executor941 Not tainted 5.9.0-rc8-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fd lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
- sctp_auth_destroy_hmacs net/sctp/auth.c:509 [inline]
- sctp_auth_destroy_hmacs net/sctp/auth.c:501 [inline]
- sctp_auth_free+0x17e/0x1d0 net/sctp/auth.c:1070
- sctp_endpoint_destroy+0x95/0x240 net/sctp/endpointola.c:203
- sctp_endpoint_put net/sctp/endpointola.c:236 [inline]
- sctp_endpoint_free+0xd6/0x110 net/sctp/endpointola.c:183
- sctp_destroy_sock+0x9c/0x3c0 net/sctp/socket.c:4981
- sctp_v6_destroy_sock+0x11/0x20 net/sctp/socket.c:9415
- sk_common_release+0x64/0x390 net/core/sock.c:3254
- sctp_close+0x4ce/0x8b0 net/sctp/socket.c:1533
- inet_release+0x12e/0x280 net/ipv4/af_inet.c:431
- inet6_release+0x4c/0x70 net/ipv6/af_inet6.c:475
- __sock_release+0xcd/0x280 net/socket.c:596
- sock_close+0x18/0x20 net/socket.c:1277
- __fput+0x285/0x920 fs/file_table.c:281
- task_work_run+0xdd/0x190 kernel/task_work.c:141
- exit_task_work include/linux/task_work.h:25 [inline]
- do_exit+0xb7d/0x29f0 kernel/exit.c:806
- do_group_exit+0x125/0x310 kernel/exit.c:903
- __do_sys_exit_group kernel/exit.c:914 [inline]
- __se_sys_exit_group kernel/exit.c:912 [inline]
- __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:912
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x43f278
-Code: Bad RIP value.
-RSP: 002b:00007fffe0995c38 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 000000000043f278
-RDX: 0000000000000000 RSI: 000000000000003c RDI: 0000000000000000
-RBP: 00000000004bf068 R08: 00000000000000e7 R09: ffffffffffffffd0
-R10: 0000000020000000 R11: 0000000000000246 R12: 0000000000000001
-R13: 00000000006d1180 R14: 0000000000000000 R15: 0000000000000000
+               and interrupts could create inverse lock ordering between
+               them.
 
-Allocated by task 6874:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
- kmem_cache_alloc_trace+0x174/0x300 mm/slab.c:3554
- kmalloc include/linux/slab.h:554 [inline]
- kmalloc_array include/linux/slab.h:593 [inline]
- kcalloc include/linux/slab.h:605 [inline]
- sctp_auth_init_hmacs+0xdb/0x3b0 net/sctp/auth.c:464
- sctp_auth_init+0x8a/0x4a0 net/sctp/auth.c:1049
- sctp_setsockopt_auth_supported net/sctp/socket.c:4354 [inline]
- sctp_setsockopt+0x477e/0x97f0 net/sctp/socket.c:4631
- __sys_setsockopt+0x2db/0x610 net/socket.c:2132
- __do_sys_setsockopt net/socket.c:2143 [inline]
- __se_sys_setsockopt net/socket.c:2140 [inline]
- __x64_sys_setsockopt+0xba/0x150 net/socket.c:2140
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   12.704073]
+               other info that might help us debug this:
+[   12.704085]  Possible interrupt unsafe locking scenario:
 
-Freed by task 6874:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
- kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
- __kasan_slab_free+0xd8/0x120 mm/kasan/common.c:422
- __cache_free mm/slab.c:3422 [inline]
- kfree+0x10e/0x2b0 mm/slab.c:3760
- sctp_auth_destroy_hmacs net/sctp/auth.c:511 [inline]
- sctp_auth_destroy_hmacs net/sctp/auth.c:501 [inline]
- sctp_auth_init_hmacs net/sctp/auth.c:496 [inline]
- sctp_auth_init_hmacs+0x2b7/0x3b0 net/sctp/auth.c:454
- sctp_auth_init+0x8a/0x4a0 net/sctp/auth.c:1049
- sctp_setsockopt_auth_supported net/sctp/socket.c:4354 [inline]
- sctp_setsockopt+0x477e/0x97f0 net/sctp/socket.c:4631
- __sys_setsockopt+0x2db/0x610 net/socket.c:2132
- __do_sys_setsockopt net/socket.c:2143 [inline]
- __se_sys_setsockopt net/socket.c:2140 [inline]
- __x64_sys_setsockopt+0xba/0x150 net/socket.c:2140
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   12.704097]        CPU0                    CPU1
+[   12.704106]        ----                    ----
+[   12.704115]   lock(&iommu->lock);
+[   12.704123]                                local_irq_disable();
+[   12.704134]                                lock(device_domain_lock);
+[   12.704146]                                lock(&iommu->lock);
+[   12.704158]   <Interrupt>
+[   12.704164]     lock(device_domain_lock);
+[   12.704174]
+                *** DEADLOCK ***
 
-Fixes: 1f485649f529 ("[SCTP]: Implement SCTP-AUTH internals")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Vlad Yasevich <vyasevich@gmail.com>
-Cc: Neil Horman <nhorman@tuxdriver.com>
-Cc: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+Link: https://lore.kernel.org/r/20200927062428.13713-1-baolu.lu@linux.intel.com
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sctp/auth.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/iommu/intel-iommu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/net/sctp/auth.c
-+++ b/net/sctp/auth.c
-@@ -515,6 +515,7 @@ int sctp_auth_init_hmacs(struct sctp_end
- out_err:
- 	/* Clean up any successful allocations */
- 	sctp_auth_destroy_hmacs(ep->auth_hmacs);
-+	ep->auth_hmacs = NULL;
- 	return -ENOMEM;
- }
+diff --git a/drivers/iommu/intel-iommu.c b/drivers/iommu/intel-iommu.c
+index 2ffec65df3889..1147626f0d253 100644
+--- a/drivers/iommu/intel-iommu.c
++++ b/drivers/iommu/intel-iommu.c
+@@ -2560,14 +2560,14 @@ static struct dmar_domain *dmar_insert_one_dev_info(struct intel_iommu *iommu,
+ 		}
  
+ 		/* Setup the PASID entry for requests without PASID: */
+-		spin_lock(&iommu->lock);
++		spin_lock_irqsave(&iommu->lock, flags);
+ 		if (hw_pass_through && domain_type_is_si(domain))
+ 			ret = intel_pasid_setup_pass_through(iommu, domain,
+ 					dev, PASID_RID2PASID);
+ 		else
+ 			ret = intel_pasid_setup_second_level(iommu, domain,
+ 					dev, PASID_RID2PASID);
+-		spin_unlock(&iommu->lock);
++		spin_unlock_irqrestore(&iommu->lock, flags);
+ 		if (ret) {
+ 			dev_err(dev, "Setup RID2PASID failed\n");
+ 			dmar_remove_one_dev_info(dev);
+-- 
+2.25.1
+
 
 
