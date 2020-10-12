@@ -2,109 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFD6F28C18E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 21:39:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 435F728C190
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 21:40:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387810AbgJLTjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 15:39:40 -0400
-Received: from mout.kundenserver.de ([212.227.126.187]:59519 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727198AbgJLTjk (ORCPT
+        id S1730928AbgJLTkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 15:40:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728338AbgJLTkh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 15:39:40 -0400
-Received: from [192.168.1.155] ([77.2.5.48]) by mrelayeu.kundenserver.de
- (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MLAF0-1kkHGz2KfK-00IBSC; Mon, 12 Oct 2020 21:39:31 +0200
-Subject: Re: [PATCH 1/2] x86: Remove led/gpio setup from pcengines platform
- driver
-To:     Ed W <lists@wildgooses.com>, linux-kernel@vger.kernel.org
-Cc:     fe@dev.tdt.de, "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        platform-driver-x86@vger.kernel.org
-References: <20200921215919.3072-1-lists@wildgooses.com>
- <d4b2045c-769b-4998-64cc-682c01c105fb@wildgooses.com>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <8058a804-a793-a5f8-d086-0bb0f600aef9@metux.net>
-Date:   Mon, 12 Oct 2020 21:39:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 12 Oct 2020 15:40:37 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 995B1C0613D1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 12:40:36 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id k18so18753204wmj.5
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 12:40:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+EfUv/T2E3FnntdBC8S4jr9sPsz796Fi5uP55L4BrAM=;
+        b=Wypqo2E4gKtll0xj4IRPBM30Ax0Kr+xLg7R7En85zXkibEo6bp5CrdFuEFuzFnTi2A
+         EF/v6A6s3qMl56QhqfWx6boN1mJ8XM2IldqC53V0bJTNCuypA7N4CpeOjZidcy0QtSea
+         Fg9javKOdd5G+581vabzl31nb1PJEH1cGMeyghoop9Wrp6OdaHA30T83JaKULsZHk7th
+         j3A8BUpmfJy++rstbLygt3iMePhowH2YDk/LGRkmNiikFWVaeS44BJr/ffqa2sxU/sW6
+         aap5swmqwZ95gd1QEvzb6CL2G6w1AXAAhKXJOp5JOIqvYMLhBDglEyXm5aGyb0wRpWR/
+         p9lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+EfUv/T2E3FnntdBC8S4jr9sPsz796Fi5uP55L4BrAM=;
+        b=nIQR6RYuACrMVPX/jMT5A0TI6pNVeGf1Y2p+iy7Dfx2LzDa++RvsaV74MCMcwLm+Jz
+         AAlswQWHW+QEankhqix1mfzEoBru5TAjUdtHkpAV9BjvbR/cNeyZ50O9w/9g41uyUP64
+         RqDcEtHs/V0MdLkCddDtSWH/025gpAlr9Jld6G6EacVfx9BqCplNpSS11XfuPdnJJnXz
+         hnmiJ2wi0PARPwGNkklb0vUI2KjDkdKuUXNcCV6zGIc4poc27RyZ6s4aPDsdGuUXjtMq
+         8oSb4C2N6bPqG2wTaY7sReEJbeGy+37wcoLMUZbNVj6XwvVRbp0AdxEaE6wLAfiGE/4x
+         0Ekg==
+X-Gm-Message-State: AOAM530ZoKtBrFLoMxJGSvpkCz+s4HWfnKeU9e5hCB12NU8w3xHAlZ+H
+        hMdnVn9d4H2U1vpc2b8tQcCXJQ==
+X-Google-Smtp-Source: ABdhPJwLeNcHMRSjmQ9MjHiT9XaiXa3Bt4emzJpT6lzHtPr7+Ii858iRpiy7q9HYHX8uvo178Ljx2w==
+X-Received: by 2002:a1c:1dc3:: with SMTP id d186mr11622031wmd.182.1602531635141;
+        Mon, 12 Oct 2020 12:40:35 -0700 (PDT)
+Received: from localhost.localdomain ([212.45.67.2])
+        by smtp.googlemail.com with ESMTPSA id f63sm24500203wme.38.2020.10.12.12.40.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 12 Oct 2020 12:40:34 -0700 (PDT)
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+To:     linux-pm@vger.kernel.org
+Cc:     mdtipton@codeaurora.org, okukatla@codeaurora.org,
+        sibis@codeaurora.org, bjorn.andersson@linaro.org,
+        amit.pundir@linaro.org, georgi.djakov@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] interconnect: qcom: sdm845: Enable keepalive for the MM1 BCM
+Date:   Mon, 12 Oct 2020 22:40:34 +0300
+Message-Id: <20201012194034.26944-1-georgi.djakov@linaro.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <d4b2045c-769b-4998-64cc-682c01c105fb@wildgooses.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: tl
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:2ccd+HPdvvkssdLpfI7hV7NC7mJ+qYRLJuKjRhJ2yCkArI0+JFV
- yMd4q8+LVMp1g0WJmARd0aqQQC1ht8gWS0VaUP4psg+XnUjPYl6VjBY5cI+dKHJGSZkdj3r
- /B7LKh2i5U1tEMGpa30ILEcVx5ysMwvmUnnuINTjKqRyOf66fiLW/g//rqYbi0DI+8dc/Uo
- Yfyhnu/l9nbhAfyZdbbMQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:uEtuSCtEiJY=:frRXq3Gq8VuA7Hhyq5PjRN
- /o7ka3UW2Qc3Ls4//UaRqX2HKeY+RphLZ/XSsTpO8grsZZ0NLPCQaz0iDfEWu+IhBRs2Q+A3y
- 0+OwuHhG3MiRzC80C7jERrqAMVnC6wHF5DeRXZ5WSTKCukwFWTMgyixm5YEhuje4tfhy89e9N
- dV2rM3MITRv8ltuVhXP2byF4aHg8A95Bn8hNs2O1Bhg/YxRnX53rcx9XhCDt3s21F3vFTFpHR
- PEuGKvDgXEvh6sDU9ispAE81CBzvJC424DXXYe86Y7ZDiGj1cU3voK8T7maxSIO0+gvpl+3qS
- wDieo04YYfRijcatrFYnwtz3vRLt1O3TxEDC/I4fJyJGRtjLjO3K7lABqwBBWsTT5ibKn8/EZ
- O2HgAJa7yfORdCx97x5s3rjPJj07/VIsAtiQMGfjOSTnHgezEX/bvvWkMjaPQWcLU7z1b+2qj
- TQ5KTqhWOBHgQ7BLEGgjGmAzrxwCLnfBDLVoslOLqCGdChUGZ/mDtxbR0Sy1BEEATGrdgDzb8
- jTqYwXyjjQLArlxT3Dt1vvcLDObGbBuFnabacfUsvrn6dVo4EUpUsaYAf1d52zLUePM/PL7lf
- AzljI49MTHOe6cJtNxKRhzao0pxW06k0yTW+/XBUdZtNh/0/Fr7hRwTmNZxajLlG4YeL0MGFo
- aA0n2oa9p+vHh9jy9yCVsPXwPZYv6DSKMYMI0yGoC+Y6v21sE6nx4o+098NttaJ2hlIE4c9zS
- nezcPaIfARIVVw5M7fJz7P1Xp8/HchSx/ghGuSIOPvRVEHtokbs3YnxdHNolJEiBGrbIXnV7P
- dkK+e05SZFwpWOUN5hDFk6XwwiLXAa8zt86HIew3xs2oYNfPTOKoduYeuqI6S79HsFCRJws
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.09.20 00:17, Ed W wrote:
-> Hi, I've been adding support for the PC Engines APU5 board, which is a variant of the APU 2-4 boards
-> with some nice features. The current platform driver for pcengines boards has some redundant
-> features with regards to recent bios/firmware packages for the board as they now set the ACPI tables
-> to indicate GPIOs for keys and leds. 
+After enabling interconect scaling for display on the db845c board,
+in certain configurations the board hangs, while the following errors
+are observed on the console:
 
-NAK. Breaks existing userlands in the field (literally field), forcing
-users to fw upgrade is not an option (field roll would be realy expensive).
+  Error sending AMC RPMH requests (-110)
+  qcom_rpmh TCS Busy, retrying RPMH message send: addr=0x50000
+  qcom_rpmh TCS Busy, retrying RPMH message send: addr=0x50000
+  qcom_rpmh TCS Busy, retrying RPMH message send: addr=0x50000
+  ...
 
-> So I've submitted a patch to eliminate this. It could be argued
-> that it's useful to support older firmware versions, but there is also a 'leds-apu' driver which a)
-> probably ought to be marked deprecated with a view to removing it and b) implements the leds even on
-> antique firmware versions.
+In this specific case, the above is related to one of the sequencers
+being stuck, while client drivers are returning from probe and trying
+to disable the currently unused clock and interconnect resources.
+Generally we want to keep the multimedia NoC enabled like the rest of
+the NoCs, so let's set the keepalive flag on it too.
 
-leds-apu is only for *OLD* apu1 - it does *not* work with v2/3/4,
-completely different chipset.
-
-> In implementing the APU5 I changed some of the exported gpio names to make them more closely match
-> functionality across all the boards. > For example APU2 vs APU4 both support 2x LTE options, but in
-> different mpcie slots and this affects the numbering of options, but not the sense of them (so I
-> renamed them based on the intention of the option). This is particularly true on APU5 which supports
-> 3x LTE cards
-
-Dont break existing userlands.
-
-> Can I get some advice: It would be helpful if the kernel would export the GPIOs to user-space
-> automatically since toggling SIM slots is fairly useful task in userspace. 
-
-This is planned to be moved to either an own subsystem or into rfkill
-(which would have to be extended for such things).
-
-Using raw gpio's isn't a good idea - it's not portable.
-
-> At least for me the gpio
-> numbers seem to jump around depending on the order of module loading, so doing something involving
-> /sys/class/gpio/export isn't obviously an easy process. 
-
-Exactly. That's why they should be bound to more high level drivers.
-Gpio numbers are anything but stable.
-
-
---mtx
-
--- 
+Fixes: aae57773fbe0 ("interconnect: qcom: sdm845: Split qnodes into their respective NoCs")
+Reported-by: Amit Pundir <amit.pundir@linaro.org>
+Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
 ---
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+ drivers/interconnect/qcom/sdm845.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/interconnect/qcom/sdm845.c b/drivers/interconnect/qcom/sdm845.c
+index 47556dc12ec0..5304aea3b058 100644
+--- a/drivers/interconnect/qcom/sdm845.c
++++ b/drivers/interconnect/qcom/sdm845.c
+@@ -151,7 +151,7 @@ DEFINE_QBCM(bcm_mc0, "MC0", true, &ebi);
+ DEFINE_QBCM(bcm_sh0, "SH0", true, &qns_llcc);
+ DEFINE_QBCM(bcm_mm0, "MM0", false, &qns_mem_noc_hf);
+ DEFINE_QBCM(bcm_sh1, "SH1", false, &qns_apps_io);
+-DEFINE_QBCM(bcm_mm1, "MM1", false, &qxm_camnoc_hf0_uncomp, &qxm_camnoc_hf1_uncomp, &qxm_camnoc_sf_uncomp, &qxm_camnoc_hf0, &qxm_camnoc_hf1, &qxm_mdp0, &qxm_mdp1);
++DEFINE_QBCM(bcm_mm1, "MM1", true, &qxm_camnoc_hf0_uncomp, &qxm_camnoc_hf1_uncomp, &qxm_camnoc_sf_uncomp, &qxm_camnoc_hf0, &qxm_camnoc_hf1, &qxm_mdp0, &qxm_mdp1);
+ DEFINE_QBCM(bcm_sh2, "SH2", false, &qns_memnoc_snoc);
+ DEFINE_QBCM(bcm_mm2, "MM2", false, &qns2_mem_noc);
+ DEFINE_QBCM(bcm_sh3, "SH3", false, &acm_tcu);
