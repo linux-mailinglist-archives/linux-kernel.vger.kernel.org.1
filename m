@@ -2,113 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F06E28B219
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 12:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CFE828B21C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 12:20:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729353AbgJLKT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 06:19:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726104AbgJLKT0 (ORCPT
+        id S1729366AbgJLKUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 06:20:44 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:35804 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726104AbgJLKUn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 06:19:26 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60DBCC0613CE;
-        Mon, 12 Oct 2020 03:19:26 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id 32so2202803otm.3;
-        Mon, 12 Oct 2020 03:19:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QjLqbETTYrIeZSgcXfOgqYxzkUnBOfzRRvqHY5JghIo=;
-        b=YNBknzBW8AMCNjIWa8VdhSr/UVwnU7wxIYoM5MKKaqr7zzbFBt9DvqvqX+v61Kn0UR
-         T7clkyxRnCKLNOkOR+MZIULsrkv8LNW1tU7dTsRlo6MxvhLHjttQi65QH84+PAyBfUFE
-         RzI4TCbkmUZxU9FA+yk+2YDmkM2Whuhz1/804rQ56S0bE9zIs7mD6sHCWYZ9ciY86y6I
-         +sYE8jO6f96k02w40so6VqIQMXemeE253ezvKmIZL6Lyg6Ljo9nmRnGbb/K4brh3Wzwl
-         1nHgvCwg1vgo/pJAfSXi/fFcqSmtIQXOaJMIux8Dd5/IlVSmSyrZkffzXMDLsDLTwdAd
-         HhBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QjLqbETTYrIeZSgcXfOgqYxzkUnBOfzRRvqHY5JghIo=;
-        b=HIENKFJBHbklfa3A12agCN0ER4zXzllWtuzzOA5eEp3ZJaNtFhrGRGbYKcWxn7JzCA
-         Om/Wv/ZHHEdIVC+jLZmu+XHM5/5oYZLcQmrxcE55Aw/JgfniGc/modQ9ye31OOuencTN
-         ftuRYZWVehReAXbu6MRFWL2F1gByMKfJPI8PN8ii6REU2FUrBrj/i1++4AAwS7MbaPkK
-         k4PgdKz7NdahfZa1WdJ8XAuJekR1/dIJw3oYmrr9l3nNfcEQG0h/+qd8q8pz5oWH25ZK
-         1B9hkYcBh8aein9Guqp48puvwvzoUaCoU28jhzitIvmRu+MFIlp9PLWtYlWwTADnf4e+
-         6tCQ==
-X-Gm-Message-State: AOAM5308W9hu9iIKk9SNY2Vkniuxfsue7/ZAiykOe81yWk3Ve15cQwka
-        ZKWEV+FhjIUWeBzO4pinTzUbwBeLrrJ+MAMhuFs=
-X-Google-Smtp-Source: ABdhPJy8uGYK/n0S+5dADCPLKkOerWni4YKFzoGVfOVllbH4AX2KOGk8t11N2r1mi9IEK6qJ1QUfzpR+xmBoR87cap8=
-X-Received: by 2002:a9d:68da:: with SMTP id i26mr3187631oto.200.1602497965798;
- Mon, 12 Oct 2020 03:19:25 -0700 (PDT)
+        Mon, 12 Oct 2020 06:20:43 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 78FE71C0B77; Mon, 12 Oct 2020 12:20:40 +0200 (CEST)
+Date:   Mon, 12 Oct 2020 12:20:39 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     kernel list <linux-kernel@vger.kernel.org>,
+        darrick.wong@oracle.com, dchinner@redhat.com, sandeen@redhat.com
+Subject: -next: Kconfig asks about XFS formats when I don't have XFS enabled
+Message-ID: <20201012102039.GA1588@amd>
 MIME-Version: 1.0
-References: <20201007130750.49349844@gandalf.local.home> <20201012101208.GF1099489@krava>
-In-Reply-To: <20201012101208.GF1099489@krava>
-From:   Zamir SUN <sztsian@gmail.com>
-Date:   Mon, 12 Oct 2020 18:19:14 +0800
-Message-ID: <CAHnb8o4tPPGEP1u8LUcip__XrRKT5U-hrAQCry3JJk9SKKqqag@mail.gmail.com>
-Subject: Re: [ANNOUNCE] libtraceevent.git
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        "Ziqian SUN (Zamir)" <zsun@redhat.com>,
-        Vitaly Chikunov <vt@altlinux.org>,
-        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
-        Yordan Karadzhov <ykaradzhov@vmware.com>,
-        Ben Hutchings <ben@decadent.org.uk>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Tony Jones <tonyj@suse.de>, John Kacur <jkacur@redhat.com>,
-        Clark Williams <williams@redhat.com>, powertop@lists.01.org,
-        Al Stone <ahs3@debian.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="UugvWAfsgieZRqgk"
+Content-Disposition: inline
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 6:12 PM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Wed, Oct 07, 2020 at 01:07:50PM -0400, Steven Rostedt wrote:
-> > I split out tools/lib/traceevent from the kernel tree using "git subtree",
-> > which recreates all the commits of a directory and makes that directory a
-> > stand alone. I then updated the Makefiles, and copied over some of the
-> > header files used to build the library. I pushed this up to:
-> >
-> >   https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/
-> >
-> > My hope is that this will now be the source of all updates to the
-> > libtraceevent library that can be used as a stand alone package that both
-> > perf and tracecmd can use. I would also like powertop and rasdaemon to use
-> > this as well.
->
-> hi,
-> I'm adding this as fedora package, is there a source arhive somewhere
-> in git.kernel.org for libtraceevent that spec could download?
->
 
-Hi Jiri,
+--UugvWAfsgieZRqgk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I was also working on it before. My way to get the source code is to
-manually generate the tarball like what trace-cmd did before.
+Hi!
 
-See my copr
-https://copr.fedorainfracloud.org/coprs/zsun/test/build/1699358/
-And the spec
+I don't have XFS enabled, yet I'm asked if I want to support its old
+format:
 
-https://download.copr.fedorainfracloud.org/results/zsun/test/fedora-rawhide-x86_64/01699358-libtraceevent/libtraceevent.spec
++config XFS_SUPPORT_V4
++       bool "Support deprecated V4 (crc=3D0) format"
++       default y
 
-I haven't have time to follow-up Steven's reply of Oct 9th about the
-document compiling yet. If you are willing to work on it now maybe you
-can start on top of mine. Otherwise I'll follow-up the packaging
-later.
+This needs to have dependence on XFS_FS.
 
-HTH.
++         This option will become default N in September 2025. Support for =
+the
++         V4 format will be removed entirely in September 2030. Distributors
++         can say N here to withdraw support earlier.
 
-> thanks,
-> jirka
->
+This seems... "interesting", contrary to "no regressions" rule.
+
+Best regards,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--UugvWAfsgieZRqgk
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl+ELfcACgkQMOfwapXb+vJyywCgjn3Pzs62zE9URhUhrHnXHjH0
+OUsAn3wVgox7V7wiXOwzyAriHM2xXK69
+=H8AP
+-----END PGP SIGNATURE-----
+
+--UugvWAfsgieZRqgk--
