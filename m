@@ -2,96 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0CC028C260
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 22:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8653F28C266
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 22:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729978AbgJLUaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 16:30:02 -0400
-Received: from mga18.intel.com ([134.134.136.126]:31318 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728392AbgJLUaB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 16:30:01 -0400
-IronPort-SDR: FgyIRCx2kFq6mOo2jW7M0DM+o4ZM7PkL0CedglDPnfHKE44Pf0DZNTVYiH6VZT5EhRWx9S4Hro
- /RRpgol7FWMQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="153631193"
-X-IronPort-AV: E=Sophos;i="5.77,367,1596524400"; 
-   d="scan'208";a="153631193"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 13:29:59 -0700
-IronPort-SDR: Q3TMmJJfFdzOben8LhYKlvy2Lf9ifmccyfK46qxXdTv68g+iC/y3Dbe8lzuVbqqJFOCGX9WdEK
- BE8Pg6hROcLw==
-X-IronPort-AV: E=Sophos;i="5.77,367,1596524400"; 
-   d="scan'208";a="356739364"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.209.167.7]) ([10.209.167.7])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 13:29:58 -0700
-Subject: Re: [PATCH v14 1/7] x86/cet/ibt: Add Kconfig option for user-mode
- Indirect Branch Tracking
-To:     Cyrill Gorcunov <gorcunov@gmail.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        id S1730322AbgJLUar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 16:30:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728392AbgJLUaq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 16:30:46 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A56C0613D1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 13:30:46 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id 144so14690031pfb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 13:30:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=92bEnA9H8SNJVNNEXdCaE7fELDRnT1hkxToMXMt8tLA=;
+        b=HIzavVBrjsYEPQ7zy0x1ixfFocokAD1tqxPGdjDYhes2oevtUfqY5UIZh9P6HklKje
+         HC8JHxJUWPG5dzOYZ1r16QkKifB8c9cwTeiy88Qc0ppBNaPwi4jb7ItH/p69MNInchXT
+         B9YfxheLzcZn49W5OLfOCfQqf4Ddc9IGB26PY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=92bEnA9H8SNJVNNEXdCaE7fELDRnT1hkxToMXMt8tLA=;
+        b=fB34AUpWy6BDA6sJdLr20GyTSR5xLxUh1q5GCg/hQMVlc+Je5eg1Dz5CZ2zuwkDC44
+         qSiCWSfDUUztpE2yMY/i5uFQsJK11pJkjCOpvdKjxXTOYGmgbnPZNyRJZvzdslXyxQD7
+         dQEKNFMEQrCHQor9uNoo7ovMLfZalpg/Gb7MAJ6fODEqIJSOEiuvgqVqPUIZF3Ox8unH
+         rqDRgRaA55nNRdbTrV3zBZ0xPX15vzbcpGk2CNVBrhs0nXW+VoP9ju42SBGm+vLUnOHE
+         nEB3r5MVu7OXdbcBkZx2Cpxt8gGFRbEVHYJToKvUb7MMxhSdsc2rQmTrhRlZ9WpK0xn/
+         eZ0Q==
+X-Gm-Message-State: AOAM532ImHxgZpMUyWhEaUqZScpss2nucgN0F94Gt46YSYEBPKVWqJgK
+        g4K2/iZqac8TwT/CCOe+EHZMNQ==
+X-Google-Smtp-Source: ABdhPJwJEP74UTtY0Q33+EQuKQPgJX/KiKy/9Mz86zmV36sv0w+P6X0F9bskoZGMEMk35HIF8oYiEw==
+X-Received: by 2002:a17:90a:7d16:: with SMTP id g22mr21849656pjl.135.1602534646290;
+        Mon, 12 Oct 2020 13:30:46 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id k127sm5983990pgk.10.2020.10.12.13.30.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 13:30:45 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 13:30:44 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Marco Elver <elver@google.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        syzkaller <syzkaller@googlegroups.com>,
+        linux-tip-commits <linux-tip-commits@vger.kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-References: <20201012154530.28382-1-yu-cheng.yu@intel.com>
- <20201012154530.28382-2-yu-cheng.yu@intel.com> <20201012191511.GC14048@grain>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <c1bb9728-95a8-2fc2-6a28-ea37f2b50e7b@intel.com>
-Date:   Mon, 12 Oct 2020 13:29:57 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Andy Lutomirski <luto@kernel.org>, x86 <x86@kernel.org>
+Subject: Re: [tip: x86/entry] x86/entry: Convert Divide Error to IDTENTRY
+Message-ID: <202010121329.1DEA8CD@keescook>
+References: <20200505134904.663914713@linutronix.de>
+ <158991831479.17951.17390452716048622271.tip-bot2@tip-bot2>
+ <CACT4Y+bTZFkuZd7+bPArowOv-7Die+WZpfOWnEO_Wgs3U59+oA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201012191511.GC14048@grain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+bTZFkuZd7+bPArowOv-7Die+WZpfOWnEO_Wgs3U59+oA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/2020 12:15 PM, Cyrill Gorcunov wrote:
-> On Mon, Oct 12, 2020 at 08:45:24AM -0700, Yu-cheng Yu wrote:
-> ...
->> +	  the application support it.  When this feature is enabled,
->> +	  legacy non-IBT applications continue to work, but without
->> +	  IBT protection.
->> +	  Support for this feature is only known to be present on
->> +	  processors released in 2020 or later.  CET features are also
->> +	  known to increase kernel text size by 3.7 KB.
+On Sun, Oct 11, 2020 at 05:25:22PM +0200, Dmitry Vyukov wrote:
+> On Tue, May 19, 2020 at 9:59 PM tip-bot2 for Thomas Gleixner
+> <tip-bot2@linutronix.de> wrote:
+> >
+> > The following commit has been merged into the x86/entry branch of tip:
+> >
+> > -DO_ERROR(X86_TRAP_DE,     SIGFPE,  FPE_INTDIV,   IP, "divide error",        divide_error)
+> >
+> > +DEFINE_IDTENTRY(exc_divide_error)
+> > +{
+> > +       do_error_trap(regs, 0, "divide_error", X86_TRAP_DE, SIGFPE,
+> > +                     FPE_INTDIV, error_get_trap_addr(regs));
+> > +}
 > 
-> It seems the last sentence is redundant - new features always bloat
-> the kernel code and precise size may differ depending on compiler
-> and options. Surely this can be patched on top.
+> I suppose this is a copy-paste typo and was supposed to be "divide
+> error", right?
+> Otherwise it changes how kernel oopses look like and breaks syzkaller
+> crash parsing, and probably of every other kernel testing system that
+> looks for kernel crashes.
 > 
+> syzkaller now says just the following for divide errors, without
+> attribution to function/file/maintainers:
+> 
+> kernel panic: Fatal exception (3)
+> FS:  0000000000000000(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00000000004c9428 CR3: 0000000009e8d000 CR4: 00000000001506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Kernel panic - not syncing: Fatal exception in interrupt
+> Kernel Offset: disabled
+> Rebooting in 86400 seconds..
+> 
+> I will fix it up in syzkaller. It is now required anyway since this
+> new crash mode is in git history, so needed for bisection and testing
+> of older releases.
+> 
+> It is not the first time kernel crash output changes
+> intentionally/unintentionally breaking kernel testing.
+> But I wonder if LKDTM can be turned into actual executable tests that
+> produce pass/fail and fix crash output for different oopses?
+> Marco, you implemented some "output tests" for KCSAN. Can that be
+> extended to other crash types? With some KUnit help? However, I am not
+> sure about hard panics, they may not play well with unit-testing...
 
-This was added after some discussion in v12 about kernel text size [1]. 
-I think these few extra words can help people who have older machines 
-and want to save some space.  Yes, like you said, if later we don't want 
-this sentence, I will be happy to add a patch to remove it.  Thanks for 
-the feedback.
+A lot of the behavioral tests in LKDTM end up triggering arch-specific
+logging. I decided to avoid trying to consolidate it in favor of
+actually getting the test coverage. :)
 
-Yu-cheng
-
-[1] 
-https://lore.kernel.org/linux-api/5e0a4005-45e3-3e88-e6e0-4ec31aad7eb9@intel.com/
+-- 
+Kees Cook
