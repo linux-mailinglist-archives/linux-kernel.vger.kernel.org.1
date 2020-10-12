@@ -2,108 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80C9228B82F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:50:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD21828B85B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390009AbgJLNuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:50:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60676 "EHLO
+        id S2390152AbgJLNvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:51:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389818AbgJLNtT (ORCPT
+        with ESMTP id S2389973AbgJLNtw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:49:19 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 167DFC0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 06:49:19 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id m13so15851743otl.9
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 06:49:19 -0700 (PDT)
+        Mon, 12 Oct 2020 09:49:52 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E26C0613D7;
+        Mon, 12 Oct 2020 06:49:51 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id t20so10697078edr.11;
+        Mon, 12 Oct 2020 06:49:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8X09Z4RduZw54E7UULyfcMVsq59sUX38yzJavXEvAuQ=;
-        b=OxcKeNhvQoR0L8nxbCn1cXzOLqpqQBDfywbnUKwin8fP1jeNNo8TXGjdlV3i/RFefc
-         kiDn5u8kWGFx2VxB985ageHcqSHKlzq4zLw3IXCA9ks8vIzNebZc3IQZx/DZrDgmJSXd
-         NsUKEksWwYQT7XMaHoiEwCdO/DkttVP0ejuaI=
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=HsbAp6qd7g4JTk6QFw04+VFZUaG3bIXSc1NpoNbfqf8=;
+        b=phQ8c5GMkXNgAEiW9pg3lAWEQS1b60Omw7uWqN0NQUjcppagPTYtroAw8rKpJsTb9G
+         +QD9RAx2vJoncFxbg7zUExmhvBJh9nr0yR8gsAZ+SJseY4NuhdNgHnBcmFPOgFnizuzQ
+         qRWHPuXVuZfx+32H/GUCF7uWBhp7NMaJQyeeZBxbPQx2vFXSU00hdF39rgfPJGfhKy55
+         EdmRUfZY16sG7yJvjcvET3KkhQ5rBeWMGrGfh6X0kZE747vjAP6eRX24+chUkhcZbMGw
+         4/5ETyAd+LZsEtsdqJGe764PuvmLDlQASUw7tIvKy3SsBWyY4wCYUlUdQXVNqKdGY0UK
+         T2/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8X09Z4RduZw54E7UULyfcMVsq59sUX38yzJavXEvAuQ=;
-        b=GgqIULK5k4rERZF9ZmU9Haaq84k27rrZ2hjMuHJLu+smIUOW4EcOqlca8CrM7scI6T
-         Rk7IB1XxWkX4jgxnA6sJIEFixe2eSmXAN1sEEqw1FNNc82o8VhJfgMyXL4ae3Kt+5xgt
-         A/st51E3xxrilDycAyQXyh65ch/Olle946O2esvP1ZZfKhhGeA/U4o4P7gAEFr9MKu4V
-         x6R2TKda1P3Rn63866oHAGOUttFvS8RLmZj73PqVfwmosfOkryqNv/8PZYvKI2ro4+Oy
-         Q+V86XkF5hP+JFexXHOczx8hWlmvjlQPEGRloglJM/r0RgJSLSYF5e9mowI/qjMEZNHb
-         cFOg==
-X-Gm-Message-State: AOAM532JiugUxsAGJ/VbwjKRPKSBpWdOxJEbH5IrsLOdAO8euaebwztt
-        tzqdcbd84j5V63sS1zjDWSsvg32ork8YZ0c93/r9wuRHLwnYIg==
-X-Google-Smtp-Source: ABdhPJx2SbzoAtarumY1qTqnmUTVH9IgcM13EmZUSL9fGwCe3viWjRc3PXrzmY6z+PXG92wLIZXLR8i7oO5kJrgMePc=
-X-Received: by 2002:a05:6830:8b:: with SMTP id a11mr7008058oto.303.1602510558346;
- Mon, 12 Oct 2020 06:49:18 -0700 (PDT)
+        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=HsbAp6qd7g4JTk6QFw04+VFZUaG3bIXSc1NpoNbfqf8=;
+        b=IpE6cDGEHNJUHYu1djq5WNwPFiC+FohCMvI5yKzz2p0Qpopx2rdZdlaPFbB1N1/7XT
+         Ft9LgUV9iXx+2atz5u0jgUlYT6fPIFdrMbQgFuinx5DlmVaHloyS9UKJ9DGIPQnzfZpG
+         48xjdVAli2dee7o8yTPvxBtedR0xTIxuVqpKXHOe1ziVpZBYuKv9Ll5iS63dk5qL577r
+         PSNxok4bG+8iKrI7wF1BYJtzG2M5r4VIBzkz8rSmPN1w6V3leYen4/tQM4gsJ3WuKyQY
+         qKpDXy4BwYeLhUERxwSGvXMrcfntAkayOlXEdrxrpRiHpDb4vjh2FWjXyrc+BsAAUe8c
+         lJQw==
+X-Gm-Message-State: AOAM5320YJjgVf3b31hkLdkIreF9cvB5Y18DJu+4b5QpbTaus7vjI56T
+        9rfP6x9FV8Ikx3rZrg+qzvI=
+X-Google-Smtp-Source: ABdhPJxFkYpU7K3AS5LxjIDvju41ZYqpsBIoDPX+SHxU23/hUALjax3K659HVU/Z5ZE7dilKv7q/kw==
+X-Received: by 2002:aa7:cd4f:: with SMTP id v15mr13718665edw.243.1602510590180;
+        Mon, 12 Oct 2020 06:49:50 -0700 (PDT)
+Received: from felia ([2001:16b8:2d57:fc00:8472:203c:3ecb:c442])
+        by smtp.gmail.com with ESMTPSA id u17sm8233872ejj.83.2020.10.12.06.49.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 06:49:49 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
+Date:   Mon, 12 Oct 2020 15:49:48 +0200 (CEST)
+X-X-Sender: lukas@felia
+To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-safety@lists.elisa.tech, intel-wired-lan@lists.osuosl.org,
+        netdev@vger.kernel.org
+Subject: Re: [linux-safety] [PATCH] e1000: drop unneeded assignment in
+ e1000_set_itr()
+In-Reply-To: <20201011212326.2758-1-sudipm.mukherjee@gmail.com>
+Message-ID: <alpine.DEB.2.21.2010121546470.6487@felia>
+References: <20201011212326.2758-1-sudipm.mukherjee@gmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-References: <20201009075934.3509076-1-daniel.vetter@ffwll.ch>
- <20201009075934.3509076-10-daniel.vetter@ffwll.ch> <20201009123421.67a80d72@coco.lan>
- <20201009122111.GN5177@ziepe.ca> <20201009143723.45609bfb@coco.lan>
- <CGME20201009124900eucas1p26c93caa29c9925f1eef9be9ff7c6c65c@eucas1p2.samsung.com>
- <20201009124850.GP5177@ziepe.ca> <ed68968b-27bc-d776-8da8-ef21d6b3c378@samsung.com>
-In-Reply-To: <ed68968b-27bc-d776-8da8-ef21d6b3c378@samsung.com>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Mon, 12 Oct 2020 15:49:07 +0200
-Message-ID: <CAKMK7uGLOubJrr9A=usxkoVx+nXDW3bxhykfeU-TYXTUZyBoeQ@mail.gmail.com>
-Subject: Re: [PATCH v2 09/17] mm: Add unsafe_follow_pfn
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>, Kees Cook <keescook@chromium.org>,
-        KVM list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux MM <linux-mm@kvack.org>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 12:47 PM Marek Szyprowski
-<m.szyprowski@samsung.com> wrote:
->
-> Hi Jason,
->
-> On 09.10.2020 14:48, Jason Gunthorpe wrote:
-> > On Fri, Oct 09, 2020 at 02:37:23PM +0200, Mauro Carvalho Chehab wrote:
-> >
-> >> I'm not a mm/ expert, but, from what I understood from Daniel's patch
-> >> description is that this is unsafe *only if*  __GFP_MOVABLE is used.
-> > No, it is unconditionally unsafe. The CMA movable mappings are
-> > specific VMAs that will have bad issues here, but there are other
-> > types too.
->
-> I'm trying to follow this thread, but I really wonder what do you mean
-> by CMA movable mappings? If a buffer has been allocated from CMA and
-> used for DMA, it won't be moved in the memory. It will stay at the same
-> physical memory address all the time until freed by the owner. It just a
-> matter of proper usage count tracking to delay freeing if it is still
-> used somewhere.
 
- Yup. The problem is that this usage count tracking doesn't exist. And
-drivers could at least in theory treat CMA like vram and swap buffers
-in&out of it, so just refcounting the userspace vma isn't enough. In
-practice, right now, it might be enough for CMA drivers though (but
-there's more that's possible here).
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+
+On Sun, 11 Oct 2020, Sudip Mukherjee wrote:
+
+> The variable 'current_itr' is assigned to 0 before jumping to
+> 'set_itr_now' but it has not been used after the jump. So, remove the
+> unneeded assignement.
+> 
+> Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+> ---
+>  drivers/net/ethernet/intel/e1000/e1000_main.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/intel/e1000/e1000_main.c b/drivers/net/ethernet/intel/e1000/e1000_main.c
+> index 5e28cf4fa2cd..042de276e632 100644
+> --- a/drivers/net/ethernet/intel/e1000/e1000_main.c
+> +++ b/drivers/net/ethernet/intel/e1000/e1000_main.c
+> @@ -2632,7 +2632,6 @@ static void e1000_set_itr(struct e1000_adapter *adapter)
+>  
+>  	/* for non-gigabit speeds, just fix the interrupt rate at 4000 */
+>  	if (unlikely(adapter->link_speed != SPEED_1000)) {
+> -		current_itr = 0;
+>  		new_itr = 4000;
+>  		goto set_itr_now;
+>  	}
+
+Alternatively, you could just inline the max(...) into the switch and 
+completely drop the current_itr definition.
+
+But your solution probably does the job: it is a "No functional change" 
+commit.
+
+Reviewed-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+
+
+Lukas
+
+> -- 
+> 2.11.0
+> 
+> 
+> 
+> -=-=-=-=-=-=-=-=-=-=-=-
+> Links: You receive all messages sent to this group.
+> View/Reply Online (#77): https://lists.elisa.tech/g/linux-safety/message/77
+> Mute This Topic: https://lists.elisa.tech/mt/77448709/1714638
+> Group Owner: linux-safety+owner@lists.elisa.tech
+> Unsubscribe: https://lists.elisa.tech/g/linux-safety/unsub [lukas.bulwahn@gmail.com]
+> -=-=-=-=-=-=-=-=-=-=-=-
+> 
+> 
+> 
