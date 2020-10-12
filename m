@@ -2,150 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC78828BBC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:25:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8062128BBC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:25:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389939AbgJLPZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 11:25:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36228 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388984AbgJLPZZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 11:25:25 -0400
-Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 34DD2208D5;
-        Mon, 12 Oct 2020 15:25:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602516324;
-        bh=bIkKTbcUZtX9LoLNwSifZfSlJSm+lTIbvj8ANEPWg+E=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=uxZf4iW79VnNA5czZ7+lfYfL5mZh/NTtQp8P1PUO/mrWTeniv1u3OVK8c7bMYmXVw
-         wU947G/HociXcrlo7OV167y6SyyB9Lqora51+m25lwRLW/rlQgarEnehXa9R0cIao6
-         JNo23nmkZcwJ70/WjKMzFieZygaW1q7ZDG+w2wzU=
-Received: by mail-ot1-f51.google.com with SMTP id m11so16122203otk.13;
-        Mon, 12 Oct 2020 08:25:24 -0700 (PDT)
-X-Gm-Message-State: AOAM531TDwHuHn0zHsJJs8yM8vE+GBwaSnlJwSCkF2rJLGMJJwTTmX13
-        6CheKC1FVGJQiL7N5kAtMhSeZR0b0sCPhXFcTQ==
-X-Google-Smtp-Source: ABdhPJzn/48d6MtUs58/VlMn2lXXGtFdr5KMFZ9WLc1IRZmoznfmeWfNkAM04VmTyhwnzuvsMRlIu9LYOOnGR3XI80o=
-X-Received: by 2002:a9d:7993:: with SMTP id h19mr15487657otm.129.1602516323477;
- Mon, 12 Oct 2020 08:25:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201010151235.20585-1-nsaenzjulienne@suse.de> <20201010151235.20585-3-nsaenzjulienne@suse.de>
-In-Reply-To: <20201010151235.20585-3-nsaenzjulienne@suse.de>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 12 Oct 2020 10:25:12 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqL2cs+cko-UuTd37fnBKO_=3jQeyjB49USvm_VTBwcS8g@mail.gmail.com>
-Message-ID: <CAL_JsqL2cs+cko-UuTd37fnBKO_=3jQeyjB49USvm_VTBwcS8g@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] of/address: Introduce of_dma_lower_bus_limit()
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        devicetree@vger.kernel.org
+        id S2389910AbgJLPZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 11:25:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388984AbgJLPZW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 11:25:22 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8F95C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 08:25:22 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id y20so12870078qta.6
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 08:25:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=jIHa8q4IkmT9vd9Bfnkau/RKxHufFOeKij/xuNE1mRI=;
+        b=k7FyQ2VOygaxXJ6PGSWN6PzoYEnz6Ce/Zq/BAMvbKmK0HMAmhS6VQB46jpUwH9gCuw
+         8e5EN7ipPc2oakWIujzbbWYnVDmnJksBBBXyiugdgeqpcUoXfaV3V6PcokdIFdlwkiym
+         IeLHO2skfW9PFqHr9cmLpOb/zmXlOCrKAP8d+1zmOK9PGb6V+z7b4jhibHKR/6tgywFa
+         YFDI6ezcB1KuibAttGxD2vf43VVxO/1qDHZi5Mj5A++4crdiLn5HuSdEdQYLgkQPC6Qf
+         Im6DnvOfe8vgX8x1SG1bJ+z/ZOO+NicPhMsGcQDdxwom4CuLUCbSgEbqKxmG5vqf0kW8
+         kh+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=jIHa8q4IkmT9vd9Bfnkau/RKxHufFOeKij/xuNE1mRI=;
+        b=T9D1kezNm/bGbh1iqqMPVpK8u9FQPsvxpPgw1k5VLJlyRNErAlG5azeHs0Z6uBgMHv
+         zIT5GociKTci38Ck7vW59FlkPt9MqYWsO9f4FbZtnnWOxdAll52XdIxNbUNSxUBjr9Dn
+         N/lv4WUVh4+B2IXOBF6PpY5OWHcshQmQDOrPGVsih9WAQ5eMqlFjsIMJUyEpiyQK+UEJ
+         A90LDEywI3vZ+9EEHDifp9TLAZMe7I1w6Hf4yxA1Y3xTJfVzFjqtE9KHLvhrjbLykYX/
+         PTGndhroklRvCwdPQ7b9Q/aWvLyFmQ99q4vAs/OPkZKgMzuGoC+Qs61tlvVWQv+gZRAf
+         Dapw==
+X-Gm-Message-State: AOAM533JDqYG2lgDrI2FUQjA2V1sBoSNn4qR1AQApt8j+d6PQwPaF1lJ
+        da2o3qfqVtqc6W4jji5o/fAmlDEuwCHTGDfb
+X-Google-Smtp-Source: ABdhPJxCobCNF8eSvpi3lYRqvqWOYP+riWm3d8tWr5cm+EkDZAAfvjq+Gg/GDRl/m7eEEepAywbI7pOAN1cJyTwE
+Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
+X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
+ (user=andreyknvl job=sendgmr) by 2002:a05:6214:1192:: with SMTP id
+ t18mr19208611qvv.49.1602516321742; Mon, 12 Oct 2020 08:25:21 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 17:25:16 +0200
+Message-Id: <6b6f14a32fc13e2f8de0f384cab5ae32ce5eb8e0.1602516273.git.andreyknvl@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
+Subject: [PATCH v3] kcov, usb: specify contexts for remote coverage sections
+From:   Andrey Konovalov <andreyknvl@google.com>
+To:     Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 10, 2020 at 10:12 AM Nicolas Saenz Julienne
-<nsaenzjulienne@suse.de> wrote:
->
-> The function provides the CPU physical address addressable by the most
-> constrained bus in the system. It might be useful in order to
-> dynamically set up memory zones during boot.
->
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> ---
->  drivers/of/address.c | 34 ++++++++++++++++++++++++++++++++++
->  include/linux/of.h   |  7 +++++++
->  2 files changed, 41 insertions(+)
->
-> diff --git a/drivers/of/address.c b/drivers/of/address.c
-> index eb9ab4f1e80b..755e97b65096 100644
-> --- a/drivers/of/address.c
-> +++ b/drivers/of/address.c
-> @@ -1024,6 +1024,40 @@ int of_dma_get_range(struct device_node *np, const struct bus_dma_region **map)
->  }
->  #endif /* CONFIG_HAS_DMA */
->
-> +/**
-> + * of_dma_safe_phys_limit - Get system wide DMA safe address space
-> + *
-> + * Gets the CPU physical address limit for safe DMA addressing system wide by
-> + * searching for the most constraining dma-range. Otherwise it returns ~0ULL.
-> + */
-> +u64 __init of_dma_safe_phys_limit(void)
-> +{
-> +       struct device_node *np = NULL;
-> +       struct of_range_parser parser;
-> +       const __be32 *ranges = NULL;
-> +       u64 phys_dma_limit = ~0ULL;
-> +       struct of_range range;
-> +       int len;
-> +
-> +       for_each_of_allnodes(np) {
-> +               dma_addr_t cpu_end = 0;
-> +
-> +               ranges = of_get_property(np, "dma-ranges", &len);
-> +               if (!ranges || !len)
-> +                       continue;
-> +
-> +               of_dma_range_parser_init(&parser, np);
-> +               for_each_of_range(&parser, &range)
-> +                       if (range.cpu_addr + range.size > cpu_end)
-> +                               cpu_end = range.cpu_addr + range.size;
+Currently there's a KCOV remote coverage collection section in
+__usb_hcd_giveback_urb(). Initially that section was added based on the
+assumption that usb_hcd_giveback_urb() can only be called in interrupt
+context as indicated by a comment before it. This is what happens when
+syzkaller is fuzzing the USB stack via the dummy_hcd driver.
 
-This doesn't work if you have more than one level of dma-ranges. The
-address has to be translated first. It should be okay to do that on
-the start or end address (if not, your DT is broken).
+As it turns out, it's actually valid to call usb_hcd_giveback_urb() in task
+context, provided that the caller turned off the interrupts; USB/IP does
+exactly that. This can lead to a nested KCOV remote coverage collection
+sections both trying to collect coverage in task context. This isn't
+supported by KCOV, and leads to a WARNING.
 
-Please add/extend a unittest for this.
+The approach this patch takes is to add another set of kcov_remote_*()
+callbacks that specify the context they are supposed to be executed in.
+If the current context doesn't match the mask provided to a callback,
+that callback is ignored. KCOV currently only supports collecting remote
+coverage in two contexts: task and softirq. This patch constraints KCOV to
+only collect coverage from __usb_hcd_giveback_urb() when it's executed in
+softirq context.
 
-> +
-> +               if (phys_dma_limit > cpu_end)
-> +                       phys_dma_limit = cpu_end;
-> +       }
-> +
-> +       return phys_dma_limit;
-> +}
-> +
->  /**
->   * of_dma_is_coherent - Check if device is coherent
->   * @np:        device node
-> diff --git a/include/linux/of.h b/include/linux/of.h
-> index 481ec0467285..958c64cffa92 100644
-> --- a/include/linux/of.h
-> +++ b/include/linux/of.h
-> @@ -558,6 +558,8 @@ int of_map_id(struct device_node *np, u32 id,
->                const char *map_name, const char *map_mask_name,
->                struct device_node **target, u32 *id_out);
->
-> +u64 of_dma_safe_phys_limit(void);
-> +
->  #else /* CONFIG_OF */
->
->  static inline void of_core_init(void)
-> @@ -995,6 +997,11 @@ static inline int of_map_id(struct device_node *np, u32 id,
->         return -EINVAL;
->  }
->
-> +static inline u64 of_dma_safe_phys_limit(void)
-> +{
-> +       return ~0ULL;
-> +}
-> +
->  #define of_match_ptr(_ptr)     NULL
->  #define of_match_node(_matches, _node) NULL
->  #endif /* CONFIG_OF */
-> --
-> 2.28.0
->
+As the result, the coverage from USB/IP related usb_hcd_giveback_urb() calls
+won't be collected, but the WARNING is fixed.
+
+A potential future improvement would be to support nested remote coverage
+collection sections, but this patch doesn't address that.
+
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+---
+
+Changes v2->v3:
+- Keep behavoir of existing callbacks the same except for the
+  __usb_hcd_giveback_urb() one.
+- Fix build error with KOV disabled.
+
+---
+ Documentation/dev-tools/kcov.rst |  6 ++++++
+ drivers/usb/core/hcd.c           |  4 ++--
+ include/linux/kcov.h             | 31 +++++++++++++++++++++++++++++--
+ kernel/kcov.c                    | 26 +++++++++++++++++++-------
+ 4 files changed, 56 insertions(+), 11 deletions(-)
+
+diff --git a/Documentation/dev-tools/kcov.rst b/Documentation/dev-tools/kcov.rst
+index 8548b0b04e43..2c0f58988512 100644
+--- a/Documentation/dev-tools/kcov.rst
++++ b/Documentation/dev-tools/kcov.rst
+@@ -235,6 +235,12 @@ saved to the kcov_handle field in the current task_struct and needs to be
+ passed to the newly spawned threads via custom annotations. Those threads
+ should in turn be annotated with kcov_remote_start()/kcov_remote_stop().
+ 
++Besides the annotations that only accept a handle, there are also
++kcov_remote_start_context()/kcov_remote_stop_context() that accept a
++context mask. This mask describes the contexts in which these annotations
++should be applied. E.g. specifying KCOV_CONTEXT_SOFTIRQ will result in the
++corresponding annotations being ignored in any context other than softirq.
++
+ Internally kcov stores handles as u64 integers. The top byte of a handle
+ is used to denote the id of a subsystem that this handle belongs to, and
+ the lower 4 bytes are used to denote the id of a thread instance within
+diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
+index a33b849e8beb..ea93d9ebcb2e 100644
+--- a/drivers/usb/core/hcd.c
++++ b/drivers/usb/core/hcd.c
+@@ -1646,9 +1646,9 @@ static void __usb_hcd_giveback_urb(struct urb *urb)
+ 
+ 	/* pass ownership to the completion handler */
+ 	urb->status = status;
+-	kcov_remote_start_usb((u64)urb->dev->bus->busnum);
++	kcov_remote_start_usb_softirq((u64)urb->dev->bus->busnum);
+ 	urb->complete(urb);
+-	kcov_remote_stop();
++	kcov_remote_stop_softirq();
+ 
+ 	usb_anchor_resume_wakeups(anchor);
+ 	atomic_dec(&urb->use_count);
+diff --git a/include/linux/kcov.h b/include/linux/kcov.h
+index a10e84707d82..9e31b71ee3f9 100644
+--- a/include/linux/kcov.h
++++ b/include/linux/kcov.h
+@@ -22,6 +22,10 @@ enum kcov_mode {
+ 	KCOV_MODE_TRACE_CMP = 3,
+ };
+ 
++#define KCOV_CONTEXT_TASK	(1u << 0)
++#define KCOV_CONTEXT_SOFTIRQ	(1u << 1)
++#define KCOV_CONTEXT_MASK	(KCOV_CONTEXT_TASK | KCOV_CONTEXT_SOFTIRQ)
++
+ #define KCOV_IN_CTXSW	(1 << 30)
+ 
+ void kcov_task_init(struct task_struct *t);
+@@ -38,10 +42,21 @@ do {						\
+ } while (0)
+ 
+ /* See Documentation/dev-tools/kcov.rst for usage details. */
+-void kcov_remote_start(u64 handle);
+-void kcov_remote_stop(void);
++
++void kcov_remote_start_context(u64 handle, unsigned int context);
++void kcov_remote_stop_context(unsigned int context);
+ u64 kcov_common_handle(void);
+ 
++static inline void kcov_remote_start(u64 handle)
++{
++	return kcov_remote_start_context(handle, KCOV_CONTEXT_MASK);
++}
++
++static inline void kcov_remote_stop(void)
++{
++	return kcov_remote_stop_context(KCOV_CONTEXT_MASK);
++}
++
+ static inline void kcov_remote_start_common(u64 id)
+ {
+ 	kcov_remote_start(kcov_remote_handle(KCOV_SUBSYSTEM_COMMON, id));
+@@ -52,6 +67,16 @@ static inline void kcov_remote_start_usb(u64 id)
+ 	kcov_remote_start(kcov_remote_handle(KCOV_SUBSYSTEM_USB, id));
+ }
+ 
++static inline void kcov_remote_start_usb_softirq(u64 id)
++{
++	kcov_remote_start_context(kcov_remote_handle(KCOV_SUBSYSTEM_USB, id), KCOV_CONTEXT_SOFTIRQ);
++}
++
++static inline void kcov_remote_stop_softirq(void)
++{
++	return kcov_remote_stop_context(KCOV_CONTEXT_SOFTIRQ);
++}
++
+ #else
+ 
+ static inline void kcov_task_init(struct task_struct *t) {}
+@@ -66,6 +91,8 @@ static inline u64 kcov_common_handle(void)
+ }
+ static inline void kcov_remote_start_common(u64 id) {}
+ static inline void kcov_remote_start_usb(u64 id) {}
++static inline void kcov_remote_start_usb_softirq(u64 id) {}
++static inline void kcov_remote_stop_softirq(void) {}
+ 
+ #endif /* CONFIG_KCOV */
+ #endif /* _LINUX_KCOV_H */
+diff --git a/kernel/kcov.c b/kernel/kcov.c
+index 6b8368be89c8..3ccdbe060f47 100644
+--- a/kernel/kcov.c
++++ b/kernel/kcov.c
+@@ -808,7 +808,8 @@ static void kcov_remote_softirq_stop(struct task_struct *t)
+ 	}
+ }
+ 
+-void kcov_remote_start(u64 handle)
++/* Also see kcov_remote_start() defined in include/linux/kcov.h. */
++void kcov_remote_start_context(u64 handle, unsigned int context)
+ {
+ 	struct task_struct *t = current;
+ 	struct kcov_remote *remote;
+@@ -821,7 +822,11 @@ void kcov_remote_start(u64 handle)
+ 
+ 	if (WARN_ON(!kcov_check_handle(handle, true, true, true)))
+ 		return;
+-	if (!in_task() && !in_serving_softirq())
++	if (WARN_ON((context & ~KCOV_CONTEXT_MASK) || !context))
++		return;
++	if (in_task() && !(context & KCOV_CONTEXT_TASK))
++		return;
++	if (in_serving_softirq() && !(context & KCOV_CONTEXT_SOFTIRQ))
+ 		return;
+ 
+ 	local_irq_save(flags);
+@@ -894,7 +899,7 @@ void kcov_remote_start(u64 handle)
+ 	local_irq_restore(flags);
+ 
+ }
+-EXPORT_SYMBOL(kcov_remote_start);
++EXPORT_SYMBOL(kcov_remote_start_context);
+ 
+ static void kcov_move_area(enum kcov_mode mode, void *dst_area,
+ 				unsigned int dst_area_size, void *src_area)
+@@ -951,8 +956,11 @@ static void kcov_move_area(enum kcov_mode mode, void *dst_area,
+ 	}
+ }
+ 
+-/* See the comment before kcov_remote_start() for usage details. */
+-void kcov_remote_stop(void)
++/*
++ * Also see kcov_remote_stop() defined in include/linux/kcov.h.
++ * See the comment before kcov_remote_start_context() for usage details.
++ */
++void kcov_remote_stop_context(unsigned int context)
+ {
+ 	struct task_struct *t = current;
+ 	struct kcov *kcov;
+@@ -962,7 +970,11 @@ void kcov_remote_stop(void)
+ 	int sequence;
+ 	unsigned long flags;
+ 
+-	if (!in_task() && !in_serving_softirq())
++	if (WARN_ON((context & ~KCOV_CONTEXT_MASK) || !context))
++		return;
++	if (in_task() && !(context & KCOV_CONTEXT_TASK))
++		return;
++	if (in_serving_softirq() && !(context & KCOV_CONTEXT_SOFTIRQ))
+ 		return;
+ 
+ 	local_irq_save(flags);
+@@ -1018,7 +1030,7 @@ void kcov_remote_stop(void)
+ 	/* Get in kcov_remote_start(). */
+ 	kcov_put(kcov);
+ }
+-EXPORT_SYMBOL(kcov_remote_stop);
++EXPORT_SYMBOL(kcov_remote_stop_context);
+ 
+ /* See the comment before kcov_remote_start() for usage details. */
+ u64 kcov_common_handle(void)
+-- 
+2.28.0.1011.ga647a8990f-goog
+
