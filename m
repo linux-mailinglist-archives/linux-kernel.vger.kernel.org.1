@@ -2,85 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C36E28B20E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 12:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 456D228B212
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 12:15:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387494AbgJLKOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 06:14:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387467AbgJLKOI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 06:14:08 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63ADEC0613CE;
-        Mon, 12 Oct 2020 03:14:08 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id 1so2462158ple.2;
-        Mon, 12 Oct 2020 03:14:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QhDaEeXzqMVTcLqFDp+35E5HX0YNacZQ8ZAJN/Iw3a8=;
-        b=eQRTXT/4Ius2BWvqcRhWh9HINzSr+buOU+8LH/C05qeU4pKtu45P/5zenIdITvog8y
-         810d6UU1caBd8Epge0fDoYqtMTXq88EcWlLaIyopkTp4bfsIImNxqC4LhQI2L3uXzmdW
-         RLpfnIan6I8jgdkPbXbd9S0PNZAvOkCr9bzgsexFj8AnZIKZ2d+7NXvCsOkxW1F02rOt
-         N/OUpkd0sKvdUKLLrN5BEobhsG31/Uo+9CjUPS4zN9GB0z2yPipwqerDmdW+kXhNNXcf
-         iMjNr4SB/7VpdRXX1sw3upKRktZZhbMkkPxOidmQjjMU7WkpBSQYL8/NXfEzjo6E6o/h
-         c9kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QhDaEeXzqMVTcLqFDp+35E5HX0YNacZQ8ZAJN/Iw3a8=;
-        b=fGiIqdIDbvhy7h8HYAx4srUCphup2jAnvwbSQJX6oxkz8YTC1ZyGzh6wqZ9/UF8XgR
-         9WN8Rq875wnMFitIouYSvS/KiwPJ7ZYlocDfmIt5EslNMEY93RcQeWu+oTgJoPt1Dhr6
-         OrkonNJ9CYJaSNJAzfN9o6ptY4+G/QXbXFFtelrQi10tYSo+FwBL/VC/MQKrPyp0bzFJ
-         i4J8BGN91hbvFS3TE3UxbacTqII9hCh9UxhjgVTpnKpF/bfFbqAQsFQN/OShwmS4aL9d
-         m9230zHkdZK2j6Z/DPD/L3o+Kqde2/0TXHR43+8g8Bn9UeJu2rGV5yM8Qa4bD5kZTZ+2
-         BjwQ==
-X-Gm-Message-State: AOAM533ln1RnyEBoRzixybfONyRwVbhdY7gwBzemmSRFCBUaA6d3eZbk
-        rJ2cE/JDG5XIbwap1NPxLhkH54mEmOwz5lTWMHc=
-X-Google-Smtp-Source: ABdhPJzn8EYi2P42gi24ZBwj5mJ8qTi0hHHtMkLnelMvAwPeHrWsfCC5XrIRIIy/w9glbOjlmlUhwijuYQKhaNa21IU=
-X-Received: by 2002:a17:902:7896:b029:d3:7768:1eb with SMTP id
- q22-20020a1709027896b02900d3776801ebmr22693133pll.17.1602497647807; Mon, 12
- Oct 2020 03:14:07 -0700 (PDT)
+        id S1726832AbgJLKPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 06:15:31 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33474 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726104AbgJLKPa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 06:15:30 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 477E3AC6C;
+        Mon, 12 Oct 2020 10:15:29 +0000 (UTC)
+Date:   Mon, 12 Oct 2020 12:15:25 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] x86/pasid updates for v5.10
+Message-ID: <20201012101525.GE25311@zn.tnic>
 MIME-Version: 1.0
-References: <20200923215633.209724-1-luke@ljones.dev> <119d6a2e-275b-e6b9-0130-edd653ecd4fa@redhat.com>
- <YOZ0IQ.A665YAO5V6WM2@ljones.dev> <4253ebb9-8978-7f31-3931-b2f5bd327f0d@redhat.com>
-In-Reply-To: <4253ebb9-8978-7f31-3931-b2f5bd327f0d@redhat.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 12 Oct 2020 13:14:57 +0300
-Message-ID: <CAHp75VfZ3QmePN2fLmAZPd1rMPzWHB=F8t4fs5s6R9rbQdvDww@mail.gmail.com>
-Subject: Re: [PATCH V6 RESEND] HID: ASUS: Add support for ASUS N-Key keyboard
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Luke Jones <luke@ljones.dev>, Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-input <linux-input@vger.kernel.org>,
-        Andy Shevchenko <andy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 12:51 PM Hans de Goede <hdegoede@redhat.com> wrote:
-> On 10/11/20 9:05 AM, Luke Jones wrote:
-> > On Fri, Oct 9, 2020 at 16:22, Hans de Goede <hdegoede@redhat.com> wrote:
+Hi Linus,
 
-...
+please pull the x86/pasid pile.
 
-> > All the DSL we've dumped are here:
-> > https://gitlab.com/asus-linux/reverse-engineering/-/tree/master/dsl
-> >
-> > I'm not sure where to go from here. Do I resubmit the revised patch in a new thread
-> > or should I attach here? (I'll attach for now)
->
-> Please submit a new version in a new email thread with [PATCH v2] as prefix to the
-> subject, you can do this by passing --subject-prefix="PATCH v2" to git format-patch.
+Thx.
 
--v<N> will do it for you in a shorter way.
+---
+
+The following changes since commit 856deb866d16e29bd65952e0289066f6078af773:
+
+  Linux 5.9-rc5 (2020-09-13 16:06:00 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_pasid_for_5.10
+
+for you to fetch changes up to 7f5933f81bd85a0bf6a87d65c7327ea048a75e54:
+
+  x86/asm: Add an enqcmds() wrapper for the ENQCMDS instruction (2020-10-07 17:53:08 +0200)
+
+----------------------------------------------------------------
+Initial support for sharing virtual addresses between the CPU and
+devices which doesn't need pinning of pages for DMA anymore. Add support
+for the command submission to devices using new x86 instructions like
+ENQCMD{,S} and MOVDIR64B. In addition, add support for process address
+space identifiers (PASIDs) which are referenced by those command
+submission instructions along with the handling of the PASID state on
+context switch as another extended state. Work by Fenghua Yu, Ashok Raj,
+Yu-cheng Yu and Dave Jiang.
+
+----------------------------------------------------------------
+Ashok Raj (1):
+      Documentation/x86: Add documentation for SVA (Shared Virtual Addressing)
+
+Dave Jiang (2):
+      x86/asm: Carve out a generic movdir64b() helper for general usage
+      x86/asm: Add an enqcmds() wrapper for the ENQCMDS instruction
+
+Fenghua Yu (7):
+      drm, iommu: Change type of pasid to u32
+      iommu/vt-d: Change flags type to unsigned int in binding mm
+      x86/cpufeatures: Enumerate ENQCMD and ENQCMDS instructions
+      x86/msr-index: Define an IA32_PASID MSR
+      mm: Add a pasid member to struct mm_struct
+      x86/cpufeatures: Mark ENQCMD as disabled when configured out
+      x86/mmu: Allocate/free a PASID
+
+Yu-cheng Yu (1):
+      x86/fpu/xstate: Add supervisor PASID state for ENQCMD
+
+ Documentation/x86/index.rst                        |   1 +
+ Documentation/x86/sva.rst                          | 257 +++++++++++++++++++++
+ arch/x86/include/asm/cpufeatures.h                 |   1 +
+ arch/x86/include/asm/disabled-features.h           |   9 +-
+ arch/x86/include/asm/fpu/api.h                     |  12 +
+ arch/x86/include/asm/fpu/internal.h                |   7 +
+ arch/x86/include/asm/fpu/types.h                   |  11 +-
+ arch/x86/include/asm/fpu/xstate.h                  |   2 +-
+ arch/x86/include/asm/io.h                          |  17 +-
+ arch/x86/include/asm/msr-index.h                   |   3 +
+ arch/x86/include/asm/special_insns.h               |  64 +++++
+ arch/x86/kernel/cpu/cpuid-deps.c                   |   1 +
+ arch/x86/kernel/fpu/xstate.c                       |  63 ++++-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd.h         |   4 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v10.c |   2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v7.c  |   2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v8.c  |   2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.c  |   2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.h  |   2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c   |   4 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c            |   6 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ids.h            |   4 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c            |   2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c             |   8 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h             |   8 +-
+ drivers/gpu/drm/amd/amdkfd/cik_event_interrupt.c   |   2 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_dbgdev.c            |   2 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_dbgmgr.h            |   2 +-
+ .../gpu/drm/amd/amdkfd/kfd_device_queue_manager.c  |   7 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_events.c            |   8 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_events.h            |   4 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_iommu.c             |   6 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_pasid.c             |   4 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_priv.h              |  20 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_process.c           |   2 +-
+ drivers/gpu/drm/amd/include/kgd_kfd_interface.h    |   2 +-
+ drivers/iommu/amd/amd_iommu.h                      |  10 +-
+ drivers/iommu/amd/iommu.c                          |  31 +--
+ drivers/iommu/amd/iommu_v2.c                       |  20 +-
+ drivers/iommu/intel/dmar.c                         |   7 +-
+ drivers/iommu/intel/iommu.c                        |   4 +-
+ drivers/iommu/intel/pasid.c                        |  31 ++-
+ drivers/iommu/intel/pasid.h                        |  24 +-
+ drivers/iommu/intel/svm.c                          |  47 +++-
+ drivers/iommu/iommu.c                              |   2 +-
+ drivers/misc/uacce/uacce.c                         |   2 +-
+ include/linux/amd-iommu.h                          |   8 +-
+ include/linux/intel-iommu.h                        |  14 +-
+ include/linux/intel-svm.h                          |   2 +-
+ include/linux/iommu.h                              |  10 +-
+ include/linux/mm_types.h                           |   4 +
+ include/linux/uacce.h                              |   2 +-
+ 52 files changed, 607 insertions(+), 164 deletions(-)
+ create mode 100644 Documentation/x86/sva.rst
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
