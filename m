@@ -2,96 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39ED628C50D
+	by mail.lfdr.de (Postfix) with ESMTP id F416D28C50F
 	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 00:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390907AbgJLW5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 18:57:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388573AbgJLW5k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 18:57:40 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B47C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 15:57:39 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id f19so15108724pfj.11
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 15:57:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ho1l607OAVVmLnoWlMqhfwRhJkqSim+LddBz61r0Qos=;
-        b=JJQ4S6hWNOQEK+Sy3Y+6MHvE6gOOcxmTo+VnXkRAr4YZg1jAzA2NjbHn3GiUPeK8gf
-         0ipw1LXDfr3tEdWE6dRrL6M12460zyb+sjoMJRNxEoEbW1Tj6e5VYs12zu49n5jFE+ag
-         LA//Dq0oC90jGuPSuhQwam8VrIDDiTx3NpK3M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ho1l607OAVVmLnoWlMqhfwRhJkqSim+LddBz61r0Qos=;
-        b=nkufcJg9JSMIz2XXwPTr8fomN09sMaEctc/1c3p7VUaOvt3g33CZQhgXNLzk66muRg
-         ey5RU1Y0tFzk4SyvguVmMnMqhHwGCMsJSwmfMZd2uRYXUNvsd3epG6XEf5btoGn6xlFI
-         //7cCCLFarpCWk/ZMvMsZUMwtw37ev4n8jk9aS9WEbvJ0Oq6b6s1JRv6G3ZU6xSJxOj1
-         DhTX/xGz1TXJIQjYQ+M9hl3jfq2OYLlgn9SBPAhWmgE3Q1pfK2SPuNZo0dyspDZKCl+G
-         yk7PFd958wWARynmlv0GxG5U/7lWIDpLXalWe5QGr+y/AJXgkQm+xKcRNRec5ir06oPp
-         gnCQ==
-X-Gm-Message-State: AOAM5322QL9Y1Voupz0i/WvhmWeTnNS5siXrreUYjUrE2SMxth5AQ9xX
-        hoCMgpgmHg1Nxk7iblyRo84elQ==
-X-Google-Smtp-Source: ABdhPJxRLYOMHo59Ns0oO1+b1TTIgg1tJPZTI/F+6kwXefZKFzuOW2ptOTYCFNOKi97y0iBzVBYADg==
-X-Received: by 2002:a17:90a:a782:: with SMTP id f2mr2869911pjq.50.1602543458516;
-        Mon, 12 Oct 2020 15:57:38 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id j6sm20479216pfi.129.2020.10.12.15.57.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 15:57:37 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 15:57:36 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     YiFei Zhu <zhuyifei1999@gmail.com>
-Cc:     Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Subject: Re: [PATCH v4 seccomp 5/5] seccomp/cache: Report cache data through
- /proc/pid/seccomp_cache
-Message-ID: <202010121556.1110776B83@keescook>
-References: <cover.1602263422.git.yifeifz2@illinois.edu>
- <c2077b8a86c6d82d611007d81ce81d32f718ec59.1602263422.git.yifeifz2@illinois.edu>
- <202010091613.B671C86@keescook>
- <CABqSeARZWBQrLkzd3ozF16ghkADQqcN4rUoJS2MKkd=73g4nVA@mail.gmail.com>
+        id S2390934AbgJLW71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 18:59:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54408 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390913AbgJLW6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 18:58:50 -0400
+Received: from localhost (170.sub-72-107-125.myvzw.com [72.107.125.170])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B272220757;
+        Mon, 12 Oct 2020 22:58:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602543530;
+        bh=NWsyNct0GmVBs7ZwzumnjCoCSbN1JUhv8GgJ2U37Pzw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=sQ8EN4l4oq1X6i3Wl7a3p5khaIA7hMZZDNrBb2pLa7Pz+Elveuma7o8i1F31Q79E6
+         YjK/PF3iEGMMVwiyUJ4t0ZGBjZgwXcx5Y7lqD9+4KVbIff9DNaXDTBtoiP5djrFCD3
+         Io5ERCSJoqjkKvyAdLKfKJwUA+Bmf6X5tIUKonuk=
+Date:   Mon, 12 Oct 2020 17:58:48 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Kelley, Sean V" <sean.v.kelley@intel.com>
+Cc:     "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>,
+        "Jonathan.Cameron@huawei.com" <Jonathan.Cameron@huawei.com>,
+        "Kuppuswamy, Sathyanarayanan" <sathyanarayanan.kuppuswamy@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "seanvk.dev@oregontracks.org" <seanvk.dev@oregontracks.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>
+Subject: Re: [PATCH v8 11/14] PCI/RCEC: Add RCiEP's linked RCEC to AER/ERR
+Message-ID: <20201012225848.GA3754175@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CABqSeARZWBQrLkzd3ozF16ghkADQqcN4rUoJS2MKkd=73g4nVA@mail.gmail.com>
+In-Reply-To: <96d2cf35723265ce189ba2053fe4c347a816e9a4.camel@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 10, 2020 at 08:26:16AM -0500, YiFei Zhu wrote:
-> On Fri, Oct 9, 2020 at 6:14 PM Kees Cook <keescook@chromium.org> wrote:
-> > HAVE_ARCH_SECCOMP_CACHE isn't used any more. I think this was left over
-> > from before.
+On Fri, Oct 09, 2020 at 11:51:39PM +0000, Kelley, Sean V wrote:
+> On Fri, 2020-10-09 at 15:07 -0700, Sean V Kelley wrote:
+
+> So I tested the following out, including your moving flr to aer.c:
 > 
-> Oh, I was meant to add this to the dependencies of
-> SECCOMP_CACHE_DEBUG. Is this something that would make sense?
+> - Renamed flr_on_rciep() to flr_on_rc() for RC devices (RC_END and
+> RC_EC)
+> 
+> - Moved check on dev->rcec into aer_root_reset() including the FLR.
+> 
+> - Reworked pci_walk_bridge() to drop extra dev argument and check
+> locally for the bridge->rcec. Maybe should also check on type when
+> checking on bridge->rcec.
+> 
+> Note I didn't use the check on aer_cap existence because I think you
+> had added that for simply being able to skip over for the non-native
+> case and I handle that with the single goto at the beginning which
+> takes you to the FLR.
 
-I think it's fine to just have this "dangle" with a help text update of
-"if seccomp action caching is supported by the architecture, provide the
-/proc/$pid ..."
+Right.  Well, my thinking was that "root" would be a device with the
+AER Root Error Command and Root Error Status registers, i.e., a Root
+Port or RCEC.  IIUC that basically means the APEI case where firmware
+gives us an error record.
 
--- 
-Kees Cook
+Isn't the existing v5.9 code buggy in that it unconditionally pokes
+these registers?  I think the APEI path can end up here, and firmware
+probably has not granted us control over AER.
+
+Somewhat related question: I'm a little skeptical about the fact that
+aer_root_reset() currently does:
+
+  - clear ROOT_PORT_INTR_ON_MESG_MASK
+  - do reset
+  - clear PCI_ERR_ROOT_STATUS
+  - enable ROOT_PORT_INTR_ON_MESG_MASK
+
+In the APEI path all this AER register manipulation must be done by
+firmware before passing the error record to the OS.  So in the native
+case where the OS does own the AER registers, why can't the OS do that
+manipulation in the same order, i.e., all before doing the reset?
+
+> So this is rough, compiled, tested with AER injections but that's it...
+
+I couldn't actually apply the patch below because it seems to be
+whitespace-damaged, but I think I like it.
+
+  - It would be nice to be able to just call pcie_flr() and not have
+    to add flr_on_rc().  I can't remember why we need the
+    pcie_has_flr() / pcie_flr() dance.  It seems racy and ugly, but I
+    have a vague recollection that there actually is some reason for
+    it.
+
+  - I would *rather* consolidate the AER register updates and test for
+    the non-native case once instead of treating it like a completely
+    separate path with a "goto".  But maybe not possible.  Not a big
+    deal either way.
+
+  - Getting rid of the extra "dev" argument to pci_walk_bridge() is a
+    great side-effect.  I didn't even notice that.
+
+  - If we can simplify that "state == pci_channel_io_frozen" case as
+    this does, that is a *big* deal because there are other patches
+    just waiting to touch that reset and it will be much simpler if
+    there's only one reset_subordinate_devices() call there.
+
+If you do work this up, I'd really appreciate it if you can start with
+my pci/err branch so I don't have to re-do all the tweaks I've already
+done:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git/commit/?h=pci/err
+
+Bjorn
