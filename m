@@ -2,226 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BDDE28BEAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 19:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44B1928BEC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 19:08:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404021AbgJLRGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 13:06:37 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:14820 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404011AbgJLRGg (ORCPT
+        id S2403791AbgJLRIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 13:08:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404074AbgJLRIg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 13:06:36 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f848ca90000>; Mon, 12 Oct 2020 10:04:41 -0700
-Received: from [10.41.23.128] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 12 Oct
- 2020 17:06:27 +0000
-Subject: Re: [PATCH v2 2/2] cpufreq: tegra194: Fix unlisted boot freq warning
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-CC:     <rjw@rjwysocki.net>, <sudeep.holla@arm.com>,
-        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <linux-pm@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <ksitaraman@nvidia.com>,
-        <bbasu@nvidia.com>, Sumit Gupta <sumitg@nvidia.com>
-References: <1602162066-26442-1-git-send-email-sumitg@nvidia.com>
- <1602162066-26442-3-git-send-email-sumitg@nvidia.com>
- <20201012061335.nht4hnn7kdjupakn@vireshk-i7>
-From:   Sumit Gupta <sumitg@nvidia.com>
-Message-ID: <4fb38a3b-ed26-6c02-e9de-59ce99ce563e@nvidia.com>
-Date:   Mon, 12 Oct 2020 22:36:25 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Mon, 12 Oct 2020 13:08:36 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0288BC0613D0;
+        Mon, 12 Oct 2020 10:08:36 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id i2so14908892pgh.7;
+        Mon, 12 Oct 2020 10:08:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=88AU0+hOtEr3LX7JPS56bloXLsETwbX3NL4vxoI6fR8=;
+        b=rcDnF/aVYnGq60l01oe+I4m8b+6mm+geAakhn1EmbfPG3tO+PnqIMKRAkDDajCwR3e
+         cG5qp9c2h9k4OTqzgOre1VV6E25lvBzAo0oxeOoPhzQNTh/oWbMBC7yI6EPvIOP7Meew
+         HLguismldIxcQFfznP4q9jgc6kTKe4fPBcjZ+QfGhZn9UU+Q6mS1+nsfFnkwDf3pFwkD
+         VG/DwclBl6RO+ByzK2sWxUU6eX4bvWXEmCZJYR5m1M6lH2JwOVXUbEk1mItLVdulfvrl
+         do+Xg9hY9hakUbh5LnaUWIu6exS7sPwEVxGBMY9K+PI3vv2L/cFUGmR2IWi5tBE0L5uy
+         korg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=88AU0+hOtEr3LX7JPS56bloXLsETwbX3NL4vxoI6fR8=;
+        b=LbByKL9FTjb6Ss3yReH6Nor44125TtOSoWiUqcNPNX3darxpE+sGVFzFDsYSqUsFkv
+         nUmkQJ5H+MT4JF0C5stVbrvQjiir/irqK7ZXHyV76UF97Ffv1q4bTTAdzZSTOjiXgk6C
+         0krbfT8Akwa0QNMAF2jp7Qd2G2L3x4zaZFRSo8Nzl8rhJavMFd5gcNxbOsGqMCiNLg1n
+         dVujPmbMy6gg+xce7DOn266tXUPRovNyEOs3adTfPXGPvRSg3FpOlI4bC4rIoIOUV9kj
+         alLVbJtr30yj/qJoKaryDp0LqE/LTGa9eSNAdiFHkhibD032qkg+bHW+I1Woy86nI19c
+         3ESw==
+X-Gm-Message-State: AOAM530z2RQcwNT+ztbYh0dSxn2i3G3JBe13W2dUmAnQ4wb3+IP0hW0L
+        F2Pee46LVm+K4Xw6SFL2Hqk=
+X-Google-Smtp-Source: ABdhPJzaNfI7nE3EZ2Fy8n9RsMiFJqfM9rdxrVlioaPCS1JwLBL4PqWCM0MkelaVImbjaoIcH45ORQ==
+X-Received: by 2002:a17:90b:4d0d:: with SMTP id mw13mr21103770pjb.192.1602522515412;
+        Mon, 12 Oct 2020 10:08:35 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:a404:280a:90bd:7a49:dcda:1fb1])
+        by smtp.gmail.com with ESMTPSA id x16sm20494337pff.14.2020.10.12.10.08.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 10:08:34 -0700 (PDT)
+From:   Ujjwal Kumar <ujjwalkumar0501@gmail.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Cc:     Ujjwal Kumar <ujjwalkumar0501@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH v2 0/2] use interpreters to invoke scripts
+Date:   Mon, 12 Oct 2020 22:36:29 +0530
+Message-Id: <20201012170631.1241502-1-ujjwalkumar0501@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20201012061335.nht4hnn7kdjupakn@vireshk-i7>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1602522281; bh=ie/Fj4acUBaQsFdQijWZk+3BtMFnqzGxCLrm9LrQs4I=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=ntZ3XZzRgUBoTpN/QAu1TaiG5Zvji265XxQvtxpjA/TMug16ELujWE3Qzm7x8EKcb
-         VkG1KE4fQba7rPVIJeMLTlJe4H8GcLOL+f7dQZQP9EL5222ewgtZRgOO2Py6qplHJ+
-         jzylPY62nQ1Wllb2EB8DPowKdUq6nlkq0WJElQKyeqb/Ofz54LnQKp3Q7/vKAUVNin
-         YUjQcwtfZtUAU94rfh5NvKwGqNm6FgdQJ4pbbAxv4G9OuB0xckFM/WeXxA6KCAywH6
-         6oP+fSULBFZiRKeJaxDm6UxsGXq7gC6JOUB/DoMaMVReyoGX1tkrdO0TYAxWAiERNd
-         /wQBOA8D02ZJA==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> Warning coming during boot because the boot freq set by bootloader
->> gets filtered out due to big freq steps while creating freq_table.
->> Fix this by setting closest higher frequency from freq_table.
->> Warning:
->>    cpufreq: cpufreq_online: CPU0: Running at unlisted freq
->>    cpufreq: cpufreq_online: CPU0: Unlisted initial frequency changed
->>
->> These warning messages also come during hotplug online of non-boot
->> CPU's while exiting from 'Suspend-to-RAM'. This happens because
->> during exit from 'Suspend-to-RAM', some time is taken to restore
->> last software requested CPU frequency written in register before
->> entering suspend.
-> 
-> And who does this restoration ?
-> 
->> To fix this, adding online hook to wait till the
->> current frequency becomes equal or close to the last requested
->> frequency.
->>
->> Fixes: df320f89359c ("cpufreq: Add Tegra194 cpufreq driver")
->> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
->> ---
->>   drivers/cpufreq/tegra194-cpufreq.c | 86 ++++++++++++++++++++++++++++++++++----
->>   1 file changed, 79 insertions(+), 7 deletions(-)
->>
->> diff --git a/drivers/cpufreq/tegra194-cpufreq.c b/drivers/cpufreq/tegra194-cpufreq.c
->> index d250e49..cc28b1e3 100644
->> --- a/drivers/cpufreq/tegra194-cpufreq.c
->> +++ b/drivers/cpufreq/tegra194-cpufreq.c
->> @@ -7,6 +7,7 @@
->>   #include <linux/cpufreq.h>
->>   #include <linux/delay.h>
->>   #include <linux/dma-mapping.h>
->> +#include <linux/iopoll.h>
->>   #include <linux/module.h>
->>   #include <linux/of.h>
->>   #include <linux/of_platform.h>
->> @@ -21,7 +22,6 @@
->>   #define KHZ                     1000
->>   #define REF_CLK_MHZ             408 /* 408 MHz */
->>   #define US_DELAY                500
->> -#define US_DELAY_MIN            2
->>   #define CPUFREQ_TBL_STEP_HZ     (50 * KHZ * KHZ)
->>   #define MAX_CNT                 ~0U
->>
->> @@ -249,17 +249,22 @@ static unsigned int tegra194_get_speed(u32 cpu)
->>   static int tegra194_cpufreq_init(struct cpufreq_policy *policy)
->>   {
->>        struct tegra194_cpufreq_data *data = cpufreq_get_driver_data();
->> -     u32 cpu;
->> +     u32 cpu = policy->cpu;
->> +     int ret;
->>        u32 cl;
->>
->> -     smp_call_function_single(policy->cpu, get_cpu_cluster, &cl, true);
->> +     if (!cpu_online(cpu))
-> 
-> Not required to check this.
-> 
-OK.
+This patch series aims at removing the dependency on execute
+bit of the scripts in the kbuild system.
 
->> +             return -EINVAL;
->> +
->> +     ret = smp_call_function_single(cpu, get_cpu_cluster, &cl, true);
->> +     if (ret) {
-> 
-> Same as in the other patch.
-> 
-Got.
+If not working with fresh clone of linux-next, clean the srctree:
+make distclean
+make tools/clean
 
->> +             pr_err("cpufreq: Failed to get cluster for CPU%d\n", cpu);
->> +             return ret;
->> +     }
->>
->>        if (cl >= data->num_clusters)
->>                return -EINVAL;
->>
->> -     /* boot freq */
->> -     policy->cur = tegra194_get_speed_common(policy->cpu, US_DELAY_MIN);
->> -
->>        /* set same policy for all cpus in a cluster */
->>        for (cpu = (cl * 2); cpu < ((cl + 1) * 2); cpu++)
->>                cpumask_set_cpu(cpu, policy->cpus);
->> @@ -267,7 +272,23 @@ static int tegra194_cpufreq_init(struct cpufreq_policy *policy)
->>        policy->freq_table = data->tables[cl];
->>        policy->cpuinfo.transition_latency = TEGRA_CPUFREQ_TRANSITION_LATENCY;
->>
->> -     return 0;
->> +     policy->cur = tegra194_get_speed_common(policy->cpu, US_DELAY);
->> +
->> +     ret = cpufreq_table_validate_and_sort(policy);
->> +     if (ret)
->> +             return ret;
->> +
->> +     /* Are we running at unknown frequency ? */
->> +     ret = cpufreq_frequency_table_get_index(policy, policy->cur);
->> +     if (ret == -EINVAL) {
->> +             ret = __cpufreq_driver_target(policy, policy->cur - 1,
->> +                                           CPUFREQ_RELATION_L);
->> +             if (ret)
->> +                     return ret;
-> 
->> +             policy->cur = tegra194_get_speed_common(policy->cpu, US_DELAY);
-> 
-> cpufreq-core will do this anyway, you don't need to do it.
-> 
-Got.
+To test the dependency on execute bits, I tried building the
+kernel after removing x-bits for all files in the repository.
+Removing execute bits:
+for i in $(find -executable -type f); do chmod -x $i; done
 
->> +     }
->> +
->> +     return ret;
->>   }
-> 
-> I wonder if I should change the pr_warn() in cpufreq-core to pr_info()
-> instead, will that help you guys ? Will that still be a problem ? This
-> is exactly same as what we do there.
-> 
-Yes, this will also work. Then we don't need the current patch.
-You want me to send a patch with change from pr_warn to pr_info?
+Any attempts to configure (or build) the kernel fail because of
+'Permission denied' on scripts with the following error:
+$ make allmodconfig
+sh: ./scripts/gcc-version.sh: Permission denied
+init/Kconfig:34: syntax error
+init/Kconfig:33: invalid statement
+init/Kconfig:34: invalid statement
+sh: ./scripts/ld-version.sh: Permission denied
+init/Kconfig:39: syntax error
+init/Kconfig:38: invalid statement
+sh: ./scripts/clang-version.sh: Permission denied
+init/Kconfig:49: syntax error
+init/Kconfig:48: invalid statement
+make[1]: *** [scripts/kconfig/Makefile:71: allmodconfig] Error 1
+make: *** [Makefile:606: allmodconfig] Error 2
 
->>   static int tegra194_cpufreq_set_target(struct cpufreq_policy *policy,
->> @@ -285,6 +306,55 @@ static int tegra194_cpufreq_set_target(struct cpufreq_policy *policy,
->>        return 0;
->>   }
->>
->> +static int tegra194_cpufreq_online(struct cpufreq_policy *policy)
->> +{
->> +     unsigned int interm_freq, last_set_freq;
->> +     struct cpufreq_frequency_table *pos;
->> +     u64 ndiv;
->> +     int ret;
->> +
->> +     if (!cpu_online(policy->cpu))
->> +             return -EINVAL;
->> +
->> +     /* get ndiv for the last frequency request from software  */
->> +     ret = smp_call_function_single(policy->cpu, get_cpu_ndiv, &ndiv, true);
->> +     if (ret) {
->> +             pr_err("cpufreq: Failed to get ndiv for CPU%d\n", policy->cpu);
->> +             return ret;
->> +     }
->> +
->> +     cpufreq_for_each_valid_entry(pos, policy->freq_table) {
->> +             if (pos->driver_data == ndiv) {
->> +                     last_set_freq = pos->frequency;
->> +                     break;
->> +             }
->> +     }
->> +
->> +     policy->cur = tegra194_get_speed_common(policy->cpu, US_DELAY);
->> +     interm_freq =  policy->cur;
->> +
->> +     /*
->> +      * It takes some time to restore the previous frequency while
->> +      * turning-on non-boot cores during exit from SC7(Suspend-to-RAM).
->> +      * So, wait till it reaches the previous value and timeout if the
->> +      * time taken to reach requested freq is >100ms
->> +      */
->> +     ret = read_poll_timeout(tegra194_get_speed_common, policy->cur,
->> +                             abs(policy->cur - last_set_freq) <= 115200, 0,
->> +                             100 * USEC_PER_MSEC, false, policy->cpu,
->> +                             US_DELAY);
-> 
-> The firmware does this update ? Why do we need to wait for this ? I
-> was actually suggesting an empty tegra194_cpufreq_online() routine
-> here.
-> > --
-> viresh
-> 
+Changes:
+  - Adds specific interpreters (in Kconfig) to invoke
+    scripts.
+
+After this patch I could successfully do a kernel build
+without any errors.
+
+  - Again, adds specific interpreters to other parts of
+    kbuild system.
+
+I could successfully perform the following make targets after
+applying the PATCH 2/2:
+make headerdep
+make kselftest-merge
+make rpm-pkg
+make perf-tar-src-pkg
+make ARCH=ia64 defconfig
+ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make prepare
+
+Following changes in PATCH 2/2 are not yet tested:
+arch/arm64/kernel/vdso32/Makefile
+arch/nds32/kernel/vdso/Makefile
+scripts/Makefile.build
+
+---
+Changes in v2:
+
+  - Changes suggested by Masahiro Yamada
+    $($(CONFIG_SHELL)    ->  $(shell $(CONFIG_SHELL)
+
+
+Ujjwal Kumar (2):
+  kconfig: use interpreters to invoke scripts
+  kbuild: use interpreters to invoke scripts
+
+ Makefile                          |  4 ++--
+ arch/arm64/kernel/vdso/Makefile   |  2 +-
+ arch/arm64/kernel/vdso32/Makefile |  2 +-
+ arch/ia64/Makefile                |  4 ++--
+ arch/nds32/kernel/vdso/Makefile   |  2 +-
+ init/Kconfig                      | 16 ++++++++--------
+ scripts/Makefile.build            |  2 +-
+ scripts/Makefile.package          |  4 ++--
+ 8 files changed, 18 insertions(+), 18 deletions(-)
+
+
+base-commit: 2cab4ac556258c14f6ec8d2157654e95556bbb31
+--
+2.25.1
+
