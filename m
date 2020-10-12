@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95FE328B64A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4384428B6A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:38:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388540AbgJLNc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:32:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34174 "EHLO mail.kernel.org"
+        id S1730950AbgJLNgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:36:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730623AbgJLNcW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:32:22 -0400
+        id S1730281AbgJLNfU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:35:20 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 632AE204EA;
-        Mon, 12 Oct 2020 13:32:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B15D222202;
+        Mon, 12 Oct 2020 13:35:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509541;
-        bh=bcv8Lud4gs41IJaT0W7P1F4O8D4lq4qTnSGKz0wkDY4=;
+        s=default; t=1602509719;
+        bh=u04UTY/9Gc6U+pNEmqKBde2TzDcfYSXtBIjnN5RzrUk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DU0Rt60nGxqeeNJXUnUaejJ8i/UtwrCpXckPyZCNKO1n0AscfFgnthJDnKtcN1Hhw
-         zzfhk+jEmuSmvwviAb8+aWAbVQOIvjcToh9Y+/pGf5zVnazeLTM5hXFXXr25lIEyEP
-         ET+V2/5rpe1BDj+/+fbiwVfxYTW1GPwk8TWbtgow=
+        b=UVWM70aQe+W0psP0DsLTIRUbRIL2ZFwpwp9r46/zXI1mfD4W81/Y71i4oxIey/g/h
+         ml/f+BHIdIq0Ah8SdRU3FVxE7rIolDM6rQRlRKwWC0Y/uhdhkggPyc2CXXK/4Evk0M
+         /N/fAkv2k0DPNM2bE5GPIJnybpsz02gXTZYOJu7Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Martin Schiller <ms@dev.tdt.de>,
-        Xie He <xie.he.0141@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 06/39] drivers/net/wan/lapbether: Make skb->protocol consistent with the header
-Date:   Mon, 12 Oct 2020 15:26:36 +0200
-Message-Id: <20201012132628.448339119@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Nicolas VINCENT <nicolas.vincent@vossloh.com>,
+        Jochen Friedrich <jochen@scram.de>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 15/54] i2c: cpm: Fix i2c_ram structure
+Date:   Mon, 12 Oct 2020 15:26:37 +0200
+Message-Id: <20201012132630.299601074@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132628.130632267@linuxfoundation.org>
-References: <20201012132628.130632267@linuxfoundation.org>
+In-Reply-To: <20201012132629.585664421@linuxfoundation.org>
+References: <20201012132629.585664421@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,55 +45,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie He <xie.he.0141@gmail.com>
+From: Nicolas VINCENT <nicolas.vincent@vossloh.com>
 
-[ Upstream commit 83f9a9c8c1edc222846dc1bde6e3479703e8e5a3 ]
+[ Upstream commit a2bd970aa62f2f7f80fd0d212b1d4ccea5df4aed ]
 
-This driver is a virtual driver stacked on top of Ethernet interfaces.
+the i2c_ram structure is missing the sdmatmp field mentionned in
+datasheet for MPC8272 at paragraph 36.5. With this field missing, the
+hardware would write past the allocated memory done through
+cpm_muram_alloc for the i2c_ram structure and land in memory allocated
+for the buffers descriptors corrupting the cbd_bufaddr field. Since this
+field is only set during setup(), the first i2c transaction would work
+and the following would send data read from an arbitrary memory
+location.
 
-When this driver transmits data on the Ethernet device, the skb->protocol
-setting is inconsistent with the Ethernet header prepended to the skb.
-
-This causes a user listening on the Ethernet interface with an AF_PACKET
-socket, to see different sll_protocol values for incoming and outgoing
-frames, because incoming frames would have this value set by parsing the
-Ethernet header.
-
-This patch changes the skb->protocol value for outgoing Ethernet frames,
-making it consistent with the Ethernet header prepended. This makes a
-user listening on the Ethernet device with an AF_PACKET socket, to see
-the same sll_protocol value for incoming and outgoing frames.
-
-Cc: Martin Schiller <ms@dev.tdt.de>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 61045dbe9d8d ("i2c: Add support for I2C bus on Freescale CPM1/CPM2 controllers")
+Signed-off-by: Nicolas VINCENT <nicolas.vincent@vossloh.com>
+Acked-by: Jochen Friedrich <jochen@scram.de>
+Acked-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wan/lapbether.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/i2c/busses/i2c-cpm.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/wan/lapbether.c b/drivers/net/wan/lapbether.c
-index c6db9a4e7c457..ef746ba74ab4c 100644
---- a/drivers/net/wan/lapbether.c
-+++ b/drivers/net/wan/lapbether.c
-@@ -201,8 +201,6 @@ static void lapbeth_data_transmit(struct net_device *ndev, struct sk_buff *skb)
- 	struct net_device *dev;
- 	int size = skb->len;
+diff --git a/drivers/i2c/busses/i2c-cpm.c b/drivers/i2c/busses/i2c-cpm.c
+index d89bde2c5da25..cf285b97a6422 100644
+--- a/drivers/i2c/busses/i2c-cpm.c
++++ b/drivers/i2c/busses/i2c-cpm.c
+@@ -74,6 +74,9 @@ struct i2c_ram {
+ 	char    res1[4];	/* Reserved */
+ 	ushort  rpbase;		/* Relocation pointer */
+ 	char    res2[2];	/* Reserved */
++	/* The following elements are only for CPM2 */
++	char    res3[4];	/* Reserved */
++	uint    sdmatmp;	/* Internal */
+ };
  
--	skb->protocol = htons(ETH_P_X25);
--
- 	ptr = skb_push(skb, 2);
- 
- 	*ptr++ = size % 256;
-@@ -213,6 +211,8 @@ static void lapbeth_data_transmit(struct net_device *ndev, struct sk_buff *skb)
- 
- 	skb->dev = dev = lapbeth->ethdev;
- 
-+	skb->protocol = htons(ETH_P_DEC);
-+
- 	skb_reset_network_header(skb);
- 
- 	dev_hard_header(skb, dev, ETH_P_DEC, bcast_addr, NULL, 0);
+ #define I2COM_START	0x80
 -- 
 2.25.1
 
