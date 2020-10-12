@@ -2,17 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C769E28B5F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:21:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B16E228B5FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388901AbgJLNTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:19:37 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:56726 "EHLO huawei.com"
+        id S2388915AbgJLNTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:19:39 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:41240 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387930AbgJLNTc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2388218AbgJLNTc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Oct 2020 09:19:32 -0400
 Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 7CD5C785A6FADD2C97AB;
+        by Forcepoint Email with ESMTP id AC974AEEC860769E8AED;
         Mon, 12 Oct 2020 21:19:30 +0800 (CST)
 Received: from thunder-town.china.huawei.com (10.174.177.134) by
  DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
@@ -23,9 +23,9 @@ To:     Wei Xu <xuwei5@hisilicon.com>, Rob Herring <robh+dt@kernel.org>,
         linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
 CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 02/11] arm64: dts: hisilicon: separate each group of data in the property "reg"
-Date:   Mon, 12 Oct 2020 21:17:30 +0800
-Message-ID: <20201012131739.1655-3-thunder.leizhen@huawei.com>
+Subject: [PATCH 03/11] arm64: dts: hisilicon: write the values of property-units into a uint32 array
+Date:   Mon, 12 Oct 2020 21:17:31 +0800
+Message-ID: <20201012131739.1655-4-thunder.leizhen@huawei.com>
 X-Mailer: git-send-email 2.26.0.windows.1
 In-Reply-To: <20201012131739.1655-1-thunder.leizhen@huawei.com>
 References: <20201012131739.1655-1-thunder.leizhen@huawei.com>
@@ -38,221 +38,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do not write the "reg" of multiple groups of data into a uint32 array,
-use <> to separate them. Otherwise, the errors similar to the following
-will be reported by reg.yaml.
+Use <> to separate the values of property-units will be treated as
+multiple arrays. The errors similar to the following will be reported by
+property-units.yaml.
 
-soc: dsa@c7000000:reg:0: [0, 3305111552, 0, 8978432, 0, 3338665984, 0, \
-6291456] is too long
+ufs@ff3c0000: freq-table-hz: [[0, 0], [0, 0]] is too long
 
 Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 ---
- arch/arm64/boot/dts/hisilicon/hip06.dtsi |   4 +-
- arch/arm64/boot/dts/hisilicon/hip07.dtsi | 148 +++++++++++++++----------------
- 2 files changed, 76 insertions(+), 76 deletions(-)
+ arch/arm64/boot/dts/hisilicon/hi3660.dtsi      | 3 ++-
+ arch/arm64/boot/dts/hisilicon/hi3670.dtsi      | 3 ++-
+ arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi | 9 ++++-----
+ 3 files changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/hisilicon/hip06.dtsi b/arch/arm64/boot/dts/hisilicon/hip06.dtsi
-index a2fba458e047fd7..941d527dcb8668c 100644
---- a/arch/arm64/boot/dts/hisilicon/hip06.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hip06.dtsi
-@@ -434,8 +434,8 @@
- 			#size-cells = <0>;
- 			compatible = "hisilicon,hns-dsaf-v2";
- 			mode = "6port-16rss";
--			reg = <0x0 0xc5000000 0x0 0x890000
--			       0x0 0xc7000000 0x0 0x600000>;
-+			reg = <0x0 0xc5000000 0x0 0x890000>,
-+			      <0x0 0xc7000000 0x0 0x600000>;
- 			reg-names = "ppe-base", "dsaf-base";
- 			interrupt-parent = <&mbigen_dsaf0>;
- 			subctrl-syscon = <&dsa_subctrl>;
-diff --git a/arch/arm64/boot/dts/hisilicon/hip07.dtsi b/arch/arm64/boot/dts/hisilicon/hip07.dtsi
-index 892691bb2adb446..36a873d150897b8 100644
---- a/arch/arm64/boot/dts/hisilicon/hip07.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hip07.dtsi
-@@ -1321,8 +1321,8 @@
- 			#size-cells = <0>;
- 			compatible = "hisilicon,hns-dsaf-v2";
- 			mode = "6port-16rss";
--			reg = <0x0 0xc5000000 0x0 0x890000
--			       0x0 0xc7000000 0x0 0x600000>;
-+			reg = <0x0 0xc5000000 0x0 0x890000>,
-+			      <0x0 0xc7000000 0x0 0x600000>;
- 			reg-names = "ppe-base", "dsaf-base";
- 			interrupt-parent = <&mbigen_dsaf0>;
- 			subctrl-syscon = <&dsa_subctrl>;
-@@ -1720,24 +1720,24 @@
+diff --git a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
+index 994140fbc916eea..3f6b1715835af06 100644
+--- a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
++++ b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
+@@ -1045,7 +1045,8 @@
+ 			clocks = <&crg_ctrl HI3660_CLK_GATE_UFSIO_REF>,
+ 				<&crg_ctrl HI3660_CLK_GATE_UFSPHY_CFG>;
+ 			clock-names = "ref_clk", "phy_clk";
+-			freq-table-hz = <0 0>, <0 0>;
++			freq-table-hz = <0 0
++					 0 0>;
+ 			/* offset: 0x84; bit: 12 */
+ 			resets = <&crg_rst 0x84 12>;
+ 			reset-names = "rst";
+diff --git a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+index 2dcffa3ed2189eb..668977d1acba94c 100644
+--- a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
++++ b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+@@ -667,7 +667,8 @@
+ 			clocks = <&crg_ctrl HI3670_CLK_GATE_UFSIO_REF>,
+ 				<&crg_ctrl HI3670_CLK_GATE_UFS_SUBSYS>;
+ 			clock-names = "ref_clk", "phy_clk";
+-			freq-table-hz = <0 0>, <0 0>;
++			freq-table-hz = <0 0
++					 0 0>;
+ 			/* offset: 0x84; bit: 12 */
+ 			resets = <&crg_rst 0x84 12>;
+ 			reset-names = "rst";
+diff --git a/arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi b/arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi
+index 12bc1d3ed4243f5..993998ac27c503c 100644
+--- a/arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi
++++ b/arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi
+@@ -91,11 +91,10 @@
+ 			gmacphyrst: reset-controller {
+ 				compatible = "ti,syscon-reset";
+ 				#reset-cells = <1>;
+-				ti,reset-bits =
+-					<0xcc 12 0xcc 12 0 0 (ASSERT_CLEAR |
+-					 DEASSERT_SET|STATUS_NONE)>,
+-					<0xcc 13 0xcc 13 0 0 (ASSERT_CLEAR |
+-					 DEASSERT_SET|STATUS_NONE)>;
++				ti,reset-bits = <
++					0xcc 12 0xcc 12 0 0 (ASSERT_CLEAR | DEASSERT_SET | STATUS_NONE)
++					0xcc 13 0xcc 13 0 0 (ASSERT_CLEAR | DEASSERT_SET | STATUS_NONE)
++				>;
+ 			};
  		};
- 		p0_sec_a: crypto@d2000000 {
- 			compatible = "hisilicon,hip07-sec";
--			reg = <0x0 0xd0000000 0x0 0x10000
--			       0x0 0xd2000000 0x0 0x10000
--			       0x0 0xd2010000 0x0 0x10000
--			       0x0 0xd2020000 0x0 0x10000
--			       0x0 0xd2030000 0x0 0x10000
--			       0x0 0xd2040000 0x0 0x10000
--			       0x0 0xd2050000 0x0 0x10000
--			       0x0 0xd2060000 0x0 0x10000
--			       0x0 0xd2070000 0x0 0x10000
--			       0x0 0xd2080000 0x0 0x10000
--			       0x0 0xd2090000 0x0 0x10000
--			       0x0 0xd20a0000 0x0 0x10000
--			       0x0 0xd20b0000 0x0 0x10000
--			       0x0 0xd20c0000 0x0 0x10000
--			       0x0 0xd20d0000 0x0 0x10000
--			       0x0 0xd20e0000 0x0 0x10000
--			       0x0 0xd20f0000 0x0 0x10000
--			       0x0 0xd2100000 0x0 0x10000>;
-+			reg = <0x0 0xd0000000 0x0 0x10000>,
-+			      <0x0 0xd2000000 0x0 0x10000>,
-+			      <0x0 0xd2010000 0x0 0x10000>,
-+			      <0x0 0xd2020000 0x0 0x10000>,
-+			      <0x0 0xd2030000 0x0 0x10000>,
-+			      <0x0 0xd2040000 0x0 0x10000>,
-+			      <0x0 0xd2050000 0x0 0x10000>,
-+			      <0x0 0xd2060000 0x0 0x10000>,
-+			      <0x0 0xd2070000 0x0 0x10000>,
-+			      <0x0 0xd2080000 0x0 0x10000>,
-+			      <0x0 0xd2090000 0x0 0x10000>,
-+			      <0x0 0xd20a0000 0x0 0x10000>,
-+			      <0x0 0xd20b0000 0x0 0x10000>,
-+			      <0x0 0xd20c0000 0x0 0x10000>,
-+			      <0x0 0xd20d0000 0x0 0x10000>,
-+			      <0x0 0xd20e0000 0x0 0x10000>,
-+			      <0x0 0xd20f0000 0x0 0x10000>,
-+			      <0x0 0xd2100000 0x0 0x10000>;
- 			interrupt-parent = <&p0_mbigen_sec_a>;
- 			iommus = <&p0_smmu_alg_a 0x600>;
- 			dma-coherent;
-@@ -1761,24 +1761,24 @@
- 		};
- 		p0_sec_b: crypto@8,d2000000 {
- 			compatible = "hisilicon,hip07-sec";
--			reg = <0x8 0xd0000000 0x0 0x10000
--			       0x8 0xd2000000 0x0 0x10000
--			       0x8 0xd2010000 0x0 0x10000
--			       0x8 0xd2020000 0x0 0x10000
--			       0x8 0xd2030000 0x0 0x10000
--			       0x8 0xd2040000 0x0 0x10000
--			       0x8 0xd2050000 0x0 0x10000
--			       0x8 0xd2060000 0x0 0x10000
--			       0x8 0xd2070000 0x0 0x10000
--			       0x8 0xd2080000 0x0 0x10000
--			       0x8 0xd2090000 0x0 0x10000
--			       0x8 0xd20a0000 0x0 0x10000
--			       0x8 0xd20b0000 0x0 0x10000
--			       0x8 0xd20c0000 0x0 0x10000
--			       0x8 0xd20d0000 0x0 0x10000
--			       0x8 0xd20e0000 0x0 0x10000
--			       0x8 0xd20f0000 0x0 0x10000
--			       0x8 0xd2100000 0x0 0x10000>;
-+			reg = <0x8 0xd0000000 0x0 0x10000>,
-+			      <0x8 0xd2000000 0x0 0x10000>,
-+			      <0x8 0xd2010000 0x0 0x10000>,
-+			      <0x8 0xd2020000 0x0 0x10000>,
-+			      <0x8 0xd2030000 0x0 0x10000>,
-+			      <0x8 0xd2040000 0x0 0x10000>,
-+			      <0x8 0xd2050000 0x0 0x10000>,
-+			      <0x8 0xd2060000 0x0 0x10000>,
-+			      <0x8 0xd2070000 0x0 0x10000>,
-+			      <0x8 0xd2080000 0x0 0x10000>,
-+			      <0x8 0xd2090000 0x0 0x10000>,
-+			      <0x8 0xd20a0000 0x0 0x10000>,
-+			      <0x8 0xd20b0000 0x0 0x10000>,
-+			      <0x8 0xd20c0000 0x0 0x10000>,
-+			      <0x8 0xd20d0000 0x0 0x10000>,
-+			      <0x8 0xd20e0000 0x0 0x10000>,
-+			      <0x8 0xd20f0000 0x0 0x10000>,
-+			      <0x8 0xd2100000 0x0 0x10000>;
- 			interrupt-parent = <&p0_mbigen_sec_b>;
- 			iommus = <&p0_smmu_alg_b 0x600>;
- 			dma-coherent;
-@@ -1802,24 +1802,24 @@
- 		};
- 		p1_sec_a: crypto@400,d2000000 {
- 			compatible = "hisilicon,hip07-sec";
--			reg = <0x400 0xd0000000 0x0 0x10000
--			       0x400 0xd2000000 0x0 0x10000
--			       0x400 0xd2010000 0x0 0x10000
--			       0x400 0xd2020000 0x0 0x10000
--			       0x400 0xd2030000 0x0 0x10000
--			       0x400 0xd2040000 0x0 0x10000
--			       0x400 0xd2050000 0x0 0x10000
--			       0x400 0xd2060000 0x0 0x10000
--			       0x400 0xd2070000 0x0 0x10000
--			       0x400 0xd2080000 0x0 0x10000
--			       0x400 0xd2090000 0x0 0x10000
--			       0x400 0xd20a0000 0x0 0x10000
--			       0x400 0xd20b0000 0x0 0x10000
--			       0x400 0xd20c0000 0x0 0x10000
--			       0x400 0xd20d0000 0x0 0x10000
--			       0x400 0xd20e0000 0x0 0x10000
--			       0x400 0xd20f0000 0x0 0x10000
--			       0x400 0xd2100000 0x0 0x10000>;
-+			reg = <0x400 0xd0000000 0x0 0x10000>,
-+			      <0x400 0xd2000000 0x0 0x10000>,
-+			      <0x400 0xd2010000 0x0 0x10000>,
-+			      <0x400 0xd2020000 0x0 0x10000>,
-+			      <0x400 0xd2030000 0x0 0x10000>,
-+			      <0x400 0xd2040000 0x0 0x10000>,
-+			      <0x400 0xd2050000 0x0 0x10000>,
-+			      <0x400 0xd2060000 0x0 0x10000>,
-+			      <0x400 0xd2070000 0x0 0x10000>,
-+			      <0x400 0xd2080000 0x0 0x10000>,
-+			      <0x400 0xd2090000 0x0 0x10000>,
-+			      <0x400 0xd20a0000 0x0 0x10000>,
-+			      <0x400 0xd20b0000 0x0 0x10000>,
-+			      <0x400 0xd20c0000 0x0 0x10000>,
-+			      <0x400 0xd20d0000 0x0 0x10000>,
-+			      <0x400 0xd20e0000 0x0 0x10000>,
-+			      <0x400 0xd20f0000 0x0 0x10000>,
-+			      <0x400 0xd2100000 0x0 0x10000>;
- 			interrupt-parent = <&p1_mbigen_sec_a>;
- 			iommus = <&p1_smmu_alg_a 0x600>;
- 			dma-coherent;
-@@ -1843,24 +1843,24 @@
- 		};
- 		p1_sec_b: crypto@408,d2000000 {
- 			compatible = "hisilicon,hip07-sec";
--			reg = <0x408 0xd0000000 0x0 0x10000
--			       0x408 0xd2000000 0x0 0x10000
--			       0x408 0xd2010000 0x0 0x10000
--			       0x408 0xd2020000 0x0 0x10000
--			       0x408 0xd2030000 0x0 0x10000
--			       0x408 0xd2040000 0x0 0x10000
--			       0x408 0xd2050000 0x0 0x10000
--			       0x408 0xd2060000 0x0 0x10000
--			       0x408 0xd2070000 0x0 0x10000
--			       0x408 0xd2080000 0x0 0x10000
--			       0x408 0xd2090000 0x0 0x10000
--			       0x408 0xd20a0000 0x0 0x10000
--			       0x408 0xd20b0000 0x0 0x10000
--			       0x408 0xd20c0000 0x0 0x10000
--			       0x408 0xd20d0000 0x0 0x10000
--			       0x408 0xd20e0000 0x0 0x10000
--			       0x408 0xd20f0000 0x0 0x10000
--			       0x408 0xd2100000 0x0 0x10000>;
-+			reg = <0x408 0xd0000000 0x0 0x10000>,
-+			      <0x408 0xd2000000 0x0 0x10000>,
-+			      <0x408 0xd2010000 0x0 0x10000>,
-+			      <0x408 0xd2020000 0x0 0x10000>,
-+			      <0x408 0xd2030000 0x0 0x10000>,
-+			      <0x408 0xd2040000 0x0 0x10000>,
-+			      <0x408 0xd2050000 0x0 0x10000>,
-+			      <0x408 0xd2060000 0x0 0x10000>,
-+			      <0x408 0xd2070000 0x0 0x10000>,
-+			      <0x408 0xd2080000 0x0 0x10000>,
-+			      <0x408 0xd2090000 0x0 0x10000>,
-+			      <0x408 0xd20a0000 0x0 0x10000>,
-+			      <0x408 0xd20b0000 0x0 0x10000>,
-+			      <0x408 0xd20c0000 0x0 0x10000>,
-+			      <0x408 0xd20d0000 0x0 0x10000>,
-+			      <0x408 0xd20e0000 0x0 0x10000>,
-+			      <0x408 0xd20f0000 0x0 0x10000>,
-+			      <0x408 0xd2100000 0x0 0x10000>;
- 			interrupt-parent = <&p1_mbigen_sec_b>;
- 			iommus = <&p1_smmu_alg_b 0x600>;
- 			dma-coherent;
+ 
 -- 
 1.8.3
 
