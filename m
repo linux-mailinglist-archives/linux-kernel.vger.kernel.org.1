@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA4228B5AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:13:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3459928B5B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388629AbgJLNNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:13:00 -0400
-Received: from esa5.microchip.iphmx.com ([216.71.150.166]:3146 "EHLO
-        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730509AbgJLNNA (ORCPT
+        id S1730536AbgJLNNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:13:31 -0400
+Received: from esa3.microchip.iphmx.com ([68.232.153.233]:58116 "EHLO
+        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730423AbgJLNNb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:13:00 -0400
+        Mon, 12 Oct 2020 09:13:31 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1602508380; x=1634044380;
+  t=1602508410; x=1634044410;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=WDNT8T0chASPmyuQTDcnmhl3GRuR4J/TIt+goiJGxHc=;
-  b=cShTrUwyhlwIinKqzMf46ngu4thJ5t5NDQEP42mDm+BHz18azEo09E4L
-   gbGvG9NE0FAfhWP1gYiGcuq43wI9ycj7UrL4VbWpufrLr6EV1DSg171LE
-   xl3fQA/YAJytjuT/YeCvQ1nyeWPyRrGhJX2oN9jlSI5tMJvyywgdttOmL
-   lxBhEeUPuuFIQH6AYmzCy3WJY1rvd2aJUVuN0w8/bRAZGfHq5Z2+rGF21
-   VOqrNc2+GDGC43ZXpxv0CyHcKop4HMGcdPUdAOrXI7BseNpE5a55Ojbkn
-   Ykf7V/Bnvquqv4OFpvSmcPG0gjYNoMS5o6FZTqdQD3hV/IWh7wEpTsGz7
-   w==;
-IronPort-SDR: jMAa8hS83ioD4sD46XKD3RoH7LywRyVayGQX1U+vaezL7QA25B5lS8nFCQBejZI/zeVq8uScE2
- 5zNdKxY+7g0bILYTevndOj3+NKVyXk9pX3rTPxB6rbCfj0LTHvlGOH9sIsdh6WQnGOkNj6xIsU
- CE68sDrBqkHz9xQ1xO/6nxHXA7uKK442u7MzIxA/JP/gFPrpu4JGoDUBizY8r/LlgH0v74tUNt
- S9DQBWvRKK+W7m8pagLb3RQLd0WA4mLXURkaZ1LnAGXP5EDqUjBzHHHL4e7kq3T+IiRFVjNptA
- pMw=
+  bh=/uHY5C97UGg9fIbk/wKP58Fy+ohxLvbrLp3RjXnau48=;
+  b=TtJEk/FRENJAgRXzOiXpEYCkwSPAnJkxkq4TOdLyruDSxepb/CtC1u9A
+   uuwnLkiHdkX+pq68XFrOpRWQM1gn5HVKiGiBxm9Vivld65GGyxgKSMYRd
+   tBF/VmewBeER1nFgAGiH3QUQ2pWvfG078Obk8cFBla6k4kLS/c+DhvBAc
+   ftmgZL/shYFpZPuHJdRyFAqleitL2YHEmSyfvWbVnyHH8H1nacvEcVRM0
+   bXjRYB6SDkm6CWpisxB04gnTcvfs0CGk6mHUgdmLFYvZwxqFacleBRwTf
+   IDH7JUbSA2HSePn+dT114pdYccYMdAejB+KpaP4pf7exd2c9vCLRNHtSE
+   Q==;
+IronPort-SDR: SJsfPXhi5E/RWB/+ANmezhdyH1CiejVZgEaHPFFmDpppNaBJL0j3tvhs69yQSBJl09mE0Okl++
+ iqazE4UVg7U3qs1/WWXuBmrdR4xbhqCRiXlLsN7k1BUqzqJcyv5fKon05nC0QN5nOlHHOkW7PR
+ +73kAs3upoiHsFQWaGiWOKKyvWpsY9bCpRy6kK4jVt7fFZwRWv61nA9+IpB8mkTP6Pjjukyc7f
+ 3m70Neu9lAVODXn/jOtD50kEZuvmHK+4plaRPkYfaNtzm95UmNOTARf0nCXzT5FarCVtU9ix9S
+ 32o=
 X-IronPort-AV: E=Sophos;i="5.77,366,1596524400"; 
-   d="scan'208";a="94260662"
+   d="scan'208";a="95011865"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 12 Oct 2020 06:13:00 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 12 Oct 2020 06:13:30 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 12 Oct 2020 06:12:59 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Mon, 12 Oct 2020 06:12:59 -0700
-Date:   Mon, 12 Oct 2020 13:11:13 +0000
+ 15.1.1979.3; Mon, 12 Oct 2020 06:13:30 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Mon, 12 Oct 2020 06:13:30 -0700
+Date:   Mon, 12 Oct 2020 13:11:44 +0000
 From:   "henrik.bjoernlund@microchip.com" <henrik.bjoernlund@microchip.com>
 To:     Nikolay Aleksandrov <nikolay@nvidia.com>
 CC:     "bridge@lists.linux-foundation.org" 
@@ -55,45 +55,59 @@ CC:     "bridge@lists.linux-foundation.org"
         "kuba@kernel.org" <kuba@kernel.org>,
         "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
         "horatiu.vultur@microchip.com" <horatiu.vultur@microchip.com>
-Subject: Re: [PATCH net-next v4 06/10] bridge: cfm: Kernel space
- implementation of CFM. CCM frame RX added.
-Message-ID: <20201012131113.p54op2ku7r4l54bv@soft-test08>
+Subject: Re: [PATCH net-next v4 05/10] bridge: cfm: Kernel space
+ implementation of CFM. CCM frame TX added.
+Message-ID: <20201012131144.rpqcx2iyt7jjkih3@soft-test08>
 References: <20201009143530.2438738-1-henrik.bjoernlund@microchip.com>
- <20201009143530.2438738-7-henrik.bjoernlund@microchip.com>
- <2ec76c98813c8190ced9e34b70b46d2dad94d714.camel@nvidia.com>
+ <20201009143530.2438738-6-henrik.bjoernlund@microchip.com>
+ <a091e766d38c00ef4d70b3bc003e16dc3747789b.camel@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <2ec76c98813c8190ced9e34b70b46d2dad94d714.camel@nvidia.com>
+In-Reply-To: <a091e766d38c00ef4d70b3bc003e16dc3747789b.camel@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Thanks for the review.
 
-The 10/09/2020 21:52, Nikolay Aleksandrov wrote:
+The 10/09/2020 21:49, Nikolay Aleksandrov wrote:
 > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
 > 
 > On Fri, 2020-10-09 at 14:35 +0000, Henrik Bjoernlund wrote:
-> > This is the third commit of the implementation of the CFM protocol
+> > This is the second commit of the implementation of the CFM protocol
 > > according to 802.1Q section 12.14.
 > >
-> > Functionality is extended with CCM frame reception.
-> > The MEP instance now contains CCM based status information.
-> > Most important is the CCM defect status indicating if correct
-> > CCM frames are received with the expected interval.
+> > Functionality is extended with CCM frame transmission.
+> >
+> > Interface is extended with these functions:
+> > br_cfm_cc_rdi_set()
+> > br_cfm_cc_ccm_tx()
+> > br_cfm_cc_config_set()
+> >
+> > A MEP Continuity Check feature can be configured by
+> > br_cfm_cc_config_set()
+> >     The Continuity Check parameters can be configured to be used when
+> >     transmitting CCM.
+> >
+> > A MEP can be configured to start or stop transmission of CCM frames by
+> > br_cfm_cc_ccm_tx()
+> >     The CCM will be transmitted for a selected period in seconds.
+> >     Must call this function before timeout to keep transmission alive.
+> >
+> > A MEP transmitting CCM can be configured with inserted RDI in PDU by
+> > br_cfm_cc_rdi_set()
 > >
 > > Signed-off-by: Henrik Bjoernlund  <henrik.bjoernlund@microchip.com>
 > > Reviewed-by: Horatiu Vultur  <horatiu.vultur@microchip.com>
 > > ---
-> >  include/uapi/linux/cfm_bridge.h |  10 ++
-> >  net/bridge/br_cfm.c             | 269 ++++++++++++++++++++++++++++++++
-> >  net/bridge/br_private_cfm.h     |  32 ++++
-> >  3 files changed, 311 insertions(+)
+> >  include/uapi/linux/cfm_bridge.h |  39 ++++-
+> >  net/bridge/br_cfm.c             | 284 ++++++++++++++++++++++++++++++++
+> >  net/bridge/br_private_cfm.h     |  54 ++++++
+> >  3 files changed, 376 insertions(+), 1 deletion(-)
 > >
 > 
 > Acked-by: Nikolay Aleksandrov <nikolay@nvidia.com>
-> 
 > 
 
 -- 
