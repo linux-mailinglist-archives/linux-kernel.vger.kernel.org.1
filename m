@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B346A28B677
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:34:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DE3428B6F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389082AbgJLNeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:34:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34924 "EHLO mail.kernel.org"
+        id S1731333AbgJLNjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:39:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389007AbgJLNcz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:32:55 -0400
+        id S1730291AbgJLNir (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:38:47 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 617B32087E;
-        Mon, 12 Oct 2020 13:32:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E252E20678;
+        Mon, 12 Oct 2020 13:38:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509574;
-        bh=gXAumGFMbP9CeIt6iIs55nIlaRny0KzXuMXPeYDImVc=;
+        s=default; t=1602509926;
+        bh=2UScKxsKiQ4yW6zBcZG68y9/Sr72p5mYnaR5HyUBc8Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WiwB378STm2ImoL9+u6Joe3K0w20VQDnYgzyPNBxVA6TYqUBlOmJeYUqIB7efMChs
-         QKQkcfigN1kxesi5NOCBE+sVN919ChSibQopE64GzomFq/e46jXByigv4UQDlWBVfP
-         WbapRQoRjJfIx3HLXG9ZMJ1yB230mmqJiZVcAirI=
+        b=J2HwSzK0fQYeURVkjOL0k6BdZr/fEt7q7zFX4EUWdQ74vX+LhqxGvVjOMGA0u+n1a
+         8x+Iz7Bm/x00HakU/mvitu4pHf0K5qoyskcWJwChWY+Ahi0lBJmzsiKUJe35pAfOm6
+         g/7MnqSNt/UTcHbKQ4wY+JYCyguv+hUm7j1FmFnA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+577fbac3145a6eb2e7a5@syzkaller.appspotmail.com,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 34/39] xfrm: Use correct address family in xfrm_state_find
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.19 18/49] macsec: avoid use-after-free in macsec_handle_frame()
 Date:   Mon, 12 Oct 2020 15:27:04 +0200
-Message-Id: <20201012132629.735737921@linuxfoundation.org>
+Message-Id: <20201012132630.290423413@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132628.130632267@linuxfoundation.org>
-References: <20201012132628.130632267@linuxfoundation.org>
+In-Reply-To: <20201012132629.469542486@linuxfoundation.org>
+References: <20201012132629.469542486@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,82 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Herbert Xu <herbert@gondor.apana.org.au>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit e94ee171349db84c7cfdc5fefbebe414054d0924 ]
+commit c7cc9200e9b4a2ac172e990ef1975cd42975dad6 upstream.
 
-The struct flowi must never be interpreted by itself as its size
-depends on the address family.  Therefore it must always be grouped
-with its original family value.
+De-referencing skb after call to gro_cells_receive() is not allowed.
+We need to fetch skb->len earlier.
 
-In this particular instance, the original family value is lost in
-the function xfrm_state_find.  Therefore we get a bogus read when
-it's coupled with the wrong family which would occur with inter-
-family xfrm states.
+Fixes: 5491e7c6b1a9 ("macsec: enable GRO and RPS on macsec devices")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Acked-by: Paolo Abeni <pabeni@redhat.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-This patch fixes it by keeping the original family value.
-
-Note that the same bug could potentially occur in LSM through
-the xfrm_state_pol_flow_match hook.  I checked the current code
-there and it seems to be safe for now as only secid is used which
-is part of struct flowi_common.  But that API should be changed
-so that so that we don't get new bugs in the future.  We could
-do that by replacing fl with just secid or adding a family field.
-
-Reported-by: syzbot+577fbac3145a6eb2e7a5@syzkaller.appspotmail.com
-Fixes: 48b8d78315bf ("[XFRM]: State selection update to use inner...")
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/xfrm/xfrm_state.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/net/macsec.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/net/xfrm/xfrm_state.c b/net/xfrm/xfrm_state.c
-index a3114abe74f20..5bb5950d6276b 100644
---- a/net/xfrm/xfrm_state.c
-+++ b/net/xfrm/xfrm_state.c
-@@ -742,7 +742,8 @@ static void xfrm_state_look_at(struct xfrm_policy *pol, struct xfrm_state *x,
- 	 */
- 	if (x->km.state == XFRM_STATE_VALID) {
- 		if ((x->sel.family &&
--		     !xfrm_selector_match(&x->sel, fl, x->sel.family)) ||
-+		     (x->sel.family != family ||
-+		      !xfrm_selector_match(&x->sel, fl, family))) ||
- 		    !security_xfrm_state_pol_flow_match(x, pol, fl))
- 			return;
+--- a/drivers/net/macsec.c
++++ b/drivers/net/macsec.c
+@@ -1085,6 +1085,7 @@ static rx_handler_result_t macsec_handle
+ 	struct macsec_rx_sa *rx_sa;
+ 	struct macsec_rxh_data *rxd;
+ 	struct macsec_dev *macsec;
++	unsigned int len;
+ 	sci_t sci;
+ 	u32 pn;
+ 	bool cbit;
+@@ -1240,9 +1241,10 @@ deliver:
+ 	macsec_rxsc_put(rx_sc);
  
-@@ -755,7 +756,9 @@ static void xfrm_state_look_at(struct xfrm_policy *pol, struct xfrm_state *x,
- 		*acq_in_progress = 1;
- 	} else if (x->km.state == XFRM_STATE_ERROR ||
- 		   x->km.state == XFRM_STATE_EXPIRED) {
--		if (xfrm_selector_match(&x->sel, fl, x->sel.family) &&
-+		if ((!x->sel.family ||
-+		     (x->sel.family == family &&
-+		      xfrm_selector_match(&x->sel, fl, family))) &&
- 		    security_xfrm_state_pol_flow_match(x, pol, fl))
- 			*error = -ESRCH;
- 	}
-@@ -791,7 +794,7 @@ xfrm_state_find(const xfrm_address_t *daddr, const xfrm_address_t *saddr,
- 		    tmpl->mode == x->props.mode &&
- 		    tmpl->id.proto == x->id.proto &&
- 		    (tmpl->id.spi == x->id.spi || !tmpl->id.spi))
--			xfrm_state_look_at(pol, x, fl, encap_family,
-+			xfrm_state_look_at(pol, x, fl, family,
- 					   &best, &acquire_in_progress, &error);
- 	}
- 	if (best || acquire_in_progress)
-@@ -807,7 +810,7 @@ xfrm_state_find(const xfrm_address_t *daddr, const xfrm_address_t *saddr,
- 		    tmpl->mode == x->props.mode &&
- 		    tmpl->id.proto == x->id.proto &&
- 		    (tmpl->id.spi == x->id.spi || !tmpl->id.spi))
--			xfrm_state_look_at(pol, x, fl, encap_family,
-+			xfrm_state_look_at(pol, x, fl, family,
- 					   &best, &acquire_in_progress, &error);
- 	}
+ 	skb_orphan(skb);
++	len = skb->len;
+ 	ret = gro_cells_receive(&macsec->gro_cells, skb);
+ 	if (ret == NET_RX_SUCCESS)
+-		count_rx(dev, skb->len);
++		count_rx(dev, len);
+ 	else
+ 		macsec->secy.netdev->stats.rx_dropped++;
  
--- 
-2.25.1
-
 
 
