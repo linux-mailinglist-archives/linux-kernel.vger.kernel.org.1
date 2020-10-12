@@ -2,130 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CED3028BECD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 19:09:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A5A28BECE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 19:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404047AbgJLRJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 13:09:48 -0400
-Received: from smtprelay0032.hostedemail.com ([216.40.44.32]:49330 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2403963AbgJLRJs (ORCPT
+        id S2404055AbgJLRKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 13:10:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403948AbgJLRKj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 13:09:48 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id B9225182251AE;
-        Mon, 12 Oct 2020 17:09:46 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 10,1,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1534:1543:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3167:3315:3354:3653:3865:3866:3867:3868:3870:3871:3874:4605:5007:7576:7903:10004:10128:10400:10848:11026:11473:11658:11914:12043:12297:12438:12555:12679:12760:12895:13095:13161:13229:13255:13439:13851:14181:14394:14659:14721:21080:21221:21433:21451:21627:21891:21972:21990:30054:30070,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: wish49_450c7ef271fc
-X-Filterd-Recvd-Size: 4228
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf04.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 12 Oct 2020 17:09:45 +0000 (UTC)
-Message-ID: <b74a95944a4bc6be1ea4ae8cf065c23e03511ba5.camel@perches.com>
-Subject: [PATCH -v4] checkpatch: Check for .byte-spelled insn opcodes
- documentation on x86
-From:   Joe Perches <joe@perches.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     X86 ML <x86@kernel.org>, Andy Whitcroft <apw@canonical.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@suse.de>
-Date:   Mon, 12 Oct 2020 10:09:44 -0700
-References: <20201009161423.14583-1-bp@alien8.de>
-         <b57a59bc80e432c7696b347a223eb12339013970.camel@perches.com>
-         <20201010105421.GA24674@zn.tnic>
-         <4147e49c0b1251343181b5580d946c2273247927.camel@perches.com>
-         <20201010161112.GC24674@zn.tnic>
-         <a534ed57c23ff35f6b84057ba3c0d1b55f0b03b9.camel@perches.com>
-         <20201012142148.GA22829@zn.tnic>
-In-Reply-To: <20201012142148.GA22829@zn.tnic>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Mon, 12 Oct 2020 13:10:39 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26F92C0613D0;
+        Mon, 12 Oct 2020 10:10:39 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id x7so11425791wrl.3;
+        Mon, 12 Oct 2020 10:10:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JQhCSXsyusOxGtjUFqayOObcSsTDfbxU0tyZvY/Vj6A=;
+        b=s2r4/v0DYuqvGNTQcT9zgz4BWyfxkTPOGxK93WLomSMqB2kqeMffyXD89Fq3PXTYvC
+         6a3f07TVZ8Gw1A4aO8hF6jlv0SVJbrghYj/s57G0LdOI3LnabDur/q8QPDXgw63fk2ig
+         uLbcCU6I2nwfbsVw8dEyqYkdF4sQxLG56f/CZauWAQZE7HPiNaGzCzrpl3FASOQdozA0
+         Hj7mn7eaSq2QyW9WKVFVOHUuZMPSwieUUiJlKmn+QRJw89CsmgQOgD+GckIqtGmzCJjl
+         QBFwe37n7jt4+/IaC/kNVoAwZ7pR7i4Pef1JUMosNuxogbTDFzHWjIsq/0+3GfEaCIiC
+         yjKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JQhCSXsyusOxGtjUFqayOObcSsTDfbxU0tyZvY/Vj6A=;
+        b=Bx93oxsmS4eMBpvIZzem/NvZEl5zsFN7K8TbqUH8T+1Tc96OOWj7NeP8HZm4zKmHXA
+         vH1/X/Kltsbkepm+wsfHlKZg46RAAxE3MWQbcP5TKMvf1vT2lvs16VPQw83qPrd+dW3G
+         g+lC+idUK5HdkDiiKQPL8qXmTvsPKYydwFgeDFK/7l0owXUzZhbwFl4iKLemt4RtiSVT
+         kBi3m0Pt5rckkUCJ+jCaO+88s9M61/M8brDvdRFL+quGtQY+MHcqMUPitJGGiTeO4SjY
+         kWEiw5Ud92TaETL2+lLVIyTn4fcRmYxqJWV0b43V3XKDZ/pjP0RqipGtwNZDaOOawqtU
+         xApA==
+X-Gm-Message-State: AOAM531looCiXl03v7E1mlWWyb221QfBX/3YVKieJ4IW2gZWW7RBdn6N
+        oMqIFJAf8dBIJT9u+s4PNzRLqUK3clvRPvwv
+X-Google-Smtp-Source: ABdhPJwGyRczTJ1YaqqPoszu5AOFLeprcyPNpPbK+gSRzKVT2oSaTGHdlKyI1sHe4p1gqj2bfhHvng==
+X-Received: by 2002:adf:c64e:: with SMTP id u14mr30375186wrg.373.1602522637731;
+        Mon, 12 Oct 2020 10:10:37 -0700 (PDT)
+Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id l11sm27199166wrt.54.2020.10.12.10.10.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 10:10:37 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+Cc:     Alex Dewar <alex.dewar90@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net: sockmap: Don't call bpf_prog_put() on NULL pointer
+Date:   Mon, 12 Oct 2020 18:09:53 +0100
+Message-Id: <20201012170952.60750-1-alex.dewar90@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Borislav Petkov <bp@suse.de>
+If bpf_prog_inc_not_zero() fails for skb_parser, then bpf_prog_put() is
+called unconditionally on skb_verdict, even though it may be NULL. Fix
+and tidy up error path.
 
-Instruction opcode bytes spelled using the gas directive .byte should
-carry a comment above them stating which binutils version has added
-support for the instruction mnemonic so that they can be replaced with
-the mnemonic when that binutils version is equal or less than the
-minimum-supported version by the kernel.
-
-Add a check for that.
-
-Requested-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Signed-off-by: Joe Perches <joe@perches.com>
+Addresses-Coverity-ID: 1497799: Null pointer dereferences (FORWARD_NULL)
+Fixes: 743df8b7749f ("bpf, sockmap: Check skb_verdict and skb_parser programs explicitly")
+Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
 ---
+ net/core/sock_map.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-v4: trivial neatening of $Hex_byte and adding a mechanism to
-    only emit the message once per patched file (Joe)
-
- scripts/checkpatch.pl | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index fab38b493cef..7568f583701c 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -414,6 +414,7 @@ our $Lval	= qr{$Ident(?:$Member)*};
- our $Int_type	= qr{(?i)llu|ull|ll|lu|ul|l|u};
- our $Binary	= qr{(?i)0b[01]+$Int_type?};
- our $Hex	= qr{(?i)0x[0-9a-f]+$Int_type?};
-+our $Hex_byte	= qr{(?i)0x[0-9a-f]{1,2}\b};
- our $Int	= qr{[0-9]+$Int_type?};
- our $Octal	= qr{0[0-7]+$Int_type?};
- our $String	= qr{"[X\t]*"};
-@@ -2408,6 +2409,7 @@ sub process {
- 	my $comment_edge = 0;
- 	my $first_line = 0;
- 	my $p1_prefix = '';
-+	my $warned_binutils = 0;
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index df09c39a4dd2..a73ccce54423 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -238,17 +238,18 @@ static int sock_map_link(struct bpf_map *map, struct sk_psock_progs *progs,
+ 	int ret;
  
- 	my $prev_values = 'E';
- 
-@@ -2589,6 +2591,7 @@ sub process {
- 			$realfile =~ s@^([^/]*)/@@ if (!$file);
- 			$in_commit_log = 0;
- 			$found_file = 1;
-+			$warned_binutils = 0;
- 		} elsif ($line =~ /^\+\+\+\s+(\S+)/) {
- 			$realfile = $1;
- 			$realfile =~ s@^([^/]*)/@@ if (!$file);
-@@ -2606,6 +2609,7 @@ sub process {
- 				      "do not modify files in include/asm, change architecture specific files in include/asm-<architecture>\n" . "$here$rawline\n");
- 			}
- 			$found_file = 1;
-+			$warned_binutils = 0;
- 		}
- 
- #make up the handle for any error we report on this line
-@@ -6954,6 +6958,20 @@ sub process {
- 			WARN("DUPLICATED_SYSCTL_CONST",
- 				"duplicated sysctl range checking value '$1', consider using the shared one in include/linux/sysctl.h\n" . $herecurr);
- 		}
+ 	skb_verdict = READ_ONCE(progs->skb_verdict);
+-	skb_parser = READ_ONCE(progs->skb_parser);
+ 	if (skb_verdict) {
+ 		skb_verdict = bpf_prog_inc_not_zero(skb_verdict);
+ 		if (IS_ERR(skb_verdict))
+ 			return PTR_ERR(skb_verdict);
+ 	}
 +
-+# document which binutils version supports the actual insn mnemonic so that the naked opcode bytes can be replaced.
-+# x86-only. Upper limit is rather arbitrary (max insn length on x86) but imposed so as to avoid perl aborts.
-+		if (!$warned_binutils &&
-+		    $realfile =~ m@^arch/x86/@ &&
-+		    $rawline =~ /\s*\.byte\s+$Hex_byte(?:\s*,\s*$Hex_byte){0,14}/) {
-+
-+			my $comment = ctx_locate_comment($file ? 0 : $first_line, $linenr);
-+			if ($comment !~ /binutils (?:version )*[0-9.]+/ms) {
-+				WARN("MISSING_BINUTILS_VERSION",
-+				     "Please consider documenting which binutils version supports these .byte-spelled insn opcodes by adding \"binutils version <num>\" in a comment above them\n" . $herecurr);
-+				$warned_binutils = 1;
-+			}
-+		}
++	skb_parser = READ_ONCE(progs->skb_parser);
+ 	if (skb_parser) {
+ 		skb_parser = bpf_prog_inc_not_zero(skb_parser);
+ 		if (IS_ERR(skb_parser)) {
+-			bpf_prog_put(skb_verdict);
+-			return PTR_ERR(skb_parser);
++			ret = PTR_ERR(skb_parser);
++			goto out_put_skb_verdict;
+ 		}
  	}
  
- 	# If we have no input at all, then there is nothing to report on
-
+@@ -257,7 +258,7 @@ static int sock_map_link(struct bpf_map *map, struct sk_psock_progs *progs,
+ 		msg_parser = bpf_prog_inc_not_zero(msg_parser);
+ 		if (IS_ERR(msg_parser)) {
+ 			ret = PTR_ERR(msg_parser);
+-			goto out;
++			goto out_put_skb_parser;
+ 		}
+ 	}
+ 
+@@ -311,11 +312,12 @@ static int sock_map_link(struct bpf_map *map, struct sk_psock_progs *progs,
+ out_progs:
+ 	if (msg_parser)
+ 		bpf_prog_put(msg_parser);
+-out:
+-	if (skb_verdict)
+-		bpf_prog_put(skb_verdict);
++out_put_skb_parser:
+ 	if (skb_parser)
+ 		bpf_prog_put(skb_parser);
++out_put_skb_verdict:
++	if (skb_verdict)
++		bpf_prog_put(skb_verdict);
+ 	return ret;
+ }
+ 
+-- 
+2.28.0
 
