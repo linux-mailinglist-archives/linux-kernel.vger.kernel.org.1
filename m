@@ -2,182 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2228128B59E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D84D28B589
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730454AbgJLNLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:11:13 -0400
-Received: from esa5.microchip.iphmx.com ([216.71.150.166]:2885 "EHLO
-        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730352AbgJLNKz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:10:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1602508255; x=1634044255;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Wx/SjgxENV21vS7rRkR80G3C+v6r1f+DHOKACkGfp3I=;
-  b=wLeJ5WUGEEXfGOJems2XLpzsvLuRUJUmhpeCdB89VmJwoSqpb5bDDQnv
-   dKCTFFQTMKLOVA1ypIatsYJhwTiUGfJ2LFBjESrhCh85kzWcybAdFlFbS
-   Axvf6x2cBqxJDA+Pg4HvL61s6sV0gE7wvrDMjPHlvtI9w603joBIvU34Q
-   ICNwu7/O5mpxjCuUcXRlMjTIjw1YcDP0F9oXBFz2/tHEPdCTI/FCxrwIc
-   J6oPFeQ5bwVIx98njOR9mQzO0Rj1AkeIVzwlA68kq/d4I/XT4UxX27jLu
-   M+CUq8fEtH88fBgJoTmoN+pcZhsF3rxdK/yX7VId2WnSjSUkHCdB9dEPL
-   w==;
-IronPort-SDR: 9Y4NwhjJvqXvf1atUzESUtA9XZU3SGWfH1qty+KcM9RojB5eNCsldilHUmq35RRz69el5nYV8a
- EpXQfim9eIn3/25OLlJm6AZrGseuuinlgKufkT7AJk/pX7iPOIdmm16VlyDaveE4sj8J4EnJWc
- mAdg3aLP0SfjhYrPe2QXf+WfJJeUIWveuHm9KfH/U+XrztlUnptHtjaGE1vl6Yv0fUkg5QDMFB
- ZaQvJYePUsfi6bjgEHBGeOxlYj9OHSqpPnR8w0Nq5M6Kv+xyudpscNU5iHvwDyoeNYgJMH87rQ
- 4rc=
-X-IronPort-AV: E=Sophos;i="5.77,366,1596524400"; 
-   d="scan'208";a="94260104"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 12 Oct 2020 06:10:54 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 12 Oct 2020 06:10:53 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Mon, 12 Oct 2020 06:10:53 -0700
-Date:   Mon, 12 Oct 2020 13:09:07 +0000
-From:   "henrik.bjoernlund@microchip.com" <henrik.bjoernlund@microchip.com>
-To:     Nikolay Aleksandrov <nikolay@nvidia.com>
-CC:     "bridge@lists.linux-foundation.org" 
-        <bridge@lists.linux-foundation.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jiri@mellanox.com" <jiri@mellanox.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Roopa Prabhu <roopa@nvidia.com>,
-        "idosch@mellanox.com" <idosch@mellanox.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        "horatiu.vultur@microchip.com" <horatiu.vultur@microchip.com>
-Subject: Re: [PATCH net-next v4 09/10] bridge: cfm: Netlink GET status
- Interface.
-Message-ID: <20201012130907.6ncpvscoots4yzxl@soft-test08>
-References: <20201009143530.2438738-1-henrik.bjoernlund@microchip.com>
- <20201009143530.2438738-10-henrik.bjoernlund@microchip.com>
- <9248a20233893a46747f3c5c867f5f0db18eb69d.camel@nvidia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <9248a20233893a46747f3c5c867f5f0db18eb69d.camel@nvidia.com>
+        id S2388649AbgJLNJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:09:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54558 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388634AbgJLNJZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:09:25 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6CE282076C;
+        Mon, 12 Oct 2020 13:09:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602508164;
+        bh=1w5qExof3jtV1uYgS2v5GAiIHQE62KG5XfkV3TuCgTE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hwhAfEq21VIdGf0HiJaS8Ba36OfOXl4HEznS/1ByBDUQU3rBu7cqGvgsiM7gYiDao
+         +Av/iCHQZV3q3efiyIpH0ZDVYAkOz0WLOejXAYKZ4AqOVcWf282i3ebbAdzO6niTeh
+         +WECiwVC5uHU2mhvTVH913TSqjbJNpnw0pcwqcVE=
+From:   Mark Brown <broonie@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] regulator updates for v5.10
+Date:   Mon, 12 Oct 2020 14:09:08 +0100
+Message-Id: <20201012130923.6CE282076C@mail.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the review. Comments below.
+The following changes since commit 549738f15da0e5a00275977623be199fbbf7df50:
 
-The 10/09/2020 22:00, Nikolay Aleksandrov wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> 
-> On Fri, 2020-10-09 at 14:35 +0000, Henrik Bjoernlund wrote:
-> > This is the implementation of CFM netlink status
-> > get information interface.
-> >
-> > Add new nested netlink attributes. These attributes are used by the
-> > user space to get status information.
-> >
-> > GETLINK:
-> >     Request filter RTEXT_FILTER_CFM_STATUS:
-> >     Indicating that CFM status information must be delivered.
-> >
-> >     IFLA_BRIDGE_CFM:
-> >         Points to the CFM information.
-> >
-> >     IFLA_BRIDGE_CFM_MEP_STATUS_INFO:
-> >         This indicate that the MEP instance status are following.
-> >     IFLA_BRIDGE_CFM_CC_PEER_STATUS_INFO:
-> >         This indicate that the peer MEP status are following.
-> >
-> > CFM nested attribute has the following attributes in next level.
-> >
-> > GETLINK RTEXT_FILTER_CFM_STATUS:
-> >     IFLA_BRIDGE_CFM_MEP_STATUS_INSTANCE:
-> >         The MEP instance number of the delivered status.
-> >         The type is u32.
-> >     IFLA_BRIDGE_CFM_MEP_STATUS_OPCODE_UNEXP_SEEN:
-> >         The MEP instance received CFM PDU with unexpected Opcode.
-> >         The type is u32 (bool).
-> >     IFLA_BRIDGE_CFM_MEP_STATUS_VERSION_UNEXP_SEEN:
-> >         The MEP instance received CFM PDU with unexpected version.
-> >         The type is u32 (bool).
-> >     IFLA_BRIDGE_CFM_MEP_STATUS_RX_LEVEL_LOW_SEEN:
-> >         The MEP instance received CCM PDU with MD level lower than
-> >         configured level. This frame is discarded.
-> >         The type is u32 (bool).
-> >
-> >     IFLA_BRIDGE_CFM_CC_PEER_STATUS_INSTANCE:
-> >         The MEP instance number of the delivered status.
-> >         The type is u32.
-> >     IFLA_BRIDGE_CFM_CC_PEER_STATUS_PEER_MEPID:
-> >         The added Peer MEP ID of the delivered status.
-> >         The type is u32.
-> >     IFLA_BRIDGE_CFM_CC_PEER_STATUS_CCM_DEFECT:
-> >         The CCM defect status.
-> >         The type is u32 (bool).
-> >         True means no CCM frame is received for 3.25 intervals.
-> >         IFLA_BRIDGE_CFM_CC_CONFIG_EXP_INTERVAL.
-> >     IFLA_BRIDGE_CFM_CC_PEER_STATUS_RDI:
-> >         The last received CCM PDU RDI.
-> >         The type is u32 (bool).
-> >     IFLA_BRIDGE_CFM_CC_PEER_STATUS_PORT_TLV_VALUE:
-> >         The last received CCM PDU Port Status TLV value field.
-> >         The type is u8.
-> >     IFLA_BRIDGE_CFM_CC_PEER_STATUS_IF_TLV_VALUE:
-> >         The last received CCM PDU Interface Status TLV value field.
-> >         The type is u8.
-> >     IFLA_BRIDGE_CFM_CC_PEER_STATUS_SEEN:
-> >         A CCM frame has been received from Peer MEP.
-> >         The type is u32 (bool).
-> >         This is cleared after GETLINK IFLA_BRIDGE_CFM_CC_PEER_STATUS_INFO.
-> >     IFLA_BRIDGE_CFM_CC_PEER_STATUS_TLV_SEEN:
-> >         A CCM frame with TLV has been received from Peer MEP.
-> >         The type is u32 (bool).
-> >         This is cleared after GETLINK IFLA_BRIDGE_CFM_CC_PEER_STATUS_INFO.
-> >     IFLA_BRIDGE_CFM_CC_PEER_STATUS_SEQ_UNEXP_SEEN:
-> >         A CCM frame with unexpected sequence number has been received
-> >         from Peer MEP.
-> >         The type is u32 (bool).
-> >         When a sequence number is not one higher than previously received
-> >         then it is unexpected.
-> >         This is cleared after GETLINK IFLA_BRIDGE_CFM_CC_PEER_STATUS_INFO.
-> >
-> > Signed-off-by: Henrik Bjoernlund  <henrik.bjoernlund@microchip.com>
-> > Reviewed-by: Horatiu Vultur  <horatiu.vultur@microchip.com>
-> > ---
-> >  include/uapi/linux/if_bridge.h |  29 +++++++++
-> >  include/uapi/linux/rtnetlink.h |   1 +
-> >  net/bridge/br_cfm_netlink.c    | 105 +++++++++++++++++++++++++++++++++
-> >  net/bridge/br_netlink.c        |  16 ++++-
-> >  net/bridge/br_private.h        |   6 ++
-> >  5 files changed, 154 insertions(+), 3 deletions(-)
-> >
-> [snip]
-> > diff --git a/net/bridge/br_cfm_netlink.c b/net/bridge/br_cfm_netlink.c
-> > index 952b6372874e..94e9b46d5fb4 100644
-> > --- a/net/bridge/br_cfm_netlink.c
-> > +++ b/net/bridge/br_cfm_netlink.c
-> > @@ -617,3 +617,108 @@ int br_cfm_config_fill_info(struct sk_buff *skb, struct net_bridge *br)
-> >  nla_info_failure:
-> >       return -EMSGSIZE;
-> >  }
-> > +
-> > +int br_cfm_status_fill_info(struct sk_buff *skb, struct net_bridge *br)
-> > +{
-> > +     struct nlattr *tb;
-> > +     struct br_cfm_mep *mep;
-> > +     struct br_cfm_peer_mep *peer_mep;
-> > +
-> >
-> 
-> Reverse xmas tree here, too. Sorry I missed these earlier.
-> 
-I chande this as requested.
-> 
+  Linux 5.9-rc8 (2020-10-04 16:04:34 -0700)
 
--- 
-/Henrik
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/regulator-v5.10
+
+for you to fetch changes up to c6e70a6fd5ceff381059e600156d78c1b94b7c60:
+
+  Merge remote-tracking branch 'regulator/for-5.10' into regulator-next (2020-10-05 16:54:56 +0100)
+
+----------------------------------------------------------------
+regulator: Updates for v5.10
+
+This is a fairly small release for the regulator API, there's quite a
+few new devices supported and some important improvements around coupled
+regulators in the core but mostly just small fixes and improvements
+otherwise.
+
+ - Fixes and cleanups around the handling of coupled regulators.
+ - A special driver for some Raspberry Pi panels with some unusually
+   custom stuff around them.
+ - Support for Qualcomm PM660/PM660L, PM8950 and PM8953, Richtek RT4801
+   and RTMV20, Rohm BD9576MUF and BD9573MUF.
+
+----------------------------------------------------------------
+AngeloGioacchino Del Regno (6):
+      regulator: core: Enlarge max OF property name length to 64 chars
+      regulator: qcom_spmi: Add support for new regulator types
+      regulator: qcom_spmi: Add PM660/PM660L regulators
+      regulator: dt-bindings: Document the PM660/660L SPMI PMIC entries
+      regulator: qcom_smd: Add PM660/PM660L regulator support
+      regulator: dt-bindings: Document the PM660/PM660L PMICs entries
+
+Anson Huang (1):
+      regulator: Convert pfuze100 to json-schema
+
+Axel Lin (3):
+      regulator: lp8755: Get rid of lp8755_read/lp8755_write/lp8755_update_bits
+      regulator: qcom_spmi: Improve readability for setting up enable/mode pin control
+      regulator: rt4801: Select REGMAP_I2C to fix build error
+
+Charles Keepax (1):
+      regulator: lochnagar: Add additional VDDCORE range
+
+ChiYuan Huang (8):
+      regulator: rt4801: Add support for RT4801 Display Bias regulator driver
+      regulator: rt4801: Add DT binding documentation
+      regulator: rt4801: Fix the dt-binding document for dtc check.
+      regulator: rt4801: Fix W=1 build warning when CONFIG_OF=n
+      regulator: rtmv20: Adds support for Richtek RTMV20 load switch regulator
+      regulator: rtmv20: Add DT-binding document for Richtek RTMV20
+      regulator: rtmv20: Update DT binding document and property name parsing
+      regulator: rtmv20: Add missing regcache cache only before marked as dirty
+
+Colin Ian King (1):
+      regulator: fix indentation issue
+
+Fabio Estevam (1):
+      regulator: dbx500: Remove unused debugfs goto label
+
+Geert Uytterhoeven (1):
+      regulator: Make constraint debug processing conditional on DEBUG
+
+Gene Chen (2):
+      regulator: mt6360: Add support for MT6360 regulator
+      dt-bindings: regulator: mt6360: Add DT binding documentation
+
+Greg Kroah-Hartman (1):
+      regulator: dbx500: no need to check return value of debugfs_create functions
+
+Hsin-Yi Wang (1):
+      regulator: da9211: add cache_type
+
+Jisheng Zhang (22):
+      regulator: mp886x: implement set_ramp_delay
+      regulator: mp886x: support setting switch freq
+      regulator: mp886x: support mps,switch-frequency
+      regulator: sy8827n: Fix W=1 build warning when CONFIG_OF=n
+      regulator: Convert sy8824x to json-schema
+      regulator: 88pg86x: Fix W=1 build warning when CONFIG_OF=n
+      regulator: da9210: Fix W=1 build warning when CONFIG_OF=n
+      regulator: fan53555: Fix W=1 build warning when CONFIG_OF=n
+      regulator: fixed: Fix W=1 build warnings when CONFIG_OF=n
+      regulator: ltc3589: Fix W=1 build warning when CONFIG_OF=n
+      regulator: ltc3676: Fix W=1 build warning when CONFIG_OF=n
+      regulator: max1586: Fix W=1 build warning when CONFIG_OF=n
+      regulator: max77826: Fix W=1 build warning when CONFIG_OF=n
+      regulator: pwm: Fix W=1 build warning when CONFIG_OF=n
+      regulator: stm32-pwr: Fix W=1 build warning when CONFIG_OF=n
+      regulator: stm32-vrefbuf: Fix W=1 build warning when CONFIG_OF=n
+      regulator: sy8106a: Fix W=1 build warning when CONFIG_OF=n
+      regulator: qcom-rpmh: Fix W=1 build warning when CONFIG_OF=n
+      regulator: stm32-booster: Fix W=1 build warning when CONFIG_OF=n
+      regulator: tps65023: Fix W=1 build warning when CONFIG_OF=n
+      regulator: mp886x: use "mps,switch-frequency-hz"
+      dt-bindings: regulator: Convert mp886x to json-schema
+
+Jonathan Marek (1):
+      regulator: set of_node for qcom vbus regulator
+
+Krzysztof Kozlowski (2):
+      regulator: enable compile testing for Maxim and Samsung PMIC drivers
+      regulator: s5m8767: initialize driver via module_platform_driver
+
+Marek Vasut (2):
+      regulator: rpi-panel: Add regulator/backlight driver for RPi panel
+      regulator: Add DT bindings for RaspberryPi 7" display ATTINY88-based regulator/backlight controller
+
+Mark Brown (11):
+      Merge existing fixes from regulator/for-5.9
+      Merge series "regulator: fix deadlock vs memory reclaim" from Michał Mirosław <mirq-linux@rere.qmqm.pl>:
+      Merge series "regulator: mp886x: two features and dt json convert" from Jisheng Zhang <jszhang3@mail.ustc.edu.cn> Jisheng Zhang <Jisheng.Zhang@synaptics.com>:
+      Merge series "regulator: Fix W=1 build warning when CONFIG_OF=n" from Jisheng Zhang <Jisheng.Zhang@synaptics.com>:
+      Merge tag 'v5.9-rc2' into regulator-5.10
+      regulator: rt4801: Specify additionalProperties: false
+      Merge series "regulator: unexport regulator_lock/unlock()" from Michał Mirosław <mirq-linux@rere.qmqm.pl>:
+      Merge series "Support ROHM BD9576MUF and BD9573MUF PMICs" from Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>:
+      Merge series "regulator: debugging aids" from Michał Mirosław <mirq-linux@rere.qmqm.pl>:
+      Merge series "Support for PM660/PM660L SPMI and SMD regulators" from kholk11@gmail.com AngeloGioacchino Del Regno <kholk11@gmail.com>:
+      Merge remote-tracking branch 'regulator/for-5.10' into regulator-next
+
+Matti Vaittinen (8):
+      regulator: bd718x7 initialize regulator config only once
+      regulator: bd718x7 fix regulator states at SUSPEND
+      regulator: bd71837: add property for omitting ON/OFF control
+      regulator: bd71847: add property for omitting ON/OFF control
+      dt_bindings: regulator: Add ROHM BD9576MUF and BD9573MUF PMICs
+      regulator: Support ROHM BD9576MUF and BD9573MUF
+      regulator: bd9576: fix regulator binfdings dt node names
+      regulator: bd9576: Fix print
+
+Michał Mirosław (8):
+      regulator: Remove pointer table overallocation
+      regulator: don't require mutex for regulator_notifier_call_chain()
+      regulator: remove locking around regulator_notifier_call_chain()
+      regulator: unexport regulator_lock/unlock()
+      regulator: print state at boot
+      regulator: print symbolic errors in kernel messages
+      regulator: resolve supply after creating regulator
+      regulator: tps65910: use regmap accessors
+
+Piyush Goyal (1):
+      regulator: mt6360: fix spelling mistake: "regulaotr" -> "regulator"
+
+Rikard Falkeborn (14):
+      regulator: tps51632: Constify tps51632_dcdc_ops
+      regulator: tps6105x: Constify tps6105x_regulator_ops
+      regulator: tps62360: Constify tps62360_dcdc_ops
+      regulator: tps65086: Constify static regulator_ops
+      regulator: tps65090: constify static regulator_ops
+      regulator: tps6586x: Constify static regulator_ops
+      regulator: tps65912: Constify static regulator_ops
+      regulator: tps65910: Constify static regulator_ops
+      regulator: dummy: Constify dummy_initdata and dummy_ops
+      regulator: fixed: Constify static regulator_ops
+      regulator: stw481x-vmmc: Constify static structs
+      regulator: pca9450: Constify static regulator_ops
+      regulator: ti-abb: Constify ti_abb_reg_ops
+      regulator: qcom: labibb: Constify static structs
+
+Stephen Boyd (1):
+      regulator: Avoid grabbing regulator lock during suspend/resume
+
+Vladimir Lypak (2):
+      regulator: qcom_smd: add pm8953 regulators
+      dt-bindings: regulator: document pm8950 and pm8953 smd regulators
+
+YueHaibing (1):
+      regulator: bd718x7: Make some variable static
+
+ .../devicetree/bindings/regulator/mp886x.txt       |  27 --
+ .../devicetree/bindings/regulator/mps,mp886x.yaml  |  61 +++
+ .../bindings/regulator/mt6360-regulator.yaml       | 113 +++++
+ .../devicetree/bindings/regulator/pfuze100.txt     | 394 ------------------
+ .../devicetree/bindings/regulator/pfuze100.yaml    | 186 +++++++++
+ .../bindings/regulator/qcom,smd-rpm-regulator.yaml |  12 +
+ .../bindings/regulator/qcom,spmi-regulator.txt     |  31 ++
+ ...pberrypi,7inch-touchscreen-panel-regulator.yaml |  44 ++
+ .../regulator/richtek,rt4801-regulator.yaml        |  79 ++++
+ .../regulator/richtek,rtmv20-regulator.yaml        | 159 +++++++
+ .../bindings/regulator/rohm,bd71837-regulator.yaml |  11 +
+ .../bindings/regulator/rohm,bd71847-regulator.yaml |  11 +
+ .../bindings/regulator/rohm,bd9576-regulator.yaml  |  34 ++
+ .../bindings/regulator/silergy,sy8824x.yaml        |  45 ++
+ .../devicetree/bindings/regulator/sy8824x.txt      |  24 --
+ drivers/regulator/88pg86x.c                        |   2 +-
+ drivers/regulator/Kconfig                          |  64 ++-
+ drivers/regulator/Makefile                         |   5 +
+ drivers/regulator/bd718x7-regulator.c              | 422 ++++++++++++-------
+ drivers/regulator/bd9576-regulator.c               | 337 +++++++++++++++
+ drivers/regulator/core.c                           | 239 ++++++-----
+ drivers/regulator/da9055-regulator.c               |   2 -
+ drivers/regulator/da9062-regulator.c               |   2 -
+ drivers/regulator/da9063-regulator.c               |   2 -
+ drivers/regulator/da9210-regulator.c               |   6 +-
+ drivers/regulator/da9211-regulator.c               |  18 +-
+ drivers/regulator/dbx500-prcmu.c                   |  26 +-
+ drivers/regulator/dummy.c                          |   4 +-
+ drivers/regulator/fan53555.c                       |   2 +-
+ drivers/regulator/fixed.c                          |  20 +-
+ drivers/regulator/lochnagar-regulator.c            |   1 +
+ drivers/regulator/lp8755.c                         |  88 +---
+ drivers/regulator/ltc3589.c                        |  12 +-
+ drivers/regulator/ltc3676.c                        |  12 +-
+ drivers/regulator/max1586.c                        |   2 +-
+ drivers/regulator/max77826-regulator.c             |   2 +-
+ drivers/regulator/mp886x.c                         | 109 ++++-
+ drivers/regulator/mt6360-regulator.c               | 459 +++++++++++++++++++++
+ drivers/regulator/pca9450-regulator.c              |   6 +-
+ drivers/regulator/pv88060-regulator.c              |  10 +-
+ drivers/regulator/pv88080-regulator.c              |  10 +-
+ drivers/regulator/pv88090-regulator.c              |  10 +-
+ drivers/regulator/pwm-regulator.c                  |   2 +-
+ drivers/regulator/qcom-labibb-regulator.c          |   8 +-
+ drivers/regulator/qcom-rpmh-regulator.c            |   2 +-
+ drivers/regulator/qcom_smd-regulator.c             | 167 ++++++++
+ drivers/regulator/qcom_spmi-regulator.c            | 177 ++++++--
+ drivers/regulator/qcom_usb_vbus-regulator.c        |   1 +
+ drivers/regulator/rpi-panel-attiny-regulator.c     | 214 ++++++++++
+ drivers/regulator/rt4801-regulator.c               | 223 ++++++++++
+ drivers/regulator/rtmv20-regulator.c               | 397 ++++++++++++++++++
+ drivers/regulator/s5m8767.c                        |  13 +-
+ drivers/regulator/slg51000-regulator.c             |   4 -
+ drivers/regulator/stm32-booster.c                  |   2 +-
+ drivers/regulator/stm32-pwr.c                      |   2 +-
+ drivers/regulator/stm32-vrefbuf.c                  |   2 +-
+ drivers/regulator/stpmic1_regulator.c              |   4 -
+ drivers/regulator/stw481x-vmmc.c                   |   4 +-
+ drivers/regulator/sy8106a-regulator.c              |   2 +-
+ drivers/regulator/sy8827n.c                        |   2 +
+ drivers/regulator/ti-abb-regulator.c               |   2 +-
+ drivers/regulator/tps51632-regulator.c             |   2 +-
+ drivers/regulator/tps6105x-regulator.c             |   2 +-
+ drivers/regulator/tps62360-regulator.c             |   2 +-
+ drivers/regulator/tps65023-regulator.c             |   2 +-
+ drivers/regulator/tps65086-regulator.c             |   4 +-
+ drivers/regulator/tps65090-regulator.c             |   8 +-
+ drivers/regulator/tps6586x-regulator.c             |   8 +-
+ drivers/regulator/tps65910-regulator.c             | 135 +++---
+ drivers/regulator/tps65912-regulator.c             |   4 +-
+ drivers/regulator/wm831x-dcdc.c                    |   4 -
+ drivers/regulator/wm831x-isink.c                   |   2 -
+ drivers/regulator/wm831x-ldo.c                     |   2 -
+ drivers/regulator/wm8350-regulator.c               |   2 -
+ .../regulator/mediatek,mt6360-regulator.h          |  16 +
+ include/linux/regulator/driver.h                   |   3 -
+ include/linux/soc/qcom/smd-rpm.h                   |   4 +
+ 77 files changed, 3498 insertions(+), 1033 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/regulator/mp886x.txt
+ create mode 100644 Documentation/devicetree/bindings/regulator/mps,mp886x.yaml
+ create mode 100644 Documentation/devicetree/bindings/regulator/mt6360-regulator.yaml
+ delete mode 100644 Documentation/devicetree/bindings/regulator/pfuze100.txt
+ create mode 100644 Documentation/devicetree/bindings/regulator/pfuze100.yaml
+ create mode 100644 Documentation/devicetree/bindings/regulator/raspberrypi,7inch-touchscreen-panel-regulator.yaml
+ create mode 100644 Documentation/devicetree/bindings/regulator/richtek,rt4801-regulator.yaml
+ create mode 100644 Documentation/devicetree/bindings/regulator/richtek,rtmv20-regulator.yaml
+ create mode 100644 Documentation/devicetree/bindings/regulator/rohm,bd9576-regulator.yaml
+ create mode 100644 Documentation/devicetree/bindings/regulator/silergy,sy8824x.yaml
+ delete mode 100644 Documentation/devicetree/bindings/regulator/sy8824x.txt
+ create mode 100644 drivers/regulator/bd9576-regulator.c
+ create mode 100644 drivers/regulator/mt6360-regulator.c
+ create mode 100644 drivers/regulator/rpi-panel-attiny-regulator.c
+ create mode 100644 drivers/regulator/rt4801-regulator.c
+ create mode 100644 drivers/regulator/rtmv20-regulator.c
+ create mode 100644 include/dt-bindings/regulator/mediatek,mt6360-regulator.h
