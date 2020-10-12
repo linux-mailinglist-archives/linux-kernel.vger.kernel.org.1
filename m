@@ -2,76 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C06AA28BB8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:08:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A299028BB90
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:10:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389370AbgJLPI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 11:08:27 -0400
-Received: from smtprelay0186.hostedemail.com ([216.40.44.186]:34288 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2388977AbgJLPI1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 11:08:27 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 66A0E100E7B40;
-        Mon, 12 Oct 2020 15:08:26 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2693:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:5007:6120:10004:10400:10848:11232:11658:11914:12296:12297:12740:12760:12895:13069:13095:13311:13357:13439:14096:14097:14181:14659:14721:21080:21433:21627:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: rest16_26084c1271fb
-X-Filterd-Recvd-Size: 2325
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf15.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 12 Oct 2020 15:08:25 +0000 (UTC)
-Message-ID: <d685a430bd04f614403608ae34c435cf35277ea5.camel@perches.com>
-Subject: Re: [RFC PATCH] checkpatch: add shebang check to EXECUTE_PERMISSIONS
-From:   Joe Perches <joe@perches.com>
-To:     Ujjwal Kumar <ujjwalkumar0501@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 12 Oct 2020 08:08:24 -0700
-In-Reply-To: <5a3fc45f-e5d7-da3d-4b4b-2a23512ff8de@gmail.com>
-References: <20201012054943.1196031-1-ujjwalkumar0501@gmail.com>
-         <63053585d41ff81cdaad6cb727eb83d81207041a.camel@perches.com>
-         <5a3fc45f-e5d7-da3d-4b4b-2a23512ff8de@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        id S2389372AbgJLPKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 11:10:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33158 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388977AbgJLPKG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 11:10:06 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 46C9120878;
+        Mon, 12 Oct 2020 15:10:06 +0000 (UTC)
+Date:   Mon, 12 Oct 2020 11:10:04 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Qiujun Huang <hqjagain@gmail.com>
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] trace: Fix some typos in comment
+Message-ID: <20201012111004.06eed387@gandalf.local.home>
+In-Reply-To: <20201010140924.3809-1-hqjagain@gmail.com>
+References: <20201010140924.3809-1-hqjagain@gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-10-12 at 19:22 +0530, Ujjwal Kumar wrote:
-> On 12/10/20 11:47 am, Joe Perches wrote:
-> > On Mon, 2020-10-12 at 11:19 +0530, Ujjwal Kumar wrote:
-> > > checkpatch.pl checks for invalid EXECUTE_PERMISSIONS on source
-> > > files. The script leverages filename extensions and its path in
-> > > the repository to decide whether to allow execute permissions on
-> > > the file or not.
-> > > 
-> > > Based on current check conditions, a perl script file having
-> > > execute permissions, without '.pl' extension in its filename
-> > > and not belonging to 'scripts/' directory is reported as ERROR
-> > > which is a false-positive.
-> > > 
-> > > Adding a shebang check along with current conditions will make
-> > > the check more generalised and improve checkpatch reports.
-> > > To do so, without breaking the core design decision of checkpatch,
-> > > we can fetch the first line from the patch itself and match it for
-> > > a shebang pattern.
-> > > 
-> > > There can be cases where the first line is not part of the patch.
-> > 
-> > For instance: a patch that only changes permissions
-> > without changing any of the file content.
+On Sat, 10 Oct 2020 22:09:24 +0800
+Qiujun Huang <hqjagain@gmail.com> wrote:
 
-Please add verbiage like this to the commit message.
-
-> Should these new changes go as a separate patch or can they be
-> included in the next iteration of this patch?
-
-V2 please.
+> s/wihin/within/
+> s/retrieven/retrieved/
+> s/suppport/support/
+> s/wil/will/
+> s/accidently/accidentally/
+> s/if the if the/if the/
+> 
+> Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
 
 
+Thanks, I queued this up.
+
+-- Steve
