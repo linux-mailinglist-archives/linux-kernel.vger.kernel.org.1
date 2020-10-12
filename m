@@ -2,131 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C720128C3AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 23:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7B428C3B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 23:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731990AbgJLVBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 17:01:20 -0400
-Received: from lan.nucleusys.com ([92.247.61.126]:36686 "EHLO
-        zztop.nucleusys.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729639AbgJLVBU (ORCPT
+        id S1729639AbgJLVCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 17:02:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731338AbgJLVCi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 17:01:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=nucleusys.com; s=x; h=In-Reply-To:Content-Type:MIME-Version:References:
-        Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=CJIzxj74bRbK6s07BM0CYFriStr95mhUR/FUtxsHOVI=; b=cyr+pQNICJxG1pzmfwF4K8B77P
-        xbKi8vFMvJcXOeKnMkdUYQn+MEsresCGmf29nTQmbd+YE8gU2/8BmXmi5H0vPXAG8SOyc+5Wxrkja
-        tTbvRUyzQ9l0MqbHI/cn0jK0BjZGcZrQFqIXMZbwNb59/nzYODrQ56QYd6+q01k8GwZA=;
-Received: from lan.nucleusys.com ([92.247.61.126] helo=nucleusys.com)
-        by zztop.nucleusys.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <petkan@nucleusys.com>)
-        id 1kS4wN-0007CC-HJ; Tue, 13 Oct 2020 00:01:07 +0300
-Date:   Tue, 13 Oct 2020 00:01:06 +0300
-From:   Petko Manolov <petkan@nucleusys.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.8 18/24] net: usb: rtl8150: set random MAC
- address when set_ethernet_addr() fails
-Message-ID: <20201012210105.GA26582@nucleusys.com>
-References: <20201012190239.3279198-1-sashal@kernel.org>
- <20201012190239.3279198-18-sashal@kernel.org>
- <c93d120c850c5fecadaea845517f0fdbfd9a61c7.camel@perches.com>
+        Mon, 12 Oct 2020 17:02:38 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0610C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 14:02:38 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id n9so15588958pgf.9
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 14:02:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SnB7E0mI9F7Ie4RlS2cFfqKwCDcopSImUj3IgUSKIxI=;
+        b=aKY2mjZqZCjoAe1tt9s9T2FsyHGWEg2r94yXrTIjifMKj+9G5PGXHdmHun7LMLnVVf
+         Iyx0hqwAI4RdNjsS7WRjj36UFpYvhE5Z30RnvNh8wxzPTZqIDq/V6FSJyRhQlm3vqAgv
+         czJMjy/QiJI5hFODJh0hCucbVTQNfJmHuR7Ss=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SnB7E0mI9F7Ie4RlS2cFfqKwCDcopSImUj3IgUSKIxI=;
+        b=QqVYeFCk1eOBdqp1y1zhqS1Fk/1mFTg5GtxTs83DrXukBPiiGm6MM62L+zAF11GD5M
+         cH9iF4xwP1g/rRkgWmu8vMMekynehv4k6C8LWfb1ekqCauGW0SzzeFmBJUPbL1fj2Xhj
+         Ptad1+RX/SSBin1etqDzZiN151uncdhlyxzJlx5qcMwEw62kTKt9yCo79fmiLEFlOefB
+         oYatnDB7bKjPwuUUCG3yu3qIUg0LUODYPODXe02pLvMbZr5ozOE/g2bceBjQ76WKp3J8
+         o6AAaTYbdiBpXB38AfGM2PK+Ri6idicsIkfmflvCdqyQpaSADuZONIbhfxdueqcS/2jS
+         SAQQ==
+X-Gm-Message-State: AOAM531a1Wd6RD0+opkKLpKCsWc8Lkv58AxPPr1Vhkza8fmRwQ1hQkm+
+        CjUU9o0hB83VXixHbzDwWS+A6A==
+X-Google-Smtp-Source: ABdhPJzJnGcA0q8XKKQGw3kIUgQPIXUnpTwBiY6N5ghL0OHEl3zmbEFuNMnAsinW9yZvnNW49rm+aQ==
+X-Received: by 2002:a63:5a11:: with SMTP id o17mr14040343pgb.287.1602536557163;
+        Mon, 12 Oct 2020 14:02:37 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 16sm24744149pjl.27.2020.10.12.14.02.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 14:02:36 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 14:02:35 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [PATCH v5 25/29] arm64: allow LTO_CLANG and THINLTO to be
+ selected
+Message-ID: <202010121402.1EB5242@keescook>
+References: <20201009161338.657380-1-samitolvanen@google.com>
+ <20201009161338.657380-26-samitolvanen@google.com>
+ <20201012083116.GA785@willie-the-truck>
+ <202010121344.53780D8CD2@keescook>
+ <20201012205108.GA1620@willie-the-truck>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c93d120c850c5fecadaea845517f0fdbfd9a61c7.camel@perches.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Score: -1.0 (-)
-X-Spam-Report: Spam detection software, running on the system "zztop.nucleusys.com",
- has NOT identified this incoming email as spam.  The original
- message has been attached to this so you can view it or label
- similar future email.  If you have any questions, see
- the administrator of that system for details.
- Content preview:  On 20-10-12 12:11:18, Joe Perches wrote: > On Mon, 2020-10-12
-    at 15:02 -0400, Sasha Levin wrote: > > From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-    > > > > [ Upstream commit f45a4248ea4cc13ed50 [...] 
- Content analysis details:   (-1.0 points, 5.0 required)
-  pts rule name              description
- ---- ---------------------- --------------------------------------------------
- -1.0 ALL_TRUSTED            Passed through trusted hosts only via SMTP
+In-Reply-To: <20201012205108.GA1620@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-10-12 12:11:18, Joe Perches wrote:
-> On Mon, 2020-10-12 at 15:02 -0400, Sasha Levin wrote:
-> > From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+On Mon, Oct 12, 2020 at 09:51:09PM +0100, Will Deacon wrote:
+> On Mon, Oct 12, 2020 at 01:44:56PM -0700, Kees Cook wrote:
+> > On Mon, Oct 12, 2020 at 09:31:16AM +0100, Will Deacon wrote:
+> > > On Fri, Oct 09, 2020 at 09:13:34AM -0700, Sami Tolvanen wrote:
+> > > > Allow CONFIG_LTO_CLANG and CONFIG_THINLTO to be enabled.
+> > > > 
+> > > > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> > > > Reviewed-by: Kees Cook <keescook@chromium.org>
+> > > > ---
+> > > >  arch/arm64/Kconfig | 2 ++
+> > > >  1 file changed, 2 insertions(+)
+> > > > 
+> > > > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> > > > index ad522b021f35..7016d193864f 100644
+> > > > --- a/arch/arm64/Kconfig
+> > > > +++ b/arch/arm64/Kconfig
+> > > > @@ -72,6 +72,8 @@ config ARM64
+> > > >  	select ARCH_USE_SYM_ANNOTATIONS
+> > > >  	select ARCH_SUPPORTS_MEMORY_FAILURE
+> > > >  	select ARCH_SUPPORTS_SHADOW_CALL_STACK if CC_HAVE_SHADOW_CALL_STACK
+> > > > +	select ARCH_SUPPORTS_LTO_CLANG
+> > > > +	select ARCH_SUPPORTS_THINLTO
+> > > 
+> > > Please don't enable this for arm64 until we have the dependency stuff sorted
+> > > out. I posted patches [1] for this before, but I think they should be part
+> > > of this series as they don't make sense on their own.
 > > 
-> > [ Upstream commit f45a4248ea4cc13ed50618ff066849f9587226b2 ]
-> > 
-> > When get_registers() fails in set_ethernet_addr(),the uninitialized
-> > value of node_id gets copied over as the address.
-> > So, check the return value of get_registers().
-> > 
-> > If get_registers() executed successfully (i.e., it returns
-> > sizeof(node_id)), copy over the MAC address using ether_addr_copy()
-> > (instead of using memcpy()).
-> > 
-> > Else, if get_registers() failed instead, a randomly generated MAC
-> > address is set as the MAC address instead.
+> > Oh, hm. We've been trying to trim down this series, since it's already
+> > quite large. Why can't [1] land first? It would make this easier to deal
+> > with, IMO.
 > 
-> This autosel is premature.
-> 
-> This patch always sets a random MAC.
-> See the follow on patch: https://lkml.org/lkml/2020/10/11/131
-> To my knowledge, this follow-ob has yet to be applied:
+> I'm happy to handle [1] along with the LTO Kconfig change when the time
+> comes, if that helps. I just don't want to merge dead code!
 
-ACK, the follow-on patch has got the correct semantics.
+Okay, understood. Thanks!
 
+> 
+> Will
+> 
+> > > [1] https://git.kernel.org/pub/scm/linux/kernel/git/will/linux.git/log/?h=rwonce/read-barrier-depends
 
-		Petko
-
-
-> > diff --git a/drivers/net/usb/rtl8150.c b/drivers/net/usb/rtl8150.c
-> []
-> > @@ -274,12 +274,20 @@ static int write_mii_word(rtl8150_t * dev, u8 phy, __u8 indx, u16 reg)
-> >  		return 1;
-> >  }
-> >  
-> > -static inline void set_ethernet_addr(rtl8150_t * dev)
-> > +static void set_ethernet_addr(rtl8150_t *dev)
-> >  {
-> > -	u8 node_id[6];
-> > +	u8 node_id[ETH_ALEN];
-> > +	int ret;
-> > +
-> > +	ret = get_registers(dev, IDR, sizeof(node_id), node_id);
-> >  
-> > -	get_registers(dev, IDR, sizeof(node_id), node_id);
-> > -	memcpy(dev->netdev->dev_addr, node_id, sizeof(node_id));
-> > +	if (ret == sizeof(node_id)) {
-> 
-> So this needs to use
-> 	if (!ret) {
-> 
-> or 
-> 	if (ret < 0)
-> 
-> and reversed code blocks
-> 
-> > +		ether_addr_copy(dev->netdev->dev_addr, node_id);
-> > +	} else {
-> > +		eth_hw_addr_random(dev->netdev);
-> > +		netdev_notice(dev->netdev, "Assigned a random MAC address: %pM\n",
-> > +			      dev->netdev->dev_addr);
-> > +	}
-> >  }
-> >  
-> >  static int rtl8150_set_mac_address(struct net_device *netdev, void *p)
-> 
-> 
+-- 
+Kees Cook
