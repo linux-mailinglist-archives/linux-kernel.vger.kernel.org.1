@@ -2,119 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFC3D28AF04
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 09:25:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DA3028AF0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 09:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727372AbgJLHZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 03:25:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52954 "EHLO mail.kernel.org"
+        id S1727346AbgJLH3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 03:29:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726413AbgJLHZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 03:25:29 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        id S1727169AbgJLH3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 03:29:01 -0400
+Received: from coco.lan (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 87AE0207FF;
-        Mon, 12 Oct 2020 07:25:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0910A20790;
+        Mon, 12 Oct 2020 07:28:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602487528;
-        bh=J36sJhtxzl7UwDAHdCIhtRxDUhNjAfyMJ6sQVGj2UnE=;
+        s=default; t=1602487740;
+        bh=CqucX5umZXAk2mfaaFWtuiDQTu1ZigAWjGzPOnNTZP8=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rz8Dixp3suYOT7a8hu+OOevIejnYpmmTdGf5ZZj8ZPLrdKko+VmwJJGyEgYwc2B7t
-         Y7jWAO+7YDnhpdyCPoQEuBMrNVSJmAjAP3ReZ81/jaq307ryq9bw5qeMzP2MTxYTFw
-         LvH+oUGgFHopPkeH6S7uG53orHm43gayluIGXKV4=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kRsD0-000Qzd-EX; Mon, 12 Oct 2020 08:25:26 +0100
+        b=0fCqrqfoaJJ7EGP/SUkouauvz/ASQKA8LLJ3U6lTjsQTBuBS4CTOm9f8pXhHI5hXj
+         uIoK3DRNJ+QoOVhe3tpJMyI4MkJPFOYaxSO5gUZwcqXR+ijNviFgH1emmpG+0Y6+8Z
+         ZLAq4Qr+KSb2zUBqgXPYpYb27z+fNJGSedmvitAg=
+Date:   Mon, 12 Oct 2020 09:28:54 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Alexandre Courbot <acourbot@chromium.org>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support
+        <linux-mediatek@lists.infradead.org>, Randy Dunlap" 
+        <rdunlap@infradead.org>
+Subject: Re: [PATCH v2] media: mtk-vcodec: fix builds when remoteproc is
+ disabled
+Message-ID: <20201012092854.3c43b9bd@coco.lan>
+In-Reply-To: <CAPBb6MXjEZB1N0vgTMGk28_qPpAqX87XFfkwor-9Yge0_uejsg@mail.gmail.com>
+References: <20201004122234.802044-1-acourbot@chromium.org>
+        <c3e1c20a-7729-9f48-ce66-41e67f195fc7@xs4all.nl>
+        <cda40a8e-4dd2-5fd7-c5ff-8b048475164b@xs4all.nl>
+        <CAPBb6MX8rFZU=9Pd5o0mqQ6pf+1oQYzk=D0WiR93_S3FUG7jJw@mail.gmail.com>
+        <1bb71c21-0f03-5d8f-be2c-fdcb13dadcd6@xs4all.nl>
+        <CAPBb6MWf7bWkigMPUwx7g6dXjwMkttGhHwC9X_=e6=cz1K5J0w@mail.gmail.com>
+        <20201009083350.6c2e5a6a@coco.lan>
+        <CAPBb6MXjEZB1N0vgTMGk28_qPpAqX87XFfkwor-9Yge0_uejsg@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Date:   Mon, 12 Oct 2020 08:25:26 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     l00484210 <limingwang@huawei.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, broonie@kernel.org,
-        suzuki.poulose@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, fanhenglong@huawei.com,
-        wanghaibin.wang@huawei.com, tangnianyao@huawei.com,
-        jiangyifei@huawei.com, dengkai1@huawei.com,
-        zhang.zhanghailiang@huawei.com, victor.zhangxiaofeng@huawei.com
-Subject: Re: [PATCH] arm64: KVM: marking pages as XN in Stage-2 does not care
- about CTR_EL0.DIC
-In-Reply-To: <20201012010852.15932-1-limingwang@huawei.com>
-References: <20201012010852.15932-1-limingwang@huawei.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <47f80f46b9bac66846871b2db32a3f92@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: limingwang@huawei.com, catalin.marinas@arm.com, will@kernel.org, broonie@kernel.org, suzuki.poulose@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, fanhenglong@huawei.com, wanghaibin.wang@huawei.com, tangnianyao@huawei.com, jiangyifei@huawei.com, dengkai1@huawei.com, zhang.zhanghailiang@huawei.com, victor.zhangxiaofeng@huawei.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Li,
+Em Mon, 12 Oct 2020 13:58:51 +0900
+Alexandre Courbot <acourbot@chromium.org> escreveu:
 
-On 2020-10-12 02:08, l00484210 wrote:
-> From: MingWang Li <limingwang@huawei.com>
+> Hi Mauro,
 > 
-> When testing the ARMv8.2-TTS2UXN feature, setting bits of XN is 
-> unavailable.
-> Because the control bit CTR_EL0.DIC is set by default on system.
+> On Fri, Oct 9, 2020 at 3:34 PM Mauro Carvalho Chehab
+> <mchehab+huawei@kernel.org> wrote:
+> >
+> > Em Fri, 9 Oct 2020 13:30:06 +0900
+> > Alexandre Courbot <acourbot@chromium.org> escreveu:
+> >  
+> > > On Fri, Oct 9, 2020 at 1:13 AM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:  
+> >  
+> > > > >>> If VIDEO_MEDIATEK_VPU=y and MTK_SCP=m, then VIDEO_MEDIATEK_VCODEC can be configured
+> > > > >>> to y, and then it won't be able to find the scp_ functions.
+> > > > >>>
+> > > > >>> To be honest, I'm not sure how to solve this.  
+> > > > >>
+> > > > >> Found it. Add this:
+> > > > >>
+> > > > >>         depends on MTK_SCP || !MTK_SCP
+> > > > >>         depends on VIDEO_MEDIATEK_VPU || !VIDEO_MEDIATEK_VPU
+> > > > >>
+> > > > >> Ugly as hell, but it appears to be the correct incantation for this.  
+> >
+> > While the above does the job, I'm wondering if the better wouldn't
+> > be to have this spit into 3 config dependencies. E. g. something like:
+> >
+> > config VIDEO_MEDIATEK_CODEC
+> >         depends on VIDEO_MEDIATEK_VPU_SCP || VIDEO_MEDIATEK_VPU
+> >
+> > config VIDEO_MEDIATEK_VPU
+> >         depends on VIDEO_DEV && VIDEO_V4L2
+> >         depends on ARCH_MEDIATEK || COMPILE_TEST
+> >         tristate "support for Mediatek Video Processor Unit without SCP"
+> >         help
+> >             ...
+> >
+> > config VIDEO_MEDIATEK_VPU_SCP
+> >         depends on VIDEO_DEV && VIDEO_V4L2
+> >         depends on ARCH_MEDIATEK || COMPILE_TEST
+> >         tristate "support for Mediatek Video Processor Unit with SCP"
+> >         help
+> >             ...  
 > 
-> But when CTR_EL0.DIC is set, software does not need to flush icache 
-> actively,
-> instead of clearing XN bits.The patch, the commit id of which
-> is 6ae4b6e0578886eb36cedbf99f04031d93f9e315, has implemented the 
-> function
-> of CTR_EL0.DIC.
-> 
-> Signed-off-by: MingWang Li <limingwang@huawei.com>
-> Signed-off-by: Henglong Fan <fanhenglong@huawei.com>
-> ---
->  arch/arm64/include/asm/pgtable-prot.h | 12 +-----------
->  1 file changed, 1 insertion(+), 11 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/pgtable-prot.h
-> b/arch/arm64/include/asm/pgtable-prot.h
-> index 4d867c6446c4..5feb94882bf7 100644
-> --- a/arch/arm64/include/asm/pgtable-prot.h
-> +++ b/arch/arm64/include/asm/pgtable-prot.h
-> @@ -79,17 +79,7 @@ extern bool arm64_use_ng_mappings;
->  		__val;							\
->  	 })
-> 
-> -#define PAGE_S2_XN							\
-> -	({								\
-> -		u64 __val;						\
-> -		if (cpus_have_const_cap(ARM64_HAS_CACHE_DIC))		\
-> -			__val = 0;					\
-> -		else							\
-> -			__val = PTE_S2_XN;				\
-> -		__val;							\
-> -	})
-> -
-> -#define PAGE_S2			__pgprot(_PROT_DEFAULT | PAGE_S2_MEMATTR(NORMAL) |
-> PTE_S2_RDONLY | PAGE_S2_XN)
-> +#define PAGE_S2			__pgprot(_PROT_DEFAULT | PAGE_S2_MEMATTR(NORMAL) |
-> PTE_S2_RDONLY | PTE_S2_XN)
->  #define PAGE_S2_DEVICE		__pgprot(_PROT_DEFAULT |
-> PAGE_S2_MEMATTR(DEVICE_nGnRE) | PTE_S2_RDONLY | PTE_S2_XN)
-> 
->  #define PAGE_NONE		__pgprot(((_PAGE_DEFAULT) & ~PTE_VALID) |
-> PTE_PROT_NONE | PTE_RDONLY | PTE_NG | PTE_PXN | PTE_UXN)
+> Doing so would introduce two extra choices to enable the driver, so
+> I'm a bit concerned this may be a bit confusing?
 
-I don't understand what you are trying to achieve here.
+The Kconfig name for "SCP" is already confusing:
 
-This whole point of not setting XN in the page tables when DIC is 
-present
-is to avoid a pointless permission fault at run time. At you noticed
-above, no icache invalidation is necessary. So why would you ever want
-to take a fault on exec the first place?
+	config MTK_SCP
+		tristate "Mediatek SCP support"
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+Only looking at the helper messages one would understand what SCP
+actually means ;-)
+
+	help
+	  Say y here to support Mediatek's System Companion Processor (SCP) via
+	  the remote processor framework.
+
+IMO, the way to make it less confusing would be to change the Kconfig
+message (probably both here and at remoteproc) to make it easier for
+people to understand.
+
+For example, I would use something similar to this for MTK_SCP prompt:
+
+	tristate "Use remoteproc with Mediatek companion processor (SCP)"
+
+There would be other ways of producing the same result using multiple
+config entries and just one that would be prompted, but, IMHO, with
+multiple entries, it t is clearer for the user to understand what
+what kind of support was selected. 
+
+This also allows one to look at the produced .config in order to 
+check if SCP was enabled for Mediatek VPU or not.
+
+> Also I have experimented with this, and it appears that
+> VIDEO_MEDIATEK_CODEC won't be automatically enabled if one of the new
+> options is selected. So this means that after setting e.g.
+> VIDEO_MEDIATEK_VPU_SCP, one still needs to manually enable
+> VIDEO_MEDIATEK_CODEC otherwise the driver won't be compiled at all.
+
+Actually, the codec config option would need a default line too,
+e. g. either:
+
+	config VIDEO_MEDIATEK_CODEC
+	         depends on VIDEO_MEDIATEK_VPU_SCP || VIDEO_MEDIATEK_VPU
+		 default y
+
+or:
+
+	config VIDEO_MEDIATEK_CODEC
+	         depends on VIDEO_MEDIATEK_VPU_SCP || VIDEO_MEDIATEK_VPU
+		 default VIDEO_MEDIATEK_VPU_SCP || VIDEO_MEDIATEK_VPU
+
+Both should produce exactly the same result. I usually prefer the
+first, as it is easier to read.
+
+> 
+> >
+> > And split the board-specific data for each variant on separate files,
+> > doing something like this at the Makefile:
+> >
+> >         obj-$(CONFIG_VIDEO_MEDIATEK_VCODEC) += mtk-vcodec-dec.o \
+> >                                        mtk-vcodec-enc.o \
+> >                                        mtk-vcodec-common.o
+> >
+> >         ifneq ($(VIDEO_MEDIATEK_VPU_SCP),)
+> >         obj-$(CONFIG_VIDEO_MEDIATEK_VCODEC) += mtk-vcodec-fw-scp.o
+> >         endif
+> >
+> >         ifneq ($(VIDEO_MEDIATEK_VPU),)
+> >         obj-$(CONFIG_VIDEO_MEDIATEK_VCODEC) += mtk-vcodec-fw-vpu.o
+> >         endif
+> >
+> > This will avoid the ugly ifdefs in the middle of mtk_vcodec_fw.c,
+> > and the ugly "depends on FOO || !FOO" usage.
+> >
+> > It should also be simpler to add future variants of it in the
+> > future, if needed.  
+> 
+> Indeed, the split makes sense regardless of the selection mechanism
+> adopted. I will try to do it in the next revision.
+
+Agreed.
+
+Thanks,
+Mauro
