@@ -2,83 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90F7D28C3D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 23:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 148FE28C3D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 23:13:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387507AbgJLVNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 17:13:11 -0400
-Received: from vern.gendns.com ([98.142.107.122]:49358 "EHLO vern.gendns.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732196AbgJLVNG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 17:13:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=lechnology.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=7rBBN/24ZhuMqbfWasueMTRp1Qqx0RQ7dihft9yfRQE=; b=lortp3tnsp1Nv8DNDiUix3Zde1
-        b46950CeXEmamXK72O7Ns3lJEkaG5Ugic3HCv9TxK50O4a8oPrqjK0u79XT7PMvGku9q0kdSYbchH
-        sYdFOFzZtP2tplM2THc0PS6yDNALnJey44kCjABBuL5gOaP3hWNS9I4M5eJq/4klI9ScpkQtCXIwf
-        XzItm0OgIVKS8gIGVMc/E6rmobrRVOgNN8+AaKqk19ybqy61wFdXa+Vo+seajKqJIhkAKO7K4+Bj2
-        SgwX2pAFXTwEfIQ1gmtcqfA6L4XhB6kyHVrRLP/2cFtoPcopk7PyWB/txXMQPwl0bJNsdE0yrM8nR
-        8xhFFUmg==;
-Received: from [2600:1700:4830:165f::19e] (port=52666 helo=freyr.lechnology.com)
-        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <david@lechnology.com>)
-        id 1kS57v-0004Ih-Sj; Mon, 12 Oct 2020 17:13:04 -0400
-From:   David Lechner <david@lechnology.com>
-To:     linux-omap@vger.kernel.org
-Cc:     David Lechner <david@lechnology.com>,
-        =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Robert Nelson <robertcnelson@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 3/3] ARM: omap2plus_defconfig: Enable TI eQEP counter driver
-Date:   Mon, 12 Oct 2020 16:12:29 -0500
-Message-Id: <20201012211229.3282128-4-david@lechnology.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201012211229.3282128-1-david@lechnology.com>
-References: <20201012211229.3282128-1-david@lechnology.com>
+        id S2387607AbgJLVNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 17:13:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731517AbgJLVNJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 17:13:09 -0400
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9589BC0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 14:13:09 -0700 (PDT)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id 7332F1E50; Mon, 12 Oct 2020 17:13:08 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 7332F1E50
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1602537188;
+        bh=UCj+DsuZKA1izzZfECvTrVOAVQYPk81HV/UKNNnkGzw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LbIHRbIxY4Yl2UGnbEDfMA5PdT41pYUJLgXtwLu+5kUl9SIYOA7QTuGkLtp8DQkEk
+         lolk3GPiWGjAkWhIHMKaYbAKZj0gYM0E6N8nUAF3ANJ3hF24gla6n+mOhZmuQeveYr
+         6ov0blcD5jDppFXTMoLKZGjsiM+qJGih/Vf8GdgY=
+Date:   Mon, 12 Oct 2020 17:13:08 -0400
+From:   "J. Bruce Fields" <bfields@fieldses.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Michael =?utf-8?B?V2Vpw58=?= <michael.weiss@aisec.fraunhofer.de>,
+        Andrei Vagin <avagin@gmail.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        linux-kernel@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2 2/4] time: make getboottime64 aware of time namespace
+Message-ID: <20201012211308.GH26571@fieldses.org>
+References: <20201008053944.32718-1-michael.weiss@aisec.fraunhofer.de>
+ <20201008053944.32718-3-michael.weiss@aisec.fraunhofer.de>
+ <20201009132815.5afulu5poh5ti57m@wittgenstein>
+ <20201009135554.GE15719@fieldses.org>
+ <878scfrwls.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - vern.gendns.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lechnology.com
-X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <878scfrwls.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This enables the TI eQEP counter driver that is used by BeagleBone Blue.
+On Fri, Oct 09, 2020 at 10:08:15PM +0200, Thomas Gleixner wrote:
+> On Fri, Oct 09 2020 at 09:55, J. Bruce Fields wrote:
+> > Looking at how it's used in net/sunrpc/cache.c....  All it's doing is
+> > comparing times which have all been calculated relative to the time
+> > returned by getboottime64().  So it doesn't really matter what
+> > getboottime64() is, as long as it's always the same.
+> >
+> > So, I don't think this should change behavior of the sunrpc code at all.
+> 
+> You wish. That's clearly wrong because that code is not guaranteed to
+> always run in a context which belongs to the root time namespace.
 
-Signed-off-by: David Lechner <david@lechnology.com>
----
- arch/arm/configs/omap2plus_defconfig | 2 ++
- 1 file changed, 2 insertions(+)
+Argh, right, thanks.
 
-diff --git a/arch/arm/configs/omap2plus_defconfig b/arch/arm/configs/omap2plus_defconfig
-index fe383f5a92fb..71b1a8f4c241 100644
---- a/arch/arm/configs/omap2plus_defconfig
-+++ b/arch/arm/configs/omap2plus_defconfig
-@@ -524,6 +524,8 @@ CONFIG_PHY_DM816X_USB=m
- CONFIG_OMAP_USB2=m
- CONFIG_TI_PIPE3=y
- CONFIG_TWL4030_USB=m
-+CONFIG_COUNTER=m
-+CONFIG_TI_EQEP=m
- CONFIG_EXT2_FS=y
- CONFIG_EXT3_FS=y
- CONFIG_EXT4_FS_SECURITY=y
--- 
-2.25.1
+> AFAICT, this stuff can run in softirq context which is context stealing
+> and the interrupted task can belong to a different time name space.
 
+Some of it runs in the context of a process doing IO to proc, some from
+kthreads.  So, anyway, yes, it's not consistent in the way we'd need.
+
+> In fact the whole thing can be simplified. You can just use time in
+> nanoseconds retrieved via ktime_get_coarse_boottime() which does not
+> read the clocksource and advances once per tick and does not contain a
+> divison and is definitely faster than seconds_since_boot()
+> 
+> The expiry time is initialized via get_expiry() which does:
+> 
+>    getboottime64(&boot);
+>    return rv - boot.tv_sec; 
+> 
+> The expiry value 'rv' which is read out of the buffer is wall time in
+> seconds. So all you need is are function which convert real to boottime
+> and vice versa. That's trivial to implement and again faster than
+> getboottime64(). Something like this:
+> 
+> ktime_t ktime_real_to_boot(ktime_t real)
+> {
+>         struct timekeeper *tk = &tk_core.timekeeper;
+>         ktime_t mono = ktime_sub(real, tk->offs_real);
+>               
+>         return ktime_add(mono, tk->offs_boot);
+> }
+> 
+> so the above becomes:
+> 
+>    return ktime_real_to_boot(rv * NSEC_PER_SEC);
+> 
+> which is still faster than a division.
+> 
+> The nanoseconds value after converting back to wall clock will need a
+> division to get seconds since the epoch, but that's not an issue because
+> that backward conversion already has one today.
+> 
+> You'd obviously need to fixup CACHE_NEW_EXPIRY and the other place which
+> add's '1' to the expiry value and some janitoring of function names and
+> variable types, but no real big surgery AFAICT.
+
+I'll give it a shot.
+
+Thanks so much for taking a careful look at this.
+
+--b.
