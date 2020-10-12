@@ -2,57 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC5E28C174
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 21:27:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE0B228C178
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 21:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391089AbgJLT1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 15:27:51 -0400
-Received: from aposti.net ([89.234.176.197]:47666 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387797AbgJLT1v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 15:27:51 -0400
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "Maciej W . Rozycki" <macro@linux-mips.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Zhou Yanjie <zhouyanjie@wanyeetech.com>, od@zcrc.me,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH] MIPS: ingenic: Remove CPU_SUPPORTS_HUGEPAGES
-Date:   Mon, 12 Oct 2020 21:27:39 +0200
-Message-Id: <20201012192739.49259-1-paul@crapouillou.net>
-In-Reply-To: <20201012143319.GA24291@roeck-us.net>
-References: <20201012143319.GA24291@roeck-us.net>
+        id S2391148AbgJLT27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 15:28:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387797AbgJLT27 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 15:28:59 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1CA9C0613D1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 12:28:57 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id d24so14996553ljg.10
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 12:28:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PBBv8x0EA+jyMbeGbj2AD5+EOk9EuJpVDyEvfsZ1FnQ=;
+        b=Sg/dv0+6q/T5D5BigWu87HiS3Oyz1Gx2mRS8WRM0qJR+ZvzBax9hT9Li7FBVJE0ydo
+         qxNsvOzo9+2aL74hch0pe/IBE/A3RgBB2mlynpMG99k3j8N5fOXAJq6TsU1kqDdSiWNJ
+         88IXcUyrzO2MAL00aCNG8np3MdgE/b4+Tqkog=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PBBv8x0EA+jyMbeGbj2AD5+EOk9EuJpVDyEvfsZ1FnQ=;
+        b=nerQjHbvekbgiAoQQOVasZJJ3+xoDgHk894UlrrP3TCqdkkBpROmP2e7Bd86Xcj9QA
+         TOdncX3QInWIlkBfT9I0/eyvZs7udosob8n2Zu3vZSpjDKyyExNtWN6QOtQ/8RQf2SxY
+         LBCsxAPyC1k9+mnS1huCCfwDzs0bM4QCpmBhaNOSplYSU3a6D4bZesH8qZGrxVTQyolm
+         ENpxXN8iNpgtODt14MXby18+AoqYF0Q76ack87VeazeplHWl/tEVwXLssvvZlMtxgwhd
+         8OXDUzwe5pNjGyzICTyasIfbQZIQ3XarL3KsGZEmt8akIGyeBCOwoIgV7+cooSYxO0Gl
+         sr3Q==
+X-Gm-Message-State: AOAM531StslY9ilWliR1IiKYdLdQbszSrev5VoQ0ua5de91VFzDXEElh
+        /9awhjiLqTBs/mINkFoUUdyhJa9s823bRQ==
+X-Google-Smtp-Source: ABdhPJwyMgGR7hH4y7YVAwb1QSun+/MB1c7fH/BKysLUhqFCJ9yVyKxyaivhlVBbptyN6Lje87COWA==
+X-Received: by 2002:a2e:990a:: with SMTP id v10mr11454661lji.278.1602530935536;
+        Mon, 12 Oct 2020 12:28:55 -0700 (PDT)
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
+        by smtp.gmail.com with ESMTPSA id s17sm3443506lfp.117.2020.10.12.12.28.54
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Oct 2020 12:28:54 -0700 (PDT)
+Received: by mail-lj1-f178.google.com with SMTP id a4so17950183lji.12
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 12:28:54 -0700 (PDT)
+X-Received: by 2002:a2e:9152:: with SMTP id q18mr10194176ljg.421.1602530934167;
+ Mon, 12 Oct 2020 12:28:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAKgNAkjMBGeAwF=2MKK758BhxvW58wYTgYKB2V-gY1PwXxrH+Q@mail.gmail.com>
+ <CAHk-=wig1HDZzkDEOxsxUjr7jMU_R5Z1s+v_JnFBv4HtBfP7QQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wig1HDZzkDEOxsxUjr7jMU_R5Z1s+v_JnFBv4HtBfP7QQ@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 12 Oct 2020 12:28:38 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgfydyikU_KfHSLo1uMSs-vksDjYkdnyv1+89C32XwUOA@mail.gmail.com>
+Message-ID: <CAHk-=wgfydyikU_KfHSLo1uMSs-vksDjYkdnyv1+89C32XwUOA@mail.gmail.com>
+Subject: Re: Regression: epoll edge-triggered (EPOLLET) for pipes/FIFOs
+To:     Michael Kerrisk-manpages <mtk.manpages@gmail.com>,
+        Alexander Viro <aviro@redhat.com>
+Cc:     David Howells <dhowells@redhat.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        Ian Kent <raven@themaw.net>,
+        Christian Brauner <christian@brauner.io>,
+        keyrings@vger.kernel.org,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While it is true that Ingenic SoCs support huge pages, we cannot use
-them yet as PTEs don't have any single bit that is free. Right now,
-having that symbol only causes build errors, so remove it until the
-situation with PTEs is resolved.
+On Mon, Oct 12, 2020 at 12:25 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> Now, the old pipe behavior was that it would wake up writers whether
+> they needed it or not [..]
 
-Fixes: f0f4a753079c ("MIPS: generic: Add support for Ingenic SoCs")
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
- arch/mips/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+That "writers" should be "readers", of course.
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index f52fa211a4cf..29bad5bd3e70 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -103,7 +103,6 @@ config MACH_INGENIC
- 	select SYS_SUPPORTS_32BIT_KERNEL
- 	select SYS_SUPPORTS_LITTLE_ENDIAN
- 	select SYS_SUPPORTS_ZBOOT
--	select CPU_SUPPORTS_HUGEPAGES
- 	select DMA_NONCOHERENT
- 	select IRQ_MIPS_CPU
- 	select PINCTRL
--- 
-2.28.0
+Although yes, that commit changed it for both readers and writers: if
+the pipe was readable from before, then a writer adding new data to it
+doesn't make it "more readable". Similarly, if a pipe was writable
+before, and a reader made even more room in it, the pipe didn't get
+"more writable".
 
+So that commit removes the pointless extra wakeup calls that don't
+actually make any sense (and that gave incorrect edges to the some
+EPOLL case that saw an edge that didn't actually exist).
+
+              Linus
