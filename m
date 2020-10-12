@@ -2,163 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC4A428C3CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 23:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8548D28C3CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 23:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732105AbgJLVLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 17:11:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729366AbgJLVLC (ORCPT
+        id S1732132AbgJLVLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 17:11:16 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:53452 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729366AbgJLVLP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 17:11:02 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EED6C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 14:11:02 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id b193so14723858pga.6
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 14:11:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hznOtUbTWNjEJYZsjBYfp17ENA2WPtrRZnCCOjoEFpg=;
-        b=dwXUraXOTIKRcxZp0pwYP1Y3/n3gOd1Dq6LzEx6rfD3EeWGFNXaEVc2LnZ43hGvxhS
-         MCb1/J0RxXgroLEIMLgGrEr093nMx28OmuDFOtqPvj5hi9PqBgFKQx5pN/d17e6T9Gom
-         itnPlTQvDOsFIAFxUjGZZ0ADAOaU+BmYJJrGsbpuBOP0RyBwwn/8vcthLx+3Ii18Wf37
-         nNpSFfPYX1bEUA/b2QAJ1FfgRVbTv6J/FIPcZBazae4+yoCvvYiDkIEQVFXkpRjVDDUP
-         SduXSoJr4gUvwbd40c98CqJJLH7WwFhreaNYRthZAvNZzG04IcLR0t0aeLZp8s2TaoQV
-         JSdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hznOtUbTWNjEJYZsjBYfp17ENA2WPtrRZnCCOjoEFpg=;
-        b=bV2UPkhaBdZMZC1fpziMiwfNEGo7GsGuYDhuilz582cgc8E547wvL1+bpFYQVc4WrJ
-         f48exwCL2VvEcKGZyY3+ugrpTZyxaH3nuDy5I8BL8HMVQsYUaOL/tny90RmsO0SUt6kr
-         yiM7F/6AUOdRigmgO5HLK/o10btlhIAJH8hiIY3genJZXoBt5QcJm30Zy1f9CqjWm+k7
-         RgC0G9EaZypTz93cTH+T2qEgsVe4VEp8OR4cCitHRblqZ76qA0pSnVl/j1hqcPuifONU
-         RjEPf2QK4ocKIDAJ7Kmf4/P8js5rjHtW8H3rRBbgdoD3IeT+RshFjGuEh7RxTHSrMdbt
-         pmdA==
-X-Gm-Message-State: AOAM530hIVGQzbWKOklUkf5u2fV3Gn4p3aRSuS0U5+Vx6W9L/MZFFV6V
-        NFWh08hfht7CuGeGtWEC+X5R86gn9x2v6+IGPYMXcEnv5+bK/Q==
-X-Google-Smtp-Source: ABdhPJyu3P3zLRq+uZnu7lqj2umh8EfmaIu62LLz3wYSgeeoXCTRxn4GjHp2/hWQppyxVuKyZU0ejH+kd3KUvKHRSdw=
-X-Received: by 2002:a62:6408:0:b029:154:dde2:a5eb with SMTP id
- y8-20020a6264080000b0290154dde2a5ebmr26213344pfb.30.1602537061565; Mon, 12
- Oct 2020 14:11:01 -0700 (PDT)
+        Mon, 12 Oct 2020 17:11:15 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09CL4RJb161007;
+        Mon, 12 Oct 2020 21:11:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=L3Sb8vcOf2Mz1CizllpDz5GKGlYv+BP7RakyyG6PVWs=;
+ b=INsllxDnYGF0dhK5pD/d7VpQVH/1wBq2tQJc7mRZk6KavbRR88C4ejMT1oIo5drhVGES
+ Dr/e7J+schXYq1X5kqPMuPyTf83Sz6ERQtBuBwTA0gjeiueyZzxVxYPlH829lLrh5VLj
+ 1V0gsfRgSxKi02VCpkPzdnzelW3a+I1bADW+DBO3FGqwC5mwoLjzDGRXr0sY7pkdXU4O
+ gwhbSZpWiQNqc4HrX9DAhhCObLwajXPaw/05bYcw3VVX5LBmCsmrmUkPvzzoo26EVP7k
+ T/yl3e3mocD3ixPjCz9SU9VgDTeLIWCQo94Djuw4vfpnvgTrRIXMGyqoB1WU//oRzmkn Iw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 343pajnsye-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 12 Oct 2020 21:11:08 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09CL5TY6070247;
+        Mon, 12 Oct 2020 21:11:07 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 344by19gxv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 12 Oct 2020 21:11:07 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09CLB5TL032217;
+        Mon, 12 Oct 2020 21:11:06 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 12 Oct 2020 14:11:05 -0700
+Date:   Mon, 12 Oct 2020 14:11:04 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     kernel list <linux-kernel@vger.kernel.org>, dchinner@redhat.com,
+        sandeen@redhat.com
+Subject: Re: -next: Kconfig asks about XFS formats when I don't have XFS
+ enabled
+Message-ID: <20201012211104.GD6559@magnolia>
+References: <20201012102039.GA1588@amd>
 MIME-Version: 1.0
-References: <20200928224854.3224862-1-natechancellor@gmail.com>
-In-Reply-To: <20200928224854.3224862-1-natechancellor@gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 12 Oct 2020 14:10:50 -0700
-Message-ID: <CAKwvOd=+98r6F4JjrPEoWX88WQ=B-KMRP2eWojabLk6it3i5KA@mail.gmail.com>
-Subject: Re: [PATCH] arm/build: Always handle .ARM.exidx and .ARM.extab sections
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>, Ingo Molnar <mingo@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201012102039.GA1588@amd>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9772 signatures=668681
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
+ suspectscore=2 mlxscore=0 malwarescore=0 adultscore=0 bulkscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010120159
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9772 signatures=668681
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=2
+ impostorscore=0 priorityscore=1501 clxscore=1011 malwarescore=0
+ adultscore=0 lowpriorityscore=0 spamscore=0 phishscore=0 mlxscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010120159
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 3:49 PM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
->
-> After turning on warnings for orphan section placement, enabling
-> CONFIG_UNWINDER_FRAME_POINTER instead of CONFIG_UNWINDER_ARM causes
-> thousands of warnings when clang + ld.lld are used:
->
-> $ scripts/config --file arch/arm/configs/multi_v7_defconfig \
->                  -d CONFIG_UNWINDER_ARM \
->                  -e CONFIG_UNWINDER_FRAME_POINTER
-> $ make -skj"$(nproc)" ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- LLVM=1 defconfig zImage
-> ld.lld: warning: init/built-in.a(main.o):(.ARM.extab) is being placed in '.ARM.extab'
-> ld.lld: warning: init/built-in.a(main.o):(.ARM.extab.init.text) is being placed in '.ARM.extab.init.text'
-> ld.lld: warning: init/built-in.a(main.o):(.ARM.extab.ref.text) is being placed in '.ARM.extab.ref.text'
-> ld.lld: warning: init/built-in.a(do_mounts.o):(.ARM.extab.init.text) is being placed in '.ARM.extab.init.text'
-> ld.lld: warning: init/built-in.a(do_mounts.o):(.ARM.extab) is being placed in '.ARM.extab'
-> ld.lld: warning: init/built-in.a(do_mounts_rd.o):(.ARM.extab.init.text) is being placed in '.ARM.extab.init.text'
-> ld.lld: warning: init/built-in.a(do_mounts_rd.o):(.ARM.extab) is being placed in '.ARM.extab'
-> ld.lld: warning: init/built-in.a(do_mounts_initrd.o):(.ARM.extab.init.text) is being placed in '.ARM.extab.init.text'
-> ld.lld: warning: init/built-in.a(initramfs.o):(.ARM.extab.init.text) is being placed in '.ARM.extab.init.text'
-> ld.lld: warning: init/built-in.a(initramfs.o):(.ARM.extab) is being placed in '.ARM.extab'
-> ld.lld: warning: init/built-in.a(calibrate.o):(.ARM.extab.init.text) is being placed in '.ARM.extab.init.text'
-> ld.lld: warning: init/built-in.a(calibrate.o):(.ARM.extab) is being placed in '.ARM.extab'
->
-> These sections are handled by the ARM_UNWIND_SECTIONS define, which is
-> only added to the list of sections when CONFIG_ARM_UNWIND is set.
-> CONFIG_ARM_UNWIND is a hidden symbol that is only selected when
-> CONFIG_UNWINDER_ARM is set so CONFIG_UNWINDER_FRAME_POINTER never
-> handles these sections. According to the help text of
-> CONFIG_UNWINDER_ARM, these sections should be discarded so that the
-> kernel image size is not affected.
+On Mon, Oct 12, 2020 at 12:20:39PM +0200, Pavel Machek wrote:
+> Hi!
+> 
+> I don't have XFS enabled, yet I'm asked if I want to support its old
+> format:
+> 
+> +config XFS_SUPPORT_V4
+> +       bool "Support deprecated V4 (crc=0) format"
+> +       default y
+> 
+> This needs to have dependence on XFS_FS.
+> 
+> +         This option will become default N in September 2025. Support for the
+> +         V4 format will be removed entirely in September 2030. Distributors
+> +         can say N here to withdraw support earlier.
+> 
+> This seems... "interesting", contrary to "no regressions" rule.
 
-My apologies for taking so long to review this.
+Oops, yeah, that should be gated on XFS_FS.  I'll send a quick fix.
 
-I have a suspicion that these come from forcing on configs that
-Kconfig/menuconfig would block, and aren't clang or lld specific, yet
-are exposed by the new linker warnings for orphan section placement
-(good).  That said, we definitely have OEMs in Android land that still
-prefer the older unwinder.
+--D
 
-From https://developer.arm.com/documentation/ihi0038/b/ (click
-download in top left), section 4.4.1 "Sections" has a note:
-
-```
-Tables are not required for ABI compliance at the C/Assembler level
-but are required for C++.
-```
-
-Review-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-
-Please submit to:
-https://www.arm.linux.org.uk/developer/patches/add.php
-
->
-> Fixes: 5a17850e251a ("arm/build: Warn on orphan section placement")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1152
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> ---
->  arch/arm/kernel/vmlinux.lds.S | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/arch/arm/kernel/vmlinux.lds.S b/arch/arm/kernel/vmlinux.lds.S
-> index 5f4922e858d0..a2c0d96b0580 100644
-> --- a/arch/arm/kernel/vmlinux.lds.S
-> +++ b/arch/arm/kernel/vmlinux.lds.S
-> @@ -40,6 +40,10 @@ SECTIONS
->                 ARM_DISCARD
->  #ifndef CONFIG_SMP_ON_UP
->                 *(.alt.smp.init)
-> +#endif
-> +#ifndef CONFIG_ARM_UNWIND
-> +               *(.ARM.exidx*)
-
-I don't think we need the wildcard, as without this line, I see:
-
-ld.lld: warning: <internal>:(.ARM.exidx) is being placed in '.ARM.exidx'
-
-though I do see binutils linker scripts use precisely what you have.
-So I guess that's fine.
-
-I guess we can't reuse `ARM_UNWIND_SECTIONS` since the ALIGN and
-linker-script-defined-symbols would be weird in a DISCARD clause?
+> Best regards,
+> 									Pavel
+> -- 
+> (english) http://www.livejournal.com/~pavelmachek
+> (cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
 
 
-> +               *(.ARM.extab*)
->  #endif
->         }
->
->
-> base-commit: 6e0bf0e0e55000742a53c5f3b58f8669e0091a11
-> --
-
-
---
-Thanks,
-~Nick Desaulniers
