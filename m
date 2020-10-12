@@ -2,434 +2,644 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0955228C401
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 23:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B72E28C404
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 23:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387986AbgJLV1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 17:27:52 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2274 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726348AbgJLV1w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 17:27:52 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09CL1idn114122;
-        Mon, 12 Oct 2020 17:27:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=myU/DteIURSWurvS9ME1bVo31BjIRt1zRFBxspz4xj0=;
- b=e9EmgJVd503+ADvrOZtgS4b45IwNAgwzcjjY5Z2PfmGN14xJwfI6t+4M8RJAKPLBTzog
- 9LQBmZnvpwnUOlwbOlznzvFGrnKsRKhxK/MI+Rp/xb4Gm7JJoyuDxV9GeBKLl9lG1U5n
- lE2hANGFvw7eMY9rDSezUCM0ceW9kZ1WOIIQpPU6qjSsAj7Awv5yDoHmSWCpbVsNikpc
- XEXNY1QX6BGuzHQQY3jFx0/hcpstSdYT/BfEpKKtjgiYzzSm+zFFhyktxe4TtoYXpKey
- LaSy34yO57oecF09G43mKbTXhUtoCvUiXOc7j8KWG79j35EYquych5cuN9igLDX0Wfmf UQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 344v8tm29h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 12 Oct 2020 17:27:50 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09CL1mPX114265;
-        Mon, 12 Oct 2020 17:27:50 -0400
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 344v8tm299-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 12 Oct 2020 17:27:50 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09CLCvpI011100;
-        Mon, 12 Oct 2020 21:27:49 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma05wdc.us.ibm.com with ESMTP id 3434k8tk3j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 12 Oct 2020 21:27:48 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09CLRjw034734578
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 12 Oct 2020 21:27:45 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9BDA36A047;
-        Mon, 12 Oct 2020 21:27:45 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D5B0F6A051;
-        Mon, 12 Oct 2020 21:27:43 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.170.177])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon, 12 Oct 2020 21:27:43 +0000 (GMT)
-Subject: Re: [PATCH v10 13/16] s390/vfio-ap: handle host AP config change
- notification
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
-        cohuck@redhat.com, mjrosato@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
-        imbrenda@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
-        kernel test robot <lkp@intel.com>
-References: <20200821195616.13554-1-akrowiak@linux.ibm.com>
- <20200821195616.13554-14-akrowiak@linux.ibm.com>
- <20200928033817.20b95549.pasic@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <e5ddd1ae-0c35-0089-1d40-30157065dece@linux.ibm.com>
-Date:   Mon, 12 Oct 2020 17:27:43 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1729233AbgJLV2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 17:28:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47406 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726662AbgJLV2O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 17:28:14 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 07C492073A;
+        Mon, 12 Oct 2020 21:28:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602538093;
+        bh=sRB2mfTioTF737Z93TJAG+W/Vo04DAWzOjtdPTNrvMs=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=byeYIN13WxjHVsYu7eaF8+v/Q6MG3kF3UdxN7Fyrl8n85rO65P3YPGFZp+YP2pbH9
+         hdOXw5vT1rqVRVXaYk8IqrGoVS4DlRNPD5oyG11/GqycQnixAPr7DdM1NntUMnVMSH
+         UaCmOptg33kTiLThKpoed3GgFx2+k9nWn/App8+k=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id B6A8235227C6; Mon, 12 Oct 2020 14:28:12 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 14:28:12 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Qian Cai <cai@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [tip: locking/core] lockdep: Fix lockdep recursion
+Message-ID: <20201012212812.GH3249@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <160223032121.7002.1269740091547117869.tip-bot2@tip-bot2>
+ <e438b231c5e1478527af6c3e69bf0b37df650110.camel@redhat.com>
+ <20201012031110.GA39540@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
 MIME-Version: 1.0
-In-Reply-To: <20200928033817.20b95549.pasic@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-12_17:2020-10-12,2020-10-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- mlxscore=0 adultscore=0 clxscore=1015 mlxlogscore=999 suspectscore=0
- impostorscore=0 bulkscore=0 phishscore=0 priorityscore=1501
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010120154
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201012031110.GA39540@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 12, 2020 at 11:11:10AM +0800, Boqun Feng wrote:
+> Hi,
+> 
+> On Fri, Oct 09, 2020 at 09:41:24AM -0400, Qian Cai wrote:
+> > On Fri, 2020-10-09 at 07:58 +0000, tip-bot2 for Peter Zijlstra wrote:
+> > > The following commit has been merged into the locking/core branch of tip:
+> > > 
+> > > Commit-ID:     4d004099a668c41522242aa146a38cc4eb59cb1e
+> > > Gitweb:        
+> > > https://git.kernel.org/tip/4d004099a668c41522242aa146a38cc4eb59cb1e
+> > > Author:        Peter Zijlstra <peterz@infradead.org>
+> > > AuthorDate:    Fri, 02 Oct 2020 11:04:21 +02:00
+> > > Committer:     Ingo Molnar <mingo@kernel.org>
+> > > CommitterDate: Fri, 09 Oct 2020 08:53:30 +02:00
+> > > 
+> > > lockdep: Fix lockdep recursion
+> > > 
+> > > Steve reported that lockdep_assert*irq*(), when nested inside lockdep
+> > > itself, will trigger a false-positive.
+> > > 
+> > > One example is the stack-trace code, as called from inside lockdep,
+> > > triggering tracing, which in turn calls RCU, which then uses
+> > > lockdep_assert_irqs_disabled().
+> > > 
+> > > Fixes: a21ee6055c30 ("lockdep: Change hardirq{s_enabled,_context} to per-cpu
+> > > variables")
+> > > Reported-by: Steven Rostedt <rostedt@goodmis.org>
+> > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > > Signed-off-by: Ingo Molnar <mingo@kernel.org>
+> > 
+> > Reverting this linux-next commit fixed booting RCU-list warnings everywhere.
+> > 
+> 
+> I think this happened because in this commit debug_lockdep_rcu_enabled()
+> didn't adopt to the change that made lockdep_recursion a percpu
+> variable?
+> 
+> Qian, mind to try the following?
+> 
+> Although, arguably the problem still exists, i.e. we still have an RCU
+> read-side critical section inside lock_acquire(), which may be called on
+> a yet-to-online CPU, which RCU doesn't watch. I think this used to be OK
+> because we don't "free" anything from lockdep, IOW, there is no
+> synchronize_rcu() or call_rcu() that _needs_ to wait for the RCU
+> read-side critical sections inside lockdep. But now we lock class
+> recycling, so it might be a problem.
 
+It is certainly an accident waiting to happen.  Would something like
+the following make sense?
 
-On 9/27/20 9:38 PM, Halil Pasic wrote:
-> On Fri, 21 Aug 2020 15:56:13 -0400
-> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
->
->> Implements the driver callback invoked by the AP bus when the host
->> AP configuration has changed. Since this callback is invoked prior to
->> unbinding a device from its device driver, the vfio_ap driver will
->> respond by unplugging the AP adapters, domains and control domains
->> removed from the host's AP configuration from the guests using them.
->>
->> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
->> Reported-by: kernel test robot <lkp@intel.com>
-> Looks reasonable, but shouldn't vfio_ap_mdev_remove_queue() already
-> have code that kicks the queue from the shadow at this stage?
->
-> I mean if the removal is for a reason different that host config change,
-> we wont update the guest_matrix or?
+							Thanx, Paul
 
-This patch specifically handles AP configuration change notification.
-The idea behind this notification is that if a configuration change results
-in one or more queues getting removed from the guest, it can be done
-in bulk before each of the queues is unbound by the AP bus. That way
-any cleanup (e.g., resets etc.) can be performed before the bus gets
-control.
+------------------------------------------------------------------------
 
-Also, keep in mind that an unbind can take place for reasons other than
-an AP configuration change:
-1. Manual unbind of a queue
-2. Deconfiguration of an adapter
-3. Adapter is broken (e.g., CHECKSTOP)
-If the queue is being unbound as a result of an AP configuration
-change, the vfio_ap_remove_queue() function will ignore the
-unbind because it has already been handled by this on_config_changed
-callback prior to the unbind operation (see patch 15/16).
->
->> ---
->>   drivers/s390/crypto/vfio_ap_drv.c     |   5 +-
->>   drivers/s390/crypto/vfio_ap_ops.c     | 147 ++++++++++++++++++++++++--
->>   drivers/s390/crypto/vfio_ap_private.h |   7 +-
->>   3 files changed, 146 insertions(+), 13 deletions(-)
->>
->> diff --git a/drivers/s390/crypto/vfio_ap_drv.c b/drivers/s390/crypto/vfio_ap_drv.c
->> index aae5b3d8e3fa..ea0a7603e886 100644
->> --- a/drivers/s390/crypto/vfio_ap_drv.c
->> +++ b/drivers/s390/crypto/vfio_ap_drv.c
->> @@ -115,9 +115,11 @@ static int vfio_ap_matrix_dev_create(void)
->>   
->>   	/* Fill in config info via PQAP(QCI), if available */
->>   	if (test_facility(12)) {
->> -		ret = ap_qci(&matrix_dev->info);
->> +		ret = ap_qci(&matrix_dev->config_info);
->>   		if (ret)
->>   			goto matrix_alloc_err;
->> +		memcpy(&matrix_dev->config_info_prev, &matrix_dev->config_info,
->> +		       sizeof(struct ap_config_info));
->>   	}
->>   
->>   	mutex_init(&matrix_dev->lock);
->> @@ -177,6 +179,7 @@ static int __init vfio_ap_init(void)
->>   	vfio_ap_drv.remove = vfio_ap_queue_dev_remove;
->>   	vfio_ap_drv.in_use = vfio_ap_mdev_resource_in_use;
->>   	vfio_ap_drv.ids = ap_queue_ids;
->> +	vfio_ap_drv.on_config_changed = vfio_ap_on_cfg_changed;
->>   
->>   	ret = ap_driver_register(&vfio_ap_drv, THIS_MODULE, VFIO_AP_DRV_NAME);
->>   	if (ret) {
->> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
->> index 2b01a8eb6ee7..e002d556abab 100644
->> --- a/drivers/s390/crypto/vfio_ap_ops.c
->> +++ b/drivers/s390/crypto/vfio_ap_ops.c
->> @@ -347,7 +347,9 @@ static int vfio_ap_mdev_create(struct kobject *kobj, struct mdev_device *mdev)
->>   	}
->>   
->>   	matrix_mdev->mdev = mdev;
->> -	vfio_ap_matrix_init(&matrix_dev->info, &matrix_mdev->matrix);
->> +	vfio_ap_matrix_init(&matrix_dev->config_info, &matrix_mdev->matrix);
->> +	vfio_ap_matrix_init(&matrix_dev->config_info,
->> +			    &matrix_mdev->shadow_apcb);
->>   	hash_init(matrix_mdev->qtable);
->>   	mdev_set_drvdata(mdev, matrix_mdev);
->>   	matrix_mdev->pqap_hook.hook = handle_pqap;
->> @@ -526,8 +528,8 @@ static int vfio_ap_mdev_filter_matrix(struct ap_matrix_mdev *matrix_mdev,
->>   		 * If the APID is not assigned to the host AP configuration,
->>   		 * we can not assign it to the guest's AP configuration
->>   		 */
->> -		if (!test_bit_inv(apid,
->> -				  (unsigned long *)matrix_dev->info.apm)) {
->> +		if (!test_bit_inv(apid, (unsigned long *)
->> +				  matrix_dev->config_info.apm)) {
->>   			clear_bit_inv(apid, shadow_apcb->apm);
->>   			continue;
->>   		}
->> @@ -540,7 +542,7 @@ static int vfio_ap_mdev_filter_matrix(struct ap_matrix_mdev *matrix_mdev,
->>   			 * guest's AP configuration
->>   			 */
->>   			if (!test_bit_inv(apqi, (unsigned long *)
->> -					  matrix_dev->info.aqm)) {
->> +					  matrix_dev->config_info.aqm)) {
->>   				clear_bit_inv(apqi, shadow_apcb->aqm);
->>   				continue;
->>   			}
->> @@ -594,7 +596,7 @@ static bool vfio_ap_mdev_config_shadow_apcb(struct ap_matrix_mdev *matrix_mdev)
->>   	int napm, naqm;
->>   	struct ap_matrix shadow_apcb;
->>   
->> -	vfio_ap_matrix_init(&matrix_dev->info, &shadow_apcb);
->> +	vfio_ap_matrix_init(&matrix_dev->config_info, &shadow_apcb);
->>   	napm = bitmap_weight(matrix_mdev->matrix.apm, AP_DEVICES);
->>   	naqm = bitmap_weight(matrix_mdev->matrix.aqm, AP_DOMAINS);
->>   
->> @@ -741,7 +743,7 @@ static bool vfio_ap_mdev_assign_apqis_4_apid(struct ap_matrix_mdev *matrix_mdev,
->>   
->>   	for_each_set_bit_inv(apqi, matrix_mdev->matrix.aqm, AP_DOMAINS) {
->>   		if (!test_bit_inv(apqi,
->> -				  (unsigned long *) matrix_dev->info.aqm))
->> +				  (unsigned long *)matrix_dev->config_info.aqm))
->>   			clear_bit_inv(apqi, aqm);
->>   
->>   		apqn = AP_MKQID(apid, apqi);
->> @@ -764,7 +766,7 @@ static bool vfio_ap_mdev_assign_guest_apid(struct ap_matrix_mdev *matrix_mdev,
->>   	unsigned long apqi, apqn;
->>   
->>   	if (!vfio_ap_mdev_has_crycb(matrix_mdev) ||
->> -	    !test_bit_inv(apid, (unsigned long *)matrix_dev->info.apm))
->> +	    !test_bit_inv(apid, (unsigned long *)matrix_dev->config_info.apm))
->>   		return false;
->>   
->>   	if (bitmap_empty(matrix_mdev->shadow_apcb.aqm, AP_DOMAINS))
->> @@ -931,8 +933,8 @@ static bool vfio_ap_mdev_assign_apids_4_apqi(struct ap_matrix_mdev *matrix_mdev,
->>   	bitmap_copy(apm, matrix_mdev->matrix.apm, AP_DEVICES);
->>   
->>   	for_each_set_bit_inv(apid, matrix_mdev->matrix.apm, AP_DEVICES) {
->> -		if (!test_bit_inv(apid,
->> -				  (unsigned long *) matrix_dev->info.apm))
->> +		if (!test_bit_inv(apid, (unsigned long *)
->> +				  matrix_dev->config_info.apm))
->>   			clear_bit_inv(apqi, apm);
->>   
->>   		apqn = AP_MKQID(apid, apqi);
->> @@ -955,7 +957,7 @@ static bool vfio_ap_mdev_assign_guest_apqi(struct ap_matrix_mdev *matrix_mdev,
->>   	unsigned long apid, apqn;
->>   
->>   	if (!vfio_ap_mdev_has_crycb(matrix_mdev) ||
->> -	    !test_bit_inv(apqi, (unsigned long *)matrix_dev->info.aqm))
->> +	    !test_bit_inv(apqi, (unsigned long *)matrix_dev->config_info.aqm))
->>   		return false;
->>   
->>   	if (bitmap_empty(matrix_mdev->shadow_apcb.apm, AP_DEVICES))
->> @@ -1702,7 +1704,7 @@ int vfio_ap_mdev_probe_queue(struct ap_queue *queue)
->>   void vfio_ap_mdev_remove_queue(struct ap_queue *queue)
->>   {
->>   	struct vfio_ap_queue *q;
->> -	int apid, apqi;
->> +	unsigned long apid, apqi;
->>   
-> Unrelated?
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index bfd38f2..52a63bc 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -4067,6 +4067,7 @@ void rcu_cpu_starting(unsigned int cpu)
+ 
+ 	rnp = rdp->mynode;
+ 	mask = rdp->grpmask;
++	lockdep_off();
+ 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
+ 	WRITE_ONCE(rnp->qsmaskinitnext, rnp->qsmaskinitnext | mask);
+ 	newcpu = !(rnp->expmaskinitnext & mask);
+@@ -4086,6 +4087,7 @@ void rcu_cpu_starting(unsigned int cpu)
+ 	} else {
+ 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ 	}
++	lockdep_on();
+ 	smp_mb(); /* Ensure RCU read-side usage follows above initialization. */
+ }
+ 
 
-Yes, I'll remove it.
-
->
->>   	mutex_lock(&matrix_dev->lock);
->>   	q = dev_get_drvdata(&queue->ap_dev.device);
->> @@ -1727,3 +1729,126 @@ bool vfio_ap_mdev_resource_in_use(unsigned long *apm, unsigned long *aqm)
->>   
->>   	return in_use;
->>   }
->> +
->> +/**
->> + * vfio_ap_mdev_unassign_apids
->> + *
->> + * @matrix_mdev: The matrix mediated device
->> + *
->> + * @aqm: A bitmap with 256 bits. Each bit in the map represents an APID from 0
->> + *	 to 255 (with the leftmost bit corresponding to APID 0).
->> + *
->> + * Unassigns each APID specified in @aqm that is assigned to the shadow CRYCB
->> + * of @matrix_mdev. Returns true if at least one APID is unassigned; otherwise,
->> + * returns false.
->> + */
->> +static bool vfio_ap_mdev_unassign_apids(struct ap_matrix_mdev *matrix_mdev,
->> +					unsigned long *apm_unassign)
->> +{
->> +	unsigned long apid;
->> +	bool unassigned = false;
->> +
->> +	/*
->> +	 * If the matrix mdev is not in use by a KVM guest, return indicating
->> +	 * that no APIDs have been unassigned.
->> +	 */
->> +	if (!vfio_ap_mdev_has_crycb(matrix_mdev))
->> +		return false;
->> +
->> +	for_each_set_bit_inv(apid, apm_unassign, AP_DEVICES) {
->> +		unassigned |= vfio_ap_mdev_unassign_guest_apid(matrix_mdev,
->> +							       apid);
->> +	}
-> I guess, we could accomplish the unassign with operations operating on
-> full bitmaps (without looping over bits), but I have no strong opinion
-> here.
-
-Yes we can and will.
-
->
->> +
->> +	return unassigned;
->> +}
->> +
->> +/**
->> + * vfio_ap_mdev_unassign_apqis
->> + *
->> + * @matrix_mdev: The matrix mediated device
->> + *
->> + * @aqm: A bitmap with 256 bits. Each bit in the map represents an APQI from 0
->> + *	 to 255 (with the leftmost bit corresponding to APQI 0).
->> + *
->> + * Unassigns each APQI specified in @aqm that is assigned to the shadow CRYCB
->> + * of @matrix_mdev. Returns true if at least one APQI is unassigned; otherwise,
->> + * returns false.
->> + */
->> +static bool vfio_ap_mdev_unassign_apqis(struct ap_matrix_mdev *matrix_mdev,
->> +					unsigned long *aqm_unassign)
->> +{
->> +	unsigned long apqi;
->> +	bool unassigned = false;
->> +
->> +	/*
->> +	 * If the matrix mdev is not in use by a KVM guest, return indicating
->> +	 * that no APQIs have been unassigned.
->> +	 */
->> +	if (!vfio_ap_mdev_has_crycb(matrix_mdev))
->> +		return false;
->> +
->> +	for_each_set_bit_inv(apqi, aqm_unassign, AP_DOMAINS) {
->> +		unassigned |= vfio_ap_mdev_unassign_guest_apqi(matrix_mdev,
->> +							       apqi);
->> +	}
->> +
->> +	return unassigned;
->> +}
->> +
->> +void vfio_ap_on_cfg_changed(struct ap_config_info *new_config_info,
->> +			    struct ap_config_info *old_config_info)
->> +{
->> +	bool unassigned;
->> +	int ap_remove, aq_remove;
->> +	struct ap_matrix_mdev *matrix_mdev;
->> +	DECLARE_BITMAP(apm_unassign, AP_DEVICES);
->> +	DECLARE_BITMAP(aqm_unassign, AP_DOMAINS);
->> +
->> +	unsigned long *cur_apm, *cur_aqm, *prev_apm, *prev_aqm;
->> +
->> +	if (matrix_dev->flags & AP_MATRIX_CFG_CHG) {
->> +		WARN_ONCE(1, "AP host configuration change already reported");
->> +		return;
->> +	}
->> +
->> +	memcpy(&matrix_dev->config_info, new_config_info,
->> +	       sizeof(struct ap_config_info));
->> +	memcpy(&matrix_dev->config_info_prev, old_config_info,
->> +	       sizeof(struct ap_config_info));
->> +
->> +	cur_apm = (unsigned long *)matrix_dev->config_info.apm;
->> +	cur_aqm = (unsigned long *)matrix_dev->config_info.aqm;
->> +	prev_apm = (unsigned long *)matrix_dev->config_info_prev.apm;
->> +	prev_aqm = (unsigned long *)matrix_dev->config_info_prev.aqm;
->> +
->> +	ap_remove = bitmap_andnot(apm_unassign, prev_apm, cur_apm, AP_DEVICES);
->> +	aq_remove = bitmap_andnot(aqm_unassign, prev_aqm, cur_aqm, AP_DOMAINS);
->> +
->> +	mutex_lock(&matrix_dev->lock);
->> +	matrix_dev->flags |= AP_MATRIX_CFG_CHG;
->> +
->> +	list_for_each_entry(matrix_mdev, &matrix_dev->mdev_list, node) {
->> +		if (!vfio_ap_mdev_has_crycb(matrix_mdev))
->> +			continue;
->> +
->> +		unassigned = false;
->> +
->> +		if (ap_remove)
->> +			if (bitmap_intersects(matrix_mdev->shadow_apcb.apm,
->> +					      apm_unassign, AP_DEVICES))
->> +				if (vfio_ap_mdev_unassign_apids(matrix_mdev,
->> +								apm_unassign))
-> This can be done with a single "if".
->
-> if (A)
-> 	if (B)
-> 		if (C)
-> 			D;
->
-> should be equivalent with
-> if (A && B && C)
-> 	D;
-> and your wouldn't end up that deep indentation. It is a style thing,
-> so unless regulated by the official coding style, it is up to you :)
-
-I will simplify it.
-
->
->
->> +					unassigned = true;
->> +		if (aq_remove)
->> +			if (bitmap_intersects(matrix_mdev->shadow_apcb.aqm,
->> +					      aqm_unassign, AP_DOMAINS))
->> +				if (vfio_ap_mdev_unassign_apqis(matrix_mdev,
->> +								aqm_unassign))
->> +					unassigned = true;
->> +
->> +		if (unassigned)
->> +			vfio_ap_mdev_commit_shadow_apcb(matrix_mdev);
->> +	}
->> +	mutex_unlock(&matrix_dev->lock);
->> +}
->> diff --git a/drivers/s390/crypto/vfio_ap_private.h b/drivers/s390/crypto/vfio_ap_private.h
->> index 055bce6d45db..fc8629e28ad3 100644
->> --- a/drivers/s390/crypto/vfio_ap_private.h
->> +++ b/drivers/s390/crypto/vfio_ap_private.h
->> @@ -40,10 +40,13 @@
->>   struct ap_matrix_dev {
->>   	struct device device;
->>   	atomic_t available_instances;
->> -	struct ap_config_info info;
->> +	struct ap_config_info config_info;
->> +	struct ap_config_info config_info_prev;
->>   	struct list_head mdev_list;
->>   	struct mutex lock;
->>   	struct ap_driver  *vfio_ap_drv;
->> +	#define AP_MATRIX_CFG_CHG (1UL << 0)
->> +	unsigned long flags;
->>   };
->>   
->>   extern struct ap_matrix_dev *matrix_dev;
->> @@ -108,5 +111,7 @@ int vfio_ap_mdev_probe_queue(struct ap_queue *queue);
->>   void vfio_ap_mdev_remove_queue(struct ap_queue *queue);
->>   
->>   bool vfio_ap_mdev_resource_in_use(unsigned long *apm, unsigned long *aqm);
->> +void vfio_ap_on_cfg_changed(struct ap_config_info *new_config_info,
->> +			    struct ap_config_info *old_config_info);
->>   
->>   #endif /* _VFIO_AP_PRIVATE_H_ */
-
+> That said, currently validate_chain() and lock class recycling are
+> mutually excluded via graph_lock, so we are safe for this one ;-)
+> 
+> ----------->8
+> diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+> index 39334d2d2b37..35d9bab65b75 100644
+> --- a/kernel/rcu/update.c
+> +++ b/kernel/rcu/update.c
+> @@ -275,8 +275,8 @@ EXPORT_SYMBOL_GPL(rcu_callback_map);
+>  
+>  noinstr int notrace debug_lockdep_rcu_enabled(void)
+>  {
+> -	return rcu_scheduler_active != RCU_SCHEDULER_INACTIVE && debug_locks &&
+> -	       current->lockdep_recursion == 0;
+> +	return rcu_scheduler_active != RCU_SCHEDULER_INACTIVE &&
+> +	       __lockdep_enabled;
+>  }
+>  EXPORT_SYMBOL_GPL(debug_lockdep_rcu_enabled);
+>  
+> 
+> > == x86 ==
+> > [    8.101841][    T1] rcu: Hierarchical SRCU implementation.
+> > [    8.110615][    T5] NMI watchdog: Enabled. Permanently consumes one hw-PMU counter.
+> > [    8.153506][    T1] smp: Bringing up secondary CPUs ...
+> > [    8.163075][    T1] x86: Booting SMP configuration:
+> > [    8.167843][    T1] .... node  #0, CPUs:        #1
+> > [    4.002695][    T0] 
+> > [    4.002695][    T0] =============================
+> > [    4.002695][    T0] WARNING: suspicious RCU usage
+> > [    4.002695][    T0] 5.9.0-rc8-next-20201009 #2 Not tainted
+> > [    4.002695][    T0] -----------------------------
+> > [    4.002695][    T0] kernel/locking/lockdep.c:3497 RCU-list traversed in non-reader section!!
+> > [    4.002695][    T0] 
+> > [    4.002695][    T0] other info that might help us debug this:
+> > [    4.002695][    T0] 
+> > [    4.002695][    T0] 
+> > [    4.002695][    T0] RCU used illegally from offline CPU!
+> > [    4.002695][    T0] rcu_scheduler_active = 1, debug_locks = 1
+> > [    4.002695][    T0] no locks held by swapper/1/0.
+> > [    4.002695][    T0] 
+> > [    4.002695][    T0] stack backtrace:
+> > [    4.002695][    T0] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.9.0-rc8-next-20201009 #2
+> > [    4.002695][    T0] Hardware name: HPE ProLiant DL385 Gen10/ProLiant DL385 Gen10, BIOS A40 07/10/2019
+> > [    4.002695][    T0] Call Trace:
+> > [    4.002695][    T0]  dump_stack+0x99/0xcb
+> > [    4.002695][    T0]  __lock_acquire.cold.76+0x2ad/0x3e0
+> > lookup_chain_cache at kernel/locking/lockdep.c:3497
+> > (inlined by) lookup_chain_cache_add at kernel/locking/lockdep.c:3517
+> > (inlined by) validate_chain at kernel/locking/lockdep.c:3572
+> > (inlined by) __lock_acquire at kernel/locking/lockdep.c:4837
+> > [    4.002695][    T0]  ? lockdep_hardirqs_on_prepare+0x3d0/0x3d0
+> > [    4.002695][    T0]  lock_acquire+0x1c8/0x820
+> > lockdep_recursion_finish at kernel/locking/lockdep.c:435
+> > (inlined by) lock_acquire at kernel/locking/lockdep.c:5444
+> > (inlined by) lock_acquire at kernel/locking/lockdep.c:5407
+> > [    4.002695][    T0]  ? __debug_object_init+0xb4/0xf50
+> > [    4.002695][    T0]  ? memset+0x1f/0x40
+> > [    4.002695][    T0]  ? rcu_read_unlock+0x40/0x40
+> > [    4.002695][    T0]  ? mce_gather_info+0x170/0x170
+> > [    4.002695][    T0]  ? arch_freq_get_on_cpu+0x270/0x270
+> > [    4.002695][    T0]  ? mce_cpu_restart+0x40/0x40
+> > [    4.002695][    T0]  _raw_spin_lock_irqsave+0x30/0x50
+> > [    4.002695][    T0]  ? __debug_object_init+0xb4/0xf50
+> > [    4.002695][    T0]  __debug_object_init+0xb4/0xf50
+> > [    4.002695][    T0]  ? mce_amd_feature_init+0x80c/0xa70
+> > [    4.002695][    T0]  ? debug_object_fixup+0x30/0x30
+> > [    4.002695][    T0]  ? machine_check_poll+0x2d0/0x2d0
+> > [    4.002695][    T0]  ? mce_cpu_restart+0x40/0x40
+> > [    4.002695][    T0]  init_timer_key+0x29/0x220
+> > [    4.002695][    T0]  identify_cpu+0xfcb/0x1980
+> > [    4.002695][    T0]  identify_secondary_cpu+0x1d/0x190
+> > [    4.002695][    T0]  smp_store_cpu_info+0x167/0x1f0
+> > [    4.002695][    T0]  start_secondary+0x5b/0x290
+> > [    4.002695][    T0]  secondary_startup_64_no_verify+0xb8/0xbb
+> > [    8.379508][    T1]   #2
+> > [    8.389728][    T1]   #3
+> > [    8.399901][    T1] 
+> > 
+> > == s390 ==
+> > 00: [    1.539768] rcu: Hierarchical SRCU implementation.                       
+> > 00: [    1.561622] smp: Bringing up secondary CPUs ...                          
+> > 00: [    1.568677]                                                              
+> > 00: [    1.568681] =============================                                
+> > 00: [    1.568682] WARNING: suspicious RCU usage                                
+> > 00: [    1.568688] 5.9.0-rc8-next-20201009 #2 Not tainted                       
+> > 00: [    1.568688] -----------------------------                                
+> > 00: [    1.568691] kernel/locking/lockdep.c:3497 RCU-list traversed in non-reade
+> > 00: r section!!                                                                 
+> > 00: [    1.568692]                                                              
+> > 00: [    1.568692] other info that might help us debug this:                    
+> > 00: [    1.568692]                                                              
+> > 00: [    1.568694]                                                              
+> > 00: [    1.568694] RCU used illegally from offline CPU!                         
+> > 00: [    1.568694] rcu_scheduler_active = 1, debug_locks = 1                    
+> > 00: [    1.568697] no locks held by swapper/1/0.                                
+> > 00: [    1.568697]                                                              
+> > 00: [    1.568697] stack backtrace:                                             
+> > 00: [    1.568702] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.9.0-rc8-next-2020
+> > 00: 1009 #2                                                                     
+> > 00: [    1.568704] Hardware name: IBM 2964 N96 400 (z/VM 6.4.0)                 
+> > 00: [    1.568706] Call Trace:                                                  
+> > 00: [    1.568719]  [<000000011fb85370>] show_stack+0x158/0x1f0                 
+> > 00: [    1.568723]  [<000000011fb90402>] dump_stack+0x1f2/0x238                 
+> > 00: [    1.568730]  [<000000011ebd89d8>] __lock_acquire+0x2640/0x4dd0   
+> > lookup_chain_cache at kernel/locking/lockdep.c:3497
+> > (inlined by) lookup_chain_cache_add at kernel/locking/lockdep.c:3517
+> > (inlined by) validate_chain at kernel/locking/lockdep.c:3572
+> > (inlined by) __lock_acquire at kernel/locking/lockdep.c:4837
+> > 00: [    1.568732]  [<000000011ebdd230>] lock_acquire+0x3a8/0xd08 
+> > lockdep_recursion_finish at kernel/locking/lockdep.c:435
+> > (inlined by) lock_acquire at kernel/locking/lockdep.c:5444
+> > (inlined by) lock_acquire at kernel/locking/lockdep.c:5407
+> > 00: [    1.568738]  [<000000011fbb5ca8>] _raw_spin_lock_irqsave+0xc0/0xf0
+> > __raw_spin_lock_irqsave at include/linux/spinlock_api_smp.h:117
+> > (inlined by) _raw_spin_lock_irqsave at kernel/locking/spinlock.c:159
+> > 00: [    1.568745]  [<000000011ec6e7e8>] clockevents_register_device+0xa8/0x528 
+> > 00:                                                                             
+> > 00: [    1.568748]  [<000000011ea55246>] init_cpu_timer+0x33e/0x468             
+> > 00: [    1.568754]  [<000000011ea7f4d2>] smp_init_secondary+0x11a/0x328         
+> > 00: [    1.568757]  [<000000011ea7f3b2>] smp_start_secondary+0x82/0x88
+> > smp_start_secondary at arch/s390/kernel/smp.c:892
+> > 00: [    1.568759] no locks held by swapper/1/0.                                
+> > 00: [    1.569956] smp: Brought up 1 node, 2 CPUs
+> > 
+> > > ---
+> > >  include/linux/lockdep.h  |  13 +++--
+> > >  kernel/locking/lockdep.c |  99 ++++++++++++++++++++++----------------
+> > >  2 files changed, 67 insertions(+), 45 deletions(-)
+> > > 
+> > > diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+> > > index 6a584b3..b1227be 100644
+> > > --- a/include/linux/lockdep.h
+> > > +++ b/include/linux/lockdep.h
+> > > @@ -534,6 +534,7 @@ do {								
+> > > 	\
+> > >  
+> > >  DECLARE_PER_CPU(int, hardirqs_enabled);
+> > >  DECLARE_PER_CPU(int, hardirq_context);
+> > > +DECLARE_PER_CPU(unsigned int, lockdep_recursion);
+> > >  
+> > >  /*
+> > >   * The below lockdep_assert_*() macros use raw_cpu_read() to access the above
+> > > @@ -543,25 +544,27 @@ DECLARE_PER_CPU(int, hardirq_context);
+> > >   * read the value from our previous CPU.
+> > >   */
+> > >  
+> > > +#define __lockdep_enabled	(debug_locks &&
+> > > !raw_cpu_read(lockdep_recursion))
+> > > +
+> > >  #define lockdep_assert_irqs_enabled()					
+> > > \
+> > >  do {									\
+> > > -	WARN_ON_ONCE(debug_locks && !raw_cpu_read(hardirqs_enabled));	\
+> > > +	WARN_ON_ONCE(__lockdep_enabled && !raw_cpu_read(hardirqs_enabled)); \
+> > >  } while (0)
+> > >  
+> > >  #define lockdep_assert_irqs_disabled()					
+> > > \
+> > >  do {									\
+> > > -	WARN_ON_ONCE(debug_locks && raw_cpu_read(hardirqs_enabled));	\
+> > > +	WARN_ON_ONCE(__lockdep_enabled && raw_cpu_read(hardirqs_enabled)); \
+> > >  } while (0)
+> > >  
+> > >  #define lockdep_assert_in_irq()						
+> > > \
+> > >  do {									\
+> > > -	WARN_ON_ONCE(debug_locks && !raw_cpu_read(hardirq_context));	\
+> > > +	WARN_ON_ONCE(__lockdep_enabled && !raw_cpu_read(hardirq_context)); \
+> > >  } while (0)
+> > >  
+> > >  #define lockdep_assert_preemption_enabled()				\
+> > >  do {									\
+> > >  	WARN_ON_ONCE(IS_ENABLED(CONFIG_PREEMPT_COUNT)	&&		\
+> > > -		     debug_locks			&&		\
+> > > +		     __lockdep_enabled			&&		\
+> > >  		     (preempt_count() != 0		||		\
+> > >  		      !raw_cpu_read(hardirqs_enabled)));		\
+> > >  } while (0)
+> > > @@ -569,7 +572,7 @@ do {								
+> > > 	\
+> > >  #define lockdep_assert_preemption_disabled()				\
+> > >  do {									\
+> > >  	WARN_ON_ONCE(IS_ENABLED(CONFIG_PREEMPT_COUNT)	&&		\
+> > > -		     debug_locks			&&		\
+> > > +		     __lockdep_enabled			&&		\
+> > >  		     (preempt_count() == 0		&&		\
+> > >  		      raw_cpu_read(hardirqs_enabled)));			\
+> > >  } while (0)
+> > > diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+> > > index a430fbb..85d15f0 100644
+> > > --- a/kernel/locking/lockdep.c
+> > > +++ b/kernel/locking/lockdep.c
+> > > @@ -76,6 +76,23 @@ module_param(lock_stat, int, 0644);
+> > >  #define lock_stat 0
+> > >  #endif
+> > >  
+> > > +DEFINE_PER_CPU(unsigned int, lockdep_recursion);
+> > > +EXPORT_PER_CPU_SYMBOL_GPL(lockdep_recursion);
+> > > +
+> > > +static inline bool lockdep_enabled(void)
+> > > +{
+> > > +	if (!debug_locks)
+> > > +		return false;
+> > > +
+> > > +	if (raw_cpu_read(lockdep_recursion))
+> > > +		return false;
+> > > +
+> > > +	if (current->lockdep_recursion)
+> > > +		return false;
+> > > +
+> > > +	return true;
+> > > +}
+> > > +
+> > >  /*
+> > >   * lockdep_lock: protects the lockdep graph, the hashes and the
+> > >   *               class/list/hash allocators.
+> > > @@ -93,7 +110,7 @@ static inline void lockdep_lock(void)
+> > >  
+> > >  	arch_spin_lock(&__lock);
+> > >  	__owner = current;
+> > > -	current->lockdep_recursion++;
+> > > +	__this_cpu_inc(lockdep_recursion);
+> > >  }
+> > >  
+> > >  static inline void lockdep_unlock(void)
+> > > @@ -101,7 +118,7 @@ static inline void lockdep_unlock(void)
+> > >  	if (debug_locks && DEBUG_LOCKS_WARN_ON(__owner != current))
+> > >  		return;
+> > >  
+> > > -	current->lockdep_recursion--;
+> > > +	__this_cpu_dec(lockdep_recursion);
+> > >  	__owner = NULL;
+> > >  	arch_spin_unlock(&__lock);
+> > >  }
+> > > @@ -393,10 +410,15 @@ void lockdep_init_task(struct task_struct *task)
+> > >  	task->lockdep_recursion = 0;
+> > >  }
+> > >  
+> > > +static __always_inline void lockdep_recursion_inc(void)
+> > > +{
+> > > +	__this_cpu_inc(lockdep_recursion);
+> > > +}
+> > > +
+> > >  static __always_inline void lockdep_recursion_finish(void)
+> > >  {
+> > > -	if (WARN_ON_ONCE((--current->lockdep_recursion) &
+> > > LOCKDEP_RECURSION_MASK))
+> > > -		current->lockdep_recursion = 0;
+> > > +	if (WARN_ON_ONCE(__this_cpu_dec_return(lockdep_recursion)))
+> > > +		__this_cpu_write(lockdep_recursion, 0);
+> > >  }
+> > >  
+> > >  void lockdep_set_selftest_task(struct task_struct *task)
+> > > @@ -3659,7 +3681,7 @@ void lockdep_hardirqs_on_prepare(unsigned long ip)
+> > >  	if (unlikely(in_nmi()))
+> > >  		return;
+> > >  
+> > > -	if (unlikely(current->lockdep_recursion & LOCKDEP_RECURSION_MASK))
+> > > +	if (unlikely(__this_cpu_read(lockdep_recursion)))
+> > >  		return;
+> > >  
+> > >  	if (unlikely(lockdep_hardirqs_enabled())) {
+> > > @@ -3695,7 +3717,7 @@ void lockdep_hardirqs_on_prepare(unsigned long ip)
+> > >  
+> > >  	current->hardirq_chain_key = current->curr_chain_key;
+> > >  
+> > > -	current->lockdep_recursion++;
+> > > +	lockdep_recursion_inc();
+> > >  	__trace_hardirqs_on_caller();
+> > >  	lockdep_recursion_finish();
+> > >  }
+> > > @@ -3728,7 +3750,7 @@ void noinstr lockdep_hardirqs_on(unsigned long ip)
+> > >  		goto skip_checks;
+> > >  	}
+> > >  
+> > > -	if (unlikely(current->lockdep_recursion & LOCKDEP_RECURSION_MASK))
+> > > +	if (unlikely(__this_cpu_read(lockdep_recursion)))
+> > >  		return;
+> > >  
+> > >  	if (lockdep_hardirqs_enabled()) {
+> > > @@ -3781,7 +3803,7 @@ void noinstr lockdep_hardirqs_off(unsigned long ip)
+> > >  	if (in_nmi()) {
+> > >  		if (!IS_ENABLED(CONFIG_TRACE_IRQFLAGS_NMI))
+> > >  			return;
+> > > -	} else if (current->lockdep_recursion & LOCKDEP_RECURSION_MASK)
+> > > +	} else if (__this_cpu_read(lockdep_recursion))
+> > >  		return;
+> > >  
+> > >  	/*
+> > > @@ -3814,7 +3836,7 @@ void lockdep_softirqs_on(unsigned long ip)
+> > >  {
+> > >  	struct irqtrace_events *trace = &current->irqtrace;
+> > >  
+> > > -	if (unlikely(!debug_locks || current->lockdep_recursion))
+> > > +	if (unlikely(!lockdep_enabled()))
+> > >  		return;
+> > >  
+> > >  	/*
+> > > @@ -3829,7 +3851,7 @@ void lockdep_softirqs_on(unsigned long ip)
+> > >  		return;
+> > >  	}
+> > >  
+> > > -	current->lockdep_recursion++;
+> > > +	lockdep_recursion_inc();
+> > >  	/*
+> > >  	 * We'll do an OFF -> ON transition:
+> > >  	 */
+> > > @@ -3852,7 +3874,7 @@ void lockdep_softirqs_on(unsigned long ip)
+> > >   */
+> > >  void lockdep_softirqs_off(unsigned long ip)
+> > >  {
+> > > -	if (unlikely(!debug_locks || current->lockdep_recursion))
+> > > +	if (unlikely(!lockdep_enabled()))
+> > >  		return;
+> > >  
+> > >  	/*
+> > > @@ -4233,11 +4255,11 @@ void lockdep_init_map_waits(struct lockdep_map *lock,
+> > > const char *name,
+> > >  	if (subclass) {
+> > >  		unsigned long flags;
+> > >  
+> > > -		if (DEBUG_LOCKS_WARN_ON(current->lockdep_recursion))
+> > > +		if (DEBUG_LOCKS_WARN_ON(!lockdep_enabled()))
+> > >  			return;
+> > >  
+> > >  		raw_local_irq_save(flags);
+> > > -		current->lockdep_recursion++;
+> > > +		lockdep_recursion_inc();
+> > >  		register_lock_class(lock, subclass, 1);
+> > >  		lockdep_recursion_finish();
+> > >  		raw_local_irq_restore(flags);
+> > > @@ -4920,11 +4942,11 @@ void lock_set_class(struct lockdep_map *lock, const
+> > > char *name,
+> > >  {
+> > >  	unsigned long flags;
+> > >  
+> > > -	if (unlikely(current->lockdep_recursion))
+> > > +	if (unlikely(!lockdep_enabled()))
+> > >  		return;
+> > >  
+> > >  	raw_local_irq_save(flags);
+> > > -	current->lockdep_recursion++;
+> > > +	lockdep_recursion_inc();
+> > >  	check_flags(flags);
+> > >  	if (__lock_set_class(lock, name, key, subclass, ip))
+> > >  		check_chain_key(current);
+> > > @@ -4937,11 +4959,11 @@ void lock_downgrade(struct lockdep_map *lock, unsigned
+> > > long ip)
+> > >  {
+> > >  	unsigned long flags;
+> > >  
+> > > -	if (unlikely(current->lockdep_recursion))
+> > > +	if (unlikely(!lockdep_enabled()))
+> > >  		return;
+> > >  
+> > >  	raw_local_irq_save(flags);
+> > > -	current->lockdep_recursion++;
+> > > +	lockdep_recursion_inc();
+> > >  	check_flags(flags);
+> > >  	if (__lock_downgrade(lock, ip))
+> > >  		check_chain_key(current);
+> > > @@ -4979,7 +5001,7 @@ static void verify_lock_unused(struct lockdep_map *lock,
+> > > struct held_lock *hlock
+> > >  
+> > >  static bool lockdep_nmi(void)
+> > >  {
+> > > -	if (current->lockdep_recursion & LOCKDEP_RECURSION_MASK)
+> > > +	if (raw_cpu_read(lockdep_recursion))
+> > >  		return false;
+> > >  
+> > >  	if (!in_nmi())
+> > > @@ -5000,7 +5022,10 @@ void lock_acquire(struct lockdep_map *lock, unsigned
+> > > int subclass,
+> > >  
+> > >  	trace_lock_acquire(lock, subclass, trylock, read, check, nest_lock, ip);
+> > >  
+> > > -	if (unlikely(current->lockdep_recursion)) {
+> > > +	if (!debug_locks)
+> > > +		return;
+> > > +
+> > > +	if (unlikely(!lockdep_enabled())) {
+> > >  		/* XXX allow trylock from NMI ?!? */
+> > >  		if (lockdep_nmi() && !trylock) {
+> > >  			struct held_lock hlock;
+> > > @@ -5023,7 +5048,7 @@ void lock_acquire(struct lockdep_map *lock, unsigned int
+> > > subclass,
+> > >  	raw_local_irq_save(flags);
+> > >  	check_flags(flags);
+> > >  
+> > > -	current->lockdep_recursion++;
+> > > +	lockdep_recursion_inc();
+> > >  	__lock_acquire(lock, subclass, trylock, read, check,
+> > >  		       irqs_disabled_flags(flags), nest_lock, ip, 0, 0);
+> > >  	lockdep_recursion_finish();
+> > > @@ -5037,13 +5062,13 @@ void lock_release(struct lockdep_map *lock, unsigned
+> > > long ip)
+> > >  
+> > >  	trace_lock_release(lock, ip);
+> > >  
+> > > -	if (unlikely(current->lockdep_recursion))
+> > > +	if (unlikely(!lockdep_enabled()))
+> > >  		return;
+> > >  
+> > >  	raw_local_irq_save(flags);
+> > >  	check_flags(flags);
+> > >  
+> > > -	current->lockdep_recursion++;
+> > > +	lockdep_recursion_inc();
+> > >  	if (__lock_release(lock, ip))
+> > >  		check_chain_key(current);
+> > >  	lockdep_recursion_finish();
+> > > @@ -5056,13 +5081,13 @@ noinstr int lock_is_held_type(const struct lockdep_map
+> > > *lock, int read)
+> > >  	unsigned long flags;
+> > >  	int ret = 0;
+> > >  
+> > > -	if (unlikely(current->lockdep_recursion))
+> > > +	if (unlikely(!lockdep_enabled()))
+> > >  		return 1; /* avoid false negative lockdep_assert_held() */
+> > >  
+> > >  	raw_local_irq_save(flags);
+> > >  	check_flags(flags);
+> > >  
+> > > -	current->lockdep_recursion++;
+> > > +	lockdep_recursion_inc();
+> > >  	ret = __lock_is_held(lock, read);
+> > >  	lockdep_recursion_finish();
+> > >  	raw_local_irq_restore(flags);
+> > > @@ -5077,13 +5102,13 @@ struct pin_cookie lock_pin_lock(struct lockdep_map
+> > > *lock)
+> > >  	struct pin_cookie cookie = NIL_COOKIE;
+> > >  	unsigned long flags;
+> > >  
+> > > -	if (unlikely(current->lockdep_recursion))
+> > > +	if (unlikely(!lockdep_enabled()))
+> > >  		return cookie;
+> > >  
+> > >  	raw_local_irq_save(flags);
+> > >  	check_flags(flags);
+> > >  
+> > > -	current->lockdep_recursion++;
+> > > +	lockdep_recursion_inc();
+> > >  	cookie = __lock_pin_lock(lock);
+> > >  	lockdep_recursion_finish();
+> > >  	raw_local_irq_restore(flags);
+> > > @@ -5096,13 +5121,13 @@ void lock_repin_lock(struct lockdep_map *lock, struct
+> > > pin_cookie cookie)
+> > >  {
+> > >  	unsigned long flags;
+> > >  
+> > > -	if (unlikely(current->lockdep_recursion))
+> > > +	if (unlikely(!lockdep_enabled()))
+> > >  		return;
+> > >  
+> > >  	raw_local_irq_save(flags);
+> > >  	check_flags(flags);
+> > >  
+> > > -	current->lockdep_recursion++;
+> > > +	lockdep_recursion_inc();
+> > >  	__lock_repin_lock(lock, cookie);
+> > >  	lockdep_recursion_finish();
+> > >  	raw_local_irq_restore(flags);
+> > > @@ -5113,13 +5138,13 @@ void lock_unpin_lock(struct lockdep_map *lock, struct
+> > > pin_cookie cookie)
+> > >  {
+> > >  	unsigned long flags;
+> > >  
+> > > -	if (unlikely(current->lockdep_recursion))
+> > > +	if (unlikely(!lockdep_enabled()))
+> > >  		return;
+> > >  
+> > >  	raw_local_irq_save(flags);
+> > >  	check_flags(flags);
+> > >  
+> > > -	current->lockdep_recursion++;
+> > > +	lockdep_recursion_inc();
+> > >  	__lock_unpin_lock(lock, cookie);
+> > >  	lockdep_recursion_finish();
+> > >  	raw_local_irq_restore(flags);
+> > > @@ -5249,15 +5274,12 @@ void lock_contended(struct lockdep_map *lock, unsigned
+> > > long ip)
+> > >  
+> > >  	trace_lock_acquired(lock, ip);
+> > >  
+> > > -	if (unlikely(!lock_stat || !debug_locks))
+> > > -		return;
+> > > -
+> > > -	if (unlikely(current->lockdep_recursion))
+> > > +	if (unlikely(!lock_stat || !lockdep_enabled()))
+> > >  		return;
+> > >  
+> > >  	raw_local_irq_save(flags);
+> > >  	check_flags(flags);
+> > > -	current->lockdep_recursion++;
+> > > +	lockdep_recursion_inc();
+> > >  	__lock_contended(lock, ip);
+> > >  	lockdep_recursion_finish();
+> > >  	raw_local_irq_restore(flags);
+> > > @@ -5270,15 +5292,12 @@ void lock_acquired(struct lockdep_map *lock, unsigned
+> > > long ip)
+> > >  
+> > >  	trace_lock_contended(lock, ip);
+> > >  
+> > > -	if (unlikely(!lock_stat || !debug_locks))
+> > > -		return;
+> > > -
+> > > -	if (unlikely(current->lockdep_recursion))
+> > > +	if (unlikely(!lock_stat || !lockdep_enabled()))
+> > >  		return;
+> > >  
+> > >  	raw_local_irq_save(flags);
+> > >  	check_flags(flags);
+> > > -	current->lockdep_recursion++;
+> > > +	lockdep_recursion_inc();
+> > >  	__lock_acquired(lock, ip);
+> > >  	lockdep_recursion_finish();
+> > >  	raw_local_irq_restore(flags);
+> > 
