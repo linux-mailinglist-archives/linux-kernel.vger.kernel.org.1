@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05ABA28B549
+	by mail.lfdr.de (Postfix) with ESMTP id 7453828B54A
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 14:56:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727128AbgJLM4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 08:56:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44883 "EHLO
+        id S2388573AbgJLM4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 08:56:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49751 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730289AbgJLM4j (ORCPT
+        by vger.kernel.org with ESMTP id S1728958AbgJLM4s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 08:56:39 -0400
+        Mon, 12 Oct 2020 08:56:48 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602507396;
+        s=mimecast20190719; t=1602507407;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Bn9fCb6fZ4KA6uOiGes/b5bfUtnB7n7KXeu5adGa1hM=;
-        b=DP5GQz2FIR03joJTcks7YwloEZbV+wXOSOyRKfvTx4Q0Ew+h6bei6OsSdE0x9z3plufyx7
-        UOSaFHGMptkEQ5/sU94YN3rJKIXlatAGuiBkIFDUWkYxLOhk7FSKKX3DWUs/chCxLRW0aV
-        s1wWAmnrOPzRiKFr6OompfqQKUKdAEY=
+        bh=DWPKhbJym1WETRYdR9Rn12f1+3lGCFT7suI6WbT4buQ=;
+        b=UwzN56iq0jyIr0NZVEf7KDgaJI4VVkTA1iCgtzIF9l5mo19TxF50gdtWpJoagrBQBFnqUd
+        HeuPwcoX/BBxnBBLWlzA6HlfMAIZmF7kMb8gMBZU5vMOklE+1OsuWCNmNywxMfN8XZCy/s
+        d/fL4zBeBcP/4sGYwaCVO5VRI3YHtUA=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-56-jNoDXg7wOOSswd3UsbdfqA-1; Mon, 12 Oct 2020 08:56:34 -0400
-X-MC-Unique: jNoDXg7wOOSswd3UsbdfqA-1
+ us-mta-387-e5DW3wekN-iUC9NBYr-wPg-1; Mon, 12 Oct 2020 08:56:43 -0400
+X-MC-Unique: e5DW3wekN-iUC9NBYr-wPg-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 441D510074D9;
-        Mon, 12 Oct 2020 12:56:33 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EF693107464F;
+        Mon, 12 Oct 2020 12:56:41 +0000 (UTC)
 Received: from t480s.redhat.com (ovpn-113-251.ams2.redhat.com [10.36.113.251])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 854A660C13;
-        Mon, 12 Oct 2020 12:56:24 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4391860C07;
+        Mon, 12 Oct 2020 12:56:33 +0000 (UTC)
 From:   David Hildenbrand <david@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-mm@kvack.org, virtualization@lists.linux-foundation.org,
@@ -42,9 +42,9 @@ Cc:     linux-mm@kvack.org, virtualization@lists.linux-foundation.org,
         David Hildenbrand <david@redhat.com>,
         Jason Wang <jasowang@redhat.com>,
         Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Subject: [PATCH v1 22/29] virtio-mem: memory block ids are specific to Sub Block Mode (SBM)
-Date:   Mon, 12 Oct 2020 14:53:16 +0200
-Message-Id: <20201012125323.17509-23-david@redhat.com>
+Subject: [PATCH v1 23/29] virtio-mem: factor out adding/removing memory from Linux
+Date:   Mon, 12 Oct 2020 14:53:17 +0200
+Message-Id: <20201012125323.17509-24-david@redhat.com>
 In-Reply-To: <20201012125323.17509-1-david@redhat.com>
 References: <20201012125323.17509-1-david@redhat.com>
 MIME-Version: 1.0
@@ -54,152 +54,233 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's move first_mb_id/next_mb_id/last_usable_mb_id accordingly.
+Let's use wrappers for the low-level functions that dev_dbg/dev_warn
+and work on addr + size, such that we can reuse them for adding/removing
+in other granularity.
+
+We only warn when adding memory failed, because that's something to pay
+attention to. We won't warn when removing failed, we'll reuse that in
+racy context soon (and we do have proper BUG_ON() statements in the
+current cases where it must never happen).
 
 Cc: "Michael S. Tsirkin" <mst@redhat.com>
 Cc: Jason Wang <jasowang@redhat.com>
 Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- drivers/virtio/virtio_mem.c | 44 ++++++++++++++++++-------------------
- 1 file changed, 22 insertions(+), 22 deletions(-)
+ drivers/virtio/virtio_mem.c | 107 ++++++++++++++++++++++++------------
+ 1 file changed, 73 insertions(+), 34 deletions(-)
 
 diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
-index d06c8760b337..d3ab04f655ee 100644
+index d3ab04f655ee..eb2ad31a8d8a 100644
 --- a/drivers/virtio/virtio_mem.c
 +++ b/drivers/virtio/virtio_mem.c
-@@ -96,13 +96,6 @@ struct virtio_mem {
- 	/* Maximum region size in bytes. */
- 	uint64_t region_size;
- 
--	/* Id of the first memory block of this device. */
--	unsigned long first_mb_id;
--	/* Id of the last usable memory block of this device. */
--	unsigned long last_usable_mb_id;
--	/* Id of the next memory bock to prepare when needed. */
--	unsigned long next_mb_id;
--
- 	/* The parent resource for all memory added via this device. */
- 	struct resource *parent_resource;
- 	/*
-@@ -121,6 +114,13 @@ struct virtio_mem {
- 	uint64_t offline_threshold;
- 
- 	struct {
-+		/* Id of the first memory block of this device. */
-+		unsigned long first_mb_id;
-+		/* Id of the last usable memory block of this device. */
-+		unsigned long last_usable_mb_id;
-+		/* Id of the next memory bock to prepare when needed. */
-+		unsigned long next_mb_id;
-+
- 		/* The subblock size. */
- 		uint64_t sb_size;
- 		/* The number of subblocks per Linux memory block. */
-@@ -265,7 +265,7 @@ static unsigned long virtio_mem_phys_to_sb_id(struct virtio_mem *vm,
- static void virtio_mem_sbm_set_mb_state(struct virtio_mem *vm,
- 					unsigned long mb_id, uint8_t state)
- {
--	const unsigned long idx = mb_id - vm->first_mb_id;
-+	const unsigned long idx = mb_id - vm->sbm.first_mb_id;
- 	uint8_t old_state;
- 
- 	old_state = vm->sbm.mb_states[idx];
-@@ -282,7 +282,7 @@ static void virtio_mem_sbm_set_mb_state(struct virtio_mem *vm,
- static uint8_t virtio_mem_sbm_get_mb_state(struct virtio_mem *vm,
- 					   unsigned long mb_id)
- {
--	const unsigned long idx = mb_id - vm->first_mb_id;
-+	const unsigned long idx = mb_id - vm->sbm.first_mb_id;
- 
- 	return vm->sbm.mb_states[idx];
- }
-@@ -292,7 +292,7 @@ static uint8_t virtio_mem_sbm_get_mb_state(struct virtio_mem *vm,
-  */
- static int virtio_mem_sbm_mb_states_prepare_next_mb(struct virtio_mem *vm)
- {
--	unsigned long old_bytes = vm->next_mb_id - vm->first_mb_id;
-+	unsigned long old_bytes = vm->sbm.next_mb_id - vm->sbm.first_mb_id;
- 	unsigned long new_bytes = old_bytes + 1;
- 	int old_pages = PFN_UP(old_bytes);
- 	int new_pages = PFN_UP(new_bytes);
-@@ -316,14 +316,14 @@ static int virtio_mem_sbm_mb_states_prepare_next_mb(struct virtio_mem *vm)
- }
- 
- #define virtio_mem_sbm_for_each_mb(_vm, _mb_id, _state) \
--	for (_mb_id = _vm->first_mb_id; \
--	     _mb_id < _vm->next_mb_id && _vm->sbm.mb_count[_state]; \
-+	for (_mb_id = _vm->sbm.first_mb_id; \
-+	     _mb_id < _vm->sbm.next_mb_id && _vm->sbm.mb_count[_state]; \
- 	     _mb_id++) \
- 		if (virtio_mem_sbm_get_mb_state(_vm, _mb_id) == _state)
- 
- #define virtio_mem_sbm_for_each_mb_rev(_vm, _mb_id, _state) \
--	for (_mb_id = _vm->next_mb_id - 1; \
--	     _mb_id >= _vm->first_mb_id && _vm->sbm.mb_count[_state]; \
-+	for (_mb_id = _vm->sbm.next_mb_id - 1; \
-+	     _mb_id >= _vm->sbm.first_mb_id && _vm->sbm.mb_count[_state]; \
- 	     _mb_id--) \
- 		if (virtio_mem_sbm_get_mb_state(_vm, _mb_id) == _state)
- 
-@@ -334,7 +334,7 @@ static int virtio_mem_sbm_mb_states_prepare_next_mb(struct virtio_mem *vm)
- static int virtio_mem_sbm_sb_state_bit_nr(struct virtio_mem *vm,
- 					  unsigned long mb_id, int sb_id)
- {
--	return (mb_id - vm->first_mb_id) * vm->sbm.sbs_per_mb + sb_id;
-+	return (mb_id - vm->sbm.first_mb_id) * vm->sbm.sbs_per_mb + sb_id;
+@@ -453,18 +453,16 @@ static bool virtio_mem_could_add_memory(struct virtio_mem *vm, uint64_t size)
  }
  
  /*
-@@ -414,7 +414,7 @@ static int virtio_mem_sbm_first_unplugged_sb(struct virtio_mem *vm,
+- * Try to add a memory block to Linux. This will usually only fail
+- * if out of memory.
++ * Try adding memory to Linux. Will usually only fail if out of memory.
+  *
+  * Must not be called with the vm->hotplug_mutex held (possible deadlock with
+  * onlining code).
+  *
+- * Will not modify the state of the memory block.
++ * Will not modify the state of memory blocks in virtio-mem.
   */
- static int virtio_mem_sbm_sb_states_prepare_next_mb(struct virtio_mem *vm)
+-static int virtio_mem_mb_add(struct virtio_mem *vm, unsigned long mb_id)
++static int virtio_mem_add_memory(struct virtio_mem *vm, uint64_t addr,
++				 uint64_t size)
  {
--	const unsigned long old_nb_mb = vm->next_mb_id - vm->first_mb_id;
-+	const unsigned long old_nb_mb = vm->sbm.next_mb_id - vm->sbm.first_mb_id;
- 	const unsigned long old_nb_bits = old_nb_mb * vm->sbm.sbs_per_mb;
- 	const unsigned long new_nb_bits = (old_nb_mb + 1) * vm->sbm.sbs_per_mb;
- 	int old_pages = PFN_UP(BITS_TO_LONGS(old_nb_bits) * sizeof(long));
-@@ -1177,7 +1177,7 @@ static int virtio_mem_sbm_prepare_next_mb(struct virtio_mem *vm,
- {
+-	const uint64_t addr = virtio_mem_mb_id_to_phys(mb_id);
+-	const uint64_t size = memory_block_size_bytes();
  	int rc;
  
--	if (vm->next_mb_id > vm->last_usable_mb_id)
-+	if (vm->sbm.next_mb_id > vm->sbm.last_usable_mb_id)
- 		return -ENOSPC;
+ 	/*
+@@ -478,32 +476,50 @@ static int virtio_mem_mb_add(struct virtio_mem *vm, unsigned long mb_id)
+ 			return -ENOMEM;
+ 	}
  
- 	/* Resize the state array if required. */
-@@ -1191,7 +1191,7 @@ static int virtio_mem_sbm_prepare_next_mb(struct virtio_mem *vm,
- 		return rc;
- 
- 	vm->sbm.mb_count[VIRTIO_MEM_SBM_MB_UNUSED]++;
--	*mb_id = vm->next_mb_id++;
-+	*mb_id = vm->sbm.next_mb_id++;
- 	return 0;
+-	dev_dbg(&vm->vdev->dev, "adding memory block: %lu\n", mb_id);
++	dev_dbg(&vm->vdev->dev, "adding memory: 0x%llx - 0x%llx\n", addr,
++		addr + size - 1);
+ 	/* Memory might get onlined immediately. */
+ 	atomic64_add(size, &vm->offline_size);
+ 	rc = add_memory_driver_managed(vm->nid, addr, size, vm->resource_name,
+ 				       MEMHP_MERGE_RESOURCE);
+-	if (rc)
++	if (rc) {
+ 		atomic64_sub(size, &vm->offline_size);
++		dev_warn(&vm->vdev->dev, "adding memory failed: %d\n", rc);
++		/*
++		 * TODO: Linux MM does not properly clean up yet in all cases
++		 * where adding of memory failed - especially on -ENOMEM.
++		 */
++	}
+ 	return rc;
  }
  
-@@ -1622,7 +1622,7 @@ static void virtio_mem_refresh_config(struct virtio_mem *vm)
- 			usable_region_size, &usable_region_size);
- 	end_addr = vm->addr + usable_region_size;
- 	end_addr = min(end_addr, phys_limit);
--	vm->last_usable_mb_id = virtio_mem_phys_to_mb_id(end_addr) - 1;
-+	vm->sbm.last_usable_mb_id = virtio_mem_phys_to_mb_id(end_addr) - 1;
+ /*
+- * Try to remove a memory block from Linux. Will only fail if the memory block
+- * is not offline.
++ * See virtio_mem_add_memory(): Try adding a single Linux memory block.
++ */
++static int virtio_mem_sbm_add_mb(struct virtio_mem *vm, unsigned long mb_id)
++{
++	const uint64_t addr = virtio_mem_mb_id_to_phys(mb_id);
++	const uint64_t size = memory_block_size_bytes();
++
++	return virtio_mem_add_memory(vm, addr, size);
++}
++
++/*
++ * Try removing memory from Linux. Will only fail if memory blocks aren't
++ * offline.
+  *
+  * Must not be called with the vm->hotplug_mutex held (possible deadlock with
+  * onlining code).
+  *
+- * Will not modify the state of the memory block.
++ * Will not modify the state of memory blocks in virtio-mem.
+  */
+-static int virtio_mem_mb_remove(struct virtio_mem *vm, unsigned long mb_id)
++static int virtio_mem_remove_memory(struct virtio_mem *vm, uint64_t addr,
++				    uint64_t size)
+ {
+-	const uint64_t addr = virtio_mem_mb_id_to_phys(mb_id);
+-	const uint64_t size = memory_block_size_bytes();
+ 	int rc;
  
- 	/* see if there is a request to change the size */
- 	virtio_cread_le(vm->vdev, struct virtio_mem_config, requested_size,
-@@ -1813,9 +1813,9 @@ static int virtio_mem_init(struct virtio_mem *vm)
- 	vm->sbm.sbs_per_mb = memory_block_size_bytes() / vm->sbm.sb_size;
+-	dev_dbg(&vm->vdev->dev, "removing memory block: %lu\n", mb_id);
++	dev_dbg(&vm->vdev->dev, "removing memory: 0x%llx - 0x%llx\n", addr,
++		addr + size - 1);
+ 	rc = remove_memory(vm->nid, addr, size);
+ 	if (!rc) {
+ 		atomic64_sub(size, &vm->offline_size);
+@@ -512,27 +528,41 @@ static int virtio_mem_mb_remove(struct virtio_mem *vm, unsigned long mb_id)
+ 		 * immediately instead of waiting.
+ 		 */
+ 		virtio_mem_retry(vm);
++	} else {
++		dev_dbg(&vm->vdev->dev, "removing memory failed: %d\n", rc);
+ 	}
+ 	return rc;
+ }
  
- 	/* Round up to the next full memory block */
--	vm->first_mb_id = virtio_mem_phys_to_mb_id(vm->addr - 1 +
--						   memory_block_size_bytes());
--	vm->next_mb_id = vm->first_mb_id;
-+	vm->sbm.first_mb_id = virtio_mem_phys_to_mb_id(vm->addr - 1 +
-+						       memory_block_size_bytes());
-+	vm->sbm.next_mb_id = vm->sbm.first_mb_id;
+ /*
+- * Try to offline and remove a memory block from Linux.
++ * See virtio_mem_remove_memory(): Try removing a single Linux memory block.
++ */
++static int virtio_mem_sbm_remove_mb(struct virtio_mem *vm, unsigned long mb_id)
++{
++	const uint64_t addr = virtio_mem_mb_id_to_phys(mb_id);
++	const uint64_t size = memory_block_size_bytes();
++
++	return virtio_mem_remove_memory(vm, addr, size);
++}
++
++/*
++ * Try offlining and removing memory from Linux.
+  *
+  * Must not be called with the vm->hotplug_mutex held (possible deadlock with
+  * onlining code).
+  *
+- * Will not modify the state of the memory block.
++ * Will not modify the state of memory blocks in virtio-mem.
+  */
+-static int virtio_mem_mb_offline_and_remove(struct virtio_mem *vm,
+-					    unsigned long mb_id)
++static int virtio_mem_offline_and_remove_memory(struct virtio_mem *vm,
++						uint64_t addr,
++						uint64_t size)
+ {
+-	const uint64_t addr = virtio_mem_mb_id_to_phys(mb_id);
+-	const uint64_t size = memory_block_size_bytes();
+ 	int rc;
  
- 	/* Prepare the offline threshold - make sure we can add two blocks. */
- 	vm->offline_threshold = max_t(uint64_t, 2 * memory_block_size_bytes(),
+-	dev_dbg(&vm->vdev->dev, "offlining and removing memory block: %lu\n",
+-		mb_id);
++	dev_dbg(&vm->vdev->dev,
++		"offlining and removing memory: 0x%llx - 0x%llx\n", addr,
++		addr + size - 1);
++
+ 	rc = offline_and_remove_memory(vm->nid, addr, size);
+ 	if (!rc) {
+ 		atomic64_sub(size, &vm->offline_size);
+@@ -541,10 +571,26 @@ static int virtio_mem_mb_offline_and_remove(struct virtio_mem *vm,
+ 		 * immediately instead of waiting.
+ 		 */
+ 		virtio_mem_retry(vm);
++	} else {
++		dev_dbg(&vm->vdev->dev,
++			"offlining and removing memory failed: %d\n", rc);
+ 	}
+ 	return rc;
+ }
+ 
++/*
++ * See virtio_mem_offline_and_remove_memory(): Try offlining and removing
++ * a single Linux memory block.
++ */
++static int virtio_mem_sbm_offline_and_remove_mb(struct virtio_mem *vm,
++						unsigned long mb_id)
++{
++	const uint64_t addr = virtio_mem_mb_id_to_phys(mb_id);
++	const uint64_t size = memory_block_size_bytes();
++
++	return virtio_mem_offline_and_remove_memory(vm, addr, size);
++}
++
+ /*
+  * Trigger the workqueue so the device can perform its magic.
+  */
+@@ -1230,17 +1276,10 @@ static int virtio_mem_sbm_plug_and_add_mb(struct virtio_mem *vm,
+ 					    VIRTIO_MEM_SBM_MB_OFFLINE_PARTIAL);
+ 
+ 	/* Add the memory block to linux - if that fails, try to unplug. */
+-	rc = virtio_mem_mb_add(vm, mb_id);
++	rc = virtio_mem_sbm_add_mb(vm, mb_id);
+ 	if (rc) {
+ 		int new_state = VIRTIO_MEM_SBM_MB_UNUSED;
+ 
+-		dev_err(&vm->vdev->dev,
+-			"adding memory block %lu failed with %d\n", mb_id, rc);
+-
+-		/*
+-		 * TODO: Linux MM does not properly clean up yet in all cases
+-		 * where adding of memory failed - especially on -ENOMEM.
+-		 */
+ 		if (virtio_mem_sbm_unplug_sb(vm, mb_id, 0, count))
+ 			new_state = VIRTIO_MEM_SBM_MB_PLUGGED;
+ 		virtio_mem_sbm_set_mb_state(vm, mb_id, new_state);
+@@ -1411,7 +1450,7 @@ static int virtio_mem_sbm_unplug_any_sb_offline(struct virtio_mem *vm,
+ 					    VIRTIO_MEM_SBM_MB_UNUSED);
+ 
+ 		mutex_unlock(&vm->hotplug_mutex);
+-		rc = virtio_mem_mb_remove(vm, mb_id);
++		rc = virtio_mem_sbm_remove_mb(vm, mb_id);
+ 		BUG_ON(rc);
+ 		mutex_lock(&vm->hotplug_mutex);
+ 	}
+@@ -1504,7 +1543,7 @@ static int virtio_mem_sbm_unplug_any_sb_online(struct virtio_mem *vm,
+ 	 */
+ 	if (virtio_mem_sbm_test_sb_unplugged(vm, mb_id, 0, vm->sbm.sbs_per_mb)) {
+ 		mutex_unlock(&vm->hotplug_mutex);
+-		rc = virtio_mem_mb_offline_and_remove(vm, mb_id);
++		rc = virtio_mem_sbm_offline_and_remove_mb(vm, mb_id);
+ 		mutex_lock(&vm->hotplug_mutex);
+ 		if (!rc)
+ 			virtio_mem_sbm_set_mb_state(vm, mb_id,
+@@ -1991,7 +2030,7 @@ static void virtio_mem_remove(struct virtio_device *vdev)
+ 	 */
+ 	virtio_mem_sbm_for_each_mb(vm, mb_id,
+ 				   VIRTIO_MEM_SBM_MB_OFFLINE_PARTIAL) {
+-		rc = virtio_mem_mb_remove(vm, mb_id);
++		rc = virtio_mem_sbm_remove_mb(vm, mb_id);
+ 		BUG_ON(rc);
+ 		virtio_mem_sbm_set_mb_state(vm, mb_id,
+ 					    VIRTIO_MEM_SBM_MB_UNUSED);
 -- 
 2.26.2
 
