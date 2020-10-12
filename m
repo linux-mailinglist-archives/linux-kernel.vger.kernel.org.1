@@ -2,121 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C196D28ABEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 04:10:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B98AC28AC01
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 04:11:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729903AbgJLCJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 22:09:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729808AbgJLCJn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 22:09:43 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00372C0613D0;
-        Sun, 11 Oct 2020 19:09:41 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id x13so9509002pfa.9;
-        Sun, 11 Oct 2020 19:09:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=fCvUZrMqyJzQQ14uf8jQABI7a2ChVtRsN/nTnfqUZZE=;
-        b=WmJqGmK6lYy+ITsDu6cyf835lQJCk+kswy9EShZfZTjxTyPKJZhY/Nq2SnAR8mrYgn
-         voh2SgimOlbEHSM1sgAXI6MZ4iiR+oMtHhvjjMSJyOoX8oBLsJd491F6BTdkDXY7mJQY
-         sCyh4HdSgNCZxsDX3zlIfjqJ3s7llujnW5q30K9IOJGjeX+7f40WVNZYYOcN+T6OuxP2
-         DGBhCy+FJBU19f7cVdussY0FQmhf4UoDc5xg+Ix6ifbWz/nwb6s/2fZePVULezLdQ1Qe
-         GnF4QluzByU8B40DC+oMh5ynodygrx2lXvWCTq5Uo6wmei8o4u0UcHL6FXW7+PJvxuir
-         dYLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fCvUZrMqyJzQQ14uf8jQABI7a2ChVtRsN/nTnfqUZZE=;
-        b=sSihDWW9YJBv7OGC1zBggFcjX4IpCnSCnNmg5ZUDel4zjBua9QRj2AkR7wZE3qdc6B
-         X+7Acak5YLyLNWOPhtrAf6iJxlF84z1Xdvy2ISq20iTVcSuOrGs1z7D/cko5hV62gZUG
-         vkzbNKp1a3Nlwio1x1jjXpmi3KkE5HUi7kp8WIFd6RfSDDBTzpKI115B6lX3I//BM6fP
-         7Hf7Rzow5iFRlYlNlI/O04FV8I5JUUQt9wuE/A1759NMBTpISmGF22lUGiHnN8W3N9ph
-         xU/yooT9N/IcG4ja2SF2lCGnSChMU1Z0BR4hL2K5uqW29UI0MQMtcSR6Zn06u0cAxGgI
-         Wrog==
-X-Gm-Message-State: AOAM530W0AZFIQrUCZ9Q0T8wsIH+BNpXKQCOOMvjaWrjmrsYCtN+PG3k
-        mcg0GrOvoY/Xvh5YHfLhYzI=
-X-Google-Smtp-Source: ABdhPJyvg9NYY3SSw3ECtdf96uoOyKdmHmuRhh+WcKRTDhDtAQOFmYqKak+UQH6tgAOrhK77M8YCMQ==
-X-Received: by 2002:a17:90a:7d16:: with SMTP id g22mr17496646pjl.135.1602468581497;
-        Sun, 11 Oct 2020 19:09:41 -0700 (PDT)
-Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
-        by smtp.gmail.com with ESMTPSA id q81sm18970519pfc.36.2020.10.11.19.09.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Oct 2020 19:09:40 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
-        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
-        GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 22/22] drm/msm: Don't implicit-sync if only a single ring
-Date:   Sun, 11 Oct 2020 19:09:49 -0700
-Message-Id: <20201012020958.229288-23-robdclark@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201012020958.229288-1-robdclark@gmail.com>
-References: <20201012020958.229288-1-robdclark@gmail.com>
+        id S1729905AbgJLCKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 22:10:46 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3568 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726431AbgJLCKn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Oct 2020 22:10:43 -0400
+Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.56])
+        by Forcepoint Email with ESMTP id 92781376A82C2DCCE846;
+        Mon, 12 Oct 2020 10:10:41 +0800 (CST)
+Received: from dggeme753-chm.china.huawei.com (10.3.19.99) by
+ dggeme754-chm.china.huawei.com (10.3.19.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Mon, 12 Oct 2020 10:10:41 +0800
+Received: from dggeme753-chm.china.huawei.com ([10.7.64.70]) by
+ dggeme753-chm.china.huawei.com ([10.7.64.70]) with mapi id 15.01.1913.007;
+ Mon, 12 Oct 2020 10:10:41 +0800
+From:   linmiaohe <linmiaohe@huawei.com>
+To:     David Hildenbrand <david@redhat.com>
+CC:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
+        "ziy@nvidia.com" <ziy@nvidia.com>,
+        "alexander.h.duyck@linux.intel.com" 
+        <alexander.h.duyck@linux.intel.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "osalvador@suse.de" <osalvador@suse.de>,
+        "steven.price@arm.com" <steven.price@arm.com>,
+        "ying.huang@intel.com" <ying.huang@intel.com>,
+        "yang.shi@linux.alibaba.com" <yang.shi@linux.alibaba.com>
+Subject: Re: [PATCH] page-flags: Remove unused __[Set|Clear]PagePrivate
+Thread-Topic: [PATCH] page-flags: Remove unused __[Set|Clear]PagePrivate
+Thread-Index: AdagPFpN5kgdhoQYAEiMEx4wSjEs+w==
+Date:   Mon, 12 Oct 2020 02:10:41 +0000
+Message-ID: <05749e061aab4cd2967a385cc5beec92@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.179.54]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
-
-Any cross-device sync use-cases *must* use explicit sync.  And if there
-is only a single ring (no-preemption), everything is FIFO order and
-there is no need to implicit-sync.
-
-Mesa should probably just always use MSM_SUBMIT_NO_IMPLICIT, as behavior
-is undefined when fences are not used to synchronize buffer usage across
-contexts (which is the only case where multiple different priority rings
-could come into play).
-
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
- drivers/gpu/drm/msm/msm_gem_submit.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
-index 3151a0ca8904..c69803ea53c8 100644
---- a/drivers/gpu/drm/msm/msm_gem_submit.c
-+++ b/drivers/gpu/drm/msm/msm_gem_submit.c
-@@ -277,7 +277,7 @@ static int submit_lock_objects(struct msm_gem_submit *submit)
- 	return ret;
- }
- 
--static int submit_fence_sync(struct msm_gem_submit *submit, bool no_implicit)
-+static int submit_fence_sync(struct msm_gem_submit *submit, bool implicit_sync)
- {
- 	int i, ret = 0;
- 
-@@ -297,7 +297,7 @@ static int submit_fence_sync(struct msm_gem_submit *submit, bool no_implicit)
- 				return ret;
- 		}
- 
--		if (no_implicit)
-+		if (!implicit_sync)
- 			continue;
- 
- 		ret = msm_gem_sync_object(&msm_obj->base, submit->ring->fctx,
-@@ -768,7 +768,8 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
- 	if (ret)
- 		goto out;
- 
--	ret = submit_fence_sync(submit, !!(args->flags & MSM_SUBMIT_NO_IMPLICIT));
-+	ret = submit_fence_sync(submit, (gpu->nr_rings > 1) &&
-+			!(args->flags & MSM_SUBMIT_NO_IMPLICIT));
- 	if (ret)
- 		goto out;
- 
--- 
-2.26.2
-
+RGF2aWQgSGlsZGVuYnJhbmQgPGRhdmlkQHJlZGhhdC5jb20+IHdyb3RlOg0KPj4gQW0gMTAuMTAu
+MjAyMCB1bSAwMzo1MyBzY2hyaWViIGxpbm1pYW9oZSA8bGlubWlhb2hlQGh1YXdlaS5jb20+Og0K
+Pj4gDQo+PiDvu79EYXZpZCBIaWxkZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT4gd3JvdGU6DQo+
+Pj4+IE9uIDA5LjEwLjIwIDE1OjU5LCBNaWFvaGUgTGluIHdyb3RlOg0KPj4+PiBUaGV5IGFyZSB1
+bnVzZWQgYW55bW9yZS4NCj4+PiANCj4+PiAtRUlOVkFMLCBzZW50ZW5jZSBkb2VzIG5vdCBtYWtl
+IHNlbnNlIDopDQo+Pj4gDQo+Pj4gIlRoZXkgYXJlIG5vdCB1c2VkIGFueW1vcmUuIg0KPj4+ICJU
+aGV5IGFyZSB1bnVzZWQgLiINCj4+IA0KPj4gTXkgcG9vciBFbmdsaXNoLiA7KSBXaWxsIGNoYW5n
+ZSBpdCBpbiB2MiBzb29uLiBNYW55IFRoYW5rcy4NCj4NCj5Zb3UgZ290IGl0IHJpZ2h0IGluIHRo
+ZSBzdWJqZWN0IDopDQo+DQo+Tm8gbmVlZCB0byByZXNlbmQgLSBBbmRyZXcgY2FuIGZpeHVwIHdo
+ZW4gYXBwbHlpbmchDQo+DQoNCk1hbnkgdGhhbmtzIGZvciB5b3VyIGtpbmRseSByZW1pbmQuIDop
+DQoNCj5DaGVlcnMhDQo+DQo+PiANCj4+PiANCj4+PiBSZXZpZXdlZC1ieTogRGF2aWQgSGlsZGVu
+YnJhbmQgPGRhdmlkQHJlZGhhdC5jb20+DQo+Pj4gDQoNCg0K
