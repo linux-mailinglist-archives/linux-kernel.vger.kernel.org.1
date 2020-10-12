@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 518E828B700
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 172DD28B6CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:38:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731404AbgJLNje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:39:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40116 "EHLO mail.kernel.org"
+        id S2388677AbgJLNho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:37:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731247AbgJLNio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:38:44 -0400
+        id S1731008AbgJLNhP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:37:15 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 93D812222C;
-        Mon, 12 Oct 2020 13:38:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC14122228;
+        Mon, 12 Oct 2020 13:37:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509917;
-        bh=6d2A1CF4f0xvg4GXQgVD9qYb2Sp7zjGQKdlXbCOoAE4=;
+        s=default; t=1602509823;
+        bh=YniFK4Q721RbQx4WneiSs78yOEjXg7O3fpiqLWWV5wY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GPFcSs/ScjWECzpZWiEXbSan5oqvq5ePDYmDOwR+HNQkiPBVRHVcwEw8qc1xUK5CU
-         u1dXBimJy2JNn/jgVQSpiYVzybTTP8+j1t/y05NzE/xI2bN0ZQ/wodKthRyn20+M+J
-         jIMDebfBlas7MpdLx/Nalg5pBTDHlgrAY80Bapzc=
+        b=ELj26FYRi6c2ckcJQl4BuNnQpuGASrSkuwVR/nF8AYO/YxkyvtnxeXrqNU7N9nNSk
+         kDMcMP9LeucIZ634VVBox6mETWBBKWt+5hzsLWnIdHqyMbeWDDGr0MtdLBhOuZM1Yu
+         MZajAg6ynHX8njExJEXDXcr21FqM+yRBk2PhIYGg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Volker=20R=C3=BCmelin?= <volker.ruemelin@googlemail.com>,
-        Jean Delvare <jdelvare@suse.de>, Wolfram Sang <wsa@kernel.org>,
-        "Nobuhiro Iwamatsu (CIP)" <nobuhiro1.iwamatsu@toshiba.co.jp>
-Subject: [PATCH 4.19 14/49] i2c: i801: Exclude device from suspend direct complete optimization
+        stable@vger.kernel.org, Paul McKenney <paulmck@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 4.14 44/70] ftrace: Move RCU is watching check after recursion check
 Date:   Mon, 12 Oct 2020 15:27:00 +0200
-Message-Id: <20201012132630.104038482@linuxfoundation.org>
+Message-Id: <20201012132632.299341807@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132629.469542486@linuxfoundation.org>
-References: <20201012132629.469542486@linuxfoundation.org>
+In-Reply-To: <20201012132630.201442517@linuxfoundation.org>
+References: <20201012132630.201442517@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,37 +43,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jean Delvare <jdelvare@suse.de>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-commit 845b89127bc5458d0152a4d63f165c62a22fcb70 upstream.
+commit b40341fad6cc2daa195f8090fd3348f18fff640a upstream.
 
-By default, PCI drivers with runtime PM enabled will skip the calls
-to suspend and resume on system PM. For this driver, we don't want
-that, as we need to perform additional steps for system PM to work
-properly on all systems. So instruct the PM core to not skip these
-calls.
+The first thing that the ftrace function callback helper functions should do
+is to check for recursion. Peter Zijlstra found that when
+"rcu_is_watching()" had its notrace removed, it caused perf function tracing
+to crash. This is because the call of rcu_is_watching() is tested before
+function recursion is checked and and if it is traced, it will cause an
+infinite recursion loop.
 
-Fixes: a9c8088c7988 ("i2c: i801: Don't restore config registers on runtime PM")
-Reported-by: Volker Rümelin <volker.ruemelin@googlemail.com>
-Signed-off-by: Jean Delvare <jdelvare@suse.de>
+rcu_is_watching() should still stay notrace, but to prevent this should
+never had crashed in the first place. The recursion prevention must be the
+first thing done in callback functions.
+
+Link: https://lore.kernel.org/r/20200929112541.GM2628@hirez.programming.kicks-ass.net
+
 Cc: stable@vger.kernel.org
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
-[iwamatsu: Use DPM_FLAG_NEVER_SKIP instead of DPM_FLAG_NO_DIRECT_COMPLETE]
-Signed-off-by: Nobuhiro Iwamatsu (CIP) <nobuhiro1.iwamatsu@toshiba.co.jp>
+Cc: Paul McKenney <paulmck@kernel.org>
+Fixes: c68c0fa293417 ("ftrace: Have ftrace_ops_get_func() handle RCU and PER_CPU flags too")
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reported-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/i2c/busses/i2c-i801.c |    1 +
- 1 file changed, 1 insertion(+)
 
---- a/drivers/i2c/busses/i2c-i801.c
-+++ b/drivers/i2c/busses/i2c-i801.c
-@@ -1698,6 +1698,7 @@ static int i801_probe(struct pci_dev *de
+---
+ kernel/trace/ftrace.c |    8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
+
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -6159,17 +6159,15 @@ static void ftrace_ops_assist_func(unsig
+ {
+ 	int bit;
  
- 	pci_set_drvdata(dev, priv);
+-	if ((op->flags & FTRACE_OPS_FL_RCU) && !rcu_is_watching())
+-		return;
+-
+ 	bit = trace_test_and_set_recursion(TRACE_LIST_START, TRACE_LIST_MAX);
+ 	if (bit < 0)
+ 		return;
  
-+	dev_pm_set_driver_flags(&dev->dev, DPM_FLAG_NEVER_SKIP);
- 	pm_runtime_set_autosuspend_delay(&dev->dev, 1000);
- 	pm_runtime_use_autosuspend(&dev->dev);
- 	pm_runtime_put_autosuspend(&dev->dev);
+ 	preempt_disable_notrace();
+ 
+-	if (!(op->flags & FTRACE_OPS_FL_PER_CPU) ||
+-	    !ftrace_function_local_disabled(op)) {
++	if ((!(op->flags & FTRACE_OPS_FL_RCU) || rcu_is_watching()) &&
++	    (!(op->flags & FTRACE_OPS_FL_PER_CPU) ||
++	     !ftrace_function_local_disabled(op))) {
+ 		op->func(ip, parent_ip, op, regs);
+ 	}
+ 
 
 
