@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C695428B999
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:04:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E183228B956
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731757AbgJLOCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:02:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40186 "EHLO mail.kernel.org"
+        id S2390695AbgJLN7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:59:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44086 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730904AbgJLNiB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:38:01 -0400
+        id S2388754AbgJLNkE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:40:04 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C60D922244;
-        Mon, 12 Oct 2020 13:37:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 46A762074F;
+        Mon, 12 Oct 2020 13:40:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509863;
-        bh=5Ex+mXH27rZvA7S/asn1Wb6Cz7VFNrhQORRj7MTgRhE=;
+        s=default; t=1602510003;
+        bh=5nqdtgn+qr9KPJ3GmAt5jLoEKu6t2vwUF42H80jS330=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xWMEHkRV3II7pTRclxiuDJxvveekGkk7Vbg4oOw1ly3HfScmwy1p8AdLtPI/Fmp0y
-         BwbJgwtKmNtdEzH88iwIJ87X6Da7S3AEd7eY5fr+LvVA3l+Ct0hhNSo/gKNjFIYs8n
-         NHIcTyFkVJYD7I3uDisuPVGJ5i9jnnAy0aZAL+G4=
+        b=ZHAOvhBYGplT+zowQ0Ku+n+H6igQ+wg84//SeA0veeAF7+Ke5n9LY+dilGd7rNR7O
+         iq9KJzEPDGwIf4F+hW3A57ySZEzk6ZscHj+Frei4qYricWPmsz/psttPiswRApFVyf
+         93Euq8z6qMwT5ha1OZfFZoYBxGrxd+vfyUD7M+oY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Wilken Gottwalt <wilken.gottwalt@mailbox.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Antony Antony <antony.antony@secunet.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 62/70] net: usb: ax88179_178a: fix missing stop entry in driver_info
+Subject: [PATCH 4.19 32/49] xfrm: clone XFRMA_SEC_CTX in xfrm_do_migrate
 Date:   Mon, 12 Oct 2020 15:27:18 +0200
-Message-Id: <20201012132633.183992972@linuxfoundation.org>
+Message-Id: <20201012132630.930225878@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132630.201442517@linuxfoundation.org>
-References: <20201012132630.201442517@linuxfoundation.org>
+In-Reply-To: <20201012132629.469542486@linuxfoundation.org>
+References: <20201012132629.469542486@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,32 +43,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
+From: Antony Antony <antony.antony@secunet.com>
 
-[ Upstream commit 9666ea66a74adfe295cb3a8760c76e1ef70f9caf ]
+[ Upstream commit 7aa05d304785204703a67a6aa7f1db402889a172 ]
 
-Adds the missing .stop entry in the Belkin driver_info structure.
+XFRMA_SEC_CTX was not cloned from the old to the new.
+Migrate this attribute during XFRMA_MSG_MIGRATE
 
-Fixes: e20bd60bf62a ("net: usb: asix88179_178a: Add support for the Belkin B2B128")
-Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+v1->v2:
+ - return -ENOMEM on error
+v2->v3:
+ - fix return type to int
+
+Fixes: 80c9abaabf42 ("[XFRM]: Extension for dynamic update of endpoint address(es)")
+Signed-off-by: Antony Antony <antony.antony@secunet.com>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/ax88179_178a.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/xfrm/xfrm_state.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-diff --git a/drivers/net/usb/ax88179_178a.c b/drivers/net/usb/ax88179_178a.c
-index 875639b0e9d56..e7193a541244b 100644
---- a/drivers/net/usb/ax88179_178a.c
-+++ b/drivers/net/usb/ax88179_178a.c
-@@ -1736,6 +1736,7 @@ static const struct driver_info belkin_info = {
- 	.status = ax88179_status,
- 	.link_reset = ax88179_link_reset,
- 	.reset	= ax88179_reset,
-+	.stop	= ax88179_stop,
- 	.flags	= FLAG_ETHER | FLAG_FRAMING_AX,
- 	.rx_fixup = ax88179_rx_fixup,
- 	.tx_fixup = ax88179_tx_fixup,
+diff --git a/net/xfrm/xfrm_state.c b/net/xfrm/xfrm_state.c
+index d76b019673aa0..c2640875ec757 100644
+--- a/net/xfrm/xfrm_state.c
++++ b/net/xfrm/xfrm_state.c
+@@ -1341,6 +1341,30 @@ out:
+ EXPORT_SYMBOL(xfrm_state_add);
+ 
+ #ifdef CONFIG_XFRM_MIGRATE
++static inline int clone_security(struct xfrm_state *x, struct xfrm_sec_ctx *security)
++{
++	struct xfrm_user_sec_ctx *uctx;
++	int size = sizeof(*uctx) + security->ctx_len;
++	int err;
++
++	uctx = kmalloc(size, GFP_KERNEL);
++	if (!uctx)
++		return -ENOMEM;
++
++	uctx->exttype = XFRMA_SEC_CTX;
++	uctx->len = size;
++	uctx->ctx_doi = security->ctx_doi;
++	uctx->ctx_alg = security->ctx_alg;
++	uctx->ctx_len = security->ctx_len;
++	memcpy(uctx + 1, security->ctx_str, security->ctx_len);
++	err = security_xfrm_state_alloc(x, uctx);
++	kfree(uctx);
++	if (err)
++		return err;
++
++	return 0;
++}
++
+ static struct xfrm_state *xfrm_state_clone(struct xfrm_state *orig,
+ 					   struct xfrm_encap_tmpl *encap)
+ {
+@@ -1397,6 +1421,10 @@ static struct xfrm_state *xfrm_state_clone(struct xfrm_state *orig,
+ 			goto error;
+ 	}
+ 
++	if (orig->security)
++		if (clone_security(x, orig->security))
++			goto error;
++
+ 	if (orig->coaddr) {
+ 		x->coaddr = kmemdup(orig->coaddr, sizeof(*x->coaddr),
+ 				    GFP_KERNEL);
 -- 
 2.25.1
 
