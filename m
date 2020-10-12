@@ -2,744 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0129128BB5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B69FA28BB58
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389585AbgJLOuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:50:55 -0400
-Received: from mail.efficios.com ([167.114.26.124]:60690 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389291AbgJLOug (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S2389425AbgJLOug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 12 Oct 2020 10:50:36 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 44F3B2EA30D;
-        Mon, 12 Oct 2020 10:50:33 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id yHmTERZjf3cE; Mon, 12 Oct 2020 10:50:32 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 4EE0D2EA05C;
-        Mon, 12 Oct 2020 10:50:32 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 4EE0D2EA05C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1602514232;
-        bh=7xkH0gQ4ENzBnFbtTf0dYpAI/IsCvW/SUR3EsIxRxts=;
-        h=From:To:Date:Message-Id;
-        b=CnESkb8KI88hBrbX9sQ9ZV/wSTHYKYVGWnYGvg/69lPInFiGRlBxGgprRdbZ2jBHm
-         dABgUDrdRrR5Eo2asUmFKk26QKaVJFgs3V3UOXVLHAm7VJqe7IcFjcigLKO8E7MX/a
-         GaImUwaKaBUR7HQQkQGDP2uDCDBCMyQtO15zCtn/2j3q6kh1UTtR2ujsV3Cgxy4lZz
-         maG+8i5BywYfBZQ/uZcDJowIzJVqsHvRKNnU1wZIEbK531DsLLlkhInjSAakc/WTZc
-         HVwcQRgOhRsarO49Fzb9mdk3DBxOi1dK/2abFvbWRGi3adQOiUG02FZTUQ9PAKmdNN
-         TgcfaR1PR86XA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id t7-BJcnGb1N9; Mon, 12 Oct 2020 10:50:32 -0400 (EDT)
-Received: from localhost.localdomain (192-222-181-218.qc.cable.ebox.net [192.222.181.218])
-        by mail.efficios.com (Postfix) with ESMTPSA id 7F7DA2E9FD8;
-        Mon, 12 Oct 2020 10:50:30 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Michael Jeanson <mjeanson@efficios.com>
-Subject: [PATCH 3/3] selftests: Add VRF route leaking tests
-Date:   Mon, 12 Oct 2020 10:50:16 -0400
-Message-Id: <20201012145016.2023-4-mathieu.desnoyers@efficios.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201012145016.2023-1-mathieu.desnoyers@efficios.com>
-References: <20201012145016.2023-1-mathieu.desnoyers@efficios.com>
+Received: from mail.kernel.org ([198.145.29.99]:57014 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387930AbgJLOub (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 10:50:31 -0400
+Received: from [192.168.0.112] (75-58-59-55.lightspeed.rlghnc.sbcglobal.net [75.58.59.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 37B142080A;
+        Mon, 12 Oct 2020 14:50:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602514230;
+        bh=Um3brhR4V7mbgCo0NMThdWSXjyTwvJ/bNPfg+5StKaM=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=LJqc3NPzieo+zCMFKTWJbZTtyeoHuwpGsCfHSBwse3DTJOJaJoamovVG0tKre3pIP
+         kP3vaN9XQyoxFskgTFvlBth9KjiJftUWI6h5Y6yOUjlPz5wzlrnUxtMt4Ayi4aIHuE
+         3R4tIBD50qhLdnfnA5/+1oYfSdQ37BN3Tka2EsjU=
+Subject: Re: [PATCH v4 2/2] PCI/ERR: Split the fatal and non-fatal error
+ recovery handling
+To:     sathyanarayanan.nkuppuswamy@gmail.com, bhelgaas@google.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ashok.raj@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com
+References: <5c5bca0bdb958e456176fe6ede10ba8f838fbafc.1602263264.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <c6e3f1168d5d88b207b59c434792a10a7331bb89.1602263264.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   Sinan Kaya <okaya@kernel.org>
+Autocrypt: addr=okaya@kernel.org; keydata=
+ mQENBFrnOrUBCADGOL0kF21B6ogpOkuYvz6bUjO7NU99PKhXx1MfK/AzK+SFgxJF7dMluoF6
+ uT47bU7zb7HqACH6itTgSSiJeSoq86jYoq5s4JOyaj0/18Hf3/YBah7AOuwk6LtV3EftQIhw
+ 9vXqCnBwP/nID6PQ685zl3vH68yzF6FVNwbDagxUz/gMiQh7scHvVCjiqkJ+qu/36JgtTYYw
+ 8lGWRcto6gr0eTF8Wd8f81wspmUHGsFdN/xPsZPKMw6/on9oOj3AidcR3P9EdLY4qQyjvcNC
+ V9cL9b5I/Ud9ghPwW4QkM7uhYqQDyh3SwgEFudc+/RsDuxjVlg9CFnGhS0nPXR89SaQZABEB
+ AAG0HVNpbmFuIEtheWEgPG9rYXlhQGtlcm5lbC5vcmc+iQFOBBMBCAA4FiEEYdOlMSE+a7/c
+ ckrQvGF4I+4LAFcFAlztcAoCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQvGF4I+4L
+ AFfidAf/VKHInxep0Z96iYkIq42432HTZUrxNzG9IWk4HN7c3vTJKv2W+b9pgvBF1SmkyQSy
+ 8SJ3Zd98CO6FOHA1FigFyZahVsme+T0GsS3/OF1kjrtMktoREr8t0rK0yKpCTYVdlkHadxmR
+ Qs5xLzW1RqKlrNigKHI2yhgpMwrpzS+67F1biT41227sqFzW9urEl/jqGJXaB6GV+SRKSHN+
+ ubWXgE1NkmfAMeyJPKojNT7ReL6eh3BNB/Xh1vQJew+AE50EP7o36UXghoUktnx6cTkge0ZS
+ qgxuhN33cCOU36pWQhPqVSlLTZQJVxuCmlaHbYWvye7bBOhmiuNKhOzb3FcgT7kBDQRa5zq1
+ AQgAyRq/7JZKOyB8wRx6fHE0nb31P75kCnL3oE+smKW/sOcIQDV3C7mZKLf472MWB1xdr4Tm
+ eXeL/wT0QHapLn5M5wWghC80YvjjdolHnlq9QlYVtvl1ocAC28y43tKJfklhHiwMNDJfdZbw
+ 9lQ2h+7nccFWASNUu9cqZOABLvJcgLnfdDpnSzOye09VVlKr3NHgRyRZa7me/oFJCxrJlKAl
+ 2hllRLt0yV08o7i14+qmvxI2EKLX9zJfJ2rGWLTVe3EJBnCsQPDzAUVYSnTtqELu2AGzvDiM
+ gatRaosnzhvvEK+kCuXuCuZlRWP7pWSHqFFuYq596RRG5hNGLbmVFZrCxQARAQABiQEfBBgB
+ CAAJBQJa5zq1AhsMAAoJELxheCPuCwBX2UYH/2kkMC4mImvoClrmcMsNGijcZHdDlz8NFfCI
+ gSb3NHkarnA7uAg8KJuaHUwBMk3kBhv2BGPLcmAknzBIehbZ284W7u3DT9o1Y5g+LDyx8RIi
+ e7pnMcC+bE2IJExCVf2p3PB1tDBBdLEYJoyFz/XpdDjZ8aVls/pIyrq+mqo5LuuhWfZzPPec
+ 9EiM2eXpJw+Rz+vKjSt1YIhg46YbdZrDM2FGrt9ve3YaM5H0lzJgq/JQPKFdbd5MB0X37Qc+
+ 2m/A9u9SFnOovA42DgXUyC2cSbIJdPWOK9PnzfXqF3sX9Aol2eLUmQuLpThJtq5EHu6FzJ7Y
+ L+s0nPaNMKwv/Xhhm6Y=
+Message-ID: <5ae14b67-94a5-6d2f-b74d-ca32bbd079cd@kernel.org>
+Date:   Mon, 12 Oct 2020 10:50:29 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
+MIME-Version: 1.0
+In-Reply-To: <c6e3f1168d5d88b207b59c434792a10a7331bb89.1602263264.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Jeanson <mjeanson@efficios.com>
+On 10/12/2020 1:03 AM, sathyanarayanan.nkuppuswamy@gmail.com wrote:
+> From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> 
+> Commit bdb5ac85777d ("PCI/ERR: Handle fatal error recovery")
+> merged fatal and non-fatal error recovery paths, and also made
+> recovery code depend on hotplug handler for "remove affected
+> device + rescan" support. But this change also complicated the
+> error recovery path and which in turn led to the following
+> issues.
+> 
+> 1. We depend on hotplug handler for removing the affected
+> devices/drivers on DLLSC LINK down event (on DPC event
+> trigger) and DPC handler for handling the error recovery. Since
+> both handlers operate on same set of affected devices, it leads
+> to race condition, which in turn leads to  NULL pointer
+> exceptions or error recovery failures.You can find more details
+> about this issue in following link.
+> 
+> https://lore.kernel.org/linux-pci/20201007113158.48933-1-haifeng.zhao@intel.com/T/#t
+> 
+> 2. For non-hotplug capable devices fatal (DPC) error recovery
+> is currently broken. Current fatal error recovery implementation
+> relies on PCIe hotplug (pciehp) handler for detaching and
+> re-enumerating the affected devices/drivers. So when dealing with
+> non-hotplug capable devices, recovery code does not restore the state
+> of the affected devices correctly. You can find more details about
+> this issue in the following links.
+> 
+> https://lore.kernel.org/linux-pci/20200527083130.4137-1-Zhiqiang.Hou@nxp.com/
+> https://lore.kernel.org/linux-pci/12115.1588207324@famine/
+> https://lore.kernel.org/linux-pci/0e6f89cd6b9e4a72293cc90fafe93487d7c2d295.1585000084.git.sathyanarayanan.kuppuswamy@linux.intel.com/
+> 
+> In order to fix the above two issues, we should stop relying on hotplug
+> handler for cleaning the affected devices/drivers and let error recovery
+> handler own this functionality. So this patch reverts Commit bdb5ac85777d
+> ("PCI/ERR: Handle fatal error recovery") and re-introduce the  "remove
+> affected device + rescan"  functionality in fatal error recovery handler.
+> 
+> Also holding pci_lock_rescan_remove() will prevent the race between hotplug
+> and DPC handler.
+> 
+> Fixes: bdb5ac85777d ("PCI/ERR: Handle fatal error recovery")
+> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> ---
+>  Documentation/PCI/pci-error-recovery.rst | 47 ++++++++++------
+>  drivers/pci/pcie/err.c                   | 71 +++++++++++++++++++-----
+>  2 files changed, 87 insertions(+), 31 deletions(-)
 
-The objective of the tests is to check that ICMP errors generated while
-crossing between VRFs are properly routed back to the source host.
+I'm not sure about locks involved but I do like the concept.
+Current fatal error handling is best effort.
 
-The first ttl test sends a ping with a ttl of 1 from h1 to h2 and parses the
-output of the command to check that a ttl expired error is received.
+There is no way to recover if link is down by the time we
+reach to fatal error handling routine.
 
-The second ttl test runs traceroute from h1 to h2 and parses the output to
-check for a hop on r1.
+This change will make the solution more reliable.
 
-The mtu test sends a ping with a payload of 1450 from h1 to h2, through
-r1 which has an interface with a mtu of 1400 and parses the output of the
-command to check that a fragmentation needed error is received.
-
-[ The IPv6 MTU test still fails with the symmetric routing setup. It
-  appears to be caused by source address selection picking ::1.  Fixing
-  this is beyond the scope of this series. ]
-
-Signed-off-by: Michael Jeanson <mjeanson@efficios.com>
-Reviewed-by: David Ahern <dsahern@gmail.com>
-Cc: David Ahern <dsahern@kernel.org>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: netdev@vger.kernel.org
----
-Changes since v2:
-- Renamed test script to vrf_route_leaking.sh
-- Added a default symmetric routing topology
-- Documented the asymmetric routing topology
-Changes since v1:
-- Formating and indentation fixes
-- Added '-t' to getopts
-- Reworked verbose output of grep'd commands with a new function
-- Expanded ip command names
-- Added fragmentation tests
----
- tools/testing/selftests/net/Makefile          |   1 +
- .../selftests/net/vrf_route_leaking.sh        | 626 ++++++++++++++++++
- 2 files changed, 627 insertions(+)
- create mode 100755 tools/testing/selftests/net/vrf_route_leaking.sh
-
-diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/selftests/net/Makefile
-index 9491bbaa0831..3e7fb1e70c77 100644
---- a/tools/testing/selftests/net/Makefile
-+++ b/tools/testing/selftests/net/Makefile
-@@ -19,6 +19,7 @@ TEST_PROGS += txtimestamp.sh
- TEST_PROGS += vrf-xfrm-tests.sh
- TEST_PROGS += rxtimestamp.sh
- TEST_PROGS += devlink_port_split.py
-+TEST_PROGS += vrf_route_leaking.sh
- TEST_PROGS_EXTENDED := in_netns.sh
- TEST_GEN_FILES =  socket nettest
- TEST_GEN_FILES += psock_fanout psock_tpacket msg_zerocopy reuseport_addr_any
-diff --git a/tools/testing/selftests/net/vrf_route_leaking.sh b/tools/testing/selftests/net/vrf_route_leaking.sh
-new file mode 100755
-index 000000000000..23cf924754a5
---- /dev/null
-+++ b/tools/testing/selftests/net/vrf_route_leaking.sh
-@@ -0,0 +1,626 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Copyright (c) 2019 David Ahern <dsahern@gmail.com>. All rights reserved.
-+# Copyright (c) 2020 Michael Jeanson <mjeanson@efficios.com>. All rights reserved.
-+#
-+# Requires CONFIG_NET_VRF, CONFIG_VETH, CONFIG_BRIDGE and CONFIG_NET_NS.
-+#
-+#
-+# Symmetric routing topology
-+#
-+#                     blue         red
-+# +----+              .253 +----+ .253              +----+
-+# | h1 |-------------------| r1 |-------------------| h2 |
-+# +----+ .1                +----+                .2 +----+
-+#         172.16.1/24                  172.16.2/24
-+#    2001:db8:16:1/64                  2001:db8:16:2/64
-+#
-+#
-+# Route from h1 to h2 and back goes through r1, incoming vrf blue has a route
-+# to the outgoing vrf red for the n2 network and red has a route back to n1.
-+# The red VRF interface has a MTU of 1400.
-+#
-+# The first test sends a ping with a ttl of 1 from h1 to h2 and parses the
-+# output of the command to check that a ttl expired error is received.
-+#
-+# The second test runs traceroute from h1 to h2 and parses the output to check
-+# for a hop on r1.
-+#
-+# The third test sends a ping with a packet size of 1450 from h1 to h2 and
-+# parses the output of the command to check that a fragmentation error is
-+# received.
-+#
-+#
-+# Asymmetric routing topology
-+#
-+# This topology represents a customer setup where the issue with icmp errors
-+# and VRF route leaking was initialy reported. The MTU test isn't done here
-+# because of the lack of a return route in the red VRF.
-+#
-+#                     blue         red
-+#                     .253 +----+ .253
-+#                     +----| r1 |----+
-+#                     |    +----+    |
-+# +----+              |              |              +----+
-+# | h1 |--------------+              +--------------| h2 |
-+# +----+ .1           |              |           .2 +----+
-+#         172.16.1/24 |    +----+    | 172.16.2/24
-+#    2001:db8:16:1/64 +----| r2 |----+ 2001:db8:16:2/64
-+#                     .254 +----+ .254
-+#
-+#
-+# Route from h1 to h2 goes through r1, incoming vrf blue has a route to the
-+# outgoing vrf red for the n2 network but red doesn't have a route back to n1.
-+# Route from h2 to h1 goes through r2.
-+#
-+# The objective is to check that the incoming vrf routing table is selected
-+# to send an ICMP error back to the source when the ttl of a packet reaches 1
-+# while it is forwarded between different vrfs.
-+
-+VERBOSE=0
-+PAUSE_ON_FAIL=no
-+DEFAULT_TTYPE=sym
-+
-+H1_N1=172.16.1.0/24
-+H1_N1_6=2001:db8:16:1::/64
-+
-+H1_N1_IP=172.16.1.1
-+R1_N1_IP=172.16.1.253
-+R2_N1_IP=172.16.1.254
-+
-+H1_N1_IP6=2001:db8:16:1::1
-+R1_N1_IP6=2001:db8:16:1::253
-+R2_N1_IP6=2001:db8:16:1::254
-+
-+H2_N2=172.16.2.0/24
-+H2_N2_6=2001:db8:16:2::/64
-+
-+H2_N2_IP=172.16.2.2
-+R1_N2_IP=172.16.2.253
-+R2_N2_IP=172.16.2.254
-+
-+H2_N2_IP6=2001:db8:16:2::2
-+R1_N2_IP6=2001:db8:16:2::253
-+R2_N2_IP6=2001:db8:16:2::254
-+
-+################################################################################
-+# helpers
-+
-+log_section()
-+{
-+	echo
-+	echo "###########################################################################"
-+	echo "$*"
-+	echo "###########################################################################"
-+	echo
-+}
-+
-+log_test()
-+{
-+	local rc=$1
-+	local expected=$2
-+	local msg="$3"
-+
-+	if [ "${rc}" -eq "${expected}" ]; then
-+		printf "TEST: %-60s  [ OK ]\n" "${msg}"
-+		nsuccess=$((nsuccess+1))
-+	else
-+		ret=1
-+		nfail=$((nfail+1))
-+		printf "TEST: %-60s  [FAIL]\n" "${msg}"
-+		if [ "${PAUSE_ON_FAIL}" = "yes" ]; then
-+			echo
-+			echo "hit enter to continue, 'q' to quit"
-+			read -r a
-+			[ "$a" = "q" ] && exit 1
-+		fi
-+	fi
-+}
-+
-+run_cmd()
-+{
-+	local cmd="$*"
-+	local out
-+	local rc
-+
-+	if [ "$VERBOSE" = "1" ]; then
-+		echo "COMMAND: $cmd"
-+	fi
-+
-+	# shellcheck disable=SC2086
-+	out=$(eval $cmd 2>&1)
-+	rc=$?
-+	if [ "$VERBOSE" = "1" ] && [ -n "$out" ]; then
-+		echo "$out"
-+	fi
-+
-+	[ "$VERBOSE" = "1" ] && echo
-+
-+	return $rc
-+}
-+
-+run_cmd_grep()
-+{
-+	local grep_pattern="$1"
-+	shift
-+	local cmd="$*"
-+	local out
-+	local rc
-+
-+	if [ "$VERBOSE" = "1" ]; then
-+		echo "COMMAND: $cmd"
-+	fi
-+
-+	# shellcheck disable=SC2086
-+	out=$(eval $cmd 2>&1)
-+	if [ "$VERBOSE" = "1" ] && [ -n "$out" ]; then
-+		echo "$out"
-+	fi
-+
-+	echo "$out" | grep -q "$grep_pattern"
-+	rc=$?
-+
-+	[ "$VERBOSE" = "1" ] && echo
-+
-+	return $rc
-+}
-+
-+################################################################################
-+# setup and teardown
-+
-+cleanup()
-+{
-+	local ns
-+
-+	for ns in h1 h2 r1 r2; do
-+		ip netns del $ns 2>/dev/null
-+	done
-+}
-+
-+setup_vrf()
-+{
-+	local ns=$1
-+
-+	ip -netns "${ns}" rule del pref 0
-+	ip -netns "${ns}" rule add pref 32765 from all lookup local
-+	ip -netns "${ns}" -6 rule del pref 0
-+	ip -netns "${ns}" -6 rule add pref 32765 from all lookup local
-+}
-+
-+create_vrf()
-+{
-+	local ns=$1
-+	local vrf=$2
-+	local table=$3
-+
-+	ip -netns "${ns}" link add "${vrf}" type vrf table "${table}"
-+	ip -netns "${ns}" link set "${vrf}" up
-+	ip -netns "${ns}" route add vrf "${vrf}" unreachable default metric 8192
-+	ip -netns "${ns}" -6 route add vrf "${vrf}" unreachable default metric 8192
-+
-+	ip -netns "${ns}" addr add 127.0.0.1/8 dev "${vrf}"
-+	ip -netns "${ns}" -6 addr add ::1 dev "${vrf}" nodad
-+}
-+
-+setup_sym()
-+{
-+	local ns
-+
-+	# make sure we are starting with a clean slate
-+	cleanup
-+
-+	#
-+	# create nodes as namespaces
-+	#
-+	for ns in h1 h2 r1; do
-+		ip netns add $ns
-+		ip -netns $ns link set lo up
-+
-+		case "${ns}" in
-+		h[12]) ip netns exec $ns sysctl -q -w net.ipv6.conf.all.forwarding=0
-+		       ip netns exec $ns sysctl -q -w net.ipv6.conf.all.keep_addr_on_down=1
-+			;;
-+		r1)    ip netns exec $ns sysctl -q -w net.ipv4.ip_forward=1
-+		       ip netns exec $ns sysctl -q -w net.ipv6.conf.all.forwarding=1
-+		esac
-+	done
-+
-+	#
-+	# create interconnects
-+	#
-+	ip -netns h1 link add eth0 type veth peer name r1h1
-+	ip -netns h1 link set r1h1 netns r1 name eth0 up
-+
-+	ip -netns h2 link add eth0 type veth peer name r1h2
-+	ip -netns h2 link set r1h2 netns r1 name eth1 up
-+
-+	#
-+	# h1
-+	#
-+	ip -netns h1 addr add dev eth0 ${H1_N1_IP}/24
-+	ip -netns h1 -6 addr add dev eth0 ${H1_N1_IP6}/64 nodad
-+	ip -netns h1 link set eth0 up
-+
-+	# h1 to h2 via r1
-+	ip -netns h1    route add ${H2_N2} via ${R1_N1_IP} dev eth0
-+	ip -netns h1 -6 route add ${H2_N2_6} via "${R1_N1_IP6}" dev eth0
-+
-+	#
-+	# h2
-+	#
-+	ip -netns h2 addr add dev eth0 ${H2_N2_IP}/24
-+	ip -netns h2 -6 addr add dev eth0 ${H2_N2_IP6}/64 nodad
-+	ip -netns h2 link set eth0 up
-+
-+	# h2 to h1 via r1
-+	ip -netns h2 route add default via ${R1_N2_IP} dev eth0
-+	ip -netns h2 -6 route add default via ${R1_N2_IP6} dev eth0
-+
-+	#
-+	# r1
-+	#
-+	setup_vrf r1
-+	create_vrf r1 blue 1101
-+	create_vrf r1 red 1102
-+	ip -netns r1 link set mtu 1400 dev eth1
-+	ip -netns r1 link set eth0 vrf blue up
-+	ip -netns r1 link set eth1 vrf red up
-+	ip -netns r1 addr add dev eth0 ${R1_N1_IP}/24
-+	ip -netns r1 -6 addr add dev eth0 ${R1_N1_IP6}/64 nodad
-+	ip -netns r1 addr add dev eth1 ${R1_N2_IP}/24
-+	ip -netns r1 -6 addr add dev eth1 ${R1_N2_IP6}/64 nodad
-+
-+	# Route leak from blue to red
-+	ip -netns r1 route add vrf blue ${H2_N2} dev red
-+	ip -netns r1 -6 route add vrf blue ${H2_N2_6} dev red
-+
-+	# Route leak from red to blue
-+	ip -netns r1 route add vrf red ${H1_N1} dev blue
-+	ip -netns r1 -6 route add vrf red ${H1_N1_6} dev blue
-+
-+
-+	# Wait for ip config to settle
-+	sleep 2
-+}
-+
-+setup_asym()
-+{
-+	local ns
-+
-+	# make sure we are starting with a clean slate
-+	cleanup
-+
-+	#
-+	# create nodes as namespaces
-+	#
-+	for ns in h1 h2 r1 r2; do
-+		ip netns add $ns
-+		ip -netns $ns link set lo up
-+
-+		case "${ns}" in
-+		h[12]) ip netns exec $ns sysctl -q -w net.ipv6.conf.all.forwarding=0
-+		       ip netns exec $ns sysctl -q -w net.ipv6.conf.all.keep_addr_on_down=1
-+			;;
-+		r[12]) ip netns exec $ns sysctl -q -w net.ipv4.ip_forward=1
-+		       ip netns exec $ns sysctl -q -w net.ipv6.conf.all.forwarding=1
-+		esac
-+	done
-+
-+	#
-+	# create interconnects
-+	#
-+	ip -netns h1 link add eth0 type veth peer name r1h1
-+	ip -netns h1 link set r1h1 netns r1 name eth0 up
-+
-+	ip -netns h1 link add eth1 type veth peer name r2h1
-+	ip -netns h1 link set r2h1 netns r2 name eth0 up
-+
-+	ip -netns h2 link add eth0 type veth peer name r1h2
-+	ip -netns h2 link set r1h2 netns r1 name eth1 up
-+
-+	ip -netns h2 link add eth1 type veth peer name r2h2
-+	ip -netns h2 link set r2h2 netns r2 name eth1 up
-+
-+	#
-+	# h1
-+	#
-+	ip -netns h1 link add br0 type bridge
-+	ip -netns h1 link set br0 up
-+	ip -netns h1 addr add dev br0 ${H1_N1_IP}/24
-+	ip -netns h1 -6 addr add dev br0 ${H1_N1_IP6}/64 nodad
-+	ip -netns h1 link set eth0 master br0 up
-+	ip -netns h1 link set eth1 master br0 up
-+
-+	# h1 to h2 via r1
-+	ip -netns h1    route add ${H2_N2} via ${R1_N1_IP} dev br0
-+	ip -netns h1 -6 route add ${H2_N2_6} via "${R1_N1_IP6}" dev br0
-+
-+	#
-+	# h2
-+	#
-+	ip -netns h2 link add br0 type bridge
-+	ip -netns h2 link set br0 up
-+	ip -netns h2 addr add dev br0 ${H2_N2_IP}/24
-+	ip -netns h2 -6 addr add dev br0 ${H2_N2_IP6}/64 nodad
-+	ip -netns h2 link set eth0 master br0 up
-+	ip -netns h2 link set eth1 master br0 up
-+
-+	# h2 to h1 via r2
-+	ip -netns h2 route add default via ${R2_N2_IP} dev br0
-+	ip -netns h2 -6 route add default via ${R2_N2_IP6} dev br0
-+
-+	#
-+	# r1
-+	#
-+	setup_vrf r1
-+	create_vrf r1 blue 1101
-+	create_vrf r1 red 1102
-+	ip -netns r1 link set mtu 1400 dev eth1
-+	ip -netns r1 link set eth0 vrf blue up
-+	ip -netns r1 link set eth1 vrf red up
-+	ip -netns r1 addr add dev eth0 ${R1_N1_IP}/24
-+	ip -netns r1 -6 addr add dev eth0 ${R1_N1_IP6}/64 nodad
-+	ip -netns r1 addr add dev eth1 ${R1_N2_IP}/24
-+	ip -netns r1 -6 addr add dev eth1 ${R1_N2_IP6}/64 nodad
-+
-+	# Route leak from blue to red
-+	ip -netns r1 route add vrf blue ${H2_N2} dev red
-+	ip -netns r1 -6 route add vrf blue ${H2_N2_6} dev red
-+
-+	# No route leak from red to blue
-+
-+	#
-+	# r2
-+	#
-+	ip -netns r2 addr add dev eth0 ${R2_N1_IP}/24
-+	ip -netns r2 -6 addr add dev eth0 ${R2_N1_IP6}/64 nodad
-+	ip -netns r2 addr add dev eth1 ${R2_N2_IP}/24
-+	ip -netns r2 -6 addr add dev eth1 ${R2_N2_IP6}/64 nodad
-+
-+	# Wait for ip config to settle
-+	sleep 2
-+}
-+
-+check_connectivity()
-+{
-+	ip netns exec h1 ping -c1 -w1 ${H2_N2_IP} >/dev/null 2>&1
-+	log_test $? 0 "Basic IPv4 connectivity"
-+	return $?
-+}
-+
-+check_connectivity6()
-+{
-+	ip netns exec h1 "${ping6}" -c1 -w1 ${H2_N2_IP6} >/dev/null 2>&1
-+	log_test $? 0 "Basic IPv6 connectivity"
-+	return $?
-+}
-+
-+check_traceroute()
-+{
-+	if [ ! -x "$(command -v traceroute)" ]; then
-+		echo "SKIP: Could not run IPV4 test without traceroute"
-+		return 1
-+	fi
-+}
-+
-+check_traceroute6()
-+{
-+	if [ ! -x "$(command -v traceroute6)" ]; then
-+		echo "SKIP: Could not run IPV6 test without traceroute6"
-+		return 1
-+	fi
-+}
-+
-+ipv4_traceroute()
-+{
-+	local ttype="$1"
-+
-+	[ "x$ttype" = "x" ] && ttype="$DEFAULT_TTYPE"
-+
-+	log_section "IPv4 ($ttype route): VRF ICMP error route lookup traceroute"
-+
-+	check_traceroute || return
-+
-+	setup_"$ttype"
-+
-+	check_connectivity || return
-+
-+	run_cmd_grep "${R1_N1_IP}" ip netns exec h1 traceroute ${H2_N2_IP}
-+	log_test $? 0 "Traceroute reports a hop on r1"
-+}
-+
-+ipv4_traceroute_asym()
-+{
-+	ipv4_traceroute asym
-+}
-+
-+ipv6_traceroute()
-+{
-+	local ttype="$1"
-+
-+	[ "x$ttype" = "x" ] && ttype="$DEFAULT_TTYPE"
-+
-+	log_section "IPv6 ($ttype route): VRF ICMP error route lookup traceroute"
-+
-+	check_traceroute6 || return
-+
-+	setup_"$ttype"
-+
-+	check_connectivity6 || return
-+
-+	run_cmd_grep "${R1_N1_IP6}" ip netns exec h1 traceroute6 ${H2_N2_IP6}
-+	log_test $? 0 "Traceroute6 reports a hop on r1"
-+}
-+
-+ipv6_traceroute_asym()
-+{
-+	ipv6_traceroute asym
-+}
-+
-+ipv4_ping_ttl()
-+{
-+	local ttype="$1"
-+
-+	[ "x$ttype" = "x" ] && ttype="$DEFAULT_TTYPE"
-+
-+	log_section "IPv4 ($ttype route): VRF ICMP ttl error route lookup ping"
-+
-+	setup_"$ttype"
-+
-+	check_connectivity || return
-+
-+	run_cmd_grep "Time to live exceeded" ip netns exec h1 ping -t1 -c1 -W2 ${H2_N2_IP}
-+	log_test $? 0 "Ping received ICMP ttl exceeded"
-+}
-+
-+ipv4_ping_ttl_asym()
-+{
-+	ipv4_ping_ttl asym
-+}
-+
-+ipv4_ping_frag()
-+{
-+	local ttype="$1"
-+
-+	[ "x$ttype" = "x" ] && ttype="$DEFAULT_TTYPE"
-+
-+	log_section "IPv4 ($ttype route): VRF ICMP fragmentation error route lookup ping"
-+
-+	setup_"$ttype"
-+
-+	check_connectivity || return
-+
-+	run_cmd_grep "Frag needed" ip netns exec h1 ping -s 1450 -Mdo -c1 -W2 ${H2_N2_IP}
-+	log_test $? 0 "Ping received ICMP Frag needed"
-+}
-+
-+ipv4_ping_frag_asym()
-+{
-+	ipv4_ping_frag asym
-+}
-+
-+ipv6_ping_ttl()
-+{
-+	local ttype="$1"
-+
-+	[ "x$ttype" = "x" ] && ttype="$DEFAULT_TTYPE"
-+
-+	log_section "IPv6 ($ttype route): VRF ICMP ttl error route lookup ping"
-+
-+	setup_"$ttype"
-+
-+	check_connectivity6 || return
-+
-+	run_cmd_grep "Time exceeded: Hop limit" ip netns exec h1 "${ping6}" -t1 -c1 -W2 ${H2_N2_IP6}
-+	log_test $? 0 "Ping received ICMP Hop limit"
-+}
-+
-+ipv6_ping_ttl_asym()
-+{
-+	ipv6_ping_ttl asym
-+}
-+
-+ipv6_ping_frag()
-+{
-+	local ttype="$1"
-+
-+	[ "x$ttype" = "x" ] && ttype="$DEFAULT_TTYPE"
-+
-+	log_section "IPv6 ($ttype route): VRF ICMP fragmentation error route lookup ping"
-+
-+	setup_"$ttype"
-+
-+	check_connectivity6 || return
-+
-+	run_cmd_grep "Packet too big" ip netns exec h1 "${ping6}" -s 1450 -Mdo -c1 -W2 ${H2_N2_IP6}
-+	log_test $? 0 "Ping received ICMP Packet too big"
-+}
-+
-+ipv6_ping_frag_asym()
-+{
-+	ipv6_ping_frag asym
-+}
-+
-+################################################################################
-+# usage
-+
-+usage()
-+{
-+        cat <<EOF
-+usage: ${0##*/} OPTS
-+
-+	-4          Run IPv4 tests only
-+	-6          Run IPv6 tests only
-+        -t TEST     Run only TEST
-+	-p          Pause on fail
-+	-v          verbose mode (show commands and output)
-+EOF
-+}
-+
-+################################################################################
-+# main
-+
-+# Some systems don't have a ping6 binary anymore
-+command -v ping6 > /dev/null 2>&1 && ping6=$(command -v ping6) || ping6=$(command -v ping)
-+
-+TESTS_IPV4="ipv4_ping_ttl ipv4_traceroute ipv4_ping_frag ipv4_ping_ttl_asym ipv4_traceroute_asym"
-+TESTS_IPV6="ipv6_ping_ttl ipv6_traceroute ipv6_ping_frag ipv6_ping_ttl_asym ipv6_traceroute_asym"
-+
-+ret=0
-+nsuccess=0
-+nfail=0
-+
-+while getopts :46t:pvh o
-+do
-+	case $o in
-+		4) TESTS=ipv4;;
-+		6) TESTS=ipv6;;
-+		t) TESTS=$OPTARG;;
-+		p) PAUSE_ON_FAIL=yes;;
-+		v) VERBOSE=1;;
-+		h) usage; exit 0;;
-+		*) usage; exit 1;;
-+	esac
-+done
-+
-+#
-+# show user test config
-+#
-+if [ -z "$TESTS" ]; then
-+        TESTS="$TESTS_IPV4 $TESTS_IPV6"
-+elif [ "$TESTS" = "ipv4" ]; then
-+        TESTS="$TESTS_IPV4"
-+elif [ "$TESTS" = "ipv6" ]; then
-+        TESTS="$TESTS_IPV6"
-+fi
-+
-+for t in $TESTS
-+do
-+	case $t in
-+	ipv4_ping_ttl|ping)              ipv4_ping_ttl;;&
-+	ipv4_ping_ttl_asym|ping)         ipv4_ping_ttl_asym;;&
-+	ipv4_traceroute|traceroute)      ipv4_traceroute;;&
-+	ipv4_traceroute_asym|traceroute) ipv4_traceroute_asym;;&
-+	ipv4_ping_frag|ping)             ipv4_ping_frag;;&
-+
-+	ipv6_ping_ttl|ping)              ipv6_ping_ttl;;&
-+	ipv6_ping_ttl_asym|ping)         ipv6_ping_ttl_asym;;&
-+	ipv6_traceroute|traceroute)      ipv6_traceroute;;&
-+	ipv6_traceroute_asym|traceroute) ipv6_traceroute_asym;;&
-+	ipv6_ping_frag|ping)             ipv6_ping_frag;;&
-+
-+	# setup namespaces and config, but do not run any tests
-+	setup_sym|setup)                 setup_sym; exit 0;;
-+	setup_asym)                      setup_asym; exit 0;;
-+
-+	help)                       echo "Test names: $TESTS"; exit 0;;
-+	esac
-+done
-+
-+cleanup
-+
-+printf "\nTests passed: %3d\n" ${nsuccess}
-+printf "Tests failed: %3d\n"   ${nfail}
-+
-+exit $ret
--- 
-2.17.1
-
+Reviewed-by: Sinan Kaya <okaya@kernel.org>
