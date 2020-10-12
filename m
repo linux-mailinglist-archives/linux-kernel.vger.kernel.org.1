@@ -2,119 +2,408 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F416D28C50F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 00:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C644F28C514
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 01:00:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390934AbgJLW71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 18:59:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54408 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390913AbgJLW6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 18:58:50 -0400
-Received: from localhost (170.sub-72-107-125.myvzw.com [72.107.125.170])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B272220757;
-        Mon, 12 Oct 2020 22:58:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602543530;
-        bh=NWsyNct0GmVBs7ZwzumnjCoCSbN1JUhv8GgJ2U37Pzw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=sQ8EN4l4oq1X6i3Wl7a3p5khaIA7hMZZDNrBb2pLa7Pz+Elveuma7o8i1F31Q79E6
-         YjK/PF3iEGMMVwiyUJ4t0ZGBjZgwXcx5Y7lqD9+4KVbIff9DNaXDTBtoiP5djrFCD3
-         Io5ERCSJoqjkKvyAdLKfKJwUA+Bmf6X5tIUKonuk=
-Date:   Mon, 12 Oct 2020 17:58:48 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Kelley, Sean V" <sean.v.kelley@intel.com>
-Cc:     "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>,
-        "Jonathan.Cameron@huawei.com" <Jonathan.Cameron@huawei.com>,
-        "Kuppuswamy, Sathyanarayanan" <sathyanarayanan.kuppuswamy@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "seanvk.dev@oregontracks.org" <seanvk.dev@oregontracks.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>
-Subject: Re: [PATCH v8 11/14] PCI/RCEC: Add RCiEP's linked RCEC to AER/ERR
-Message-ID: <20201012225848.GA3754175@bjorn-Precision-5520>
+        id S2390962AbgJLXAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 19:00:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390946AbgJLW7t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 18:59:49 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4318C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 15:59:47 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id k25so19546656ioh.7
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 15:59:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cNsRLEkySf3v54+YqIeevQ4fb9eVdZRoPO5zed6Njvg=;
+        b=J1+jbZmmGQs6PTdls6Glk+YhlKexrpR3t27C8STz3O3vJY3CMk0xd+/zPRRewn9fYU
+         A8D5KhRdh4bOmRpqhuu3pWzWv+FHKrc4dQ860B5Da+bN1mqW+X1AigVTImy47Am5AEug
+         rGodI/tjj+zuE9b6C++WLf1M9XCGvavdsjANnEU04BtKNGvtZVdQUOj/KnWqEKCZTY07
+         UwZBpfhCGooQzcWGduU0SBjZdZKMeAsj7LkzSlN1Nq2OvFvn9HGLdvERsHfW0TEqSw56
+         WsL+mcwI2l6q97V23AUH5XHx4es0hxmEiJUWdxpcz2k8urS2hrF2fBZx04IXBxAIIeow
+         u75w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cNsRLEkySf3v54+YqIeevQ4fb9eVdZRoPO5zed6Njvg=;
+        b=Xg5QfPWiFZAYNzHfherhpTfZfGMpa3HbW7u+AsCfBMox/Z1zUbKom9wOkw2epyjxWV
+         QLytS4Dtj7Z8B9GI+Qx4C6DDSUp3iprhVHT4eA21puc5Lx5uVXCyMjX0mm+y0NxQLOef
+         xHX6mHwISBCgCloypPxlgjuWp9CE9ixlSbg1kKpeQ9LwV5KcjcjbW8AKQNtcWJcAyhyk
+         7zPxypB2r05lVnekEBJNKBlsWVqe24dtYedPlVRJcQNNOzhlEyDXEqHMOOgc/EbTZabi
+         4V1rVu6uu1V81N2joUV5GpykXjqJLzKd8xDLuhjNHWyAABdyU/Ic+fXTmNUrEPrPPGtX
+         de9g==
+X-Gm-Message-State: AOAM532GkzbAFfbgnj6X3g+vLulN9iMx6dXVtZBEKgAfqcZVcBIXHYRu
+        A3YP66DVWp88Ra4rXDzc/ndDj7bfiU4T7GN8i6ss1A==
+X-Google-Smtp-Source: ABdhPJy/CL3a+iDKKsZCRVNHyp1AS4/aW/91KE1iht4vaOkv37WURoQ0hLz5TGJNc5vgHWJEVVAIUrIJBvGKO+0HkNg=
+X-Received: by 2002:a5d:97c2:: with SMTP id k2mr18626090ios.9.1602543586731;
+ Mon, 12 Oct 2020 15:59:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <96d2cf35723265ce189ba2053fe4c347a816e9a4.camel@intel.com>
+References: <20200925212302.3979661-1-bgardon@google.com> <20200925212302.3979661-5-bgardon@google.com>
+ <20200930060610.GA29659@linux.intel.com>
+In-Reply-To: <20200930060610.GA29659@linux.intel.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Mon, 12 Oct 2020 15:59:35 -0700
+Message-ID: <CANgfPd90pTFr_36EhHsZjYkmFdyhyxYsRVxQ4_63znT1ri7jOw@mail.gmail.com>
+Subject: Re: [PATCH 04/22] kvm: mmu: Allocate and free TDP MMU roots
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 11:51:39PM +0000, Kelley, Sean V wrote:
-> On Fri, 2020-10-09 at 15:07 -0700, Sean V Kelley wrote:
+On Tue, Sep 29, 2020 at 11:06 PM Sean Christopherson
+<sean.j.christopherson@intel.com> wrote:
+>
+> On Fri, Sep 25, 2020 at 02:22:44PM -0700, Ben Gardon wrote:
+>   static u64 __read_mostly shadow_nx_mask;
+> > @@ -3597,10 +3592,14 @@ static void mmu_free_root_page(struct kvm *kvm, hpa_t *root_hpa,
+> >       if (!VALID_PAGE(*root_hpa))
+> >               return;
+> >
+> > -     sp = to_shadow_page(*root_hpa & PT64_BASE_ADDR_MASK);
+> > -     --sp->root_count;
+> > -     if (!sp->root_count && sp->role.invalid)
+> > -             kvm_mmu_prepare_zap_page(kvm, sp, invalid_list);
+> > +     if (is_tdp_mmu_root(kvm, *root_hpa)) {
+> > +             kvm_tdp_mmu_put_root_hpa(kvm, *root_hpa);
+> > +     } else {
+> > +             sp = to_shadow_page(*root_hpa & PT64_BASE_ADDR_MASK);
+> > +             --sp->root_count;
+> > +             if (!sp->root_count && sp->role.invalid)
+> > +                     kvm_mmu_prepare_zap_page(kvm, sp, invalid_list);
+>
+> Hmm, I see that future patches use put_tdp_mmu_root()/get_tdp_mmu_root(),
+> but the code itself isn't specific to the TDP MMU.  Even if this ends up
+> being the only non-TDP user of get/put, I think it'd be worth making them
+> common helpers, e.g.
+>
+>         sp = to_shadow_page(*root_hpa & PT64_BASE_ADDR_MASK);
+>         if (mmu_put_root(sp) {
+>                 if (is_tdp_mmu(...))
+>                         kvm_tdp_mmu_free_root(kvm, sp);
+>                 else if (sp->role.invalid)
+>                         kvm_mmu_prepare_zap_page(kvm, sp, invalid_list);
+>         }
+>
+> > +     }
+> >
+> >       *root_hpa = INVALID_PAGE;
+> >  }
+> > @@ -3691,7 +3690,13 @@ static int mmu_alloc_direct_roots(struct kvm_vcpu *vcpu)
+> >       unsigned i;
+> >
+> >       if (shadow_root_level >= PT64_ROOT_4LEVEL) {
+> > -             root = mmu_alloc_root(vcpu, 0, 0, shadow_root_level, true);
+> > +             if (vcpu->kvm->arch.tdp_mmu_enabled) {
+>
+> I believe this will break 32-bit NPT.  Or at a minimum, look weird.  It'd
+> be better to explicitly disable the TDP MMU on 32-bit KVM, then this becomes
+>
+>         if (vcpu->kvm->arch.tdp_mmu_enabled) {
+>
+>         } else if (shadow_root_level >= PT64_ROOT_4LEVEL) {
+>
+>         } else {
+>
+>         }
+>
 
-> So I tested the following out, including your moving flr to aer.c:
-> 
-> - Renamed flr_on_rciep() to flr_on_rc() for RC devices (RC_END and
-> RC_EC)
-> 
-> - Moved check on dev->rcec into aer_root_reset() including the FLR.
-> 
-> - Reworked pci_walk_bridge() to drop extra dev argument and check
-> locally for the bridge->rcec. Maybe should also check on type when
-> checking on bridge->rcec.
-> 
-> Note I didn't use the check on aer_cap existence because I think you
-> had added that for simply being able to skip over for the non-native
-> case and I handle that with the single goto at the beginning which
-> takes you to the FLR.
+How does this break 32-bit NPT? I'm not sure I understand how we would
+get into a bad state here because I'm not familiar with the specifics
+of 32 bit NPT.
 
-Right.  Well, my thinking was that "root" would be a device with the
-AER Root Error Command and Root Error Status registers, i.e., a Root
-Port or RCEC.  IIUC that basically means the APEI case where firmware
-gives us an error record.
-
-Isn't the existing v5.9 code buggy in that it unconditionally pokes
-these registers?  I think the APEI path can end up here, and firmware
-probably has not granted us control over AER.
-
-Somewhat related question: I'm a little skeptical about the fact that
-aer_root_reset() currently does:
-
-  - clear ROOT_PORT_INTR_ON_MESG_MASK
-  - do reset
-  - clear PCI_ERR_ROOT_STATUS
-  - enable ROOT_PORT_INTR_ON_MESG_MASK
-
-In the APEI path all this AER register manipulation must be done by
-firmware before passing the error record to the OS.  So in the native
-case where the OS does own the AER registers, why can't the OS do that
-manipulation in the same order, i.e., all before doing the reset?
-
-> So this is rough, compiled, tested with AER injections but that's it...
-
-I couldn't actually apply the patch below because it seems to be
-whitespace-damaged, but I think I like it.
-
-  - It would be nice to be able to just call pcie_flr() and not have
-    to add flr_on_rc().  I can't remember why we need the
-    pcie_has_flr() / pcie_flr() dance.  It seems racy and ugly, but I
-    have a vague recollection that there actually is some reason for
-    it.
-
-  - I would *rather* consolidate the AER register updates and test for
-    the non-native case once instead of treating it like a completely
-    separate path with a "goto".  But maybe not possible.  Not a big
-    deal either way.
-
-  - Getting rid of the extra "dev" argument to pci_walk_bridge() is a
-    great side-effect.  I didn't even notice that.
-
-  - If we can simplify that "state == pci_channel_io_frozen" case as
-    this does, that is a *big* deal because there are other patches
-    just waiting to touch that reset and it will be much simpler if
-    there's only one reset_subordinate_devices() call there.
-
-If you do work this up, I'd really appreciate it if you can start with
-my pci/err branch so I don't have to re-do all the tweaks I've already
-done:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git/commit/?h=pci/err
-
-Bjorn
+> > +                     root = kvm_tdp_mmu_get_vcpu_root_hpa(vcpu);
+> > +             } else {
+> > +                     root = mmu_alloc_root(vcpu, 0, 0, shadow_root_level,
+> > +                                           true);
+> > +             }
+>
+> May not matter in the end, but the braces aren't needed.
+>
+> > +
+> >               if (!VALID_PAGE(root))
+> >                       return -ENOSPC;
+> >               vcpu->arch.mmu->root_hpa = root;
+> > diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
+> > index 65bb110847858..530b7d893c7b3 100644
+> > --- a/arch/x86/kvm/mmu/mmu_internal.h
+> > +++ b/arch/x86/kvm/mmu/mmu_internal.h
+> > @@ -41,8 +41,12 @@ struct kvm_mmu_page {
+> >
+> >       /* Number of writes since the last time traversal visited this page.  */
+> >       atomic_t write_flooding_count;
+> > +
+> > +     bool tdp_mmu_page;
+> >  };
+> >
+> > +extern struct kmem_cache *mmu_page_header_cache;
+> > +
+> >  static inline struct kvm_mmu_page *to_shadow_page(hpa_t shadow_page)
+> >  {
+> >       struct page *page = pfn_to_page(shadow_page >> PAGE_SHIFT);
+> > @@ -69,6 +73,11 @@ bool kvm_mmu_slot_gfn_write_protect(struct kvm *kvm,
+> >       (((address) >> PT64_LEVEL_SHIFT(level)) & ((1 << PT64_LEVEL_BITS) - 1))
+> >  #define SHADOW_PT_INDEX(addr, level) PT64_INDEX(addr, level)
+> >
+> > +#define ACC_EXEC_MASK    1
+> > +#define ACC_WRITE_MASK   PT_WRITABLE_MASK
+> > +#define ACC_USER_MASK    PT_USER_MASK
+> > +#define ACC_ALL          (ACC_EXEC_MASK | ACC_WRITE_MASK | ACC_USER_MASK)
+> > +
+> >  /* Functions for interpreting SPTEs */
+> >  kvm_pfn_t spte_to_pfn(u64 pte);
+> >  bool is_mmio_spte(u64 spte);
+> > diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> > index 8241e18c111e6..cdca829e42040 100644
+> > --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> > +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> > @@ -1,5 +1,7 @@
+> >  /* SPDX-License-Identifier: GPL-2.0 */
+> >
+> > +#include "mmu.h"
+> > +#include "mmu_internal.h"
+> >  #include "tdp_mmu.h"
+> >
+> >  static bool __read_mostly tdp_mmu_enabled = true;
+> > @@ -25,10 +27,165 @@ void kvm_mmu_init_tdp_mmu(struct kvm *kvm)
+> >
+> >       /* This should not be changed for the lifetime of the VM. */
+> >       kvm->arch.tdp_mmu_enabled = true;
+> > +
+> > +     INIT_LIST_HEAD(&kvm->arch.tdp_mmu_roots);
+> >  }
+> >
+> >  void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm)
+> >  {
+> >       if (!kvm->arch.tdp_mmu_enabled)
+> >               return;
+> > +
+> > +     WARN_ON(!list_empty(&kvm->arch.tdp_mmu_roots));
+> > +}
+> > +
+> > +#define for_each_tdp_mmu_root(_kvm, _root)                       \
+> > +     list_for_each_entry(_root, &_kvm->arch.tdp_mmu_roots, link)
+> > +
+> > +bool is_tdp_mmu_root(struct kvm *kvm, hpa_t hpa)
+> > +{
+> > +     struct kvm_mmu_page *root;
+> > +
+> > +     if (!kvm->arch.tdp_mmu_enabled)
+> > +             return false;
+> > +
+> > +     root = to_shadow_page(hpa);
+> > +
+> > +     if (WARN_ON(!root))
+> > +             return false;
+> > +
+> > +     return root->tdp_mmu_page;
+>
+> Why all the extra checks?
+>
+> > +}
+> > +
+> > +static void free_tdp_mmu_root(struct kvm *kvm, struct kvm_mmu_page *root)
+> > +{
+> > +     lockdep_assert_held(&kvm->mmu_lock);
+> > +
+> > +     WARN_ON(root->root_count);
+> > +     WARN_ON(!root->tdp_mmu_page);
+> > +
+> > +     list_del(&root->link);
+> > +
+> > +     free_page((unsigned long)root->spt);
+> > +     kmem_cache_free(mmu_page_header_cache, root);
+> > +}
+> > +
+> > +static void put_tdp_mmu_root(struct kvm *kvm, struct kvm_mmu_page *root)
+> > +{
+> > +     lockdep_assert_held(&kvm->mmu_lock);
+> > +
+> > +     root->root_count--;
+> > +     if (!root->root_count)
+> > +             free_tdp_mmu_root(kvm, root);
+> > +}
+> > +
+> > +static void get_tdp_mmu_root(struct kvm *kvm, struct kvm_mmu_page *root)
+> > +{
+> > +     lockdep_assert_held(&kvm->mmu_lock);
+> > +     WARN_ON(!root->root_count);
+> > +
+> > +     root->root_count++;
+> > +}
+> > +
+> > +void kvm_tdp_mmu_put_root_hpa(struct kvm *kvm, hpa_t root_hpa)
+> > +{
+> > +     struct kvm_mmu_page *root;
+> > +
+> > +     root = to_shadow_page(root_hpa);
+> > +
+> > +     if (WARN_ON(!root))
+> > +             return;
+> > +
+> > +     put_tdp_mmu_root(kvm, root);
+> > +}
+> > +
+> > +static struct kvm_mmu_page *find_tdp_mmu_root_with_role(
+> > +             struct kvm *kvm, union kvm_mmu_page_role role)
+> > +{
+> > +     struct kvm_mmu_page *root;
+> > +
+> > +     lockdep_assert_held(&kvm->mmu_lock);
+> > +     for_each_tdp_mmu_root(kvm, root) {
+> > +             WARN_ON(!root->root_count);
+> > +
+> > +             if (root->role.word == role.word)
+> > +                     return root;
+> > +     }
+> > +
+> > +     return NULL;
+> > +}
+> > +
+> > +static struct kvm_mmu_page *alloc_tdp_mmu_root(struct kvm_vcpu *vcpu,
+> > +                                            union kvm_mmu_page_role role)
+> > +{
+> > +     struct kvm_mmu_page *new_root;
+> > +     struct kvm_mmu_page *root;
+> > +
+> > +     new_root = kvm_mmu_memory_cache_alloc(
+> > +                     &vcpu->arch.mmu_page_header_cache);
+> > +     new_root->spt = kvm_mmu_memory_cache_alloc(
+> > +                     &vcpu->arch.mmu_shadow_page_cache);
+> > +     set_page_private(virt_to_page(new_root->spt), (unsigned long)new_root);
+> > +
+> > +     new_root->role.word = role.word;
+> > +     new_root->root_count = 1;
+> > +     new_root->gfn = 0;
+> > +     new_root->tdp_mmu_page = true;
+> > +
+> > +     spin_lock(&vcpu->kvm->mmu_lock);
+> > +
+> > +     /* Check that no matching root exists before adding this one. */
+> > +     root = find_tdp_mmu_root_with_role(vcpu->kvm, role);
+> > +     if (root) {
+> > +             get_tdp_mmu_root(vcpu->kvm, root);
+> > +             spin_unlock(&vcpu->kvm->mmu_lock);
+>
+> Hrm, I'm not a big fan of dropping locks in the middle of functions, but the
+> alternatives aren't great.  :-/  Best I can come up with is
+>
+>         if (root)
+>                 get_tdp_mmu_root()
+>         else
+>                 list_add();
+>
+>         spin_unlock();
+>
+>         if (root) {
+>                 free_page()
+>                 kmem_cache_free()
+>         } else {
+>                 root = new_root;
+>         }
+>
+>         return root;
+>
+> Not sure that's any better.
+>
+> > +             free_page((unsigned long)new_root->spt);
+> > +             kmem_cache_free(mmu_page_header_cache, new_root);
+> > +             return root;
+> > +     }
+> > +
+> > +     list_add(&new_root->link, &vcpu->kvm->arch.tdp_mmu_roots);
+> > +     spin_unlock(&vcpu->kvm->mmu_lock);
+> > +
+> > +     return new_root;
+> > +}
+> > +
+> > +static struct kvm_mmu_page *get_tdp_mmu_vcpu_root(struct kvm_vcpu *vcpu)
+> > +{
+> > +     struct kvm_mmu_page *root;
+> > +     union kvm_mmu_page_role role;
+> > +
+> > +     role = vcpu->arch.mmu->mmu_role.base;
+> > +     role.level = vcpu->arch.mmu->shadow_root_level;
+> > +     role.direct = true;
+> > +     role.gpte_is_8_bytes = true;
+> > +     role.access = ACC_ALL;
+> > +
+> > +     spin_lock(&vcpu->kvm->mmu_lock);
+> > +
+> > +     /* Search for an already allocated root with the same role. */
+> > +     root = find_tdp_mmu_root_with_role(vcpu->kvm, role);
+> > +     if (root) {
+> > +             get_tdp_mmu_root(vcpu->kvm, root);
+> > +             spin_unlock(&vcpu->kvm->mmu_lock);
+>
+> Rather than manually unlock and return, this can be
+>
+>         if (root)
+>                 get_tdp_mmju_root();
+>
+>         spin_unlock()
+>
+>         if (!root)
+>                 root = alloc_tdp_mmu_root();
+>
+>         return root;
+>
+> You could also add a helper to do the "get" along with the "find".  Not sure
+> if that's worth the code.
+>
+> > +             return root;
+> > +     }
+> > +
+> > +     spin_unlock(&vcpu->kvm->mmu_lock);
+> > +
+> > +     /* If there is no appropriate root, allocate one. */
+> > +     root = alloc_tdp_mmu_root(vcpu, role);
+> > +
+> > +     return root;
+> > +}
+> > +
+> > +hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu)
+> > +{
+> > +     struct kvm_mmu_page *root;
+> > +
+> > +     root = get_tdp_mmu_vcpu_root(vcpu);
+> > +     if (!root)
+> > +             return INVALID_PAGE;
+> > +
+> > +     return __pa(root->spt);
+> >  }
+> > diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
+> > index dd3764f5a9aa3..9274debffeaa1 100644
+> > --- a/arch/x86/kvm/mmu/tdp_mmu.h
+> > +++ b/arch/x86/kvm/mmu/tdp_mmu.h
+> > @@ -7,4 +7,9 @@
+> >
+> >  void kvm_mmu_init_tdp_mmu(struct kvm *kvm);
+> >  void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm);
+> > +
+> > +bool is_tdp_mmu_root(struct kvm *kvm, hpa_t root);
+> > +hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu);
+> > +void kvm_tdp_mmu_put_root_hpa(struct kvm *kvm, hpa_t root_hpa);
+> > +
+> >  #endif /* __KVM_X86_MMU_TDP_MMU_H */
+> > --
+> > 2.28.0.709.gb0816b6eb0-goog
+> >
