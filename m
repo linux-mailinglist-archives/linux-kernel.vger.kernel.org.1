@@ -2,73 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03B0728BE39
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A21BC28BE46
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403960AbgJLQnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 12:43:47 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:40589 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403782AbgJLQnr (ORCPT
+        id S2403994AbgJLQo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 12:44:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390257AbgJLQox (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 12:43:47 -0400
-Received: by mail-ed1-f67.google.com with SMTP id p13so17705196edi.7;
-        Mon, 12 Oct 2020 09:43:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=btBZVZqxtWI3fuInlzEdZDm6KMtgsylPsMWQD9V4zcU=;
-        b=SUllY70smH5ucMbxTn8eJvN0TW/GB4YZBq1OjmUDTN49Hc5zacxQaVwWZ66wdJa7nR
-         eNswY0xrXF7uZ+eZGBK610IuuqBqqHSeq2QatamRovdrV3O0sf+GH2FZZdOi+AGlxvcD
-         zI/jA3qK8PFoUJUZz1Ld29EOgmgPwJ5jrSLipziMkY40AE8mpxtDmMF0TqJFnvwgNkSp
-         FF1CcO5sLkh4wuHjEb1fhohk3U1ueR+Yx8RSdUrm5QYvF1xZWQ4evYp8IH2+IseHnqVR
-         wA7u9EIS3Dsz3p4d56uiS/2Q9EOmzQb2Ajh3XTsz+fDeKoXkiTbQ+6uuRRaIoFM1qm/8
-         Es6A==
-X-Gm-Message-State: AOAM530B7jgER0HtD6ssWpqe4KV8mZZt7nisQCsJFAMZ6z3u1kkEMHNw
-        HRggncQ6Qk3K8ebnv+Xa5Dw=
-X-Google-Smtp-Source: ABdhPJy83MPzuSNmmNVuVbEVbI50fmUXELVcQJIDTkSuGz3Qa+Derhs51xqlTZOO4i3RL6jwPsc2ug==
-X-Received: by 2002:a05:6402:3133:: with SMTP id dd19mr13178133edb.100.1602521023802;
-        Mon, 12 Oct 2020 09:43:43 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.215])
-        by smtp.googlemail.com with ESMTPSA id m19sm10771438ejj.91.2020.10.12.09.43.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 12 Oct 2020 09:43:42 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 18:43:40 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     thierry.reding@gmail.com, robh+dt@kernel.org, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/5] memory: tegra: Sort tegra210_swgroups by reg address
-Message-ID: <20201012164340.GA3557@kozik-lap>
-References: <20201008003746.25659-1-nicoleotsuka@gmail.com>
- <20201008003746.25659-4-nicoleotsuka@gmail.com>
- <20201008103258.GA16358@kozik-lap>
- <20201008202615.GA32140@Asurada-Nvidia>
+        Mon, 12 Oct 2020 12:44:53 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BED7C0613D0;
+        Mon, 12 Oct 2020 09:44:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=l9dol8BjF52rFe8mzz85c9RZmeAYDZ2M1zPXpY3Bxec=; b=cjGmRDHB+K+xo1zaI46uR/JWZM
+        mu6b6OfRoAYfgdNA5Kf5Iurex6D1FcBZ+mRQhj12vLi3isoy7f1JrMIQOIfa61TejqqWEwpL43yKb
+        2mAeiG7QIg8Vb+ajA0gepoKbc6o17WQEzV+UWJKTyQWQStoFHb/kNJEfYbWmPc27vxrcwV1GpTL/g
+        cqcPit9vRB3f1Zs6upmREd44qhzYUWIO5sf13vXmWctx364S7GYQlJM4ZaGSBTPIwUKM8imQUHEl+
+        YU7Gj26Vo02zH0C4u7a3/EscApIpoLOe+KQejmiwTcRHTR/bJWdX/slhogDIyA7BDVBafjowKFz4j
+        1dyYxPzg==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kS0wA-0004gO-8Q; Mon, 12 Oct 2020 16:44:38 +0000
+Date:   Mon, 12 Oct 2020 17:44:38 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, linux-aio@kvack.org,
+        linux-efi@vger.kernel.org, kvm@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mmc@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
+        target-devel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-kselftest@vger.kernel.org, samba-technical@lists.samba.org,
+        ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com,
+        devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org,
+        x86@kernel.org, amd-gfx@lists.freedesktop.org,
+        linux-afs@lists.infradead.org, cluster-devel@redhat.com,
+        linux-cachefs@redhat.com, intel-wired-lan@lists.osuosl.org,
+        xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org,
+        Fenghua Yu <fenghua.yu@intel.com>, ecryptfs@vger.kernel.org,
+        linux-um@lists.infradead.org, intel-gfx@lists.freedesktop.org,
+        linux-erofs@lists.ozlabs.org, reiserfs-devel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        io-uring@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, netdev@vger.kernel.org,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH RFC PKS/PMEM 22/58] fs/f2fs: Utilize new kmap_thread()
+Message-ID: <20201012164438.GA20115@casper.infradead.org>
+References: <20201009195033.3208459-1-ira.weiny@intel.com>
+ <20201009195033.3208459-23-ira.weiny@intel.com>
+ <20201009213434.GA839@sol.localdomain>
+ <20201010003954.GW20115@casper.infradead.org>
+ <20201010013036.GD1122@sol.localdomain>
+ <20201012065635.GB2046448@iweiny-DESK2.sc.intel.com>
+ <20201012161946.GA858@sol.localdomain>
+ <5d621db9-23d4-e140-45eb-d7fca2093d2b@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201008202615.GA32140@Asurada-Nvidia>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <5d621db9-23d4-e140-45eb-d7fca2093d2b@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 01:26:16PM -0700, Nicolin Chen wrote:
-> Hi Krzysztof,
+On Mon, Oct 12, 2020 at 09:28:29AM -0700, Dave Hansen wrote:
+> kmap_atomic() is always preferred over kmap()/kmap_thread().
+> kmap_atomic() is _much_ more lightweight since its TLB invalidation is
+> always CPU-local and never broadcast.
 > 
-> On Thu, Oct 08, 2020 at 12:32:58PM +0200, Krzysztof Kozlowski wrote:
-> > On Wed, Oct 07, 2020 at 05:37:44PM -0700, Nicolin Chen wrote:
-> > > This is a cleanup change to prepare for new swgroups.
-> > 
-> > What type of cleanup? Any functional change?
-> 
-> It's to sort the swgroup list by reg address as I mentioned in
-> the subject. Perhaps I should have put in commit message also.
+> So, basically, unless you *must* sleep while the mapping is in place,
+> kmap_atomic() is preferred.
 
-Indeed it is sorted by regs, I missed some numbers... looks good. I can
-adjust the commit msg so no need for resend.
-
-Best regards,
-Krzysztof
+But kmap_atomic() disables preemption, so the _ideal_ interface would map
+it only locally, then on preemption make it global.  I don't even know
+if that _can_ be done.  But this email makes it seem like kmap_atomic()
+has no downsides.
