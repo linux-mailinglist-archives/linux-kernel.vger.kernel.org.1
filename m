@@ -2,133 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C64428AD05
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 06:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08E8528AD0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 06:35:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728291AbgJLEdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 00:33:39 -0400
-Received: from mail-eopbgr130088.outbound.protection.outlook.com ([40.107.13.88]:62853
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726431AbgJLEdi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 00:33:38 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gDxwTn4whCu+mbGp4PUlGrNq1/Zvu5M8OyyezHdP7McqKRz7ileCWlBEyRPvE+LbL5X5NejFvrkkysyJwt6T4+CXVM5/i4aTueEMaAVsHbvfRiZEgAFgGkG97WqYJwV6gr9aJtsZALcmtezNxniqRPFr47mzFL2Wl/koGLngKqsveIjaRsyLB1kI/7U/cPOSJmeEi/17i7qj0gDTGpEowXMM0q8CSYtYtS7VjWZDudj54cN0MfFSWpnAsUBNO1kcIVaoetEDuJzVNzQq0XMkJS3/kGEbbAI5waoWdb+qz+trojZoJf8zN2ni5Croo5pMRMuOLUwPPWwZga/WONeD5Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nPHMTwzNhTqni6LtUG7xzcsSt2rLeAsIa9RV7H5IbCk=;
- b=oSf5XVb3v8qnHc+E67tRrE6vYGy8wXjgTfUrvkfFvBJZT5VX9tMWmRLPCqHZABzLf3ADbiHv1OPm7aYiG7oUyLpE30fD5mtgGK+sgWXvOae+Cc+JigJHrHESZkjulYu1zf3Nb/sjRrpRSb2jr8V/0VRhmObNFksEu0Hw9K3FKaSwNQbA6KUDvBweF3uL2fHFPQNSawb+lgXEJMIYxmFs4MQPT8jx8MughVGwY+Vw2fuFvPwcGl6I6rwf33JP2lSNI2lOx7joZhOy1EMGX4s0E8AOkkWB8AcWZiwUeXNR7XCKJzut/ap2a43BTTtA4t6h2thg4KRdcYxxOptExjgLhg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nPHMTwzNhTqni6LtUG7xzcsSt2rLeAsIa9RV7H5IbCk=;
- b=YnJV2hq83agM3f1pRbcUgcwfSluaC60u6P/pnPpZcWqa1RCYSWo1v1/z3y+MDVGBwkXvtNT+fd0ZIvDzc1f8zwEZZ8CMbsqTrSnkzEjFy5/Z/p0DoLzvXXJAsJnjpwlJer0n/n7p1SWscyEgOqRCiyU1F6xdqO41l2JWzj44RAE=
-Received: from HE1PR0402MB3371.eurprd04.prod.outlook.com (2603:10a6:7:85::27)
- by HE1PR04MB3179.eurprd04.prod.outlook.com (2603:10a6:7:21::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.28; Mon, 12 Oct
- 2020 04:33:33 +0000
-Received: from HE1PR0402MB3371.eurprd04.prod.outlook.com
- ([fe80::c872:d354:7cf7:deb9]) by HE1PR0402MB3371.eurprd04.prod.outlook.com
- ([fe80::c872:d354:7cf7:deb9%3]) with mapi id 15.20.3455.030; Mon, 12 Oct 2020
- 04:33:33 +0000
-From:   "Z.q. Hou" <zhiqiang.hou@nxp.com>
-To:     Rob Herring <robh@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-CC:     PCI <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "M.h. Lian" <minghuan.lian@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-        Mingkai Hu <mingkai.hu@nxp.com>, Leo Li <leoyang.li@nxp.com>
-Subject: RE: [PATCH] PCI: layerscape: Change back to the default error
- response behavior
-Thread-Topic: [PATCH] PCI: layerscape: Change back to the default error
- response behavior
-Thread-Index: AQHWlmOUIiAVbf4g/0+1Jt3JLmBS46mBLpWAgAAbmgCAEigaUA==
-Date:   Mon, 12 Oct 2020 04:33:32 +0000
-Message-ID: <HE1PR0402MB3371AAA60147CAB24C63E2E384070@HE1PR0402MB3371.eurprd04.prod.outlook.com>
-References: <20200929131328.13779-1-Zhiqiang.Hou@nxp.com>
- <6e6d021b-bc46-63b4-7e84-6ca2c8e631f9@ti.com>
- <CAL_Jsq+rH6-NMb0=jbdYA5mzP_2VphW4TXvKJdKr3cnsPQp1RA@mail.gmail.com>
-In-Reply-To: <CAL_Jsq+rH6-NMb0=jbdYA5mzP_2VphW4TXvKJdKr3cnsPQp1RA@mail.gmail.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.73]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 69085431-1c5a-4938-059e-08d86e67fa24
-x-ms-traffictypediagnostic: HE1PR04MB3179:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <HE1PR04MB3179C86AE13D1497BEF0F18584070@HE1PR04MB3179.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Hcik13sLlJb/0jFJYDektw+rXN1+zTll/ycNoRgEWtYrofh0V87dE6os+Q5qMV8yse1fan2cmLP1ZN1PWdn2aDLtUQfYOAOGwtXHN+V8s/uEuqgPb2mr27k0+GORT1ITb4/UZf0GCs8BlIHhjCzqzzRnroa1xggj3KPck5lVGD4tKssiWUt19VLSEaWOUfopThDrjci7T82wuVtz3COE5/hfSMOrP+CZCVkOiyFIv9YmTkAPjVxhzJSqaSkJUt2kkH9+1GH8QrYIS7v4DVt2Wz1YVQHS2720ASsNmfSN59NvpO+PvKe9AYQWyqbHA1oHYWNz/NLcbE9cEcd0CBGT/Q==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0402MB3371.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(346002)(39860400002)(136003)(396003)(186003)(52536014)(4326008)(33656002)(110136005)(8936002)(26005)(83380400001)(86362001)(66446008)(66946007)(2906002)(66556008)(64756008)(66476007)(55016002)(71200400001)(9686003)(478600001)(53546011)(6506007)(7696005)(54906003)(5660300002)(76116006)(8676002)(316002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: DNAijQd5Ch8EU6Au0ucM2I8IN+prXR6aLawapJQmD4b8HiGTdRMBJC+Um/0ew/CRuVmSbSECrpIqF1Hp4UwiQvvN+KuggMRv0JrZYSNsBXuMB9vkeG5RdocFwIzmv5DWFou44ZrgAdqkNkftRHRgtzbzvL8PqQMJKGVv4JUBXKmGFQVsioqFxQ7EU1Bv+Y0k6je/b5aPcoXh8Nk1kXjnfPDF0xF/o3VI62Gl7CUv777eJ1Q5sLYle93yadm7qmUoZbmSsrDrdwZRKUYjXsErVZ9FEL97XYmGm12cdn1+8FJnKbyA89YJi3SCTcFaPXHJupWNqdWFN2N5q8dukjMmAQLYdFe4heH6ClulUKz1V9b/i3Lv4pRZq+Z2saadGyAzJBqnxEirfUdCEbfnOKPriBDZXD7EezmQzMVNEIDZxqUi27AJjZLj2q8GlafYGujXfL3QliM9mnnozEJ+9vztS0oJ6IVoKONNaH1mOPP7rtuR6IesfrnZfXiu+o8sSZVZi/8Czqe/fLAqoQi3W0K4qUvEN+hiXUyiJJVR3KP1esA175cMooinVeRI8uxp9JDj7oSN0BPsX2xlXT9b/gUIJk302JDhAx02dgarbL3HLyuIHr07Lyf0TyQn0bZ9Unv6DZBF2DXgVBzZTV/8VZ7/OQ==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1728338AbgJLEfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 00:35:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726431AbgJLEfW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 00:35:22 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A15FC0613CE;
+        Sun, 11 Oct 2020 21:35:22 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id t20so7852401qvv.8;
+        Sun, 11 Oct 2020 21:35:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nGaRgY5KXDnDzgTPGxT6g3wAgRB6O4Efwdc4BkmUcUQ=;
+        b=SOWUjFcCQQ64YMoS0aewIWeR2JZr4N4UPekS7iGiL3qAfsUMJ4/CkpEiG+L1PmUcdy
+         0JknrUGXjVlQEGtpGwfJ+mL4W1w1sPyNaf9bo/oEwcTLRZ8fUId82aPbBnrpuUFSAW3y
+         JR57zS7q5TJXMyJXE1U2e1e/AxudPhhcjIAbk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nGaRgY5KXDnDzgTPGxT6g3wAgRB6O4Efwdc4BkmUcUQ=;
+        b=bxOHsP+bEhu0lRPxrywbBlS2d95jlCa+LHT9278UCnrZFbXAdFiY/LHGzob53ByuZu
+         lQuQ0YJJDOt1Tr30f/9FJaalIaVO7ei61GiP1RvkG8DWBr4Z4xLZVmVA9EfLQbkKuZLk
+         SQ1CIxLJ8goKZygoDURD48wrMlLFqbErpgpgH/BDdReiFT0hrarbSI5iw15Ibrd71S5K
+         rt9LuZrp5n0jxyuQHwPxkSWR7r9TD2MO+eggEQsmJmOofZO5XyUFm0/R4LEIzrk4o6vs
+         h4hIFXu5tH0ujpoST9UTaah7B2+C8yrRVur+f7MHOFHTv/lc+WZwDtqA1d8yB/jqWCbn
+         vaaA==
+X-Gm-Message-State: AOAM531P3pbdsJEcCW+kj5mG6yhBsOEhHOQijFqfBK+vsc++6SIxHtl2
+        EbOvgJN+b2Jy7nAWeR0sptC0okZy0AFP7c54XuBIRwIFOq0=
+X-Google-Smtp-Source: ABdhPJz7CL/VjmDDY37z1JG7gnOXApbbOdETG7sUFAFSF3cJkzGsH4f/RHqySKhCjPt72g6ojvIXvmBDeknLFRJYh3I=
+X-Received: by 2002:a0c:e308:: with SMTP id s8mr3269819qvl.10.1602477321232;
+ Sun, 11 Oct 2020 21:35:21 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR0402MB3371.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 69085431-1c5a-4938-059e-08d86e67fa24
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Oct 2020 04:33:32.7858
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: IYB9aqM7Gc/QCmfDMCtHHWRjx5zjcQLkT2Ot1la4+isRsrrrlufBZWsptds4mrR8dRb/5XA5PX7I0LMd0hgrNA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR04MB3179
+References: <20201012033150.21056-1-billy_tsai@aspeedtech.com> <20201012033150.21056-3-billy_tsai@aspeedtech.com>
+In-Reply-To: <20201012033150.21056-3-billy_tsai@aspeedtech.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Mon, 12 Oct 2020 04:35:09 +0000
+Message-ID: <CACPK8XdYvSmwdAkBzAO3kC8_PYa3CtPkNb0VxcOhmb2UYz5zDA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] Arm: dts: aspeed-g6: Add sgpio node
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        BMC-SW <BMC-SW@aspeedtech.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgUm9iIGFuZCBLaXNob24sDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJv
-bTogUm9iIEhlcnJpbmcgPHJvYmhAa2VybmVsLm9yZz4NCj4gU2VudDogMjAyMOW5tDnmnIgzMOaX
-pSAyMzowOA0KPiBUbzogS2lzaG9uIFZpamF5IEFicmFoYW0gSSA8a2lzaG9uQHRpLmNvbT4NCj4g
-Q2M6IFoucS4gSG91IDx6aGlxaWFuZy5ob3VAbnhwLmNvbT47IFBDSSA8bGludXgtcGNpQHZnZXIu
-a2VybmVsLm9yZz47DQo+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWFybS1r
-ZXJuZWwNCj4gPGxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZz47IExvcmVuem8g
-UGllcmFsaXNpDQo+IDxsb3JlbnpvLnBpZXJhbGlzaUBhcm0uY29tPjsgQmpvcm4gSGVsZ2FhcyA8
-YmhlbGdhYXNAZ29vZ2xlLmNvbT47IE0uaC4NCj4gTGlhbiA8bWluZ2h1YW4ubGlhbkBueHAuY29t
-PjsgUm95IFphbmcgPHJveS56YW5nQG54cC5jb20+OyBNaW5na2FpDQo+IEh1IDxtaW5na2FpLmh1
-QG54cC5jb20+OyBMZW8gTGkgPGxlb3lhbmcubGlAbnhwLmNvbT4NCj4gU3ViamVjdDogUmU6IFtQ
-QVRDSF0gUENJOiBsYXllcnNjYXBlOiBDaGFuZ2UgYmFjayB0byB0aGUgZGVmYXVsdCBlcnJvcg0K
-PiByZXNwb25zZSBiZWhhdmlvcg0KPiANCj4gT24gV2VkLCBTZXAgMzAsIDIwMjAgYXQgODoyOSBB
-TSBLaXNob24gVmlqYXkgQWJyYWhhbSBJIDxraXNob25AdGkuY29tPg0KPiB3cm90ZToNCj4gPg0K
-PiA+IEhpIEhvdSwNCj4gPg0KPiA+IE9uIDI5LzA5LzIwIDY6NDMgcG0sIFpoaXFpYW5nIEhvdSB3
-cm90ZToNCj4gPiA+IEZyb206IEhvdSBaaGlxaWFuZyA8WmhpcWlhbmcuSG91QG54cC5jb20+DQo+
-ID4gPg0KPiA+ID4gSW4gdGhlIGN1cnJlbnQgZXJyb3IgcmVzcG9uc2UgYmVoYXZpb3IsIGl0IHdp
-bGwgc2VuZCBhIFNMVkVSUg0KPiA+ID4gcmVzcG9uc2UgdG8gZGV2aWNlJ3MgaW50ZXJuYWwgQVhJ
-IHNsYXZlIHN5c3RlbSBpbnRlcmZhY2Ugd2hlbiB0aGUNCj4gPiA+IFBDSWUgY29udHJvbGxlciBl
-eHBlcmllbmNlcyBhbiBlcnJvbmVvdXMgY29tcGxldGlvbiAoVVIsIENBIGFuZCBDVCkNCj4gPiA+
-IGZyb20gYW4gZXh0ZXJuYWwgY29tcGxldGVyIGZvciBpdHMgb3V0Ym91bmQgbm9uLXBvc3RlZCBy
-ZXF1ZXN0LA0KPiA+ID4gd2hpY2ggd2lsbCByZXN1bHQgaW4gU0Vycm9yIGFuZCBjcmFzaCB0aGUg
-a2VybmVsIGRpcmVjdGx5Lg0KPiA+ID4gVGhpcyBwYXRjaCBjaGFuZ2UgYmFjayBpdCB0byB0aGUg
-ZGVmYXVsdCBiZWhhdmlvciB0byBpbmNyZWFzZSB0aGUNCj4gPiA+IHJvYnVzdG5lc3Mgb2YgdGhl
-IGtlcm5lbC4gSW4gdGhlIGRlZmF1bHQgYmVoYXZpb3IsIGl0IGFsd2F5cyBzZW5kcw0KPiA+ID4g
-YW4gT0tBWSByZXNwb25zZSB0byB0aGUgaW50ZXJuYWwgQVhJIHNsYXZlIGludGVyZmFjZSB3aGVu
-IHRoZQ0KPiA+ID4gY29udHJvbGxlciBnZXRzIHRoZXNlIGVycm9uZW91cyBjb21wbGV0aW9ucy4g
-QW5kIHRoZSBBRVIgZHJpdmVyIHdpbGwNCj4gPiA+IHJlcG9ydCBhbmQgdHJ5IHRvIHJlY292ZXIg
-dGhlc2UgZXJyb3JzLg0KPiA+DQo+ID4gSSBkb24ndCB0aGluayBub3QgZm9yd2FyZGluZyBhbnkg
-ZXJyb3IgaW50ZXJydXB0cyBpcyBhIGdvb2QgaWRlYS4NCj4gDQo+IEludGVycnVwdHMgd291bGQg
-YmUgZmluZS4gQWJvcnQvU0Vycm9yIGlzIG5vdC4gSSB0aGluayBpdCBpcyBwcmV0dHkgY2xlYXIg
-d2hhdCB0aGUNCj4gY29ycmVjdCBiZWhhdmlvciBpcyBmb3IgY29uZmlnIGFjY2Vzc2VzLg0KDQpJ
-IGFncmVlIHdpdGggUm9iLg0KDQo+IA0KPiA+IE1heWJlDQo+ID4geW91IGNvdWxkIGRpc2FibGUg
-aXQgd2hpbGUgcmVhZGluZyBjb25maWd1cmF0aW9uIHNwYWNlIHJlZ2lzdGVycw0KPiA+ICh2ZW5k
-b3JJRCBhbmQgZGV2aWNlSUQpIGFuZCB0aGVuIGVuYWJsZSBlcnJvciBmb3J3YXJkaW5nIGJhY2s/
-DQo+IA0KPiBUbyBhZGQgdG8gdGhlIGxvY2tpbmcgKG9yIGxhY2sgb2YpIHByb2JsZW1zIGluIGNv
-bmZpZyBhY2Nlc3Nlcz8NCg0KSWYgdGFrZSB0aGlzIGFwcHJvYWNoLCBkdXJpbmcgdGhlIGhvbGUg
-b2YgQ0ZHIGFjY2VzcywgdGhlIGVycm9yIG9mIE1FTV9yZCB3aWxsIGFsc28gbm90IGJlIGZvcndh
-cmRlZCwgc28gaXQncyBub3QgYSByZWxpYWJsZSBtZWNoYW5pc20gZm9yIHVzZXIuDQoNClRoYW5r
-cywNClpoaXFpYW5nDQoNCj4gDQo+IFJvYg0K
+On Mon, 12 Oct 2020 at 03:32, Billy Tsai <billy_tsai@aspeedtech.com> wrote:
+>
+> This patch is used to add sgpiom and sgpios nodes and add compatiable
+> string for sgpiom.
+
+You also need to add sgpios documentation to the bindings docs.
+
+Whenever you add new device tree bindings to the kernel tree you
+should add documentation for them.
+
+When preparing patches for submission, use scripts/checkpatch.pl to
+check for common issues. It will warn you if you are adding strings
+that are not documented.
+
+Cheers,
+
+Joel
+
+>
+> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+> ---
+>  .../devicetree/bindings/gpio/sgpio-aspeed.txt |  8 +--
+>  arch/arm/boot/dts/aspeed-g6.dtsi              | 52 +++++++++++++++++++
+>  2 files changed, 57 insertions(+), 3 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/gpio/sgpio-aspeed.txt b/Documentation/devicetree/bindings/gpio/sgpio-aspeed.txt
+> index d4d83916c09d..815d9b5167a5 100644
+> --- a/Documentation/devicetree/bindings/gpio/sgpio-aspeed.txt
+> +++ b/Documentation/devicetree/bindings/gpio/sgpio-aspeed.txt
+> @@ -1,8 +1,10 @@
+>  Aspeed SGPIO controller Device Tree Bindings
+>  --------------------------------------------
+>
+> -This SGPIO controller is for ASPEED AST2500 SoC, it supports up to 80 full
+> -featured Serial GPIOs. Each of the Serial GPIO pins can be programmed to
+> +This SGPIO controller is for ASPEED AST2500/AST2600 SoC, it supports 2 master.
+> +One is up to 128 SGPIO input ports and 128 output ports concurrently(after AST2600A1)
+> +and Second one is up to 80.
+> +Each of the Serial GPIO pins can be programmed to
+>  support the following options:
+>  - Support interrupt option for each input port and various interrupt
+>    sensitivity option (level-high, level-low, edge-high, edge-low)
+> @@ -14,7 +16,7 @@ support the following options:
+>  Required properties:
+>
+>  - compatible : Should be one of
+> -  "aspeed,ast2400-sgpio", "aspeed,ast2500-sgpio"
+> +  "aspeed,ast2400-sgpio", "aspeed,ast2500-sgpio", "aspeed,ast2600-sgpiom"
+
+I think we should add sgpiom strings for the ast2500 (and ast2400?)
+too, as this is how they should have been named in the first place:
+
+>  - compatible : Should be one of
+>    "aspeed,ast2400-sgpio", "aspeed,ast2500-sgpio"
+>   "aspeed,ast2400-sgpiom", "aspeed,ast2500-sgpiom", "aspeed,ast2600-sgpiom"
+
+
+>  - #gpio-cells : Should be 2, see gpio.txt
+>  - reg : Address and length of the register set for the device
+>  - gpio-controller : Marks the device node as a GPIO controller
+> diff --git a/arch/arm/boot/dts/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed-g6.dtsi
+> index ad19dce038ea..cb053a996e87 100644
+> --- a/arch/arm/boot/dts/aspeed-g6.dtsi
+> +++ b/arch/arm/boot/dts/aspeed-g6.dtsi
+> @@ -366,6 +366,58 @@
+>                                 #interrupt-cells = <2>;
+>                         };
+>
+> +                       sgpiom0: sgpiom@1e780500 {
+> +                               #gpio-cells = <2>;
+> +                               gpio-controller;
+> +                               compatible = "aspeed,ast2600-sgpiom";
+> +                               reg = <0x1e780500 0x100>;
+> +                               interrupts = <GIC_SPI 51 IRQ_TYPE_LEVEL_HIGH>;
+> +                               ngpios = <128>;
+> +                               clocks = <&syscon ASPEED_CLK_APB2>;
+> +                               interrupt-controller;
+> +                               bus-frequency = <12000000>;
+> +
+> +                               pinctrl-names = "default";
+> +                               pinctrl-0 = <&pinctrl_sgpm1_default>;
+> +                               status = "disabled";
+> +                       };
+> +
+> +                       sgpiom1: sgpiom@1e780600 {
+> +                               #gpio-cells = <2>;
+> +                               gpio-controller;
+> +                               compatible = "aspeed,ast2600-sgpiom";
+> +                               reg = <0x1e780600 0x100>;
+> +                               interrupts = <GIC_SPI 70 IRQ_TYPE_LEVEL_HIGH>;
+> +                               ngpios = <80>;
+> +                               clocks = <&syscon ASPEED_CLK_APB2>;
+> +                               interrupt-controller;
+> +                               bus-frequency = <12000000>;
+> +
+> +                               pinctrl-names = "default";
+> +                               pinctrl-0 = <&pinctrl_sgpm2_default>;
+> +                               status = "disabled";
+> +                       };
+> +
+> +                       sgpios0: sgpios@1e780700 {
+> +                               #gpio-cells = <2>;
+> +                               gpio-controller;
+> +                               compatible = "aspeed,ast2600-sgpios";
+> +                               reg = <0x1e780700 0x40>;
+> +                               interrupts = <GIC_SPI 52 IRQ_TYPE_LEVEL_HIGH>;
+> +                               clocks = <&syscon ASPEED_CLK_APB2>;
+> +                               status = "disabled";
+> +                       };
+> +
+> +                       sgpios1: sgpios@1e780740 {
+> +                               #gpio-cells = <2>;
+> +                               gpio-controller;
+> +                               compatible = "aspeed,ast2600-sgpios";
+> +                               reg = <0x1e780740 0x40>;
+> +                               interrupts = <GIC_SPI 71 IRQ_TYPE_LEVEL_HIGH>;
+> +                               clocks = <&syscon ASPEED_CLK_APB2>;
+> +                               status = "disabled";
+> +                       };
+> +
+>                         gpio1: gpio@1e780800 {
+>                                 #gpio-cells = <2>;
+>                                 gpio-controller;
+> --
+> 2.17.1
+>
