@@ -2,92 +2,340 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 154E128B182
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 11:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2AC28B183
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 11:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387446AbgJLJ1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 05:27:35 -0400
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:52060 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2387407AbgJLJ1e (ORCPT
+        id S2387467AbgJLJ1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 05:27:49 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:12106 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387393AbgJLJ1t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 05:27:34 -0400
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 09C9CbFi024245;
-        Mon, 12 Oct 2020 04:26:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=jl7kX0K5HniwlP4ks17v/3j180R3c6Yncvf/wU/ifAo=;
- b=j724elzva3NbeZWsveM/PBK2hR9+SkjmZmi36ixsr0FJZ0QVpq0MG+VAe7YNJ5Qid04j
- YR+2cTmr9X6r20Yhu79RHnuTeLcJ0Z/sHcXsq+2XPjK3OBH2OQs2gkgFjsLRMv922X+P
- RWOmoWe5CKrEBSHHyYGB1aFumKIuoVDrk3aSJQ2kUByRdL5Io2AKlRqt1LB/Vxf4VUz3
- 7PNXPIXdcz3fKVIrLi5ECEGG6dNv+Dnhxvy6mYk+J/fG4BkPHWQBWSp3nHxTr/INhoba
- QFFT5Dhnl7jmReDXz2Y7ZCSxrApY4otlR4KbJL1m6nvxyJynS183XnDsM6BaXrh6pL6Z +g== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 343ac1t3ve-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 12 Oct 2020 04:26:45 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 12 Oct
- 2020 10:26:43 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Mon, 12 Oct 2020 10:26:43 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id CA60945;
-        Mon, 12 Oct 2020 09:26:42 +0000 (UTC)
-Date:   Mon, 12 Oct 2020 09:26:42 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Julia Lawall <Julia.Lawall@inria.fr>
-CC:     Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        Joe Perches <joe@perches.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        <kernel-janitors@vger.kernel.org>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, <alsa-devel@alsa-project.org>,
-        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 7/8] ASoC: madera: use semicolons rather than commas to
- separate statements
-Message-ID: <20201012092642.GZ10899@ediswmail.ad.cirrus.com>
-References: <1602407979-29038-1-git-send-email-Julia.Lawall@inria.fr>
- <1602407979-29038-8-git-send-email-Julia.Lawall@inria.fr>
+        Mon, 12 Oct 2020 05:27:49 -0400
+X-IronPort-AV: E=Sophos;i="5.77,366,1596492000"; 
+   d="scan'208";a="472098834"
+Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 11:27:17 +0200
+Date:   Mon, 12 Oct 2020 11:27:17 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Sumera Priyadarsini <sylphrenadin@gmail.com>
+cc:     cocci@systeme.lip6.fr, Julia.Lawall@lip6.fr,
+        michal.lkml@markovi.net, nicolas.palix@imag.fr,
+        linux-kernel@vger.kernel.org, Gilles.Muller@lip6.fr
+Subject: Re: [Cocci] [PATCH] coccinelle: iterators: Add for_each_child.cocci
+ script
+In-Reply-To: <20200924103504.2ceibylmerdzgmct@adolin>
+Message-ID: <alpine.DEB.2.22.394.2010121123490.2901@hadrien>
+References: <20200924103504.2ceibylmerdzgmct@adolin>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1602407979-29038-8-git-send-email-Julia.Lawall@inria.fr>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 lowpriorityscore=0
- malwarescore=0 priorityscore=1501 suspectscore=0 impostorscore=0
- mlxscore=0 spamscore=0 bulkscore=0 mlxlogscore=715 clxscore=1015
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010120079
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 11, 2020 at 11:19:38AM +0200, Julia Lawall wrote:
-> Replace commas with semicolons.  What is done is essentially described by
-> the following Coccinelle semantic patch (http://coccinelle.lip6.fr/):
-> 
-> // <smpl>
-> @@ expression e1,e2; @@
-> e1
-> -,
-> +;
-> e2
-> ... when any
-> // </smpl>
-> 
-> Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
-> 
+
+
+On Thu, 24 Sep 2020, Sumera Priyadarsini wrote:
+
+> While iterating over child nodes with the for_each functions, if
+> control is transferred from the middle of the loop, as in the case
+> of a break or return or goto, there is no decrement in the
+> reference counter thus ultimately resulting in a memory leak.
+>
+> Add this script to detect potential memory leaks caused by
+> the absence of of_node_put() before break, goto, or, return
+> statements which transfer control outside the loop.
+>
+> Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
 > ---
+>  .../coccinelle/iterators/for_each_child.cocci | 348 ++++++++++++++++++
+>  1 file changed, 348 insertions(+)
+>  create mode 100644 scripts/coccinelle/iterators/for_each_child.cocci
+>
+> diff --git a/scripts/coccinelle/iterators/for_each_child.cocci b/scripts/coccinelle/iterators/for_each_child.cocci
+> new file mode 100644
+> index 000000000000..0abc12ca2ad3
+> --- /dev/null
+> +++ b/scripts/coccinelle/iterators/for_each_child.cocci
+> @@ -0,0 +1,348 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +// Adds missing of_node_put() before return/break/goto statement within a for_each iterator for child nodes.
+> +//# False positives can be due to function calls within the for_each
+> +//# loop that may encapsulate an of_node_put.
+> +///
+> +// Confidence: High
+> +// Copyright: (C) 2020 Sumera Priyadarsini
+> +// URL: http://coccinelle.lip6.fr
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+As Markus suggested, adding
 
-Thanks,
-Charles
++// Options: --no-includes --include-headers
+
+would be useful.  The processing of .c files does not need to see header
+files for this issue.  At the same time, if the problem occurs in a header
+files, it could be useful to treat it.
+
+
+> +@rulethree depends on patch && !context && !org && !report exists@
+> +
+> +local idexpression r.n;
+> +iterator r.i,i1,i2;
+> +expression e,e1;
+> +identifier l;
+> +expression list [r.n1] es;
+> +statement S,S2;
+> +@@
+> +
+> + i(es,n,...) {
+> +   ...
+> +(
+> +   of_node_put(n);
+> +|
+> +   e = n
+> +|
+> +   i1(...,n,...) S
+> +|
+> ++  of_node_put(n);
+> +?  goto l;
+> +)
+> +   ... when any
+> + }
+> +... when exists
+> +l: ... when != n
+> +       when strict
+
+A when forall is needed under the when strict.  The idea here is that when
+the goto is taken, we need to check all of the possible execution paths to
+see if there is any reference to n.
+
+All of the rules that involve break and goto need to be checked for this
+issue.
+
+julia
+
+> +(
+> + n = e1;
+> +|
+> +?i2(...,n,...) S2
+> +)
+> +
+> +// ----------------------------------------------------------------------------
+> +
+> +@ruleone_context depends on !patch && (context || org || report) exists@
+> +statement S;
+> +expression e;
+> +expression list[r.n1] es;
+> +iterator r.i, i1;
+> +local idexpression r.n;
+> +position j0, j1;
+> +@@
+> +
+> + i@j0(es,n,...) {
+> +   ...
+> +(
+> +   of_node_put(n);
+> +|
+> +   e = n
+> +|
+> +   return n;
+> +|
+> +   i1(...,n,...) S
+> +|
+> +  return @j1 ...;
+> +)
+> +   ... when any
+> + }
+> +
+> +@ruleone_disj depends on !patch && (context || org || report)@
+> +expression list[r.n1] es;
+> +iterator r.i;
+> +local idexpression r.n;
+> +position ruleone_context.j0, ruleone_context.j1;
+> +@@
+> +
+> +*  i@j0(es,n,...) {
+> +   ...
+> +*return  @j1...;
+> +   ... when any
+> + }
+> +
+> +@ruletwo_context depends on !patch && (context || org || report) exists@
+> +statement S, S2;
+> +expression e, e1;
+> +expression list[r.n1] es;
+> +iterator r.i, i1, i2;
+> +local idexpression r.n;
+> +position j0, j2;
+> +@@
+> +
+> + i@j0(es,n,...) {
+> +   ...
+> +(
+> +   of_node_put(n);
+> +|
+> +   e = n
+> +|
+> +   i1(...,n,...) S
+> +|
+> +  break@j2;
+> +)
+> +   ... when any
+> + }
+> +... when != n
+> +    when strict
+> +(
+> + n = e1;
+> +|
+> +?i2(...,n,...) S2
+> +)
+> +
+> +@ruletwo_disj depends on !patch && (context || org || report)@
+> +statement S2;
+> +expression e1;
+> +expression list[r.n1] es;
+> +iterator r.i, i2;
+> +local idexpression r.n;
+> +position ruletwo_context.j0, ruletwo_context.j2;
+> +@@
+> +
+> +*  i@j0(es,n,...) {
+> +   ...
+> +*break @j2;
+> +   ... when any
+> + }
+> +... when != n
+> +    when strict
+> +(
+> +  n = e1;
+> +|
+> +?i2(...,n,...) S2
+> +)
+> +
+> +@rulethree_context depends on !patch && (context || org || report) exists@
+> +identifier l;
+> +statement S,S2;
+> +expression e, e1;
+> +expression list[r.n1] es;
+> +iterator r.i, i1, i2;
+> +local idexpression r.n;
+> +position j0, j3;
+> +@@
+> +
+> + i@j0(es,n,...) {
+> +   ...
+> +(
+> +   of_node_put(n);
+> +|
+> +   e = n
+> +|
+> +   i1(...,n,...) S
+> +|
+> +  goto l@j3;
+> +)
+> +  ... when any
+> + }
+> +... when exists
+> +l:
+> +... when != n
+> +    when strict
+> +(
+> + n = e1;
+> +|
+> +?i2(...,n,...) S2
+> +)
+> +
+> +@rulethree_disj depends on !patch && (context || org || report) exists@
+> +identifier l;
+> +statement S2;
+> +expression e1;
+> +expression list[r.n1] es;
+> +iterator r.i, i2;
+> +local idexpression r.n;
+> +position rulethree_context.j0, rulethree_context.j3;
+> +@@
+> +
+> +*  i@j0(es,n,...) {
+> +   ...
+> +*goto l@j3;
+> +   ... when any
+> + }
+> +... when exists
+> + l:
+> + ... when != n
+> +     when strict
+> +(
+> + n = e1;
+> +|
+> +?i2(...,n,...) S2
+> +)
+> +
+> +// ----------------------------------------------------------------------------
+> +
+> +@script:python ruleone_org depends on org@
+> +i << r.i;
+> +j0 << ruleone_context.j0;
+> +j1 << ruleone_context. j1;
+> +@@
+> +
+> +msg = "WARNING: Function \"%s\" should have of_node_put() before return " % (i)
+> +coccilib.org.print_safe_todo(j0[0], msg)
+> +coccilib.org.print_link(j1[0], "")
+> +
+> +@script:python ruletwo_org depends on org@
+> +i << r.i;
+> +j0 << ruletwo_context.j0;
+> +j2 << ruletwo_context.j2;
+> +@@
+> +
+> +msg = "WARNING: Function \"%s\" should have of_node_put() before break " % (i)
+> +coccilib.org.print_safe_todo(j0[0], msg)
+> +coccilib.org.print_link(j2[0], "")
+> +
+> +@script:python rulethree_org depends on org@
+> +i << r.i;
+> +j0 << rulethree_context.j0;
+> +j3 << rulethree_context.j3;
+> +@@
+> +
+> +msg = "WARNING: Function \"%s\" should have of_node_put() before goto " % (i)
+> +coccilib.org.print_safe_todo(j0[0], msg)
+> +coccilib.org.print_link(j3[0], "")
+> +
+> +// ----------------------------------------------------------------------------
+> +
+> +@script:python ruleone_report depends on report@
+> +i << r.i;
+> +j0 << ruleone_context.j0;
+> +j1 << ruleone_context.j1;
+> +@@
+> +
+> +msg = "WARNING: Function \"%s\" should have of_node_put() before return around line %s." % (i, j1[0].line)
+> +coccilib.report.print_report(j0[0], msg)
+> +
+> +@script:python ruletwo_report depends on report@
+> +i << r.i;
+> +j0 << ruletwo_context.j0;
+> +j2 << ruletwo_context.j2;
+> +@@
+> +
+> +msg = "WARNING: Function \"%s\" should have of_node_put() before break around line %s." % (i,j2[0].line)
+> +coccilib.report.print_report(j0[0], msg)
+> +
+> +@script:python rulethree_report depends on report@
+> +i << r.i;
+> +j0 << rulethree_context.j0;
+> +j3 << rulethree_context.j3;
+> +@@
+> +
+> +msg = "WARNING: Function \"%s\" should have of_node_put() before goto around lines %s." % (i,j3[0].line)
+> +coccilib.report.print_report(j0[0], msg)
+> --
+> 2.25.1
+>
+> _______________________________________________
+> Cocci mailing list
+> Cocci@systeme.lip6.fr
+> https://systeme.lip6.fr/mailman/listinfo/cocci
+>
