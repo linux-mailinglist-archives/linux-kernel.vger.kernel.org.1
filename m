@@ -2,108 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB7E428BF73
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 20:13:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48B1528BF7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 20:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404162AbgJLSNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 14:13:04 -0400
-Received: from sonic317-38.consmr.mail.ne1.yahoo.com ([66.163.184.49]:38222
-        "EHLO sonic317-38.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2403994AbgJLSND (ORCPT
+        id S2404182AbgJLSON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 14:14:13 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:44432 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404152AbgJLSOL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 14:13:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1602526383; bh=8eCM6LJOT79n5bc3w/IODElEbZRQS2hX2XQQTIO4KUg=; h=To:Cc:From:Subject:Date:References:From:Subject; b=mSQtq3KD6hSl1oKnofc8Dh5HKSuTVX9IkLYp1dDVjyLviaNM04hIWksZqlkDrRhVBc1HCVdwXx6qq2D8sEAMYZz5Fq130fwovrU+jXy99X6eBKITgIg8XN/fbQ2rxQkSPo/PUqHBe5KBDfGPwqcxcVVewyeOMBBxDaFp0RaSfcpWjnXhkMRJzHSpnPDjDNaonMmHhIUiBLT9jCHvZyeevDlMWYRoOjCezuVR6t3Vnj1gZku1ZW1NoimEbhfvtZflMbRwD4Nlw5LTrj1CUDaBe2rGu2a9fy3tBKreX1lTwFnZp8LH4136yLB2KS6aQaH2y7xd3u0kEiQQymempuihNQ==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1602526383; bh=S4CNXjO0spr+ubMrBBm4yOz2sU+DLHlfPng3wUcO6IV=; h=To:From:Subject:Date; b=TivhR5OjQ73+59gDAffRWdltkhjs7K8Xfjx3w/6UCqKvXOIv/ZJLae8EzXkUhuREC5i4STuAp3ULZiDz4hqrduwzPKVrYKlgRxzPog5W8wpm3CoyLYYvg5Eoth64FlkvoFx+q5XiM4OT3i1wKDeZjkMNnxJgBJOirjTTlzi7RDjWdqxNjdlPbVAQC16BmUejJyztQRX9vXRqh2/183tl3sLSCTFsDvzHz5Xaiw6YHO+YsadShF/X17uMT634Lp0XjNiWTJ01tvbFXd5O8DH8P4gF44lfowJT9M1CuAlSIFAdK4bgMOSrpqM7w8ir4RFWmimxGBjNhyqvi6fYzOoz9A==
-X-YMail-OSG: QVF40qQVM1l1Fohy4ZIJkIuNCxxWVedEjcQXGWOF741phpL1LuBHvjgVV8ktIw8
- DHeFCImvzaYEYZrnizJpAQeljwsfya1ewy5Ht8gwk7HDLYPu8eKKGHzXdKptJae435qgSFe.ncOI
- Lq6FL53puMEP3.sUG4UEyCnubZzFbUWSXA_wELTLzlEBi4jVENhmPgTum.KW0VK3v_zglAt_qYev
- rSowmLwBrsFodxLLNQcdFFYKVIKrp7lb3UWhsZpK_3e79I54v0RFxwTxnpdL.7v4lTll6MPjHa0Q
- 9ixGnbmqxNTWegG2GIvI.K_4ga7tp87V3pU6Aigp7ND6Ch0vrISFowhghLyJaRAOzxxYV4f7beZT
- D7Y378qku_WQ3I4Dc70Yrl0VGJy.SyA21bZaKJIWW4pIuzeKrEB1hStQ.VxpVLjwCKYlwYVYOqJN
- 3jt357OJGzXgNML.xVfLS1hBT9kD3aVIkd_nGE347u_RGawGLz5jlLFctAy7v6k7FKpP.cWxIpzr
- 8OnOl13PTyB.6SjMNT3ZybTh5bFQ8kEu01sD_F5FywRygtyrnWqdajh37pMrqZAQCqg3Mp502vzN
- TXCIBByHd2cIQYxVcCIWhAAcNcvtMHnrWqBv3NzfbIji2J0L65S2ngKWvRcgubdvGgSgeikVIlnC
- s7202tAnDsbUDg.vUb7iTMLAno0l9mg3HorEjYci5TRMq3Pm_QQTjhYuLitW3brZR3Rjshdgia0i
- YQsWro3UxOE6gNPA49NMNdhgNpMw7_VPPl3IkM0zXWIxnYT7wbvA9WoanvSCVlfQb6bN5YyamoFa
- ESW57HjjoGeWUjHYWNSJ4BBVsjNQIYOEzJsberS8ZxEylYNVXY.LY2YFzJJ15zJUoG9kT5v3z8K6
- 3grIOjCB1tX.K1MPD0a_Tvpt_g_kWoRCS9PAmGDn0_YwSJxpmd4GiU3PwLBnMzkCD9nDlLeuMMrl
- QetiRhTISnBSUq_KTdWo5LOMjO3Bbs58GdF20_Kttyy87_AAofODlvC3XCbrFyCTbfx1IGry6khY
- cptHN0O7S_3qLADGeC64GIYc_VnkSePpHD2U75ZSjI6JU7kO3qVJeD_2LRFpW_abxy6hOkhbBRyB
- EFPdC_jejq6NhGqsFoktQzQuziqrFT6YuYRVkon8hOmd6ls2r64V1yfxwP9bkPn1iNhRZR33.wRs
- EM886PhQ8oM4V3V7BUWrMOZquJA2xSb8enj9ukvRSYeWj5yqNikYHSspR05QDCgMiaIxG0rZxWhm
- 1MIkkrWK47b7pooNNIjJqcCFvi_sVakaWZ0hSBeXjQnzZ.lwCC3784z2w8B64UZcMJBiUdWI.Dir
- uD7IeOgboKlP2yYBjRESLKJMMdrIPAHgv2sgItZwJG3g4pT3hoPUjwYrFsThAj.AoO8uD.aRF60E
- UA2dcUBFrEyv2709rHSdmVFA_io0XxPMa2ANJiKqT68hB4oHfR9YWXBMRBLm9LS.Rdr14egngqNu
- o_5G5sPgU87mEQ0QeZ9gKZZOwfRTDz381maQDXnrXIIj8TUw7Bjb95qzagmOYbiGmAkHFeRoQVHh
- sf_BQp8rYAPuGcmMOxtgCirtgyCVjBXdz4McO
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic317.consmr.mail.ne1.yahoo.com with HTTP; Mon, 12 Oct 2020 18:13:03 +0000
-Received: by smtp415.mail.bf1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID b3e8df5906594d7e7f20b6689795e967;
-          Mon, 12 Oct 2020 18:13:02 +0000 (UTC)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Subject: [GIT PULL] Smack patches for v5.10
-Message-ID: <efb97951-c946-8511-a6c3-b8aa340ebf8f@schaufler-ca.com>
-Date:   Mon, 12 Oct 2020 11:13:01 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        Mon, 12 Oct 2020 14:14:11 -0400
+Received: by mail-oi1-f196.google.com with SMTP id x62so19596162oix.11;
+        Mon, 12 Oct 2020 11:14:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=J3q7xHuH0aR/mKQTWSzv+4bd6O+Z10supV2gdoPo7Lo=;
+        b=Ew2499x4LmgZqJg7/faouURyB3dhB6irypikPNyKFXbVvBkw9JE1xfqX4++thzwMJ1
+         zGRvy5xydJ7d/BxyMAD6hbbGgL/OfNgIEKJQFKtfXU8e6YZpkwL5QgiMlEiIpYiqml1K
+         iBhkE3a2VLNGw08y/yUOuJeXKfsNlav/tkBwquK30/C5+362t0bARMa8dq5OIEkRwh8q
+         tERkjkKP2LmyXVUhPSN2kT3RbIDA6pX1YcrOmxebkFdBpy0cn/D9XEG9sw6GuS18zbxl
+         o3fkJEW58QRy9xwXr0JA1d5rq2Mh5zJnca5hpY2PXZjAl/InfWW+sZ2qi+wcKYQjUAci
+         bymw==
+X-Gm-Message-State: AOAM533HIb8JPdVjOfnwc9L6il2kpNnQyaSA9tHMCjdnrKBrg/gJ/foy
+        UtMS38LNew5sAuArOPnNHA==
+X-Google-Smtp-Source: ABdhPJxEUqKxSDYUb/dWoUKkqguMsBXKOfsJi4XsgrQSu5P3tIoepRAQCg4Kb7WGp2CkRnNpo8Kn8Q==
+X-Received: by 2002:aca:4e05:: with SMTP id c5mr12111904oib.99.1602526448601;
+        Mon, 12 Oct 2020 11:14:08 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 189sm9779176oid.40.2020.10.12.11.14.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 11:14:06 -0700 (PDT)
+Received: (nullmailer pid 1850043 invoked by uid 1000);
+        Mon, 12 Oct 2020 18:14:04 -0000
+Date:   Mon, 12 Oct 2020 13:14:04 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>, linux-pwm@vger.kernel.org,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-kernel@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] dt-bindings: pwm: imx: document i.MX compatibles
+Message-ID: <20201012181404.GA1846397@bogus>
+References: <20200925212609.23093-1-krzk@kernel.org>
+ <20200926132217.xr3rhv7o2o2yc2l7@pengutronix.de>
+ <20200926134157.GA4730@kozik-lap>
+ <20201009120239.GA450876@ulmo>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-References: <efb97951-c946-8511-a6c3-b8aa340ebf8f.ref@schaufler-ca.com>
-X-Mailer: WebService/1.1.16795 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.7)
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201009120239.GA450876@ulmo>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus
+On Fri, Oct 09, 2020 at 02:02:39PM +0200, Thierry Reding wrote:
+> On Sat, Sep 26, 2020 at 03:41:57PM +0200, Krzysztof Kozlowski wrote:
+> > On Sat, Sep 26, 2020 at 03:22:17PM +0200, Uwe Kleine-König wrote:
+> > > On Fri, Sep 25, 2020 at 11:26:09PM +0200, Krzysztof Kozlowski wrote:
+> > > > Document all ARMv5, ARMv6 and ARMv7 i.MX compatibles to fix dtbs_check
+> > > > warnings like:
+> > > > 
+> > > >   arch/arm/boot/dts/imx6dl-colibri-eval-v3.dt.yaml: pwm@2080000: compatible:0:
+> > > >     'fsl,imx6q-pwm' is not one of ['fsl,imx8mm-pwm', 'fsl,imx8mn-pwm', 'fsl,imx8mp-pwm', 'fsl,imx8mq-pwm']
+> > > > 
+> > > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > > > ---
+> > > >  Documentation/devicetree/bindings/pwm/imx-pwm.yaml | 11 +++++++++++
+> > > >  1 file changed, 11 insertions(+)
+> > > > 
+> > > > diff --git a/Documentation/devicetree/bindings/pwm/imx-pwm.yaml b/Documentation/devicetree/bindings/pwm/imx-pwm.yaml
+> > > > index 473863eb67e5..379d693889f6 100644
+> > > > --- a/Documentation/devicetree/bindings/pwm/imx-pwm.yaml
+> > > > +++ b/Documentation/devicetree/bindings/pwm/imx-pwm.yaml
+> > > > @@ -25,6 +25,17 @@ properties:
+> > > >            - fsl,imx27-pwm
+> > > >        - items:
+> > > >            - enum:
+> > > > +              - fsl,imx25-pwm
+> > > 
+> > > The driver actually used fsl,imx27-pwm to bind ...
+> > 
+> > Yes, most of i.MX drivers use only few compatibles but DTSes and
+> > bindings use multiple of them.  I was convinced during various talks
+> > that the specific compatibles (so "fsl,imx6q-pwm, fsl,imx27-pwm") are
+> > preferred than generic ones (so only "fsl,imx27-pwm"). NXP took it
+> > to the another level creating compatibles for absolutely every flavor of
+> > their CPU. And they mainlined it in DTSes...
+> > 
+> > The PWM is this crazy examples where, as you say, only two compatibles
+> > are actually used for binding but DTSes uses more.
+> 
+> Yeah, these new compatible strings all seem to be used in the kernel, so
+> we might as well document them.
+> 
+> That said, I did want to apply this patch, but that fails. Am I missing
+> some other patch that you have sent out that touches this file? Actually
+> it looks like this is because you've based this patch on linux-next, or
+> perhaps the devicetree tree, because that contains commit d058717bdff4
+> ("dt-bindings: pwm: imx-pwm: Add i.MX 8M compatibles") from you that
+> adds a couple more compatible strings. Probably best for Rob to pick
+> this up, then:
+> 
+> Acked-by: Thierry Reding <treding@nvidia.com>
+> 
+> Rob, here's a patchwork link for you if you need one:
+> 
+> 	https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20200925212609.23093-1-krzk@kernel.org/
+> 
+> Although, looking at the devicetree-bindings instance version of that
+> patch, I see that it's got a failing check attached (which looks like
+> it can be ignored) and it's marked "Changes Requested", but no comments
+> saying so.
 
-Here are two minor fixes and one performance enhancement to Smack
-for the v5.10 release. The netlabel cache changes have been in linux-next=
+I was assuming a rename at least.
 
-for several weeks. The performance improvement is significant and the
-new code is more like its counterpart in SELinux.
+> Not sure if you want anything done here?
 
+I guess not, so I've applied it.
 
---
-The following changes since commit d012a7190fc1fd72ed48911e77ca97ba4521bc=
-cd:
-
-  Linux 5.9-rc2 (2020-08-23 14:08:43 -0700)
-
-are available in the Git repository at:
-
-  https://github.com/cschaufler/smack-next tags/Smack-for-5.10
-
-for you to fetch changes up to edd615371b668404d06699c04f5f90c4f438814a:
-
-  Smack: Remove unnecessary variable initialization (2020-10-05 14:20:51 =
--0700)
-
-----------------------------------------------------------------
-Smack LSM changes for Linux 5.10
-
-Two kernel test robot suggested clean-ups.
-Teach Smack to use the IPv4 netlabel cache.
-This results in a 12-14% improvement on TCP benchmarks.
-
-----------------------------------------------------------------
-Casey Schaufler (5):
-      Smack: Consolidate uses of secmark into a function
-      Smack: Set socket labels only once
-      Smack: Use the netlabel cache
-      Smack: Fix build when NETWORK_SECMARK is not set
-      Smack: Remove unnecessary variable initialization
-
- security/smack/smack.h        |  19 +---
- security/smack/smack_access.c |  55 ++++++---
- security/smack/smack_lsm.c    | 252 +++++++++++++++++++++++++-----------=
-------
- security/smack/smackfs.c      |  23 ++--
- 4 files changed, 200 insertions(+), 149 deletions(-)
-
-
+Rob
