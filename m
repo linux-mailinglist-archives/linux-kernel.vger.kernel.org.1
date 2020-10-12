@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A4E328B658
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:34:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0067428B9C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389077AbgJLNc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:32:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34696 "EHLO mail.kernel.org"
+        id S2390868AbgJLODQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:03:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388998AbgJLNcn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:32:43 -0400
+        id S1731004AbgJLNhO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:37:14 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 497CD2087E;
-        Mon, 12 Oct 2020 13:32:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 31A0322202;
+        Mon, 12 Oct 2020 13:36:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509560;
-        bh=ciPxHtj2f0tQIj3a/F4Xjhz11pILOMIG9uVe5v4llP0=;
+        s=default; t=1602509818;
+        bh=i/8HbRzEGX4wWm4uRh2kyiPpqym/dW/95Q+ypT/ldq4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bgkIro3utabAAjjjiJmgf27mrF+5l7gx4DHSNGYSOiFQVMOnqZOOob0TgpB1e1Vu6
-         hu4+/Q+ulz+Nz7cBMPZIc2HBLuNpqceMgMrul7C2XlR1E6FdKfSlsGC12aAsFjR3Mc
-         FDGrZQRtE9zSVxOFo056w2Vk62KIWluEpX4BUOGs=
+        b=ZoTrcdJ0Rfg87u5ZvDox7RQkMHgKHGL/HvAPVKGfC/ZdT8KpLB40IhsGkDHrcZUiZ
+         X+dNJByQTN7iTz31Sd0USW5BlrZwyp8FwUtOkWKSITrnqPlGg9OATz6H7i/THurIk2
+         rtIOkAh6ewoQHPhVdq5qaY6BWZfpSbK7Rzp67etU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 28/39] team: set dev->needed_headroom in team_setup_by_port()
+        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Subject: [PATCH 4.14 42/70] mtd: rawnand: sunxi: Fix the probe error path
 Date:   Mon, 12 Oct 2020 15:26:58 +0200
-Message-Id: <20201012132629.478443268@linuxfoundation.org>
+Message-Id: <20201012132632.202138435@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132628.130632267@linuxfoundation.org>
-References: <20201012132628.130632267@linuxfoundation.org>
+In-Reply-To: <20201012132630.201442517@linuxfoundation.org>
+References: <20201012132630.201442517@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,32 +42,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Miquel Raynal <miquel.raynal@bootlin.com>
 
-commit 89d01748b2354e210b5d4ea47bc25a42a1b42c82 upstream.
+commit 3d84515ffd8fb657e10fa5b1215e9f095fa7efca upstream.
 
-Some devices set needed_headroom. If we ignore it, we might
-end up crashing in various skb_push() for example in ipgre_header()
-since some layers assume enough headroom has been reserved.
+nand_release() is supposed be called after MTD device registration.
+Here, only nand_scan() happened, so use nand_cleanup() instead.
 
-Fixes: 1d76efe1577b ("team: add support for non-ethernet devices")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 1fef62c1423b ("mtd: nand: add sunxi NAND flash controller support")
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/linux-mtd/20200519130035.1883-54-miquel.raynal@bootlin.com
+[iwamatsu: adjust filename]
+Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/net/team/team.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/nand/sunxi_nand.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/team/team.c
-+++ b/drivers/net/team/team.c
-@@ -2038,6 +2038,7 @@ static void team_setup_by_port(struct ne
- 	dev->header_ops	= port_dev->header_ops;
- 	dev->type = port_dev->type;
- 	dev->hard_header_len = port_dev->hard_header_len;
-+	dev->needed_headroom = port_dev->needed_headroom;
- 	dev->addr_len = port_dev->addr_len;
- 	dev->mtu = port_dev->mtu;
- 	memcpy(dev->broadcast, port_dev->broadcast, port_dev->addr_len);
+--- a/drivers/mtd/nand/sunxi_nand.c
++++ b/drivers/mtd/nand/sunxi_nand.c
+@@ -2125,7 +2125,7 @@ static int sunxi_nand_chip_init(struct d
+ 	ret = mtd_device_register(mtd, NULL, 0);
+ 	if (ret) {
+ 		dev_err(dev, "failed to register mtd device: %d\n", ret);
+-		nand_release(nand);
++		nand_cleanup(nand);
+ 		return ret;
+ 	}
+ 
 
 
