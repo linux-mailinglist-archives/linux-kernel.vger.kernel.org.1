@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E2CD28BA57
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:08:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8866028B984
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730760AbgJLOIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:08:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35768 "EHLO mail.kernel.org"
+        id S1731200AbgJLNih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:38:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40116 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389069AbgJLNdh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:33:37 -0400
+        id S1731017AbgJLNhT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:37:19 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 76BB020838;
-        Mon, 12 Oct 2020 13:33:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8891F204EA;
+        Mon, 12 Oct 2020 13:37:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509616;
-        bh=sxyYFJaYYfTrBpG9XEX/1qzpRTaAjKaCLA2pCCuRF6Q=;
+        s=default; t=1602509835;
+        bh=YwlDmvQPPSAfDtG59Bri/v67AlNWkFT/fxzVaZY807Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tj9o0DfxQoC0RfwamQOCBDbJgORXNHdhpxMgd9XCjVNn1kEDYQ57ND3oPyFaE6ICX
-         2lhDyxyuJdZ771SQ9JlY+quZFQuMfqAd77+rQmfrbsythtvqUMoxpOaeDNLU9kqiQD
-         gsXQr4czxGc6AbP1FpM2dqyQdFSWLGUukofsvbYg=
+        b=On+cfCgjmKkXOyyioiOntNYBP58hsbwWranrt7UkHVIiU/62FoQ5h5LWSCs6ds6gC
+         qVoT77P53XaEgNGlbbOHgQw1j7fY7D6EptwQz2mcPQV4ejDDn+3ZIRK046MNhyIYz7
+         X5PzCbPTWGzRO5tAy8Ln4vU1dJabr9NdSwOytKS8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,12 +30,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jeffrey Mitchell <jeffrey.mitchell@starlab.io>,
         Trond Myklebust <trond.myklebust@hammerspace.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 12/54] nfs: Fix security label length not being reset
-Date:   Mon, 12 Oct 2020 15:26:34 +0200
-Message-Id: <20201012132630.150241058@linuxfoundation.org>
+Subject: [PATCH 4.14 19/70] nfs: Fix security label length not being reset
+Date:   Mon, 12 Oct 2020 15:26:35 +0200
+Message-Id: <20201012132631.152281902@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132629.585664421@linuxfoundation.org>
-References: <20201012132629.585664421@linuxfoundation.org>
+In-Reply-To: <20201012132630.201442517@linuxfoundation.org>
+References: <20201012132630.201442517@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -73,10 +73,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+)
 
 diff --git a/fs/nfs/dir.c b/fs/nfs/dir.c
-index 2517fcd423b68..d405b5a14073a 100644
+index 673d89bb817ea..5c26e90db5887 100644
 --- a/fs/nfs/dir.c
 +++ b/fs/nfs/dir.c
-@@ -583,6 +583,9 @@ int nfs_readdir_page_filler(nfs_readdir_descriptor_t *desc, struct nfs_entry *en
+@@ -560,6 +560,9 @@ int nfs_readdir_page_filler(nfs_readdir_descriptor_t *desc, struct nfs_entry *en
  	xdr_set_scratch_buffer(&stream, page_address(scratch), PAGE_SIZE);
  
  	do {
