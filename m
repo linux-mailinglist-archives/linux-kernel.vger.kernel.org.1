@@ -2,83 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 893B328BAC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:24:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9526228BACB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389679AbgJLOYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:24:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389328AbgJLOYp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 10:24:45 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C3AFC0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 07:24:45 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id b2so16132643ilr.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 07:24:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KXjyEZ75Pe4z4wSYrGbLTLW5aWcGXSPk3cloYXZRaQ4=;
-        b=rDqNIIj/4RCVrCTL8/M7nsY1rbeEAMaUOaH858YqkKmjLup7HNaJas+bWUE8scDgMY
-         WRgvGnWGk9gwIlxRrR1MKsaI1xyQbLtdsyiTaBFxunHI6UD73d/WqpJlABKqG9B8R1GX
-         yttwsR7L2CXJ6PmPLUUCC3VNQ3704dbZ+fRx+ZpTJjhIKHGAvPOeKJ+nemH8b8zWVnYm
-         AxPjX3mq06Z731A5VzfA2BLMaHqLrtUibfXqQtf32Zh1c7YkNJ/tEApnlk3dfDlTQ82l
-         vIiwKheyCCeFVuWiON8Gq9fRnzlG8AziqZW4w/LBoSgyTcVHf6bAm63v6uoixd2JZxSZ
-         75kQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KXjyEZ75Pe4z4wSYrGbLTLW5aWcGXSPk3cloYXZRaQ4=;
-        b=sOB+fAe50XUsXPfYd+sGezF68iiC18iu2xq5ibMhd8uw0HxBQYlbRCWEYeizJMSpyL
-         Bv8ZetUepJEveoM+UqSSIjCMOLqJFR3OfjZKnSKDRbmY2f/S0fQQvkOneqFbYBHNagVs
-         ehWWOi+07chV42RRgsVrAkVzgzToUFsTAwBZwDCQXFMpT8/T2lur7jlYSKcFnrwHZl7V
-         m8IaGiNnvpOlWfukSoDsvOc3uhlnWwqY+fnKJp/fUNX+u2suKPenLQQiptmzw3pR4FPq
-         beW4nzYt7cpg73kEq28sdlC9Qy708szdG0lBCV7vll1VUZEcFpkK1YJpGSSPMkO9vXA0
-         +UDA==
-X-Gm-Message-State: AOAM531MnfeNl+l0+Tx6J1u0uMXuC5k53lQsfZgKryJOE8kqW+YTKZQm
-        FlGzLWTTh1b2hyvnbIbvFTDKu1EI4oH6uQ==
-X-Google-Smtp-Source: ABdhPJznZRNU9a15R8WfJMyAoMmQCUgRYZZ8MpyOl67bGNCEGVilcETpNqOifTaQIWKqwq05Rl0odw==
-X-Received: by 2002:a92:ae0a:: with SMTP id s10mr19507476ilh.289.1602512683984;
-        Mon, 12 Oct 2020 07:24:43 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id c2sm7405690ioc.29.2020.10.12.07.24.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Oct 2020 07:24:43 -0700 (PDT)
-Subject: Re: [PATCH][next] io_uring: Fix sizeof() mismatch
-To:     Colin King <colin.king@canonical.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201012140341.77412-1-colin.king@canonical.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <871e585c-06ca-17cb-f082-fec576bb75e1@kernel.dk>
-Date:   Mon, 12 Oct 2020 08:24:42 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201012140341.77412-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S2389092AbgJLO0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:26:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51768 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388589AbgJLO0Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 10:26:16 -0400
+Received: from tzanussi-mobl (c-73-209-127-30.hsd1.il.comcast.net [73.209.127.30])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B565A2076C;
+        Mon, 12 Oct 2020 14:26:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602512775;
+        bh=T18qq6n77M14K4aDgEWW3a4aROVcFCp95O5Tl5EbYQc=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=n4e71GzUhq2ZKR3S5av77GyaGXDfHFRFkw0jQkSk6tAb32pDCstgvo6DyxrCxiwct
+         LqbP1Efhrb4dvE+e7Cutt+Ig6bQ/ngsm1LKZfOy+WvVO42BveT75+a4pX5EPBNJbvE
+         E/KlVDyTCfc8L7rgbD9rZbCkUpb+dyLqM4ZaQ1bA=
+Message-ID: <43b10ad23a80ee5ae9f10b6d47d7944b6b14a25d.camel@kernel.org>
+Subject: Re: [PATCH v3 1/2] tracing: support "bool" type in synthetic trace
+ events
+From:   Tom Zanussi <zanussi@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michel Lespinasse <walken@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Jann Horn <jannh@google.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Date:   Mon, 12 Oct 2020 09:26:13 -0500
+In-Reply-To: <20201012101527.6df53dda@gandalf.local.home>
+References: <20201009220524.485102-1-axelrasmussen@google.com>
+         <20201009220524.485102-2-axelrasmussen@google.com>
+         <20201012101527.6df53dda@gandalf.local.home>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/20 8:03 AM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+Hi Steve,
+
+Looks ok to me.
+
+Acked-by: Tom Zanussi <zanussi@kernel.org>
+
+Thanks,
+
+Tom
+
+
+On Mon, 2020-10-12 at 10:15 -0400, Steven Rostedt wrote:
+> Tom,
 > 
-> An incorrect sizeof() is being used, sizeof(file_data->table) is not
-> correct, it should be sizeof(*file_data->table).
-
-Thanks, should be a no-op, which is why KASAN didn't complain in my
-testing. I'll queue this up, thanks.
-
--- 
-Jens Axboe
+> Can you ack this patch for me?
+> 
+> -- Steve
+> 
+> 
+> On Fri,  9 Oct 2020 15:05:23 -0700
+> Axel Rasmussen <axelrasmussen@google.com> wrote:
+> 
+> > It's common [1] to define tracepoint fields as "bool" when they
+> > contain
+> > a true / false value. Currently, defining a synthetic event with a
+> > "bool" field yields EINVAL. It's possible to work around this by
+> > using
+> > e.g. u8 (assuming sizeof(bool) is 1, and bool is unsigned; if
+> > either of
+> > these properties don't match, you get EINVAL [2]).
+> > 
+> > Supporting "bool" explicitly makes hooking this up easier and more
+> > portable for userspace.
+> > 
+> > [1]: grep -r "bool" include/trace/events/
+> > [2]: check_synth_field() in kernel/trace/trace_events_hist.c
+> > 
+> > Acked-by: Michel Lespinasse <walken@google.com>
+> > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+> > ---
+> >  kernel/trace/trace_events_synth.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> > 
+> > diff --git a/kernel/trace/trace_events_synth.c
+> > b/kernel/trace/trace_events_synth.c
+> > index 8e1974fbad0e..8f94c84349a6 100644
+> > --- a/kernel/trace/trace_events_synth.c
+> > +++ b/kernel/trace/trace_events_synth.c
+> > @@ -234,6 +234,8 @@ static int synth_field_size(char *type)
+> >  		size = sizeof(long);
+> >  	else if (strcmp(type, "unsigned long") == 0)
+> >  		size = sizeof(unsigned long);
+> > +	else if (strcmp(type, "bool") == 0)
+> > +		size = sizeof(bool);
+> >  	else if (strcmp(type, "pid_t") == 0)
+> >  		size = sizeof(pid_t);
+> >  	else if (strcmp(type, "gfp_t") == 0)
+> > @@ -276,6 +278,8 @@ static const char *synth_field_fmt(char *type)
+> >  		fmt = "%ld";
+> >  	else if (strcmp(type, "unsigned long") == 0)
+> >  		fmt = "%lu";
+> > +	else if (strcmp(type, "bool") == 0)
+> > +		fmt = "%d";
+> >  	else if (strcmp(type, "pid_t") == 0)
+> >  		fmt = "%d";
+> >  	else if (strcmp(type, "gfp_t") == 0)
+> > --
+> > 2.28.0.1011.ga647a8990f-goog
+> 
+> 
 
