@@ -2,84 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B449528B250
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 12:37:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A0328B25D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 12:38:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387594AbgJLKhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 06:37:50 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2968 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387522AbgJLKhu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 06:37:50 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.106])
-        by Forcepoint Email with ESMTP id B89ABBECC34FEB1508D9;
-        Mon, 12 Oct 2020 11:37:48 +0100 (IST)
-Received: from [127.0.0.1] (10.47.8.38) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 12 Oct
- 2020 11:37:47 +0100
-Subject: Re: [PATCH RFC v4 13/13] perf vendor events: Add JSON metrics for
- imx8mm DDR Perf
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>,
-        "acme@kernel.org" <acme@kernel.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "jolsa@redhat.com" <jolsa@redhat.com>,
-        "irogers@google.com" <irogers@google.com>,
-        "leo.yan@linaro.org" <leo.yan@linaro.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "alexander.shishkin@linux.intel.com" 
-        <alexander.shishkin@linux.intel.com>,
-        "namhyung@kernel.org" <namhyung@kernel.org>,
-        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>
-CC:     Linuxarm <linuxarm@huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Zhangshaokun <zhangshaokun@hisilicon.com>,
-        "james.clark@arm.com" <james.clark@arm.com>,
-        dl-linux-imx <linux-imx@nxp.com>
-References: <1602152121-240367-1-git-send-email-john.garry@huawei.com>
- <1602152121-240367-14-git-send-email-john.garry@huawei.com>
- <DB8PR04MB67950A459A08343CA3A779A4E6070@DB8PR04MB6795.eurprd04.prod.outlook.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <14cf6eae-f865-bd0d-72c1-57aeb87f2570@huawei.com>
-Date:   Mon, 12 Oct 2020 11:34:40 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S2387683AbgJLKi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 06:38:28 -0400
+Received: from elvis.franken.de ([193.175.24.41]:58431 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387599AbgJLKiS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 06:38:18 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kRvDc-0008KW-07; Mon, 12 Oct 2020 12:38:16 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 841EFC1140; Mon, 12 Oct 2020 12:34:47 +0200 (CEST)
+Date:   Mon, 12 Oct 2020 12:34:47 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Jonathan Corbet <corbet@lwn.net>, Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH v2 1/4 RESEND] MIPS: Loongson64: Select SMP in Kconfig to
+ avoid build error
+Message-ID: <20201012103447.GA7953@alpha.franken.de>
+References: <1602373674-4579-1-git-send-email-yangtiezhu@loongson.cn>
+ <1602373674-4579-2-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
-In-Reply-To: <DB8PR04MB67950A459A08343CA3A779A4E6070@DB8PR04MB6795.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.8.38]
-X-ClientProxiedBy: lhreml711-chm.china.huawei.com (10.201.108.62) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1602373674-4579-2-git-send-email-yangtiezhu@loongson.cn>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/2020 11:03, Joakim Zhang wrote:
->> --- /dev/null
->> +++ b/tools/perf/pmu-events/arch/arm64/freescale/imx8mm/sys/ddrc.json
->> @@ -0,0 +1,39 @@
->> +[
->> +   {
->> +           "BriefDescription": "ddr cycles event",
->> +           "EventCode": "0x00",
->> +           "EventName": "imx8_ddr.cycles",
-> Could you help change to imx8mm_ddr.cycles? Thanks a lot!
-
-Can do.
-
-Note that I want to improve perf list in future such that alias 
-"imx8_ddr.cycles" removes kernel PMU events which this alias is 
-matching. The motivation is that perf list can be swamped by kernel 
-uncore PMU events listing.
-
+On Sun, Oct 11, 2020 at 07:47:51AM +0800, Tiezhu Yang wrote:
+> In the current code, CONFIG_SMP can be set as N by user on the Loongson
+> platform, then there exists the following build error under !CONFIG_SMP:
 > 
->> +           "Unit": "imx8_ddr",
->> +           "Compat": "i.MX8MM"
+>   CC      arch/mips/kernel/asm-offsets.s
+> In file included from ./include/linux/gfp.h:9:0,
+>                  from ./include/linux/xarray.h:14,
+>                  from ./include/linux/radix-tree.h:18,
+>                  from ./include/linux/fs.h:15,
+>                  from ./include/linux/compat.h:17,
+>                  from arch/mips/kernel/asm-offsets.c:12:
+> ./include/linux/topology.h: In function 'numa_node_id':
+> ./include/linux/topology.h:119:2: error: implicit declaration of function 'cpu_logical_map' [-Werror=implicit-function-declaration]
+>   return cpu_to_node(raw_smp_processor_id());
+>   ^
+> cc1: some warnings being treated as errors
+> scripts/Makefile.build:117: recipe for target 'arch/mips/kernel/asm-offsets.s' failed
+> make[1]: *** [arch/mips/kernel/asm-offsets.s] Error 1
+> 
+> Select SMP in Kconfig to avoid the above build error and then remove
+> CONFIG_SMP=y in loongson3_defconfig.
+> 
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+> 
+> v2: no changes
+> 
+>  arch/mips/Kconfig                     | 1 +
+>  arch/mips/configs/loongson3_defconfig | 1 -
+>  2 files changed, 1 insertion(+), 1 deletion(-)
 
+applied to mips-next.
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
