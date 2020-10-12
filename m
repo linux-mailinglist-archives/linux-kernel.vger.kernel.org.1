@@ -2,192 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C343128B347
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 12:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16CFB28B34C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 13:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387952AbgJLK7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 06:59:50 -0400
-Received: from foss.arm.com ([217.140.110.172]:37640 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387594AbgJLK7s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 06:59:48 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F09F330E;
-        Mon, 12 Oct 2020 03:59:46 -0700 (PDT)
-Received: from localhost (unknown [10.1.199.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 924113F719;
-        Mon, 12 Oct 2020 03:59:46 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 11:59:45 +0100
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Nicola Mazzucato <nicola.mazzucato@arm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        vireshk@kernel.org, daniel.lezcano@linaro.org, rjw@rjwysocki.net,
-        linux-kernel@vger.kernel.org, sudeep.holla@arm.com,
-        chris.redpath@arm.com, morten.rasmussen@arm.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 2/2] [RFC] CPUFreq: Add support for
- cpu-perf-dependencies
-Message-ID: <20201012105945.GA9219@arm.com>
-References: <20200924095347.32148-3-nicola.mazzucato@arm.com>
- <20201006071909.3cgz7i5v35dgnuzn@vireshk-i7>
- <2417d7b5-bc58-fa30-192c-e5991ec22ce0@arm.com>
- <20201008110241.dcyxdtqqj7slwmnc@vireshk-i7>
- <20201008150317.GB20268@arm.com>
- <56846759-e3a6-9471-827d-27af0c3d410d@arm.com>
- <20201009053921.pkq4pcyrv4r7ylzu@vireshk-i7>
- <42e3c8e9-cadc-d013-1e1f-fa06af4a45ff@arm.com>
- <20201009140141.GA4048593@bogus>
- <2b7b6486-2898-1279-ce9f-9e7bd3512152@arm.com>
+        id S2387970AbgJLLAl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 12 Oct 2020 07:00:41 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:33668 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387851AbgJLLAl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 07:00:41 -0400
+Received: by mail-ot1-f68.google.com with SMTP id t15so15520865otk.0;
+        Mon, 12 Oct 2020 04:00:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=1zzGoaY2S/EFy3jNz5H4aQ0+yU4Sr8kmv9ptMMnIcf8=;
+        b=e9RTGE2+RhmJBDmIoHQ7f6HjRY7yZ9NkDHLJRtH65Gu2RyEHV//B4jE6GGZtfAbkPT
+         Hew+hrYmoKMiqr5u6ELTFYXNB3LbF9QVvYXY2NL2aVmfWvFrd2G3m56nZhYsN1CFMM7H
+         pbThAMpWrWpXRqajslMzzEcyvAdaOQv7N9KYD+mkDE01N5yohBxKcyETeg7pCe1hVTXV
+         /1T7ykvfT6DQtpBrpvNawsGGc9bjVBPxkCnBgVvmznPM1FIbJO2Rr8Kqd61EWPR0tyUE
+         BSa22mBaNEYINla4Rj/zPEKHA090RZYdgk63xLDpbbBWcXOVaw6HhvIpY8x7rz2USI1x
+         3owA==
+X-Gm-Message-State: AOAM531IbYyaBrA8pxqKvule9703OmXLVSWVdG1xv2a727CL8b4pB3dm
+        OE0UptjUl14q0lYHC2uBUA2Mj/y/vfa1kUlxFO8=
+X-Google-Smtp-Source: ABdhPJzKbmNdJGUGB3vocn6qhxNNfE4DQHDLsmhe3UNcG1kKuhMWsNUT113WNdSH0sNZd2Y8aa1zzukJYdKAuP9HzQY=
+X-Received: by 2002:a9d:3626:: with SMTP id w35mr18911107otb.206.1602500439914;
+ Mon, 12 Oct 2020 04:00:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2b7b6486-2898-1279-ce9f-9e7bd3512152@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <1a69c5bc-ccc4-68db-7871-af05a70052c9@molgen.mpg.de>
+ <20201007221628.GW1009802@dtor-ws> <bbb70981-1242-0aea-01c9-f9507f8eae3b@molgen.mpg.de>
+ <CAJZ5v0hKmESo0-kfN1+vK7to05GpVV3d7ZnO3XEsQ2jKKhvkJQ@mail.gmail.com> <7921b792-c99a-659c-730f-ecb25cb7f04b@molgen.mpg.de>
+In-Reply-To: <7921b792-c99a-659c-730f-ecb25cb7f04b@molgen.mpg.de>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 12 Oct 2020 13:00:28 +0200
+Message-ID: <CAJZ5v0iim_XvBcjSZevEmbQb6F8bCb2jP14Ptnqd_7qfuuUHpw@mail.gmail.com>
+Subject: Re: i8042_init: PS/2 mouse not detected with ACPIPnP/PnPBIOS
+To:     Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>, linux-input@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 12 Oct 2020 at 11:22:57 (+0100), Lukasz Luba wrote:
-[..]
-> > > I thought about it and looked for other platforms' DT to see if can reuse
-> > > existing opp information. Unfortunately I don't think it is optimal. The reason
-> > > being that, because cpus have the same opp table it does not necessarily mean
-> > > that they share a clock wire. It just tells us that they have the same
-> > > capabilities (literally just tells us they have the same V/f op points).
-> > > Unless I am missing something?
-> > > 
-> > > When comparing with ACPI/_PSD it becomes more intuitive that there is no
-> > > equivalent way to reveal "perf-dependencies" in DT.
-> > 
-> > You should be able to by examining the clock tree. But perhaps SCMI
-> > abstracts all that and just presents virtual clocks without parent
-> > clocks available to determine what clocks are shared? Fix SCMI if that's
-> > the case.
-> 
-> True, the SCMI clock does not support discovery of clock tree:
-> (from 4.6.1 Clock management protocol background)
-> 'The protocol does not cover discovery of the clock tree, which must be
-> described through firmware tables instead.' [1]
-> 
-> In this situation, would it make sense, instead of this binding from
-> patch 1/2, create a binding for internal firmware/scmi node?
-> 
-> Something like:
-> 
-> firmware {
-> 	scmi {
-> 	...		
-> 		scmi-perf-dep {
-> 			compatible = "arm,scmi-perf-dependencies";
-> 			cpu-perf-dep0 {
-> 				cpu-perf-affinity = <&CPU0>, <&CPU1>;
-> 			};
-> 			cpu-perf-dep1 {
-> 				cpu-perf-affinity = <&CPU3>, <&CPU4>;
-> 			};
-> 			cpu-perf-dep2 {
-> 				cpu-perf-affinity = <&CPU7>;
-> 			};
-> 		};
-> 	};
-> };
-> 
-> The code which is going to parse the binding would be inside the
-> scmi perf protocol code and used via API by scmi-cpufreq.c.
-> 
+On Mon, Oct 12, 2020 at 12:50 PM Paul Menzel <pmenzel@molgen.mpg.de> wrote:
+>
+> Dear Rafael,
+>
+>
+> Am 12.10.20 um 12:39 schrieb Rafael J. Wysocki:
+> > On Sun, Oct 11, 2020 at 1:08 AM Paul Menzel <pmenzel@molgen.mpg.de> wrote:
+> >>
+> >> Dear Dmitry, dear Rafael, dear Len,
+> >>
+> >>
+> >> Am 08.10.20 um 00:16 schrieb Dmitry Torokhov:
+> >>
+> >>> On Wed, Oct 07, 2020 at 11:18:41PM +0200, Paul Menzel wrote:
+> >>
+> >>>> On the Asus F2A85-M PRO Linux 5.9-rc8 (and previous versions) does not
+> >>>> recognize a plugged in PS/2 mouse using the Plug & Play method. The PS/2
+> >>>> keyboard is detected fine, and using `i8042.nopnp`, the PS/2 mouse also
+> >>>> works.
+> >>>>
+> >>>>> [    1.035915] calling  i8042_init+0x0/0x42d @ 1
+> >>>>> [    1.035947] i8042: PNP: PS/2 Controller [PNP0303:PS2K] at 0x60,0x64 irq 1
+> >>>>> [    1.035948] i8042: PNP: PS/2 appears to have AUX port disabled, if this is incorrect please boot with i8042.nopnp
+> >>>>> [    1.036589] serio: i8042 KBD port at 0x60,0x64 irq 1
+> >>>>> [    1.036621] initcall i8042_init+0x0/0x42d returned 0 after 687 usecs
+> >>>>
+> >>>> But, the DSDT includes the “mouse device”. From
+> >>>>
+> >>>>       acpidump > dump.bin; acpixtract dump.bin; iasl -d *dat; more dsdt.dsl
+> >>>>
+> >>>> we get
+> >>>>
+> >>>>                   Device (PS2M)
+> >>>>                   {
+> >>>>                       Name (_HID, EisaId ("PNP0F03") /* Microsoft PS/2-style Mouse */)  // _HID: Hardware ID
+> >>>>                       Name (_CID, EisaId ("PNP0F13") /* PS/2 Mouse */) // _CID: Compatible ID
+> >>>>                       Method (_STA, 0, NotSerialized)  // _STA: Status
+> >>>>                       {
+> >>>>                           If ((IOST & 0x4000))
+> >>>>                           {
+> >>>>                               Return (0x0F)
+> >>>>                           }
+> >>>>                           Else
+> >>>>                           {
+> >>>>                               Return (Zero)
+> >>>>                           }
+> >>>>                       }
+> >>>>
+> >>>> and the identifiers PNP0F03 and PNP0F13 are both listed in the array
+> >>>> `pnp_aux_devids[]`. But adding print statements to `i8042_pnp_aux_probe()`,
+> >>>> I do not see them, so the function does not seem to be called.
+> >>>
+> >>> My guess is that _STA returns 0 indicating that the device is not
+> >>> present. I would try tracking where IOST is being set and figuring out
+> >>> why it does not have mouse bit enabled.
+> >>
+> >> Does the ACPI subsystem allow to track, how ACPI variables(?) like IOST
+> >> are read and set?
+> >
+> > My guess would be that IOST is a field in an operation region which
+> > would indicate that it is initialized by the bootstrap part of the
+> > BIOS.
+>
+> Thank you for your answer. But how can I verify that?
 
-While SCMI cpufreq would be able to benefit from the functionality that
-Nicola is trying to introduce, it's not the only driver, and more
-importantly, it's not *going* to be the only driver benefiting from
-this.
+Inspecting the ACPI tables from the system in question could help you
+to find out whether or not IOST really is a field in an operation
+region, but its initial value may not be possible to determine this
+way.
 
-Currently there is also qcom-cpufreq-hw.c and the future
-mediatek-cpufreq-hw.c that is currently under review [1]. They both do
-their frequency setting by interacting with HW/FW, and could either take
-or update their OPP tables from there. Therefore, if the platform would
-require it, they could also expose different controls for frequency
-setting and could benefit from additional information about clock
-domains (either through opp-shared or the new entries in Nicola's patch),
-without driver changes.
+> Is there a Linux kernel parameter, that would print it?
 
-Another point to be made is that I strongly believe this is going to be
-the norm in the future. Directly setting PLLs and regulator voltages
-has been proven unsafe and unsecure.
-
-Therefore, I see this as support for a generic cpufreq feature (a
-hardware coordination type), rather than support for a specific driver.
-
-[1] https://lkml.org/lkml/2020/9/10/11
-
-> 
-> Now regarding the 'dependent_cpus' mask.
-> 
-> We could avoid adding a new field 'dependent_cpus' in policy
-> struct, but I am not sure of one bit - Frequency Invariant Engine,
-> (which is also not fixed by just adding a new cpumask).
-  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  Let's take it step by step..
-> 
-> We have 3 subsystems to fix:
-> 1. EAS - EM has API function which takes custom cpumask, so no issue,
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-	   keep in mind that EAS it's using the max aggregation method
-	   that schedutil is using. So if we are to describe the
-	   functionality correctly, it needs both a cpumask describing
-	   the frequency domains and an aggregation method.
-
->   fix would be to use it via the scmi-cpufreq.c
-
-> 2. IPA (for calculating the power of a cluster, not whole thermal needs
->   this knowledge about 'dependent cpus') - this can be fixed internally
-
-> 3. Frequency Invariant Engine (FIE) - currently it relies on schedutil
->   filtering and providing max freq of all cpus in the cluster into the
->   FIE; this info is then populated to all 'related_cpus' which will
->   have this freq (we know, because there is no other freq requests);
->   Issues:
-> 3.1. Schedutil is not going to check all cpus in the cluster to take
->   max freq, which is then passed into the cpufreq driver and FIE
-> 3.2. FIE would have to (or maybe we would drop it) have a logic similar
->   to what schedutil does (max freq search and set, then filter next
->   freq requests from other cpus in the next period e.g. 10ms)
-> 3.3. Schedutil is going to invoke freq change for each cpu independently
->   and the current code just calls arch_set_freq_scale() - adding just
->   'dependent_cpus' won't help
-
-I don't believe these are issues. As we need changes for EAS and IPA, we'd
-need changes for FIE. We don't need more than the cpumask that shows
-frequency domains as we already already have the aggregation method that
-schedutil uses to propagate the max frequency in a domain across CPUs.
-
-This would be the default method if cycle counters are not present. It
-might not reflect the frequency the cores actually get from HW, but for
-that cycle counters should be used.
-
-> 3.4 What would be the real frequency of these cpus and what would be
->   set to FIE
-> 3.5 FIE is going to filter to soon requests from other dependent cpus?
-> 
-> IMHO the FIE needs more bits than just a new cpumask.
-> Maybe we should consider to move FIE arch_set_freq_scale() call into the
-> cpufreq driver, which will know better how to aggregate/filter requests
-> and then call FIE update?
-
-I'm quite strongly against this :). As described before, this is not a
-feature that a single driver needs, and even if it was, the aggregation
-method for FIE is not a driver policy.
-
-Thanks,
-Ionela.
-
-> 
-> Regards,
-> Lukasz
-> 
-> [1] https://developer.arm.com/documentation/den0056/b/
-> > 
-> > Rob
-> > 
+Not that I know of.
