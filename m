@@ -2,101 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8525E28B590
+	by mail.lfdr.de (Postfix) with ESMTP id F19B528B591
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388694AbgJLNKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:10:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54546 "EHLO
+        id S1728945AbgJLNKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:10:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388684AbgJLNKI (ORCPT
+        with ESMTP id S2388684AbgJLNKJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:10:08 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3876C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 06:10:07 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id d20so17576763iop.10
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 06:10:07 -0700 (PDT)
+        Mon, 12 Oct 2020 09:10:09 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D217C0613D1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 06:10:09 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id m17so17624544ioo.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 06:10:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6XlKFYoGp/9Yp1zRFm8Sy327KOHtLJ5llMoPdKvcscA=;
-        b=jAGHmTf5Nduq/fQUv+4nxjuTCU+LwWMr13IeDChxgwAclrtAvqi8ibY6kOF/HkeCAy
-         LJ0Dtm0wZ5876fZRWreg6cYHCGlR3RjiSEIme4jwJt2JykPyxOmQAYETSMpdJMVE7s6J
-         Dnw2y5HbsWr6nN3fpKAG3nzdiPtIo4eWlKF91vunAMAir8/dsVHdavzNYX3znB14XWdr
-         JNAJnFXxXoDy3fXAI/pQeEMcSk5ozcgC5wiXd0136HcmPZNk4V483t43ETquo8uAQ8SB
-         sLn/T521yuk7OPnqBI6DIHN4cnZFk/JwexylrdOYCsXwrVuaVLh2rI4XJ3TcakJtH3cu
-         E7aA==
+        h=mime-version:reply-to:from:date:message-id:subject:to:cc;
+        bh=ECw5bzhSCyxuQlk/zYdTL9hZWuUWFH2UmH7qybfKxvQ=;
+        b=TfAdQ7XkO56MzJ/poXHQPPRsu7qQZfNllHrCt9mZx/SMBQ9PvLEJgmROL23QqZds8w
+         l88sa8T2aXgSlakMFon+XITo2Qx0+wzblHPnjqfqiW6NbOz46cAEOE1cfuLnzIiw4rPT
+         r9Q+OE/OA9ZhHjaLyRK+SFyyHw6EqgW9qp/SNmlQzvb4/3hB1Az1uz7m3Z5Mlj3bWCFT
+         C8zZaoBLKjJUZpA9uLUSaEF+YIM/6zcjy6KdeLA6qKRlZ/+2tfW0QmFIbXC0ULCO0Rbm
+         IBZPacQULmZxRTS33xrduWjD3YNR47/y4DOOWTTBbKkk35wVUc7HAnYbcqww/lqidQLU
+         sw3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6XlKFYoGp/9Yp1zRFm8Sy327KOHtLJ5llMoPdKvcscA=;
-        b=kCDP6lYpt76n9hhL2pV26PY4Zv90oI1LBPthRIcCPfH6C3oFesro/zl2KeFp+gSo9+
-         S55MDywzqRIZlTHpFpjGx3/xzf+5xoycA4m/lTaZfuHXmxWWi4tHU4umWtP8Zllbb1gY
-         aLCB/hbZxtVT51+2Omv24YFGX9beSGOlZ+6++Pkt/lcHKgLY9bZI5voNkepFydBXM5hZ
-         z53BYR1s7u0OcIPr3jP7FUEm4n2mT9F163Gy194HveYaluq4DtbZG94Ew0JlQPsk1O7j
-         RyXfaBlzUkiBmJ9mePMoQvI0UhheSE+oSBTaQHQWZw/V9bXqVPb0A5QSSTYc2MmSeYdr
-         MLcg==
-X-Gm-Message-State: AOAM533P4BpyZlWBPH49C718c5AvNAXYnJQ+zvNc5lRCcjb9ltbdZlsZ
-        nH3uI64bsiRKCJLqYhkS8/zxmI5ouNiqxeMYpoM=
-X-Google-Smtp-Source: ABdhPJyQX7B4TigMLUeL1CeyT+6EMpdx6Rpju+B9FjFdQ94a5CEIxfd6w/uYgD7lIAfCV9OVGN8pV8heZnZB3F9w6h8=
-X-Received: by 2002:a5d:8b4c:: with SMTP id c12mr16754244iot.167.1602508207125;
- Mon, 12 Oct 2020 06:10:07 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=ECw5bzhSCyxuQlk/zYdTL9hZWuUWFH2UmH7qybfKxvQ=;
+        b=cFgn/Sppze35jUNrBLfAX9yY1smxtc6CcBjsAVOnrT1VVTzpsjgBXEXcIUBSe/70qG
+         UFjaSTJGNKZ0Y8hq1eCMieoDlFWQONJS2zlezhH//i0cYe5Dr0+cCsJrhhlLA0gk3h+G
+         iIetkr1zeJuGdZJ/CwaKrKFE8ADXC2/AclF+fbyYgJvWMa46kQ+yID7Gilf/ZynX7gpl
+         H0qqZvu1dIZP0tukExx/Nd9qAvfrmN00SkCyPHMFjXTYdKnkq/pRXfopObM5ZsxsErYe
+         mq3ndViWhFXBXsesJKMaOP+tMx5I0F31HHqLNXg/B1N8QL54ySlxFEyqoJ7pge8rHOf1
+         0FOA==
+X-Gm-Message-State: AOAM532jPlRJKWWpM0wZOTGp0RJSnSWec9Om2dwYvymTGO4mO/wjpX5b
+        wJrr50+HQxeF4WzWqSQ6HytAPXgjML+ymMJXLHn0GwRmBRiohg==
+X-Google-Smtp-Source: ABdhPJxpjWGowQanilPP0doPZ1xgDf+LIY28UcrdtMJBXCwOcLjJAeayzY1GaafkeWpCi1qjDQDAucrZaEnMla8FPq8=
+X-Received: by 2002:a6b:b841:: with SMTP id i62mr16741492iof.57.1602508208829;
+ Mon, 12 Oct 2020 06:10:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201012125323.17509-1-david@redhat.com> <20201012125323.17509-5-david@redhat.com>
-In-Reply-To: <20201012125323.17509-5-david@redhat.com>
-From:   Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Date:   Mon, 12 Oct 2020 15:09:55 +0200
-Message-ID: <CAM9Jb+jf3DJiXmS-fnkZ6cfdw7AhPsusWiYM=XMwBD0L=yephA@mail.gmail.com>
-Subject: Re: [PATCH v1 04/29] virtio-mem: drop rc2 in virtio_mem_mb_plug_and_add()
-To:     David Hildenbrand <david@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        virtualization@lists.linux-foundation.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Mon, 12 Oct 2020 15:09:57 +0200
+Message-ID: <CA+icZUUK3sgpHyY1h_pdzJzkX1bY46opLYytRKRzeCxBNzTX4A@mail.gmail.com>
+Subject: Missing [GIT PULL] request for <tip.git#locking-urgent-2020-10-11>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Cc: "Michael S. Tsirkin" <mst@redhat.com>
-> Cc: Jason Wang <jasowang@redhat.com>
-> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->  drivers/virtio/virtio_mem.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
-> index 78c2fbcddcf8..b3eebac7191f 100644
-> --- a/drivers/virtio/virtio_mem.c
-> +++ b/drivers/virtio/virtio_mem.c
-> @@ -1072,7 +1072,7 @@ static int virtio_mem_mb_plug_and_add(struct virtio_mem *vm,
->                                       uint64_t *nb_sb)
->  {
->         const int count = min_t(int, *nb_sb, vm->nb_sb_per_mb);
-> -       int rc, rc2;
-> +       int rc;
->
->         if (WARN_ON_ONCE(!count))
->                 return -EINVAL;
-> @@ -1103,13 +1103,12 @@ static int virtio_mem_mb_plug_and_add(struct virtio_mem *vm,
->
->                 dev_err(&vm->vdev->dev,
->                         "adding memory block %lu failed with %d\n", mb_id, rc);
-> -               rc2 = virtio_mem_mb_unplug_sb(vm, mb_id, 0, count);
->
->                 /*
->                  * TODO: Linux MM does not properly clean up yet in all cases
->                  * where adding of memory failed - especially on -ENOMEM.
->                  */
-> -               if (rc2)
-> +               if (virtio_mem_mb_unplug_sb(vm, mb_id, 0, count))
->                         new_state = VIRTIO_MEM_MB_STATE_PLUGGED;
->                 virtio_mem_mb_set_state(vm, mb_id, new_state);
->                 return rc;
+Hi,
 
-Reviewed-by: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+yesterday, I saw Ingo tagged "locking-urgent-2020-10-11" in tip Git.
+
+Did you drop it or was this for Linux v5.9 final and the git-pull
+request was simply forgotten?
+
+Just curious.
+
+Regards,
+- Sedat -
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/tag/?h=locking-urgent-2020-10-11
