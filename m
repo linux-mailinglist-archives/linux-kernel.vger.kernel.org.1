@@ -2,146 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0163D28AC42
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 04:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E542128AC4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 04:51:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726527AbgJLCpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 22:45:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726104AbgJLCpV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 22:45:21 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83B0FC0613CE;
-        Sun, 11 Oct 2020 19:45:20 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1726917AbgJLCvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 22:51:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53408 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725917AbgJLCvY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Oct 2020 22:51:24 -0400
+Received: from localhost (c-67-180-165-146.hsd1.ca.comcast.net [67.180.165.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C8jhX2zbJz9sS8;
-        Mon, 12 Oct 2020 13:45:15 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1602470716;
-        bh=mjGtmYaiKrM7DLhsF4b+HYazmeMtTIacQOJRXpDBvpI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=bVRi1MSXDXH5opTzDVEHsoktz0RWKHHd/VxvQ/rHIJbkFBEHTxG5tpFWCQQdj5ss2
-         1k0r4pD6WOK+Sqpxabu3oD6Fh7GJ7qAGa43enl4k9v/e+UnU/uBjFiq5MeM9s4EV2T
-         l3suINV5zQVhkN6FpXCHE2FlOqDtY5Qq7UyFWJQgHfGgPpEflcgE1C0QAEYDUbetNw
-         nT3w3XCbxMdhN93aJ8iOJvU9KRZb0/iaACG2nbvXxi+DLoWOHhgBOES7BDNMXyN7NS
-         cD+qT66s8j4RkksrJLvZkvfp/dbE9eDSr3tqT249blaA8MbgWVgdoLY1pBGjuUP2c6
-         GkXcYXKg7vUnw==
-Date:   Mon, 12 Oct 2020 13:45:10 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Geliang Tang <geliangtang@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Subject: linux-next: manual merge of the net-next tree with the net tree
-Message-ID: <20201012134510.51c0bd0a@canb.auug.org.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id 9E1FD2076C;
+        Mon, 12 Oct 2020 02:51:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602471083;
+        bh=kA0MEIENIiRQUQu1eR85Jqj0jeU2eLwYDp8Phxlfv1E=;
+        h=From:To:Cc:Subject:Date:From;
+        b=TkftCbfUz4oKI1HBJTzqdffRR4H20+Ngki5OfYeD4Zdhxxl06s1QoJ9G358NL2lIH
+         n1ybQDETtf6gdz9gIMm+1aryG3bD+WBAaHl88mJ6BshpTskp68Y7hD2nkHMI+xElLL
+         TJfCB8xvc3ddxNsJ8RlNIIinNqPg1MzIur1U+yTc=
+From:   Andy Lutomirski <luto@kernel.org>
+To:     x86@kernel.org
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Jessica Clarke <jrtc27@jrtc27.com>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: [PATCH] x86/syscalls: Document the fact that syscalls 512-547 are a legacy mistake
+Date:   Sun, 11 Oct 2020 19:51:21 -0700
+Message-Id: <6c56fb4ddd18fc60a238eb4d867e4b3d97c6351e.1602471055.git.luto@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/1.iFEXTbGlrHy2jUC.WPk+G";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/1.iFEXTbGlrHy2jUC.WPk+G
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Since commit 6365b842aae4 ("x86/syscalls: Split the x32 syscalls
+into their own table"), there is no need for special x32-specific
+syscall numbers.  I forgot to update the comments in syscall_64.tbl.
+Add comments to make it clear to future contributors that this range
+is a legacy wart.
 
-Hi all,
+Signed-off-by: Andy Lutomirski <luto@kernel.org>
+---
+ arch/x86/entry/syscalls/syscall_64.tbl | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-Today's linux-next merge of the net-next tree got a conflict in:
+diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
+index f30d6ae9a688..4adb5d2a3319 100644
+--- a/arch/x86/entry/syscalls/syscall_64.tbl
++++ b/arch/x86/entry/syscalls/syscall_64.tbl
+@@ -363,10 +363,10 @@
+ 439	common	faccessat2		sys_faccessat2
+ 
+ #
+-# x32-specific system call numbers start at 512 to avoid cache impact
+-# for native 64-bit operation. The __x32_compat_sys stubs are created
+-# on-the-fly for compat_sys_*() compatibility system calls if X86_X32
+-# is defined.
++# Due to a historical design error, certain syscalls are numbered differently
++# in x32 as compared to native x86_64.  These syscalls have numbers 512-547.
++# Do not add new syscalls to this range.  Numbers 548 and above are available
++# for non-x32 use.
+ #
+ 512	x32	rt_sigaction		compat_sys_rt_sigaction
+ 513	x32	rt_sigreturn		compat_sys_x32_rt_sigreturn
+@@ -404,3 +404,5 @@
+ 545	x32	execveat		compat_sys_execveat
+ 546	x32	preadv2			compat_sys_preadv64v2
+ 547	x32	pwritev2		compat_sys_pwritev64v2
++# This is the end of the legacy x32 range.  Numbers 548 and above are
++# not special and are not to be used for x32-specific syscalls.
+-- 
+2.26.2
 
-  net/mptcp/protocol.h
-
-between commit:
-
-  d582484726c4 ("mptcp: fix fallback for MP_JOIN subflows")
-
-from the net tree and commit:
-
-  d0876b2284cf ("mptcp: add the incoming RM_ADDR support")
-
-from the net-next tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc net/mptcp/protocol.h
-index 972463642690,aa0ab18d2e57..000000000000
---- a/net/mptcp/protocol.h
-+++ b/net/mptcp/protocol.h
-@@@ -203,9 -211,10 +212,11 @@@ struct mptcp_sock=20
-  	bool		fully_established;
-  	bool		rcv_data_fin;
-  	bool		snd_data_fin_enable;
- +	bool		use_64bit_ack; /* Set when we received a 64-bit DSN */
-  	spinlock_t	join_list_lock;
-  	struct work_struct work;
-+ 	struct sk_buff  *ooo_last_skb;
-+ 	struct rb_root  out_of_order_queue;
-  	struct list_head conn_list;
-  	struct list_head rtx_queue;
-  	struct list_head join_list;
-@@@ -294,9 -309,10 +311,9 @@@ struct mptcp_subflow_context=20
-  		map_valid : 1,
-  		mpc_map : 1,
-  		backup : 1,
-- 		data_avail : 1,
-  		rx_eof : 1,
- -		use_64bit_ack : 1, /* Set when we received a 64-bit DSN */
-  		can_ack : 1;	    /* only after processing the remote a key */
-+ 	enum mptcp_data_avail data_avail;
-  	u32	remote_nonce;
-  	u64	thmac;
-  	u32	local_nonce;
-@@@ -349,11 -365,13 +366,14 @@@ void mptcp_subflow_fully_established(st
-  				     struct mptcp_options_received *mp_opt);
-  bool mptcp_subflow_data_available(struct sock *sk);
-  void __init mptcp_subflow_init(void);
- +void mptcp_subflow_reset(struct sock *ssk);
-+ void mptcp_subflow_shutdown(struct sock *sk, struct sock *ssk, int how);
-+ void __mptcp_close_ssk(struct sock *sk, struct sock *ssk,
-+ 		       struct mptcp_subflow_context *subflow,
-+ 		       long timeout);
- =20
-  /* called with sk socket lock held */
-- int __mptcp_subflow_connect(struct sock *sk, int ifindex,
-- 			    const struct mptcp_addr_info *loc,
-+ int __mptcp_subflow_connect(struct sock *sk, const struct mptcp_addr_info=
- *loc,
-  			    const struct mptcp_addr_info *remote);
-  int mptcp_subflow_create_socket(struct sock *sk, struct socket **new_sock=
-);
- =20
-
---Sig_/1.iFEXTbGlrHy2jUC.WPk+G
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+DwzYACgkQAVBC80lX
-0Gyjqwf+IGWQv9QTFfZKE05vuR5QVtzxP81b1PiK4YBeiKNQPrpKHBp8MH1Hm1eo
-eNhTEEyYv2XClkTSw3R/QAxawOpa4OZMupjXNGhjryt+q5fFZaJPX7M/GgJiFiW/
-rtH8amipgxuZ/rqY8IhNrzmbV6YgcyfnTrYL557MfpnbCVuzWXSmgYE0rWv713RP
-qXoWjX3LCCNpQ1uADLxIIBnj5dXQN06l9gWm1HYux0JjdDbXj9z6p+jWY4SrExtM
-6A981XJK5A0e7f8OMticnK+h6RMuSK8CCJELC8ZFF3G124h8xdWwEkVK1EmYqVMw
-uBftf3ZEqxHKYWr8jB5jfS1wA7DDkA==
-=pU71
------END PGP SIGNATURE-----
-
---Sig_/1.iFEXTbGlrHy2jUC.WPk+G--
