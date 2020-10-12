@@ -2,99 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E755728ACC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 06:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E1DA28ACDA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 06:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728202AbgJLEYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 00:24:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726706AbgJLEYX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 00:24:23 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B732EC0613CE;
-        Sun, 11 Oct 2020 21:24:23 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id 144so12365281pfb.4;
-        Sun, 11 Oct 2020 21:24:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tGGjPH4vRcWgaIyBvIwbuR8WDhMxPW1JkVrUAJH4wsw=;
-        b=HVFLCVrJ9e/R18ofzZLeou3umzwT5fdPgRN+4LEas2eE+jBqseaUGv3FhBZk+khqI+
-         5mZoEdAKnTgukkl0I4m5od9383+CT8FO/EW/+8PrsIx7gScnYEWOi7VM11l5TpIfHXYW
-         viON4q9nrl+25CgwiOMJPUxxnb0fI8/LN+UQNLiclRpHfAjNZtm3b1/ssZd4l4VkRfSd
-         6BQ1gpvAUfsndFgH+cFETq+OsAPplgexzPWrgEcv8vgke+38nK7Q7Db65iSFnYIP0ZpZ
-         hcTynQ4e4vIH0HvGOKjR4A/ddjHJJDM+n5GiP23JNcACLzMQS9/3N+RuyHCH3TpSd+Wy
-         5Lxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tGGjPH4vRcWgaIyBvIwbuR8WDhMxPW1JkVrUAJH4wsw=;
-        b=R+DLo15mGKsHaGTS55gqktv4QCLWtCUPEeylWK3xtW8TOnLHtQazvz+yYVvssnhV1v
-         kCRc5HHoxDmOdjeJVupHG4KhoQVQdJ0cv+rFpJxX47MSPHTcxEGZ2vk+UzoFyCavduoj
-         gxcYq4LWyaZI0zJs1lVzWfBXoXXFXy+svYKGiVQRAKvYTvwe1DrF5Y8M9ojr2FyfdYbJ
-         EytKcWMfXwJcdWlYv9cIvsYcNlANYtCDd5tzVkJ4iK0DONJuMaauGg6Lwmhr6o92No50
-         kUJcFR553WEPNCO+BWpboqmXpQa9sxRMBnFqQJoqpaV2SdoXd/upYa1/tUI/iJ1QrX6L
-         uomw==
-X-Gm-Message-State: AOAM530J2WP5ownl6DkfnC6lhJF70ewMKVyqULkapvdGFN0sMNqx++zT
-        GUBFYoCTktF1Jr5k3jr8WjQ=
-X-Google-Smtp-Source: ABdhPJzZRPX105i1KB5YPC6MVCCPOxq7CKb10XSNAcjI+7RWRlEQZdWUkpBRYMRarueOXCGcZlpXdQ==
-X-Received: by 2002:a65:6858:: with SMTP id q24mr11849299pgt.10.1602476663055;
-        Sun, 11 Oct 2020 21:24:23 -0700 (PDT)
-Received: from localhost.localdomain ([49.207.200.2])
-        by smtp.gmail.com with ESMTPSA id ck21sm21348723pjb.56.2020.10.11.21.24.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Oct 2020 21:24:22 -0700 (PDT)
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-To:     ericvh@gmail.com, lucho@ionkov.net, asmadeus@codewreck.org,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        v9fs-developer@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+75d51fe5bf4ebe988518@syzkaller.appspotmail.com
-Subject: [PATCH net] net: 9p: initialize sun_server.sun_path to have addr's value only when addr is valid
-Date:   Mon, 12 Oct 2020 09:54:04 +0530
-Message-Id: <20201012042404.2508-1-anant.thazhemadam@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S1728252AbgJLEZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 00:25:01 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:44397 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726706AbgJLEZA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 00:25:00 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C8lvV5YHWz9sTr;
+        Mon, 12 Oct 2020 15:24:53 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1602476696;
+        bh=V42sruk0+lv2KrynPMxQFmIBmqyCNPJsMXYMk6z+xUs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=pEu8KRyuzcu0JerpjF/Dod+RgU5S9805mP5dJOyncw8NE942wFoYfqXMA6UL15RqF
+         1ds6SjHv8fk/De4eL7WOwjILSYj3fnzHVzpe3Za2jxYc1o6LH5kR2OQQt19WH4q3nD
+         J3oWYRfU6ZVur9u0hzbx6ZyszPEmLFF/eR4Ab9Rbn96COFZDR+zYor/bNvKwYzrL3M
+         HzCY06ulR2lm7q9Kgm6aheimun8YJl4RJ7bW7bzChybrwcvZN6SGaM/9jThvhCWImP
+         LxK8dHypm9NraldhduDQG53uiTZIBqiR8Wmo49prk0Ecyipi80qavVmhBeQNNWQI4a
+         /li+fNC9oeuWA==
+Date:   Mon, 12 Oct 2020 15:24:52 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Paul Cercueil <paul@crapouillou.net>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the drm-misc tree
+Message-ID: <20201012152452.432c4867@canb.auug.org.au>
+In-Reply-To: <20201008154202.175fbec7@canb.auug.org.au>
+References: <20201008140903.12a411b8@canb.auug.org.au>
+        <20201008154202.175fbec7@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/mU+rg28WViFZLTuKkAevgnd";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In p9_fd_create_unix, checking is performed to see if the addr (passed
-as an argument) is NULL or not.
-However, no check is performed to see if addr is a valid address, i.e.,
-it doesn't entirely consist of only 0's.
-The initialization of sun_server.sun_path to be equal to this faulty
-addr value leads to an uninitialized variable, as detected by KMSAN.
-Checking for this (faulty addr) and returning a negative error number
-appropriately, resolves this issue.
+--Sig_/mU+rg28WViFZLTuKkAevgnd
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Reported-by: syzbot+75d51fe5bf4ebe988518@syzkaller.appspotmail.com
-Tested-by: syzbot+75d51fe5bf4ebe988518@syzkaller.appspotmail.com
-Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
----
- net/9p/trans_fd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi all,
 
-diff --git a/net/9p/trans_fd.c b/net/9p/trans_fd.c
-index c0762a302162..8f528e783a6c 100644
---- a/net/9p/trans_fd.c
-+++ b/net/9p/trans_fd.c
-@@ -1023,7 +1023,7 @@ p9_fd_create_unix(struct p9_client *client, const char *addr, char *args)
- 
- 	csocket = NULL;
- 
--	if (addr == NULL)
-+	if (!addr || !strlen(addr))
- 		return -EINVAL;
- 
- 	if (strlen(addr) >= UNIX_PATH_MAX) {
--- 
-2.25.1
+On Thu, 8 Oct 2020 15:42:02 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>
+> On Thu, 8 Oct 2020 14:09:03 +1100 Stephen Rothwell <sfr@canb.auug.org.au>=
+ wrote:
+> >
+> > After merging the drm-misc tree, today's linux-next build (x86_64
+> > allmodconfig) failed like this: =20
+>=20
+> In file included from include/linux/clk.h:13,
+>                  from drivers/gpu/drm/ingenic/ingenic-drm-drv.c:10:
+> drivers/gpu/drm/ingenic/ingenic-drm-drv.c: In function 'ingenic_drm_updat=
+e_palette':
+> drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:35: error: 'struct ingenic_=
+drm' has no member named 'dma_hwdescs'; did you mean 'dma_hwdesc_f0'?
+>   448 |  for (i =3D 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); i++) {
+>       |                                   ^~~~~~~~~~~
+> include/linux/kernel.h:47:33: note: in definition of macro 'ARRAY_SIZE'
+>    47 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_=
+be_array(arr))
+>       |                                 ^~~
+> drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:35: error: 'struct ingenic_=
+drm' has no member named 'dma_hwdescs'; did you mean 'dma_hwdesc_f0'?
+>   448 |  for (i =3D 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); i++) {
+>       |                                   ^~~~~~~~~~~
+> include/linux/kernel.h:47:48: note: in definition of macro 'ARRAY_SIZE'
+>    47 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_=
+be_array(arr))
+>       |                                                ^~~
+> In file included from include/linux/bits.h:22,
+>                  from include/linux/bitops.h:5,
+>                  from drivers/gpu/drm/ingenic/ingenic-drm.h:10,
+>                  from drivers/gpu/drm/ingenic/ingenic-drm-drv.c:7:
+> drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:35: error: 'struct ingenic_=
+drm' has no member named 'dma_hwdescs'; did you mean 'dma_hwdesc_f0'?
+>   448 |  for (i =3D 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); i++) {
+>       |                                   ^~~~~~~~~~~
+> include/linux/build_bug.h:16:62: note: in definition of macro 'BUILD_BUG_=
+ON_ZERO'
+>    16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e));=
+ })))
+>       |                                                              ^
+> include/linux/compiler.h:224:46: note: in expansion of macro '__same_type'
+>   224 | #define __must_be_array(a) BUILD_BUG_ON_ZERO(__same_type((a), &(a=
+)[0]))
+>       |                                              ^~~~~~~~~~~
+> include/linux/kernel.h:47:59: note: in expansion of macro '__must_be_arra=
+y'
+>    47 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_=
+be_array(arr))
+>       |                                                           ^~~~~~~=
+~~~~~~~~
+> drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:18: note: in expansion of m=
+acro 'ARRAY_SIZE'
+>   448 |  for (i =3D 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); i++) {
+>       |                  ^~~~~~~~~~
+> drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:35: error: 'struct ingenic_=
+drm' has no member named 'dma_hwdescs'; did you mean 'dma_hwdesc_f0'?
+>   448 |  for (i =3D 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); i++) {
+>       |                                   ^~~~~~~~~~~
+> include/linux/build_bug.h:16:62: note: in definition of macro 'BUILD_BUG_=
+ON_ZERO'
+>    16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e));=
+ })))
+>       |                                                              ^
+> include/linux/compiler.h:224:46: note: in expansion of macro '__same_type'
+>   224 | #define __must_be_array(a) BUILD_BUG_ON_ZERO(__same_type((a), &(a=
+)[0]))
+>       |                                              ^~~~~~~~~~~
+> include/linux/kernel.h:47:59: note: in expansion of macro '__must_be_arra=
+y'
+>    47 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_=
+be_array(arr))
+>       |                                                           ^~~~~~~=
+~~~~~~~~
+> drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:18: note: in expansion of m=
+acro 'ARRAY_SIZE'
+>   448 |  for (i =3D 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); i++) {
+>       |                  ^~~~~~~~~~
+> include/linux/build_bug.h:16:51: error: bit-field '<anonymous>' width not=
+ an integer constant
+>    16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e));=
+ })))
+>       |                                                   ^
+> include/linux/compiler.h:224:28: note: in expansion of macro 'BUILD_BUG_O=
+N_ZERO'
+>   224 | #define __must_be_array(a) BUILD_BUG_ON_ZERO(__same_type((a), &(a=
+)[0]))
+>       |                            ^~~~~~~~~~~~~~~~~
+> include/linux/kernel.h:47:59: note: in expansion of macro '__must_be_arra=
+y'
+>    47 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_=
+be_array(arr))
+>       |                                                           ^~~~~~~=
+~~~~~~~~
+> drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:18: note: in expansion of m=
+acro 'ARRAY_SIZE'
+>   448 |  for (i =3D 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); i++) {
+>       |                  ^~~~~~~~~~
+> drivers/gpu/drm/ingenic/ingenic-drm-drv.c:453:9: error: 'struct ingenic_d=
+rm' has no member named 'dma_hwdescs'; did you mean 'dma_hwdesc_f0'?
+>   453 |   priv->dma_hwdescs->palette[i] =3D color;
+>       |         ^~~~~~~~~~~
+>       |         dma_hwdesc_f0
+> drivers/gpu/drm/ingenic/ingenic-drm-drv.c: In function 'ingenic_drm_plane=
+_atomic_update':
+> drivers/gpu/drm/ingenic/ingenic-drm-drv.c:467:3: error: 'crtc_state' unde=
+clared (first use in this function); did you mean 'ctx_state'?
+>   467 |   crtc_state =3D state->crtc->state;
+>       |   ^~~~~~~~~~
+>       |   ctx_state
+> drivers/gpu/drm/ingenic/ingenic-drm-drv.c:467:3: note: each undeclared id=
+entifier is reported only once for each function it appears in
+> At top level:
+> drivers/gpu/drm/ingenic/ingenic-drm-drv.c:443:13: warning: 'ingenic_drm_u=
+pdate_palette' defined but not used [-Wunused-function]
+>   443 | static void ingenic_drm_update_palette(struct ingenic_drm *priv,
+>       |             ^~~~~~~~~~~~~~~~~~~~~~~~~~
+>=20
+> > I noticed that the ingenic driver revert I had been waiting for appeared
+> > in hte drm-misc tree, so I removed the BROKEN dependency for it, but it
+> > produced the above errors, so I have marked it BROKEN again. =20
 
+Any progress on this?  I am still marking CONFIG_DRM_INGENIC as BROKEN
+in the drm and drm-misc trees.
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/mU+rg28WViFZLTuKkAevgnd
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+D2pQACgkQAVBC80lX
+0GwWswgAoQjqIMp6/EDG0a9l7HrawiqW+u8IT7Kz2YF8D2exgrPek75c0eSKWjHm
+Tgs0l9NVHZ/QQ1AZxwu2N9jwDZlJIgSUr7Y7jRsCOfAgkgi6Whdd0fIsJI4psgsf
+8m6Hbjl6zErvkxDGk2MMA7xUjxkzft7r8SC9gt6yViCAerbVvsCkYFCpdyiEY1ll
+Vsm9EQFF4NH5wZS4PcAfNn4kYv47h8rFRDvyToMjvWONPZYWutJ8D4LeBOFhTxCH
++d0Iod6poifszGtp/VJrub1C/f5Ue8lp2Nf/htLcg2DH0FFhA1tGr2wB3dn0dT3D
+0N1kL0EBG+N/Guiljcd8xEpaPRBh7Q==
+=3cru
+-----END PGP SIGNATURE-----
+
+--Sig_/mU+rg28WViFZLTuKkAevgnd--
