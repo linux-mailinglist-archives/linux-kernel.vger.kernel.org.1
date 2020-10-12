@@ -2,99 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFCE728C18A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 21:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C3C828C18B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 21:37:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730939AbgJLThQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 15:37:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58268 "EHLO
+        id S2387656AbgJLThk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 15:37:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728031AbgJLThQ (ORCPT
+        with ESMTP id S1727198AbgJLThk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 15:37:16 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67C10C0613D0;
-        Mon, 12 Oct 2020 12:37:16 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id l85so19846695oih.10;
-        Mon, 12 Oct 2020 12:37:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=p1ZpjVcszStkZDefJuWb6d8WY1mKdaOZZ7wfdZDnMuU=;
-        b=CUBfhkmahf1/vpcfm05O+btB7eEmlqL/y7i2iQ8uxWD83Be2xL8h3DKkqqa0HwGW8A
-         oBNieCqstY8ccSgpofNNkVyEX2kGO/142yR2C2OwHi2iYjsIrCWu+CjjcfvG+3kCRppL
-         8DER93E0gjb24q0iScesSgWXnXa3bPSvujLSNZX/XoJNf1l4csX7PK9gbngTKKUvV5MK
-         cFF783eHsOkk4fdrEapOKev3itjRvv88loIITZ1OWLbxLws8PDM4h47ijktnyFzRSkQJ
-         hVM94r/SBRQXVZahpGq1tY5nugV60Uft/OX36643mWm9dzQroQLJIIdo12oqfAB2FdbR
-         7HaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition:user-agent;
-        bh=p1ZpjVcszStkZDefJuWb6d8WY1mKdaOZZ7wfdZDnMuU=;
-        b=V6qv2tIvCNRH+T1oSTQnfspvTckKkKfav1PAkqfpVWTc6fBwrA0vFv3z4g3h/gL+J9
-         wG2PYVKyJ/SFGJWN0mYVvEeAT4qCsU9hzFKFNzWEfb8W1HcAsyCa4isvOhDt3LrDHyHF
-         zWVUKUnAxtE0XEMG5LVXIPI3XY/yp887ZvHnu/8emNT65ENcf3JGkH07dUsrBYG23Fl7
-         HzXeiL5BcUvsgmZr4GjZ34RqFqEwgK/7v64iRQS2636cO9LUJ98lbnfBrqvP+sCpyd49
-         t0U/Z0DBYkQwcuFu2g/nuRMcfjj43EF3lqef7+DmN5gT7D8yQ+4k1UGZ8j7yL9E5QdKr
-         hMrw==
-X-Gm-Message-State: AOAM533MnVv+powHdjJ0rl2NrGMiT1SzISXjgJmLXPGrdXGwvHKrRvNi
-        Mr20k8pQ7fyspFuUtNTubGcye6rm2TU=
-X-Google-Smtp-Source: ABdhPJxjZIwqRckKckwUcDxkbio8Y7OgQyN9/iJrI/OZPPisOpojdiBR0rHIwBvvDFUCLISL0zwhCg==
-X-Received: by 2002:aca:1105:: with SMTP id 5mr12050115oir.46.1602531435679;
-        Mon, 12 Oct 2020 12:37:15 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id p17sm1109284oov.1.2020.10.12.12.37.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 12 Oct 2020 12:37:15 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 12 Oct 2020 12:37:14 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "Maciej W . Rozycki" <macro@linux-mips.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Zhou Yanjie <zhouyanjie@wanyeetech.com>, od@zcrc.me,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
-Subject: Re: [PATCH] MIPS: ingenic: Remove CPU_SUPPORTS_HUGEPAGES
-Message-ID: <20201012193714.GA154159@roeck-us.net>
+        Mon, 12 Oct 2020 15:37:40 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B940C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 12:37:40 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602531459;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zAGBr8RcuoICd4qF7JmAt3GQy9qhOMrKg4+LZEzCs7I=;
+        b=em/+enAgv/TMh+3ZDFKKaxCtVfPiQLPgMx8GGm4uGPeRlerT3cvcwHDBBeFcIe1opya7Pw
+        gNrUe/kX32EDSTCd4SlUpZBtYbGyMiNPd9sLSwfOX+0TwyhckDi0WtQEUwyhjLJYRVb63t
+        4rpaCRH6eGdNzNGltRqldjiVhOn1buTfJYI6l3QTCk7wqvLGt7MKTC449O255p7/OCIVps
+        vBhD3QSbXuX7egIcei0QjshLtr/OWbkqjCaYmCNwkWVXEk2RM6vk6VjxHO9j4qqQ0EWngR
+        atGFi0cF7IrMDn3TPD4Lcrj3/dW6WfMeZh4vpS/ia6MwhlGRCc7G+iHr2/pn4w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602531459;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zAGBr8RcuoICd4qF7JmAt3GQy9qhOMrKg4+LZEzCs7I=;
+        b=tta8OF6ktH1HopKhNPtT0t0oKAT66+2IavD/noxJAULo5Jv30IwUCytC6RfCEuZXUu6S6N
+        zsjSeY2VJHB2b6DQ==
+To:     Chris Friesen <chris.friesen@windriver.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: IRQs in /proc/irq/* that aren't listed in /proc/interrupts?
+In-Reply-To: <c74773ba-10ff-ba3a-b144-da5c2a34c74e@windriver.com>
+References: <c74773ba-10ff-ba3a-b144-da5c2a34c74e@windriver.com>
+Date:   Mon, 12 Oct 2020 21:37:38 +0200
+Message-ID: <87wnzvp75p.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 09:27:39PM +0200, Paul Cercueil wrote:
-> While it is true that Ingenic SoCs support huge pages, we cannot use
-> them yet as PTEs don't have any single bit that is free. Right now,
-> having that symbol only causes build errors, so remove it until the
-> situation with PTEs is resolved.
-> 
-> Fixes: f0f4a753079c ("MIPS: generic: Add support for Ingenic SoCs")
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Chris,
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+On Mon, Oct 12 2020 at 12:40, Chris Friesen wrote:
+> On one of my X86-64 systems /proc/interrupts starts with the following 
+> interrupts (per-cpu info snipped):
+>
+>    0:      IR-IO-APIC-edge      timer
+>     4:      IR-IO-APIC-edge      serial
+>     8:      IR-IO-APIC-edge      rtc0
+>     9:      IR-IO-APIC-fasteoi   acpi
+>    17:      IR-IO-APIC-fasteoi   ehci_hcd:usb1, hpilo
+>
+>
+> On this same system /proc/irq shows these interrupts:
+>
+> 0-15, 17
+>
+> Is there any way to determine what the interrupts are that aren't listed 
+> in /proc/interrupts?
 
-> ---
->  arch/mips/Kconfig | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> index f52fa211a4cf..29bad5bd3e70 100644
-> --- a/arch/mips/Kconfig
-> +++ b/arch/mips/Kconfig
-> @@ -103,7 +103,6 @@ config MACH_INGENIC
->  	select SYS_SUPPORTS_32BIT_KERNEL
->  	select SYS_SUPPORTS_LITTLE_ENDIAN
->  	select SYS_SUPPORTS_ZBOOT
-> -	select CPU_SUPPORTS_HUGEPAGES
->  	select DMA_NONCOHERENT
->  	select IRQ_MIPS_CPU
->  	select PINCTRL
-> -- 
-> 2.28.0
-> 
+They are simply unused.
+
+> Six of them are affined to all CPUs, and I'm trying to affine as many
+> interrupts as possible to housekeeping CPUs to free up application
+> CPUs for low-latency operations.
+
+Affining unused and therefore disabled interrupts is a pretty pointless
+exercise.
+
+Thanks,
+
+        tglx
