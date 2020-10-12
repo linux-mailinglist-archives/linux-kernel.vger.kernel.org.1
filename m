@@ -2,88 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F5F228BBA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A6A228BBA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:17:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389761AbgJLPQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 11:16:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34270 "EHLO mail.kernel.org"
+        id S2389797AbgJLPRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 11:17:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389225AbgJLPQg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 11:16:36 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
+        id S2389142AbgJLPRj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 11:17:39 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6A6B920878;
-        Mon, 12 Oct 2020 15:16:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B54A8206CA;
+        Mon, 12 Oct 2020 15:17:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602515795;
-        bh=0j6qf98C/VHd5JVBKbDLdE4Pd0CIJdHg9Om9AIcfSm0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ivnuej6X8z4a8TCAuaJTm6INdDWC6yUxZPKyVGbSEVvL27mCCNRxqp1yjXAmY8dPB
-         YCMn70Op0MPtEkAbQ/faDox7RvTPLfnmu/SxQsD7KLFCfyWMzws84aA2d73Ta4BWez
-         +fJD2shGgoJ1BcHUrs8Eu9NSL0LeNVBHzh+WeSns=
-Date:   Mon, 12 Oct 2020 08:16:33 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>
-Cc:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        intel-wired-lan@lists.osuosl.org, netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Yongxin Liu <yongxin.liu@windriver.com>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH] net: ethernet: ixgbe: don't propagate -ENODEV from
- ixgbe_mii_bus_init()
-Message-ID: <20201012081633.7b501cde@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <CAMRc=MexKweGRjF5KNg1saz7NmE+tQq=03oR3wzoMsaTcm+CAA@mail.gmail.com>
-References: <20200928071744.18253-1-brgl@bgdev.pl>
-        <CAMRc=MexKweGRjF5KNg1saz7NmE+tQq=03oR3wzoMsaTcm+CAA@mail.gmail.com>
+        s=default; t=1602515857;
+        bh=1xZhHA/uDuJ7Gy1WDUFXCvtNvBHEC12Qmx8K7X14idw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Sj/jL+LdugfJz86Zym6e2oM0sHSAKq0djYYcEJUbRr1EvI7OX09bls/61ZmVETZc4
+         639Zk/cOlV3aKBT0yvYY4Bya6mZmkXlTTex/88TI0ptadYj/86lztw/lOiDfVwLc8d
+         wEqSm/xSHV/NprwRAo5n7Q3au5mprYhc86J8WV60=
+Date:   Mon, 12 Oct 2020 17:18:16 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-safety@lists.elisa.tech,
+        linux-usb@vger.kernel.org
+Subject: Re: [linux-safety] [PATCH] usb: host: ehci-sched: add comment about
+ find_tt() not returning error
+Message-ID: <20201012151816.GA1559916@kroah.com>
+References: <20201011205008.24369-1-sudipm.mukherjee@gmail.com>
+ <alpine.DEB.2.21.2010121550300.6487@felia>
+ <20201012145710.GA631710@rowland.harvard.edu>
+ <alpine.DEB.2.21.2010121659040.6487@felia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.21.2010121659040.6487@felia>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Oct 2020 14:20:16 +0200 Bartosz Golaszewski wrote:
-> On Mon, Sep 28, 2020 at 9:17 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> >
-> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> >
-> > It's a valid use-case for ixgbe_mii_bus_init() to return -ENODEV - we
-> > still want to finalize the registration of the ixgbe device. Check the
-> > error code and don't bail out if err == -ENODEV.
-> >
-> > This fixes an issue on C3000 family of SoCs where four ixgbe devices
-> > share a single MDIO bus and ixgbe_mii_bus_init() returns -ENODEV for
-> > three of them but we still want to register them.
-> >
-> > Fixes: 09ef193fef7e ("net: ethernet: ixgbe: check the return value of ixgbe_mii_bus_init()")
-> > Reported-by: Yongxin Liu <yongxin.liu@windriver.com>
-> > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > ---
-> >  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> > index 2f8a4cfc5fa1..d1623af30125 100644
-> > --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> > +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> > @@ -11032,7 +11032,7 @@ static int ixgbe_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
-> >                         true);
-> >
-> >         err = ixgbe_mii_bus_init(hw);
-> > -       if (err)
-> > +       if (err && err != -ENODEV)
-> >                 goto err_netdev;
-> >
-> >         return 0;
->
-> Gentle ping for this patch. Who's picking up networking patches now
-> that David is OoO? Should I Cc someone else?
+On Mon, Oct 12, 2020 at 05:10:21PM +0200, Lukas Bulwahn wrote:
+> And for the static analysis finding, we need to find a way to ignore this 
+> finding without simply ignoring all findings or new findings that just 
+> look very similar to the original finding, but which are valid.
 
-Intel went through a maintainer change of its own, and they usually
-pick up their patches and send a PR.
+Then I suggest you fix the tool that "flagged" this, surely this is not
+the only thing it detected with a test like this, right?
 
-Tony, do you want me to apply this directly?
+What tool reported this?
+
+thanks,
+
+greg k-h
