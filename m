@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8487128B712
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB29D28B742
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:42:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388834AbgJLNkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:40:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43080 "EHLO mail.kernel.org"
+        id S1731499AbgJLNmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:42:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730801AbgJLNjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:39:18 -0400
+        id S1730538AbgJLNlG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:41:06 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2842A21D7F;
-        Mon, 12 Oct 2020 13:39:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 67C6320678;
+        Mon, 12 Oct 2020 13:41:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509957;
-        bh=yPw1Tjcg7arkiZ9q+KvcQmSs2RcA9QimSAeawjaQDkU=;
+        s=default; t=1602510065;
+        bh=jQi2E8JFqGCg1MtXW3mSS/ZR2oZmHW+9bj8lJ015Zt4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lPiauUC9xM21b8c6yxKecBP0cllgk+yYKYV1aPy9E8kqF2MLPQ+U+T4g1+7g0Zx6l
-         fyM6T++3eAb9fYUc9xQFSgCC3YAtFC1T67rnRqIx/FxQfR6v3D6/l83jmnveo9Fi9G
-         L2aaCMXq+rXN+jJOeVvQgi1ksh6hgB8Px2ARo7Dw=
+        b=WeBqsXyB8QZI4KsAeLdVfRlIQF65T7XNeo4TRSWO1wX/7MHFumM5VrtG/BzsOuYcJ
+         85Z0GlHoa1tH2CkoEMt2aUdktE9cen7DHEV864PAwxZSSWALL6YCpv1opUB5cnuHkd
+         GhWh8npTAeMqSfNEeeeuPDXNUmGcvixYEeThGIQs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peilin Ye <yepeilin.cs@gmail.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        syzbot+29d4ed7f3bdedf2aa2fd@syzkaller.appspotmail.com
-Subject: [PATCH 4.19 03/49] fbcon: Fix global-out-of-bounds read in fbcon_get_font()
+        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        Filipe Manana <fdmanana@suse.com>,
+        David Sterba <dsterba@suse.com>,
+        Anand Jain <anand.jain@oracle.com>
+Subject: [PATCH 5.4 26/85] Btrfs: send, allow clone operations within the same file
 Date:   Mon, 12 Oct 2020 15:26:49 +0200
-Message-Id: <20201012132629.608316610@linuxfoundation.org>
+Message-Id: <20201012132634.114097309@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132629.469542486@linuxfoundation.org>
-References: <20201012132629.469542486@linuxfoundation.org>
+In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
+References: <20201012132632.846779148@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,76 +44,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peilin Ye <yepeilin.cs@gmail.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-commit 5af08640795b2b9a940c9266c0260455377ae262 upstream.
+commit 11f2069c113e02971b8db6fda62f9b9cd31a030f upstream.
 
-fbcon_get_font() is reading out-of-bounds. A malicious user may resize
-`vc->vc_font.height` to a large value, causing fbcon_get_font() to
-read out of `fontdata`.
+For send we currently skip clone operations when the source and
+destination files are the same. This is so because clone didn't support
+this case in its early days, but support for it was added back in May
+2013 by commit a96fbc72884fcb ("Btrfs: allow file data clone within a
+file"). This change adds support for it.
 
-fbcon_get_font() handles both built-in and user-provided fonts.
-Fortunately, recently we have added FONT_EXTRA_WORDS support for built-in
-fonts, so fix it by adding range checks using FNTSIZE().
+Example:
 
-This patch depends on patch "fbdev, newport_con: Move FONT_EXTRA_WORDS
-macros into linux/font.h", and patch "Fonts: Support FONT_EXTRA_WORDS
-macros for built-in fonts".
+  $ mkfs.btrfs -f /dev/sdd
+  $ mount /dev/sdd /mnt/sdd
 
-Cc: stable@vger.kernel.org
-Reported-and-tested-by: syzbot+29d4ed7f3bdedf2aa2fd@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?id=08b8be45afea11888776f897895aef9ad1c3ecfd
-Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/b34544687a1a09d6de630659eb7a773f4953238b.1600953813.git.yepeilin.cs@gmail.com
+  $ xfs_io -f -c "pwrite -S 0xab -b 64K 0 64K" /mnt/sdd/foobar
+  $ xfs_io -c "reflink /mnt/sdd/foobar 0 64K 64K" /mnt/sdd/foobar
+
+  $ btrfs subvolume snapshot -r /mnt/sdd /mnt/sdd/snap
+
+  $ mkfs.btrfs -f /dev/sde
+  $ mount /dev/sde /mnt/sde
+
+  $ btrfs send /mnt/sdd/snap | btrfs receive /mnt/sde
+
+Without this change file foobar at the destination has a single 128Kb
+extent:
+
+  $ filefrag -v /mnt/sde/snap/foobar
+  Filesystem type is: 9123683e
+  File size of /mnt/sde/snap/foobar is 131072 (32 blocks of 4096 bytes)
+   ext:     logical_offset:        physical_offset: length:   expected: flags:
+     0:        0..      31:          0..        31:     32:             last,unknown_loc,delalloc,eof
+  /mnt/sde/snap/foobar: 1 extent found
+
+With this we get a single 64Kb extent that is shared at file offsets 0
+and 64K, just like in the source filesystem:
+
+  $ filefrag -v /mnt/sde/snap/foobar
+  Filesystem type is: 9123683e
+  File size of /mnt/sde/snap/foobar is 131072 (32 blocks of 4096 bytes)
+   ext:     logical_offset:        physical_offset: length:   expected: flags:
+     0:        0..      15:       3328..      3343:     16:             shared
+     1:       16..      31:       3328..      3343:     16:       3344: last,shared,eof
+  /mnt/sde/snap/foobar: 2 extents found
+
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/video/fbdev/core/fbcon.c |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ fs/btrfs/send.c |   18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
 
---- a/drivers/video/fbdev/core/fbcon.c
-+++ b/drivers/video/fbdev/core/fbcon.c
-@@ -2270,6 +2270,9 @@ static int fbcon_get_font(struct vc_data
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -1257,12 +1257,20 @@ static int __iterate_backrefs(u64 ino, u
+ 	 */
+ 	if (found->root == bctx->sctx->send_root) {
+ 		/*
+-		 * TODO for the moment we don't accept clones from the inode
+-		 * that is currently send. We may change this when
+-		 * BTRFS_IOC_CLONE_RANGE supports cloning from and to the same
+-		 * file.
++		 * If the source inode was not yet processed we can't issue a
++		 * clone operation, as the source extent does not exist yet at
++		 * the destination of the stream.
+ 		 */
+-		if (ino >= bctx->cur_objectid)
++		if (ino > bctx->cur_objectid)
++			return 0;
++		/*
++		 * We clone from the inode currently being sent as long as the
++		 * source extent is already processed, otherwise we could try
++		 * to clone from an extent that does not exist yet at the
++		 * destination of the stream.
++		 */
++		if (ino == bctx->cur_objectid &&
++		    offset >= bctx->sctx->cur_inode_next_write_offset)
+ 			return 0;
+ 	}
  
- 	if (font->width <= 8) {
- 		j = vc->vc_font.height;
-+		if (font->charcount * j > FNTSIZE(fontdata))
-+			return -EINVAL;
-+
- 		for (i = 0; i < font->charcount; i++) {
- 			memcpy(data, fontdata, j);
- 			memset(data + j, 0, 32 - j);
-@@ -2278,6 +2281,9 @@ static int fbcon_get_font(struct vc_data
- 		}
- 	} else if (font->width <= 16) {
- 		j = vc->vc_font.height * 2;
-+		if (font->charcount * j > FNTSIZE(fontdata))
-+			return -EINVAL;
-+
- 		for (i = 0; i < font->charcount; i++) {
- 			memcpy(data, fontdata, j);
- 			memset(data + j, 0, 64 - j);
-@@ -2285,6 +2291,9 @@ static int fbcon_get_font(struct vc_data
- 			fontdata += j;
- 		}
- 	} else if (font->width <= 24) {
-+		if (font->charcount * (vc->vc_font.height * sizeof(u32)) > FNTSIZE(fontdata))
-+			return -EINVAL;
-+
- 		for (i = 0; i < font->charcount; i++) {
- 			for (j = 0; j < vc->vc_font.height; j++) {
- 				*data++ = fontdata[0];
-@@ -2297,6 +2306,9 @@ static int fbcon_get_font(struct vc_data
- 		}
- 	} else {
- 		j = vc->vc_font.height * 4;
-+		if (font->charcount * j > FNTSIZE(fontdata))
-+			return -EINVAL;
-+
- 		for (i = 0; i < font->charcount; i++) {
- 			memcpy(data, fontdata, j);
- 			memset(data + j, 0, 128 - j);
 
 
