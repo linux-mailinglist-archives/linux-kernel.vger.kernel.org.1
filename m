@@ -2,153 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E361828BE89
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:56:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEFE628BE8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390753AbgJLQ4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 12:56:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390534AbgJLQ4L (ORCPT
+        id S2390795AbgJLQ6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 12:58:05 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:44378 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390355AbgJLQ6F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 12:56:11 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A72C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 09:56:11 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id n6so18338256ioc.12
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 09:56:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=uGtCXDE+yC85EATgAOWUy4OTm5QzADu4nBEjXio7les=;
-        b=sxb8k/hwI80eNFQLW8lSIbzTmeApaNpfv6ABK6bk3K/LiMAEfK9TvfMXucceZ/iZbE
-         v2m0frgqW08gpea1+w4hvt4IXC6RJklW+UikIz2ciDsmSedBAykU9y0aTnLE5efQSqjq
-         GPQFww8YoMOV7vS+ODWAh1hWTmHiQYIS0/nCJYoXrdL4Arz/i6rADS50od0KSsxuSUHg
-         CYzzh3z6i9KAlkLMklJQ6KaqZO3GPl0lYNmyzimbaDTYAW4hiSogWx3Cq08hZi5sTlul
-         qq3dc/NCGjPox7yiYHs8Cj03B5GZpOq11yUk0X5bJEkFKAIhUwDstOXsSmYByCBI9JaP
-         Zq8g==
+        Mon, 12 Oct 2020 12:58:05 -0400
+Received: by mail-pg1-f194.google.com with SMTP id o3so4875135pgr.11;
+        Mon, 12 Oct 2020 09:58:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=uGtCXDE+yC85EATgAOWUy4OTm5QzADu4nBEjXio7les=;
-        b=IrXvwxV6VixiEZm1nG8MVKRLMl7vAenb/cm+VraOs+rYbNrgq8lO+zd5jbjuSbyFwN
-         /db/Vo9EC75PFTlQAX+NV6HBiIqN2o/ThEqcjk6aIz8YBPzuvqQ9a4EYAlQJ+NTM2kTn
-         fplN6elxgsY/neCUS2IPVOMVNJcPxoKyCuF2PJ2DIuWb5zncWr9P1EIswpDKDQtzgq3n
-         CM3+P7kJrvdqtPJTe+2/9Unin8o/r8LWvZ38qUE5EqUJ/di4RBFUYTHUHYlYlp19Xna/
-         T0iBKVdazb2Ye2/ZapEHdUVlgW7e44I6A3d1mB6y9BJ5SmixYxOjI43hkAwD7Wo8rD9E
-         jupw==
-X-Gm-Message-State: AOAM530CoWiVtXlsiwwLqYTMaj+NKvjdU19k3R9ev2A6I9ygc2/tSzpl
-        EqFj0kGQ2NJ8wE/D72ic72PfXPgPm1/mrQu08bEz+g==
-X-Google-Smtp-Source: ABdhPJwwoRyVM9yiqq135MM0Bel7b1I4N7nqmFTIUEhp6P10fswBgBayivHOj1k6ZvjPFWHFEQPQdp9Cea9aH51MAwo=
-X-Received: by 2002:a02:7817:: with SMTP id p23mr19909334jac.57.1602521770491;
- Mon, 12 Oct 2020 09:56:10 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=k4OUtjq5lhgWhKFweGldJN253/ip0FkUL7lJYS0LP8k=;
+        b=WzVgFomvL8wyw1tIYOsyUyyjoNF8Yte/hZPTeXmep4aWWfh4XzfQ3EW9/uD6IZTtj/
+         OO4aKkjeUuPFXY9MuVUfEA7tKBzl6N7EHRY5WyVnODvByPmFmf36QJVsm9/uTd8X3Gun
+         oQcDSOxwlQGos1OmaPaGw39JEYfZu7k+CKtjaoCUwaqobYZ/W87YLjQEJh+pDFIudL7h
+         W/Jm8r69rwRxYh71swgPMqwAPbutg8oowZDtu2vm5mVsrJ0ZhO10ZGixAlSV4zQ7nq/C
+         Cubhudpz93g899Wk61jZ1RH1vqDpeYLUo7A/bXHPH0u505OBxPjG/tad0Bwo2mMtPAsy
+         VGbA==
+X-Gm-Message-State: AOAM532KkEwKzOn8HLRF72pJHtw03HyIWwWHhTmtRNxPTlGn8hBhOqZL
+        igAGIApKcph4/aT8N/AtYHw=
+X-Google-Smtp-Source: ABdhPJz80xR0oT8apEleLqIMeto85pAjVJY6u6I/kCvyhnCU03ERwoIoNJwOmvSgzdzZsPR/GqUl1A==
+X-Received: by 2002:a63:4854:: with SMTP id x20mr14476237pgk.220.1602521884486;
+        Mon, 12 Oct 2020 09:58:04 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:1162:1ac0:17a6:4cc6:d1ef])
+        by smtp.gmail.com with ESMTPSA id q5sm8694300pjg.0.2020.10.12.09.58.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 09:58:03 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 09:58:03 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Xu Yilun <yilun.xu@intel.com>, mdf@kernel.org,
+        linux-fpga@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        gregkh@linuxfoundation.org, trix@redhat.com, lgoncalv@redhat.com,
+        hao.wu@intel.com, Russ Weight <russell.h.weight@intel.com>
+Subject: Re: [PATCH v9 6/6] memory: dfl-emif: add the DFL EMIF private
+ feature driver
+Message-ID: <20201012165803.GA2654@archbook>
+References: <1602313793-21421-1-git-send-email-yilun.xu@intel.com>
+ <1602313793-21421-7-git-send-email-yilun.xu@intel.com>
+ <CAJKOXPcLbnvXJLa6G8Rpa8tLv4v22dDVPBDx4DrakPnbGdK4QA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201012095158.779c6d9d@canb.auug.org.au> <CAK8P3a2gLDw8rOYPgg=-hnNcK_5NW-fGHmiJ3ntb0dbf1EjQOQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a2gLDw8rOYPgg=-hnNcK_5NW-fGHmiJ3ntb0dbf1EjQOQ@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 12 Oct 2020 22:25:59 +0530
-Message-ID: <CA+G9fYu-YKfCSE58+y83UgXDDTHVgnpNLOgWwAaCr2W63nFQbQ@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the arm64 tree with the asm-generic tree
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>, Qian Cai <cai@redhat.com>,
-        lkft-triage@lists.linaro.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJKOXPcLbnvXJLa6G8Rpa8tLv4v22dDVPBDx4DrakPnbGdK4QA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Oct 2020 at 13:33, Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Mon, Oct 12, 2020 at 12:52 AM Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
-> >
-> > Hi all,
-> >
-> > Today's linux-next merge of the arm64 tree got a conflict in:
-> >
-> >   arch/arm64/include/asm/mmu_context.h
-> >
-> > between commit:
-> >
-> >   f911c2a7c096 ("arm64: use asm-generic/mmu_context.h for no-op impleme=
-ntations")
-> >
-> > from the asm-generic tree and commit:
-> >
-> >   48118151d8cc ("arm64: mm: Pin down ASIDs for sharing mm with devices"=
-)
-> >
-> > from the arm64 tree.
-> >
-> > I fixed it up (see below) and can carry the fix as necessary. This
-> > is now fixed as far as linux-next is concerned, but any non trivial
-> > conflicts should be mentioned to your upstream maintainer when your tre=
-e
-> > is submitted for merging.  You may also want to consider cooperating
-> > with the maintainer of the conflicting tree to minimise any particularl=
-y
-> > complex conflicts.
-> >
->
-> Sorry about that, I had pushed my asm-generic branch to the correct
-> location on Friday after I noticed it was missing. Removed it again now
-> until the end up the merge window.
+Hi Krzysztof,
 
+On Mon, Oct 12, 2020 at 06:40:46PM +0200, Krzysztof Kozlowski wrote:
+> On Sat, 10 Oct 2020 at 09:15, Xu Yilun <yilun.xu@intel.com> wrote:
+> >
+> > This driver is for the EMIF private feature implemented under FPGA
+> > Device Feature List (DFL) framework. It is used to expose memory
+> > interface status information as well as memory clearing control.
+> >
+> > The purpose of memory clearing block is to zero out all private memory
+> > when FPGA is to be reprogrammed. This gives users a reliable method to
+> > prevent potential data leakage.
+> >
+> > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> > Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> > Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > ---
+> > v2: Adjust the position of this driver in Kconfig.
+> >     Improves the name of the Kconfig option.
+> >     Change the include dfl-bus.h to dfl.h, cause the previous patchset
+> >      renames the file.
+> >     Some minor fixes and comment improvement.
+> > v3: Adjust the position of the driver in Makefile.
+> > v9: Add static prefix for emif attributes macro
+> >     Update the kernel version of the sysfs interfaces in Doc.
+> > ---
+> >  .../ABI/testing/sysfs-bus-dfl-devices-emif         |  25 +++
+> >  drivers/memory/Kconfig                             |   9 +
+> >  drivers/memory/Makefile                            |   2 +
+> >  drivers/memory/dfl-emif.c                          | 207 +++++++++++++++++++++
+> >  4 files changed, 243 insertions(+)
+> >  create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
+> >  create mode 100644 drivers/memory/dfl-emif.c
+> >
+> 
+> I am confused now. This was already taken by Moritz, wasn't it? And
+> the dependencies were already taken, weren't they? Previously it was
+> depending on "Modularization of DFL private feature drivers" and "add
+> dfl bus support to MODULE_DEVICE_TABLE()"... now this is here so did
+> the dependencies change? What is the reason to include this patch
+> here?
 
-arm64 build failed on today's tag 20201012.
+It is confusing. Basically Greg had comments on the patch after I had
+applied it. It's going through anothe round of review.
 
+> 
+> My ack was for the purpose of taking it via Moritz tree, because of
+> the dependencies. If this is not the case, then probably better to
+> take it via memory controllers tree to avoid any conflicts (it's not a
+> small change).
 
-make -sk KBUILD_BUILD_USER=3DTuxBuild -C/linux -j16 ARCH=3Darm64
-CROSS_COMPILE=3Daarch64-linux-gnu- HOSTCC=3Dgcc CC=3D"sccache
-aarch64-linux-gnu-gcc" O=3Dbuild Image
-#
-In file included from ../arch/arm64/include/asm/mmu_context.h:257,
-                 from ../arch/arm64/include/asm/efi.h:10,
-                 from ../arch/arm64/xen/../../arm/xen/enlighten.c:19:
-../include/asm-generic/mmu_context.h:34:19: error: redefinition of
-=E2=80=98init_new_context=E2=80=99
-   34 | static inline int init_new_context(struct task_struct *tsk,
-      |                   ^~~~~~~~~~~~~~~~
-In file included from ../arch/arm64/include/asm/efi.h:10,
-                 from ../arch/arm64/xen/../../arm/xen/enlighten.c:19:
-../arch/arm64/include/asm/mmu_context.h:180:1: note: previous
-definition of =E2=80=98init_new_context=E2=80=99 was here
-  180 | init_new_context(struct task_struct *tsk, struct mm_struct *mm)
-      | ^~~~~~~~~~~~~~~~
-make[3]: *** [../scripts/Makefile.build:283:
-arch/arm64/xen/../../arm/xen/enlighten.o] Error 1
-In file included from ../arch/arm64/include/asm/mmu_context.h:257,
-                 from ../include/linux/mmu_context.h:5,
-                 from ../kernel/sched/sched.h:54,
-                 from ../kernel/sched/core.c:13:
-../include/asm-generic/mmu_context.h:34:19: error: redefinition of
-=E2=80=98init_new_context=E2=80=99
-   34 | static inline int init_new_context(struct task_struct *tsk,
-      |                   ^~~~~~~~~~~~~~~~
-In file included from ../include/linux/mmu_context.h:5,
-                 from ../kernel/sched/sched.h:54,
-                 from ../kernel/sched/core.c:13:
-../arch/arm64/include/asm/mmu_context.h:180:1: note: previous
-definition of =E2=80=98init_new_context=E2=80=99 was here
-  180 | init_new_context(struct task_struct *tsk, struct mm_struct *mm)
-      | ^~~~~~~~~~~~~~~~
+Once it's ok I can put it on a branch with a stable tag and you can pull
+that in and take the patch through your tree.
 
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Does that work?
 
-ref:
-https://gitlab.com/Linaro/lkft/mirrors/next/linux-next/-/jobs/785569731
+Sorry for the mess,
 
->
->        Arnd
-
-
-- Naresh
+Moritz
