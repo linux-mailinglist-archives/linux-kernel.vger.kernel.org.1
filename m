@@ -2,98 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C6828BBEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFFA428BBED
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389976AbgJLPbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 11:31:49 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:23958 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2389948AbgJLPbs (ORCPT
+        id S2389885AbgJLPbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 11:31:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388527AbgJLPbh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 11:31:48 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09CFRx2K009325;
-        Mon, 12 Oct 2020 17:31:34 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : subject :
- date : message-id : references : in-reply-to : content-type : content-id :
- content-transfer-encoding : mime-version; s=STMicroelectronics;
- bh=N542qLINbv1anFY9bS8CNSsvQ1Mj8Jp+GnbcDJCIDbI=;
- b=yU7Fk4vHgMdVOCof3aFBut/LtAMM901J/RvZxy32Ku5Dnx4qUhdyzsMPhomEYZ7YMPed
- X71IHo7vNGDlixUPzwIPQnGxJkj99McRmV4JIuo9KpqWU2oVGuKstpEfWIdOTJjn7vs8
- EXyDk02BZAmxDo8OOVBdDQo0mUvNPKuknC3hqvya1H1jGlNxwbADhXhBOMjBUUc5/4Cw
- cBn+bphbd811atmWfb57HfZcbfsyPg3fAmMPnw/1nBzib1WY77jiiREYoRD2QeFV2emR
- lUAJZhckT5eoBa1Ij6D34V3UVduYNkGyGFhdAVGenEGQdaSfv8Ki5V4x6MNB6FXW0FWC Cw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34353w1wd5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 12 Oct 2020 17:31:34 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B97FB10002A;
-        Mon, 12 Oct 2020 17:31:32 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag1node1.st.com [10.75.127.1])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 97FFE2A9F57;
-        Mon, 12 Oct 2020 17:31:32 +0200 (CEST)
-Received: from SFHDAG2NODE3.st.com (10.75.127.6) by SFHDAG1NODE1.st.com
- (10.75.127.1) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 12 Oct
- 2020 17:31:32 +0200
-Received: from SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c]) by
- SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c%20]) with mapi id
- 15.00.1473.003; Mon, 12 Oct 2020 17:31:32 +0200
-From:   Philippe CORNU <philippe.cornu@st.com>
-To:     Yannick FERTRE <yannick.fertre@st.com>,
-        Antonio BORNEO <antonio.borneo@st.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        "Sam Ravnborg" <sam@ravnborg.org>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] drm/panel: rm68200: fix mode to 50fps
-Thread-Topic: [PATCH] drm/panel: rm68200: fix mode to 50fps
-Thread-Index: AQHWk0ZzzcM7a4UXCEW70da9oB7h6KmUEW0A
-Date:   Mon, 12 Oct 2020 15:31:32 +0000
-Message-ID: <b8b082c2-4543-4080-cf6e-d14fed712669@st.com>
-References: <20200925141618.12097-1-yannick.fertre@st.com>
-In-Reply-To: <20200925141618.12097-1-yannick.fertre@st.com>
-Accept-Language: fr-FR, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.75.127.50]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <68D722A0FC36A64FB7104D71B442DF99@st.com>
-Content-Transfer-Encoding: base64
+        Mon, 12 Oct 2020 11:31:37 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99393C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 08:31:37 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id l4so16176032ota.7
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 08:31:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=iBGnzN/+6loJkhrhbH/dzTk9PX3jtnMo9lpzqcBWYus=;
+        b=q2YDCkFgYowfit5pBl4KmbOmz6TGnHCQP+Nxf7PSgt6b7zX5yCMyBuIKnW8JdommYm
+         IZs81D0v+2F9Q8MVT6YiphajrfWDEflspmJgSg9ohGQqMvam0gd99NVOqH0DYEcborFV
+         rzxTsxL7TzTY8cdY5CfwAro7ksLHxbCnDpoe2zoy/KWgV6N/b8olzMj6v/IJqv2nUTIx
+         Z/Qak1aPXtJCijAq/DNTpchN/O6ffDqiQMHO1knnH4qoX3TsPuA454cpRvx/WQoW8NFY
+         HM32lhVwpBKoZ1fUhfvvZR7hxAZbjyAzb04QKgFKNeUuNNAaWUKIQH2pUGiq+Km7pSHA
+         pPag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=iBGnzN/+6loJkhrhbH/dzTk9PX3jtnMo9lpzqcBWYus=;
+        b=pGHT+acSRDeTBwpstffzMIt6AkFNv+hE4xKwHd9/fFpXn+AsNyeHs6Sej6+r6nuVIZ
+         DEU+vWxEGIXN8OtFAa1odYaAWwkPBiMsee05V0lbkHpCLO9bsvDs3Nwu4zoF5ebGQy17
+         HkkapeybtU2gsJJ9ahS1uObC5uKrZb6Xz8K93XU+1933+MzsKRl8/6MtWwtsQF5OahTA
+         ywhNT3agYswdbxYh/Pb1v2t/kSmXVbrpa8YMOXAcb32PV+5kpM5cbqY1s6wEyTF+XqfB
+         CzQBlO2Pz6EMA886v3QkUQLjRs8HbpN++mgSjumwOkY4SnRc2FEm9ndGN763rkoTZIBB
+         xd/g==
+X-Gm-Message-State: AOAM533H6E9hd980bhqAgenx7FmE9biT90wdD/rE0E0wRDK7aRbMG1Eo
+        31Bms2yBLyCxj/ECpbc1pTDMH9yoPKpmPqX59Fk=
+X-Google-Smtp-Source: ABdhPJynwNIqDzkb9LAhs2VU4jyvpgwuqegQE72W2uyeAxg+RZ0DYmhq2QHOmaBl4StS9Va/mNySuFplEsA4xiOLvUc=
+X-Received: by 2002:a05:6830:1319:: with SMTP id p25mr17703923otq.38.1602516696954;
+ Mon, 12 Oct 2020 08:31:36 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-12_12:2020-10-12,2020-10-12 signatures=0
+Received: by 2002:aca:c490:0:0:0:0:0 with HTTP; Mon, 12 Oct 2020 08:31:36
+ -0700 (PDT)
+Reply-To: tofilbaman1@gmail.com
+From:   Tofil Bama <tomaralif80@gmail.com>
+Date:   Mon, 12 Oct 2020 08:31:36 -0700
+Message-ID: <CAJFNYjX0Wyppu=O_UcSBov+Fz94WcmO87Z6aWj8OVaBYYpykrA@mail.gmail.com>
+Subject: KINDEST MESSAGE.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCk9uIDkvMjUvMjAgNDoxNiBQTSwgWWFubmljayBGZXJ0cmUgd3JvdGU6DQo+IENvbXB1dGUg
-bmV3IHRpbWluZ3MgdG8gZ2V0IGEgZnJhbWVyYXRlIG9mIDUwZnBzIHdpdGggYSBwaXhlbCBjbG9j
-aw0KPiBANTRNaHouDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBZYW5uaWNrIEZlcnRyZSA8eWFubmlj
-ay5mZXJ0cmVAc3QuY29tPg0KPiAtLS0NCj4gICBkcml2ZXJzL2dwdS9kcm0vcGFuZWwvcGFuZWwt
-cmF5ZGl1bS1ybTY4MjAwLmMgfCAxMiArKysrKystLS0tLS0NCj4gICAxIGZpbGUgY2hhbmdlZCwg
-NiBpbnNlcnRpb25zKCspLCA2IGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZl
-cnMvZ3B1L2RybS9wYW5lbC9wYW5lbC1yYXlkaXVtLXJtNjgyMDAuYyBiL2RyaXZlcnMvZ3B1L2Ry
-bS9wYW5lbC9wYW5lbC1yYXlkaXVtLXJtNjgyMDAuYw0KPiBpbmRleCAyYjllNDhiMGE0OTEuLjQx
-MmMwZGJjYjJiNiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL3BhbmVsL3BhbmVsLXJh
-eWRpdW0tcm02ODIwMC5jDQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9wYW5lbC9wYW5lbC1yYXlk
-aXVtLXJtNjgyMDAuYw0KPiBAQCAtODIsMTUgKzgyLDE1IEBAIHN0cnVjdCBybTY4MjAwIHsNCj4g
-ICB9Ow0KPiAgIA0KPiAgIHN0YXRpYyBjb25zdCBzdHJ1Y3QgZHJtX2Rpc3BsYXlfbW9kZSBkZWZh
-dWx0X21vZGUgPSB7DQo+IC0JLmNsb2NrID0gNTI1ODIsDQo+ICsJLmNsb2NrID0gNTQwMDAsDQo+
-ICAgCS5oZGlzcGxheSA9IDcyMCwNCj4gLQkuaHN5bmNfc3RhcnQgPSA3MjAgKyAzOCwNCj4gLQku
-aHN5bmNfZW5kID0gNzIwICsgMzggKyA4LA0KPiAtCS5odG90YWwgPSA3MjAgKyAzOCArIDggKyAz
-OCwNCj4gKwkuaHN5bmNfc3RhcnQgPSA3MjAgKyA0OCwNCj4gKwkuaHN5bmNfZW5kID0gNzIwICsg
-NDggKyA5LA0KPiArCS5odG90YWwgPSA3MjAgKyA0OCArIDkgKyA0OCwNCj4gICAJLnZkaXNwbGF5
-ID0gMTI4MCwNCj4gICAJLnZzeW5jX3N0YXJ0ID0gMTI4MCArIDEyLA0KPiAtCS52c3luY19lbmQg
-PSAxMjgwICsgMTIgKyA0LA0KPiAtCS52dG90YWwgPSAxMjgwICsgMTIgKyA0ICsgMTIsDQo+ICsJ
-LnZzeW5jX2VuZCA9IDEyODAgKyAxMiArIDUsDQo+ICsJLnZ0b3RhbCA9IDEyODAgKyAxMiArIDUg
-KyAxMiwNCj4gICAJLmZsYWdzID0gMCwNCj4gICAJLndpZHRoX21tID0gNjgsDQo+ICAgCS5oZWln
-aHRfbW0gPSAxMjIsDQo+IA0KDQpIaSBZYW5uaWNrLA0KVGVzdGVkLWJ5OiBQaGlsaXBwZSBDb3Ju
-dSA8cGhpbGlwcGUuY29ybnVAc3QuY29tPg0KVGhhbmsgeW91LA0KUGhpbGlwcGU=
+Dear,
+
+My name is Mr Tofil Bama, I am the Bill and Exchange assistant
+Manager in Bank of Africa Ouagadougou Burkina Faso. In my department
+I discovered an abandoned sum of eighteen million three hundred
+thousand United State of American dollars (18.3MILLION USA DOLLARS)
+in an account that belongs to one of our foreign customer
+(late Mr Shitu Nuri) who died in Ethiopian Airlines Flight 409 that
+crashed into the Mediterranean Sea on 25th January 2010.
+
+Since I got information about his death I have been expecting
+his next of kin to come over and claim his money because we
+cannot release it unless somebody applies for it as the next
+of kin or relation to the deceased as indicated in our banking guidelines,
+unfortunately we learnt that all his supposed next of kin or
+relation died alongside with him in the plane crash leaving
+nobody behind for the claim.
+
+It is therefore upon this discovery that I decided to make this
+business proposal to you and release the money to you as next of kin
+to the deceased for safety and subsequent disbursement since nobody is
+coming for the fund, it is 10 years now the money is lying pending in
+the account of our deceased and I don't want the money to go into the
+bank treasury as unclaimed bill.
+
+You will be entitled with 40% of the total sum while 60% will be for
+me after which I will visit your Country to invest my own share when
+the fund is successfully transferred into your account, Please I would
+like you to keep this transaction confidential and as a top secret
+between me and you until we successfully achieve this golden
+opportunity.
+
+Yours sincerely,
+Mr Tofil Bama.
