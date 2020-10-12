@@ -2,86 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33FB828B4FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 14:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5057528B504
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 14:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727502AbgJLMwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 08:52:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51752 "EHLO
+        id S2388569AbgJLMwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 08:52:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726572AbgJLMwQ (ORCPT
+        with ESMTP id S1728191AbgJLMwt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 08:52:16 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E75EBC0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 05:52:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qibnqW3/jBcA6KLTouvKyfDZONWPLgZFig9zBnTvLc4=; b=awGNq7PdfWKwVcchkDfeCjPEAW
-        DbJGht8JeVFEucbFLJdpw0IQx4H0kJT2xYuDV5dzVcCgLHpZMAOr57i4rlXDh3rfbPD9S1bOm55yO
-        rtK+hq7jIWDtlGLayHYF6mEA8yvYqH3QiAtg+Wx6v+k8ekyQv7Yd4BOyiBFM3sO/Iv7Ee182rvFGd
-        qj6iJUJ/RQ9iMJyUqzfNgD9yYSJYIHC+IbH9cnXRQdMzy6La5X3IA1Z1m2ZeYGzm8bq1NEhnzfhx7
-        G4l9lTUJXgh+aapk7ysG3qkekwuD3jRHcJ6b7nohrv9ZLkhHEoNudSY5S9rL65kAKmBnsP0hJoFn2
-        /NYn2FlQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kRxJ4-0007jE-Ck; Mon, 12 Oct 2020 12:52:02 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 53A7E304BAE;
-        Mon, 12 Oct 2020 14:52:00 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1D64F2B8E927B; Mon, 12 Oct 2020 14:52:00 +0200 (CEST)
-Date:   Mon, 12 Oct 2020 14:52:00 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     tglx@linutronix.de, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
-        valentin.schneider@arm.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, rostedt@goodmis.org,
-        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
-        vincent.donnefort@arm.com, tj@kernel.org
-Subject: Re: [PATCH -v2 07/17] sched: Fix hotplug vs CPU bandwidth control
-Message-ID: <20201012125200.GW2628@hirez.programming.kicks-ass.net>
-References: <20201005145717.346020688@infradead.org>
- <20201005150921.661842442@infradead.org>
- <336a3916-1dd8-98cf-44e8-88dbf27018d5@arm.com>
+        Mon, 12 Oct 2020 08:52:49 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50727C0613D1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 05:52:49 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id u24so14175687pgi.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 05:52:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ipcIccSaehWRY8KFTu0E4RX30NBtF9Iei0Qm//1giqU=;
+        b=vDmn/7Sox6P2fsbvwBYtK3OIQm6frCDfK+NSfp+MWaNoEgAtO9OtRnCMzRgCodb9J+
+         f05LMh5zkDIZDdcf3k9UKZ2WSAJDbkSqns6f5KRDk2ajKEtdvXHVmIvVguLro00+VdVC
+         Cm3abEcZErgIwXroZQUSpltfGvWD8+8AkcS12d93tTsy615SnA8R0btDLyVHy31STuIO
+         cDX5Z2LBkQ6OPRMQN4YuSMvykCIeEDQcOy0deYu3RGBOfJpTg9sMDWH1ReEX684Rr3LI
+         SJzsy9iSkbSjVugDsOXmw+JNzLgUM+w5BPn7R3bLKie+PMbBwXWeacPP0nwRpCdc1joe
+         KQww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ipcIccSaehWRY8KFTu0E4RX30NBtF9Iei0Qm//1giqU=;
+        b=RTcyxdfhHhZB/ndPAdiYtLRNjJVuUoXKMN56TgTxhO7FfjVQyT3r/oztZ3l+DiyXYW
+         az6GboE1TEs3gstk9d9IB5mdV4MmFmKNkayyaHVrHVcIKh2XoXlceVWFrMG801brWjXV
+         QWgZ/zYvLZnN+P0KviKXexQy47qTmZqW6c610RMijRlQxjxRTdWXsEUn0rMDPS6uTVBL
+         fG5S3AJ2j658MiDHZh9EU6pCo1YAAEBh2/lI3kX5AYrNp9u0TlkLpaWGSSL7y8KmCBO1
+         +ovgAMhMYeukpjRZZXA+9axqWJ4KSktU1HC4Omgbay3oBHrq4E0Ycr7pL7jh7OxcRJSS
+         XqMQ==
+X-Gm-Message-State: AOAM5330/khZ79c7fwbRFNU40x3bm43NSZf0F1Tfix3mHhzF9C7028Jp
+        +q0+cdurRCD7KfgtIfUB2BDOOzGAjiBoQ2yvfS1DdA==
+X-Google-Smtp-Source: ABdhPJxlshYioCMTyfDuNgCaIHvRc9rwT6fnHXX2uNOsXi4q+WcC9764HESYH/R1WG1xuE19lwP7z+hBF+xWhaf8e6g=
+X-Received: by 2002:a17:90b:807:: with SMTP id bk7mr19285084pjb.166.1602507168618;
+ Mon, 12 Oct 2020 05:52:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <336a3916-1dd8-98cf-44e8-88dbf27018d5@arm.com>
+References: <dfb5eee2b1bdff14508100ee7c427596de384cd3.1602237653.git.handeharputlu@google.com>
+ <20201010065527.GA130900@kroah.com>
+In-Reply-To: <20201010065527.GA130900@kroah.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Mon, 12 Oct 2020 14:52:37 +0200
+Message-ID: <CAAeHK+zQzyjN6c8swzzmtA726hP1Or6s=Cw-tB1y3N3zKJCqqA@mail.gmail.com>
+Subject: Re: [PATCH] usbip, kcov: collect coverage from usbip client
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     NazimeHandeHarputluogluhandeharput@gmail.com,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Hande Harputluoglu <handeharput@gmail.com>,
+        Nazime Hande Harputluoglu <handeharputlu@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 10:41:11PM +0200, Dietmar Eggemann wrote:
-> On 05/10/2020 16:57, Peter Zijlstra wrote:
-> > Since we now migrate tasks away before DYING, we should also move
-> > bandwidth unthrottle, otherwise we can gain tasks from unthrottle
-> > after we expect all tasks to be gone already.
-> > 
-> > Also; it looks like the RT balancers don't respect cpu_active() and
-> > instead rely on rq->online in part, complete this. This too requires
-> > we do set_rq_offline() earlier to match the cpu_active() semantics.
-> > (The bigger patch is to convert RT to cpu_active() entirely)
-> > 
-> > Since set_rq_online() is called from sched_cpu_activate(), place
-> > set_rq_offline() in sched_cpu_deactivate().
+On Sat, Oct 10, 2020 at 8:55 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Fri, Oct 09, 2020 at 03:22:55PM +0000, NazimeHandeHarputluogluhandeharput@gmail.com wrote:
+> > From: Nazime Hande Harputluoglu <handeharputlu@google.com>
+> >
+> > Add kcov_remote_start()/kcov_remote_stop() annotations to the
+> > vhci_rx_loop() function, which is responsible for parsing USB/IP packets
+> > in USB/IP client.
+> >
+> > Since vhci_rx_loop() threads are spawned per usbip device instance, the
+> > common kcov handle is used for kcov_remote_start()/stop() annotations
+> > (see Documentation/dev-tools/kcov.rst for details). As the result kcov
+> > can now be used to collect coverage from vhci_rx_loop() threads.
+> >
+> > Signed-off-by: Nazime Hande Harputluoglu <handeharputlu@google.com>
+> > ---
+> >  drivers/usb/usbip/usbip_common.h | 2 ++
+> >  drivers/usb/usbip/vhci_rx.c      | 6 ++++--
+> >  drivers/usb/usbip/vhci_sysfs.c   | 2 ++
+> >  3 files changed, 8 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/usb/usbip/usbip_common.h b/drivers/usb/usbip/usbip_common.h
+> > index 8be857a4fa13..cbbf2aa8ac73 100644
+> > --- a/drivers/usb/usbip/usbip_common.h
+> > +++ b/drivers/usb/usbip/usbip_common.h
+> > @@ -277,6 +277,8 @@ struct usbip_device {
+> >               void (*reset)(struct usbip_device *);
+> >               void (*unusable)(struct usbip_device *);
+> >       } eh_ops;
+> > +
+> > +        u64 kcov_handle;
+> >  };
+> >
+> >  #define kthread_get_run(threadfn, data, namefmt, ...)                           \
+> > diff --git a/drivers/usb/usbip/vhci_rx.c b/drivers/usb/usbip/vhci_rx.c
+> > index 266024cbb64f..b2eb3e8c04b9 100644
+> > --- a/drivers/usb/usbip/vhci_rx.c
+> > +++ b/drivers/usb/usbip/vhci_rx.c
+> > @@ -260,8 +260,10 @@ int vhci_rx_loop(void *data)
+> >       while (!kthread_should_stop()) {
+> >               if (usbip_event_happened(ud))
+> >                       break;
+> > -
+> > -             vhci_rx_pdu(ud);
+> > +
+> > +                kcov_remote_start_common(ud->kcov_handle);
+> > +                vhci_rx_pdu(ud);
+> > +                kcov_remote_stop();
+> >       }
+> >
+> >       return 0;
+> > diff --git a/drivers/usb/usbip/vhci_sysfs.c b/drivers/usb/usbip/vhci_sysfs.c
+> > index be37aec250c2..4dfe3809ebbb 100644
+> > --- a/drivers/usb/usbip/vhci_sysfs.c
+> > +++ b/drivers/usb/usbip/vhci_sysfs.c
+> > @@ -9,6 +9,7 @@
+> >  #include <linux/net.h>
+> >  #include <linux/platform_device.h>
+> >  #include <linux/slab.h>
+> > +#include <linux/kcov.h>
+> >
+> >  /* Hardening for Spectre-v1 */
+> >  #include <linux/nospec.h>
+> > @@ -383,6 +384,7 @@ static ssize_t attach_store(struct device *dev, struct device_attribute *attr,
+> >       vdev->ud.sockfd     = sockfd;
+> >       vdev->ud.tcp_socket = socket;
+> >       vdev->ud.status     = VDEV_ST_NOTASSIGNED;
+> > +        vdev->ud.kcov_handle = kcov_common_handle();
+> >
+> >       spin_unlock(&vdev->ud.lock);
+> >       spin_unlock_irqrestore(&vhci->lock, flags);
+> > --
+> > 2.28.0.1011.ga647a8990f-goog
+> >
+>
+> Please run checkpatch.pl on your patches before sending them out, so you
+> don't get grumpy maintainers telling you to run checkpatch.pl on your
+> patch...
 
-> [   76.215229] WARNING: CPU: 1 PID: 1913 at kernel/irq_work.c:95 irq_work_queue_on+0x108/0x110
+Hi Greg,
 
-> [   76.341076]  irq_work_queue_on+0x108/0x110
-> [   76.349185]  pull_rt_task+0x58/0x68
-> [   76.352673]  balance_rt+0x84/0x88
+Sorry, I'll fix it up and send v2.
 
-> balance_rt() checks via need_pull_rt_task() that rq is online but it
-> looks like that with RT_PUSH_IPI pull_rt_task() -> tell_cpu_to_push()
-> calls irq_work_queue_on() with cpu = rto_next_cpu(rq->rd) and this one
-> can be offline here as well now.
-
-Hurmph... so if I read this right, we reach offline with overload set?
-
-Oooh, I think I see how that happens..
+Thanks!
