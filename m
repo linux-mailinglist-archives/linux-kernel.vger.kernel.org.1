@@ -2,49 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB7528C572
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 01:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1097128C56C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 01:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391101AbgJLXup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 19:50:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49238 "EHLO mail.kernel.org"
+        id S2390956AbgJLXuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 19:50:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389765AbgJLXuF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 19:50:05 -0400
-Subject: Re: [git pull] vfs.git iov_iter series
+        id S2389654AbgJLXuG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 19:50:06 -0400
+Subject: Re: [GIT PULL] Documentation for 5.10
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602546604;
-        bh=FREUOS5+p/0DJ54+SzP7kgalRqWwHKsB/Le6P4B1LOY=;
+        s=default; t=1602546605;
+        bh=PFxcfnuYkMRy4JqihHf8jMqmmBOGezqQ9Vjun9KGwMU=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=ozXsMGNjYAOsHlkZtHKz8Qjzg3OA+unDPSC+wuOMH/oy7ZMW9/PrI409d0gbpnqy2
-         czpdthBAbifPZ5/+uwT/LOxffVQ0EKvs7O+DwiGcci6j8z/HZ0l1tJhrlH2WuDFEJx
-         B1tzK+CvgIdjAkMAYq/pif3tZZ65ksJYy1T7QSAw=
+        b=gwlrHcRHejGvb4cjZJgc6Pc+XVtQJQdVB7wqQ6Lz50tkU1HoyASNCzIa939ld3uot
+         UG/1KJl7ue130zSarlZ6HEPWiS6zMRVcbnoDbfZpC4HweROFnoHv3IfSiThCm4XYnM
+         B0JyD6BfmrE04WPB8q4zpKE1ouNYpjgfBZBcWC7M=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201012031722.GF3576660@ZenIV.linux.org.uk>
-References: <20201012031722.GF3576660@ZenIV.linux.org.uk>
+In-Reply-To: <20201012133042.688ee6a6@lwn.net>
+References: <20201012133042.688ee6a6@lwn.net>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201012031722.GF3576660@ZenIV.linux.org.uk>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.iov_iter
-X-PR-Tracked-Commit-Id: 5d47b394794d3086c1c338cc014011a9ee34005c
+X-PR-Tracked-Message-Id: <20201012133042.688ee6a6@lwn.net>
+X-PR-Tracked-Remote: git://git.lwn.net/linux.git tags/docs-5.10
+X-PR-Tracked-Commit-Id: 4fb220da0dd03d3699776220d86ac84b38941c0c
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 85ed13e78dbedf9433115a62c85429922bc5035c
-Message-Id: <160254660469.9131.46634232117859172.pr-tracker-bot@kernel.org>
-Date:   Mon, 12 Oct 2020 23:50:04 +0000
-To:     Al Viro <viro@zeniv.linux.org.uk>
+X-PR-Merge-Commit-Id: 50d228345a03c882dfe11928ab41b42458b3f922
+Message-Id: <160254660550.9131.14565875654021588152.pr-tracker-bot@kernel.org>
+Date:   Mon, 12 Oct 2020 23:50:05 +0000
+To:     Jonathan Corbet <corbet@lwn.net>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
+        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 12 Oct 2020 04:17:22 +0100:
+The pull request you sent on Mon, 12 Oct 2020 13:30:42 -0600:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.iov_iter
+> git://git.lwn.net/linux.git tags/docs-5.10
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/85ed13e78dbedf9433115a62c85429922bc5035c
+https://git.kernel.org/torvalds/c/50d228345a03c882dfe11928ab41b42458b3f922
 
 Thank you!
 
