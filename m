@@ -2,134 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 513DF28BE76
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B247B28BE79
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:52:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403948AbgJLQwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 12:52:15 -0400
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:35752 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390683AbgJLQwO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 12:52:14 -0400
-Received: by mail-ed1-f66.google.com with SMTP id cq12so17746914edb.2;
-        Mon, 12 Oct 2020 09:52:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3mboFW4RncTKtOa1W24m1Ae7YyE66jcNb5+APhjiUo8=;
-        b=TrFiW84TQByeVqD+r/u6Dikvtsw+SSUrb3fD1oAMSmQLye5TpAMe0S328tHQZHkKZu
-         62w8UyLsbmLCo+g9Xm9MD4hzVoTfuej4AclSEYbme/86OcLxhQ+gtQsFkh33kAxbrB3R
-         WkU6plJRoyc9szXsj96GBPNlfBfwWjeUD+cbc0iGfr/rNacd69LJXogZvoz+je28VKWL
-         8iOFVEowAGFfK4KXXb1fGLHGEI/TnXol9ZCe0OZa7Q9BquLdUYTKCGW5HuxzNzXRlBNu
-         RAFPxx5nZPJ4CEp4lpXuRonql3vSVsMkfHeMdY6Ny+1tR+tfA/D8CbWY3K4u+sp6JXP1
-         lu0Q==
-X-Gm-Message-State: AOAM532VXj1t5abkHx/Rpjp/wcfyqavBcx2nhtnIZ6/BRzk+T3x3aeyV
-        42V4pCoJnTlqW80f8cAIfmA=
-X-Google-Smtp-Source: ABdhPJwHfSMlR1K1xguOC5H0QrsWlq5j9g7EhtvzQgZS6un/QQ7FKO5pQ+6qmTh33FDIeD4VYJr+Hw==
-X-Received: by 2002:aa7:dc16:: with SMTP id b22mr15155239edu.252.1602521532271;
-        Mon, 12 Oct 2020 09:52:12 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.215])
-        by smtp.googlemail.com with ESMTPSA id j24sm10475455edq.29.2020.10.12.09.52.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 12 Oct 2020 09:52:10 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 18:52:08 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     AngeloGioacchino Del Regno <kholk11@gmail.com>
-Cc:     dmitry.torokhov@gmail.com, Rob Herring <robh+dt@kernel.org>,
-        rydberg@bitmath.org, priv.luk@gmail.com,
-        linux-input@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        marijns95@gmail.com, konradybcio@gmail.com,
-        martin.botka1@gmail.com, phone-devel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 3/3] dt-bindings: touchscreen: Add binding for Novatek
- NT36xxx series driver
-Message-ID: <20201012165208.GA3706@kozik-lap>
-References: <20201008181514.668548-1-kholk11@gmail.com>
- <20201008181514.668548-4-kholk11@gmail.com>
- <CAJKOXPdZ_zo0bPwQd=_dKHhA2KWHgsH4KTH=+cX8hNxSVrqrig@mail.gmail.com>
- <CAK7fi1ZJN=AbkusWqDEbAkZ=AgKEPCvWH43hBpX0-EUDJWOC5g@mail.gmail.com>
+        id S2403962AbgJLQwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 12:52:23 -0400
+Received: from foss.arm.com ([217.140.110.172]:57696 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390705AbgJLQwW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 12:52:22 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E280431B;
+        Mon, 12 Oct 2020 09:52:20 -0700 (PDT)
+Received: from localhost (unknown [10.1.199.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 84FD43F66B;
+        Mon, 12 Oct 2020 09:52:20 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 17:52:19 +0100
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Nicola Mazzucato <nicola.mazzucato@arm.com>,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        vireshk@kernel.org, daniel.lezcano@linaro.org, rjw@rjwysocki.net,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        chris.redpath@arm.com, morten.rasmussen@arm.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 2/2] [RFC] CPUFreq: Add support for
+ cpu-perf-dependencies
+Message-ID: <20201012165219.GA3573@arm.com>
+References: <20200924095347.32148-1-nicola.mazzucato@arm.com>
+ <20200924095347.32148-3-nicola.mazzucato@arm.com>
+ <20201006071909.3cgz7i5v35dgnuzn@vireshk-i7>
+ <2417d7b5-bc58-fa30-192c-e5991ec22ce0@arm.com>
+ <20201008110241.dcyxdtqqj7slwmnc@vireshk-i7>
+ <20201008150317.GB20268@arm.com>
+ <56846759-e3a6-9471-827d-27af0c3d410d@arm.com>
+ <20201009053921.pkq4pcyrv4r7ylzu@vireshk-i7>
+ <20201012154915.GD16519@bogus>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK7fi1ZJN=AbkusWqDEbAkZ=AgKEPCvWH43hBpX0-EUDJWOC5g@mail.gmail.com>
+In-Reply-To: <20201012154915.GD16519@bogus>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 10:30:35PM +0200, AngeloGioacchino Del Regno wrote:
-> Il giorno gio 8 ott 2020 alle ore 20:21 Krzysztof Kozlowski
-> <krzk@kernel.org> ha scritto:
-> >
-> > On Thu, 8 Oct 2020 at 20:15, <kholk11@gmail.com> wrote:
-> > >
-> > > From: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> > >
-> > > Add binding for the Novatek NT36xxx series touchscreen driver.
-> > >
-> > > Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> > > ---
-> > >  .../input/touchscreen/novatek,nt36xxx.yaml    | 59 +++++++++++++++++++
-> > >  1 file changed, 59 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml b/Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml
-> > > new file mode 100644
-> > > index 000000000000..e747cacae036
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml
-> > > @@ -0,0 +1,59 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/input/touchscreen/novatek,nt36xxx.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Novatek NT36xxx series touchscreen controller Bindings
-> > > +
-> > > +maintainers:
-> > > +  - Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> > > +
-> > > +allOf:
-> > > +  - $ref: touchscreen.yaml#
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    const: novatek,nt36xxx
-> >
-> > Thanks for the changes, they look good except this part here which I
-> > missed before. The compatible should not contain wildcards. If all
-> > devices are really compatible, just add here one const, e.g. "const:
-> > novatek,nt36525". If they are different, you could add multiple
-> > compatibles in enum.
-> >
-> > Best regards,
-> > Krzysztof
+On Monday 12 Oct 2020 at 16:49:30 (+0100), Sudeep Holla wrote:
+> On Fri, Oct 09, 2020 at 11:09:21AM +0530, Viresh Kumar wrote:
+> > On 08-10-20, 17:00, Nicola Mazzucato wrote:
+> > > On 10/8/20 4:03 PM, Ionela Voinescu wrote:
+> > > > Hi Viresh,
+> > > > 
+> > > > On Thursday 08 Oct 2020 at 16:32:41 (+0530), Viresh Kumar wrote:
+> > > >> On 07-10-20, 13:58, Nicola Mazzucato wrote:
+> > > >>> Hi Viresh,
+> > > >>>
+> > > >>> performance controls is what is exposed by the firmware through a protocol that
+> > > >>> is not capable of describing hardware (say SCMI). For example, the firmware can
+> > > >>> tell that the platform has N controls, but it can't say to which hardware they
+> > > >>> are "wired" to. This is done in dt, where, for example, we map these controls
+> > > >>> to cpus, gpus, etc.
+> > > >>>
+> > > >>> Let's focus on cpus.
+> > > >>>
+> > > >>> Normally we would have N of performance controls (what comes from f/w)
+> > > >>> that that correspond to hardware clock/dvfs domains.
+> > > >>>
+> > > >>> However, some firmware implementations might benefit from having finer
+> > > >>> grained information about the performance requirements (e.g.
+> > > >>> per-CPU) and therefore choose to present M performance controls to the
+> > > >>> OS. DT would be adjusted accordingly to "wire" these controls to cpus
+> > > >>> or set of cpus.
+> > > >>> In this scenario, the f/w will make aggregation decisions based on the
+> > > >>> requests it receives on these M controls.
+> > > >>>
+> > > >>> Here we would have M cpufreq policies which do not necessarily reflect the
+> > > >>> underlying clock domains, thus some s/w components will underperform
+> > > >>> (EAS and thermal, for example).
+> > > >>>
+> > > >>> A real example would be a platform in which the firmware describes the system
+> > > >>> having M per-cpu control, and the cpufreq subsystem will have M policies while
+> > > >>> in fact these cpus are "performance-dependent" each other (e.g. are in the same
+> > > >>> clock domain).
+> > > >>
+> > > >> If the CPUs are in the same clock domain, they must be part of the
+> > > >> same cpufreq policy.
+> > > > 
+> > > > But cpufreq does not currently support HW_ALL (I'm using the ACPI
+> > > > coordination type to describe the generic scenario of using hardware
+> > > > aggregation and coordination when establishing the clock rate of CPUs).
+> > > > 
+> > > > Adding support for HW_ALL* will involve either bypassing some
+> > > > assumptions around cpufreq policies or making core cpufreq changes.
+> > > > 
+> > > > In the way I see it, support for HW_ALL involves either:
+> > > > 
+> > > >  - (a) Creating per-cpu policies in order to allow each of the CPUs to
+> > > >    send their own frequency request to the hardware which will do
+> > > >    aggregation and clock rate decision at the level of the clock
+> > > >    domain. The PSD domains (ACPI) and the new DT binding will tell
+> > > >    which CPUs are actually in the same clock domain for whomever is
+> > > >    interested, despite those CPUs not being in the same policy.
+> > > >    This requires the extra mask that Nicola introduced.
+> > > > 
+> > > >  - (b) Making deep changes to cpufreq (core/governors/drivers) to allow:
+> > > >    - Governors to stop aggregating (usually max) the information
+> > > >      for each of the CPUs in the policy and convey to the core
+> > > >      information for each CPU.
+> > > >    - Cpufreq core to be able to receive and pass this information
+> > > >      down to the drivers.
+> > > >    - Drivers to be able to have some per cpu structures to hold
+> > > >      frequency control (let's say SCP fast channel addresses) for
+> > > >      each of the CPUs in the policy. Or have these structures in the
+> > > >      cpufreq core/policy, to avoid code duplication in drivers.
+> > > > 
+> > > > Therefore (a) is the least invasive but we'll be bypassing the rule
+> > > > above. But to make that rule stick we'll have to make invasive cpufreq
+> > > > changes (b).
+> > > 
+> > > Regarding the 'rule' above of one cpufreq policy per clock domain, I would like
+> > > to share my understanding on it. Perhaps it's a good opportunity to shed some light.
+> > > 
+> > > Looking back in the history of CPUFreq, related_cpus was originally designed
+> > > to hold the map of cpus within the same clock. Later on, the meaning of this
+> > > cpumask changed [1].
+> > > This led to the introduction of a new cpumask 'freqdomain_cpus'
+> > > within acpi-cpufreq to keep the knowledge of hardware clock domains for
+> > > sysfs consumers since related_cpus was not suitable anymore for this.
+> > > Further on, this cpumask was assigned to online+offline cpus within the same clk
+> > > domain when sw coordination is in use [2].
+> > > 
+> > > My interpretation is that there is no guarantee that related_cpus holds the
+> > > 'real' hardware clock implementation. As a consequence, it is not true anymore
+> > > that cpus that are in the same clock domain will be part of the same
+> > > policy.
+> > > 
+> > > This guided me to think it would be better to have a cpumask which always holds
+> > > the real hw clock domains in the policy.
+> > > 
+> > > > 
+> > > > This is my current understanding and I'm leaning towards (a). What do
+> > > > you think?
+> > > > 
+> > > > *in not so many words, this is what these patches are trying to propose,
+> > > > while also making sure it's supported for both ACPI and DT.
+> > > > 
+> > > > BTW, thank you for your effort in making sense of this!
+> > > > 
+> > > > Regards,
+> > > > Ionela.
+> > > > 
+> > > 
+> > > This could be a platform where per-cpu and perf-dependencies will be used:
+> > > 
+> > > CPU:              0    1    2    3    4    5    6    7
+> > > Type:             A    A    A    A    B    B    B    B
+> > > Cluster:         [                                    ]
+> > > perf-controls:   [  ] [  ] [  ] [ ]  [ ]  [ ]  [ ]  [ ]
+> > > perf-dependency: [                ]  [                ]
+> > > HW clock:        [                ]  [                ]
+> > > 
+> > > The firmware will present 8 controls to the OS and each control is mapped to a
+> > > cpu device via the standard dt. This is done so we can achieve hw coordination.
+> > > What is required in these systems is to present to OS the information of which
+> > > cpus belong to which clock domain. In other words, when hw coordinates we don't
+> > > have any way at present in dt to understand how these cpus are dependent
+> > > each other, from performance perspective (as opposed to ACPI where we have
+> > > _PSD). Hence my proposal for the new cpu-perf-dependencies.
+> > > This is regardless whether we decide to go for either a policy per-cpu or a
+> > > policy per-domain.
+> > > 
+> > > Hope it helps.
+> > 
+> > Oh yes, I get it now. Finally. Thanks for helping me out :)
+> > 
+> > So if I can say all this stuff in simple terms, this is what it will
+> > be like:
+> > 
+> > - We don't want software aggregation of frequencies and so we need to
+> >   have per-cpu policies even when they share their clock lines.
+> > 
+> > - But we still need a way for other frameworks to know which CPUs
+> >   share the clock lines (that's what the perf-dependency is all about,
+> >   right ?).
+> > 
+> > - We can't get it from SCMI, but need a DT based solution.
+> > 
+> > - Currently for the cpufreq-case we relied for this on the way OPP
+> >   tables for the CPUs were described. i.e. the opp-table is marked as
+> >   "shared" and multiple CPUs point to it.
+> > 
+> > - I wonder if we can keep using that instead of creating new bindings
+> >   for exact same stuff ? Though the difference here would be that the
+> >   OPP may not have any other entries.
 > 
-> They are all managed the same way, but the page addresses are
-> changing between all of them... the driver is reading the chip ID
-> while the TS MCU is in "boot mode", then checking in a ID table
-> if the chip is supported and finally assigning a page address table.
-> This is done for the entire NT36*** series.
+> Well summarised, sorry for chiming in late. I could have not summarised
+> any better. Just saw the big thread and was thinking of summarising.
+> If the last point on OPP is possible(i.e. no OPP entries but just use
+> it for fetch the information) for $subject patch is trying to achieve,
+> then it would be good.
 > 
-> If wildcards are not permitted, perhaps I can change it to something
-> like "novatek,nt36" or "novatek,nt36-ts"... as then specifying the
-> specific IC model into the DT means that I would have to logically
-> change the driver itself to also crosscheck a DT-specified model
-> with whatever gets recognized by reading the chip (which then would
-> be a triple check of what's going on, imo overcomplicating the logic).
-> 
-> What would you propose, at this point?
 
-If you want the autodetection based on chip ID, then use the
-oldest/earliest device as compatible, so "novatek,nt36525" and keep
-everything else as is. In your case the HW description for all devices
-is the same, thus one compatible is enough.  This way if in future you
-need to bring a difference for a new HW (let's say some imaginary
-NT36999), you can simply add a new compatible.
+Just to put in my two pennies worth: using opp-shared (in possibly empty
+OPP table) as alternative to cpu-perf-dependencies sounds good enough
+to me as well.
 
-Best regards,
-Krzysztof
+Thanks,
+Ionela.
+
+> -- 
+> Regards,
+> Sudeep
