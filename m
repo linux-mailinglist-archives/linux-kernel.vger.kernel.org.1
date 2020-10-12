@@ -2,90 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0FB828BFD0
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 20:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C4DE28BFDA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 20:38:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389739AbgJLSfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 14:35:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43432 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389213AbgJLSfC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 14:35:02 -0400
-Received: from linux-8ccs (p57a236d4.dip0.t-ipconnect.de [87.162.54.212])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9933020797;
-        Mon, 12 Oct 2020 18:35:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602527702;
-        bh=4bedygPxkAIdJoSdpOeA13U7DggA6lrz5iExsiBazPA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=S7hfWuJJGRQ3EMneN7eL6QLc2STkWB9VKl2NCkFX2dzbQzYkhWqgWUnpuMWjdxE8f
-         vsaSAbVKrj7hDPWwY3cbGtzd30e24nBJ06PiSqY5i+XD6mVmYioG9FLrREZev5ksn/
-         PGJzqGfubIl9Q5894Dbr2c9fOoOqO6wZCoMuBfTA=
-Date:   Mon, 12 Oct 2020 20:34:57 +0200
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc:     Corentin Labbe <clabbe.montjoie@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] module: statically initialize init section freeing data
-Message-ID: <20201012183456.GA7338@linux-8ccs>
-References: <20201008173220.923671-1-daniel.m.jordan@oracle.com>
+        id S2388505AbgJLSiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 14:38:18 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:46842 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726636AbgJLSiS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 14:38:18 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602527896;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AIJJxrRTYI7/G4jUBhTF1PuYkEEiQEXkfOYIuChW94Q=;
+        b=2CnO3irtn1TPs1W8K6cSo8Fi1B+04BiL4p9scFJK6PxfDb+QaQB/hafstqIZkSTTC6DT0Z
+        7QaBIzeajNCjTYW8SVApOK4QCF69OgumOFBSHEKvmmTKyPG/i7Uewpd38oFZvLg0pRq6z8
+        DP8tjNKtawl/XmzvL5fUtdUCB+ixK9kzXmFfIeLHmNgOiKhbD0q4chsFEl6NORV1iUOcko
+        Odt6p/FEg/sTf+xx20g8+9zzY2Jqf453TDglxP6Z/hGlj4qDzdDDMqNJqTc0LQD74Y8xOR
+        bpFK3WX1p45yer6mwbif+rt4sJXaj0q7cq/88GxhIfUQu6K7C8F6NtC6Ft14Xw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602527896;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AIJJxrRTYI7/G4jUBhTF1PuYkEEiQEXkfOYIuChW94Q=;
+        b=RzhatGEc49jSWbj2iqK6QoIQCvLwtYoyESzglE8MeZ4Ni8Nyy++ScWap8ts92tTHnIBl27
+        BZqR/wNVniffCUAQ==
+To:     David Woodhouse <dwmw2@infradead.org>, x86@kernel.org,
+        Marc Zyngier <maz@kernel.org>
+Cc:     kvm <kvm@vger.kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 5/5] x86/kvm: Add KVM_FEATURE_MSI_EXT_DEST_ID
+In-Reply-To: <25c54f8e5da1fd5cf3b01ad2fdc1640c5d86baa1.camel@infradead.org>
+References: <803bb6b2212e65c568c84ff6882c2aa8a0ee03d5.camel@infradead.org> <20201007122046.1113577-1-dwmw2@infradead.org> <20201007122046.1113577-5-dwmw2@infradead.org> <87blhcx6qz.fsf@nanos.tec.linutronix.de> <f27b17cf4ab64fdb4f14a056bd8c6a93795d9a85.camel@infradead.org> <95625dfce360756b99641c31212634c1bf80a69a.camel@infradead.org> <87362owhcb.fsf@nanos.tec.linutronix.de> <c6f21628733cac23fd28679842c20423df2dd423.camel@infradead.org> <87tuv4uwmt.fsf@nanos.tec.linutronix.de> <958f0d5c9844f94f2ce47a762c5453329b9e737e.camel@infradead.org> <874kn2s3ud.fsf@nanos.tec.linutronix.de> <0E51DAB1-5973-4226-B127-65D77DC46CB5@infradead.org> <87pn5or8k7.fsf@nanos.tec.linutronix.de> <F0F0A646-8DBA-4448-933F-993A3335BD59@infradead.org> <87ft6jrdpk.fsf@nanos.tec.linutronix.de> <25c54f8e5da1fd5cf3b01ad2fdc1640c5d86baa1.camel@infradead.org>
+Date:   Mon, 12 Oct 2020 20:38:16 +0200
+Message-ID: <87362jqoh3.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201008173220.923671-1-daniel.m.jordan@oracle.com>
-X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+++ Daniel Jordan [08/10/20 13:32 -0400]:
->Corentin hit the following workqueue warning when running with
->CRYPTO_MANAGER_EXTRA_TESTS:
+On Mon, Oct 12 2020 at 17:06, David Woodhouse wrote:
+> On Mon, 2020-10-12 at 11:33 +0200, Thomas Gleixner wrote:
+>> You might want to look into using irq_find_matching_fwspec() instead for
+>> both HPET and IOAPIC. That needs a select() callback implemented in the
+>> remapping domains.
 >
->  WARNING: CPU: 2 PID: 147 at kernel/workqueue.c:1473 __queue_work+0x3b8/0x3d0
->  Modules linked in: ghash_generic
->  CPU: 2 PID: 147 Comm: modprobe Not tainted
->      5.6.0-rc1-next-20200214-00068-g166c9264f0b1-dirty #545
->  Hardware name: Pine H64 model A (DT)
->  pc : __queue_work+0x3b8/0x3d0
->  Call trace:
->   __queue_work+0x3b8/0x3d0
->   queue_work_on+0x6c/0x90
->   do_init_module+0x188/0x1f0
->   load_module+0x1d00/0x22b0
->
->I wasn't able to reproduce on x86 or rpi 3b+.
->
->This is
->
->  WARN_ON(!list_empty(&work->entry))
->
->from __queue_work(), and it happens because the init_free_wq work item
->isn't initialized in time for a crypto test that requests the gcm
->module.  Some crypto tests were recently moved earlier in boot as
->explained in commit c4741b230597 ("crypto: run initcalls for generic
->implementations earlier"), which went into mainline less than two weeks
->before the Fixes commit.
->
->Avoid the warning by statically initializing init_free_wq and the
->corresponding llist.
->
->Link: https://lore.kernel.org/lkml/20200217204803.GA13479@Red/
->Fixes: 1a7b7d922081 ("modules: Use vmalloc special flag")
->Reported-by: Corentin Labbe <clabbe.montjoie@gmail.com>
->Tested-by: Corentin Labbe <clabbe.montjoie@gmail.com>
->Tested-on: sun50i-h6-pine-h64
->Tested-on: imx8mn-ddr4-evk
->Tested-on: sun50i-a64-bananapi-m64
->Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+> That works.
 
-Applied, thanks!
+:)
 
-Jessica
+Nasty, but way better than what we have now. Now I start to wonder
+whether we can get rid of a few other things as well especially the
+non-standard alloc_info thingy.
+
+Thanks,
+
+        tglx
