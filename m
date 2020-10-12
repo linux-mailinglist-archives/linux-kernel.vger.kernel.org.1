@@ -2,165 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 529E828B499
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 14:28:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDB0128B4A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 14:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388496AbgJLM15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 08:27:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42608 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388334AbgJLM15 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 08:27:57 -0400
-Received: from coco.lan (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1098C20708;
-        Mon, 12 Oct 2020 12:27:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602505676;
-        bh=59oCIjsJ1RnqsEKDFdcIlGF19qeI1cmuvdFDSYDMqPk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=yL++0nK1IJxw7lJh/t8BWWrR2pEmL6hzOw6KfjjXH38nQz42t0lV+aNhETYAHRSGl
-         YZKlgqhBi3F73W9/2G5Z7+LXHW7h1/RidGnZRsEsFhuEmfXR32QOllavshxbfCrazc
-         6Vk2+Xm12rjajbpI7Kt/P8uhGyZN65gQjiTqA+oM=
-Date:   Mon, 12 Oct 2020 14:27:50 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Changbin Du <changbin.du@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Markus Heiser <markus.heiser@darmarit.de>
-Subject: Re: [PATCH] scripts: kernel-doc: allow passing desired Sphinx C
- domain dialect
-Message-ID: <20201012142750.5073109a@coco.lan>
-In-Reply-To: <20201006080134.07d94d26@lwn.net>
-References: <ee1f16453ad40eae2603adfde5f6dda3ab1befc7.1601798520.git.mchehab+huawei@kernel.org>
-        <20201005101736.7adf4f46@lwn.net>
-        <20201006084207.125c88d5@coco.lan>
-        <20201006080134.07d94d26@lwn.net>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S2388478AbgJLMbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 08:31:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388334AbgJLMbL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 08:31:11 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB81EC0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 05:31:09 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id e18so18964122wrw.9
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 05:31:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MvIZCy8+uyG7PlFqYpqlAdUF/vTk3X+HzF3V0T1VljQ=;
+        b=CqyWnOKRUBw/Boxzc/3KtKSNAH6ni3OI/OFYvkdZluHArK5KZwePxrUUlxyYaLFSBD
+         vCjQsVLLNHxs4L5K9N+J0DE1oYycFmVIyXG+DVnE4sfzmNGwRTtLoOtWBtyInpmquJ59
+         IpyFj0YmyWVa0ZM9dP3oaCFjnqX1B8Lr1Df8k2afgovNm3+dcYmFK9xdLoF5Qhwx0Xcg
+         Y+7SKm3sm9Mmkxk+asWaYAE9srvIKntsbamoUhgF066LAchmlrLae9MiFXpEy6M7jYwS
+         qkFa2iUz8SWKFor3BtFIoWuIE9MJqo4pJ1TETNZnj+Df1hG0ZENJbBLvaSauiIb2OnrM
+         rfIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MvIZCy8+uyG7PlFqYpqlAdUF/vTk3X+HzF3V0T1VljQ=;
+        b=AQ3DQSbtef1tMw3nNZ+z8AbKDrseLsKgGxSJNk+vnp0yoPsI+A/pmOA+uAqsL8SIdQ
+         QZFo1P2eCq68dg0ZacsdVI6Iw9sol2mJpBriL4SWXkvSsmKcOD7W4CTU+DEEhaQi6ajO
+         0tZcc6rddavV8h2iCwAULvBc9iwS8nHUTkec4GptGsItKx6kz1VR3pbEHmwkmsTYB7zH
+         SZpBUEAgdVIlk8//J5LodAFC4R7Fi1tKNmUrWdH5qEG6Zwr94IM4K7odly9rfFwda97h
+         29wvDZ+B2Ok3eYzUbJw2vrQWDQtjyePTE1ymXwOIfnFKncAaLx6AxyNKqQHdQNUZv2SL
+         WKLw==
+X-Gm-Message-State: AOAM533e6k8SaYTgeeUoDSjO59fVOlrOpV8awMwoS+b0GLxugnFwvvGo
+        OQ8hjUcj3KgTxa+lxWxHIO+zOw4FSDY62w==
+X-Google-Smtp-Source: ABdhPJyXrQMqvFC6DcpILZj94c1CmBX8YBtmQtfWHr/g3npQmL7PmVc15eqRA2+Qfrn+J6C8S5sWqQ==
+X-Received: by 2002:adf:c3c2:: with SMTP id d2mr30672263wrg.191.1602505868361;
+        Mon, 12 Oct 2020 05:31:08 -0700 (PDT)
+Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
+        by smtp.gmail.com with ESMTPSA id b25sm20408235wmj.21.2020.10.12.05.31.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 05:31:07 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH next] iommu: intel: make DMAR_TABLE select IOMMU_API
+Date:   Mon, 12 Oct 2020 14:31:05 +0200
+Message-Id: <20201012123105.32652-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 6 Oct 2020 08:01:34 -0600
-Jonathan Corbet <corbet@lwn.net> escreveu:
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-> On Tue, 6 Oct 2020 08:42:07 +0200
-> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
-> 
-> > As right now we don't support Sphinx version 3.0[1], we're actually using just
-> > $sphinx_major. So, I'm wonder if it would make sense to also make <minor>
-> > optional.  
-> 
-> Maybe...someday we may need it, knowing how the Sphinx folks approach
-> compatibility, but I guess we can always add it then if so.
-> 
-> > The change would be trivial, although the regex will become even more
-> > harder to read ;-)  
-> 
-> 	^(\d+)(\.(\d+)){,2}
-> 
-> ?  (untested, of course)
+Since commit c40aaaac1018 ("iommu/vt-d: Gracefully handle DMAR units
+with no supported address widths") dmar.c needs struct iommu_device to
+be defined. We need to unconditionally select IOMMU_API when DMAR_TABLE
+is selected. This fixes the following build error when IOMMU_API is not
+selected:
 
-Didn't work (perl complains about its syntax), and neither:
+drivers/iommu/intel/dmar.c: In function ‘free_iommu’:
+drivers/iommu/intel/dmar.c:1139:41: error: ‘struct iommu_device’ has no member named ‘ops’
+ 1139 |  if (intel_iommu_enabled && iommu->iommu.ops) {
+                                                ^
 
-	^(\d+)(\.(\d+)){0,2}
+Fixes: c40aaaac1018 ("iommu/vt-d: Gracefully handle DMAR units with no supported address widths")
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+---
+ drivers/iommu/intel/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I also tried this:
-
-	^(\d+)(?:\.(\d+)){0,2}
-
-But both ends misplacing the second group information when
-x.y.z is used.
-
-On the tests I did, this is the one that worked fine:
-
-	if ($ver_string =~ m/^(\d+)(?:\.(\d+))?(?:\.(\d+))?/) {
-	    $sphinx_major = $1;
-	    if (defined($2)) {
-		$sphinx_minor = $2;
-	    } else {
-		$sphinx_minor = 0;
-	    }
-	    if (defined($3)) {
-		$sphinx_patch = $3
-	    } else {
-		$sphinx_patch = 0;
-	    }
-
-Or the alternative one, using substrings:
-
-	if ($ver_string =~ m/^(\d+)(\.\d+)?(\.\d+)?/) {
-	    $sphinx_major = $1;
-	    if (defined($2)) {
-		$sphinx_minor = substr($2,1);
-	    } else {
-		$sphinx_minor = 0;
-	    }
-	    if (defined($3)) {
-		$sphinx_patch = substr($3,1)
-	    } else {
-		$sphinx_patch = 0;
-	    }
-	}
-
-I'll keep the last one, as it is likely simpler to understand.
-
-> 
-> > [1] not sure how valuable would be adding support for Sphinx 3.0. While
-> > I didn't make any tests, I'm strongly suspecting that, with the approach
-> > we took for backward/forward compatibility, adding support for it
-> > would mean to just do a trivial change at cdomain.py by applying a
-> > patch that Markus did replacing a regex function that doesn't exist
-> > anymore at Sphinx API and emulating C namespace with the logic I
-> > already implemented.   
-> 
-> 3.0 might just be skippable at this point, methinks.  
-
-Yeah, agreed. 
-
-I'll fold the latest version of this patch with the following diff.
-
-Thanks,
-Mauro
-
-index 297312824d26..c8f6b11d5da1 100755
---- a/scripts/kernel-doc
-+++ b/scripts/kernel-doc
-@@ -466,11 +466,15 @@ while ($ARGV[0] =~ m/^--?(.*)/) {
- 	$show_not_found = 1;  # A no-op but don't fail
-     } elsif ($cmd eq "sphinx-version") {
- 	my $ver_string = shift @ARGV;
--	if ($ver_string =~ m/^(\d+)\.(\d+)(\.\d+)?/) {
-+	if ($ver_string =~ m/^(\d+)(\.\d+)?(\.\d+)?/) {
- 	    $sphinx_major = $1;
--	    $sphinx_minor = $2;
-+	    if (defined($2)) {
-+		$sphinx_minor = substr($2,1);
-+	    } else {
-+		$sphinx_minor = 0;
-+	    }
- 	    if (defined($3)) {
--		$sphinx_patch = substr($3,1);
-+		$sphinx_patch = substr($3,1)
- 	    } else {
- 		$sphinx_patch = 0;
- 	    }
-@@ -2368,7 +2372,10 @@ sub process_file($) {
- }
+diff --git a/drivers/iommu/intel/Kconfig b/drivers/iommu/intel/Kconfig
+index 5337ee1584b0..f814b7585ba8 100644
+--- a/drivers/iommu/intel/Kconfig
++++ b/drivers/iommu/intel/Kconfig
+@@ -1,13 +1,13 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ # Intel IOMMU support
+ config DMAR_TABLE
++	select IOMMU_API
+ 	bool
  
- 
--get_sphinx_version() if (!$sphinx_major);
-+if ($output_mode eq "rst") {
-+	get_sphinx_version() if (!$sphinx_major);
-+}
-+
- $kernelversion = get_kernel_version();
- 
- # generate a sequence of code that will splice in highlighting information
-
+ config INTEL_IOMMU
+ 	bool "Support for Intel IOMMU using DMA Remapping Devices"
+ 	depends on PCI_MSI && ACPI && (X86 || IA64)
+ 	select DMA_OPS
+-	select IOMMU_API
+ 	select IOMMU_IOVA
+ 	select NEED_DMA_MAP_STATE
+ 	select DMAR_TABLE
+-- 
+2.28.0
 
