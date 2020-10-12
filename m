@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88C2728B755
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:43:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F73828B697
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729726AbgJLNmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:42:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46218 "EHLO mail.kernel.org"
+        id S1730788AbgJLNfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:35:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731083AbgJLNlh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:41:37 -0400
+        id S1729957AbgJLNei (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:34:38 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D247F221FE;
-        Mon, 12 Oct 2020 13:41:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CB84D208B8;
+        Mon, 12 Oct 2020 13:34:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602510092;
-        bh=iO7A3UDABTT4fqsjuY546SAsDNwvLoYNDp0TNT7BO5c=;
+        s=default; t=1602509677;
+        bh=EGZ3U6t60tbulp34moqSIixJM/dTXPvwEQcAfdxFVzo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SRCXPKr+jZjqycN8vHDui4EghZsUpr3rRpEjxOEC5daIcmrNF5KdhejIXzjq9GJOE
-         hUUgqbesk1RxhWaOzjthdjrZA0Pe72czX/4JcAJGRicUCFpE6/PgiGuHGGX2p23K99
-         Z2oJcWSF/tI+tHiX47b1WmnA/HDwUkPyU53qZ5Yw=
+        b=lXwKMj5R5jGYogRbuTSUlqxorB+19BNNqRV0afTzpMX79SmNDGpUi85T19/zEv6mo
+         Nd9qTZw+OWBGL8fECnd4XFnsGxYLzZgTVxGkfgc2vR1DAhCswtleBElUAG7vfUnt07
+         QZ3ENSlNOTa94jfhqkXPIcbF69MUtcpHQasROHEo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>,
-        Coly Li <colyli@suse.de>, Vasily Averin <vvs@virtuozzo.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 36/85] tcp: use sendpage_ok() to detect misused .sendpage
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.9 37/54] sctp: fix sctp_auth_init_hmacs() error path
 Date:   Mon, 12 Oct 2020 15:26:59 +0200
-Message-Id: <20201012132634.594653424@linuxfoundation.org>
+Message-Id: <20201012132631.304806495@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
-References: <20201012132632.846779148@linuxfoundation.org>
+In-Reply-To: <20201012132629.585664421@linuxfoundation.org>
+References: <20201012132629.585664421@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +45,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Coly Li <colyli@suse.de>
+From: Eric Dumazet <edumazet@google.com>
 
-commit cf83a17edeeb36195596d2dae060a7c381db35f1 upstream.
+commit d42ee76ecb6c49d499fc5eb32ca34468d95dbc3e upstream.
 
-commit a10674bf2406 ("tcp: detecting the misuse of .sendpage for Slab
-objects") adds the checks for Slab pages, but the pages don't have
-page_count are still missing from the check.
+After freeing ep->auth_hmacs we have to clear the pointer
+or risk use-after-free as reported by syzbot:
 
-Network layer's sendpage method is not designed to send page_count 0
-pages neither, therefore both PageSlab() and page_count() should be
-both checked for the sending page. This is exactly what sendpage_ok()
-does.
+BUG: KASAN: use-after-free in sctp_auth_destroy_hmacs net/sctp/auth.c:509 [inline]
+BUG: KASAN: use-after-free in sctp_auth_destroy_hmacs net/sctp/auth.c:501 [inline]
+BUG: KASAN: use-after-free in sctp_auth_free+0x17e/0x1d0 net/sctp/auth.c:1070
+Read of size 8 at addr ffff8880a8ff52c0 by task syz-executor941/6874
 
-This patch uses sendpage_ok() in do_tcp_sendpages() to detect misused
-.sendpage, to make the code more robust.
+CPU: 0 PID: 6874 Comm: syz-executor941 Not tainted 5.9.0-rc8-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+ sctp_auth_destroy_hmacs net/sctp/auth.c:509 [inline]
+ sctp_auth_destroy_hmacs net/sctp/auth.c:501 [inline]
+ sctp_auth_free+0x17e/0x1d0 net/sctp/auth.c:1070
+ sctp_endpoint_destroy+0x95/0x240 net/sctp/endpointola.c:203
+ sctp_endpoint_put net/sctp/endpointola.c:236 [inline]
+ sctp_endpoint_free+0xd6/0x110 net/sctp/endpointola.c:183
+ sctp_destroy_sock+0x9c/0x3c0 net/sctp/socket.c:4981
+ sctp_v6_destroy_sock+0x11/0x20 net/sctp/socket.c:9415
+ sk_common_release+0x64/0x390 net/core/sock.c:3254
+ sctp_close+0x4ce/0x8b0 net/sctp/socket.c:1533
+ inet_release+0x12e/0x280 net/ipv4/af_inet.c:431
+ inet6_release+0x4c/0x70 net/ipv6/af_inet6.c:475
+ __sock_release+0xcd/0x280 net/socket.c:596
+ sock_close+0x18/0x20 net/socket.c:1277
+ __fput+0x285/0x920 fs/file_table.c:281
+ task_work_run+0xdd/0x190 kernel/task_work.c:141
+ exit_task_work include/linux/task_work.h:25 [inline]
+ do_exit+0xb7d/0x29f0 kernel/exit.c:806
+ do_group_exit+0x125/0x310 kernel/exit.c:903
+ __do_sys_exit_group kernel/exit.c:914 [inline]
+ __se_sys_exit_group kernel/exit.c:912 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:912
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x43f278
+Code: Bad RIP value.
+RSP: 002b:00007fffe0995c38 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 000000000043f278
+RDX: 0000000000000000 RSI: 000000000000003c RDI: 0000000000000000
+RBP: 00000000004bf068 R08: 00000000000000e7 R09: ffffffffffffffd0
+R10: 0000000020000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 00000000006d1180 R14: 0000000000000000 R15: 0000000000000000
 
-Fixes: a10674bf2406 ("tcp: detecting the misuse of .sendpage for Slab objects")
-Suggested-by: Eric Dumazet <eric.dumazet@gmail.com>
-Signed-off-by: Coly Li <colyli@suse.de>
-Cc: Vasily Averin <vvs@virtuozzo.com>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: stable@vger.kernel.org
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Allocated by task 6874:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
+ kmem_cache_alloc_trace+0x174/0x300 mm/slab.c:3554
+ kmalloc include/linux/slab.h:554 [inline]
+ kmalloc_array include/linux/slab.h:593 [inline]
+ kcalloc include/linux/slab.h:605 [inline]
+ sctp_auth_init_hmacs+0xdb/0x3b0 net/sctp/auth.c:464
+ sctp_auth_init+0x8a/0x4a0 net/sctp/auth.c:1049
+ sctp_setsockopt_auth_supported net/sctp/socket.c:4354 [inline]
+ sctp_setsockopt+0x477e/0x97f0 net/sctp/socket.c:4631
+ __sys_setsockopt+0x2db/0x610 net/socket.c:2132
+ __do_sys_setsockopt net/socket.c:2143 [inline]
+ __se_sys_setsockopt net/socket.c:2140 [inline]
+ __x64_sys_setsockopt+0xba/0x150 net/socket.c:2140
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 6874:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0xd8/0x120 mm/kasan/common.c:422
+ __cache_free mm/slab.c:3422 [inline]
+ kfree+0x10e/0x2b0 mm/slab.c:3760
+ sctp_auth_destroy_hmacs net/sctp/auth.c:511 [inline]
+ sctp_auth_destroy_hmacs net/sctp/auth.c:501 [inline]
+ sctp_auth_init_hmacs net/sctp/auth.c:496 [inline]
+ sctp_auth_init_hmacs+0x2b7/0x3b0 net/sctp/auth.c:454
+ sctp_auth_init+0x8a/0x4a0 net/sctp/auth.c:1049
+ sctp_setsockopt_auth_supported net/sctp/socket.c:4354 [inline]
+ sctp_setsockopt+0x477e/0x97f0 net/sctp/socket.c:4631
+ __sys_setsockopt+0x2db/0x610 net/socket.c:2132
+ __do_sys_setsockopt net/socket.c:2143 [inline]
+ __se_sys_setsockopt net/socket.c:2140 [inline]
+ __x64_sys_setsockopt+0xba/0x150 net/socket.c:2140
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Fixes: 1f485649f529 ("[SCTP]: Implement SCTP-AUTH internals")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Vlad Yasevich <vyasevich@gmail.com>
+Cc: Neil Horman <nhorman@tuxdriver.com>
+Cc: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/ipv4/tcp.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/sctp/auth.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -971,7 +971,8 @@ ssize_t do_tcp_sendpages(struct sock *sk
- 	long timeo = sock_sndtimeo(sk, flags & MSG_DONTWAIT);
+--- a/net/sctp/auth.c
++++ b/net/sctp/auth.c
+@@ -494,6 +494,7 @@ int sctp_auth_init_hmacs(struct sctp_end
+ out_err:
+ 	/* Clean up any successful allocations */
+ 	sctp_auth_destroy_hmacs(ep->auth_hmacs);
++	ep->auth_hmacs = NULL;
+ 	return -ENOMEM;
+ }
  
- 	if (IS_ENABLED(CONFIG_DEBUG_VM) &&
--	    WARN_ONCE(PageSlab(page), "page must not be a Slab one"))
-+	    WARN_ONCE(!sendpage_ok(page),
-+		      "page must not be a Slab one and have page_count > 0"))
- 		return -EINVAL;
- 
- 	/* Wait for a connection to finish. One exception is TCP Fast Open
 
 
