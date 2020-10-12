@@ -2,106 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C34C428AB1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 01:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F6A828AB29
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 02:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387833AbgJKX4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 19:56:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387799AbgJKX4t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 19:56:49 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E630EC0613CE;
-        Sun, 11 Oct 2020 16:56:47 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id m17so15888927ioo.1;
-        Sun, 11 Oct 2020 16:56:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/fduF09yM7vuP+WIo3gczCgW86zcHAmHOB9GlTh+hfA=;
-        b=reMWvGiq0ouMhl326muorYxlUAV0TT8c5fYPf0FHRNo+YkZ2LOw8PP/Gv7vZ7Q7PIp
-         Lnyn68oxDalFKBjG3GzQxpV720iN7fY7wnqmx7yG8O6cNp839MQL24YkXTJzIZ79Srns
-         1o+nkDNHpV2UijbcPbYur3eGuAkv5GHvDOMqjNEoi4x+EIbgysXQbDeK4WunJjnP6UYA
-         fxQyyzlmKvNlx4snD/KSycGGlb9V9dN/TQNfKNURgBWOlMRIJXtZ1FWyS2uVTwjXnvPW
-         R9BUhdAg26A0ifVDOSW/kgFgMLsOY8Tnc80qMngm+8PceW6uZJYQ39HSQtfd54AUTLFS
-         gLuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/fduF09yM7vuP+WIo3gczCgW86zcHAmHOB9GlTh+hfA=;
-        b=Rct4MeZ6BwYEk4UpmC1416vrJA/BCZv+H811KE5ukjaQmI6mAKYENAxdnD/sg+ih/C
-         wGp9EZTOqbBorFxIDMGbDvOl7mrIeb7SWIW73SIDU77/FpBygcRUClnLySN3yBC2ex8X
-         alawy8XpDd5QCVwZrGdHNHxBxAxich0/tcQnFR17UB8D6u/jEN1groMDNDH5JeT13ZkF
-         ut65HXgsGfajM51HNt+NmC3Do9GbuCNa/7YLp8/2bnPseo/2y+GZbFr1zJMJyKRwo66C
-         IctMFh6g+m5D5ViCs7cKdiFBtpqWntxTaUHaybMPabDgiyNsPRlJE+5xTZIHXEMMn503
-         0RgQ==
-X-Gm-Message-State: AOAM530LTba+FFjp+ZLTZnYTuEP+jXxoOHm7X2sj/oHUP4uSu/0xj1MX
-        7/Tw7KLtzyVVWmhPPeA7Q3UEa6g/Cls=
-X-Google-Smtp-Source: ABdhPJyJJmBv0bPJEFldWnZVeCAKEDBfKwvDPK+zYZMoVTIdKHbzYw7wl2vzpknPZdSSY/rWG/mnTw==
-X-Received: by 2002:a6b:6c0c:: with SMTP id a12mr15283601ioh.40.1602460606890;
-        Sun, 11 Oct 2020 16:56:46 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([2601:282:803:7700:85e0:a5a2:ceeb:837])
-        by smtp.googlemail.com with ESMTPSA id h184sm6530152ioa.34.2020.10.11.16.56.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 11 Oct 2020 16:56:46 -0700 (PDT)
-Subject: Re: [RFC PATCH 0/3] l3mdev icmp error route lookup fixes
-From:   David Ahern <dsahern@gmail.com>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        David Ahern <dsahern@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Michael Jeanson <mjeanson@efficios.com>
-Cc:     linux-kernel@vger.kernel.org
-References: <20200925200452.2080-1-mathieu.desnoyers@efficios.com>
- <fd970150-f214-63a3-953c-769fa2787bc0@gmail.com>
-Message-ID: <19cf586d-4c4e-e18c-cd9e-3fde3717a9e1@gmail.com>
-Date:   Sun, 11 Oct 2020 17:56:45 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.1
-MIME-Version: 1.0
-In-Reply-To: <fd970150-f214-63a3-953c-769fa2787bc0@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1729627AbgJLACe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 20:02:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53672 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726148AbgJLACd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Oct 2020 20:02:33 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 08D4B2074D;
+        Mon, 12 Oct 2020 00:02:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602460952;
+        bh=GMaaSRJhJ9tBEJeg7JGfEam3FoW0td08m4out50B96g=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=nbfBteZcGCAWtJo7sCXioLCQA2gf8JgMSxZ3jwYb+ElPI1+XxkirlqxHn9QzD5kXZ
+         iMuIYZNoPQMmacI+8AiKfMi21OWlKD5Qsg/o5h3YHf96uc9/L12YOoH0pEX7i6rOx+
+         zIj399Y9OUf8DzT1m6IiZ7LbOqAdHVMkP5w8KtEc=
+Date:   Mon, 12 Oct 2020 09:02:28 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Vasily Gorbik <gor@linux.ibm.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        x86 <x86@kernel.org>
+Subject: Re: [tip: objtool/core] x86/insn: Support big endian cross-compiles
+Message-Id: <20201012090228.2af0bf7e2f85c3a251e573fc@kernel.org>
+In-Reply-To: <your-ad-here.call-01602338530-ext-4703@work.hours>
+References: <160208761921.7002.1321765913567405137.tip-bot2@tip-bot2>
+        <20201009203822.GA2974@worktop.programming.kicks-ass.net>
+        <20201009204921.GB21731@zn.tnic>
+        <your-ad-here.call-01602338530-ext-4703@work.hours>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/5/20 9:30 AM, David Ahern wrote:
-> On 9/25/20 1:04 PM, Mathieu Desnoyers wrote:
->> Hi,
->>
->> Here is an updated series of fixes for ipv4 and ipv6 which which ensure
->> the route lookup is performed on the right routing table in VRF
->> configurations when sending TTL expired icmp errors (useful for
->> traceroute).
->>
->> It includes tests for both ipv4 and ipv6.
->>
->> These fixes address specifically address the code paths involved in
->> sending TTL expired icmp errors. As detailed in the individual commit
->> messages, those fixes do not address similar icmp errors related to
->> network namespaces and unreachable / fragmentation needed messages,
->> which appear to use different code paths.
->>
->> The main changes since the last round are updates to the selftests.
->>
-> 
-> This looks fine to me. I noticed the IPv6 large packet test case is
-> failing; the fib6 tracepoint is showing the loopback as the iif which is
-> wrong:
-> 
-> ping6  8488 [004]   502.015817: fib6:fib6_table_lookup: table 255 oif 0
-> iif 1 proto 58 ::/0 -> 2001:db8:16:1::1/0 tos 0 scope 0 flags 0 ==> dev
-> lo gw :: err -113
-> 
-> I will dig into it later this week.
-> 
+On Sat, 10 Oct 2020 16:02:10 +0200
+Vasily Gorbik <gor@linux.ibm.com> wrote:
 
-I see the problem here -- source address selection is picking ::1. I do
-not have a solution to the problem yet, but its resolution is
-independent of the change in this set so I think this one is good to go.
+> On Fri, Oct 09, 2020 at 10:49:21PM +0200, Borislav Petkov wrote:
+> > On Fri, Oct 09, 2020 at 10:38:22PM +0200, Peter Zijlstra wrote:
+> > > On Wed, Oct 07, 2020 at 04:20:19PM -0000, tip-bot2 for Martin Schwidefsky wrote:
+> > > > The following commit has been merged into the objtool/core branch of tip:
+> > > > 
+> > > > Commit-ID:     2a522b53c47051d3bf98748418f4f8e5f20d2c04
+> > > > Gitweb:        https://git.kernel.org/tip/2a522b53c47051d3bf98748418f4f8e5f20d2c04
+> > > > 
+> > > > x86/insn: Support big endian cross-compiles
+> > > 
+> > > This commit breaks the x86 build with CONFIG_X86_DECODER_SELFTEST=y.
+> > > 
+> > > I've asked Boris to truncate tip/objtool/core.
+> > 
+> > Yeah, top 4 are gone until this is resolved.
+> > 
+> > What I would suggest is to have a look at how tools/ headers are kept
+> > separate from kernel proper ones, see tools/include/ and how those
+> > headers there are full of dummy definitions just so it builds.
+> > 
+> > And then including a global one like linux/kernel.h is just looking for
+> > trouble:
+> > 
+> > In file included from ./include/uapi/linux/byteorder/little_endian.h:12,
+> >                  from ./include/linux/byteorder/little_endian.h:5,
+> >                  from /usr/include/x86_64-linux-gnu/asm/byteorder.h:5,
+> >                  from ./arch/x86/include/asm/insn.h:10,
+> >                  from arch/x86/tools/insn_sanity.c:21:
+> > ./tools/include/linux/types.h:30:18: error: conflicting types for ‘u64’
+> >    30 | typedef uint64_t u64;
+> 
+> Sigh... I have not realized there are more usages of insn.c which are
+> conditionally compiled. It's not like you grep *.c files to find who
+> includes them regularity.
+
+Yes, x86 insn library code is used for the sanity check tool too.
+
+> 
+> Looks like there is no way to find common byte swapping helpers for
+> the kernel and tools then. Even though tools provide quite a bunch of
+> them in tools/include/. So, completely avoiding mixing "kernel" and
+> "userspace" headers would look like the following (delta to commit
+> mentioned above):
+> ---
+> 
+> diff --git a/arch/x86/include/asm/insn.h b/arch/x86/include/asm/insn.h
+> index 004e27bdf121..68197fe18a11 100644
+> --- a/arch/x86/include/asm/insn.h
+> +++ b/arch/x86/include/asm/insn.h
+> @@ -7,7 +7,13 @@
+>   * Copyright (C) IBM Corporation, 2009
+>   */
+>  
+> +#ifdef __KERNEL__
+>  #include <asm/byteorder.h>
+> +#define insn_cpu_to_le32 cpu_to_le32
+> +#else
+> +#include <endian.h>
+> +#define insn_cpu_to_le32 htole32
+> +#endif
+>  /* insn_attr_t is defined in inat.h */
+>  #include <asm/inat.h>
+>  
+> @@ -47,7 +53,7 @@ static inline void insn_field_set(struct insn_field *p, insn_value_t v,
+>  				  unsigned char n)
+>  {
+>  	p->value = v;
+> -	p->little = __cpu_to_le32(v);
+> +	p->little = insn_cpu_to_le32(v);
+>  	p->nbytes = n;
+>  }
+>  
+> diff --git a/arch/x86/lib/insn.c b/arch/x86/lib/insn.c
+> index 520b31fc1f1a..003f32ff7798 100644
+> --- a/arch/x86/lib/insn.c
+> +++ b/arch/x86/lib/insn.c
+> @@ -5,7 +5,6 @@
+>   * Copyright (C) IBM Corporation, 2002, 2004, 2009
+>   */
+>  
+> -#include <linux/kernel.h>
+>  #ifdef __KERNEL__
+>  #include <linux/string.h>
+>  #else
+> @@ -16,15 +15,23 @@
+>  
+>  #include <asm/emulate_prefix.h>
+>  
+> +#ifdef __KERNEL__
+> +#define insn_le32_to_cpu le32_to_cpu
+> +#define insn_le16_to_cpu le16_to_cpu
+> +#else
+> +#define insn_le32_to_cpu le32toh
+> +#define insn_le16_to_cpu le16toh
+> +#endif
+> +
+>  #define leXX_to_cpu(t, r)						\
+>  ({									\
+>  	__typeof__(t) v;						\
+>  	switch (sizeof(t)) {						\
+> -	case 4: v = le32_to_cpu(r); break;				\
+> -	case 2: v = le16_to_cpu(r); break;				\
+> +	case 4: v = insn_le32_to_cpu(r); break;				\
+> +	case 2: v = insn_le16_to_cpu(r); break;				\
+>  	case 1:	v = r; break;						\
+> -	default:							\
+> -		BUILD_BUG(); break;					\
+> +	default: /* relying on -Wuninitialized to report this */	\
+> +		break;							\
+>  	}								\
+>  	v;								\
+>  })
+> --
+> And the same for the tools/*
+> No linux/kernel.h means no BUILD_BUG(), but -Wuninitialized actually
+> does a decent job in this case:
+> arch/x86/../../../arch/x86/lib/insn.c:605:37: error: variable 'v' is
+> 		uninitialized when used here [-Werror,-Wuninitialized]
+>                 insn_field_set(&insn->immediate2, get_next(long, insn), 1);
+>                                                   ^~~~~~~~~~~~~~~~~~~~
+
+Can you initialize v with 0 ? Anyway it will be optimized out while
+compiling the code.
+
+> 
+> Masami, Josh,
+> would that be acceptable?
+
+Yes.
+
+Thank you,
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
