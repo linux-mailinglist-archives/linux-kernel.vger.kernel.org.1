@@ -2,88 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 979FA28B438
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 13:57:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA36128B439
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 13:57:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388364AbgJLL5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 07:57:09 -0400
-Received: from mail-m17613.qiye.163.com ([59.111.176.13]:10153 "EHLO
-        mail-m17613.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388255AbgJLL5J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 07:57:09 -0400
-Received: from ubuntu.localdomain (unknown [157.0.31.124])
-        by mail-m17613.qiye.163.com (Hmail) with ESMTPA id D2857482BD2;
-        Mon, 12 Oct 2020 19:57:05 +0800 (CST)
-From:   Bernard Zhao <bernard@vivo.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com, Bernard Zhao <bernard@vivo.com>
-Subject: [PATCH] gpu/drm/mediatek: fix unused parameter warning
-Date:   Mon, 12 Oct 2020 04:56:59 -0700
-Message-Id: <20201012115700.8925-1-bernard@vivo.com>
-X-Mailer: git-send-email 2.28.0
+        id S2388377AbgJLL52 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 12 Oct 2020 07:57:28 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3630 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388248AbgJLL52 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 07:57:28 -0400
+Received: from DGGEMM405-HUB.china.huawei.com (unknown [172.30.72.56])
+        by Forcepoint Email with ESMTP id 000DCF8DF6F97C310D13;
+        Mon, 12 Oct 2020 19:57:24 +0800 (CST)
+Received: from DGGEMM526-MBX.china.huawei.com ([169.254.8.75]) by
+ DGGEMM405-HUB.china.huawei.com ([10.3.20.213]) with mapi id 14.03.0487.000;
+ Mon, 12 Oct 2020 19:57:21 +0800
+From:   "Zengtao (B)" <prime.zeng@hisilicon.com>
+To:     "yulei.kernel@gmail.com" <yulei.kernel@gmail.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "naoya.horiguchi@nec.com" <naoya.horiguchi@nec.com>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>
+CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "xiaoguangrong.eric@gmail.com" <xiaoguangrong.eric@gmail.com>,
+        "kernellwp@gmail.com" <kernellwp@gmail.com>,
+        "lihaiwei.kernel@gmail.com" <lihaiwei.kernel@gmail.com>,
+        Yulei Zhang <yuleixzhang@tencent.com>
+Subject: RE: [PATCH 00/35] Enhance memory utilization with DMEMFS
+Thread-Topic: [PATCH 00/35] Enhance memory utilization with DMEMFS
+Thread-Index: AQHWnUhD+KX8RHawSUyoBEEGXF5fO6mT4mTw
+Date:   Mon, 12 Oct 2020 11:57:20 +0000
+Message-ID: <678F3D1BB717D949B966B68EAEB446ED49E01801@dggemm526-mbx.china.huawei.com>
+References: <cover.1602093760.git.yuleixzhang@tencent.com>
+In-Reply-To: <cover.1602093760.git.yuleixzhang@tencent.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.74.221.187]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZSkpLTE5JTElCTUMaVkpNS0lOS0hDSU1KSk1VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MzI6NRw4HD8eQjk3IxccFQ1M
-        Tj4aC1FVSlVKTUtJTktIQ0lNTk9OVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlKTkxV
-        S1VISlVKSU9ZV1kIAVlBSEtMTDcG
-X-HM-Tid: 0a751cabda8693bakuwsd2857482bd2
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Functions mtk_drm_crtc_atomic_flush & mtk_drm_crtc_atomic_enable
-& mtk_drm_crtc_atomic_disable don`t use the second parameter.
-So we may get warning like : warning: unused parameter '***'
-[-Wunused-parameter].
-This change is to fix the compile warning with -Wunused-parameter.
 
-Signed-off-by: Bernard Zhao <bernard@vivo.com>
----
- drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> -----Original Message-----
+> From: yulei.kernel@gmail.com [mailto:yulei.kernel@gmail.com]
+> Sent: Thursday, October 08, 2020 3:54 PM
+> To: akpm@linux-foundation.org; naoya.horiguchi@nec.com;
+> viro@zeniv.linux.org.uk; pbonzini@redhat.com
+> Cc: linux-fsdevel@vger.kernel.org; kvm@vger.kernel.org;
+> linux-kernel@vger.kernel.org; xiaoguangrong.eric@gmail.com;
+> kernellwp@gmail.com; lihaiwei.kernel@gmail.com; Yulei Zhang
+> Subject: [PATCH 00/35] Enhance memory utilization with DMEMFS
+> 
+> From: Yulei Zhang <yuleixzhang@tencent.com>
+> 
+> In current system each physical memory page is assocaited with
+> a page structure which is used to track the usage of this page.
+> But due to the memory usage rapidly growing in cloud environment,
+> we find the resource consuming for page structure storage becomes
+> highly remarkable. So is it an expense that we could spare?
+> 
+> This patchset introduces an idea about how to save the extra
+> memory through a new virtual filesystem -- dmemfs.
+> 
+> Dmemfs (Direct Memory filesystem) is device memory or reserved
+> memory based filesystem. This kind of memory is special as it
+> is not managed by kernel and most important it is without 'struct page'.
+> Therefore we can leverage the extra memory from the host system
+> to support more tenants in our cloud service.
+> 
+> We uses a kernel boot parameter 'dmem=' to reserve the system
+> memory when the host system boots up, the details can be checked
+> in /Documentation/admin-guide/kernel-parameters.txt.
+> 
+> Theoretically for each 4k physical page it can save 64 bytes if
+> we drop the 'struct page', so for guest memory with 320G it can
+> save about 5G physical memory totally.
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-index 4d29568be3f5..6e55ec0e80bb 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-@@ -542,7 +542,7 @@ static void mtk_drm_crtc_atomic_enable(struct drm_crtc *crtc,
- }
- 
- static void mtk_drm_crtc_atomic_disable(struct drm_crtc *crtc,
--					struct drm_crtc_state *old_state)
-+					struct drm_crtc_state __attribute__((unused)) *old_state)
- {
- 	struct mtk_drm_crtc *mtk_crtc = to_mtk_crtc(crtc);
- 	struct mtk_ddp_comp *comp = mtk_crtc->ddp_comp[0];
-@@ -575,7 +575,7 @@ static void mtk_drm_crtc_atomic_disable(struct drm_crtc *crtc,
- }
- 
- static void mtk_drm_crtc_atomic_begin(struct drm_crtc *crtc,
--				      struct drm_crtc_state *old_crtc_state)
-+				      struct drm_crtc_state __attribute__((unused)) *old_crtc_state)
- {
- 	struct mtk_crtc_state *state = to_mtk_crtc_state(crtc->state);
- 	struct mtk_drm_crtc *mtk_crtc = to_mtk_crtc(crtc);
-@@ -592,7 +592,7 @@ static void mtk_drm_crtc_atomic_begin(struct drm_crtc *crtc,
- }
- 
- static void mtk_drm_crtc_atomic_flush(struct drm_crtc *crtc,
--				      struct drm_crtc_state *old_crtc_state)
-+				      struct drm_crtc_state __attribute__((unused)) *old_crtc_state)
- {
- 	struct mtk_drm_crtc *mtk_crtc = to_mtk_crtc(crtc);
- 	int i;
--- 
-2.28.0
+Sounds interesting, but seems your patch only support x86, have you
+ considered aarch64?
 
+Regards
+Zengtao 
