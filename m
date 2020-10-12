@@ -2,71 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F19B528B591
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7456828B592
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:10:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728945AbgJLNKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:10:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54552 "EHLO
+        id S1730349AbgJLNKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:10:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388684AbgJLNKJ (ORCPT
+        with ESMTP id S2388697AbgJLNKK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:10:09 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D217C0613D1
+        Mon, 12 Oct 2020 09:10:10 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7246C0613D2
         for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 06:10:09 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id m17so17624544ioo.1
+Received: by mail-wr1-x443.google.com with SMTP id n18so19132516wrs.5
         for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 06:10:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to:cc;
-        bh=ECw5bzhSCyxuQlk/zYdTL9hZWuUWFH2UmH7qybfKxvQ=;
-        b=TfAdQ7XkO56MzJ/poXHQPPRsu7qQZfNllHrCt9mZx/SMBQ9PvLEJgmROL23QqZds8w
-         l88sa8T2aXgSlakMFon+XITo2Qx0+wzblHPnjqfqiW6NbOz46cAEOE1cfuLnzIiw4rPT
-         r9Q+OE/OA9ZhHjaLyRK+SFyyHw6EqgW9qp/SNmlQzvb4/3hB1Az1uz7m3Z5Mlj3bWCFT
-         C8zZaoBLKjJUZpA9uLUSaEF+YIM/6zcjy6KdeLA6qKRlZ/+2tfW0QmFIbXC0ULCO0Rbm
-         IBZPacQULmZxRTS33xrduWjD3YNR47/y4DOOWTTBbKkk35wVUc7HAnYbcqww/lqidQLU
-         sw3g==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HDv79H0T0YMmpA6Cg6LXdiKcuj2DrLE+0Njp0Y0u8KM=;
+        b=XGY9IxnK+Djfx5Zb8HC+CkSfHoX6LZfeU7EHgj0M7jE27eNiu/NTCS/8O2N4CTMsIr
+         5HqQk78SAe0OaeEucGW1pj0pUs0eJK0sgVXRExrJJ1zO7w1xG78/XBvpsOoi0BhY+Z1w
+         jF7hYRNPIHRUxxFrSyeAToz+/9RQ+zjKRDJgcjSHa4Uap2u0tdqxNVZf7hqSh24Xi9sT
+         f+HixQE9Y0oDRYUii64YVp8p/vFZjnBTnvXhhjUpoK82Up70SzvU6+iF4rws5ul5hPfy
+         YRi+o3/CaD4VTZS0wfrcVj/HR330hT2wnk/fWjBuNSrCrx78+tJHm2Pf+4dKLNOcsWEp
+         9FQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=ECw5bzhSCyxuQlk/zYdTL9hZWuUWFH2UmH7qybfKxvQ=;
-        b=cFgn/Sppze35jUNrBLfAX9yY1smxtc6CcBjsAVOnrT1VVTzpsjgBXEXcIUBSe/70qG
-         UFjaSTJGNKZ0Y8hq1eCMieoDlFWQONJS2zlezhH//i0cYe5Dr0+cCsJrhhlLA0gk3h+G
-         iIetkr1zeJuGdZJ/CwaKrKFE8ADXC2/AclF+fbyYgJvWMa46kQ+yID7Gilf/ZynX7gpl
-         H0qqZvu1dIZP0tukExx/Nd9qAvfrmN00SkCyPHMFjXTYdKnkq/pRXfopObM5ZsxsErYe
-         mq3ndViWhFXBXsesJKMaOP+tMx5I0F31HHqLNXg/B1N8QL54ySlxFEyqoJ7pge8rHOf1
-         0FOA==
-X-Gm-Message-State: AOAM532jPlRJKWWpM0wZOTGp0RJSnSWec9Om2dwYvymTGO4mO/wjpX5b
-        wJrr50+HQxeF4WzWqSQ6HytAPXgjML+ymMJXLHn0GwRmBRiohg==
-X-Google-Smtp-Source: ABdhPJxpjWGowQanilPP0doPZ1xgDf+LIY28UcrdtMJBXCwOcLjJAeayzY1GaafkeWpCi1qjDQDAucrZaEnMla8FPq8=
-X-Received: by 2002:a6b:b841:: with SMTP id i62mr16741492iof.57.1602508208829;
- Mon, 12 Oct 2020 06:10:08 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HDv79H0T0YMmpA6Cg6LXdiKcuj2DrLE+0Njp0Y0u8KM=;
+        b=epgCrdGJ4rOlpbgkWkiExfgDzz4IrHNDaZ6YTn4tzys1k5vXO6biIJXloBqgcd6dNX
+         SRdB+vZk/cW4eU95m4OhAZm9jjONn5IGlPMNSgZ4A0bhQhB/Bf4y+RthhnU7sFvvBaqH
+         cjP9IZeGddUau7Ua1VyYmweVXTCFbDA6YbRNdIhcPo2C6NH21jnTQwuYGAFgvxDPIdLv
+         S0eMGL4WIeTjpXr9K0xBQfRS/T30mvhvpKYimh2YlM7+dRlV7BqfeC6X77LrNvnZpSiD
+         EjKtMtY5bskONJXoSfPyounXxaEhKo/WK413VlYJAKxna8R8pDZvkUvE6/i5SKdlHbzJ
+         8d4g==
+X-Gm-Message-State: AOAM5332yXlawefl1KonZvddbtTTnkgmEXk7rRqC2pWrDyUgwbpGiV3E
+        2r+pc3XgT9WKE/e2FEOCMeCrIg==
+X-Google-Smtp-Source: ABdhPJysslHpkfKa/rNifK/bUIFGSLBzE605Lmx/ZaVPZeJstlvv21gBu3jK5rmlIjoNhyVsWXs6gg==
+X-Received: by 2002:adf:97dd:: with SMTP id t29mr21818564wrb.322.1602508208105;
+        Mon, 12 Oct 2020 06:10:08 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:110:f693:9fff:fef4:a7ef])
+        by smtp.gmail.com with ESMTPSA id u20sm15595626wmm.29.2020.10.12.06.10.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 06:10:07 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 14:10:04 +0100
+From:   Quentin Perret <qperret@google.com>
+To:     zhuguangqing83@gmail.com
+Cc:     lukasz.luba@arm.com, quentin.perret@arm.com, rjw@rjwysocki.net,
+        pavel@ucw.cz, len.brown@intel.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        zhuguangqing <zhuguangqing@xiaomi.com>
+Subject: Re: [PATCH] PM / EM: consult something about cpumask in
+ em_dev_register_perf_domain
+Message-ID: <20201012131004.GB3366383@google.com>
+References: <20201012124136.4147-1-zhuguangqing83@gmail.com>
+ <20201012130501.GA3366383@google.com>
 MIME-Version: 1.0
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Mon, 12 Oct 2020 15:09:57 +0200
-Message-ID: <CA+icZUUK3sgpHyY1h_pdzJzkX1bY46opLYytRKRzeCxBNzTX4A@mail.gmail.com>
-Subject: Missing [GIT PULL] request for <tip.git#locking-urgent-2020-10-11>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201012130501.GA3366383@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Monday 12 Oct 2020 at 14:05:01 (+0100), Quentin Perret wrote:
+> > 3, The third question is, how can we ensure cpu_dev as follows is not
+> > NULL? If we can't ensure that, maybe we should add a check before using
+> > it.
+> > /kernel/power/energy_model.c
+> > 174) static int em_create_pd(struct device *dev, int nr_states,
+> > 175)                    struct em_data_callback *cb, cpumask_t *cpus)
+> > 176) {
+> > 199)    if (_is_cpu_device(dev))
+> > 200)            for_each_cpu(cpu, cpus) {
+> > 201)                    cpu_dev = get_cpu_device(cpu);
+> > 202)                    cpu_dev->em_pd = pd;
+> > 203)            }
+> 
+> And that should not be necessary as we check for the !dev case at the
+> top of em_dev_register_perf_domain(). Or were you thinking about
+> something else?
 
-yesterday, I saw Ingo tagged "locking-urgent-2020-10-11" in tip Git.
+Oh I think I read that one wrong, but the conclusion should be the same,
+at least on Arm64 -- all _possible_ CPUs should be registered early
+enough for that not to be an issue.
 
-Did you drop it or was this for Linux v5.9 final and the git-pull
-request was simply forgotten?
+Did you observe anything wrong there for your use-case?
 
-Just curious.
-
-Regards,
-- Sedat -
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/tag/?h=locking-urgent-2020-10-11
+Thanks,
+Quentin
