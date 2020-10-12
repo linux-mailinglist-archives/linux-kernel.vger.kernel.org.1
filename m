@@ -2,122 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A88728C54F
+	by mail.lfdr.de (Postfix) with ESMTP id E6F4E28C550
 	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 01:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730226AbgJLXjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 19:39:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37682 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726780AbgJLXjS (ORCPT
+        id S2388743AbgJLXjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 19:39:54 -0400
+Received: from o1.b.az.sendgrid.net ([208.117.55.133]:47186 "EHLO
+        o1.b.az.sendgrid.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730272AbgJLXjx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 19:39:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602545956;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rW0rq42E0Ia7pA/3O1pSHV86DfoT5jFkZR8FD7wpIhQ=;
-        b=FjhfLqUU90o5Z5jPNA+2M0yrTeLW6/utZC6+EbmFxusn2VMGXqCEYyCMv68VjXFtAKEE7t
-        DJ8rTYFAzNJnLtADKuGDyZHUX2zCx4Cyp77Xbq4dD7fbqOcB3ig7845sP7oqI+x3GBJdUK
-        9Drdu6I1UN4qZ3t2u7mxaNfUlEP9AFc=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-385-NeAfapKNPXi-Rdu4nZmhcw-1; Mon, 12 Oct 2020 19:39:14 -0400
-X-MC-Unique: NeAfapKNPXi-Rdu4nZmhcw-1
-Received: by mail-qv1-f72.google.com with SMTP id y45so11727685qve.15
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 16:39:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:reply-to:to:date
-         :in-reply-to:references:organization:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=rW0rq42E0Ia7pA/3O1pSHV86DfoT5jFkZR8FD7wpIhQ=;
-        b=bXIAdFcGzQkVM0mo7ExINkt6RSxALKb6KspiQoyWap5Ong32ZFWF/aA7JHLMR2AgJl
-         Ye1TZXp0KKNDaHybdl5c7+fVM0tL3uqdk/SDmm+AdqYmqwLozT7yFwsx6rpUmpkg071F
-         xzx2pFTZLNYMog12WIFs24DCGXQB8OiEPWXhKIRhaIovFb2ODphV4d2Q//LWdNHmGqe4
-         NirSRTCc/CHGwsx1oQuFd3aRbN1z7V/SYUnAtzXevtzm15/06pDEQRw8bjx1RZzEQEpx
-         9cIsccNoc4AD6P27Q5rdJQoWn8TpSgXdIYbLNHLimWEJz3UYbALetIvJQI6dpIxGT4YF
-         SNHA==
-X-Gm-Message-State: AOAM5330VGvAeLPhBH9tqfFVPECbir5na0xb/gwSf+0/Wd9BadPJXPam
-        tjRzN7QgrSCoLO4jYDqbneTWfE9CHC0LDXAgVbrBzg18FZP97g9eXGaL/QxYnoc6o09GphiTto1
-        /UcAXT0BBI6aWa9lH+MYcPM57
-X-Received: by 2002:a05:620a:4:: with SMTP id j4mr8855254qki.164.1602545954411;
-        Mon, 12 Oct 2020 16:39:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyPc5P35iA6gXgoVAJSgh/p8EZmd1mF8MJWKHd6dMdvNW16yF9VfLRK/jtKJ+he966MNK0pKA==
-X-Received: by 2002:a05:620a:4:: with SMTP id j4mr8855235qki.164.1602545954156;
-        Mon, 12 Oct 2020 16:39:14 -0700 (PDT)
-Received: from Whitewolf.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
-        by smtp.gmail.com with ESMTPSA id g5sm13323920qtx.43.2020.10.12.16.39.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 16:39:13 -0700 (PDT)
-Message-ID: <3a89934f69387ddf654745e2c78bbb8362bbc4b4.camel@redhat.com>
-Subject: Re: [PATCH 1/2] drm/i915/dpcd_bl: uncheck PWM_PIN_CAP when detect
- eDP backlight capabilities
-From:   Lyude Paul <lyude@redhat.com>
-Reply-To: lyude@redhat.com
-To:     Aaron Ma <aaron.ma@canonical.com>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        mapengyu@gmail.com, daniel@ffwll.ch, airlied@linux.ie,
-        tzimmermann@suse.de, mripard@kernel.org,
-        maarten.lankhorst@linux.intel.com, rodrigo.vivi@intel.com,
-        joonas.lahtinen@linux.intel.com, jani.nikula@linux.intel.com,
-        ville.syrjala@linux.intel.com
-Date:   Mon, 12 Oct 2020 19:39:11 -0400
-In-Reply-To: <20201009085750.88490-1-aaron.ma@canonical.com>
-References: <20201009085750.88490-1-aaron.ma@canonical.com>
-Organization: Red Hat
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        Mon, 12 Oct 2020 19:39:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
+        h=subject:references:from:mime-version:in-reply-to:to:cc:content-type:
+        content-transfer-encoding;
+        s=001; bh=FWd7GLu/tKLDYZWyqY42ek5eJQUDEXNUAlc9iLUoOSQ=;
+        b=hWlEplUmTpnYzRFWyIf4FCE6wfVXkJ1rfr7fkYfsKO8P15QdaCtSTB2hHa/RrVx5a0AQ
+        HhHIHIYOf3857gyEAWb5XbG8TsAazMN7Rgfn1etr5zH+N0waxqett+LYdKlRqwtw8/P8mv
+        eyofcmrs3avYSGmUfi6j2nYUg/5YY9hdE=
+Received: by filterdrecv-p3las1-dcbfbb89c-tcntw with SMTP id filterdrecv-p3las1-dcbfbb89c-tcntw-18-5F84E946-82
+        2020-10-12 23:39:51.179332393 +0000 UTC m=+435832.437857433
+Received: from [192.168.1.14] (unknown)
+        by ismtpd0006p1lon1.sendgrid.net (SG) with ESMTP
+        id C8HTQRspSkaVK3O5MSCmWA
+        Mon, 12 Oct 2020 23:39:50.729 +0000 (UTC)
+Subject: Re: [PATCH 00/18] Add Hantro regmap and VC8000 h264 decode support
+References: <20201012205957.889185-1-adrian.ratiu@collabora.com>
+From:   Jonas Karlman <jonas@kwiboo.se>
+Message-ID: <97e84bb5-972a-091d-a159-6ab1151f17ab@kwiboo.se>
+Date:   Mon, 12 Oct 2020 23:39:51 +0000 (UTC)
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
+In-Reply-To: <20201012205957.889185-1-adrian.ratiu@collabora.com>
+X-SG-EID: =?us-ascii?Q?TdbjyGynYnRZWhH+7lKUQJL+ZxmxpowvO2O9SQF5CwCVrYgcwUXgU5DKUU3QxA?=
+ =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0h4m=2F0JLyOkHdDHSTb?=
+ =?us-ascii?Q?GzI4=2FudO3qzCik37O+eo=2FnD6F3CkCKMBwB34tRk?=
+ =?us-ascii?Q?aKxv5b6rTNjK84lRypk2iCtJ7H31qwC85Q=2FQY4G?=
+ =?us-ascii?Q?=2FpCYOE1kV4UVAMvMyY5vfGWiU47oKIeBmG9dK3C?=
+ =?us-ascii?Q?+lyS6Q6rOV78eta9aXO2vfEy1UNCzOYO1kfFPwm?=
+ =?us-ascii?Q?qQxZPWrjAICo8knfiYE8A=3D=3D?=
+To:     Adrian Ratiu <adrian.ratiu@collabora.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Fruehberger Peter <Peter.Fruehberger@de.bosch.com>,
+        kuhanh.murugasen.krishnan@intel.com,
+        Daniel Vetter <daniel@ffwll.ch>, kernel@collabora.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+X-Entity-ID: wSPGWgGSXUap++qShBI+ag==
+Content-Type: text/plain; charset=us-ascii
+Content-Language: sv
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Completely zoned out on Ccing these patches to stable before submitting them,
-but once they hit the mainline kernel you should be able to ask Greg to backport
-them if you need. Anyway, pushed to drm-intel-next-queued. Thanks for the
-patches!
+Hi,
 
-On Fri, 2020-10-09 at 16:57 +0800, Aaron Ma wrote:
-> BOE panel with ID 2270 claims both PWM_PIN_CAP and AUX_SET_CAP backlight
-> control bits, but default chip backlight failed to control brightness.
+On 2020-10-12 22:59, Adrian Ratiu wrote:
+> Dear all,
 > 
-> Check AUX_SET_CAP and proceed to check quirks or VBT backlight type.
-> DPCD can control the brightness of this pannel.
+> This series introduces a regmap infrastructure for the Hantro driver
+> which is used to compensate for different HW-revision register layouts.
+> To justify it h264 decoding capability is added for newer VC8000 chips.
 > 
-> Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
-> ---
->  drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+> This is a gradual conversion to the new infra - a complete conversion
+> would have been very big and I do not have all the HW yet to test (I'm
+> expecting a RK3399 shipment next week though ;). I think converting the
+> h264 decoder provides a nice blueprint for how the other codecs can be
+> converted and enabled for different HW revisions.
 > 
-> diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> index acbd7eb66cbe..308b14159b7c 100644
-> --- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> +++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> @@ -334,8 +334,7 @@ intel_dp_aux_display_control_capable(struct
-> intel_connector *connector)
->  	 * the panel can support backlight control over the aux channel
->  	 */
->  	if (intel_dp->edp_dpcd[1] & DP_EDP_TCON_BACKLIGHT_ADJUSTMENT_CAP &&
-> -	    (intel_dp->edp_dpcd[2] & DP_EDP_BACKLIGHT_BRIGHTNESS_AUX_SET_CAP) &&
-> -	    !(intel_dp->edp_dpcd[2] & DP_EDP_BACKLIGHT_BRIGHTNESS_PWM_PIN_CAP))
-> {
-> +	    (intel_dp->edp_dpcd[2] & DP_EDP_BACKLIGHT_BRIGHTNESS_AUX_SET_CAP)) {
->  		drm_dbg_kms(&i915->drm, "AUX Backlight Control Supported!\n");
->  		return true;
->  	}
--- 
-Sincerely,
-      Lyude Paul (she/her)
-      Software Engineer at Red Hat
+> The end goal of this is to make the driver more generic and eliminate
+> entirely custom boilerplate like `struct hantro_reg` or headers with
+> core-specific bit manipulations like `hantro_g1_regs.h` and instead rely
+> on the well-tested albeit more verbose regmap subsytem.
+> 
+> To give just two examples of bugs which are easily discovered by using
+> more verbose regmap fields (very easy to compare with the datasheets)
+> instead of relying on bit-magic tricks: G1_REG_DEC_CTRL3_INIT_QP(x) was
+> off-by-1 and the wrong .clk_gate bit was set in hantro_postproc.c.
+> 
+> Anyway, this series also extends the MMIO regmap API to allow relaxed
+> writes for the theoretical reason that avoiding unnecessary membarriers
+> leads to less CPU usage and small improvements to battery life. However,
+> in practice I could not measure differences between relaxed/non-relaxed
+> IO, so I'm on the fence whether to keep or remove the relaxed calls.
+> 
+> What I could masure is the performance impact of adding more sub-reg
+> field acesses: a constant ~ 20 microsecond bump per G1 h264 frame. This
+> is acceptable considering the total time to decode a frame takes three
+> orders of magnitude longer, i.e. miliseconds ranges, depending on the
+> frame size and bitstream params, so it is an acceptable trade-off to
+> have a more generic driver.
 
-Note: I deal with a lot of emails and have a lot of bugs on my plate. If you've
-asked me a question, are waiting for a review/merge on a patch, etc. and I
-haven't responded in a while, please feel free to send me another email to check
-on my status. I don't bite!
+In the RK3399 variant all fields use completely different positions so
+in order to make the driver fully generic all around 145 sub-reg fields
+used for h264 needs to be converted, see [1] for a quick generation of
+field mappings used for h264 decoding.
 
+Any indication on how the performance will be impacted with 145 fields
+compared to around 20 fields used in this series?
+
+Another issue with RK3399 variant is that some fields use different
+position depending on the codec used, e.g. two dec_ref_frames in [2].
+Should we use codec specific field maps? or any other suggestion on
+how we can handle such case?
+
+[1] https://github.com/Kwiboo/rockchip-vpu-regtool/commit/8b88d94d2ed966c7d88d9a735c0c97368eb6c92d
+[2] https://github.com/Kwiboo/rockchip-vpu-regtool/blob/master/rk3399_dec_regs.c#L1065
+[3] https://github.com/Kwiboo/rockchip-vpu-regtool/commit/9498326296445a9ce153b585cc48e0cea05d3c93
+
+Best regards,
+Jonas
+
+> 
+> This has been tested on next-20201009 with imx8mq for G1 and an SoC with
+> VC8000 which has not yet been added (hopefuly support lands soon).
+> 
+> Kind regards,
+> Adrian
+> 
+> Adrian Ratiu (18):
+>   media: hantro: document all int reg bits up to vc8000
+>   media: hantro: make consistent use of decimal register notation
+>   media: hantro: make G1_REG_SOFT_RESET Rockchip specific
+>   media: hantro: add reset controller support
+>   media: hantro: prepare clocks before variant inits are run
+>   media: hantro: imx8mq: simplify ctrlblk reset logic
+>   regmap: mmio: add config option to allow relaxed MMIO accesses
+>   media: hantro: add initial MMIO regmap infrastructure
+>   media: hantro: default regmap to relaxed MMIO
+>   media: hantro: convert G1 h264 decoder to regmap fields
+>   media: hantro: convert G1 postproc to regmap
+>   media: hantro: add VC8000D h264 decoding
+>   media: hantro: add VC8000D postproc support
+>   media: hantro: make PP enablement logic a bit smarter
+>   media: hantro: add user-selectable, platform-selectable H264 High10
+>   media: hantro: rename h264_dec as it's not G1 specific anymore
+>   media: hantro: add dump registers debug option before decode start
+>   media: hantro: document encoder reg fields
+> 
+>  drivers/base/regmap/regmap-mmio.c             |   34 +-
+>  drivers/staging/media/hantro/Makefile         |    3 +-
+>  drivers/staging/media/hantro/hantro.h         |   79 +-
+>  drivers/staging/media/hantro/hantro_drv.c     |   41 +-
+>  drivers/staging/media/hantro/hantro_g1_regs.h |   92 +-
+>  ...hantro_g1_h264_dec.c => hantro_h264_dec.c} |  237 +++-
+>  drivers/staging/media/hantro/hantro_hw.h      |   23 +-
+>  .../staging/media/hantro/hantro_postproc.c    |  144 ++-
+>  drivers/staging/media/hantro/hantro_regmap.c  | 1015 +++++++++++++++++
+>  drivers/staging/media/hantro/hantro_regmap.h  |  295 +++++
+>  drivers/staging/media/hantro/hantro_v4l2.c    |    3 +-
+>  drivers/staging/media/hantro/imx8m_vpu_hw.c   |   75 +-
+>  drivers/staging/media/hantro/rk3288_vpu_hw.c  |    5 +-
+>  include/linux/regmap.h                        |    5 +
+>  14 files changed, 1795 insertions(+), 256 deletions(-)
+>  rename drivers/staging/media/hantro/{hantro_g1_h264_dec.c => hantro_h264_dec.c} (58%)
+>  create mode 100644 drivers/staging/media/hantro/hantro_regmap.c
+>  create mode 100644 drivers/staging/media/hantro/hantro_regmap.h
+> 
