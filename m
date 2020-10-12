@@ -2,103 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00DF128AD84
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 07:14:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DD2228AD8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 07:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726617AbgJLFN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 01:13:57 -0400
-Received: from mga14.intel.com ([192.55.52.115]:24006 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725967AbgJLFN5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 01:13:57 -0400
-IronPort-SDR: 7ADqcn1ok1sE6gxqAUEE+ZlRYBjKx3YmtCNLjxnar6tJXiuy5pHh0JM+VdSrs0DdwDLiyGgZTn
- 8zqZ+YmU8eXg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="164905262"
-X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; 
-   d="scan'208";a="164905262"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2020 22:13:57 -0700
-IronPort-SDR: XIJncUnAd3RoeChaxJorWzxcTwLLSIoVmhAwwlmHM8se+NpLFZWPSyKs3VPtk5ESjbtuhiXdC7
- DdEXSY15TSpQ==
-X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; 
-   d="scan'208";a="355679494"
-Received: from sdhopkin-mobl.amr.corp.intel.com (HELO [10.254.98.243]) ([10.254.98.243])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2020 22:13:56 -0700
-Subject: Re: [PATCH v3 1/1] PCI/ERR: Fix reset logic in pcie_do_recovery()
- call
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Sinan Kaya <okaya@kernel.org>, Bjorn Helgaas <helgaas@kernel.org>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
-        Jay Vosburgh <jay.vosburgh@canonical.com>
-References: <20200922233333.GA2239404@bjorn-Precision-5520>
- <526dc846-b12b-3523-4995-966eb972ceb7@kernel.org>
- <1fdcc4a6-53b7-2b5f-8496-f0f09405f561@linux.intel.com>
- <aef0b9aa-59f5-9ec3-adac-5bc366b362e0@kernel.org>
- <a647f485-8db4-db45-f404-940b55117b53@linux.intel.com>
- <aefd8842-90c4-836a-b43a-f21c5428d2ba@kernel.org>
- <95e23cb5-f6e1-b121-0de8-a2066d507d9c@linux.intel.com>
- <65238d0b-0a39-400a-3a18-4f68eb554538@kernel.org>
- <4ae86061-2182-bcf1-ebd7-485acf2d47b9@linux.intel.com>
- <f360165e-5f73-057c-efd1-557b5e5027eb@kernel.org>
- <8beca800-ffb5-c535-6d43-7e750cbf06d0@linux.intel.com>
- <44f0cac5-8deb-1169-eb6d-93ac4889fe7e@kernel.org>
- <3bc0fd23-8ddd-32c5-1dd9-4d5209ea68c3@linux.intel.com>
- <a2bbdfed-fb17-51dc-8ae4-55d924c13211@kernel.org>
- <8a3aeb3c-83c4-8626-601d-360946d55dd8@linux.intel.com>
- <9b295cad-7302-cf2c-d19d-d27fabcb48be@kernel.org>
- <93b4015f-df2b-728b-3ef7-ac5aa10f03ed@kernel.org>
- <d6da2246-cf82-315e-c716-62ab9ec13a22@linux.intel.com>
-Message-ID: <0013f3d2-569a-27ba-336e-3d4668834545@linux.intel.com>
-Date:   Sun, 11 Oct 2020 22:13:54 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726648AbgJLFSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 01:18:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726120AbgJLFSC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 01:18:02 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F06F8C0613CE;
+        Sun, 11 Oct 2020 22:18:01 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C8n4k4l2Jz9sT6;
+        Mon, 12 Oct 2020 16:17:58 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1602479879;
+        bh=yP3OneOd9YRdtDtR/9NA/FMdutcdKOMzjqgz3BEBAtU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=URlAOgUATHcSpnY7laMPanAFQODa73RMxEyk8Cc7Qt6KskgTzjX3y+sYU/r6Iw9vn
+         u+L+YttEOqKxcHKyEASetQJPYjYcSE3naE90EEnhT7vX0LzMPGOh+i33AzMx/VbDSv
+         S7kQocDR4yN0ftFczz1MF0nVEuNdo3kNkzWa4bo188xf5CQQGvzxafiyxx+aFsPTtb
+         K4QqB01UOSqLWftX2f+92tnnXrqGJtDlLxSCvE44oPytQdFKqKvJC6Ye6AGmxJsZLA
+         jVX/SBoUeZraQPoKyvo7iGcVvJywTi+/bjjKX4B4JD+e1TzeQMwADSJW863VUwarTm
+         nZ/uZsIlEVOpQ==
+Date:   Mon, 12 Oct 2020 16:17:57 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Marc Zyngier <maz@kernel.org>, Lee Jones <lee.jones@linaro.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mark-PK Tsai <mark-pk.tsai@mediatek.com>,
+        Michael Walle <michael@walle.cc>
+Subject: linux-next: manual merge of the irqchip tree with the mfd tree
+Message-ID: <20201012161757.4cdf20c2@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <d6da2246-cf82-315e-c716-62ab9ec13a22@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/sxoGIv=jBAH9wnwoQL_On=c";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sinan,
+--Sig_/sxoGIv=jBAH9wnwoQL_On=c
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 9/28/20 11:32 AM, Kuppuswamy, Sathyanarayanan wrote:
-> 
-> 
-> On 9/28/20 11:25 AM, Sinan Kaya wrote:
->> On 9/28/2020 2:02 PM, Sinan Kaya wrote:
->>> Since there is no state restoration for FATAL errors, I am wondering
->>> whether
->>> calls to ->error_detected(), ->mmio_enabled() and ->slot_reset() are
->>> required?
->>
->> I also would like to ask someone closer to the spec language double
->> check this.
->>
->> When we recover the link at the end of the DPC handler, what is the
->> expected state of the endpoint?
->>
->> Is it a some kind of a reset like secondary bus reset? (I assumed this
->>   one)
-> I think it will be in reset state.
->>
->> Undefined?
->>
->> or just plain link recovery with everything else as intact as it used
->> to be?
->>
-> 
+Hi all,
 
-Please check the following version. It should fix most of the reset issues
-properly.
+Today's linux-next merge of the irqchip tree got a conflict in:
 
-https://lore.kernel.org/linux-pci/5c5bca0bdb958e456176fe6ede10ba8f838fbafc.1602263264.git.sathyanarayanan.kuppuswamy@linux.intel.com/T/#t
+  drivers/irqchip/Makefile
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+between commit:
+
+  03ac990e0ac0 ("irqchip: Add sl28cpld interrupt controller support")
+
+from the mfd tree and commit:
+
+  ad4c938c92af ("irqchip/irq-mst: Add MStar interrupt controller support")
+
+from the irqchip tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/irqchip/Makefile
+index db5e37d2db11,f1525149b7a2..000000000000
+--- a/drivers/irqchip/Makefile
++++ b/drivers/irqchip/Makefile
+@@@ -110,4 -113,4 +112,5 @@@ obj-$(CONFIG_LOONGSON_HTPIC)		+=3D irq-lo
+  obj-$(CONFIG_LOONGSON_HTVEC)		+=3D irq-loongson-htvec.o
+  obj-$(CONFIG_LOONGSON_PCH_PIC)		+=3D irq-loongson-pch-pic.o
+  obj-$(CONFIG_LOONGSON_PCH_MSI)		+=3D irq-loongson-pch-msi.o
+ +obj-$(CONFIG_SL28CPLD_INTC)		+=3D irq-sl28cpld.o
++ obj-$(CONFIG_MST_IRQ)			+=3D irq-mst-intc.o
+
+--Sig_/sxoGIv=jBAH9wnwoQL_On=c
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+D5wUACgkQAVBC80lX
+0GwVjwgAjdf3OGwZeb6UARz1pkgMULTTGnFTkTlFDhv/rDw4pwkKOqLNmDIDB8JS
+P8bZQ/dW7kbqK2mqbsMIBwmnCh/HZz/sG6PpAYQw1QbyXO9jqcVmD+cfp+CLH5/R
+QPhxApLDKUfHca8h1HgHJXMEVJ1vfc6SHuyKHfM2ikhZICmLkFtxNGn3EpLy8i4x
+Cq0Igvjkonm+ki9judF94LVNApTDtfMF1KMKBsNWXV0KFYEbGbFyalTZRC1CjVgR
+IWvwcL0AGsK+BzWz3o5bHUn6GEthdiCDYPnOTQUc+DwMu778yXEZWyBPLQ8vSpPr
+Cedot7FOZGhtaTOoe5Nm1XMfXi4Ulw==
+=zh6y
+-----END PGP SIGNATURE-----
+
+--Sig_/sxoGIv=jBAH9wnwoQL_On=c--
