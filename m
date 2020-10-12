@@ -2,181 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FAB228BB00
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:41:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDE4028BAFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389128AbgJLOlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:41:40 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:8442 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388957AbgJLOlj (ORCPT
+        id S1729890AbgJLOkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:40:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728800AbgJLOkW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 10:41:39 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09CEZDrw078166;
-        Mon, 12 Oct 2020 10:41:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=Mh49I7jw4VB6kT4/ay+AaLZilzKCmLBonLwWNkMHRRw=;
- b=MK1q9eNePHSQkxW58VHmw9c51ABMDsasKexGHGtGFzfduqPUsqiEoLP3H2BW8pLNOJDY
- HKqx86fR6w5oclhuufWpcOEwP0GRox8JaBTYNny6OCAn7MCC4NOBYADXeh4lyftwVqJE
- sr8kULHlSgEXQMxanjk40vuI1bFSD2BIM9y2lsiAzCbBQg6f5qdB0j+hbWLabzpIGN5U
- bdFaxg4nw+BtjTue5U9eA2In51WVMjfyNcPxdiO7vm1Otcrw/GYBNtZXjnZIUa1xkmQk
- QBmsEy0lKB9GG3gZTFV4t6AdsGpBK0O3fAnbdeXBZ0quZUqnXFhalJ1jhEuBXpdVz/cX +w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 344qucjbjf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 12 Oct 2020 10:41:29 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09CEZWTT079650;
-        Mon, 12 Oct 2020 10:41:28 -0400
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 344qucjawm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 12 Oct 2020 10:41:28 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09CEbR7V001812;
-        Mon, 12 Oct 2020 14:39:34 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma01fra.de.ibm.com with ESMTP id 344558rf3p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 12 Oct 2020 14:39:34 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09CEdVqO9437672
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 12 Oct 2020 14:39:32 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CF0F8A405C;
-        Mon, 12 Oct 2020 14:39:31 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 052EAA405F;
-        Mon, 12 Oct 2020 14:39:31 +0000 (GMT)
-Received: from [9.145.9.103] (unknown [9.145.9.103])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 12 Oct 2020 14:39:30 +0000 (GMT)
-Subject: Re: [PATCH v2 08/17] s390/pci: Remove races against pte updates
-To:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-s390@vger.kernel.org,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>
-References: <20201009075934.3509076-1-daniel.vetter@ffwll.ch>
- <20201009075934.3509076-9-daniel.vetter@ffwll.ch>
- <6deb08dd-46f3-bf26-5362-fdc696f6fd74@linux.ibm.com>
- <20201012141906.GX438822@phenom.ffwll.local>
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-Message-ID: <3c28a96a-6bb5-f581-4671-5c87161238f7@linux.ibm.com>
-Date:   Mon, 12 Oct 2020 16:39:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 12 Oct 2020 10:40:22 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12446C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 07:40:22 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id k18so17778169wmj.5
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 07:40:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Sgxu8pwzEMgUUbjWBDrQW3ILYSpl7WdZp96R0DhO5Mc=;
+        b=XI3dCFkFiN+2pFpXGzPmSIRwuJuDv/y/2G9Cj9dJ5EghRoEEVwApSzVYeCtJxffgn5
+         skL+vGIevqPHDkBJSkAmpM2A1fHP5B8RcTb8FrQ1CweEk8h/tiOQmT7bbDlKQbpo7hXP
+         ndmRWBk0diEt7ZiV4Hc+RQVD5RBiDSm7v5vA0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=Sgxu8pwzEMgUUbjWBDrQW3ILYSpl7WdZp96R0DhO5Mc=;
+        b=jsJNjPETmcaJg6JH7+ibuHzkFCYQy7CSFlK7iA74+hAB/E/em16s0h0aEYz4PrtJ7Z
+         hd5Wx3VTj2JLmOXdTpMlTGbcuUSccH1lY1gOF3ygmMJwZ1GYFvcgsv+niaeVmXge1QAf
+         6CkdyfZKLyKSBfBl2adwqFATH4LgzCgefu/LynFQse9YzV0waB7uf+VkmgLg8BNG408+
+         qLzj+hF3dCyark3GbcZHIHXd7h8c+UD/VPzzNfQydT4J8qlUUGDtr3730ERDosw21kDn
+         UqVJNynQwU/hy971plRV/2/oqvHQ/4JLdwvZrfSUVAOHjqrKJKs0t5HIsMehYmRma52T
+         91lA==
+X-Gm-Message-State: AOAM5305YpZpe2W8bOSJF3ED3ZL423EOYsy5S5VhdOy25nEvawBVjTqG
+        A5Rh5CD4DDcumgXEQP1wRU4tn+4ee8BqGSTw
+X-Google-Smtp-Source: ABdhPJxtuGldLayKaoOLNdhPXiIp8BIJ4bsOKgdiv6Dh9nEH8u2gHnOAjBdyITgyL7C1levJe7WYXg==
+X-Received: by 2002:a1c:8056:: with SMTP id b83mr11077306wmd.124.1602513620761;
+        Mon, 12 Oct 2020 07:40:20 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id v4sm23467980wmg.35.2020.10.12.07.40.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 07:40:20 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 16:40:18 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 22/22] drm/msm: Don't implicit-sync if only a single
+ ring
+Message-ID: <20201012144018.GB438822@phenom.ffwll.local>
+Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
+        dri-devel@lists.freedesktop.org, Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <freedreno@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20201012020958.229288-1-robdclark@gmail.com>
+ <20201012020958.229288-23-robdclark@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201012141906.GX438822@phenom.ffwll.local>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-12_12:2020-10-12,2020-10-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
- priorityscore=1501 suspectscore=0 lowpriorityscore=0 impostorscore=0
- spamscore=0 malwarescore=0 adultscore=0 mlxlogscore=999 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010120117
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201012020958.229288-23-robdclark@gmail.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-... snip ...
->>> Cc: linux-media@vger.kernel.org
->>> Cc: Niklas Schnelle <schnelle@linux.ibm.com>
->>> Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
->>> Cc: linux-s390@vger.kernel.org
->>> --
->>> v2: Move VM_IO | VM_PFNMAP checks around so they keep returning EINVAL
->>> like before (Gerard)
->>
->> I think the above should go before the CC/Signed-off/Reviewev block.
+On Sun, Oct 11, 2020 at 07:09:49PM -0700, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
 > 
-> This is a per-subsystem bikeshed :-) drivers/gpu definitely wants it
-> above, but most core subsystems want it below. I'll move it.
-
-Today I learned, thanks! That said I think most of the time I've
-actually not seen version change information in the commit message itself
-only in the cover letters. I really don't care just looked odd to me.
-
+> Any cross-device sync use-cases *must* use explicit sync.  And if there
+> is only a single ring (no-preemption), everything is FIFO order and
+> there is no need to implicit-sync.
 > 
->>> ---
->>>  arch/s390/pci/pci_mmio.c | 98 +++++++++++++++++++++++-----------------
->>>  1 file changed, 57 insertions(+), 41 deletions(-)
->>>
->>> diff --git a/arch/s390/pci/pci_mmio.c b/arch/s390/pci/pci_mmio.c
->>> index 401cf670a243..1a6adbc68ee8 100644
->>> --- a/arch/s390/pci/pci_mmio.c
->>> +++ b/arch/s390/pci/pci_mmio.c
->>> @@ -119,33 +119,15 @@ static inline int __memcpy_toio_inuser(void __iomem *dst,
->>>  	return rc;
->>>  }
->>>  
->>> -static long get_pfn(unsigned long user_addr, unsigned long access,
->>> -		    unsigned long *pfn)
->>> -{
->>> -	struct vm_area_struct *vma;
->>> -	long ret;
->>> -
->>> -	mmap_read_lock(current->mm);
->>> -	ret = -EINVAL;
->>> -	vma = find_vma(current->mm, user_addr);
->>> -	if (!vma)
->>> -		goto out;
->>> -	ret = -EACCES;
->>> -	if (!(vma->vm_flags & access))
->>> -		goto out;
->>> -	ret = follow_pfn(vma, user_addr, pfn);
->>> -out:
->>> -	mmap_read_unlock(current->mm);
->>> -	return ret;
->>> -}
->>> -
->>>  SYSCALL_DEFINE3(s390_pci_mmio_write, unsigned long, mmio_addr,
->>>  		const void __user *, user_buffer, size_t, length)
->>>  {
->>>  	u8 local_buf[64];
->>>  	void __iomem *io_addr;
->>>  	void *buf;
->>> -	unsigned long pfn;
->>> +	struct vm_area_struct *vma;
->>> +	pte_t *ptep;
->>> +	spinlock_t *ptl;
->>
->> With checkpatch.pl --strict the above yields a complained
->> "CHECK: spinlock_t definition without comment" but I think
->> that's really okay since your commit description is very clear.
->> Same oin line 277.
-> 
-> I think this is a falls positive, checkpatch doesn't realize that
-> SYSCALL_DEFINE3 is a function, not a structure. And in a structure I'd
-> have added the kerneldoc or comment.
+> Mesa should probably just always use MSM_SUBMIT_NO_IMPLICIT, as behavior
+> is undefined when fences are not used to synchronize buffer usage across
+> contexts (which is the only case where multiple different priority rings
+> could come into play).
 
-Interesting, your theory sounds convincing, I too thought this
-was a bit too pedantic.
+Uh does this mean msm is broken on dri2/3 and wayland? Or I'm I just
+confused by your commit message?
+
+Since for these protocols we do expect implicit sync accross processes to
+work. Even across devices (and nvidia have actually provided quite a bunch
+of patches to make this work in i915 - ttm based drivers get this right,
+plus dumb scanout drivers using the right helpers also get this all
+right).
+-Daniel
 
 > 
-> I'll fix up all the nits you've found for the next round. Thanks for
-> taking a look.
-
-You're welcome hope I didn't sound pedantic. I think you've a lot
-more experience actually and this can indeed turn into bikeshedding
-but since I was answering anyway and most of this was checkpatch…
-
-> -Daniel
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> ---
+>  drivers/gpu/drm/msm/msm_gem_submit.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
 > 
+> diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
+> index 3151a0ca8904..c69803ea53c8 100644
+> --- a/drivers/gpu/drm/msm/msm_gem_submit.c
+> +++ b/drivers/gpu/drm/msm/msm_gem_submit.c
+> @@ -277,7 +277,7 @@ static int submit_lock_objects(struct msm_gem_submit *submit)
+>  	return ret;
+>  }
+>  
+> -static int submit_fence_sync(struct msm_gem_submit *submit, bool no_implicit)
+> +static int submit_fence_sync(struct msm_gem_submit *submit, bool implicit_sync)
+>  {
+>  	int i, ret = 0;
+>  
+> @@ -297,7 +297,7 @@ static int submit_fence_sync(struct msm_gem_submit *submit, bool no_implicit)
+>  				return ret;
+>  		}
+>  
+> -		if (no_implicit)
+> +		if (!implicit_sync)
+>  			continue;
+>  
+>  		ret = msm_gem_sync_object(&msm_obj->base, submit->ring->fctx,
+> @@ -768,7 +768,8 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
+>  	if (ret)
+>  		goto out;
+>  
+> -	ret = submit_fence_sync(submit, !!(args->flags & MSM_SUBMIT_NO_IMPLICIT));
+> +	ret = submit_fence_sync(submit, (gpu->nr_rings > 1) &&
+> +			!(args->flags & MSM_SUBMIT_NO_IMPLICIT));
+>  	if (ret)
+>  		goto out;
+>  
+> -- 
+> 2.26.2
+> 
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
