@@ -2,106 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F4328BC8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 000C028BC8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390868AbgJLPlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 11:41:45 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:63219 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390203AbgJLPjt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 11:39:49 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4C92t45LYpz9v10q;
-        Mon, 12 Oct 2020 17:39:40 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id tIzJjLTsdFXn; Mon, 12 Oct 2020 17:39:40 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4C92t447XWz9v10n;
-        Mon, 12 Oct 2020 17:39:40 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 51EFA8B793;
-        Mon, 12 Oct 2020 17:39:46 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 0doUTwML87kl; Mon, 12 Oct 2020 17:39:46 +0200 (CEST)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1E9718B792;
-        Mon, 12 Oct 2020 17:39:46 +0200 (CEST)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id F0BF866440; Mon, 12 Oct 2020 15:39:45 +0000 (UTC)
-Message-Id: <06bf0e094463533e7aec6900bddd435171e9f44f.1602517171.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2] powerpc/mm: Add mask of always present MMU features
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Mon, 12 Oct 2020 15:39:45 +0000 (UTC)
+        id S2390831AbgJLPlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 11:41:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58863 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389974AbgJLPkA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 11:40:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602517199;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tVvce4e6eIFCyn6Tznu2Pb8PdDR0S4LAYFGAeOch+LY=;
+        b=hpZcv3w9oh4Ga6pBhmI0t15reXQLJ22pSmtia8ES97IZyFvMLZeB1UYgH2QyQmc7a2srpe
+        bGNc/i7vwSG444eSwIdJiVWA5uzwBDloE2q79v1+WLihkx3kcP4uA2MgjEnFl/b8Fld4fl
+        mTBsNuVd9nW7B18Zldi8c8QnKFVi2n8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-289-AIxEAjSVNEyJJFti44RVyw-1; Mon, 12 Oct 2020 11:39:55 -0400
+X-MC-Unique: AIxEAjSVNEyJJFti44RVyw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9EA936408B;
+        Mon, 12 Oct 2020 15:39:53 +0000 (UTC)
+Received: from treble (ovpn-118-167.rdu2.redhat.com [10.10.118.167])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id F076973663;
+        Mon, 12 Oct 2020 15:39:51 +0000 (UTC)
+Date:   Mon, 12 Oct 2020 10:39:49 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, x86 <x86@kernel.org>
+Subject: Re: [tip: objtool/core] x86/insn: Support big endian cross-compiles
+Message-ID: <20201012153949.jfwa7rgpzu5b7ld4@treble>
+References: <160208761921.7002.1321765913567405137.tip-bot2@tip-bot2>
+ <20201009203822.GA2974@worktop.programming.kicks-ass.net>
+ <20201009204921.GB21731@zn.tnic>
+ <20201010174415.zwopoy6vpficoqlr@treble>
+ <20201012091236.0f9a64bfedb8825732b65ea5@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201012091236.0f9a64bfedb8825732b65ea5@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On the same principle as commit 773edeadf672 ("powerpc/mm: Add mask
-of possible MMU features"), add mask for MMU features that are
-always there in order to optimise out dead branches.
+On Mon, Oct 12, 2020 at 09:12:36AM +0900, Masami Hiramatsu wrote:
+> On Sat, 10 Oct 2020 12:44:15 -0500
+> Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> 
+> > On Fri, Oct 09, 2020 at 10:49:21PM +0200, Borislav Petkov wrote:
+> > > On Fri, Oct 09, 2020 at 10:38:22PM +0200, Peter Zijlstra wrote:
+> > > > On Wed, Oct 07, 2020 at 04:20:19PM -0000, tip-bot2 for Martin Schwidefsky wrote:
+> > > > > The following commit has been merged into the objtool/core branch of tip:
+> > > > > 
+> > > > > Commit-ID:     2a522b53c47051d3bf98748418f4f8e5f20d2c04
+> > > > > Gitweb:        https://git.kernel.org/tip/2a522b53c47051d3bf98748418f4f8e5f20d2c04
+> > > > > Author:        Martin Schwidefsky <schwidefsky@de.ibm.com>
+> > > > > AuthorDate:    Mon, 05 Oct 2020 17:50:31 +02:00
+> > > > > Committer:     Josh Poimboeuf <jpoimboe@redhat.com>
+> > > > > CommitterDate: Tue, 06 Oct 2020 09:32:29 -05:00
+> > > > > 
+> > > > > x86/insn: Support big endian cross-compiles
+> > > > > 
+> > > > > x86 instruction decoder code is shared across the kernel source and the
+> > > > > tools. Currently objtool seems to be the only tool from build tools needed
+> > > > > which breaks x86 cross compilation on big endian systems. Make the x86
+> > > > > instruction decoder build host endianness agnostic to support x86 cross
+> > > > > compilation and enable objtool to implement endianness awareness for
+> > > > > big endian architectures support.
+> > > > > 
+> > > > > Signed-off-by: Martin Schwidefsky <schwidefsky@de.ibm.com>
+> > > > > Co-developed-by: Vasily Gorbik <gor@linux.ibm.com>
+> > > > > Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+> > > > > Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > > > > Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> > > > 
+> > > > This commit breaks the x86 build with CONFIG_X86_DECODER_SELFTEST=y.
+> > > > 
+> > > > I've asked Boris to truncate tip/objtool/core.
+> > > 
+> > > Yeah, top 4 are gone until this is resolved.
+> > 
+> > Masami, I wonder if we even need these selftests anymore?  Objtool
+> > already decodes the entire kernel.
+> 
+> No, they have different roles. The selftest checks if the decoder
+> works correctly by comparing with the output of objdump.
+> 
+> As far as I can see, the objtool relies on the sanity of the decoder
+> (it trusts the output of the decoder).
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-v2: Features must be anded with MMU_FTRS_POSSIBLE instead of ~0, otherwise
-    MMU_FTRS_ALWAYS is ~0 when no #ifdef matches.
----
- arch/powerpc/include/asm/mmu.h | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+Ok.  I wonder if we should move the decoder selftest to the 'tools'
+subdirectory.
 
-diff --git a/arch/powerpc/include/asm/mmu.h b/arch/powerpc/include/asm/mmu.h
-index 255a1837e9f7..64e7e7f7cda9 100644
---- a/arch/powerpc/include/asm/mmu.h
-+++ b/arch/powerpc/include/asm/mmu.h
-@@ -201,8 +201,30 @@ enum {
- 		0,
- };
- 
-+enum {
-+	MMU_FTRS_ALWAYS =
-+#ifdef CONFIG_PPC_8xx
-+		MMU_FTR_TYPE_8xx &
-+#endif
-+#ifdef CONFIG_40x
-+		MMU_FTR_TYPE_40x &
-+#endif
-+#ifdef CONFIG_PPC_47x
-+		MMU_FTR_TYPE_47x &
-+#elif defined(CONFIG_44x)
-+		MMU_FTR_TYPE_44x &
-+#endif
-+#if defined(CONFIG_E200) || defined(CONFIG_E500)
-+		MMU_FTR_TYPE_FSL_E &
-+#endif
-+		MMU_FTRS_POSSIBLE,
-+};
-+
- static inline bool early_mmu_has_feature(unsigned long feature)
- {
-+	if (MMU_FTRS_ALWAYS & feature)
-+		return true;
-+
- 	return !!(MMU_FTRS_POSSIBLE & cur_cpu_spec->mmu_features & feature);
- }
- 
-@@ -231,6 +253,9 @@ static __always_inline bool mmu_has_feature(unsigned long feature)
- 	}
- #endif
- 
-+	if (MMU_FTRS_ALWAYS & feature)
-+		return true;
-+
- 	if (!(MMU_FTRS_POSSIBLE & feature))
- 		return false;
- 
 -- 
-2.25.0
+Josh
 
