@@ -2,162 +2,373 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0382528B623
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C3FD28B9D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:04:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729790AbgJLN0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:26:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60648 "EHLO mail.kernel.org"
+        id S2390903AbgJLOEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:04:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729726AbgJLN0U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:26:20 -0400
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S2388582AbgJLNgO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:36:14 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 87D8420BED;
-        Mon, 12 Oct 2020 13:26:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0E63E2074F;
+        Mon, 12 Oct 2020 13:36:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509179;
-        bh=yGzfcblPNkEu1jThQo3Kr1pZhnuRpAynpzlLmU3Eyto=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=2D2ESyQOMTChv7yvxLAiD0dAuxlG0M14eT38MlEDqC6L6xVG1ZHu4M9xJTVMu5neu
-         envgnta/HiKRtEOq8DzGGEU2tSlQMCpbouoj1QusJ1hHAbZKyt9hdK0qWJrfv3/G+f
-         WjCjzSGa8vfOIx5nqxsYLyVIBn2+E5lpoNLRstuk=
-Received: by mail-ed1-f46.google.com with SMTP id i5so16917055edr.5;
-        Mon, 12 Oct 2020 06:26:19 -0700 (PDT)
-X-Gm-Message-State: AOAM530/se2Fx6qazsLlzJDGJYxWdgWUzVg15Vgz8P7AGmTXvMg/1GwV
-        FNiQiMq2P6H4xOZJ42dk/E3bBABKV4fYtXq7y2A=
-X-Google-Smtp-Source: ABdhPJxZI9QpirJF8bPQYjiJrUckib3iXod98Zoj/Cz28ZEeJBmZJyvnNsh48f+gVrrDxErmHk+CoScI5f/RtUGp454=
-X-Received: by 2002:a50:8b62:: with SMTP id l89mr14553273edl.132.1602509177952;
- Mon, 12 Oct 2020 06:26:17 -0700 (PDT)
+        s=default; t=1602509771;
+        bh=/cX849B3BzpL2kEpr8oXlMsJPj5FC7QA9vt0k2DzvT0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=pFDPmKId4024vAziLCUpioZLysP6y0MGyil81EYHaGDhzy0ADtnFyUlUfutfbOsAa
+         rJAl4uPpKDMZnYL0B2ADzI5/62JgHxRYbI8GOT4yV9LxPfJ0U0Y+0wdjZK9Uwloxxv
+         bWGwjJdhyTwvjl5pY8a4ak/htlt9v/k+viYcwZ2U=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        pavel@denx.de, stable@vger.kernel.org
+Subject: [PATCH 4.14 00/70] 4.14.201-rc1 review
+Date:   Mon, 12 Oct 2020 15:26:16 +0200
+Message-Id: <20201012132630.201442517@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20200930070647.10188-1-yong.wu@mediatek.com> <20200930070647.10188-3-yong.wu@mediatek.com>
- <20201002110831.GD6888@pi3> <1601958428.26323.26.camel@mhfsdcap03>
- <CAJKOXPfOOGnJeNCa58WEZqbzaAFdLHSm-7pyMyGkYgCBEt0+RA@mail.gmail.com>
- <1602310691.26323.39.camel@mhfsdcap03> <20201012071843.GA1889@pi3> <1602504119.26323.54.camel@mhfsdcap03>
-In-Reply-To: <1602504119.26323.54.camel@mhfsdcap03>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Mon, 12 Oct 2020 15:26:05 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPcn4scqt2C9eE_EikJ76kqro2QYzThdsXXR_5xtBmyH3g@mail.gmail.com>
-Message-ID: <CAJKOXPcn4scqt2C9eE_EikJ76kqro2QYzThdsXXR_5xtBmyH3g@mail.gmail.com>
-Subject: Re: [PATCH v3 02/24] dt-bindings: memory: mediatek: Convert SMI to DT schema
-To:     Yong Wu <yong.wu@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Tomasz Figa <tfiga@google.com>,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
-        Nicolas Boichat <drinkcat@chromium.org>, anan.sun@mediatek.com,
-        chao.hao@mediatek.com, ming-fan.chen@mediatek.com,
-        Greg Kroah-Hartman <gregkh@google.com>, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.201-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.14.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.14.201-rc1
+X-KernelTest-Deadline: 2020-10-14T13:26+00:00
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Oct 2020 at 14:02, Yong Wu <yong.wu@mediatek.com> wrote:
->
-> On Mon, 2020-10-12 at 09:18 +0200, Krzysztof Kozlowski wrote:
-> > On Sat, Oct 10, 2020 at 02:18:11PM +0800, Yong Wu wrote:
-> > > On Tue, 2020-10-06 at 09:15 +0200, Krzysztof Kozlowski wrote:
-> > > > On Tue, 6 Oct 2020 at 06:27, Yong Wu <yong.wu@mediatek.com> wrote:
-> > > > >
-> > > > > On Fri, 2020-10-02 at 13:08 +0200, Krzysztof Kozlowski wrote:
-> > > > > > On Wed, Sep 30, 2020 at 03:06:25PM +0800, Yong Wu wrote:
-> > > > > > > Convert MediaTek SMI to DT schema.
-> > > > > > >
-> > > > > > > Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-> > > > > > > ---
-> > > > > > >  .../mediatek,smi-common.txt                   |  49 ---------
-> > > > > > >  .../mediatek,smi-common.yaml                  | 100 ++++++++++++++++++
-> > > > > > >  .../memory-controllers/mediatek,smi-larb.txt  |  49 ---------
-> > > > > > >  .../memory-controllers/mediatek,smi-larb.yaml |  91 ++++++++++++++++
-> > > > > > >  4 files changed, 191 insertions(+), 98 deletions(-)
-> > > > > > >  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/mediatek,smi-common.txt
-> > > > > > >  create mode 100644 Documentation/devicetree/bindings/memory-controllers/mediatek,smi-common.yaml
-> > > > > > >  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.txt
-> > > > > > >  create mode 100644 Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.yaml
-> > > > > ...
-> > > > > > > +properties:
-> > > > > > > +  compatible:
-> > > > > > > +    oneOf:
-> > > > > > > +      - enum:
-> > > > > > > +          - mediatek,mt2701-smi-common
-> > > > > > > +          - mediatek,mt2712-smi-common
-> > > > > > > +          - mediatek,mt6779-smi-common
-> > > > > > > +          - mediatek,mt8173-smi-common
-> > > > > > > +          - mediatek,mt8183-smi-common
-> > > > > > > +
-> > > > > > > +      - description: for mt7623
-> > > > > > > +        items:
-> > > > > > > +          - const: mediatek,mt7623-smi-common
-> > > > > > > +          - const: mediatek,mt2701-smi-common
-> > > > > > > +
-> > > > > > > +  reg:
-> > > > > > > +    maxItems: 1
-> > > > > > > +
-> > > > > > > +  clocks:
-> > > > > > > +    description: |
-> > > > > > > +      apb and smi are mandatory. the async is only for generation 1 smi HW.
-> > > > > > > +      gals(global async local sync) also is optional, here is the list which
-> > > > > > > +      require gals: mt6779 and mt8183.
-> > > > > > > +    minItems: 2
-> > > > > > > +    maxItems: 4
-> > > > > > > +    items:
-> > > > > > > +      - description: apb is Advanced Peripheral Bus clock, It's the clock for
-> > > > > > > +          setting the register.
-> > > > > > > +      - description: smi is the clock for transfer data and command.
-> > > > > > > +      - description: async is asynchronous clock, it help transform the smi clock
-> > > > > > > +          into the emi clock domain.
-> > > > > > > +      - description: gals0 is the path0 clock of gals.
-> > > > > > > +      - description: gals1 is the path1 clock of gals.
-> > > > > > > +
-> > > > > > > +  clock-names:
-> > > > > > > +    oneOf:
-> > > > > > > +      - items:
-> > > > > > > +          - const: apb
-> > > > > > > +          - const: smi
-> > > > > > > +      - items:
-> > > > > > > +          - const: apb
-> > > > > > > +          - const: smi
-> > > > > > > +          - const: async
-> > > > > > > +      - items:
-> > > > > > > +          - const: apb
-> > > > > > > +          - const: smi
-> > > > > > > +          - const: gals0
-> > > > > > > +          - const: gals1
-> > > > > >
-> > > > > > Similarly to my comment to other properties, this requirement per
-> > > > > > compatible should be part of the schema within 'if-then'.
-> > > > >
-> > > > > I'm not so familiar with this format. Do this has "if-then-'else
-> > > > > if'-then-else"?
-> > > >
-> > > > These are mutually exclusive conditions, so you can skip else:
-> > > >  - if-then
-> > > >  - if-then
-> > > >  - if-then
-> > > > It will be more readable then stacking 'if' under 'else'
-> > >
-> > > Thanks. I will use something like this:
-> > >
-> > >  anyOf:
-> >
-> > Then it should be oneOf as only one condition can be valid.
->
-> I did do this at the beginning. But I get a warning log when
-> dt_binding_check.
+This is the start of the stable review cycle for the 4.14.201 release.
+There are 70 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-Mhmm, right, since "if-else" matches in either of arms, then oneOf
-will complain as it expects only one of items to match.  Then just go
-with allOf. anyOf might match zero of items, so it would not catch
-actual errors, I think.
+Responses should be made by Wed, 14 Oct 2020 13:26:14 +0000.
+Anything received after that time might be too late.
 
-Best regards,
-Krzysztof
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.201-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
+and the diffstat can be found below.
+
+thanks,
+
+greg k-h
+
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.14.201-rc1
+
+Anant Thazhemadam <anant.thazhemadam@gmail.com>
+    net: usb: rtl8150: set random MAC address when set_ethernet_addr() fails
+
+Vijay Balakrishna <vijayb@linux.microsoft.com>
+    mm: khugepaged: recalculate min_free_kbytes after memory hotplug as expected by khugepaged
+
+Coly Li <colyli@suse.de>
+    mmc: core: don't set limits.discard_granularity as 0
+
+Kajol Jain <kjain@linux.ibm.com>
+    perf: Fix task_function_call() error handling
+
+David Howells <dhowells@redhat.com>
+    rxrpc: Fix server keyring leak
+
+David Howells <dhowells@redhat.com>
+    rxrpc: Fix some missing _bh annotations on locking conn->state_lock
+
+David Howells <dhowells@redhat.com>
+    rxrpc: Downgrade the BUG() for unsupported token type in rxrpc_read()
+
+Marc Dionne <marc.dionne@auristor.com>
+    rxrpc: Fix rxkad token xdr encoding
+
+Wilken Gottwalt <wilken.gottwalt@mailbox.org>
+    net: usb: ax88179_178a: fix missing stop entry in driver_info
+
+Randy Dunlap <rdunlap@infradead.org>
+    mdio: fix mdio-thunder.c dependency & build error
+
+Eric Dumazet <edumazet@google.com>
+    bonding: set dev->needed_headroom in bond_setup_by_slave()
+
+Herbert Xu <herbert@gondor.apana.org.au>
+    xfrm: Use correct address family in xfrm_state_find
+
+Necip Fazil Yildiran <fazilyildiran@gmail.com>
+    platform/x86: fix kconfig dependency warning for FUJITSU_LAPTOP
+
+Voon Weifeng <weifeng.voon@intel.com>
+    net: stmmac: removed enabling eee in EEE set callback
+
+Antony Antony <antony.antony@secunet.com>
+    xfrm: clone whole liftime_cur structure in xfrm_do_migrate
+
+Antony Antony <antony.antony@secunet.com>
+    xfrm: clone XFRMA_SEC_CTX in xfrm_do_migrate
+
+Antony Antony <antony.antony@secunet.com>
+    xfrm: clone XFRMA_REPLAY_ESN_VAL in xfrm_do_migrate
+
+Philip Yang <Philip.Yang@amd.com>
+    drm/amdgpu: prevent double kfree ttm->sg
+
+Dumitru Ceara <dceara@redhat.com>
+    openvswitch: handle DNAT tuple collision
+
+Anant Thazhemadam <anant.thazhemadam@gmail.com>
+    net: team: fix memory leak in __team_options_register
+
+Eric Dumazet <edumazet@google.com>
+    team: set dev->needed_headroom in team_setup_by_port()
+
+Eric Dumazet <edumazet@google.com>
+    sctp: fix sctp_auth_init_hmacs() error path
+
+Jerome Brunet <jbrunet@baylibre.com>
+    i2c: meson: fix clock setting overwrite
+
+Vladimir Zapolskiy <vladimir@tuxera.com>
+    cifs: Fix incomplete memory allocation on setxattr path
+
+Hugh Dickins <hughd@google.com>
+    mm/khugepaged: fix filemap page_to_pgoff(page) != offset
+
+Eric Dumazet <edumazet@google.com>
+    macsec: avoid use-after-free in macsec_handle_frame()
+
+Steven Rostedt (VMware) <rostedt@goodmis.org>
+    ftrace: Move RCU is watching check after recursion check
+
+Robbie Ko <robbieko@synology.com>
+    Btrfs: fix unexpected failure of nocow buffered writes after snapshotting when low on space
+
+Miquel Raynal <miquel.raynal@bootlin.com>
+    mtd: rawnand: sunxi: Fix the probe error path
+
+Tommi Rantala <tommi.t.rantala@nokia.com>
+    perf top: Fix stdio interface input handling with glibc 2.28+
+
+Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+    driver core: Fix probe_count imbalance in really_probe()
+
+Aaron Ma <aaron.ma@canonical.com>
+    platform/x86: thinkpad_acpi: re-initialize ACPI buffer size when reuse
+
+Tom Rix <trix@redhat.com>
+    platform/x86: thinkpad_acpi: initialize tp_nvram_state variable
+
+Linus Torvalds <torvalds@linux-foundation.org>
+    usermodehelper: reset umask to default before executing user process
+
+Anant Thazhemadam <anant.thazhemadam@gmail.com>
+    net: wireless: nl80211: fix out-of-bounds access in nl80211_del_key()
+
+Peilin Ye <yepeilin.cs@gmail.com>
+    fbcon: Fix global-out-of-bounds read in fbcon_get_font()
+
+Geert Uytterhoeven <geert+renesas@glider.be>
+    Revert "ravb: Fixed to be able to unload modules"
+
+Peilin Ye <yepeilin.cs@gmail.com>
+    Fonts: Support FONT_EXTRA_WORDS macros for built-in fonts
+
+Peilin Ye <yepeilin.cs@gmail.com>
+    fbdev, newport_con: Move FONT_EXTRA_WORDS macros into linux/font.h
+
+Giuliano Procida <gprocida@google.com>
+    drm/syncobj: Fix drm_syncobj_handle_to_fd refcount leak
+
+Will McVicker <willmcvicker@google.com>
+    netfilter: ctnetlink: add a range check for l3/l4 protonum
+
+Al Viro <viro@zeniv.linux.org.uk>
+    ep_create_wakeup_source(): dentry name can change under you...
+
+Al Viro <viro@zeniv.linux.org.uk>
+    epoll: EPOLL_CTL_ADD: close the race in decision to take fast path
+
+Al Viro <viro@zeniv.linux.org.uk>
+    epoll: replace ->visited/visited_list with generation count
+
+Al Viro <viro@zeniv.linux.org.uk>
+    epoll: do not insert into poll queues until all sanity checks are done
+
+Or Cohen <orcohen@paloaltonetworks.com>
+    net/packet: fix overflow in tpacket_rcv
+
+Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>
+    random32: Restore __latent_entropy attribute on net_rand_state
+
+Vincent Huang <vincent.huang@tw.synaptics.com>
+    Input: trackpoint - enable Synaptics trackpoints
+
+Nicolas VINCENT <nicolas.vincent@vossloh.com>
+    i2c: cpm: Fix i2c_ram structure
+
+Yu Kuai <yukuai3@huawei.com>
+    iommu/exynos: add missing put_device() call in exynos_iommu_of_xlate()
+
+Marek Szyprowski <m.szyprowski@samsung.com>
+    clk: samsung: exynos4: mark 'chipid' clock as CLK_IGNORE_UNUSED
+
+Jeffrey Mitchell <jeffrey.mitchell@starlab.io>
+    nfs: Fix security label length not being reset
+
+Chris Packham <chris.packham@alliedtelesis.co.nz>
+    pinctrl: mvebu: Fix i2c sda definition for 98DX3236
+
+James Smart <james.smart@broadcom.com>
+    nvme-fc: fail new connections to a deleted host or remote port
+
+Chris Packham <chris.packham@alliedtelesis.co.nz>
+    spi: fsl-espi: Only process interrupts for expected events
+
+Felix Fietkau <nbd@nbd.name>
+    mac80211: do not allow bigger VHT MPDUs than the hardware supports
+
+Xie He <xie.he.0141@gmail.com>
+    drivers/net/wan/hdlc: Set skb->protocol before transmitting
+
+Xie He <xie.he.0141@gmail.com>
+    drivers/net/wan/lapbether: Make skb->protocol consistent with the header
+
+Olympia Giannou <ogiannou@gmail.com>
+    rndis_host: increase sleep time in the query-response loop
+
+Lucy Yan <lucyyan@google.com>
+    net: dec: de2104x: Increase receive ring size for Tulip
+
+Martin Cerveny <m.cerveny@computer.org>
+    drm/sun4i: mixer: Extend regmap max_register
+
+Xie He <xie.he.0141@gmail.com>
+    drivers/net/wan/hdlc_fr: Add needed_headroom for PVC devices
+
+Jean Delvare <jdelvare@suse.de>
+    drm/amdgpu: restore proper ref count in amdgpu_display_crtc_set_config
+
+Jiri Kosina <jkosina@suse.cz>
+    Input: i8042 - add nopnp quirk for Acer Aspire 5 A515
+
+dillon min <dillon.minfei@gmail.com>
+    gpio: tc35894: fix up tc35894 interrupt configuration
+
+Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+    USB: gadget: f_ncm: Fix NDP16 datagram validation
+
+Sebastien Boeuf <sebastien.boeuf@intel.com>
+    net: virtio_vsock: Enhance connection semantics
+
+Stefano Garzarella <sgarzare@redhat.com>
+    vsock/virtio: add transport parameter to the virtio_transport_reset_no_sock()
+
+Stefano Garzarella <sgarzare@redhat.com>
+    vsock/virtio: stop workers during the .remove()
+
+Stefano Garzarella <sgarzare@redhat.com>
+    vsock/virtio: use RCU to avoid use-after-free on the_virtio_vsock
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                           |   4 +-
+ drivers/base/dd.c                                  |   5 +-
+ drivers/clk/samsung/clk-exynos4.c                  |   4 +-
+ drivers/gpio/gpio-tc3589x.c                        |   2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_display.c        |   2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c            |   1 +
+ drivers/gpu/drm/drm_syncobj.c                      |   1 -
+ drivers/gpu/drm/sun4i/sun8i_mixer.c                |   2 +-
+ drivers/i2c/busses/i2c-cpm.c                       |   3 +
+ drivers/i2c/busses/i2c-meson.c                     |  19 +-
+ drivers/input/mouse/trackpoint.c                   |   2 +
+ drivers/input/serio/i8042-x86ia64io.h              |   7 +
+ drivers/iommu/exynos-iommu.c                       |   8 +-
+ drivers/mmc/core/queue.c                           |   2 +-
+ drivers/mtd/nand/sunxi_nand.c                      |   2 +-
+ drivers/net/bonding/bond_main.c                    |   1 +
+ drivers/net/ethernet/dec/tulip/de2104x.c           |   2 +-
+ drivers/net/ethernet/renesas/ravb_main.c           | 110 ++++-----
+ .../net/ethernet/stmicro/stmmac/stmmac_ethtool.c   |  15 +-
+ drivers/net/macsec.c                               |   4 +-
+ drivers/net/phy/Kconfig                            |   1 +
+ drivers/net/team/team.c                            |   3 +-
+ drivers/net/usb/ax88179_178a.c                     |   1 +
+ drivers/net/usb/rndis_host.c                       |   2 +-
+ drivers/net/usb/rtl8150.c                          |  16 +-
+ drivers/net/wan/hdlc_cisco.c                       |   1 +
+ drivers/net/wan/hdlc_fr.c                          |   6 +-
+ drivers/net/wan/hdlc_ppp.c                         |   1 +
+ drivers/net/wan/lapbether.c                        |   4 +-
+ drivers/nvme/host/fc.c                             |   6 +-
+ drivers/pinctrl/mvebu/pinctrl-armada-xp.c          |   2 +-
+ drivers/platform/x86/Kconfig                       |   1 +
+ drivers/platform/x86/thinkpad_acpi.c               |   6 +-
+ drivers/spi/spi-fsl-espi.c                         |   5 +-
+ drivers/usb/gadget/function/f_ncm.c                |  30 +--
+ drivers/vhost/vsock.c                              |  94 ++++----
+ drivers/video/console/newport_con.c                |   7 +-
+ drivers/video/fbdev/core/fbcon.c                   |  12 +
+ drivers/video/fbdev/core/fbcon.h                   |   7 -
+ drivers/video/fbdev/core/fbcon_rotate.c            |   1 +
+ drivers/video/fbdev/core/tileblit.c                |   1 +
+ fs/btrfs/ctree.h                                   |   1 +
+ fs/btrfs/disk-io.c                                 |   1 +
+ fs/btrfs/inode.c                                   |  25 +-
+ fs/btrfs/ioctl.c                                   |  16 ++
+ fs/cifs/smb2ops.c                                  |   2 +-
+ fs/eventpoll.c                                     |  71 +++---
+ fs/nfs/dir.c                                       |   3 +
+ include/linux/font.h                               |  13 +
+ include/linux/khugepaged.h                         |   5 +
+ include/linux/virtio_vsock.h                       |   3 +-
+ include/net/xfrm.h                                 |  16 +-
+ kernel/events/core.c                               |   5 +-
+ kernel/trace/ftrace.c                              |   8 +-
+ kernel/umh.c                                       |   9 +
+ lib/fonts/font_10x18.c                             |   9 +-
+ lib/fonts/font_6x10.c                              |   9 +-
+ lib/fonts/font_6x11.c                              |   9 +-
+ lib/fonts/font_7x14.c                              |   9 +-
+ lib/fonts/font_8x16.c                              |   9 +-
+ lib/fonts/font_8x8.c                               |   9 +-
+ lib/fonts/font_acorn_8x8.c                         |   9 +-
+ lib/fonts/font_mini_4x6.c                          |   8 +-
+ lib/fonts/font_pearl_8x8.c                         |   9 +-
+ lib/fonts/font_sun12x22.c                          |   9 +-
+ lib/fonts/font_sun8x16.c                           |   7 +-
+ lib/random32.c                                     |   2 +-
+ mm/khugepaged.c                                    |  25 +-
+ mm/page_alloc.c                                    |   3 +
+ net/mac80211/vht.c                                 |   8 +-
+ net/netfilter/nf_conntrack_netlink.c               |   2 +
+ net/openvswitch/conntrack.c                        |  22 +-
+ net/packet/af_packet.c                             |   9 +-
+ net/rxrpc/conn_event.c                             |   6 +-
+ net/rxrpc/key.c                                    |  18 +-
+ net/sctp/auth.c                                    |   1 +
+ net/vmw_vsock/virtio_transport.c                   | 265 +++++++++++++--------
+ net/vmw_vsock/virtio_transport_common.c            |  13 +-
+ net/wireless/nl80211.c                             |   3 +
+ net/xfrm/xfrm_state.c                              |  41 +++-
+ tools/perf/builtin-top.c                           |   4 +-
+ 81 files changed, 648 insertions(+), 451 deletions(-)
+
+
