@@ -2,134 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D91AF28BEE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 19:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB82328BEE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 19:17:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404014AbgJLRQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 13:16:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45374 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403845AbgJLRQ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 13:16:56 -0400
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BBEF72087E;
-        Mon, 12 Oct 2020 17:16:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602523015;
-        bh=OXdGjM2WT5x5sf1uC6sNIswByKxFQUWPV6TwtUK3Y0c=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=A1pqyRMyjwp3U/Olyt7d5jHUEq7IhD2O0GlgJgMOX2xV+8LWTFBa+tb4G8eLBd0t6
-         YZR26XEn7l7KGsaObmPBcLwQ6ZnboUdYk420hYA5smqwCiqm4Z4ZNSt29peAXazBur
-         EqqNrdoEnXs7Sdc3qL/LGS5n0HGrMid1q31A5LtM=
-Received: by mail-ed1-f53.google.com with SMTP id dg9so15461133edb.12;
-        Mon, 12 Oct 2020 10:16:54 -0700 (PDT)
-X-Gm-Message-State: AOAM5312Rer2LAwtN+YVCSbX+DYj+7C2QEKUh2jh6aWXC4AnkThKZAzv
-        ID9mmiSb4JvMkG6CpFbaCfE/sqpOLX9JHFwlTdk=
-X-Google-Smtp-Source: ABdhPJzEVNB8x3r9rtZW2qJLQPAd4mUTCuAhNFPv7+8r7HZYouTO819J7+/JyUqoGPgkO6hqTwq262cY2ghyAYoZKYQ=
-X-Received: by 2002:aa7:c643:: with SMTP id z3mr13089405edr.104.1602523013267;
- Mon, 12 Oct 2020 10:16:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200925212609.23093-1-krzk@kernel.org> <20200926132217.xr3rhv7o2o2yc2l7@pengutronix.de>
- <20200926134157.GA4730@kozik-lap> <20201009120239.GA450876@ulmo>
-In-Reply-To: <20201009120239.GA450876@ulmo>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Mon, 12 Oct 2020 19:16:40 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPe3R4E7sgHGrLumrZ3hYXFMJKc18hotnLGpWvwMcZ8e0Q@mail.gmail.com>
-Message-ID: <CAJKOXPe3R4E7sgHGrLumrZ3hYXFMJKc18hotnLGpWvwMcZ8e0Q@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: pwm: imx: document i.MX compatibles
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+        id S2404048AbgJLRRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 13:17:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403845AbgJLRRV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 13:17:21 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F916C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 10:17:21 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id r128so13219148qkc.9
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 10:17:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=iftzmkGj+wEWSbxIj0LtgdSqgUlxBbSobE6NvMeXE1k=;
+        b=taIzv5OlhST2Zc1P/rubs2NGB6QZNl6ot+eta151F7y0DPGOvka4ArYxmFrdWao4Ld
+         em+3qctGjpNnaVcebsSHvgnKrBhq0T1NJkPA88Nzyq6wB6Qg7lISi5a+miTYwoC+g4Ee
+         3BTdcni9U92gmCuoaDm1At6zXVxM1/+fdzjsiFGeuTqmdQOkEF2IxrRN/3oe1tNjQkFI
+         v6Q00UbiVGVLBJOUZlrwNUjNXcOl+LcER6zZFZOK1g5xBwFj4Z59aPuxQDmyJ9roO7IO
+         glIMRMYNXcZJGxf6joaXvwepuAbdXqOdYfQJeuUxGHVIh1qGMmB0RWM24Wd04ozBku+H
+         vCdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=iftzmkGj+wEWSbxIj0LtgdSqgUlxBbSobE6NvMeXE1k=;
+        b=MScOI99K2ZXEU7qHWWtv9IPJ2Fn8HB270YEDOKJLwgHSNTL5y/sbihKIWC6UPz7XMo
+         hYORsqcXKmz/r9WdDQySm0kZaswb69btW4p1VieOi4ECvbpxp/KHpV4qtErf+MUk2/Qf
+         nZZDsrKVVmBrLfBs0qeTgC4bjMEBqRZG++SWBCin4qyVZLKWNOH/4oODcdG06e4F3KPK
+         tqJG3atBYo3rjD1D3bkt/WUqLpcP5zsUSbsh/VSHwPjCvT0jZATdM7EAba5956iiI8at
+         X6lravNAFZCHN1IkMF1qDeyjUrus5v7sI6u7FsnVXiRH6txIE+Y6SMVut2zc5LXmoago
+         L+9g==
+X-Gm-Message-State: AOAM530EfczdR1QsQ+2AebOOQmXQXd7UAKoAdH2fnfCi2evKrBSxOwlm
+        6D57PBQHyYuc2tJ+ZRqk2mbrzW4OzPwzYvoJ
+X-Google-Smtp-Source: ABdhPJy8OcaT6FoXJMdq3WHdkDyXe1RWsv5vnH6sy3ogRmfuI/Hha2hcMBPjUXPL4XhMWdUZy2rcExIj3S8OTUXk
+Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
+X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
+ (user=andreyknvl job=sendgmr) by 2002:a0c:bd85:: with SMTP id
+ n5mr25605380qvg.22.1602523039990; Mon, 12 Oct 2020 10:17:19 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 19:17:12 +0200
+Message-Id: <c229372e5526b84ed0542028437111c2eb83d55f.1602522784.git.andreyknvl@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
+Subject: [PATCH v4] kcov, usb: specify contexts for remote coverage sections
+From:   Andrey Konovalov <andreyknvl@google.com>
+To:     Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 9 Oct 2020 at 14:02, Thierry Reding <thierry.reding@gmail.com> wrot=
-e:
->
-> On Sat, Sep 26, 2020 at 03:41:57PM +0200, Krzysztof Kozlowski wrote:
-> > On Sat, Sep 26, 2020 at 03:22:17PM +0200, Uwe Kleine-K=C3=B6nig wrote:
-> > > On Fri, Sep 25, 2020 at 11:26:09PM +0200, Krzysztof Kozlowski wrote:
-> > > > Document all ARMv5, ARMv6 and ARMv7 i.MX compatibles to fix dtbs_ch=
-eck
-> > > > warnings like:
-> > > >
-> > > >   arch/arm/boot/dts/imx6dl-colibri-eval-v3.dt.yaml: pwm@2080000: co=
-mpatible:0:
-> > > >     'fsl,imx6q-pwm' is not one of ['fsl,imx8mm-pwm', 'fsl,imx8mn-pw=
-m', 'fsl,imx8mp-pwm', 'fsl,imx8mq-pwm']
-> > > >
-> > > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > > > ---
-> > > >  Documentation/devicetree/bindings/pwm/imx-pwm.yaml | 11 ++++++++++=
+Currently there's a KCOV remote coverage collection section in
+__usb_hcd_giveback_urb(). Initially that section was added based on the
+assumption that usb_hcd_giveback_urb() can only be called in interrupt
+context as indicated by a comment before it. This is what happens when
+syzkaller is fuzzing the USB stack via the dummy_hcd driver.
+
+As it turns out, it's actually valid to call usb_hcd_giveback_urb() in task
+context, provided that the caller turned off the interrupts; USB/IP does
+exactly that. This can lead to a nested KCOV remote coverage collection
+sections both trying to collect coverage in task context. This isn't
+supported by KCOV, and leads to a WARNING.
+
+The approach this patch takes is to add another set of kcov_remote_*()
+callbacks that specify the context they are supposed to be executed in.
+If the current context doesn't match the mask provided to a callback,
+that callback is ignored. KCOV currently only supports collecting remote
+coverage in two contexts: task and softirq. This patch constraints KCOV to
+only collect coverage from __usb_hcd_giveback_urb() when it's executed in
+softirq context.
+
+As the result, the coverage from USB/IP related usb_hcd_giveback_urb()
+calls won't be collected, but the WARNING is fixed.
+
+A potential future improvement would be to support nested remote coverage
+collection sections, but this patch doesn't address that.
+
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Acked-by: Marco Elver <elver@google.com>
+---
+
+Changes v3->v4:
+- Drop unnecessary returns from kcov callbacks.
+
+---
+ Documentation/dev-tools/kcov.rst |  6 ++++++
+ drivers/usb/core/hcd.c           |  4 ++--
+ include/linux/kcov.h             | 31 +++++++++++++++++++++++++++++--
+ kernel/kcov.c                    | 26 +++++++++++++++++++-------
+ 4 files changed, 56 insertions(+), 11 deletions(-)
+
+diff --git a/Documentation/dev-tools/kcov.rst b/Documentation/dev-tools/kcov.rst
+index 8548b0b04e43..2c0f58988512 100644
+--- a/Documentation/dev-tools/kcov.rst
++++ b/Documentation/dev-tools/kcov.rst
+@@ -235,6 +235,12 @@ saved to the kcov_handle field in the current task_struct and needs to be
+ passed to the newly spawned threads via custom annotations. Those threads
+ should in turn be annotated with kcov_remote_start()/kcov_remote_stop().
+ 
++Besides the annotations that only accept a handle, there are also
++kcov_remote_start_context()/kcov_remote_stop_context() that accept a
++context mask. This mask describes the contexts in which these annotations
++should be applied. E.g. specifying KCOV_CONTEXT_SOFTIRQ will result in the
++corresponding annotations being ignored in any context other than softirq.
 +
-> > > >  1 file changed, 11 insertions(+)
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/pwm/imx-pwm.yaml b/D=
-ocumentation/devicetree/bindings/pwm/imx-pwm.yaml
-> > > > index 473863eb67e5..379d693889f6 100644
-> > > > --- a/Documentation/devicetree/bindings/pwm/imx-pwm.yaml
-> > > > +++ b/Documentation/devicetree/bindings/pwm/imx-pwm.yaml
-> > > > @@ -25,6 +25,17 @@ properties:
-> > > >            - fsl,imx27-pwm
-> > > >        - items:
-> > > >            - enum:
-> > > > +              - fsl,imx25-pwm
-> > >
-> > > The driver actually used fsl,imx27-pwm to bind ...
-> >
-> > Yes, most of i.MX drivers use only few compatibles but DTSes and
-> > bindings use multiple of them.  I was convinced during various talks
-> > that the specific compatibles (so "fsl,imx6q-pwm, fsl,imx27-pwm") are
-> > preferred than generic ones (so only "fsl,imx27-pwm"). NXP took it
-> > to the another level creating compatibles for absolutely every flavor o=
-f
-> > their CPU. And they mainlined it in DTSes...
-> >
-> > The PWM is this crazy examples where, as you say, only two compatibles
-> > are actually used for binding but DTSes uses more.
->
-> Yeah, these new compatible strings all seem to be used in the kernel, so
-> we might as well document them.
->
-> That said, I did want to apply this patch, but that fails. Am I missing
-> some other patch that you have sent out that touches this file? Actually
-> it looks like this is because you've based this patch on linux-next, or
-> perhaps the devicetree tree, because that contains commit d058717bdff4
-> ("dt-bindings: pwm: imx-pwm: Add i.MX 8M compatibles") from you that
-> adds a couple more compatible strings. Probably best for Rob to pick
-> this up, then:
->
-> Acked-by: Thierry Reding <treding@nvidia.com>
->
-> Rob, here's a patchwork link for you if you need one:
->
->         https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20=
-200925212609.23093-1-krzk@kernel.org/
->
-> Although, looking at the devicetree-bindings instance version of that
-> patch, I see that it's got a failing check attached (which looks like
-> it can be ignored) and it's marked "Changes Requested", but no comments
-> saying so.
->
-> Not sure if you want anything done here?
+ Internally kcov stores handles as u64 integers. The top byte of a handle
+ is used to denote the id of a subsystem that this handle belongs to, and
+ the lower 4 bytes are used to denote the id of a thread instance within
+diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
+index a33b849e8beb..ea93d9ebcb2e 100644
+--- a/drivers/usb/core/hcd.c
++++ b/drivers/usb/core/hcd.c
+@@ -1646,9 +1646,9 @@ static void __usb_hcd_giveback_urb(struct urb *urb)
+ 
+ 	/* pass ownership to the completion handler */
+ 	urb->status = status;
+-	kcov_remote_start_usb((u64)urb->dev->bus->busnum);
++	kcov_remote_start_usb_softirq((u64)urb->dev->bus->busnum);
+ 	urb->complete(urb);
+-	kcov_remote_stop();
++	kcov_remote_stop_softirq();
+ 
+ 	usb_anchor_resume_wakeups(anchor);
+ 	atomic_dec(&urb->use_count);
+diff --git a/include/linux/kcov.h b/include/linux/kcov.h
+index a10e84707d82..a9c025c3e1df 100644
+--- a/include/linux/kcov.h
++++ b/include/linux/kcov.h
+@@ -22,6 +22,10 @@ enum kcov_mode {
+ 	KCOV_MODE_TRACE_CMP = 3,
+ };
+ 
++#define KCOV_CONTEXT_TASK	(1u << 0)
++#define KCOV_CONTEXT_SOFTIRQ	(1u << 1)
++#define KCOV_CONTEXT_MASK	(KCOV_CONTEXT_TASK | KCOV_CONTEXT_SOFTIRQ)
++
+ #define KCOV_IN_CTXSW	(1 << 30)
+ 
+ void kcov_task_init(struct task_struct *t);
+@@ -38,10 +42,21 @@ do {						\
+ } while (0)
+ 
+ /* See Documentation/dev-tools/kcov.rst for usage details. */
+-void kcov_remote_start(u64 handle);
+-void kcov_remote_stop(void);
++
++void kcov_remote_start_context(u64 handle, unsigned int context);
++void kcov_remote_stop_context(unsigned int context);
+ u64 kcov_common_handle(void);
+ 
++static inline void kcov_remote_start(u64 handle)
++{
++	kcov_remote_start_context(handle, KCOV_CONTEXT_MASK);
++}
++
++static inline void kcov_remote_stop(void)
++{
++	kcov_remote_stop_context(KCOV_CONTEXT_MASK);
++}
++
+ static inline void kcov_remote_start_common(u64 id)
+ {
+ 	kcov_remote_start(kcov_remote_handle(KCOV_SUBSYSTEM_COMMON, id));
+@@ -52,6 +67,16 @@ static inline void kcov_remote_start_usb(u64 id)
+ 	kcov_remote_start(kcov_remote_handle(KCOV_SUBSYSTEM_USB, id));
+ }
+ 
++static inline void kcov_remote_start_usb_softirq(u64 id)
++{
++	kcov_remote_start_context(kcov_remote_handle(KCOV_SUBSYSTEM_USB, id), KCOV_CONTEXT_SOFTIRQ);
++}
++
++static inline void kcov_remote_stop_softirq(void)
++{
++	kcov_remote_stop_context(KCOV_CONTEXT_SOFTIRQ);
++}
++
+ #else
+ 
+ static inline void kcov_task_init(struct task_struct *t) {}
+@@ -66,6 +91,8 @@ static inline u64 kcov_common_handle(void)
+ }
+ static inline void kcov_remote_start_common(u64 id) {}
+ static inline void kcov_remote_start_usb(u64 id) {}
++static inline void kcov_remote_start_usb_softirq(u64 id) {}
++static inline void kcov_remote_stop_softirq(void) {}
+ 
+ #endif /* CONFIG_KCOV */
+ #endif /* _LINUX_KCOV_H */
+diff --git a/kernel/kcov.c b/kernel/kcov.c
+index 6b8368be89c8..3ccdbe060f47 100644
+--- a/kernel/kcov.c
++++ b/kernel/kcov.c
+@@ -808,7 +808,8 @@ static void kcov_remote_softirq_stop(struct task_struct *t)
+ 	}
+ }
+ 
+-void kcov_remote_start(u64 handle)
++/* Also see kcov_remote_start() defined in include/linux/kcov.h. */
++void kcov_remote_start_context(u64 handle, unsigned int context)
+ {
+ 	struct task_struct *t = current;
+ 	struct kcov_remote *remote;
+@@ -821,7 +822,11 @@ void kcov_remote_start(u64 handle)
+ 
+ 	if (WARN_ON(!kcov_check_handle(handle, true, true, true)))
+ 		return;
+-	if (!in_task() && !in_serving_softirq())
++	if (WARN_ON((context & ~KCOV_CONTEXT_MASK) || !context))
++		return;
++	if (in_task() && !(context & KCOV_CONTEXT_TASK))
++		return;
++	if (in_serving_softirq() && !(context & KCOV_CONTEXT_SOFTIRQ))
+ 		return;
+ 
+ 	local_irq_save(flags);
+@@ -894,7 +899,7 @@ void kcov_remote_start(u64 handle)
+ 	local_irq_restore(flags);
+ 
+ }
+-EXPORT_SYMBOL(kcov_remote_start);
++EXPORT_SYMBOL(kcov_remote_start_context);
+ 
+ static void kcov_move_area(enum kcov_mode mode, void *dst_area,
+ 				unsigned int dst_area_size, void *src_area)
+@@ -951,8 +956,11 @@ static void kcov_move_area(enum kcov_mode mode, void *dst_area,
+ 	}
+ }
+ 
+-/* See the comment before kcov_remote_start() for usage details. */
+-void kcov_remote_stop(void)
++/*
++ * Also see kcov_remote_stop() defined in include/linux/kcov.h.
++ * See the comment before kcov_remote_start_context() for usage details.
++ */
++void kcov_remote_stop_context(unsigned int context)
+ {
+ 	struct task_struct *t = current;
+ 	struct kcov *kcov;
+@@ -962,7 +970,11 @@ void kcov_remote_stop(void)
+ 	int sequence;
+ 	unsigned long flags;
+ 
+-	if (!in_task() && !in_serving_softirq())
++	if (WARN_ON((context & ~KCOV_CONTEXT_MASK) || !context))
++		return;
++	if (in_task() && !(context & KCOV_CONTEXT_TASK))
++		return;
++	if (in_serving_softirq() && !(context & KCOV_CONTEXT_SOFTIRQ))
+ 		return;
+ 
+ 	local_irq_save(flags);
+@@ -1018,7 +1030,7 @@ void kcov_remote_stop(void)
+ 	/* Get in kcov_remote_start(). */
+ 	kcov_put(kcov);
+ }
+-EXPORT_SYMBOL(kcov_remote_stop);
++EXPORT_SYMBOL(kcov_remote_stop_context);
+ 
+ /* See the comment before kcov_remote_start() for usage details. */
+ u64 kcov_common_handle(void)
+-- 
+2.28.0.1011.ga647a8990f-goog
 
-Thanks, I guess this will wait for the merge window to finish. It
-should then apply to your tree. I can resend in two weeks.
-
-Best regards,
-Krzysztof
