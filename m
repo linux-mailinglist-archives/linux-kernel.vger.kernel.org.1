@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15DEC28BA12
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3163F28B9D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390996AbgJLOFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:05:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37648 "EHLO mail.kernel.org"
+        id S2390890AbgJLOEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:04:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730767AbgJLNfG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:35:06 -0400
+        id S2388678AbgJLNgT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:36:19 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D678C20838;
-        Mon, 12 Oct 2020 13:35:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1C63F20838;
+        Mon, 12 Oct 2020 13:36:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509705;
-        bh=sudRuVoU4xgj+VKWusNGnCB196jQ2NRCgcBSSzuH7Tg=;
+        s=default; t=1602509778;
+        bh=F1rjjk2R6kRcGkQX/opbC9GH1bjipdoGnPPesNrUuuA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Jz40Xm6474P0L4KqP5Yjd/zhK8BWnWnofoo5NgTyH+zubyrdsqTBMgbJPmHRTuBfl
-         foULEJ1ROH0Y67nWQ62LVncpMrNZ6ZXVHBUoh0EYLsKd4kA86dep2lel3DuV5MJwFz
-         b8v2IPVVKAOkfA3GPltXaM+ZpQfSY4ka4a1Es1pc=
+        b=QxGGyIBAkRD9HPsnnI9u9svZRCw46i7J5gex7gvVnsxJt+ZSA3xsQyRVGIfvZUKTL
+         dHJsxMvcoftFeQDtr0ZQAfGChJyvT/eg43d3jbdV38wi7LZQfaA6ciC+Dx9b26G29r
+         J2NnMsBn9UMm4meQF2hzSe91SHYPXGjVzkw8Er74=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH 4.9 19/54] epoll: replace ->visited/visited_list with generation count
-Date:   Mon, 12 Oct 2020 15:26:41 +0200
-Message-Id: <20201012132630.489208929@linuxfoundation.org>
+Subject: [PATCH 4.14 26/70] epoll: do not insert into poll queues until all sanity checks are done
+Date:   Mon, 12 Oct 2020 15:26:42 +0200
+Message-Id: <20201012132631.469575068@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132629.585664421@linuxfoundation.org>
-References: <20201012132629.585664421@linuxfoundation.org>
+In-Reply-To: <20201012132630.201442517@linuxfoundation.org>
+References: <20201012132630.201442517@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,91 +43,81 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Al Viro <viro@zeniv.linux.org.uk>
 
-commit 18306c404abe18a0972587a6266830583c60c928 upstream.
-
-removes the need to clear it, along with the races.
+commit f8d4f44df056c5b504b0d49683fb7279218fd207 upstream.
 
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/eventpoll.c |   26 +++++++-------------------
- 1 file changed, 7 insertions(+), 19 deletions(-)
+ fs/eventpoll.c |   37 ++++++++++++++++++-------------------
+ 1 file changed, 18 insertions(+), 19 deletions(-)
 
 --- a/fs/eventpoll.c
 +++ b/fs/eventpoll.c
-@@ -222,8 +222,7 @@ struct eventpoll {
- 	struct file *file;
- 
- 	/* used to optimize loop detection check */
--	int visited;
--	struct list_head visited_list_link;
-+	u64 gen;
- };
- 
- /* Wait structure used by the poll hooks */
-@@ -267,6 +266,8 @@ static long max_user_watches __read_most
-  */
- static DEFINE_MUTEX(epmutex);
- 
-+static u64 loop_check_gen = 0;
-+
- /* Used to check for epoll file descriptor inclusion loops */
- static struct nested_calls poll_loop_ncalls;
- 
-@@ -282,9 +283,6 @@ static struct kmem_cache *epi_cache __re
- /* Slab cache used to allocate "struct eppoll_entry" */
- static struct kmem_cache *pwq_cache __read_mostly;
- 
--/* Visited nodes during ep_loop_check(), so we can unset them when we finish */
--static LIST_HEAD(visited_list);
--
- /*
-  * List of files with newly added links, where we may need to limit the number
-  * of emanating paths. Protected by the epmutex.
-@@ -1724,13 +1722,12 @@ static int ep_loop_check_proc(void *priv
- 	struct epitem *epi;
- 
- 	mutex_lock_nested(&ep->mtx, call_nests + 1);
--	ep->visited = 1;
--	list_add(&ep->visited_list_link, &visited_list);
-+	ep->gen = loop_check_gen;
- 	for (rbp = rb_first(&ep->rbr); rbp; rbp = rb_next(rbp)) {
- 		epi = rb_entry(rbp, struct epitem, rbn);
- 		if (unlikely(is_file_epoll(epi->ffd.file))) {
- 			ep_tovisit = epi->ffd.file->private_data;
--			if (ep_tovisit->visited)
-+			if (ep_tovisit->gen == loop_check_gen)
- 				continue;
- 			error = ep_call_nested(&poll_loop_ncalls, EP_MAX_NESTS,
- 					ep_loop_check_proc, epi->ffd.file,
-@@ -1771,18 +1768,8 @@ static int ep_loop_check_proc(void *priv
-  */
- static int ep_loop_check(struct eventpoll *ep, struct file *file)
- {
--	int ret;
--	struct eventpoll *ep_cur, *ep_next;
--
--	ret = ep_call_nested(&poll_loop_ncalls, EP_MAX_NESTS,
-+	return ep_call_nested(&poll_loop_ncalls, EP_MAX_NESTS,
- 			      ep_loop_check_proc, file, ep, current);
--	/* clear visited list */
--	list_for_each_entry_safe(ep_cur, ep_next, &visited_list,
--							visited_list_link) {
--		ep_cur->visited = 0;
--		list_del(&ep_cur->visited_list_link);
--	}
--	return ret;
- }
- 
- static void clear_tfile_check_list(void)
-@@ -1999,6 +1986,7 @@ SYSCALL_DEFINE4(epoll_ctl, int, epfd, in
- error_tgt_fput:
- 	if (full_check) {
- 		clear_tfile_check_list();
-+		loop_check_gen++;
- 		mutex_unlock(&epmutex);
+@@ -1461,6 +1461,22 @@ static int ep_insert(struct eventpoll *e
+ 		RCU_INIT_POINTER(epi->ws, NULL);
  	}
  
++	/* Add the current item to the list of active epoll hook for this file */
++	spin_lock(&tfile->f_lock);
++	list_add_tail_rcu(&epi->fllink, &tfile->f_ep_links);
++	spin_unlock(&tfile->f_lock);
++
++	/*
++	 * Add the current item to the RB tree. All RB tree operations are
++	 * protected by "mtx", and ep_insert() is called with "mtx" held.
++	 */
++	ep_rbtree_insert(ep, epi);
++
++	/* now check if we've created too many backpaths */
++	error = -EINVAL;
++	if (full_check && reverse_path_check())
++		goto error_remove_epi;
++
+ 	/* Initialize the poll table using the queue callback */
+ 	epq.epi = epi;
+ 	init_poll_funcptr(&epq.pt, ep_ptable_queue_proc);
+@@ -1483,22 +1499,6 @@ static int ep_insert(struct eventpoll *e
+ 	if (epi->nwait < 0)
+ 		goto error_unregister;
+ 
+-	/* Add the current item to the list of active epoll hook for this file */
+-	spin_lock(&tfile->f_lock);
+-	list_add_tail_rcu(&epi->fllink, &tfile->f_ep_links);
+-	spin_unlock(&tfile->f_lock);
+-
+-	/*
+-	 * Add the current item to the RB tree. All RB tree operations are
+-	 * protected by "mtx", and ep_insert() is called with "mtx" held.
+-	 */
+-	ep_rbtree_insert(ep, epi);
+-
+-	/* now check if we've created too many backpaths */
+-	error = -EINVAL;
+-	if (full_check && reverse_path_check())
+-		goto error_remove_epi;
+-
+ 	/* We have to drop the new item inside our item list to keep track of it */
+ 	spin_lock_irqsave(&ep->lock, flags);
+ 
+@@ -1527,6 +1527,8 @@ static int ep_insert(struct eventpoll *e
+ 
+ 	return 0;
+ 
++error_unregister:
++	ep_unregister_pollwait(ep, epi);
+ error_remove_epi:
+ 	spin_lock(&tfile->f_lock);
+ 	list_del_rcu(&epi->fllink);
+@@ -1534,9 +1536,6 @@ error_remove_epi:
+ 
+ 	rb_erase_cached(&epi->rbn, &ep->rbr);
+ 
+-error_unregister:
+-	ep_unregister_pollwait(ep, epi);
+-
+ 	/*
+ 	 * We need to do this because an event could have been arrived on some
+ 	 * allocated wait queue. Note that we don't care about the ep->ovflist
 
 
