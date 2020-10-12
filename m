@@ -2,222 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DD0728ACF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 06:26:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC98328ACFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 06:30:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727457AbgJLE0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 00:26:23 -0400
-Received: from ozlabs.org ([203.11.71.1]:37797 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725967AbgJLE0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 00:26:22 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C8lx65jg2z9sTf;
-        Mon, 12 Oct 2020 15:26:18 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1602476779;
-        bh=JaoueffLPiqe0vVFbNDyshuQW42Vb35P3hSNJmElmMw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=etiFfRjPep5aCsL5z9RKGh4Bey53GqVtc0RutV4WEoB8f6ghuNvGVDq0rj3o6CP/G
-         atWk4UOwfFeXUlKtrMbtyHKwOoqmbRgtKX0b4xfmlPjhG1omOMC0G5DKTCj4ak/3Ou
-         n9SIkAo1C1VCIa9nHp4UxtcTKG2xG/iMxkoZ2T2ULT3t3QS9yk4j0c8QHtyll/XdZf
-         YvjcaQASdt7Dr17ZI2DsJLuXRobfMm8mf2mXMHCJW9wVjbQtm7XLzys9PX/3u5x/Lw
-         bmexy1Cxo76Axl5Fm0N8F6wypRqV4oQLP1vpy5xDsEHtYdxUwu+nfAgp4xLy1iFFRR
-         v2NGN7HCbQipw==
-Date:   Mon, 12 Oct 2020 15:26:18 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Dave Airlie <airlied@linux.ie>
-Subject: Re: linux-next: build failure after merge of the drm-misc tree
-Message-ID: <20201012152618.5e3116ca@canb.auug.org.au>
-In-Reply-To: <20201012152452.432c4867@canb.auug.org.au>
-References: <20201008140903.12a411b8@canb.auug.org.au>
-        <20201008154202.175fbec7@canb.auug.org.au>
-        <20201012152452.432c4867@canb.auug.org.au>
+        id S1726402AbgJLEaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 00:30:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725882AbgJLEaN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 00:30:13 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5A57C0613CE;
+        Sun, 11 Oct 2020 21:30:12 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id 188so16643144qkk.12;
+        Sun, 11 Oct 2020 21:30:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ix53B+4PxpD3FvNrquTS4wrFrQE1rmLNYwUdzsQBz70=;
+        b=Vi0Okto4r2twCBe/iUIb9WvlHH1xO2X3Pgp/nljP/qcnaXwYhnCYzuh1+uReRXwRdx
+         TPoGM9Rlp+ghbeEWUbk+eDkR+uz9q51GERSJbC0puwH+q4lKe8vhqMSjFp+Sge2IR07V
+         Yz5TD89m4VosCu5dlVKyhk/N9QRS5LXdMkwaU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ix53B+4PxpD3FvNrquTS4wrFrQE1rmLNYwUdzsQBz70=;
+        b=eIQ0eICtr791UJxgyG5Dj8yCwjrPSblsnR0/dvIx4v9rcYwWVTB+sywWaOz86YndSr
+         ZaFuF625hZHa5RIFkDf84Mrh5zsObfmZot/JQ6qkkFTst5h9bFUnS4LIvAhiCzTCxkb9
+         MXfsE6CLihSbeJ3Q0OFRAUpN4S7oKGxYdwp8C8pOFk3h4hYM/Z4wnstrVixtJC8tccC6
+         smjln3TJQEn6FhUJIPOKtaHZCsUu1n2hsUKNrQhjfwOSMOasUWbxUMMtQIQQzl1LfNzV
+         xcSTvTkwDzqaNHjfhzEWk0CRs0tcS62LhkiYvJFwae7LKCWJNjuEv+qzTaWo9zankj9F
+         /vWg==
+X-Gm-Message-State: AOAM5327c/VDGzi8UB0A+cV8iXkjHwU03fcTSFrulfSn4A+yryjRUu43
+        PQX90bHUlxfqQGSLqpZ102C1aTDxS+Sso2Bu2mw=
+X-Google-Smtp-Source: ABdhPJyNBsj3Xl5S6RY3Rvn00/GtfkhS8Ore3QHLa1prcwNZOO4RsI2temxvhrolGiYtx4NchxSTU3LmSRQ/3KhH1ts=
+X-Received: by 2002:a05:620a:16aa:: with SMTP id s10mr7987574qkj.273.1602477012120;
+ Sun, 11 Oct 2020 21:30:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/PsBqT+2U+eGmb+1a29SSGu/";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20201012033150.21056-1-billy_tsai@aspeedtech.com> <20201012033150.21056-2-billy_tsai@aspeedtech.com>
+In-Reply-To: <20201012033150.21056-2-billy_tsai@aspeedtech.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Mon, 12 Oct 2020 04:30:00 +0000
+Message-ID: <CACPK8XcQ+uodvYCyL7_RO9W2QF+AA2LidHhXi2tR3_uriQFccQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] Arm: dts: aspeed-g6: Fix the register range of gpio
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        BMC-SW <BMC-SW@aspeedtech.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/PsBqT+2U+eGmb+1a29SSGu/
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-[Just adding Dave to cc's]
-
-On Mon, 12 Oct 2020 15:24:52 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
+On Mon, 12 Oct 2020 at 03:32, Billy Tsai <billy_tsai@aspeedtech.com> wrote:
 >
-> Hi all,
->=20
-> On Thu, 8 Oct 2020 15:42:02 +1100 Stephen Rothwell <sfr@canb.auug.org.au>=
- wrote:
-> >
-> > On Thu, 8 Oct 2020 14:09:03 +1100 Stephen Rothwell <sfr@canb.auug.org.a=
-u> wrote: =20
-> > >
-> > > After merging the drm-misc tree, today's linux-next build (x86_64
-> > > allmodconfig) failed like this:   =20
-> >=20
-> > In file included from include/linux/clk.h:13,
-> >                  from drivers/gpu/drm/ingenic/ingenic-drm-drv.c:10:
-> > drivers/gpu/drm/ingenic/ingenic-drm-drv.c: In function 'ingenic_drm_upd=
-ate_palette':
-> > drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:35: error: 'struct ingeni=
-c_drm' has no member named 'dma_hwdescs'; did you mean 'dma_hwdesc_f0'?
-> >   448 |  for (i =3D 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); i++)=
- {
-> >       |                                   ^~~~~~~~~~~
-> > include/linux/kernel.h:47:33: note: in definition of macro 'ARRAY_SIZE'
-> >    47 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __mus=
-t_be_array(arr))
-> >       |                                 ^~~
-> > drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:35: error: 'struct ingeni=
-c_drm' has no member named 'dma_hwdescs'; did you mean 'dma_hwdesc_f0'?
-> >   448 |  for (i =3D 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); i++)=
- {
-> >       |                                   ^~~~~~~~~~~
-> > include/linux/kernel.h:47:48: note: in definition of macro 'ARRAY_SIZE'
-> >    47 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __mus=
-t_be_array(arr))
-> >       |                                                ^~~
-> > In file included from include/linux/bits.h:22,
-> >                  from include/linux/bitops.h:5,
-> >                  from drivers/gpu/drm/ingenic/ingenic-drm.h:10,
-> >                  from drivers/gpu/drm/ingenic/ingenic-drm-drv.c:7:
-> > drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:35: error: 'struct ingeni=
-c_drm' has no member named 'dma_hwdescs'; did you mean 'dma_hwdesc_f0'?
-> >   448 |  for (i =3D 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); i++)=
- {
-> >       |                                   ^~~~~~~~~~~
-> > include/linux/build_bug.h:16:62: note: in definition of macro 'BUILD_BU=
-G_ON_ZERO'
-> >    16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)=
-); })))
-> >       |                                                              ^
-> > include/linux/compiler.h:224:46: note: in expansion of macro '__same_ty=
-pe'
-> >   224 | #define __must_be_array(a) BUILD_BUG_ON_ZERO(__same_type((a), &=
-(a)[0]))
-> >       |                                              ^~~~~~~~~~~
-> > include/linux/kernel.h:47:59: note: in expansion of macro '__must_be_ar=
-ray'
-> >    47 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __mus=
-t_be_array(arr))
-> >       |                                                           ^~~~~=
-~~~~~~~~~~
-> > drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:18: note: in expansion of=
- macro 'ARRAY_SIZE'
-> >   448 |  for (i =3D 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); i++)=
- {
-> >       |                  ^~~~~~~~~~
-> > drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:35: error: 'struct ingeni=
-c_drm' has no member named 'dma_hwdescs'; did you mean 'dma_hwdesc_f0'?
-> >   448 |  for (i =3D 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); i++)=
- {
-> >       |                                   ^~~~~~~~~~~
-> > include/linux/build_bug.h:16:62: note: in definition of macro 'BUILD_BU=
-G_ON_ZERO'
-> >    16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)=
-); })))
-> >       |                                                              ^
-> > include/linux/compiler.h:224:46: note: in expansion of macro '__same_ty=
-pe'
-> >   224 | #define __must_be_array(a) BUILD_BUG_ON_ZERO(__same_type((a), &=
-(a)[0]))
-> >       |                                              ^~~~~~~~~~~
-> > include/linux/kernel.h:47:59: note: in expansion of macro '__must_be_ar=
-ray'
-> >    47 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __mus=
-t_be_array(arr))
-> >       |                                                           ^~~~~=
-~~~~~~~~~~
-> > drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:18: note: in expansion of=
- macro 'ARRAY_SIZE'
-> >   448 |  for (i =3D 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); i++)=
- {
-> >       |                  ^~~~~~~~~~
-> > include/linux/build_bug.h:16:51: error: bit-field '<anonymous>' width n=
-ot an integer constant
-> >    16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)=
-); })))
-> >       |                                                   ^
-> > include/linux/compiler.h:224:28: note: in expansion of macro 'BUILD_BUG=
-_ON_ZERO'
-> >   224 | #define __must_be_array(a) BUILD_BUG_ON_ZERO(__same_type((a), &=
-(a)[0]))
-> >       |                            ^~~~~~~~~~~~~~~~~
-> > include/linux/kernel.h:47:59: note: in expansion of macro '__must_be_ar=
-ray'
-> >    47 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __mus=
-t_be_array(arr))
-> >       |                                                           ^~~~~=
-~~~~~~~~~~
-> > drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:18: note: in expansion of=
- macro 'ARRAY_SIZE'
-> >   448 |  for (i =3D 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); i++)=
- {
-> >       |                  ^~~~~~~~~~
-> > drivers/gpu/drm/ingenic/ingenic-drm-drv.c:453:9: error: 'struct ingenic=
-_drm' has no member named 'dma_hwdescs'; did you mean 'dma_hwdesc_f0'?
-> >   453 |   priv->dma_hwdescs->palette[i] =3D color;
-> >       |         ^~~~~~~~~~~
-> >       |         dma_hwdesc_f0
-> > drivers/gpu/drm/ingenic/ingenic-drm-drv.c: In function 'ingenic_drm_pla=
-ne_atomic_update':
-> > drivers/gpu/drm/ingenic/ingenic-drm-drv.c:467:3: error: 'crtc_state' un=
-declared (first use in this function); did you mean 'ctx_state'?
-> >   467 |   crtc_state =3D state->crtc->state;
-> >       |   ^~~~~~~~~~
-> >       |   ctx_state
-> > drivers/gpu/drm/ingenic/ingenic-drm-drv.c:467:3: note: each undeclared =
-identifier is reported only once for each function it appears in
-> > At top level:
-> > drivers/gpu/drm/ingenic/ingenic-drm-drv.c:443:13: warning: 'ingenic_drm=
-_update_palette' defined but not used [-Wunused-function]
-> >   443 | static void ingenic_drm_update_palette(struct ingenic_drm *priv,
-> >       |             ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> >  =20
-> > > I noticed that the ingenic driver revert I had been waiting for appea=
-red
-> > > in hte drm-misc tree, so I removed the BROKEN dependency for it, but =
-it
-> > > produced the above errors, so I have marked it BROKEN again.   =20
->=20
-> Any progress on this?  I am still marking CONFIG_DRM_INGENIC as BROKEN
-> in the drm and drm-misc trees.
+> This patch is used to fix the memory range of gpio0
+>
+> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
 
---=20
-Cheers,
-Stephen Rothwell
+Reviewed-by: Joel Stanley <joel@jms.id.au>
 
---Sig_/PsBqT+2U+eGmb+1a29SSGu/
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+D2uoACgkQAVBC80lX
-0Gwnowf9G2Odj/qp8Y+TBepUYlByT5rgvdUQpll2T8YtC8laneNWjNSd6w2d+rtR
-wqP0fL4IMOePhZ1Zq09hkfe57IFja+2U2/D2Ra/4nWJvVkpkTDgNoBj9nnfvuX6I
-YIG+J5AERsCer5RPUB6XO5SOag4oyDa+jxt9LCQkKSzUfbrY7Z1a7mBwtXBBv824
-ba5hdJz4QKnGvXP+yYGNLXEVP10LHZFpLhhf1XG+tzwv+aslBY/i38+CwZn39XX4
-dgH0iykSfgFqkX9DpBeyfWRwR0wuclFXG1nwmSzihasWklMZDRlaNYb6gliuz9B0
-3HCguHgn29KaYpLj39ZDymKuWyQO5w==
-=pQfj
------END PGP SIGNATURE-----
-
---Sig_/PsBqT+2U+eGmb+1a29SSGu/--
+> ---
+>  arch/arm/boot/dts/aspeed-g6.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/arm/boot/dts/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed-g6.dtsi
+> index 97ca743363d7..ad19dce038ea 100644
+> --- a/arch/arm/boot/dts/aspeed-g6.dtsi
+> +++ b/arch/arm/boot/dts/aspeed-g6.dtsi
+> @@ -357,7 +357,7 @@
+>                                 #gpio-cells = <2>;
+>                                 gpio-controller;
+>                                 compatible = "aspeed,ast2600-gpio";
+> -                               reg = <0x1e780000 0x800>;
+> +                               reg = <0x1e780000 0x400>;
+>                                 interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>;
+>                                 gpio-ranges = <&pinctrl 0 0 208>;
+>                                 ngpios = <208>;
+> --
+> 2.17.1
+>
