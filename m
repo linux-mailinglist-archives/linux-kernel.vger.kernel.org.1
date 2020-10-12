@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0568728B7A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:45:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64FA228B97B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731358AbgJLNp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:45:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48502 "EHLO mail.kernel.org"
+        id S1731406AbgJLOBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:01:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389289AbgJLNnP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:43:15 -0400
+        id S1731236AbgJLNin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:38:43 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BFEB721D81;
-        Mon, 12 Oct 2020 13:43:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 30135221FE;
+        Mon, 12 Oct 2020 13:38:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602510194;
-        bh=NAMGh12AMVvn72LzdUDV6g8w9N4PLdldcf1Bd4jNMB8=;
+        s=default; t=1602509900;
+        bh=6wAB02IwfsC7DHvdEzt8a2/LnQp5Sy5OvIscxeAHml4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lPboFW4EMMUgae8QkUvqNv+PCGvBxodYXu++vQpmuBU02eWeEEhHH3Uhp3eimbo2Z
-         MKbyNZNnM8vkzcRUIVgr9mX1D53qKYclzypJlOTcqh7C9ftg37D7CI+f7bHnVMHASk
-         6B9wVs+2wWarxMnKx9ZayISIqMi8NUoxs21Vx8rg=
+        b=XeTDDUXrFR2j4kZLmypwQCj905ARsif6klfpkM/dl8VsaWSKS5YN/ispSmccVMK4Y
+         zj3alrARUNnSWtZ/Op5W4WqzMpv1otyaoPpl1dsJREJDES/W1JCRNrdWSIoN1SGbN6
+         0e3OaCm2knf4ehbx8l9zgprb6M1VyxE1H+J7x2YM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Antony Antony <antony.antony@secunet.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
+        stable@vger.kernel.org, Voon Weifeng <weifeng.voon@intel.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 50/85] xfrm: clone XFRMA_REPLAY_ESN_VAL in xfrm_do_migrate
+Subject: [PATCH 4.14 57/70] net: stmmac: removed enabling eee in EEE set callback
 Date:   Mon, 12 Oct 2020 15:27:13 +0200
-Message-Id: <20201012132635.272819536@linuxfoundation.org>
+Message-Id: <20201012132632.927620045@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
-References: <20201012132632.846779148@linuxfoundation.org>
+In-Reply-To: <20201012132630.201442517@linuxfoundation.org>
+References: <20201012132630.201442517@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,54 +44,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Antony Antony <antony.antony@secunet.com>
+From: Voon Weifeng <weifeng.voon@intel.com>
 
-[ Upstream commit 91a46c6d1b4fcbfa4773df9421b8ad3e58088101 ]
+[ Upstream commit 7241c5a697479c7d0c5a96595822cdab750d41ae ]
 
-XFRMA_REPLAY_ESN_VAL was not cloned completely from the old to the new.
-Migrate this attribute during XFRMA_MSG_MIGRATE
+EEE should be only be enabled during stmmac_mac_link_up() when the
+link are up and being set up properly. set_eee should only do settings
+configuration and disabling the eee.
 
-v1->v2:
- - move curleft cloning to a separate patch
+Without this fix, turning on EEE using ethtool will return
+"Operation not supported". This is due to the driver is in a dead loop
+waiting for eee to be advertised in the for eee to be activated but the
+driver will only configure the EEE advertisement after the eee is
+activated.
 
-Fixes: af2f464e326e ("xfrm: Assign esn pointers when cloning a state")
-Signed-off-by: Antony Antony <antony.antony@secunet.com>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Ethtool should only return "Operation not supported" if there is no EEE
+capbility in the MAC controller.
+
+Fixes: 8a7493e58ad6 ("net: stmmac: Fix a race in EEE enable callback")
+Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
+Acked-by: Mark Gross <mgross@linux.intel.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/xfrm.h | 16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
+ .../net/ethernet/stmicro/stmmac/stmmac_ethtool.c  | 15 ++++-----------
+ 1 file changed, 4 insertions(+), 11 deletions(-)
 
-diff --git a/include/net/xfrm.h b/include/net/xfrm.h
-index 12aa6e15e43f6..c00b9ae71ae40 100644
---- a/include/net/xfrm.h
-+++ b/include/net/xfrm.h
-@@ -1773,21 +1773,17 @@ static inline unsigned int xfrm_replay_state_esn_len(struct xfrm_replay_state_es
- static inline int xfrm_replay_clone(struct xfrm_state *x,
- 				     struct xfrm_state *orig)
- {
--	x->replay_esn = kzalloc(xfrm_replay_state_esn_len(orig->replay_esn),
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+index 8c71090081852..5105e1f724fb7 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+@@ -677,23 +677,16 @@ static int stmmac_ethtool_op_set_eee(struct net_device *dev,
+ 	struct stmmac_priv *priv = netdev_priv(dev);
+ 	int ret;
+ 
+-	if (!edata->eee_enabled) {
++	if (!priv->dma_cap.eee)
++		return -EOPNOTSUPP;
 +
-+	x->replay_esn = kmemdup(orig->replay_esn,
-+				xfrm_replay_state_esn_len(orig->replay_esn),
- 				GFP_KERNEL);
- 	if (!x->replay_esn)
- 		return -ENOMEM;
--
--	x->replay_esn->bmp_len = orig->replay_esn->bmp_len;
--	x->replay_esn->replay_window = orig->replay_esn->replay_window;
--
--	x->preplay_esn = kmemdup(x->replay_esn,
--				 xfrm_replay_state_esn_len(x->replay_esn),
-+	x->preplay_esn = kmemdup(orig->preplay_esn,
-+				 xfrm_replay_state_esn_len(orig->preplay_esn),
- 				 GFP_KERNEL);
--	if (!x->preplay_esn) {
--		kfree(x->replay_esn);
-+	if (!x->preplay_esn)
- 		return -ENOMEM;
++	if (!edata->eee_enabled)
+ 		stmmac_disable_eee_mode(priv);
+-	} else {
+-		/* We are asking for enabling the EEE but it is safe
+-		 * to verify all by invoking the eee_init function.
+-		 * In case of failure it will return an error.
+-		 */
+-		edata->eee_enabled = stmmac_eee_init(priv);
+-		if (!edata->eee_enabled)
+-			return -EOPNOTSUPP;
 -	}
  
+ 	ret = phy_ethtool_set_eee(dev->phydev, edata);
+ 	if (ret)
+ 		return ret;
+ 
+-	priv->eee_enabled = edata->eee_enabled;
+ 	priv->tx_lpi_timer = edata->tx_lpi_timer;
  	return 0;
  }
 -- 
