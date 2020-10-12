@@ -2,157 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4878428BBE8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58C6828BBEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389540AbgJLPbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 11:31:10 -0400
-Received: from mout.kundenserver.de ([217.72.192.73]:42081 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388527AbgJLPbJ (ORCPT
+        id S2389976AbgJLPbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 11:31:49 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:23958 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2389948AbgJLPbs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 11:31:09 -0400
-Received: from mail-qk1-f182.google.com ([209.85.222.182]) by
- mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1M5PRT-1kRARb1wLF-001QUy; Mon, 12 Oct 2020 17:31:06 +0200
-Received: by mail-qk1-f182.google.com with SMTP id q63so18080040qkf.3;
-        Mon, 12 Oct 2020 08:31:06 -0700 (PDT)
-X-Gm-Message-State: AOAM530XcP7wb8zAcjMY7SPnyaM1gM3y1r1kgv3/mAG9zNvp2uYk3VgI
-        ZUWvozBqOR+GpDY02cOfMoEU0Cdpq6sCrfikNZo=
-X-Google-Smtp-Source: ABdhPJwvsy1oYnuUy5ljPB75evT7Pa/tyuqSvAbw5I5mVYvqU4g4l8zWrAr5hU7svLQBi/0OorEm0EPGvxy5dZlnbs0=
-X-Received: by 2002:a05:620a:2ee:: with SMTP id a14mr5630220qko.286.1602516665130;
- Mon, 12 Oct 2020 08:31:05 -0700 (PDT)
+        Mon, 12 Oct 2020 11:31:48 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09CFRx2K009325;
+        Mon, 12 Oct 2020 17:31:34 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : subject :
+ date : message-id : references : in-reply-to : content-type : content-id :
+ content-transfer-encoding : mime-version; s=STMicroelectronics;
+ bh=N542qLINbv1anFY9bS8CNSsvQ1Mj8Jp+GnbcDJCIDbI=;
+ b=yU7Fk4vHgMdVOCof3aFBut/LtAMM901J/RvZxy32Ku5Dnx4qUhdyzsMPhomEYZ7YMPed
+ X71IHo7vNGDlixUPzwIPQnGxJkj99McRmV4JIuo9KpqWU2oVGuKstpEfWIdOTJjn7vs8
+ EXyDk02BZAmxDo8OOVBdDQo0mUvNPKuknC3hqvya1H1jGlNxwbADhXhBOMjBUUc5/4Cw
+ cBn+bphbd811atmWfb57HfZcbfsyPg3fAmMPnw/1nBzib1WY77jiiREYoRD2QeFV2emR
+ lUAJZhckT5eoBa1Ij6D34V3UVduYNkGyGFhdAVGenEGQdaSfv8Ki5V4x6MNB6FXW0FWC Cw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 34353w1wd5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 12 Oct 2020 17:31:34 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B97FB10002A;
+        Mon, 12 Oct 2020 17:31:32 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag1node1.st.com [10.75.127.1])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 97FFE2A9F57;
+        Mon, 12 Oct 2020 17:31:32 +0200 (CEST)
+Received: from SFHDAG2NODE3.st.com (10.75.127.6) by SFHDAG1NODE1.st.com
+ (10.75.127.1) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 12 Oct
+ 2020 17:31:32 +0200
+Received: from SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c]) by
+ SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c%20]) with mapi id
+ 15.00.1473.003; Mon, 12 Oct 2020 17:31:32 +0200
+From:   Philippe CORNU <philippe.cornu@st.com>
+To:     Yannick FERTRE <yannick.fertre@st.com>,
+        Antonio BORNEO <antonio.borneo@st.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        "Sam Ravnborg" <sam@ravnborg.org>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] drm/panel: rm68200: fix mode to 50fps
+Thread-Topic: [PATCH] drm/panel: rm68200: fix mode to 50fps
+Thread-Index: AQHWk0ZzzcM7a4UXCEW70da9oB7h6KmUEW0A
+Date:   Mon, 12 Oct 2020 15:31:32 +0000
+Message-ID: <b8b082c2-4543-4080-cf6e-d14fed712669@st.com>
+References: <20200925141618.12097-1-yannick.fertre@st.com>
+In-Reply-To: <20200925141618.12097-1-yannick.fertre@st.com>
+Accept-Language: fr-FR, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.75.127.50]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <68D722A0FC36A64FB7104D71B442DF99@st.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-9-arnd@arndb.de>
- <CAMuHMdWtMZaJ8ETb4g+AfaLeSZ1vyi8-POEaRzmdwh3ha=jieA@mail.gmail.com>
-In-Reply-To: <CAMuHMdWtMZaJ8ETb4g+AfaLeSZ1vyi8-POEaRzmdwh3ha=jieA@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 12 Oct 2020 17:30:49 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1nDZYYwtuniUGxmy=H8LHbOEGSU=Pmi2=LMrLw09x8+w@mail.gmail.com>
-Message-ID: <CAK8P3a1nDZYYwtuniUGxmy=H8LHbOEGSU=Pmi2=LMrLw09x8+w@mail.gmail.com>
-Subject: Re: [PATCH 08/13] m68k: m68328: use legacy_timer_tick()
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Philip Blundell <philb@gnu.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Sam Creasey <sammy@sammy.net>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:DJJD98gQfMORp0800O7Ew01mrOIiBaWtMDU5TgDNGrJZmMB1AqZ
- NqPQk/mwzxVPcHmEjj6zegLLQNVhCmGchJktO77E/kRqQwwAQc7nVdyPFjLExbBQtfO21nv
- sL8xXmEEuCOKG6g967og41FVYdyYLmlP8qsBNcIJyepNG+zBALDzlOb73dbyrDBXnLvPa0v
- 56lM8ztGjzBoTBYeF30Ow==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ggoW9tp1yI4=:Rjwwz7JmODT6i2Ujg+riPF
- EDSaovwE46D4knVSyExkaQiy7me2/AZD89AKQlZGgv1b/07YvCkvVAzzM2S2/0qhNCnd3wg+E
- Gwe8FyelBilvrjEDDJxpOoUwKqhfGK/WWyy3NtR+qAVO23UWiCTP5VXFW/IconwKYAiuVjPiu
- gugS7X6MSJ/e/VVR0KIVIhUh0rPeljjjT2pBC3+AxPEkifadT7jvR7IhrZaJcMHu0w5/MClA8
- XRCH0mYZiPJ+54QIYwY3pHTzUozak4HooOrdMkXB9q/mTpmgfCfw8Ys3mk4UTsLkARDx8mZgX
- MJiSLF3jALBa8I3fc1sF+P9LXSAQVmTFtZKX5iCDXaI5JGPMHZox4FrfFissjjUX3PDujrvfX
- m/pCbu7SYJfk1BbnDFhI+qY94v6jvlFDsm8zNrRIMh+76gMekTdaC0442i3WWQ4ZUvzztu0AP
- uJq+PK6yCOma555JDOewlGWmclTp/S+LTDfRLazR0r+ey4YWa8wNUmXoN9HsTNPT1PkBvd91L
- 3ZU+VzcMRBkb2NKP1PDpSOywicC0FeA1ftd4tlg3F1/1HAiize86c7OJJevXTouaeICmTktHS
- S708f3Eb0NNHVfrjXYaCsNLiNUFaYq47vP5GF34nyjjecb6vjuS+PuDE/OK6ISSqTTlypajzd
- Cfqv198bKjP9frkk2mH6e/ICk8c7zH+htH6YXE3mj2JK+6gw6/MmXBkF0O0poyXcsgigiK2+2
- pe/pnqbreffCQMIy+8ov/Ns47zTYrmfW4MR0lf+Aksh903IAABIcB8hpqEZ2AwXvXKF+yg1KY
- dXaKVgLHvtc/uQp/v7/w9RcFZXrnfk/LtZDV8BTyAa3ohsnJnMChpxXzc+GEhW36ms3q+XdJi
- 0qjk7GfEinH+0ug6vdbOPM7ssfLa31kAXskhiyCNui6Z1OZnQKow5162GleqtG3VDMqp8q64o
- ls6bi2zpB3ds4N6pXoMRgSMZIjdybd7Ovd8cCJLYNyrpa7mwYJEFa
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-12_12:2020-10-12,2020-10-12 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 3:15 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Given this feature is SoC-specific, not platform-specific, perhaps
-> it makes sense to move the selects to the M68{,EZ,VZ}328 symbols?
->
-> Regardless:
-> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Ok, folded in the change blow, using one less line. I couldn't figure
-out whether
-it should just be part of the CONFIG_M68000 instead, which doesn't appear
-to have any machine support by itself. The dragonball CPU configuration
-looks really odd, because you have to build exactly one of M68{,EZ,VZ}328
-into the kernel to get a successful compilation, while Kconfig allows
-many other combinations.
-
-     Arnd
-
-diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
-index 322a35ef14c6..648054d4f860 100644
---- a/arch/m68k/Kconfig.cpu
-+++ b/arch/m68k/Kconfig.cpu
-@@ -104,6 +104,7 @@ config M68060
- config M68328
-        bool "MC68328"
-        depends on !MMU
-+       select LEGACY_TIMER_TICK
-        select M68000
-        help
-          Motorola 68328 processor support.
-@@ -111,6 +112,7 @@ config M68328
- config M68EZ328
-        bool "MC68EZ328"
-        depends on !MMU
-+       select LEGACY_TIMER_TICK
-        select M68000
-        help
-          Motorola 68EX328 processor support.
-@@ -118,6 +120,7 @@ config M68EZ328
- config M68VZ328
-        bool "MC68VZ328"
-        depends on !MMU
-+       select LEGACY_TIMER_TICK
-        select M68000
-        help
-          Motorola 68VZ328 processor support.
-diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
-index 0ff9338b958e..e3c835440d9a 100644
---- a/arch/m68k/Kconfig.machine
-+++ b/arch/m68k/Kconfig.machine
-@@ -146,7 +146,6 @@ config PILOT
- config PILOT3
-        bool "Pilot 1000/5000, PalmPilot Personal/Pro, or PalmIII support"
-        depends on M68328
--       select LEGACY_TIMER_TICK
-        select PILOT
-        help
-          Support for the Palm Pilot 1000/5000, Personal/Pro and PalmIII.
-@@ -160,21 +159,18 @@ config XCOPILOT_BUGS
- config UCSIMM
-        bool "uCsimm module support"
-        depends on M68EZ328
--       select LEGACY_TIMER_TICK
-        help
-          Support for the Arcturus Networks uCsimm module.
-
- config UCDIMM
-        bool "uDsimm module support"
-        depends on M68VZ328
--       select LEGACY_TIMER_TICK
-        help
-          Support for the Arcturus Networks uDsimm module.
-
- config DRAGEN2
-        bool "DragenEngine II board support"
-        depends on M68VZ328
--       select LEGACY_TIMER_TICK
-        help
-          Support for the DragenEngine II board.
+DQoNCk9uIDkvMjUvMjAgNDoxNiBQTSwgWWFubmljayBGZXJ0cmUgd3JvdGU6DQo+IENvbXB1dGUg
+bmV3IHRpbWluZ3MgdG8gZ2V0IGEgZnJhbWVyYXRlIG9mIDUwZnBzIHdpdGggYSBwaXhlbCBjbG9j
+aw0KPiBANTRNaHouDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBZYW5uaWNrIEZlcnRyZSA8eWFubmlj
+ay5mZXJ0cmVAc3QuY29tPg0KPiAtLS0NCj4gICBkcml2ZXJzL2dwdS9kcm0vcGFuZWwvcGFuZWwt
+cmF5ZGl1bS1ybTY4MjAwLmMgfCAxMiArKysrKystLS0tLS0NCj4gICAxIGZpbGUgY2hhbmdlZCwg
+NiBpbnNlcnRpb25zKCspLCA2IGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZl
+cnMvZ3B1L2RybS9wYW5lbC9wYW5lbC1yYXlkaXVtLXJtNjgyMDAuYyBiL2RyaXZlcnMvZ3B1L2Ry
+bS9wYW5lbC9wYW5lbC1yYXlkaXVtLXJtNjgyMDAuYw0KPiBpbmRleCAyYjllNDhiMGE0OTEuLjQx
+MmMwZGJjYjJiNiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL3BhbmVsL3BhbmVsLXJh
+eWRpdW0tcm02ODIwMC5jDQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9wYW5lbC9wYW5lbC1yYXlk
+aXVtLXJtNjgyMDAuYw0KPiBAQCAtODIsMTUgKzgyLDE1IEBAIHN0cnVjdCBybTY4MjAwIHsNCj4g
+ICB9Ow0KPiAgIA0KPiAgIHN0YXRpYyBjb25zdCBzdHJ1Y3QgZHJtX2Rpc3BsYXlfbW9kZSBkZWZh
+dWx0X21vZGUgPSB7DQo+IC0JLmNsb2NrID0gNTI1ODIsDQo+ICsJLmNsb2NrID0gNTQwMDAsDQo+
+ICAgCS5oZGlzcGxheSA9IDcyMCwNCj4gLQkuaHN5bmNfc3RhcnQgPSA3MjAgKyAzOCwNCj4gLQku
+aHN5bmNfZW5kID0gNzIwICsgMzggKyA4LA0KPiAtCS5odG90YWwgPSA3MjAgKyAzOCArIDggKyAz
+OCwNCj4gKwkuaHN5bmNfc3RhcnQgPSA3MjAgKyA0OCwNCj4gKwkuaHN5bmNfZW5kID0gNzIwICsg
+NDggKyA5LA0KPiArCS5odG90YWwgPSA3MjAgKyA0OCArIDkgKyA0OCwNCj4gICAJLnZkaXNwbGF5
+ID0gMTI4MCwNCj4gICAJLnZzeW5jX3N0YXJ0ID0gMTI4MCArIDEyLA0KPiAtCS52c3luY19lbmQg
+PSAxMjgwICsgMTIgKyA0LA0KPiAtCS52dG90YWwgPSAxMjgwICsgMTIgKyA0ICsgMTIsDQo+ICsJ
+LnZzeW5jX2VuZCA9IDEyODAgKyAxMiArIDUsDQo+ICsJLnZ0b3RhbCA9IDEyODAgKyAxMiArIDUg
+KyAxMiwNCj4gICAJLmZsYWdzID0gMCwNCj4gICAJLndpZHRoX21tID0gNjgsDQo+ICAgCS5oZWln
+aHRfbW0gPSAxMjIsDQo+IA0KDQpIaSBZYW5uaWNrLA0KVGVzdGVkLWJ5OiBQaGlsaXBwZSBDb3Ju
+dSA8cGhpbGlwcGUuY29ybnVAc3QuY29tPg0KVGhhbmsgeW91LA0KUGhpbGlwcGU=
