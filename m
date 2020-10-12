@@ -2,68 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC3AE28C42C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 23:32:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37AF828C3F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 23:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730166AbgJLVcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 17:32:07 -0400
-Received: from sandeen.net ([63.231.237.45]:47850 "EHLO sandeen.net"
+        id S1732105AbgJLVZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 17:25:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729292AbgJLVcH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 17:32:07 -0400
-X-Greylist: delayed 513 seconds by postgrey-1.27 at vger.kernel.org; Mon, 12 Oct 2020 17:32:07 EDT
-Received: from liberator.sandeen.net (liberator.sandeen.net [10.0.0.146])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by sandeen.net (Postfix) with ESMTPSA id E293F5EDA6;
-        Mon, 12 Oct 2020 16:22:24 -0500 (CDT)
-Subject: Re: [PATCH] xfs: fix Kconfig asking about XFS_SUPPORT_V4 when
- XFS_FS=n
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Pavel Machek <pavel@ucw.cz>, xfs <linux-xfs@vger.kernel.org>
-Cc:     kernel list <linux-kernel@vger.kernel.org>, dchinner@redhat.com,
-        sandeen@redhat.com
-References: <20201012211157.GE6559@magnolia>
-From:   Eric Sandeen <sandeen@sandeen.net>
-Message-ID: <4354fb15-9aa0-0957-eea8-89a930774d40@sandeen.net>
-Date:   Mon, 12 Oct 2020 16:23:32 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.3.1
-MIME-Version: 1.0
-In-Reply-To: <20201012211157.GE6559@magnolia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1726897AbgJLVZC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 17:25:02 -0400
+Subject: Re: [GIT PULL] EFI changes for v5.10
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602537902;
+        bh=v+9f3MPB8yW4vIYi4dycKGmdotoC4gZ0eWWxB2CM1eQ=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=hrX1EYA19UIv9KBvsHIab2fYgpjpqSi8w/hQtAI6czwNu5lkIS2feFTm6XSVpYeUO
+         KYkORhNAGZf8qmmd4dok6Qn0X+cykDdy6OWXaubSZXpdHdEUEOdk+nY5QWZVXVzFNb
+         Og0JRQiCe6dPmVOD+5pTu6BMDFEDyd0KuouOhdys=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20201012152119.GA3476595@gmail.com>
+References: <20201012152119.GA3476595@gmail.com>
+X-PR-Tracked-List-Id: <linux-efi.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201012152119.GA3476595@gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git efi-core-2020-10-12
+X-PR-Tracked-Commit-Id: 4d0a4388ccdd9482fef6b26f879d0f6099143f80
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: e6412f9833db23740ee848ab3d6e7af18dff82a6
+Message-Id: <160253790214.926.8020408319776197944.pr-tracker-bot@kernel.org>
+Date:   Mon, 12 Oct 2020 21:25:02 +0000
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+        linux-efi@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Andrew Morton <akpm@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/20 4:11 PM, Darrick J. Wong wrote:
-> From: Darrick J. Wong <darrick.wong@oracle.com>
-> 
-> Pavel Machek complained that the question about supporting deprecated
-> XFS v4 comes up even when XFS is disabled.  This clearly makes no sense,
-> so fix Kconfig.
-> 
-> Reported-by: Pavel Machek <pavel@ucw.cz>
-> Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+The pull request you sent on Mon, 12 Oct 2020 17:21:19 +0200:
 
-Reviewed-by: Eric Sandeen <sandeen@redhat.com>
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git efi-core-2020-10-12
 
-> ---
->  fs/xfs/Kconfig |    1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/fs/xfs/Kconfig b/fs/xfs/Kconfig
-> index 5422227e9e93..9fac5ea8d0e4 100644
-> --- a/fs/xfs/Kconfig
-> +++ b/fs/xfs/Kconfig
-> @@ -24,6 +24,7 @@ config XFS_FS
->  
->  config XFS_SUPPORT_V4
->  	bool "Support deprecated V4 (crc=0) format"
-> +	depends on XFS_FS
->  	default y
->  	help
->  	  The V4 filesystem format lacks certain features that are supported
-> 
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/e6412f9833db23740ee848ab3d6e7af18dff82a6
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
