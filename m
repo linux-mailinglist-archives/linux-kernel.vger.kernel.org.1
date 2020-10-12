@@ -2,148 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBA9C28C53A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 01:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A88728C54F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 01:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389654AbgJLXbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 19:31:33 -0400
-Received: from mga11.intel.com ([192.55.52.93]:32822 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726780AbgJLXb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 19:31:29 -0400
-IronPort-SDR: v8kc3Fio+LjPoyvQb3mY8ylUGqFR6CzeawpaCTXAqt1VAiQ6XIXdXgWe/N/tGX+W/WtGkwX1MB
- Yyz30aCCeR2g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="162351722"
-X-IronPort-AV: E=Sophos;i="5.77,368,1596524400"; 
-   d="scan'208";a="162351722"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 16:31:28 -0700
-IronPort-SDR: tYujEEKuwB7pwkDEJNgfSBtOh7hwJ+YZEVhRvoIibttlBusG3o0pRElwiIGjx+C70rOitVdHyl
- N8yvUi3stUVQ==
-X-IronPort-AV: E=Sophos;i="5.77,368,1596524400"; 
-   d="scan'208";a="313606559"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 16:31:27 -0700
-Date:   Mon, 12 Oct 2020 16:31:26 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, linux-aio@kvack.org,
-        linux-efi@vger.kernel.org, kvm@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mmc@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
-        target-devel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-kselftest@vger.kernel.org, samba-technical@lists.samba.org,
-        ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com,
-        devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
-        linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org,
-        x86@kernel.org, amd-gfx@lists.freedesktop.org,
-        linux-afs@lists.infradead.org, cluster-devel@redhat.com,
-        linux-cachefs@redhat.com, intel-wired-lan@lists.osuosl.org,
-        xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org,
-        Fenghua Yu <fenghua.yu@intel.com>, ecryptfs@vger.kernel.org,
-        linux-um@lists.infradead.org, intel-gfx@lists.freedesktop.org,
-        linux-erofs@lists.ozlabs.org, reiserfs-devel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        io-uring@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-ntfs-dev@lists.sourceforge.net, netdev@vger.kernel.org,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH RFC PKS/PMEM 22/58] fs/f2fs: Utilize new kmap_thread()
-Message-ID: <20201012233126.GD2046448@iweiny-DESK2.sc.intel.com>
-References: <20201009195033.3208459-23-ira.weiny@intel.com>
- <20201009213434.GA839@sol.localdomain>
- <20201010003954.GW20115@casper.infradead.org>
- <20201010013036.GD1122@sol.localdomain>
- <20201012065635.GB2046448@iweiny-DESK2.sc.intel.com>
- <20201012161946.GA858@sol.localdomain>
- <5d621db9-23d4-e140-45eb-d7fca2093d2b@intel.com>
- <20201012164438.GA20115@casper.infradead.org>
- <20201012195354.GC2046448@iweiny-DESK2.sc.intel.com>
- <20201012200254.GB20115@casper.infradead.org>
+        id S1730226AbgJLXjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 19:39:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37682 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726780AbgJLXjS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 19:39:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602545956;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rW0rq42E0Ia7pA/3O1pSHV86DfoT5jFkZR8FD7wpIhQ=;
+        b=FjhfLqUU90o5Z5jPNA+2M0yrTeLW6/utZC6+EbmFxusn2VMGXqCEYyCMv68VjXFtAKEE7t
+        DJ8rTYFAzNJnLtADKuGDyZHUX2zCx4Cyp77Xbq4dD7fbqOcB3ig7845sP7oqI+x3GBJdUK
+        9Drdu6I1UN4qZ3t2u7mxaNfUlEP9AFc=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-385-NeAfapKNPXi-Rdu4nZmhcw-1; Mon, 12 Oct 2020 19:39:14 -0400
+X-MC-Unique: NeAfapKNPXi-Rdu4nZmhcw-1
+Received: by mail-qv1-f72.google.com with SMTP id y45so11727685qve.15
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 16:39:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:reply-to:to:date
+         :in-reply-to:references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=rW0rq42E0Ia7pA/3O1pSHV86DfoT5jFkZR8FD7wpIhQ=;
+        b=bXIAdFcGzQkVM0mo7ExINkt6RSxALKb6KspiQoyWap5Ong32ZFWF/aA7JHLMR2AgJl
+         Ye1TZXp0KKNDaHybdl5c7+fVM0tL3uqdk/SDmm+AdqYmqwLozT7yFwsx6rpUmpkg071F
+         xzx2pFTZLNYMog12WIFs24DCGXQB8OiEPWXhKIRhaIovFb2ODphV4d2Q//LWdNHmGqe4
+         NirSRTCc/CHGwsx1oQuFd3aRbN1z7V/SYUnAtzXevtzm15/06pDEQRw8bjx1RZzEQEpx
+         9cIsccNoc4AD6P27Q5rdJQoWn8TpSgXdIYbLNHLimWEJz3UYbALetIvJQI6dpIxGT4YF
+         SNHA==
+X-Gm-Message-State: AOAM5330VGvAeLPhBH9tqfFVPECbir5na0xb/gwSf+0/Wd9BadPJXPam
+        tjRzN7QgrSCoLO4jYDqbneTWfE9CHC0LDXAgVbrBzg18FZP97g9eXGaL/QxYnoc6o09GphiTto1
+        /UcAXT0BBI6aWa9lH+MYcPM57
+X-Received: by 2002:a05:620a:4:: with SMTP id j4mr8855254qki.164.1602545954411;
+        Mon, 12 Oct 2020 16:39:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyPc5P35iA6gXgoVAJSgh/p8EZmd1mF8MJWKHd6dMdvNW16yF9VfLRK/jtKJ+he966MNK0pKA==
+X-Received: by 2002:a05:620a:4:: with SMTP id j4mr8855235qki.164.1602545954156;
+        Mon, 12 Oct 2020 16:39:14 -0700 (PDT)
+Received: from Whitewolf.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
+        by smtp.gmail.com with ESMTPSA id g5sm13323920qtx.43.2020.10.12.16.39.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 16:39:13 -0700 (PDT)
+Message-ID: <3a89934f69387ddf654745e2c78bbb8362bbc4b4.camel@redhat.com>
+Subject: Re: [PATCH 1/2] drm/i915/dpcd_bl: uncheck PWM_PIN_CAP when detect
+ eDP backlight capabilities
+From:   Lyude Paul <lyude@redhat.com>
+Reply-To: lyude@redhat.com
+To:     Aaron Ma <aaron.ma@canonical.com>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        mapengyu@gmail.com, daniel@ffwll.ch, airlied@linux.ie,
+        tzimmermann@suse.de, mripard@kernel.org,
+        maarten.lankhorst@linux.intel.com, rodrigo.vivi@intel.com,
+        joonas.lahtinen@linux.intel.com, jani.nikula@linux.intel.com,
+        ville.syrjala@linux.intel.com
+Date:   Mon, 12 Oct 2020 19:39:11 -0400
+In-Reply-To: <20201009085750.88490-1-aaron.ma@canonical.com>
+References: <20201009085750.88490-1-aaron.ma@canonical.com>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201012200254.GB20115@casper.infradead.org>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 09:02:54PM +0100, Matthew Wilcox wrote:
-> On Mon, Oct 12, 2020 at 12:53:54PM -0700, Ira Weiny wrote:
-> > On Mon, Oct 12, 2020 at 05:44:38PM +0100, Matthew Wilcox wrote:
-> > > On Mon, Oct 12, 2020 at 09:28:29AM -0700, Dave Hansen wrote:
-> > > > kmap_atomic() is always preferred over kmap()/kmap_thread().
-> > > > kmap_atomic() is _much_ more lightweight since its TLB invalidation is
-> > > > always CPU-local and never broadcast.
-> > > > 
-> > > > So, basically, unless you *must* sleep while the mapping is in place,
-> > > > kmap_atomic() is preferred.
-> > > 
-> > > But kmap_atomic() disables preemption, so the _ideal_ interface would map
-> > > it only locally, then on preemption make it global.  I don't even know
-> > > if that _can_ be done.  But this email makes it seem like kmap_atomic()
-> > > has no downsides.
-> > 
-> > And that is IIUC what Thomas was trying to solve.
-> > 
-> > Also, Linus brought up that kmap_atomic() has quirks in nesting.[1]
-> > 
-> > >From what I can see all of these discussions support the need to have something
-> > between kmap() and kmap_atomic().
-> > 
-> > However, the reason behind converting call sites to kmap_thread() are different
-> > between Thomas' patch set and mine.  Both require more kmap granularity.
-> > However, they do so with different reasons and underlying implementations but
-> > with the _same_ resulting semantics; a thread local mapping which is
-> > preemptable.[2]  Therefore they each focus on changing different call sites.
-> > 
-> > While this patch set is huge I think it serves a valuable purpose to identify a
-> > large number of call sites which are candidates for this new semantic.
+Completely zoned out on Ccing these patches to stable before submitting them,
+but once they hit the mainline kernel you should be able to ask Greg to backport
+them if you need. Anyway, pushed to drm-intel-next-queued. Thanks for the
+patches!
+
+On Fri, 2020-10-09 at 16:57 +0800, Aaron Ma wrote:
+> BOE panel with ID 2270 claims both PWM_PIN_CAP and AUX_SET_CAP backlight
+> control bits, but default chip backlight failed to control brightness.
 > 
-> Yes, I agree.  My problem with this patch-set is that it ties it to
-> some Intel feature that almost nobody cares about.
-
-I humbly disagree.  At this level the only thing this is tied to is the idea
-that there are additional memory protections available which can be enabled
-quickly on a per-thread basis.  PKS on Intel is but 1 implementation of that.
-
-Even the kmap code only has knowledge that there is something which needs to be
-done special on a devm page.
-
->
-> Maybe we should
-> care about it, but you didn't try very hard to make anyone care about
-> it in the cover letter.
-
-Ok my bad.  We have customers who care very much about restricting access to
-the PMEM pages to prevent bugs in the kernel from causing permanent damage to
-their data/file systems.  I'll reword the cover letter better.
-
+> Check AUX_SET_CAP and proceed to check quirks or VBT backlight type.
+> DPCD can control the brightness of this pannel.
 > 
-> For a future patch-set, I'd like to see you just introduce the new
-> API.  Then you can optimise the Intel implementation of it afterwards.
-> Those patch-sets have entirely different reviewers.
+> Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
+> ---
+>  drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+> b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+> index acbd7eb66cbe..308b14159b7c 100644
+> --- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+> +++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+> @@ -334,8 +334,7 @@ intel_dp_aux_display_control_capable(struct
+> intel_connector *connector)
+>  	 * the panel can support backlight control over the aux channel
+>  	 */
+>  	if (intel_dp->edp_dpcd[1] & DP_EDP_TCON_BACKLIGHT_ADJUSTMENT_CAP &&
+> -	    (intel_dp->edp_dpcd[2] & DP_EDP_BACKLIGHT_BRIGHTNESS_AUX_SET_CAP) &&
+> -	    !(intel_dp->edp_dpcd[2] & DP_EDP_BACKLIGHT_BRIGHTNESS_PWM_PIN_CAP))
+> {
+> +	    (intel_dp->edp_dpcd[2] & DP_EDP_BACKLIGHT_BRIGHTNESS_AUX_SET_CAP)) {
+>  		drm_dbg_kms(&i915->drm, "AUX Backlight Control Supported!\n");
+>  		return true;
+>  	}
+-- 
+Sincerely,
+      Lyude Paul (she/her)
+      Software Engineer at Red Hat
 
-I considered doing this.  But this seemed more logical because the feature is
-being driven by PMEM which is behind the kmap interface not by the users of the
-API.
+Note: I deal with a lot of emails and have a lot of bugs on my plate. If you've
+asked me a question, are waiting for a review/merge on a patch, etc. and I
+haven't responded in a while, please feel free to send me another email to check
+on my status. I don't bite!
 
-I can introduce a patch set with a kmap_thread() call which does nothing if
-that is more palatable but it seems wrong to me to do so.
-
-Ira
