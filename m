@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BB6E28B5C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:16:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D09128B5C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388734AbgJLNPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:15:14 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:45926 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388535AbgJLNPL (ORCPT
+        id S2388755AbgJLNP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:15:28 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:33167 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388696AbgJLNPS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:15:11 -0400
-Received: by mail-oi1-f194.google.com with SMTP id j7so1101790oie.12;
-        Mon, 12 Oct 2020 06:15:11 -0700 (PDT)
+        Mon, 12 Oct 2020 09:15:18 -0400
+Received: by mail-oi1-f196.google.com with SMTP id s21so843014oij.0;
+        Mon, 12 Oct 2020 06:15:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HpOWl2K8xGZe8ObyWcT/Rs8C0sopZbqbVvo88pQRdW8=;
-        b=rfCEB1dRndNdvCiNRKyfAIolIc3X8BOvfdTslUV0aaj8cASuzaoQIVN042SjOuc6gK
-         ZmCRoJCvwixwBJv9vNoSbhxZMtAocDiLnwzPJxarpbNWgKwNbKZeLRaoifMP5Uk1y1cx
-         hOyglQG2837dFTotqFRIUsFwfyQJbCEwpgUVBBKz9RIAs+9oa2t8+pHhin3UU/1Qtzye
-         3R3dXJbjdMFRG/wcpZPzkG/sOrZ32jAWKl0HF1D/1cqKudlq7AGjmXyYLOw138KPRbNF
-         sGidQYz/1wEkth3OZ9u56mwlttKlyYDPiddAGFP22PGFWFxl9CK8eTFK1AOBFa29oNrG
-         x4/w==
-X-Gm-Message-State: AOAM530n0OEHIU+cThJxD7U68Qn2Wbpgn501AGlwlW/Mzw0paaqVddhQ
-        omXKhf9krmIvNqL90ZZ5jbe2PJEZtcTNNNgT+RY=
-X-Google-Smtp-Source: ABdhPJx4N97WaNtxkBiGWavGJamYpC2k/3nsjt/ifSHOvJJxlsVXZ3k/2Mj9uJqTjcLeGamsrfAVV4ILuEa2QQZHLEA=
-X-Received: by 2002:aca:c490:: with SMTP id u138mr10798781oif.54.1602508510780;
- Mon, 12 Oct 2020 06:15:10 -0700 (PDT)
+        bh=479sdd44MecSreb9si4jbrVvzN+pxNd9n3jIu5G3rEw=;
+        b=YMtWBVhusDfnNMuco2wozTmT7Gv9B9IrVPJTjzbnFzyQRKn5Y+rcmymXeQk30UJW3o
+         twk+CD5x9IqoXmqc8hWSQKbaVl24l26mMq0xXF7t9DSnBx2M3wN1yhJKD9nl5Xqg4koT
+         WjXpqGjciFSX78JJdkbZek1GT/VW3F+T92GQOtTEXv7dUEI2iRdYuUT+Nb6uQt1EuS5z
+         lV6rZcXXpjhQtQeuM35GAi+B/4GiZXe1Zj1XHCZB7Mx6pO9GegShxhm+tOPBSwDVFJFy
+         xMnQMlfY4MlqSxnaHViv/YLWnDOz5d+vOf5le5xbfPqdVIbHCPBmGaaCXqoPf8E5G9Q4
+         5NJQ==
+X-Gm-Message-State: AOAM531+82OVXqYO0yB/tzsnoQ8MY4MASi99kO4FPUYdmqYcjkVKp4Im
+        6KWkpITT8wChPK/DNtittdIBW4vCBYmy702ITQ2MC5Ie
+X-Google-Smtp-Source: ABdhPJxW+cuVuSNpTqFXx/Oo7DUbd+3z4lLadyCXqpYmjYp69GvJFXK10DtV6alyiU95OoxbP6hkY5LDEnOMkJzJjYo=
+X-Received: by 2002:aca:4441:: with SMTP id r62mr10153443oia.153.1602508517137;
+ Mon, 12 Oct 2020 06:15:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-7-arnd@arndb.de>
-In-Reply-To: <20201008154651.1901126-7-arnd@arndb.de>
+References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-8-arnd@arndb.de>
+In-Reply-To: <20201008154651.1901126-8-arnd@arndb.de>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 12 Oct 2020 15:14:59 +0200
-Message-ID: <CAMuHMdWPcw39MZotZtBP-b_CiiaX0iyys5SyuK6TYQQZ0+k_PQ@mail.gmail.com>
-Subject: Re: [PATCH 06/13] m68k: split heartbeat out of timer function
+Date:   Mon, 12 Oct 2020 15:15:06 +0200
+Message-ID: <CAMuHMdUgT38aG7YNqk9U2iD-y-Ms3JJO24jfVY9pGweuRFMcjA@mail.gmail.com>
+Subject: Re: [PATCH 07/13] m68k: sun3/sun3c: use legacy_timer_tick
 To:     Arnd Bergmann <arnd@arndb.de>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Russell King <linux@armlinux.org.uk>,
@@ -64,20 +64,23 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Thu, Oct 8, 2020 at 5:48 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> The heartbeat functionality is mostly separate from the
-> actual timer interrupt handling, and it is only used on
-> five platforms.
+> These two are different from all other machines:
 >
-> Split it out into a separate function and call that directly
-> from the timer irq on those platforms.
+> * sun3 does not call timer_routine() but open-codes it
+>   except for the profile_tick() call that appears to
+>   be unintentionally missing.
+>
+> * sun3x has a commented-out timer irq handler but no
+>   functional timer tick I could find.
+>
+> Change both to calling the new legacy_timer_tick here,
+> which includes the call to profile_tick() but does not
+> fix sun3x as that is still commented out.
 >
 > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
 Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-And finally (for Amiga):
-Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
 Gr{oetje,eeting}s,
 
