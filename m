@@ -2,17 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A8C28B607
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32E2128B608
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388979AbgJLNUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:20:02 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:56860 "EHLO huawei.com"
+        id S2388983AbgJLNUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:20:04 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:56884 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388889AbgJLNTh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:19:37 -0400
+        id S2387930AbgJLNTo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:19:44 -0400
 Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 97A3DBEA199870C5118F;
+        by Forcepoint Email with ESMTP id 9C3D8C0B8A6EB6466787;
         Mon, 12 Oct 2020 21:19:35 +0800 (CST)
 Received: from thunder-town.china.huawei.com (10.174.177.134) by
  DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
@@ -23,9 +23,9 @@ To:     Wei Xu <xuwei5@hisilicon.com>, Rob Herring <robh+dt@kernel.org>,
         linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
 CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 07/11] arm64: dts: hisilicon: normalize the node name of the usb devices
-Date:   Mon, 12 Oct 2020 21:17:35 +0800
-Message-ID: <20201012131739.1655-8-thunder.leizhen@huawei.com>
+Subject: [PATCH 08/11] arm64: dts: hisilicon: normalize the node name of the UART devices
+Date:   Mon, 12 Oct 2020 21:17:36 +0800
+Message-ID: <20201012131739.1655-9-thunder.leizhen@huawei.com>
 X-Mailer: git-send-email 2.26.0.windows.1
 In-Reply-To: <20201012131739.1655-1-thunder.leizhen@huawei.com>
 References: <20201012131739.1655-1-thunder.leizhen@huawei.com>
@@ -38,82 +38,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change the node name of the usb devices to match "^usb(@.*)?". These errors
-are detected by generic-ehci.yaml and generic-ohci.yaml.
+Change the node name of the UART devices to match
+"^serial(@[0-9a-f,]+)*$".
 
 Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 ---
- arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi | 4 ++--
- arch/arm64/boot/dts/hisilicon/hip06.dtsi       | 4 ++--
- arch/arm64/boot/dts/hisilicon/hip07.dtsi       | 4 ++--
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ arch/arm64/boot/dts/hisilicon/hip05.dtsi | 4 ++--
+ arch/arm64/boot/dts/hisilicon/hip06.dtsi | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi b/arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi
-index e24969d53c8fed0..11a72891e2a3a65 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi
-@@ -584,7 +584,7 @@
+diff --git a/arch/arm64/boot/dts/hisilicon/hip05.dtsi b/arch/arm64/boot/dts/hisilicon/hip05.dtsi
+index f7e3a7af4634233..26caf09e9511b3c 100644
+--- a/arch/arm64/boot/dts/hisilicon/hip05.dtsi
++++ b/arch/arm64/boot/dts/hisilicon/hip05.dtsi
+@@ -296,7 +296,7 @@
+ 			clock-frequency = <200000000>;
+ 		};
+ 
+-		uart0: uart@80300000 {
++		uart0: serial@80300000 {
+ 			compatible = "snps,dw-apb-uart";
+ 			reg = <0x0 0x80300000 0x0 0x10000>;
+ 			interrupts = <GIC_SPI 317 IRQ_TYPE_LEVEL_HIGH>;
+@@ -307,7 +307,7 @@
  			status = "disabled";
  		};
  
--		ohci: ohci@9880000 {
-+		ohci: usb@9880000 {
- 			compatible = "generic-ohci";
- 			reg = <0x9880000 0x10000>;
- 			interrupts = <GIC_SPI 67 IRQ_TYPE_LEVEL_HIGH>;
-@@ -599,7 +599,7 @@
- 			status = "disabled";
- 		};
- 
--		ehci: ehci@9890000 {
-+		ehci: usb@9890000 {
- 			compatible = "generic-ehci";
- 			reg = <0x9890000 0x10000>;
- 			interrupts = <GIC_SPI 66 IRQ_TYPE_LEVEL_HIGH>;
+-		uart1: uart@80310000 {
++		uart1: serial@80310000 {
+ 			compatible = "snps,dw-apb-uart";
+ 			reg = <0x0 0x80310000 0x0 0x10000>;
+ 			interrupts = <GIC_SPI 318 IRQ_TYPE_LEVEL_HIGH>;
 diff --git a/arch/arm64/boot/dts/hisilicon/hip06.dtsi b/arch/arm64/boot/dts/hisilicon/hip06.dtsi
-index 2f1930d4457fe1b..2d401d74a01f8b9 100644
+index 2d401d74a01f8b9..7980709e21ff020 100644
 --- a/arch/arm64/boot/dts/hisilicon/hip06.dtsi
 +++ b/arch/arm64/boot/dts/hisilicon/hip06.dtsi
-@@ -373,7 +373,7 @@
- 			#clock-cells = <0>;
- 		};
+@@ -359,7 +359,7 @@
+ 				status = "disabled";
+ 			};
  
--		usb_ohci: ohci@a7030000 {
-+		usb_ohci: usb@a7030000 {
- 			compatible = "generic-ohci";
- 			reg = <0x0 0xa7030000 0x0 0x10000>;
- 			interrupt-parent = <&mbigen_usb>;
-@@ -382,7 +382,7 @@
- 			status = "disabled";
- 		};
- 
--		usb_ehci: ehci@a7020000 {
-+		usb_ehci: usb@a7020000 {
- 			compatible = "generic-ehci";
- 			reg = <0x0 0xa7020000 0x0 0x10000>;
- 			interrupt-parent = <&mbigen_usb>;
-diff --git a/arch/arm64/boot/dts/hisilicon/hip07.dtsi b/arch/arm64/boot/dts/hisilicon/hip07.dtsi
-index ba90b25853555b7..7832d9cdec21c93 100644
---- a/arch/arm64/boot/dts/hisilicon/hip07.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hip07.dtsi
-@@ -1253,7 +1253,7 @@
- 			status = "disabled";
- 		};
- 
--		usb_ohci: ohci@a7030000 {
-+		usb_ohci: usb@a7030000 {
- 			compatible = "generic-ohci";
- 			reg = <0x0 0xa7030000 0x0 0x10000>;
- 			interrupt-parent = <&mbigen_usb>;
-@@ -1262,7 +1262,7 @@
- 			status = "disabled";
- 		};
- 
--		usb_ehci: ehci@a7020000 {
-+		usb_ehci: usb@a7020000 {
- 			compatible = "generic-ehci";
- 			reg = <0x0 0xa7020000 0x0 0x10000>;
- 			interrupt-parent = <&mbigen_usb>;
+-			uart0: lpc-uart@2f8 {
++			uart0: serial@2f8 {
+ 				compatible = "ns16550a";
+ 				clock-frequency = <1843200>;
+ 				reg = <0x01 0x2f8 0x08>;
 -- 
 1.8.3
 
