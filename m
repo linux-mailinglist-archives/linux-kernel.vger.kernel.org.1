@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8118D28B7A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:45:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7076E28B714
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730952AbgJLNpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:45:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48538 "EHLO mail.kernel.org"
+        id S1730847AbgJLNk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:40:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388373AbgJLNnR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:43:17 -0400
+        id S1731352AbgJLNjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:39:15 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1E8DA221FE;
-        Mon, 12 Oct 2020 13:43:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 577F420838;
+        Mon, 12 Oct 2020 13:39:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602510196;
-        bh=UfrYpmMLSfHoSfyBBh1Q85+/udG9IiZNyjLAVN6D9bY=;
+        s=default; t=1602509952;
+        bh=6ywTh4+0mnnRnCT5j+Wl7afSosu3sCue0g9jlw3VrSM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fJALk0hE1250vV73Ndbb9cRIGdmPVQxXsglWmaZRdp41NJIZXRib/MGGFHJo6cJDw
-         IslJVrWOmXZNCKUftmcwBS3ubWXBVBLCprbYDKY4xaghzKre97qwA367mM/G2j6/uP
-         kJWCmXGGB1pqybKZsflZku7IPrOzg50cik/XTqU8=
+        b=VROMFPfGQczR/jCgqv71WV5xenuE/To8gsf6uuImD7V+lv6NWXn9i3ImKc5b+ABM4
+         7Bm2SzgZem+zNuGal4PxIodLJ0ygdUlhg25npTjxJeJBwAJIBzp1UOa5TulXmozgnR
+         YDu1ovZoUTShYPAHYp//IuKxRlSfJ37JwvFzjBrA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Antony Antony <antony.antony@secunet.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 51/85] xfrm: clone XFRMA_SEC_CTX in xfrm_do_migrate
+        stable@vger.kernel.org, Florian Westphal <fw@strlen.de>,
+        Dumitru Ceara <dceara@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.19 28/49] openvswitch: handle DNAT tuple collision
 Date:   Mon, 12 Oct 2020 15:27:14 +0200
-Message-Id: <20201012132635.320244639@linuxfoundation.org>
+Message-Id: <20201012132630.764037085@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
-References: <20201012132632.846779148@linuxfoundation.org>
+In-Reply-To: <20201012132629.469542486@linuxfoundation.org>
+References: <20201012132629.469542486@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,74 +43,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Antony Antony <antony.antony@secunet.com>
+From: Dumitru Ceara <dceara@redhat.com>
 
-[ Upstream commit 7aa05d304785204703a67a6aa7f1db402889a172 ]
+commit 8aa7b526dc0b5dbf40c1b834d76a667ad672a410 upstream.
 
-XFRMA_SEC_CTX was not cloned from the old to the new.
-Migrate this attribute during XFRMA_MSG_MIGRATE
+With multiple DNAT rules it's possible that after destination
+translation the resulting tuples collide.
 
-v1->v2:
- - return -ENOMEM on error
-v2->v3:
- - fix return type to int
+For example, two openvswitch flows:
+nw_dst=10.0.0.10,tp_dst=10, actions=ct(commit,table=2,nat(dst=20.0.0.1:20))
+nw_dst=10.0.0.20,tp_dst=10, actions=ct(commit,table=2,nat(dst=20.0.0.1:20))
 
-Fixes: 80c9abaabf42 ("[XFRM]: Extension for dynamic update of endpoint address(es)")
-Signed-off-by: Antony Antony <antony.antony@secunet.com>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Assuming two TCP clients initiating the following connections:
+10.0.0.10:5000->10.0.0.10:10
+10.0.0.10:5000->10.0.0.20:10
+
+Both tuples would translate to 10.0.0.10:5000->20.0.0.1:20 causing
+nf_conntrack_confirm() to fail because of tuple collision.
+
+Netfilter handles this case by allocating a null binding for SNAT at
+egress by default.  Perform the same operation in openvswitch for DNAT
+if no explicit SNAT is requested by the user and allocate a null binding
+for SNAT for packets in the "original" direction.
+
+Reported-at: https://bugzilla.redhat.com/1877128
+Suggested-by: Florian Westphal <fw@strlen.de>
+Fixes: 05752523e565 ("openvswitch: Interface with NAT.")
+Signed-off-by: Dumitru Ceara <dceara@redhat.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- net/xfrm/xfrm_state.c | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+ net/openvswitch/conntrack.c |   20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/net/xfrm/xfrm_state.c b/net/xfrm/xfrm_state.c
-index 10d30f0338d72..fc1b391ba1554 100644
---- a/net/xfrm/xfrm_state.c
-+++ b/net/xfrm/xfrm_state.c
-@@ -1438,6 +1438,30 @@ out:
- EXPORT_SYMBOL(xfrm_state_add);
+--- a/net/openvswitch/conntrack.c
++++ b/net/openvswitch/conntrack.c
+@@ -899,15 +899,19 @@ static int ovs_ct_nat(struct net *net, s
+ 	}
+ 	err = ovs_ct_nat_execute(skb, ct, ctinfo, &info->range, maniptype);
  
- #ifdef CONFIG_XFRM_MIGRATE
-+static inline int clone_security(struct xfrm_state *x, struct xfrm_sec_ctx *security)
-+{
-+	struct xfrm_user_sec_ctx *uctx;
-+	int size = sizeof(*uctx) + security->ctx_len;
-+	int err;
-+
-+	uctx = kmalloc(size, GFP_KERNEL);
-+	if (!uctx)
-+		return -ENOMEM;
-+
-+	uctx->exttype = XFRMA_SEC_CTX;
-+	uctx->len = size;
-+	uctx->ctx_doi = security->ctx_doi;
-+	uctx->ctx_alg = security->ctx_alg;
-+	uctx->ctx_len = security->ctx_len;
-+	memcpy(uctx + 1, security->ctx_str, security->ctx_len);
-+	err = security_xfrm_state_alloc(x, uctx);
-+	kfree(uctx);
-+	if (err)
-+		return err;
-+
-+	return 0;
-+}
-+
- static struct xfrm_state *xfrm_state_clone(struct xfrm_state *orig,
- 					   struct xfrm_encap_tmpl *encap)
- {
-@@ -1494,6 +1518,10 @@ static struct xfrm_state *xfrm_state_clone(struct xfrm_state *orig,
- 			goto error;
+-	if (err == NF_ACCEPT &&
+-	    ct->status & IPS_SRC_NAT && ct->status & IPS_DST_NAT) {
+-		if (maniptype == NF_NAT_MANIP_SRC)
+-			maniptype = NF_NAT_MANIP_DST;
+-		else
+-			maniptype = NF_NAT_MANIP_SRC;
++	if (err == NF_ACCEPT && ct->status & IPS_DST_NAT) {
++		if (ct->status & IPS_SRC_NAT) {
++			if (maniptype == NF_NAT_MANIP_SRC)
++				maniptype = NF_NAT_MANIP_DST;
++			else
++				maniptype = NF_NAT_MANIP_SRC;
+ 
+-		err = ovs_ct_nat_execute(skb, ct, ctinfo, &info->range,
+-					 maniptype);
++			err = ovs_ct_nat_execute(skb, ct, ctinfo, &info->range,
++						 maniptype);
++		} else if (CTINFO2DIR(ctinfo) == IP_CT_DIR_ORIGINAL) {
++			err = ovs_ct_nat_execute(skb, ct, ctinfo, NULL,
++						 NF_NAT_MANIP_SRC);
++		}
  	}
  
-+	if (orig->security)
-+		if (clone_security(x, orig->security))
-+			goto error;
-+
- 	if (orig->coaddr) {
- 		x->coaddr = kmemdup(orig->coaddr, sizeof(*x->coaddr),
- 				    GFP_KERNEL);
--- 
-2.25.1
-
+ 	/* Mark NAT done if successful and update the flow key. */
 
 
