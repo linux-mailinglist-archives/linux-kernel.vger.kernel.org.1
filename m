@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7510328B596
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7085328B599
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730402AbgJLNKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:10:25 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:39566 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730376AbgJLNKX (ORCPT
+        id S1730418AbgJLNK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:10:27 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:41066 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730368AbgJLNKW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:10:23 -0400
-Received: by mail-il1-f197.google.com with SMTP id r10so12544469ilq.6
+        Mon, 12 Oct 2020 09:10:22 -0400
+Received: by mail-il1-f199.google.com with SMTP id z6so4055080ilf.8
         for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 06:10:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=ruwn0zWSDaveXQu6Bcr4bLcjDOKEK9RynywhL1QC2Qg=;
-        b=lPfnWp5WoLAsC0WhUk9OuC9JWsDR1V1fqOwyDB3T0Q7V5nsm9pyw+7rG1Ht6s/v/Qq
-         VQQhneRAyogYy9OjVV7mSM0MkjTEoPtUIzLuSfkmfjSgaAZWcJk7BcFjOOkXfEC9eibb
-         RK9If2EYj5LQT2gk9vVhkIFDyw4whPHiBKpz9Bjt1NKSM6cI2Ox4TxHdku1vTov0NlfU
-         HFYVk6kjioOzYsN7jH5nAArdX117JLaGL6pSG3cJSXhcl1QxoF9lvlFzeWhUytuNIDQO
-         qPk/mt2OM0h+r1Ko0FphT12BhRZBRDS4YQfaHmw7DNB9mstmy6pulDoSuxn9V2OHIvEY
-         iDcw==
-X-Gm-Message-State: AOAM531Sf4cQFt7Op3iebfzec9UoTS3x+L0hxURGwTQNTxhJQCBsY9YP
-        G5VS92CrE5xpvHre6rd604LFwXIPhu7ejOd1B1ldq6/G5GK3
-X-Google-Smtp-Source: ABdhPJwmKooF3mW5HGZXnz4Rm3mU4ZTSfXWKxE4Poiu/CjP+vqINI5mpk8mKyzMp+MZurJWuwLNoE6X/phPpgu5xmv52HhVIm87x
+        bh=ty+a1LZxl17gReBYzjTIEx2+QFoT3DIs5fUkSnxzBxs=;
+        b=WxdW1AyWa79Z6zOCJ5lfCxPuE86qrFVzBqsOGc8690TzxCKrcyG/iHrPXIU7n1ZrWS
+         Wzxsz3KBWBPyDsbl2K0xNNeVBHKUTeFyjHfvJTADb44b56ipTJc8tIPswml0eslYccr2
+         qxa12Y5YD5Fh1kILeKS6jDN2VGtO+j7jrcboy8LLGth2nGRdvVQWnRP8x++47hu9N1l3
+         FANRbkh0TAQH/f/CW1qBNR5BATGDVsKSLvMJFPJlLoZWEYRmisQ7GKO5g69mr8poJpc8
+         himNaHcQfRozwL8Hv+8DbrzAQlx75eQ6GDprWahT+HIq1ysm83NcLgZhUDeFkVMJwiD+
+         C9bA==
+X-Gm-Message-State: AOAM533/5dr/SxgxP770/UvHN1rmJQbL/Zcq36hlMvuZQYHjotC17YEI
+        Yef8b8LyiHt9Ug8BG9J86JD0xan5e7qcvuNHFbtdpDcErxqY
+X-Google-Smtp-Source: ABdhPJyNZvFhmmuyQWlSXrAhghAZG2nABU8cIhFSLaGFhf+Ic89VxBQYh9e5I6CsSoB0ajJmtJhvAwvqrbmux4Td+kv8UMIq9eFN
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:d45:: with SMTP id h5mr9473108ilj.307.1602508220977;
- Mon, 12 Oct 2020 06:10:20 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 06:10:20 -0700
+X-Received: by 2002:a02:2ac1:: with SMTP id w184mr19540608jaw.44.1602508221256;
+ Mon, 12 Oct 2020 06:10:21 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 06:10:21 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000042d83305b1790599@google.com>
-Subject: WARNING in ieee80211_get_sband
-From:   syzbot <syzbot+7716dbc401d9a437890d@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000471ab405b179056d@google.com>
+Subject: UBSAN: array-index-out-of-bounds in init_sb
+From:   syzbot <syzbot+a5e2482a693e6b1e444b@syzkaller.appspotmail.com>
+To:     agruenba@redhat.com, cluster-devel@redhat.com,
+        linux-kernel@vger.kernel.org, rpeterso@redhat.com,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,76 +48,59 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    036dfd83 selftests: mptcp: interpret \n as a new line
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=13d4d817900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8ad9ecfafd94317b
-dashboard link: https://syzkaller.appspot.com/bug?extid=7716dbc401d9a437890d
+HEAD commit:    6f2f486d Merge tag 'spi-fix-v5.9-rc8' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16887cab900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c06bcf3cc963d91c
+dashboard link: https://syzkaller.appspot.com/bug?extid=a5e2482a693e6b1e444b
 compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16755e58500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=162b6700500000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1081031b900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=133c359f900000
 
 Bisection is inconclusive: the issue happens on the oldest tested release.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=113dd700500000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=133dd700500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=153dd700500000
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15f3f320500000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=17f3f320500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=13f3f320500000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+7716dbc401d9a437890d@syzkaller.appspotmail.com
+Reported-by: syzbot+a5e2482a693e6b1e444b@syzkaller.appspotmail.com
 
-device wlan0 entered promiscuous mode
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 6905 at net/mac80211/ieee80211_i.h:1460 ieee80211_get_sband+0x2e3/0x3e0 net/mac80211/ieee80211_i.h:1460
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 6905 Comm: syz-executor526 Not tainted 5.9.0-rc8-syzkaller #0
+gfs2: fsid=loop0: Trying to join cluster "lock_nolock", "loop0"
+gfs2: fsid=loop0: Now mounting FS...
+================================================================================
+UBSAN: array-index-out-of-bounds in fs/gfs2/ops_fstype.c:342:21
+index 11 is out of range for type 'u64 [11]'
+CPU: 0 PID: 6887 Comm: syz-executor693 Not tainted 5.9.0-rc8-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Call Trace:
  __dump_stack lib/dump_stack.c:77 [inline]
  dump_stack+0x198/0x1fd lib/dump_stack.c:118
- panic+0x382/0x7fb kernel/panic.c:231
- __warn.cold+0x20/0x4b kernel/panic.c:600
- report_bug+0x1bd/0x210 lib/bug.c:198
- handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
- exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-RIP: 0010:ieee80211_get_sband+0x2e3/0x3e0 net/mac80211/ieee80211_i.h:1460
-Code: f9 48 c7 c2 e0 5f 61 89 be 7b 02 00 00 48 c7 c7 40 60 61 89 c6 05 b6 fb 80 03 01 e8 3c a2 85 f9 e9 b8 fd ff ff e8 cd ac 9f f9 <0f> 0b e8 46 75 60 00 31 ff 89 c3 89 c6 e8 1b a9 9f f9 85 db 74 19
-RSP: 0018:ffffc900056573d8 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff87d6db35
-RDX: ffff8880a6a2a180 RSI: ffffffff87d6dbb3 RDI: 0000000000000005
-RBP: ffff88809ec40c80 R08: 0000000000000001 R09: ffffffff8d1119e7
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: ffff88809ecccc00 R14: ffff88809ec40c80 R15: ffffc9000565751c
- sta_apply_parameters+0x4e/0x1dc0 net/mac80211/cfg.c:1451
- ieee80211_add_station+0x320/0x660 net/mac80211/cfg.c:1678
- rdev_add_station net/wireless/rdev-ops.h:190 [inline]
- nl80211_new_station+0xdce/0x1420 net/wireless/nl80211.c:6571
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
- genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2489
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_out_of_bounds.cold+0x62/0x6c lib/ubsan.c:356
+ gfs2_read_sb fs/gfs2/ops_fstype.c:342 [inline]
+ init_sb+0xc37/0xd30 fs/gfs2/ops_fstype.c:479
+ gfs2_fill_super+0x1796/0x254a fs/gfs2/ops_fstype.c:1096
+ get_tree_bdev+0x421/0x740 fs/super.c:1342
+ gfs2_get_tree+0x4a/0x270 fs/gfs2/ops_fstype.c:1201
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1547
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x1387/0x20a0 fs/namespace.c:3192
+ do_mount fs/namespace.c:3205 [inline]
+ __do_sys_mount fs/namespace.c:3413 [inline]
+ __se_sys_mount fs/namespace.c:3390 [inline]
+ __x64_sys_mount+0x27f/0x300 fs/namespace.c:3390
  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x446309
-Code: e8 bc b5 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 8b 0f fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f4a00236d98 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000006dbc78 RCX: 0000000000446309
-RDX: 0000000000000000 RSI: 0000000020000040 RDI: 000000000000000a
-RBP: 00000000006dbc70 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc7c
-R13: 0000000000000000 R14: 000000306e616c77 R15: 0000000000660006
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+RIP: 0033:0x446dba
+Code: b8 08 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 fd ad fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 da ad fb ff c3 66 0f 1f 84 00 00 00 00 00
+RSP: 002b:00007ffcd944f138 EFLAGS: 00000293 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffcd944f190 RCX: 0000000000446dba
+RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007ffcd944f150
+RBP: 00007ffcd944f150 R08: 00007ffcd944f190 R09: 00007ffc00000015
+R10: 0000000002200000 R11: 0000000000000293 R12: 0000000000000001
+R13: 0000000000000004 R14: 0000000000000003 R15: 0000000000000003
+================================================================================
 
 
 ---
