@@ -2,111 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DA7F28BBF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BC4B28BBF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:32:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389983AbgJLPch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 11:32:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389340AbgJLPch (ORCPT
+        id S2389886AbgJLPcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 11:32:23 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:52709 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389340AbgJLPcX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 11:32:37 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 372F1C0613D0;
-        Mon, 12 Oct 2020 08:32:37 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id n142so13696003ybf.7;
-        Mon, 12 Oct 2020 08:32:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Q+589eEK9RUMo5k3gXC7QGOAGtF0NXhGUz1kajGcrv8=;
-        b=r/LrAE+tyr+DmwidynsfG+yaFi4t/NaYYBfmS+rwflbEohjyVSBYGzZDGRgxT08+3o
-         WG5r6/o3xlQJUCv2xJR4vIWUF1mlztRTibRv/DCesnLy2J70g5Cu/my1ld4K2cCGo7F7
-         vx7k3liNNv+j1rXwM/FUI3ujLhuactXGgUEWkVYXU+Y7VvERuiiXjCcLJ8Ho9ssc+i1H
-         Vvw30gjghafsvVOqCgu+QaS/w1znUZFRKrF9MKqL+oQFEqpYaworLamOFfjDTcSXt66L
-         edScY2F+o7eki16tHTb6NmnVuvCINlCnkXQTdj7roj6UNpgi5g/JahjSA0jwhgYDmOC3
-         uDeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Q+589eEK9RUMo5k3gXC7QGOAGtF0NXhGUz1kajGcrv8=;
-        b=rcykRq/HloEi2uvj6fuRoKJQieP5kkponqMYyqufK1UmaLtEnA3ELSBkCAkwg5Jmck
-         sO5uscUY8m/LJqO6HHueMqcgMUWXJMPM64S3alV89w6zjbxdnJKe8Xhia+ewm7AjNYeC
-         +ecbrnWEq43l0gaROcON+W9WefXVBEaOmEBsLxot2lV1ndoE8/re9VME8EXa++hFwf39
-         T5Ep/q2nX/FBxh207vgQbX4EmHQS0tISVxX9dg/zyLslqMScVzYOjsg0dcARs1c52H4D
-         ZafDrAbow6UeTD3sjkE/76pxeTIaOFWmUqq36Lb6uSvSs9IcWhVpWr1FmBjZNfEklmZ7
-         iY/A==
-X-Gm-Message-State: AOAM530RYDJ1jxcDPcRN8oGq3GVJ8KIPgNcZHIcnzsKuqV7Ydjz7xmwh
-        IliybYro73CEiHuGTClCPzlOqUcBp7Vcoh0OUxc=
-X-Google-Smtp-Source: ABdhPJw+hAxQlG+1/PVLLrv2BqdonAWAW01tSmViwJtPemblj5lheDDRXhRaGUKmAcnUwd2TawkgwHIKxMz06yWWGQI=
-X-Received: by 2002:a25:7405:: with SMTP id p5mr34323868ybc.19.1602516756470;
- Mon, 12 Oct 2020 08:32:36 -0700 (PDT)
+        Mon, 12 Oct 2020 11:32:23 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kRzoD-00041a-BW; Mon, 12 Oct 2020 15:32:21 +0000
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     Zhu Yanjun <yanjunz@nvidia.com>,
+        "Doug Ledford <dledford"@redhat.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   Colin Ian King <colin.king@canonical.com>
+Subject: re: RDMA/rxe: Fix skb lifetime in rxe_rcv_mcast_pkt()
+Message-ID: <9ca5205a-ee1c-0ad6-3e9d-3287e92714a1@canonical.com>
+Date:   Mon, 12 Oct 2020 16:32:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-References: <20201007130750.49349844@gandalf.local.home> <20201012101208.GF1099489@krava>
- <20201012111950.55a73588@gandalf.local.home>
-In-Reply-To: <20201012111950.55a73588@gandalf.local.home>
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Date:   Mon, 12 Oct 2020 16:32:00 +0100
-Message-ID: <CADVatmP1iZdiWWqs-ZujAeXiCvYYJpNvoPt3K+GFfL5a6vyJGA@mail.gmail.com>
-Subject: Re: [ANNOUNCE] libtraceevent.git
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
-        Zamir SUN <sztsian@gmail.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        zsun@redhat.com, Vitaly Chikunov <vt@altlinux.org>,
-        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
-        Yordan Karadzhov <ykaradzhov@vmware.com>,
-        Ben Hutchings <ben@decadent.org.uk>,
-        Tony Jones <tonyj@suse.de>, John Kacur <jkacur@redhat.com>,
-        Clark Williams <williams@redhat.com>, powertop@lists.01.org,
-        Al Stone <ahs3@debian.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 4:19 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Mon, 12 Oct 2020 12:12:08 +0200
-> Jiri Olsa <jolsa@redhat.com> wrote:
->
-> > On Wed, Oct 07, 2020 at 01:07:50PM -0400, Steven Rostedt wrote:
-> > > I split out tools/lib/traceevent from the kernel tree using "git subtree",
-> > > which recreates all the commits of a directory and makes that directory a
-> > > stand alone. I then updated the Makefiles, and copied over some of the
-> > > header files used to build the library. I pushed this up to:
-> > >
-> > >   https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/
-> > >
-> > > My hope is that this will now be the source of all updates to the
-> > > libtraceevent library that can be used as a stand alone package that both
-> > > perf and tracecmd can use. I would also like powertop and rasdaemon to use
-> > > this as well.
-> >
-> > hi,
-> > I'm adding this as fedora package, is there a source arhive somewhere
-> > in git.kernel.org for libtraceevent that spec could download?
-> >
->
-> Hi Jiri!
->
-> Once it's shown that it works for all the package maintainers, I will tag
-> it which should create the tarballs automatically on the above link. But I
-> wanted to fix all the packaging bugs before doing so. I hope this doesn't
-> make it into a catch-22. Where you can't package till there's a source
-> tarball, but I can't make a source tarball until I know you can package
-> it ;-)
+Hi,
 
-For Debian I have raised https://bugs.debian.org/971976 but I will
-package it locally today just to check there is no packaging bugs for
-our packaging.
+Static analysis with Coverity has detected a potential issue with the
+following commit:
 
+commit e7ec96fc7932f48a6d6cdd05bf82004a1a04285b
+Author: Bob Pearson <rpearsonhpe@gmail.com>
+Date:   Thu Oct 8 15:36:52 2020 -0500
 
--- 
-Regards
-Sudip
+    RDMA/rxe: Fix skb lifetime in rxe_rcv_mcast_pkt()
+
+The analysis is as follows:
+
+   16. Condition mce->qp_list.next != &mcg->qp_list, taking true branch.
+
+269                if (mce->qp_list.next != &mcg->qp_list)
+
+   17. returned_null: skb_clone returns NULL (checked 153 out of 178 times).
+   18. var_assigned: Assigning: per_qp_skb = NULL return value from
+skb_clone.
+   19. Falling through to end of if statement.
+270                        per_qp_skb = skb_clone(skb, GFP_ATOMIC);
+271                else
+272                        per_qp_skb = skb;
+273
+274                per_qp_pkt = SKB_TO_PKT(per_qp_skb);
+275                per_qp_pkt->qp = qp;
+276                rxe_add_ref(qp);
+
+Dereference null return value (NULL_RETURNS)
+    20. dereference: Dereferencing a pointer that might be NULL
+per_qp_skb when calling rxe_rcv_pkt.
+277                rxe_rcv_pkt(per_qp_pkt, per_qp_skb);
+278        }
+279
+
+It is possible for skb_clone to return NULL, so dereferencing the NULL
+return pointer per_qp_skb is a potential issue.
+
+Colin
+
