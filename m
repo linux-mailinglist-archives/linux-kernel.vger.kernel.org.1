@@ -2,76 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D45B28C579
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 01:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1817428C57E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 01:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731050AbgJLXzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 19:55:09 -0400
-Received: from mga12.intel.com ([192.55.52.136]:20992 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728821AbgJLXzI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 19:55:08 -0400
-IronPort-SDR: 3GFYgVk+GQCZSlXQDC9h9DdYFMG49IcrwGpnzYoKqTunWJdGqzWakGRFHJTytU2VMzLlwEC8XN
- bQzEeHYfuZhA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="145139069"
-X-IronPort-AV: E=Sophos;i="5.77,368,1596524400"; 
-   d="scan'208";a="145139069"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 16:55:07 -0700
-IronPort-SDR: SV0qYb63niNV9GMArm2g502LOO41WCibREwQLWEdJpDSZOVJp3Wfeu2Ylls0Vzbg/P9gkErI/D
- AupL5AM/4/Zw==
-X-IronPort-AV: E=Sophos;i="5.77,368,1596524400"; 
-   d="scan'208";a="530165565"
-Received: from lusin-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.53.81])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 16:55:04 -0700
-Date:   Tue, 13 Oct 2020 02:55:02 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Cc:     Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Deven Bowers <deven.desai@linux.microsoft.com>,
-        Jaskaran Khurana <jaskarankhurana@linux.microsoft.com>,
-        Milan Broz <gmazyland@gmail.com>, dm-devel@redhat.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
-Subject: Re: [PATCH v1] dm verity: Add support for signature verification
- with 2nd keyring
-Message-ID: <20201012235502.GA36149@linux.intel.com>
-References: <20201002071802.535023-1-mic@digikod.net>
- <bda2ffd7-3b7c-33a4-667f-a3435e112fc1@digikod.net>
+        id S2389522AbgJLX7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 19:59:23 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:55864 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388709AbgJLX7W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 19:59:22 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 6BAB0272DB;
+        Mon, 12 Oct 2020 19:59:18 -0400 (EDT)
+Date:   Tue, 13 Oct 2020 10:59:18 +1100 (AEDT)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Daniel Wagner <dwagner@suse.de>
+cc:     Nilesh Javali <njavali@marvell.com>, Arun Easi <aeasi@marvell.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] qla2xxx: Return EBUSY on fcport deletion
+In-Reply-To: <20201012173524.46544-1-dwagner@suse.de>
+Message-ID: <alpine.LNX.2.23.453.2010131058220.10@nippy.intranet>
+References: <20201012173524.46544-1-dwagner@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <bda2ffd7-3b7c-33a4-667f-a3435e112fc1@digikod.net>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 11:50:03AM +0200, Mickaël Salaün wrote:
-> Hi,
-> 
-> What do you think about this patch?
-> 
-> Regards,
->  Mickaël
-> 
-> On 02/10/2020 09:18, Mickaël Salaün wrote:
-> > From: Mickaël Salaün <mic@linux.microsoft.com>
-> > 
-> > Add a new DM_VERITY_VERIFY_ROOTHASH_SIG_SECONDARY_KEYRING configuration
-> > to enable dm-verity signatures to be verified against the secondary
-> > trusted keyring.  This allows certificate updates without kernel update
-> > and reboot, aligning with module and kernel (kexec) signature
-> > verifications.
 
-I'd prefer a bit more verbose phrasing, not least because I have never
-really even peeked at dm-verity, but it is also a good practice.
+On Mon, 12 Oct 2020, Daniel Wagner wrote:
 
-You have the middle part of the story missing - explaining the semantics
-of how the feature leads to the aimed solution.
+> When the fcport is about to be deleted we should return EBUSY instead
+> of ENODEV. Only for EBUSY the request will be requeued in a multipath
+> setup.
+> 
+> Also in case we have a valid qpair but the firmware has not yet
+> started return EBUSY to avoid dropping the request.
+> 
+> Signed-off-by: Daniel Wagner <dwagner@suse.de>
+> ---
+> 
+> v3: simplify test logic as suggested by Arun.
 
-/Jarkko
+Not exactly a "simplification": there was a change of behaviour between v2 
+and v3. It seems the commit log no longer reflects the code.
+
+> v2: rebased on mkp/staging
+> 
+>  drivers/scsi/qla2xxx/qla_nvme.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/scsi/qla2xxx/qla_nvme.c b/drivers/scsi/qla2xxx/qla_nvme.c
+> index 2cd9bd288910..1fa457a5736e 100644
+> --- a/drivers/scsi/qla2xxx/qla_nvme.c
+> +++ b/drivers/scsi/qla2xxx/qla_nvme.c
+> @@ -555,10 +555,12 @@ static int qla_nvme_post_cmd(struct nvme_fc_local_port *lport,
+>  
+>  	fcport = qla_rport->fcport;
+>  
+> -	if (!qpair || !fcport || (qpair && !qpair->fw_started) ||
+> -	    (fcport && fcport->deleted))
+> +	if (!qpair || !fcport)
+>  		return -ENODEV;
+>  
+> +	if (!qpair->fw_started || fcport->deleted)
+> +		return -EBUSY;
+> +
+>  	vha = fcport->vha;
+>  
+>  	if (!(fcport->nvme_flag & NVME_FLAG_REGISTERED))
+> 
