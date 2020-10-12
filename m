@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E27A28BA10
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:08:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B5F28B6C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:38:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390984AbgJLOF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:05:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37732 "EHLO mail.kernel.org"
+        id S1729939AbgJLNhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:37:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729949AbgJLNfK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:35:10 -0400
+        id S2388713AbgJLNgV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:36:21 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 769FF221FE;
-        Mon, 12 Oct 2020 13:35:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6A6BF20878;
+        Mon, 12 Oct 2020 13:36:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509710;
-        bh=ezOUzcrUIiadmFHTCXkiPhveMCAMHY6T5StkAf66SzY=;
+        s=default; t=1602509780;
+        bh=Dqj8WYjt6OA+au4Mary/LhvkSCMmRFoqRFqXhFVPoCQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xKshFr3sbNnBY5Lh6pJ8CWdt9Y3QpaM7LYFWMJaZtJycILkqiKuIHFntDRz26DEE8
-         x8xz+3JFHcAok5Tta0BFPZft/6kVhsuSv9QpveLfYmsl9oc5RjkS/4t5AGHyPpxHNL
-         //RHYz90LKJzm5cUB+k7cBga0jUokQpX+y3P6ye8=
+        b=dMibZcklYpWYWPDmTuMjkDamVv1QDPctjBqPBY9pDK+0gp0YUA47snGdGpfETVb0o
+         xiYUakoxbDKFLg2x5aFkLdHKa6OkETShG5iGoAaaCFLDDZICnpGtkHPjbFFjuKi1EF
+         ObpzpvWmDO1JEndIBdGLDIwaZ+Zzl9/+e1VquOmM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH 4.9 21/54] ep_create_wakeup_source(): dentry name can change under you...
+Subject: [PATCH 4.14 27/70] epoll: replace ->visited/visited_list with generation count
 Date:   Mon, 12 Oct 2020 15:26:43 +0200
-Message-Id: <20201012132630.569922401@linuxfoundation.org>
+Message-Id: <20201012132631.506509917@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132629.585664421@linuxfoundation.org>
-References: <20201012132629.585664421@linuxfoundation.org>
+In-Reply-To: <20201012132630.201442517@linuxfoundation.org>
+References: <20201012132630.201442517@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,40 +43,91 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Al Viro <viro@zeniv.linux.org.uk>
 
-commit 3701cb59d892b88d569427586f01491552f377b1 upstream.
+commit 18306c404abe18a0972587a6266830583c60c928 upstream.
 
-or get freed, for that matter, if it's a long (separately stored)
-name.
+removes the need to clear it, along with the races.
 
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/eventpoll.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ fs/eventpoll.c |   26 +++++++-------------------
+ 1 file changed, 7 insertions(+), 19 deletions(-)
 
 --- a/fs/eventpoll.c
 +++ b/fs/eventpoll.c
-@@ -1260,7 +1260,7 @@ static int reverse_path_check(void)
+@@ -223,8 +223,7 @@ struct eventpoll {
+ 	struct file *file;
  
- static int ep_create_wakeup_source(struct epitem *epi)
+ 	/* used to optimize loop detection check */
+-	int visited;
+-	struct list_head visited_list_link;
++	u64 gen;
+ 
+ #ifdef CONFIG_NET_RX_BUSY_POLL
+ 	/* used to track busy poll napi_id */
+@@ -273,6 +272,8 @@ static long max_user_watches __read_most
+  */
+ static DEFINE_MUTEX(epmutex);
+ 
++static u64 loop_check_gen = 0;
++
+ /* Used to check for epoll file descriptor inclusion loops */
+ static struct nested_calls poll_loop_ncalls;
+ 
+@@ -288,9 +289,6 @@ static struct kmem_cache *epi_cache __re
+ /* Slab cache used to allocate "struct eppoll_entry" */
+ static struct kmem_cache *pwq_cache __read_mostly;
+ 
+-/* Visited nodes during ep_loop_check(), so we can unset them when we finish */
+-static LIST_HEAD(visited_list);
+-
+ /*
+  * List of files with newly added links, where we may need to limit the number
+  * of emanating paths. Protected by the epmutex.
+@@ -1877,13 +1875,12 @@ static int ep_loop_check_proc(void *priv
+ 	struct epitem *epi;
+ 
+ 	mutex_lock_nested(&ep->mtx, call_nests + 1);
+-	ep->visited = 1;
+-	list_add(&ep->visited_list_link, &visited_list);
++	ep->gen = loop_check_gen;
+ 	for (rbp = rb_first_cached(&ep->rbr); rbp; rbp = rb_next(rbp)) {
+ 		epi = rb_entry(rbp, struct epitem, rbn);
+ 		if (unlikely(is_file_epoll(epi->ffd.file))) {
+ 			ep_tovisit = epi->ffd.file->private_data;
+-			if (ep_tovisit->visited)
++			if (ep_tovisit->gen == loop_check_gen)
+ 				continue;
+ 			error = ep_call_nested(&poll_loop_ncalls, EP_MAX_NESTS,
+ 					ep_loop_check_proc, epi->ffd.file,
+@@ -1924,18 +1921,8 @@ static int ep_loop_check_proc(void *priv
+  */
+ static int ep_loop_check(struct eventpoll *ep, struct file *file)
  {
--	const char *name;
-+	struct name_snapshot n;
- 	struct wakeup_source *ws;
+-	int ret;
+-	struct eventpoll *ep_cur, *ep_next;
+-
+-	ret = ep_call_nested(&poll_loop_ncalls, EP_MAX_NESTS,
++	return ep_call_nested(&poll_loop_ncalls, EP_MAX_NESTS,
+ 			      ep_loop_check_proc, file, ep, current);
+-	/* clear visited list */
+-	list_for_each_entry_safe(ep_cur, ep_next, &visited_list,
+-							visited_list_link) {
+-		ep_cur->visited = 0;
+-		list_del(&ep_cur->visited_list_link);
+-	}
+-	return ret;
+ }
  
- 	if (!epi->ep->ws) {
-@@ -1269,8 +1269,9 @@ static int ep_create_wakeup_source(struc
- 			return -ENOMEM;
+ static void clear_tfile_check_list(void)
+@@ -2152,6 +2139,7 @@ SYSCALL_DEFINE4(epoll_ctl, int, epfd, in
+ error_tgt_fput:
+ 	if (full_check) {
+ 		clear_tfile_check_list();
++		loop_check_gen++;
+ 		mutex_unlock(&epmutex);
  	}
  
--	name = epi->ffd.file->f_path.dentry->d_name.name;
--	ws = wakeup_source_register(name);
-+	take_dentry_name_snapshot(&n, epi->ffd.file->f_path.dentry);
-+	ws = wakeup_source_register(n.name);
-+	release_dentry_name_snapshot(&n);
- 
- 	if (!ws)
- 		return -ENOMEM;
 
 
