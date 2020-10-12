@@ -2,115 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C099128AE0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 08:04:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86E9228AE12
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 08:09:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727165AbgJLGEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 02:04:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726337AbgJLGEp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 02:04:45 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74CC6C0613D0
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 23:04:45 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id b19so7905356qvm.6
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 23:04:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1yI8jYs2/lZFaIWxLZ/rjVvQ+sNLY30huA6J9bKeQWs=;
-        b=RcKAUm7XE30LvjwktSIVOpda8L78FHBfTGbVdFcE2/BPz9VprsI9jUKte8aio2Nnen
-         c4VU+029KeHaZBqm3or90rscQ/kZxgV0k2PAXM3VYGsyQNjhuAyPy9BThFX8GcCEQ0In
-         9eT4oCCNSrRsFOLWOcMv89Qw+YXdmwN91H5maqzG2xCkk9wlKbeSbAYr6hvKgWUfvjqO
-         X9M5okURon1jOYF7xWHWyhCBIRUuHrQPoBs/4yBvwQ5yKv+Ut+8hxwkmp5f4lVUaXKv/
-         8HGIZ82BwymAeEUjLbpsSFJIyzoWOcll5IdLRSE4gwprUmA/9OEtXFXT6wcnDbZ0PKYu
-         qDyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1yI8jYs2/lZFaIWxLZ/rjVvQ+sNLY30huA6J9bKeQWs=;
-        b=rBec6cIODJ364p6mqdNu0KCW7X1nSVTRScHDVlNa+uOvIL8d91Rg2AbUCJgYAL85LI
-         D4NQJHZ8zT6eazImZpJAtdH1Oji0wopkGonmcuObZykAHuDnjoeHkp15jK7Bf4ccRmI7
-         6Xw5HXdx1CZ6Oh/1SRt68DTrRqVx+GJuqA8yLAOsKpLUchmBfVF6JgEFcV0QOTlKPzTH
-         y+Ycr3254UQy+j/QRwWugytprriJzHhtVAh8iwNGDpyM+6pQmj+c8jexGfZcP4uxHqpZ
-         TkMqDc9ofO/ejQ2MsrA3G34+pm4YIIL8CQieUbPiq+P3oYmeQ14zlaHi/ZnnaLQBWZ/z
-         SBvw==
-X-Gm-Message-State: AOAM531CSx08gPkU9KUDk2lBzmhqRPczsgZmvdxg7pYP4SbnIYz87eGg
-        58ebNvhKzmiqmPEoEP2Ou58UUzyzXYqb05SEl3gqCQ==
-X-Google-Smtp-Source: ABdhPJzk9yyYIHb6tMn3rAnnLaCzCXcPF/2qBusVxjrttHq08TplYv2Tzc1oqd7dVB9eyqXFLmA3t7FgHBFT5milr7k=
-X-Received: by 2002:a05:6214:222:: with SMTP id j2mr24604054qvt.32.1602482684327;
- Sun, 11 Oct 2020 23:04:44 -0700 (PDT)
+        id S1727172AbgJLGJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 02:09:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46330 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726337AbgJLGJV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 02:09:21 -0400
+Received: from localhost (unknown [122.182.245.197])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6BDB920757;
+        Mon, 12 Oct 2020 06:09:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602482961;
+        bh=GPU8CP6xKnWURBquscB890UF3K7DVSENbbTjU0EOU3A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=prFNN/Lgyqvvw6oyH5tHsdNyhvz7J9fnspEpav3BNtPSmXWEHte305llkJ9+etXiM
+         2Zvxj4RuV2Vc2NenmjoWKYzrHqTVnxkWVhxw/itvpB+3ymUqEHmZrdEcQkX6oU8+VR
+         1Gai7wI58vNqj1NZZm/xU2I3LEScUvfdsyQb0lLk=
+Date:   Mon, 12 Oct 2020 11:39:16 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc:     dmaengine@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/3] dmaengine: add peripheral configuration
+Message-ID: <20201012060916.GI2968@vkoul-mobl>
+References: <20201008123151.764238-1-vkoul@kernel.org>
+ <20201008123151.764238-3-vkoul@kernel.org>
+ <e2c0323b-4f41-1926-5930-c63624fe1dd1@ti.com>
+ <20201009103019.GD2968@vkoul-mobl>
+ <a44af464-7d13-1254-54dd-f7783ccfaa0f@ti.com>
+ <20201009111515.GF2968@vkoul-mobl>
+ <13fdee71-5060-83fc-d69d-8ec73f82fac4@ti.com>
 MIME-Version: 1.0
-References: <20201007101726.3149375-1-a.nogikh@gmail.com> <20201007101726.3149375-2-a.nogikh@gmail.com>
- <20201009161558.57792e1a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CACT4Y+ZF_umjBpyJiCb8YPQOOSofG-M9h0CB=xn3bCgK=Kr=9w@mail.gmail.com> <20201010081431.1f2d9d0d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201010081431.1f2d9d0d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 12 Oct 2020 08:04:33 +0200
-Message-ID: <CACT4Y+aEQoRMO6eA7iQZf4dhOu2cD1ZbbH6TT4Rs_uQwG0PWYg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] net: store KCOV remote handle in sk_buff
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Aleksandr Nogikh <a.nogikh@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Marco Elver <elver@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Aleksandr Nogikh <nogikh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <13fdee71-5060-83fc-d69d-8ec73f82fac4@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 10, 2020 at 5:14 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Sat, 10 Oct 2020 09:54:57 +0200 Dmitry Vyukov wrote:
-> > On Sat, Oct 10, 2020 at 1:16 AM Jakub Kicinski <kuba@kernel.org> wrote:
-> > > On Wed,  7 Oct 2020 10:17:25 +0000 Aleksandr Nogikh wrote:
-> > > > From: Aleksandr Nogikh <nogikh@google.com>
-> > > >
-> > > > Remote KCOV coverage collection enables coverage-guided fuzzing of the
-> > > > code that is not reachable during normal system call execution. It is
-> > > > especially helpful for fuzzing networking subsystems, where it is
-> > > > common to perform packet handling in separate work queues even for the
-> > > > packets that originated directly from the user space.
-> > > >
-> > > > Enable coverage-guided frame injection by adding a kcov_handle
-> > > > parameter to sk_buff structure. Initialization in __alloc_skb ensures
-> > > > that no socket buffer that was generated during a system call will be
-> > > > missed.
-> > > >
-> > > > Code that is of interest and that performs packet processing should be
-> > > > annotated with kcov_remote_start()/kcov_remote_stop().
-> > > >
-> > > > An alternative approach is to determine kcov_handle solely on the
-> > > > basis of the device/interface that received the specific socket
-> > > > buffer. However, in this case it would be impossible to distinguish
-> > > > between packets that originated from normal background network
-> > > > processes and those that were intentionally injected from the user
-> > > > space.
-> > > >
-> > > > Signed-off-by: Aleksandr Nogikh <nogikh@google.com>
-> > >
-> > > Could you use skb_extensions for this?
-> >
-> > Why? If for space, this is already under a non-production ifdef.
->
-> I understand, but the skb_ext infra is there for uncommon use cases
-> like this one. Any particular reason you don't want to use it?
-> The slight LoC increase?
->
-> Is there any precedent for adding the kcov field to other performance
-> critical structures?
+On 09-10-20, 14:29, Peter Ujfalusi wrote:
+> 
+> 
+> On 09/10/2020 14.15, Vinod Koul wrote:
+> >>> If for any any reason subsequent txn is for different direction, I would
+> >>> expect that parameters are set again before prep_ calls
+> >>
+> >> But in DEV_TO_DEV?
+> > 
+> > Do we support that :D
+> > 
+> >> If we have two peripherals, both needs config:
+> >> p1_config and p2_config
+> >>
+> >> What and how would one use the single peripheral_config?
+> > 
+> > Since the config is implementation specific, I do not think it limits.
+> > You may create
+> > 
+> > struct peter_config {
+> >         struct p1_config;
+> >         struct p2_config;
+> > };
+> 
+> The use case is:
+> MEM -DMA-> P1 -DMA-> P2
+> or
+> P2 -DMA-> P1 -DMA-> MEM
+> or
+> MEM -DMA-> P2
+> or
+> P2 -DMA-> MEM
+> or
+> MEM -DMA-> P1 -DMA-> MEM
+> 
+> How would the DMA guess what it should do? How would the independent P1
+> and P2 would know how to set up the config?
 
-I see. Yes, increase in complexity for no gain.
-No, KCOV context wasn't added to anything as critical as sk_buff.
-It seems there is no established practice both ways -- I don't see
-anything debug-related in sk_buff nor in skb_ext_id...
+As I said, we do not support DEV_TO_DEV yet :)
+
+Question is how would p1<-->p2 look, will p1 initiate a DMA txn or p2..?
+who will configure these..
+
+Do you have a real world example in horizon...
+
+-- 
+~Vinod
