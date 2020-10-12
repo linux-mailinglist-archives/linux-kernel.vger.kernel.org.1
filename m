@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23A0228B9A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:04:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 556B128B75D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389423AbgJLOCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:02:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40156 "EHLO mail.kernel.org"
+        id S2388588AbgJLNnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:43:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730285AbgJLNiB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:38:01 -0400
+        id S2389210AbgJLNmU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:42:20 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A424622268;
-        Mon, 12 Oct 2020 13:37:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5921D21BE5;
+        Mon, 12 Oct 2020 13:42:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509868;
-        bh=g9eZMOySVwoeHzqMnMxXsSUskHfz637tZ/TK/8hEtgo=;
+        s=default; t=1602510138;
+        bh=NlpJeNZBIK7fYuWQZKrCfng+EtnxDeidHiBKJ7JZo0U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HWy/z2jXvaMe4Z3+uOZhhWE1B47ufqujbUDpI5/fJ+kscbyk7/hNpu/2Ndcask3n3
-         U2gIdWNCasBroVgR9uJY9DM0NKH+memnjQ4fZ3glM+643KZjXE8kiTnER/E0ckt692
-         xy0cXgmfIFosFsdDQuNF4+kHqShCUkH/cWog9eKw=
+        b=ybi8sIYOQ3O+Ieu6iw4wixJFKUqMcPSnghgiAP+WZMkhQ8teFzWpGBOJOEOkc3nGB
+         q2erf9Sw1huVjHZ3P+Gh5BaFrm80EX2bVBFI+RGSH9bpJg9PFu+LTmhfyIc9zuqxRJ
+         EVsbzKXJepvoHltSQgVJRL+A3+HzVl4EzXp2IPhw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Howells <dhowells@redhat.com>,
+        stable@vger.kernel.org,
+        Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>,
+        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
+        Aaron Brown <aaron.f.brown@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 64/70] rxrpc: Downgrade the BUG() for unsupported token type in rxrpc_read()
+Subject: [PATCH 5.4 57/85] iavf: Fix incorrect adapter get in iavf_resume
 Date:   Mon, 12 Oct 2020 15:27:20 +0200
-Message-Id: <20201012132633.284230434@linuxfoundation.org>
+Message-Id: <20201012132635.603955116@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132630.201442517@linuxfoundation.org>
-References: <20201012132630.201442517@linuxfoundation.org>
+In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
+References: <20201012132632.846779148@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,45 +46,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells <dhowells@redhat.com>
+From: Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>
 
-[ Upstream commit 9a059cd5ca7d9c5c4ca5a6e755cf72f230176b6a ]
+[ Upstream commit 75598a8fc0e0dff2aa5d46c62531b36a595f1d4f ]
 
-If rxrpc_read() (which allows KEYCTL_READ to read a key), sees a token of a
-type it doesn't recognise, it can BUG in a couple of places, which is
-unnecessary as it can easily get back to userspace.
+When calling iavf_resume there was a crash because wrong
+function was used to get iavf_adapter and net_device pointers.
+Changed how iavf_resume is getting iavf_adapter and net_device
+pointers from pci_dev.
 
-Fix this to print an error message instead.
-
-Fixes: 99455153d067 ("RxRPC: Parse security index 5 keys (Kerberos 5)")
-Signed-off-by: David Howells <dhowells@redhat.com>
+Fixes: 5eae00c57f5e ("i40evf: main driver core")
+Signed-off-by: Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>
+Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
+Tested-by: Aaron Brown <aaron.f.brown@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/rxrpc/key.c | 4 ++--
+ drivers/net/ethernet/intel/iavf/iavf_main.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/rxrpc/key.c b/net/rxrpc/key.c
-index fead67b42a993..1fe203c56faf0 100644
---- a/net/rxrpc/key.c
-+++ b/net/rxrpc/key.c
-@@ -1110,7 +1110,8 @@ static long rxrpc_read(const struct key *key,
- 			break;
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_main.c b/drivers/net/ethernet/intel/iavf/iavf_main.c
+index bcb95b2ea792f..cd95d6af8fc1b 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_main.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_main.c
+@@ -3813,8 +3813,8 @@ static int __maybe_unused iavf_suspend(struct device *dev_d)
+ static int __maybe_unused iavf_resume(struct device *dev_d)
+ {
+ 	struct pci_dev *pdev = to_pci_dev(dev_d);
+-	struct iavf_adapter *adapter = pci_get_drvdata(pdev);
+-	struct net_device *netdev = adapter->netdev;
++	struct net_device *netdev = pci_get_drvdata(pdev);
++	struct iavf_adapter *adapter = netdev_priv(netdev);
+ 	u32 err;
  
- 		default: /* we have a ticket we can't encode */
--			BUG();
-+			pr_err("Unsupported key token type (%u)\n",
-+			       token->security_index);
- 			continue;
- 		}
- 
-@@ -1226,7 +1227,6 @@ static long rxrpc_read(const struct key *key,
- 			break;
- 
- 		default:
--			BUG();
- 			break;
- 		}
- 
+ 	pci_set_master(pdev);
 -- 
 2.25.1
 
