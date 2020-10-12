@@ -2,162 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A28428BECB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 19:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CED3028BECD
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 19:09:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404120AbgJLRJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 13:09:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403963AbgJLRI4 (ORCPT
+        id S2404047AbgJLRJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 13:09:48 -0400
+Received: from smtprelay0032.hostedemail.com ([216.40.44.32]:49330 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2403963AbgJLRJs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 13:08:56 -0400
-Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60C2BC0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 10:08:56 -0700 (PDT)
-Received: by mail-wr1-x44a.google.com with SMTP id b6so9525361wrn.17
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 10:08:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=GiteUeefhedmcujA7Gl+XRhg8qxQ0VOJlBmMbUTsQlA=;
-        b=UQwrqnNl9bttN2st5o+e1I97Ik31gSsTuOTKKWjJwjtJdLsV6uXmL76RIk4YLIOuRD
-         mG6ob4SY5zR57ce6fvfvscLHfREXGARHVhHJAMhDu5KhmgGey5v4ThO3xH19stea6i5Y
-         3hfMyt0wG78qw5hnPmmsP73SlzsJ7MwjaCliEYDhsuu/tBDrkmM7fO/CadHEflBvplIm
-         LItUvxoPYV6CXQZQJCA3ZVv27iZ5zZuSvfEBBtFs71cNCTzteliZc6RMR2M/a8bLhWiv
-         adTWhqzet90tJ1tZF1IdRKCfz5B4K5HMqknUyX07eNqYSz+c0MTc9l4Evb5cRxyAYO9d
-         V63Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=GiteUeefhedmcujA7Gl+XRhg8qxQ0VOJlBmMbUTsQlA=;
-        b=eZqDdVrq0PS+0hidFftQx7gjnRohQqtX0SWBpFaYmyf9xyy6pEJfwUdwVVgDofnDre
-         8n+xXGG611JmAlfvLs7UQRtl4Y75w6eNYUlJSwpG8cXM6Gv3MTRsFT2Tf+U655lpu+2H
-         4VoIqtajWwhfSsKCPphiZSTN1KUwF7rXcN2NT6g3K7YgQhj9hN19veusYp6KxxPzUfpH
-         83syitaLKB09mxOwGC4yZLCLy90sHPF3EuW4GkXxcYDf5n/l+8JpzI6UdD9wSl3zEQFE
-         6UdUgWMKnA24fF40ghDB26lUnbD4UDEfxMnuJf7LGISSb0F7OgxX4U5AlCSiSMi9LWaN
-         m5tw==
-X-Gm-Message-State: AOAM532qZ2XeiUemEYsUy060h04nA9gsTj0z7ZttG2VEyOsJFWiXu5H6
-        NqzU1nE6Basoz/8Trc/TJpBvTeQq6t4QtWyj
-X-Google-Smtp-Source: ABdhPJw8Nay4C7k703MetiSSMrQWLpB/N5fHBuREXZOnZ++6Izul9okxKMTHUt/nEdPX0Nlgup5jgsERTvGmG2hM
-Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
-X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a7b:c156:: with SMTP id
- z22mr2912419wmi.0.1602522534241; Mon, 12 Oct 2020 10:08:54 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 19:08:35 +0200
-Message-Id: <c07a2deae7a75e394de272c1a33cfcc1f667af92.1602522185.git.andreyknvl@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
-Subject: [PATCH v2] kcov, usbip: collect coverage from vhci_rx_loop
-From:   Andrey Konovalov <andreyknvl@google.com>
-To:     Dmitry Vyukov <dvyukov@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Nazime Hande Harputluoglu <handeharput@gmail.com>,
-        Nazime Hande Harputluoglu <handeharputlu@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 12 Oct 2020 13:09:48 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id B9225182251AE;
+        Mon, 12 Oct 2020 17:09:46 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 10,1,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1534:1543:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3167:3315:3354:3653:3865:3866:3867:3868:3870:3871:3874:4605:5007:7576:7903:10004:10128:10400:10848:11026:11473:11658:11914:12043:12297:12438:12555:12679:12760:12895:13095:13161:13229:13255:13439:13851:14181:14394:14659:14721:21080:21221:21433:21451:21627:21891:21972:21990:30054:30070,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: wish49_450c7ef271fc
+X-Filterd-Recvd-Size: 4228
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf04.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 12 Oct 2020 17:09:45 +0000 (UTC)
+Message-ID: <b74a95944a4bc6be1ea4ae8cf065c23e03511ba5.camel@perches.com>
+Subject: [PATCH -v4] checkpatch: Check for .byte-spelled insn opcodes
+ documentation on x86
+From:   Joe Perches <joe@perches.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     X86 ML <x86@kernel.org>, Andy Whitcroft <apw@canonical.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@suse.de>
+Date:   Mon, 12 Oct 2020 10:09:44 -0700
+References: <20201009161423.14583-1-bp@alien8.de>
+         <b57a59bc80e432c7696b347a223eb12339013970.camel@perches.com>
+         <20201010105421.GA24674@zn.tnic>
+         <4147e49c0b1251343181b5580d946c2273247927.camel@perches.com>
+         <20201010161112.GC24674@zn.tnic>
+         <a534ed57c23ff35f6b84057ba3c0d1b55f0b03b9.camel@perches.com>
+         <20201012142148.GA22829@zn.tnic>
+In-Reply-To: <20201012142148.GA22829@zn.tnic>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nazime Hande Harputluoglu <handeharputlu@google.com>
+From: Borislav Petkov <bp@suse.de>
 
-Add kcov_remote_start()/kcov_remote_stop() annotations to the
-vhci_rx_loop() function, which is responsible for parsing USB/IP packets
-coming into USB/IP client.
+Instruction opcode bytes spelled using the gas directive .byte should
+carry a comment above them stating which binutils version has added
+support for the instruction mnemonic so that they can be replaced with
+the mnemonic when that binutils version is equal or less than the
+minimum-supported version by the kernel.
 
-Since vhci_rx_loop() threads are spawned per vhci_hcd device instance, the
-common kcov handle is used for kcov_remote_start()/stop() annotations
-(see Documentation/dev-tools/kcov.rst for details). As the result kcov
-can now be used to collect coverage from vhci_rx_loop() threads.
+Add a check for that.
 
-Signed-off-by: Nazime Hande Harputluoglu <handeharputlu@google.com>
+Requested-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Signed-off-by: Joe Perches <joe@perches.com>
 ---
 
-Changes v1->v2:
-- Fix spacing issues.
-- Add ifdef CONFIG_KCOV around kcov_handle in usbip_device struct.
+v4: trivial neatening of $Hex_byte and adding a mechanism to
+    only emit the message once per patched file (Joe)
 
----
- drivers/usb/usbip/usbip_common.h |  4 ++++
- drivers/usb/usbip/vhci_rx.c      |  3 +++
- drivers/usb/usbip/vhci_sysfs.c   | 12 +++++++-----
- 3 files changed, 14 insertions(+), 5 deletions(-)
+ scripts/checkpatch.pl | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/drivers/usb/usbip/usbip_common.h b/drivers/usb/usbip/usbip_common.h
-index 8be857a4fa13..0906182011d6 100644
---- a/drivers/usb/usbip/usbip_common.h
-+++ b/drivers/usb/usbip/usbip_common.h
-@@ -277,6 +277,10 @@ struct usbip_device {
- 		void (*reset)(struct usbip_device *);
- 		void (*unusable)(struct usbip_device *);
- 	} eh_ops;
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index fab38b493cef..7568f583701c 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -414,6 +414,7 @@ our $Lval	= qr{$Ident(?:$Member)*};
+ our $Int_type	= qr{(?i)llu|ull|ll|lu|ul|l|u};
+ our $Binary	= qr{(?i)0b[01]+$Int_type?};
+ our $Hex	= qr{(?i)0x[0-9a-f]+$Int_type?};
++our $Hex_byte	= qr{(?i)0x[0-9a-f]{1,2}\b};
+ our $Int	= qr{[0-9]+$Int_type?};
+ our $Octal	= qr{0[0-7]+$Int_type?};
+ our $String	= qr{"[X\t]*"};
+@@ -2408,6 +2409,7 @@ sub process {
+ 	my $comment_edge = 0;
+ 	my $first_line = 0;
+ 	my $p1_prefix = '';
++	my $warned_binutils = 0;
+ 
+ 	my $prev_values = 'E';
+ 
+@@ -2589,6 +2591,7 @@ sub process {
+ 			$realfile =~ s@^([^/]*)/@@ if (!$file);
+ 			$in_commit_log = 0;
+ 			$found_file = 1;
++			$warned_binutils = 0;
+ 		} elsif ($line =~ /^\+\+\+\s+(\S+)/) {
+ 			$realfile = $1;
+ 			$realfile =~ s@^([^/]*)/@@ if (!$file);
+@@ -2606,6 +2609,7 @@ sub process {
+ 				      "do not modify files in include/asm, change architecture specific files in include/asm-<architecture>\n" . "$here$rawline\n");
+ 			}
+ 			$found_file = 1;
++			$warned_binutils = 0;
+ 		}
+ 
+ #make up the handle for any error we report on this line
+@@ -6954,6 +6958,20 @@ sub process {
+ 			WARN("DUPLICATED_SYSCTL_CONST",
+ 				"duplicated sysctl range checking value '$1', consider using the shared one in include/linux/sysctl.h\n" . $herecurr);
+ 		}
 +
-+#ifdef CONFIG_KCOV
-+	u64 kcov_handle;
-+#endif
- };
- 
- #define kthread_get_run(threadfn, data, namefmt, ...)			   \
-diff --git a/drivers/usb/usbip/vhci_rx.c b/drivers/usb/usbip/vhci_rx.c
-index 266024cbb64f..473f14587bd5 100644
---- a/drivers/usb/usbip/vhci_rx.c
-+++ b/drivers/usb/usbip/vhci_rx.c
-@@ -3,6 +3,7 @@
-  * Copyright (C) 2003-2008 Takahiro Hirofuchi
-  */
- 
-+#include <linux/kcov.h>
- #include <linux/kthread.h>
- #include <linux/slab.h>
- 
-@@ -261,7 +262,9 @@ int vhci_rx_loop(void *data)
- 		if (usbip_event_happened(ud))
- 			break;
- 
-+		kcov_remote_start_common(ud->kcov_handle);
- 		vhci_rx_pdu(ud);
-+		kcov_remote_stop();
++# document which binutils version supports the actual insn mnemonic so that the naked opcode bytes can be replaced.
++# x86-only. Upper limit is rather arbitrary (max insn length on x86) but imposed so as to avoid perl aborts.
++		if (!$warned_binutils &&
++		    $realfile =~ m@^arch/x86/@ &&
++		    $rawline =~ /\s*\.byte\s+$Hex_byte(?:\s*,\s*$Hex_byte){0,14}/) {
++
++			my $comment = ctx_locate_comment($file ? 0 : $first_line, $linenr);
++			if ($comment !~ /binutils (?:version )*[0-9.]+/ms) {
++				WARN("MISSING_BINUTILS_VERSION",
++				     "Please consider documenting which binutils version supports these .byte-spelled insn opcodes by adding \"binutils version <num>\" in a comment above them\n" . $herecurr);
++				$warned_binutils = 1;
++			}
++		}
  	}
  
- 	return 0;
-diff --git a/drivers/usb/usbip/vhci_sysfs.c b/drivers/usb/usbip/vhci_sysfs.c
-index be37aec250c2..966f1f5cafb1 100644
---- a/drivers/usb/usbip/vhci_sysfs.c
-+++ b/drivers/usb/usbip/vhci_sysfs.c
-@@ -4,6 +4,7 @@
-  * Copyright (C) 2015-2016 Nobuo Iwata
-  */
- 
-+#include <linux/kcov.h>
- #include <linux/kthread.h>
- #include <linux/file.h>
- #include <linux/net.h>
-@@ -378,11 +379,12 @@ static ssize_t attach_store(struct device *dev, struct device_attribute *attr,
- 	dev_info(dev, "devid(%u) speed(%u) speed_str(%s)\n",
- 		 devid, speed, usb_speed_string(speed));
- 
--	vdev->devid         = devid;
--	vdev->speed         = speed;
--	vdev->ud.sockfd     = sockfd;
--	vdev->ud.tcp_socket = socket;
--	vdev->ud.status     = VDEV_ST_NOTASSIGNED;
-+	vdev->devid          = devid;
-+	vdev->speed          = speed;
-+	vdev->ud.sockfd      = sockfd;
-+	vdev->ud.tcp_socket  = socket;
-+	vdev->ud.status      = VDEV_ST_NOTASSIGNED;
-+	vdev->ud.kcov_handle = kcov_common_handle();
- 
- 	spin_unlock(&vdev->ud.lock);
- 	spin_unlock_irqrestore(&vhci->lock, flags);
--- 
-2.28.0.1011.ga647a8990f-goog
+ 	# If we have no input at all, then there is nothing to report on
+
 
