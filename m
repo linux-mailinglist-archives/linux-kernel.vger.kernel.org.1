@@ -2,179 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D50AB28B1D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 11:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CF6A28B1D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 11:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729504AbgJLJyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 05:54:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726510AbgJLJyG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 05:54:06 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56EBAC0613CE;
-        Mon, 12 Oct 2020 02:54:06 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id o18so16276815edq.4;
-        Mon, 12 Oct 2020 02:54:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=iGo+ZN3tAXAxv3w8yNYuIIpSkiLbRMRp3Fk34AunwFo=;
-        b=Z8qjXpJma1fftxvQeo8JughAkkolo9T2zLHCRb0WgSqanywbY8nDc5tNb7CFaDzh0K
-         1axx2jb5E5GAdrAUGcjgF493gNmTdPqbSuyLmRtUDLcSQcp6eKwQm3sIbH94Wm9B0jn8
-         vbNZ3cq016hHWU2hOar7rqO4cgWhyf4cB5zrrJs857cOouUWAZBTg3pexYRmbz+NJhsn
-         snCXnKqpzQeXRo+o9dK6NH8kCneNHnAYXuYv2VMDGTymSrGUlgWwr7qaRgBfyaZggUdh
-         yAUqHQJQNHuXcIHrxVaRo871hVw5EscjwpJsaO/z/jk1Hw9LTGwmvht7AZUTKQ8Yeqb9
-         wnnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=iGo+ZN3tAXAxv3w8yNYuIIpSkiLbRMRp3Fk34AunwFo=;
-        b=pH8OIQevXjaMwq9/ueJk6Z5lWXtaQWCsPIKJYtwGrhobcRjTK9cyodCjZpaUuD+KTP
-         oOyt4Puje8xx4+SPffDpf3c5wd6Nh/NvinqU7qD8OJoywstTyGx7Lrq5M7GxCJiFw+im
-         gynUziNXzxATFxjk6ETK6+J/3L7Ophg73+oHk3tBTye2QsQAD0iEoB6WlcrZj/tRLYd8
-         QzuxxV1brkgvpRxKPwLzBdBM2lLfYH+g4QuLpp4BGcqfzmlfr63skr8HlqwGXkjE0fHx
-         5nKzb9Iu1ogu41t/S6O6A08Q+n8wmMxBmVPrmRtP4TGcx5ZLaBIB0WmnugnWvDDYKZSp
-         rN7g==
-X-Gm-Message-State: AOAM531q6NjZR1LoHlJj6cB3ZwVuWcskFQMIcYth7nGJxi/Cdgyav1VM
-        wY6l9PvALH8An9G/1Gedtrl/m7qs78c=
-X-Google-Smtp-Source: ABdhPJyw6Z4x/GzJgRDWypbVo8PuDMznjmUSHnCLRlwMcu+LYuIIg/U2/pOqZYDhPwo0JTUgXYLKRA==
-X-Received: by 2002:a05:6402:2292:: with SMTP id cw18mr13678803edb.112.1602496445047;
-        Mon, 12 Oct 2020 02:54:05 -0700 (PDT)
-Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id bt16sm10369895ejb.89.2020.10.12.02.54.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 12 Oct 2020 02:54:04 -0700 (PDT)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     zhangqing@rock-chips.com, finley.xiao@rock-chips.com,
-        zhengyang@rock-chips.com, hjc@rock-chips.com,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v1] clk: rockchip: add CLK_SET_RATE_PARENT to sclk for rk3066a i2s and uart clocks
-Date:   Mon, 12 Oct 2020 11:53:57 +0200
-Message-Id: <20201012095357.4852-1-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
+        id S1729464AbgJLJ4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 05:56:39 -0400
+Received: from foss.arm.com ([217.140.110.172]:34280 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726104AbgJLJ4i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 05:56:38 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5251C31B;
+        Mon, 12 Oct 2020 02:56:38 -0700 (PDT)
+Received: from [192.168.178.2] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 527D63F719;
+        Mon, 12 Oct 2020 02:56:35 -0700 (PDT)
+Subject: Re: [PATCH -v2 15/17] sched: Fix migrate_disable() vs rt/dl balancing
+To:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
+        mingo@kernel.org
+Cc:     linux-kernel@vger.kernel.org, bigeasy@linutronix.de,
+        qais.yousef@arm.com, swood@redhat.com, valentin.schneider@arm.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vincent.donnefort@arm.com, tj@kernel.org
+References: <20201005145717.346020688@infradead.org>
+ <20201005150922.458081448@infradead.org>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <54bebe28-1d6d-5f71-da57-deb2eee111d3@arm.com>
+Date:   Mon, 12 Oct 2020 11:56:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201005150922.458081448@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add CLK_SET_RATE_PARENT to sclk for rk3066a i2s and uart clocks,
-so that the parent COMPOSITE_FRACMUX and COMPOSITE_NOMUX
-also update.
+On 05/10/2020 16:57, Peter Zijlstra wrote:
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
- drivers/clk/rockchip/clk-rk3188.c | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+[...]
 
-diff --git a/drivers/clk/rockchip/clk-rk3188.c b/drivers/clk/rockchip/clk-rk3188.c
-index 730020fcc..db8c58813 100644
---- a/drivers/clk/rockchip/clk-rk3188.c
-+++ b/drivers/clk/rockchip/clk-rk3188.c
-@@ -255,19 +255,19 @@ static struct rockchip_clk_branch common_spdif_fracmux __initdata =
- 			RK2928_CLKSEL_CON(5), 8, 2, MFLAGS);
- 
- static struct rockchip_clk_branch common_uart0_fracmux __initdata =
--	MUX(SCLK_UART0, "sclk_uart0", mux_sclk_uart0_p, 0,
-+	MUX(SCLK_UART0, "sclk_uart0", mux_sclk_uart0_p, CLK_SET_RATE_PARENT,
- 			RK2928_CLKSEL_CON(13), 8, 2, MFLAGS);
- 
- static struct rockchip_clk_branch common_uart1_fracmux __initdata =
--	MUX(SCLK_UART1, "sclk_uart1", mux_sclk_uart1_p, 0,
-+	MUX(SCLK_UART1, "sclk_uart1", mux_sclk_uart1_p, CLK_SET_RATE_PARENT,
- 			RK2928_CLKSEL_CON(14), 8, 2, MFLAGS);
- 
- static struct rockchip_clk_branch common_uart2_fracmux __initdata =
--	MUX(SCLK_UART2, "sclk_uart2", mux_sclk_uart2_p, 0,
-+	MUX(SCLK_UART2, "sclk_uart2", mux_sclk_uart2_p, CLK_SET_RATE_PARENT,
- 			RK2928_CLKSEL_CON(15), 8, 2, MFLAGS);
- 
- static struct rockchip_clk_branch common_uart3_fracmux __initdata =
--	MUX(SCLK_UART3, "sclk_uart3", mux_sclk_uart3_p, 0,
-+	MUX(SCLK_UART3, "sclk_uart3", mux_sclk_uart3_p, CLK_SET_RATE_PARENT,
- 			RK2928_CLKSEL_CON(16), 8, 2, MFLAGS);
- 
- static struct rockchip_clk_branch common_clk_branches[] __initdata = {
-@@ -408,28 +408,28 @@ static struct rockchip_clk_branch common_clk_branches[] __initdata = {
- 	COMPOSITE_NOMUX(0, "uart0_pre", "uart_src", 0,
- 			RK2928_CLKSEL_CON(13), 0, 7, DFLAGS,
- 			RK2928_CLKGATE_CON(1), 8, GFLAGS),
--	COMPOSITE_FRACMUX(0, "uart0_frac", "uart0_pre", 0,
-+	COMPOSITE_FRACMUX(0, "uart0_frac", "uart0_pre", CLK_SET_RATE_PARENT,
- 			RK2928_CLKSEL_CON(17), 0,
- 			RK2928_CLKGATE_CON(1), 9, GFLAGS,
- 			&common_uart0_fracmux),
- 	COMPOSITE_NOMUX(0, "uart1_pre", "uart_src", 0,
- 			RK2928_CLKSEL_CON(14), 0, 7, DFLAGS,
- 			RK2928_CLKGATE_CON(1), 10, GFLAGS),
--	COMPOSITE_FRACMUX(0, "uart1_frac", "uart1_pre", 0,
-+	COMPOSITE_FRACMUX(0, "uart1_frac", "uart1_pre", CLK_SET_RATE_PARENT,
- 			RK2928_CLKSEL_CON(18), 0,
- 			RK2928_CLKGATE_CON(1), 11, GFLAGS,
- 			&common_uart1_fracmux),
- 	COMPOSITE_NOMUX(0, "uart2_pre", "uart_src", 0,
- 			RK2928_CLKSEL_CON(15), 0, 7, DFLAGS,
- 			RK2928_CLKGATE_CON(1), 12, GFLAGS),
--	COMPOSITE_FRACMUX(0, "uart2_frac", "uart2_pre", 0,
-+	COMPOSITE_FRACMUX(0, "uart2_frac", "uart2_pre", CLK_SET_RATE_PARENT,
- 			RK2928_CLKSEL_CON(19), 0,
- 			RK2928_CLKGATE_CON(1), 13, GFLAGS,
- 			&common_uart2_fracmux),
- 	COMPOSITE_NOMUX(0, "uart3_pre", "uart_src", 0,
- 			RK2928_CLKSEL_CON(16), 0, 7, DFLAGS,
- 			RK2928_CLKGATE_CON(1), 14, GFLAGS),
--	COMPOSITE_FRACMUX(0, "uart3_frac", "uart3_pre", 0,
-+	COMPOSITE_FRACMUX(0, "uart3_frac", "uart3_pre", CLK_SET_RATE_PARENT,
- 			RK2928_CLKSEL_CON(20), 0,
- 			RK2928_CLKGATE_CON(1), 15, GFLAGS,
- 			&common_uart3_fracmux),
-@@ -543,15 +543,15 @@ static struct clk_div_table div_aclk_cpu_t[] = {
- };
- 
- static struct rockchip_clk_branch rk3066a_i2s0_fracmux __initdata =
--	MUX(SCLK_I2S0, "sclk_i2s0", mux_sclk_i2s0_p, 0,
-+	MUX(SCLK_I2S0, "sclk_i2s0", mux_sclk_i2s0_p, CLK_SET_RATE_PARENT,
- 			RK2928_CLKSEL_CON(2), 8, 2, MFLAGS);
- 
- static struct rockchip_clk_branch rk3066a_i2s1_fracmux __initdata =
--	MUX(SCLK_I2S1, "sclk_i2s1", mux_sclk_i2s1_p, 0,
-+	MUX(SCLK_I2S1, "sclk_i2s1", mux_sclk_i2s1_p, CLK_SET_RATE_PARENT,
- 			RK2928_CLKSEL_CON(3), 8, 2, MFLAGS);
- 
- static struct rockchip_clk_branch rk3066a_i2s2_fracmux __initdata =
--	MUX(SCLK_I2S2, "sclk_i2s2", mux_sclk_i2s2_p, 0,
-+	MUX(SCLK_I2S2, "sclk_i2s2", mux_sclk_i2s2_p, CLK_SET_RATE_PARENT,
- 			RK2928_CLKSEL_CON(4), 8, 2, MFLAGS);
- 
- static struct rockchip_clk_branch rk3066a_clk_branches[] __initdata = {
-@@ -615,21 +615,21 @@ static struct rockchip_clk_branch rk3066a_clk_branches[] __initdata = {
- 	COMPOSITE_NOMUX(0, "i2s0_pre", "i2s_src", 0,
- 			RK2928_CLKSEL_CON(2), 0, 7, DFLAGS,
- 			RK2928_CLKGATE_CON(0), 7, GFLAGS),
--	COMPOSITE_FRACMUX(0, "i2s0_frac", "i2s0_pre", 0,
-+	COMPOSITE_FRACMUX(0, "i2s0_frac", "i2s0_pre", CLK_SET_RATE_PARENT,
- 			RK2928_CLKSEL_CON(6), 0,
- 			RK2928_CLKGATE_CON(0), 8, GFLAGS,
- 			&rk3066a_i2s0_fracmux),
- 	COMPOSITE_NOMUX(0, "i2s1_pre", "i2s_src", 0,
- 			RK2928_CLKSEL_CON(3), 0, 7, DFLAGS,
- 			RK2928_CLKGATE_CON(0), 9, GFLAGS),
--	COMPOSITE_FRACMUX(0, "i2s1_frac", "i2s1_pre", 0,
-+	COMPOSITE_FRACMUX(0, "i2s1_frac", "i2s1_pre", CLK_SET_RATE_PARENT,
- 			RK2928_CLKSEL_CON(7), 0,
- 			RK2928_CLKGATE_CON(0), 10, GFLAGS,
- 			&rk3066a_i2s1_fracmux),
- 	COMPOSITE_NOMUX(0, "i2s2_pre", "i2s_src", 0,
- 			RK2928_CLKSEL_CON(4), 0, 7, DFLAGS,
- 			RK2928_CLKGATE_CON(0), 11, GFLAGS),
--	COMPOSITE_FRACMUX(0, "i2s2_frac", "i2s2_pre", 0,
-+	COMPOSITE_FRACMUX(0, "i2s2_frac", "i2s2_pre", CLK_SET_RATE_PARENT,
- 			RK2928_CLKSEL_CON(8), 0,
- 			RK2928_CLKGATE_CON(0), 12, GFLAGS,
- 			&rk3066a_i2s2_fracmux),
--- 
-2.11.0
+> --- a/kernel/sched/rt.c
+> +++ b/kernel/sched/rt.c
+> @@ -1859,7 +1859,7 @@ static struct task_struct *pick_next_pus
+>   * running task can migrate over to a CPU that is running a task
+>   * of lesser priority.
+>   */
+> -static int push_rt_task(struct rq *rq)
+> +static int push_rt_task(struct rq *rq, bool pull)
+>  {
+>  	struct task_struct *next_task;
+>  	struct rq *lowest_rq;
+> @@ -1873,6 +1873,34 @@ static int push_rt_task(struct rq *rq)
+>  		return 0;
+>  
+>  retry:
+> +	if (is_migration_disabled(next_task)) {
+> +		struct task_struct *push_task = NULL;
+> +		int cpu;
+> +
+> +		if (!pull || rq->push_busy)
+> +			return 0;
 
+Shouldn't there be the same functionality in push_dl_task(), i.e.
+returning 0 earlier for a task with migration_disabled?
+
+[...]
