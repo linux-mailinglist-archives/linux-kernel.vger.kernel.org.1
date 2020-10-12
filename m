@@ -2,73 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD37028BE81
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21D6F28BE85
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:55:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403996AbgJLQxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 12:53:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403984AbgJLQxk (ORCPT
+        id S2390739AbgJLQy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 12:54:57 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:52746 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2390705AbgJLQy5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 12:53:40 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3D4AC0613D0;
-        Mon, 12 Oct 2020 09:53:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=0xPKHcc8MTxN9G6km2QTOKG69v7B4xiLbgAzISFd/e0=; b=kz3byLEjQRbXUjKEwxSctQX5ib
-        JSA+qNZHtA9aewEXAvoV2M3/g5ArH8yJiAAE/kke62YDaHPl5o3/+xMrd/i+waTWdk3FhLyFNeYuc
-        4Nk7+Bj9BYXz1xAwd03P2XqWJ4u6gF0YTzxkwS+nNCJwrPuiM7tYRinTk9MOFt20vbPG0TllKA7E7
-        FUnU7I/afnKhT4pPw79tju4VhbduW2vl13IeqsRBdekOuYvNqMsrEYykSyc7jGqRQHVc5tHH6aPY+
-        3213WdwwwrFYELr6mggaHw1E8IyEoal3f+Bv/YjhibFGCElAxvPsPRtwNZbUqKeJg0h3VUzn9VsZs
-        n9KroRrg==;
-Received: from [2601:1c0:6280:3f0::507c]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kS14o-0005Ww-Nr; Mon, 12 Oct 2020 16:53:35 +0000
-Subject: Re: [PATCH v2 21/22] mpool: add documentation
-To:     Nabeel M Mohamed <nmeeramohide@micron.com>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-mm@kvack.org,
-        linux-nvdimm@lists.01.org
-Cc:     smoyer@micron.com, gbecker@micron.com, plabat@micron.com,
-        jgroves@micron.com
-References: <20201012162736.65241-1-nmeeramohide@micron.com>
- <20201012162736.65241-22-nmeeramohide@micron.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <57fef732-f63d-9c9c-e368-660c654a7438@infradead.org>
-Date:   Mon, 12 Oct 2020 09:53:31 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 12 Oct 2020 12:54:57 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09CGioWs000804;
+        Mon, 12 Oct 2020 09:54:54 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=date : from : to :
+ cc : subject : in-reply-to : message-id : references : mime-version :
+ content-type; s=pfpt0220; bh=i+XH48QeOQjsexb49NBlrZ3T/4puq8Cjpltdejn9FKM=;
+ b=QKQujlJuP+J1ga8OCLYjE+CiIm3ESuci5LA2PVEJ0rTtUWfy9NxzUe0uTf6pFb2R87CR
+ icgTJph1WjiFBnDYJAks/tS2w5OK6meFjHwoqaz4cJvHWI8SDdpNkMf0Kb5X89w4tx8r
+ eaViCnbixRBoSdVL/9RJhOXDOTQ6SBNrepaqjzFs1EuFhwfy2bav/efqmw6MJbgpT7ag
+ sBItFAGVFW0E5YFstELnN1+ZZU3v0xDk+8BVkbz8aE5F1oRUOlXR/90cDEaommHgjcx3
+ 1fs8zMhHvmu7E3dsPSjPKqgPNYB1oWYFdg8nEuYABe16K2BWPpF/1if4Heo5PyIYVilh bg== 
+Received: from sc-exch03.marvell.com ([199.233.58.183])
+        by mx0a-0016f401.pphosted.com with ESMTP id 343aanexnb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 12 Oct 2020 09:54:54 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH03.marvell.com
+ (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 12 Oct
+ 2020 09:54:53 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 12 Oct 2020 09:54:53 -0700
+Received: from irv1user01.caveonetworks.com (unknown [10.104.116.179])
+        by maili.marvell.com (Postfix) with ESMTP id 7BD4E3F703F;
+        Mon, 12 Oct 2020 09:54:53 -0700 (PDT)
+Received: from localhost (aeasi@localhost)
+        by irv1user01.caveonetworks.com (8.14.4/8.14.4/Submit) with ESMTP id 09CGsr7T004955;
+        Mon, 12 Oct 2020 09:54:53 -0700
+X-Authentication-Warning: irv1user01.caveonetworks.com: aeasi owned process doing -bs
+Date:   Mon, 12 Oct 2020 09:54:53 -0700
+From:   Arun Easi <aeasi@marvell.com>
+X-X-Sender: aeasi@irv1user01.caveonetworks.com
+To:     Daniel Wagner <dwagner@suse.de>
+CC:     Nilesh Javali <njavali@marvell.com>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] qla2xxx: Return EBUSY on fcport deletion
+In-Reply-To: <20201012164148.42962-1-dwagner@suse.de>
+Message-ID: <alpine.LRH.2.21.9999.2010120951560.28578@irv1user01.caveonetworks.com>
+References: <20201012164148.42962-1-dwagner@suse.de>
+User-Agent: Alpine 2.21.9999 (LRH 334 2019-03-29)
 MIME-Version: 1.0
-In-Reply-To: <20201012162736.65241-22-nmeeramohide@micron.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="US-ASCII"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-12_14:2020-10-12,2020-10-12 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 12 Oct 2020, 9:41am, Daniel Wagner wrote:
 
-> diff --git a/drivers/mpool/mpool-locking.rst b/drivers/mpool/mpool-locking.rst
-> new file mode 100644
-> index 000000000000..6a5da727f2fb
-> --- /dev/null
-> +++ b/drivers/mpool/mpool-locking.rst
-> @@ -0,0 +1,90 @@
-
-> +Object Layout Reference Counts
-> +------------------------------
+> When the fcport is about to be deleted we should return EBUSY instead
+> of ENODEV. Only for EBUSY the request will be requeued in a multipath
+> setup.
+> 
+> Also in case we have a valid qpair but the firmware has not yet
+> started return EBUSY to avoid dropping the request.
+> 
+> Signed-off-by: Daniel Wagner <dwagner@suse.de>
+> ---
+> 
+> v2: rebased on mkp/staging
+> 
+>  drivers/scsi/qla2xxx/qla_nvme.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/scsi/qla2xxx/qla_nvme.c b/drivers/scsi/qla2xxx/qla_nvme.c
+> index 2cd9bd288910..fded1e3bc9e0 100644
+> --- a/drivers/scsi/qla2xxx/qla_nvme.c
+> +++ b/drivers/scsi/qla2xxx/qla_nvme.c
+> @@ -555,8 +555,11 @@ static int qla_nvme_post_cmd(struct nvme_fc_local_port *lport,
+>  
+>  	fcport = qla_rport->fcport;
+>  
+> -	if (!qpair || !fcport || (qpair && !qpair->fw_started) ||
+> +	if ((qpair && !qpair->fw_started) ||
+>  	    (fcport && fcport->deleted))
+> +		return -EBUSY;
 > +
-> +The reference counts for an object layout (eld_ref) are protected
-> +by mmi_co_lock or mmi_uc_lock of the object's MDC dependiing upon
+> +	if (!qpair || !fcport)
+>  		return -ENODEV;
+>  
+>  	vha = fcport->vha;
+> 
 
-                                                     depending
+Please move up the "(!qpair || !fcport)" check; you can avoid the 
+qpair/fcport check in the first "if" condition, then.
 
-> +which tree it is in at the time of acquisition.
-
--- 
-~Randy
-
+Regards,
+-Arun
