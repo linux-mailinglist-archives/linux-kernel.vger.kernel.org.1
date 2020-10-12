@@ -2,39 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 056DB28B93A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E51CC28B9A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390683AbgJLN6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:58:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40660 "EHLO mail.kernel.org"
+        id S2388723AbgJLOC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:02:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731311AbgJLNk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:40:56 -0400
+        id S1729809AbgJLNiB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:38:01 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4910A22202;
-        Mon, 12 Oct 2020 13:40:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 43CBE22228;
+        Mon, 12 Oct 2020 13:37:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602510022;
-        bh=PZN35SPpSz/Kz9MmIP1Hox82tgjCS2cttSyiyXk3NYE=;
+        s=default; t=1602509860;
+        bh=eMqosG4lrKOhjxzhNXzZxFfVQARlSV+MNl3lOSuaQ8U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wOwVRIW9yIXx4IjrMrMpKBLdK0gfK/UJqTx/imQSTnlcVBMCiKyNtT8aAFletipJV
-         +RosQz+OJSw/szspL0I7LyrXIvQSLS4PfaN1zg9k/TgUQh/vNasshCDX6481C8Iwr+
-         BewRoLq6nNQARGlNdECtb2FTLFeTcQCOdy5Cl0Ig=
+        b=alqx/ifzdMD031+o3QIBDxHES7OC/Uxm3CC/6m1wVzMy5DD80fy7tV847vCob6ay5
+         aoLftxfLsy4HBvwaLMw75TeABE9gbxchVQBySjD58Fh6Zxc15BvbQhyUgkmYkznkK0
+         MUTScaekvm8tykWTR6JiK/nSuXtXpOURMlCtE7YA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Antony Antony <antony.antony@secunet.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
+        David Daney <david.daney@cavium.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 30/49] xfrm: clone XFRMA_SET_MARK in xfrm_do_migrate
-Date:   Mon, 12 Oct 2020 15:27:16 +0200
-Message-Id: <20201012132630.850011419@linuxfoundation.org>
+Subject: [PATCH 4.14 61/70] mdio: fix mdio-thunder.c dependency & build error
+Date:   Mon, 12 Oct 2020 15:27:17 +0200
+Message-Id: <20201012132633.133106852@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132629.469542486@linuxfoundation.org>
-References: <20201012132629.469542486@linuxfoundation.org>
+In-Reply-To: <20201012132630.201442517@linuxfoundation.org>
+References: <20201012132630.201442517@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,33 +48,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Antony Antony <antony.antony@secunet.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 545e5c571662b1cd79d9588f9d3b6e36985b8007 ]
+[ Upstream commit 7dbbcf496f2a4b6d82cfc7810a0746e160b79762 ]
 
-XFRMA_SET_MARK and XFRMA_SET_MARK_MASK was not cloned from the old
-to the new. Migrate these two attributes during XFRMA_MSG_MIGRATE
+Fix build error by selecting MDIO_DEVRES for MDIO_THUNDER.
+Fixes this build error:
 
-Fixes: 9b42c1f179a6 ("xfrm: Extend the output_mark to support input direction and masking.")
-Signed-off-by: Antony Antony <antony.antony@secunet.com>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+ld: drivers/net/phy/mdio-thunder.o: in function `thunder_mdiobus_pci_probe':
+drivers/net/phy/mdio-thunder.c:78: undefined reference to `devm_mdiobus_alloc_size'
+
+Fixes: 379d7ac7ca31 ("phy: mdio-thunder: Add driver for Cavium Thunder SoC MDIO buses.")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc: Andrew Lunn <andrew@lunn.ch>
+Cc: Heiner Kallweit <hkallweit1@gmail.com>
+Cc: netdev@vger.kernel.org
+Cc: David Daney <david.daney@cavium.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/xfrm/xfrm_state.c | 1 +
+ drivers/net/phy/Kconfig | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/net/xfrm/xfrm_state.c b/net/xfrm/xfrm_state.c
-index 47a8ff972a2bf..d76b019673aa0 100644
---- a/net/xfrm/xfrm_state.c
-+++ b/net/xfrm/xfrm_state.c
-@@ -1410,6 +1410,7 @@ static struct xfrm_state *xfrm_state_clone(struct xfrm_state *orig,
- 	}
- 
- 	memcpy(&x->mark, &orig->mark, sizeof(x->mark));
-+	memcpy(&x->props.smark, &orig->props.smark, sizeof(x->props.smark));
- 
- 	if (xfrm_init_state(x) < 0)
- 		goto error;
+diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
+index cd931cf9dcc26..e08d822338341 100644
+--- a/drivers/net/phy/Kconfig
++++ b/drivers/net/phy/Kconfig
+@@ -146,6 +146,7 @@ config MDIO_THUNDER
+ 	depends on 64BIT
+ 	depends on PCI
+ 	select MDIO_CAVIUM
++	select MDIO_DEVRES
+ 	help
+ 	  This driver supports the MDIO interfaces found on Cavium
+ 	  ThunderX SoCs when the MDIO bus device appears as a PCI
 -- 
 2.25.1
 
