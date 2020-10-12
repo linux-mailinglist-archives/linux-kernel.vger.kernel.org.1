@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C49D28B6BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:38:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3607928BA38
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:08:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730928AbgJLNhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:37:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38816 "EHLO mail.kernel.org"
+        id S2403794AbgJLOGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:06:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388126AbgJLNgJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:36:09 -0400
+        id S1730618AbgJLNeX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:34:23 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF5112076E;
-        Mon, 12 Oct 2020 13:36:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B131121BE5;
+        Mon, 12 Oct 2020 13:33:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509769;
-        bh=x9rJTn/ZOTLcmzUHgBJnyjHCPBI8NwOuBd7Gjgf5FHM=;
+        s=default; t=1602509626;
+        bh=H4+IAAdHH8z6G7ZjURbGAk2EVjqEvP1hJA0gKTsMC7E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w9ZyXRHl/518dvA3ciT4Q6bINmaAIBK9KvrNA1NiVRTSGfEJVhxHG2sLVgzUQ6Elt
-         fQ162Iiy8iXagMCM4A4aP3tQFb/g1fj0+vmj7uQn9RV17KRprdOHF4JVWiN6Ka2iJ4
-         CZligFvXzSn5SE/+WBa7gt2lIPdmsKVfZn4DUBGk=
+        b=j+04lByqPn8yuhJWwCobk+7Azrkw4eU0d0vJLcmj30vRSHJUe7dbkEmSynvbrkcX7
+         c661CJKUv2+LOIDqwk6CL2JB4KACUm/Xf3Wi2lqPVbjK3qVacqwiA6UbUWslC3u+BA
+         jCPrj7WYG+154fp3/BZuIpNIkcW91poUxWRLxyhw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Halasa <khc@pm.waw.pl>,
-        Martin Schiller <ms@dev.tdt.de>,
-        Xie He <xie.he.0141@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 09/70] drivers/net/wan/hdlc_fr: Add needed_headroom for PVC devices
+        stable@vger.kernel.org,
+        Ilja Van Sprundel <ivansprundel@ioactive.com>,
+        Brooke Basile <brookebasile@gmail.com>,
+        stable <stable@kernel.org>,
+        Bryan ODonoghue <bryan.odonoghue@linaro.org>
+Subject: [PATCH 4.9 03/54] USB: gadget: f_ncm: Fix NDP16 datagram validation
 Date:   Mon, 12 Oct 2020 15:26:25 +0200
-Message-Id: <20201012132630.674204830@linuxfoundation.org>
+Message-Id: <20201012132629.763422990@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132630.201442517@linuxfoundation.org>
-References: <20201012132630.201442517@linuxfoundation.org>
+In-Reply-To: <20201012132629.585664421@linuxfoundation.org>
+References: <20201012132629.585664421@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,59 +45,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie He <xie.he.0141@gmail.com>
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
-[ Upstream commit 44a049c42681de71c783d75cd6e56b4e339488b0 ]
+commit 2b405533c2560d7878199c57d95a39151351df72 upstream.
 
-PVC devices are virtual devices in this driver stacked on top of the
-actual HDLC device. They are the devices normal users would use.
-PVC devices have two types: normal PVC devices and Ethernet-emulating
-PVC devices.
+commit 2b74b0a04d3e ("USB: gadget: f_ncm: add bounds checks to ncm_unwrap_ntb()")
+adds important bounds checking however it unfortunately also introduces  a
+bug with respect to section 3.3.1 of the NCM specification.
 
-When transmitting data with PVC devices, the ndo_start_xmit function
-will prepend a header of 4 or 10 bytes. Currently this driver requests
-this headroom to be reserved for normal PVC devices by setting their
-hard_header_len to 10. However, this does not work when these devices
-are used with AF_PACKET/RAW sockets. Also, this driver does not request
-this headroom for Ethernet-emulating PVC devices (but deals with this
-problem by reallocating the skb when needed, which is not optimal).
+wDatagramIndex[1] : "Byte index, in little endian, of the second datagram
+described by this NDP16. If zero, then this marks the end of the sequence
+of datagrams in this NDP16."
 
-This patch replaces hard_header_len with needed_headroom, and set
-needed_headroom for Ethernet-emulating PVC devices, too. This makes
-the driver to request headroom for all PVC devices in all cases.
+wDatagramLength[1]: "Byte length, in little endian, of the second datagram
+described by this NDP16. If zero, then this marks the end of the sequence
+of datagrams in this NDP16."
 
-Cc: Krzysztof Halasa <khc@pm.waw.pl>
-Cc: Martin Schiller <ms@dev.tdt.de>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+wDatagramIndex[1] and wDatagramLength[1] respectively then may be zero but
+that does not mean we should throw away the data referenced by
+wDatagramIndex[0] and wDatagramLength[0] as is currently the case.
+
+Breaking the loop on (index2 == 0 || dg_len2 == 0) should come at the end
+as was previously the case and checks for index2 and dg_len2 should be
+removed since zero is valid.
+
+I'm not sure how much testing the above patch received but for me right now
+after enumeration ping doesn't work. Reverting the commit restores ping,
+scp, etc.
+
+The extra validation associated with wDatagramIndex[0] and
+wDatagramLength[0] appears to be valid so, this change removes the incorrect
+restriction on wDatagramIndex[1] and wDatagramLength[1] restoring data
+processing between host and device.
+
+Fixes: 2b74b0a04d3e ("USB: gadget: f_ncm: add bounds checks to ncm_unwrap_ntb()")
+Cc: Ilja Van Sprundel <ivansprundel@ioactive.com>
+Cc: Brooke Basile <brookebasile@gmail.com>
+Cc: stable <stable@kernel.org>
+Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Link: https://lore.kernel.org/r/20200920170158.1217068-1-bryan.odonoghue@linaro.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/wan/hdlc_fr.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/usb/gadget/function/f_ncm.c |   30 ++----------------------------
+ 1 file changed, 2 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/net/wan/hdlc_fr.c b/drivers/net/wan/hdlc_fr.c
-index 78596e42a3f3f..a09af49cd08b9 100644
---- a/drivers/net/wan/hdlc_fr.c
-+++ b/drivers/net/wan/hdlc_fr.c
-@@ -1045,7 +1045,7 @@ static void pvc_setup(struct net_device *dev)
- {
- 	dev->type = ARPHRD_DLCI;
- 	dev->flags = IFF_POINTOPOINT;
--	dev->hard_header_len = 10;
-+	dev->hard_header_len = 0;
- 	dev->addr_len = 2;
- 	netif_keep_dst(dev);
- }
-@@ -1097,6 +1097,7 @@ static int fr_add_pvc(struct net_device *frad, unsigned int dlci, int type)
- 	dev->mtu = HDLC_MAX_MTU;
- 	dev->min_mtu = 68;
- 	dev->max_mtu = HDLC_MAX_MTU;
-+	dev->needed_headroom = 10;
- 	dev->priv_flags |= IFF_NO_QUEUE;
- 	dev->ml_priv = pvc;
+--- a/drivers/usb/gadget/function/f_ncm.c
++++ b/drivers/usb/gadget/function/f_ncm.c
+@@ -1217,7 +1217,6 @@ static int ncm_unwrap_ntb(struct gether
+ 	const struct ndp_parser_opts *opts = ncm->parser_opts;
+ 	unsigned	crc_len = ncm->is_crc ? sizeof(uint32_t) : 0;
+ 	int		dgram_counter;
+-	bool		ndp_after_header;
  
--- 
-2.25.1
-
+ 	/* dwSignature */
+ 	if (get_unaligned_le32(tmp) != opts->nth_sign) {
+@@ -1244,7 +1243,6 @@ static int ncm_unwrap_ntb(struct gether
+ 	}
+ 
+ 	ndp_index = get_ncm(&tmp, opts->ndp_index);
+-	ndp_after_header = false;
+ 
+ 	/* Run through all the NDP's in the NTB */
+ 	do {
+@@ -1260,8 +1258,6 @@ static int ncm_unwrap_ntb(struct gether
+ 			     ndp_index);
+ 			goto err;
+ 		}
+-		if (ndp_index == opts->nth_size)
+-			ndp_after_header = true;
+ 
+ 		/*
+ 		 * walk through NDP
+@@ -1340,37 +1336,13 @@ static int ncm_unwrap_ntb(struct gether
+ 			index2 = get_ncm(&tmp, opts->dgram_item_len);
+ 			dg_len2 = get_ncm(&tmp, opts->dgram_item_len);
+ 
+-			if (index2 == 0 || dg_len2 == 0)
+-				break;
+-
+ 			/* wDatagramIndex[1] */
+-			if (ndp_after_header) {
+-				if (index2 < opts->nth_size + opts->ndp_size) {
+-					INFO(port->func.config->cdev,
+-					     "Bad index: %#X\n", index2);
+-					goto err;
+-				}
+-			} else {
+-				if (index2 < opts->nth_size + opts->dpe_size) {
+-					INFO(port->func.config->cdev,
+-					     "Bad index: %#X\n", index2);
+-					goto err;
+-				}
+-			}
+ 			if (index2 > block_len - opts->dpe_size) {
+ 				INFO(port->func.config->cdev,
+ 				     "Bad index: %#X\n", index2);
+ 				goto err;
+ 			}
+ 
+-			/* wDatagramLength[1] */
+-			if ((dg_len2 < 14 + crc_len) ||
+-					(dg_len2 > frame_max)) {
+-				INFO(port->func.config->cdev,
+-				     "Bad dgram length: %#X\n", dg_len);
+-				goto err;
+-			}
+-
+ 			/*
+ 			 * Copy the data into a new skb.
+ 			 * This ensures the truesize is correct
+@@ -1387,6 +1359,8 @@ static int ncm_unwrap_ntb(struct gether
+ 			ndp_len -= 2 * (opts->dgram_item_len * 2);
+ 
+ 			dgram_counter++;
++			if (index2 == 0 || dg_len2 == 0)
++				break;
+ 		} while (ndp_len > 2 * (opts->dgram_item_len * 2));
+ 	} while (ndp_index);
+ 
 
 
