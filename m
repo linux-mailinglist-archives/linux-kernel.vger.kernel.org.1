@@ -2,126 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B4D528B456
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 14:04:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40C3F28B45C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 14:07:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388396AbgJLMEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 08:04:52 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:45466 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388209AbgJLMEt (ORCPT
+        id S2388400AbgJLMHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 08:07:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388209AbgJLMHn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 08:04:49 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09CC4liq100601;
-        Mon, 12 Oct 2020 07:04:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1602504287;
-        bh=SblS3eNJU3ed7uUT1OdEfRWLSXZf81u3pH3jCxFggXc=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=dR/DEABbPKrPo3d3Xn8A1K+1Hd75Br80o1FmIzBhSlg/Mz4sgmKynZa5plyc4vyQy
-         Y3QTg1St9Zzgvj/zI/wuCM2gPgIICLbo9wFzbi9hhqV3tCyBLg7qgdCDUfWeYrbAZe
-         vSmqP34DX48M5oG9uuI1whLQm0NkDBqQLBaFh4OI=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09CC4lmX067886
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 12 Oct 2020 07:04:47 -0500
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 12
- Oct 2020 07:04:46 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 12 Oct 2020 07:04:47 -0500
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09CC4igL126083;
-        Mon, 12 Oct 2020 07:04:45 -0500
-Subject: Re: [PATCH v4 2/3] dmaengine: add peripheral configuration
-To:     Vinod Koul <vkoul@kernel.org>
-CC:     <dmaengine@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20201008123151.764238-1-vkoul@kernel.org>
- <20201008123151.764238-3-vkoul@kernel.org>
- <e2c0323b-4f41-1926-5930-c63624fe1dd1@ti.com>
- <20201009103019.GD2968@vkoul-mobl>
- <a44af464-7d13-1254-54dd-f7783ccfaa0f@ti.com>
- <20201009111515.GF2968@vkoul-mobl>
- <13fdee71-5060-83fc-d69d-8ec73f82fac4@ti.com>
- <20201012060916.GI2968@vkoul-mobl>
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-Message-ID: <6ddaa8c1-0703-4910-f5a8-2e30bddd2642@ti.com>
-Date:   Mon, 12 Oct 2020 15:05:09 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        Mon, 12 Oct 2020 08:07:43 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2564C0613D0;
+        Mon, 12 Oct 2020 05:07:42 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id f21so16953806wml.3;
+        Mon, 12 Oct 2020 05:07:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=hyLQqnsPp2QoVdD4Le8oIZ3NiV3JMjhazdAHbl+D9wU=;
+        b=ekcRy/FNerrYq8mtZClP73dij3+euY9uxtnkcEGlMlV8MZqFJ2h2HlCRPN7vUpmD+E
+         E3EaWddH3zQ5nNyp0FYQrcx3YrR9+HFIzMqwRQNz2j2t2MciWm3Q13tYSlL1u7M9xMSW
+         /baaGrFZEiYjDOWq7ANLWzMqDORmEK6+SVqOlO7SDgGlFdUeP5xRztTpvHEp1wAdjAKO
+         gkhjI3bbztIsQnnhJL/LcdQzZqfokPcKc8sTB/1egrWEA/y+FtRQZB9cHB8rqOT5t/yp
+         txfGLiAcCcb2YklH61lAcf65+RJDa7P8NqcBfPPTFEfaXHED2Bo6//ktag1HY8LIUmYE
+         42uA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=hyLQqnsPp2QoVdD4Le8oIZ3NiV3JMjhazdAHbl+D9wU=;
+        b=A7CoLdT/vsf76dAG1fzl2V7M5LjsSzMIoksD2lsjwuzXD0D/QRkiPVB4UdNAU572hi
+         ngkH6gE/Ldi+bq0yBbKVWkSbzmiQ49/021WojI1WPBpsdAYOPK8Km9u/2sIcoerDLaNi
+         wRzDCY6G8HT4JSAXWfgZowhHN1RWboFSw6IdfQ9euXNSZf9ysIJfhXKe2r4QRDgM2qx8
+         M27xg+A+pR4eYGWm76b5yutcF/zgBCx3vLhk9AK8yLdONAIIlr9/ksjZ//v9Y/0iIyzx
+         yMIUKp1O4BbndoiYgsGW80wz6PPq0yLeDpl4sgkMquIniTRYoGddwECJGKa6OneduQUH
+         4YGQ==
+X-Gm-Message-State: AOAM531E7WzPSxuG9XnPTUgm/dYUgcbPToNkmxm+owlyS6bBZ3jeP3gg
+        Lj9F8DYkoFYlKeaJDBNdU3g=
+X-Google-Smtp-Source: ABdhPJwUfj7Av4Hl9jD8LHoYMEWgeUV0AjRwanMiqDbt+5CmZuFGRVLDSBGWKu5ymbYpQDPIw0414w==
+X-Received: by 2002:a05:600c:2211:: with SMTP id z17mr6322560wml.92.1602504461204;
+        Mon, 12 Oct 2020 05:07:41 -0700 (PDT)
+Received: from a-VirtualBox ([103.120.71.253])
+        by smtp.gmail.com with ESMTPSA id q4sm24238151wru.65.2020.10.12.05.07.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 05:07:40 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 17:07:30 +0500
+From:   Bilal Wasim <bilalwasim676@gmail.com>
+To:     Jitao Shi <jitao.shi@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org, srv_heupstream@mediatek.com,
+        huijuan.xie@mediatek.com, stonea168@163.com,
+        cawa.cheng@mediatek.com, linux-mediatek@lists.infradead.org,
+        bibby.hsieh@mediatek.com, ck.hu@mediatek.com,
+        yingjoe.chen@mediatek.com, eddie.huang@mediatek.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 1/2] Revert "drm/mediatek: dsi: Fix scrolling of
+ panel with small hfp or hbp"
+Message-ID: <20201012170730.582d4b96@a-VirtualBox>
+In-Reply-To: <20201010070910.11294-2-jitao.shi@mediatek.com>
+References: <20201010070910.11294-1-jitao.shi@mediatek.com>
+        <20201010070910.11294-2-jitao.shi@mediatek.com>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20201012060916.GI2968@vkoul-mobl>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jitao,
 
+On Sat, 10 Oct 2020 15:09:09 +0800
+Jitao Shi <jitao.shi@mediatek.com> wrote:
 
-On 12/10/2020 9.09, Vinod Koul wrote:
-> On 09-10-20, 14:29, Peter Ujfalusi wrote:
->>
->>
->> On 09/10/2020 14.15, Vinod Koul wrote:
->>>>> If for any any reason subsequent txn is for different direction, I would
->>>>> expect that parameters are set again before prep_ calls
->>>>
->>>> But in DEV_TO_DEV?
->>>
->>> Do we support that :D
->>>
->>>> If we have two peripherals, both needs config:
->>>> p1_config and p2_config
->>>>
->>>> What and how would one use the single peripheral_config?
->>>
->>> Since the config is implementation specific, I do not think it limits.
->>> You may create
->>>
->>> struct peter_config {
->>>         struct p1_config;
->>>         struct p2_config;
->>> };
->>
->> The use case is:
->> MEM -DMA-> P1 -DMA-> P2
->> or
->> P2 -DMA-> P1 -DMA-> MEM
->> or
->> MEM -DMA-> P2
->> or
->> P2 -DMA-> MEM
->> or
->> MEM -DMA-> P1 -DMA-> MEM
->>
->> How would the DMA guess what it should do? How would the independent P1
->> and P2 would know how to set up the config?
+> This reverts commit 35bf948f1edbf507f6e57e0879fa6ea36d2d2930.
 > 
-> As I said, we do not support DEV_TO_DEV yet :)
+> Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_dsi.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
 > 
-> Question is how would p1<-->p2 look, will p1 initiate a DMA txn or p2..?
-> who will configure these..
+> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c
+> b/drivers/gpu/drm/mediatek/mtk_dsi.c index 80b7a082e874..16fd99dcdacf
+> 100644 --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
+> @@ -466,13 +466,14 @@ static void mtk_dsi_config_vdo_timing(struct
+> mtk_dsi *dsi) horizontal_sync_active_byte = (vm->hsync_len *
+> dsi_tmp_buf_bpp - 10); 
+>  	if (dsi->mode_flags & MIPI_DSI_MODE_VIDEO_SYNC_PULSE)
+> -		horizontal_backporch_byte = vm->hback_porch *
+> dsi_tmp_buf_bpp;
+> +		horizontal_backporch_byte =
+> +			(vm->hback_porch * dsi_tmp_buf_bpp - 10);
+>  	else
+> -		horizontal_backporch_byte = (vm->hback_porch +
+> vm->hsync_len) *
+> -					    dsi_tmp_buf_bpp;
+> +		horizontal_backporch_byte = ((vm->hback_porch +
+> vm->hsync_len) *
+> +			dsi_tmp_buf_bpp - 10);
+>  
+>  	data_phy_cycles = timing->lpx + timing->da_hs_prepare +
+> -			  timing->da_hs_zero + timing->da_hs_exit;
+> +			  timing->da_hs_zero + timing->da_hs_exit +
+> 3; 
+>  	if (dsi->mode_flags & MIPI_DSI_MODE_VIDEO_BURST) {
+>  		if ((vm->hfront_porch + vm->hback_porch) *
+> dsi_tmp_buf_bpp >
 
-That's a good question, I have not really thought about that.
-If we have MEM in the picture, then it is a bit cleaner, but I would guess.
+Reviewed-by: Bilal Wasim <bilal.wasim@imgtec.com>
+Tested-by: Bilal Wasim <bilal.wasim@imgtec.com>
 
-> Do you have a real world example in horizon...
-
-In j721e we have AASRC module which needs special PDMA configuration to
-match with it's setup, AASRC can be chained with McASP, which in turn
-have different type of PDMA.
-
-- Péter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Thanks,
+Bilal
