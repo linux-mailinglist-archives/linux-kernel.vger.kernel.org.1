@@ -2,67 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5228028BAFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35AFE28BB07
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:45:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388927AbgJLOlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:41:11 -0400
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:43375 "EHLO 1wt.eu"
+        id S2389019AbgJLOpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:45:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387930AbgJLOlL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 10:41:11 -0400
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 09CEeeKE011622;
-        Mon, 12 Oct 2020 16:40:40 +0200
-Date:   Mon, 12 Oct 2020 16:40:40 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Guillaume Tucker <guillaume.tucker@collabora.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Diego Elio =?iso-8859-1?Q?Petten=F2?= <flameeyes@flameeyes.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        kernelci@groups.io
-Subject: Re: [PATCH] x86/x86_64_defconfig: Enable the serial console
-Message-ID: <20201012144040.GB11614@1wt.eu>
-References: <20201008164044.GE5505@zn.tnic>
- <4162cfa4-7bf2-3e6e-1b8c-e19187e6fa10@infradead.org>
- <2538da14-0f4b-5d4a-c7bf-6fdb46ba2796@collabora.com>
- <20201011122020.GA15925@zn.tnic>
- <107a6fb0-a667-2f30-d1f4-640e3fee193a@collabora.com>
- <20201011155754.GC15925@zn.tnic>
- <1dfdf163-9b54-ceae-b178-c566e6109263@collabora.com>
- <20201012035846.GB11282@1wt.eu>
- <b188f977-b11e-f570-599a-7bcf364be0fd@collabora.com>
- <20201012143212.GC22829@zn.tnic>
+        id S2388646AbgJLOpL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 10:45:11 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BB7ED20776;
+        Mon, 12 Oct 2020 14:45:10 +0000 (UTC)
+Date:   Mon, 12 Oct 2020 10:45:09 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Enderborg, Peter" <Peter.Enderborg@sony.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>
+Subject: Re: [PATCH] trace: Return ENOTCONN instead of EBADF
+Message-ID: <20201012104509.6ae404d5@gandalf.local.home>
+In-Reply-To: <55b99d8d-f75a-e095-63fa-3d5df8b77f1b@sony.com>
+References: <20201012082642.1394-1-peter.enderborg@sony.com>
+        <20201012095324.78996fd2@gandalf.local.home>
+        <55b99d8d-f75a-e095-63fa-3d5df8b77f1b@sony.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201012143212.GC22829@zn.tnic>
-User-Agent: Mutt/1.6.1 (2016-04-27)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 04:32:12PM +0200, Borislav Petkov wrote:
-> On Mon, Oct 12, 2020 at 11:22:10AM +0100, Guillaume Tucker wrote:
-> > However, it was found while adding some x86 Chromebooks[1] to
-> > KernelCI that x86_64_defconfig lacked some basic things for
-> > anyone to be able to boot a kernel with a serial console enabled
-> > on those.
+On Mon, 12 Oct 2020 14:26:48 +0000
+"Enderborg, Peter" <Peter.Enderborg@sony.com> wrote:
+
+> On 10/12/20 3:53 PM, Steven Rostedt wrote:
+> > On Mon, 12 Oct 2020 10:26:42 +0200
+> > Peter Enderborg <peter.enderborg@sony.com> wrote:
+> >  
+> >> When there is no clients listening on event the trace return
+> >> EBADF. The file is not a bad file descriptor and to get the
+> >> userspace able to do a proper error handling it need a different
+> >> error code that separate a bad file descriptor from a empty listening.  
+> > I have no problem with this patch, but your description is incorrect. And
+> > before making this change, I want to make sure that what you think is
+> > happening is actually happening.
+> >
+> > This has nothing to do with "clients listening". This happens when the ring
+> > buffer is disabled for some reason. The most likely case of this happening
+> > is if someone sets /sys/kernel/tracing/tracing_on to zero.  
 > 
-> Hold on, those are laptops, right? How come they do have serial console?
-> Because laptops don't have serial console - that has been the eternal
-> problem with debugging kernels on laptops.
+> I see that as no one is listening. You start to listen by setting this tracing on
+> some instance, but that is for trace_pipe. Is it the same flag for raw access and all ways you
+> can invoke a trace?
 
-Well, to be precise, they don't have *anymore*. I used to exclusively
-select laptops having a serial port given that I was using it daily with
-routers, until I had to resign when I abandonned my good old NC8000 :-/
+I don't know what you mean by "setting this tracing on some instance".
 
-Willy
+When you boot up, who is listening? tracing_on is enabled. But there's no
+listener.
+
+
+> 
+> Would
+> 
+> "When there is no instances listening on events the trace return
+
+What instance are you talking about? What do you think needs to be
+listening. And no, trace_pipe plays zero role in this.
+
+> EBADF, it is when the tracing_on is off globally. The file is not a bad file
+> descriptor and to get the userspace able to do a proper error handling it need a different
+> error code that separate a bad file descriptor from a empty listening."
+> 
+> be a ok?
+> 
+
+No. Because I don't understand any of the above!
+
+There's no a producer / consumer here. It's a read / write enabled or
+disabled. If the ring buffer is disabled from write, and you try to write
+to the ring buffer, you get an error.
+
+Basically, it's the same analogy as trying to write to a read-only file.
+Perhaps the proper error is EPERM.
+
+-- Steve
