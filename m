@@ -2,103 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7599728AFC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 10:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CBB428AFD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 10:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729075AbgJLINS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 04:13:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728956AbgJLINR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 04:13:17 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40CA6C0613CE;
-        Mon, 12 Oct 2020 01:13:17 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id u8so21984253ejg.1;
-        Mon, 12 Oct 2020 01:13:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=reply-to:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=ISkqozpSXsD9a8Oh/2Mwcyva57KxR87dIuzCIf+AzK4=;
-        b=vLxLC2ao0L4Ivfe+BPwXRED7H586V1sSXEIbMF9LfxQwxO+Zj65QHw9YpnzzpNF+5s
-         pe0SgL866UCiUr5PMln2kM/rXsQAiQwxm9xqBa1r/w5BcshC+iOmiozfO7Z4u6AwQfAz
-         Vfx3PqBr4wY4D9HosTE8Wp76eUyQkFEjvjbUBNXO9p/9oGzOrrNit+i1xQ8rB5QbDjQs
-         F9Ihv4Bw7KG4xGNRxT0nbSDmdL/1EJi1xqf/gG4FNU+OUu4iG+9rU7nADfRhvp4+8AAf
-         HcdDZZMKxxCfFS+tSPVctDoJoYUswL6SPs0UcCi3bxYvLZGbno5o1HYN8rV+tCw9Xic+
-         UV3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:subject:to:cc:references:from
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-transfer-encoding:content-language;
-        bh=ISkqozpSXsD9a8Oh/2Mwcyva57KxR87dIuzCIf+AzK4=;
-        b=SN0wvtpqevJXriN9ZTkbSGFlqaZMvIyfOLM1sFttaRoSxXuKBPS7fMtbgVpOixb3Ii
-         32MQqoI5xRq7KMvClsix5DqmK2EcKBwg/TwQXP+rAlARJx0b2PEo+Y7dZvXeKWrtLqTA
-         AH1G4AM78QVF6q08BFKZylWZTxyKZ+rJfx5dIyAsqlQ65heUajn8D8YmSCzb3LRbpRjy
-         Er8OUk6hEmpouax1PHJ/rfE/GwaXvzRvZMgICCxNdXImR11H9FTcsMKJDVaiJZVFBCNM
-         IqL7VUyTChOKBVqKcI1uJzBBXZFJbTZBv/G4NxA24UawWtfs0Pd+BeyNWvX9g31vLqxU
-         STaA==
-X-Gm-Message-State: AOAM531LLyo51G3OpftYA3a2H0QaKmbiMKVNt6NsoUHr6KaBDmV8gSNL
-        O/j5f8Hg/fM+IYX/XVbLAxg=
-X-Google-Smtp-Source: ABdhPJyESr76MyJXr7Jw9FX0sBn+vlDp7RU85Q8VgP3nIl7qNvty4ksx+a/gWI8+0WMbFKdXmfr7Ow==
-X-Received: by 2002:a17:906:4e06:: with SMTP id z6mr28073702eju.370.1602490395918;
-        Mon, 12 Oct 2020 01:13:15 -0700 (PDT)
-Received: from ?IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7? ([2a02:908:1252:fb60:be8a:bd56:1f94:86e7])
-        by smtp.gmail.com with ESMTPSA id p16sm10218325ejz.103.2020.10.12.01.13.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Oct 2020 01:13:15 -0700 (PDT)
-Reply-To: christian.koenig@amd.com
-Subject: Re: [PATCH 1/6] mm: mmap: fix fput in error path
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, chris@chris-wilson.co.uk,
-        airlied@redhat.com, daniel@ffwll.ch, sumit.semwal@linaro.org,
-        willy@infradead.org, jhubbard@nvidia.com,
-        Miaohe Lin <linmiaohe@huawei.com>
-References: <20201009150342.1979-1-christian.koenig@amd.com>
- <20201009150420.450833e3830b9d39a2385dd9@linux-foundation.org>
- <20201009222509.GC5177@ziepe.ca>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-Message-ID: <666ef8f3-6299-3c0b-6ebb-04e957a115a1@gmail.com>
-Date:   Mon, 12 Oct 2020 10:13:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729171AbgJLINr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 04:13:47 -0400
+Received: from ozlabs.org ([203.11.71.1]:56801 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727457AbgJLINr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 04:13:47 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C8rzV27Z5z9sS8;
+        Mon, 12 Oct 2020 19:13:42 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1602490424;
+        bh=/RQGULKhs5Jj4kjp7KiecigKGlItBPjp7kcqUU1M8I4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=hz/pTI0+CKpSjCh8G4OLF6qCl48Nj9yhhJ02Phx5yhk8TlrVxS5pvgBeOU3U+Cd8z
+         dRrqvUvaeQS4ojwkd/TWxH1TNlq2r3fZ15jCxa+Mw09lO821k2jQrrCIqwu+c09yzW
+         aaGCeIGdYlTgEVQ371D9TzCmTuH+njDN+2CFZsTX0pPb3ZqRGyfh8adKK5PLA1WOrW
+         Z/vHCrtl1KPUxtLHT2SEU5C1P6RTlVO4LS46/CvTaWf7F0Azz7aItn9jShxQJsZmTj
+         4tmrZ8yGkHbJR19iYvE1WNSwnDLFl3cczPC4m0yJrTFkZTto1u2AI02kFuxzkb9Uhc
+         Idrw599T69pWQ==
+Date:   Mon, 12 Oct 2020 19:13:40 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Shuah Khan <skhan@linuxfoundation.org>,
+        Corey Minyard <cminyard@mvista.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Xianting Tian <tian.xianting@h3c.com>
+Subject: linux-next: manual merge of the counters tree with the ipmi tree
+Message-ID: <20201012191340.78ebbaea@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20201009222509.GC5177@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: multipart/signed; boundary="Sig_/0KS4xOikIQTAin_m61NnD8D";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 10.10.20 um 00:25 schrieb Jason Gunthorpe:
-> On Fri, Oct 09, 2020 at 03:04:20PM -0700, Andrew Morton wrote:
->> On Fri,  9 Oct 2020 17:03:37 +0200 "Christian König" <ckoenig.leichtzumerken@gmail.com> wrote:
->>
->>> Patch "495c10cc1c0c CHROMIUM: dma-buf: restore args..."
->>> adds a workaround for a bug in mmap_region.
->>>
->>> As the comment states ->mmap() callback can change
->>> vma->vm_file and so we might call fput() on the wrong file.
->>>
->>> Revert the workaround and proper fix this in mmap_region.
->>>
->> Doesn't this patch series address the same thing as
->> https://lkml.kernel.org/r/20200916090733.31427-1-linmiaohe@huawei.com?
-> Same basic issue, looks like both of these patches should be combined
-> to plug it fully.
+--Sig_/0KS4xOikIQTAin_m61NnD8D
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Yes, agree completely.
+Hi all,
 
-It's a different error path, but we need to fix both occasions.
+Today's linux-next merge of the counters tree got a conflict in:
 
-Christian.
+  drivers/char/ipmi/ipmi_msghandler.c
 
->
-> Jason
+between commit:
 
+  f8910ffa81b0 ("ipmi:msghandler: retry to get device id on an error")
+
+from the ipmi tree and commit:
+
+  dc87264ac991 ("drivers/char/ipmi: convert stats to use counter_atomic32")
+
+from the counters tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/char/ipmi/ipmi_msghandler.c
+index 8774a3b8ff95,36c0b1be22fb..000000000000
+--- a/drivers/char/ipmi/ipmi_msghandler.c
++++ b/drivers/char/ipmi/ipmi_msghandler.c
+@@@ -34,7 -34,7 +34,8 @@@
+  #include <linux/uuid.h>
+  #include <linux/nospec.h>
+  #include <linux/vmalloc.h>
+ +#include <linux/delay.h>
++ #include <linux/counters.h>
+ =20
+  #define IPMI_DRIVER_VERSION "39.2"
+ =20
+
+--Sig_/0KS4xOikIQTAin_m61NnD8D
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+EEDQACgkQAVBC80lX
+0Gy6UQf/fERKmG8Wt/QbJwaKNKM/FeDhPsLnlzT4sMMuDB2l/0t94wOmnFkeHCd1
+r3lN42lcq6O/2Q+rX++5cgdadCqQAZKv6MmMHUfaLI7KEerxtmGDpoJJyEFVLAnD
+uXSndL0t7cxzcsHSDGAB1Z8BYm+Iztu6mGPrRbEzlEDbrahr4pRDckCcYdnYiItm
+pWl40CJexb8l/YpmgPPE3oaoPe7ktFqcjkHvXgL19bmQ8mnYEzL/872CFj6QJupQ
++IM+BnddsgRT3azHaRPjycFkaxrGMWCoRsoVnYIham51MgfAFqO04X3SSezLeFcp
+ZfwC5bki5cfe5efFFy857LIbn0pVyg==
+=M2Lz
+-----END PGP SIGNATURE-----
+
+--Sig_/0KS4xOikIQTAin_m61NnD8D--
