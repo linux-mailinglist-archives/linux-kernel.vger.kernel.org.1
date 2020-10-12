@@ -2,61 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 133C528BB7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 602AF28BB81
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:03:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389153AbgJLPCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 11:02:11 -0400
-Received: from smtprelay0129.hostedemail.com ([216.40.44.129]:60622 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2389019AbgJLPCK (ORCPT
+        id S2389187AbgJLPDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 11:03:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388518AbgJLPDB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 11:02:10 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 80F96100E7B40;
-        Mon, 12 Oct 2020 15:02:09 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1561:1593:1594:1711:1714:1730:1747:1777:1792:1801:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3167:3622:3865:3871:4321:4605:5007:10004:10400:10848:11232:11658:11914:12043:12297:12740:12760:12895:13069:13255:13311:13357:13439:14659:21080:21627:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: alarm80_01153e8271fb
-X-Filterd-Recvd-Size: 1574
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf14.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 12 Oct 2020 15:02:08 +0000 (UTC)
-Message-ID: <ef07f3b6c519cd79695c769a0e01a9f5be544c3d.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: Check for .byte-spelled insn opcodes
- documentation on x86
-From:   Joe Perches <joe@perches.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     X86 ML <x86@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
-        Andy Whitcroft <apw@canonical.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Date:   Mon, 12 Oct 2020 08:02:06 -0700
-In-Reply-To: <20201012142148.GA22829@zn.tnic>
-References: <20201009161423.14583-1-bp@alien8.de>
-         <b57a59bc80e432c7696b347a223eb12339013970.camel@perches.com>
-         <20201010105421.GA24674@zn.tnic>
-         <4147e49c0b1251343181b5580d946c2273247927.camel@perches.com>
-         <20201010161112.GC24674@zn.tnic>
-         <a534ed57c23ff35f6b84057ba3c0d1b55f0b03b9.camel@perches.com>
-         <20201012142148.GA22829@zn.tnic>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Mon, 12 Oct 2020 11:03:01 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DB5BC0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 08:03:01 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id r4so10307578ioh.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 08:03:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=dOxxPNjr/iGY+8h7dwDR7hTiVWYmoip3CgBNC9AuzuE=;
+        b=ZGopY0hZEV5bwj0rj2DunzilMiAZsTy6XqBCL3e4yGwYyDmBQwJOJDyCVzZ2j9Of0n
+         L3y8MEG4r5bV/kgzPhbInVUsTh8sYlj7a3PNkPPPnbMuYdvFNARz/UKeoSIfW5G1fVMw
+         3Fd1+CeWdd+GLTZfx+Xtu9CwWoDlpiYfyY49H87H5q5RUxBJ661cW7pzOMaBWZMwMgKv
+         X2jgK/3D6jWpcEI+DheIEZWfkYvMEM7JMfPlqwrPTd/ou5d+ilfLDp6qpOFHlWRWTD6R
+         Yf5zFkEoZf2Ki80GnomDrA+25ipQ1Aq5Dx/Cm6qCj1RSMJR9561EacIlB7R7kqNY/Vd4
+         outQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=dOxxPNjr/iGY+8h7dwDR7hTiVWYmoip3CgBNC9AuzuE=;
+        b=LkNmuq9P2OL6rRfZBDK2MY7M0WJ2mBHmtDvk6AB0kxOPvIgGlI+1RKAp0WSxPVDprM
+         uqVmtjwp6v3dnYeoM6Yexz8LzKGVdpN+hIF2Rj5tFkJzbYas8ZZUAKRcgj0fXOTJpY0O
+         wLgpbHzCs+K0DbmN0uFnvNmnLiDHAkD05tcKI75x4fEWVi7A+oCTijWbefub2rGMU5Za
+         zvXU9MbaDMKjr/M7XbjeY0LNX0JZd3tdslvNnfK3M6fo/rRO5NfTyr4WIIT0UqIlSsac
+         9DyeinTjXjTdPdlj67D+l1CW71726lsPf/uUeQfB3WOpTjQY9MNwywsGIAVj2FBT1zBf
+         rWPA==
+X-Gm-Message-State: AOAM531rdQGct+gTqdu52pMIDaRtX/+ta/YB8lp7wOjjuJO4Kdrt1D02
+        4y1Pml+aGvNJgq8jJsyM7GD3RaiRDUpn+vv8Gmo=
+X-Google-Smtp-Source: ABdhPJwpeAItH4JeuVaGeeVfh9CLzdfNJeMzvWGFfuNkMvzJI16Jo9eHNZuj8faSiuVR/SQTmqy29exZ6embZffhdk0=
+X-Received: by 2002:a6b:e017:: with SMTP id z23mr16873712iog.110.1602514980900;
+ Mon, 12 Oct 2020 08:03:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <CA+icZUUK3sgpHyY1h_pdzJzkX1bY46opLYytRKRzeCxBNzTX4A@mail.gmail.com>
+ <20201012134255.GB2023362@gmail.com>
+In-Reply-To: <20201012134255.GB2023362@gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Mon, 12 Oct 2020 17:02:50 +0200
+Message-ID: <CA+icZUX8s3WrdunQZvf+ANu90M0v41oP7669O7_0yrjzmxXauA@mail.gmail.com>
+Subject: Re: Missing [GIT PULL] request for <tip.git#locking-urgent-2020-10-11>
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-10-12 at 16:21 +0200, Borislav Petkov wrote:
-> On Sat, Oct 10, 2020 at 09:47:59AM -0700, Joe Perches wrote:
-> > > '/\s*\.byte\s+(?:0x[0-9a-f]{1,2}[\s,]*){2,}/i'
-> >     ^^^                                       ^
-> > now useless without the "
+On Mon, Oct 12, 2020 at 3:42 PM Ingo Molnar <mingo@kernel.org> wrote:
 >
-> There are \.byte specifications without " so not useless.
+>
+> * Sedat Dilek <sedat.dilek@gmail.com> wrote:
+>
+> > Hi,
+> >
+> > yesterday, I saw Ingo tagged "locking-urgent-2020-10-11" in tip Git.
+> >
+> > Did you drop it or was this for Linux v5.9 final and the git-pull
+> > request was simply forgotten?
+> >
+> > Just curious.
+>
+> So I ran the pull request script to send the tree to Linus, but on final
+> review decided not to send it, as there was a pending bugreport against the
+> tree, it was very late in the cycle and the commits were pretty fresh.
 
-Matching optional leading spaces is useless.
+You mean the lockdep recursion in debug_lockdep_rcu_enabled()?
 
-
+- Sedat -
