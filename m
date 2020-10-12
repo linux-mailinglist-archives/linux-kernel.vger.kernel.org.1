@@ -2,226 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C98A28AC9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 05:39:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EACC628ACA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 05:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727320AbgJLDjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 23:39:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726058AbgJLDjG (ORCPT
+        id S1727396AbgJLDnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 23:43:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23043 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726041AbgJLDnv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 23:39:06 -0400
-Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA8D1C0613CE
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 20:39:05 -0700 (PDT)
-Received: by mail-vk1-xa41.google.com with SMTP id h74so3532395vkh.6
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 20:39:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KiuyMjRQI4UrLg1n7cKhKKhLAfvoAgBKOZvduZBf0aY=;
-        b=GvYw6qfjah6oj28Zd4TyigWyNPLHWgTmQXGUKHFCNco3JwK1pqqfGb+tdfWgJV/aHj
-         S+h2hbUt0Q0CInYosoIAWUWuaIun06dlEqgLRbo4SauF9qtCc8cq4Z0radiQB0tk3mmI
-         IDt/gz0+D1P3VfbCMkRdwLcOAADZSidrs9f3Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KiuyMjRQI4UrLg1n7cKhKKhLAfvoAgBKOZvduZBf0aY=;
-        b=RsE66kB//x+G2RBa3vfxol+Rqo3zZG4esEnydGHotnePGbEDsGBhgtbBNtX1ay3SA3
-         sFBwkJFOZVreJeRb/yzl5OM3mUC6txDAwZuTiit5Ea+Hfhwynm6bAmtXrHM903QFJWlN
-         uk4X+U/EuGEOnz8HMOWEtM2qJYhLF7FSeVFP1q3N00Zp4TgOCrz+//c+MAOlvzTWyAtH
-         cUG9HMxwUoZvJhwfHfC057ME0KubUoIDrFgax6AxBTErLS94D68YlyuKbasHLvJC81Za
-         UWIZnM96i8GD37IaPqaDMskjieAwbGpcOBywRhrnmBhEj41s8Olv0xLRyaD8hO6SLzpr
-         at6Q==
-X-Gm-Message-State: AOAM532ZmaGEiZ8uPTSuYAxkz/9LrN2008GVWninUYCR57PFuamx7Adl
-        UqsaYIV6njqjd2wPOukKcvJEeakieUTAPpdQXnSkDg==
-X-Google-Smtp-Source: ABdhPJwKOiKNGLkhvGKapg/FgDio242ur83cmC2L2lxBLQ0SOgKJTlTt6djxWtCGfhAXNv6m7RcdvSnXNsZSIZ3S6+c=
-X-Received: by 2002:a05:6122:7c7:: with SMTP id l7mr2639856vkr.17.1602473944804;
- Sun, 11 Oct 2020 20:39:04 -0700 (PDT)
+        Sun, 11 Oct 2020 23:43:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602474229;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LRc/4gOXa8jCVo/d1ERRs5SER0ImU1RZc38TDUpLQFc=;
+        b=Rc54z2xuiCTXJcdAlhLyjGA3hCP72Qsh0a6z7pLqB9RL/AhmGVnD4IFK0IWx0pUfk6cVrV
+        3xi5cdCtDzQnqkN5MDObLw5yuCQHRwGOH6dpOnLA2bP88PlPlt3dIajvlH50QTKQG0NdvG
+        kO9BJRFMNSYROsfSDU54Tli0lM//srw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-258-hQRGdXMNNcu0xzgFnXbrDA-1; Sun, 11 Oct 2020 23:43:45 -0400
+X-MC-Unique: hQRGdXMNNcu0xzgFnXbrDA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8589D805F0B;
+        Mon, 12 Oct 2020 03:43:43 +0000 (UTC)
+Received: from [10.72.13.74] (ovpn-13-74.pek2.redhat.com [10.72.13.74])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1888460C13;
+        Mon, 12 Oct 2020 03:43:33 +0000 (UTC)
+Subject: Re: [PATCH v3] i2c: virtio: add a virtio i2c frontend driver
+To:     Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     mst@redhat.com, wsa+renesas@sang-engineering.com, wsa@kernel.org,
+        andriy.shevchenko@linux.intel.com, jarkko.nikula@linux.intel.com,
+        jdelvare@suse.de, Sergey.Semin@baikalelectronics.ru,
+        krzk@kernel.org, rppt@kernel.org, loic.poulain@linaro.org,
+        tali.perry1@gmail.com, bjorn.andersson@linaro.org,
+        shuo.a.liu@intel.com, conghui.chen@intel.com, yu1.wang@intel.com
+References: <1350309657ab0c7b9f97e7a5c71d084f88caa549.1600743079.git.jie.deng@intel.com>
+ <958b69c3-0321-d5cb-4c12-702795925583@redhat.com>
+ <2dc4bd12-9f23-7caa-b1ec-f3403d36e065@intel.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <83529dac-7b87-aec9-55f0-85face47e7b6@redhat.com>
+Date:   Mon, 12 Oct 2020 11:43:32 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201012024345.8361-1-wenbin.mei@mediatek.com> <20201012024345.8361-5-wenbin.mei@mediatek.com>
-In-Reply-To: <20201012024345.8361-5-wenbin.mei@mediatek.com>
-From:   Nicolas Boichat <drinkcat@chromium.org>
-Date:   Mon, 12 Oct 2020 11:38:53 +0800
-Message-ID: <CANMq1KD5MRvAiwk+EPfOTqaEqjcXz5FUAvmkX+OjQ=kpEP_=8A@mail.gmail.com>
-Subject: Re: [PATCH v5 4/4] mmc: mediatek: Add subsys clock control for MT8192 msdc
-To:     Wenbin Mei <wenbin.mei@mediatek.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-mmc@vger.kernel.org,
-        Devicetree List <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <2dc4bd12-9f23-7caa-b1ec-f3403d36e065@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the quick turnaround.
 
-And sorry, I should have noticed these issues in my previous pass.
+On 2020/10/12 上午10:45, Jie Deng wrote:
+>
+>
+> On 2020/10/10 11:14, Jason Wang wrote:
+>>
+>>> +
+>>> +        virtqueue_kick(vq);
+>>> +
+>>> +        time_left = wait_for_completion_timeout(&vi->completion, 
+>>> adap->timeout);
+>>> +        if (!time_left) {
+>>> +            dev_err(&adap->dev, "msg[%d]: addr=0x%x timeout.\n", i, 
+>>> msgs[i].addr);
+>>> +            break;
+>>> +        }
+>>
+>>
+>> You don't set error number here. Is this intended?
+>>
+>> And using a timeout here is not good, and if the request is finished 
+>> just after the timeout, in the next xfer you may hit the following 
+>> check.
+>>
+>> It's better to use either interrupt here.
+>>
+> Could you check the I2C drivers in the kernel ? The 
+> "wait_for_completion_timeout" mechanism
+> is commonly used by I2C bus drivers in their i2c_algorithm.master_xfer.
 
-On Mon, Oct 12, 2020 at 10:44 AM Wenbin Mei <wenbin.mei@mediatek.com> wrote:
->
-> MT8192 msdc is an independent sub system, we need control more bus
-> clocks for it.
-> Add support for the additional subsys clocks to allow it to be
-> configured appropriately.
->
-> Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
-> ---
->  drivers/mmc/host/mtk-sd.c | 74 +++++++++++++++++++++++++++++----------
->  1 file changed, 56 insertions(+), 18 deletions(-)
->
-> diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
-> index a704745e5882..41703e6d6b17 100644
-> --- a/drivers/mmc/host/mtk-sd.c
-> +++ b/drivers/mmc/host/mtk-sd.c
-> @@ -35,6 +35,7 @@
->  #include "cqhci.h"
->
->  #define MAX_BD_NUM          1024
-> +#define MSDC_NR_CLOCKS      3
->
->  /*--------------------------------------------------------------------------*/
->  /* Common Definition                                                        */
-> @@ -425,6 +426,8 @@ struct msdc_host {
->         struct clk *h_clk;      /* msdc h_clk */
->         struct clk *bus_clk;    /* bus clock which used to access register */
->         struct clk *src_clk_cg; /* msdc source clock control gate */
-> +       struct clk *sys_clk_cg; /* msdc subsys clock control gate */
-> +       struct clk_bulk_data bulk_clks[MSDC_NR_CLOCKS];
->         u32 mclk;               /* mmc subsystem clock frequency */
->         u32 src_clk_freq;       /* source clock frequency */
->         unsigned char timing;
-> @@ -784,6 +787,7 @@ static void msdc_set_busy_timeout(struct msdc_host *host, u64 ns, u64 clks)
->
->  static void msdc_gate_clock(struct msdc_host *host)
->  {
-> +       clk_bulk_disable_unprepare(MSDC_NR_CLOCKS, host->bulk_clks);
->         clk_disable_unprepare(host->src_clk_cg);
->         clk_disable_unprepare(host->src_clk);
->         clk_disable_unprepare(host->bus_clk);
-> @@ -792,10 +796,18 @@ static void msdc_gate_clock(struct msdc_host *host)
->
->  static void msdc_ungate_clock(struct msdc_host *host)
->  {
-> +       int ret;
-> +
->         clk_prepare_enable(host->h_clk);
->         clk_prepare_enable(host->bus_clk);
->         clk_prepare_enable(host->src_clk);
->         clk_prepare_enable(host->src_clk_cg);
-> +       ret = clk_bulk_prepare_enable(MSDC_NR_CLOCKS, host->bulk_clks);
-> +       if (ret) {
-> +               dev_err(host->dev, "Cannot enable pclk/axi/ahb clock gates\n");
-> +               return;
-> +       }
 
-It's a bit odd that we only care about the last 3 clocks... Should we
-return early if any of the clocks can't be enabled? Changing the
-behaviour for the other clocks should be in another patch though.
+There's a major difference between virtio-i2c and other drivers. In the 
+case of virtio, the device could be a software device emulated by a 
+remote process. This means the timeout might not be rare.
 
-> +
->         while (!(readl(host->base + MSDC_CFG) & MSDC_CFG_CKSTB))
->                 cpu_relax();
->  }
-> @@ -2366,6 +2378,48 @@ static void msdc_of_property_parse(struct platform_device *pdev,
->                 host->cqhci = false;
->  }
+I don't see how timeout is properly handled in this patch (e.g did you 
+notice that you don't set any error when timeout? or is this intended?)
+
+
 >
-> +static int msdc_of_clock_parse(struct platform_device *pdev,
-> +                              struct msdc_host *host)
-> +{
-> +       int ret;
-> +
-> +       host->src_clk = devm_clk_get_optional(&pdev->dev, "source");
+>>
+>>> +
+>>> +        vmsg = (struct virtio_i2c_msg *)virtqueue_get_buf(vq, &len);
+>>> +        /* vmsg should point to the same address with &vi->vmsg */
+>>> +        if ((!vmsg) || (vmsg != &vi->vmsg)) {
+>>> +            dev_err(&adap->dev, "msg[%d]: addr=0x%x virtqueue 
+>>> error.\n",
+>>> +                i, msgs[i].addr);
+>>> +            break;
+>>> +        }
+>>
+>>
+>> So I think we can remove this check. Consider only one descriptor 
+>> will be used at most, unless there's a bug in the device (and no 
+>> other driver to the similar check), we should not hit this.
+>>
+>> Btw, as I replied in the previous version, the device should be 
+>> cacpable of dealing of a batch of requests through the virtqueue, 
+>> otherwise it's meaningless to use a queue here.
+>>
+> We should not assume there is no bug in the device. I don't think we 
+> can remove this check if we want our code to be robust.
 
-I think you want devm_clk_get, as the previous version of the code
-does not make this clock optional.
 
-> +       if (IS_ERR(host->src_clk))
-> +               return PTR_ERR(host->src_clk);
-> +
-> +       host->h_clk = devm_clk_get_optional(&pdev->dev, "hclk");
+Can you tell when at which case you may hit !vmsg or vmsg != vi->vmsg?
 
-ditto, devm_clk_get
 
-> +       if (IS_ERR(host->h_clk))
-> +               return PTR_ERR(host->h_clk);
-> +
-> +       host->bus_clk = devm_clk_get_optional(&pdev->dev, "bus_clk");
-> +       if (IS_ERR(host->bus_clk))
-> +               host->bus_clk = NULL;
 
-This is consistent with previous behaviour, but this looks wrong. If
-the clock exists (!= NULL return value), but you get an error, you
-should return that error. This belongs in another patch though.
+> As I said, currently, we are using the virtqueue to send the msg one 
+> by one to the backend. The mechanism is described in the spec. 
 
-> +
-> +       /*source clock control gate is optional clock*/
-> +       host->src_clk_cg = devm_clk_get_optional(&pdev->dev, "source_cg");
-> +       if (IS_ERR(host->src_clk_cg))
-> +               host->src_clk_cg = NULL;
-> +
-> +       host->sys_clk_cg = devm_clk_get_optional(&pdev->dev, "sys_cg");
-> +       if (IS_ERR(host->sys_clk_cg))
-> +               host->sys_clk_cg = NULL;
-> +
-> +       /* If present, always enable for this clock gate */
-> +       clk_prepare_enable(host->sys_clk_cg);
-> +
-> +       host->bulk_clks[0].id = "pclk_cg";
-> +       host->bulk_clks[1].id = "axi_cg";
-> +       host->bulk_clks[2].id = "ahb_cg";
-> +       ret = devm_clk_bulk_get_optional(&pdev->dev, MSDC_NR_CLOCKS,
-> +                                        host->bulk_clks);
-> +       if (ret) {
-> +               dev_err(&pdev->dev, "Cannot get pclk/axi/ahb clock gates\n");
-> +               return ret;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
->  static int msdc_drv_probe(struct platform_device *pdev)
->  {
->         struct mmc_host *mmc;
-> @@ -2405,25 +2459,9 @@ static int msdc_drv_probe(struct platform_device *pdev)
->         if (ret)
->                 goto host_free;
+
+Which part of the spec describes such "one by one" mechanism? If there 
+is one, I'd happily give a NACK since it doesn't require a queue to work 
+which is conflict with the concept of the virtqueue.
+
+
+> Thanks.
 >
-> -       host->src_clk = devm_clk_get(&pdev->dev, "source");
-> -       if (IS_ERR(host->src_clk)) {
-> -               ret = PTR_ERR(host->src_clk);
-> -               goto host_free;
-> -       }
-> -
-> -       host->h_clk = devm_clk_get(&pdev->dev, "hclk");
-> -       if (IS_ERR(host->h_clk)) {
-> -               ret = PTR_ERR(host->h_clk);
-> +       ret = msdc_of_clock_parse(pdev, host);
-> +       if (ret)
->                 goto host_free;
-> -       }
-> -
-> -       host->bus_clk = devm_clk_get(&pdev->dev, "bus_clk");
-> -       if (IS_ERR(host->bus_clk))
-> -               host->bus_clk = NULL;
-> -       /*source clock control gate is optional clock*/
-> -       host->src_clk_cg = devm_clk_get(&pdev->dev, "source_cg");
-> -       if (IS_ERR(host->src_clk_cg))
-> -               host->src_clk_cg = NULL;
 >
->         host->reset = devm_reset_control_get_optional_exclusive(&pdev->dev,
->                                                                 "hrst");
-> --
-> 2.18.0
+>>
+>>> +
+>>>
+>>> +
+>>> +#ifndef _UAPI_LINUX_VIRTIO_I2C_H
+>>> +#define _UAPI_LINUX_VIRTIO_I2C_H
+>>> +
+>>> +#include <linux/types.h>
+>>> +#include <linux/virtio_ids.h>
+>>> +#include <linux/virtio_config.h>
+>>> +
+>>> +/**
+>>> + * struct virtio_i2c_hdr - the virtio I2C message header structure
+>>> + * @addr: i2c_msg addr, the slave address
+>>> + * @flags: i2c_msg flags
+>>> + * @len: i2c_msg len
+>>> + */
+>>> +struct virtio_i2c_hdr {
+>>> +    __le16 addr;
+>>> +    __le16 flags;
+>>> +    __le16 len;
+>>> +};
+>>
+>>
+>> I'm afraid this is not complete. E.g the status is missed.
+>>
+>> I suspect what virtio-scsi use is better. Which split the in from the 
+>> out instead of reusing the same buffer. And it can ease the uAPI 
+>> header export.
+>>
+>> Thanks
+>>
+>>
+>
+> I think following definition in uAPI for the status is enough.
+> There is no need to provide a "u8" status in the structure.
+>
+> /* The final status written by the device */
+> #define VIRTIO_I2C_MSG_OK    0
+> #define VIRTIO_I2C_MSG_ERR    1
+>
+> You can see an example in virtio_blk.
+>
+> In the spec:
+>
+> struct virtio_blk_req {
+> le32 type;
+> le32 reserved;
+> le64 sector;
+> u8 data[];
+> u8 status;
+> };
+>
+> In virtio_blk.h, there is only following definitions.
+>
+> #define VIRTIO_BLK_S_OK        0
+> #define VIRTIO_BLK_S_IOERR    1
+> #define VIRTIO_BLK_S_UNSUPP    2
+>
+
+virtio-blk is a bad example, it's just too late to fix. For any new 
+introduced uAPI it should be a complete one.
+
+Thanks
+
+
+> Thanks.
+>
+>
+>
+
