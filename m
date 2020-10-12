@@ -2,80 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 741BC28B3B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 13:23:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E80228B3BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 13:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388188AbgJLLXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 07:23:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52300 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387635AbgJLLXd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 07:23:33 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2388126AbgJLLY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 07:24:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36154 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387635AbgJLLY3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 07:24:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602501867;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9Asn23qFx4Q0YR7PdPb45EKlx8mKy8F35eEdDp868CY=;
+        b=WCDq1RMviZuNHhxV1T2hLNEs83ZZc8RGdpmvm4z7TZD/sPLjyJYDG0WN8lT5wJIj3txRxi
+        MPLdO5m+2DVS4fl/MeK2K4OZxxpyYx924icEAJS9wlAlBGsxzjvaMesOv6Cawui7bgKDn9
+        8t7UrLRb80YOkB9VvL4yGY4vuODLtyI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-2-PVnoWT1tNGSFJIr4C_7n2w-1; Mon, 12 Oct 2020 07:24:26 -0400
+X-MC-Unique: PVnoWT1tNGSFJIr4C_7n2w-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB3DE2076E;
-        Mon, 12 Oct 2020 11:23:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602501811;
-        bh=jdhiSa/uHBYzeEjlL6WbIoy8FQlJ0j0drF49kJlgass=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XxqtEU3oOMkY3UYdnBtj4t2KBq88P1q3Sqr41dWKm6PbhT6ANUl+CbZcs78cn5sqJ
-         wS4JJiu3qpvwW45Op0z6Xyv+KqRQH6Cwuk62vjLcvOn9sL3dMBDhRRYXXhjUBhqz3m
-         08u3jBB+cTBSqVamUsplw+vS7oPYZOS3qNrmm554=
-Date:   Mon, 12 Oct 2020 13:24:10 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     rickyniu <rickyniu@google.com>
-Cc:     balbi@kernel.org, astrachan@google.com, amit.pundir@linaro.org,
-        lockwood@android.com, benoit@android.com, jackp@codeaurora.org,
-        vvreddy@codeaurora.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, kyletso@google.com
-Subject: Re: [PATCH 1/3] ANDROID: usb: gadget: f_accessory: Add Android
- Accessory function
-Message-ID: <20201012112410.GB356911@kroah.com>
-References: <20201012111024.2259162-1-rickyniu@google.com>
- <20201012111024.2259162-2-rickyniu@google.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0F497802B4B;
+        Mon, 12 Oct 2020 11:24:24 +0000 (UTC)
+Received: from krava (unknown [10.40.195.81])
+        by smtp.corp.redhat.com (Postfix) with SMTP id B50E510013BD;
+        Mon, 12 Oct 2020 11:24:20 +0000 (UTC)
+Date:   Mon, 12 Oct 2020 13:24:19 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        namhyung@kernel.org, kjain@linux.ibm.com, irogers@google.com,
+        yao.jin@linux.intel.com, yeyunfeng@huawei.com,
+        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
+        =linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] perf jevents: Fix event code for events referencing std
+ arch events
+Message-ID: <20201012112419.GJ1099489@krava>
+References: <1602170368-11892-1-git-send-email-john.garry@huawei.com>
+ <20201012105430.GH1099489@krava>
+ <5b0aefe2-e0d5-b5ff-654c-4e93c427050f@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201012111024.2259162-2-rickyniu@google.com>
+In-Reply-To: <5b0aefe2-e0d5-b5ff-654c-4e93c427050f@huawei.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 07:10:22PM +0800, rickyniu wrote:
-> From: Benoit Goby <benoit@android.com>
+On Mon, Oct 12, 2020 at 12:15:04PM +0100, John Garry wrote:
+> On 12/10/2020 11:54, Jiri Olsa wrote:
+> > > ff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
+> > > index 99df41a9543d..e47644cab3fa 100644
+> > > --- a/tools/perf/pmu-events/jevents.c
+> > > +++ b/tools/perf/pmu-events/jevents.c
+> > > @@ -505,20 +505,15 @@ static char *real_event(const char *name, char *event)
+> > >   }
+> > >   static int
+> > > -try_fixup(const char *fn, char *arch_std, unsigned long long eventcode,
+> > > -	  struct json_event *je)
+> > > +try_fixup(const char *fn, char *arch_std, struct json_event *je, char **event)
+> > >   {
+> > >   	/* try to find matching event from arch standard values */
+> > >   	struct event_struct *es;
+> > >   	list_for_each_entry(es, &arch_std_events, list) {
+> > >   		if (!strcmp(arch_std, es->name)) {
+> > > -			if (!eventcode && es->event) {
+> > > -				/* allow EventCode to be overridden */
+> > > -				free(je->event);
+> > > -				je->event = NULL;
+> > > -			}
+> > >   			FOR_ALL_EVENT_STRUCT_FIELDS(TRY_FIXUP_FIELD);
+> > > +			*event = je->event;
+> > I'm bit rusty on this code, but isn't je->event NULL at this point?
 > 
-> USB accessory mode allows users to connect USB host hardware
-> specifically designed for Android-powered devices. The accessories
-> must adhere to the Android accessory protocol outlined in the
-> http://accessories.android.com documentation. This allows
-> Android devices that cannot act as a USB host to still interact with
-> USB hardware. When an Android device is in USB accessory mode, the
-> attached Android USB accessory acts as the host, provides power
-> to the USB bus, and enumerates connected devices.
+> je->event should be now assigned from es->event because of
+> FOR_ALL_EVENT_STRUCT_FIELDS(TRY_FIXUP_FIELD):
 > 
-> Signed-off-by: Mike Lockwood <lockwood@android.com>
-> [AmitP: Folded following android-4.9 commit changes into this patch
->         ceb2f0aac624 ("ANDROID: usb: gadget: accessory: Fix section mismatch")
->         Parts of e27543931009 ("ANDROID: usb: gadget: Fixes and hacks to make android usb gadget compile on 3.8")
->         1b07ec751563 ("ANDROID: drivers: usb: gadget: 64-bit related type fixes")]
-> Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
-> [astrachan: Folded the following changes into this patch:
->             9d5891d516e2 ("ANDROID: usb: gadget: f_accessory: Add ACCESSORY_SET_AUDIO_MODE control request and ioctl")
->             dc66cfce9622 ("ANDROID: usb: gadget: f_accessory: Add support for HID input devices")
->             5f1ac9c2871b ("ANDROID: usb: gadget: f_accessory: move userspace interface to uapi")
->             9a6241722cd8 ("ANDROID: usb: gadget: f_accessory: Enabled Zero Length Packet (ZLP) for acc_write")
->             31a0ecd5a825 ("ANDROID: usb: gadget: f_accessory: check for accessory device before disconnecting HIDs")
->             580721fa6cbc ("ANDROID: usb: gadget: f_accessory: Migrate to USB_FUNCTION API")
->             7f407172fb28 ("ANDROID: usb: gadget: f_accessory: Fix for UsbAccessory clean unbind.")
->             ebc98ac5a22f ("ANDROID: usb: gadget: f_accessory: fix false disconnect due to a signal sent to the reading process")
->             71c6dc5ffdab ("ANDROID: usb: gadget: f_accessory: assign no-op request complete callbacks")
->             675047ee68e9 ("ANDROID: usb: gadget: f_accessory: Move gadget functions code")
->             b2bedaa5c7df ("CHROMIUM: usb: gadget: f_accessory: add .raw_request callback")]
+> #define TRY_FIXUP_FIELD(field) do { if (es->field && !*field) {\
+> 	*field = strdup(es->field);				\
+> 	if (!*field)						\
+> 		return -ENOMEM;					\
+> } } while (0)
+> 
+> And es->event should be set.
 
-Those commit ids mean nothing to the linux kernel tree, right?
+right, thanks
 
-Please fix up.
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-greg k-h
+jirka
+
