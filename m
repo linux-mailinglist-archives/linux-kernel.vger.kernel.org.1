@@ -2,136 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6BA428AF66
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 09:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F98C28AF6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 09:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727199AbgJLHnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 03:43:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32796 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726120AbgJLHnO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 03:43:14 -0400
-Received: from coco.lan (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726662AbgJLHpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 03:45:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54963 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726714AbgJLHpe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 03:45:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602488732;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QdZ3onrXxBOiI/yO33udyhWQa6oD4WfuDiVTG0nr5Kw=;
+        b=bq4YDkbHm3y1Qp09+GqshjACwXHMZyNPSxwItiaRw+PGs8RZwooPUYyrmW7PNOLETeuMH7
+        rjAt4qJAte257139s1c0Of8djUp4TP+4OKgk7zDOzygNtP4uhku5l27dowL9HEtSMswnHW
+        9FyV4gAnFRb8eg4JoEe5XG3+SgaOe4Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-206-sMCUXiNeM6evZkrVbhjnyw-1; Mon, 12 Oct 2020 03:45:28 -0400
+X-MC-Unique: sMCUXiNeM6evZkrVbhjnyw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A79652080D;
-        Mon, 12 Oct 2020 07:43:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602488592;
-        bh=bAc0d6eqVxt5kvlc4/0fQ1Dt0V8pQkYKNF5xQvY2t1c=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=I4bI/s+y9vhd/nExxWZ2y1XlzgBQbfzcWfLW4DA6opqThS+SEVWVra3xcsUSwUYB0
-         7GWCy1HVs91CGAzCZP450EzLotvskdCmFtt/vKkoa3U+yoSRHrcwYguEsMFOFnqg1U
-         ScjBKMOPw39aL8eSQFn+wWTOTiWmAeXR+nP5bhMI=
-Date:   Mon, 12 Oct 2020 09:43:07 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Alexandre Courbot <acourbot@chromium.org>
-Cc:     Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, gnurou@gmail.com,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v3 2/2] media: mtk-vcodec: fix build breakage when one
- of VPU or SCP is enabled
-Message-ID: <20201012094307.1f32155b@coco.lan>
-In-Reply-To: <20201012053557.4102148-3-acourbot@chromium.org>
-References: <20201012053557.4102148-1-acourbot@chromium.org>
-        <20201012053557.4102148-3-acourbot@chromium.org>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AD17F108E1C2;
+        Mon, 12 Oct 2020 07:45:26 +0000 (UTC)
+Received: from [10.72.13.74] (ovpn-13-74.pek2.redhat.com [10.72.13.74])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8453F10023A7;
+        Mon, 12 Oct 2020 07:45:12 +0000 (UTC)
+Subject: Re: [RFC PATCH 10/24] vdpa: introduce config operations for
+ associating ASID to a virtqueue group
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     mst@redhat.com, lulu@redhat.com, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rob.miller@broadcom.com,
+        lingshan.zhu@intel.com, eperezma@redhat.com, hanand@xilinx.com,
+        mhabets@solarflare.com, amorenoz@redhat.com,
+        maxime.coquelin@redhat.com, stefanha@redhat.com,
+        sgarzare@redhat.com
+References: <20200924032125.18619-1-jasowang@redhat.com>
+ <20200924032125.18619-11-jasowang@redhat.com>
+ <20201001132927.GC32363@mtl-vdi-166.wap.labs.mlnx>
+ <70af3ff0-74ed-e519-56f5-d61e6a48767f@redhat.com>
+ <20201012065931.GA42327@mtl-vdi-166.wap.labs.mlnx>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <b1ac150b-0845-874f-75d0-7440133a1d41@redhat.com>
+Date:   Mon, 12 Oct 2020 15:45:10 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20201012065931.GA42327@mtl-vdi-166.wap.labs.mlnx>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 12 Oct 2020 14:35:57 +0900
-Alexandre Courbot <acourbot@chromium.org> escreveu:
 
-> The addition of MT8183 support added a dependency on the SCP remoteproc
-> module. However the initial patch used the "select" Kconfig directive,
-> which may result in the SCP module to not be compiled if remoteproc was
-> disabled. In such a case, mtk-vcodec would try to link against
-> non-existent SCP symbols. "select" was clearly misused here as explained
-> in kconfig-language.txt.
-> 
-> Replace this by a "depends" directive on at least one of the VPU and
-> SCP modules, to allow the driver to be compiled as long as one of these
-> is enabled, and adapt the code to support this new scenario.
-> 
-> Also adapt the Kconfig text to explain the extra requirements for MT8173
-> and MT8183.
-> 
-> Reported-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
-> Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-> Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> ---
->  drivers/media/platform/Kconfig                | 22 +++++++++++++++----
->  drivers/media/platform/mtk-vcodec/Makefile    | 10 +++++++--
->  .../platform/mtk-vcodec/mtk_vcodec_fw_priv.h  | 18 +++++++++++++++
->  3 files changed, 44 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
-> index a3cb104956d5..457b6c39ddc0 100644
-> --- a/drivers/media/platform/Kconfig
-> +++ b/drivers/media/platform/Kconfig
-> @@ -253,18 +253,32 @@ config VIDEO_MEDIATEK_VCODEC
->  	depends on MTK_IOMMU || COMPILE_TEST
->  	depends on VIDEO_DEV && VIDEO_V4L2
->  	depends on ARCH_MEDIATEK || COMPILE_TEST
-> +	depends on VIDEO_MEDIATEK_VPU || MTK_SCP
-> +	# The two following lines ensure we have the same state ("m" or "y") as
-> +	# our dependencies, to avoid missing symbols during link.
-> +	depends on VIDEO_MEDIATEK_VPU || !VIDEO_MEDIATEK_VPU
-> +	depends on MTK_SCP || !MTK_SCP
->  	select VIDEOBUF2_DMA_CONTIG
->  	select V4L2_MEM2MEM_DEV
-> -	select VIDEO_MEDIATEK_VPU
-> -	select MTK_SCP
-> +	select VIDEO_MEDIATEK_VCODEC_VPU if VIDEO_MEDIATEK_VPU
-> +	select VIDEO_MEDIATEK_VCODEC_SCP if MTK_SCP
->  	help
->  	    Mediatek video codec driver provides HW capability to
-> -	    encode and decode in a range of video formats
-> -	    This driver rely on VPU driver to communicate with VPU.
-> +	    encode and decode in a range of video formats on MT8173
-> +	    and MT8183.
-> +
-> +	    Note that support for MT8173 requires VIDEO_MEDIATEK_VPU to
-> +	    also be selected. Support for MT8183 depends on MTK_SCP.
->  
->  	    To compile this driver as modules, choose M here: the
->  	    modules will be called mtk-vcodec-dec and mtk-vcodec-enc.
-
-Just my 2 cents here, and to complement my last e-mail, the helper message
-here IMO is a lot more confusing than if you do this, instead:
-
-	config VIDEO_MEDIATEK_CODEC
-	         depends on VIDEO_MEDIATEK_VPU_SCP || VIDEO_MEDIATEK_VPU
-		 default y
-
-	config VIDEO_MEDIATEK_VPU
-            depends on VIDEO_DEV && VIDEO_V4L2
-            depends on ARCH_MEDIATEK || COMPILE_TEST
-            tristate "Enable Mediatek Video Processor Unit for MT8173"
-	    help
-		Select this option to enable Mediatek VPU on MT8173.
-
-	config VIDEO_MEDIATEK_VPU_SCP
-            depends on VIDEO_DEV && VIDEO_V4L2
-            depends on ARCH_MEDIATEK || COMPILE_TEST
-            tristate "Enable Mediatek Video Processor Unit for MT8183"
-	    help
-		Select this option to enable Mediatek VPU on MT8183.
-
-To be clear, from my side, I can live with either one of the alternatives,
-but, IMHO, the above is a lot clearer for anyone wanting to use
-VPU, as, if MTK_SCP is disabled, the MT8183 Kconfig prompt will
-disappear.
+On 2020/10/12 下午2:59, Eli Cohen wrote:
+> On Fri, Oct 09, 2020 at 11:56:45AM +0800, Jason Wang wrote:
+>> On 2020/10/1 下午9:29, Eli Cohen wrote:
+>>> On Thu, Sep 24, 2020 at 11:21:11AM +0800, Jason Wang wrote:
+>>>> This patch introduces a new bus operation to allow the vDPA bus driver
+>>>> to associate an ASID to a virtqueue group.
+>>>>
+>>> So in case of virtio_net, I would expect that all the data virtqueues
+>>> will be associated with the same address space identifier.
+>>
+>> Right.
+>>
+>> I will add the codes to do this in the next version. It should be more
+>> explicit than have this assumption by default.
+>>
+>>
+>>> Moreover,
+>>> this assignment should be provided before the set_map call that provides
+>>> the iotlb for the address space, correct?
+>>
+>> I think it's better not have this limitation, note that set_map() now takes
+>> a asid argument.
+>>
+>> So for hardware if the associated as is changed, the driver needs to program
+>> the hardware to switch to the new mapping.
+>>
+>> Does this work for mlx5?
+>>
+> So in theory we can have several asid's (for different virtqueues), each
+> one should be followed by a specific set_map call. If this is so, how do
+> I know if I met all the conditions run my driver? Maybe we need another
+> callback to let the driver know it should not expect more set_maps().
 
 
-Thanks,
-Mauro
+This should work similarly as in the past. Two parts of the work is 
+expected to be done by the driver:
+
+1) store the mapping somewhere (e.g hardware) during set_map()
+2) associating mapping with a specific virtqueue
+
+The only difference is that more than one mapping is used now.
+
+For the issue of more set_maps(), driver should be always ready for the 
+new set_maps() call instead of not expecting new set_maps() since guest 
+memory topology could be changed due to several reasons.
+
+Qemu or vhost-vDPA will try their best to avoid the frequency of 
+set_maps() for better performance (e.g through batched IOTLB updating). 
+E.g there should be at most one set_map() during one time of guest booting.
+
+Thanks
+
+
+>
+
