@@ -2,206 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF1F28BFEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 20:42:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C462528BFF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 20:47:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388020AbgJLSmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 14:42:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726742AbgJLSmv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 14:42:51 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1199FC0613D0;
-        Mon, 12 Oct 2020 11:42:51 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id n9so15194511pgf.9;
-        Mon, 12 Oct 2020 11:42:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=c68FH0ayGziDihZ9IYbZBNMjx/y2IsXlW9Ldybbm4jU=;
-        b=ie6zixgXJeTa6LHBerbXDBYBBNXGY2lUgcJxg3YweIzpWPNzPLKMhG+gD+ewRcglrM
-         Sjvtw/TFUr2XUNjqd6rgulNzpTG226xhPwQ57kxnnMeyvscqWT523AIK9kYUDgIqkYj9
-         k4ONBw4T1knBe+YoImKNG3lUzqrUrEeXO7C/dlyWjk1AS4OUR6xnKieDS3an+omlvd+x
-         uFIiDJqWi4gKKoIWde0kfX1sqZqidYDU/WV9tn7EdCFLb00DXf3P/vPaotpMdZE+G9sC
-         u/AqAL/+oTVh/3LdoRX8VFkB/hJP1UuenBgwYAyKYM6Q/XBCf2DsBKZSXL8V02RmP6tM
-         elcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=c68FH0ayGziDihZ9IYbZBNMjx/y2IsXlW9Ldybbm4jU=;
-        b=TSdV4961faCBu/AzzNK0oJwJpD2BqEgrLjB9IKvglZNPhgc0xl6WC+YCFfMO2UwsMD
-         een67Jbeh2hd/Qt73cauahrDyY5Rk8U8dmeWqk/iH8Ekswe5BSdyGHLgMlYshv4q57S7
-         rVAENFspWlr9YSz98qT7xQKOAXkG5KRl2tg/RWEG1D+QtJUU20wpFqqc8Opz0wcKFR1C
-         KZrvon7NcNNXWKOADfGxx85bkwzcfTXPYVeHPsrgB6YWu+VSYMKjFtkymXy0uIBPn4S1
-         02N8IW5xXfVh77ra1TtJYJ3wCzGvTUl+v0+b5qFeQkh8ltD6CZNECBOyoQ8x76H6nTd0
-         z2dQ==
-X-Gm-Message-State: AOAM5331QDeilCn3QaaDJitj+pXU0aRtxQ2lLevE3JGDQKuK19swH9YX
-        +ra6+UB2pNsqONl4xmcEjkw=
-X-Google-Smtp-Source: ABdhPJxUl9gci4/N41y7sONJDgGFBjycbw30Mwd3jwVk5l13YuKgeIkuPnhxJyNVL46QE57cXsBv2w==
-X-Received: by 2002:a17:90a:b64:: with SMTP id 91mr21130861pjq.93.1602528170431;
-        Mon, 12 Oct 2020 11:42:50 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:a404:280a:90bd:7a49:dcda:1fb1])
-        by smtp.gmail.com with ESMTPSA id f1sm19566915pfe.145.2020.10.12.11.42.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Oct 2020 11:42:49 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] kbuild: use interpreters to invoke scripts
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <20201012170631.1241502-1-ujjwalkumar0501@gmail.com>
- <20201012170631.1241502-3-ujjwalkumar0501@gmail.com>
- <alpine.DEB.2.21.2010122019410.17866@felia>
-From:   Ujjwal Kumar <ujjwalkumar0501@gmail.com>
-Message-ID: <b4fdc7c5-8edf-3895-69fc-1bcf9efb5d4a@gmail.com>
-Date:   Tue, 13 Oct 2020 00:12:41 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S1730595AbgJLSrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 14:47:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47124 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726267AbgJLSrT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 14:47:19 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 26BCF20838;
+        Mon, 12 Oct 2020 18:47:18 +0000 (UTC)
+Date:   Mon, 12 Oct 2020 14:47:16 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc:     uclinux-h8-devel@lists.sourceforge.jp,
+        LKML <linux-kernel@vger.kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Richard Weinberger <richard@sigma-star.at>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] h8300: Make irq disable and enable a compiler barrier
+Message-ID: <20201012144716.2a6b20df@gandalf.local.home>
+In-Reply-To: <20200918152507.711865ce@gandalf.local.home>
+References: <20200918152507.711865ce@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.21.2010122019410.17866@felia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/20 11:50 pm, Lukas Bulwahn wrote:
+Ping!
+
+(Warning 3: is this architecture still maintained?)
+
+I think, if there's no response in two more weeks, we can assume this is
+unmaintained, and remove h8300 from Linux.
+
+-- Steve
+
+On Fri, 18 Sep 2020 15:25:07 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 > 
+> In a conversation on #linux-rt, it was asked if the irq disabling and
+> enabling functions were a compiler barrier, and reads wont happen outside
+> these functions from where they were in the call.
 > 
-> On Mon, 12 Oct 2020, Ujjwal Kumar wrote:
+> I stated that they most definitely need to be, otherwise we would have bugs
+> all over the place if not. And just to confirm, I looked at the
+> implementation on x86 which had "memory" as a constraint to the asm, and
+> that is a compiler barrier. As that was just one arch, I looked at others,
+> and all the other archs do the same but one. H8300 seems to fail here. And
+> that is most definitely a bug.
 > 
->> We cannot rely on execute bits to be set on files in the repository.
->> The build script should use the explicit interpreter when invoking any
->> script from the repository.
->>
->> Link: https://lore.kernel.org/lkml/20200830174409.c24c3f67addcce0cea9a9d4c@linux-foundation.org/
->> Link: https://lore.kernel.org/lkml/202008271102.FEB906C88@keescook/
->>
->> Suggested-by: Andrew Morton <akpm@linux-foundation.org>
->> Suggested-by: Kees Cook <keescook@chromium.org>
->> Suggested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
->> Signed-off-by: Ujjwal Kumar <ujjwalkumar0501@gmail.com>
->> ---
->>  Makefile                          | 4 ++--
->>  arch/arm64/kernel/vdso/Makefile   | 2 +-
->>  arch/arm64/kernel/vdso32/Makefile | 2 +-
->>  arch/ia64/Makefile                | 4 ++--
->>  arch/nds32/kernel/vdso/Makefile   | 2 +-
->>  scripts/Makefile.build            | 2 +-
->>  scripts/Makefile.package          | 4 ++--
->>  7 files changed, 10 insertions(+), 10 deletions(-)
->>
->> diff --git a/Makefile b/Makefile
->> index 0af7945caa61..df20e71dd7c8 100644
->> --- a/Makefile
->> +++ b/Makefile
->> @@ -1256,7 +1256,7 @@ include/generated/utsrelease.h: include/config/kernel.release FORCE
->>  PHONY += headerdep
->>  headerdep:
->>  	$(Q)find $(srctree)/include/ -name '*.h' | xargs --max-args 1 \
->> -	$(srctree)/scripts/headerdep.pl -I$(srctree)/include
->> +	$(PERL) $(srctree)/scripts/headerdep.pl -I$(srctree)/include
->>
->>  # ---------------------------------------------------------------------------
->>  # Kernel headers
->> @@ -1312,7 +1312,7 @@ PHONY += kselftest-merge
->>  kselftest-merge:
->>  	$(if $(wildcard $(objtree)/.config),, $(error No .config exists, config your kernel first!))
->>  	$(Q)find $(srctree)/tools/testing/selftests -name config | \
->> -		xargs $(srctree)/scripts/kconfig/merge_config.sh -m $(objtree)/.config
->> +		xargs $(CONFIG_SHELL) $(srctree)/scripts/kconfig/merge_config.sh -m $(objtree)/.config
->>  	$(Q)$(MAKE) -f $(srctree)/Makefile olddefconfig
->>
->>  # ---------------------------------------------------------------------------
->> diff --git a/arch/arm64/kernel/vdso/Makefile b/arch/arm64/kernel/vdso/Makefile
->> index edccdb77c53e..fb07804b7fc1 100644
->> --- a/arch/arm64/kernel/vdso/Makefile
->> +++ b/arch/arm64/kernel/vdso/Makefile
->> @@ -65,7 +65,7 @@ $(obj)/%.so: $(obj)/%.so.dbg FORCE
->>  # Generate VDSO offsets using helper script
->>  gen-vdsosym := $(srctree)/$(src)/gen_vdso_offsets.sh
->>  quiet_cmd_vdsosym = VDSOSYM $@
->> -      cmd_vdsosym = $(NM) $< | $(gen-vdsosym) | LC_ALL=C sort > $@
->> +      cmd_vdsosym = $(NM) $< | $(CONFIG_SHELL) $(gen-vdsosym) | LC_ALL=C sort > $@
->>
->>  include/generated/vdso-offsets.h: $(obj)/vdso.so.dbg FORCE
->>  	$(call if_changed,vdsosym)
->> diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
->> index 7f96a1a9f68c..617c9ac58156 100644
->> --- a/arch/arm64/kernel/vdso32/Makefile
->> +++ b/arch/arm64/kernel/vdso32/Makefile
->> @@ -205,7 +205,7 @@ quiet_cmd_vdsomunge = MUNGE   $@
->>  gen-vdsosym := $(srctree)/$(src)/../vdso/gen_vdso_offsets.sh
->>  quiet_cmd_vdsosym = VDSOSYM $@
->>  # The AArch64 nm should be able to read an AArch32 binary
->> -      cmd_vdsosym = $(NM) $< | $(gen-vdsosym) | LC_ALL=C sort > $@
->> +      cmd_vdsosym = $(NM) $< | $(CONFIG_SHELL) $(gen-vdsosym) | LC_ALL=C sort > $@
->>
->>  # Install commands for the unstripped file
->>  quiet_cmd_vdso_install = INSTALL32 $@
->> diff --git a/arch/ia64/Makefile b/arch/ia64/Makefile
->> index 703b1c4f6d12..86d42a2d09cb 100644
->> --- a/arch/ia64/Makefile
->> +++ b/arch/ia64/Makefile
->> @@ -27,8 +27,8 @@ cflags-y	:= -pipe $(EXTRA) -ffixed-r13 -mfixed-range=f12-f15,f32-f127 \
->>  		   -falign-functions=32 -frename-registers -fno-optimize-sibling-calls
->>  KBUILD_CFLAGS_KERNEL := -mconstant-gp
->>
->> -GAS_STATUS	= $(shell $(srctree)/arch/ia64/scripts/check-gas "$(CC)" "$(OBJDUMP)")
->> -KBUILD_CPPFLAGS += $(shell $(srctree)/arch/ia64/scripts/toolchain-flags "$(CC)" "$(OBJDUMP)" "$(READELF)")
->> +GAS_STATUS	= $(shell $(CONFIG_SHELL) $(srctree)/arch/ia64/scripts/check-gas "$(CC)" "$(OBJDUMP)")
->> +KBUILD_CPPFLAGS += $(shell $(CONFIG_SHELL) $(srctree)/arch/ia64/scripts/toolchain-flags "$(CC)" "$(OBJDUMP)" "$(READELF)")
+> Add the compiler barrier to the enabling and disabling of interrupts on
+> H8300. As this is a really critical bug, I'm starting to wonder how much
+> this arch is really used. Let's see how quickly this patch gets added to
+> the arch, and if it is not applied or responded to within a month, I think
+> we can safely state that this arch is not maintained.
 > 
-> Here is an instance of what Masahiro-san pointed out being wrong.
-> 
-> Ujjwal, will you send a v3?
+> Reported-by: Vlastimil Babka <vbabka@suse.cz>
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> ---
+> diff --git a/arch/h8300/include/asm/irqflags.h b/arch/h8300/include/asm/irqflags.h
+> index 48756b7f405e..477cb9d7785f 100644
+> --- a/arch/h8300/include/asm/irqflags.h
+> +++ b/arch/h8300/include/asm/irqflags.h
+> @@ -15,12 +15,12 @@ static inline h8300flags arch_local_save_flags(void)
+>  
+>  static inline void arch_local_irq_disable(void)
+>  {
+> -	__asm__ volatile ("orc  #0xc0,ccr");
+> +	__asm__ volatile ("orc  #0xc0,ccr" : : : "memory");
+>  }
+>  
+>  static inline void arch_local_irq_enable(void)
+>  {
+> -	__asm__ volatile ("andc #0x3f,ccr");
+> +	__asm__ volatile ("andc #0x3f,ccr" : : : "memory");
+>  }
+>  
+>  static inline h8300flags arch_local_irq_save(void)
+> @@ -28,13 +28,13 @@ static inline h8300flags arch_local_irq_save(void)
+>  	h8300flags flags;
+>  
+>  	__asm__ volatile ("stc ccr,%w0\n\t"
+> -		      "orc  #0xc0,ccr" : "=r" (flags));
+> +		      "orc  #0xc0,ccr" : "=r" (flags) : : "memory");
+>  	return flags;
+>  }
+>  
+>  static inline void arch_local_irq_restore(h8300flags flags)
+>  {
+> -	__asm__ volatile ("ldc %w0,ccr" : : "r" (flags) : "cc");
+> +	__asm__ volatile ("ldc %w0,ccr" : : "r" (flags) : "memory", "cc");
+>  }
+>  
+>  static inline int arch_irqs_disabled_flags(unsigned long flags)
+> @@ -55,13 +55,13 @@ static inline h8300flags arch_local_save_flags(void)
+>  
+>  static inline void arch_local_irq_disable(void)
+>  {
+> -	__asm__ volatile ("orc #0x80,ccr\n\t");
+> +	__asm__ volatile ("orc #0x80,ccr\n\t" : : : "memory");
+>  }
+>  
+>  static inline void arch_local_irq_enable(void)
+>  {
+>  	__asm__ volatile ("andc #0x7f,ccr\n\t"
+> -		      "andc #0xf0,exr\n\t");
+> +		      "andc #0xf0,exr\n\t" : : : "memory");
+>  }
+>  
+>  static inline h8300flags arch_local_irq_save(void)
+> @@ -71,7 +71,7 @@ static inline h8300flags arch_local_irq_save(void)
+>  	__asm__ volatile ("stc ccr,%w0\n\t"
+>  		      "stc exr,%x0\n\t"
+>  		      "orc  #0x80,ccr\n\t"
+> -		      : "=r" (flags));
+> +		      : "=r" (flags) : : "memory");
+>  	return flags;
+>  }
+>  
+> @@ -79,7 +79,7 @@ static inline void arch_local_irq_restore(h8300flags flags)
+>  {
+>  	__asm__ volatile ("ldc %w0,ccr\n\t"
+>  		      "ldc %x0,exr"
+> -		      : : "r" (flags) : "cc");
+> +		      : : "r" (flags) : "memory", "cc");
+>  }
+>  
+>  static inline int arch_irqs_disabled_flags(h8300flags flags)
 
-Following is the quoted text from the reply mail from Masahiro
-
->> -GAS_STATUS     = $(shell $(srctree)/arch/ia64/scripts/check-gas "$(CC)" "$(OBJDUMP)")
->> -KBUILD_CPPFLAGS += $(shell $(srctree)/arch/ia64/scripts/toolchain-flags "$(CC)" "$(OBJDUMP)" "$(READELF)")
->> +GAS_STATUS     = $($(CONFIG_SHELL) $(srctree)/arch/ia64/scripts/check-gas "$(CC)" "$(OBJDUMP)")
->> +KBUILD_CPPFLAGS += $($(CONFIG_SHELL) $(srctree)/arch/ia64/scripts/toolchain-flags "$(CC)" "$(OBJDUMP)" "$(READELF)")
-> 
-> 
-> 
-> These changes look wrong to me.
-> 
-> $($(CONFIG_SHELL)    ->  $(shell $(CONFIG_SHELL)
-> 
-
-From the above text, I understand as follows:
-
-That my proposed change:
-$(shell $(src...)    ->  $($(CONFIG_SHELL) $(src...)
-
-is WRONG
-
-and in the next line he suggested the required correction.
-That being:
-$($(CONFIG_SHELL)    ->  $(shell $(CONFIG_SHELL)
-
-Which is in v2 of the patch series.
-
-Lukas, please correct me if I'm wrong so that I can work on v3
-if required.
-
-Also, Nathan reviewed both the patches in v1 of this series. So,
-should I be the one who adds his tag in next iterations?
-
-
-Thanks
-Ujjwal Kumar
