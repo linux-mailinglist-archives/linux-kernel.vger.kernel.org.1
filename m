@@ -2,101 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6194828ACBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 06:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14DB728AD16
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 06:38:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727682AbgJLET4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 00:19:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726706AbgJLET4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 00:19:56 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AF9BC0613D1
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 21:19:56 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id x16so13076209pgj.3
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 21:19:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=d+sLnvZTeiN7/c8MjJpzLtaNxN7gU2/mrKXXOJoa83I=;
-        b=KZNllpqNv5xOOyaT+G76rND+p88FGMLQDwK/cKeOaH0uaaFMeS/R2t/RDbnFjojLn6
-         w3hgXLVskRRdm4HZzepz2AWIxtY3A+S7ZcR/XGzLerA5Lk19lufAV2U/mRlqmm+/cdQr
-         290KuNWsojQRMc8HK5QdcUGyV0KzwahuRZTM4bhE18hiw/gRN7JubTomi2KxG0Qsnp9o
-         t6qI3WrIrhHJtGKqntnM4+IMW90BR988wMzW/TpWaXbloatA8wYUZ53dClTQdEEBXCaC
-         RiHroE/nO6QMJcF3ORz21df3TbOYtzcI/prP0Y3vFmys8Gu9uYnQ7slnpdS4DybE3qus
-         CZ3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=d+sLnvZTeiN7/c8MjJpzLtaNxN7gU2/mrKXXOJoa83I=;
-        b=Z26917xbquPqZgfSmCRvw5xnK9g83dacc0ESxa5B1f4hndgJkloYXUyblWpTxtlpDo
-         ImCofYvD7K8WJwZOdCKWgZ9FF6+iecltIlcBURVIfnq8kevt7qt3vDnadnWnRev1/SJX
-         JdWKPftjOPay/VnzghUmZsnr9TWl/cN03EbN1gQMrnbTBoGqOetA09eYN1xjLFs4kwiQ
-         mwWET+pvSsZcfSSKkNKkeCSOfwXZjUJzAhF+SmbSY0wfCBkkGT/m9lgS8+8qeuI+J3eY
-         f/ik1tuHqhHp5Ky/iA4NL5YdgQZu5N4OkhJmHKnu4Z4C0FGN5SciiRXAPpTLvFImGSnh
-         fpmg==
-X-Gm-Message-State: AOAM533/HbB+BYzp3rivyoRNHZFRYseZKitQL/rF0acIcFfDnYvd5joO
-        ClCn9VKs6gTJkc0FsqVVRPRauQ==
-X-Google-Smtp-Source: ABdhPJwzZau3S/gIoJSK5Yx87xenSxCIZ61I1KDOdlIEpr0ycGp+oIrV+pYht3gAa9PS7YL4RjIgGA==
-X-Received: by 2002:aa7:9358:0:b029:152:b349:8af8 with SMTP id 24-20020aa793580000b0290152b3498af8mr22989089pfn.9.1602476395311;
-        Sun, 11 Oct 2020 21:19:55 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id e21sm15513630pfl.22.2020.10.11.21.19.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 11 Oct 2020 21:19:54 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 09:49:51 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Nicola Mazzucato <nicola.mazzucato@arm.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        vireshk@kernel.org, daniel.lezcano@linaro.org, rjw@rjwysocki.net,
-        linux-kernel@vger.kernel.org, sudeep.holla@arm.com,
-        chris.redpath@arm.com, morten.rasmussen@arm.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 2/2] [RFC] CPUFreq: Add support for
- cpu-perf-dependencies
-Message-ID: <20201012041951.4qytnhuqvvzjionh@vireshk-i7>
-References: <20200924095347.32148-3-nicola.mazzucato@arm.com>
- <20201006071909.3cgz7i5v35dgnuzn@vireshk-i7>
- <2417d7b5-bc58-fa30-192c-e5991ec22ce0@arm.com>
- <20201008110241.dcyxdtqqj7slwmnc@vireshk-i7>
- <20201008150317.GB20268@arm.com>
- <56846759-e3a6-9471-827d-27af0c3d410d@arm.com>
- <20201009053921.pkq4pcyrv4r7ylzu@vireshk-i7>
- <42e3c8e9-cadc-d013-1e1f-fa06af4a45ff@arm.com>
- <20201009140141.GA4048593@bogus>
- <88f46cd0-226a-fb3c-0bd7-59688a566ea4@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <88f46cd0-226a-fb3c-0bd7-59688a566ea4@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+        id S1728487AbgJLEiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 00:38:20 -0400
+Received: from mga14.intel.com ([192.55.52.115]:21513 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725941AbgJLEiT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 00:38:19 -0400
+IronPort-SDR: 6Kene1N9kHGpDkOZ3uIjzPhXPGn7uic1qFJGPFmWzphyguEL1+AtBagmLRZMtVU8ZutciHWE1L
+ l1dcqnb7HFQg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="164903132"
+X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; 
+   d="scan'208";a="164903132"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2020 21:38:17 -0700
+IronPort-SDR: 2RtJkiEYP4oqc/OHa2AdFzu946jGikQAqm6ihRt1VhNWO1Qy6wXeKdrWPMBWk4xEN+PDC6T61d
+ BphOttrHWhqQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; 
+   d="scan'208";a="313321163"
+Received: from unknown (HELO jsia-HP-Z620-Workstation.png.intel.com) ([10.221.118.135])
+  by orsmga003.jf.intel.com with ESMTP; 11 Oct 2020 21:38:16 -0700
+From:   Sia Jee Heng <jee.heng.sia@intel.com>
+To:     vkoul@kernel.org, Eugeniy.Paltsev@synopsys.com
+Cc:     andriy.shevchenko@linux.intel.com, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 00/15] dmaengine: dw-axi-dmac: support Intel KeemBay AxiDMA
+Date:   Mon, 12 Oct 2020 12:21:45 +0800
+Message-Id: <20201012042200.29787-1-jee.heng.sia@intel.com>
+X-Mailer: git-send-email 2.18.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09-10-20, 16:28, Nicola Mazzucato wrote:
-> @Viresh
-> I am sorry I misread your reply earlier thus I did not pay attention on that
-> property.
-> And yes, it is exactly as how you have described :)
-> In the case 1 (different opps, different clk) and case 2 (same opps, different
-> clk) we provide v/f points. In case 3, we add 'opp-shared' property in opp table
-> to tell that the cpus with this opp table share a clock line.
-> 
-> Here are my thoughts on this 3rd case:
-> - the information of 'share the same clock line' comes correctly from DT as it's
-> purely a hw description. The same applies for cpu-perf-dependencies.
-> - because the opp table can come from any firmware, we won't have any opp table
-> in DT, thus we won't be able to take advantage of 'opp-shared' I am afraid.
+The below patch series are to support AxiDMA running on Intel KeemBay SoC.
+The base driver is dw-axi-dmac but code refactoring is needed, for example:
+- Support YAML Schemas DT binding.
+- Replacing Linked List with virtual descriptor management.
+- Remove unrelated hw desc stuff from dma memory pool.
+- Manage dma memory pool alloc/destroy based on channel activity.
+- Support dmaengine device_sync() callback.
+- Support dmaengine device_config().
+- Support dmaegnine device_prep_slave_sg().
+- Support dmaengine device_prep_dma_cyclic().
+- Support of_dma_controller_register().
+- Support burst residue granularity.
+- Support Intel KeemBay AxiDMA registers.
+- Support Intel KeemBay AxiDMA device handshake.
+- Support Intel KeemBay AxiDMA BYTE and HALFWORD device operation.
+- Add constraint to Max segment size.
 
-I wonder if we should use an empty OPP table just for parsing this
-information.
+This patch set is to replace the patch series submitted at:
+https://lore.kernel.org/dmaengine/1599213094-30144-1-git-send-email-jee.heng.sia@intel.com/
+
+This patch series are tested on Intel KeemBay platform.
+
+
+Sia Jee Heng (15):
+  dt-bindings: dma: Add YAML schemas for dw-axi-dmac
+  dmaengine: dw-axi-dmac: simplify descriptor management
+  dmaengine: dw-axi-dmac: move dma_pool_create() to
+    alloc_chan_resources()
+  dmaengine: dw-axi-dmac: Add device_synchronize() callback
+  dmaengine: dw-axi-dmac: Add device_config operation
+  dmaengine: dw-axi-dmac: Support device_prep_slave_sg
+  dmaegine: dw-axi-dmac: Support device_prep_dma_cyclic()
+  dmaengine: dw-axi-dmac: Support of_dma_controller_register()
+  dmaengine: dw-axi-dmac: Support burst residue granularity
+  dmaengine: dw-axi-dmac: Add Intel KeemBay AxiDMA support
+  dt-binding: dma: dw-axi-dmac: Add support for Intel KeemBay AxiDMA
+  dmaengine: dw-axi-dmac: Add Intel KeemBay DMA register fields
+  dmaengine: dw-axi-dmac: Add Intel KeemBay AxiDMA handshake
+  dmaengine: dw-axi-dmac: Add Intel KeemBay AxiDMA BYTE and HALFWORD
+    registers
+  dmaengine: dw-axi-dmac: Set constraint to the Max segment size
+
+ .../bindings/dma/snps,dw-axi-dmac.txt         |  39 -
+ .../bindings/dma/snps,dw-axi-dmac.yaml        | 149 ++++
+ .../dma/dw-axi-dmac/dw-axi-dmac-platform.c    | 696 +++++++++++++++---
+ drivers/dma/dw-axi-dmac/dw-axi-dmac.h         |  33 +-
+ 4 files changed, 783 insertions(+), 134 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.txt
+ create mode 100644 Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
 
 -- 
-viresh
+2.18.0
+
