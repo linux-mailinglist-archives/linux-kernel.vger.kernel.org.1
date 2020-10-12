@@ -2,72 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E41028BAF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FAB228BB00
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:41:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389014AbgJLOhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:37:13 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:34712 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729808AbgJLOhN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 10:37:13 -0400
-Received: from zn.tnic (p200300ec2f06920008362ea164c1c332.dip0.t-ipconnect.de [IPv6:2003:ec:2f06:9200:836:2ea1:64c1:c332])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E98891EC0354;
-        Mon, 12 Oct 2020 16:37:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1602513432;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=p9v0SyOf5SNHbEM+QinvH46YOkzsyIKt+QyfqVIHc3Q=;
-        b=mg+4AGvv4z5UT6r5IHZ5CoYMfgV33DG3Ca7hB9YP534Su7RoE4Sp6iMs3sbpHBngXWLNpI
-        SvUSjGwxWWaUrQOVWJfhaQZn2opLQuLDArYr0TKIxETUs8687Ou78/sf1Dm+8st8UpOBIq
-        iVRPH/tIj9sEDJJ+vaXxYteB3al0m2M=
-Date:   Mon, 12 Oct 2020 16:37:08 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Rong Chen <rong.a.chen@intel.com>
-Cc:     Philip Li <philip.li@intel.com>, kernel test robot <lkp@intel.com>,
-        x86-ml <x86@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [tip:x86/pti] BUILD SUCCESS WITH WARNING
- 767d46ab566dd489733666efe48732d523c8c332
-Message-ID: <20201012143708.GD22829@zn.tnic>
-References: <5f62b7f2.Q9ixRaxJwQpWTURd%lkp@intel.com>
- <20200917061220.GB31960@zn.tnic>
- <20200917073620.GA4946@intel.com>
- <20200917080044.GD31960@zn.tnic>
- <20200917133722.GA21986@intel.com>
- <c06bc69c-e3f6-2902-5df7-15cf2c9ea9d7@intel.com>
+        id S2389128AbgJLOlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:41:40 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:8442 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388957AbgJLOlj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 10:41:39 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09CEZDrw078166;
+        Mon, 12 Oct 2020 10:41:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Mh49I7jw4VB6kT4/ay+AaLZilzKCmLBonLwWNkMHRRw=;
+ b=MK1q9eNePHSQkxW58VHmw9c51ABMDsasKexGHGtGFzfduqPUsqiEoLP3H2BW8pLNOJDY
+ HKqx86fR6w5oclhuufWpcOEwP0GRox8JaBTYNny6OCAn7MCC4NOBYADXeh4lyftwVqJE
+ sr8kULHlSgEXQMxanjk40vuI1bFSD2BIM9y2lsiAzCbBQg6f5qdB0j+hbWLabzpIGN5U
+ bdFaxg4nw+BtjTue5U9eA2In51WVMjfyNcPxdiO7vm1Otcrw/GYBNtZXjnZIUa1xkmQk
+ QBmsEy0lKB9GG3gZTFV4t6AdsGpBK0O3fAnbdeXBZ0quZUqnXFhalJ1jhEuBXpdVz/cX +w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 344qucjbjf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 12 Oct 2020 10:41:29 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09CEZWTT079650;
+        Mon, 12 Oct 2020 10:41:28 -0400
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 344qucjawm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 12 Oct 2020 10:41:28 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09CEbR7V001812;
+        Mon, 12 Oct 2020 14:39:34 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma01fra.de.ibm.com with ESMTP id 344558rf3p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 12 Oct 2020 14:39:34 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09CEdVqO9437672
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 12 Oct 2020 14:39:32 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CF0F8A405C;
+        Mon, 12 Oct 2020 14:39:31 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 052EAA405F;
+        Mon, 12 Oct 2020 14:39:31 +0000 (GMT)
+Received: from [9.145.9.103] (unknown [9.145.9.103])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 12 Oct 2020 14:39:30 +0000 (GMT)
+Subject: Re: [PATCH v2 08/17] s390/pci: Remove races against pte updates
+To:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-s390@vger.kernel.org,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>
+References: <20201009075934.3509076-1-daniel.vetter@ffwll.ch>
+ <20201009075934.3509076-9-daniel.vetter@ffwll.ch>
+ <6deb08dd-46f3-bf26-5362-fdc696f6fd74@linux.ibm.com>
+ <20201012141906.GX438822@phenom.ffwll.local>
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+Message-ID: <3c28a96a-6bb5-f581-4671-5c87161238f7@linux.ibm.com>
+Date:   Mon, 12 Oct 2020 16:39:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <20201012141906.GX438822@phenom.ffwll.local>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <c06bc69c-e3f6-2902-5df7-15cf2c9ea9d7@intel.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-12_12:2020-10-12,2020-10-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
+ priorityscore=1501 suspectscore=0 lowpriorityscore=0 impostorscore=0
+ spamscore=0 malwarescore=0 adultscore=0 mlxlogscore=999 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010120117
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 05:16:54PM +0800, Rong Chen wrote:
-> We have added the reported links in the report, you can find it in the
-> latest tip report:
+... snip ...
+>>> Cc: linux-media@vger.kernel.org
+>>> Cc: Niklas Schnelle <schnelle@linux.ibm.com>
+>>> Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+>>> Cc: linux-s390@vger.kernel.org
+>>> --
+>>> v2: Move VM_IO | VM_PFNMAP checks around so they keep returning EINVAL
+>>> like before (Gerard)
+>>
+>> I think the above should go before the CC/Signed-off/Reviewev block.
 > 
-> [tip:master] BUILD REGRESSION 820e6f502f021417140bc8ee11f9c7be148ea844
+> This is a per-subsystem bikeshed :-) drivers/gpu definitely wants it
+> above, but most core subsystems want it below. I'll move it.
+
+Today I learned, thanks! That said I think most of the time I've
+actually not seen version change information in the commit message itself
+only in the cover letters. I really don't care just looked odd to me.
+
 > 
-> tree/branch:https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git   master
-> branch HEAD: 820e6f502f021417140bc8ee11f9c7be148ea844  Merge branch 'efi/core'
+>>> ---
+>>>  arch/s390/pci/pci_mmio.c | 98 +++++++++++++++++++++++-----------------
+>>>  1 file changed, 57 insertions(+), 41 deletions(-)
+>>>
+>>> diff --git a/arch/s390/pci/pci_mmio.c b/arch/s390/pci/pci_mmio.c
+>>> index 401cf670a243..1a6adbc68ee8 100644
+>>> --- a/arch/s390/pci/pci_mmio.c
+>>> +++ b/arch/s390/pci/pci_mmio.c
+>>> @@ -119,33 +119,15 @@ static inline int __memcpy_toio_inuser(void __iomem *dst,
+>>>  	return rc;
+>>>  }
+>>>  
+>>> -static long get_pfn(unsigned long user_addr, unsigned long access,
+>>> -		    unsigned long *pfn)
+>>> -{
+>>> -	struct vm_area_struct *vma;
+>>> -	long ret;
+>>> -
+>>> -	mmap_read_lock(current->mm);
+>>> -	ret = -EINVAL;
+>>> -	vma = find_vma(current->mm, user_addr);
+>>> -	if (!vma)
+>>> -		goto out;
+>>> -	ret = -EACCES;
+>>> -	if (!(vma->vm_flags & access))
+>>> -		goto out;
+>>> -	ret = follow_pfn(vma, user_addr, pfn);
+>>> -out:
+>>> -	mmap_read_unlock(current->mm);
+>>> -	return ret;
+>>> -}
+>>> -
+>>>  SYSCALL_DEFINE3(s390_pci_mmio_write, unsigned long, mmio_addr,
+>>>  		const void __user *, user_buffer, size_t, length)
+>>>  {
+>>>  	u8 local_buf[64];
+>>>  	void __iomem *io_addr;
+>>>  	void *buf;
+>>> -	unsigned long pfn;
+>>> +	struct vm_area_struct *vma;
+>>> +	pte_t *ptep;
+>>> +	spinlock_t *ptl;
+>>
+>> With checkpatch.pl --strict the above yields a complained
+>> "CHECK: spinlock_t definition without comment" but I think
+>> that's really okay since your commit description is very clear.
+>> Same oin line 277.
 > 
-> Error/Warning reports:
+> I think this is a falls positive, checkpatch doesn't realize that
+> SYSCALL_DEFINE3 is a function, not a structure. And in a structure I'd
+> have added the kerneldoc or comment.
+
+Interesting, your theory sounds convincing, I too thought this
+was a bit too pedantic.
+
 > 
-> https://lore.kernel.org/lkml/202010112007.JDl1BSci-lkp@intel.com
+> I'll fix up all the nits you've found for the next round. Thanks for
+> taking a look.
 
-Thanks, that link has all the info needed to reproduce AFAICT, as long
-as you make sure to send it to a mailing list which gets archived by
-lore.kernel.org - otherwise the redirection won't work.
+You're welcome hope I didn't sound pedantic. I think you've a lot
+more experience actually and this can indeed turn into bikeshedding
+but since I was answering anyway and most of this was checkpatch…
 
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> -Daniel
+> 
