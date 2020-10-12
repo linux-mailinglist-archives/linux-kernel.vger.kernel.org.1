@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8CEE28BA27
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 708EC28B709
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391042AbgJLOGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:06:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36738 "EHLO mail.kernel.org"
+        id S2388694AbgJLNj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:39:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729259AbgJLNe1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:34:27 -0400
+        id S1731370AbgJLNjZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:39:25 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 66EA522244;
-        Mon, 12 Oct 2020 13:34:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7EE14221FE;
+        Mon, 12 Oct 2020 13:39:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509658;
-        bh=I1JIuh6qIXYMRTZ5ZXq+36qofeTo5VWMWl71hv3qjGE=;
+        s=default; t=1602509965;
+        bh=xfPx18DR1Yo1IeyBOmicVze493qZfk5VFd3DR5Muv9U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IPnYuUALGn/7TSrpTBA+F7n7b9inrW/fKldYjuQsOFRvQD43QbD/aK/C7R25F8WHa
-         JO6GVKILhSIKY9qa1BYuEv8oOw8Q8BNXseT0eU95LQn3mAJIE/xvoWcoE6bAFXoH7G
-         JWjJfA+Siw5z9hs1vLdls7ihIZp6ctSrh/SKur2U=
+        b=JCTsfky4SZ7rjzPz8734OX9/65ovFiFsYvb9M37kARVnpG3oZ+UtYqDVLq5soQdwU
+         jSxzCLHYUzbbfWaM3TLahlZag/1c+AR6KS07WBS/kWmF1zmdYCcfeEVgTA4NHn8Ewj
+         pmuppFYybANZVNW1CjWxqMdlnAY7CLreq57nQLT4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aaron Ma <aaron.ma@canonical.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH 4.9 30/54] platform/x86: thinkpad_acpi: re-initialize ACPI buffer size when reuse
+        stable@vger.kernel.org, Karol Herbst <kherbst@redhat.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Dave Airlie <airlied@redhat.com>
+Subject: [PATCH 4.19 06/49] drm/nouveau/mem: guard against NULL pointer access in mem_del
 Date:   Mon, 12 Oct 2020 15:26:52 +0200
-Message-Id: <20201012132630.983280040@linuxfoundation.org>
+Message-Id: <20201012132629.739034353@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132629.585664421@linuxfoundation.org>
-References: <20201012132629.585664421@linuxfoundation.org>
+In-Reply-To: <20201012132629.469542486@linuxfoundation.org>
+References: <20201012132629.469542486@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,37 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aaron Ma <aaron.ma@canonical.com>
+From: Karol Herbst <kherbst@redhat.com>
 
-commit 720ef73d1a239e33c3ad8fac356b9b1348e68aaf upstream.
+commit d10285a25e29f13353bbf7760be8980048c1ef2f upstream.
 
-Evaluating ACPI _BCL could fail, then ACPI buffer size will be set to 0.
-When reuse this ACPI buffer, AE_BUFFER_OVERFLOW will be triggered.
+other drivers seems to do something similar
 
-Re-initialize buffer size will make ACPI evaluate successfully.
-
-Fixes: 46445b6b896fd ("thinkpad-acpi: fix handle locate for video and query of _BCL")
-Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Karol Herbst <kherbst@redhat.com>
+Cc: dri-devel <dri-devel@lists.freedesktop.org>
+Cc: Dave Airlie <airlied@redhat.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Dave Airlie <airlied@redhat.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20201006220528.13925-2-kherbst@redhat.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/platform/x86/thinkpad_acpi.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/nouveau/nouveau_mem.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/platform/x86/thinkpad_acpi.c
-+++ b/drivers/platform/x86/thinkpad_acpi.c
-@@ -6640,8 +6640,10 @@ static int __init tpacpi_query_bcl_level
- 	list_for_each_entry(child, &device->children, node) {
- 		acpi_status status = acpi_evaluate_object(child->handle, "_BCL",
- 							  NULL, &buffer);
--		if (ACPI_FAILURE(status))
-+		if (ACPI_FAILURE(status)) {
-+			buffer.length = ACPI_ALLOCATE_BUFFER;
- 			continue;
-+		}
- 
- 		obj = (union acpi_object *)buffer.pointer;
- 		if (!obj || (obj->type != ACPI_TYPE_PACKAGE)) {
+--- a/drivers/gpu/drm/nouveau/nouveau_mem.c
++++ b/drivers/gpu/drm/nouveau/nouveau_mem.c
+@@ -176,6 +176,8 @@ void
+ nouveau_mem_del(struct ttm_mem_reg *reg)
+ {
+ 	struct nouveau_mem *mem = nouveau_mem(reg);
++	if (!mem)
++		return;
+ 	nouveau_mem_fini(mem);
+ 	kfree(reg->mm_node);
+ 	reg->mm_node = NULL;
 
 
