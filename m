@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0605328B66F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7504828B9C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389182AbgJLNdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:33:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35250 "EHLO mail.kernel.org"
+        id S1730567AbgJLODa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:03:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389116AbgJLNdM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:33:12 -0400
+        id S1730808AbgJLNgh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:36:37 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E924720678;
-        Mon, 12 Oct 2020 13:33:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 79711208B8;
+        Mon, 12 Oct 2020 13:36:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509591;
-        bh=RyzAeQ9vihSfklRP/ulLDWhABDtni9FIhc8heIIPko8=;
+        s=default; t=1602509795;
+        bh=v6TC/afamof1ms9LRUmLrPjC/pPoBr805aVrngS61SY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mGBefvd3YZSWorYYE3NFSPqx+Fq652bGW9luGuk/oxhBtclGjLmFAqnvB6Fvdac/E
-         /QH4KDGQAF/cemRbScAJiYgGvr6xC7ohTsH9jp7B6JCRwi94pMfPjnc27EvTtpVzyT
-         Ik7GgBselRYMz+SxoCExYaHEHz+Y/3ZxkvyP+zyA=
+        b=W2Wf4/sg9Ya+C7d2zn5x9J6pfaVnHbq/qBUVxb6aw4remHcDvUJ3ldnTIzfSNYeL5
+         WQQfz+mljTnLdiG+hdolKkFjIBBqZO019Z47+6P4J/1lMRbM/X8xxMEBZ26LPM3iY4
+         YOhn4meS+LqvKHvaf1o85BKcdRf9bO2MS0WeJCu8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 19/39] Revert "ravb: Fixed to be able to unload modules"
+        stable@vger.kernel.org, Peilin Ye <yepeilin.cs@gmail.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: [PATCH 4.14 33/70] Fonts: Support FONT_EXTRA_WORDS macros for built-in fonts
 Date:   Mon, 12 Oct 2020 15:26:49 +0200
-Message-Id: <20201012132629.042093472@linuxfoundation.org>
+Message-Id: <20201012132631.774855525@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132628.130632267@linuxfoundation.org>
-References: <20201012132628.130632267@linuxfoundation.org>
+In-Reply-To: <20201012132630.201442517@linuxfoundation.org>
+References: <20201012132630.201442517@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,243 +42,406 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Peilin Ye <yepeilin.cs@gmail.com>
 
-commit 77972b55fb9d35d4a6b0abca99abffaa4ec6a85b upstream.
+commit 6735b4632def0640dbdf4eb9f99816aca18c4f16 upstream.
 
-This reverts commit 1838d6c62f57836639bd3d83e7855e0ee4f6defc.
+syzbot has reported an issue in the framebuffer layer, where a malicious
+user may overflow our built-in font data buffers.
 
-This commit moved the ravb_mdio_init() call (and thus the
-of_mdiobus_register() call) from the ravb_probe() to the ravb_open()
-call.  This causes a regression during system resume (s2idle/s2ram), as
-new PHY devices cannot be bound while suspended.
+In order to perform a reliable range check, subsystems need to know
+`FONTDATAMAX` for each built-in font. Unfortunately, our font descriptor,
+`struct console_font` does not contain `FONTDATAMAX`, and is part of the
+UAPI, making it infeasible to modify it.
 
-During boot, the Micrel PHY is detected like this:
+For user-provided fonts, the framebuffer layer resolves this issue by
+reserving four extra words at the beginning of data buffers. Later,
+whenever a function needs to access them, it simply uses the following
+macros:
 
-    Micrel KSZ9031 Gigabit PHY e6800000.ethernet-ffffffff:00: attached PHY driver [Micrel KSZ9031 Gigabit PHY] (mii_bus:phy_addr=e6800000.ethernet-ffffffff:00, irq=228)
-    ravb e6800000.ethernet eth0: Link is Up - 1Gbps/Full - flow control off
+Recently we have gathered all the above macros to <linux/font.h>. Let us
+do the same thing for built-in fonts, prepend four extra words (including
+`FONTDATAMAX`) to their data buffers, so that subsystems can use these
+macros for all fonts, no matter built-in or user-provided.
 
-During system suspend, (A) defer_all_probes is set to true, and (B)
-usermodehelper_disabled is set to UMH_DISABLED, to avoid drivers being
-probed while suspended.
+This patch depends on patch "fbdev, newport_con: Move FONT_EXTRA_WORDS
+macros into linux/font.h".
 
-  A. If CONFIG_MODULES=n, phy_device_register() calling device_add()
-     merely adds the device, but does not probe it yet, as
-     really_probe() returns early due to defer_all_probes being set:
-
-       dpm_resume+0x128/0x4f8
-	 device_resume+0xcc/0x1b0
-	   dpm_run_callback+0x74/0x340
-	     ravb_resume+0x190/0x1b8
-	       ravb_open+0x84/0x770
-		 of_mdiobus_register+0x1e0/0x468
-		   of_mdiobus_register_phy+0x1b8/0x250
-		     of_mdiobus_phy_device_register+0x178/0x1e8
-		       phy_device_register+0x114/0x1b8
-			 device_add+0x3d4/0x798
-			   bus_probe_device+0x98/0xa0
-			     device_initial_probe+0x10/0x18
-			       __device_attach+0xe4/0x140
-				 bus_for_each_drv+0x64/0xc8
-				   __device_attach_driver+0xb8/0xe0
-				     driver_probe_device.part.11+0xc4/0xd8
-				       really_probe+0x32c/0x3b8
-
-     Later, phy_attach_direct() notices no PHY driver has been bound,
-     and falls back to the Generic PHY, leading to degraded operation:
-
-       Generic PHY e6800000.ethernet-ffffffff:00: attached PHY driver [Generic PHY] (mii_bus:phy_addr=e6800000.ethernet-ffffffff:00, irq=POLL)
-       ravb e6800000.ethernet eth0: Link is Up - 1Gbps/Full - flow control off
-
-  B. If CONFIG_MODULES=y, request_module() returns early with -EBUSY due
-     to UMH_DISABLED, and MDIO initialization fails completely:
-
-       mdio_bus e6800000.ethernet-ffffffff:00: error -16 loading PHY driver module for ID 0x00221622
-       ravb e6800000.ethernet eth0: failed to initialize MDIO
-       PM: dpm_run_callback(): ravb_resume+0x0/0x1b8 returns -16
-       PM: Device e6800000.ethernet failed to resume: error -16
-
-     Ignoring -EBUSY in phy_request_driver_module(), like was done for
-     -ENOENT in commit 21e194425abd65b5 ("net: phy: fix issue with loading
-     PHY driver w/o initramfs"), would makes it fall back to the Generic
-     PHY, like in the CONFIG_MODULES=n case.
-
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Cc: stable@vger.kernel.org
-Reviewed-by: Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Link: https://syzkaller.appspot.com/bug?id=08b8be45afea11888776f897895aef9ad1c3ecfd
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/ef18af00c35fb3cc826048a5f70924ed6ddce95b.1600953813.git.yepeilin.cs@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/ethernet/renesas/ravb_main.c |  110 +++++++++++++++----------------
- 1 file changed, 55 insertions(+), 55 deletions(-)
+ include/linux/font.h       |    5 +++++
+ lib/fonts/font_10x18.c     |    9 ++++-----
+ lib/fonts/font_6x10.c      |    9 +++++----
+ lib/fonts/font_6x11.c      |    9 ++++-----
+ lib/fonts/font_7x14.c      |    9 ++++-----
+ lib/fonts/font_8x16.c      |    9 ++++-----
+ lib/fonts/font_8x8.c       |    9 ++++-----
+ lib/fonts/font_acorn_8x8.c |    9 ++++++---
+ lib/fonts/font_mini_4x6.c  |    8 ++++----
+ lib/fonts/font_pearl_8x8.c |    9 ++++-----
+ lib/fonts/font_sun12x22.c  |    9 ++++-----
+ lib/fonts/font_sun8x16.c   |    7 ++++---
+ 12 files changed, 52 insertions(+), 49 deletions(-)
 
---- a/drivers/net/ethernet/renesas/ravb_main.c
-+++ b/drivers/net/ethernet/renesas/ravb_main.c
-@@ -1214,64 +1214,12 @@ static const struct ethtool_ops ravb_eth
- 	.get_ts_info		= ravb_get_ts_info,
+--- a/include/linux/font.h
++++ b/include/linux/font.h
+@@ -65,4 +65,9 @@ extern const struct font_desc *get_defau
+ 
+ #define FONT_EXTRA_WORDS 4
+ 
++struct font_data {
++	unsigned int extra[FONT_EXTRA_WORDS];
++	const unsigned char data[];
++} __packed;
++
+ #endif /* _VIDEO_FONT_H */
+--- a/lib/fonts/font_10x18.c
++++ b/lib/fonts/font_10x18.c
+@@ -8,8 +8,8 @@
+ 
+ #define FONTDATAMAX 9216
+ 
+-static const unsigned char fontdata_10x18[FONTDATAMAX] = {
+-
++static struct font_data fontdata_10x18 = {
++	{ 0, 0, FONTDATAMAX, 0 }, {
+ 	/* 0 0x00 '^@' */
+ 	0x00, 0x00, /* 0000000000 */
+ 	0x00, 0x00, /* 0000000000 */
+@@ -5129,8 +5129,7 @@ static const unsigned char fontdata_10x1
+ 	0x00, 0x00, /* 0000000000 */
+ 	0x00, 0x00, /* 0000000000 */
+ 	0x00, 0x00, /* 0000000000 */
+-
+-};
++} };
+ 
+ 
+ const struct font_desc font_10x18 = {
+@@ -5138,7 +5137,7 @@ const struct font_desc font_10x18 = {
+ 	.name	= "10x18",
+ 	.width	= 10,
+ 	.height	= 18,
+-	.data	= fontdata_10x18,
++	.data	= fontdata_10x18.data,
+ #ifdef __sparc__
+ 	.pref	= 5,
+ #else
+--- a/lib/fonts/font_6x10.c
++++ b/lib/fonts/font_6x10.c
+@@ -1,8 +1,10 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include <linux/font.h>
+ 
+-static const unsigned char fontdata_6x10[] = {
++#define FONTDATAMAX 2560
+ 
++static struct font_data fontdata_6x10 = {
++	{ 0, 0, FONTDATAMAX, 0 }, {
+ 	/* 0 0x00 '^@' */
+ 	0x00, /* 00000000 */
+ 	0x00, /* 00000000 */
+@@ -3074,14 +3076,13 @@ static const unsigned char fontdata_6x10
+ 	0x00, /* 00000000 */
+ 	0x00, /* 00000000 */
+ 	0x00, /* 00000000 */
+-
+-};
++} };
+ 
+ const struct font_desc font_6x10 = {
+ 	.idx	= FONT6x10_IDX,
+ 	.name	= "6x10",
+ 	.width	= 6,
+ 	.height	= 10,
+-	.data	= fontdata_6x10,
++	.data	= fontdata_6x10.data,
+ 	.pref	= 0,
+ };
+--- a/lib/fonts/font_6x11.c
++++ b/lib/fonts/font_6x11.c
+@@ -9,8 +9,8 @@
+ 
+ #define FONTDATAMAX (11*256)
+ 
+-static const unsigned char fontdata_6x11[FONTDATAMAX] = {
+-
++static struct font_data fontdata_6x11 = {
++	{ 0, 0, FONTDATAMAX, 0 }, {
+ 	/* 0 0x00 '^@' */
+ 	0x00, /* 00000000 */
+ 	0x00, /* 00000000 */
+@@ -3338,8 +3338,7 @@ static const unsigned char fontdata_6x11
+ 	0x00, /* 00000000 */
+ 	0x00, /* 00000000 */
+ 	0x00, /* 00000000 */
+-
+-};
++} };
+ 
+ 
+ const struct font_desc font_vga_6x11 = {
+@@ -3347,7 +3346,7 @@ const struct font_desc font_vga_6x11 = {
+ 	.name	= "ProFont6x11",
+ 	.width	= 6,
+ 	.height	= 11,
+-	.data	= fontdata_6x11,
++	.data	= fontdata_6x11.data,
+ 	/* Try avoiding this font if possible unless on MAC */
+ 	.pref	= -2000,
+ };
+--- a/lib/fonts/font_7x14.c
++++ b/lib/fonts/font_7x14.c
+@@ -8,8 +8,8 @@
+ 
+ #define FONTDATAMAX 3584
+ 
+-static const unsigned char fontdata_7x14[FONTDATAMAX] = {
+-
++static struct font_data fontdata_7x14 = {
++	{ 0, 0, FONTDATAMAX, 0 }, {
+ 	/* 0 0x00 '^@' */
+ 	0x00, /* 0000000 */
+ 	0x00, /* 0000000 */
+@@ -4105,8 +4105,7 @@ static const unsigned char fontdata_7x14
+ 	0x00, /* 0000000 */
+ 	0x00, /* 0000000 */
+ 	0x00, /* 0000000 */
+-
+-};
++} };
+ 
+ 
+ const struct font_desc font_7x14 = {
+@@ -4114,6 +4113,6 @@ const struct font_desc font_7x14 = {
+ 	.name	= "7x14",
+ 	.width	= 7,
+ 	.height	= 14,
+-	.data	= fontdata_7x14,
++	.data	= fontdata_7x14.data,
+ 	.pref	= 0,
+ };
+--- a/lib/fonts/font_8x16.c
++++ b/lib/fonts/font_8x16.c
+@@ -10,8 +10,8 @@
+ 
+ #define FONTDATAMAX 4096
+ 
+-static const unsigned char fontdata_8x16[FONTDATAMAX] = {
+-
++static struct font_data fontdata_8x16 = {
++	{ 0, 0, FONTDATAMAX, 0 }, {
+ 	/* 0 0x00 '^@' */
+ 	0x00, /* 00000000 */
+ 	0x00, /* 00000000 */
+@@ -4619,8 +4619,7 @@ static const unsigned char fontdata_8x16
+ 	0x00, /* 00000000 */
+ 	0x00, /* 00000000 */
+ 	0x00, /* 00000000 */
+-
+-};
++} };
+ 
+ 
+ const struct font_desc font_vga_8x16 = {
+@@ -4628,7 +4627,7 @@ const struct font_desc font_vga_8x16 = {
+ 	.name	= "VGA8x16",
+ 	.width	= 8,
+ 	.height	= 16,
+-	.data	= fontdata_8x16,
++	.data	= fontdata_8x16.data,
+ 	.pref	= 0,
+ };
+ EXPORT_SYMBOL(font_vga_8x16);
+--- a/lib/fonts/font_8x8.c
++++ b/lib/fonts/font_8x8.c
+@@ -9,8 +9,8 @@
+ 
+ #define FONTDATAMAX 2048
+ 
+-static const unsigned char fontdata_8x8[FONTDATAMAX] = {
+-
++static struct font_data fontdata_8x8 = {
++	{ 0, 0, FONTDATAMAX, 0 }, {
+ 	/* 0 0x00 '^@' */
+ 	0x00, /* 00000000 */
+ 	0x00, /* 00000000 */
+@@ -2570,8 +2570,7 @@ static const unsigned char fontdata_8x8[
+ 	0x00, /* 00000000 */
+ 	0x00, /* 00000000 */
+ 	0x00, /* 00000000 */
+-
+-};
++} };
+ 
+ 
+ const struct font_desc font_vga_8x8 = {
+@@ -2579,6 +2578,6 @@ const struct font_desc font_vga_8x8 = {
+ 	.name	= "VGA8x8",
+ 	.width	= 8,
+ 	.height	= 8,
+-	.data	= fontdata_8x8,
++	.data	= fontdata_8x8.data,
+ 	.pref	= 0,
+ };
+--- a/lib/fonts/font_acorn_8x8.c
++++ b/lib/fonts/font_acorn_8x8.c
+@@ -3,7 +3,10 @@
+ 
+ #include <linux/font.h>
+ 
+-static const unsigned char acorndata_8x8[] = {
++#define FONTDATAMAX 2048
++
++static struct font_data acorndata_8x8 = {
++{ 0, 0, FONTDATAMAX, 0 }, {
+ /* 00 */  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* ^@ */
+ /* 01 */  0x7e, 0x81, 0xa5, 0x81, 0xbd, 0x99, 0x81, 0x7e, /* ^A */
+ /* 02 */  0x7e, 0xff, 0xbd, 0xff, 0xc3, 0xe7, 0xff, 0x7e, /* ^B */
+@@ -260,14 +263,14 @@ static const unsigned char acorndata_8x8
+ /* FD */  0x38, 0x04, 0x18, 0x20, 0x3c, 0x00, 0x00, 0x00,
+ /* FE */  0x00, 0x00, 0x3c, 0x3c, 0x3c, 0x3c, 0x00, 0x00,
+ /* FF */  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+-};
++} };
+ 
+ const struct font_desc font_acorn_8x8 = {
+ 	.idx	= ACORN8x8_IDX,
+ 	.name	= "Acorn8x8",
+ 	.width	= 8,
+ 	.height	= 8,
+-	.data	= acorndata_8x8,
++	.data	= acorndata_8x8.data,
+ #ifdef CONFIG_ARCH_ACORN
+ 	.pref	= 20,
+ #else
+--- a/lib/fonts/font_mini_4x6.c
++++ b/lib/fonts/font_mini_4x6.c
+@@ -43,8 +43,8 @@ __END__;
+ 
+ #define FONTDATAMAX 1536
+ 
+-static const unsigned char fontdata_mini_4x6[FONTDATAMAX] = {
+-
++static struct font_data fontdata_mini_4x6 = {
++	{ 0, 0, FONTDATAMAX, 0 }, {
+ 	/*{*/
+ 	  	/*   Char 0: ' '  */
+ 	0xee,	/*=  [*** ]       */
+@@ -2145,14 +2145,14 @@ static const unsigned char fontdata_mini
+ 	0xee,	/*=   [*** ]        */
+ 	0x00,	/*=   [    ]        */
+ 	/*}*/
+-};
++} };
+ 
+ const struct font_desc font_mini_4x6 = {
+ 	.idx	= MINI4x6_IDX,
+ 	.name	= "MINI4x6",
+ 	.width	= 4,
+ 	.height	= 6,
+-	.data	= fontdata_mini_4x6,
++	.data	= fontdata_mini_4x6.data,
+ 	.pref	= 3,
  };
  
--/* MDIO bus init function */
--static int ravb_mdio_init(struct ravb_private *priv)
--{
--	struct platform_device *pdev = priv->pdev;
--	struct device *dev = &pdev->dev;
--	int error;
--
--	/* Bitbang init */
--	priv->mdiobb.ops = &bb_ops;
--
--	/* MII controller setting */
--	priv->mii_bus = alloc_mdio_bitbang(&priv->mdiobb);
--	if (!priv->mii_bus)
--		return -ENOMEM;
--
--	/* Hook up MII support for ethtool */
--	priv->mii_bus->name = "ravb_mii";
--	priv->mii_bus->parent = dev;
--	snprintf(priv->mii_bus->id, MII_BUS_ID_SIZE, "%s-%x",
--		 pdev->name, pdev->id);
--
--	/* Register MDIO bus */
--	error = of_mdiobus_register(priv->mii_bus, dev->of_node);
--	if (error)
--		goto out_free_bus;
--
--	return 0;
--
--out_free_bus:
--	free_mdio_bitbang(priv->mii_bus);
--	return error;
--}
--
--/* MDIO bus release function */
--static int ravb_mdio_release(struct ravb_private *priv)
--{
--	/* Unregister mdio bus */
--	mdiobus_unregister(priv->mii_bus);
--
--	/* Free bitbang info */
--	free_mdio_bitbang(priv->mii_bus);
--
--	return 0;
--}
--
- /* Network device open function for Ethernet AVB */
- static int ravb_open(struct net_device *ndev)
- {
- 	struct ravb_private *priv = netdev_priv(ndev);
- 	int error;
+--- a/lib/fonts/font_pearl_8x8.c
++++ b/lib/fonts/font_pearl_8x8.c
+@@ -14,8 +14,8 @@
  
--	/* MDIO bus init */
--	error = ravb_mdio_init(priv);
--	if (error) {
--		netdev_err(ndev, "failed to initialize MDIO\n");
--		return error;
--	}
+ #define FONTDATAMAX 2048
+ 
+-static const unsigned char fontdata_pearl8x8[FONTDATAMAX] = {
 -
- 	napi_enable(&priv->napi[RAVB_BE]);
- 	napi_enable(&priv->napi[RAVB_NC]);
- 
-@@ -1320,7 +1268,6 @@ out_free_irq:
- out_napi_off:
- 	napi_disable(&priv->napi[RAVB_NC]);
- 	napi_disable(&priv->napi[RAVB_BE]);
--	ravb_mdio_release(priv);
- 	return error;
- }
- 
-@@ -1614,8 +1561,6 @@ static int ravb_close(struct net_device
- 	ravb_ring_free(ndev, RAVB_BE);
- 	ravb_ring_free(ndev, RAVB_NC);
- 
--	ravb_mdio_release(priv);
++static struct font_data fontdata_pearl8x8 = {
++   { 0, 0, FONTDATAMAX, 0 }, {
+    /* 0 0x00 '^@' */
+    0x00, /* 00000000 */
+    0x00, /* 00000000 */
+@@ -2575,14 +2575,13 @@ static const unsigned char fontdata_pear
+    0x00, /* 00000000 */
+    0x00, /* 00000000 */
+    0x00, /* 00000000 */
 -
- 	return 0;
- }
+-};
++} };
  
-@@ -1719,6 +1664,51 @@ static const struct net_device_ops ravb_
- 	.ndo_change_mtu		= eth_change_mtu,
+ const struct font_desc font_pearl_8x8 = {
+ 	.idx	= PEARL8x8_IDX,
+ 	.name	= "PEARL8x8",
+ 	.width	= 8,
+ 	.height	= 8,
+-	.data	= fontdata_pearl8x8,
++	.data	= fontdata_pearl8x8.data,
+ 	.pref	= 2,
  };
+--- a/lib/fonts/font_sun12x22.c
++++ b/lib/fonts/font_sun12x22.c
+@@ -3,8 +3,8 @@
  
-+/* MDIO bus init function */
-+static int ravb_mdio_init(struct ravb_private *priv)
-+{
-+	struct platform_device *pdev = priv->pdev;
-+	struct device *dev = &pdev->dev;
-+	int error;
-+
-+	/* Bitbang init */
-+	priv->mdiobb.ops = &bb_ops;
-+
-+	/* MII controller setting */
-+	priv->mii_bus = alloc_mdio_bitbang(&priv->mdiobb);
-+	if (!priv->mii_bus)
-+		return -ENOMEM;
-+
-+	/* Hook up MII support for ethtool */
-+	priv->mii_bus->name = "ravb_mii";
-+	priv->mii_bus->parent = dev;
-+	snprintf(priv->mii_bus->id, MII_BUS_ID_SIZE, "%s-%x",
-+		 pdev->name, pdev->id);
-+
-+	/* Register MDIO bus */
-+	error = of_mdiobus_register(priv->mii_bus, dev->of_node);
-+	if (error)
-+		goto out_free_bus;
-+
-+	return 0;
-+
-+out_free_bus:
-+	free_mdio_bitbang(priv->mii_bus);
-+	return error;
-+}
-+
-+/* MDIO bus release function */
-+static int ravb_mdio_release(struct ravb_private *priv)
-+{
-+	/* Unregister mdio bus */
-+	mdiobus_unregister(priv->mii_bus);
-+
-+	/* Free bitbang info */
-+	free_mdio_bitbang(priv->mii_bus);
-+
-+	return 0;
-+}
-+
- static const struct of_device_id ravb_match_table[] = {
- 	{ .compatible = "renesas,etheravb-r8a7790", .data = (void *)RCAR_GEN2 },
- 	{ .compatible = "renesas,etheravb-r8a7794", .data = (void *)RCAR_GEN2 },
-@@ -1857,6 +1847,13 @@ static int ravb_probe(struct platform_de
- 		eth_hw_addr_random(ndev);
- 	}
+ #define FONTDATAMAX 11264
  
-+	/* MDIO bus init */
-+	error = ravb_mdio_init(priv);
-+	if (error) {
-+		dev_err(&pdev->dev, "failed to initialize MDIO\n");
-+		goto out_dma_free;
-+	}
-+
- 	netif_napi_add(ndev, &priv->napi[RAVB_BE], ravb_poll, 64);
- 	netif_napi_add(ndev, &priv->napi[RAVB_NC], ravb_poll, 64);
+-static const unsigned char fontdata_sun12x22[FONTDATAMAX] = {
+-
++static struct font_data fontdata_sun12x22 = {
++	{ 0, 0, FONTDATAMAX, 0 }, {
+ 	/* 0 0x00 '^@' */
+ 	0x00, 0x00, /* 000000000000 */
+ 	0x00, 0x00, /* 000000000000 */
+@@ -6148,8 +6148,7 @@ static const unsigned char fontdata_sun1
+ 	0x00, 0x00, /* 000000000000 */
+ 	0x00, 0x00, /* 000000000000 */
+ 	0x00, 0x00, /* 000000000000 */
+-
+-};
++} };
  
-@@ -1876,6 +1873,8 @@ static int ravb_probe(struct platform_de
- out_napi_del:
- 	netif_napi_del(&priv->napi[RAVB_NC]);
- 	netif_napi_del(&priv->napi[RAVB_BE]);
-+	ravb_mdio_release(priv);
-+out_dma_free:
- 	dma_free_coherent(ndev->dev.parent, priv->desc_bat_size, priv->desc_bat,
- 			  priv->desc_bat_dma);
- out_release:
-@@ -1900,6 +1899,7 @@ static int ravb_remove(struct platform_d
- 	unregister_netdev(ndev);
- 	netif_napi_del(&priv->napi[RAVB_NC]);
- 	netif_napi_del(&priv->napi[RAVB_BE]);
-+	ravb_mdio_release(priv);
- 	pm_runtime_disable(&pdev->dev);
- 	free_netdev(ndev);
- 	platform_set_drvdata(pdev, NULL);
+ 
+ const struct font_desc font_sun_12x22 = {
+@@ -6157,7 +6156,7 @@ const struct font_desc font_sun_12x22 =
+ 	.name	= "SUN12x22",
+ 	.width	= 12,
+ 	.height	= 22,
+-	.data	= fontdata_sun12x22,
++	.data	= fontdata_sun12x22.data,
+ #ifdef __sparc__
+ 	.pref	= 5,
+ #else
+--- a/lib/fonts/font_sun8x16.c
++++ b/lib/fonts/font_sun8x16.c
+@@ -3,7 +3,8 @@
+ 
+ #define FONTDATAMAX 4096
+ 
+-static const unsigned char fontdata_sun8x16[FONTDATAMAX] = {
++static struct font_data fontdata_sun8x16 = {
++{ 0, 0, FONTDATAMAX, 0 }, {
+ /* */ 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+ /* */ 0x00,0x00,0x7e,0x81,0xa5,0x81,0x81,0xbd,0x99,0x81,0x81,0x7e,0x00,0x00,0x00,0x00,
+ /* */ 0x00,0x00,0x7e,0xff,0xdb,0xff,0xff,0xc3,0xe7,0xff,0xff,0x7e,0x00,0x00,0x00,0x00,
+@@ -260,14 +261,14 @@ static const unsigned char fontdata_sun8
+ /* */ 0x00,0x70,0xd8,0x30,0x60,0xc8,0xf8,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+ /* */ 0x00,0x00,0x00,0x00,0x7c,0x7c,0x7c,0x7c,0x7c,0x7c,0x7c,0x00,0x00,0x00,0x00,0x00,
+ /* */ 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+-};
++} };
+ 
+ const struct font_desc font_sun_8x16 = {
+ 	.idx	= SUN8x16_IDX,
+ 	.name	= "SUN8x16",
+ 	.width	= 8,
+ 	.height	= 16,
+-	.data	= fontdata_sun8x16,
++	.data	= fontdata_sun8x16.data,
+ #ifdef __sparc__
+ 	.pref	= 10,
+ #else
 
 
