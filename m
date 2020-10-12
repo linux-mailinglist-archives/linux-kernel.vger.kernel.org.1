@@ -2,82 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C148B28BA72
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B55528BA7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:11:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389149AbgJLOKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:10:04 -0400
-Received: from mail.efficios.com ([167.114.26.124]:49278 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730092AbgJLOKD (ORCPT
+        id S2389236AbgJLOK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:10:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43770 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389395AbgJLOK4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 10:10:03 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id E53C22E9EA4;
-        Mon, 12 Oct 2020 10:10:02 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id vsVqtoQiWkgg; Mon, 12 Oct 2020 10:10:02 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id B294D2E9A76;
-        Mon, 12 Oct 2020 10:10:02 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com B294D2E9A76
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1602511802;
-        bh=QVkLm+x0TjuTuXozjPwAMAR8pJJk7vUphDALOFnUiU8=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=dvYojegqeDStGhVyafA/ZNfd5qUQlH5RV0ogiW1KahWhSE6TKc5tGoky1ofspCnU9
-         b2N1bWQWH8XflQkyRhzeXxrPVpaJZ1ZwuDEODTv0j+9uEkc3av3IUmTkEeVoyJZMSu
-         /UHgy8E5CdUIuF9RCd1fe0YQSqrPxJklyrc+5OYigvYir68Hmrr6WAaOtVft3QhRFu
-         F7sYa/6hR1KKM51dr2+OBrOspuBu28srSy1pPcsD2SAf1u3qgNY421ChauDZj4ekE0
-         YjlJmDto4VsftKpuHgVrJNyc4DXnJ60Y8G50cmBYLEu/at5Se/1nLQ6rmfKeNqv+Ur
-         3C7Akra3nLEEA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 3-FIHBgwVR-y; Mon, 12 Oct 2020 10:10:02 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id A262B2E9EA3;
-        Mon, 12 Oct 2020 10:10:02 -0400 (EDT)
-Date:   Mon, 12 Oct 2020 10:10:02 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     David Ahern <dsahern@gmail.com>
-Cc:     David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        Michael Jeanson <mjeanson@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <90427402.16599.1602511802505.JavaMail.zimbra@efficios.com>
-In-Reply-To: <74f254cb-b274-48f7-6271-4056f531f9fa@gmail.com>
-References: <20200925200452.2080-1-mathieu.desnoyers@efficios.com> <fd970150-f214-63a3-953c-769fa2787bc0@gmail.com> <19cf586d-4c4e-e18c-cd9e-3fde3717a9e1@gmail.com> <2056270363.16428.1602507463959.JavaMail.zimbra@efficios.com> <74f254cb-b274-48f7-6271-4056f531f9fa@gmail.com>
-Subject: Re: [RFC PATCH 0/3] l3mdev icmp error route lookup fixes
+        Mon, 12 Oct 2020 10:10:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602511856;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=qeLRzZ2kmlgn/5uncvk+yQgdLuVN4fv/HfcAAmZlzhY=;
+        b=FPglRbBDzMs6Ce0yDbhDIEtEigVvVQojDFaZFpaxStvZ2Lc/bPMeT+8B0KsFeIKyW0kdE9
+        L2AyTUZ2jrsjZwFHnW3GPzscazr4b3rrGONs6ibic1Tahbsc5Tu0D4VAcK39sUyvSQgAxc
+        +RF+x9+8dyRDBtujfVs6LWaT4TMJpSk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-492-R7YYZCLVOIC0kqtErudtYQ-1; Mon, 12 Oct 2020 10:10:52 -0400
+X-MC-Unique: R7YYZCLVOIC0kqtErudtYQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 655F1104D3E0;
+        Mon, 12 Oct 2020 14:10:50 +0000 (UTC)
+Received: from localhost.localdomain.com (ovpn-117-187.rdu2.redhat.com [10.10.117.187])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 166B760C0F;
+        Mon, 12 Oct 2020 14:10:48 +0000 (UTC)
+From:   Qian Cai <cai@redhat.com>
+To:     Arnd Bergmann <arnd@arndb.de>, Will Deacon <will@kernel.org>
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] arm64: Fix redefinition of init_new_context()
+Date:   Mon, 12 Oct 2020 10:10:32 -0400
+Message-Id: <20201012141032.6333-1-cai@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3968 (ZimbraWebClient - FF81 (Linux)/8.8.15_GA_3968)
-Thread-Topic: l3mdev icmp error route lookup fixes
-Thread-Index: 3ryJJd286QK1dZTKIcjpU6a6fmpocA==
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Oct 12, 2020, at 9:45 AM, David Ahern dsahern@gmail.com wrote:
+The linux-next commit c870baeede75 ("asm-generic: add generic MMU
+versions of mmu context functions") missed a case in the arm64/for-next
+branch.
 
-> On 10/12/20 5:57 AM, Mathieu Desnoyers wrote:
->> OK, do you want to pick up the RFC patch series, or should I re-send it
->> without RFC tag ?
-> 
-> you need to re-send for Dave or Jakub to pick them up via patchworks
+Signed-off-by: Qian Cai <cai@redhat.com>
+---
+ arch/arm64/include/asm/mmu_context.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-OK. Can I have your Acked-by or Reviewed-by for all three patches ?
-
-Thanks,
-
-Mathieu
-
-
+diff --git a/arch/arm64/include/asm/mmu_context.h b/arch/arm64/include/asm/mmu_context.h
+index da5f146e665b..cd5c33a50469 100644
+--- a/arch/arm64/include/asm/mmu_context.h
++++ b/arch/arm64/include/asm/mmu_context.h
+@@ -176,6 +176,7 @@ static inline void cpu_replace_ttbr1(pgd_t *pgdp)
+  */
+ void check_and_switch_context(struct mm_struct *mm);
+ 
++#define init_new_context init_new_context
+ static inline int
+ init_new_context(struct task_struct *tsk, struct mm_struct *mm)
+ {
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+2.28.0
+
