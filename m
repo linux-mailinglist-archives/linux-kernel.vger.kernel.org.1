@@ -2,148 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0A3228B421
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 13:51:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AD5228B42E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 13:54:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388370AbgJLLvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 07:51:19 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:42390 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388327AbgJLLvN (ORCPT
+        id S2388349AbgJLLxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 07:53:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388209AbgJLLxx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 07:51:13 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09CBp8c4095381;
-        Mon, 12 Oct 2020 06:51:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1602503468;
-        bh=Q268xbAANVai1wbe6oY4hx1HWU4FUJh2iu0Vh8hEct4=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=Kt5iSxIMWwq5GlyRyOHDgC4Hl1KN37XfT46z1kRpvDzQXhYat5AD86ZT9SPmc05/t
-         dRS5Dd0USvZS9ub7iF2/pHYtR4Jdv/1FSvsf7LuQMByW+7xzDkhx40LOVx5X2AKur+
-         SgoZ2TyX0nrg3PdYNNsMEzSzIYr6HrCXa8BnmTiQ=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09CBp8X7042767
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 12 Oct 2020 06:51:08 -0500
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 12
- Oct 2020 06:51:07 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 12 Oct 2020 06:51:08 -0500
-Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09CBoswv088613;
-        Mon, 12 Oct 2020 06:51:06 -0500
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-To:     <nm@ti.com>, <t-kristo@ti.com>, <ssantosh@kernel.org>,
-        <lokeshvutla@ti.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <grygorii.strashko@ti.com>
-Subject: [PATCH v3 05/11] firmware: ti_sci: rm: Add support for extended_ch_type for tx channel
-Date:   Mon, 12 Oct 2020 14:51:13 +0300
-Message-ID: <20201012115119.11333-6-peter.ujfalusi@ti.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012115119.11333-1-peter.ujfalusi@ti.com>
-References: <20201012115119.11333-1-peter.ujfalusi@ti.com>
+        Mon, 12 Oct 2020 07:53:53 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E6CC0613D0;
+        Mon, 12 Oct 2020 04:53:51 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id o8so8436575pll.4;
+        Mon, 12 Oct 2020 04:53:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Fb1d8gmC83mgx6ZXccfV51mL2eDPuoS5rOP1jKZbgr0=;
+        b=WqRIRK1ILJUZ67z70QvMDBxN06fFvlwUdMAnAtrRsF1vPMIL52nvWTtO9rfNvOfdU4
+         c4oZuWaKIk/IlnERqKlzhGmiDtbVDYOdV1fdSQVzA6WfvnuXzBtUY3oBM3bKCuLiUNlm
+         wb+dROSaHcGVHWmWKRZYg9qnbiZB5vcXXcw+paU0XtrKDet/ZbtD0BTfiebCzZE3Vfm2
+         MLJ9cjShvdWMG4+T+yqYAKI1y0hSMPLCUk05PHD/Bc2d8W7xSKuqa3zDnvdY+VSN5aFH
+         PRFoObfPV/asfoDKDYQLEI9gLnEJZrKsg4L0BmXAkHnpxpP7YXYW6xU+OFXaOYsUs3eg
+         SNkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Fb1d8gmC83mgx6ZXccfV51mL2eDPuoS5rOP1jKZbgr0=;
+        b=eNZHAsF/GCmlMDxm7EphCHyg0YB173FMRtG2UbEU08C2/W7pxBlyAZxPyUFNfRSQ1b
+         BPtsptSBjc6vlOX9oT57EW2yWQu0HtbeqlIfl1KlCdhIJNB5KPadqfkRyN3OCIr53qWf
+         0UI0owi7+nf/977/fSCRpcXEYoncvRckyocXeZ9EyZJUQd97F2KPOqjzOrYIMIjLCmWe
+         TOKAuBQR0dyZbiAUrdO+c0WWze8Jnyiji+rdkVJgQDFxJFpGUXnHwJPZrXrVuL/erAm9
+         +kFMD4F6oXSDIwoHKACuyJZhLWIczb/sCLa6mSBjRbrA4Dq3SK+4rJiSetcrob/FjoFe
+         Ue3A==
+X-Gm-Message-State: AOAM5316vvGxOFMQs/eGvLcSMuAeuTOsbPVB3t315bZ8UedzDKmDMeR2
+        tY2dEI3RTauJTu7bMRTEIZQ=
+X-Google-Smtp-Source: ABdhPJxlO1TccaY9ka4oOYHIRdg81JvK1kUFDXWvaLfFg4GNc+QKlcsPPRGHb2yAxPpyrlh7CDA6BA==
+X-Received: by 2002:a17:902:7c0d:b029:d3:de09:a3 with SMTP id x13-20020a1709027c0db02900d3de0900a3mr22968153pll.52.1602503631317;
+        Mon, 12 Oct 2020 04:53:51 -0700 (PDT)
+Received: from localhost ([160.16.113.140])
+        by smtp.gmail.com with ESMTPSA id k25sm9638298pfi.42.2020.10.12.04.53.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 04:53:50 -0700 (PDT)
+From:   Coiby Xu <coiby.xu@gmail.com>
+X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
+Date:   Mon, 12 Oct 2020 19:51:14 +0800
+To:     Benjamin Poirier <benjamin.poirier@gmail.com>
+Cc:     devel@driverdev.osuosl.org, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+        Manish Chopra <manishc@marvell.com>,
+        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
+        <GR-Linux-NIC-Dev@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:QLOGIC QLGE 10Gb ETHERNET DRIVER" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 2/6] staging: qlge: coredump via devlink health
+ reporter
+Message-ID: <20201012115114.lyh33rvmm4rt7mej@Rk>
+References: <20201008115808.91850-1-coiby.xu@gmail.com>
+ <20201008115808.91850-3-coiby.xu@gmail.com>
+ <20201010074809.GB14495@f3>
+ <20201010100258.px2go6nugsfbwoq7@Rk>
+ <20201010132230.GA17351@f3>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20201010132230.GA17351@f3>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sysfw added 'extended_ch_type' to the tx_ch_cfg_req message which should be
-used when BCDMA block copy channels are configured:
-extended_ch_type = 0 : the channel is split tx channel (tchan)
-extended_ch_type = 1 : the channel is block copy channel (bchan)
+On Sat, Oct 10, 2020 at 10:22:30PM +0900, Benjamin Poirier wrote:
+>On 2020-10-10 18:02 +0800, Coiby Xu wrote:
+>[...]
+>> > > +	do {                                                           \
+>> > > +		err = fill_seg_(fmsg, &dump->seg_hdr, dump->seg_regs); \
+>> > > +		if (err) {					       \
+>> > > +			kvfree(dump);                                  \
+>> > > +			return err;				       \
+>> > > +		}                                                      \
+>> > > +	} while (0)
+>> > > +
+>> > > +static int qlge_reporter_coredump(struct devlink_health_reporter *reporter,
+>> > > +				  struct devlink_fmsg *fmsg, void *priv_ctx,
+>> > > +				  struct netlink_ext_ack *extack)
+>> > > +{
+>> > > +	int err = 0;
+>> > > +
+>> > > +	struct qlge_devlink *dev = devlink_health_reporter_priv(reporter);
+>> >
+>> > Please name this variable ql_devlink, like in qlge_probe().
+>>
+>> I happened to find the following text in drivers/staging/qlge/TODO
+>> > * in terms of namespace, the driver uses either qlge_, ql_ (used by
+>> >  other qlogic drivers, with clashes, ex: ql_sem_spinlock) or nothing (with
+>> >  clashes, ex: struct ob_mac_iocb_req). Rename everything to use the "qlge_"
+>> >  prefix.
+>
+>This comment applies to global identifiers, not local variables.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- drivers/firmware/ti_sci.c              | 1 +
- drivers/firmware/ti_sci.h              | 6 ++++++
- include/linux/soc/ti/ti_sci_protocol.h | 5 +++++
- 3 files changed, 12 insertions(+)
+Thank you for the explanation! Are you suggesting we should choose
+different naming styles so we better tell global identifiers from local
+variables?
+>
+>>
+>> So I will adopt qlge_ instead. Besides I prefer qlge_dl to ql_devlink.
+>
+>Up to you but personally, I think ql_devlink is better. In any case,
+>"dev" is too general and often used for struct net_device pointers
+>instead.
 
-diff --git a/drivers/firmware/ti_sci.c b/drivers/firmware/ti_sci.c
-index 2793bb923881..0dd3fbb4f964 100644
---- a/drivers/firmware/ti_sci.c
-+++ b/drivers/firmware/ti_sci.c
-@@ -2365,6 +2365,7 @@ static int ti_sci_cmd_rm_udmap_tx_ch_cfg(const struct ti_sci_handle *handle,
- 	req->tx_sched_priority = params->tx_sched_priority;
- 	req->tx_burst_size = params->tx_burst_size;
- 	req->tx_tdtype = params->tx_tdtype;
-+	req->extended_ch_type = params->extended_ch_type;
- 
- 	ret = ti_sci_do_xfer(info, xfer);
- 	if (ret) {
-diff --git a/drivers/firmware/ti_sci.h b/drivers/firmware/ti_sci.h
-index 4d980eb592c4..ca15d8f1f8de 100644
---- a/drivers/firmware/ti_sci.h
-+++ b/drivers/firmware/ti_sci.h
-@@ -915,6 +915,7 @@ struct rm_ti_sci_msg_udmap_rx_flow_opt_cfg {
-  *   13 - Valid bit for @ref ti_sci_msg_rm_udmap_tx_ch_cfg::fdepth
-  *   14 - Valid bit for @ref ti_sci_msg_rm_udmap_tx_ch_cfg::tx_burst_size
-  *   15 - Valid bit for @ref ti_sci_msg_rm_udmap_tx_ch_cfg::tx_tdtype
-+ *   16 - Valid bit for @ref ti_sci_msg_rm_udmap_tx_ch_cfg::extended_ch_type
-  *
-  * @nav_id: SoC device ID of Navigator Subsystem where tx channel is located
-  *
-@@ -983,6 +984,10 @@ struct rm_ti_sci_msg_udmap_rx_flow_opt_cfg {
-  * programmed into the tdtype field of the TCHAN_TCFG register:
-  * 0 - Return immediately
-  * 1 - Wait for completion message from remote peer
-+ *
-+ * @extended_ch_type: Valid for BCDMA.
-+ * 0 - the channel is split tx channel (tchan)
-+ * 1 - the channel is block copy channel (bchan)
-  */
- struct ti_sci_msg_rm_udmap_tx_ch_cfg_req {
- 	struct ti_sci_msg_hdr hdr;
-@@ -1005,6 +1010,7 @@ struct ti_sci_msg_rm_udmap_tx_ch_cfg_req {
- 	u8 tx_sched_priority;
- 	u8 tx_burst_size;
- 	u8 tx_tdtype;
-+	u8 extended_ch_type;
- } __packed;
- 
- /**
-diff --git a/include/linux/soc/ti/ti_sci_protocol.h b/include/linux/soc/ti/ti_sci_protocol.h
-index 9699b260de59..6978afc00823 100644
---- a/include/linux/soc/ti/ti_sci_protocol.h
-+++ b/include/linux/soc/ti/ti_sci_protocol.h
-@@ -336,6 +336,9 @@ struct ti_sci_rm_psil_ops {
- #define TI_SCI_RM_UDMAP_CHAN_BURST_SIZE_128_BYTES	2
- #define TI_SCI_RM_UDMAP_CHAN_BURST_SIZE_256_BYTES	3
- 
-+#define TI_SCI_RM_BCDMA_EXTENDED_CH_TYPE_TCHAN		0
-+#define TI_SCI_RM_BCDMA_EXTENDED_CH_TYPE_BCHAN		1
-+
- /* UDMAP TX/RX channel valid_params common declarations */
- #define TI_SCI_MSG_VALUE_RM_UDMAP_CH_PAUSE_ON_ERR_VALID		BIT(0)
- #define TI_SCI_MSG_VALUE_RM_UDMAP_CH_ATYPE_VALID                BIT(1)
-@@ -362,6 +365,7 @@ struct ti_sci_msg_rm_udmap_tx_ch_cfg {
- #define TI_SCI_MSG_VALUE_RM_UDMAP_CH_TX_CREDIT_COUNT_VALID      BIT(12)
- #define TI_SCI_MSG_VALUE_RM_UDMAP_CH_TX_FDEPTH_VALID            BIT(13)
- #define TI_SCI_MSG_VALUE_RM_UDMAP_CH_TX_TDTYPE_VALID            BIT(15)
-+#define TI_SCI_MSG_VALUE_RM_UDMAP_CH_EXTENDED_CH_TYPE_VALID	BIT(16)
- 	u16 nav_id;
- 	u16 index;
- 	u8 tx_pause_on_err;
-@@ -380,6 +384,7 @@ struct ti_sci_msg_rm_udmap_tx_ch_cfg {
- 	u8 tx_sched_priority;
- 	u8 tx_burst_size;
- 	u8 tx_tdtype;
-+	u8 extended_ch_type;
- };
- 
- /**
--- 
-Peter
+Thank you for the suggestion. Another reason to use qlge_dl is many
+other network drivers supporting devlink interface also adopt this kind
+of style.
 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
-
+--
+Best regards,
+Coiby
