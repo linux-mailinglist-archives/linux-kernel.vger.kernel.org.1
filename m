@@ -2,111 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F4328BE7E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:53:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16F9B28BE7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403979AbgJLQxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 12:53:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390534AbgJLQxT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 12:53:19 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1C26C0613D0;
-        Mon, 12 Oct 2020 09:53:18 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id h7so19993584wre.4;
-        Mon, 12 Oct 2020 09:53:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+vLvR2wy5eGqgyPIxJSCZBSQQ+dbsnbZ11swl+iSUJE=;
-        b=hkMbwX9Ihr0nuDzGl4PJrqj4PHwbhKvCszEovxFaOBuv39OX1Dh7OZwuvlGkUh9GQt
-         RMIvqPvIZRQsfDRO4EaJND5XLaEqVPJK9N3UExt6xPZ1akVFhrUFRwTZBlZbIpvwOy46
-         dU5mzhM5N/Qa8CcTK8S8ib/Ec/AZhV8+pM8EFHquvRcCAeZGSpQmW0t3y3miYan10D9V
-         zRfS3s2X60MZwl79zyqc+PQea8n/STI2D53qpn9K9gR2eCAVCAxZP5bJbVsozhLC7JuW
-         MUNSGcBGab5iBowjvnhV+HinPe2PpRoLqmyI8Zq/RqgyCx9WnH6EusiuPJT7UIpN3pl7
-         sHHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+vLvR2wy5eGqgyPIxJSCZBSQQ+dbsnbZ11swl+iSUJE=;
-        b=O4LOmE35wBUOHqQc4Ny7TQ1Vyiawyo/oo7YaO6hlh5tGW91EoaggWjAyaQlgTmhdFh
-         cHai6CCUPTatUDdfxeOxhDbp2PnRwXLI5q6xtceGGmM/7iDvxMhHIn85sOLIRalDM3+d
-         t6E6tKZdqJn6wwGhK0kdvU3LlkrjS3HsRbTFNu8rtuLE9xEDRh3XgCzAmgKoEnN753et
-         O/YWhtb1viiut8L9yG8I6GfvLgT308LMVLJ54DCECYJnasqDvZhe+qlZdHtZAAgZsjq4
-         tkJDGxHOb+Wi1R7pZ2vgn1Bzh2kccTgxKfk5wagVJp+uAO1WFMQhAycZ+r3fToYfZwjc
-         26MA==
-X-Gm-Message-State: AOAM532Fr7mSMXKts7z90njI5B3lLE7FXLVsA15ZhP/iEsyZNDFo3so+
-        JTrhH0PO57MsxFb6TSmDP3ZqHx3eEUGs+w==
-X-Google-Smtp-Source: ABdhPJzKK+zDmc7pcMb2gP2pC09uP7g0Ac9Lj3c1QZ4Te6MjKjvXS/C5cbgyLnQKWSBBMe/H+1sZxQ==
-X-Received: by 2002:adf:ee4c:: with SMTP id w12mr1310096wro.22.1602521597296;
-        Mon, 12 Oct 2020 09:53:17 -0700 (PDT)
-Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id d30sm27362777wrc.19.2020.10.12.09.53.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 09:53:16 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-Cc:     Alex Dewar <alex.dewar90@gmail.com>,
-        Zhu Yanjun <yanjunz@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Bob Pearson <rpearsonhpe@gmail.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] RDMA/rxe: Fix possible NULL pointer dereference
-Date:   Mon, 12 Oct 2020 17:52:30 +0100
-Message-Id: <20201012165229.59257-1-alex.dewar90@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        id S2403949AbgJLQwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 12:52:44 -0400
+Received: from mga03.intel.com ([134.134.136.65]:35518 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390622AbgJLQwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 12:52:44 -0400
+IronPort-SDR: qEZ5V7PJxKLSqDAGOeNV/xaWEaEXJEJd9jw552v9zm73L8pRqa6xvTLiOxIZK9t9jlySLRmjve
+ nL+s0FoIrLXQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="165829527"
+X-IronPort-AV: E=Sophos;i="5.77,367,1596524400"; 
+   d="scan'208";a="165829527"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 09:52:42 -0700
+IronPort-SDR: WQON228o5cjV2jjXjJk4CHWOjmpm3P1PQKLPFSKHztBmmW1qef5lTNKM/dEf+fk+ESqMSmyxtx
+ StT9W4+ygdBw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,367,1596524400"; 
+   d="scan'208";a="299341621"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga008.fm.intel.com with ESMTP; 12 Oct 2020 09:52:41 -0700
+Received: from [10.249.225.186] (abudanko-mobl.ccr.corp.intel.com [10.249.225.186])
+        by linux.intel.com (Postfix) with ESMTP id 112715807A3;
+        Mon, 12 Oct 2020 09:52:35 -0700 (PDT)
+Subject: Re: [PATCH v1 03/15] perf data: open data directory in read access
+ mode
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com>
+ <9ac7f12e-f5a4-dd91-a19a-bb7e5be27636@linux.intel.com>
+ <20201012160339.GB466880@tassilo.jf.intel.com>
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <49bfe810-f1cc-b1c6-67d3-b0a746552fd6@linux.intel.com>
+Date:   Mon, 12 Oct 2020 19:52:33 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <20201012160339.GB466880@tassilo.jf.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-skb_clone() is called without checking if the returned pointer is NULL
-before it is dereferenced. Fix by adding an additional error check.
 
-Fixes: e7ec96fc7932 ("RDMA/rxe: Fix skb lifetime in rxe_rcv_mcast_pkt()")
-Addresses-Coverity-ID: 1497804: Null pointer dereferences (NULL_RETURNS)
-Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
----
- drivers/infiniband/sw/rxe/rxe_recv.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+On 12.10.2020 19:03, Andi Kleen wrote:
+> On Mon, Oct 12, 2020 at 11:55:07AM +0300, Alexey Budankov wrote:
+>>
+>> Open files located at data directory in case of read access mode.
+> 
+> Need some rationale. Is this a bug fix? Did the case not matter
+> before?
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
-index 11f3daf20768..a65936e12f89 100644
---- a/drivers/infiniband/sw/rxe/rxe_recv.c
-+++ b/drivers/infiniband/sw/rxe/rxe_recv.c
-@@ -266,10 +266,13 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
- 		/* for all but the last qp create a new clone of the
- 		 * skb and pass to the qp.
- 		 */
--		if (mce->qp_list.next != &mcg->qp_list)
-+		if (mce->qp_list.next != &mcg->qp_list) {
- 			per_qp_skb = skb_clone(skb, GFP_ATOMIC);
--		else
-+			if (!per_qp_skb)
-+				goto err2;
-+		} else {
- 			per_qp_skb = skb;
-+		}
- 
- 		per_qp_pkt = SKB_TO_PKT(per_qp_skb);
- 		per_qp_pkt->qp = qp;
-@@ -283,6 +286,10 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
- 
- 	return;
- 
-+err2:
-+	spin_unlock_bh(&mcg->mcg_lock);
-+	rxe_drop_ref(mcg);	/* drop ref from rxe_pool_get_key. */
-+
- err1:
- 	kfree_skb(skb);
- }
--- 
-2.28.0
+This is not a bug fix. The case didn't matter before.
+
+> 
+>>
+>> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+>> ---
+>>  tools/perf/util/data.c | 4 ++++
+>>  1 file changed, 4 insertions(+)
+>>
+>> diff --git a/tools/perf/util/data.c b/tools/perf/util/data.c
+>> index c47aa34fdc0a..6ad61ac6ba67 100644
+>> --- a/tools/perf/util/data.c
+>> +++ b/tools/perf/util/data.c
+>> @@ -321,6 +321,10 @@ static int open_dir(struct perf_data *data)
+>>  		return -1;
+>>  
+>>  	ret = open_file(data);
+>> +	if (!ret && perf_data__is_dir(data)) {
+>> +		if (perf_data__is_read(data))
+>> +			ret = perf_data__open_dir(data);
+>> +	}
+>>  
+>>  	/* Cleanup whatever we managed to create so far. */
+>>  	if (ret && perf_data__is_write(data))
+>> -- 
+>> 2.24.1
+
+Alexei
 
