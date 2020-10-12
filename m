@@ -2,164 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F4E28C550
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 01:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C141528C564
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 01:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388743AbgJLXjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 19:39:54 -0400
-Received: from o1.b.az.sendgrid.net ([208.117.55.133]:47186 "EHLO
-        o1.b.az.sendgrid.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730272AbgJLXjx (ORCPT
+        id S2389443AbgJLXsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 19:48:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388855AbgJLXsN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 19:39:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
-        h=subject:references:from:mime-version:in-reply-to:to:cc:content-type:
-        content-transfer-encoding;
-        s=001; bh=FWd7GLu/tKLDYZWyqY42ek5eJQUDEXNUAlc9iLUoOSQ=;
-        b=hWlEplUmTpnYzRFWyIf4FCE6wfVXkJ1rfr7fkYfsKO8P15QdaCtSTB2hHa/RrVx5a0AQ
-        HhHIHIYOf3857gyEAWb5XbG8TsAazMN7Rgfn1etr5zH+N0waxqett+LYdKlRqwtw8/P8mv
-        eyofcmrs3avYSGmUfi6j2nYUg/5YY9hdE=
-Received: by filterdrecv-p3las1-dcbfbb89c-tcntw with SMTP id filterdrecv-p3las1-dcbfbb89c-tcntw-18-5F84E946-82
-        2020-10-12 23:39:51.179332393 +0000 UTC m=+435832.437857433
-Received: from [192.168.1.14] (unknown)
-        by ismtpd0006p1lon1.sendgrid.net (SG) with ESMTP
-        id C8HTQRspSkaVK3O5MSCmWA
-        Mon, 12 Oct 2020 23:39:50.729 +0000 (UTC)
-Subject: Re: [PATCH 00/18] Add Hantro regmap and VC8000 h264 decode support
-References: <20201012205957.889185-1-adrian.ratiu@collabora.com>
-From:   Jonas Karlman <jonas@kwiboo.se>
-Message-ID: <97e84bb5-972a-091d-a159-6ab1151f17ab@kwiboo.se>
-Date:   Mon, 12 Oct 2020 23:39:51 +0000 (UTC)
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Mon, 12 Oct 2020 19:48:13 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83B2CC0613D0;
+        Mon, 12 Oct 2020 16:48:12 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C9Fjd73Frz9sTf;
+        Tue, 13 Oct 2020 10:48:05 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1602546486;
+        bh=tsA+FpAYJ79DdkImsUuB55VqWEvgtK9G7BhifvUYuIg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=R7fu8uy5xHzwglAwVG/HCIY6UElV04dIg1VvkgInLNDOKwhvshfQwDAj7Nkggj9qO
+         Ri2ncW8x2vQ8KE6craIsjzM65npAVMWDE7OsSKevpljiu4mQHuLP1pJuR7jV8D0Ps1
+         eCZ949jKPWtyhrpYwwkFZ4+ab4QMi9DuRmf5uzoj7JGdXYDiPRATzC3gZX/HhjA5vU
+         jOYSQRRyww5LyMnWqLvWktMj6LmPyY/lpPdOrMJMLbpMDhErxWToJ5mRqM6dXZrmWQ
+         1HiXm23iUMvQKsbVvKdLpe4OyhF4W1xtDPULDW8hZQy2JaAfP1NJnns2AKlxL5ZToc
+         I86B43phnIhtQ==
+Date:   Tue, 13 Oct 2020 10:47:47 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Max Reitz <mreitz@redhat.com>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Subject: linux-next: manual merge of the fuse tree with Linus' tree
+Message-ID: <20201013104747.559128e7@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20201012205957.889185-1-adrian.ratiu@collabora.com>
-X-SG-EID: =?us-ascii?Q?TdbjyGynYnRZWhH+7lKUQJL+ZxmxpowvO2O9SQF5CwCVrYgcwUXgU5DKUU3QxA?=
- =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0h4m=2F0JLyOkHdDHSTb?=
- =?us-ascii?Q?GzI4=2FudO3qzCik37O+eo=2FnD6F3CkCKMBwB34tRk?=
- =?us-ascii?Q?aKxv5b6rTNjK84lRypk2iCtJ7H31qwC85Q=2FQY4G?=
- =?us-ascii?Q?=2FpCYOE1kV4UVAMvMyY5vfGWiU47oKIeBmG9dK3C?=
- =?us-ascii?Q?+lyS6Q6rOV78eta9aXO2vfEy1UNCzOYO1kfFPwm?=
- =?us-ascii?Q?qQxZPWrjAICo8knfiYE8A=3D=3D?=
-To:     Adrian Ratiu <adrian.ratiu@collabora.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Fruehberger Peter <Peter.Fruehberger@de.bosch.com>,
-        kuhanh.murugasen.krishnan@intel.com,
-        Daniel Vetter <daniel@ffwll.ch>, kernel@collabora.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-X-Entity-ID: wSPGWgGSXUap++qShBI+ag==
-Content-Type: text/plain; charset=us-ascii
-Content-Language: sv
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/h5hLElEIrFzfhb0L6gQk4_x";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+--Sig_/h5hLElEIrFzfhb0L6gQk4_x
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 2020-10-12 22:59, Adrian Ratiu wrote:
-> Dear all,
-> 
-> This series introduces a regmap infrastructure for the Hantro driver
-> which is used to compensate for different HW-revision register layouts.
-> To justify it h264 decoding capability is added for newer VC8000 chips.
-> 
-> This is a gradual conversion to the new infra - a complete conversion
-> would have been very big and I do not have all the HW yet to test (I'm
-> expecting a RK3399 shipment next week though ;). I think converting the
-> h264 decoder provides a nice blueprint for how the other codecs can be
-> converted and enabled for different HW revisions.
-> 
-> The end goal of this is to make the driver more generic and eliminate
-> entirely custom boilerplate like `struct hantro_reg` or headers with
-> core-specific bit manipulations like `hantro_g1_regs.h` and instead rely
-> on the well-tested albeit more verbose regmap subsytem.
-> 
-> To give just two examples of bugs which are easily discovered by using
-> more verbose regmap fields (very easy to compare with the datasheets)
-> instead of relying on bit-magic tricks: G1_REG_DEC_CTRL3_INIT_QP(x) was
-> off-by-1 and the wrong .clk_gate bit was set in hantro_postproc.c.
-> 
-> Anyway, this series also extends the MMIO regmap API to allow relaxed
-> writes for the theoretical reason that avoiding unnecessary membarriers
-> leads to less CPU usage and small improvements to battery life. However,
-> in practice I could not measure differences between relaxed/non-relaxed
-> IO, so I'm on the fence whether to keep or remove the relaxed calls.
-> 
-> What I could masure is the performance impact of adding more sub-reg
-> field acesses: a constant ~ 20 microsecond bump per G1 h264 frame. This
-> is acceptable considering the total time to decode a frame takes three
-> orders of magnitude longer, i.e. miliseconds ranges, depending on the
-> frame size and bitstream params, so it is an acceptable trade-off to
-> have a more generic driver.
+Hi all,
 
-In the RK3399 variant all fields use completely different positions so
-in order to make the driver fully generic all around 145 sub-reg fields
-used for h264 needs to be converted, see [1] for a quick generation of
-field mappings used for h264 decoding.
+Today's linux-next merge of the fuse tree got a conflict in:
 
-Any indication on how the performance will be impacted with 145 fields
-compared to around 20 fields used in this series?
+  fs/fuse/file.c
 
-Another issue with RK3399 variant is that some fields use different
-position depending on the codec used, e.g. two dec_ref_frames in [2].
-Should we use codec specific field maps? or any other suggestion on
-how we can handle such case?
+between commit:
 
-[1] https://github.com/Kwiboo/rockchip-vpu-regtool/commit/8b88d94d2ed966c7d88d9a735c0c97368eb6c92d
-[2] https://github.com/Kwiboo/rockchip-vpu-regtool/blob/master/rk3399_dec_regs.c#L1065
-[3] https://github.com/Kwiboo/rockchip-vpu-regtool/commit/9498326296445a9ce153b585cc48e0cea05d3c93
+  933a3752babc ("fuse: fix the ->direct_IO() treatment of iov_iter")
 
-Best regards,
-Jonas
+from Linus' tree and commit:
 
-> 
-> This has been tested on next-20201009 with imx8mq for G1 and an SoC with
-> VC8000 which has not yet been added (hopefuly support lands soon).
-> 
-> Kind regards,
-> Adrian
-> 
-> Adrian Ratiu (18):
->   media: hantro: document all int reg bits up to vc8000
->   media: hantro: make consistent use of decimal register notation
->   media: hantro: make G1_REG_SOFT_RESET Rockchip specific
->   media: hantro: add reset controller support
->   media: hantro: prepare clocks before variant inits are run
->   media: hantro: imx8mq: simplify ctrlblk reset logic
->   regmap: mmio: add config option to allow relaxed MMIO accesses
->   media: hantro: add initial MMIO regmap infrastructure
->   media: hantro: default regmap to relaxed MMIO
->   media: hantro: convert G1 h264 decoder to regmap fields
->   media: hantro: convert G1 postproc to regmap
->   media: hantro: add VC8000D h264 decoding
->   media: hantro: add VC8000D postproc support
->   media: hantro: make PP enablement logic a bit smarter
->   media: hantro: add user-selectable, platform-selectable H264 High10
->   media: hantro: rename h264_dec as it's not G1 specific anymore
->   media: hantro: add dump registers debug option before decode start
->   media: hantro: document encoder reg fields
-> 
->  drivers/base/regmap/regmap-mmio.c             |   34 +-
->  drivers/staging/media/hantro/Makefile         |    3 +-
->  drivers/staging/media/hantro/hantro.h         |   79 +-
->  drivers/staging/media/hantro/hantro_drv.c     |   41 +-
->  drivers/staging/media/hantro/hantro_g1_regs.h |   92 +-
->  ...hantro_g1_h264_dec.c => hantro_h264_dec.c} |  237 +++-
->  drivers/staging/media/hantro/hantro_hw.h      |   23 +-
->  .../staging/media/hantro/hantro_postproc.c    |  144 ++-
->  drivers/staging/media/hantro/hantro_regmap.c  | 1015 +++++++++++++++++
->  drivers/staging/media/hantro/hantro_regmap.h  |  295 +++++
->  drivers/staging/media/hantro/hantro_v4l2.c    |    3 +-
->  drivers/staging/media/hantro/imx8m_vpu_hw.c   |   75 +-
->  drivers/staging/media/hantro/rk3288_vpu_hw.c  |    5 +-
->  include/linux/regmap.h                        |    5 +
->  14 files changed, 1795 insertions(+), 256 deletions(-)
->  rename drivers/staging/media/hantro/{hantro_g1_h264_dec.c => hantro_h264_dec.c} (58%)
->  create mode 100644 drivers/staging/media/hantro/hantro_regmap.c
->  create mode 100644 drivers/staging/media/hantro/hantro_regmap.h
-> 
+  fcee216beb9c ("fuse: split fuse_mount off of fuse_conn")
+
+from the fuse tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc fs/fuse/file.c
+index 43c165e796da,53d4dd1ab992..000000000000
+--- a/fs/fuse/file.c
++++ b/fs/fuse/file.c
+@@@ -3120,17 -3156,10 +3146,18 @@@ fuse_direct_IO(struct kiocb *iocb, stru
+  	 * By default, we want to optimize all I/Os with async request
+  	 * submission to the client filesystem if supported.
+  	 */
+- 	io->async =3D ff->fc->async_dio;
+ -	io->async =3D async_dio;
+++	io->async =3D ff->fm->fc->async_dio;
+  	io->iocb =3D iocb;
+  	io->blocking =3D is_sync_kiocb(iocb);
+ =20
+ +	/* optimization for short read */
+ +	if (io->async && !io->write && offset + count > i_size) {
+- 		iov_iter_truncate(iter, fuse_round_up(ff->fc, i_size - offset));
+++		iov_iter_truncate(iter, fuse_round_up(ff->fm->fc,
+++				  i_size - offset));
+ +		shortened =3D count - iov_iter_count(iter);
+ +		count -=3D shortened;
+ +	}
+ +
+  	/*
+  	 * We cannot asynchronously extend the size of a file.
+  	 * In such case the aio will behave exactly like sync io.
+
+--Sig_/h5hLElEIrFzfhb0L6gQk4_x
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+E6yMACgkQAVBC80lX
+0GwVLQf/Xcp+10ogecx1mL8vumFkhv4KP7guIxHq5/gp+XTvjgpU0mS9VlBnzb6W
+pEhSG+PIlw7mzy2tahwFJkYA4ljF5rhBVk/NQi7r6t8GMQdR2XCx5IUF8blSS925
+eBFQW5Ww4VjvfyUXxz/PCylw695nCicM8J8IGensszB1GYRwnr0mT0JMieybdJOY
+m+xg5ove3Alp2gSHIC+t0I9cbpb0W7qCQCWWeuUztv+4Mjpym6atzwCnDa8reX6D
+4xkKPhVL0DBKsEupWUzXMFYcQQpF/hHgWgQ7GRSw7QYiUOFEMMHg4PDZENdfyK6N
+SV+P9lcwpY/d3gMq0NwUBLKbKMN42w==
+=GCQ+
+-----END PGP SIGNATURE-----
+
+--Sig_/h5hLElEIrFzfhb0L6gQk4_x--
