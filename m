@@ -2,98 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9A7928B3EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 13:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E58928B3C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 13:28:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388280AbgJLLit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 07:38:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388208AbgJLLis (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 07:38:48 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D695C0613CE;
-        Mon, 12 Oct 2020 04:38:48 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id p11so8419093pld.5;
-        Mon, 12 Oct 2020 04:38:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uAr1u2AxKhyAhsPGz3HPtu7lWVnt+PlRnjUfOtRYD10=;
-        b=eXjiSmybFzCfsLPApRdx4SqJd6Q3JXAdvU4MJPKZZ4ippGkNFfgFeYTZwyzfKdWC3N
-         YY4Ee59ldzAAxxHe4aH1Td5dqVxdLDSGafdKsH+jgctwaG/tQBZccfYg2Xd7cpGdzQhy
-         fkUUiKGWchxtaeuE8+U1v99g21gesrczOEHEht53nKBwa+fizLetc2lpleHUJ3jYOm1F
-         QMF4HcPQ5uyXuV6Lge8N7UnvTP16iaUuhVuaaUhk4DU80tBdQTswwjokQViDioc3Pi/N
-         0n448WWUK9jaxfz/5wTa5GytQaRD4Yb4oY0mKvyOFaUUdJ0ABranwTEq/UXc10SqAA6R
-         y3Hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uAr1u2AxKhyAhsPGz3HPtu7lWVnt+PlRnjUfOtRYD10=;
-        b=kS6ICuadiDeAngrKXdqbmKMsWnI/YfLA6DL8kKwPOGBytT4IZIZFYjl85o3PTmaJlJ
-         FI2gfA5DwTQBGlzjFDPjYpzHEpvh2iN71kjNvyURgU4DNP1e8xCXGaS2uE0f3/CoLM2W
-         0hEeSrwDjLQ551yUVWZsLiPU7UDISWaf5SQEtYK5k7n5US4I8pUlJYn65pomn1FLWPGY
-         I0fzJkWLG/kD/Gx8EhW5WxeHIREdPdEc5a9MUO3oG5H2PVyYuMv/7Inc1UeTHA+5V3oP
-         mjU5O/N3Kmm44QcGWuB+oIpfupZ4xJhixiuZdEHrP47XIQLMowFUzEJ82Zj01hClcJyw
-         3HYw==
-X-Gm-Message-State: AOAM530CrddpnBu81EdD1LoviOP84LLGiyooNSeJrjOI/F2oPmXpuHQr
-        kFV76OszgepiiiL2zg85MhCQdDjYeW2hlD8U
-X-Google-Smtp-Source: ABdhPJxHiPbCY6AwdU1NepgLndb4Cc4E+OU455e+aeQtaXWusCq2n76TGY06FvHVFDAGFlriW9lX4w==
-X-Received: by 2002:a17:902:8698:b029:d3:b362:7342 with SMTP id g24-20020a1709028698b02900d3b3627342mr23245874plo.50.1602502728048;
-        Mon, 12 Oct 2020 04:38:48 -0700 (PDT)
-Received: from localhost ([160.16.113.140])
-        by smtp.gmail.com with ESMTPSA id v20sm14861383pjh.5.2020.10.12.04.38.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 04:38:47 -0700 (PDT)
-From:   Coiby Xu <coiby.xu@gmail.com>
-X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
-Date:   Mon, 12 Oct 2020 19:29:14 +0800
-To:     Benjamin Poirier <benjamin.poirier@gmail.com>
-Cc:     devel@driverdev.osuosl.org, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-        Manish Chopra <manishc@marvell.com>,
-        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
-        <GR-Linux-NIC-Dev@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:QLOGIC QLGE 10Gb ETHERNET DRIVER" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 5/6] staging: qlge: clean up debugging code in the
- QL_ALL_DUMP ifdef land
-Message-ID: <20201012112914.xrkwi53gqvg5l6lw@Rk>
-References: <20201008115808.91850-1-coiby.xu@gmail.com>
- <20201008115808.91850-6-coiby.xu@gmail.com>
- <20201010080126.GC14495@f3>
- <20201010100002.6v54yiojnscnuxqv@Rk>
- <20201010134055.GA18693@f3>
+        id S2388079AbgJLL2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 07:28:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53218 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387617AbgJLL2o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 07:28:44 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D0BE32080D;
+        Mon, 12 Oct 2020 11:28:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602502124;
+        bh=sTuFov17QoNXvw1Tg9+jfAMUuJ6kBXheaeeiufRm4Uc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ztBicItN8ZBStXxDAbrbg12G6I7X99E+HqS6WiwUApfZ7XM++w65xYT684QAJ0mEn
+         OwLtTucPhNu8dNb/7h5MvdkC3Mh55Tbyn3X98e7S+8Hvd7IsdPyS0+NddQ5UWKxh1l
+         Q6Eh2PP5Lc1W1drEcBis4+HaIP98YUghXB5lYxxY=
+Date:   Mon, 12 Oct 2020 13:29:23 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     rickyniu <rickyniu@google.com>
+Cc:     balbi@kernel.org, astrachan@google.com, amit.pundir@linaro.org,
+        lockwood@android.com, benoit@android.com, jackp@codeaurora.org,
+        vvreddy@codeaurora.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, kyletso@google.com
+Subject: Re: [PATCH 0/3] f_accessory upstream
+Message-ID: <20201012112923.GE356911@kroah.com>
+References: <20201012111024.2259162-1-rickyniu@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201010134055.GA18693@f3>
+In-Reply-To: <20201012111024.2259162-1-rickyniu@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 10, 2020 at 10:40:55PM +0900, Benjamin Poirier wrote:
->On 2020-10-10 18:00 +0800, Coiby Xu wrote:
->[...]
->> >
->> > Please also update drivers/staging/qlge/TODO accordingly. There is still
->> > a lot of debugging code IMO (the netif_printk statements - kernel
->> > tracing can be used instead of those) but this patch is a substantial
->> > improvement.
->>
->> Thank you for the reminding! To move qlge out of staging tree would be
->> interesting exercise for me:)
->
->If you would like to work more on the driver, I would highly suggest
->getting one or two adapters to be able to test your changes. They can be
->had for relatively cheap on ebay. Just search for "qle8142".
+On Mon, Oct 12, 2020 at 07:10:21PM +0800, rickyniu wrote:
+> Below commit is to add log and send uevent:
+> 0003-ANDROID-usb-f_accessory-send-uevent-for-51-52-reques.patch
 
-Thank you for the info! Right now I don't have a desktop to install
-this kind of adapter. I'll get one after settling the plan for a desktop.
+I don't understand the text in this changelog, what does it mean?
 
---
-Best regards,
-Coiby
+confused,
+
+greg k-h
