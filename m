@@ -2,217 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAEB928B117
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 11:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47FC228B119
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 11:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729054AbgJLJGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 05:06:02 -0400
-Received: from mga03.intel.com ([134.134.136.65]:53874 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726428AbgJLJGC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 05:06:02 -0400
-IronPort-SDR: 63Tdabt+seR1ysg6dwIjySEIDrIBrlxtv205HdQAagsC+d2lOiZ1Mkc/LHE+KbSe8wXot9uyRE
- l6d42c9eA7kQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="165768066"
-X-IronPort-AV: E=Sophos;i="5.77,366,1596524400"; 
-   d="scan'208";a="165768066"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 02:06:01 -0700
-IronPort-SDR: MLDxntxmGP4Opnv4DErH0z0hYNbI6M/MG51Lbv2NzYbQhRZpNwKeYze2BrVMcrC18cHTAz3sBm
- Dx0FzqpX1xNQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,366,1596524400"; 
-   d="scan'208";a="520622558"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga005.fm.intel.com with ESMTP; 12 Oct 2020 02:06:00 -0700
-Received: from [10.249.225.186] (abudanko-mobl.ccr.corp.intel.com [10.249.225.186])
-        by linux.intel.com (Postfix) with ESMTP id 9F8F9580814;
-        Mon, 12 Oct 2020 02:05:58 -0700 (PDT)
-Subject: [PATCH v1 12/15] perf record: introduce thread local variable for
- trace streaming
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com>
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <7a4821f7-5d31-c265-5cc9-5bf932c512d5@linux.intel.com>
-Date:   Mon, 12 Oct 2020 12:05:57 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S1729075AbgJLJG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 05:06:56 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:37746 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726428AbgJLJGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 05:06:55 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 80AB1FCFC1F4BC6F89CA;
+        Mon, 12 Oct 2020 17:06:47 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 12 Oct 2020 17:06:40 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH] f2fs: introduce check_swap_activate_fast()
+Date:   Mon, 12 Oct 2020 17:06:05 +0800
+Message-ID: <20201012090605.30604-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+check_swap_activate() will lookup block mapping via bmap() one by one, so
+its performance is very bad, this patch introduces check_swap_activate_fast()
+to use f2fs_fiemap() to boost this process, since f2fs_fiemap() will lookup
+block mappings in batch, therefore, it can improve swapon()'s performance
+significantly.
 
-Introduce thread local variable and use it for threaded trace streaming.
+Note that this enhancement only works when page size is equal to f2fs' block
+size.
 
-Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+Testcase: (backend device: zram)
+- touch file
+- pin & fallocate file to 8GB
+- mkswap file
+- swapon file
+
+Before:
+real	0m2.999s
+user	0m0.000s
+sys	0m2.980s
+
+After:
+real	0m0.081s
+user	0m0.000s
+sys	0m0.064s
+
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
 ---
- tools/perf/builtin-record.c | 71 ++++++++++++++++++++++++++++++++-----
- 1 file changed, 62 insertions(+), 9 deletions(-)
+ fs/f2fs/data.c | 80 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 80 insertions(+)
 
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index 89cb8e913fb3..3b7e9026f25b 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -101,6 +101,8 @@ struct thread_data {
- 	u64		   bytes_written;
- };
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index ee87407602fa..be4da52604ed 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -3883,6 +3883,83 @@ int f2fs_migrate_page(struct address_space *mapping,
+ #endif
  
-+static __thread struct thread_data *thread;
-+
- struct record {
- 	struct perf_tool	tool;
- 	struct record_opts	opts;
-@@ -587,7 +589,11 @@ static int record__pushfn(struct mmap *map, void *to, void *bf, size_t size)
- 		}
- 	}
- 
--	rec->samples++;
-+	if (thread)
-+		thread->samples++;
-+	else
-+		rec->samples++;
-+
- 	return record__write(rec, map, bf, compressed);
- }
- 
-@@ -1258,6 +1264,7 @@ static int record__mmap_read_evlist(struct record *rec, struct evlist *evlist,
- 	int i;
- 	int rc = 0;
- 	struct mmap *maps;
-+	int nr_mmaps;
- 	int trace_fd = rec->data.file.fd;
- 	off_t off = 0;
- 
-@@ -1265,6 +1272,14 @@ static int record__mmap_read_evlist(struct record *rec, struct evlist *evlist,
- 		return 0;
- 
- 	maps = overwrite ? evlist->overwrite_mmap : evlist->mmap;
-+	nr_mmaps = evlist->core.nr_mmaps;
-+
-+	if (thread) {
-+		bytes_written = thread->bytes_written;
-+		maps = thread->maps;
-+		nr_mmaps = thread->nr_mmaps;
-+	}
-+
- 	if (!maps)
- 		return 0;
- 
-@@ -1274,7 +1289,7 @@ static int record__mmap_read_evlist(struct record *rec, struct evlist *evlist,
- 	if (record__aio_enabled(rec))
- 		off = record__aio_get_pos(trace_fd);
- 
--	for (i = 0; i < evlist->core.nr_mmaps; i++) {
-+	for (i = 0; i < nr_mmaps; i++) {
- 		u64 flush = 0;
- 		struct mmap *map = &maps[i];
- 
-@@ -1323,7 +1338,7 @@ static int record__mmap_read_evlist(struct record *rec, struct evlist *evlist,
- 	 * because per-cpu maps and files have data
- 	 * sorted by kernel.
- 	 */
--	if (!record__threads_enabled(rec) && bytes_written != rec->bytes_written)
-+	if (!thread && bytes_written != rec->bytes_written)
- 		rc = record__write(rec, NULL, &finished_round_event, sizeof(finished_round_event));
- 
- 	if (overwrite)
-@@ -1343,6 +1358,15 @@ static int record__mmap_read_all(struct record *rec, bool synch)
- 	return record__mmap_read_evlist(rec, rec->evlist, true, synch);
- }
- 
-+static void record__thread_munmap_filtered(struct fdarray *fda, int fd,
-+					   void *arg __maybe_unused)
+ #ifdef CONFIG_SWAP
++static int check_swap_activate_fast(struct swap_info_struct *sis,
++				struct file *swap_file, sector_t *span)
 +{
-+	struct perf_mmap *map = fda->priv[fd].ptr;
++	struct address_space *mapping = swap_file->f_mapping;
++	struct inode *inode = mapping->host;
++	sector_t cur_lblock;
++	sector_t last_lblock;
++	sector_t pblock;
++	sector_t lowest_pblock = -1;
++	sector_t highest_pblock = 0;
++	int nr_extents = 0;
++	unsigned long nr_pblocks;
++	unsigned long len;
++	int ret;
 +
-+	if (map)
-+		perf_mmap__put(map);
++	/*
++	 * Map all the blocks into the extent list.  This code doesn't try
++	 * to be very smart.
++	 */
++	cur_lblock = 0;
++	last_lblock = logical_to_blk(inode, i_size_read(inode));
++	len = i_size_read(inode);
++
++	while (cur_lblock <= last_lblock && cur_lblock < sis->max) {
++		struct buffer_head map_bh;
++		pgoff_t next_pgofs;
++
++		cond_resched();
++
++		memset(&map_bh, 0, sizeof(struct buffer_head));
++		map_bh.b_size = len - cur_lblock;
++
++		ret = get_data_block(inode, cur_lblock, &map_bh, 0,
++					F2FS_GET_BLOCK_FIEMAP, &next_pgofs);
++		if (ret)
++			goto err_out;
++
++		/* hole */
++		if (!buffer_mapped(&map_bh))
++			goto err_out;
++
++		pblock = map_bh.b_blocknr;
++		nr_pblocks = logical_to_blk(inode, map_bh.b_size);
++
++		if (cur_lblock + nr_pblocks >= sis->max)
++			nr_pblocks = sis->max - cur_lblock;
++
++		if (cur_lblock) {	/* exclude the header page */
++			if (pblock < lowest_pblock)
++				lowest_pblock = pblock;
++			if (pblock + nr_pblocks - 1 > highest_pblock)
++				highest_pblock = pblock + nr_pblocks - 1;
++		}
++
++		/*
++		 * We found a PAGE_SIZE-length, PAGE_SIZE-aligned run of blocks
++		 */
++		ret = add_swap_extent(sis, cur_lblock, nr_pblocks, pblock);
++		if (ret < 0)
++			goto out;
++		nr_extents += ret;
++		cur_lblock += nr_pblocks;
++	}
++	ret = nr_extents;
++	*span = 1 + highest_pblock - lowest_pblock;
++	if (cur_lblock == 0)
++		cur_lblock = 1;	/* force Empty message */
++	sis->max = cur_lblock;
++	sis->pages = cur_lblock - 1;
++	sis->highest_bit = cur_lblock - 1;
++out:
++	return ret;
++err_out:
++	pr_err("swapon: swapfile has holes\n");
++	return -EINVAL;
 +}
 +
- static void record__init_features(struct record *rec)
- {
- 	struct perf_session *session = rec->session;
-@@ -2020,7 +2044,12 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 	trigger_ready(&switch_output_trigger);
- 	perf_hooks__invoke_record_start();
- 	for (;;) {
--		unsigned long long hits = rec->samples;
-+		unsigned long long hits0, hits1;
-+
-+		if (thread)
-+			hits0 = thread->samples;
-+		else
-+			hits0 = rec->samples;
+ /* Copied from generic_swapfile_activate() to check any holes */
+ static int check_swap_activate(struct swap_info_struct *sis,
+ 				struct file *swap_file, sector_t *span)
+@@ -3899,6 +3976,9 @@ static int check_swap_activate(struct swap_info_struct *sis,
+ 	int nr_extents = 0;
+ 	int ret;
  
- 		/*
- 		 * rec->evlist->bkw_mmap_state is possible to be
-@@ -2089,20 +2118,44 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 				alarm(rec->switch_output.time);
- 		}
- 
--		if (hits == rec->samples) {
-+		if (thread)
-+			hits1 = thread->samples;
-+		else
-+			hits1 = rec->samples;
++	if (PAGE_SIZE == F2FS_BLKSIZE)
++		return check_swap_activate_fast(sis, swap_file, span);
 +
-+		if (hits0 == hits1) {
- 			if (done || draining)
- 				break;
--			err = evlist__poll(rec->evlist, -1);
-+
-+			if (thread)
-+				err = fdarray__poll(&thread->pollfd, -1);
-+			else
-+				err = evlist__poll(rec->evlist, -1);
- 			/*
- 			 * Propagate error, only if there's any. Ignore positive
- 			 * number of returned events and interrupt error.
- 			 */
- 			if (err > 0 || (err < 0 && errno == EINTR))
- 				err = 0;
--			waking++;
+ 	blkbits = inode->i_blkbits;
+ 	blocks_per_page = PAGE_SIZE >> blkbits;
  
--			if (evlist__filter_pollfd(rec->evlist, POLLERR | POLLHUP) == 0)
--				draining = true;
-+			if (thread) {
-+				thread->waking++;
-+				if (thread->ctlfd_pos != -1) {
-+					evlist__ctlfd_update(rec->evlist,
-+						&(thread->pollfd.entries[thread->ctlfd_pos]));
-+				}
-+			} else {
-+				waking++;
-+			}
-+
-+			if (thread) {
-+				if (fdarray__filter(&thread->pollfd, POLLERR | POLLHUP,
-+						    record__thread_munmap_filtered, NULL) == 0)
-+					draining = true;
-+			} else {
-+				if (evlist__filter_pollfd(rec->evlist, POLLERR | POLLHUP) == 0)
-+					draining = true;
-+			}
- 		}
- 
- 		if (evlist__ctlfd_process(rec->evlist, &cmd) > 0) {
 -- 
-2.24.1
-
+2.26.2
 
