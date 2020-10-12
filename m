@@ -2,152 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5057528B504
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 14:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4796328B507
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 14:53:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388569AbgJLMwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 08:52:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728191AbgJLMwt (ORCPT
+        id S1729897AbgJLMxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 08:53:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48490 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725941AbgJLMxw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 08:52:49 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50727C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 05:52:49 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id u24so14175687pgi.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 05:52:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ipcIccSaehWRY8KFTu0E4RX30NBtF9Iei0Qm//1giqU=;
-        b=vDmn/7Sox6P2fsbvwBYtK3OIQm6frCDfK+NSfp+MWaNoEgAtO9OtRnCMzRgCodb9J+
-         f05LMh5zkDIZDdcf3k9UKZ2WSAJDbkSqns6f5KRDk2ajKEtdvXHVmIvVguLro00+VdVC
-         Cm3abEcZErgIwXroZQUSpltfGvWD8+8AkcS12d93tTsy615SnA8R0btDLyVHy31STuIO
-         cDX5Z2LBkQ6OPRMQN4YuSMvykCIeEDQcOy0deYu3RGBOfJpTg9sMDWH1ReEX684Rr3LI
-         SJzsy9iSkbSjVugDsOXmw+JNzLgUM+w5BPn7R3bLKie+PMbBwXWeacPP0nwRpCdc1joe
-         KQww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ipcIccSaehWRY8KFTu0E4RX30NBtF9Iei0Qm//1giqU=;
-        b=RTcyxdfhHhZB/ndPAdiYtLRNjJVuUoXKMN56TgTxhO7FfjVQyT3r/oztZ3l+DiyXYW
-         az6GboE1TEs3gstk9d9IB5mdV4MmFmKNkayyaHVrHVcIKh2XoXlceVWFrMG801brWjXV
-         QWgZ/zYvLZnN+P0KviKXexQy47qTmZqW6c610RMijRlQxjxRTdWXsEUn0rMDPS6uTVBL
-         fG5S3AJ2j658MiDHZh9EU6pCo1YAAEBh2/lI3kX5AYrNp9u0TlkLpaWGSSL7y8KmCBO1
-         +ovgAMhMYeukpjRZZXA+9axqWJ4KSktU1HC4Omgbay3oBHrq4E0Ycr7pL7jh7OxcRJSS
-         XqMQ==
-X-Gm-Message-State: AOAM5330/khZ79c7fwbRFNU40x3bm43NSZf0F1Tfix3mHhzF9C7028Jp
-        +q0+cdurRCD7KfgtIfUB2BDOOzGAjiBoQ2yvfS1DdA==
-X-Google-Smtp-Source: ABdhPJxlshYioCMTyfDuNgCaIHvRc9rwT6fnHXX2uNOsXi4q+WcC9764HESYH/R1WG1xuE19lwP7z+hBF+xWhaf8e6g=
-X-Received: by 2002:a17:90b:807:: with SMTP id bk7mr19285084pjb.166.1602507168618;
- Mon, 12 Oct 2020 05:52:48 -0700 (PDT)
+        Mon, 12 Oct 2020 08:53:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602507231;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=9as9DomaNwaEbcpUvaYzBEVtAuuYaWah59A5A3tRjFI=;
+        b=HDpx4AZOalRoTQQbQGeKsDE30iQ/KrQ8fUikC0Z9MMR00Wc9qKULPWzQ6/goWGADgCAiN0
+        B5rPXkOXR6l9Ne3zIe4vvgOFq6Q22vq0suR8+V2ZMXw9Q+j+z/uHPhYcme3eiPfswp8MS/
+        DArkYvlAIukO5V8k/sYsHzj3su1hE90=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-426-aa_kpuyJPze5snL9n_K6Iw-1; Mon, 12 Oct 2020 08:53:49 -0400
+X-MC-Unique: aa_kpuyJPze5snL9n_K6Iw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DA6551074654;
+        Mon, 12 Oct 2020 12:53:47 +0000 (UTC)
+Received: from t480s.redhat.com (ovpn-113-251.ams2.redhat.com [10.36.113.251])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 11BC260C07;
+        Mon, 12 Oct 2020 12:53:34 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, virtualization@lists.linux-foundation.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+Subject: [PATCH v1 00/29] virtio-mem: Big Block Mode (BBM)
+Date:   Mon, 12 Oct 2020 14:52:54 +0200
+Message-Id: <20201012125323.17509-1-david@redhat.com>
 MIME-Version: 1.0
-References: <dfb5eee2b1bdff14508100ee7c427596de384cd3.1602237653.git.handeharputlu@google.com>
- <20201010065527.GA130900@kroah.com>
-In-Reply-To: <20201010065527.GA130900@kroah.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Mon, 12 Oct 2020 14:52:37 +0200
-Message-ID: <CAAeHK+zQzyjN6c8swzzmtA726hP1Or6s=Cw-tB1y3N3zKJCqqA@mail.gmail.com>
-Subject: Re: [PATCH] usbip, kcov: collect coverage from usbip client
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     NazimeHandeHarputluogluhandeharput@gmail.com,
-        Valentina Manea <valentina.manea.m@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Hande Harputluoglu <handeharput@gmail.com>,
-        Nazime Hande Harputluoglu <handeharputlu@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 10, 2020 at 8:55 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Fri, Oct 09, 2020 at 03:22:55PM +0000, NazimeHandeHarputluogluhandeharput@gmail.com wrote:
-> > From: Nazime Hande Harputluoglu <handeharputlu@google.com>
-> >
-> > Add kcov_remote_start()/kcov_remote_stop() annotations to the
-> > vhci_rx_loop() function, which is responsible for parsing USB/IP packets
-> > in USB/IP client.
-> >
-> > Since vhci_rx_loop() threads are spawned per usbip device instance, the
-> > common kcov handle is used for kcov_remote_start()/stop() annotations
-> > (see Documentation/dev-tools/kcov.rst for details). As the result kcov
-> > can now be used to collect coverage from vhci_rx_loop() threads.
-> >
-> > Signed-off-by: Nazime Hande Harputluoglu <handeharputlu@google.com>
-> > ---
-> >  drivers/usb/usbip/usbip_common.h | 2 ++
-> >  drivers/usb/usbip/vhci_rx.c      | 6 ++++--
-> >  drivers/usb/usbip/vhci_sysfs.c   | 2 ++
-> >  3 files changed, 8 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/usb/usbip/usbip_common.h b/drivers/usb/usbip/usbip_common.h
-> > index 8be857a4fa13..cbbf2aa8ac73 100644
-> > --- a/drivers/usb/usbip/usbip_common.h
-> > +++ b/drivers/usb/usbip/usbip_common.h
-> > @@ -277,6 +277,8 @@ struct usbip_device {
-> >               void (*reset)(struct usbip_device *);
-> >               void (*unusable)(struct usbip_device *);
-> >       } eh_ops;
-> > +
-> > +        u64 kcov_handle;
-> >  };
-> >
-> >  #define kthread_get_run(threadfn, data, namefmt, ...)                           \
-> > diff --git a/drivers/usb/usbip/vhci_rx.c b/drivers/usb/usbip/vhci_rx.c
-> > index 266024cbb64f..b2eb3e8c04b9 100644
-> > --- a/drivers/usb/usbip/vhci_rx.c
-> > +++ b/drivers/usb/usbip/vhci_rx.c
-> > @@ -260,8 +260,10 @@ int vhci_rx_loop(void *data)
-> >       while (!kthread_should_stop()) {
-> >               if (usbip_event_happened(ud))
-> >                       break;
-> > -
-> > -             vhci_rx_pdu(ud);
-> > +
-> > +                kcov_remote_start_common(ud->kcov_handle);
-> > +                vhci_rx_pdu(ud);
-> > +                kcov_remote_stop();
-> >       }
-> >
-> >       return 0;
-> > diff --git a/drivers/usb/usbip/vhci_sysfs.c b/drivers/usb/usbip/vhci_sysfs.c
-> > index be37aec250c2..4dfe3809ebbb 100644
-> > --- a/drivers/usb/usbip/vhci_sysfs.c
-> > +++ b/drivers/usb/usbip/vhci_sysfs.c
-> > @@ -9,6 +9,7 @@
-> >  #include <linux/net.h>
-> >  #include <linux/platform_device.h>
-> >  #include <linux/slab.h>
-> > +#include <linux/kcov.h>
-> >
-> >  /* Hardening for Spectre-v1 */
-> >  #include <linux/nospec.h>
-> > @@ -383,6 +384,7 @@ static ssize_t attach_store(struct device *dev, struct device_attribute *attr,
-> >       vdev->ud.sockfd     = sockfd;
-> >       vdev->ud.tcp_socket = socket;
-> >       vdev->ud.status     = VDEV_ST_NOTASSIGNED;
-> > +        vdev->ud.kcov_handle = kcov_common_handle();
-> >
-> >       spin_unlock(&vdev->ud.lock);
-> >       spin_unlock_irqrestore(&vhci->lock, flags);
-> > --
-> > 2.28.0.1011.ga647a8990f-goog
-> >
->
-> Please run checkpatch.pl on your patches before sending them out, so you
-> don't get grumpy maintainers telling you to run checkpatch.pl on your
-> patch...
+virtio-mem currently only supports device block sizes that span at most
+a single Linux memory block. For example, gigantic pages in the hypervisor
+result on x86-64 in a device block size of 1 GiB - when the Linux memory
+block size is 128 MiB, we cannot support such devices (we fail loading the
+driver). Of course, we want to support any device block size in any Linux
+VM.
 
-Hi Greg,
+Bigger device block sizes will become especially important once supporting
+VFIO in QEMU - each device block has to be mapped separately, and the
+maximum number of mappings for VFIO is 64k. So we usually want blocks in
+the gigabyte range when wanting to grow the VM big.
 
-Sorry, I'll fix it up and send v2.
+This series:
+- Performs some cleanups
+- Factors out existing Sub Block Mode (SBM)
+- Implements memory hot(un)plug in Big Block Mode (BBM)
 
-Thanks!
+I need one core-mm change, to make offline_and_remove_memory() eat bigger
+chunks.
+
+This series is based on "next-20201009" and can be found at:
+	git@gitlab.com:virtio-mem/linux.git virtio-mem-dbm-v1
+
+Once some virtio-mem patches that are pending in the -mm tree are upstream
+(I guess they'll go in in 5.10), I'll resend based on Linus' tree.
+I suggest to take this (including the MM patch, acks/review please) via the
+vhost tree once time has come. In the meantime, I'll do more testing.
+
+David Hildenbrand (29):
+  virtio-mem: determine nid only once using memory_add_physaddr_to_nid()
+  virtio-mem: simplify calculation in
+    virtio_mem_mb_state_prepare_next_mb()
+  virtio-mem: simplify MAX_ORDER - 1 / pageblock_order handling
+  virtio-mem: drop rc2 in virtio_mem_mb_plug_and_add()
+  virtio-mem: generalize check for added memory
+  virtio-mem: generalize virtio_mem_owned_mb()
+  virtio-mem: generalize virtio_mem_overlaps_range()
+  virtio-mem: drop last_mb_id
+  virtio-mem: don't always trigger the workqueue when offlining memory
+  virtio-mem: generalize handling when memory is getting onlined
+    deferred
+  virtio-mem: use "unsigned long" for nr_pages when fake
+    onlining/offlining
+  virtio-mem: factor out fake-offlining into virtio_mem_fake_offline()
+  virtio-mem: factor out handling of fake-offline pages in memory
+    notifier
+  virtio-mem: retry fake-offlining via alloc_contig_range() on
+    ZONE_MOVABLE
+  virito-mem: document Sub Block Mode (SBM)
+  virtio-mem: memory block states are specific to Sub Block Mode (SBM)
+  virito-mem: subblock states are specific to Sub Block Mode (SBM)
+  virtio-mem: factor out calculation of the bit number within the
+    sb_states bitmap
+  virito-mem: existing (un)plug functions are specific to Sub Block Mode
+    (SBM)
+  virtio-mem: nb_sb_per_mb and subblock_size are specific to Sub Block
+    Mode (SBM)
+  virtio-mem: memory notifier callbacks are specific to Sub Block Mode
+    (SBM)
+  virtio-mem: memory block ids are specific to Sub Block Mode (SBM)
+  virtio-mem: factor out adding/removing memory from Linux
+  virtio-mem: print debug messages from virtio_mem_send_*_request()
+  virtio-mem: Big Block Mode (BBM) memory hotplug
+  virtio-mem: allow to force Big Block Mode (BBM) and set the big block
+    size
+  mm/memory_hotplug: extend offline_and_remove_memory() to handle more
+    than one memory block
+  virtio-mem: Big Block Mode (BBM) - basic memory hotunplug
+  virtio-mem: Big Block Mode (BBM) - safe memory hotunplug
+
+ drivers/virtio/virtio_mem.c | 1783 +++++++++++++++++++++++++----------
+ mm/memory_hotplug.c         |  105 ++-
+ 2 files changed, 1373 insertions(+), 515 deletions(-)
+
+-- 
+2.26.2
+
