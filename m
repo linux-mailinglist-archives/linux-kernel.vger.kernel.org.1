@@ -2,86 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8807728BEDF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 19:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D91AF28BEE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 19:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403996AbgJLRPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 13:15:55 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:60966 "EHLO mail.skyhub.de"
+        id S2404014AbgJLRQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 13:16:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403845AbgJLRPy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 13:15:54 -0400
-Received: from zn.tnic (p200300ec2f06920038fd325cadbd10b1.dip0.t-ipconnect.de [IPv6:2003:ec:2f06:9200:38fd:325c:adbd:10b1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2403845AbgJLRQ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 13:16:56 -0400
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 818291EC0354;
-        Mon, 12 Oct 2020 19:15:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1602522953;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=SVEgQUKffP8ymr3h0zxoWDWJJBsuRqSGl9gDFBBQSfU=;
-        b=NDA+CGbs6hMCkOIIkvx/sXos6ujKKZ2vXdDrA9UykAzBUirN7cAmWbV0ASSn7dpXnZLeEg
-        5HANlkTHvJmNbkDxfHa7bqs3dXTCtBqsyIzmm7X16di1i8iGMgz/+l6Lq/MBvP2DXV4GFh
-        gp+P61p9eeDC2ySbIE5AIpvHDRM+RDw=
-Date:   Mon, 12 Oct 2020 19:15:44 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Joe Perches <joe@perches.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, X86 ML <x86@kernel.org>,
-        Andy Whitcroft <apw@canonical.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH -v4] checkpatch: Check for .byte-spelled insn opcodes
- documentation on x86
-Message-ID: <20201012171544.GH22829@zn.tnic>
-References: <20201009161423.14583-1-bp@alien8.de>
- <b57a59bc80e432c7696b347a223eb12339013970.camel@perches.com>
- <20201010105421.GA24674@zn.tnic>
- <4147e49c0b1251343181b5580d946c2273247927.camel@perches.com>
- <20201010161112.GC24674@zn.tnic>
- <a534ed57c23ff35f6b84057ba3c0d1b55f0b03b9.camel@perches.com>
- <20201012142148.GA22829@zn.tnic>
- <b74a95944a4bc6be1ea4ae8cf065c23e03511ba5.camel@perches.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id BBEF72087E;
+        Mon, 12 Oct 2020 17:16:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602523015;
+        bh=OXdGjM2WT5x5sf1uC6sNIswByKxFQUWPV6TwtUK3Y0c=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=A1pqyRMyjwp3U/Olyt7d5jHUEq7IhD2O0GlgJgMOX2xV+8LWTFBa+tb4G8eLBd0t6
+         YZR26XEn7l7KGsaObmPBcLwQ6ZnboUdYk420hYA5smqwCiqm4Z4ZNSt29peAXazBur
+         EqqNrdoEnXs7Sdc3qL/LGS5n0HGrMid1q31A5LtM=
+Received: by mail-ed1-f53.google.com with SMTP id dg9so15461133edb.12;
+        Mon, 12 Oct 2020 10:16:54 -0700 (PDT)
+X-Gm-Message-State: AOAM5312Rer2LAwtN+YVCSbX+DYj+7C2QEKUh2jh6aWXC4AnkThKZAzv
+        ID9mmiSb4JvMkG6CpFbaCfE/sqpOLX9JHFwlTdk=
+X-Google-Smtp-Source: ABdhPJzEVNB8x3r9rtZW2qJLQPAd4mUTCuAhNFPv7+8r7HZYouTO819J7+/JyUqoGPgkO6hqTwq262cY2ghyAYoZKYQ=
+X-Received: by 2002:aa7:c643:: with SMTP id z3mr13089405edr.104.1602523013267;
+ Mon, 12 Oct 2020 10:16:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <b74a95944a4bc6be1ea4ae8cf065c23e03511ba5.camel@perches.com>
+References: <20200925212609.23093-1-krzk@kernel.org> <20200926132217.xr3rhv7o2o2yc2l7@pengutronix.de>
+ <20200926134157.GA4730@kozik-lap> <20201009120239.GA450876@ulmo>
+In-Reply-To: <20201009120239.GA450876@ulmo>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Mon, 12 Oct 2020 19:16:40 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPe3R4E7sgHGrLumrZ3hYXFMJKc18hotnLGpWvwMcZ8e0Q@mail.gmail.com>
+Message-ID: <CAJKOXPe3R4E7sgHGrLumrZ3hYXFMJKc18hotnLGpWvwMcZ8e0Q@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: pwm: imx: document i.MX compatibles
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 10:09:44AM -0700, Joe Perches wrote:
-> From: Borislav Petkov <bp@suse.de>
-> 
-> Instruction opcode bytes spelled using the gas directive .byte should
-> carry a comment above them stating which binutils version has added
-> support for the instruction mnemonic so that they can be replaced with
-> the mnemonic when that binutils version is equal or less than the
-> minimum-supported version by the kernel.
-> 
-> Add a check for that.
-> 
-> Requested-by: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Borislav Petkov <bp@suse.de>
-> Signed-off-by: Joe Perches <joe@perches.com>
-> ---
-> 
-> v4: trivial neatening of $Hex_byte and adding a mechanism to
->     only emit the message once per patched file (Joe)
-> 
->  scripts/checkpatch.pl | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
+On Fri, 9 Oct 2020 at 14:02, Thierry Reding <thierry.reding@gmail.com> wrot=
+e:
+>
+> On Sat, Sep 26, 2020 at 03:41:57PM +0200, Krzysztof Kozlowski wrote:
+> > On Sat, Sep 26, 2020 at 03:22:17PM +0200, Uwe Kleine-K=C3=B6nig wrote:
+> > > On Fri, Sep 25, 2020 at 11:26:09PM +0200, Krzysztof Kozlowski wrote:
+> > > > Document all ARMv5, ARMv6 and ARMv7 i.MX compatibles to fix dtbs_ch=
+eck
+> > > > warnings like:
+> > > >
+> > > >   arch/arm/boot/dts/imx6dl-colibri-eval-v3.dt.yaml: pwm@2080000: co=
+mpatible:0:
+> > > >     'fsl,imx6q-pwm' is not one of ['fsl,imx8mm-pwm', 'fsl,imx8mn-pw=
+m', 'fsl,imx8mp-pwm', 'fsl,imx8mq-pwm']
+> > > >
+> > > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > > > ---
+> > > >  Documentation/devicetree/bindings/pwm/imx-pwm.yaml | 11 ++++++++++=
++
+> > > >  1 file changed, 11 insertions(+)
+> > > >
+> > > > diff --git a/Documentation/devicetree/bindings/pwm/imx-pwm.yaml b/D=
+ocumentation/devicetree/bindings/pwm/imx-pwm.yaml
+> > > > index 473863eb67e5..379d693889f6 100644
+> > > > --- a/Documentation/devicetree/bindings/pwm/imx-pwm.yaml
+> > > > +++ b/Documentation/devicetree/bindings/pwm/imx-pwm.yaml
+> > > > @@ -25,6 +25,17 @@ properties:
+> > > >            - fsl,imx27-pwm
+> > > >        - items:
+> > > >            - enum:
+> > > > +              - fsl,imx25-pwm
+> > >
+> > > The driver actually used fsl,imx27-pwm to bind ...
+> >
+> > Yes, most of i.MX drivers use only few compatibles but DTSes and
+> > bindings use multiple of them.  I was convinced during various talks
+> > that the specific compatibles (so "fsl,imx6q-pwm, fsl,imx27-pwm") are
+> > preferred than generic ones (so only "fsl,imx27-pwm"). NXP took it
+> > to the another level creating compatibles for absolutely every flavor o=
+f
+> > their CPU. And they mainlined it in DTSes...
+> >
+> > The PWM is this crazy examples where, as you say, only two compatibles
+> > are actually used for binding but DTSes uses more.
+>
+> Yeah, these new compatible strings all seem to be used in the kernel, so
+> we might as well document them.
+>
+> That said, I did want to apply this patch, but that fails. Am I missing
+> some other patch that you have sent out that touches this file? Actually
+> it looks like this is because you've based this patch on linux-next, or
+> perhaps the devicetree tree, because that contains commit d058717bdff4
+> ("dt-bindings: pwm: imx-pwm: Add i.MX 8M compatibles") from you that
+> adds a couple more compatible strings. Probably best for Rob to pick
+> this up, then:
+>
+> Acked-by: Thierry Reding <treding@nvidia.com>
+>
+> Rob, here's a patchwork link for you if you need one:
+>
+>         https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20=
+200925212609.23093-1-krzk@kernel.org/
+>
+> Although, looking at the devicetree-bindings instance version of that
+> patch, I see that it's got a failing check attached (which looks like
+> it can be ignored) and it's marked "Changes Requested", but no comments
+> saying so.
+>
+> Not sure if you want anything done here?
 
-./scripts/checkpatch.pl /tmp/test
-Global symbol "$rawline" requires explicit package name (did you forget to declare "my $rawline"?) at ./scripts/checkpatch.pl line 6943.
-Global symbol "$herecurr" requires explicit package name (did you forget to declare "my $herecurr"?) at ./scripts/checkpatch.pl line 6948.
-Execution of ./scripts/checkpatch.pl aborted due to compilation errors.
+Thanks, I guess this will wait for the merge window to finish. It
+should then apply to your tree. I can resend in two weeks.
 
-No workie.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Best regards,
+Krzysztof
