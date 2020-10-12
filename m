@@ -2,186 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B820B28BC07
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56DBD28BC08
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390130AbgJLPef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 11:34:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388881AbgJLPee (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 11:34:34 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7AFAC0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 08:34:33 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id dn5so17403618edb.10
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 08:34:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=sd/r7feX+waUmCuH9ghOVlWmPSUIeMBgSYL2TkIIEhY=;
-        b=fA4JUllwIYe+onJaV9Z3yKBQD08cm+mhv4xsSGU/1j48aDVWIxM/OfjMmUCkBa1uGp
-         Dm5DVR4TPj2aONLL9+eSqg96H0KdETxze2bGFvpCkfg736iocrfg5y2eg5evavMIxwu1
-         S5grP0aoYeHbhcbynPaojK+uDZ7TY6SmyQeLUusVqfFbQ67rg3vHFMhYSkyXUqpq3HyN
-         xt7tA8TWeg96JKn79IZ5edXrM99cYbNlr8LL/3Lc3ZL2yB55sh3ilPC3dcYRsqnSGI5+
-         lc+JlPz6oqOk1eYJtuCeFACRPv4bi85/H9QuGH17wva0h9Fzdd0bcPUg06m3tjJAKFnU
-         /1xQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=sd/r7feX+waUmCuH9ghOVlWmPSUIeMBgSYL2TkIIEhY=;
-        b=IpH6GERUGOie8gB6WgQGGb9yOwDO4ruTjhFUH8ILM1V61uNf/vjls+PVz+bdWSdb+X
-         3ABG7ca8Bhnydabjg/n0UVtzF1aRotPSVgE6SIegFNK9JHP5gVq5U/NqD82zh6AlTPJh
-         bJ9lQRl7Cu7ULxqCcAVpeGaQRVjXKQDqGRJZ/RwIfCFT8b2wtC5bDrdFdLJSQ4qt0qFR
-         3iLv3hbZ6l1EnEWRElUaoALamgL6b6HI4zxspBXpqTTGG9BKjBIZKYuJB6p7TkpEQjEj
-         5KB1/KcXtMKnRpHWCI9Je3KH6+eCeR3N9G9tM0Ke9Ta+iscKKRRjYz0NY6y0s3aDGxY4
-         TDVA==
-X-Gm-Message-State: AOAM531aii4vy3Ua1RRTF+saqYAFl9w2qizK7lAEMV8s6TIp+zGRaGs2
-        zNwlspa4ORdTRryFgtJzpqo=
-X-Google-Smtp-Source: ABdhPJxXXtILev+oXZ63UAUWqW1MabuRxagtAp+kyyRj44l0ydsS6wloRKflHfnXBIZxhPaJrPFOnw==
-X-Received: by 2002:aa7:c90a:: with SMTP id b10mr15058706edt.163.1602516872644;
-        Mon, 12 Oct 2020 08:34:32 -0700 (PDT)
-Received: from gmail.com (563B81C8.dsl.pool.telekom.hu. [86.59.129.200])
-        by smtp.gmail.com with ESMTPSA id ok21sm4394119ejb.96.2020.10.12.08.34.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 08:34:32 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Mon, 12 Oct 2020 17:34:30 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Kees Cook <keescook@chromium.org>
-Subject: [GIT PULL] core/build changes for v5.10: Add orphan section checking
- for x86, ARM and ARM64
-Message-ID: <20201012153430.GA3491427@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+        id S2390151AbgJLPel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 11:34:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40512 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390134AbgJLPek (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 11:34:40 -0400
+Received: from tzanussi-mobl (c-73-209-127-30.hsd1.il.comcast.net [73.209.127.30])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4CB4820878;
+        Mon, 12 Oct 2020 15:34:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602516879;
+        bh=9tv0aUSLZkiSKGbQNrHKFe21oUDTnwdZ9HcWYHAI7Zo=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=Xgrqi7B6L/jraq/gTdi5+j5nKvwjOVn4gXPsM6K8W8K/DMpXrUErnAz0K9nX+AdbK
+         Xsk93AS4+mjEj7xR+Ejh0FgpI2z2iyjdsppePeTDlc87OF7jk3jyPKqfcvx8VaTwI3
+         5bP49ZcbWIE0g8QdAa7wtpidb/5gfd5+ui8Ad7ak=
+Message-ID: <94c550e15b90cb11c7d291a27d0cb7fb3e1f4afb.camel@kernel.org>
+Subject: Re: [PATCH 4/5] tracing: Add synthetic event error logging
+From:   Tom Zanussi <zanussi@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     rostedt@goodmis.org, axelrasmussen@google.com,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 12 Oct 2020 10:34:37 -0500
+In-Reply-To: <20201010235754.432db5b2e841cad9dfae1865@kernel.org>
+References: <cover.1602255803.git.zanussi@kernel.org>
+         <ad3aa73bb8d20ae83ae466ed0561997bd12e69fc.1602255803.git.zanussi@kernel.org>
+         <20201010235754.432db5b2e841cad9dfae1865@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+Hi Masami,
 
-Please pull the latest core/build git tree from:
+On Sat, 2020-10-10 at 23:57 +0900, Masami Hiramatsu wrote:
+> On Fri,  9 Oct 2020 10:17:10 -0500
+> Tom Zanussi <zanussi@kernel.org> wrote:
+> 
+> > Add support for synthetic event error logging, which entails adding
+> > a
+> > logging function for it, a way to save the synthetic event command,
+> > and a set of specific synthetic event parse error strings and
+> > handling.
+> 
+> Thanks for fixing this. But it seems that the INVALID_TYPE error
+> position is not correct.
+> 
+> /sys/kernel/debug/tracing # echo "myevent chr arg" >>
+> synthetic_events 
+> sh: write error: Invalid argument
+> /sys/kernel/debug/tracing # cat error_log 
+> [ 1354.611660] synthetic_events: error: Invalid type
+>   Command: myevent chr arg 
+>                        ^
+> 
+> If the type is invalid, it should point "chr" instead of "arg".
+> If you add a syntax error testcase as same as kprobe_events, you can
+> check the error position too.
+> 
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git core-build-2020-10-12
+Right, it's using name where it should be using type.  Will fix in the
+next version.
 
-   # HEAD: 6e0bf0e0e55000742a53c5f3b58f8669e0091a11 x86/boot/compressed: Warn on orphan section placement
+Thanks,
 
-Orphan link sections were a long-standing source of obscure bugs,
-because the heuristics that various linkers & compilers use to handle them
-(include these bits into the output image vs discarding them silently)
-are both highly idiosyncratic and also version dependent.
+Tom
 
-Instead of this historically problematic mess, this tree by Kees Cook (et al)
-adds build time asserts and build time warnings if there's any orphan section
-in the kernel or if a section is not sized as expected.
+> Thank you,
+> 
+> > 
+> > Signed-off-by: Tom Zanussi <zanussi@kernel.org>
+> > ---
+> >  kernel/trace/trace_events_synth.c | 114
+> > +++++++++++++++++++++++++++++-
+> >  1 file changed, 112 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/kernel/trace/trace_events_synth.c
+> > b/kernel/trace/trace_events_synth.c
+> > index 8c9d6e464da0..ce4cae5cfd47 100644
+> > --- a/kernel/trace/trace_events_synth.c
+> > +++ b/kernel/trace/trace_events_synth.c
+> > @@ -20,6 +20,53 @@
+> >  
+> >  #include "trace_synth.h"
+> >  
+> > +#undef ERRORS
+> > +#define ERRORS	\
+> > +	C(BAD_NAME,		"Illegal name"),		\
+> > +	C(CMD_INCOMPLETE,	"Incomplete command"),		\
+> > +	C(EVENT_EXISTS,		"Event already exists"),	\
+> > +	C(TOO_MANY_FIELDS,	"Too many fields"),		\
+> > +	C(INCOMPLETE_TYPE,	"Incomplete type"),		\
+> > +	C(INVALID_TYPE,		"Invalid type"),		\
+> > +	C(INVALID_FIELD,	"Invalid field"),		\
+> > +	C(CMD_TOO_LONG,		"Command too long"),
+> > +
+> > +#undef C
+> > +#define C(a, b)		SYNTH_ERR_##a
+> > +
+> > +enum { ERRORS };
+> > +
+> > +#undef C
+> > +#define C(a, b)		b
+> > +
+> > +static const char *err_text[] = { ERRORS };
+> > +
+> > +static char last_cmd[MAX_FILTER_STR_VAL];
+> > +
+> > +static int errpos(const char *str)
+> > +{
+> > +	return err_pos(last_cmd, str);
+> > +}
+> > +
+> > +static void last_cmd_set(char *str)
+> > +{
+> > +	if (!str)
+> > +		return;
+> > +
+> > +	strncat(last_cmd, str, MAX_FILTER_STR_VAL - 1);
+> > +}
+> > +
+> > +static void synth_err(u8 err_type, u8 err_pos)
+> > +{
+> > +	tracing_log_err(NULL, "synthetic_events", last_cmd, err_text,
+> > +			err_type, err_pos);
+> > +}
+> > +
+> > +static void synth_err_clear(void)
+> > +{
+> > +	last_cmd[0] = '\0';
+> > +}
+> > +
+> >  static int create_synth_event(int argc, const char **argv);
+> >  static int synth_event_show(struct seq_file *m, struct dyn_event
+> > *ev);
+> >  static int synth_event_release(struct dyn_event *ev);
+> > @@ -545,8 +592,10 @@ static struct synth_field
+> > *parse_synth_field(int argc, const char **argv,
+> >  		field_type++;
+> >  
+> >  	if (!strcmp(field_type, "unsigned")) {
+> > -		if (argc < 3)
+> > +		if (argc < 3) {
+> > +			synth_err(SYNTH_ERR_INCOMPLETE_TYPE,
+> > errpos(field_type));
+> >  			return ERR_PTR(-EINVAL);
+> > +		}
+> >  		prefix = "unsigned ";
+> >  		field_type = argv[1];
+> >  		field_name = argv[2];
+> > @@ -573,6 +622,7 @@ static struct synth_field
+> > *parse_synth_field(int argc, const char **argv,
+> >  		goto free;
+> >  	}
+> >  	if (!is_good_name(field->name)) {
+> > +		synth_err(SYNTH_ERR_BAD_NAME, errpos(field_name));
+> >  		ret = -EINVAL;
+> >  		goto free;
+> >  	}
+> > @@ -601,6 +651,7 @@ static struct synth_field
+> > *parse_synth_field(int argc, const char **argv,
+> >  
+> >  	size = synth_field_size(field->type);
+> >  	if (size < 0) {
+> > +		synth_err(SYNTH_ERR_INVALID_TYPE, errpos(field->name));
+> >  		ret = -EINVAL;
+> >  		goto free;
+> >  	} else if (size == 0) {
+> > @@ -621,6 +672,7 @@ static struct synth_field
+> > *parse_synth_field(int argc, const char **argv,
+> >  			field->is_dynamic = true;
+> >  			size = sizeof(u64);
+> >  		} else {
+> > +			synth_err(SYNTH_ERR_INVALID_TYPE, errpos(field-
+> > >name));
+> >  			ret = -EINVAL;
+> >  			goto free;
+> >  		}
+> > @@ -1098,12 +1150,64 @@ int synth_event_gen_cmd_array_start(struct
+> > dynevent_cmd *cmd, const char *name,
+> >  }
+> >  EXPORT_SYMBOL_GPL(synth_event_gen_cmd_array_start);
+> >  
+> > +static int cmdstr_append(char *buf, const char *str, int
+> > *remaining)
+> > +{
+> > +	int len = strlen(str);
+> > +
+> > +	if (len + 1 >= *remaining) {
+> > +		synth_err(SYNTH_ERR_CMD_TOO_LONG, 0);
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	strcat(buf, str);
+> > +	strcat(buf, " ");
+> > +	*remaining -= len + 1;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int save_cmdstr(int argc, const char *name, const char
+> > **argv)
+> > +{
+> > +	int i, ret, remaining = MAX_DYNEVENT_CMD_LEN;
+> > +	char *buf;
+> > +
+> > +	synth_err_clear();
+> > +
+> > +	buf = kzalloc(MAX_DYNEVENT_CMD_LEN, GFP_KERNEL);
+> > +	if (!buf)
+> > +		return -ENOMEM;
+> > +
+> > +	ret = cmdstr_append(buf, name, &remaining);
+> > +	if (ret) {
+> > +		kfree(buf);
+> > +		return ret;
+> > +	}
+> > +
+> > +	for (i = 0; i < argc; i++) {
+> > +		ret = cmdstr_append(buf, argv[i], &remaining);
+> > +		if (ret) {
+> > +			kfree(buf);
+> > +			return ret;
+> > +		}
+> > +	}
+> > +
+> > +	last_cmd_set(buf);
+> > +
+> > +	kfree(buf);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> >  static int __create_synth_event(int argc, const char *name, const
+> > char **argv)
+> >  {
+> >  	struct synth_field *field, *fields[SYNTH_FIELDS_MAX];
+> >  	struct synth_event *event = NULL;
+> >  	int i, consumed = 0, n_fields = 0, ret = 0;
+> >  
+> > +	ret = save_cmdstr(argc, name, argv);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> >  	/*
+> >  	 * Argument syntax:
+> >  	 *  - Add synthetic event: <event_name> field[;field] ...
+> > @@ -1111,18 +1215,22 @@ static int __create_synth_event(int argc,
+> > const char *name, const char **argv)
+> >  	 *      where 'field' = type field_name
+> >  	 */
+> >  
+> > -	if (name[0] == '\0' || argc < 1)
+> > +	if (name[0] == '\0' || argc < 1) {
+> > +		synth_err(SYNTH_ERR_CMD_INCOMPLETE, 0);
+> >  		return -EINVAL;
+> > +	}
+> >  
+> >  	mutex_lock(&event_mutex);
+> >  
+> >  	if (!is_good_name(name)) {
+> > +		synth_err(SYNTH_ERR_BAD_NAME, errpos(name));
+> >  		ret = -EINVAL;
+> >  		goto out;
+> >  	}
+> >  
+> >  	event = find_synth_event(name);
+> >  	if (event) {
+> > +		synth_err(SYNTH_ERR_EVENT_EXISTS, errpos(name));
+> >  		ret = -EEXIST;
+> >  		goto out;
+> >  	}
+> > @@ -1131,6 +1239,7 @@ static int __create_synth_event(int argc,
+> > const char *name, const char **argv)
+> >  		if (strcmp(argv[i], ";") == 0)
+> >  			continue;
+> >  		if (n_fields == SYNTH_FIELDS_MAX) {
+> > +			synth_err(SYNTH_ERR_TOO_MANY_FIELDS, 0);
+> >  			ret = -EINVAL;
+> >  			goto err;
+> >  		}
+> > @@ -1145,6 +1254,7 @@ static int __create_synth_event(int argc,
+> > const char *name, const char **argv)
+> >  	}
+> >  
+> >  	if (i < argc && strcmp(argv[i], ";") != 0) {
+> > +		synth_err(SYNTH_ERR_INVALID_FIELD, errpos(argv[i]));
+> >  		ret = -EINVAL;
+> >  		goto err;
+> >  	}
+> > -- 
+> > 2.17.1
+> > 
+> 
+> 
 
-And because we relied on so many silent assumptions in this area, fix a metric
-ton of dependencies and some outright bugs related to this, before we can
-finally enable the checks on the x86, ARM and ARM64 platforms.
-
- Thanks,
-
-	Ingo
-
------------------->
-Ard Biesheuvel (3):
-      x86/boot/compressed: Move .got.plt entries out of the .got section
-      x86/boot/compressed: Force hidden visibility for all symbol references
-      x86/boot/compressed: Get rid of GOT fixup code
-
-Arvind Sankar (4):
-      x86/boot: Add .text.* to setup.ld
-      x86/boot: Remove run-time relocations from .head.text code
-      x86/boot: Remove run-time relocations from head_{32,64}.S
-      x86/boot: Check that there are no run-time relocations
-
-Kees Cook (28):
-      vmlinux.lds.h: Create COMMON_DISCARDS
-      vmlinux.lds.h: Add .gnu.version* to COMMON_DISCARDS
-      vmlinux.lds.h: Avoid KASAN and KCSAN's unwanted sections
-      vmlinux.lds.h: Split ELF_DETAILS from STABS_DEBUG
-      vmlinux.lds.h: Add .symtab, .strtab, and .shstrtab to ELF_DETAILS
-      efi/libstub: Disable -mbranch-protection
-      arm64/mm: Remove needless section quotes
-      arm64/kernel: Remove needless Call Frame Information annotations
-      arm64/build: Remove .eh_frame* sections due to unwind tables
-      arm64/build: Use common DISCARDS in linker script
-      arm64/build: Add missing DWARF sections
-      arm64/build: Assert for unwanted sections
-      arm/build: Refactor linker script headers
-      arm/build: Explicitly keep .ARM.attributes sections
-      arm/build: Add missing sections
-      arm/build: Assert for unwanted sections
-      arm/boot: Handle all sections explicitly
-      x86/asm: Avoid generating unused kprobe sections
-      x86/build: Enforce an empty .got.plt section
-      x86/build: Add asserts for unwanted sections
-      x86/boot/compressed: Reorganize zero-size section asserts
-      x86/boot/compressed: Remove, discard, or assert for unwanted sections
-      x86/boot/compressed: Add missing debugging sections to output
-      arm64/build: Warn on orphan section placement
-      arm/build: Warn on orphan section placement
-      arm/boot: Warn on orphan section placement
-      x86/build: Warn on orphan section placement
-      x86/boot/compressed: Warn on orphan section placement
-
-Nick Desaulniers (1):
-      vmlinux.lds.h: Add PGO and AutoFDO input sections
-
-
- arch/alpha/kernel/vmlinux.lds.S                |   1 +
- arch/arc/kernel/vmlinux.lds.S                  |   1 +
- arch/arm/Makefile                              |   4 +
- arch/arm/boot/compressed/Makefile              |   2 +
- arch/arm/boot/compressed/vmlinux.lds.S         |  20 +--
- arch/arm/{kernel => include/asm}/vmlinux.lds.h |  30 ++++-
- arch/arm/kernel/vmlinux-xip.lds.S              |   8 +-
- arch/arm/kernel/vmlinux.lds.S                  |   8 +-
- arch/arm64/Makefile                            |   9 +-
- arch/arm64/kernel/smccc-call.S                 |   2 -
- arch/arm64/kernel/vmlinux.lds.S                |  28 ++++-
- arch/arm64/mm/mmu.c                            |   2 +-
- arch/csky/kernel/vmlinux.lds.S                 |   1 +
- arch/hexagon/kernel/vmlinux.lds.S              |   1 +
- arch/ia64/kernel/vmlinux.lds.S                 |   1 +
- arch/mips/kernel/vmlinux.lds.S                 |   1 +
- arch/nds32/kernel/vmlinux.lds.S                |   1 +
- arch/nios2/kernel/vmlinux.lds.S                |   1 +
- arch/openrisc/kernel/vmlinux.lds.S             |   1 +
- arch/parisc/boot/compressed/vmlinux.lds.S      |   1 +
- arch/parisc/kernel/vmlinux.lds.S               |   1 +
- arch/powerpc/kernel/vmlinux.lds.S              |   2 +-
- arch/riscv/kernel/vmlinux.lds.S                |   1 +
- arch/s390/kernel/vmlinux.lds.S                 |   1 +
- arch/sh/kernel/vmlinux.lds.S                   |   1 +
- arch/sparc/kernel/vmlinux.lds.S                |   1 +
- arch/um/kernel/dyn.lds.S                       |   2 +-
- arch/um/kernel/uml.lds.S                       |   2 +-
- arch/x86/Makefile                              |   4 +
- arch/x86/boot/compressed/Makefile              |  41 ++----
- arch/x86/boot/compressed/head_32.S             |  99 +++++----------
- arch/x86/boot/compressed/head_64.S             | 165 ++++++++++---------------
- arch/x86/boot/compressed/mkpiggy.c             |   6 +
- arch/x86/boot/compressed/vmlinux.lds.S         |  50 +++++++-
- arch/x86/boot/setup.ld                         |   2 +-
- arch/x86/include/asm/asm.h                     |   6 +-
- arch/x86/kernel/vmlinux.lds.S                  |  39 +++++-
- drivers/firmware/efi/libstub/Makefile          |  11 +-
- drivers/firmware/efi/libstub/hidden.h          |   6 -
- include/asm-generic/vmlinux.lds.h              |  49 ++++++--
- include/linux/hidden.h                         |  19 +++
- 41 files changed, 378 insertions(+), 253 deletions(-)
- rename arch/arm/{kernel => include/asm}/vmlinux.lds.h (84%)
- delete mode 100644 drivers/firmware/efi/libstub/hidden.h
- create mode 100644 include/linux/hidden.h
