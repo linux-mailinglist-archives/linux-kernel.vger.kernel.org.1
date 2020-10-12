@@ -2,124 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB1C828C1CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 21:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DD0E28C1D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 21:59:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730936AbgJLT6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 15:58:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726648AbgJLT6M (ORCPT
+        id S2388774AbgJLT7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 15:59:14 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:52841 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726648AbgJLT7N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 15:58:12 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C49EC0613D0;
-        Mon, 12 Oct 2020 12:58:12 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id l2so19609538lfk.0;
-        Mon, 12 Oct 2020 12:58:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=UH3UXpfvrUNTYADvYPs2GrdsYjSWIaxmja32HFZoz98=;
-        b=PA275n58J7f37URqrBTUoDFA89FhZekXMQ21Bb7CQwst5nv71BJD2xlKXU/N4lIIiV
-         jD4DySJRjyBOq4YQn0WI3E0mUp0Hmn4gOhn9H6QF7AXOBQ4phxqKQ972lRqkScQ0EKLI
-         gH6RzWc/8RAhqpfngv8vqC2HRT9xy5FVSEkCbBbqlKE0gw1o9NhLpqwrraZe5xEzhAH3
-         uSru8TSSKGaHVLPXRIBlhgZNAeHbamAfNqWsJkPj7Os/Y/dEfbHQUpNRjRkb/rHYu+dx
-         huYMlfq3W/itydIJk3pPuNhHylfpKvs4lFoVhuykm44AwS59wSt0OTLzzExVSn/rIdOX
-         4Rxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=UH3UXpfvrUNTYADvYPs2GrdsYjSWIaxmja32HFZoz98=;
-        b=dvEBjJUqVafqUOnAKq1lu2aCOvQnzi+L5U6SnPqmArbsqx++lmY4fv97QEA80meVrn
-         3HfypylpkMynoNHp2bVIWUpngYlMBBWIJicFlSE4d2ESxEfJSEIFQddRNzhJHrSDdiDA
-         U/U2zk3maTqIARDw0AKL+/qwnOmdW4r/tqMX1WEOXDEFbTTAn8nWvo1lafH4Oh9vsv+F
-         XzGqW1MMuZHN+B2+dv7TAYZKr5RmKPWlrAtQXyRkebaS7ND1KIA11C4MyBEma79SQI1+
-         euB4X4LG6dWNkspzgjPPapqxJg3RKJ0INfwpvQFkA+X1DN9bLdkq5T0LATz0e9zrAna3
-         rlnw==
-X-Gm-Message-State: AOAM530Tl4yoNFq0kQ5PKOkUbpfRc6RwaKAK1j671eOL48t2dyixKiH9
-        XjGwSylQdCWZz9BbVkYIeJE=
-X-Google-Smtp-Source: ABdhPJxlvyqilgdH1o27x6VJAY1YQ0TW4Ua3qooVBz9Izd6zA7hKwEZCPS860qjC1oNhpf1U3Oe5dQ==
-X-Received: by 2002:a19:c6cc:: with SMTP id w195mr1542377lff.24.1602532690551;
-        Mon, 12 Oct 2020 12:58:10 -0700 (PDT)
-Received: from grain.localdomain ([5.18.102.224])
-        by smtp.gmail.com with ESMTPSA id m11sm649927lfa.112.2020.10.12.12.58.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 12:58:09 -0700 (PDT)
-Received: by grain.localdomain (Postfix, from userid 1000)
-        id 3417A1A032A; Mon, 12 Oct 2020 22:58:08 +0300 (MSK)
-Date:   Mon, 12 Oct 2020 22:58:08 +0300
-From:   Cyrill Gorcunov <gorcunov@gmail.com>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-Subject: Re: [PATCH v14 03/26] x86/fpu/xstate: Introduce CET MSR XSAVES
- supervisor states
-Message-ID: <20201012195808.GD14048@grain>
-References: <20201012153850.26996-1-yu-cheng.yu@intel.com>
- <20201012153850.26996-4-yu-cheng.yu@intel.com>
+        Mon, 12 Oct 2020 15:59:13 -0400
+Received: from [192.168.1.155] ([77.2.5.48]) by mrelayeu.kundenserver.de
+ (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MOQyE-1kplnT1Rb4-00PuLl; Mon, 12 Oct 2020 21:58:57 +0200
+Subject: Re: [PATCH] gpio: gpio-amd-fch: Fix typo on define of
+ AMD_FCH_GPIO_REG_GPIO55_DEVSLP0
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Ed W <lists@wildgooses.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Florian Eckert <fe@dev.tdt.de>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+References: <20200920203207.25696-1-lists@wildgooses.com>
+ <CAHp75Vd2uz-QrEFshUr=e719VBX2zYzvOhVC07BpHfvi0WDgOA@mail.gmail.com>
+ <deb07bad-2d84-723a-7237-2b625a3c4de8@wildgooses.com>
+ <815ff3a6-8941-573d-36c0-36639f47dc04@wildgooses.com>
+ <CAHp75Ve3APYLKzH9KvmTueEcTP-CZJS9MmLC+ZsHRT9brOxsEQ@mail.gmail.com>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <8e28d798-c429-fb1c-8b6f-f271f694cfd3@metux.net>
+Date:   Mon, 12 Oct 2020 21:58:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201012153850.26996-4-yu-cheng.yu@intel.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+In-Reply-To: <CAHp75Ve3APYLKzH9KvmTueEcTP-CZJS9MmLC+ZsHRT9brOxsEQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:1OCHnEmxT6HKaEDcG9/t/pkL4s0iEx2M7MzJ6h97VAOPM4VLsGv
+ nc2Fsb2Ub+37My/omxUVmCbR70skZpbnRNOz1IuZKaf1Zwws4xx1XwlACISvC5PD+Xkgx5M
+ RrMIfaGkfICDMKYno37ekMSMIFR0856HJzq8bSeUZPyESNag52KUsH8htGqLl/pAXUTL13f
+ QZrODSor/RmgbbXGIgEhw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Lc9Xpg21jmM=:6w8wQGrHdkVxzAaoQj+Ufz
+ bhfCSKSdYY5kexwZpoVd/V5vxMJxI7yVx3BIjQrxGVYrZQho/Sw+321jOHMst2n0Vy7TOnebR
+ bHtwVpb9yiU9yHHZ+3bfik9OkORGoyL1Xy+lD/i7wDPpqt87weu6hQHokNjKIPcL0aBtQohDH
+ wadpY9wpKV2cfMcSvLqXgeOkCSPYC3VyQnY8JPgbrx+/BpVv9wYq1d+Ox+QJlY2Y0H7Vya9Lq
+ R+1zXwh8DZkFsgQ+1T97fkH+V8w8ZD+EA8XvBdjhpewlaZzs52uHHyLKP6WihNZjZxmtacuMd
+ Nb5T/gUbiDwbRjG1BSzo7/YJcWlMR8yrpgPBMEFyLVzLGn0VBkvhuj0vGTvGWHiheJpFL7ov/
+ Lu0eHo3nUvnUzFfil7oHpa1m4tHUwDJ7GVapxKvi43nT5J9pzbXVID6R6Sw4FR/eoHxrUk5TX
+ W5M9IHj94SfrEJr13MpBTtafZdE46xXedsys1YAt2fdxkWiyGELLWqjia6eSUqTX3YPi9VmdD
+ I0cLF98orMukhgX7aqPJr+EWZ7QVfGXeKYJpnmZk91m4NaSNzylbOPimSa31W47te/RsVXxiy
+ SZQv8D/26O0yY/hjcNS4wwLz/vWAFROUD6iQ0izHBc/lp7xJQMjc5xhgt9jJmYcWSGA1mDbwI
+ y4HJTrxlunkGXzFZuK+y+2FKRl9rwWq4GT3LI+SZo9G57EBDrtl6ucHB1iTPaSQwculBjZ1o7
+ JSBFicKdsVw2d2WZ5BHdM/T7HJ80uWUibN1aWW9GdhtE75AkJ7wTmFjdjizIYoFujOIioH0Kr
+ SW9kcjb43CthbxbZkSB0XC9wJ8MIa5Qde28e4P4TWKodpMhj0V/TgTxrZUG+cGKh83mihWW
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 08:38:27AM -0700, Yu-cheng Yu wrote:
-...
->  /*
->   * x86-64 Task Priority Register, CR8
-> diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-> index 038e19c0019e..705fd9b94e31 100644
-> --- a/arch/x86/kernel/fpu/xstate.c
-> +++ b/arch/x86/kernel/fpu/xstate.c
-> @@ -38,6 +38,9 @@ static const char *xfeature_names[] =
->  	"Processor Trace (unused)"	,
->  	"Protection Keys User registers",
->  	"unknown xstate feature"	,
-> +	"Control-flow User registers"	,
-> +	"Control-flow Kernel registers"	,
-> +	"unknown xstate feature"	,
->  };
->  
->  static short xsave_cpuid_features[] __initdata = {
-> @@ -51,6 +54,9 @@ static short xsave_cpuid_features[] __initdata = {
->  	X86_FEATURE_AVX512F,
->  	X86_FEATURE_INTEL_PT,
->  	X86_FEATURE_PKU,
-> +	-1,		   /* Unused */
-> +	X86_FEATURE_SHSTK, /* XFEATURE_CET_USER */
-> +	X86_FEATURE_SHSTK, /* XFEATURE_CET_KERNEL */
->  };
+Acked-by: Enrico Weigelt <info@metux.net>
 
-Why do you need "-1" here in the array? The only 1:1 mapping is between
-the names itselves and values, not indices of arrays so i don't understand
-why we need this unused value. Sorry if it is a dumb questions and
-been discussed already.
+
+--mtx
+
+On 28.09.20 13:45, Andy Shevchenko wrote:
+> On Mon, Sep 28, 2020 at 1:33 PM Ed W <lists@wildgooses.com> wrote:
+>>
+>> Hi
+>>
+>> Could I get a final opinion (or signoff) on this patch please?
+>>
+>> The significant typo is the reference to "59", when the GPIO is actually 55
+>>
+>> According to the PCEngines schematic the names of two similar GPIOs are
+>>     G59/DEVSLP1
+>>     G55/DEVSLP
+>>
+>> The original developer named the second GPIO with a trailing 0, which doesn't seem unreasonable,
+>> hence I just corrected the name to:
+>>     AMD_FCH_GPIO_REG_GPIO55_DEVSLP0
+>> However another acceptable name could be:
+>>     AMD_FCH_GPIO_REG_GPIO55_DEVSLP
+>>
+>> If I could ask for some guidance and if necessary I will resubmit this patch? Enrico, do you have an
+>> opinion?
+>>
+>> However, perhaps it's already acceptable as is?
+> 
+> It's being accepted, and will be sent later to Linus.
+> 
+>>
+>> Kind regards
+>>
+>> Ed W
+>>
+>>
+>> On 21/09/2020 09:40, Ed W wrote:
+>>> On 21/09/2020 08:55, Andy Shevchenko wrote:
+>>>> On Sun, Sep 20, 2020 at 11:33 PM Ed Wildgoose <lists@wildgooses.com> wrote:
+>>>>> Schematics show that the GPIO number is 55 (not 59). Trivial typo.
+>>>> Does it still DEVSLP0? Perhaps you need to drop that part as well.
+>>>>
+>>>> ...
+>>>
+>>>
+>>> In the PCEngines schematic it's labelled as "G55/DEVSLP" (no 0)
+>>>
+>>> (In contrast G59 is labelled "G59/DEVSLP1")
+>>>
+>>> What is the quorum opinion on name?
+>>>
+>>> Thanks
+>>>
+>>> Ed W
+>>>
+>>>
+>>>>
+>>>>>   #define APU2_GPIO_REG_LED3             AMD_FCH_GPIO_REG_GPIO59_DEVSLP1
+>>>>>   #define APU2_GPIO_REG_MODESW           AMD_FCH_GPIO_REG_GPIO32_GE1
+>>>>>   #define APU2_GPIO_REG_SIMSWAP          AMD_FCH_GPIO_REG_GPIO33_GE2
+>>>>> -#define APU2_GPIO_REG_MPCIE2           AMD_FCH_GPIO_REG_GPIO59_DEVSLP0
+>>>>> +#define APU2_GPIO_REG_MPCIE2           AMD_FCH_GPIO_REG_GPIO55_DEVSLP0
+>>>>>   #define APU2_GPIO_REG_MPCIE3           AMD_FCH_GPIO_REG_GPIO51
+>>>>>
+>>>>>   /* Order in which the GPIO lines are defined in the register list */
+>>>>> diff --git a/include/linux/platform_data/gpio/gpio-amd-fch.h
+>>>>> b/include/linux/platform_data/gpio/gpio-amd-fch.h
+>>>>> index 9e46678ed..255d51c9d 100644
+>>>>> --- a/include/linux/platform_data/gpio/gpio-amd-fch.h
+>>>>> +++ b/include/linux/platform_data/gpio/gpio-amd-fch.h
+>>>>> @@ -19,7 +19,7 @@
+>>>>>   #define AMD_FCH_GPIO_REG_GPIO49                0x40
+>>>>>   #define AMD_FCH_GPIO_REG_GPIO50                0x41
+>>>>>   #define AMD_FCH_GPIO_REG_GPIO51                0x42
+>>>>> -#define AMD_FCH_GPIO_REG_GPIO59_DEVSLP0        0x43
+>>>>> +#define AMD_FCH_GPIO_REG_GPIO55_DEVSLP0        0x43
+>>>>>   #define AMD_FCH_GPIO_REG_GPIO57                0x44
+>>>>>   #define AMD_FCH_GPIO_REG_GPIO58                0x45
+>>>>>   #define AMD_FCH_GPIO_REG_GPIO59_DEVSLP1        0x46
+>>>>
+>>>
+>>
+> 
+> 
+
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
