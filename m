@@ -2,121 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D6D728BF00
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 19:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AB3F28BF03
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 19:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404029AbgJLR1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 13:27:42 -0400
-Received: from mail-ej1-f65.google.com ([209.85.218.65]:32902 "EHLO
-        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389613AbgJLR1m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 13:27:42 -0400
-Received: by mail-ej1-f65.google.com with SMTP id c22so24356071ejx.0;
-        Mon, 12 Oct 2020 10:27:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=bXfdWwJ70rGKeWiHiVGGLR5+++oukZBshR02MSPwwGk=;
-        b=ibZmvJD/K5OST4X6vO5CicqIdPPGYNb9BMHCgGxvU4LIZ65L7I3/jRJLqb8c58k500
-         WCUKWa/CG+AqFcdaUv8PkLG4zgRRplaRtKWKHlEA7d7tryQKXXbqZe4f24WMaBLLcnYD
-         S2m0CiGyg/wpeOAIY8qgVnPrjpJzPtSAzKMB6/oYwNGVodg0QnIfNxNh0WtM6dYgNeie
-         Ay5lKZGJYAURinlME6chSRhMQH7OYzIgSSwHx25Uxoie3cIuTxo9P9HCuOX5OyaA4bLb
-         vsKG3I9k/8nb13695KFPatlXPrydlyEuCc/TxW91yP2onsagpE1InSi79oC6hgYpnsUJ
-         0Tnw==
-X-Gm-Message-State: AOAM533qPkmx+ucvmvkmSnEpNZNKukggz4ch3u+LYBCqUOI/EBh002OU
-        q+us+JbTghBuBMbhZP/jVGreHxPMoaE=
-X-Google-Smtp-Source: ABdhPJx2FIpbI/LUxRyNnbEBrS+Joz1QQ83i9JBjfTKxvC+r9os3jnRRkhWLQR24PaMDY84fEEa0ew==
-X-Received: by 2002:a17:906:34d1:: with SMTP id h17mr23937787ejb.87.1602523659738;
-        Mon, 12 Oct 2020 10:27:39 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.215])
-        by smtp.googlemail.com with ESMTPSA id g3sm10729358edy.12.2020.10.12.10.27.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 12 Oct 2020 10:27:38 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 19:27:36 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Moritz Fischer <mdf@kernel.org>
-Cc:     Xu Yilun <yilun.xu@intel.com>, linux-fpga@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        gregkh@linuxfoundation.org, trix@redhat.com, lgoncalv@redhat.com,
-        hao.wu@intel.com, Russ Weight <russell.h.weight@intel.com>
-Subject: Re: [PATCH v9 6/6] memory: dfl-emif: add the DFL EMIF private
- feature driver
-Message-ID: <20201012172736.GA7225@kozik-lap>
-References: <1602313793-21421-1-git-send-email-yilun.xu@intel.com>
- <1602313793-21421-7-git-send-email-yilun.xu@intel.com>
- <CAJKOXPcLbnvXJLa6G8Rpa8tLv4v22dDVPBDx4DrakPnbGdK4QA@mail.gmail.com>
- <20201012165803.GA2654@archbook>
+        id S2403963AbgJLR1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 13:27:51 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40582 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390753AbgJLR1u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 13:27:50 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 458A6AC6C;
+        Mon, 12 Oct 2020 17:27:49 +0000 (UTC)
+Date:   Mon, 12 Oct 2020 19:27:48 +0200 (CEST)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Jens Axboe <axboe@kernel.dk>
+cc:     Oleg Nesterov <oleg@redhat.com>, linux-kernel@vger.kernel.org,
+        io-uring@vger.kernel.org, peterz@infradead.org, tglx@linutronix.de,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCHSET RFC v3 0/6] Add support for TIF_NOTIFY_SIGNAL
+In-Reply-To: <9a01ab10-3140-3fa6-0fcf-07d3179973f2@kernel.dk>
+Message-ID: <alpine.LSU.2.21.2010121921420.10435@pobox.suse.cz>
+References: <20201005150438.6628-1-axboe@kernel.dk> <20201008145610.GK9995@redhat.com> <alpine.LSU.2.21.2010090959260.23400@pobox.suse.cz> <e33ec671-3143-d720-176b-a8815996fd1c@kernel.dk> <9a01ab10-3140-3fa6-0fcf-07d3179973f2@kernel.dk>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201012165803.GA2654@archbook>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 09:58:03AM -0700, Moritz Fischer wrote:
-> Hi Krzysztof,
-> 
-> On Mon, Oct 12, 2020 at 06:40:46PM +0200, Krzysztof Kozlowski wrote:
-> > On Sat, 10 Oct 2020 at 09:15, Xu Yilun <yilun.xu@intel.com> wrote:
-> > >
-> > > This driver is for the EMIF private feature implemented under FPGA
-> > > Device Feature List (DFL) framework. It is used to expose memory
-> > > interface status information as well as memory clearing control.
-> > >
-> > > The purpose of memory clearing block is to zero out all private memory
-> > > when FPGA is to be reprogrammed. This gives users a reliable method to
-> > > prevent potential data leakage.
-> > >
-> > > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> > > Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> > > Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > > ---
-> > > v2: Adjust the position of this driver in Kconfig.
-> > >     Improves the name of the Kconfig option.
-> > >     Change the include dfl-bus.h to dfl.h, cause the previous patchset
-> > >      renames the file.
-> > >     Some minor fixes and comment improvement.
-> > > v3: Adjust the position of the driver in Makefile.
-> > > v9: Add static prefix for emif attributes macro
-> > >     Update the kernel version of the sysfs interfaces in Doc.
-> > > ---
-> > >  .../ABI/testing/sysfs-bus-dfl-devices-emif         |  25 +++
-> > >  drivers/memory/Kconfig                             |   9 +
-> > >  drivers/memory/Makefile                            |   2 +
-> > >  drivers/memory/dfl-emif.c                          | 207 +++++++++++++++++++++
-> > >  4 files changed, 243 insertions(+)
-> > >  create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
-> > >  create mode 100644 drivers/memory/dfl-emif.c
-> > >
-> > 
-> > I am confused now. This was already taken by Moritz, wasn't it? And
-> > the dependencies were already taken, weren't they? Previously it was
-> > depending on "Modularization of DFL private feature drivers" and "add
-> > dfl bus support to MODULE_DEVICE_TABLE()"... now this is here so did
-> > the dependencies change? What is the reason to include this patch
-> > here?
-> 
-> It is confusing. Basically Greg had comments on the patch after I had
-> applied it. It's going through anothe round of review.
-> 
-> > 
-> > My ack was for the purpose of taking it via Moritz tree, because of
-> > the dependencies. If this is not the case, then probably better to
-> > take it via memory controllers tree to avoid any conflicts (it's not a
-> > small change).
-> 
-> Once it's ok I can put it on a branch with a stable tag and you can pull
-> that in and take the patch through your tree.
+On Sat, 10 Oct 2020, Jens Axboe wrote:
 
-I am not going to apply any new patches before end of merge window, so
-if you can still push it to Greg for v5.10, then please take it. However
-I think Greg also does not take patches during merge window, so most
-likely this will wait for the next cycle. In such case let's do it via
-stable tag for DFL parts.
+> On 10/9/20 9:21 AM, Jens Axboe wrote:
+> > On 10/9/20 2:01 AM, Miroslav Benes wrote:
+> >> On Thu, 8 Oct 2020, Oleg Nesterov wrote:
+> >>
+> >>> On 10/05, Jens Axboe wrote:
+> >>>>
+> >>>> Hi,
+> >>>>
+> >>>> The goal is this patch series is to decouple TWA_SIGNAL based task_work
+> >>>> from real signals and signal delivery.
+> >>>
+> >>> I think TIF_NOTIFY_SIGNAL can have more users. Say, we can move
+> >>> try_to_freeze() from get_signal() to tracehook_notify_signal(), kill
+> >>> fake_signal_wake_up(), and remove freezing() from recalc_sigpending().
+> >>>
+> >>> Probably the same for TIF_PATCH_PENDING, klp_send_signals() can use
+> >>> set_notify_signal() rather than signal_wake_up().
+> >>
+> >> Yes, that was my impression from the patch set too, when I accidentally 
+> >> noticed it.
+> >>
+> >> Jens, could you CC our live patching ML when you submit v4, please? It 
+> >> would be a nice cleanup.
+> > 
+> > Definitely, though it'd be v5 at this point. But we really need to get
+> > all archs supporting TIF_NOTIFY_SIGNAL first. Once we have that, there's
+> > a whole slew of cleanups that'll fall out naturally:
+> > 
+> > - Removal of JOBCTL_TASK_WORK
+> > - Removal of special path for TWA_SIGNAL in task_work
+> > - TIF_PATCH_PENDING can be converted and then removed
+> > - try_to_freeze() cleanup that Oleg mentioned
+> > 
+> > And probably more I'm not thinking of right now :-)
+> 
+> Here's the current series, I took a stab at converting all archs to
+> support TIF_NOTIFY_SIGNAL so we have a base to build on top of. Most
+> of them were straight forward, but I need someone to fixup powerpc,
+> verify arm and s390.
+> 
+> But it's a decent start I think, and means that we can drop various
+> bits as is done at the end of the series. I could swap things around
+> a bit and avoid having the intermediate step, but I envision that
+> getting this in all archs will take a bit longer than just signing off
+> on the generic/x86 bits. So probably best to keep the series as it is
+> for now, and work on getting the arch bits verified/fixed/tested.
+> 
+> https://git.kernel.dk/cgit/linux-block/log/?h=tif-task_work
 
-Best regards,
-Krzysztof
+Thanks, Jens.
+
+Crude diff for live patching on top of the series is below. Tested only on 
+x86_64, but it passes the tests without an issue.
+
+Miroslav
+
+---
+diff --git a/kernel/livepatch/transition.c b/kernel/livepatch/transition.c
+index f6310f848f34..3a4beb9395c4 100644
+--- a/kernel/livepatch/transition.c
++++ b/kernel/livepatch/transition.c
+@@ -9,6 +9,7 @@
+ 
+ #include <linux/cpu.h>
+ #include <linux/stacktrace.h>
++#include <linux/tracehook.h>
+ #include "core.h"
+ #include "patch.h"
+ #include "transition.h"
+@@ -369,9 +370,7 @@ static void klp_send_signals(void)
+                         * Send fake signal to all non-kthread tasks which are
+                         * still not migrated.
+                         */
+-                       spin_lock_irq(&task->sighand->siglock);
+-                       signal_wake_up(task, 0);
+-                       spin_unlock_irq(&task->sighand->siglock);
++                       set_notify_signal(task);
+                }
+        }
+        read_unlock(&tasklist_lock);
+diff --git a/kernel/signal.c b/kernel/signal.c
+index a15c584a0455..b7cf4eda8611 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -181,8 +181,7 @@ void recalc_sigpending_and_wake(struct task_struct *t)
+ 
+ void recalc_sigpending(void)
+ {
+-       if (!recalc_sigpending_tsk(current) && !freezing(current) &&
+-           !klp_patch_pending(current))
++       if (!recalc_sigpending_tsk(current) && !freezing(current))
+                clear_thread_flag(TIF_SIGPENDING);
+ 
+ }
+
