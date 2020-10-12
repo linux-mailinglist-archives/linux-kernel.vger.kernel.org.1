@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EAAB28B79A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:45:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6ED428B96F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:01:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730666AbgJLNpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:45:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46218 "EHLO mail.kernel.org"
+        id S2390762AbgJLOA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:00:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731551AbgJLNmt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:42:49 -0400
+        id S1728130AbgJLNjm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:39:42 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 94F5B22227;
-        Mon, 12 Oct 2020 13:42:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 148CE21D81;
+        Mon, 12 Oct 2020 13:39:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602510157;
-        bh=A1jcSsf8w89XJvJHo4za3hRNOQ9EBXCrildb1koHq1o=;
+        s=default; t=1602509981;
+        bh=ualpSjygNXqURRiZsGyee47tHeQIYsGssVDS2IJdcE0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uH2bKUdEmrtNpSBwWeh/Y50zaBZZ0OKBWKdeAsUCPouiya8SVxaeV2X1jCGcWJd86
-         AA9zwLeP1rNYjBXfyxlvYVQExEz1Eto4Em+ZtIpXEgaEwFqMfQk6VWWG0bgNw6ytuV
-         G1Wx7rN+fTv+vyiXXqgiy8MgKL60Ou5oIByBUMek=
+        b=H9TJtPdvT3Ki3/Y5x2NtFd9gOUkudh5IVcgHTCw8S2w/RYO5lNtIo2akrWV4YvYnE
+         6QyYG46NcVaqkD5geLviXY/iRhwRuLXpcQrtzw55ZRgggeub2AsxBun68L6Otr1SEt
+         11DkHKwfvGi+yeM7z5izWD8OqBP2f8qEmvU9lGJ0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Tonghao Zhang <xiangxia.m.yue@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Aya Levin <ayal@nvidia.com>,
+        Moshe Shemesh <moshe@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 64/85] virtio-net: dont disable guest csum when disable LRO
+Subject: [PATCH 4.19 41/49] net/mlx5e: Fix VLAN create flow
 Date:   Mon, 12 Oct 2020 15:27:27 +0200
-Message-Id: <20201012132635.922502288@linuxfoundation.org>
+Message-Id: <20201012132631.312190140@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
-References: <20201012132632.846779148@linuxfoundation.org>
+In-Reply-To: <20201012132629.469542486@linuxfoundation.org>
+References: <20201012132629.469542486@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,52 +44,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
+From: Aya Levin <ayal@nvidia.com>
 
-[ Upstream commit 1a03b8a35a957f9f38ecb8a97443b7380bbf6a8b ]
+[ Upstream commit d4a16052bccdd695982f89d815ca075825115821 ]
 
-Open vSwitch and Linux bridge will disable LRO of the interface
-when this interface added to them. Now when disable the LRO, the
-virtio-net csum is disable too. That drops the forwarding performance.
+When interface is attached while in promiscuous mode and with VLAN
+filtering turned off, both configurations are not respected and VLAN
+filtering is performed.
+There are 2 flows which add the any-vid rules during interface attach:
+VLAN creation table and set rx mode. Each is relaying on the other to
+add any-vid rules, eventually non of them does.
 
-Fixes: a02e8964eaf9 ("virtio-net: ethtool configurable LRO")
-Cc: Michael S. Tsirkin <mst@redhat.com>
-Cc: Jason Wang <jasowang@redhat.com>
-Cc: Willem de Bruijn <willemb@google.com>
-Signed-off-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
-Acked-by: Willem de Bruijn <willemb@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fix this by adding any-vid rules on VLAN creation regardless of
+promiscuous mode.
+
+Fixes: 9df30601c843 ("net/mlx5e: Restore vlan filter after seamless reset")
+Signed-off-by: Aya Levin <ayal@nvidia.com>
+Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/virtio_net.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en_fs.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 030d30603c295..99e1a7bc06886 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -63,6 +63,11 @@ static const unsigned long guest_offloads[] = {
- 	VIRTIO_NET_F_GUEST_CSUM
- };
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c b/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
+index b8c3ceaed585b..7ddacc9e4fe40 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
+@@ -217,6 +217,9 @@ static int __mlx5e_add_vlan_rule(struct mlx5e_priv *priv,
+ 		break;
+ 	}
  
-+#define GUEST_OFFLOAD_LRO_MASK ((1ULL << VIRTIO_NET_F_GUEST_TSO4) | \
-+				(1ULL << VIRTIO_NET_F_GUEST_TSO6) | \
-+				(1ULL << VIRTIO_NET_F_GUEST_ECN)  | \
-+				(1ULL << VIRTIO_NET_F_GUEST_UFO))
++	if (WARN_ONCE(*rule_p, "VLAN rule already exists type %d", rule_type))
++		return 0;
 +
- struct virtnet_stat_desc {
- 	char desc[ETH_GSTRING_LEN];
- 	size_t offset;
-@@ -2572,7 +2577,8 @@ static int virtnet_set_features(struct net_device *dev,
- 		if (features & NETIF_F_LRO)
- 			offloads = vi->guest_offloads_capable;
- 		else
--			offloads = 0;
-+			offloads = vi->guest_offloads_capable &
-+				   ~GUEST_OFFLOAD_LRO_MASK;
+ 	*rule_p = mlx5_add_flow_rules(ft, spec, &flow_act, &dest, 1);
  
- 		err = virtnet_set_guest_offloads(vi, offloads);
- 		if (err)
+ 	if (IS_ERR(*rule_p)) {
+@@ -397,8 +400,7 @@ static void mlx5e_add_vlan_rules(struct mlx5e_priv *priv)
+ 	for_each_set_bit(i, priv->fs.vlan.active_svlans, VLAN_N_VID)
+ 		mlx5e_add_vlan_rule(priv, MLX5E_VLAN_RULE_TYPE_MATCH_STAG_VID, i);
+ 
+-	if (priv->fs.vlan.cvlan_filter_disabled &&
+-	    !(priv->netdev->flags & IFF_PROMISC))
++	if (priv->fs.vlan.cvlan_filter_disabled)
+ 		mlx5e_add_any_vid_rules(priv);
+ }
+ 
 -- 
 2.25.1
 
