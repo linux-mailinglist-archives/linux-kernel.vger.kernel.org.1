@@ -2,64 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A8BD28B208
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 12:12:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AD1228B20B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 12:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729570AbgJLKM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 06:12:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55340 "EHLO
+        id S2387461AbgJLKNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 06:13:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729605AbgJLKMX (ORCPT
+        with ESMTP id S1726510AbgJLKNr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 06:12:23 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71D63C0613CE;
-        Mon, 12 Oct 2020 03:12:23 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 12:12:20 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602497541;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IdEsPfkP6ELSvsf0xhQrsCqwY+f265qjWQciQjRTzmU=;
-        b=oznsj9rk5LKQwYF5e/OJKi2GwhNvvVc0gFIgpVsqaKEHoQeSmptHXDi1C5xepjCMiIY8x8
-        pamx523S1h1V8e/BxycCtQoSMZlNAfwXG2mSybw05fscQJAXE9Is6rN3GxVqd2Gfez+u2w
-        nLbO0vO6klk4VUWKN1JvgA8nyJ1IZHGeUwAWaqwCJo8O9f/FBd1y1axgQFmo31ud4Lf6eP
-        0DrU2PCms5gP/YM0vUPmNGpkNdcxp55B9xaAT7aKC4l3d0GQN9rbeoGZkL3M0LANzxUY40
-        RwpOiMpFyCIRen6IupVzrU6ZGzHGMz4lC/mbbgW13TG4pw8ToJOD+blzGmZgng==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602497541;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IdEsPfkP6ELSvsf0xhQrsCqwY+f265qjWQciQjRTzmU=;
-        b=LFgS06jots95MgjR1Ql1efcUH5B4fFDP07YepvuO1SqQFa+Bw7qAgFtGpGNriagBj2/dGX
-        T2Yu7bhsAvlelGDA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Clark Williams <clrkwllms@kernel.org>
-Cc:     rostedt@goodmis.org, linux-rt-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tracing: fix compile failure on RT with PREEMPT_RT off
-Message-ID: <20201012101220.q2bfwq2k6xbdp77c@linutronix.de>
-References: <20201010214554.389157-1-clrkwllms@kernel.org>
+        Mon, 12 Oct 2020 06:13:47 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B404CC0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 03:13:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Dn/O7OmyBKPjXz4w+vIDufrUCX0e5WR00/QXRFI14Wc=; b=prmzH2eD4I4CqdlEZQDpN4SQCB
+        jY2hODRzO7/iAF5kObY8UBFy/jzJZByMbwnxgYL7Awp/F8v/UtIH/41XK0DtskSN7qFUsa4aEWGAa
+        z0aBhy7Uc8HbtB8CmIXh9bv0Wud7hj0/d1Gf01HcqAQ5U+owxFXsADpzgR03FPiKwARAjlehGjVDy
+        CdMFxOwr1hJusThxWOFoA/TJ44MuKFI2IliDG515XKOVkqbOmm2wCYCzXJZw2U8FSTdRZBmqKZ7iS
+        4SuHgk72HnWzgZdkcvtFKUKsAMT99+mCfVZqw2gKQyiWP8Nd/c9Y2IwIGdVoXniV36pcaRbiBb0+6
+        GGFsM+uA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kRupj-0003tb-DR; Mon, 12 Oct 2020 10:13:35 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 485E3304B90;
+        Mon, 12 Oct 2020 12:13:30 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9CFB320AEA645; Mon, 12 Oct 2020 12:13:30 +0200 (CEST)
+Date:   Mon, 12 Oct 2020 12:13:30 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     xen-devel@lists.xenproject.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>
+Subject: Re: [PATCH] x86/alternative: don't call text_poke() in lazy TLB mode
+Message-ID: <20201012101330.GR2628@hirez.programming.kicks-ass.net>
+References: <20201009144225.12019-1-jgross@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201010214554.389157-1-clrkwllms@kernel.org>
+In-Reply-To: <20201009144225.12019-1-jgross@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-10 16:45:54 [-0500], Clark Williams wrote:
-> This patch is against v5.9-rc8-rt14
+On Fri, Oct 09, 2020 at 04:42:25PM +0200, Juergen Gross wrote:
+> When running in lazy TLB mode the currently active page tables might
+> be the ones of a previous process, e.g. when running a kernel thread.
 > 
-> Fix a compile issue when CONFIG_PREEMPT_RT is not defined. If
-> we're not on an RT kernel, just set the migration disabled
-> status to zero.
+> This can be problematic in case kernel code is being modified via
+> text_poke() in a kernel thread, and on another processor exit_mmap()
+> is active for the process which was running on the first cpu before
+> the kernel thread.
+> 
+> As text_poke() is using a temporary address space and the former
+> address space (obtained via cpu_tlbstate.loaded_mm) is restored
+> afterwards, there is a race possible in case the cpu on which
+> exit_mmap() is running wants to make sure there are no stale
+> references to that address space on any cpu active (this e.g. is
+> required when running as a Xen PV guest, where this problem has been
+> observed and analyzed).
+> 
+> In order to avoid that, drop off TLB lazy mode before switching to the
+> temporary address space.
 
-Thank you. Let me fold it where it belongs. As of now, I don't know if
-we can keep it or have to use the trace events Peter made.
+Oh man, that must've been 'fun' :/
 
-> Signed-off-by: Clark Williams <clrkwllms@kernel.org>
+> Fixes: cefa929c034eb5d ("x86/mm: Introduce temporary mm structs")
+> Signed-off-by: Juergen Gross <jgross@suse.com>
+> ---
+>  arch/x86/kernel/alternative.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+> index cdaab30880b9..cd6be6f143e8 100644
+> --- a/arch/x86/kernel/alternative.c
+> +++ b/arch/x86/kernel/alternative.c
+> @@ -807,6 +807,15 @@ static inline temp_mm_state_t use_temporary_mm(struct mm_struct *mm)
+>  	temp_mm_state_t temp_state;
+>  
+>  	lockdep_assert_irqs_disabled();
+> +
+> +	/*
+> +	 * Make sure not to be in TLB lazy mode, as otherwise we'll end up
+> +	 * with a stale address space WITHOUT being in lazy mode after
+> +	 * restoring the previous mm.
+> +	 */
+> +	if (this_cpu_read(cpu_tlbstate.is_lazy))
+> +		leave_mm(smp_processor_id());
+> +
+>  	temp_state.mm = this_cpu_read(cpu_tlbstate.loaded_mm);
+>  	switch_mm_irqs_off(NULL, mm, current);
 
-Sebastian
+Would it make sense to write it like:
+
+	this_state.mm = this_cpu_read(cpu_tlbstate.is_lazy) ?
+			&init_mm : this_cpu_read(cpu_tlbstate.loaded_mm);
+
+Possibly with that wrapped in a conveniently named helper function.
+
