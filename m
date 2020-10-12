@@ -2,104 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A614B28AFE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 10:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7128228AFE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 10:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729240AbgJLIO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 04:14:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29240 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728700AbgJLIO4 (ORCPT
+        id S1726950AbgJLIQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 04:16:16 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:53760 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726098AbgJLIQP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 04:14:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602490494;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iVMTNfZPhpmjUvWqwlb2u6mv5fmTTCfQRSLZkL9cblY=;
-        b=NdiCPTEwsFGEICD2NSeOgj7BR0YDOsCh/Wma2DtL5LVcpc9QPh76I1twoYbh2eerA6e0Y3
-        hoW6uch8JloYo8yBXkTMQK258gV5W8Y1FzO6tf0Q9QBp7qPidnuTUt9WNl17YHcTG8a4xk
-        gjaVIOBqnTPLWsbm3dnYnV+PEPxizm4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-289-eLkQHV8xPPyqrp4SGbLINA-1; Mon, 12 Oct 2020 04:14:52 -0400
-X-MC-Unique: eLkQHV8xPPyqrp4SGbLINA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DF4F418BE164;
-        Mon, 12 Oct 2020 08:14:50 +0000 (UTC)
-Received: from [10.36.112.220] (ovpn-112-220.ams2.redhat.com [10.36.112.220])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E1C285C22A;
-        Mon, 12 Oct 2020 08:14:43 +0000 (UTC)
-From:   "Eelco Chaudron" <echaudro@redhat.com>
-To:     "Sebastian Andrzej Siewior" <bigeasy@linutronix.de>
-Cc:     "Juri Lelli" <juri.lelli@redhat.com>, tglx@linutronix.de,
-        linux-rt-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bristot@redhat.com, williams@redhat.com, atheurer@redhat.com
-Subject: Re: [PATCH 5.9 RT] net: openvswitch: Fix using smp_processor_id() in
- preemptible code
-Date:   Mon, 12 Oct 2020 10:14:42 +0200
-Message-ID: <65BBD0B4-2A74-421A-BF81-357CD5F84747@redhat.com>
-In-Reply-To: <20201009154116.a4fcrrm7flxonidd@linutronix.de>
-References: <20201009124759.592550-1-juri.lelli@redhat.com>
- <20201009154116.a4fcrrm7flxonidd@linutronix.de>
+        Mon, 12 Oct 2020 04:16:15 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09C8GAZ6018397;
+        Mon, 12 Oct 2020 03:16:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1602490570;
+        bh=EeOk5U7dM/ZinVPm0g5IDyfXmSWU4mN+EyyeLXE4LW8=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=kVxYbLtvw+ZF2fY4XFWqHjZEV/S9XBM3rBLDcTiwGvqut/VZvrGUNv030v+iLOHUu
+         jcAlOpSYIlEI0DEfwMeN5PkpMuA8HKrL8XroxK0v9HVLV4ob3RBLUrouYlohZ+IwLA
+         Pr1D9HYVtibuibATSZDibtKP5H+Wm3EY1Gmv0kvA=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09C8G9kS082697
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 12 Oct 2020 03:16:10 -0500
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 12
+ Oct 2020 03:16:09 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 12 Oct 2020 03:16:09 -0500
+Received: from [192.168.2.14] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09C8G7ex087114;
+        Mon, 12 Oct 2020 03:16:08 -0500
+Subject: Re: [PATCH v2] usb: cdns3: Rids of duplicate error message
+To:     Pawel Laszczak <pawell@cadence.com>, <balbi@kernel.org>
+CC:     <peter.chen@nxp.com>, <gregkh@linuxfoundation.org>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kurahul@cadence.com>
+References: <20201012064256.8344-1-pawell@cadence.com>
+From:   Roger Quadros <rogerq@ti.com>
+Message-ID: <e5ab2110-6bb0-ce06-be4f-010a030e307f@ti.com>
+Date:   Mon, 12 Oct 2020 11:16:06 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20201012064256.8344-1-pawell@cadence.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Pawel,
 
+On 12/10/2020 09:42, Pawel Laszczak wrote:
+> On failure, the platform_get_irq_byname prints an error message
+> so, patch removes error message related to this function from
+> core.c file.
+> 
+> A change was suggested during reviewing CDNSP driver by Chunfeng Yun.
+> 
+> Signed-off-by: Pawel Laszczak <pawell@cadence.com>
+> ---
+> Changelog:
+> v2
+> - simplified code as sugested by Roger Quadros.
+> 
+>   drivers/usb/cdns3/core.c | 10 +---------
+>   1 file changed, 1 insertion(+), 9 deletions(-)
+> 
+> diff --git a/drivers/usb/cdns3/core.c b/drivers/usb/cdns3/core.c
+> index a0f73d4711ae..85ef3025b293 100644
+> --- a/drivers/usb/cdns3/core.c
+> +++ b/drivers/usb/cdns3/core.c
+> @@ -469,22 +469,14 @@ static int cdns3_probe(struct platform_device *pdev)
+>   	if (cdns->dev_irq == -EPROBE_DEFER)
 
-On 9 Oct 2020, at 17:41, Sebastian Andrzej Siewior wrote:
+Shouldn't this be
+	if (cdns->dev_irq < 0)
+?
 
-> On 2020-10-09 14:47:59 [+0200], Juri Lelli wrote:
->> This happens because openvswitch/flow_table::flow_lookup() accesses
->> per-cpu data while being preemptible (and migratable).
->>
->> Fix it by adding get/put_cpu_light(), so that, even if preempted, the
->> task executing this code is not migrated (operation is also guarded 
->> by
->> ovs_mutex mutex).
->
-> This warning is not limited to PREEMPT_RT it also present upstream 
-> since
-> commit
->    eac87c413bf97 ("net: openvswitch: reorder masks array based on 
-> usage")
->
-> You should be able to reproduce it there, too.
-> The path ovs_flow_tbl_lookup() -> flow_lookup() is guarded by 
-> ovs_lock()
-> I can't say that this true for
->    ovs_vport_receive() -> ovs_dp_process_packet() ->
->    ovs_flow_tbl_lookup_stats() -> flow_lookup()
->
-> (means I don't know but it looks like coming from NAPI).
->
-> Which means u64_stats_update_begin() could have two writers. This must
-> not happen.
-> There are two reader which do u64_stats_fetch_begin_irq(). Disabling
-> interrupts makes no sense since they perform cross-CPU access.
->
-> -> You need to ensure that there is only one writer at a time.
->
-> If mask_array gains a spinlock_t for writer protection then you can
-> acquire the lock prio grabbing ->masks_usage_cntr. But as of now there
-> is one `ma->syncp'.
+>   		return cdns->dev_irq;
+>   
+> -	if (cdns->dev_irq < 0)
+> -		dev_err(dev, "couldn't get peripheral irq\n");
+> -
+>   	regs = devm_platform_ioremap_resource_byname(pdev, "dev");
+>   	if (IS_ERR(regs))
+>   		return PTR_ERR(regs);
+>   	cdns->dev_regs	= regs;
+>   
+>   	cdns->otg_irq = platform_get_irq_byname(pdev, "otg");
+> -	if (cdns->otg_irq == -EPROBE_DEFER)
+> -		return cdns->otg_irq;
+> -
+> -	if (cdns->otg_irq < 0) {
+> -		dev_err(dev, "couldn't get otg irq\n");
+> +	if (cdns->otg_irq < 0)
+>   		return cdns->otg_irq;
+> -	}
+>   
+>   	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "otg");
+>   	if (!res) {
+> 
 
-I’m not too familiar with the RT kernel, but in the none RT kernel, 
-this function is called in run to completion parts only, hence does not 
-need a lock. Actually, this was designed in such a way that it does not 
-need a lock at all.
-
-So maybe this needs a get_cpu() instead of the light variant in the RT 
-case?
-
-//Eelco
-
+-- 
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
