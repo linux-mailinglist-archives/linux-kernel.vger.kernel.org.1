@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B63428B99E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:04:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A08E28B94F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389623AbgJLOCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:02:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40152 "EHLO mail.kernel.org"
+        id S2390334AbgJLN7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:59:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730501AbgJLNiB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:38:01 -0400
+        id S2388787AbgJLNkO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:40:14 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 574A22224A;
-        Mon, 12 Oct 2020 13:37:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E41B1221FC;
+        Mon, 12 Oct 2020 13:40:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509872;
-        bh=VG9CSanfmLO4eHxmZo/+noXJhoJKQEcs8kV3iIYycxg=;
+        s=default; t=1602510013;
+        bh=gfcMD41HGhTeQ9DNaXOghSyGdFHy7OJGp03ALSKnYcg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0mYJyRgyn17n3C+pv6eMQndEvQ0mKwLgJ7CvM0F6dhvckH0I8P+JCPIItqLW+3UtC
-         fxu/5CaBfFLTIfN9PlivR2Y1OVsAUyNRy4PQads8V2jyRkkspyYOxkGResOS/5kIxM
-         yaus0z/yZBNHk1iTQpN8W1jUtS7KtVplBMtBXA60=
+        b=GNwZ9O7/NhhISjYqB5L8TxkcyAW1P9pm2u40LprJqJ2eEA3+6H9vu6Sme7o+1zxCi
+         2YacP9TlsYXhIPiYLk3HeRrehwWR6k0BkDaQn4wBQJxLbZJKuRmXrPRHQf/Thhkz42
+         KKUAGTuNYMr1eehjcyAd+cFRg1cQURkkRTDvwI6M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Howells <dhowells@redhat.com>,
+        stable@vger.kernel.org,
+        syzbot+577fbac3145a6eb2e7a5@syzkaller.appspotmail.com,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 66/70] rxrpc: Fix server keyring leak
+Subject: [PATCH 4.19 36/49] xfrm: Use correct address family in xfrm_state_find
 Date:   Mon, 12 Oct 2020 15:27:22 +0200
-Message-Id: <20201012132633.380426962@linuxfoundation.org>
+Message-Id: <20201012132631.109848901@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132630.201442517@linuxfoundation.org>
-References: <20201012132630.201442517@linuxfoundation.org>
+In-Reply-To: <20201012132629.469542486@linuxfoundation.org>
+References: <20201012132629.469542486@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,35 +45,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells <dhowells@redhat.com>
+From: Herbert Xu <herbert@gondor.apana.org.au>
 
-[ Upstream commit 38b1dc47a35ba14c3f4472138ea56d014c2d609b ]
+[ Upstream commit e94ee171349db84c7cfdc5fefbebe414054d0924 ]
 
-If someone calls setsockopt() twice to set a server key keyring, the first
-keyring is leaked.
+The struct flowi must never be interpreted by itself as its size
+depends on the address family.  Therefore it must always be grouped
+with its original family value.
 
-Fix it to return an error instead if the server key keyring is already set.
+In this particular instance, the original family value is lost in
+the function xfrm_state_find.  Therefore we get a bogus read when
+it's coupled with the wrong family which would occur with inter-
+family xfrm states.
 
-Fixes: 17926a79320a ("[AF_RXRPC]: Provide secure RxRPC sockets for use by userspace and kernel both")
-Signed-off-by: David Howells <dhowells@redhat.com>
+This patch fixes it by keeping the original family value.
+
+Note that the same bug could potentially occur in LSM through
+the xfrm_state_pol_flow_match hook.  I checked the current code
+there and it seems to be safe for now as only secid is used which
+is part of struct flowi_common.  But that API should be changed
+so that so that we don't get new bugs in the future.  We could
+do that by replacing fl with just secid or adding a family field.
+
+Reported-by: syzbot+577fbac3145a6eb2e7a5@syzkaller.appspotmail.com
+Fixes: 48b8d78315bf ("[XFRM]: State selection update to use inner...")
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/rxrpc/key.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/xfrm/xfrm_state.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/net/rxrpc/key.c b/net/rxrpc/key.c
-index 1fe203c56faf0..2fe2add62a8ed 100644
---- a/net/rxrpc/key.c
-+++ b/net/rxrpc/key.c
-@@ -905,7 +905,7 @@ int rxrpc_request_key(struct rxrpc_sock *rx, char __user *optval, int optlen)
+diff --git a/net/xfrm/xfrm_state.c b/net/xfrm/xfrm_state.c
+index c68eb587c0efb..a649d7c2f48ca 100644
+--- a/net/xfrm/xfrm_state.c
++++ b/net/xfrm/xfrm_state.c
+@@ -923,7 +923,8 @@ static void xfrm_state_look_at(struct xfrm_policy *pol, struct xfrm_state *x,
+ 	 */
+ 	if (x->km.state == XFRM_STATE_VALID) {
+ 		if ((x->sel.family &&
+-		     !xfrm_selector_match(&x->sel, fl, x->sel.family)) ||
++		     (x->sel.family != family ||
++		      !xfrm_selector_match(&x->sel, fl, family))) ||
+ 		    !security_xfrm_state_pol_flow_match(x, pol, fl))
+ 			return;
  
- 	_enter("");
+@@ -936,7 +937,9 @@ static void xfrm_state_look_at(struct xfrm_policy *pol, struct xfrm_state *x,
+ 		*acq_in_progress = 1;
+ 	} else if (x->km.state == XFRM_STATE_ERROR ||
+ 		   x->km.state == XFRM_STATE_EXPIRED) {
+-		if (xfrm_selector_match(&x->sel, fl, x->sel.family) &&
++		if ((!x->sel.family ||
++		     (x->sel.family == family &&
++		      xfrm_selector_match(&x->sel, fl, family))) &&
+ 		    security_xfrm_state_pol_flow_match(x, pol, fl))
+ 			*error = -ESRCH;
+ 	}
+@@ -976,7 +979,7 @@ xfrm_state_find(const xfrm_address_t *daddr, const xfrm_address_t *saddr,
+ 		    tmpl->mode == x->props.mode &&
+ 		    tmpl->id.proto == x->id.proto &&
+ 		    (tmpl->id.spi == x->id.spi || !tmpl->id.spi))
+-			xfrm_state_look_at(pol, x, fl, encap_family,
++			xfrm_state_look_at(pol, x, fl, family,
+ 					   &best, &acquire_in_progress, &error);
+ 	}
+ 	if (best || acquire_in_progress)
+@@ -993,7 +996,7 @@ xfrm_state_find(const xfrm_address_t *daddr, const xfrm_address_t *saddr,
+ 		    tmpl->mode == x->props.mode &&
+ 		    tmpl->id.proto == x->id.proto &&
+ 		    (tmpl->id.spi == x->id.spi || !tmpl->id.spi))
+-			xfrm_state_look_at(pol, x, fl, encap_family,
++			xfrm_state_look_at(pol, x, fl, family,
+ 					   &best, &acquire_in_progress, &error);
+ 	}
  
--	if (optlen <= 0 || optlen > PAGE_SIZE - 1)
-+	if (optlen <= 0 || optlen > PAGE_SIZE - 1 || rx->securities)
- 		return -EINVAL;
- 
- 	description = memdup_user_nul(optval, optlen);
 -- 
 2.25.1
 
