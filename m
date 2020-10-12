@@ -2,101 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 435F728C190
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 21:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E115B28C193
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 21:44:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730928AbgJLTkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 15:40:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728338AbgJLTkh (ORCPT
+        id S2387999AbgJLTod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 15:44:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57181 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727633AbgJLToc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 15:40:37 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 995B1C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 12:40:36 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id k18so18753204wmj.5
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 12:40:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+EfUv/T2E3FnntdBC8S4jr9sPsz796Fi5uP55L4BrAM=;
-        b=Wypqo2E4gKtll0xj4IRPBM30Ax0Kr+xLg7R7En85zXkibEo6bp5CrdFuEFuzFnTi2A
-         EF/v6A6s3qMl56QhqfWx6boN1mJ8XM2IldqC53V0bJTNCuypA7N4CpeOjZidcy0QtSea
-         Fg9javKOdd5G+581vabzl31nb1PJEH1cGMeyghoop9Wrp6OdaHA30T83JaKULsZHk7th
-         j3A8BUpmfJy++rstbLygt3iMePhowH2YDk/LGRkmNiikFWVaeS44BJr/ffqa2sxU/sW6
-         aap5swmqwZ95gd1QEvzb6CL2G6w1AXAAhKXJOp5JOIqvYMLhBDglEyXm5aGyb0wRpWR/
-         p9lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+EfUv/T2E3FnntdBC8S4jr9sPsz796Fi5uP55L4BrAM=;
-        b=nIQR6RYuACrMVPX/jMT5A0TI6pNVeGf1Y2p+iy7Dfx2LzDa++RvsaV74MCMcwLm+Jz
-         AAlswQWHW+QEankhqix1mfzEoBru5TAjUdtHkpAV9BjvbR/cNeyZ50O9w/9g41uyUP64
-         RqDcEtHs/V0MdLkCddDtSWH/025gpAlr9Jld6G6EacVfx9BqCplNpSS11XfuPdnJJnXz
-         hnmiJ2wi0PARPwGNkklb0vUI2KjDkdKuUXNcCV6zGIc4poc27RyZ6s4aPDsdGuUXjtMq
-         8oSb4C2N6bPqG2wTaY7sReEJbeGy+37wcoLMUZbNVj6XwvVRbp0AdxEaE6wLAfiGE/4x
-         0Ekg==
-X-Gm-Message-State: AOAM530ZoKtBrFLoMxJGSvpkCz+s4HWfnKeU9e5hCB12NU8w3xHAlZ+H
-        hMdnVn9d4H2U1vpc2b8tQcCXJQ==
-X-Google-Smtp-Source: ABdhPJwLeNcHMRSjmQ9MjHiT9XaiXa3Bt4emzJpT6lzHtPr7+Ii858iRpiy7q9HYHX8uvo178Ljx2w==
-X-Received: by 2002:a1c:1dc3:: with SMTP id d186mr11622031wmd.182.1602531635141;
-        Mon, 12 Oct 2020 12:40:35 -0700 (PDT)
-Received: from localhost.localdomain ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id f63sm24500203wme.38.2020.10.12.12.40.33
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 12 Oct 2020 12:40:34 -0700 (PDT)
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-To:     linux-pm@vger.kernel.org
-Cc:     mdtipton@codeaurora.org, okukatla@codeaurora.org,
-        sibis@codeaurora.org, bjorn.andersson@linaro.org,
-        amit.pundir@linaro.org, georgi.djakov@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] interconnect: qcom: sdm845: Enable keepalive for the MM1 BCM
-Date:   Mon, 12 Oct 2020 22:40:34 +0300
-Message-Id: <20201012194034.26944-1-georgi.djakov@linaro.org>
-X-Mailer: git-send-email 2.28.0
+        Mon, 12 Oct 2020 15:44:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602531870;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BxutIYc1UD5CyY2Sl7rZUaS40mM0YyLIvw5DzcFzuWU=;
+        b=JOTQsmX8AvcgrgVTHn0SOh9ICi/ZCdVKIokT+iURaEEQxCEpuh7eJJXxaoYXorZ5biQ9/P
+        HKJZ0jp0F16GmQc3P+YqJ5wtw8vB2U8BB4sT46EOa5slPH9MOHTwM5TVyzSgXV0IoP06Pt
+        Edt9Dz01vGy6t7yaytAscGW0QuUZQwg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-579--gvV5kK8MLCOe3zYZrmLeQ-1; Mon, 12 Oct 2020 15:44:26 -0400
+X-MC-Unique: -gvV5kK8MLCOe3zYZrmLeQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8D76A57084;
+        Mon, 12 Oct 2020 19:44:25 +0000 (UTC)
+Received: from w520.home (ovpn-113-35.phx2.redhat.com [10.3.113.35])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2BAD37D4ED;
+        Mon, 12 Oct 2020 19:44:25 +0000 (UTC)
+Date:   Mon, 12 Oct 2020 13:44:24 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Diana Craciun <diana.craciun@oss.nxp.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bharatb.linux@gmail.com, laurentiu.tudor@nxp.com
+Subject: Re: [PATCH v6 00/10] vfio/fsl-mc: VFIO support for FSL-MC device
+Message-ID: <20201012134424.39bb53a7@w520.home>
+In-Reply-To: <20201005173654.31773-1-diana.craciun@oss.nxp.com>
+References: <20201005173654.31773-1-diana.craciun@oss.nxp.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After enabling interconect scaling for display on the db845c board,
-in certain configurations the board hangs, while the following errors
-are observed on the console:
+On Mon,  5 Oct 2020 20:36:44 +0300
+Diana Craciun <diana.craciun@oss.nxp.com> wrote:
 
-  Error sending AMC RPMH requests (-110)
-  qcom_rpmh TCS Busy, retrying RPMH message send: addr=0x50000
-  qcom_rpmh TCS Busy, retrying RPMH message send: addr=0x50000
-  qcom_rpmh TCS Busy, retrying RPMH message send: addr=0x50000
-  ...
+> DPAA2 (Data Path Acceleration Architecture) consists in
+> mechanisms for processing Ethernet packets, queue management,
+> accelerators, etc.
+> 
+> The Management Complex (mc) is a hardware entity that manages the DPAA2
+> hardware resources. It provides an object-based abstraction for software
+> drivers to use the DPAA2 hardware. The MC mediates operations such as
+> create, discover, destroy of DPAA2 objects.
+> The MC provides memory-mapped I/O command interfaces (MC portals) which
+> DPAA2 software drivers use to operate on DPAA2 objects.
+> 
+> A DPRC is a container object that holds other types of DPAA2 objects.
+> Each object in the DPRC is a Linux device and bound to a driver.
+> The MC-bus driver is a platform driver (different from PCI or platform
+> bus). The DPRC driver does runtime management of a bus instance. It
+> performs the initial scan of the DPRC and handles changes in the DPRC
+> configuration (adding/removing objects).
+> 
+> All objects inside a container share the same hardware isolation
+> context, meaning that only an entire DPRC can be assigned to
+> a virtual machine.
+> When a container is assigned to a virtual machine, all the objects
+> within that container are assigned to that virtual machine.
+> The DPRC container assigned to the virtual machine is not allowed
+> to change contents (add/remove objects) by the guest. The restriction
+> is set by the host and enforced by the mc hardware.
+> 
+> The DPAA2 objects can be directly assigned to the guest. However
+> the MC portals (the memory mapped command interface to the MC) need
+> to be emulated because there are commands that configure the
+> interrupts and the isolation IDs which are virtual in the guest.
+> 
+> Example:
+> echo vfio-fsl-mc > /sys/bus/fsl-mc/devices/dprc.2/driver_override
+> echo dprc.2 > /sys/bus/fsl-mc/drivers/vfio-fsl-mc/bind
+> 
+> The dprc.2 is bound to the VFIO driver and all the objects within
+> dprc.2 are going to be bound to the VFIO driver.
+> 
+> More details about the DPAA2 objects can be found here:
+> Documentation/networking/device_drivers/freescale/dpaa2/overview.rst
+> 
+> The patches are dependent on some changes in the mc-bus (bus/fsl-mc)
+> driver. The changes were needed in order to re-use code and to export
+> some more functions that are needed by the VFIO driver.
+> Currenlty the mc-bus patches were queued for merging.
+> https://www.spinics.net/lists/kernel/msg3680670.html
+> 
+> v5 --> v6
+> - style fixes
+> - review fixes
+> 
+> v4 --> v5
+> - do not allow mmap for DPRCs
+> - style fixes
+> 
+> v3 --> v4
+> - use bus provided functions to tear down the DPRC
+> - added reset support
+> 
+> v2 --> v3
+> - There is no need to align region size to page size
+> - read/write implemented for all DPAA2 objects
+> - review fixes
+> 
+> v1 --> v2
+> - Fixed the container reset, a new flag added to the firmware command
+> - Implement a bus notifier for setting driver_override
+> 
+> 
+> Bharat Bhushan (1):
+>   vfio/fsl-mc: Add VFIO framework skeleton for fsl-mc devices
+> 
+> Diana Craciun (9):
+>   vfio/fsl-mc: Scan DPRC objects on vfio-fsl-mc driver bind
+>   vfio/fsl-mc: Implement VFIO_DEVICE_GET_INFO ioctl
+>   vfio/fsl-mc: Implement VFIO_DEVICE_GET_REGION_INFO ioctl call
+>   vfio/fsl-mc: Allow userspace to MMAP fsl-mc device MMIO regions
+>   vfio/fsl-mc: Added lock support in preparation for interrupt handling
+>   vfio/fsl-mc: Add irq infrastructure for fsl-mc devices
+>   vfio/fsl-mc: trigger an interrupt via eventfd
+>   vfio/fsl-mc: Add read/write support for fsl-mc devices
+>   vfio/fsl-mc: Add support for device reset
+> 
+>  MAINTAINERS                               |   6 +
+>  drivers/vfio/Kconfig                      |   1 +
+>  drivers/vfio/Makefile                     |   1 +
+>  drivers/vfio/fsl-mc/Kconfig               |   9 +
+>  drivers/vfio/fsl-mc/Makefile              |   4 +
+>  drivers/vfio/fsl-mc/vfio_fsl_mc.c         | 682 ++++++++++++++++++++++
+>  drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c    | 194 ++++++
+>  drivers/vfio/fsl-mc/vfio_fsl_mc_private.h |  55 ++
+>  include/uapi/linux/vfio.h                 |   1 +
+>  9 files changed, 953 insertions(+)
+>  create mode 100644 drivers/vfio/fsl-mc/Kconfig
+>  create mode 100644 drivers/vfio/fsl-mc/Makefile
+>  create mode 100644 drivers/vfio/fsl-mc/vfio_fsl_mc.c
+>  create mode 100644 drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c
+>  create mode 100644 drivers/vfio/fsl-mc/vfio_fsl_mc_private.h
 
-In this specific case, the above is related to one of the sequencers
-being stuck, while client drivers are returning from probe and trying
-to disable the currently unused clock and interconnect resources.
-Generally we want to keep the multimedia NoC enabled like the rest of
-the NoCs, so let's set the keepalive flag on it too.
 
-Fixes: aae57773fbe0 ("interconnect: qcom: sdm845: Split qnodes into their respective NoCs")
-Reported-by: Amit Pundir <amit.pundir@linaro.org>
-Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
----
- drivers/interconnect/qcom/sdm845.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks Diana, applied to vfio next branch with Eric's reviews for
+v5.10.  Thanks,
 
-diff --git a/drivers/interconnect/qcom/sdm845.c b/drivers/interconnect/qcom/sdm845.c
-index 47556dc12ec0..5304aea3b058 100644
---- a/drivers/interconnect/qcom/sdm845.c
-+++ b/drivers/interconnect/qcom/sdm845.c
-@@ -151,7 +151,7 @@ DEFINE_QBCM(bcm_mc0, "MC0", true, &ebi);
- DEFINE_QBCM(bcm_sh0, "SH0", true, &qns_llcc);
- DEFINE_QBCM(bcm_mm0, "MM0", false, &qns_mem_noc_hf);
- DEFINE_QBCM(bcm_sh1, "SH1", false, &qns_apps_io);
--DEFINE_QBCM(bcm_mm1, "MM1", false, &qxm_camnoc_hf0_uncomp, &qxm_camnoc_hf1_uncomp, &qxm_camnoc_sf_uncomp, &qxm_camnoc_hf0, &qxm_camnoc_hf1, &qxm_mdp0, &qxm_mdp1);
-+DEFINE_QBCM(bcm_mm1, "MM1", true, &qxm_camnoc_hf0_uncomp, &qxm_camnoc_hf1_uncomp, &qxm_camnoc_sf_uncomp, &qxm_camnoc_hf0, &qxm_camnoc_hf1, &qxm_mdp0, &qxm_mdp1);
- DEFINE_QBCM(bcm_sh2, "SH2", false, &qns_memnoc_snoc);
- DEFINE_QBCM(bcm_mm2, "MM2", false, &qns2_mem_noc);
- DEFINE_QBCM(bcm_sh3, "SH3", false, &acm_tcu);
+Alex
+
