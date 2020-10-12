@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F8928BA1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:08:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B944428B787
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391012AbgJLOFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:05:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37556 "EHLO mail.kernel.org"
+        id S2389469AbgJLNoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:44:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48072 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730757AbgJLNfB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:35:01 -0400
+        id S1731392AbgJLNm4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:42:56 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4AE2F2076E;
-        Mon, 12 Oct 2020 13:35:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3E6E1206D9;
+        Mon, 12 Oct 2020 13:42:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509700;
-        bh=jJgw/SkZ18YIhaj5TflwF/qZFLPKihsWDmc7/ASX/y4=;
+        s=default; t=1602510175;
+        bh=hIm/wYYl0doePaPKkN7iO5I3ZmBsb/RHHwm4JJMhybw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LJeYp3NN6sKkYVO8Njj1HGTzbaQxR2bNWSrBtY9T+c7HIB580RPnUywuTHX4jp64q
-         lHz74jo2a4SyKahz3bzKxPFkCG3BTmdJO7sycyig3omtzQCHirEylW/vnGIYgdhwRc
-         skcoPkx12EuYjpMFLjaa3XohccnZmqmW2YJajXqU=
+        b=yT4l8dSsDkjk4NB6sT/IPNs7EgykIMSlRpTGFLIvl95w9xV76m1lluWwrShBSU8+P
+         fSrDZUtV/LKROjPRA7TiaWQ6XlNjv2ouSZGTFHOiq0LNCyLKEgbwz/zcA1mA7ze8Tw
+         iRnJrpgT3dsL+5eXdZn4nZhlt2TCn90pvXZKf2Ec=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 46/54] bonding: set dev->needed_headroom in bond_setup_by_slave()
+        stable@vger.kernel.org,
+        syzbot+69b804437cfec30deac3@syzkaller.appspotmail.com,
+        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 45/85] net: team: fix memory leak in __team_options_register
 Date:   Mon, 12 Oct 2020 15:27:08 +0200
-Message-Id: <20201012132631.697205084@linuxfoundation.org>
+Message-Id: <20201012132635.027100219@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132629.585664421@linuxfoundation.org>
-References: <20201012132629.585664421@linuxfoundation.org>
+In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
+References: <20201012132632.846779148@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,71 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
 
-[ Upstream commit f32f19339596b214c208c0dba716f4b6cc4f6958 ]
+commit 9a9e77495958c7382b2438bc19746dd3aaaabb8e upstream.
 
-syzbot managed to crash a host by creating a bond
-with a GRE device.
+The variable "i" isn't initialized back correctly after the first loop
+under the label inst_rollback gets executed.
 
-For non Ethernet device, bonding calls bond_setup_by_slave()
-instead of ether_setup(), and unfortunately dev->needed_headroom
-was not copied from the new added member.
+The value of "i" is assigned to be option_count - 1, and the ensuing
+loop (under alloc_rollback) begins by initializing i--.
+Thus, the value of i when the loop begins execution will now become
+i = option_count - 2.
 
-[  171.243095] skbuff: skb_under_panic: text:ffffffffa184b9ea len:116 put:20 head:ffff883f84012dc0 data:ffff883f84012dbc tail:0x70 end:0xd00 dev:bond0
-[  171.243111] ------------[ cut here ]------------
-[  171.243112] kernel BUG at net/core/skbuff.c:112!
-[  171.243117] invalid opcode: 0000 [#1] SMP KASAN PTI
-[  171.243469] gsmi: Log Shutdown Reason 0x03
-[  171.243505] Call Trace:
-[  171.243506]  <IRQ>
-[  171.243512]  [<ffffffffa171be59>] skb_push+0x49/0x50
-[  171.243516]  [<ffffffffa184b9ea>] ipgre_header+0x2a/0xf0
-[  171.243520]  [<ffffffffa17452d7>] neigh_connected_output+0xb7/0x100
-[  171.243524]  [<ffffffffa186f1d3>] ip6_finish_output2+0x383/0x490
-[  171.243528]  [<ffffffffa186ede2>] __ip6_finish_output+0xa2/0x110
-[  171.243531]  [<ffffffffa186acbc>] ip6_finish_output+0x2c/0xa0
-[  171.243534]  [<ffffffffa186abe9>] ip6_output+0x69/0x110
-[  171.243537]  [<ffffffffa186ac90>] ? ip6_output+0x110/0x110
-[  171.243541]  [<ffffffffa189d952>] mld_sendpack+0x1b2/0x2d0
-[  171.243544]  [<ffffffffa189d290>] ? mld_send_report+0xf0/0xf0
-[  171.243548]  [<ffffffffa189c797>] mld_ifc_timer_expire+0x2d7/0x3b0
-[  171.243551]  [<ffffffffa189c4c0>] ? mld_gq_timer_expire+0x50/0x50
-[  171.243556]  [<ffffffffa0fea270>] call_timer_fn+0x30/0x130
-[  171.243559]  [<ffffffffa0fea17c>] expire_timers+0x4c/0x110
-[  171.243563]  [<ffffffffa0fea0e3>] __run_timers+0x213/0x260
-[  171.243566]  [<ffffffffa0fecb7d>] ? ktime_get+0x3d/0xa0
-[  171.243570]  [<ffffffffa0ff9c4e>] ? clockevents_program_event+0x7e/0xe0
-[  171.243574]  [<ffffffffa0f7e5d5>] ? sched_clock_cpu+0x15/0x190
-[  171.243577]  [<ffffffffa0fe973d>] run_timer_softirq+0x1d/0x40
-[  171.243581]  [<ffffffffa1c00152>] __do_softirq+0x152/0x2f0
-[  171.243585]  [<ffffffffa0f44e1f>] irq_exit+0x9f/0xb0
-[  171.243588]  [<ffffffffa1a02e1d>] smp_apic_timer_interrupt+0xfd/0x1a0
-[  171.243591]  [<ffffffffa1a01ea6>] apic_timer_interrupt+0x86/0x90
+Thus, when kfree(dst_opts[i]) is called in the second loop in this
+order, (i.e., inst_rollback followed by alloc_rollback),
+dst_optsp[option_count - 2] is the first element freed, and
+dst_opts[option_count - 1] does not get freed, and thus, a memory
+leak is caused.
 
-Fixes: f5184d267c1a ("net: Allow netdevices to specify needed head/tailroom")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
+This memory leak can be fixed, by assigning i = option_count (instead of
+option_count - 1).
+
+Fixes: 80f7c6683fe0 ("team: add support for per-port options")
+Reported-by: syzbot+69b804437cfec30deac3@syzkaller.appspotmail.com
+Tested-by: syzbot+69b804437cfec30deac3@syzkaller.appspotmail.com
+Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/bonding/bond_main.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/team/team.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index 8322129c3f987..240d7850c8252 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -1129,6 +1129,7 @@ static void bond_setup_by_slave(struct net_device *bond_dev,
+--- a/drivers/net/team/team.c
++++ b/drivers/net/team/team.c
+@@ -287,7 +287,7 @@ inst_rollback:
+ 	for (i--; i >= 0; i--)
+ 		__team_option_inst_del_option(team, dst_opts[i]);
  
- 	bond_dev->type		    = slave_dev->type;
- 	bond_dev->hard_header_len   = slave_dev->hard_header_len;
-+	bond_dev->needed_headroom   = slave_dev->needed_headroom;
- 	bond_dev->addr_len	    = slave_dev->addr_len;
- 
- 	memcpy(bond_dev->broadcast, slave_dev->broadcast,
--- 
-2.25.1
-
+-	i = option_count - 1;
++	i = option_count;
+ alloc_rollback:
+ 	for (i--; i >= 0; i--)
+ 		kfree(dst_opts[i]);
 
 
