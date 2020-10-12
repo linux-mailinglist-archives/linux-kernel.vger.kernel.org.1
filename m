@@ -2,82 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25D5D28B3C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 13:28:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9A7928B3EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 13:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388159AbgJLL2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 07:28:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53058 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387617AbgJLL2S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 07:28:18 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 34DEE2080D;
-        Mon, 12 Oct 2020 11:28:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602502097;
-        bh=UYCUSVo7eZRgN435+hdcC/jNwyldCPunnk8QhRYmcLg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wzvXH1sbaA80OpiNeg7RRKMJw/R1WKlmMxOmdYEXO0QtC6aLOajXvNtP4w3xqg/dB
-         NXFESjrbfVpeyMj9zjI+kup462me1/F/qIPvn0UndtuGqZclNdwQHmJ+ubvmEVZ+9h
-         5VpR5+X86jJHSODxyM+Jh0A5fBC8zd5CLuhB7rlw=
-Date:   Mon, 12 Oct 2020 13:28:57 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     rickyniu <rickyniu@google.com>
-Cc:     balbi@kernel.org, astrachan@google.com, amit.pundir@linaro.org,
-        lockwood@android.com, benoit@android.com, jackp@codeaurora.org,
-        vvreddy@codeaurora.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, kyletso@google.com
-Subject: Re: [PATCH 3/3] ANDROID: usb: f_accessory: send uevent for 51,52
- requests
-Message-ID: <20201012112857.GD356911@kroah.com>
-References: <20201012111024.2259162-1-rickyniu@google.com>
- <20201012111024.2259162-4-rickyniu@google.com>
+        id S2388280AbgJLLit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 07:38:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388208AbgJLLis (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 07:38:48 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D695C0613CE;
+        Mon, 12 Oct 2020 04:38:48 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id p11so8419093pld.5;
+        Mon, 12 Oct 2020 04:38:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uAr1u2AxKhyAhsPGz3HPtu7lWVnt+PlRnjUfOtRYD10=;
+        b=eXjiSmybFzCfsLPApRdx4SqJd6Q3JXAdvU4MJPKZZ4ippGkNFfgFeYTZwyzfKdWC3N
+         YY4Ee59ldzAAxxHe4aH1Td5dqVxdLDSGafdKsH+jgctwaG/tQBZccfYg2Xd7cpGdzQhy
+         fkUUiKGWchxtaeuE8+U1v99g21gesrczOEHEht53nKBwa+fizLetc2lpleHUJ3jYOm1F
+         QMF4HcPQ5uyXuV6Lge8N7UnvTP16iaUuhVuaaUhk4DU80tBdQTswwjokQViDioc3Pi/N
+         0n448WWUK9jaxfz/5wTa5GytQaRD4Yb4oY0mKvyOFaUUdJ0ABranwTEq/UXc10SqAA6R
+         y3Hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uAr1u2AxKhyAhsPGz3HPtu7lWVnt+PlRnjUfOtRYD10=;
+        b=kS6ICuadiDeAngrKXdqbmKMsWnI/YfLA6DL8kKwPOGBytT4IZIZFYjl85o3PTmaJlJ
+         FI2gfA5DwTQBGlzjFDPjYpzHEpvh2iN71kjNvyURgU4DNP1e8xCXGaS2uE0f3/CoLM2W
+         0hEeSrwDjLQ551yUVWZsLiPU7UDISWaf5SQEtYK5k7n5US4I8pUlJYn65pomn1FLWPGY
+         I0fzJkWLG/kD/Gx8EhW5WxeHIREdPdEc5a9MUO3oG5H2PVyYuMv/7Inc1UeTHA+5V3oP
+         mjU5O/N3Kmm44QcGWuB+oIpfupZ4xJhixiuZdEHrP47XIQLMowFUzEJ82Zj01hClcJyw
+         3HYw==
+X-Gm-Message-State: AOAM530CrddpnBu81EdD1LoviOP84LLGiyooNSeJrjOI/F2oPmXpuHQr
+        kFV76OszgepiiiL2zg85MhCQdDjYeW2hlD8U
+X-Google-Smtp-Source: ABdhPJxHiPbCY6AwdU1NepgLndb4Cc4E+OU455e+aeQtaXWusCq2n76TGY06FvHVFDAGFlriW9lX4w==
+X-Received: by 2002:a17:902:8698:b029:d3:b362:7342 with SMTP id g24-20020a1709028698b02900d3b3627342mr23245874plo.50.1602502728048;
+        Mon, 12 Oct 2020 04:38:48 -0700 (PDT)
+Received: from localhost ([160.16.113.140])
+        by smtp.gmail.com with ESMTPSA id v20sm14861383pjh.5.2020.10.12.04.38.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 04:38:47 -0700 (PDT)
+From:   Coiby Xu <coiby.xu@gmail.com>
+X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
+Date:   Mon, 12 Oct 2020 19:29:14 +0800
+To:     Benjamin Poirier <benjamin.poirier@gmail.com>
+Cc:     devel@driverdev.osuosl.org, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+        Manish Chopra <manishc@marvell.com>,
+        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
+        <GR-Linux-NIC-Dev@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:QLOGIC QLGE 10Gb ETHERNET DRIVER" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 5/6] staging: qlge: clean up debugging code in the
+ QL_ALL_DUMP ifdef land
+Message-ID: <20201012112914.xrkwi53gqvg5l6lw@Rk>
+References: <20201008115808.91850-1-coiby.xu@gmail.com>
+ <20201008115808.91850-6-coiby.xu@gmail.com>
+ <20201010080126.GC14495@f3>
+ <20201010100002.6v54yiojnscnuxqv@Rk>
+ <20201010134055.GA18693@f3>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20201012111024.2259162-4-rickyniu@google.com>
+In-Reply-To: <20201010134055.GA18693@f3>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 07:10:24PM +0800, rickyniu wrote:
-> Add more log between accessory device and host to help debug.
-> Send the uevent when the host gets ctrl_request 51 and 52 to user space.
-> Let user space know the current connect status.
-> 
-> Signed-off-by: rickyniu <rickyniu@google.com>
-> ---
->  drivers/usb/gadget/function/f_accessory.c | 30 +++++++++++++++++++++++
->  1 file changed, 30 insertions(+)
-> 
-> diff --git a/drivers/usb/gadget/function/f_accessory.c b/drivers/usb/gadget/function/f_accessory.c
-> index 5ed80940b9bf..e51cab9246f9 100644
-> --- a/drivers/usb/gadget/function/f_accessory.c
-> +++ b/drivers/usb/gadget/function/f_accessory.c
-> @@ -117,6 +117,12 @@ struct acc_dev {
->  	/* delayed work for handling ACCESSORY_START */
->  	struct delayed_work start_work;
->  
-> +	/* work for handling ACCESSORY GET PROTOCOL */
-> +	struct work_struct getprotocol_work;
-> +
-> +	/* work for handling ACCESSORY SEND STRING */
-> +	struct work_struct sendstring_work;
-> +
->  	/* worker for registering and unregistering hid devices */
->  	struct work_struct hid_work;
->  
-> @@ -849,11 +855,16 @@ int acc_ctrlrequest(struct usb_composite_dev *cdev,
->  	if (b_requestType == (USB_DIR_OUT | USB_TYPE_VENDOR)) {
->  		if (b_request == ACCESSORY_START) {
->  			dev->start_requested = 1;
-> +			dev_info(&cdev->gadget->dev, "%s: got ACCESSORY_START(53) request\n",
-> +				__func__);
+On Sat, Oct 10, 2020 at 10:40:55PM +0900, Benjamin Poirier wrote:
+>On 2020-10-10 18:00 +0800, Coiby Xu wrote:
+>[...]
+>> >
+>> > Please also update drivers/staging/qlge/TODO accordingly. There is still
+>> > a lot of debugging code IMO (the netif_printk statements - kernel
+>> > tracing can be used instead of those) but this patch is a substantial
+>> > improvement.
+>>
+>> Thank you for the reminding! To move qlge out of staging tree would be
+>> interesting exercise for me:)
+>
+>If you would like to work more on the driver, I would highly suggest
+>getting one or two adapters to be able to test your changes. They can be
+>had for relatively cheap on ebay. Just search for "qle8142".
 
-Why is this here?
+Thank you for the info! Right now I don't have a desktop to install
+this kind of adapter. I'll get one after settling the plan for a desktop.
 
-:(
-
+--
+Best regards,
+Coiby
