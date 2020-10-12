@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 037B028B948
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:01:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86D0C28B762
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:43:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389425AbgJLN7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:59:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44400 "EHLO mail.kernel.org"
+        id S1731427AbgJLNnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:43:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388795AbgJLNkQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:40:16 -0400
+        id S1731505AbgJLNms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:42:48 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4F8F12222C;
-        Mon, 12 Oct 2020 13:40:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8395C22247;
+        Mon, 12 Oct 2020 13:42:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602510015;
-        bh=sxcVJjaOeoj5xTexMNx9F4btIuaE/WM6YcZuVq2Ly9w=;
+        s=default; t=1602510148;
+        bh=WkQ6xEkzFiAsfXvGIkrOACJFHmw9nXajemLqbl8qCWo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hcDKVmGydd4ExM4cw0xeQByjQlqYDhCwv6kVWLdU4XAS27WQqdf3SgwROi+nj1qjA
-         8VJmehkwPJmreMaX6/qtR1IFMpH8U1p0AwNx6o1xCGPsY8Cz6HXnhZCFWxT5E3jAZj
-         z46dDjGrToY14F4NlirDsqBHQOSuy/TiSL2L71MY=
+        b=cgd2TqnJmhripdRgJIFDp5Gekh9xcP7cYKR9+Nkw7MjZYDoO+ZTk8zYQ5FrrrxV0+
+         t4EHTDFHKKLhm/yp3nCCAwZBEn+yWCw57hdOI56N8EETrkH5RQngREZlQetMuRtmdT
+         Gc+ejZ1NsSi/5uUx6mLpRnOaWh7iukTR0Cx/1v/0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
+        stable@vger.kernel.org, Ido Schimmel <idosch@nvidia.com>,
+        Jiri Pirko <jiri@nvidia.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 37/49] bonding: set dev->needed_headroom in bond_setup_by_slave()
-Date:   Mon, 12 Oct 2020 15:27:23 +0200
-Message-Id: <20201012132631.153465000@linuxfoundation.org>
+Subject: [PATCH 5.4 61/85] mlxsw: spectrum_acl: Fix mlxsw_sp_acl_tcam_group_add()s error path
+Date:   Mon, 12 Oct 2020 15:27:24 +0200
+Message-Id: <20201012132635.785944845@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132629.469542486@linuxfoundation.org>
-References: <20201012132629.469542486@linuxfoundation.org>
+In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
+References: <20201012132632.846779148@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,69 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Ido Schimmel <idosch@nvidia.com>
 
-[ Upstream commit f32f19339596b214c208c0dba716f4b6cc4f6958 ]
+[ Upstream commit 72865028582a678be1e05240e55d452e5c258eca ]
 
-syzbot managed to crash a host by creating a bond
-with a GRE device.
+If mlxsw_sp_acl_tcam_group_id_get() fails, the mutex initialized earlier
+is not destroyed.
 
-For non Ethernet device, bonding calls bond_setup_by_slave()
-instead of ether_setup(), and unfortunately dev->needed_headroom
-was not copied from the new added member.
+Fix this by initializing the mutex after calling the function. This is
+symmetric to mlxsw_sp_acl_tcam_group_del().
 
-[  171.243095] skbuff: skb_under_panic: text:ffffffffa184b9ea len:116 put:20 head:ffff883f84012dc0 data:ffff883f84012dbc tail:0x70 end:0xd00 dev:bond0
-[  171.243111] ------------[ cut here ]------------
-[  171.243112] kernel BUG at net/core/skbuff.c:112!
-[  171.243117] invalid opcode: 0000 [#1] SMP KASAN PTI
-[  171.243469] gsmi: Log Shutdown Reason 0x03
-[  171.243505] Call Trace:
-[  171.243506]  <IRQ>
-[  171.243512]  [<ffffffffa171be59>] skb_push+0x49/0x50
-[  171.243516]  [<ffffffffa184b9ea>] ipgre_header+0x2a/0xf0
-[  171.243520]  [<ffffffffa17452d7>] neigh_connected_output+0xb7/0x100
-[  171.243524]  [<ffffffffa186f1d3>] ip6_finish_output2+0x383/0x490
-[  171.243528]  [<ffffffffa186ede2>] __ip6_finish_output+0xa2/0x110
-[  171.243531]  [<ffffffffa186acbc>] ip6_finish_output+0x2c/0xa0
-[  171.243534]  [<ffffffffa186abe9>] ip6_output+0x69/0x110
-[  171.243537]  [<ffffffffa186ac90>] ? ip6_output+0x110/0x110
-[  171.243541]  [<ffffffffa189d952>] mld_sendpack+0x1b2/0x2d0
-[  171.243544]  [<ffffffffa189d290>] ? mld_send_report+0xf0/0xf0
-[  171.243548]  [<ffffffffa189c797>] mld_ifc_timer_expire+0x2d7/0x3b0
-[  171.243551]  [<ffffffffa189c4c0>] ? mld_gq_timer_expire+0x50/0x50
-[  171.243556]  [<ffffffffa0fea270>] call_timer_fn+0x30/0x130
-[  171.243559]  [<ffffffffa0fea17c>] expire_timers+0x4c/0x110
-[  171.243563]  [<ffffffffa0fea0e3>] __run_timers+0x213/0x260
-[  171.243566]  [<ffffffffa0fecb7d>] ? ktime_get+0x3d/0xa0
-[  171.243570]  [<ffffffffa0ff9c4e>] ? clockevents_program_event+0x7e/0xe0
-[  171.243574]  [<ffffffffa0f7e5d5>] ? sched_clock_cpu+0x15/0x190
-[  171.243577]  [<ffffffffa0fe973d>] run_timer_softirq+0x1d/0x40
-[  171.243581]  [<ffffffffa1c00152>] __do_softirq+0x152/0x2f0
-[  171.243585]  [<ffffffffa0f44e1f>] irq_exit+0x9f/0xb0
-[  171.243588]  [<ffffffffa1a02e1d>] smp_apic_timer_interrupt+0xfd/0x1a0
-[  171.243591]  [<ffffffffa1a01ea6>] apic_timer_interrupt+0x86/0x90
-
-Fixes: f5184d267c1a ("net: Allow netdevices to specify needed head/tailroom")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
+Fixes: 5ec2ee28d27b ("mlxsw: spectrum_acl: Introduce a mutex to guard region list updates")
+Signed-off-by: Ido Schimmel <idosch@nvidia.com>
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/bonding/bond_main.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_tcam.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index d32e32e791741..a59333b87eafd 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -1123,6 +1123,7 @@ static void bond_setup_by_slave(struct net_device *bond_dev,
+diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_tcam.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_tcam.c
+index 295b27112d367..ec0d5a4a60a98 100644
+--- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_tcam.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_tcam.c
+@@ -290,13 +290,14 @@ mlxsw_sp_acl_tcam_group_add(struct mlxsw_sp_acl_tcam *tcam,
+ 	int err;
  
- 	bond_dev->type		    = slave_dev->type;
- 	bond_dev->hard_header_len   = slave_dev->hard_header_len;
-+	bond_dev->needed_headroom   = slave_dev->needed_headroom;
- 	bond_dev->addr_len	    = slave_dev->addr_len;
+ 	group->tcam = tcam;
+-	mutex_init(&group->lock);
+ 	INIT_LIST_HEAD(&group->region_list);
  
- 	memcpy(bond_dev->broadcast, slave_dev->broadcast,
+ 	err = mlxsw_sp_acl_tcam_group_id_get(tcam, &group->id);
+ 	if (err)
+ 		return err;
+ 
++	mutex_init(&group->lock);
++
+ 	return 0;
+ }
+ 
 -- 
 2.25.1
 
