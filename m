@@ -2,340 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2AC28B183
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 11:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D72E28B18B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 11:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387467AbgJLJ1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 05:27:49 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:12106 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387393AbgJLJ1t (ORCPT
+        id S1729346AbgJLJ3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 05:29:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728945AbgJLJ3s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 05:27:49 -0400
-X-IronPort-AV: E=Sophos;i="5.77,366,1596492000"; 
-   d="scan'208";a="472098834"
-Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 11:27:17 +0200
-Date:   Mon, 12 Oct 2020 11:27:17 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Sumera Priyadarsini <sylphrenadin@gmail.com>
-cc:     cocci@systeme.lip6.fr, Julia.Lawall@lip6.fr,
-        michal.lkml@markovi.net, nicolas.palix@imag.fr,
-        linux-kernel@vger.kernel.org, Gilles.Muller@lip6.fr
-Subject: Re: [Cocci] [PATCH] coccinelle: iterators: Add for_each_child.cocci
- script
-In-Reply-To: <20200924103504.2ceibylmerdzgmct@adolin>
-Message-ID: <alpine.DEB.2.22.394.2010121123490.2901@hadrien>
-References: <20200924103504.2ceibylmerdzgmct@adolin>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Mon, 12 Oct 2020 05:29:48 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB3DC0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 02:29:48 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id ev17so8089515qvb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 02:29:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Hx1JxtMpGOBSkvdiTGALFPxyGJvgmhTvMTBp0XSjrI4=;
+        b=Tl9rF0B+WZ9zXfdHdek6SO9b9G50iTzazFdS8GxCK9MzOMhjPxWG0jb6mkBeYwcolY
+         sAGIUTojwWqSEfmYxLrUs58D5kSzqk7Aha7lKEqHlT5gaj+2DzgtmD8B86xFbPeIbr+c
+         HyrGPjsZmqWYYLOxLbpSQwR5bh5ikhi9yzfA8GidMCE8523Y7/Bshv47vpRbNIx1AH2O
+         WZqPYLkm4VqHo17nNmHRxkMJWLN/M94Qf2wBJzkI7ZnGZli0WYa3a9rjqF+WCQwgWHYq
+         GUkzsHjCuHwOJR/q+gItI2Hf9BWfI4WrlXT9uPwWqlXwhXnIHsTtccALdmOkQvl38Eh+
+         ieeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Hx1JxtMpGOBSkvdiTGALFPxyGJvgmhTvMTBp0XSjrI4=;
+        b=fPPckaBeuB9vl2F40Q1bJZROsKamPROO0xydb86YyD3O9lWf8dFFX4p0Sc1y/JHb15
+         0hFLggiy9EITJKRjVCTM6brw9sUsqHdvYz+wlYBHaVrkzGpu5ihE83PuFVIuiO5dEbO3
+         Q0DL2N5yP4gmcnK1K9iX2RQG7UZV4AILmgDlNlW+RSh6uGV1+a+0JBApoulBKpoeF34h
+         2O8tBq1ghH2OLd7wFrBM2g9VhIfJHtVEDCTjYbVlHMFl3RiDoslji543vp/pWrdLP1mk
+         G6RyP4rarQFbEKaO18f9nk5YJJPhYeRz/hujswos0MJvPLoXeSars4KZX1Oln68Ql/R1
+         Nmag==
+X-Gm-Message-State: AOAM533HKoUF7sTkLtI+Tmr/RvES6UXMjGsYiYj2ulyFd2reJLTs3QNu
+        afiXIjz3s/tK2xH4Ftiz1YBzkmhbZsus6PfoMg6GXw==
+X-Google-Smtp-Source: ABdhPJxQqBkaKsbjXs5AHi2ivpzhyL+UQ/VYvlfrtZska+XY7zzsso3Es5Rqg3N7kBXnI7jdrAR0jjlb99FYC58RbJo=
+X-Received: by 2002:a05:6214:184c:: with SMTP id d12mr24976264qvy.11.1602494986800;
+ Mon, 12 Oct 2020 02:29:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <000000000000903b5c05b1732a75@google.com> <CAK8P3a3p7Ueydagr4yshr8RKGzLivJZwEh0TxfipuHYRkN9Wcw@mail.gmail.com>
+ <CACT4Y+aXuBZbvwM1xJNPhG+dHCdjt_Are=p6wRwOk-DFHEGz2Q@mail.gmail.com> <CAK8P3a28w8kw9MJVx_Cada3c8tQBHT0xXheS2EmGdRgT=2jp6Q@mail.gmail.com>
+In-Reply-To: <CAK8P3a28w8kw9MJVx_Cada3c8tQBHT0xXheS2EmGdRgT=2jp6Q@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 12 Oct 2020 11:29:35 +0200
+Message-ID: <CACT4Y+ZR9LMRHHYazd7okt0HpA+WjXDpXW9VM50KM7ozd1m+bQ@mail.gmail.com>
+Subject: Re: general protection fault in qp_release_pages
+To:     Arnd Bergmann <arnd@arndb.de>,
+        syzkaller <syzkaller@googlegroups.com>
+Cc:     rgerganov@vmware.com,
+        syzbot <syzbot+f58fe4bb535845237057@syzkaller.appspotmail.com>,
+        gregkh <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Thu, 24 Sep 2020, Sumera Priyadarsini wrote:
-
-> While iterating over child nodes with the for_each functions, if
-> control is transferred from the middle of the loop, as in the case
-> of a break or return or goto, there is no decrement in the
-> reference counter thus ultimately resulting in a memory leak.
+On Mon, Oct 12, 2020 at 11:16 AM Arnd Bergmann <arnd@arndb.de> wrote:
 >
-> Add this script to detect potential memory leaks caused by
-> the absence of of_node_put() before break, goto, or, return
-> statements which transfer control outside the loop.
+> On Mon, Oct 12, 2020 at 10:14 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+> > On Mon, Oct 12, 2020 at 10:01 AM Arnd Bergmann <arnd@arndb.de> wrote:
+> > > On Mon, Oct 12, 2020 at 8:11 AM syzbot
+> > >
+> > > Adding everyone from the git history that did meaningful changes in the past
+> > > for this driver, as there is no specific maintainer file entry for
+> > > them to further
+> > > investigate.
+> >
+> > Hi Arnd,
+> >
+> > There is already a recorded fix for this on the dashboard:
 >
-> Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
-> ---
->  .../coccinelle/iterators/for_each_child.cocci | 348 ++++++++++++++++++
->  1 file changed, 348 insertions(+)
->  create mode 100644 scripts/coccinelle/iterators/for_each_child.cocci
+> Ok, good.
 >
-> diff --git a/scripts/coccinelle/iterators/for_each_child.cocci b/scripts/coccinelle/iterators/for_each_child.cocci
-> new file mode 100644
-> index 000000000000..0abc12ca2ad3
-> --- /dev/null
-> +++ b/scripts/coccinelle/iterators/for_each_child.cocci
-> @@ -0,0 +1,348 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +// Adds missing of_node_put() before return/break/goto statement within a for_each iterator for child nodes.
-> +//# False positives can be due to function calls within the for_each
-> +//# loop that may encapsulate an of_node_put.
-> +///
-> +// Confidence: High
-> +// Copyright: (C) 2020 Sumera Priyadarsini
-> +// URL: http://coccinelle.lip6.fr
-
-As Markus suggested, adding
-
-+// Options: --no-includes --include-headers
-
-would be useful.  The processing of .c files does not need to see header
-files for this issue.  At the same time, if the problem occurs in a header
-files, it could be useful to treat it.
-
-
-> +@rulethree depends on patch && !context && !org && !report exists@
-> +
-> +local idexpression r.n;
-> +iterator r.i,i1,i2;
-> +expression e,e1;
-> +identifier l;
-> +expression list [r.n1] es;
-> +statement S,S2;
-> +@@
-> +
-> + i(es,n,...) {
-> +   ...
-> +(
-> +   of_node_put(n);
-> +|
-> +   e = n
-> +|
-> +   i1(...,n,...) S
-> +|
-> ++  of_node_put(n);
-> +?  goto l;
-> +)
-> +   ... when any
-> + }
-> +... when exists
-> +l: ... when != n
-> +       when strict
-
-A when forall is needed under the when strict.  The idea here is that when
-the goto is taken, we need to check all of the possible execution paths to
-see if there is any reference to n.
-
-All of the rules that involve break and goto need to be checked for this
-issue.
-
-julia
-
-> +(
-> + n = e1;
-> +|
-> +?i2(...,n,...) S2
-> +)
-> +
-> +// ----------------------------------------------------------------------------
-> +
-> +@ruleone_context depends on !patch && (context || org || report) exists@
-> +statement S;
-> +expression e;
-> +expression list[r.n1] es;
-> +iterator r.i, i1;
-> +local idexpression r.n;
-> +position j0, j1;
-> +@@
-> +
-> + i@j0(es,n,...) {
-> +   ...
-> +(
-> +   of_node_put(n);
-> +|
-> +   e = n
-> +|
-> +   return n;
-> +|
-> +   i1(...,n,...) S
-> +|
-> +  return @j1 ...;
-> +)
-> +   ... when any
-> + }
-> +
-> +@ruleone_disj depends on !patch && (context || org || report)@
-> +expression list[r.n1] es;
-> +iterator r.i;
-> +local idexpression r.n;
-> +position ruleone_context.j0, ruleone_context.j1;
-> +@@
-> +
-> +*  i@j0(es,n,...) {
-> +   ...
-> +*return  @j1...;
-> +   ... when any
-> + }
-> +
-> +@ruletwo_context depends on !patch && (context || org || report) exists@
-> +statement S, S2;
-> +expression e, e1;
-> +expression list[r.n1] es;
-> +iterator r.i, i1, i2;
-> +local idexpression r.n;
-> +position j0, j2;
-> +@@
-> +
-> + i@j0(es,n,...) {
-> +   ...
-> +(
-> +   of_node_put(n);
-> +|
-> +   e = n
-> +|
-> +   i1(...,n,...) S
-> +|
-> +  break@j2;
-> +)
-> +   ... when any
-> + }
-> +... when != n
-> +    when strict
-> +(
-> + n = e1;
-> +|
-> +?i2(...,n,...) S2
-> +)
-> +
-> +@ruletwo_disj depends on !patch && (context || org || report)@
-> +statement S2;
-> +expression e1;
-> +expression list[r.n1] es;
-> +iterator r.i, i2;
-> +local idexpression r.n;
-> +position ruletwo_context.j0, ruletwo_context.j2;
-> +@@
-> +
-> +*  i@j0(es,n,...) {
-> +   ...
-> +*break @j2;
-> +   ... when any
-> + }
-> +... when != n
-> +    when strict
-> +(
-> +  n = e1;
-> +|
-> +?i2(...,n,...) S2
-> +)
-> +
-> +@rulethree_context depends on !patch && (context || org || report) exists@
-> +identifier l;
-> +statement S,S2;
-> +expression e, e1;
-> +expression list[r.n1] es;
-> +iterator r.i, i1, i2;
-> +local idexpression r.n;
-> +position j0, j3;
-> +@@
-> +
-> + i@j0(es,n,...) {
-> +   ...
-> +(
-> +   of_node_put(n);
-> +|
-> +   e = n
-> +|
-> +   i1(...,n,...) S
-> +|
-> +  goto l@j3;
-> +)
-> +  ... when any
-> + }
-> +... when exists
-> +l:
-> +... when != n
-> +    when strict
-> +(
-> + n = e1;
-> +|
-> +?i2(...,n,...) S2
-> +)
-> +
-> +@rulethree_disj depends on !patch && (context || org || report) exists@
-> +identifier l;
-> +statement S2;
-> +expression e1;
-> +expression list[r.n1] es;
-> +iterator r.i, i2;
-> +local idexpression r.n;
-> +position rulethree_context.j0, rulethree_context.j3;
-> +@@
-> +
-> +*  i@j0(es,n,...) {
-> +   ...
-> +*goto l@j3;
-> +   ... when any
-> + }
-> +... when exists
-> + l:
-> + ... when != n
-> +     when strict
-> +(
-> + n = e1;
-> +|
-> +?i2(...,n,...) S2
-> +)
-> +
-> +// ----------------------------------------------------------------------------
-> +
-> +@script:python ruleone_org depends on org@
-> +i << r.i;
-> +j0 << ruleone_context.j0;
-> +j1 << ruleone_context. j1;
-> +@@
-> +
-> +msg = "WARNING: Function \"%s\" should have of_node_put() before return " % (i)
-> +coccilib.org.print_safe_todo(j0[0], msg)
-> +coccilib.org.print_link(j1[0], "")
-> +
-> +@script:python ruletwo_org depends on org@
-> +i << r.i;
-> +j0 << ruletwo_context.j0;
-> +j2 << ruletwo_context.j2;
-> +@@
-> +
-> +msg = "WARNING: Function \"%s\" should have of_node_put() before break " % (i)
-> +coccilib.org.print_safe_todo(j0[0], msg)
-> +coccilib.org.print_link(j2[0], "")
-> +
-> +@script:python rulethree_org depends on org@
-> +i << r.i;
-> +j0 << rulethree_context.j0;
-> +j3 << rulethree_context.j3;
-> +@@
-> +
-> +msg = "WARNING: Function \"%s\" should have of_node_put() before goto " % (i)
-> +coccilib.org.print_safe_todo(j0[0], msg)
-> +coccilib.org.print_link(j3[0], "")
-> +
-> +// ----------------------------------------------------------------------------
-> +
-> +@script:python ruleone_report depends on report@
-> +i << r.i;
-> +j0 << ruleone_context.j0;
-> +j1 << ruleone_context.j1;
-> +@@
-> +
-> +msg = "WARNING: Function \"%s\" should have of_node_put() before return around line %s." % (i, j1[0].line)
-> +coccilib.report.print_report(j0[0], msg)
-> +
-> +@script:python ruletwo_report depends on report@
-> +i << r.i;
-> +j0 << ruletwo_context.j0;
-> +j2 << ruletwo_context.j2;
-> +@@
-> +
-> +msg = "WARNING: Function \"%s\" should have of_node_put() before break around line %s." % (i,j2[0].line)
-> +coccilib.report.print_report(j0[0], msg)
-> +
-> +@script:python rulethree_report depends on report@
-> +i << r.i;
-> +j0 << rulethree_context.j0;
-> +j3 << rulethree_context.j3;
-> +@@
-> +
-> +msg = "WARNING: Function \"%s\" should have of_node_put() before goto around lines %s." % (i,j3[0].line)
-> +coccilib.report.print_report(j0[0], msg)
-> --
-> 2.25.1
+> > https://syzkaller.appspot.com/bug?extid=f58fe4bb535845237057
+> > VMCI: check return value of get_user_pages_fast() for errors
 >
-> _______________________________________________
-> Cocci mailing list
-> Cocci@systeme.lip6.fr
-> https://systeme.lip6.fr/mailman/listinfo/cocci
+> Ah, I actually looked at linux-next, which included the fix. I had
+> never before looked at the dashboard, good to know where to find
+> this information.
 >
+> If this is something that happened to others as well, could the
+> email report be changed to point out bugs that are already
+> fixed in linux-next but not in mainline?
+
+When syzbot mails a report, it does not know about any fixes by definition.
+
+There is a pending feature request to notify when a fix becomes known:
+https://github.com/google/syzkaller/issues/1574
+
+However:
+1. This will double the number of emails from syzbot, not sure if it
+will be welcome.
+2. This probably only makes sense for fixes that are auto-discovered
+in git trees. While this one came from a user email, it was just not
+sent to the same thread/recipients (the common problem of replying to
+emails you did not receive). So it would not help in this case.
+3. There is lots of other dynamic info on the dashboard (more crashes,
+where it happens, how frequently, when started/stopped). It's not
+feasible to send an email for every update (there can be 100K
+crashes), so the dashboard needed to be looked at in some cases
+anyway.
+
+Do you see any potential improvements in this context?
