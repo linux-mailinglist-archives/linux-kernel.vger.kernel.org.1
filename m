@@ -2,101 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D6F28BE85
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E361828BE89
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:56:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390739AbgJLQy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 12:54:57 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:52746 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2390705AbgJLQy5 (ORCPT
+        id S2390753AbgJLQ4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 12:56:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390534AbgJLQ4L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 12:54:57 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09CGioWs000804;
-        Mon, 12 Oct 2020 09:54:54 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=date : from : to :
- cc : subject : in-reply-to : message-id : references : mime-version :
- content-type; s=pfpt0220; bh=i+XH48QeOQjsexb49NBlrZ3T/4puq8Cjpltdejn9FKM=;
- b=QKQujlJuP+J1ga8OCLYjE+CiIm3ESuci5LA2PVEJ0rTtUWfy9NxzUe0uTf6pFb2R87CR
- icgTJph1WjiFBnDYJAks/tS2w5OK6meFjHwoqaz4cJvHWI8SDdpNkMf0Kb5X89w4tx8r
- eaViCnbixRBoSdVL/9RJhOXDOTQ6SBNrepaqjzFs1EuFhwfy2bav/efqmw6MJbgpT7ag
- sBItFAGVFW0E5YFstELnN1+ZZU3v0xDk+8BVkbz8aE5F1oRUOlXR/90cDEaommHgjcx3
- 1fs8zMhHvmu7E3dsPSjPKqgPNYB1oWYFdg8nEuYABe16K2BWPpF/1if4Heo5PyIYVilh bg== 
-Received: from sc-exch03.marvell.com ([199.233.58.183])
-        by mx0a-0016f401.pphosted.com with ESMTP id 343aanexnb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 12 Oct 2020 09:54:54 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH03.marvell.com
- (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 12 Oct
- 2020 09:54:53 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 12 Oct 2020 09:54:53 -0700
-Received: from irv1user01.caveonetworks.com (unknown [10.104.116.179])
-        by maili.marvell.com (Postfix) with ESMTP id 7BD4E3F703F;
-        Mon, 12 Oct 2020 09:54:53 -0700 (PDT)
-Received: from localhost (aeasi@localhost)
-        by irv1user01.caveonetworks.com (8.14.4/8.14.4/Submit) with ESMTP id 09CGsr7T004955;
-        Mon, 12 Oct 2020 09:54:53 -0700
-X-Authentication-Warning: irv1user01.caveonetworks.com: aeasi owned process doing -bs
-Date:   Mon, 12 Oct 2020 09:54:53 -0700
-From:   Arun Easi <aeasi@marvell.com>
-X-X-Sender: aeasi@irv1user01.caveonetworks.com
-To:     Daniel Wagner <dwagner@suse.de>
-CC:     Nilesh Javali <njavali@marvell.com>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] qla2xxx: Return EBUSY on fcport deletion
-In-Reply-To: <20201012164148.42962-1-dwagner@suse.de>
-Message-ID: <alpine.LRH.2.21.9999.2010120951560.28578@irv1user01.caveonetworks.com>
-References: <20201012164148.42962-1-dwagner@suse.de>
-User-Agent: Alpine 2.21.9999 (LRH 334 2019-03-29)
+        Mon, 12 Oct 2020 12:56:11 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A72C0613D1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 09:56:11 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id n6so18338256ioc.12
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 09:56:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=uGtCXDE+yC85EATgAOWUy4OTm5QzADu4nBEjXio7les=;
+        b=sxb8k/hwI80eNFQLW8lSIbzTmeApaNpfv6ABK6bk3K/LiMAEfK9TvfMXucceZ/iZbE
+         v2m0frgqW08gpea1+w4hvt4IXC6RJklW+UikIz2ciDsmSedBAykU9y0aTnLE5efQSqjq
+         GPQFww8YoMOV7vS+ODWAh1hWTmHiQYIS0/nCJYoXrdL4Arz/i6rADS50od0KSsxuSUHg
+         CYzzh3z6i9KAlkLMklJQ6KaqZO3GPl0lYNmyzimbaDTYAW4hiSogWx3Cq08hZi5sTlul
+         qq3dc/NCGjPox7yiYHs8Cj03B5GZpOq11yUk0X5bJEkFKAIhUwDstOXsSmYByCBI9JaP
+         Zq8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=uGtCXDE+yC85EATgAOWUy4OTm5QzADu4nBEjXio7les=;
+        b=IrXvwxV6VixiEZm1nG8MVKRLMl7vAenb/cm+VraOs+rYbNrgq8lO+zd5jbjuSbyFwN
+         /db/Vo9EC75PFTlQAX+NV6HBiIqN2o/ThEqcjk6aIz8YBPzuvqQ9a4EYAlQJ+NTM2kTn
+         fplN6elxgsY/neCUS2IPVOMVNJcPxoKyCuF2PJ2DIuWb5zncWr9P1EIswpDKDQtzgq3n
+         CM3+P7kJrvdqtPJTe+2/9Unin8o/r8LWvZ38qUE5EqUJ/di4RBFUYTHUHYlYlp19Xna/
+         T0iBKVdazb2Ye2/ZapEHdUVlgW7e44I6A3d1mB6y9BJ5SmixYxOjI43hkAwD7Wo8rD9E
+         jupw==
+X-Gm-Message-State: AOAM530CoWiVtXlsiwwLqYTMaj+NKvjdU19k3R9ev2A6I9ygc2/tSzpl
+        EqFj0kGQ2NJ8wE/D72ic72PfXPgPm1/mrQu08bEz+g==
+X-Google-Smtp-Source: ABdhPJwwoRyVM9yiqq135MM0Bel7b1I4N7nqmFTIUEhp6P10fswBgBayivHOj1k6ZvjPFWHFEQPQdp9Cea9aH51MAwo=
+X-Received: by 2002:a02:7817:: with SMTP id p23mr19909334jac.57.1602521770491;
+ Mon, 12 Oct 2020 09:56:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-12_14:2020-10-12,2020-10-12 signatures=0
+References: <20201012095158.779c6d9d@canb.auug.org.au> <CAK8P3a2gLDw8rOYPgg=-hnNcK_5NW-fGHmiJ3ntb0dbf1EjQOQ@mail.gmail.com>
+In-Reply-To: <CAK8P3a2gLDw8rOYPgg=-hnNcK_5NW-fGHmiJ3ntb0dbf1EjQOQ@mail.gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 12 Oct 2020 22:25:59 +0530
+Message-ID: <CA+G9fYu-YKfCSE58+y83UgXDDTHVgnpNLOgWwAaCr2W63nFQbQ@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the arm64 tree with the asm-generic tree
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>, Qian Cai <cai@redhat.com>,
+        lkft-triage@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Oct 2020, 9:41am, Daniel Wagner wrote:
+On Mon, 12 Oct 2020 at 13:33, Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Mon, Oct 12, 2020 at 12:52 AM Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+> >
+> > Hi all,
+> >
+> > Today's linux-next merge of the arm64 tree got a conflict in:
+> >
+> >   arch/arm64/include/asm/mmu_context.h
+> >
+> > between commit:
+> >
+> >   f911c2a7c096 ("arm64: use asm-generic/mmu_context.h for no-op impleme=
+ntations")
+> >
+> > from the asm-generic tree and commit:
+> >
+> >   48118151d8cc ("arm64: mm: Pin down ASIDs for sharing mm with devices"=
+)
+> >
+> > from the arm64 tree.
+> >
+> > I fixed it up (see below) and can carry the fix as necessary. This
+> > is now fixed as far as linux-next is concerned, but any non trivial
+> > conflicts should be mentioned to your upstream maintainer when your tre=
+e
+> > is submitted for merging.  You may also want to consider cooperating
+> > with the maintainer of the conflicting tree to minimise any particularl=
+y
+> > complex conflicts.
+> >
+>
+> Sorry about that, I had pushed my asm-generic branch to the correct
+> location on Friday after I noticed it was missing. Removed it again now
+> until the end up the merge window.
 
-> When the fcport is about to be deleted we should return EBUSY instead
-> of ENODEV. Only for EBUSY the request will be requeued in a multipath
-> setup.
-> 
-> Also in case we have a valid qpair but the firmware has not yet
-> started return EBUSY to avoid dropping the request.
-> 
-> Signed-off-by: Daniel Wagner <dwagner@suse.de>
-> ---
-> 
-> v2: rebased on mkp/staging
-> 
->  drivers/scsi/qla2xxx/qla_nvme.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/qla2xxx/qla_nvme.c b/drivers/scsi/qla2xxx/qla_nvme.c
-> index 2cd9bd288910..fded1e3bc9e0 100644
-> --- a/drivers/scsi/qla2xxx/qla_nvme.c
-> +++ b/drivers/scsi/qla2xxx/qla_nvme.c
-> @@ -555,8 +555,11 @@ static int qla_nvme_post_cmd(struct nvme_fc_local_port *lport,
->  
->  	fcport = qla_rport->fcport;
->  
-> -	if (!qpair || !fcport || (qpair && !qpair->fw_started) ||
-> +	if ((qpair && !qpair->fw_started) ||
->  	    (fcport && fcport->deleted))
-> +		return -EBUSY;
-> +
-> +	if (!qpair || !fcport)
->  		return -ENODEV;
->  
->  	vha = fcport->vha;
-> 
 
-Please move up the "(!qpair || !fcport)" check; you can avoid the 
-qpair/fcport check in the first "if" condition, then.
+arm64 build failed on today's tag 20201012.
 
-Regards,
--Arun
+
+make -sk KBUILD_BUILD_USER=3DTuxBuild -C/linux -j16 ARCH=3Darm64
+CROSS_COMPILE=3Daarch64-linux-gnu- HOSTCC=3Dgcc CC=3D"sccache
+aarch64-linux-gnu-gcc" O=3Dbuild Image
+#
+In file included from ../arch/arm64/include/asm/mmu_context.h:257,
+                 from ../arch/arm64/include/asm/efi.h:10,
+                 from ../arch/arm64/xen/../../arm/xen/enlighten.c:19:
+../include/asm-generic/mmu_context.h:34:19: error: redefinition of
+=E2=80=98init_new_context=E2=80=99
+   34 | static inline int init_new_context(struct task_struct *tsk,
+      |                   ^~~~~~~~~~~~~~~~
+In file included from ../arch/arm64/include/asm/efi.h:10,
+                 from ../arch/arm64/xen/../../arm/xen/enlighten.c:19:
+../arch/arm64/include/asm/mmu_context.h:180:1: note: previous
+definition of =E2=80=98init_new_context=E2=80=99 was here
+  180 | init_new_context(struct task_struct *tsk, struct mm_struct *mm)
+      | ^~~~~~~~~~~~~~~~
+make[3]: *** [../scripts/Makefile.build:283:
+arch/arm64/xen/../../arm/xen/enlighten.o] Error 1
+In file included from ../arch/arm64/include/asm/mmu_context.h:257,
+                 from ../include/linux/mmu_context.h:5,
+                 from ../kernel/sched/sched.h:54,
+                 from ../kernel/sched/core.c:13:
+../include/asm-generic/mmu_context.h:34:19: error: redefinition of
+=E2=80=98init_new_context=E2=80=99
+   34 | static inline int init_new_context(struct task_struct *tsk,
+      |                   ^~~~~~~~~~~~~~~~
+In file included from ../include/linux/mmu_context.h:5,
+                 from ../kernel/sched/sched.h:54,
+                 from ../kernel/sched/core.c:13:
+../arch/arm64/include/asm/mmu_context.h:180:1: note: previous
+definition of =E2=80=98init_new_context=E2=80=99 was here
+  180 | init_new_context(struct task_struct *tsk, struct mm_struct *mm)
+      | ^~~~~~~~~~~~~~~~
+
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+
+ref:
+https://gitlab.com/Linaro/lkft/mirrors/next/linux-next/-/jobs/785569731
+
+>
+>        Arnd
+
+
+- Naresh
