@@ -2,116 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 286B528AFAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 10:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D1328AFB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 10:11:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728883AbgJLIJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 04:09:55 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:31899 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727170AbgJLIJy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 04:09:54 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602490194; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=5YXnNsXE0oYDUilxaLIpOVbD5idrWDQORor7EfH/zAk=; b=aEn3Tx/S2/qnF21U0Oha0+h74m+X7UAGpykxhHYC24DDnYGPdP4fHRl1yji/xy6FwHGPRaKU
- hrQ2MrKEy0f6/bgysEInSYf6pDvvSpi3M/vNrDdn+rD8xTo6E5tH60jH6Td5YIgjs5/gScLo
- o6eBy6rNwMd+h889wsxL/2hJR4k=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 5f840f51319d4e9cb50af47a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 12 Oct 2020 08:09:53
- GMT
-Sender: akashast=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D88A1C433F1; Mon, 12 Oct 2020 08:09:53 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.43.98] (unknown [47.9.68.210])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akashast)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7A391C433CB;
-        Mon, 12 Oct 2020 08:09:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7A391C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akashast@codeaurora.org
-Subject: Re: [PATCH 1/3] soc: qcom: geni: More properly switch to DMA mode
-To:     Douglas Anderson <dianders@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Wolfram Sang <wsa@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        linux-i2c@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Girish Mahadevan <girishm@codeaurora.org>,
-        Karthikeyan Ramasubramanian <kramasub@codeaurora.org>,
-        Mukesh Kumar Savaliya <msavaliy@codeaurora.org>,
-        linux-kernel@vger.kernel.org
-References: <20201008225235.2035820-1-dianders@chromium.org>
- <20201008155154.1.Ifdb1b69fa3367b81118e16e9e4e63299980ca798@changeid>
-From:   Akash Asthana <akashast@codeaurora.org>
-Message-ID: <698e9616-cca9-e01d-391e-ad0439c08e04@codeaurora.org>
-Date:   Mon, 12 Oct 2020 13:39:36 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S1728893AbgJLILh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 04:11:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726680AbgJLILg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 04:11:36 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7838C0613CE;
+        Mon, 12 Oct 2020 01:11:34 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id t25so21885246ejd.13;
+        Mon, 12 Oct 2020 01:11:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=reply-to:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=M1NhPSK8WcpTtZeyW8ggYwirkBLqPyAO/qcKCJS3Ci0=;
+        b=hooBfwk+2I80d0Ms8XxtPp3CfKDIx3enCApEOuuytF3Anb8bHKoLNqZfbtlJbU56Hb
+         yNwF7zdbzJAkZQVna9Si5mcidbKO5VoSKaNZpmIZIrXhFaGg0IHkXmRwRBHAoGB1ddD9
+         ZKw3QjFBs+o7tQRDviU6aBtv/ckgsVeO558kbxdQAJXW1toWHTWlxDplYsvVyD2f/odt
+         i/g0Botby3AkC2oTpABiBaKl/jcVCDz9nRj9CqvSQ8rBj7gVuIpkRNy85vuRePFfd4Rp
+         cBlY/IUcu4KNrcgO3at/VEVS6tfMIxZ6VUZRaJBSrNxFxh53vobe1uI/OhZJbjdkg32x
+         Y+cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:reply-to:subject:to:cc:references:from
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-transfer-encoding:content-language;
+        bh=M1NhPSK8WcpTtZeyW8ggYwirkBLqPyAO/qcKCJS3Ci0=;
+        b=Sqit7FoOkWwFdZtQfFuK3jDIKx/+Izqmvw7mOBB8gkh2IOR+jrft+m0ZndwT/djinC
+         UysFssBHEmBc67dl5S0qPpPWqvSkfHCvlTTtpHovVGctfVLKqCr9nPqu7VU5rnHlhb9c
+         eRrTmEHnThv8qEsDgNCQlCTSfirMggDe4Fn4Tvnam9mb3TADtjCkWvb36VvXpIjyvSyA
+         DuGoBEgm63FnejNaY2LSsEy9X1rBAuBytptluFBj1YEhxhAtRHmcVnDkvSx7ZV3ZAtYW
+         T5WKAXxDw8zWviwvliu27XVDMMgOq//ELqUxKKlQDPzLLqP3tABCawZE3PUYYrueg2fq
+         SNhg==
+X-Gm-Message-State: AOAM532hWM2wQ7vYQNF6j+f1UBqExnYvfGFCN8xRDsYXwE952q0Oagrh
+        CGP80efQXvHaCcl7LzZlOZg=
+X-Google-Smtp-Source: ABdhPJweeE2yP6VxtQZod6lD2VKbJ5vhzDztVRMAHk7/HnG5S/RU3E8nwHmSCPtcnJZtER6cRV0qzw==
+X-Received: by 2002:a17:906:53d7:: with SMTP id p23mr26383911ejo.232.1602490293318;
+        Mon, 12 Oct 2020 01:11:33 -0700 (PDT)
+Received: from ?IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7? ([2a02:908:1252:fb60:be8a:bd56:1f94:86e7])
+        by smtp.gmail.com with ESMTPSA id j18sm10177649ejc.111.2020.10.12.01.11.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Oct 2020 01:11:32 -0700 (PDT)
+Reply-To: christian.koenig@amd.com
+Subject: Re: [PATCH 2/6] mm: introduce vma_set_file function v3
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, chris@chris-wilson.co.uk,
+        airlied@redhat.com, akpm@linux-foundation.org, daniel@ffwll.ch,
+        sumit.semwal@linaro.org, willy@infradead.org, jhubbard@nvidia.com
+References: <20201009150342.1979-1-christian.koenig@amd.com>
+ <20201009150342.1979-2-christian.koenig@amd.com>
+ <20201009151418.GW5177@ziepe.ca>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+Message-ID: <9592e3da-a105-b0ec-3fb2-be349c464c2c@gmail.com>
+Date:   Mon, 12 Oct 2020 10:11:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201008155154.1.Ifdb1b69fa3367b81118e16e9e4e63299980ca798@changeid>
+In-Reply-To: <20201009151418.GW5177@ziepe.ca>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am 09.10.20 um 17:14 schrieb Jason Gunthorpe:
+> On Fri, Oct 09, 2020 at 05:03:38PM +0200, Christian König wrote:
+>> +/*
+>> + * Change backing file, only valid to use during initial VMA setup.
+>> + */
+>> +void vma_set_file(struct vm_area_struct *vma, struct file *file)
+>> +{
+>> +	if (file)
+>> +	        get_file(file);
+>> +
+>> +	swap(vma->vm_file, file);
+>> +
+>> +	if (file)
+>> +		fput(file);
+>> +}
+> fput crashes when file is NULL so the error handling after
+> unmap_and_free_vma: can't handle this case, similarly vm_file can't be
+> NULL either.
+>
+> So just simply:
+>
+>   swap(vma->vm_file, file);
+>   get_file(vma->vm_file);
+>   fput(file);
+>   
+> Will do?
 
-On 10/9/2020 4:22 AM, Douglas Anderson wrote:
-> On geni-i2c transfers using DMA, it was seen that if you program the
-> command (I2C_READ) before calling geni_se_rx_dma_prep() that it could
-> cause interrupts to fire.  If we get unlucky, these interrupts can
-> just keep firing (and not be handled) blocking further progress and
-> hanging the system.
->
-> In commit 02b9aec59243 ("i2c: i2c-qcom-geni: Fix DMA transfer race")
-> we avoided that by making sure we didn't program the command until
-> after geni_se_rx_dma_prep() was called.  While that avoided the
-> problems, it also turns out to be invalid.  At least in the TX case we
-> started seeing sporadic corrupted transfers.  This is easily seen by
-> adding an msleep() between the DMA prep and the writing of the
-> command, which makes the problem worse.  That means we need to revert
-> that commit and find another way to fix the bogus IRQs.
->
-> Specifically, after reverting commit 02b9aec59243 ("i2c:
-> i2c-qcom-geni: Fix DMA transfer race"), I put some traces in.  I found
-> that the when the interrupts were firing like crazy:
-> - "m_stat" had bits for M_RX_IRQ_EN, M_RX_FIFO_WATERMARK_EN set.
-> - "dma" was set.
->
-> Further debugging showed that I could make the problem happen more
-> reliably by adding an "msleep(1)" any time after geni_se_setup_m_cmd()
-> ran up until geni_se_rx_dma_prep() programmed the length.
->
-> A rather simple fix is to change geni_se_select_dma_mode() so it's a
-> true inverse of geni_se_select_fifo_mode() and disables all the FIFO
-> related interrupts.  Now the problematic interrupts can't fire and we
-> can program things in the correct order without worrying.
->
-> As part of this, let's also change the writel_relaxed() in the prepare
-> function to a writel() so that our DMA is guaranteed to be prepared
-> now that we can't rely on geni_se_setup_m_cmd()'s writel().
->
-> NOTE: the only current user of GENI_SE_DMA in mainline is i2c.
->
-> Fixes: 37692de5d523 ("i2c: i2c-qcom-geni: Add bus driver for the Qualcomm GENI I2C controller")
-> Fixes: 02b9aec59243 ("i2c: i2c-qcom-geni: Fix DMA transfer race")
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Akash Asthana <akashast@codeaurora.org>
+I was considering this as well, yes.
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,\na Linux Foundation Collaborative Project
+> Just let it crash if any of them are wrongly NULL.
+
+Mhm, changing from anonymous to file backed or reverse is probably not 
+such a good idea.
+
+So yes catching those problems early is probably the best approach we 
+could do.
+
+Going to do this in v4 if nobody objects.
+
+Regards,
+Christian.
+
+>
+> Jason
 
