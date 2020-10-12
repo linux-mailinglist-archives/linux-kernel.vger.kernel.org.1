@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A230E28B9CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:04:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64AB328BA5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390878AbgJLOEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:04:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39132 "EHLO mail.kernel.org"
+        id S1731733AbgJLOId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:08:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730496AbgJLNg0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:36:26 -0400
+        id S1730459AbgJLNd2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:33:28 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 124CB2074F;
-        Mon, 12 Oct 2020 13:36:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 04EB42087E;
+        Mon, 12 Oct 2020 13:33:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509785;
-        bh=OPa5yQLzYJHvajpXaufU2Bxo/HPPfAOXikCA6XAhZNY=;
+        s=default; t=1602509607;
+        bh=IaFkkKqz+j+4058K/qo2yULq6Tsf1e3p8QUKOnugrO4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U3mpRK4Vo3fhNNFqCP4iwZVmYWI3vVi4GIQzIwlvzSJu8ESx+axOfQSQz9WhDwmQQ
-         On9DTqwXXxNKoMP/qd00z0F7DquTAo6exrbNo203x5PlfJajFeoFhDTLJ1EMTZNnQB
-         hSLN9yT6wvCGlID57mrNvsOaPSHdUWvRP6O6EZJc=
+        b=ZYjSXYkvx0IoDYr1zlp/G7eGDYca3yfYMs0blaRYIMsC/gPPrRHlzKxIJJ+42R0cv
+         vEkGdTKiMvPvn5Cb3xABhSJtCkvEDGsirecLZswLey907Xegn4FwMoKdq7UWJwqZBU
+         AllkQB35AcEMLriLDMz3uV7v0S/cdDEiOJNsNB6w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH 4.14 29/70] ep_create_wakeup_source(): dentry name can change under you...
-Date:   Mon, 12 Oct 2020 15:26:45 +0200
-Message-Id: <20201012132631.595858190@linuxfoundation.org>
+        stable@vger.kernel.org, Will McVicker <willmcvicker@google.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 4.4 16/39] netfilter: ctnetlink: add a range check for l3/l4 protonum
+Date:   Mon, 12 Oct 2020 15:26:46 +0200
+Message-Id: <20201012132628.896589178@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132630.201442517@linuxfoundation.org>
-References: <20201012132630.201442517@linuxfoundation.org>
+In-Reply-To: <20201012132628.130632267@linuxfoundation.org>
+References: <20201012132628.130632267@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +42,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+From: Will McVicker <willmcvicker@google.com>
 
-commit 3701cb59d892b88d569427586f01491552f377b1 upstream.
+commit 1cc5ef91d2ff94d2bf2de3b3585423e8a1051cb6 upstream.
 
-or get freed, for that matter, if it's a long (separately stored)
-name.
+The indexes to the nf_nat_l[34]protos arrays come from userspace. So
+check the tuple's family, e.g. l3num, when creating the conntrack in
+order to prevent an OOB memory access during setup.  Here is an example
+kernel panic on 4.14.180 when userspace passes in an index greater than
+NFPROTO_NUMPROTO.
 
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
+Modules linked in:...
+Process poc (pid: 5614, stack limit = 0x00000000a3933121)
+CPU: 4 PID: 5614 Comm: poc Tainted: G S      W  O    4.14.180-g051355490483
+Hardware name: Qualcomm Technologies, Inc. SM8150 V2 PM8150 Google Inc. MSM
+task: 000000002a3dfffe task.stack: 00000000a3933121
+pc : __cfi_check_fail+0x1c/0x24
+lr : __cfi_check_fail+0x1c/0x24
+...
+Call trace:
+__cfi_check_fail+0x1c/0x24
+name_to_dev_t+0x0/0x468
+nfnetlink_parse_nat_setup+0x234/0x258
+ctnetlink_parse_nat_setup+0x4c/0x228
+ctnetlink_new_conntrack+0x590/0xc40
+nfnetlink_rcv_msg+0x31c/0x4d4
+netlink_rcv_skb+0x100/0x184
+nfnetlink_rcv+0xf4/0x180
+netlink_unicast+0x360/0x770
+netlink_sendmsg+0x5a0/0x6a4
+___sys_sendmsg+0x314/0x46c
+SyS_sendmsg+0xb4/0x108
+el0_svc_naked+0x34/0x38
+
+This crash is not happening since 5.4+, however, ctnetlink still
+allows for creating entries with unsupported layer 3 protocol number.
+
+Fixes: c1d10adb4a521 ("[NETFILTER]: Add ctnetlink port for nf_conntrack")
+Signed-off-by: Will McVicker <willmcvicker@google.com>
+[pablo@netfilter.org: rebased original patch on top of nf.git]
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/eventpoll.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ net/netfilter/nf_conntrack_netlink.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/fs/eventpoll.c
-+++ b/fs/eventpoll.c
-@@ -1389,7 +1389,7 @@ static int reverse_path_check(void)
+--- a/net/netfilter/nf_conntrack_netlink.c
++++ b/net/netfilter/nf_conntrack_netlink.c
+@@ -1022,6 +1022,8 @@ ctnetlink_parse_tuple(const struct nlatt
+ 	if (!tb[CTA_TUPLE_IP])
+ 		return -EINVAL;
  
- static int ep_create_wakeup_source(struct epitem *epi)
- {
--	const char *name;
-+	struct name_snapshot n;
- 	struct wakeup_source *ws;
++	if (l3num != NFPROTO_IPV4 && l3num != NFPROTO_IPV6)
++		return -EOPNOTSUPP;
+ 	tuple->src.l3num = l3num;
  
- 	if (!epi->ep->ws) {
-@@ -1398,8 +1398,9 @@ static int ep_create_wakeup_source(struc
- 			return -ENOMEM;
- 	}
- 
--	name = epi->ffd.file->f_path.dentry->d_name.name;
--	ws = wakeup_source_register(name);
-+	take_dentry_name_snapshot(&n, epi->ffd.file->f_path.dentry);
-+	ws = wakeup_source_register(n.name);
-+	release_dentry_name_snapshot(&n);
- 
- 	if (!ws)
- 		return -ENOMEM;
+ 	err = ctnetlink_parse_tuple_ip(tb[CTA_TUPLE_IP], tuple);
 
 
