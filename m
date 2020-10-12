@@ -2,94 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A295528AF94
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 10:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB9E28AF95
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 10:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727879AbgJLIDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 04:03:03 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:53605 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726640AbgJLIDC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 04:03:02 -0400
-Received: from mail-lf1-f53.google.com ([209.85.167.53]) by
- mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1Mx0VH-1kHvLz2vvv-00yQ5g; Mon, 12 Oct 2020 10:03:00 +0200
-Received: by mail-lf1-f53.google.com with SMTP id c141so10789852lfg.5;
-        Mon, 12 Oct 2020 01:03:00 -0700 (PDT)
-X-Gm-Message-State: AOAM5329rPpF4X0jNpISzjyKGS9ElycpcARJDozJ56RnJ66uV3ypd9tX
-        3wzPkXSqMqnKu1qiwSZ5g87TZu1gGWijPS/Oe4E=
-X-Google-Smtp-Source: ABdhPJx11cXgd7NuyGgFGTokjzGvI9x76aNkz9qF5daELeSTHToGxJqvkn1G/zD5r3PdGT6e1Rse9dVo5HWd3YU1gAM=
-X-Received: by 2002:ac2:446b:: with SMTP id y11mr4705383lfl.403.1602489780126;
- Mon, 12 Oct 2020 01:03:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201012095158.779c6d9d@canb.auug.org.au>
-In-Reply-To: <20201012095158.779c6d9d@canb.auug.org.au>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 12 Oct 2020 10:02:43 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2gLDw8rOYPgg=-hnNcK_5NW-fGHmiJ3ntb0dbf1EjQOQ@mail.gmail.com>
-Message-ID: <CAK8P3a2gLDw8rOYPgg=-hnNcK_5NW-fGHmiJ3ntb0dbf1EjQOQ@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the arm64 tree with the asm-generic tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:xjt3PXPnjTuI/+1Dwfs2jLk7eSdwUQnP7mRB6hkbAUPLqqPBDoe
- vVpzSDhsw3iVH2AdbC5t5lgvVhTflkVgXGeNVGemPiWNlyxYI0E78GrBEZX6wq+ry3r9r2d
- SQy6t/tInQgWYmzWEBjo395Eh/ksXTA9h1g+C437WzJKcJg4l7yX7qTcZ+yjPvkClTkxu7L
- X6xVKDmI4chPLMgVU08Rw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:5A5TrkE48kY=:ZcYEY4RLldJ54grMBAQIMc
- T7APgyTnY4Lo9n/iJup7Wr+9Fkpp9oa0fgJE41CiTDEfVauiRWyvr7Ffjh8rCU2xCCufKCy5X
- 5y/CDc+JB9hdTX1ARA8UUxhr38GL69Zqcv9iBsZGGEHef7XLizzfPFmX0Po1i7jMbfpVm8M1Z
- 7cXR5gyrLiWRESpzWU9aUFKll57JQlNEze1BdAzlyJlb2+DyHTzXjmVpkLhgRDJNPnF/87iRi
- 8YlGpojFMq3dnPoMYQ8rrarvjkVMXKOAZczAKn/TO1jsldVZM4Hy8pqATctqXvorA/l3rYnCv
- h8CaIOTu8c/blXqaiPK7vdXPlzKUtW7uvU2Jw7VfQQ+It0nEZa1/11P2nPQK+4rCVZbTaGINa
- MGbgPx6EVGimce5u9ivGDZFB1cmia8lVtNPb0St6sYRQ8aB9Wv99louZRhX52ZPW8scahaoUs
- hXe9AmbsnBVNAaugNtO83XOAQxWP92hYtc+q4LYdgiyUO3dgG3hEcIUY79JPTZ6h/2iI6LUhU
- oLo9EFkAMUvO7KR4RN2EzcftRb/eEMq8h8yMCWqoMU1LkzCGioCPpgJO1Rx3spotyzGn1zCr+
- IWSuFPXZfPoBDdSChUDk0ZJ3CxGFo+tbkNWLSsPnPReFGDJ0enwnFXaPkHtNtTzvUuqSekrYa
- D+EaINPLuePNXXmqLhZeypaRxREmGnO2Ec9aAhF99eCxvR9RVvQ1kzcp/sUFVrdlpo91Mz1Gl
- WKjO63jBFdeApOXVI7ewZhZNMpRVoTitii9s7pYEfepXvKlpyRPDykPqZECkqo9/Tg/SD9ooZ
- dYSVuUBdrFQm7T+7t95OwTUngHYPBg7Fe3ZF10PHMeYHahdonefTVcZvMEWQLKsSnjfFs12M+
- yTmc0bQwmIJX67OpztIABOCQDTClvcZ/7yspeBZ5H0GrYbfpNgp5vFhbBpurkVizp7YsvluHe
- c1cUf3iGWrwBG7mFu6bv8lvggymVsXw9+V5kt1YqRk8ooRdGXomuO
+        id S1726739AbgJLIDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 04:03:42 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:54057 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726412AbgJLIDl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 04:03:41 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4C8rlp5RKgz9typT;
+        Mon, 12 Oct 2020 10:03:34 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id xB5zi7FBj2g6; Mon, 12 Oct 2020 10:03:34 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4C8rlp3CQlz9typR;
+        Mon, 12 Oct 2020 10:03:34 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7B2468B784;
+        Mon, 12 Oct 2020 10:03:39 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id HFyR3Qgm5_FC; Mon, 12 Oct 2020 10:03:39 +0200 (CEST)
+Received: from po17688vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.100])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4863C8B783;
+        Mon, 12 Oct 2020 10:03:39 +0200 (CEST)
+Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 310F266441; Mon, 12 Oct 2020 08:03:39 +0000 (UTC)
+Message-Id: <0346768708b69bdbfec82f6e5b0364962b9b6932.1602489812.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/features: Remove CPU_FTR_NODSISRALIGN
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Mon, 12 Oct 2020 08:03:39 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 12:52 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> Today's linux-next merge of the arm64 tree got a conflict in:
->
->   arch/arm64/include/asm/mmu_context.h
->
-> between commit:
->
->   f911c2a7c096 ("arm64: use asm-generic/mmu_context.h for no-op implementations")
->
-> from the asm-generic tree and commit:
->
->   48118151d8cc ("arm64: mm: Pin down ASIDs for sharing mm with devices")
->
-> from the arm64 tree.
->
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->
+CPU_FTR_NODSISRALIGN has not been used since
+commit 31bfdb036f12 ("powerpc: Use instruction emulation
+infrastructure to handle alignment faults")
 
-Sorry about that, I had pushed my asm-generic branch to the correct
-location on Friday after I noticed it was missing. Removed it again now
-until the end up the merge window.
+Remove it.
 
-       Arnd
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/include/asm/cputable.h | 22 ++++++++++------------
+ arch/powerpc/kernel/dt_cpu_ftrs.c   |  8 --------
+ arch/powerpc/kernel/prom.c          |  2 +-
+ 3 files changed, 11 insertions(+), 21 deletions(-)
+
+diff --git a/arch/powerpc/include/asm/cputable.h b/arch/powerpc/include/asm/cputable.h
+index 9780c55f9811..accdc1286f37 100644
+--- a/arch/powerpc/include/asm/cputable.h
++++ b/arch/powerpc/include/asm/cputable.h
+@@ -137,7 +137,6 @@ static inline void cpu_feature_keys_init(void) { }
+ #define CPU_FTR_DBELL			ASM_CONST(0x00000004)
+ #define CPU_FTR_CAN_NAP			ASM_CONST(0x00000008)
+ #define CPU_FTR_DEBUG_LVL_EXC		ASM_CONST(0x00000010)
+-#define CPU_FTR_NODSISRALIGN		ASM_CONST(0x00000020)
+ #define CPU_FTR_FPU_UNAVAILABLE		ASM_CONST(0x00000040)
+ #define CPU_FTR_LWSYNC			ASM_CONST(0x00000080)
+ #define CPU_FTR_NOEXECUTE		ASM_CONST(0x00000100)
+@@ -219,7 +218,7 @@ static inline void cpu_feature_keys_init(void) { }
+ 
+ #ifndef __ASSEMBLY__
+ 
+-#define CPU_FTR_PPCAS_ARCH_V2	(CPU_FTR_NOEXECUTE | CPU_FTR_NODSISRALIGN)
++#define CPU_FTR_PPCAS_ARCH_V2	(CPU_FTR_NOEXECUTE)
+ 
+ #define MMU_FTR_PPCAS_ARCH_V2 	(MMU_FTR_TLBIEL | MMU_FTR_16M_PAGE)
+ 
+@@ -378,33 +377,33 @@ static inline void cpu_feature_keys_init(void) { }
+ 	    CPU_FTR_COMMON | CPU_FTR_FPU_UNAVAILABLE  | CPU_FTR_NOEXECUTE)
+ #define CPU_FTRS_CLASSIC32	(CPU_FTR_COMMON)
+ #define CPU_FTRS_8XX	(CPU_FTR_NOEXECUTE)
+-#define CPU_FTRS_40X	(CPU_FTR_NODSISRALIGN | CPU_FTR_NOEXECUTE)
+-#define CPU_FTRS_44X	(CPU_FTR_NODSISRALIGN | CPU_FTR_NOEXECUTE)
+-#define CPU_FTRS_440x6	(CPU_FTR_NODSISRALIGN | CPU_FTR_NOEXECUTE | \
++#define CPU_FTRS_40X	(CPU_FTR_NOEXECUTE)
++#define CPU_FTRS_44X	(CPU_FTR_NOEXECUTE)
++#define CPU_FTRS_440x6	(CPU_FTR_NOEXECUTE | \
+ 	    CPU_FTR_INDEXED_DCR)
+ #define CPU_FTRS_47X	(CPU_FTRS_440x6)
+ #define CPU_FTRS_E200	(CPU_FTR_SPE_COMP | \
+-	    CPU_FTR_NODSISRALIGN | CPU_FTR_COHERENT_ICACHE | \
++	    CPU_FTR_COHERENT_ICACHE | \
+ 	    CPU_FTR_NOEXECUTE | \
+ 	    CPU_FTR_DEBUG_LVL_EXC)
+ #define CPU_FTRS_E500	(CPU_FTR_MAYBE_CAN_DOZE | \
+-	    CPU_FTR_SPE_COMP | CPU_FTR_MAYBE_CAN_NAP | CPU_FTR_NODSISRALIGN | \
++	    CPU_FTR_SPE_COMP | CPU_FTR_MAYBE_CAN_NAP | \
+ 	    CPU_FTR_NOEXECUTE)
+ #define CPU_FTRS_E500_2	(CPU_FTR_MAYBE_CAN_DOZE | \
+ 	    CPU_FTR_SPE_COMP | CPU_FTR_MAYBE_CAN_NAP | \
+-	    CPU_FTR_NODSISRALIGN | CPU_FTR_NOEXECUTE)
+-#define CPU_FTRS_E500MC	(CPU_FTR_NODSISRALIGN | \
++	    CPU_FTR_NOEXECUTE)
++#define CPU_FTRS_E500MC	( \
+ 	    CPU_FTR_LWSYNC | CPU_FTR_NOEXECUTE | \
+ 	    CPU_FTR_DBELL | CPU_FTR_DEBUG_LVL_EXC | CPU_FTR_EMB_HV)
+ /*
+  * e5500/e6500 erratum A-006958 is a timebase bug that can use the
+  * same workaround as CPU_FTR_CELL_TB_BUG.
+  */
+-#define CPU_FTRS_E5500	(CPU_FTR_NODSISRALIGN | \
++#define CPU_FTRS_E5500	( \
+ 	    CPU_FTR_LWSYNC | CPU_FTR_NOEXECUTE | \
+ 	    CPU_FTR_DBELL | CPU_FTR_POPCNTB | CPU_FTR_POPCNTD | \
+ 	    CPU_FTR_DEBUG_LVL_EXC | CPU_FTR_EMB_HV | CPU_FTR_CELL_TB_BUG)
+-#define CPU_FTRS_E6500	(CPU_FTR_NODSISRALIGN | \
++#define CPU_FTRS_E6500	( \
+ 	    CPU_FTR_LWSYNC | CPU_FTR_NOEXECUTE | \
+ 	    CPU_FTR_DBELL | CPU_FTR_POPCNTB | CPU_FTR_POPCNTD | \
+ 	    CPU_FTR_DEBUG_LVL_EXC | CPU_FTR_EMB_HV | CPU_FTR_ALTIVEC_COMP | \
+@@ -554,7 +553,6 @@ enum {
+ #define CPU_FTRS_DT_CPU_BASE			\
+ 	(CPU_FTR_LWSYNC |			\
+ 	 CPU_FTR_FPU_UNAVAILABLE |		\
+-	 CPU_FTR_NODSISRALIGN |			\
+ 	 CPU_FTR_NOEXECUTE |			\
+ 	 CPU_FTR_COHERENT_ICACHE |		\
+ 	 CPU_FTR_STCX_CHECKS_ADDRESS |		\
+diff --git a/arch/powerpc/kernel/dt_cpu_ftrs.c b/arch/powerpc/kernel/dt_cpu_ftrs.c
+index 1098863e17ee..c598961d9f15 100644
+--- a/arch/powerpc/kernel/dt_cpu_ftrs.c
++++ b/arch/powerpc/kernel/dt_cpu_ftrs.c
+@@ -273,13 +273,6 @@ static int __init feat_enable_idle_nap(struct dt_cpu_feature *f)
+ 	return 1;
+ }
+ 
+-static int __init feat_enable_align_dsisr(struct dt_cpu_feature *f)
+-{
+-	cur_cpu_spec->cpu_features &= ~CPU_FTR_NODSISRALIGN;
+-
+-	return 1;
+-}
+-
+ static int __init feat_enable_idle_stop(struct dt_cpu_feature *f)
+ {
+ 	u64 lpcr;
+@@ -641,7 +634,6 @@ static struct dt_cpu_feature_match __initdata
+ 	{"tm-suspend-hypervisor-assist", feat_enable, CPU_FTR_P9_TM_HV_ASSIST},
+ 	{"tm-suspend-xer-so-bug", feat_enable, CPU_FTR_P9_TM_XER_SO_BUG},
+ 	{"idle-nap", feat_enable_idle_nap, 0},
+-	{"alignment-interrupt-dsisr", feat_enable_align_dsisr, 0},
+ 	{"idle-stop", feat_enable_idle_stop, 0},
+ 	{"machine-check-power8", feat_enable_mce_power8, 0},
+ 	{"performance-monitor-power8", feat_enable_pmu_power8, 0},
+diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
+index c1545f22c077..a5a5acb627fe 100644
+--- a/arch/powerpc/kernel/prom.c
++++ b/arch/powerpc/kernel/prom.c
+@@ -165,7 +165,7 @@ static struct ibm_pa_feature {
+ #ifdef CONFIG_PPC_RADIX_MMU
+ 	{ .pabyte = 40, .pabit = 0, .mmu_features  = MMU_FTR_TYPE_RADIX | MMU_FTR_GTSE },
+ #endif
+-	{ .pabyte = 1,  .pabit = 1, .invert = 1, .cpu_features = CPU_FTR_NODSISRALIGN },
++	{ .pabyte = 1,  .pabit = 1, .invert = 1, },
+ 	{ .pabyte = 5,  .pabit = 0, .cpu_features  = CPU_FTR_REAL_LE,
+ 				    .cpu_user_ftrs = PPC_FEATURE_TRUE_LE },
+ 	/*
+-- 
+2.25.0
+
