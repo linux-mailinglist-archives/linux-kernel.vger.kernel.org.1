@@ -2,113 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB1428C2D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 22:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6ACF28C335
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 22:48:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730636AbgJLUoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 16:44:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40560 "EHLO
+        id S1729474AbgJLUrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 16:47:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729162AbgJLUoj (ORCPT
+        with ESMTP id S1729541AbgJLUqq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 16:44:39 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0312C0613D0;
-        Mon, 12 Oct 2020 13:44:38 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602535477;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2D9ftb4BNlPgU4fGOVcc9hqHah5NjLimpJgfMw28f+o=;
-        b=3/o7m4+JNTO8cP79WuCRiuRnkNMsIzvD57ZEvEm9wyGyPse3QVqeClMl/XBroA5Gw5sryY
-        yt1B4FPqa8dQZVnOskzF4aK2RvAdaPtSNuvrq2kiHKwjtrI2O56Doey5MrVWZ1PmMtFe51
-        nIgCRI/OA1S/wFNBCKjgyh2PPtOYor7ZlBPcXGGO9efhAqy/xfK5oMj09dFsWK+REE51vs
-        QtnliaSEueOg5DKUKyvIr/bYO3yvxWZ6lOX7iWnhT5LL+Vf3dHfFjZNNjjcYZWGXKeWwU4
-        VdlYT89JkZ+cBgIEAmwK1KJnZbO6NmNDuL/ib8buYfCUf/2RV6R9QHIynPbu9A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602535477;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2D9ftb4BNlPgU4fGOVcc9hqHah5NjLimpJgfMw28f+o=;
-        b=qK6+kw4fzMu2UlI7byqtGAmPcI78XzzYUsSPXcvpiK8RQ/WaolXUVuLHhBgI49kAgKr+DQ
-        n59ZXMNHRPEyWhCQ==
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Philip Blundell <philb@gnu.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Sam Creasey <sammy@sammy.net>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "linux-ia64\@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 11/13] timekeeping: remove xtime_update
-In-Reply-To: <CAK8P3a2hY+Vc3S32KKBJj7gUaUFQb4=rKsRJwCwhAbYP7CakzA@mail.gmail.com>
-References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-12-arnd@arndb.de> <CAMuHMdU7bn7rzG-0xzr4St1uArGoOhw6dy7HCkrHRvYqM38Wxg@mail.gmail.com> <CAK8P3a2hY+Vc3S32KKBJj7gUaUFQb4=rKsRJwCwhAbYP7CakzA@mail.gmail.com>
+        Mon, 12 Oct 2020 16:46:46 -0400
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 621C9C0613D8
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 13:46:06 -0700 (PDT)
+Received: by mail-wr1-x449.google.com with SMTP id p6so9295805wrm.23
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 13:46:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=traBQYsXDq59+qKm3sjLr2vdah15OLSAttojnE/4vlo=;
+        b=bW93PBWy6nemY2gKKLQnIl0lRZdoml7mRyefWR4721T7HG0oulUbLdoxcevnFAA7kg
+         LwHbM5TCY35W8CTjz492p0Y5lDl447wvtP1+/1OQgrLuH3CgugUalCzuEDCXikOnf3oD
+         Ok3iKXqjT8LB8NTPQXbmjzl9AtFNcA5gyOQfrdAm1hjP6gv5zVSXe0ShEAsNLq4R8h5D
+         rwjFDxToe3PCsHZdwBM+LAPKf4qAsjeN+Y7uBBMSG8ZQD6SyadB2c7RawaFgKYu88cuB
+         OCyyItoaODsudu6KJf0h4zJGyxfvaOc5/c6BaX6LpCQ1J576RMgRiFdoi9lfmtNPFoEM
+         qimA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=traBQYsXDq59+qKm3sjLr2vdah15OLSAttojnE/4vlo=;
+        b=dcLSFb92syaccqi23FJPiUbHt5Lto0tc2Ny9JP02LZREO6m21Di1z4YIOlz6pUXDip
+         iDaEiYWHwVarK1cSje/3scDX8RqdhWArM41BPB5D51hv2llRlHfE81n/UUVMdBdXuZ5I
+         ckSzSuyKZQdpf2+HnlWGnuiewpX/HMZBrP/X7VLY3pfhRYQG3gU4VfyWDq6uChL9xUz1
+         ecDgIVFuJzuMHHEAORhnbiKOar07fxMfqq/LhNBDeMAQBUg9kyX+TuT62mYPw9vYLArX
+         8vG8qSYnS5W0Gq/naIENEwjBUufN0uNcY9BBp0dMHu28Ge8c7nhYpgk6746TOZCJ0FxJ
+         Vyvw==
+X-Gm-Message-State: AOAM533Y/wsg+qt2AOgguEei6TtfvVkm7mzJtLlXj909J6d6XBJetrEM
+        WMvm+/XrRZvWRqwnPvYeI8vd5IeBsG7gVVvX
+X-Google-Smtp-Source: ABdhPJyNk1zfo2KZpql4kYkRkaffcHPcxvd5YlB1ciKfNhyx/rQd/2Jivu4X/alDsFB8bgyWDwncJ4My9B/GEanQ
+Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
+X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
+ (user=andreyknvl job=sendgmr) by 2002:a1c:a3c2:: with SMTP id
+ m185mr10326465wme.161.1602535565034; Mon, 12 Oct 2020 13:46:05 -0700 (PDT)
 Date:   Mon, 12 Oct 2020 22:44:36 +0200
-Message-ID: <87pn5np423.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <cover.1602535397.git.andreyknvl@google.com>
+Message-Id: <38ca7c139b94d2de5152d30496aedb0a193507a8.1602535397.git.andreyknvl@google.com>
+Mime-Version: 1.0
+References: <cover.1602535397.git.andreyknvl@google.com>
+X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
+Subject: [PATCH v5 30/40] kasan, arm64: don't allow SW_TAGS with ARM64_MTE
+From:   Andrey Konovalov <andreyknvl@google.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev@googlegroups.com, Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12 2020 at 15:37, Arnd Bergmann wrote:
-> On Mon, Oct 12, 2020 at 3:16 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->> On Thu, Oct 8, 2020 at 5:48 PM Arnd Bergmann <arnd@arndb.de> wrote:
->> The comment about xtime_update() in arch/ia64/kernel/time.c needs
->> an update.
->
-> I think the correct action for ia64 would be to make it a
-> proper clockevent driver with oneshot support, and remove
-> the rest of this logic.
+Software tag-based KASAN provides its own tag checking machinery that
+can conflict with MTE. Don't allow enabling software tag-based KASAN
+when MTE is enabled.
 
-Correct action would be to remove all of arch/ia64 :)
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+---
+Change-Id: Icd29bd0c6b1d3d7a0ee3d50c20490f404d34fc97
+---
+ arch/arm64/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> I could try to rewrite the comment, but I tried not to touch that
-> part since I don't understand the logic behind it. Maybe the
-> ia64 maintainers can comment here why it even tries to skip
-> a timer tick. Is there a danger of ending up with the timer irq
-> permanently disabled if the timer_interrupt() function returns
-> with the itm register in the past, or is this simply about not having
-> too many interrupts in a row?
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index f27297ac70bf..192544fcd1a5 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -131,7 +131,7 @@ config ARM64
+ 	select HAVE_ARCH_JUMP_LABEL
+ 	select HAVE_ARCH_JUMP_LABEL_RELATIVE
+ 	select HAVE_ARCH_KASAN if !(ARM64_16K_PAGES && ARM64_VA_BITS_48)
+-	select HAVE_ARCH_KASAN_SW_TAGS if HAVE_ARCH_KASAN
++	select HAVE_ARCH_KASAN_SW_TAGS if (HAVE_ARCH_KASAN && !ARM64_MTE)
+ 	select HAVE_ARCH_KGDB
+ 	select HAVE_ARCH_MMAP_RND_BITS
+ 	select HAVE_ARCH_MMAP_RND_COMPAT_BITS if COMPAT
+-- 
+2.28.0.1011.ga647a8990f-goog
 
-There was a comment in the initial ia64 code:
-
-                * There is a race condition here: to be on the "safe"
-                * side, we process timer ticks until itm.next is
-                * ahead of the itc by at least half the timer
-                * interval.  This should give us enough time to set
-                * the new itm value without losing a timer tick.
-
-The ITM (Interval Timer Match) register is raising an interrupt when the
-ITM value matches the ITC (Interval Timer Counter) register. If the new
-counter is already past the match then the timer interrupt will happen
-once ITC wrapped around and reaches the match value again. Might take
-ages for a 64bit counter to do that. :)
-
-IIRC, PXA had the same problem and HPET definitely has it as well. Seems
-Intel patented the concept of broken timers, but at least they listened
-when they proposed to implement the TSC deadline timer on x86 in the
-exact same way.
-
-See hpet_clkevt_set_next_event() for the gory details how to handle that
-correctly.
-
-Thanks,
-
-        tglx
