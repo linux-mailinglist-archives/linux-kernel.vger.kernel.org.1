@@ -2,184 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20A5428C14F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 21:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE45E28C14B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 21:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389066AbgJLTPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 15:15:47 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:35846 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729890AbgJLTPq (ORCPT
+        id S1731011AbgJLTPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 15:15:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729890AbgJLTPQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 15:15:46 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09CJDlEW058263;
-        Mon, 12 Oct 2020 19:15:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=e7LLkEO6oOyhsGoOKklJm6Moay2fNLlI0j3ff+Zw1hQ=;
- b=iVhJLpjoQ+ueDWP1B+2MErB5kQ+Pg1MEBqYyWQz7MGfjt9dolEfTFk9wWUr1g7XaYZ1h
- 3CAFy1WRrzHXIDEkTPMTaLs2uivQUa5M6cJPdgkopysX1E3uxCiQC5fkKQTxXpdPwvVo
- vSMEGJFnpxx+lqAt/5nRbdj8BL0rHr6d4Q0E/9HjoO3/1HQZ7V1McPa0wG6yLjrsX/zY
- HwdrD8/TcJViHpRS6+esRpDHEuRG1L1yq12LuDzxGu70MOj/M0GzNlrZ5bO/N0leSWx/
- Iotpq8gtOMxQV5k6GUHHRxRsqdv84wbTEB6s4Fo5KRrjuLkJdGG5jx40WlI9QVVI4jmF tw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 343vae52r0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 12 Oct 2020 19:15:10 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09CJATMP051832;
-        Mon, 12 Oct 2020 19:15:09 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 343pvvbhke-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 12 Oct 2020 19:15:09 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09CJF02N014682;
-        Mon, 12 Oct 2020 19:15:00 GMT
-Received: from [10.65.146.162] (/10.65.146.162)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 12 Oct 2020 12:15:00 -0700
-Subject: Re: [PATCH 1/2] mm/mprotect: Call arch_validate_prot under mmap_lock
- and with length
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Jann Horn <jannh@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        sparclinux@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Anthony Yznaga <anthony.yznaga@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org
-References: <20201007073932.865218-1-jannh@google.com>
- <d5332a7b-c300-6d28-18b9-4b7d4110ef86@oracle.com>
- <20201010110949.GA32545@gaia>
- <af207cf8-3049-85eb-349d-5fed6b9be49c@oracle.com>
- <20201012172218.GE6493@gaia>
-From:   Khalid Aziz <khalid.aziz@oracle.com>
-Organization: Oracle Corp
-X-Pep-Version: 2.0
-Message-ID: <20c85633-b559-c299-3e57-ae136b201526@oracle.com>
-Date:   Mon, 12 Oct 2020 13:14:50 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 12 Oct 2020 15:15:16 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 025EDC0613D0;
+        Mon, 12 Oct 2020 12:15:16 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id c21so1531115ljj.0;
+        Mon, 12 Oct 2020 12:15:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=HoEgSi7W4gHD9lScysoMmzA283msUCELsQqu811nuNc=;
+        b=Ql1melcRhvWByESFg5O9z6kB9ZaejNEcoZdrPtWcHm5Eb+e5dEy98OHoHK4KMI2qvs
+         BQbhmbBhTukGkR6Q48H5ZM27KZKnMeP2hVXC0TSoA+qQvkm9o8wE/+LF1rVnj/ar4xAF
+         Qror7GlA7bJ2bzmz2QWfUBs8yBTTNxkCL0HpPmUzKqOhaDoa6qRTCjs8xGcriqroLZAR
+         V76TOINy7/Wulmj/k/4QrmvLbA9NzyHoH/vyZUqRMQ8pMYwL1LPGHQswhd0jwVv+3eSy
+         bVo9G1b4xp9hb1TemZo1b/eBszcC0Kc+o3gaCGKztpcU+AG/e+dFRg+PlwYmkACn1S5I
+         Tc/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=HoEgSi7W4gHD9lScysoMmzA283msUCELsQqu811nuNc=;
+        b=aXSorLj5P5Qttjb+8kuZec5RXrWs7tpcmpze1LHcSvgQA3vmcsKdbwv3ICpGzzMOpU
+         3gFGTXfi7g3Qw0+6AZ86DdpcBs5sNZWReopECJQrfpR7lFj3OI9Q945TlCGbK0IkwJ56
+         Dxr4XMcRJKrIVwApcTRTasT8+vhvCVf/JYTisnxLFxXqrH6SSp6HtPRy+df8Io58PnYL
+         J2Gev2CMqubZX4r++Hu8kScE9ndXojGRqMifxDeCa1cFQrRhC+7MXQiQBI9NovGDJL9N
+         a7TFITLXHxsrBB/26mYuLdhAA6Yd8t65h5cvSFAPqA/R3341bXvtcni2E9OXNrZZBokT
+         r7Uw==
+X-Gm-Message-State: AOAM531YOwRbKrJJCPWvXnjSys2ZQNXfsPAappc5QDMBbUpWgwBDX0aO
+        LYIpbZGG79zfV/34xqvezyI=
+X-Google-Smtp-Source: ABdhPJyunP+sr/B3JWabN71d6meVGuLl7M/RSAPI9eowpJdSxaoXQ/4ExdCfDtrOaJiRLT2GklJNOQ==
+X-Received: by 2002:a2e:a41a:: with SMTP id p26mr3102963ljn.126.1602530114236;
+        Mon, 12 Oct 2020 12:15:14 -0700 (PDT)
+Received: from grain.localdomain ([5.18.102.224])
+        by smtp.gmail.com with ESMTPSA id q27sm1092814lfd.261.2020.10.12.12.15.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 12:15:13 -0700 (PDT)
+Received: by grain.localdomain (Postfix, from userid 1000)
+        id 0C3381A032A; Mon, 12 Oct 2020 22:15:11 +0300 (MSK)
+Date:   Mon, 12 Oct 2020 22:15:11 +0300
+From:   Cyrill Gorcunov <gorcunov@gmail.com>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Subject: Re: [PATCH v14 1/7] x86/cet/ibt: Add Kconfig option for user-mode
+ Indirect Branch Tracking
+Message-ID: <20201012191511.GC14048@grain>
+References: <20201012154530.28382-1-yu-cheng.yu@intel.com>
+ <20201012154530.28382-2-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20201012172218.GE6493@gaia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9772 signatures=668681
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 adultscore=0
- bulkscore=0 mlxlogscore=999 suspectscore=0 malwarescore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010120142
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9772 signatures=668681
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 clxscore=1015
- impostorscore=0 phishscore=0 malwarescore=0 bulkscore=0 priorityscore=1501
- mlxscore=0 suspectscore=0 spamscore=0 adultscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010120143
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201012154530.28382-2-yu-cheng.yu@intel.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/20 11:22 AM, Catalin Marinas wrote:
-> On Mon, Oct 12, 2020 at 11:03:33AM -0600, Khalid Aziz wrote:
->> On 10/10/20 5:09 AM, Catalin Marinas wrote:
->>> On Wed, Oct 07, 2020 at 02:14:09PM -0600, Khalid Aziz wrote:
->>>> On 10/7/20 1:39 AM, Jann Horn wrote:
->>>>> arch_validate_prot() is a hook that can validate whether a given se=
-t of
->>>>> protection flags is valid in an mprotect() operation. It is given t=
-he set
->>>>> of protection flags and the address being modified.
->>>>>
->>>>> However, the address being modified can currently not actually be u=
-sed in
->>>>> a meaningful way because:
->>>>>
->>>>> 1. Only the address is given, but not the length, and the operation=
- can
->>>>>    span multiple VMAs. Therefore, the callee can't actually tell wh=
-ich
->>>>>    virtual address range, or which VMAs, are being targeted.
->>>>> 2. The mmap_lock is not held, meaning that if the callee were to ch=
-eck
->>>>>    the VMA at @addr, that VMA would be unrelated to the one the
->>>>>    operation is performed on.
->>>>>
->>>>> Currently, custom arch_validate_prot() handlers are defined by
->>>>> arm64, powerpc and sparc.
->>>>> arm64 and powerpc don't care about the address range, they just che=
-ck the
->>>>> flags against CPU support masks.
->>>>> sparc's arch_validate_prot() attempts to look at the VMA, but doesn=
-'t take
->>>>> the mmap_lock.
->>>>>
->>>>> Change the function signature to also take a length, and move the
->>>>> arch_validate_prot() call in mm/mprotect.c down into the locked reg=
-ion.
->>> [...]
->>>> As Chris pointed out, the call to arch_validate_prot() from do_mmap2=
-()
->>>> is made without holding mmap_lock. Lock is not acquired until
->>>> vm_mmap_pgoff(). This variance is uncomfortable but I am more
->>>> uncomfortable forcing all implementations of validate_prot to requir=
-e
->>>> mmap_lock be held when non-sparc implementations do not have such ne=
-ed
->>>> yet. Since do_mmap2() is in powerpc specific code, for now this patc=
-h
->>>> solves a current problem.
->>>
->>> I still think sparc should avoid walking the vmas in
->>> arch_validate_prot(). The core code already has the vmas, though not
->>> when calling arch_validate_prot(). That's one of the reasons I added
->>> arch_validate_flags() with the MTE patches. For sparc, this could be
->>> (untested, just copied the arch_validate_prot() code):
->>
->> I am little uncomfortable with the idea of validating protection bits
->> inside the VMA walk loop in do_mprotect_pkey(). When ADI is being
->> enabled across multiple VMAs and arch_validate_flags() fails on a VMA
->> later, do_mprotect_pkey() will bail out with error leaving ADI enabled=
+On Mon, Oct 12, 2020 at 08:45:24AM -0700, Yu-cheng Yu wrote:
+...
+> +	  the application support it.  When this feature is enabled,
+> +	  legacy non-IBT applications continue to work, but without
+> +	  IBT protection.
+> +	  Support for this feature is only known to be present on
+> +	  processors released in 2020 or later.  CET features are also
+> +	  known to increase kernel text size by 3.7 KB.
 
->> on earlier VMAs. This will apply to protection bits other than ADI as
->> well of course. This becomes a partial failure of mprotect() call. I
->> think it should be all or nothing with mprotect() - when one calls
->> mprotect() from userspace, either the entire address range passed in
->> gets its protection bits updated or none of it does. That requires
->> validating protection bits upfront or undoing what earlier iterations =
-of
->> VMA walk loop might have done.
->=20
-> I thought the same initially but mprotect() already does this with the
-> VM_MAY* flag checking. If you ask it for an mprotect() that crosses
-> multiple vmas and one of them fails, it doesn't roll back the changes t=
-o
-> the prior ones. I considered that a similar approach is fine for MTE
-> (it's most likely a user error).
->=20
-
-You are right about the current behavior with VM_MAY* flags, but that is
-not the right behavior. Adding more cases to this just perpetuates
-incorrect behavior. It is not easy to roll back changes after VMAs have
-potentially been split/merged which is probably why the current code
-simply throws in the towel and returns with partially modified address
-space. It is lot easier to do all the checks upfront and then proceed or
-not proceed with modifying VMAs. One approach might be to call
-arch_validate_flags() in a loop before modifying VMAs and walk all VMAs
-with a read lock held. Current code also bails out with ENOMEM if it
-finds a hole in the address range and leaves any modifications already
-made in place. This is another case where a hole could have been
-detected earlier.
-
---
-Khalid
-
+It seems the last sentence is redundant - new features always bloat
+the kernel code and precise size may differ depending on compiler
+and options. Surely this can be patched on top.
