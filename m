@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13A0F28B687
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC65C28B93C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:01:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730734AbgJLNet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:34:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36764 "EHLO mail.kernel.org"
+        id S2390706AbgJLN6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:58:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730603AbgJLNeW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:34:22 -0400
+        id S1731468AbgJLNk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:40:56 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3279522202;
-        Mon, 12 Oct 2020 13:33:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C149A2224A;
+        Mon, 12 Oct 2020 13:40:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509635;
-        bh=omDmb/EHkfaofnfyWtsh79Yx1RS9yvzCCe9Y5cUMIIs=;
+        s=default; t=1602510039;
+        bh=Cm8oRoMhqtPQ8VwK6tUug8MUgovYGLFNqrjpyTJLxKA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BPjTJpWaMqr+bIuDG3soBXgVxQGmJXAuiFSYWd48DBPyhoarx0d10M3qBEgqlM3bR
-         Fp8G3FB3Qx4an3DW/Yi15KP11eZFXaajNekPn7CgHEBOzWEyJA4I0alzd90FR5qwCe
-         58irUReg9s0XCI8fdEKwijUGKgmm9t4XtYF/eA8U=
+        b=eti8JrsBf0zJk/AceTG6GZOjFZkwaAhmD2tvF0GW9hy3XNeavGD+xRf5+DKp3Fri8
+         hUofxqLv8U8hj9fXcEowvRHfe4OrIgtDdekDe8q58sPLycbGMuNEZIoAD/WMRvdfCI
+         WDUwAKRC2DvnaUS6vNhhOWakS8wM+QL+lrV42n20=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lucy Yan <lucyyan@google.com>,
-        Moritz Fischer <mdf@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 07/54] net: dec: de2104x: Increase receive ring size for Tulip
-Date:   Mon, 12 Oct 2020 15:26:29 +0200
-Message-Id: <20201012132629.932476281@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, zhuyinyin@bytedance.com, Muchun Song" 
+        <songmuchun@bytedance.com>, Jens Axboe <axboe@kernel.dk>,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH 5.4 07/85] io_uring: Fix remove irrelevant req from the task_list
+Date:   Mon, 12 Oct 2020 15:26:30 +0200
+Message-Id: <20201012132633.210398077@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132629.585664421@linuxfoundation.org>
-References: <20201012132629.585664421@linuxfoundation.org>
+In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
+References: <20201012132632.846779148@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,43 +45,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lucy Yan <lucyyan@google.com>
+From: Muchun Song <songmuchun@bytedance.com>
 
-[ Upstream commit ee460417d254d941dfea5fb7cff841f589643992 ]
+If the process 0 has been initialized io_uring is complete, and
+then fork process 1. If process 1 exits and it leads to delete
+all reqs from the task_list. If we kill process 0. We will not
+send SIGINT signal to the kworker. So we can not remove the req
+from the task_list. The io_sq_wq_submit_work() can do that for
+us.
 
-Increase Rx ring size to address issue where hardware is reaching
-the receive work limit.
-
-Before:
-
-[  102.223342] de2104x 0000:17:00.0 eth0: rx work limit reached
-[  102.245695] de2104x 0000:17:00.0 eth0: rx work limit reached
-[  102.251387] de2104x 0000:17:00.0 eth0: rx work limit reached
-[  102.267444] de2104x 0000:17:00.0 eth0: rx work limit reached
-
-Signed-off-by: Lucy Yan <lucyyan@google.com>
-Reviewed-by: Moritz Fischer <mdf@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 1c4404efcf2c ("io_uring: make sure async workqueue is canceled on exit")
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/dec/tulip/de2104x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/io_uring.c |   21 ++++++++++-----------
+ 1 file changed, 10 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/net/ethernet/dec/tulip/de2104x.c b/drivers/net/ethernet/dec/tulip/de2104x.c
-index cadcee645f74e..11ce50a057998 100644
---- a/drivers/net/ethernet/dec/tulip/de2104x.c
-+++ b/drivers/net/ethernet/dec/tulip/de2104x.c
-@@ -91,7 +91,7 @@ MODULE_PARM_DESC (rx_copybreak, "de2104x Breakpoint at which Rx packets are copi
- #define DSL			CONFIG_DE2104X_DSL
- #endif
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -2272,13 +2272,11 @@ restart:
+ 					break;
+ 				cond_resched();
+ 			} while (1);
+-end_req:
+-			if (!list_empty(&req->task_list)) {
+-				spin_lock_irq(&ctx->task_lock);
+-				list_del_init(&req->task_list);
+-				spin_unlock_irq(&ctx->task_lock);
+-			}
+ 		}
++end_req:
++		spin_lock_irq(&ctx->task_lock);
++		list_del_init(&req->task_list);
++		spin_unlock_irq(&ctx->task_lock);
  
--#define DE_RX_RING_SIZE		64
-+#define DE_RX_RING_SIZE		128
- #define DE_TX_RING_SIZE		64
- #define DE_RING_BYTES		\
- 		((sizeof(struct de_desc) * DE_RX_RING_SIZE) +	\
--- 
-2.25.1
-
+ 		/* drop submission reference */
+ 		io_put_req(req);
+@@ -3722,15 +3720,16 @@ static int io_uring_fasync(int fd, struc
+ static void io_cancel_async_work(struct io_ring_ctx *ctx,
+ 				 struct files_struct *files)
+ {
++	struct io_kiocb *req;
++
+ 	if (list_empty(&ctx->task_list))
+ 		return;
+ 
+ 	spin_lock_irq(&ctx->task_lock);
+-	while (!list_empty(&ctx->task_list)) {
+-		struct io_kiocb *req;
+ 
+-		req = list_first_entry(&ctx->task_list, struct io_kiocb, task_list);
+-		list_del_init(&req->task_list);
++	list_for_each_entry(req, &ctx->task_list, task_list) {
++		if (files && req->files != files)
++			continue;
+ 
+ 		/*
+ 		 * The below executes an smp_mb(), which matches with the
+@@ -3740,7 +3739,7 @@ static void io_cancel_async_work(struct
+ 		 */
+ 		smp_store_mb(req->flags, req->flags | REQ_F_CANCEL); /* B */
+ 
+-		if (req->work_task && (!files || req->files == files))
++		if (req->work_task)
+ 			send_sig(SIGINT, req->work_task, 1);
+ 	}
+ 	spin_unlock_irq(&ctx->task_lock);
 
 
