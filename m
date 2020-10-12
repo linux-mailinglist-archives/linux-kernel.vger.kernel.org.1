@@ -2,115 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 148FE28C3D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 23:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93CF728C3DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 23:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387607AbgJLVNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 17:13:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45132 "EHLO
+        id S1731456AbgJLVOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 17:14:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731517AbgJLVNJ (ORCPT
+        with ESMTP id S1729454AbgJLVOU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 17:13:09 -0400
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9589BC0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 14:13:09 -0700 (PDT)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id 7332F1E50; Mon, 12 Oct 2020 17:13:08 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 7332F1E50
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1602537188;
-        bh=UCj+DsuZKA1izzZfECvTrVOAVQYPk81HV/UKNNnkGzw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LbIHRbIxY4Yl2UGnbEDfMA5PdT41pYUJLgXtwLu+5kUl9SIYOA7QTuGkLtp8DQkEk
-         lolk3GPiWGjAkWhIHMKaYbAKZj0gYM0E6N8nUAF3ANJ3hF24gla6n+mOhZmuQeveYr
-         6ov0blcD5jDppFXTMoLKZGjsiM+qJGih/Vf8GdgY=
-Date:   Mon, 12 Oct 2020 17:13:08 -0400
-From:   "J. Bruce Fields" <bfields@fieldses.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Michael =?utf-8?B?V2Vpw58=?= <michael.weiss@aisec.fraunhofer.de>,
-        Andrei Vagin <avagin@gmail.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        linux-kernel@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v2 2/4] time: make getboottime64 aware of time namespace
-Message-ID: <20201012211308.GH26571@fieldses.org>
-References: <20201008053944.32718-1-michael.weiss@aisec.fraunhofer.de>
- <20201008053944.32718-3-michael.weiss@aisec.fraunhofer.de>
- <20201009132815.5afulu5poh5ti57m@wittgenstein>
- <20201009135554.GE15719@fieldses.org>
- <878scfrwls.fsf@nanos.tec.linutronix.de>
+        Mon, 12 Oct 2020 17:14:20 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22C3AC0613D1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 14:14:20 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id u8so25239822ejg.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 14:14:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+E/x/oIv2ijFm2c9w4wv62KEKilXSc7t2Sb9ekDFptw=;
+        b=Edzs632po8qKWgO3YwL1+/WtB+jp3E2Vu3gnBGR3UWRBL5wqJFRo1ZiouYvd1j7hdU
+         Ixp12qDDQ78vGjE3OV/Lj7aXRatwmUPIiEL72PLClFVepJZovvzodPZGKEyxKZ9N3xzC
+         /wGWB0EZXZiyIIdnohsdUSrkF2j3ljeNYyfJpgOxpuRecdCzWN9MlXi1HxwYn3AG3Y+j
+         Ez7G84Q3qjBphLh3URy4AEUUlcVBgQlK2HwfEj6iwS7/1bTQlNl3JMbkVP+uoaeiZmrz
+         LYmcl5Q9ho6uVvcilbmyEJCZ07yD0pc3UEOxk5BWy9nUQ1CumAEd4X0Eyuz1wzQmRqHk
+         qAtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+E/x/oIv2ijFm2c9w4wv62KEKilXSc7t2Sb9ekDFptw=;
+        b=GF7AbqvXNpRZ/k0HMkVLtJ9vqB2uRrPdQWA+dFz4ZKtoQLFhuVQP+qJeQ6+xEW2W5E
+         nyRqQjITdW1Mf6uoftxFr8zTZJb5tlrJz2GB+9ZJiPEjulO4ePBGaz5KwpbWi799/cnb
+         0tfhvyIXjpgyMR4xHMNDSAN09IMN9YoQP4fI3Zlli8i7kXwwIFVKx8sUX8wJgs4Vn0zl
+         tFhoBJQHcz6k7YVG3Q8OeuRs1j8mO6reKjZMaYko2oak1vt6rSFtW/l8RgEYPGrb7+Vq
+         tbQpRA38YFSetfj1UWemDbQCQuZAOnqBxn2DurklqqM9gTcnE6/I9peNbj/5vM0AsfXc
+         48OQ==
+X-Gm-Message-State: AOAM533pgh1KIAHtQEa/AZQu2azv0OOUrgYDpsSyGBIO+MhyzqNwA+I5
+        4gi0/z9v0xhRxeXbNWoFSqrLpa8uf9yPSVFTqE5JnVjKkp+1hA==
+X-Google-Smtp-Source: ABdhPJz02OtB37X1Kl6Yw4VB2J5fzc4t6W8lA+4qFWxSxgpuA/gexEv+m5h1tqboEVvNq9alpAfTRLuAH8zdbpyQqLs=
+X-Received: by 2002:a17:906:b88f:: with SMTP id hb15mr29759160ejb.45.1602537258704;
+ Mon, 12 Oct 2020 14:14:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <878scfrwls.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+References: <20201012174540.17328-1-rcampbell@nvidia.com>
+In-Reply-To: <20201012174540.17328-1-rcampbell@nvidia.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Mon, 12 Oct 2020 14:14:07 -0700
+Message-ID: <CAPcyv4ijD+=3rje1CfSG4XKuRNfuAWOui93NQV09NmBte_gc0w@mail.gmail.com>
+Subject: Re: [PATCH v2] mm/hmm: make device private reference counts zero based
+To:     Ralph Campbell <rcampbell@nvidia.com>
+Cc:     Linux MM <linux-mm@kvack.org>, kvm-ppc@vger.kernel.org,
+        nouveau@lists.freedesktop.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jason Gunthorpe <jgg@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 10:08:15PM +0200, Thomas Gleixner wrote:
-> On Fri, Oct 09 2020 at 09:55, J. Bruce Fields wrote:
-> > Looking at how it's used in net/sunrpc/cache.c....  All it's doing is
-> > comparing times which have all been calculated relative to the time
-> > returned by getboottime64().  So it doesn't really matter what
-> > getboottime64() is, as long as it's always the same.
-> >
-> > So, I don't think this should change behavior of the sunrpc code at all.
-> 
-> You wish. That's clearly wrong because that code is not guaranteed to
-> always run in a context which belongs to the root time namespace.
+On Mon, Oct 12, 2020 at 10:46 AM Ralph Campbell <rcampbell@nvidia.com> wrote:
+>
+> ZONE_DEVICE struct pages have an extra reference count that complicates the
+> code for put_page() and several places in the kernel that need to check the
+> reference count to see that a page is not being used (gup, compaction,
+> migration, etc.). Clean up the code so the reference count doesn't need to
+> be treated specially for device private pages, leaving DAX as still being
+> a special case.
 
-Argh, right, thanks.
+Please no half-step to removing the special casing...
 
-> AFAICT, this stuff can run in softirq context which is context stealing
-> and the interrupted task can belong to a different time name space.
+[..]
+> +void free_zone_device_page(struct page *page)
+> +{
+> +       if (!is_device_private_page(page))
+>                 return;
 
-Some of it runs in the context of a process doing IO to proc, some from
-kthreads.  So, anyway, yes, it's not consistent in the way we'd need.
-
-> In fact the whole thing can be simplified. You can just use time in
-> nanoseconds retrieved via ktime_get_coarse_boottime() which does not
-> read the clocksource and advances once per tick and does not contain a
-> divison and is definitely faster than seconds_since_boot()
-> 
-> The expiry time is initialized via get_expiry() which does:
-> 
->    getboottime64(&boot);
->    return rv - boot.tv_sec; 
-> 
-> The expiry value 'rv' which is read out of the buffer is wall time in
-> seconds. So all you need is are function which convert real to boottime
-> and vice versa. That's trivial to implement and again faster than
-> getboottime64(). Something like this:
-> 
-> ktime_t ktime_real_to_boot(ktime_t real)
-> {
->         struct timekeeper *tk = &tk_core.timekeeper;
->         ktime_t mono = ktime_sub(real, tk->offs_real);
->               
->         return ktime_add(mono, tk->offs_boot);
-> }
-> 
-> so the above becomes:
-> 
->    return ktime_real_to_boot(rv * NSEC_PER_SEC);
-> 
-> which is still faster than a division.
-> 
-> The nanoseconds value after converting back to wall clock will need a
-> division to get seconds since the epoch, but that's not an issue because
-> that backward conversion already has one today.
-> 
-> You'd obviously need to fixup CACHE_NEW_EXPIRY and the other place which
-> add's '1' to the expiry value and some janitoring of function names and
-> variable types, but no real big surgery AFAICT.
-
-I'll give it a shot.
-
-Thanks so much for taking a careful look at this.
-
---b.
+That seems too subtle to be acceptable to me. All ZONE_DEVICE pages
+need to have the same relationship with respect to idle-ness and the
+page reference count.
