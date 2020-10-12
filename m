@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D369328B771
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A32F28B9B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388672AbgJLNnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:43:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46880 "EHLO mail.kernel.org"
+        id S1731832AbgJLOCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:02:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731527AbgJLNmI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:42:08 -0400
+        id S2387878AbgJLNhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:37:37 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E53AE206D9;
-        Mon, 12 Oct 2020 13:42:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C185B21D81;
+        Mon, 12 Oct 2020 13:37:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602510127;
-        bh=Yht/NJAyp77MftgzEDZvxYwOmomqXuL4Byc/Purviyc=;
+        s=default; t=1602509856;
+        bh=6D16Ojn1327Tw+cEBJU5AZf5RJUIh1UJwNkpv29XaTs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GwgWseb/WtpHii5m50Fh8WTuZm1BiuDaypu5FD/R/kM5Sxh+OywD4TbkmDjSX5BBZ
-         27njcPfr4as50IQxsIgek3rUJtuZE5VYAj/201MvPDMLY4eMbg4WaDVz1GtQyk5pWl
-         tnDD/gs6IbenWnJHO8nfBgRipJr7C+88V6uV+lq0=
+        b=Mr9bgLVPeoBxdZoI5NSWbr7wNyXG0Qs8uHAHt2GvIisChEsRj314LIUPZsYbVKr5f
+         4A1kVz8jgJghB5vYXrQ560P7Us8Uivo+HM7PBnXbpE6LoGRuKxkYRucyotseWqC125
+         WohO5hxAdNTAJRCf+clljw6ytkyNhCE/qIhpvs/U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Antony Antony <antony.antony@secunet.com>,
+        stable@vger.kernel.org,
+        syzbot+577fbac3145a6eb2e7a5@syzkaller.appspotmail.com,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Steffen Klassert <steffen.klassert@secunet.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 52/85] xfrm: clone whole liftime_cur structure in xfrm_do_migrate
+Subject: [PATCH 4.14 59/70] xfrm: Use correct address family in xfrm_state_find
 Date:   Mon, 12 Oct 2020 15:27:15 +0200
-Message-Id: <20201012132635.369021823@linuxfoundation.org>
+Message-Id: <20201012132633.031362262@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
-References: <20201012132632.846779148@linuxfoundation.org>
+In-Reply-To: <20201012132630.201442517@linuxfoundation.org>
+References: <20201012132630.201442517@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +45,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Antony Antony <antony.antony@secunet.com>
+From: Herbert Xu <herbert@gondor.apana.org.au>
 
-[ Upstream commit 8366685b2883e523f91e9816d7be371eb1144749 ]
+[ Upstream commit e94ee171349db84c7cfdc5fefbebe414054d0924 ]
 
-When we clone state only add_time was cloned. It missed values like
-bytes, packets.  Now clone the all members of the structure.
+The struct flowi must never be interpreted by itself as its size
+depends on the address family.  Therefore it must always be grouped
+with its original family value.
 
-v1->v3:
- - use memcpy to copy the entire structure
+In this particular instance, the original family value is lost in
+the function xfrm_state_find.  Therefore we get a bogus read when
+it's coupled with the wrong family which would occur with inter-
+family xfrm states.
 
-Fixes: 80c9abaabf42 ("[XFRM]: Extension for dynamic update of endpoint address(es)")
-Signed-off-by: Antony Antony <antony.antony@secunet.com>
+This patch fixes it by keeping the original family value.
+
+Note that the same bug could potentially occur in LSM through
+the xfrm_state_pol_flow_match hook.  I checked the current code
+there and it seems to be safe for now as only secid is used which
+is part of struct flowi_common.  But that API should be changed
+so that so that we don't get new bugs in the future.  We could
+do that by replacing fl with just secid or adding a family field.
+
+Reported-by: syzbot+577fbac3145a6eb2e7a5@syzkaller.appspotmail.com
+Fixes: 48b8d78315bf ("[XFRM]: State selection update to use inner...")
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/xfrm/xfrm_state.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/xfrm/xfrm_state.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
 diff --git a/net/xfrm/xfrm_state.c b/net/xfrm/xfrm_state.c
-index fc1b391ba1554..8df460eaac275 100644
+index 3f21d34833cf0..05c275a712f11 100644
 --- a/net/xfrm/xfrm_state.c
 +++ b/net/xfrm/xfrm_state.c
-@@ -1547,7 +1547,7 @@ static struct xfrm_state *xfrm_state_clone(struct xfrm_state *orig,
- 	x->tfcpad = orig->tfcpad;
- 	x->replay_maxdiff = orig->replay_maxdiff;
- 	x->replay_maxage = orig->replay_maxage;
--	x->curlft.add_time = orig->curlft.add_time;
-+	memcpy(&x->curlft, &orig->curlft, sizeof(x->curlft));
- 	x->km.state = orig->km.state;
- 	x->km.seq = orig->km.seq;
- 	x->replay = orig->replay;
+@@ -909,7 +909,8 @@ static void xfrm_state_look_at(struct xfrm_policy *pol, struct xfrm_state *x,
+ 	 */
+ 	if (x->km.state == XFRM_STATE_VALID) {
+ 		if ((x->sel.family &&
+-		     !xfrm_selector_match(&x->sel, fl, x->sel.family)) ||
++		     (x->sel.family != family ||
++		      !xfrm_selector_match(&x->sel, fl, family))) ||
+ 		    !security_xfrm_state_pol_flow_match(x, pol, fl))
+ 			return;
+ 
+@@ -922,7 +923,9 @@ static void xfrm_state_look_at(struct xfrm_policy *pol, struct xfrm_state *x,
+ 		*acq_in_progress = 1;
+ 	} else if (x->km.state == XFRM_STATE_ERROR ||
+ 		   x->km.state == XFRM_STATE_EXPIRED) {
+-		if (xfrm_selector_match(&x->sel, fl, x->sel.family) &&
++		if ((!x->sel.family ||
++		     (x->sel.family == family &&
++		      xfrm_selector_match(&x->sel, fl, family))) &&
+ 		    security_xfrm_state_pol_flow_match(x, pol, fl))
+ 			*error = -ESRCH;
+ 	}
+@@ -961,7 +964,7 @@ xfrm_state_find(const xfrm_address_t *daddr, const xfrm_address_t *saddr,
+ 		    tmpl->mode == x->props.mode &&
+ 		    tmpl->id.proto == x->id.proto &&
+ 		    (tmpl->id.spi == x->id.spi || !tmpl->id.spi))
+-			xfrm_state_look_at(pol, x, fl, encap_family,
++			xfrm_state_look_at(pol, x, fl, family,
+ 					   &best, &acquire_in_progress, &error);
+ 	}
+ 	if (best || acquire_in_progress)
+@@ -977,7 +980,7 @@ xfrm_state_find(const xfrm_address_t *daddr, const xfrm_address_t *saddr,
+ 		    tmpl->mode == x->props.mode &&
+ 		    tmpl->id.proto == x->id.proto &&
+ 		    (tmpl->id.spi == x->id.spi || !tmpl->id.spi))
+-			xfrm_state_look_at(pol, x, fl, encap_family,
++			xfrm_state_look_at(pol, x, fl, family,
+ 					   &best, &acquire_in_progress, &error);
+ 	}
+ 
 -- 
 2.25.1
 
