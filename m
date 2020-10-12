@@ -2,85 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2296928BFA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 20:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39B5728BF92
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 20:21:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391359AbgJLSWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 14:22:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35132 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387669AbgJLSVE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 14:21:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602526863;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=TGKXah/Cz5smHPfpgTJAC3mAN6Yqghu5QabHEuhJVPM=;
-        b=ORIQvBSzFSW3gE0K1PMMvyQcjkf05JZeQoT7g18VEoCgtUZv9IV810lqZ6L0Nfuo/egFII
-        qFdoblbeoCUkynkllVD9C5Si3NHEDsFHC/q3sDUW5PJcnB0vKlmeOFrnh0x92Z2S54J269
-        kedXU7RxyJuSRo802yrrUKoT9DNR6Pg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-309-UG2oN96KMK-Iy6BmCjondg-1; Mon, 12 Oct 2020 14:20:56 -0400
-X-MC-Unique: UG2oN96KMK-Iy6BmCjondg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9538D879517;
-        Mon, 12 Oct 2020 18:20:55 +0000 (UTC)
-Received: from redhat.com (null.msp.redhat.com [10.15.80.136])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5633055760;
-        Mon, 12 Oct 2020 18:20:55 +0000 (UTC)
-Date:   Mon, 12 Oct 2020 13:20:53 -0500
-From:   David Teigland <teigland@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [GIT PULL] dlm updates for 5.10
-Message-ID: <20201012182053.GA16029@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.8.3 (2017-05-23)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+        id S2390865AbgJLSVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 14:21:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39082 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387669AbgJLSVC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 14:21:02 -0400
+Subject: Re: [GIT PULL] EDAC queue for v5.10
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602526862;
+        bh=22XGfSewhYj0UUi/pwq1jJzvdCqo8cXGLo+vm/QUmys=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=S6E3dZ5/4oKdAA/quNs6PREt9MQtoqbvvLjzKP7NXeobK67LAcrx9u1fwz9BypUVE
+         uyDIbYQp9/2DnOIlpi78HmUT0qgjsCvEX836iBOrufuUjuGTWO2JJR1H6nhTLPCqZ7
+         tzOmvkcgUYj5NETgoyaOB8KLda4FnJe6tcstEnIM=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20201012092029.GA25311@zn.tnic>
+References: <20201012092029.GA25311@zn.tnic>
+X-PR-Tracked-List-Id: <linux-edac.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201012092029.GA25311@zn.tnic>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git tags/edac_updates_for_v5.10
+X-PR-Tracked-Commit-Id: 1dc32628d65a670625afada00f50c91add1a19a2
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: a9a4b7d9a6380ae4e1df2c9b90fef6c427229aab
+Message-Id: <160252686240.3643.17498350851659457514.pr-tracker-bot@kernel.org>
+Date:   Mon, 12 Oct 2020 18:21:02 +0000
+To:     Borislav Petkov <bp@suse.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-edac <linux-edac@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+The pull request you sent on Mon, 12 Oct 2020 11:20:29 +0200:
 
-Please pull dlm updates from tag:
+> git://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git tags/edac_updates_for_v5.10
 
-git://git.kernel.org/pub/scm/linux/kernel/git/teigland/linux-dlm.git dlm-5.10
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/a9a4b7d9a6380ae4e1df2c9b90fef6c427229aab
 
-This set continues the ongoing rework of the low level
-communication layer in the dlm.  The focus here is on
-improvements to connection handling, and reworking the
-receiving of messages.
+Thank you!
 
-Thanks,
-Dave
-
-Alexander Aring (13):
-      fs: dlm: synchronize dlm before shutdown
-      fs: dlm: make connection hash lockless
-      fs: dlm: fix dlm_local_addr memory leak
-      fs: dlm: fix configfs memory leak
-      fs: dlm: move free writequeue into con free
-      fs: dlm: handle possible othercon writequeues
-      fs: dlm: use free_con to free connection
-      fs: dlm: remove lock dependency warning
-      fs: dlm: fix mark per nodeid setting
-      fs: dlm: handle range check as callback
-      fs: dlm: disallow buffer size below default
-      fs: dlm: rework receive handling
-      fs: dlm: fix race in nodeid2con
-
- fs/dlm/Kconfig    |   1 +
- fs/dlm/config.c   |  66 ++++++-----
- fs/dlm/config.h   |   4 +-
- fs/dlm/lowcomms.c | 329 ++++++++++++++++++++++++++----------------------------
- fs/dlm/midcomms.c | 136 +++++++++-------------
- fs/dlm/midcomms.h |   3 +-
- 6 files changed, 260 insertions(+), 279 deletions(-)
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
