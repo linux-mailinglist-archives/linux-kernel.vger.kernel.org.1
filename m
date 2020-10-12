@@ -2,199 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8348D28B4A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 14:33:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D6C628B4AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 14:34:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388497AbgJLMdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 08:33:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43374 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388334AbgJLMdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 08:33:51 -0400
-Received: from coco.lan (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D9DB620757;
-        Mon, 12 Oct 2020 12:33:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602506030;
-        bh=tohlfQTkfXdUJtGBBzRCJve9wbCQXBOwa6pkSKA1kb0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=0eKzCLbp/IYaQeVolU/syVOKtIKrH8bI8p8sBkMzHisSOOWHdUSuqbDlO+Yqw0Ekj
-         KaX5f7Fs6IK6LFL00UM/gihX2P6HwSZ8xdOHPAiBONjknipou4XT5sZ8TDOdoLbv+h
-         5LVrlLyJNoC+euZjPyHdsOegrLnIKnv73yRUEa/Y=
-Date:   Mon, 12 Oct 2020 14:33:46 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Changbin Du <changbin.du@intel.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH v5.1 10/52] scripts: kernel-doc: allow passing desired
- Sphinx C domain dialect
-Message-ID: <20201012143346.3643708c@coco.lan>
-In-Reply-To: <9e9301fadc02986b9c2709db50a4d6b98db3d9fa.1601992016.git.mchehab+huawei@kernel.org>
-References: <cover.1601992016.git.mchehab+huawei@kernel.org>
-        <9e9301fadc02986b9c2709db50a4d6b98db3d9fa.1601992016.git.mchehab+huawei@kernel.org>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S2388548AbgJLMeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 08:34:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388519AbgJLMeM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 08:34:12 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53250C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 05:34:12 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kRx1f-0001Ew-N6; Mon, 12 Oct 2020 14:34:03 +0200
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kRx1c-0007Sl-Mz; Mon, 12 Oct 2020 14:34:00 +0200
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>
+Cc:     Johan Hovold <johan@kernel.org>, linux-leds@vger.kernel.org,
+        linux-serial@vger.kernel.org, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v8 0/3] leds: trigger: implement a tty trigger
+Date:   Mon, 12 Oct 2020 14:33:55 +0200
+Message-Id: <20201012123358.1475928-1-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When kernel-doc is called via kerneldoc.py, there's no need to
-auto-detect the Sphinx version, as the Sphinx module already
-knows it. So, add an optional parameter to allow changing the
-Sphinx dialect.
+this is v8 of a series adding support for tty triggers. See patch 3 for
+how to use it. The first two patches provide the necessary
+infrastructure in the tty subsystem to make the trigger possible.
 
-As kernel-doc can also be manually called, keep the auto-detection
-logic if the parameter was not specified. On such case, emit
-a warning if sphinx-build can't be found at PATH.
+Changes compared to v7 sent with Message-Id
+20200707165958.16522-1-u.kleine-koenig@pengutronix.de on 7 Jul 2020:
 
-I ended using a suggestion from Joe for using a more readable
-regex, instead of using a complex one with a hidden group like:
+ - ensure the worker function doesn't monopolize the context it is
+   running in
+ - Add a missing mutex_unlock in an error path
 
-	m/^(\d+)\.(\d+)(?:\.?(\d+)?)/
+Pavel Machek wondered in reply to v7 if led_set_brightness was a good
+idea. I didn't understand the issue and didn't get a reply to my
+question. So if this is indeed a problem, this one still persists.
 
-in order to get the optional <patch> argument.
+Best regards
+Uwe
 
-Thanks-to: Joe Perches <joe@perches.com>
-Suggested-by: Jonathan Corbet <corbet@lwn.net>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Uwe Kleine-König (3):
+  tty: rename tty_kopen() and add new function tty_kopen_shared()
+  tty: new helper function tty_get_icount()
+  leds: trigger: implement a tty trigger
 
----
+ .../ABI/testing/sysfs-class-led-trigger-tty   |   6 +
+ drivers/accessibility/speakup/spk_ttyio.c     |   2 +-
+ drivers/leds/trigger/Kconfig                  |   9 +
+ drivers/leds/trigger/Makefile                 |   1 +
+ drivers/leds/trigger/ledtrig-tty.c            | 187 ++++++++++++++++++
+ drivers/tty/tty_io.c                          |  85 +++++---
+ include/linux/tty.h                           |   7 +-
+ 7 files changed, 272 insertions(+), 25 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-class-led-trigger-tty
+ create mode 100644 drivers/leds/trigger/ledtrig-tty.c
 
-v5.1: 
+-- 
+2.28.0
 
-- Right now, the script only needs to know the Sphinx major version.
-  So, relax the regex to allow entering version on 3 different
-  formats:
-	x
-	x.y
-	x.y.z
-- if Sphinx output mode is not -rst, it shouldn't print a warning
-  when the version is not found.
-
-diff --git a/Documentation/sphinx/kerneldoc.py b/Documentation/sphinx/kerneldoc.py
-index 4bcbd6ae01cd..1a1b12242a45 100644
---- a/Documentation/sphinx/kerneldoc.py
-+++ b/Documentation/sphinx/kerneldoc.py
-@@ -70,6 +70,11 @@ class KernelDocDirective(Directive):
-         env = self.state.document.settings.env
-         cmd = [env.config.kerneldoc_bin, '-rst', '-enable-lineno']
- 
-+	# Pass the version string to kernel-doc, as it needs to use a different
-+	# dialect, depending what the C domain supports for each specific
-+	# Sphinx versions
-+        cmd += ['-sphinx-version', sphinx.__version__]
-+
-         filename = env.config.kerneldoc_srctree + '/' + self.arguments[0]
-         export_file_patterns = []
- 
-diff --git a/scripts/kernel-doc b/scripts/kernel-doc
-index 09e3e78b9723..ed32883c3221 100755
---- a/scripts/kernel-doc
-+++ b/scripts/kernel-doc
-@@ -56,6 +56,13 @@ Output format selection (mutually exclusive):
-   -rst			Output reStructuredText format.
-   -none			Do not output documentation, only warnings.
- 
-+Output format selection modifier (affects only ReST output):
-+
-+  -sphinx-version	Use the ReST C domain dialect compatible with an
-+			specific Sphinx Version.
-+			If not specified, kernel-doc will auto-detect using
-+			the sphinx-build version found on PATH.
-+
- Output selection (mutually exclusive):
-   -export		Only output documentation for symbols that have been
- 			exported using EXPORT_SYMBOL() or EXPORT_SYMBOL_GPL()
-@@ -270,7 +277,7 @@ if ($#ARGV == -1) {
- }
- 
- my $kernelversion;
--my $sphinx_major;
-+my ($sphinx_major, $sphinx_minor, $sphinx_patch);
- 
- my $dohighlight = "";
- 
-@@ -457,6 +464,23 @@ while ($ARGV[0] =~ m/^--?(.*)/) {
- 	    $enable_lineno = 1;
-     } elsif ($cmd eq 'show-not-found') {
- 	$show_not_found = 1;  # A no-op but don't fail
-+    } elsif ($cmd eq "sphinx-version") {
-+	my $ver_string = shift @ARGV;
-+	if ($ver_string =~ m/^(\d+)(\.\d+)?(\.\d+)?/) {
-+	    $sphinx_major = $1;
-+	    if (defined($2)) {
-+		$sphinx_minor = substr($2,1);
-+	    } else {
-+		$sphinx_minor = 0;
-+	    }
-+	    if (defined($3)) {
-+		$sphinx_patch = substr($3,1)
-+	    } else {
-+		$sphinx_patch = 0;
-+	    }
-+	} else {
-+	    die "Sphinx version should either major.minor or major.minor.patch format\n";
-+	}
-     } else {
- 	# Unknown argument
-         usage();
-@@ -477,29 +501,37 @@ sub findprog($)
- sub get_sphinx_version()
- {
- 	my $ver;
--	my $major = 1;
- 
- 	my $cmd = "sphinx-build";
- 	if (!findprog($cmd)) {
- 		my $cmd = "sphinx-build3";
--		return $major if (!findprog($cmd));
-+		if (!findprog($cmd)) {
-+			$sphinx_major = 1;
-+			$sphinx_minor = 2;
-+			$sphinx_patch = 0;
-+			printf STDERR "Warning: Sphinx version not found. Using default (Sphinx version %d.%d.%d)\n",
-+			       $sphinx_major, $sphinx_minor, $sphinx_patch;
-+			return;
-+		}
- 	}
- 
- 	open IN, "$cmd --version 2>&1 |";
- 	while (<IN>) {
- 		if (m/^\s*sphinx-build\s+([\d]+)\.([\d\.]+)(\+\/[\da-f]+)?$/) {
--			$major=$1;
-+			$sphinx_major = $1;
-+			$sphinx_minor = $2;
-+			$sphinx_patch = $3;
- 			last;
- 		}
- 		# Sphinx 1.2.x uses a different format
- 		if (m/^\s*Sphinx.*\s+([\d]+)\.([\d\.]+)$/) {
--			$major=$1;
-+			$sphinx_major = $1;
-+			$sphinx_minor = $2;
-+			$sphinx_patch = $3;
- 			last;
- 		}
- 	}
- 	close IN;
--
--	return $major;
- }
- 
- # get kernel version from env
-@@ -2333,7 +2365,10 @@ sub process_file($) {
- }
- 
- 
--$sphinx_major = get_sphinx_version();
-+if ($output_mode eq "rst") {
-+	get_sphinx_version() if (!$sphinx_major);
-+}
-+
- $kernelversion = get_kernel_version();
- 
- # generate a sequence of code that will splice in highlighting information
