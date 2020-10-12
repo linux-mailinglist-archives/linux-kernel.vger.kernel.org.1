@@ -2,83 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8538028C182
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 21:32:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8115A28C187
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 21:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730840AbgJLTcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 15:32:10 -0400
-Received: from mout.kundenserver.de ([212.227.126.187]:54563 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728031AbgJLTcK (ORCPT
+        id S1731008AbgJLTeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 15:34:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728031AbgJLTeJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 15:32:10 -0400
-Received: from [192.168.1.155] ([77.2.5.48]) by mrelayeu.kundenserver.de
- (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1Mk0a0-1k3g4z2OUK-00kKqy; Mon, 12 Oct 2020 21:31:57 +0200
-Subject: Re: [PATCH 1/2] x86: Remove led/gpio setup from pcengines platform
- driver
-To:     Ed Wildgoose <lists@wildgooses.com>, linux-kernel@vger.kernel.org
-Cc:     fe@dev.tdt.de, "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        platform-driver-x86@vger.kernel.org
-References: <20200921215919.3072-1-lists@wildgooses.com>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <5f0efbd5-31ef-bf22-0f72-01db4118f144@metux.net>
-Date:   Mon, 12 Oct 2020 21:31:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 12 Oct 2020 15:34:09 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7576C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 12:34:07 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id d24so19498174lfa.8
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 12:34:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4IEcErwKura8IVO2XV3PGiHRSSS7854fDtA49nhFrcw=;
+        b=a+gxzMp490jjatDYg1NAvpcsRkEU9T02SFYLU1fU2rakRbdcEbNM+TLkxTXZ7D0apX
+         zKj1nkwdSnNkz8AYfbO198EuKs2R8WwiHVchARb3yavRlud4m/3KaNJwj1LU4RxaMfWm
+         3UnEeLM99kCP0N66IxPsHHHI0WZvL/t3jgFCQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4IEcErwKura8IVO2XV3PGiHRSSS7854fDtA49nhFrcw=;
+        b=K9rnefFVEmXJtxRFunfdPlEkQ6EfeEndgd0bD9AbhEOGeLWOa5BiCiNKdIWSpp8qyf
+         6zYvRJcKxgX3w9ogmIAJPDHMnHa2WqCwWAcAQ24kIEG3pbLzqWONePUI4Bx3Wo9FOZFW
+         9dDOA1cfqpewU7R8I3iflysDduOghZwBUJJS6frgvw0rnGg3rk+vNHouV/HozEeWpga4
+         cVdyNcep5U9PSh70rXywKmicxLvnbeJwcjmXixn4FiBJ9CaYqs3BSZr/mdyojKAnwGzy
+         VKE/WS5ER6aZI5tYvIZn66UZCToIW1mNUhgWZG+YFicdPxbc/GshRhfaSMxU24l7qdv/
+         YeSA==
+X-Gm-Message-State: AOAM531FbDkxH+ZMwdZbE3F9YPRie4h+Ad6ydhrO2xaZs1/h/yOwcycs
+        rSuzsa949Vf3hyy7c1Etn4U6rukSGFsM9A==
+X-Google-Smtp-Source: ABdhPJw72GLDan8fZOmne8rfuxyF3kKZAbmQ7EJwIjRHwHN3V3nWrJm2pQmFKC1w3wvchxgONAw7kQ==
+X-Received: by 2002:a19:7418:: with SMTP id v24mr8588276lfe.440.1602531245943;
+        Mon, 12 Oct 2020 12:34:05 -0700 (PDT)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id n125sm2899140lfd.7.2020.10.12.12.34.05
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Oct 2020 12:34:05 -0700 (PDT)
+Received: by mail-lf1-f49.google.com with SMTP id l2so19545479lfk.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 12:34:05 -0700 (PDT)
+X-Received: by 2002:ac2:5f48:: with SMTP id 8mr2620988lfz.344.1602531244892;
+ Mon, 12 Oct 2020 12:34:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200921215919.3072-1-lists@wildgooses.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:XD5sOD7k8Tr1Otb3wzR8NKWk+F+Elwzb/E9j9FE8dzyXtcYw+Ry
- xWxROgoE9ToyK4yeM1ZeTOhDCS09g7141Hd/hoJUvrMcocT6kEWVQA9FDfaHB2EW2Ev7yg0
- Ae1YvxyWRCtdv8vaPa4lIgtlnY6g9s2Z1n3GgZlAupvtpaO35631Ro21W+W8Dm3a7dBsBLa
- ZTF/MolmbQ0Whq0E5cYGw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:0raJtei4uco=:4OAclrQvY1+hgEyFiRgx65
- 07rNEx1fuI2KobICcVk9hTSW2NVAkTeCP0+hjWf+JBS5sN3XeX0omZbvpm9/PjMhPhDKdeaiU
- buCJUtfnQfPLEon+9lZBz+TfkVuVZR3claiQ4LYCm/Zi66X93US7hSTazBgdXuiZojSBFCgUi
- 0xVzD05J1LLkm19uy+BsCc0MxXJs25nyiPQKkTSxRiijX+l6TmPc7NJGkXjsE5UwftbH31TEe
- GkR0DjzfaYHBOB51Rx1duzK9FxmcbHW61EPr/BMEBIF3pW/uu9i8Gn9Ts5rIYMMOXiex6eO2U
- jPDivwyPiAHiI45+sTxYLfC+KRMFFPqx7Od0u5bTLQAXBdGdB0U9ojE1Mup47BYLfCsQTdJ07
- E8+SZ6jXL5z0FTKFSSUupxgd7wy5wK8u3gBLxPgzVAiQO7Nby4Xti7l0/eNGmVTP845QnLNha
- fobN1NIn5Bd5VLRPqAD/2Ton9DS8IIwwDe9OeUdlO75vqHRYA7bm7L4xqhmNgAvCf9uk4OlT/
- FQT9/ty9Jq8xsctE2656b5GO45WSLY0Z5MCMlfUjjc9hB+77aQ6vdlrK5+8SfEO+3VbN25GcB
- LNai2PDFhvGbvdh/Y5Wor2uEh7rAnRb8RkIWoRU81FddeJvvxpisyo/TA2xXozgCtlhm4Vt9K
- FqmPgyow8NkW5mn48/c3Hr7g8hvcC1RkVlRnh6jDdkh7SisDPcbD76sgCw8tQstDo8iQMbXsr
- hBZwBSpL57qoqLaNCU+zXWsH2Sn+IDPbI9RQPVFgmMekb6ZlozCYuuTgQiw7yy+T1KW5u1Nhm
- xUCCNFZXC1ypd+smwD6V5V/kqEhPt+b/XBa0IOL0e7yJjgIXFca484DaOlgi+mJUXnQDvjj
+References: <20201012110557.GK25311@zn.tnic> <CAHk-=wiVoLoZS1v9SCQzH4mkpz6akE3pPrHPxM2hamOXPcaW9w@mail.gmail.com>
+ <CAFULd4Z1_UKN6haGbNJMi0_tGddPZcawRDfoYnLdn-Qe6UR3-Q@mail.gmail.com>
+ <CAHk-=whbEhjSHR7D=8Q_xARd=UKHGcz750LoT1BeRdgTR+6uSw@mail.gmail.com>
+ <CAHk-=wgBHgmAoLG9A0b-2_2ZiL_OaXLyO2pbKOHm=u93NttSBQ@mail.gmail.com> <CAFULd4bHpJQau5kw8J93B2Xu1J_tYhShG6eWP88vRvhwxRZmdQ@mail.gmail.com>
+In-Reply-To: <CAFULd4bHpJQau5kw8J93B2Xu1J_tYhShG6eWP88vRvhwxRZmdQ@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 12 Oct 2020 12:33:49 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wg2hkPc049k01fxZ0p0K3QSABi0O0uN-NHoqLa0yz-DJw@mail.gmail.com>
+Message-ID: <CAHk-=wg2hkPc049k01fxZ0p0K3QSABi0O0uN-NHoqLa0yz-DJw@mail.gmail.com>
+Subject: Re: [GIT PULL] x86/asm updates for v5.10
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     Borislav Petkov <bp@suse.de>, x86-ml <x86@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.09.20 23:59, Ed Wildgoose wrote:
-> The pcengines bios/firmware includes ACPI tables (since 4.10.0.1) which
-> will cause the kernel to automatically create led + gpio_key devices for
-> the platform. This means that the platform setup now creates duplicates
-> of all these led/key devices.
+On Mon, Oct 12, 2020 at 12:24 PM Uros Bizjak <ubizjak@gmail.com> wrote:
+>
+> I don't think it is even possible to write to a part of a register in the asm. An example:
 
-Absolutely not. This breaks a high number of machines in the field,
-where FW upgrade is not an option.
+But this example is the *reverse* of what I worry about.
 
-> Anyone with a much older bios can use the 'leds-apu' driver to get the
-> same set of led devices as created by the kernel with a modern bios.
+I worry about the asm writing not to a "part" of a register, but to
+*more* than we told the compiler we'd write to.
 
-No, this ancient and obsolete driver does not support more recent boards
-and lacks lots of other important functionality, eg. keys, where
-userland relies on. Never break userland.
+If we told the compiler we're only writing to %al, then I could see
+the compiler using %ah for something, and scheduling that "somethihng"
+to after the inline asm that said it was only modifying the low bits.
 
---mtx
+Now, I do believe you're right that gcc (and probably clang) simply
+doesn't track %ah liveness and clobbering separately from %al.
 
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+But it still stinks as a concept when this isn't actually documented
+anywhere I can tell.
+
+See my worry?
+
+                Linus
