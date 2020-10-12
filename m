@@ -2,109 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9827428AC31
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 04:38:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE55128AC47
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 04:46:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726214AbgJLCiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 22:38:14 -0400
-Received: from mga17.intel.com ([192.55.52.151]:7827 "EHLO mga17.intel.com"
+        id S1726486AbgJLCqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 22:46:02 -0400
+Received: from mga12.intel.com ([192.55.52.136]:59575 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725882AbgJLCiO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 22:38:14 -0400
-IronPort-SDR: jVggHOxwgpvOAZ359mDrFAsmmTJG8jQOI+XXgbPu2h3h+7yjqEPkgGnx8BeLKuasYOS3RHeXtw
- m8CL7sUDoZcw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="145546330"
+        id S1725978AbgJLCqC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Oct 2020 22:46:02 -0400
+IronPort-SDR: +RHDE0ClzKoPSPv62NE0pBUIDj3qmDdUEELEOrz0KYDYgtVU5xfU6HXDy2wrSGaLFFuKnn8Q/V
+ SVFs/M0/LBTA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="145002787"
 X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; 
-   d="scan'208";a="145546330"
+   d="scan'208";a="145002787"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2020 19:38:09 -0700
-IronPort-SDR: 6SS+sDvmGGVHmqq3yHY5Cj2vODTAbxVolMjhokJy+QIAbUZFsPU0NmPOvo0ldjggmQeKu8M1eg
- 6rd5lq/ch96A==
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2020 19:46:01 -0700
+IronPort-SDR: pqtrKKIQB/Y0bo3tr4jguTlRbWSSgC/KtZDbP+DtUKPs7Rw+OSvc7BVZy0hLmJtfKA8xGHJ+l9
+ vqkce2C9prdQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; 
-   d="scan'208";a="344679529"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
-  by fmsmga004.fm.intel.com with ESMTP; 11 Oct 2020 19:38:05 -0700
-Cc:     baolu.lu@linux.intel.com, CobeChen-oc@zhaoxin.com,
-        RaymondPang-oc@zhaoxin.com, TonyWWang-oc@zhaoxin.com
-Subject: Re: [PATCH v3 0/2] Add support for ACPI device in RMRR
-To:     FelixCuioc <FelixCui-oc@zhaoxin.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        David Woodhouse <dwmw2@infradead.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>, kbuild@lists.01.org
-References: <20201010080241.14642-1-FelixCui-oc@zhaoxin.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <06de2814-36c9-bea4-d0e1-0b6dddd1006e@linux.intel.com>
-Date:   Mon, 12 Oct 2020 10:31:40 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+   d="scan'208";a="529767360"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by orsmga005.jf.intel.com with ESMTP; 11 Oct 2020 19:45:58 -0700
+Date:   Mon, 12 Oct 2020 10:41:00 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Tom Rix <trix@redhat.com>
+Cc:     mdf@kernel.org, krzk@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        lgoncalv@redhat.com, hao.wu@intel.com, yilun.xu@intel.com
+Subject: Re: [PATCH v9 1/6] fpga: dfl: fix the definitions of type &
+  feature_id for dfl devices
+Message-ID: <20201012024100.GC29436@yilunxu-OptiPlex-7050>
+References: <1602313793-21421-1-git-send-email-yilun.xu@intel.com>
+ <1602313793-21421-2-git-send-email-yilun.xu@intel.com>
+ <8786ca8f-7edd-d7b1-7eca-6447814c6e5e@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201010080241.14642-1-FelixCui-oc@zhaoxin.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8786ca8f-7edd-d7b1-7eca-6447814c6e5e@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Felix,
+On Sat, Oct 10, 2020 at 08:07:07AM -0700, Tom Rix wrote:
+> 
+> On 10/10/20 12:09 AM, Xu Yilun wrote:
+> > The value of the field dfl_device.type comes from the 12 bits register
+> > field DFH_ID according to DFL spec. So this patch changes the definition
+> > of the type field to u16.
+> >
+> > Also it is not necessary to illustrate the valid bits of the type field
+> > in comments. Instead we should explicitly define the possible values in
+> > the enumeration type for it, because they are shared by hardware spec.
+> > We should not let the compiler decide these values.
+> >
+> > Similar changes are also applied to dfl_device.feature_id.
+> >
+> > This patch also fixed the MODALIAS format according to the changes
+> > above.
+> >
+> > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> > ---
+> > v9: no change
+> > ---
+> >  drivers/fpga/dfl.c |  3 +--
+> >  drivers/fpga/dfl.h | 14 +++++++-------
+> >  2 files changed, 8 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/drivers/fpga/dfl.c b/drivers/fpga/dfl.c
+> > index b450870..5a6ba3b 100644
+> > --- a/drivers/fpga/dfl.c
+> > +++ b/drivers/fpga/dfl.c
+> > @@ -298,8 +298,7 @@ static int dfl_bus_uevent(struct device *dev, struct kobj_uevent_env *env)
+> >  {
+> >  	struct dfl_device *ddev = to_dfl_dev(dev);
+> >  
+> > -	/* The type has 4 valid bits and feature_id has 12 valid bits */
+> > -	return add_uevent_var(env, "MODALIAS=dfl:t%01Xf%03X",
+> > +	return add_uevent_var(env, "MODALIAS=dfl:t%04Xf%04X",
+> >  			      ddev->type, ddev->feature_id);
+> >  }
+> >  
+> > diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
+> > index 5dc758f..ac373b1 100644
+> > --- a/drivers/fpga/dfl.h
+> > +++ b/drivers/fpga/dfl.h
+> > @@ -520,19 +520,19 @@ long dfl_feature_ioctl_set_irq(struct platform_device *pdev,
+> >   * enum dfl_id_type - define the DFL FIU types
+> >   */
+> >  enum dfl_id_type {
+> > -	FME_ID,
+> > -	PORT_ID,
+> > +	FME_ID = 0,
+> > +	PORT_ID = 1,
+> 
+> This is redundant, why make this change ?
 
-On 10/10/20 4:02 PM, FelixCuioc wrote:
-> BIOS allocate reserved memory ranges that may be DMA targets.
-> BIOS may report each such reserved memory region through the
-> RMRR structures,along with the devices that requires access to
-> the specified reserved memory region.
-> 
-> The purpose of this series is to achieve ACPI device in RMRR
-> access reserved memory.Therefore,it is necessary to increase
-> the analysis of acpi device in RMRR and establish a mapping
-> for this device.
-> 
-> The first patch adds interfaces for detecting ACPI device
-> in RMRR and in order to distinguish it from pci device,
-> some interface functions are modified.
-> 
-> The second patch adds support for probing ACPI device in RMRR.
-> In probe_acpi_namespace_devices(),add support for direct mapping
-> of ACPI device and add support for physical node of acpi device
-> to be NULL.
+These values are shared by hardware spec, so it is suggested that the
+values of the enum type should be explicitly set, otherwise the compiler
+is in its right to do whatever it wants with them (within reason...)
 
-Thanks for your patches. As I explained in the previous reply, RMRRs
-were added as work around for certain legacy device and we have been
-working hard to fix those legacy devices so that RMRR are no longer
-needed. Any new use case of RMRR is not encouraged.
+Please see the original discussion:
+https://lore.kernel.org/linux-fpga/20200923055436.GA2629915@kroah.com/
 
-By the way, I guess the problem you are facing can still be handled well
-under current RMRR mechanism by simple putting the device in the
-ACPI/ANDD table. It's worth trying.
-
-Best regards,
-baolu
+Thanks,
+Yilun
 
 > 
-> v2->v3:
->     - Add the blank line between functions.
->     - Make dmar_acpi_insert_dev_scope() bool,change the 1/0 to true/false
->       and add a comment explaining.
->     - Delete unused initialization.
->     - if dmar_acpi_insert_dev_scope() always returns zero,will not
->       call dmar_rmrr_add_acpi_dev().
->     - Use a proper error code.
->     - Use if(!pdev).
->     - Use goto unlock instead of mutex_unlock().
+> Tom
 > 
-> 
-> FelixCuioc (2):
->    iommu/vt-d:Add support for detecting ACPI device in RMRR
->    iommu/vt-d:Add support for probing ACPI device in RMRR
-> 
->   drivers/iommu/intel/dmar.c  | 76 +++++++++++++++++++++----------------
->   drivers/iommu/intel/iommu.c | 52 ++++++++++++++++++++++++-
->   drivers/iommu/iommu.c       |  6 +++
->   include/linux/dmar.h        | 12 +++++-
->   include/linux/iommu.h       |  2 +
->   5 files changed, 113 insertions(+), 35 deletions(-)
-> 
+> >  	DFL_ID_MAX,
+> >  };
+> >  
+> >  /**
+> >   * struct dfl_device_id -  dfl device identifier
+> > - * @type: contains 4 bits DFL FIU type of the device. See enum dfl_id_type.
+> > - * @feature_id: contains 12 bits feature identifier local to its DFL FIU type.
+> > + * @type: DFL FIU type of the device. See enum dfl_id_type.
+> > + * @feature_id: feature identifier local to its DFL FIU type.
+> >   * @driver_data: driver specific data.
+> >   */
+> >  struct dfl_device_id {
+> > -	u8 type;
+> > +	u16 type;
+> >  	u16 feature_id;
+> >  	unsigned long driver_data;
+> >  };
+> > @@ -543,7 +543,7 @@ struct dfl_device_id {
+> >   * @dev: generic device interface.
+> >   * @id: id of the dfl device.
+> >   * @type: type of DFL FIU of the device. See enum dfl_id_type.
+> > - * @feature_id: 16 bits feature identifier local to its DFL FIU type.
+> > + * @feature_id: feature identifier local to its DFL FIU type.
+> >   * @mmio_res: mmio resource of this dfl device.
+> >   * @irqs: list of Linux IRQ numbers of this dfl device.
+> >   * @num_irqs: number of IRQs supported by this dfl device.
+> > @@ -553,7 +553,7 @@ struct dfl_device_id {
+> >  struct dfl_device {
+> >  	struct device dev;
+> >  	int id;
+> > -	u8 type;
+> > +	u16 type;
+> >  	u16 feature_id;
+> >  	struct resource mmio_res;
+> >  	int *irqs;
