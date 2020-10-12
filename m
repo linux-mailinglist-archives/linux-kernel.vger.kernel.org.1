@@ -2,140 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 456D228B212
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 12:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE4E28B213
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 12:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726832AbgJLKPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 06:15:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33474 "EHLO mx2.suse.de"
+        id S1729164AbgJLKPq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 12 Oct 2020 06:15:46 -0400
+Received: from aposti.net ([89.234.176.197]:53264 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726104AbgJLKPa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 06:15:30 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 477E3AC6C;
-        Mon, 12 Oct 2020 10:15:29 +0000 (UTC)
-Date:   Mon, 12 Oct 2020 12:15:25 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] x86/pasid updates for v5.10
-Message-ID: <20201012101525.GE25311@zn.tnic>
+        id S1726974AbgJLKPq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 06:15:46 -0400
+Date:   Mon, 12 Oct 2020 12:15:31 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: linux-next: build failure after merge of the drm-misc tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-next@vger.kernel.org, Dave Airlie <airlied@linux.ie>
+Message-Id: <V533IQ.G4C1EIUTGQYU3@crapouillou.net>
+In-Reply-To: <20201012152452.432c4867@canb.auug.org.au>
+References: <20201008140903.12a411b8@canb.auug.org.au>
+        <20201008154202.175fbec7@canb.auug.org.au>
+        <20201012152452.432c4867@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Stephen,
 
-please pull the x86/pasid pile.
+Le lun. 12 oct. 2020 ‡ 15:24, Stephen Rothwell <sfr@canb.auug.org.au> 
+a Ècrit :
+> Hi all,
+> 
+> On Thu, 8 Oct 2020 15:42:02 +1100 Stephen Rothwell 
+> <sfr@canb.auug.org.au> wrote:
+>> 
+>>  On Thu, 8 Oct 2020 14:09:03 +1100 Stephen Rothwell 
+>> <sfr@canb.auug.org.au> wrote:
+>>  >
+>>  > After merging the drm-misc tree, today's linux-next build (x86_64
+>>  > allmodconfig) failed like this:
+>> 
+>>  In file included from include/linux/clk.h:13,
+>>                   from drivers/gpu/drm/ingenic/ingenic-drm-drv.c:10:
+>>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c: In function 
+>> 'ingenic_drm_update_palette':
+>>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:35: error: 'struct 
+>> ingenic_drm' has no member named 'dma_hwdescs'; did you mean 
+>> 'dma_hwdesc_f0'?
+>>    448 |  for (i = 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); 
+>> i++) {
+>>        |                                   ^~~~~~~~~~~
+>>  include/linux/kernel.h:47:33: note: in definition of macro 
+>> 'ARRAY_SIZE'
+>>     47 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + 
+>> __must_be_array(arr))
+>>        |                                 ^~~
+>>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:35: error: 'struct 
+>> ingenic_drm' has no member named 'dma_hwdescs'; did you mean 
+>> 'dma_hwdesc_f0'?
+>>    448 |  for (i = 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); 
+>> i++) {
+>>        |                                   ^~~~~~~~~~~
+>>  include/linux/kernel.h:47:48: note: in definition of macro 
+>> 'ARRAY_SIZE'
+>>     47 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + 
+>> __must_be_array(arr))
+>>        |                                                ^~~
+>>  In file included from include/linux/bits.h:22,
+>>                   from include/linux/bitops.h:5,
+>>                   from drivers/gpu/drm/ingenic/ingenic-drm.h:10,
+>>                   from drivers/gpu/drm/ingenic/ingenic-drm-drv.c:7:
+>>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:35: error: 'struct 
+>> ingenic_drm' has no member named 'dma_hwdescs'; did you mean 
+>> 'dma_hwdesc_f0'?
+>>    448 |  for (i = 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); 
+>> i++) {
+>>        |                                   ^~~~~~~~~~~
+>>  include/linux/build_bug.h:16:62: note: in definition of macro 
+>> 'BUILD_BUG_ON_ZERO'
+>>     16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { 
+>> int:(-!!(e)); })))
+>>        |                                                             
+>>  ^
+>>  include/linux/compiler.h:224:46: note: in expansion of macro 
+>> '__same_type'
+>>    224 | #define __must_be_array(a) 
+>> BUILD_BUG_ON_ZERO(__same_type((a), &(a)[0]))
+>>        |                                              ^~~~~~~~~~~
+>>  include/linux/kernel.h:47:59: note: in expansion of macro 
+>> '__must_be_array'
+>>     47 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + 
+>> __must_be_array(arr))
+>>        |                                                           
+>> ^~~~~~~~~~~~~~~
+>>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:18: note: in 
+>> expansion of macro 'ARRAY_SIZE'
+>>    448 |  for (i = 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); 
+>> i++) {
+>>        |                  ^~~~~~~~~~
+>>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:35: error: 'struct 
+>> ingenic_drm' has no member named 'dma_hwdescs'; did you mean 
+>> 'dma_hwdesc_f0'?
+>>    448 |  for (i = 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); 
+>> i++) {
+>>        |                                   ^~~~~~~~~~~
+>>  include/linux/build_bug.h:16:62: note: in definition of macro 
+>> 'BUILD_BUG_ON_ZERO'
+>>     16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { 
+>> int:(-!!(e)); })))
+>>        |                                                             
+>>  ^
+>>  include/linux/compiler.h:224:46: note: in expansion of macro 
+>> '__same_type'
+>>    224 | #define __must_be_array(a) 
+>> BUILD_BUG_ON_ZERO(__same_type((a), &(a)[0]))
+>>        |                                              ^~~~~~~~~~~
+>>  include/linux/kernel.h:47:59: note: in expansion of macro 
+>> '__must_be_array'
+>>     47 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + 
+>> __must_be_array(arr))
+>>        |                                                           
+>> ^~~~~~~~~~~~~~~
+>>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:18: note: in 
+>> expansion of macro 'ARRAY_SIZE'
+>>    448 |  for (i = 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); 
+>> i++) {
+>>        |                  ^~~~~~~~~~
+>>  include/linux/build_bug.h:16:51: error: bit-field '<anonymous>' 
+>> width not an integer constant
+>>     16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { 
+>> int:(-!!(e)); })))
+>>        |                                                   ^
+>>  include/linux/compiler.h:224:28: note: in expansion of macro 
+>> 'BUILD_BUG_ON_ZERO'
+>>    224 | #define __must_be_array(a) 
+>> BUILD_BUG_ON_ZERO(__same_type((a), &(a)[0]))
+>>        |                            ^~~~~~~~~~~~~~~~~
+>>  include/linux/kernel.h:47:59: note: in expansion of macro 
+>> '__must_be_array'
+>>     47 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + 
+>> __must_be_array(arr))
+>>        |                                                           
+>> ^~~~~~~~~~~~~~~
+>>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:18: note: in 
+>> expansion of macro 'ARRAY_SIZE'
+>>    448 |  for (i = 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); 
+>> i++) {
+>>        |                  ^~~~~~~~~~
+>>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c:453:9: error: 'struct 
+>> ingenic_drm' has no member named 'dma_hwdescs'; did you mean 
+>> 'dma_hwdesc_f0'?
+>>    453 |   priv->dma_hwdescs->palette[i] = color;
+>>        |         ^~~~~~~~~~~
+>>        |         dma_hwdesc_f0
+>>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c: In function 
+>> 'ingenic_drm_plane_atomic_update':
+>>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c:467:3: error: 
+>> 'crtc_state' undeclared (first use in this function); did you mean 
+>> 'ctx_state'?
+>>    467 |   crtc_state = state->crtc->state;
+>>        |   ^~~~~~~~~~
+>>        |   ctx_state
+>>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c:467:3: note: each 
+>> undeclared identifier is reported only once for each function it 
+>> appears in
+>>  At top level:
+>>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c:443:13: warning: 
+>> 'ingenic_drm_update_palette' defined but not used [-Wunused-function]
+>>    443 | static void ingenic_drm_update_palette(struct ingenic_drm 
+>> *priv,
+>>        |             ^~~~~~~~~~~~~~~~~~~~~~~~~~
+>> 
+>>  > I noticed that the ingenic driver revert I had been waiting for 
+>> appeared
+>>  > in hte drm-misc tree, so I removed the BROKEN dependency for it, 
+>> but it
+>>  > produced the above errors, so I have marked it BROKEN again.
+> 
+> Any progress on this?  I am still marking CONFIG_DRM_INGENIC as BROKEN
+> in the drm and drm-misc trees.
 
-Thx.
+Ugh, that doesn't look good. I'll send a fix ASAP.
 
----
+(I was having email problems last week and the original email bounced, 
+sorry about that)
 
-The following changes since commit 856deb866d16e29bd65952e0289066f6078af773:
+Cheers,
+-Paul
 
-  Linux 5.9-rc5 (2020-09-13 16:06:00 -0700)
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_pasid_for_5.10
-
-for you to fetch changes up to 7f5933f81bd85a0bf6a87d65c7327ea048a75e54:
-
-  x86/asm: Add an enqcmds() wrapper for the ENQCMDS instruction (2020-10-07 17:53:08 +0200)
-
-----------------------------------------------------------------
-Initial support for sharing virtual addresses between the CPU and
-devices which doesn't need pinning of pages for DMA anymore. Add support
-for the command submission to devices using new x86 instructions like
-ENQCMD{,S} and MOVDIR64B. In addition, add support for process address
-space identifiers (PASIDs) which are referenced by those command
-submission instructions along with the handling of the PASID state on
-context switch as another extended state. Work by Fenghua Yu, Ashok Raj,
-Yu-cheng Yu and Dave Jiang.
-
-----------------------------------------------------------------
-Ashok Raj (1):
-      Documentation/x86: Add documentation for SVA (Shared Virtual Addressing)
-
-Dave Jiang (2):
-      x86/asm: Carve out a generic movdir64b() helper for general usage
-      x86/asm: Add an enqcmds() wrapper for the ENQCMDS instruction
-
-Fenghua Yu (7):
-      drm, iommu: Change type of pasid to u32
-      iommu/vt-d: Change flags type to unsigned int in binding mm
-      x86/cpufeatures: Enumerate ENQCMD and ENQCMDS instructions
-      x86/msr-index: Define an IA32_PASID MSR
-      mm: Add a pasid member to struct mm_struct
-      x86/cpufeatures: Mark ENQCMD as disabled when configured out
-      x86/mmu: Allocate/free a PASID
-
-Yu-cheng Yu (1):
-      x86/fpu/xstate: Add supervisor PASID state for ENQCMD
-
- Documentation/x86/index.rst                        |   1 +
- Documentation/x86/sva.rst                          | 257 +++++++++++++++++++++
- arch/x86/include/asm/cpufeatures.h                 |   1 +
- arch/x86/include/asm/disabled-features.h           |   9 +-
- arch/x86/include/asm/fpu/api.h                     |  12 +
- arch/x86/include/asm/fpu/internal.h                |   7 +
- arch/x86/include/asm/fpu/types.h                   |  11 +-
- arch/x86/include/asm/fpu/xstate.h                  |   2 +-
- arch/x86/include/asm/io.h                          |  17 +-
- arch/x86/include/asm/msr-index.h                   |   3 +
- arch/x86/include/asm/special_insns.h               |  64 +++++
- arch/x86/kernel/cpu/cpuid-deps.c                   |   1 +
- arch/x86/kernel/fpu/xstate.c                       |  63 ++++-
- drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd.h         |   4 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v10.c |   2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v7.c  |   2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v8.c  |   2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.c  |   2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.h  |   2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c   |   4 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c            |   6 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_ids.h            |   4 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c            |   2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c             |   8 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h             |   8 +-
- drivers/gpu/drm/amd/amdkfd/cik_event_interrupt.c   |   2 +-
- drivers/gpu/drm/amd/amdkfd/kfd_dbgdev.c            |   2 +-
- drivers/gpu/drm/amd/amdkfd/kfd_dbgmgr.h            |   2 +-
- .../gpu/drm/amd/amdkfd/kfd_device_queue_manager.c  |   7 +-
- drivers/gpu/drm/amd/amdkfd/kfd_events.c            |   8 +-
- drivers/gpu/drm/amd/amdkfd/kfd_events.h            |   4 +-
- drivers/gpu/drm/amd/amdkfd/kfd_iommu.c             |   6 +-
- drivers/gpu/drm/amd/amdkfd/kfd_pasid.c             |   4 +-
- drivers/gpu/drm/amd/amdkfd/kfd_priv.h              |  20 +-
- drivers/gpu/drm/amd/amdkfd/kfd_process.c           |   2 +-
- drivers/gpu/drm/amd/include/kgd_kfd_interface.h    |   2 +-
- drivers/iommu/amd/amd_iommu.h                      |  10 +-
- drivers/iommu/amd/iommu.c                          |  31 +--
- drivers/iommu/amd/iommu_v2.c                       |  20 +-
- drivers/iommu/intel/dmar.c                         |   7 +-
- drivers/iommu/intel/iommu.c                        |   4 +-
- drivers/iommu/intel/pasid.c                        |  31 ++-
- drivers/iommu/intel/pasid.h                        |  24 +-
- drivers/iommu/intel/svm.c                          |  47 +++-
- drivers/iommu/iommu.c                              |   2 +-
- drivers/misc/uacce/uacce.c                         |   2 +-
- include/linux/amd-iommu.h                          |   8 +-
- include/linux/intel-iommu.h                        |  14 +-
- include/linux/intel-svm.h                          |   2 +-
- include/linux/iommu.h                              |  10 +-
- include/linux/mm_types.h                           |   4 +
- include/linux/uacce.h                              |   2 +-
- 52 files changed, 607 insertions(+), 164 deletions(-)
- create mode 100644 Documentation/x86/sva.rst
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imend√∂rffer, HRB 36809, AG N√ºrnberg
