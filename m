@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7785628B6DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:38:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4822528B63B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:32:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731147AbgJLNiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:38:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40454 "EHLO mail.kernel.org"
+        id S1730049AbgJLNcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:32:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731075AbgJLNh3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:37:29 -0400
+        id S1726724AbgJLNcA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:32:00 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 421DA2087E;
-        Mon, 12 Oct 2020 13:37:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6A9AD2076E;
+        Mon, 12 Oct 2020 13:31:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509846;
-        bh=LkZZCHlybjPnZTp1wDgjaho81eMJAMmwVqqYco40hfU=;
+        s=default; t=1602509518;
+        bh=S54bNra/rImz1omB3KR01pGqy8W/aA8qlDuyjpzsyy8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d34oQB0BHl8fSdIiO/haXUiIKwIZHQMHTMxu7YWMD3YEc35858P1Fvitc1jCyDUp7
-         0zzuc31/qTaI7Ew5WnnRddqgk3P8JuQniK0TMl+mlj5WQ8qvgjTwenyJtWquYeEaE/
-         OqBtHggqKIqlc3AhLqI0zLIJLjV6nFG67SnJdNzg=
+        b=wrtzUAAE5svYEyE19iI2dvFRqj8f2343iwsD5voKF2Xg14IEdT0c0uKKaIy9bjNMV
+         d/KxdrFahpulh+QUlmdPQmewGZoYvr3K2ZVlEsUBgoG4EW3blldllONkzdxE7OSdJc
+         LnNxM7Dxh485l+du9dt6Vwbz03kQ6LNMi38k/vgE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Willy Tarreau <w@1wt.eu>,
-        Emese Revfy <re.emese@gmail.com>,
-        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 24/70] random32: Restore __latent_entropy attribute on net_rand_state
+        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 10/39] iommu/exynos: add missing put_device() call in exynos_iommu_of_xlate()
 Date:   Mon, 12 Oct 2020 15:26:40 +0200
-Message-Id: <20201012132631.384954236@linuxfoundation.org>
+Message-Id: <20201012132628.638819502@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132630.201442517@linuxfoundation.org>
-References: <20201012132630.201442517@linuxfoundation.org>
+In-Reply-To: <20201012132628.130632267@linuxfoundation.org>
+References: <20201012132628.130632267@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,44 +43,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>
+From: Yu Kuai <yukuai3@huawei.com>
 
-[ Upstream commit 09a6b0bc3be793ca8cba580b7992d73e9f68f15d ]
+[ Upstream commit 1a26044954a6d1f4d375d5e62392446af663be7a ]
 
-Commit f227e3ec3b5c ("random32: update the net random state on interrupt
-and activity") broke compilation and was temporarily fixed by Linus in
-83bdc7275e62 ("random32: remove net_rand_state from the latent entropy
-gcc plugin") by entirely moving net_rand_state out of the things handled
-by the latent_entropy GCC plugin.
+if of_find_device_by_node() succeed, exynos_iommu_of_xlate() doesn't have
+a corresponding put_device(). Thus add put_device() to fix the exception
+handling for this function implementation.
 
->From what I understand when reading the plugin code, using the
-__latent_entropy attribute on a declaration was the wrong part and
-simply keeping the __latent_entropy attribute on the variable definition
-was the correct fix.
-
-Fixes: 83bdc7275e62 ("random32: remove net_rand_state from the latent entropy gcc plugin")
-Acked-by: Willy Tarreau <w@1wt.eu>
-Cc: Emese Revfy <re.emese@gmail.com>
-Signed-off-by: Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: aa759fd376fb ("iommu/exynos: Add callback for initializing devices from device tree")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Acked-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Link: https://lore.kernel.org/r/20200918011335.909141-1-yukuai3@huawei.com
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/random32.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iommu/exynos-iommu.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/lib/random32.c b/lib/random32.c
-index 6e2c48ab80722..eb54663e9e941 100644
---- a/lib/random32.c
-+++ b/lib/random32.c
-@@ -48,7 +48,7 @@ static inline void prandom_state_selftest(void)
- }
- #endif
+diff --git a/drivers/iommu/exynos-iommu.c b/drivers/iommu/exynos-iommu.c
+index 29a31eb9ace3e..02df8d9dc842a 100644
+--- a/drivers/iommu/exynos-iommu.c
++++ b/drivers/iommu/exynos-iommu.c
+@@ -1158,13 +1158,17 @@ static int exynos_iommu_of_xlate(struct device *dev,
+ 		return -ENODEV;
  
--DEFINE_PER_CPU(struct rnd_state, net_rand_state);
-+DEFINE_PER_CPU(struct rnd_state, net_rand_state)  __latent_entropy;
+ 	data = platform_get_drvdata(sysmmu);
+-	if (!data)
++	if (!data) {
++		put_device(&sysmmu->dev);
+ 		return -ENODEV;
++	}
  
- /**
-  *	prandom_u32_state - seeded pseudo-random number generator.
+ 	if (!owner) {
+ 		owner = kzalloc(sizeof(*owner), GFP_KERNEL);
+-		if (!owner)
++		if (!owner) {
++			put_device(&sysmmu->dev);
+ 			return -ENOMEM;
++		}
+ 
+ 		INIT_LIST_HEAD(&owner->controllers);
+ 		dev->archdata.iommu = owner;
 -- 
 2.25.1
 
