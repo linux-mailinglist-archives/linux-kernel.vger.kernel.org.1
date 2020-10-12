@@ -2,164 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A04C628C494
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 00:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D630D28C499
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 00:19:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388614AbgJLWPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 18:15:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54848 "EHLO
+        id S2388635AbgJLWTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 18:19:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387733AbgJLWPf (ORCPT
+        with ESMTP id S2388218AbgJLWSk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 18:15:35 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90680C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 15:15:34 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id u24so15817143pgi.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 15:15:34 -0700 (PDT)
+        Mon, 12 Oct 2020 18:18:40 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63EC6C0613D1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 15:18:40 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id b1so16541022lfp.11
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 15:18:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=BKYX+JmWfXuwrCDmdV8EzGOvf57b0HcqGp36a/NsrYs=;
-        b=Z7tMEutwDeyWrAC5UnbnozDqy6eKxwJc5Rh7LnrrTGwM2z2a1lneHoN75Rd60BFyQQ
-         qxeDOFAv+BjEFK4y4Qi75JcSY1z0XOb+fh263beY/+WLp5gwncLCurdTa78HnuX95U/E
-         NYW7+z0RYqyTnv8PlOIwItstbg/+bMn06cMC0=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=J4SqumeB1YgQv0x1Jm7d/tqmvbX1crmxlaZ1m5MG3oA=;
+        b=OfDqbVxFOqGLzYnhHrZ0IFyNDqkjxi9b8KIlZlFxr/y3V6zSeWSlSYMumsdSf/3aBM
+         KG/sz0uoSJ9IEizz8W76tcT7yk+69T2nOaH4rGM0h3lHJpvLvEeV9oteYD6I/xqMrofs
+         YAoIa1BArYx2BLuriJf0imGLucEJRG0jzPab3AMNRPUuMXfmlpI1ISFgtDJt298I5Saf
+         8PKLt5Jmeo3QFN/eNaVBJLjjlaYcBcZsNOmmJ+TvKABqJXKREhTjI2zSbTedNMG8Ui/j
+         2f7wzuhie2UTjVgyWRTGTH33aoTPrifydj9FF8cGeiuHDGze1SnrtjS7o8N32zgiICAw
+         wl8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=BKYX+JmWfXuwrCDmdV8EzGOvf57b0HcqGp36a/NsrYs=;
-        b=qxKc86viOm3VQk3KdAR8arE86MlTf4xU1136VFK6+SfDVhhr18ZVwiA+h/iijom+gg
-         GUlhC5mG4XrHzUae0Vj2pGa1mpaoKnc+8qT/syEvLFqP1en5QP7qBDV7s5/14AIsIGPE
-         j3nPKYlZ7z+GARFy93JjsrJRmpJDWdt71nvE4c9EGWKfhmYCph/BFhHpley39t99xXjE
-         fVkG738em6rI78ng9gzFLK46H0JB/6Of7DdLjT4QBFYlYraHkLGJQVFiaK9A44WopvLc
-         cvml5pmGR+3QvKWLVulCSTGUiigOTPpITeuVB9gHEvHx0qsTLiuycQRRQNLqiRMXx0fJ
-         cqYQ==
-X-Gm-Message-State: AOAM532WbIgsFrre4VrenGE/LREy8RSele+d0eAlSfA+G+rl7rI59KLd
-        7XcgkFNq5pqaNc+P0mcXcv/KQg==
-X-Google-Smtp-Source: ABdhPJypPY6QUWUyRVWmuIUOQMJpWDH5GMtfJQMvdaXxSCkhB88JoiVV53OIF985PG+Pr56L2KzBVw==
-X-Received: by 2002:a17:90a:4a8a:: with SMTP id f10mr21779242pjh.60.1602540934064;
-        Mon, 12 Oct 2020 15:15:34 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 128sm12552892pfd.110.2020.10.12.15.15.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 15:15:33 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 15:15:32 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Denis Efremov <efremov@linux.com>,
-        Hulk Robot <hulkci@huawei.com>, Jann Horn <jannh@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Rich Felker <dalias@libc.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        YiFei Zhu <yifeifz2@illinois.edu>, Zou Wei <zou_wei@huawei.com>
-Subject: [GIT PULL] seccomp updates for v5.10-rc1
-Message-ID: <202010121512.015F57CC@keescook>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=J4SqumeB1YgQv0x1Jm7d/tqmvbX1crmxlaZ1m5MG3oA=;
+        b=FI0e3tfnjUyLzRmI9QWdTn8oxvkwzAEjIYAAyz/ANiHGZRjNmPC19hD0SwjQo6jBs/
+         rxiqjS8vx/tKlJNm125qZBBTRZSWxidUBu6j19IBzymOOTfLPcgR5lZ97r/faCTieHS9
+         wIyGrZWZYajxPuxcWkZe4qy5xYFN4g2XGKRvfZ1hfSI15aOOrCpeo6zqf6FQgrZx+y/C
+         JuRKuy9Y8jF2cVrMo8VFO2lGhm3X8vIQyhiE40AKJ14huDDI+/PK+TYBCLloGsffA0YU
+         djw+5uPGS9gEyrMi4yQl+zk0sXKs4dOiKKWm+WyiLFshyczmYOYflzvctmfzAcE2XmCe
+         n1bg==
+X-Gm-Message-State: AOAM5334yE8wwrU5KZ8x/WMx4O0MtBsrAsNroxcId1w3R9Nv7YNWcyNN
+        lZkhtbsfazENIAWSkyeUxTDN0QNeH0/sJH+BUDVBPA==
+X-Google-Smtp-Source: ABdhPJy3+DdWNCOxYnTCuxD+CbYa27ZxKc8awp524OmaGufVr9hHFU278C/4/xCTFQ3hOhGY2sSdeEN1qo0B7oUZ8LQ=
+X-Received: by 2002:a19:8191:: with SMTP id c139mr8154062lfd.333.1602541118637;
+ Mon, 12 Oct 2020 15:18:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20201008154651.1901126-1-arnd@arndb.de>
+In-Reply-To: <20201008154651.1901126-1-arnd@arndb.de>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 13 Oct 2020 00:18:27 +0200
+Message-ID: <CACRpkdZedudw5VTSaQk3TRiROi87a_=ioqJGxN7Dxq7Qab34-w@mail.gmail.com>
+Subject: Re: [PATCH 00/13] Clean up legacy clock tick users
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Philip Blundell <philb@gnu.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Sam Creasey <sammy@sammy.net>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, linux-ia64@vger.kernel.org,
+        linux-parisc@vger.kernel.org,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Thu, Oct 8, 2020 at 5:47 PM Arnd Bergmann <arnd@arndb.de> wrote:
 
-Please pull these seccomp updates for v5.10-rc1. The bulk of the changes
-are with the seccomp selftests to accommodate some powerpc-specific
-behavioral characteristics. Additional cleanups, fixes, and improvements
-are also included, noted in the tag description.
+> When I created the patch removing CONFIG_ARCH_GETTIMEOFFSET,
+> I also had a look at CONFIG_GENERIC_CLOCKEVENTS, which is
+> selected by most, but not all, platforms today, each of the
+> ones that lack it doing the timer tick slightly differently.
+>
+> The cleanups here make the old platforms a bit more
+> consistent, in multiple ways:
+>
+> - rather than selecting GENERIC_CLOCKEVENTS on modern
+>   platforms, select LEGACY_TIMER_TICK on the old ones.
+>
+> - Hide some more of the internal implementation and only
+>   provide a single common entry point for the timer tick,
+>   which also makes the behavior more consistent.
+>
+> - Remove the m68k and arm specific infrastructure pieces
+>   and call the common helper directly from each timer
+>   interrupt function.
+>
+> I tested the series on m68k with the qemu q800 target
+> platform, both with the legacy_timer_tick() implementation
+> and after converting that to a periodic clockevent driver.
 
-Thanks!
+I am a big fan of this patch series:
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
--Kees
+Maybe the RFC patch can be kept in the sidelines but the
+rest should be merged ASAP in my opinion, the kernel just
+looks so much better after this.
 
-The following changes since commit e839317900e9f13c83d8711d684de88c625b307a:
-
-  seccomp: don't leave dangling ->notif if file allocation fails (2020-09-08 11:30:16 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/seccomp-v5.10-rc1
-
-for you to fetch changes up to dfe719fef03d752f1682fa8aeddf30ba501c8555:
-
-  seccomp: Make duplicate listener detection non-racy (2020-10-08 13:17:47 -0700)
-
-----------------------------------------------------------------
-seccomp updates for v5.10-rc1
-
-- heavily refactor seccomp selftests (and clone3 selftests dependency) to
-  fix powerpc (Kees Cook, Thadeu Lima de Souza Cascardo)
-- fix style issue in selftests (Zou Wei)
-- upgrade "unknown action" from KILL_THREAD to KILL_PROCESS (Rich Felker)
-- replace task_pt_regs(current) with current_pt_regs() (Denis Efremov)
-- fix corner-case race in USER_NOTIF (Jann Horn)
-- make CONFIG_SECCOMP no longer per-arch (YiFei Zhu)
-
-----------------------------------------------------------------
-Denis Efremov (1):
-      seccomp: Use current_pt_regs() instead of task_pt_regs(current)
-
-Jann Horn (1):
-      seccomp: Make duplicate listener detection non-racy
-
-Kees Cook (18):
-      selftests/seccomp: Add test for unknown SECCOMP_RET kill behavior
-      selftests/seccomp: Use __NR_mknodat instead of __NR_mknod
-      selftests/seccomp: Refactor arch register macros to avoid xtensa special case
-      selftests/seccomp: Provide generic syscall setting macro
-      selftests/seccomp: mips: Define SYSCALL_NUM_SET macro
-      selftests/seccomp: arm: Define SYSCALL_NUM_SET macro
-      selftests/seccomp: arm64: Define SYSCALL_NUM_SET macro
-      selftests/seccomp: mips: Remove O32-specific macro
-      selftests/seccomp: Remove syscall setting #ifdefs
-      selftests/seccomp: Convert HAVE_GETREG into ARCH_GETREG/ARCH_SETREG
-      selftests/seccomp: Convert REGSET calls into ARCH_GETREG/ARCH_SETREG
-      selftests/seccomp: Avoid redundant register flushes
-      selftests/seccomp: Remove SYSCALL_NUM_RET_SHARE_REG in favor of SYSCALL_RET_SET
-      selftests/seccomp: powerpc: Fix seccomp return value testing
-      selftests/seccomp: Record syscall during ptrace entry
-      selftests/seccomp: Allow syscall nr and ret value to be set separately
-      selftests/seccomp: powerpc: Set syscall return during ptrace syscall exit
-      selftests/clone3: Avoid OS-defined clone_args
-
-Rich Felker (1):
-      seccomp: kill process instead of thread for unknown actions
-
-YiFei Zhu (1):
-      seccomp: Move config option SECCOMP to arch/Kconfig
-
-Zou Wei (1):
-      selftests/seccomp: Use bitwise instead of arithmetic operator for flags
-
- arch/Kconfig                                       |  30 ++
- arch/arm/Kconfig                                   |  15 +-
- arch/arm64/Kconfig                                 |  13 -
- arch/csky/Kconfig                                  |  13 -
- arch/microblaze/Kconfig                            |  18 +-
- arch/mips/Kconfig                                  |  17 -
- arch/parisc/Kconfig                                |  16 -
- arch/powerpc/Kconfig                               |  17 -
- arch/riscv/Kconfig                                 |  13 -
- arch/s390/Kconfig                                  |  17 -
- arch/sh/Kconfig                                    |  16 -
- arch/sparc/Kconfig                                 |  18 +-
- arch/um/Kconfig                                    |  16 -
- arch/x86/Kconfig                                   |  16 -
- arch/xtensa/Kconfig                                |  14 -
- kernel/seccomp.c                                   |  64 ++-
- tools/testing/selftests/clone3/clone3.c            |  45 +--
- .../clone3/clone3_cap_checkpoint_restore.c         |   4 +-
- .../selftests/clone3/clone3_clear_sighand.c        |   2 +-
- tools/testing/selftests/clone3/clone3_selftests.h  |  24 +-
- tools/testing/selftests/clone3/clone3_set_tid.c    |   4 +-
- tools/testing/selftests/pidfd/pidfd_setns_test.c   |   2 +-
- tools/testing/selftests/seccomp/seccomp_bpf.c      | 440 +++++++++++++--------
- 23 files changed, 397 insertions(+), 437 deletions(-)
-
--- 
-Kees Cook
+Yours,
+Linus Walleij
