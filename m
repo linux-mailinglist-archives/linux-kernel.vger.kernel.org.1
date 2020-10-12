@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFAE628B799
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:45:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 561B928B963
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:01:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389580AbgJLNo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:44:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46202 "EHLO mail.kernel.org"
+        id S1731421AbgJLOAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:00:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731545AbgJLNmt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:42:49 -0400
+        id S1731452AbgJLNju (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:39:50 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 456EA22244;
-        Mon, 12 Oct 2020 13:42:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B4DBD20838;
+        Mon, 12 Oct 2020 13:39:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602510161;
-        bh=JHkqCSZdy7MzQOPZEl0Ec0T8/etdya31jdOjtdOcFdQ=;
+        s=default; t=1602509989;
+        bh=ty/XQN42QxF/uv2gSCu9I9A4/6LWpqHXIWZwyrgsVV8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ed/qU/vIRGOvodVUlZKmAY63kTXM0y5wPO3bgrAckCN6CPSrG2cWU7J7HjgGHmxAl
-         ar1jIMuvrgGGmwdRA9/ZeFgE2kBxZzI/SdXkdbReWxYxbaXPoeoJSe2c1F3/A+yRWP
-         bgflon+83W4X+2rZklYH4HOQNn7Blz473PTt8QFs=
+        b=n6hOw0LMbUAbn5o+0iutUREOsYLfKp0iitzd04eQTsA48LDeuT9Dyo5Ix+rlnHYeX
+         xhts8tsFsTjEGpy/NUIl2mh1u/0JFh5QVZiQeMlYzNCw9V05r5blahAXFqbDFrIZgQ
+         9/soYB1sWx+MR35JOh50KJVZS4Yhm41Tp/OcIVB8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>,
-        Eran Ben Elisha <eranbe@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
+        stable@vger.kernel.org, David Howells <dhowells@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 66/85] net/mlx5: Fix request_irqs error flow
-Date:   Mon, 12 Oct 2020 15:27:29 +0200
-Message-Id: <20201012132636.017657813@linuxfoundation.org>
+Subject: [PATCH 4.19 44/49] rxrpc: Fix some missing _bh annotations on locking conn->state_lock
+Date:   Mon, 12 Oct 2020 15:27:30 +0200
+Message-Id: <20201012132631.436768553@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
-References: <20201012132632.846779148@linuxfoundation.org>
+In-Reply-To: <20201012132629.469542486@linuxfoundation.org>
+References: <20201012132629.469542486@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,78 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maor Gottlieb <maorg@nvidia.com>
+From: David Howells <dhowells@redhat.com>
 
-[ Upstream commit 732ebfab7fe96b7ac9a3df3208f14752a4bb6db3 ]
+[ Upstream commit fa1d113a0f96f9ab7e4fe4f8825753ba1e34a9d3 ]
 
-Fix error flow handling in request_irqs which try to free irq
-that we failed to request.
-It fixes the below trace.
+conn->state_lock may be taken in softirq mode, but a previous patch
+replaced an outer lock in the response-packet event handling code, and lost
+the _bh from that when doing so.
 
-WARNING: CPU: 1 PID: 7587 at kernel/irq/manage.c:1684 free_irq+0x4d/0x60
-CPU: 1 PID: 7587 Comm: bash Tainted: G        W  OE    4.15.15-1.el7MELLANOXsmp-x86_64 #1
-Hardware name: Advantech SKY-6200/SKY-6200, BIOS F2.00 08/06/2020
-RIP: 0010:free_irq+0x4d/0x60
-RSP: 0018:ffffc9000ef47af0 EFLAGS: 00010282
-RAX: ffff88001476ae00 RBX: 0000000000000655 RCX: 0000000000000000
-RDX: ffff88001476ae00 RSI: ffffc9000ef47ab8 RDI: ffff8800398bb478
-RBP: ffff88001476a838 R08: ffff88001476ae00 R09: 000000000000156d
-R10: 0000000000000000 R11: 0000000000000004 R12: ffff88001476a838
-R13: 0000000000000006 R14: ffff88001476a888 R15: 00000000ffffffe4
-FS:  00007efeadd32740(0000) GS:ffff88047fc40000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fc9cc010008 CR3: 00000001a2380004 CR4: 00000000007606e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-PKRU: 55555554
-Call Trace:
- mlx5_irq_table_create+0x38d/0x400 [mlx5_core]
- ? atomic_notifier_chain_register+0x50/0x60
- mlx5_load_one+0x7ee/0x1130 [mlx5_core]
- init_one+0x4c9/0x650 [mlx5_core]
- pci_device_probe+0xb8/0x120
- driver_probe_device+0x2a1/0x470
- ? driver_allows_async_probing+0x30/0x30
- bus_for_each_drv+0x54/0x80
- __device_attach+0xa3/0x100
- pci_bus_add_device+0x4a/0x90
- pci_iov_add_virtfn+0x2dc/0x2f0
- pci_enable_sriov+0x32e/0x420
- mlx5_core_sriov_configure+0x61/0x1b0 [mlx5_core]
- ? kstrtoll+0x22/0x70
- num_vf_store+0x4b/0x70 [mlx5_core]
- kernfs_fop_write+0x102/0x180
- __vfs_write+0x26/0x140
- ? rcu_all_qs+0x5/0x80
- ? _cond_resched+0x15/0x30
- ? __sb_start_write+0x41/0x80
- vfs_write+0xad/0x1a0
- SyS_write+0x42/0x90
- do_syscall_64+0x60/0x110
- entry_SYSCALL_64_after_hwframe+0x3d/0xa2
+Fix this by applying the _bh annotation to the state_lock locking.
 
-Fixes: 24163189da48 ("net/mlx5: Separate IRQ request/free from EQ life cycle")
-Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
-Reviewed-by: Eran Ben Elisha <eranbe@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Fixes: a1399f8bb033 ("rxrpc: Call channels should have separate call number spaces")
+Signed-off-by: David Howells <dhowells@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/rxrpc/conn_event.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-index 373981a659c7c..6fd9749203944 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-@@ -115,7 +115,7 @@ static int request_irqs(struct mlx5_core_dev *dev, int nvec)
- 	return 0;
+diff --git a/net/rxrpc/conn_event.c b/net/rxrpc/conn_event.c
+index 126154a97a592..04213afd7710f 100644
+--- a/net/rxrpc/conn_event.c
++++ b/net/rxrpc/conn_event.c
+@@ -342,18 +342,18 @@ static int rxrpc_process_event(struct rxrpc_connection *conn,
+ 			return ret;
  
- err_request_irq:
--	for (; i >= 0; i--) {
-+	while (i--) {
- 		struct mlx5_irq *irq = mlx5_irq_get(dev, i);
- 		int irqn = pci_irq_vector(dev->pdev, i);
+ 		spin_lock(&conn->channel_lock);
+-		spin_lock(&conn->state_lock);
++		spin_lock_bh(&conn->state_lock);
  
+ 		if (conn->state == RXRPC_CONN_SERVICE_CHALLENGING) {
+ 			conn->state = RXRPC_CONN_SERVICE;
+-			spin_unlock(&conn->state_lock);
++			spin_unlock_bh(&conn->state_lock);
+ 			for (loop = 0; loop < RXRPC_MAXCALLS; loop++)
+ 				rxrpc_call_is_secure(
+ 					rcu_dereference_protected(
+ 						conn->channels[loop].call,
+ 						lockdep_is_held(&conn->channel_lock)));
+ 		} else {
+-			spin_unlock(&conn->state_lock);
++			spin_unlock_bh(&conn->state_lock);
+ 		}
+ 
+ 		spin_unlock(&conn->channel_lock);
 -- 
 2.25.1
 
