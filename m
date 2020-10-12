@@ -2,252 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FB4F28B1D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 11:53:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D50AB28B1D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 11:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387446AbgJLJxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 05:53:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52472 "EHLO
+        id S1729504AbgJLJyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 05:54:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726104AbgJLJxj (ORCPT
+        with ESMTP id S1726510AbgJLJyG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 05:53:39 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC0DC0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 02:53:39 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id i2so13725158pgh.7
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 02:53:39 -0700 (PDT)
+        Mon, 12 Oct 2020 05:54:06 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56EBAC0613CE;
+        Mon, 12 Oct 2020 02:54:06 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id o18so16276815edq.4;
+        Mon, 12 Oct 2020 02:54:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=sn6xmUdTB1gp5VGgvXCTEMXAJuxSUuB9tlWw8Fq4HPM=;
-        b=S/Uy5/9opCRWAvXzlKUsyfnuZH3nXfZuek8qLpeXaXtoTgaMHqMjFB5J2Jaix/Uwhj
-         XNWc3JMXvST3cZmD/26t/lODN3tnZFTzPhvhvqy0pWDbXyil+lwS5gSRdQxaBDSiPKGC
-         JInmtJ24vb4sJA9K4IaSnG3Ib6bIEfusm/ej0bT/tLxyBUCpMTfeDCV53PVWTjX2RJgc
-         5rt+YMd9xEy4+Y4SIeF/ISKwkaHtJX3fYLKUaQRDA1aUkUezT1qrgRYxrsxIc/rHMobo
-         jr48Ir65g6U8N1A7x5Cs7XdVXR8dMTn2ra4ki4rDO6CcBr/hOMEMbkzxnRAImKM0E0kV
-         Yd/g==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=iGo+ZN3tAXAxv3w8yNYuIIpSkiLbRMRp3Fk34AunwFo=;
+        b=Z8qjXpJma1fftxvQeo8JughAkkolo9T2zLHCRb0WgSqanywbY8nDc5tNb7CFaDzh0K
+         1axx2jb5E5GAdrAUGcjgF493gNmTdPqbSuyLmRtUDLcSQcp6eKwQm3sIbH94Wm9B0jn8
+         vbNZ3cq016hHWU2hOar7rqO4cgWhyf4cB5zrrJs857cOouUWAZBTg3pexYRmbz+NJhsn
+         snCXnKqpzQeXRo+o9dK6NH8kCneNHnAYXuYv2VMDGTymSrGUlgWwr7qaRgBfyaZggUdh
+         yAUqHQJQNHuXcIHrxVaRo871hVw5EscjwpJsaO/z/jk1Hw9LTGwmvht7AZUTKQ8Yeqb9
+         wnnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=sn6xmUdTB1gp5VGgvXCTEMXAJuxSUuB9tlWw8Fq4HPM=;
-        b=WBNfckgE73I5VZhjWgGZZb1zejzTkVUIHrTI7xUKDzQ9DKIkpfG56EatyOf6DTCUra
-         Lm7mxmvMlHwT84j8RB4qDl86PGOxVhlKxPXQAWH1/Pd+nynVIlqgXs6VLuAyFtcsIKpE
-         S1tnt6bE6HCkxESzDqVVxAWOtmPuUCKFsY6xi4vDeHEHK5gZFT34FUJEPgNGs5ERhIi0
-         EDGCQGhKx2Ot9Cjgtl+50DUVXveV/rZOeR3f4qYs5KBkU991We/IWts1GAs8rIkCzCXa
-         YH7DMRKNCBaavhQzb03MDHNgEqFpSpeARvUhFsB5DXqKIom/et8i/Mzrj2WiC18eIFzU
-         rrbw==
-X-Gm-Message-State: AOAM533i0/rY7V33/LeI7DIDcHetZoL+iRlRvKhG+RUiEjk/orEfBoGk
-        +WD611BitMkGDW20TRWwDarEQhquTuC5Jdl2WMQOsA==
-X-Google-Smtp-Source: ABdhPJyZzFLu56q7KSwjoqmED0nD/Mf8NBR5wmig0VDfTyRAvWQtaIbkn88N932UzTVPy2+058Fq79lgqoFQOV16kaQ=
-X-Received: by 2002:a17:90a:4749:: with SMTP id y9mr6534556pjg.229.1602496418720;
- Mon, 12 Oct 2020 02:53:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201010103854.66746-1-songmuchun@bytedance.com>
- <CAM_iQpUQXctR8UBNRP6td9dWTA705tP5fWKj4yZe9gOPTn_8oQ@mail.gmail.com>
- <CAMZfGtUhVx_iYY3bJZRY5s1PG0N1mCsYGS9Oku8cTqPiMDze-g@mail.gmail.com>
- <CANn89iKprp7WYeZy4RRO5jHykprnSCcVBc7Tk14Ui_MA9OK7Fg@mail.gmail.com>
- <CAMZfGtXVKER_GM-wwqxrUshDzcEg9FkS3x_BaMTVyeqdYPGSkw@mail.gmail.com> <9262ea44-fc3a-0b30-54dd-526e16df85d1@gmail.com>
-In-Reply-To: <9262ea44-fc3a-0b30-54dd-526e16df85d1@gmail.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 12 Oct 2020 17:53:01 +0800
-Message-ID: <CAMZfGtVF6OjNuJFUExRMY1k-EaDS744=nKy6_a2cYdrJRncTgQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm: proc: add Sock to /proc/meminfo
-To:     Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>, rafael@kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Shakeel Butt <shakeelb@google.com>,
-        Will Deacon <will@kernel.org>, Michal Hocko <mhocko@suse.com>,
-        Roman Gushchin <guro@fb.com>, Neil Brown <neilb@suse.de>,
-        rppt@kernel.org, Sami Tolvanen <samitolvanen@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Florian Westphal <fw@strlen.de>, gustavoars@kernel.org,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Thomas Gleixner <tglx@linutronix.de>, dave@stgolabs.net,
-        Michel Lespinasse <walken@google.com>,
-        Jann Horn <jannh@google.com>, chenqiwu@xiaomi.com,
-        christophe.leroy@c-s.fr, Minchan Kim <minchan@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=iGo+ZN3tAXAxv3w8yNYuIIpSkiLbRMRp3Fk34AunwFo=;
+        b=pH8OIQevXjaMwq9/ueJk6Z5lWXtaQWCsPIKJYtwGrhobcRjTK9cyodCjZpaUuD+KTP
+         oOyt4Puje8xx4+SPffDpf3c5wd6Nh/NvinqU7qD8OJoywstTyGx7Lrq5M7GxCJiFw+im
+         gynUziNXzxATFxjk6ETK6+J/3L7Ophg73+oHk3tBTye2QsQAD0iEoB6WlcrZj/tRLYd8
+         QzuxxV1brkgvpRxKPwLzBdBM2lLfYH+g4QuLpp4BGcqfzmlfr63skr8HlqwGXkjE0fHx
+         5nKzb9Iu1ogu41t/S6O6A08Q+n8wmMxBmVPrmRtP4TGcx5ZLaBIB0WmnugnWvDDYKZSp
+         rN7g==
+X-Gm-Message-State: AOAM531q6NjZR1LoHlJj6cB3ZwVuWcskFQMIcYth7nGJxi/Cdgyav1VM
+        wY6l9PvALH8An9G/1Gedtrl/m7qs78c=
+X-Google-Smtp-Source: ABdhPJyw6Z4x/GzJgRDWypbVo8PuDMznjmUSHnCLRlwMcu+LYuIIg/U2/pOqZYDhPwo0JTUgXYLKRA==
+X-Received: by 2002:a05:6402:2292:: with SMTP id cw18mr13678803edb.112.1602496445047;
+        Mon, 12 Oct 2020 02:54:05 -0700 (PDT)
+Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id bt16sm10369895ejb.89.2020.10.12.02.54.04
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 12 Oct 2020 02:54:04 -0700 (PDT)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     zhangqing@rock-chips.com, finley.xiao@rock-chips.com,
+        zhengyang@rock-chips.com, hjc@rock-chips.com,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH v1] clk: rockchip: add CLK_SET_RATE_PARENT to sclk for rk3066a i2s and uart clocks
+Date:   Mon, 12 Oct 2020 11:53:57 +0200
+Message-Id: <20201012095357.4852-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 5:24 PM Eric Dumazet <eric.dumazet@gmail.com> wrote=
-:
->
->
->
-> On 10/12/20 10:39 AM, Muchun Song wrote:
-> > On Mon, Oct 12, 2020 at 3:42 PM Eric Dumazet <edumazet@google.com> wrot=
-e:
-> >>
-> >> On Mon, Oct 12, 2020 at 6:22 AM Muchun Song <songmuchun@bytedance.com>=
- wrote:
-> >>>
-> >>> On Mon, Oct 12, 2020 at 2:39 AM Cong Wang <xiyou.wangcong@gmail.com> =
-wrote:
-> >>>>
-> >>>> On Sat, Oct 10, 2020 at 3:39 AM Muchun Song <songmuchun@bytedance.co=
-m> wrote:
-> >>>>>
-> >>>>> The amount of memory allocated to sockets buffer can become signifi=
-cant.
-> >>>>> However, we do not display the amount of memory consumed by sockets
-> >>>>> buffer. In this case, knowing where the memory is consumed by the k=
-ernel
-> >>>>
-> >>>> We do it via `ss -m`. Is it not sufficient? And if not, why not addi=
-ng it there
-> >>>> rather than /proc/meminfo?
-> >>>
-> >>> If the system has little free memory, we can know where the memory is=
- via
-> >>> /proc/meminfo. If a lot of memory is consumed by socket buffer, we ca=
-nnot
-> >>> know it when the Sock is not shown in the /proc/meminfo. If the unawa=
-re user
-> >>> can't think of the socket buffer, naturally they will not `ss -m`. Th=
-e
-> >>> end result
-> >>> is that we still don=E2=80=99t know where the memory is consumed. And=
- we add the
-> >>> Sock to the /proc/meminfo just like the memcg does('sock' item in the=
- cgroup
-> >>> v2 memory.stat). So I think that adding to /proc/meminfo is sufficien=
-t.
-> >>>
-> >>>>
-> >>>>>  static inline void __skb_frag_unref(skb_frag_t *frag)
-> >>>>>  {
-> >>>>> -       put_page(skb_frag_page(frag));
-> >>>>> +       struct page *page =3D skb_frag_page(frag);
-> >>>>> +
-> >>>>> +       if (put_page_testzero(page)) {
-> >>>>> +               dec_sock_node_page_state(page);
-> >>>>> +               __put_page(page);
-> >>>>> +       }
-> >>>>>  }
-> >>>>
-> >>>> You mix socket page frag with skb frag at least, not sure this is ex=
-actly
-> >>>> what you want, because clearly skb page frags are frequently used
-> >>>> by network drivers rather than sockets.
-> >>>>
-> >>>> Also, which one matches this dec_sock_node_page_state()? Clearly
-> >>>> not skb_fill_page_desc() or __skb_frag_ref().
-> >>>
-> >>> Yeah, we call inc_sock_node_page_state() in the skb_page_frag_refill(=
-).
-> >>> So if someone gets the page returned by skb_page_frag_refill(), it mu=
-st
-> >>> put the page via __skb_frag_unref()/skb_frag_unref(). We use PG_priva=
-te
-> >>> to indicate that we need to dec the node page state when the refcount=
- of
-> >>> page reaches zero.
-> >>>
-> >>
-> >> Pages can be transferred from pipe to socket, socket to pipe (splice()
-> >> and zerocopy friends...)
-> >>
-> >>  If you want to track TCP memory allocations, you always can look at
-> >> /proc/net/sockstat,
-> >> without adding yet another expensive memory accounting.
-> >
-> > The 'mem' item in the /proc/net/sockstat does not represent real
-> > memory usage. This is just the total amount of charged memory.
-> >
-> > For example, if a task sends a 10-byte message, it only charges one
-> > page to memcg. But the system may allocate 8 pages. Therefore, it
-> > does not truly reflect the memory allocated by the above memory
-> > allocation path. We can see the difference via the following message.
-> >
-> > cat /proc/net/sockstat
-> >   sockets: used 698
-> >   TCP: inuse 70 orphan 0 tw 617 alloc 134 mem 13
-> >   UDP: inuse 90 mem 4
-> >   UDPLITE: inuse 0
-> >   RAW: inuse 1
-> >   FRAG: inuse 0 memory 0
-> >
-> > cat /proc/meminfo | grep Sock
-> >   Sock:              13664 kB
-> >
-> > The /proc/net/sockstat only shows us that there are 17*4 kB TCP
-> > memory allocations. But apply this patch, we can see that we truly
-> > allocate 13664 kB(May be greater than this value because of per-cpu
-> > stat cache). Of course the load of the example here is not high. In
-> > some high load cases, I believe the difference here will be even
-> > greater.
-> >
->
-> This is great, but you have not addressed my feedback.
->
-> TCP memory allocations are bounded by /proc/sys/net/ipv4/tcp_mem
->
-> Fact that the memory is forward allocated or not is a detail.
->
-> If you think we must pre-allocate memory, instead of forward allocations,
-> your patch does not address this. Adding one line per consumer in /proc/m=
-eminfo looks
-> wrong to me.
+Add CLK_SET_RATE_PARENT to sclk for rk3066a i2s and uart clocks,
+so that the parent COMPOSITE_FRACMUX and COMPOSITE_NOMUX
+also update.
 
-I think that the consumer which consumes a lot of memory should be added
-to the /proc/meminfo. This can help us know the user of large memory.
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+---
+ drivers/clk/rockchip/clk-rk3188.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
->
-> If you do not want 9.37 % of physical memory being possibly used by TCP,
-> just change /proc/sys/net/ipv4/tcp_mem accordingly ?
+diff --git a/drivers/clk/rockchip/clk-rk3188.c b/drivers/clk/rockchip/clk-rk3188.c
+index 730020fcc..db8c58813 100644
+--- a/drivers/clk/rockchip/clk-rk3188.c
++++ b/drivers/clk/rockchip/clk-rk3188.c
+@@ -255,19 +255,19 @@ static struct rockchip_clk_branch common_spdif_fracmux __initdata =
+ 			RK2928_CLKSEL_CON(5), 8, 2, MFLAGS);
+ 
+ static struct rockchip_clk_branch common_uart0_fracmux __initdata =
+-	MUX(SCLK_UART0, "sclk_uart0", mux_sclk_uart0_p, 0,
++	MUX(SCLK_UART0, "sclk_uart0", mux_sclk_uart0_p, CLK_SET_RATE_PARENT,
+ 			RK2928_CLKSEL_CON(13), 8, 2, MFLAGS);
+ 
+ static struct rockchip_clk_branch common_uart1_fracmux __initdata =
+-	MUX(SCLK_UART1, "sclk_uart1", mux_sclk_uart1_p, 0,
++	MUX(SCLK_UART1, "sclk_uart1", mux_sclk_uart1_p, CLK_SET_RATE_PARENT,
+ 			RK2928_CLKSEL_CON(14), 8, 2, MFLAGS);
+ 
+ static struct rockchip_clk_branch common_uart2_fracmux __initdata =
+-	MUX(SCLK_UART2, "sclk_uart2", mux_sclk_uart2_p, 0,
++	MUX(SCLK_UART2, "sclk_uart2", mux_sclk_uart2_p, CLK_SET_RATE_PARENT,
+ 			RK2928_CLKSEL_CON(15), 8, 2, MFLAGS);
+ 
+ static struct rockchip_clk_branch common_uart3_fracmux __initdata =
+-	MUX(SCLK_UART3, "sclk_uart3", mux_sclk_uart3_p, 0,
++	MUX(SCLK_UART3, "sclk_uart3", mux_sclk_uart3_p, CLK_SET_RATE_PARENT,
+ 			RK2928_CLKSEL_CON(16), 8, 2, MFLAGS);
+ 
+ static struct rockchip_clk_branch common_clk_branches[] __initdata = {
+@@ -408,28 +408,28 @@ static struct rockchip_clk_branch common_clk_branches[] __initdata = {
+ 	COMPOSITE_NOMUX(0, "uart0_pre", "uart_src", 0,
+ 			RK2928_CLKSEL_CON(13), 0, 7, DFLAGS,
+ 			RK2928_CLKGATE_CON(1), 8, GFLAGS),
+-	COMPOSITE_FRACMUX(0, "uart0_frac", "uart0_pre", 0,
++	COMPOSITE_FRACMUX(0, "uart0_frac", "uart0_pre", CLK_SET_RATE_PARENT,
+ 			RK2928_CLKSEL_CON(17), 0,
+ 			RK2928_CLKGATE_CON(1), 9, GFLAGS,
+ 			&common_uart0_fracmux),
+ 	COMPOSITE_NOMUX(0, "uart1_pre", "uart_src", 0,
+ 			RK2928_CLKSEL_CON(14), 0, 7, DFLAGS,
+ 			RK2928_CLKGATE_CON(1), 10, GFLAGS),
+-	COMPOSITE_FRACMUX(0, "uart1_frac", "uart1_pre", 0,
++	COMPOSITE_FRACMUX(0, "uart1_frac", "uart1_pre", CLK_SET_RATE_PARENT,
+ 			RK2928_CLKSEL_CON(18), 0,
+ 			RK2928_CLKGATE_CON(1), 11, GFLAGS,
+ 			&common_uart1_fracmux),
+ 	COMPOSITE_NOMUX(0, "uart2_pre", "uart_src", 0,
+ 			RK2928_CLKSEL_CON(15), 0, 7, DFLAGS,
+ 			RK2928_CLKGATE_CON(1), 12, GFLAGS),
+-	COMPOSITE_FRACMUX(0, "uart2_frac", "uart2_pre", 0,
++	COMPOSITE_FRACMUX(0, "uart2_frac", "uart2_pre", CLK_SET_RATE_PARENT,
+ 			RK2928_CLKSEL_CON(19), 0,
+ 			RK2928_CLKGATE_CON(1), 13, GFLAGS,
+ 			&common_uart2_fracmux),
+ 	COMPOSITE_NOMUX(0, "uart3_pre", "uart_src", 0,
+ 			RK2928_CLKSEL_CON(16), 0, 7, DFLAGS,
+ 			RK2928_CLKGATE_CON(1), 14, GFLAGS),
+-	COMPOSITE_FRACMUX(0, "uart3_frac", "uart3_pre", 0,
++	COMPOSITE_FRACMUX(0, "uart3_frac", "uart3_pre", CLK_SET_RATE_PARENT,
+ 			RK2928_CLKSEL_CON(20), 0,
+ 			RK2928_CLKGATE_CON(1), 15, GFLAGS,
+ 			&common_uart3_fracmux),
+@@ -543,15 +543,15 @@ static struct clk_div_table div_aclk_cpu_t[] = {
+ };
+ 
+ static struct rockchip_clk_branch rk3066a_i2s0_fracmux __initdata =
+-	MUX(SCLK_I2S0, "sclk_i2s0", mux_sclk_i2s0_p, 0,
++	MUX(SCLK_I2S0, "sclk_i2s0", mux_sclk_i2s0_p, CLK_SET_RATE_PARENT,
+ 			RK2928_CLKSEL_CON(2), 8, 2, MFLAGS);
+ 
+ static struct rockchip_clk_branch rk3066a_i2s1_fracmux __initdata =
+-	MUX(SCLK_I2S1, "sclk_i2s1", mux_sclk_i2s1_p, 0,
++	MUX(SCLK_I2S1, "sclk_i2s1", mux_sclk_i2s1_p, CLK_SET_RATE_PARENT,
+ 			RK2928_CLKSEL_CON(3), 8, 2, MFLAGS);
+ 
+ static struct rockchip_clk_branch rk3066a_i2s2_fracmux __initdata =
+-	MUX(SCLK_I2S2, "sclk_i2s2", mux_sclk_i2s2_p, 0,
++	MUX(SCLK_I2S2, "sclk_i2s2", mux_sclk_i2s2_p, CLK_SET_RATE_PARENT,
+ 			RK2928_CLKSEL_CON(4), 8, 2, MFLAGS);
+ 
+ static struct rockchip_clk_branch rk3066a_clk_branches[] __initdata = {
+@@ -615,21 +615,21 @@ static struct rockchip_clk_branch rk3066a_clk_branches[] __initdata = {
+ 	COMPOSITE_NOMUX(0, "i2s0_pre", "i2s_src", 0,
+ 			RK2928_CLKSEL_CON(2), 0, 7, DFLAGS,
+ 			RK2928_CLKGATE_CON(0), 7, GFLAGS),
+-	COMPOSITE_FRACMUX(0, "i2s0_frac", "i2s0_pre", 0,
++	COMPOSITE_FRACMUX(0, "i2s0_frac", "i2s0_pre", CLK_SET_RATE_PARENT,
+ 			RK2928_CLKSEL_CON(6), 0,
+ 			RK2928_CLKGATE_CON(0), 8, GFLAGS,
+ 			&rk3066a_i2s0_fracmux),
+ 	COMPOSITE_NOMUX(0, "i2s1_pre", "i2s_src", 0,
+ 			RK2928_CLKSEL_CON(3), 0, 7, DFLAGS,
+ 			RK2928_CLKGATE_CON(0), 9, GFLAGS),
+-	COMPOSITE_FRACMUX(0, "i2s1_frac", "i2s1_pre", 0,
++	COMPOSITE_FRACMUX(0, "i2s1_frac", "i2s1_pre", CLK_SET_RATE_PARENT,
+ 			RK2928_CLKSEL_CON(7), 0,
+ 			RK2928_CLKGATE_CON(0), 10, GFLAGS,
+ 			&rk3066a_i2s1_fracmux),
+ 	COMPOSITE_NOMUX(0, "i2s2_pre", "i2s_src", 0,
+ 			RK2928_CLKSEL_CON(4), 0, 7, DFLAGS,
+ 			RK2928_CLKGATE_CON(0), 11, GFLAGS),
+-	COMPOSITE_FRACMUX(0, "i2s2_frac", "i2s2_pre", 0,
++	COMPOSITE_FRACMUX(0, "i2s2_frac", "i2s2_pre", CLK_SET_RATE_PARENT,
+ 			RK2928_CLKSEL_CON(8), 0,
+ 			RK2928_CLKGATE_CON(0), 12, GFLAGS,
+ 			&rk3066a_i2s2_fracmux),
+-- 
+2.11.0
 
-We are not complaining about TCP using too much memory, but how do
-we know that TCP uses a lot of memory. When I firstly face this problem,
-I do not know who uses the 25GB memory and it is not shown in the /proc/mem=
-info.
-If we can know the amount memory of the socket buffer via /proc/meminfo, we
-may not need to spend a lot of time troubleshooting this problem. Not every=
-one
-knows that a lot of memory may be used here. But I believe many people
-should know /proc/meminfo to confirm memory users.
-
-Thanks.
-
->
->
-
-
---=20
-Yours,
-Muchun
