@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27B0928B91A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8254A28B6A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:37:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390674AbgJLN5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:57:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46220 "EHLO mail.kernel.org"
+        id S1728980AbgJLNfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:35:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389346AbgJLNnj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:43:39 -0400
+        id S1730472AbgJLNew (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:34:52 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 716C6208B8;
-        Mon, 12 Oct 2020 13:43:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F127721D7F;
+        Mon, 12 Oct 2020 13:34:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602510198;
-        bh=c3FF0dtBNxenNhYRG9lbq4FRJg05wTXpy+HDvjExw4Q=;
+        s=default; t=1602509691;
+        bh=Txeoa9jljciSqEI/b5waAiBtnseB2Kt2+lT1JCbsAeo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yzkT4tC6uUyqyPTlaTewESzxVxPhZWvhSrIeIvdM74Tq9im2PZKCrmHxRjtMrUP35
-         otctcW1In2kB/eHMvEOK8+FBynPH3GOI9fzVhUGgfK/XgoRKsqBKYgRxjXQbR+8iOb
-         BngLuRUzC/AbHfEpkoHTXRYTn+H3MCvWxzhwkJkM=
+        b=jypM56z6YZBl1eM5r4TGBiI3MPKf4Ihsy45QpFtF2awxM+c6GDetGAXZJcVUvLOWX
+         DL6/S29CR4vp93UKGeBqLhzbVsGRH6GXQBhlE5mWloj4nzBeLR1v/P0TemW1zhv1Zo
+         xQqraQC7RX+VvveSI0Ts8xNoRdEhZp1C8xo+clKQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
-        Wolfram Sang <wsa@kernel.org>
-Subject: [PATCH 5.4 42/85] i2c: owl: Clear NACK and BUS error bits
+        stable@vger.kernel.org, Antony Antony <antony.antony@secunet.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 43/54] xfrm: clone whole liftime_cur structure in xfrm_do_migrate
 Date:   Mon, 12 Oct 2020 15:27:05 +0200
-Message-Id: <20201012132634.883041993@linuxfoundation.org>
+Message-Id: <20201012132631.573473101@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
-References: <20201012132632.846779148@linuxfoundation.org>
+In-Reply-To: <20201012132629.585664421@linuxfoundation.org>
+References: <20201012132629.585664421@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,47 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+From: Antony Antony <antony.antony@secunet.com>
 
-commit f5b3f433641c543ebe5171285a42aa6adcdb2d22 upstream.
+[ Upstream commit 8366685b2883e523f91e9816d7be371eb1144749 ]
 
-When the NACK and BUS error bits are set by the hardware, the driver is
-responsible for clearing them by writing "1" into the corresponding
-status registers.
+When we clone state only add_time was cloned. It missed values like
+bytes, packets.  Now clone the all members of the structure.
 
-Hence perform the necessary operations in owl_i2c_interrupt().
+v1->v3:
+ - use memcpy to copy the entire structure
 
-Fixes: d211e62af466 ("i2c: Add Actions Semiconductor Owl family S900 I2C driver")
-Reported-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 80c9abaabf42 ("[XFRM]: Extension for dynamic update of endpoint address(es)")
+Signed-off-by: Antony Antony <antony.antony@secunet.com>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-owl.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ net/xfrm/xfrm_state.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/i2c/busses/i2c-owl.c
-+++ b/drivers/i2c/busses/i2c-owl.c
-@@ -179,6 +179,9 @@ static irqreturn_t owl_i2c_interrupt(int
- 	fifostat = readl(i2c_dev->base + OWL_I2C_REG_FIFOSTAT);
- 	if (fifostat & OWL_I2C_FIFOSTAT_RNB) {
- 		i2c_dev->err = -ENXIO;
-+		/* Clear NACK error bit by writing "1" */
-+		owl_i2c_update_reg(i2c_dev->base + OWL_I2C_REG_FIFOSTAT,
-+				   OWL_I2C_FIFOSTAT_RNB, true);
- 		goto stop;
- 	}
- 
-@@ -186,6 +189,9 @@ static irqreturn_t owl_i2c_interrupt(int
- 	stat = readl(i2c_dev->base + OWL_I2C_REG_STAT);
- 	if (stat & OWL_I2C_STAT_BEB) {
- 		i2c_dev->err = -EIO;
-+		/* Clear BUS error bit by writing "1" */
-+		owl_i2c_update_reg(i2c_dev->base + OWL_I2C_REG_STAT,
-+				   OWL_I2C_STAT_BEB, true);
- 		goto stop;
- 	}
- 
+diff --git a/net/xfrm/xfrm_state.c b/net/xfrm/xfrm_state.c
+index 3734ad56b456c..e210d9b77de18 100644
+--- a/net/xfrm/xfrm_state.c
++++ b/net/xfrm/xfrm_state.c
+@@ -1244,7 +1244,7 @@ static struct xfrm_state *xfrm_state_clone(struct xfrm_state *orig)
+ 	x->tfcpad = orig->tfcpad;
+ 	x->replay_maxdiff = orig->replay_maxdiff;
+ 	x->replay_maxage = orig->replay_maxage;
+-	x->curlft.add_time = orig->curlft.add_time;
++	memcpy(&x->curlft, &orig->curlft, sizeof(x->curlft));
+ 	x->km.state = orig->km.state;
+ 	x->km.seq = orig->km.seq;
+ 	x->replay = orig->replay;
+-- 
+2.25.1
+
 
 
