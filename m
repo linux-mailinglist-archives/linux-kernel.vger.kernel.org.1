@@ -2,123 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AD5228B42E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 13:54:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47DA428B420
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 13:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388349AbgJLLxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 07:53:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388209AbgJLLxx (ORCPT
+        id S2388357AbgJLLvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 07:51:18 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:33208 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388329AbgJLLvP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 07:53:53 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E6CC0613D0;
-        Mon, 12 Oct 2020 04:53:51 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id o8so8436575pll.4;
-        Mon, 12 Oct 2020 04:53:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Fb1d8gmC83mgx6ZXccfV51mL2eDPuoS5rOP1jKZbgr0=;
-        b=WqRIRK1ILJUZ67z70QvMDBxN06fFvlwUdMAnAtrRsF1vPMIL52nvWTtO9rfNvOfdU4
-         c4oZuWaKIk/IlnERqKlzhGmiDtbVDYOdV1fdSQVzA6WfvnuXzBtUY3oBM3bKCuLiUNlm
-         wb+dROSaHcGVHWmWKRZYg9qnbiZB5vcXXcw+paU0XtrKDet/ZbtD0BTfiebCzZE3Vfm2
-         MLJ9cjShvdWMG4+T+yqYAKI1y0hSMPLCUk05PHD/Bc2d8W7xSKuqa3zDnvdY+VSN5aFH
-         PRFoObfPV/asfoDKDYQLEI9gLnEJZrKsg4L0BmXAkHnpxpP7YXYW6xU+OFXaOYsUs3eg
-         SNkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Fb1d8gmC83mgx6ZXccfV51mL2eDPuoS5rOP1jKZbgr0=;
-        b=eNZHAsF/GCmlMDxm7EphCHyg0YB173FMRtG2UbEU08C2/W7pxBlyAZxPyUFNfRSQ1b
-         BPtsptSBjc6vlOX9oT57EW2yWQu0HtbeqlIfl1KlCdhIJNB5KPadqfkRyN3OCIr53qWf
-         0UI0owi7+nf/977/fSCRpcXEYoncvRckyocXeZ9EyZJUQd97F2KPOqjzOrYIMIjLCmWe
-         TOKAuBQR0dyZbiAUrdO+c0WWze8Jnyiji+rdkVJgQDFxJFpGUXnHwJPZrXrVuL/erAm9
-         +kFMD4F6oXSDIwoHKACuyJZhLWIczb/sCLa6mSBjRbrA4Dq3SK+4rJiSetcrob/FjoFe
-         Ue3A==
-X-Gm-Message-State: AOAM5316vvGxOFMQs/eGvLcSMuAeuTOsbPVB3t315bZ8UedzDKmDMeR2
-        tY2dEI3RTauJTu7bMRTEIZQ=
-X-Google-Smtp-Source: ABdhPJxlO1TccaY9ka4oOYHIRdg81JvK1kUFDXWvaLfFg4GNc+QKlcsPPRGHb2yAxPpyrlh7CDA6BA==
-X-Received: by 2002:a17:902:7c0d:b029:d3:de09:a3 with SMTP id x13-20020a1709027c0db02900d3de0900a3mr22968153pll.52.1602503631317;
-        Mon, 12 Oct 2020 04:53:51 -0700 (PDT)
-Received: from localhost ([160.16.113.140])
-        by smtp.gmail.com with ESMTPSA id k25sm9638298pfi.42.2020.10.12.04.53.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 04:53:50 -0700 (PDT)
-From:   Coiby Xu <coiby.xu@gmail.com>
-X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
-Date:   Mon, 12 Oct 2020 19:51:14 +0800
-To:     Benjamin Poirier <benjamin.poirier@gmail.com>
-Cc:     devel@driverdev.osuosl.org, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-        Manish Chopra <manishc@marvell.com>,
-        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
-        <GR-Linux-NIC-Dev@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:QLOGIC QLGE 10Gb ETHERNET DRIVER" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 2/6] staging: qlge: coredump via devlink health
- reporter
-Message-ID: <20201012115114.lyh33rvmm4rt7mej@Rk>
-References: <20201008115808.91850-1-coiby.xu@gmail.com>
- <20201008115808.91850-3-coiby.xu@gmail.com>
- <20201010074809.GB14495@f3>
- <20201010100258.px2go6nugsfbwoq7@Rk>
- <20201010132230.GA17351@f3>
+        Mon, 12 Oct 2020 07:51:15 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09CBpAYg044249;
+        Mon, 12 Oct 2020 06:51:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1602503470;
+        bh=n25EwxA0r9Nd7YzdD8cqO/C1kLgylLvcULlcmOPiUoY=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=ZNJ/DKczsf7t0tqiTLXOzecS3Vrx+oigDP77LX1Z4c9YkYsnibSyAMctZ0xSv+u6u
+         lbIjh6lGd61H9hPzaX0vYFYCfbKyTi842KKCX7SgfEVOsXHlrLiA9UaESVoIe6L924
+         xWsjNMLWIHpGNuBC3hEo36xxrSQJH9MbyockNxV4=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09CBpAxa014439
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 12 Oct 2020 06:51:10 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 12
+ Oct 2020 06:51:09 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 12 Oct 2020 06:51:09 -0500
+Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09CBosww088613;
+        Mon, 12 Oct 2020 06:51:08 -0500
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+To:     <nm@ti.com>, <t-kristo@ti.com>, <ssantosh@kernel.org>,
+        <lokeshvutla@ti.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <grygorii.strashko@ti.com>
+Subject: [PATCH v3 06/11] firmware: ti_sci: rm: Remove ring_get_config support
+Date:   Mon, 12 Oct 2020 14:51:14 +0300
+Message-ID: <20201012115119.11333-7-peter.ujfalusi@ti.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201012115119.11333-1-peter.ujfalusi@ti.com>
+References: <20201012115119.11333-1-peter.ujfalusi@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201010132230.GA17351@f3>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 10, 2020 at 10:22:30PM +0900, Benjamin Poirier wrote:
->On 2020-10-10 18:02 +0800, Coiby Xu wrote:
->[...]
->> > > +	do {                                                           \
->> > > +		err = fill_seg_(fmsg, &dump->seg_hdr, dump->seg_regs); \
->> > > +		if (err) {					       \
->> > > +			kvfree(dump);                                  \
->> > > +			return err;				       \
->> > > +		}                                                      \
->> > > +	} while (0)
->> > > +
->> > > +static int qlge_reporter_coredump(struct devlink_health_reporter *reporter,
->> > > +				  struct devlink_fmsg *fmsg, void *priv_ctx,
->> > > +				  struct netlink_ext_ack *extack)
->> > > +{
->> > > +	int err = 0;
->> > > +
->> > > +	struct qlge_devlink *dev = devlink_health_reporter_priv(reporter);
->> >
->> > Please name this variable ql_devlink, like in qlge_probe().
->>
->> I happened to find the following text in drivers/staging/qlge/TODO
->> > * in terms of namespace, the driver uses either qlge_, ql_ (used by
->> >  other qlogic drivers, with clashes, ex: ql_sem_spinlock) or nothing (with
->> >  clashes, ex: struct ob_mac_iocb_req). Rename everything to use the "qlge_"
->> >  prefix.
->
->This comment applies to global identifiers, not local variables.
+The ring_get_cfg (0x1111 message) is not used and it is not supported by
+sysfw for a long time.
 
-Thank you for the explanation! Are you suggesting we should choose
-different naming styles so we better tell global identifiers from local
-variables?
->
->>
->> So I will adopt qlge_ instead. Besides I prefer qlge_dl to ql_devlink.
->
->Up to you but personally, I think ql_devlink is better. In any case,
->"dev" is too general and often used for struct net_device pointers
->instead.
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
+---
+ drivers/firmware/ti_sci.c              | 80 --------------------------
+ drivers/firmware/ti_sci.h              | 44 --------------
+ include/linux/soc/ti/ti_sci_protocol.h |  6 --
+ 3 files changed, 130 deletions(-)
 
-Thank you for the suggestion. Another reason to use qlge_dl is many
-other network drivers supporting devlink interface also adopt this kind
-of style.
+diff --git a/drivers/firmware/ti_sci.c b/drivers/firmware/ti_sci.c
+index 0dd3fbb4f964..0b801e67e672 100644
+--- a/drivers/firmware/ti_sci.c
++++ b/drivers/firmware/ti_sci.c
+@@ -2119,85 +2119,6 @@ static int ti_sci_cmd_ring_config(const struct ti_sci_handle *handle,
+ 	return ret;
+ }
+ 
+-/**
+- * ti_sci_cmd_ring_get_config() - get RA ring configuration
+- * @handle:	Pointer to TI SCI handle.
+- * @nav_id:	Device ID of Navigator Subsystem from which the ring is
+- *		allocated
+- * @index:	Ring index
+- * @addr_lo:	Returns ring's base address lo 32 bits
+- * @addr_hi:	Returns ring's base address hi 32 bits
+- * @count:	Returns number of ring elements
+- * @mode:	Returns mode of the ring
+- * @size:	Returns ring element size
+- * @order_id:	Returns ring's bus order ID
+- *
+- * Return: 0 if all went well, else returns appropriate error value.
+- *
+- * See @ti_sci_msg_rm_ring_get_cfg_req for more info.
+- */
+-static int ti_sci_cmd_ring_get_config(const struct ti_sci_handle *handle,
+-				      u32 nav_id, u32 index, u8 *mode,
+-				      u32 *addr_lo, u32 *addr_hi,
+-				      u32 *count, u8 *size, u8 *order_id)
+-{
+-	struct ti_sci_msg_rm_ring_get_cfg_resp *resp;
+-	struct ti_sci_msg_rm_ring_get_cfg_req *req;
+-	struct ti_sci_xfer *xfer;
+-	struct ti_sci_info *info;
+-	struct device *dev;
+-	int ret = 0;
+-
+-	if (IS_ERR_OR_NULL(handle))
+-		return -EINVAL;
+-
+-	info = handle_to_ti_sci_info(handle);
+-	dev = info->dev;
+-
+-	xfer = ti_sci_get_one_xfer(info, TI_SCI_MSG_RM_RING_GET_CFG,
+-				   TI_SCI_FLAG_REQ_ACK_ON_PROCESSED,
+-				   sizeof(*req), sizeof(*resp));
+-	if (IS_ERR(xfer)) {
+-		ret = PTR_ERR(xfer);
+-		dev_err(dev,
+-			"RM_RA:Message get config failed(%d)\n", ret);
+-		return ret;
+-	}
+-	req = (struct ti_sci_msg_rm_ring_get_cfg_req *)xfer->xfer_buf;
+-	req->nav_id = nav_id;
+-	req->index = index;
+-
+-	ret = ti_sci_do_xfer(info, xfer);
+-	if (ret) {
+-		dev_err(dev, "RM_RA:Mbox get config send fail %d\n", ret);
+-		goto fail;
+-	}
+-
+-	resp = (struct ti_sci_msg_rm_ring_get_cfg_resp *)xfer->xfer_buf;
+-
+-	if (!ti_sci_is_response_ack(resp)) {
+-		ret = -ENODEV;
+-	} else {
+-		if (mode)
+-			*mode = resp->mode;
+-		if (addr_lo)
+-			*addr_lo = resp->addr_lo;
+-		if (addr_hi)
+-			*addr_hi = resp->addr_hi;
+-		if (count)
+-			*count = resp->count;
+-		if (size)
+-			*size = resp->size;
+-		if (order_id)
+-			*order_id = resp->order_id;
+-	};
+-
+-fail:
+-	ti_sci_put_one_xfer(&info->minfo, xfer);
+-	dev_dbg(dev, "RM_RA:get config ring %u ret:%d\n", index, ret);
+-	return ret;
+-}
+-
+ /**
+  * ti_sci_cmd_rm_psil_pair() - Pair PSI-L source to destination thread
+  * @handle:	Pointer to TI SCI handle.
+@@ -2926,7 +2847,6 @@ static void ti_sci_setup_ops(struct ti_sci_info *info)
+ 	iops->free_event_map = ti_sci_cmd_free_event_map;
+ 
+ 	rops->config = ti_sci_cmd_ring_config;
+-	rops->get_config = ti_sci_cmd_ring_get_config;
+ 
+ 	psilops->pair = ti_sci_cmd_rm_psil_pair;
+ 	psilops->unpair = ti_sci_cmd_rm_psil_unpair;
+diff --git a/drivers/firmware/ti_sci.h b/drivers/firmware/ti_sci.h
+index ca15d8f1f8de..1cdf918be861 100644
+--- a/drivers/firmware/ti_sci.h
++++ b/drivers/firmware/ti_sci.h
+@@ -49,7 +49,6 @@
+ #define TI_SCI_MSG_RM_RING_RECONFIG		0x1102
+ #define TI_SCI_MSG_RM_RING_RESET		0x1103
+ #define TI_SCI_MSG_RM_RING_CFG			0x1110
+-#define TI_SCI_MSG_RM_RING_GET_CFG		0x1111
+ 
+ /* PSI-L requests */
+ #define TI_SCI_MSG_RM_PSIL_PAIR			0x1280
+@@ -687,49 +686,6 @@ struct ti_sci_msg_rm_ring_cfg_req {
+ 	u8 order_id;
+ } __packed;
+ 
+-/**
+- * struct ti_sci_msg_rm_ring_get_cfg_req - Get RA ring's configuration
+- *
+- * Gets the configuration of the non-real-time register fields of a ring.  The
+- * host, or a supervisor of the host, who owns the ring must be the requesting
+- * host.  The values of the non-real-time registers are returned in
+- * @ti_sci_msg_rm_ring_get_cfg_resp.
+- *
+- * @hdr: Generic Header
+- * @nav_id: Device ID of Navigator Subsystem from which the ring is allocated
+- * @index: ring index.
+- */
+-struct ti_sci_msg_rm_ring_get_cfg_req {
+-	struct ti_sci_msg_hdr hdr;
+-	u16 nav_id;
+-	u16 index;
+-} __packed;
+-
+-/**
+- * struct ti_sci_msg_rm_ring_get_cfg_resp -  Ring get configuration response
+- *
+- * Response received by host processor after RM has handled
+- * @ti_sci_msg_rm_ring_get_cfg_req. The response contains the ring's
+- * non-real-time register values.
+- *
+- * @hdr: Generic Header
+- * @addr_lo: Ring 32 LSBs of base address
+- * @addr_hi: Ring 16 MSBs of base address.
+- * @count: Ring number of elements.
+- * @mode: Ring mode.
+- * @size: encoded Ring element size
+- * @order_id: ing order ID.
+- */
+-struct ti_sci_msg_rm_ring_get_cfg_resp {
+-	struct ti_sci_msg_hdr hdr;
+-	u32 addr_lo;
+-	u32 addr_hi;
+-	u32 count;
+-	u8 mode;
+-	u8 size;
+-	u8 order_id;
+-} __packed;
+-
+ /**
+  * struct ti_sci_msg_psil_pair - Pairs a PSI-L source thread to a destination
+  *				 thread
+diff --git a/include/linux/soc/ti/ti_sci_protocol.h b/include/linux/soc/ti/ti_sci_protocol.h
+index 6978afc00823..6710d7ac7a72 100644
+--- a/include/linux/soc/ti/ti_sci_protocol.h
++++ b/include/linux/soc/ti/ti_sci_protocol.h
+@@ -286,8 +286,6 @@ struct ti_sci_rm_irq_ops {
+ /**
+  * struct ti_sci_rm_ringacc_ops - Ring Accelerator Management operations
+  * @config: configure the SoC Navigator Subsystem Ring Accelerator ring
+- * @get_config: get the SoC Navigator Subsystem Ring Accelerator ring
+- *		configuration
+  */
+ struct ti_sci_rm_ringacc_ops {
+ 	int (*config)(const struct ti_sci_handle *handle,
+@@ -295,10 +293,6 @@ struct ti_sci_rm_ringacc_ops {
+ 		      u32 addr_lo, u32 addr_hi, u32 count, u8 mode,
+ 		      u8 size, u8 order_id
+ 	);
+-	int (*get_config)(const struct ti_sci_handle *handle,
+-			  u32 nav_id, u32 index, u8 *mode,
+-			  u32 *addr_lo, u32 *addr_hi, u32 *count,
+-			  u8 *size, u8 *order_id);
+ };
+ 
+ /**
+-- 
+Peter
 
---
-Best regards,
-Coiby
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+
