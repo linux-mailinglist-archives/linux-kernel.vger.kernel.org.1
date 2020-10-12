@@ -2,121 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F98C28AF6F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 09:45:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E1D828AF71
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 09:45:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbgJLHpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 03:45:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54963 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726714AbgJLHpe (ORCPT
+        id S1727312AbgJLHpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 03:45:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726609AbgJLHpx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 03:45:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602488732;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QdZ3onrXxBOiI/yO33udyhWQa6oD4WfuDiVTG0nr5Kw=;
-        b=bq4YDkbHm3y1Qp09+GqshjACwXHMZyNPSxwItiaRw+PGs8RZwooPUYyrmW7PNOLETeuMH7
-        rjAt4qJAte257139s1c0Of8djUp4TP+4OKgk7zDOzygNtP4uhku5l27dowL9HEtSMswnHW
-        9FyV4gAnFRb8eg4JoEe5XG3+SgaOe4Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-206-sMCUXiNeM6evZkrVbhjnyw-1; Mon, 12 Oct 2020 03:45:28 -0400
-X-MC-Unique: sMCUXiNeM6evZkrVbhjnyw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AD17F108E1C2;
-        Mon, 12 Oct 2020 07:45:26 +0000 (UTC)
-Received: from [10.72.13.74] (ovpn-13-74.pek2.redhat.com [10.72.13.74])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8453F10023A7;
-        Mon, 12 Oct 2020 07:45:12 +0000 (UTC)
-Subject: Re: [RFC PATCH 10/24] vdpa: introduce config operations for
- associating ASID to a virtqueue group
-To:     Eli Cohen <elic@nvidia.com>
-Cc:     mst@redhat.com, lulu@redhat.com, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rob.miller@broadcom.com,
-        lingshan.zhu@intel.com, eperezma@redhat.com, hanand@xilinx.com,
-        mhabets@solarflare.com, amorenoz@redhat.com,
-        maxime.coquelin@redhat.com, stefanha@redhat.com,
-        sgarzare@redhat.com
-References: <20200924032125.18619-1-jasowang@redhat.com>
- <20200924032125.18619-11-jasowang@redhat.com>
- <20201001132927.GC32363@mtl-vdi-166.wap.labs.mlnx>
- <70af3ff0-74ed-e519-56f5-d61e6a48767f@redhat.com>
- <20201012065931.GA42327@mtl-vdi-166.wap.labs.mlnx>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <b1ac150b-0845-874f-75d0-7440133a1d41@redhat.com>
-Date:   Mon, 12 Oct 2020 15:45:10 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 12 Oct 2020 03:45:53 -0400
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70537C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 00:45:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=bit-web.eu;
+         s=ds202010; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+        Message-ID:Subject:From:To:Sender:Reply-To:Cc:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=rNuHJKhbLGHj0uq+7enKQCNAjEDWhdSc6os/rvgy1bI=; b=vwAKCwYk0ocDBVcDHGjcvSf91O
+        I6iU375EXt4p2f5cO/61IqQQo41XLZzqCuVG0SRiRa7Ln9nJmy6yGBxQecBCym6oIdrWDjuMIOiR7
+        9WZj8QwLcXDU+Qp8Qn2icI3kAxqSaZkC393jzKSrdxktL27x3JpyHPtJ8tGwo7jzsoqf8xYP1sOWv
+        zvQPp9LT7BCkpT+/VVzPiNUjAHfqXeUfdv5LMPegCWmFVvWQzbgIVV4WbS+JGCxh0QvlaqmL1F7g5
+        qdafi2XqPqlOiIIlNV7xwom8EixQKo0nFDhbjjpXD/VBURi7y6jg8C0spYXHJDuvzSucreoCbl1TQ
+        ocHl0ung==;
+Received: from [2a02:fe0:c700:2:687c:e90d:da70:b07d] (port=51985)
+        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <ywe_c@bit-web.eu>)
+        id 1kRsWk-0007Oq-43
+        for linux-kernel@vger.kernel.org; Mon, 12 Oct 2020 09:45:50 +0200
+To:     linux-kernel@vger.kernel.org
+From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <ywe_c@bit-web.eu>
+Subject: Fair Pay Project now on Bit-Web.EU
+Message-ID: <8537cdd5-029e-65cd-ceb0-6ab57a6663de@bit-web.eu>
+Date:   Mon, 12 Oct 2020 09:45:48 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <20201012065931.GA42327@mtl-vdi-166.wap.labs.mlnx>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+For those wanting the email version only:
 
-On 2020/10/12 下午2:59, Eli Cohen wrote:
-> On Fri, Oct 09, 2020 at 11:56:45AM +0800, Jason Wang wrote:
->> On 2020/10/1 下午9:29, Eli Cohen wrote:
->>> On Thu, Sep 24, 2020 at 11:21:11AM +0800, Jason Wang wrote:
->>>> This patch introduces a new bus operation to allow the vDPA bus driver
->>>> to associate an ASID to a virtqueue group.
->>>>
->>> So in case of virtio_net, I would expect that all the data virtqueues
->>> will be associated with the same address space identifier.
->>
->> Right.
->>
->> I will add the codes to do this in the next version. It should be more
->> explicit than have this assumption by default.
->>
->>
->>> Moreover,
->>> this assignment should be provided before the set_map call that provides
->>> the iotlb for the address space, correct?
->>
->> I think it's better not have this limitation, note that set_map() now takes
->> a asid argument.
->>
->> So for hardware if the associated as is changed, the driver needs to program
->> the hardware to switch to the new mapping.
->>
->> Does this work for mlx5?
->>
-> So in theory we can have several asid's (for different virtqueues), each
-> one should be followed by a specific set_map call. If this is so, how do
-> I know if I met all the conditions run my driver? Maybe we need another
-> callback to let the driver know it should not expect more set_maps().
+Welcome to Bit-Web, Ywe Cærlyns homepage. I mainly work with OS 
+development and environmentally friendly economically optimal I-T culture.
 
+As a conclusion on natural progress and research, we deassociate from 
+regressed deities, where we can rather use a correct variant. So for 
+ease of transition to a solid basis with fair pay principles in La 
+Quran, I work with an operating system, and some related culture. Being 
+on the side of all the politics we wanted in the new millennium.
 
-This should work similarly as in the past. Two parts of the work is 
-expected to be done by the driver:
+Cider 5
+My first amateur project, related to now called 3 D Scene, going back to 
+my teens in Norway. With videogame culture and 4-chan music, which 
+turned cideroriented in a syncretic influenced "christian" culture. I 
+found it no longer suited as a basis for politics or fair pay needed in 
+computing space, and reintegrated myself as muslim. A remix project 
+where I was known for the music Style Blend. And DSP insights, targeting 
+the best of this culture for available source.
 
-1) store the mapping somewhere (e.g hardware) during set_map()
-2) associating mapping with a specific virtqueue
+Bit Trance !
+Retro Trance. With a background in I-T, I went on to do techno/E D M 
+music production also, to promote I-T and optimal culture. Such as 
+environment friendlyness, and charitability. And became famous on 
+mp3.com, the worlds first streaming service. And became familiar with 
+Islam, and the arabic concepts Maruf (not Munkar), that is the same as 
+"green" politics. With hopes to the Akira, (afterlife) I pursued 
+this.The genre also gained dubstep breaks from american relatives. I 
+still recommend a bit of 8-bit clap in there, and *nix and tracker, 
+which was like the original. Here as Ihsan VJ.
 
-The only difference is that more than one mapping is used now.
+LJX
+A low latency/jitter I-T centric Supply and Demand Data System. With 
+sorted information, for the derivative works of Adams original 
+infotablet. (The pointer being a sign from The Dispilio Tablet.)
+With fair pay basis in La Quran.
+With E-money integration, for a good Tech-Democracy.
+Emphasizing prominent issues such as Clean Midrange, and Fair Pay. 
+Ultimately aiming for a LCPU (functions library accelerated C-inspired 
+cpu) low-latency system, 48-bit colour graphics, 4K with 8K subpixels.
 
-For the issue of more set_maps(), driver should be always ready for the 
-new set_maps() call instead of not expecting new set_maps() since guest 
-memory topology could be changed due to several reasons.
+Bit V-log
+I may vlog here from time to time.
 
-Qemu or vhost-vDPA will try their best to avoid the frequency of 
-set_maps() for better performance (e.g through batched IOTLB updating). 
-E.g there should be at most one set_map() during one time of guest booting.
+Hail La YLAH, Rabb Of The Worlds, La Rahman, La Rahim.
+(latin capital letter singular form only concept)
 
-Thanks
-
-
->
-
+Serene Greetings,
+Ywe Cærlyn, Viken County (Norway).
