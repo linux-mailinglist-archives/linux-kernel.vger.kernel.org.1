@@ -2,91 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A15D528C272
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 22:32:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E4228C276
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 22:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729235AbgJLUcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 16:32:52 -0400
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:43422 "EHLO 1wt.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726560AbgJLUcw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 16:32:52 -0400
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 09CKWQkJ011866;
-        Mon, 12 Oct 2020 22:32:26 +0200
-Date:   Mon, 12 Oct 2020 22:32:26 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     George Spelvin <lkml@sdf.org>, Amit Klein <aksecurity@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>, tytso@mit.edu,
-        Florian Westphal <fw@strlen.de>,
-        Marc Plumb <lkml.mplumb@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] prandom32 changes for v5.10
-Message-ID: <20201012203226.GA11861@1wt.eu>
+        id S1730629AbgJLUdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 16:33:47 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:39966 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726560AbgJLUdq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 16:33:46 -0400
+Received: by mail-ot1-f65.google.com with SMTP id l4so17007507ota.7;
+        Mon, 12 Oct 2020 13:33:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WHj2EuQ6Y9UuZUdPKYmroHd7gs7p/Zz8/iUe6juJ+/s=;
+        b=RufnyPfugdIzVxebwW2aCIRp2lS3IqTfMK/PhCzVfqLqhwvmKUPPIdSjCVXQ4yGXzI
+         bzi0pGa6lwvYq2slguwxtxRRRYV3JQIU51k+IwiNP0FZuRIaFW+6DfK1giKLEBjuY/EQ
+         2fKO5xj0AI8QMTn9GQhcfSeFGwAz85EFf3tMQO5tg/3ccIffQxugJYIJm8rva/1FNBMC
+         dH1gFl2+m/g8N8qtvVODYAoNqEhgFw3GziuaQLHDjgLUQTHFkJcK+rjRgUxHwDIGKBZ1
+         HVPomob8dsyIehWk2HKRTQSPY4ZxWSjS/3Rg6k2GmmzQSwHQQ6EbKz6zaFH4GoCS99Lp
+         znPg==
+X-Gm-Message-State: AOAM532bv29BVlAHmrEt/JK8a295V3AR+xAXIxP+Pp29h8xayEXgRv++
+        82mjXxa6f4bZqbKH+3bIqh72wUHgASSdrUPM4PQ=
+X-Google-Smtp-Source: ABdhPJxRQUPv4QRU6bGXQ32mHjNH8DlCArC4gpcRZuNH1X3e73U3xKZSxcyGyJ5QbmACZ01+5UvtW70qVpcHzevNLb8=
+X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr19468668otc.145.1602534825338;
+ Mon, 12 Oct 2020 13:33:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.6.1 (2016-04-27)
+References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-9-arnd@arndb.de>
+ <CAMuHMdWtMZaJ8ETb4g+AfaLeSZ1vyi8-POEaRzmdwh3ha=jieA@mail.gmail.com> <CAK8P3a1nDZYYwtuniUGxmy=H8LHbOEGSU=Pmi2=LMrLw09x8+w@mail.gmail.com>
+In-Reply-To: <CAK8P3a1nDZYYwtuniUGxmy=H8LHbOEGSU=Pmi2=LMrLw09x8+w@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 12 Oct 2020 22:33:34 +0200
+Message-ID: <CAMuHMdXn=1Gsn6hS72BoJ0jZwTVv_nurV0zCdSpUKJ6T5BL=Rg@mail.gmail.com>
+Subject: Re: [PATCH 08/13] m68k: m68328: use legacy_timer_tick()
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Philip Blundell <philb@gnu.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Sam Creasey <sammy@sammy.net>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+Hi Arnd,
 
-Given that nobody objected to this patchset since last update on
-prandom32 a month ago, I'm sending you the refreshed one for 5.10.
+On Mon, Oct 12, 2020 at 5:31 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> On Mon, Oct 12, 2020 at 3:15 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > Given this feature is SoC-specific, not platform-specific, perhaps
+> > it makes sense to move the selects to the M68{,EZ,VZ}328 symbols?
+> >
+> > Regardless:
+> > Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>
+> Ok, folded in the change blow, using one less line. I couldn't figure
 
-The following changes since commit bbf5c979011a099af5dc76498918ed7df445635b:
+Thanks, looks good.
 
-  Linux 5.9 (2020-10-11 14:15:50 -0700)
+> out whether
+> it should just be part of the CONFIG_M68000 instead, which doesn't appear
 
-are available in the Git repository at:
+It must definitely not be selected by CONFIG_M68000, as the plain MC68000
+is a CPU, not an SoC, and does not have the timer.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/wtarreau/prandom.git tags/20201012-v3-5.10
+> to have any machine support by itself. The dragonball CPU configuration
+> looks really odd, because you have to build exactly one of M68{,EZ,VZ}328
+> into the kernel to get a successful compilation, while Kconfig allows
+> many other combinations.
 
-for you to fetch changes up to 3486a21c7e5bafbdbc0f7ea5d40f3dad39022bf4:
+While CONFIG_M68000 could be used for a "pure" MC68000-based machine,
+I believe we don't support any yet.
+M68{,EZ,VZ}328 select M68000 as they are SoCs containing a 68000
+CPU core.
+Other m68k SoCs have a CPU32 core, which is a simplified 68020 CPU core
+(hmm, what happened to 68360 support? Oh, removed in 2016, so nothing
+selects CPU32 anymore).
 
-  random32: add noise from network and scheduling activity (2020-10-12 18:11:51 +0200)
+Gr{oetje,eeting}s,
 
-Thanks!
-Willy
+                        Geert
 
-----------------------------------------------------------------
-This is the cleanup of the latest series of prandom_u32 experimentations
-consisting in using SipHash instead of Tausworthe to produce the randoms
-used by the network stack. The changes to the files were kept minimal,
-and the controversial commit that used to take noise from the fast_pool
-(f227e3ec3b5c) was reverted. Instead, a dedicated "net_rand_noise" per_cpu
-variable is fed from various sources of activities (networking, scheduling)
-to perturb the SipHash state using fast, non-trivially predictable data,
-instead of keeping it fully deterministic. The goal is essentially to make
-any occasional memory leakage or brute-force attempt useless.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-The resulting code was verified to be very slightly faster on x86_64 than
-what is was with the controversial commit above, though this remains barely
-above measurement noise. It was also tested on i386 and arm, and build-
-tested only on arm64.
-
-This v3 is a rebase on top of 5.9-final, and switches __this_cpu_read()
-for this_cpu_read() to address a crash on i386+SMP+PREEMPT reported by
-LTP. Nothing else was changed.
-
-----------------------------------------------------------------
-George Spelvin (1):
-      random32: make prandom_u32() output unpredictable
-
-Willy Tarreau (1):
-      random32: add noise from network and scheduling activity
-
- drivers/char/random.c   |   1 -
- include/linux/prandom.h |  55 +++++-
- kernel/time/timer.c     |   9 +-
- lib/random32.c          | 438 +++++++++++++++++++++++++++++-------------------
- net/core/dev.c          |   4 +
- 5 files changed, 326 insertions(+), 181 deletions(-)
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
