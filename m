@@ -2,98 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D7B28B206
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 12:12:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EAB928B207
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 12:12:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729578AbgJLKMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 06:12:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727340AbgJLKMM (ORCPT
+        id S1729600AbgJLKMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 06:12:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42663 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729583AbgJLKMV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 06:12:12 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE80DC0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 03:12:11 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id h24so22392574ejg.9
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 03:12:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nmVmFIUNT4Wupci76xBxABrZMx+zyajrqk5q8LZr/Os=;
-        b=R0w/bK3ITaBcdVnsfq7spkvUuQ1tHsnj1UG63RulbeaLiedEJxPa3bDSrXYbbZKSf5
-         xEdZ+fwxvrG4TxC8HW33Pz0jPecJ02VtgeqgMTxNaOOMfc9PLbu1hfFXSSAyLNDz/WUQ
-         Sz9TGoEUjcvsU5Q5pa++/P0+VCIJnuBkumoAP20UsYhZnogG0rTfz+e77cc4ZmQAcAIb
-         YjjUrsOf4w/QRzYzb8tCoORDzqwsaQZv6fJBrtkKMVUPD6lFzj4eSOGEVYz/kRF3HuIC
-         x0zRE2dhsTdJhNJMP2b/82L+fTRiAQa0/QdIxMmGCOTmRLLwmaaYgMBIzChzRl+U4yGS
-         qarw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nmVmFIUNT4Wupci76xBxABrZMx+zyajrqk5q8LZr/Os=;
-        b=mTUup0urqg3eyEE4FocfoaB+SbTdnhv0A4g1Uq/oQJ0uV76aqJ78HNrrV/mXCbJSsj
-         EVdwS+iyLRj2IHKi5fsoAFCyG5Iei3zi1id9iWl1ec7/Y3plrxEzPeeLEpMA90PURXJn
-         xDuGsiL+w/D7iP22F63J66lYolRlWXkiZDmnpNbQC90p+1fF3VCWC4HJTmpFuTUskWZ0
-         7HF44klGV8tHeXHDaE+Aw/G1HW6mqDQWtIMQPOI7WECQa7SrVGdrwnvDM8J7k8EKfit8
-         gYdF4I+dINOVGXrVOLesEIFCXGQkTzssES6kjISjTV84CH1oKKXIkaf6lhv5S6uaKlWw
-         PyBg==
-X-Gm-Message-State: AOAM530+J/OmSHPcIOAUO3RrmSdMN6L1zcc6GSgj5xDazTjYGOMyS3yo
-        ZencKOuPjXlxFkX9K2tlQdPlb2VeFGQJu9GKgxV+aQ==
-X-Google-Smtp-Source: ABdhPJwQWGNBKj1XAqiwPto53ra1G7ksfQJUPPrZIPr4BTHa6hZcTDvS2eqBYi+DJrnwXDQWoPrGBgEm1P1U2Nzl+q0=
-X-Received: by 2002:a17:906:4e19:: with SMTP id z25mr28265243eju.44.1602497530533;
- Mon, 12 Oct 2020 03:12:10 -0700 (PDT)
+        Mon, 12 Oct 2020 06:12:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602497540;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=S7UY0NqcxaCpDu11VSHh3rOGwOGkuQSUNrquH3JIcFk=;
+        b=NfWp+kBZvRwcSGDjYIa5vvOrn2aO3zZHKfOzlJqX780mCPsvz03B/qgDSY8yfSABzPaeRJ
+        Xw5YrZd5UFf6GAeJAURDzBE+RYiHpBkko+fkziPsa6dIcmmbo0w/nNJvhA8TjD/ahoFBd6
+        DfSBMhCbmhFFKfosLLutxWH8qX4FCU8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-234-49nESNQbPXK-3K0C6gKbSw-1; Mon, 12 Oct 2020 06:12:16 -0400
+X-MC-Unique: 49nESNQbPXK-3K0C6gKbSw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 262AB4239D;
+        Mon, 12 Oct 2020 10:12:14 +0000 (UTC)
+Received: from krava (unknown [10.40.195.81])
+        by smtp.corp.redhat.com (Postfix) with SMTP id E09015C225;
+        Mon, 12 Oct 2020 10:12:09 +0000 (UTC)
+Date:   Mon, 12 Oct 2020 12:12:08 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
+        Zamir SUN <sztsian@gmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        zsun@redhat.com, Vitaly Chikunov <vt@altlinux.org>,
+        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
+        Yordan Karadzhov <ykaradzhov@vmware.com>,
+        Ben Hutchings <ben@decadent.org.uk>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Tony Jones <tonyj@suse.de>, John Kacur <jkacur@redhat.com>,
+        Clark Williams <williams@redhat.com>, powertop@lists.01.org,
+        Al Stone <ahs3@debian.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: Re: [ANNOUNCE] libtraceevent.git
+Message-ID: <20201012101208.GF1099489@krava>
+References: <20201007130750.49349844@gandalf.local.home>
 MIME-Version: 1.0
-References: <20201008143722.21888-1-etienne.carriere@linaro.org>
- <20201008143722.21888-3-etienne.carriere@linaro.org> <20201008210839.6nnl2tvm2re2ckvu@bogus>
- <CAN5uoS-t2De5OvawUSeK1NuskqpBEt-rWGVtJky-E=+RRpe+_Q@mail.gmail.com> <20201009155816.il56rbatvcagyosz@bogus>
-In-Reply-To: <20201009155816.il56rbatvcagyosz@bogus>
-From:   Etienne Carriere <etienne.carriere@linaro.org>
-Date:   Mon, 12 Oct 2020 12:11:59 +0200
-Message-ID: <CAN5uoS9QtSrkgqePYugYys6Kgx2my+o=tmJRjQK2EVA_W1jZKw@mail.gmail.com>
-Subject: Re: [PATCH 3/5] firmware: arm_scmi: add config dependency for smc transport
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     linux-kernel@vger.kernel.org,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Souvik Chakravarty <Souvik.Chakravarty@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201007130750.49349844@gandalf.local.home>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 9 Oct 2020 at 17:58, Sudeep Holla <sudeep.holla@arm.com> wrote:
->
-> On Fri, Oct 09, 2020 at 02:33:41PM +0200, Etienne Carriere wrote:
-> > On Thu, 8 Oct 2020 at 23:08, Sudeep Holla <sudeep.holla@arm.com> wrote:
-> > >
-> > > On Thu, Oct 08, 2020 at 04:37:20PM +0200, Etienne Carriere wrote:
-> > > > Fix dependencies for configuration switch ARM_SCMI_PROTOCOL that
-> > > > is not exclusively dependent on MAILBOX since the alternate
-> > > > smc transport that is depends on HAVE_ARM_SMCCC_DISCOVERY since [1].
-> > > >
-> > >
-> > > Do you need any build issues ? I don't see why this is needed.
-> > >
-> >
-> > This change is for consistency of the kernel configuration.
-> > Without this change, a kernel configured without CONFIG_MAILBOX
-> > cannot embed SCMI support even is using only the SMC transport
-> > enabled thanks to HAVE_ARM_SMCCC_DISCOVERY.
-> >
->
-> Fair enough, however instead of adding to the list for each added transport
-> we need to do better transport abstraction now that we have multiple.
-> I don't see this as critical, let me know if you disagree.
+On Wed, Oct 07, 2020 at 01:07:50PM -0400, Steven Rostedt wrote:
+> I split out tools/lib/traceevent from the kernel tree using "git subtree",
+> which recreates all the commits of a directory and makes that directory a
+> stand alone. I then updated the Makefiles, and copied over some of the
+> header files used to build the library. I pushed this up to:
+> 
+>   https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/
+> 
+> My hope is that this will now be the source of all updates to the
+> libtraceevent library that can be used as a stand alone package that both
+> perf and tracecmd can use. I would also like powertop and rasdaemon to use
+> this as well.
 
-Not critical, I agree :)
+hi,
+I'm adding this as fedora package, is there a source arhive somewhere
+in git.kernel.org for libtraceevent that spec could download?
 
-etienne
+thanks,
+jirka
 
->
-> --
-> Regards,
-> Sudeep
