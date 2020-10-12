@@ -2,137 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D0F28ADDB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 07:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6338128ADE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 07:52:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727032AbgJLFt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 01:49:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726072AbgJLFt4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 01:49:56 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2B16C0613CE
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 22:49:54 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id c20so1914047pfr.8
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 22:49:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YNSSFlxS0Jw+cQsOnsPziRX11XM/7DkrUT0mheiLgeg=;
-        b=UxO+H5vxXv1UTXIGMrvzkl02w0Yb9KAHirjKDjdQknMbKG6FU+5YpsIBI1L8mr53yV
-         M/U0pBQSB6qQeSLE+GndEwyb96NpSd4soS+upP7eNqZ6A3xpaTVDlZC0DxOzNsfSZENT
-         p5C4iTZYMqyXbswhyx0bDo2Xw7adm5takwZkveJZjs9cpAqiD01UHaoyQQeBRQfhn1NJ
-         BxPy5WDymd0oovB4QiVNYQ7M0yk2Q1caxt9FkulD1VcDGwNpLp75uGSk8udkeK8xY5C8
-         aLtHt23bkwjcINHazDK/tjoJEs/RVQR+Feymy2NMTEgnHWy3CVcp9TIwlBM1p8qdOJ/T
-         5rIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YNSSFlxS0Jw+cQsOnsPziRX11XM/7DkrUT0mheiLgeg=;
-        b=b3yYKxnlp1uu5qldiYB0fsjrOvoO379kL4OIub5sGH6scrMDvcY4xbCqH9YVuDg1aU
-         MaAYUtTjcAut44pzGPKplz1EkEKAJhPvGBQHm19sCNBdePY1D/k4S0TXK+pN/PGAgVXT
-         Rd45407xsLsuQwfYVvoDyhtr+e5GEUmoH4EpvFfCdkqEuoj20cOYQy9h3r3fBlxxRDEm
-         +7H8k9O4HbbpPq5FLUqLBEdy6c8L/2+SDA/dcCAC/fJtpm6KfwIR7CwrVCGzaaXBjXrb
-         4EQJvEx+YjEzSEzYe/+rJzgM6bRljcMrANC87YTRoUIUAQTkArJIQWZh+oKa99lOjBEu
-         eU8A==
-X-Gm-Message-State: AOAM530l+lUsWAgM863KfJKqqhBDYyv2qbcLToDEeSMo3CFFWZRyMoCS
-        1sHk/B+oZVNcR962Id7gN8w=
-X-Google-Smtp-Source: ABdhPJxVNBvAUs35rhIwBsJ1BkwyFph/YswmvpDEQ2quvwdYDVU55XDcPtHih9eoLL/wxaU2HtPudw==
-X-Received: by 2002:a17:90b:3103:: with SMTP id gc3mr18423521pjb.158.1602481794088;
-        Sun, 11 Oct 2020 22:49:54 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:a404:280a:90bd:7a49:dcda:1fb1])
-        by smtp.gmail.com with ESMTPSA id ck21sm21759040pjb.56.2020.10.11.22.49.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Oct 2020 22:49:52 -0700 (PDT)
-From:   Ujjwal Kumar <ujjwalkumar0501@gmail.com>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Joe Perches <joe@perches.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org,
-        Ujjwal Kumar <ujjwalkumar0501@gmail.com>
-Subject: [RFC PATCH] checkpatch: add shebang check to EXECUTE_PERMISSIONS
-Date:   Mon, 12 Oct 2020 11:19:43 +0530
-Message-Id: <20201012054943.1196031-1-ujjwalkumar0501@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S1727164AbgJLFwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 01:52:24 -0400
+Received: from mga12.intel.com ([192.55.52.136]:18020 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726072AbgJLFwU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 01:52:20 -0400
+IronPort-SDR: CLPkUE8ZXL9RG0hlY2fQGhUxycBLQsChKLafCW6TnTmty/B4AJSVoYo8VkwfX4+LMLJe/TrE5a
+ 9755N6FOm/YQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="145014271"
+X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; 
+   d="scan'208";a="145014271"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2020 22:52:20 -0700
+IronPort-SDR: Ya9EDAn3SOMd08SCKVKBtueoni+yyq9EF8H8N9tr+YE/IrdFHweYy6SREcwPgxnde0DbbLRvxa
+ rOKYCbITG9ew==
+X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; 
+   d="scan'208";a="520573207"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2020 22:52:19 -0700
+Date:   Sun, 11 Oct 2020 22:52:19 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kexec@lists.infradead.org, linux-bcache@vger.kernel.org,
+        linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org,
+        linux-efi@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-aio@kvack.org,
+        io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net,
+        reiserfs-devel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
+        ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-cachefs@redhat.com,
+        samba-technical@lists.samba.org, intel-wired-lan@lists.osuosl.org
+Subject: Re: [PATCH RFC PKS/PMEM 57/58] nvdimm/pmem: Stray access protection
+ for pmem->virt_addr
+Message-ID: <20201012055218.GA2046448@iweiny-DESK2.sc.intel.com>
+References: <20201009195033.3208459-1-ira.weiny@intel.com>
+ <20201009195033.3208459-58-ira.weiny@intel.com>
+ <bd3f5ece-0e7b-4c15-abbc-1b3b943334dc@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bd3f5ece-0e7b-4c15-abbc-1b3b943334dc@nvidia.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-checkpatch.pl checks for invalid EXECUTE_PERMISSIONS on source
-files. The script leverages filename extensions and its path in
-the repository to decide whether to allow execute permissions on
-the file or not.
+On Fri, Oct 09, 2020 at 07:53:07PM -0700, John Hubbard wrote:
+> On 10/9/20 12:50 PM, ira.weiny@intel.com wrote:
+> > From: Ira Weiny <ira.weiny@intel.com>
+> > 
+> > The pmem driver uses a cached virtual address to access its memory
+> > directly.  Because the nvdimm driver is well aware of the special
+> > protections it has mapped memory with, we call dev_access_[en|dis]able()
+> > around the direct pmem->virt_addr (pmem_addr) usage instead of the
+> > unnecessary overhead of trying to get a page to kmap.
+> > 
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > ---
+> >   drivers/nvdimm/pmem.c | 4 ++++
+> >   1 file changed, 4 insertions(+)
+> > 
+> > diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
+> > index fab29b514372..e4dc1ae990fc 100644
+> > --- a/drivers/nvdimm/pmem.c
+> > +++ b/drivers/nvdimm/pmem.c
+> > @@ -148,7 +148,9 @@ static blk_status_t pmem_do_read(struct pmem_device *pmem,
+> >   	if (unlikely(is_bad_pmem(&pmem->bb, sector, len)))
+> >   		return BLK_STS_IOERR;
+> > +	dev_access_enable(false);
+> >   	rc = read_pmem(page, page_off, pmem_addr, len);
+> > +	dev_access_disable(false);
+> 
+> Hi Ira!
+> 
+> The APIs should be tweaked to use a symbol (GLOBAL, PER_THREAD), instead of
+> true/false. Try reading the above and you'll see that it sounds like it's
+> doing the opposite of what it is ("enable_this(false)" sounds like a clumsy
+> API design to *disable*, right?). And there is no hint about the scope.
 
-Based on current check conditions, a perl script file having
-execute permissions, without '.pl' extension in its filename
-and not belonging to 'scripts/' directory is reported as ERROR
-which is a false-positive.
+Sounds reasonable.
 
-Adding a shebang check along with current conditions will make
-the check more generalised and improve checkpatch reports.
-To do so, without breaking the core design decision of checkpatch,
-we can fetch the first line from the patch itself and match it for
-a shebang pattern.
+> 
+> And it *could* be so much more readable like this:
+> 
+>     dev_access_enable(DEV_ACCESS_THIS_THREAD);
 
-There can be cases where the first line is not part of the patch.
-In that case there may be a false-positive report but in the end we
-will have less false-positives as we will be handling some of the
-unhandled cases.
+I'll think about the flag name.  I'm not liking 'this thread'.
 
-Signed-off-by: Ujjwal Kumar <ujjwalkumar0501@gmail.com>
----
-Apologies, I forgot to include linux-kernel@vger.kernel.org so I'm
-now resending.
+Maybe DEV_ACCESS_[GLOBAL|THREAD]
 
- scripts/checkpatch.pl | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index fab38b493cef..e596d30794bf 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -1795,6 +1795,23 @@ sub get_stat_here {
- 	return $herectx;
- }
-
-+sub get_shebang {
-+	my ($linenr, $realfile) = @_;
-+	my $rawline = "";
-+	my $shebang = "";
-+
-+	$rawline = raw_line($linenr, 3);
-+	if (defined $rawline &&
-+		$rawline =~ /^\@\@ -\d+(?:,\d+)? \+(\d+)(,(\d+))? \@\@/) {
-+		if (defined $1 && $1 == 1) {
-+			$shebang = raw_line($linenr, 4);
-+			$shebang = substr $shebang, 1;
-+		}
-+	}
-+
-+	return $shebang;
-+}
-+
- sub cat_vet {
- 	my ($vet) = @_;
- 	my ($res, $coded);
-@@ -2680,7 +2697,9 @@ sub process {
- # Check for incorrect file permissions
- 		if ($line =~ /^new (file )?mode.*[7531]\d{0,2}$/) {
- 			my $permhere = $here . "FILE: $realfile\n";
-+			my $shebang = get_shebang($linenr, $realfile);
- 			if ($realfile !~ m@scripts/@ &&
-+			    $shebang !~ /^#!\s*(\/\w)+.*/ &&
- 			    $realfile !~ /\.(py|pl|awk|sh)$/) {
- 				ERROR("EXECUTE_PERMISSIONS",
- 				      "do not set execute permissions for source files\n" . $permhere);
-
-base-commit: d67bc7812221606e1886620a357b13f906814af7
---
-2.26.2
+Ira
 
