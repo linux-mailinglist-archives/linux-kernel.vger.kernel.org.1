@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BBED28B945
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:01:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B3E928B778
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:44:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389346AbgJLN64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:58:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44514 "EHLO mail.kernel.org"
+        id S2389405AbgJLNnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:43:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388831AbgJLNkV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:40:21 -0400
+        id S1731546AbgJLNms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:42:48 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 069D8221FF;
-        Mon, 12 Oct 2020 13:40:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3D69B22202;
+        Mon, 12 Oct 2020 13:42:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602510020;
-        bh=y5FT2GJf9TW6Y0VgJnAu8jhSXIO5GmntzAzd9OrCVWU=;
+        s=default; t=1602510154;
+        bh=k78XAI5isEK/D5oZDtstYulxItLHO5vvYCvSyiP5twM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jDAI9JTrP5RsuZ1HzvpYThzYMxnCa1bTp9tRvSp/kjLLewwk0EFLLK28i0zeSRv8g
-         45cF3OYP46FOzigzOIS9xzBpm8+7rlXwbTyVsVZ9j5AUMTNHLp8YydfBFhgqXSBQX5
-         sXm31qkl+BGMptoWe52WMiVraM5I75JbKCK5R5lQ=
+        b=qh6e9icFiDcrNm4Z3mUqjeXp5TpLavbLjLB+5jsSFdF3KoFO7dIGGCgOQp/5Hs8OH
+         gc9AVzNOeAOW//Ap8h3UeMve4UFhwDyMmiIu54Dy6l1713RjcEhIF3E/Izwtzvnvzn
+         IqX2MEPyHR/2aFKibdaOBdbelZCJf5jgApkHl8z0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,12 +30,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Wilken Gottwalt <wilken.gottwalt@mailbox.org>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 39/49] net: usb: ax88179_178a: fix missing stop entry in driver_info
-Date:   Mon, 12 Oct 2020 15:27:25 +0200
-Message-Id: <20201012132631.241589077@linuxfoundation.org>
+Subject: [PATCH 5.4 63/85] net: usb: ax88179_178a: fix missing stop entry in driver_info
+Date:   Mon, 12 Oct 2020 15:27:26 +0200
+Message-Id: <20201012132635.874229686@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132629.469542486@linuxfoundation.org>
-References: <20201012132629.469542486@linuxfoundation.org>
+In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
+References: <20201012132632.846779148@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -59,10 +59,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/drivers/net/usb/ax88179_178a.c b/drivers/net/usb/ax88179_178a.c
-index 8455f72007b9e..a9d0df435e266 100644
+index df2f7cc6dc03a..8e37e1f58c4b9 100644
 --- a/drivers/net/usb/ax88179_178a.c
 +++ b/drivers/net/usb/ax88179_178a.c
-@@ -1735,6 +1735,7 @@ static const struct driver_info belkin_info = {
+@@ -1719,6 +1719,7 @@ static const struct driver_info belkin_info = {
  	.status = ax88179_status,
  	.link_reset = ax88179_link_reset,
  	.reset	= ax88179_reset,
