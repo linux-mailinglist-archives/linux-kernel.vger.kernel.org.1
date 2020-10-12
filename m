@@ -2,276 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB2A928B46F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 14:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3666928B47C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 14:19:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388459AbgJLMPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 08:15:42 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:58971 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388209AbgJLMPl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 08:15:41 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id D95E05802D4;
-        Mon, 12 Oct 2020 08:15:39 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Mon, 12 Oct 2020 08:15:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=IjmSkHG+RebQZ02RSsHtc/0Z3Iz
-        8rbb2V+2upqrHWA0=; b=ZsikuYpnUfe/BcAE9hGG/bNtDltimbdoyEBcKt7oNpW
-        up2AkMvGRClxsHuqleg0SN/UeBbvrFb4lLiIRdyNSggri8DO+PirdJZutbq/dKQ8
-        gWaCmgMd59xknXxSEVH44DBve9zlpUA/+56L3GeryUXf7n+NypcLGoaMguscrMi/
-        fcl2WA2nFNk+CzUcua0A742dU24gJyM0O5AfuIHo0jBbHNPUxcFvMwU8JQPA277K
-        8qr9RCfbHQW1kalJ2+kEXzYjSyF+lVJyH6LcH42O+0r4XukcGU0Kf4te049aN3+v
-        meWbLUFdNx7PEUCs88/dy2duzkPH9VB1uwKzXPWC91Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=IjmSkH
-        G+RebQZ02RSsHtc/0Z3Iz8rbb2V+2upqrHWA0=; b=Tq2O1ndJd8ICA9oWGdBruv
-        zdIsy+vShHuiQkUBE1AZXBKPoFXwQJabmdHOkfX0JfGry8sdjePTISV43HsoKm0b
-        5WYAIaCg2TYOLQD5Of63L7xTBsuDYC2ObbOALwBuyJMR2Mi2XgtKvEhEpkS8YiDa
-        54wPyV5qtN9UNXZbrQ4abHGszxMeA5J5Vmy32uzEz9xxWo9ebwyQ1EMfzpQ0/4dV
-        FyHxX2TA7SVlOlaAPGs/UlNodXJHeU7++8p0ScvC+B8tN0km6xdgo74y8BHfbqny
-        3y6q5KFrrz9UtB3fFvgoFuLoRDSJd1ync6SGYok12whDerxd+KgNCoX9Rzo4jnqg
-        ==
-X-ME-Sender: <xms:6kiEX76_RIMqtvFagEOCsaA_HACioAiUTxle2mBwxYHqecQZDhIQvw>
-    <xme:6kiEXw50qHeheJUB9rEvJfVAuCwfjevwwk8MJ9JpobXZlsB4UVfauirXCGFRQ7ofo
-    _N3dyOuQvdIdamro_g>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrheejgdehtdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtudenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeduvdduhfekkeehgffftefflefgffdtheffudffgeevteffheeuiedvvdejvdfg
-    veenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:6kiEXydWRmObeY4odSoNSzicL44Pm28eCRjYuAREftK34zsOOl7SCQ>
-    <xmx:6kiEX8IkMfnwblPlRAGsPC7ypK0qhabIadAe9GWzsiQ__zdxxAleDg>
-    <xmx:6kiEX_K2DpzlfKa3zsfn1KQR12iTq-M2OCh8z0VeXn3E4zjInQshYg>
-    <xmx:60iEX5AaQJ7zY5yXbovLQ3zaq5nEHK1Be7cXpkL135C3dHGr_TQvOA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id D8154328005A;
-        Mon, 12 Oct 2020 08:15:37 -0400 (EDT)
-Date:   Mon, 12 Oct 2020 14:15:36 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Cc:     Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Marcus Cooper <codekipper@gmail.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>,
-        Samuel Holland <samuel@sholland.org>
-Subject: Re: [PATCH v6 02/14] ASoC: sun4i-i2s: Change set_chan_cfg() params
-Message-ID: <20201012121536.z5d7kecdxaabw35n@gilmour.lan>
-References: <20201003141950.455829-1-peron.clem@gmail.com>
- <20201003141950.455829-3-peron.clem@gmail.com>
- <20201005121307.v6jpyeyfi4kxc2cl@gilmour.lan>
- <CAJiuCcdd6_kzsxEERZbj2Budjmuyv6gV_sPG8LjLY=fk+MO8zQ@mail.gmail.com>
+        id S2388478AbgJLMTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 08:19:03 -0400
+Received: from mail-db8eur05on2086.outbound.protection.outlook.com ([40.107.20.86]:21185
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388209AbgJLMTC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 08:19:02 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cveKYzI6etJjVVlcjUBTniJ2RfgKvANaRjN83b7/Wl0pdGNh4WF4pyNL0SYiEhWI4V8Vi3E2I+rzlb8GLFS+/Eqk20niSRt+C8ccTEXhUPssVYxjvpMwkEw5qmv7mdpuA0xVtQ2IgKF5CvaDNsO/SNI4q2y8gDI+lVdqDvLBbeW0t3u9sENNH12kQ++yrG034fhDPDiF6C6dOJilcsRPYg03aRo1ZptLghsSB/RE/a5MQjQ8TDNtzMyGp21dU+ZgbTaInUdW6fNEgM0KNYaaVrjrk61Pf3vOKzP0Vzlj+lyVFoTd1tCcfaUVxIKgLJtHg9eeFP7WlDBqEUEvPSOQgg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hK9nT0VAkMgVHImm4RxVVZwLs4SjW1Q2woP1FLDHXXc=;
+ b=iLs2p8o8Fi7XG9SoHZ9G7x/8f3JH8E14TWLE1pqyFFNXmsTK6WqMN47im8XJmLyrBeI/vsOq7dAur0+XzO7DcorASghfiTlO7Xu0csT4nGr9jh06VbIChQ0iPMEb6tIidd6XvvMe2egIoPQ9M7TwOTMOgCtE+uS4mkoLY4tfzHFp/N/HvLsTq0TDh1Q/6YAYxG9pUprN9NHJDfUSUkugLTxdExswS7oawejXFm1gKTdpkQKFKBHSs26NCYfEv1Wey7ppKm6xRDhxmVqOawN204EobdaYR9aQJKLdS4LGRpoCx8JN7xb1OdIilD0smVdwQfsulM0WP50lATnWiRuQrQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hK9nT0VAkMgVHImm4RxVVZwLs4SjW1Q2woP1FLDHXXc=;
+ b=sSbHNQUI3JsRiENIAXTSOj1D5bw0YRKH8uBhCOLTZx8/+hZRmBdhiSIR8qHOmHxGpmOgVcoEj/FuxJaRJOyp8K6OKnv7IOWASAX0e20lEuwxuCp1c4pna83GQem2sPRqgBwxM4VUzjXVkIDfAn83/o6EiRy7yuj/iTOuRMfYERg=
+Received: from AM8PR04MB7300.eurprd04.prod.outlook.com (2603:10a6:20b:1c7::12)
+ by AM8PR04MB7859.eurprd04.prod.outlook.com (2603:10a6:20b:24c::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.30; Mon, 12 Oct
+ 2020 12:18:59 +0000
+Received: from AM8PR04MB7300.eurprd04.prod.outlook.com
+ ([fe80::ad01:9b1c:3b4b:3a77]) by AM8PR04MB7300.eurprd04.prod.outlook.com
+ ([fe80::ad01:9b1c:3b4b:3a77%7]) with mapi id 15.20.3455.030; Mon, 12 Oct 2020
+ 12:18:59 +0000
+From:   Peter Chen <peter.chen@nxp.com>
+To:     Roger Quadros <rogerq@ti.com>
+CC:     Pawel Laszczak <pawell@cadence.com>,
+        "balbi@kernel.org" <balbi@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Rahul Kumar <kurahul@cadence.com>
+Subject: Re: [PATCH v2] usb: cdns3: Rids of duplicate error message
+Thread-Topic: [PATCH v2] usb: cdns3: Rids of duplicate error message
+Thread-Index: AQHWoGM50wbXYw0KR0uXLh7D+U1lm6mTnxYAgAAxQYCAAAc7AIAAC0EA
+Date:   Mon, 12 Oct 2020 12:18:59 +0000
+Message-ID: <20201012121831.GA17965@b29397-desktop>
+References: <20201012064256.8344-1-pawell@cadence.com>
+ <e5ab2110-6bb0-ce06-be4f-010a030e307f@ti.com>
+ <DM6PR07MB5529E8B3EC059F7DA43EEC25DD070@DM6PR07MB5529.namprd07.prod.outlook.com>
+ <ab93c402-f721-d780-654b-7b74bc5b2ab1@ti.com>
+In-Reply-To: <ab93c402-f721-d780-654b-7b74bc5b2ab1@ti.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: ti.com; dkim=none (message not signed)
+ header.d=none;ti.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.67]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 950a87fc-d40c-4b53-eb31-08d86ea8ff87
+x-ms-traffictypediagnostic: AM8PR04MB7859:
+x-microsoft-antispam-prvs: <AM8PR04MB785953AE0219F9C14DF3E82E8B070@AM8PR04MB7859.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4714;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: JHlxOydqnqTEvRB9RerXA13s26qtgxDS5AmFIQEHhMw+iUa8aKvWPjCKZvCfGIpo+HRsOc/cI/qVfiTrsHyTjagWJfzNYwI6gDium8vzMgi/PxYIilJuq9m5Wv2k1iw6gdyic3c9kw1HK5szjb5YKqmHy6Fc/uG3tkTs3YbJPQDmb0VJSWT02Uf2CcNDfUvlImhB2L4dC3ZGZYf8aSJvppYMA/E0yHw04pFigjLKI0Iy4R3jp0HDCENJR+Vx1pGgCvZaISzv1+wlGZzGoxsJLatLIbmDdEZe4i7tqLKry/PHq+Wn33Xni0m5vr6GrSfzGBj6K1ankf5Q8UqcVxWmeQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM8PR04MB7300.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(346002)(376002)(136003)(396003)(366004)(39860400002)(33656002)(316002)(83380400001)(8676002)(54906003)(33716001)(86362001)(8936002)(44832011)(66476007)(478600001)(66446008)(5660300002)(66946007)(6916009)(66556008)(186003)(64756008)(76116006)(15650500001)(91956017)(71200400001)(26005)(6512007)(9686003)(53546011)(6486002)(4326008)(6506007)(1076003)(2906002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: Cb/gTV19vYoIe22prA0OakL5iBjsuFrkReZtgcmi/zvuAgtXZVL0uuiVtnh29zzTBFjOPpcHELaRkPi/ivdt/d2y0xnG5++w5kHla/Nj9tIm14DqBiVOBo0c3KkTlnWflf+DZpDVKqBTMbawDz93qDhqOC4J5CzyzntEv7IiOK5OGtVb4qiIK6cCs0p057SbPTUgZR4KEMCwdMtcHU/kPQ2OCTxMv4vyYX0fcvsHiC9N1iBocB2e6f7s8uZQh+yBtLcL4UTdhnYIZpxae6yIcLwZNkddtqsbqN1wAxwPfgFCNfnZMf3M46r+gmHNt0VTmtfy3nB92LzkjDxBFFyZk8MB830Tp7JarwZK43T+T7SMJGT/95bWXSJn/XvhpdKOQ7dhY/qQtp8BZPB8NYFouw3kGQcFIAsXEuaWYR4VF3xeYRMZxkOnzaHaImcuEVytTqNwtN425YF88WK+MZ9AyVkIrafCiCa4AXlHIV37j1OVzo59xK/Y2jBbWkXYhKDKgam4sQ7kGP1x0Te+ptoAmgX1ytp0Cb4Z6SjfQDhQ3mBm3WWFUaJL3TQ1hOsJYt9n/fBkiW0Yo8ezlFYTA0+34q77X/s0Ko1+GNJGnb1TIL4XfkvU7LO+XozqTOd+opjJkOgV5M6/qj3iEeeA4iSbzQ==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <712824E1DD877042ADA5EA66AD44925E@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="phliouq6fvfyh5hw"
-Content-Disposition: inline
-In-Reply-To: <CAJiuCcdd6_kzsxEERZbj2Budjmuyv6gV_sPG8LjLY=fk+MO8zQ@mail.gmail.com>
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM8PR04MB7300.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 950a87fc-d40c-4b53-eb31-08d86ea8ff87
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Oct 2020 12:18:59.2498
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: WzCJ01IVWzjtxPr7CYcx/Lsdi8yAVFJzlnN09q17axOA+qqugXpUtvbv7MF3NQAx4AU+i2YRqC61pDwBcwp7Yg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7859
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---phliouq6fvfyh5hw
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Mon, Oct 05, 2020 at 03:23:12PM +0200, Cl=E9ment P=E9ron wrote:
-> On Mon, 5 Oct 2020 at 14:13, Maxime Ripard <maxime@cerno.tech> wrote:
-> >
-> > On Sat, Oct 03, 2020 at 04:19:38PM +0200, Cl=E9ment P=E9ron wrote:
-> > > As slots and slot_width can be set manually using set_tdm().
-> > > These values are then kept in sun4i_i2s struct.
-> > > So we need to check if these values are setted or not
-> > > in the struct.
-> > >
-> > > Avoid to check for this logic in set_chan_cfg(). This will
-> > > duplicate the same check instead pass the required values
-> > > as params to set_chan_cfg().
-> > >
-> > > This will also avoid a bug when we will enable 20/24bits support,
-> > > i2s->slot_width is not actually used in the lrck_period computation.
-> > >
-> > > Suggested-by: Samuel Holland <samuel@sholland.org>
-> > > Signed-off-by: Cl=E9ment P=E9ron <peron.clem@gmail.com>
+On 20-10-12 14:38:16, Roger Quadros wrote:
+> Pawel,
+>=20
+> On 12/10/2020 14:12, Pawel Laszczak wrote:
+> > Hi Roger,
+> >=20
+> > On 12/10/2020 09:42, Pawel Laszczak wrote:
+> > > On failure, the platform_get_irq_byname prints an error message
+> > > so, patch removes error message related to this function from
+> > > core.c file.
+> > >=20
+> > > A change was suggested during reviewing CDNSP driver by Chunfeng Yun.
+> > >=20
+> > > Signed-off-by: Pawel Laszczak <pawell@cadence.com>
 > > > ---
-> > >  sound/soc/sunxi/sun4i-i2s.c | 36 ++++++++++++++----------------------
-> > >  1 file changed, 14 insertions(+), 22 deletions(-)
-> > >
-> > > diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-> > > index c5ccd423e6d3..1f577dbc20a6 100644
-> > > --- a/sound/soc/sunxi/sun4i-i2s.c
-> > > +++ b/sound/soc/sunxi/sun4i-i2s.c
-> > > @@ -177,8 +177,9 @@ struct sun4i_i2s_quirks {
-> > >       unsigned long (*get_bclk_parent_rate)(const struct sun4i_i2s *);
-> > >       s8      (*get_sr)(const struct sun4i_i2s *, int);
-> > >       s8      (*get_wss)(const struct sun4i_i2s *, int);
-> > > -     int     (*set_chan_cfg)(const struct sun4i_i2s *,
-> > > -                             const struct snd_pcm_hw_params *);
-> > > +     int     (*set_chan_cfg)(const struct sun4i_i2s *i2s,
-> > > +                             unsigned int channels,  unsigned int sl=
-ots,
-> > > +                             unsigned int slot_width);
-> > >       int     (*set_fmt)(const struct sun4i_i2s *, unsigned int);
-> > >  };
-> > >
-> > > @@ -414,10 +415,9 @@ static s8 sun8i_i2s_get_sr_wss(const struct sun4=
-i_i2s *i2s, int width)
-> > >  }
-> > >
-> > >  static int sun4i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
-> > > -                               const struct snd_pcm_hw_params *param=
-s)
-> > > +                               unsigned int channels, unsigned int s=
-lots,
-> > > +                               unsigned int slot_width)
-> > >  {
-> > > -     unsigned int channels =3D params_channels(params);
+> > > Changelog:
+> > > v2
+> > > - simplified code as sugested by Roger Quadros.
+> > >=20
+> > >    drivers/usb/cdns3/core.c | 10 +---------
+> > >    1 file changed, 1 insertion(+), 9 deletions(-)
+> > >=20
+> > > diff --git a/drivers/usb/cdns3/core.c b/drivers/usb/cdns3/core.c
+> > > index a0f73d4711ae..85ef3025b293 100644
+> > > --- a/drivers/usb/cdns3/core.c
+> > > +++ b/drivers/usb/cdns3/core.c
+> > > @@ -469,22 +469,14 @@ static int cdns3_probe(struct platform_device *=
+pdev)
+> > >    	if (cdns->dev_irq =3D=3D -EPROBE_DEFER)
+> >=20
+> > Shouldn't this be
+> > 	if (cdns->dev_irq < 0)
+> > ?
+> >=20
+> > No, such line will change the original behavior of driver.
+> >=20
+> > Current patch allows to run driver when we support only host.
+> > In such case the dev_irq can be < 0 and we still can use host  side.
+>=20
+> In that case should we check if we need dev_irq and if so then error out.
+> i.e. if mode is "peripheral" or "otg"
+>=20
+> Also DT binding document says all 3 IRQs are mandatory. Do we need to upd=
+ate that?
+>=20
+
+I agree with Roger, or you change the driver behaviour that return error
+if the dev_irq is < 0.
+
+Peter
+>=20
+> >=20
+> > Regards,
+> > Pawel Laszczak
+> >=20
+> > >    		return cdns->dev_irq;
+> > > -	if (cdns->dev_irq < 0)
+> > > -		dev_err(dev, "couldn't get peripheral irq\n");
 > > > -
-> > >       /* Map the channels for playback and capture */
-> > >       regmap_write(i2s->regmap, SUN4I_I2S_TX_CHAN_MAP_REG, 0x76543210=
-);
-> > >       regmap_write(i2s->regmap, SUN4I_I2S_RX_CHAN_MAP_REG, 0x00003210=
-);
-> > > @@ -434,15 +434,11 @@ static int sun4i_i2s_set_chan_cfg(const struct =
-sun4i_i2s *i2s,
-> > >  }
-> > >
-> > >  static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
-> > > -                               const struct snd_pcm_hw_params *param=
-s)
-> > > +                               unsigned int channels, unsigned int s=
-lots,
-> > > +                               unsigned int slot_width)
-> > >  {
-> > > -     unsigned int channels =3D params_channels(params);
-> > > -     unsigned int slots =3D channels;
-> > >       unsigned int lrck_period;
-> > >
-> > > -     if (i2s->slots)
-> > > -             slots =3D i2s->slots;
+> > >    	regs =3D devm_platform_ioremap_resource_byname(pdev, "dev");
+> > >    	if (IS_ERR(regs))
+> > >    		return PTR_ERR(regs);
+> > >    	cdns->dev_regs	=3D regs;
+> > >    	cdns->otg_irq =3D platform_get_irq_byname(pdev, "otg");
+> > > -	if (cdns->otg_irq =3D=3D -EPROBE_DEFER)
+> > > -		return cdns->otg_irq;
 > > > -
-> > >       /* Map the channels for playback and capture */
-> > >       regmap_write(i2s->regmap, SUN8I_I2S_TX_CHAN_MAP_REG, 0x76543210=
-);
-> > >       regmap_write(i2s->regmap, SUN8I_I2S_RX_CHAN_MAP_REG, 0x76543210=
-);
-> > > @@ -467,11 +463,11 @@ static int sun8i_i2s_set_chan_cfg(const struct =
-sun4i_i2s *i2s,
-> > >       case SND_SOC_DAIFMT_DSP_B:
-> > >       case SND_SOC_DAIFMT_LEFT_J:
-> > >       case SND_SOC_DAIFMT_RIGHT_J:
-> > > -             lrck_period =3D params_physical_width(params) * slots;
-> > > +             lrck_period =3D slot_width * slots;
-> > >               break;
-> > >
-> > >       case SND_SOC_DAIFMT_I2S:
-> > > -             lrck_period =3D params_physical_width(params);
-> > > +             lrck_period =3D slot_width;
-> > >               break;
-> > >
-> > >       default:
-> > > @@ -490,15 +486,11 @@ static int sun8i_i2s_set_chan_cfg(const struct =
-sun4i_i2s *i2s,
-> > >  }
-> > >
-> > >  static int sun50i_h6_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
-> > > -                                   const struct snd_pcm_hw_params *p=
-arams)
-> > > +                                   unsigned int channels, unsigned i=
-nt slots,
-> > > +                                   unsigned int slot_width)
-> > >  {
-> > > -     unsigned int channels =3D params_channels(params);
-> > > -     unsigned int slots =3D channels;
-> > >       unsigned int lrck_period;
-> > >
-> > > -     if (i2s->slots)
-> > > -             slots =3D i2s->slots;
-> > > -
-> > >       /* Map the channels for playback and capture */
-> > >       regmap_write(i2s->regmap, SUN50I_H6_I2S_TX_CHAN_MAP0_REG, 0xFED=
-CBA98);
-> > >       regmap_write(i2s->regmap, SUN50I_H6_I2S_TX_CHAN_MAP1_REG, 0x765=
-43210);
-> > > @@ -525,11 +517,11 @@ static int sun50i_h6_i2s_set_chan_cfg(const str=
-uct sun4i_i2s *i2s,
-> > >       case SND_SOC_DAIFMT_DSP_B:
-> > >       case SND_SOC_DAIFMT_LEFT_J:
-> > >       case SND_SOC_DAIFMT_RIGHT_J:
-> > > -             lrck_period =3D params_physical_width(params) * slots;
-> > > +             lrck_period =3D slot_width * slots;
-> > >               break;
-> > >
-> > >       case SND_SOC_DAIFMT_I2S:
-> > > -             lrck_period =3D params_physical_width(params);
-> > > +             lrck_period =3D slot_width;
-> > >               break;
-> > >
-> > >       default:
-> > > @@ -565,7 +557,7 @@ static int sun4i_i2s_hw_params(struct snd_pcm_sub=
-stream *substream,
-> > >       if (i2s->slot_width)
-> > >               slot_width =3D i2s->slot_width;
-> > >
-> > > -     ret =3D i2s->variant->set_chan_cfg(i2s, params);
-> > > +     ret =3D i2s->variant->set_chan_cfg(i2s, channels, slots, slot_w=
-idth);
-> >
-> > Isn't slots and slot_width set to 0 here ?
+> > > -	if (cdns->otg_irq < 0) {
+> > > -		dev_err(dev, "couldn't get otg irq\n");
+> > > +	if (cdns->otg_irq < 0)
+> > >    		return cdns->otg_irq;
+> > > -	}
+> > >    	res =3D platform_get_resource_byname(pdev, IORESOURCE_MEM, "otg")=
+;
+> > >    	if (!res) {
+> > >=20
+> >=20
 >=20
-> No, there is still a check before calling the set_cfg function.
->=20
->   unsigned int slot_width =3D params_physical_width(params);
->   unsigned int channels =3D params_channels(params);
->   unsigned int slots =3D channels;
->=20
->   if (i2s->slots)
->   slots =3D i2s->slots;
->=20
->   if (i2s->slot_width)
->   slot_width =3D i2s->slot_width;
->=20
-> ret =3D i2s->variant->set_chan_cfg(i2s, channels, slots, slot_width);
->=20
-> So slot_width will be equal to params_physical_width(params);
-> like before
+> --=20
+> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
-Still, it's not obvious what slots and slot_width are going to be set to
-in a non-TDM setup where that doesn't really make much sense.
+--=20
 
-I assume you want to reduce the boilerplate, then we can make an helper
-to get the frame size and the number of channels / slots if needed
-
-Maxime
-
---phliouq6fvfyh5hw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX4RI6AAKCRDj7w1vZxhR
-xWZ/AQCPwhn7X1Jytz5VV8NHRQXexz4dJIIusxesiha4X1AN/gEAr9v/2MjG2Wpg
-A9g0xJSWTrZ3btCSWB5slUokdWcv9Q4=
-=cLEy
------END PGP SIGNATURE-----
-
---phliouq6fvfyh5hw--
+Thanks,
+Peter Chen=
