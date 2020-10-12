@@ -2,156 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E6C28BB5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:51:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96A6A28BB62
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:51:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389498AbgJLOvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:51:19 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:53892 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729937AbgJLOvT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 10:51:19 -0400
-Received: by mail-io1-f70.google.com with SMTP id m23so9945546ioj.20
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 07:51:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=MG7LCgZV9JOV33VFA5S3dcXj+/fRsnhH4tx6womiSsI=;
-        b=QQ+Bs4MkVdqbzHCMwXH5peoLrT7hqu2zXHhqZA+24cVDpAZxHKBYr+gb58JPd74TcB
-         2DQU1V6GiqKwHbdw5yPQKKVV+PN85O59NqXe07KxKJCNDNWGwGW/jSnTCVPpCP/oS6U6
-         3tUTygU5YbHciMInvgAsI10jcf7+RwTPyIi7k1O9Vk4rZd52vNVNx4Ki6MtriIO29/7y
-         5NJ1mgJb8DwUsMkswyvR0w8/0dSVzOSyZ0qJlcshQND4eJZO39gpNfODq08sdKIsC73N
-         eE5gcSG++LhfI6Cqu5c9UNc93O122Y2c7u2AuTDl/g+b/kWiYYvUifzgW95m+hYka1bl
-         6+SA==
-X-Gm-Message-State: AOAM533Owk0j9aRqV2JlAcMAjXQbVAfpvXGAkJjffJ9LhkSSMkGcMu3h
-        iVz5LaLuUzi2qwa3yxj3YnXxIzdBYYtYd5rV2Ej9G3KmGtuh
-X-Google-Smtp-Source: ABdhPJzjAr9+E4+dMkFlppgsJObffFCcsvpXcuPwLE5FQ2n1f7kFyepuI9mhKD5fSKBDsbF53JcWneaj1Csps57LxMCBRldUW55X
+        id S2389673AbgJLOvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:51:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57350 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730003AbgJLOvU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 10:51:20 -0400
+Received: from [192.168.0.112] (75-58-59-55.lightspeed.rlghnc.sbcglobal.net [75.58.59.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B2BE2080A;
+        Mon, 12 Oct 2020 14:51:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602514279;
+        bh=KjcJj3HhUJ7QjgoguyEHAlgwsxwB6hxZaDCQ/+0hunU=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=ftQ9hEcYMpMcGI44trydysHHPWBqKPKVBnHIj7m2LvnfYWBkj6ieYZ8DlIUJuHKZC
+         l31hJcJGp32qBVnwZfsWROfNSf0K2qj48as7jMv4XlHwDi45Rp0r58J0W0yUkbjjWf
+         fzomFq53wYQUfTb8D9qJTLtUlYtX0DgJG0dVWlQo=
+Subject: Re: [PATCH v4 1/2] PCI/ERR: Call pci_bus_reset() before calling
+ ->slot_reset() callback
+To:     sathyanarayanan.nkuppuswamy@gmail.com, bhelgaas@google.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ashok.raj@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com
+References: <5c5bca0bdb958e456176fe6ede10ba8f838fbafc.1602263264.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   Sinan Kaya <okaya@kernel.org>
+Autocrypt: addr=okaya@kernel.org; keydata=
+ mQENBFrnOrUBCADGOL0kF21B6ogpOkuYvz6bUjO7NU99PKhXx1MfK/AzK+SFgxJF7dMluoF6
+ uT47bU7zb7HqACH6itTgSSiJeSoq86jYoq5s4JOyaj0/18Hf3/YBah7AOuwk6LtV3EftQIhw
+ 9vXqCnBwP/nID6PQ685zl3vH68yzF6FVNwbDagxUz/gMiQh7scHvVCjiqkJ+qu/36JgtTYYw
+ 8lGWRcto6gr0eTF8Wd8f81wspmUHGsFdN/xPsZPKMw6/on9oOj3AidcR3P9EdLY4qQyjvcNC
+ V9cL9b5I/Ud9ghPwW4QkM7uhYqQDyh3SwgEFudc+/RsDuxjVlg9CFnGhS0nPXR89SaQZABEB
+ AAG0HVNpbmFuIEtheWEgPG9rYXlhQGtlcm5lbC5vcmc+iQFOBBMBCAA4FiEEYdOlMSE+a7/c
+ ckrQvGF4I+4LAFcFAlztcAoCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQvGF4I+4L
+ AFfidAf/VKHInxep0Z96iYkIq42432HTZUrxNzG9IWk4HN7c3vTJKv2W+b9pgvBF1SmkyQSy
+ 8SJ3Zd98CO6FOHA1FigFyZahVsme+T0GsS3/OF1kjrtMktoREr8t0rK0yKpCTYVdlkHadxmR
+ Qs5xLzW1RqKlrNigKHI2yhgpMwrpzS+67F1biT41227sqFzW9urEl/jqGJXaB6GV+SRKSHN+
+ ubWXgE1NkmfAMeyJPKojNT7ReL6eh3BNB/Xh1vQJew+AE50EP7o36UXghoUktnx6cTkge0ZS
+ qgxuhN33cCOU36pWQhPqVSlLTZQJVxuCmlaHbYWvye7bBOhmiuNKhOzb3FcgT7kBDQRa5zq1
+ AQgAyRq/7JZKOyB8wRx6fHE0nb31P75kCnL3oE+smKW/sOcIQDV3C7mZKLf472MWB1xdr4Tm
+ eXeL/wT0QHapLn5M5wWghC80YvjjdolHnlq9QlYVtvl1ocAC28y43tKJfklhHiwMNDJfdZbw
+ 9lQ2h+7nccFWASNUu9cqZOABLvJcgLnfdDpnSzOye09VVlKr3NHgRyRZa7me/oFJCxrJlKAl
+ 2hllRLt0yV08o7i14+qmvxI2EKLX9zJfJ2rGWLTVe3EJBnCsQPDzAUVYSnTtqELu2AGzvDiM
+ gatRaosnzhvvEK+kCuXuCuZlRWP7pWSHqFFuYq596RRG5hNGLbmVFZrCxQARAQABiQEfBBgB
+ CAAJBQJa5zq1AhsMAAoJELxheCPuCwBX2UYH/2kkMC4mImvoClrmcMsNGijcZHdDlz8NFfCI
+ gSb3NHkarnA7uAg8KJuaHUwBMk3kBhv2BGPLcmAknzBIehbZ284W7u3DT9o1Y5g+LDyx8RIi
+ e7pnMcC+bE2IJExCVf2p3PB1tDBBdLEYJoyFz/XpdDjZ8aVls/pIyrq+mqo5LuuhWfZzPPec
+ 9EiM2eXpJw+Rz+vKjSt1YIhg46YbdZrDM2FGrt9ve3YaM5H0lzJgq/JQPKFdbd5MB0X37Qc+
+ 2m/A9u9SFnOovA42DgXUyC2cSbIJdPWOK9PnzfXqF3sX9Aol2eLUmQuLpThJtq5EHu6FzJ7Y
+ L+s0nPaNMKwv/Xhhm6Y=
+Message-ID: <5d8db992-27bf-5c34-2abd-dc490cf76c92@kernel.org>
+Date:   Mon, 12 Oct 2020 10:51:17 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-X-Received: by 2002:a92:a112:: with SMTP id v18mr19573477ili.290.1602514277849;
- Mon, 12 Oct 2020 07:51:17 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 07:51:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000047627e05b17a6ec9@google.com>
-Subject: general protection fault in scsi_queue_rq
-From:   syzbot <syzbot+0796b72dc61f223d8cc5@syzkaller.appspotmail.com>
-To:     hare@suse.de, hch@lst.de, jejb@linux.ibm.com,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        martin.petersen@oracle.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <5c5bca0bdb958e456176fe6ede10ba8f838fbafc.1602263264.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 10/12/2020 1:03 AM, sathyanarayanan.nkuppuswamy@gmail.com wrote:
+> From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> 
+> Currently if report_error_detected() or report_mmio_enabled()
+> functions requests PCI_ERS_RESULT_NEED_RESET, current
+> pcie_do_recovery() implementation does not do the requested
+> explicit device reset, but instead just calls the
+> report_slot_reset() on all affected devices. Notifying about the
+> reset via report_slot_reset() without doing the actual device
+> reset is incorrect. So call pci_bus_reset() before triggering
+> ->slot_reset() callback.
+> 
+> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> ---
+>  drivers/pci/pcie/err.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+> 
+> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+> index c543f419d8f9..067c58728b88 100644
+> --- a/drivers/pci/pcie/err.c
+> +++ b/drivers/pci/pcie/err.c
+> @@ -181,11 +181,7 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>  	}
+>  
+>  	if (status == PCI_ERS_RESULT_NEED_RESET) {
+> -		/*
+> -		 * TODO: Should call platform-specific
+> -		 * functions to reset slot before calling
+> -		 * drivers' slot_reset callbacks?
+> -		 */
+> +		pci_reset_bus(dev);
+>  		status = PCI_ERS_RESULT_RECOVERED;
+>  		pci_dbg(dev, "broadcast slot_reset message\n");
+>  		pci_walk_bus(bus, report_slot_reset, &status);
+> 
 
-syzbot found the following issue on:
-
-HEAD commit:    e4fb79c7 Add linux-next specific files for 20201008
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=125c9a9f900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=568d41fe4341ed0f
-dashboard link: https://syzkaller.appspot.com/bug?extid=0796b72dc61f223d8cc5
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12582fe7900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=124ac7d0500000
-
-The issue was bisected to:
-
-commit 2ceda20f0a99a74a82b78870f3b3e5fa93087a7f
-Author: Christoph Hellwig <hch@lst.de>
-Date:   Mon Oct 5 08:41:23 2020 +0000
-
-    scsi: core: Move command size detection out of the fast path
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=135ea777900000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=10dea777900000
-console output: https://syzkaller.appspot.com/x/log.txt?x=175ea777900000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0796b72dc61f223d8cc5@syzkaller.appspotmail.com
-Fixes: 2ceda20f0a99 ("scsi: core: Move command size detection out of the fast path")
-
-general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-CPU: 1 PID: 6889 Comm: syz-executor086 Not tainted 5.9.0-rc8-next-20201008-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:scsi_command_size include/scsi/scsi_common.h:24 [inline]
-RIP: 0010:scsi_setup_scsi_cmnd drivers/scsi/scsi_lib.c:1186 [inline]
-RIP: 0010:scsi_prepare_cmd drivers/scsi/scsi_lib.c:1565 [inline]
-RIP: 0010:scsi_queue_rq+0x2155/0x3020 drivers/scsi/scsi_lib.c:1654
-Code: 00 fc ff df 48 c1 ea 03 80 3c 02 00 0f 85 98 0c 00 00 48 8b 83 58 02 00 00 48 ba 00 00 00 00 00 fc ff df 48 89 c1 48 c1 e9 03 <0f> b6 14 11 48 89 c1 83 e1 07 38 ca 7f 08 84 d2 0f 85 53 0c 00 00
-RSP: 0018:ffffc90005627580 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: ffff88801b6bd400 RCX: 0000000000000000
-RDX: dffffc0000000000 RSI: ffffffff84aaad82 RDI: 0000000000000003
-RBP: ffff888019670000 R08: 0000000000000001 R09: ffff88801b6bd7c0
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: ffff88801b6bd658 R14: ffff8881341bc000 R15: 0000000000000000
-FS:  00007f1d217b3700(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005617bf6e4410 CR3: 000000001f08b000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- blk_mq_dispatch_rq_list+0x3a1/0x1eb0 block/blk-mq.c:1388
- __blk_mq_sched_dispatch_requests+0x263/0x490 block/blk-mq-sched.c:308
- blk_mq_sched_dispatch_requests+0xfb/0x180 block/blk-mq-sched.c:341
- __blk_mq_run_hw_queue+0x13a/0x2d0 block/blk-mq.c:1532
- __blk_mq_delay_run_hw_queue+0x522/0x5f0 block/blk-mq.c:1609
- blk_mq_run_hw_queue+0x16c/0x2f0 block/blk-mq.c:1662
- blk_mq_sched_insert_request+0x4d7/0x5e0 block/blk-mq-sched.c:473
- blk_execute_rq+0xd4/0x1b0 block/blk-exec.c:86
- sg_io+0x609/0xf50 block/scsi_ioctl.c:360
- scsi_cmd_ioctl+0x5ce/0x660 block/scsi_ioctl.c:808
- scsi_cmd_blk_ioctl block/scsi_ioctl.c:866 [inline]
- scsi_cmd_blk_ioctl+0xe1/0x130 block/scsi_ioctl.c:857
- sd_ioctl_common+0x17e/0x280 drivers/scsi/sd.c:1575
- sd_ioctl+0x26/0xf0 drivers/scsi/sd.c:1765
- __blkdev_driver_ioctl block/ioctl.c:228 [inline]
- blkdev_ioctl+0x2a7/0x7f0 block/ioctl.c:623
- block_ioctl+0xf9/0x140 fs/block_dev.c:1869
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x446059
-Code: e8 fc b8 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 0b 12 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f1d217b2d98 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00000000006ddc48 RCX: 0000000000446059
-RDX: 00000000200046c0 RSI: 0000000000002285 RDI: 0000000000000004
-RBP: 00000000006ddc40 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006ddc4c
-R13: 0000000020000000 R14: 00000000004ae698 R15: 0000000000000003
-Modules linked in:
----[ end trace 2bb961546eae45fe ]---
-RIP: 0010:scsi_command_size include/scsi/scsi_common.h:24 [inline]
-RIP: 0010:scsi_setup_scsi_cmnd drivers/scsi/scsi_lib.c:1186 [inline]
-RIP: 0010:scsi_prepare_cmd drivers/scsi/scsi_lib.c:1565 [inline]
-RIP: 0010:scsi_queue_rq+0x2155/0x3020 drivers/scsi/scsi_lib.c:1654
-Code: 00 fc ff df 48 c1 ea 03 80 3c 02 00 0f 85 98 0c 00 00 48 8b 83 58 02 00 00 48 ba 00 00 00 00 00 fc ff df 48 89 c1 48 c1 e9 03 <0f> b6 14 11 48 89 c1 83 e1 07 38 ca 7f 08 84 d2 0f 85 53 0c 00 00
-RSP: 0018:ffffc90005627580 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: ffff88801b6bd400 RCX: 0000000000000000
-RDX: dffffc0000000000 RSI: ffffffff84aaad82 RDI: 0000000000000003
-RBP: ffff888019670000 R08: 0000000000000001 R09: ffff88801b6bd7c0
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: ffff88801b6bd658 R14: ffff8881341bc000 R15: 0000000000000000
-FS:  00007f1d217b3700(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005617bf6e4410 CR3: 000000001f08b000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Reviewed-by: Sinan Kaya <okaya@kernel.org>
