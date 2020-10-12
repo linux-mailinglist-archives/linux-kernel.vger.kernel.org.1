@@ -2,177 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6DFD28B987
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B411228B731
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730786AbgJLOB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:01:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58986 "EHLO
+        id S2389218AbgJLNlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:41:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731203AbgJLNib (ORCPT
+        with ESMTP id S2389075AbgJLNlE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:38:31 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 417A6C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 06:38:29 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id l6so8264036vsr.7
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 06:38:29 -0700 (PDT)
+        Mon, 12 Oct 2020 09:41:04 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CA34C0613D0;
+        Mon, 12 Oct 2020 06:41:04 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id x7so10645163wrl.3;
+        Mon, 12 Oct 2020 06:41:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qoV1BfVdJZsinq1maVaibHxEqbflhmKT48S5ZU728Qg=;
-        b=tcYUB4C2mYNzgj9n3WDo4iGUsBORwa7h6zIm0OOVB4fwMOctooJ9mJqC8BtdPyFwOm
-         xBWnw3tvq0FoOgptFSalZkv5U92OpM5O1sddNa/grvI9ICtJl9jzpCkZo7D8d2Wkeb9U
-         KtU3NR/FMBMDN76/2JaIv+BZyYzsexaodydLqhkVrex9df59GtlGi7KtaFO7ut7bg2g4
-         E68NhztWMBhL37VLiOtiqa2aIRZJxAaPL3RKBDBaHWZTUL/fHjZXMqmuUgiKByQTjHi0
-         PuBS/tSEvM0NvyYkMON6TObgoVPU2KTKzljetrJob90XRyZ5a99yBbdPnn1y7a1cBrfA
-         71DA==
+        h=from:date:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=IJUnRg3mPl7jkNIy9dsIVIo/IklmtiJHaWeguv2Wi6o=;
+        b=myis63Jh6YDVFMzfEygbdF9hf05zpKmITCIrOSFpVhbl8MbqTQUpPKNrthRN4bO5yl
+         wc79p3g9mtnnnjpkbqE9eiHSA37bYb5Kmu7yBK8xzdzMJOXHsoG7tGnSjVRrbpixUFJT
+         cCHC/QGUeGslVcgZ2c/UJtWpO7GPQRjz2YD534IFFUaJ6vOn7yjSSksjjaniWJz+FB6q
+         wNLNI25LsHqQwfxCir6BNSrnP+QPQ0QkBSL2sTZiQgUXIhHNyV1J4dAg1/EaMbkRsm+S
+         RPv/tqbypnh6u5mng3PsfzcItpfboZQVu9V+MrAJZ+K3r9O2qPe8sKWtTE67WrbcR4ws
+         jRIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qoV1BfVdJZsinq1maVaibHxEqbflhmKT48S5ZU728Qg=;
-        b=LPJ/r+T0thEDstL2u/UUUqiAmprbAhCVESmNPOCipB7mpiGB8IcQkGzk0s67J0dwNS
-         WBosnquomIZ3Rc9tGUGJr8cPHJBNFQPVUHvxRCl3Kl083fZwwlhKLlncXoRsXgH/j6+0
-         NRijrg/BkPVh4esA21Wc1ViVIgXQy20aXnMWxbXZZU1z6jG6QBnjVpO9o9jJRJIz6Zrh
-         bQNXto4p1hDCtHnoIecEck+TosWre0KaScQvvZPZsXuH2Rplp4GLUbktT9mOy/98ZAEc
-         3OY0FspUphGGvx8zTSvfgwU+KXGBzZ5sg82ryNrID+tBs3PFQS7IuPS54E+iw07AQ9Af
-         +9AA==
-X-Gm-Message-State: AOAM5322EQlH29rVA9wSPqq0u/Q8eu5pBkx8g9R1++Nnas1Za2TMJUi1
-        RgRrZgoqxWYiTzqcO+cy+5BttUfmUFk=
-X-Google-Smtp-Source: ABdhPJxkEqM+Yhc/T2gQ65qiNxPZJ/VIS1Fu3Z2nqv1sSGQ16E4HpnMJypGPSVJJyhY1ogSB7bkRsg==
-X-Received: by 2002:a05:6102:2406:: with SMTP id j6mr6580315vsi.49.1602509908125;
-        Mon, 12 Oct 2020 06:38:28 -0700 (PDT)
-Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com. [209.85.221.174])
-        by smtp.gmail.com with ESMTPSA id t6sm2209307vke.28.2020.10.12.06.38.26
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Oct 2020 06:38:27 -0700 (PDT)
-Received: by mail-vk1-f174.google.com with SMTP id l23so2774110vkm.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 06:38:26 -0700 (PDT)
-X-Received: by 2002:a1f:6dc2:: with SMTP id i185mr13578365vkc.3.1602509906266;
- Mon, 12 Oct 2020 06:38:26 -0700 (PDT)
+        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=IJUnRg3mPl7jkNIy9dsIVIo/IklmtiJHaWeguv2Wi6o=;
+        b=gcDD4uA+Pi5yCOl7vn6cg1fI2fpUeMLzsfrMtH5ep8pCWCOQfCBxUJpkmMQqbGGzlw
+         Pw3fuqMMPaxsKCFr9+0Pfv8ZVB/OfPOCToM1ONJ5rFPKk8SueYhYnTU6PWS6+WUNv27q
+         OLNJvOBfeCL6cyjdhkhU7arwsvVHImGqe9UZurthf76fANg4Y4DjU0Cl4WDf83TV3sp4
+         atlG7b2JORFpdim4U7GlMeZj55YlCVBDTgpdQzAYLCIUwlSOAlBv1gr5YXxrAY+6HHyt
+         oyvnspyLp54K6yBZUJhoJM4CnpR1byA9R7JSDcteGK7sa0qwtQ86QmrzUGbBPDsI+p9r
+         oZuw==
+X-Gm-Message-State: AOAM530DLatO5BWRXuHyMLFANrHLcok8vhxHirVUc5yNFS7/qzNd1MC2
+        vgX0GrSbetJQpCdvGRTcDG0=
+X-Google-Smtp-Source: ABdhPJxNacfJsPZ4yvtD3vkFSwscCrt+i4xkgGs8nl4/9iPQ2QPpRexcbXY0JT8irITMO0Ma8G6Vyg==
+X-Received: by 2002:adf:e80f:: with SMTP id o15mr28721128wrm.308.1602510062848;
+        Mon, 12 Oct 2020 06:41:02 -0700 (PDT)
+Received: from felia ([2001:16b8:2d57:fc00:8472:203c:3ecb:c442])
+        by smtp.gmail.com with ESMTPSA id t5sm24754891wrb.21.2020.10.12.06.41.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 06:41:02 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
+Date:   Mon, 12 Oct 2020 15:40:54 +0200 (CEST)
+X-X-Sender: lukas@felia
+To:     Ujjwal Kumar <ujjwalkumar0501@gmail.com>
+cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH RFC 0/2] use interpreters to invoke scripts
+In-Reply-To: <2b00e566-112c-5657-c10f-7f210d3eae93@gmail.com>
+Message-ID: <alpine.DEB.2.21.2010121537150.6487@felia>
+References: <2b00e566-112c-5657-c10f-7f210d3eae93@gmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-References: <20201012093542.15504-1-ceggers@arri.de>
-In-Reply-To: <20201012093542.15504-1-ceggers@arri.de>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Mon, 12 Oct 2020 09:37:49 -0400
-X-Gmail-Original-Message-ID: <CA+FuTSfkBHtKqjppMmqudj9GwZBidSqvOP6WCzoxLGihqiz5Qw@mail.gmail.com>
-Message-ID: <CA+FuTSfkBHtKqjppMmqudj9GwZBidSqvOP6WCzoxLGihqiz5Qw@mail.gmail.com>
-Subject: Re: [PATCH net v2 1/2] socket: fix option SO_TIMESTAMPING_NEW
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Deepa Dinamani <deepa.kernel@gmail.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 5:36 AM Christian Eggers <ceggers@arri.de> wrote:
->
-> The comparison of optname with SO_TIMESTAMPING_NEW is wrong way around,
-> so SOCK_TSTAMP_NEW will first be set and than reset again. Additionally
-> move it out of the test for SOF_TIMESTAMPING_RX_SOFTWARE as this seems
-> unrelated.
->
-> This problem happens on 32 bit platforms were the libc has already
-> switched to struct timespec64 (from SO_TIMExxx_OLD to SO_TIMExxx_NEW
-> socket options). ptp4l complains with "missing timestamp on transmitted
-> peer delay request" because the wrong format is received (and
-> discarded).
->
-> Fixes: 9718475e6908 ("socket: Add SO_TIMESTAMPING_NEW")
-> Signed-off-by: Christian Eggers <ceggers@arri.de>
-> Reviewed-by: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-> Reviewed-by: Deepa Dinamani <deepa.kernel@gmail.com>
-
-We have not yet reviewed this second patch. Please do not add such
-tags on behalf of other people.
-
-That said, I now have and do agree with the change, so
-
-Acked-by: Willem de Bruijn <willemb@google.com>
-
-> ---
-> v2:
-> -----
-> - integrated proposal from Willem de Bruijn
-> - added Reviewed-by: from Willem and Deepa
->
->
-> On Saturday, 10 October 2020, 02:23:10 CEST, Willem de Bruijn wrote:
-> > This suggested fix still sets and clears the flag if calling
-> > SO_TIMESTAMPING_NEW to disable timestamping.
-> where is it cleared?
->
-> > Instead, how about
-> >
-> >         case SO_TIMESTAMPING_NEW:
-> > -               sock_set_flag(sk, SOCK_TSTAMP_NEW);
-> >                 fallthrough;
-> >         case SO_TIMESTAMPING_OLD:
-> > [..]
-> > +               sock_valbool_flag(sk, SOCK_TSTAMP_NEW,
-> > +                                 optname == SO_TIMESTAMPING_NEW);
-> > +
-> using you version looks clearer
->
-> >                 if (val & SOF_TIMESTAMPING_OPT_ID &&
-> >
-> I would like to keep this below the "ret = -FOO; break" statements. IMHO the
-> setsockopt() call should either completely fail or succeed.
-
-Agreed.
 
 
->  net/core/sock.c | 10 +++-------
->  1 file changed, 3 insertions(+), 7 deletions(-)
+On Sat, 3 Oct 2020, Ujjwal Kumar wrote:
+
+> This patch series aims at removing the dependency on execute 
+> bit of the scripts in the kbuild system.
+> 
+> If not working with fresh clone of linux-next, clean the srctree:
+> make distclean
+> make tools/clean
+> 
+> To test the dependency on execute bits, I tried building the 
+> kernel after removing x-bits for all files in the repository.
+> Removing execute bits:
+> for i in $(find -executable -type f); do chmod -x $i; done
+> 
+> Any attempts to configure (or build) the kernel fail because of 
+> 'Permission denied' on scripts with the following error:
+> $ make allmodconfig
+> sh: ./scripts/gcc-version.sh: Permission denied
+> init/Kconfig:34: syntax error
+> init/Kconfig:33: invalid statement
+> init/Kconfig:34: invalid statement
+> sh: ./scripts/ld-version.sh: Permission denied
+> init/Kconfig:39: syntax error
+> init/Kconfig:38: invalid statement
+> sh: ./scripts/clang-version.sh: Permission denied
+> init/Kconfig:49: syntax error
+> init/Kconfig:48: invalid statement
+> make[1]: *** [scripts/kconfig/Makefile:71: allmodconfig] Error 1
+> make: *** [Makefile:606: allmodconfig] Error 2
+> 
+> Changes:
+> 1. Adds specific interpreters (in Kconfig) to invoke 
+> scripts.
+> 
+> After this patch I could successfully do a kernel build 
+> without any errors.
+> 
+> 2. Again, adds specific interpreters to other parts of 
+> kbuild system.
+> 
+> I could successfully perform the following make targets after 
+> applying the PATCH 2/2:
+> make headerdep
+> make kselftest-merge
+> make rpm-pkg
+> make perf-tar-src-pkg
+> make ARCH=ia64 defconfig
+> ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make prepare
+> 
+> Following changes in PATCH 2/2 are not yet tested:
+> arch/arm64/kernel/vdso32/Makefile
+> arch/nds32/kernel/vdso/Makefile
+> scripts/Makefile.build
+> 
+> Ujjwal Kumar (2):
+>   kconfig: use interpreters to invoke scripts
+>   kbuild: use interpreters to invoke scripts
 >
-> diff --git a/net/core/sock.c b/net/core/sock.c
-> index 34a8d12e38d7..669cf9b8bb44 100644
-> --- a/net/core/sock.c
-> +++ b/net/core/sock.c
-> @@ -994,8 +994,6 @@ int sock_setsockopt(struct socket *sock, int level, int optname,
->                 __sock_set_timestamps(sk, valbool, true, true);
->                 break;
->         case SO_TIMESTAMPING_NEW:
-> -               sock_set_flag(sk, SOCK_TSTAMP_NEW);
-> -               fallthrough;
->         case SO_TIMESTAMPING_OLD:
->                 if (val & ~SOF_TIMESTAMPING_MASK) {
->                         ret = -EINVAL;
-> @@ -1024,16 +1022,14 @@ int sock_setsockopt(struct socket *sock, int level, int optname,
->                 }
->
->                 sk->sk_tsflags = val;
-> +               sock_valbool_flag(sk, SOCK_TSTAMP_NEW, optname == SO_TIMESTAMPING_NEW);
-> +
->                 if (val & SOF_TIMESTAMPING_RX_SOFTWARE)
->                         sock_enable_timestamp(sk,
->                                               SOCK_TIMESTAMPING_RX_SOFTWARE);
-> -               else {
-> -                       if (optname == SO_TIMESTAMPING_NEW)
-> -                               sock_reset_flag(sk, SOCK_TSTAMP_NEW);
-> -
-> +               else
->                         sock_disable_timestamp(sk,
->                                                (1UL << SOCK_TIMESTAMPING_RX_SOFTWARE));
-> -               }
->                 break;
->
->         case SO_RCVLOWAT:
-> --
-> Christian Eggers
-> Embedded software developer
->
-> Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-> Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
-> Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
-> Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
-> Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
->
+
+Ujjwal, I suggest that you continue to wait if you get any feedback from 
+Masahiro-san within the next two weeks (although the merge window) and if
+not, try to rebase to the the next rc1 and resend this patchset with 
+Nathan's feedback tags added.
+
+The merge window is busy time for maintainers; in the meantime, you might
+look into if the build target 'make tools/clean' works on the current 
+release and if there are fixes getting merged that fix that.
+
+Lukas
+
+>  Makefile                          |  4 ++--
+>  arch/arm64/kernel/vdso/Makefile   |  2 +-
+>  arch/arm64/kernel/vdso32/Makefile |  2 +-
+>  arch/ia64/Makefile                |  4 ++--
+>  arch/nds32/kernel/vdso/Makefile   |  2 +-
+>  init/Kconfig                      | 16 ++++++++--------
+>  scripts/Makefile.build            |  2 +-
+>  scripts/Makefile.package          |  4 ++--
+>  8 files changed, 18 insertions(+), 18 deletions(-)
+> 
+> -- 
+> 2.26.2
+> 
+> 
