@@ -2,115 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A64628B31C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 12:55:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB17128B33F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 12:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387898AbgJLKzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 06:55:50 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:33653 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387573AbgJLKzt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 06:55:49 -0400
-Received: by mail-oi1-f193.google.com with SMTP id s21so468040oij.0;
-        Mon, 12 Oct 2020 03:55:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S+hd10jJuHFvk+cIEZrswP+cpusL+l5/ShjyumJlZ9g=;
-        b=ZgFZBnMdEYDKqq+Bx2p6/yz48WlzqwItTm7c06rwczQY62jD6wsParNcogWhidi5oO
-         JybDcx9C8UdJ7NVdIPoC3mdyp+irkbqfw1HAvVWZEHpBFebLLnUQceCxT2jCmRILX9WO
-         QXhjeaCGDY9zat4Z1fln2u6Dom/4szIsQtSyIO77BsJJJyuwbLA+dOEK1ScPgw4n4Rc5
-         5Fp1PPOW8pNXeLe/FfhmbwQeuus60fDuCYc0VfETYSJXp/i2dIxlcLYvTiuHbRPwN3m2
-         M92WpaiQRiV+rNQc1+JjsEy1Lcax92csvuy6/qS83Qvru90PxpDOsclD2w6TW+ucVceV
-         iI8g==
-X-Gm-Message-State: AOAM533Tj/5v1sMYbF2HHcUrHZc84YmEzw71Hn3w8zmgT0aZZo5tKROW
-        ggJyv+QyFE8+mu+kreLWF3c7KpMpLSnsCDWmRk/PSL10V/E=
-X-Google-Smtp-Source: ABdhPJyF1gQYc/tPRiLsXbeuSgURmZLIMAPjNV3JpAj72mu2R9FAlHx36tHhzdYVkRix9k4XZ6SMTnzXOnPVICqPoys=
-X-Received: by 2002:aca:fd52:: with SMTP id b79mr10403675oii.69.1602500147705;
- Mon, 12 Oct 2020 03:55:47 -0700 (PDT)
+        id S2387906AbgJLK73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 06:59:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35030 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387876AbgJLK7Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 06:59:24 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3ADD3ACA3;
+        Mon, 12 Oct 2020 10:59:22 +0000 (UTC)
+Date:   Mon, 12 Oct 2020 12:59:18 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] x86/cache updates for v5.10
+Message-ID: <20201012105918.GJ25311@zn.tnic>
 MIME-Version: 1.0
-References: <20201010221806.2106-1-amonakov@ispras.ru>
-In-Reply-To: <20201010221806.2106-1-amonakov@ispras.ru>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 12 Oct 2020 12:55:32 +0200
-Message-ID: <CAJZ5v0iFj0s=ZNrLnBxQ34uUnn2NQ6bH+oriyNWrFu-g8HGfUg@mail.gmail.com>
-Subject: Re: [PATCH] intel_idle: mention assumption that wbinvd is not needed
-To:     Alexander Monakov <amonakov@ispras.ru>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 11, 2020 at 1:13 AM Alexander Monakov <amonakov@ispras.ru> wrote:
->
-> Intel SDM does not explicitly say that entering a C-state via MWAIT will
-> implicitly flush CPU caches as appropriate for that C-state. However,
-> documentation for individual Intel CPU generations does mention this
-> behavior.
->
-> Since intel_idle binds to any Intel CPU with MWAIT, mention this
-> assumption on MWAIT behavior. In passing, reword opening comment
-> to make it clear that driver can load on any future Intel CPU with MWAIT.
->
-> Signed-off-by: Alexander Monakov <amonakov@ispras.ru>
-> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
-> Hi,
->
-> I noticed that one of significant optimizations of intel_idle over
-> acpi_idle is elision of explicit wbinvd: ACPI requires the OS to flush
-> caches when entering C3, and Linux issues an explicit wbinvd to do that,
-> but intel_idle simply issues mwait with the expectation that the CPU
-> will automatically flush caches if needed.
->
-> To me this is a fairly subtle point that became even more subtle
-> following the update to intel_idle that made it capable to bind to old
-> and future Intel CPUs with MWAIT (by the way, thanks for that!)
->
-> Can you take this patch to spell out the assumption?
->
->  drivers/idle/intel_idle.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
-> index f4495841bf68..1e5666cf8763 100644
-> --- a/drivers/idle/intel_idle.c
-> +++ b/drivers/idle/intel_idle.c
-> @@ -8,7 +8,7 @@
->   */
->
->  /*
-> - * intel_idle is a cpuidle driver that loads on specific Intel processors
-> + * intel_idle is a cpuidle driver that loads on all Intel CPUs with MWAIT
->   * in lieu of the legacy ACPI processor_idle driver.  The intent is to
->   * make Linux more efficient on these processors, as intel_idle knows
->   * more than ACPI, as well as make Linux more immune to ACPI BIOS bugs.
-> @@ -20,7 +20,11 @@
->   * All CPUs have same idle states as boot CPU
->   *
->   * Chipset BM_STS (bus master status) bit is a NOP
-> - *     for preventing entry into deep C-stats
-> + *     for preventing entry into deep C-states
-> + *
-> + * CPU will flush caches as needed when entering a C-state via MWAIT
+Hi Linus,
 
-I would rephrase this to mention that the above actually is an assumption.
+please pull the resctrl pile this time around.
 
-> + *     (in contrast to entering ACPI C3, where acpi_idle driver is
+Thx.
 
-And mentioning acpi_idle here is not needed; it would be sufficient to
-say something like "in which case the WBINVD instruction needs to be
-executed to flush the caches".
+---
+The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
 
-> + *     itself responsible for flushing, via WBINVD)
->   */
->
->  /*
-> --
+  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
 
-Thanks!
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_cache_for_v5.10
+
+for you to fetch changes up to 29b6bd41ee24f69a85666b9f68d500b382d408fd:
+
+  x86/resctrl: Enable user to view thread or core throttling mode (2020-08-26 17:53:22 +0200)
+
+----------------------------------------------------------------
+* Misc cleanups to the resctrl code in preparation for the ARM side, by
+James Morse.
+
+* Add support for controlling per-thread memory bandwidth throttling
+delay values on hw which supports it, by Fenghua Yu.
+
+----------------------------------------------------------------
+Fenghua Yu (2):
+      x86/resctrl: Enumerate per-thread MBA controls
+      x86/resctrl: Enable user to view thread or core throttling mode
+
+James Morse (10):
+      x86/resctrl: Remove unused struct mbm_state::chunks_bw
+      x86/resctrl: Remove struct rdt_membw::max_delay
+      x86/resctrl: Fix stale comment
+      x86/resctrl: Use container_of() in delayed_work handlers
+      x86/resctrl: Include pid.h
+      x86/resctrl: Use is_closid_match() in more places
+      x86/resctrl: Add struct rdt_membw::arch_needs_linear to explain AMD/Intel MBA difference
+      x86/resctrl: Merge AMD/Intel parse_bw() calls
+      x86/resctrl: Add struct rdt_cache::arch_has_{sparse, empty}_bitmaps
+      cacheinfo: Move resctrl's get_cache_id() to the cacheinfo header file
+
+ Documentation/x86/resctrl_ui.rst          | 18 +++++-
+ arch/x86/include/asm/cpufeatures.h        |  1 +
+ arch/x86/kernel/cpu/cpuid-deps.c          |  1 +
+ arch/x86/kernel/cpu/resctrl/core.c        | 56 ++++++++++---------
+ arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 92 +++++--------------------------
+ arch/x86/kernel/cpu/resctrl/internal.h    | 49 ++++++++++------
+ arch/x86/kernel/cpu/resctrl/monitor.c     | 16 +-----
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 85 ++++++++++++++++++++++------
+ arch/x86/kernel/cpu/scattered.c           |  1 +
+ include/linux/cacheinfo.h                 | 21 +++++++
+ include/linux/resctrl.h                   |  2 +
+ 11 files changed, 185 insertions(+), 157 deletions(-)
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
