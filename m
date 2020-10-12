@@ -2,133 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40B8428AB7E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 03:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5A3328AB80
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 03:48:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726685AbgJLBpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 21:45:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33544 "EHLO
+        id S1727386AbgJLBsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 21:48:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726430AbgJLBpm (ORCPT
+        with ESMTP id S1726430AbgJLBsm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 21:45:42 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75F95C0613CE
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 18:45:42 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C8hMf0qsMz9sRK;
-        Mon, 12 Oct 2020 12:45:33 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1602467138;
-        bh=QMZkogI/gfDoyPHm/Lw5pjXwd5LTspyIiIIxRsHsUhE=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=G2SILhc5zkJv94KDxb2kWB4/qyoGwraRecRHH+4IQoyIvFEaqLhtooHgvfyzzuZFl
-         YPzWUvHFRZjWnq1p1acv2p2D2YbjTyAUNMFR4dAEuVcXaxgVmIhpeIb9mzH9gwkLOg
-         CHCnaovOIHeORhIoMTGfpSQTRcwjmYcm/3NQPYBgEjT33tl/8LxYGXrDI8kpbjmQMq
-         9bQiWKxfSPNGHzMZNRC27yLVwkYbcNr1BZAo8z3LRmRTEZv8wGMlCy18gVmp3TpRwu
-         DxUjK2O/IPbDNOvuqm5k2QTF8awhYHFfcM13Ag5PYgQr+XefpUFtjhDs38pcQFyTlR
-         sBDe+EGxPLyfg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Qian Cai <cai@redhat.com>, LKML <linux-kernel@vger.kernel.org>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Subject: Re: [PATCH] powerpc/smp: Use GFP_ATOMIC while allocating tmp mask
-In-Reply-To: <20201008034240.34059-1-srikar@linux.vnet.ibm.com>
-References: <20201008034240.34059-1-srikar@linux.vnet.ibm.com>
-Date:   Mon, 12 Oct 2020 12:45:33 +1100
-Message-ID: <874kn01aki.fsf@mpe.ellerman.id.au>
+        Sun, 11 Oct 2020 21:48:42 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65C0CC0613D0
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 18:48:42 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id z22so12796637wmi.0
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 18:48:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jrtc27.com; s=gmail.jrtc27.user;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Egc2g1s4c25bC1m2WOZ1u2/TqRkKnNmhG2I4XAl2dTI=;
+        b=Y40pGiZPqAof6VouNq0+ourFU4bmZXSYyZtSdX4j/Fid8buNEu4Tdb391+FWFwNQO0
+         TqjWIzI+NV7Q7eZk+iwy1F7m8toUwObyGlZHedu8x3GZqos1tdNFHnVf9Uv+X0RNvwa7
+         v2iFruxiVWPOVO/3n5muqbyxEXXB4Q/T87vr+znyHquzxzBceREq/mwFp0Y/x0aGyWrw
+         TQGI5RZ+OaHI1+/eNiwiYni27xaijXPgoRvaFlzToGZ1LtxMQvT2DVLnLWgbzkJ2PxlR
+         zYL5ykSkAr+xMGDH0Pkn+3CIhAfFF7T1fq03nfNFejhM3sBzqhBMbOBGMEZlc0SX3wVn
+         b7sQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Egc2g1s4c25bC1m2WOZ1u2/TqRkKnNmhG2I4XAl2dTI=;
+        b=ozSDQQsTdO5Oz6sv1Y9UZIELmrhzGzhKfoybz3r8pQ//48szQpseO8LjzaSOzpF05q
+         pDQ6ebJfyAnpa1TZ3p+KYduztAv7GYuBEKK7wZlmdisq6TB1W/Wxm/8U+ouBbhqwvQv6
+         K9l/kw7BG8zyHQlg1GOPiaF/arOmphpIo/0ppwP0DXPYFMWqQfJ6h8Oh9DQwUtviXBnw
+         bRkpRkPJwz16gh9k5tnDriOr172FjsHO8P6IQJipCMWmlse1fOLIvyBfkoVgmSMkA1pG
+         qS7s3WIXJqKSaXBglLT9Wq9TbdYgeGPbCWLtO9wTKQvNSeQmv9mEfpZBDL0Dg+OhAZRN
+         Adgg==
+X-Gm-Message-State: AOAM531CZ4dc4stwDO+AGhRWYXGMbND5HWV7+CdAZ+1i+VembPsFN568
+        QJLlqq814J/1RJJ1OgZWcYD/iA==
+X-Google-Smtp-Source: ABdhPJwXZqRs/voCiPycmmzVSzvpjBw4F5QVqYhVjQ79vub102+DvRzK5g6N8eFW1+uSvZsZ/DS+2Q==
+X-Received: by 2002:a1c:59c3:: with SMTP id n186mr8644345wmb.32.1602467320984;
+        Sun, 11 Oct 2020 18:48:40 -0700 (PDT)
+Received: from debian (trinity-students-nat.trin.cam.ac.uk. [131.111.193.104])
+        by smtp.gmail.com with ESMTPSA id k18sm4306829wrx.96.2020.10.11.18.48.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Oct 2020 18:48:40 -0700 (PDT)
+Received: from jrtc27 by debian with local (Exim 4.94)
+        (envelope-from <jrtc27@jrtc27.com>)
+        id 1kRmx5-0003jb-UC; Mon, 12 Oct 2020 02:48:39 +0100
+From:   Jessica Clarke <jrtc27@jrtc27.com>
+To:     linux-x86_64@vger.kernel.org
+Cc:     Jessica Clarke <jrtc27@jrtc27.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] x86: Fix x32 System V message queue syscalls
+Date:   Mon, 12 Oct 2020 02:48:37 +0100
+Message-Id: <20201012014837.14305-1-jrtc27@jrtc27.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Srikar Dronamraju <srikar@linux.vnet.ibm.com> writes:
+POSIX specifies that the first field of the supplied msgp, namely mtype,
+is a long, not a __kernel_long_t, and it's a user-defined struct due to
+the variable-length mtext field so we can't even bend the spec and make
+it a __kernel_long_t even if we wanted to. Thus we must use the compat
+syscalls on x32 to avoid buffer overreads and overflows in msgsnd and
+msgrcv respectively.
 
-> Qian Cai reported a regression where CPU Hotplug fails with the latest
-> powerpc/next
->
-> BUG: sleeping function called from invalid context at mm/slab.h:494
-> in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 0, name: swapper/88
-> no locks held by swapper/88/0.
-> irq event stamp: 18074448
-> hardirqs last  enabled at (18074447): [<c0000000001a2a7c>] tick_nohz_idle_enter+0x9c/0x110
-> hardirqs last disabled at (18074448): [<c000000000106798>] do_idle+0x138/0x3b0
-> do_idle at kernel/sched/idle.c:253 (discriminator 1)
-> softirqs last  enabled at (18074440): [<c0000000000bbec4>] irq_enter_rcu+0x94/0xa0
-> softirqs last disabled at (18074439): [<c0000000000bbea0>] irq_enter_rcu+0x70/0xa0
-> CPU: 88 PID: 0 Comm: swapper/88 Tainted: G        W         5.9.0-rc8-next-20201007 #1
-> Call Trace:
-> [c00020000a4bfcf0] [c000000000649e98] dump_stack+0xec/0x144 (unreliable)
-> [c00020000a4bfd30] [c0000000000f6c34] ___might_sleep+0x2f4/0x310
-> [c00020000a4bfdb0] [c000000000354f94] slab_pre_alloc_hook.constprop.82+0x124/0x190
-> [c00020000a4bfe00] [c00000000035e9e8] __kmalloc_node+0x88/0x3a0
-> slab_alloc_node at mm/slub.c:2817
-> (inlined by) __kmalloc_node at mm/slub.c:4013
-> [c00020000a4bfe80] [c0000000006494d8] alloc_cpumask_var_node+0x38/0x80
-> kmalloc_node at include/linux/slab.h:577
-> (inlined by) alloc_cpumask_var_node at lib/cpumask.c:116
-> [c00020000a4bfef0] [c00000000003eedc] start_secondary+0x27c/0x800
-> update_mask_by_l2 at arch/powerpc/kernel/smp.c:1267
-> (inlined by) add_cpu_to_masks at arch/powerpc/kernel/smp.c:1387
-> (inlined by) start_secondary at arch/powerpc/kernel/smp.c:1420
-> [c00020000a4bff90] [c00000000000c468] start_secondary_resume+0x10/0x14
->
-> Allocating a temporary mask while performing a CPU Hotplug operation
-> with CONFIG_CPUMASK_OFFSTACK enabled, leads to calling a sleepable
-> function from a atomic context. Fix this by allocating the temporary
-> mask with GFP_ATOMIC flag.
->
-> If there is a failure to allocate a mask, scheduler is going to observe
-> that this CPU's topology is broken. Instead of having to speculate why
-> the topology is broken, add a WARN_ON_ONCE.
->
-> Fixes: 70a94089d7f7 ("powerpc/smp: Optimize update_coregroup_mask")
-> Fixes: 3ab33d6dc3e9 ("powerpc/smp: Optimize update_mask_by_l2")
-> Reported-by: Qian Cai <cai@redhat.com>
-> Suggested-by: Qian Cai <cai@redhat.com>
-> Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-> Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-> Cc: LKML <linux-kernel@vger.kernel.org>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Nathan Lynch <nathanl@linux.ibm.com>
-> Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
-> Cc: Ingo Molnar <mingo@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Valentin Schneider <valentin.schneider@arm.com>
-> Cc: Qian Cai <cai@redhat.com>
-> ---
->  arch/powerpc/kernel/smp.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-> index 0dc1b85..1268558 100644
-> --- a/arch/powerpc/kernel/smp.c
-> +++ b/arch/powerpc/kernel/smp.c
-> @@ -1264,7 +1264,8 @@ static bool update_mask_by_l2(int cpu)
->  		return false;
->  	}
->  
-> -	alloc_cpumask_var_node(&mask, GFP_KERNEL, cpu_to_node(cpu));
-> +	/* In CPU-hotplug path, hence use GFP_ATOMIC */
-> +	WARN_ON_ONCE(!alloc_cpumask_var_node(&mask, GFP_ATOMIC, cpu_to_node(cpu)));
+Due to erroneously including the first 4 bytes of mtext in the mtype
+this would previously also cause non-zero msgtyp arguments for msgrcv to
+search for the wrong messages, and if sharing message queues between x32
+and non-x32 (i386 or x86_64) processes this would previously cause mtext
+to "move" and, depending on the direction and ABI combination, lose the
+first 4 bytes.
 
-A failed memory allocation is not something that should trigger a WARN,
-a pr_warn() maybe.
+Signed-off-by: Jessica Clarke <jrtc27@jrtc27.com>
+---
+ arch/x86/entry/syscalls/syscall_64.tbl | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-But ...
+diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
+index f30d6ae9a..7ee40989e 100644
+--- a/arch/x86/entry/syscalls/syscall_64.tbl
++++ b/arch/x86/entry/syscalls/syscall_64.tbl
+@@ -77,8 +77,8 @@
+ 66	common	semctl			sys_semctl
+ 67	common	shmdt			sys_shmdt
+ 68	common	msgget			sys_msgget
+-69	common	msgsnd			sys_msgsnd
+-70	common	msgrcv			sys_msgrcv
++69	64	msgsnd			sys_msgsnd
++70	64	msgrcv			sys_msgrcv
+ 71	common	msgctl			sys_msgctl
+ 72	common	fcntl			sys_fcntl
+ 73	common	flock			sys_flock
+@@ -404,3 +404,5 @@
+ 545	x32	execveat		compat_sys_execveat
+ 546	x32	preadv2			compat_sys_preadv64v2
+ 547	x32	pwritev2		compat_sys_pwritev64v2
++548	x32	msgsnd			compat_sys_msgsnd
++549	x32	msgrcv			compat_sys_msgrcv
+-- 
+2.28.0
 
->  	cpumask_and(mask, cpu_online_mask, cpu_cpu_mask(cpu));
-
-If the allocation failed this will oops (mask will be NULL).
-
-cheers
