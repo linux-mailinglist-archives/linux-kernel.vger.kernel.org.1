@@ -2,85 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0F528C440
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 23:46:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B16C228C444
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 23:47:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730115AbgJLVqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 17:46:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50336 "EHLO
+        id S1730932AbgJLVrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 17:47:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727167AbgJLVqa (ORCPT
+        with ESMTP id S1730022AbgJLVrD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 17:46:30 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9DD4C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 14:46:29 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id h6so19853573lfj.3
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 14:46:29 -0700 (PDT)
+        Mon, 12 Oct 2020 17:47:03 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A060CC0613D0;
+        Mon, 12 Oct 2020 14:47:03 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id l8so19172577ioh.11;
+        Mon, 12 Oct 2020 14:47:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jcj0FDQEdTyI9jLGbrsM++CDc4aPSACJ/ntrnYfOykU=;
-        b=E8beS6Vul0tNp9f6I3CYvbBngOfB/LbOo0hsQystbwHbkaK7vAg5a6ntf8euvt1GhG
-         xqLG1Qp8S+i29TM98JEsWajE6jpS751UC7jzJ5lVCuo+T+JFNChpcqQCLyEqxFwF/q+i
-         1RDd0k8PwgncGNOalDPmrDaVryOuwESOnHG1U=
+         :cc:content-transfer-encoding;
+        bh=h+F8apYj2Plr5dGtsp4Sn87icM0Gt/ZYiDUCGu5uXTA=;
+        b=sYImlSuWHY/0f/jfbP/5+gVgcuqOAtQjUMnXMHXED5umjtE3LPslOSL7etCXMHOofP
+         OCpa+2Sz42CDxUNykjUuDhWyt5vFu1VQ2q4mLxaSnkvM0BeJYsRX2yVIf69oRTE9T67o
+         HRSY3XMYMW81cX286ZryHP3m3P/6kZ5ItQS7iUkubm19T+mUJGaXaGWyUNZdJtMqQgmL
+         zSpO8tHo17YhrEljp7eptvHzAhmOHFf/hJvg/N0IaJaR5HkeDupWi3U14lijEclKn9qq
+         MEwXGSOFD9iX8EgjReyyv2j7VDxt6rk3rEUTRz5EOYXiuvy4JelYIs/WB2F89KX73aVI
+         Mp9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jcj0FDQEdTyI9jLGbrsM++CDc4aPSACJ/ntrnYfOykU=;
-        b=TGonG+hb+clWGySjvoDGjajq2GYjLxmGztBaoA1eqDyDovXiPIl9gLkYYUZH7gTx1l
-         usR7N3hAvZZWnW5xk7/E8Wk5XDUx4o6KxarNy8BJFYxAJMpfGbwSBwJ2c3J44Gin/Jwu
-         Rr+qOOJPLIj9tjBH6Ty04nLeaNlRGmQ5nJTJCK+C3lLWBmnePo3X+B/3OJqTzzdnEC9s
-         JehpKo3+H58xkgZStZDN8LKgJcDWjZKjbtH2MYtIunzCq/LscyiLkbjJ5CL7ZXlDda0M
-         h+Ijm8TahURgWgK2qyQ2JjD4hV9l4tn0K4CYuvXP+aiUGSfWeJdZk5hMh0ADfScQM8pG
-         fZNg==
-X-Gm-Message-State: AOAM53207ZNC60AUhcPsPk6OXXbE+w00Bapk9NPaVFCoAHnGejcmCOYa
-        uNBkVu8AStlnVMTEAU7OKi2AptKXUDH0+w==
-X-Google-Smtp-Source: ABdhPJzD0ZF43GdsvlbRTkqbBxzMoGsf602FOygXbGKH29ENlegs5oWOAI1RuFUDTVzm4NO2vsg8cQ==
-X-Received: by 2002:ac2:446b:: with SMTP id y11mr5713864lfl.403.1602539187717;
-        Mon, 12 Oct 2020 14:46:27 -0700 (PDT)
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
-        by smtp.gmail.com with ESMTPSA id b14sm1472352lfo.39.2020.10.12.14.46.26
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Oct 2020 14:46:27 -0700 (PDT)
-Received: by mail-lj1-f176.google.com with SMTP id a4so18261135lji.12
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 14:46:26 -0700 (PDT)
-X-Received: by 2002:a2e:8092:: with SMTP id i18mr10484981ljg.314.1602539186509;
- Mon, 12 Oct 2020 14:46:26 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=h+F8apYj2Plr5dGtsp4Sn87icM0Gt/ZYiDUCGu5uXTA=;
+        b=bw4nJYFsH3L6LXwBI0dvBAu3GG/YkGgk2gSymw9Jm2G8SbKXb0pDY69YJSD3b0XObx
+         7Q79hcTiYmydzI+UJa7vP95O1ZYRHwQNGeTQ3ak6iSQkbpkZGJ8C9R4hyUgP9X/rJGtK
+         XrcA4V4GVIWgv9rg2fneiEijdkQhejhtWD/GnEQrqt1+oPgNoeTFDXgu2uY7hCtmk6AS
+         Q8WrM4KMdHzLKRAobosryi60chagneE+Uedi3xrAi3uITKErio06oFfyd25WnRJdpStv
+         gQuFmpUCrKcDkVOLrZcJrR38TphVDNmsZelza0YEel1QJPDoSUqrhNiXL7ZxiAwkNkmz
+         uTAQ==
+X-Gm-Message-State: AOAM532ts66YoeTI3X4kC+fMw0c/khNRe5tnLbHMVznDUFdh0nqzbbvB
+        dNg/QN1JjD3RwT3SFKGzHqgEh9oPqhGqeL1KuIo=
+X-Google-Smtp-Source: ABdhPJz+y8paHziZjzqkLnzbjCoDFkO2pq2nRDQe31YPP796UzqDxRo9ZdyGommWTE6TqDzyP+Mz9TyqV84szZZPZVw=
+X-Received: by 2002:a02:94cd:: with SMTP id x71mr20173978jah.124.1602539222864;
+ Mon, 12 Oct 2020 14:47:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201012101012.GD25311@zn.tnic> <CAHk-=wiwBYoAKQ6H=n0ppZfMe6nVDwDw6cruv7jxZZw4XEmUsg@mail.gmail.com>
- <c8cfb3d2-d3c4-6d8d-1dfd-aeb349e26303@hpe.com> <20201012212709.GM25311@zn.tnic>
- <f778b25e-68e7-98ec-9032-b35696948405@hpe.com>
-In-Reply-To: <f778b25e-68e7-98ec-9032-b35696948405@hpe.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 12 Oct 2020 14:46:10 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg6MBLPzRrRYGQ6EeoUGV+-MdMraFiUiiQyenVk=t6=Bw@mail.gmail.com>
-Message-ID: <CAHk-=wg6MBLPzRrRYGQ6EeoUGV+-MdMraFiUiiQyenVk=t6=Bw@mail.gmail.com>
-Subject: Re: [GIT PULL] x86/platform updates for v5.10
-To:     Mike Travis <mike.travis@hpe.com>
-Cc:     Borislav Petkov <bp@suse.de>, x86-ml <x86@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
+References: <20201010103854.66746-1-songmuchun@bytedance.com>
+ <CAM_iQpUQXctR8UBNRP6td9dWTA705tP5fWKj4yZe9gOPTn_8oQ@mail.gmail.com> <CAMZfGtUhVx_iYY3bJZRY5s1PG0N1mCsYGS9Oku8cTqPiMDze-g@mail.gmail.com>
+In-Reply-To: <CAMZfGtUhVx_iYY3bJZRY5s1PG0N1mCsYGS9Oku8cTqPiMDze-g@mail.gmail.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Mon, 12 Oct 2020 14:46:51 -0700
+Message-ID: <CAM_iQpXLX1xXN02idk-yU1T=AGb9JmGiLkfRGCJOxjCw-OWpfQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] mm: proc: add Sock to /proc/meminfo
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, rafael@kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Shakeel Butt <shakeelb@google.com>,
+        Will Deacon <will@kernel.org>, Michal Hocko <mhocko@suse.com>,
+        Roman Gushchin <guro@fb.com>, Neil Brown <neilb@suse.de>,
+        rppt@kernel.org, Sami Tolvanen <samitolvanen@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Florian Westphal <fw@strlen.de>, gustavoars@kernel.org,
+        Pablo Neira Ayuso <pablo@netfilter.org>, decui@microsoft.com,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Thomas Gleixner <tglx@linutronix.de>, dave@stgolabs.net,
+        Michel Lespinasse <walken@google.com>,
+        Jann Horn <jannh@google.com>, chenqiwu@xiaomi.com,
+        christophe.leroy@c-s.fr, Minchan Kim <minchan@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 2:42 PM Mike Travis <mike.travis@hpe.com> wrote:
+On Sun, Oct 11, 2020 at 9:22 PM Muchun Song <songmuchun@bytedance.com> wrot=
+e:
 >
-> It should have been an unsigned long instead of an int as Linus
-> suggested.  I'm not sure it's a write only variable as I think the mask
-> is used to check if the interrupt occurred (I'll have to look closer).
+> On Mon, Oct 12, 2020 at 2:39 AM Cong Wang <xiyou.wangcong@gmail.com> wrot=
+e:
+> >
+> > On Sat, Oct 10, 2020 at 3:39 AM Muchun Song <songmuchun@bytedance.com> =
+wrote:
+> > >
+> > > The amount of memory allocated to sockets buffer can become significa=
+nt.
+> > > However, we do not display the amount of memory consumed by sockets
+> > > buffer. In this case, knowing where the memory is consumed by the ker=
+nel
+> >
+> > We do it via `ss -m`. Is it not sufficient? And if not, why not adding =
+it there
+> > rather than /proc/meminfo?
+>
+> If the system has little free memory, we can know where the memory is via
+> /proc/meminfo. If a lot of memory is consumed by socket buffer, we cannot
+> know it when the Sock is not shown in the /proc/meminfo. If the unaware u=
+ser
+> can't think of the socket buffer, naturally they will not `ss -m`. The
+> end result
 
-At least "git grep" only shows two assignments to it.
+Interesting, we already have a few counters related to socket buffers,
+are you saying these are not accounted in /proc/meminfo either?
+If yes, why are page frags so special here? If not, they are more
+important than page frags, so you probably want to deal with them
+first.
 
-Of course, that would miss any cases that play games with preprocessor
-token pasting etc, so it's not entirely meaningful, but it's certainly
-a hint..
 
-And yes, I expect that the fix is to just make it "unsigned long", but
-if it truly isn't actually used, maybe removal is better.
+> is that we still don=E2=80=99t know where the memory is consumed. And we =
+add the
+> Sock to the /proc/meminfo just like the memcg does('sock' item in the cgr=
+oup
+> v2 memory.stat). So I think that adding to /proc/meminfo is sufficient.
 
-             Linus
+It looks like actually the socket page frag is already accounted,
+for example, the tcp_sendmsg_locked():
+
+                        copy =3D min_t(int, copy, pfrag->size - pfrag->offs=
+et);
+
+                        if (!sk_wmem_schedule(sk, copy))
+                                goto wait_for_memory;
+
+
+>
+> >
+> > >  static inline void __skb_frag_unref(skb_frag_t *frag)
+> > >  {
+> > > -       put_page(skb_frag_page(frag));
+> > > +       struct page *page =3D skb_frag_page(frag);
+> > > +
+> > > +       if (put_page_testzero(page)) {
+> > > +               dec_sock_node_page_state(page);
+> > > +               __put_page(page);
+> > > +       }
+> > >  }
+> >
+> > You mix socket page frag with skb frag at least, not sure this is exact=
+ly
+> > what you want, because clearly skb page frags are frequently used
+> > by network drivers rather than sockets.
+> >
+> > Also, which one matches this dec_sock_node_page_state()? Clearly
+> > not skb_fill_page_desc() or __skb_frag_ref().
+>
+> Yeah, we call inc_sock_node_page_state() in the skb_page_frag_refill().
+
+How is skb_page_frag_refill() possibly paired with __skb_frag_unref()?
+
+> So if someone gets the page returned by skb_page_frag_refill(), it must
+> put the page via __skb_frag_unref()/skb_frag_unref(). We use PG_private
+> to indicate that we need to dec the node page state when the refcount of
+> page reaches zero.
+
+skb_page_frag_refill() is called on frags not within an skb, for instance,
+sk_page_frag_refill() uses it for a per-socket or per-process page frag.
+But, __skb_frag_unref() is specifically used for skb frags, which are
+supposed to be filled by skb_fill_page_desc() (page is allocated by driver)=
+.
+
+They are different things you are mixing them up, which looks clearly
+wrong or at least misleading.
+
+Thanks.
