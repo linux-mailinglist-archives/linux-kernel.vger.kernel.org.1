@@ -2,127 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16CFB28B34C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 13:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC1DF28B354
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 13:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387970AbgJLLAl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 12 Oct 2020 07:00:41 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:33668 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387851AbgJLLAl (ORCPT
+        id S2388050AbgJLLBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 07:01:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387986AbgJLLBH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 07:00:41 -0400
-Received: by mail-ot1-f68.google.com with SMTP id t15so15520865otk.0;
-        Mon, 12 Oct 2020 04:00:40 -0700 (PDT)
+        Mon, 12 Oct 2020 07:01:07 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FB66C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 04:01:07 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id m13so15444906otl.9
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 04:01:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K2YFWJ4pOihJHXPodcnaJ3e2LKbXyuwWQOZ0b/XSrV8=;
+        b=tIb4U4SQcIv4Nhyx/JYzQed9+OXaMfwLCji838eUt700PeULZsa+2OTq+TpRk0yKyY
+         RjcKqMI9CKAfUKSKrlJl0YyjZJvRZLww1+rOM+s+F0rgJoUNLswuUBz/Iz8jpJH1NE4q
+         Rm+gypk/4N8QlZfSHHy/ifmzL/QT9rcB4K6/78l5JpvLUf2C6Fz0rae3W6hpr7YrwJJW
+         uz0fC9woH5/3GthhMgNgFv47m2o7YsrwJt87Zc1dogDBtSReB8fYIamXdiWeLn6bMB1y
+         NOPe+WvoxD0DZT4vKKedDKk+zHxlBaAX6JjwFNbmuwomwwS3rsoTl7xij5IkQsbnrfFJ
+         Nung==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1zzGoaY2S/EFy3jNz5H4aQ0+yU4Sr8kmv9ptMMnIcf8=;
-        b=e9RTGE2+RhmJBDmIoHQ7f6HjRY7yZ9NkDHLJRtH65Gu2RyEHV//B4jE6GGZtfAbkPT
-         Hew+hrYmoKMiqr5u6ELTFYXNB3LbF9QVvYXY2NL2aVmfWvFrd2G3m56nZhYsN1CFMM7H
-         pbThAMpWrWpXRqajslMzzEcyvAdaOQv7N9KYD+mkDE01N5yohBxKcyETeg7pCe1hVTXV
-         /1T7ykvfT6DQtpBrpvNawsGGc9bjVBPxkCnBgVvmznPM1FIbJO2Rr8Kqd61EWPR0tyUE
-         BSa22mBaNEYINla4Rj/zPEKHA090RZYdgk63xLDpbbBWcXOVaw6HhvIpY8x7rz2USI1x
-         3owA==
-X-Gm-Message-State: AOAM531IbYyaBrA8pxqKvule9703OmXLVSWVdG1xv2a727CL8b4pB3dm
-        OE0UptjUl14q0lYHC2uBUA2Mj/y/vfa1kUlxFO8=
-X-Google-Smtp-Source: ABdhPJzKbmNdJGUGB3vocn6qhxNNfE4DQHDLsmhe3UNcG1kKuhMWsNUT113WNdSH0sNZd2Y8aa1zzukJYdKAuP9HzQY=
-X-Received: by 2002:a9d:3626:: with SMTP id w35mr18911107otb.206.1602500439914;
- Mon, 12 Oct 2020 04:00:39 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=K2YFWJ4pOihJHXPodcnaJ3e2LKbXyuwWQOZ0b/XSrV8=;
+        b=Szigg+HTjpwhZv8eMC1r/CQhOdA3rjzbdqcOv1nFojFlYGGDwIvtoAzeXpKrrCtdio
+         NZXvMl/jhu430F0wG23zwCLGn/lLqmlpOlxzeG+mesAFydVbat+n5lN7R10lDh02dFET
+         6VtD4VxesRmDpuo+qOXfdVxgrkPRT1dhsz5srxrtIKSl6Lb4g3zYZs6GOlkwtvGU4iBM
+         uxBliPk7NEwXlqiJH3MsULJaJIM/XaKYMX47CImTgK11/gVOXNvYN0kXWQFdgCBM7adj
+         sj1UAFkWWwipDl4emGkkd4y4z1BBADH4sMw9A0h1nixv/hVxcD7cj2gN7tyHHQNMHQPI
+         rZuQ==
+X-Gm-Message-State: AOAM530qDnVtiAsCwp9dftGGKKT+UKp04L6LcbuWSmBWjAS+aeXof7GS
+        y/dwk73OJn2X1YSYRbXUUT6m8GRPrl6N08JFcdU7PA==
+X-Google-Smtp-Source: ABdhPJw+swSWmxv1x2aPtX24h3ONkzSGRkKogbhvAzbeYS+3/LewQEMZnQ2O5aCjFapU1Zgd/wDJAOaL5I/bk+ksh9g=
+X-Received: by 2002:a9d:66a:: with SMTP id 97mr18798931otn.233.1602500466129;
+ Mon, 12 Oct 2020 04:01:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <1a69c5bc-ccc4-68db-7871-af05a70052c9@molgen.mpg.de>
- <20201007221628.GW1009802@dtor-ws> <bbb70981-1242-0aea-01c9-f9507f8eae3b@molgen.mpg.de>
- <CAJZ5v0hKmESo0-kfN1+vK7to05GpVV3d7ZnO3XEsQ2jKKhvkJQ@mail.gmail.com> <7921b792-c99a-659c-730f-ecb25cb7f04b@molgen.mpg.de>
-In-Reply-To: <7921b792-c99a-659c-730f-ecb25cb7f04b@molgen.mpg.de>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 12 Oct 2020 13:00:28 +0200
-Message-ID: <CAJZ5v0iim_XvBcjSZevEmbQb6F8bCb2jP14Ptnqd_7qfuuUHpw@mail.gmail.com>
-Subject: Re: i8042_init: PS/2 mouse not detected with ACPIPnP/PnPBIOS
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>, linux-input@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>
+References: <20201010145357.60886-1-98.arpi@gmail.com>
+In-Reply-To: <20201010145357.60886-1-98.arpi@gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 12 Oct 2020 13:00:54 +0200
+Message-ID: <CANpmjNOmbPsx-eEQ+TfC0X5CM-Jgy2NBqpYo=h2L9e33rnajSw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] kunit: Support for Parameterized Testing
+To:     Arpitha Raghunandan <98.arpi@gmail.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        skhan@linuxfoundation.org, yzaikin@google.com,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 12:50 PM Paul Menzel <pmenzel@molgen.mpg.de> wrote:
+On Sat, 10 Oct 2020 at 16:54, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+> Implementation of support for parameterized testing in KUnit.
 >
-> Dear Rafael,
+> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+> ---
+>  include/kunit/test.h | 29 +++++++++++++++++++++++++++++
+>  lib/kunit/test.c     | 44 +++++++++++++++++++++++++++++++++++++++++++-
+>  2 files changed, 72 insertions(+), 1 deletion(-)
 >
+> diff --git a/include/kunit/test.h b/include/kunit/test.h
+> index 59f3144f009a..4740d66269b4 100644
+> --- a/include/kunit/test.h
+> +++ b/include/kunit/test.h
+> @@ -140,10 +140,14 @@ struct kunit;
+>  struct kunit_case {
+>         void (*run_case)(struct kunit *test);
+>         const char *name;
+> +       void* (*get_params)(void);
+> +       int max_parameters_count;
+> +       int parameter_size;
 >
-> Am 12.10.20 um 12:39 schrieb Rafael J. Wysocki:
-> > On Sun, Oct 11, 2020 at 1:08 AM Paul Menzel <pmenzel@molgen.mpg.de> wrote:
-> >>
-> >> Dear Dmitry, dear Rafael, dear Len,
-> >>
-> >>
-> >> Am 08.10.20 um 00:16 schrieb Dmitry Torokhov:
-> >>
-> >>> On Wed, Oct 07, 2020 at 11:18:41PM +0200, Paul Menzel wrote:
-> >>
-> >>>> On the Asus F2A85-M PRO Linux 5.9-rc8 (and previous versions) does not
-> >>>> recognize a plugged in PS/2 mouse using the Plug & Play method. The PS/2
-> >>>> keyboard is detected fine, and using `i8042.nopnp`, the PS/2 mouse also
-> >>>> works.
-> >>>>
-> >>>>> [    1.035915] calling  i8042_init+0x0/0x42d @ 1
-> >>>>> [    1.035947] i8042: PNP: PS/2 Controller [PNP0303:PS2K] at 0x60,0x64 irq 1
-> >>>>> [    1.035948] i8042: PNP: PS/2 appears to have AUX port disabled, if this is incorrect please boot with i8042.nopnp
-> >>>>> [    1.036589] serio: i8042 KBD port at 0x60,0x64 irq 1
-> >>>>> [    1.036621] initcall i8042_init+0x0/0x42d returned 0 after 687 usecs
-> >>>>
-> >>>> But, the DSDT includes the “mouse device”. From
-> >>>>
-> >>>>       acpidump > dump.bin; acpixtract dump.bin; iasl -d *dat; more dsdt.dsl
-> >>>>
-> >>>> we get
-> >>>>
-> >>>>                   Device (PS2M)
-> >>>>                   {
-> >>>>                       Name (_HID, EisaId ("PNP0F03") /* Microsoft PS/2-style Mouse */)  // _HID: Hardware ID
-> >>>>                       Name (_CID, EisaId ("PNP0F13") /* PS/2 Mouse */) // _CID: Compatible ID
-> >>>>                       Method (_STA, 0, NotSerialized)  // _STA: Status
-> >>>>                       {
-> >>>>                           If ((IOST & 0x4000))
-> >>>>                           {
-> >>>>                               Return (0x0F)
-> >>>>                           }
-> >>>>                           Else
-> >>>>                           {
-> >>>>                               Return (Zero)
-> >>>>                           }
-> >>>>                       }
-> >>>>
-> >>>> and the identifiers PNP0F03 and PNP0F13 are both listed in the array
-> >>>> `pnp_aux_devids[]`. But adding print statements to `i8042_pnp_aux_probe()`,
-> >>>> I do not see them, so the function does not seem to be called.
-> >>>
-> >>> My guess is that _STA returns 0 indicating that the device is not
-> >>> present. I would try tracking where IOST is being set and figuring out
-> >>> why it does not have mouse bit enabled.
-> >>
-> >> Does the ACPI subsystem allow to track, how ACPI variables(?) like IOST
-> >> are read and set?
-> >
-> > My guess would be that IOST is a field in an operation region which
-> > would indicate that it is initialized by the bootstrap part of the
-> > BIOS.
->
-> Thank you for your answer. But how can I verify that?
+>         /* private: internal use only. */
+>         bool success;
+>         char *log;
+> +       bool parameterized;
 
-Inspecting the ACPI tables from the system in question could help you
-to find out whether or not IOST really is a field in an operation
-region, but its initial value may not be possible to determine this
-way.
+Why do you need this bool? Doesn't get_params being non-NULL tell you
+if the test case is parameterized?
 
-> Is there a Linux kernel parameter, that would print it?
+>  };
+>
+>  static inline char *kunit_status_to_string(bool status)
+> @@ -162,6 +166,11 @@ static inline char *kunit_status_to_string(bool status)
+>   */
+>  #define KUNIT_CASE(test_name) { .run_case = test_name, .name = #test_name }
+>
+> +#define KUNIT_CASE_PARAM(test_name, getparams, count, size)                            \
+> +               { .run_case = test_name, .name = #test_name,                            \
+> +                 .parameterized = true, .get_params = (void* (*)(void))getparams,      \
+> +                 .max_parameters_count = count, .parameter_size = size }
+> +
 
-Not that I know of.
+I think this interface is overly complex. For one, if the only purpose
+of the getparams function is to return a pointer to some array, then
+there are only few cases where I see getparams being a function could
+be useful.
+
+Instead, could we make the getparams function behave like a generator?
+Because then you do not need count, nor size. Its function signature
+would be:
+
+void* (*generate_params)(void* prev_param);
+
+The protocol would be:
+
+- The first call to generate_params is passed prev_param of NULL, and
+returns a pointer to the first parameter P[0].
+
+- Every nth successive call to generate_params is passed the previous
+parameter P[n-1].
+
+- When no more parameters are available, generate_params returns NULL.
+
+- (generate_params should otherwise be stateless, but this is only
+relevant if concurrent calls are expected.)
+
+
+>  /**
+>   * struct kunit_suite - describes a related collection of &struct kunit_case
+>   *
+> @@ -206,6 +215,23 @@ struct kunit {
+>         /* private: internal use only. */
+>         const char *name; /* Read only after initialization! */
+>         char *log; /* Points at case log after initialization */
+> +       bool parameterized; /* True for parameterized tests */
+> +       /* param_values stores the test parameters
+> +        * for parameterized tests.
+> +        */
+> +       void *param_values;
+> +       /* max_parameters_count indicates maximum number of
+> +        * parameters for parameterized tests.
+> +        */
+> +       int max_parameters_count;
+> +       /* iterator_count is used by the iterator method
+> +        * for parameterized tests.
+> +        */
+> +       int iterator_count;
+> +       /* parameter_size indicates size of a single test case
+> +        * for parameterized tests.
+> +        */
+> +       int parameter_size;
+
+All of this would become much simpler if you used the generator
+approach. Likely only 1 field would be required, which is the current
+param.
+
+>         struct kunit_try_catch try_catch;
+>         /*
+>          * success starts as true, and may only be set to false during a
+> @@ -225,6 +251,7 @@ struct kunit {
+>  };
+>
+>  void kunit_init_test(struct kunit *test, const char *name, char *log);
+> +void kunit_init_param_test(struct kunit *test, struct kunit_case *test_case);
+>
+>  int kunit_run_tests(struct kunit_suite *suite);
+>
+> @@ -237,6 +264,8 @@ int __kunit_test_suites_init(struct kunit_suite **suites);
+>
+>  void __kunit_test_suites_exit(struct kunit_suite **suites);
+>
+> +void *get_test_case_parameters(struct kunit *test);
+> +
+>  /**
+>   * kunit_test_suites() - used to register one or more &struct kunit_suite
+>   *                      with KUnit.
+> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+> index c36037200310..ab9e13c81d4a 100644
+> --- a/lib/kunit/test.c
+> +++ b/lib/kunit/test.c
+> @@ -142,6 +142,11 @@ unsigned int kunit_test_case_num(struct kunit_suite *suite,
+>  }
+>  EXPORT_SYMBOL_GPL(kunit_test_case_num);
+>
+> +static void kunit_print_failed_param(struct kunit *test)
+> +{
+> +       kunit_err(test, "\n\tTest failed at parameter: %d\n", test->iterator_count);
+> +}
+> +
+>  static void kunit_print_string_stream(struct kunit *test,
+>                                       struct string_stream *stream)
+>  {
+> @@ -182,6 +187,9 @@ static void kunit_fail(struct kunit *test, struct kunit_assert *assert)
+>
+>         assert->format(assert, stream);
+>
+> +       if (test->parameterized)
+> +               kunit_print_failed_param(test);
+> +
+>         kunit_print_string_stream(test, stream);
+>
+>         WARN_ON(string_stream_destroy(stream));
+> @@ -236,6 +244,18 @@ void kunit_init_test(struct kunit *test, const char *name, char *log)
+>  }
+>  EXPORT_SYMBOL_GPL(kunit_init_test);
+>
+> +void kunit_init_param_test(struct kunit *test, struct kunit_case *test_case)
+> +{
+> +       spin_lock_init(&test->lock);
+> +       INIT_LIST_HEAD(&test->resources);
+> +       test->parameterized = true;
+> +       test->param_values = (void *)(test_case->get_params());
+> +       test->max_parameters_count = test_case->max_parameters_count;
+> +       test->parameter_size = test_case->parameter_size;
+> +       test->iterator_count = 0;
+> +}
+> +EXPORT_SYMBOL_GPL(kunit_init_param_test);
+> +
+>  /*
+>   * Initializes and runs test case. Does not clean up or do post validations.
+>   */
+> @@ -254,7 +274,14 @@ static void kunit_run_case_internal(struct kunit *test,
+>                 }
+>         }
+>
+> -       test_case->run_case(test);
+> +       if (!test->parameterized) {
+> +               test_case->run_case(test);
+> +       } else {
+> +               int i;
+> +
+> +               for (i = 0; i < test->max_parameters_count; i++)
+> +                       test_case->run_case(test);
+
+With a generator approach, here you'd call generate_params. Most
+likely, you'll need to stash its result somewhere, e.g. test->param,
+so it can be retrieved by the test case.
+
+> +       }
+>  }
+>
+>  static void kunit_case_internal_cleanup(struct kunit *test)
+> @@ -343,6 +370,8 @@ static void kunit_run_case_catch_errors(struct kunit_suite *suite,
+>         struct kunit test;
+>
+>         kunit_init_test(&test, test_case->name, test_case->log);
+> +       if (test_case->parameterized)
+> +               kunit_init_param_test(&test, test_case);
+>         try_catch = &test.try_catch;
+>
+>         kunit_try_catch_init(try_catch,
+> @@ -407,6 +436,19 @@ void __kunit_test_suites_exit(struct kunit_suite **suites)
+>  }
+>  EXPORT_SYMBOL_GPL(__kunit_test_suites_exit);
+>
+> +/*
+> + * Iterator method for the parameterized test cases
+> + */
+> +void *get_test_case_parameters(struct kunit *test)
+> +{
+> +       int index = test->iterator_count * test->parameter_size;
+> +
+> +       if (test->iterator_count != test->max_parameters_count)
+> +               test->iterator_count++;
+
+This is quite confusing, because if get_test_case_parameters is called
+multiple times within the same test case, we'll iterate through all
+the test case params in the same test case? I think this function
+should not have side-effects (like normal getters).
+
+But if you use the generator approach, you'll likely not need this
+function anyway.
+
+> +       return (test->param_values + index);
+
+Braces not needed.
+
+> +}
+> +EXPORT_SYMBOL_GPL(get_test_case_parameters);
+> +
+>  /*
+>   * Used for static resources and when a kunit_resource * has been created by
+>   * kunit_alloc_resource().  When an init function is supplied, @data is passed
+> --
+> 2.25.1
+>
