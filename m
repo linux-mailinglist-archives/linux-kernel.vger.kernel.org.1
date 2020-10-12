@@ -2,82 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D45CC28BE73
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:51:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 513DF28BE76
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403929AbgJLQvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 12:51:11 -0400
-Received: from mga14.intel.com ([192.55.52.115]:25720 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403778AbgJLQvL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 12:51:11 -0400
-IronPort-SDR: nY42OOrW8chaxgnwBnIk8k1XjiDNXdqjm/zkcHbilZQBbsif5IG+SdsHWfBZ6Wax4R+lYvUdo+
- Kxe9Cdnf0sjA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="164985053"
-X-IronPort-AV: E=Sophos;i="5.77,367,1596524400"; 
-   d="scan'208";a="164985053"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 09:51:08 -0700
-IronPort-SDR: tSLYrDYHK7fbzX4zjazH/J4S8MUExl9kkpOfCYw+SomYDqq5ugNWk4t0AD3iIZCusG32CA9od5
- 5LrCcEXvhU+Q==
-X-IronPort-AV: E=Sophos;i="5.77,367,1596524400"; 
-   d="scan'208";a="530042114"
-Received: from lohmeies-mobl.ger.corp.intel.com (HELO localhost) ([10.252.37.19])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 09:50:55 -0700
-Date:   Mon, 12 Oct 2020 19:50:51 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        linux-kselftest@vger.kernel.org, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
-        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
-        luto@kernel.org, nhorman@redhat.com, npmccallum@redhat.com,
-        puiterwijk@redhat.com, rientjes@google.com,
-        sean.j.christopherson@intel.com, tglx@linutronix.de,
-        yaozhangx@google.com, mikko.ylinen@intel.com
-Subject: Re: [PATCH v39 22/24] selftests/x86: Add a selftest for SGX
-Message-ID: <20201012165051.GA8475@linux.intel.com>
-References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
- <20201003045059.665934-23-jarkko.sakkinen@linux.intel.com>
+        id S2403948AbgJLQwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 12:52:15 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:35752 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390683AbgJLQwO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 12:52:14 -0400
+Received: by mail-ed1-f66.google.com with SMTP id cq12so17746914edb.2;
+        Mon, 12 Oct 2020 09:52:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3mboFW4RncTKtOa1W24m1Ae7YyE66jcNb5+APhjiUo8=;
+        b=TrFiW84TQByeVqD+r/u6Dikvtsw+SSUrb3fD1oAMSmQLye5TpAMe0S328tHQZHkKZu
+         62w8UyLsbmLCo+g9Xm9MD4hzVoTfuej4AclSEYbme/86OcLxhQ+gtQsFkh33kAxbrB3R
+         WkU6plJRoyc9szXsj96GBPNlfBfwWjeUD+cbc0iGfr/rNacd69LJXogZvoz+je28VKWL
+         8iOFVEowAGFfK4KXXb1fGLHGEI/TnXol9ZCe0OZa7Q9BquLdUYTKCGW5HuxzNzXRlBNu
+         RAFPxx5nZPJ4CEp4lpXuRonql3vSVsMkfHeMdY6Ny+1tR+tfA/D8CbWY3K4u+sp6JXP1
+         lu0Q==
+X-Gm-Message-State: AOAM532VXj1t5abkHx/Rpjp/wcfyqavBcx2nhtnIZ6/BRzk+T3x3aeyV
+        42V4pCoJnTlqW80f8cAIfmA=
+X-Google-Smtp-Source: ABdhPJwHfSMlR1K1xguOC5H0QrsWlq5j9g7EhtvzQgZS6un/QQ7FKO5pQ+6qmTh33FDIeD4VYJr+Hw==
+X-Received: by 2002:aa7:dc16:: with SMTP id b22mr15155239edu.252.1602521532271;
+        Mon, 12 Oct 2020 09:52:12 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.215])
+        by smtp.googlemail.com with ESMTPSA id j24sm10475455edq.29.2020.10.12.09.52.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 12 Oct 2020 09:52:10 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 18:52:08 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     AngeloGioacchino Del Regno <kholk11@gmail.com>
+Cc:     dmitry.torokhov@gmail.com, Rob Herring <robh+dt@kernel.org>,
+        rydberg@bitmath.org, priv.luk@gmail.com,
+        linux-input@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        marijns95@gmail.com, konradybcio@gmail.com,
+        martin.botka1@gmail.com, phone-devel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v4 3/3] dt-bindings: touchscreen: Add binding for Novatek
+ NT36xxx series driver
+Message-ID: <20201012165208.GA3706@kozik-lap>
+References: <20201008181514.668548-1-kholk11@gmail.com>
+ <20201008181514.668548-4-kholk11@gmail.com>
+ <CAJKOXPdZ_zo0bPwQd=_dKHhA2KWHgsH4KTH=+cX8hNxSVrqrig@mail.gmail.com>
+ <CAK7fi1ZJN=AbkusWqDEbAkZ=AgKEPCvWH43hBpX0-EUDJWOC5g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201003045059.665934-23-jarkko.sakkinen@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <CAK7fi1ZJN=AbkusWqDEbAkZ=AgKEPCvWH43hBpX0-EUDJWOC5g@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 03, 2020 at 07:50:57AM +0300, Jarkko Sakkinen wrote:
-> Add a selftest for SGX. It is a trivial test where a simple enclave
-> copies one 64-bit word of memory between two memory locations.
+On Thu, Oct 08, 2020 at 10:30:35PM +0200, AngeloGioacchino Del Regno wrote:
+> Il giorno gio 8 ott 2020 alle ore 20:21 Krzysztof Kozlowski
+> <krzk@kernel.org> ha scritto:
+> >
+> > On Thu, 8 Oct 2020 at 20:15, <kholk11@gmail.com> wrote:
+> > >
+> > > From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> > >
+> > > Add binding for the Novatek NT36xxx series touchscreen driver.
+> > >
+> > > Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> > > ---
+> > >  .../input/touchscreen/novatek,nt36xxx.yaml    | 59 +++++++++++++++++++
+> > >  1 file changed, 59 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml b/Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml
+> > > new file mode 100644
+> > > index 000000000000..e747cacae036
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml
+> > > @@ -0,0 +1,59 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/input/touchscreen/novatek,nt36xxx.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Novatek NT36xxx series touchscreen controller Bindings
+> > > +
+> > > +maintainers:
+> > > +  - Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> > > +
+> > > +allOf:
+> > > +  - $ref: touchscreen.yaml#
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    const: novatek,nt36xxx
+> >
+> > Thanks for the changes, they look good except this part here which I
+> > missed before. The compatible should not contain wildcards. If all
+> > devices are really compatible, just add here one const, e.g. "const:
+> > novatek,nt36525". If they are different, you could add multiple
+> > compatibles in enum.
+> >
+> > Best regards,
+> > Krzysztof
 > 
-> Cc: Shuah Khan <shuah@kernel.org>
-> Cc: linux-kselftest@vger.kernel.org
-> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> They are all managed the same way, but the page addresses are
+> changing between all of them... the driver is reading the chip ID
+> while the TS MCU is in "boot mode", then checking in a ID table
+> if the chip is supported and finally assigning a page address table.
+> This is done for the entire NT36*** series.
+> 
+> If wildcards are not permitted, perhaps I can change it to something
+> like "novatek,nt36" or "novatek,nt36-ts"... as then specifying the
+> specific IC model into the DT means that I would have to logically
+> change the driver itself to also crosscheck a DT-specified model
+> with whatever gets recognized by reading the chip (which then would
+> be a triple check of what's going on, imo overcomplicating the logic).
+> 
+> What would you propose, at this point?
 
-Greg, speaking of dual licensing, I'd make an expection with this
-selftest to what we agreed in the last week.
+If you want the autodetection based on chip ID, then use the
+oldest/earliest device as compatible, so "novatek,nt36525" and keep
+everything else as is. In your case the HW description for all devices
+is the same, thus one compatible is enough.  This way if in future you
+need to bring a difference for a new HW (let's say some imaginary
+NT36999), you can simply add a new compatible.
 
-It's the only compact C-only example that I'm aware of that shows how to
-put together the basics of an SGX user space. Here a more permissive
-licensing would make sense in my opinion just to give a seed for
-alternatives.
-
-Right now the user space implementations are either in C++ and Rust, and
-they work great for big things like containers etc. I could envision
-someone to have something more minimalistic to do something simple for
-lets say a system daemon.
-
-I've done a similar decision with tools/testing/selftests/tpm2/tpm2.py
-in the past.
-
-What do you think?
-
-/Jarkko
+Best regards,
+Krzysztof
