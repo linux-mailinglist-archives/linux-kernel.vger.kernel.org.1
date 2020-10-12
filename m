@@ -2,145 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AE1A28B807
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:48:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9B4028B6B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389372AbgJLNsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:48:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56272 "EHLO mail.kernel.org"
+        id S2388710AbgJLNgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:36:20 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:49549 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731994AbgJLNsc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:48:32 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1730092AbgJLNf0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:35:26 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602509726; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=yJVu2nYtW7tgXAqxi6u1cPfPKhnG3l6c6j29s6R7Esg=; b=deEPPL01fjZK/Aw6c5ZYHnspy49PGLJagMSKuB5ZoPHiC3NA6ZUZ7UTpBw+oDHlsz+MFtJef
+ Aqpe8bs/ReTDvd/93oWf5IWx5QNHaE1e46+angwnvb3EK6QNuQtJBWrVzfmmsRySewr30frx
+ jRYzoVo2gLwhjdSW8ECdr34Og8k=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5f845b45ad37af35ec9f4855 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 12 Oct 2020 13:33:57
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 79C8DC43382; Mon, 12 Oct 2020 13:33:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.1.9] (unknown [117.210.180.123])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 38D34206D9;
-        Mon, 12 Oct 2020 13:48:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602510511;
-        bh=YSsYICUfP4/I9lYXIaaa1C27+E6Yrl01Yk2dNT5Dgsw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eg5uOFu84jSo0UH/defQZmE6eHcoN746Yb4Br5Woqb4VXzGBdaMx6EJgZqbtL+KX8
-         robXm/gSZQ7O1JzcCqpAvQ3FuiVWjss/K2uCd5YQ6uBMzjutwQuEt9gcWknYO9r0uT
-         MhbDy4JQahczMbE+B2+pWuyr4o0CzUYQYhSWmaE4=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vlad Buslov <vladbu@mellanox.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        syzbot+2287853d392e4b42374a@syzkaller.appspotmail.com
-Subject: [PATCH 5.8 124/124] net_sched: commit action insertions together
-Date:   Mon, 12 Oct 2020 15:32:08 +0200
-Message-Id: <20201012133152.858233775@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012133146.834528783@linuxfoundation.org>
-References: <20201012133146.834528783@linuxfoundation.org>
-User-Agent: quilt/0.66
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1344FC43391;
+        Mon, 12 Oct 2020 13:33:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1344FC43391
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+Subject: Re: [2/2] drm/msm: Add support for GPU cooling
+To:     mka@chromium.org
+Cc:     freedreno@lists.freedesktop.org, robh@kernel.org,
+        robdclark@gmail.com, linux-arm-msm@vger.kernel.org,
+        dri-devel@freedesktop.org, linux-kernel@vger.kernel.org
+References: <1602176947-17385-2-git-send-email-akhilpo@codeaurora.org>
+ <20201009183640.GB1292413@google.com>
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+Message-ID: <cab2105e-7a8c-988f-dcc1-056692a94e8b@codeaurora.org>
+Date:   Mon, 12 Oct 2020 19:03:51 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201009183640.GB1292413@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cong Wang <xiyou.wangcong@gmail.com>
+On 10/10/2020 12:06 AM, mka@chromium.org wrote:
+> Hi Akhil,
+> 
+> On Thu, Oct 08, 2020 at 10:39:07PM +0530, Akhil P Oommen wrote:
+>> Register GPU as a devfreq cooling device so that it can be passively
+>> cooled by the thermal framework.
+>>
+>> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+>> ---
+>>   drivers/gpu/drm/msm/msm_gpu.c | 13 ++++++++++++-
+>>   drivers/gpu/drm/msm/msm_gpu.h |  2 ++
+>>   2 files changed, 14 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
+>> index 55d1648..93ffd66 100644
+>> --- a/drivers/gpu/drm/msm/msm_gpu.c
+>> +++ b/drivers/gpu/drm/msm/msm_gpu.c
+>> @@ -14,6 +14,7 @@
+>>   #include <generated/utsrelease.h>
+>>   #include <linux/string_helpers.h>
+>>   #include <linux/devfreq.h>
+>> +#include <linux/devfreq_cooling.h>
+>>   #include <linux/devcoredump.h>
+>>   #include <linux/sched/task.h>
+>>   
+>> @@ -107,9 +108,18 @@ static void msm_devfreq_init(struct msm_gpu *gpu)
+>>   	if (IS_ERR(gpu->devfreq.devfreq)) {
+>>   		DRM_DEV_ERROR(&gpu->pdev->dev, "Couldn't initialize GPU devfreq\n");
+>>   		gpu->devfreq.devfreq = NULL;
+>> +		return;
+>>   	}
+>>   
+>>   	devfreq_suspend_device(gpu->devfreq.devfreq);
+>> +
+>> +	gpu->cooling = of_devfreq_cooling_register(gpu->pdev->dev.of_node,
+>> +			gpu->devfreq.devfreq);
+>> +	if (IS_ERR(gpu->cooling)) {
+>> +		DRM_DEV_ERROR(&gpu->pdev->dev,
+>> +				"Couldn't register GPU cooling device\n");
+>> +		gpu->cooling = NULL;
+>> +	}
+>>   }
+>>   
+>>   static int enable_pwrrail(struct msm_gpu *gpu)
+>> @@ -926,7 +936,6 @@ int msm_gpu_init(struct drm_device *drm, struct platform_device *pdev,
+>>   
+>>   	msm_devfreq_init(gpu);
+>>   
+>> -
+>>   	gpu->aspace = gpu->funcs->create_address_space(gpu, pdev);
+>>   
+>>   	if (gpu->aspace == NULL)
+>> @@ -1005,4 +1014,6 @@ void msm_gpu_cleanup(struct msm_gpu *gpu)
+>>   		gpu->aspace->mmu->funcs->detach(gpu->aspace->mmu);
+>>   		msm_gem_address_space_put(gpu->aspace);
+>>   	}
+>> +
+>> +	devfreq_cooling_unregister(gpu->cooling);
+> 
+> Resources should be released in reverse order, otherwise the cooling device
+> could use resources that have already been freed.
+> Why do you think this is not the correct order? If you are thinking 
+about devfreq struct, it is managed device resource.
 
-commit 0fedc63fadf0404a729e73a35349481c8009c02f upstream.
-
-syzbot is able to trigger a failure case inside the loop in
-tcf_action_init(), and when this happens we clean up with
-tcf_action_destroy(). But, as these actions are already inserted
-into the global IDR, other parallel process could free them
-before tcf_action_destroy(), then we will trigger a use-after-free.
-
-Fix this by deferring the insertions even later, after the loop,
-and committing all the insertions in a separate loop, so we will
-never fail in the middle of the insertions any more.
-
-One side effect is that the window between alloction and final
-insertion becomes larger, now it is more likely that the loop in
-tcf_del_walker() sees the placeholder -EBUSY pointer. So we have
-to check for error pointer in tcf_del_walker().
-
-Reported-and-tested-by: syzbot+2287853d392e4b42374a@syzkaller.appspotmail.com
-Fixes: 0190c1d452a9 ("net: sched: atomically check-allocate action")
-Cc: Vlad Buslov <vladbu@mellanox.com>
-Cc: Jamal Hadi Salim <jhs@mojatatu.com>
-Cc: Jiri Pirko <jiri@resnulli.us>
-Signed-off-by: Cong Wang <xiyou.wangcong@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- net/sched/act_api.c |   32 +++++++++++++++++++++++---------
- 1 file changed, 23 insertions(+), 9 deletions(-)
-
---- a/net/sched/act_api.c
-+++ b/net/sched/act_api.c
-@@ -307,6 +307,8 @@ static int tcf_del_walker(struct tcf_idr
- 
- 	mutex_lock(&idrinfo->lock);
- 	idr_for_each_entry_ul(idr, p, tmp, id) {
-+		if (IS_ERR(p))
-+			continue;
- 		ret = tcf_idr_release_unsafe(p);
- 		if (ret == ACT_P_DELETED) {
- 			module_put(ops->owner);
-@@ -891,14 +893,24 @@ static const struct nla_policy tcf_actio
- 	[TCA_ACT_HW_STATS]	= NLA_POLICY_BITFIELD32(TCA_ACT_HW_STATS_ANY),
- };
- 
--static void tcf_idr_insert(struct tc_action *a)
-+static void tcf_idr_insert_many(struct tc_action *actions[])
- {
--	struct tcf_idrinfo *idrinfo = a->idrinfo;
-+	int i;
- 
--	mutex_lock(&idrinfo->lock);
--	/* Replace ERR_PTR(-EBUSY) allocated by tcf_idr_check_alloc */
--	WARN_ON(!IS_ERR(idr_replace(&idrinfo->action_idr, a, a->tcfa_index)));
--	mutex_unlock(&idrinfo->lock);
-+	for (i = 0; i < TCA_ACT_MAX_PRIO; i++) {
-+		struct tc_action *a = actions[i];
-+		struct tcf_idrinfo *idrinfo;
-+
-+		if (!a)
-+			continue;
-+		idrinfo = a->idrinfo;
-+		mutex_lock(&idrinfo->lock);
-+		/* Replace ERR_PTR(-EBUSY) allocated by tcf_idr_check_alloc if
-+		 * it is just created, otherwise this is just a nop.
-+		 */
-+		idr_replace(&idrinfo->action_idr, a, a->tcfa_index);
-+		mutex_unlock(&idrinfo->lock);
-+	}
- }
- 
- struct tc_action *tcf_action_init_1(struct net *net, struct tcf_proto *tp,
-@@ -995,9 +1007,6 @@ struct tc_action *tcf_action_init_1(stru
- 		return ERR_PTR(-EINVAL);
- 	}
- 
--	if (err == ACT_P_CREATED)
--		tcf_idr_insert(a);
--
- 	if (!name && tb[TCA_ACT_COOKIE])
- 		tcf_set_action_cookie(&a->act_cookie, cookie);
- 
-@@ -1053,6 +1062,11 @@ int tcf_action_init(struct net *net, str
- 		actions[i - 1] = act;
- 	}
- 
-+	/* We have to commit them all together, because if any error happened in
-+	 * between, we could not handle the failure gracefully.
-+	 */
-+	tcf_idr_insert_many(actions);
-+
- 	*attr_size = tcf_action_full_attrs_size(sz);
- 	return i - 1;
- 
-
-
+-Akhil
