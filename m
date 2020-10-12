@@ -2,63 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD2B028B38B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 13:14:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E593528B399
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 13:18:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387977AbgJLLOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 07:14:30 -0400
-Received: from mail.ispras.ru ([83.149.199.84]:53590 "EHLO mail.ispras.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387597AbgJLLOa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 07:14:30 -0400
-Received: from monopod.intra.ispras.ru (unknown [10.10.3.121])
-        by mail.ispras.ru (Postfix) with ESMTPS id 9227140D4004;
-        Mon, 12 Oct 2020 11:14:27 +0000 (UTC)
-Date:   Mon, 12 Oct 2020 14:14:27 +0300 (MSK)
-From:   Alexander Monakov <amonakov@ispras.ru>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-cc:     Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Subject: Re: [PATCH] intel_idle: mention assumption that wbinvd is not
- needed
-In-Reply-To: <CAJZ5v0iFj0s=ZNrLnBxQ34uUnn2NQ6bH+oriyNWrFu-g8HGfUg@mail.gmail.com>
-Message-ID: <alpine.LNX.2.20.13.2010121410490.15808@monopod.intra.ispras.ru>
-References: <20201010221806.2106-1-amonakov@ispras.ru> <CAJZ5v0iFj0s=ZNrLnBxQ34uUnn2NQ6bH+oriyNWrFu-g8HGfUg@mail.gmail.com>
-User-Agent: Alpine 2.20.13 (LNX 116 2015-12-14)
+        id S2387984AbgJLLSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 07:18:16 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2969 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2387681AbgJLLSO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 07:18:14 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id DACD698E2956841DAB43;
+        Mon, 12 Oct 2020 12:18:12 +0100 (IST)
+Received: from [127.0.0.1] (10.47.8.38) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 12 Oct
+ 2020 12:18:11 +0100
+Subject: Re: [PATCH] perf jevents: Fix event code for events referencing std
+ arch events
+To:     Jiri Olsa <jolsa@redhat.com>
+CC:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <namhyung@kernel.org>, <kjain@linux.ibm.com>, <irogers@google.com>,
+        <yao.jin@linux.intel.com>, <yeyunfeng@huawei.com>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        <=linux-arm-kernel@lists.infradead.org>
+References: <1602170368-11892-1-git-send-email-john.garry@huawei.com>
+ <20201012105430.GH1099489@krava>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <5b0aefe2-e0d5-b5ff-654c-4e93c427050f@huawei.com>
+Date:   Mon, 12 Oct 2020 12:15:04 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20201012105430.GH1099489@krava>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.8.38]
+X-ClientProxiedBy: lhreml711-chm.china.huawei.com (10.201.108.62) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Oct 2020, Rafael J. Wysocki wrote:
+On 12/10/2020 11:54, Jiri Olsa wrote:
+>> ff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
+>> index 99df41a9543d..e47644cab3fa 100644
+>> --- a/tools/perf/pmu-events/jevents.c
+>> +++ b/tools/perf/pmu-events/jevents.c
+>> @@ -505,20 +505,15 @@ static char *real_event(const char *name, char *event)
+>>   }
+>>   
+>>   static int
+>> -try_fixup(const char *fn, char *arch_std, unsigned long long eventcode,
+>> -	  struct json_event *je)
+>> +try_fixup(const char *fn, char *arch_std, struct json_event *je, char **event)
+>>   {
+>>   	/* try to find matching event from arch standard values */
+>>   	struct event_struct *es;
+>>   
+>>   	list_for_each_entry(es, &arch_std_events, list) {
+>>   		if (!strcmp(arch_std, es->name)) {
+>> -			if (!eventcode && es->event) {
+>> -				/* allow EventCode to be overridden */
+>> -				free(je->event);
+>> -				je->event = NULL;
+>> -			}
+>>   			FOR_ALL_EVENT_STRUCT_FIELDS(TRY_FIXUP_FIELD);
+>> +			*event = je->event;
+> I'm bit rusty on this code, 
+> but isn't je->event NULL at this point?
 
-> > @@ -20,7 +20,11 @@
-> >   * All CPUs have same idle states as boot CPU
-> >   *
-> >   * Chipset BM_STS (bus master status) bit is a NOP
-> > - *     for preventing entry into deep C-stats
-> > + *     for preventing entry into deep C-states
-> > + *
-> > + * CPU will flush caches as needed when entering a C-state via MWAIT
-> 
-> I would rephrase this to mention that the above actually is an assumption.
+je->event should be now assigned from es->event because of 
+FOR_ALL_EVENT_STRUCT_FIELDS(TRY_FIXUP_FIELD):
 
-This comment block is by itself a list of assumptions. It begins with heading
-"Design Assumptions" and then lists two assumptions. This patch adds a third
-one.
+#define TRY_FIXUP_FIELD(field) do { if (es->field && !*field) {\
+	*field = strdup(es->field);				\
+	if (!*field)						\
+		return -ENOMEM;					\
+} } while (0)
 
-With that clarified, do you still need me to change this hunk?
+And es->event should be set.
 
-> 
-> > + *     (in contrast to entering ACPI C3, where acpi_idle driver is
-> 
-> And mentioning acpi_idle here is not needed; it would be sufficient to
-> say something like "in which case the WBINVD instruction needs to be
-> executed to flush the caches".
-
-I see, thanks, I will change this for v2 once the above is cleared up.
-
-Thanks.
-Alexander
+Thanks,
+John
