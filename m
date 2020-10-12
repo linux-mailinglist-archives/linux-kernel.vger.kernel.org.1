@@ -2,31 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35AFE28BB07
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:45:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC88328BB09
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:46:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389019AbgJLOpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:45:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55328 "EHLO mail.kernel.org"
+        id S2389015AbgJLOqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:46:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388646AbgJLOpL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 10:45:11 -0400
+        id S2388646AbgJLOqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 10:46:17 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BB7ED20776;
-        Mon, 12 Oct 2020 14:45:10 +0000 (UTC)
-Date:   Mon, 12 Oct 2020 10:45:09 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id F1EEF20776;
+        Mon, 12 Oct 2020 14:46:15 +0000 (UTC)
+Date:   Mon, 12 Oct 2020 10:46:14 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Enderborg, Peter" <Peter.Enderborg@sony.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>
-Subject: Re: [PATCH] trace: Return ENOTCONN instead of EBADF
-Message-ID: <20201012104509.6ae404d5@gandalf.local.home>
-In-Reply-To: <55b99d8d-f75a-e095-63fa-3d5df8b77f1b@sony.com>
-References: <20201012082642.1394-1-peter.enderborg@sony.com>
-        <20201012095324.78996fd2@gandalf.local.home>
-        <55b99d8d-f75a-e095-63fa-3d5df8b77f1b@sony.com>
+To:     Tom Zanussi <zanussi@kernel.org>
+Cc:     Axel Rasmussen <axelrasmussen@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michel Lespinasse <walken@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Jann Horn <jannh@google.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v3 1/2] tracing: support "bool" type in synthetic trace
+ events
+Message-ID: <20201012104614.25ea97bc@gandalf.local.home>
+In-Reply-To: <43b10ad23a80ee5ae9f10b6d47d7944b6b14a25d.camel@kernel.org>
+References: <20201009220524.485102-1-axelrasmussen@google.com>
+        <20201009220524.485102-2-axelrasmussen@google.com>
+        <20201012101527.6df53dda@gandalf.local.home>
+        <43b10ad23a80ee5ae9f10b6d47d7944b6b14a25d.camel@kernel.org>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -35,57 +46,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Oct 2020 14:26:48 +0000
-"Enderborg, Peter" <Peter.Enderborg@sony.com> wrote:
+On Mon, 12 Oct 2020 09:26:13 -0500
+Tom Zanussi <zanussi@kernel.org> wrote:
 
-> On 10/12/20 3:53 PM, Steven Rostedt wrote:
-> > On Mon, 12 Oct 2020 10:26:42 +0200
-> > Peter Enderborg <peter.enderborg@sony.com> wrote:
-> >  
-> >> When there is no clients listening on event the trace return
-> >> EBADF. The file is not a bad file descriptor and to get the
-> >> userspace able to do a proper error handling it need a different
-> >> error code that separate a bad file descriptor from a empty listening.  
-> > I have no problem with this patch, but your description is incorrect. And
-> > before making this change, I want to make sure that what you think is
-> > happening is actually happening.
-> >
-> > This has nothing to do with "clients listening". This happens when the ring
-> > buffer is disabled for some reason. The most likely case of this happening
-> > is if someone sets /sys/kernel/tracing/tracing_on to zero.  
+> Hi Steve,
 > 
-> I see that as no one is listening. You start to listen by setting this tracing on
-> some instance, but that is for trace_pipe. Is it the same flag for raw access and all ways you
-> can invoke a trace?
-
-I don't know what you mean by "setting this tracing on some instance".
-
-When you boot up, who is listening? tracing_on is enabled. But there's no
-listener.
-
-
+> Looks ok to me.
 > 
-> Would
-> 
-> "When there is no instances listening on events the trace return
+> Acked-by: Tom Zanussi <zanussi@kernel.org>
 
-What instance are you talking about? What do you think needs to be
-listening. And no, trace_pipe plays zero role in this.
+Great!
 
-> EBADF, it is when the tracing_on is off globally. The file is not a bad file
-> descriptor and to get the userspace able to do a proper error handling it need a different
-> error code that separate a bad file descriptor from a empty listening."
-> 
-> be a ok?
-> 
+I'll pull this patch into my tree. It doesn't look like patch 2/2 is
+dependent on this and these two can go through different trees.
 
-No. Because I don't understand any of the above!
-
-There's no a producer / consumer here. It's a read / write enabled or
-disabled. If the ring buffer is disabled from write, and you try to write
-to the ring buffer, you get an error.
-
-Basically, it's the same analogy as trying to write to a read-only file.
-Perhaps the proper error is EPERM.
+Is everyone OK if I take this patch through my tree?
 
 -- Steve
