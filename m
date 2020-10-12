@@ -2,148 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB83A28BDEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD44128BE04
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404003AbgJLQ3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 12:29:15 -0400
-Received: from mga05.intel.com ([192.55.52.43]:7333 "EHLO mga05.intel.com"
+        id S2403929AbgJLQaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 12:30:35 -0400
+Received: from foss.arm.com ([217.140.110.172]:56626 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403778AbgJLQ2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 12:28:40 -0400
-IronPort-SDR: oKfo37Fz351a3BR2Kz24NLdo8V0LNzfiRTEDwG3dAnum11rVSc8LByfTgerpBbE8JoydgYl+0f
- TJ4UnHwnbotA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="250460933"
-X-IronPort-AV: E=Sophos;i="5.77,367,1596524400"; 
-   d="scan'208";a="250460933"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 09:28:33 -0700
-IronPort-SDR: lpVqfUJ9kdOGINFzSz3Rb/+voVruUqKl5QXBieW8JLewmkz3mmd/w7cERQhz4kzL6b3gTh7T5C
- 5oHwexl8ugkg==
-X-IronPort-AV: E=Sophos;i="5.77,367,1596524400"; 
-   d="scan'208";a="355847059"
-Received: from soumyaka-mobl.amr.corp.intel.com (HELO [10.212.101.39]) ([10.212.101.39])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 09:28:30 -0700
-Subject: Re: [PATCH RFC PKS/PMEM 22/58] fs/f2fs: Utilize new kmap_thread()
-To:     Eric Biggers <ebiggers@kernel.org>, Ira Weiny <ira.weiny@intel.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, linux-aio@kvack.org,
-        linux-efi@vger.kernel.org, kvm@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mmc@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
-        target-devel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-kselftest@vger.kernel.org, samba-technical@lists.samba.org,
-        ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com,
-        devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
-        linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org,
-        x86@kernel.org, amd-gfx@lists.freedesktop.org,
-        linux-afs@lists.infradead.org, cluster-devel@redhat.com,
-        linux-cachefs@redhat.com, intel-wired-lan@lists.osuosl.org,
-        xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org,
-        Fenghua Yu <fenghua.yu@intel.com>, ecryptfs@vger.kernel.org,
-        linux-um@lists.infradead.org, intel-gfx@lists.freedesktop.org,
-        linux-erofs@lists.ozlabs.org, reiserfs-devel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        io-uring@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-ntfs-dev@lists.sourceforge.net, netdev@vger.kernel.org,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org
-References: <20201009195033.3208459-1-ira.weiny@intel.com>
- <20201009195033.3208459-23-ira.weiny@intel.com>
- <20201009213434.GA839@sol.localdomain>
- <20201010003954.GW20115@casper.infradead.org>
- <20201010013036.GD1122@sol.localdomain>
- <20201012065635.GB2046448@iweiny-DESK2.sc.intel.com>
- <20201012161946.GA858@sol.localdomain>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <5d621db9-23d4-e140-45eb-d7fca2093d2b@intel.com>
-Date:   Mon, 12 Oct 2020 09:28:29 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2390612AbgJLQaf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 12:30:35 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A20EE31B;
+        Mon, 12 Oct 2020 09:30:34 -0700 (PDT)
+Received: from localhost (unknown [10.1.199.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 442E73F719;
+        Mon, 12 Oct 2020 09:30:34 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 17:30:32 +0100
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Nicola Mazzucato <nicola.mazzucato@arm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        vireshk@kernel.org, daniel.lezcano@linaro.org, rjw@rjwysocki.net,
+        linux-kernel@vger.kernel.org, sudeep.holla@arm.com,
+        chris.redpath@arm.com, morten.rasmussen@arm.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 2/2] [RFC] CPUFreq: Add support for
+ cpu-perf-dependencies
+Message-ID: <20201012163032.GA30838@arm.com>
+References: <2417d7b5-bc58-fa30-192c-e5991ec22ce0@arm.com>
+ <20201008110241.dcyxdtqqj7slwmnc@vireshk-i7>
+ <20201008150317.GB20268@arm.com>
+ <56846759-e3a6-9471-827d-27af0c3d410d@arm.com>
+ <20201009053921.pkq4pcyrv4r7ylzu@vireshk-i7>
+ <42e3c8e9-cadc-d013-1e1f-fa06af4a45ff@arm.com>
+ <20201009140141.GA4048593@bogus>
+ <2b7b6486-2898-1279-ce9f-9e7bd3512152@arm.com>
+ <20201012105945.GA9219@arm.com>
+ <500510b9-58f3-90b3-8c95-0ac481d468b5@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20201012161946.GA858@sol.localdomain>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <500510b9-58f3-90b3-8c95-0ac481d468b5@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/20 9:19 AM, Eric Biggers wrote:
-> On Sun, Oct 11, 2020 at 11:56:35PM -0700, Ira Weiny wrote:
->>> And I still don't really understand.  After this patchset, there is still code
->>> nearly identical to the above (doing a temporary mapping just for a memcpy) that
->>> would still be using kmap_atomic().
->> I don't understand.  You mean there would be other call sites calling:
->>
->> kmap_atomic()
->> memcpy()
->> kunmap_atomic()
-> Yes, there are tons of places that do this.  Try 'git grep -A6 kmap_atomic'
-> and look for memcpy().
+Hi Lukasz,
+
+On Monday 12 Oct 2020 at 14:48:20 (+0100), Lukasz Luba wrote:
 > 
-> Hence why I'm asking what will be the "recommended" way to do this...
-> kunmap_thread() or kmap_atomic()?
+> 
+> On 10/12/20 11:59 AM, Ionela Voinescu wrote:
+> > On Monday 12 Oct 2020 at 11:22:57 (+0100), Lukasz Luba wrote:
+> > [..]
+> > > > > I thought about it and looked for other platforms' DT to see if can reuse
+> > > > > existing opp information. Unfortunately I don't think it is optimal. The reason
+> > > > > being that, because cpus have the same opp table it does not necessarily mean
+> > > > > that they share a clock wire. It just tells us that they have the same
+> > > > > capabilities (literally just tells us they have the same V/f op points).
+> > > > > Unless I am missing something?
+> > > > > 
+> > > > > When comparing with ACPI/_PSD it becomes more intuitive that there is no
+> > > > > equivalent way to reveal "perf-dependencies" in DT.
+> > > > 
+> > > > You should be able to by examining the clock tree. But perhaps SCMI
+> > > > abstracts all that and just presents virtual clocks without parent
+> > > > clocks available to determine what clocks are shared? Fix SCMI if that's
+> > > > the case.
+> > > 
+> > > True, the SCMI clock does not support discovery of clock tree:
+> > > (from 4.6.1 Clock management protocol background)
+> > > 'The protocol does not cover discovery of the clock tree, which must be
+> > > described through firmware tables instead.' [1]
+> > > 
+> > > In this situation, would it make sense, instead of this binding from
+> > > patch 1/2, create a binding for internal firmware/scmi node?
+> > > 
+> > > Something like:
+> > > 
+> > > firmware {
+> > > 	scmi {
+> > > 	...		
+> > > 		scmi-perf-dep {
+> > > 			compatible = "arm,scmi-perf-dependencies";
+> > > 			cpu-perf-dep0 {
+> > > 				cpu-perf-affinity = <&CPU0>, <&CPU1>;
+> > > 			};
+> > > 			cpu-perf-dep1 {
+> > > 				cpu-perf-affinity = <&CPU3>, <&CPU4>;
+> > > 			};
+> > > 			cpu-perf-dep2 {
+> > > 				cpu-perf-affinity = <&CPU7>;
+> > > 			};
+> > > 		};
+> > > 	};
+> > > };
+> > > 
+> > > The code which is going to parse the binding would be inside the
+> > > scmi perf protocol code and used via API by scmi-cpufreq.c.
+> > > 
+> > 
+> > While SCMI cpufreq would be able to benefit from the functionality that
+> > Nicola is trying to introduce, it's not the only driver, and more
+> > importantly, it's not *going* to be the only driver benefiting from
+> > this.
+> > 
+> > Currently there is also qcom-cpufreq-hw.c and the future
+> > mediatek-cpufreq-hw.c that is currently under review [1]. They both do
+> > their frequency setting by interacting with HW/FW, and could either take
+> > or update their OPP tables from there. Therefore, if the platform would
+> > require it, they could also expose different controls for frequency
+> > setting and could benefit from additional information about clock
+> > domains (either through opp-shared or the new entries in Nicola's patch),
+> > without driver changes.
+> > 
+> > Another point to be made is that I strongly believe this is going to be
+> > the norm in the future. Directly setting PLLs and regulator voltages
+> > has been proven unsafe and unsecure.
+> > 
+> > Therefore, I see this as support for a generic cpufreq feature (a
+> > hardware coordination type), rather than support for a specific driver.
+> > 
+> > [1] https://lkml.org/lkml/2020/9/10/11
+> > 
+> > > 
+> > > Now regarding the 'dependent_cpus' mask.
+> > > 
+> > > We could avoid adding a new field 'dependent_cpus' in policy
+> > > struct, but I am not sure of one bit - Frequency Invariant Engine,
+> > > (which is also not fixed by just adding a new cpumask).
+> >    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> >    Let's take it step by step..
+> > > 
+> > > We have 3 subsystems to fix:
+> > > 1. EAS - EM has API function which takes custom cpumask, so no issue,
+> >             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> > 	   keep in mind that EAS it's using the max aggregation method
+> > 	   that schedutil is using. So if we are to describe the
+> > 	   functionality correctly, it needs both a cpumask describing
+> > 	   the frequency domains and an aggregation method.
+> 
+> EAS does not use schedutil max agregation, it calculates max_util
+> internally.
+> 
 
-kmap_atomic() is always preferred over kmap()/kmap_thread().
-kmap_atomic() is _much_ more lightweight since its TLB invalidation is
-always CPU-local and never broadcast.
+But isn't it the same logic mechanism that schedutil uses?
 
-So, basically, unless you *must* sleep while the mapping is in place,
-kmap_atomic() is preferred.
+> The compute_energy() loops through the CPUs in the domain and
+> takes the utilization from them via schedutil_cpu_util(cpu_rq(cpu)).
+> It figures out max_util and then em_cpu_energy() maps it to next
+  ^^^^^^^^^^^^^^^^^^^^^^^
 
+Same for schedutil: sugov_next_freq_shared() calls sugov_get_util()
+which then calls schedutil_cpu_util().
+
+If your point is that one is applying the max function in compute_energy()
+while the other is doing it in sugov_next_freq_shared(), I'll re-enforce
+my argument that they are logically doing the same *type* of
+aggregation. EAS is relying on it and schedutil was purposely modified
+for this purpose:
+
+938e5e4b0d15  sched/cpufreq: Prepare schedutil for Energy Aware
+Scheduling
+
+> frequency for the cluster. It just needs proper utilization from
+> CPUs, which is taken from run-queues, which is a sum of utilization
+> of tasks being there. This leads to problem how we account utilization
+> of a task. This is the place where the FIE is involved. EAS assumes the
+> utilization is calculated properly.
+
+This is separate. Above we were discussing the aggregation method and
+what CPUs this is applied on. I'll continue on FIE below.
+
+> > 
+> > >    fix would be to use it via the scmi-cpufreq.c
+> > 
+> > > 2. IPA (for calculating the power of a cluster, not whole thermal needs
+> > >    this knowledge about 'dependent cpus') - this can be fixed internally
+> > 
+> > > 3. Frequency Invariant Engine (FIE) - currently it relies on schedutil
+> > >    filtering and providing max freq of all cpus in the cluster into the
+> > >    FIE; this info is then populated to all 'related_cpus' which will
+> > >    have this freq (we know, because there is no other freq requests);
+> > >    Issues:
+> > > 3.1. Schedutil is not going to check all cpus in the cluster to take
+> > >    max freq, which is then passed into the cpufreq driver and FIE
+> > > 3.2. FIE would have to (or maybe we would drop it) have a logic similar
+> > >    to what schedutil does (max freq search and set, then filter next
+> > >    freq requests from other cpus in the next period e.g. 10ms)
+> > > 3.3. Schedutil is going to invoke freq change for each cpu independently
+> > >    and the current code just calls arch_set_freq_scale() - adding just
+> > >    'dependent_cpus' won't help
+> > 
+> > I don't believe these are issues. As we need changes for EAS and IPA, we'd
+> > need changes for FIE. We don't need more than the cpumask that shows
+> > frequency domains as we already already have the aggregation method that
+> > schedutil uses to propagate the max frequency in a domain across CPUs.
+> 
+> Schedutil is going to work in !policy_is_shared() mode, which leads to
+> sugov_update_single() being the 'main' function. We won't have
+> schedutil goodness which is handling related_cpus use case.
+> 
+
+Agreed! I did not mean that I'd rely on schedutil to do the aggregation
+and hand me the answer. But my suggestion is to use the same logical
+method - maximum, for cases where counters are not present.
+
+> Then in software FIE would you just change the call from:
+> 	arch_set_freq_scale(policy->related_cpus,...)
+> to:
+> 	arch_set_freq_scale(policy->dependent_cpus,...)
+> ?
+> 
+> This code would be called from any CPU (without filtering) and it
+> would loop through cpumask updating freq_scale, which is wrong IMO.
+> You need some 'logic', which is not currently in there.
+> 
+
+Definitely! But that's because the FIE changes above are incomplete.
+That's why whomever does these changes should go beyond:
+s/related_cpus/dependent_cpus.
+
+We don't need more information from DT additional to this dependent_cpus
+maks, but it does not mean the end solution for making use of it will be
+a simple "s/related_cpus/dependent_cpus".
+
+> Leaving the 'related_cpus' would also be wrong (because real CPU
+> frequency is different, so we would account task utilization wrongly).
+> 
+> > 
+> > This would be the default method if cycle counters are not present. It
+> > might not reflect the frequency the cores actually get from HW, but for
+> > that cycle counters should be used.
+> 
+> IMHO the configurations with per-cpu freq requests while there are CPUs
+> 'dependent' and there are no HW counters to use for tasks
+> utilization accounting - should be blocked. Then we don't need
+> 'dependent_cpus' in software FIE. Then one less from your requirements
+> list for new cpumask.
+> 
+
+I'd go for a default.. better have something than removing it
+altogether, but we'll see.
+
+I'll stop this here as I think we're distracting a bit from the main
+purpose of this RFC. I don't believe FIE brings an additional
+requirement. "Software" FIE will need fixing/optimizing/bypassing
+(we'll agree later on the implementation) but it does not need anything
+else from DT/ACPI.
+
+Thank you,
+Ionela.
+
+> > 
+> > > 3.4 What would be the real frequency of these cpus and what would be
+> > >    set to FIE
+> > > 3.5 FIE is going to filter to soon requests from other dependent cpus?
+> > > 
+> > > IMHO the FIE needs more bits than just a new cpumask.
+> > > Maybe we should consider to move FIE arch_set_freq_scale() call into the
+> > > cpufreq driver, which will know better how to aggregate/filter requests
+> > > and then call FIE update?
+> > 
+> > I'm quite strongly against this :). As described before, this is not a
+> > feature that a single driver needs, and even if it was, the aggregation
+> > method for FIE is not a driver policy.
+> 
+> Software version of FIE has issues in this case, schedutil or EAS won't
+> help (different code path).
+> 
+> Regards,
+> Lukasz
