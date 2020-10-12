@@ -2,119 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F14028C025
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 20:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C4B928C10C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 21:08:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730844AbgJLS7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 14:59:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52376 "EHLO
+        id S2391557AbgJLTIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 15:08:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730787AbgJLS7p (ORCPT
+        with ESMTP id S2391699AbgJLTI0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 14:59:45 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3431C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 11:59:44 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id f19so14366157pfj.11
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 11:59:44 -0700 (PDT)
+        Mon, 12 Oct 2020 15:08:26 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3196EC0613D7
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 12:08:22 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id 1so3294254ple.2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 12:08:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XdWH9D9M3/U9qxVAleAUiYrGS3wE2xPiVDjiH/su/+M=;
-        b=qRsaQDlKwkVRsOu5VN5rMGyty+hbdZMaLwM/L1PjRUHFc52xtzXjVsz3FGbPxZQvaD
-         F7znPPdLv9DSUL5A3cAcmm3/sC6YxvbAZysY5UV4KXSrrc5OLjpcML4I+lEgY5CLHUwf
-         3wYxkWDqsENblUt2EkWv5aCAYbLF9ybGtbvn9Eakx0ufjX6f0LROr+iWA+5sXemXXCrv
-         /7Z4TBx1W7BjPHpgIjBItVc+w6dYfCxbJomNRbDB/JQGMbV/fFqx3hhdLUmht/3RKAM0
-         gKScA1ZdHvMa6rrt54P0PYg8nM2Vu9JjDgrAGBrBdRhZ8Y+8fWcNNicKHU069E5fKoeJ
-         h4mw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=zW/ankKb/VemIvdGEdb5qHcmtQbdYR++io0wzUbX+nA=;
+        b=b9GVLTZcD8hI5Pa0lYQpQysftTjixmM5ALJCTVZvP5J6ZHy41IBA9DS+ExAop9sM59
+         /LI3g52m0l+5VzqiQoyp/GweRshZlzeOPSbmksxJs4frRcBz563P7Hec6N+xDpK8wq+d
+         8xnCF3fbAxMWBnCbEkJvn0BBQoFar7dwIhn8ikDQXXO6Vm48qVc2p2zBMDfvrYB1pBvd
+         8PHewJl4Z3+FanYnqYBnnSJSz8LkIn2FLP6yvyON8BXeiu/kOnbn/7M7p8zzIz3APhND
+         KQDqJ4CgOxP2NtEakj4BLHA+jT1Fo6XhGwquEEKFbUb19sahC8pEf5jRxYeEzDJSBFqt
+         SoBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XdWH9D9M3/U9qxVAleAUiYrGS3wE2xPiVDjiH/su/+M=;
-        b=dG8Q6j657+AC8xcBos19yWFIkbgOkqCDiNT5cCVJ4MbgI1kULs2xISIfqOpYYo57vg
-         Idtkt1rx6k+hPpqE/FzvhJ5J+GK0gtsm1pNnPvG5yxSodi7SkXnf/vQe10JxryENj/lI
-         /FTjyWlyQ6LchIjLnlxOQyvcAteYxT19xUz4E/GdIYmic204Yaa194OsPyGiis92dKAB
-         zyZVrZ+eEhOHW210LVALfi4iTNHafLsi8LzdfHaiEpf1wPL8a7/tK9lX5uFx8enOzrTW
-         zSL4kmSFy6XTUtlm0a7KEQQGmpRmy3Rhv/fzLOtjERsoUHkTlHXIvVhZD9eBV+o8ZlS1
-         X1Sg==
-X-Gm-Message-State: AOAM531rojJnwubZEpT3GjRnNNXbEvhYf3n5dYocG8j0Q5o2JaTPYGaM
-        PsswVaI9NKWEFZ/fsY60COpaEB3ucl5t6qYSQs53yA==
-X-Google-Smtp-Source: ABdhPJz1IQDkXAJH3Ol4Ru15l2xlErlBPjjgPdwZufZsOzipmONg/Wto5Z1aTHyNCIPXWyDlVyXW5RTXdoeTeypKpyA=
-X-Received: by 2002:a17:90a:6b04:: with SMTP id v4mr21936098pjj.101.1602529184203;
- Mon, 12 Oct 2020 11:59:44 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=zW/ankKb/VemIvdGEdb5qHcmtQbdYR++io0wzUbX+nA=;
+        b=iyGIvsH7+0rsB4hcCheDlJ8zPBIhmJNkpXcxTB/FnhXYkWynADWE+FF+x/Gt1D9yYd
+         fFkCrVthnyTW7TMUakBG3CYkWa9vpbxmvaX2FrexAtDW9KJ2CgOLf4cOkB5f8CQ1Htlw
+         bgVubO4jLPXaWoDwjpiLZXaqOY7CtlUCGt/yCQpG/g+8bC2wW/jJPUwQNyqkyJ7jBuQC
+         Q4C+0qpsmfqobglZwm7DX9FGNo7g7nG+SNpmR4UU2NSgANdbQtLwu3G5g0UG0V2C1VWj
+         0d+ln8RBWOxnwD7+jd7oyT7WkxS2qS5OfakplHlbjKc8LRVAANc7ukolB41caNDQA+Dl
+         eF5Q==
+X-Gm-Message-State: AOAM532het1C4+rUDn6tSQoJzT5Kt4boZC36nqy2vDTPtLR+1Zq49N6a
+        S3HupEyKzWXKt3iAxQ1eir0=
+X-Google-Smtp-Source: ABdhPJz+f2A+tX5w9xGTOqmWei3lNZIF6S21G/3LO8dmNxWD06QmSquO6fSjKsvwO4qBcjZBFkHdiw==
+X-Received: by 2002:a17:902:6845:b029:d4:d1d5:2139 with SMTP id f5-20020a1709026845b02900d4d1d52139mr9524779pln.53.1602529701706;
+        Mon, 12 Oct 2020 12:08:21 -0700 (PDT)
+Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id r6sm16945719pfg.85.2020.10.12.12.08.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 12 Oct 2020 12:08:21 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 12:00:38 -0700
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     timur@kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com,
+        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: fsl_spdif: Add support for higher sample rates
+Message-ID: <20201012190037.GB17643@Asurada-Nvidia>
+References: <1602492582-3558-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-References: <20201010215135.GB2666@wildebeest.org> <20201010220712.5352-1-mark@klomp.org>
- <CAP-5=fUT-1-CR-KMMsrpzgw9b3nBooeY05=YU9XKa5enO9SK+A@mail.gmail.com>
-In-Reply-To: <CAP-5=fUT-1-CR-KMMsrpzgw9b3nBooeY05=YU9XKa5enO9SK+A@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 12 Oct 2020 11:59:33 -0700
-Message-ID: <CAKwvOdnLrgVRmkXLK-OoQsDTcAMZx4RfrTQXEASnJVroAZBdkQ@mail.gmail.com>
-Subject: Re: [PATCH] Only add -fno-var-tracking-assignments workaround for old
- GCC versions.
-To:     Ian Rogers <irogers@google.com>
-Cc:     Mark Wielaard <mark@klomp.org>, Andi Kleen <andi@firstfloor.org>,
-        linux-toolchains@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "Phillips, Kim" <kim.phillips@amd.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1602492582-3558-1-git-send-email-shengjiu.wang@nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 10, 2020 at 3:57 PM Ian Rogers <irogers@google.com> wrote:
->
-> On Sat, Oct 10, 2020 at 3:08 PM Mark Wielaard <mark@klomp.org> wrote:
-> >
-> > Some old GCC versions between 4.5.0 and 4.9.1 might miscompile code
-> > with -fvar-tracking-assingments (which is enabled by default with -g -O2).
-> > commit 2062afb4f added -fno-var-tracking-assignments unconditionally to
-> > work around this. But newer versions of GCC no longer have this bug, so
-> > only add it for versions of GCC before 5.0.
-> >
-> > Signed-off-by: Mark Wielaard <mark@klomp.org>
->
-> Acked-by: Ian Rogers <irogers@google.com>
->
-> Thanks,
-> Ian
->
-> > ---
-> >  Makefile | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/Makefile b/Makefile
-> > index f84d7e4ca0be..4f4a9416a87a 100644
-> > --- a/Makefile
-> > +++ b/Makefile
-> > @@ -813,7 +813,9 @@ KBUILD_CFLAGS       += -ftrivial-auto-var-init=zero
-> >  KBUILD_CFLAGS  += -enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang
-> >  endif
-> >
-> > -DEBUG_CFLAGS   := $(call cc-option, -fno-var-tracking-assignments)
-> > +# Workaround https://gcc.gnu.org/bugzilla/show_bug.cgi?id=61801
-> > +# for old versions of GCC.
-> > +DEBUG_CFLAGS   := $(call cc-ifversion, -lt, 0500, $(call cc-option, -fno-var-tracking-assignments))
+Hi Shengjiu,
 
-Should this be wrapped in: `ifdef CONFIG_CC_IS_GCC`/`endif`?
+On Mon, Oct 12, 2020 at 04:49:42PM +0800, Shengjiu Wang wrote:
+> Add 88200Hz and 176400Hz sample rates support for TX.
+> Add 88200Hz, 176400Hz, 192000Hz sample rates support for RX.
+> 
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
 
-> >
-> >  ifdef CONFIG_DEBUG_INFO
-> >  ifdef CONFIG_DEBUG_INFO_SPLIT
-> > --
-> > 2.18.4
-> >
+Probably should put your own Signed-off at the bottom?
 
-
-
--- 
-Thanks,
-~Nick Desaulniers
+Anyway:
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
