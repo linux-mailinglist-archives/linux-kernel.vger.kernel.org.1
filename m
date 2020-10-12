@@ -2,41 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3781F28B9A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:04:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89C2828B947
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390630AbgJLOCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:02:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40116 "EHLO mail.kernel.org"
+        id S2389406AbgJLN7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:59:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731008AbgJLNiB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:38:01 -0400
+        id S2388819AbgJLNkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:40:19 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5146522280;
-        Mon, 12 Oct 2020 13:37:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7F5A72222F;
+        Mon, 12 Oct 2020 13:40:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509879;
-        bh=qjAjUT1EOq/LtcBgKckRAfwZ+DgXureRRbtoz4zHvm8=;
+        s=default; t=1602510018;
+        bh=2Nx3/OxOX057FxNjUTWL3n5+d+aTyHL7ZD2aZeSaif4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1iIHf4GJ/vduPKjn4fqCq2UARH0l7+ANQKq4wj9scAk6M5Zstc+3nsK62aeGr9tXg
-         52ZPuXiaq4wO3CgfqaFL91J/rCCXb3xVT3YyeDXA8/iDCtulrnEuSxQXsVA6cjaMtQ
-         52kDvZzElguAzuEIYl7ExqrcIjfpPFYbqJhRqyz8=
+        b=KjQCOFPKVX3hkSXXJOA8be1K1LezLy2QmMVo6jemir5QdvPVQAT/QwMcxxb4VbsZi
+         2LXbsjyBwoHZIRjflnOOkrhLI/GGUpANiFMzkdHxEgeKNWNp6FvvGeyEY199jBc22V
+         XjYnAtcHuRNNuIKIdy1cP9T1Fh6HR4srwhU6YBfw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Coly Li <colyli@suse.de>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Vicente Bergas <vicencb@gmail.com>
-Subject: [PATCH 4.14 68/70] mmc: core: dont set limits.discard_granularity as 0
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
+        David Daney <david.daney@cavium.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 38/49] mdio: fix mdio-thunder.c dependency & build error
 Date:   Mon, 12 Oct 2020 15:27:24 +0200
-Message-Id: <20201012132633.481704808@linuxfoundation.org>
+Message-Id: <20201012132631.204016121@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132630.201442517@linuxfoundation.org>
-References: <20201012132630.201442517@linuxfoundation.org>
+In-Reply-To: <20201012132629.469542486@linuxfoundation.org>
+References: <20201012132629.469542486@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,68 +48,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Coly Li <colyli@suse.de>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 4243219141b67d7c2fdb2d8073c17c539b9263eb ]
+[ Upstream commit 7dbbcf496f2a4b6d82cfc7810a0746e160b79762 ]
 
-In mmc_queue_setup_discard() the mmc driver queue's discard_granularity
-might be set as 0 (when card->pref_erase > max_discard) while the mmc
-device still declares to support discard operation. This is buggy and
-triggered the following kernel warning message,
+Fix build error by selecting MDIO_DEVRES for MDIO_THUNDER.
+Fixes this build error:
 
-WARNING: CPU: 0 PID: 135 at __blkdev_issue_discard+0x200/0x294
-CPU: 0 PID: 135 Comm: f2fs_discard-17 Not tainted 5.9.0-rc6 #1
-Hardware name: Google Kevin (DT)
-pstate: 00000005 (nzcv daif -PAN -UAO BTYPE=--)
-pc : __blkdev_issue_discard+0x200/0x294
-lr : __blkdev_issue_discard+0x54/0x294
-sp : ffff800011dd3b10
-x29: ffff800011dd3b10 x28: 0000000000000000 x27: ffff800011dd3cc4 x26: ffff800011dd3e18 x25: 000000000004e69b x24: 0000000000000c40 x23: ffff0000f1deaaf0 x22: ffff0000f2849200 x21: 00000000002734d8 x20: 0000000000000008 x19: 0000000000000000 x18: 0000000000000000 x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000 x14: 0000000000000394 x13: 0000000000000000 x12: 0000000000000000 x11: 0000000000000000 x10: 00000000000008b0 x9 : ffff800011dd3cb0 x8 : 000000000004e69b x7 : 0000000000000000 x6 : ffff0000f1926400 x5 : ffff0000f1940800 x4 : 0000000000000000 x3 : 0000000000000c40 x2 : 0000000000000008 x1 : 00000000002734d8 x0 : 0000000000000000 Call trace:
-__blkdev_issue_discard+0x200/0x294
-__submit_discard_cmd+0x128/0x374
-__issue_discard_cmd_orderly+0x188/0x244
-__issue_discard_cmd+0x2e8/0x33c
-issue_discard_thread+0xe8/0x2f0
-kthread+0x11c/0x120
-ret_from_fork+0x10/0x1c
----[ end trace e4c8023d33dfe77a ]---
+ld: drivers/net/phy/mdio-thunder.o: in function `thunder_mdiobus_pci_probe':
+drivers/net/phy/mdio-thunder.c:78: undefined reference to `devm_mdiobus_alloc_size'
 
-This patch fixes the issue by setting discard_granularity as SECTOR_SIZE
-instead of 0 when (card->pref_erase > max_discard) is true. Now no more
-complain from __blkdev_issue_discard() for the improper value of discard
-granularity.
-
-This issue is exposed after commit b35fd7422c2f ("block: check queue's
-limits.discard_granularity in __blkdev_issue_discard()"), a "Fixes:" tag
-is also added for the commit to make sure people won't miss this patch
-after applying the change of __blkdev_issue_discard().
-
-Fixes: e056a1b5b67b ("mmc: queue: let host controllers specify maximum discard timeout")
-Fixes: b35fd7422c2f ("block: check queue's limits.discard_granularity in __blkdev_issue_discard()").
-Reported-and-tested-by: Vicente Bergas <vicencb@gmail.com>
-Signed-off-by: Coly Li <colyli@suse.de>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Ulf Hansson <ulf.hansson@linaro.org>
-Link: https://lore.kernel.org/r/20201002013852.51968-1-colyli@suse.de
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Fixes: 379d7ac7ca31 ("phy: mdio-thunder: Add driver for Cavium Thunder SoC MDIO buses.")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc: Andrew Lunn <andrew@lunn.ch>
+Cc: Heiner Kallweit <hkallweit1@gmail.com>
+Cc: netdev@vger.kernel.org
+Cc: David Daney <david.daney@cavium.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/core/queue.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/phy/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
-index f74f9ef460cc9..218472879d9ce 100644
---- a/drivers/mmc/core/queue.c
-+++ b/drivers/mmc/core/queue.c
-@@ -143,7 +143,7 @@ static void mmc_queue_setup_discard(struct request_queue *q,
- 	q->limits.discard_granularity = card->pref_erase << 9;
- 	/* granularity must not be greater than max. discard */
- 	if (card->pref_erase > max_discard)
--		q->limits.discard_granularity = 0;
-+		q->limits.discard_granularity = SECTOR_SIZE;
- 	if (mmc_can_secure_erase_trim(card))
- 		queue_flag_set_unlocked(QUEUE_FLAG_SECERASE, q);
- }
+diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
+index 1f5fd24cd749e..2386871e12949 100644
+--- a/drivers/net/phy/Kconfig
++++ b/drivers/net/phy/Kconfig
+@@ -154,6 +154,7 @@ config MDIO_THUNDER
+ 	depends on 64BIT
+ 	depends on PCI
+ 	select MDIO_CAVIUM
++	select MDIO_DEVRES
+ 	help
+ 	  This driver supports the MDIO interfaces found on Cavium
+ 	  ThunderX SoCs when the MDIO bus device appears as a PCI
 -- 
 2.25.1
 
