@@ -2,118 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC18C28ADBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 07:30:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80AA428ADC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 07:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726473AbgJLFaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 01:30:02 -0400
-Received: from mga03.intel.com ([134.134.136.65]:35131 "EHLO mga03.intel.com"
+        id S1726930AbgJLFgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 01:36:33 -0400
+Received: from mga07.intel.com ([134.134.136.100]:38309 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726098AbgJLFaC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 01:30:02 -0400
-IronPort-SDR: XDudJNlmK8YV6mWoPCl2qBmhgHGl5QyxcyyWXxF/HMza9nF1V4sbNW0CMLU+JzSjEUWyXSCXp7
- ITOw+EigM2yQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="165749587"
+        id S1726862AbgJLFgc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 01:36:32 -0400
+IronPort-SDR: Etbf+2t2AI2iytjafSwrc3pBuv5wFGeQt7v8oRLJ9qLyrA6QCRowWElFPTvXCqDoiiqLJgNFxn
+ bWEW76EkULEw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="229874740"
 X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; 
-   d="scan'208";a="165749587"
+   d="scan'208";a="229874740"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2020 22:30:01 -0700
-IronPort-SDR: 7eQVdQbX5NOM1z5RKVqTaIVr2Q4I0piUQWEe746H9eYsJPeN9tg4JdT6wlIbPsxmBSXlDz4b37
- NkUwojE60qIA==
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2020 22:36:31 -0700
+IronPort-SDR: vpHbOx+gNG5XUt9hhcJIyvza4nUPAxHrE4HXYDg+0rrSuFnDnfPNZG2lQyYbIDTNVmmzYQLrOX
+ tsL2l/cMzOPA==
 X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; 
-   d="scan'208";a="462971273"
-Received: from xingzhen-mobl.ccr.corp.intel.com (HELO [10.238.4.68]) ([10.238.4.68])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2020 22:29:57 -0700
-Subject: Re: [LKP] Re: [hugetlbfs] c0d0381ade: vm-scalability.throughput
- -33.4% regression
-To:     Mike Kravetz <mike.kravetz@oracle.com>,
-        kernel test robot <rong.a.chen@intel.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        "Kirill A.Shutemov" <kirill.shutemov@linux.intel.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Prakash Sangappa <prakash.sangappa@oracle.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
-References: <20200622005551.GK5535@shao2-debian>
- <e140ec78-1fbd-73e2-7a11-7db3b714874d@oracle.com>
- <718e1653-b273-096b-0ee3-f720cf794612@oracle.com>
- <d945497d-0edb-f540-33e1-8b1ba1e20f62@linux.intel.com>
- <691152ef-6787-9598-4445-fd2a0164f70f@oracle.com>
- <1f6d321e-96b4-18c3-2991-d6a2e94c9e60@oracle.com>
-From:   Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Message-ID: <68992a81-a1b9-467b-59c4-48ab65c601c5@linux.intel.com>
-Date:   Mon, 12 Oct 2020 13:29:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+   d="scan'208";a="529819680"
+Received: from shao2-debian.sh.intel.com (HELO [10.239.13.3]) ([10.239.13.3])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2020 22:36:30 -0700
+Subject: Re: [kbuild-all] Re: drivers/power/supply/mp2629_charger.c:522:9:
+ warning: %d in format string (no. 1) requires 'int' but the argument type is
+ 'unsigned int'.
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        kernel test robot <lkp@intel.com>
+Cc:     Saravanan Sekar <sravanhome@gmail.com>, kbuild-all@lists.01.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+References: <20201009133734.GE8133@xsang-OptiPlex-9020>
+ <CAHp75VdX_uxbrkX=XF11WDBcuXjpQYWjjOzVzJ8ffj46oGw_JA@mail.gmail.com>
+From:   Rong Chen <rong.a.chen@intel.com>
+Message-ID: <bbb89cb9-ce1b-6863-dcc5-c27ba9c05819@intel.com>
+Date:   Mon, 12 Oct 2020 13:35:40 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <1f6d321e-96b4-18c3-2991-d6a2e94c9e60@oracle.com>
+In-Reply-To: <CAHp75VdX_uxbrkX=XF11WDBcuXjpQYWjjOzVzJ8ffj46oGw_JA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike,
-
-    I re-test it in v5.9-rc8, the regression still existed. It is almost 
-the same as 34ae204f1851. Do you have time to look at it? Thanks.
-
-=========================================================================================
-tbox_group/testcase/rootfs/kconfig/compiler/runtime/size/test/cpufreq_governor/ucode:
- 
-lkp-knm01/vm-scalability/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-7/300s/8T/anon-cow-seq-hugetlb/performance/0x11
-
-commit:
-   49aef7175cc6eb703a9280a7b830e675fe8f2704
-   c0d0381ade79885c04a04c303284b040616b116e
-   v5.8
-   34ae204f18519f0920bd50a644abd6fefc8dbfcf
-   v5.9-rc1
-   v5.9-rc8
-
-49aef7175cc6eb70 c0d0381ade79885c04a04c30328                        v5.8 
-34ae204f18519f0920bd50a644a                    v5.9-rc1 
-   v5.9-rc8
----------------- --------------------------- --------------------------- 
---------------------------- --------------------------- 
----------------------------
-          %stddev     %change         %stddev     %change 
-%stddev     %change         %stddev     %change         %stddev 
-%change         %stddev
-              \          |                \          |                \ 
-         |                \          |                \          | 
-          \
-      38043 ±  3%     -30.2%      26560 ±  4%     -29.5%      26815 ± 
-6%      -7.4%      35209 ±  2%      -7.4%      35244            -8.8% 
-   34704        vm-scalability.median
-       7.86 ± 19%      +9.7       17.54 ± 21%     +10.4       18.23 ± 
-34%      -3.1        4.75 ±  7%      -4.5        3.36 ±  7%      -4.0 
-     3.82 ± 15%  vm-scalability.median_stddev%
-   12822071 ±  3%     -34.1%    8450822 ±  4%     -33.6%    8517252 ± 
-6%     -10.7%   11453675 ±  2%     -10.2%   11513595 ±  2%     -11.6% 
-11331657        vm-scalability.throughput
-  2.523e+09 ±  3%     -20.7%  2.001e+09 ±  5%     -19.9%  2.021e+09 ± 
-7%      +6.8%  2.694e+09 ±  2%      +7.3%  2.707e+09 ±  2%      +5.4% 
-2.661e+09        vm-scalability.workload
 
 
-On 8/22/2020 7:36 AM, Mike Kravetz wrote:
-> On 8/21/20 2:02 PM, Mike Kravetz wrote:
->> Would you be willing to test this series on top of 34ae204f1851?  I will need
->> to rebase the series to take the changes made by 34ae204f1851 into account.
-> 
-> Actually, the series in this thread will apply/run cleanly on top of
-> 34ae204f1851.  No need to rebase or port.  If we decide to move forward more
-> work is required.  See a few FIXME's in the patches.
-> 
+On 10/9/20 10:27 PM, Andy Shevchenko wrote:
+> On Fri, Oct 9, 2020 at 4:23 PM kernel test robot <lkp@intel.com> wrote:
+>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>> head:   549738f15da0e5a00275977623be199fbbf7df50
+>> commit: 3bc6d790c39dfc4539c36525e6bcb617abbae467 power: supply: Add support for mps mp2629 battery charger
+>> date:   4 months ago
+>> :::::: branch date: 12 hours ago
+>> :::::: commit date: 4 months ago
+>> compiler: sh4-linux-gcc (GCC) 9.3.0
+>>
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+> ...
+>
+>> 3bc6d790c39dfc Saravanan Sekar 2020-05-26  514          unsigned int rval;
+>> 3bc6d790c39dfc Saravanan Sekar 2020-05-26  515          int ret;
+>> 3bc6d790c39dfc Saravanan Sekar 2020-05-26  516
+>> 3bc6d790c39dfc Saravanan Sekar 2020-05-26  517          ret = regmap_read(charger->regmap, MP2629_REG_IMPEDANCE_COMP, &rval);
+>> 3bc6d790c39dfc Saravanan Sekar 2020-05-26  518          if (ret)
+>> 3bc6d790c39dfc Saravanan Sekar 2020-05-26  519                  return ret;
+>> 3bc6d790c39dfc Saravanan Sekar 2020-05-26  520
+>> 3bc6d790c39dfc Saravanan Sekar 2020-05-26  521          rval = (rval >> 4) * 10;
+>> 3bc6d790c39dfc Saravanan Sekar 2020-05-26 @522          return sprintf(buf, "%d mohm\n", rval);
+>> 3bc6d790c39dfc Saravanan Sekar 2020-05-26  523  }
+> Right, should be %u. Can LKP generate this type of patches?
+>
 
--- 
-Zhengjun Xing
+Hi Andy,
+
+Thanks for the advice, is there a auto correct tool to do such thing?
+I afraid we can't cover all the circumstances.
+
+Best Regards,
+Rong Chen
