@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73BD828B74A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AD8B28BA1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:08:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389179AbgJLNmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:42:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46200 "EHLO mail.kernel.org"
+        id S2391032AbgJLOFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:05:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37490 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731503AbgJLNmD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:42:03 -0400
+        id S1726963AbgJLNe4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:34:56 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7AB1B22227;
-        Mon, 12 Oct 2020 13:41:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AB17D20678;
+        Mon, 12 Oct 2020 13:34:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602510118;
-        bh=PNJvWSmSQbBEj8dbQ1RCRg2EII/CqiUPwkmNlcOvIEk=;
+        s=default; t=1602509696;
+        bh=nwsihx0hEKKxGCYZPIMOabEyuW0LWmS5jhpfaKWmdDI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v3ILAzgO2jh1uE4TeyfEdnU05ohnLnhMaQpOuDfrmdZ2yO57ZwBDZ09ralMTkbgzP
-         sCU/rwRDC1bDZMFI3eQd/T7AFPGOCEVWEOd9z+xq4tPF0RYe2DdcTRkjZZdrvnYnqi
-         bM/zfhu52tsAOzk+bP2OBT6uWdptQfOkqsY2qakU=
+        b=NAZZc2NEgdNX36YFovuC76tsM0WjLZ7JbphTcWer0SQFTn682aUMFvAu1Nl6BQwao
+         jBR2aLbde6tRwN/S53cBOYIZz4PFWXZ1m6bRwDGW4/uPPrsNmiaKUU0iAqEZc3yAxU
+         4eCXkTcRSVlNApPhGx6L/arc1vZ+Z7gw/VxC4+jk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tony Ambardar <Tony.Ambardar@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: [PATCH 5.4 17/85] bpf: Fix sysfs export of empty BTF section
+        stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH 4.9 18/54] epoll: do not insert into poll queues until all sanity checks are done
 Date:   Mon, 12 Oct 2020 15:26:40 +0200
-Message-Id: <20201012132633.681759469@linuxfoundation.org>
+Message-Id: <20201012132630.437902095@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
-References: <20201012132632.846779148@linuxfoundation.org>
+In-Reply-To: <20201012132629.585664421@linuxfoundation.org>
+References: <20201012132629.585664421@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,66 +41,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Ambardar <tony.ambardar@gmail.com>
+From: Al Viro <viro@zeniv.linux.org.uk>
 
-commit e23bb04b0c938588eae41b7f4712b722290ed2b8 upstream.
+commit f8d4f44df056c5b504b0d49683fb7279218fd207 upstream.
 
-If BTF data is missing or removed from the ELF section it is still exported
-via sysfs as a zero-length file:
-
-  root@OpenWrt:/# ls -l /sys/kernel/btf/vmlinux
-  -r--r--r--    1 root    root    0 Jul 18 02:59 /sys/kernel/btf/vmlinux
-
-Moreover, reads from this file succeed and leak kernel data:
-
-  root@OpenWrt:/# hexdump -C /sys/kernel/btf/vmlinux|head -10
-  000000 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |................|
-  *
-  000cc0 00 00 00 00 00 00 00 00 00 00 00 00 80 83 b0 80 |................|
-  000cd0 00 10 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |................|
-  000ce0 00 00 00 00 00 00 00 00 00 00 00 00 57 ac 6e 9d |............W.n.|
-  000cf0 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |................|
-  *
-  002650 00 00 00 00 00 00 00 10 00 00 00 01 00 00 00 01 |................|
-  002660 80 82 9a c4 80 85 97 80 81 a9 51 68 00 00 00 02 |..........Qh....|
-  002670 80 25 44 dc 80 85 97 80 81 a9 50 24 81 ab c4 60 |.%D.......P$...`|
-
-This situation was first observed with kernel 5.4.x, cross-compiled for a
-MIPS target system. Fix by adding a sanity-check for export of zero-length
-data sections.
-
-Fixes: 341dfcf8d78e ("btf: expose BTF info through sysfs")
-Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Link: https://lore.kernel.org/bpf/b38db205a66238f70823039a8c531535864eaac5.1600417359.git.Tony.Ambardar@gmail.com
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- kernel/bpf/sysfs_btf.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/eventpoll.c |   37 ++++++++++++++++++-------------------
+ 1 file changed, 18 insertions(+), 19 deletions(-)
 
---- a/kernel/bpf/sysfs_btf.c
-+++ b/kernel/bpf/sysfs_btf.c
-@@ -30,15 +30,15 @@ static struct kobject *btf_kobj;
+--- a/fs/eventpoll.c
++++ b/fs/eventpoll.c
+@@ -1332,6 +1332,22 @@ static int ep_insert(struct eventpoll *e
+ 		RCU_INIT_POINTER(epi->ws, NULL);
+ 	}
  
- static int __init btf_vmlinux_init(void)
- {
--	if (!__start_BTF)
-+	bin_attr_btf_vmlinux.size = __stop_BTF - __start_BTF;
++	/* Add the current item to the list of active epoll hook for this file */
++	spin_lock(&tfile->f_lock);
++	list_add_tail_rcu(&epi->fllink, &tfile->f_ep_links);
++	spin_unlock(&tfile->f_lock);
 +
-+	if (!__start_BTF || bin_attr_btf_vmlinux.size == 0)
- 		return 0;
++	/*
++	 * Add the current item to the RB tree. All RB tree operations are
++	 * protected by "mtx", and ep_insert() is called with "mtx" held.
++	 */
++	ep_rbtree_insert(ep, epi);
++
++	/* now check if we've created too many backpaths */
++	error = -EINVAL;
++	if (full_check && reverse_path_check())
++		goto error_remove_epi;
++
+ 	/* Initialize the poll table using the queue callback */
+ 	epq.epi = epi;
+ 	init_poll_funcptr(&epq.pt, ep_ptable_queue_proc);
+@@ -1354,22 +1370,6 @@ static int ep_insert(struct eventpoll *e
+ 	if (epi->nwait < 0)
+ 		goto error_unregister;
  
- 	btf_kobj = kobject_create_and_add("btf", kernel_kobj);
- 	if (!btf_kobj)
- 		return -ENOMEM;
- 
--	bin_attr_btf_vmlinux.size = __stop_BTF - __start_BTF;
+-	/* Add the current item to the list of active epoll hook for this file */
+-	spin_lock(&tfile->f_lock);
+-	list_add_tail_rcu(&epi->fllink, &tfile->f_ep_links);
+-	spin_unlock(&tfile->f_lock);
 -
- 	return sysfs_create_bin_file(btf_kobj, &bin_attr_btf_vmlinux);
- }
+-	/*
+-	 * Add the current item to the RB tree. All RB tree operations are
+-	 * protected by "mtx", and ep_insert() is called with "mtx" held.
+-	 */
+-	ep_rbtree_insert(ep, epi);
+-
+-	/* now check if we've created too many backpaths */
+-	error = -EINVAL;
+-	if (full_check && reverse_path_check())
+-		goto error_remove_epi;
+-
+ 	/* We have to drop the new item inside our item list to keep track of it */
+ 	spin_lock_irqsave(&ep->lock, flags);
  
+@@ -1395,6 +1395,8 @@ static int ep_insert(struct eventpoll *e
+ 
+ 	return 0;
+ 
++error_unregister:
++	ep_unregister_pollwait(ep, epi);
+ error_remove_epi:
+ 	spin_lock(&tfile->f_lock);
+ 	list_del_rcu(&epi->fllink);
+@@ -1402,9 +1404,6 @@ error_remove_epi:
+ 
+ 	rb_erase(&epi->rbn, &ep->rbr);
+ 
+-error_unregister:
+-	ep_unregister_pollwait(ep, epi);
+-
+ 	/*
+ 	 * We need to do this because an event could have been arrived on some
+ 	 * allocated wait queue. Note that we don't care about the ep->ovflist
 
 
