@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A7828B7AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8158D28B939
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:01:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389694AbgJLNps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:45:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46754 "EHLO mail.kernel.org"
+        id S2389263AbgJLN61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:58:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731508AbgJLNmD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:42:03 -0400
+        id S1731476AbgJLNk5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:40:57 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 14A322222F;
-        Mon, 12 Oct 2020 13:42:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EFDAE22261;
+        Mon, 12 Oct 2020 13:40:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602510122;
-        bh=0NLXawZZtJwWc1txiDQRztJtFvzTwqayGFOwCEGlfu0=;
+        s=default; t=1602510046;
+        bh=xfPx18DR1Yo1IeyBOmicVze493qZfk5VFd3DR5Muv9U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O5Xzh9n8sj1H9Lr8CgrLd7Llk+NtMAnqNARcj8+Fs8/Cs6ht40f1bQyyPCJJpcGf+
-         RVmOVXKGalu4rk8H+hep+dpU32blgH4w15ykIGGTWpzCUDetFPHVtxz1cY7LMJrT2h
-         xacTNh259AJSElBoS0Y+jrWNHV1TRRlOVCcv+PDE=
+        b=nBP6u5mUG+dFqmUXi6bRwuHEF0+EJNWNlQI0HJjmBfgjU1Xzgg+IoJPaiy8IOrWs2
+         PWmTEhZS3+zyeQB8GnFnh8Jw6dXNOFHFIkQzO1hFR9pYeoiYKtFLb868NupxJI3VEN
+         ZXEALU0k+of/jBOHsYXZ/C0Ut23Yv3bafEtPg1zg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+b1bb342d1d097516cbda@syzkaller.appspotmail.com,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 5.4 09/85] net: wireless: nl80211: fix out-of-bounds access in nl80211_del_key()
-Date:   Mon, 12 Oct 2020 15:26:32 +0200
-Message-Id: <20201012132633.313470438@linuxfoundation.org>
+        stable@vger.kernel.org, Karol Herbst <kherbst@redhat.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Dave Airlie <airlied@redhat.com>
+Subject: [PATCH 5.4 10/85] drm/nouveau/mem: guard against NULL pointer access in mem_del
+Date:   Mon, 12 Oct 2020 15:26:33 +0200
+Message-Id: <20201012132633.354399123@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
 References: <20201012132632.846779148@linuxfoundation.org>
@@ -44,42 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+From: Karol Herbst <kherbst@redhat.com>
 
-commit 3dc289f8f139997f4e9d3cfccf8738f20d23e47b upstream.
+commit d10285a25e29f13353bbf7760be8980048c1ef2f upstream.
 
-In nl80211_parse_key(), key.idx is first initialized as -1.
-If this value of key.idx remains unmodified and gets returned, and
-nl80211_key_allowed() also returns 0, then rdev_del_key() gets called
-with key.idx = -1.
-This causes an out-of-bounds array access.
+other drivers seems to do something similar
 
-Handle this issue by checking if the value of key.idx after
-nl80211_parse_key() is called and return -EINVAL if key.idx < 0.
-
+Signed-off-by: Karol Herbst <kherbst@redhat.com>
+Cc: dri-devel <dri-devel@lists.freedesktop.org>
+Cc: Dave Airlie <airlied@redhat.com>
 Cc: stable@vger.kernel.org
-Reported-by: syzbot+b1bb342d1d097516cbda@syzkaller.appspotmail.com
-Tested-by: syzbot+b1bb342d1d097516cbda@syzkaller.appspotmail.com
-Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Link: https://lore.kernel.org/r/20201007035401.9522-1-anant.thazhemadam@gmail.com
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Dave Airlie <airlied@redhat.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20201006220528.13925-2-kherbst@redhat.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/wireless/nl80211.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/gpu/drm/nouveau/nouveau_mem.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/net/wireless/nl80211.c
-+++ b/net/wireless/nl80211.c
-@@ -3975,6 +3975,9 @@ static int nl80211_del_key(struct sk_buf
- 	if (err)
- 		return err;
- 
-+	if (key.idx < 0)
-+		return -EINVAL;
-+
- 	if (info->attrs[NL80211_ATTR_MAC])
- 		mac_addr = nla_data(info->attrs[NL80211_ATTR_MAC]);
- 
+--- a/drivers/gpu/drm/nouveau/nouveau_mem.c
++++ b/drivers/gpu/drm/nouveau/nouveau_mem.c
+@@ -176,6 +176,8 @@ void
+ nouveau_mem_del(struct ttm_mem_reg *reg)
+ {
+ 	struct nouveau_mem *mem = nouveau_mem(reg);
++	if (!mem)
++		return;
+ 	nouveau_mem_fini(mem);
+ 	kfree(reg->mm_node);
+ 	reg->mm_node = NULL;
 
 
