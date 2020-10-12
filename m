@@ -2,35 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEB6628BA04
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:07:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52FB328BA01
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730262AbgJLOFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:05:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38062 "EHLO mail.kernel.org"
+        id S1731414AbgJLOFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:05:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730453AbgJLNf0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:35:26 -0400
+        id S1730262AbgJLNfh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:35:37 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B04B722203;
-        Mon, 12 Oct 2020 13:35:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 14731208B8;
+        Mon, 12 Oct 2020 13:35:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509726;
-        bh=/hxe9addzgsfIKyP7sFYqT4K5eZlskGM9ITZGN5/8lw=;
+        s=default; t=1602509728;
+        bh=cRZwsTwV1n6Wp1uz0djYGfR4/C8Jq4a8bdMtfvv7hLk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GpcXSvlonZA8fQGoKwFpv5UizYZIIGyoM8DXpUagdHk5i3LAcXmvbAZOAzuxJhdaw
-         Z6cDKMEHwXXK4bRD9sQGUzUyv6FWPnRmnYPXvHTE3tCyMXCxV+2Vvwn1u/W9lSvJ6y
-         Hona8+e49dlcplQESbSsP1OXNp/Sjp+6Xpi/NzFE=
+        b=OHg9D/E2KWti101XC9NyT3b+JHOnWIBoa6nYbZjty3XPTEpOfe1FepBDcmun15QQR
+         WWFGIVWSyvC/Woqbz8hw3BWZP28WhaU936cfhTvvNPsgPIrrSoEA+gG+lJrfj3WTTj
+         69rWFRz6ANvwUxbzl5kHJA89FJ9V1YGDr7wA7YTo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Howells <dhowells@redhat.com>,
+        stable@vger.kernel.org,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Barret Rhoden <brho@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 51/54] rxrpc: Fix server keyring leak
-Date:   Mon, 12 Oct 2020 15:27:13 +0200
-Message-Id: <20201012132631.937441267@linuxfoundation.org>
+Subject: [PATCH 4.9 52/54] perf: Fix task_function_call() error handling
+Date:   Mon, 12 Oct 2020 15:27:14 +0200
+Message-Id: <20201012132631.977230363@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201012132629.585664421@linuxfoundation.org>
 References: <20201012132629.585664421@linuxfoundation.org>
@@ -42,35 +47,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells <dhowells@redhat.com>
+From: Kajol Jain <kjain@linux.ibm.com>
 
-[ Upstream commit 38b1dc47a35ba14c3f4472138ea56d014c2d609b ]
+[ Upstream commit 6d6b8b9f4fceab7266ca03d194f60ec72bd4b654 ]
 
-If someone calls setsockopt() twice to set a server key keyring, the first
-keyring is leaked.
+The error handling introduced by commit:
 
-Fix it to return an error instead if the server key keyring is already set.
+  2ed6edd33a21 ("perf: Add cond_resched() to task_function_call()")
 
-Fixes: 17926a79320a ("[AF_RXRPC]: Provide secure RxRPC sockets for use by userspace and kernel both")
-Signed-off-by: David Howells <dhowells@redhat.com>
+looses any return value from smp_call_function_single() that is not
+{0, -EINVAL}. This is a problem because it will return -EXNIO when the
+target CPU is offline. Worse, in that case it'll turn into an infinite
+loop.
+
+Fixes: 2ed6edd33a21 ("perf: Add cond_resched() to task_function_call()")
+Reported-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Reviewed-by: Barret Rhoden <brho@google.com>
+Tested-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Link: https://lkml.kernel.org/r/20200827064732.20860-1-kjain@linux.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/rxrpc/key.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/events/core.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/net/rxrpc/key.c b/net/rxrpc/key.c
-index 01d2d40ef21cb..fa475b02bdceb 100644
---- a/net/rxrpc/key.c
-+++ b/net/rxrpc/key.c
-@@ -899,7 +899,7 @@ int rxrpc_request_key(struct rxrpc_sock *rx, char __user *optval, int optlen)
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index b562467d2d498..7aad4d22b4223 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -94,7 +94,7 @@ static void remote_function(void *data)
+  * retry due to any failures in smp_call_function_single(), such as if the
+  * task_cpu() goes offline concurrently.
+  *
+- * returns @func return value or -ESRCH when the process isn't running
++ * returns @func return value or -ESRCH or -ENXIO when the process isn't running
+  */
+ static int
+ task_function_call(struct task_struct *p, remote_function_f func, void *info)
+@@ -110,7 +110,8 @@ task_function_call(struct task_struct *p, remote_function_f func, void *info)
+ 	for (;;) {
+ 		ret = smp_call_function_single(task_cpu(p), remote_function,
+ 					       &data, 1);
+-		ret = !ret ? data.ret : -EAGAIN;
++		if (!ret)
++			ret = data.ret;
  
- 	_enter("");
- 
--	if (optlen <= 0 || optlen > PAGE_SIZE - 1)
-+	if (optlen <= 0 || optlen > PAGE_SIZE - 1 || rx->securities)
- 		return -EINVAL;
- 
- 	description = memdup_user_nul(optval, optlen);
+ 		if (ret != -EAGAIN)
+ 			break;
 -- 
 2.25.1
 
