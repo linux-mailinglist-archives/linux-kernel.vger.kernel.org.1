@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A404628B76A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:43:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A798C28B9A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389313AbgJLNnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:43:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47136 "EHLO mail.kernel.org"
+        id S2390440AbgJLOCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:02:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40114 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389141AbgJLNmR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:42:17 -0400
+        id S1729815AbgJLNiB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:38:01 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 11A1821D7F;
-        Mon, 12 Oct 2020 13:42:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4E06E2222A;
+        Mon, 12 Oct 2020 13:37:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602510136;
-        bh=ZHxrrTtIL4qvu+XzZtjBKNSlmeA6jwRsBaw7+lM8ec0=;
+        s=default; t=1602509865;
+        bh=5qbW2pw6CK3ZE8lib06+Srj0tLsoRJpS6HEI/WGpEkw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IJIqPV8YRQIxwRRT0NzZShnWZ96rMNgGa3ljKU8gfMzSbctfCvVNCXbH21axc1sOE
-         5nTmshCTe3zmSyUxjU3sHYcNGMsdbYzwCG44LaGCvItt6araex4d7B6OjukicR/WYa
-         kDMiqmT8uwvHz8FTS/XNOM6ilGley2PlvE7lw3vI=
+        b=qcSJvEWCmgFT8KoA00zKLgeVr142KuihUhw3J2L4jYISwt0RfcxDxyb3hxr5+XoHk
+         +etULQweBNG548/8pz56DVVWXHBUEBHC2onQe05Vlj8+aYo8GRfqm+oj8krx/ZFDi5
+         /2Xv2KbFXUVJoroeegZb2aBU6iY+0FGUT/ZUqYlE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        Andrew Bowers <andrewx.bowers@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Marc Dionne <marc.dionne@auristor.com>,
+        David Howells <dhowells@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 56/85] iavf: use generic power management
+Subject: [PATCH 4.14 63/70] rxrpc: Fix rxkad token xdr encoding
 Date:   Mon, 12 Oct 2020 15:27:19 +0200
-Message-Id: <20201012132635.565534692@linuxfoundation.org>
+Message-Id: <20201012132633.235771658@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
-References: <20201012132632.846779148@linuxfoundation.org>
+In-Reply-To: <20201012132630.201442517@linuxfoundation.org>
+References: <20201012132630.201442517@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,128 +43,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+From: Marc Dionne <marc.dionne@auristor.com>
 
-[ Upstream commit bc5cbd73eb493944b8665dc517f684c40eb18a4a ]
+[ Upstream commit 56305118e05b2db8d0395bba640ac9a3aee92624 ]
 
-With the support of generic PM callbacks, drivers no longer need to use
-legacy .suspend() and .resume() in which they had to maintain PCI states
-changes and device's power state themselves. The required operations are
-done by PCI core.
+The session key should be encoded with just the 8 data bytes and
+no length; ENCODE_DATA precedes it with a 4 byte length, which
+confuses some existing tools that try to parse this format.
 
-PCI drivers are not expected to invoke PCI helper functions like
-pci_save/restore_state(), pci_enable/disable_device(),
-pci_set_power_state(), etc. Their tasks are completed by PCI core itself.
+Add an ENCODE_BYTES macro that does not include a length, and use
+it for the key.  Also adjust the expected length.
 
-Compile-tested only.
+Note that commit 774521f353e1d ("rxrpc: Fix an assertion in
+rxrpc_read()") had fixed a BUG by changing the length rather than
+fixing the encoding.  The original length was correct.
 
-Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
-Tested-by: Andrew Bowers <andrewx.bowers@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes: 99455153d067 ("RxRPC: Parse security index 5 keys (Kerberos 5)")
+Signed-off-by: Marc Dionne <marc.dionne@auristor.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/iavf/iavf_main.c | 45 ++++++---------------
- 1 file changed, 12 insertions(+), 33 deletions(-)
+ net/rxrpc/key.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/iavf/iavf_main.c b/drivers/net/ethernet/intel/iavf/iavf_main.c
-index 222ae76809aa1..bcb95b2ea792f 100644
---- a/drivers/net/ethernet/intel/iavf/iavf_main.c
-+++ b/drivers/net/ethernet/intel/iavf/iavf_main.c
-@@ -3773,7 +3773,6 @@ err_dma:
- 	return err;
- }
+diff --git a/net/rxrpc/key.c b/net/rxrpc/key.c
+index ad9d1b21cb0ba..fead67b42a993 100644
+--- a/net/rxrpc/key.c
++++ b/net/rxrpc/key.c
+@@ -1075,7 +1075,7 @@ static long rxrpc_read(const struct key *key,
  
--#ifdef CONFIG_PM
- /**
-  * iavf_suspend - Power management suspend routine
-  * @pdev: PCI device information struct
-@@ -3781,11 +3780,10 @@ err_dma:
-  *
-  * Called when the system (VM) is entering sleep/suspend.
-  **/
--static int iavf_suspend(struct pci_dev *pdev, pm_message_t state)
-+static int __maybe_unused iavf_suspend(struct device *dev_d)
- {
--	struct net_device *netdev = pci_get_drvdata(pdev);
-+	struct net_device *netdev = dev_get_drvdata(dev_d);
- 	struct iavf_adapter *adapter = netdev_priv(netdev);
--	int retval = 0;
- 
- 	netif_device_detach(netdev);
- 
-@@ -3803,12 +3801,6 @@ static int iavf_suspend(struct pci_dev *pdev, pm_message_t state)
- 
- 	clear_bit(__IAVF_IN_CRITICAL_TASK, &adapter->crit_section);
- 
--	retval = pci_save_state(pdev);
--	if (retval)
--		return retval;
--
--	pci_disable_device(pdev);
--
- 	return 0;
- }
- 
-@@ -3818,24 +3810,13 @@ static int iavf_suspend(struct pci_dev *pdev, pm_message_t state)
-  *
-  * Called when the system (VM) is resumed from sleep/suspend.
-  **/
--static int iavf_resume(struct pci_dev *pdev)
-+static int __maybe_unused iavf_resume(struct device *dev_d)
- {
-+	struct pci_dev *pdev = to_pci_dev(dev_d);
- 	struct iavf_adapter *adapter = pci_get_drvdata(pdev);
- 	struct net_device *netdev = adapter->netdev;
- 	u32 err;
- 
--	pci_set_power_state(pdev, PCI_D0);
--	pci_restore_state(pdev);
--	/* pci_restore_state clears dev->state_saved so call
--	 * pci_save_state to restore it.
--	 */
--	pci_save_state(pdev);
--
--	err = pci_enable_device_mem(pdev);
--	if (err) {
--		dev_err(&pdev->dev, "Cannot enable PCI device from suspend.\n");
--		return err;
--	}
- 	pci_set_master(pdev);
- 
- 	rtnl_lock();
-@@ -3859,7 +3840,6 @@ static int iavf_resume(struct pci_dev *pdev)
- 	return err;
- }
- 
--#endif /* CONFIG_PM */
- /**
-  * iavf_remove - Device Removal Routine
-  * @pdev: PCI device information struct
-@@ -3961,16 +3941,15 @@ static void iavf_remove(struct pci_dev *pdev)
- 	pci_disable_device(pdev);
- }
- 
-+static SIMPLE_DEV_PM_OPS(iavf_pm_ops, iavf_suspend, iavf_resume);
-+
- static struct pci_driver iavf_driver = {
--	.name     = iavf_driver_name,
--	.id_table = iavf_pci_tbl,
--	.probe    = iavf_probe,
--	.remove   = iavf_remove,
--#ifdef CONFIG_PM
--	.suspend  = iavf_suspend,
--	.resume   = iavf_resume,
--#endif
--	.shutdown = iavf_shutdown,
-+	.name      = iavf_driver_name,
-+	.id_table  = iavf_pci_tbl,
-+	.probe     = iavf_probe,
-+	.remove    = iavf_remove,
-+	.driver.pm = &iavf_pm_ops,
-+	.shutdown  = iavf_shutdown,
- };
- 
- /**
+ 		switch (token->security_index) {
+ 		case RXRPC_SECURITY_RXKAD:
+-			toksize += 9 * 4;	/* viceid, kvno, key*2 + len, begin,
++			toksize += 8 * 4;	/* viceid, kvno, key*2, begin,
+ 						 * end, primary, tktlen */
+ 			toksize += RND(token->kad->ticket_len);
+ 			break;
+@@ -1141,6 +1141,14 @@ static long rxrpc_read(const struct key *key,
+ 			memcpy((u8 *)xdr + _l, &zero, 4 - (_l & 3));	\
+ 		xdr += (_l + 3) >> 2;					\
+ 	} while(0)
++#define ENCODE_BYTES(l, s)						\
++	do {								\
++		u32 _l = (l);						\
++		memcpy(xdr, (s), _l);					\
++		if (_l & 3)						\
++			memcpy((u8 *)xdr + _l, &zero, 4 - (_l & 3));	\
++		xdr += (_l + 3) >> 2;					\
++	} while(0)
+ #define ENCODE64(x)					\
+ 	do {						\
+ 		__be64 y = cpu_to_be64(x);		\
+@@ -1168,7 +1176,7 @@ static long rxrpc_read(const struct key *key,
+ 		case RXRPC_SECURITY_RXKAD:
+ 			ENCODE(token->kad->vice_id);
+ 			ENCODE(token->kad->kvno);
+-			ENCODE_DATA(8, token->kad->session_key);
++			ENCODE_BYTES(8, token->kad->session_key);
+ 			ENCODE(token->kad->start);
+ 			ENCODE(token->kad->expiry);
+ 			ENCODE(token->kad->primary_flag);
 -- 
 2.25.1
 
