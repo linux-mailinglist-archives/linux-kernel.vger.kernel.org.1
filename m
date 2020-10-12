@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0157A28B756
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:43:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED2D628B694
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:37:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731314AbgJLNmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:42:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46202 "EHLO mail.kernel.org"
+        id S1730327AbgJLNfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:35:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731055AbgJLNlh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:41:37 -0400
+        id S1730273AbgJLNed (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:34:33 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 309DE21D7F;
-        Mon, 12 Oct 2020 13:41:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 428F22074F;
+        Mon, 12 Oct 2020 13:34:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602510084;
-        bh=Ked5Wnlh6TO7OfldJzkdhIuH0gIr9hYVlBb985QeF3k=;
+        s=default; t=1602509672;
+        bh=Ytcri4kG4M2XhCPYKUnH3cSUlS2ZgeqpgD1d7g2OaPI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aD++t3IwJISh7XObShVjkOejIBfXlHtBt/izLIR1hsEztmDwdqp/XIc9Hpzh459Lo
-         GUOzptPx329EJg82HL64NHAPYAdbx0vmFuG3SrNkOdWNjfCJnTLorjY9Iipx879DVg
-         rEcGege9uXuuUuMv7zPkipf40jjcln1QyDUr+TlI=
+        b=YkXqJ4COL9sCZcsuz3TKR8iXZS6uVWMZ8Wu8DOdp0vWQKoNzTExDor98GxvvSD1xP
+         nM7cp9o24OL5BK1KB5rth6jqnFONunba12o1AcFIC1eja0htJ7Cyz6Z5AhY6crtfLy
+         glCWjt16IYpcLdEfaL05oI9HUMFfZUPrN6/ipJc8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
         Paolo Abeni <pabeni@redhat.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 33/85] macsec: avoid use-after-free in macsec_handle_frame()
-Date:   Mon, 12 Oct 2020 15:26:56 +0200
-Message-Id: <20201012132634.452596986@linuxfoundation.org>
+Subject: [PATCH 4.9 35/54] macsec: avoid use-after-free in macsec_handle_frame()
+Date:   Mon, 12 Oct 2020 15:26:57 +0200
+Message-Id: <20201012132631.214913922@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
-References: <20201012132632.846779148@linuxfoundation.org>
+In-Reply-To: <20201012132629.585664421@linuxfoundation.org>
+References: <20201012132629.585664421@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -63,7 +63,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/net/macsec.c
 +++ b/drivers/net/macsec.c
-@@ -1080,6 +1080,7 @@ static rx_handler_result_t macsec_handle
+@@ -1087,6 +1087,7 @@ static rx_handler_result_t macsec_handle
  	struct macsec_rx_sa *rx_sa;
  	struct macsec_rxh_data *rxd;
  	struct macsec_dev *macsec;
@@ -71,7 +71,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	sci_t sci;
  	u32 pn;
  	bool cbit;
-@@ -1236,9 +1237,10 @@ deliver:
+@@ -1242,9 +1243,10 @@ deliver:
  	macsec_rxsc_put(rx_sc);
  
  	skb_orphan(skb);
