@@ -2,38 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA69728B97A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C753228BA18
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:08:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390827AbgJLOBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:01:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40660 "EHLO mail.kernel.org"
+        id S2391006AbgJLOFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:05:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731294AbgJLNi7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:38:59 -0400
+        id S1730760AbgJLNfD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:35:03 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A273821D81;
-        Mon, 12 Oct 2020 13:38:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 71FD820BED;
+        Mon, 12 Oct 2020 13:35:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509938;
-        bh=v32w6gzbd+mgm20XfeIYCSJ5DfnFGrjg/6O7LtYd2YY=;
+        s=default; t=1602509703;
+        bh=N8UrZrhzNix/bXcJER3RnuEQasK4KRQjKvkr5dRDUok=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L1Ppa47AK7EoaMiMLhLLu77kuHH/4s2kjh+tLliPoXGUvqd2MD5h66EgRRfxRSE6A
-         6lGq7UAz1VwER9qlxBw3qB7Jfj/Tg82PdPQaArMpn9388BR7f5kpy3G2JlhdgsURYm
-         Wti6nILKKmKLi6+eGc0qbvcNJbH8T2QfF2+6f5UY=
+        b=x8cUKIEgJPBtONFbjP39FspYD/NYUBGHUejyfPbhicD8emZl4wp6N1teDAnC6F1C9
+         hMHsZlTJYdmngbJMFD80wy0TkbKLBcD6D4JnKPnxQz79CfWwmLuFfmbi5bhVChlXN5
+         fF0Th4DhNlbYysYJIV9DsE+cObHsbRDh++fgKCsA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>,
-        Wolfram Sang <wsa@kernel.org>
-Subject: [PATCH 4.19 22/49] i2c: meson: fix clock setting overwrite
-Date:   Mon, 12 Oct 2020 15:27:08 +0200
-Message-Id: <20201012132630.480627807@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
+        David Daney <david.daney@cavium.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 47/54] mdio: fix mdio-thunder.c dependency & build error
+Date:   Mon, 12 Oct 2020 15:27:09 +0200
+Message-Id: <20201012132631.748381172@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132629.469542486@linuxfoundation.org>
-References: <20201012132629.469542486@linuxfoundation.org>
+In-Reply-To: <20201012132629.585664421@linuxfoundation.org>
+References: <20201012132629.585664421@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,82 +48,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jerome Brunet <jbrunet@baylibre.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-commit 28683e847e2f20eed22cdd24f185d7783db396d3 upstream.
+[ Upstream commit 7dbbcf496f2a4b6d82cfc7810a0746e160b79762 ]
 
-When the slave address is written in do_start(), SLAVE_ADDR is written
-completely. This may overwrite some setting related to the clock rate
-or signal filtering.
+Fix build error by selecting MDIO_DEVRES for MDIO_THUNDER.
+Fixes this build error:
 
-Fix this by writing only the bits related to slave address. To avoid
-causing unexpected changed, explicitly disable filtering or high/low
-clock mode which may have been left over by the bootloader.
+ld: drivers/net/phy/mdio-thunder.o: in function `thunder_mdiobus_pci_probe':
+drivers/net/phy/mdio-thunder.c:78: undefined reference to `devm_mdiobus_alloc_size'
 
-Fixes: 30021e3707a7 ("i2c: add support for Amlogic Meson I2C controller")
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 379d7ac7ca31 ("phy: mdio-thunder: Add driver for Cavium Thunder SoC MDIO buses.")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc: Andrew Lunn <andrew@lunn.ch>
+Cc: Heiner Kallweit <hkallweit1@gmail.com>
+Cc: netdev@vger.kernel.org
+Cc: David Daney <david.daney@cavium.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-meson.c |   19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+ drivers/net/phy/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/i2c/busses/i2c-meson.c
-+++ b/drivers/i2c/busses/i2c-meson.c
-@@ -8,6 +8,7 @@
-  * published by the Free Software Foundation.
-  */
- 
-+#include <linux/bitfield.h>
- #include <linux/clk.h>
- #include <linux/completion.h>
- #include <linux/i2c.h>
-@@ -40,6 +41,12 @@
- #define REG_CTRL_CLKDIVEXT_SHIFT 28
- #define REG_CTRL_CLKDIVEXT_MASK	GENMASK(29, 28)
- 
-+#define REG_SLV_ADDR		GENMASK(7, 0)
-+#define REG_SLV_SDA_FILTER	GENMASK(10, 8)
-+#define REG_SLV_SCL_FILTER	GENMASK(13, 11)
-+#define REG_SLV_SCL_LOW		GENMASK(27, 16)
-+#define REG_SLV_SCL_LOW_EN	BIT(28)
-+
- #define I2C_TIMEOUT_MS		500
- 
- enum {
-@@ -149,6 +156,9 @@ static void meson_i2c_set_clk_div(struct
- 	meson_i2c_set_mask(i2c, REG_CTRL, REG_CTRL_CLKDIVEXT_MASK,
- 			   (div >> 10) << REG_CTRL_CLKDIVEXT_SHIFT);
- 
-+	/* Disable HIGH/LOW mode */
-+	meson_i2c_set_mask(i2c, REG_SLAVE_ADDR, REG_SLV_SCL_LOW_EN, 0);
-+
- 	dev_dbg(i2c->dev, "%s: clk %lu, freq %u, div %u\n", __func__,
- 		clk_rate, freq, div);
- }
-@@ -276,7 +286,10 @@ static void meson_i2c_do_start(struct me
- 	token = (msg->flags & I2C_M_RD) ? TOKEN_SLAVE_ADDR_READ :
- 		TOKEN_SLAVE_ADDR_WRITE;
- 
--	writel(msg->addr << 1, i2c->regs + REG_SLAVE_ADDR);
-+
-+	meson_i2c_set_mask(i2c, REG_SLAVE_ADDR, REG_SLV_ADDR,
-+			   FIELD_PREP(REG_SLV_ADDR, msg->addr << 1));
-+
- 	meson_i2c_add_token(i2c, TOKEN_START);
- 	meson_i2c_add_token(i2c, token);
- }
-@@ -435,6 +448,10 @@ static int meson_i2c_probe(struct platfo
- 		return ret;
- 	}
- 
-+	/* Disable filtering */
-+	meson_i2c_set_mask(i2c, REG_SLAVE_ADDR,
-+			   REG_SLV_SDA_FILTER | REG_SLV_SCL_FILTER, 0);
-+
- 	meson_i2c_set_clk_div(i2c, timings.bus_freq_hz);
- 
- 	return 0;
+diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
+index 2651c8d8de2f8..032017bd0ced5 100644
+--- a/drivers/net/phy/Kconfig
++++ b/drivers/net/phy/Kconfig
+@@ -135,6 +135,7 @@ config MDIO_THUNDER
+ 	depends on 64BIT
+ 	depends on PCI
+ 	select MDIO_CAVIUM
++	select MDIO_DEVRES
+ 	help
+ 	  This driver supports the MDIO interfaces found on Cavium
+ 	  ThunderX SoCs when the MDIO bus device appears as a PCI
+-- 
+2.25.1
+
 
 
