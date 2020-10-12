@@ -2,66 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8FB228B26B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 12:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8596C28B26D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 12:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387682AbgJLKkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 06:40:21 -0400
-Received: from foss.arm.com ([217.140.110.172]:36532 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387522AbgJLKkU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 06:40:20 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 19BB531B;
-        Mon, 12 Oct 2020 03:40:20 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 758493F719;
-        Mon, 12 Oct 2020 03:40:18 -0700 (PDT)
-References: <20201012053910.97010-1-juri.lelli@redhat.com>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Juri Lelli <juri.lelli@redhat.com>
-Cc:     peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, bristot@redhat.com,
-        patrick.bellasi@matbug.net, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, chris.redpath@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de
-Subject: Re: [PATCH] sched/features: Fix !CONFIG_JUMP_LABEL case
-In-reply-to: <20201012053910.97010-1-juri.lelli@redhat.com>
-Date:   Mon, 12 Oct 2020 11:40:10 +0100
-Message-ID: <jhj8scbenhx.mognet@arm.com>
+        id S2387758AbgJLKks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 06:40:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387632AbgJLKkr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 06:40:47 -0400
+Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0110CC0613CE;
+        Mon, 12 Oct 2020 03:40:46 -0700 (PDT)
+Received: by nautica.notk.org (Postfix, from userid 1001)
+        id 6A40AC009; Mon, 12 Oct 2020 12:40:45 +0200 (CEST)
+Date:   Mon, 12 Oct 2020 12:40:30 +0200
+From:   Dominique Martinet <asmadeus@codewreck.org>
+To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     ericvh@gmail.com, lucho@ionkov.net, davem@davemloft.net,
+        kuba@kernel.org, v9fs-developer@lists.sourceforge.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+75d51fe5bf4ebe988518@syzkaller.appspotmail.com
+Subject: Re: [PATCH net] net: 9p: initialize sun_server.sun_path to have
+ addr's value only when addr is valid
+Message-ID: <20201012104030.GA888@nautica>
+References: <20201012042404.2508-1-anant.thazhemadam@gmail.com>
+ <20201012075910.GA17745@nautica>
+ <147004bd-5cff-6240-218d-ebd80a9b48a1@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <147004bd-5cff-6240-218d-ebd80a9b48a1@gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Anant Thazhemadam wrote on Mon, Oct 12, 2020:
+> You mentioned how a fully zeroed address isn't exactly faulty. By extension, wouldn't that
+> mean that an address that simply begins with a 0 isn't faulty as well?
 
-Hi,
+That is correct.
+If you have a look at the unix(7) man page that describes AF_UNIX, it
+describes what 'abstract' addresses are and unix_mkname() in linux's
+net/unix/af_unix.c shows how it's handled.
 
-On 12/10/20 06:39, Juri Lelli wrote:
-> Commit 765cc3a4b224e ("sched/core: Optimize sched_feat() for
-> !CONFIG_SCHED_DEBUG builds") made sched features static for
-> !CONFIG_SCHED_DEBUG configurations, but overlooked the CONFIG_
-> SCHED_DEBUG enabled and !HAVE_JUMP_LABEL cases. For the latter, echoing
-> changes to /sys/kernel/debug/sched_features has the nasty effect of
-> effectively changing what sched_features reports, but without actually
-> changing the scheduler behaviour (since different translation units get
-> different sysctl_sched_features).
->
-> Fix CONFIG_SCHED_DEBUG and !HAVE_JUMP_LABEL configurations by properly
-> restructuring ifdefs.
->
+> This is an interesting point, because if the condition is modified to checking for addr[0] directly,
+> addresses that simply begin with 0 (but have more non-zero content following) wouldn't be
+> copied over either, right?
 
-That should be CONFIG_JUMP_LABEL, no? The HAVE stuff should've died with
+Yes, we would reject any address that starts with a nul byte -- but that
+is already exactly what your patch does with strlen() already: a '\0' at
+the start of the string is equivalent to strlen(addr) == 0.
+The only difference is that checking for addr[0] won't run through all
+the string if it doesn't start with a nul byte; but this is a one-time
+thing at mount so it really doesn't matter.
 
-  e9666d10a567 ("jump_label: move 'asm goto' support test to Kconfig")
+> In the end, it comes down to what you define as a "valid" value that sun_path can have.
+> We've already agreed that a fully zeroed address wouldn't qualify as a valid value for sun_path.
+> Are addresses that aren't fully zeroed, but only begin with a 0 also to be considered as an
+> unacceptable value for sun_path?
 
-> Fixes: 765cc3a4b224e ("sched/core: Optimize sched_feat() for !CONFIG_SCHED_DEBUG builds")
-> Co-developed-by: Daniel Bristot de Oliveira <bristot@redhat.com>
-> Signed-off-by: Daniel Bristot de Oliveira <bristot@redhat.com>
-> Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
+Yes, because the strcpy() a few lines below would copy nothing, leaving
+sun_server.sun_path uninitialized like your example.
 
-With the aforementioned replacement (changelog AND diff):
+At that point you could ask why not "fix" that strcpy to properly copy
+the address passed instead but that doesn't really make sense given
+where 'addr' comes from: it's passed from userspace as a nul-terminated
+string, so nothing after the first '\0' is valid.
 
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+There probably are ways to work around that (e.g. iproute's ss will
+display abstract addresses with a leading '@' instead) but given nobody
+ever seemed to care I think it's safe to just return EINVAL there like
+you did ; there's nothing wrong with your patch as far as I'm concerned.
+
+-- 
+Dominique
