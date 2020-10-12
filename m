@@ -2,225 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D57628B40A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 13:46:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA5FE28B413
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 13:48:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388258AbgJLLqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 07:46:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30566 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388135AbgJLLqX (ORCPT
+        id S2388299AbgJLLsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 07:48:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388209AbgJLLst (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 07:46:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602503182;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MPOxMq+F8ph56ff+X8V9f90cV/Mc4fJb08APecd2if8=;
-        b=heMIBJvh0xoujHDEUZafOJbW3d8ZP2OEYNZ+fldiZz3dqVdmYZVJmB0L5G+icIVM8j41TN
-        GCj5dONhVdMkA+tPJnXLdRpilDeVnPkeakG6GX2Hz/UAMcIz2Gqvuz+rYZFqbJx970nPyR
-        5ZpSMk6M686WXeI261T/qHZHZ20QPoQ=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-351-u0vl3gTdP2-xPJ3alfAPKg-1; Mon, 12 Oct 2020 07:46:20 -0400
-X-MC-Unique: u0vl3gTdP2-xPJ3alfAPKg-1
-Received: by mail-ed1-f71.google.com with SMTP id a73so3727201edf.16
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 04:46:20 -0700 (PDT)
+        Mon, 12 Oct 2020 07:48:49 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 372C3C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 04:48:49 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id n15so18846985wrq.2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 04:48:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Q6n1VfSlPeYvAYXi3X+McChRUB1U53qE0icC0y04rMg=;
+        b=MlE8AXarx2worHi4q7CJY1BPT575y5Eph90OrpPsS60YFxU0azPItXiw94v2NNig+M
+         /XVWvI9x66INxGk6a94OG3w6q6ePfCPTC4iJbIBefItyga9a3O/bvOjcK6VAqoLciY6U
+         pNWysSgLoYz1MXCEkl7Wkn/acKvsyBfw7cUNHPnaSKVTOwvL42yaqcwjhDMXQjCLkO6f
+         KuZ6BfFzb/U5m1NTM/jweDTUVVK449wIZOvrCxdV16n1smdi1TFe3nTjZ65mARSGo7sr
+         j7p79cm0DaCMUWeLyYMi+GN3rLMMSonRIqZohXKxrkdlwYLAX/Gd0uJ0BAa3d404J1QV
+         Egbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MPOxMq+F8ph56ff+X8V9f90cV/Mc4fJb08APecd2if8=;
-        b=YaaknQhsLAsJtmOIppn1/7xAUaE+Xja1PeWubkBeT9NTIp8CL+lh5B8EqA+x9pdOqo
-         OVeSIivnbWj9dOn7QkHVQZXjcz/5CoPKtxtJybgjY6I/Qa0qe0kgtt+QpKt1xAyzgNHg
-         LklmNkGeSeqSH6kRRy0/yRPD027fJQjLPajAehNOXsG+BYXLm1EzMc+rmlePdYBH4W+U
-         Y6fln0AmzLeIT/vpFAfWU8MyEmTr9y5gS0r4bOIXBN6tDCRiAS8vpeXQ+QWbpoqy1KL6
-         7rDuqhIOvXcR5kp9FFp4RFtx3ToS99uSiJmUzb9C5JrGoApiW2r9qAHwGIQckG8QAtR2
-         MFeQ==
-X-Gm-Message-State: AOAM5328Lq6/c71p4dgHKc6c/p2AekzNmE2eWWXzV8qMW4zRLEK6TcYw
-        rVP53pnsA0WHpilqQR3ItmRGulII3vUHYg9gk1cmxBSAA0qJ15ycTAJADakMWrVX7YO1N33VNAJ
-        ND4cYHvskQwUzDUKONRgpxmqn
-X-Received: by 2002:a05:6402:744:: with SMTP id p4mr13245307edy.190.1602503178826;
-        Mon, 12 Oct 2020 04:46:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzxgS7fuYft0E4VSk86TJ480HWHxhGEz4kkZwvpi6R3og3eSUHOtcLYgXqEyHl7XDOc+k3J2A==
-X-Received: by 2002:a05:6402:744:: with SMTP id p4mr13245274edy.190.1602503178524;
-        Mon, 12 Oct 2020 04:46:18 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id r27sm10550629edx.33.2020.10.12.04.46.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Oct 2020 04:46:17 -0700 (PDT)
-Subject: Re: [PATCH 0/4] powercap/dtpm: Add the DTPM framework
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>, rafael@kernel.org,
-        srinivas.pandruvada@linux.intel.com
-Cc:     lukasz.luba@arm.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, rui.zhang@intel.com
-References: <20201006122024.14539-1-daniel.lezcano@linaro.org>
- <eb26a00d-eee0-a4d1-ed25-61a661ad5683@redhat.com>
- <8be66efd-7833-2c8a-427d-b0055c2f6ec1@linaro.org>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <97e5368b-228d-eca1-85a5-b918dfcfd336@redhat.com>
-Date:   Mon, 12 Oct 2020 13:46:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Q6n1VfSlPeYvAYXi3X+McChRUB1U53qE0icC0y04rMg=;
+        b=mt2cX3TpSWu9UwOBXybmrxniFl8Fs967f/OtqrWNB3QU/qFSYYXTYzCjmt/mf8f8Gu
+         h+f+zdYae2TaTH/nLYV7o0Wl/ZU0Ne02IlODlaZ2nEI/ZElsZ1WnQmKoJAhSE/neMW1T
+         iC1KGNiE8cuiR/W5SPOREnD/MiVO9gbjkzAlQtw5B8G4ST3/10AzGtdHsNKBfWLAs8u7
+         aau6SJZx0bRRSlNM2XfkH2dTgHSNH0KhVM2Q1MYNrOXZ0ZF3wAg0knf73ImJ0R69yHm7
+         40MDjL3v/NT9dS7lyAddoxZPsu528mgqv7SvS+HXOHqJSOgdEqxr49Ci/PTCajs7nX7O
+         ab9g==
+X-Gm-Message-State: AOAM530/y6YlcyOIUHhmDw3fEiTxM9CykT6cZF1j3w2CpzXyumEfc+W0
+        gDmAonX2UTcBlrTwOyIHrVnuQg==
+X-Google-Smtp-Source: ABdhPJzDZm0wFpc5zf4P88lMJXp54ZLTHc2e7Lk86RniSNFOP38YB9kxDfBS+Nxrj8yfCOXboR6bbQ==
+X-Received: by 2002:adf:e54b:: with SMTP id z11mr20988583wrm.128.1602503327662;
+        Mon, 12 Oct 2020 04:48:47 -0700 (PDT)
+Received: from dell ([91.110.221.138])
+        by smtp.gmail.com with ESMTPSA id c21sm22940930wme.36.2020.10.12.04.48.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 04:48:46 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 12:48:44 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
+        linux-kernel@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-pwm@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>, linux-rtc@vger.kernel.org,
+        Rob Herring <robh@kernel.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Daniel Palmer <daniel@0x0f.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
+        allen <allen.chen@ite.com.tw>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Mark Brown <broonie@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Josua Mayer <josua.mayer@jm0.eu>,
+        Shawn Guo <shawnguo@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v3 1/7] dt-bindings: Add vendor prefix for Netronix, Inc.
+Message-ID: <20201012114844.GL1763265@dell>
+References: <20200924192455.2484005-1-j.neuschaefer@gmx.net>
+ <20200924192455.2484005-2-j.neuschaefer@gmx.net>
+ <20201012071909.wjbclmorlfcz7lln@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <8be66efd-7833-2c8a-427d-b0055c2f6ec1@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201012071909.wjbclmorlfcz7lln@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+On Mon, 12 Oct 2020, Uwe Kleine-König wrote:
 
-On 10/12/20 12:30 PM, Daniel Lezcano wrote:
+> On Thu, Sep 24, 2020 at 09:24:49PM +0200, Jonathan Neuschäfer wrote:
+> > Netronix, Inc. (http://www.netronixinc.com/) makes ebook reader board
+> > designs, which are for example used in Kobo and Tolino devices.
+> > 
+> > An alternative prefix for Netronix would be "ntx", which is already used
+> > in code released by Netronix. It is shorter, but perhaps less clear.
+> > 
+> > Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+> > Acked-by: Rob Herring <robh@kernel.org>
 > 
-> Hi Hans,
-> 
-> On 07/10/2020 12:43, Hans de Goede wrote:
->> Hi,
->>
->> On 10/6/20 2:20 PM, Daniel Lezcano wrote:
->>> The density of components greatly increased the last decade bringing a
->>> numerous number of heating sources which are monitored by more than 20
->>> sensors on recent SoC. The skin temperature, which is the case
->>> temperature of the device, must stay below approximately 45°C in order
->>> to comply with the legal requirements.
->>>
->>> The skin temperature is managed as a whole by an user space daemon,
->>> which is catching the current application profile, to allocate a power
->>> budget to the different components where the resulting heating effect
->>> will comply with the skin temperature constraint.
->>>
->>> This technique is called the Dynamic Thermal Power Management.
->>>
->>> The Linux kernel does not provide any unified interface to act on the
->>> power of the different devices. Currently, the thermal framework is
->>> changed to export artificially the performance states of different
->>> devices via the cooling device software component with opaque values.
->>> This change is done regardless of the in-kernel logic to mitigate the
->>> temperature. The user space daemon uses all the available knobs to act
->>> on the power limit and those differ from one platform to another.
->>>
->>> This series provides a Dynamic Thermal Power Management framework to
->>> provide an unified way to act on the power of the devices.
->>
->> Interesting, we have a discussion going on about a related
->> (while at the same time almost orthogonal) discussion for
->> setting policies for if the code managing the restraints
->> (which on x86 is often hidden in firmware or ACPI DPTF tables)
->> should have a bias towards trying to have as long a battery life
->> as possible, vs maximum performance. I know those 2 aren't
->> always opposite ends of a spectrum with race-to-idle, yet most
->> modern x86 hardware has some notion of what I call performance-profiles
->> where we can tell the firmware managing this to go for a bias towards
->> low-power / balanced / performance.
->>
->> I've send a RFC / sysfs API proposal for this here:
->> https://lore.kernel.org/linux-pm/20201003131938.9426-1-hdegoede@redhat.com/
->>
->> I've read the patches in this thread and as said already I think
->> the 2 APIs are mostly orthogonal. The API in this thread is giving
->> userspace direct access to detailed power-limits allowing userspace
->> to configure things directly (and for things to work optimal userspace
->> must do this). Where as in the x86 case with which I'm dealing everything
->> is mostly handled in a black-box and userspace can merely configure
->> the low-power / balanced / performance bias (*) of that black-box.
->>
->> Still I think it is good if we are aware of each-others efforts here.
->>
->> So Daniel, if you can take a quick look at my proposal:
->> https://lore.kernel.org/linux-pm/20201003131938.9426-1-hdegoede@redhat.com/
->>
->> That would be great. I think we definitely want to avoid having 2
->> APIs for the same thing here. Again I don't think that is actually
->> the case, but maybe you see this differently ?
-> 
-> Thanks for pointing this out. Actually, it is a different feature as you
-> mentioned. The profile is the same knob we have with the BIOS where we
-> can choose power/ balanced power / balanced/balanced
-> performance / performance, AFAICT.
+> minor nitpick: your S-o-b should be last in the tags area.
 
-Right.
+I personally like to see tags in chronological order.
 
-> Here the proposed interface is already exported in userspace via the
-> powercap framework which supports today the backend driver for the RAPL
-> register.
+I doubt Rob Acked it before Jonathan originally signed it off.
 
-You say that some sort of power/ balanced power / balanced /
-balanced performance / performance setting in is already exported
-through the powercap interface today (if I understand you correctly)?
-
-But I'm not seeing any such setting in:
-Documentation/ABI/testing/sysfs-class-powercap
-
-Nor can I find it under /sys/class/powercap/intel-rapl* on a ThinkPad
-X1 carbon 8th gen.
-
-Note, if there indeed is an existing userspace API for this I would
-greatly prefer for the thinkpad_acpi and hp-wmi (and possibly other)
-drivers to use this, so if you can point me to this interface then
-that would be great.
-
-> The userspace will be in charge of handling the logic to have the
-> correct power/performance profile tuned against the current application
-> running foreground. The DTPM framework gives the unified access to the
-> power limitation to the individual devices the userspace logic can act on.
-> 
-> A side note, related to your proposal, not this patch. IMO it suits
-> better to have /sys/power/profile.
-> 
-> cat /sys/power/profile
-> 
-> power
-> balanced_power *
-> balanced
-> balanced_performance
-> performance
-> 
-> The (*) being the active profile.
-
-Interesting the same thing was brought up in the discussion surrounding
-RFC which I posted.
-
-The downside against this approach is that it assumes that there
-only is a single system-wide settings. AFAIK that is not always
-the case, e.g. (AFAIK):
-
-1. The intel pstate driver has something like this
-    (might this be the rapl setting you mean? )
-
-2. The X1C8 has such a setting for the embedded-controller, controlled
-    through the ACPI interfaces which thinkpad-acpi used
-
-3. The hp-wmi interface allows selecting a profile which in turn
-    (through AML code) sets a bunch of variables which influence how
-    the (dynamic, through mjg59's patches) DPTF code controls various
-    things
-
-At least the pstate setting and the vendor specific settings can
-co-exist. Also the powercap API has a notion of zones, I can see the
-same thing here, with a desktop e.g. having separate performance-profile
-selection for the CPU and a discrete GPU.
-
-So limiting the API to a single /sys/power/profile setting seems a
-bit limited and I have the feeling we will regret making this
-choice in the future.
-
-With that said your proposal would work well for the current
-thinkpad_acpi / hp-wmi cases, so I'm not 100% against it.
-
-This would require adding some internal API to the code which
-owns the /sys/power root-dir to allow registering a profile
-provider I guess. But that would also immediately bring the
-question, what if multiple drivers try to register themselves
-as /sys/power/profile provider ?
-
-Regards,
-
-Hans
-
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
