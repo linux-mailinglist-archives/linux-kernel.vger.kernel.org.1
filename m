@@ -2,199 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4308628B6C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:38:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8E428B6D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731078AbgJLNha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:37:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730994AbgJLNhO (ORCPT
+        id S1730133AbgJLNiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:38:12 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:34045 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731063AbgJLNh3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:37:14 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52C25C0613DE
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 06:37:05 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id dt13so23213514ejb.12
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 06:37:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=tCUpQoSulnQei1dT4ghNdiCKyO8fOYZZP8+ViGtmQQc=;
-        b=OcF/8hAefoDzydagDszym4HaHQhFksCnztgDdXaaOwJIOw/SUubpEh24slj+VtK6rt
-         OrYPejsdZ9xZ/R9Ma8EegPOZ+iZopKEyJVxdz+8n2xvdAjdRKFrHmTaGdhHmOCAH7GgV
-         At7mMwq6cQHUbbTMZhuYotDxot4HagxUkyX3LGhKpUigD0MdN7pb/raVx13+SoaOJkTZ
-         vAKdagrpD+iwnoO4pGdo0PXYW6KKPD4VaiK8ijh9UL7RkUSJxlY3RdomIG1ZdOP3vuhy
-         YNkyEl1KOC8n/h5F76LP+43aJnCcPKkg1QA27e4YKbKswDrhvch+yPpS0TgN6FDCLkzv
-         Qipw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=tCUpQoSulnQei1dT4ghNdiCKyO8fOYZZP8+ViGtmQQc=;
-        b=PaTpL2FzuiClvALNkaZxVQotNmydcQiXGagB8zUsVrmd+6DOZn+uslrzCb1a+B8JgK
-         ve605Dt8G4Ed3uH0RAL3KsVn9xpjcXvjMxOkXe7LturK3i/w2cXx2S96AeBTcHXLHn0w
-         niRG4MuwoGL6WR7feocwHMsQl1rs5ciLBjZb6ULlyYRo2yc5LyD0bJdQ7OBMD+CYWzVA
-         5mZtbW51qM/+h/aVRZJoOk2UUfK70l8YzaFpm2HnA983hiz1ROAFQ3vG6MPmKkG0doKc
-         J5NlbI3PbU/aaogi3UbheAhueRBME1wxiD2ONgmZqKxamoCbVlYOVI6zA540lPVqU3rw
-         S6ow==
-X-Gm-Message-State: AOAM533VMJfiU+s96SZb5cdS9gnjuIa5TWeWMe4riwsDUF/Ld9Rm1ivh
-        a4ZK5Abc+xaCj0jG+9U2z48=
-X-Google-Smtp-Source: ABdhPJyClTZhFg3sHiRkIoMm4qqDjOUdMlb5/yTlq3yvJThvEJfNcEQp7bTGx9jj4aOy1TF4C8Z/LQ==
-X-Received: by 2002:a17:906:54d8:: with SMTP id c24mr10110818ejp.499.1602509823947;
-        Mon, 12 Oct 2020 06:37:03 -0700 (PDT)
-Received: from gmail.com (563B81C8.dsl.pool.telekom.hu. [86.59.129.200])
-        by smtp.gmail.com with ESMTPSA id e5sm10792343ejb.26.2020.10.12.06.37.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 06:37:03 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Mon, 12 Oct 2020 15:37:01 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: [GIT PULL] scheduler changes for v5.10
-Message-ID: <20201012133701.GA3206705@gmail.com>
+        Mon, 12 Oct 2020 09:37:29 -0400
+Received: from mail-qt1-f180.google.com ([209.85.160.180]) by
+ mrelayeu.kundenserver.de (mreue011 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MplHR-1k7UF80lKf-00qCkJ; Mon, 12 Oct 2020 15:37:27 +0200
+Received: by mail-qt1-f180.google.com with SMTP id t9so12754153qtp.9;
+        Mon, 12 Oct 2020 06:37:26 -0700 (PDT)
+X-Gm-Message-State: AOAM531KfO80OiUdKbULvlE7u+ajp17ruQsmKmwWidIxmbypU2fsJxSj
+        VRf+hhySJ1jrrndxCl4J4quYUeyoSLC6ZtioMwU=
+X-Google-Smtp-Source: ABdhPJw6Xw5QPFz9Hbm4r+y0vTuo5ru8d6HOL66whTmsLJNolGIOqnjXdgx88Su9kNbZVfsNfxwFqVNIjbZi+UQICLY=
+X-Received: by 2002:ac8:64a:: with SMTP id e10mr9800808qth.142.1602509845710;
+ Mon, 12 Oct 2020 06:37:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-12-arnd@arndb.de>
+ <CAMuHMdU7bn7rzG-0xzr4St1uArGoOhw6dy7HCkrHRvYqM38Wxg@mail.gmail.com>
+In-Reply-To: <CAMuHMdU7bn7rzG-0xzr4St1uArGoOhw6dy7HCkrHRvYqM38Wxg@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 12 Oct 2020 15:37:09 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2hY+Vc3S32KKBJj7gUaUFQb4=rKsRJwCwhAbYP7CakzA@mail.gmail.com>
+Message-ID: <CAK8P3a2hY+Vc3S32KKBJj7gUaUFQb4=rKsRJwCwhAbYP7CakzA@mail.gmail.com>
+Subject: Re: [PATCH 11/13] timekeeping: remove xtime_update
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Philip Blundell <philb@gnu.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Sam Creasey <sammy@sammy.net>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:BsBR49K4r9UqORnUI2CXH8prW1C1pgsCLtwNP9oJZoTdaQ5Mp61
+ xb0TEXecnuEb6oz01w7+jTBY2d/0EavRHDItoBlHJIVfqcDpU4stdtGGZW5++LdQY83ej1t
+ VpUFQGsDhFBz648k0OEzrPO7frTTuY3i/9ew8y/3T/xxk35vnSYHDYmj5qbLTuCaQa47RIo
+ FrPmmcWbLHpeA1d6x9dJA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:0Hfyhez933s=:Ra979ud5Mj/4+53raRBR1X
+ Santde6uyHWKyZGpYcYs0Rh1/fGxyN7Qcd9H1PsB/ITC0PZGcH6faVz1Edm4WYONmv6S3QaGC
+ x2cRhsOcqPdZNiOngQ/bMcHS4nWXcLjSEyywZQbaNXfrhYHCIgzshRTV8tFGqXQlx1aarJkLy
+ xpl7PVFGH/gbyP2FEZykcVZoLubpwfiNNoHES7ZAIPgLUrMjGfRyxSo4gF6gtk6r+1CgW82iy
+ GmjQ2Bi08cTm83IaS4ijdxUvilSQJrKlRSIA9hew5jIn/BgtoQ3c2RfPkyooXstZ06BX0peV/
+ PvyyyeuA/qO9ohS//CbaYXUnLyKhsjSsokiOqdS7L3+u0vowzlR1E7pf3oLeuqu1WpcmM+Vwl
+ XaAOI1SbrN00dzkJbrYvy6A2bLpXOxHAgcPj4yV4Ev4TsifkpyJQUNeu4hgoQtQCzbsfiy7Di
+ hNEoxoU3TKp7FwmdtlDK5g7lBUCCo4lNMVwYloKptfk36zX2qUF/LxcI7scqtoiKvj+JOT7+n
+ ZRXf23YDkGVlpRNSfE/GRvRwjfzXHTJka0NUTY3PCBpi73utda45FN8ODHZ+dKUFOxIwRxC95
+ I1rmF1BIFXC9WriyIjO9DRtmvlikyfGOHfXmS9Kzm2VJDa0miiKaTUeCNex3+FBEt2GSMbf7h
+ tm/8X7fS/49saP9SWbaETnxtJUG9FjSCeTmFqg0MVZ/5Dc6UcfLauZxsYshjps2lXsdV8yG59
+ zs+4Mh8ObXjNw7wxJZzLXnE7i3pFO9m9Lyh5x5ocxaANIA49B4nlFp/4B5oLiTGwrSmAPBDOr
+ +QA4bVe4PCZYri9gfrJTBCR23hrtEsWi+RWvLq+CZKwNSmY9o5fVVbzOIwj8gQ5TwxYK9SoDx
+ p2XRAHyD+p55aCrB2H232gE5+5law6/U0QnEQoO8ptRKMKEeo4HzQpE6ng3Q74PKU36Tw5F+j
+ AqS0kNUDHoWpyAM/nlFEMqKawd+3JVrN13s7TcVRu/3D1OyJ0JWWy
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Mon, Oct 12, 2020 at 3:16 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> On Thu, Oct 8, 2020 at 5:48 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> > There are no more users of xtime_update aside from legacy_timer_tick(),
+> > so fold it into that function and remove the declaration.
+> >
+> > update_process_times() is now only called inside of the kernel/time/
+> > code, so the declaration can be moved there.
+> >
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>
+> Thanks for your patch!
+>
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>
+> The comment about xtime_update() in arch/ia64/kernel/time.c needs
+> an update.
 
-Please pull the latest sched/core git tree from:
+I think the correct action for ia64 would be to make it a
+proper clockevent driver with oneshot support, and remove
+the rest of this logic.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched-core-2020-10-12
+I could try to rewrite the comment, but I tried not to touch that
+part since I don't understand the logic behind it. Maybe the
+ia64 maintainers can comment here why it even tries to skip
+a timer tick. Is there a danger of ending up with the timer irq
+permanently disabled if the timer_interrupt() function returns
+with the itm register in the past, or is this simply about not having
+too many interrupts in a row?
 
-   # HEAD: feff2e65efd8d84cf831668e182b2ce73c604bbb sched/deadline: Unthrottle PI boosted threads while enqueuing
+> Does the comment about update_process_times() in
+> arch/openrisc/kernel/time.c needs an update, too?
 
-Scheduler changes for v5.10:
+I think that one is still technically correct.
 
- - Reorganize & clean up the SD* flags definitions and add a bunch
-   of sanity checks. These new checks caught quite a few bugs or at
-   least inconsistencies, resulting in another set of patches.
-
- - Rseq updates, add MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ
-
- - Add a new tracepoint to improve CPU capacity tracking
-
- - Improve overloaded SMP system load-balancing behavior
-
- - Tweak SMT balancing
-
- - Energy-aware scheduling updates
-
- - NUMA balancing improvements
-
- - Deadline scheduler fixes and improvements
-
- - CPU isolation fixes
-
- - Misc cleanups, simplifications and smaller optimizations.
-
- Thanks,
-
-	Ingo
-
------------------->
-Barry Song (1):
-      sched/fair: Use dst group while checking imbalance for NUMA balancer
-
-Daniel Bristot de Oliveira (3):
-      MAINTAINERS: Add myself as SCHED_DEADLINE reviewer
-      sched/rt: Disable RT_RUNTIME_SHARE by default
-      sched/deadline: Unthrottle PI boosted threads while enqueuing
-
-Jiang Biao (1):
-      sched/fair: Simplify the work when reweighting entity
-
-Josh Don (1):
-      sched/fair: Ignore cache hotness for SMT migration
-
-Lucas Stach (1):
-      sched/deadline: Fix stale throttling on de-/boosted tasks
-
-Lukasz Luba (1):
-      sched/fair: Fix wrong negative conversion in find_energy_efficient_cpu()
-
-Peter Oskolkov (4):
-      rseq/membarrier: Add MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ
-      rseq/selftests,x86_64: Add rseq_offset_deref_addv()
-      rseq/selftests: Test MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ
-      sched/fair: Tweak pick_next_entity()
-
-Sebastian Andrzej Siewior (2):
-      sched: Bring the PF_IO_WORKER and PF_WQ_WORKER bits closer together
-      sched: Cache task_struct::flags in sched_submit_work()
-
-Valentin Schneider (19):
-      ARM, sched/topology: Remove SD_SHARE_POWERDOMAIN
-      ARM, sched/topology: Revert back to default scheduler topology
-      sched/topology: Split out SD_* flags declaration to its own file
-      sched/topology: Define and assign sched_domain flag metadata
-      sched/topology: Verify SD_* flags setup when sched_debug is on
-      sched/debug: Output SD flag names rather than their values
-      sched/topology: Introduce SD metaflag for flags needing > 1 groups
-      sched/topology: Use prebuilt SD flag degeneration mask
-      sched/topology: Remove SD_SERIALIZE degeneration special case
-      sched/topology: Propagate SD_ASYM_CPUCAPACITY upwards
-      sched/topology: Mark SD_PREFER_SIBLING as SDF_NEEDS_GROUPS
-      sched/topology: Mark SD_BALANCE_WAKE as SDF_NEEDS_GROUPS
-      sched/topology: Mark SD_SERIALIZE as SDF_NEEDS_GROUPS
-      sched/topology: Mark SD_ASYM_PACKING as SDF_NEEDS_GROUPS
-      sched/topology: Mark SD_OVERLAP as SDF_NEEDS_GROUPS
-      sched/topology: Mark SD_NUMA as SDF_NEEDS_GROUPS
-      sched/topology: Move sd_flag_debug out of linux/sched/topology.h
-      sched/topology: Move SD_DEGENERATE_GROUPS_MASK out of linux/sched/topology.h
-      sched/topology: Move sd_flag_debug out of #ifdef CONFIG_SYSCTL
-
-Vincent Donnefort (1):
-      sched/debug: Add new tracepoint to track cpu_capacity
-
-Vincent Guittot (5):
-      sched/numa: Use runnable_avg to classify node
-      sched/fair: Relax constraint on task's load during load balance
-      sched/fair: Reduce minimal imbalance threshold
-      sched/fair: Minimize concurrent LBs between domain level
-      sched/fair: Reduce busy load balance interval
-
-Xianting Tian (1):
-      sched/fair: Remove the force parameter of update_tg_load_avg()
-
-Xunlei Pang (1):
-      sched/fair: Fix wrong cpu selecting from isolated domain
-
-YueHaibing (1):
-      sched: Remove unused inline function uclamp_bucket_base_value()
-
-
- MAINTAINERS                                    |   1 +
- arch/arm/kernel/topology.c                     |  26 ---
- include/linux/sched.h                          |   5 +-
- include/linux/sched/mm.h                       |   3 +
- include/linux/sched/sd_flags.h                 | 156 +++++++++++++++++
- include/linux/sched/topology.h                 |  37 ++--
- include/linux/syscalls.h                       |   2 +-
- include/trace/events/sched.h                   |   4 +
- include/uapi/linux/membarrier.h                |  26 +++
- kernel/sched/core.c                            |  13 +-
- kernel/sched/deadline.c                        |  34 +++-
- kernel/sched/debug.c                           |  56 ++++++-
- kernel/sched/fair.c                            | 103 ++++++++----
- kernel/sched/features.h                        |   2 +-
- kernel/sched/membarrier.c                      | 136 +++++++++++----
- kernel/sched/topology.c                        |  69 ++++----
- tools/testing/selftests/rseq/param_test.c      | 223 ++++++++++++++++++++++++-
- tools/testing/selftests/rseq/rseq-x86.h        |  57 +++++++
- tools/testing/selftests/rseq/run_param_test.sh |   2 +
- 19 files changed, 803 insertions(+), 152 deletions(-)
- create mode 100644 include/linux/sched/sd_flags.h
+       Arnd
