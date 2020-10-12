@@ -2,90 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BD7628AB67
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 03:26:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40B8428AB7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 03:45:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727428AbgJLB0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 21:26:54 -0400
-Received: from smtp.h3c.com ([60.191.123.56]:31220 "EHLO h3cspam01-ex.h3c.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726543AbgJLB0y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 21:26:54 -0400
-Received: from DAG2EX06-IDC.srv.huawei-3com.com ([10.8.0.69])
-        by h3cspam01-ex.h3c.com with ESMTPS id 09C1Q0W3023693
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 12 Oct 2020 09:26:00 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
- DAG2EX06-IDC.srv.huawei-3com.com (10.8.0.69) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 12 Oct 2020 09:26:01 +0800
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
- by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%7]) with
- mapi id 15.01.1713.004; Mon, 12 Oct 2020 09:26:01 +0800
-From:   Tianxianting <tian.xianting@h3c.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        "John Fastabend" <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        "Song Liu" <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] bpf: Avoid allocing memory on memoryless numa node
-Thread-Topic: [PATCH] bpf: Avoid allocing memory on memoryless numa node
-Thread-Index: AQHWnuLrmIxw4uY1XUG+lUKVObi7NKmSqAmAgACHNeA=
-Date:   Mon, 12 Oct 2020 01:26:01 +0000
-Message-ID: <21cff6313475470e9b316911c748f890@h3c.com>
-References: <20201010084417.5400-1-tian.xianting@h3c.com>
- <CAADnVQJUL7BynGMD_nGu8y=D1yv6TybOxeSh03TrkD7kS0aOrA@mail.gmail.com>
-In-Reply-To: <CAADnVQJUL7BynGMD_nGu8y=D1yv6TybOxeSh03TrkD7kS0aOrA@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.99.141.128]
-x-sender-location: DAG2
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726685AbgJLBpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 21:45:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726430AbgJLBpm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Oct 2020 21:45:42 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75F95C0613CE
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 18:45:42 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C8hMf0qsMz9sRK;
+        Mon, 12 Oct 2020 12:45:33 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1602467138;
+        bh=QMZkogI/gfDoyPHm/Lw5pjXwd5LTspyIiIIxRsHsUhE=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=G2SILhc5zkJv94KDxb2kWB4/qyoGwraRecRHH+4IQoyIvFEaqLhtooHgvfyzzuZFl
+         YPzWUvHFRZjWnq1p1acv2p2D2YbjTyAUNMFR4dAEuVcXaxgVmIhpeIb9mzH9gwkLOg
+         CHCnaovOIHeORhIoMTGfpSQTRcwjmYcm/3NQPYBgEjT33tl/8LxYGXrDI8kpbjmQMq
+         9bQiWKxfSPNGHzMZNRC27yLVwkYbcNr1BZAo8z3LRmRTEZv8wGMlCy18gVmp3TpRwu
+         DxUjK2O/IPbDNOvuqm5k2QTF8awhYHFfcM13Ag5PYgQr+XefpUFtjhDs38pcQFyTlR
+         sBDe+EGxPLyfg==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Qian Cai <cai@redhat.com>, LKML <linux-kernel@vger.kernel.org>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Subject: Re: [PATCH] powerpc/smp: Use GFP_ATOMIC while allocating tmp mask
+In-Reply-To: <20201008034240.34059-1-srikar@linux.vnet.ibm.com>
+References: <20201008034240.34059-1-srikar@linux.vnet.ibm.com>
+Date:   Mon, 12 Oct 2020 12:45:33 +1100
+Message-ID: <874kn01aki.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-X-DNSRBL: 
-X-MAIL: h3cspam01-ex.h3c.com 09C1Q0W3023693
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhhbmtzIEFsZXhlaSBmb3IgeW91ciBzdWdnZXN0aW9uLA0KSSB3aWxsIHRyeSB0byBkbyBpdC4N
-Cg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IEFsZXhlaSBTdGFyb3ZvaXRvdiBb
-bWFpbHRvOmFsZXhlaS5zdGFyb3ZvaXRvdkBnbWFpbC5jb21dIA0KU2VudDogTW9uZGF5LCBPY3Rv
-YmVyIDEyLCAyMDIwIDk6MjEgQU0NClRvOiB0aWFueGlhbnRpbmcgKFJEKSA8dGlhbi54aWFudGlu
-Z0BoM2MuY29tPg0KQ2M6IEFsZXhlaSBTdGFyb3ZvaXRvdiA8YXN0QGtlcm5lbC5vcmc+OyBEYW5p
-ZWwgQm9ya21hbm4gPGRhbmllbEBpb2dlYXJib3gubmV0PjsgRGF2aWQgUy4gTWlsbGVyIDxkYXZl
-bUBkYXZlbWxvZnQubmV0PjsgSmFrdWIgS2ljaW5za2kgPGt1YmFAa2VybmVsLm9yZz47IEplc3Bl
-ciBEYW5nYWFyZCBCcm91ZXIgPGhhd2tAa2VybmVsLm9yZz47IEpvaG4gRmFzdGFiZW5kIDxqb2hu
-LmZhc3RhYmVuZEBnbWFpbC5jb20+OyBNYXJ0aW4gS2FGYWkgTGF1IDxrYWZhaUBmYi5jb20+OyBT
-b25nIExpdSA8c29uZ2xpdWJyYXZpbmdAZmIuY29tPjsgWW9uZ2hvbmcgU29uZyA8eWhzQGZiLmNv
-bT47IEFuZHJpaSBOYWtyeWlrbyA8YW5kcmlpbkBmYi5jb20+OyBLUCBTaW5naCA8a3BzaW5naEBj
-aHJvbWl1bS5vcmc+OyBOZXR3b3JrIERldmVsb3BtZW50IDxuZXRkZXZAdmdlci5rZXJuZWwub3Jn
-PjsgYnBmIDxicGZAdmdlci5rZXJuZWwub3JnPjsgTEtNTCA8bGludXgta2VybmVsQHZnZXIua2Vy
-bmVsLm9yZz4NClN1YmplY3Q6IFJlOiBbUEFUQ0hdIGJwZjogQXZvaWQgYWxsb2NpbmcgbWVtb3J5
-IG9uIG1lbW9yeWxlc3MgbnVtYSBub2RlDQoNCk9uIFNhdCwgT2N0IDEwLCAyMDIwIGF0IDE6NTUg
-QU0gWGlhbnRpbmcgVGlhbiA8dGlhbi54aWFudGluZ0BoM2MuY29tPiB3cm90ZToNCj4NCj4gSW4g
-YXJjaGl0ZWN0dXJlIGxpa2UgcG93ZXJwYywgd2UgY2FuIGhhdmUgY3B1cyB3aXRob3V0IGFueSBs
-b2NhbCANCj4gbWVtb3J5IGF0dGFjaGVkIHRvIGl0LiBJbiBzdWNoIGNhc2VzIHRoZSBub2RlIGRv
-ZXMgbm90IGhhdmUgcmVhbCBtZW1vcnkuDQo+DQo+IFVzZSBsb2NhbF9tZW1vcnlfbm9kZSgpLCB3
-aGljaCBpcyBndWFyYW50ZWVkIHRvIGhhdmUgbWVtb3J5Lg0KPiBsb2NhbF9tZW1vcnlfbm9kZSBp
-cyBhIG5vb3AgaW4gb3RoZXIgYXJjaGl0ZWN0dXJlcyB0aGF0IGRvZXMgbm90IA0KPiBzdXBwb3J0
-IG1lbW9yeWxlc3Mgbm9kZXMuDQouLi4NCj4gICAgICAgICAvKiBIYXZlIG1hcC0+bnVtYV9ub2Rl
-LCBidXQgY2hvb3NlIG5vZGUgb2YgcmVkaXJlY3QgdGFyZ2V0IENQVSAqLw0KPiAtICAgICAgIG51
-bWEgPSBjcHVfdG9fbm9kZShjcHUpOw0KPiArICAgICAgIG51bWEgPSBsb2NhbF9tZW1vcnlfbm9k
-ZShjcHVfdG9fbm9kZShjcHUpKTsNCg0KVGhlcmUgYXJlIHNvIG1hbnkgY2FsbHMgdG8gY3B1X3Rv
-X25vZGUoKSB0aHJvdWdob3V0IHRoZSBrZXJuZWwuDQpBcmUgeW91IGdvaW5nIHRvIGNvbnZlcnQg
-YWxsIG9mIHRoZW0gb25lIHBhdGNoIGF0IGEgdGltZSB0byB0aGUgYWJvdmUgc2VxdWVuY2U/DQpX
-aHkgbm90IGRvIHRoaXMgQ09ORklHX0hBVkVfTUVNT1JZTEVTU19OT0RFUyBpbiBjcHVfdG9fbm9k
-ZSgpIGluc3RlYWQ/DQphbmQgc2F2ZSB0aGUgY2h1cm4uDQo=
+Srikar Dronamraju <srikar@linux.vnet.ibm.com> writes:
+
+> Qian Cai reported a regression where CPU Hotplug fails with the latest
+> powerpc/next
+>
+> BUG: sleeping function called from invalid context at mm/slab.h:494
+> in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 0, name: swapper/88
+> no locks held by swapper/88/0.
+> irq event stamp: 18074448
+> hardirqs last  enabled at (18074447): [<c0000000001a2a7c>] tick_nohz_idle_enter+0x9c/0x110
+> hardirqs last disabled at (18074448): [<c000000000106798>] do_idle+0x138/0x3b0
+> do_idle at kernel/sched/idle.c:253 (discriminator 1)
+> softirqs last  enabled at (18074440): [<c0000000000bbec4>] irq_enter_rcu+0x94/0xa0
+> softirqs last disabled at (18074439): [<c0000000000bbea0>] irq_enter_rcu+0x70/0xa0
+> CPU: 88 PID: 0 Comm: swapper/88 Tainted: G        W         5.9.0-rc8-next-20201007 #1
+> Call Trace:
+> [c00020000a4bfcf0] [c000000000649e98] dump_stack+0xec/0x144 (unreliable)
+> [c00020000a4bfd30] [c0000000000f6c34] ___might_sleep+0x2f4/0x310
+> [c00020000a4bfdb0] [c000000000354f94] slab_pre_alloc_hook.constprop.82+0x124/0x190
+> [c00020000a4bfe00] [c00000000035e9e8] __kmalloc_node+0x88/0x3a0
+> slab_alloc_node at mm/slub.c:2817
+> (inlined by) __kmalloc_node at mm/slub.c:4013
+> [c00020000a4bfe80] [c0000000006494d8] alloc_cpumask_var_node+0x38/0x80
+> kmalloc_node at include/linux/slab.h:577
+> (inlined by) alloc_cpumask_var_node at lib/cpumask.c:116
+> [c00020000a4bfef0] [c00000000003eedc] start_secondary+0x27c/0x800
+> update_mask_by_l2 at arch/powerpc/kernel/smp.c:1267
+> (inlined by) add_cpu_to_masks at arch/powerpc/kernel/smp.c:1387
+> (inlined by) start_secondary at arch/powerpc/kernel/smp.c:1420
+> [c00020000a4bff90] [c00000000000c468] start_secondary_resume+0x10/0x14
+>
+> Allocating a temporary mask while performing a CPU Hotplug operation
+> with CONFIG_CPUMASK_OFFSTACK enabled, leads to calling a sleepable
+> function from a atomic context. Fix this by allocating the temporary
+> mask with GFP_ATOMIC flag.
+>
+> If there is a failure to allocate a mask, scheduler is going to observe
+> that this CPU's topology is broken. Instead of having to speculate why
+> the topology is broken, add a WARN_ON_ONCE.
+>
+> Fixes: 70a94089d7f7 ("powerpc/smp: Optimize update_coregroup_mask")
+> Fixes: 3ab33d6dc3e9 ("powerpc/smp: Optimize update_mask_by_l2")
+> Reported-by: Qian Cai <cai@redhat.com>
+> Suggested-by: Qian Cai <cai@redhat.com>
+> Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+> Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+> Cc: LKML <linux-kernel@vger.kernel.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Nathan Lynch <nathanl@linux.ibm.com>
+> Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
+> Cc: Ingo Molnar <mingo@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Valentin Schneider <valentin.schneider@arm.com>
+> Cc: Qian Cai <cai@redhat.com>
+> ---
+>  arch/powerpc/kernel/smp.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
+> index 0dc1b85..1268558 100644
+> --- a/arch/powerpc/kernel/smp.c
+> +++ b/arch/powerpc/kernel/smp.c
+> @@ -1264,7 +1264,8 @@ static bool update_mask_by_l2(int cpu)
+>  		return false;
+>  	}
+>  
+> -	alloc_cpumask_var_node(&mask, GFP_KERNEL, cpu_to_node(cpu));
+> +	/* In CPU-hotplug path, hence use GFP_ATOMIC */
+> +	WARN_ON_ONCE(!alloc_cpumask_var_node(&mask, GFP_ATOMIC, cpu_to_node(cpu)));
+
+A failed memory allocation is not something that should trigger a WARN,
+a pr_warn() maybe.
+
+But ...
+
+>  	cpumask_and(mask, cpu_online_mask, cpu_cpu_mask(cpu));
+
+If the allocation failed this will oops (mask will be NULL).
+
+cheers
