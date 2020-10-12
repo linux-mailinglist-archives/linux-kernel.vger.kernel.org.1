@@ -2,61 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F72D28C145
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 21:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48F3A28C147
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 21:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389546AbgJLTNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 15:13:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59152 "EHLO mail.kernel.org"
+        id S2390915AbgJLTOG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 12 Oct 2020 15:14:06 -0400
+Received: from aposti.net ([89.234.176.197]:44790 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730833AbgJLTNz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 15:13:55 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0178B206C1;
-        Mon, 12 Oct 2020 19:13:52 +0000 (UTC)
-Date:   Mon, 12 Oct 2020 15:13:51 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Tony Jones <tonyj@suse.de>, LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
-        Zamir SUN <sztsian@gmail.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        zsun@redhat.com, Vitaly Chikunov <vt@altlinux.org>,
-        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
-        Yordan Karadzhov <ykaradzhov@vmware.com>,
-        Ben Hutchings <ben@decadent.org.uk>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        John Kacur <jkacur@redhat.com>,
-        Clark Williams <williams@redhat.com>, powertop@lists.01.org,
-        Al Stone <ahs3@debian.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: Re: [ANNOUNCE] libtraceevent.git
-Message-ID: <20201012151351.06cf284a@gandalf.local.home>
-In-Reply-To: <20201012185217.GB1158208@krava>
-References: <20201007130750.49349844@gandalf.local.home>
-        <20201012101208.GF1099489@krava>
-        <20201012111950.55a73588@gandalf.local.home>
-        <20201012184120.GN13697@suse.de>
-        <20201012185217.GB1158208@krava>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2390172AbgJLTOF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 15:14:05 -0400
+Date:   Mon, 12 Oct 2020 21:13:53 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH] drm/ingenic: Fix bad revert
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-next@vger.kernel.org
+Message-Id: <53S3IQ.YMG1AT14NTR93@crapouillou.net>
+In-Reply-To: <20201012141041.GU438822@phenom.ffwll.local>
+References: <20201012152452.432c4867@canb.auug.org.au>
+        <20201012102509.10690-1-paul@crapouillou.net>
+        <20201012141041.GU438822@phenom.ffwll.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Oct 2020 20:52:17 +0200
-Jiri Olsa <jolsa@redhat.com> wrote:
 
-> > I presume some perf Makefile changes will be forthcoming to use it,
-> > rather than continuing to force build it out of TRACE_EVENT_DIR  
+
+Le lun. 12 oct. 2020 à 16:10, Daniel Vetter <daniel@ffwll.ch> a écrit 
+:
+> On Mon, Oct 12, 2020 at 12:25:09PM +0200, Paul Cercueil wrote:
+>>  Fix a badly reverted commit. The revert commit was cherry-picked 
+>> from
+>>  drm-misc-next to drm-misc-next-fixes, and in the process some 
+>> unrelated
+>>  code was added.
+>> 
+>>  Fixes: a3fb64c00d44 "Revert "gpu/drm: ingenic: Add option to mmap 
+>> GEM buffers cached""
+>>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 > 
-> right, we need to detect it in features like any other library
-> and use it if it's found
+> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-I need to do the same with trace-cmd.
+I applied the patch to drm-misc-next-fixes.
 
--- Steve
+Thanks,
+-Paul
+
+> And yes if you use git cherry-pick it'll do a 3 way merge, and
+> occasionally it's very tricky to resolve that properly. Especially 
+> when
+> you're not used to it.
+> 
+> What I tend to do to double check cerry-picks is git show both 
+> commits,
+> and compare the entire diff line-by-line to make sure I didn't 
+> misplace
+> anything.
+> 
+> Another trick is to use the raw patch instead of cherry-pick, since 
+> that
+> won't do a 3 way merge where you might get confused with other 
+> context and
+> fun stuff like that.
+> 
+> Cheers, Daniel
+>>  ---
+>>   drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 16 ----------------
+>>   1 file changed, 16 deletions(-)
+>> 
+>>  diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c 
+>> b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>>  index 1be1235bd546..a3d1617d7c67 100644
+>>  --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>>  +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>>  @@ -440,20 +440,6 @@ void ingenic_drm_plane_config(struct device 
+>> *dev,
+>>   	}
+>>   }
+>> 
+>>  -static void ingenic_drm_update_palette(struct ingenic_drm *priv,
+>>  -				       const struct drm_color_lut *lut)
+>>  -{
+>>  -	unsigned int i;
+>>  -
+>>  -	for (i = 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); i++) {
+>>  -		u16 color = drm_color_lut_extract(lut[i].red, 5) << 11
+>>  -			| drm_color_lut_extract(lut[i].green, 6) << 5
+>>  -			| drm_color_lut_extract(lut[i].blue, 5);
+>>  -
+>>  -		priv->dma_hwdescs->palette[i] = color;
+>>  -	}
+>>  -}
+>>  -
+>>   static void ingenic_drm_plane_atomic_update(struct drm_plane 
+>> *plane,
+>>   					    struct drm_plane_state *oldstate)
+>>   {
+>>  @@ -464,8 +450,6 @@ static void 
+>> ingenic_drm_plane_atomic_update(struct drm_plane *plane,
+>>   	dma_addr_t addr;
+>> 
+>>   	if (state && state->fb) {
+>>  -		crtc_state = state->crtc->state;
+>>  -
+>>   		addr = drm_fb_cma_get_gem_addr(state->fb, state, 0);
+>>   		width = state->src_w >> 16;
+>>   		height = state->src_h >> 16;
+>>  --
+>>  2.28.0
+>> 
+> 
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
+
+
