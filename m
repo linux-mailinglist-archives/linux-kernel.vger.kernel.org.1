@@ -2,83 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05BE828B570
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0806128B572
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729266AbgJLNEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:04:47 -0400
-Received: from mail-ej1-f67.google.com ([209.85.218.67]:42809 "EHLO
-        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729054AbgJLNEr (ORCPT
+        id S1729343AbgJLNFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:05:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgJLNFH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:04:47 -0400
-Received: by mail-ej1-f67.google.com with SMTP id h24so23044105ejg.9;
-        Mon, 12 Oct 2020 06:04:45 -0700 (PDT)
+        Mon, 12 Oct 2020 09:05:07 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BD63C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 06:05:07 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id j136so17475746wmj.2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 06:05:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XlL7umVsvWUu9nC85NmIJJazhDfhIvxS22WEywbwFsQ=;
+        b=tmRYrzcgKlzAUQKgP5vXL9/uTTj7B/U9f0202gf3G2SLvMnx87gE1KviAzRDfa8QX/
+         HCwSellky3Y8J5DozzR6KX7VZQOLBD/jORIAj8cGGdvCoZu92TJjNlQj3h8QnZYfX5Ln
+         44oCi3Ixv0AJbVa7MF/B2Nz21Nf74thJ6GOz8VVyfQ+lbZfAXWPuja//CDmOjR2rqyh3
+         AqXDj8eHPBmUhTIvnZJB6Qpf3vW5eTEBErBlGKdUUw4V+JwfxBrBInm1KjG5aEvGL22X
+         CPKWlcctVUb9/sZU9oaNzezZKHlwcr36YeIBCZIf1BI7azSCqFVGZJ3SM5LAG7ZX2kte
+         9EoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=mBSC1L14aODojvS84MshxRPw6wp9K3Se6pbpNxJH76o=;
-        b=UokMqcmdloTstZv/Cs5p+4qR/UAa5VxN+EQrpkeaCspCtapy1VE5yBow4Go/vkTTc0
-         BMnGzdOF2SS0mKrkHHEsUf7fVQu7L5aayQBexRSzftIpHo+55vT5tizXL/QXJtDzl0YR
-         ORm5Hj/azJ61QZpb/jd+Bc/LAWbRSoXctyuopDYzm19HN23tXfMtFni6aF5ruOfpmSW1
-         RoJlED0mhA8yDC2jQ+Atqid31RWSfWyVrmxilkOzfgv0Auy8FhJa+D8P8CxlIPtZDzuW
-         cxAew8Mqup8pOH2MhgY41EPtPQ+SpqxArXOUAHSixlkbwE9gFKYv412P4pXsXMleVaB2
-         pJdA==
-X-Gm-Message-State: AOAM532ZEnb01dM/3O94rwcMHSOyy7EuJ3Sm27Uy/8zWTMn9nWXggr9y
-        xibqy1/zPFawD2C1KgsM48U=
-X-Google-Smtp-Source: ABdhPJyrBRuKfwAvIEb0BAfwEfuiA4d9/Ym01zd/j4aP5SQ43xyQOlj21q/KSm2l3xcMXWDjeRkEmg==
-X-Received: by 2002:a17:907:20e6:: with SMTP id rh6mr27243130ejb.169.1602507885060;
-        Mon, 12 Oct 2020 06:04:45 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.215])
-        by smtp.googlemail.com with ESMTPSA id v23sm10502289edq.86.2020.10.12.06.04.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 12 Oct 2020 06:04:43 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 15:04:40 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Anson Huang <Anson.Huang@nxp.com>
-Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, aford173@gmail.com,
-        daniel.baluta@nxp.com, shengjiu.wang@nxp.com, peter.chen@nxp.com,
-        alifer.wsdm@gmail.com, abel.vesa@nxp.com, yibin.gong@nxp.com,
-        jun.li@nxp.com, l.stach@pengutronix.de, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Linux-imx@nxp.com
-Subject: Re: [PATCH V2 1/3] arm64: dts: imx8mm: Correct WDOG_B pin
- configuration
-Message-ID: <20201012130440.GA6468@kozik-lap>
-References: <1602506642-5262-1-git-send-email-Anson.Huang@nxp.com>
+         :mime-version:content-disposition:in-reply-to;
+        bh=XlL7umVsvWUu9nC85NmIJJazhDfhIvxS22WEywbwFsQ=;
+        b=Ie4AMAmeoivjFztpoT532GMSo8h73QqEaxJJMe54BD9laDLdujuxRpTzo0qj2nyXcH
+         kqqW52GFmzAraHCCaqhRcXBGF+vv4eGaiftwJghribkaqpeq+HEaKQGDUPjUM59R+J8J
+         kLMcbSqszQcWKB5kSXazAALoNF+7qXOyKlQGYUxZ8LHRBBIP++BIpMst39WWJX4vGThn
+         2qdF0FtT7OUUBU6w78vunASccp/OGOLNjEUuimm8v2yhO9z2+9t7Cr5AEqUNMIoZWgtx
+         g7q/EBD91NeJSXyqfM7fPU4Yc+4XBAGglNPwpmV5SLs7YMAyiY9Nj+UArFM3WwBB6M56
+         gBrg==
+X-Gm-Message-State: AOAM531TSUQmkrZ7AiyATZhblZsXICBjhcSov1uZDhslFPdVSBdpMFxn
+        XXAnHyVgCQ+KsmIhIHfFHfoqlQ==
+X-Google-Smtp-Source: ABdhPJxvJGKO6cr1CfvjsY4aqYWIxii9Fm+gSpkgy8mfxVH6cieqbEh1hQqbAuo5sPR/uY0zrz+PeA==
+X-Received: by 2002:a1c:1b15:: with SMTP id b21mr11006430wmb.143.1602507905993;
+        Mon, 12 Oct 2020 06:05:05 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:110:f693:9fff:fef4:a7ef])
+        by smtp.gmail.com with ESMTPSA id 64sm4434430wmd.3.2020.10.12.06.05.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 06:05:05 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 14:05:01 +0100
+From:   Quentin Perret <qperret@google.com>
+To:     zhuguangqing83@gmail.com
+Cc:     lukasz.luba@arm.com, quentin.perret@arm.com, rjw@rjwysocki.net,
+        pavel@ucw.cz, len.brown@intel.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        zhuguangqing <zhuguangqing@xiaomi.com>
+Subject: Re: [PATCH] PM / EM: consult something about cpumask in
+ em_dev_register_perf_domain
+Message-ID: <20201012130501.GA3366383@google.com>
+References: <20201012124136.4147-1-zhuguangqing83@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1602506642-5262-1-git-send-email-Anson.Huang@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201012124136.4147-1-zhuguangqing83@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 08:44:00PM +0800, Anson Huang wrote:
-> Different revision of i.MX8MM EVK boards may have different external
-> pull up registor design, some are enabled while some are NOT, to make
-> sure the WDOG_B pin works properly, better to enable internal pull up
-> resistor. Since enabling internal pull up resistor is NOT harmful and
-> having benefit of flexibility on different board design, just enable
-> it for all i.MX8MM boards; And schmitt input is NOT necessary for this
-> WDOG_B output pin, so remove it; Open drain outputs provide more
-> flexibility to a designer as they can be pulled-up to any voltage found
-> in the system, so enable it as well.
+Hi,
+
+On Monday 12 Oct 2020 at 20:41:36 (+0800), zhuguangqing83@gmail.com wrote:
+> From: zhuguangqing <zhuguangqing@xiaomi.com>
 > 
-> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-> ---
-> Changes since V1:
-> 	- Provide more explanation of removing schmitt input and enabling open drain in commit msg.
-> ---
->  arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi | 2 +-
->  arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi        | 2 +-
->  arch/arm64/boot/dts/freescale/imx8mm-var-som.dtsi    | 2 +-
->  3 files changed, 3 insertions(+), 3 deletions(-)
+> Hi, Lukasz, Quentin
+>   I have three questions to consult about cpumask in energy_model.c.
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+OK, let's see if we can help :)
 
-Best regards,
-Krzysztof
+> 1, The first one is about the meanings of the following two parameters,
+> [1] and [2].
+> [1]: "cpumask_t *cpus" in function em_dev_register_perf_domain(): Pointer
+> to cpumask_t, which in case of a CPU device is obligatory. It can be taken
+> from i.e. 'policy->cpus'.
+> [2]: "unsigned long cpus[]" in struct em_perf_domain: Cpumask covering the
+> CPUs of the domain. It's here for performance reasons to avoid potential
+> cache misses during energy calculations in the scheduler and simplifies
+> allocating/freeing that memory region.
+> 
+> From the current code, we see [2] is copied from [1]. But from comments,
+> accorinding to my understanding, [2] and [1] have different meanings.
+> [1] can be taken from i.e. 'policy->cpus', according to the comment in the
+> defination of struct cpufreq_policy, it means Online CPUs only. Actually,
+> 'policy->cpus' is not always Online CPUs.
+> [2] means each_possible_cpus in the same domain, including phycical
+> hotplug cpus(just possible), logically hotplug cpus(just present) and
+> online cpus.
+>
+> 
+> So, the first question is, what are the meanings of [1] and [2]?
+> I guess maybe there are the following 4 possible choices.
+> A), for_each_possible_cpu in the same domain, maybe phycical hotplug
+> B), for_each_present_cpu in the same domain, maybe logically hotplug
+> C), for_each_online_cpu in the same domain, online
+> D), others
+
+So, if the comments are confusing we should update them, but from the EM
+framework perspective, all cpumasks must be the _possible_ CPUs in the
+domain. It's up to the clients (e.g. the scheduler) to deal with hotplug
+and so on, but the EM framework should cover non-online CPUs too.
+
+> 2, The second question is about the function em_dev_register_perf_domain().
+> If multiple clients register the same performance domain with different
+> *dev or *cpus, how should we handle?
+> 
+> int em_dev_register_perf_domain(struct device *dev, unsigned int nr_states,
+> 			struct em_data_callback *cb, cpumask_t *cpus)
+> 
+> For example, say cpu0 and cpu1 are in the same performance domain,
+> cpu0 is registered first. As part of the init process,
+> em_dev_register_perf_domain() is called, then *dev = cpu0_dev,
+> *cpus = 01b(cpu1 is initially offline). It creates a em_pd for cpu0_dev.
+> After a while, cpu1 is online, em_dev_register_perf_domain() is called
+> again as part of init process for cpu1, then *dev =cpu1_dev,
+> *cpus = 11b(cpu1 is online).  In this case, for the current code,
+> cpu1_dev can not get its em_pd.
+
+As per the above, the registration should be done once, with the mask of
+all possible CPUs in the domain. If CPUs 0 and 1 share the same domain, a
+single call to em_dev_register_perf_domain() should be sufficient to
+register both of them at once.
+
+> 3, The third question is, how can we ensure cpu_dev as follows is not
+> NULL? If we can't ensure that, maybe we should add a check before using
+> it.
+> /kernel/power/energy_model.c
+> 174) static int em_create_pd(struct device *dev, int nr_states,
+> 175)                    struct em_data_callback *cb, cpumask_t *cpus)
+> 176) {
+> 199)    if (_is_cpu_device(dev))
+> 200)            for_each_cpu(cpu, cpus) {
+> 201)                    cpu_dev = get_cpu_device(cpu);
+> 202)                    cpu_dev->em_pd = pd;
+> 203)            }
+
+And that should not be necessary as we check for the !dev case at the
+top of em_dev_register_perf_domain(). Or were you thinking about
+something else?
+
+Thanks,
+Quentin
