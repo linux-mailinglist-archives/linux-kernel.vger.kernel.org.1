@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACFFC28B6F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5742928B666
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731322AbgJLNjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:39:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42478 "EHLO mail.kernel.org"
+        id S2389140AbgJLNdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:33:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35184 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731274AbgJLNix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:38:53 -0400
+        id S2389089AbgJLNdH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:33:07 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 958772076E;
-        Mon, 12 Oct 2020 13:38:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1E45920BED;
+        Mon, 12 Oct 2020 13:32:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509931;
-        bh=v6TC/afamof1ms9LRUmLrPjC/pPoBr805aVrngS61SY=;
+        s=default; t=1602509579;
+        bh=3hi9m9Cnj4WTgtPvSnSz+apK7xXQCPwDRaPgs7QdrGM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JtBa+583+sTOeLdScj5YSZjeo+wJ3w//mY0tcjmMOcjB+yr9t56pa7uww5UInx3cs
-         DuPXy/tRfVVsAeXNL++anty5sGiHBvOCcR9847WKir2IrNlwjs7NvG18K8wwFMqvN4
-         KY4co8yqM/yX9pBP3fLU8oXbGC+iYCIClQ3IMeRM=
+        b=ksb5J48SpIu5QDWqNAkke1brqFrmLN8f6gSbMlctuPAP73fqYe6s+FJoba3rpZS7c
+         Sk2JTAH7hzKrDaT8xYE1eamn5sQgP9ws6mKtu7waRUippdrC1/GllH3VeU4+GvX5i3
+         jGRpPCnKe+1ubxqamX6vl4t1MQCzfn4Kamiswapo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Peilin Ye <yepeilin.cs@gmail.com>,
         Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: [PATCH 4.19 02/49] Fonts: Support FONT_EXTRA_WORDS macros for built-in fonts
+Subject: [PATCH 4.4 18/39] Fonts: Support FONT_EXTRA_WORDS macros for built-in fonts
 Date:   Mon, 12 Oct 2020 15:26:48 +0200
-Message-Id: <20201012132629.563296671@linuxfoundation.org>
+Message-Id: <20201012132628.991511271@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132629.469542486@linuxfoundation.org>
-References: <20201012132629.469542486@linuxfoundation.org>
+In-Reply-To: <20201012132628.130632267@linuxfoundation.org>
+References: <20201012132628.130632267@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -104,7 +104,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  #endif /* _VIDEO_FONT_H */
 --- a/lib/fonts/font_10x18.c
 +++ b/lib/fonts/font_10x18.c
-@@ -8,8 +8,8 @@
+@@ -7,8 +7,8 @@
  
  #define FONTDATAMAX 9216
  
@@ -115,7 +115,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	/* 0 0x00 '^@' */
  	0x00, 0x00, /* 0000000000 */
  	0x00, 0x00, /* 0000000000 */
-@@ -5129,8 +5129,7 @@ static const unsigned char fontdata_10x1
+@@ -5128,8 +5128,7 @@ static const unsigned char fontdata_10x1
  	0x00, 0x00, /* 0000000000 */
  	0x00, 0x00, /* 0000000000 */
  	0x00, 0x00, /* 0000000000 */
@@ -125,7 +125,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  
  
  const struct font_desc font_10x18 = {
-@@ -5138,7 +5137,7 @@ const struct font_desc font_10x18 = {
+@@ -5137,7 +5136,7 @@ const struct font_desc font_10x18 = {
  	.name	= "10x18",
  	.width	= 10,
  	.height	= 18,
@@ -136,8 +136,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  #else
 --- a/lib/fonts/font_6x10.c
 +++ b/lib/fonts/font_6x10.c
-@@ -1,8 +1,10 @@
- // SPDX-License-Identifier: GPL-2.0
+@@ -1,7 +1,9 @@
  #include <linux/font.h>
  
 -static const unsigned char fontdata_6x10[] = {
@@ -148,7 +147,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	/* 0 0x00 '^@' */
  	0x00, /* 00000000 */
  	0x00, /* 00000000 */
-@@ -3074,14 +3076,13 @@ static const unsigned char fontdata_6x10
+@@ -3073,14 +3075,13 @@ static const unsigned char fontdata_6x10
  	0x00, /* 00000000 */
  	0x00, /* 00000000 */
  	0x00, /* 00000000 */
@@ -167,7 +166,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  };
 --- a/lib/fonts/font_6x11.c
 +++ b/lib/fonts/font_6x11.c
-@@ -9,8 +9,8 @@
+@@ -8,8 +8,8 @@
  
  #define FONTDATAMAX (11*256)
  
@@ -178,7 +177,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	/* 0 0x00 '^@' */
  	0x00, /* 00000000 */
  	0x00, /* 00000000 */
-@@ -3338,8 +3338,7 @@ static const unsigned char fontdata_6x11
+@@ -3337,8 +3337,7 @@ static const unsigned char fontdata_6x11
  	0x00, /* 00000000 */
  	0x00, /* 00000000 */
  	0x00, /* 00000000 */
@@ -188,7 +187,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  
  
  const struct font_desc font_vga_6x11 = {
-@@ -3347,7 +3346,7 @@ const struct font_desc font_vga_6x11 = {
+@@ -3346,7 +3345,7 @@ const struct font_desc font_vga_6x11 = {
  	.name	= "ProFont6x11",
  	.width	= 6,
  	.height	= 11,
@@ -199,7 +198,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  };
 --- a/lib/fonts/font_7x14.c
 +++ b/lib/fonts/font_7x14.c
-@@ -8,8 +8,8 @@
+@@ -7,8 +7,8 @@
  
  #define FONTDATAMAX 3584
  
@@ -210,7 +209,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	/* 0 0x00 '^@' */
  	0x00, /* 0000000 */
  	0x00, /* 0000000 */
-@@ -4105,8 +4105,7 @@ static const unsigned char fontdata_7x14
+@@ -4104,8 +4104,7 @@ static const unsigned char fontdata_7x14
  	0x00, /* 0000000 */
  	0x00, /* 0000000 */
  	0x00, /* 0000000 */
@@ -220,7 +219,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  
  
  const struct font_desc font_7x14 = {
-@@ -4114,6 +4113,6 @@ const struct font_desc font_7x14 = {
+@@ -4113,6 +4112,6 @@ const struct font_desc font_7x14 = {
  	.name	= "7x14",
  	.width	= 7,
  	.height	= 14,
@@ -230,7 +229,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  };
 --- a/lib/fonts/font_8x16.c
 +++ b/lib/fonts/font_8x16.c
-@@ -10,8 +10,8 @@
+@@ -9,8 +9,8 @@
  
  #define FONTDATAMAX 4096
  
@@ -241,7 +240,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	/* 0 0x00 '^@' */
  	0x00, /* 00000000 */
  	0x00, /* 00000000 */
-@@ -4619,8 +4619,7 @@ static const unsigned char fontdata_8x16
+@@ -4618,8 +4618,7 @@ static const unsigned char fontdata_8x16
  	0x00, /* 00000000 */
  	0x00, /* 00000000 */
  	0x00, /* 00000000 */
@@ -251,7 +250,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  
  
  const struct font_desc font_vga_8x16 = {
-@@ -4628,7 +4627,7 @@ const struct font_desc font_vga_8x16 = {
+@@ -4627,7 +4626,7 @@ const struct font_desc font_vga_8x16 = {
  	.name	= "VGA8x16",
  	.width	= 8,
  	.height	= 16,
@@ -262,7 +261,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  EXPORT_SYMBOL(font_vga_8x16);
 --- a/lib/fonts/font_8x8.c
 +++ b/lib/fonts/font_8x8.c
-@@ -9,8 +9,8 @@
+@@ -8,8 +8,8 @@
  
  #define FONTDATAMAX 2048
  
@@ -273,7 +272,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	/* 0 0x00 '^@' */
  	0x00, /* 00000000 */
  	0x00, /* 00000000 */
-@@ -2570,8 +2570,7 @@ static const unsigned char fontdata_8x8[
+@@ -2569,8 +2569,7 @@ static const unsigned char fontdata_8x8[
  	0x00, /* 00000000 */
  	0x00, /* 00000000 */
  	0x00, /* 00000000 */
@@ -283,7 +282,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  
  
  const struct font_desc font_vga_8x8 = {
-@@ -2579,6 +2578,6 @@ const struct font_desc font_vga_8x8 = {
+@@ -2578,6 +2577,6 @@ const struct font_desc font_vga_8x8 = {
  	.name	= "VGA8x8",
  	.width	= 8,
  	.height	= 8,
@@ -293,7 +292,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  };
 --- a/lib/fonts/font_acorn_8x8.c
 +++ b/lib/fonts/font_acorn_8x8.c
-@@ -3,7 +3,10 @@
+@@ -2,7 +2,10 @@
  
  #include <linux/font.h>
  
@@ -305,7 +304,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  /* 00 */  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* ^@ */
  /* 01 */  0x7e, 0x81, 0xa5, 0x81, 0xbd, 0x99, 0x81, 0x7e, /* ^A */
  /* 02 */  0x7e, 0xff, 0xbd, 0xff, 0xc3, 0xe7, 0xff, 0x7e, /* ^B */
-@@ -260,14 +263,14 @@ static const unsigned char acorndata_8x8
+@@ -259,14 +262,14 @@ static const unsigned char acorndata_8x8
  /* FD */  0x38, 0x04, 0x18, 0x20, 0x3c, 0x00, 0x00, 0x00,
  /* FE */  0x00, 0x00, 0x3c, 0x3c, 0x3c, 0x3c, 0x00, 0x00,
  /* FF */  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
@@ -354,7 +353,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  
 --- a/lib/fonts/font_pearl_8x8.c
 +++ b/lib/fonts/font_pearl_8x8.c
-@@ -14,8 +14,8 @@
+@@ -13,8 +13,8 @@
  
  #define FONTDATAMAX 2048
  
@@ -365,7 +364,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
     /* 0 0x00 '^@' */
     0x00, /* 00000000 */
     0x00, /* 00000000 */
-@@ -2575,14 +2575,13 @@ static const unsigned char fontdata_pear
+@@ -2574,14 +2574,13 @@ static const unsigned char fontdata_pear
     0x00, /* 00000000 */
     0x00, /* 00000000 */
     0x00, /* 00000000 */
@@ -384,7 +383,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  };
 --- a/lib/fonts/font_sun12x22.c
 +++ b/lib/fonts/font_sun12x22.c
-@@ -3,8 +3,8 @@
+@@ -2,8 +2,8 @@
  
  #define FONTDATAMAX 11264
  
@@ -395,7 +394,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	/* 0 0x00 '^@' */
  	0x00, 0x00, /* 000000000000 */
  	0x00, 0x00, /* 000000000000 */
-@@ -6148,8 +6148,7 @@ static const unsigned char fontdata_sun1
+@@ -6147,8 +6147,7 @@ static const unsigned char fontdata_sun1
  	0x00, 0x00, /* 000000000000 */
  	0x00, 0x00, /* 000000000000 */
  	0x00, 0x00, /* 000000000000 */
@@ -405,7 +404,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  
  
  const struct font_desc font_sun_12x22 = {
-@@ -6157,7 +6156,7 @@ const struct font_desc font_sun_12x22 =
+@@ -6156,7 +6155,7 @@ const struct font_desc font_sun_12x22 =
  	.name	= "SUN12x22",
  	.width	= 12,
  	.height	= 22,
@@ -416,7 +415,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  #else
 --- a/lib/fonts/font_sun8x16.c
 +++ b/lib/fonts/font_sun8x16.c
-@@ -3,7 +3,8 @@
+@@ -2,7 +2,8 @@
  
  #define FONTDATAMAX 4096
  
@@ -426,7 +425,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  /* */ 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
  /* */ 0x00,0x00,0x7e,0x81,0xa5,0x81,0x81,0xbd,0x99,0x81,0x81,0x7e,0x00,0x00,0x00,0x00,
  /* */ 0x00,0x00,0x7e,0xff,0xdb,0xff,0xff,0xc3,0xe7,0xff,0xff,0x7e,0x00,0x00,0x00,0x00,
-@@ -260,14 +261,14 @@ static const unsigned char fontdata_sun8
+@@ -259,14 +260,14 @@ static const unsigned char fontdata_sun8
  /* */ 0x00,0x70,0xd8,0x30,0x60,0xc8,0xf8,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
  /* */ 0x00,0x00,0x00,0x00,0x7c,0x7c,0x7c,0x7c,0x7c,0x7c,0x7c,0x00,0x00,0x00,0x00,0x00,
  /* */ 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
