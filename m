@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7F6F28B995
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EAAB28B79A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:45:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731710AbgJLOBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:01:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41404 "EHLO mail.kernel.org"
+        id S1730666AbgJLNpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:45:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46218 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731061AbgJLNiF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:38:05 -0400
+        id S1731551AbgJLNmt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:42:49 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D69F9206D9;
-        Mon, 12 Oct 2020 13:38:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 94F5B22227;
+        Mon, 12 Oct 2020 13:42:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509884;
-        bh=DPJ7hSF8Bve5Cv5O4DeRfsryLXidSFc+kkrXAutzhMA=;
+        s=default; t=1602510157;
+        bh=A1jcSsf8w89XJvJHo4za3hRNOQ9EBXCrildb1koHq1o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0wmf9JptQr5XeSN9Jb/T5HsjjHA/zDhT68NTOrZuh0Xsfk3kqMs/QHw07IEmTmplg
-         BQarp77Cj/o1faiRfngxzhgTHJQROfj8iogQprcn24QqFKKDM1YctAz8LNCM8DUDnG
-         Diw2LD03CxXP4YPp3t131gNbLGH8E2gAGLUBuMOY=
+        b=uH2bKUdEmrtNpSBwWeh/Y50zaBZZ0OKBWKdeAsUCPouiya8SVxaeV2X1jCGcWJd86
+         AA9zwLeP1rNYjBXfyxlvYVQExEz1Eto4Em+ZtIpXEgaEwFqMfQk6VWWG0bgNw6ytuV
+         G1Wx7rN+fTv+vyiXXqgiy8MgKL60Ou5oIByBUMek=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com,
-        Petko Manolov <petkan@nucleusys.com>,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 70/70] net: usb: rtl8150: set random MAC address when set_ethernet_addr() fails
-Date:   Mon, 12 Oct 2020 15:27:26 +0200
-Message-Id: <20201012132633.582211822@linuxfoundation.org>
+        stable@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Tonghao Zhang <xiangxia.m.yue@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 64/85] virtio-net: dont disable guest csum when disable LRO
+Date:   Mon, 12 Oct 2020 15:27:27 +0200
+Message-Id: <20201012132635.922502288@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132630.201442517@linuxfoundation.org>
-References: <20201012132630.201442517@linuxfoundation.org>
+In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
+References: <20201012132632.846779148@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,58 +46,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
 
-commit f45a4248ea4cc13ed50618ff066849f9587226b2 upstream.
+[ Upstream commit 1a03b8a35a957f9f38ecb8a97443b7380bbf6a8b ]
 
-When get_registers() fails in set_ethernet_addr(),the uninitialized
-value of node_id gets copied over as the address.
-So, check the return value of get_registers().
+Open vSwitch and Linux bridge will disable LRO of the interface
+when this interface added to them. Now when disable the LRO, the
+virtio-net csum is disable too. That drops the forwarding performance.
 
-If get_registers() executed successfully (i.e., it returns
-sizeof(node_id)), copy over the MAC address using ether_addr_copy()
-(instead of using memcpy()).
-
-Else, if get_registers() failed instead, a randomly generated MAC
-address is set as the MAC address instead.
-
-Reported-by: syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com
-Tested-by: syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com
-Acked-by: Petko Manolov <petkan@nucleusys.com>
-Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Fixes: a02e8964eaf9 ("virtio-net: ethtool configurable LRO")
+Cc: Michael S. Tsirkin <mst@redhat.com>
+Cc: Jason Wang <jasowang@redhat.com>
+Cc: Willem de Bruijn <willemb@google.com>
+Signed-off-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
+Acked-by: Willem de Bruijn <willemb@google.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/rtl8150.c |   16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ drivers/net/virtio_net.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
---- a/drivers/net/usb/rtl8150.c
-+++ b/drivers/net/usb/rtl8150.c
-@@ -277,12 +277,20 @@ static int write_mii_word(rtl8150_t * de
- 		return 1;
- }
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 030d30603c295..99e1a7bc06886 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -63,6 +63,11 @@ static const unsigned long guest_offloads[] = {
+ 	VIRTIO_NET_F_GUEST_CSUM
+ };
  
--static inline void set_ethernet_addr(rtl8150_t * dev)
-+static void set_ethernet_addr(rtl8150_t *dev)
- {
--	u8 node_id[6];
-+	u8 node_id[ETH_ALEN];
-+	int ret;
- 
--	get_registers(dev, IDR, sizeof(node_id), node_id);
--	memcpy(dev->netdev->dev_addr, node_id, sizeof(node_id));
-+	ret = get_registers(dev, IDR, sizeof(node_id), node_id);
++#define GUEST_OFFLOAD_LRO_MASK ((1ULL << VIRTIO_NET_F_GUEST_TSO4) | \
++				(1ULL << VIRTIO_NET_F_GUEST_TSO6) | \
++				(1ULL << VIRTIO_NET_F_GUEST_ECN)  | \
++				(1ULL << VIRTIO_NET_F_GUEST_UFO))
 +
-+	if (ret == sizeof(node_id)) {
-+		ether_addr_copy(dev->netdev->dev_addr, node_id);
-+	} else {
-+		eth_hw_addr_random(dev->netdev);
-+		netdev_notice(dev->netdev, "Assigned a random MAC address: %pM\n",
-+			      dev->netdev->dev_addr);
-+	}
- }
+ struct virtnet_stat_desc {
+ 	char desc[ETH_GSTRING_LEN];
+ 	size_t offset;
+@@ -2572,7 +2577,8 @@ static int virtnet_set_features(struct net_device *dev,
+ 		if (features & NETIF_F_LRO)
+ 			offloads = vi->guest_offloads_capable;
+ 		else
+-			offloads = 0;
++			offloads = vi->guest_offloads_capable &
++				   ~GUEST_OFFLOAD_LRO_MASK;
  
- static int rtl8150_set_mac_address(struct net_device *netdev, void *p)
+ 		err = virtnet_set_guest_offloads(vi, offloads);
+ 		if (err)
+-- 
+2.25.1
+
 
 
