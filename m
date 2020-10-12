@@ -2,198 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21B6A28BD56
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94DEB28BD5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:16:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390597AbgJLQL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 12:11:59 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:41446 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390543AbgJLQL6 (ORCPT
+        id S2403764AbgJLQQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 12:16:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390043AbgJLQQU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 12:11:58 -0400
-Received: by mail-ot1-f67.google.com with SMTP id q21so16275495ota.8;
-        Mon, 12 Oct 2020 09:11:57 -0700 (PDT)
+        Mon, 12 Oct 2020 12:16:20 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2697CC0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 09:16:20 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id c196so6885332ybf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 09:16:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=graV3pGKh1wSZY3RtXTrko5CERBJDFLNGxisxbtlJMw=;
+        b=hmJR1R1dur4ua18it34enqX+n5x5y0EvwVfbAsgm7qP5x7BTZjWf5sof12NZA2T5RD
+         hl+KP6bE7+CmAlsYlsaooToVv2MgT+Yg/hiqGkwd+CZEnqYF+FNw39yo8Q2OJSXnMtQH
+         DdRW3eqRNy+SY3BTeZnrBznxMYMI1w8UNE/Xrig049cP/BzVV1XzK2LMlO5YJl4YBFZg
+         Zq3bV+1UQ+3yZ+pBrMn0godTadJh5178YuNSE/omP0Ixg7XwNc3AjfyUeUH1tigKmxyu
+         toWL9HRsbd7UJH0t+Y0XAvFuoFWgWEoFeZO2UZ825AOOgPOVcJ4isHhC3XDDXySppTm5
+         yQMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FBN0i7koeveN6LV2jTrTmRFBh0GWC3oxf9cjLV0OmvE=;
-        b=fO+OGasTjp2D2UTewOwfFHGMRNj2sXdceIu9ZAS9ftTyAuTJsbCVbkOck78tpQlMhX
-         Zsbf7hqwjknqMjGXSwqWgDHtDMeLQu4iTnfuol48wPqWvsff1IboQKwkFWYHTLx3V5VZ
-         LYWuojqO4pWvsabbaIaer/3IOwFFdgqM+7cneK169F903aOXAbxxuovWGiPFRkgflziX
-         aabbT4pUBab9QFZ5meAmflqoNzEwm+QIzs1/pEhiQkdbJyWULUBWZ57Sn4Biyrco1Se4
-         DOv2LEzC5jznV1lnlUctv8UalNAcjsjcuNFN6LzFvZjGmzIewXRSFUxTn+tTTscCacrE
-         XTRA==
-X-Gm-Message-State: AOAM530tNiAGiEU6MqxIbW9jAVIvqvIYnhCUmbSgADz+bRsBiL9VPg0x
-        GWGcRUAanzi+WqCHsIi7Fg==
-X-Google-Smtp-Source: ABdhPJxd+irepjSAW9fP8Aa4hfahEirk3nmWjcRyyszeGcM8hryXomN6TH6qhmZCrZNvsRa4b9k9aw==
-X-Received: by 2002:a9d:1406:: with SMTP id h6mr18026315oth.59.1602519117323;
-        Mon, 12 Oct 2020 09:11:57 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id l184sm6711195ooc.10.2020.10.12.09.11.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 09:11:56 -0700 (PDT)
-Received: (nullmailer pid 1636788 invoked by uid 1000);
-        Mon, 12 Oct 2020 16:11:56 -0000
-Date:   Mon, 12 Oct 2020 11:11:56 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/5] dt-bindings: gpio: Add a binding header for the
- MSC313 GPIO driver
-Message-ID: <20201012161156.GA1635284@bogus>
-References: <20201011024831.3868571-1-daniel@0x0f.com>
- <20201011024831.3868571-3-daniel@0x0f.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201011024831.3868571-3-daniel@0x0f.com>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=graV3pGKh1wSZY3RtXTrko5CERBJDFLNGxisxbtlJMw=;
+        b=hSGVuCsS9rwx5H0FdePAi2Ed6VT/8Su/IAhtSCKuGKQX95SRfoXfTgi25gvwbybF4+
+         lKdgdPaAz4Fal32QI9UsBsT78hQp3Rpcv0B/zqKyI9XV5PoZLxUpi9DiFoEbUbBnqKQc
+         BalTCWLe4UYjJiH8FkfciLg9Oo8jPWqufa0K1bpCrXkfVdSMTVUPCZLrSJjpJSYpRpzD
+         FLdMD184G33jDArlyJD/LU0qLHc0JrFj9+OvOYUV22amquoItcOycqSs9Lp2KqVEoIPO
+         LAnXww6qgUnphbWxmCSgsINIO/Ut9iDfo4v+40uAAo6n4sTt5xJD/t3fvfz10LoWkoqh
+         8Ptg==
+X-Gm-Message-State: AOAM532PjeZey0Lde9fU9W3XtquH1Iq7sS2DuiOQGR0+SUlQJwH74d9C
+        NodyUelmyqkK4mr9Rz0hgHhlJXlatloX
+X-Google-Smtp-Source: ABdhPJzEx7g8DCF4p6ZkuOEX6HEuWobfi3/dLtAPZ6S90xvqI15QiEGD9YiX1NqaGpXJRe3xSgw0GB+se8Pr
+Sender: "irogers via sendgmr" <irogers@irogers.svl.corp.google.com>
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:f693:9fff:fef4:4583])
+ (user=irogers job=sendgmr) by 2002:a25:e649:: with SMTP id
+ d70mr13241751ybh.127.1602519379310; Mon, 12 Oct 2020 09:16:19 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 09:16:11 -0700
+Message-Id: <20201012161611.366482-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
+Subject: [PATCH v2] perf bench: Use condition variables in numa.
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Peng Fan <fanpeng@loongson.cn>, linux-kernel@vger.kernel.org
+Cc:     Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 11, 2020 at 11:48:28AM +0900, Daniel Palmer wrote:
-> The driver uses the pin names to find the right interrupt for
-> a pin from the device tree so this header reduces the need to
-> have multiple copies of the same string all over the place.
-> 
-> This header also adds defines for the gpio number of each pin
-> from the driver view. The gpio block seems to support 128 lines
-> but what line is mapped to a physical pin depends on the chip.
-> The driver itself uses the index of a pin's offset in an array
-> of the possible offsets for a chip as the gpio number.
-> 
-> The defines remove the need to work out that index to consume
-> a pin in the device tree.
-> 
-> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
-> ---
->  MAINTAINERS                            |  1 +
->  include/dt-bindings/gpio/msc313-gpio.h | 95 ++++++++++++++++++++++++++
->  2 files changed, 96 insertions(+)
->  create mode 100644 include/dt-bindings/gpio/msc313-gpio.h
+The existing approach to synchronization between threads in the numa
+benchmark is unbalanced mutexes. This synchronization causes thread
+sanitizer to warn of locks being taken twice on a thread without an
+unlock, as well as unlocks with no corresponding locks.
+This change replaces the synchronization with more regular condition
+variables. While this fixes one class of thread sanitizer warnings,
+there still remain warnings of data races due to threads reading and
+writing shared memory without any atomics.
 
-This should be part of the previous patch to avoid the error.
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/bench/numa.c | 67 ++++++++++++++++++++++++++++-------------
+ 1 file changed, 46 insertions(+), 21 deletions(-)
 
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 4594b70f2e3a..ec5b49b9955f 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -2158,6 +2158,7 @@ F:	Documentation/devicetree/bindings/arm/mstar/*
->  F:	Documentation/devicetree/bindings/gpio/mstar,msc313-gpio.yaml
->  F:	arch/arm/boot/dts/mstar-*
->  F:	arch/arm/mach-mstar/
-> +F:	include/dt-bindings/gpio/msc313-gpio.h
->  
->  ARM/NEC MOBILEPRO 900/c MACHINE SUPPORT
->  M:	Michael Petchkovsky <mkpetch@internode.on.net>
-> diff --git a/include/dt-bindings/gpio/msc313-gpio.h b/include/dt-bindings/gpio/msc313-gpio.h
-> new file mode 100644
-> index 000000000000..655fe03de519
-> --- /dev/null
-> +++ b/include/dt-bindings/gpio/msc313-gpio.h
-> @@ -0,0 +1,95 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
+diff --git a/tools/perf/bench/numa.c b/tools/perf/bench/numa.c
+index f85bceccc459..11726ec6285f 100644
+--- a/tools/perf/bench/numa.c
++++ b/tools/perf/bench/numa.c
+@@ -137,12 +137,13 @@ struct global_info {
+ 	u8			*data;
+ 
+ 	pthread_mutex_t		startup_mutex;
++	pthread_cond_t		startup_cond;
+ 	int			nr_tasks_started;
+ 
+-	pthread_mutex_t		startup_done_mutex;
+-
+ 	pthread_mutex_t		start_work_mutex;
++	pthread_cond_t		start_work_cond;
+ 	int			nr_tasks_working;
++	bool			start_work;
+ 
+ 	pthread_mutex_t		stop_work_mutex;
+ 	u64			bytes_done;
+@@ -483,6 +484,18 @@ static void init_global_mutex(pthread_mutex_t *mutex)
+ 	pthread_mutex_init(mutex, &attr);
+ }
+ 
++/*
++ * Return a process-shared (global) condition variable:
++ */
++static void init_global_cond(pthread_cond_t *cond)
++{
++	pthread_condattr_t attr;
++
++	pthread_condattr_init(&attr);
++	pthread_condattr_setpshared(&attr, PTHREAD_PROCESS_SHARED);
++	pthread_cond_init(cond, &attr);
++}
++
+ static int parse_cpu_list(const char *arg)
+ {
+ 	p0.cpu_list_str = strdup(arg);
+@@ -1136,15 +1149,18 @@ static void *worker_thread(void *__tdata)
+ 	if (g->p.serialize_startup) {
+ 		pthread_mutex_lock(&g->startup_mutex);
+ 		g->nr_tasks_started++;
++		/* The last thread wakes the main process. */
++		if (g->nr_tasks_started == g->p.nr_tasks)
++			pthread_cond_signal(&g->startup_cond);
++
+ 		pthread_mutex_unlock(&g->startup_mutex);
+ 
+ 		/* Here we will wait for the main process to start us all at once: */
+ 		pthread_mutex_lock(&g->start_work_mutex);
++		g->start_work = false;
+ 		g->nr_tasks_working++;
+-
+-		/* Last one wake the main process: */
+-		if (g->nr_tasks_working == g->p.nr_tasks)
+-			pthread_mutex_unlock(&g->startup_done_mutex);
++		while (!g->start_work)
++			pthread_cond_wait(&g->start_work_cond, &g->start_work_mutex);
+ 
+ 		pthread_mutex_unlock(&g->start_work_mutex);
+ 	}
+@@ -1441,8 +1457,9 @@ static int init(void)
+ 
+ 	/* Startup serialization: */
+ 	init_global_mutex(&g->start_work_mutex);
++	init_global_cond(&g->start_work_cond);
+ 	init_global_mutex(&g->startup_mutex);
+-	init_global_mutex(&g->startup_done_mutex);
++	init_global_cond(&g->startup_cond);
+ 	init_global_mutex(&g->stop_work_mutex);
+ 
+ 	init_thread_data();
+@@ -1502,9 +1519,6 @@ static int __bench_numa(const char *name)
+ 	pids = zalloc(g->p.nr_proc * sizeof(*pids));
+ 	pid = -1;
+ 
+-	/* All threads try to acquire it, this way we can wait for them to start up: */
+-	pthread_mutex_lock(&g->start_work_mutex);
+-
+ 	if (g->p.serialize_startup) {
+ 		tprintf(" #\n");
+ 		tprintf(" # Startup synchronization: ..."); fflush(stdout);
+@@ -1526,22 +1540,29 @@ static int __bench_numa(const char *name)
+ 		pids[i] = pid;
+ 
+ 	}
+-	/* Wait for all the threads to start up: */
+-	while (g->nr_tasks_started != g->p.nr_tasks)
+-		usleep(USEC_PER_MSEC);
+-
+-	BUG_ON(g->nr_tasks_started != g->p.nr_tasks);
+ 
+ 	if (g->p.serialize_startup) {
++		bool threads_ready = false;
+ 		double startup_sec;
+ 
+-		pthread_mutex_lock(&g->startup_done_mutex);
++		/*
++		 * Wait for all the threads to start up. The last thread will
++		 * signal this process.
++		 */
++		pthread_mutex_lock(&g->startup_mutex);
++		while (g->nr_tasks_started != g->p.nr_tasks)
++			pthread_cond_wait(&g->startup_cond, &g->startup_mutex);
+ 
+-		/* This will start all threads: */
+-		pthread_mutex_unlock(&g->start_work_mutex);
++		pthread_mutex_unlock(&g->startup_mutex);
+ 
+-		/* This mutex is locked - the last started thread will wake us: */
+-		pthread_mutex_lock(&g->startup_done_mutex);
++		/* Wait for all threads to be at the start_work_cond. */
++		while (!threads_ready) {
++			pthread_mutex_lock(&g->start_work_mutex);
++			threads_ready = (g->nr_tasks_working == g->p.nr_tasks);
++			pthread_mutex_unlock(&g->start_work_mutex);
++			if (!threads_ready)
++				usleep(1);
++		}
+ 
+ 		gettimeofday(&stop, NULL);
+ 
+@@ -1555,7 +1576,11 @@ static int __bench_numa(const char *name)
+ 		tprintf(" #\n");
+ 
+ 		start = stop;
+-		pthread_mutex_unlock(&g->startup_done_mutex);
++		/* Start all threads running. */
++		pthread_mutex_lock(&g->start_work_mutex);
++		g->start_work = true;
++		pthread_mutex_unlock(&g->start_work_mutex);
++		pthread_cond_broadcast(&g->start_work_cond);
+ 	} else {
+ 		gettimeofday(&start, NULL);
+ 	}
+-- 
+2.28.0.1011.ga647a8990f-goog
 
-Don't use DT on non-GPL systems?
-
-> +/*
-> + * GPIO definitions for MStar/SigmaStar MSC313 and later SoCs
-> + *
-> + * Copyright (C) 2020 Daniel Palmer <daniel@thingy.jp>
-> + */
-> +
-> +#ifndef _DT_BINDINGS_MSC313_GPIO_H
-> +#define _DT_BINDINGS_MSC313_GPIO_H
-> +
-> +/* pin names for fuart, same for all SoCs so far */
-> +#define MSC313_PINNAME_FUART_RX		"fuart_rx"
-> +#define MSC313_PINNAME_FUART_TX		"fuart_tx"
-> +#define MSC313_PINNAME_FUART_CTS	"fuart_cts"
-> +#define MSC313_PINNAME_FUART_RTS	"fuart_rts"
-> +
-> +/* pin names for sr, mercury5 is different */
-> +#define MSC313_PINNAME_SR_IO2		"sr_io2"
-> +#define MSC313_PINNAME_SR_IO3		"sr_io3"
-> +#define MSC313_PINNAME_SR_IO4		"sr_io4"
-> +#define MSC313_PINNAME_SR_IO5		"sr_io5"
-> +#define MSC313_PINNAME_SR_IO6		"sr_io6"
-> +#define MSC313_PINNAME_SR_IO7		"sr_io7"
-> +#define MSC313_PINNAME_SR_IO8		"sr_io8"
-> +#define MSC313_PINNAME_SR_IO9		"sr_io9"
-> +#define MSC313_PINNAME_SR_IO10		"sr_io10"
-> +#define MSC313_PINNAME_SR_IO11		"sr_io11"
-> +#define MSC313_PINNAME_SR_IO12		"sr_io12"
-> +#define MSC313_PINNAME_SR_IO13		"sr_io13"
-> +#define MSC313_PINNAME_SR_IO14		"sr_io14"
-> +#define MSC313_PINNAME_SR_IO15		"sr_io15"
-> +#define MSC313_PINNAME_SR_IO16		"sr_io16"
-> +#define MSC313_PINNAME_SR_IO17		"sr_io17"
-> +
-> +/* pin names for sd, same for all SoCs so far */
-> +#define MSC313_PINNAME_SD_CLK		"sd_clk"
-> +#define MSC313_PINNAME_SD_CMD		"sd_cmd"
-> +#define MSC313_PINNAME_SD_D0		"sd_d0"
-> +#define MSC313_PINNAME_SD_D1		"sd_d1"
-> +#define MSC313_PINNAME_SD_D2		"sd_d2"
-> +#define MSC313_PINNAME_SD_D3		"sd_d3"
-> +
-> +/* pin names for i2c1, same for all SoCs so for */
-> +#define MSC313_PINNAME_I2C1_SCL		"i2c1_scl"
-> +#define MSC313_PINNAME_I2C1_SCA		"i2c1_sda"
-> +
-> +/* pin names for spi0, same for all SoCs so far */
-> +#define MSC313_PINNAME_SPI0_CZ		"spi0_cz"
-> +#define MSC313_PINNAME_SPI0_CK		"spi0_ck"
-> +#define MSC313_PINNAME_SPI0_DI		"spi0_di"
-> +#define MSC313_PINNAME_SPI0_DO		"spi0_do"
-> +
-> +#define MSC313_GPIO_FUART	0
-> +#define MSC313_GPIO_FUART_RX	(MSC313_GPIO_FUART + 0)
-> +#define MSC313_GPIO_FUART_TX	(MSC313_GPIO_FUART + 1)
-> +#define MSC313_GPIO_FUART_CTS	(MSC313_GPIO_FUART + 2)
-> +#define MSC313_GPIO_FUART_RTS	(MSC313_GPIO_FUART + 3)
-> +
-> +#define MSC313_GPIO_SR		(MSC313_GPIO_FUART_RTS + 1)
-> +#define MSC313_GPIO_SR_IO2	(MSC313_GPIO_SR + 0)
-> +#define MSC313_GPIO_SR_IO3	(MSC313_GPIO_SR + 1)
-> +#define MSC313_GPIO_SR_IO4	(MSC313_GPIO_SR + 2)
-> +#define MSC313_GPIO_SR_IO5	(MSC313_GPIO_SR + 3)
-> +#define MSC313_GPIO_SR_IO6	(MSC313_GPIO_SR + 4)
-> +#define MSC313_GPIO_SR_IO7	(MSC313_GPIO_SR + 5)
-> +#define MSC313_GPIO_SR_IO8	(MSC313_GPIO_SR + 6)
-> +#define MSC313_GPIO_SR_IO9	(MSC313_GPIO_SR + 7)
-> +#define MSC313_GPIO_SR_IO10	(MSC313_GPIO_SR + 8)
-> +#define MSC313_GPIO_SR_IO11	(MSC313_GPIO_SR + 9)
-> +#define MSC313_GPIO_SR_IO12	(MSC313_GPIO_SR + 10)
-> +#define MSC313_GPIO_SR_IO13	(MSC313_GPIO_SR + 11)
-> +#define MSC313_GPIO_SR_IO14	(MSC313_GPIO_SR + 12)
-> +#define MSC313_GPIO_SR_IO15	(MSC313_GPIO_SR + 13)
-> +#define MSC313_GPIO_SR_IO16	(MSC313_GPIO_SR + 14)
-> +#define MSC313_GPIO_SR_IO17	(MSC313_GPIO_SR + 15)
-> +
-> +#define MSC313_GPIO_SD		(MSC313_GPIO_SR_IO17 + 1)
-> +#define MSC313_GPIO_SD_CLK	(MSC313_GPIO_SD + 0)
-> +#define MSC313_GPIO_SD_CMD	(MSC313_GPIO_SD + 1)
-> +#define MSC313_GPIO_SD_D0	(MSC313_GPIO_SD + 2)
-> +#define MSC313_GPIO_SD_D1	(MSC313_GPIO_SD + 3)
-> +#define MSC313_GPIO_SD_D2	(MSC313_GPIO_SD + 4)
-> +#define MSC313_GPIO_SD_D3	(MSC313_GPIO_SD + 5)
-> +
-> +#define MSC313_GPIO_I2C1	(MSC313_GPIO_SD_D3 + 1)
-> +#define MSC313_GPIO_I2C1_SCL	(MSC313_GPIO_I2C1 + 0)
-> +#define MSC313_GPIO_I2C1_SDA	(MSC313_GPIO_I2C1 + 1)
-> +
-> +#define MSC313_GPIO_SPI0	(MSC313_GPIO_I2C1_SDA + 1)
-> +#define MSC313_GPIO_SPI0_CZ	(MSC313_GPIO_SPI0 + 0)
-> +#define MSC313_GPIO_SPI0_CK	(MSC313_GPIO_SPI0 + 1)
-> +#define MSC313_GPIO_SPI0_DI	(MSC313_GPIO_SPI0 + 2)
-> +#define MSC313_GPIO_SPI0_DO	(MSC313_GPIO_SPI0 + 3)
-> +
-> +#endif /* _DT_BINDINGS_MSC313_GPIO_H */
-> -- 
-> 2.27.0
-> 
