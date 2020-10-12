@@ -2,95 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C6628C4D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 00:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39ED628C50D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 00:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390333AbgJLWi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 18:38:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58492 "EHLO
+        id S2390907AbgJLW5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 18:57:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389220AbgJLWi5 (ORCPT
+        with ESMTP id S2388573AbgJLW5k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 18:38:57 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 696CEC0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 15:38:55 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id d6so9500555plo.13
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 15:38:55 -0700 (PDT)
+        Mon, 12 Oct 2020 18:57:40 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B47C0613D1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 15:57:39 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id f19so15108724pfj.11
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 15:57:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=MHjY2BtfKrd4/1qBHnd1VY01yh7hsfG7Nbpa6Facd+8=;
-        b=UbxwGpbCpJR31PRA8U0b3q9Gsauw1M4jnXZT1WZtQmMITiNkYXbJ4nF55/VfZSwgnE
-         Cof86BCkQCrUE4aun3Bxc5sIxchNPopS8/DoymK/XvcObDUiOy1ks59rp/MOEv2/r+aK
-         3aK70LJUlFEkzNHYAY4dP2r/hjeTUW6SfJytg=
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ho1l607OAVVmLnoWlMqhfwRhJkqSim+LddBz61r0Qos=;
+        b=JJQ4S6hWNOQEK+Sy3Y+6MHvE6gOOcxmTo+VnXkRAr4YZg1jAzA2NjbHn3GiUPeK8gf
+         0ipw1LXDfr3tEdWE6dRrL6M12460zyb+sjoMJRNxEoEbW1Tj6e5VYs12zu49n5jFE+ag
+         LA//Dq0oC90jGuPSuhQwam8VrIDDiTx3NpK3M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=MHjY2BtfKrd4/1qBHnd1VY01yh7hsfG7Nbpa6Facd+8=;
-        b=a65BRt1dPfolhM8pYxjl/UkHG+mzjIlk8u4CIMOwLAMTh9oiG3R6H8zoRa6kX6OfiY
-         9sj9bGOn+tiB/20C75qArOq5LSlX5IfYv/UF+IMjUvxLcg6PWPEE/PE7Ri/gEs+7v+uy
-         DR3Fn4pgc3dFq/B52Cc82Vm2IdkgukfNj/swam0k/n1/XzxbLGGqasnhMwTZi6o0yf0I
-         u8Kk4/OYwf5VhCngNPc3y7ihNJDkm590VOg9dDiJxsnT3dWI4E9MDDNahWdpqvl0FHA6
-         lKG7GidkNN6Hun+ytf6fpJI9n96AMr+VgazASXUPpGQ7GR0htrtKJnpagDBtKuAygbeB
-         H8wg==
-X-Gm-Message-State: AOAM531KfiJPk6OQoYPeVw9yVEFxu0q/T+YOJO6eDsTUwZm/5O4Vg7ey
-        BiI+xRgEUDt8fTJepY82ZQIBEW3LpH+QUA==
-X-Google-Smtp-Source: ABdhPJz6bcNd/AxuM1IWQf82RoKB/XXjkAkfb3UFrvbM0uot3+WB2l8W1A3qzQFXQYr81TCDO777OA==
-X-Received: by 2002:a17:902:b611:b029:d3:89e2:7957 with SMTP id b17-20020a170902b611b02900d389e27957mr25299479pls.19.1602542334866;
-        Mon, 12 Oct 2020 15:38:54 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ho1l607OAVVmLnoWlMqhfwRhJkqSim+LddBz61r0Qos=;
+        b=nkufcJg9JSMIz2XXwPTr8fomN09sMaEctc/1c3p7VUaOvt3g33CZQhgXNLzk66muRg
+         ey5RU1Y0tFzk4SyvguVmMnMqhHwGCMsJSwmfMZd2uRYXUNvsd3epG6XEf5btoGn6xlFI
+         //7cCCLFarpCWk/ZMvMsZUMwtw37ev4n8jk9aS9WEbvJ0Oq6b6s1JRv6G3ZU6xSJxOj1
+         DhTX/xGz1TXJIQjYQ+M9hl3jfq2OYLlgn9SBPAhWmgE3Q1pfK2SPuNZo0dyspDZKCl+G
+         yk7PFd958wWARynmlv0GxG5U/7lWIDpLXalWe5QGr+y/AJXgkQm+xKcRNRec5ir06oPp
+         gnCQ==
+X-Gm-Message-State: AOAM5322QL9Y1Voupz0i/WvhmWeTnNS5siXrreUYjUrE2SMxth5AQ9xX
+        hoCMgpgmHg1Nxk7iblyRo84elQ==
+X-Google-Smtp-Source: ABdhPJxRLYOMHo59Ns0oO1+b1TTIgg1tJPZTI/F+6kwXefZKFzuOW2ptOTYCFNOKi97y0iBzVBYADg==
+X-Received: by 2002:a17:90a:a782:: with SMTP id f2mr2869911pjq.50.1602543458516;
+        Mon, 12 Oct 2020 15:57:38 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id bx22sm26965614pjb.40.2020.10.12.15.38.53
+        by smtp.gmail.com with ESMTPSA id j6sm20479216pfi.129.2020.10.12.15.57.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 15:38:54 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 15:38:53 -0700
+        Mon, 12 Oct 2020 15:57:37 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 15:57:36 -0700
 From:   Kees Cook <keescook@chromium.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: [GIT PULL] overflow update for v5.10-rc1
-Message-ID: <202010121537.E5CB11BA@keescook>
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Subject: Re: [PATCH v4 seccomp 5/5] seccomp/cache: Report cache data through
+ /proc/pid/seccomp_cache
+Message-ID: <202010121556.1110776B83@keescook>
+References: <cover.1602263422.git.yifeifz2@illinois.edu>
+ <c2077b8a86c6d82d611007d81ce81d32f718ec59.1602263422.git.yifeifz2@illinois.edu>
+ <202010091613.B671C86@keescook>
+ <CABqSeARZWBQrLkzd3ozF16ghkADQqcN4rUoJS2MKkd=73g4nVA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <CABqSeARZWBQrLkzd3ozF16ghkADQqcN4rUoJS2MKkd=73g4nVA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Sat, Oct 10, 2020 at 08:26:16AM -0500, YiFei Zhu wrote:
+> On Fri, Oct 9, 2020 at 6:14 PM Kees Cook <keescook@chromium.org> wrote:
+> > HAVE_ARCH_SECCOMP_CACHE isn't used any more. I think this was left over
+> > from before.
+> 
+> Oh, I was meant to add this to the dependencies of
+> SECCOMP_CACHE_DEBUG. Is this something that would make sense?
 
-Please pull this overflow update for v5.10-rc1. This tree is pretty
-quiet this last dev cycle, so it's just a single change to help enforce
-all callers are actually checking the results of the helpers.
-
-Thanks!
-
--Kees
-
-The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
-
-  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/overflow-v5.10-rc1
-
-for you to fetch changes up to 9b80e4c4ddaca3501177ed41e49d0928ba2122a8:
-
-  overflow: Add __must_check attribute to check_*() helpers (2020-10-12 15:19:07 -0700)
-
-----------------------------------------------------------------
-overflow update for v5.10-rc1
-
-- Add __must_check to check_*_overflow() helpers
-
-----------------------------------------------------------------
-Kees Cook (1):
-      overflow: Add __must_check attribute to check_*() helpers
-
- include/linux/overflow.h | 39 ++++++++++++++++++++++++---------------
- 1 file changed, 24 insertions(+), 15 deletions(-)
+I think it's fine to just have this "dangle" with a help text update of
+"if seccomp action caching is supported by the architecture, provide the
+/proc/$pid ..."
 
 -- 
 Kees Cook
