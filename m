@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC8C828B10C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 11:01:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BE0828B10E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 11:02:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728821AbgJLJBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 05:01:55 -0400
-Received: from mga05.intel.com ([192.55.52.43]:28728 "EHLO mga05.intel.com"
+        id S1728924AbgJLJCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 05:02:44 -0400
+Received: from mga17.intel.com ([192.55.52.151]:1953 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727121AbgJLJBy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 05:01:54 -0400
-IronPort-SDR: MDjwfYEo/Qb+6vCEHSV/ci2yxw0hlvGsN8ab7On7Ivgv9cLZZF6wmIJCHjdRid0T7lULJZv9dU
- xrA88hmAgrhQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="250403829"
+        id S1727121AbgJLJCo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 05:02:44 -0400
+IronPort-SDR: faYTSfPYgJr4AFeCBwGD9QHm0XBhYr9O9Ag9iwKRikpiPF0vl5NZ91BlIV/mQzOxuLGbvHXqjW
+ jUNv869aoy0g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="145574962"
 X-IronPort-AV: E=Sophos;i="5.77,366,1596524400"; 
-   d="scan'208";a="250403829"
+   d="scan'208";a="145574962"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 02:01:54 -0700
-IronPort-SDR: 2m6Tg1BaJ4CE+U8ZZuPIQJWYDs1aeHRWSBbX6zd9OFixxWBpRcMcK7XkRkjb14Kk0vzp9hG/6t
- ZE+KjMajww0g==
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 02:02:43 -0700
+IronPort-SDR: ygvizUtS/A6xdWDQtk2NJtEpvEbBC4fjcPAeYRG/MuyPCRytZFaruzWfwUYyj6Vi7/5NASzSEJ
+ ftQ4CuCHxbjA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,366,1596524400"; 
-   d="scan'208";a="356553768"
+   d="scan'208";a="344804594"
 Received: from linux.intel.com ([10.54.29.200])
-  by orsmga007.jf.intel.com with ESMTP; 12 Oct 2020 02:01:53 -0700
+  by fmsmga004.fm.intel.com with ESMTP; 12 Oct 2020 02:02:41 -0700
 Received: from [10.249.225.186] (abudanko-mobl.ccr.corp.intel.com [10.249.225.186])
-        by linux.intel.com (Postfix) with ESMTP id 531E15805EC;
-        Mon, 12 Oct 2020 02:01:51 -0700 (PDT)
-Subject: [PATCH v1 08/15] perf record: write trace data into mmap trace files
+        by linux.intel.com (Postfix) with ESMTP id CA5F35805EC;
+        Mon, 12 Oct 2020 02:02:38 -0700 (PDT)
+Subject: [PATCH v1 09/15] perf record: introduce thread specific objects for
+ trace streaming
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@redhat.com>
 Cc:     Namhyung Kim <namhyung@kernel.org>,
@@ -43,8 +44,8 @@ Cc:     Namhyung Kim <namhyung@kernel.org>,
 References: <810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com>
 From:   Alexey Budankov <alexey.budankov@linux.intel.com>
 Organization: Intel Corp.
-Message-ID: <0652b8dd-e753-7c10-27e9-af9524e7ccc5@linux.intel.com>
-Date:   Mon, 12 Oct 2020 12:01:50 +0300
+Message-ID: <fe45bf0f-b9fd-e338-9fdb-2c947d7e7e07@linux.intel.com>
+Date:   Mon, 12 Oct 2020 12:02:37 +0300
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.1
 MIME-Version: 1.0
@@ -57,136 +58,49 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Write trace data into per mmap trace files located
-at data directory. Streaming thread adjusts its affinity
-according to mask of the buffer being processed.
+Introduce thread local data object and its array to be used for
+threaded trace streaming.
 
 Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
 ---
- tools/perf/builtin-record.c | 44 ++++++++++++++++++++++++++++++++-----
- tools/perf/util/record.h    |  1 +
- 2 files changed, 39 insertions(+), 6 deletions(-)
+ tools/perf/builtin-record.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
 diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index 619aaee11231..ba26d75c51d6 100644
+index ba26d75c51d6..8e512096a060 100644
 --- a/tools/perf/builtin-record.c
 +++ b/tools/perf/builtin-record.c
-@@ -120,6 +120,11 @@ static const char *affinity_tags[PERF_AFFINITY_MAX] = {
- 	"SYS", "NODE", "CPU"
+@@ -85,11 +85,29 @@ struct switch_output {
+ 	int		 cur_file;
  };
  
-+static int record__threads_enabled(struct record *rec)
-+{
-+	return rec->opts.threads;
-+}
++struct thread_data {
++	pid_t		   tid;
++	struct {
++		int	   msg[2];
++		int	   ack[2];
++	} comm;
++	struct fdarray	   pollfd;
++	int		   ctlfd_pos;
++	struct mmap	   *maps;
++	int		   nr_mmaps;
++	struct record	   *rec;
++	unsigned long long samples;
++	unsigned long	   waking;
++	u64		   bytes_written;
++};
 +
- static bool switch_output_signal(struct record *rec)
- {
- 	return rec->switch_output.signal &&
-@@ -894,6 +899,20 @@ static int record__mmap_evlist(struct record *rec,
- 				return -EINVAL;
- 		}
- 	}
-+
-+	if (record__threads_enabled(rec)) {
-+		int i, ret, nr = evlist->core.nr_mmaps;
-+		struct mmap *mmaps = rec->opts.overwrite ?
-+				     evlist->overwrite_mmap : evlist->mmap;
-+
-+		ret = perf_data__create_dir(&rec->data, evlist->core.nr_mmaps);
-+		if (ret)
-+			return ret;
-+
-+		for (i = 0; i < nr; i++)
-+			mmaps[i].file = &rec->data.dir.files[i];
-+	}
-+
- 	return 0;
- }
- 
-@@ -1184,8 +1203,12 @@ static int record__mmap_read_evlist(struct record *rec, struct evlist *evlist,
- 	/*
- 	 * Mark the round finished in case we wrote
- 	 * at least one event.
-+	 *
-+	 * No need for round events in directory mode,
-+	 * because per-cpu maps and files have data
-+	 * sorted by kernel.
- 	 */
--	if (bytes_written != rec->bytes_written)
-+	if (!record__threads_enabled(rec) && bytes_written != rec->bytes_written)
- 		rc = record__write(rec, NULL, &finished_round_event, sizeof(finished_round_event));
- 
- 	if (overwrite)
-@@ -1231,7 +1254,9 @@ static void record__init_features(struct record *rec)
- 	if (!rec->opts.use_clockid)
- 		perf_header__clear_feat(&session->header, HEADER_CLOCK_DATA);
- 
--	perf_header__clear_feat(&session->header, HEADER_DIR_FORMAT);
-+	if (!record__threads_enabled(rec))
-+		perf_header__clear_feat(&session->header, HEADER_DIR_FORMAT);
-+
- 	if (!record__comp_enabled(rec))
- 		perf_header__clear_feat(&session->header, HEADER_COMPRESSED);
- 
-@@ -1242,15 +1267,21 @@ static void
- record__finish_output(struct record *rec)
- {
- 	struct perf_data *data = &rec->data;
--	int fd = perf_data__fd(data);
-+	int i, fd = perf_data__fd(data);
- 
- 	if (data->is_pipe)
- 		return;
- 
- 	rec->session->header.data_size += rec->bytes_written;
- 	data->file.size = lseek(perf_data__fd(data), 0, SEEK_CUR);
-+	if (record__threads_enabled(rec)) {
-+		for (i = 0; i < data->dir.nr; i++)
-+			data->dir.files[i].size = lseek(data->dir.files[i].fd, 0, SEEK_CUR);
-+	}
- 
- 	if (!rec->no_buildid) {
-+		/* this will be recalculated during process_buildids() */
-+		rec->samples = 0;
- 		process_buildids(rec);
- 
- 		if (rec->buildid_all)
-@@ -2041,8 +2072,6 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 		status = err;
- 
- 	record__synthesize(rec, true);
--	/* this will be recalculated during process_buildids() */
--	rec->samples = 0;
- 
- 	if (!err) {
- 		if (!rec->timestamp_filename) {
-@@ -2680,9 +2709,12 @@ int cmd_record(int argc, const char **argv)
- 
- 	}
- 
--	if (rec->opts.kcore)
-+	if (rec->opts.kcore || record__threads_enabled(rec))
- 		rec->data.is_dir = true;
- 
-+	if (record__threads_enabled(rec))
-+		rec->opts.affinity = PERF_AFFINITY_CPU;
-+
- 	if (rec->opts.comp_level != 0) {
- 		pr_debug("Compression enabled, disabling build id collection at the end of the session.\n");
- 		rec->no_buildid = true;
-diff --git a/tools/perf/util/record.h b/tools/perf/util/record.h
-index 266760ac9143..aeda3cdaa3e9 100644
---- a/tools/perf/util/record.h
-+++ b/tools/perf/util/record.h
-@@ -74,6 +74,7 @@ struct record_opts {
- 	int	      ctl_fd;
- 	int	      ctl_fd_ack;
- 	bool	      ctl_fd_close;
-+	bool	      threads;
- };
- 
- extern const char * const *record_usage;
+ struct record {
+ 	struct perf_tool	tool;
+ 	struct record_opts	opts;
+ 	u64			bytes_written;
+ 	struct perf_data	data;
++	struct thread_data	*thread_data;
++	int			nr_thread_data;
+ 	struct auxtrace_record	*itr;
+ 	struct evlist	*evlist;
+ 	struct perf_session	*session;
 -- 
 2.24.1
+
 
