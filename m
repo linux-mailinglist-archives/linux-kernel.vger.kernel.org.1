@@ -2,87 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5530828B61D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0382528B623
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:26:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729725AbgJLNZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:25:38 -0400
-Received: from smtp.h3c.com ([60.191.123.50]:10972 "EHLO h3cspam02-ex.h3c.com"
+        id S1729790AbgJLN0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:26:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726780AbgJLNZh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:25:37 -0400
-Received: from DAG2EX01-BASE.srv.huawei-3com.com ([10.8.0.64])
-        by h3cspam02-ex.h3c.com with ESMTPS id 09CDOrAF015813
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 12 Oct 2020 21:24:53 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
- DAG2EX01-BASE.srv.huawei-3com.com (10.8.0.64) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 12 Oct 2020 21:24:57 +0800
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
- by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%7]) with
- mapi id 15.01.1713.004; Mon, 12 Oct 2020 21:24:57 +0800
-From:   Tianxianting <tian.xianting@h3c.com>
-To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        "mike.marciniszyn@intel.com" <mike.marciniszyn@intel.com>,
-        "dennis.dalessandro@intel.com" <dennis.dalessandro@intel.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] IB/hfi1: Avoid allocing memory on memoryless numa node
-Thread-Topic: [PATCH] IB/hfi1: Avoid allocing memory on memoryless numa node
-Thread-Index: AQHWnuS/GGzJ/pEib0+lVn06jP77D6mTZNmAgACTMhA=
-Date:   Mon, 12 Oct 2020 13:24:56 +0000
-Message-ID: <3a00a3dced1c400bbe369348e441f7ef@h3c.com>
-References: <20201010085732.20708-1-tian.xianting@h3c.com>
- <9ba33073-044c-9da6-a90d-4626e6441793@cornelisnetworks.com>
-In-Reply-To: <9ba33073-044c-9da6-a90d-4626e6441793@cornelisnetworks.com>
-Accept-Language: en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.99.141.128]
-x-sender-location: DAG2
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1729726AbgJLN0U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:26:20 -0400
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 87D8420BED;
+        Mon, 12 Oct 2020 13:26:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602509179;
+        bh=yGzfcblPNkEu1jThQo3Kr1pZhnuRpAynpzlLmU3Eyto=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=2D2ESyQOMTChv7yvxLAiD0dAuxlG0M14eT38MlEDqC6L6xVG1ZHu4M9xJTVMu5neu
+         envgnta/HiKRtEOq8DzGGEU2tSlQMCpbouoj1QusJ1hHAbZKyt9hdK0qWJrfv3/G+f
+         WjCjzSGa8vfOIx5nqxsYLyVIBn2+E5lpoNLRstuk=
+Received: by mail-ed1-f46.google.com with SMTP id i5so16917055edr.5;
+        Mon, 12 Oct 2020 06:26:19 -0700 (PDT)
+X-Gm-Message-State: AOAM530/se2Fx6qazsLlzJDGJYxWdgWUzVg15Vgz8P7AGmTXvMg/1GwV
+        FNiQiMq2P6H4xOZJ42dk/E3bBABKV4fYtXq7y2A=
+X-Google-Smtp-Source: ABdhPJxZI9QpirJF8bPQYjiJrUckib3iXod98Zoj/Cz28ZEeJBmZJyvnNsh48f+gVrrDxErmHk+CoScI5f/RtUGp454=
+X-Received: by 2002:a50:8b62:: with SMTP id l89mr14553273edl.132.1602509177952;
+ Mon, 12 Oct 2020 06:26:17 -0700 (PDT)
 MIME-Version: 1.0
-X-DNSRBL: 
-X-MAIL: h3cspam02-ex.h3c.com 09CDOrAF015813
+References: <20200930070647.10188-1-yong.wu@mediatek.com> <20200930070647.10188-3-yong.wu@mediatek.com>
+ <20201002110831.GD6888@pi3> <1601958428.26323.26.camel@mhfsdcap03>
+ <CAJKOXPfOOGnJeNCa58WEZqbzaAFdLHSm-7pyMyGkYgCBEt0+RA@mail.gmail.com>
+ <1602310691.26323.39.camel@mhfsdcap03> <20201012071843.GA1889@pi3> <1602504119.26323.54.camel@mhfsdcap03>
+In-Reply-To: <1602504119.26323.54.camel@mhfsdcap03>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Mon, 12 Oct 2020 15:26:05 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPcn4scqt2C9eE_EikJ76kqro2QYzThdsXXR_5xtBmyH3g@mail.gmail.com>
+Message-ID: <CAJKOXPcn4scqt2C9eE_EikJ76kqro2QYzThdsXXR_5xtBmyH3g@mail.gmail.com>
+Subject: Re: [PATCH v3 02/24] dt-bindings: memory: mediatek: Convert SMI to DT schema
+To:     Yong Wu <yong.wu@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Tomasz Figa <tfiga@google.com>,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
+        Nicolas Boichat <drinkcat@chromium.org>, anan.sun@mediatek.com,
+        chao.hao@mediatek.com, ming-fan.chen@mediatek.com,
+        Greg Kroah-Hartman <gregkh@google.com>, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgRGVubmlzDQpUaGFua3MgZm9yIHRoZSBjb21tZW50cw0KSWYgaXQgZGVwZW5kcyBvbiB4ODZf
-NjQsIEkgdGhpbmsgdGhpcyBpc3N1ZSBkb2Vzbid0IGV4aXN0Lg0KU29ycnkgdG8gZGlzdHVyYiB5
-b3UuDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBEZW5uaXMgRGFsZXNzYW5k
-cm8gW21haWx0bzpkZW5uaXMuZGFsZXNzYW5kcm9AY29ybmVsaXNuZXR3b3Jrcy5jb21dIA0KU2Vu
-dDogTW9uZGF5LCBPY3RvYmVyIDEyLCAyMDIwIDg6MzcgUE0NClRvOiB0aWFueGlhbnRpbmcgKFJE
-KSA8dGlhbi54aWFudGluZ0BoM2MuY29tPjsgbWlrZS5tYXJjaW5pc3p5bkBpbnRlbC5jb207IGRl
-bm5pcy5kYWxlc3NhbmRyb0BpbnRlbC5jb207IGRsZWRmb3JkQHJlZGhhdC5jb207IGpnZ0B6aWVw
-ZS5jYQ0KQ2M6IGxpbnV4LXJkbWFAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5r
-ZXJuZWwub3JnDQpTdWJqZWN0OiBSZTogW1BBVENIXSBJQi9oZmkxOiBBdm9pZCBhbGxvY2luZyBt
-ZW1vcnkgb24gbWVtb3J5bGVzcyBudW1hIG5vZGUNCg0KT24gMTAvMTAvMjAyMCA0OjU3IEFNLCBY
-aWFudGluZyBUaWFuIHdyb3RlOg0KPiBJbiBhcmNoaXRlY3R1cmUgbGlrZSBwb3dlcnBjLCB3ZSBj
-YW4gaGF2ZSBjcHVzIHdpdGhvdXQgYW55IGxvY2FsIA0KPiBtZW1vcnkgYXR0YWNoZWQgdG8gaXQu
-IEluIHN1Y2ggY2FzZXMgdGhlIG5vZGUgZG9lcyBub3QgaGF2ZSByZWFsIG1lbW9yeS4NCj4gDQo+
-IFVzZSBsb2NhbF9tZW1vcnlfbm9kZSgpLCB3aGljaCBpcyBndWFyYW50ZWVkIHRvIGhhdmUgbWVt
-b3J5Lg0KPiBsb2NhbF9tZW1vcnlfbm9kZSBpcyBhIG5vb3AgaW4gb3RoZXIgYXJjaGl0ZWN0dXJl
-cyB0aGF0IGRvZXMgbm90IA0KPiBzdXBwb3J0IG1lbW9yeWxlc3Mgbm9kZXMuDQo+IA0KPiBTaWdu
-ZWQtb2ZmLWJ5OiBYaWFudGluZyBUaWFuIDx0aWFuLnhpYW50aW5nQGgzYy5jb20+DQo+IC0tLQ0K
-PiAgIGRyaXZlcnMvaW5maW5pYmFuZC9ody9oZmkxL2ZpbGVfb3BzLmMgfCAyICstDQo+ICAgMSBm
-aWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pDQo+IA0KPiBkaWZmIC0t
-Z2l0IGEvZHJpdmVycy9pbmZpbmliYW5kL2h3L2hmaTEvZmlsZV9vcHMuYyANCj4gYi9kcml2ZXJz
-L2luZmluaWJhbmQvaHcvaGZpMS9maWxlX29wcy5jDQo+IGluZGV4IDhjYTUxZTQzYy4uNzlmYTIy
-Y2M3IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2luZmluaWJhbmQvaHcvaGZpMS9maWxlX29wcy5j
-DQo+ICsrKyBiL2RyaXZlcnMvaW5maW5pYmFuZC9ody9oZmkxL2ZpbGVfb3BzLmMNCj4gQEAgLTk2
-NSw3ICs5NjUsNyBAQCBzdGF0aWMgaW50IGFsbG9jYXRlX2N0eHQoc3RydWN0IGhmaTFfZmlsZWRh
-dGEgKmZkLCBzdHJ1Y3QgaGZpMV9kZXZkYXRhICpkZCwNCj4gICAJICovDQo+ICAgCWZkLT5yZWNf
-Y3B1X251bSA9IGhmaTFfZ2V0X3Byb2NfYWZmaW5pdHkoZGQtPm5vZGUpOw0KPiAgIAlpZiAoZmQt
-PnJlY19jcHVfbnVtICE9IC0xKQ0KPiAtCQludW1hID0gY3B1X3RvX25vZGUoZmQtPnJlY19jcHVf
-bnVtKTsNCj4gKwkJbnVtYSA9IGxvY2FsX21lbW9yeV9ub2RlKGNwdV90b19ub2RlKGZkLT5yZWNf
-Y3B1X251bSkpOw0KPiAgIAllbHNlDQo+ICAgCQludW1hID0gbnVtYV9ub2RlX2lkKCk7DQo+ICAg
-CXJldCA9IGhmaTFfY3JlYXRlX2N0eHRkYXRhKGRkLT5wcG9ydCwgbnVtYSwgJnVjdHh0KTsNCj4g
-DQoNClRoZSBoZmkxIGRyaXZlciBkZXBlbmRzIG9uIFg4Nl82NC4gSSdtIG5vdCBzdXJlIHdoYXQg
-dGhpcyBwYXRjaCBidXlzLCBjYW4geW91IGV4cGFuZCBhIGJpdD8NCg0KLURlbm55DQo=
+On Mon, 12 Oct 2020 at 14:02, Yong Wu <yong.wu@mediatek.com> wrote:
+>
+> On Mon, 2020-10-12 at 09:18 +0200, Krzysztof Kozlowski wrote:
+> > On Sat, Oct 10, 2020 at 02:18:11PM +0800, Yong Wu wrote:
+> > > On Tue, 2020-10-06 at 09:15 +0200, Krzysztof Kozlowski wrote:
+> > > > On Tue, 6 Oct 2020 at 06:27, Yong Wu <yong.wu@mediatek.com> wrote:
+> > > > >
+> > > > > On Fri, 2020-10-02 at 13:08 +0200, Krzysztof Kozlowski wrote:
+> > > > > > On Wed, Sep 30, 2020 at 03:06:25PM +0800, Yong Wu wrote:
+> > > > > > > Convert MediaTek SMI to DT schema.
+> > > > > > >
+> > > > > > > Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> > > > > > > ---
+> > > > > > >  .../mediatek,smi-common.txt                   |  49 ---------
+> > > > > > >  .../mediatek,smi-common.yaml                  | 100 ++++++++++++++++++
+> > > > > > >  .../memory-controllers/mediatek,smi-larb.txt  |  49 ---------
+> > > > > > >  .../memory-controllers/mediatek,smi-larb.yaml |  91 ++++++++++++++++
+> > > > > > >  4 files changed, 191 insertions(+), 98 deletions(-)
+> > > > > > >  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/mediatek,smi-common.txt
+> > > > > > >  create mode 100644 Documentation/devicetree/bindings/memory-controllers/mediatek,smi-common.yaml
+> > > > > > >  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.txt
+> > > > > > >  create mode 100644 Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.yaml
+> > > > > ...
+> > > > > > > +properties:
+> > > > > > > +  compatible:
+> > > > > > > +    oneOf:
+> > > > > > > +      - enum:
+> > > > > > > +          - mediatek,mt2701-smi-common
+> > > > > > > +          - mediatek,mt2712-smi-common
+> > > > > > > +          - mediatek,mt6779-smi-common
+> > > > > > > +          - mediatek,mt8173-smi-common
+> > > > > > > +          - mediatek,mt8183-smi-common
+> > > > > > > +
+> > > > > > > +      - description: for mt7623
+> > > > > > > +        items:
+> > > > > > > +          - const: mediatek,mt7623-smi-common
+> > > > > > > +          - const: mediatek,mt2701-smi-common
+> > > > > > > +
+> > > > > > > +  reg:
+> > > > > > > +    maxItems: 1
+> > > > > > > +
+> > > > > > > +  clocks:
+> > > > > > > +    description: |
+> > > > > > > +      apb and smi are mandatory. the async is only for generation 1 smi HW.
+> > > > > > > +      gals(global async local sync) also is optional, here is the list which
+> > > > > > > +      require gals: mt6779 and mt8183.
+> > > > > > > +    minItems: 2
+> > > > > > > +    maxItems: 4
+> > > > > > > +    items:
+> > > > > > > +      - description: apb is Advanced Peripheral Bus clock, It's the clock for
+> > > > > > > +          setting the register.
+> > > > > > > +      - description: smi is the clock for transfer data and command.
+> > > > > > > +      - description: async is asynchronous clock, it help transform the smi clock
+> > > > > > > +          into the emi clock domain.
+> > > > > > > +      - description: gals0 is the path0 clock of gals.
+> > > > > > > +      - description: gals1 is the path1 clock of gals.
+> > > > > > > +
+> > > > > > > +  clock-names:
+> > > > > > > +    oneOf:
+> > > > > > > +      - items:
+> > > > > > > +          - const: apb
+> > > > > > > +          - const: smi
+> > > > > > > +      - items:
+> > > > > > > +          - const: apb
+> > > > > > > +          - const: smi
+> > > > > > > +          - const: async
+> > > > > > > +      - items:
+> > > > > > > +          - const: apb
+> > > > > > > +          - const: smi
+> > > > > > > +          - const: gals0
+> > > > > > > +          - const: gals1
+> > > > > >
+> > > > > > Similarly to my comment to other properties, this requirement per
+> > > > > > compatible should be part of the schema within 'if-then'.
+> > > > >
+> > > > > I'm not so familiar with this format. Do this has "if-then-'else
+> > > > > if'-then-else"?
+> > > >
+> > > > These are mutually exclusive conditions, so you can skip else:
+> > > >  - if-then
+> > > >  - if-then
+> > > >  - if-then
+> > > > It will be more readable then stacking 'if' under 'else'
+> > >
+> > > Thanks. I will use something like this:
+> > >
+> > >  anyOf:
+> >
+> > Then it should be oneOf as only one condition can be valid.
+>
+> I did do this at the beginning. But I get a warning log when
+> dt_binding_check.
+
+Mhmm, right, since "if-else" matches in either of arms, then oneOf
+will complain as it expects only one of items to match.  Then just go
+with allOf. anyOf might match zero of items, so it would not catch
+actual errors, I think.
+
+Best regards,
+Krzysztof
