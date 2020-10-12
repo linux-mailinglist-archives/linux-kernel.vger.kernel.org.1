@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 650FA28B6E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:40:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACA2228B7AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731227AbgJLNil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:38:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40114 "EHLO mail.kernel.org"
+        id S2389640AbgJLNpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:45:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729373AbgJLNhS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:37:18 -0400
+        id S1731509AbgJLNmD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:42:03 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D53562222F;
-        Mon, 12 Oct 2020 13:37:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0F8BE20878;
+        Mon, 12 Oct 2020 13:41:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509830;
-        bh=P6AwGZLnoVv4dJ794+/teWgZDTUN9tPfanYFTwFFiK0=;
+        s=default; t=1602510101;
+        bh=62GCCzbQfGFJHTVA3GyMn3wJSoKS6XiQCT9nQDpeDN0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2SSsOCQraK6eBiB8t5YFstoXKlX1+yDyHr4AGbzz4eKG6i1eZBkHRhsvXjG8uVgqO
-         LnPAuAPwyeljDJlUpsdMVPEjBwBDfJdi1wjZNX0hdTexxRWpt6HNlhRp49x5WS8+fv
-         8ollXuUVxD0xal3k/8Fy9S5eypZ1TX7NsNa1spQI=
+        b=093biQAJk3u5GWPt2CQ07orshpsCSXXzCh65WI0gl+BVdtREnyDEzJzUDh3S7BQrS
+         bfPh3nA2MlJBDvQCVuS0E8mYEjT6AxeIYRR3OiFm9q8LeVadzIsDE9R7R6trVvBAwS
+         ZfDzmNWtEPjsQQexu3EpYQscPa9OPLtxM8F2+Cwg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Denis Lisov <dennis.lissov@gmail.com>,
-        Qian Cai <cai@lca.pw>, Hugh Dickins <hughd@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Suren Baghdasaryan <surenb@google.com>
-Subject: [PATCH 4.14 46/70] mm/khugepaged: fix filemap page_to_pgoff(page) != offset
+        stable@vger.kernel.org, Vladimir Zapolskiy <vladimir@tuxera.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 39/85] cifs: Fix incomplete memory allocation on setxattr path
 Date:   Mon, 12 Oct 2020 15:27:02 +0200
-Message-Id: <20201012132632.398663262@linuxfoundation.org>
+Message-Id: <20201012132634.737182302@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132630.201442517@linuxfoundation.org>
-References: <20201012132630.201442517@linuxfoundation.org>
+In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
+References: <20201012132632.846779148@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,106 +42,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hugh Dickins <hughd@google.com>
+From: Vladimir Zapolskiy <vladimir@tuxera.com>
 
-commit 033b5d77551167f8c24ca862ce83d3e0745f9245 upstream.
+commit 64b7f674c292207624b3d788eda2dde3dc1415df upstream.
 
-There have been elusive reports of filemap_fault() hitting its
-VM_BUG_ON_PAGE(page_to_pgoff(page) != offset, page) on kernels built
-with CONFIG_READ_ONLY_THP_FOR_FS=y.
+On setxattr() syscall path due to an apprent typo the size of a dynamically
+allocated memory chunk for storing struct smb2_file_full_ea_info object is
+computed incorrectly, to be more precise the first addend is the size of
+a pointer instead of the wanted object size. Coincidentally it makes no
+difference on 64-bit platforms, however on 32-bit targets the following
+memcpy() writes 4 bytes of data outside of the dynamically allocated memory.
 
-Suren has hit it on a kernel with CONFIG_READ_ONLY_THP_FOR_FS=y and
-CONFIG_NUMA is not set: and he has analyzed it down to how khugepaged
-without NUMA reuses the same huge page after collapse_file() failed
-(whereas NUMA targets its allocation to the respective node each time).
-And most of us were usually testing with CONFIG_NUMA=y kernels.
+  =============================================================================
+  BUG kmalloc-16 (Not tainted): Redzone overwritten
+  -----------------------------------------------------------------------------
 
-collapse_file(old start)
-  new_page = khugepaged_alloc_page(hpage)
-  __SetPageLocked(new_page)
-  new_page->index = start // hpage->index=old offset
-  new_page->mapping = mapping
-  xas_store(&xas, new_page)
+  Disabling lock debugging due to kernel taint
+  INFO: 0x79e69a6f-0x9e5cdecf @offset=368. First byte 0x73 instead of 0xcc
+  INFO: Slab 0xd36d2454 objects=85 used=51 fp=0xf7d0fc7a flags=0x35000201
+  INFO: Object 0x6f171df3 @offset=352 fp=0x00000000
 
-                          filemap_fault
-                            page = find_get_page(mapping, offset)
-                            // if offset falls inside hpage then
-                            // compound_head(page) == hpage
-                            lock_page_maybe_drop_mmap()
-                              __lock_page(page)
+  Redzone 5d4ff02d: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc  ................
+  Object 6f171df3: 00 00 00 00 00 05 06 00 73 6e 72 75 62 00 66 69  ........snrub.fi
+  Redzone 79e69a6f: 73 68 32 0a                                      sh2.
+  Padding 56254d82: 5a 5a 5a 5a 5a 5a 5a 5a                          ZZZZZZZZ
+  CPU: 0 PID: 8196 Comm: attr Tainted: G    B             5.9.0-rc8+ #3
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
+  Call Trace:
+   dump_stack+0x54/0x6e
+   print_trailer+0x12c/0x134
+   check_bytes_and_report.cold+0x3e/0x69
+   check_object+0x18c/0x250
+   free_debug_processing+0xfe/0x230
+   __slab_free+0x1c0/0x300
+   kfree+0x1d3/0x220
+   smb2_set_ea+0x27d/0x540
+   cifs_xattr_set+0x57f/0x620
+   __vfs_setxattr+0x4e/0x60
+   __vfs_setxattr_noperm+0x4e/0x100
+   __vfs_setxattr_locked+0xae/0xd0
+   vfs_setxattr+0x4e/0xe0
+   setxattr+0x12c/0x1a0
+   path_setxattr+0xa4/0xc0
+   __ia32_sys_lsetxattr+0x1d/0x20
+   __do_fast_syscall_32+0x40/0x70
+   do_fast_syscall_32+0x29/0x60
+   do_SYSENTER_32+0x15/0x20
+   entry_SYSENTER_32+0x9f/0xf2
 
-  // collapse fails
-  xas_store(&xas, old page)
-  new_page->mapping = NULL
-  unlock_page(new_page)
-
-collapse_file(new start)
-  new_page = khugepaged_alloc_page(hpage)
-  __SetPageLocked(new_page)
-  new_page->index = start // hpage->index=new offset
-  new_page->mapping = mapping // mapping becomes valid again
-
-                            // since compound_head(page) == hpage
-                            // page_to_pgoff(page) got changed
-                            VM_BUG_ON_PAGE(page_to_pgoff(page) != offset)
-
-An initial patch replaced __SetPageLocked() by lock_page(), which did
-fix the race which Suren illustrates above.  But testing showed that it's
-not good enough: if the racing task's __lock_page() gets delayed long
-after its find_get_page(), then it may follow collapse_file(new start)'s
-successful final unlock_page(), and crash on the same VM_BUG_ON_PAGE.
-
-It could be fixed by relaxing filemap_fault()'s VM_BUG_ON_PAGE to a
-check and retry (as is done for mapping), with similar relaxations in
-find_lock_entry() and pagecache_get_page(): but it's not obvious what
-else might get caught out; and khugepaged non-NUMA appears to be unique
-in exposing a page to page cache, then revoking, without going through
-a full cycle of freeing before reuse.
-
-Instead, non-NUMA khugepaged_prealloc_page() release the old page
-if anyone else has a reference to it (1% of cases when I tested).
-
-Although never reported on huge tmpfs, I believe its find_lock_entry()
-has been at similar risk; but huge tmpfs does not rely on khugepaged
-for its normal working nearly so much as READ_ONLY_THP_FOR_FS does.
-
-Reported-by: Denis Lisov <dennis.lissov@gmail.com>
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=206569
-Link: https://lore.kernel.org/linux-mm/?q=20200219144635.3b7417145de19b65f258c943%40linux-foundation.org
-Reported-by: Qian Cai <cai@lca.pw>
-Link: https://lore.kernel.org/linux-xfs/?q=20200616013309.GB815%40lca.pw
-Reported-and-analyzed-by: Suren Baghdasaryan <surenb@google.com>
-Fixes: 87c460a0bded ("mm/khugepaged: collapse_shmem() without freezing new_page")
-Signed-off-by: Hugh Dickins <hughd@google.com>
-Cc: stable@vger.kernel.org # v4.9+
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Fixes: 5517554e4313 ("cifs: Add support for writing attributes on SMB2+")
+Signed-off-by: Vladimir Zapolskiy <vladimir@tuxera.com>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- mm/khugepaged.c |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ fs/cifs/smb2ops.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -801,6 +801,18 @@ static struct page *khugepaged_alloc_hug
+--- a/fs/cifs/smb2ops.c
++++ b/fs/cifs/smb2ops.c
+@@ -1179,7 +1179,7 @@ smb2_set_ea(const unsigned int xid, stru
+ 	rqst[1].rq_iov = si_iov;
+ 	rqst[1].rq_nvec = 1;
  
- static bool khugepaged_prealloc_page(struct page **hpage, bool *wait)
- {
-+	/*
-+	 * If the hpage allocated earlier was briefly exposed in page cache
-+	 * before collapse_file() failed, it is possible that racing lookups
-+	 * have not yet completed, and would then be unpleasantly surprised by
-+	 * finding the hpage reused for the same mapping at a different offset.
-+	 * Just release the previous allocation if there is any danger of that.
-+	 */
-+	if (*hpage && page_count(*hpage) > 1) {
-+		put_page(*hpage);
-+		*hpage = NULL;
-+	}
-+
- 	if (!*hpage)
- 		*hpage = khugepaged_alloc_hugepage(wait);
- 
+-	len = sizeof(ea) + ea_name_len + ea_value_len + 1;
++	len = sizeof(*ea) + ea_name_len + ea_value_len + 1;
+ 	ea = kzalloc(len, GFP_KERNEL);
+ 	if (ea == NULL) {
+ 		rc = -ENOMEM;
 
 
