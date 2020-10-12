@@ -2,90 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4B5828C3D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 23:12:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2ED828C3D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 23:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732140AbgJLVMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 17:12:08 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:60876 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729366AbgJLVMI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 17:12:08 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09CL3kGq052334;
-        Mon, 12 Oct 2020 21:12:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=8cqoPLTtq/NHfcvapZt8mGoKzzMKd8h2pZPnM4dn3ak=;
- b=Vk5Tk/8CjszzCLiJ6CQVZGxNwuWXWQbFU9yda4Sd9hnFr3DrlAGFpxqMoF8250KbDn1b
- mDsu+2Lu77o7OYn0lhobq6DtpzTSfwhIq5el/OuUF0+1DY5NZUBJhfOxMFDEia+vx2XE
- bm8SXJMIJcs9r7Fdwdv2Ku3Z7XEfY1K+Q+OtJheAVdcqFcDbXSZA+C0THiin9QcvSyY0
- tOqb0LFXPmuUNfCSuSvic2U5NVu4HU6awvjY6ea+1mXJd0rSfWN0JU0AbKVp06QbwnQy
- XtVw022Kim0IQhxzlaJEnO6FpcMFC9tgs/ND304lVJIyLs4kRl95nJiPGDMh6/F5H/W9 yA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 343vae5ghe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 12 Oct 2020 21:12:00 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09CLBAFI003576;
-        Mon, 12 Oct 2020 21:11:59 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 343pux38gp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 12 Oct 2020 21:11:59 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09CLBxmp008649;
-        Mon, 12 Oct 2020 21:11:59 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 12 Oct 2020 14:11:59 -0700
-Date:   Mon, 12 Oct 2020 14:11:57 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Pavel Machek <pavel@ucw.cz>, xfs <linux-xfs@vger.kernel.org>
-Cc:     kernel list <linux-kernel@vger.kernel.org>, dchinner@redhat.com,
-        sandeen@redhat.com
-Subject: [PATCH] xfs: fix Kconfig asking about XFS_SUPPORT_V4 when XFS_FS=n
-Message-ID: <20201012211157.GE6559@magnolia>
+        id S1732141AbgJLVND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 17:13:03 -0400
+Received: from vern.gendns.com ([98.142.107.122]:49312 "EHLO vern.gendns.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726988AbgJLVND (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 17:13:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=lechnology.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=BU8Y8hbTrSCDGFXXrVu4H2rvAgBqEv+1vUT0kZBE8Zw=; b=NLO+BUL9kg7v6b8w+g7ohEzKQ4
+        b5P8SAikT8ovGIopkjef6GIrhawJjABW0MJW41HHaX0Ptv32x4Rrt6+ef7x1gcMTsNMOA1UEiuIAF
+        JuzwdxicA8VF+5WbRIAjx6Ts5JOKXN6nxI9es8bkuQwcxrwsN0WE8qvAYzIkY4oLD/Vj69xaa/EZE
+        LtKj3G85XQMC2/i+LXff9f9qvpA/+Fo4J3svfRYKP0nHik41R3cjSMPwbSNzYVFUThXQz791qk4JU
+        L/Eg2Y6z4+47Lnx35xwiNXe3bPkp3fTFQlJ/nh9O8k6jXAN5WJcIYHO3gJ7sUbozIcf79Yvdym4Af
+        jYEUuHqA==;
+Received: from [2600:1700:4830:165f::19e] (port=52666 helo=freyr.lechnology.com)
+        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <david@lechnology.com>)
+        id 1kS57r-0004Ih-Dt; Mon, 12 Oct 2020 17:12:59 -0400
+From:   David Lechner <david@lechnology.com>
+To:     linux-omap@vger.kernel.org
+Cc:     David Lechner <david@lechnology.com>,
+        =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Robert Nelson <robertcnelson@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 0/3] Enable eQEP counter driver on BeagleBone Blue
+Date:   Mon, 12 Oct 2020 16:12:26 -0500
+Message-Id: <20201012211229.3282128-1-david@lechnology.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9772 signatures=668681
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 spamscore=0
- adultscore=0 suspectscore=1 phishscore=0 bulkscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010120160
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9772 signatures=668681
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 clxscore=1015
- impostorscore=0 phishscore=0 malwarescore=0 bulkscore=0 priorityscore=1501
- mlxscore=0 suspectscore=1 spamscore=0 adultscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010120159
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - vern.gendns.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lechnology.com
+X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Darrick J. Wong <darrick.wong@oracle.com>
+This series adds device tree nodes for the eQEP portion of the PWMSS on AM33xx
+and enables it on BeagleBone Blue.
 
-Pavel Machek complained that the question about supporting deprecated
-XFS v4 comes up even when XFS is disabled.  This clearly makes no sense,
-so fix Kconfig.
+I actually submitted these a year ago, but it looks like these patches never got
+applied with the actual eQEP driver when it was merged.
 
-Reported-by: Pavel Machek <pavel@ucw.cz>
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
----
- fs/xfs/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+For reference, there was some previous discussion about the clocks in "ARM: dts:
+am33xx: Add nodes for eQEP". [1]
 
-diff --git a/fs/xfs/Kconfig b/fs/xfs/Kconfig
-index 5422227e9e93..9fac5ea8d0e4 100644
---- a/fs/xfs/Kconfig
-+++ b/fs/xfs/Kconfig
-@@ -24,6 +24,7 @@ config XFS_FS
- 
- config XFS_SUPPORT_V4
- 	bool "Support deprecated V4 (crc=0) format"
-+	depends on XFS_FS
- 	default y
- 	help
- 	  The V4 filesystem format lacks certain features that are supported
+[1]: https://lore.kernel.org/linux-omap/20190723145100.GS5447@atomide.com/
+
+I have also included a new patch to enable the eQEP driver in the defconfig.
+
+
+David Lechner (3):
+  ARM: dts: am33xx: Add nodes for eQEP
+  ARM: dts: am335x-boneblue: Enable eQEP
+  ARM: omap2plus_defconfig: Enable TI eQEP counter driver
+
+ arch/arm/boot/dts/am335x-boneblue.dts | 54 +++++++++++++++++++++++++++
+ arch/arm/boot/dts/am33xx-l4.dtsi      | 27 ++++++++++++++
+ arch/arm/configs/omap2plus_defconfig  |  2 +
+ 3 files changed, 83 insertions(+)
+
+-- 
+2.25.1
+
