@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 003EF28B713
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F5728B76F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:43:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388824AbgJLNkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:40:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43018 "EHLO mail.kernel.org"
+        id S2389368AbgJLNnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:43:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731354AbgJLNjQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:39:16 -0400
+        id S1731536AbgJLNmK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:42:10 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C4FB3221FC;
-        Mon, 12 Oct 2020 13:39:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 377E92074F;
+        Mon, 12 Oct 2020 13:42:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509955;
-        bh=SWvCop2WZqgWmdAfIzaIY2uElDz0F4ea8HQLKznVC1c=;
+        s=default; t=1602510129;
+        bh=zhWx1SIoZQ9nkQPPAdEMjkvc9ZuMVeASYAFxnBccCVQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VCI7S1TYZAuhf11dDZ/T+tEpX6Hmj7Oaz2Oiy2akW0YdYHpwYnrefCFtKcKMZ0jk6
-         aQnRjfKnQPv7xiBKvP7HKMN+EQ6V3vPmFxF0nRaVYy0gNOxu40gX/aroLFpaAELTdT
-         UMvysYU8WG2zRPfdSn1N0L/eg0X2zkBuiKOSi8ug=
+        b=DKrKzAH5y4nmaJsNgE6AHgNSsSNkC+9A0JdauuXLpgnR9c0P7tBj2wGypBwxHhQv+
+         vSSp8USqOww1e9jtIgYqqX9AxuGHyOrQiPJYanxd2U8XL007Mrs5/RpvtHe45d8oWm
+         GmKvO5HyCoZ4dyoohSq9eVodXHfx7sFRvmwcNqZU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Philip Yang <Philip.Yang@amd.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Voon Weifeng <weifeng.voon@intel.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 29/49] drm/amdgpu: prevent double kfree ttm->sg
-Date:   Mon, 12 Oct 2020 15:27:15 +0200
-Message-Id: <20201012132630.803558121@linuxfoundation.org>
+Subject: [PATCH 5.4 53/85] net: stmmac: removed enabling eee in EEE set callback
+Date:   Mon, 12 Oct 2020 15:27:16 +0200
+Message-Id: <20201012132635.417241209@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132629.469542486@linuxfoundation.org>
-References: <20201012132629.469542486@linuxfoundation.org>
+In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
+References: <20201012132632.846779148@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,74 +44,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Philip Yang <Philip.Yang@amd.com>
+From: Voon Weifeng <weifeng.voon@intel.com>
 
-[ Upstream commit 1d0e16ac1a9e800598dcfa5b6bc53b704a103390 ]
+[ Upstream commit 7241c5a697479c7d0c5a96595822cdab750d41ae ]
 
-Set ttm->sg to NULL after kfree, to avoid memory corruption backtrace:
+EEE should be only be enabled during stmmac_mac_link_up() when the
+link are up and being set up properly. set_eee should only do settings
+configuration and disabling the eee.
 
-[  420.932812] kernel BUG at
-/build/linux-do9eLF/linux-4.15.0/mm/slub.c:295!
-[  420.934182] invalid opcode: 0000 [#1] SMP NOPTI
-[  420.935445] Modules linked in: xt_conntrack ipt_MASQUERADE
-[  420.951332] Hardware name: Dell Inc. PowerEdge R7525/0PYVT1, BIOS
-1.5.4 07/09/2020
-[  420.952887] RIP: 0010:__slab_free+0x180/0x2d0
-[  420.954419] RSP: 0018:ffffbe426291fa60 EFLAGS: 00010246
-[  420.955963] RAX: ffff9e29263e9c30 RBX: ffff9e29263e9c30 RCX:
-000000018100004b
-[  420.957512] RDX: ffff9e29263e9c30 RSI: fffff3d33e98fa40 RDI:
-ffff9e297e407a80
-[  420.959055] RBP: ffffbe426291fb00 R08: 0000000000000001 R09:
-ffffffffc0d39ade
-[  420.960587] R10: ffffbe426291fb20 R11: ffff9e49ffdd4000 R12:
-ffff9e297e407a80
-[  420.962105] R13: fffff3d33e98fa40 R14: ffff9e29263e9c30 R15:
-ffff9e2954464fd8
-[  420.963611] FS:  00007fa2ea097780(0000) GS:ffff9e297e840000(0000)
-knlGS:0000000000000000
-[  420.965144] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  420.966663] CR2: 00007f16bfffefb8 CR3: 0000001ff0c62000 CR4:
-0000000000340ee0
-[  420.968193] Call Trace:
-[  420.969703]  ? __page_cache_release+0x3c/0x220
-[  420.971294]  ? amdgpu_ttm_tt_unpopulate+0x5e/0x80 [amdgpu]
-[  420.972789]  kfree+0x168/0x180
-[  420.974353]  ? amdgpu_ttm_tt_set_user_pages+0x64/0xc0 [amdgpu]
-[  420.975850]  ? kfree+0x168/0x180
-[  420.977403]  amdgpu_ttm_tt_unpopulate+0x5e/0x80 [amdgpu]
-[  420.978888]  ttm_tt_unpopulate.part.10+0x53/0x60 [amdttm]
-[  420.980357]  ttm_tt_destroy.part.11+0x4f/0x60 [amdttm]
-[  420.981814]  ttm_tt_destroy+0x13/0x20 [amdttm]
-[  420.983273]  ttm_bo_cleanup_memtype_use+0x36/0x80 [amdttm]
-[  420.984725]  ttm_bo_release+0x1c9/0x360 [amdttm]
-[  420.986167]  amdttm_bo_put+0x24/0x30 [amdttm]
-[  420.987663]  amdgpu_bo_unref+0x1e/0x30 [amdgpu]
-[  420.989165]  amdgpu_amdkfd_gpuvm_alloc_memory_of_gpu+0x9ca/0xb10
-[amdgpu]
-[  420.990666]  kfd_ioctl_alloc_memory_of_gpu+0xef/0x2c0 [amdgpu]
+Without this fix, turning on EEE using ethtool will return
+"Operation not supported". This is due to the driver is in a dead loop
+waiting for eee to be advertised in the for eee to be activated but the
+driver will only configure the EEE advertisement after the eee is
+activated.
 
-Signed-off-by: Philip Yang <Philip.Yang@amd.com>
-Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Ethtool should only return "Operation not supported" if there is no EEE
+capbility in the MAC controller.
+
+Fixes: 8a7493e58ad6 ("net: stmmac: Fix a race in EEE enable callback")
+Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
+Acked-by: Mark Gross <mgross@linux.intel.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c | 1 +
- 1 file changed, 1 insertion(+)
+ .../net/ethernet/stmicro/stmmac/stmmac_ethtool.c  | 15 ++++-----------
+ 1 file changed, 4 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-index fcf421263fd96..abad7460084f2 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-@@ -954,6 +954,7 @@ static int amdgpu_ttm_tt_pin_userptr(struct ttm_tt *ttm)
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+index 1a768837ca728..ce1346c14b05a 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+@@ -662,23 +662,16 @@ static int stmmac_ethtool_op_set_eee(struct net_device *dev,
+ 	struct stmmac_priv *priv = netdev_priv(dev);
+ 	int ret;
  
- release_sg:
- 	kfree(ttm->sg);
-+	ttm->sg = NULL;
- 	return r;
+-	if (!edata->eee_enabled) {
++	if (!priv->dma_cap.eee)
++		return -EOPNOTSUPP;
++
++	if (!edata->eee_enabled)
+ 		stmmac_disable_eee_mode(priv);
+-	} else {
+-		/* We are asking for enabling the EEE but it is safe
+-		 * to verify all by invoking the eee_init function.
+-		 * In case of failure it will return an error.
+-		 */
+-		edata->eee_enabled = stmmac_eee_init(priv);
+-		if (!edata->eee_enabled)
+-			return -EOPNOTSUPP;
+-	}
+ 
+ 	ret = phylink_ethtool_set_eee(priv->phylink, edata);
+ 	if (ret)
+ 		return ret;
+ 
+-	priv->eee_enabled = edata->eee_enabled;
+ 	priv->tx_lpi_timer = edata->tx_lpi_timer;
+ 	return 0;
  }
- 
 -- 
 2.25.1
 
