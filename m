@@ -2,260 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F74528BD28
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B049528BD2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390257AbgJLQDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 12:03:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390201AbgJLQDE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 12:03:04 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7123C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 09:03:02 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id n6so19496515wrm.13
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 09:03:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=D7jZJvslu9stMIs5zdM6ag+QiZdu9iBSwrqEDJqxgPM=;
-        b=LcABs3efXeI3QQr3vPdqp+nR5p81Wh0icvrwmV7EtEfHllpnvuZlRFIPtdgZFc+JoI
-         KfP+1paN5jkKjSQyvHBiE6j/mPbSUn2mDbB94P7qxxETfSad0ajCV46jy/e+Ff26yavN
-         PPNE2ypVzF6/yWSx63E2PayIq5lEeOpWVXGh5RhCrc3H9W25x2eUhqa3iWB8YmOtw2nA
-         csdxV+7r0TL5Er32ZU9GeZI3dlu0/o2FxD0ipqZae/S6rrqoMZhU29/PUsIirujAixcA
-         7YmDks459UiZrbx3gIqZNCla/dQx9/ZuTVMJT8dmec/Nd0eqO74lImKtYBLuhV5C2ID/
-         VFMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=D7jZJvslu9stMIs5zdM6ag+QiZdu9iBSwrqEDJqxgPM=;
-        b=KE7bFayHZNEnhaqIeFJvXhDyEKoBgAeoatTOmWrSov88K2uBymibNb9/Xm6UvxJob1
-         2pgXcsA4pmS+zcYTyMpGtrEbRLQN238OMbsFXEEnL07QoAG6EOkKPXE3doAEeO15zR9H
-         U1++9Bp2eaJDRn9CV4EXfa24cIZ2wRXvfBGKgxuZju9RRcIlepCfadbx8QnX3Q+Z1P1c
-         TtHwLigcjU+uVMGV54qmdn+C7OPABJ3wOBGgdA8LkgLSQghgZJYg2kLJNjy1rrN81loz
-         nswTz20AM9GnxI5evxEUw72RKJHF592S5wruyQdj2eklTARv1so4KGW7XHVn0ga9+/Mg
-         umKw==
-X-Gm-Message-State: AOAM530oJ3OFfRuX5KhrIpCL84+APt0ZuGtIjJCuKGJVfpScWljx0fwq
-        0VWelXNUzfsYgzrmvJC2CTUniQ==
-X-Google-Smtp-Source: ABdhPJx1zVdDYGuHrXvhDtTLHxP1+hZ4ACRK7I+JJ9D/bwul0j8B0X5t6Rx4J9oNvsJ1ZGmGp6eYWw==
-X-Received: by 2002:adf:e589:: with SMTP id l9mr4668264wrm.110.1602518581090;
-        Mon, 12 Oct 2020 09:03:01 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:8dea:c7dd:5d0e:51e6? ([2a01:e34:ed2f:f020:8dea:c7dd:5d0e:51e6])
-        by smtp.googlemail.com with ESMTPSA id v8sm24173138wmb.20.2020.10.12.09.02.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Oct 2020 09:03:00 -0700 (PDT)
-Subject: Re: [PATCH 0/4] powercap/dtpm: Add the DTPM framework
-To:     Hans de Goede <hdegoede@redhat.com>, rafael@kernel.org,
-        srinivas.pandruvada@linux.intel.com
-Cc:     lukasz.luba@arm.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, rui.zhang@intel.com
-References: <20201006122024.14539-1-daniel.lezcano@linaro.org>
- <eb26a00d-eee0-a4d1-ed25-61a661ad5683@redhat.com>
- <8be66efd-7833-2c8a-427d-b0055c2f6ec1@linaro.org>
- <97e5368b-228d-eca1-85a5-b918dfcfd336@redhat.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <bc1a0134-5242-65d7-a753-fbec0d3bb327@linaro.org>
-Date:   Mon, 12 Oct 2020 18:02:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2390316AbgJLQDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 12:03:44 -0400
+Received: from mga02.intel.com ([134.134.136.20]:38593 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389555AbgJLQDn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 12:03:43 -0400
+IronPort-SDR: vGOO8P+9X++1q/O+Anx1MvGBCAqqDNtDN9Y2tvHO2lVWrCEziXgUIcLx/wyf7W4R1hrZOr2DPC
+ oU4dcXNLHdpg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="152689843"
+X-IronPort-AV: E=Sophos;i="5.77,367,1596524400"; 
+   d="scan'208";a="152689843"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 09:03:41 -0700
+IronPort-SDR: M5j79n+CE0wd4PUjVgJxGHSdnkhN9BhNlbtFdkX7IjVPlC1RHRWg3Kcbd6wNAazbeftBLLl/mW
+ XPWGaY0lljbQ==
+X-IronPort-AV: E=Sophos;i="5.77,367,1596524400"; 
+   d="scan'208";a="345899088"
+Received: from tassilo.jf.intel.com ([10.54.74.11])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 09:03:41 -0700
+Date:   Mon, 12 Oct 2020 09:03:39 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 03/15] perf data: open data directory in read access
+ mode
+Message-ID: <20201012160339.GB466880@tassilo.jf.intel.com>
+References: <810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com>
+ <9ac7f12e-f5a4-dd91-a19a-bb7e5be27636@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <97e5368b-228d-eca1-85a5-b918dfcfd336@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9ac7f12e-f5a4-dd91-a19a-bb7e5be27636@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/2020 13:46, Hans de Goede wrote:
-> Hi Daniel,
+On Mon, Oct 12, 2020 at 11:55:07AM +0300, Alexey Budankov wrote:
 > 
-> On 10/12/20 12:30 PM, Daniel Lezcano wrote:
->>
->> Hi Hans,
->>
->> On 07/10/2020 12:43, Hans de Goede wrote:
->>> Hi,
->>>
->>> On 10/6/20 2:20 PM, Daniel Lezcano wrote:
->>>> The density of components greatly increased the last decade bringing a
->>>> numerous number of heating sources which are monitored by more than 20
->>>> sensors on recent SoC. The skin temperature, which is the case
->>>> temperature of the device, must stay below approximately 45°C in order
->>>> to comply with the legal requirements.
->>>>
->>>> The skin temperature is managed as a whole by an user space daemon,
->>>> which is catching the current application profile, to allocate a power
->>>> budget to the different components where the resulting heating effect
->>>> will comply with the skin temperature constraint.
->>>>
->>>> This technique is called the Dynamic Thermal Power Management.
->>>>
->>>> The Linux kernel does not provide any unified interface to act on the
->>>> power of the different devices. Currently, the thermal framework is
->>>> changed to export artificially the performance states of different
->>>> devices via the cooling device software component with opaque values.
->>>> This change is done regardless of the in-kernel logic to mitigate the
->>>> temperature. The user space daemon uses all the available knobs to act
->>>> on the power limit and those differ from one platform to another.
->>>>
->>>> This series provides a Dynamic Thermal Power Management framework to
->>>> provide an unified way to act on the power of the devices.
->>>
->>> Interesting, we have a discussion going on about a related
->>> (while at the same time almost orthogonal) discussion for
->>> setting policies for if the code managing the restraints
->>> (which on x86 is often hidden in firmware or ACPI DPTF tables)
->>> should have a bias towards trying to have as long a battery life
->>> as possible, vs maximum performance. I know those 2 aren't
->>> always opposite ends of a spectrum with race-to-idle, yet most
->>> modern x86 hardware has some notion of what I call performance-profiles
->>> where we can tell the firmware managing this to go for a bias towards
->>> low-power / balanced / performance.
->>>
->>> I've send a RFC / sysfs API proposal for this here:
->>> https://lore.kernel.org/linux-pm/20201003131938.9426-1-hdegoede@redhat.com/
->>>
->>>
->>> I've read the patches in this thread and as said already I think
->>> the 2 APIs are mostly orthogonal. The API in this thread is giving
->>> userspace direct access to detailed power-limits allowing userspace
->>> to configure things directly (and for things to work optimal userspace
->>> must do this). Where as in the x86 case with which I'm dealing
->>> everything
->>> is mostly handled in a black-box and userspace can merely configure
->>> the low-power / balanced / performance bias (*) of that black-box.
->>>
->>> Still I think it is good if we are aware of each-others efforts here.
->>>
->>> So Daniel, if you can take a quick look at my proposal:
->>> https://lore.kernel.org/linux-pm/20201003131938.9426-1-hdegoede@redhat.com/
->>>
->>>
->>> That would be great. I think we definitely want to avoid having 2
->>> APIs for the same thing here. Again I don't think that is actually
->>> the case, but maybe you see this differently ?
->>
->> Thanks for pointing this out. Actually, it is a different feature as you
->> mentioned. The profile is the same knob we have with the BIOS where we
->> can choose power/ balanced power / balanced/balanced
->> performance / performance, AFAICT.
+> Open files located at data directory in case of read access mode.
+
+Need some rationale. Is this a bug fix? Did the case not matter
+before?
+
 > 
-> Right.
+> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+> ---
+>  tools/perf/util/data.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
->> Here the proposed interface is already exported in userspace via the
->> powercap framework which supports today the backend driver for the RAPL
->> register.
+> diff --git a/tools/perf/util/data.c b/tools/perf/util/data.c
+> index c47aa34fdc0a..6ad61ac6ba67 100644
+> --- a/tools/perf/util/data.c
+> +++ b/tools/perf/util/data.c
+> @@ -321,6 +321,10 @@ static int open_dir(struct perf_data *data)
+>  		return -1;
+>  
+>  	ret = open_file(data);
+> +	if (!ret && perf_data__is_dir(data)) {
+> +		if (perf_data__is_read(data))
+> +			ret = perf_data__open_dir(data);
+> +	}
+>  
+>  	/* Cleanup whatever we managed to create so far. */
+>  	if (ret && perf_data__is_write(data))
+> -- 
+> 2.24.1
 > 
-> You say that some sort of power/ balanced power / balanced /
-> balanced performance / performance setting in is already exported
-> through the powercap interface today (if I understand you correctly)?
-
-Sorry, I was unclear. I meant 'Here the proposed interface' referring to
-the powercap/dtpm. There is no profile interface in the powercap framework.
-
-> But I'm not seeing any such setting in:
-> Documentation/ABI/testing/sysfs-class-powercap
 > 
-> Nor can I find it under /sys/class/powercap/intel-rapl* on a ThinkPad
-> X1 carbon 8th gen.
-> 
-> Note, if there indeed is an existing userspace API for this I would
-> greatly prefer for the thinkpad_acpi and hp-wmi (and possibly other)
-> drivers to use this, so if you can point me to this interface then
-> that would be great.
-> 
->> The userspace will be in charge of handling the logic to have the
->> correct power/performance profile tuned against the current application
->> running foreground. The DTPM framework gives the unified access to the
->> power limitation to the individual devices the userspace logic can act
->> on.
->>
->> A side note, related to your proposal, not this patch. IMO it suits
->> better to have /sys/power/profile.
->>
->> cat /sys/power/profile
->>
->> power
->> balanced_power *
->> balanced
->> balanced_performance
->> performance
->>
->> The (*) being the active profile.
-> 
-> Interesting the same thing was brought up in the discussion surrounding
-> RFC which I posted.
-> 
-> The downside against this approach is that it assumes that there
-> only is a single system-wide settings. AFAIK that is not always
-> the case, e.g. (AFAIK):
-> 
-> 1. The intel pstate driver has something like this
->    (might this be the rapl setting you mean? )
-> 
-> 2. The X1C8 has such a setting for the embedded-controller, controlled
->    through the ACPI interfaces which thinkpad-acpi used
-> 
-> 3. The hp-wmi interface allows selecting a profile which in turn
->    (through AML code) sets a bunch of variables which influence how
->    the (dynamic, through mjg59's patches) DPTF code controls various
->    things
-> 
-> At least the pstate setting and the vendor specific settings can
-> co-exist. Also the powercap API has a notion of zones, I can see the
-> same thing here, with a desktop e.g. having separate performance-profile
-> selection for the CPU and a discrete GPU.
-> 
-> So limiting the API to a single /sys/power/profile setting seems a
-> bit limited and I have the feeling we will regret making this
-> choice in the future.
-> 
-> With that said your proposal would work well for the current
-> thinkpad_acpi / hp-wmi cases, so I'm not 100% against it.
-> 
-> This would require adding some internal API to the code which
-> owns the /sys/power root-dir to allow registering a profile
-> provider I guess. But that would also immediately bring the
-> question, what if multiple drivers try to register themselves
-> as /sys/power/profile provider ?
-
-Did you consider putting the profile on a per device basis ?
-
-eg.
-
-/sys/devices/system/cpu/cpu[0-9]/power/profile
-
-May be make 'energy_performance_preference' obsolete in
-/sys/devices/system/cpu/cpufreq ?
-
-When one device sets the profile, all children will have the same profile.
-
-eg.
-
-A change in /sys/devices/system/cpu/power/profile will impact all the
-underlying cpu[0-9]/power/profile
-
-Or a change in /sys/devices/power/profile will change all profiles below
-/sys/devices.
-
-Well that is a high level suggestion, I don't know how that can fit with
-the cyclic sysfs hierarchy.
-
-
-
-
-
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
