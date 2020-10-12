@@ -2,167 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47FC228B119
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 11:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0DB428B11C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 11:07:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729075AbgJLJG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 05:06:56 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:37746 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726428AbgJLJGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 05:06:55 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 80AB1FCFC1F4BC6F89CA;
-        Mon, 12 Oct 2020 17:06:47 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 12 Oct 2020 17:06:40 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH] f2fs: introduce check_swap_activate_fast()
-Date:   Mon, 12 Oct 2020 17:06:05 +0800
-Message-ID: <20201012090605.30604-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.26.2
+        id S1729123AbgJLJHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 05:07:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726428AbgJLJHy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 05:07:54 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51F7CC0613CE;
+        Mon, 12 Oct 2020 02:07:52 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id lw21so22168446ejb.6;
+        Mon, 12 Oct 2020 02:07:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WBP0ukfg4bFUZZ8QI0iTYDIdCmp1ksVWbobi3gjGmJA=;
+        b=VKPM45KMaQStON5NAFbV9TPHSROxX4rvZ6xMY9f/mTEz8NZ08VJ6tKcUKtMOfa6Lh4
+         S2Ok6+JlD39XR2ItQCTPe466/QYF+m5frXD0kFEPo6wceZtP+bc8yIo0CKqfu3MMerpQ
+         xZvrlDBUa0tHdHz1evHWWx6Nns6S3CSiG5NPQqYKqav5iPccWLtSOGUnPf3+R724hQ38
+         V4ZfGDyA42QzGGyCNI36tldOIS8Qs5RS9NqRvymVWhBe0aCFMgXyaUMba7up3Kca+V4H
+         A9QTR1xpQ8I6WbNv8hZ1qbvk7QW6G01kxFRHMkJrWf8qZiE2cKq84Pv5SDoki89TDr9d
+         9ORA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WBP0ukfg4bFUZZ8QI0iTYDIdCmp1ksVWbobi3gjGmJA=;
+        b=Jqp+DhLXxENg56AScfGhIFFVBGyt1HVRkJmEO4cMv6xxAFJCOBDpsWI0DoSSofUERN
+         FNmexHrOpGfVyGGgEgFar0O7dRWh87AtD2kz6Z7qH+tV2340+5gaqpm19KUpBrwql5eB
+         O7mWi/Z43O2wIRDs9wISvBX9RZHckBWdgiq0D80zZxsHBIR9GixJjgtwEawaT0yjgE1N
+         VXIqXzi4G+zEq22uyGYERzBya3TA95jWbEyAl8cZj06kgzcd0fk6ZuhkpSL4CmEBydI4
+         2c8TP9gnQD65S7M2WqWV0XTEhPEX+9cxG716y6/zC54H+Ugtt1p3JZjxBQgadEWEQ7Iy
+         PMFQ==
+X-Gm-Message-State: AOAM530a38t/oeZtf/ahYs1zMXr6Y7Yc7DgxyAbp8Xi2R1IcXRrJ5CPA
+        VCJu6zlI5x7rBBuV/9Vxr68=
+X-Google-Smtp-Source: ABdhPJzGtSWf6qZSdSdrnDLrLYkt+xop/WQnkOoCpLjW3n9eUhP+o6txr3NIKKXdR1SJKE/3AvmXXw==
+X-Received: by 2002:a17:906:c015:: with SMTP id e21mr26451902ejz.432.1602493670667;
+        Mon, 12 Oct 2020 02:07:50 -0700 (PDT)
+Received: from ubuntu2004 ([188.24.159.61])
+        by smtp.gmail.com with ESMTPSA id d1sm5003346ejo.17.2020.10.12.02.07.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 02:07:50 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 12:07:53 +0300
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        Wolfram Sang <wsa@kernel.org>, Peter Rosin <peda@axentia.se>,
+        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-actions@lists.infradead.org
+Subject: Re: [PATCH 2/3] i2c: owl: Add support for atomic transfers
+Message-ID: <20201012090753.GB73734@ubuntu2004>
+References: <cover.1602190168.git.cristian.ciocaltea@gmail.com>
+ <1af37112fafd6cf069dfe864560f77996f57d80d.1602190168.git.cristian.ciocaltea@gmail.com>
+ <20201011140920.GB4971@Mani-XPS-13-9360>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201011140920.GB4971@Mani-XPS-13-9360>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-check_swap_activate() will lookup block mapping via bmap() one by one, so
-its performance is very bad, this patch introduces check_swap_activate_fast()
-to use f2fs_fiemap() to boost this process, since f2fs_fiemap() will lookup
-block mappings in batch, therefore, it can improve swapon()'s performance
-significantly.
+On Sun, Oct 11, 2020 at 07:39:20PM +0530, Manivannan Sadhasivam wrote:
+> On Fri, Oct 09, 2020 at 12:44:40AM +0300, Cristian Ciocaltea wrote:
+> > Atomic transfers are required to properly power off a machine through
+> > an I2C controlled PMIC, such as the Actions Semi ATC260x series.
+> > 
+> > System shutdown may happen with interrupts being disabled and, as a
+> > consequence, the kernel may hang if the driver does not support atomic
+> > transfers.
+> > 
+> > This functionality is essentially implemented by polling the FIFO
+> > Status register until either Command Execute Completed or NACK Error
+> > bits are set.
+> > 
+> > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> 
+> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> 
+> Thanks,
+> Mani
 
-Note that this enhancement only works when page size is equal to f2fs' block
-size.
-
-Testcase: (backend device: zram)
-- touch file
-- pin & fallocate file to 8GB
-- mkswap file
-- swapon file
-
-Before:
-real	0m2.999s
-user	0m0.000s
-sys	0m2.980s
-
-After:
-real	0m0.081s
-user	0m0.000s
-sys	0m0.064s
-
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
- fs/f2fs/data.c | 80 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 80 insertions(+)
-
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index ee87407602fa..be4da52604ed 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -3883,6 +3883,83 @@ int f2fs_migrate_page(struct address_space *mapping,
- #endif
- 
- #ifdef CONFIG_SWAP
-+static int check_swap_activate_fast(struct swap_info_struct *sis,
-+				struct file *swap_file, sector_t *span)
-+{
-+	struct address_space *mapping = swap_file->f_mapping;
-+	struct inode *inode = mapping->host;
-+	sector_t cur_lblock;
-+	sector_t last_lblock;
-+	sector_t pblock;
-+	sector_t lowest_pblock = -1;
-+	sector_t highest_pblock = 0;
-+	int nr_extents = 0;
-+	unsigned long nr_pblocks;
-+	unsigned long len;
-+	int ret;
-+
-+	/*
-+	 * Map all the blocks into the extent list.  This code doesn't try
-+	 * to be very smart.
-+	 */
-+	cur_lblock = 0;
-+	last_lblock = logical_to_blk(inode, i_size_read(inode));
-+	len = i_size_read(inode);
-+
-+	while (cur_lblock <= last_lblock && cur_lblock < sis->max) {
-+		struct buffer_head map_bh;
-+		pgoff_t next_pgofs;
-+
-+		cond_resched();
-+
-+		memset(&map_bh, 0, sizeof(struct buffer_head));
-+		map_bh.b_size = len - cur_lblock;
-+
-+		ret = get_data_block(inode, cur_lblock, &map_bh, 0,
-+					F2FS_GET_BLOCK_FIEMAP, &next_pgofs);
-+		if (ret)
-+			goto err_out;
-+
-+		/* hole */
-+		if (!buffer_mapped(&map_bh))
-+			goto err_out;
-+
-+		pblock = map_bh.b_blocknr;
-+		nr_pblocks = logical_to_blk(inode, map_bh.b_size);
-+
-+		if (cur_lblock + nr_pblocks >= sis->max)
-+			nr_pblocks = sis->max - cur_lblock;
-+
-+		if (cur_lblock) {	/* exclude the header page */
-+			if (pblock < lowest_pblock)
-+				lowest_pblock = pblock;
-+			if (pblock + nr_pblocks - 1 > highest_pblock)
-+				highest_pblock = pblock + nr_pblocks - 1;
-+		}
-+
-+		/*
-+		 * We found a PAGE_SIZE-length, PAGE_SIZE-aligned run of blocks
-+		 */
-+		ret = add_swap_extent(sis, cur_lblock, nr_pblocks, pblock);
-+		if (ret < 0)
-+			goto out;
-+		nr_extents += ret;
-+		cur_lblock += nr_pblocks;
-+	}
-+	ret = nr_extents;
-+	*span = 1 + highest_pblock - lowest_pblock;
-+	if (cur_lblock == 0)
-+		cur_lblock = 1;	/* force Empty message */
-+	sis->max = cur_lblock;
-+	sis->pages = cur_lblock - 1;
-+	sis->highest_bit = cur_lblock - 1;
-+out:
-+	return ret;
-+err_out:
-+	pr_err("swapon: swapfile has holes\n");
-+	return -EINVAL;
-+}
-+
- /* Copied from generic_swapfile_activate() to check any holes */
- static int check_swap_activate(struct swap_info_struct *sis,
- 				struct file *swap_file, sector_t *span)
-@@ -3899,6 +3976,9 @@ static int check_swap_activate(struct swap_info_struct *sis,
- 	int nr_extents = 0;
- 	int ret;
- 
-+	if (PAGE_SIZE == F2FS_BLKSIZE)
-+		return check_swap_activate_fast(sis, swap_file, span);
-+
- 	blkbits = inode->i_blkbits;
- 	blocks_per_page = PAGE_SIZE >> blkbits;
- 
--- 
-2.26.2
-
+Thanks for reviewing,
+Cristi
