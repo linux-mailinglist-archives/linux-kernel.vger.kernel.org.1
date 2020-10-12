@@ -2,212 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB1A528B895
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 390B428B882
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:53:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390300AbgJLNx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:53:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60284 "EHLO
+        id S2390167AbgJLNxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:53:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729033AbgJLNqr (ORCPT
+        with ESMTP id S1731620AbgJLNrS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:46:47 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E1D0C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 06:46:47 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id d20so17688012iop.10
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 06:46:47 -0700 (PDT)
+        Mon, 12 Oct 2020 09:47:18 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F07C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 06:47:17 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id t12so16027965ilh.3
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 06:47:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=ED22sYxmXTNHxD5KJzHuAJgagrQ1zg3CPo4Xkaouy0Y=;
-        b=A+Nl1hOILTs0JvKjw6ICIck0ko/vIZPvUMMVSHofPuH+sIZ9viM8huqRUkaFQQp937
-         m/ndlIkiPZeSCJPUhtdVkCuAMFpnE641/MROjFu5opDmUl11PzZgXSn0Ob641w4/02H8
-         GJTMedOuAjbFoHw4dtfpruy8Qj/QY/w9CaviZwd3CuIxUia2Q2QQuCsbJtE7RL1TPZ7F
-         CtmlonHxzVShwG1zUfYsyZvDUgGHz96jt3fS6KYQdpglqFO/fWcjyIYzBPQuypLgnplK
-         EPtQYa0Z7Q+uRmvWIG5ITCDlylOHpIYS476doYti/8cFHaaQbfJ0C/M+ZmU/po2AQEJe
-         z0GA==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=jUWdkLAc0EuvQ0YL/yaReUL5fg4C8jsTaN58qP8cA1U=;
+        b=WuzH3MEBxPuB2MZUkvqe9T3Nbmlr6xjJIiS698B9XVlplTZB89C9Nl9+cJs1GQscXt
+         WGWf5WmViAnkyD9e+Ld2nxje5+PZ3Xc4tGqALVr4RSVykV1Szua6O4u+jOyd0kMMC5Ib
+         LExN9Mt3wbnbDbAAkhOX7Zmg7OYqNw00RMyeWl8rli9nPcpAUidPNPwB5H1vQs6BPVb2
+         cX7L7VykFMmH8dbDwypBPLIkEz6lAIbAdBH5VUaG4blOEZ+RIjqkDg6V0Ch2T4EE14Ri
+         lqIPLDd+bc//d3C8yaVIemdA7KBM/CNllxPLNUe2ycnNz95lGU4LMB5b2mkGbzXNY1bK
+         ht7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=ED22sYxmXTNHxD5KJzHuAJgagrQ1zg3CPo4Xkaouy0Y=;
-        b=XDGvkuFvIMq0aoSTaCH7Lueim+skwsorMWkh4vdcFcTCEC7fgHydLUl98jPcctE7XT
-         +s8lkM7KeDnrB2K4u5SHI9o5iR7gBdSrZDLMIeOK8hizCPVBAmUqoNyiRSeelMNJULBR
-         hYNDPi1Ml6MdR5cJOOnb7vrfY0HkWzVIs6EBWhdBrTcVntUA3scacvzSTCnkDuXIIjZa
-         ThSHO1egS+vMEzk70S/nkFFff5mRPiVowyyNRgZvMZ4JzSI+Wld4lcTyEP84FQYNoDd5
-         /TJPxLjH1FYjN5EV2oEWXfHjN6ANMnT1W9HuOv+f4Owsi94wbfFs2Jm/PIvl4esCdkrL
-         440g==
-X-Gm-Message-State: AOAM533mXNa8sp3VMq6kAXEfp95v1YwHTyA99xR51dltsjxZIKjE1515
-        LDO5KWb3sPJ9O3dzohJnnOw2BCjgCMU5Hg==
-X-Google-Smtp-Source: ABdhPJxmqPWnwFggHKOWtiTHh2RWpkrRYAVu+9VhQ7SZDn+Q0ZfoTYdl/GmkYJ4ZMf5ML9vLfRwmZQ==
-X-Received: by 2002:a6b:3fd6:: with SMTP id m205mr16224147ioa.80.1602510405975;
-        Mon, 12 Oct 2020 06:46:45 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id v17sm9037554ilm.48.2020.10.12.06.46.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Oct 2020 06:46:45 -0700 (PDT)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     io-uring <io-uring@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Subject: [GIT PULL] io_uring updates for 5.10-rc1
-Message-ID: <36a6706d-73e1-64e7-f1f8-8f5ef246d3ea@kernel.dk>
-Date:   Mon, 12 Oct 2020 07:46:45 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=jUWdkLAc0EuvQ0YL/yaReUL5fg4C8jsTaN58qP8cA1U=;
+        b=QU8UzxeZEnUYqMpb2iTcm10Sn+2Lq7ux/B5fdH6S1Ms7iPiPQpZZlMmzBVHWUolOsf
+         P5bEp0SU6+/jda5mZoiSqen4A9koupqqbMjOFX8kzeUFM936ybhXAuelC66NhCcFOJSw
+         7nbKQiZiE0lxcZIbH89SrIJSNmNOu1zI4A6FVIV6IX9ejA9mlXQKobz1HmApGclygeBp
+         pKhvJQG0DlnR8gKRM2kCiarHoM7k+hYZh6azrTqyo3csUUrGkxfDKREFSutg9GO43gwY
+         Ks1ZeQ9sCC1mWRORWTNHKzQdE1BWsDvL44V6Mr00oNi2J/hbaidQevEOL2Z6WfLbXwis
+         t45g==
+X-Gm-Message-State: AOAM533WXhbljbRLYEX9geHSDWqzDvJO1KIkhzG3RCH760CG2oGyb08x
+        f9yRdbFlJX1NRoJjcl64UxE9i/ifKUrpNxxqE8s=
+X-Google-Smtp-Source: ABdhPJwyH02SJz5Jq+nl7A1gAj4pfVo/91SEQqPOU/B/vf8QDgR/GowVioFYQfmJsVUksT4MOgymw7OhdsCeWSgLXPo=
+X-Received: by 2002:a05:6e02:4d:: with SMTP id i13mr13149719ilr.216.1602510435793;
+ Mon, 12 Oct 2020 06:47:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Reply-To: m.elizabethedward@gmail.com
+Sender: nicolebenoite.m@gmail.com
+Received: by 2002:a4f:c801:0:0:0:0:0 with HTTP; Mon, 12 Oct 2020 06:47:15
+ -0700 (PDT)
+From:   "Mrs. Elizabeth Edward" <m.elizabethedward020@gmail.com>
+Date:   Mon, 12 Oct 2020 14:47:15 +0100
+X-Google-Sender-Auth: LLy2CxyKb60n1Pp08Fa-e0AnbOo
+Message-ID: <CAH1nK1+Pqdb-K_Hom7vbbr6CBhjqwLREh4cMLh6MDiyCREk0jg@mail.gmail.com>
+Subject: Dear. beloved one I need Your Urgent respond,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Greeting,
 
-Here are the io_uring updates for 5.10. This pull request contains:
+Please forgive me for stressing you with my predicaments and I sorry
+to approach you through this media it is because it serves the fastest
+means of communication. I came across your E-mail from my personal
+search and I decided to contact you believing you will be honest to
+fulfill my final wish before I die.
 
-- Add blkcg accounting for io-wq offload (Dennis)
+I am Mrs. Elizabeth Edward, 63 years, from USA, I am childless and I
+am suffering from a pro-long critical cancer, my doctors confirmed I
+may not live beyond two months from now as my ill health has defiled
+all forms of medical treatment.
 
-- A use-after-free fix for io-wq (Hillf)
+Since my days are numbered, I=E2=80=99ve decided willingly to fulfill my
+long-time promise to donate you the sum ($5.000.000.00) million
+dollars I inherited from my late husband Mr. Edward Herbart, foreign
+bank account over years. I need a very honest person who can assist in
+transfer of this money to his or her account and use the funds for
+charities work of God while you use 50% for yourself. I want you to
+know there are no risk involved, it is 100% hitch free & safe. If you
+will be interesting to assist in getting this fund into your account
+for charity project to fulfill my promise before I die please let me
+know immediately. I will appreciate your utmost confidentiality as I
+wait for your reply.
 
-- Cancelation fixes and improvements
+Best Regards
 
-- Use proper files_struct references for offload
-
-- Cleanup of io_uring_get_socket() since that can now go into our own
-  header
-
-- SQPOLL fixes and cleanups, and support for sharing the thread
-
-- Improvement to how page accounting is done for registered buffers and
-  huge pages, accounting the real pinned state
-
-- Series cleaning up the xarray code (Willy)
-
-- Various cleanups, refactoring, and improvements (Pavel)
-
-- Use raw spinlock for io-wq (Sebastian)
-
-- Add support for ring restrictions (Stefano)
-
-Please pull!
-
-
-The following changes since commit c8d317aa1887b40b188ec3aaa6e9e524333caed1:
-
-  io_uring: fix async buffered reads when readahead is disabled (2020-09-29 07:54:00 -0600)
-
-are available in the Git repository at:
-
-  git://git.kernel.dk/linux-block.git tags/io_uring-5.10-2020-10-12
-
-for you to fetch changes up to b2e9685283127f30e7f2b466af0046ff9bd27a86:
-
-  io_uring: keep a pointer ref_node in file_data (2020-10-10 12:49:25 -0600)
-
-----------------------------------------------------------------
-io_uring-5.10-2020-10-12
-
-----------------------------------------------------------------
-Dennis Zhou (1):
-      io_uring: add blkcg accounting to offloaded operations
-
-Hillf Danton (1):
-      io-wq: fix use-after-free in io_wq_worker_running
-
-Jens Axboe (29):
-      Merge branch 'io_uring-5.9' into for-5.10/io_uring
-      io_uring: allow timeout/poll/files killing to take task into account
-      io_uring: move dropping of files into separate helper
-      io_uring: stash ctx task reference for SQPOLL
-      io_uring: unconditionally grab req->task
-      io_uring: return cancelation status from poll/timeout/files handlers
-      io_uring: enable task/files specific overflow flushing
-      io_uring: don't rely on weak ->files references
-      io_uring: reference ->nsproxy for file table commands
-      io_uring: move io_uring_get_socket() into io_uring.h
-      io_uring: io_sq_thread() doesn't need to flush signals
-      fs: align IOCB_* flags with RWF_* flags
-      io_uring: use private ctx wait queue entries for SQPOLL
-      io_uring: move SQPOLL post-wakeup ring need wakeup flag into wake handler
-      io_uring: split work handling part of SQPOLL into helper
-      io_uring: split SQPOLL data into separate structure
-      io_uring: base SQPOLL handling off io_sq_data
-      io_uring: enable IORING_SETUP_ATTACH_WQ to attach to SQPOLL thread too
-      io_uring: mark io_uring_fops/io_op_defs as __read_mostly
-      io_uring: provide IORING_ENTER_SQ_WAIT for SQPOLL SQ ring waits
-      io_uring: get rid of req->io/io_async_ctx union
-      io_uring: cap SQ submit size for SQPOLL with multiple rings
-      io_uring: improve registered buffer accounting for huge pages
-      io_uring: process task work in io_uring_register()
-      io-wq: kill unused IO_WORKER_F_EXITING
-      io_uring: kill callback_head argument for io_req_task_work_add()
-      io_uring: batch account ->req_issue and task struct references
-      io_uring: no need to call xa_destroy() on empty xarray
-      io_uring: fix break condition for __io_uring_register() waiting
-
-Joseph Qi (1):
-      io_uring: show sqthread pid and cpu in fdinfo
-
-Matthew Wilcox (Oracle) (3):
-      io_uring: Fix use of XArray in __io_uring_files_cancel
-      io_uring: Fix XArray usage in io_uring_add_task_file
-      io_uring: Convert advanced XArray uses to the normal API
-
-Pavel Begunkov (23):
-      io_uring: simplify io_rw_prep_async()
-      io_uring: refactor io_req_map_rw()
-      io_uring: fix overlapped memcpy in io_req_map_rw()
-      io_uring: kill extra user_bufs check
-      io_uring: simplify io_alloc_req()
-      io_uring: io_kiocb_ppos() style change
-      io_uring: remove F_NEED_CLEANUP check in *prep()
-      io_uring: set/clear IOCB_NOWAIT into io_read/write
-      io_uring: remove nonblock arg from io_{rw}_prep()
-      io_uring: decouple issuing and req preparation
-      io_uring: move req preps out of io_issue_sqe()
-      io_uring: don't io_prep_async_work() linked reqs
-      io_uring: clean up ->files grabbing
-      io_uring: kill extra check in fixed io_file_get()
-      io_uring: simplify io_file_get()
-      io_uring: improve submit_state.ios_left accounting
-      io_uring: use a separate struct for timeout_remove
-      io_uring: remove timeout.list after hrtimer cancel
-      io_uring: clean leftovers after splitting issue
-      io_uring: don't delay io_init_req() error check
-      io_uring: clean file_data access in files_register
-      io_uring: refactor *files_register()'s error paths
-      io_uring: keep a pointer ref_node in file_data
-
-Sebastian Andrzej Siewior (1):
-      io_wq: Make io_wqe::lock a raw_spinlock_t
-
-Stefano Garzarella (3):
-      io_uring: use an enumeration for io_uring_register(2) opcodes
-      io_uring: add IOURING_REGISTER_RESTRICTIONS opcode
-      io_uring: allow disabling rings during the creation
-
-Zheng Bin (1):
-      io_uring: remove unneeded semicolon
-
- fs/exec.c                     |    6 +
- fs/file.c                     |    2 +
- fs/io-wq.c                    |  200 +++---
- fs/io-wq.h                    |    4 +
- fs/io_uring.c                 | 2181 ++++++++++++++++++++++++++++++++++++--------------------
- include/linux/fs.h            |   46 +-
- include/linux/io_uring.h      |   58 ++
- include/linux/sched.h         |    5 +
- include/uapi/linux/io_uring.h |   61 +-
- init/init_task.c              |    3 +
- kernel/fork.c                 |    6 +
- net/unix/scm.c                |    1 +
- 12 files changed, 1662 insertions(+), 911 deletions(-)
- create mode 100644 include/linux/io_uring.h
-
--- 
-Jens Axboe
-
+Mrs. Elizabeth Edward,
