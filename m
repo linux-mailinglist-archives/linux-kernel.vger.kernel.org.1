@@ -2,231 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE2028AE2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 08:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 318F328AE32
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 08:17:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727281AbgJLGNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 02:13:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726340AbgJLGNk (ORCPT
+        id S1726267AbgJLGR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 02:17:26 -0400
+Received: from smtprelay0006.hostedemail.com ([216.40.44.6]:58742 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725941AbgJLGR0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 02:13:40 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F26FC0613D1
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 23:13:39 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id b193so12381026pga.6
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 23:13:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=wzwgHWW6fAZr3jurcNxxh+hZXMvNGactjM2e0hjZyhg=;
-        b=sPESY74Q66CsNglsTg/3UY1/Fn8549U4STepmGTe0zQUUk72zSettmgX+BaFs9CVq0
-         DruTaVdBebld5EfH33POJJWw5nwgn9fXFyt3ZEh/z3ESVkwMFpT5ZQnp60BIc7aOWp9g
-         sf/7I8L29N1DXn4eWmktZa9OYX26H4ixeY4Ft7gA9IPuqVUnYQ3mxXZ18xozaw9zv0l2
-         wmdYvykokiHwSUc+Itmw9eJwufwWcJMqUPBXKo5CjT2iPtB97XkKvkuSShI6L2xSutTc
-         86d4W0V1Dw4ZzUrhwL5WIU67LT20PL2K7kojRaAiC0yvBvZDTVZFC9G4+c6fWqWCCpv+
-         KJGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=wzwgHWW6fAZr3jurcNxxh+hZXMvNGactjM2e0hjZyhg=;
-        b=tRbgUAUUTwRH6fnN+sMyaup9KwB38W3ecsJqL+fVvWVjV3qLm/qOV2snHiUlv+Y//Z
-         C5FxNYmFtWpDONC8KZY899pYm2dB/DSLKAUg5z9sq8J2WFCC/y1YfQFJOf4Ci2KfILqq
-         ho+GD1RaDvexCFG2e1gzbVlRjO8aQuNC+dVnwoEZqVXOQoJUo1FFZ+ePnzuY/GnAMepq
-         U43h5COAVF5DLuf36oDesvW26YtKjYVOHWQKRFJ6kE2qiVeM+ZGzmqLZ8DDgbFf8dKfV
-         m6uzsx5vxVjX6bvueHpr93WKrh7vupRTtfEVOGzhpwqMSQbFRcLZGR7p8lK3XnXi+L98
-         rdjg==
-X-Gm-Message-State: AOAM532a2ISiQi0Yfc8AKfRHcNfTIdUcV+ynio9FsnUbvYdN4Z6+hLTj
-        Um0t960LiKcZgrInPCdGqPbdog==
-X-Google-Smtp-Source: ABdhPJwv+DgSLej3lQfBr6wGZhPZg0LBp7Tj7G2jrVpqjzGKafLrDp48qNU3IdOsQe84t73fdd2w3w==
-X-Received: by 2002:a62:b506:0:b029:155:d56e:5193 with SMTP id y6-20020a62b5060000b0290155d56e5193mr6942930pfe.52.1602483218694;
-        Sun, 11 Oct 2020 23:13:38 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id na9sm13558143pjb.45.2020.10.11.23.13.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 11 Oct 2020 23:13:37 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 11:43:35 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Sumit Gupta <sumitg@nvidia.com>
-Cc:     rjw@rjwysocki.net, sudeep.holla@arm.com, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, linux-pm@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, ksitaraman@nvidia.com,
-        bbasu@nvidia.com
-Subject: Re: [PATCH v2 2/2] cpufreq: tegra194: Fix unlisted boot freq warning
-Message-ID: <20201012061335.nht4hnn7kdjupakn@vireshk-i7>
-References: <1602162066-26442-1-git-send-email-sumitg@nvidia.com>
- <1602162066-26442-3-git-send-email-sumitg@nvidia.com>
+        Mon, 12 Oct 2020 02:17:26 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 22A8D5C0;
+        Mon, 12 Oct 2020 06:17:25 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1543:1593:1594:1605:1711:1730:1747:1777:1792:2197:2199:2393:2553:2559:2562:2693:2828:3138:3139:3140:3141:3142:3622:3653:3865:3866:3867:3868:3870:3871:3872:3874:4321:4605:5007:6120:7514:10004:10400:11026:11232:11658:11914:12296:12297:12663:12679:12740:12760:12895:13019:13161:13229:13439:14181:14659:14721:21080:21221:21451:21627:21990:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: love65_0b0cd1e271f8
+X-Filterd-Recvd-Size: 4046
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf09.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 12 Oct 2020 06:17:24 +0000 (UTC)
+Message-ID: <63053585d41ff81cdaad6cb727eb83d81207041a.camel@perches.com>
+Subject: Re: [RFC PATCH] checkpatch: add shebang check to EXECUTE_PERMISSIONS
+From:   Joe Perches <joe@perches.com>
+To:     Ujjwal Kumar <ujjwalkumar0501@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Date:   Sun, 11 Oct 2020 23:17:23 -0700
+In-Reply-To: <20201012054943.1196031-1-ujjwalkumar0501@gmail.com>
+References: <20201012054943.1196031-1-ujjwalkumar0501@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1602162066-26442-3-git-send-email-sumitg@nvidia.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08-10-20, 18:31, Sumit Gupta wrote:
-> Warning coming during boot because the boot freq set by bootloader
-> gets filtered out due to big freq steps while creating freq_table.
-> Fix this by setting closest higher frequency from freq_table.
-> Warning:
->   cpufreq: cpufreq_online: CPU0: Running at unlisted freq
->   cpufreq: cpufreq_online: CPU0: Unlisted initial frequency changed
+On Mon, 2020-10-12 at 11:19 +0530, Ujjwal Kumar wrote:
+> checkpatch.pl checks for invalid EXECUTE_PERMISSIONS on source
+> files. The script leverages filename extensions and its path in
+> the repository to decide whether to allow execute permissions on
+> the file or not.
 > 
-> These warning messages also come during hotplug online of non-boot
-> CPU's while exiting from 'Suspend-to-RAM'. This happens because
-> during exit from 'Suspend-to-RAM', some time is taken to restore
-> last software requested CPU frequency written in register before
-> entering suspend.
-
-And who does this restoration ?
-
-> To fix this, adding online hook to wait till the
-> current frequency becomes equal or close to the last requested
-> frequency.
+> Based on current check conditions, a perl script file having
+> execute permissions, without '.pl' extension in its filename
+> and not belonging to 'scripts/' directory is reported as ERROR
+> which is a false-positive.
 > 
-> Fixes: df320f89359c ("cpufreq: Add Tegra194 cpufreq driver")
-> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+> Adding a shebang check along with current conditions will make
+> the check more generalised and improve checkpatch reports.
+> To do so, without breaking the core design decision of checkpatch,
+> we can fetch the first line from the patch itself and match it for
+> a shebang pattern.
+> 
+> There can be cases where the first line is not part of the patch.
+
+For instance: a patch that only changes permissions
+without changing any of the file content.
+
+> 
+> In that case there may be a false-positive report but in the end we
+> will have less false-positives as we will be handling some of the
+> unhandled cases.
+
+> Signed-off-by: Ujjwal Kumar <ujjwalkumar0501@gmail.com>
 > ---
->  drivers/cpufreq/tegra194-cpufreq.c | 86 ++++++++++++++++++++++++++++++++++----
->  1 file changed, 79 insertions(+), 7 deletions(-)
+> Apologies, I forgot to include linux-kernel@vger.kernel.org so I'm
+> now resending.
 > 
-> diff --git a/drivers/cpufreq/tegra194-cpufreq.c b/drivers/cpufreq/tegra194-cpufreq.c
-> index d250e49..cc28b1e3 100644
-> --- a/drivers/cpufreq/tegra194-cpufreq.c
-> +++ b/drivers/cpufreq/tegra194-cpufreq.c
-> @@ -7,6 +7,7 @@
->  #include <linux/cpufreq.h>
->  #include <linux/delay.h>
->  #include <linux/dma-mapping.h>
-> +#include <linux/iopoll.h>
->  #include <linux/module.h>
->  #include <linux/of.h>
->  #include <linux/of_platform.h>
-> @@ -21,7 +22,6 @@
->  #define KHZ                     1000
->  #define REF_CLK_MHZ             408 /* 408 MHz */
->  #define US_DELAY                500
-> -#define US_DELAY_MIN            2
->  #define CPUFREQ_TBL_STEP_HZ     (50 * KHZ * KHZ)
->  #define MAX_CNT                 ~0U
->  
-> @@ -249,17 +249,22 @@ static unsigned int tegra194_get_speed(u32 cpu)
->  static int tegra194_cpufreq_init(struct cpufreq_policy *policy)
->  {
->  	struct tegra194_cpufreq_data *data = cpufreq_get_driver_data();
-> -	u32 cpu;
-> +	u32 cpu = policy->cpu;
-> +	int ret;
->  	u32 cl;
->  
-> -	smp_call_function_single(policy->cpu, get_cpu_cluster, &cl, true);
-> +	if (!cpu_online(cpu))
-
-Not required to check this.
-
-> +		return -EINVAL;
-> +
-> +	ret = smp_call_function_single(cpu, get_cpu_cluster, &cl, true);
-> +	if (ret) {
-
-Same as in the other patch.
-
-> +		pr_err("cpufreq: Failed to get cluster for CPU%d\n", cpu);
-> +		return ret;
-> +	}
->  
->  	if (cl >= data->num_clusters)
->  		return -EINVAL;
->  
-> -	/* boot freq */
-> -	policy->cur = tegra194_get_speed_common(policy->cpu, US_DELAY_MIN);
-> -
->  	/* set same policy for all cpus in a cluster */
->  	for (cpu = (cl * 2); cpu < ((cl + 1) * 2); cpu++)
->  		cpumask_set_cpu(cpu, policy->cpus);
-> @@ -267,7 +272,23 @@ static int tegra194_cpufreq_init(struct cpufreq_policy *policy)
->  	policy->freq_table = data->tables[cl];
->  	policy->cpuinfo.transition_latency = TEGRA_CPUFREQ_TRANSITION_LATENCY;
->  
-> -	return 0;
-> +	policy->cur = tegra194_get_speed_common(policy->cpu, US_DELAY);
-> +
-> +	ret = cpufreq_table_validate_and_sort(policy);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Are we running at unknown frequency ? */
-> +	ret = cpufreq_frequency_table_get_index(policy, policy->cur);
-> +	if (ret == -EINVAL) {
-> +		ret = __cpufreq_driver_target(policy, policy->cur - 1,
-> +					      CPUFREQ_RELATION_L);
-> +		if (ret)
-> +			return ret;
-
-> +		policy->cur = tegra194_get_speed_common(policy->cpu, US_DELAY);
-
-cpufreq-core will do this anyway, you don't need to do it.
-
-> +	}
-> +
-> +	return ret;
+>  scripts/checkpatch.pl | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+> 
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> @@ -1795,6 +1795,23 @@ sub get_stat_here {
+>  	return $herectx;
 >  }
 
-I wonder if I should change the pr_warn() in cpufreq-core to pr_info()
-instead, will that help you guys ? Will that still be a problem ? This
-is exactly same as what we do there.
+First some style trivia:
 
->  static int tegra194_cpufreq_set_target(struct cpufreq_policy *policy,
-> @@ -285,6 +306,55 @@ static int tegra194_cpufreq_set_target(struct cpufreq_policy *policy,
->  	return 0;
->  }
->  
-> +static int tegra194_cpufreq_online(struct cpufreq_policy *policy)
-> +{
-> +	unsigned int interm_freq, last_set_freq;
-> +	struct cpufreq_frequency_table *pos;
-> +	u64 ndiv;
-> +	int ret;
+> +sub get_shebang {
+> +	my ($linenr, $realfile) = @_;
+> +	my $rawline = "";
+> +	my $shebang = "";
 > +
-> +	if (!cpu_online(policy->cpu))
-> +		return -EINVAL;
-> +
-> +	/* get ndiv for the last frequency request from software  */
-> +	ret = smp_call_function_single(policy->cpu, get_cpu_ndiv, &ndiv, true);
-> +	if (ret) {
-> +		pr_err("cpufreq: Failed to get ndiv for CPU%d\n", policy->cpu);
-> +		return ret;
-> +	}
-> +
-> +	cpufreq_for_each_valid_entry(pos, policy->freq_table) {
-> +		if (pos->driver_data == ndiv) {
-> +			last_set_freq = pos->frequency;
-> +			break;
+> +	$rawline = raw_line($linenr, 3);
+> +	if (defined $rawline &&
+> +		$rawline =~ /^\@\@ -\d+(?:,\d+)? \+(\d+)(,(\d+))? \@\@/) {
+
+alignment to open parenthesis please
+
+> +		if (defined $1 && $1 == 1) {
+> +			$shebang = raw_line($linenr, 4);
+> +			$shebang = substr $shebang, 1;
+
+parentheses around substr please.
+
 > +		}
 > +	}
 > +
-> +	policy->cur = tegra194_get_speed_common(policy->cpu, US_DELAY);
-> +	interm_freq =  policy->cur;
+> +	return $shebang;
+> +}
+
+And some real notes:
+
+$realfile isn't used in this function so there doesn't
+seem to be a reason to have it as an function argument.
+
 > +
-> +	/*
-> +	 * It takes some time to restore the previous frequency while
-> +	 * turning-on non-boot cores during exit from SC7(Suspend-to-RAM).
-> +	 * So, wait till it reaches the previous value and timeout if the
-> +	 * time taken to reach requested freq is >100ms
-> +	 */
-> +	ret = read_poll_timeout(tegra194_get_speed_common, policy->cur,
-> +				abs(policy->cur - last_set_freq) <= 115200, 0,
-> +				100 * USEC_PER_MSEC, false, policy->cpu,
-> +				US_DELAY);
+>  sub cat_vet {
+>  	my ($vet) = @_;
+>  	my ($res, $coded);
+> @@ -2680,7 +2697,9 @@ sub process {
+>  # Check for incorrect file permissions
+>  		if ($line =~ /^new (file )?mode.*[7531]\d{0,2}$/) {
 
-The firmware does this update ? Why do we need to wait for this ? I
-was actually suggesting an empty tegra194_cpufreq_online() routine
-here.
+probably better here to use a capture group for the permissions
 
--- 
-viresh
+		if ($line =~ /^new (?:file )?mode (\d+)$/) {
+			my $mode = substr($1, -3);
+
+>  			my $permhere = $here . "FILE: $realfile\n";
+> +			my $shebang = get_shebang($linenr, $realfile);
+>  			if ($realfile !~ m@scripts/@ &&
+
+Maybe remove the $realfile directory test as
+there are many source files that are not scripts
+in this directory and its subdirectories.
+
+> +			    $shebang !~ /^#!\s*(\/\w)+.*/ &&
+
+unnecessary capture group
+
+and add
+
+			   $mode =~ /[1357]/ &&
+
+>  			    $realfile !~ /\.(py|pl|awk|sh)$/) {
+
+No need for a a capture group here either. (existing defect)
+
+>  				ERROR("EXECUTE_PERMISSIONS",
+>  				      "do not set execute permissions for source files\n" . $permhere);
+
+
+
