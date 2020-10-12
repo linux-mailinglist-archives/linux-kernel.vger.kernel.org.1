@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C8628B9E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A230E28B9CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730975AbgJLNgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:36:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37830 "EHLO mail.kernel.org"
+        id S2390878AbgJLOEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:04:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39132 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728724AbgJLNfP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:35:15 -0400
+        id S1730496AbgJLNg0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:36:26 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 19DA02087E;
-        Mon, 12 Oct 2020 13:35:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 124CB2074F;
+        Mon, 12 Oct 2020 13:36:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509714;
-        bh=OzOTN8jKo7kNhY9MZajRoUo7sdMGGo9dIRe98N8tscs=;
+        s=default; t=1602509785;
+        bh=OPa5yQLzYJHvajpXaufU2Bxo/HPPfAOXikCA6XAhZNY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=anDTtNdxvZFXn31rhydP72OLGlXYeHuGzG86rRakdTMhd1M4YeuipsX3R/H8GgyoA
-         kz3G5gY9ixPiAMrJTT018QWH+T+JFlOrcPbtTCNJqFhrxdr8xaGreAeikeUX5suiNK
-         X8vJ1qqIlPW6o3bZq5VBpr0aaFM7sATGa/Xy2w68=
+        b=U3mpRK4Vo3fhNNFqCP4iwZVmYWI3vVi4GIQzIwlvzSJu8ESx+axOfQSQz9WhDwmQQ
+         On9DTqwXXxNKoMP/qd00z0F7DquTAo6exrbNo203x5PlfJajFeoFhDTLJ1EMTZNnQB
+         hSLN9yT6wvCGlID57mrNvsOaPSHdUWvRP6O6EZJc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peilin Ye <yepeilin.cs@gmail.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: [PATCH 4.9 23/54] fbdev, newport_con: Move FONT_EXTRA_WORDS macros into linux/font.h
+        stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH 4.14 29/70] ep_create_wakeup_source(): dentry name can change under you...
 Date:   Mon, 12 Oct 2020 15:26:45 +0200
-Message-Id: <20201012132630.659734237@linuxfoundation.org>
+Message-Id: <20201012132631.595858190@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132629.585664421@linuxfoundation.org>
-References: <20201012132629.585664421@linuxfoundation.org>
+In-Reply-To: <20201012132630.201442517@linuxfoundation.org>
+References: <20201012132630.201442517@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,105 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peilin Ye <yepeilin.cs@gmail.com>
+From: Al Viro <viro@zeniv.linux.org.uk>
 
-commit bb0890b4cd7f8203e3aa99c6d0f062d6acdaad27 upstream.
+commit 3701cb59d892b88d569427586f01491552f377b1 upstream.
 
-drivers/video/console/newport_con.c is borrowing FONT_EXTRA_WORDS macros
-from drivers/video/fbdev/core/fbcon.h. To keep things simple, move all
-definitions into <linux/font.h>.
+or get freed, for that matter, if it's a long (separately stored)
+name.
 
-Since newport_con now uses four extra words, initialize the fourth word in
-newport_set_font() properly.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/7fb8bc9b0abc676ada6b7ac0e0bd443499357267.1600953813.git.yepeilin.cs@gmail.com
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/video/console/fbcon.h        |    7 -------
- drivers/video/console/fbcon_rotate.c |    1 +
- drivers/video/console/newport_con.c  |    7 +------
- drivers/video/console/tileblit.c     |    1 +
- include/linux/font.h                 |    8 ++++++++
- 5 files changed, 11 insertions(+), 13 deletions(-)
+ fs/eventpoll.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/drivers/video/console/fbcon.h
-+++ b/drivers/video/console/fbcon.h
-@@ -151,13 +151,6 @@ static inline int attr_col_ec(int shift,
- #define attr_bgcol_ec(bgshift, vc, info) attr_col_ec(bgshift, vc, info, 0)
- #define attr_fgcol_ec(fgshift, vc, info) attr_col_ec(fgshift, vc, info, 1)
+--- a/fs/eventpoll.c
++++ b/fs/eventpoll.c
+@@ -1389,7 +1389,7 @@ static int reverse_path_check(void)
  
--/* Font */
--#define REFCOUNT(fd)	(((int *)(fd))[-1])
--#define FNTSIZE(fd)	(((int *)(fd))[-2])
--#define FNTCHARCNT(fd)	(((int *)(fd))[-3])
--#define FNTSUM(fd)	(((int *)(fd))[-4])
--#define FONT_EXTRA_WORDS 4
--
-     /*
-      *  Scroll Method
-      */
---- a/drivers/video/console/fbcon_rotate.c
-+++ b/drivers/video/console/fbcon_rotate.c
-@@ -14,6 +14,7 @@
- #include <linux/fb.h>
- #include <linux/vt_kern.h>
- #include <linux/console.h>
-+#include <linux/font.h>
- #include <asm/types.h>
- #include "fbcon.h"
- #include "fbcon_rotate.h"
---- a/drivers/video/console/newport_con.c
-+++ b/drivers/video/console/newport_con.c
-@@ -35,12 +35,6 @@
+ static int ep_create_wakeup_source(struct epitem *epi)
+ {
+-	const char *name;
++	struct name_snapshot n;
+ 	struct wakeup_source *ws;
  
- #define FONT_DATA ((unsigned char *)font_vga_8x16.data)
+ 	if (!epi->ep->ws) {
+@@ -1398,8 +1398,9 @@ static int ep_create_wakeup_source(struc
+ 			return -ENOMEM;
+ 	}
  
--/* borrowed from fbcon.c */
--#define REFCOUNT(fd)	(((int *)(fd))[-1])
--#define FNTSIZE(fd)	(((int *)(fd))[-2])
--#define FNTCHARCNT(fd)	(((int *)(fd))[-3])
--#define FONT_EXTRA_WORDS 3
--
- static unsigned char *font_data[MAX_NR_CONSOLES];
+-	name = epi->ffd.file->f_path.dentry->d_name.name;
+-	ws = wakeup_source_register(name);
++	take_dentry_name_snapshot(&n, epi->ffd.file->f_path.dentry);
++	ws = wakeup_source_register(n.name);
++	release_dentry_name_snapshot(&n);
  
- static struct newport_regs *npregs;
-@@ -522,6 +516,7 @@ static int newport_set_font(int unit, st
- 	FNTSIZE(new_data) = size;
- 	FNTCHARCNT(new_data) = op->charcount;
- 	REFCOUNT(new_data) = 0;	/* usage counter */
-+	FNTSUM(new_data) = 0;
- 
- 	p = new_data;
- 	for (i = 0; i < op->charcount; i++) {
---- a/drivers/video/console/tileblit.c
-+++ b/drivers/video/console/tileblit.c
-@@ -13,6 +13,7 @@
- #include <linux/fb.h>
- #include <linux/vt_kern.h>
- #include <linux/console.h>
-+#include <linux/font.h>
- #include <asm/types.h>
- #include "fbcon.h"
- 
---- a/include/linux/font.h
-+++ b/include/linux/font.h
-@@ -57,4 +57,12 @@ extern const struct font_desc *get_defau
- /* Max. length for the name of a predefined font */
- #define MAX_FONT_NAME	32
- 
-+/* Extra word getters */
-+#define REFCOUNT(fd)	(((int *)(fd))[-1])
-+#define FNTSIZE(fd)	(((int *)(fd))[-2])
-+#define FNTCHARCNT(fd)	(((int *)(fd))[-3])
-+#define FNTSUM(fd)	(((int *)(fd))[-4])
-+
-+#define FONT_EXTRA_WORDS 4
-+
- #endif /* _VIDEO_FONT_H */
+ 	if (!ws)
+ 		return -ENOMEM;
 
 
