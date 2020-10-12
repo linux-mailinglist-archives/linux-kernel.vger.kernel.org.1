@@ -2,92 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFFA428BBED
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DA7F28BBF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389885AbgJLPbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 11:31:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48376 "EHLO
+        id S2389983AbgJLPch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 11:32:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388527AbgJLPbh (ORCPT
+        with ESMTP id S2389340AbgJLPch (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 11:31:37 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99393C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 08:31:37 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id l4so16176032ota.7
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 08:31:37 -0700 (PDT)
+        Mon, 12 Oct 2020 11:32:37 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 372F1C0613D0;
+        Mon, 12 Oct 2020 08:32:37 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id n142so13696003ybf.7;
+        Mon, 12 Oct 2020 08:32:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=iBGnzN/+6loJkhrhbH/dzTk9PX3jtnMo9lpzqcBWYus=;
-        b=q2YDCkFgYowfit5pBl4KmbOmz6TGnHCQP+Nxf7PSgt6b7zX5yCMyBuIKnW8JdommYm
-         IZs81D0v+2F9Q8MVT6YiphajrfWDEflspmJgSg9ohGQqMvam0gd99NVOqH0DYEcborFV
-         rzxTsxL7TzTY8cdY5CfwAro7ksLHxbCnDpoe2zoy/KWgV6N/b8olzMj6v/IJqv2nUTIx
-         Z/Qak1aPXtJCijAq/DNTpchN/O6ffDqiQMHO1knnH4qoX3TsPuA454cpRvx/WQoW8NFY
-         HM32lhVwpBKoZ1fUhfvvZR7hxAZbjyAzb04QKgFKNeUuNNAaWUKIQH2pUGiq+Km7pSHA
-         pPag==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Q+589eEK9RUMo5k3gXC7QGOAGtF0NXhGUz1kajGcrv8=;
+        b=r/LrAE+tyr+DmwidynsfG+yaFi4t/NaYYBfmS+rwflbEohjyVSBYGzZDGRgxT08+3o
+         WG5r6/o3xlQJUCv2xJR4vIWUF1mlztRTibRv/DCesnLy2J70g5Cu/my1ld4K2cCGo7F7
+         vx7k3liNNv+j1rXwM/FUI3ujLhuactXGgUEWkVYXU+Y7VvERuiiXjCcLJ8Ho9ssc+i1H
+         Vvw30gjghafsvVOqCgu+QaS/w1znUZFRKrF9MKqL+oQFEqpYaworLamOFfjDTcSXt66L
+         edScY2F+o7eki16tHTb6NmnVuvCINlCnkXQTdj7roj6UNpgi5g/JahjSA0jwhgYDmOC3
+         uDeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=iBGnzN/+6loJkhrhbH/dzTk9PX3jtnMo9lpzqcBWYus=;
-        b=pGHT+acSRDeTBwpstffzMIt6AkFNv+hE4xKwHd9/fFpXn+AsNyeHs6Sej6+r6nuVIZ
-         DEU+vWxEGIXN8OtFAa1odYaAWwkPBiMsee05V0lbkHpCLO9bsvDs3Nwu4zoF5ebGQy17
-         HkkapeybtU2gsJJ9ahS1uObC5uKrZb6Xz8K93XU+1933+MzsKRl8/6MtWwtsQF5OahTA
-         ywhNT3agYswdbxYh/Pb1v2t/kSmXVbrpa8YMOXAcb32PV+5kpM5cbqY1s6wEyTF+XqfB
-         CzQBlO2Pz6EMA886v3QkUQLjRs8HbpN++mgSjumwOkY4SnRc2FEm9ndGN763rkoTZIBB
-         xd/g==
-X-Gm-Message-State: AOAM533H6E9hd980bhqAgenx7FmE9biT90wdD/rE0E0wRDK7aRbMG1Eo
-        31Bms2yBLyCxj/ECpbc1pTDMH9yoPKpmPqX59Fk=
-X-Google-Smtp-Source: ABdhPJynwNIqDzkb9LAhs2VU4jyvpgwuqegQE72W2uyeAxg+RZ0DYmhq2QHOmaBl4StS9Va/mNySuFplEsA4xiOLvUc=
-X-Received: by 2002:a05:6830:1319:: with SMTP id p25mr17703923otq.38.1602516696954;
- Mon, 12 Oct 2020 08:31:36 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q+589eEK9RUMo5k3gXC7QGOAGtF0NXhGUz1kajGcrv8=;
+        b=rcykRq/HloEi2uvj6fuRoKJQieP5kkponqMYyqufK1UmaLtEnA3ELSBkCAkwg5Jmck
+         sO5uscUY8m/LJqO6HHueMqcgMUWXJMPM64S3alV89w6zjbxdnJKe8Xhia+ewm7AjNYeC
+         +ecbrnWEq43l0gaROcON+W9WefXVBEaOmEBsLxot2lV1ndoE8/re9VME8EXa++hFwf39
+         T5Ep/q2nX/FBxh207vgQbX4EmHQS0tISVxX9dg/zyLslqMScVzYOjsg0dcARs1c52H4D
+         ZafDrAbow6UeTD3sjkE/76pxeTIaOFWmUqq36Lb6uSvSs9IcWhVpWr1FmBjZNfEklmZ7
+         iY/A==
+X-Gm-Message-State: AOAM530RYDJ1jxcDPcRN8oGq3GVJ8KIPgNcZHIcnzsKuqV7Ydjz7xmwh
+        IliybYro73CEiHuGTClCPzlOqUcBp7Vcoh0OUxc=
+X-Google-Smtp-Source: ABdhPJw+hAxQlG+1/PVLLrv2BqdonAWAW01tSmViwJtPemblj5lheDDRXhRaGUKmAcnUwd2TawkgwHIKxMz06yWWGQI=
+X-Received: by 2002:a25:7405:: with SMTP id p5mr34323868ybc.19.1602516756470;
+ Mon, 12 Oct 2020 08:32:36 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:aca:c490:0:0:0:0:0 with HTTP; Mon, 12 Oct 2020 08:31:36
- -0700 (PDT)
-Reply-To: tofilbaman1@gmail.com
-From:   Tofil Bama <tomaralif80@gmail.com>
-Date:   Mon, 12 Oct 2020 08:31:36 -0700
-Message-ID: <CAJFNYjX0Wyppu=O_UcSBov+Fz94WcmO87Z6aWj8OVaBYYpykrA@mail.gmail.com>
-Subject: KINDEST MESSAGE.
-To:     undisclosed-recipients:;
+References: <20201007130750.49349844@gandalf.local.home> <20201012101208.GF1099489@krava>
+ <20201012111950.55a73588@gandalf.local.home>
+In-Reply-To: <20201012111950.55a73588@gandalf.local.home>
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Date:   Mon, 12 Oct 2020 16:32:00 +0100
+Message-ID: <CADVatmP1iZdiWWqs-ZujAeXiCvYYJpNvoPt3K+GFfL5a6vyJGA@mail.gmail.com>
+Subject: Re: [ANNOUNCE] libtraceevent.git
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
+        Zamir SUN <sztsian@gmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        zsun@redhat.com, Vitaly Chikunov <vt@altlinux.org>,
+        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
+        Yordan Karadzhov <ykaradzhov@vmware.com>,
+        Ben Hutchings <ben@decadent.org.uk>,
+        Tony Jones <tonyj@suse.de>, John Kacur <jkacur@redhat.com>,
+        Clark Williams <williams@redhat.com>, powertop@lists.01.org,
+        Al Stone <ahs3@debian.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear,
+On Mon, Oct 12, 2020 at 4:19 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Mon, 12 Oct 2020 12:12:08 +0200
+> Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> > On Wed, Oct 07, 2020 at 01:07:50PM -0400, Steven Rostedt wrote:
+> > > I split out tools/lib/traceevent from the kernel tree using "git subtree",
+> > > which recreates all the commits of a directory and makes that directory a
+> > > stand alone. I then updated the Makefiles, and copied over some of the
+> > > header files used to build the library. I pushed this up to:
+> > >
+> > >   https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/
+> > >
+> > > My hope is that this will now be the source of all updates to the
+> > > libtraceevent library that can be used as a stand alone package that both
+> > > perf and tracecmd can use. I would also like powertop and rasdaemon to use
+> > > this as well.
+> >
+> > hi,
+> > I'm adding this as fedora package, is there a source arhive somewhere
+> > in git.kernel.org for libtraceevent that spec could download?
+> >
+>
+> Hi Jiri!
+>
+> Once it's shown that it works for all the package maintainers, I will tag
+> it which should create the tarballs automatically on the above link. But I
+> wanted to fix all the packaging bugs before doing so. I hope this doesn't
+> make it into a catch-22. Where you can't package till there's a source
+> tarball, but I can't make a source tarball until I know you can package
+> it ;-)
 
-My name is Mr Tofil Bama, I am the Bill and Exchange assistant
-Manager in Bank of Africa Ouagadougou Burkina Faso. In my department
-I discovered an abandoned sum of eighteen million three hundred
-thousand United State of American dollars (18.3MILLION USA DOLLARS)
-in an account that belongs to one of our foreign customer
-(late Mr Shitu Nuri) who died in Ethiopian Airlines Flight 409 that
-crashed into the Mediterranean Sea on 25th January 2010.
+For Debian I have raised https://bugs.debian.org/971976 but I will
+package it locally today just to check there is no packaging bugs for
+our packaging.
 
-Since I got information about his death I have been expecting
-his next of kin to come over and claim his money because we
-cannot release it unless somebody applies for it as the next
-of kin or relation to the deceased as indicated in our banking guidelines,
-unfortunately we learnt that all his supposed next of kin or
-relation died alongside with him in the plane crash leaving
-nobody behind for the claim.
 
-It is therefore upon this discovery that I decided to make this
-business proposal to you and release the money to you as next of kin
-to the deceased for safety and subsequent disbursement since nobody is
-coming for the fund, it is 10 years now the money is lying pending in
-the account of our deceased and I don't want the money to go into the
-bank treasury as unclaimed bill.
-
-You will be entitled with 40% of the total sum while 60% will be for
-me after which I will visit your Country to invest my own share when
-the fund is successfully transferred into your account, Please I would
-like you to keep this transaction confidential and as a top secret
-between me and you until we successfully achieve this golden
-opportunity.
-
-Yours sincerely,
-Mr Tofil Bama.
+-- 
+Regards
+Sudip
