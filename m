@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 982F428B705
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9565028B7AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:45:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731454AbgJLNjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:39:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43316 "EHLO mail.kernel.org"
+        id S2389682AbgJLNpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:45:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46188 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731389AbgJLNja (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:39:30 -0400
+        id S1730968AbgJLNlh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:41:37 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2E9B0221FF;
-        Mon, 12 Oct 2020 13:39:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 771DF208B8;
+        Mon, 12 Oct 2020 13:41:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509969;
-        bh=XtpB59G9TYE4H0HNJH7eGgnDt+9I9era3TAO16Mqdc4=;
+        s=default; t=1602510080;
+        bh=io4dqfZqbXmRiEIdaqlTbeMncJ13Rdp7lGs9BZMlDHQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GV5aP2jajcH94YmKI6wZhNPfIONjadJxO6digUUEbIpj8aCzEb4KOXuLyO9vSf2AP
-         rqUci4yQXNccWyh3ndS3Ei2lAdouTk0y1+Y1Y8g+7vjVgkHdK4HwUQi0mnsqTHyrbo
-         OtY5P25JVvSlUM5fO+fd5V8JTm+AEg6Pyezz35h0=
+        b=IG57vDntfCYsavwrJPRWAVWrd8Dx7kMpvAQREBYquu+PnhTe8dy79t7TULjRLZ6RI
+         cBOs0oWc2akwJXZ1FLwKEY8QPDojF49F2cxiCkiuNhw/thx9tDzqkUxhsVNUrYwiXO
+         kYhkY/JpT9h+tdCc/mM8gcn7QZmibTMuhmW7n95c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH 4.19 08/49] platform/x86: intel-vbtn: Fix SW_TABLET_MODE always reporting 1 on the HP Pavilion 11 x360
+        stable@vger.kernel.org, Martin Doucha <martin.doucha@suse.com>,
+        Filipe Manana <fdmanana@suse.com>,
+        Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.4 31/85] btrfs: allow btrfs_truncate_block() to fallback to nocow for data space reservation
 Date:   Mon, 12 Oct 2020 15:26:54 +0200
-Message-Id: <20201012132629.820632023@linuxfoundation.org>
+Message-Id: <20201012132634.353480633@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132629.469542486@linuxfoundation.org>
-References: <20201012132629.469542486@linuxfoundation.org>
+In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
+References: <20201012132632.846779148@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,70 +44,189 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Qu Wenruo <wqu@suse.com>
 
-commit d823346876a970522ff9e4d2b323c9b734dcc4de upstream.
+commit 6d4572a9d71d5fc2affee0258d8582d39859188c upstream.
 
-Commit cfae58ed681c ("platform/x86: intel-vbtn: Only blacklist
-SW_TABLET_MODE on the 9 / "Laptop" chasis-type") restored SW_TABLET_MODE
-reporting on the HP stream x360 11 series on which it was previously broken
-by commit de9647efeaa9 ("platform/x86: intel-vbtn: Only activate tablet
-mode switch on 2-in-1's").
+[BUG]
+When the data space is exhausted, even if the inode has NOCOW attribute,
+we will still refuse to truncate unaligned range due to ENOSPC.
 
-It turns out that enabling SW_TABLET_MODE reporting on devices with a
-chassis-type of 10 ("Notebook") causes SW_TABLET_MODE to always report 1
-at boot on the HP Pavilion 11 x360, which causes libinput to disable the
-kbd and touchpad.
+The following script can reproduce it pretty easily:
+  #!/bin/bash
 
-The HP Pavilion 11 x360's ACPI VGBS method sets bit 4 instead of bit 6 when
-NOT in tablet mode at boot. Inspecting all the DSDTs in my DSDT collection
-shows only one other model, the Medion E1239T ever setting bit 4 and it
-always sets this together with bit 6.
+  dev=/dev/test/test
+  mnt=/mnt/btrfs
 
-So lets treat bit 4 as a second bit which when set indicates the device not
-being in tablet-mode, as we already do for bit 6.
+  umount $dev &> /dev/null
+  umount $mnt &> /dev/null
 
-While at it also prefix all VGBS constant defines with "VGBS_".
+  mkfs.btrfs -f $dev -b 1G
+  mount -o nospace_cache $dev $mnt
+  touch $mnt/foobar
+  chattr +C $mnt/foobar
 
-Fixes: cfae58ed681c ("platform/x86: intel-vbtn: Only blacklist SW_TABLET_MODE on the 9 / "Laptop" chasis-type")
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Mark Gross <mgross@linux.intel.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+  xfs_io -f -c "pwrite -b 4k 0 4k" $mnt/foobar > /dev/null
+  xfs_io -f -c "pwrite -b 4k 0 1G" $mnt/padding &> /dev/null
+  sync
+
+  xfs_io -c "fpunch 0 2k" $mnt/foobar
+  umount $mnt
+
+Currently this will fail at the fpunch part.
+
+[CAUSE]
+Because btrfs_truncate_block() always reserves space without checking
+the NOCOW attribute.
+
+Since the writeback path follows NOCOW bit, we only need to bother the
+space reservation code in btrfs_truncate_block().
+
+[FIX]
+Make btrfs_truncate_block() follow btrfs_buffered_write() to try to
+reserve data space first, and fall back to NOCOW check only when we
+don't have enough space.
+
+Such always-try-reserve is an optimization introduced in
+btrfs_buffered_write(), to avoid expensive btrfs_check_can_nocow() call.
+
+This patch will export check_can_nocow() as btrfs_check_can_nocow(), and
+use it in btrfs_truncate_block() to fix the problem.
+
+Reported-by: Martin Doucha <martin.doucha@suse.com>
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/platform/x86/intel-vbtn.c |   12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ fs/btrfs/ctree.h |    2 ++
+ fs/btrfs/file.c  |    9 +++++----
+ fs/btrfs/inode.c |   44 +++++++++++++++++++++++++++++++++++++-------
+ 3 files changed, 44 insertions(+), 11 deletions(-)
 
---- a/drivers/platform/x86/intel-vbtn.c
-+++ b/drivers/platform/x86/intel-vbtn.c
-@@ -15,9 +15,13 @@
- #include <linux/platform_device.h>
- #include <linux/suspend.h>
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -2956,6 +2956,8 @@ int btrfs_fdatawrite_range(struct inode
+ loff_t btrfs_remap_file_range(struct file *file_in, loff_t pos_in,
+ 			      struct file *file_out, loff_t pos_out,
+ 			      loff_t len, unsigned int remap_flags);
++int btrfs_check_can_nocow(struct btrfs_inode *inode, loff_t pos,
++			  size_t *write_bytes);
  
-+/* Returned when NOT in tablet mode on some HP Stream x360 11 models */
-+#define VGBS_TABLET_MODE_FLAG_ALT	0x10
- /* When NOT in tablet mode, VGBS returns with the flag 0x40 */
--#define TABLET_MODE_FLAG 0x40
--#define DOCK_MODE_FLAG   0x80
-+#define VGBS_TABLET_MODE_FLAG		0x40
-+#define VGBS_DOCK_MODE_FLAG		0x80
-+
-+#define VGBS_TABLET_MODE_FLAGS (VGBS_TABLET_MODE_FLAG | VGBS_TABLET_MODE_FLAG_ALT)
- 
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("AceLan Kao");
-@@ -148,9 +152,9 @@ static void detect_tablet_mode(struct pl
- 	if (ACPI_FAILURE(status))
- 		return;
- 
--	m = !(vgbs & TABLET_MODE_FLAG);
-+	m = !(vgbs & VGBS_TABLET_MODE_FLAGS);
- 	input_report_switch(priv->input_dev, SW_TABLET_MODE, m);
--	m = (vgbs & DOCK_MODE_FLAG) ? 1 : 0;
-+	m = (vgbs & VGBS_DOCK_MODE_FLAG) ? 1 : 0;
- 	input_report_switch(priv->input_dev, SW_DOCK, m);
+ /* tree-defrag.c */
+ int btrfs_defrag_leaves(struct btrfs_trans_handle *trans,
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -1546,8 +1546,8 @@ lock_and_cleanup_extent_if_need(struct b
+ 	return ret;
  }
  
+-static noinline int check_can_nocow(struct btrfs_inode *inode, loff_t pos,
+-				    size_t *write_bytes)
++int btrfs_check_can_nocow(struct btrfs_inode *inode, loff_t pos,
++			  size_t *write_bytes)
+ {
+ 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+ 	struct btrfs_root *root = inode->root;
+@@ -1647,7 +1647,7 @@ static noinline ssize_t btrfs_buffered_w
+ 		if (ret < 0) {
+ 			if ((BTRFS_I(inode)->flags & (BTRFS_INODE_NODATACOW |
+ 						      BTRFS_INODE_PREALLOC)) &&
+-			    check_can_nocow(BTRFS_I(inode), pos,
++			    btrfs_check_can_nocow(BTRFS_I(inode), pos,
+ 					&write_bytes) > 0) {
+ 				/*
+ 				 * For nodata cow case, no need to reserve
+@@ -1927,7 +1927,8 @@ static ssize_t btrfs_file_write_iter(str
+ 		 */
+ 		if (!(BTRFS_I(inode)->flags & (BTRFS_INODE_NODATACOW |
+ 					      BTRFS_INODE_PREALLOC)) ||
+-		    check_can_nocow(BTRFS_I(inode), pos, &nocow_bytes) <= 0) {
++		    btrfs_check_can_nocow(BTRFS_I(inode), pos,
++					  &nocow_bytes) <= 0) {
+ 			inode_unlock(inode);
+ 			return -EAGAIN;
+ 		}
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -5133,11 +5133,13 @@ int btrfs_truncate_block(struct inode *i
+ 	struct extent_state *cached_state = NULL;
+ 	struct extent_changeset *data_reserved = NULL;
+ 	char *kaddr;
++	bool only_release_metadata = false;
+ 	u32 blocksize = fs_info->sectorsize;
+ 	pgoff_t index = from >> PAGE_SHIFT;
+ 	unsigned offset = from & (blocksize - 1);
+ 	struct page *page;
+ 	gfp_t mask = btrfs_alloc_write_mask(mapping);
++	size_t write_bytes = blocksize;
+ 	int ret = 0;
+ 	u64 block_start;
+ 	u64 block_end;
+@@ -5149,11 +5151,27 @@ int btrfs_truncate_block(struct inode *i
+ 	block_start = round_down(from, blocksize);
+ 	block_end = block_start + blocksize - 1;
+ 
+-	ret = btrfs_delalloc_reserve_space(inode, &data_reserved,
+-					   block_start, blocksize);
+-	if (ret)
+-		goto out;
+ 
++	ret = btrfs_check_data_free_space(inode, &data_reserved, block_start,
++					  blocksize);
++	if (ret < 0) {
++		if ((BTRFS_I(inode)->flags & (BTRFS_INODE_NODATACOW |
++					      BTRFS_INODE_PREALLOC)) &&
++		    btrfs_check_can_nocow(BTRFS_I(inode), block_start,
++					  &write_bytes) > 0) {
++			/* For nocow case, no need to reserve data space */
++			only_release_metadata = true;
++		} else {
++			goto out;
++		}
++	}
++	ret = btrfs_delalloc_reserve_metadata(BTRFS_I(inode), blocksize);
++	if (ret < 0) {
++		if (!only_release_metadata)
++			btrfs_free_reserved_data_space(inode, data_reserved,
++					block_start, blocksize);
++		goto out;
++	}
+ again:
+ 	page = find_or_create_page(mapping, index, mask);
+ 	if (!page) {
+@@ -5222,14 +5240,26 @@ again:
+ 	set_page_dirty(page);
+ 	unlock_extent_cached(io_tree, block_start, block_end, &cached_state);
+ 
++	if (only_release_metadata)
++		set_extent_bit(&BTRFS_I(inode)->io_tree, block_start,
++				block_end, EXTENT_NORESERVE, NULL, NULL,
++				GFP_NOFS);
++
+ out_unlock:
+-	if (ret)
+-		btrfs_delalloc_release_space(inode, data_reserved, block_start,
+-					     blocksize, true);
++	if (ret) {
++		if (only_release_metadata)
++			btrfs_delalloc_release_metadata(BTRFS_I(inode),
++					blocksize, true);
++		else
++			btrfs_delalloc_release_space(inode, data_reserved,
++					block_start, blocksize, true);
++	}
+ 	btrfs_delalloc_release_extents(BTRFS_I(inode), blocksize);
+ 	unlock_page(page);
+ 	put_page(page);
+ out:
++	if (only_release_metadata)
++		btrfs_end_write_no_snapshotting(BTRFS_I(inode)->root);
+ 	extent_changeset_free(data_reserved);
+ 	return ret;
+ }
 
 
