@@ -2,108 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65CE428B089
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 10:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6168828B08B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 10:48:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727149AbgJLIsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 04:48:25 -0400
-Received: from ozlabs.org ([203.11.71.1]:49475 "EHLO ozlabs.org"
+        id S1727468AbgJLIsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 04:48:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726104AbgJLIsY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 04:48:24 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1726104AbgJLIsg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 04:48:36 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C8slV0YsDz9sSG;
-        Mon, 12 Oct 2020 19:48:22 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1602492502;
-        bh=H4vsbFQ4YopxQ5AsbArAUhsvvaJoJSd4wrTnXiDX+Dg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=idDJClWniaUMPHw5AnhT7ektZyNKqkFQ25ytkDHwk80+kyixNeC/kDCglrDI18a0Y
-         7fLfKHhmAG2X54fdzhgkqjqJgeo+0a4zSkh6SpFKX2REE6eK4zklTxFfEEaja6iTCZ
-         BrN5nMhJUxf6Wm1CQiP28/+VMYyJHtnE1Ywt6eP2+HWu6nrZl/E3sacGSBtRMIsVvi
-         A5Bm8GPQ2KnDcCZ0BxMOiKCoAGb4+rDQ9IbvsFtIPx0W9DsQCl1aCMcYiTehGCNcxX
-         fDHkEO4FIqU7Ff+ylI5gVFVRehkNF1KUWqpU/w+wtcnF+889RisUat+i0eU7TzD9qd
-         TfHAEiGUPJfDA==
-Date:   Mon, 12 Oct 2020 19:48:21 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: linux-next: manual merge of the akpm-current tree with the counters
- tree
-Message-ID: <20201012194821.4eeaffab@canb.auug.org.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id 125C020773;
+        Mon, 12 Oct 2020 08:48:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602492515;
+        bh=cCsb7DHMH1TLtqM3vgMHvWsrDmhMZmW/jNR9XvpQzko=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OS0H5doFjiXqph3ehhylpNM+q9XJrnGqdIN80pHFDByD3AYZc+DWrZJ4pSV/XkVci
+         HJkzWO57y1hf/VyyeKlmezv5aJukU9xTC6f48H9O/OXC9O8+AhB9HKUkHz+FBtFZDe
+         wZFlDx8TXms+Ig6pPm0j0vUlO046LgPdNbXZoZL8=
+Date:   Mon, 12 Oct 2020 09:48:29 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Peter Zijlstra <peterz@infradead.org>, kan.liang@linux.intel.com,
+        mingo@redhat.com, acme@kernel.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, eranian@google.com, ak@linux.intel.com,
+        dave.hansen@intel.com, kirill.shutemov@linux.intel.com,
+        benh@kernel.crashing.org, paulus@samba.org,
+        David Miller <davem@davemloft.net>
+Subject: Re: [PATCH V9 1/4] perf/core: Add PERF_SAMPLE_DATA_PAGE_SIZE
+Message-ID: <20201012084829.GA1151@willie-the-truck>
+References: <20201001135749.2804-1-kan.liang@linux.intel.com>
+ <20201001135749.2804-2-kan.liang@linux.intel.com>
+ <20201009090927.GQ2611@hirez.programming.kicks-ass.net>
+ <877drz1qbc.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/iC91Bsy9=Gzl=cvGn4n4xPL";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <877drz1qbc.fsf@mpe.ellerman.id.au>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/iC91Bsy9=Gzl=cvGn4n4xPL
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sat, Oct 10, 2020 at 12:28:39AM +1100, Michael Ellerman wrote:
+> Peter Zijlstra <peterz@infradead.org> writes:
+> > Patch 4 makes it all far worse by exposing it to pretty much everybody.
+> >
+> > Now, I think we can fix at least the user mappings with the below delta,
+> > but if archs are using non-page-table MMU sizes we'll need arch helpers.
+> >
+> > ARM64 is in that last boat.
+> 
+> I think we probably need it to be weak so we can provide our own
+> version.
 
-Hi all,
+I guess the same thing applies to us, but I can't really tell how accurate
+this stuff needs to be for userspace. If it's trying to use the page-table
+configuration to infer properties of the TLB, that's never going to be
+reliable because the TLB can choose both to split and coalesce entries
+as long as software can't tell.
 
-Today's linux-next merge of the akpm-current tree got a conflict in:
-
-  lib/Makefile
-
-between commit:
-
-  37a0dbf631f6 ("counters: Introduce counter_atomic* counters")
-
-from the counters tree and commit:
-
-  ed7f5253e189 ("mm/page_alloc.c: fix freeing non-compound pages")
-
-from the akpm-current tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc lib/Makefile
-index 95b357bb5f3c,1c7577b2e86a..000000000000
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@@ -99,7 -101,7 +101,8 @@@ obj-$(CONFIG_TEST_BLACKHOLE_DEV) +=3D tes
-  obj-$(CONFIG_TEST_MEMINIT) +=3D test_meminit.o
-  obj-$(CONFIG_TEST_LOCKUP) +=3D test_lockup.o
-  obj-$(CONFIG_TEST_HMM) +=3D test_hmm.o
- +obj-$(CONFIG_TEST_COUNTERS) +=3D test_counters.o
-+ obj-$(CONFIG_TEST_FREE_PAGES) +=3D test_free_pages.o
- =20
-  #
-  # CFLAGS for compiling floating point code inside the kernel. x86/Makefil=
-e turns
-
---Sig_/iC91Bsy9=Gzl=cvGn4n4xPL
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+EGFUACgkQAVBC80lX
-0Gwt8Af/WjLVWjWjtWIcwDqatfmMEEktFsFnycAftFOI8JW681tHJlRHZ7XGVGDG
-sUV9yKCzwr8E6pLD/3lug15jkjUhPCuskpw7zhliwERqJBDa6YfgLefs9nPcW4ED
-Vmb8Epq2uniEbcaOVNib5z/M587i/zdeDMUJmICYb9B81mCbOTD9QosFTtE6KnMG
-wh3J/yPzFnqtDhVHWgmfs3wEbxkliq8Ok2tUAYinLC/SH2jRSjyb7tirChiUVgEj
-d7LGeCD3Wwogr5YkhDwryjyIJ8AzpwZJq6xM+6CCw7nWNY91mvrcDM+SGsucO1es
-np9gIX5MfXKIgscCi/MtniVmgOZ3cQ==
-=UmWN
------END PGP SIGNATURE-----
-
---Sig_/iC91Bsy9=Gzl=cvGn4n4xPL--
+Will
