@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49BBB28B6B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 056DB28B93A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:01:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388669AbgJLNgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:36:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36796 "EHLO mail.kernel.org"
+        id S2390683AbgJLN6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:58:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730686AbgJLNfi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:35:38 -0400
+        id S1731311AbgJLNk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:40:56 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C31DC2222A;
-        Mon, 12 Oct 2020 13:35:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4910A22202;
+        Mon, 12 Oct 2020 13:40:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509733;
-        bh=DPJ7hSF8Bve5Cv5O4DeRfsryLXidSFc+kkrXAutzhMA=;
+        s=default; t=1602510022;
+        bh=PZN35SPpSz/Kz9MmIP1Hox82tgjCS2cttSyiyXk3NYE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XVnMAue6qXHNqUMyrhGEuHfAJ+s6goFN/rd2qtq0nm9dU0NGgpXq/ONrdD5TutoB0
-         3RmkiLYgvyd4IwPGfYcJbTaxt48XXBLtqg8qKyRjGGCARPnaMyoGvuU8orE2ygrJAQ
-         iLhCf2XzisQgJ9UljKj3XjGK1O0BTG2QUOrNnAAU=
+        b=wOwVRIW9yIXx4IjrMrMpKBLdK0gfK/UJqTx/imQSTnlcVBMCiKyNtT8aAFletipJV
+         +RosQz+OJSw/szspL0I7LyrXIvQSLS4PfaN1zg9k/TgUQh/vNasshCDX6481C8Iwr+
+         BewRoLq6nNQARGlNdECtb2FTLFeTcQCOdy5Cl0Ig=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com,
-        Petko Manolov <petkan@nucleusys.com>,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 54/54] net: usb: rtl8150: set random MAC address when set_ethernet_addr() fails
+        stable@vger.kernel.org, Antony Antony <antony.antony@secunet.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 30/49] xfrm: clone XFRMA_SET_MARK in xfrm_do_migrate
 Date:   Mon, 12 Oct 2020 15:27:16 +0200
-Message-Id: <20201012132632.078339755@linuxfoundation.org>
+Message-Id: <20201012132630.850011419@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132629.585664421@linuxfoundation.org>
-References: <20201012132629.585664421@linuxfoundation.org>
+In-Reply-To: <20201012132629.469542486@linuxfoundation.org>
+References: <20201012132629.469542486@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,58 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+From: Antony Antony <antony.antony@secunet.com>
 
-commit f45a4248ea4cc13ed50618ff066849f9587226b2 upstream.
+[ Upstream commit 545e5c571662b1cd79d9588f9d3b6e36985b8007 ]
 
-When get_registers() fails in set_ethernet_addr(),the uninitialized
-value of node_id gets copied over as the address.
-So, check the return value of get_registers().
+XFRMA_SET_MARK and XFRMA_SET_MARK_MASK was not cloned from the old
+to the new. Migrate these two attributes during XFRMA_MSG_MIGRATE
 
-If get_registers() executed successfully (i.e., it returns
-sizeof(node_id)), copy over the MAC address using ether_addr_copy()
-(instead of using memcpy()).
-
-Else, if get_registers() failed instead, a randomly generated MAC
-address is set as the MAC address instead.
-
-Reported-by: syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com
-Tested-by: syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com
-Acked-by: Petko Manolov <petkan@nucleusys.com>
-Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 9b42c1f179a6 ("xfrm: Extend the output_mark to support input direction and masking.")
+Signed-off-by: Antony Antony <antony.antony@secunet.com>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/rtl8150.c |   16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ net/xfrm/xfrm_state.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/usb/rtl8150.c
-+++ b/drivers/net/usb/rtl8150.c
-@@ -277,12 +277,20 @@ static int write_mii_word(rtl8150_t * de
- 		return 1;
- }
+diff --git a/net/xfrm/xfrm_state.c b/net/xfrm/xfrm_state.c
+index 47a8ff972a2bf..d76b019673aa0 100644
+--- a/net/xfrm/xfrm_state.c
++++ b/net/xfrm/xfrm_state.c
+@@ -1410,6 +1410,7 @@ static struct xfrm_state *xfrm_state_clone(struct xfrm_state *orig,
+ 	}
  
--static inline void set_ethernet_addr(rtl8150_t * dev)
-+static void set_ethernet_addr(rtl8150_t *dev)
- {
--	u8 node_id[6];
-+	u8 node_id[ETH_ALEN];
-+	int ret;
+ 	memcpy(&x->mark, &orig->mark, sizeof(x->mark));
++	memcpy(&x->props.smark, &orig->props.smark, sizeof(x->props.smark));
  
--	get_registers(dev, IDR, sizeof(node_id), node_id);
--	memcpy(dev->netdev->dev_addr, node_id, sizeof(node_id));
-+	ret = get_registers(dev, IDR, sizeof(node_id), node_id);
-+
-+	if (ret == sizeof(node_id)) {
-+		ether_addr_copy(dev->netdev->dev_addr, node_id);
-+	} else {
-+		eth_hw_addr_random(dev->netdev);
-+		netdev_notice(dev->netdev, "Assigned a random MAC address: %pM\n",
-+			      dev->netdev->dev_addr);
-+	}
- }
- 
- static int rtl8150_set_mac_address(struct net_device *netdev, void *p)
+ 	if (xfrm_init_state(x) < 0)
+ 		goto error;
+-- 
+2.25.1
+
 
 
