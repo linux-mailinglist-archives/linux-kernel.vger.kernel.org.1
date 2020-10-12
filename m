@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6321128B6FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2FA28B678
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:34:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731387AbgJLNj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:39:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40158 "EHLO mail.kernel.org"
+        id S2389200AbgJLNeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:34:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34872 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730053AbgJLNio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:38:44 -0400
+        id S2389062AbgJLNcx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:32:53 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8C5BE21BE5;
-        Mon, 12 Oct 2020 13:38:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0EE4A20878;
+        Mon, 12 Oct 2020 13:32:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509924;
-        bh=uvwa/k5xa2M1gsseXq64HOYbcOvqvzqq/Zn+AUygn8I=;
+        s=default; t=1602509572;
+        bh=Aa1hEP8l8eNGl0K2ERTxmiFBm7d9nfbiKUMwCxfGjHs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U3fNfDJiuTl7eus9IjXZJPG3ktJgD99NmtOr3hrzTGkWVUsM8c27lbbBo33ZiITcg
-         4IGKY6Mg014/U+Eh37Qu08taUJeLFQVYSti3igd5qxGja5QOTU8LSqtFKwX4nD0hn2
-         Rkyvco/j8ZroONDiAmEHGQe7z254kcdXrIkCd/VM=
+        b=YjnF/IdhbWz79IaTqLeSEvAZBVuMxDW9hiJKESjDyrJ4edftDe5ROqwwCfCwpGjmJ
+         L2dXAUxzKvZeAgRsQ/P7dQWvHu1vjLpTkG/Qs7oGHgAuvxMhthS/CTxQw2gr/zNL8b
+         OlybDLTkxAS4nL1PAusCMHlW91oyhi2Yo6W8xJkg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 4.19 17/49] nvme-core: put ctrl ref when module ref get fail
+        stable@vger.kernel.org, Voon Weifeng <weifeng.voon@intel.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 33/39] net: stmmac: removed enabling eee in EEE set callback
 Date:   Mon, 12 Oct 2020 15:27:03 +0200
-Message-Id: <20201012132630.238981493@linuxfoundation.org>
+Message-Id: <20201012132629.693707225@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132629.469542486@linuxfoundation.org>
-References: <20201012132629.469542486@linuxfoundation.org>
+In-Reply-To: <20201012132628.130632267@linuxfoundation.org>
+References: <20201012132628.130632267@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,39 +44,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+From: Voon Weifeng <weifeng.voon@intel.com>
 
-commit 4bab69093044ca81f394bd0780be1b71c5a4d308 upstream.
+[ Upstream commit 7241c5a697479c7d0c5a96595822cdab750d41ae ]
 
-When try_module_get() fails in the nvme_dev_open() it returns without
-releasing the ctrl reference which was taken earlier.
+EEE should be only be enabled during stmmac_mac_link_up() when the
+link are up and being set up properly. set_eee should only do settings
+configuration and disabling the eee.
 
-Put the ctrl reference which is taken before calling the
-try_module_get() in the error return code path.
+Without this fix, turning on EEE using ethtool will return
+"Operation not supported". This is due to the driver is in a dead loop
+waiting for eee to be advertised in the for eee to be activated but the
+driver will only configure the EEE advertisement after the eee is
+activated.
 
-Fixes: 52a3974feb1a "nvme-core: get/put ctrl and transport module in nvme_dev_open/release()"
-Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Ethtool should only return "Operation not supported" if there is no EEE
+capbility in the MAC controller.
 
+Fixes: 8a7493e58ad6 ("net: stmmac: Fix a race in EEE enable callback")
+Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
+Acked-by: Mark Gross <mgross@linux.intel.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/core.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ .../net/ethernet/stmicro/stmmac/stmmac_ethtool.c  | 15 ++++-----------
+ 1 file changed, 4 insertions(+), 11 deletions(-)
 
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -2606,8 +2606,10 @@ static int nvme_dev_open(struct inode *i
- 	}
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+index fbf701e5f1e9f..6fe441696882d 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+@@ -616,23 +616,16 @@ static int stmmac_ethtool_op_set_eee(struct net_device *dev,
+ 	struct stmmac_priv *priv = netdev_priv(dev);
+ 	int ret;
  
- 	nvme_get_ctrl(ctrl);
--	if (!try_module_get(ctrl->ops->module))
-+	if (!try_module_get(ctrl->ops->module)) {
-+		nvme_put_ctrl(ctrl);
- 		return -EINVAL;
-+	}
+-	if (!edata->eee_enabled) {
++	if (!priv->dma_cap.eee)
++		return -EOPNOTSUPP;
++
++	if (!edata->eee_enabled)
+ 		stmmac_disable_eee_mode(priv);
+-	} else {
+-		/* We are asking for enabling the EEE but it is safe
+-		 * to verify all by invoking the eee_init function.
+-		 * In case of failure it will return an error.
+-		 */
+-		edata->eee_enabled = stmmac_eee_init(priv);
+-		if (!edata->eee_enabled)
+-			return -EOPNOTSUPP;
+-	}
  
- 	file->private_data = ctrl;
+ 	ret = phy_ethtool_set_eee(dev->phydev, edata);
+ 	if (ret)
+ 		return ret;
+ 
+-	priv->eee_enabled = edata->eee_enabled;
+ 	priv->tx_lpi_timer = edata->tx_lpi_timer;
  	return 0;
+ }
+-- 
+2.25.1
+
 
 
