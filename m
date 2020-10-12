@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B18F228B69F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7939528B757
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:43:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730820AbgJLNff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:35:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36910 "EHLO mail.kernel.org"
+        id S1731556AbgJLNmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:42:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730640AbgJLNe2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:34:28 -0400
+        id S1730994AbgJLNlh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:41:37 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5D2C920838;
-        Mon, 12 Oct 2020 13:34:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CE08521BE5;
+        Mon, 12 Oct 2020 13:41:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509665;
-        bh=9vOzk6L5ZlgzV3aSRh7G4WCOGUmax/tn8RhXBuTL/64=;
+        s=default; t=1602510082;
+        bh=HAuengNthdDvCmZ0JukO7cZtza2GxFWMWld0I5lHcVI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Nk0/5PWJx0aJ1fpj/a5Mq7wOhNpPtbopufJj25uI0CaPMmRzsARKDrEXTMrPDEVlD
-         IOcGrx/xNX0NXg2xVGxJ1FfF6TqSOvPgbhlsm7a00D/OOZ0vZZJ5GlmAhBVlSYbaO6
-         l822LGYczCzZ8JXQzZuZDvs426g5fAH8MqzKtp8o=
+        b=SvvAVDvJ/feq0+grKNV9ZvCuqj2ne5MhIeDoHUL0C+w0g9dwG4TO7CGi+XcB1yNDd
+         C2nXPdvbP7ZRqDnm6pSrK8YWCG6xuOUuDYESKrDThQF8j1+ydzA4lSM1IXY024ZbzK
+         FIMdle5iVS/YCRorbWYL9C+Dd5QNO40UNAO3d+fo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Subject: [PATCH 4.9 33/54] mtd: rawnand: sunxi: Fix the probe error path
+        stable@vger.kernel.org,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 5.4 32/85] nvme-core: put ctrl ref when module ref get fail
 Date:   Mon, 12 Oct 2020 15:26:55 +0200
-Message-Id: <20201012132631.124815696@linuxfoundation.org>
+Message-Id: <20201012132634.402282637@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132629.585664421@linuxfoundation.org>
-References: <20201012132629.585664421@linuxfoundation.org>
+In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
+References: <20201012132632.846779148@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,34 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+From: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
 
-commit 3d84515ffd8fb657e10fa5b1215e9f095fa7efca upstream.
+commit 4bab69093044ca81f394bd0780be1b71c5a4d308 upstream.
 
-nand_release() is supposed be called after MTD device registration.
-Here, only nand_scan() happened, so use nand_cleanup() instead.
+When try_module_get() fails in the nvme_dev_open() it returns without
+releasing the ctrl reference which was taken earlier.
 
-Fixes: 1fef62c1423b ("mtd: nand: add sunxi NAND flash controller support")
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/linux-mtd/20200519130035.1883-54-miquel.raynal@bootlin.com
-[iwamatsu: adjust filename]
-Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Put the ctrl reference which is taken before calling the
+try_module_get() in the error return code path.
+
+Fixes: 52a3974feb1a "nvme-core: get/put ctrl and transport module in nvme_dev_open/release()"
+Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/mtd/nand/sunxi_nand.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/mtd/nand/sunxi_nand.c
-+++ b/drivers/mtd/nand/sunxi_nand.c
-@@ -2108,7 +2108,7 @@ static int sunxi_nand_chip_init(struct d
- 	ret = mtd_device_register(mtd, NULL, 0);
- 	if (ret) {
- 		dev_err(dev, "failed to register mtd device: %d\n", ret);
--		nand_release(nand);
-+		nand_cleanup(nand);
- 		return ret;
+---
+ drivers/nvme/host/core.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -2932,8 +2932,10 @@ static int nvme_dev_open(struct inode *i
  	}
  
+ 	nvme_get_ctrl(ctrl);
+-	if (!try_module_get(ctrl->ops->module))
++	if (!try_module_get(ctrl->ops->module)) {
++		nvme_put_ctrl(ctrl);
+ 		return -EINVAL;
++	}
+ 
+ 	file->private_data = ctrl;
+ 	return 0;
 
 
