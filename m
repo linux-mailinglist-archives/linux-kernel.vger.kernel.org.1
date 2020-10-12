@@ -2,44 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B439628B95B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:01:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D1FE28B957
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390723AbgJLN7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:59:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43974 "EHLO mail.kernel.org"
+        id S2389646AbgJLN7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:59:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388691AbgJLNkA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:40:00 -0400
+        id S2388726AbgJLNkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:40:02 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 52DFE21D7F;
-        Mon, 12 Oct 2020 13:39:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DEA6F208B8;
+        Mon, 12 Oct 2020 13:40:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509999;
-        bh=Rnhk7T9mAIqQWbrNqx+3n4D9k2bdIFK3DiNgdOQrz4Y=;
+        s=default; t=1602510001;
+        bh=DPJ7hSF8Bve5Cv5O4DeRfsryLXidSFc+kkrXAutzhMA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jkD07rsLoYQ7dlNIHHfiColAcq98m9jnCDoJnb4pB+HgcDD9KkxM54av0MG8dxqTd
-         9KOgQnluwKUMqw/ehR7FV9Au3cNFDRPb32LJeFNrOoM7kRo69q4iVJuddTh03QiU0A
-         xv1BrlVLm2uPiXPTJsear2et1BnkJ53OdHEbJgi4=
+        b=Xc5pw2TdYsTUTsAbbU3j7+KvHnv2pG5qW2iaKZKDq1oPIylR2AdWDxRuteYgLX2NT
+         CTcrtw7nh1jrmLmiok9e4hUXH8UnLfCvEehdYeowo796BZO6zEW81Hqz/G+RVW9xXv
+         HQaY7EJgOQZjlxga3dNyYfxgWQeZHMJ8uLEb0obU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Vijay Balakrishna <vijayb@linux.microsoft.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Allen Pais <apais@microsoft.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 48/49] mm: khugepaged: recalculate min_free_kbytes after memory hotplug as expected by khugepaged
-Date:   Mon, 12 Oct 2020 15:27:34 +0200
-Message-Id: <20201012132631.610989729@linuxfoundation.org>
+        syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com,
+        Petko Manolov <petkan@nucleusys.com>,
+        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 49/49] net: usb: rtl8150: set random MAC address when set_ethernet_addr() fails
+Date:   Mon, 12 Oct 2020 15:27:35 +0200
+Message-Id: <20201012132631.659868379@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201012132629.469542486@linuxfoundation.org>
 References: <20201012132629.469542486@linuxfoundation.org>
@@ -51,114 +45,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vijay Balakrishna <vijayb@linux.microsoft.com>
+From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
 
-commit 4aab2be0983031a05cb4a19696c9da5749523426 upstream.
+commit f45a4248ea4cc13ed50618ff066849f9587226b2 upstream.
 
-When memory is hotplug added or removed the min_free_kbytes should be
-recalculated based on what is expected by khugepaged.  Currently after
-hotplug, min_free_kbytes will be set to a lower default and higher
-default set when THP enabled is lost.
+When get_registers() fails in set_ethernet_addr(),the uninitialized
+value of node_id gets copied over as the address.
+So, check the return value of get_registers().
 
-This change restores min_free_kbytes as expected for THP consumers.
+If get_registers() executed successfully (i.e., it returns
+sizeof(node_id)), copy over the MAC address using ether_addr_copy()
+(instead of using memcpy()).
 
-[vijayb@linux.microsoft.com: v5]
-  Link: https://lkml.kernel.org/r/1601398153-5517-1-git-send-email-vijayb@linux.microsoft.com
+Else, if get_registers() failed instead, a randomly generated MAC
+address is set as the MAC address instead.
 
-Fixes: f000565adb77 ("thp: set recommended min free kbytes")
-Signed-off-by: Vijay Balakrishna <vijayb@linux.microsoft.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Cc: Allen Pais <apais@microsoft.com>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc: Oleg Nesterov <oleg@redhat.com>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/1600305709-2319-2-git-send-email-vijayb@linux.microsoft.com
-Link: https://lkml.kernel.org/r/1600204258-13683-1-git-send-email-vijayb@linux.microsoft.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Reported-by: syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com
+Tested-by: syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com
+Acked-by: Petko Manolov <petkan@nucleusys.com>
+Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- include/linux/khugepaged.h |    5 +++++
- mm/khugepaged.c            |   13 +++++++++++--
- mm/page_alloc.c            |    3 +++
- 3 files changed, 19 insertions(+), 2 deletions(-)
+ drivers/net/usb/rtl8150.c |   16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
---- a/include/linux/khugepaged.h
-+++ b/include/linux/khugepaged.h
-@@ -15,6 +15,7 @@ extern int __khugepaged_enter(struct mm_
- extern void __khugepaged_exit(struct mm_struct *mm);
- extern int khugepaged_enter_vma_merge(struct vm_area_struct *vma,
- 				      unsigned long vm_flags);
-+extern void khugepaged_min_free_kbytes_update(void);
+--- a/drivers/net/usb/rtl8150.c
++++ b/drivers/net/usb/rtl8150.c
+@@ -277,12 +277,20 @@ static int write_mii_word(rtl8150_t * de
+ 		return 1;
+ }
  
- #define khugepaged_enabled()					       \
- 	(transparent_hugepage_flags &				       \
-@@ -73,6 +74,10 @@ static inline int khugepaged_enter_vma_m
+-static inline void set_ethernet_addr(rtl8150_t * dev)
++static void set_ethernet_addr(rtl8150_t *dev)
  {
- 	return 0;
+-	u8 node_id[6];
++	u8 node_id[ETH_ALEN];
++	int ret;
+ 
+-	get_registers(dev, IDR, sizeof(node_id), node_id);
+-	memcpy(dev->netdev->dev_addr, node_id, sizeof(node_id));
++	ret = get_registers(dev, IDR, sizeof(node_id), node_id);
++
++	if (ret == sizeof(node_id)) {
++		ether_addr_copy(dev->netdev->dev_addr, node_id);
++	} else {
++		eth_hw_addr_random(dev->netdev);
++		netdev_notice(dev->netdev, "Assigned a random MAC address: %pM\n",
++			      dev->netdev->dev_addr);
++	}
  }
-+
-+static inline void khugepaged_min_free_kbytes_update(void)
-+{
-+}
- #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
  
- #endif /* _LINUX_KHUGEPAGED_H */
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -53,6 +53,9 @@ enum scan_result {
- #define CREATE_TRACE_POINTS
- #include <trace/events/huge_memory.h>
- 
-+static struct task_struct *khugepaged_thread __read_mostly;
-+static DEFINE_MUTEX(khugepaged_mutex);
-+
- /* default scan 8*512 pte (or vmas) every 30 second */
- static unsigned int khugepaged_pages_to_scan __read_mostly;
- static unsigned int khugepaged_pages_collapsed;
-@@ -1952,8 +1955,6 @@ static void set_recommended_min_free_kby
- 
- int start_stop_khugepaged(void)
- {
--	static struct task_struct *khugepaged_thread __read_mostly;
--	static DEFINE_MUTEX(khugepaged_mutex);
- 	int err = 0;
- 
- 	mutex_lock(&khugepaged_mutex);
-@@ -1980,3 +1981,11 @@ fail:
- 	mutex_unlock(&khugepaged_mutex);
- 	return err;
- }
-+
-+void khugepaged_min_free_kbytes_update(void)
-+{
-+	mutex_lock(&khugepaged_mutex);
-+	if (khugepaged_enabled() && khugepaged_thread)
-+		set_recommended_min_free_kbytes();
-+	mutex_unlock(&khugepaged_mutex);
-+}
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -66,6 +66,7 @@
- #include <linux/ftrace.h>
- #include <linux/lockdep.h>
- #include <linux/nmi.h>
-+#include <linux/khugepaged.h>
- 
- #include <asm/sections.h>
- #include <asm/tlbflush.h>
-@@ -7399,6 +7400,8 @@ int __meminit init_per_zone_wmark_min(vo
- 	setup_min_slab_ratio();
- #endif
- 
-+	khugepaged_min_free_kbytes_update();
-+
- 	return 0;
- }
- postcore_initcall(init_per_zone_wmark_min)
+ static int rtl8150_set_mac_address(struct net_device *netdev, void *p)
 
 
