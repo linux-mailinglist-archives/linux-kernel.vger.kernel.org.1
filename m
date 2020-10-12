@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33A6628B5CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:16:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE8C028B5D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:16:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388797AbgJLNPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:15:50 -0400
-Received: from mail-oo1-f65.google.com ([209.85.161.65]:40946 "EHLO
-        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388784AbgJLNPt (ORCPT
+        id S2388803AbgJLNQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:16:05 -0400
+Received: from mail-oo1-f68.google.com ([209.85.161.68]:38272 "EHLO
+        mail-oo1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388742AbgJLNQE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:15:49 -0400
-Received: by mail-oo1-f65.google.com with SMTP id w7so4052957oow.7;
-        Mon, 12 Oct 2020 06:15:48 -0700 (PDT)
+        Mon, 12 Oct 2020 09:16:04 -0400
+Received: by mail-oo1-f68.google.com with SMTP id y127so4045128ooa.5;
+        Mon, 12 Oct 2020 06:16:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=IaAtROGTENgKEPOO1Q4DxIoQzzqOoFc9nfud5UvDGR0=;
-        b=FCb5cZ9OzmXO1P2uUh7S0mErtP+uMwm6J4WM5GofyvcumRu2NvTFplRtTwZLIhi5x/
-         ZrWPrHoPmtHUdNZQCv+ur22HC2yv9vSPNweRD9HWrKPOjQDrbH3+OIoJrhEFQjt8/wOA
-         aFugaPDm4FZI+ntsfmvSXoB1J3E2hUtIzivBXYfE03RyoB9QN95sEwXol3rci8m1e1m2
-         JF7hLyDDhXIgzEl/fctey8BqtHQGyy/OBqOAjQv2arZXU6Q3ssd5zV0FoiFn/S3gh81g
-         r5sNRq9G4X4Eh/3xjNRaUFvcC6TdUyc1hWICNC6lBb80hqB7FIb/jAxvkA07d1eB+RE7
-         f+9g==
-X-Gm-Message-State: AOAM5317PC6gF2sapdGuWXLpCql6EBeR+s+KFHfiHTH9wf+p94ubjpvy
-        vW39Xlfl29l96Jlv7veiUqTbhr8sHvXWtD2Vy4k=
-X-Google-Smtp-Source: ABdhPJxchKns3slAZrfyy4YUUOoGaa31rGDaKwMNk0XJqkoWaiHnxGSNKIXlCj3XYAqY439edA8VMCwt9dsV88NjCGg=
-X-Received: by 2002:a4a:dbd3:: with SMTP id t19mr18526635oou.40.1602508547896;
- Mon, 12 Oct 2020 06:15:47 -0700 (PDT)
+        bh=tLQ9YunWIKqoe+aYDnxj7j3vxwL9TZbVGnFl2iqFMpI=;
+        b=NpjIR/iZybLHx/CieghYqNaBJr7oudEL4SFHc3ly/UoyrpYXJ0uxJzbUxbe/O7xLf+
+         Dc1K0C/UZjrdiPwm7UOEC4O5O/dpTZA91WOTNzPJQkEpSffbXqxrzEt9mkEcvP3XTYqg
+         dF4I3osTi5LDlWMgA0dvSYv1Zt5kiqhQjpeO1TGxK9IUIYqjOU/mf3dfM/hJRsJzrwb7
+         JdLIGDbW6lCDpxJuFwpANZxXGVZ0Vn9iTqd0o/p0mNItJAWDkPTkj3Ye/tQLGqAzZyju
+         4BEzRvHQkdNO64k4vw1sgJLuR6VnEPE+w6Djw0HhIFSYltIiaztIlpCpYwJVp8VIZC16
+         esEQ==
+X-Gm-Message-State: AOAM530siNM/Zc441/abqbn50mggFxxpoGNK+gi19rIYwZDDkZOmk6qh
+        6xcXqU9DBAqm2HcK9YeXs3jHgRHLBm4OOPltIjg=
+X-Google-Smtp-Source: ABdhPJy4En79gxB2k+49ecp+szepSXrwDIHHt78jsB5/HEmEcFlQC2kZ28isWhIx+lbYv7co1E5K8qggiNkVoAFaKzc=
+X-Received: by 2002:a4a:4f17:: with SMTP id c23mr18858278oob.11.1602508562529;
+ Mon, 12 Oct 2020 06:16:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-10-arnd@arndb.de>
-In-Reply-To: <20201008154651.1901126-10-arnd@arndb.de>
+References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-12-arnd@arndb.de>
+In-Reply-To: <20201008154651.1901126-12-arnd@arndb.de>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 12 Oct 2020 15:15:36 +0200
-Message-ID: <CAMuHMdXDRG5mOVPWiMAUuNuzKJnTjy3vQeUYhdzfsJ3_Vechwg@mail.gmail.com>
-Subject: Re: [PATCH 09/13] m68k: change remaining timers to legacy_timer_tick
+Date:   Mon, 12 Oct 2020 15:15:51 +0200
+Message-ID: <CAMuHMdU7bn7rzG-0xzr4St1uArGoOhw6dy7HCkrHRvYqM38Wxg@mail.gmail.com>
+Subject: Re: [PATCH 11/13] timekeeping: remove xtime_update
 To:     Arnd Bergmann <arnd@arndb.de>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Russell King <linux@armlinux.org.uk>,
@@ -63,19 +63,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Arnd,
+
 On Thu, Oct 8, 2020 at 5:48 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> There are nine more machines that each have their own timer interrupt
-> calling the m68k timer_interrupt() function through an indirect pointer.
+> There are no more users of xtime_update aside from legacy_timer_tick(),
+> so fold it into that function and remove the declaration.
 >
-> This function is now the same as legacy_timer_tick, so just call that
-> directly and select the corresponding Kconfig symbol.
+> update_process_times() is now only called inside of the kernel/time/
+> code, so the declaration can be moved there.
 >
 > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Thanks for your patch!
 
-And finally (for Amiga and Atari/ARAnyM):
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+The comment about xtime_update() in arch/ia64/kernel/time.c needs
+an update.
+Does the comment about update_process_times() in
+arch/openrisc/kernel/time.c needs an update, too?
+
+For Amiga and Atari/ARAnyM:
 Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
 Gr{oetje,eeting}s,
