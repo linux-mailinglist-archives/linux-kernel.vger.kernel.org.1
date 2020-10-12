@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A6B28B60C
+	by mail.lfdr.de (Postfix) with ESMTP id E1DF328B60E
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:21:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389014AbgJLNUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:20:20 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:40715 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388883AbgJLNUR (ORCPT
+        id S1727502AbgJLNVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:21:25 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:44324 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728856AbgJLNVY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:20:17 -0400
-Received: by mail-io1-f69.google.com with SMTP id v7so8510216ioe.7
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 06:20:16 -0700 (PDT)
+        Mon, 12 Oct 2020 09:21:24 -0400
+Received: by mail-il1-f198.google.com with SMTP id f184so2581440ilh.11
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 06:21:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=i7R36m5Nwz/soo8xSZ9gC0CAm4nSXg4mO1zlUpI+BvI=;
-        b=fKnpxYYEoQS38h2GYGSgTbRxmtBxUL8JB7B+kG7sXx9X6RSvJCcJIOAVO7iH6pP1B6
-         y7f/4E9XDsiGDPg96RI2Oa9H8obFbuVkZTgTCqDdNLRs11uss/y45mWaOLWRffN95qFt
-         /6OHc7q93WmGe7Mf6QzL4tYjVcLIAPW+ZRmVdywf+QV27Qz0umFV1RtSq5+NsiTDeoCc
-         yCrKpsTj3YR1L3qHEE1ylt+mCmXy6Qx6NEkeWC2aBP5+lm4jBfWFLku7en/AOwlNtFm2
-         llYM0mitV/dFjsfBbCndU5uA93N4ajwluScqCWyQazHp7RcINP9t9Kk06b/5Pd2Z9TFO
-         jcEw==
-X-Gm-Message-State: AOAM533jdBwXgPs1IEvxdtxrfLsxSKlwgbre/t2sie55eX+AdJzk8cnr
-        EhzAZWCR+VieJPUhBA+A6Lbw9sI/oFZ8ep/wfAW8EYBVFtqc
-X-Google-Smtp-Source: ABdhPJynfFh91VQ5K1AOW66HZqn33pphVgk6vgP9su7x29MaAvfOxBvz8K8g+a78DhuegtsGMxDyW1agQMNth+UgTnoZvP7Ia91Q
+        bh=7Z6adHB6iiE50ME5jgXJ1GMZydlGjJsbWFTrhmRv32M=;
+        b=LS36bGxccPVxFBqpBrGTiYJNf8gpXCeJFINwuPhZCGWGam2UXnSA18n/wsYAjrMfNV
+         WT4Qhk5CQjKDB+2RZ6AIpU55v7IizkSV8Lwqtr14I1VtlB3ttupLJRHtLWa6XKwJyesL
+         3lyizTcn99SHy9RHwvyDYg4hLTJi9PSrCUNlikhlAMTidir9LFQixUXIPUP93UgHWqZm
+         /hJmpMV8FplMgSDR5O/IibgqDwoCI5Nm5bk/ZP4ZVQhUanze5DiBgrmf18bxKoF7UsCp
+         BtOlF/6Sp4EYzsvy+oRX1t8Rge8uH8Yzc/eyLFJdKq+DbLDyQoSNRZLUmwvDRpAcvuLH
+         Y5VQ==
+X-Gm-Message-State: AOAM531hnOuvKg+OjnqCMTmf37QCaalbQI6JVgky0YeDhefgrYCOSYcq
+        32xZxCqbyfT+s7yhTsQn+4HaOeizNUdhzp5WRjjly8YbEPqZ
+X-Google-Smtp-Source: ABdhPJy0c29nx/xk7zaSu9U3AKcDKmqVE2M0FWxALgmOiu88PLU3VvaUx9qSjKfN9cRBh09F0AecfALyD48S6zI7/En8rH85ypkn
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2ac8:: with SMTP id m8mr14192203iov.46.1602508815967;
- Mon, 12 Oct 2020 06:20:15 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 06:20:15 -0700
+X-Received: by 2002:a92:910:: with SMTP id y16mr18572381ilg.254.1602508883752;
+ Mon, 12 Oct 2020 06:21:23 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 06:21:23 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b9fad405b179289b@google.com>
-Subject: WARNING in udf_truncate_extents
-From:   syzbot <syzbot+43fc5ba6dcb33e3261ca@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, bvanassche@acm.org, chaitanya.kulkarni@wdc.com,
-        jack@suse.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000c3fd7d05b1792ca0@google.com>
+Subject: WARNING in drv_remove_interface
+From:   syzbot <syzbot+2e5c1e55b9e5c28a3da7@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,73 +48,72 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    da690031 Merge branch 'i2c/for-current' of git://git.kerne..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=172e2ef0500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=de7f697da23057c7
-dashboard link: https://syzkaller.appspot.com/bug?extid=43fc5ba6dcb33e3261ca
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10ce0a8b900000
+HEAD commit:    874fb9e2 ipv4: Restore flowi4_oif update before call to xf..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=137f6078500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c06bcf3cc963d91c
+dashboard link: https://syzkaller.appspot.com/bug?extid=2e5c1e55b9e5c28a3da7
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=156cf31b900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15e110ab900000
 
-The issue was bisected to:
+Bisection is inconclusive: the issue happens on the oldest tested release.
 
-commit 2004bfdef945fe55196db6b9cdf321fbc75bb0de
-Author: Bart Van Assche <bvanassche@acm.org>
-Date:   Tue Mar 10 04:26:21 2020 +0000
-
-    null_blk: Fix the null_add_dev() error path
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10110920500000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=12110920500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=14110920500000
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17c9459f900000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1429459f900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1029459f900000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+43fc5ba6dcb33e3261ca@syzkaller.appspotmail.com
-Fixes: 2004bfdef945 ("null_blk: Fix the null_add_dev() error path")
+Reported-by: syzbot+2e5c1e55b9e5c28a3da7@syzkaller.appspotmail.com
 
-UDF-fs: Scanning with blocksize 512 failed
-UDF-fs: INFO Mounting volume 'LinuxUDF', timestamp 2020/09/19 18:44 (1000)
 ------------[ cut here ]------------
-WARNING: CPU: 1 PID: 17858 at fs/udf/truncate.c:226 udf_truncate_extents+0xf74/0x1120 fs/udf/truncate.c:226
+wlan0: Failed check-sdata-in-driver check, flags: 0x4
+WARNING: CPU: 1 PID: 12353 at net/mac80211/driver-ops.c:97 drv_remove_interface+0x3b7/0x4b0 net/mac80211/driver-ops.c:97
 Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 17858 Comm: syz-executor.5 Not tainted 5.9.0-rc8-syzkaller #0
+CPU: 1 PID: 12353 Comm: syz-executor404 Not tainted 5.9.0-rc8-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Call Trace:
  __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1d6/0x29e lib/dump_stack.c:118
- panic+0x2c0/0x800 kernel/panic.c:231
- __warn+0x227/0x250 kernel/panic.c:600
- report_bug+0x1b1/0x2e0 lib/bug.c:198
- handle_bug+0x42/0x80 arch/x86/kernel/traps.c:234
- exc_invalid_op+0x16/0x40 arch/x86/kernel/traps.c:254
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ panic+0x382/0x7fb kernel/panic.c:231
+ __warn.cold+0x20/0x4b kernel/panic.c:600
+ report_bug+0x1bd/0x210 lib/bug.c:198
+ handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
  asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-RIP: 0010:udf_truncate_extents+0xf74/0x1120 fs/udf/truncate.c:226
-Code: 24 14 18 00 00 00 43 80 3c 2f 00 0f 85 63 fe ff ff e9 6b fe ff ff e8 2b 9a cd fe bb fb ff ff ff e9 27 ff ff ff e8 1c 9a cd fe <0f> 0b e9 1b ff ff ff 89 d9 80 e1 07 38 c1 0f 8c 59 f1 ff ff 48 89
-RSP: 0018:ffffc90005ea7a08 EFLAGS: 00010293
-RAX: ffffffff82a763d4 RBX: 0000000000000000 RCX: ffff888077582040
-RDX: 0000000000000000 RSI: 0000000000000400 RDI: 0000000000000000
-RBP: 0000000000000400 R08: ffffffff82a757a8 R09: ffffffff82a54d54
-R10: 0000000000000002 R11: ffff888077582040 R12: 0000000005ea7aff
-R13: 00000000000c2000 R14: 0000000000000308 R15: 1ffff1100e577c10
- udf_write_failed fs/udf/inode.c:176 [inline]
- udf_write_begin+0x1e2/0x210 fs/udf/inode.c:211
- generic_perform_write+0x23b/0x4e0 mm/filemap.c:3505
- __generic_file_write_iter+0x22b/0x4e0 mm/filemap.c:3634
- udf_file_write_iter+0x339/0x4e0 fs/udf/file.c:169
- do_iter_readv_writev+0x4f9/0x6c0 include/linux/fs.h:1876
- do_iter_write+0x164/0x610 fs/read_write.c:1026
- vfs_writev fs/read_write.c:1099 [inline]
- do_pwritev+0x234/0x430 fs/read_write.c:1196
- do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+RIP: 0010:drv_remove_interface+0x3b7/0x4b0 net/mac80211/driver-ops.c:97
+Code: 00 00 48 85 db 0f 84 91 00 00 00 e8 83 08 b7 f9 48 89 dd e8 7b 08 b7 f9 44 89 ea 48 89 ee 48 c7 c7 20 d2 5e 89 e8 6b 45 87 f9 <0f> 0b e9 a8 fd ff ff e8 5d 08 b7 f9 0f 0b e9 d4 fc ff ff e8 51 08
+RSP: 0018:ffffc9000a407770 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: ffff8880945bc000 RCX: 0000000000000000
+RDX: ffff8880a3d28140 RSI: ffffffff815f5a55 RDI: fffff52001480ee0
+RBP: ffff8880945bc000 R08: 0000000000000001 R09: ffff8880ae5318e7
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff8880859e0c80
+R13: 0000000000000004 R14: ffff8880945bd250 R15: 000000000000000f
+ ieee80211_do_stop+0x103c/0x2100 net/mac80211/iface.c:1054
+ ieee80211_stop+0x1a/0x20 net/mac80211/iface.c:1081
+ __dev_close_many+0x1b3/0x2e0 net/core/dev.c:1605
+ __dev_close net/core/dev.c:1617 [inline]
+ __dev_change_flags+0x2cb/0x730 net/core/dev.c:8346
+ dev_change_flags+0x8a/0x160 net/core/dev.c:8419
+ devinet_ioctl+0x14fd/0x1ca0 net/ipv4/devinet.c:1143
+ inet_ioctl+0x1ea/0x330 net/ipv4/af_inet.c:967
+ packet_ioctl+0xad/0x260 net/packet/af_packet.c:4144
+ sock_do_ioctl+0xcb/0x2d0 net/socket.c:1047
+ sock_ioctl+0x3b8/0x730 net/socket.c:1198
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45de59
-Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f4cc0709c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000128
-RAX: ffffffffffffffda RBX: 0000000000026400 RCX: 000000000045de59
-RDX: 0000000000000001 RSI: 00000000200014c0 RDI: 0000000000000003
-RBP: 000000000118bf70 R08: 0000000000000020 R09: 0000000000000000
-R10: 0000000000000002 R11: 0000000000000246 R12: 000000000118bf2c
-R13: 00007fffd7780fdf R14: 00007f4cc070a9c0 R15: 000000000118bf2c
+RIP: 0033:0x44cd69
+Code: e8 1c e6 ff ff 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 1b 02 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fa19e2fbce8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00000000006eaa08 RCX: 000000000044cd69
+RDX: 0000000020001000 RSI: 0000000000008914 RDI: 0000000000000003
+RBP: 00000000006eaa00 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006eaa0c
+R13: 00007fff5b3daaff R14: 00007fa19e2fc9c0 R15: 0000000000000000
 Kernel Offset: disabled
 Rebooting in 86400 seconds..
 
