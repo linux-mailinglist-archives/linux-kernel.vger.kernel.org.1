@@ -2,87 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFCC628B121
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 11:08:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7269328B125
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 11:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729195AbgJLJIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 05:08:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728834AbgJLJIv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 05:08:51 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01FFCC0613CE;
-        Mon, 12 Oct 2020 02:08:51 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id u8so22201814ejg.1;
-        Mon, 12 Oct 2020 02:08:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wqiQJ3we1Ola+AjnEDNyt+aRzblqZ6hdUORf0Fcttl8=;
-        b=FoMzh+hNQtMfe2dRjl6bHBnSaX09jW3hp3/tKZeE1nsYFnLnE1DwtDM3h+bGtDqgtW
-         6RIfsbqSY0U1sxe1KmjCaLBzMHJOvJ3GhiOFLDn+muHEq+8nqPqbfGzO4AjTrZkgcpw0
-         xIr5Oe7mgI2P6oStrj5NJYerSnj/jRZs9IM4Wm98qPEAE/q7cGUCWLjCGmZsVUeQzpIM
-         z+HXcLd9v08YVJUHIFUZzEM2QQ/gCtV5gqvz3uvjVjjwobEd0gjj8E48q1Pc+H6+doJw
-         QXv1V3WMvAOUVZcG52SaB3dnvkw9MAMqWkhqE7TPOuf0Dx2rJHO4TfqYIJLcU/Vu0obB
-         5YSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wqiQJ3we1Ola+AjnEDNyt+aRzblqZ6hdUORf0Fcttl8=;
-        b=mUFyp8UmA4CmFpCRWli6Y8oOVXpKpdmeplCqnAK0rSyEQp3+KEYqbvB4vnrBw7HVQ8
-         8hvJRM80FpCR4OvpumGo+IaD3LJbu41VokR4xDgigAeWBxBejwT9IZKFyzSUiTlpfdAe
-         AnF8cbn2qb0Bz5k8g8JgF3IkLm4+5o4PiKwgUxqLW+MsVEHPtdXIXvrnF2RmE5CYG2G/
-         brRtLqT7dS1E1exTp0QbDdPLYudtqGv9NAoWx/8YFkj2Uw1noQ46JjZhWLsfXWgU5rGd
-         ZSxVr1ZGDzdOl+GoMMTwSraaAaOnkuTwmlloNwUutKxMBhhMPsrvb+ShqDRN4R5lE83k
-         NMJg==
-X-Gm-Message-State: AOAM531Z2Bgkrygp4dEiKyLBZEHFt3r+sezK5ne2Rr0t7Ts6cfBYrDhH
-        8UaUIAag9m7x6AcexL0jfWo=
-X-Google-Smtp-Source: ABdhPJyoimAq8VNtDy17siyKrLkDM9RH3OqbD1sMDlCaybG5WeM0twFcDA2pe5Q9Uo7X4IpdwbAVJA==
-X-Received: by 2002:a17:906:3a1a:: with SMTP id z26mr25947572eje.519.1602493729627;
-        Mon, 12 Oct 2020 02:08:49 -0700 (PDT)
-Received: from ubuntu2004 ([188.24.159.61])
-        by smtp.gmail.com with ESMTPSA id z20sm10127717edq.90.2020.10.12.02.08.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 02:08:49 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 12:08:52 +0300
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Wolfram Sang <wsa@kernel.org>, Peter Rosin <peda@axentia.se>,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-actions@lists.infradead.org
-Subject: Re: [PATCH 3/3] i2c: owl: Enable asynchronous probing
-Message-ID: <20201012090852.GC73734@ubuntu2004>
-References: <cover.1602190168.git.cristian.ciocaltea@gmail.com>
- <f343802a4b1a8ab6fc78e5db6d24a350b2319495.1602190168.git.cristian.ciocaltea@gmail.com>
- <20201011140645.GA4971@Mani-XPS-13-9360>
+        id S1729120AbgJLJKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 05:10:15 -0400
+Received: from mga06.intel.com ([134.134.136.31]:3665 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729014AbgJLJKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 05:10:15 -0400
+IronPort-SDR: +R2igll7c8brWBaRatk3CVD9UKKDVDfHjoz6f9tYZWWg3Px6dMc2OfvZ3AC0/Oug4XlygoQ7ox
+ v6LIMuXJxuhg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="227356978"
+X-IronPort-AV: E=Sophos;i="5.77,366,1596524400"; 
+   d="scan'208";a="227356978"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 02:10:13 -0700
+IronPort-SDR: 3ISA1hPRcQaVCZTm4pNWhfPqOk9beN3HKxotX9JjVOtxCkkOhg2E4TAczGfciHjHJLDueqmPTZ
+ TgU7hQh8DKFQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,366,1596524400"; 
+   d="scan'208";a="344807200"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga004.fm.intel.com with ESMTP; 12 Oct 2020 02:10:13 -0700
+Received: from [10.249.225.186] (abudanko-mobl.ccr.corp.intel.com [10.249.225.186])
+        by linux.intel.com (Postfix) with ESMTP id 10B30580814;
+        Mon, 12 Oct 2020 02:10:10 -0700 (PDT)
+Subject: [PATCH v1 13/15] perf record: stop threads in the end of trace
+ streaming
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com>
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <4cc1a63d-091b-0cb5-9258-71a2f95d3b7c@linux.intel.com>
+Date:   Mon, 12 Oct 2020 12:10:09 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201011140645.GA4971@Mani-XPS-13-9360>
+In-Reply-To: <810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 11, 2020 at 07:36:45PM +0530, Manivannan Sadhasivam wrote:
-> On Fri, Oct 09, 2020 at 12:44:41AM +0300, Cristian Ciocaltea wrote:
-> > Speed up the boot process by using the asynchronous probing feature
-> > supported by the recent kernels.
-> > 
-> > For SBCs based on the Actions Semi S500 SoC, the overall boot time is
-> > expected to be reduced by 200-300 ms.
-> > 
-> > Suggested-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> 
-> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> 
-> Thanks,
-> Mani
 
-Thanks for reviewing,
-Cristi
+Close write fd of comm.msg pipe to signal thread to terminate
+and receive THREAD_MSG__READY confirmation on termination.
+Accumulate thread stats into global stats to be correctly
+calculated and displayed in perf tool output.
+
+Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+---
+ tools/perf/builtin-record.c | 64 ++++++++++++++++++++++++++++++++++---
+ 1 file changed, 60 insertions(+), 4 deletions(-)
+
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index 3b7e9026f25b..a15642656066 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -85,6 +85,16 @@ struct switch_output {
+ 	int		 cur_file;
+ };
+ 
++enum thread_msg {
++	THREAD_MSG__UNSUPPORTED = 0,
++	THREAD_MSG__READY,
++	THREAD_MSG__MAX,
++};
++
++static const char *thread_msg_tags[THREAD_MSG__MAX] = {
++	"UNSUPPORTED", "READY"
++};
++
+ struct thread_data {
+ 	pid_t		   tid;
+ 	struct {
+@@ -1796,6 +1806,50 @@ static void hit_auxtrace_snapshot_trigger(struct record *rec)
+ 	}
+ }
+ 
++static int record__terminate_thread(struct thread_data *thread_data)
++{
++	int res;
++	enum thread_msg ack = THREAD_MSG__UNSUPPORTED;
++	pid_t tid = thread_data->tid;
++
++	close(thread_data->comm.msg[1]);
++	res = read(thread_data->comm.ack[0], &ack, sizeof(ack));
++	if (res != -1)
++		pr_debug("threads: %d -> %s\n", tid, thread_msg_tags[ack]);
++	else
++		pr_err("threads: failed to recv msg=%s from %d\n",
++		       thread_msg_tags[ack], tid);
++
++	return 0;
++}
++
++static int record__stop_threads(struct record *rec, unsigned long *waking)
++{
++	int i, j, nr_thread_data = rec->nr_thread_data;
++	struct thread_data *thread_data = rec->thread_data;
++
++	if (!record__threads_enabled(rec))
++		return 0;
++
++	for (i = 1; i < nr_thread_data; i++)
++		record__terminate_thread(&thread_data[i]);
++
++	for (i = 0; i < nr_thread_data; i++) {
++		pr_debug("threads: %d : samples %lld, wakes %ld\n",
++			 thread_data[i].tid, thread_data[i].samples,
++			 thread_data[i].waking);
++
++		rec->samples += thread_data[i].samples;
++		*waking      += thread_data[i].waking;
++		for (j = 0; j < thread_data[i].nr_mmaps; j++) {
++			rec->session->bytes_transferred += thread_data[i].maps[j].bytes_transferred;
++			rec->session->bytes_compressed  += thread_data[i].maps[j].bytes_compressed;
++		}
++	}
++
++	return 0;
++}
++
+ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ {
+ 	int err;
+@@ -1903,7 +1957,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 
+ 	if (record__open(rec) != 0) {
+ 		err = -1;
+-		goto out_child;
++		goto out_free_threads;
+ 	}
+ 	session->header.env.comp_mmap_len = session->evlist->core.mmap_len;
+ 
+@@ -2203,18 +2257,20 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 		goto out_child;
+ 	}
+ 
+-	if (!quiet)
+-		fprintf(stderr, "[ perf record: Woken up %ld times to write data ]\n", waking);
+-
+ 	if (target__none(&rec->opts.target))
+ 		record__synthesize_workload(rec, true);
+ 
+ out_child:
++	record__stop_threads(rec, &waking);
++out_free_threads:
+ 	record__free_thread_data(rec);
+ 	evlist__finalize_ctlfd(rec->evlist);
+ 	record__mmap_read_all(rec, true);
+ 	record__aio_mmap_read_sync(rec);
+ 
++	if (!quiet)
++		fprintf(stderr, "[ perf record: Woken up %ld times to write data ]\n", waking);
++
+ 	if (rec->session->bytes_transferred && rec->session->bytes_compressed) {
+ 		ratio = (float)rec->session->bytes_transferred/(float)rec->session->bytes_compressed;
+ 		session->header.env.comp_ratio = ratio + 0.5;
+-- 
+2.24.1
+
