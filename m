@@ -2,65 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB67C28ACA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 05:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D2A928ACA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 06:00:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727482AbgJLDug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 23:50:36 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:40178 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727396AbgJLDug (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 23:50:36 -0400
-Received: from bogon.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxiMWB0oNf_LQcAA--.4045S2;
-        Mon, 12 Oct 2020 11:50:25 +0800 (CST)
-From:   Jinyang He <hejinyang@loongson.cn>
-To:     Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] sh: Remove unused HAVE_COPY_THREAD_TLS macro
-Date:   Mon, 12 Oct 2020 11:50:24 +0800
-Message-Id: <1602474624-3225-1-git-send-email-hejinyang@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9DxiMWB0oNf_LQcAA--.4045S2
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYn7k0a2IF6w1UM7kC6x804xWl14x267AK
-        xVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGw
-        A2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26ryj
-        6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26r
-        4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY
-        62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7V
-        C2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkI
-        ecxEwVAFwVW8GwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_
-        Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AK
-        xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
-        xUIHGQDUUUU
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
+        id S1727363AbgJLD7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 23:59:51 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:43301 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727202AbgJLD7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Oct 2020 23:59:51 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 09C3wlP9011315;
+        Mon, 12 Oct 2020 05:58:47 +0200
+Date:   Mon, 12 Oct 2020 05:58:47 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Diego Elio =?iso-8859-1?Q?Petten=F2?= <flameeyes@flameeyes.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: Re: [PATCH] x86/x86_64_defconfig: Enable the serial console
+Message-ID: <20201012035846.GB11282@1wt.eu>
+References: <20201008162206.862203-1-enric.balletbo@collabora.com>
+ <20201008164044.GE5505@zn.tnic>
+ <4162cfa4-7bf2-3e6e-1b8c-e19187e6fa10@infradead.org>
+ <2538da14-0f4b-5d4a-c7bf-6fdb46ba2796@collabora.com>
+ <20201011122020.GA15925@zn.tnic>
+ <107a6fb0-a667-2f30-d1f4-640e3fee193a@collabora.com>
+ <20201011155754.GC15925@zn.tnic>
+ <1dfdf163-9b54-ceae-b178-c566e6109263@collabora.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1dfdf163-9b54-ceae-b178-c566e6109263@collabora.com>
+User-Agent: Mutt/1.6.1 (2016-04-27)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes: 	e1cc9d8d596e ("sh: switch to copy_thread_tls()")
-Signed-off-by: Jinyang He <hejinyang@loongson.cn>
----
- arch/sh/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+Hi Enric,
 
-diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-index d209271..165f291 100644
---- a/arch/sh/Kconfig
-+++ b/arch/sh/Kconfig
-@@ -30,7 +30,6 @@ config SUPERH
- 	select HAVE_ARCH_KGDB
- 	select HAVE_ARCH_SECCOMP_FILTER
- 	select HAVE_ARCH_TRACEHOOK
--	select HAVE_COPY_THREAD_TLS
- 	select HAVE_DEBUG_BUGVERBOSE
- 	select HAVE_DEBUG_KMEMLEAK
- 	select HAVE_DYNAMIC_FTRACE
--- 
-2.1.0
+On Sun, Oct 11, 2020 at 07:05:55PM +0200, Enric Balletbo i Serra wrote:
+> For arm64 (i.e : arm64_defconfig):
+>     1. Someone renames CONFIG_A to CONFIG_AB, sends a patch, and as he did a
+> grep, the patch modifies all the defconfigs.
+>     2. The patch is accepted and merged in linux-next.
+>     3. KernelCI builds linux-next, boots the kernel on the hardware and all the
+> tests continue passing.
+> 
+> 
+> For x86:
+>     1. Someone renames CONFIG_A to CONFIG_AB, sends a patch and as he did a grep
+> the patches modifies all the defconfigs.
+>     2. The patch is accepted and merged in linux-next.
+>     3. KernelCI builds linux-next, boots the kernel on the hardware, and some
+> tests start to fail or are skipped.
+>     4. The maintainer is noticed about the behavior change, so he will need to
+> look at the problem, and find it.
+>     5. The maintainer sends a patch.
+>     6. The patch is accepted, but he needs to tag the release as per kernel <
+> x.y.z version it should use CONFIG_A and for kernel > x.y.z it should pick
+> CONFIG_AB.
+>     7. KernelCI builds linux-next, boots the kernel on the hardware and all the
+> tests pass again.
 
+Previously I thought I understood your needs, but now I don't anymore. You
+seem to be saying that you're not testing *anything* outside of defconfig,
+and that as such you'd like defconfig to be complete enough to provide good
+coverage. This sounds a bit odd to me. And what if in the arm64 case, the
+CONFIG_YOUR_V4L2_DEVICE is *not* added to defconfig ? You're in the same
+situation.
+
+We all know it's not fun to have to deal with local config snippets, but
+as soon as you plan to boot on a specific hardware, this is unavoidable.
+Also, config symbols are rarely renamed. Most often they are moved under
+new entries (e.g. CONFIG_VENDOR_FOO) which are enabled by default, so
+that updating your old configuration using "make olddefconfig" is enough
+to update it.
+
+What I'm understanding from your proposed change is not to support
+KernelCI, but to support Chromebooks by default. This could make more
+sense if that's a relevant platform whose support is currently limited
+by default, I'm not able to judge that, but at least it seems to me
+this would make more sense than having specific configs for KernelCI.
+
+Just my 2 cents,
+Willy
