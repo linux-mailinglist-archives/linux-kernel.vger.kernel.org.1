@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0763028B9EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 276AD28B9E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390935AbgJLOEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:04:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38712 "EHLO mail.kernel.org"
+        id S1730508AbgJLOEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:04:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730958AbgJLNgF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:36:05 -0400
+        id S1730972AbgJLNgH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:36:07 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 153212074F;
-        Mon, 12 Oct 2020 13:36:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5F5A6204EA;
+        Mon, 12 Oct 2020 13:36:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509764;
-        bh=f6mRYexfxpR8P5LZOq7F9XtT3LyAljWXdZMPYLjFUTk=;
+        s=default; t=1602509766;
+        bh=G9qADhESR9WwZPWF3gf8qwOswwDOIOS9GyIrpKq8Bw8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QK53zX0aN0i4oYSHJAfs3eHZH7vPPacxqW7Lkg+A8jB22x12dHMVA+qsNzm84YOpG
-         TJnuAhTfVPVdwNlhHAfEPfORAj0hvKpUYVL7U47w7l+olTk5SnZJeQc+kg4riiSyAg
-         M1Ar/eeLKaOK4dif42+fH3uV0QK5ZgnFyMOlM3H8=
+        b=wJknhEuYOZ8CA4vXvhkAM9PW/vaulRRrccWCFzns9MTOZGevuwfEJcPPZIWmRTfPw
+         2df/NRB7E7uuQvcAb2+UffFwwXJuIw075LHq8c3LAWp+YqHrCuTsHtelS9Wy5dAXWc
+         /QiZ/cmGXtcGbPXdwUiVZO0ZSQDSVjkLiCrTKP8c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Andr=C3=A9s=20Barrantes=20Silman?= 
-        <andresbs2000@protonmail.com>, Jiri Kosina <jkosina@suse.cz>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 4.14 07/70] Input: i8042 - add nopnp quirk for Acer Aspire 5 A515
-Date:   Mon, 12 Oct 2020 15:26:23 +0200
-Message-Id: <20201012132630.572364494@linuxfoundation.org>
+        stable@vger.kernel.org, Jean Delvare <jdelvare@suse.de>,
+        Navid Emamdoost <navid.emamdoost@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 4.14 08/70] drm/amdgpu: restore proper ref count in amdgpu_display_crtc_set_config
+Date:   Mon, 12 Oct 2020 15:26:24 +0200
+Message-Id: <20201012132630.624101753@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201012132630.201442517@linuxfoundation.org>
 References: <20201012132630.201442517@linuxfoundation.org>
@@ -44,42 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Kosina <jkosina@suse.cz>
+From: Jean Delvare <jdelvare@suse.de>
 
-commit 5fc27b098dafb8e30794a9db0705074c7d766179 upstream.
+commit a39d0d7bdf8c21ac7645c02e9676b5cb2b804c31 upstream.
 
-Touchpad on this laptop is not detected properly during boot, as PNP
-enumerates (wrongly) AUX port as disabled on this machine.
+A recent attempt to fix a ref count leak in
+amdgpu_display_crtc_set_config() turned out to be doing too much and
+"fixed" an intended decrease as if it were a leak. Undo that part to
+restore the proper balance. This is the very nature of this function
+to increase or decrease the power reference count depending on the
+situation.
 
-Fix that by adding this board (with admittedly quite funny DMI
-identifiers) to nopnp quirk list.
+Consequences of this bug is that the power reference would
+eventually get down to 0 while the display was still in use,
+resulting in that display switching off unexpectedly.
 
-Reported-by: Andrés Barrantes Silman <andresbs2000@protonmail.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
-Link: https://lore.kernel.org/r/nycvar.YFH.7.76.2009252337340.3336@cbobk.fhfr.pm
+Signed-off-by: Jean Delvare <jdelvare@suse.de>
+Fixes: e008fa6fb415 ("drm/amdgpu: fix ref count leak in amdgpu_display_crtc_set_config")
 Cc: stable@vger.kernel.org
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Navid Emamdoost <navid.emamdoost@gmail.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/input/serio/i8042-x86ia64io.h |    7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_display.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/input/serio/i8042-x86ia64io.h
-+++ b/drivers/input/serio/i8042-x86ia64io.h
-@@ -725,6 +725,13 @@ static const struct dmi_system_id __init
- 			DMI_MATCH(DMI_BOARD_VENDOR, "MICRO-STAR INTERNATIONAL CO., LTD"),
- 		},
- 	},
-+	{
-+		/* Acer Aspire 5 A515 */
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_NAME, "Grumpy_PK"),
-+			DMI_MATCH(DMI_BOARD_VENDOR, "PK"),
-+		},
-+	},
- 	{ }
- };
- 
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
+@@ -284,7 +284,7 @@ int amdgpu_crtc_set_config(struct drm_mo
+ 	   take the current one */
+ 	if (active && !adev->have_disp_power_ref) {
+ 		adev->have_disp_power_ref = true;
+-		goto out;
++		return ret;
+ 	}
+ 	/* if we have no active crtcs, then drop the power ref
+ 	   we got before */
 
 
