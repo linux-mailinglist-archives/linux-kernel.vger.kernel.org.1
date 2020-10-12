@@ -2,158 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3F3428BA65
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:10:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B002428BA67
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:10:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731883AbgJLOIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:08:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731849AbgJLOIk (ORCPT
+        id S1730628AbgJLOIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:08:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25820 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2391222AbgJLOIE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 10:08:40 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D199C0613DA
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 07:08:06 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1kRyUU-0006e3-Aj; Mon, 12 Oct 2020 16:07:54 +0200
-Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1kRyUT-0003JY-O0; Mon, 12 Oct 2020 16:07:53 +0200
-Date:   Mon, 12 Oct 2020 16:07:53 +0200
-From:   Sascha Hauer <s.hauer@pengutronix.de>
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     Mark Brown <broonie@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] spi: imx: Revert "spi: imx: enable runtime pm support"
-Message-ID: <20201012140753.GF12463@pengutronix.de>
-References: <20201009042738.26602-1-ceggers@arri.de>
- <20201009073944.GA11648@pengutronix.de>
- <6367849.hfWVFoRi9M@n95hx1g2>
+        Mon, 12 Oct 2020 10:08:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602511682;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SaF6cMVDlVpoFfwkDVmoyVLnyiyb+8WHLNcrHzGdFx8=;
+        b=StR1HqHGCBRieO9eumNH+RXgTFkZwrmu7cBYxS8yEYMARCF/mM9iziVRaRhoUbakoL3E4o
+        s024R4RJKrMRsGTrWEMPbo7dEX9iQHuueD8nndiv7MbCS+Xj9YHd5UKxQDdWBMtnfWfHeJ
+        muV1QQ5kV1wwuDNxHFPO3bk7UiKG5UI=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-245-pwVprZdeOJCJyYyNg2MyZQ-1; Mon, 12 Oct 2020 10:07:59 -0400
+X-MC-Unique: pwVprZdeOJCJyYyNg2MyZQ-1
+Received: by mail-qt1-f197.google.com with SMTP id y20so12704767qta.6
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 07:07:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=SaF6cMVDlVpoFfwkDVmoyVLnyiyb+8WHLNcrHzGdFx8=;
+        b=KgjDOrpiyEBRw/7q8Bje26+JGLj5ISqbEnLyUapQxvdLRs/QdhCUgI8MLnbanadx2+
+         xpibCtsuRnAQRiv1dTxE8h66s93/VNPM61EAE4amuAwcDuFG40Ozahv1iBd6ADSkOjiG
+         t/2MzK7d5NvovMPCD0vo0/xiXjdJHXs3YL1lbn9oZL1BkQ+VvRzpBc1ukuxSnxcPWPRV
+         gy+/80/wO6DdBgEsq2J1R6cGU00akJ+ANMzEZaHGIiaT0jMDMTrlTqlKDEzKcd7N5nLz
+         x2dBsx+hEBjXTWoWtlD3prZzZx3XPCE/c7GadeFkUDPi9NamS3djI+Jd1Vur2lpkxcjX
+         gL4g==
+X-Gm-Message-State: AOAM533K4/V8A+vizxTHj45682nrCoqAK6qhjkuM26FgEvTX8IvhcLnR
+        Dfg+KTfv+nwogbPiu1mkAUyWB6RJsPwuUHqHY0+rTFPCKSlStrJV/2otTxzfjiKFrD2DsrOhVJV
+        jQ1wEkNXEq6mhj7E3DwE2FUiw
+X-Received: by 2002:a37:b782:: with SMTP id h124mr7138544qkf.169.1602511679206;
+        Mon, 12 Oct 2020 07:07:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwQcHEwB54mQ/ZTK405YXwJFA8SS8HAiWpwGkm1pSQUWn+MqMwcU89Xxlt4bFwLro0ehIWuMA==
+X-Received: by 2002:a37:b782:: with SMTP id h124mr7138512qkf.169.1602511678829;
+        Mon, 12 Oct 2020 07:07:58 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id l13sm13088697qtv.82.2020.10.12.07.07.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Oct 2020 07:07:57 -0700 (PDT)
+Subject: Re: [PATCH v9 1/6] fpga: dfl: fix the definitions of type &
+ feature_id for dfl devices
+To:     Xu Yilun <yilun.xu@intel.com>
+Cc:     mdf@kernel.org, krzk@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        lgoncalv@redhat.com, hao.wu@intel.com
+References: <1602313793-21421-1-git-send-email-yilun.xu@intel.com>
+ <1602313793-21421-2-git-send-email-yilun.xu@intel.com>
+ <8786ca8f-7edd-d7b1-7eca-6447814c6e5e@redhat.com>
+ <20201012024100.GC29436@yilunxu-OptiPlex-7050>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <440b7d06-426f-86c6-cf3f-396a9cc6bff7@redhat.com>
+Date:   Mon, 12 Oct 2020 07:07:55 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6367849.hfWVFoRi9M@n95hx1g2>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 16:05:21 up 235 days, 21:35, 155 users,  load average: 0.39, 0.21,
- 0.16
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20201012024100.GC29436@yilunxu-OptiPlex-7050>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 09:48:29AM +0200, Christian Eggers wrote:
-> Hi Sascha,
-> 
-> On Friday, 9 October 2020, 09:39:44 CEST, Sascha Hauer wrote:
-> > On Fri, Oct 09, 2020 at 06:27:38AM +0200, Christian Eggers wrote:
-> > > This reverts commit 525c9e5a32bd7951eae3f06d9d077fea51718a6c.
-> > >
-> > > If CONFIG_PM is disabled, the system completely freezes on probe as
-> > > nothing enables the clock of the SPI peripheral.
-> >
-> > Instead of reverting it, why not just fix it?
-> I expect that 5.9 will be released soon. I think that in this late stage
-> reverting is more safe than fixing...
-> 
-> > Normally the device should be brought to active state manually in probe
-> > before pm_runtime takes over, then CONFIG_PM disabled doesn't hurt.
-> > Using pm_runtime to put the device to active state initially has the
-> > problem you describe.
-> Thanks for the hint. I've no experience in runtime power management. If you
-> could provide a patch against the current version, I can make a quick test. I
-> can also try to fix it myself, but this will take until next week.
 
-Here we go. The patch basically works, but I am also not very confident
-with pm_runtime, so please have a close look ;)
+On 10/11/20 7:41 PM, Xu Yilun wrote:
+> On Sat, Oct 10, 2020 at 08:07:07AM -0700, Tom Rix wrote:
+>> On 10/10/20 12:09 AM, Xu Yilun wrote:
+>>> The value of the field dfl_device.type comes from the 12 bits register
+>>> field DFH_ID according to DFL spec. So this patch changes the definition
+>>> of the type field to u16.
+>>>
+>>> Also it is not necessary to illustrate the valid bits of the type field
+>>> in comments. Instead we should explicitly define the possible values in
+>>> the enumeration type for it, because they are shared by hardware spec.
+>>> We should not let the compiler decide these values.
+>>>
+>>> Similar changes are also applied to dfl_device.feature_id.
+>>>
+>>> This patch also fixed the MODALIAS format according to the changes
+>>> above.
+>>>
+>>> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+>>> ---
+>>> v9: no change
+>>> ---
+>>>  drivers/fpga/dfl.c |  3 +--
+>>>  drivers/fpga/dfl.h | 14 +++++++-------
+>>>  2 files changed, 8 insertions(+), 9 deletions(-)
+>>>
+>>> diff --git a/drivers/fpga/dfl.c b/drivers/fpga/dfl.c
+>>> index b450870..5a6ba3b 100644
+>>> --- a/drivers/fpga/dfl.c
+>>> +++ b/drivers/fpga/dfl.c
+>>> @@ -298,8 +298,7 @@ static int dfl_bus_uevent(struct device *dev, struct kobj_uevent_env *env)
+>>>  {
+>>>  	struct dfl_device *ddev = to_dfl_dev(dev);
+>>>  
+>>> -	/* The type has 4 valid bits and feature_id has 12 valid bits */
+>>> -	return add_uevent_var(env, "MODALIAS=dfl:t%01Xf%03X",
+>>> +	return add_uevent_var(env, "MODALIAS=dfl:t%04Xf%04X",
+>>>  			      ddev->type, ddev->feature_id);
+>>>  }
+>>>  
+>>> diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
+>>> index 5dc758f..ac373b1 100644
+>>> --- a/drivers/fpga/dfl.h
+>>> +++ b/drivers/fpga/dfl.h
+>>> @@ -520,19 +520,19 @@ long dfl_feature_ioctl_set_irq(struct platform_device *pdev,
+>>>   * enum dfl_id_type - define the DFL FIU types
+>>>   */
+>>>  enum dfl_id_type {
+>>> -	FME_ID,
+>>> -	PORT_ID,
+>>> +	FME_ID = 0,
+>>> +	PORT_ID = 1,
+>> This is redundant, why make this change ?
+> These values are shared by hardware spec, so it is suggested that the
+> values of the enum type should be explicitly set, otherwise the compiler
+> is in its right to do whatever it wants with them (within reason...)
+>
+> Please see the original discussion:
+> https://lore.kernel.org/linux-fpga/20200923055436.GA2629915@kroah.com/
 
-Sascha
+I don't believe this is undefined behavior for the compiler
 
--------------------------------8<--------------------------------
+from c11 6.7.2.2,3
 
-From 6c584eb8a2fbff46bf8bbebae6c10609c169309b Mon Sep 17 00:00:00 2001
-From: Sascha Hauer <s.hauer@pengutronix.de>
-Date: Mon, 12 Oct 2020 15:59:50 +0200
-Subject: [PATCH] spi: imx: fix runtime pm support for !CONFIG_PM
+The identifiers in an enumerator list are declared as constants that have type int and may appear wherever such are permitted.127) An enumerator with = defines its enumeration constant as the value of the constant expression. If the first enumerator has no =, the value of its enumeration constant is 0. Each subsequent enumerator with no = defines its enumeration constant as the value of the constant expression obtained by adding 1 to the value of the previous enumeration constant. (The use of enumerators with = may produce enumeration constants with values that duplicate other values in the same enumeration.) The enumerators of an enumeration are also known as its members.
 
-525c9e5a32bd introduced pm_runtime support for the i.MX SPI driver. With
-this pm_runtime is used to bring up the clocks initially. When CONFIG_PM
-is disabled the clocks are no longer enabled and the driver doesn't work
-anymore. Fix this by enabling the clocks in the probe function and
-telling pm_runtime that the device is active using
-pm_runtime_set_active().
+setting them again has some use for documentation so this change is ok if you have strong feeling for it.
 
-Fixes: 525c9e5a32bd spi: imx: enable runtime pm support
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
- drivers/spi/spi-imx.c | 23 +++++++++++++++--------
- 1 file changed, 15 insertions(+), 8 deletions(-)
+Tom
 
-diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c
-index 38a5f1304cec..c796e937dc6a 100644
---- a/drivers/spi/spi-imx.c
-+++ b/drivers/spi/spi-imx.c
-@@ -1674,15 +1674,18 @@ static int spi_imx_probe(struct platform_device *pdev)
- 		goto out_master_put;
- 	}
- 
--	pm_runtime_enable(spi_imx->dev);
-+	ret = clk_prepare_enable(spi_imx->clk_per);
-+	if (ret)
-+		goto out_master_put;
-+
-+	ret = clk_prepare_enable(spi_imx->clk_ipg);
-+	if (ret)
-+		goto out_put_per;
-+
- 	pm_runtime_set_autosuspend_delay(spi_imx->dev, MXC_RPM_TIMEOUT);
- 	pm_runtime_use_autosuspend(spi_imx->dev);
--
--	ret = pm_runtime_get_sync(spi_imx->dev);
--	if (ret < 0) {
--		dev_err(spi_imx->dev, "failed to enable clock\n");
--		goto out_runtime_pm_put;
--	}
-+	pm_runtime_set_active(spi_imx->dev);
-+	pm_runtime_enable(spi_imx->dev);
- 
- 	spi_imx->spi_clk = clk_get_rate(spi_imx->clk_per);
- 	/*
-@@ -1719,8 +1722,12 @@ static int spi_imx_probe(struct platform_device *pdev)
- 
- out_runtime_pm_put:
- 	pm_runtime_dont_use_autosuspend(spi_imx->dev);
--	pm_runtime_put_sync(spi_imx->dev);
-+	pm_runtime_set_suspended(&pdev->dev);
- 	pm_runtime_disable(spi_imx->dev);
-+
-+	clk_disable_unprepare(spi_imx->clk_ipg);
-+out_put_per:
-+	clk_disable_unprepare(spi_imx->clk_per);
- out_master_put:
- 	spi_master_put(master);
- 
--- 
-2.28.0
+>
+> Thanks,
+> Yilun
+>
+>> Tom
+>>
+>>>  	DFL_ID_MAX,
+>>>  };
+>>>  
+>>>  /**
+>>>   * struct dfl_device_id -  dfl device identifier
+>>> - * @type: contains 4 bits DFL FIU type of the device. See enum dfl_id_type.
+>>> - * @feature_id: contains 12 bits feature identifier local to its DFL FIU type.
+>>> + * @type: DFL FIU type of the device. See enum dfl_id_type.
+>>> + * @feature_id: feature identifier local to its DFL FIU type.
+>>>   * @driver_data: driver specific data.
+>>>   */
+>>>  struct dfl_device_id {
+>>> -	u8 type;
+>>> +	u16 type;
+>>>  	u16 feature_id;
+>>>  	unsigned long driver_data;
+>>>  };
+>>> @@ -543,7 +543,7 @@ struct dfl_device_id {
+>>>   * @dev: generic device interface.
+>>>   * @id: id of the dfl device.
+>>>   * @type: type of DFL FIU of the device. See enum dfl_id_type.
+>>> - * @feature_id: 16 bits feature identifier local to its DFL FIU type.
+>>> + * @feature_id: feature identifier local to its DFL FIU type.
+>>>   * @mmio_res: mmio resource of this dfl device.
+>>>   * @irqs: list of Linux IRQ numbers of this dfl device.
+>>>   * @num_irqs: number of IRQs supported by this dfl device.
+>>> @@ -553,7 +553,7 @@ struct dfl_device_id {
+>>>  struct dfl_device {
+>>>  	struct device dev;
+>>>  	int id;
+>>> -	u8 type;
+>>> +	u16 type;
+>>>  	u16 feature_id;
+>>>  	struct resource mmio_res;
+>>>  	int *irqs;
 
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
