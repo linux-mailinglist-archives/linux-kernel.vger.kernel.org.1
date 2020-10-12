@@ -2,42 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8735A28B6FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EB2528B753
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:43:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731366AbgJLNjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:39:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40142 "EHLO mail.kernel.org"
+        id S1729808AbgJLNmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:42:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46216 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731244AbgJLNio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:38:44 -0400
+        id S1731065AbgJLNlh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:41:37 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C9C9E22258;
-        Mon, 12 Oct 2020 13:38:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BA4BE21D81;
+        Mon, 12 Oct 2020 13:41:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509912;
-        bh=qUM7Ytv60gu663GexdikDZ2Nncf93/ZXvsiw9W78LH0=;
+        s=default; t=1602510089;
+        bh=SagM/+ssNdab14RfdeRph0M1lhneTxrqr5Ig6X/gDYo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GVxPkpRQsFjOfcFBtUR2FrCdux3wamef+YrsT2RJxae6K2UAsAQhQ3SpwOmnwwYFz
-         4nXLM3htaapRxFBx8BmAH3y3penWL2O3nyPJ8Kumtg7mCfl2pMFrRT/RFCJVRM7r5c
-         Ryo4LCx5HFY2GsbbhMx+7RMlE8DRE1+oh9FxGZS8=
+        b=aIHuPzgFrYAugw+Qo0fCFxYfTEQ0m6OvWkrouIRG9sBUm7p5yhZlxO/laaa3SvKpm
+         pqdBbgylYK2+dOFHeF9gQqt6HtV3KBs4qYFvZC9vHabvPwDrjkB2qjzP4B7a42t2L8
+         Mmtw7JcsWlPcA+rafj6Gr0SxMUpDV0pvl38W2AWg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot <syzbot+805f5f6ae37411f15b64@syzkaller.appspotmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        stable <stable@kernel.org>,
-        "Nobuhiro Iwamatsu (CIP)" <nobuhiro1.iwamatsu@toshiba.co.jp>
-Subject: [PATCH 4.19 12/49] driver core: Fix probe_count imbalance in really_probe()
+        stable@vger.kernel.org, Coly Li <colyli@suse.de>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
+        Jan Kara <jack@suse.com>, Jens Axboe <axboe@kernel.dk>,
+        Mikhail Skorzhinskii <mskorzhinskiy@solarflare.com>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Vlastimil Babka <vbabka@suse.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 35/85] net: introduce helper sendpage_ok() in include/linux/net.h
 Date:   Mon, 12 Oct 2020 15:26:58 +0200
-Message-Id: <20201012132630.006402406@linuxfoundation.org>
+Message-Id: <20201012132634.549294666@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132629.469542486@linuxfoundation.org>
-References: <20201012132629.469542486@linuxfoundation.org>
+In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
+References: <20201012132632.846779148@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,55 +49,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+From: Coly Li <colyli@suse.de>
 
-commit b292b50b0efcc7095d8bf15505fba6909bb35dce upstream.
+commit c381b07941adc2274ce552daf86c94701c5e265a upstream.
 
-syzbot is reporting hung task in wait_for_device_probe() [1]. At least,
-we always need to decrement probe_count if we incremented probe_count in
-really_probe().
+The original problem was from nvme-over-tcp code, who mistakenly uses
+kernel_sendpage() to send pages allocated by __get_free_pages() without
+__GFP_COMP flag. Such pages don't have refcount (page_count is 0) on
+tail pages, sending them by kernel_sendpage() may trigger a kernel panic
+from a corrupted kernel heap, because these pages are incorrectly freed
+in network stack as page_count 0 pages.
 
-However, since I can't find "Resources present before probing" message in
-the console log, both "this message simply flowed off" and "syzbot is not
-hitting this path" will be possible. Therefore, while we are at it, let's
-also prepare for concurrent wait_for_device_probe() calls by replacing
-wake_up() with wake_up_all().
+This patch introduces a helper sendpage_ok(), it returns true if the
+checking page,
+- is not slab page: PageSlab(page) is false.
+- has page refcount: page_count(page) is not zero
 
-[1] https://syzkaller.appspot.com/bug?id=25c833f1983c9c1d512f4ff860dd0d7f5a2e2c0f
+All drivers who want to send page to remote end by kernel_sendpage()
+may use this helper to check whether the page is OK. If the helper does
+not return true, the driver should try other non sendpage method (e.g.
+sock_no_sendpage()) to handle the page.
 
-Reported-by: syzbot <syzbot+805f5f6ae37411f15b64@syzkaller.appspotmail.com>
-Fixes: 7c35e699c88bd607 ("driver core: Print device when resources present in really_probe()")
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Cc: stable <stable@kernel.org>
-Link: https://lore.kernel.org/r/20200713021254.3444-1-penguin-kernel@I-love.SAKURA.ne.jp
-[iwamatsu: Drop patch for deferred_probe_timeout_work_func()]
-Signed-off-by: Nobuhiro Iwamatsu (CIP) <nobuhiro1.iwamatsu@toshiba.co.jp>
+Signed-off-by: Coly Li <colyli@suse.de>
+Cc: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Hannes Reinecke <hare@suse.de>
+Cc: Jan Kara <jack@suse.com>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Mikhail Skorzhinskii <mskorzhinskiy@solarflare.com>
+Cc: Philipp Reisner <philipp.reisner@linbit.com>
+Cc: Sagi Grimberg <sagi@grimberg.me>
+Cc: Vlastimil Babka <vbabka@suse.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/base/dd.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/base/dd.c
-+++ b/drivers/base/dd.c
-@@ -472,7 +472,8 @@ static int really_probe(struct device *d
- 		 drv->bus->name, __func__, drv->name, dev_name(dev));
- 	if (!list_empty(&dev->devres_head)) {
- 		dev_crit(dev, "Resources present before probing\n");
--		return -EBUSY;
-+		ret = -EBUSY;
-+		goto done;
- 	}
+---
+ include/linux/net.h |   16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+--- a/include/linux/net.h
++++ b/include/linux/net.h
+@@ -21,6 +21,7 @@
+ #include <linux/rcupdate.h>
+ #include <linux/once.h>
+ #include <linux/fs.h>
++#include <linux/mm.h>
  
- re_probe:
-@@ -579,7 +580,7 @@ pinctrl_bind_failed:
- 	ret = 0;
- done:
- 	atomic_dec(&probe_count);
--	wake_up(&probe_waitqueue);
-+	wake_up_all(&probe_waitqueue);
- 	return ret;
- }
+ #include <uapi/linux/net.h>
  
+@@ -288,6 +289,21 @@ do {									\
+ #define net_get_random_once_wait(buf, nbytes)			\
+ 	get_random_once_wait((buf), (nbytes))
+ 
++/*
++ * E.g. XFS meta- & log-data is in slab pages, or bcache meta
++ * data pages, or other high order pages allocated by
++ * __get_free_pages() without __GFP_COMP, which have a page_count
++ * of 0 and/or have PageSlab() set. We cannot use send_page for
++ * those, as that does get_page(); put_page(); and would cause
++ * either a VM_BUG directly, or __page_cache_release a page that
++ * would actually still be referenced by someone, leading to some
++ * obscure delayed Oops somewhere else.
++ */
++static inline bool sendpage_ok(struct page *page)
++{
++	return !PageSlab(page) && page_count(page) >= 1;
++}
++
+ int kernel_sendmsg(struct socket *sock, struct msghdr *msg, struct kvec *vec,
+ 		   size_t num, size_t len);
+ int kernel_sendmsg_locked(struct sock *sk, struct msghdr *msg,
 
 
