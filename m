@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE9A28B7A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:45:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A188A28B9D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731401AbgJLNpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:45:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46218 "EHLO mail.kernel.org"
+        id S2390896AbgJLOEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:04:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731329AbgJLNmD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:42:03 -0400
+        id S2388668AbgJLNgQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:36:16 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B720722228;
-        Mon, 12 Oct 2020 13:41:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C33D72076E;
+        Mon, 12 Oct 2020 13:36:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602510120;
-        bh=UJHkcwtAMBTTaQj49a9rbFF+vKgSWPKHudMnhOaOilU=;
+        s=default; t=1602509776;
+        bh=cAc9SVIjfg6BCU3+Mi+hwrdDWDsKxVFO2cw2CcXk7YE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PF78RTHanPxwp0cH3g3nX0neB7/4SQM0+Z4rEg9A9ViVQqQLB32o0BYKoaCbdwc0c
-         ZK6SB+AmWQzQW6GohRd+E20aQkGwQFQMQmsxJHYwX7WIk+jebsOeqdKG8vHkxKH4Zl
-         FDD0WTlVDxxgxXvQeuMnlth7J1gjDkhHA19ZOQrU=
+        b=Bc1h5QbSC7fQBhf1yaZpdLwASMlGDl88G52yY4Vl1ej2ky+0V/Vlv1SXVKUnGH6gt
+         jnrmPwSROAi7eJ8FaJvRhuBpjpPiY+qDH4HGAfoJLDqF1lRwZfEGDVLgJGkFQ10Ccj
+         P4BSpBmS450m/+rp8Fiz4DZ5GvbAy7LcqtxEZkaw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tony Ambardar <Tony.Ambardar@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: [PATCH 5.4 18/85] bpf: Prevent .BTF section elimination
+        stable@vger.kernel.org, Or Cohen <orcohen@paloaltonetworks.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Stefan Nuernberger <snu@amazon.com>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Amit Shah <aams@amazon.com>
+Subject: [PATCH 4.14 25/70] net/packet: fix overflow in tpacket_rcv
 Date:   Mon, 12 Oct 2020 15:26:41 +0200
-Message-Id: <20201012132633.725047120@linuxfoundation.org>
+Message-Id: <20201012132631.426074555@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
-References: <20201012132632.846779148@linuxfoundation.org>
+In-Reply-To: <20201012132630.201442517@linuxfoundation.org>
+References: <20201012132630.201442517@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,39 +46,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Ambardar <tony.ambardar@gmail.com>
+From: Or Cohen <orcohen@paloaltonetworks.com>
 
-commit 65c204398928f9c79f1a29912b410439f7052635 upstream.
+commit acf69c946233259ab4d64f8869d4037a198c7f06 upstream.
 
-Systems with memory or disk constraints often reduce the kernel footprint
-by configuring LD_DEAD_CODE_DATA_ELIMINATION. However, this can result in
-removal of any BTF information.
+Using tp_reserve to calculate netoff can overflow as
+tp_reserve is unsigned int and netoff is unsigned short.
 
-Use the KEEP() macro to preserve the BTF data as done with other important
-sections, while still allowing for smaller kernels.
+This may lead to macoff receving a smaller value then
+sizeof(struct virtio_net_hdr), and if po->has_vnet_hdr
+is set, an out-of-bounds write will occur when
+calling virtio_net_hdr_from_skb.
 
-Fixes: 90ceddcb4950 ("bpf: Support llvm-objcopy for vmlinux BTF")
-Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Link: https://lore.kernel.org/bpf/a635b5d3e2da044e7b51ec1315e8910fbce0083f.1600417359.git.Tony.Ambardar@gmail.com
+The bug is fixed by converting netoff to unsigned int
+and checking if it exceeds USHRT_MAX.
+
+This addresses CVE-2020-14386
+
+Fixes: 8913336a7e8d ("packet: add PACKET_RESERVE sockopt")
+Signed-off-by: Or Cohen <orcohen@paloaltonetworks.com>
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+[ snu: backported to pre-5.3, changed tp_drops counting/locking ]
+Signed-off-by: Stefan Nuernberger <snu@amazon.com>
+CC: David Woodhouse <dwmw@amazon.co.uk>
+CC: Amit Shah <aams@amazon.com>
+CC: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- include/asm-generic/vmlinux.lds.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/packet/af_packet.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -599,7 +599,7 @@
- #define BTF								\
- 	.BTF : AT(ADDR(.BTF) - LOAD_OFFSET) {				\
- 		__start_BTF = .;					\
--		*(.BTF)							\
-+		KEEP(*(.BTF))						\
- 		__stop_BTF = .;						\
+--- a/net/packet/af_packet.c
++++ b/net/packet/af_packet.c
+@@ -2201,7 +2201,8 @@ static int tpacket_rcv(struct sk_buff *s
+ 	int skb_len = skb->len;
+ 	unsigned int snaplen, res;
+ 	unsigned long status = TP_STATUS_USER;
+-	unsigned short macoff, netoff, hdrlen;
++	unsigned short macoff, hdrlen;
++	unsigned int netoff;
+ 	struct sk_buff *copy_skb = NULL;
+ 	struct timespec ts;
+ 	__u32 ts_status;
+@@ -2264,6 +2265,12 @@ static int tpacket_rcv(struct sk_buff *s
+ 		}
+ 		macoff = netoff - maclen;
  	}
- #else
++	if (netoff > USHRT_MAX) {
++		spin_lock(&sk->sk_receive_queue.lock);
++		po->stats.stats1.tp_drops++;
++		spin_unlock(&sk->sk_receive_queue.lock);
++		goto drop_n_restore;
++	}
+ 	if (po->tp_version <= TPACKET_V2) {
+ 		if (macoff + snaplen > po->rx_ring.frame_size) {
+ 			if (po->copy_thresh &&
 
 
