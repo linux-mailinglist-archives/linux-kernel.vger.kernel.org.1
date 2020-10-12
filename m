@@ -2,164 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DBCA28B408
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 13:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E760028B40C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 13:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388247AbgJLLp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 07:45:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388070AbgJLLpZ (ORCPT
+        id S2388281AbgJLLqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 07:46:36 -0400
+Received: from mail-m17613.qiye.163.com ([59.111.176.13]:54740 "EHLO
+        mail-m17613.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388247AbgJLLqf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 07:45:25 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EB9EC0613CE;
-        Mon, 12 Oct 2020 04:45:25 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 11:45:21 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602503123;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=F/ZSaZR0YJBI2cwJ0nGB8AuKWq/v+FHNtXdosmWZABk=;
-        b=SJgWmIzkECNoLyx/TlivZajvnT1AojfnaQGQYJXoBxKQs4WWewHyZ2WvhLrmXbBzX/iY/g
-        o5ioiwKwy0t+rOyF5roXdcBi6WpkD8uToRtOawxbc7ZDWxllocsF+cn3XTUBUv76s4egg+
-        +H3Y405BDgYzJv1rvbedZ+WzJyHQb1XxZHLb3lm5Gya7FQ7ugzrMEmY0LmAFpi3W0Vln0Q
-        5BiLE3aQW8QzlUYSgb2oQxfOHD7kAUxc979D8G28FCjs65NcIgIolKkW90QfbN4ntOWnTa
-        iqtBX7vuYo4bfHb2LYZLZs5SiA8wVFt9UA/k0mTwcuAta0JhvDNpLHDffARjTA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602503123;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=F/ZSaZR0YJBI2cwJ0nGB8AuKWq/v+FHNtXdosmWZABk=;
-        b=A08Uinidc+sTgUewhkCtx04xqPUKrTM+CL3ZJyzYuwzBG1pWMysOfmTrxm+ld7tYTdS+7T
-        cYGvMBhoJJOj1BAA==
-From:   "tip-bot2 for Jiri Olsa" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf/core: Fix race in the perf_mmap_close() function
-Cc:     Michael Petlan <mpetlan@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Wade Mealing <wmealing@redhat.com>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200916115311.GE2301783@krava>
-References: <20200916115311.GE2301783@krava>
+        Mon, 12 Oct 2020 07:46:35 -0400
+Received: from ubuntu.localdomain (unknown [157.0.31.124])
+        by mail-m17613.qiye.163.com (Hmail) with ESMTPA id 7EB9248240E;
+        Mon, 12 Oct 2020 19:46:29 +0800 (CST)
+From:   Bernard Zhao <bernard@vivo.com>
+To:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Anthony Koo <Anthony.Koo@amd.com>, Aric Cyr <aric.cyr@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Yongqiang Sun <yongqiang.sun@amd.com>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Jun Lei <jun.lei@amd.com>, Samson Tam <Samson.Tam@amd.com>,
+        Krunoslav Kovac <Krunoslav.Kovac@amd.com>,
+        Reza Amini <Reza.Amini@amd.com>,
+        Brandon Syu <Brandon.Syu@amd.com>,
+        Charlene Liu <Charlene.Liu@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Wyatt Wood <wyatt.wood@amd.com>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Cc:     opensource.kernel@vivo.com, Bernard Zhao <bernard@vivo.com>
+Subject: [PATCH] drm/amd/display: remove no need return value
+Date:   Mon, 12 Oct 2020 04:46:16 -0700
+Message-Id: <20201012114623.8583-1-bernard@vivo.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Message-ID: <160250312175.7002.16224226628192751806.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQk0dGUNOGEIdTklKVkpNS0lOS0hKQktLTkNVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS09ISFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OhA6Dyo5Az8jIzkJFRgtMzAQ
+        SxkaCRFVSlVKTUtJTktISkJLTklLVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlKTkxV
+        S1VISlVKSU9ZV1kIAVlBTU9OTjcG
+X-HM-Tid: 0a751ca225f793bakuws7eb9248240e
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/core branch of tip:
+Functions (disable_all_writeback_pipes_for_stream &
+dc_enable_stereo & dc_post_update_surfaces_to_stream)
+always return true, there is no need to keep the return value.
+This change is to make the code a bit more readable.
 
-Commit-ID:     f91072ed1b7283b13ca57fcfbece5a3b92726143
-Gitweb:        https://git.kernel.org/tip/f91072ed1b7283b13ca57fcfbece5a3b92726143
-Author:        Jiri Olsa <jolsa@redhat.com>
-AuthorDate:    Wed, 16 Sep 2020 13:53:11 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Mon, 12 Oct 2020 13:24:26 +02:00
-
-perf/core: Fix race in the perf_mmap_close() function
-
-There's a possible race in perf_mmap_close() when checking ring buffer's
-mmap_count refcount value. The problem is that the mmap_count check is
-not atomic because we call atomic_dec() and atomic_read() separately.
-
-  perf_mmap_close:
-  ...
-   atomic_dec(&rb->mmap_count);
-   ...
-   if (atomic_read(&rb->mmap_count))
-      goto out_put;
-
-   <ring buffer detach>
-   free_uid
-
-out_put:
-  ring_buffer_put(rb); /* could be last */
-
-The race can happen when we have two (or more) events sharing same ring
-buffer and they go through atomic_dec() and then they both see 0 as refcount
-value later in atomic_read(). Then both will go on and execute code which
-is meant to be run just once.
-
-The code that detaches ring buffer is probably fine to be executed more
-than once, but the problem is in calling free_uid(), which will later on
-demonstrate in related crashes and refcount warnings, like:
-
-  refcount_t: addition on 0; use-after-free.
-  ...
-  RIP: 0010:refcount_warn_saturate+0x6d/0xf
-  ...
-  Call Trace:
-  prepare_creds+0x190/0x1e0
-  copy_creds+0x35/0x172
-  copy_process+0x471/0x1a80
-  _do_fork+0x83/0x3a0
-  __do_sys_wait4+0x83/0x90
-  __do_sys_clone+0x85/0xa0
-  do_syscall_64+0x5b/0x1e0
-  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Using atomic decrease and check instead of separated calls.
-
-Tested-by: Michael Petlan <mpetlan@redhat.com>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Peter Zijlstra <a.p.zijlstra@chello.nl>
-Acked-by: Namhyung Kim <namhyung@kernel.org>
-Acked-by: Wade Mealing <wmealing@redhat.com>
-Fixes: 9bb5d40cd93c ("perf: Fix mmap() accounting hole");
-Link: https://lore.kernel.org/r/20200916115311.GE2301783@krava
+Signed-off-by: Bernard Zhao <bernard@vivo.com>
 ---
- kernel/events/core.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/amd/display/dc/core/dc.c   | 17 +++++------------
+ drivers/gpu/drm/amd/display/dc/dc.h        |  2 +-
+ drivers/gpu/drm/amd/display/dc/dc_stream.h |  2 +-
+ 3 files changed, 7 insertions(+), 14 deletions(-)
 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 45edb85..fb662eb 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -5895,11 +5895,11 @@ static void perf_pmu_output_stop(struct perf_event *event);
- static void perf_mmap_close(struct vm_area_struct *vma)
- {
- 	struct perf_event *event = vma->vm_file->private_data;
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc.c b/drivers/gpu/drm/amd/display/dc/core/dc.c
+index 92eb1ca1634f..8dc598a632b5 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc.c
+@@ -761,7 +761,7 @@ static bool dc_construct(struct dc *dc,
+ 	return false;
+ }
+ 
+-static bool disable_all_writeback_pipes_for_stream(
++static void disable_all_writeback_pipes_for_stream(
+ 		const struct dc *dc,
+ 		struct dc_stream_state *stream,
+ 		struct dc_state *context)
+@@ -770,8 +770,6 @@ static bool disable_all_writeback_pipes_for_stream(
+ 
+ 	for (i = 0; i < stream->num_wb_info; i++)
+ 		stream->writeback_info[i].wb_enabled = false;
 -
- 	struct perf_buffer *rb = ring_buffer_get(event);
- 	struct user_struct *mmap_user = rb->mmap_user;
- 	int mmap_locked = rb->mmap_locked;
- 	unsigned long size = perf_data_size(rb);
-+	bool detach_rest = false;
+-	return true;
+ }
  
- 	if (event->pmu->event_unmapped)
- 		event->pmu->event_unmapped(event, vma->vm_mm);
-@@ -5930,7 +5930,8 @@ static void perf_mmap_close(struct vm_area_struct *vma)
- 		mutex_unlock(&event->mmap_mutex);
+ void apply_ctx_interdependent_lock(struct dc *dc, struct dc_state *context, struct dc_stream_state *stream, bool lock)
+@@ -1213,13 +1211,12 @@ bool dc_validate_seamless_boot_timing(const struct dc *dc,
+ 	return true;
+ }
+ 
+-bool dc_enable_stereo(
++void dc_enable_stereo(
+ 	struct dc *dc,
+ 	struct dc_state *context,
+ 	struct dc_stream_state *streams[],
+ 	uint8_t stream_count)
+ {
+-	bool ret = true;
+ 	int i, j;
+ 	struct pipe_ctx *pipe;
+ 
+@@ -1234,8 +1231,6 @@ bool dc_enable_stereo(
+ 				dc->hwss.setup_stereo(pipe, dc);
+ 		}
  	}
+-
+-	return ret;
+ }
  
--	atomic_dec(&rb->mmap_count);
-+	if (atomic_dec_and_test(&rb->mmap_count))
-+		detach_rest = true;
+ /*
+@@ -1448,18 +1443,18 @@ static bool is_flip_pending_in_pipes(struct dc *dc, struct dc_state *context)
+ 	return false;
+ }
  
- 	if (!atomic_dec_and_mutex_lock(&event->mmap_count, &event->mmap_mutex))
- 		goto out_put;
-@@ -5939,7 +5940,7 @@ static void perf_mmap_close(struct vm_area_struct *vma)
- 	mutex_unlock(&event->mmap_mutex);
+-bool dc_post_update_surfaces_to_stream(struct dc *dc)
++void dc_post_update_surfaces_to_stream(struct dc *dc)
+ {
+ 	int i;
+ 	struct dc_state *context = dc->current_state;
  
- 	/* If there's still other mmap()s of this buffer, we're done. */
--	if (atomic_read(&rb->mmap_count))
-+	if (!detach_rest)
- 		goto out_put;
+ 	if ((!dc->optimized_required) || dc->optimize_seamless_boot_streams > 0)
+-		return true;
++		return;
  
- 	/*
+ 	post_surface_trace(dc);
+ 
+ 	if (is_flip_pending_in_pipes(dc, context))
+-		return true;
++		return;
+ 
+ 	for (i = 0; i < dc->res_pool->pipe_count; i++)
+ 		if (context->res_ctx.pipe_ctx[i].stream == NULL ||
+@@ -1472,8 +1467,6 @@ bool dc_post_update_surfaces_to_stream(struct dc *dc)
+ 
+ 	dc->optimized_required = false;
+ 	dc->wm_optimized_required = false;
+-
+-	return true;
+ }
+ 
+ struct dc_state *dc_create_state(struct dc *dc)
+diff --git a/drivers/gpu/drm/amd/display/dc/dc.h b/drivers/gpu/drm/amd/display/dc/dc.h
+index f50ef4255020..f79a3c318757 100644
+--- a/drivers/gpu/drm/amd/display/dc/dc.h
++++ b/drivers/gpu/drm/amd/display/dc/dc.h
+@@ -962,7 +962,7 @@ struct dc_flip_addrs {
+ 	bool triplebuffer_flips;
+ };
+ 
+-bool dc_post_update_surfaces_to_stream(
++void dc_post_update_surfaces_to_stream(
+ 		struct dc *dc);
+ 
+ #include "dc_stream.h"
+diff --git a/drivers/gpu/drm/amd/display/dc/dc_stream.h b/drivers/gpu/drm/amd/display/dc/dc_stream.h
+index d9888f316da6..0047ab33f88e 100644
+--- a/drivers/gpu/drm/amd/display/dc/dc_stream.h
++++ b/drivers/gpu/drm/amd/display/dc/dc_stream.h
+@@ -391,7 +391,7 @@ enum dc_status dc_validate_stream(struct dc *dc, struct dc_stream_state *stream)
+  * Enable stereo when commit_streams is not required,
+  * for example, frame alternate.
+  */
+-bool dc_enable_stereo(
++void dc_enable_stereo(
+ 	struct dc *dc,
+ 	struct dc_state *context,
+ 	struct dc_stream_state *streams[],
+-- 
+2.28.0
+
