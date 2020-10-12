@@ -2,93 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1FAD28B13F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 11:14:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E6FD28B143
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 11:16:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729288AbgJLJN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 05:13:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51093 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728859AbgJLJN6 (ORCPT
+        id S1728974AbgJLJQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 05:16:42 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:40947 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726396AbgJLJQl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 05:13:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602494037;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LfzBE/FgwUq1m0i5a1nd7eVANIytGnMHpB7MFKJjIkQ=;
-        b=Bb6D8qBFu1xLHRLWUJtQmYjOJYcjrKMFm/HJ+HNugPtXh4ooqgbePvm+0UfgfPvAhTxYUY
-        M7wUSk//pC8X1j1YZeZAKxwLVeZiwd6CaoYk3HQjbPxy+TB3YE2P+y5JHtlF52fBBKBXzX
-        pi/SjylsbxShUuQoKhvzqz8GwhGIAuQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-310-EaTJdbepMOyZRJxCadIPIw-1; Mon, 12 Oct 2020 05:13:52 -0400
-X-MC-Unique: EaTJdbepMOyZRJxCadIPIw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 29FFB802B46;
-        Mon, 12 Oct 2020 09:13:51 +0000 (UTC)
-Received: from krava (unknown [10.40.195.81])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 40F5C10013BD;
-        Mon, 12 Oct 2020 09:13:49 +0000 (UTC)
-Date:   Mon, 12 Oct 2020 11:13:48 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf c2c: Update usage for showing memory events
-Message-ID: <20201012091348.GC1099489@krava>
-References: <20201011121022.22409-1-leo.yan@linaro.org>
+        Mon, 12 Oct 2020 05:16:41 -0400
+Received: from mail-qv1-f51.google.com ([209.85.219.51]) by
+ mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MKKIZ-1klTnU3jqR-00LpWs for <linux-kernel@vger.kernel.org>; Mon, 12 Oct
+ 2020 11:16:40 +0200
+Received: by mail-qv1-f51.google.com with SMTP id t20so8077367qvv.8
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 02:16:39 -0700 (PDT)
+X-Gm-Message-State: AOAM531lWakvT11//kso2w/vUgNQsXKo76qj0R9H8znnZMv+PpSSgKnf
+        /wYydIwxuExWXIPhG0XK0IUQBnFN23xe24nM4tY=
+X-Google-Smtp-Source: ABdhPJyjbd3z2377x4FuP1FBq7UMVo+WDBeHGILAwQYfvFNPNFZ5hS5CFKemTggI0xsyYp71ceWxP5wO6z0wpLdGk+Q=
+X-Received: by 2002:a0c:9b9e:: with SMTP id o30mr6859283qve.16.1602494198843;
+ Mon, 12 Oct 2020 02:16:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201011121022.22409-1-leo.yan@linaro.org>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <000000000000903b5c05b1732a75@google.com> <CAK8P3a3p7Ueydagr4yshr8RKGzLivJZwEh0TxfipuHYRkN9Wcw@mail.gmail.com>
+ <CACT4Y+aXuBZbvwM1xJNPhG+dHCdjt_Are=p6wRwOk-DFHEGz2Q@mail.gmail.com>
+In-Reply-To: <CACT4Y+aXuBZbvwM1xJNPhG+dHCdjt_Are=p6wRwOk-DFHEGz2Q@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 12 Oct 2020 11:16:22 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a28w8kw9MJVx_Cada3c8tQBHT0xXheS2EmGdRgT=2jp6Q@mail.gmail.com>
+Message-ID: <CAK8P3a28w8kw9MJVx_Cada3c8tQBHT0xXheS2EmGdRgT=2jp6Q@mail.gmail.com>
+Subject: Re: general protection fault in qp_release_pages
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     rgerganov@vmware.com,
+        syzbot <syzbot+f58fe4bb535845237057@syzkaller.appspotmail.com>,
+        gregkh <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:yum7ZFPL3PfTD8gX6of6DsGQYURqqNOKPyXrHYhDg6alk8sU2a9
+ gFQJz+B4qwY2vplHa2qKwcDy72XQmecPodkSni06KmNUHLsJ+vPq7Wk5F0gY780Tq3naEBk
+ +s6BAG9yrgYDIUgoKXKVwPSv+LF/1/b+keisKMaiQNqJspwXgqFsjYcW+A5NFgTjfr1nic8
+ ZchSyAFgFzTcAJs3C7+Ew==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:kleoYoxVBX0=:Z3DjFHVMJdY8IDZ0fEYvx6
+ UczQ0mnjt2rt/tLAMBpFJpYXq2l6gBfhNzsKDd7QLJYptQEA3fwys5KjHUuyc5uWG0wjod7gM
+ Y3YxD9E5B46UUG84jNDht/ZrzVdHRjAGRKPmRRIyjb0kqVz9c/TgH8JJ/Fbt5WMyBivT8wUTn
+ XyJytzF4cZGAM9OgYmBwFVDlcNC6xhcY0KKGgcpgcvsdLuPAa2MDtHjEvrn8cz5NrkCz1n0Ct
+ JYbGEj7JvMTxy1ZW6eBNqCBZdqt/6DtpJO+1OKd1PGPP5I7hGL3B+okwBnwf0LxkytCh3SWwv
+ 5KUG+eG1vBZLzb1Q7jmJd7PxXhPZx8shHdKQm0aiGEvjmTGpWJauETFlc/MU8YWnr11gdP5EV
+ YmNCGzaPJk5H6D2plvXEYjEoCw6pXKBuR97EB2JmSv6LBG3RAqztFAUulNW5vYyYLNUTf98QA
+ B//f8PArULg/IWqSgWu5Sz0QosQJTmPotNWEDQIjIWTpGFlWe7cWNJuFwDiNdQDRk9VSgSTdG
+ MSwzVpT/7u1YB7bi8CrZlrFZPS3xp+JvhtrEbzWOcl+6+H51QrhI0TSHKSUK9b8zCQKAFkMg5
+ apmYbab5Fqv8ma56TDaswX966JySUrIaW7DD+b3tTM05Dri2U7F1uhyTAc/ALewElzGzZX1Xz
+ dfb8t/RB/fc/YONRAZvtYBilrLHuDYBmT4bNoef+FNYaF+At2/hnhm7dPw4hCFBaVX737cCsF
+ 1u9z4obda3mt/OFuagKsNdangF38WlJ5B1cM7Zcsr5XkhbRupraM01Km9n7UTee9I6ErZMvYR
+ t8w5MgBQph81ap5Fi0U7avHBwsi8vEYUi1e9wr6qu1n/uZLfYjHSrcOPClphBy36hmY3j5N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 11, 2020 at 08:10:22PM +0800, Leo Yan wrote:
-> Since commit b027cc6fdf1b ("perf c2c: Fix 'perf c2c record -e list' to
-> show the default events used"), "perf c2c" tool can show the memory
-> events properly, it's no reason to still suggest user to use the
-> command "perf mem record -e list" for showing events.
-> 
-> This patch updates the usage for showing memory events with command
-> "perf c2c record -e list".
-> 
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+On Mon, Oct 12, 2020 at 10:14 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+> On Mon, Oct 12, 2020 at 10:01 AM Arnd Bergmann <arnd@arndb.de> wrote:
+> > On Mon, Oct 12, 2020 at 8:11 AM syzbot
+> >
+> > Adding everyone from the git history that did meaningful changes in the past
+> > for this driver, as there is no specific maintainer file entry for
+> > them to further
+> > investigate.
+>
+> Hi Arnd,
+>
+> There is already a recorded fix for this on the dashboard:
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+Ok, good.
 
-thanks,
-jirka
+> https://syzkaller.appspot.com/bug?extid=f58fe4bb535845237057
+> VMCI: check return value of get_user_pages_fast() for errors
 
-> ---
->  tools/perf/builtin-c2c.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
-> index 5938b100eaf4..57bb6cce43e3 100644
-> --- a/tools/perf/builtin-c2c.c
-> +++ b/tools/perf/builtin-c2c.c
-> @@ -2916,7 +2916,7 @@ static int perf_c2c__record(int argc, const char **argv)
->  	bool event_set = false;
->  	struct option options[] = {
->  	OPT_CALLBACK('e', "event", &event_set, "event",
-> -		     "event selector. Use 'perf mem record -e list' to list available events",
-> +		     "event selector. Use 'perf c2c record -e list' to list available events",
->  		     parse_record_events),
->  	OPT_BOOLEAN('u', "all-user", &all_user, "collect only user level data"),
->  	OPT_BOOLEAN('k', "all-kernel", &all_kernel, "collect only kernel level data"),
-> -- 
-> 2.17.1
-> 
+Ah, I actually looked at linux-next, which included the fix. I had
+never before looked at the dashboard, good to know where to find
+this information.
 
+If this is something that happened to others as well, could the
+email report be changed to point out bugs that are already
+fixed in linux-next but not in mainline?
+
+     Arnd
