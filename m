@@ -2,67 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B71B28BD1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7189528BD26
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390130AbgJLQBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 12:01:51 -0400
-Received: from mga11.intel.com ([192.55.52.93]:59729 "EHLO mga11.intel.com"
+        id S2390199AbgJLQDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 12:03:00 -0400
+Received: from foss.arm.com ([217.140.110.172]:55098 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389562AbgJLQBv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 12:01:51 -0400
-IronPort-SDR: uAj1jFW6sx1q/C7flGeGNjSIwh37YbyS3DEapkf/wIIZgIRA81oNSYGZ+kc+fzI8LvsI/xa921
- tdnBMCefdg/w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="162294887"
-X-IronPort-AV: E=Sophos;i="5.77,367,1596524400"; 
-   d="scan'208";a="162294887"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 09:01:50 -0700
-IronPort-SDR: i3U8DHjXh/yBEJFOCr5LqII2KTjE24KOAFjbSVcqwBuULDFxKnHJtSf1zU97ffz0AQiK3v387Z
- h2RNmFWjsG8A==
-X-IronPort-AV: E=Sophos;i="5.77,367,1596524400"; 
-   d="scan'208";a="520734047"
-Received: from tassilo.jf.intel.com ([10.54.74.11])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 09:01:49 -0700
-Date:   Mon, 12 Oct 2020 09:01:44 -0700
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Alexey Budankov <alexey.budankov@linux.intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 02/15] perf report: output trace file name in raw
- trace dump
-Message-ID: <20201012160144.GA466880@tassilo.jf.intel.com>
-References: <810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com>
- <87e2050b-37e6-8ed8-e1e0-cfa074b030fa@linux.intel.com>
+        id S2388982AbgJLQDA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 12:03:00 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5C5B631B;
+        Mon, 12 Oct 2020 09:02:59 -0700 (PDT)
+Received: from bogus (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8F9653F719;
+        Mon, 12 Oct 2020 09:02:57 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 17:02:46 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Nicola Mazzucato <nicola.mazzucato@arm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        vireshk@kernel.org, daniel.lezcano@linaro.org, rjw@rjwysocki.net,
+        linux-kernel@vger.kernel.org, chris.redpath@arm.com,
+        morten.rasmussen@arm.com, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 2/2] [RFC] CPUFreq: Add support for
+ cpu-perf-dependencies
+Message-ID: <20201012160232.GF16519@bogus>
+References: <20200924095347.32148-3-nicola.mazzucato@arm.com>
+ <20201006071909.3cgz7i5v35dgnuzn@vireshk-i7>
+ <2417d7b5-bc58-fa30-192c-e5991ec22ce0@arm.com>
+ <20201008110241.dcyxdtqqj7slwmnc@vireshk-i7>
+ <20201008150317.GB20268@arm.com>
+ <56846759-e3a6-9471-827d-27af0c3d410d@arm.com>
+ <20201009053921.pkq4pcyrv4r7ylzu@vireshk-i7>
+ <42e3c8e9-cadc-d013-1e1f-fa06af4a45ff@arm.com>
+ <20201009140141.GA4048593@bogus>
+ <2b7b6486-2898-1279-ce9f-9e7bd3512152@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87e2050b-37e6-8ed8-e1e0-cfa074b030fa@linux.intel.com>
+In-Reply-To: <2b7b6486-2898-1279-ce9f-9e7bd3512152@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 11:54:24AM +0300, Alexey Budankov wrote:
-> @@ -180,7 +183,8 @@ static int ordered_events__deliver_event(struct ordered_events *oe,
->  						    ordered_events);
->  
->  	return perf_session__deliver_event(session, event->event,
-> -					   session->tool, event->file_offset);
-> +					   session->tool, event->file_offset,
-> +					   event->file_path);
+On Mon, Oct 12, 2020 at 11:22:57AM +0100, Lukasz Luba wrote:
+[...]
 
-Wouldn't it be better to pass "event" around now, which would contain at least
-four of the arguments.
+> 
+> True, the SCMI clock does not support discovery of clock tree:
+> (from 4.6.1 Clock management protocol background)
+> 'The protocol does not cover discovery of the clock tree, which must be
+> described through firmware tables instead.' [1]
+>
 
-These functions are getting entirely too many arguments.
+By firmware, spec refers to DT or ACPI, just to be clear.
 
--Andi
+> In this situation, would it make sense, instead of this binding from
+> patch 1/2, create a binding for internal firmware/scmi node?
+>
 
+Why ? I prefer to solve this in a generic way and make it not scmi
+specific issue. If OPP idea Viresh suggested can be made to work, that
+would be good.
+
+> Something like:
+> 
+> firmware {
+> 	scmi {
+> 	...		
+> 		scmi-perf-dep {
+> 			compatible = "arm,scmi-perf-dependencies";
+> 			cpu-perf-dep0 {
+> 				cpu-perf-affinity = <&CPU0>, <&CPU1>;
+> 			};
+> 			cpu-perf-dep1 {
+> 				cpu-perf-affinity = <&CPU3>, <&CPU4>;
+> 			};
+> 			cpu-perf-dep2 {
+> 				cpu-perf-affinity = <&CPU7>;
+> 			};
+> 		};
+> 	};
+> };
+> 
+> The code which is going to parse the binding would be inside the
+> scmi perf protocol code and used via API by scmi-cpufreq.c.
+>
+
+Not completely against it, just need to understand how is this solved
+or will be solved for any DT(non SCMI) and why it can be generic.
+
+-- 
+Regards,
+Sudeep
