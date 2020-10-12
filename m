@@ -2,97 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C2B28AC65
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 05:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6235028AC68
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 05:20:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727088AbgJLDSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 23:18:43 -0400
-Received: from mga11.intel.com ([192.55.52.93]:57761 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726525AbgJLDSn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 23:18:43 -0400
-IronPort-SDR: +hXr4u+CiRKMFnzk1uYJ2ZBnTPVzsn3BPIYOXNVjlvAH5UZf/CGu49AH/SkwLQEGGieJ0te6b4
- HierYXXSUYHg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="162218378"
-X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; 
-   d="scan'208";a="162218378"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2020 20:18:42 -0700
-IronPort-SDR: wn48UUCHyPIxAShK90rpdGM5jdgvNx/lyisOggpdFq0ZFLb41WfVBNv3nnz9YTrKAyFr9USUj6
- MmAUQUFbr+Aw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; 
-   d="scan'208";a="299153675"
-Received: from unknown (HELO [10.239.154.47]) ([10.239.154.47])
-  by fmsmga008.fm.intel.com with ESMTP; 11 Oct 2020 20:18:39 -0700
-Subject: Re: [PATCH v3] i2c: virtio: add a virtio i2c frontend driver
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
-        andriy.shevchenko@linux.intel.com, jarkko.nikula@linux.intel.com,
-        jdelvare@suse.de, Sergey.Semin@baikalelectronics.ru,
-        krzk@kernel.org, rppt@kernel.org, loic.poulain@linaro.org,
-        tali.perry1@gmail.com, bjorn.andersson@linaro.org,
-        shuo.a.liu@intel.com, conghui.chen@intel.com, yu1.wang@intel.com
-References: <1350309657ab0c7b9f97e7a5c71d084f88caa549.1600743079.git.jie.deng@intel.com>
- <20201008140151.GE897@ninjato>
-From:   Jie Deng <jie.deng@intel.com>
-Message-ID: <4b4cd16b-5930-008f-1139-0dae2825f717@intel.com>
-Date:   Mon, 12 Oct 2020 11:18:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.2.2
+        id S1727120AbgJLDTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 23:19:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727093AbgJLDTz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Oct 2020 23:19:55 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E00FEC0613CE;
+        Sun, 11 Oct 2020 20:19:54 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kRoNN-00Fke8-A6; Mon, 12 Oct 2020 03:19:53 +0000
+Date:   Mon, 12 Oct 2020 04:19:53 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: [git pull] vfs.git quota compat series
+Message-ID: <20201012031953.GG3576660@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20201008140151.GE897@ninjato>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+	More Christoph's compat cleanups: quotactl(2).
 
-On 2020/10/8 22:01, Wolfram Sang wrote:
-> Hi,
->
-> some super high level questions:
->
->> different controllers according to their needs. A backend
->> example can be found in the device model of the open source
->> project ACRN. For more information, please refer to
->> https://projectacrn.org.
-> Could you provide a link directly to the backend, please?
-Sure. Here is the link.
-https://raw.githubusercontent.com/projectacrn/acrn-hypervisor/master/devicemodel/hw/pci/virtio/virtio_i2c.c
->> The device ID request:
->>          https://github.com/oasis-tcs/virtio-spec/issues/85
-> Shall we wait for this to be approved? Or will it get only approved once
-> the driver here is upstream?
-That's what I want to know also.
-So hi Michael, what's the upstream flow for this patch ?
+The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
 
-Thanks.
+  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
 
+are available in the git repository at:
 
->> +	  If you say yes to this option, support will be included for the virtio
->> +	  I2C adapter driver. The hardware can be emulated by any device model
->> +	  software according to the virtio protocol.
-> That means stuff like "limiting which devices on a given bus can be
-> accessed" will be handled by the backends, or?
->
-> What kind of testing has been done with this on which setup?
->
-> Thanks and happy hacking,
->
->     Wolfram
-Yes, you can configure what devices can be seen by the guest.
-This provides a way to flexibly organize and manage I2C slave devices 
-from the guest.
+  git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.quota-compat
 
-We tested it on Intel APL MRB. There are some docs for you reference.
-https://projectacrn.github.io/latest/developer-guides/hld/virtio-i2c.html?highlight=i2c
+for you to fetch changes up to 80bdad3d7e3ec03f812471d9309f5f682e10f52b:
 
-Regards.
+  quota: simplify the quotactl compat handling (2020-09-17 13:00:46 -0400)
 
+----------------------------------------------------------------
+Christoph Hellwig (3):
+      compat: lift compat_s64 and compat_u64 to <asm-generic/compat.h>
+      compat: add a compat_need_64bit_alignment_fixup() helper
+      quota: simplify the quotactl compat handling
+
+ arch/arm64/include/asm/compat.h        |   2 -
+ arch/mips/include/asm/compat.h         |   2 -
+ arch/parisc/include/asm/compat.h       |   2 -
+ arch/powerpc/include/asm/compat.h      |   2 -
+ arch/s390/include/asm/compat.h         |   2 -
+ arch/sparc/include/asm/compat.h        |   3 +-
+ arch/x86/entry/syscalls/syscall_32.tbl |   2 +-
+ arch/x86/include/asm/compat.h          |   3 +-
+ fs/quota/Kconfig                       |   5 --
+ fs/quota/Makefile                      |   1 -
+ fs/quota/compat.c                      | 120 ---------------------------------
+ fs/quota/compat.h                      |  34 ++++++++++
+ fs/quota/quota.c                       |  73 ++++++++++++++++----
+ include/asm-generic/compat.h           |   8 +++
+ include/linux/compat.h                 |   9 +++
+ include/linux/quotaops.h               |   3 -
+ kernel/sys_ni.c                        |   1 -
+ 17 files changed, 113 insertions(+), 159 deletions(-)
+ delete mode 100644 fs/quota/compat.c
+ create mode 100644 fs/quota/compat.h
