@@ -2,148 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0886228BEB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 19:08:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A2528BEB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 19:08:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404039AbgJLRIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 13:08:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43252 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403845AbgJLRIY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 13:08:24 -0400
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9D09C2087D;
-        Mon, 12 Oct 2020 17:08:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602522503;
-        bh=diu7jTvqirdea73U2Pivn25Z5fqp8dxACmIMHPhvbwQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=eAbD7YbuBxUjjRD7VMI3SGS3JQ3/TPUQvQE/GWdsGv+V5X5ieFF4h7fQgI7OYFS1b
-         Y+DRqJUmrxFo3PvsyQj/5Gqc5T6wtjZIJVkyKK/+/KuSG6NGe10bRkdb3R8Lo16/K6
-         dMkMi9dt6nkV86/Y/W/AiB3XefGkBc8YLmq3+Sck=
-Received: by mail-ed1-f44.google.com with SMTP id l16so17798859eds.3;
-        Mon, 12 Oct 2020 10:08:23 -0700 (PDT)
-X-Gm-Message-State: AOAM532+OxvaA2c7AgICD3OSDGbJa5UOp65LY+Halr/WkCHQN6iapH7h
-        WohjzY8qIfl5wWRMtDHTttwX34HowDeRfavP6Rs=
-X-Google-Smtp-Source: ABdhPJznFFkxxdcO9CFLA1y4py80sWN1jeeBhSeZnTVvSdAbSWX+EHDk5exEBJ+K31o8PGsm86EFdFdTJq7JbVnnqqk=
-X-Received: by 2002:aa7:c643:: with SMTP id z3mr13042703edr.104.1602522502225;
- Mon, 12 Oct 2020 10:08:22 -0700 (PDT)
+        id S2404054AbgJLRI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 13:08:29 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:46372 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403845AbgJLRI2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 13:08:28 -0400
+Date:   Mon, 12 Oct 2020 17:08:24 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602522506;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FqPxZnfywW+ztZ5cdwA8OmBYMPSQ0kxlCZ9kAZHRBOg=;
+        b=EzhEVRb6GEY1sBChpSi2q5jEC6URr1mPuWF6ZbItfUgeR+K/EaFO9MypWjVva0QwrSWAQ/
+        CTqif8WypsJB+45HaDLnyk0UoS0IoqOeQI5mLyUaePsHLtES3Z71NUH0J+e66PX7wDXUlG
+        Hu5IkrYfFWtbQHnDsTTljRXANwwAE10TJIlheJwSJe4ucI/ZacomusONU9OEnM7Ydl4PWe
+        BwnLCCbusnyjllYSFsqqOh0XFQcHzU5mbOaMc/QkTA/+AuW30OwGr4KcdvWmkWh42cDTKN
+        zoqD5pWUnHb7heK5VXhxW6Kic1FBRgzqcKZ6mrZgtdRVE+obqVeQwgQx5KVe6w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602522506;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FqPxZnfywW+ztZ5cdwA8OmBYMPSQ0kxlCZ9kAZHRBOg=;
+        b=wwqwaNNgFgVWVEveuuVmP44zTHlrvKfkq8A5bIxxKxOWitSBtyyYCtQ+8zfLNJ+zajVaOk
+        IMifNdCrERXfnzCg==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/kprobes] kprobes: Replace rp->free_instance with freelist
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <159870623583.1229682.17472357584134058687.stgit@devnote2>
+References: <159870623583.1229682.17472357584134058687.stgit@devnote2>
 MIME-Version: 1.0
-References: <20200930070647.10188-1-yong.wu@mediatek.com> <20200930070647.10188-2-yong.wu@mediatek.com>
- <20201002110709.GC6888@pi3> <1601958415.26323.25.camel@mhfsdcap03>
-In-Reply-To: <1601958415.26323.25.camel@mhfsdcap03>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Mon, 12 Oct 2020 19:08:09 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPedQdOYque5igJ0_v_-_0L4S+NW6puUw-kWc+zWM96i_Q@mail.gmail.com>
-Message-ID: <CAJKOXPedQdOYque5igJ0_v_-_0L4S+NW6puUw-kWc+zWM96i_Q@mail.gmail.com>
-Subject: Re: [PATCH v3 01/24] dt-bindings: iommu: mediatek: Convert IOMMU to
- DT schema
-To:     Yong Wu <yong.wu@mediatek.com>
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Tomasz Figa <tfiga@google.com>,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
-        Nicolas Boichat <drinkcat@chromium.org>, anan.sun@mediatek.com,
-        chao.hao@mediatek.com, ming-fan.chen@mediatek.com,
-        Greg Kroah-Hartman <gregkh@google.com>, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <160252250482.7002.18034659363554741944.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 6 Oct 2020 at 06:27, Yong Wu <yong.wu@mediatek.com> wrote:
->
-> On Fri, 2020-10-02 at 13:07 +0200, Krzysztof Kozlowski wrote:
-> > On Wed, Sep 30, 2020 at 03:06:24PM +0800, Yong Wu wrote:
-> > > Convert MediaTek IOMMU to DT schema.
-> > >
-> > > Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-> > > ---
-> > >  .../bindings/iommu/mediatek,iommu.txt         | 103 ------------
-> > >  .../bindings/iommu/mediatek,iommu.yaml        | 154 ++++++++++++++++++
-> > >  2 files changed, 154 insertions(+), 103 deletions(-)
-> > >  delete mode 100644 Documentation/devicetree/bindings/iommu/mediatek,iommu.txt
-> > >  create mode 100644 Documentation/devicetree/bindings/iommu/mediatek,iommu.yaml
-> > >
->
-> [...]
->
-> > > +properties:
-> > > +  compatible:
-> > > +    oneOf:
-> > > +      - enum:
-> > > +          - mediatek,mt2701-m4u # mt2701 generation one HW
-> > > +          - mediatek,mt2712-m4u # mt2712 generation two HW
-> > > +          - mediatek,mt6779-m4u # mt6779 generation two HW
-> > > +          - mediatek,mt8173-m4u # mt8173 generation two HW
-> > > +          - mediatek,mt8183-m4u # mt8183 generation two HW
-> > > +
-> > > +      - description: mt7623 generation one HW
-> > > +        items:
-> > > +          - const: mediatek,mt7623-m4u
-> > > +          - const: mediatek,mt2701-m4u
-> > > +
-> > > +  reg:
-> > > +    maxItems: 1
-> > > +
-> > > +  interrupts:
-> > > +    maxItems: 1
-> > > +
-> > > +  clocks:
-> > > +    description: |
-> > > +      bclk is optional. here is the list which require this bclk:
-> > > +      mt2701, mt2712, mt7623 and mt8173.
-> >
-> > Similarly to my comment in other patch, this should be part of schema
-> > within 'if-then'.
->
-> Thanks for the review.
->
-> I will change like this:
->
-> =============
->   clocks:
->     items:
->       - description: bclk is the block clock.
->
->   clock-names:
->     items:
->       - const: bclk
->
-> required:
->   - compatible
->   - reg
->   - interrupts
->   - mediatek,larbs
->   - '#iommu-cells'
-> if:
->   properties:
->     compatible:
->       contains:
->         enum:
->           - mediatek,mt2701-m4u
->           - mediatek,mt2712-m4u
->           - mediatek,mt8173-m4u
->
-> then:
->  required:
->    - clocks
-> ==============
->
-> If this is not right, please tell me.
-> (dt_binding_check is ok.)
+The following commit has been merged into the perf/kprobes branch of tip:
 
-Looks fine, except "if" should be part of some "allOf" block.
+Commit-ID:     6e426e0fcd20ce144bb93e00b70df51e9f2e08c3
+Gitweb:        https://git.kernel.org/tip/6e426e0fcd20ce144bb93e00b70df51e9f2e08c3
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Sat, 29 Aug 2020 22:03:56 +09:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Mon, 12 Oct 2020 18:27:28 +02:00
 
-Best regards,
-Krzysztof
+kprobes: Replace rp->free_instance with freelist
+
+Gets rid of rp->lock, and as a result kretprobes are now fully
+lockless.
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/159870623583.1229682.17472357584134058687.stgit@devnote2
+---
+ include/linux/kprobes.h |  8 +++---
+ kernel/kprobes.c        | 56 +++++++++++++++++-----------------------
+ 2 files changed, 28 insertions(+), 36 deletions(-)
+
+diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+index 00cf442..b7824e3 100644
+--- a/include/linux/kprobes.h
++++ b/include/linux/kprobes.h
+@@ -28,6 +28,7 @@
+ #include <linux/mutex.h>
+ #include <linux/ftrace.h>
+ #include <linux/refcount.h>
++#include <linux/freelist.h>
+ #include <asm/kprobes.h>
+ 
+ #ifdef CONFIG_KPROBES
+@@ -157,17 +158,16 @@ struct kretprobe {
+ 	int maxactive;
+ 	int nmissed;
+ 	size_t data_size;
+-	struct hlist_head free_instances;
++	struct freelist_head freelist;
+ 	struct kretprobe_holder *rph;
+-	raw_spinlock_t lock;
+ };
+ 
+ struct kretprobe_instance {
+ 	union {
+-		struct llist_node llist;
+-		struct hlist_node hlist;
++		struct freelist_node freelist;
+ 		struct rcu_head rcu;
+ 	};
++	struct llist_node llist;
+ 	struct kretprobe_holder *rph;
+ 	kprobe_opcode_t *ret_addr;
+ 	void *fp;
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 850ee36..30b8fe7 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -1228,11 +1228,8 @@ static void recycle_rp_inst(struct kretprobe_instance *ri)
+ {
+ 	struct kretprobe *rp = get_kretprobe(ri);
+ 
+-	INIT_HLIST_NODE(&ri->hlist);
+ 	if (likely(rp)) {
+-		raw_spin_lock(&rp->lock);
+-		hlist_add_head(&ri->hlist, &rp->free_instances);
+-		raw_spin_unlock(&rp->lock);
++		freelist_add(&ri->freelist, &rp->freelist);
+ 	} else
+ 		call_rcu(&ri->rcu, free_rp_inst_rcu);
+ }
+@@ -1290,11 +1287,14 @@ NOKPROBE_SYMBOL(kprobe_flush_task);
+ static inline void free_rp_inst(struct kretprobe *rp)
+ {
+ 	struct kretprobe_instance *ri;
+-	struct hlist_node *next;
++	struct freelist_node *node;
+ 	int count = 0;
+ 
+-	hlist_for_each_entry_safe(ri, next, &rp->free_instances, hlist) {
+-		hlist_del(&ri->hlist);
++	node = rp->freelist.head;
++	while (node) {
++		ri = container_of(node, struct kretprobe_instance, freelist);
++		node = node->next;
++
+ 		kfree(ri);
+ 		count++;
+ 	}
+@@ -1925,32 +1925,26 @@ NOKPROBE_SYMBOL(__kretprobe_trampoline_handler)
+ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
+ {
+ 	struct kretprobe *rp = container_of(p, struct kretprobe, kp);
+-	unsigned long flags = 0;
+ 	struct kretprobe_instance *ri;
++	struct freelist_node *fn;
+ 
+-	/* TODO: consider to only swap the RA after the last pre_handler fired */
+-	raw_spin_lock_irqsave(&rp->lock, flags);
+-	if (!hlist_empty(&rp->free_instances)) {
+-		ri = hlist_entry(rp->free_instances.first,
+-				struct kretprobe_instance, hlist);
+-		hlist_del(&ri->hlist);
+-		raw_spin_unlock_irqrestore(&rp->lock, flags);
+-
+-		if (rp->entry_handler && rp->entry_handler(ri, regs)) {
+-			raw_spin_lock_irqsave(&rp->lock, flags);
+-			hlist_add_head(&ri->hlist, &rp->free_instances);
+-			raw_spin_unlock_irqrestore(&rp->lock, flags);
+-			return 0;
+-		}
+-
+-		arch_prepare_kretprobe(ri, regs);
++	fn = freelist_try_get(&rp->freelist);
++	if (!fn) {
++		rp->nmissed++;
++		return 0;
++	}
+ 
+-		__llist_add(&ri->llist, &current->kretprobe_instances);
++	ri = container_of(fn, struct kretprobe_instance, freelist);
+ 
+-	} else {
+-		rp->nmissed++;
+-		raw_spin_unlock_irqrestore(&rp->lock, flags);
++	if (rp->entry_handler && rp->entry_handler(ri, regs)) {
++		freelist_add(&ri->freelist, &rp->freelist);
++		return 0;
+ 	}
++
++	arch_prepare_kretprobe(ri, regs);
++
++	__llist_add(&ri->llist, &current->kretprobe_instances);
++
+ 	return 0;
+ }
+ NOKPROBE_SYMBOL(pre_handler_kretprobe);
+@@ -2007,8 +2001,7 @@ int register_kretprobe(struct kretprobe *rp)
+ 		rp->maxactive = num_possible_cpus();
+ #endif
+ 	}
+-	raw_spin_lock_init(&rp->lock);
+-	INIT_HLIST_HEAD(&rp->free_instances);
++	rp->freelist.head = NULL;
+ 	rp->rph = kzalloc(sizeof(struct kretprobe_holder), GFP_KERNEL);
+ 	if (!rp->rph)
+ 		return -ENOMEM;
+@@ -2023,8 +2016,7 @@ int register_kretprobe(struct kretprobe *rp)
+ 			return -ENOMEM;
+ 		}
+ 		inst->rph = rp->rph;
+-		INIT_HLIST_NODE(&inst->hlist);
+-		hlist_add_head(&inst->hlist, &rp->free_instances);
++		freelist_add(&inst->freelist, &rp->freelist);
+ 	}
+ 	refcount_set(&rp->rph->ref, i);
+ 
