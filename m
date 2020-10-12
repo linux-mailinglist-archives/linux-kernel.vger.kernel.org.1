@@ -2,141 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E86C528BB9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F12828BB9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389691AbgJLPNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 11:13:33 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:35408 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389640AbgJLPNc (ORCPT
+        id S2389640AbgJLPPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 11:15:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389225AbgJLPPD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 11:13:32 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 68C5F8030865;
-        Mon, 12 Oct 2020 15:13:29 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 18g_bu0glQOE; Mon, 12 Oct 2020 18:13:28 +0300 (MSK)
-Date:   Mon, 12 Oct 2020 18:13:26 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Neil Armstrong <narmstrong@baylibre.com>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Roger Quadros <rogerq@ti.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-amlogic@lists.infradead.org>
-Subject: Re: [PATCH 15/18] dt-bindings: usb: meson-g12a-usb: Discard FL-adj
- property
-Message-ID: <20201012151326.peu4yq6fhmi5utnb@mobilestation>
-References: <20201010224121.12672-1-Sergey.Semin@baikalelectronics.ru>
- <20201010224121.12672-16-Sergey.Semin@baikalelectronics.ru>
- <329129ac-ff44-4928-bca4-805297a8c456@baylibre.com>
- <20201012142201.7fr2n5xwvei23yog@mobilestation>
- <f6e38330-146c-eb7c-5a99-7e156454e90b@baylibre.com>
+        Mon, 12 Oct 2020 11:15:03 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 914A9C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 08:15:01 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id k6so18011827ior.2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 08:15:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aopq3bWlyudeE0F1obi/ohMkIFf3denWD7+q5Q1/76Q=;
+        b=NlZfCgBepBO3p7AThICPnp1xjH8hkVObWLmfguiUKUnRf61VZrAfUcWGFEi0fdhK3c
+         L5YJbaL6cLB47otNtxPfSWp/b7HKHxOn9VA4APAXRNx+3TXA9MFWoIk3zQlTD+lN5Osk
+         Xymgk4UbKuNQR7ZQvh4F8PDoDWk/h+jdGmmOM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aopq3bWlyudeE0F1obi/ohMkIFf3denWD7+q5Q1/76Q=;
+        b=gitQ6gxt7F/VZFvtVIb/5m/yG93JqWl/A+XEXmhSpUfoCFKx40mSjnX0C/KjNoDgDI
+         dTfB1BELNI37bUlX8a+TUtzHg91cl4UVd/6t2Rp6Q+X8k+Nb5UeIA7e22HeyIVCL5hf8
+         DfuOXKMea1NvnErkQ8jMBBZujgRi0X+WOrpJjz2MqrRWIVHZTVUHBSGcMmRqytOaURqn
+         lVdHYkzWpfrk6weoj08a3wGwEnsPJwYtv/+RrmPz/+C9dEtiVloA08gy3VvJwFjj1MUW
+         tCEi1lFt7zrCF6PLmM6nLUcv393TrAqlePC6gSobMt/Zqa4pR66Bch+AgPY0J7MkyDmR
+         Ayrw==
+X-Gm-Message-State: AOAM53200bE3yK2GFnmt8HFuhavGbi3xiyUh1tFdt5Zlx+hIMElsKdvj
+        IiELiK+Nre178qIvZzR5uHlXVG5WZbs5yL8OsgVIsWs8aW8=
+X-Google-Smtp-Source: ABdhPJxO/t6b0YLIr1p/givst+C1fgAosSNr7nGTAoYMZ4ulnxXPxtCs0/jrVSIg5+JRnEXt7TLOfokvuMfzEmBQdg8=
+X-Received: by 2002:a05:6638:2395:: with SMTP id q21mr19119566jat.94.1602515700748;
+ Mon, 12 Oct 2020 08:15:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <f6e38330-146c-eb7c-5a99-7e156454e90b@baylibre.com>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+References: <20201010180323.126634-1-robdclark@gmail.com> <20201012095955.0741313b@gandalf.local.home>
+In-Reply-To: <20201012095955.0741313b@gandalf.local.home>
+From:   Rob Clark <robdclark@chromium.org>
+Date:   Mon, 12 Oct 2020 08:14:50 -0700
+Message-ID: <CAJs_Fx69jUs5jJdX6ZpP4Z4K_iFdkUAAiium6xAuBiM00Gd4SA@mail.gmail.com>
+Subject: Re: [PATCH] kthread: Add kthread_work tracepoints
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Ilias Stamatis <stamatis.iliass@gmail.com>,
+        Liang Chen <cl@rock-chips.com>,
+        Ben Dooks <ben.dooks@codethink.co.uk>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        "J. Bruce Fields" <bfields@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 05:01:43PM +0200, Neil Armstrong wrote:
-> Hi,
-> 
-> On 12/10/2020 16:22, Serge Semin wrote:
-> > On Mon, Oct 12, 2020 at 09:54:25AM +0200, Neil Armstrong wrote:
-> >> Hi,
-> >>
-> >> On 11/10/2020 00:41, Serge Semin wrote:
-> >>> An empty snps,quirk-frame-length-adjustment won't cause any change
-> >>> performed by the driver. Moreover the DT schema validation will fail,
-> >>> since it expects the property being assigned with some value. So just
-> >>> discard the property declaration then from the example.
-> >>>
-> >>> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> >>>
-> >>> ---
-> >>>
-> >>> Note the same problem is in the DT source file
-> >>> arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi .
-> >>> ---
-> >>>  .../devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml     | 1 -
-> >>>  1 file changed, 1 deletion(-)
-> >>>
-> >>> diff --git a/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml b/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml
-> >>> index 5b04a7dfa018..88184d7e26cc 100644
-> >>> --- a/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml
-> >>> +++ b/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml
-> >>> @@ -209,6 +209,5 @@ examples:
-> >>>                interrupts = <30>;
-> >>>                dr_mode = "host";
-> >>>                snps,dis_u2_susphy_quirk;
-> >>> -              snps,quirk-frame-length-adjustment;
-> >>>            };
-> >>>      };
-> >>>
-> >>
-> > 
-> >> Thanks for reporting this, actually the fladj must be 0x20 on this hw,
-> >> but we do set this on the PHY side, so we can let the dwc3 side 0 here.
-> > 
-> > I can convert this patch to initializing the "snps,quirk-frame-length-adjustment"
-> > property with 0x20 value instead. Since most likely I'll have to send a v2/v3/etc
-> > of this patchset, that modification won't be too much work to do. What do you think?
-> 
+On Mon, Oct 12, 2020 at 6:59 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Sat, 10 Oct 2020 11:03:22 -0700
+> Rob Clark <robdclark@gmail.com> wrote:
+>
+> > /**
+> > + * sched_kthread_work_execute_start - called immediately before the work callback
+> > + * @work:    pointer to struct kthread_work
+> > + *
+> > + * Allows to track kthread work execution.
+> > + */
+> > +TRACE_EVENT(sched_kthread_work_execute_start,
+> > +
+> > +     TP_PROTO(struct kthread_work *work),
+> > +
+> > +     TP_ARGS(work),
+> > +
+> > +     TP_STRUCT__entry(
+> > +             __field( void *,        work    )
+> > +             __field( void *,        function)
+> > +     ),
+> > +
+> > +     TP_fast_assign(
+> > +             __entry->work           = work;
+> > +             __entry->function       = work->func;
+> > +     ),
+> > +
+> > +     TP_printk("work struct %p: function %ps", __entry->work, __entry->function)
+> > +);
+> > +
+> > +/**
+> > + * sched_kthread_work_execute_end - called immediately after the work callback
+> > + * @work:    pointer to struct work_struct
+> > + * @function:   pointer to worker function
+> > + *
+> > + * Allows to track workqueue execution.
+> > + */
+> > +TRACE_EVENT(sched_kthread_work_execute_end,
+> > +
+> > +     TP_PROTO(struct kthread_work *work, kthread_work_func_t function),
+> > +
+> > +     TP_ARGS(work, function),
+> > +
+> > +     TP_STRUCT__entry(
+> > +             __field( void *,        work    )
+> > +             __field( void *,        function)
+> > +     ),
+> > +
+> > +     TP_fast_assign(
+> > +             __entry->work           = work;
+> > +             __entry->function       = function;
+> > +     ),
+> > +
+> > +     TP_printk("work struct %p: function %ps", __entry->work, __entry->function)
+> > +);
+> > +
+>
+>
+> Please combine the above into:
+>
+> DECLARE_EVENT_CLASS(sched_kthread_work_execute_template,
+>
+>         TP_PROTO(struct kthread_work *work),
+>
+>         TP_ARGS(work),
+>
+>         TP_STRUCT__entry(
+>                 __field( void *,        work    )
+>                 __field( void *,        function)
+>         ),
+>
+>         TP_fast_assign(
+>                 __entry->work           = work;
+>                 __entry->function       = work->func;
+>         ),
+>
+>         TP_printk("work struct %p: function %ps", __entry->work, __entry->function)
+> );
+>
+> DEFINE_EVENT(sched_kthread_work_execute_template, sched_kthread_work_execute_start,
+>         TP_PROTO(struct kthread_work *work),
+>         TP_ARGS(work));
+>
+> DEFINE_EVENT(sched_kthread_work_execute_template, sched_kthread_work_execute_end,
+>         TP_PROTO(struct kthread_work *work),
+>         TP_ARGS(work));
+>
+> As events are cheap, classes are expensive (size wise), and a TRACE_EVENT()
+> is really just a CLASS and EVENT for a single instance.
 
-> Yes, do this please,
+I think we cannot quite do this, because we should not rely on being
+able to dereference work after it finishes.  Although I suppose I
+could just define it to explicitly pass the fxn ptr to both
+tracepoints..
 
-Ok. Shall I preserve your Acked-by tag in the new patch or you'd prefer to
-review it first?
-
-> anyway it's only an example so it's ok.
-
-Actually examples are also validated by "make dt_binding_check". That's why I
-had to fix the amlogic,meson-g12a-usb-ctrl example for at least so the new
-snps,dwc3.yaml DT schema wouldn't break that full DT bindings
-validation procedure.)
-
--Sergey
-
-> 
-> > 
-> > Anyway please note, that I've fixed the improper property usage in the DT schema
-> > example only. "snps,quirk-frame-length-adjustment" defined as boolean still
-> > persists in the DTS file: arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi .
-> > So if you ever try to validate that dts file with "make dtbs_check" scenario, it
-> > will fail.
-> 
-> Yes, I'll push a fix to pass the dtbs_check when this is merged.
-> 
-> Thanks,
-> Neil
-> 
-> > 
-> > -Sergey
-> > 
-> >>
-> >> Acked-by: Neil Armstrong <narmstrong@baylibre.com>
-> >>
-> >> Neil
-> >>
-> 
+BR,
+-R
