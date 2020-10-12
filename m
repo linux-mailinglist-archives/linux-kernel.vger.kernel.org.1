@@ -2,116 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEFE628BE8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B12828BE93
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 19:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390795AbgJLQ6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 12:58:05 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:44378 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390355AbgJLQ6F (ORCPT
+        id S2403883AbgJLRAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 13:00:24 -0400
+Received: from mail-ed1-f65.google.com ([209.85.208.65]:35931 "EHLO
+        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390541AbgJLRAY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 12:58:05 -0400
-Received: by mail-pg1-f194.google.com with SMTP id o3so4875135pgr.11;
-        Mon, 12 Oct 2020 09:58:04 -0700 (PDT)
+        Mon, 12 Oct 2020 13:00:24 -0400
+Received: by mail-ed1-f65.google.com with SMTP id l16so17768505eds.3;
+        Mon, 12 Oct 2020 10:00:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=k4OUtjq5lhgWhKFweGldJN253/ip0FkUL7lJYS0LP8k=;
-        b=WzVgFomvL8wyw1tIYOsyUyyjoNF8Yte/hZPTeXmep4aWWfh4XzfQ3EW9/uD6IZTtj/
-         OO4aKkjeUuPFXY9MuVUfEA7tKBzl6N7EHRY5WyVnODvByPmFmf36QJVsm9/uTd8X3Gun
-         oQcDSOxwlQGos1OmaPaGw39JEYfZu7k+CKtjaoCUwaqobYZ/W87YLjQEJh+pDFIudL7h
-         W/Jm8r69rwRxYh71swgPMqwAPbutg8oowZDtu2vm5mVsrJ0ZhO10ZGixAlSV4zQ7nq/C
-         Cubhudpz93g899Wk61jZ1RH1vqDpeYLUo7A/bXHPH0u505OBxPjG/tad0Bwo2mMtPAsy
-         VGbA==
-X-Gm-Message-State: AOAM532KkEwKzOn8HLRF72pJHtw03HyIWwWHhTmtRNxPTlGn8hBhOqZL
-        igAGIApKcph4/aT8N/AtYHw=
-X-Google-Smtp-Source: ABdhPJz80xR0oT8apEleLqIMeto85pAjVJY6u6I/kCvyhnCU03ERwoIoNJwOmvSgzdzZsPR/GqUl1A==
-X-Received: by 2002:a63:4854:: with SMTP id x20mr14476237pgk.220.1602521884486;
-        Mon, 12 Oct 2020 09:58:04 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1162:1ac0:17a6:4cc6:d1ef])
-        by smtp.gmail.com with ESMTPSA id q5sm8694300pjg.0.2020.10.12.09.58.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 09:58:03 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 09:58:03 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Xu Yilun <yilun.xu@intel.com>, mdf@kernel.org,
-        linux-fpga@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        gregkh@linuxfoundation.org, trix@redhat.com, lgoncalv@redhat.com,
-        hao.wu@intel.com, Russ Weight <russell.h.weight@intel.com>
-Subject: Re: [PATCH v9 6/6] memory: dfl-emif: add the DFL EMIF private
- feature driver
-Message-ID: <20201012165803.GA2654@archbook>
-References: <1602313793-21421-1-git-send-email-yilun.xu@intel.com>
- <1602313793-21421-7-git-send-email-yilun.xu@intel.com>
- <CAJKOXPcLbnvXJLa6G8Rpa8tLv4v22dDVPBDx4DrakPnbGdK4QA@mail.gmail.com>
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Wn7EpXqZqHIQ3MMILy5MY7724GoBcJYnMWBYl3sWpNQ=;
+        b=c6BRUtKbt48ex6W2OcK2c55VMoeHQtTiYRsaOSnnzpPbSV0l4Ben0J27sbQerE7ogw
+         Pjv2FEs4VZ0LTjA/QvUV2QYU/y5Ro5fWElXp9BkGOctwcteeO3N6Hq/VFb0VGSWFslvh
+         2fQmaQHUPg+B5CS3LdZo8f0WfL7BrTEODX4sJSzlt73ByzwQcv54B6u+EyGPsaQWuuEu
+         T6sJAIyoVpOgMwjaa3xKOsh14aFajPl0tQEmg8z7OgjOBbgBEWtSIIhbgBS2EwIA439x
+         WZR47X54Ukwetf45HZ5LAzgtDaj1KgV4MXsKtQFQjj9/MGRenn0da+ZnQr/6pmQXbmnV
+         mpng==
+X-Gm-Message-State: AOAM532L4FV1iIx4/YO00hu7EMDRmZMUAcBWmHzAoRP1HVoNtrkYBXjN
+        vJFT3bb0m24VMZbUjeEcgjU=
+X-Google-Smtp-Source: ABdhPJzISm+wRVoKC+DT01Byee1lSD1AYIeK5EIK2LTNhM9yT1Jeqg3TetDh7RaddD0Dz4nvuuZ2+g==
+X-Received: by 2002:aa7:cd4f:: with SMTP id v15mr14664030edw.243.1602522020943;
+        Mon, 12 Oct 2020 10:00:20 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.215])
+        by smtp.googlemail.com with ESMTPSA id o3sm10895646edv.63.2020.10.12.10.00.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 12 Oct 2020 10:00:19 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 19:00:16 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, aford@beaconembedded.com,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] arm64: dts: imx8mm: Add node for SPDIF
+Message-ID: <20201012170016.GA5369@kozik-lap>
+References: <20201008212706.870115-1-aford173@gmail.com>
+ <20201008212706.870115-2-aford173@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAJKOXPcLbnvXJLa6G8Rpa8tLv4v22dDVPBDx4DrakPnbGdK4QA@mail.gmail.com>
+In-Reply-To: <20201008212706.870115-2-aford173@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+On Thu, Oct 08, 2020 at 04:27:05PM -0500, Adam Ford wrote:
+> The i.MX8M Mini can support SPIDF which is very similar to the
 
-On Mon, Oct 12, 2020 at 06:40:46PM +0200, Krzysztof Kozlowski wrote:
-> On Sat, 10 Oct 2020 at 09:15, Xu Yilun <yilun.xu@intel.com> wrote:
-> >
-> > This driver is for the EMIF private feature implemented under FPGA
-> > Device Feature List (DFL) framework. It is used to expose memory
-> > interface status information as well as memory clearing control.
-> >
-> > The purpose of memory clearing block is to zero out all private memory
-> > when FPGA is to be reprogrammed. This gives users a reliable method to
-> > prevent potential data leakage.
-> >
-> > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> > Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> > Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > ---
-> > v2: Adjust the position of this driver in Kconfig.
-> >     Improves the name of the Kconfig option.
-> >     Change the include dfl-bus.h to dfl.h, cause the previous patchset
-> >      renames the file.
-> >     Some minor fixes and comment improvement.
-> > v3: Adjust the position of the driver in Makefile.
-> > v9: Add static prefix for emif attributes macro
-> >     Update the kernel version of the sysfs interfaces in Doc.
-> > ---
-> >  .../ABI/testing/sysfs-bus-dfl-devices-emif         |  25 +++
-> >  drivers/memory/Kconfig                             |   9 +
-> >  drivers/memory/Makefile                            |   2 +
-> >  drivers/memory/dfl-emif.c                          | 207 +++++++++++++++++++++
-> >  4 files changed, 243 insertions(+)
-> >  create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
-> >  create mode 100644 drivers/memory/dfl-emif.c
-> >
+SPIDF -> SPDIF
+
+> IP used on the i.MX35.
 > 
-> I am confused now. This was already taken by Moritz, wasn't it? And
-> the dependencies were already taken, weren't they? Previously it was
-> depending on "Modularization of DFL private feature drivers" and "add
-> dfl bus support to MODULE_DEVICE_TABLE()"... now this is here so did
-> the dependencies change? What is the reason to include this patch
-> here?
+> This patch adds the SPIF node.
 
-It is confusing. Basically Greg had comments on the patch after I had
-applied it. It's going through anothe round of review.
+Just "Add the SPDIF node", avoid "this patch". And SPIF->SPDIF.
 
 > 
-> My ack was for the purpose of taking it via Moritz tree, because of
-> the dependencies. If this is not the case, then probably better to
-> take it via memory controllers tree to avoid any conflicts (it's not a
-> small change).
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> index fad1f9cdb241..44a59f59f65a 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> @@ -358,6 +358,30 @@ micfil: audio-controller@30080000 {
+>  				status = "disabled";
+>  			};
+>  
+> +			spdif1: spdif@30090000 {
+> +				compatible = "fsl,imx8mm-spdif", "fsl,imx35-spdif";
 
-Once it's ok I can put it on a branch with a stable tag and you can pull
-that in and take the patch through your tree.
+This does not pass the dtschema validation, so only "fsl,imx35-spdif".
 
-Does that work?
-
-Sorry for the mess,
-
-Moritz
+Best regards,
+Krzysztof
