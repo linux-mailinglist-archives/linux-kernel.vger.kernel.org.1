@@ -2,173 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86FD528B1D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 11:57:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D863A28B1D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 11:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729481AbgJLJ5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 05:57:30 -0400
-Received: from mga04.intel.com ([192.55.52.120]:38446 "EHLO mga04.intel.com"
+        id S1729503AbgJLJ6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 05:58:09 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50070 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726104AbgJLJ5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 05:57:30 -0400
-IronPort-SDR: yN5dw3Iqta6C/7JXH0Ri/RjOZU192g5usfK8KC3VJkru4yCpnLr4G1GaxAtKkx6LZEj4VMOPPG
- DW9olwRC5oPA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="163077319"
-X-IronPort-AV: E=Sophos;i="5.77,366,1596524400"; 
-   d="scan'208";a="163077319"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 02:57:24 -0700
-IronPort-SDR: chQnRpzWQmAyvspHN7Fjvxro/uryDYgXMqscs4uy/8XlySR6zuc262Fula1VxvklXRkfOCQH2+
- 3bZk+utPWe4A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,366,1596524400"; 
-   d="scan'208";a="317869596"
-Received: from lkp-server02.sh.intel.com (HELO c41e9df04563) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 12 Oct 2020 02:57:23 -0700
-Received: from kbuild by c41e9df04563 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kRua2-00004N-O7; Mon, 12 Oct 2020 09:57:22 +0000
-Date:   Mon, 12 Oct 2020 17:56:32 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:irq/core] BUILD SUCCESS
- 863bae1fbcfa0420e5f51389218a9532542aa00f
-Message-ID: <5f842850.gWtDZT/Fezm5ygj2%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726104AbgJLJ6I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 05:58:08 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4A3BAADF5;
+        Mon, 12 Oct 2020 09:58:07 +0000 (UTC)
+Date:   Mon, 12 Oct 2020 11:57:56 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] x86/cpu updates for v5.10
+Message-ID: <20201012095756.GC25311@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  irq/core
-branch HEAD: 863bae1fbcfa0420e5f51389218a9532542aa00f  Merge tag 'irqchip-5.10' of git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into irq/core
+Hi Linus,
 
-elapsed time: 721m
+please pull the x86/cpu changes collected this time.
 
-configs tested: 109
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                     tqm8541_defconfig
-mips                        jmr3927_defconfig
-m68k                       bvme6000_defconfig
-arc                             nps_defconfig
-arm                          tango4_defconfig
-mips                      maltasmvp_defconfig
-i386                             allyesconfig
-sh                           se7206_defconfig
-powerpc                     tqm5200_defconfig
-mips                         bigsur_defconfig
-mips                       bmips_be_defconfig
-um                            kunit_defconfig
-arm                           stm32_defconfig
-xtensa                    smp_lx200_defconfig
-x86_64                           alldefconfig
-arm                            xcep_defconfig
-xtensa                              defconfig
-riscv                    nommu_k210_defconfig
-sh                          rsk7269_defconfig
-riscv                            allmodconfig
-s390                                defconfig
-arc                      axs103_smp_defconfig
-powerpc                 linkstation_defconfig
-mips                    maltaup_xpa_defconfig
-i386                                defconfig
-sh                        sh7785lcr_defconfig
-arc                     nsimosci_hs_defconfig
-powerpc                mpc7448_hpc2_defconfig
-sh                           sh2007_defconfig
-arm                          imote2_defconfig
-arm                         ebsa110_defconfig
-arm                        vexpress_defconfig
-arm                          badge4_defconfig
-mips                          ath79_defconfig
-mips                        omega2p_defconfig
-c6x                         dsk6455_defconfig
-arm                         lubbock_defconfig
-arm                       multi_v4t_defconfig
-powerpc                 mpc837x_mds_defconfig
-sh                         ecovec24_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20201012
-i386                 randconfig-a006-20201012
-i386                 randconfig-a001-20201012
-i386                 randconfig-a003-20201012
-i386                 randconfig-a004-20201012
-i386                 randconfig-a002-20201012
-x86_64               randconfig-a016-20201012
-x86_64               randconfig-a015-20201012
-x86_64               randconfig-a012-20201012
-x86_64               randconfig-a013-20201012
-x86_64               randconfig-a014-20201012
-x86_64               randconfig-a011-20201012
-i386                 randconfig-a016-20201012
-i386                 randconfig-a015-20201012
-i386                 randconfig-a013-20201012
-i386                 randconfig-a012-20201012
-i386                 randconfig-a011-20201012
-i386                 randconfig-a014-20201012
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a004-20201012
-x86_64               randconfig-a002-20201012
-x86_64               randconfig-a006-20201012
-x86_64               randconfig-a001-20201012
-x86_64               randconfig-a003-20201012
-x86_64               randconfig-a005-20201012
+Thx.
 
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
+
+  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_cpu_for_v5.10
+
+for you to fetch changes up to e1ebb2b49048c4767cfa0d8466f9c701e549fa5e:
+
+  KVM: SVM: Don't flush cache if hardware enforces cache coherency across encryption domains (2020-09-19 20:46:59 +0200)
+
+----------------------------------------------------------------
+* Add support for hardware-enforced cache coherency on AMD which
+obviates the need to flush cachelines before changing the PTE encryption
+bit, by Krish Sadhukhan.
+
+* Add Centaur initialization support for families >= 7, by Tony W
+Wang-oc.
+
+* Add a feature flag for, and expose TSX suspend load tracking feature
+to KVM, by Cathy Zhang.
+
+* Emulate SLDT and STR so that windows programs don't crash on UMIP
+machines, by Brendan Shanks and Ricardo Neri.
+
+* Use the new SERIALIZE insn on Intel hardware which supports it, by
+Ricardo Neri.
+
+* Misc cleanups and fixes.
+
+----------------------------------------------------------------
+Brendan Shanks (1):
+      x86/umip: Add emulation/spoofing for SLDT and STR instructions
+
+Cathy Zhang (1):
+      x86/kvm: Expose TSX Suspend Load Tracking feature
+
+Ingo Molnar (1):
+      x86/cpu: Fix typos and improve the comments in sync_core()
+
+Krish Sadhukhan (3):
+      x86/cpu: Add hardware-enforced cache coherency as a CPUID feature
+      x86/mm/pat: Don't flush cache if hardware enforces cache coherency across encryption domnains
+      KVM: SVM: Don't flush cache if hardware enforces cache coherency across encryption domains
+
+Kyung Min Park (1):
+      x86/cpufeatures: Enumerate TSX suspend load address tracking instructions
+
+Ricardo Neri (1):
+      x86/cpu: Use SERIALIZE in sync_core() when available
+
+Tony W Wang-oc (2):
+      x86/cpu/centaur: Replace two-condition switch-case with an if statement
+      x86/cpu/centaur: Add Centaur family >=7 CPUs initialization support
+
+Uros Bizjak (1):
+      x86/cpu: Use XGETBV and XSETBV mnemonics in fpu/internal.h
+
+ arch/x86/include/asm/cpufeatures.h   |  3 ++-
+ arch/x86/include/asm/fpu/internal.h  |  7 ++-----
+ arch/x86/include/asm/special_insns.h |  6 ++++++
+ arch/x86/include/asm/sync_core.h     | 34 +++++++++++++++++++-----------
+ arch/x86/kernel/cpu/centaur.c        | 27 +++++++++++-------------
+ arch/x86/kernel/cpu/scattered.c      |  1 +
+ arch/x86/kernel/umip.c               | 40 ++++++++++++++++++++++++------------
+ arch/x86/kvm/cpuid.c                 |  2 +-
+ arch/x86/kvm/svm/sev.c               |  3 ++-
+ arch/x86/mm/pat/set_memory.c         |  2 +-
+ 10 files changed, 76 insertions(+), 49 deletions(-)
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
