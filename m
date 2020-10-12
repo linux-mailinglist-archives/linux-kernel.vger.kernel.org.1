@@ -2,56 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1325B28C186
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 21:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFCE728C18A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 21:37:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730938AbgJLTeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 15:34:09 -0400
-Received: from smtprelay0117.hostedemail.com ([216.40.44.117]:57416 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728031AbgJLTeJ (ORCPT
+        id S1730939AbgJLThQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 15:37:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728031AbgJLThQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 15:34:09 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 3D408181D3028;
-        Mon, 12 Oct 2020 19:34:08 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1437:1515:1516:1518:1534:1538:1561:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3867:3868:3870:3871:5007:6119:10004:10400:10848:11658:11914:12297:12555:12760:13019:13069:13311:13357:13439:14181:14394:14659:14721:21080:21627:30054,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: slope07_061768b271fd
-X-Filterd-Recvd-Size: 1152
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf16.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 12 Oct 2020 19:34:07 +0000 (UTC)
-Message-ID: <03974c13efba564224284cf3fe87fe955dbfa27f.camel@perches.com>
-Subject: [PATCH] atomics.tbl: Remove executable permission bits
-From:   Joe Perches <joe@perches.com>
-To:     Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Boqun Feng <boqun.feng@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Mon, 12 Oct 2020 12:34:06 -0700
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Mon, 12 Oct 2020 15:37:16 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67C10C0613D0;
+        Mon, 12 Oct 2020 12:37:16 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id l85so19846695oih.10;
+        Mon, 12 Oct 2020 12:37:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=p1ZpjVcszStkZDefJuWb6d8WY1mKdaOZZ7wfdZDnMuU=;
+        b=CUBfhkmahf1/vpcfm05O+btB7eEmlqL/y7i2iQ8uxWD83Be2xL8h3DKkqqa0HwGW8A
+         oBNieCqstY8ccSgpofNNkVyEX2kGO/142yR2C2OwHi2iYjsIrCWu+CjjcfvG+3kCRppL
+         8DER93E0gjb24q0iScesSgWXnXa3bPSvujLSNZX/XoJNf1l4csX7PK9gbngTKKUvV5MK
+         cFF783eHsOkk4fdrEapOKev3itjRvv88loIITZ1OWLbxLws8PDM4h47ijktnyFzRSkQJ
+         hVM94r/SBRQXVZahpGq1tY5nugV60Uft/OX36643mWm9dzQroQLJIIdo12oqfAB2FdbR
+         7HaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition:user-agent;
+        bh=p1ZpjVcszStkZDefJuWb6d8WY1mKdaOZZ7wfdZDnMuU=;
+        b=V6qv2tIvCNRH+T1oSTQnfspvTckKkKfav1PAkqfpVWTc6fBwrA0vFv3z4g3h/gL+J9
+         wG2PYVKyJ/SFGJWN0mYVvEeAT4qCsU9hzFKFNzWEfb8W1HcAsyCa4isvOhDt3LrDHyHF
+         zWVUKUnAxtE0XEMG5LVXIPI3XY/yp887ZvHnu/8emNT65ENcf3JGkH07dUsrBYG23Fl7
+         HzXeiL5BcUvsgmZr4GjZ34RqFqEwgK/7v64iRQS2636cO9LUJ98lbnfBrqvP+sCpyd49
+         t0U/Z0DBYkQwcuFu2g/nuRMcfjj43EF3lqef7+DmN5gT7D8yQ+4k1UGZ8j7yL9E5QdKr
+         hMrw==
+X-Gm-Message-State: AOAM533MnVv+powHdjJ0rl2NrGMiT1SzISXjgJmLXPGrdXGwvHKrRvNi
+        Mr20k8pQ7fyspFuUtNTubGcye6rm2TU=
+X-Google-Smtp-Source: ABdhPJxjZIwqRckKckwUcDxkbio8Y7OgQyN9/iJrI/OZPPisOpojdiBR0rHIwBvvDFUCLISL0zwhCg==
+X-Received: by 2002:aca:1105:: with SMTP id 5mr12050115oir.46.1602531435679;
+        Mon, 12 Oct 2020 12:37:15 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id p17sm1109284oov.1.2020.10.12.12.37.14
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 12 Oct 2020 12:37:15 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 12 Oct 2020 12:37:14 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "Maciej W . Rozycki" <macro@linux-mips.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Zhou Yanjie <zhouyanjie@wanyeetech.com>, od@zcrc.me,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
+Subject: Re: [PATCH] MIPS: ingenic: Remove CPU_SUPPORTS_HUGEPAGES
+Message-ID: <20201012193714.GA154159@roeck-us.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 4d8e5cd233db ("locking/atomics: Fix scripts/atomic/ script permissions")
-set all files in this directory executable.
+On Mon, Oct 12, 2020 at 09:27:39PM +0200, Paul Cercueil wrote:
+> While it is true that Ingenic SoCs support huge pages, we cannot use
+> them yet as PTEs don't have any single bit that is free. Right now,
+> having that symbol only causes build errors, so remove it until the
+> situation with PTEs is resolved.
+> 
+> Fixes: f0f4a753079c ("MIPS: generic: Add support for Ingenic SoCs")
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 
-But this file is an input to those scripts and does not need to be executable.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- scripts/atomic/atomics.tbl | 0
- 1 file changed, 0 insertions(+), 0 deletions(-)
-
-diff --git a/scripts/atomic/atomics.tbl b/scripts/atomic/atomics.tbl
-old mode 100755
-new mode 100644
-
-
-
+> ---
+>  arch/mips/Kconfig | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> index f52fa211a4cf..29bad5bd3e70 100644
+> --- a/arch/mips/Kconfig
+> +++ b/arch/mips/Kconfig
+> @@ -103,7 +103,6 @@ config MACH_INGENIC
+>  	select SYS_SUPPORTS_32BIT_KERNEL
+>  	select SYS_SUPPORTS_LITTLE_ENDIAN
+>  	select SYS_SUPPORTS_ZBOOT
+> -	select CPU_SUPPORTS_HUGEPAGES
+>  	select DMA_NONCOHERENT
+>  	select IRQ_MIPS_CPU
+>  	select PINCTRL
+> -- 
+> 2.28.0
+> 
