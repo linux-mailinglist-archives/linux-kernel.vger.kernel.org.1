@@ -2,112 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D418928BED7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 19:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8807728BEDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 19:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404070AbgJLRMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 13:12:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403884AbgJLRMC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 13:12:02 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D1F4C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 10:12:02 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id u8so24272369ejg.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 10:12:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=HRzR7+kCYLtxvcWWyR+9mvbAFuN88fj9J1guKXhLosA=;
-        b=QLdY9ZuC2fXdfjZcorb8t6RJT5/l/S8H1g7pNajMFBmztyPlRehWfkubxPB4OGkPKC
-         a623ooyaCEV+lN7jBrlRLYcy9UOwNpXx+N3QiYa89LS0wApu72T1fP//sZGVPZJDGgiJ
-         bvNFybkUjY2TqrEp4hua+Gw7xF6btx0ltXJWL/1vnV924GDxlSmVKdsfKumkXM6+Yp/6
-         pjR2bXr2Y1M7b4WO8u1K5M0kt5PXHqaQzttlKe60RgYSNJGoNxZQv6tC4RoBW5QFG2wA
-         Yzl8pdZpJe2oufagatD+fSLEYAnJ5b/R9Wo31ME7P63ozJyzxRXVoCjNOubMhiWywz1Q
-         +Ecw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=HRzR7+kCYLtxvcWWyR+9mvbAFuN88fj9J1guKXhLosA=;
-        b=JruAJhjTWVuMONFqybaQ1pT+mBGBjTGWx3fQmm4DDmjuCQgAL6E5Du13PY/jsr26QX
-         yTFDyRoF2v8ztSdgVqJKlCKUfQISRfWBy0LoHiuamBUKXz5T8JAuz3UX0G1Lc6kNOuyS
-         bUca39zufeXncFuQObwnP0M7zZ23EzgUJRslvIjfQNyWc4e4W4PaQmtHvHyLi5GD/BwR
-         Z10WztsBrAnClZN7zkU9Ni2OJodiE0H3Z1yOOlh/v1sYr9FMiAYwfxuuaFwNiSgkMJmS
-         1xFaA+pXxvKvB9YpU/e1sUNJXrplHh7MJHX3GbzsUeBh9VXd7EXwxnB0PdHx4qsFBmYd
-         EiGw==
-X-Gm-Message-State: AOAM533hlP5NrzepjAZyI2o90gPTk0BK1MCRzeg7aszlThj82w+KJH9I
-        6dsJ+XseF9KePGBpZhf4VRM=
-X-Google-Smtp-Source: ABdhPJwKtI1Tytf37tYQagM2DBjRjOC/OvD61Nj+HoWFB0YxQJQhhmFMokz1g3LPw6PmKK8K2oAGwQ==
-X-Received: by 2002:a17:906:640d:: with SMTP id d13mr28385407ejm.223.1602522720884;
-        Mon, 12 Oct 2020 10:12:00 -0700 (PDT)
-Received: from gmail.com (563B81C8.dsl.pool.telekom.hu. [86.59.129.200])
-        by smtp.gmail.com with ESMTPSA id g9sm10833510edv.81.2020.10.12.10.11.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 10:12:00 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Mon, 12 Oct 2020 19:11:58 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Kees Cook <keescook@chromium.org>
-Subject: [GIT PULL] x86/kaslr changes for v5.10
-Message-ID: <20201012171158.GA2831196@gmail.com>
+        id S2403996AbgJLRPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 13:15:55 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:60966 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2403845AbgJLRPy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 13:15:54 -0400
+Received: from zn.tnic (p200300ec2f06920038fd325cadbd10b1.dip0.t-ipconnect.de [IPv6:2003:ec:2f06:9200:38fd:325c:adbd:10b1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 818291EC0354;
+        Mon, 12 Oct 2020 19:15:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1602522953;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=SVEgQUKffP8ymr3h0zxoWDWJJBsuRqSGl9gDFBBQSfU=;
+        b=NDA+CGbs6hMCkOIIkvx/sXos6ujKKZ2vXdDrA9UykAzBUirN7cAmWbV0ASSn7dpXnZLeEg
+        5HANlkTHvJmNbkDxfHa7bqs3dXTCtBqsyIzmm7X16di1i8iGMgz/+l6Lq/MBvP2DXV4GFh
+        gp+P61p9eeDC2ySbIE5AIpvHDRM+RDw=
+Date:   Mon, 12 Oct 2020 19:15:44 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Joe Perches <joe@perches.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, X86 ML <x86@kernel.org>,
+        Andy Whitcroft <apw@canonical.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH -v4] checkpatch: Check for .byte-spelled insn opcodes
+ documentation on x86
+Message-ID: <20201012171544.GH22829@zn.tnic>
+References: <20201009161423.14583-1-bp@alien8.de>
+ <b57a59bc80e432c7696b347a223eb12339013970.camel@perches.com>
+ <20201010105421.GA24674@zn.tnic>
+ <4147e49c0b1251343181b5580d946c2273247927.camel@perches.com>
+ <20201010161112.GC24674@zn.tnic>
+ <a534ed57c23ff35f6b84057ba3c0d1b55f0b03b9.camel@perches.com>
+ <20201012142148.GA22829@zn.tnic>
+ <b74a95944a4bc6be1ea4ae8cf065c23e03511ba5.camel@perches.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+In-Reply-To: <b74a95944a4bc6be1ea4ae8cf065c23e03511ba5.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Mon, Oct 12, 2020 at 10:09:44AM -0700, Joe Perches wrote:
+> From: Borislav Petkov <bp@suse.de>
+> 
+> Instruction opcode bytes spelled using the gas directive .byte should
+> carry a comment above them stating which binutils version has added
+> support for the instruction mnemonic so that they can be replaced with
+> the mnemonic when that binutils version is equal or less than the
+> minimum-supported version by the kernel.
+> 
+> Add a check for that.
+> 
+> Requested-by: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Borislav Petkov <bp@suse.de>
+> Signed-off-by: Joe Perches <joe@perches.com>
+> ---
+> 
+> v4: trivial neatening of $Hex_byte and adding a mechanism to
+>     only emit the message once per patched file (Joe)
+> 
+>  scripts/checkpatch.pl | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
 
-Please pull the latest x86/kaslr git tree from:
+./scripts/checkpatch.pl /tmp/test
+Global symbol "$rawline" requires explicit package name (did you forget to declare "my $rawline"?) at ./scripts/checkpatch.pl line 6943.
+Global symbol "$herecurr" requires explicit package name (did you forget to declare "my $herecurr"?) at ./scripts/checkpatch.pl line 6948.
+Execution of ./scripts/checkpatch.pl aborted due to compilation errors.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-kaslr-2020-10-12
+No workie.
 
-   # HEAD: 76167e5c5457aee8fba3edc5b8554183696fc94d x86/kaslr: Replace strlen() with strnlen()
+-- 
+Regards/Gruss,
+    Boris.
 
-This tree cleans up and simplifies the x86 KASLR code, and
-also fixes some corner case bugs.
-
- Thanks,
-
-	Ingo
-
------------------->
-Arvind Sankar (22):
-      x86/kaslr: Make command line handling safer
-      x86/kaslr: Remove bogus warning and unnecessary goto
-      x86/kaslr: Fix process_efi_entries comment
-      x86/kaslr: Initialize mem_limit to the real maximum address
-      x86/kaslr: Fix off-by-one error in __process_mem_region()
-      x86/kaslr: Drop redundant cur_entry from __process_mem_region()
-      x86/kaslr: Eliminate 'start_orig' local variable from __process_mem_region()
-      x86/kaslr: Drop redundant variable in __process_mem_region()
-      x86/kaslr: Drop some redundant checks from __process_mem_region()
-      x86/kaslr: Fix off-by-one error in process_gb_huge_pages()
-      x86/kaslr: Short-circuit gb_huge_pages on x86-32
-      x86/kaslr: Simplify process_gb_huge_pages()
-      x86/kaslr: Drop test for command-line parameters before parsing
-      x86/kaslr: Make the type of number of slots/slot areas consistent
-      x86/kaslr: Drop redundant check in store_slot_info()
-      x86/kaslr: Drop unnecessary alignment in find_random_virt_addr()
-      x86/kaslr: Small cleanup of find_random_phys_addr()
-      x86/kaslr: Make minimum/image_size 'unsigned long'
-      x86/kaslr: Replace 'unsigned long long' with 'u64'
-      x86/kaslr: Make local variables 64-bit
-      x86/kaslr: Add a check that the random address is in range
-      x86/kaslr: Replace strlen() with strnlen()
-
-
- arch/x86/boot/compressed/kaslr.c | 238 +++++++++++++++++----------------------
- arch/x86/boot/compressed/misc.h  |   4 +-
- 2 files changed, 107 insertions(+), 135 deletions(-)
+https://people.kernel.org/tglx/notes-about-netiquette
