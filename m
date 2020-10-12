@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DED4428AF01
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 09:25:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B52528AF03
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 09:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727267AbgJLHZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 03:25:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57800 "EHLO
+        id S1727350AbgJLHZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 03:25:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727236AbgJLHZI (ORCPT
+        with ESMTP id S1727234AbgJLHZQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 03:25:08 -0400
+        Mon, 12 Oct 2020 03:25:16 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69960C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 00:25:08 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3156C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 00:25:15 -0700 (PDT)
 Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1kRsCU-00043H-O8; Mon, 12 Oct 2020 09:24:54 +0200
+        id 1kRsCU-00043I-O7; Mon, 12 Oct 2020 09:24:54 +0200
 Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1kRsCT-0003f3-Ra; Mon, 12 Oct 2020 09:24:53 +0200
+        id 1kRsCT-0003fD-SV; Mon, 12 Oct 2020 09:24:53 +0200
 From:   Oleksij Rempel <o.rempel@pengutronix.de>
 To:     Mark Rutland <mark.rutland@arm.com>,
         Rob Herring <robh+dt@kernel.org>,
@@ -34,10 +34,12 @@ Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
         NXP Linux Team <linux-imx@nxp.com>,
         Pengutronix Kernel Team <kernel@pengutronix.de>,
         David Jander <david@protonic.nl>
-Subject: [PATCH v1 1/3] dt-bindings: vendor-prefixes: Add an entry for Altus-Escon-Company
-Date:   Mon, 12 Oct 2020 09:24:50 +0200
-Message-Id: <20201012072452.14021-1-o.rempel@pengutronix.de>
+Subject: [PATCH v1 2/3] dt-bindings: arm: fsl: add Altesco I6P board
+Date:   Mon, 12 Oct 2020 09:24:51 +0200
+Message-Id: <20201012072452.14021-2-o.rempel@pengutronix.de>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201012072452.14021-1-o.rempel@pengutronix.de>
+References: <20201012072452.14021-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
@@ -48,26 +50,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add "alt" entry for Altus-Escon-Company BV: https://www.altus-escon.com/
+Add Altus-Escon-Company BV I6P iMX6dl based board
 
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/devicetree/bindings/arm/fsl.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index 60b59ca04066..801cc267349d 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -65,6 +65,8 @@ patternProperties:
-     description: AlphaScale Integrated Circuits Systems, Inc.
-   "^alps,.*":
-     description: Alps Electric Co., Ltd.
-+  "^alt,.*":
-+    description: Altus-Escon-Company BV
-   "^altr,.*":
-     description: Altera Corp.
-   "^amarula,.*":
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index b615284d1b7c..74aaf68b7d06 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -167,6 +167,7 @@ properties:
+       - description: i.MX6DL based Boards
+         items:
+           - enum:
++              - alt,alti6p                # Altesco I6P Board
+               - armadeus,imx6dl-apf6      # APF6 (Solo) SoM
+               - armadeus,imx6dl-apf6dev   # APF6 (Solo) SoM on APF6Dev board
+               - eckelmann,imx6dl-ci4x10
 -- 
 2.28.0
 
