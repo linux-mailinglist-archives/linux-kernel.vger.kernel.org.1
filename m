@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4822528B63B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:32:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3798B28B63D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:32:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730049AbgJLNcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:32:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33736 "EHLO mail.kernel.org"
+        id S1730121AbgJLNcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:32:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726724AbgJLNcA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:32:00 -0400
+        id S1730032AbgJLNcB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:32:01 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6A9AD2076E;
-        Mon, 12 Oct 2020 13:31:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A6025204EA;
+        Mon, 12 Oct 2020 13:32:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509518;
-        bh=S54bNra/rImz1omB3KR01pGqy8W/aA8qlDuyjpzsyy8=;
+        s=default; t=1602509521;
+        bh=CU2iw3b6Eixu2oQ+2Yk4LKv+dyXLOZXsx9c/YQcPLw4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wrtzUAAE5svYEyE19iI2dvFRqj8f2343iwsD5voKF2Xg14IEdT0c0uKKaIy9bjNMV
-         d/KxdrFahpulh+QUlmdPQmewGZoYvr3K2ZVlEsUBgoG4EW3blldllONkzdxE7OSdJc
-         LnNxM7Dxh485l+du9dt6Vwbz03kQ6LNMi38k/vgE=
+        b=DB2BpscsGcSf1MxVd+xxcOuEMchGPE+fSaLSkfOHeEZ5o+2edsnXT8G4U0W18DkyG
+         ecnf2Hvm+Z06NF+t1nIk9aaC1+gsUQHn9CpTpH4/0Ntrcimbn9gWNIMxX4WmIab1Lk
+         Ov9u/HweVkP//tMoh9SEJDHXJw5qpVI/NNy4lk1M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 10/39] iommu/exynos: add missing put_device() call in exynos_iommu_of_xlate()
-Date:   Mon, 12 Oct 2020 15:26:40 +0200
-Message-Id: <20201012132628.638819502@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Nicolas VINCENT <nicolas.vincent@vossloh.com>,
+        Jochen Friedrich <jochen@scram.de>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 11/39] i2c: cpm: Fix i2c_ram structure
+Date:   Mon, 12 Oct 2020 15:26:41 +0200
+Message-Id: <20201012132628.679679830@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201012132628.130632267@linuxfoundation.org>
 References: <20201012132628.130632267@linuxfoundation.org>
@@ -43,48 +45,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+From: Nicolas VINCENT <nicolas.vincent@vossloh.com>
 
-[ Upstream commit 1a26044954a6d1f4d375d5e62392446af663be7a ]
+[ Upstream commit a2bd970aa62f2f7f80fd0d212b1d4ccea5df4aed ]
 
-if of_find_device_by_node() succeed, exynos_iommu_of_xlate() doesn't have
-a corresponding put_device(). Thus add put_device() to fix the exception
-handling for this function implementation.
+the i2c_ram structure is missing the sdmatmp field mentionned in
+datasheet for MPC8272 at paragraph 36.5. With this field missing, the
+hardware would write past the allocated memory done through
+cpm_muram_alloc for the i2c_ram structure and land in memory allocated
+for the buffers descriptors corrupting the cbd_bufaddr field. Since this
+field is only set during setup(), the first i2c transaction would work
+and the following would send data read from an arbitrary memory
+location.
 
-Fixes: aa759fd376fb ("iommu/exynos: Add callback for initializing devices from device tree")
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Acked-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Link: https://lore.kernel.org/r/20200918011335.909141-1-yukuai3@huawei.com
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Fixes: 61045dbe9d8d ("i2c: Add support for I2C bus on Freescale CPM1/CPM2 controllers")
+Signed-off-by: Nicolas VINCENT <nicolas.vincent@vossloh.com>
+Acked-by: Jochen Friedrich <jochen@scram.de>
+Acked-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/exynos-iommu.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/i2c/busses/i2c-cpm.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/iommu/exynos-iommu.c b/drivers/iommu/exynos-iommu.c
-index 29a31eb9ace3e..02df8d9dc842a 100644
---- a/drivers/iommu/exynos-iommu.c
-+++ b/drivers/iommu/exynos-iommu.c
-@@ -1158,13 +1158,17 @@ static int exynos_iommu_of_xlate(struct device *dev,
- 		return -ENODEV;
+diff --git a/drivers/i2c/busses/i2c-cpm.c b/drivers/i2c/busses/i2c-cpm.c
+index b167ab25310a3..34a35e927fc6d 100644
+--- a/drivers/i2c/busses/i2c-cpm.c
++++ b/drivers/i2c/busses/i2c-cpm.c
+@@ -74,6 +74,9 @@ struct i2c_ram {
+ 	char    res1[4];	/* Reserved */
+ 	ushort  rpbase;		/* Relocation pointer */
+ 	char    res2[2];	/* Reserved */
++	/* The following elements are only for CPM2 */
++	char    res3[4];	/* Reserved */
++	uint    sdmatmp;	/* Internal */
+ };
  
- 	data = platform_get_drvdata(sysmmu);
--	if (!data)
-+	if (!data) {
-+		put_device(&sysmmu->dev);
- 		return -ENODEV;
-+	}
- 
- 	if (!owner) {
- 		owner = kzalloc(sizeof(*owner), GFP_KERNEL);
--		if (!owner)
-+		if (!owner) {
-+			put_device(&sysmmu->dev);
- 			return -ENOMEM;
-+		}
- 
- 		INIT_LIST_HEAD(&owner->controllers);
- 		dev->archdata.iommu = owner;
+ #define I2COM_START	0x80
 -- 
 2.25.1
 
