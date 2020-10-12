@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7128228AFE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 10:16:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC90828AFEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 10:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726950AbgJLIQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 04:16:16 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:53760 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726098AbgJLIQP (ORCPT
+        id S1726811AbgJLIQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 04:16:45 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:44450 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726098AbgJLIQo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 04:16:15 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09C8GAZ6018397;
-        Mon, 12 Oct 2020 03:16:10 -0500
+        Mon, 12 Oct 2020 04:16:44 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09C8GZuf098418;
+        Mon, 12 Oct 2020 03:16:35 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1602490570;
-        bh=EeOk5U7dM/ZinVPm0g5IDyfXmSWU4mN+EyyeLXE4LW8=;
+        s=ti-com-17Q1; t=1602490595;
+        bh=n39Krt8LWMfBKfq39pnWds8VbAZOF+IQjxmrqmorgfs=;
         h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=kVxYbLtvw+ZF2fY4XFWqHjZEV/S9XBM3rBLDcTiwGvqut/VZvrGUNv030v+iLOHUu
-         jcAlOpSYIlEI0DEfwMeN5PkpMuA8HKrL8XroxK0v9HVLV4ob3RBLUrouYlohZ+IwLA
-         Pr1D9HYVtibuibATSZDibtKP5H+Wm3EY1Gmv0kvA=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09C8G9kS082697
+        b=Vbu17lwYM2NEDPMmZuAzMccD5fZN2sCO9APZGaWr5gqZFcW+f6MCkFHCPZn/9hzgK
+         vdUbEOUMV5inCqFjgmDWYp6wYy9E6y8P35llPwyFVrYK+BjFEzV6y9SrgFboW5Rf2k
+         UiStKbc+Q83fDAFdu0jtHibaWiAKqTP/x7Y8tOs4=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09C8GZlo012100
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 12 Oct 2020 03:16:10 -0500
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+        Mon, 12 Oct 2020 03:16:35 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 12
- Oct 2020 03:16:09 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ Oct 2020 03:16:35 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 12 Oct 2020 03:16:09 -0500
+ Frontend Transport; Mon, 12 Oct 2020 03:16:35 -0500
 Received: from [192.168.2.14] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09C8G7ex087114;
-        Mon, 12 Oct 2020 03:16:08 -0500
-Subject: Re: [PATCH v2] usb: cdns3: Rids of duplicate error message
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09C8GWi5051101;
+        Mon, 12 Oct 2020 03:16:33 -0500
+Subject: Re: [PATCH v2] usb: cdns3: Variable 'length' set but not used
 To:     Pawel Laszczak <pawell@cadence.com>, <balbi@kernel.org>
-CC:     <peter.chen@nxp.com>, <gregkh@linuxfoundation.org>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kurahul@cadence.com>
-References: <20201012064256.8344-1-pawell@cadence.com>
+CC:     <peter.chen@nxp.com>, <nsekhar@ti.com>,
+        <gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kurahul@cadence.com>
+References: <20201012064548.8725-1-pawell@cadence.com>
 From:   Roger Quadros <rogerq@ti.com>
-Message-ID: <e5ab2110-6bb0-ce06-be4f-010a030e307f@ti.com>
-Date:   Mon, 12 Oct 2020 11:16:06 +0300
+Message-ID: <902c4a1b-a5f1-b0ed-b2d6-af5c2893fee2@ti.com>
+Date:   Mon, 12 Oct 2020 11:16:32 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201012064256.8344-1-pawell@cadence.com>
+In-Reply-To: <20201012064548.8725-1-pawell@cadence.com>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -58,57 +58,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pawel,
 
-On 12/10/2020 09:42, Pawel Laszczak wrote:
-> On failure, the platform_get_irq_byname prints an error message
-> so, patch removes error message related to this function from
-> core.c file.
+
+On 12/10/2020 09:45, Pawel Laszczak wrote:
+> Patch removes not used variable 'length' from
+> cdns3_wa2_descmiss_copy_data function.
 > 
-> A change was suggested during reviewing CDNSP driver by Chunfeng Yun.
-> 
+> Fixes: 141e70fef4ee ("usb: cdns3: gadget: need to handle sg case for workaround 2 case")
 > Signed-off-by: Pawel Laszczak <pawell@cadence.com>
+
+Acked-by: Roger Quadros <rogerq@ti.com>
+
 > ---
 > Changelog:
 > v2
-> - simplified code as sugested by Roger Quadros.
+> - added "Fixes" tag.
 > 
->   drivers/usb/cdns3/core.c | 10 +---------
->   1 file changed, 1 insertion(+), 9 deletions(-)
+>   drivers/usb/cdns3/gadget.c | 2 --
+>   1 file changed, 2 deletions(-)
 > 
-> diff --git a/drivers/usb/cdns3/core.c b/drivers/usb/cdns3/core.c
-> index a0f73d4711ae..85ef3025b293 100644
-> --- a/drivers/usb/cdns3/core.c
-> +++ b/drivers/usb/cdns3/core.c
-> @@ -469,22 +469,14 @@ static int cdns3_probe(struct platform_device *pdev)
->   	if (cdns->dev_irq == -EPROBE_DEFER)
-
-Shouldn't this be
-	if (cdns->dev_irq < 0)
-?
-
->   		return cdns->dev_irq;
+> diff --git a/drivers/usb/cdns3/gadget.c b/drivers/usb/cdns3/gadget.c
+> index 6e7b70a2e352..692acf7b9b14 100644
+> --- a/drivers/usb/cdns3/gadget.c
+> +++ b/drivers/usb/cdns3/gadget.c
+> @@ -506,7 +506,6 @@ static void cdns3_wa2_descmiss_copy_data(struct cdns3_endpoint *priv_ep,
 >   
-> -	if (cdns->dev_irq < 0)
-> -		dev_err(dev, "couldn't get peripheral irq\n");
-> -
->   	regs = devm_platform_ioremap_resource_byname(pdev, "dev");
->   	if (IS_ERR(regs))
->   		return PTR_ERR(regs);
->   	cdns->dev_regs	= regs;
+>   	while (!list_empty(&priv_ep->wa2_descmiss_req_list)) {
+>   		int chunk_end;
+> -		int length;
 >   
->   	cdns->otg_irq = platform_get_irq_byname(pdev, "otg");
-> -	if (cdns->otg_irq == -EPROBE_DEFER)
-> -		return cdns->otg_irq;
-> -
-> -	if (cdns->otg_irq < 0) {
-> -		dev_err(dev, "couldn't get otg irq\n");
-> +	if (cdns->otg_irq < 0)
->   		return cdns->otg_irq;
-> -	}
+>   		descmiss_priv_req =
+>   			cdns3_next_priv_request(&priv_ep->wa2_descmiss_req_list);
+> @@ -517,7 +516,6 @@ static void cdns3_wa2_descmiss_copy_data(struct cdns3_endpoint *priv_ep,
+>   			break;
 >   
->   	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "otg");
->   	if (!res) {
+>   		chunk_end = descmiss_priv_req->flags & REQUEST_INTERNAL_CH;
+> -		length = request->actual + descmiss_req->actual;
+>   		request->status = descmiss_req->status;
+>   		__cdns3_descmiss_copy_data(request, descmiss_req);
+>   		list_del_init(&descmiss_priv_req->list);
 > 
 
 -- 
