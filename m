@@ -2,42 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 556B128B75D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:43:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D138F28B9AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388588AbgJLNnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:43:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47192 "EHLO mail.kernel.org"
+        id S1731792AbgJLOCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:02:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40142 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389210AbgJLNmU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:42:20 -0400
+        id S1731011AbgJLNiB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:38:01 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5921D21BE5;
-        Mon, 12 Oct 2020 13:42:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 02CC222247;
+        Mon, 12 Oct 2020 13:37:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602510138;
-        bh=NlpJeNZBIK7fYuWQZKrCfng+EtnxDeidHiBKJ7JZo0U=;
+        s=default; t=1602509870;
+        bh=FOXmyPjkKaaRWUtxVxLJOIElPQCwwDP0EwAvdHRhkYA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ybi8sIYOQ3O+Ieu6iw4wixJFKUqMcPSnghgiAP+WZMkhQ8teFzWpGBOJOEOkc3nGB
-         q2erf9Sw1huVjHZ3P+Gh5BaFrm80EX2bVBFI+RGSH9bpJg9PFu+LTmhfyIc9zuqxRJ
-         EVsbzKXJepvoHltSQgVJRL+A3+HzVl4EzXp2IPhw=
+        b=a3ibAdgLtdi5YLTGdk0Krp1VOegw7tqvVqpBeJL6D3iofbSjfx0dRb2XlYgz2X4s1
+         mOYWjNr6rd823wIK+EVzRZbOAPXUXj4FSbHXwjfo1Hk6A7vzAMjMlOZNeNyiRIVbc1
+         N5YD7xXYBfWP18BYu9mxTOIQU+feOiXvBiKIWHTg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>,
-        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
-        Aaron Brown <aaron.f.brown@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, David Howells <dhowells@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 57/85] iavf: Fix incorrect adapter get in iavf_resume
-Date:   Mon, 12 Oct 2020 15:27:20 +0200
-Message-Id: <20201012132635.603955116@linuxfoundation.org>
+Subject: [PATCH 4.14 65/70] rxrpc: Fix some missing _bh annotations on locking conn->state_lock
+Date:   Mon, 12 Oct 2020 15:27:21 +0200
+Message-Id: <20201012132633.330871566@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
-References: <20201012132632.846779148@linuxfoundation.org>
+In-Reply-To: <20201012132630.201442517@linuxfoundation.org>
+References: <20201012132630.201442517@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,40 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>
+From: David Howells <dhowells@redhat.com>
 
-[ Upstream commit 75598a8fc0e0dff2aa5d46c62531b36a595f1d4f ]
+[ Upstream commit fa1d113a0f96f9ab7e4fe4f8825753ba1e34a9d3 ]
 
-When calling iavf_resume there was a crash because wrong
-function was used to get iavf_adapter and net_device pointers.
-Changed how iavf_resume is getting iavf_adapter and net_device
-pointers from pci_dev.
+conn->state_lock may be taken in softirq mode, but a previous patch
+replaced an outer lock in the response-packet event handling code, and lost
+the _bh from that when doing so.
 
-Fixes: 5eae00c57f5e ("i40evf: main driver core")
-Signed-off-by: Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>
-Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-Tested-by: Aaron Brown <aaron.f.brown@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fix this by applying the _bh annotation to the state_lock locking.
+
+Fixes: a1399f8bb033 ("rxrpc: Call channels should have separate call number spaces")
+Signed-off-by: David Howells <dhowells@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/iavf/iavf_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/rxrpc/conn_event.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/iavf/iavf_main.c b/drivers/net/ethernet/intel/iavf/iavf_main.c
-index bcb95b2ea792f..cd95d6af8fc1b 100644
---- a/drivers/net/ethernet/intel/iavf/iavf_main.c
-+++ b/drivers/net/ethernet/intel/iavf/iavf_main.c
-@@ -3813,8 +3813,8 @@ static int __maybe_unused iavf_suspend(struct device *dev_d)
- static int __maybe_unused iavf_resume(struct device *dev_d)
- {
- 	struct pci_dev *pdev = to_pci_dev(dev_d);
--	struct iavf_adapter *adapter = pci_get_drvdata(pdev);
--	struct net_device *netdev = adapter->netdev;
-+	struct net_device *netdev = pci_get_drvdata(pdev);
-+	struct iavf_adapter *adapter = netdev_priv(netdev);
- 	u32 err;
+diff --git a/net/rxrpc/conn_event.c b/net/rxrpc/conn_event.c
+index 75ec1ad595b72..2432c118397f6 100644
+--- a/net/rxrpc/conn_event.c
++++ b/net/rxrpc/conn_event.c
+@@ -316,18 +316,18 @@ static int rxrpc_process_event(struct rxrpc_connection *conn,
+ 			return ret;
  
- 	pci_set_master(pdev);
+ 		spin_lock(&conn->channel_lock);
+-		spin_lock(&conn->state_lock);
++		spin_lock_bh(&conn->state_lock);
+ 
+ 		if (conn->state == RXRPC_CONN_SERVICE_CHALLENGING) {
+ 			conn->state = RXRPC_CONN_SERVICE;
+-			spin_unlock(&conn->state_lock);
++			spin_unlock_bh(&conn->state_lock);
+ 			for (loop = 0; loop < RXRPC_MAXCALLS; loop++)
+ 				rxrpc_call_is_secure(
+ 					rcu_dereference_protected(
+ 						conn->channels[loop].call,
+ 						lockdep_is_held(&conn->channel_lock)));
+ 		} else {
+-			spin_unlock(&conn->state_lock);
++			spin_unlock_bh(&conn->state_lock);
+ 		}
+ 
+ 		spin_unlock(&conn->channel_lock);
 -- 
 2.25.1
 
