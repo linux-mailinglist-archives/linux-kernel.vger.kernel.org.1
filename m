@@ -2,106 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEB6428B202
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 12:10:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D7B28B206
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 12:12:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729568AbgJLKKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 06:10:25 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57994 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729547AbgJLKKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 06:10:24 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 95688AC6C;
-        Mon, 12 Oct 2020 10:10:23 +0000 (UTC)
-Date:   Mon, 12 Oct 2020 12:10:12 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] x86/platform updates for v5.10
-Message-ID: <20201012101012.GD25311@zn.tnic>
+        id S1729578AbgJLKMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 06:12:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727340AbgJLKMM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 06:12:12 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE80DC0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 03:12:11 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id h24so22392574ejg.9
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 03:12:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nmVmFIUNT4Wupci76xBxABrZMx+zyajrqk5q8LZr/Os=;
+        b=R0w/bK3ITaBcdVnsfq7spkvUuQ1tHsnj1UG63RulbeaLiedEJxPa3bDSrXYbbZKSf5
+         xEdZ+fwxvrG4TxC8HW33Pz0jPecJ02VtgeqgMTxNaOOMfc9PLbu1hfFXSSAyLNDz/WUQ
+         Sz9TGoEUjcvsU5Q5pa++/P0+VCIJnuBkumoAP20UsYhZnogG0rTfz+e77cc4ZmQAcAIb
+         YjjUrsOf4w/QRzYzb8tCoORDzqwsaQZv6fJBrtkKMVUPD6lFzj4eSOGEVYz/kRF3HuIC
+         x0zRE2dhsTdJhNJMP2b/82L+fTRiAQa0/QdIxMmGCOTmRLLwmaaYgMBIzChzRl+U4yGS
+         qarw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nmVmFIUNT4Wupci76xBxABrZMx+zyajrqk5q8LZr/Os=;
+        b=mTUup0urqg3eyEE4FocfoaB+SbTdnhv0A4g1Uq/oQJ0uV76aqJ78HNrrV/mXCbJSsj
+         EVdwS+iyLRj2IHKi5fsoAFCyG5Iei3zi1id9iWl1ec7/Y3plrxEzPeeLEpMA90PURXJn
+         xDuGsiL+w/D7iP22F63J66lYolRlWXkiZDmnpNbQC90p+1fF3VCWC4HJTmpFuTUskWZ0
+         7HF44klGV8tHeXHDaE+Aw/G1HW6mqDQWtIMQPOI7WECQa7SrVGdrwnvDM8J7k8EKfit8
+         gYdF4I+dINOVGXrVOLesEIFCXGQkTzssES6kjISjTV84CH1oKKXIkaf6lhv5S6uaKlWw
+         PyBg==
+X-Gm-Message-State: AOAM530+J/OmSHPcIOAUO3RrmSdMN6L1zcc6GSgj5xDazTjYGOMyS3yo
+        ZencKOuPjXlxFkX9K2tlQdPlb2VeFGQJu9GKgxV+aQ==
+X-Google-Smtp-Source: ABdhPJwQWGNBKj1XAqiwPto53ra1G7ksfQJUPPrZIPr4BTHa6hZcTDvS2eqBYi+DJrnwXDQWoPrGBgEm1P1U2Nzl+q0=
+X-Received: by 2002:a17:906:4e19:: with SMTP id z25mr28265243eju.44.1602497530533;
+ Mon, 12 Oct 2020 03:12:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+References: <20201008143722.21888-1-etienne.carriere@linaro.org>
+ <20201008143722.21888-3-etienne.carriere@linaro.org> <20201008210839.6nnl2tvm2re2ckvu@bogus>
+ <CAN5uoS-t2De5OvawUSeK1NuskqpBEt-rWGVtJky-E=+RRpe+_Q@mail.gmail.com> <20201009155816.il56rbatvcagyosz@bogus>
+In-Reply-To: <20201009155816.il56rbatvcagyosz@bogus>
+From:   Etienne Carriere <etienne.carriere@linaro.org>
+Date:   Mon, 12 Oct 2020 12:11:59 +0200
+Message-ID: <CAN5uoS9QtSrkgqePYugYys6Kgx2my+o=tmJRjQK2EVA_W1jZKw@mail.gmail.com>
+Subject: Re: [PATCH 3/5] firmware: arm_scmi: add config dependency for smc transport
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Souvik Chakravarty <Souvik.Chakravarty@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri, 9 Oct 2020 at 17:58, Sudeep Holla <sudeep.holla@arm.com> wrote:
+>
+> On Fri, Oct 09, 2020 at 02:33:41PM +0200, Etienne Carriere wrote:
+> > On Thu, 8 Oct 2020 at 23:08, Sudeep Holla <sudeep.holla@arm.com> wrote:
+> > >
+> > > On Thu, Oct 08, 2020 at 04:37:20PM +0200, Etienne Carriere wrote:
+> > > > Fix dependencies for configuration switch ARM_SCMI_PROTOCOL that
+> > > > is not exclusively dependent on MAILBOX since the alternate
+> > > > smc transport that is depends on HAVE_ARM_SMCCC_DISCOVERY since [1].
+> > > >
+> > >
+> > > Do you need any build issues ? I don't see why this is needed.
+> > >
+> >
+> > This change is for consistency of the kernel configuration.
+> > Without this change, a kernel configured without CONFIG_MAILBOX
+> > cannot embed SCMI support even is using only the SMC transport
+> > enabled thanks to HAVE_ARM_SMCCC_DISCOVERY.
+> >
+>
+> Fair enough, however instead of adding to the list for each added transport
+> we need to do better transport abstraction now that we have multiple.
+> I don't see this as critical, let me know if you disagree.
 
-please pull the x86/platform queue.
+Not critical, I agree :)
 
-Thx.
+etienne
 
----
-
-The following changes since commit a1b8638ba1320e6684aa98233c15255eb803fac7:
-
-  Linux 5.9-rc7 (2020-09-27 14:38:10 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_platform_for_v5.10
-
-for you to fetch changes up to 7a6d94f0ed957fb667d4d74c5c6c640a26e87c8f:
-
-  x86/platform/uv: Update Copyrights to conform to HPE standards (2020-10-07 09:10:07 +0200)
-
-----------------------------------------------------------------
-* Cleanup different aspects of the UV code and start adding support for
-the new UV5 class of systems, by Mike Travis.
-
-* Use a flexible array for a dynamically sized struct uv_rtc_timer_head,
-by Gustavo A. R. Silva.
-
-----------------------------------------------------------------
-Gustavo A. R. Silva (1):
-      x86/uv/time: Use a flexible array in struct uv_rtc_timer_head
-
-Mike Travis (13):
-      x86/platform/uv: Remove UV BAU TLB Shootdown Handler
-      x86/platform/uv: Remove SCIR MMR references for UV systems
-      drivers/misc/sgi-xp: Adjust references in UV kernel modules
-      x86/platform/uv: Update UV MMRs for UV5
-      x86/platform/uv: Add UV5 direct references
-      x86/platform/uv: Add and decode Arch Type in UVsystab
-      x86/platform/uv: Update MMIOH references based on new UV5 MMRs
-      x86/platform/uv: Adjust GAM MMR references affected by UV5 updates
-      x86/platform/uv: Update UV5 MMR references in UV GRU
-      x86/platform/uv: Update node present counting
-      x86/platform/uv: Update UV5 TSC checking
-      x86/platform/uv: Update for UV5 NMI MMR changes
-      x86/platform/uv: Update Copyrights to conform to HPE standards
-
- arch/x86/include/asm/idtentry.h     |    4 -
- arch/x86/include/asm/uv/bios.h      |   17 +-
- arch/x86/include/asm/uv/uv.h        |    4 +-
- arch/x86/include/asm/uv/uv_bau.h    |  755 ----
- arch/x86/include/asm/uv/uv_hub.h    |  165 +-
- arch/x86/include/asm/uv/uv_mmrs.h   | 7646 +++++++++++++++++++----------------
- arch/x86/kernel/apic/x2apic_uv_x.c  |  822 ++--
- arch/x86/kernel/idt.c               |    3 -
- arch/x86/mm/tlb.c                   |   24 -
- arch/x86/platform/uv/Makefile       |    2 +-
- arch/x86/platform/uv/bios_uv.c      |   28 +-
- arch/x86/platform/uv/tlb_uv.c       | 2097 ----------
- arch/x86/platform/uv/uv_nmi.c       |   65 +-
- arch/x86/platform/uv/uv_time.c      |   18 +-
- drivers/misc/sgi-gru/grufile.c      |    3 +-
- drivers/misc/sgi-xp/xp.h            |    8 +-
- drivers/misc/sgi-xp/xp_main.c       |    5 +-
- drivers/misc/sgi-xp/xp_uv.c         |    7 +-
- drivers/misc/sgi-xp/xpc_main.c      |    7 +-
- drivers/misc/sgi-xp/xpc_partition.c |    3 +-
- drivers/misc/sgi-xp/xpnet.c         |    3 +-
- 21 files changed, 4797 insertions(+), 6889 deletions(-)
- delete mode 100644 arch/x86/include/asm/uv/uv_bau.h
- delete mode 100644 arch/x86/platform/uv/tlb_uv.c
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+>
+> --
+> Regards,
+> Sudeep
