@@ -2,127 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CCF828C46C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 00:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1EDE28C46F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 00:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731396AbgJLWAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 18:00:10 -0400
-Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:17608 "EHLO
-        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727457AbgJLWAK (ORCPT
+        id S1731515AbgJLWBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 18:01:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727778AbgJLWBb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 18:00:10 -0400
-Received: from pps.filterd (m0148664.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09CLukL1018528;
-        Mon, 12 Oct 2020 22:00:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pps0720;
- bh=2ewB9L6N7SS53Tor3diDn70OSD/7Tr6m812rdTHQG90=;
- b=pgiTlZSLUe6UfZm58Q1dIO9MjWBI9OPIODbcD/cqDEL+YCCRGOq6ewixxOBqVVG4RrIN
- uzjkB4qRan26js3QMxNabkrrFnEN4k/bhQlmzsElB5lx9yPjsdyOv4g0BEbGWzD+XI+P
- ZvCx7BL5Yo+/2SWPT3XqnnSE+l9focQlGZRjXRHyUOhzI6i2ayxfanfzZ2HSCvBB//Hr
- sU/9/ERQZVQKtJr0JoE01NDeRLucg7p3T59kWtr3qKDdl4giif9oOpnEWmoC7OxNjCui
- o0dtpkRCKoF9T6199tC0CBAHFjtvfoCLF++oxi5GTSdU4hbRxDupNtoTLFtYJ62fEANb Ug== 
-Received: from g4t3427.houston.hpe.com (g4t3427.houston.hpe.com [15.241.140.73])
-        by mx0b-002e3701.pphosted.com with ESMTP id 344e3brhq3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 12 Oct 2020 22:00:06 +0000
-Received: from g4t3433.houston.hpecorp.net (g4t3433.houston.hpecorp.net [16.208.49.245])
-        by g4t3427.houston.hpe.com (Postfix) with ESMTP id 4593B7B;
-        Mon, 12 Oct 2020 22:00:06 +0000 (UTC)
-Received: from [16.99.129.135] (unknown [16.99.129.135])
-        by g4t3433.houston.hpecorp.net (Postfix) with ESMTP id CA8209A;
-        Mon, 12 Oct 2020 22:00:05 +0000 (UTC)
-Subject: Re: [GIT PULL] x86/platform updates for v5.10
-To:     Borislav Petkov <bp@suse.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-References: <20201012101012.GD25311@zn.tnic>
- <CAHk-=wiwBYoAKQ6H=n0ppZfMe6nVDwDw6cruv7jxZZw4XEmUsg@mail.gmail.com>
- <c8cfb3d2-d3c4-6d8d-1dfd-aeb349e26303@hpe.com>
- <20201012212709.GM25311@zn.tnic>
- <f778b25e-68e7-98ec-9032-b35696948405@hpe.com>
- <CAHk-=wg6MBLPzRrRYGQ6EeoUGV+-MdMraFiUiiQyenVk=t6=Bw@mail.gmail.com>
- <20201012215642.GN25311@zn.tnic>
-From:   Mike Travis <mike.travis@hpe.com>
-Message-ID: <335ef705-d395-1260-b668-2edab8bf32ff@hpe.com>
-Date:   Mon, 12 Oct 2020 15:00:05 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        Mon, 12 Oct 2020 18:01:31 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0842C0613D0;
+        Mon, 12 Oct 2020 15:01:29 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id x16so15763598pgj.3;
+        Mon, 12 Oct 2020 15:01:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=bfkpkKc5//vLPHmkF2yidzgAEep/vbh2udDMyO66d9I=;
+        b=LxA2YTmXyfkffzXPRasT4DhLlVDwrppDBqS/hYVEa1ZSdEuAFT7jF3k8PnudIxlic+
+         vci88/yKwtYtJGw5zKC31lHWOko9jk+qJQPSmuilYvW04CpvYb5duxTffBG+jmLa5gNq
+         xLp2mfsU7UCJ2xywQLHvokdmwop5h1AsjIEvK5BucvqQiY5AEHURu8clCJtltLxTIg+/
+         5XXDktjCbQtPSjWinQyiV2Fh3ggMqV0+su/i3HYBbSOvLi7mObVbvtD/PtaHW6Hy2n7p
+         ywly2vTORbdlmitE2kK0Sb7n9bWXotmeo5+QYuHGB9xquid5zhi5soazgK/MmB8Yg8zm
+         LRVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=bfkpkKc5//vLPHmkF2yidzgAEep/vbh2udDMyO66d9I=;
+        b=J/oLQhtNwG6uSEt4M8k1M5g8OCHCfqEbfeg8kmDskC4ND9XTX+4zHO8QHIF2VgEmFJ
+         az2HJWRDLj3dj4ayDLykczTeRYYbpOjd/pjaI9YteBwp622+XKi5xO7T/xSGq7ztDINM
+         YzXFrDqIKqVrvs/IUN1434TKdZIIIQzTyTJwdXcfyvjcWLz0R+mtzkG0sO5lixt5eVvG
+         dvlfN3gMIIpjw+ysiVpLOwRdCXwoQVbp35dt3D95uDrjohmhbkxL0iDzDRuxTtwGq3jL
+         qdNuhTp0QDBtSdTQwzk1mMwbmHAIh7Bh3UmMeG98tEI3LbxQopNfDL4hSOcO6g2P/EHP
+         AcSw==
+X-Gm-Message-State: AOAM531vOGwuX9SeSYUXFQz+qBKbWHc1S/q1lVDyC6l3SYIrzXa1Y31D
+        zQNDMA7NYxx5SBnlRYZTgKSemmACmq8=
+X-Google-Smtp-Source: ABdhPJwLUvhoIqW41HExMySdxlZZViQPZ50hdtDgotqFyk1XoGTdXqSoNvzoyILOXnkJHyElqoVeGA==
+X-Received: by 2002:a17:90a:e64f:: with SMTP id ep15mr8806928pjb.95.1602540089414;
+        Mon, 12 Oct 2020 15:01:29 -0700 (PDT)
+Received: from hoboy (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
+        by smtp.gmail.com with ESMTPSA id d145sm22065668pfd.136.2020.10.12.15.01.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 15:01:28 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 15:01:26 -0700
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     trix@redhat.com
+Cc:     natechancellor@gmail.com, ndesaulniers@google.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] ptp: ptp_clockmatrix: initialize variables
+Message-ID: <20201012220126.GB1310@hoboy>
+References: <20201011200955.29992-1-trix@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201012215642.GN25311@zn.tnic>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-12_18:2020-10-12,2020-10-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- mlxlogscore=999 mlxscore=0 priorityscore=1501 spamscore=0 bulkscore=0
- lowpriorityscore=0 adultscore=0 malwarescore=0 clxscore=1015
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010120162
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201011200955.29992-1-trix@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Oct 11, 2020 at 01:09:55PM -0700, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> Clang static analysis reports this representative problem
+> 
+> ptp_clockmatrix.c:1852:2: warning: 5th function call argument
+>   is an uninitialized value
+>         snprintf(idtcm->version, sizeof(idtcm->version), "%u.%u.%u",
+>         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> idtcm_display_version_info() calls several idtcm_read_*'s without
+> checking a return status.
 
+So why not check the return status?
 
-On 10/12/2020 2:56 PM, Borislav Petkov wrote:
-> On Mon, Oct 12, 2020 at 02:46:10PM -0700, Linus Torvalds wrote:
->> At least "git grep" only shows two assignments to it.
->>
->> Of course, that would miss any cases that play games with preprocessor
->> token pasting etc, so it's not entirely meaningful, but it's certainly
->> a hint..
-> 
->  From a quick staring at gcc asm, it looks write only. And gcc didn't
-> warn because it optimized that assignment away completely AFAICT.
-> 
->> And yes, I expect that the fix is to just make it "unsigned long", but
->> if it truly isn't actually used, maybe removal is better.
-> 
-> Yeah, below is a proper patch which builds fine with gcc and clang-10.
-> You guys have fun - I'm going to bed. :-)
-> 
-> ---
-> From: Mike Travis <mike.travis@hpe.com>
-> Date: Mon, 12 Oct 2020 23:46:34 +0200
-> Subject: [PATCH] x86/platform/uv: Correct uvh_nmi_mmrx_mask's type
-> 
-> Clang rightfully warns:
-> 
->    arch/x86/platform/uv/uv_nmi.c:250:23: warning: implicit conversion
->    from 'unsigned long' to 'int' changes value from 1152921504606846976
->    to 0 [-Wconstant-conversion]
->                    uvh_nmi_mmrx_mask = UVH_EVENT_OCCURRED0_EXTIO_INT0_MASK;
->                                    ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Make the variable unsigned long.
-> 
->   [ bp: Productize it. ]
+Your patch papers over the issue.
 
-Thanks, I will look at it (and test it on hardware and the UV5 simulator 
-to make sure it's correct.)
-> 
-> Signed-off-by: Mike Travis <mike.travis@hpe.com>
-> Signed-off-by: Borislav Petkov <bp@suse.de>
-> ---
->   arch/x86/platform/uv/uv_nmi.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/platform/uv/uv_nmi.c b/arch/x86/platform/uv/uv_nmi.c
-> index 0f5cbcf0da63..8566730f154d 100644
-> --- a/arch/x86/platform/uv/uv_nmi.c
-> +++ b/arch/x86/platform/uv/uv_nmi.c
-> @@ -59,7 +59,7 @@ DEFINE_PER_CPU(struct uv_cpu_nmi_s, uv_cpu_nmi);
->   static unsigned long uvh_nmi_mmrx;		/* UVH_EVENT_OCCURRED0/1 */
->   static unsigned long uvh_nmi_mmrx_clear;	/* UVH_EVENT_OCCURRED0/1_ALIAS */
->   static int uvh_nmi_mmrx_shift;			/* UVH_EVENT_OCCURRED0/1_EXTIO_INT0_SHFT */
-> -static int uvh_nmi_mmrx_mask;			/* UVH_EVENT_OCCURRED0/1_EXTIO_INT0_MASK */
-> +static unsigned long uvh_nmi_mmrx_mask;			/* UVH_EVENT_OCCURRED0/1_EXTIO_INT0_MASK */
->   static char *uvh_nmi_mmrx_type;			/* "EXTIO_INT0" */
->   
->   /* Non-zero indicates newer SMM NMI handler present */
-> 
+Thanks,
+Richard
