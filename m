@@ -2,54 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE0BF28C4CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 00:34:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50C6628C4D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 00:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389765AbgJLWeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 18:34:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45928 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389084AbgJLWeD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 18:34:03 -0400
-Subject: Re: [GIT PULL] x86/mm changes for v5.10
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602542043;
-        bh=USPoreDj9bZg71MA4aeQUnZGzH2SDZQKKmV8xtcj3Xk=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=x8s7VXloHX6Hd86APhyoD7ZRvHzUq2TZv+0LKZqmzkAwOA4Vo85mLkigunQEsxg1q
-         dMPQYo8J69CJD9oYK0rHYN77ZLVSEvRnJx6zwKYsFzfgOVicCLH+UpxLGsyDZ2N9Np
-         sKFXWVVn/vYX2GRJ3BJF42xNKELwzRUGVKshGIsE=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201012172415.GA2962950@gmail.com>
-References: <20201012172415.GA2962950@gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201012172415.GA2962950@gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-mm-2020-10-12
-X-PR-Tracked-Commit-Id: 7a27ef5e83089090f3a4073a9157c862ef00acfc
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c1b4ec85ee40cc7a9f7b48bea9013094f2d88203
-Message-Id: <160254204333.4463.13959719310829843881.pr-tracker-bot@kernel.org>
-Date:   Mon, 12 Oct 2020 22:34:03 +0000
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Andrew Morton <akpm@linux-foundation.org>
+        id S2390333AbgJLWi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 18:38:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389220AbgJLWi5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 18:38:57 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 696CEC0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 15:38:55 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id d6so9500555plo.13
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 15:38:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=MHjY2BtfKrd4/1qBHnd1VY01yh7hsfG7Nbpa6Facd+8=;
+        b=UbxwGpbCpJR31PRA8U0b3q9Gsauw1M4jnXZT1WZtQmMITiNkYXbJ4nF55/VfZSwgnE
+         Cof86BCkQCrUE4aun3Bxc5sIxchNPopS8/DoymK/XvcObDUiOy1ks59rp/MOEv2/r+aK
+         3aK70LJUlFEkzNHYAY4dP2r/hjeTUW6SfJytg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=MHjY2BtfKrd4/1qBHnd1VY01yh7hsfG7Nbpa6Facd+8=;
+        b=a65BRt1dPfolhM8pYxjl/UkHG+mzjIlk8u4CIMOwLAMTh9oiG3R6H8zoRa6kX6OfiY
+         9sj9bGOn+tiB/20C75qArOq5LSlX5IfYv/UF+IMjUvxLcg6PWPEE/PE7Ri/gEs+7v+uy
+         DR3Fn4pgc3dFq/B52Cc82Vm2IdkgukfNj/swam0k/n1/XzxbLGGqasnhMwTZi6o0yf0I
+         u8Kk4/OYwf5VhCngNPc3y7ihNJDkm590VOg9dDiJxsnT3dWI4E9MDDNahWdpqvl0FHA6
+         lKG7GidkNN6Hun+ytf6fpJI9n96AMr+VgazASXUPpGQ7GR0htrtKJnpagDBtKuAygbeB
+         H8wg==
+X-Gm-Message-State: AOAM531KfiJPk6OQoYPeVw9yVEFxu0q/T+YOJO6eDsTUwZm/5O4Vg7ey
+        BiI+xRgEUDt8fTJepY82ZQIBEW3LpH+QUA==
+X-Google-Smtp-Source: ABdhPJz6bcNd/AxuM1IWQf82RoKB/XXjkAkfb3UFrvbM0uot3+WB2l8W1A3qzQFXQYr81TCDO777OA==
+X-Received: by 2002:a17:902:b611:b029:d3:89e2:7957 with SMTP id b17-20020a170902b611b02900d389e27957mr25299479pls.19.1602542334866;
+        Mon, 12 Oct 2020 15:38:54 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id bx22sm26965614pjb.40.2020.10.12.15.38.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 15:38:54 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 15:38:53 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: [GIT PULL] overflow update for v5.10-rc1
+Message-ID: <202010121537.E5CB11BA@keescook>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 12 Oct 2020 19:24:15 +0200:
+Hi Linus,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-mm-2020-10-12
+Please pull this overflow update for v5.10-rc1. This tree is pretty
+quiet this last dev cycle, so it's just a single change to help enforce
+all callers are actually checking the results of the helpers.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c1b4ec85ee40cc7a9f7b48bea9013094f2d88203
+Thanks!
 
-Thank you!
+-Kees
+
+The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
+
+  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/overflow-v5.10-rc1
+
+for you to fetch changes up to 9b80e4c4ddaca3501177ed41e49d0928ba2122a8:
+
+  overflow: Add __must_check attribute to check_*() helpers (2020-10-12 15:19:07 -0700)
+
+----------------------------------------------------------------
+overflow update for v5.10-rc1
+
+- Add __must_check to check_*_overflow() helpers
+
+----------------------------------------------------------------
+Kees Cook (1):
+      overflow: Add __must_check attribute to check_*() helpers
+
+ include/linux/overflow.h | 39 ++++++++++++++++++++++++---------------
+ 1 file changed, 24 insertions(+), 15 deletions(-)
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Kees Cook
