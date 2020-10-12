@@ -2,127 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48F3A28C147
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 21:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F91328C149
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 21:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390915AbgJLTOG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 12 Oct 2020 15:14:06 -0400
-Received: from aposti.net ([89.234.176.197]:44790 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390172AbgJLTOF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 15:14:05 -0400
-Date:   Mon, 12 Oct 2020 21:13:53 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH] drm/ingenic: Fix bad revert
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-next@vger.kernel.org
-Message-Id: <53S3IQ.YMG1AT14NTR93@crapouillou.net>
-In-Reply-To: <20201012141041.GU438822@phenom.ffwll.local>
-References: <20201012152452.432c4867@canb.auug.org.au>
-        <20201012102509.10690-1-paul@crapouillou.net>
-        <20201012141041.GU438822@phenom.ffwll.local>
+        id S1730953AbgJLTOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 15:14:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730833AbgJLTOX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 15:14:23 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40336C0613D0;
+        Mon, 12 Oct 2020 12:14:23 -0700 (PDT)
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 00A9837C;
+        Mon, 12 Oct 2020 19:14:21 +0000 (UTC)
+Date:   Mon, 12 Oct 2020 13:14:20 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Naoki Hayama <naoki.hayama@lineo.co.jp>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Documentation/admin-guide: tainted-kernels: Fix typo
+ occured
+Message-ID: <20201012131420.0e621db1@lwn.net>
+In-Reply-To: <20201012082441.5831-1-naoki.hayama@lineo.co.jp>
+References: <20201012082441.5831-1-naoki.hayama@lineo.co.jp>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 12 Oct 2020 17:24:41 +0900
+Naoki Hayama <naoki.hayama@lineo.co.jp> wrote:
 
-
-Le lun. 12 oct. 2020 à 16:10, Daniel Vetter <daniel@ffwll.ch> a écrit 
-:
-> On Mon, Oct 12, 2020 at 12:25:09PM +0200, Paul Cercueil wrote:
->>  Fix a badly reverted commit. The revert commit was cherry-picked 
->> from
->>  drm-misc-next to drm-misc-next-fixes, and in the process some 
->> unrelated
->>  code was added.
->> 
->>  Fixes: a3fb64c00d44 "Revert "gpu/drm: ingenic: Add option to mmap 
->> GEM buffers cached""
->>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> Fix typo.
+> s/occured/occurred/
 > 
-> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-
-I applied the patch to drm-misc-next-fixes.
-
-Thanks,
--Paul
-
-> And yes if you use git cherry-pick it'll do a 3 way merge, and
-> occasionally it's very tricky to resolve that properly. Especially 
-> when
-> you're not used to it.
+> Signed-off-by: Naoki Hayama <naoki.hayama@lineo.co.jp>
+> ---
+>  Documentation/admin-guide/tainted-kernels.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> What I tend to do to double check cerry-picks is git show both 
-> commits,
-> and compare the entire diff line-by-line to make sure I didn't 
-> misplace
-> anything.
-> 
-> Another trick is to use the raw patch instead of cherry-pick, since 
-> that
-> won't do a 3 way merge where you might get confused with other 
-> context and
-> fun stuff like that.
-> 
-> Cheers, Daniel
->>  ---
->>   drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 16 ----------------
->>   1 file changed, 16 deletions(-)
->> 
->>  diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c 
->> b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->>  index 1be1235bd546..a3d1617d7c67 100644
->>  --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->>  +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->>  @@ -440,20 +440,6 @@ void ingenic_drm_plane_config(struct device 
->> *dev,
->>   	}
->>   }
->> 
->>  -static void ingenic_drm_update_palette(struct ingenic_drm *priv,
->>  -				       const struct drm_color_lut *lut)
->>  -{
->>  -	unsigned int i;
->>  -
->>  -	for (i = 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); i++) {
->>  -		u16 color = drm_color_lut_extract(lut[i].red, 5) << 11
->>  -			| drm_color_lut_extract(lut[i].green, 6) << 5
->>  -			| drm_color_lut_extract(lut[i].blue, 5);
->>  -
->>  -		priv->dma_hwdescs->palette[i] = color;
->>  -	}
->>  -}
->>  -
->>   static void ingenic_drm_plane_atomic_update(struct drm_plane 
->> *plane,
->>   					    struct drm_plane_state *oldstate)
->>   {
->>  @@ -464,8 +450,6 @@ static void 
->> ingenic_drm_plane_atomic_update(struct drm_plane *plane,
->>   	dma_addr_t addr;
->> 
->>   	if (state && state->fb) {
->>  -		crtc_state = state->crtc->state;
->>  -
->>   		addr = drm_fb_cma_get_gem_addr(state->fb, state, 0);
->>   		width = state->src_w >> 16;
->>   		height = state->src_h >> 16;
->>  --
->>  2.28.0
->> 
-> 
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+> diff --git a/Documentation/admin-guide/tainted-kernels.rst b/Documentation/admin-guide/tainted-kernels.rst
+> index abf804719890..f718a2eaf1f6 100644
+> --- a/Documentation/admin-guide/tainted-kernels.rst
+> +++ b/Documentation/admin-guide/tainted-kernels.rst
+> @@ -130,7 +130,7 @@ More detailed explanation for tainting
+>   5)  ``B`` If a page-release function has found a bad page reference or some
+>       unexpected page flags. This indicates a hardware problem or a kernel bug;
+>       there should be other information in the log indicating why this tainting
+> -     occured.
+> +     occurred.
 
+Applied, thanks.
 
+jon
