@@ -2,45 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18A9728B754
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:43:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 736AF28B67D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730891AbgJLNmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:42:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46220 "EHLO mail.kernel.org"
+        id S2389215AbgJLNeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:34:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34782 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731090AbgJLNlh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:41:37 -0400
+        id S2389033AbgJLNcs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:32:48 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 168482222C;
-        Mon, 12 Oct 2020 13:41:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3909720678;
+        Mon, 12 Oct 2020 13:32:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602510094;
-        bh=P+J3iYdLRe/4gnQUT2CTlAkEiy7G0U67pId7UtyfoC8=;
+        s=default; t=1602509567;
+        bh=4blNXUI1xL+qepDcBCoVHP/4UqJ4NeUDb97ie2v5ehE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I5p+6HGa/oz3obYGIOkRAt3LRdEuBGTf+UTZBm3MdpYfuMh19lgJ+3skyagp88HZT
-         yylgYjBGz6VWTK9vvVZDy8Z+xn1ujDEg4PfA5vLIEpMDVyegeNuw4MLZaHcRRrg11C
-         h334BNpR+ZZ5N6WTH/jn/k4Hxg8hNhTHp40Dj3Cc=
+        b=MVKllAxw/ga2kEr/b+U68lP+YHVddrXzrdiAMTKBXwh0jF7med7le51h9XOoRConl
+         wgoHPivRTy2CjZ4dnKfmFUrHPeUy1e2qnJUTBGv5kPd//NtFN8i1vTh7iAUvwlUpr6
+         dMHYvzchcd1pGdW5btZxJlz92KFzgkESZ+SxAKps=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Coly Li <colyli@suse.de>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
-        Jan Kara <jack@suse.com>, Jens Axboe <axboe@kernel.dk>,
-        Mikhail Skorzhinskii <mskorzhinskiy@solarflare.com>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Vlastimil Babka <vbabka@suse.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 37/85] nvme-tcp: check page by sendpage_ok() before calling kernel_sendpage()
-Date:   Mon, 12 Oct 2020 15:27:00 +0200
-Message-Id: <20201012132634.639060575@linuxfoundation.org>
+        stable@vger.kernel.org, Antony Antony <antony.antony@secunet.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 31/39] xfrm: clone XFRMA_REPLAY_ESN_VAL in xfrm_do_migrate
+Date:   Mon, 12 Oct 2020 15:27:01 +0200
+Message-Id: <20201012132629.610741704@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
-References: <20201012132632.846779148@linuxfoundation.org>
+In-Reply-To: <20201012132628.130632267@linuxfoundation.org>
+References: <20201012132628.130632267@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,58 +43,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Coly Li <colyli@suse.de>
+From: Antony Antony <antony.antony@secunet.com>
 
-commit 7d4194abfc4de13a2663c7fee6891de8360f7a52 upstream.
+[ Upstream commit 91a46c6d1b4fcbfa4773df9421b8ad3e58088101 ]
 
-Currently nvme_tcp_try_send_data() doesn't use kernel_sendpage() to
-send slab pages. But for pages allocated by __get_free_pages() without
-__GFP_COMP, which also have refcount as 0, they are still sent by
-kernel_sendpage() to remote end, this is problematic.
+XFRMA_REPLAY_ESN_VAL was not cloned completely from the old to the new.
+Migrate this attribute during XFRMA_MSG_MIGRATE
 
-The new introduced helper sendpage_ok() checks both PageSlab tag and
-page_count counter, and returns true if the checking page is OK to be
-sent by kernel_sendpage().
+v1->v2:
+ - move curleft cloning to a separate patch
 
-This patch fixes the page checking issue of nvme_tcp_try_send_data()
-with sendpage_ok(). If sendpage_ok() returns true, send this page by
-kernel_sendpage(), otherwise use sock_no_sendpage to handle this page.
-
-Signed-off-by: Coly Li <colyli@suse.de>
-Cc: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Hannes Reinecke <hare@suse.de>
-Cc: Jan Kara <jack@suse.com>
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc: Mikhail Skorzhinskii <mskorzhinskiy@solarflare.com>
-Cc: Philipp Reisner <philipp.reisner@linbit.com>
-Cc: Sagi Grimberg <sagi@grimberg.me>
-Cc: Vlastimil Babka <vbabka@suse.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: af2f464e326e ("xfrm: Assign esn pointers when cloning a state")
+Signed-off-by: Antony Antony <antony.antony@secunet.com>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/tcp.c |    7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ include/net/xfrm.h | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
---- a/drivers/nvme/host/tcp.c
-+++ b/drivers/nvme/host/tcp.c
-@@ -861,12 +861,11 @@ static int nvme_tcp_try_send_data(struct
- 		else
- 			flags |= MSG_MORE;
+diff --git a/include/net/xfrm.h b/include/net/xfrm.h
+index 89685c7bc7c0f..7a9c18deaa512 100644
+--- a/include/net/xfrm.h
++++ b/include/net/xfrm.h
+@@ -1730,21 +1730,17 @@ static inline int xfrm_replay_state_esn_len(struct xfrm_replay_state_esn *replay
+ static inline int xfrm_replay_clone(struct xfrm_state *x,
+ 				     struct xfrm_state *orig)
+ {
+-	x->replay_esn = kzalloc(xfrm_replay_state_esn_len(orig->replay_esn),
++
++	x->replay_esn = kmemdup(orig->replay_esn,
++				xfrm_replay_state_esn_len(orig->replay_esn),
+ 				GFP_KERNEL);
+ 	if (!x->replay_esn)
+ 		return -ENOMEM;
+-
+-	x->replay_esn->bmp_len = orig->replay_esn->bmp_len;
+-	x->replay_esn->replay_window = orig->replay_esn->replay_window;
+-
+-	x->preplay_esn = kmemdup(x->replay_esn,
+-				 xfrm_replay_state_esn_len(x->replay_esn),
++	x->preplay_esn = kmemdup(orig->preplay_esn,
++				 xfrm_replay_state_esn_len(orig->preplay_esn),
+ 				 GFP_KERNEL);
+-	if (!x->preplay_esn) {
+-		kfree(x->replay_esn);
++	if (!x->preplay_esn)
+ 		return -ENOMEM;
+-	}
  
--		/* can't zcopy slab pages */
--		if (unlikely(PageSlab(page))) {
--			ret = sock_no_sendpage(queue->sock, page, offset, len,
-+		if (sendpage_ok(page)) {
-+			ret = kernel_sendpage(queue->sock, page, offset, len,
- 					flags);
- 		} else {
--			ret = kernel_sendpage(queue->sock, page, offset, len,
-+			ret = sock_no_sendpage(queue->sock, page, offset, len,
- 					flags);
- 		}
- 		if (ret <= 0)
+ 	return 0;
+ }
+-- 
+2.25.1
+
 
 
