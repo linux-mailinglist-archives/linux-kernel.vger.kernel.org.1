@@ -2,86 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1EDE28C46F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 00:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 331AE28C472
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 00:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731515AbgJLWBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 18:01:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727778AbgJLWBb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 18:01:31 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0842C0613D0;
-        Mon, 12 Oct 2020 15:01:29 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id x16so15763598pgj.3;
-        Mon, 12 Oct 2020 15:01:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=bfkpkKc5//vLPHmkF2yidzgAEep/vbh2udDMyO66d9I=;
-        b=LxA2YTmXyfkffzXPRasT4DhLlVDwrppDBqS/hYVEa1ZSdEuAFT7jF3k8PnudIxlic+
-         vci88/yKwtYtJGw5zKC31lHWOko9jk+qJQPSmuilYvW04CpvYb5duxTffBG+jmLa5gNq
-         xLp2mfsU7UCJ2xywQLHvokdmwop5h1AsjIEvK5BucvqQiY5AEHURu8clCJtltLxTIg+/
-         5XXDktjCbQtPSjWinQyiV2Fh3ggMqV0+su/i3HYBbSOvLi7mObVbvtD/PtaHW6Hy2n7p
-         ywly2vTORbdlmitE2kK0Sb7n9bWXotmeo5+QYuHGB9xquid5zhi5soazgK/MmB8Yg8zm
-         LRVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=bfkpkKc5//vLPHmkF2yidzgAEep/vbh2udDMyO66d9I=;
-        b=J/oLQhtNwG6uSEt4M8k1M5g8OCHCfqEbfeg8kmDskC4ND9XTX+4zHO8QHIF2VgEmFJ
-         az2HJWRDLj3dj4ayDLykczTeRYYbpOjd/pjaI9YteBwp622+XKi5xO7T/xSGq7ztDINM
-         YzXFrDqIKqVrvs/IUN1434TKdZIIIQzTyTJwdXcfyvjcWLz0R+mtzkG0sO5lixt5eVvG
-         dvlfN3gMIIpjw+ysiVpLOwRdCXwoQVbp35dt3D95uDrjohmhbkxL0iDzDRuxTtwGq3jL
-         qdNuhTp0QDBtSdTQwzk1mMwbmHAIh7Bh3UmMeG98tEI3LbxQopNfDL4hSOcO6g2P/EHP
-         AcSw==
-X-Gm-Message-State: AOAM531vOGwuX9SeSYUXFQz+qBKbWHc1S/q1lVDyC6l3SYIrzXa1Y31D
-        zQNDMA7NYxx5SBnlRYZTgKSemmACmq8=
-X-Google-Smtp-Source: ABdhPJwLUvhoIqW41HExMySdxlZZViQPZ50hdtDgotqFyk1XoGTdXqSoNvzoyILOXnkJHyElqoVeGA==
-X-Received: by 2002:a17:90a:e64f:: with SMTP id ep15mr8806928pjb.95.1602540089414;
-        Mon, 12 Oct 2020 15:01:29 -0700 (PDT)
-Received: from hoboy (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
-        by smtp.gmail.com with ESMTPSA id d145sm22065668pfd.136.2020.10.12.15.01.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 15:01:28 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 15:01:26 -0700
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     trix@redhat.com
-Cc:     natechancellor@gmail.com, ndesaulniers@google.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] ptp: ptp_clockmatrix: initialize variables
-Message-ID: <20201012220126.GB1310@hoboy>
-References: <20201011200955.29992-1-trix@redhat.com>
+        id S1732220AbgJLWBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 18:01:36 -0400
+Received: from foss.arm.com ([217.140.110.172]:46380 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727778AbgJLWBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 18:01:35 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C7FCA31B;
+        Mon, 12 Oct 2020 15:01:34 -0700 (PDT)
+Received: from localhost (unknown [10.1.199.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6999E3F719;
+        Mon, 12 Oct 2020 15:01:34 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 23:01:33 +0100
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Nicola Mazzucato <nicola.mazzucato@arm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        vireshk@kernel.org, daniel.lezcano@linaro.org, rjw@rjwysocki.net,
+        linux-kernel@vger.kernel.org, sudeep.holla@arm.com,
+        chris.redpath@arm.com, morten.rasmussen@arm.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 2/2] [RFC] CPUFreq: Add support for
+ cpu-perf-dependencies
+Message-ID: <20201012220132.GA1715@arm.com>
+References: <20201008150317.GB20268@arm.com>
+ <56846759-e3a6-9471-827d-27af0c3d410d@arm.com>
+ <20201009053921.pkq4pcyrv4r7ylzu@vireshk-i7>
+ <42e3c8e9-cadc-d013-1e1f-fa06af4a45ff@arm.com>
+ <20201009140141.GA4048593@bogus>
+ <2b7b6486-2898-1279-ce9f-9e7bd3512152@arm.com>
+ <20201012105945.GA9219@arm.com>
+ <500510b9-58f3-90b3-8c95-0ac481d468b5@arm.com>
+ <20201012163032.GA30838@arm.com>
+ <9fe56600-ba7d-d3b6-eea3-885475d94d7a@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201011200955.29992-1-trix@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <9fe56600-ba7d-d3b6-eea3-885475d94d7a@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 11, 2020 at 01:09:55PM -0700, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
-> 
-> Clang static analysis reports this representative problem
-> 
-> ptp_clockmatrix.c:1852:2: warning: 5th function call argument
->   is an uninitialized value
->         snprintf(idtcm->version, sizeof(idtcm->version), "%u.%u.%u",
->         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> idtcm_display_version_info() calls several idtcm_read_*'s without
-> checking a return status.
+Hey Lukasz,
 
-So why not check the return status?
+I think after all this discussion (in our own way of describing things)
+we agree on how the current cpufreq based FIE implementation is affected
+in systems that use hardware coordination.
 
-Your patch papers over the issue.
+What we don't agree on is the location where that implementation (that
+uses the new mask and aggregation) should be.
+
+On Monday 12 Oct 2020 at 19:19:29 (+0100), Lukasz Luba wrote:
+[..]
+> The previous FIE implementation where arch_set_freq_scale()
+> was called from the drivers, was better suited for this issue.
+> Driver could just use internal dependency cpumask or even
+> do the aggregation to figure out the max freq for cluster
+> if there is a need, before calling arch_set_freq_scale().
+> 
+> It is not perfect solution for software FIE, but one of possible
+> when there is no hw counters.
+> 
+[..]
+
+> Difference between new FIE and old FIE (from v5.8) is that the new one
+> purely relies on schedutil max freq value (which will now be missing),
+> while the old FIE was called by the driver and thus it was an option to
+> fix only the affected cpufreq driver [1][2].
+> 
+
+My final argument is that now you have 2 drivers that would need this
+support, next you'll have 3 (the new mediatek driver), and in the future
+there will be more. So why limit and duplicate this functionality in the
+drivers? Why not make it generic for all drivers to use if the system
+is using hardware coordination?
+
+Additionally, I don't think drivers should not even need to know about
+these dependency/clock domains. They should act at the level of the
+policy, which in this case will be at the level of each CPU.
 
 Thanks,
-Richard
+Ionela.
+
+> IMO we can avoid this new cpumask in policy.
+> 
+> Regards,
+> Lukasz
+> 
+> [1] https://elixir.bootlin.com/linux/v5.8/source/drivers/cpufreq/scmi-cpufreq.c#L58
+> [2] https://elixir.bootlin.com/linux/v5.8/source/drivers/cpufreq/qcom-cpufreq-hw.c#L79
+> 
