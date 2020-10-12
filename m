@@ -2,106 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20DE528BAB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:23:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66E4128BAC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389213AbgJLOXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:23:11 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:60802 "EHLO mail.skyhub.de"
+        id S2389582AbgJLOYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:24:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388838AbgJLOXK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 10:23:10 -0400
-Received: from zn.tnic (p200300ec2f06920008362ea164c1c332.dip0.t-ipconnect.de [IPv6:2003:ec:2f06:9200:836:2ea1:64c1:c332])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726631AbgJLOX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 10:23:59 -0400
+Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BF1DA1EC0354;
-        Mon, 12 Oct 2020 16:23:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1602512589;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=hNG/z6/tE0JeJzB38pp/37BGP/5V7LhnaQ5aT6cUgRA=;
-        b=hi8Co7OTGCQtqYIKkMdKTs1o64c6UyE996pnC78n25Dmck/WfqAl6a+afHtB+KSCMvXwWB
-        2jaMonaMMh+qXpyxJTcSLLhIixD8I8Mdx5ioyCPlPYhNAqXPsUMZss905/SOY22syv+1Kt
-        hF8aM8lPxVMPG6Wvs92Ozpg4OAI6+20=
-Date:   Mon, 12 Oct 2020 16:23:06 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Joe Perches <joe@perches.com>
-Cc:     X86 ML <x86@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
-        Andy Whitcroft <apw@canonical.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH -v3] checkpatch: Check for .byte-spelled insn opcodes
- documentation on x86
-Message-ID: <20201012142306.GB22829@zn.tnic>
-References: <20201009161423.14583-1-bp@alien8.de>
- <b57a59bc80e432c7696b347a223eb12339013970.camel@perches.com>
- <20201010105421.GA24674@zn.tnic>
- <4147e49c0b1251343181b5580d946c2273247927.camel@perches.com>
- <20201010161112.GC24674@zn.tnic>
- <a534ed57c23ff35f6b84057ba3c0d1b55f0b03b9.camel@perches.com>
- <20201012142148.GA22829@zn.tnic>
+        by mail.kernel.org (Postfix) with ESMTPSA id 000E9208B6;
+        Mon, 12 Oct 2020 14:23:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602512639;
+        bh=mkV3zHZdLWkkkiotMkWaHSfgaeAhT3IEqlhrwfXJLpw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=0rXs3HhXixR1Sr37VrUEPvUFG1NCTuJpfMTLxVMP92+0rAz5djPDI+ROp0ZyKO0xl
+         3S9JxTOG3bQA1KMy3Ynj60I3PBNyAG4ehU+u927VFzGinJ7Eofns7pBdP7py3rMWyl
+         A/Cfj22OgdukPF1xOzZyrZAF81y+S2lUL/io4i7w=
+Received: by mail-ot1-f53.google.com with SMTP id l4so15969929ota.7;
+        Mon, 12 Oct 2020 07:23:58 -0700 (PDT)
+X-Gm-Message-State: AOAM530IGnyID9T/B1WQ73MCBaZyPFVjEqSwH4m9BmtkjQyKBql9ogIk
+        xYMHAm6WGCwD/ZtEXytm+sH0ut6vXkw/aHpKP20=
+X-Google-Smtp-Source: ABdhPJxdPTaQgCziNQnn1xG1IdFeKsHKlCipNToXN2Mp8aZ6g8wZ+Ii9TOczjjBJ/F+8iATwtdtq/fW0RpyMunMLK3M=
+X-Received: by 2002:a9d:6c92:: with SMTP id c18mr9080953otr.108.1602512638334;
+ Mon, 12 Oct 2020 07:23:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201012142148.GA22829@zn.tnic>
+References: <20201010151235.20585-1-nsaenzjulienne@suse.de>
+ <20201010151235.20585-2-nsaenzjulienne@suse.de> <20201012113748.GE9844@gaia>
+In-Reply-To: <20201012113748.GE9844@gaia>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 12 Oct 2020 16:23:47 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFUH7gv-dPVNM8xa5SBHhSndCQu4QFy5os2vAkaO_yecg@mail.gmail.com>
+Message-ID: <CAMj1kXFUH7gv-dPVNM8xa5SBHhSndCQu4QFy5os2vAkaO_yecg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/5] arm64: mm: Move zone_dma_bits initialization into zone_sizes_init()
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-rpi-kernel@lists.infradead.org,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        iommu@lists.linux-foundation.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Borislav Petkov <bp@suse.de>
+On Mon, 12 Oct 2020 at 13:37, Catalin Marinas <catalin.marinas@arm.com> wrote:
+>
+> On Sat, Oct 10, 2020 at 05:12:31PM +0200, Nicolas Saenz Julienne wrote:
+> > diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> > index f6902a2b4ea6..0eca5865dcb1 100644
+> > --- a/arch/arm64/mm/init.c
+> > +++ b/arch/arm64/mm/init.c
+> > @@ -196,14 +196,16 @@ static void __init zone_sizes_init(unsigned long min, unsigned long max)
+> >       unsigned long max_zone_pfns[MAX_NR_ZONES]  = {0};
+> >
+> >  #ifdef CONFIG_ZONE_DMA
+> > +     zone_dma_bits = ARM64_ZONE_DMA_BITS;
+> > +
+> >       if (IS_ENABLED(CONFIG_ACPI)) {
+> >               extern unsigned int acpi_iort_get_zone_dma_size(void);
+> >
+> >               zone_dma_bits = min(zone_dma_bits,
+> >                                   acpi_iort_get_zone_dma_size());
+> > -             arm64_dma_phys_limit = max_zone_phys(zone_dma_bits);
+> >       }
+> >
+> > +     arm64_dma_phys_limit = max_zone_phys(zone_dma_bits);
+> >       max_zone_pfns[ZONE_DMA] = PFN_DOWN(arm64_dma_phys_limit);
+> >  #endif
+> >  #ifdef CONFIG_ZONE_DMA32
+> > @@ -394,11 +396,6 @@ void __init arm64_memblock_init(void)
+> >
+> >       early_init_fdt_scan_reserved_mem();
+> >
+> > -     if (IS_ENABLED(CONFIG_ZONE_DMA)) {
+> > -             zone_dma_bits = ARM64_ZONE_DMA_BITS;
+> > -             arm64_dma_phys_limit = max_zone_phys(ARM64_ZONE_DMA_BITS);
+> > -     }
+>
+> arm64_dma_phys_limit is used by memblock_alloc_low() (via
+> ARCH_LOW_ADDRESS_LIMIT). I think it's too late to leave its
+> initialisation to zone_sizes_init().
+>
 
-Instruction opcode bytes spelled using the gas directive .byte should
-carry a comment above them stating which binutils version has added
-support for the instruction mnemonic so that they can be replaced with
-the mnemonic when that binutils version is equal or less than the
-minimum-supported version by the kernel.
+The only generic caller of memblock_alloc_low() is swiotlb_init(),
+which is called much later. So at that point, we definitely need
+ARCH_LOW_ADDRESS_LIMIT to be set correctly, but that means doing it in
+zone_sizes_init() is early enough.
 
-Add a check for that.
-
-Requested-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
----
- scripts/checkpatch.pl | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 504d2e431c60..e9ead600d685 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -408,6 +408,7 @@ our $Lval	= qr{$Ident(?:$Member)*};
- our $Int_type	= qr{(?i)llu|ull|ll|lu|ul|l|u};
- our $Binary	= qr{(?i)0b[01]+$Int_type?};
- our $Hex	= qr{(?i)0x[0-9a-f]+$Int_type?};
-+our $Hex_byte	= qr{(?i)0x[0-9a-f]{1,2}};
- our $Int	= qr{[0-9]+$Int_type?};
- our $Octal	= qr{0[0-7]+$Int_type?};
- our $String	= qr{"[X\t]*"};
-@@ -6858,6 +6859,18 @@ sub process {
- 			WARN("DUPLICATED_SYSCTL_CONST",
- 				"duplicated sysctl range checking value '$1', consider using the shared one in include/linux/sysctl.h\n" . $herecurr);
- 		}
-+
-+# document which binutils version supports the actual insn mnemonic so that the naked opcode bytes can be replaced.
-+# x86-only. Upper limit is rather arbitrary (max insn length on x86) but imposed so as to avoid perl aborts.
-+		if ($realfile =~ m@^arch/x86/@ &&
-+		    $rawline =~ /\s*\.byte\s+(?:$Hex_byte[,\s]*){1,15}/) {
-+
-+			my $comment = ctx_locate_comment($file ? 0 : $first_line, $linenr);
-+			if ($comment !~ /binutils (?:version )*[0-9.]+/ms) {
-+				WARN("MISSING_BINUTILS_VERSION",
-+				     "Please consider documenting which binutils version supports these .byte-spelled insn opcodes by adding \"binutils version <num>\" in a comment above them.\n" . $herecurr);
-+			}
-+		}
- 	}
- 
- 	# If we have no input at all, then there is nothing to report on
--- 
-2.21.0
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+So the only problematic reference seems to be crashkernel_reserve() afaict.
