@@ -2,83 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 549A928AB52
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 03:10:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1237128AB5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 03:21:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727260AbgJLBJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 21:09:30 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:33894 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727132AbgJLBJa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 21:09:30 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 68EE0DFF88410E0B8066;
-        Mon, 12 Oct 2020 09:09:27 +0800 (CST)
-Received: from huawei.com (10.174.187.17) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Mon, 12 Oct 2020
- 09:09:19 +0800
-From:   l00484210 <limingwang@huawei.com>
-To:     <catalin.marinas@arm.com>, <will@kernel.org>, <broonie@kernel.org>,
-        <maz@kernel.org>, <suzuki.poulose@arm.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <fanhenglong@huawei.com>,
-        <wanghaibin.wang@huawei.com>, <tangnianyao@huawei.com>,
-        <jiangyifei@huawei.com>, <dengkai1@huawei.com>,
-        <zhang.zhanghailiang@huawei.com>,
-        <victor.zhangxiaofeng@huawei.com>,
-        "MingWang Li" <limingwang@huawei.com>
-Subject: [PATCH] arm64: KVM: marking pages as XN in Stage-2 does not care about CTR_EL0.DIC
-Date:   Mon, 12 Oct 2020 09:08:52 +0800
-Message-ID: <20201012010852.15932-1-limingwang@huawei.com>
-X-Mailer: git-send-email 2.19.1.windows.1
+        id S1727367AbgJLBVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 21:21:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727132AbgJLBVV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Oct 2020 21:21:21 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FCAFC0613CE;
+        Sun, 11 Oct 2020 18:21:20 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id a7so15570612lfk.9;
+        Sun, 11 Oct 2020 18:21:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2TCBI/PBpDL1NHcOhIQ+uhvSm8Uq53rPu6VzsFICHZo=;
+        b=Uj+Fniap6lqy6beyyGRanUdT9p4CR923o/wKlh++OTF+hqYPBtfLpEEJP5vRvAQM6L
+         +aK3Qz83hOm6QPZ0VVdYpWFc9sFOIuSsd6cI0YJVOl1U1CdPxIsz9+2r4rKU404DZcFH
+         NaFA4FyiYCIIzzG/an8/TvglN66Q/pC+IUZUKfW8IP0sgQiDKnHNLMQs1fbOab/tavXq
+         rh2EazE9gIkp7OLyyPYDmpgEk5sqBIwfmmFGNGEUA6N+a7Y3JiL+N72NecHVMBWNfuPb
+         4XNvuFqcSUIS7zTzvKIwaalLunuQsRzqhV+ZWweNzLf1Hp4Pqni4A/EDE12KcjgNdNx1
+         7OCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2TCBI/PBpDL1NHcOhIQ+uhvSm8Uq53rPu6VzsFICHZo=;
+        b=oRsFLIIAjqcXQgzE693Wdtk7qPPmNcOn4luL3Q1zW1btl9c26KpP0FLqAbbOk1pUUj
+         tKxf73SYEXs1G3PZK3OrsaTjQ3TrX9yujTOh5oSSfg8rRwB2mdEzLSZVA9m9Yr4RaMfR
+         N6wQq9mo/0I1Mu+bcuIj72Uv7wXTyNERA45j8Rpo7HCLv3aoelAhoDVEA27qHv7CdyuV
+         1ECmBVibNXmLXbx7lrjp1GxAOP6oRVMqEirbhEO1mOeOzdlxJc0737u74swEbK4nakCt
+         OaNXtlwkzky6bn/qyAzvRx2rsFyxuHTQG2ECnydqyu784JL5kPeHru0Wk7vri2LfWmqR
+         41Bw==
+X-Gm-Message-State: AOAM530cJLlOSPBcKFXP3hbWTqiQvvjB6NEX/pLvLqNzgCFrEKSPg7xl
+        aX2rsysSHrtpjzAeKX/+xePCn/KXacO71k+c1ak=
+X-Google-Smtp-Source: ABdhPJxcXimExNSbt/riOewy0F5UEGHJXvbGST95O4fPZNKOp7oethJ0Y0C6M4iKwdRSKqBGRdFQ+b1U/PvdcQDA/U0=
+X-Received: by 2002:ac2:58d2:: with SMTP id u18mr5895982lfo.390.1602465678557;
+ Sun, 11 Oct 2020 18:21:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.187.17]
-X-CFilter-Loop: Reflected
+References: <20201010084417.5400-1-tian.xianting@h3c.com>
+In-Reply-To: <20201010084417.5400-1-tian.xianting@h3c.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sun, 11 Oct 2020 18:21:07 -0700
+Message-ID: <CAADnVQJUL7BynGMD_nGu8y=D1yv6TybOxeSh03TrkD7kS0aOrA@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Avoid allocing memory on memoryless numa node
+To:     Xianting Tian <tian.xianting@h3c.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: MingWang Li <limingwang@huawei.com>
+On Sat, Oct 10, 2020 at 1:55 AM Xianting Tian <tian.xianting@h3c.com> wrote:
+>
+> In architecture like powerpc, we can have cpus without any local memory
+> attached to it. In such cases the node does not have real memory.
+>
+> Use local_memory_node(), which is guaranteed to have memory.
+> local_memory_node is a noop in other architectures that does not support
+> memoryless nodes.
+...
+>         /* Have map->numa_node, but choose node of redirect target CPU */
+> -       numa = cpu_to_node(cpu);
+> +       numa = local_memory_node(cpu_to_node(cpu));
 
-When testing the ARMv8.2-TTS2UXN feature, setting bits of XN is unavailable.
-Because the control bit CTR_EL0.DIC is set by default on system.
-
-But when CTR_EL0.DIC is set, software does not need to flush icache actively,
-instead of clearing XN bits.The patch, the commit id of which
-is 6ae4b6e0578886eb36cedbf99f04031d93f9e315, has implemented the function
-of CTR_EL0.DIC.
-
-Signed-off-by: MingWang Li <limingwang@huawei.com>
-Signed-off-by: Henglong Fan <fanhenglong@huawei.com>
----
- arch/arm64/include/asm/pgtable-prot.h | 12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
-
-diff --git a/arch/arm64/include/asm/pgtable-prot.h b/arch/arm64/include/asm/pgtable-prot.h
-index 4d867c6446c4..5feb94882bf7 100644
---- a/arch/arm64/include/asm/pgtable-prot.h
-+++ b/arch/arm64/include/asm/pgtable-prot.h
-@@ -79,17 +79,7 @@ extern bool arm64_use_ng_mappings;
- 		__val;							\
- 	 })
- 
--#define PAGE_S2_XN							\
--	({								\
--		u64 __val;						\
--		if (cpus_have_const_cap(ARM64_HAS_CACHE_DIC))		\
--			__val = 0;					\
--		else							\
--			__val = PTE_S2_XN;				\
--		__val;							\
--	})
--
--#define PAGE_S2			__pgprot(_PROT_DEFAULT | PAGE_S2_MEMATTR(NORMAL) | PTE_S2_RDONLY | PAGE_S2_XN)
-+#define PAGE_S2			__pgprot(_PROT_DEFAULT | PAGE_S2_MEMATTR(NORMAL) | PTE_S2_RDONLY | PTE_S2_XN)
- #define PAGE_S2_DEVICE		__pgprot(_PROT_DEFAULT | PAGE_S2_MEMATTR(DEVICE_nGnRE) | PTE_S2_RDONLY | PTE_S2_XN)
- 
- #define PAGE_NONE		__pgprot(((_PAGE_DEFAULT) & ~PTE_VALID) | PTE_PROT_NONE | PTE_RDONLY | PTE_NG | PTE_PXN | PTE_UXN)
--- 
-2.19.1
-
+There are so many calls to cpu_to_node() throughout the kernel.
+Are you going to convert all of them one patch at a time to the above sequence?
+Why not do this CONFIG_HAVE_MEMORYLESS_NODES
+in cpu_to_node() instead?
+and save the churn.
