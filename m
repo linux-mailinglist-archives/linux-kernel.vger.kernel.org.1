@@ -2,138 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C1328BB91
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B77328BB94
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389450AbgJLPKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 11:10:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388977AbgJLPKY (ORCPT
+        id S2389588AbgJLPKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 11:10:50 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:45882 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389269AbgJLPKu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 11:10:24 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 893A6C0613D0;
-        Mon, 12 Oct 2020 08:10:24 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id t9so19583307wrq.11;
-        Mon, 12 Oct 2020 08:10:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=mkuNs+7XxlEVvtkC9IIAwWFcSgj3h27AZFQnWZFm0XA=;
-        b=lUD7+AsC3gIYyuLjGVkGz6YiVnzefUHoKy63QYSNowSifa9yEth6OS7GbALyfbMTnr
-         LvGTXyj7YkXluF2uD9dqQnuvjVR8sebs6lreneRQ5UYklalKSg8hSwL7XtVYdSCITphA
-         6VmeQ8r4y2fXb8UQaxh/FVLnvuhzoyWwEaHfgjCtgA6EeO7agVwqK2i9dtf7U4DPMEMJ
-         LSkgWoHtBoO8sD9NxY3EpZKVM+gxKt5WvICVfVYmWCRk6YWntGNc7G57vVSObnOVCAIo
-         IMtIdelwKZzw7FmbW3qiIxI/3aCDdjnWAjhC82l+zk0ZJvGPVPq6q7bjlp3AmYTk8rZM
-         6KPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=mkuNs+7XxlEVvtkC9IIAwWFcSgj3h27AZFQnWZFm0XA=;
-        b=o2vGmNCz1MUut4ppU+ejY3KLXSpoC4kZ0q8aT1BoW6FXki+baAlgUlI8UG7Y8eNind
-         GFrF72FHv6DDu5FPtZJynDwSGc0I7MnzdBZaLJQUEtEir9AbKVknU3rWCk9W9hLvIV5K
-         e78jOAOPXFgKmrsv5BcS1FjPsW6aig/D/5RI1yODTDVFgdXik+f2NYShMTK2HF884Yas
-         fVohy0mqN/DJnrlQYCKzSnQkvCsD7aeXcciT9uJ+8MKftmKhGPdeqY/JhWzPJ00hKxVn
-         I5FQl4sMNBPXyqtXJ/L2zl/PwljnAubc7lBl0uo0vGU+TB0TiFF26TzEK/bK9gUUSqcx
-         eryA==
-X-Gm-Message-State: AOAM531/QHT9uRorEPavkm3BXW/on2s3CwkZHTm84MlYWKbPPt71PSkt
-        iEq9pROIoIyaJD4NOZ27svpMKjNCUfhgG1R3
-X-Google-Smtp-Source: ABdhPJyFfLN8mAuNx/DYHdt0jVUfqeX8Dq1RkoyYSUAkOjaB1Na7Vv03X4kTC2bPoZCBiPZ8BFtgGA==
-X-Received: by 2002:adf:f305:: with SMTP id i5mr25025707wro.346.1602515423074;
-        Mon, 12 Oct 2020 08:10:23 -0700 (PDT)
-Received: from felia ([2001:16b8:2d57:fc00:8472:203c:3ecb:c442])
-        by smtp.gmail.com with ESMTPSA id c185sm2406624wma.44.2020.10.12.08.10.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 08:10:22 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
-Date:   Mon, 12 Oct 2020 17:10:21 +0200 (CEST)
-X-X-Sender: lukas@felia
-To:     Alan Stern <stern@rowland.harvard.edu>
-cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-safety@lists.elisa.tech,
-        linux-usb@vger.kernel.org
-Subject: Re: [linux-safety] [PATCH] usb: host: ehci-sched: add comment about
- find_tt() not returning error
-In-Reply-To: <20201012145710.GA631710@rowland.harvard.edu>
-Message-ID: <alpine.DEB.2.21.2010121659040.6487@felia>
-References: <20201011205008.24369-1-sudipm.mukherjee@gmail.com> <alpine.DEB.2.21.2010121550300.6487@felia> <20201012145710.GA631710@rowland.harvard.edu>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Mon, 12 Oct 2020 11:10:50 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id 64D8B1F44AF0
+Subject: Re: [PATCH] x86/x86_64_defconfig: Enable the serial console
+To:     Willy Tarreau <w@1wt.eu>, Borislav Petkov <bp@alien8.de>
+Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        =?UTF-8?Q?Diego_Elio_Petten=c3=b2?= <flameeyes@flameeyes.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        kernelci@groups.io
+References: <20201008164044.GE5505@zn.tnic>
+ <4162cfa4-7bf2-3e6e-1b8c-e19187e6fa10@infradead.org>
+ <2538da14-0f4b-5d4a-c7bf-6fdb46ba2796@collabora.com>
+ <20201011122020.GA15925@zn.tnic>
+ <107a6fb0-a667-2f30-d1f4-640e3fee193a@collabora.com>
+ <20201011155754.GC15925@zn.tnic>
+ <1dfdf163-9b54-ceae-b178-c566e6109263@collabora.com>
+ <20201012035846.GB11282@1wt.eu>
+ <b188f977-b11e-f570-599a-7bcf364be0fd@collabora.com>
+ <20201012143212.GC22829@zn.tnic> <20201012144040.GB11614@1wt.eu>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <a165781d-d1c8-04e2-0b60-8d776a21a625@collabora.com>
+Date:   Mon, 12 Oct 2020 16:10:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20201012144040.GB11614@1wt.eu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 12/10/2020 15:40, Willy Tarreau wrote:
+> On Mon, Oct 12, 2020 at 04:32:12PM +0200, Borislav Petkov wrote:
+>> On Mon, Oct 12, 2020 at 11:22:10AM +0100, Guillaume Tucker wrote:
+>>> However, it was found while adding some x86 Chromebooks[1] to
+>>> KernelCI that x86_64_defconfig lacked some basic things for
+>>> anyone to be able to boot a kernel with a serial console enabled
+>>> on those.
+>>
+>> Hold on, those are laptops, right? How come they do have serial console?
+>> Because laptops don't have serial console - that has been the eternal
+>> problem with debugging kernels on laptops.
+
+Yes the link you pointed at is a prerequisite to enable serial
+console in the firmware (Coreboot/Depthcharge).
+
+> Well, to be precise, they don't have *anymore*. I used to exclusively
+> select laptops having a serial port given that I was using it daily with
+> routers, until I had to resign when I abandonned my good old NC8000 :-/
+
+You can get serial console on recent enough Chromebooks with a
+debug interface such as SuzyQable:
+
+  https://www.sparkfun.com/products/14746
+
+It's not a USB Type-C adapter, it has a debug interface which
+works with Chromebooks that support Case-Closed Debugging.
+Anyone can do that without modifying the Chromebook, and with a
+bit of patience to go through the documentation[1]...
+
+The KernelCI sample results from my previous email were run using
+just that: off-the-shelf Chromebooks + SuzyQ + rebuilt firmware
+for interactive console and tftp boot + kernel with the config
+options in Enric's patch.
+
+Thanks,
+Guillaume
 
 
-On Mon, 12 Oct 2020, Alan Stern wrote:
-
-> On Mon, Oct 12, 2020 at 04:11:38PM +0200, Lukas Bulwahn wrote:
-> > 
-> > 
-> > On Sun, 11 Oct 2020, Sudip Mukherjee wrote:
-> > 
-> > > Add a comment explaining why find_tt() will not return error even though
-> > > find_tt() is checking for NULL and other errors.
-> > > 
-> > > Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-> > 
-> > I get the intent of the comment but there is a large risk that somebody 
-> > could remove the find_tt() call before the calling the function and there 
-> > is no chance to then see later that the comment is actually wrong.
-> 
-> Why would anybody do that?  Who would deliberately go change a driver in 
-> a way that is obviously wrong and would break it?  Especially when such 
-> changes are likely to cause compile errors?
-> 
-> There are tons of changes one might make to any program that will leave 
-> it syntactically valid but will cause it to fail.  What's special about 
-> removing the early calls to find_tt()?
-> 
-> > I guess you want to link this comment here to a code line above and
-> > request anyone touching the line above to reconsider the comment then.
-> 
-> That really seems unnecessary.
-> 
-> > But there is no 'concept' for such kind of requests to changes and 
-> > comments.
-> > 
-> > So, the comment is true now, but might be true or wrong later.
-> > 
-> > I am wondering if such comment deserves to be included if we cannot check 
-> > its validity later...
-> > 
-> > I would prefer a simple tool that could check that your basic assumption 
-> > on the code is valid and if it the basic assumption is still valid, 
-> > just shut up any stupid tool that simply does not get that these calls 
-> > here cannot return any error.
-> 
-> Real code contains so many assumptions, especially if you include ones 
-> which are obvious to everybody, that such a tool seems impractical.
->
-
-I fear that problem applies to all static code analysis tools I have seen; 
-at some point, the remaining findings are simply obviously wrong to 
-everybody but the tool does not get those assumptions and continues 
-complaining, making the tool seem impractical.
-
-Alan, so would you be willing to take patches where _anyone_ simply adds 
-comments on what functions returns, depending on what this person might 
-consider just not obvious enough?
-
-Or are you going to simply reject this 'added a comment' patch here?
-
-I am not arguing either way, it is just that it is unclear to me what the 
-added value of the comment really is here.
-
-And for the static analysis finding, we need to find a way to ignore this 
-finding without simply ignoring all findings or new findings that just 
-look very similar to the original finding, but which are valid.
-
-Lukas
+[1] https://chromium.googlesource.com/chromiumos/platform/ec/+/cr50_stab/docs/case_closed_debugging_cr50.md
