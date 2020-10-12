@@ -2,108 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E4228C276
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 22:33:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43F1D28C2CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 22:43:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730629AbgJLUdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 16:33:47 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:39966 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726560AbgJLUdq (ORCPT
+        id S1729151AbgJLUne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 16:43:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728944AbgJLUnd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 16:33:46 -0400
-Received: by mail-ot1-f65.google.com with SMTP id l4so17007507ota.7;
-        Mon, 12 Oct 2020 13:33:45 -0700 (PDT)
+        Mon, 12 Oct 2020 16:43:33 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BBC7C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 13:43:33 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id v12so2663617ply.12
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 13:43:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=A6mr2GZ0DBJINQQpjmdYC2+OXujmO1pjxp1POyMlL2Y=;
+        b=nkPnEYk/TLpBpiZhbw9Co0vkESAqfDQdMLbvHaLr/5IjpIdqevfPju7kohqgEo7ksk
+         j9P4eHXHwHse0/oE9MbGn0/vvREbCk0OI8mhvlDRWvcZK/YTrWdc7u0RFoY/0Xiq7owD
+         nfZ04P9MBRZDiskcE9fB7lgt/sSthpVDBiOtE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WHj2EuQ6Y9UuZUdPKYmroHd7gs7p/Zz8/iUe6juJ+/s=;
-        b=RufnyPfugdIzVxebwW2aCIRp2lS3IqTfMK/PhCzVfqLqhwvmKUPPIdSjCVXQ4yGXzI
-         bzi0pGa6lwvYq2slguwxtxRRRYV3JQIU51k+IwiNP0FZuRIaFW+6DfK1giKLEBjuY/EQ
-         2fKO5xj0AI8QMTn9GQhcfSeFGwAz85EFf3tMQO5tg/3ccIffQxugJYIJm8rva/1FNBMC
-         dH1gFl2+m/g8N8qtvVODYAoNqEhgFw3GziuaQLHDjgLUQTHFkJcK+rjRgUxHwDIGKBZ1
-         HVPomob8dsyIehWk2HKRTQSPY4ZxWSjS/3Rg6k2GmmzQSwHQQ6EbKz6zaFH4GoCS99Lp
-         znPg==
-X-Gm-Message-State: AOAM532bv29BVlAHmrEt/JK8a295V3AR+xAXIxP+Pp29h8xayEXgRv++
-        82mjXxa6f4bZqbKH+3bIqh72wUHgASSdrUPM4PQ=
-X-Google-Smtp-Source: ABdhPJxRQUPv4QRU6bGXQ32mHjNH8DlCArC4gpcRZuNH1X3e73U3xKZSxcyGyJ5QbmACZ01+5UvtW70qVpcHzevNLb8=
-X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr19468668otc.145.1602534825338;
- Mon, 12 Oct 2020 13:33:45 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=A6mr2GZ0DBJINQQpjmdYC2+OXujmO1pjxp1POyMlL2Y=;
+        b=MEQhfzdmrSA32tp8CqfPdLEdkLjvwr3QuD3QqTK4Hw7wTz7Zv1b7FpxCMyMSbZNepo
+         vXXl0BI9WYb/mxZPoVOXKM51uUhKtRMeu3CKJdbL95i5tTJDSJ+ygPPrCmDrmiRP82mC
+         yPueWbCvvCtH/UO9UDcMRUl6R1Avp5RoO33TvrSIDtzyt/Vl0MJgPB/dfyJIDfSlPnEy
+         rYco+Yr2JU4l7Eaq+SLt03jooWwcexzUV63kQCfdWDVHMC/Wfo8Krq1EEsLus5OTuTfM
+         nsJqXOAKaEf3hV3BAyWhrBxoF+voOFuCrmCgeii4P6hiQfLSGlx0HXxcKRwpW5F5WME/
+         8s4A==
+X-Gm-Message-State: AOAM530xO6CqMAAQ7Ir1SHpvmK6IBh9RmKt1AtXVfApiBZfs2UOJ614g
+        4sTzAsCoiQMy55nkrsq6ppzMFw==
+X-Google-Smtp-Source: ABdhPJy1Hfs3WCk1tNDDRBB108LnSHEMkiQWQrCzfTBIswhUfzDcCcfAA0yjxRQniPbRDHSo0ZL6TQ==
+X-Received: by 2002:a17:902:8f82:b029:d4:bf4f:13da with SMTP id z2-20020a1709028f82b02900d4bf4f13damr16441277plo.40.1602535412935;
+        Mon, 12 Oct 2020 13:43:32 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id w5sm21123501pgf.61.2020.10.12.13.43.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 13:43:32 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 13:43:31 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Christopher Lameter <cl@linux.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, stable@vger.kernel.org,
+        Marco Elver <elver@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v2 2/3] mm/slub: Fix redzoning for small allocations
+Message-ID: <202010121342.836D3C26CF@keescook>
+References: <20201009195411.4018141-1-keescook@chromium.org>
+ <20201009195411.4018141-3-keescook@chromium.org>
+ <alpine.DEB.2.22.394.2010120754010.150059@www.lameter.com>
 MIME-Version: 1.0
-References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-9-arnd@arndb.de>
- <CAMuHMdWtMZaJ8ETb4g+AfaLeSZ1vyi8-POEaRzmdwh3ha=jieA@mail.gmail.com> <CAK8P3a1nDZYYwtuniUGxmy=H8LHbOEGSU=Pmi2=LMrLw09x8+w@mail.gmail.com>
-In-Reply-To: <CAK8P3a1nDZYYwtuniUGxmy=H8LHbOEGSU=Pmi2=LMrLw09x8+w@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 12 Oct 2020 22:33:34 +0200
-Message-ID: <CAMuHMdXn=1Gsn6hS72BoJ0jZwTVv_nurV0zCdSpUKJ6T5BL=Rg@mail.gmail.com>
-Subject: Re: [PATCH 08/13] m68k: m68328: use legacy_timer_tick()
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Philip Blundell <philb@gnu.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Sam Creasey <sammy@sammy.net>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.22.394.2010120754010.150059@www.lameter.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
-
-On Mon, Oct 12, 2020 at 5:31 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> On Mon, Oct 12, 2020 at 3:15 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > Given this feature is SoC-specific, not platform-specific, perhaps
-> > it makes sense to move the selects to the M68{,EZ,VZ}328 symbols?
+On Mon, Oct 12, 2020 at 08:01:04AM +0000, Christopher Lameter wrote:
+> On Fri, 9 Oct 2020, Kees Cook wrote:
+> 
+> > Store the freelist pointer out of line when object_size is smaller than
+> > sizeof(void *) and redzoning is enabled.
 > >
-> > Regardless:
-> > Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
->
-> Ok, folded in the change blow, using one less line. I couldn't figure
+> > (Note that no caches with such a size are known to exist in the kernel
+> > currently.)
+> 
+> Ummm... The smallest allowable cache size is sizeof(void *) as I recall.
+> 
+> 
+> mm/slab_common.c::kmem_sanity_check() checks the sizes when caches are
+> created.
 
-Thanks, looks good.
-
-> out whether
-> it should just be part of the CONFIG_M68000 instead, which doesn't appear
-
-It must definitely not be selected by CONFIG_M68000, as the plain MC68000
-is a CPU, not an SoC, and does not have the timer.
-
-> to have any machine support by itself. The dragonball CPU configuration
-> looks really odd, because you have to build exactly one of M68{,EZ,VZ}328
-> into the kernel to get a successful compilation, while Kconfig allows
-> many other combinations.
-
-While CONFIG_M68000 could be used for a "pure" MC68000-based machine,
-I believe we don't support any yet.
-M68{,EZ,VZ}328 select M68000 as they are SoCs containing a 68000
-CPU core.
-Other m68k SoCs have a CPU32 core, which is a simplified 68020 CPU core
-(hmm, what happened to 68360 support? Oh, removed in 2016, so nothing
-selects CPU32 anymore).
-
-Gr{oetje,eeting}s,
-
-                        Geert
+Ah thank you! Yes, I really thought there was a place where that
+happened, but I missed it. This patch can be dropped.
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Kees Cook
