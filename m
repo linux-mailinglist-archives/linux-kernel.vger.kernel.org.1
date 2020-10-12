@@ -2,91 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB17128B33F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 12:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30FB228B34E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 13:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387906AbgJLK73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 06:59:29 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35030 "EHLO mx2.suse.de"
+        id S2387982AbgJLLBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 07:01:04 -0400
+Received: from mailout04.rmx.de ([94.199.90.94]:33509 "EHLO mailout04.rmx.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387876AbgJLK7Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 06:59:24 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3ADD3ACA3;
-        Mon, 12 Oct 2020 10:59:22 +0000 (UTC)
-Date:   Mon, 12 Oct 2020 12:59:18 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] x86/cache updates for v5.10
-Message-ID: <20201012105918.GJ25311@zn.tnic>
+        id S2387706AbgJLLBE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 07:01:04 -0400
+Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mailout04.rmx.de (Postfix) with ESMTPS id 4C8whW66vqz3r0h8;
+        Mon, 12 Oct 2020 13:00:59 +0200 (CEST)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin02.retarus.com (Postfix) with ESMTPS id 4C8whK1HBLz2TTNp;
+        Mon, 12 Oct 2020 13:00:49 +0200 (CEST)
+Received: from n95hx1g2.localnet (192.168.54.46) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Mon, 12 Oct
+ 2020 12:59:35 +0200
+From:   Christian Eggers <ceggers@arri.de>
+To:     Sascha Hauer <s.hauer@pengutronix.de>
+CC:     Mark Brown <broonie@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        <linux-spi@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Clark Wang <xiaoning.wang@nxp.com>
+Subject: Re: [PATCH] spi: imx: Revert "spi: imx: enable runtime pm support"
+Date:   Mon, 12 Oct 2020 12:59:34 +0200
+Message-ID: <2670390.HS4A6M72fu@n95hx1g2>
+Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+In-Reply-To: <20201009073944.GA11648@pengutronix.de>
+References: <20201009042738.26602-1-ceggers@arri.de> <20201009073944.GA11648@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [192.168.54.46]
+X-RMX-ID: 20201012-130049-4C8whK1HBLz2TTNp-0@kdin02
+X-RMX-SOURCE: 217.111.95.66
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Sascha,
 
-please pull the resctrl pile this time around.
+On Friday, 9 October 2020, 09:39:44 CEST, Sascha Hauer wrote:
+> On Fri, Oct 09, 2020 at 06:27:38AM +0200, Christian Eggers wrote:
+> > This reverts commit 525c9e5a32bd7951eae3f06d9d077fea51718a6c.
+> > 
+> > If CONFIG_PM is disabled, the system completely freezes on probe as
+> > nothing enables the clock of the SPI peripheral.
+> 
+> Instead of reverting it, why not just fix it?
+> 
+> Normally the device should be brought to active state manually in probe
+> before pm_runtime takes over, then CONFIG_PM disabled doesn't hurt.
+> Using pm_runtime to put the device to active state initially has the
+> problem you describe.
 
-Thx.
+prior introducing runtime pm for spi-imx, the clock was "manually" enabled and 
+disabled around each transfer (so the power usage should already have been 
+optimal). If we would manually enable the clock in probe() as you suggested, 
+for users without CONFIG_PM there would be a drawback compared with the 
+previous state (as the clock will always be on now).
 
----
-The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
+What is the benefit of controlling the SPI clock with runtime PM instead of 
+doing it manually?
 
-  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
+As I have no experience with runtime PM, hopefully somebody else can fix (or 
+revert) this.
 
-are available in the Git repository at:
+@Clark: I forgot to put you on CC on my initial message. You can find the full 
+discussion here:
+https://lore.kernel.org/patchwork/patch/1318736/
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_cache_for_v5.10
+Best regards
+Christian
 
-for you to fetch changes up to 29b6bd41ee24f69a85666b9f68d500b382d408fd:
 
-  x86/resctrl: Enable user to view thread or core throttling mode (2020-08-26 17:53:22 +0200)
 
-----------------------------------------------------------------
-* Misc cleanups to the resctrl code in preparation for the ARM side, by
-James Morse.
 
-* Add support for controlling per-thread memory bandwidth throttling
-delay values on hw which supports it, by Fenghua Yu.
-
-----------------------------------------------------------------
-Fenghua Yu (2):
-      x86/resctrl: Enumerate per-thread MBA controls
-      x86/resctrl: Enable user to view thread or core throttling mode
-
-James Morse (10):
-      x86/resctrl: Remove unused struct mbm_state::chunks_bw
-      x86/resctrl: Remove struct rdt_membw::max_delay
-      x86/resctrl: Fix stale comment
-      x86/resctrl: Use container_of() in delayed_work handlers
-      x86/resctrl: Include pid.h
-      x86/resctrl: Use is_closid_match() in more places
-      x86/resctrl: Add struct rdt_membw::arch_needs_linear to explain AMD/Intel MBA difference
-      x86/resctrl: Merge AMD/Intel parse_bw() calls
-      x86/resctrl: Add struct rdt_cache::arch_has_{sparse, empty}_bitmaps
-      cacheinfo: Move resctrl's get_cache_id() to the cacheinfo header file
-
- Documentation/x86/resctrl_ui.rst          | 18 +++++-
- arch/x86/include/asm/cpufeatures.h        |  1 +
- arch/x86/kernel/cpu/cpuid-deps.c          |  1 +
- arch/x86/kernel/cpu/resctrl/core.c        | 56 ++++++++++---------
- arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 92 +++++--------------------------
- arch/x86/kernel/cpu/resctrl/internal.h    | 49 ++++++++++------
- arch/x86/kernel/cpu/resctrl/monitor.c     | 16 +-----
- arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 85 ++++++++++++++++++++++------
- arch/x86/kernel/cpu/scattered.c           |  1 +
- include/linux/cacheinfo.h                 | 21 +++++++
- include/linux/resctrl.h                   |  2 +
- 11 files changed, 185 insertions(+), 157 deletions(-)
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
