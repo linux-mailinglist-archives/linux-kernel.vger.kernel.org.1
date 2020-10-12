@@ -2,118 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5793C28BEFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 19:26:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D6D728BF00
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 19:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403986AbgJLR0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 13:26:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389613AbgJLR0f (ORCPT
+        id S2404029AbgJLR1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 13:27:42 -0400
+Received: from mail-ej1-f65.google.com ([209.85.218.65]:32902 "EHLO
+        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389613AbgJLR1m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 13:26:35 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C00C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 10:26:34 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id e22so24337320ejr.4
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 10:26:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=jfRqsNqCQEape10RQhRcZ/NBG4vE9xmHkftKBlkAo+w=;
-        b=RWEdoDXh23I7mNzcoiO8mFVyVJ5fbuVashSYnodDsgaeHWjWO6oMHKKo0ppUz6vTdB
-         sjTVF+8RPwFN2Briszy1xm0Ql6LERqKR2sYtQH+qpOgqphVLQXVH0H6nW1EMgTF1Samg
-         T4etfdTV6py+/vbCiyzUpIUDaiaKzZs00RHmv+9FuVSmyK23L+Puz1V21UgWM8dNZbFP
-         eAk9TUvg2FDEC/D6A3z+4raglnmB42ozAX9WqnREo4bzYs43sPzdH21ondFetLhqTy6J
-         3g4HDDzBi22PL1B7SNQoSRUdQit55tp84jENbsbQzf88taUcGzWnTMqJawVtOBaOOq9c
-         fw0g==
+        Mon, 12 Oct 2020 13:27:42 -0400
+Received: by mail-ej1-f65.google.com with SMTP id c22so24356071ejx.0;
+        Mon, 12 Oct 2020 10:27:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=jfRqsNqCQEape10RQhRcZ/NBG4vE9xmHkftKBlkAo+w=;
-        b=qMyNe5HlCwSAUnkGzHFwIr5T7MwhUgq0I7diiO/qA4pGzAJ2y/blcuAj2zPoXJM5Qy
-         weWRFheSc0k/gbe7BrRc+jTsLon8yQXfuwRXdKdMi8c8vynngj4I3Jn9lvySrPBfoaNU
-         LNOtJNXXCEMgD2Ha5v6MTr5GR4tf0LETv+8ntI7tDAyNWlEe9RJZZ5c/T1W87FG+bHj7
-         BVj4IbO/HGH5IfTBRbFsy+UrQZn4Q72Dty0APr0dAaNItnbk21C/9sjTmJTLT34xjxSH
-         Fctrt3WuTaSYkdQhK7OmteTEh2EE7fQaCcq7944TcpxAZWZ0hZkMpw2oyjgUANHM0syH
-         QQCQ==
-X-Gm-Message-State: AOAM5328iOWEc/ui5qnRzxU+EJPP8luaZxMzthbGX2hmtmq22UMT0E58
-        gR0mLW3pkyYXESoRKvh//LA=
-X-Google-Smtp-Source: ABdhPJwryRiLuazDtuWuH3JnNF6sexunfuvtAgvhndx77sTEg0Z1Kzrv1DJGHVryR5ikwRpXhIaUyQ==
-X-Received: by 2002:a17:906:394:: with SMTP id b20mr28450692eja.513.1602523592964;
-        Mon, 12 Oct 2020 10:26:32 -0700 (PDT)
-Received: from gmail.com (563B81C8.dsl.pool.telekom.hu. [86.59.129.200])
-        by smtp.gmail.com with ESMTPSA id rn10sm10736655ejb.8.2020.10.12.10.26.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 10:26:32 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Mon, 12 Oct 2020 19:26:30 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>
-Subject: [GIT PULL] x86/build change for v5.10
-Message-ID: <20201012172630.GA2963540@gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=bXfdWwJ70rGKeWiHiVGGLR5+++oukZBshR02MSPwwGk=;
+        b=ibZmvJD/K5OST4X6vO5CicqIdPPGYNb9BMHCgGxvU4LIZ65L7I3/jRJLqb8c58k500
+         WCUKWa/CG+AqFcdaUv8PkLG4zgRRplaRtKWKHlEA7d7tryQKXXbqZe4f24WMaBLLcnYD
+         S2m0CiGyg/wpeOAIY8qgVnPrjpJzPtSAzKMB6/oYwNGVodg0QnIfNxNh0WtM6dYgNeie
+         Ay5lKZGJYAURinlME6chSRhMQH7OYzIgSSwHx25Uxoie3cIuTxo9P9HCuOX5OyaA4bLb
+         vsKG3I9k/8nb13695KFPatlXPrydlyEuCc/TxW91yP2onsagpE1InSi79oC6hgYpnsUJ
+         0Tnw==
+X-Gm-Message-State: AOAM533qPkmx+ucvmvkmSnEpNZNKukggz4ch3u+LYBCqUOI/EBh002OU
+        q+us+JbTghBuBMbhZP/jVGreHxPMoaE=
+X-Google-Smtp-Source: ABdhPJx2FIpbI/LUxRyNnbEBrS+Joz1QQ83i9JBjfTKxvC+r9os3jnRRkhWLQR24PaMDY84fEEa0ew==
+X-Received: by 2002:a17:906:34d1:: with SMTP id h17mr23937787ejb.87.1602523659738;
+        Mon, 12 Oct 2020 10:27:39 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.215])
+        by smtp.googlemail.com with ESMTPSA id g3sm10729358edy.12.2020.10.12.10.27.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 12 Oct 2020 10:27:38 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 19:27:36 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Moritz Fischer <mdf@kernel.org>
+Cc:     Xu Yilun <yilun.xu@intel.com>, linux-fpga@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        gregkh@linuxfoundation.org, trix@redhat.com, lgoncalv@redhat.com,
+        hao.wu@intel.com, Russ Weight <russell.h.weight@intel.com>
+Subject: Re: [PATCH v9 6/6] memory: dfl-emif: add the DFL EMIF private
+ feature driver
+Message-ID: <20201012172736.GA7225@kozik-lap>
+References: <1602313793-21421-1-git-send-email-yilun.xu@intel.com>
+ <1602313793-21421-7-git-send-email-yilun.xu@intel.com>
+ <CAJKOXPcLbnvXJLa6G8Rpa8tLv4v22dDVPBDx4DrakPnbGdK4QA@mail.gmail.com>
+ <20201012165803.GA2654@archbook>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+In-Reply-To: <20201012165803.GA2654@archbook>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Mon, Oct 12, 2020 at 09:58:03AM -0700, Moritz Fischer wrote:
+> Hi Krzysztof,
+> 
+> On Mon, Oct 12, 2020 at 06:40:46PM +0200, Krzysztof Kozlowski wrote:
+> > On Sat, 10 Oct 2020 at 09:15, Xu Yilun <yilun.xu@intel.com> wrote:
+> > >
+> > > This driver is for the EMIF private feature implemented under FPGA
+> > > Device Feature List (DFL) framework. It is used to expose memory
+> > > interface status information as well as memory clearing control.
+> > >
+> > > The purpose of memory clearing block is to zero out all private memory
+> > > when FPGA is to be reprogrammed. This gives users a reliable method to
+> > > prevent potential data leakage.
+> > >
+> > > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> > > Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> > > Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > > ---
+> > > v2: Adjust the position of this driver in Kconfig.
+> > >     Improves the name of the Kconfig option.
+> > >     Change the include dfl-bus.h to dfl.h, cause the previous patchset
+> > >      renames the file.
+> > >     Some minor fixes and comment improvement.
+> > > v3: Adjust the position of the driver in Makefile.
+> > > v9: Add static prefix for emif attributes macro
+> > >     Update the kernel version of the sysfs interfaces in Doc.
+> > > ---
+> > >  .../ABI/testing/sysfs-bus-dfl-devices-emif         |  25 +++
+> > >  drivers/memory/Kconfig                             |   9 +
+> > >  drivers/memory/Makefile                            |   2 +
+> > >  drivers/memory/dfl-emif.c                          | 207 +++++++++++++++++++++
+> > >  4 files changed, 243 insertions(+)
+> > >  create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
+> > >  create mode 100644 drivers/memory/dfl-emif.c
+> > >
+> > 
+> > I am confused now. This was already taken by Moritz, wasn't it? And
+> > the dependencies were already taken, weren't they? Previously it was
+> > depending on "Modularization of DFL private feature drivers" and "add
+> > dfl bus support to MODULE_DEVICE_TABLE()"... now this is here so did
+> > the dependencies change? What is the reason to include this patch
+> > here?
+> 
+> It is confusing. Basically Greg had comments on the patch after I had
+> applied it. It's going through anothe round of review.
+> 
+> > 
+> > My ack was for the purpose of taking it via Moritz tree, because of
+> > the dependencies. If this is not the case, then probably better to
+> > take it via memory controllers tree to avoid any conflicts (it's not a
+> > small change).
+> 
+> Once it's ok I can put it on a branch with a stable tag and you can pull
+> that in and take the patch through your tree.
 
-Please pull the latest x86/build git tree from:
+I am not going to apply any new patches before end of merge window, so
+if you can still push it to Greg for v5.10, then please take it. However
+I think Greg also does not take patches during merge window, so most
+likely this will wait for the next cycle. In such case let's do it via
+stable tag for DFL parts.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-build-2020-10-12
-
-   # HEAD: 642d94cf336fe57675e63a91d11f53d74b9a3f9f x86/build: Declutter the build output
-
-Remove a couple of ancient and distracting printouts from the x86 build,
-such as the CRC sum or limited size data - most of which can be gained
-via tools.
-
- Thanks,
-
-	Ingo
-
------------------->
-Ingo Molnar (1):
-      x86/build: Declutter the build output
-
-
- arch/x86/boot/tools/build.c | 4 ----
- 1 file changed, 4 deletions(-)
-
-diff --git a/arch/x86/boot/tools/build.c b/arch/x86/boot/tools/build.c
-index c8b8c1a8d1fc..a3725ad46c5a 100644
---- a/arch/x86/boot/tools/build.c
-+++ b/arch/x86/boot/tools/build.c
-@@ -416,8 +416,6 @@ int main(int argc, char ** argv)
- 	/* Set the default root device */
- 	put_unaligned_le16(DEFAULT_ROOT_DEV, &buf[508]);
- 
--	printf("Setup is %d bytes (padded to %d bytes).\n", c, i);
--
- 	/* Open and stat the kernel file */
- 	fd = open(argv[2], O_RDONLY);
- 	if (fd < 0)
-@@ -425,7 +423,6 @@ int main(int argc, char ** argv)
- 	if (fstat(fd, &sb))
- 		die("Unable to stat `%s': %m", argv[2]);
- 	sz = sb.st_size;
--	printf("System is %d kB\n", (sz+1023)/1024);
- 	kernel = mmap(NULL, sz, PROT_READ, MAP_SHARED, fd, 0);
- 	if (kernel == MAP_FAILED)
- 		die("Unable to mmap '%s': %m", argv[2]);
-@@ -488,7 +485,6 @@ int main(int argc, char ** argv)
- 	}
- 
- 	/* Write the CRC */
--	printf("CRC %x\n", crc);
- 	put_unaligned_le32(crc, buf);
- 	if (fwrite(buf, 1, 4, dest) != 4)
- 		die("Writing CRC failed");
+Best regards,
+Krzysztof
