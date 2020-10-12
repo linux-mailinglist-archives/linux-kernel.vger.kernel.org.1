@@ -2,82 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5136C28B57B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F06EF28B580
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:07:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730315AbgJLNFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:05:50 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:33831 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728945AbgJLNFt (ORCPT
+        id S2388614AbgJLNHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:07:35 -0400
+Received: from esa3.microchip.iphmx.com ([68.232.153.233]:57474 "EHLO
+        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729521AbgJLNHe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:05:49 -0400
-Received: by mail-ed1-f68.google.com with SMTP id x1so16850507eds.1;
-        Mon, 12 Oct 2020 06:05:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=9ydwIlTuEwN4EX6ZQ9wz8gbjgf5SQz/6nMZbwr7W7Vk=;
-        b=GGmcQDLzHcKBLQeXzhhixc87eSaqAadqglxOVk3Cqvqa+MsSTMMTeO708FJo20C9fT
-         DwPC1BMBv1QwoGLPqHGyZH0jv8eDtsZ1nLSnF7scUQbX36Yj47c9FjtWwxNqT9lFRuXk
-         9XEoVbmlEH9qdauevbOU56gQkkuDZIGW6czvCJOYML5daxSlwbB1ZY3WO2Wmez3erA7q
-         kkAWWu4YjBO6qorG6dc/63vGpMLPPZ8uIANuN+9hrenKYCAuq2WFVZd0RMUMVXJfi+xY
-         0aU/gsr9UGVXdrNp3GI9avXVbkzdB3dpXDX+JOsKeMSpVjwA0IBxBoO/HAPNTuKIC1TE
-         nv5g==
-X-Gm-Message-State: AOAM530PoP/r7JXU2cgeskzFfgvJF/CdAJW4Xj/lyjy6p3rzP/t5rCLP
-        5WhiXABQ8na5NNEm6bsrAiU=
-X-Google-Smtp-Source: ABdhPJwG6YJ/YqbFjWqAQPFEIXmQsIVRi4YwedcPF81udFn+oBoRWG37Rp2oByAd+zGy1ereOMMvPw==
-X-Received: by 2002:a50:cd51:: with SMTP id d17mr13794841edj.93.1602507947594;
-        Mon, 12 Oct 2020 06:05:47 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.215])
-        by smtp.googlemail.com with ESMTPSA id f28sm10591423edc.94.2020.10.12.06.05.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 12 Oct 2020 06:05:46 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 15:05:34 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Anson Huang <Anson.Huang@nxp.com>
-Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, aford173@gmail.com,
-        daniel.baluta@nxp.com, shengjiu.wang@nxp.com, peter.chen@nxp.com,
-        alifer.wsdm@gmail.com, abel.vesa@nxp.com, yibin.gong@nxp.com,
-        jun.li@nxp.com, l.stach@pengutronix.de, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Linux-imx@nxp.com
-Subject: Re: [PATCH V2 3/3] arm64: dts: imx8mp-evk: Correct WDOG_B pin
- configuration
-Message-ID: <20201012130534.GC6468@kozik-lap>
-References: <1602506642-5262-1-git-send-email-Anson.Huang@nxp.com>
- <1602506642-5262-3-git-send-email-Anson.Huang@nxp.com>
+        Mon, 12 Oct 2020 09:07:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1602508053; x=1634044053;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=TKhEx3NIOhBw3NXbPso9bAlFvFT04OKekx/d4GF2W9A=;
+  b=1UZSbtULcp7L+rh9GeME4m8qPLoHZ8MSEbH4uHNEro0LNR3SYDQHleU8
+   kYGZAMBDVNlBq3nbblNc98vfBRSARmU5BOE9vAf2aTEvl14wcTRpyAlfK
+   RZSFORNk40/e+vFRusYW5fhVbmo09qMqj70LJ6rgto4ONF8hWl+Eyb/91
+   WKZMKTZo8atnogv7Lr0MlpLaMMMq8xxXsna3aZ75O1mFIUHnIxY1Ggm09
+   j8+/VAhTNdrnlo41SZns84cxpA6tNplbq+MO2AOyj5vQSxQmZ20MDGnm/
+   gWDq+7MLAvwrpnomqtPwxMCsXVMceJZnuazNb1k8icRqiijEx/FgZxkgv
+   A==;
+IronPort-SDR: AZFthPCBxXnlpxQOnTsJoxSlTXbDS96gW5LJq91+TnExtPDcKaV7WVqfZpF7FIpMYGvfKFNAyB
+ uAmjsF/YU///mZSq0gOqaehV6h1ZuT+LUMC1aFgJMHOCFh48vwb+I786qUo1vZHbo8AlYHgw+P
+ jZMLy974lL1nVspQEXsmZU1txTJ/WgIqbgzjxHheTOXzLdY1HBctR/wl3wSOCz0EEYCSXRsC7t
+ PUe0wR75ncsy7M5DHvmgpg6EIRY5w3gfCJHY/bfnkxuIThWuPH6hCUbpvOLnKWdm4DZtk4DopH
+ K2s=
+X-IronPort-AV: E=Sophos;i="5.77,366,1596524400"; 
+   d="scan'208";a="95010773"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 12 Oct 2020 06:07:33 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
+ chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 12 Oct 2020 06:07:33 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Mon, 12 Oct 2020 06:07:33 -0700
+Date:   Mon, 12 Oct 2020 13:05:47 +0000
+From:   Henrik Bjoernlund <henrik.bjoernlund@microchip.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     <davem@davemloft.net>, <roopa@nvidia.com>, <nikolay@nvidia.com>,
+        <jiri@mellanox.com>, <idosch@mellanox.com>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <bridge@lists.linux-foundation.org>,
+        <UNGLinuxDriver@microchip.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: Re: [PATCH net-next v4 07/10] bridge: cfm: Netlink SET configuration
+ Interface.
+Message-ID: <20201012130547.7tj3sdkmzcqjcssf@soft-test08>
+References: <20201009143530.2438738-1-henrik.bjoernlund@microchip.com>
+ <20201009143530.2438738-8-henrik.bjoernlund@microchip.com>
+ <20201009184556.6cfe6fbc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <1602506642-5262-3-git-send-email-Anson.Huang@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201009184556.6cfe6fbc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 08:44:02PM +0800, Anson Huang wrote:
-> Different revision of i.MX8MP EVK boards may have different external
-> pull up registor design, some are enabled while some are NOT, to make
-> sure the WDOG_B pin works properly, better to enable internal pull up
-> resistor. Since enabling internal pull up resistor is NOT harmful and
-> having benefit of flexibility on different board design, just enable
-> it for all i.MX8MP boards; And schmitt input is NOT necessary for this
-> WDOG_B output pin, so remove it; Open drain outputs provide more
-> flexibility to a designer as they can be pulled-up to any voltage found
-> in the system, so enable it as well.
+Thanks for the review. Comments below.
+
+The 10/09/2020 18:45, Jakub Kicinski wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
 > 
-> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-> ---
-> Changes since V1:
-> 	- Provide more explanation of removing schmitt input and enabling open drain in commit msg.
-> ---
->  arch/arm64/boot/dts/freescale/imx8mp-evk.dts | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> On Fri, 9 Oct 2020 14:35:27 +0000 Henrik Bjoernlund wrote:
+> > +static inline struct mac_addr nla_get_mac(const struct nlattr *nla)
+> 
+> static inlines are generally not needed in C sources and just hide
+> unused code. Please drop the inline annotation.
+> 
+I removed this function
+> > +{
+> > +     struct mac_addr mac;
+> > +
+> > +     nla_memcpy(&mac.addr, nla, sizeof(mac.addr));
+> > +
+> > +     return mac;
+> > +}
+> > +
+> > +static inline struct br_cfm_maid nla_get_maid(const struct nlattr *nla)
+> 
+> ditto
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+I removed this function.
 
-Best regards,
-Krzysztof
+> 
+> > +{
+> > +     struct br_cfm_maid maid;
+> > +
+> > +     nla_memcpy(&maid.data, nla, sizeof(maid.data));
+> 
+> returning a 48B struct from a helper is a little strange, but I guess
+> it's not too bad when compiler inlines the thing?
+> 
+I removed this function. 
+
+> > +     return maid;
+> > +}
+> > +
+> > +static const struct nla_policy
+> > +br_cfm_policy[IFLA_BRIDGE_CFM_MAX + 1] = {
+> > +     [IFLA_BRIDGE_CFM_UNSPEC]                = { .type = NLA_REJECT },
+> 
+> Not needed, REJECT is treated the same as 0 / uninit, right?
+> 
+Did not change anything here. I would like to keep this if it does no harm.
+
+> > +     [IFLA_BRIDGE_CFM_MEP_CREATE]            = { .type = NLA_NESTED },
+> 
+> Consider using NLA_POLICY_NESTED() to link up the next layers.
+> 
+I change to use the NLA_POLICY_NESTED macro.
+
+> > +     [IFLA_BRIDGE_CFM_MEP_DELETE]            = { .type = NLA_NESTED },
+> > +     [IFLA_BRIDGE_CFM_MEP_CONFIG]            = { .type = NLA_NESTED },
+> > +     [IFLA_BRIDGE_CFM_CC_CONFIG]             = { .type = NLA_NESTED },
+> > +     [IFLA_BRIDGE_CFM_CC_PEER_MEP_ADD]       = { .type = NLA_NESTED },
+> > +     [IFLA_BRIDGE_CFM_CC_PEER_MEP_REMOVE]    = { .type = NLA_NESTED },
+> > +     [IFLA_BRIDGE_CFM_CC_RDI]                = { .type = NLA_NESTED },
+> > +     [IFLA_BRIDGE_CFM_CC_CCM_TX]             = { .type = NLA_NESTED },
+> > +};
+
+-- 
+/Henrik
