@@ -2,94 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0373028BBB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:22:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E17E28BBBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389866AbgJLPWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 11:22:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35440 "EHLO mail.kernel.org"
+        id S2389886AbgJLPWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 11:22:44 -0400
+Received: from gentwo.org ([3.19.106.255]:51300 "EHLO gentwo.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389142AbgJLPWf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 11:22:35 -0400
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 90343208B8;
-        Mon, 12 Oct 2020 15:22:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602516154;
-        bh=5C/jmTpz0PKuGny4/s3SbSc4Irgi9NI62ZqH3ELIX7s=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=aLX8Vr/+ckwRva0GmI4m4s/4wxSqmx0xqfMUrdDEM+fCprnL6NTcrZ+naQvF0e4eY
-         zWkWUxdyTPmg/GLZ1qz0vTlhsD42q25Wl9SQ1DQi3GpB3+NEg6BXYn4jkrbiLaDa5g
-         wOpkbxvdAoMzjsEH/3QEXKZ8zv++QgW2Lt0sPrOg=
-Received: by mail-ed1-f54.google.com with SMTP id t21so17383564eds.6;
-        Mon, 12 Oct 2020 08:22:34 -0700 (PDT)
-X-Gm-Message-State: AOAM532T5y4AOnMoTRfDeKLTHFdxVr6x93ltylXKuX9mAxZ54GXkm71f
-        Px/xNzbrS3/lxOxBbCYZLde+6qgGlfAkRdAW7Q==
-X-Google-Smtp-Source: ABdhPJwu3cOwmieaIPSGaFSoyA4Wc/3ksuAi+VNzjSghjBXRfe60ms0JWtONwlY6z7lgezHab9z1uAotOlywDThS1cE=
-X-Received: by 2002:a05:6402:1cbb:: with SMTP id cz27mr14412016edb.38.1602516153075;
- Mon, 12 Oct 2020 08:22:33 -0700 (PDT)
+        id S2389142AbgJLPWn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 11:22:43 -0400
+Received: by gentwo.org (Postfix, from userid 1002)
+        id B7F1C3F19D; Mon, 12 Oct 2020 15:22:42 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+        by gentwo.org (Postfix) with ESMTP id B590E3EC24;
+        Mon, 12 Oct 2020 15:22:42 +0000 (UTC)
+Date:   Mon, 12 Oct 2020 15:22:42 +0000 (UTC)
+From:   Christopher Lameter <cl@linux.com>
+X-X-Sender: cl@www.lameter.com
+To:     Xianting Tian <tian.xianting@h3c.com>
+cc:     penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kuba@kernel.org,
+        alexei.starovoitov@gmail.com
+Subject: Re: [PATCH] mm: Make allocator take care of memoryless numa node
+In-Reply-To: <20201012082739.15661-1-tian.xianting@h3c.com>
+Message-ID: <alpine.DEB.2.22.394.2010121520440.154031@www.lameter.com>
+References: <20201012082739.15661-1-tian.xianting@h3c.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-References: <20201010070910.11294-1-jitao.shi@mediatek.com>
-In-Reply-To: <20201010070910.11294-1-jitao.shi@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Mon, 12 Oct 2020 23:22:21 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_-qZni-o11HJeymH74PAFSJw-0Awdz0wdjiQ0u7Ga1MGA@mail.gmail.com>
-Message-ID: <CAAOTY_-qZni-o11HJeymH74PAFSJw-0Awdz0wdjiQ0u7Ga1MGA@mail.gmail.com>
-Subject: Re: [v4 PATCH 0/2] fix scrolling of panel with small hfp or hbp
-To:     Jitao Shi <jitao.shi@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        huijuan.xie@mediatek.com, stonea168@163.com,
-        cawa.cheng@mediatek.com,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, yingjoe.chen@mediatek.com,
-        eddie.huang@mediatek.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Jitao:
+On Mon, 12 Oct 2020, Xianting Tian wrote:
 
-Jitao Shi <jitao.shi@mediatek.com> =E6=96=BC 2020=E5=B9=B410=E6=9C=8810=E6=
-=97=A5 =E9=80=B1=E5=85=AD =E4=B8=8B=E5=8D=883:09=E5=AF=AB=E9=81=93=EF=BC=9A
+> In architecture like powerpc, we can have cpus without any local memory
+> attached to it. In such cases the node does not have real memory.
 >
-> Changes since v3:
->  - Revert v2, for v2 will cause some bridge ic no output. the cause
->    the video linetime doesn't match display mode from get mode.
->  - Make sure the horizontal_frontporch_byte and horizontal_backporch_byte
->    are > 0.
+> In many places of current kernel code, it doesn't judge whether the node is
+> memoryless numa node before calling allocator interface.
 
-Because v2 is merged into mainline, I think you should merge 1/2 and
-2/2 to one patch which fix the problem caused by v2.
+That is intentional. SLUB relies on the page allocator to pick a node.
 
-Regards,
-Chun-Kuang.
+> This patch is to use local_memory_node(), which is guaranteed to have
+> memory, in allocator interface. local_memory_node() is a noop in other
+> architectures that don't support memoryless nodes.
 
->
-> Jitao Shi (2):
->   Revert "drm/mediatek: dsi: Fix scrolling of panel with small hfp or
->     hbp"
->   drm/mediatek: dsi: fix scrolling of panel with small hfp or hbp
->
->  drivers/gpu/drm/mediatek/mtk_dsi.c | 65 +++++++++++++++-----------------=
-------
->  1 file changed, 25 insertions(+), 40 deletions(-)
->
-> --
-> 2.12.5
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+The patch would destroy the support for memory policies in the
+SLUB allocator and likely in the other ones as well.
+
