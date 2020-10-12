@@ -2,225 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5EAC28AEBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 09:03:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F22AC28AEB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 09:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726960AbgJLHDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 03:03:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726839AbgJLHCk (ORCPT
+        id S1726904AbgJLHDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 03:03:12 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:41229 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726801AbgJLHCd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 03:02:40 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ACB3C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 00:02:40 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id 1so2229228ple.2
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 00:02:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Yk0QOk6H5np+MiDRWtj9bNoIkJMyYk6ejzTpATnxulw=;
-        b=ui2K2ovHTOnI8eToAEg9Cu1wzK9/78I1SesmomC1qt92eHcslxfWmZu5uv0uZMx694
-         FYsfkuAedBxmHxEyjDwE4T7NenQBWGYVG5tvFjNlRf4/mrrFfxsLQTHzdYXAjcggASfJ
-         qlENd1YVT6LGGcwFcEXlWAlMgFQGBpMxz4CKplnxPzdWkvahRZsD0jgLm6zn9Zb1r0TA
-         B9jI3ZAenwx3wyLvwgUMvUV25bvOdgb68il3CnRrf9mBWyEolFEDuW4V+CmPOj86PM/P
-         Yce1qRzutIQJkRxWjD4DSEKkZgRUySgu4AQc/TmBLG0ZlRIqy2Y1TGdPkMr9E/NIYTqy
-         J2Bg==
+        Mon, 12 Oct 2020 03:02:33 -0400
+Received: by mail-io1-f72.google.com with SMTP id j21so9946412iog.8
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 00:02:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=Yk0QOk6H5np+MiDRWtj9bNoIkJMyYk6ejzTpATnxulw=;
-        b=uEzGm6DZqBwz87BYNEHuNuWSY62nm9WUZML5WccYo7eUPTxpMBBs4jUTIYjzGUfSRt
-         HYsHH7j90o2IXztGWP3mfQWA93UdOfUR8yc3XC/lFrr4MWrfRoUXJKPWM3TizZGDRQk3
-         QKkRu3I8viLZOQiGc7s/OcQY7EeFi73t0ALVdbBZLPqGI4MKCZ6q58ezW7RY3hmcoDWy
-         u1cdkxnigTvxOMVQo2BxLOOixZloc0T5EaF7i+S3WkCOPG8BK3PrrHPpA9pINlETQoDh
-         Nmpi9tvQnF8zXMOHkziyspll9XjCH4vNiFbpxoK7J15kRxKExsM0OJUGnPuKxVdhlmjE
-         YHng==
-X-Gm-Message-State: AOAM53358c4LibqWHmrhpvOriy79lbQuxkyN4pShHrnPHcbN0hYQK1cL
-        HGmH0P5ha9Jae7jPDwv0kNY=
-X-Google-Smtp-Source: ABdhPJxmrvDEofuNBukUqC2/08n3OWSCwdX4u/PTAEshwl/LQzT3pEzbBFNAu8SKyZo68fjmTw2PNw==
-X-Received: by 2002:a17:902:24d:b029:d2:564c:654b with SMTP id 71-20020a170902024db02900d2564c654bmr21334592plc.8.1602486160079;
-        Mon, 12 Oct 2020 00:02:40 -0700 (PDT)
-Received: from balhae.roam.corp.google.com ([112.159.19.5])
-        by smtp.gmail.com with ESMTPSA id n12sm18082556pgk.20.2020.10.12.00.02.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 00:02:39 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Subject: [PATCH 6/6] perf bench: Run inject-build-id with --buildid-all option too
-Date:   Mon, 12 Oct 2020 16:02:14 +0900
-Message-Id: <20201012070214.2074921-7-namhyung@kernel.org>
-X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
-In-Reply-To: <20201012070214.2074921-1-namhyung@kernel.org>
-References: <20201012070214.2074921-1-namhyung@kernel.org>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=oBTaOP0izjvvnMj3Tgkml6QTXmNy4hLZxNIIGyQr/DQ=;
+        b=MT0MOUiDS+kHN00BAMBTNgohP/1K1HmTdxcCFcfM6APKwYT39t7vblfG/Zg4l7k+uq
+         dN+FpvqW2mvzoDgl3GadyRxXzB4TLKIM7BEnBIwqrNwv6xqtfCXnmiZHPKOZ+Woynaem
+         E832eOan4v2IFFFg0OenCcWM3IQsUbHsIQu3D7jGTHqia5ImIMck3BGhTAsYWgL0/Dtj
+         vOKtCPQLwtVxs6izfzSknjIfVbDWWXcc1wG4xkjts/k/JZ5/Z/t/7m1Ms8axUiVXA36h
+         zzynNV8+nhNDP+CfTZnVHOzNgNPQO1vobXHyu180U1b8Kppxup7F38YlfS1alI77Gr6E
+         acLg==
+X-Gm-Message-State: AOAM531hu2jTmhY/0xXZ/RGMb358w0+PL/W2IoU2odwyQCf0cRcNertD
+        aqoVgSno4XkJuqkWpFoam1U4Hgf7Nvsh9utSZ25oN2OO3Zza
+X-Google-Smtp-Source: ABdhPJwveXlEY9Ilmtv0AfpWuPoqxbcgCFdlsA9rA54OXuaN1WFzxd4zOAOlDSXFl7FcQAbFrYFKWB+zendvxxenblyg0tbvHdb7
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:ca92:: with SMTP id t18mr18284723ilo.287.1602486150916;
+ Mon, 12 Oct 2020 00:02:30 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 00:02:30 -0700
+In-Reply-To: <000000000000ae8d6e05a9c7b889@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c86f1705b173e15a@google.com>
+Subject: Re: possible deadlock in dev_uc_sync
+From:   syzbot <syzbot+4a0f7bc34e3997a6c7df@syzkaller.appspotmail.com>
+To:     ap420073@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, xiyou.wangcong@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For comparison, it now runs the benchmark twice - one if regular -b
-and another for --buildid-all.
+syzbot has found a reproducer for the following issue on:
 
-  $ perf bench internals inject-build-id
-  # Running 'internals/inject-build-id' benchmark:
-    Average build-id injection took: 21.002 msec (+- 0.172 msec)
-    Average time per event: 2.059 usec (+- 0.017 usec)
-    Average memory usage: 8169 KB (+- 0 KB)
-    Average build-id-all injection took: 19.543 msec (+- 0.124 msec)
-    Average time per event: 1.916 usec (+- 0.012 usec)
-    Average memory usage: 7348 KB (+- 0 KB)
+HEAD commit:    3dd0130f Merge branch 'akpm' (patches from Andrew)
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16b36120500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c06bcf3cc963d91c
+dashboard link: https://syzkaller.appspot.com/bug?extid=4a0f7bc34e3997a6c7df
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=105cbfb8500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13193ce8500000
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Acked-by: Ian Rogers <irogers@google.com>
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/bench/inject-buildid.c | 54 ++++++++++++++++++++-----------
- 1 file changed, 35 insertions(+), 19 deletions(-)
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4a0f7bc34e3997a6c7df@syzkaller.appspotmail.com
 
-diff --git a/tools/perf/bench/inject-buildid.c b/tools/perf/bench/inject-buildid.c
-index 0fccf2a9e95b..e9a11f4a1109 100644
---- a/tools/perf/bench/inject-buildid.c
-+++ b/tools/perf/bench/inject-buildid.c
-@@ -271,7 +271,7 @@ static void *data_reader(void *arg)
- 	return NULL;
- }
- 
--static int setup_injection(struct bench_data *data)
-+static int setup_injection(struct bench_data *data, bool build_id_all)
- {
- 	int ready_pipe[2];
- 	int dev_null_fd;
-@@ -292,6 +292,7 @@ static int setup_injection(struct bench_data *data)
- 
- 	if (data->pid == 0) {
- 		const char **inject_argv;
-+		int inject_argc = 2;
- 
- 		close(data->input_pipe[1]);
- 		close(data->output_pipe[0]);
-@@ -308,17 +309,22 @@ static int setup_injection(struct bench_data *data)
- 
- 		dup2(dev_null_fd, STDERR_FILENO);
- 
--		inject_argv = calloc(3, sizeof(*inject_argv));
-+		if (build_id_all)
-+			inject_argc++;
-+
-+		inject_argv = calloc(inject_argc + 1, sizeof(*inject_argv));
- 		if (inject_argv == NULL)
- 			exit(1);
- 
- 		inject_argv[0] = strdup("inject");
- 		inject_argv[1] = strdup("-b");
-+		if (build_id_all)
-+			inject_argv[2] = strdup("--buildid-all");
- 
- 		/* signal that we're ready to go */
- 		close(ready_pipe[1]);
- 
--		cmd_inject(2, inject_argv);
-+		cmd_inject(inject_argc, inject_argv);
- 
- 		exit(0);
- 	}
-@@ -377,27 +383,17 @@ static int inject_build_id(struct bench_data *data, u64 *max_rss)
- 	return 0;
- }
- 
--static int do_inject_loop(struct bench_data *data)
-+static void do_inject_loop(struct bench_data *data, bool build_id_all)
- {
- 	unsigned int i;
- 	struct stats time_stats, mem_stats;
- 	double time_average, time_stddev;
- 	double mem_average, mem_stddev;
- 
--	srand(time(NULL));
- 	init_stats(&time_stats);
- 	init_stats(&mem_stats);
--	symbol__init(NULL);
- 
--	bench_sample_type  = PERF_SAMPLE_IDENTIFIER | PERF_SAMPLE_IP;
--	bench_sample_type |= PERF_SAMPLE_TID | PERF_SAMPLE_TIME;
--	bench_id_hdr_size  = 32;
--
--	collect_dso();
--	if (nr_dsos == 0) {
--		printf("  Cannot collect DSOs for injection\n");
--		return -1;
--	}
-+	pr_debug("  Build-id%s injection benchmark\n", build_id_all ? "-all" : "");
- 
- 	for (i = 0; i < iterations; i++) {
- 		struct timeval start, end, diff;
-@@ -405,7 +401,7 @@ static int do_inject_loop(struct bench_data *data)
- 
- 		pr_debug("  Iteration #%d\n", i+1);
- 
--		if (setup_injection(data) < 0) {
-+		if (setup_injection(data, build_id_all) < 0) {
- 			printf("  Build-id injection setup failed\n");
- 			break;
- 		}
-@@ -427,8 +423,8 @@ static int do_inject_loop(struct bench_data *data)
- 
- 	time_average = avg_stats(&time_stats) / USEC_PER_MSEC;
- 	time_stddev = stddev_stats(&time_stats) / USEC_PER_MSEC;
--	printf("  Average build-id injection took: %.3f msec (+- %.3f msec)\n",
--		time_average, time_stddev);
-+	printf("  Average build-id%s injection took: %.3f msec (+- %.3f msec)\n",
-+	       build_id_all ? "-all" : "", time_average, time_stddev);
- 
- 	/* each iteration, it processes MMAP2 + BUILD_ID + nr_samples * SAMPLE */
- 	time_average = avg_stats(&time_stats) / (nr_mmaps * (nr_samples + 2));
-@@ -440,6 +436,26 @@ static int do_inject_loop(struct bench_data *data)
- 	mem_stddev = stddev_stats(&mem_stats);
- 	printf("  Average memory usage: %.0f KB (+- %.0f KB)\n",
- 		mem_average, mem_stddev);
-+}
-+
-+static int do_inject_loops(struct bench_data *data)
-+{
-+
-+	srand(time(NULL));
-+	symbol__init(NULL);
-+
-+	bench_sample_type  = PERF_SAMPLE_IDENTIFIER | PERF_SAMPLE_IP;
-+	bench_sample_type |= PERF_SAMPLE_TID | PERF_SAMPLE_TIME;
-+	bench_id_hdr_size  = 32;
-+
-+	collect_dso();
-+	if (nr_dsos == 0) {
-+		printf("  Cannot collect DSOs for injection\n");
-+		return -1;
-+	}
-+
-+	do_inject_loop(data, false);
-+	do_inject_loop(data, true);
- 
- 	release_dso();
- 	return 0;
-@@ -455,6 +471,6 @@ int bench_inject_build_id(int argc, const char **argv)
- 		exit(EXIT_FAILURE);
- 	}
- 
--	return do_inject_loop(&data);
-+	return do_inject_loops(&data);
- }
- 
--- 
-2.28.0.1011.ga647a8990f-goog
+======================================================
+WARNING: possible circular locking dependency detected
+5.9.0-rc8-syzkaller #0 Not tainted
+------------------------------------------------------
+syz-executor655/7496 is trying to acquire lock:
+ffff888092808280 (&dev_addr_list_lock_key/2){+...}-{2:2}, at: netif_addr_lock include/linux/netdevice.h:4281 [inline]
+ffff888092808280 (&dev_addr_list_lock_key/2){+...}-{2:2}, at: dev_uc_sync+0xdc/0x190 net/core/dev_addr_lists.c:640
+
+but task is already holding lock:
+ffff888087efa280 (&macvlan_netdev_addr_lock_key/1){+...}-{2:2}, at: netif_addr_lock_bh include/linux/netdevice.h:4292 [inline]
+ffff888087efa280 (&macvlan_netdev_addr_lock_key/1){+...}-{2:2}, at: dev_set_rx_mode net/core/dev.c:8274 [inline]
+ffff888087efa280 (&macvlan_netdev_addr_lock_key/1){+...}-{2:2}, at: __dev_open+0x368/0x4d0 net/core/dev.c:1529
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #1 (&macvlan_netdev_addr_lock_key/1){+...}-{2:2}:
+       _raw_spin_lock_nested+0x30/0x40 kernel/locking/spinlock.c:361
+       netif_addr_lock include/linux/netdevice.h:4281 [inline]
+       dev_uc_sync+0xdc/0x190 net/core/dev_addr_lists.c:640
+       bond_hw_addr_swap drivers/net/bonding/bond_main.c:740 [inline]
+       bond_change_active_slave+0xc3d/0x20d0 drivers/net/bonding/bond_main.c:1007
+       bond_select_active_slave+0x28d/0xa40 drivers/net/bonding/bond_main.c:1093
+       bond_enslave+0x4441/0x49a0 drivers/net/bonding/bond_main.c:1947
+       do_set_master+0x1c8/0x220 net/core/rtnetlink.c:2517
+       __rtnl_newlink+0x132a/0x1740 net/core/rtnetlink.c:3469
+       rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3500
+       rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5563
+       netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
+       netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+       netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+       netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+       sock_sendmsg_nosec net/socket.c:651 [inline]
+       sock_sendmsg+0xcf/0x120 net/socket.c:671
+       ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
+       ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
+       __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
+       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> #0 (&dev_addr_list_lock_key/2){+...}-{2:2}:
+       check_prev_add kernel/locking/lockdep.c:2496 [inline]
+       check_prevs_add kernel/locking/lockdep.c:2601 [inline]
+       validate_chain kernel/locking/lockdep.c:3218 [inline]
+       __lock_acquire+0x2a96/0x5780 kernel/locking/lockdep.c:4441
+       lock_acquire+0x1f3/0xaf0 kernel/locking/lockdep.c:5029
+       _raw_spin_lock_nested+0x30/0x40 kernel/locking/spinlock.c:361
+       netif_addr_lock include/linux/netdevice.h:4281 [inline]
+       dev_uc_sync+0xdc/0x190 net/core/dev_addr_lists.c:640
+       macvlan_set_mac_lists+0x55/0x110 drivers/net/macvlan.c:802
+       __dev_set_rx_mode+0x1e2/0x2e0 net/core/dev.c:8269
+       dev_set_rx_mode net/core/dev.c:8275 [inline]
+       __dev_open+0x370/0x4d0 net/core/dev.c:1529
+       dev_open net/core/dev.c:1557 [inline]
+       dev_open+0xe8/0x150 net/core/dev.c:1550
+       bond_enslave+0x927/0x49a0 drivers/net/bonding/bond_main.c:1728
+       do_set_master+0x1c8/0x220 net/core/rtnetlink.c:2517
+       __rtnl_newlink+0x132a/0x1740 net/core/rtnetlink.c:3469
+       rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3500
+       rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5563
+       netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
+       netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+       netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+       netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+       sock_sendmsg_nosec net/socket.c:651 [inline]
+       sock_sendmsg+0xcf/0x120 net/socket.c:671
+       ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
+       ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
+       __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
+       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&macvlan_netdev_addr_lock_key/1);
+                               lock(&dev_addr_list_lock_key/2);
+                               lock(&macvlan_netdev_addr_lock_key/1);
+  lock(&dev_addr_list_lock_key/2);
+
+ *** DEADLOCK ***
+
+2 locks held by syz-executor655/7496:
+ #0: ffffffff8b150908 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:72 [inline]
+ #0: ffffffff8b150908 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x3f9/0xad0 net/core/rtnetlink.c:5560
+ #1: ffff888087efa280 (&macvlan_netdev_addr_lock_key/1){+...}-{2:2}, at: netif_addr_lock_bh include/linux/netdevice.h:4292 [inline]
+ #1: ffff888087efa280 (&macvlan_netdev_addr_lock_key/1){+...}-{2:2}, at: dev_set_rx_mode net/core/dev.c:8274 [inline]
+ #1: ffff888087efa280 (&macvlan_netdev_addr_lock_key/1){+...}-{2:2}, at: __dev_open+0x368/0x4d0 net/core/dev.c:1529
+
+stack backtrace:
+CPU: 0 PID: 7496 Comm: syz-executor655 Not tainted 5.9.0-rc8-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ check_noncircular+0x324/0x3e0 kernel/locking/lockdep.c:1827
+ check_prev_add kernel/locking/lockdep.c:2496 [inline]
+ check_prevs_add kernel/locking/lockdep.c:2601 [inline]
+ validate_chain kernel/locking/lockdep.c:3218 [inline]
+ __lock_acquire+0x2a96/0x5780 kernel/locking/lockdep.c:4441
+ lock_acquire+0x1f3/0xaf0 kernel/locking/lockdep.c:5029
+ _raw_spin_lock_nested+0x30/0x40 kernel/locking/spinlock.c:361
+ netif_addr_lock include/linux/netdevice.h:4281 [inline]
+ dev_uc_sync+0xdc/0x190 net/core/dev_addr_lists.c:640
+ macvlan_set_mac_lists+0x55/0x110 drivers/net/macvlan.c:802
+ __dev_set_rx_mode+0x1e2/0x2e0 net/core/dev.c:8269
+ dev_set_rx_mode net/core/dev.c:8275 [inline]
+ __dev_open+0x370/0x4d0 net/core/dev.c:1529
+ dev_open net/core/dev.c:1557 [inline]
+ dev_open+0xe8/0x150 net/core/dev.c:1550
+ bond_enslave+0x927/0x49a0 drivers/net/bonding/bond_main.c:1728
+ do_set_master+0x1c8/0x220 net/core/rtnetlink.c:2517
+ __rtnl_newlink+0x132a/0x1740 net/core/rtnetlink.c:3469
+ rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3500
+ rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5563
+ netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:671
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x449b39
+Code: e8 cc 0c 03 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 0b 06 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fb38e3d4d98 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00000000006dfca8 RCX: 0000000000449b39
+RDX: 0000000000000000 RSI: 0000000020000340 RDI: 0000000000000008
+RBP: 00000000006dfca0 R08: 00007fb38e3d5700 R09: 0000000000000000
+R10: 00007fb38e3d5700 R11: 0000000000000246 R12: 00000000006dfcac
+R13: 00000000000003ff R14: 0000003f797fa400 R15: 070d00100000003c
+bond9: (slave macvlan9): Enslaving as an active interface with a down link
 
