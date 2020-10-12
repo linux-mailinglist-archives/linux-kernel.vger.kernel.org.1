@@ -2,31 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12ABA28AE1D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 08:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D3528AE1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 08:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727234AbgJLGMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 02:12:48 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:33564 "EHLO huawei.com"
+        id S1727267AbgJLGMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 02:12:50 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:33566 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727172AbgJLGMr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727199AbgJLGMr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Oct 2020 02:12:47 -0400
 Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id BA150B73366EE4340348;
+        by Forcepoint Email with ESMTP id C002F30AB600401601EA;
         Mon, 12 Oct 2020 14:12:45 +0800 (CST)
 Received: from thunder-town.china.huawei.com (10.174.177.134) by
  DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 12 Oct 2020 14:12:35 +0800
+ 14.3.487.0; Mon, 12 Oct 2020 14:12:36 +0800
 From:   Zhen Lei <thunder.leizhen@huawei.com>
 To:     Wei Xu <xuwei5@hisilicon.com>, Rob Herring <robh+dt@kernel.org>,
         devicetree <devicetree@vger.kernel.org>,
         linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
 CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH v2 00/10] clean up all Hisilicon-related errors detected by DT schema on arm32
-Date:   Mon, 12 Oct 2020 14:12:15 +0800
-Message-ID: <20201012061225.1597-1-thunder.leizhen@huawei.com>
+Subject: [PATCH v2 01/10] ARM: dts: hisilicon: fix errors detected by snps-dw-apb-uart.yaml
+Date:   Mon, 12 Oct 2020 14:12:16 +0800
+Message-ID: <20201012061225.1597-2-thunder.leizhen@huawei.com>
 X-Mailer: git-send-email 2.26.0.windows.1
+In-Reply-To: <20201012061225.1597-1-thunder.leizhen@huawei.com>
+References: <20201012061225.1597-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -36,39 +38,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v1 --> v2:
-Too deep in arm32. I forgot arm64. Add property "#reset-cells" into sysctrl.yaml (Patch 9).
+1. Change node name to match '^serial(@[0-9a-f,]+)*$'
+2. Change clock-names to "baudclk", "apb_pclk". Both of them use the same
+   clock.
 
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ arch/arm/boot/dts/hip01.dtsi    | 24 ++++++++++++------------
+ arch/arm/boot/dts/hip04-d01.dts |  2 +-
+ arch/arm/boot/dts/hip04.dtsi    |  6 +++---
+ 3 files changed, 16 insertions(+), 16 deletions(-)
 
-v1:
-These patches are based on the latest linux-next.
-
-Zhen Lei (10):
-  ARM: dts: hisilicon: fix errors detected by snps-dw-apb-uart.yaml
-  ARM: dts: hisilicon: fix errors detected by pl011.yaml
-  ARM: dts: hisilicon: fix errors detected by usb yaml
-  ARM: dts: hisilicon: fix errors detected by simple-bus.yaml
-  ARM: dts: hisilicon: fix errors detected by root-node.yaml
-  ARM: dts: hisilicon: fix errors detected by synopsys-dw-mshc.yaml
-  ARM: dts: hisilicon: fix errors detected by spi-pl022.yaml
-  ARM: dts: hisilicon: fix errors detected by syscon.yaml
-  dt-bindings: arm: hisilicon: add missing properties into sysctrl.yaml
-  dt-bindings: arm: hisilicon: add missing properties into cpuctrl.yaml
-
- .../bindings/arm/hisilicon/controller/cpuctrl.yaml | 27 +++++++++++++-
- .../bindings/arm/hisilicon/controller/sysctrl.yaml | 28 +++++++++++++--
- arch/arm/boot/dts/hi3519-demb.dts                  |  2 +-
- arch/arm/boot/dts/hi3519.dtsi                      | 32 ++++++++---------
- arch/arm/boot/dts/hi3620-hi4511.dts                | 24 ++++++-------
- arch/arm/boot/dts/hi3620.dtsi                      | 32 ++++++++---------
- arch/arm/boot/dts/hip01-ca9x2.dts                  |  2 +-
- arch/arm/boot/dts/hip01.dtsi                       | 26 +++++++-------
- arch/arm/boot/dts/hip04-d01.dts                    |  2 +-
- arch/arm/boot/dts/hip04.dtsi                       |  6 ++--
- arch/arm/boot/dts/hisi-x5hd2-dkb.dts               |  2 +-
- arch/arm/boot/dts/hisi-x5hd2.dtsi                  | 42 +++++++++++-----------
- 12 files changed, 136 insertions(+), 89 deletions(-)
-
+diff --git a/arch/arm/boot/dts/hip01.dtsi b/arch/arm/boot/dts/hip01.dtsi
+index 975d39828405f0b..fd09e6d9309c755 100644
+--- a/arch/arm/boot/dts/hip01.dtsi
++++ b/arch/arm/boot/dts/hip01.dtsi
+@@ -41,41 +41,41 @@
+ 			compatible = "simple-bus";
+ 			ranges;
+ 
+-			uart0: uart@10001000 {
++			uart0: serial@10001000 {
+ 				compatible = "snps,dw-apb-uart";
+ 				reg = <0x10001000 0x1000>;
+-				clocks = <&hisi_refclk144mhz>;
+-				clock-names = "apb_pclk";
++				clocks = <&hisi_refclk144mhz>, <&hisi_refclk144mhz>;
++				clock-names = "baudclk", "apb_pclk";
+ 				reg-shift = <2>;
+ 				interrupts = <0 32 4>;
+ 				status = "disabled";
+ 			};
+ 
+-			uart1: uart@10002000 {
++			uart1: serial@10002000 {
+ 				compatible = "snps,dw-apb-uart";
+ 				reg = <0x10002000 0x1000>;
+-				clocks = <&hisi_refclk144mhz>;
+-				clock-names = "apb_pclk";
++				clocks = <&hisi_refclk144mhz>, <&hisi_refclk144mhz>;
++				clock-names = "baudclk", "apb_pclk";
+ 				reg-shift = <2>;
+ 				interrupts = <0 33 4>;
+ 				status = "disabled";
+ 			};
+ 
+-			uart2: uart@10003000 {
++			uart2: serial@10003000 {
+ 				compatible = "snps,dw-apb-uart";
+ 				reg = <0x10003000 0x1000>;
+-				clocks = <&hisi_refclk144mhz>;
+-				clock-names = "apb_pclk";
++				clocks = <&hisi_refclk144mhz>, <&hisi_refclk144mhz>;
++				clock-names = "baudclk", "apb_pclk";
+ 				reg-shift = <2>;
+ 				interrupts = <0 34 4>;
+ 				status = "disabled";
+ 			};
+ 
+-			uart3: uart@10006000 {
++			uart3: serial@10006000 {
+ 				compatible = "snps,dw-apb-uart";
+ 				reg = <0x10006000 0x1000>;
+-				clocks = <&hisi_refclk144mhz>;
+-				clock-names = "apb_pclk";
++				clocks = <&hisi_refclk144mhz>, <&hisi_refclk144mhz>;
++				clock-names = "baudclk", "apb_pclk";
+ 				reg-shift = <2>;
+ 				interrupts = <0 4 4>;
+ 				status = "disabled";
+diff --git a/arch/arm/boot/dts/hip04-d01.dts b/arch/arm/boot/dts/hip04-d01.dts
+index 9019e0d2ef60b67..f5691dbc26d2419 100644
+--- a/arch/arm/boot/dts/hip04-d01.dts
++++ b/arch/arm/boot/dts/hip04-d01.dts
+@@ -22,7 +22,7 @@
+ 	};
+ 
+ 	soc {
+-		uart0: uart@4007000 {
++		uart0: serial@4007000 {
+ 			status = "ok";
+ 		};
+ 	};
+diff --git a/arch/arm/boot/dts/hip04.dtsi b/arch/arm/boot/dts/hip04.dtsi
+index 555bc6b6720fc94..bccf5ba3d8553c2 100644
+--- a/arch/arm/boot/dts/hip04.dtsi
++++ b/arch/arm/boot/dts/hip04.dtsi
+@@ -250,12 +250,12 @@
+ 				     <0 79 4>;
+ 		};
+ 
+-		uart0: uart@4007000 {
++		uart0: serial@4007000 {
+ 			compatible = "snps,dw-apb-uart";
+ 			reg = <0x4007000 0x1000>;
+ 			interrupts = <0 381 4>;
+-			clocks = <&clk_168m>;
+-			clock-names = "uartclk";
++			clocks = <&clk_168m>, <&clk_168m>;
++			clock-names = "baudclk", "apb_pclk";
+ 			reg-shift = <2>;
+ 			status = "disabled";
+ 		};
 -- 
 1.8.3
 
