@@ -2,122 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2AD828BB72
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:59:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3268428BB76
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:00:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730322AbgJLO7Q convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 12 Oct 2020 10:59:16 -0400
-Received: from aposti.net ([89.234.176.197]:42934 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729021AbgJLO7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 10:59:16 -0400
-Date:   Mon, 12 Oct 2020 16:59:01 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v3 11/15] MIPS: generic: Add support for Ingenic SoCs
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "Maciej W . Rozycki" <macro@linux-mips.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Zhou Yanjie <zhouyanjie@wanyeetech.com>, od@zcrc.me,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
-Message-Id: <DAG3IQ.ZKOH2Y112U5U@crapouillou.net>
-In-Reply-To: <20201012143319.GA24291@roeck-us.net>
-References: <20200906192935.107086-1-paul@crapouillou.net>
-        <20200906192935.107086-12-paul@crapouillou.net>
-        <20201012143319.GA24291@roeck-us.net>
+        id S1730483AbgJLPAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 11:00:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730049AbgJLPAI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 11:00:08 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CA61C0613D0;
+        Mon, 12 Oct 2020 08:00:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=n9rKwABW1rW8ifuT1wp/xKxs4ZM4lyDE+xlv3wP2wvY=; b=fXZNEzjpAEg8beql8d+moKCW2D
+        NhvsyZK3u5DwneXnRsjCCl3uwLthGxJ0G1IQLpcGKLjPtM7E5oJtZe+zIhOJI0JQOKcxHYyUwKpdD
+        Fnm3lsZKpi+BDIRPa1xy9q1aXWvJ1N/LyvE3CenOGCTzbpBsQbTPBECKEjnC91eGMtS/+FyZ9Axg4
+        9DphTPPWGx5GnTDAiG539iRndmJ3Lur5fDJRBRLRyrPjkXOVv0NSWwIVsZcGl/O9Jzn7sFZGfACUn
+        VRiofm2B4nAZrBSecyfHzOkxD/XBrq+jRFIN3CJb021BIo+CHV7ynYcraRdxVviudqFP+5UgqVenM
+        d5e84wIQ==;
+Received: from [2601:1c0:6280:3f0::507c]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kRzIu-0006Jv-Eq; Mon, 12 Oct 2020 15:00:01 +0000
+Subject: Re: [PATCH v3 2/2] media: mtk-vcodec: fix build breakage when one of
+ VPU or SCP is enabled
+To:     Alexandre Courbot <acourbot@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, gnurou@gmail.com
+References: <20201012053557.4102148-1-acourbot@chromium.org>
+ <20201012053557.4102148-3-acourbot@chromium.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <b9afc70f-9787-6513-29e7-41ffd6972da0@infradead.org>
+Date:   Mon, 12 Oct 2020 07:59:55 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20201012053557.4102148-3-acourbot@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guenter,
-
-Le lun. 12 oct. 2020 à 7:33, Guenter Roeck <linux@roeck-us.net> a 
-écrit :
-> On Sun, Sep 06, 2020 at 09:29:31PM +0200, Paul Cercueil wrote:
->>  Add support for Ingenic SoCs in arch/mips/generic/.
->> 
->>  The Kconfig changes are here to ensure that it is possible to 
->> compile
->>  either a generic kernel that supports Ingenic SoCs, or a 
->> Ingenic-only
->>  kernel, both using the same code base, to avoid duplicated code.
->> 
->>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+On 10/11/20 10:35 PM, Alexandre Courbot wrote:
+> The addition of MT8183 support added a dependency on the SCP remoteproc
+> module. However the initial patch used the "select" Kconfig directive,
+> which may result in the SCP module to not be compiled if remoteproc was
+> disabled. In such a case, mtk-vcodec would try to link against
+> non-existent SCP symbols. "select" was clearly misused here as explained
+> in kconfig-language.txt.
 > 
-> This patch results in the following build error (mips:allmodconfig).
+> Replace this by a "depends" directive on at least one of the VPU and
+> SCP modules, to allow the driver to be compiled as long as one of these
+> is enabled, and adapt the code to support this new scenario.
 > 
-> In file included from <command-line>:
-> arch/mips/mm/init.c: In function 'mem_init':
-> include/linux/compiler_types.h:319:38: error: call to 
-> '__compiletime_assert_331'
-> 	declared with attribute error: BUILD_BUG_ON failed:
-> 		IS_ENABLED(CONFIG_32BIT) && (_PFN_SHIFT > PAGE_SHIFT)
+> Also adapt the Kconfig text to explain the extra requirements for MT8173
+> and MT8183.
 > 
-> Bisect log attached.
+> Reported-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
+> Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
 
-This doesn't seem to be something that was added with this patch. This 
-COMPILE_BUG_ON() has been here for quite some time... I'm not sure why 
-it triggers now.
+That Ack applied to v2. I have not tested nor acked this version of the patch.
 
-The mips:allmodconfig works here as long as I switch to 
-CPU_LITTLE_ENDIAN (no big-endian compiler). But I'm at a different 
-HEAD, and I can't find commit d67bc7812221606e1886620a357b13f906814af7 
-anywhere, in which repo is that found?
-
-Cheers,
--Paul
-
+> Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 > ---
-> # bad: [d67bc7812221606e1886620a357b13f906814af7] Add linux-next 
-> specific files for 20201009
-> # good: [549738f15da0e5a00275977623be199fbbf7df50] Linux 5.9-rc8
-> git bisect start 'HEAD' 'v5.9-rc8'
-> # bad: [b71be15b496cc71a3434a198fc1a1b9e08af6c57] Merge 
-> remote-tracking branch 'bpf-next/master' into master
-> git bisect bad b71be15b496cc71a3434a198fc1a1b9e08af6c57
-> # bad: [6be11f939f380ef14bc94242cb0262197ce2a054] Merge 
-> remote-tracking branch 'i2c/i2c/for-next' into master
-> git bisect bad 6be11f939f380ef14bc94242cb0262197ce2a054
-> # good: [c03a115d8ad8a87b6d275c3c91c13bc111217bf6] Merge 
-> remote-tracking branch 'samsung-krzk/for-next' into master
-> git bisect good c03a115d8ad8a87b6d275c3c91c13bc111217bf6
-> # bad: [bdd0ef71b0d7d6a8f1d59af57dc73d19ddc26ad0] Merge 
-> remote-tracking branch 'f2fs/dev' into master
-> git bisect bad bdd0ef71b0d7d6a8f1d59af57dc73d19ddc26ad0
-> # bad: [0c4bd40a7ccd06122c1942f525b714abcd9efe36] Merge 
-> remote-tracking branch 'powerpc/next' into master
-> git bisect bad 0c4bd40a7ccd06122c1942f525b714abcd9efe36
-> # bad: [744d2c114d58c11fd76d572021d7ef3c55a1a225] Merge 
-> remote-tracking branch 'nds32/next' into master
-> git bisect bad 744d2c114d58c11fd76d572021d7ef3c55a1a225
-> # good: [1e9f9330cea616f9f2baf8144f049e4b405715dd] Merge 
-> remote-tracking branch 'csky/linux-next' into master
-> git bisect good 1e9f9330cea616f9f2baf8144f049e4b405715dd
-> # bad: [b350041e6f23a71f63f1eee6d939c846838e7e25] MIPS: alchemy: 
-> remove unused ALCHEMY_GPIOINT_AU1000
-> git bisect bad b350041e6f23a71f63f1eee6d939c846838e7e25
-> # good: [43df4eb2fc9511e09c66252c3fec4f8933a77c73] MIPS: Replace 
-> SIBYTE_1956_WAR by CONFIG_SB1_PASS_2_WORKAROUNDS
-> git bisect good 43df4eb2fc9511e09c66252c3fec4f8933a77c73
-> # good: [13a0ea28e8c698cc0d600fdeed8da3e4d478b97e] MIPS: generic: 
-> Init command line with fw_init_cmdline()
-> git bisect good 13a0ea28e8c698cc0d600fdeed8da3e4d478b97e
-> # bad: [d41afc398fbc9dfb8c40b951e97a7f0283346c6a] MAINTAINERS: Update 
-> paths to Ingenic platform code
-> git bisect bad d41afc398fbc9dfb8c40b951e97a7f0283346c6a
-> # bad: [f0f4a753079c636d5d43a102edbde0dad1e7de51] MIPS: generic: Add 
-> support for Ingenic SoCs
-> git bisect bad f0f4a753079c636d5d43a102edbde0dad1e7de51
-> # good: [c3e2ee657418f4f2bff1269c0550f8135ed0c927] MIPS: generic: Add 
-> support for zboot
-> git bisect good c3e2ee657418f4f2bff1269c0550f8135ed0c927
-> # good: [02bd530f888c6d6ba4995c3afcd10f87c136f173] MIPS: generic: 
-> Increase NR_IRQS to 256
-> git bisect good 02bd530f888c6d6ba4995c3afcd10f87c136f173
-> # first bad commit: [f0f4a753079c636d5d43a102edbde0dad1e7de51] MIPS: 
-> generic: Add support for Ingenic SoCs
+>  drivers/media/platform/Kconfig                | 22 +++++++++++++++----
+>  drivers/media/platform/mtk-vcodec/Makefile    | 10 +++++++--
+>  .../platform/mtk-vcodec/mtk_vcodec_fw_priv.h  | 18 +++++++++++++++
+>  3 files changed, 44 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
+> index a3cb104956d5..457b6c39ddc0 100644
+> --- a/drivers/media/platform/Kconfig
+> +++ b/drivers/media/platform/Kconfig
+> @@ -253,18 +253,32 @@ config VIDEO_MEDIATEK_VCODEC
+>  	depends on MTK_IOMMU || COMPILE_TEST
+>  	depends on VIDEO_DEV && VIDEO_V4L2
+>  	depends on ARCH_MEDIATEK || COMPILE_TEST
+> +	depends on VIDEO_MEDIATEK_VPU || MTK_SCP
+> +	# The two following lines ensure we have the same state ("m" or "y") as
+> +	# our dependencies, to avoid missing symbols during link.
+> +	depends on VIDEO_MEDIATEK_VPU || !VIDEO_MEDIATEK_VPU
+> +	depends on MTK_SCP || !MTK_SCP
+>  	select VIDEOBUF2_DMA_CONTIG
+>  	select V4L2_MEM2MEM_DEV
+> -	select VIDEO_MEDIATEK_VPU
+> -	select MTK_SCP
+> +	select VIDEO_MEDIATEK_VCODEC_VPU if VIDEO_MEDIATEK_VPU
+> +	select VIDEO_MEDIATEK_VCODEC_SCP if MTK_SCP
+>  	help
+>  	    Mediatek video codec driver provides HW capability to
+> -	    encode and decode in a range of video formats
+> -	    This driver rely on VPU driver to communicate with VPU.
+> +	    encode and decode in a range of video formats on MT8173
+> +	    and MT8183.
+> +
+> +	    Note that support for MT8173 requires VIDEO_MEDIATEK_VPU to
+> +	    also be selected. Support for MT8183 depends on MTK_SCP.
+>  
+>  	    To compile this driver as modules, choose M here: the
+>  	    modules will be called mtk-vcodec-dec and mtk-vcodec-enc.
+>  
+> +config VIDEO_MEDIATEK_VCODEC_VPU
+> +	bool
+> +
+> +config VIDEO_MEDIATEK_VCODEC_SCP
+> +	bool
+> +
+>  config VIDEO_MEM2MEM_DEINTERLACE
+>  	tristate "Deinterlace support"
+>  	depends on VIDEO_DEV && VIDEO_V4L2
+> diff --git a/drivers/media/platform/mtk-vcodec/Makefile b/drivers/media/platform/mtk-vcodec/Makefile
+> index 6e1ea3a9f052..4618d43dbbc8 100644
+> --- a/drivers/media/platform/mtk-vcodec/Makefile
+> +++ b/drivers/media/platform/mtk-vcodec/Makefile
+> @@ -25,5 +25,11 @@ mtk-vcodec-enc-y := venc/venc_vp8_if.o \
+>  mtk-vcodec-common-y := mtk_vcodec_intr.o \
+>  		mtk_vcodec_util.o \
+>  		mtk_vcodec_fw.o \
+> -		mtk_vcodec_fw_vpu.o \
+> -		mtk_vcodec_fw_scp.o
+> +
+> +ifneq ($(CONFIG_VIDEO_MEDIATEK_VCODEC_VPU),)
+> +mtk-vcodec-common-y += mtk_vcodec_fw_vpu.o
+> +endif
+> +
+> +ifneq ($(CONFIG_VIDEO_MEDIATEK_VCODEC_SCP),)
+> +mtk-vcodec-common-y += mtk_vcodec_fw_scp.o
+> +endif
+> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw_priv.h b/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw_priv.h
+> index 51f1694a7c7d..b41e66185cec 100644
+> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw_priv.h
+> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw_priv.h
+> @@ -27,8 +27,26 @@ struct mtk_vcodec_fw_ops {
+>  	void (*release)(struct mtk_vcodec_fw *fw);
+>  };
+>  
+> +#if IS_ENABLED(CONFIG_VIDEO_MEDIATEK_VCODEC_VPU)
+>  struct mtk_vcodec_fw *mtk_vcodec_fw_vpu_init(struct mtk_vcodec_dev *dev,
+>  					     enum mtk_vcodec_fw_use fw_use);
+> +#else
+> +static inline struct mtk_vcodec_fw *
+> +mtk_vcodec_fw_vpu_init(struct mtk_vcodec_dev *dev,
+> +		       enum mtk_vcodec_fw_use fw_use)
+> +{
+> +	return ERR_PTR(-ENODEV);
+> +}
+> +#endif /* CONFIG_VIDEO_MEDIATEK_VCODEC_VPU */
+> +
+> +#if IS_ENABLED(CONFIG_VIDEO_MEDIATEK_VCODEC_SCP)
+>  struct mtk_vcodec_fw *mtk_vcodec_fw_scp_init(struct mtk_vcodec_dev *dev);
+> +#else
+> +static inline struct mtk_vcodec_fw *
+> +mtk_vcodec_fw_scp_init(struct mtk_vcodec_dev *dev)
+> +{
+> +	return ERR_PTR(-ENODEV);
+> +}
+> +#endif /* CONFIG_VIDEO_MEDIATEK_VCODEC_SCP */
+>  
+>  #endif /* _MTK_VCODEC_FW_PRIV_H_ */
+> 
 
 
+-- 
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
