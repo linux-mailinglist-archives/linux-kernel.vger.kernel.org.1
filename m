@@ -2,202 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD73828B074
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 10:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 153A928B070
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 10:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727689AbgJLIkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 04:40:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727121AbgJLIkF (ORCPT
+        id S1727481AbgJLIjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 04:39:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49073 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726810AbgJLIjo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 04:40:05 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A71AEC0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 01:40:05 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id c20so2263430pfr.8
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 01:40:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=nTI2YVEwOfgh9p+oFG+z1qgnrhBmz+BUoqQKcix3EZ0=;
-        b=vqGvXRZVq1jW4sgEi8S0/sHNxlcmL0ZqERj4Pwa/WZ/ql0G1AeXGVR3f0CADFyveGx
-         yE4XNBUehdPzqu2tIoeidrSoNM+0p+0j7cD6/4C60mkXbuwx65n9284S00AVMuCMxpzo
-         uqC2OXUTVpLHQgjMfUzNeNti7tYU4VRki29c2wScgRT6DVhDhxHhld/yLPfdsOhNpiIT
-         HjAcfMVzJE3T9Kbg0UMlUJz+JCT5AHgArYOkj2SUDhQXJV/3KxaCC79zC7ZAP/nVi9uH
-         jN9YsFuUeBuLNATPATZ0u25+bWi/vJ+VL/CNOz+ep9qFyHAmUYLN9mhb4C6/FxmKGN2v
-         G5Dw==
+        Mon, 12 Oct 2020 04:39:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602491983;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=y3RMpkzwbs4gYYxerAWpVUyUaKh3PAp9tJ4OZPN0XNc=;
+        b=eg4JahuxAuhqw99WMV4fa9clgrz5GObv5LT0jOwcndNtSFA+fSjedYzu3Gafex1efwqGbP
+        KbTlZN3K5rboAJowy0VhLfoLp9IOQgNOp/rRSepgEYZrvdmGRrJvxASIW90RDP7aeVmPdj
+        n6DzqqczP+gJPrMr65FjVmrGakKaAQw=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-512-WpQwv8PiPC6XDGLTjyqdrQ-1; Mon, 12 Oct 2020 04:39:41 -0400
+X-MC-Unique: WpQwv8PiPC6XDGLTjyqdrQ-1
+Received: by mail-ed1-f70.google.com with SMTP id s2so541802edw.21
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 01:39:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=nTI2YVEwOfgh9p+oFG+z1qgnrhBmz+BUoqQKcix3EZ0=;
-        b=OwJBDbWyJwSjck4a7th1PoFDc0lJIWp6FD5RpRliR6AAXZZy2CeNndDgqVkCLd/O1q
-         iMqaHKN4UU7v5kAdQOJAjkVKmzyIa1RzdQ8LhQiWctpomIULwYWX4CJMoB7+nHegZDtK
-         jwFQZjeUa25y+z+nCljPF0ndsHZ0m5ASzMENC2YwK3OiovMb+6dDOaGPMwXTnHplvKUg
-         wv5jC77q7j3MdrOYa39kfXx2pcKgLRefpG6JN3WzWUYWhM/IGsV3rnkiuhbkGyJbEe3M
-         F0440ezMirulMvvtzvWAyZy0I39g+6QKuq+NIdnMHd4eGS2+5lfM7jhE3/Hp/YHDri1r
-         FimQ==
-X-Gm-Message-State: AOAM5316i2YBR+V4B1WpNtVOvbo+I963aoD9fzZ7wkVKHpgnEuIxbH8f
-        2HyDrFabZkIGtrjr7pvuYSyxVtZBxZZiTb2mrjZYCw==
-X-Google-Smtp-Source: ABdhPJzNls6dEzlTfEwkc2JEA15IrxS4rfGeYvT3I9xltofknhxcsIMWp8gAk9p3+kZn0WPzJWpnMpGcH9se0bk2XaE=
-X-Received: by 2002:a63:fd0a:: with SMTP id d10mr12237891pgh.273.1602492005028;
- Mon, 12 Oct 2020 01:40:05 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=y3RMpkzwbs4gYYxerAWpVUyUaKh3PAp9tJ4OZPN0XNc=;
+        b=MoTC16VXxCZwRH5TumH07FO3NRpbhmG6JpO3gzWWpyOoindPyW/jgELDg+ExnS75gA
+         n/XM5VwYka/V3yJIa7PjuLSuf8Rn2T8bORAK6qMLbCg97ZwvGOvUg206vX1WjnEX5teH
+         Ew/Q8VISFo71elvfzXtQokhx0p8j3XpQwi4FR+eQO1ziiN2JJBBurrNh1Vk2k3sYYYDu
+         qXEEqkDCm48iGPtkpXiIEvgjalvNq9JXZBdZ3dZo3cummXn36bMBY9oG2ar2CeMetLz5
+         EddR86yjRt5EC3/EDOyecvtsG5BZHqyfze/UVNAGXCNKqj07VChJtpRpdc01R12EBmCR
+         j0cQ==
+X-Gm-Message-State: AOAM532Ku7UjF8JmzwS1fDHEi/cO1+XMdQxakjjBUbKTECsB5xQM5yba
+        13R18H1xHpTvmIE6UIyGdeZBK3tLR3dB5qsmac07ARwsDTZbEJ//y4AVqdLV1B8J8KbrsAklEME
+        VaaUQXqKs49+i7G0WIuyCRLPH
+X-Received: by 2002:aa7:d7ce:: with SMTP id e14mr13553947eds.258.1602491979764;
+        Mon, 12 Oct 2020 01:39:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzUy1ps24iRo7L+BxM/joct4u9wwg9Ic4AXkut+5FgbTiF6Rd5bXkh7IAxHsgcdzotsN3VScA==
+X-Received: by 2002:aa7:d7ce:: with SMTP id e14mr13553926eds.258.1602491979523;
+        Mon, 12 Oct 2020 01:39:39 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id u2sm9893889edr.70.2020.10.12.01.39.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 01:39:38 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Eduardo Habkost <ehabkost@redhat.com>,
+        Jon Doron <arilou@gmail.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/2] KVM: x86: hyper-v: make KVM_GET_SUPPORTED_HV_CPUID more useful
+In-Reply-To: <20200929150944.1235688-1-vkuznets@redhat.com>
+References: <20200929150944.1235688-1-vkuznets@redhat.com>
+Date:   Mon, 12 Oct 2020 10:39:38 +0200
+Message-ID: <871ri37s8l.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-References: <20201010103854.66746-1-songmuchun@bytedance.com>
- <CAM_iQpUQXctR8UBNRP6td9dWTA705tP5fWKj4yZe9gOPTn_8oQ@mail.gmail.com>
- <CAMZfGtUhVx_iYY3bJZRY5s1PG0N1mCsYGS9Oku8cTqPiMDze-g@mail.gmail.com> <CANn89iKprp7WYeZy4RRO5jHykprnSCcVBc7Tk14Ui_MA9OK7Fg@mail.gmail.com>
-In-Reply-To: <CANn89iKprp7WYeZy4RRO5jHykprnSCcVBc7Tk14Ui_MA9OK7Fg@mail.gmail.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 12 Oct 2020 16:39:28 +0800
-Message-ID: <CAMZfGtXVKER_GM-wwqxrUshDzcEg9FkS3x_BaMTVyeqdYPGSkw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm: proc: add Sock to /proc/meminfo
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     Cong Wang <xiyou.wangcong@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>, rafael@kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Shakeel Butt <shakeelb@google.com>,
-        Will Deacon <will@kernel.org>, Michal Hocko <mhocko@suse.com>,
-        Roman Gushchin <guro@fb.com>, Neil Brown <neilb@suse.de>,
-        rppt@kernel.org, Sami Tolvanen <samitolvanen@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Florian Westphal <fw@strlen.de>, gustavoars@kernel.org,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Thomas Gleixner <tglx@linutronix.de>, dave@stgolabs.net,
-        Michel Lespinasse <walken@google.com>,
-        Jann Horn <jannh@google.com>, chenqiwu@xiaomi.com,
-        christophe.leroy@c-s.fr, Minchan Kim <minchan@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 3:42 PM Eric Dumazet <edumazet@google.com> wrote:
+Vitaly Kuznetsov <vkuznets@redhat.com> writes:
+
+> Changes since v2:
+> - Keep vCPU version of the ioctl intact but make it 'deprecated' in
+>   api.rst [Paolo Bonzini]
+> - First two patches of v2 series already made it to kvm/queue
 >
-> On Mon, Oct 12, 2020 at 6:22 AM Muchun Song <songmuchun@bytedance.com> wr=
-ote:
-> >
-> > On Mon, Oct 12, 2020 at 2:39 AM Cong Wang <xiyou.wangcong@gmail.com> wr=
-ote:
-> > >
-> > > On Sat, Oct 10, 2020 at 3:39 AM Muchun Song <songmuchun@bytedance.com=
-> wrote:
-> > > >
-> > > > The amount of memory allocated to sockets buffer can become signifi=
-cant.
-> > > > However, we do not display the amount of memory consumed by sockets
-> > > > buffer. In this case, knowing where the memory is consumed by the k=
-ernel
-> > >
-> > > We do it via `ss -m`. Is it not sufficient? And if not, why not addin=
-g it there
-> > > rather than /proc/meminfo?
-> >
-> > If the system has little free memory, we can know where the memory is v=
-ia
-> > /proc/meminfo. If a lot of memory is consumed by socket buffer, we cann=
-ot
-> > know it when the Sock is not shown in the /proc/meminfo. If the unaware=
- user
-> > can't think of the socket buffer, naturally they will not `ss -m`. The
-> > end result
-> > is that we still don=E2=80=99t know where the memory is consumed. And w=
-e add the
-> > Sock to the /proc/meminfo just like the memcg does('sock' item in the c=
-group
-> > v2 memory.stat). So I think that adding to /proc/meminfo is sufficient.
-> >
-> > >
-> > > >  static inline void __skb_frag_unref(skb_frag_t *frag)
-> > > >  {
-> > > > -       put_page(skb_frag_page(frag));
-> > > > +       struct page *page =3D skb_frag_page(frag);
-> > > > +
-> > > > +       if (put_page_testzero(page)) {
-> > > > +               dec_sock_node_page_state(page);
-> > > > +               __put_page(page);
-> > > > +       }
-> > > >  }
-> > >
-> > > You mix socket page frag with skb frag at least, not sure this is exa=
-ctly
-> > > what you want, because clearly skb page frags are frequently used
-> > > by network drivers rather than sockets.
-> > >
-> > > Also, which one matches this dec_sock_node_page_state()? Clearly
-> > > not skb_fill_page_desc() or __skb_frag_ref().
-> >
-> > Yeah, we call inc_sock_node_page_state() in the skb_page_frag_refill().
-> > So if someone gets the page returned by skb_page_frag_refill(), it must
-> > put the page via __skb_frag_unref()/skb_frag_unref(). We use PG_private
-> > to indicate that we need to dec the node page state when the refcount o=
-f
-> > page reaches zero.
-> >
+> QEMU series using the feature:
+> https://lists.gnu.org/archive/html/qemu-devel/2020-09/msg02017.html
 >
-> Pages can be transferred from pipe to socket, socket to pipe (splice()
-> and zerocopy friends...)
+> Original description:
 >
->  If you want to track TCP memory allocations, you always can look at
-> /proc/net/sockstat,
-> without adding yet another expensive memory accounting.
+> KVM_GET_SUPPORTED_HV_CPUID was initially implemented as a vCPU ioctl but
+> this is not very useful when VMM is just trying to query which Hyper-V
+> features are supported by the host prior to creating VM/vCPUs. The data
+> in KVM_GET_SUPPORTED_HV_CPUID is mostly static with a few exceptions but
+> it seems we can change this. Add support for KVM_GET_SUPPORTED_HV_CPUID as
+> a system ioctl as well.
+>
+> QEMU specific description:
+> In some cases QEMU needs to collect the information about which Hyper-V
+> features are supported by KVM and pass it up the stack. For non-hyper-v
+> features this is done with system-wide KVM_GET_SUPPORTED_CPUID/
+> KVM_GET_MSRS ioctls but Hyper-V specific features don't get in the output
+> (as Hyper-V CPUIDs intersect with KVM's). In QEMU, CPU feature expansion
+> happens before any KVM vcpus are created so KVM_GET_SUPPORTED_HV_CPUID
+> can't be used in its current shape.
+>
+> Vitaly Kuznetsov (2):
+>   KVM: x86: hyper-v: allow KVM_GET_SUPPORTED_HV_CPUID as a system ioctl
+>   KVM: selftests: test KVM_GET_SUPPORTED_HV_CPUID as a system ioctl
+>
+>  Documentation/virt/kvm/api.rst                | 16 ++--
+>  arch/x86/kvm/hyperv.c                         |  6 +-
+>  arch/x86/kvm/hyperv.h                         |  4 +-
+>  arch/x86/kvm/vmx/evmcs.c                      |  3 +-
+>  arch/x86/kvm/x86.c                            | 45 ++++++----
+>  include/uapi/linux/kvm.h                      |  3 +-
+>  .../testing/selftests/kvm/include/kvm_util.h  |  2 +
+>  tools/testing/selftests/kvm/lib/kvm_util.c    | 26 ++++++
+>  .../selftests/kvm/x86_64/hyperv_cpuid.c       | 87 +++++++++++--------
+>  9 files changed, 123 insertions(+), 69 deletions(-)
 
-The 'mem' item in the /proc/net/sockstat does not represent real
-memory usage. This is just the total amount of charged memory.
+Ping)
 
-For example, if a task sends a 10-byte message, it only charges one
-page to memcg. But the system may allocate 8 pages. Therefore, it
-does not truly reflect the memory allocated by the above memory
-allocation path. We can see the difference via the following message.
+Still hoping this can be picked up for 5.10.
 
-cat /proc/net/sockstat
-  sockets: used 698
-  TCP: inuse 70 orphan 0 tw 617 alloc 134 mem 13
-  UDP: inuse 90 mem 4
-  UDPLITE: inuse 0
-  RAW: inuse 1
-  FRAG: inuse 0 memory 0
+the latest QEMU patchset was posted last Friday:
+https://lists.gnu.org/archive/html/qemu-devel/2020-10/msg02443.html
 
-cat /proc/meminfo | grep Sock
-  Sock:              13664 kB
+-- 
+Vitaly
 
-The /proc/net/sockstat only shows us that there are 17*4 kB TCP
-memory allocations. But apply this patch, we can see that we truly
-allocate 13664 kB(May be greater than this value because of per-cpu
-stat cache). Of course the load of the example here is not high. In
-some high load cases, I believe the difference here will be even
-greater.
-
---=20
-Yours,
-Muchun
