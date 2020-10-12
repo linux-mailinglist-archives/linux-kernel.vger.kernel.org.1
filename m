@@ -2,116 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56DFC28BE15
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:35:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A7E28BE1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403889AbgJLQfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 12:35:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36238 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390442AbgJLQfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 12:35:45 -0400
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A743C2087E;
-        Mon, 12 Oct 2020 16:35:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602520545;
-        bh=YcQkpt6LAikAkB8QxaNKH7LeylYY9QtLEPxQqeO6Opc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=h3CNKfqwIHPV7BZ9hlGFurPVOoV3tPc0rsL8zhSQ3bYNeva/1gL1LMR6EgvNgZ1ky
-         Iue96vWauoxpSjbJ0nTKmHeG1rslzfbYWaB/Mq5x5OWvhn/dOTTQ8G9m+BlO9Y3Tp0
-         Y7SUutsnxm/64ZLRdP9PVhAzUFjaKyM+162FzfvU=
-Date:   Mon, 12 Oct 2020 09:35:43 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Daniel Rosenberg <drosen@google.com>
-Subject: [GIT PULL] fscrypt updates for 5.10
-Message-ID: <20201012163543.GB858@sol.localdomain>
+        id S2403912AbgJLQgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 12:36:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403803AbgJLQgS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 12:36:18 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 874E1C0613D0;
+        Mon, 12 Oct 2020 09:36:18 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id o9so8875018plx.10;
+        Mon, 12 Oct 2020 09:36:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Gd86cnVMEv6nUkqocEH/guphnmHfom7rwvxSoLZ1nQI=;
+        b=k7q3poQliNKrMvFe1BHWGlTNslk5tloXi5A3aKJecrv11W7LeZbZ8+46JBcbyW4WFj
+         oG0T+Oq8U5Uh9y4fT7Ye1kBl7fJJSMZeFPBOuUI8pWi5nRyBgk02EQIDi1FmhO4ZgiZy
+         nszISfAfxb3Q3AEySwTSq5nv2RLPMK78fsKIFeF5fmbx1AdnkWbphY8cD5aGxRNPBEDx
+         pcki268j1GbJ9vNuYYoiqJTqDamy6sU9s1yXq0Se2YsOjgBJ67Srp2H2Br4P5LUv1V6m
+         HmQwSqdAasoEgG9uJfOjBi1b55fLxuzOpaWpk6I4L8vmap+gy6lk4PNLLeupWaXE2dgz
+         FWHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Gd86cnVMEv6nUkqocEH/guphnmHfom7rwvxSoLZ1nQI=;
+        b=GU1F7+/1/KB59N8qS4U0Mbx5lPM9QKgjULBGX9AF/yv1+11vV8J94xq8KHpGloFd8l
+         WmvIfSAVa6D2hjfKCz1lCVnSG13ojr8zgCWREeQyIGQIbwtnU14RTBJzHA+5gXjuzQKW
+         66PPgH2lXk3X1H9HQCcVYxd7e5WWZQpSRCUDv8mTlt+3QsbNVCxriwJxc2xtnAk7cJuz
+         2sBJIfFBuHCWqgCco5TfE8QW1+ioejn1D6A8z9VDAl3LoQtR0q1BNO0jVxkj+8USpPCi
+         v8/zd5CeJrPjyG9/M+ogJ8ncpeC9jHVyGLs6obPpbuBsJdRRMGFolsXHDW3UoPHIdW4w
+         dJeQ==
+X-Gm-Message-State: AOAM533NoJCGo5QAITkNvFtebOyXRmkhrr5UCwlazkVvy852GxSdXLMs
+        5YSsf9ebsRSx2EQsc42DHJo=
+X-Google-Smtp-Source: ABdhPJz8AZdqfnri4o1DwdFFnh8hMt0zGwqgg9ejf3blzSfx/a97v/U3yLzd4m7LH8J9Ei3f+RmI2A==
+X-Received: by 2002:a17:902:a715:b029:d3:c2b4:bcee with SMTP id w21-20020a170902a715b02900d3c2b4bceemr25272756plq.22.1602520577791;
+        Mon, 12 Oct 2020 09:36:17 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:a404:280a:90bd:7a49:dcda:1fb1])
+        by smtp.gmail.com with ESMTPSA id q24sm23427124pfn.72.2020.10.12.09.36.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Oct 2020 09:36:16 -0700 (PDT)
+Subject: Re: [PATCH RFC 0/2] use interpreters to invoke scripts
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-ia64@vger.kernel.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <2b00e566-112c-5657-c10f-7f210d3eae93@gmail.com>
+ <CAK7LNAQwib66YwnMuN9qGQBs8dqqVaufOr9BqYMKfYUqiXu6jg@mail.gmail.com>
+From:   Ujjwal Kumar <ujjwalkumar0501@gmail.com>
+Message-ID: <0dfaf697-1f69-74c4-ffc1-30b77026db68@gmail.com>
+Date:   Mon, 12 Oct 2020 22:06:09 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <CAK7LNAQwib66YwnMuN9qGQBs8dqqVaufOr9BqYMKfYUqiXu6jg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit f4d51dffc6c01a9e94650d95ce0104964f8ae822:
+On 12/10/20 9:48 pm, Masahiro Yamada wrote:
+> On Sun, Oct 4, 2020 at 12:19 AM Ujjwal Kumar <ujjwalkumar0501@gmail.com> wrote:
+>>
+>> This patch series aims at removing the dependency on execute
+>> bit of the scripts in the kbuild system.
+>>
+>> If not working with fresh clone of linux-next, clean the srctree:
+>> make distclean
+>> make tools/clean
+>>
+>> To test the dependency on execute bits, I tried building the
+>> kernel after removing x-bits for all files in the repository.
+>> Removing execute bits:
+>> for i in $(find -executable -type f); do chmod -x $i; done
+>>
+>> Any attempts to configure (or build) the kernel fail because of
+>> 'Permission denied' on scripts with the following error:
+>> $ make allmodconfig
+>> sh: ./scripts/gcc-version.sh: Permission denied
+>> init/Kconfig:34: syntax error
+>> init/Kconfig:33: invalid statement
+>> init/Kconfig:34: invalid statement
+>> sh: ./scripts/ld-version.sh: Permission denied
+>> init/Kconfig:39: syntax error
+>> init/Kconfig:38: invalid statement
+>> sh: ./scripts/clang-version.sh: Permission denied
+>> init/Kconfig:49: syntax error
+>> init/Kconfig:48: invalid statement
+>> make[1]: *** [scripts/kconfig/Makefile:71: allmodconfig] Error 1
+>> make: *** [Makefile:606: allmodconfig] Error 2
+>>
+>> Changes:
+>> 1. Adds specific interpreters (in Kconfig) to invoke
+>> scripts.
+>>
+>> After this patch I could successfully do a kernel build
+>> without any errors.
+>>
+>> 2. Again, adds specific interpreters to other parts of
+>> kbuild system.
+>>
+>> I could successfully perform the following make targets after
+>> applying the PATCH 2/2:
+>> make headerdep
+>> make kselftest-merge
+>> make rpm-pkg
+>> make perf-tar-src-pkg
+>> make ARCH=ia64 defconfig
+>> ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make prepare
+>>
+>> Following changes in PATCH 2/2 are not yet tested:
+>> arch/arm64/kernel/vdso32/Makefile
+>> arch/nds32/kernel/vdso/Makefile
+>> scripts/Makefile.build
+>>
+>> Ujjwal Kumar (2):
+>>   kconfig: use interpreters to invoke scripts
+>>   kbuild: use interpreters to invoke scripts
+>>
+>>  Makefile                          |  4 ++--
+>>  arch/arm64/kernel/vdso/Makefile   |  2 +-
+>>  arch/arm64/kernel/vdso32/Makefile |  2 +-
+>>  arch/ia64/Makefile                |  4 ++--
+>>  arch/nds32/kernel/vdso/Makefile   |  2 +-
+>>  init/Kconfig                      | 16 ++++++++--------
+>>  scripts/Makefile.build            |  2 +-
+>>  scripts/Makefile.package          |  4 ++--
+>>  8 files changed, 18 insertions(+), 18 deletions(-)
+>>
+>> --
+>> 2.26.2
+>>
+> 
+> 
+> Andrew Morton suggested and applied the doc patch
+> (commit e9aae7af4601688386 in linux-next),
+> but did not pick up this series.
+> 
+> It is difficult to predict which patch he would
+> pick up, and which he would not.
+> 
+> 
+> I can apply this series
+> together with Lukas' base patch.
+> 
+> 
+> I pointed out possible mistakes in 2/2.
+> I can locally fix them up if you agree.
 
-  Linux 5.9-rc4 (2020-09-06 17:11:40 -0700)
+I agree with the changes you pointed out. I was in the process
+of sending a V2 patch series (almost done). But if you prefer 
+on locally fixing them, that is completely fine.
 
-are available in the Git repository at:
+> 
+> 
+> BTW, Kees Cook suggested dropping the x bit
+> from all scripts, but I did not agree with that part.
 
-  https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
+IIRC, in the discussion Kees Cook suggestion was not to drop
+x bit but rather he meant to use that as a trick to catch
+any existing dependency on x bit.
 
-for you to fetch changes up to 5b2a828b98ec1872799b1b4d82113c76a12d594f:
+> 
+> 
+> In the doc change, Lukas mentioned
+> "further clean-up patches", but I hope
+> it does not mean dropping the x bits.
 
-  fscrypt: export fscrypt_d_revalidate() (2020-09-28 14:44:51 -0700)
+IMO, he did not mean to drop the x bits.
+But rather I have many more small changes similar to these.
+He must be referring to these two patches and any future
+patches around this issue.
 
-----------------------------------------------------------------
+> 
+> 
+> --
+> Best Regards
+> 
+> Masahiro Yamada
+> 
 
-This release, we rework the implementation of creating new encrypted
-files in order to fix some deadlocks and prepare for adding fscrypt
-support to CephFS, which Jeff Layton is working on.
-
-We also export a symbol in preparation for the above-mentioned CephFS
-support and also for ext4/f2fs encrypt+casefold support.
-
-Finally, there are a few other small cleanups.
-
-As usual, all these patches have been in linux-next with no reported
-issues, and I've tested them with xfstests.
-
-----------------------------------------------------------------
-Eric Biggers (18):
-      fscrypt: restrict IV_INO_LBLK_32 to ino_bits <= 32
-      fscrypt: add fscrypt_prepare_new_inode() and fscrypt_set_context()
-      ext4: factor out ext4_xattr_credits_for_new_inode()
-      ext4: use fscrypt_prepare_new_inode() and fscrypt_set_context()
-      f2fs: use fscrypt_prepare_new_inode() and fscrypt_set_context()
-      ubifs: use fscrypt_prepare_new_inode() and fscrypt_set_context()
-      fscrypt: adjust logging for in-creation inodes
-      fscrypt: remove fscrypt_inherit_context()
-      fscrypt: require that fscrypt_encrypt_symlink() already has key
-      fscrypt: stop pretending that key setup is nofs-safe
-      fscrypt: make "#define fscrypt_policy" user-only
-      fscrypt: move fscrypt_prepare_symlink() out-of-line
-      fscrypt: handle test_dummy_encryption in more logical way
-      fscrypt: make fscrypt_set_test_dummy_encryption() take a 'const char *'
-      fscrypt: use sha256() instead of open coding
-      fscrypt: don't call no-key names "ciphertext names"
-      fscrypt: rename DCACHE_ENCRYPTED_NAME to DCACHE_NOKEY_NAME
-      fscrypt: export fscrypt_d_revalidate()
-
-Jeff Layton (1):
-      fscrypt: drop unused inode argument from fscrypt_fname_alloc_buffer
-
- fs/crypto/crypto.c           |   4 +-
- fs/crypto/fname.c            |  60 ++++++-------
- fs/crypto/fscrypt_private.h  |  10 ++-
- fs/crypto/hooks.c            |  80 +++++++++++------
- fs/crypto/inline_crypt.c     |   7 +-
- fs/crypto/keyring.c          |   9 +-
- fs/crypto/keysetup.c         | 182 +++++++++++++++++++++++++++----------
- fs/crypto/keysetup_v1.c      |   8 +-
- fs/crypto/policy.c           | 209 ++++++++++++++++++++++++-------------------
- fs/ext4/dir.c                |   2 +-
- fs/ext4/ext4.h               |   6 +-
- fs/ext4/ialloc.c             | 119 ++++++++++++------------
- fs/ext4/namei.c              |   7 +-
- fs/ext4/super.c              |  16 ++--
- fs/f2fs/dir.c                |   6 +-
- fs/f2fs/f2fs.h               |  25 +-----
- fs/f2fs/namei.c              |   7 +-
- fs/f2fs/super.c              |  15 ++--
- fs/ubifs/dir.c               |  40 ++++-----
- include/linux/dcache.h       |   2 +-
- include/linux/fscrypt.h      | 159 +++++++++++++-------------------
- include/uapi/linux/fscrypt.h |   6 +-
- 22 files changed, 535 insertions(+), 444 deletions(-)
+Thanks
+Ujjwal Kumar
