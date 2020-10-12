@@ -2,189 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B002428BA67
+	by mail.lfdr.de (Postfix) with ESMTP id 38BA328BA66
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:10:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730628AbgJLOIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:08:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25820 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391222AbgJLOIE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 10:08:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602511682;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SaF6cMVDlVpoFfwkDVmoyVLnyiyb+8WHLNcrHzGdFx8=;
-        b=StR1HqHGCBRieO9eumNH+RXgTFkZwrmu7cBYxS8yEYMARCF/mM9iziVRaRhoUbakoL3E4o
-        s024R4RJKrMRsGTrWEMPbo7dEX9iQHuueD8nndiv7MbCS+Xj9YHd5UKxQDdWBMtnfWfHeJ
-        muV1QQ5kV1wwuDNxHFPO3bk7UiKG5UI=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-245-pwVprZdeOJCJyYyNg2MyZQ-1; Mon, 12 Oct 2020 10:07:59 -0400
-X-MC-Unique: pwVprZdeOJCJyYyNg2MyZQ-1
-Received: by mail-qt1-f197.google.com with SMTP id y20so12704767qta.6
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 07:07:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=SaF6cMVDlVpoFfwkDVmoyVLnyiyb+8WHLNcrHzGdFx8=;
-        b=KgjDOrpiyEBRw/7q8Bje26+JGLj5ISqbEnLyUapQxvdLRs/QdhCUgI8MLnbanadx2+
-         xpibCtsuRnAQRiv1dTxE8h66s93/VNPM61EAE4amuAwcDuFG40Ozahv1iBd6ADSkOjiG
-         t/2MzK7d5NvovMPCD0vo0/xiXjdJHXs3YL1lbn9oZL1BkQ+VvRzpBc1ukuxSnxcPWPRV
-         gy+/80/wO6DdBgEsq2J1R6cGU00akJ+ANMzEZaHGIiaT0jMDMTrlTqlKDEzKcd7N5nLz
-         x2dBsx+hEBjXTWoWtlD3prZzZx3XPCE/c7GadeFkUDPi9NamS3djI+Jd1Vur2lpkxcjX
-         gL4g==
-X-Gm-Message-State: AOAM533K4/V8A+vizxTHj45682nrCoqAK6qhjkuM26FgEvTX8IvhcLnR
-        Dfg+KTfv+nwogbPiu1mkAUyWB6RJsPwuUHqHY0+rTFPCKSlStrJV/2otTxzfjiKFrD2DsrOhVJV
-        jQ1wEkNXEq6mhj7E3DwE2FUiw
-X-Received: by 2002:a37:b782:: with SMTP id h124mr7138544qkf.169.1602511679206;
-        Mon, 12 Oct 2020 07:07:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwQcHEwB54mQ/ZTK405YXwJFA8SS8HAiWpwGkm1pSQUWn+MqMwcU89Xxlt4bFwLro0ehIWuMA==
-X-Received: by 2002:a37:b782:: with SMTP id h124mr7138512qkf.169.1602511678829;
-        Mon, 12 Oct 2020 07:07:58 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id l13sm13088697qtv.82.2020.10.12.07.07.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Oct 2020 07:07:57 -0700 (PDT)
-Subject: Re: [PATCH v9 1/6] fpga: dfl: fix the definitions of type &
- feature_id for dfl devices
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     mdf@kernel.org, krzk@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        lgoncalv@redhat.com, hao.wu@intel.com
-References: <1602313793-21421-1-git-send-email-yilun.xu@intel.com>
- <1602313793-21421-2-git-send-email-yilun.xu@intel.com>
- <8786ca8f-7edd-d7b1-7eca-6447814c6e5e@redhat.com>
- <20201012024100.GC29436@yilunxu-OptiPlex-7050>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <440b7d06-426f-86c6-cf3f-396a9cc6bff7@redhat.com>
-Date:   Mon, 12 Oct 2020 07:07:55 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1730757AbgJLOIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:08:46 -0400
+Received: from mga05.intel.com ([192.55.52.43]:56827 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731799AbgJLOIe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 10:08:34 -0400
+IronPort-SDR: YkfdJNv7f51CxYKqkUq4TDfpBFt7HnIZdcW6RBy9hOIjWS1Y2vyW0r40vr0pGpZV+rbK7pgqgO
+ 3SEju5/lnwyg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="250439094"
+X-IronPort-AV: E=Sophos;i="5.77,366,1596524400"; 
+   d="scan'208";a="250439094"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 07:08:33 -0700
+IronPort-SDR: wbAGRGWAXQa1ibfUea/jP7QJf6mUAd5tHGdH8L/hm79dKaKdKhvacleFkl0isuM7S5/3jrGBr8
+ cTM3t7JAxeEA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,366,1596524400"; 
+   d="scan'208";a="356628626"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga007.jf.intel.com with ESMTP; 12 Oct 2020 07:08:31 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+        id 0A663150; Mon, 12 Oct 2020 17:08:30 +0300 (EEST)
+Date:   Mon, 12 Oct 2020 17:08:30 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>,
+        Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/boot/64: Initialize 5-level paging variables earlier
+Message-ID: <20201012140830.vrc25x2gwo7yo4kn@black.fi.intel.com>
+References: <20201008191623.2881677-1-nivedita@alum.mit.edu>
+ <20201010191110.4060905-1-nivedita@alum.mit.edu>
+ <20201010192624.GA4062867@rani.riverdale.lan>
 MIME-Version: 1.0
-In-Reply-To: <20201012024100.GC29436@yilunxu-OptiPlex-7050>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201010192624.GA4062867@rani.riverdale.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Oct 10, 2020 at 03:26:24PM -0400, Arvind Sankar wrote:
+> On Sat, Oct 10, 2020 at 03:11:10PM -0400, Arvind Sankar wrote:
+> > Commit
+> >   ca0e22d4f011 ("x86/boot/compressed/64: Always switch to own page table")
+> > started using a new set of pagetables even without KASLR.
+> > 
+> > After that commit, initialize_identity_maps() is called before the
+> > 5-level paging variables are setup in choose_random_location(), which
+> > will not work if 5-level paging is actually enabled.
+> 
+> Note that I don't have hardware that supports 5-level paging, so this
+> is not actually tested with 5-level, but based on code inspection, it
+> shouldn't work.
 
-On 10/11/20 7:41 PM, Xu Yilun wrote:
-> On Sat, Oct 10, 2020 at 08:07:07AM -0700, Tom Rix wrote:
->> On 10/10/20 12:09 AM, Xu Yilun wrote:
->>> The value of the field dfl_device.type comes from the 12 bits register
->>> field DFH_ID according to DFL spec. So this patch changes the definition
->>> of the type field to u16.
->>>
->>> Also it is not necessary to illustrate the valid bits of the type field
->>> in comments. Instead we should explicitly define the possible values in
->>> the enumeration type for it, because they are shared by hardware spec.
->>> We should not let the compiler decide these values.
->>>
->>> Similar changes are also applied to dfl_device.feature_id.
->>>
->>> This patch also fixed the MODALIAS format according to the changes
->>> above.
->>>
->>> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
->>> ---
->>> v9: no change
->>> ---
->>>  drivers/fpga/dfl.c |  3 +--
->>>  drivers/fpga/dfl.h | 14 +++++++-------
->>>  2 files changed, 8 insertions(+), 9 deletions(-)
->>>
->>> diff --git a/drivers/fpga/dfl.c b/drivers/fpga/dfl.c
->>> index b450870..5a6ba3b 100644
->>> --- a/drivers/fpga/dfl.c
->>> +++ b/drivers/fpga/dfl.c
->>> @@ -298,8 +298,7 @@ static int dfl_bus_uevent(struct device *dev, struct kobj_uevent_env *env)
->>>  {
->>>  	struct dfl_device *ddev = to_dfl_dev(dev);
->>>  
->>> -	/* The type has 4 valid bits and feature_id has 12 valid bits */
->>> -	return add_uevent_var(env, "MODALIAS=dfl:t%01Xf%03X",
->>> +	return add_uevent_var(env, "MODALIAS=dfl:t%04Xf%04X",
->>>  			      ddev->type, ddev->feature_id);
->>>  }
->>>  
->>> diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
->>> index 5dc758f..ac373b1 100644
->>> --- a/drivers/fpga/dfl.h
->>> +++ b/drivers/fpga/dfl.h
->>> @@ -520,19 +520,19 @@ long dfl_feature_ioctl_set_irq(struct platform_device *pdev,
->>>   * enum dfl_id_type - define the DFL FIU types
->>>   */
->>>  enum dfl_id_type {
->>> -	FME_ID,
->>> -	PORT_ID,
->>> +	FME_ID = 0,
->>> +	PORT_ID = 1,
->> This is redundant, why make this change ?
-> These values are shared by hardware spec, so it is suggested that the
-> values of the enum type should be explicitly set, otherwise the compiler
-> is in its right to do whatever it wants with them (within reason...)
->
-> Please see the original discussion:
-> https://lore.kernel.org/linux-fpga/20200923055436.GA2629915@kroah.com/
+qemu supports it. -cpu "qemu64,+la57"
 
-I don't believe this is undefined behavior for the compiler
-
-from c11 6.7.2.2,3
-
-The identifiers in an enumerator list are declared as constants that have type int and may appear wherever such are permitted.127) An enumerator with = defines its enumeration constant as the value of the constant expression. If the first enumerator has no =, the value of its enumeration constant is 0. Each subsequent enumerator with no = defines its enumeration constant as the value of the constant expression obtained by adding 1 to the value of the previous enumeration constant. (The use of enumerators with = may produce enumeration constants with values that duplicate other values in the same enumeration.) The enumerators of an enumeration are also known as its members.
-
-setting them again has some use for documentation so this change is ok if you have strong feeling for it.
-
-Tom
-
->
-> Thanks,
-> Yilun
->
->> Tom
->>
->>>  	DFL_ID_MAX,
->>>  };
->>>  
->>>  /**
->>>   * struct dfl_device_id -  dfl device identifier
->>> - * @type: contains 4 bits DFL FIU type of the device. See enum dfl_id_type.
->>> - * @feature_id: contains 12 bits feature identifier local to its DFL FIU type.
->>> + * @type: DFL FIU type of the device. See enum dfl_id_type.
->>> + * @feature_id: feature identifier local to its DFL FIU type.
->>>   * @driver_data: driver specific data.
->>>   */
->>>  struct dfl_device_id {
->>> -	u8 type;
->>> +	u16 type;
->>>  	u16 feature_id;
->>>  	unsigned long driver_data;
->>>  };
->>> @@ -543,7 +543,7 @@ struct dfl_device_id {
->>>   * @dev: generic device interface.
->>>   * @id: id of the dfl device.
->>>   * @type: type of DFL FIU of the device. See enum dfl_id_type.
->>> - * @feature_id: 16 bits feature identifier local to its DFL FIU type.
->>> + * @feature_id: feature identifier local to its DFL FIU type.
->>>   * @mmio_res: mmio resource of this dfl device.
->>>   * @irqs: list of Linux IRQ numbers of this dfl device.
->>>   * @num_irqs: number of IRQs supported by this dfl device.
->>> @@ -553,7 +553,7 @@ struct dfl_device_id {
->>>  struct dfl_device {
->>>  	struct device dev;
->>>  	int id;
->>> -	u8 type;
->>> +	u16 type;
->>>  	u16 feature_id;
->>>  	struct resource mmio_res;
->>>  	int *irqs;
-
+-- 
+ Kirill A. Shutemov
