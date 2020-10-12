@@ -2,119 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB33A28B0ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 10:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B18528B0EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 10:57:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728817AbgJLI4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 04:56:52 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:35871 "EHLO ozlabs.org"
+        id S1728859AbgJLI5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 04:57:06 -0400
+Received: from mga18.intel.com ([134.134.136.126]:30277 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726104AbgJLI4w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 04:56:52 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C8sxG0Xhlz9sSG;
-        Mon, 12 Oct 2020 19:56:49 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1602493010;
-        bh=0BDj2/7yaYfUlmI/C6roPX3WAC3VlzB0zh4re1S9MbQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=AWQ8TkvqMLwH8YTbfnDDqOyZkLcEpOI62qkzIy/RPcp96MZS1pE6++qZadbftztMZ
-         FK4bPzVDBFHNS69XitrfO/70ShF/+2LcKuM8Ux3blxN/tZACezMpcCIVUsrxdLW/gF
-         u0C78yBrphCSlApdgF03p4vP0FFo+csUG8GxQW/DGjpponHkYYrj6dF0Vn6/70rtdW
-         FgnETtwTCzGZXd3cjgZuBY3o6Dw54BFdlUh7GwWJvmCZnhBH8oeSbLkzv8Rgb3rLje
-         ZrZRmYZbcfRlIudzhhhFzhXMkrqZTsfLcbJdpA1gsn6oPp31ybNnsQU7tjBx6y3KbL
-         Qi+fF4hC1m8yQ==
-Date:   Mon, 12 Oct 2020 19:56:49 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Brendan Higgins <brendanhiggins@google.com>
-Cc:     David Gow <davidgow@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Patricia Alfonso <trishalfonso@google.com>
-Subject: linux-next: manual merge of the akpm-current tree with the
- kunit-next tree
-Message-ID: <20201012195649.2047671f@canb.auug.org.au>
+        id S1726104AbgJLI5G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 04:57:06 -0400
+IronPort-SDR: EQKaHuhpNKHV196kVb5jZaTd6S8GTyDQjW23fF6QWf9HqS5z41wCjMZJCGGvrQtmlne90iAH73
+ 006KOZxW0+BA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="153540071"
+X-IronPort-AV: E=Sophos;i="5.77,366,1596524400"; 
+   d="scan'208";a="153540071"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 01:57:04 -0700
+IronPort-SDR: zwAvp9tbj9CscFsxBTroJaWpbR+6PyB3989f4TMURwbpWthze4UMrqzJniSTQzu33yjvVWkPsE
+ OLxTttoQMp5Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,366,1596524400"; 
+   d="scan'208";a="420163741"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga001.fm.intel.com with ESMTP; 12 Oct 2020 01:57:03 -0700
+Received: from [10.249.225.186] (abudanko-mobl.ccr.corp.intel.com [10.249.225.186])
+        by linux.intel.com (Postfix) with ESMTP id 7BE575805EC;
+        Mon, 12 Oct 2020 01:57:01 -0700 (PDT)
+Subject: [PATCH v1 05/15] perf session: introduce decompressor into trace
+ reader object
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com>
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <a7fa42f9-a3a9-0ee0-4933-fe5d1d60176f@linux.intel.com>
+Date:   Mon, 12 Oct 2020 11:57:00 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/.wrJV8t32EmvOT+.NOrF1n1";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/.wrJV8t32EmvOT+.NOrF1n1
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+Introduce decompressor to trace reader object so that decompression
+could be executed on per trace file basis separately for every
+trace file located at data directory.
 
-Today's linux-next merge of the akpm-current tree got a conflict in:
+Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+---
+ tools/perf/util/session.c | 4 +++-
+ tools/perf/util/session.h | 1 +
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-  lib/kunit/test.c
+diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+index 911b2dbcd0ac..6afc670fdf0c 100644
+--- a/tools/perf/util/session.c
++++ b/tools/perf/util/session.c
+@@ -44,6 +44,8 @@ static int perf_session__process_compressed_event(struct perf_session *session,
+ 	u64 decomp_last_rem = 0;
+ 	size_t mmap_len, decomp_len = session->header.env.comp_mmap_len;
+ 	struct decomp *decomp, *decomp_last = session->decomp_last;
++	struct zstd_data *zstd_data = session->reader ?
++		&(session->reader->zstd_data) : &(session->zstd_data);
+ 
+ 	if (decomp_last) {
+ 		decomp_last_rem = decomp_last->size - decomp_last->head;
+@@ -71,7 +73,7 @@ static int perf_session__process_compressed_event(struct perf_session *session,
+ 	src = (void *)event + sizeof(struct perf_record_compressed);
+ 	src_size = event->pack.header.size - sizeof(struct perf_record_compressed);
+ 
+-	decomp_size = zstd_decompress_stream(&(session->zstd_data), src, src_size,
++	decomp_size = zstd_decompress_stream(zstd_data, src, src_size,
+ 				&(decomp->data[decomp_last_rem]), decomp_len - decomp_last_rem);
+ 	if (!decomp_size) {
+ 		munmap(decomp, mmap_len);
+diff --git a/tools/perf/util/session.h b/tools/perf/util/session.h
+index abdb8518a81f..4fc9ccdf7970 100644
+--- a/tools/perf/util/session.h
++++ b/tools/perf/util/session.h
+@@ -42,6 +42,7 @@ struct reader {
+ 	u64		 data_size;
+ 	u64		 data_offset;
+ 	reader_cb_t	 process;
++	struct zstd_data zstd_data;
+ };
+ 
+ struct perf_session {
+-- 
+2.24.1
 
-between commit:
 
-  45dcbb6f5ef7 ("kunit: test: add test plan to KUnit TAP format")
-
-from the kunit-next tree and commit:
-
-  e685acc91080 ("KUnit: KASAN Integration")
-
-from the akpm-current tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc lib/kunit/test.c
-index de07876b6601,dcc35fd30d95..000000000000
---- a/lib/kunit/test.c
-+++ b/lib/kunit/test.c
-@@@ -15,11 -16,16 +16,6 @@@
-  #include "string-stream.h"
-  #include "try-catch-impl.h"
- =20
-- static void kunit_set_failure(struct kunit *test)
- -static void kunit_print_tap_version(void)
---{
-- 	WRITE_ONCE(test->success, false);
- -	static bool kunit_has_printed_tap_version;
- -
- -	if (!kunit_has_printed_tap_version) {
- -		pr_info("TAP version 14\n");
- -		kunit_has_printed_tap_version =3D true;
- -	}
---}
---
-  /*
-   * Append formatted message to log, size of which is limited to
-   * KUNIT_LOG_SIZE bytes (including null terminating byte).
-
---Sig_/.wrJV8t32EmvOT+.NOrF1n1
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+EGlEACgkQAVBC80lX
-0Gz+GQf+LCbynHutK7u7OFR4ocFe6LBwX3VNnT1+NXffwaPfqTd/DC6+hSfevPrq
-e8bq5y/xFVjvEKPsaQb5AfpfqsTnN4qAOsypbTmA6AoF9FMds5BIUKRwjWJ3NhQW
-IAbdEa12oynd2/2f4wrXYS67W2S11ZzU2bbZuAgyWCyaVC7yZ//sMzylhDRm0lhW
-JcqxC+ZfHODoWM31fQ9AC3e/4sPmUYLkpEfDlAH2yqG1+u6J7HEZcZ6OrUJceZMi
-T+58SsFgb5QuMl/fQATy2jvFhhGc4j8ePy9EN8pGff54Ia2aoVI2/Y+WGH8bCOZZ
-wOheGFl3vx1EZHH2JotcxXv+23C2fQ==
-=Ewv4
------END PGP SIGNATURE-----
-
---Sig_/.wrJV8t32EmvOT+.NOrF1n1--
