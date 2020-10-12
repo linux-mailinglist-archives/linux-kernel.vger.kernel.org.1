@@ -2,94 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58DBA28AEE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 09:18:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5364928AEEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 09:18:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726877AbgJLHSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 03:18:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726694AbgJLHSZ (ORCPT
+        id S1727088AbgJLHSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 03:18:49 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:36483 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726413AbgJLHSt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 03:18:25 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56FF5C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 00:18:25 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kRs66-0003Eq-SE; Mon, 12 Oct 2020 09:18:18 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kRs65-0005qm-VF; Mon, 12 Oct 2020 09:18:17 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Mark Rutland <mark.rutland@arm.com>,
+        Mon, 12 Oct 2020 03:18:49 -0400
+Received: by mail-ed1-f66.google.com with SMTP id l16so15822433eds.3;
+        Mon, 12 Oct 2020 00:18:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OCtzqcTvgm/lHz6dwVOWYKE+wIp/najcKC43qSAnkQQ=;
+        b=bTKBII3Bb5p4w7f27vx1Up3BTiYpxA02icl+ajWUPMdhYUf5kWAQnlZC8VNtPgyf2/
+         sYp52TKXRRd15fdtFrJQ0dGWqrnjExLsSxAdsG1hnJiwTCvlpDFeuzEz+L9kn7n6s3qL
+         s2PmaDtsRCj0IqtU76BzlRyzMYpXbbPKz1q0Z1hxjIsam/z3IhKHCtJ2S2ODgkd3shGJ
+         9u4CwqV4teWsdZmVBvyMYTGsB7PR2VqSfX7E0TzUeP07UmR3wWwCZxWNvqXPWlf0ItwU
+         NSGZcnAfrwpxgj0s65yXdiyrX9LJLL6YNXFT83lD2aSBrOaVhJWnYwsXWY6j9AbjqsAB
+         kAiQ==
+X-Gm-Message-State: AOAM533hMFHq+3l90iFY1ct1VslqUOgK6X1dw276BK7KlR1gpEjWsVBU
+        RyeySN4C7asOocmZQf/0IHE=
+X-Google-Smtp-Source: ABdhPJzH66RE1w9X2obXO5dNA8hKqBI0KiAd4eRYjVVAQ32i5EUIaFFJfhg/d3NrvvfQG9iIyYP+oQ==
+X-Received: by 2002:aa7:c2c4:: with SMTP id m4mr13091357edp.172.1602487127112;
+        Mon, 12 Oct 2020 00:18:47 -0700 (PDT)
+Received: from pi3 ([194.230.155.215])
+        by smtp.googlemail.com with ESMTPSA id a10sm9995107edu.78.2020.10.12.00.18.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 00:18:45 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 09:18:43 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Yong Wu <yong.wu@mediatek.com>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>
-Subject: [PATCH v1] ARM: dts: protonic prti6q: fix PHY address
-Date:   Mon, 12 Oct 2020 09:18:16 +0200
-Message-Id: <20201012071816.22434-1-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.28.0
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Tomasz Figa <tfiga@google.com>,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
+        Nicolas Boichat <drinkcat@chromium.org>, anan.sun@mediatek.com,
+        chao.hao@mediatek.com, ming-fan.chen@mediatek.com,
+        Greg Kroah-Hartman <gregkh@google.com>, kernel-team@android.com
+Subject: Re: [PATCH v3 02/24] dt-bindings: memory: mediatek: Convert SMI to
+ DT schema
+Message-ID: <20201012071843.GA1889@pi3>
+References: <20200930070647.10188-1-yong.wu@mediatek.com>
+ <20200930070647.10188-3-yong.wu@mediatek.com>
+ <20201002110831.GD6888@pi3>
+ <1601958428.26323.26.camel@mhfsdcap03>
+ <CAJKOXPfOOGnJeNCa58WEZqbzaAFdLHSm-7pyMyGkYgCBEt0+RA@mail.gmail.com>
+ <1602310691.26323.39.camel@mhfsdcap03>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1602310691.26323.39.camel@mhfsdcap03>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Due to bug in the bootloader, the PHY has floating address and may
-randomly change on each PHY reset. To avoid it, the updated bootloader
-with the following patch[0] should be used:
+On Sat, Oct 10, 2020 at 02:18:11PM +0800, Yong Wu wrote:
+> On Tue, 2020-10-06 at 09:15 +0200, Krzysztof Kozlowski wrote:
+> > On Tue, 6 Oct 2020 at 06:27, Yong Wu <yong.wu@mediatek.com> wrote:
+> > >
+> > > On Fri, 2020-10-02 at 13:08 +0200, Krzysztof Kozlowski wrote:
+> > > > On Wed, Sep 30, 2020 at 03:06:25PM +0800, Yong Wu wrote:
+> > > > > Convert MediaTek SMI to DT schema.
+> > > > >
+> > > > > Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> > > > > ---
+> > > > >  .../mediatek,smi-common.txt                   |  49 ---------
+> > > > >  .../mediatek,smi-common.yaml                  | 100 ++++++++++++++++++
+> > > > >  .../memory-controllers/mediatek,smi-larb.txt  |  49 ---------
+> > > > >  .../memory-controllers/mediatek,smi-larb.yaml |  91 ++++++++++++++++
+> > > > >  4 files changed, 191 insertions(+), 98 deletions(-)
+> > > > >  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/mediatek,smi-common.txt
+> > > > >  create mode 100644 Documentation/devicetree/bindings/memory-controllers/mediatek,smi-common.yaml
+> > > > >  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.txt
+> > > > >  create mode 100644 Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.yaml
+> > > ...
+> > > > > +properties:
+> > > > > +  compatible:
+> > > > > +    oneOf:
+> > > > > +      - enum:
+> > > > > +          - mediatek,mt2701-smi-common
+> > > > > +          - mediatek,mt2712-smi-common
+> > > > > +          - mediatek,mt6779-smi-common
+> > > > > +          - mediatek,mt8173-smi-common
+> > > > > +          - mediatek,mt8183-smi-common
+> > > > > +
+> > > > > +      - description: for mt7623
+> > > > > +        items:
+> > > > > +          - const: mediatek,mt7623-smi-common
+> > > > > +          - const: mediatek,mt2701-smi-common
+> > > > > +
+> > > > > +  reg:
+> > > > > +    maxItems: 1
+> > > > > +
+> > > > > +  clocks:
+> > > > > +    description: |
+> > > > > +      apb and smi are mandatory. the async is only for generation 1 smi HW.
+> > > > > +      gals(global async local sync) also is optional, here is the list which
+> > > > > +      require gals: mt6779 and mt8183.
+> > > > > +    minItems: 2
+> > > > > +    maxItems: 4
+> > > > > +    items:
+> > > > > +      - description: apb is Advanced Peripheral Bus clock, It's the clock for
+> > > > > +          setting the register.
+> > > > > +      - description: smi is the clock for transfer data and command.
+> > > > > +      - description: async is asynchronous clock, it help transform the smi clock
+> > > > > +          into the emi clock domain.
+> > > > > +      - description: gals0 is the path0 clock of gals.
+> > > > > +      - description: gals1 is the path1 clock of gals.
+> > > > > +
+> > > > > +  clock-names:
+> > > > > +    oneOf:
+> > > > > +      - items:
+> > > > > +          - const: apb
+> > > > > +          - const: smi
+> > > > > +      - items:
+> > > > > +          - const: apb
+> > > > > +          - const: smi
+> > > > > +          - const: async
+> > > > > +      - items:
+> > > > > +          - const: apb
+> > > > > +          - const: smi
+> > > > > +          - const: gals0
+> > > > > +          - const: gals1
+> > > >
+> > > > Similarly to my comment to other properties, this requirement per
+> > > > compatible should be part of the schema within 'if-then'.
+> > >
+> > > I'm not so familiar with this format. Do this has "if-then-'else
+> > > if'-then-else"?
+> > 
+> > These are mutually exclusive conditions, so you can skip else:
+> >  - if-then
+> >  - if-then
+> >  - if-then
+> > It will be more readable then stacking 'if' under 'else'
+> 
+> Thanks. I will use something like this:
+> 
+>  anyOf:
 
-| ARM: protonic: disable on-die termination to fix PHY bootstrapping
-|
-| If on-die termination is enabled, the RXC pin of iMX6 will be pulled
-| high. Since we already have an 10K pull-down on board, the RXC level on
-| PHY reset will be ~800mV, which is mostly interpreted as 1. On some
-| reboots we get 0 instead and kernel can't detect the PHY properly.
-|
-| Since the default 0x020e07ac value is 0, it is sufficient to remove this
-| entry from the affected imxcfg files.
-|
-| Since we get stable 0 on pin PHYADDR[2], the PHY address is changed from
-| 4 to 0.
+Then it should be oneOf as only one condition can be valid.
 
-With latest bootloader update, the PHY address will be fixed to "0".
+Best regards,
+Krzysztof
 
-[0] https://git.pengutronix.de/cgit/barebox/commit/?id=93f7dcf631edfcda19e7757b28d66017ea274b81
-
-Fixes: 0d446a50559 ("ARM: dts: add Protonic PRTI6Q board")
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- arch/arm/boot/dts/imx6q-prti6q.dts | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/arm/boot/dts/imx6q-prti6q.dts b/arch/arm/boot/dts/imx6q-prti6q.dts
-index de6cbaab8b49..671bb3a6665d 100644
---- a/arch/arm/boot/dts/imx6q-prti6q.dts
-+++ b/arch/arm/boot/dts/imx6q-prti6q.dts
-@@ -213,8 +213,8 @@ mdio {
- 		#size-cells = <0>;
- 
- 		/* Microchip KSZ9031RNX PHY */
--		rgmii_phy: ethernet-phy@4 {
--			reg = <4>;
-+		rgmii_phy: ethernet-phy@0 {
-+			reg = <0>;
- 			interrupts-extended = <&gpio1 28 IRQ_TYPE_LEVEL_LOW>;
- 			reset-gpios = <&gpio1 25 GPIO_ACTIVE_LOW>;
- 			reset-assert-us = <10000>;
--- 
-2.28.0
-
+>    - if: #gen1 hw
+>      then:
+>        use apb/smi/async clocks
+> 
+>    - if: #gen2 hw that has gals.
+>      then:
+>        use apb/smi/gals0/gals1 clocks
+>      else: # gen2 hw that doesn't have gals.
+>        use apb/smi clocks.
