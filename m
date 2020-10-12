@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F0E428B747
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:42:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95FE328B64A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731537AbgJLNmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:42:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46750 "EHLO mail.kernel.org"
+        id S2388540AbgJLNc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:32:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731507AbgJLNmD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:42:03 -0400
+        id S1730623AbgJLNcW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:32:22 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1FF1220838;
-        Mon, 12 Oct 2020 13:41:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 632AE204EA;
+        Mon, 12 Oct 2020 13:32:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602510108;
-        bh=kj6sxvvaay1N0knIRsy0kDpNRDM8VKzidKLrpRkenaw=;
+        s=default; t=1602509541;
+        bh=bcv8Lud4gs41IJaT0W7P1F4O8D4lq4qTnSGKz0wkDY4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MYdMJTbhEW6hjtwl8ST4MYURUnY4ZywVfv0A+79O2fxupH5S3knqZVuMttJcAUFsu
-         tWQ4xUdtzkbwz+6iCwqyb2WjohasieibdwcLL7IR8VYJ7fzcIbWtiXltmKN8OFc7jj
-         dZ0tjcXYR574LvrO1CD0oTUogxoDg2XIrTc/DNdQ=
+        b=DU0Rt60nGxqeeNJXUnUaejJ8i/UtwrCpXckPyZCNKO1n0AscfFgnthJDnKtcN1Hhw
+         zzfhk+jEmuSmvwviAb8+aWAbVQOIvjcToh9Y+/pGf5zVnazeLTM5hXFXXr25lIEyEP
+         ET+V2/5rpe1BDj+/+fbiwVfxYTW1GPwk8TWbtgow=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vegard Nossum <vegard.nossum@oracle.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 13/85] usermodehelper: reset umask to default before executing user process
+        stable@vger.kernel.org, Martin Schiller <ms@dev.tdt.de>,
+        Xie He <xie.he.0141@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 06/39] drivers/net/wan/lapbether: Make skb->protocol consistent with the header
 Date:   Mon, 12 Oct 2020 15:26:36 +0200
-Message-Id: <20201012132633.506236900@linuxfoundation.org>
+Message-Id: <20201012132628.448339119@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
-References: <20201012132632.846779148@linuxfoundation.org>
+In-Reply-To: <20201012132628.130632267@linuxfoundation.org>
+References: <20201012132628.130632267@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,64 +44,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Xie He <xie.he.0141@gmail.com>
 
-commit 4013c1496c49615d90d36b9d513eee8e369778e9 upstream.
+[ Upstream commit 83f9a9c8c1edc222846dc1bde6e3479703e8e5a3 ]
 
-Kernel threads intentionally do CLONE_FS in order to follow any changes
-that 'init' does to set up the root directory (or cwd).
+This driver is a virtual driver stacked on top of Ethernet interfaces.
 
-It is admittedly a bit odd, but it avoids the situation where 'init'
-does some extensive setup to initialize the system environment, and then
-we execute a usermode helper program, and it uses the original FS setup
-from boot time that may be very limited and incomplete.
+When this driver transmits data on the Ethernet device, the skb->protocol
+setting is inconsistent with the Ethernet header prepended to the skb.
 
-[ Both Al Viro and Eric Biederman point out that 'pivot_root()' will
-  follow the root regardless, since it fixes up other users of root (see
-  chroot_fs_refs() for details), but overmounting root and doing a
-  chroot() would not. ]
+This causes a user listening on the Ethernet interface with an AF_PACKET
+socket, to see different sll_protocol values for incoming and outgoing
+frames, because incoming frames would have this value set by parsing the
+Ethernet header.
 
-However, Vegard Nossum noticed that the CLONE_FS not only means that we
-follow the root and current working directories, it also means we share
-umask with whatever init changed it to. That wasn't intentional.
+This patch changes the skb->protocol value for outgoing Ethernet frames,
+making it consistent with the Ethernet header prepended. This makes a
+user listening on the Ethernet device with an AF_PACKET socket, to see
+the same sll_protocol value for incoming and outgoing frames.
 
-Just reset umask to the original default (0022) before actually starting
-the usermode helper program.
-
-Reported-by: Vegard Nossum <vegard.nossum@oracle.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Acked-by: Eric W. Biederman <ebiederm@xmission.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Cc: Martin Schiller <ms@dev.tdt.de>
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/umh.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/net/wan/lapbether.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/kernel/umh.c
-+++ b/kernel/umh.c
-@@ -14,6 +14,7 @@
- #include <linux/cred.h>
- #include <linux/file.h>
- #include <linux/fdtable.h>
-+#include <linux/fs_struct.h>
- #include <linux/workqueue.h>
- #include <linux/security.h>
- #include <linux/mount.h>
-@@ -76,6 +77,14 @@ static int call_usermodehelper_exec_asyn
- 	spin_unlock_irq(&current->sighand->siglock);
+diff --git a/drivers/net/wan/lapbether.c b/drivers/net/wan/lapbether.c
+index c6db9a4e7c457..ef746ba74ab4c 100644
+--- a/drivers/net/wan/lapbether.c
++++ b/drivers/net/wan/lapbether.c
+@@ -201,8 +201,6 @@ static void lapbeth_data_transmit(struct net_device *ndev, struct sk_buff *skb)
+ 	struct net_device *dev;
+ 	int size = skb->len;
  
- 	/*
-+	 * Initial kernel threads share ther FS with init, in order to
-+	 * get the init root directory. But we've now created a new
-+	 * thread that is going to execve a user process and has its own
-+	 * 'struct fs_struct'. Reset umask to the default.
-+	 */
-+	current->fs->umask = 0022;
+-	skb->protocol = htons(ETH_P_X25);
+-
+ 	ptr = skb_push(skb, 2);
+ 
+ 	*ptr++ = size % 256;
+@@ -213,6 +211,8 @@ static void lapbeth_data_transmit(struct net_device *ndev, struct sk_buff *skb)
+ 
+ 	skb->dev = dev = lapbeth->ethdev;
+ 
++	skb->protocol = htons(ETH_P_DEC);
 +
-+	/*
- 	 * Our parent (unbound workqueue) runs with elevated scheduling
- 	 * priority. Avoid propagating that into the userspace child.
- 	 */
+ 	skb_reset_network_header(skb);
+ 
+ 	dev_hard_header(skb, dev, ETH_P_DEC, bcast_addr, NULL, 0);
+-- 
+2.25.1
+
 
 
