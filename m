@@ -2,120 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF7B428C3B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 23:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7410528C3BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 23:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729639AbgJLVCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 17:02:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43434 "EHLO
+        id S1732057AbgJLVDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 17:03:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731338AbgJLVCi (ORCPT
+        with ESMTP id S1730845AbgJLVDJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 17:02:38 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0610C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 14:02:38 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id n9so15588958pgf.9
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 14:02:38 -0700 (PDT)
+        Mon, 12 Oct 2020 17:03:09 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63D10C0613D1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 14:03:08 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id a200so14776492pfa.10
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 14:03:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SnB7E0mI9F7Ie4RlS2cFfqKwCDcopSImUj3IgUSKIxI=;
-        b=aKY2mjZqZCjoAe1tt9s9T2FsyHGWEg2r94yXrTIjifMKj+9G5PGXHdmHun7LMLnVVf
-         Iyx0hqwAI4RdNjsS7WRjj36UFpYvhE5Z30RnvNh8wxzPTZqIDq/V6FSJyRhQlm3vqAgv
-         czJMjy/QiJI5hFODJh0hCucbVTQNfJmHuR7Ss=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b/TAN4DgDbRq78KqjsPZvJBxycvwlCcdCcdTr+Ek7Og=;
+        b=P+n28kBusJXK2wX8qUVrbwldVwyq54gUynSy7mBzZ9CQt7v340G5/ZkQkl2QVkngvZ
+         66PjP02ma9k+2+AJ0ci3ZnvC5c720Vhtn51PlaCcyXBQHG/ond0nQFbbeh2TqbhNFtTI
+         +6XaOrqijFTUAuHph0GU7zKOA3JLrLRqd2UamYfYe+pvQPSroChvZCtL1dgIgdBx/weo
+         TqvpCARRsPxKRIN2cCA7gheHrJkhvw0RoSEH+Fge/ZcDjX1R6ruPhAIoFSAvoGdPqPLr
+         hxwrFlEBNAKVpJxfGZm5g8NfHalTD6RhlIVz597pyZEa6AmD2RtK7A0WFHuSQWYE3MsO
+         D/YA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SnB7E0mI9F7Ie4RlS2cFfqKwCDcopSImUj3IgUSKIxI=;
-        b=QqVYeFCk1eOBdqp1y1zhqS1Fk/1mFTg5GtxTs83DrXukBPiiGm6MM62L+zAF11GD5M
-         cH9iF4xwP1g/rRkgWmu8vMMekynehv4k6C8LWfb1ekqCauGW0SzzeFmBJUPbL1fj2Xhj
-         Ptad1+RX/SSBin1etqDzZiN151uncdhlyxzJlx5qcMwEw62kTKt9yCo79fmiLEFlOefB
-         oYatnDB7bKjPwuUUCG3yu3qIUg0LUODYPODXe02pLvMbZr5ozOE/g2bceBjQ76WKp3J8
-         o6AAaTYbdiBpXB38AfGM2PK+Ri6idicsIkfmflvCdqyQpaSADuZONIbhfxdueqcS/2jS
-         SAQQ==
-X-Gm-Message-State: AOAM531a1Wd6RD0+opkKLpKCsWc8Lkv58AxPPr1Vhkza8fmRwQ1hQkm+
-        CjUU9o0hB83VXixHbzDwWS+A6A==
-X-Google-Smtp-Source: ABdhPJzJnGcA0q8XKKQGw3kIUgQPIXUnpTwBiY6N5ghL0OHEl3zmbEFuNMnAsinW9yZvnNW49rm+aQ==
-X-Received: by 2002:a63:5a11:: with SMTP id o17mr14040343pgb.287.1602536557163;
-        Mon, 12 Oct 2020 14:02:37 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 16sm24744149pjl.27.2020.10.12.14.02.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 14:02:36 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 14:02:35 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [PATCH v5 25/29] arm64: allow LTO_CLANG and THINLTO to be
- selected
-Message-ID: <202010121402.1EB5242@keescook>
-References: <20201009161338.657380-1-samitolvanen@google.com>
- <20201009161338.657380-26-samitolvanen@google.com>
- <20201012083116.GA785@willie-the-truck>
- <202010121344.53780D8CD2@keescook>
- <20201012205108.GA1620@willie-the-truck>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b/TAN4DgDbRq78KqjsPZvJBxycvwlCcdCcdTr+Ek7Og=;
+        b=ugvtnbm/xxGvfkP6HBJhCwSRoT0DaE0L5ZFb2NqMAgSMXJH5gAJ/Pv6hxzgUGRn047
+         U3eZviaDFUhP7lGiMOamDDJyvTBRIv5YbeRRzFRDMzO+zqfFEE0HZXiycKRH9IJrghwp
+         FxfTRfXF26HiTER/EU65S3ae8fhj7gE1n82M5FE7ZUs82ppSfibltC1KC4EVlVMTS5c9
+         Hjv647JCVdr+lJkHW8xMtiR6YUTeiSlB+BFlEwvuspb3ZsPXnVJQyIAfHvEhB9rzEKSn
+         ka1XYeD9a2WNDtduNQahiUGfDUm0FQ/skd1FvcaSKhPp85eT6lIHhwSOZwYdWjIi8sFE
+         UPNw==
+X-Gm-Message-State: AOAM531eZRxQzVZU8Ak9fP81fRLSHpL/fbA8BiPyISKjJQf0JLK/MlfU
+        tmEDxgjX6eYvbAXOCYzpITuLatamgdeFs0ZeVfKkRQ==
+X-Google-Smtp-Source: ABdhPJwIqtkqX0s+O7rGfHATFdJHihF17V4UMLnv5pGyiTA1XTsNZtRMs/y29n25CQKI5VwrwyLp6EpyeDim8He9q+c=
+X-Received: by 2002:a17:90a:7144:: with SMTP id g4mr20595295pjs.80.1602536587672;
+ Mon, 12 Oct 2020 14:03:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201012205108.GA1620@willie-the-truck>
+References: <20200729201146.537433-1-vitor@massaru.org> <20200729203908.GD2655@hirez.programming.kicks-ass.net>
+ <CADQ6JjW-=SNjV-abGpGA9NfHD4yGG_bD5FmvW99W-Vo06twkbw@mail.gmail.com>
+ <20200804132517.GK2657@hirez.programming.kicks-ass.net> <CADQ6JjWzze-VAmg_b9EkS4iVySt5pw8V4FSxYpDFAj8jvBxuGA@mail.gmail.com>
+ <20200804142344.GM2674@hirez.programming.kicks-ass.net> <CADQ6JjWbCsyWxZKQ5=kkxx8hkaW=mbCjDodPXDAv5vH-=tVvEQ@mail.gmail.com>
+In-Reply-To: <CADQ6JjWbCsyWxZKQ5=kkxx8hkaW=mbCjDodPXDAv5vH-=tVvEQ@mail.gmail.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Mon, 12 Oct 2020 14:02:56 -0700
+Message-ID: <CAFd5g46DzWRzp9yXkpHbtyJuv236E=z7OaWeqXnfuiy6CTBL4A@mail.gmail.com>
+Subject: Re: [PATCH] lib: kunit: add test_min_heap test conversion to KUnit
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Vitor Massaru Iha <vitor@massaru.org>
+Cc:     KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Ian Rogers <irogers@google.com>, Ingo Molnar <mingo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 09:51:09PM +0100, Will Deacon wrote:
-> On Mon, Oct 12, 2020 at 01:44:56PM -0700, Kees Cook wrote:
-> > On Mon, Oct 12, 2020 at 09:31:16AM +0100, Will Deacon wrote:
-> > > On Fri, Oct 09, 2020 at 09:13:34AM -0700, Sami Tolvanen wrote:
-> > > > Allow CONFIG_LTO_CLANG and CONFIG_THINLTO to be enabled.
-> > > > 
-> > > > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> > > > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > > > ---
-> > > >  arch/arm64/Kconfig | 2 ++
-> > > >  1 file changed, 2 insertions(+)
-> > > > 
-> > > > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> > > > index ad522b021f35..7016d193864f 100644
-> > > > --- a/arch/arm64/Kconfig
-> > > > +++ b/arch/arm64/Kconfig
-> > > > @@ -72,6 +72,8 @@ config ARM64
-> > > >  	select ARCH_USE_SYM_ANNOTATIONS
-> > > >  	select ARCH_SUPPORTS_MEMORY_FAILURE
-> > > >  	select ARCH_SUPPORTS_SHADOW_CALL_STACK if CC_HAVE_SHADOW_CALL_STACK
-> > > > +	select ARCH_SUPPORTS_LTO_CLANG
-> > > > +	select ARCH_SUPPORTS_THINLTO
-> > > 
-> > > Please don't enable this for arm64 until we have the dependency stuff sorted
-> > > out. I posted patches [1] for this before, but I think they should be part
-> > > of this series as they don't make sense on their own.
-> > 
-> > Oh, hm. We've been trying to trim down this series, since it's already
-> > quite large. Why can't [1] land first? It would make this easier to deal
-> > with, IMO.
-> 
-> I'm happy to handle [1] along with the LTO Kconfig change when the time
-> comes, if that helps. I just don't want to merge dead code!
+On Tue, Aug 4, 2020 at 9:22 AM Vitor Massaru Iha <vitor@massaru.org> wrote:
+>
+> Hi Peter,
+>
+> On Tue, Aug 4, 2020 at 11:23 AM <peterz@infradead.org> wrote:
+> >
+> > On Tue, Aug 04, 2020 at 10:46:21AM -0300, Vitor Massaru Iha wrote:
+> > > On Tue, Aug 4, 2020 at 10:25 AM <peterz@infradead.org> wrote:
+> > > > On Wed, Jul 29, 2020 at 06:57:17PM -0300, Vitor Massaru Iha wrote:
+> > > >
+> > > > > The results can be seen this way:
+> > > > >
+> > > > > This is an excerpt from the test.log with the result in TAP format:
+> > > > > [snip]
+> > > > > ok 5 - example
+> > > > >     # Subtest: min-heap
+> > > > >     1..6
+> > > > >     ok 1 - test_heapify_all_true
+> > > > >     ok 2 - test_heapify_all_false
+> > > > >     ok 3 - test_heap_push_true
+> > > > >     ok 4 - test_heap_push_false
+> > > > >     ok 5 - test_heap_pop_push_true
+> > > > >     ok 6 - test_heap_pop_push_false
+> > > > > [snip]
+> >
+> > So ^ is TAP format?
+>
+> Yep, you can see the spec here: https://testanything.org/tap-specification.html
+>
+> >
+> > > > I don't care or care to use either; what does dmesg do? It used to be
+> > > > that just building the self-tests was sufficient and any error would
+> > > > show in dmesg when you boot the machine.
+> > > >
+> > > > But if I now have to use some damn tool, this is a regression.
+> > >
+> > > If you don't want to, you don't need to use the kunit-tool. If you
+> > > compile the tests as builtin and run the Kernel on your machine
+> > > the test result will be shown in dmesg in TAP format.
+> >
+> > That's seems a lot more verbose than it is now. I've recently even done
+> > a bunch of tests that don't print anything on success, dmesg is clutter
+> > enough already.
+>
+> What tests do you refer to?
+>
+> Running the test_min_heap.c, I got this from dmesg:
+>
+> min_heap_test: test passed
+>
+> And running min_heap_kunit.c:
+>
+> ok 1 - min-heap
 
-Okay, understood. Thanks!
-
-> 
-> Will
-> 
-> > > [1] https://git.kernel.org/pub/scm/linux/kernel/git/will/linux.git/log/?h=rwonce/read-barrier-depends
-
--- 
-Kees Cook
+Gentle poke. I think Vitor was looking for a response. My guess is
+that Ian was waiting for a follow up patch.
