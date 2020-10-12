@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E7E28B9CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D94FD28B72D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403748AbgJLODt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:03:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39186 "EHLO mail.kernel.org"
+        id S2389143AbgJLNlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:41:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45348 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730424AbgJLNgc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:36:32 -0400
+        id S2389046AbgJLNlB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:41:01 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B46452076E;
-        Mon, 12 Oct 2020 13:36:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 98312206D9;
+        Mon, 12 Oct 2020 13:41:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509790;
-        bh=Uqcssya3qJQURCLZ5TZcMKCc+eeib0YtWVFfrFHR1vk=;
+        s=default; t=1602510061;
+        bh=7dz23NY2KBKOImqjS0Ile7KEAPqgw9emGuG/GUkRrao=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cbjWU33o/WbW+8zviYWmpZjCXLeO+fOQWwOp69Jrs5I7TcLqoaaTI+F8tH2HnmJCq
-         a7BuKqAPPGUK4h35sjPs6ImDT5h5m/poCYK+VIoLrNOA52pIMVn71Bok6/SEo6xfYJ
-         by8Wcd36UDjUPP0kTJyCvMEjWcC7AyqdBNE8FCWs=
+        b=c2MT5DMU3+EFxU6IgZMpj3PUU/y74btXMglqEGOlTcxLk6YYyZFZKThOF2dimQxg6
+         ANamzdFDkO9pJutg4CDuHr1wN91yOFqG3HEFXQ9dpbIo0mSTSpwwRYmudazjO/5m3d
+         Ye2ozKtTvvHNB0jfNEBLVFWifvnlNBtMigeoMyiw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Giuliano Procida <gprocida@google.com>
-Subject: [PATCH 4.14 31/70] drm/syncobj: Fix drm_syncobj_handle_to_fd refcount leak
+        stable@vger.kernel.org,
+        =?UTF-8?q?Volker=20R=C3=BCmelin?= <volker.ruemelin@googlemail.com>,
+        Jean Delvare <jdelvare@suse.de>, Wolfram Sang <wsa@kernel.org>,
+        "Nobuhiro Iwamatsu (CIP)" <nobuhiro1.iwamatsu@toshiba.co.jp>
+Subject: [PATCH 5.4 24/85] i2c: i801: Exclude device from suspend direct complete optimization
 Date:   Mon, 12 Oct 2020 15:26:47 +0200
-Message-Id: <20201012132631.677832766@linuxfoundation.org>
+Message-Id: <20201012132634.015971970@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132630.201442517@linuxfoundation.org>
-References: <20201012132630.201442517@linuxfoundation.org>
+In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
+References: <20201012132632.846779148@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +44,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Giuliano Procida <gprocida@google.com>
+From: Jean Delvare <jdelvare@suse.de>
 
-Commit 5fb252cad61f20ae5d5a8b199f6cc4faf6f418e1, a cherry-pick of
-upstream commit e7cdf5c82f1773c3386b93bbcf13b9bfff29fa31, introduced a
-refcount imbalance and thus a struct drm_syncobj object leak which can
-be triggered with DRM_IOCTL_SYNCOBJ_HANDLE_TO_FD.
+commit 845b89127bc5458d0152a4d63f165c62a22fcb70 upstream.
 
-The function drm_syncobj_handle_to_fd first calls drm_syncobj_find
-which increments the refcount of the object on success. In all of the
-drm_syncobj_handle_to_fd error paths, the refcount is decremented, but
-in the success path the refcount should remain at +1 as the struct
-drm_syncobj now belongs to the newly opened file. Instead, the
-refcount was incremented again to +2.
+By default, PCI drivers with runtime PM enabled will skip the calls
+to suspend and resume on system PM. For this driver, we don't want
+that, as we need to perform additional steps for system PM to work
+properly on all systems. So instruct the PM core to not skip these
+calls.
 
-Fixes: 5fb252cad61f ("drm/syncobj: Stop reusing the same struct file for all syncobj -> fd")
-Signed-off-by: Giuliano Procida <gprocida@google.com>
+Fixes: a9c8088c7988 ("i2c: i801: Don't restore config registers on runtime PM")
+Reported-by: Volker Rümelin <volker.ruemelin@googlemail.com>
+Signed-off-by: Jean Delvare <jdelvare@suse.de>
+Cc: stable@vger.kernel.org
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
+[iwamatsu: Use DPM_FLAG_NEVER_SKIP instead of DPM_FLAG_NO_DIRECT_COMPLETE]
+Signed-off-by: Nobuhiro Iwamatsu (CIP) <nobuhiro1.iwamatsu@toshiba.co.jp>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/gpu/drm/drm_syncobj.c |    1 -
- 1 file changed, 1 deletion(-)
+ drivers/i2c/busses/i2c-i801.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/gpu/drm/drm_syncobj.c
-+++ b/drivers/gpu/drm/drm_syncobj.c
-@@ -355,7 +355,6 @@ static int drm_syncobj_handle_to_fd(stru
- 		return PTR_ERR(file);
- 	}
+--- a/drivers/i2c/busses/i2c-i801.c
++++ b/drivers/i2c/busses/i2c-i801.c
+@@ -1891,6 +1891,7 @@ static int i801_probe(struct pci_dev *de
  
--	drm_syncobj_get(syncobj);
- 	fd_install(fd, file);
+ 	pci_set_drvdata(dev, priv);
  
- 	*p_fd = fd;
++	dev_pm_set_driver_flags(&dev->dev, DPM_FLAG_NEVER_SKIP);
+ 	pm_runtime_set_autosuspend_delay(&dev->dev, 1000);
+ 	pm_runtime_use_autosuspend(&dev->dev);
+ 	pm_runtime_put_autosuspend(&dev->dev);
 
 
