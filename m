@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39B5728BF92
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 20:21:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FC2F28BF94
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 20:21:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390865AbgJLSVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 14:21:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39082 "EHLO mail.kernel.org"
+        id S2390896AbgJLSVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 14:21:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387669AbgJLSVC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 14:21:02 -0400
-Subject: Re: [GIT PULL] EDAC queue for v5.10
+        id S2390868AbgJLSVD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 14:21:03 -0400
+Subject: Re: [GIT PULL] tpmdd updates for v5.10
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602526862;
-        bh=22XGfSewhYj0UUi/pwq1jJzvdCqo8cXGLo+vm/QUmys=;
+        s=default; t=1602526863;
+        bh=vnZDg8jSo+sa2BeLBe4d0PRQEwin/sgTFKHotrKyMYg=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=S6E3dZ5/4oKdAA/quNs6PREt9MQtoqbvvLjzKP7NXeobK67LAcrx9u1fwz9BypUVE
-         uyDIbYQp9/2DnOIlpi78HmUT0qgjsCvEX836iBOrufuUjuGTWO2JJR1H6nhTLPCqZ7
-         tzOmvkcgUYj5NETgoyaOB8KLda4FnJe6tcstEnIM=
+        b=LPuXdjTxQrlQrsw2Y9XQUtH6N8Z4ywR3e0pH6TDRS90uDVZqi3bEabvTc9JDyIzwQ
+         UylvOUKGK/6rtuK062Cd0e+VHrqW35GllYMYx1UkWVIP7Yh1Hz0d4pO3z1x8mEkx9r
+         t+FOIdDUTPFPlcJFDE87UHjluKUNWNGr3iCH1k1k=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201012092029.GA25311@zn.tnic>
-References: <20201012092029.GA25311@zn.tnic>
-X-PR-Tracked-List-Id: <linux-edac.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201012092029.GA25311@zn.tnic>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git tags/edac_updates_for_v5.10
-X-PR-Tracked-Commit-Id: 1dc32628d65a670625afada00f50c91add1a19a2
+In-Reply-To: <20201004210121.GA41675@linux.intel.com>
+References: <20201004210121.GA41675@linux.intel.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201004210121.GA41675@linux.intel.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git tags/tpmdd-next-v5.10
+X-PR-Tracked-Commit-Id: 7b9be800756f60bf5bb7baf39c7d221ecb877863
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: a9a4b7d9a6380ae4e1df2c9b90fef6c427229aab
-Message-Id: <160252686240.3643.17498350851659457514.pr-tracker-bot@kernel.org>
-Date:   Mon, 12 Oct 2020 18:21:02 +0000
-To:     Borislav Petkov <bp@suse.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-edac <linux-edac@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
+X-PR-Merge-Commit-Id: d04a248f1f6cb4bcd8e38b6894bd4f9dc64b6aa8
+Message-Id: <160252686356.3643.17735478866910483181.pr-tracker-bot@kernel.org>
+Date:   Mon, 12 Oct 2020 18:21:03 +0000
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org, jmorris@namei.org,
+        dhowells@redhat.com, peterhuewe@gmx.de
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 12 Oct 2020 11:20:29 +0200:
+The pull request you sent on Mon, 5 Oct 2020 00:01:31 +0300:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git tags/edac_updates_for_v5.10
+> git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git tags/tpmdd-next-v5.10
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/a9a4b7d9a6380ae4e1df2c9b90fef6c427229aab
+https://git.kernel.org/torvalds/c/d04a248f1f6cb4bcd8e38b6894bd4f9dc64b6aa8
 
 Thank you!
 
