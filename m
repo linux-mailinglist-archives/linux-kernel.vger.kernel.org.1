@@ -2,152 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A18D28BAB2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9403928BAB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389225AbgJLOVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:21:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726724AbgJLOVN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 10:21:13 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AEE6C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 07:21:12 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id m128so18860477oig.7
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 07:21:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qgmtNie/zntd1O8Xi3/aeMkTtA9q5iGd/FaFCpPsSPs=;
-        b=W5D1O2LhZGhhtUHHQ0CoKvhXXf/YejHLvjh9W17bi16WOd0iJo1QZTL1rcHvftYDMV
-         h6XvT/lCmWVeoZLr9Tjqsc/fOiM7YbwnNwnvXem9eM/+1ZJs0pqwf/p48vjhWaDyD4CR
-         fevht215iJjkDTi4Nl/dVbNS+ell3n3OgXOzmQQALEJPbD1Hs+2LUQ2DgtPXAcI2FXtB
-         wvxHPK6QEYohTpdrIHAZabd9TDA5lbi7jQwcfY5cBpYSi1vec/iBwv6MfVEktJiRjr0b
-         YdFUc251KB7K6IRHrYMSoZEFAbENaJ34qCFRqlILxCzqzjSKuJ15s+uDvLvRiavWHlIB
-         mSIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qgmtNie/zntd1O8Xi3/aeMkTtA9q5iGd/FaFCpPsSPs=;
-        b=h5+kem6CIi+GdvOg3DI2hdDZcnjCEpkH3QJo1r3luzqYvAylj7fFTbINAvaH/yVH00
-         XdxAuugFE2v9a3A6ZpisHqaeruLPmn6G8Ter+q9nccCPP2Gwm+KQoz6B0PjXXxbYTvaS
-         BW79O8+EHmlH6rs4vNftlffAM4ZEI6Wg2kDMQwp0D20S6UZ1YdyBNGpNIEgwIYuzrtMw
-         9jIb6SvMYlkvF3Z5oNYxopI8qS3A+Z8ZxQPRl4XCHhqNpi+kuHXZRrWLtVGwBGqt3763
-         3vS5DB6IXfJwh08V6mtzrzwxSg1rp7KvQVfJUWcsSWeedreq7VCxrGH8Sjvbg5i77jlu
-         XOVQ==
-X-Gm-Message-State: AOAM530vdB+gLGyQVjzv3jTojcYbwu4UGSpvjVziLU8lsfg8xP6Y927P
-        wt2tA7BdYRqdMJkXKSHRxy9e/9su2b5A1/8ioLbevg==
-X-Google-Smtp-Source: ABdhPJxW8RGoOJpKn2/G8YuZtMEiJ+Fre4lLQCyuU8ImxOvZHMcKn2i477QwV30ZDV2aJL70uTEAfHUomZ6GY2lTL2g=
-X-Received: by 2002:a54:468f:: with SMTP id k15mr11407914oic.121.1602512471058;
- Mon, 12 Oct 2020 07:21:11 -0700 (PDT)
+        id S2388948AbgJLOV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 10:21:59 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:60598 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388662AbgJLOV7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 10:21:59 -0400
+Received: from zn.tnic (p200300ec2f06920008362ea164c1c332.dip0.t-ipconnect.de [IPv6:2003:ec:2f06:9200:836:2ea1:64c1:c332])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 56EE41EC0354;
+        Mon, 12 Oct 2020 16:21:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1602512517;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=2HBhpr20wGHxmrWIiVkliQjBY+neXHsHZzH2hEr3+aU=;
+        b=gpcVZL/+cvuB4XwKO7zXR9WFMYNzA6JpE+me5jxk/8LmZlG0EQiurUU7TIyD2ogFNbLn5H
+        PS41KsFPIE/RuEEMBjsy0ejzBSGVLxNNkwjof/o5Hyq7cFUYz/eZHWGFK2o3D2Kt6SUKKN
+        vVIRblfA4uJdPpogbDGPA8HaGTWyhcU=
+Date:   Mon, 12 Oct 2020 16:21:48 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Joe Perches <joe@perches.com>
+Cc:     X86 ML <x86@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
+        Andy Whitcroft <apw@canonical.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] checkpatch: Check for .byte-spelled insn opcodes
+ documentation on x86
+Message-ID: <20201012142148.GA22829@zn.tnic>
+References: <20201009161423.14583-1-bp@alien8.de>
+ <b57a59bc80e432c7696b347a223eb12339013970.camel@perches.com>
+ <20201010105421.GA24674@zn.tnic>
+ <4147e49c0b1251343181b5580d946c2273247927.camel@perches.com>
+ <20201010161112.GC24674@zn.tnic>
+ <a534ed57c23ff35f6b84057ba3c0d1b55f0b03b9.camel@perches.com>
 MIME-Version: 1.0
-References: <20200929133814.2834621-1-elver@google.com> <20200929133814.2834621-2-elver@google.com>
- <CAG48ez3+_K6YXoXgKBkB8AMeSQj++Mxi5u2OT--B+mJgE7Cyfg@mail.gmail.com>
- <20201002171959.GA986344@elver.google.com> <CAG48ez0D1+hStZaDOigwbqNqFHJAJtXK+8Nadeuiu1Byv+xp5A@mail.gmail.com>
- <CANpmjNN7s3o4DYbP64iLYo0MeDWciQnKd61njJKLsiZv+ZLQdA@mail.gmail.com> <CAG48ez0az-Mv1f6EpnQwO6cYQANwx4qCDLa+yda_i15AzciS1Q@mail.gmail.com>
-In-Reply-To: <CAG48ez0az-Mv1f6EpnQwO6cYQANwx4qCDLa+yda_i15AzciS1Q@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 12 Oct 2020 16:20:59 +0200
-Message-ID: <CANpmjNPb2JW6vjRODOzpbjh2HauAN2==NAs9tfpbxYiv53r_Zg@mail.gmail.com>
-Subject: Re: [PATCH v4 01/11] mm: add Kernel Electric-Fence infrastructure
-To:     Jann Horn <jannh@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Kees Cook <keescook@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        SeongJae Park <sjpark@amazon.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Will Deacon <will@kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-MM <linux-mm@kvack.org>, SeongJae Park <sjpark@amazon.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <a534ed57c23ff35f6b84057ba3c0d1b55f0b03b9.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Sorry for delay, just noticed this one doesn't have a reply yet. ]
+On Sat, Oct 10, 2020 at 09:47:59AM -0700, Joe Perches wrote:
+> > '/\s*\.byte\s+(?:0x[0-9a-f]{1,2}[\s,]*){2,}/i'
+>     ^^^                                       ^
+> now useless without the "
 
-On Sat, 3 Oct 2020 at 00:27, Jann Horn <jannh@google.com> wrote:
-> On Fri, Oct 2, 2020 at 11:28 PM Marco Elver <elver@google.com> wrote:
-> > On Fri, 2 Oct 2020 at 21:32, Jann Horn <jannh@google.com> wrote:
-> > > > That's another check; we don't want to make this more expensive.
-> > >
-> > > Ah, right, I missed that this is the one piece of KFENCE that is
-> > > actually really hot code until Dmitry pointed that out.
-> > >
-> > > But actually, can't you reduce how hot this is for SLUB by moving
-> > > is_kfence_address() down into the freeing slowpath? At the moment you
-> > > use it in slab_free_freelist_hook(), which is in the super-hot
-> > > fastpath, but you should be able to at least move it down into
-> > > __slab_free()...
-> > >
-> > > Actually, you already have hooked into __slab_free(), so can't you
-> > > just get rid of the check in the slab_free_freelist_hook()?
-> >
-> > I missed this bit: the loop that follows wants the free pointer, so I
-> > currently see how this might work. :-/
+There are \.byte specifications without " so not useless.
+
+> matches .BYTE
+
+so what. It would have failed before, when trying to compile it.
+
+> you probably want (?i:0x[etc...]
+> 
+> I'd prefer to add an upper bound to the {m,n} use.
+> Unbounded multiple
+> matches {m,} can cause perl aborts.
+
+Ok, we can make that 15. Max insn length on x86 is 15 bytes and that
+is unrealistically high for this use case so we should be good. And the
+range must be {1,15} because you can have single-byte instructions.
+
+And that's fine if there are *some* false positives. And whatever we do,
+it won't match everything. For example:
+
+arch/x86/include/asm/fpu/internal.h:208:#define XSAVE           ".byte " REX_PREFIX "0x0f,0xae,0x27"
+arch/x86/include/asm/fpu/internal.h:209:#define XSAVEOPT        ".byte " REX_PREFIX "0x0f,0xae,0x37"
+arch/x86/include/asm/fpu/internal.h:210:#define XSAVES          ".byte " REX_PREFIX "0x0f,0xc7,0x2f"
+arch/x86/include/asm/fpu/internal.h:211:#define XRSTOR          ".byte " REX_PREFIX "0x0f,0xae,0x2f"
+arch/x86/include/asm/fpu/internal.h:212:#define XRSTORS         ".byte " REX_PREFIX "0x0f,0xc7,0x1f"
+
+but that's fine. I prefer for the regex to remain readable and single
+outliers like those are caught in manual review.
+
+As another example, sometimes it would be a false positive for another
+reason:
+
+arch/x86/include/asm/idtentry.h:500: * Note, that the 'pushq imm8' is emitted via '.byte 0x6a, vector' because
+
+that's why I've changed the text to say "Please consider..." implying
+thatdocumenting binutils version might not always be necessary/needed.
+
+All in all, it's fine if there are some false positives and it can make
+reviewers have a second look.
+
+> This regex would also match
 >
-> reverse call graph:
-> __slab_free
->   do_slab_free
->     slab_free
->       kmem_cache_free (frees a single non-kmalloc allocation)
->       kmem_cache_free_bulk (frees multiple)
->       kfree (frees a single kmalloc allocation)
->     ___cache_free (frees a single allocation for KASAN)
+> .byte 0x020x02
 >
-> So the only path for which we can actually loop in __slab_free() is
-> kmem_cache_free_bulk(); and you've already changed
-> build_detached_freelist() (which is used by kmem_cache_free_bulk() to
-> group objects from the same page) to consume KFENCE allocations before
-> they can ever reach __slab_free(). So we know that if we've reached
-> __slab_free(), then we are being called with either a single object
-> (which may be a KFENCE object) or with a list of objects that all
-> belong to the same page and don't contain any KFENCE allocations.
+> (which admittedly wouldn't compile, but I've seen really bad patches
+> submitted too)
 
-Yes, while that is true, we still cannot execute the code in
-slab_free_freelist_hook(). There are several problems:
+That's fine - I love reviewing !compiled patches. They will never send
+!compiled again.
 
-- getting the freepointer which accesses object + s->offset, may
-result in KFENCE OOB errors.
+> A readability convenience would be to add and use:
+> 
+> our $Hex_byte	= qr{(?i)0x[0-9a-f]{1,2}\b};
+> 
+> So if the minimum length if the isns .byte block is 2,
+> with a separating comma then the regex could be:
+> 
+> /\.byte\s+$Hex_byte\s*,\s*$Hex_byte\b/
+> 
+> which I think is pretty readable.
 
-- similarly for setting the freepointer.
+Yap, makes sense. v3 coming up...
 
-- slab_want_init_on_free zeroing object according to memcache
-object_size, because it'll corrupt KFENCE's redzone if memcache
-object_size > actual allocation size.
+Thx.
 
-Leaving this here is fine, since we have determined that recent
-optimizations make the check in slab_free_freelist_hook() negligible.
+-- 
+Regards/Gruss,
+    Boris.
 
-Thanks,
--- Marco
+https://people.kernel.org/tglx/notes-about-netiquette
