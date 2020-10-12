@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E530028B6E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:40:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20EC828B639
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731183AbgJLNiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:38:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40456 "EHLO mail.kernel.org"
+        id S1730003AbgJLNb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:31:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731076AbgJLNh3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:37:29 -0400
+        id S1726724AbgJLNb5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:31:57 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 933BE20878;
-        Mon, 12 Oct 2020 13:37:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B651204EA;
+        Mon, 12 Oct 2020 13:31:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509849;
-        bh=brp7bKmkwE5VDkgoa+MU6Rrefw8r8r9J3NGC26UiEVE=;
+        s=default; t=1602509516;
+        bh=/ngqEW/vsmhMDLi44tJJDbJfbYHofzdjf8TSrjQVgng=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xaFPfKXwXDtX8qLlOBX7nWwOf3GfEiCFKXBc1AD3X7cpfMMB5i7jUlDJDvxCkO1Ns
-         51RTX2LVjQg0TtyckK94DeLd+3mabB3y/eqJZvNNHQwZUATubcQa6LNaZ6MJUdwwZm
-         nwvMMwjT5gHsR+5kr0gXsIHfMjh3CZN4WtSG/iFY=
+        b=mm6/D/l55XpPloeI2WqY+HQ4arCm3Qn3t8jspqlVOuJV3aaMMvf5Sc2RY8aBSowuA
+         bZwlMW1mxylKwmH2/Uc9+6YTWCs7Ha0sjfA9K0FVf4GOlAAcUxsTBVm6zKdSZC4VMY
+         nyZ2SoavEO95mjf0udvJrHIlFhaBo9CARrA9UhlY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 15/70] mac80211: do not allow bigger VHT MPDUs than the hardware supports
+        stable@vger.kernel.org, dillon min <dillon.minfei@gmail.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH 4.4 01/39] gpio: tc35894: fix up tc35894 interrupt configuration
 Date:   Mon, 12 Oct 2020 15:26:31 +0200
-Message-Id: <20201012132630.950724985@linuxfoundation.org>
+Message-Id: <20201012132628.209157557@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132630.201442517@linuxfoundation.org>
-References: <20201012132630.201442517@linuxfoundation.org>
+In-Reply-To: <20201012132628.130632267@linuxfoundation.org>
+References: <20201012132628.130632267@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -43,48 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Felix Fietkau <nbd@nbd.name>
+From: dillon min <dillon.minfei@gmail.com>
 
-[ Upstream commit 3bd5c7a28a7c3aba07a2d300d43f8e988809e147 ]
+commit 214b0e1ad01abf4c1f6d8d28fa096bf167e47cef upstream.
 
-Limit maximum VHT MPDU size by local capability.
+The offset of regmap is incorrect, j * 8 is move to the
+wrong register.
 
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Link: https://lore.kernel.org/r/20200917125031.45009-1-nbd@nbd.name
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+for example:
+
+asume i = 0, j = 1. we want to set KPY5 as interrupt
+falling edge mode, regmap[0][1] should be TC3589x_GPIOIBE1 0xcd
+but, regmap[i] + j * 8 = TC3589x_GPIOIBE0 + 8 ,point to 0xd4,
+this is TC3589x_GPIOIE2 not TC3589x_GPIOIBE1.
+
+Fixes: d88b25be3584 ("gpio: Add TC35892 GPIO driver")
+Cc: Cc: stable@vger.kernel.org
+Signed-off-by: dillon min <dillon.minfei@gmail.com>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- net/mac80211/vht.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/gpio/gpio-tc3589x.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/mac80211/vht.c b/net/mac80211/vht.c
-index 19ec2189d3acb..502b3fbb3b0f4 100644
---- a/net/mac80211/vht.c
-+++ b/net/mac80211/vht.c
-@@ -170,10 +170,7 @@ ieee80211_vht_cap_ie_to_sta_vht_cap(struct ieee80211_sub_if_data *sdata,
- 	/* take some capabilities as-is */
- 	cap_info = le32_to_cpu(vht_cap_ie->vht_cap_info);
- 	vht_cap->cap = cap_info;
--	vht_cap->cap &= IEEE80211_VHT_CAP_MAX_MPDU_LENGTH_3895 |
--			IEEE80211_VHT_CAP_MAX_MPDU_LENGTH_7991 |
--			IEEE80211_VHT_CAP_MAX_MPDU_LENGTH_11454 |
--			IEEE80211_VHT_CAP_RXLDPC |
-+	vht_cap->cap &= IEEE80211_VHT_CAP_RXLDPC |
- 			IEEE80211_VHT_CAP_VHT_TXOP_PS |
- 			IEEE80211_VHT_CAP_HTC_VHT |
- 			IEEE80211_VHT_CAP_MAX_A_MPDU_LENGTH_EXPONENT_MASK |
-@@ -182,6 +179,9 @@ ieee80211_vht_cap_ie_to_sta_vht_cap(struct ieee80211_sub_if_data *sdata,
- 			IEEE80211_VHT_CAP_RX_ANTENNA_PATTERN |
- 			IEEE80211_VHT_CAP_TX_ANTENNA_PATTERN;
+--- a/drivers/gpio/gpio-tc3589x.c
++++ b/drivers/gpio/gpio-tc3589x.c
+@@ -157,7 +157,7 @@ static void tc3589x_gpio_irq_sync_unlock
+ 				continue;
  
-+	vht_cap->cap |= min_t(u32, cap_info & IEEE80211_VHT_CAP_MAX_MPDU_MASK,
-+			      own_cap.cap & IEEE80211_VHT_CAP_MAX_MPDU_MASK);
-+
- 	/* and some based on our own capabilities */
- 	switch (own_cap.cap & IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_MASK) {
- 	case IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160MHZ:
--- 
-2.25.1
-
+ 			tc3589x_gpio->oldregs[i][j] = new;
+-			tc3589x_reg_write(tc3589x, regmap[i] + j * 8, new);
++			tc3589x_reg_write(tc3589x, regmap[i] + j, new);
+ 		}
+ 	}
+ 
 
 
