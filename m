@@ -2,230 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6E1528BCFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:54:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7002128BD01
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:55:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730277AbgJLPy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 11:54:58 -0400
-Received: from foss.arm.com ([217.140.110.172]:54716 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729816AbgJLPy5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 11:54:57 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 75C0031B;
-        Mon, 12 Oct 2020 08:54:55 -0700 (PDT)
-Received: from bogus (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A35BC3F719;
-        Mon, 12 Oct 2020 08:54:53 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 16:54:43 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Nicola Mazzucato <nicola.mazzucato@arm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        vireshk@kernel.org, daniel.lezcano@linaro.org, rjw@rjwysocki.net,
-        linux-kernel@vger.kernel.org, chris.redpath@arm.com,
-        Sudeep Holla <sudeep.holla@arm.com>, morten.rasmussen@arm.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 2/2] [RFC] CPUFreq: Add support for
- cpu-perf-dependencies
-Message-ID: <20201012155443.GE16519@bogus>
-References: <20200924095347.32148-1-nicola.mazzucato@arm.com>
- <20200924095347.32148-3-nicola.mazzucato@arm.com>
- <20201006071909.3cgz7i5v35dgnuzn@vireshk-i7>
- <2417d7b5-bc58-fa30-192c-e5991ec22ce0@arm.com>
- <20201008110241.dcyxdtqqj7slwmnc@vireshk-i7>
- <20201008150317.GB20268@arm.com>
- <56846759-e3a6-9471-827d-27af0c3d410d@arm.com>
- <20201009053921.pkq4pcyrv4r7ylzu@vireshk-i7>
- <42e3c8e9-cadc-d013-1e1f-fa06af4a45ff@arm.com>
- <20201009140141.GA4048593@bogus>
+        id S1730423AbgJLPzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 11:55:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729021AbgJLPzp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 11:55:45 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926D2C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 08:55:45 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id l24so17523945edj.8
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 08:55:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=J22b/w7syzaCBzkYdGdKNNSK+qnL7HdTU6ZmewqeGXE=;
+        b=m8yxRnTngqc/OGWZ6wMTzbKI+q7qAYXLW6qXzeezFSXETj/Jk5Qeq++x1L8c5Xc3j6
+         Y7NbMcBl0duqhJlZDzZ+4vciAFLdO7YpXUvzFEaCdZSQPNxHr2e/5sSAjd//F1kuAPMn
+         wm12GuhXylfyVVPOeZgbitBexdL8vfPJzVvEVcQcWRBW0DfDHInk3BXfY/Hf7CKVO4VA
+         Y7fQDwjfLY4meXdFC0cImbrPBv1jC3t13QOxgJoBgSQIcNzOTewdck+JLfviKlec3uZf
+         8QcLVfy1VWJ/8LB1SVArOOprjnlB2EZd0Q9UXWPBAWRyaDgZ1KayW2UPMsmJUEvBt1PP
+         fWQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=J22b/w7syzaCBzkYdGdKNNSK+qnL7HdTU6ZmewqeGXE=;
+        b=S+bVNiqZJxlChEjQmGOvT81FvPivnc7R6DdT4txtexbXB1SkPP2sNlDiJyy7KCZSUF
+         eTAKBJ3BaW/JYkwB4FBB6nvAw/bK09vzjPRTEcGMymtgsGk4WBRznrduXwclfW6Ihq5X
+         UEjubjxC9bj5oA4XimImVFCNqHi8App1shTu6C149EVHHwfj9upX/j0mFwjhhMOozPSn
+         I1KnGPlAGyNcg0ymZCyKxYVGey/LK8M0BbvSNYqOaWlyBbgpMZj2OeOS/sUk+YF3AZ0G
+         2vz4pT9coQkS5vYLI4xEJEODT9a6hKbx43g4HGV99ZSFbC56qnYPAVtsX7Oxd80PRi0I
+         kOHA==
+X-Gm-Message-State: AOAM5307K/jgZIVwtFEif1y88mjxLHfGSQw3sZpcldm9/27SOsE1fDzt
+        k5J3UL+O7u8GY5UiCTE/7J4=
+X-Google-Smtp-Source: ABdhPJy/6BKanCysOzW6UlQurYRbDRCViBL2b43/b31mnaCYL3/ODYd/OOVS4J+XJ0+g8K98lliYOA==
+X-Received: by 2002:aa7:da12:: with SMTP id r18mr14534437eds.169.1602518144300;
+        Mon, 12 Oct 2020 08:55:44 -0700 (PDT)
+Received: from gmail.com (563B81C8.dsl.pool.telekom.hu. [86.59.129.200])
+        by smtp.gmail.com with ESMTPSA id n13sm1081310ejg.93.2020.10.12.08.55.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 08:55:43 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Mon, 12 Oct 2020 17:55:42 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [GIT PULL] Static calls for v5.10
+Message-ID: <20201012155542.GA3557765@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201009140141.GA4048593@bogus>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 09:01:41AM -0500, Rob Herring wrote:
-> On Fri, Oct 09, 2020 at 12:10:03PM +0100, Nicola Mazzucato wrote:
-> > Hi Viresh, I'm glad it helped.
-> >
-> > Please find below my reply.
-> >
-> > On 10/9/20 6:39 AM, Viresh Kumar wrote:
-> > > On 08-10-20, 17:00, Nicola Mazzucato wrote:
-> > >> On 10/8/20 4:03 PM, Ionela Voinescu wrote:
-> > >>> Hi Viresh,
-> > >>>
-> > >>> On Thursday 08 Oct 2020 at 16:32:41 (+0530), Viresh Kumar wrote:
-> > >>>> On 07-10-20, 13:58, Nicola Mazzucato wrote:
-> > >>>>> Hi Viresh,
-> > >>>>>
-> > >>>>> performance controls is what is exposed by the firmware through a protocol that
-> > >>>>> is not capable of describing hardware (say SCMI). For example, the firmware can
-> > >>>>> tell that the platform has N controls, but it can't say to which hardware they
-> > >>>>> are "wired" to. This is done in dt, where, for example, we map these controls
-> > >>>>> to cpus, gpus, etc.
-> > >>>>>
-> > >>>>> Let's focus on cpus.
-> > >>>>>
-> > >>>>> Normally we would have N of performance controls (what comes from f/w)
-> > >>>>> that that correspond to hardware clock/dvfs domains.
-> > >>>>>
-> > >>>>> However, some firmware implementations might benefit from having finer
-> > >>>>> grained information about the performance requirements (e.g.
-> > >>>>> per-CPU) and therefore choose to present M performance controls to the
-> > >>>>> OS. DT would be adjusted accordingly to "wire" these controls to cpus
-> > >>>>> or set of cpus.
-> > >>>>> In this scenario, the f/w will make aggregation decisions based on the
-> > >>>>> requests it receives on these M controls.
-> > >>>>>
-> > >>>>> Here we would have M cpufreq policies which do not necessarily reflect the
-> > >>>>> underlying clock domains, thus some s/w components will underperform
-> > >>>>> (EAS and thermal, for example).
-> > >>>>>
-> > >>>>> A real example would be a platform in which the firmware describes the system
-> > >>>>> having M per-cpu control, and the cpufreq subsystem will have M policies while
-> > >>>>> in fact these cpus are "performance-dependent" each other (e.g. are in the same
-> > >>>>> clock domain).
-> > >>>>
-> > >>>> If the CPUs are in the same clock domain, they must be part of the
-> > >>>> same cpufreq policy.
-> > >>>
-> > >>> But cpufreq does not currently support HW_ALL (I'm using the ACPI
-> > >>> coordination type to describe the generic scenario of using hardware
-> > >>> aggregation and coordination when establishing the clock rate of CPUs).
-> > >>>
-> > >>> Adding support for HW_ALL* will involve either bypassing some
-> > >>> assumptions around cpufreq policies or making core cpufreq changes.
-> > >>>
-> > >>> In the way I see it, support for HW_ALL involves either:
-> > >>>
-> > >>>  - (a) Creating per-cpu policies in order to allow each of the CPUs to
-> > >>>    send their own frequency request to the hardware which will do
-> > >>>    aggregation and clock rate decision at the level of the clock
-> > >>>    domain. The PSD domains (ACPI) and the new DT binding will tell
-> > >>>    which CPUs are actually in the same clock domain for whomever is
-> > >>>    interested, despite those CPUs not being in the same policy.
-> > >>>    This requires the extra mask that Nicola introduced.
-> > >>>
-> > >>>  - (b) Making deep changes to cpufreq (core/governors/drivers) to allow:
-> > >>>    - Governors to stop aggregating (usually max) the information
-> > >>>      for each of the CPUs in the policy and convey to the core
-> > >>>      information for each CPU.
-> > >>>    - Cpufreq core to be able to receive and pass this information
-> > >>>      down to the drivers.
-> > >>>    - Drivers to be able to have some per cpu structures to hold
-> > >>>      frequency control (let's say SCP fast channel addresses) for
-> > >>>      each of the CPUs in the policy. Or have these structures in the
-> > >>>      cpufreq core/policy, to avoid code duplication in drivers.
-> > >>>
-> > >>> Therefore (a) is the least invasive but we'll be bypassing the rule
-> > >>> above. But to make that rule stick we'll have to make invasive cpufreq
-> > >>> changes (b).
-> > >>
-> > >> Regarding the 'rule' above of one cpufreq policy per clock domain, I would like
-> > >> to share my understanding on it. Perhaps it's a good opportunity to shed some light.
-> > >>
-> > >> Looking back in the history of CPUFreq, related_cpus was originally designed
-> > >> to hold the map of cpus within the same clock. Later on, the meaning of this
-> > >> cpumask changed [1].
-> > >> This led to the introduction of a new cpumask 'freqdomain_cpus'
-> > >> within acpi-cpufreq to keep the knowledge of hardware clock domains for
-> > >> sysfs consumers since related_cpus was not suitable anymore for this.
-> > >> Further on, this cpumask was assigned to online+offline cpus within the same clk
-> > >> domain when sw coordination is in use [2].
-> > >>
-> > >> My interpretation is that there is no guarantee that related_cpus holds the
-> > >> 'real' hardware clock implementation. As a consequence, it is not true anymore
-> > >> that cpus that are in the same clock domain will be part of the same
-> > >> policy.
-> > >>
-> > >> This guided me to think it would be better to have a cpumask which always holds
-> > >> the real hw clock domains in the policy.
-> > >>
-> > >>>
-> > >>> This is my current understanding and I'm leaning towards (a). What do
-> > >>> you think?
-> > >>>
-> > >>> *in not so many words, this is what these patches are trying to propose,
-> > >>> while also making sure it's supported for both ACPI and DT.
-> > >>>
-> > >>> BTW, thank you for your effort in making sense of this!
-> > >>>
-> > >>> Regards,
-> > >>> Ionela.
-> > >>>
-> > >>
-> > >> This could be a platform where per-cpu and perf-dependencies will be used:
-> > >>
-> > >> CPU:              0    1    2    3    4    5    6    7
-> > >> Type:             A    A    A    A    B    B    B    B
-> > >> Cluster:         [                                    ]
-> > >> perf-controls:   [  ] [  ] [  ] [ ]  [ ]  [ ]  [ ]  [ ]
-> > >> perf-dependency: [                ]  [                ]
-> > >> HW clock:        [                ]  [                ]
-> > >>
-> > >> The firmware will present 8 controls to the OS and each control is mapped to a
-> > >> cpu device via the standard dt. This is done so we can achieve hw coordination.
-> > >> What is required in these systems is to present to OS the information of which
-> > >> cpus belong to which clock domain. In other words, when hw coordinates we don't
-> > >> have any way at present in dt to understand how these cpus are dependent
-> > >> each other, from performance perspective (as opposed to ACPI where we have
-> > >> _PSD). Hence my proposal for the new cpu-perf-dependencies.
-> > >> This is regardless whether we decide to go for either a policy per-cpu or a
-> > >> policy per-domain.
-> > >>
-> > >> Hope it helps.
-> > >
-> > > Oh yes, I get it now. Finally. Thanks for helping me out :)
-> > >
-> > > So if I can say all this stuff in simple terms, this is what it will
-> > > be like:
-> > >
-> > > - We don't want software aggregation of frequencies and so we need to
-> > >   have per-cpu policies even when they share their clock lines.
-> > >
-> > > - But we still need a way for other frameworks to know which CPUs
-> > >   share the clock lines (that's what the perf-dependency is all about,
-> > >   right ?).
-> > >
-> > > - We can't get it from SCMI, but need a DT based solution.
-> > >
-> > > - Currently for the cpufreq-case we relied for this on the way OPP
-> > >   tables for the CPUs were described. i.e. the opp-table is marked as
-> > >   "shared" and multiple CPUs point to it.
-> > >
-> > > - I wonder if we can keep using that instead of creating new bindings
-> > >   for exact same stuff ? Though the difference here would be that the
-> > >   OPP may not have any other entries.
-> >
-> > I thought about it and looked for other platforms' DT to see if can reuse
-> > existing opp information. Unfortunately I don't think it is optimal. The reason
-> > being that, because cpus have the same opp table it does not necessarily mean
-> > that they share a clock wire. It just tells us that they have the same
-> > capabilities (literally just tells us they have the same V/f op points).
-> > Unless I am missing something?
-> >
-> > When comparing with ACPI/_PSD it becomes more intuitive that there is no
-> > equivalent way to reveal "perf-dependencies" in DT.
->
-> You should be able to by examining the clock tree. But perhaps SCMI
-> abstracts all that and just presents virtual clocks without parent
-> clocks available to determine what clocks are shared? Fix SCMI if that's
-> the case.
+Linus,
 
-We tried, but it goes against the abstraction according to SCMI spec authors
-which is hard to argue against. The authors think the whole EAS thing is
-OSPM specific and since ACPI has a way to express this even when CPPC
-entries are per CPU and _PSD provides the shared clock domain info, they
-prefer this to be outside the scope of SCMI and use DT for this. I don't
-totally agree with that but I don't have strong case to argue here.
+Please pull the latest core/static_call git tree from:
 
---
-Regards,
-Sudeep
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git core-static_call-2020-10-12
+
+   # HEAD: 69e0ad37c9f32d5aa1beb02aab4ec0cd055be013 static_call: Fix return type of static_call_init
+
+This tree introduces static_call(), which is the idea of static_branch()
+applied to indirect function calls. Remove a data load (indirection) by
+modifying the text.
+
+They give the flexibility of function pointers, but with better
+performance. (This is especially important for cases where
+retpolines would otherwise be used, as retpolines can be pretty
+slow.)
+
+API overview:
+
+  DECLARE_STATIC_CALL(name, func);
+  DEFINE_STATIC_CALL(name, func);
+  DEFINE_STATIC_CALL_NULL(name, typename);
+
+  static_call(name)(args...);
+  static_call_cond(name)(args...);
+  static_call_update(name, func);
+
+x86 is supported via text patching, otherwise basic indirect calls are used,
+with function pointers.
+
+There's a second variant using inline code patching, inspired by jump-labels,
+implemented on x86 as well.
+
+The new APIs are utilized in the x86 perf code, a heavy user of function pointers,
+where static calls speed up the PMU handler by 4.2% (!).
+
+The generic implementation is not really excercised on other architectures,
+outside of the trivial test_static_call_init() self-test.
+
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+ Thanks,
+
+	Ingo
+
+------------------>
+Josh Poimboeuf (5):
+      compiler.h: Make __ADDRESSABLE() symbol truly unique
+      static_call: Add basic static call infrastructure
+      static_call: Add inline static call infrastructure
+      x86/static_call: Add out-of-line static call implementation
+      x86/static_call: Add inline static call implementation for x86-64
+
+Nathan Chancellor (1):
+      static_call: Fix return type of static_call_init
+
+Peter Zijlstra (12):
+      notifier: Fix broken error handling pattern
+      module: Fix up module_notifier return values
+      module: Properly propagate MODULE_STATE_COMING failure
+      jump_label,module: Fix module lifetime for __jump_label_mod_text_reserved()
+      static_call: Avoid kprobes on inline static_call()s
+      static_call: Add simple self-test for static calls
+      x86/alternatives: Teach text_poke_bp() to emulate RET
+      static_call: Add static_call_cond()
+      static_call: Handle tail-calls
+      static_call: Add some validation
+      static_call: Allow early init
+      x86/perf, static_call: Optimize x86_pmu methods
+
+Steven Rostedt (VMware) (2):
+      tracepoint: Optimize using static_call()
+      tracepoint: Fix out of sync data passing by static caller
+
+peterz@infradead.org (1):
+      tracepoint: Fix overly long tracepoint names
+
+
+ arch/Kconfig                            |  13 +
+ arch/x86/Kconfig                        |   4 +-
+ arch/x86/events/core.c                  | 134 ++++++---
+ arch/x86/include/asm/static_call.h      |  40 +++
+ arch/x86/include/asm/text-patching.h    |  19 ++
+ arch/x86/kernel/Makefile                |   1 +
+ arch/x86/kernel/alternative.c           |   5 +
+ arch/x86/kernel/kprobes/opt.c           |   4 +-
+ arch/x86/kernel/setup.c                 |   2 +
+ arch/x86/kernel/static_call.c           |  98 +++++++
+ arch/x86/kernel/vmlinux.lds.S           |   1 +
+ drivers/oprofile/buffer_sync.c          |   4 +-
+ include/asm-generic/vmlinux.lds.h       |  13 +
+ include/linux/compiler.h                |   2 +-
+ include/linux/module.h                  |   5 +
+ include/linux/notifier.h                |  15 +-
+ include/linux/static_call.h             | 298 ++++++++++++++++++++
+ include/linux/static_call_types.h       |  35 +++
+ include/linux/tracepoint-defs.h         |   5 +
+ include/linux/tracepoint.h              |  86 ++++--
+ include/trace/define_trace.h            |  14 +-
+ kernel/Makefile                         |   1 +
+ kernel/cpu_pm.c                         |  48 ++--
+ kernel/jump_label.c                     |  10 +-
+ kernel/kprobes.c                        |   2 +
+ kernel/module.c                         |  15 +-
+ kernel/notifier.c                       | 144 ++++++----
+ kernel/power/hibernate.c                |  39 ++-
+ kernel/power/main.c                     |   8 +-
+ kernel/power/power.h                    |   3 +-
+ kernel/power/suspend.c                  |  14 +-
+ kernel/power/user.c                     |  14 +-
+ kernel/static_call.c                    | 482 ++++++++++++++++++++++++++++++++
+ kernel/trace/bpf_trace.c                |   8 +-
+ kernel/trace/trace.c                    |   2 +-
+ kernel/trace/trace_events.c             |   2 +-
+ kernel/trace/trace_printk.c             |   4 +-
+ kernel/tracepoint.c                     |  39 ++-
+ tools/include/linux/static_call_types.h |  35 +++
+ tools/objtool/check.c                   | 138 +++++++++
+ tools/objtool/check.h                   |   1 +
+ tools/objtool/elf.c                     |   8 +-
+ tools/objtool/elf.h                     |   3 +-
+ tools/objtool/objtool.h                 |   1 +
+ tools/objtool/orc_gen.c                 |   4 +-
+ tools/objtool/sync-check.sh             |   1 +
+ tools/power/pm-graph/sleepgraph.py      |   2 +-
+ 47 files changed, 1585 insertions(+), 241 deletions(-)
+ create mode 100644 arch/x86/include/asm/static_call.h
+ create mode 100644 arch/x86/kernel/static_call.c
+ create mode 100644 include/linux/static_call.h
+ create mode 100644 include/linux/static_call_types.h
+ create mode 100644 kernel/static_call.c
+ create mode 100644 tools/include/linux/static_call_types.h
