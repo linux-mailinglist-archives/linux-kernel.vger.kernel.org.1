@@ -2,130 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AB3F28BF03
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 19:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F6A628BF09
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 19:30:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403963AbgJLR1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 13:27:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40582 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390753AbgJLR1u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 13:27:50 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 458A6AC6C;
-        Mon, 12 Oct 2020 17:27:49 +0000 (UTC)
-Date:   Mon, 12 Oct 2020 19:27:48 +0200 (CEST)
-From:   Miroslav Benes <mbenes@suse.cz>
-To:     Jens Axboe <axboe@kernel.dk>
-cc:     Oleg Nesterov <oleg@redhat.com>, linux-kernel@vger.kernel.org,
-        io-uring@vger.kernel.org, peterz@infradead.org, tglx@linutronix.de,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCHSET RFC v3 0/6] Add support for TIF_NOTIFY_SIGNAL
-In-Reply-To: <9a01ab10-3140-3fa6-0fcf-07d3179973f2@kernel.dk>
-Message-ID: <alpine.LSU.2.21.2010121921420.10435@pobox.suse.cz>
-References: <20201005150438.6628-1-axboe@kernel.dk> <20201008145610.GK9995@redhat.com> <alpine.LSU.2.21.2010090959260.23400@pobox.suse.cz> <e33ec671-3143-d720-176b-a8815996fd1c@kernel.dk> <9a01ab10-3140-3fa6-0fcf-07d3179973f2@kernel.dk>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S2404035AbgJLRaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 13:30:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403805AbgJLRaT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 13:30:19 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A6B0C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 10:30:19 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id l18so5889671pgg.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 10:30:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=v0AdZGi06c/kzJZh24P4aQjE5ukb95Z+UwxoUfOR2Ew=;
+        b=cSc82buz6ZIbkSefbi6BfmOz98OwL1erinhcTQt1QXmEIMFgOA1Xz7ou0DQv1dItNC
+         g/ZSGgsMGQZz8XwLjJHyeVFWcd5yd1qtV/eUIzQaGoowT7B1XzK8D1B4gycRaGEb3Nu+
+         auMXYu8jYfwvIDBE1chpSBVG/6YBfx1W1fs0T6BYtUE767dBI6LPhp9RI5DTAroEgl4g
+         nQM57UZ9udRM5iLxZcqrr8jdr1DRhnfjwuKZadaK35nXF/usP+IiLGIjPIXaQzW+M92O
+         Cww6QucMNT/9l8wm+A3yG/IvdOtaGktoi1ioUiGjaqCS5QzOf49B28RN5OBGVySOMDNs
+         VzUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=v0AdZGi06c/kzJZh24P4aQjE5ukb95Z+UwxoUfOR2Ew=;
+        b=ggY7GcakR8MJ4DnQt+qBchOySjM0OmfbXBBWvnRyqB4h6sKQKFqo0NszAJOV7Cm6Ve
+         NlYkR85+VVOjTdCxAK3I7Ss1N0hKHMpCFcJeSGLi6fIKqp0NArmvyDFSmtTtKTf64kTg
+         uEHkiPtFC9/ISZdBpjzv0mUpHbalVvNlsrJo4uMBkQMk4WmQkhoyAF2/ry9Gqxqp2hTY
+         Vz8mQmAFledcNcMvXg7tG54CvGrWf7NkhxkuFjOGLxQOjQBpYyE/Z71gtgrz6728JX54
+         vZaHd65n4+ja2jO+STWcuBCc4vnEGANmO4BHQ7JcGIcwRfSsayc+xubeoZTX4NHlXBIf
+         MBRg==
+X-Gm-Message-State: AOAM532tqRz/Wuknp5BPsSgE//EAY0vyp647CRxpL2VZvFYj+ZKbYSjQ
+        doGfJRg7cVAj7r2G9UXhnBAuTg==
+X-Google-Smtp-Source: ABdhPJyMem7/qg898mhmnsaOKJcNew0PRi+PS0RDVSgwFcdVEY5RS5Wbf3saVrpenW1mNQgTctAS9g==
+X-Received: by 2002:a63:1e0c:: with SMTP id e12mr14309950pge.386.1602523818705;
+        Mon, 12 Oct 2020 10:30:18 -0700 (PDT)
+Received: from debian ([122.174.176.57])
+        by smtp.gmail.com with ESMTPSA id g9sm19739568pgm.79.2020.10.12.10.30.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 10:30:17 -0700 (PDT)
+Message-ID: <d31bda1df5cc75e3217d88eece08dcc2c3c29531.camel@rajagiritech.edu.in>
+Subject: Re: [PATCH 5.8 000/124] 5.8.15-rc1 review
+From:   Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        pavel@denx.de, stable@vger.kernel.org
+Date:   Mon, 12 Oct 2020 23:00:07 +0530
+In-Reply-To: <20201012133146.834528783@linuxfoundation.org>
+References: <20201012133146.834528783@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 10 Oct 2020, Jens Axboe wrote:
-
-> On 10/9/20 9:21 AM, Jens Axboe wrote:
-> > On 10/9/20 2:01 AM, Miroslav Benes wrote:
-> >> On Thu, 8 Oct 2020, Oleg Nesterov wrote:
-> >>
-> >>> On 10/05, Jens Axboe wrote:
-> >>>>
-> >>>> Hi,
-> >>>>
-> >>>> The goal is this patch series is to decouple TWA_SIGNAL based task_work
-> >>>> from real signals and signal delivery.
-> >>>
-> >>> I think TIF_NOTIFY_SIGNAL can have more users. Say, we can move
-> >>> try_to_freeze() from get_signal() to tracehook_notify_signal(), kill
-> >>> fake_signal_wake_up(), and remove freezing() from recalc_sigpending().
-> >>>
-> >>> Probably the same for TIF_PATCH_PENDING, klp_send_signals() can use
-> >>> set_notify_signal() rather than signal_wake_up().
-> >>
-> >> Yes, that was my impression from the patch set too, when I accidentally 
-> >> noticed it.
-> >>
-> >> Jens, could you CC our live patching ML when you submit v4, please? It 
-> >> would be a nice cleanup.
-> > 
-> > Definitely, though it'd be v5 at this point. But we really need to get
-> > all archs supporting TIF_NOTIFY_SIGNAL first. Once we have that, there's
-> > a whole slew of cleanups that'll fall out naturally:
-> > 
-> > - Removal of JOBCTL_TASK_WORK
-> > - Removal of special path for TWA_SIGNAL in task_work
-> > - TIF_PATCH_PENDING can be converted and then removed
-> > - try_to_freeze() cleanup that Oleg mentioned
-> > 
-> > And probably more I'm not thinking of right now :-)
+ * On Mon, 2020-10-12 at 15:30 +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.8.15 release.
+> There are 124 patches in this series, all will be posted as a
+> response
+> to this one.  If anyone has any issues with these being applied,
+> please
+> let me know.
 > 
-> Here's the current series, I took a stab at converting all archs to
-> support TIF_NOTIFY_SIGNAL so we have a base to build on top of. Most
-> of them were straight forward, but I need someone to fixup powerpc,
-> verify arm and s390.
+> Responses should be made by Wed, 14 Oct 2020 13:31:22 +0000.
+> Anything received after that time might be too late.
 > 
-> But it's a decent start I think, and means that we can drop various
-> bits as is done at the end of the series. I could swap things around
-> a bit and avoid having the intermediate step, but I envision that
-> getting this in all archs will take a bit longer than just signing off
-> on the generic/x86 bits. So probably best to keep the series as it is
-> for now, and work on getting the arch bits verified/fixed/tested.
+> The whole patch series can be found in one patch at:
+> 	
+> https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.8.15-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-
+> stable-rc.git linux-5.8.y
+> and the diffstat can be found below.
 > 
-> https://git.kernel.dk/cgit/linux-block/log/?h=tif-task_work
+> thanks,
+> 
+> greg k-h
 
-Thanks, Jens.
+hello,
 
-Crude diff for live patching on top of the series is below. Tested only on 
-x86_64, but it passes the tests without an issue.
+Compiled and booted 5.8.15-rc1+ .  No typical dmesg regression.
+I also  have something to mention here. I saw  a warning related in
+several  kernels which looks like the following...
 
-Miroslav
+"MDS CPU bug present and SMT on, data leak possible"
 
----
-diff --git a/kernel/livepatch/transition.c b/kernel/livepatch/transition.c
-index f6310f848f34..3a4beb9395c4 100644
---- a/kernel/livepatch/transition.c
-+++ b/kernel/livepatch/transition.c
-@@ -9,6 +9,7 @@
- 
- #include <linux/cpu.h>
- #include <linux/stacktrace.h>
-+#include <linux/tracehook.h>
- #include "core.h"
- #include "patch.h"
- #include "transition.h"
-@@ -369,9 +370,7 @@ static void klp_send_signals(void)
-                         * Send fake signal to all non-kthread tasks which are
-                         * still not migrated.
-                         */
--                       spin_lock_irq(&task->sighand->siglock);
--                       signal_wake_up(task, 0);
--                       spin_unlock_irq(&task->sighand->siglock);
-+                       set_notify_signal(task);
-                }
-        }
-        read_unlock(&tasklist_lock);
-diff --git a/kernel/signal.c b/kernel/signal.c
-index a15c584a0455..b7cf4eda8611 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -181,8 +181,7 @@ void recalc_sigpending_and_wake(struct task_struct *t)
- 
- void recalc_sigpending(void)
- {
--       if (!recalc_sigpending_tsk(current) && !freezing(current) &&
--           !klp_patch_pending(current))
-+       if (!recalc_sigpending_tsk(current) && !freezing(current))
-                clear_thread_flag(TIF_SIGPENDING);
- 
- }
+But now in 5.8.15-rc1+ , that warning disappeared.
+
+Tested-by: Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
+
+-- 
+software engineer
+rajagiri school of engineering and technology
 
