@@ -2,33 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D79F28AE6C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 08:53:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4287A28AE6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 08:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbgJLGxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 02:53:11 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37930 "EHLO mx2.suse.de"
+        id S1726600AbgJLGxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 02:53:10 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38016 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726205AbgJLGwq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 02:52:46 -0400
+        id S1726413AbgJLGxG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 02:53:06 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 76487AD76;
-        Mon, 12 Oct 2020 06:52:44 +0000 (UTC)
-Date:   Mon, 12 Oct 2020 08:52:43 +0200
-Message-ID: <s5ho8l8q6kk.wl-tiwai@suse.de>
+        by mx2.suse.de (Postfix) with ESMTP id C4495AC12;
+        Mon, 12 Oct 2020 06:53:04 +0000 (UTC)
+Date:   Mon, 12 Oct 2020 08:53:04 +0200
+Message-ID: <s5hmu0sq6jz.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
 To:     Julia Lawall <Julia.Lawall@inria.fr>
-Cc:     Jaroslav Kysela <perex@perex.cz>,
-        Valdis =?UTF-8?B?S2zEk3RuaWVrcw==?= <valdis.kletnieks@vt.edu>,
-        Joe Perches <joe@perches.com>,
+Cc:     Clemens Ladisch <clemens@ladisch.de>,
+        Valdis =?UTF-8?B?S2zEk3RuaWVr?= =?UTF-8?B?cw==?= 
+        <valdis.kletnieks@vt.edu>, Joe Perches <joe@perches.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/8] ALSA: hda: use semicolons rather than commas to separate statements
-In-Reply-To: <1602407979-29038-3-git-send-email-Julia.Lawall@inria.fr>
+        kernel-janitors@vger.kernel.org,
+        Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/8] ALSA: fireworks: use semicolons rather than commas to separate statements
+In-Reply-To: <1602407979-29038-5-git-send-email-Julia.Lawall@inria.fr>
 References: <1602407979-29038-1-git-send-email-Julia.Lawall@inria.fr>
-        <1602407979-29038-3-git-send-email-Julia.Lawall@inria.fr>
+        <1602407979-29038-5-git-send-email-Julia.Lawall@inria.fr>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -38,7 +41,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 11 Oct 2020 11:19:33 +0200,
+On Sun, 11 Oct 2020 11:19:35 +0200,
 Julia Lawall wrote:
 > 
 > Replace commas with semicolons.  What is done is essentially described by
