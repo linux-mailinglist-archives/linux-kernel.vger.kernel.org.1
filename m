@@ -2,96 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E84B528AD35
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 06:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8960928ACC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 06:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726732AbgJLEjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 00:39:46 -0400
-Received: from mga14.intel.com ([192.55.52.115]:21641 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726597AbgJLEjd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 00:39:33 -0400
-IronPort-SDR: qCCKuPqLN5Tl+MNEuXF1KK7hNQhA9AAf73dX57SQkkUdPM7kWh7+gPDaQg8JRcE4Q7XmD/RF8l
- X3kAtmBVtTlA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="164903203"
-X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; 
-   d="scan'208";a="164903203"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2020 21:39:33 -0700
-IronPort-SDR: 0rP98mTaKoR2gYOBrqwRzr81na+FSbHFY8f5UrUSOuRHsNGNScGV/FStzbn4Z6Tz0NriDGwIGN
- 4Jb9cmBHvADw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; 
-   d="scan'208";a="313321391"
-Received: from unknown (HELO jsia-HP-Z620-Workstation.png.intel.com) ([10.221.118.135])
-  by orsmga003.jf.intel.com with ESMTP; 11 Oct 2020 21:39:32 -0700
-From:   Sia Jee Heng <jee.heng.sia@intel.com>
-To:     vkoul@kernel.org, Eugeniy.Paltsev@synopsys.com
-Cc:     andriy.shevchenko@linux.intel.com, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 15/15] dmaengine: dw-axi-dmac: Set constraint to the Max segment size
-Date:   Mon, 12 Oct 2020 12:22:00 +0800
-Message-Id: <20201012042200.29787-16-jee.heng.sia@intel.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20201012042200.29787-1-jee.heng.sia@intel.com>
-References: <20201012042200.29787-1-jee.heng.sia@intel.com>
+        id S1727948AbgJLEWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 00:22:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726706AbgJLEWx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 00:22:53 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E96BBC0613CE
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 21:22:52 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id r10so13053129pgb.10
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 21:22:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=86h9GnvGBi5wC9xCp0mEaMT6C/YP6RZUf0IR+KiY+mM=;
+        b=n5A3l84IVanhAXQ+RpWAMhL2/paRrC+kBPfk32SkjMJ3AMIe+3jVIqh5wck4Qd64RH
+         OJ1A23lm7sibahUbKhN34W8lVpaxR2Sth1OKPcLb6ZGuB6MapkRU9HNBC3XkRM4rrB/L
+         qkKvRFLA1BpjbDhEJv4NzLXFuijYW2r+o17N5n+k4+ZaLNoO3bpDGymp68ohPmNCfJ3Z
+         33n6gE3eMLl3UD9fIFLUFcSbulpMADG+sOEVBQazltObrafBDS+pVXURv2NVG3AWKyVq
+         BavLV2VLLjgz1sFHY7rqtk/5uidIKHx52b48F5hLddg4pbIQX6HpruoRh2OA+Ep8QMyS
+         KNCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=86h9GnvGBi5wC9xCp0mEaMT6C/YP6RZUf0IR+KiY+mM=;
+        b=bCatiZGUeUsrut7xd0Gqzw6YLcDSq6XpVkAaShoGS9lBvhWm5DiTG6HAtmzJt/gAW5
+         G+H8mzlU+rwwCYWZdkVypDcHDdFRyCuDo1hXIb8xpElM2mdskqnezNgOIdC+4Osvt8Yo
+         CibEsn9jplcD0qlePjQwOS9IhNxSzLyrcGhO4lPeOTkuoSmGX5a1mNt7LFa0xIwRdd5H
+         /3VF4ogEQSSoll2LSbxdcEgs2CxDJgePK2Ek8XlgN8H/bMT9FhV1Omyd0wNrgbBRIRiy
+         4bsXizaFAFD1rvYkKktpCIM05sefc5A3Qrt7yL20TD6BKJ+sRcKAJhPRsF0BRQI1qt78
+         FSKA==
+X-Gm-Message-State: AOAM530koyhEaSRuzAwh2o6UcOka+p/nTsvYv9xPJ/FR8u+wJOF/NoOG
+        UpWaRjdMahrn9Nl/t/AKSk6ERqJuG1QeGfSYM+JYLQ==
+X-Google-Smtp-Source: ABdhPJxHHIJDJzppxANA9QNUbZw/HickM6E0AFMSiV9107EW+Zh0ghm7JqhHQ8xdMJzxoaSvB20+kIMEP4lWGOY6O1g=
+X-Received: by 2002:a17:90a:890f:: with SMTP id u15mr18101013pjn.147.1602476572410;
+ Sun, 11 Oct 2020 21:22:52 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201010103854.66746-1-songmuchun@bytedance.com> <CAM_iQpUQXctR8UBNRP6td9dWTA705tP5fWKj4yZe9gOPTn_8oQ@mail.gmail.com>
+In-Reply-To: <CAM_iQpUQXctR8UBNRP6td9dWTA705tP5fWKj4yZe9gOPTn_8oQ@mail.gmail.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Mon, 12 Oct 2020 12:22:16 +0800
+Message-ID: <CAMZfGtUhVx_iYY3bJZRY5s1PG0N1mCsYGS9Oku8cTqPiMDze-g@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] mm: proc: add Sock to /proc/meminfo
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, rafael@kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Shakeel Butt <shakeelb@google.com>,
+        Will Deacon <will@kernel.org>, Michal Hocko <mhocko@suse.com>,
+        Roman Gushchin <guro@fb.com>, Neil Brown <neilb@suse.de>,
+        rppt@kernel.org, Sami Tolvanen <samitolvanen@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Florian Westphal <fw@strlen.de>, gustavoars@kernel.org,
+        Pablo Neira Ayuso <pablo@netfilter.org>, decui@microsoft.com,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Thomas Gleixner <tglx@linutronix.de>, dave@stgolabs.net,
+        Michel Lespinasse <walken@google.com>,
+        Jann Horn <jannh@google.com>, chenqiwu@xiaomi.com,
+        christophe.leroy@c-s.fr, Minchan Kim <minchan@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for DMA Scatter-Gather (SG) constraint so that DMA clients can
-handle the AxiDMA limitation.
+On Mon, Oct 12, 2020 at 2:39 AM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+>
+> On Sat, Oct 10, 2020 at 3:39 AM Muchun Song <songmuchun@bytedance.com> wr=
+ote:
+> >
+> > The amount of memory allocated to sockets buffer can become significant=
+.
+> > However, we do not display the amount of memory consumed by sockets
+> > buffer. In this case, knowing where the memory is consumed by the kerne=
+l
+>
+> We do it via `ss -m`. Is it not sufficient? And if not, why not adding it=
+ there
+> rather than /proc/meminfo?
 
-Without supporting DMA constraint the default Max segment size reported by
-dmaengine is 64KB, which is not supported by Intel KeemBay AxiDMA.
+If the system has little free memory, we can know where the memory is via
+/proc/meminfo. If a lot of memory is consumed by socket buffer, we cannot
+know it when the Sock is not shown in the /proc/meminfo. If the unaware use=
+r
+can't think of the socket buffer, naturally they will not `ss -m`. The
+end result
+is that we still don=E2=80=99t know where the memory is consumed. And we ad=
+d the
+Sock to the /proc/meminfo just like the memcg does('sock' item in the cgrou=
+p
+v2 memory.stat). So I think that adding to /proc/meminfo is sufficient.
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Sia Jee Heng <jee.heng.sia@intel.com>
----
- drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c | 8 ++++++++
- drivers/dma/dw-axi-dmac/dw-axi-dmac.h          | 1 +
- 2 files changed, 9 insertions(+)
+>
+> >  static inline void __skb_frag_unref(skb_frag_t *frag)
+> >  {
+> > -       put_page(skb_frag_page(frag));
+> > +       struct page *page =3D skb_frag_page(frag);
+> > +
+> > +       if (put_page_testzero(page)) {
+> > +               dec_sock_node_page_state(page);
+> > +               __put_page(page);
+> > +       }
+> >  }
+>
+> You mix socket page frag with skb frag at least, not sure this is exactly
+> what you want, because clearly skb page frags are frequently used
+> by network drivers rather than sockets.
+>
+> Also, which one matches this dec_sock_node_page_state()? Clearly
+> not skb_fill_page_desc() or __skb_frag_ref().
 
-diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-index d4fca3ffe67f..bd56e21663c3 100644
---- a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-+++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-@@ -12,6 +12,7 @@
- #include <linux/device.h>
- #include <linux/dmaengine.h>
- #include <linux/dmapool.h>
-+#include <linux/dma-mapping.h>
- #include <linux/err.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
-@@ -1407,6 +1408,13 @@ static int dw_probe(struct platform_device *pdev)
- 	dw->dma.device_prep_slave_sg = dw_axi_dma_chan_prep_slave_sg;
- 	dw->dma.device_prep_dma_cyclic = dw_axi_dma_chan_prep_cyclic;
- 
-+	/*
-+	 * Synopsis DesignWare AxiDMA datasheet mentioned Maximum
-+	 * supported blocks is 1024. Device register width is 4 bytes.
-+	 * Therefore, set constraint to 1024 * 4.
-+	 */
-+	dw->dma.dev->dma_parms = &dw->dma_parms;
-+	dma_set_max_seg_size(&pdev->dev, MAX_BLOCK_SIZE);
- 	platform_set_drvdata(pdev, chip);
- 
- 	pm_runtime_enable(chip->dev);
-diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac.h b/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
-index f64e8d33b127..67669049cead 100644
---- a/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
-+++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
-@@ -54,6 +54,7 @@ struct axi_dma_chan {
- struct dw_axi_dma {
- 	struct dma_device	dma;
- 	struct dw_axi_dma_hcfg	*hdata;
-+	struct device_dma_parameters	dma_parms;
- 
- 	/* channels */
- 	struct axi_dma_chan	*chan;
--- 
-2.18.0
+Yeah, we call inc_sock_node_page_state() in the skb_page_frag_refill().
+So if someone gets the page returned by skb_page_frag_refill(), it must
+put the page via __skb_frag_unref()/skb_frag_unref(). We use PG_private
+to indicate that we need to dec the node page state when the refcount of
+page reaches zero.
 
+Thanks.
+
+>
+> Thanks.
+
+
+
+--=20
+Yours,
+Muchun
