@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBFD928C228
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 22:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 148CE28C225
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 22:18:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731193AbgJLUSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 16:18:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55110 "EHLO mail.kernel.org"
+        id S1731227AbgJLUSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 16:18:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726814AbgJLUSQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 16:18:16 -0400
+        id S1728036AbgJLUSR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 16:18:17 -0400
 Received: from localhost.localdomain (c-73-209-127-30.hsd1.il.comcast.net [73.209.127.30])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 18EB82087E;
-        Mon, 12 Oct 2020 20:18:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5AA7321D81;
+        Mon, 12 Oct 2020 20:18:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602533895;
-        bh=20EOdtXnWxOJ876IXC/aCEshOJ/JHm8zvad+Y0ixElM=;
+        s=default; t=1602533896;
+        bh=W4KQ+Y2wW3gz49IeWayddSXsmF60Q6fCDuI0p+XVnOQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:In-Reply-To:
          References:From;
-        b=PKnTeMspOo23ZUimOkZr8djSwfW7Y0jHPivfcLKMz1xl6+XvUpI0eBdSmrHpTFA45
-         zRtegpKIma5JZ+tcHViaalvkY7yM70X98t04lPFtAwREShFU3URCNOQOHrq/uqdmPS
-         WUOlqnSRnG7NvgElVBlM8Tljsmx9mGkRUkANEhIY=
+        b=gHnLMX6U7KOSresKUKBvyFOuuA/f8ZPYTCp02n3Nnc8rOFYO8rlaySyZmJvpFVRSo
+         nPhtK+6MSIJPtTfVkPu9kqv0m9Rogxr03srvC0bEGTHgNOtzuggwsHAk4OHjoSggSG
+         gevyHKqcF/OiDNbP3pw06uDb6HMmnoYU6R7VFIDo=
 From:   Tom Zanussi <zanussi@kernel.org>
 To:     rostedt@goodmis.org, axelrasmussen@google.com
 Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/7] tracing: Don't show dynamic string internals in synthetic event description
-Date:   Mon, 12 Oct 2020 15:18:03 -0500
-Message-Id: <b3b7baf7813298a5ede4ff02e2e837b91c05a724.1602533267.git.zanussi@kernel.org>
+Subject: [PATCH v2 2/7] tracing: Move is_good_name() from trace_probe.h to trace.h
+Date:   Mon, 12 Oct 2020 15:18:04 -0500
+Message-Id: <cc6d6a2d7da6957fcbe1e2922e76d18d2bb459b4.1602533267.git.zanussi@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <cover.1602533267.git.zanussi@kernel.org>
 References: <cover.1602533267.git.zanussi@kernel.org>
@@ -39,49 +39,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For synthetic event dynamic fields, the type contains "__data_loc",
-which is basically an internal part of the type which is only meant to
-be displayed in the format, not in the event description itself, which
-is confusing to users since they can't use __data_loc on the
-command-line to define an event field, which printing it would lead
-them to believe.
+is_good_name() is useful for other trace infrastructure, such as
+synthetic events, so make it available via trace.h.
 
-So filter it out from the description, while leaving it in the type.
-
-Reported-by: Masami Hiramatsu <mhiramat@kernel.org>
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Tom Zanussi <zanussi@kernel.org>
 ---
- kernel/trace/trace_events_synth.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ kernel/trace/trace.h       | 13 +++++++++++++
+ kernel/trace/trace_probe.h | 13 -------------
+ 2 files changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
-index 3b2dcc42b8ee..b19e2f4159ab 100644
---- a/kernel/trace/trace_events_synth.c
-+++ b/kernel/trace/trace_events_synth.c
-@@ -1867,14 +1867,22 @@ static int __synth_event_show(struct seq_file *m, struct synth_event *event)
- {
- 	struct synth_field *field;
- 	unsigned int i;
-+	char *type, *t;
+diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+index 5b0e797cacdd..a94852838491 100644
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -19,6 +19,7 @@
+ #include <linux/glob.h>
+ #include <linux/irq_work.h>
+ #include <linux/workqueue.h>
++#include <linux/ctype.h>
  
- 	seq_printf(m, "%s\t", event->name);
+ #ifdef CONFIG_FTRACE_SYSCALLS
+ #include <asm/unistd.h>		/* For NR_SYSCALLS	     */
+@@ -2090,4 +2091,16 @@ static __always_inline void trace_iterator_reset(struct trace_iterator *iter)
+ 	iter->pos = -1;
+ }
  
- 	for (i = 0; i < event->n_fields; i++) {
- 		field = event->fields[i];
- 
-+		type = field->type;
-+		t = strstr(type, "__data_loc");
-+		if (t) { /* __data_loc belongs in format but not event desc */
-+			t += sizeof("__data_loc");
-+			type = t;
-+		}
++/* Check the name is good for event/group/fields */
++static inline bool is_good_name(const char *name)
++{
++	if (!isalpha(*name) && *name != '_')
++		return false;
++	while (*++name != '\0') {
++		if (!isalpha(*name) && !isdigit(*name) && *name != '_')
++			return false;
++	}
++	return true;
++}
 +
- 		/* parameter values */
--		seq_printf(m, "%s %s%s", field->type, field->name,
-+		seq_printf(m, "%s %s%s", type, field->name,
- 			   i == event->n_fields - 1 ? "" : "; ");
- 	}
+ #endif /* _LINUX_KERNEL_TRACE_H */
+diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
+index 04d00987da69..2f703a20c724 100644
+--- a/kernel/trace/trace_probe.h
++++ b/kernel/trace/trace_probe.h
+@@ -16,7 +16,6 @@
+ #include <linux/tracefs.h>
+ #include <linux/types.h>
+ #include <linux/string.h>
+-#include <linux/ctype.h>
+ #include <linux/ptrace.h>
+ #include <linux/perf_event.h>
+ #include <linux/kprobes.h>
+@@ -348,18 +347,6 @@ bool trace_probe_match_command_args(struct trace_probe *tp,
+ #define trace_probe_for_each_link_rcu(pos, tp)	\
+ 	list_for_each_entry_rcu(pos, &(tp)->event->files, list)
  
+-/* Check the name is good for event/group/fields */
+-static inline bool is_good_name(const char *name)
+-{
+-	if (!isalpha(*name) && *name != '_')
+-		return false;
+-	while (*++name != '\0') {
+-		if (!isalpha(*name) && !isdigit(*name) && *name != '_')
+-			return false;
+-	}
+-	return true;
+-}
+-
+ #define TPARG_FL_RETURN BIT(0)
+ #define TPARG_FL_KERNEL BIT(1)
+ #define TPARG_FL_FENTRY BIT(2)
 -- 
 2.17.1
 
