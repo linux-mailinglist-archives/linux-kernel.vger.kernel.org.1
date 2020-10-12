@@ -2,203 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A7E28BE1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1C3B28BE21
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 18:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403912AbgJLQgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 12:36:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403803AbgJLQgS (ORCPT
+        id S2403931AbgJLQhf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 12 Oct 2020 12:37:35 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:38207 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390610AbgJLQhf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 12:36:18 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 874E1C0613D0;
-        Mon, 12 Oct 2020 09:36:18 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id o9so8875018plx.10;
-        Mon, 12 Oct 2020 09:36:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Gd86cnVMEv6nUkqocEH/guphnmHfom7rwvxSoLZ1nQI=;
-        b=k7q3poQliNKrMvFe1BHWGlTNslk5tloXi5A3aKJecrv11W7LeZbZ8+46JBcbyW4WFj
-         oG0T+Oq8U5Uh9y4fT7Ye1kBl7fJJSMZeFPBOuUI8pWi5nRyBgk02EQIDi1FmhO4ZgiZy
-         nszISfAfxb3Q3AEySwTSq5nv2RLPMK78fsKIFeF5fmbx1AdnkWbphY8cD5aGxRNPBEDx
-         pcki268j1GbJ9vNuYYoiqJTqDamy6sU9s1yXq0Se2YsOjgBJ67Srp2H2Br4P5LUv1V6m
-         HmQwSqdAasoEgG9uJfOjBi1b55fLxuzOpaWpk6I4L8vmap+gy6lk4PNLLeupWaXE2dgz
-         FWHw==
+        Mon, 12 Oct 2020 12:37:35 -0400
+Received: by mail-oi1-f194.google.com with SMTP id h10so6649370oie.5;
+        Mon, 12 Oct 2020 09:37:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Gd86cnVMEv6nUkqocEH/guphnmHfom7rwvxSoLZ1nQI=;
-        b=GU1F7+/1/KB59N8qS4U0Mbx5lPM9QKgjULBGX9AF/yv1+11vV8J94xq8KHpGloFd8l
-         WmvIfSAVa6D2hjfKCz1lCVnSG13ojr8zgCWREeQyIGQIbwtnU14RTBJzHA+5gXjuzQKW
-         66PPgH2lXk3X1H9HQCcVYxd7e5WWZQpSRCUDv8mTlt+3QsbNVCxriwJxc2xtnAk7cJuz
-         2sBJIfFBuHCWqgCco5TfE8QW1+ioejn1D6A8z9VDAl3LoQtR0q1BNO0jVxkj+8USpPCi
-         v8/zd5CeJrPjyG9/M+ogJ8ncpeC9jHVyGLs6obPpbuBsJdRRMGFolsXHDW3UoPHIdW4w
-         dJeQ==
-X-Gm-Message-State: AOAM533NoJCGo5QAITkNvFtebOyXRmkhrr5UCwlazkVvy852GxSdXLMs
-        5YSsf9ebsRSx2EQsc42DHJo=
-X-Google-Smtp-Source: ABdhPJz8AZdqfnri4o1DwdFFnh8hMt0zGwqgg9ejf3blzSfx/a97v/U3yLzd4m7LH8J9Ei3f+RmI2A==
-X-Received: by 2002:a17:902:a715:b029:d3:c2b4:bcee with SMTP id w21-20020a170902a715b02900d3c2b4bceemr25272756plq.22.1602520577791;
-        Mon, 12 Oct 2020 09:36:17 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:a404:280a:90bd:7a49:dcda:1fb1])
-        by smtp.gmail.com with ESMTPSA id q24sm23427124pfn.72.2020.10.12.09.36.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Oct 2020 09:36:16 -0700 (PDT)
-Subject: Re: [PATCH RFC 0/2] use interpreters to invoke scripts
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-ia64@vger.kernel.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <2b00e566-112c-5657-c10f-7f210d3eae93@gmail.com>
- <CAK7LNAQwib66YwnMuN9qGQBs8dqqVaufOr9BqYMKfYUqiXu6jg@mail.gmail.com>
-From:   Ujjwal Kumar <ujjwalkumar0501@gmail.com>
-Message-ID: <0dfaf697-1f69-74c4-ffc1-30b77026db68@gmail.com>
-Date:   Mon, 12 Oct 2020 22:06:09 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=xcurelh7vW13up8NGtRLhHtfhV2S8gnGHhSt9Nr+B8w=;
+        b=ZpEJsQ4xVXrGaJ8B/u7Tm33bHmDKLY8BZcXu10rEQpGPukohGqzIX/hcYIHKny1/n2
+         euTgJGe2G7xghOHjofIBc/5dnzlXygP+ErFTUZXwWnYRM1k71+PLlsfhVMNX9laqIJPK
+         nbDbM7BXei1+Yn8yOjkJTCGuDOdM7Gagt8lYrFZP4HzeARsQsMQUNfU2yGVfWOOqCrLS
+         favU+EYs53pnCH1c4HhCEKrtQD2XPNvWXI07F/9k7qnCVQmPDew0Ap/aP+zVMnIEchuq
+         NWEKIuiKLRQPVwwYWphrcYNryBoTE3M2dDeC5vyubomwtU7U61FRa6QCtc1Y8v23Iu6s
+         B+Vw==
+X-Gm-Message-State: AOAM531PhfHdsE42njG7wamDuwAQjMX3mh9LTYWdQOYITgLvnQjbKHCt
+        00WLGOhaWCwd+8XJ3b6MjlduhksKwsUCzU86XCqU4bSJ
+X-Google-Smtp-Source: ABdhPJxfau0lc7K8/8I7s0oJxNL9bNNG4B7A9PFASkmEgL4HVwcQrC47ED3ixAZN/+7PnjDdLr7cHAAD8KBfi4pLvp0=
+X-Received: by 2002:aca:724a:: with SMTP id p71mr11474381oic.157.1602520653510;
+ Mon, 12 Oct 2020 09:37:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAK7LNAQwib66YwnMuN9qGQBs8dqqVaufOr9BqYMKfYUqiXu6jg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201006122024.14539-1-daniel.lezcano@linaro.org>
+ <eb26a00d-eee0-a4d1-ed25-61a661ad5683@redhat.com> <8be66efd-7833-2c8a-427d-b0055c2f6ec1@linaro.org>
+ <97e5368b-228d-eca1-85a5-b918dfcfd336@redhat.com>
+In-Reply-To: <97e5368b-228d-eca1-85a5-b918dfcfd336@redhat.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 12 Oct 2020 18:37:22 +0200
+Message-ID: <CAJZ5v0gwc_d1vnwDVWXY+i4f0T2r0tAz8xuWV7oS_afsy7OocQ@mail.gmail.com>
+Subject: Re: [PATCH 0/4] powercap/dtpm: Add the DTPM framework
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        "Zhang, Rui" <rui.zhang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/20 9:48 pm, Masahiro Yamada wrote:
-> On Sun, Oct 4, 2020 at 12:19 AM Ujjwal Kumar <ujjwalkumar0501@gmail.com> wrote:
->>
->> This patch series aims at removing the dependency on execute
->> bit of the scripts in the kbuild system.
->>
->> If not working with fresh clone of linux-next, clean the srctree:
->> make distclean
->> make tools/clean
->>
->> To test the dependency on execute bits, I tried building the
->> kernel after removing x-bits for all files in the repository.
->> Removing execute bits:
->> for i in $(find -executable -type f); do chmod -x $i; done
->>
->> Any attempts to configure (or build) the kernel fail because of
->> 'Permission denied' on scripts with the following error:
->> $ make allmodconfig
->> sh: ./scripts/gcc-version.sh: Permission denied
->> init/Kconfig:34: syntax error
->> init/Kconfig:33: invalid statement
->> init/Kconfig:34: invalid statement
->> sh: ./scripts/ld-version.sh: Permission denied
->> init/Kconfig:39: syntax error
->> init/Kconfig:38: invalid statement
->> sh: ./scripts/clang-version.sh: Permission denied
->> init/Kconfig:49: syntax error
->> init/Kconfig:48: invalid statement
->> make[1]: *** [scripts/kconfig/Makefile:71: allmodconfig] Error 1
->> make: *** [Makefile:606: allmodconfig] Error 2
->>
->> Changes:
->> 1. Adds specific interpreters (in Kconfig) to invoke
->> scripts.
->>
->> After this patch I could successfully do a kernel build
->> without any errors.
->>
->> 2. Again, adds specific interpreters to other parts of
->> kbuild system.
->>
->> I could successfully perform the following make targets after
->> applying the PATCH 2/2:
->> make headerdep
->> make kselftest-merge
->> make rpm-pkg
->> make perf-tar-src-pkg
->> make ARCH=ia64 defconfig
->> ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make prepare
->>
->> Following changes in PATCH 2/2 are not yet tested:
->> arch/arm64/kernel/vdso32/Makefile
->> arch/nds32/kernel/vdso/Makefile
->> scripts/Makefile.build
->>
->> Ujjwal Kumar (2):
->>   kconfig: use interpreters to invoke scripts
->>   kbuild: use interpreters to invoke scripts
->>
->>  Makefile                          |  4 ++--
->>  arch/arm64/kernel/vdso/Makefile   |  2 +-
->>  arch/arm64/kernel/vdso32/Makefile |  2 +-
->>  arch/ia64/Makefile                |  4 ++--
->>  arch/nds32/kernel/vdso/Makefile   |  2 +-
->>  init/Kconfig                      | 16 ++++++++--------
->>  scripts/Makefile.build            |  2 +-
->>  scripts/Makefile.package          |  4 ++--
->>  8 files changed, 18 insertions(+), 18 deletions(-)
->>
->> --
->> 2.26.2
->>
-> 
-> 
-> Andrew Morton suggested and applied the doc patch
-> (commit e9aae7af4601688386 in linux-next),
-> but did not pick up this series.
-> 
-> It is difficult to predict which patch he would
-> pick up, and which he would not.
-> 
-> 
-> I can apply this series
-> together with Lukas' base patch.
-> 
-> 
-> I pointed out possible mistakes in 2/2.
-> I can locally fix them up if you agree.
+On Mon, Oct 12, 2020 at 1:46 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> Hi Daniel,
+>
+> On 10/12/20 12:30 PM, Daniel Lezcano wrote:
+> >
+> > Hi Hans,
+> >
+> > On 07/10/2020 12:43, Hans de Goede wrote:
+> >> Hi,
+> >>
+> >> On 10/6/20 2:20 PM, Daniel Lezcano wrote:
+> >>> The density of components greatly increased the last decade bringing a
+> >>> numerous number of heating sources which are monitored by more than 20
+> >>> sensors on recent SoC. The skin temperature, which is the case
+> >>> temperature of the device, must stay below approximately 45°C in order
+> >>> to comply with the legal requirements.
+> >>>
+> >>> The skin temperature is managed as a whole by an user space daemon,
+> >>> which is catching the current application profile, to allocate a power
+> >>> budget to the different components where the resulting heating effect
+> >>> will comply with the skin temperature constraint.
+> >>>
+> >>> This technique is called the Dynamic Thermal Power Management.
+> >>>
+> >>> The Linux kernel does not provide any unified interface to act on the
+> >>> power of the different devices. Currently, the thermal framework is
+> >>> changed to export artificially the performance states of different
+> >>> devices via the cooling device software component with opaque values.
+> >>> This change is done regardless of the in-kernel logic to mitigate the
+> >>> temperature. The user space daemon uses all the available knobs to act
+> >>> on the power limit and those differ from one platform to another.
+> >>>
+> >>> This series provides a Dynamic Thermal Power Management framework to
+> >>> provide an unified way to act on the power of the devices.
+> >>
+> >> Interesting, we have a discussion going on about a related
+> >> (while at the same time almost orthogonal) discussion for
+> >> setting policies for if the code managing the restraints
+> >> (which on x86 is often hidden in firmware or ACPI DPTF tables)
+> >> should have a bias towards trying to have as long a battery life
+> >> as possible, vs maximum performance. I know those 2 aren't
+> >> always opposite ends of a spectrum with race-to-idle, yet most
+> >> modern x86 hardware has some notion of what I call performance-profiles
+> >> where we can tell the firmware managing this to go for a bias towards
+> >> low-power / balanced / performance.
+> >>
+> >> I've send a RFC / sysfs API proposal for this here:
+> >> https://lore.kernel.org/linux-pm/20201003131938.9426-1-hdegoede@redhat.com/
+> >>
+> >> I've read the patches in this thread and as said already I think
+> >> the 2 APIs are mostly orthogonal. The API in this thread is giving
+> >> userspace direct access to detailed power-limits allowing userspace
+> >> to configure things directly (and for things to work optimal userspace
+> >> must do this). Where as in the x86 case with which I'm dealing everything
+> >> is mostly handled in a black-box and userspace can merely configure
+> >> the low-power / balanced / performance bias (*) of that black-box.
+> >>
+> >> Still I think it is good if we are aware of each-others efforts here.
+> >>
+> >> So Daniel, if you can take a quick look at my proposal:
+> >> https://lore.kernel.org/linux-pm/20201003131938.9426-1-hdegoede@redhat.com/
+> >>
+> >> That would be great. I think we definitely want to avoid having 2
+> >> APIs for the same thing here. Again I don't think that is actually
+> >> the case, but maybe you see this differently ?
+> >
+> > Thanks for pointing this out. Actually, it is a different feature as you
+> > mentioned. The profile is the same knob we have with the BIOS where we
+> > can choose power/ balanced power / balanced/balanced
+> > performance / performance, AFAICT.
+>
+> Right.
+>
+> > Here the proposed interface is already exported in userspace via the
+> > powercap framework which supports today the backend driver for the RAPL
+> > register.
+>
+> You say that some sort of power/ balanced power / balanced /
+> balanced performance / performance setting in is already exported
+> through the powercap interface today (if I understand you correctly)?
+>
+> But I'm not seeing any such setting in:
+> Documentation/ABI/testing/sysfs-class-powercap
+>
+> Nor can I find it under /sys/class/powercap/intel-rapl* on a ThinkPad
+> X1 carbon 8th gen.
+>
+> Note, if there indeed is an existing userspace API for this I would
+> greatly prefer for the thinkpad_acpi and hp-wmi (and possibly other)
+> drivers to use this, so if you can point me to this interface then
+> that would be great.
+>
+> > The userspace will be in charge of handling the logic to have the
+> > correct power/performance profile tuned against the current application
+> > running foreground. The DTPM framework gives the unified access to the
+> > power limitation to the individual devices the userspace logic can act on.
+> >
+> > A side note, related to your proposal, not this patch. IMO it suits
+> > better to have /sys/power/profile.
+> >
+> > cat /sys/power/profile
+> >
+> > power
+> > balanced_power *
+> > balanced
+> > balanced_performance
+> > performance
+> >
+> > The (*) being the active profile.
+>
+> Interesting the same thing was brought up in the discussion surrounding
+> RFC which I posted.
+>
+> The downside against this approach is that it assumes that there
+> only is a single system-wide settings. AFAIK that is not always
+> the case, e.g. (AFAIK):
+>
+> 1. The intel pstate driver has something like this
+>     (might this be the rapl setting you mean? )
+>
+> 2. The X1C8 has such a setting for the embedded-controller, controlled
+>     through the ACPI interfaces which thinkpad-acpi used
+>
+> 3. The hp-wmi interface allows selecting a profile which in turn
+>     (through AML code) sets a bunch of variables which influence how
+>     the (dynamic, through mjg59's patches) DPTF code controls various
+>     things
+>
+> At least the pstate setting and the vendor specific settings can
+> co-exist. Also the powercap API has a notion of zones, I can see the
+> same thing here, with a desktop e.g. having separate performance-profile
+> selection for the CPU and a discrete GPU.
+>
+> So limiting the API to a single /sys/power/profile setting seems a
+> bit limited and I have the feeling we will regret making this
+> choice in the future.
+>
+> With that said your proposal would work well for the current
+> thinkpad_acpi / hp-wmi cases, so I'm not 100% against it.
+>
+> This would require adding some internal API to the code which
+> owns the /sys/power root-dir to allow registering a profile
+> provider I guess. But that would also immediately bring the
+> question, what if multiple drivers try to register themselves
+> as /sys/power/profile provider ?
 
-I agree with the changes you pointed out. I was in the process
-of sending a V2 patch series (almost done). But if you prefer 
-on locally fixing them, that is completely fine.
+It doesn't need to work this way IMV.
 
-> 
-> 
-> BTW, Kees Cook suggested dropping the x bit
-> from all scripts, but I did not agree with that part.
+It may also work by allowing drivers (or whatever kernel entities are
+interested in that) to subscribe to it, so that they get notified
+whenever a new value is written to it by user space (eg. each driver
+may be able to register a callback to be invoked when that happens).
+The information coming from user space will just be passed to the
+subscribers of that interface and they will do about it what they want
+(eg. it may be translated into a value to be written to a
+performance-vs-power interface provided by the platform or similar).
 
-IIRC, in the discussion Kees Cook suggestion was not to drop
-x bit but rather he meant to use that as a trick to catch
-any existing dependency on x bit.
-
-> 
-> 
-> In the doc change, Lukas mentioned
-> "further clean-up patches", but I hope
-> it does not mean dropping the x bits.
-
-IMO, he did not mean to drop the x bits.
-But rather I have many more small changes similar to these.
-He must be referring to these two patches and any future
-patches around this issue.
-
-> 
-> 
-> --
-> Best Regards
-> 
-> Masahiro Yamada
-> 
-
-Thanks
-Ujjwal Kumar
+This really is similar to having a class interface with one file per
+"subscribed" device except that the aggregation is done in the kernel
+and not in user space and the subscribers need not be related to
+specific devices.  It still allows to avoid exposing the low-level
+interfaces to user space verbatim and it just passes the "policy"
+choice from user space down to the entities that can take it into
+account.
