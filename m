@@ -2,185 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DA3028AF0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 09:29:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B4AF28AF0C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 09:29:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727346AbgJLH3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 03:29:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53546 "EHLO mail.kernel.org"
+        id S1727385AbgJLH3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 03:29:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727169AbgJLH3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 03:29:01 -0400
-Received: from coco.lan (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727169AbgJLH3V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 03:29:21 -0400
+Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0910A20790;
-        Mon, 12 Oct 2020 07:28:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9A7422087D
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 07:29:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602487740;
-        bh=CqucX5umZXAk2mfaaFWtuiDQTu1ZigAWjGzPOnNTZP8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=0fCqrqfoaJJ7EGP/SUkouauvz/ASQKA8LLJ3U6lTjsQTBuBS4CTOm9f8pXhHI5hXj
-         uIoK3DRNJ+QoOVhe3tpJMyI4MkJPFOYaxSO5gUZwcqXR+ijNviFgH1emmpG+0Y6+8Z
-         ZLAq4Qr+KSb2zUBqgXPYpYb27z+fNJGSedmvitAg=
-Date:   Mon, 12 Oct 2020 09:28:54 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Alexandre Courbot <acourbot@chromium.org>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support
-        <linux-mediatek@lists.infradead.org>, Randy Dunlap" 
-        <rdunlap@infradead.org>
-Subject: Re: [PATCH v2] media: mtk-vcodec: fix builds when remoteproc is
- disabled
-Message-ID: <20201012092854.3c43b9bd@coco.lan>
-In-Reply-To: <CAPBb6MXjEZB1N0vgTMGk28_qPpAqX87XFfkwor-9Yge0_uejsg@mail.gmail.com>
-References: <20201004122234.802044-1-acourbot@chromium.org>
-        <c3e1c20a-7729-9f48-ce66-41e67f195fc7@xs4all.nl>
-        <cda40a8e-4dd2-5fd7-c5ff-8b048475164b@xs4all.nl>
-        <CAPBb6MX8rFZU=9Pd5o0mqQ6pf+1oQYzk=D0WiR93_S3FUG7jJw@mail.gmail.com>
-        <1bb71c21-0f03-5d8f-be2c-fdcb13dadcd6@xs4all.nl>
-        <CAPBb6MWf7bWkigMPUwx7g6dXjwMkttGhHwC9X_=e6=cz1K5J0w@mail.gmail.com>
-        <20201009083350.6c2e5a6a@coco.lan>
-        <CAPBb6MXjEZB1N0vgTMGk28_qPpAqX87XFfkwor-9Yge0_uejsg@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        s=default; t=1602487760;
+        bh=OdMrR8xGJzTJnmyDgf3CCLPTfuDHl86rUB1Og6PyJ8I=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=mL+jKTyqh9wSLdifqsZnmHG+3EHbKJiAKe3JF6u/udo5PAeLdV42U5FUmwDGwzYe6
+         8jO2jhGP8MNDqm5DWKPYapm6fKMYlRg2HTrXbcYwX2G72uTqHB4BfkLkDvvxt4QUsi
+         1SXZ8MhR/oZen4jVTzTkF1p81uTcpop3qim7N1bI=
+Received: by mail-oo1-f53.google.com with SMTP id f2so3125530ooj.2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 00:29:20 -0700 (PDT)
+X-Gm-Message-State: AOAM531/4kFqo+nrJhKxyz6dW964Or86w/dL5prxiP2DgnLtBEgD2Pa0
+        SdNCHOc7nVu7IjY6ESODCekqHny2SEpATzFw6zI=
+X-Google-Smtp-Source: ABdhPJysZwFcTO8fLwgY5QoipxhuC1iq5Q4TNsYibm/DKqC5H/88/JbcqH7ufTbI1Q1Thv+H7f23RZxi4H5JmSUiCW0=
+X-Received: by 2002:a4a:5258:: with SMTP id d85mr17666894oob.13.1602487759778;
+ Mon, 12 Oct 2020 00:29:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <1600332402-30123-1-git-send-email-anshuman.khandual@arm.com>
+ <20200928203539.GA12218@willie-the-truck> <09266aed-7eef-5b16-5d52-0dcb7dcb7246@arm.com>
+ <20200929152221.GA13995@willie-the-truck> <f44d34df-8a21-712c-138d-f7f633b0eb6c@arm.com>
+ <262f2fd8-2e0c-4eaf-d4ff-f72728049f52@arm.com>
+In-Reply-To: <262f2fd8-2e0c-4eaf-d4ff-f72728049f52@arm.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 12 Oct 2020 09:29:08 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFszo8SO7eAn0FEO+AQUHV9HZyukUi7=-udKyK+mCNVRw@mail.gmail.com>
+Message-ID: <CAMj1kXFszo8SO7eAn0FEO+AQUHV9HZyukUi7=-udKyK+mCNVRw@mail.gmail.com>
+Subject: Re: [PATCH] arm64/mm: Validate hotplug range before creating linear mapping
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 12 Oct 2020 13:58:51 +0900
-Alexandre Courbot <acourbot@chromium.org> escreveu:
-
-> Hi Mauro,
-> 
-> On Fri, Oct 9, 2020 at 3:34 PM Mauro Carvalho Chehab
-> <mchehab+huawei@kernel.org> wrote:
+On Tue, 6 Oct 2020 at 08:36, Anshuman Khandual
+<anshuman.khandual@arm.com> wrote:
+>
+>
+>
+> On 09/30/2020 01:32 PM, Anshuman Khandual wrote:
+> > But if __is_lm_address() checks against the effective linear range instead
+> > i.e [_PAGE_OFFSET(vabits_actual)..(PAGE_END - 1)], it can be used for hot
+> > plug physical range check there after. Perhaps something like this, though
+> > not tested properly.
 > >
-> > Em Fri, 9 Oct 2020 13:30:06 +0900
-> > Alexandre Courbot <acourbot@chromium.org> escreveu:
-> >  
-> > > On Fri, Oct 9, 2020 at 1:13 AM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:  
-> >  
-> > > > >>> If VIDEO_MEDIATEK_VPU=y and MTK_SCP=m, then VIDEO_MEDIATEK_VCODEC can be configured
-> > > > >>> to y, and then it won't be able to find the scp_ functions.
-> > > > >>>
-> > > > >>> To be honest, I'm not sure how to solve this.  
-> > > > >>
-> > > > >> Found it. Add this:
-> > > > >>
-> > > > >>         depends on MTK_SCP || !MTK_SCP
-> > > > >>         depends on VIDEO_MEDIATEK_VPU || !VIDEO_MEDIATEK_VPU
-> > > > >>
-> > > > >> Ugly as hell, but it appears to be the correct incantation for this.  
+> > diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+> > index afa722504bfd..6da046b479d4 100644
+> > --- a/arch/arm64/include/asm/memory.h
+> > +++ b/arch/arm64/include/asm/memory.h
+> > @@ -238,7 +238,10 @@ static inline const void *__tag_set(const void *addr, u8 tag)
+> >   * space. Testing the top bit for the start of the region is a
+> >   * sufficient check and avoids having to worry about the tag.
+> >   */
+> > -#define __is_lm_address(addr)  (!(((u64)addr) & BIT(vabits_actual - 1)))
+> > +static inline bool __is_lm_address(unsigned long addr)
+> > +{
+> > +       return ((addr >= _PAGE_OFFSET(vabits_actual)) && (addr <= (PAGE_END - 1)));
+> > +}
 > >
-> > While the above does the job, I'm wondering if the better wouldn't
-> > be to have this spit into 3 config dependencies. E. g. something like:
+> >  #define __lm_to_phys(addr)     (((addr) + physvirt_offset))
+> >  #define __kimg_to_phys(addr)   ((addr) - kimage_voffset)
+> > diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+> > index d59ffabb9c84..5750370a7e8c 100644
+> > --- a/arch/arm64/mm/mmu.c
+> > +++ b/arch/arm64/mm/mmu.c
+> > @@ -1451,8 +1451,7 @@ static bool inside_linear_region(u64 start, u64 size)
+> >          * address range mapped by the linear map, the start address should
+> >          * be calculated using vabits_actual.
+> >          */
+> > -       return ((start >= __pa(_PAGE_OFFSET(vabits_actual)))
+> > -                       && ((start + size) <= __pa(PAGE_END - 1)));
+> > +       return __is_lm_address(__va(start)) && __is_lm_address(__va(start + size));
+> >  }
 > >
-> > config VIDEO_MEDIATEK_CODEC
-> >         depends on VIDEO_MEDIATEK_VPU_SCP || VIDEO_MEDIATEK_VPU
-> >
-> > config VIDEO_MEDIATEK_VPU
-> >         depends on VIDEO_DEV && VIDEO_V4L2
-> >         depends on ARCH_MEDIATEK || COMPILE_TEST
-> >         tristate "support for Mediatek Video Processor Unit without SCP"
-> >         help
-> >             ...
-> >
-> > config VIDEO_MEDIATEK_VPU_SCP
-> >         depends on VIDEO_DEV && VIDEO_V4L2
-> >         depends on ARCH_MEDIATEK || COMPILE_TEST
-> >         tristate "support for Mediatek Video Processor Unit with SCP"
-> >         help
-> >             ...  
-> 
-> Doing so would introduce two extra choices to enable the driver, so
-> I'm a bit concerned this may be a bit confusing?
+> >  int arch_add_memory(int nid, u64 start, u64 size,
+>
+> Will/Ard,
+>
+> Any thoughts about this ? __is_lm_address() now checks for a range instead
+> of a bit. This will be compatible later on, even if linear mapping range
+> changes from current lower half scheme.
+>
 
-The Kconfig name for "SCP" is already confusing:
+As I'm sure you have noticed, I sent out some patches that get rid of
+physvirt_offset, and which simplify __is_lm_address() to only take
+compile time constants into account (unless KASAN is enabled). This
+means that in the 52-bit VA case, __is_lm_address() does not
+distinguish between virtual addresses that can be mapped by the
+hardware and ones that cannot.
 
-	config MTK_SCP
-		tristate "Mediatek SCP support"
+In the memory hotplug case, we need to decide whether the added memory
+will appear in the addressable area, which is a different question. So
+it makes sense to duplicate some of the logic that exists in
+arm64_memblock_init() (or factor it out) to decide whether this newly
+added memory will appear in the addressable window or not.
 
-Only looking at the helper messages one would understand what SCP
-actually means ;-)
-
-	help
-	  Say y here to support Mediatek's System Companion Processor (SCP) via
-	  the remote processor framework.
-
-IMO, the way to make it less confusing would be to change the Kconfig
-message (probably both here and at remoteproc) to make it easier for
-people to understand.
-
-For example, I would use something similar to this for MTK_SCP prompt:
-
-	tristate "Use remoteproc with Mediatek companion processor (SCP)"
-
-There would be other ways of producing the same result using multiple
-config entries and just one that would be prompted, but, IMHO, with
-multiple entries, it t is clearer for the user to understand what
-what kind of support was selected. 
-
-This also allows one to look at the produced .config in order to 
-check if SCP was enabled for Mediatek VPU or not.
-
-> Also I have experimented with this, and it appears that
-> VIDEO_MEDIATEK_CODEC won't be automatically enabled if one of the new
-> options is selected. So this means that after setting e.g.
-> VIDEO_MEDIATEK_VPU_SCP, one still needs to manually enable
-> VIDEO_MEDIATEK_CODEC otherwise the driver won't be compiled at all.
-
-Actually, the codec config option would need a default line too,
-e. g. either:
-
-	config VIDEO_MEDIATEK_CODEC
-	         depends on VIDEO_MEDIATEK_VPU_SCP || VIDEO_MEDIATEK_VPU
-		 default y
-
-or:
-
-	config VIDEO_MEDIATEK_CODEC
-	         depends on VIDEO_MEDIATEK_VPU_SCP || VIDEO_MEDIATEK_VPU
-		 default VIDEO_MEDIATEK_VPU_SCP || VIDEO_MEDIATEK_VPU
-
-Both should produce exactly the same result. I usually prefer the
-first, as it is easier to read.
-
-> 
-> >
-> > And split the board-specific data for each variant on separate files,
-> > doing something like this at the Makefile:
-> >
-> >         obj-$(CONFIG_VIDEO_MEDIATEK_VCODEC) += mtk-vcodec-dec.o \
-> >                                        mtk-vcodec-enc.o \
-> >                                        mtk-vcodec-common.o
-> >
-> >         ifneq ($(VIDEO_MEDIATEK_VPU_SCP),)
-> >         obj-$(CONFIG_VIDEO_MEDIATEK_VCODEC) += mtk-vcodec-fw-scp.o
-> >         endif
-> >
-> >         ifneq ($(VIDEO_MEDIATEK_VPU),)
-> >         obj-$(CONFIG_VIDEO_MEDIATEK_VCODEC) += mtk-vcodec-fw-vpu.o
-> >         endif
-> >
-> > This will avoid the ugly ifdefs in the middle of mtk_vcodec_fw.c,
-> > and the ugly "depends on FOO || !FOO" usage.
-> >
-> > It should also be simpler to add future variants of it in the
-> > future, if needed.  
-> 
-> Indeed, the split makes sense regardless of the selection mechanism
-> adopted. I will try to do it in the next revision.
-
-Agreed.
-
-Thanks,
-Mauro
+So I think your original approach makes more sense here, although I
+think you want '(start + size - 1) <= __pa(PAGE_END - 1)' in the
+comparison above (and please drop the redundant parens)
