@@ -2,114 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7A6828BE9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 19:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 947F928BE9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 19:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403919AbgJLRER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 13:04:17 -0400
-Received: from vern.gendns.com ([98.142.107.122]:56706 "EHLO vern.gendns.com"
+        id S2403962AbgJLRFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 13:05:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42110 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390355AbgJLRER (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 13:04:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=zJY3Dr6AnVYzWq6bCyK4S4rlKOnb0m8nFs+n4rj0aqA=; b=k/NrFvl5XJsTY+RGXOx8Q7rgV5
-        6WNNASc5T2nH77d9p4WJ5StsyyoafuyjaX7OIUA/cx9AzZCWgCRdBuECQRkacLzZujA1K1NtbFU9c
-        KT8ra/6X+hfinxyRa8siQlResVDcawWPR3ET4bVDjn+XY2LOmvomALeWmTn4JL19k/gC+3IkGygGh
-        WGAyhJUf0R5CDBejIe3Sr7wUWTQl8qhMG11CkFDMgw3zPBV8NQ1L+CdhHkXbHHuBBNBLcUxWHtbMt
-        Q02yv7CcfFESjhKZTjKfgLviYlVIbGFNkkQZefNDtOBRrc2s4OMTLDJxaB1PKao2OkQWTGL3nL+ME
-        t4YRc7kQ==;
-Received: from [2600:1700:4830:165f::19e] (port=46758)
-        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <david@lechnology.com>)
-        id 1kS1F6-00009H-9o; Mon, 12 Oct 2020 13:04:12 -0400
-Subject: Re: [PATCH v5 4/5] docs: counter: Document character device interface
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>
-Cc:     jic23@kernel.org, kamel.bouhara@bootlin.com, gwendal@chromium.org,
-        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
-        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com
-References: <cover.1601170670.git.vilhelm.gray@gmail.com>
- <54190f9875b81b6aa5483a7710b084053a44abb8.1601170670.git.vilhelm.gray@gmail.com>
- <20201008080909.GA31561@amd> <20201008122845.GA3314@shinobu>
-From:   David Lechner <david@lechnology.com>
-Message-ID: <d06d5e47-5776-85ee-0dc5-8b624e36d83d@lechnology.com>
-Date:   Mon, 12 Oct 2020 12:04:10 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2403931AbgJLRFE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 13:05:04 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8B6BA2072D;
+        Mon, 12 Oct 2020 17:05:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602522304;
+        bh=+36ST4U99P+UWwG8debn0zuuiSGn1LQmo1LY2w8xF6o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=CBGaB1Yj6IT7WRAhzb2OO5M2uCdl52HAvaF/Y8yEI5FSBU9p3bg0XmkxGuisRBgvl
+         MAed/+WXCvR1iNT+459iyKcSLe0qcOG/JkoTgJWzm88K5O1zICbf83BmBKPoaZkDgt
+         hH3KAg2T7U/inJ3mBhm3wt+0pC2OCqIrXfYqC5E0=
+Date:   Mon, 12 Oct 2020 10:05:01 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Christian Eggers <ceggers@arri.de>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        George McCollister <george.mccollister@gmail.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [net v4] net: dsa: microchip: fix race condition
+Message-ID: <20201012100501.33a41d8a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201012083942.12722-1-ceggers@arri.de>
+References: <20201012083942.12722-1-ceggers@arri.de>
 MIME-Version: 1.0
-In-Reply-To: <20201008122845.GA3314@shinobu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - vern.gendns.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lechnology.com
-X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/8/20 7:28 AM, William Breathitt Gray wrote:
-> On Thu, Oct 08, 2020 at 10:09:09AM +0200, Pavel Machek wrote:
->> Hi!
->>
->>> +        int main(void)
->>> +        {
->>> +                struct pollfd pfd = { .events = POLLIN };
->>> +                struct counter_event event_data[2];
->>> +
->>> +                pfd.fd = open("/dev/counter0", O_RDWR);
->>> +
->>> +                ioctl(pfd.fd, COUNTER_SET_WATCH_IOCTL, watches);
->>> +                ioctl(pfd.fd, COUNTER_SET_WATCH_IOCTL, watches + 1);
->>> +                ioctl(pfd.fd, COUNTER_LOAD_WATCHES_IOCTL);
->>> +
->>> +                for (;;) {
->>> +                        poll(&pfd, 1, -1);
->>
->> Why do poll, when you are doing blocking read?
->>
->>> +                        read(pfd.fd, event_data,  sizeof(event_data));
->>
->> Does your new chrdev always guarantee returning complete buffer?
->>
->> If so, should it behave like that?
->>
->> Best regards,
->> 									Pavel
->> -- 
->> (english) http://www.livejournal.com/~pavelmachek
->> (cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
+On Mon, 12 Oct 2020 10:39:42 +0200 Christian Eggers wrote:
+> Between queuing the delayed work and finishing the setup of the dsa
+> ports, the process may sleep in request_module() (via
+> phy_device_create()) and the queued work may be executed prior to the
+> switch net devices being registered. In ksz_mib_read_work(), a NULL
+> dereference will happen within netof_carrier_ok(dp->slave).
 > 
-> I suppose you're right: a poll() should be redundant now with this
-> version of the character device implementation because buffers will
-> always return complete; so a blocking read() should achieve the same
-> behavior that a poll() with read() would.
-> 
-> I'll give some more time for additional feedback to come in for this
-> version of the patchset, and then likely remove support for poll() in
-> the v6 submission.
-> 
-> William Breathitt Gray
-> 
+> Not queuing the delayed work in ksz_init_mib_timer() makes things even
+> worse because the work will now be queued for immediate execution
+> (instead of 2000 ms) in ksz_mac_link_down() via
+> dsa_port_link_register_of().
 
-I hope that you mean that you will just remove it from the example
-and not from the chardev. Otherwise it won't be possible to
-integrate this with an event loop.
+> 
+> Solution:
+> 1. Do not queue (only initialize) delayed work in ksz_init_mib_timer().
+> 2. Only queue delayed work in ksz_mac_link_down() if init is completed.
+> 3. Queue work once in ksz_switch_register(), after dsa_register_switch()
+> has completed.
+> 
+> Fixes: 7c6ff470aa86 ("net: dsa: microchip: add MIB counter reading support")
+> Signed-off-by: Christian Eggers <ceggers@arri.de>
+> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+> Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+> Reviewed-by: Jakub Kicinski <kuba@kernel.org>
 
+Now you went too far in the opposite direction, I never gave you my
+explicit tag :) So I'll drop it.
+
+Applied and queued for stable, thanks!
