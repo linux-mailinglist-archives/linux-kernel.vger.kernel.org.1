@@ -2,61 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 542EE28B264
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 12:38:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C809D28B240
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 12:30:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387748AbgJLKip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 06:38:45 -0400
-Received: from elvis.franken.de ([193.175.24.41]:58410 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387558AbgJLKiS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 06:38:18 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kRvDc-0008KW-02; Mon, 12 Oct 2020 12:38:16 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id A6A13C1140; Mon, 12 Oct 2020 12:30:00 +0200 (CEST)
-Date:   Mon, 12 Oct 2020 12:30:00 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] MIPS: cpu-probe: move fpu probing/handling into
- its own file
-Message-ID: <20201012103000.GB7765@alpha.franken.de>
-References: <20201008213327.11603-1-tsbogend@alpha.franken.de>
+        id S2387555AbgJLKaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 06:30:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387522AbgJLKaY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 06:30:24 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBDF3C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 03:30:22 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id q5so17026639wmq.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 03:30:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yyM17tjzjvmIht2LJIVw9YnlLvTnh878kmMY5/s0rp8=;
+        b=kvieTaTiPUyF2cejHPTTECoW2OcrlgEASS+aRq3RBvdy2FCPN8EKBfxeX3VHORnNLN
+         X5unBpy4uWQ+JJqjF5q66UCyo+0f3S3sLYNzc1KZcWDKU2hlnEhsjwdWKN6pCWd6Iybm
+         wPX64K52Pkm06XaDg/4Xm8/gUBRmkzdc4QDctjOWJPlegPCVMgorigrMRkvY0wnlmPAA
+         VtcbHPkTGnkHtejmDMHrKUiGWMi8V3BSOlu9dmcS0oN1xL1DrZE9Q4TjGsTSRpJr0hqK
+         4v6q3NMlrmprG5r00ou4Wh3zzIHEutEbtQiqJixfxje9rVVfUsf1OZv7HS8uJGx5cFHj
+         /W5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yyM17tjzjvmIht2LJIVw9YnlLvTnh878kmMY5/s0rp8=;
+        b=Tf5eyX0NF4QzeDVKbF3vHtJf1hYNa+qx8R0KG3j5zj9VhLKdw6NyM6ZBmAvOYX8JUL
+         RP5r9CBo69nijRZlW5X2nA/f9gU2gOipVpNhYYCyT85o6/221JgMwXMWg5aS9BL3jsOs
+         8173ITWkhkmqEGpoOLFf5RNlv9dwP+da0HuvU4A3CwVvc4uX5erdStxpOzDpEdu55K0X
+         GO7/Ffk9jr3t0ud9ZjeKcm/zjIobc8H5bEJvS8VphXzMde998zWF38ahfbaHBC+KdJrc
+         SNZiPpx8YYAxOiKGZZ/3UvPV3oAuTb+MMENJj/ZFOGVbG3gsp4Ebvd7pf+NGnZMCtscx
+         MyAw==
+X-Gm-Message-State: AOAM530dk1/RrowMamItLnRiAai3gON/G4LHS81IYGk/Wr/ZLX1cGzei
+        OT9wVAwThNFVLqoudhUpk/r79w==
+X-Google-Smtp-Source: ABdhPJw/+WIzOfEP1ryl9YJjiyRaMzJUNiQauMEmTblkUh36HVXFAWjiNhwleESlaA5b64lQ/Y2WhQ==
+X-Received: by 2002:a7b:c085:: with SMTP id r5mr10037042wmh.17.1602498620679;
+        Mon, 12 Oct 2020 03:30:20 -0700 (PDT)
+Received: from [192.168.43.23] ([37.166.230.211])
+        by smtp.googlemail.com with ESMTPSA id z191sm22754538wme.40.2020.10.12.03.30.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Oct 2020 03:30:20 -0700 (PDT)
+Subject: Re: [PATCH 0/4] powercap/dtpm: Add the DTPM framework
+To:     Hans de Goede <hdegoede@redhat.com>, rafael@kernel.org,
+        srinivas.pandruvada@linux.intel.com
+Cc:     lukasz.luba@arm.com, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, rui.zhang@intel.com
+References: <20201006122024.14539-1-daniel.lezcano@linaro.org>
+ <eb26a00d-eee0-a4d1-ed25-61a661ad5683@redhat.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <8be66efd-7833-2c8a-427d-b0055c2f6ec1@linaro.org>
+Date:   Mon, 12 Oct 2020 12:30:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201008213327.11603-1-tsbogend@alpha.franken.de>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <eb26a00d-eee0-a4d1-ed25-61a661ad5683@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 11:33:25PM +0200, Thomas Bogendoerfer wrote:
-> cpu-probe.c has grown when supporting more and more CPUs and there
-> are use cases where probing for all the CPUs isn't useful like
-> running on a R3k system. But still the fpu handling is nearly
-> the same. For sharing put the fpu code into it's own file.
-> 
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> ---
-> Changes in v2:
-> 	removed #ifdef CONFIG_MIPS_FP_SUPPORT in fpu-probe.c
-> 	added include fpu-probe.h in fpu-proble.c
-> 
-> 
->  arch/mips/kernel/Makefile    |   1 +
->  arch/mips/kernel/cpu-probe.c | 326 +------------------------------------------
->  arch/mips/kernel/fpu-probe.c | 319 ++++++++++++++++++++++++++++++++++++++++++
->  arch/mips/kernel/fpu-probe.h |  40 ++++++
->  4 files changed, 362 insertions(+), 324 deletions(-)
->  create mode 100644 arch/mips/kernel/fpu-probe.c
->  create mode 100644 arch/mips/kernel/fpu-probe.h
 
-applied to mips-next.
+Hi Hans,
 
-Thomas.
+On 07/10/2020 12:43, Hans de Goede wrote:
+> Hi,
+> 
+> On 10/6/20 2:20 PM, Daniel Lezcano wrote:
+>> The density of components greatly increased the last decade bringing a
+>> numerous number of heating sources which are monitored by more than 20
+>> sensors on recent SoC. The skin temperature, which is the case
+>> temperature of the device, must stay below approximately 45°C in order
+>> to comply with the legal requirements.
+>>
+>> The skin temperature is managed as a whole by an user space daemon,
+>> which is catching the current application profile, to allocate a power
+>> budget to the different components where the resulting heating effect
+>> will comply with the skin temperature constraint.
+>>
+>> This technique is called the Dynamic Thermal Power Management.
+>>
+>> The Linux kernel does not provide any unified interface to act on the
+>> power of the different devices. Currently, the thermal framework is
+>> changed to export artificially the performance states of different
+>> devices via the cooling device software component with opaque values.
+>> This change is done regardless of the in-kernel logic to mitigate the
+>> temperature. The user space daemon uses all the available knobs to act
+>> on the power limit and those differ from one platform to another.
+>>
+>> This series provides a Dynamic Thermal Power Management framework to
+>> provide an unified way to act on the power of the devices.
+> 
+> Interesting, we have a discussion going on about a related
+> (while at the same time almost orthogonal) discussion for
+> setting policies for if the code managing the restraints
+> (which on x86 is often hidden in firmware or ACPI DPTF tables)
+> should have a bias towards trying to have as long a battery life
+> as possible, vs maximum performance. I know those 2 aren't
+> always opposite ends of a spectrum with race-to-idle, yet most
+> modern x86 hardware has some notion of what I call performance-profiles
+> where we can tell the firmware managing this to go for a bias towards
+> low-power / balanced / performance.
+> 
+> I've send a RFC / sysfs API proposal for this here:
+> https://lore.kernel.org/linux-pm/20201003131938.9426-1-hdegoede@redhat.com/
+> 
+> I've read the patches in this thread and as said already I think
+> the 2 APIs are mostly orthogonal. The API in this thread is giving
+> userspace direct access to detailed power-limits allowing userspace
+> to configure things directly (and for things to work optimal userspace
+> must do this). Where as in the x86 case with which I'm dealing everything
+> is mostly handled in a black-box and userspace can merely configure
+> the low-power / balanced / performance bias (*) of that black-box.
+> 
+> Still I think it is good if we are aware of each-others efforts here.
+> 
+> So Daniel, if you can take a quick look at my proposal:
+> https://lore.kernel.org/linux-pm/20201003131938.9426-1-hdegoede@redhat.com/
+> 
+> That would be great. I think we definitely want to avoid having 2
+> APIs for the same thing here. Again I don't think that is actually
+> the case, but maybe you see this differently ?
+
+Thanks for pointing this out. Actually, it is a different feature as you
+mentioned. The profile is the same knob we have with the BIOS where we
+can choose power/ balanced power / balanced/balanced
+performance / performance, AFAICT.
+
+Here the proposed interface is already exported in userspace via the
+powercap framework which supports today the backend driver for the RAPL
+register.
+
+The userspace will be in charge of handling the logic to have the
+correct power/performance profile tuned against the current application
+running foreground. The DTPM framework gives the unified access to the
+power limitation to the individual devices the userspace logic can act on.
+
+A side note, related to your proposal, not this patch. IMO it suits
+better to have /sys/power/profile.
+
+cat /sys/power/profile
+
+power
+balanced_power *
+balanced
+balanced_performance
+performance
+
+The (*) being the active profile.
+
+
+> *) bias might not always give the correct impression at least
+> on some Thinkpads switching from balanced (which they call medium)
+> to performance boosts the long time power-limit from aprox.
+> 15W to 25W which as expected results in a significant performance
+> boost.
+> 
+> Note usually we have no idea what the black-box knob which we are
+> tweaking actually does, all we know is that it is there and
+> Windows 10 often has a slider to configure it and users want
+> the same functionality under Linux.
+> 
+
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
