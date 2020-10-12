@@ -2,139 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCA0328B96D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 952ED28B973
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390071AbgJLOAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:00:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38438 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389424AbgJLN77 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:59:59 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6A0252076E;
-        Mon, 12 Oct 2020 13:59:57 +0000 (UTC)
-Date:   Mon, 12 Oct 2020 09:59:55 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Rob Clark <robdclark@chromium.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Ilias Stamatis <stamatis.iliass@gmail.com>,
-        Liang Chen <cl@rock-chips.com>,
-        Ben Dooks <ben.dooks@codethink.co.uk>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        "J. Bruce Fields" <bfields@redhat.com>
-Subject: Re: [PATCH] kthread: Add kthread_work tracepoints
-Message-ID: <20201012095955.0741313b@gandalf.local.home>
-In-Reply-To: <20201010180323.126634-1-robdclark@gmail.com>
-References: <20201010180323.126634-1-robdclark@gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1731643AbgJLOAk convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 12 Oct 2020 10:00:40 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3632 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2390745AbgJLOA1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 10:00:27 -0400
+Received: from dggeme753-chm.china.huawei.com (unknown [172.30.72.55])
+        by Forcepoint Email with ESMTP id 5D03A1931B07E1AA0D58;
+        Mon, 12 Oct 2020 22:00:18 +0800 (CST)
+Received: from dggeme753-chm.china.huawei.com (10.3.19.99) by
+ dggeme753-chm.china.huawei.com (10.3.19.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Mon, 12 Oct 2020 22:00:18 +0800
+Received: from dggeme753-chm.china.huawei.com ([10.7.64.70]) by
+ dggeme753-chm.china.huawei.com ([10.7.64.70]) with mapi id 15.01.1913.007;
+ Mon, 12 Oct 2020 22:00:18 +0800
+From:   linmiaohe <linmiaohe@huawei.com>
+To:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        Vitaly Wool <vitaly.wool@konsulko.com>
+CC:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: [Question Resend] About z3fold page migration
+Thread-Topic: [Question Resend] About z3fold page migration
+Thread-Index: Adagn3yNVyDgo4n6SKSqZr6PQeVVww==
+Date:   Mon, 12 Oct 2020 14:00:17 +0000
+Message-ID: <6d803d0cf27840caa64619949c2c3dd1@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.179.54]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 10 Oct 2020 11:03:22 -0700
-Rob Clark <robdclark@gmail.com> wrote:
+Hi all:
 
-> /**
-> + * sched_kthread_work_execute_start - called immediately before the work callback
-> + * @work:	pointer to struct kthread_work
-> + *
-> + * Allows to track kthread work execution.
-> + */
-> +TRACE_EVENT(sched_kthread_work_execute_start,
-> +
-> +	TP_PROTO(struct kthread_work *work),
-> +
-> +	TP_ARGS(work),
-> +
-> +	TP_STRUCT__entry(
-> +		__field( void *,	work	)
-> +		__field( void *,	function)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__entry->work		= work;
-> +		__entry->function	= work->func;
-> +	),
-> +
-> +	TP_printk("work struct %p: function %ps", __entry->work, __entry->function)
-> +);
-> +
-> +/**
-> + * sched_kthread_work_execute_end - called immediately after the work callback
-> + * @work:	pointer to struct work_struct
-> + * @function:   pointer to worker function
-> + *
-> + * Allows to track workqueue execution.
-> + */
-> +TRACE_EVENT(sched_kthread_work_execute_end,
-> +
-> +	TP_PROTO(struct kthread_work *work, kthread_work_func_t function),
-> +
-> +	TP_ARGS(work, function),
-> +
-> +	TP_STRUCT__entry(
-> +		__field( void *,	work	)
-> +		__field( void *,	function)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__entry->work		= work;
-> +		__entry->function	= function;
-> +	),
-> +
-> +	TP_printk("work struct %p: function %ps", __entry->work, __entry->function)
-> +);
-> +
+	Many thanks for brilliant z3fold code. I am reading it and have some questions about it. It's very nice of you if you can explain it for me.
+	1.page->private is used in z3fold but PagePrivate flag is never set, should we SetPagePrivate for it?
+	2.Since PagePrivate flag is never set, why we ClearPagePrivate in free_z3fold_page and z3fold_page_migrate?
+	3.Should we add page to the unbuddied list in z3fold_page_putback() when zhdr->refcount does not reach 0 since we remove it from unbuddied list
+in z3fold_page_isolate? Or When we will add page to the unbuddied list after z3fold_page_putback?
 
+	Thanks a lot in advance. And waiting for your kindly reply. :)
 
-Please combine the above into:
-
-DECLARE_EVENT_CLASS(sched_kthread_work_execute_template,
-
-	TP_PROTO(struct kthread_work *work),
-
-	TP_ARGS(work),
-
-	TP_STRUCT__entry(
-		__field( void *,	work	)
-		__field( void *,	function)
-	),
-
-	TP_fast_assign(
-		__entry->work		= work;
-		__entry->function	= work->func;
-	),
-
-	TP_printk("work struct %p: function %ps", __entry->work, __entry->function)
-);
-
-DEFINE_EVENT(sched_kthread_work_execute_template, sched_kthread_work_execute_start,
-	TP_PROTO(struct kthread_work *work),
-	TP_ARGS(work));
-
-DEFINE_EVENT(sched_kthread_work_execute_template, sched_kthread_work_execute_end,
-	TP_PROTO(struct kthread_work *work),
-	TP_ARGS(work));
-
-As events are cheap, classes are expensive (size wise), and a TRACE_EVENT()
-is really just a CLASS and EVENT for a single instance.
-
--- Steve
