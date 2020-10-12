@@ -2,52 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 380C428C567
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 01:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2788E28C575
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 01:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390759AbgJLXuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 19:50:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49264 "EHLO mail.kernel.org"
+        id S2389074AbgJLXxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 19:53:08 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:36170 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390498AbgJLXuF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 19:50:05 -0400
-Subject: Re: [git pull] vfs.git mount compat series
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602546605;
-        bh=jl+4fMMqACZQB1o63dcM/LX8h58PEiOi/xQq3D3/Huk=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=RUB6pzbXmF/5YWDt3gx9SBXyv0c9GqxxCjCEgGDqHANJW44VHtdGGCJTRhj0AimMv
-         /bVJ8fq+KasU6e1CNpVRhDuyZz2M6Bh4x/44z/C5jZTVdEc84NIzC5LF3ehBrY26kd
-         nrHVtV69r8Bps7k5AjnkKla3PI5yCHjG+3G7/b10=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201012032748.GH3576660@ZenIV.linux.org.uk>
-References: <20201012032748.GH3576660@ZenIV.linux.org.uk>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201012032748.GH3576660@ZenIV.linux.org.uk>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git compat.mount
-X-PR-Tracked-Commit-Id: 028abd9222df0cf5855dab5014a5ebaf06f90565
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 22230cd2c55bd27ee2c3a3def97c0d5577a75b82
-Message-Id: <160254660512.9131.14909527555871586153.pr-tracker-bot@kernel.org>
-Date:   Mon, 12 Oct 2020 23:50:05 +0000
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
+        id S1728821AbgJLXxH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 19:53:07 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602546787; h=Message-ID: References: In-Reply-To: Reply-To:
+ Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=r4GqumW05KH7+Nrt91D8kXZa1fGG3XxTAyZUX/6FE/8=;
+ b=RV8Xeq94RQIZvr19VYGWoILAJHIBHDXdOMKnggx4JMeMCUsW/LKAgEkHofqibNAwcOooa7s6
+ +l1OD/GJQDqIuslnia5uV4AxHX5qnyorb3mx4EYVXVA03xebgvwXL8tkovPBCyaDZhUjFwvI
+ t+1hEnPe3Xb9YfLjPySci16YjUg=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5f84ec324f8cc67c31114189 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 12 Oct 2020 23:52:18
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DA3E0C433C9; Mon, 12 Oct 2020 23:52:17 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 81A98C433CB;
+        Mon, 12 Oct 2020 23:52:17 +0000 (UTC)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 12 Oct 2020 16:52:17 -0700
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     Jeffrey Hugo <jhugo@codeaurora.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        linux-kernel@vger.kernel.org, jhugo=codeaurora.org@codeaurora.org
+Subject: Re: [PATCH v1 04/10] bus: mhi: core: Use the IRQF_ONESHOT flag for
+ the BHI interrupt line
+Organization: Qualcomm Innovation Center, Inc.
+Reply-To: bbhatt@codeaurora.org
+Mail-Reply-To: bbhatt@codeaurora.org
+In-Reply-To: <26de08b5-b477-c5b9-fdca-eb80bcf98561@codeaurora.org>
+References: <1600480955-16827-1-git-send-email-bbhatt@codeaurora.org>
+ <1600480955-16827-5-git-send-email-bbhatt@codeaurora.org>
+ <20201009155706.GE4810@Mani-XPS-13-9360>
+ <26de08b5-b477-c5b9-fdca-eb80bcf98561@codeaurora.org>
+Message-ID: <b3ba694d03469e767f1e82260cb8a006@codeaurora.org>
+X-Sender: bbhatt@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 12 Oct 2020 04:27:48 +0100:
+On 2020-10-09 09:04, Jeffrey Hugo wrote:
+> On 10/9/2020 9:57 AM, Manivannan Sadhasivam wrote:
+>> On Fri, Sep 18, 2020 at 07:02:29PM -0700, Bhaumik Bhatt wrote:
+>>> Remove the IRQF_SHARED flag as it is not needed for the BHI interrupt
+>>> and replace it with IRQF_ONESHOT so that host can be sure that the
+>>> next BHI hard interrupt is triggered only when the threaded interrupt
+>>> handler has returned. This is to avoid any race conditions we may run
+>>> into if BHI interrupts fire one after another.
+>>> 
+>>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+>>> ---
+>>>   drivers/bus/mhi/core/init.c | 2 +-
+>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>> 
+>>> diff --git a/drivers/bus/mhi/core/init.c 
+>>> b/drivers/bus/mhi/core/init.c
+>>> index ca32563..9ae4c19 100644
+>>> --- a/drivers/bus/mhi/core/init.c
+>>> +++ b/drivers/bus/mhi/core/init.c
+>>> @@ -167,7 +167,7 @@ int mhi_init_irq_setup(struct mhi_controller 
+>>> *mhi_cntrl)
+>>>   	/* Setup BHI_INTVEC IRQ */
+>>>   	ret = request_threaded_irq(mhi_cntrl->irq[0], mhi_intvec_handler,
+>>>   				   mhi_intvec_threaded_handler,
+>>> -				   IRQF_SHARED | IRQF_NO_SUSPEND,
+>>> +				   IRQF_ONESHOT | IRQF_NO_SUSPEND,
+>> 
+>> Jeff, I believe you're the one requested for shared irq during initial 
+>> push.
+>> Are you okay with this?
+> 
+> Nope  :)
+> 
+> AIC100 has a single interrupt for BHI/MHI activity, so this needs to be 
+> shared.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git compat.mount
+Did not account for this. Will drop this patch.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/22230cd2c55bd27ee2c3a3def97c0d5577a75b82
-
-Thank you!
+Thanks,
+Bhaumik
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum, a
+Linux Foundation Collaborative Project
