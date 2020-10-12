@@ -2,76 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C9C28AF92
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 10:02:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A295528AF94
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 10:03:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728856AbgJLICd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 04:02:33 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:28260 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726492AbgJLICc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 04:02:32 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4C8rkT4dbwz9typT;
-        Mon, 12 Oct 2020 10:02:25 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 9HWd4hggHV4o; Mon, 12 Oct 2020 10:02:25 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4C8rkT3cpKz9typR;
-        Mon, 12 Oct 2020 10:02:25 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8C2408B789;
-        Mon, 12 Oct 2020 10:02:30 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id n-ogDPEvuRDP; Mon, 12 Oct 2020 10:02:30 +0200 (CEST)
-Received: from po17688vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.100])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 217898B788;
-        Mon, 12 Oct 2020 10:02:30 +0200 (CEST)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 123EC66441; Mon, 12 Oct 2020 08:02:30 +0000 (UTC)
-Message-Id: <e26ddc1d6f6aca739dd8d2b7c67351ead559b084.1602489664.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc/mm: Remove useless #ifndef CPU_FTR_COHERENT_ICACHE in
- mem.c
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Mon, 12 Oct 2020 08:02:30 +0000 (UTC)
+        id S1727879AbgJLIDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 04:03:03 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:53605 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726640AbgJLIDC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 04:03:02 -0400
+Received: from mail-lf1-f53.google.com ([209.85.167.53]) by
+ mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1Mx0VH-1kHvLz2vvv-00yQ5g; Mon, 12 Oct 2020 10:03:00 +0200
+Received: by mail-lf1-f53.google.com with SMTP id c141so10789852lfg.5;
+        Mon, 12 Oct 2020 01:03:00 -0700 (PDT)
+X-Gm-Message-State: AOAM5329rPpF4X0jNpISzjyKGS9ElycpcARJDozJ56RnJ66uV3ypd9tX
+        3wzPkXSqMqnKu1qiwSZ5g87TZu1gGWijPS/Oe4E=
+X-Google-Smtp-Source: ABdhPJx11cXgd7NuyGgFGTokjzGvI9x76aNkz9qF5daELeSTHToGxJqvkn1G/zD5r3PdGT6e1Rse9dVo5HWd3YU1gAM=
+X-Received: by 2002:ac2:446b:: with SMTP id y11mr4705383lfl.403.1602489780126;
+ Mon, 12 Oct 2020 01:03:00 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201012095158.779c6d9d@canb.auug.org.au>
+In-Reply-To: <20201012095158.779c6d9d@canb.auug.org.au>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 12 Oct 2020 10:02:43 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2gLDw8rOYPgg=-hnNcK_5NW-fGHmiJ3ntb0dbf1EjQOQ@mail.gmail.com>
+Message-ID: <CAK8P3a2gLDw8rOYPgg=-hnNcK_5NW-fGHmiJ3ntb0dbf1EjQOQ@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the arm64 tree with the asm-generic tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:xjt3PXPnjTuI/+1Dwfs2jLk7eSdwUQnP7mRB6hkbAUPLqqPBDoe
+ vVpzSDhsw3iVH2AdbC5t5lgvVhTflkVgXGeNVGemPiWNlyxYI0E78GrBEZX6wq+ry3r9r2d
+ SQy6t/tInQgWYmzWEBjo395Eh/ksXTA9h1g+C437WzJKcJg4l7yX7qTcZ+yjPvkClTkxu7L
+ X6xVKDmI4chPLMgVU08Rw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:5A5TrkE48kY=:ZcYEY4RLldJ54grMBAQIMc
+ T7APgyTnY4Lo9n/iJup7Wr+9Fkpp9oa0fgJE41CiTDEfVauiRWyvr7Ffjh8rCU2xCCufKCy5X
+ 5y/CDc+JB9hdTX1ARA8UUxhr38GL69Zqcv9iBsZGGEHef7XLizzfPFmX0Po1i7jMbfpVm8M1Z
+ 7cXR5gyrLiWRESpzWU9aUFKll57JQlNEze1BdAzlyJlb2+DyHTzXjmVpkLhgRDJNPnF/87iRi
+ 8YlGpojFMq3dnPoMYQ8rrarvjkVMXKOAZczAKn/TO1jsldVZM4Hy8pqATctqXvorA/l3rYnCv
+ h8CaIOTu8c/blXqaiPK7vdXPlzKUtW7uvU2Jw7VfQQ+It0nEZa1/11P2nPQK+4rCVZbTaGINa
+ MGbgPx6EVGimce5u9ivGDZFB1cmia8lVtNPb0St6sYRQ8aB9Wv99louZRhX52ZPW8scahaoUs
+ hXe9AmbsnBVNAaugNtO83XOAQxWP92hYtc+q4LYdgiyUO3dgG3hEcIUY79JPTZ6h/2iI6LUhU
+ oLo9EFkAMUvO7KR4RN2EzcftRb/eEMq8h8yMCWqoMU1LkzCGioCPpgJO1Rx3spotyzGn1zCr+
+ IWSuFPXZfPoBDdSChUDk0ZJ3CxGFo+tbkNWLSsPnPReFGDJ0enwnFXaPkHtNtTzvUuqSekrYa
+ D+EaINPLuePNXXmqLhZeypaRxREmGnO2Ec9aAhF99eCxvR9RVvQ1kzcp/sUFVrdlpo91Mz1Gl
+ WKjO63jBFdeApOXVI7ewZhZNMpRVoTitii9s7pYEfepXvKlpyRPDykPqZECkqo9/Tg/SD9ooZ
+ dYSVuUBdrFQm7T+7t95OwTUngHYPBg7Fe3ZF10PHMeYHahdonefTVcZvMEWQLKsSnjfFs12M+
+ yTmc0bQwmIJX67OpztIABOCQDTClvcZ/7yspeBZ5H0GrYbfpNgp5vFhbBpurkVizp7YsvluHe
+ c1cUf3iGWrwBG7mFu6bv8lvggymVsXw9+V5kt1YqRk8ooRdGXomuO
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 10b35d9978ac ("[PATCH] powerpc: merged asm/cputable.h"),
-CPU_FTR_COHERENT_ICACHE has always been defined.
+On Mon, Oct 12, 2020 at 12:52 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> Today's linux-next merge of the arm64 tree got a conflict in:
+>
+>   arch/arm64/include/asm/mmu_context.h
+>
+> between commit:
+>
+>   f911c2a7c096 ("arm64: use asm-generic/mmu_context.h for no-op implementations")
+>
+> from the asm-generic tree and commit:
+>
+>   48118151d8cc ("arm64: mm: Pin down ASIDs for sharing mm with devices")
+>
+> from the arm64 tree.
+>
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>
 
-Remove the #ifndef CPU_FTR_COHERENT_ICACHE block.
+Sorry about that, I had pushed my asm-generic branch to the correct
+location on Friday after I noticed it was missing. Removed it again now
+until the end up the merge window.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/mm/mem.c | 5 -----
- 1 file changed, 5 deletions(-)
-
-diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
-index b7586d8c835b..2708d40c38e4 100644
---- a/arch/powerpc/mm/mem.c
-+++ b/arch/powerpc/mm/mem.c
-@@ -53,11 +53,6 @@
- 
- #include <mm/mmu_decl.h>
- 
--#ifndef CPU_FTR_COHERENT_ICACHE
--#define CPU_FTR_COHERENT_ICACHE	0	/* XXX for now */
--#define CPU_FTR_NOEXECUTE	0
--#endif
--
- unsigned long long memory_limit;
- bool init_mem_is_free;
- 
--- 
-2.25.0
-
+       Arnd
