@@ -2,80 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 229C928AC7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 05:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 541ED28AC84
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 05:33:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727186AbgJLD1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Oct 2020 23:27:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727169AbgJLD1u (ORCPT
+        id S1727301AbgJLDdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Oct 2020 23:33:10 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:30625 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727271AbgJLDdJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Oct 2020 23:27:50 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FAE9C0613CE;
-        Sun, 11 Oct 2020 20:27:50 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kRoV2-00Fkpi-Oy; Mon, 12 Oct 2020 03:27:48 +0000
-Date:   Mon, 12 Oct 2020 04:27:48 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: [git pull] vfs.git mount compat series
-Message-ID: <20201012032748.GH3576660@ZenIV.linux.org.uk>
+        Sun, 11 Oct 2020 23:33:09 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 09C3TpBf087375;
+        Mon, 12 Oct 2020 11:29:51 +0800 (GMT-8)
+        (envelope-from billy_tsai@aspeedtech.com)
+Received: from localhost.localdomain (192.168.10.9) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 12 Oct
+ 2020 11:32:00 +0800
+From:   Billy Tsai <billy_tsai@aspeedtech.com>
+To:     <robh+dt@kernel.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <linus.walleij@linaro.org>, <bgolaszewski@baylibre.com>,
+        <linux-gpio@vger.kernel.org>, <openbmc@lists.ozlabs.org>
+CC:     <BMC-SW@aspeedtech.com>
+Subject: [V2 PATCH 0/3] Fix the memory layout and add sgpio node for aspeed g6
+Date:   Mon, 12 Oct 2020 11:31:47 +0800
+Message-ID: <20201012033150.21056-1-billy_tsai@aspeedtech.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Type: text/plain
+X-Originating-IP: [192.168.10.9]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 09C3TpBf087375
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-	The last remnants of mount(2) compat buried.  Buried into NFS, that is;
-generally I'm less enthusiastic about "let's use in_compat_syscall() deep in
-call chain" kind of approach than Christoph seems to be, but in this case it's
-warranted - that crap had been an NFS-specific wart, hopefully not to be repeated
-in any other filesystems (read: any new filesystem introducing non-text mount
-options will get NAKed even if it doesn't fuck the layout up).  Not worth trying
-to grow an infrastructure that would avoid that use of in_compat_syscall()...
-	[Note: alpha-related tail of the series got dropped]
+This patch series is used to add sgpiom and sgpios nodes and add pinctrl 
+setting for sgpiom1
 
-The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
+v2:
+  - Split the change of dts and pinctrl to two commit.
+  - Add the compatible string for aspeed,ast2600-sgpiom. 
+    aspeed,ast2600-sgpios will implement in the future.
 
-  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
+Billy Tsai (3):
+  Arm: dts: aspeed-g6: Fix the register range of gpio
+  Arm: dts: aspeed-g6: Add sgpio node
+  pinctrl: aspeed-g6: Add sgpiom2 pinctrl setting
 
-are available in the git repository at:
+ .../devicetree/bindings/gpio/sgpio-aspeed.txt |  8 +--
+ arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi      |  5 ++
+ arch/arm/boot/dts/aspeed-g6.dtsi              | 54 ++++++++++++++++++-
+ drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c    | 30 +++++++++--
+ 4 files changed, 89 insertions(+), 8 deletions(-)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git compat.mount
+-- 
+2.17.1
 
-for you to fetch changes up to 028abd9222df0cf5855dab5014a5ebaf06f90565:
-
-  fs: remove compat_sys_mount (2020-09-22 23:45:57 -0400)
-
-----------------------------------------------------------------
-Christoph Hellwig (3):
-      nfs: simplify nfs4_parse_monolithic
-      fs,nfs: lift compat nfs4 mount data handling into the nfs code
-      fs: remove compat_sys_mount
-
- arch/arm64/include/asm/unistd32.h                  |   2 +-
- arch/mips/kernel/syscalls/syscall_n32.tbl          |   2 +-
- arch/mips/kernel/syscalls/syscall_o32.tbl          |   2 +-
- arch/parisc/kernel/syscalls/syscall.tbl            |   2 +-
- arch/powerpc/kernel/syscalls/syscall.tbl           |   2 +-
- arch/s390/kernel/syscalls/syscall.tbl              |   2 +-
- arch/sparc/kernel/syscalls/syscall.tbl             |   2 +-
- arch/x86/entry/syscalls/syscall_32.tbl             |   2 +-
- fs/Makefile                                        |   1 -
- fs/compat.c                                        | 132 --------------
- fs/internal.h                                      |   3 -
- fs/namespace.c                                     |   4 +-
- fs/nfs/fs_context.c                                | 195 +++++++++++++--------
- include/linux/compat.h                             |   6 -
- include/uapi/asm-generic/unistd.h                  |   2 +-
- tools/include/uapi/asm-generic/unistd.h            |   2 +-
- tools/perf/arch/powerpc/entry/syscalls/syscall.tbl |   2 +-
- tools/perf/arch/s390/entry/syscalls/syscall.tbl    |   2 +-
- 18 files changed, 138 insertions(+), 227 deletions(-)
- delete mode 100644 fs/compat.c
