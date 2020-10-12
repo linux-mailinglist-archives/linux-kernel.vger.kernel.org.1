@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC65C28B93C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDEBA28B690
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390706AbgJLN6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:58:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43450 "EHLO mail.kernel.org"
+        id S1730665AbgJLNe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:34:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731468AbgJLNk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:40:56 -0400
+        id S1730583AbgJLNeX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:34:23 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C149A2224A;
-        Mon, 12 Oct 2020 13:40:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7FF5F221FE;
+        Mon, 12 Oct 2020 13:33:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602510039;
-        bh=Cm8oRoMhqtPQ8VwK6tUug8MUgovYGLFNqrjpyTJLxKA=;
+        s=default; t=1602509638;
+        bh=XHhT+BWI5pRqE+V74UmBpgVn+ChE0exEXSay7jL+qHA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eti8JrsBf0zJk/AceTG6GZOjFZkwaAhmD2tvF0GW9hy3XNeavGD+xRf5+DKp3Fri8
-         hUofxqLv8U8hj9fXcEowvRHfe4OrIgtDdekDe8q58sPLycbGMuNEZIoAD/WMRvdfCI
-         WDUwAKRC2DvnaUS6vNhhOWakS8wM+QL+lrV42n20=
+        b=Uvs/GUYIkobip4yzjoldn/PAL5ilLhnprLPld9KBnktCAQMlXHatVqVaeByH6HrqH
+         Tpxzc9dFO/lgaQH3ib9cwxgIGO00Yrw0XI1Z8qChRzr0IkDFgid4wwPOFBURiqfipU
+         /Hozm0SQCYGQ9Rcue4uLRpjeG96V59ex0uB+31qQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        "linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, zhuyinyin@bytedance.com, Muchun Song" 
-        <songmuchun@bytedance.com>, Jens Axboe <axboe@kernel.dk>,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH 5.4 07/85] io_uring: Fix remove irrelevant req from the task_list
+        Olympia Giannou <olympia.giannou@leica-geosystems.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 08/54] rndis_host: increase sleep time in the query-response loop
 Date:   Mon, 12 Oct 2020 15:26:30 +0200
-Message-Id: <20201012132633.210398077@linuxfoundation.org>
+Message-Id: <20201012132629.979198020@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
-References: <20201012132632.846779148@linuxfoundation.org>
+In-Reply-To: <20201012132629.585664421@linuxfoundation.org>
+References: <20201012132629.585664421@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,72 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Muchun Song <songmuchun@bytedance.com>
+From: Olympia Giannou <ogiannou@gmail.com>
 
-If the process 0 has been initialized io_uring is complete, and
-then fork process 1. If process 1 exits and it leads to delete
-all reqs from the task_list. If we kill process 0. We will not
-send SIGINT signal to the kworker. So we can not remove the req
-from the task_list. The io_sq_wq_submit_work() can do that for
-us.
+[ Upstream commit 4202c9fdf03d79dedaa94b2c4cf574f25793d669 ]
 
-Fixes: 1c4404efcf2c ("io_uring: make sure async workqueue is canceled on exit")
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Some WinCE devices face connectivity issues via the NDIS interface. They
+fail to register, resulting in -110 timeout errors and failures during the
+probe procedure.
+
+In this kind of WinCE devices, the Windows-side ndis driver needs quite
+more time to be loaded and configured, so that the linux rndis host queries
+to them fail to be responded correctly on time.
+
+More specifically, when INIT is called on the WinCE side - no other
+requests can be served by the Client and this results in a failed QUERY
+afterwards.
+
+The increase of the waiting time on the side of the linux rndis host in
+the command-response loop leaves the INIT process to complete and respond
+to a QUERY, which comes afterwards. The WinCE devices with this special
+"feature" in their ndis driver are satisfied by this fix.
+
+Signed-off-by: Olympia Giannou <olympia.giannou@leica-geosystems.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/io_uring.c |   21 ++++++++++-----------
- 1 file changed, 10 insertions(+), 11 deletions(-)
+ drivers/net/usb/rndis_host.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -2272,13 +2272,11 @@ restart:
- 					break;
- 				cond_resched();
- 			} while (1);
--end_req:
--			if (!list_empty(&req->task_list)) {
--				spin_lock_irq(&ctx->task_lock);
--				list_del_init(&req->task_list);
--				spin_unlock_irq(&ctx->task_lock);
--			}
+diff --git a/drivers/net/usb/rndis_host.c b/drivers/net/usb/rndis_host.c
+index 4f4f71b2966ba..9ccbdf1431063 100644
+--- a/drivers/net/usb/rndis_host.c
++++ b/drivers/net/usb/rndis_host.c
+@@ -213,7 +213,7 @@ int rndis_command(struct usbnet *dev, struct rndis_msg_hdr *buf, int buflen)
+ 			dev_dbg(&info->control->dev,
+ 				"rndis response error, code %d\n", retval);
  		}
-+end_req:
-+		spin_lock_irq(&ctx->task_lock);
-+		list_del_init(&req->task_list);
-+		spin_unlock_irq(&ctx->task_lock);
- 
- 		/* drop submission reference */
- 		io_put_req(req);
-@@ -3722,15 +3720,16 @@ static int io_uring_fasync(int fd, struc
- static void io_cancel_async_work(struct io_ring_ctx *ctx,
- 				 struct files_struct *files)
- {
-+	struct io_kiocb *req;
-+
- 	if (list_empty(&ctx->task_list))
- 		return;
- 
- 	spin_lock_irq(&ctx->task_lock);
--	while (!list_empty(&ctx->task_list)) {
--		struct io_kiocb *req;
- 
--		req = list_first_entry(&ctx->task_list, struct io_kiocb, task_list);
--		list_del_init(&req->task_list);
-+	list_for_each_entry(req, &ctx->task_list, task_list) {
-+		if (files && req->files != files)
-+			continue;
- 
- 		/*
- 		 * The below executes an smp_mb(), which matches with the
-@@ -3740,7 +3739,7 @@ static void io_cancel_async_work(struct
- 		 */
- 		smp_store_mb(req->flags, req->flags | REQ_F_CANCEL); /* B */
- 
--		if (req->work_task && (!files || req->files == files))
-+		if (req->work_task)
- 			send_sig(SIGINT, req->work_task, 1);
+-		msleep(20);
++		msleep(40);
  	}
- 	spin_unlock_irq(&ctx->task_lock);
+ 	dev_dbg(&info->control->dev, "rndis response timeout\n");
+ 	return -ETIMEDOUT;
+-- 
+2.25.1
+
 
 
