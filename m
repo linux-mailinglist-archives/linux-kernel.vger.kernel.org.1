@@ -2,93 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39D6A28AEFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 09:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E90D728AEFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 09:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727169AbgJLHW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 03:22:27 -0400
-Received: from ec2-3-21-30-127.us-east-2.compute.amazonaws.com ([3.21.30.127]:52978
-        "EHLO www.teo-en-ming.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726205AbgJLHW1 (ORCPT
+        id S1727188AbgJLHYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 03:24:37 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:44688 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726413AbgJLHYh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 03:22:27 -0400
-Received: from localhost (localhost [IPv6:::1])
-        by www.teo-en-ming.com (Postfix) with ESMTPA id 2734844DD91;
-        Mon, 12 Oct 2020 15:22:26 +0800 (+08)
+        Mon, 12 Oct 2020 03:24:37 -0400
+Received: by mail-oi1-f195.google.com with SMTP id x62so17762349oix.11
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 00:24:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RXMZC6BcTZzfv1Fuk35nRT3JTEf+0mhCLiGzuphZHl8=;
+        b=kwJf6Whneco4mcvcLYCO2L49C4wo6Zm76XtlQ98uFRaqU8boFLY3V4G18arPlgdMhQ
+         Fbsj8foPebOa/lqQQAa4SVHofuJPV3dOl1B1fXZoMKqBEoF8LVmxtqHg/OvxGobvGRjs
+         Z2IOp992wKnQhmyQToITSsYbO7qin8WFY3zbD4eXMgqd6Jyp2uoJon0s288u0ldmUKLI
+         Zx+oqvjhSd2rth24P1KzHfI+nfJ/biVmCSxJ1hJV27yWsOQRskDahV+PYQ/LeNtHuPVJ
+         gncUiwmb5q8DO7FBTtKe6z9CLVps4f3Pq7tU8wsz5H8lMmV4qRyQcroAj8XRQWDbNXN3
+         3/SA==
+X-Gm-Message-State: AOAM5329CVgR2uOiSksc54yiSZ6eVmtQ1bBcq7G3FN5BHu7AvqeMSlqI
+        zfzVhW8cW+k2SdMFb0z5SDjTwomjdYPX/xj4pjuxWTfnuL0=
+X-Google-Smtp-Source: ABdhPJwitkepHUiETgcL671cEpg5zhwJIgCG6qbyIy3aQPsn9a6bt8xSHwdL2+9noceeeLoQoJhwQ6XPRKZx7vgr3fI=
+X-Received: by 2002:aca:c490:: with SMTP id u138mr10014122oif.54.1602487476220;
+ Mon, 12 Oct 2020 00:24:36 -0700 (PDT)
 MIME-Version: 1.0
-Date:   Mon, 12 Oct 2020 15:22:26 +0800
-From:   Turritopsis Dohrnii Teo En Ming <ceo@teo-en-ming.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     ceo@teo-en-ming-corp.com
-Subject: Reconfigure Cisco ASA 5506-X Firewall to Add Support for AnyConnect
- (MACOS)
-Message-ID: <e48476d68aafde65c634c3105e5131b7@teo-en-ming.com>
-X-Sender: ceo@teo-en-ming.com
-User-Agent: Roundcube Webmail/1.2.3
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20201012072114.5245-1-geert@linux-m68k.org>
+In-Reply-To: <20201012072114.5245-1-geert@linux-m68k.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 12 Oct 2020 09:24:25 +0200
+Message-ID: <CAMuHMdU_RtEsoRy0Accb99uiTTb4Y_z1iDAg4yijNtDZA9ZoNw@mail.gmail.com>
+Subject: Re: Build regressions/improvements in v5.9
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     linux-um <linux-um@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Subject: Reconfigure Cisco ASA 5506-X Firewall to Add Support for 
-AnyConnect (MACOS)
+On Mon, Oct 12, 2020 at 9:22 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> JFYI, when comparing v5.9[1] to v5.9-rc8[3], the summaries are:
+>   - build errors: +6/-3
+>   - build warnings: +5/-0
 
-Author: Mr. Turritopsis Dohrnii Teo En Ming
-Country: Singapore
-Date: 12 Oct 2020 Monday Singapore Time
+  + error: modpost: "devm_ioremap"
+[drivers/net/ethernet/xilinx/ll_temac.ko] undefined!:  => N/A
+  + error: modpost: "devm_ioremap_resource"
+[drivers/net/ethernet/xilinx/xilinx_emac.ko] undefined!:  => N/A
+  + error: modpost: "devm_of_iomap"
+[drivers/net/ethernet/xilinx/ll_temac.ko] undefined!:  => N/A
+  + error: modpost: "devm_platform_ioremap_resource"
+[drivers/iio/adc/adi-axi-adc.ko] undefined!:  => N/A
+  + error: modpost: "devm_platform_ioremap_resource"
+[drivers/ptp/ptp_ines.ko] undefined!:  => N/A
+  + error: modpost: "devm_platform_ioremap_resource_byname"
+[drivers/net/ethernet/xilinx/ll_temac.ko] undefined!:  => N/A
 
-Type of Publication: Plain Text
-Document Version: 20201012.01
+um-all{mod,yes}config
 
-Cisco ASA 5506-X Firewall CLI commands:
+> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/bbf5c979011a099af5dc76498918ed7df445635b/ (all 192 configs)
+> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/549738f15da0e5a00275977623be199fbbf7df50/ (all 192 configs)
 
-copy ftp://anonymous@<IP address of FTP Server>/ 
-anyconnect-macos-4.9.02028-webdeploy-k9.pkg
+Gr{oetje,eeting}s,
 
-show flash
-
-config t
-
-webvpn
-
-no anyconnect image flash:/anyconnect-win-4.9.00086-webdeploy-k9.pkg
-
-anyconnect image disk0:/anyconnect-win-4.9.00086-webdeploy-k9.pkg 1
-
-anyconnect image disk0:/anyconnect-macos-4.9.02028-webdeploy-k9.pkg 2
-
-copy run start
-
-
-
-
-
+                        Geert
 
 -- 
------BEGIN EMAIL SIGNATURE-----
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-The Gospel for all Targeted Individuals (TIs):
-
-[The New York Times] Microwave Weapons Are Prime Suspect in Ills of
-U.S. Embassy Workers
-
-Link: 
-https://www.nytimes.com/2018/09/01/science/sonic-attack-cuba-microwave.html
-
-********************************************************************************************
-
-Singaporean Targeted Individual Mr. Turritopsis Dohrnii Teo En Ming's 
-Academic
-Qualifications as at 14 Feb 2019 and refugee seeking attempts at the 
-United Nations Refugee Agency Bangkok (21 Mar 2017), in Taiwan (5 Aug 
-2019) and Australia (25 Dec 2019 to 9 Jan 2020):
-
-[1] https://tdtemcerts.wordpress.com/
-
-[2] https://tdtemcerts.blogspot.sg/
-
-[3] https://www.scribd.com/user/270125049/Teo-En-Ming
-
------END EMAIL SIGNATURE-----
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
