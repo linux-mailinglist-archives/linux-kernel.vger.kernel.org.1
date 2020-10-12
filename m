@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D4FF28B6C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F8528B646
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730939AbgJLNhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:37:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39068 "EHLO mail.kernel.org"
+        id S1730616AbgJLNcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:32:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388748AbgJLNgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:36:24 -0400
+        id S1730150AbgJLNcI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:32:08 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B23E8204EA;
-        Mon, 12 Oct 2020 13:36:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 969762078E;
+        Mon, 12 Oct 2020 13:32:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509783;
-        bh=f8I6H2/jqM8koxnBlbTyxjnfPaHzq0NPYF/1oI9hfeg=;
+        s=default; t=1602509528;
+        bh=tG7NBlJqpiCfPJruqzP8/L8q8AcSqtF400RxEoSh3yw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c6sAoLcvZxAEACunC5FAM2gCGPZ1jsrfAGYnu0E5jomNYBInITucuR+X1Cs3ET9qc
-         MS6f1fez/oomNjaZ70vbHrk9pcKvBAWtjwoIHR8enOlNG6D0SJgkQMoGNmoA3jEKTH
-         EqF6kMUdJ/7mlEKvfmnbZfnbkRcDfL2Je1n80LVk=
+        b=XToGHP16VGIN+WSZDQic6TaPWWK6WAEbdJiqZ6zrkdojy0CxGy50HuQzsuWo6fnFG
+         S7gdHnUuzDfRX7KHm+I0s8ETKA5yo5UhQyfaQyD8QBTO6ymsP4ievLy6IM+a2UGz1h
+         2nAKp9LpYojY5/nuIZsnDKI/OMKw7Ufgp+AZDg08=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH 4.14 28/70] epoll: EPOLL_CTL_ADD: close the race in decision to take fast path
+Subject: [PATCH 4.4 14/39] epoll: EPOLL_CTL_ADD: close the race in decision to take fast path
 Date:   Mon, 12 Oct 2020 15:26:44 +0200
-Message-Id: <20201012132631.559110164@linuxfoundation.org>
+Message-Id: <20201012132628.816631680@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132630.201442517@linuxfoundation.org>
-References: <20201012132630.201442517@linuxfoundation.org>
+In-Reply-To: <20201012132628.130632267@linuxfoundation.org>
+References: <20201012132628.130632267@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -96,7 +96,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/fs/eventpoll.c
 +++ b/fs/eventpoll.c
-@@ -2079,6 +2079,7 @@ SYSCALL_DEFINE4(epoll_ctl, int, epfd, in
+@@ -1885,6 +1885,7 @@ SYSCALL_DEFINE4(epoll_ctl, int, epfd, in
  	mutex_lock_nested(&ep->mtx, 0);
  	if (op == EPOLL_CTL_ADD) {
  		if (!list_empty(&f.file->f_ep_links) ||
