@@ -2,106 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DBA828AE9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 08:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 060A828AEA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 08:59:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726677AbgJLG7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 02:59:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725941AbgJLG7W (ORCPT
+        id S1726780AbgJLG7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 02:59:47 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:2324 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726334AbgJLG7q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 02:59:22 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75333C0613D0
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 23:59:21 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id d81so16203921wmc.1
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 23:59:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=8R6AjN+P7E5Fn1syKS345C5WBWhnLVLCOEs1RW9kuyk=;
-        b=uSo/yxS+dgP3+QypemHlHRE7o7ZjY5QyVMOYF/pCNuO7eqxl97UJWKfP215p9XZ0WD
-         DNdbmUYHX/3f6muzjEd6IUGJBjrXKyeKMRoMajqNeM/aqcYiJP+rqEelQ7lctBR74RXh
-         k3Zre8YpzstJC0cACfYPA4u/U/xttGKWLsYte4ZbMBaSGgEghCBbvayZ0BotA1Pkkhz3
-         hkyJT1PSUC3SIHuGar99bbB5f/FwmBgkHESumOim8P2aJ6QC21U/4Wmq1PR6U8exrn5y
-         q6Nh4uhA1WakAQyvExxEHrpmOGXV+rf6Q8tk0ZU/ZGpiiLnxlgBP7is5wW21SG6NhREd
-         tF1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=8R6AjN+P7E5Fn1syKS345C5WBWhnLVLCOEs1RW9kuyk=;
-        b=p0eqK+YxcUPskG/WDbBZGZ/UtQZjHHzX6CwsXMy5nmyS+PNcBbNwydbC+WfKlhmrLi
-         tj6mN+QXHr78cUflIcDctfkot1mEkxOjKo7aaQPigUmAbhKHZENkviFw+kBByjxuId0g
-         EN++7M5MzHqH9xabtQKfKL8TGiP7mpEccMSdevgIxa0wkKI1xFXMUfFPI3SY6ZOO4I7D
-         AO9CsZ/+aDYmDnhhdAuIsOPpfDqilOYNH65SExG/NhKi5qbWgYthIuyHBalNa3hZzPjl
-         U8FEdzkm5YPO4GTanL+3TGwcecX9nqKC+SdKQmU+WDwTMHqvmAdxTB+hYNE8TDDHdUj7
-         jQmw==
-X-Gm-Message-State: AOAM531L4+iXR7em7s3g7b5uSIFbuUIJxH1X1T5q0CSxNkNUW0skQQhG
-        GpDi1ngJ/XsL/0+NS+Db/ILl6g==
-X-Google-Smtp-Source: ABdhPJzKTbCpmYcZHzy4LRAsTLP1gG/GCfSlQ4UmgewK6QDxvzaHYbijwD5OaHLmKXnxWF8wuveDpA==
-X-Received: by 2002:a1c:bad7:: with SMTP id k206mr9163787wmf.159.1602485960052;
-        Sun, 11 Oct 2020 23:59:20 -0700 (PDT)
-Received: from dell ([91.110.221.138])
-        by smtp.gmail.com with ESMTPSA id v17sm24236235wrc.23.2020.10.11.23.59.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Oct 2020 23:59:19 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 07:59:17 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Mark-PK Tsai <mark-pk.tsai@mediatek.com>,
-        Michael Walle <michael@walle.cc>
-Subject: Re: linux-next: manual merge of the irqchip tree with the mfd tree
-Message-ID: <20201012065917.GK1763265@dell>
-References: <20201012161757.4cdf20c2@canb.auug.org.au>
+        Mon, 12 Oct 2020 02:59:46 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f83fed50000>; Sun, 11 Oct 2020 23:59:33 -0700
+Received: from mtl-vdi-166.wap.labs.mlnx (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 12 Oct
+ 2020 06:59:35 +0000
+Date:   Mon, 12 Oct 2020 09:59:31 +0300
+From:   Eli Cohen <elic@nvidia.com>
+To:     Jason Wang <jasowang@redhat.com>
+CC:     <mst@redhat.com>, <lulu@redhat.com>, <kvm@vger.kernel.org>,
+        <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <rob.miller@broadcom.com>, <lingshan.zhu@intel.com>,
+        <eperezma@redhat.com>, <hanand@xilinx.com>,
+        <mhabets@solarflare.com>, <amorenoz@redhat.com>,
+        <maxime.coquelin@redhat.com>, <stefanha@redhat.com>,
+        <sgarzare@redhat.com>
+Subject: Re: [RFC PATCH 10/24] vdpa: introduce config operations for
+ associating ASID to a virtqueue group
+Message-ID: <20201012065931.GA42327@mtl-vdi-166.wap.labs.mlnx>
+References: <20200924032125.18619-1-jasowang@redhat.com>
+ <20200924032125.18619-11-jasowang@redhat.com>
+ <20201001132927.GC32363@mtl-vdi-166.wap.labs.mlnx>
+ <70af3ff0-74ed-e519-56f5-d61e6a48767f@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201012161757.4cdf20c2@canb.auug.org.au>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <70af3ff0-74ed-e519-56f5-d61e6a48767f@redhat.com>
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1602485973; bh=oLIM5KrFZSg7XdPKgA7O+c2YZdk02ihQGMxzwd+FBp0=;
+        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+         Content-Type:Content-Disposition:Content-Transfer-Encoding:
+         In-Reply-To:User-Agent:X-Originating-IP:X-ClientProxiedBy;
+        b=j7POww5YzB1PZDV3EX1CXFYBvDpPFgva/ygZpG1yE7PKz6g+ZJtDp12l3sJ6ctI1E
+         z2Zd4UjvIlDIgKuSb+OJBBsTneb2OO3PO0mEw0pl5atWLRgN6LxWswrKlOmsSNwv1W
+         iKT/EgMNscVmaGXZpw8FJPhISMVx8h1EuTYJByZQFdhYyg37n2B0mmcAA8W7Qvi2hd
+         ddAFj+2pk3q71sD8rAIc3mTYdoaQOOZe2j6CFc0uLBdjrEX7iTtuJVjuxja5T73K/L
+         eFrbNtKJd1A0tuBxGAUU6mXdRV8XWUmIe/tuXzEpdLEqA6WAWZrHG9ke61Dtnd5/m1
+         Ph5+bwqt+PcVg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Oct 2020, Stephen Rothwell wrote:
+On Fri, Oct 09, 2020 at 11:56:45AM +0800, Jason Wang wrote:
+>=20
+> On 2020/10/1 =E4=B8=8B=E5=8D=889:29, Eli Cohen wrote:
+> > On Thu, Sep 24, 2020 at 11:21:11AM +0800, Jason Wang wrote:
+> > > This patch introduces a new bus operation to allow the vDPA bus drive=
+r
+> > > to associate an ASID to a virtqueue group.
+> > >=20
+> > So in case of virtio_net, I would expect that all the data virtqueues
+> > will be associated with the same address space identifier.
+>=20
+>=20
+> Right.
+>=20
+> I will add the codes to do this in the next version. It should be more
+> explicit than have this assumption by default.
+>=20
+>=20
+> > Moreover,
+> > this assignment should be provided before the set_map call that provide=
+s
+> > the iotlb for the address space, correct?
+>=20
+>=20
+> I think it's better not have this limitation, note that set_map() now tak=
+es
+> a asid argument.
+>=20
+> So for hardware if the associated as is changed, the driver needs to prog=
+ram
+> the hardware to switch to the new mapping.
+>=20
+> Does this work for mlx5?
+>=20
 
-> Hi all,
-> 
-> Today's linux-next merge of the irqchip tree got a conflict in:
-> 
->   drivers/irqchip/Makefile
-> 
-> between commit:
-> 
->   03ac990e0ac0 ("irqchip: Add sl28cpld interrupt controller support")
-> 
-> from the mfd tree and commit:
-> 
->   ad4c938c92af ("irqchip/irq-mst: Add MStar interrupt controller support")
-> 
-> from the irqchip tree.
-> 
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
-
-It looks as though the 'ib-mfd-gpio-hwmon-irqchip-pwm-watchdog-5.10'
-pull-request I sent on Thursday 17th September [0] should be applied
-to the IRQChip tree. 
-
-[0] https://patchwork.kernel.org/patch/11783523/
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+So in theory we can have several asid's (for different virtqueues), each
+one should be followed by a specific set_map call. If this is so, how do
+I know if I met all the conditions run my driver? Maybe we need another
+callback to let the driver know it should not expect more set_maps().
