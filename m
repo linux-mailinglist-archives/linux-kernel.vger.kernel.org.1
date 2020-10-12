@@ -2,108 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A32E28AD46
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 06:48:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39CDF28AD59
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 06:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbgJLEsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 00:48:09 -0400
-Received: from mga01.intel.com ([192.55.52.88]:22482 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725917AbgJLEsH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 00:48:07 -0400
-IronPort-SDR: D5zKImA/blPs9ugNxSdwTFqrAiCPQ7MfkSDjdD7L1ZPrs2PLYW8mlo8pL00EnU95KhYD7GvV7Z
- Er8+B/ppaVCA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="183144505"
-X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; 
-   d="scan'208";a="183144505"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2020 21:47:58 -0700
-IronPort-SDR: OeJlrvjJIthwDW5ZiLkp+F246Fw9BWID0JMdXYyjjISLX5UipnPYleFarWgQdoLnt1ZOhIB0kv
- QrFucSf/AAcw==
-X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; 
-   d="scan'208";a="529805779"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2020 21:47:57 -0700
-Date:   Sun, 11 Oct 2020 21:47:56 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Bernard Metzler <BMT@zurich.ibm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Faisal Latif <faisal.latif@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kexec@lists.infradead.org, linux-bcache@vger.kernel.org,
-        linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org,
-        linux-efi@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-aio@kvack.org,
-        io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net,
-        reiserfs-devel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
-        ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-rdma@vger.kernel.org, amd-gfx@lists.freed.esktop.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        drbd-dev@tron.linbit.com, linux-block@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-cachefs@redhat.com,
-        samba-technical@lists.samba.org, intel-wired-lan@lists.osuosl.org
-Subject: Re: [PATCH RFC PKS/PMEM 10/58] drivers/rdma: Utilize new
- kmap_thread()
-Message-ID: <20201012044756.GY2046448@iweiny-DESK2.sc.intel.com>
-References: <20201009195033.3208459-11-ira.weiny@intel.com>
- <20201009195033.3208459-1-ira.weiny@intel.com>
- <OF849D92D8.F4735ECA-ON002585FD.003F5F27-002585FD.003FCBD6@notes.na.collabserv.com>
+        id S1726417AbgJLEuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 00:50:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725917AbgJLEuQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 00:50:16 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20733C0613CE
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 21:50:16 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id f19so12392514pfj.11
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Oct 2020 21:50:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5EKZs60ksc+C2mu0NsIjhHU08u0xHxXWsdgv8V8eFP0=;
+        b=Li52b2kHX9x7ticLBS6QsQ9odgPel9CR8bmvd0J2IN4ss5soWyxOpqU2jbJeDsr/jv
+         RLmf3LOU6o32xIuqRBWOO6bHY++nXMGO50y+0mWjuMHtZ+RcEKArkPygJgPJFMi0+uPS
+         iB0QFKRKza4OQzr7qkVA5yFzitUPVjyIsamhm6+6873ZL+AcrsoJLYvX5LsBLE+4LTzw
+         qjG6zGHmmuIi1eUEWnkgQfvGJtc3q3XUeGpmuFKediuL8+rdekQ9lHbiZQ3S5AiD2B+K
+         qU2LGCw2Cp7xCsEIfCkFWCXUFDJ8uUE3rzkYa7IOHrDklrCqLpEtJWZkodF+VZlXm3pe
+         yvOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5EKZs60ksc+C2mu0NsIjhHU08u0xHxXWsdgv8V8eFP0=;
+        b=VxQm4PB/HM8H1BGK8eOkdDfeCHspp/F2mT2OJcGpKdj7HWTPXfwVnJmMxbWE4eWNI8
+         WwHj7yytjrvHlpLvqHXdbBQukhkQtzkSEEKH/7/KxYfbxY3kgggLRLUEf/XBnWSQ6B5C
+         OzQ/Qll+HS/RvSaejBGosM3xbWs6YXdVufHogMELDE0/+xsyd9CaLT7LEqngaxoiGS2Y
+         WmFxi4c07tqbCoK1Hjtkos0gXnWubkjVq+RmNq1634csFYyCsDKEeAqvT1TIPBADi2LZ
+         kzAZ7h5E2hLFRG20GyhNic53UFDKx3i+jsTxWKHF779D2mUwelmh8QSCpLR1fTlrHQm0
+         Cgtg==
+X-Gm-Message-State: AOAM530vGu4hN6nYHRn0HmhL+b94vDeNfoZS8sj/YTE4NQwDzI3/iNJW
+        G+Y4hKfQFrSlAyc4TlpHCBG6pQ==
+X-Google-Smtp-Source: ABdhPJwgPGyOize8k9X+CFBTrgh9pPEeE3nVg6DLQfoivM2ZpN/FvLmtpOFwEwo4Op6xTL2lxrI31A==
+X-Received: by 2002:a17:90a:6f21:: with SMTP id d30mr17643381pjk.165.1602478215616;
+        Sun, 11 Oct 2020 21:50:15 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id s20sm13091945pfc.201.2020.10.11.21.50.14
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 11 Oct 2020 21:50:14 -0700 (PDT)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel test robot <lkp@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] cpufreq: stats: Fix string format specifier mismatch
+Date:   Mon, 12 Oct 2020 10:20:07 +0530
+Message-Id: <9c499a132d06f31e81a516c91bd92d619eb118ba.1602478204.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <OF849D92D8.F4735ECA-ON002585FD.003F5F27-002585FD.003FCBD6@notes.na.collabserv.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 10, 2020 at 11:36:49AM +0000, Bernard Metzler wrote:
-> -----ira.weiny@intel.com wrote: -----
-> 
+Fix following warning:
 
-[snip]
+drivers/cpufreq/cpufreq_stats.c:63:10: warning: %d in format string (no.
+1) requires 'int' but the argument type is 'unsigned int'
 
-> >@@ -505,7 +505,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx,
-> >struct socket *s)
-> > 				page_array[seg] = p;
-> > 
-> > 				if (!c_tx->use_sendpage) {
-> >-					iov[seg].iov_base = kmap(p) + fp_off;
-> >+					iov[seg].iov_base = kmap_thread(p) + fp_off;
-> 
-> This misses a corresponding kunmap_thread() in siw_unmap_pages()
-> (pls change line 403 in siw_qp_tx.c as well)
+Fixes: 40c3bd4cfa6f ("cpufreq: stats: Defer stats update to cpufreq_stats_record_transition()")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+ drivers/cpufreq/cpufreq_stats.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks I missed that.
+diff --git a/drivers/cpufreq/cpufreq_stats.c b/drivers/cpufreq/cpufreq_stats.c
+index 1b1389face85..6cd5c8ab5d49 100644
+--- a/drivers/cpufreq/cpufreq_stats.c
++++ b/drivers/cpufreq/cpufreq_stats.c
+@@ -62,7 +62,7 @@ static ssize_t show_total_trans(struct cpufreq_policy *policy, char *buf)
+ 	if (READ_ONCE(stats->reset_pending))
+ 		return sprintf(buf, "%d\n", 0);
+ 	else
+-		return sprintf(buf, "%d\n", stats->total_trans);
++		return sprintf(buf, "%u\n", stats->total_trans);
+ }
+ cpufreq_freq_attr_ro(total_trans);
+ 
+-- 
+2.25.0.rc1.19.g042ed3e048af
 
-Done.
-
-Ira
-
-> 
-> Thanks,
-> Bernard.
-> 
