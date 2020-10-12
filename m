@@ -2,178 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3268428BB76
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CC2F28BB78
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730483AbgJLPAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1729021AbgJLPAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 11:00:10 -0400
+Received: from mail.hallyn.com ([178.63.66.53]:38240 "EHLO mail.hallyn.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729667AbgJLPAI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Oct 2020 11:00:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730049AbgJLPAI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 11:00:08 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CA61C0613D0;
-        Mon, 12 Oct 2020 08:00:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=n9rKwABW1rW8ifuT1wp/xKxs4ZM4lyDE+xlv3wP2wvY=; b=fXZNEzjpAEg8beql8d+moKCW2D
-        NhvsyZK3u5DwneXnRsjCCl3uwLthGxJ0G1IQLpcGKLjPtM7E5oJtZe+zIhOJI0JQOKcxHYyUwKpdD
-        Fnm3lsZKpi+BDIRPa1xy9q1aXWvJ1N/LyvE3CenOGCTzbpBsQbTPBECKEjnC91eGMtS/+FyZ9Axg4
-        9DphTPPWGx5GnTDAiG539iRndmJ3Lur5fDJRBRLRyrPjkXOVv0NSWwIVsZcGl/O9Jzn7sFZGfACUn
-        VRiofm2B4nAZrBSecyfHzOkxD/XBrq+jRFIN3CJb021BIo+CHV7ynYcraRdxVviudqFP+5UgqVenM
-        d5e84wIQ==;
-Received: from [2601:1c0:6280:3f0::507c]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kRzIu-0006Jv-Eq; Mon, 12 Oct 2020 15:00:01 +0000
-Subject: Re: [PATCH v3 2/2] media: mtk-vcodec: fix build breakage when one of
- VPU or SCP is enabled
-To:     Alexandre Courbot <acourbot@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, gnurou@gmail.com
-References: <20201012053557.4102148-1-acourbot@chromium.org>
- <20201012053557.4102148-3-acourbot@chromium.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <b9afc70f-9787-6513-29e7-41ffd6972da0@infradead.org>
-Date:   Mon, 12 Oct 2020 07:59:55 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+Received: by mail.hallyn.com (Postfix, from userid 1001)
+        id 4A5A5CBF; Mon, 12 Oct 2020 10:00:06 -0500 (CDT)
+Date:   Mon, 12 Oct 2020 10:00:06 -0500
+From:   "Serge E. Hallyn" <serge@hallyn.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Alexander Mihalicyn <alexander@mihalicyn.com>,
+        Mrunal Patel <mpatel@redhat.com>, Wat Lim <watl@google.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Joseph Christopher Sible <jcsible@cert.org>,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Stephane Graber <stgraber@ubuntu.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sargun Dhillon <sargun@sargun.me>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: LPC 2020 Hackroom Session: summary and next steps for isolated
+ user namespaces
+Message-ID: <20201012150006.GA3503@mail.hallyn.com>
+References: <20200830143959.rhosiunyz5yqbr35@wittgenstein>
+ <20201010042606.GA30062@mail.hallyn.com>
+ <20201011205306.GC17441@localhost>
+ <CALCETrUZcHNwspz315KFvSPxtK8MmLUPfiN=hCBgx+wqeJe4+g@mail.gmail.com>
+ <87h7r0qbqi.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-In-Reply-To: <20201012053557.4102148-3-acourbot@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87h7r0qbqi.fsf@x220.int.ebiederm.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/20 10:35 PM, Alexandre Courbot wrote:
-> The addition of MT8183 support added a dependency on the SCP remoteproc
-> module. However the initial patch used the "select" Kconfig directive,
-> which may result in the SCP module to not be compiled if remoteproc was
-> disabled. In such a case, mtk-vcodec would try to link against
-> non-existent SCP symbols. "select" was clearly misused here as explained
-> in kconfig-language.txt.
+On Mon, Oct 12, 2020 at 12:01:09AM -0500, Eric W. Biederman wrote:
+> Andy Lutomirski <luto@kernel.org> writes:
 > 
-> Replace this by a "depends" directive on at least one of the VPU and
-> SCP modules, to allow the driver to be compiled as long as one of these
-> is enabled, and adapt the code to support this new scenario.
-> 
-> Also adapt the Kconfig text to explain the extra requirements for MT8173
-> and MT8183.
-> 
-> Reported-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
-> Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+> > On Sun, Oct 11, 2020 at 1:53 PM Josh Triplett <josh@joshtriplett.org> wrote:
+> >>
+> >> On Fri, Oct 09, 2020 at 11:26:06PM -0500, Serge E. Hallyn wrote:
+> >> > > 3. Find a way to allow setgroups() in a user namespace while keeping
+> >> > >    in mind the case of groups used for negative access control.
+> >> > >    This was suggested by Josh Triplett and Geoffrey Thomas. Their idea was to
+> >> > >    investigate adding a prctl() to allow setgroups() to be called in a user
+> >> > >    namespace at the cost of restricting paths to the most restrictive
+> >> > >    permission. So if something is 0707 it needs to be treated as if it's 0000
+> >> > >    even though the caller is not in its owning group which is used for negative
+> >> > >    access control (how these new semantics will interact with ACLs will also
+> >> > >    need to be looked into).
+> >> >
+> >> > I should probably think this through more, but for this problem, would it
+> >> > not suffice to add a new prevgroups grouplist to the struct cred, maybe
+> >> > struct group_info *locked_groups, and every time an unprivileged task creates
+> >> > a new user namespace, add all its current groups to this list?
+> >>
+> >> So, effectively, you would be allowed to drop permissions, but
+> >> locked_groups would still be checked for restrictions?
+> >>
+> >> That seems like it'd introduce a new level of complexity (a new facet of
+> >> permission) to manage. Not opposed, but it does seem more complex than
+> >> just opting out of using groups for negative permissions.
 
-That Ack applied to v2. I have not tested nor acked this version of the patch.
+Yeah, it would, but I basically hoped that we could catch most of this at
+e.g. generic_permission(), and/or we could introduce a helper which
+automatically adds a check for permission denied from locked_groups, so
+it shouldn't be too wide-spread.  If it does end up showing up all over
+the place, then that's a good reason not to do this.
 
-> Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> ---
->  drivers/media/platform/Kconfig                | 22 +++++++++++++++----
->  drivers/media/platform/mtk-vcodec/Makefile    | 10 +++++++--
->  .../platform/mtk-vcodec/mtk_vcodec_fw_priv.h  | 18 +++++++++++++++
->  3 files changed, 44 insertions(+), 6 deletions(-)
+> > Is there any context other than regular UNIX DAC in which groups can
+> > act as negative permissions or is this literally just an issue for
+> > files with a more restrictive group mode than other mode?
 > 
-> diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
-> index a3cb104956d5..457b6c39ddc0 100644
-> --- a/drivers/media/platform/Kconfig
-> +++ b/drivers/media/platform/Kconfig
-> @@ -253,18 +253,32 @@ config VIDEO_MEDIATEK_VCODEC
->  	depends on MTK_IOMMU || COMPILE_TEST
->  	depends on VIDEO_DEV && VIDEO_V4L2
->  	depends on ARCH_MEDIATEK || COMPILE_TEST
-> +	depends on VIDEO_MEDIATEK_VPU || MTK_SCP
-> +	# The two following lines ensure we have the same state ("m" or "y") as
-> +	# our dependencies, to avoid missing symbols during link.
-> +	depends on VIDEO_MEDIATEK_VPU || !VIDEO_MEDIATEK_VPU
-> +	depends on MTK_SCP || !MTK_SCP
->  	select VIDEOBUF2_DMA_CONTIG
->  	select V4L2_MEM2MEM_DEV
-> -	select VIDEO_MEDIATEK_VPU
-> -	select MTK_SCP
-> +	select VIDEO_MEDIATEK_VCODEC_VPU if VIDEO_MEDIATEK_VPU
-> +	select VIDEO_MEDIATEK_VCODEC_SCP if MTK_SCP
->  	help
->  	    Mediatek video codec driver provides HW capability to
-> -	    encode and decode in a range of video formats
-> -	    This driver rely on VPU driver to communicate with VPU.
-> +	    encode and decode in a range of video formats on MT8173
-> +	    and MT8183.
-> +
-> +	    Note that support for MT8173 requires VIDEO_MEDIATEK_VPU to
-> +	    also be selected. Support for MT8183 depends on MTK_SCP.
->  
->  	    To compile this driver as modules, choose M here: the
->  	    modules will be called mtk-vcodec-dec and mtk-vcodec-enc.
->  
-> +config VIDEO_MEDIATEK_VCODEC_VPU
-> +	bool
-> +
-> +config VIDEO_MEDIATEK_VCODEC_SCP
-> +	bool
-> +
->  config VIDEO_MEM2MEM_DEINTERLACE
->  	tristate "Deinterlace support"
->  	depends on VIDEO_DEV && VIDEO_V4L2
-> diff --git a/drivers/media/platform/mtk-vcodec/Makefile b/drivers/media/platform/mtk-vcodec/Makefile
-> index 6e1ea3a9f052..4618d43dbbc8 100644
-> --- a/drivers/media/platform/mtk-vcodec/Makefile
-> +++ b/drivers/media/platform/mtk-vcodec/Makefile
-> @@ -25,5 +25,11 @@ mtk-vcodec-enc-y := venc/venc_vp8_if.o \
->  mtk-vcodec-common-y := mtk_vcodec_intr.o \
->  		mtk_vcodec_util.o \
->  		mtk_vcodec_fw.o \
-> -		mtk_vcodec_fw_vpu.o \
-> -		mtk_vcodec_fw_scp.o
-> +
-> +ifneq ($(CONFIG_VIDEO_MEDIATEK_VCODEC_VPU),)
-> +mtk-vcodec-common-y += mtk_vcodec_fw_vpu.o
-> +endif
-> +
-> +ifneq ($(CONFIG_VIDEO_MEDIATEK_VCODEC_SCP),)
-> +mtk-vcodec-common-y += mtk_vcodec_fw_scp.o
-> +endif
-> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw_priv.h b/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw_priv.h
-> index 51f1694a7c7d..b41e66185cec 100644
-> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw_priv.h
-> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw_priv.h
-> @@ -27,8 +27,26 @@ struct mtk_vcodec_fw_ops {
->  	void (*release)(struct mtk_vcodec_fw *fw);
->  };
->  
-> +#if IS_ENABLED(CONFIG_VIDEO_MEDIATEK_VCODEC_VPU)
->  struct mtk_vcodec_fw *mtk_vcodec_fw_vpu_init(struct mtk_vcodec_dev *dev,
->  					     enum mtk_vcodec_fw_use fw_use);
-> +#else
-> +static inline struct mtk_vcodec_fw *
-> +mtk_vcodec_fw_vpu_init(struct mtk_vcodec_dev *dev,
-> +		       enum mtk_vcodec_fw_use fw_use)
-> +{
-> +	return ERR_PTR(-ENODEV);
-> +}
-> +#endif /* CONFIG_VIDEO_MEDIATEK_VCODEC_VPU */
-> +
-> +#if IS_ENABLED(CONFIG_VIDEO_MEDIATEK_VCODEC_SCP)
->  struct mtk_vcodec_fw *mtk_vcodec_fw_scp_init(struct mtk_vcodec_dev *dev);
-> +#else
-> +static inline struct mtk_vcodec_fw *
-> +mtk_vcodec_fw_scp_init(struct mtk_vcodec_dev *dev)
-> +{
-> +	return ERR_PTR(-ENODEV);
-> +}
-> +#endif /* CONFIG_VIDEO_MEDIATEK_VCODEC_SCP */
->  
->  #endif /* _MTK_VCODEC_FW_PRIV_H_ */
+> Just that.
 > 
+> The ideas kicked around in the conversation were some variant of having
+> a sysctl that says "This system never uses groups for negative
+> permissions".
+> 
+> It was also suggested that if the sysctl was set the the permission
+> checks would be altered such that even if someone tried to set a
+> negative permission, the more liberal permissions of other would be used
+> instead.
 
+So then this would touch all the same code points which the
+locked_groups approach would have to touch?
 
--- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Given that creating /etc/subgid is effectively opting out of negative
+> permissions already have a sysctl that says that upfront feels like a
+> very clean solution.
+> 
+> Eric
+
+That feels like a cop-out to me.  If some young admin at Roxxon Corp decides
+she needs to run a container, so installs subuid package and sets that sysctl,
+how does she know whether or not some previous admin, who has since retired and
+did not keep good docs, set things up so that a negative acl is keeping nginx
+from reading some supersecret doc?
+
+Now personally I'm not a great believer in the negative acls so I think the
+above is a very unlikely scenario, but if we're going to worry about it, then
+we should worry about it :)
+
+"Click this button if noone has ever used feature X on this server"
+
+-serge
