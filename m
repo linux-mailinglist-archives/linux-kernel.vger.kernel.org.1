@@ -2,134 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF0928C32F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 22:48:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDF8828C342
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 22:48:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387503AbgJLUqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 16:46:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731466AbgJLUqs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 16:46:48 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BAA4C0613E3
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 13:46:32 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id 1so3477105ple.2
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 13:46:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=GP/tSxU+2ueJJAD5XvrlcBqjjbcVqs1GAlfX4xS/x5o=;
-        b=Zmyj6b1xn7fgYQ4LeerdVC70u737/gGJRwdCYnv5k4lAJ4ZAWiq77J6HTWNtPLy5Fb
-         +xId2w1AJdlP4b4Gk+cO+qmKRbcZL0o4WUamdOMbP0HnLbSjH7bnxsZclfoKc6+wueKq
-         Y4WFwLXKO7dsLcGwu3W0ytOyLYRM/b67FrN7deWaZaARnBxEiuSQkhaYtEFWV3FNh1DJ
-         mYsz/GpTkpDNVka9ngAw3/WAJVbib0KRuj33mR5fuEcT+qGLmQdkwuO6TrpxS1rNI4ix
-         t8Vacy6eZIRybQE0PFe7c5weaxWzTGWykb5XWW2C6WIttIokJ30keX8fgYRcZYI7D11N
-         1gcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=GP/tSxU+2ueJJAD5XvrlcBqjjbcVqs1GAlfX4xS/x5o=;
-        b=A1eT6tvhr9NJHYUQevBPg28YSqbPlx1kWIoDQzjlbILzFhGdLGnl0vBIiPJfo9AVZA
-         dc8vtM6EtzJ8jPFcA41zq/J4abSlviWpkh21zij0ak3HY8hH5RDGX0/qiybL57ZbBMx9
-         kOjXTE87gi3AgVaFK0qlc+G1eHqyV8xFhujAU9naAULCsj3jk29is59bMMn5BDoO0VgT
-         DAztuBEawEVCoEPjbawhLYyFnaFQ0U8h/hlnNvGToGNVN19r5hlo5g69MWyxdbJaFQ5f
-         jyaK4sP7vzjaq2B8RHHOnPTgtnMIIWq/yzZ2Wv0o0+Ntt6HUM45uD5OmPJ5qPEqStNHK
-         Tu1w==
-X-Gm-Message-State: AOAM5317KBAul8r+vaTwXQhKh2SfRzWTNho2XzdlVdHkgPZr3CflNUW3
-        OXAHscbuXeE1w+KnsNqNCykzXw==
-X-Google-Smtp-Source: ABdhPJxvYuECJqceRU/Ms78R61xviB7QnwDg4XOxMDIU5Uul1Qb3W8B+eZKuWlzzWx/nqi1F2hbH0w==
-X-Received: by 2002:a17:902:70c8:b029:d4:d4d5:f140 with SMTP id l8-20020a17090270c8b02900d4d4d5f140mr9444301plt.33.1602535591364;
-        Mon, 12 Oct 2020 13:46:31 -0700 (PDT)
-Received: from google.com ([2620:15c:2cb:201:c634:6bff:fe71:d8d1])
-        by smtp.gmail.com with ESMTPSA id q5sm9065695pjg.0.2020.10.12.13.46.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 13:46:30 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 13:46:25 -0700
-From:   Brendan Higgins <brendanhiggins@google.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Arpitha Raghunandan <98.arpi@gmail.com>,
-        skhan@linuxfoundation.org, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH] lib: Convert test_printf.c to KUnit
-Message-ID: <20201012204625.GA56597@google.com>
-References: <20200817043028.76502-1-98.arpi@gmail.com>
- <f408efbd-10f7-f1dd-9baa-0f1233cafffc@rasmusvillemoes.dk>
- <20200821113710.GA26290@alley>
- <20200821122849.GS1891694@smile.fi.intel.com>
+        id S1730891AbgJLUsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 16:48:46 -0400
+Received: from mga18.intel.com ([134.134.136.126]:32797 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726567AbgJLUsp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 16:48:45 -0400
+IronPort-SDR: Ga9jL4XqRZoF/1D1vPbHZsHj3CpAhD1MgNQqMX+Mylk6bSQjbiKpXtgx504ddlcc0SLEVcLG2d
+ aHJWxQBJQKZQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="153633359"
+X-IronPort-AV: E=Sophos;i="5.77,367,1596524400"; 
+   d="scan'208";a="153633359"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 13:48:44 -0700
+IronPort-SDR: H1g1CQHMtcwO1nWWiBZcdHpuTzPfruHJRRdh25uJeXaBoAYCtJIBhg3KVBUEXVaTG53rphSmVx
+ fgUHljXAvRCA==
+X-IronPort-AV: E=Sophos;i="5.77,367,1596524400"; 
+   d="scan'208";a="356745959"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.209.167.7]) ([10.209.167.7])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 13:48:43 -0700
+Subject: Re: [PATCH v14 03/26] x86/fpu/xstate: Introduce CET MSR XSAVES
+ supervisor states
+To:     Cyrill Gorcunov <gorcunov@gmail.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+References: <20201012153850.26996-1-yu-cheng.yu@intel.com>
+ <20201012153850.26996-4-yu-cheng.yu@intel.com> <20201012195808.GD14048@grain>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <b98933fd-e424-1a14-6591-7ba598ab90c6@intel.com>
+Date:   Mon, 12 Oct 2020 13:48:42 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200821122849.GS1891694@smile.fi.intel.com>
+In-Reply-To: <20201012195808.GD14048@grain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 03:28:49PM +0300, Andy Shevchenko wrote:
-> On Fri, Aug 21, 2020 at 01:37:10PM +0200, Petr Mladek wrote:
-> > On Mon 2020-08-17 09:06:32, Rasmus Villemoes wrote:
-> > > On 17/08/2020 06.30, Arpitha Raghunandan wrote:
-> > > > Converts test lib/test_printf.c to KUnit.
-> > > > More information about KUnit can be found at
-> > > > https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html.
-> > > > KUnit provides a common framework for unit tests in the kernel.
-> > > 
-> > > So I can continue to build a kernel with some appropriate CONFIG set to
-> > > y, boot it under virt-me, run dmesg and see if I broke printf? That's
-> > > what I do now, and I don't want to have to start using some enterprisy
-> > > framework.
-> > 
-> > I had the same concern. I have tried it.
+On 10/12/2020 12:58 PM, Cyrill Gorcunov wrote:
+> On Mon, Oct 12, 2020 at 08:38:27AM -0700, Yu-cheng Yu wrote:
+> ...
+>>   /*
+>>    * x86-64 Task Priority Register, CR8
+>> diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+>> index 038e19c0019e..705fd9b94e31 100644
+>> --- a/arch/x86/kernel/fpu/xstate.c
+>> +++ b/arch/x86/kernel/fpu/xstate.c
+>> @@ -38,6 +38,9 @@ static const char *xfeature_names[] =
+>>   	"Processor Trace (unused)"	,
+>>   	"Protection Keys User registers",
+>>   	"unknown xstate feature"	,
+>> +	"Control-flow User registers"	,
+>> +	"Control-flow Kernel registers"	,
+>> +	"unknown xstate feature"	,
+>>   };
+>>   
+>>   static short xsave_cpuid_features[] __initdata = {
+>> @@ -51,6 +54,9 @@ static short xsave_cpuid_features[] __initdata = {
+>>   	X86_FEATURE_AVX512F,
+>>   	X86_FEATURE_INTEL_PT,
+>>   	X86_FEATURE_PKU,
+>> +	-1,		   /* Unused */
+>> +	X86_FEATURE_SHSTK, /* XFEATURE_CET_USER */
+>> +	X86_FEATURE_SHSTK, /* XFEATURE_CET_KERNEL */
+>>   };
+> 
+> Why do you need "-1" here in the array? The only 1:1 mapping is between
+> the names itselves and values, not indices of arrays so i don't understand
+> why we need this unused value. Sorry if it is a dumb questions and
+> been discussed already.
+> 
 
-Sorry you feel that way. Do you have any suggestions on how we can make
-it seem less enterprisy? Seems like there are people here who are not a
-fan of the output format, so of which we can fix here, some of which is
-part of KTAP[1].
+The indices are used indirectly in fpu__init_system_xstate() to set bits 
+in xfeatures_mask_all, i.e.
 
-> Which raises an obvious question: did the people who convert this test this
-> themselves? Looks like a janitor work in the area without understanding the
-> area good enough.
+xfeatures_mask_all &= ~BIT_ULL(i).
 
-Looks to me like Arpitha ran it, but you are right, we don't have a lot
-of familiarity with this area; we were treating it as "janitor work" as
-you say.
+So they need to match the xstate feature bits.
 
-Our intention was just to take some existing tests and as non-invasively
-as possible, get them to report using a common format, and maybe even
-get some of the tests to follow a common pattern.
-
-> Probably I will NAK all those patches from now on, until it will be good commit
-> messages and cover of risen aspects, including reference to before and after
-> outcome for passed and failed test cases.
-
-Fair enough, hopefully we can address these issues in the next revision.
-
-One issue though, with the "before and after outcome" you are
-referencing; are you referring to the issue that Petr pointed out in how
-they are inconsistent:
-
-   + original code: vsnprintf(buf, 6, "%pi4|%pI4", ...) wrote '127.0', expected '127-0'
-   + kunit code: vsnprintf(buf, 20, "%pi4|%pI4", ...) wrote '127.000.000.001|127', expected '127-000.000.001|127'  
-
-(I think Rasmus addressed this.) Or are your referring to something
-else?
-
-> Brendan, I guess the ball now on your side to prove this is good activity.
-
-And I see that we are off to a great start! :-)
-
-In all seriousness, I am really sorry about this. I kind of bungled this
-up trying to go after too many of these conversions at once.
-
-Arpitha, can you get this follow up patch out?
-
-[1] https://lore.kernel.org/linux-kselftest/CY4PR13MB1175B804E31E502221BC8163FD830@CY4PR13MB1175.namprd13.prod.outlook.com/
+Yu-cheng
