@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D09128B5C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:16:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 738CF28B5C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388755AbgJLNP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:15:28 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:33167 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388696AbgJLNPS (ORCPT
+        id S2388765AbgJLNPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:15:34 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:37094 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388742AbgJLNPZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:15:18 -0400
-Received: by mail-oi1-f196.google.com with SMTP id s21so843014oij.0;
-        Mon, 12 Oct 2020 06:15:17 -0700 (PDT)
+        Mon, 12 Oct 2020 09:15:25 -0400
+Received: by mail-ot1-f67.google.com with SMTP id m22so4364341ots.4;
+        Mon, 12 Oct 2020 06:15:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=479sdd44MecSreb9si4jbrVvzN+pxNd9n3jIu5G3rEw=;
-        b=YMtWBVhusDfnNMuco2wozTmT7Gv9B9IrVPJTjzbnFzyQRKn5Y+rcmymXeQk30UJW3o
-         twk+CD5x9IqoXmqc8hWSQKbaVl24l26mMq0xXF7t9DSnBx2M3wN1yhJKD9nl5Xqg4koT
-         WjXpqGjciFSX78JJdkbZek1GT/VW3F+T92GQOtTEXv7dUEI2iRdYuUT+Nb6uQt1EuS5z
-         lV6rZcXXpjhQtQeuM35GAi+B/4GiZXe1Zj1XHCZB7Mx6pO9GegShxhm+tOPBSwDVFJFy
-         xMnQMlfY4MlqSxnaHViv/YLWnDOz5d+vOf5le5xbfPqdVIbHCPBmGaaCXqoPf8E5G9Q4
-         5NJQ==
-X-Gm-Message-State: AOAM531+82OVXqYO0yB/tzsnoQ8MY4MASi99kO4FPUYdmqYcjkVKp4Im
-        6KWkpITT8wChPK/DNtittdIBW4vCBYmy702ITQ2MC5Ie
-X-Google-Smtp-Source: ABdhPJxW+cuVuSNpTqFXx/Oo7DUbd+3z4lLadyCXqpYmjYp69GvJFXK10DtV6alyiU95OoxbP6hkY5LDEnOMkJzJjYo=
-X-Received: by 2002:aca:4441:: with SMTP id r62mr10153443oia.153.1602508517137;
- Mon, 12 Oct 2020 06:15:17 -0700 (PDT)
+        bh=32prFsUImi2et0wD1nInyNzJbwFsAz7pM2lg+OwfdA8=;
+        b=k5B/3XX4aXddOZ3ydgyOcsgtaLGx0eYx3x6UosGECa7MGfmUc1XIGOIfoNlVuMYCmT
+         djf6y6A34HlKc5EG2JBItl1/94U6eRGjXs11LBWympMBL+uiB/uHXp4G6pwVEMunZlWD
+         KvCbnMNFGBFrz/aMI7UWKc9Dc9wPNwROXfbugwdSzwLfrRLvEsVVenoerK8GfM30a0A4
+         IOJjkd2NL0oyGs8JHcNsBFv4Ql9f5Qler/3/WECqA0uVsiL3b/uioAVyxdzm9WTkEvM/
+         jwlXT9QwK2etzy3eVR88GRUVilJY/ic9HZH7qG6nHCTpELhx2hQv7skfIdEV88vFwS9F
+         6Ing==
+X-Gm-Message-State: AOAM533bnDfYg4MC07JPUgYx4UotU1lfDoBu3qS4wTz+LXcv53QqciKb
+        dDERTd0ZXBDCeh4wTyIyko0ufJGATAZR2c9aN/U=
+X-Google-Smtp-Source: ABdhPJxtX+V6nlzREBpZnHfCCWLCLBZEkIJ6fKRmhts0E87Q/NkdkOCqC2URIeU4xfs9RBjZ1sZArftZVEwo7jtjoJU=
+X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr18308270otc.145.1602508524639;
+ Mon, 12 Oct 2020 06:15:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-8-arnd@arndb.de>
-In-Reply-To: <20201008154651.1901126-8-arnd@arndb.de>
+References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-11-arnd@arndb.de>
+In-Reply-To: <20201008154651.1901126-11-arnd@arndb.de>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 12 Oct 2020 15:15:06 +0200
-Message-ID: <CAMuHMdUgT38aG7YNqk9U2iD-y-Ms3JJO24jfVY9pGweuRFMcjA@mail.gmail.com>
-Subject: Re: [PATCH 07/13] m68k: sun3/sun3c: use legacy_timer_tick
+Date:   Mon, 12 Oct 2020 15:15:13 +0200
+Message-ID: <CAMuHMdUQMgE2ny-nuUeYjn-gcpvav2rp-11oTQp-GZ5TX9Z8Pw@mail.gmail.com>
+Subject: Re: [PATCH 10/13] m68k: remove timer_interrupt() function
 To:     Arnd Bergmann <arnd@arndb.de>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Russell King <linux@armlinux.org.uk>,
@@ -63,24 +63,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Arnd,
+
 On Thu, Oct 8, 2020 at 5:48 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> These two are different from all other machines:
->
-> * sun3 does not call timer_routine() but open-codes it
->   except for the profile_tick() call that appears to
->   be unintentionally missing.
->
-> * sun3x has a commented-out timer irq handler but no
->   functional timer tick I could find.
->
-> Change both to calling the new legacy_timer_tick here,
-> which includes the call to profile_tick() but does not
-> fix sun3x as that is still commented out.
+> This gets passed to a number of init functions, but is
+> ignored everywhere, so remove the function and change the
+> mach_sched_init callback to take no arguments.
 >
 > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
 Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+And finally (for Amiga and Atari/ARAnyM):
+Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+> --- a/arch/m68k/include/asm/machdep.h
+> +++ b/arch/m68k/include/asm/machdep.h
+> @@ -33,8 +33,7 @@ extern void (*mach_l2_flush) (int);
+>  extern void (*mach_beep) (unsigned int, unsigned int);
+>
+>  /* Hardware clock functions */
+> -extern void hw_timer_init(irq_handler_t handler);
+> -extern unsigned long hw_timer_offset(void);
+
+Yeah, this never-used prototype, which entered through the nommu merge,
+can go.  But that's not really related to this patch.
 
 Gr{oetje,eeting}s,
 
