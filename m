@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4316128B551
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 14:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6525428B556
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 14:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730171AbgJLM5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 08:57:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34720 "EHLO
+        id S1728800AbgJLM5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 08:57:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27575 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726810AbgJLM5Y (ORCPT
+        by vger.kernel.org with ESMTP id S1726130AbgJLM5e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 08:57:24 -0400
+        Mon, 12 Oct 2020 08:57:34 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602507443;
+        s=mimecast20190719; t=1602507452;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=d0oDb6ZiE+J+ruRF91Otjbi8LwSZmBARuqAieXPiQD0=;
-        b=Nz1iX23pqVmAmQgDYTMAODOJesPMSDgc+FshPg/B+KEkdm+3ccmh9HEy2ZuZUisdDMpckW
-        vcEVTbrfj40VTGZP8zoKXohLd3ey6qPeT9DK+0LeZfPCMXne1iV+VYiJVX7Jw/fnnuhDcD
-        X3zAPYZmyPKtTdl7vi7WpC3nUH6kquI=
+        bh=GC8VOJiDkG6ErANTb/WlUuIOAAehbykdKgaBnzsSpVw=;
+        b=QYU4g9SSHdbM86vXZ9hm1UWh8Qs46eN6zk1sR58L32N4Y/HSRmCyGxrOs456OhwBokp6s2
+        3jg4d8dBPHgZ3YR0zzpGp1EqSk4T4dC4/U/gjMOMd/CsZlGndGk4bW7Ggi1deFlcUxg6j0
+        i7kfgcA9XT1Ma2kezHywSIHtN6wX2/A=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-186-pEcttyr8NBCWAOKkzx2eUw-1; Mon, 12 Oct 2020 08:57:21 -0400
-X-MC-Unique: pEcttyr8NBCWAOKkzx2eUw-1
+ us-mta-34-pUaSbvp5NBOvnPhuhjfrhg-1; Mon, 12 Oct 2020 08:57:30 -0400
+X-MC-Unique: pUaSbvp5NBOvnPhuhjfrhg-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8E3921800D4A;
-        Mon, 12 Oct 2020 12:57:19 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E74851074658;
+        Mon, 12 Oct 2020 12:57:28 +0000 (UTC)
 Received: from t480s.redhat.com (ovpn-113-251.ams2.redhat.com [10.36.113.251])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 04B6D60C07;
-        Mon, 12 Oct 2020 12:57:05 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5621160C07;
+        Mon, 12 Oct 2020 12:57:19 +0000 (UTC)
 From:   David Hildenbrand <david@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-mm@kvack.org, virtualization@lists.linux-foundation.org,
@@ -45,9 +45,9 @@ Cc:     linux-mm@kvack.org, virtualization@lists.linux-foundation.org,
         Michal Hocko <mhocko@kernel.org>,
         Oscar Salvador <osalvador@suse.de>,
         Wei Yang <richard.weiyang@linux.alibaba.com>
-Subject: [PATCH v1 27/29] mm/memory_hotplug: extend offline_and_remove_memory() to handle more than one memory block
-Date:   Mon, 12 Oct 2020 14:53:21 +0200
-Message-Id: <20201012125323.17509-28-david@redhat.com>
+Subject: [PATCH v1 28/29] virtio-mem: Big Block Mode (BBM) - basic memory hotunplug
+Date:   Mon, 12 Oct 2020 14:53:22 +0200
+Message-Id: <20201012125323.17509-29-david@redhat.com>
 In-Reply-To: <20201012125323.17509-1-david@redhat.com>
 References: <20201012125323.17509-1-david@redhat.com>
 MIME-Version: 1.0
@@ -57,32 +57,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-virtio-mem soon wants to use offline_and_remove_memory() memory that
-exceeds a single Linux memory block (memory_block_size_bytes()). Let's
-remove that restriction.
+Let's try to unplug completely offline big blocks first. Then, (if
+enabled via unplug_offline) try to offline and remove whole big blocks.
 
-Let's remember the old state and try to restore that if anything goes
-wrong. While re-onlining can, in general, fail, it's highly unlikely to
-happen (usually only when a notifier fails to allocate memory, and these
-are rather rare).
+No locking necessary - we can deal with concurrent onlining/offlining
+just fine.
 
-This will be used by virtio-mem to offline+remove memory ranges that are
-bigger than a single memory block - for example, with a device block
-size of 1 GiB (e.g., gigantic pages in the hypervisor) and a Linux memory
-block size of 128MB.
+Note1: This is sub-optimal and might be dangerous in some environments: we
+could end up in an infinite loop when offlining (e.g., long-term pinnings),
+similar as with DIMMs. We'll introduce safe memory hotunplug via
+fake-offlining next, and use this basic mode only when explicitly enabled.
 
-While we could compress the state into 2 bit, using 8 bit is much
-easier.
-
-This handling is similar, but different to acpi_scan_try_to_offline():
-
-a) We don't try to offline twice. I am not sure if this CONFIG_MEMCG
-optimization is still relevant - it should only apply to ZONE_NORMAL
-(where we have no guarantees). If relevant, we can always add it.
-
-b) acpi_scan_try_to_offline() simply onlines all memory in case
-something goes wrong. It doesn't restore previous online type. Let's do
-that, so we won't overwrite what e.g., user space configured.
+Note2: Without ZONE_MOVABLE, memory unplug will be extremely unreliable
+with bigger block sizes.
 
 Cc: "Michael S. Tsirkin" <mst@redhat.com>
 Cc: Jason Wang <jasowang@redhat.com>
@@ -93,142 +80,204 @@ Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- mm/memory_hotplug.c | 105 +++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 89 insertions(+), 16 deletions(-)
+ drivers/virtio/virtio_mem.c | 156 +++++++++++++++++++++++++++++++++++-
+ 1 file changed, 155 insertions(+), 1 deletion(-)
 
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index b44d4c7ba73b..217080ca93e5 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -1806,39 +1806,112 @@ int remove_memory(int nid, u64 start, u64 size)
- }
- EXPORT_SYMBOL_GPL(remove_memory);
+diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+index 94cf44b15cbf..6bcd0acbff32 100644
+--- a/drivers/virtio/virtio_mem.c
++++ b/drivers/virtio/virtio_mem.c
+@@ -388,6 +388,12 @@ static int virtio_mem_bbm_bb_states_prepare_next_bb(struct virtio_mem *vm)
+ 	     _bb_id++) \
+ 		if (virtio_mem_bbm_get_bb_state(_vm, _bb_id) == _state)
  
-+static int try_offline_memory_block(struct memory_block *mem, void *arg)
++#define virtio_mem_bbm_for_each_bb_rev(_vm, _bb_id, _state) \
++	for (_bb_id = vm->bbm.next_bb_id - 1; \
++	     _bb_id >= vm->bbm.first_bb_id && _vm->bbm.bb_count[_state]; \
++	     _bb_id--) \
++		if (virtio_mem_bbm_get_bb_state(_vm, _bb_id) == _state)
++
+ /*
+  * Set the state of a memory block, taking care of the state counter.
+  */
+@@ -685,6 +691,18 @@ static int virtio_mem_sbm_remove_mb(struct virtio_mem *vm, unsigned long mb_id)
+ 	return virtio_mem_remove_memory(vm, addr, size);
+ }
+ 
++/*
++ * See virtio_mem_remove_memory(): Try to remove all Linux memory blocks covered
++ * by the big block.
++ */
++static int virtio_mem_bbm_remove_bb(struct virtio_mem *vm, unsigned long bb_id)
 +{
-+	uint8_t online_type = MMOP_ONLINE_KERNEL;
-+	uint8_t **online_types = arg;
-+	struct page *page;
-+	int rc;
++	const uint64_t addr = virtio_mem_bb_id_to_phys(vm, bb_id);
++	const uint64_t size = vm->bbm.bb_size;
 +
-+	/*
-+	 * Sense the online_type via the zone of the memory block. Offlining
-+	 * with multiple zones within one memory block will be rejected
-+	 * by offlining code ... so we don't care about that.
-+	 */
-+	page = pfn_to_online_page(section_nr_to_pfn(mem->start_section_nr));
-+	if (page && zone_idx(page_zone(page)) == ZONE_MOVABLE)
-+		online_type = MMOP_ONLINE_MOVABLE;
-+
-+	rc = device_offline(&mem->dev);
-+	/*
-+	 * Default is MMOP_OFFLINE - change it only if offlining succeeded,
-+	 * so try_reonline_memory_block() can do the right thing.
-+	 */
-+	if (!rc)
-+		**online_types = online_type;
-+
-+	(*online_types)++;
-+	/* Ignore if already offline. */
-+	return rc < 0 ? rc : 0;
-+}
-+
-+static int try_reonline_memory_block(struct memory_block *mem, void *arg)
-+{
-+	uint8_t **online_types = arg;
-+	int rc;
-+
-+	if (**online_types != MMOP_OFFLINE) {
-+		mem->online_type = **online_types;
-+		rc = device_online(&mem->dev);
-+		if (rc < 0)
-+			pr_warn("%s: Failed to re-online memory: %d",
-+				__func__, rc);
-+	}
-+
-+	/* Continue processing all remaining memory blocks. */
-+	(*online_types)++;
-+	return 0;
++	return virtio_mem_remove_memory(vm, addr, size);
 +}
 +
  /*
-- * Try to offline and remove a memory block. Might take a long time to
-- * finish in case memory is still in use. Primarily useful for memory devices
-- * that logically unplugged all memory (so it's no longer in use) and want to
-- * offline + remove the memory block.
-+ * Try to offline and remove memory. Might take a long time to finish in case
-+ * memory is still in use. Primarily useful for memory devices that logically
-+ * unplugged all memory (so it's no longer in use) and want to offline + remove
-+ * that memory.
+  * Try offlining and removing memory from Linux.
+  *
+@@ -731,6 +749,19 @@ static int virtio_mem_sbm_offline_and_remove_mb(struct virtio_mem *vm,
+ 	return virtio_mem_offline_and_remove_memory(vm, addr, size);
+ }
+ 
++/*
++ * See virtio_mem_offline_and_remove_memory(): Try to offline and remove a
++ * all Linux memory blocks covered by the big block.
++ */
++static int virtio_mem_bbm_offline_and_remove_bb(struct virtio_mem *vm,
++						unsigned long bb_id)
++{
++	const uint64_t addr = virtio_mem_bb_id_to_phys(vm, bb_id);
++	const uint64_t size = vm->bbm.bb_size;
++
++	return virtio_mem_offline_and_remove_memory(vm, addr, size);
++}
++
+ /*
+  * Trigger the workqueue so the device can perform its magic.
   */
- int offline_and_remove_memory(int nid, u64 start, u64 size)
- {
--	struct memory_block *mem;
--	int rc = -EINVAL;
-+	const unsigned long mb_count = size / memory_block_size_bytes();
-+	uint8_t *online_types, *tmp;
-+	int rc;
- 
- 	if (!IS_ALIGNED(start, memory_block_size_bytes()) ||
--	    size != memory_block_size_bytes())
--		return rc;
-+	    !IS_ALIGNED(size, memory_block_size_bytes()) || !size)
-+		return -EINVAL;
-+
-+	/*
-+	 * We'll remember the old online type of each memory block, so we can
-+	 * try to revert whatever we did when offlining one memory block fails
-+	 * after offlining some others succeeded.
-+	 */
-+	online_types = kmalloc_array(mb_count, sizeof(*online_types),
-+				     GFP_KERNEL);
-+	if (!online_types)
-+		return -ENOMEM;
-+	/*
-+	 * Initialize all states to MMOP_OFFLINE, so when we abort processing in
-+	 * try_offline_memory_block(), we'll skip all unprocessed blocks in
-+	 * try_reonline_memory_block().
-+	 */
-+	memset(online_types, MMOP_OFFLINE, mb_count);
- 
- 	lock_device_hotplug();
--	mem = find_memory_block(__pfn_to_section(PFN_DOWN(start)));
--	if (mem)
--		rc = device_offline(&mem->dev);
--	/* Ignore if the device is already offline. */
--	if (rc > 0)
--		rc = 0;
-+
-+	tmp = online_types;
-+	rc = walk_memory_blocks(start, size, &tmp, try_offline_memory_block);
- 
- 	/*
--	 * In case we succeeded to offline the memory block, remove it.
-+	 * In case we succeeded to offline all memory, remove it.
- 	 * This cannot fail as it cannot get onlined in the meantime.
- 	 */
- 	if (!rc) {
- 		rc = try_remove_memory(nid, start, size);
--		WARN_ON_ONCE(rc);
-+		if (rc)
-+			pr_err("%s: Failed to remove memory: %d", __func__, rc);
-+	}
-+
-+	/*
-+	 * Rollback what we did. While memory onlining might theoretically fail
-+	 * (nacked by a notifier), it barely ever happens.
-+	 */
-+	if (rc) {
-+		tmp = online_types;
-+		walk_memory_blocks(start, size, &tmp,
-+				   try_reonline_memory_block);
- 	}
- 	unlock_device_hotplug();
- 
-+	kfree(online_types);
+@@ -1928,6 +1959,129 @@ static int virtio_mem_sbm_unplug_request(struct virtio_mem *vm, uint64_t diff)
  	return rc;
  }
- EXPORT_SYMBOL_GPL(offline_and_remove_memory);
+ 
++/*
++ * Try to offline and remove a big block from Linux and unplug it. Will fail
++ * with -EBUSY if some memory is busy and cannot get unplugged.
++ *
++ * Will modify the state of the memory block. Might temporarily drop the
++ * hotplug_mutex.
++ */
++static int virtio_mem_bbm_offline_remove_and_unplug_bb(struct virtio_mem *vm,
++						       unsigned long bb_id)
++{
++	int rc;
++
++	if (WARN_ON_ONCE(virtio_mem_bbm_get_bb_state(vm, bb_id) !=
++			 VIRTIO_MEM_BBM_BB_ADDED))
++		return -EINVAL;
++
++	rc = virtio_mem_bbm_offline_and_remove_bb(vm, bb_id);
++	if (rc)
++		return rc;
++
++	rc = virtio_mem_bbm_unplug_bb(vm, bb_id);
++	if (rc)
++		virtio_mem_bbm_set_bb_state(vm, bb_id,
++					    VIRTIO_MEM_BBM_BB_PLUGGED);
++	else
++		virtio_mem_bbm_set_bb_state(vm, bb_id,
++					    VIRTIO_MEM_BBM_BB_UNUSED);
++	return rc;
++}
++
++/*
++ * Try to remove a big block from Linux and unplug it. Will fail with
++ * -EBUSY if some memory is online.
++ *
++ * Will modify the state of the memory block.
++ */
++static int virtio_mem_bbm_remove_and_unplug_bb(struct virtio_mem *vm,
++					       unsigned long bb_id)
++{
++	int rc;
++
++	if (WARN_ON_ONCE(virtio_mem_bbm_get_bb_state(vm, bb_id) !=
++			 VIRTIO_MEM_BBM_BB_ADDED))
++		return -EINVAL;
++
++	rc = virtio_mem_bbm_remove_bb(vm, bb_id);
++	if (rc)
++		return -EBUSY;
++
++	rc = virtio_mem_bbm_unplug_bb(vm, bb_id);
++	if (rc)
++		virtio_mem_bbm_set_bb_state(vm, bb_id,
++					    VIRTIO_MEM_BBM_BB_PLUGGED);
++	else
++		virtio_mem_bbm_set_bb_state(vm, bb_id,
++					    VIRTIO_MEM_BBM_BB_UNUSED);
++	return rc;
++}
++
++/*
++ * Test if a big block is completely offline.
++ */
++static bool virtio_mem_bbm_bb_is_offline(struct virtio_mem *vm,
++					 unsigned long bb_id)
++{
++	const unsigned long start_pfn = PFN_DOWN(virtio_mem_bb_id_to_phys(vm, bb_id));
++	const unsigned long nr_pages = PFN_DOWN(vm->bbm.bb_size);
++	unsigned long pfn;
++
++	for (pfn = start_pfn; pfn < start_pfn + nr_pages;
++	     pfn += PAGES_PER_SECTION) {
++		if (pfn_to_online_page(pfn))
++			return false;
++	}
++
++	return true;
++}
++
++static int virtio_mem_bbm_unplug_request(struct virtio_mem *vm, uint64_t diff)
++{
++	uint64_t nb_bb = diff / vm->bbm.bb_size;
++	uint64_t bb_id;
++	int rc;
++
++	if (!nb_bb)
++		return 0;
++
++	/* Try to unplug completely offline big blocks first. */
++	virtio_mem_bbm_for_each_bb_rev(vm, bb_id, VIRTIO_MEM_BBM_BB_ADDED) {
++		cond_resched();
++		/*
++		 * As we're holding no locks, this check is racy as memory
++		 * can get onlined in the meantime - but we'll fail gracefully.
++		 */
++		if (!virtio_mem_bbm_bb_is_offline(vm, bb_id))
++			continue;
++		rc = virtio_mem_bbm_remove_and_unplug_bb(vm, bb_id);
++		if (rc == -EBUSY)
++			continue;
++		if (!rc)
++			nb_bb--;
++		if (rc || !nb_bb)
++			return rc;
++	}
++
++	if (!unplug_online)
++		return 0;
++
++	/* Try to unplug any big blocks. */
++	virtio_mem_bbm_for_each_bb_rev(vm, bb_id, VIRTIO_MEM_BBM_BB_ADDED) {
++		cond_resched();
++		rc = virtio_mem_bbm_offline_remove_and_unplug_bb(vm, bb_id);
++		if (rc == -EBUSY)
++			continue;
++		if (!rc)
++			nb_bb--;
++		if (rc || !nb_bb)
++			return rc;
++	}
++
++	return nb_bb ? -EBUSY : 0;
++}
++
+ /*
+  * Try to unplug the requested amount of memory.
+  */
+@@ -1935,7 +2089,7 @@ static int virtio_mem_unplug_request(struct virtio_mem *vm, uint64_t diff)
+ {
+ 	if (vm->in_sbm)
+ 		return virtio_mem_sbm_unplug_request(vm, diff);
+-	return -EBUSY;
++	return virtio_mem_bbm_unplug_request(vm, diff);
+ }
+ 
+ /*
 -- 
 2.26.2
 
