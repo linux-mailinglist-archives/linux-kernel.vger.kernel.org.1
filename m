@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E24328AEB2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 09:02:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E01328AEB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 09:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726340AbgJLHCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 03:02:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54296 "EHLO
+        id S1726825AbgJLHCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 03:02:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726413AbgJLHCW (ORCPT
+        with ESMTP id S1726547AbgJLHCY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 03:02:22 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E73C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 00:02:20 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id 10so3141325pfp.5
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 00:02:20 -0700 (PDT)
+        Mon, 12 Oct 2020 03:02:24 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21964C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 00:02:24 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id q21so2153957pgi.13
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 00:02:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4RN+hbUL0NYVT8QB5Vq3pnGcRVctGrSfTt0+NRJ+u8c=;
-        b=tc7s7qqwskvgLr281jx0EFcu6sTMzFyuoJ6MEDR8hAFHlqYk56kDrtr3TPXL/vNSDM
-         Nm4VQzCSU5azPfSvrTimtqoGy+85XFcxpUxZuFq9mC1RQ16F6CtCZnXzcWLUtLgR3hvS
-         yfydx6bohyBbAINNkA/o1dUAje6UFn1RBu/sNPzsivUVKV/XkhCCuL0K/rN4K9WEwxs1
-         f9TfbOL/bqP/i1kJH/T/mYkJ7YZrYbfs3yx9PY0bPh0eWF8S5QybDCREBc/jO26VJTPZ
-         QV/7Ion4UqPdVWXySAR3vMUPLh5+4Kbq3Wgjv7TVZXlQKZM5XIL2z4ys9FGK7eOBeU68
-         bO0w==
+        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=1mIQJ8pEgreaee5cjCQCas0gU3LG+FyyTUXM/hPhHfQ=;
+        b=BWNqF27qX01ChMQkXYADbCDjzKW+jeCKwxPa9IW9b1uynL48I/rbZfiuK1YEeNWef/
+         ub1gumy9cgXzGsLShQnbx05Nx5L+z6kidXbhjv4XMSCSAzQWVp5itYPGpn+C/vy78Rz/
+         pSzht5fe+t+HjQr3vkHt5JEPaM7FJeQb6WZ77tapjzJAljBi6aDQ/Qwqd67BjExrdEGP
+         JbQIFnWEGRI+Oola8X3B5LD5U20VlQ100sKZdk1etQuPI+pM8FeauOLYmGZvII810CUV
+         OlHE/t4Sj/nZJ445SjQd/SzTmYugbUyapvXqsBi+/Py4nhywJmRaJLomcCDrMxNKzwl+
+         APYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=4RN+hbUL0NYVT8QB5Vq3pnGcRVctGrSfTt0+NRJ+u8c=;
-        b=AzVhmO7cW7lBImTzupi3dTLywhSGnfn5/O1deedzcgTsigWWJqaJUuzDWBfEosHt5L
-         RafcVA4Bn8FLO0zGu4lLNSkCywXuQq0ccVMdonVV9rRQ0Jy8RJJVpysQaJsYChrPIJpr
-         VgKdpsVe+o2E8fkVnxHMS7ubZWO0QRtOUR5j4Iu0EHUaxsA2DlHW9tWysePrO5BbA6Y8
-         YuLeEa+aT7H7jDOvoPxh9RHrX9wIQo5eW7YJlszzodYAAqfX/5tHrkIY93fq6muj1SAv
-         jdGTh2WxfM/R0p++VA4KyEgnAaPTUS0ECnX9D6E3XGKNfcHsXmK0HDaC5GhIGoj9gCTu
-         i6WQ==
-X-Gm-Message-State: AOAM53218X78aRxvOSJgcGU4svpFU9mgi4lbeeDVSOOSe0L2hAubENQc
-        I3PfjawDr/+n8IiwrREY3jg=
-X-Google-Smtp-Source: ABdhPJzE+7cobd9IEABBuqOIaoZPrWbR1ZvqlY9r1+cPXr+ZkzEO7IsjgrHPzzpl4HljZ4yeX8Fm1Q==
-X-Received: by 2002:a63:d6:: with SMTP id 205mr12066548pga.309.1602486140183;
-        Mon, 12 Oct 2020 00:02:20 -0700 (PDT)
+         :in-reply-to:references:mime-version:content-transfer-encoding;
+        bh=1mIQJ8pEgreaee5cjCQCas0gU3LG+FyyTUXM/hPhHfQ=;
+        b=tpJRSv05mYLNbje0Y76UJEih4uY5fZ0FCA4pfhmLAVr0r6Vf4etwP7Odu10n0ZObDC
+         Kdr6ZBcsSogSdxfJOGwNMCyJFNDibZXvrswt6/hOSJmwvpBy2JQh5E/VXmIHRo3nHWvx
+         xz5kPcqyODGWgRVLOFp5PBdEoH24V2IQaRCnwO1r9Vpts5rh4/Mi20+d2e7YhxwKAFJ3
+         Q0cKjLvGyV04enMbr/VGAcl6FEjxR90sc8H5BR5KlHE+yxTqx7eQjBpXtYPx/YufICjN
+         iexzOJb25DvVlbYpYwXcKFug8fNLIAtkfFyheFl/h+iFfeXxBqRjSH1QCL/hREaVkLoQ
+         +Eeg==
+X-Gm-Message-State: AOAM5333PScpXyOLCEkTH+dx1skw/d9muruFuRNOBANPyVvbUUPdyY3y
+        uYQOlkz6PwbXsoyydUkirLo=
+X-Google-Smtp-Source: ABdhPJx49M4nGOOY7rEeS2QmPL/A2TQx8l4E9TT2Gcjtvbt0H0E8truJ5DrrQ8/9rUvKQPRaaplJag==
+X-Received: by 2002:a63:8c42:: with SMTP id q2mr12339963pgn.130.1602486143576;
+        Mon, 12 Oct 2020 00:02:23 -0700 (PDT)
 Received: from balhae.roam.corp.google.com ([112.159.19.5])
-        by smtp.gmail.com with ESMTPSA id n12sm18082556pgk.20.2020.10.12.00.02.17
+        by smtp.gmail.com with ESMTPSA id n12sm18082556pgk.20.2020.10.12.00.02.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 00:02:19 -0700 (PDT)
+        Mon, 12 Oct 2020 00:02:22 -0700 (PDT)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -59,24 +59,34 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
         Stephane Eranian <eranian@google.com>,
         Ian Rogers <irogers@google.com>
-Subject: [PATCHSET v4 0/6] perf inject: Speed build-id injection
-Date:   Mon, 12 Oct 2020 16:02:08 +0900
-Message-Id: <20201012070214.2074921-1-namhyung@kernel.org>
+Subject: [PATCH 1/6] perf bench: Add build-id injection benchmark
+Date:   Mon, 12 Oct 2020 16:02:09 +0900
+Message-Id: <20201012070214.2074921-2-namhyung@kernel.org>
 X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
+In-Reply-To: <20201012070214.2074921-1-namhyung@kernel.org>
+References: <20201012070214.2074921-1-namhyung@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Sometimes I can see perf record piped with perf inject take long time
+processing build-id.  So add inject-build-id benchmark to the
+internals benchmark suite to measure its overhead regularly.
 
-This is the new version of speed up build-id injection.  As this is
-to improve performance, I've added a benchmark for it.  Please look at
-the usage in the first commit.
+It runs perf inject command internally and feeds the given number of
+synthesized events (MMAP2 + SAMPLE basically).
+
+  Usage: perf bench internals inject-build-id <options>
+
+    -i, --iterations <n>  Number of iterations used to compute average (default: 100)
+    -m, --nr-mmaps <n>    Number of mmap events for each iteration (default: 100)
+    -n, --nr-samples <n>  Number of sample events per mmap event (default: 100)
+    -v, --verbose         be more verbose (show iteration count, DSO name, etc)
 
 By default, it measures average processing time of 100 MMAP2 events
-and 10000 SAMPLE events.  Below is the current result on my laptop.
+and 10000 SAMPLE events.  Below is a result on my laptop.
 
   $ perf bench internals inject-build-id
   # Running 'internals/inject-build-id' benchmark:
@@ -84,101 +94,555 @@ and 10000 SAMPLE events.  Below is the current result on my laptop.
     Average time per event: 2.528 usec (+- 0.020 usec)
     Average memory usage: 8411 KB (+- 7 KB)
 
-With this patchset applied, it got this:
-
-  $ perf bench internals inject-build-id
-  # Running 'internals/inject-build-id' benchmark:
-    Average build-id injection took: 20.838 msec (+- 0.093 msec)
-    Average time per event: 2.043 usec (+- 0.009 usec)
-    Average memory usage: 8261 KB (+- 0 KB)
-    Average build-id-all injection took: 19.361 msec (+- 0.118 msec)
-    Average time per event: 1.898 usec (+- 0.012 usec)
-    Average memory usage: 7440 KB (+- 0 KB)
-
-
-Real usecases might be different as it depends on the number of
-mmap/sample events as well as how many DSOs are actually hit.
-
-The benchmark result now includes memory footprint in terms of maximum
-RSS.  Also I've update the benchmark code to use timestamp so that it
-can be queued to the ordered_events (and flushed at the end).  It's
-also important how well it sorts the input events in the queue so I
-randomly chose a timestamp at the beginning of each MMAP event
-injection to resemble actual behavior.
-
-As I said in other thread, perf inject currently doesn't flush the
-input events and processes all at the end.  This gives a good speedup
-but spends more memory (in proprotion to the input size).  While the
-build-id-all injection bypasses the queue so it uses less memory as
-well as faster processing.  The downside is that it'll mark all DSOs
-as hit so later processing steps (like perf report) likely handle them
-unnecessarily.
-
-
-This code is available at 'perf/inject-speedup-v4' branch on
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
-
-
-Changes from v3:
- - add timestamp to the synthesized events in the benchmark
- - add a separate thread to read pipe in the benchmark
-
-Changes from v2:
- - fix benchmark to read required data
- - add Acked-by from Jiri and Ian
- - pass map flag to check huge pages  (Jiri)
- - add comments on some functions  (Ian)
- - show memory (max-RSS) usage in the benchmark  (Ian)
- - drop build-id marking patch at the last  (Adrian)
-
-
-Namhyung Kim (6):
-  perf bench: Add build-id injection benchmark
-  perf inject: Add missing callbacks in perf_tool
-  perf inject: Enter namespace when reading build-id
-  perf inject: Do not load map/dso when injecting build-id
-  perf inject: Add --buildid-all option
-  perf bench: Run inject-build-id with --buildid-all option too
-
- tools/perf/Documentation/perf-inject.txt |   6 +-
- tools/perf/bench/Build                   |   1 +
- tools/perf/bench/bench.h                 |   1 +
- tools/perf/bench/inject-buildid.c        | 457 +++++++++++++++++++++++
- tools/perf/builtin-bench.c               |   1 +
- tools/perf/builtin-inject.c              | 199 ++++++++--
- tools/perf/util/build-id.h               |   4 +
- tools/perf/util/map.c                    |  17 +-
- tools/perf/util/map.h                    |  14 +
- 9 files changed, 645 insertions(+), 55 deletions(-)
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/bench/Build            |   1 +
+ tools/perf/bench/bench.h          |   1 +
+ tools/perf/bench/inject-buildid.c | 460 ++++++++++++++++++++++++++++++
+ tools/perf/builtin-bench.c        |   1 +
+ tools/perf/builtin-inject.c       |   9 +-
+ tools/perf/util/build-id.h        |   4 +
+ 6 files changed, 471 insertions(+), 5 deletions(-)
  create mode 100644 tools/perf/bench/inject-buildid.c
 
--- 
-2.28.0.681.g6f77f65b4e-goog
-
-
-*** BLURB HERE ***
-
-Namhyung Kim (6):
-  perf bench: Add build-id injection benchmark
-  perf inject: Add missing callbacks in perf_tool
-  perf inject: Enter namespace when reading build-id
-  perf inject: Do not load map/dso when injecting build-id
-  perf inject: Add --buildid-all option
-  perf bench: Run inject-build-id with --buildid-all option too
-
- tools/perf/Documentation/perf-inject.txt |   6 +-
- tools/perf/bench/Build                   |   1 +
- tools/perf/bench/bench.h                 |   1 +
- tools/perf/bench/inject-buildid.c        | 476 +++++++++++++++++++++++
- tools/perf/builtin-bench.c               |   1 +
- tools/perf/builtin-inject.c              | 199 ++++++++--
- tools/perf/util/build-id.h               |   4 +
- tools/perf/util/map.c                    |  17 +-
- tools/perf/util/map.h                    |  14 +
- 9 files changed, 664 insertions(+), 55 deletions(-)
- create mode 100644 tools/perf/bench/inject-buildid.c
-
+diff --git a/tools/perf/bench/Build b/tools/perf/bench/Build
+index dd68a40a790c..8b52591338d6 100644
+--- a/tools/perf/bench/Build
++++ b/tools/perf/bench/Build
+@@ -12,6 +12,7 @@ perf-y += epoll-ctl.o
+ perf-y += synthesize.o
+ perf-y += kallsyms-parse.o
+ perf-y += find-bit-bench.o
++perf-y += inject-buildid.o
+ 
+ perf-$(CONFIG_X86_64) += mem-memcpy-x86-64-lib.o
+ perf-$(CONFIG_X86_64) += mem-memcpy-x86-64-asm.o
+diff --git a/tools/perf/bench/bench.h b/tools/perf/bench/bench.h
+index 2804812d4154..eac36afab2b3 100644
+--- a/tools/perf/bench/bench.h
++++ b/tools/perf/bench/bench.h
+@@ -47,6 +47,7 @@ int bench_epoll_wait(int argc, const char **argv);
+ int bench_epoll_ctl(int argc, const char **argv);
+ int bench_synthesize(int argc, const char **argv);
+ int bench_kallsyms_parse(int argc, const char **argv);
++int bench_inject_build_id(int argc, const char **argv);
+ 
+ #define BENCH_FORMAT_DEFAULT_STR	"default"
+ #define BENCH_FORMAT_DEFAULT		0
+diff --git a/tools/perf/bench/inject-buildid.c b/tools/perf/bench/inject-buildid.c
+new file mode 100644
+index 000000000000..0fccf2a9e95b
+--- /dev/null
++++ b/tools/perf/bench/inject-buildid.c
+@@ -0,0 +1,460 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <stdlib.h>
++#include <stddef.h>
++#include <ftw.h>
++#include <fcntl.h>
++#include <errno.h>
++#include <unistd.h>
++#include <pthread.h>
++#include <sys/mman.h>
++#include <sys/wait.h>
++#include <linux/kernel.h>
++#include <linux/time64.h>
++#include <linux/list.h>
++#include <linux/err.h>
++#include <internal/lib.h>
++#include <subcmd/parse-options.h>
++
++#include "bench.h"
++#include "util/data.h"
++#include "util/stat.h"
++#include "util/debug.h"
++#include "util/event.h"
++#include "util/symbol.h"
++#include "util/session.h"
++#include "util/build-id.h"
++#include "util/synthetic-events.h"
++
++#define MMAP_DEV_MAJOR  8
++#define DSO_MMAP_RATIO  4
++
++static unsigned int iterations = 100;
++static unsigned int nr_mmaps   = 100;
++static unsigned int nr_samples = 100;  /* samples per mmap */
++
++static u64 bench_sample_type;
++static u16 bench_id_hdr_size;
++
++struct bench_data {
++	int			pid;
++	int			input_pipe[2];
++	int			output_pipe[2];
++	pthread_t		th;
++};
++
++struct bench_dso {
++	struct list_head	list;
++	char			*name;
++	int			ino;
++};
++
++static int nr_dsos;
++static struct bench_dso *dsos;
++
++extern int cmd_inject(int argc, const char *argv[]);
++
++static const struct option options[] = {
++	OPT_UINTEGER('i', "iterations", &iterations,
++		     "Number of iterations used to compute average (default: 100)"),
++	OPT_UINTEGER('m', "nr-mmaps", &nr_mmaps,
++		     "Number of mmap events for each iteration (default: 100)"),
++	OPT_UINTEGER('n', "nr-samples", &nr_samples,
++		     "Number of sample events per mmap event (default: 100)"),
++	OPT_INCR('v', "verbose", &verbose,
++		 "be more verbose (show iteration count, DSO name, etc)"),
++	OPT_END()
++};
++
++static const char *const bench_usage[] = {
++	"perf bench internals inject-build-id <options>",
++	NULL
++};
++
++/*
++ * Helper for collect_dso that adds the given file as a dso to dso_list
++ * if it contains a build-id.  Stops after collecting 4 times more than
++ * we need (for MMAP2 events).
++ */
++static int add_dso(const char *fpath, const struct stat *sb __maybe_unused,
++		   int typeflag, struct FTW *ftwbuf __maybe_unused)
++{
++	struct bench_dso *dso = &dsos[nr_dsos];
++	unsigned char build_id[BUILD_ID_SIZE];
++
++	if (typeflag == FTW_D || typeflag == FTW_SL)
++		return 0;
++
++	if (filename__read_build_id(fpath, build_id, BUILD_ID_SIZE) < 0)
++		return 0;
++
++	dso->name = realpath(fpath, NULL);
++	if (dso->name == NULL)
++		return -1;
++
++	dso->ino = nr_dsos++;
++	pr_debug2("  Adding DSO: %s\n", fpath);
++
++	/* stop if we collected enough DSOs */
++	if ((unsigned int)nr_dsos == DSO_MMAP_RATIO * nr_mmaps)
++		return 1;
++
++	return 0;
++}
++
++static void collect_dso(void)
++{
++	dsos = calloc(nr_mmaps * DSO_MMAP_RATIO, sizeof(*dsos));
++	if (dsos == NULL) {
++		printf("  Memory allocation failed\n");
++		exit(1);
++	}
++
++	if (nftw("/usr/lib/", add_dso, 10, FTW_PHYS) < 0)
++		return;
++
++	pr_debug("  Collected %d DSOs\n", nr_dsos);
++}
++
++static void release_dso(void)
++{
++	int i;
++
++	for (i = 0; i < nr_dsos; i++) {
++		struct bench_dso *dso = &dsos[i];
++
++		free(dso->name);
++	}
++	free(dsos);
++}
++
++/* Fake address used by mmap and sample events */
++static u64 dso_map_addr(struct bench_dso *dso)
++{
++	return 0x400000ULL + dso->ino * 8192ULL;
++}
++
++static u32 synthesize_attr(struct bench_data *data)
++{
++	union perf_event event;
++
++	memset(&event, 0, sizeof(event.attr) + sizeof(u64));
++
++	event.header.type = PERF_RECORD_HEADER_ATTR;
++	event.header.size = sizeof(event.attr) + sizeof(u64);
++
++	event.attr.attr.type = PERF_TYPE_SOFTWARE;
++	event.attr.attr.config = PERF_COUNT_SW_TASK_CLOCK;
++	event.attr.attr.exclude_kernel = 1;
++	event.attr.attr.sample_id_all = 1;
++	event.attr.attr.sample_type = bench_sample_type;
++
++	return writen(data->input_pipe[1], &event, event.header.size);
++}
++
++static u32 synthesize_fork(struct bench_data *data)
++{
++	union perf_event event;
++
++	memset(&event, 0, sizeof(event.fork) + bench_id_hdr_size);
++
++	event.header.type = PERF_RECORD_FORK;
++	event.header.misc = PERF_RECORD_MISC_FORK_EXEC;
++	event.header.size = sizeof(event.fork) + bench_id_hdr_size;
++
++	event.fork.ppid = 1;
++	event.fork.ptid = 1;
++	event.fork.pid = data->pid;
++	event.fork.tid = data->pid;
++
++	return writen(data->input_pipe[1], &event, event.header.size);
++}
++
++static u32 synthesize_mmap(struct bench_data *data, struct bench_dso *dso,
++			   u64 timestamp)
++{
++	union perf_event event;
++	size_t len = offsetof(struct perf_record_mmap2, filename);
++	u64 *id_hdr_ptr = (void *)&event;
++	int ts_idx;
++
++	len += roundup(strlen(dso->name) + 1, 8) + bench_id_hdr_size;
++
++	memset(&event, 0, min(len, sizeof(event.mmap2)));
++
++	event.header.type = PERF_RECORD_MMAP2;
++	event.header.misc = PERF_RECORD_MISC_USER;
++	event.header.size = len;
++
++	event.mmap2.pid = data->pid;
++	event.mmap2.tid = data->pid;
++	event.mmap2.maj = MMAP_DEV_MAJOR;
++	event.mmap2.ino = dso->ino;
++
++	strcpy(event.mmap2.filename, dso->name);
++
++	event.mmap2.start = dso_map_addr(dso);
++	event.mmap2.len = 4096;
++	event.mmap2.prot = PROT_EXEC;
++
++	if (len > sizeof(event.mmap2)) {
++		/* write mmap2 event first */
++		writen(data->input_pipe[1], &event, len - bench_id_hdr_size);
++		/* zero-fill sample id header */
++		memset(id_hdr_ptr, 0, bench_id_hdr_size);
++		/* put timestamp in the right position */
++		ts_idx = (bench_id_hdr_size / sizeof(u64)) - 2;
++		id_hdr_ptr[ts_idx] = timestamp;
++		writen(data->input_pipe[1], id_hdr_ptr, bench_id_hdr_size);
++	} else {
++		ts_idx = (len / sizeof(u64)) - 2;
++		id_hdr_ptr[ts_idx] = timestamp;
++		writen(data->input_pipe[1], &event, len);
++	}
++	return len;
++}
++
++static u32 synthesize_sample(struct bench_data *data, struct bench_dso *dso,
++			     u64 timestamp)
++{
++	union perf_event event;
++	struct perf_sample sample = {
++		.tid = data->pid,
++		.pid = data->pid,
++		.ip = dso_map_addr(dso),
++		.time = timestamp,
++	};
++
++	event.header.type = PERF_RECORD_SAMPLE;
++	event.header.misc = PERF_RECORD_MISC_USER;
++	event.header.size = perf_event__sample_event_size(&sample, bench_sample_type, 0);
++
++	perf_event__synthesize_sample(&event, bench_sample_type, 0, &sample);
++
++	return writen(data->input_pipe[1], &event, event.header.size);
++}
++
++static u32 synthesize_flush(struct bench_data *data)
++{
++	struct perf_event_header header = {
++		.size = sizeof(header),
++		.type = PERF_RECORD_FINISHED_ROUND,
++	};
++
++	return writen(data->input_pipe[1], &header, header.size);
++}
++
++static void *data_reader(void *arg)
++{
++	struct bench_data *data = arg;
++	char buf[8192];
++	int flag;
++	int n;
++
++	flag = fcntl(data->output_pipe[0], F_GETFL);
++	fcntl(data->output_pipe[0], F_SETFL, flag | O_NONBLOCK);
++
++	/* read out data from child */
++	while (true) {
++		n = read(data->output_pipe[0], buf, sizeof(buf));
++		if (n > 0)
++			continue;
++		if (n == 0)
++			break;
++
++		if (errno != EINTR && errno != EAGAIN)
++			break;
++
++		usleep(100);
++	}
++
++	close(data->output_pipe[0]);
++	return NULL;
++}
++
++static int setup_injection(struct bench_data *data)
++{
++	int ready_pipe[2];
++	int dev_null_fd;
++	char buf;
++
++	if (pipe(ready_pipe) < 0)
++		return -1;
++
++	if (pipe(data->input_pipe) < 0)
++		return -1;
++
++	if (pipe(data->output_pipe) < 0)
++		return -1;
++
++	data->pid = fork();
++	if (data->pid < 0)
++		return -1;
++
++	if (data->pid == 0) {
++		const char **inject_argv;
++
++		close(data->input_pipe[1]);
++		close(data->output_pipe[0]);
++		close(ready_pipe[0]);
++
++		dup2(data->input_pipe[0], STDIN_FILENO);
++		close(data->input_pipe[0]);
++		dup2(data->output_pipe[1], STDOUT_FILENO);
++		close(data->output_pipe[1]);
++
++		dev_null_fd = open("/dev/null", O_WRONLY);
++		if (dev_null_fd < 0)
++			exit(1);
++
++		dup2(dev_null_fd, STDERR_FILENO);
++
++		inject_argv = calloc(3, sizeof(*inject_argv));
++		if (inject_argv == NULL)
++			exit(1);
++
++		inject_argv[0] = strdup("inject");
++		inject_argv[1] = strdup("-b");
++
++		/* signal that we're ready to go */
++		close(ready_pipe[1]);
++
++		cmd_inject(2, inject_argv);
++
++		exit(0);
++	}
++
++	pthread_create(&data->th, NULL, data_reader, data);
++
++	close(ready_pipe[1]);
++	close(data->input_pipe[0]);
++	close(data->output_pipe[1]);
++
++	/* wait for child ready */
++	if (read(ready_pipe[0], &buf, 1) < 0)
++		return -1;
++	close(ready_pipe[0]);
++
++	return 0;
++}
++
++static int inject_build_id(struct bench_data *data, u64 *max_rss)
++{
++	int status;
++	unsigned int i, k;
++	struct rusage rusage;
++	u64 len = 0;
++
++	/* this makes the child to run */
++	if (perf_header__write_pipe(data->input_pipe[1]) < 0)
++		return -1;
++
++	len += synthesize_attr(data);
++	len += synthesize_fork(data);
++
++	for (i = 0; i < nr_mmaps; i++) {
++		int idx = rand() % (nr_dsos - 1);
++		struct bench_dso *dso = &dsos[idx];
++		u64 timestamp = rand() % 1000000;
++
++		pr_debug2("   [%d] injecting: %s\n", i+1, dso->name);
++		len += synthesize_mmap(data, dso, timestamp);
++
++		for (k = 0; k < nr_samples; k++)
++			len += synthesize_sample(data, dso, timestamp + k * 1000);
++
++		if ((i + 1) % 10 == 0)
++			len += synthesize_flush(data);
++	}
++
++	/* tihs makes the child to finish */
++	close(data->input_pipe[1]);
++
++	wait4(data->pid, &status, 0, &rusage);
++	*max_rss = rusage.ru_maxrss;
++
++	pr_debug("   Child %d exited with %d\n", data->pid, status);
++
++	return 0;
++}
++
++static int do_inject_loop(struct bench_data *data)
++{
++	unsigned int i;
++	struct stats time_stats, mem_stats;
++	double time_average, time_stddev;
++	double mem_average, mem_stddev;
++
++	srand(time(NULL));
++	init_stats(&time_stats);
++	init_stats(&mem_stats);
++	symbol__init(NULL);
++
++	bench_sample_type  = PERF_SAMPLE_IDENTIFIER | PERF_SAMPLE_IP;
++	bench_sample_type |= PERF_SAMPLE_TID | PERF_SAMPLE_TIME;
++	bench_id_hdr_size  = 32;
++
++	collect_dso();
++	if (nr_dsos == 0) {
++		printf("  Cannot collect DSOs for injection\n");
++		return -1;
++	}
++
++	for (i = 0; i < iterations; i++) {
++		struct timeval start, end, diff;
++		u64 runtime_us, max_rss;
++
++		pr_debug("  Iteration #%d\n", i+1);
++
++		if (setup_injection(data) < 0) {
++			printf("  Build-id injection setup failed\n");
++			break;
++		}
++
++		gettimeofday(&start, NULL);
++		if (inject_build_id(data, &max_rss) < 0) {
++			printf("  Build-id injection failed\n");
++			break;
++		}
++
++		gettimeofday(&end, NULL);
++		timersub(&end, &start, &diff);
++		runtime_us = diff.tv_sec * USEC_PER_SEC + diff.tv_usec;
++		update_stats(&time_stats, runtime_us);
++		update_stats(&mem_stats, max_rss);
++
++		pthread_join(data->th, NULL);
++	}
++
++	time_average = avg_stats(&time_stats) / USEC_PER_MSEC;
++	time_stddev = stddev_stats(&time_stats) / USEC_PER_MSEC;
++	printf("  Average build-id injection took: %.3f msec (+- %.3f msec)\n",
++		time_average, time_stddev);
++
++	/* each iteration, it processes MMAP2 + BUILD_ID + nr_samples * SAMPLE */
++	time_average = avg_stats(&time_stats) / (nr_mmaps * (nr_samples + 2));
++	time_stddev = stddev_stats(&time_stats) / (nr_mmaps * (nr_samples + 2));
++	printf("  Average time per event: %.3f usec (+- %.3f usec)\n",
++		time_average, time_stddev);
++
++	mem_average = avg_stats(&mem_stats);
++	mem_stddev = stddev_stats(&mem_stats);
++	printf("  Average memory usage: %.0f KB (+- %.0f KB)\n",
++		mem_average, mem_stddev);
++
++	release_dso();
++	return 0;
++}
++
++int bench_inject_build_id(int argc, const char **argv)
++{
++	struct bench_data data;
++
++	argc = parse_options(argc, argv, options, bench_usage, 0);
++	if (argc) {
++		usage_with_options(bench_usage, options);
++		exit(EXIT_FAILURE);
++	}
++
++	return do_inject_loop(&data);
++}
++
+diff --git a/tools/perf/builtin-bench.c b/tools/perf/builtin-bench.c
+index 4f176039fc8f..62a7b7420a44 100644
+--- a/tools/perf/builtin-bench.c
++++ b/tools/perf/builtin-bench.c
+@@ -87,6 +87,7 @@ static struct bench epoll_benchmarks[] = {
+ static struct bench internals_benchmarks[] = {
+ 	{ "synthesize", "Benchmark perf event synthesis",	bench_synthesize	},
+ 	{ "kallsyms-parse", "Benchmark kallsyms parsing",	bench_kallsyms_parse	},
++	{ "inject-build-id", "Benchmark build-id injection",	bench_inject_build_id	},
+ 	{ NULL,		NULL,					NULL			}
+ };
+ 
+diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
+index 6d2f410d773a..e4d78f11494e 100644
+--- a/tools/perf/builtin-inject.c
++++ b/tools/perf/builtin-inject.c
+@@ -441,11 +441,10 @@ static int dso__inject_build_id(struct dso *dso, struct perf_tool *tool,
+ 	return 0;
+ }
+ 
+-static int perf_event__inject_buildid(struct perf_tool *tool,
+-				      union perf_event *event,
+-				      struct perf_sample *sample,
+-				      struct evsel *evsel __maybe_unused,
+-				      struct machine *machine)
++int perf_event__inject_buildid(struct perf_tool *tool, union perf_event *event,
++			       struct perf_sample *sample,
++			       struct evsel *evsel __maybe_unused,
++			       struct machine *machine)
+ {
+ 	struct addr_location al;
+ 	struct thread *thread;
+diff --git a/tools/perf/util/build-id.h b/tools/perf/util/build-id.h
+index aad419bb165c..949f7e54c9cb 100644
+--- a/tools/perf/util/build-id.h
++++ b/tools/perf/util/build-id.h
+@@ -29,6 +29,10 @@ int build_id__mark_dso_hit(struct perf_tool *tool, union perf_event *event,
+ 
+ int dsos__hit_all(struct perf_session *session);
+ 
++int perf_event__inject_buildid(struct perf_tool *tool, union perf_event *event,
++			       struct perf_sample *sample, struct evsel *evsel,
++			       struct machine *machine);
++
+ bool perf_session__read_build_ids(struct perf_session *session, bool with_hits);
+ int perf_session__write_buildid_table(struct perf_session *session,
+ 				      struct feat_fd *fd);
 -- 
 2.28.0.1011.ga647a8990f-goog
 
