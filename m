@@ -2,138 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9486928BE96
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 19:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C56928BE98
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 19:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403894AbgJLRCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 13:02:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390355AbgJLRCw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 13:02:52 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAD46C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 10:02:51 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id q5so18223004wmq.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 10:02:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gCocwBk0zsLiLfxj4V7WicRiwG5RXcRHYmfk3RiD8UM=;
-        b=REQjzzKGbFJr09J7c0ahMc56ZLqOPhPfVl1oT/bpeXleHnEO4aSqBrhI8dCH+bgxwH
-         KWw8kayNxvvS0wSVrrF4Ma+eM2TiQbgl8pJ7jghVSLlVkRiI1+rAw+6z3XM3KhQsypB/
-         YtoJb4HsnUxUdb5C/KMbjEEAQPqNqlq2ZBg7lpVje7rUuUOLSrB0F1Bf9iRrLIF+dpv8
-         kKykuChTXtlWV6JG2nTS4RXnrpo/85JJ2lcMFRiRyjMN80MJdNV0eGVnoOE0MXoFLeCJ
-         GCUGwwOnWQ0VSZT2XSv6c+Sgw+SFbYzN1pC5AW2mgYRjJceAmaFsWFCWVNGPg0r6lQq8
-         utkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gCocwBk0zsLiLfxj4V7WicRiwG5RXcRHYmfk3RiD8UM=;
-        b=lr+pN5S2ucDbqbVHLK9NPcQklaswsDegzc4pTsamUmttIpOn1SCMn6CQ5K5pik3GQe
-         fqtII0SCzEfyGKjqEL7kbr0rQjJao//l7EQXUCev3A4j/UXiePAXzQwGcUejBkekcQuG
-         6Ttc58q3pQ2L2dWdYmsvlKjzKwotJF1fkPjoLNihIbAs0gdXb2IcJQCF83LqyKZwgDSS
-         kU0lG7aKKaeSM1cNY27dEBMEWP5VSNy+v6cY3IKYUgJarWn6byXPmIBiXboQhb/sNeuA
-         kTsXzCjKzLsp+3LIIzB6Lyl4PgCElKBd5Jb/6SIYZtZY76q7j7opCan4OIFcYdyAxWkS
-         zWjQ==
-X-Gm-Message-State: AOAM530fSr5XslJ7R0DSfd4MbQtkWUAX3MPqH+W/SIt7AD5m/2DyArTR
-        2SMnrqEMSBqWV2qIU+t+rr/igXAG0wM/UqxbPF4x6g==
-X-Google-Smtp-Source: ABdhPJzou3eVrc5U7Gdikdm3S33pUaKtPuc3l97KtGAW6vrk8naWp/dq3nd6Ycudnc0FS+uVbMWphTDZ7ttwrYLIdX4=
-X-Received: by 2002:a1c:4d13:: with SMTP id o19mr7352774wmh.185.1602522170285;
- Mon, 12 Oct 2020 10:02:50 -0700 (PDT)
+        id S2390741AbgJLRDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 13:03:31 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59454 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390681AbgJLRDa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 13:03:30 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 99DCDAC6C;
+        Mon, 12 Oct 2020 17:03:27 +0000 (UTC)
+Date:   Mon, 12 Oct 2020 19:03:25 +0200
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ARM: dts: sun8i: h2+: Enable optional SPI flash on
+ Orange Pi Zero board
+Message-ID: <20201012170325.GS29778@kitsune.suse.cz>
+References: <20200929083025.2089-1-msuchanek@suse.de>
+ <20201008151315.v3geykbs6musl4wq@gilmour.lan>
+ <20201008160219.GM29778@kitsune.suse.cz>
+ <20201008171454.qixrcjmhzko766su@gilmour.lan>
+ <20201008174044.GN29778@kitsune.suse.cz>
+ <20201012153507.ft77jgaprpendpne@gilmour.lan>
 MIME-Version: 1.0
-References: <20201012135724.110579-1-greentime.hu@sifive.com>
-In-Reply-To: <20201012135724.110579-1-greentime.hu@sifive.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Mon, 12 Oct 2020 22:32:38 +0530
-Message-ID: <CAAhSdy0Jj3+gsto8oj76GkDnm1WYiDFCntM=VuxKtoABGYTK5g@mail.gmail.com>
-Subject: Re: [PATCH 1/2] irqchip/sifive-plic: Enable or disable interrupt
- based on its previous setting
-To:     Greentime Hu <greentime.hu@sifive.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201012153507.ft77jgaprpendpne@gilmour.lan>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 7:27 PM Greentime Hu <greentime.hu@sifive.com> wrote:
->
-> It will always enable the interrupt after calling plic_set_affinity()
-> however it should set to its previous setting. Staying disabled or enabled.
->
-> This patch can also fix this pwm hang issue in Unleashed board.
->
-> [  919.015783] rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
-> [  919.020922] rcu:     0-...0: (0 ticks this GP)
-> idle=7d2/1/0x4000000000000002 softirq=1424/1424 fqs=105807
-> [  919.030295]  (detected by 1, t=225825 jiffies, g=1561, q=3496)
-> [  919.036109] Task dump for CPU 0:
-> [  919.039321] kworker/0:1     R  running task        0    30      2 0x00000008
-> [  919.046359] Workqueue: events set_brightness_delayed
-> [  919.051302] Call Trace:
-> [  919.053738] [<ffffffe000930d92>] __schedule+0x194/0x4de
-> [  982.035783] rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
-> [  982.040923] rcu:     0-...0: (0 ticks this GP)
-> idle=7d2/1/0x4000000000000002 softirq=1424/1424 fqs=113325
-> [  982.050294]  (detected by 1, t=241580 jiffies, g=1561, q=3509)
-> [  982.056108] Task dump for CPU 0:
-> [  982.059321] kworker/0:1     R  running task        0    30      2 0x00000008
-> [  982.066359] Workqueue: events set_brightness_delayed
-> [  982.071302] Call Trace:
-> [  982.073739] [<ffffffe000930d92>] __schedule+0x194/0x4de
-> [..]
->
-> Fixes: bb0fed1c60cc ("irqchip/sifive-plic: Switch to fasteoi flow")
-> Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
-> ---
->  drivers/irqchip/irq-sifive-plic.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
-> index eaa3e9fe54e9..4cc8a2657a6d 100644
-> --- a/drivers/irqchip/irq-sifive-plic.c
-> +++ b/drivers/irqchip/irq-sifive-plic.c
-> @@ -137,6 +137,7 @@ static int plic_set_affinity(struct irq_data *d,
->                              const struct cpumask *mask_val, bool force)
->  {
->         unsigned int cpu;
-> +       bool enable;
->         struct cpumask amask;
->         struct plic_priv *priv = irq_get_chip_data(d->irq);
->
-> @@ -150,8 +151,10 @@ static int plic_set_affinity(struct irq_data *d,
->         if (cpu >= nr_cpu_ids)
->                 return -EINVAL;
->
-> +       enable = !irqd_irq_disabled(d);
->         plic_irq_toggle(&priv->lmask, d, 0);
-> -       plic_irq_toggle(cpumask_of(cpu), d, 1);
-> +       /* Keep its original setting. */
-> +       plic_irq_toggle(cpumask_of(cpu), d, enable);
->
->         irq_data_update_effective_affinity(d, cpumask_of(cpu));
->
-> --
-> 2.28.0
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+On Mon, Oct 12, 2020 at 05:35:07PM +0200, Maxime Ripard wrote:
+> On Thu, Oct 08, 2020 at 07:40:44PM +0200, Michal Suchánek wrote:
+> > On Thu, Oct 08, 2020 at 07:14:54PM +0200, Maxime Ripard wrote:
+> > > On Thu, Oct 08, 2020 at 06:02:19PM +0200, Michal Suchánek wrote:
+> > > > On Thu, Oct 08, 2020 at 05:13:15PM +0200, Maxime Ripard wrote:
+> > > > > Hi,
+> > > > > 
+> > > > > On Tue, Sep 29, 2020 at 10:30:25AM +0200, Michal Suchanek wrote:
+> > > > > > The flash is present on all new boards and users went out of their way
+> > > > > > to add it on the old ones.
+> > > > > > 
+> > > > > > Enabling it makes a more reasonable default.
+> > > > > > 
+> > > > > > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+> > > > > > ---
+> > > > > >  arch/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dts | 4 ++--
+> > > > > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > > > > > 
+> > > > > > diff --git a/arch/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dts b/arch/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dts
+> > > > > > index f19ed981da9d..061d295bbba7 100644
+> > > > > > --- a/arch/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dts
+> > > > > > +++ b/arch/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dts
+> > > > > > @@ -163,8 +163,8 @@ &ohci1 {
+> > > > > >  };
+> > > > > >  
+> > > > > >  &spi0 {
+> > > > > > -	/* Disable SPI NOR by default: it optional on Orange Pi Zero boards */
+> > > > > > -	status = "disabled";
+> > > > > > +	/* Enable optional SPI NOR by default */
+> > > > > > +	status = "okay";
+> > > > > >  
+> > > > > >  	flash@0 {
+> > > > > >  		#address-cells = <1>;
+> > > > > 
+> > > > > Unfortunately, it's optional, so there's really no reason to enable it
+> > > > > all the time. If it's troublesome to users, then the distros or vendors
+> > > > > should make the changes necessary to the hardware, bootloader or their
+> > > > > documentation to make it easier for those users.
+> > > > 
+> > > > I don't understand the reasoning. Why must it be disabled when optional?
+> > > 
+> > > Think about it the other way around. If we enable everything that is
+> > > optional, we're going to have a multitude of conflicts everywhere, and
+> > > without a clear decision as to who is "best" and thus how we should
+> > > resolve it.
+> > Conflicts with what?
+> > 
+> > The SPI0 bus is routed the the flash memory pads. Either there is the
+> > flash mounted or there are free pads. Nothing else on the board uses
+> > these pins. You could possily solder something else there but that's
+> > definitely not part of the board.
+> > > 
+> > > On a separate platform, recently I've been using a VGA bridge for the
+> > > RaspberryPi that takes the UART pins as well. It's definitely optional,
+> > > should I enable it by default? At the same time, enabling by default the
+> > > UART is just as arbitrary and will result in people using the VGA bridge
+> > > to complain about their regression (rightfully so).
+> > 
+> > That's completely different situation. That bridge is probably not even
+> > part of the board.
+> > 
+> > > 
+> > > So, really, if it's optional, it means that it not always there. If it's
+> > > not always there, it's meant to be supported by an overlay.
+> > > 
+> > > > By the same reasoning there is no reason to disable it all the time.
+> > > 
+> > > I'm not sure I follow you here. The least common denominator is that
+> > > it's not there, so it's not enabled.
+> > 
+> > You have two options - have a flash mounted or not. You ask why enable
+> > flash when it is not always present. By the same logic I can ask why
+> > disable it when it is not always absent. Enabling is the more useful
+> > option because it degrades gracefully in the case it is not present. It
+> > does not work the other way around.
+> > 
+> > > 
+> > > > Also the boards that do not have the flsh are either broken or
+> > > > obsolete.
+> > > 
+> > > Making general statements without arguments doesn't really make it true
+> > > though. Plenty of boards to have flash and are neither broken nor
+> > > obsolete.
+> >
+> > Cannot parse this.
+> 
+> "Plenty of boards do not have flash and are neither broken nor obsolete"
+The product description of Orange Pi Zero clearly states there is a
+flash memory: http://www.orangepi.org/orangepizero/
 
-Good catch. Your fix looks good to me.
+When you order an Orange Pi Zero it comes with a flash memory. That is
+not what the device tree describes. The device tree is supposed to
+descrbe the hardware. If it does not it is broken.
 
-Reviewed-by: Anup Patel <anup@brainfault.org>
+If you have a board without a flash memory I do not know what it is but
+it is clearly not an Orange Pi Zero because it comes with one.
+> 
+> > > 
+> > > > So most of the time enabling the flash chip is the right thing.
+> > > > 
+> > > > Or do we need two DTBs like sun8i-h2-plus-orangepi-zero.dts and
+> > > > sun8i-h2-plus-orangepi-zero-no-spi-nor.dts
+> > > 
+> > > No, you need sun8i-h2-plus-orangepi-zero plus an overlay for the
+> > > SPI-NOR.
+> >
+> > The flash is part of the board.
+> 
+> Not always though.
+No, it always comes with one. You must be speaking of a different board
+then.
+> 
+> > There is no need for an overlay.
+> 
+> Overlays are here to deal with the "not always though" situation...
+There are no overlays in the kernel. Please show me tho code in the
+kernel for handling overlays.
+> 
+> > And overlays don't exist.
+> 
+> If you want to believe that, please go ahead.
+> 
+> But there's support for it in libfdt, and you can either apply them
+> directly through the U-Boot command line, or bundle them in a FIT image.
+And as you state the user ususally does not know which version of the Pi
+they have. How are they supposed to know that they should apply an
+overlay through u-boot commandline (if they even get to see one) or
+bundle them in a FIT image (if they are even using a FIT image).
 
-Regards,
-Anup
+I am doing neither. I boot a standard distribution kernel from EFI grub.
+
+I understand that it would be nice to support two almost identical
+boards with a single device tree. However, if an error about missing
+flash memory is not acceptable, and the kernel does not support enabling
+the flash memory dynamically we need two device trees then.
+> 
+> Plenty of support for something that doesn't exist.
+> 
+> > > 
+> > > > There is no way to change the setting on a runnig system, the pins are
+> > > > routed to the flash pads anyway so are not usable for anything else. The
+> > > > only thing that happens on boards that do not have the flash is kernel
+> > > > probing it and complaining that the ID 00 00 00 is not valid SPI NOR
+> > > > flash memory ID.
+> > > 
+> > > We have people reporting bugs about completely innocuous error messages
+> > > without any side effects already. An error about a missing or broken
+> > > storage device will surely raise some eyebrows.
+> > 
+> > I am sure poeple who have an old Orange Pi Zero know that it is missing
+> > the flash memory.
+> 
+> Do you really expect every single user on an Orange Pi Zero to know
+> exactly the revision it has and whether or not it's been bundled with a
+> SPI flash if it's the older ones (with the proper definition of older
+> ones)?
+
+And how is the user supposed to tell when the flash is disabled and thre
+is no way to enable it?
+
+Thanks
+
+Michal
