@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E8A028C33C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 22:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A99028C334
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 22:48:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731091AbgJLUri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 16:47:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40826 "EHLO
+        id S2387507AbgJLUrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 16:47:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730972AbgJLUqB (ORCPT
+        with ESMTP id S1731439AbgJLUqq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 16:46:01 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3E46C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 13:46:00 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id c3so11547089qvj.4
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 13:46:00 -0700 (PDT)
+        Mon, 12 Oct 2020 16:46:46 -0400
+Received: from mail-ej1-x649.google.com (mail-ej1-x649.google.com [IPv6:2a00:1450:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A9CC0613D7
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 13:46:03 -0700 (PDT)
+Received: by mail-ej1-x649.google.com with SMTP id k13so6772042ejv.16
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 13:46:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=C/ZkQuBXx2nX9poF1oVWF0/8POPrhJAQWwQRLYs2ips=;
-        b=jJdL0HQ+gh7eVuJKv6ami2+Lt7lJ/2PznHtA9rBpI7dkOmlTidjhTECV8PVM7nBZL+
-         LHSDOuxZypUm4+KKzmj4V/bK/JMTueiVKuMfYG257yff3vi/eZGUXwsAU7WE5dAUPZZ5
-         lU3CsPF0Ekms92i0V9fqvRfv6aiNiQMP8Hi1BDTLBGYWebcMAoSmbOM/4XrUjGaMwtGj
-         VxCwN280X+n1/bFTCVzNrg88onuoo11ReFn9XMNJkdKbHNkb/3IBzpgCe/q1s7j1GJWc
-         iexcax/Z/K4FXzHJY+kW7dgus17yN+UR//DnbOsmkpW/ruj30CxQdTcPOvMbF+O5mxD3
-         hnBA==
+        bh=FxkgJWitnYQ4KCO5g1pFJrvXiUx3cakvbVWfbN/gwfM=;
+        b=P2R3KXtk+miPGtCQ/ftFngtqpBO1fCTFodZE+2pqsiYQkXvzJUcMgDh3tmmVLtCZMw
+         OcH56KV/uiefEuYUt+YsxjrSUSiNfco9ED6dq1InxgWFmCvQwDLvOEcWV7Vcchdv4wtp
+         MG74gOCnRdz6bdJaPrY2tFBnMsCVAGQVn/lkHPlg1lkFEzYP467zbTqkwFUrQOZ0HWoG
+         oR0OAHfkwPraMOim4LeiSn4F2qmJkwo5YBtWiagitgDVCoJr1sMltcMGOD0y1nALOUBo
+         wmPEDj1/e3jfhrL4myn9POr2H/6ueC0yFeEfF9rRw50xPVRxQPOzVuFzn5yGWUR+kX9d
+         c1Dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=C/ZkQuBXx2nX9poF1oVWF0/8POPrhJAQWwQRLYs2ips=;
-        b=L5Y5M5RJ1qNktKoaTVawfATJw7Sy16/THDhTRXh/knPlbFba0t1tgSnLZ41Z5TiVtE
-         br3ucNDNDBF28n/uDUyTKt0EH+Tb6Z+NOAqQPmbuTSilbfW77+C6OyYaUJzwSQlWjxLB
-         ByYmr8p2tg1RE+rUBBiFJIJ/ZetlpiX0G/PgybbDfNx9VLXrnCQ/MUnBnhopM3tz2l2X
-         9h5Zz9C9fwhhT+cPvev2LqjASdYvtokKin7jAyUIxqDmMDaE1lwHAF2mu20hLyoCJ0Qi
-         rNcNlBc5ggcJyE/VmMhvutLgJt2+Pd4PJSBybKP7C9h/ZAyhp3vha7Nj4LMiLQEMJnZE
-         CW1w==
-X-Gm-Message-State: AOAM531gSNixYnF8DOxSEyCfh2E+IWhDnWGNOUTZdIUTbqttNtgH/GBy
-        B+PtLfxVeneRF+nTGSUCrYs802EkQJR0W0GI
-X-Google-Smtp-Source: ABdhPJwA4Y621BttjsZVU3u42W5cjEKrz9IoLXQZ1U1ek0QmMnALiFkhYwyzEZU1/i21avDZBd1rOyJXp9m9g0ot
+        bh=FxkgJWitnYQ4KCO5g1pFJrvXiUx3cakvbVWfbN/gwfM=;
+        b=QkOameH0k5ZNL9e/sGPgHi9IcAsfx03vc02YPZnQUYn1aLZcRHFwEp5/HBhIKTg94D
+         xF/OZH8NGgFccudzmXJ4BBg0inPUpqL8WQCKJGDrVpI2hieTaaGAflHaLdTSg6dE8t1y
+         na78QX3mPHiK82f0PJcSze/Pba5jzmdD8dxdkHMlZcu7xK4f6JntKfAMU7Gt/WE1kkRF
+         tb3umy3ci56nLx4oOuKDclJFsJ/HkfuO3kv7tSBFbpXYcp/V8+ZjNyOgkmV/oV5FMCJr
+         4WF8i789HrjiL2W2dHL2FhsIRv8TLahEHDCkkK/SCeRah9a64YrpKy5iJkaY6TvNzBYW
+         4EWw==
+X-Gm-Message-State: AOAM531n7agUJ3TVvkd4hlQo14XhTT52Fz2XkTCtvfxoOyerzqgbNE6e
+        MsTvgWM6W9oWX9IRFReHX0KiBweFNq2xhdeS
+X-Google-Smtp-Source: ABdhPJz/BddLvNCDRFZcot/tUVN8NYq/sCHyMsbWAP6so+MT7dwjcMUH63fvAtg2uu0h61182mDeXHB+wNMa1AAT
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a05:6214:52a:: with SMTP id
- x10mr26987827qvw.59.1602535559853; Mon, 12 Oct 2020 13:45:59 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 22:44:34 +0200
+ (user=andreyknvl job=sendgmr) by 2002:a50:fa89:: with SMTP id
+ w9mr16233395edr.235.1602535562467; Mon, 12 Oct 2020 13:46:02 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 22:44:35 +0200
 In-Reply-To: <cover.1602535397.git.andreyknvl@google.com>
-Message-Id: <000f468c5aaba5f1e38dbd4a5b19c2f54d80f7f1.1602535397.git.andreyknvl@google.com>
+Message-Id: <10a1185de44bee978449f07b448ebbe52c2435e0.1602535397.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1602535397.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
-Subject: [PATCH v5 28/40] kasan: rename SHADOW layout macros to META
+Subject: [PATCH v5 29/40] kasan: separate metadata_fetch_row for each mode
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will.deacon@arm.com>
@@ -77,101 +77,183 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 This is a preparatory commit for the upcoming addition of a new hardware
 tag-based (MTE-based) KASAN mode.
 
-Hardware tag-based KASAN won't be using shadow memory, but will reuse
-these macros. Rename "SHADOW" to implementation-neutral "META".
+Rework print_memory_metadata() to make it agnostic with regard to the
+way metadata is stored. Allow providing a separate metadata_fetch_row()
+implementation for each KASAN mode. Hardware tag-based KASAN will provide
+its own implementation that doesn't use shadow memory.
 
-No functional changes.
+No functional changes for software modes.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 Reviewed-by: Marco Elver <elver@google.com>
 ---
-Change-Id: Id2d836bf43b401bce1221cc06e745185f17b1cc
+Change-Id: I5b0ed1d079ea776e620beca6a529a861e7dced95
 ---
- mm/kasan/report.c | 30 +++++++++++++++---------------
- 1 file changed, 15 insertions(+), 15 deletions(-)
+ mm/kasan/kasan.h          |  8 ++++++
+ mm/kasan/report.c         | 56 +++++++++++++++++++--------------------
+ mm/kasan/report_generic.c |  5 ++++
+ mm/kasan/report_sw_tags.c |  5 ++++
+ 4 files changed, 45 insertions(+), 29 deletions(-)
 
-diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-index 67aa30b45805..13b27675a696 100644
---- a/mm/kasan/report.c
-+++ b/mm/kasan/report.c
-@@ -31,11 +31,11 @@
- #include "kasan.h"
- #include "../slab.h"
+diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+index 420638225c13..9c73f324e3ce 100644
+--- a/mm/kasan/kasan.h
++++ b/mm/kasan/kasan.h
+@@ -57,6 +57,13 @@
+ #define KASAN_ABI_VERSION 1
+ #endif
  
--/* Shadow layout customization. */
--#define SHADOW_BYTES_PER_BLOCK 1
--#define SHADOW_BLOCKS_PER_ROW 16
--#define SHADOW_BYTES_PER_ROW (SHADOW_BLOCKS_PER_ROW * SHADOW_BYTES_PER_BLOCK)
--#define SHADOW_ROWS_AROUND_ADDR 2
 +/* Metadata layout customization. */
 +#define META_BYTES_PER_BLOCK 1
 +#define META_BLOCKS_PER_ROW 16
 +#define META_BYTES_PER_ROW (META_BLOCKS_PER_ROW * META_BYTES_PER_BLOCK)
++#define META_MEM_BYTES_PER_ROW (META_BYTES_PER_ROW * KASAN_GRANULE_SIZE)
 +#define META_ROWS_AROUND_ADDR 2
++
+ struct kasan_access_info {
+ 	const void *access_addr;
+ 	const void *first_bad_addr;
+@@ -168,6 +175,7 @@ bool check_invalid_free(void *addr);
  
+ void *find_first_bad_addr(void *addr, size_t size);
+ const char *get_bug_type(struct kasan_access_info *info);
++void metadata_fetch_row(char *buffer, void *row);
+ 
+ #ifdef CONFIG_KASAN_STACK_ENABLE
+ void print_address_stack_frame(const void *addr);
+diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+index 13b27675a696..3924127b4786 100644
+--- a/mm/kasan/report.c
++++ b/mm/kasan/report.c
+@@ -31,12 +31,6 @@
+ #include "kasan.h"
+ #include "../slab.h"
+ 
+-/* Metadata layout customization. */
+-#define META_BYTES_PER_BLOCK 1
+-#define META_BLOCKS_PER_ROW 16
+-#define META_BYTES_PER_ROW (META_BLOCKS_PER_ROW * META_BYTES_PER_BLOCK)
+-#define META_ROWS_AROUND_ADDR 2
+-
  static unsigned long kasan_flags;
  
-@@ -238,7 +238,7 @@ static void print_address_description(void *addr, u8 tag)
- 
- static bool row_is_guilty(const void *row, const void *guilty)
- {
--	return (row <= guilty) && (guilty < row + SHADOW_BYTES_PER_ROW);
-+	return (row <= guilty) && (guilty < row + META_BYTES_PER_ROW);
+ #define KASAN_BIT_REPORTED	0
+@@ -236,55 +230,59 @@ static void print_address_description(void *addr, u8 tag)
+ 	print_address_stack_frame(addr);
  }
  
- static int shadow_pointer_offset(const void *row, const void *shadow)
-@@ -247,7 +247,7 @@ static int shadow_pointer_offset(const void *row, const void *shadow)
- 	 *    3 + (BITS_PER_LONG/8)*2 chars.
+-static bool row_is_guilty(const void *row, const void *guilty)
++static bool meta_row_is_guilty(const void *row, const void *addr)
+ {
+-	return (row <= guilty) && (guilty < row + META_BYTES_PER_ROW);
++	return (row <= addr) && (addr < row + META_MEM_BYTES_PER_ROW);
+ }
+ 
+-static int shadow_pointer_offset(const void *row, const void *shadow)
++static int meta_pointer_offset(const void *row, const void *addr)
+ {
+-	/* The length of ">ff00ff00ff00ff00: " is
+-	 *    3 + (BITS_PER_LONG/8)*2 chars.
++	/*
++	 * Memory state around the buggy address:
++	 *  ff00ff00ff00ff00: 00 00 00 05 fe fe fe fe fe fe fe fe fe fe fe fe
++	 *  ...
++	 *
++	 * The length of ">ff00ff00ff00ff00: " is
++	 *    3 + (BITS_PER_LONG / 8) * 2 chars.
++	 * The length of each granule metadata is 2 bytes
++	 *    plus 1 byte for space.
  	 */
- 	return 3 + (BITS_PER_LONG/8)*2 + (shadow - row)*2 +
--		(shadow - row) / SHADOW_BYTES_PER_BLOCK + 1;
-+		(shadow - row) / META_BYTES_PER_BLOCK + 1;
+-	return 3 + (BITS_PER_LONG/8)*2 + (shadow - row)*2 +
+-		(shadow - row) / META_BYTES_PER_BLOCK + 1;
++	return 3 + (BITS_PER_LONG / 8) * 2 +
++		(addr - row) / KASAN_GRANULE_SIZE * 3 + 1;
  }
  
  static void print_memory_metadata(const void *addr)
-@@ -257,15 +257,15 @@ static void print_memory_metadata(const void *addr)
- 	const void *shadow_row;
+ {
+ 	int i;
+-	const void *shadow = kasan_mem_to_shadow(addr);
+-	const void *shadow_row;
++	void *row;
  
- 	shadow_row = (void *)round_down((unsigned long)shadow,
--					SHADOW_BYTES_PER_ROW)
--		- SHADOW_ROWS_AROUND_ADDR * SHADOW_BYTES_PER_ROW;
-+					META_BYTES_PER_ROW)
-+		- META_ROWS_AROUND_ADDR * META_BYTES_PER_ROW;
+-	shadow_row = (void *)round_down((unsigned long)shadow,
+-					META_BYTES_PER_ROW)
+-		- META_ROWS_AROUND_ADDR * META_BYTES_PER_ROW;
++	row = (void *)round_down((unsigned long)addr, META_MEM_BYTES_PER_ROW)
++			- META_ROWS_AROUND_ADDR * META_MEM_BYTES_PER_ROW;
  
  	pr_err("Memory state around the buggy address:\n");
  
--	for (i = -SHADOW_ROWS_AROUND_ADDR; i <= SHADOW_ROWS_AROUND_ADDR; i++) {
-+	for (i = -META_ROWS_AROUND_ADDR; i <= META_ROWS_AROUND_ADDR; i++) {
- 		const void *kaddr = kasan_shadow_to_mem(shadow_row);
- 		char buffer[4 + (BITS_PER_LONG/8)*2];
--		char shadow_buf[SHADOW_BYTES_PER_ROW];
-+		char shadow_buf[META_BYTES_PER_ROW];
+ 	for (i = -META_ROWS_AROUND_ADDR; i <= META_ROWS_AROUND_ADDR; i++) {
+-		const void *kaddr = kasan_shadow_to_mem(shadow_row);
+-		char buffer[4 + (BITS_PER_LONG/8)*2];
+-		char shadow_buf[META_BYTES_PER_ROW];
++		char buffer[4 + (BITS_PER_LONG / 8) * 2];
++		char metadata[META_BYTES_PER_ROW];
  
  		snprintf(buffer, sizeof(buffer),
- 			(i == 0) ? ">%px: " : " %px: ", kaddr);
-@@ -274,17 +274,17 @@ static void print_memory_metadata(const void *addr)
+-			(i == 0) ? ">%px: " : " %px: ", kaddr);
++				(i == 0) ? ">%px: " : " %px: ", row);
++
+ 		/*
+ 		 * We should not pass a shadow pointer to generic
  		 * function, because generic functions may try to
  		 * access kasan mapping for the passed address.
  		 */
--		memcpy(shadow_buf, shadow_row, SHADOW_BYTES_PER_ROW);
-+		memcpy(shadow_buf, shadow_row, META_BYTES_PER_ROW);
+-		memcpy(shadow_buf, shadow_row, META_BYTES_PER_ROW);
++		metadata_fetch_row(&metadata[0], row);
++
  		print_hex_dump(KERN_ERR, buffer,
--			DUMP_PREFIX_NONE, SHADOW_BYTES_PER_ROW, 1,
--			shadow_buf, SHADOW_BYTES_PER_ROW, 0);
-+			DUMP_PREFIX_NONE, META_BYTES_PER_ROW, 1,
-+			shadow_buf, META_BYTES_PER_ROW, 0);
+ 			DUMP_PREFIX_NONE, META_BYTES_PER_ROW, 1,
+-			shadow_buf, META_BYTES_PER_ROW, 0);
++			metadata, META_BYTES_PER_ROW, 0);
  
- 		if (row_is_guilty(shadow_row, shadow))
- 			pr_err("%*c\n",
- 				shadow_pointer_offset(shadow_row, shadow),
- 				'^');
+-		if (row_is_guilty(shadow_row, shadow))
+-			pr_err("%*c\n",
+-				shadow_pointer_offset(shadow_row, shadow),
+-				'^');
++		if (meta_row_is_guilty(row, addr))
++			pr_err("%*c\n", meta_pointer_offset(row, addr), '^');
  
--		shadow_row += SHADOW_BYTES_PER_ROW;
-+		shadow_row += META_BYTES_PER_ROW;
+-		shadow_row += META_BYTES_PER_ROW;
++		row += META_MEM_BYTES_PER_ROW;
  	}
  }
  
+diff --git a/mm/kasan/report_generic.c b/mm/kasan/report_generic.c
+index ff067071cd28..de7a85c83106 100644
+--- a/mm/kasan/report_generic.c
++++ b/mm/kasan/report_generic.c
+@@ -122,6 +122,11 @@ const char *get_bug_type(struct kasan_access_info *info)
+ 	return get_wild_bug_type(info);
+ }
+ 
++void metadata_fetch_row(char *buffer, void *row)
++{
++	memcpy(buffer, kasan_mem_to_shadow(row), META_BYTES_PER_ROW);
++}
++
+ #ifdef CONFIG_KASAN_STACK_ENABLE
+ static bool __must_check tokenize_frame_descr(const char **frame_descr,
+ 					      char *token, size_t max_tok_len,
+diff --git a/mm/kasan/report_sw_tags.c b/mm/kasan/report_sw_tags.c
+index c87d5a343b4e..add2dfe6169c 100644
+--- a/mm/kasan/report_sw_tags.c
++++ b/mm/kasan/report_sw_tags.c
+@@ -80,6 +80,11 @@ void *find_first_bad_addr(void *addr, size_t size)
+ 	return p;
+ }
+ 
++void metadata_fetch_row(char *buffer, void *row)
++{
++	memcpy(buffer, kasan_mem_to_shadow(row), META_BYTES_PER_ROW);
++}
++
+ void print_tags(u8 addr_tag, const void *addr)
+ {
+ 	u8 *shadow = (u8 *)kasan_mem_to_shadow(addr);
 -- 
 2.28.0.1011.ga647a8990f-goog
 
