@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7504828B9C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8487128B712
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:40:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730567AbgJLODa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:03:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39316 "EHLO mail.kernel.org"
+        id S2388834AbgJLNkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:40:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730808AbgJLNgh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:36:37 -0400
+        id S1730801AbgJLNjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:39:18 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 79711208B8;
-        Mon, 12 Oct 2020 13:36:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2842A21D7F;
+        Mon, 12 Oct 2020 13:39:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509795;
-        bh=v6TC/afamof1ms9LRUmLrPjC/pPoBr805aVrngS61SY=;
+        s=default; t=1602509957;
+        bh=yPw1Tjcg7arkiZ9q+KvcQmSs2RcA9QimSAeawjaQDkU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W2Wf4/sg9Ya+C7d2zn5x9J6pfaVnHbq/qBUVxb6aw4remHcDvUJ3ldnTIzfSNYeL5
-         WQQfz+mljTnLdiG+hdolKkFjIBBqZO019Z47+6P4J/1lMRbM/X8xxMEBZ26LPM3iY4
-         YOhn4meS+LqvKHvaf1o85BKcdRf9bO2MS0WeJCu8=
+        b=lPiauUC9xM21b8c6yxKecBP0cllgk+yYKYV1aPy9E8kqF2MLPQ+U+T4g1+7g0Zx6l
+         fyM6T++3eAb9fYUc9xQFSgCC3YAtFC1T67rnRqIx/FxQfR6v3D6/l83jmnveo9Fi9G
+         L2aaCMXq+rXN+jJOeVvQgi1ksh6hgB8Px2ARo7Dw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Peilin Ye <yepeilin.cs@gmail.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: [PATCH 4.14 33/70] Fonts: Support FONT_EXTRA_WORDS macros for built-in fonts
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        syzbot+29d4ed7f3bdedf2aa2fd@syzkaller.appspotmail.com
+Subject: [PATCH 4.19 03/49] fbcon: Fix global-out-of-bounds read in fbcon_get_font()
 Date:   Mon, 12 Oct 2020 15:26:49 +0200
-Message-Id: <20201012132631.774855525@linuxfoundation.org>
+Message-Id: <20201012132629.608316610@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132630.201442517@linuxfoundation.org>
-References: <20201012132630.201442517@linuxfoundation.org>
+In-Reply-To: <20201012132629.469542486@linuxfoundation.org>
+References: <20201012132629.469542486@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,404 +45,74 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Peilin Ye <yepeilin.cs@gmail.com>
 
-commit 6735b4632def0640dbdf4eb9f99816aca18c4f16 upstream.
+commit 5af08640795b2b9a940c9266c0260455377ae262 upstream.
 
-syzbot has reported an issue in the framebuffer layer, where a malicious
-user may overflow our built-in font data buffers.
+fbcon_get_font() is reading out-of-bounds. A malicious user may resize
+`vc->vc_font.height` to a large value, causing fbcon_get_font() to
+read out of `fontdata`.
 
-In order to perform a reliable range check, subsystems need to know
-`FONTDATAMAX` for each built-in font. Unfortunately, our font descriptor,
-`struct console_font` does not contain `FONTDATAMAX`, and is part of the
-UAPI, making it infeasible to modify it.
-
-For user-provided fonts, the framebuffer layer resolves this issue by
-reserving four extra words at the beginning of data buffers. Later,
-whenever a function needs to access them, it simply uses the following
-macros:
-
-Recently we have gathered all the above macros to <linux/font.h>. Let us
-do the same thing for built-in fonts, prepend four extra words (including
-`FONTDATAMAX`) to their data buffers, so that subsystems can use these
-macros for all fonts, no matter built-in or user-provided.
+fbcon_get_font() handles both built-in and user-provided fonts.
+Fortunately, recently we have added FONT_EXTRA_WORDS support for built-in
+fonts, so fix it by adding range checks using FNTSIZE().
 
 This patch depends on patch "fbdev, newport_con: Move FONT_EXTRA_WORDS
-macros into linux/font.h".
+macros into linux/font.h", and patch "Fonts: Support FONT_EXTRA_WORDS
+macros for built-in fonts".
 
 Cc: stable@vger.kernel.org
+Reported-and-tested-by: syzbot+29d4ed7f3bdedf2aa2fd@syzkaller.appspotmail.com
 Link: https://syzkaller.appspot.com/bug?id=08b8be45afea11888776f897895aef9ad1c3ecfd
 Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
 Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/ef18af00c35fb3cc826048a5f70924ed6ddce95b.1600953813.git.yepeilin.cs@gmail.com
+Link: https://patchwork.freedesktop.org/patch/msgid/b34544687a1a09d6de630659eb7a773f4953238b.1600953813.git.yepeilin.cs@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- include/linux/font.h       |    5 +++++
- lib/fonts/font_10x18.c     |    9 ++++-----
- lib/fonts/font_6x10.c      |    9 +++++----
- lib/fonts/font_6x11.c      |    9 ++++-----
- lib/fonts/font_7x14.c      |    9 ++++-----
- lib/fonts/font_8x16.c      |    9 ++++-----
- lib/fonts/font_8x8.c       |    9 ++++-----
- lib/fonts/font_acorn_8x8.c |    9 ++++++---
- lib/fonts/font_mini_4x6.c  |    8 ++++----
- lib/fonts/font_pearl_8x8.c |    9 ++++-----
- lib/fonts/font_sun12x22.c  |    9 ++++-----
- lib/fonts/font_sun8x16.c   |    7 ++++---
- 12 files changed, 52 insertions(+), 49 deletions(-)
+ drivers/video/fbdev/core/fbcon.c |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
---- a/include/linux/font.h
-+++ b/include/linux/font.h
-@@ -65,4 +65,9 @@ extern const struct font_desc *get_defau
+--- a/drivers/video/fbdev/core/fbcon.c
++++ b/drivers/video/fbdev/core/fbcon.c
+@@ -2270,6 +2270,9 @@ static int fbcon_get_font(struct vc_data
  
- #define FONT_EXTRA_WORDS 4
- 
-+struct font_data {
-+	unsigned int extra[FONT_EXTRA_WORDS];
-+	const unsigned char data[];
-+} __packed;
+ 	if (font->width <= 8) {
+ 		j = vc->vc_font.height;
++		if (font->charcount * j > FNTSIZE(fontdata))
++			return -EINVAL;
 +
- #endif /* _VIDEO_FONT_H */
---- a/lib/fonts/font_10x18.c
-+++ b/lib/fonts/font_10x18.c
-@@ -8,8 +8,8 @@
- 
- #define FONTDATAMAX 9216
- 
--static const unsigned char fontdata_10x18[FONTDATAMAX] = {
--
-+static struct font_data fontdata_10x18 = {
-+	{ 0, 0, FONTDATAMAX, 0 }, {
- 	/* 0 0x00 '^@' */
- 	0x00, 0x00, /* 0000000000 */
- 	0x00, 0x00, /* 0000000000 */
-@@ -5129,8 +5129,7 @@ static const unsigned char fontdata_10x1
- 	0x00, 0x00, /* 0000000000 */
- 	0x00, 0x00, /* 0000000000 */
- 	0x00, 0x00, /* 0000000000 */
--
--};
-+} };
- 
- 
- const struct font_desc font_10x18 = {
-@@ -5138,7 +5137,7 @@ const struct font_desc font_10x18 = {
- 	.name	= "10x18",
- 	.width	= 10,
- 	.height	= 18,
--	.data	= fontdata_10x18,
-+	.data	= fontdata_10x18.data,
- #ifdef __sparc__
- 	.pref	= 5,
- #else
---- a/lib/fonts/font_6x10.c
-+++ b/lib/fonts/font_6x10.c
-@@ -1,8 +1,10 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <linux/font.h>
- 
--static const unsigned char fontdata_6x10[] = {
-+#define FONTDATAMAX 2560
- 
-+static struct font_data fontdata_6x10 = {
-+	{ 0, 0, FONTDATAMAX, 0 }, {
- 	/* 0 0x00 '^@' */
- 	0x00, /* 00000000 */
- 	0x00, /* 00000000 */
-@@ -3074,14 +3076,13 @@ static const unsigned char fontdata_6x10
- 	0x00, /* 00000000 */
- 	0x00, /* 00000000 */
- 	0x00, /* 00000000 */
--
--};
-+} };
- 
- const struct font_desc font_6x10 = {
- 	.idx	= FONT6x10_IDX,
- 	.name	= "6x10",
- 	.width	= 6,
- 	.height	= 10,
--	.data	= fontdata_6x10,
-+	.data	= fontdata_6x10.data,
- 	.pref	= 0,
- };
---- a/lib/fonts/font_6x11.c
-+++ b/lib/fonts/font_6x11.c
-@@ -9,8 +9,8 @@
- 
- #define FONTDATAMAX (11*256)
- 
--static const unsigned char fontdata_6x11[FONTDATAMAX] = {
--
-+static struct font_data fontdata_6x11 = {
-+	{ 0, 0, FONTDATAMAX, 0 }, {
- 	/* 0 0x00 '^@' */
- 	0x00, /* 00000000 */
- 	0x00, /* 00000000 */
-@@ -3338,8 +3338,7 @@ static const unsigned char fontdata_6x11
- 	0x00, /* 00000000 */
- 	0x00, /* 00000000 */
- 	0x00, /* 00000000 */
--
--};
-+} };
- 
- 
- const struct font_desc font_vga_6x11 = {
-@@ -3347,7 +3346,7 @@ const struct font_desc font_vga_6x11 = {
- 	.name	= "ProFont6x11",
- 	.width	= 6,
- 	.height	= 11,
--	.data	= fontdata_6x11,
-+	.data	= fontdata_6x11.data,
- 	/* Try avoiding this font if possible unless on MAC */
- 	.pref	= -2000,
- };
---- a/lib/fonts/font_7x14.c
-+++ b/lib/fonts/font_7x14.c
-@@ -8,8 +8,8 @@
- 
- #define FONTDATAMAX 3584
- 
--static const unsigned char fontdata_7x14[FONTDATAMAX] = {
--
-+static struct font_data fontdata_7x14 = {
-+	{ 0, 0, FONTDATAMAX, 0 }, {
- 	/* 0 0x00 '^@' */
- 	0x00, /* 0000000 */
- 	0x00, /* 0000000 */
-@@ -4105,8 +4105,7 @@ static const unsigned char fontdata_7x14
- 	0x00, /* 0000000 */
- 	0x00, /* 0000000 */
- 	0x00, /* 0000000 */
--
--};
-+} };
- 
- 
- const struct font_desc font_7x14 = {
-@@ -4114,6 +4113,6 @@ const struct font_desc font_7x14 = {
- 	.name	= "7x14",
- 	.width	= 7,
- 	.height	= 14,
--	.data	= fontdata_7x14,
-+	.data	= fontdata_7x14.data,
- 	.pref	= 0,
- };
---- a/lib/fonts/font_8x16.c
-+++ b/lib/fonts/font_8x16.c
-@@ -10,8 +10,8 @@
- 
- #define FONTDATAMAX 4096
- 
--static const unsigned char fontdata_8x16[FONTDATAMAX] = {
--
-+static struct font_data fontdata_8x16 = {
-+	{ 0, 0, FONTDATAMAX, 0 }, {
- 	/* 0 0x00 '^@' */
- 	0x00, /* 00000000 */
- 	0x00, /* 00000000 */
-@@ -4619,8 +4619,7 @@ static const unsigned char fontdata_8x16
- 	0x00, /* 00000000 */
- 	0x00, /* 00000000 */
- 	0x00, /* 00000000 */
--
--};
-+} };
- 
- 
- const struct font_desc font_vga_8x16 = {
-@@ -4628,7 +4627,7 @@ const struct font_desc font_vga_8x16 = {
- 	.name	= "VGA8x16",
- 	.width	= 8,
- 	.height	= 16,
--	.data	= fontdata_8x16,
-+	.data	= fontdata_8x16.data,
- 	.pref	= 0,
- };
- EXPORT_SYMBOL(font_vga_8x16);
---- a/lib/fonts/font_8x8.c
-+++ b/lib/fonts/font_8x8.c
-@@ -9,8 +9,8 @@
- 
- #define FONTDATAMAX 2048
- 
--static const unsigned char fontdata_8x8[FONTDATAMAX] = {
--
-+static struct font_data fontdata_8x8 = {
-+	{ 0, 0, FONTDATAMAX, 0 }, {
- 	/* 0 0x00 '^@' */
- 	0x00, /* 00000000 */
- 	0x00, /* 00000000 */
-@@ -2570,8 +2570,7 @@ static const unsigned char fontdata_8x8[
- 	0x00, /* 00000000 */
- 	0x00, /* 00000000 */
- 	0x00, /* 00000000 */
--
--};
-+} };
- 
- 
- const struct font_desc font_vga_8x8 = {
-@@ -2579,6 +2578,6 @@ const struct font_desc font_vga_8x8 = {
- 	.name	= "VGA8x8",
- 	.width	= 8,
- 	.height	= 8,
--	.data	= fontdata_8x8,
-+	.data	= fontdata_8x8.data,
- 	.pref	= 0,
- };
---- a/lib/fonts/font_acorn_8x8.c
-+++ b/lib/fonts/font_acorn_8x8.c
-@@ -3,7 +3,10 @@
- 
- #include <linux/font.h>
- 
--static const unsigned char acorndata_8x8[] = {
-+#define FONTDATAMAX 2048
+ 		for (i = 0; i < font->charcount; i++) {
+ 			memcpy(data, fontdata, j);
+ 			memset(data + j, 0, 32 - j);
+@@ -2278,6 +2281,9 @@ static int fbcon_get_font(struct vc_data
+ 		}
+ 	} else if (font->width <= 16) {
+ 		j = vc->vc_font.height * 2;
++		if (font->charcount * j > FNTSIZE(fontdata))
++			return -EINVAL;
 +
-+static struct font_data acorndata_8x8 = {
-+{ 0, 0, FONTDATAMAX, 0 }, {
- /* 00 */  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* ^@ */
- /* 01 */  0x7e, 0x81, 0xa5, 0x81, 0xbd, 0x99, 0x81, 0x7e, /* ^A */
- /* 02 */  0x7e, 0xff, 0xbd, 0xff, 0xc3, 0xe7, 0xff, 0x7e, /* ^B */
-@@ -260,14 +263,14 @@ static const unsigned char acorndata_8x8
- /* FD */  0x38, 0x04, 0x18, 0x20, 0x3c, 0x00, 0x00, 0x00,
- /* FE */  0x00, 0x00, 0x3c, 0x3c, 0x3c, 0x3c, 0x00, 0x00,
- /* FF */  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
--};
-+} };
- 
- const struct font_desc font_acorn_8x8 = {
- 	.idx	= ACORN8x8_IDX,
- 	.name	= "Acorn8x8",
- 	.width	= 8,
- 	.height	= 8,
--	.data	= acorndata_8x8,
-+	.data	= acorndata_8x8.data,
- #ifdef CONFIG_ARCH_ACORN
- 	.pref	= 20,
- #else
---- a/lib/fonts/font_mini_4x6.c
-+++ b/lib/fonts/font_mini_4x6.c
-@@ -43,8 +43,8 @@ __END__;
- 
- #define FONTDATAMAX 1536
- 
--static const unsigned char fontdata_mini_4x6[FONTDATAMAX] = {
--
-+static struct font_data fontdata_mini_4x6 = {
-+	{ 0, 0, FONTDATAMAX, 0 }, {
- 	/*{*/
- 	  	/*   Char 0: ' '  */
- 	0xee,	/*=  [*** ]       */
-@@ -2145,14 +2145,14 @@ static const unsigned char fontdata_mini
- 	0xee,	/*=   [*** ]        */
- 	0x00,	/*=   [    ]        */
- 	/*}*/
--};
-+} };
- 
- const struct font_desc font_mini_4x6 = {
- 	.idx	= MINI4x6_IDX,
- 	.name	= "MINI4x6",
- 	.width	= 4,
- 	.height	= 6,
--	.data	= fontdata_mini_4x6,
-+	.data	= fontdata_mini_4x6.data,
- 	.pref	= 3,
- };
- 
---- a/lib/fonts/font_pearl_8x8.c
-+++ b/lib/fonts/font_pearl_8x8.c
-@@ -14,8 +14,8 @@
- 
- #define FONTDATAMAX 2048
- 
--static const unsigned char fontdata_pearl8x8[FONTDATAMAX] = {
--
-+static struct font_data fontdata_pearl8x8 = {
-+   { 0, 0, FONTDATAMAX, 0 }, {
-    /* 0 0x00 '^@' */
-    0x00, /* 00000000 */
-    0x00, /* 00000000 */
-@@ -2575,14 +2575,13 @@ static const unsigned char fontdata_pear
-    0x00, /* 00000000 */
-    0x00, /* 00000000 */
-    0x00, /* 00000000 */
--
--};
-+} };
- 
- const struct font_desc font_pearl_8x8 = {
- 	.idx	= PEARL8x8_IDX,
- 	.name	= "PEARL8x8",
- 	.width	= 8,
- 	.height	= 8,
--	.data	= fontdata_pearl8x8,
-+	.data	= fontdata_pearl8x8.data,
- 	.pref	= 2,
- };
---- a/lib/fonts/font_sun12x22.c
-+++ b/lib/fonts/font_sun12x22.c
-@@ -3,8 +3,8 @@
- 
- #define FONTDATAMAX 11264
- 
--static const unsigned char fontdata_sun12x22[FONTDATAMAX] = {
--
-+static struct font_data fontdata_sun12x22 = {
-+	{ 0, 0, FONTDATAMAX, 0 }, {
- 	/* 0 0x00 '^@' */
- 	0x00, 0x00, /* 000000000000 */
- 	0x00, 0x00, /* 000000000000 */
-@@ -6148,8 +6148,7 @@ static const unsigned char fontdata_sun1
- 	0x00, 0x00, /* 000000000000 */
- 	0x00, 0x00, /* 000000000000 */
- 	0x00, 0x00, /* 000000000000 */
--
--};
-+} };
- 
- 
- const struct font_desc font_sun_12x22 = {
-@@ -6157,7 +6156,7 @@ const struct font_desc font_sun_12x22 =
- 	.name	= "SUN12x22",
- 	.width	= 12,
- 	.height	= 22,
--	.data	= fontdata_sun12x22,
-+	.data	= fontdata_sun12x22.data,
- #ifdef __sparc__
- 	.pref	= 5,
- #else
---- a/lib/fonts/font_sun8x16.c
-+++ b/lib/fonts/font_sun8x16.c
-@@ -3,7 +3,8 @@
- 
- #define FONTDATAMAX 4096
- 
--static const unsigned char fontdata_sun8x16[FONTDATAMAX] = {
-+static struct font_data fontdata_sun8x16 = {
-+{ 0, 0, FONTDATAMAX, 0 }, {
- /* */ 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
- /* */ 0x00,0x00,0x7e,0x81,0xa5,0x81,0x81,0xbd,0x99,0x81,0x81,0x7e,0x00,0x00,0x00,0x00,
- /* */ 0x00,0x00,0x7e,0xff,0xdb,0xff,0xff,0xc3,0xe7,0xff,0xff,0x7e,0x00,0x00,0x00,0x00,
-@@ -260,14 +261,14 @@ static const unsigned char fontdata_sun8
- /* */ 0x00,0x70,0xd8,0x30,0x60,0xc8,0xf8,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
- /* */ 0x00,0x00,0x00,0x00,0x7c,0x7c,0x7c,0x7c,0x7c,0x7c,0x7c,0x00,0x00,0x00,0x00,0x00,
- /* */ 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
--};
-+} };
- 
- const struct font_desc font_sun_8x16 = {
- 	.idx	= SUN8x16_IDX,
- 	.name	= "SUN8x16",
- 	.width	= 8,
- 	.height	= 16,
--	.data	= fontdata_sun8x16,
-+	.data	= fontdata_sun8x16.data,
- #ifdef __sparc__
- 	.pref	= 10,
- #else
+ 		for (i = 0; i < font->charcount; i++) {
+ 			memcpy(data, fontdata, j);
+ 			memset(data + j, 0, 64 - j);
+@@ -2285,6 +2291,9 @@ static int fbcon_get_font(struct vc_data
+ 			fontdata += j;
+ 		}
+ 	} else if (font->width <= 24) {
++		if (font->charcount * (vc->vc_font.height * sizeof(u32)) > FNTSIZE(fontdata))
++			return -EINVAL;
++
+ 		for (i = 0; i < font->charcount; i++) {
+ 			for (j = 0; j < vc->vc_font.height; j++) {
+ 				*data++ = fontdata[0];
+@@ -2297,6 +2306,9 @@ static int fbcon_get_font(struct vc_data
+ 		}
+ 	} else {
+ 		j = vc->vc_font.height * 4;
++		if (font->charcount * j > FNTSIZE(fontdata))
++			return -EINVAL;
++
+ 		for (i = 0; i < font->charcount; i++) {
+ 			memcpy(data, fontdata, j);
+ 			memset(data + j, 0, 128 - j);
 
 
