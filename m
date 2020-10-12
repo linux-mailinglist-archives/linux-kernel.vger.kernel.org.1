@@ -2,98 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BF1C28B270
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 12:42:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1A7728B272
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 12:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387613AbgJLKmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 06:42:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387463AbgJLKmO (ORCPT
+        id S2387656AbgJLKnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 06:43:01 -0400
+Received: from hosting.gsystem.sk ([212.5.213.30]:37818 "EHLO
+        hosting.gsystem.sk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387463AbgJLKnA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 06:42:14 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99DB8C0613CE;
-        Mon, 12 Oct 2020 03:42:14 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id h6so13026785ybi.11;
-        Mon, 12 Oct 2020 03:42:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=76yOKpDkY6SohdWqBReb2Fv42/fYarjNUXw7oodg76M=;
-        b=itNWfjEqO/BaS0tjo/KOv/XHvKupudt+e6o9uDHN1CoX8wfgGNuW4yrLPwddstExTP
-         Fjw14JJiin/Ua5oMYhjg4zNYWfNkfcWsdb6BHdg01RVLmlJaxYg/5riS+tf3KY8NDS5h
-         2k8wH+kmn5xNROrBmfMJ49HkQFjodFjnDW9Fgz0TSfa6VadewYIcLsdFH8ZAj1N50bdd
-         sCB6jUh3BjaWizWoi8AEWaZ6VqpDaox5FY1V3YqU1G9pJmmnsh3VuFeNCv8A39HcuUQZ
-         M1k98lFJKgFWGPC+tiTetB/qseqns7CMkcI4B7G2yt7CIDyv1NFZc7ZX5VAHxlQqVMR8
-         b9mQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=76yOKpDkY6SohdWqBReb2Fv42/fYarjNUXw7oodg76M=;
-        b=n5yHKF8UdUMX6P7S4zOnar7w0KMXOa4PAWG+ybeFJ5nOJNu07LQPR/CAxFEWNomOHV
-         SlfHWstKJZOfdM1ACbf7X2vxsiaHy3j+vwiWGp5EmBXN+SOLg+mzUBNbJA+c8kfKs5E1
-         YQ80z0AKTaWFaFL45ByAGfC87c/esfSwKT5tfgqDKByyzM38YzrjQ4IVBNmQCSdhN/h0
-         3gSX8EJIIRsWYCmS6xULLEzJLxl25r/hKTMv5ais+UymTlQjHAzXsCPT9Kkz+c9DisSS
-         g6LZoJAER6df0lxMBKS1SVDNLLdR9GZYlKCbF5tE+BbLWvjtWNTn+uPKo8wmHrQ0lUiL
-         h1Zw==
-X-Gm-Message-State: AOAM533YfDgyzHdU7ke3R31eb9zPkoG80ZuT7X9tRMTDravDJN0L2nyR
-        rkezOguKtYRjRBDiaKx7A2gnUB3YrkdGDI0hDyrSp5ZCu5f6/g==
-X-Google-Smtp-Source: ABdhPJx6yMMXbEmNmhY5yrzcuCxsT22YJ4xZVrkRDDG7gfnR/4ouIkkBHZjYadL8Yqx0pIaUdJPI+davp1VqKCnCGTM=
-X-Received: by 2002:a25:3cc4:: with SMTP id j187mr29096132yba.48.1602499333899;
- Mon, 12 Oct 2020 03:42:13 -0700 (PDT)
+        Mon, 12 Oct 2020 06:43:00 -0400
+Received: from [192.168.1.3] (ns.gsystem.sk [62.176.172.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by hosting.gsystem.sk (Postfix) with ESMTPSA id 8B83D7A0192;
+        Mon, 12 Oct 2020 12:42:58 +0200 (CEST)
+From:   Ondrej Zary <linux@zary.sk>
+To:     Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH 1/2] cx82310_eth: re-enable ethernet mode after router reboot
+Date:   Mon, 12 Oct 2020 12:42:55 +0200
+User-Agent: KMail/1.9.10
+Cc:     Oliver Neukum <oneukum@suse.com>, netdev@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201010140048.12067-1-linux@zary.sk> <20201011155539.315bf5aa@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201011155539.315bf5aa@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+X-KMail-QuotePrefix: > 
 MIME-Version: 1.0
-References: <20200717033350.13006-1-benchuanggli@gmail.com>
- <CAPDyKFpp54tNRiQ+or-3o9dUJ=CB+PpsRc=fkxc10dAUY-x_SQ@mail.gmail.com>
- <CACT4zj-Z0yiuYF9KVyvTM+0nvk__YnBh=c7MHuB1XOFVpTtmHw@mail.gmail.com> <CAPDyKFrWO_x2wBjKRaoS9ypEszuQ+RWMr5Vej0uBOVV3=AAD-w@mail.gmail.com>
-In-Reply-To: <CAPDyKFrWO_x2wBjKRaoS9ypEszuQ+RWMr5Vej0uBOVV3=AAD-w@mail.gmail.com>
-From:   Ben Chuang <benchuanggli@gmail.com>
-Date:   Mon, 12 Oct 2020 18:42:03 +0800
-Message-ID: <CACT4zj-TxNAFKzPoBE8C3702qz1=Pg2tboMwUHd+nd2BuTF5WA@mail.gmail.com>
-Subject: Re: [PATCH] mmc: sdhci-pci-gli: Set SDR104's clock to 205MHz and
- enable SSC for GL975x
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
-        greg.tu@genesyslogic.com.tw, SeanHY.Chen@genesyslogic.com.tw
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <202010121242.55826.linux@zary.sk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ulf,
-
-On Mon, Oct 12, 2020 at 6:25 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> On Mon, 12 Oct 2020 at 10:41, Ben Chuang <benchuanggli@gmail.com> wrote:
+On Monday 12 October 2020, Jakub Kicinski wrote:
+> On Sat, 10 Oct 2020 16:00:46 +0200 Ondrej Zary wrote:
+> > When the router is rebooted without a power cycle, the USB device
+> > remains connected but its configuration is reset. This results in
+> > a non-working ethernet connection with messages like this in syslog:
+> > 	usb 2-2: RX packet too long: 65535 B
 > >
-> > Hi Ulf,
-> >
-> > Regarding this patch, we also want to fix the EMI of one hardware
-> > using the old version(such as v5.4).
-> > Is there a chance to append a Fixes tag on this patch ?
+> > Re-enable ethernet mode when receiving a packet with invalid size of
+> > 0xffff.
 >
-> Unfortunately no. $subject patch is a part of the pull request with
-> mmc updates for v5.10, that I just sent to Linus.
->
-> > Or what should I do ?
->
-> If you think that $subject patch should be included into an LTS
-> kernel, please send a manual backport to stable@vger.kernel.org. For
-> more information about the process, please have a look at
-> Documentation/process/stable-kernel-rules.rst
->
-> [...]
+> Patch looks good, but could you explain what's a reboot without a power
+> cycle in this case? The modem gets reset but USB subsystem doesn't know
+> it and doesn't go though a unbind() + bind() cycle?
 
-I got it. Thanks for your answer.
+The router can be rebooted through the web interface. The reboot does not 
+disconnect the USB device - it remains connected as if nothing happened. Only 
+wrong data starts to come in.
 
-Best regards,
-Ben
-
->
-> Kind regards
-> Uffe
+-- 
+Ondrej Zary
