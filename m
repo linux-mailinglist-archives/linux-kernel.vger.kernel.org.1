@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 738CF28B5C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC88528B5CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388765AbgJLNPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 09:15:34 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:37094 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388742AbgJLNPZ (ORCPT
+        id S2388781AbgJLNPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:15:41 -0400
+Received: from mail-oo1-f66.google.com ([209.85.161.66]:34693 "EHLO
+        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388767AbgJLNPh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:15:25 -0400
-Received: by mail-ot1-f67.google.com with SMTP id m22so4364341ots.4;
-        Mon, 12 Oct 2020 06:15:25 -0700 (PDT)
+        Mon, 12 Oct 2020 09:15:37 -0400
+Received: by mail-oo1-f66.google.com with SMTP id o20so4054095ook.1;
+        Mon, 12 Oct 2020 06:15:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=32prFsUImi2et0wD1nInyNzJbwFsAz7pM2lg+OwfdA8=;
-        b=k5B/3XX4aXddOZ3ydgyOcsgtaLGx0eYx3x6UosGECa7MGfmUc1XIGOIfoNlVuMYCmT
-         djf6y6A34HlKc5EG2JBItl1/94U6eRGjXs11LBWympMBL+uiB/uHXp4G6pwVEMunZlWD
-         KvCbnMNFGBFrz/aMI7UWKc9Dc9wPNwROXfbugwdSzwLfrRLvEsVVenoerK8GfM30a0A4
-         IOJjkd2NL0oyGs8JHcNsBFv4Ql9f5Qler/3/WECqA0uVsiL3b/uioAVyxdzm9WTkEvM/
-         jwlXT9QwK2etzy3eVR88GRUVilJY/ic9HZH7qG6nHCTpELhx2hQv7skfIdEV88vFwS9F
-         6Ing==
-X-Gm-Message-State: AOAM533bnDfYg4MC07JPUgYx4UotU1lfDoBu3qS4wTz+LXcv53QqciKb
-        dDERTd0ZXBDCeh4wTyIyko0ufJGATAZR2c9aN/U=
-X-Google-Smtp-Source: ABdhPJxtX+V6nlzREBpZnHfCCWLCLBZEkIJ6fKRmhts0E87Q/NkdkOCqC2URIeU4xfs9RBjZ1sZArftZVEwo7jtjoJU=
-X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr18308270otc.145.1602508524639;
- Mon, 12 Oct 2020 06:15:24 -0700 (PDT)
+        bh=OFhRs7TjS820R6Lv4nnFfwi1wzFa7myuHvQUHpv2Z9o=;
+        b=GRHsh95vW2HKE1Tw7PYY4DeAVowMEkIJNAQrU7wVr0cWsc/gYkMfDT2y0zVKrX3ns3
+         LK6QI3NbFVzKwEJtPxmzqAysl2M9tUo80BQqdDLzIkw4cvwtLRTYS34xVZdGjBMSpX1v
+         AwE7h4TCoWBf8r+Xp3NaO1U7SYj8i3n72wTK9+h8CpzXFqlVoWiE1T4bGc4PamfYMUyA
+         SFOHq2gI6anxsTEUfGjFm9z4VJKeIX8MYTgqtz/wSOdlaCfhmUaFhREz0DsSiKY3iCeL
+         LQ1kIbNfEX8paR/eG9AdUrAkTaTdQaW/k+weCFgKnePZK4xwUbtFOdozO7y/Bbf6Y7MQ
+         1LvA==
+X-Gm-Message-State: AOAM5316SSz6Dczi2NcqXzwd+5OyVNleqsTEhOBDOrPA7W4GxIuzWiXi
+        n/RIkwznLLeX2RhsYxSEpgs+EcozHG08muNLiic=
+X-Google-Smtp-Source: ABdhPJwH87hW/Pgij7RCQUnzcFXjl6OK87/RDvKI1ooIz6IBNHxF4/GrZMi+obXHOEc8W7DIRvqP891GQZlhJ9GHy5c=
+X-Received: by 2002:a4a:5d84:: with SMTP id w126mr18415022ooa.1.1602508536062;
+ Mon, 12 Oct 2020 06:15:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-11-arnd@arndb.de>
-In-Reply-To: <20201008154651.1901126-11-arnd@arndb.de>
+References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-9-arnd@arndb.de>
+In-Reply-To: <20201008154651.1901126-9-arnd@arndb.de>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 12 Oct 2020 15:15:13 +0200
-Message-ID: <CAMuHMdUQMgE2ny-nuUeYjn-gcpvav2rp-11oTQp-GZ5TX9Z8Pw@mail.gmail.com>
-Subject: Re: [PATCH 10/13] m68k: remove timer_interrupt() function
+Date:   Mon, 12 Oct 2020 15:15:25 +0200
+Message-ID: <CAMuHMdWtMZaJ8ETb4g+AfaLeSZ1vyi8-POEaRzmdwh3ha=jieA@mail.gmail.com>
+Subject: Re: [PATCH 08/13] m68k: m68328: use legacy_timer_tick()
 To:     Arnd Bergmann <arnd@arndb.de>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Russell King <linux@armlinux.org.uk>,
@@ -66,29 +66,52 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Hi Arnd,
 
 On Thu, Oct 8, 2020 at 5:48 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> This gets passed to a number of init functions, but is
-> ignored everywhere, so remove the function and change the
-> mach_sched_init callback to take no arguments.
+> A couple of machines share the m68328 timer code that
+> is based on calling timer_interrupt(). Change these
+> to the new and slightly more generic legacy_timer_tick()
+> helper.
 >
 > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Thanks for your patch!
 
-And finally (for Amiga and Atari/ARAnyM):
-Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-> --- a/arch/m68k/include/asm/machdep.h
-> +++ b/arch/m68k/include/asm/machdep.h
-> @@ -33,8 +33,7 @@ extern void (*mach_l2_flush) (int);
->  extern void (*mach_beep) (unsigned int, unsigned int);
+> --- a/arch/m68k/Kconfig.machine
+> +++ b/arch/m68k/Kconfig.machine
+> @@ -146,6 +146,7 @@ config PILOT
+>  config PILOT3
+>         bool "Pilot 1000/5000, PalmPilot Personal/Pro, or PalmIII support"
+>         depends on M68328
+> +       select LEGACY_TIMER_TICK
+>         select PILOT
+>         help
+>           Support for the Palm Pilot 1000/5000, Personal/Pro and PalmIII.
+> @@ -159,18 +160,21 @@ config XCOPILOT_BUGS
+>  config UCSIMM
+>         bool "uCsimm module support"
+>         depends on M68EZ328
+> +       select LEGACY_TIMER_TICK
+>         help
+>           Support for the Arcturus Networks uCsimm module.
 >
->  /* Hardware clock functions */
-> -extern void hw_timer_init(irq_handler_t handler);
-> -extern unsigned long hw_timer_offset(void);
+>  config UCDIMM
+>         bool "uDsimm module support"
+>         depends on M68VZ328
+> +       select LEGACY_TIMER_TICK
+>         help
+>           Support for the Arcturus Networks uDsimm module.
+>
+>  config DRAGEN2
+>         bool "DragenEngine II board support"
+>         depends on M68VZ328
+> +       select LEGACY_TIMER_TICK
+>         help
+>           Support for the DragenEngine II board.
 
-Yeah, this never-used prototype, which entered through the nommu merge,
-can go.  But that's not really related to this patch.
+Given this feature is SoC-specific, not platform-specific, perhaps
+it makes sense to move the selects to the M68{,EZ,VZ}328 symbols?
+
+Regardless:
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
 Gr{oetje,eeting}s,
 
