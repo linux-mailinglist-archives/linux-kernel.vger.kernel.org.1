@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E605E28B51F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 14:55:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74EFD28B522
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 14:55:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730086AbgJLMyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 08:54:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24998 "EHLO
+        id S1730113AbgJLMy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 08:54:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46864 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727633AbgJLMyx (ORCPT
+        by vger.kernel.org with ESMTP id S1729953AbgJLMy6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 08:54:53 -0400
+        Mon, 12 Oct 2020 08:54:58 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602507291;
+        s=mimecast20190719; t=1602507295;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=GqBRdrN+rzKtjpl2XrHaqNhvixrxohgsDeDRZkVA61Y=;
-        b=NpfEra2nd72i88fNdS8+JGEuXfY5HxLzm77jvs3b283PWi9ouZm8lhqIeDdSKiiMcj6R/k
-        sxqx1lAMVBQWSqTrS13l1rTVVXJCmjYKB897jtk1u+UHt4M3t+vSaLKbdcq7u72j97elB9
-        7s2clVdEVSu5GoKQIv7OxhHoT69RqG0=
+        bh=6lNgGPuUWhHPLbbNwUf6slTr9Mpg9CiMj0jLIC7eI5M=;
+        b=iXjbWBfvQvmeP8wJIUFb2MBC8qm35JKQsRwUdUO/R9Ac34sxkJCmhWXjdgkYQDTyd7UGrB
+        JUerIE/bG4UIFTJHQu5pVMb6vkzw98k2+PmMJ9Hxt7cUI71ubMU/Aa4TaiOwQFdKhIspiN
+        zCFBc9OT+ztb36R8KLkXwp9ZqmZwdl4=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-447-T30Fq8AONu2AuXWUt9jDqA-1; Mon, 12 Oct 2020 08:54:47 -0400
-X-MC-Unique: T30Fq8AONu2AuXWUt9jDqA-1
+ us-mta-199-h6Re677iMwiYv_T7k_tQsA-1; Mon, 12 Oct 2020 08:54:53 -0400
+X-MC-Unique: h6Re677iMwiYv_T7k_tQsA-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 40C4E1800D4A;
-        Mon, 12 Oct 2020 12:54:46 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5E23180F058;
+        Mon, 12 Oct 2020 12:54:51 +0000 (UTC)
 Received: from t480s.redhat.com (ovpn-113-251.ams2.redhat.com [10.36.113.251])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 009C060C13;
-        Mon, 12 Oct 2020 12:54:35 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B843B60C07;
+        Mon, 12 Oct 2020 12:54:46 +0000 (UTC)
 From:   David Hildenbrand <david@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-mm@kvack.org, virtualization@lists.linux-foundation.org,
@@ -42,9 +42,9 @@ Cc:     linux-mm@kvack.org, virtualization@lists.linux-foundation.org,
         David Hildenbrand <david@redhat.com>,
         Jason Wang <jasowang@redhat.com>,
         Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Subject: [PATCH v1 09/29] virtio-mem: don't always trigger the workqueue when offlining memory
-Date:   Mon, 12 Oct 2020 14:53:03 +0200
-Message-Id: <20201012125323.17509-10-david@redhat.com>
+Subject: [PATCH v1 10/29] virtio-mem: generalize handling when memory is getting onlined deferred
+Date:   Mon, 12 Oct 2020 14:53:04 +0200
+Message-Id: <20201012125323.17509-11-david@redhat.com>
 In-Reply-To: <20201012125323.17509-1-david@redhat.com>
 References: <20201012125323.17509-1-david@redhat.com>
 MIME-Version: 1.0
@@ -54,109 +54,267 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's trigger from offlining code when we're not allowed to touch online
-memory.
+We don't want to add too much memory when it's not getting onlined
+immediately, to avoid running OOM. Generalize the handling, to avoid
+making use of memory block states. Use a threshold of 1 GiB for now.
 
-Handle the other case (memmap possibly freeing up another memory block)
-when actually removing memory. When removing via virtio_mem_remove(),
-virtio_mem_retry() is a NOP and safe to use.
+Properly adjust the offline size when adding/removing memory. As we are
+not always protected by a lock when touching the offline size, use an
+atomic64_t. We don't care about races (e.g., someone offlining memory
+while we are adding more), only about consistent values.
 
-While at it, move retry handling when offlining out of
-virtio_mem_notify_offline(), to share it with Device Block Mode (DBM)
-soon.
+(1 GiB needs a memmap of ~16MiB - which sounds reasonable even for
+ setups with little boot memory and (possibly) one virtio-mem device per
+ node)
+
+We don't want to retrigger when onlining is caused immediately by our
+action (e.g., adding memory which immediately gets onlined), so use a
+flag to indicate if the workqueue is active and use that as an
+indicator whether to trigger a retry.
 
 Cc: "Michael S. Tsirkin" <mst@redhat.com>
 Cc: Jason Wang <jasowang@redhat.com>
 Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- drivers/virtio/virtio_mem.c | 40 ++++++++++++++++++++++++++-----------
- 1 file changed, 28 insertions(+), 12 deletions(-)
+ drivers/virtio/virtio_mem.c | 95 ++++++++++++++++++++++++-------------
+ 1 file changed, 63 insertions(+), 32 deletions(-)
 
 diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
-index 5c93f8a65eba..8ea00f0b2ecd 100644
+index 8ea00f0b2ecd..cb2e8f254650 100644
 --- a/drivers/virtio/virtio_mem.c
 +++ b/drivers/virtio/virtio_mem.c
-@@ -158,6 +158,7 @@ static DEFINE_MUTEX(virtio_mem_mutex);
- static LIST_HEAD(virtio_mem_devices);
+@@ -51,6 +51,7 @@ struct virtio_mem {
  
- static void virtio_mem_online_page_cb(struct page *page, unsigned int order);
-+static void virtio_mem_retry(struct virtio_mem *vm);
+ 	/* Workqueue that processes the plug/unplug requests. */
+ 	struct work_struct wq;
++	atomic_t wq_active;
+ 	atomic_t config_changed;
+ 
+ 	/* Virtqueue for guest->host requests. */
+@@ -99,7 +100,15 @@ struct virtio_mem {
+ 
+ 	/* Summary of all memory block states. */
+ 	unsigned long nb_mb_state[VIRTIO_MEM_MB_STATE_COUNT];
+-#define VIRTIO_MEM_NB_OFFLINE_THRESHOLD		10
++
++	/*
++	 * We don't want to add too much memory if it's not getting onlined,
++	 * to avoid running OOM. Besides this threshold, we allow to have at
++	 * least two offline blocks at a time (whatever is bigger).
++	 */
++#define VIRTIO_MEM_DEFAULT_OFFLINE_THRESHOLD		(1024 * 1024 * 1024)
++	atomic64_t offline_size;
++	uint64_t offline_threshold;
+ 
+ 	/*
+ 	 * One byte state per memory block.
+@@ -393,6 +402,18 @@ static int virtio_mem_sb_bitmap_prepare_next_mb(struct virtio_mem *vm)
+ 	return 0;
+ }
+ 
++/*
++ * Test if we could add memory without creating too much offline memory -
++ * to avoid running OOM if memory is getting onlined deferred.
++ */
++static bool virtio_mem_could_add_memory(struct virtio_mem *vm, uint64_t size)
++{
++	if (WARN_ON_ONCE(size > vm->offline_threshold))
++		return false;
++
++	return atomic64_read(&vm->offline_size) + size <= vm->offline_threshold;
++}
++
+ /*
+  * Try to add a memory block to Linux. This will usually only fail
+  * if out of memory.
+@@ -405,6 +426,8 @@ static int virtio_mem_sb_bitmap_prepare_next_mb(struct virtio_mem *vm)
+ static int virtio_mem_mb_add(struct virtio_mem *vm, unsigned long mb_id)
+ {
+ 	const uint64_t addr = virtio_mem_mb_id_to_phys(mb_id);
++	const uint64_t size = memory_block_size_bytes();
++	int rc;
+ 
+ 	/*
+ 	 * When force-unloading the driver and we still have memory added to
+@@ -418,10 +441,13 @@ static int virtio_mem_mb_add(struct virtio_mem *vm, unsigned long mb_id)
+ 	}
+ 
+ 	dev_dbg(&vm->vdev->dev, "adding memory block: %lu\n", mb_id);
+-	return add_memory_driver_managed(vm->nid, addr,
+-					 memory_block_size_bytes(),
+-					 vm->resource_name,
+-					 MEMHP_MERGE_RESOURCE);
++	/* Memory might get onlined immediately. */
++	atomic64_add(size, &vm->offline_size);
++	rc = add_memory_driver_managed(vm->nid, addr, size, vm->resource_name,
++				       MEMHP_MERGE_RESOURCE);
++	if (rc)
++		atomic64_sub(size, &vm->offline_size);
++	return rc;
+ }
  
  /*
-  * Register a virtio-mem device so it will be considered for the online_page
-@@ -435,9 +436,17 @@ static int virtio_mem_mb_add(struct virtio_mem *vm, unsigned long mb_id)
+@@ -436,16 +462,19 @@ static int virtio_mem_mb_add(struct virtio_mem *vm, unsigned long mb_id)
  static int virtio_mem_mb_remove(struct virtio_mem *vm, unsigned long mb_id)
  {
  	const uint64_t addr = virtio_mem_mb_id_to_phys(mb_id);
-+	int rc;
++	const uint64_t size = memory_block_size_bytes();
+ 	int rc;
  
  	dev_dbg(&vm->vdev->dev, "removing memory block: %lu\n", mb_id);
--	return remove_memory(vm->nid, addr, memory_block_size_bytes());
-+	rc = remove_memory(vm->nid, addr, memory_block_size_bytes());
-+	if (!rc)
-+		/*
-+		 * We might have freed up memory we can now unplug, retry
-+		 * immediately instead of waiting.
-+		 */
-+		virtio_mem_retry(vm);
-+	return rc;
+-	rc = remove_memory(vm->nid, addr, memory_block_size_bytes());
+-	if (!rc)
++	rc = remove_memory(vm->nid, addr, size);
++	if (!rc) {
++		atomic64_sub(size, &vm->offline_size);
+ 		/*
+ 		 * We might have freed up memory we can now unplug, retry
+ 		 * immediately instead of waiting.
+ 		 */
+ 		virtio_mem_retry(vm);
++	}
+ 	return rc;
  }
  
- /*
-@@ -452,11 +461,19 @@ static int virtio_mem_mb_offline_and_remove(struct virtio_mem *vm,
+@@ -461,18 +490,20 @@ static int virtio_mem_mb_offline_and_remove(struct virtio_mem *vm,
  					    unsigned long mb_id)
  {
  	const uint64_t addr = virtio_mem_mb_id_to_phys(mb_id);
-+	int rc;
++	const uint64_t size = memory_block_size_bytes();
+ 	int rc;
  
  	dev_dbg(&vm->vdev->dev, "offlining and removing memory block: %lu\n",
  		mb_id);
--	return offline_and_remove_memory(vm->nid, addr,
--					 memory_block_size_bytes());
-+	rc = offline_and_remove_memory(vm->nid, addr,
-+				       memory_block_size_bytes());
-+	if (!rc)
-+		/*
-+		 * We might have freed up memory we can now unplug, retry
-+		 * immediately instead of waiting.
-+		 */
-+		virtio_mem_retry(vm);
-+	return rc;
+-	rc = offline_and_remove_memory(vm->nid, addr,
+-				       memory_block_size_bytes());
+-	if (!rc)
++	rc = offline_and_remove_memory(vm->nid, addr, size);
++	if (!rc) {
++		atomic64_sub(size, &vm->offline_size);
+ 		/*
+ 		 * We might have freed up memory we can now unplug, retry
+ 		 * immediately instead of waiting.
+ 		 */
+ 		virtio_mem_retry(vm);
++	}
+ 	return rc;
  }
  
- /*
-@@ -534,15 +551,6 @@ static void virtio_mem_notify_offline(struct virtio_mem *vm,
+@@ -555,8 +586,6 @@ static void virtio_mem_notify_offline(struct virtio_mem *vm,
+ 
+ static void virtio_mem_notify_online(struct virtio_mem *vm, unsigned long mb_id)
+ {
+-	unsigned long nb_offline;
+-
+ 	switch (virtio_mem_mb_get_state(vm, mb_id)) {
+ 	case VIRTIO_MEM_MB_STATE_OFFLINE_PARTIAL:
+ 		virtio_mem_mb_set_state(vm, mb_id,
+@@ -569,12 +598,6 @@ static void virtio_mem_notify_online(struct virtio_mem *vm, unsigned long mb_id)
  		BUG();
  		break;
  	}
+-	nb_offline = vm->nb_mb_state[VIRTIO_MEM_MB_STATE_OFFLINE] +
+-		     vm->nb_mb_state[VIRTIO_MEM_MB_STATE_OFFLINE_PARTIAL];
 -
--	/*
--	 * Trigger the workqueue, maybe we can now unplug memory. Also,
--	 * when we offline and remove a memory block, this will re-trigger
--	 * us immediately - which is often nice because the removal of
--	 * the memory block (e.g., memmap) might have freed up memory
--	 * on other memory blocks we manage.
--	 */
--	virtio_mem_retry(vm);
+-	/* see if we can add new blocks now that we onlined one block */
+-	if (nb_offline == VIRTIO_MEM_NB_OFFLINE_THRESHOLD - 1)
+-		virtio_mem_retry(vm);
  }
  
- static void virtio_mem_notify_online(struct virtio_mem *vm, unsigned long mb_id)
-@@ -679,6 +687,14 @@ static int virtio_mem_memory_notifier_cb(struct notifier_block *nb,
- 		break;
+ static void virtio_mem_notify_going_offline(struct virtio_mem *vm,
+@@ -688,6 +711,7 @@ static int virtio_mem_memory_notifier_cb(struct notifier_block *nb,
  	case MEM_OFFLINE:
  		virtio_mem_notify_offline(vm, mb_id);
+ 
++		atomic64_add(size, &vm->offline_size);
+ 		/*
+ 		 * Trigger the workqueue. Now that we have some offline memory,
+ 		 * maybe we can handle pending unplug requests.
+@@ -700,6 +724,18 @@ static int virtio_mem_memory_notifier_cb(struct notifier_block *nb,
+ 		break;
+ 	case MEM_ONLINE:
+ 		virtio_mem_notify_online(vm, mb_id);
 +
++		atomic64_sub(size, &vm->offline_size);
 +		/*
-+		 * Trigger the workqueue. Now that we have some offline memory,
-+		 * maybe we can handle pending unplug requests.
++		 * Start adding more memory once we onlined half of our
++		 * threshold. Don't trigger if it's possibly due to our actipn
++		 * (e.g., us adding memory which gets onlined immediately from
++		 * the core).
 +		 */
-+		if (!unplug_online)
++		if (!atomic_read(&vm->wq_active) &&
++		    virtio_mem_could_add_memory(vm, vm->offline_threshold / 2))
 +			virtio_mem_retry(vm);
 +
  		vm->hotplug_active = false;
  		mutex_unlock(&vm->hotplug_mutex);
  		break;
+@@ -1060,18 +1096,6 @@ static int virtio_mem_prepare_next_mb(struct virtio_mem *vm,
+ 	return 0;
+ }
+ 
+-/*
+- * Don't add too many blocks that are not onlined yet to avoid running OOM.
+- */
+-static bool virtio_mem_too_many_mb_offline(struct virtio_mem *vm)
+-{
+-	unsigned long nb_offline;
+-
+-	nb_offline = vm->nb_mb_state[VIRTIO_MEM_MB_STATE_OFFLINE] +
+-		     vm->nb_mb_state[VIRTIO_MEM_MB_STATE_OFFLINE_PARTIAL];
+-	return nb_offline >= VIRTIO_MEM_NB_OFFLINE_THRESHOLD;
+-}
+-
+ /*
+  * Try to plug the desired number of subblocks and add the memory block
+  * to Linux.
+@@ -1225,7 +1249,7 @@ static int virtio_mem_plug_request(struct virtio_mem *vm, uint64_t diff)
+ 
+ 	/* Try to plug and add unused blocks */
+ 	virtio_mem_for_each_mb_state(vm, mb_id, VIRTIO_MEM_MB_STATE_UNUSED) {
+-		if (virtio_mem_too_many_mb_offline(vm))
++		if (!virtio_mem_could_add_memory(vm, memory_block_size_bytes()))
+ 			return -ENOSPC;
+ 
+ 		rc = virtio_mem_mb_plug_and_add(vm, mb_id, &nb_sb);
+@@ -1236,7 +1260,7 @@ static int virtio_mem_plug_request(struct virtio_mem *vm, uint64_t diff)
+ 
+ 	/* Try to prepare, plug and add new blocks */
+ 	while (nb_sb) {
+-		if (virtio_mem_too_many_mb_offline(vm))
++		if (!virtio_mem_could_add_memory(vm, memory_block_size_bytes()))
+ 			return -ENOSPC;
+ 
+ 		rc = virtio_mem_prepare_next_mb(vm, &mb_id);
+@@ -1536,6 +1560,7 @@ static void virtio_mem_run_wq(struct work_struct *work)
+ 	if (vm->broken)
+ 		return;
+ 
++	atomic_set(&vm->wq_active, 1);
+ retry:
+ 	rc = 0;
+ 
+@@ -1596,6 +1621,8 @@ static void virtio_mem_run_wq(struct work_struct *work)
+ 			"unknown error, marking device broken: %d\n", rc);
+ 		vm->broken = true;
+ 	}
++
++	atomic_set(&vm->wq_active, 0);
+ }
+ 
+ static enum hrtimer_restart virtio_mem_timer_expired(struct hrtimer *timer)
+@@ -1704,6 +1731,10 @@ static int virtio_mem_init(struct virtio_mem *vm)
+ 						   memory_block_size_bytes());
+ 	vm->next_mb_id = vm->first_mb_id;
+ 
++	/* Prepare the offline threshold - make sure we can add two blocks. */
++	vm->offline_threshold = max_t(uint64_t, 2 * memory_block_size_bytes(),
++				      VIRTIO_MEM_DEFAULT_OFFLINE_THRESHOLD);
++
+ 	dev_info(&vm->vdev->dev, "start address: 0x%llx", vm->addr);
+ 	dev_info(&vm->vdev->dev, "region size: 0x%llx", vm->region_size);
+ 	dev_info(&vm->vdev->dev, "device block size: 0x%llx",
 -- 
 2.26.2
 
