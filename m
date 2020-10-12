@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC1528B9D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 16:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E9B928B650
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 15:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390910AbgJLOEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 10:04:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38908 "EHLO mail.kernel.org"
+        id S2389015AbgJLNcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 09:32:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388626AbgJLNgO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:36:14 -0400
+        id S1730459AbgJLNcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:32:14 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 682FD204EA;
-        Mon, 12 Oct 2020 13:36:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 45C2F2087E;
+        Mon, 12 Oct 2020 13:32:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602509773;
-        bh=kb/xDZY5HRtm/9Aad0YHn71BSrGa64+RJEGGTIQklS4=;
+        s=default; t=1602509532;
+        bh=r9jUpOgGpSfN02fFNw1fqjMQ5gLzMzDHY2178iSZcmQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vWGc8ggpacg2/uUIpPKox1IWcQs+TgiDwBpVaL5Gzf/vf4Ias+rUIep11KAtGLsV1
-         WcvNwhEqjvpzAqURZAffKdxmT+yya98E9QvBZFrQUxNCy23um1gudve+28zb5hu8Xw
-         YT40G2AvMWS9/ADdBUjuGI33JTXO0L1+Q4QR2kz8=
+        b=cD8izYWgjv9E7VaVHz+Efg2Th2BXM66sV8r5aVKLMNQAtsCa04WKUXsdHv1VhQHjF
+         axQH7glf1CAa5j0jNZ5dK/brk5YwqWqYlgmDsWaVzYyz9oQZtbk6zYeN1ikKf+LrzA
+         1bOUqRvAtVKG9Kc0+BVa4yiS/5JLh19LACEC1d2Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 16/70] spi: fsl-espi: Only process interrupts for expected events
+        =?UTF-8?q?Andr=C3=A9s=20Barrantes=20Silman?= 
+        <andresbs2000@protonmail.com>, Jiri Kosina <jkosina@suse.cz>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH 4.4 02/39] Input: i8042 - add nopnp quirk for Acer Aspire 5 A515
 Date:   Mon, 12 Oct 2020 15:26:32 +0200
-Message-Id: <20201012132630.998887361@linuxfoundation.org>
+Message-Id: <20201012132628.259190907@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201012132630.201442517@linuxfoundation.org>
-References: <20201012132630.201442517@linuxfoundation.org>
+In-Reply-To: <20201012132628.130632267@linuxfoundation.org>
+References: <20201012132628.130632267@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,49 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+From: Jiri Kosina <jkosina@suse.cz>
 
-[ Upstream commit b867eef4cf548cd9541225aadcdcee644669b9e1 ]
+commit 5fc27b098dafb8e30794a9db0705074c7d766179 upstream.
 
-The SPIE register contains counts for the TX FIFO so any time the irq
-handler was invoked we would attempt to process the RX/TX fifos. Use the
-SPIM value to mask the events so that we only process interrupts that
-were expected.
+Touchpad on this laptop is not detected properly during boot, as PNP
+enumerates (wrongly) AUX port as disabled on this machine.
 
-This was a latent issue exposed by commit 3282a3da25bd ("powerpc/64:
-Implement soft interrupt replay in C").
+Fix that by adding this board (with admittedly quite funny DMI
+identifiers) to nopnp quirk list.
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Link: https://lore.kernel.org/r/20200904002812.7300-1-chris.packham@alliedtelesis.co.nz
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: Andrés Barrantes Silman <andresbs2000@protonmail.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Link: https://lore.kernel.org/r/nycvar.YFH.7.76.2009252337340.3336@cbobk.fhfr.pm
+Cc: stable@vger.kernel.org
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/spi/spi-fsl-espi.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/input/serio/i8042-x86ia64io.h |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/spi/spi-fsl-espi.c b/drivers/spi/spi-fsl-espi.c
-index 1d332e23f6ede..6a39ba5840c2e 100644
---- a/drivers/spi/spi-fsl-espi.c
-+++ b/drivers/spi/spi-fsl-espi.c
-@@ -556,13 +556,14 @@ static void fsl_espi_cpu_irq(struct fsl_espi *espi, u32 events)
- static irqreturn_t fsl_espi_irq(s32 irq, void *context_data)
- {
- 	struct fsl_espi *espi = context_data;
--	u32 events;
-+	u32 events, mask;
+--- a/drivers/input/serio/i8042-x86ia64io.h
++++ b/drivers/input/serio/i8042-x86ia64io.h
+@@ -797,6 +797,13 @@ static const struct dmi_system_id __init
+ 			DMI_MATCH(DMI_BOARD_VENDOR, "MICRO-STAR INTERNATIONAL CO., LTD"),
+ 		},
+ 	},
++	{
++		/* Acer Aspire 5 A515 */
++		.matches = {
++			DMI_MATCH(DMI_BOARD_NAME, "Grumpy_PK"),
++			DMI_MATCH(DMI_BOARD_VENDOR, "PK"),
++		},
++	},
+ 	{ }
+ };
  
- 	spin_lock(&espi->lock);
- 
- 	/* Get interrupt events(tx/rx) */
- 	events = fsl_espi_read_reg(espi, ESPI_SPIE);
--	if (!events) {
-+	mask = fsl_espi_read_reg(espi, ESPI_SPIM);
-+	if (!(events & mask)) {
- 		spin_unlock(&espi->lock);
- 		return IRQ_NONE;
- 	}
--- 
-2.25.1
-
 
 
