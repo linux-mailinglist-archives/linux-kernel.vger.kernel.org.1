@@ -2,89 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6212828B3C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 13:29:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4795928B3CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 13:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388202AbgJLL2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 07:28:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38840 "EHLO
+        id S2388219AbgJLL2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 07:28:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387617AbgJLL2r (ORCPT
+        with ESMTP id S2388160AbgJLL2y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 07:28:47 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD601C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 04:28:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=PpONMJX6Ovvx5TzUoS9zwvJeYk6DHjL244IX/UZUnvo=; b=kArmmlsFCP43044VNkMy/TAPYD
-        FdQqfQJTt+3deZpUMYsO8Gnq4H1NMaI7sZ/Cdj/71qQYw2vMCofO1Dfrd8R9Fu7EkJeLCcHm8S92S
-        fAnWDfIPWQ/Vh5PsYg2RXTi5LKwgPVdus9ZKpvQG+riykwJZnW0cntnSuOlo28mW8v/WyHNHl7NKJ
-        BPjaYMmyMLTQ1z/HPsVJB1yxCk3yeciR3w2InU5/SJ5NASqMW42lJpdtGEtRt/6k1Q1+0Xh0jRGf9
-        /1+MQZ+qlpqJkFsUHxVI3OjqmGbHXJbw2eEsV0EN7VYGd9nN2b/Dg1BcY1vdk9JR0E+R6dEA7PZRc
-        OEJRJBbg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kRw0A-0008MU-JQ; Mon, 12 Oct 2020 11:28:26 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C731A304BAE;
-        Mon, 12 Oct 2020 13:28:24 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id ADA4B20A2950E; Mon, 12 Oct 2020 13:28:24 +0200 (CEST)
-Date:   Mon, 12 Oct 2020 13:28:24 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     tglx@linutronix.de, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
-        valentin.schneider@arm.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, rostedt@goodmis.org,
-        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
-        vincent.donnefort@arm.com, tj@kernel.org
-Subject: Re: [PATCH -v2 15/17] sched: Fix migrate_disable() vs rt/dl balancing
-Message-ID: <20201012112824.GU2628@hirez.programming.kicks-ass.net>
-References: <20201005145717.346020688@infradead.org>
- <20201005150922.458081448@infradead.org>
- <54bebe28-1d6d-5f71-da57-deb2eee111d3@arm.com>
+        Mon, 12 Oct 2020 07:28:54 -0400
+Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F0D1C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 04:28:54 -0700 (PDT)
+Received: by mail-oo1-xc43.google.com with SMTP id c10so612032oon.6
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 04:28:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+XBDGrLSwB/6Y+76sReBKVonEBADxfEIwAHgLXgJVMM=;
+        b=WNwNfCC2ACvhv6Pa/bsQsYh4kkbVFDdT5MQQONrFzL2gwX2MnK1rrG1hTLm2LOiffa
+         SQNwSmdAuo7yfROtUrQKfzrgiyTB/OedKABr7BcetNgeA9/21HUAr5fvxqxBIF9BdvGF
+         vTgCZRXUVz3zUO6A0eUpkN4bYxvqxZa4c4JKHwV2amoJLfuMy48tIJ1PLvPi2Fec8av0
+         3IPFllGnuCE8yt8J8sDzBxSGKNyTU0x4sgH0xJCnIkGjwklwaZ//LqiA76vGJudwFaUK
+         uPBFzsKZlcfkVQg7JnhB0Mpt6tT0RpU1t0YIMdzjrtYA5y2vzpw3cSpDZEg4VJnRNf6e
+         PeWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+XBDGrLSwB/6Y+76sReBKVonEBADxfEIwAHgLXgJVMM=;
+        b=hRfc7wxWo+nk/egs3/rNQdskjRzMkK9S380X+muQ5yH3zsQCMLiwouVqJWX95C9+mu
+         IHD1Y40rrcAmHEkvScn/LtITB/ycyJ/YfY0vc6ZqzFugtHpT+EesWfjRK71MgnBEgwcf
+         KHwX2UCNLA1vSVwzn0GcVBaIzc/fTDU+Rxap2RD9JtbSOcbFWHqC+GkbIV5Z+VKVR39T
+         bypTes5wtlhvcfqEXA+qKazp3Y2Cny18PTf+DwZo0Hp2PeK9/RwvAIG5iicGF/6QNeCS
+         LWHFN5qz+s9434OllkDm7qVHLR2DN+zmY1yKMhFUSr7eG489dyWOOwNq8yojCENslwB+
+         W7qg==
+X-Gm-Message-State: AOAM531GTifwLRmHhuhcCKC6s4FFb8O/wtDcF2B3YLxqepePzgRgcFCx
+        56asgQWGXtxjsc64MXltUYBrBC1GIqH1UBhNU+E28w==
+X-Google-Smtp-Source: ABdhPJxsRy1faO20CsKmVxozicKRHXjn1dAMVKdnEGKL74LeSp9bzA6YqEnp2aHZxDujgJpSWMrKE9d4pcir8ovYK6w=
+X-Received: by 2002:a4a:db6f:: with SMTP id o15mr18181579ood.36.1602502133520;
+ Mon, 12 Oct 2020 04:28:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <54bebe28-1d6d-5f71-da57-deb2eee111d3@arm.com>
+References: <20201012105420.5945-1-sjpark@amazon.com>
+In-Reply-To: <20201012105420.5945-1-sjpark@amazon.com>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 12 Oct 2020 13:28:42 +0200
+Message-ID: <CANpmjNP3oZZsOkE4sP---sXoa-K8yBB9fBXc8JzqQNXs2MwKUg@mail.gmail.com>
+Subject: Re: [PATCH] Documentation: kunit: Update Kconfig parts for KUNIT's
+ module support
+To:     SeongJae Park <sjpark@amazon.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        SeongJae Park <sjpark@amazon.de>,
+        Jonathan Corbet <corbet@lwn.net>, skhan@linuxfoundation.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 11:56:09AM +0200, Dietmar Eggemann wrote:
-> On 05/10/2020 16:57, Peter Zijlstra wrote:
-> 
-> [...]
-> 
-> > --- a/kernel/sched/rt.c
-> > +++ b/kernel/sched/rt.c
-> > @@ -1859,7 +1859,7 @@ static struct task_struct *pick_next_pus
-> >   * running task can migrate over to a CPU that is running a task
-> >   * of lesser priority.
-> >   */
-> > -static int push_rt_task(struct rq *rq)
-> > +static int push_rt_task(struct rq *rq, bool pull)
-> >  {
-> >  	struct task_struct *next_task;
-> >  	struct rq *lowest_rq;
-> > @@ -1873,6 +1873,34 @@ static int push_rt_task(struct rq *rq)
-> >  		return 0;
-> >  
-> >  retry:
-> > +	if (is_migration_disabled(next_task)) {
-> > +		struct task_struct *push_task = NULL;
-> > +		int cpu;
-> > +
-> > +		if (!pull || rq->push_busy)
-> > +			return 0;
-> 
-> Shouldn't there be the same functionality in push_dl_task(), i.e.
-> returning 0 earlier for a task with migration_disabled?
+On Mon, 12 Oct 2020 at 12:54, 'SeongJae Park' via KUnit Development
+<kunit-dev@googlegroups.com> wrote:
+>
+> From: SeongJae Park <sjpark@amazon.de>
+>
+> If 'CONFIG_KUNIT=m', letting kunit tests that do not support loadable
+> module build depends on 'KUNIT' instead of 'KUNIT=y' result in compile
+> errors.  This commit updates the document for this.
+>
+> Fixes: 9fe124bf1b77 ("kunit: allow kunit to be loaded as a module")
+> Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> ---
+>  Documentation/dev-tools/kunit/start.rst | 2 +-
+>  Documentation/dev-tools/kunit/usage.rst | 5 +++++
+>  2 files changed, 6 insertions(+), 1 deletion(-)
+>
+> diff --git a/Documentation/dev-tools/kunit/start.rst b/Documentation/dev-tools/kunit/start.rst
+> index d23385e3e159..454f307813ea 100644
+> --- a/Documentation/dev-tools/kunit/start.rst
+> +++ b/Documentation/dev-tools/kunit/start.rst
+> @@ -197,7 +197,7 @@ Now add the following to ``drivers/misc/Kconfig``:
+>
+>         config MISC_EXAMPLE_TEST
+>                 bool "Test for my example"
+> -               depends on MISC_EXAMPLE && KUNIT
+> +               depends on MISC_EXAMPLE && KUNIT=y
+>
+>  and the following to ``drivers/misc/Makefile``:
+>
+> diff --git a/Documentation/dev-tools/kunit/usage.rst b/Documentation/dev-tools/kunit/usage.rst
+> index 3c3fe8b5fecc..410380fc7fb4 100644
+> --- a/Documentation/dev-tools/kunit/usage.rst
+> +++ b/Documentation/dev-tools/kunit/usage.rst
+> @@ -556,6 +556,11 @@ Once the kernel is built and installed, a simple
+>
+>  ...will run the tests.
+>
+> +.. note::
+> +   Note that you should make your test depends on ``KUNIT=y`` in Kcofig if the
+> +   test does not support module build.  Otherwise, it will trigger compile
+> +   errors if ``CONFIG_KUNIT`` is ``m``.
 
-No, deadline didn't implement HAVE_RT_PUSH_IPI.
+s/Kcofig/Kconfig/
+
+>  Writing new tests for other architectures
+>  -----------------------------------------
+>
+> --
+> 2.17.1
+>
+> --
+> You received this message because you are subscribed to the Google Groups "KUnit Development" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/20201012105420.5945-1-sjpark%40amazon.com.
