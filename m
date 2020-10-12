@@ -2,187 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D3828BB85
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C31B028BB8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 17:07:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389340AbgJLPF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 11:05:58 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44706 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388518AbgJLPF5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 11:05:57 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1602515156;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=S+GgfFsJplcKBzAPeKTgp6qRJedCgXjl2rlqvMEfQ7k=;
-        b=k6xsaCntr9nauSRZklRZ6O/Qbe249vizPTD+pbhp/mayv6+QC7iWiK8HFV5mAhbtp3U/lC
-        aV6Nf4mIQV9EkcRO1i1tqOMw0/EO2llbTiOZCFC+4EwuNgR0+phyrNdhDpHPKc3e+2BIys
-        eDEyMiB30gRb7ILX6X07I2c3vXJGRXs=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 303C7AC3C;
-        Mon, 12 Oct 2020 15:05:56 +0000 (UTC)
-Date:   Mon, 12 Oct 2020 17:05:54 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Xianting Tian <tian.xianting@h3c.com>
-Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org, kuba@kernel.org,
-        alexei.starovoitov@gmail.com
-Subject: Re: [PATCH] mm: Make allocator take care of memoryless numa node
-Message-ID: <20201012150554.GE29725@dhcp22.suse.cz>
-References: <20201012082739.15661-1-tian.xianting@h3c.com>
+        id S2389346AbgJLPHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 11:07:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388977AbgJLPHv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 11:07:51 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74E03C0613D0;
+        Mon, 12 Oct 2020 08:07:51 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id g12so19568582wrp.10;
+        Mon, 12 Oct 2020 08:07:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=N63w/hby23Xo2ev/1aEpCrQGDov9SsqcHUiTP2skbiI=;
+        b=gbXCeP8b5TF9IDNUV4TODyi0GqMmcmmkbw9MLIQ9qDq52DVtZUZ63yoTWGXllZh1jN
+         SkcFCJX1FdeMdwC9XoXvKfl9/+hVW+JY1aveRK30r8h5c06Tj1RWFA0NGY2XVc/5hIOn
+         ygTf/XAGuVAfeRT0ic71adgRKeojqB/daFJ9bf7f/Gz4x+X1+9dYdGYmRPOX/fpHxNH5
+         3Vi7i8APFHQc/GOt8/Mt5/LLgeEKSClOzmQ2b099rU8d/zmdckwl/Dv4dmsF2SOCr1Hp
+         a0XL/l8t0i+76OwTX/3BZUK5DxX3fMBPPrar4I6mMDiKrpPSyUkipy3ieVcxI8bGLPnB
+         v+GA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=N63w/hby23Xo2ev/1aEpCrQGDov9SsqcHUiTP2skbiI=;
+        b=tGGnFkv2qQjbVUBvqdnS1ld4rLRysY7jm+6H+Y68J7Mhat1sO7sTWbh3VRwIWmDZob
+         6h66UY7JKBqZXevTBlmsndMdhGM7kMdAd3TMoJb7zP465UTYcXmmap4stqbkaEUHzcs8
+         6dR+ar/0gQs3JE1e8zcRHnUwLC+DPjy4WkGCRJDkTjtVMdyvy4LGqzndJvmtH22hqgRP
+         CUSTHj1q01r2cXB9GfYREOzfp/8glI1u7rSGX5ophhWevOse17K7Bxz7q119y2z/2QB3
+         e3sUcsnGRnfjM4x++VJDwaRNo3nZbDFzLtOv/y6M3OpWFKLr+XWDJNOT5y0GROB7eBCH
+         wPog==
+X-Gm-Message-State: AOAM531miZQwr1iW+YTmf539pqiQtBIFbEw4uVkA/L5yn5JHkLzmvRqO
+        ZgCy6TYgfNuj1ULojDyrfiov1ggAJQ8BxurLIQk=
+X-Google-Smtp-Source: ABdhPJw1J1uRF+oqzk1e06jyzWbAQmoo5BlAKp5GN8GdeH726h8oJY64szLqMuzUfvU3UdrRFzhjdTg78fBEFnzzN4I=
+X-Received: by 2002:adf:bc0f:: with SMTP id s15mr30811932wrg.83.1602515270083;
+ Mon, 12 Oct 2020 08:07:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201012082739.15661-1-tian.xianting@h3c.com>
+References: <20201012020958.229288-1-robdclark@gmail.com> <20201012020958.229288-23-robdclark@gmail.com>
+ <20201012144018.GB438822@phenom.ffwll.local>
+In-Reply-To: <20201012144018.GB438822@phenom.ffwll.local>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Mon, 12 Oct 2020 08:07:38 -0700
+Message-ID: <CAF6AEGuZ0QOCbJDTF=FsHsbJ9J5rqLLPJexk_EvX+SxPGFZLDQ@mail.gmail.com>
+Subject: Re: [PATCH v2 22/22] drm/msm: Don't implicit-sync if only a single ring
+To:     Rob Clark <robdclark@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Cc:     Daniel Vetter <daniel@ffwll.ch>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 12-10-20 16:27:39, Xianting Tian wrote:
-> In architecture like powerpc, we can have cpus without any local memory
-> attached to it. In such cases the node does not have real memory.
+On Mon, Oct 12, 2020 at 7:40 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+>
+> On Sun, Oct 11, 2020 at 07:09:49PM -0700, Rob Clark wrote:
+> > From: Rob Clark <robdclark@chromium.org>
+> >
+> > Any cross-device sync use-cases *must* use explicit sync.  And if there
+> > is only a single ring (no-preemption), everything is FIFO order and
+> > there is no need to implicit-sync.
+> >
+> > Mesa should probably just always use MSM_SUBMIT_NO_IMPLICIT, as behavior
+> > is undefined when fences are not used to synchronize buffer usage across
+> > contexts (which is the only case where multiple different priority rings
+> > could come into play).
+>
+> Uh does this mean msm is broken on dri2/3 and wayland? Or I'm I just
+> confused by your commit message?
 
-Yes, this is normal (unfortunately).
+No, I don't think so.  If there is only a single priority level
+ringbuffer (ie. no preemption to higher priority ring) then everything
+is inherently FIFO order.
 
-> In many places of current kernel code, it doesn't judge whether the node is
-> memoryless numa node before calling allocator interface.
+For cases where we are sharing buffers with something external to drm,
+explicit sync will be used.  And we don't implicit sync with display,
+otherwise x11 (frontbuffer rendering) would not work
 
-And that is correct. It shouldn't make any assumption on the memory on a
-given node because that memory might be depleted (similar to no memory)
-or it can disappear at any moment because of the memory offlining.
+BR,
+-R
 
-> This patch is to use local_memory_node(), which is guaranteed to have
-> memory, in allocator interface. local_memory_node() is a noop in other
-> architectures that don't support memoryless nodes.
-> 
-> As the call path:
-> 	alloc_pages_node
-> 	    __alloc_pages_node
-> 	        __alloc_pages_nodemask
-> and __alloc_pages_node,__alloc_pages_nodemask may be called directly,
-> so only add local_memory_node() in __alloc_pages_nodemask.
-
-Page allocator should deal with memory less nodes just fine. It has
-zonelists constructed for each possible nodes. And it will automatically
-fall back into a node with is closest to the requested node.
-local_memory_node might be incorrect choice from the topology POV.
-
-What kind of problem are you trying to fix?
-
-> Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
-> ---
->  include/linux/slab.h |  3 +++
->  mm/page_alloc.c      |  1 +
->  mm/slab.c            |  6 +++++-
->  mm/slob.c            |  1 +
->  mm/slub.c            | 10 ++++++++--
->  5 files changed, 18 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/linux/slab.h b/include/linux/slab.h
-> index 24df2393e..527e811e0 100644
-> --- a/include/linux/slab.h
-> +++ b/include/linux/slab.h
-> @@ -574,6 +574,7 @@ static __always_inline void *kmalloc_node(size_t size, gfp_t flags, int node)
->  						flags, node, size);
->  	}
->  #endif
-> +	node = local_memory_node(node);
->  	return __kmalloc_node(size, flags, node);
->  }
->  
-> @@ -626,6 +627,8 @@ static inline void *kmalloc_array_node(size_t n, size_t size, gfp_t flags,
->  		return NULL;
->  	if (__builtin_constant_p(n) && __builtin_constant_p(size))
->  		return kmalloc_node(bytes, flags, node);
-> +
-> +	node = local_memory_node(node);
->  	return __kmalloc_node(bytes, flags, node);
->  }
->  
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 6866533de..be63c62c2 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -4878,6 +4878,7 @@ __alloc_pages_nodemask(gfp_t gfp_mask, unsigned int order, int preferred_nid,
->  		return NULL;
->  	}
->  
-> +	preferred_nid = local_memory_node(preferred_nid);
->  	gfp_mask &= gfp_allowed_mask;
->  	alloc_mask = gfp_mask;
->  	if (!prepare_alloc_pages(gfp_mask, order, preferred_nid, nodemask, &ac, &alloc_mask, &alloc_flags))
-> diff --git a/mm/slab.c b/mm/slab.c
-> index f658e86ec..263c2f2e1 100644
-> --- a/mm/slab.c
-> +++ b/mm/slab.c
-> @@ -3575,7 +3575,10 @@ EXPORT_SYMBOL(kmem_cache_alloc_trace);
->   */
->  void *kmem_cache_alloc_node(struct kmem_cache *cachep, gfp_t flags, int nodeid)
->  {
-> -	void *ret = slab_alloc_node(cachep, flags, nodeid, _RET_IP_);
-> +	void *ret;
-> +
-> +	nodeid = local_memory_node(nodeid);
-> +	ret = slab_alloc_node(cachep, flags, nodeid, _RET_IP_);
->  
->  	trace_kmem_cache_alloc_node(_RET_IP_, ret,
->  				    cachep->object_size, cachep->size,
-> @@ -3593,6 +3596,7 @@ void *kmem_cache_alloc_node_trace(struct kmem_cache *cachep,
->  {
->  	void *ret;
->  
-> +	nodeid = local_memory_node(nodeid);
->  	ret = slab_alloc_node(cachep, flags, nodeid, _RET_IP_);
->  
->  	ret = kasan_kmalloc(cachep, ret, size, flags);
-> diff --git a/mm/slob.c b/mm/slob.c
-> index 7cc9805c8..1f1c25e06 100644
-> --- a/mm/slob.c
-> +++ b/mm/slob.c
-> @@ -636,6 +636,7 @@ EXPORT_SYMBOL(__kmalloc_node);
->  
->  void *kmem_cache_alloc_node(struct kmem_cache *cachep, gfp_t gfp, int node)
->  {
-> +	node = local_memory_node(node);
->  	return slob_alloc_node(cachep, gfp, node);
->  }
->  EXPORT_SYMBOL(kmem_cache_alloc_node);
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 6d3574013..6e5e12b04 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -2921,7 +2921,10 @@ EXPORT_SYMBOL(kmem_cache_alloc_trace);
->  #ifdef CONFIG_NUMA
->  void *kmem_cache_alloc_node(struct kmem_cache *s, gfp_t gfpflags, int node)
->  {
-> -	void *ret = slab_alloc_node(s, gfpflags, node, _RET_IP_);
-> +	void *ret;
-> +
-> +	node = local_memory_node(node);
-> +	ret = slab_alloc_node(s, gfpflags, node, _RET_IP_);
->  
->  	trace_kmem_cache_alloc_node(_RET_IP_, ret,
->  				    s->object_size, s->size, gfpflags, node);
-> @@ -2935,7 +2938,10 @@ void *kmem_cache_alloc_node_trace(struct kmem_cache *s,
->  				    gfp_t gfpflags,
->  				    int node, size_t size)
->  {
-> -	void *ret = slab_alloc_node(s, gfpflags, node, _RET_IP_);
-> +	void *ret;
-> +
-> +	node = local_memory_node(node);
-> +	ret = slab_alloc_node(s, gfpflags, node, _RET_IP_);
->  
->  	trace_kmalloc_node(_RET_IP_, ret,
->  			   size, s->size, gfpflags, node);
-> -- 
-> 2.17.1
-> 
-
--- 
-Michal Hocko
-SUSE Labs
+> Since for these protocols we do expect implicit sync accross processes to
+> work. Even across devices (and nvidia have actually provided quite a bunch
+> of patches to make this work in i915 - ttm based drivers get this right,
+> plus dumb scanout drivers using the right helpers also get this all
+> right).
+> -Daniel
+>
+> >
+> > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > ---
+> >  drivers/gpu/drm/msm/msm_gem_submit.c | 7 ++++---
+> >  1 file changed, 4 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
+> > index 3151a0ca8904..c69803ea53c8 100644
+> > --- a/drivers/gpu/drm/msm/msm_gem_submit.c
+> > +++ b/drivers/gpu/drm/msm/msm_gem_submit.c
+> > @@ -277,7 +277,7 @@ static int submit_lock_objects(struct msm_gem_submit *submit)
+> >       return ret;
+> >  }
+> >
+> > -static int submit_fence_sync(struct msm_gem_submit *submit, bool no_implicit)
+> > +static int submit_fence_sync(struct msm_gem_submit *submit, bool implicit_sync)
+> >  {
+> >       int i, ret = 0;
+> >
+> > @@ -297,7 +297,7 @@ static int submit_fence_sync(struct msm_gem_submit *submit, bool no_implicit)
+> >                               return ret;
+> >               }
+> >
+> > -             if (no_implicit)
+> > +             if (!implicit_sync)
+> >                       continue;
+> >
+> >               ret = msm_gem_sync_object(&msm_obj->base, submit->ring->fctx,
+> > @@ -768,7 +768,8 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
+> >       if (ret)
+> >               goto out;
+> >
+> > -     ret = submit_fence_sync(submit, !!(args->flags & MSM_SUBMIT_NO_IMPLICIT));
+> > +     ret = submit_fence_sync(submit, (gpu->nr_rings > 1) &&
+> > +                     !(args->flags & MSM_SUBMIT_NO_IMPLICIT));
+> >       if (ret)
+> >               goto out;
+> >
+> > --
+> > 2.26.2
+> >
+>
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
