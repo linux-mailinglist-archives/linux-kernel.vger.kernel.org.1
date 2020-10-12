@@ -2,88 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB96828C0A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 21:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B019C28C020
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Oct 2020 20:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391595AbgJLTFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 15:05:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388321AbgJLTFm (ORCPT
+        id S1730814AbgJLS5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 14:57:40 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:35964 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727115AbgJLS5k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 15:05:42 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB002C0613D7;
-        Mon, 12 Oct 2020 12:05:08 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id b19so9146078pld.0;
-        Mon, 12 Oct 2020 12:05:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=p3cGg0vwc3FihVmBETo+InQcjCzVvWFZGiYWNMDgXHo=;
-        b=R2KU3BiTA8Nmrr+K+h2kh4PXN+JdaEKRuc92/hX1rea8+M04xV2DSjJQpLRaMmFOr+
-         Cb429Bwwk0r6kfUdw83y/EtX7PKpROIqCEPLVR+F/5rObYZl4l6sDlbnrLEcU85TZDS6
-         9oC9WCirk8Z3FGbpYsR+i5rfPSrZFOBXkVTRdmmItGUJEevsRq5+xAYzi2Gn0s91LEfU
-         a2AY00IIjvAOJLTKklCSa3Vf/Xuqs8Mgn/dot64N407SSJodWreCO9D8VIOKopXhwHYe
-         GGwpGUzvi7ougmirF5pmTBJKUoKrl2yfQdXEPTNAJpAKkWqKXPtOIf6PmUblYgtpaXxw
-         Xynw==
+        Mon, 12 Oct 2020 14:57:40 -0400
+Received: by mail-ot1-f67.google.com with SMTP id 32so3598551otm.3;
+        Mon, 12 Oct 2020 11:57:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=p3cGg0vwc3FihVmBETo+InQcjCzVvWFZGiYWNMDgXHo=;
-        b=ZxVEnViCjVRGwVI0vUBjYKrR6Hqi/1+aidvaBDj7I1ksbxsQZy+GxOgv6K+TsoDzYD
-         FM/SQPtRSv83jps9VczC2bSOFQ1KTL5itw0K/xg3hLLvMLw1j1eln3q8jb4MXHhUjugx
-         Kda62Y9o0RnxZuHqxNKZMn3m/RBsb4nxfJiZF73JM1cpR1rKDt6W+2OlCkB97ihDOGcg
-         dWCUkV8BUXJ6UqrT1cROK2HrXp7wPHjSTXh/ZyIZkZKumBDTW2sCirNfoPhQRL8yB5r4
-         yMzX92jeAlBSKpLBnxHiNAo9u/BZu/ucunsfBkpU+n6Dx1Nn84vy4/O0uPX1PBXr5Ewq
-         nl+A==
-X-Gm-Message-State: AOAM533XK215eOmbPcsU7axSYp3lzsmoZ/7qXhHhG9sRTnWMnT/7WubM
-        9wrAx6Vi6FKTtwEF8DPltxwUc9rP9lk=
-X-Google-Smtp-Source: ABdhPJzjXdwKjMlIP3AJiMsod6ukBI9sxvQE+gfn2RqN7aXk0BNvM2fP+ILXyldXKpEmA5rdKmvAbQ==
-X-Received: by 2002:a17:902:ee83:b029:d4:bdd6:cabe with SMTP id a3-20020a170902ee83b02900d4bdd6cabemr17253953pld.68.1602529508244;
-        Mon, 12 Oct 2020 12:05:08 -0700 (PDT)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id v20sm15896961pjh.5.2020.10.12.12.05.07
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 12 Oct 2020 12:05:07 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 11:57:22 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     thierry.reding@gmail.com, robh+dt@kernel.org, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/5] memory: tegra: Sort tegra210_swgroups by reg address
-Message-ID: <20201012185721.GA17643@Asurada-Nvidia>
-References: <20201008003746.25659-1-nicoleotsuka@gmail.com>
- <20201008003746.25659-4-nicoleotsuka@gmail.com>
- <20201008103258.GA16358@kozik-lap>
- <20201008202615.GA32140@Asurada-Nvidia>
- <20201012164340.GA3557@kozik-lap>
+         :mime-version:content-disposition:in-reply-to;
+        bh=ddIV4HQN24CafNYgtjScHKXn58YYBc4ENbBdZztl7Po=;
+        b=hW7NKjPA9XmDVlbiDZ1SzZSr2fz9arPeXwoM6C4WyojbDOlmGpgEnA9bH+EOF2CZl6
+         1rOP+iwS24Wz6dH22xVMUXMi+06Qzwzg3LL1YXv6hf5nLc9nuXTSO2QhO/A3tG/Wl+kK
+         qVOjp2W03a1DJTWfRv58rYuj6iDXMICFyEPZigqFCVVoZpYmmQB7eb8/DB0P/eLAhBrx
+         OSDMbGqMAkoIXaTu+LEBCzkY4aq5gOSG9mGeEvG4VaNzaAHwPDTghPTHp1NpO5DLivl2
+         KKGZ7rflgmGEay4FjBYZ+6v8nafGaLbqlw8itWDqQCKj3mEwmIVIr3+gzwGp8j6N6v6F
+         FxHQ==
+X-Gm-Message-State: AOAM532LzNDepTE0LNhwz8YUoHqXm50RSD6bb5hbLOr2O8d5EwkgcMKE
+        H9RxgiFMKF48/kztPruufe/aPS5RBbFO
+X-Google-Smtp-Source: ABdhPJw4IVll4ULsuJ5LXi+mVD/6wjOwgXKHePUC517QdcqQleAXdmNv1FWoCkkbRyTDphEGrvoV1g==
+X-Received: by 2002:a05:6830:1e19:: with SMTP id s25mr18618580otr.294.1602529058807;
+        Mon, 12 Oct 2020 11:57:38 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 81sm9006727oti.79.2020.10.12.11.57.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 11:57:38 -0700 (PDT)
+Received: (nullmailer pid 1908487 invoked by uid 1000);
+        Mon, 12 Oct 2020 18:57:37 -0000
+Date:   Mon, 12 Oct 2020 13:57:37 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     dmaengine@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v4 1/3] dt-bindings: dmaengine: Document qcom,gpi dma
+ binding
+Message-ID: <20201012185737.GA1905980@bogus>
+References: <20201008123151.764238-1-vkoul@kernel.org>
+ <20201008123151.764238-2-vkoul@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201012164340.GA3557@kozik-lap>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201008123151.764238-2-vkoul@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 06:43:40PM +0200, Krzysztof Kozlowski wrote:
-> On Thu, Oct 08, 2020 at 01:26:16PM -0700, Nicolin Chen wrote:
-> > Hi Krzysztof,
-> > 
-> > On Thu, Oct 08, 2020 at 12:32:58PM +0200, Krzysztof Kozlowski wrote:
-> > > On Wed, Oct 07, 2020 at 05:37:44PM -0700, Nicolin Chen wrote:
-> > > > This is a cleanup change to prepare for new swgroups.
-> > > 
-> > > What type of cleanup? Any functional change?
-> > 
-> > It's to sort the swgroup list by reg address as I mentioned in
-> > the subject. Perhaps I should have put in commit message also.
+On Thu, Oct 08, 2020 at 06:01:49PM +0530, Vinod Koul wrote:
+> Add devicetree binding documentation for GPI DMA controller
+> implemented on Qualcomm SoCs
 > 
-> Indeed it is sorted by regs, I missed some numbers... looks good. I can
-> adjust the commit msg so no need for resend.
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>  .../devicetree/bindings/dma/qcom,gpi.yaml     | 86 +++++++++++++++++++
+>  include/dt-bindings/dma/qcom-gpi.h            | 11 +++
+>  2 files changed, 97 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/dma/qcom,gpi.yaml
+>  create mode 100644 include/dt-bindings/dma/qcom-gpi.h
+> 
+> diff --git a/Documentation/devicetree/bindings/dma/qcom,gpi.yaml b/Documentation/devicetree/bindings/dma/qcom,gpi.yaml
+> new file mode 100644
+> index 000000000000..4470c1b2fd6c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/dma/qcom,gpi.yaml
+> @@ -0,0 +1,86 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/dma/qcom,gpi.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Technologies Inc GPI DMA controller
+> +
+> +maintainers:
+> +  - Vinod Koul <vkoul@kernel.org>
+> +
+> +description: |
+> +  QCOM GPI DMA controller provides DMA capabilities for
+> +  peripheral buses such as I2C, UART, and SPI.
+> +
+> +allOf:
+> +  - $ref: "dma-controller.yaml#"
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,sdm845-gpi-dma
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    description:
+> +      Interrupt lines for each GPI instance
+> +    maxItems: 13
+> +
+> +  "#dma-cells":
+> +    const: 3
+> +    description: >
+> +      DMA clients must use the format described in dma.txt, giving a phandle
+> +      to the DMA controller plus the following 3 integer cells:
+> +      - channel: if set to 0xffffffff, any available channel will be allocated
+> +        for the client. Otherwise, the exact channel specified will be used.
+> +      - seid: serial id of the client as defined in the SoC documentation.
+> +      - client: type of the client as defined in dt-bindings/dma/qcom-gpi.h
+> +
+> +  iommus:
+> +    maxItems: 1
+> +
+> +  dma-channels:
+> +    maximum: 31
+> +
+> +  dma-channel-mask:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - "#dma-cells"
+> +  - iommus
+> +  - dma-channels
+> +  - dma-channel-mask
 
-Thank you!
+additionalProperties: false
+
+With that,
+
+Reviewed-by: Rob Herring <robh@kernel.org>
+
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/dma/qcom-gpi.h>
+> +    gpi_dma0: dma-controller@800000 {
+> +        compatible = "qcom,gpi-dma";
+> +        #dma-cells = <3>;
+> +        reg = <0x00800000 0x60000>;
+> +        iommus = <&apps_smmu 0x0016 0x0>;
+> +        dma-channels = <13>;
+> +        dma-channel-mask = <0xfa>;
+> +        interrupts = <GIC_SPI 244 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 245 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 246 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 247 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 248 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 249 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 250 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 251 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 252 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 253 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 254 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 255 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 256 IRQ_TYPE_LEVEL_HIGH>;
+> +    };
+> +
+> +...
+> diff --git a/include/dt-bindings/dma/qcom-gpi.h b/include/dt-bindings/dma/qcom-gpi.h
+> new file mode 100644
+> index 000000000000..71f79eb7614c
+> --- /dev/null
+> +++ b/include/dt-bindings/dma/qcom-gpi.h
+> @@ -0,0 +1,11 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/* Copyright (c) 2020, Linaro Ltd.  */
+> +
+> +#ifndef __DT_BINDINGS_DMA_QCOM_GPI_H__
+> +#define __DT_BINDINGS_DMA_QCOM_GPI_H__
+> +
+> +#define QCOM_GPI_SPI		1
+> +#define QCOM_GPI_UART		2
+> +#define QCOM_GPI_I2C		3
+> +
+> +#endif /* __DT_BINDINGS_DMA_QCOM_GPI_H__ */
+> -- 
+> 2.26.2
+> 
