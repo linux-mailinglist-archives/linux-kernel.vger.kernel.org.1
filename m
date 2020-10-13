@@ -2,142 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8056928DD5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:26:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38B1F28D6BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 01:00:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729094AbgJNJYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 05:24:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731179AbgJNJWk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 05:22:40 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59FF5C05BD2D
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 15:56:21 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id g16so328294pjv.3
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 15:56:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=rDMoJN83Dku18zH5wHCbvoU/fSD4X5asBCZjJeZXhT0=;
-        b=mdpis0srH5G+EIp7Bro5R+LFWreMp2jYpgCNRmbE/3f8GTo1jYIO8bGRkYcapmcwZI
-         wOIIQVCZcVxvzgkuGqGmcfVtORvY6LgWk7C4wIIHQZDHFfo7Jes4sipFZXAOcNMAaZaB
-         mr0rZWVVoKOrw9gnak1JdmJmuD8ZlGBrxDn3S2hkC+7VyOXEQEzPP8BKR2pIxOvCthED
-         LlLwb56VU03BeOzbGPm8jlzjnxaXGX+jJP+0kP3lLpOgf+2DMEspY66Mpvx2vK/Uzj1q
-         ZpooD+73ijUMXCURYqDhh+94TjZwWDwocpZPB3hWM6m1GKPkuupA5FsRR2XOVUemlijG
-         5c1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=rDMoJN83Dku18zH5wHCbvoU/fSD4X5asBCZjJeZXhT0=;
-        b=PXsA9tGmIjUrbIowfl0l+MGzX6GczKDoMWQHqAPLPEyaL2e1qD5XKVWgOa27N6X5C0
-         yp6BC3CWPQtGQow6m6blGtxBB5jZComxPu51fB49g1i/xp+ttR/mJxai5u49rVuprabe
-         qo1i/QUPKd35VlP+V5OJRbeCeRcBr5w8TJb+8YMpLMfkrtHGvXZx9ot/dunRUmAjdQuA
-         j9SYTHUWv3JjMUXpjRrrT7wW2NVCes99trH5C2/dfBFsJqyzdnRolV3CY/xZixtzdABC
-         xJ15XYxZT9YLwIX+ogNSdhg2yremW+zJ8v3um3Ef6n3DNr5pMOE975fTMCitvowbeihk
-         FZ2w==
-X-Gm-Message-State: AOAM532rnxrtvR2yww2GJcQN8XQKbc5UkGNujBYfOrNKvH3LRfC/DKXO
-        YfyUe65Qrmvwuhi94pnG1U1s5aN5I3AJvlaBNRqWDA==
-X-Google-Smtp-Source: ABdhPJydCBiVHdgbwTGbV7u0sa/UTXEIcWpXMQgP11WtR/YqjczAeBchA3yZp053Qp+1JStupnwTBQybRAuTiDWjCxM=
-X-Received: by 2002:a17:90a:3b48:: with SMTP id t8mr615136pjf.32.1602629780628;
- Tue, 13 Oct 2020 15:56:20 -0700 (PDT)
+        id S1729560AbgJMXAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 19:00:20 -0400
+Received: from mga17.intel.com ([192.55.52.151]:64264 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726894AbgJMXAU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 19:00:20 -0400
+IronPort-SDR: LS4apg2c52bDZwt5rhlXoaeCxjLpq+YHDKJUb6F9Ds6Sh1+Q1SYud83vicFWD0RBS1yH2azrYx
+ AWVc4SHpDQ7Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="145862296"
+X-IronPort-AV: E=Sophos;i="5.77,372,1596524400"; 
+   d="scan'208";a="145862296"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 16:00:15 -0700
+IronPort-SDR: FkQZgwoNjz0b9z4mqNn80ZkJZts77ZCbAiraqSXnpvaL32BpHC6NJOBC9c8niiULW8ZWapq4Vu
+ /nd6WyQlEHww==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,372,1596524400"; 
+   d="scan'208";a="346339760"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga008.jf.intel.com with ESMTP; 13 Oct 2020 16:00:15 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 13 Oct 2020 16:00:14 -0700
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 13 Oct 2020 16:00:14 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Tue, 13 Oct 2020 16:00:14 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.170)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Tue, 13 Oct 2020 16:00:13 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JJhVx4dyxBDz1bFn57mbWQVt9YhL8oXCWnrLVNmyXqQFsFLU+bnYgh3JLPBtXeFmcVYxZ5dGwCZoolBhq1bwHLKZN4XZ2lMh8GHvP/A8UxEYbnIaAnM8usvOMEgDQa2pt/EjHANkxHpx9WqgQinjamYDiv9DYxqPpE+WbWhRfn8tu/yx4phaVAhpg6cjMCGJh2EvxJ4P44J7AJEaTiVEgLo2kn9r56bhTUGFrxwjGPdhUSG/zo4GjTAoNJbR4RN2vgc7+F1xc+ErGSjqInEVwZ2LIYXbkHIvypBupCUqnz+EM1R5FduiBimn3tCOfInsAFrQGb39PiMvIK6bx97ZWw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wgL8Trb+MIT4YTWs3pgmais9eOisgS8M26zEH7WDoeA=;
+ b=VV35E0tx82v1Bl5W75yXI6VN+6wj8Wyj5YCZDcFy/i4+eDY5cmlWLnCPn4UNvKPChrciULVVMORQegVuyxR7M0KO8tVmK/SfFUHorsiGqGzJEjfp1ZYnxIjo9HPZr1xC4gxFAFi/z1Tv0hN95c6vIXoO5Zhijl+cTrQd5tFONeeyyvsnUMWuLEJKbaFxATZ3dmRnywqC92Rgq4Q/G1tAqx2ecYkjqYXim/8Ez+ACw+aNSPhEYHxxnr2yFNjywk01wHHr/vTCkxdt3DxB6LLf5qecfIYCdLtol5ENuGggMF1zATXm8spwBNf3YLLxEea87NwXJ8UMpERp5sJlNDQomg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wgL8Trb+MIT4YTWs3pgmais9eOisgS8M26zEH7WDoeA=;
+ b=w2EgKzR2xlzdR1SlQAPctj/sWLS4a/NThUZorXha1EubcNuzf3oWo9UqnVBdOSAvPMbODOgL4Ecs44jhT+D/nO21vvccaB2TChf6hd+9EcS3BJSTsQuWDoilNvRWFNml1WblSIYf3aH6Id0GL2BT7EzaWg6hI+HHpOSNEBsLdRA=
+Received: from BYAPR11MB3463.namprd11.prod.outlook.com (2603:10b6:a03:1e::16)
+ by SJ0PR11MB4831.namprd11.prod.outlook.com (2603:10b6:a03:2d2::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.29; Tue, 13 Oct
+ 2020 23:00:06 +0000
+Received: from BYAPR11MB3463.namprd11.prod.outlook.com
+ ([fe80::94c2:2c26:494c:98e6]) by BYAPR11MB3463.namprd11.prod.outlook.com
+ ([fe80::94c2:2c26:494c:98e6%4]) with mapi id 15.20.3477.020; Tue, 13 Oct 2020
+ 23:00:06 +0000
+From:   "Brown, Len" <len.brown@intel.com>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@kernel.org" <mingo@kernel.org>, "bp@suse.de" <bp@suse.de>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>
+CC:     "Hansen, Dave" <dave.hansen@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+Subject: RE: [RFC PATCH 22/22] x86/fpu/xstate: Introduce boot-parameters for
+ control some state component support
+Thread-Topic: [RFC PATCH 22/22] x86/fpu/xstate: Introduce boot-parameters for
+ control some state component support
+Thread-Index: AQHWmDN7aItv7L4uQkiAxQ/hdrUB16mDkc4AgBKfsOA=
+Date:   Tue, 13 Oct 2020 23:00:05 +0000
+Message-ID: <BYAPR11MB346391F798B3D13FD2863A18E0040@BYAPR11MB3463.namprd11.prod.outlook.com>
+References: <20201001203913.9125-1-chang.seok.bae@intel.com>
+ <20201001203913.9125-23-chang.seok.bae@intel.com>
+ <5e9b73bf-5334-189e-753e-f1f766375024@infradead.org>
+In-Reply-To: <5e9b73bf-5334-189e-753e-f1f766375024@infradead.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-reaction: no-action
+dlp-product: dlpe-windows
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [75.100.89.66]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 234e61c6-14c3-409b-925a-08d86fcbb9f3
+x-ms-traffictypediagnostic: SJ0PR11MB4831:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SJ0PR11MB48311553422B5B40E0F8698DE0040@SJ0PR11MB4831.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4714;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: BsCK06+RBRQTuRb84cPIruCzG2eAEGeZq5xTUIa9o8CyMIa6qWoqBfa0TD79oA0qBi/bQ4zKzXT/HzER6HijhHQRnGChWTZzUTmfifIfymT5++Fq6dcjLD9rrviKlwWEyxS2i5ovMAgAdRVT7i0f6CIK0AXPlWzXQkLWe8uZAMvjMaVwVT5psVrJtWmGw4fn2GHL4fbwd6p5A6Buc/vcpv8FsbIk4SkKuG8pDwGx7q9sdxtRroRdgCW5la2pivL76UnXHyxwvAkDhh35vGkWByYP9vJ/3d9+4kL4FfcxEP1U/0QJMOZRnRUb0kZr62VlWLkJNm4S+11Zfh9wNdn9wdwuF14dwS4DfmkKUL/pzEZhf6jBVpQo0APKCvxSjrasfZ4wFEsEUM64x4L5PNzCfg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3463.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(346002)(396003)(366004)(86362001)(9686003)(71200400001)(66476007)(83080400001)(76116006)(26005)(66946007)(6506007)(8676002)(186003)(33656002)(4744005)(4326008)(8936002)(2906002)(7696005)(110136005)(55016002)(966005)(5660300002)(64756008)(66446008)(66556008)(54906003)(316002)(478600001)(52536014);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: N4gQihdZyo7n++JGXIyfziLXjTujqmDLahRPCvr1tyQWWtJQhLL/bVwDOET9wFhgPUcUzzvCVKC5KgiKMalxVf5QcTOrENpUWI2sJpA+19c+nbEGFv0fOxQIoC1ME9exlEy9qVHWhbSw3tEJE4KUS4ReEQt8HbzHpTNrBaEfa31R2zjKDEroQ1ZnBcmQYdbNuWOZpOXNacnWpyKIlds5WrHidTqqEdJqbV3g4gaNu1/N85MbEmPc9YOjPrSQuUzAq4Do3AcW5mZN2SQyVZC4hd3cfMtNFdw+crWi1fbh+MmT+kwl3o5in/5Z3BhdUKXD7jVIuGq7Ek24ToWDhCblqoSnLuGBMdeyofc/by4NV3TtB2/pQIeU5D8lCtBzFJqlWnNjntl3Yt7Q1nHHTS2JzjH77fmhkouvRauSlgpD3Aj9isqAouqbZcc49uSOUjlZf7oquvHx7I5ZDBj6CLeVsdAJwwSynKmNQffpTgANevFjC47M1gY0oo5fLZvOkR+zhw+PAvsWiGIk1HoEDBxwoZMVK2qgQfBcCwtWnjYVyqyrr0RqwvWCk6nWYEZnGfTHVsKoMjXts1enQMEYRxOHTT2uZ/iCPL6Shi3Q+EoTPJQbUAWlA4UkPh48nNdcHr5Pr4BS+/heoLBf9PIRdzJ3LQ==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20200928224854.3224862-1-natechancellor@gmail.com>
- <CAKwvOd=+98r6F4JjrPEoWX88WQ=B-KMRP2eWojabLk6it3i5KA@mail.gmail.com>
- <CAFP8O3J_Yn8SVD8RR=P5qv=NjdLT0s6JQQM8gWFU-2n0=b1uZg@mail.gmail.com>
- <202010121426.A5FA5E59@keescook> <20201013032607.GA2091780@ubuntu-m3-large-x86>
-In-Reply-To: <20201013032607.GA2091780@ubuntu-m3-large-x86>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 13 Oct 2020 15:56:08 -0700
-Message-ID: <CAKwvOdnM4UHFy1jrnfoKPG_S6CQpWMTCpuxTkbN+_AGe2Ov0SQ@mail.gmail.com>
-Subject: Re: [PATCH] arm/build: Always handle .ARM.exidx and .ARM.extab sections
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3463.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 234e61c6-14c3-409b-925a-08d86fcbb9f3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Oct 2020 23:00:05.9957
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: W0VuPszcQbkJiVplP620G7kzP0gXkeCqyD4o0Ea1nLSlH+QyEqA5ad8Sm4FAekDdLZkq66C1AVwGcemH+UpOFQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4831
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 8:26 PM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
->
-> On Mon, Oct 12, 2020 at 02:26:52PM -0700, Kees Cook wrote:
-> > On Mon, Oct 12, 2020 at 02:22:03PM -0700, F=C4=81ng-ru=C3=AC S=C3=B2ng =
-wrote:
-> > > On Mon, Oct 12, 2020 at 2:11 PM 'Nick Desaulniers' via Clang Built
-> > > Linux <clang-built-linux@googlegroups.com> wrote:
-> > > >
-> > > > Please submit to:
-> > > > https://www.arm.linux.org.uk/developer/patches/add.php
->
-> This should go through the tip tree (hence sending it straight to Ingo)
-> since the patch that this fixes was there. I guess it does not
-> necessarily matter now that the breakage is in mainline but basing a
-> set of patches on a non -rc tag is a little taboo I thought so not sure
-> it is appropriate to go through Russell for now. It is up to the
-> maintainers though, I will submit it wherever it needs to go.
-
-Ah got it, yeah I don't really care which tree this goes up in.
-
->
-> > > > >
-> > > > > Fixes: 5a17850e251a ("arm/build: Warn on orphan section placement=
-")
-> > > > > Link: https://github.com/ClangBuiltLinux/linux/issues/1152
-> > > > > Reported-by: kernel test robot <lkp@intel.com>
-> > > > > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> > > > > ---
-> > > > >  arch/arm/kernel/vmlinux.lds.S | 4 ++++
-> > > > >  1 file changed, 4 insertions(+)
-> > > > >
-> > > > > diff --git a/arch/arm/kernel/vmlinux.lds.S b/arch/arm/kernel/vmli=
-nux.lds.S
-> > > > > index 5f4922e858d0..a2c0d96b0580 100644
-> > > > > --- a/arch/arm/kernel/vmlinux.lds.S
-> > > > > +++ b/arch/arm/kernel/vmlinux.lds.S
-> > > > > @@ -40,6 +40,10 @@ SECTIONS
-> > > > >                 ARM_DISCARD
-> > > > >  #ifndef CONFIG_SMP_ON_UP
-> > > > >                 *(.alt.smp.init)
-> > > > > +#endif
-> > > > > +#ifndef CONFIG_ARM_UNWIND
-> > > > > +               *(.ARM.exidx*)
-> > > >
-> > > > I don't think we need the wildcard, as without this line, I see:
-> > > >
-> > > > ld.lld: warning: <internal>:(.ARM.exidx) is being placed in '.ARM.e=
-xidx'
-> > >
-> > > We may need the wildcard if there are -ffunction-sections builds.
-> > > In clang, .ARM.exidx* cannot be removed even with -fno-unwind-tables
-> > > -fno-exceptions.
-> >
-> > Does it need to be:
-> >
-> >       *(.ARM.exidx) *(.ARM.exidx.*)
-> >       *(.ARM.extab) *(.ARM.extab.*)
-> >
-> > ?
->
-> I tested the patch and saw no warnings with what I sent. I can change it
-> to that if it is more proper though!
-
-We don't have LTO working on 32b ARM yet, so I'm not worried about
--ffunction-sections for this (yet).  The ld.bfd linker scripts didn't
-seem to use the non-wildcard and wildcard suggestion; just the
-wildcarded.  (Maybe they have the same "bug?")  I'm happy to revisit
-though if we plan to get LTO up and running on 32b ARM.
---=20
-Thanks,
-~Nick Desaulniers
+DQo+IEZyb206IFJhbmR5IER1bmxhcCA8cmR1bmxhcEBpbmZyYWRlYWQub3JnPiANCg0KPiBXaGF0
+IGRvIHRoZXNlIGJpdG1hc2tzIGxvb2sgbGlrZT8gIHdoYXQgZG8gdGhlIGJpdHMgbWVhbj8NCj4g
+V2hlcmUgZG9lcyBhIHVzZXIgZmluZCB0aGlzIGluZm8/DQoNClRoZSBYU0FWRSBzdGF0ZSBjb21w
+b25lbnQgYml0bWFwcyBhcmUgZGV0YWlsZWQgaW4NCnRoZSBJbnRlbCBTb2Z0d2FyZSBEZXZlbG9w
+ZXIncyBNYW51YWwsIHZvbHVtZSAxLCBDaGFwdGVyIDEzOg0KIk1hbmFnaW5nIFN0YXRlIHVzaW5n
+IHRoZSBYU0FWRSBGZWF0dXJlIFNldCIuDQoNCmh0dHA6Ly9pbnRlbC5jb20vc2RtDQoNCkluIHRo
+ZSBrZXJuZWwgc291cmNlLCB0aGV5IGFyZSBlbnVtZXJhdGVkIGluIHhzdGF0ZS5jDQphbmQgeW91
+IGNhbiBvYnNlcnZlIHRoZW0gaW4gZG1lc2c6DQoNClsgICAgMC4wMDAwMDBdIHg4Ni9mcHU6IFN1
+cHBvcnRpbmcgWFNBVkUgZmVhdHVyZSAweDAwMTogJ3g4NyBmbG9hdGluZyBwb2ludCByZWdpc3Rl
+cnMnDQpbICAgIDAuMDAwMDAwXSB4ODYvZnB1OiBTdXBwb3J0aW5nIFhTQVZFIGZlYXR1cmUgMHgw
+MDI6ICdTU0UgcmVnaXN0ZXJzJw0KWyAgICAwLjAwMDAwMF0geDg2L2ZwdTogU3VwcG9ydGluZyBY
+U0FWRSBmZWF0dXJlIDB4MDA0OiAnQVZYIHJlZ2lzdGVycycNClsgICAgMC4wMDAwMDBdIHg4Ni9m
+cHU6IFN1cHBvcnRpbmcgWFNBVkUgZmVhdHVyZSAweDAwODogJ01QWCBib3VuZHMgcmVnaXN0ZXJz
+Jw0KWyAgICAwLjAwMDAwMF0geDg2L2ZwdTogU3VwcG9ydGluZyBYU0FWRSBmZWF0dXJlIDB4MDEw
+OiAnTVBYIENTUicNCg0KVGhhbmtzLA0KLUxlbg0KDQo=
