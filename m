@@ -2,206 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C99628CE8A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2428C28CE8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:42:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728005AbgJMMlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 08:41:44 -0400
-Received: from mail-bn7nam10on2056.outbound.protection.outlook.com ([40.107.92.56]:52694
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727077AbgJMMlo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 08:41:44 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iRBB838i14AS9DvYcr0jikoBgcGS09aQG+oLz/zKZ1rwsLVq4uieEwt4eCKAl5UtcBNRQ5VxUyvjAOsIU5Wq05tD1NCoglOzg3UhtRoXPfOg+FYDffhvsKkUEsAZvdctwynJalmUkL1tgivhVwmABLUMcaKBriFGHNgM9aZ/mxfXiG9SQsI7M468uDMRYsSOc//Xzf0zV/1g/7xwInpl71KfBoizDuE2XvfnNWVjPB76Z9HPHNDH+5nRtmRzNd9sfjYs7NoHULTn94Z4rKaIL1a5ORmn1ufOjVYGJ+j7FkkJEeUFDmbcz6AYBQhBkXqo1cuU4MDUWUx3nrZ1sllI9A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gFzoAspnzrGSlxB4um6wmOt6wviJg+HS0xcX+sd2tqE=;
- b=BJik+hVxuHtKym58J0oarAS4ZuS9DU6osC9OT2Xk5LSCcZn2JIlkrW2Gwortar1q8TwCJqisXFN1gxF8LeR2aqyXAbymfNWdyFZyVTnTF5WYeQmq7QBKZK0YElVm6mWQ+XFtU2DBI5hmzknSg+tznGF8LRfM3myGfcN5JnBvdMrnX63Rdleh6upR9A1rSByr9VCzElgJos7z6gASmVtjs2+W++46TUf4UXXRBfhNEupatYKYKy8DTrMXjJ5qiBmAiIK248TQsIAdpjec3aKXOE7nNVKdq3fouUHaVpaBwuJY3UwB6PFU6jflFpiQwvrXZ+VD+Ja3d6HyURBAWm+OjA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gFzoAspnzrGSlxB4um6wmOt6wviJg+HS0xcX+sd2tqE=;
- b=FUD+FvhD1GB3SSPJ0H8LKWmmCcqgd78xkvIzOr/Ew/YX8YdYfPWv1GVXGWqKpcrKwEZsq+YPZaXgu1lHKfrEgFncD/sMNMg0PGkPN3/QH7JYWMl4qoRfk1e39a6FG3HP4N3zICVU6SjPTsuaHAjTgIvBRgjVDzBMsklU5G7uNOw=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by BL0PR12MB2419.namprd12.prod.outlook.com (2603:10b6:207:44::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.24; Tue, 13 Oct
- 2020 12:41:40 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::f8f7:7403:1c92:3a60]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::f8f7:7403:1c92:3a60%6]) with mapi id 15.20.3455.030; Tue, 13 Oct 2020
- 12:41:40 +0000
-Subject: Re: [PATCH v2 07/24] drm: amdgpu: kernel-doc: update some adev
- parameters
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Bernard Zhao <bernard@vivo.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Colton Lewis <colton.w.lewis@protonmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Airlie <airlied@redhat.com>,
-        David Airlie <airlied@linux.ie>, Dennis Li <Dennis.Li@amd.com>,
-        Evan Quan <evan.quan@amd.com>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1602590106.git.mchehab+huawei@kernel.org>
- <e8d8081e713010edcae2414427fec4a497182fae.1602590106.git.mchehab+huawei@kernel.org>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <50178896-8166-0912-c3b3-5671b72740a5@amd.com>
-Date:   Tue, 13 Oct 2020 14:41:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <e8d8081e713010edcae2414427fec4a497182fae.1602590106.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
-X-ClientProxiedBy: FRYP281CA0005.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10::15)
- To MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+        id S1728028AbgJMMmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 08:42:06 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:40234 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727077AbgJMMmG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 08:42:06 -0400
+Received: by mail-oi1-f196.google.com with SMTP id m128so22292429oig.7;
+        Tue, 13 Oct 2020 05:42:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9a9S8jqFI1z/da5IKYstSGsQ5P0heyKtA+nDpAbWxis=;
+        b=ae0JiDRUGc6UhmD2+npHtsX8/Co/tEckAlfJgyZ2ekhWEdLLjluqcdHHgkocSNuVL0
+         dpQ3ZwXEsYaNblb8oN+VnCPcCaLoUsgYTCTXkEoYLkMQnAzToeV5tksKtoUQB68lKoBV
+         l86jnp4pVyjGR6gWzI3sPdngFR0X3+Gex5dU3O1gNTw+5VakzOJFWQgQfaWRWEvzdikY
+         R9aJ8b4cLVFsUqaZ1LGkzT1vAXyRc13IGkJE08OXLWPWPfaE1sS2wNZ/HftbjBKZ3psv
+         1wyGuoxnzdqo/VmsZkI+/zmKdZXRosytEUaC6rAeMmSZW8FN38PT6+Ytplsy70yHJhvI
+         muBA==
+X-Gm-Message-State: AOAM5333Z8cyzkIFNQ+kHlKMsbSoNPgIWvgI6R/k1gmwi6DYmzLVEX29
+        zgYhdMRnc90Y6NIrZR7i6Q==
+X-Google-Smtp-Source: ABdhPJzik5HzirfRUO8Rt3aNEPIrxservslx8BbKUyJWQUJ9c+zphQ1dJb0v+CV4goeTVMBvVtFbNg==
+X-Received: by 2002:aca:fc85:: with SMTP id a127mr14056058oii.125.1602592925132;
+        Tue, 13 Oct 2020 05:42:05 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id o15sm10002746otj.3.2020.10.13.05.42.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Oct 2020 05:42:04 -0700 (PDT)
+Received: (nullmailer pid 3312154 invoked by uid 1000);
+        Tue, 13 Oct 2020 12:42:03 -0000
+Date:   Tue, 13 Oct 2020 07:42:03 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Mathias Nyman <mathias.nyman@intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Roger Quadros <rogerq@ti.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org
+Subject: Re: [PATCH 16/18] dt-bindings: usb: meson-g12a-usb: Validate
+ DWC2/DWC3 sub-nodes
+Message-ID: <20201013124203.GE3269269@bogus>
+References: <20201010224121.12672-1-Sergey.Semin@baikalelectronics.ru>
+ <20201010224121.12672-17-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by FRYP281CA0005.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.12 via Frontend Transport; Tue, 13 Oct 2020 12:41:36 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: c44a1aec-a579-450a-210d-08d86f7554f6
-X-MS-TrafficTypeDiagnostic: BL0PR12MB2419:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL0PR12MB24195C3749D765664F86C65F83040@BL0PR12MB2419.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:304;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: yJL2/hyRavGiweobgi2ETv/bwf9Rk2lJKu03qvVDjs/omarMkdb7IPMZkPjCRd75mMB2WAdwllYx6snKxUoAGaAbpmV1byD9OgcdPUcMYU5ksempIJxtwjXVAo4szn0HhGOk8uRhqOOS9BpQAly1yEX/p1PT+ULvnmq85gHE2BmwNxt46X0rH2rTYw/XUMu8dE8PVwKRA0DyDMx6oyLkfijYxTzY6hP6ViudmHqqskw1mC2heHKd/eHiT1ohRQsuRnJZNESPws59lU4NVqo9opzM0joZRR/wMCrPbMtL+/A+DLwoy4U3rquVXPG9hueboOi4QCSPXbof9FjB7IqOYPVGgtF3qYk9j/QG1q2fPgRS8ZUj0duKAdMvriuW6AQP
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(136003)(346002)(376002)(396003)(6666004)(316002)(66556008)(66946007)(5660300002)(52116002)(54906003)(110136005)(15650500001)(66476007)(83380400001)(86362001)(186003)(2616005)(478600001)(7416002)(31686004)(31696002)(6486002)(8936002)(8676002)(2906002)(36756003)(4326008)(16526019)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: iGbubkCwWsuMXud1JJe2cgAuYD18+ubzQ7JGJLUZNmQz6Ksf49UK/3TI007ZMnuev28oQLFQ/1i8Rq1WKu1LYfujGwAd5ylYis0F4NXklbLQSk6ma/neJ/3t+TAZ7ZhLcqM46CH42xIVa7uY+zhbuAZLlatNzokPUZFM+8CpI2s+gXMj4/I/ahr/M69Rcu8PYh98ghz2u2ftEPFE2Ds8nQ3De7LvL99OBzlQCJfj0biOMZjLNFYrq42AfqZ1DsHxT5qiNZzMkXhAiz9m8gsD6yXzBPWynk/zl/+PvTtWpl3LZpoaKo04/i2Az+0S18I5JCeH12OK/qUKdcYIHcylYk19RXAKP8LArAogEmEFTnAyRYTgt9GAXjjw3bLECClM9v3nlI2fg2ASK+ibnKt/A6fVjDtEdzj+ORjjQu7W9lhy6meuxzJy8YzocFkP38GVl99dAnNRDqXAbOGgBEK6piRaPJPtnDMx6rKPf1Kn+h/Nc/1DAaXf1lCo8Kqd07waGQ+sjvk4U2l7H37hq8AMMoDdazJi8A3cEHP1/hasokQ1DwpyobThfxZMxFA0WzMIjtrXs6c34WEyFTM6jLgyGfcXUod2et3yR19geTYTuLJEXM/pZKxYbbneBYdigSRvZmkNvCgbwRXb8ncw2Qp45WraFGFlZduidG5SM03yQYpg1Oz+fJS3pdXeskr8y/zlo/vPByrifJCBHU8z5Ko0rw==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c44a1aec-a579-450a-210d-08d86f7554f6
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2020 12:41:40.4366
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: oZvPW/yrn9rMXB5OCd3Vixejn6DfcFrcON5fwzVK+EXZcu6vc6TEmEA/1tNJXWu2
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2419
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201010224121.12672-17-Sergey.Semin@baikalelectronics.ru>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 13.10.20 um 14:14 schrieb Mauro Carvalho Chehab:
-> Running "make htmldocs: produce lots of warnings on those files:
-> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:177: warning: Excess function parameter 'man' description in 'amdgpu_vram_mgr_init'
-> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:177: warning: Excess function parameter 'p_size' description in 'amdgpu_vram_mgr_init'
-> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:211: warning: Excess function parameter 'man' description in 'amdgpu_vram_mgr_fini'
-> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:177: warning: Excess function parameter 'man' description in 'amdgpu_vram_mgr_init'
-> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:177: warning: Excess function parameter 'p_size' description in 'amdgpu_vram_mgr_init'
-> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:211: warning: Excess function parameter 'man' description in 'amdgpu_vram_mgr_fini'
-> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:177: warning: Excess function parameter 'man' description in 'amdgpu_vram_mgr_init'
-> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:177: warning: Excess function parameter 'p_size' description in 'amdgpu_vram_mgr_init'
-> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:211: warning: Excess function parameter 'man' description in 'amdgpu_vram_mgr_fini'
-> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:177: warning: Excess function parameter 'man' description in 'amdgpu_vram_mgr_init'
-> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:177: warning: Excess function parameter 'p_size' description in 'amdgpu_vram_mgr_init'
-> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:211: warning: Excess function parameter 'man' description in 'amdgpu_vram_mgr_fini'
-> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c:90: warning: Excess function parameter 'man' description in 'amdgpu_gtt_mgr_init'
-> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c:90: warning: Excess function parameter 'p_size' description in 'amdgpu_gtt_mgr_init'
-> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c:134: warning: Excess function parameter 'man' description in 'amdgpu_gtt_mgr_fini'
-> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c:90: warning: Excess function parameter 'man' description in 'amdgpu_gtt_mgr_init'
-> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c:90: warning: Excess function parameter 'p_size' description in 'amdgpu_gtt_mgr_init'
-> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c:134: warning: Excess function parameter 'man' description in 'amdgpu_gtt_mgr_fini'
-> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:675: warning: Excess function parameter 'dev' description in 'amdgpu_device_asic_init'
-> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:675: warning: Excess function parameter 'dev' description in 'amdgpu_device_asic_init'
-> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:675: warning: Excess function parameter 'dev' description in 'amdgpu_device_asic_init'
-> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:675: warning: Excess function parameter 'dev' description in 'amdgpu_device_asic_init'
->
-> They're related to the repacement of some parameters by adev,
-> and due to a few renamed parameters.
->
-> Update the kernel-doc documentation accordingly.
->
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+On Sun, Oct 11, 2020 at 01:41:19AM +0300, Serge Semin wrote:
+> Amlogic G12A USB DT sub-nodes are supposed to be compatible with the
+> generic DWC USB2 and USB3 devices. Since now we've got DT schemas for
+> both of the later IP cores let's make sure that the Amlogic G12A USB
+> DT nodes are fully evaluated including the DWC sub-nodes.
+> 
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 > ---
->   drivers/gpu/drm/amd/amdgpu/amdgpu_device.c   | 2 +-
->   drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c  | 6 +++---
->   drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c | 5 ++---
->   3 files changed, 6 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-> index f8f298b34805..fb375752feb1 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-> @@ -817,7 +817,7 @@ static void amdgpu_block_invalid_wreg(struct amdgpu_device *adev,
->   /**
->    * amdgpu_device_asic_init - Wrapper for atom asic_init
->    *
-> - * @dev: drm_device pointer
-> + * @adev: drm_device pointer
+>  .../bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml | 15 ++++++++++++++-
+>  1 file changed, 14 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml b/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml
+> index 88184d7e26cc..3e8ac0ff90de 100644
+> --- a/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml
+> +++ b/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml
+> @@ -78,7 +78,20 @@ properties:
+>  
+>  patternProperties:
+>    "^usb@[0-9a-f]+$":
+> -    type: object
+> +    allOf:
+> +      - if:
+> +          properties:
+> +            compatible:
+> +              contains:
+> +                const: snps,dwc2
+> +        then:
+> +          $ref: dwc2.yaml#
+> +      - if:
+> +          properties:
+> +            compatible:
+> +              const: snps,dwc3
+> +        then:
+> +          $ref: snps,dwc3.yaml#
 
-This should probably read amdgpu device pointer, but apart from that 
-looks good to me.
+It should be enough to do just:
 
-Christian.
-
->    *
->    * Does any asic specific work and then calls atom asic init.
->    */
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c
-> index f203e4a6a3f2..5f3a04cd0fba 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c
-> @@ -81,8 +81,8 @@ static const struct ttm_resource_manager_func amdgpu_gtt_mgr_func;
->   /**
->    * amdgpu_gtt_mgr_init - init GTT manager and DRM MM
->    *
-> - * @man: TTM memory type manager
-> - * @p_size: maximum size of GTT
-> + * @adev: amdgpu device structure
-> + * @gtt_size: maximum size of GTT
->    *
->    * Allocate and initialize the GTT manager.
->    */
-> @@ -123,7 +123,7 @@ int amdgpu_gtt_mgr_init(struct amdgpu_device *adev, uint64_t gtt_size)
->   /**
->    * amdgpu_gtt_mgr_fini - free and destroy GTT manager
->    *
-> - * @man: TTM memory type manager
-> + * @adev: amdgpu device structure
->    *
->    * Destroy and free the GTT manager, returns -EBUSY if ranges are still
->    * allocated inside it.
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-> index 01c1171afbe0..a0e787ddbbd7 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-> @@ -168,8 +168,7 @@ static const struct ttm_resource_manager_func amdgpu_vram_mgr_func;
->   /**
->    * amdgpu_vram_mgr_init - init VRAM manager and DRM MM
->    *
-> - * @man: TTM memory type manager
-> - * @p_size: maximum size of VRAM
-> + * @adev: amdgpu device structure
->    *
->    * Allocate and initialize the VRAM manager.
->    */
-> @@ -199,7 +198,7 @@ int amdgpu_vram_mgr_init(struct amdgpu_device *adev)
->   /**
->    * amdgpu_vram_mgr_fini - free and destroy VRAM manager
->    *
-> - * @man: TTM memory type manager
-> + * @adev: amdgpu device structure
->    *
->    * Destroy and free the VRAM manager, returns -EBUSY if ranges are still
->    * allocated inside it.
-
+oneOf:
+  - $ref: dwc2.yaml#
+  - $ref: snps,dwc3.yaml#
