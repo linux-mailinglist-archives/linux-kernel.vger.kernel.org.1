@@ -2,108 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9671728D1A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 17:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B01228D1AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 18:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731453AbgJMP7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 11:59:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731302AbgJMP7j (ORCPT
+        id S1731455AbgJMQDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 12:03:16 -0400
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:48141 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726744AbgJMQDP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 11:59:39 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92168C0613D0;
-        Tue, 13 Oct 2020 08:59:39 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id q25so9170568ioh.4;
-        Tue, 13 Oct 2020 08:59:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GoK/FN58ddEqFxJb9/v0ALx7V7xXFOJvLkZX3jWieiI=;
-        b=oylhnEaPP6ek6HyznEVGBglU1X4AQm1C3CktWmZqvyVeaMi2GU7Ra/7wM5wnnjNnOl
-         DeW8tV6roR/LEStCUbRSl+eMZwakc0VDzKzo19Tf1mUzRDAdYSpN0RCOsHm4IvyRXor5
-         UcDbV5LR2wMOP0EPvob2ZbW5C3XVrhjqP3o7Wugusaf9+pT6geRMr3XYwn9FXvZJGIfK
-         brnTkNrrg5BhAeLZTvVeWMqZQa0qczKvNC9bXVwnMd6I/VfVCN5NAB23Oq8np8hwaz+N
-         K6qqPJhOiuauqNMmJlcmJ2/pyHFe8jEXI8PdhcF35zd9ggVIx9YciuaPan+8MdE2qnJQ
-         4LnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GoK/FN58ddEqFxJb9/v0ALx7V7xXFOJvLkZX3jWieiI=;
-        b=p1/vLZbxfuUk59c3J3EWwW/awMRtO9BoXKQIg4w81G/gD8gzZxYt3SUnSp7qPndk25
-         uLFkkrtNdkdVJEfkxmzVvnIPGismlZJeQ1cUP1iTaeSjBLfSvw0dNlx3sbxIg5cWvyuu
-         1d/d/qy4a63KTmC58J/Gt4jA26BwMUopcNUehXNNaPlRBbbL6SwRiNgMIiZwpAZbngZB
-         K8IoEjc+mJSXRVyHDFQnmGkwZohPJQoMeIOa1lE+9ctH6uvvKMgxmVz6F7V90Lmp1YZW
-         KkoxwmddWrIxzrCOAA+k+7r4XKpwsGCKNUii5I+c/XaJPXJt5UoKJdRLsREWMNwGucYB
-         QKvQ==
-X-Gm-Message-State: AOAM530vR7OppbCGSJ37e6z1kkA7T1J4a5/Nn5OrVlKeMPdjKJuwy23e
-        qGEZaSAZigkfLRH7Gqr7NCu8Hi0juQTqaBAwgKc=
-X-Google-Smtp-Source: ABdhPJzZha795qGjwavS+Zmii1KbnFD70ocwhqgxvRVr9dwy9BI+9WNCFg1FDRdptRVvAg+T8XTI6OVi6tIDsfr3kfE=
-X-Received: by 2002:a05:6638:98:: with SMTP id v24mr524631jao.113.1602604778970;
- Tue, 13 Oct 2020 08:59:38 -0700 (PDT)
+        Tue, 13 Oct 2020 12:03:15 -0400
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 09DG2vTG009053;
+        Wed, 14 Oct 2020 01:02:57 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 09DG2vTG009053
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1602604978;
+        bh=3Doy0JIMW8UlEO9WI984BiymwAAc3PcCowImi1wWrlc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=j1iFKrZFjKmYB3TS8hS72+3ACn6mEqyeXyYK+OY/XcWRDiCLMKufgU6PI75iJ58FZ
+         ZqD5aLNvA39nMpysKLZC72E0xGyW4sUckhjz3n8gIUAl6h4kyMvPLBXh+3D6sKuZgq
+         9cG4qFz+WchFkOtXJdWjeeCRbIqifjTOC+FLInKWf6g0+tv0J+3G7ht7fzrqeTNEdJ
+         v5kDS0j9pSdICvj5MU3estuPiL7nPx1xsi/cRk22nNIwntgtgS5IxjFK26ZgrzQh0a
+         Bof89zfD3ncfUS3jTnaZbcQF0ztFME3JhZwXAjf5wF7UZGbrVnzEeQPdD9dnPNtU3y
+         pRitjo25wXk9Q==
+X-Nifty-SrcIP: [209.85.216.45]
+Received: by mail-pj1-f45.google.com with SMTP id g16so109301pjv.3;
+        Tue, 13 Oct 2020 09:02:57 -0700 (PDT)
+X-Gm-Message-State: AOAM533Iil0a6heFHSsh2tMXZnYFQlDaOTnF0XAQEpIMaSuAzLjL4rDq
+        VtFNL0rwBumTwejiaR0fCmqu8qGO61qZ2m+jGYU=
+X-Google-Smtp-Source: ABdhPJwppXe7uVVWc+nfoNIz3RPoqqMPJii8V+bgs/KaSKZBm5bodncuyboRoJgCH3YbpjaBw+5sUrG7IlnA22ZMdAo=
+X-Received: by 2002:a17:902:c3d4:b029:d3:df24:1619 with SMTP id
+ j20-20020a170902c3d4b02900d3df241619mr159914plj.1.1602604976734; Tue, 13 Oct
+ 2020 09:02:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201007101726.3149375-1-a.nogikh@gmail.com> <20201007101726.3149375-2-a.nogikh@gmail.com>
- <20201009161558.57792e1a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CACT4Y+ZF_umjBpyJiCb8YPQOOSofG-M9h0CB=xn3bCgK=Kr=9w@mail.gmail.com>
- <20201010081431.1f2d9d0d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <CACT4Y+aEQoRMO6eA7iQZf4dhOu2cD1ZbbH6TT4Rs_uQwG0PWYg@mail.gmail.com>
-In-Reply-To: <CACT4Y+aEQoRMO6eA7iQZf4dhOu2cD1ZbbH6TT4Rs_uQwG0PWYg@mail.gmail.com>
-From:   Aleksandr Nogikh <a.nogikh@gmail.com>
-Date:   Tue, 13 Oct 2020 18:59:28 +0300
-Message-ID: <CADpXja8i4YPT=vcuCr412RYqRMjTOGuaMW2dyV0j7BtEwNBgFA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] net: store KCOV remote handle in sk_buff
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Marco Elver <elver@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Aleksandr Nogikh <nogikh@google.com>
+References: <20201012170631.1241502-1-ujjwalkumar0501@gmail.com>
+ <20201012170631.1241502-3-ujjwalkumar0501@gmail.com> <alpine.DEB.2.21.2010122019410.17866@felia>
+ <b4fdc7c5-8edf-3895-69fc-1bcf9efb5d4a@gmail.com> <53b7257e-b192-07da-9dd3-06497ce826f0@petrovitsch.priv.at>
+In-Reply-To: <53b7257e-b192-07da-9dd3-06497ce826f0@petrovitsch.priv.at>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 14 Oct 2020 01:02:19 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARRDz-+HqXtW6o7nowwprBSgKkhx7-Joe2=hjgLp4o+4A@mail.gmail.com>
+Message-ID: <CAK7LNARRDz-+HqXtW6o7nowwprBSgKkhx7-Joe2=hjgLp4o+4A@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] kbuild: use interpreters to invoke scripts
+To:     Bernd Petrovitsch <bernd@petrovitsch.priv.at>
+Cc:     Ujjwal Kumar <ujjwalkumar0501@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-ia64@vger.kernel.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Oct 2020 at 09:04, Dmitry Vyukov <dvyukov@google.com> wrote:
+On Tue, Oct 13, 2020 at 4:03 AM Bernd Petrovitsch
+<bernd@petrovitsch.priv.at> wrote:
 >
-> On Sat, Oct 10, 2020 at 5:14 PM Jakub Kicinski <kuba@kernel.org> wrote:
+> Hi all!
+>
+> On 12/10/2020 18:42, Ujjwal Kumar wrote:
+> > On 12/10/20 11:50 pm, Lukas Bulwahn wrote:
+> >>
+> >>
+> >> On Mon, 12 Oct 2020, Ujjwal Kumar wrote:
+> >>
+> >>> We cannot rely on execute bits to be set on files in the repository.
+> >>> The build script should use the explicit interpreter when invoking any
+> >>> script from the repository.
+> >>>
+> >>> Link: https://lore.kernel.org/lkml/20200830174409.c24c3f67addcce0cea9a9d4c@linux-foundation.org/
+> >>> Link: https://lore.kernel.org/lkml/202008271102.FEB906C88@keescook/
+> >>>
+> >>> Suggested-by: Andrew Morton <akpm@linux-foundation.org>
+> >>> Suggested-by: Kees Cook <keescook@chromium.org>
+> >>> Suggested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> >>> Signed-off-by: Ujjwal Kumar <ujjwalkumar0501@gmail.com>
+> >>> ---
+> >>>  Makefile                          | 4 ++--
+> >>>  arch/arm64/kernel/vdso/Makefile   | 2 +-
+> >>>  arch/arm64/kernel/vdso32/Makefile | 2 +-
+> >>>  arch/ia64/Makefile                | 4 ++--
+> >>>  arch/nds32/kernel/vdso/Makefile   | 2 +-
+> >>>  scripts/Makefile.build            | 2 +-
+> >>>  scripts/Makefile.package          | 4 ++--
+> >>>  7 files changed, 10 insertions(+), 10 deletions(-)
+> >>>
+> >>> diff --git a/Makefile b/Makefile
+> >>> index 0af7945caa61..df20e71dd7c8 100644
+> >>> --- a/Makefile
+> >>> +++ b/Makefile
+> >>> @@ -1256,7 +1256,7 @@ include/generated/utsrelease.h: include/config/kernel.release FORCE
+> >>>  PHONY += headerdep
+> >>>  headerdep:
+> >>>     $(Q)find $(srctree)/include/ -name '*.h' | xargs --max-args 1 \
+> >>> -   $(srctree)/scripts/headerdep.pl -I$(srctree)/include
+> >>> +   $(PERL) $(srctree)/scripts/headerdep.pl -I$(srctree)/include
+> >>>
+> >>>  # ---------------------------------------------------------------------------
+> >>>  # Kernel headers
+> >>> @@ -1312,7 +1312,7 @@ PHONY += kselftest-merge
+> >>>  kselftest-merge:
+> >>>     $(if $(wildcard $(objtree)/.config),, $(error No .config exists, config your kernel first!))
+> >>>     $(Q)find $(srctree)/tools/testing/selftests -name config | \
+> >>> -           xargs $(srctree)/scripts/kconfig/merge_config.sh -m $(objtree)/.config
+> >>> +           xargs $(CONFIG_SHELL) $(srctree)/scripts/kconfig/merge_config.sh -m $(objtree)/.config
+> >>>     $(Q)$(MAKE) -f $(srctree)/Makefile olddefconfig
+> >>>
+> >>>  # ---------------------------------------------------------------------------
+> >>> diff --git a/arch/arm64/kernel/vdso/Makefile b/arch/arm64/kernel/vdso/Makefile
+> >>> index edccdb77c53e..fb07804b7fc1 100644
+> >>> --- a/arch/arm64/kernel/vdso/Makefile
+> >>> +++ b/arch/arm64/kernel/vdso/Makefile
+> >>> @@ -65,7 +65,7 @@ $(obj)/%.so: $(obj)/%.so.dbg FORCE
+> >>>  # Generate VDSO offsets using helper script
+> >>>  gen-vdsosym := $(srctree)/$(src)/gen_vdso_offsets.sh
+> >>>  quiet_cmd_vdsosym = VDSOSYM $@
+> >>> -      cmd_vdsosym = $(NM) $< | $(gen-vdsosym) | LC_ALL=C sort > $@
+> >>> +      cmd_vdsosym = $(NM) $< | $(CONFIG_SHELL) $(gen-vdsosym) | LC_ALL=C sort > $@
+> >>>
+> >>>  include/generated/vdso-offsets.h: $(obj)/vdso.so.dbg FORCE
+> >>>     $(call if_changed,vdsosym)
+> >>> diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
+> >>> index 7f96a1a9f68c..617c9ac58156 100644
+> >>> --- a/arch/arm64/kernel/vdso32/Makefile
+> >>> +++ b/arch/arm64/kernel/vdso32/Makefile
+> >>> @@ -205,7 +205,7 @@ quiet_cmd_vdsomunge = MUNGE   $@
+> >>>  gen-vdsosym := $(srctree)/$(src)/../vdso/gen_vdso_offsets.sh
+> >>>  quiet_cmd_vdsosym = VDSOSYM $@
+> >>>  # The AArch64 nm should be able to read an AArch32 binary
+> >>> -      cmd_vdsosym = $(NM) $< | $(gen-vdsosym) | LC_ALL=C sort > $@
+> >>> +      cmd_vdsosym = $(NM) $< | $(CONFIG_SHELL) $(gen-vdsosym) | LC_ALL=C sort > $@
+> >>>
+> >>>  # Install commands for the unstripped file
+> >>>  quiet_cmd_vdso_install = INSTALL32 $@
+> >>> diff --git a/arch/ia64/Makefile b/arch/ia64/Makefile
+> >>> index 703b1c4f6d12..86d42a2d09cb 100644
+> >>> --- a/arch/ia64/Makefile
+> >>> +++ b/arch/ia64/Makefile
+> >>> @@ -27,8 +27,8 @@ cflags-y  := -pipe $(EXTRA) -ffixed-r13 -mfixed-range=f12-f15,f32-f127 \
+> >>>                -falign-functions=32 -frename-registers -fno-optimize-sibling-calls
+> >>>  KBUILD_CFLAGS_KERNEL := -mconstant-gp
+> >>>
+> >>> -GAS_STATUS = $(shell $(srctree)/arch/ia64/scripts/check-gas "$(CC)" "$(OBJDUMP)")
+> >>> -KBUILD_CPPFLAGS += $(shell $(srctree)/arch/ia64/scripts/toolchain-flags "$(CC)" "$(OBJDUMP)" "$(READELF)")
+> >>> +GAS_STATUS = $(shell $(CONFIG_SHELL) $(srctree)/arch/ia64/scripts/check-gas "$(CC)" "$(OBJDUMP)")
+> >>> +KBUILD_CPPFLAGS += $(shell $(CONFIG_SHELL) $(srctree)/arch/ia64/scripts/toolchain-flags "$(CC)" "$(OBJDUMP)" "$(READELF)")
+> >>
+> >> Here is an instance of what Masahiro-san pointed out being wrong.
+> >>
+> >> Ujjwal, will you send a v3?
 > >
-> > On Sat, 10 Oct 2020 09:54:57 +0200 Dmitry Vyukov wrote:
-> > > On Sat, Oct 10, 2020 at 1:16 AM Jakub Kicinski <kuba@kernel.org> wrote:
-[...]
-> > > > Could you use skb_extensions for this?
-> > >
-> > > Why? If for space, this is already under a non-production ifdef.
+> > Following is the quoted text from the reply mail from Masahiro
 > >
-> > I understand, but the skb_ext infra is there for uncommon use cases
-> > like this one. Any particular reason you don't want to use it?
-> > The slight LoC increase?
+> >>> -GAS_STATUS     = $(shell $(srctree)/arch/ia64/scripts/check-gas "$(CC)" "$(OBJDUMP)")
+> >>> -KBUILD_CPPFLAGS += $(shell $(srctree)/arch/ia64/scripts/toolchain-flags "$(CC)" "$(OBJDUMP)" "$(READELF)")
+> >>> +GAS_STATUS     = $($(CONFIG_SHELL) $(srctree)/arch/ia64/scripts/check-gas "$(CC)" "$(OBJDUMP)")
+> >>> +KBUILD_CPPFLAGS += $($(CONFIG_SHELL) $(srctree)/arch/ia64/scripts/toolchain-flags "$(CC)" "$(OBJDUMP)" "$(READELF)")
+> >>
+> >>
+> >>
+> >> These changes look wrong to me.
+> >>
+> >> $($(CONFIG_SHELL)    ->  $(shell $(CONFIG_SHELL)
+> >>
 > >
-> > Is there any precedent for adding the kcov field to other performance
-> > critical structures?
+> > From the above text, I understand as follows:
+>
+> Did you actually *test* that (expecially) these lines work
+> afterwards as good as before?
+>
+> > That my proposed change:
+> > $(shell $(src...)    ->  $($(CONFIG_SHELL) $(src...)
+> >
+> > is WRONG
+>
+> Yup, as it's in a Makefile and that's a Makefile construct.
+>
+> > and in the next line he suggested the required correction.
+> > That being:
+> > $($(CONFIG_SHELL)    ->  $(shell $(CONFIG_SHELL)
+>
+> Such stuff should generally not be needed as the to-be-used
+> shell can be set in Makefiles via a "SHELL = " assignment
+> (defaulting to /bin/sh - what else;-).
+> Flags for the shell can BTW set with ".SHELLFLAGS = ".
 
-It would be great to come to some conclusion on where exactly to store
-kcov_handle. Technically, it is possible to use skb extensions for the
-purpose, though it will indeed slightly increase the complexity.
 
-Jakub, you think that kcov_handle should be added as an skb extension,
-right?
+You are talking about a different thing.
 
-Though I do not really object to moving the field, it still seems to
-me that sk_buff itself is a better place. Right now skb extensions
-store values that are local to specific protocols and that are only
-meaningful in the context of these protocols (correct me if I'm
-wrong). Although this patch only adds remote kcov coverage to the wifi
-code, kcov_handle can be meaningful for other protocols as well - just
-like the already existing sk_buff fields. So adding kcov_handle to skb
-extensions will break this logical separation.
+
+
+Take the current code as an example:
+
+$(shell $(srctree)/arch/ia64/scripts/check-gas "$(CC)" "$(OBJDUMP)")
+
+
+Here are two shell invocations.
+
+
+[1]
+The command
+$(srctree)/arch/ia64/scripts/check-gas "$(CC)" "$(OBJDUMP)"
+is run in /bin/sh because the default value of SHELL is /bin/sh.
+
+
+[2]
+The script, arch/ia64/scripts/check-gas, is run in /bin/sh
+because the hash-bang (the first line of check-gas)
+specifies #!/bin/sh
+
+
+
+
+Bernd is talking about [1].
+
+In contrast, this patch is addressing [2] because
+Andrew Morton suggested to run scripts without relying
+on the executable bit.
+(and, after this patch, we run scripts without relying
+on the hash-bang because we now specify the interpreter.)
+
+
+Of course, [1] and [2] can be different.
+
+
+I always want to use /bin/sh for [1],
+so please do not use bash-extension inside $(shell  ...)
+
+
+You have more choices for [2].
+
+If arch/ia64/scripts/check-gas had been written with bash-extension,
+the code would have been changed into:
+
+$(shell $(BASH) $(srctree)/arch/ia64/scripts/check-gas "$(CC)" "$(OBJDUMP)")
+
+
+I hope this will be clearer.
+
+
+
+
+> So please
+> -) learn basic "Makefile" + "make" before brainlessly patching
+>    a Makefile.
+> -) actually testy your changes to make sure the patch didn't
+>    broke anything
+> -) and - last but not least - check if there isn't a shell
+>    already set (and which).
+>
+> MfG,
+>         Bernd
+> --
+> There is no cloud, just other people computers.
+> -- https://static.fsf.org/nosvn/stickers/thereisnocloud.svg
+
+
 
 --
-Best regards,
-Aleksandr
+Best Regards
+Masahiro Yamada
