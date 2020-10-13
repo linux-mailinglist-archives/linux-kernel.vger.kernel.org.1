@@ -2,143 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF28228D337
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 19:40:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5072228D33C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 19:41:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725977AbgJMRkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 13:40:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37368 "EHLO
+        id S1726124AbgJMRl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 13:41:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725899AbgJMRkm (ORCPT
+        with ESMTP id S1725899AbgJMRlZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 13:40:42 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9229AC0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 10:40:42 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id v12so209655ply.12
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 10:40:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BgqdPWs6k36v3EWHSCP5rIGkH3M8a7CT3H5KDtj6quk=;
-        b=D1gwXHACQsx2PqfeXXFocSDuvYv2+rCbN8y3GlauYrnpzYBaqeF6LlMSWiWsI7DhEw
-         AHI7yLk23HAdzbup0c3EEgCntoVKaVXrspt86RkLh+rNrAJuCLAs7eyjaUsTcE0u7VxG
-         Fq09OAfg/M9T/nMBxrTXXKJ3uXfFx3z58onpU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BgqdPWs6k36v3EWHSCP5rIGkH3M8a7CT3H5KDtj6quk=;
-        b=S2uG+TFSH+tm5yCqPPQf85OqAPw0Iuvb7XfNwFnSCrCwTvxsomhXXTosyMUbtCeuXj
-         EBExwPqqUu2hG4Fjkk6NpgFGUFXiyyHrRlmyMwRoQqB6r1Uxe+/2E5B/zAy2Dyly9Ta7
-         ebjoSBQOUe1y8w4eKCAXEj8oS0BE6f8tVpTlahPmQdR95IJW0ylwHyEj7wwL+ruY+nAZ
-         MXMpaD0XA5tCY7OIIj/u79njCkz7ZnGOzhRbKyqlGPtY6PNZ0mKF8ojvD8LWYyhbXVOK
-         Lr427itkcdZB0EM47TSohF3QFTkMkexJ6W0d6stB14OgOwbfEluSoYD1VYEC1wo1XxOK
-         GjhQ==
-X-Gm-Message-State: AOAM532tvxVc36V/ZrNPHIRtGpJmp6MOue7Lq5IDWXOKswa779dSeJpg
-        P7hS73Ktbolh3ooB7oC4BSS/Og==
-X-Google-Smtp-Source: ABdhPJxcQDym/jLS7CXIRriJ6p5w8ir5pH5scUs0e3tlaC0hn8R/ZsAouQVQx9h4pitkUsStjIXxvw==
-X-Received: by 2002:a17:90b:1b03:: with SMTP id nu3mr863981pjb.64.1602610841134;
-        Tue, 13 Oct 2020 10:40:41 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
-        by smtp.gmail.com with ESMTPSA id n3sm265870pgf.11.2020.10.13.10.40.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Oct 2020 10:40:40 -0700 (PDT)
-Date:   Tue, 13 Oct 2020 10:40:38 -0700
-From:   mka@chromium.org
-To:     Akhil P Oommen <akhilpo@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@freedesktop.org, freedreno@lists.freedesktop.org
-Subject: Re: [2/2] drm/msm: Add support for GPU cooling
-Message-ID: <20201013174038.GA424420@google.com>
-References: <1602176947-17385-2-git-send-email-akhilpo@codeaurora.org>
- <20201009183640.GB1292413@google.com>
- <cab2105e-7a8c-988f-dcc1-056692a94e8b@codeaurora.org>
- <20201012174035.GA44627@google.com>
- <80ded484-a058-70fc-be9d-045be2933563@codeaurora.org>
+        Tue, 13 Oct 2020 13:41:25 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42617C0613D0;
+        Tue, 13 Oct 2020 10:41:25 -0700 (PDT)
+Date:   Tue, 13 Oct 2020 17:41:19 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602610880;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nz8S0QJntGZrjmA1YVrBL07KP5xJTEQ9dbpbyuq5xS4=;
+        b=hq00tO2undWg1x5z8kJ31pN0vELKeaqzAXqahAoZA46TxhIcwMflpdbsxGpt08Z+nFFpYn
+        dCVZSKus6JVUOkkiyeivrDJbmOGngJpA0YeNvJdbMYSYxcmTrHT/JIiKIQuquRFq9vLeXV
+        GzbFYKvngs/kz584SFm4Xl08VoxyQfN775Q+vBSqgnrAV7+JHkRac0Ji0ApP19AbhFZmt6
+        Qu/HSwnKAzAfgdUBg+jpB1wZjL0WaOZNLbJFuMsLNeUwJ6GI3M+KeC9fAVbY4tdI+IE/Iu
+        EPmD3XcJi4PPIt/P3leHJ87oeCcPBojw786XQsKbJXbVFm/kNIUTwUDVNcpH1A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602610880;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nz8S0QJntGZrjmA1YVrBL07KP5xJTEQ9dbpbyuq5xS4=;
+        b=xa366Fugi3Tdl2pDHkacvLml2N7pDEnrw5Gt6qJGLk39vA12CMmHdP6f5FWbaOP72GknPv
+        xSh2B4/sWhlwigBQ==
+From:   "tip-bot2 for Mike Travis" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/platform/uv: Remove unused variable in UV5 NMI handler
+Cc:     Mike Travis <mike.travis@hpe.com>, Borislav Petkov <bp@suse.de>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20201013154731.132565-1-mike.travis@hpe.com>
+References: <20201013154731.132565-1-mike.travis@hpe.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <80ded484-a058-70fc-be9d-045be2933563@codeaurora.org>
+Message-ID: <160261087913.7002.10262284099177006973.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 07:23:34PM +0530, Akhil P Oommen wrote:
-> On 10/12/2020 11:10 PM, mka@chromium.org wrote:
-> > On Mon, Oct 12, 2020 at 07:03:51PM +0530, Akhil P Oommen wrote:
-> > > On 10/10/2020 12:06 AM, mka@chromium.org wrote:
-> > > > Hi Akhil,
-> > > > 
-> > > > On Thu, Oct 08, 2020 at 10:39:07PM +0530, Akhil P Oommen wrote:
-> > > > > Register GPU as a devfreq cooling device so that it can be passively
-> > > > > cooled by the thermal framework.
-> > > > > 
-> > > > > Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
-> > > > > ---
-> > > > >    drivers/gpu/drm/msm/msm_gpu.c | 13 ++++++++++++-
-> > > > >    drivers/gpu/drm/msm/msm_gpu.h |  2 ++
-> > > > >    2 files changed, 14 insertions(+), 1 deletion(-)
-> > > > > 
-> > > > > diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
-> > > > > index 55d1648..93ffd66 100644
-> > > > > --- a/drivers/gpu/drm/msm/msm_gpu.c
-> > > > > +++ b/drivers/gpu/drm/msm/msm_gpu.c
-> > > > > @@ -14,6 +14,7 @@
-> > > > >    #include <generated/utsrelease.h>
-> > > > >    #include <linux/string_helpers.h>
-> > > > >    #include <linux/devfreq.h>
-> > > > > +#include <linux/devfreq_cooling.h>
-> > > > >    #include <linux/devcoredump.h>
-> > > > >    #include <linux/sched/task.h>
-> > > > > @@ -107,9 +108,18 @@ static void msm_devfreq_init(struct msm_gpu *gpu)
-> > > > >    	if (IS_ERR(gpu->devfreq.devfreq)) {
-> > > > >    		DRM_DEV_ERROR(&gpu->pdev->dev, "Couldn't initialize GPU devfreq\n");
-> > > > >    		gpu->devfreq.devfreq = NULL;
-> > > > > +		return;
-> > > > >    	}
-> > > > >    	devfreq_suspend_device(gpu->devfreq.devfreq);
-> > > > > +
-> > > > > +	gpu->cooling = of_devfreq_cooling_register(gpu->pdev->dev.of_node,
-> > > > > +			gpu->devfreq.devfreq);
-> > > > > +	if (IS_ERR(gpu->cooling)) {
-> > > > > +		DRM_DEV_ERROR(&gpu->pdev->dev,
-> > > > > +				"Couldn't register GPU cooling device\n");
-> > > > > +		gpu->cooling = NULL;
-> > > > > +	}
-> > > > >    }
-> > > > >    static int enable_pwrrail(struct msm_gpu *gpu)
-> > > > > @@ -926,7 +936,6 @@ int msm_gpu_init(struct drm_device *drm, struct platform_device *pdev,
-> > > > >    	msm_devfreq_init(gpu);
-> > > > > -
-> Will remove this unintended change.
-> > > > >    	gpu->aspace = gpu->funcs->create_address_space(gpu, pdev);
-> > > > >    	if (gpu->aspace == NULL)
-> > > > > @@ -1005,4 +1014,6 @@ void msm_gpu_cleanup(struct msm_gpu *gpu)
-> > > > >    		gpu->aspace->mmu->funcs->detach(gpu->aspace->mmu);
-> > > > >    		msm_gem_address_space_put(gpu->aspace);
-> > > > >    	}
-> > > > > +
-> > > > > +	devfreq_cooling_unregister(gpu->cooling);
-> > > > 
-> > > > Resources should be released in reverse order, otherwise the cooling device
-> > > > could use resources that have already been freed.
-> > > > Why do you think this is not the correct order? If you are thinking
-> > > about devfreq struct, it is managed device resource.
-> > 
-> > I did not check specifically if changing the frequency really uses any of the
-> > resources that are released previously, In any case it's not a good idea to
-> > allow other parts of the kernel to use a half initialized/torn down device.
-> > Even if it isn't a problem today someone could change the driver to use any
-> > of these resources (or add a new one) in a frequency change, without even
-> > thinking about the cooling device, just (rightfully) asuming that things are
-> > set up and torn down in a sane order.
-> 'sane order' relative to what specifically here? Should we worry about freq
-> change at this point because we have already disabled gpu runtime pm and
-> devfreq?
+The following commit has been merged into the x86/urgent branch of tip:
 
-GPU runtime PM and the devfreq being disabled is not evident from the context
-of the function. You are probably right that it's not a problem in practice,
-but why give reason for doubts in the first place if this could be avoided
-by following a common practice?
+Commit-ID:     081dd68c89061077930ec7776d98837cb64b0405
+Gitweb:        https://git.kernel.org/tip/081dd68c89061077930ec7776d98837cb64b0405
+Author:        Mike Travis <mike.travis@hpe.com>
+AuthorDate:    Tue, 13 Oct 2020 10:47:31 -05:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Tue, 13 Oct 2020 19:21:13 +02:00
+
+x86/platform/uv: Remove unused variable in UV5 NMI handler
+
+Remove an unused variable.
+
+Signed-off-by: Mike Travis <mike.travis@hpe.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20201013154731.132565-1-mike.travis@hpe.com
+---
+ arch/x86/platform/uv/uv_nmi.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/arch/x86/platform/uv/uv_nmi.c b/arch/x86/platform/uv/uv_nmi.c
+index 0f5cbcf..eafc530 100644
+--- a/arch/x86/platform/uv/uv_nmi.c
++++ b/arch/x86/platform/uv/uv_nmi.c
+@@ -59,7 +59,6 @@ DEFINE_PER_CPU(struct uv_cpu_nmi_s, uv_cpu_nmi);
+ static unsigned long uvh_nmi_mmrx;		/* UVH_EVENT_OCCURRED0/1 */
+ static unsigned long uvh_nmi_mmrx_clear;	/* UVH_EVENT_OCCURRED0/1_ALIAS */
+ static int uvh_nmi_mmrx_shift;			/* UVH_EVENT_OCCURRED0/1_EXTIO_INT0_SHFT */
+-static int uvh_nmi_mmrx_mask;			/* UVH_EVENT_OCCURRED0/1_EXTIO_INT0_MASK */
+ static char *uvh_nmi_mmrx_type;			/* "EXTIO_INT0" */
+ 
+ /* Non-zero indicates newer SMM NMI handler present */
+@@ -247,7 +246,6 @@ static void uv_nmi_setup_mmrs(void)
+ 		uvh_nmi_mmrx = UVH_EVENT_OCCURRED0;
+ 		uvh_nmi_mmrx_clear = UVH_EVENT_OCCURRED0_ALIAS;
+ 		uvh_nmi_mmrx_shift = UVH_EVENT_OCCURRED0_EXTIO_INT0_SHFT;
+-		uvh_nmi_mmrx_mask = UVH_EVENT_OCCURRED0_EXTIO_INT0_MASK;
+ 		uvh_nmi_mmrx_type = "OCRD0-EXTIO_INT0";
+ 
+ 		uvh_nmi_mmrx_supported = UVH_EXTIO_INT0_BROADCAST;
+@@ -258,7 +256,6 @@ static void uv_nmi_setup_mmrs(void)
+ 		uvh_nmi_mmrx = UVH_EVENT_OCCURRED1;
+ 		uvh_nmi_mmrx_clear = UVH_EVENT_OCCURRED1_ALIAS;
+ 		uvh_nmi_mmrx_shift = UVH_EVENT_OCCURRED1_EXTIO_INT0_SHFT;
+-		uvh_nmi_mmrx_mask = UVH_EVENT_OCCURRED1_EXTIO_INT0_MASK;
+ 		uvh_nmi_mmrx_type = "OCRD1-EXTIO_INT0";
+ 
+ 		uvh_nmi_mmrx_supported = UVH_EXTIO_INT0_BROADCAST;
