@@ -2,101 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A52F28C580
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 01:59:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B64228C586
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 02:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389625AbgJLX7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 19:59:31 -0400
-Received: from mga18.intel.com ([134.134.136.126]:47370 "EHLO mga18.intel.com"
+        id S1726168AbgJMAGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 20:06:15 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:44024 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388709AbgJLX7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 19:59:31 -0400
-IronPort-SDR: 8rHKqNG44OT6YxsbeBHQpp//nX7AXLvEsIALuIF8FssuwcTiYCUWFqNlrOFiIJ+Ia3yoI+fXtq
- 9Ft0YwTgXIGQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="153651227"
-X-IronPort-AV: E=Sophos;i="5.77,368,1596524400"; 
-   d="scan'208";a="153651227"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 16:59:30 -0700
-IronPort-SDR: yjTi45t6rk7br2LsqZKE93BfY/THNmNIlozOo7cj6LaLBU2KOZ+4Mu0Mjm6R9Bqck7+lSwvWBz
- fe4p/zLhep/g==
-X-IronPort-AV: E=Sophos;i="5.77,368,1596524400"; 
-   d="scan'208";a="520848155"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 16:59:29 -0700
-Date:   Mon, 12 Oct 2020 16:59:27 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Subject: Re: [PATCH 04/22] kvm: mmu: Allocate and free TDP MMU roots
-Message-ID: <20201012235927.GA8949@linux.intel.com>
-References: <20200925212302.3979661-1-bgardon@google.com>
- <20200925212302.3979661-5-bgardon@google.com>
- <20200930060610.GA29659@linux.intel.com>
- <CANgfPd90pTFr_36EhHsZjYkmFdyhyxYsRVxQ4_63znT1ri7jOw@mail.gmail.com>
+        id S1725970AbgJMAGP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 20:06:15 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602547574; h=Message-ID: References: In-Reply-To: Reply-To:
+ Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=ML0+jaoZ1OBNN29iovgFRYOPaLsbkufdiGw3b6HBh/s=;
+ b=lMp20GyUx/F2TQt143yiNix0heHi0I4BjgabX7UfWJMhuxrZNVCzLUb52PLIFZ4tMCvBAXId
+ QMOMEzR9K6Bmz+aCEWVqQXOhPKxO1sf3BJySbkkXbLt7U5dguPwixkIeWlMR8+PJ29oR09xo
+ hadI426TGmjZMX+qHOXPqpdBEWs=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5f84eeeeef891f1ee2966798 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 13 Oct 2020 00:03:58
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6EF74C433FE; Tue, 13 Oct 2020 00:03:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BCB88C433CB;
+        Tue, 13 Oct 2020 00:03:56 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANgfPd90pTFr_36EhHsZjYkmFdyhyxYsRVxQ4_63znT1ri7jOw@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 12 Oct 2020 17:03:56 -0700
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        mgautam@codeaurora.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 05/10] bus: mhi: core: Disable IRQs when powering down
+Organization: Qualcomm Innovation Center, Inc.
+Reply-To: bbhatt@codeaurora.org
+Mail-Reply-To: bbhatt@codeaurora.org
+In-Reply-To: <20201009160216.GF4810@Mani-XPS-13-9360>
+References: <1600480955-16827-1-git-send-email-bbhatt@codeaurora.org>
+ <1600480955-16827-6-git-send-email-bbhatt@codeaurora.org>
+ <20201009160216.GF4810@Mani-XPS-13-9360>
+Message-ID: <8b49f421f81ff850e58d14795376337b@codeaurora.org>
+X-Sender: bbhatt@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Heads up, you may get this multiple times, our mail servers got "upgraded"
-recently and are giving me troubles...
+On 2020-10-09 09:02, Manivannan Sadhasivam wrote:
+> On Fri, Sep 18, 2020 at 07:02:30PM -0700, Bhaumik Bhatt wrote:
+>> While powering down, the device may or may not acknowledge the MHI
+>> RESET issued by host for graceful shutdown scenario which can lead
+>> to a rogue device sending an interrupt after the clean-up has been
+>> done. This can result in a tasklet being scheduled after it has
+>> been killed and access already freed memory causing a NULL pointer
+>> exception. Avoid this corner case by disabling the interrupts as a
+>> part of host clean up.
+>> 
+>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+>> ---
+>>  drivers/bus/mhi/core/pm.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>> 
+>> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+>> index 1862960..3462d82 100644
+>> --- a/drivers/bus/mhi/core/pm.c
+>> +++ b/drivers/bus/mhi/core/pm.c
+>> @@ -517,6 +517,7 @@ static void mhi_pm_disable_transition(struct 
+>> mhi_controller *mhi_cntrl,
+>>  	for (i = 0; i < mhi_cntrl->total_ev_rings; i++, mhi_event++) {
+>>  		if (mhi_event->offload_ev)
+>>  			continue;
+>> +		disable_irq(mhi_cntrl->irq[mhi_event->irq]);
+> 
+> No need to disable irq[0]?
+> 
+> Thanks,
+> Mani
+> 
+>>  		tasklet_kill(&mhi_event->task);
+>>  	}
+>> 
+>> --
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+>> Forum,
+>> a Linux Foundation Collaborative Project
+>> 
 
-On Mon, Oct 12, 2020 at 03:59:35PM -0700, Ben Gardon wrote:
-> On Tue, Sep 29, 2020 at 11:06 PM Sean Christopherson
-> <sean.j.christopherson@intel.com> wrote:
-> > > @@ -3691,7 +3690,13 @@ static int mmu_alloc_direct_roots(struct kvm_vcpu *vcpu)
-> > >       unsigned i;
-> > >
-> > >       if (shadow_root_level >= PT64_ROOT_4LEVEL) {
-> > > -             root = mmu_alloc_root(vcpu, 0, 0, shadow_root_level, true);
-> > > +             if (vcpu->kvm->arch.tdp_mmu_enabled) {
-> >
-> > I believe this will break 32-bit NPT.  Or at a minimum, look weird.  It'd
-> > be better to explicitly disable the TDP MMU on 32-bit KVM, then this becomes
-> >
-> >         if (vcpu->kvm->arch.tdp_mmu_enabled) {
-> >
-> >         } else if (shadow_root_level >= PT64_ROOT_4LEVEL) {
-> >
-> >         } else {
-> >
-> >         }
-> >
->
-> How does this break 32-bit NPT? I'm not sure I understand how we would
-> get into a bad state here because I'm not familiar with the specifics
-> of 32 bit NPT.
+This patch would disable the IRQ line and if IRQ lines are shared 
+between BHI
+and MHI, we would not see handling of BHI related work happen.
 
-32-bit NPT will have a max TDP level of PT32E_ROOT_LEVEL (3), i.e. will
-fail the "shadow_root_level >= PT64_ROOT_4LEVEL" check, and thus won't get
-to the tdp_mmu_enabled check.  That would likely break as some parts of KVM
-would see tdp_mmu_enabled, but this root allocation would continue using
-the legacy MMU.
+Discussed this with Hemant and and as I am dropping the previous patch, 
+will update
+this one to make it free_irq() instead which removes the IRQ handler and 
+does not
+disable the interrupt line.
 
-It's somewhat of a moot point, because IIRC there are other things that will
-break with 32-bit KVM, i.e. TDP MMU will be 64-bit only.  But burying that
-assumption/dependency in these flows is weird.
+The function mhi_deinit_free_irq() will not be called from 
+mhi_power_down() and
+instead, only a free for the main IRQ handler will be called.
 
-> > > +                     root = kvm_tdp_mmu_get_vcpu_root_hpa(vcpu);
-> > > +             } else {
-> > > +                     root = mmu_alloc_root(vcpu, 0, 0, shadow_root_level,
-> > > +                                           true);
-> > > +             }
-
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
