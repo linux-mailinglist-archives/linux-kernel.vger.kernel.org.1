@@ -2,54 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E9CB28D228
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 18:24:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1D4028D224
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 18:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389763AbgJMQYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 12:24:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49334 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389732AbgJMQYF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2389737AbgJMQYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 13 Oct 2020 12:24:05 -0400
-Subject: Re: [GIT PULL] fscrypt updates for 5.10
+Received: from mail.kernel.org ([198.145.29.99]:49280 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389679AbgJMQYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 12:24:04 -0400
+Subject: Re: [GIT PULL] Btrfs updates for 5.10
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1602606244;
-        bh=0GDL0FDvlJWyLDYOyGXqNYN79mm0g6czXO6Y14y8hrk=;
+        bh=KWAzpjmi9l7B0c4W5/JaRhuvdkK4DnAmvRgfkjSSJm8=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=mofhlG7EDLN4Wve2vrb/jiWtdjc82+lqb+c3kTbmI1iFf2xdVgtLjlQf0+l9/MtrC
-         sE81COzKRt4L22V5GvwJKgzI+XyZCUsfnYqG3/HK4o0gRIglNXN8s9xuYDCF7C+Van
-         fYZnaujwVqmKli37bmbx/DRw8xt2EHPDN/A1MYzs=
+        b=hSOLxh093RVv+JyWQTgNOj31ryVZWyhutkTh2g/MgU/DU8PwrrlRFfi6OazXKU21R
+         2MFCDxzOyYc0jy85HsmPzKR5rSBeJzBdGcKTSF1gqu6SAZGEoCdWQ2cwt631ulngj9
+         YG0YwZbPOK0svrDwnB7DG/uYiP6dIB/WXBw0uBgs=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201012163543.GB858@sol.localdomain>
-References: <20201012163543.GB858@sol.localdomain>
-X-PR-Tracked-List-Id: <linux-ext4.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201012163543.GB858@sol.localdomain>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
-X-PR-Tracked-Commit-Id: 5b2a828b98ec1872799b1b4d82113c76a12d594f
+In-Reply-To: <cover.1602519695.git.dsterba@suse.com>
+References: <cover.1602519695.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1602519695.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.10-tag
+X-PR-Tracked-Commit-Id: 1fd4033dd011a3525bacddf37ab9eac425d25c4f
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 6f5032a852f9bf3c449db58a9209ba267f11869a
-Message-Id: <160260624476.24492.420695043633414876.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 11e3235b4399f7e626caa791a68a0ea8337f6683
+Message-Id: <160260624422.24492.10394506834366879321.pr-tracker-bot@kernel.org>
 Date:   Tue, 13 Oct 2020 16:24:04 +0000
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Daniel Rosenberg <drosen@google.com>
+To:     David Sterba <dsterba@suse.com>
+Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 12 Oct 2020 09:35:43 -0700:
+The pull request you sent on Mon, 12 Oct 2020 22:25:02 +0200:
 
-> https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.10-tag
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/6f5032a852f9bf3c449db58a9209ba267f11869a
+https://git.kernel.org/torvalds/c/11e3235b4399f7e626caa791a68a0ea8337f6683
 
 Thank you!
 
