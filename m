@@ -2,193 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E5F28D2B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 18:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50B1D28D2B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 18:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728651AbgJMQ4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 12:56:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728624AbgJMQ4Z (ORCPT
+        id S1728616AbgJMQzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 12:55:41 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:37359 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727696AbgJMQzl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 12:56:25 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0178CC0613D2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 09:56:24 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id w21so131344pfc.7
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 09:56:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=K1nsHK9CkHQD5KrRCjG14Z+H7u+Ut6VhtenLPkHqaew=;
-        b=HxhVGZANerXKnrnAtUGvf/3VfyW9K1vE54QZu+yHKLtgTHl+T4juSHjMo6yg2KsNt8
-         r+xRCVxNjxPdcRnD6dNwn8HUEwGkkpIIVjQyx3ZhQ5jdOYkzJZdlAgKyyI8TWuIQGyxy
-         l3NkK5hmi7P383CvuYBf+UHn/PBMxVyL/LeYRsBErMNlKGrK4F0ANtmkpPF3vAygttyI
-         FZHLccdlYilIwo8oDcjUupeZefW6n9nwtU6Vh6teRt30SclrjAR9RRWXcFQisWTxqEf8
-         xFcf07g9ehasg846DbCIm5NJmo441kH0PDiUdGoDKwPupbxnTjIY+B7r7WGRKqJJlOCJ
-         zy8g==
+        Tue, 13 Oct 2020 12:55:41 -0400
+Received: by mail-oi1-f194.google.com with SMTP id t77so105939oie.4;
+        Tue, 13 Oct 2020 09:55:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=K1nsHK9CkHQD5KrRCjG14Z+H7u+Ut6VhtenLPkHqaew=;
-        b=l+AhHrIfhhMvojiIiZ5PVS/LyjDx8rUhyHTTQVoKDEw1m/ZMPG10aI7MOb9AdxU2pC
-         7WnHkCRaZltBsfcWKw4D3vp3Cbrod//JqQ6kWZQG0hO06+Bsuz8Ekpn7ZuMo4xtkKn0d
-         hSh8JysgIq8Re5YzRaZsSkTwMeMjVT1sjEJ3TVeKIZhxHhKjtsk0QogZPf8M6fYaMjcj
-         gXK4iMvQ9d/CguhkK6puTpcNlpT5Q+VsaJmRi1mlw2QbJyLN1Uvumqi3L5DYqdYdvYL9
-         1BUY+7Y5YfBFiIKgPZQVaxJk1npHKYorx+JSBR0BPP7eM/QjJFFuAjI0ISx1EpHr1LpN
-         AUKQ==
-X-Gm-Message-State: AOAM532/0do4QFrbbrS9Gj8YAHBDqVbU1H5/SdGlBfS5zUlm1SqWh0oL
-        oZsXzMCKaIBBFqfUaKJj8rDDm1xUlz73aw==
-X-Google-Smtp-Source: ABdhPJwHox5XSpr8/XFp6AULN8Y31D80FxtNrF7h6Lib95vvfVqj6KB4bf7CFAGzKMpnFbHu+nnd1w==
-X-Received: by 2002:a63:cb51:: with SMTP id m17mr346050pgi.337.1602608184319;
-        Tue, 13 Oct 2020 09:56:24 -0700 (PDT)
-Received: from arch-ashland-svkelley ([2601:1c0:6a00:1804:88d3:6720:250a:6d10])
-        by smtp.gmail.com with ESMTPSA id q123sm182547pfq.56.2020.10.13.09.56.22
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1Oz6Xfj76J5UebP7W/wnJQsjdJjBRc1UsbNsPfdE2SU=;
+        b=bmEIFueiRr5MczqT5B+bVk4i0vSUHu1xnajvZZgT7JU6kqEClQR0B1WcN5VcWWpl+Q
+         yBO5M/f5AsaRthVUuvYWmfTUNSmaNPbLrnAy1/0LwnIWAFODbJHnUmym/D2QJoOWnyAw
+         d7SdmIJ+hwvWNt7DYKl5h6kyYBNKCoNlJ0VKUdiKavk93dELAZEUJMTby7Gn/BZffo29
+         9f0uzgZ8totjq9kDGJD5IglzDaEg+p/CQOvaxO3VsaWWB5RH1Kf3W6wyvSR5BEPGNm2q
+         ox/ItX7AGpFNRTOqoxWrONpL9WiQKulKdQKRF6hOJWVgy30+Pe+XKGPMhawRtpFeWOrU
+         41Hg==
+X-Gm-Message-State: AOAM5304YUITC3rllu8/sDWyQ/sBOB1O62GaBlVJe0Qqc3MAws6nJMj8
+        Og2B5Evj3NKqcGQOuGuCYQ==
+X-Google-Smtp-Source: ABdhPJybTuOcoxZ4SOf+C3/3IaOFYEcbMnTh6G+tmhKIT0Nm26q4BedGaMMNk77+QFkru5lJJlOl+A==
+X-Received: by 2002:aca:afcc:: with SMTP id y195mr430066oie.30.1602608140255;
+        Tue, 13 Oct 2020 09:55:40 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id r80sm164332oor.31.2020.10.13.09.55.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 09:56:23 -0700 (PDT)
-Message-ID: <d023cc5153bf855e27d7ee098e1afa0fd5ba9761.camel@intel.com>
-Subject: Re: [PATCH v8 11/14] PCI/RCEC: Add RCiEP's linked RCEC to AER/ERR
-From:   Sean V Kelley <sean.v.kelley@intel.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>,
-        "Jonathan.Cameron@huawei.com" <Jonathan.Cameron@huawei.com>,
-        "Kuppuswamy, Sathyanarayanan" <sathyanarayanan.kuppuswamy@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "seanvk.dev@oregontracks.org" <seanvk.dev@oregontracks.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>
-Date:   Tue, 13 Oct 2020 09:55:34 -0700
-In-Reply-To: <20201012225848.GA3754175@bjorn-Precision-5520>
-References: <20201012225848.GA3754175@bjorn-Precision-5520>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 
+        Tue, 13 Oct 2020 09:55:39 -0700 (PDT)
+Received: (nullmailer pid 3684302 invoked by uid 1000);
+        Tue, 13 Oct 2020 16:55:38 -0000
+Date:   Tue, 13 Oct 2020 11:55:38 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Wenbin Mei <wenbin.mei@mediatek.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        srv_heupstream@mediatek.com
+Subject: Re: [PATCH v6 1/4] dt-bindings: mmc: Convert mtk-sd to json-schema
+Message-ID: <20201013165538.GA3678156@bogus>
+References: <20201012124547.16649-1-wenbin.mei@mediatek.com>
+ <20201012124547.16649-2-wenbin.mei@mediatek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201012124547.16649-2-wenbin.mei@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-10-12 at 17:58 -0500, Bjorn Helgaas wrote:
-> On Fri, Oct 09, 2020 at 11:51:39PM +0000, Kelley, Sean V wrote:
-> > On Fri, 2020-10-09 at 15:07 -0700, Sean V Kelley wrote:
-> > So I tested the following out, including your moving flr to aer.c:
-> > 
-> > - Renamed flr_on_rciep() to flr_on_rc() for RC devices (RC_END and
-> > RC_EC)
-> > 
-> > - Moved check on dev->rcec into aer_root_reset() including the FLR.
-> > 
-> > - Reworked pci_walk_bridge() to drop extra dev argument and check
-> > locally for the bridge->rcec. Maybe should also check on type when
-> > checking on bridge->rcec.
-> > 
-> > Note I didn't use the check on aer_cap existence because I think
-> > you
-> > had added that for simply being able to skip over for the non-
-> > native
-> > case and I handle that with the single goto at the beginning which
-> > takes you to the FLR.
+On Mon, Oct 12, 2020 at 08:45:44PM +0800, Wenbin Mei wrote:
+> Convert the mtk-sd binding to DT schema format using json-schema.
 > 
-> Right.  Well, my thinking was that "root" would be a device with the
-> AER Root Error Command and Root Error Status registers, i.e., a Root
-> Port or RCEC.  IIUC that basically means the APEI case where firmware
-> gives us an error record.
-
-Got it.
-
+> Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
+> ---
+>  .../devicetree/bindings/mmc/mtk-sd.txt        |  75 --------
+>  .../devicetree/bindings/mmc/mtk-sd.yaml       | 163 ++++++++++++++++++
+>  2 files changed, 163 insertions(+), 75 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/mmc/mtk-sd.txt
+>  create mode 100644 Documentation/devicetree/bindings/mmc/mtk-sd.yaml
 > 
-> Isn't the existing v5.9 code buggy in that it unconditionally pokes
-> these registers?  I think the APEI path can end up here, and firmware
-> probably has not granted us control over AER.
+> diff --git a/Documentation/devicetree/bindings/mmc/mtk-sd.txt b/Documentation/devicetree/bindings/mmc/mtk-sd.txt
+> deleted file mode 100644
+> index 26a8f320a156..000000000000
+> --- a/Documentation/devicetree/bindings/mmc/mtk-sd.txt
+> +++ /dev/null
+> @@ -1,75 +0,0 @@
+> -* MTK MMC controller
+> -
+> -The MTK  MSDC can act as a MMC controller
+> -to support MMC, SD, and SDIO types of memory cards.
+> -
+> -This file documents differences between the core properties in mmc.txt
+> -and the properties used by the msdc driver.
+> -
+> -Required properties:
+> -- compatible: value should be either of the following.
+> -	"mediatek,mt8135-mmc": for mmc host ip compatible with mt8135
+> -	"mediatek,mt8173-mmc": for mmc host ip compatible with mt8173
+> -	"mediatek,mt8183-mmc": for mmc host ip compatible with mt8183
+> -	"mediatek,mt8516-mmc": for mmc host ip compatible with mt8516
+> -	"mediatek,mt6779-mmc": for mmc host ip compatible with mt6779
+> -	"mediatek,mt2701-mmc": for mmc host ip compatible with mt2701
+> -	"mediatek,mt2712-mmc": for mmc host ip compatible with mt2712
+> -	"mediatek,mt7622-mmc": for MT7622 SoC
+> -	"mediatek,mt7623-mmc", "mediatek,mt2701-mmc": for MT7623 SoC
+> -	"mediatek,mt7620-mmc", for MT7621 SoC (and others)
+> -
+> -- reg: physical base address of the controller and length
+> -- interrupts: Should contain MSDC interrupt number
+> -- clocks: Should contain phandle for the clock feeding the MMC controller
+> -- clock-names: Should contain the following:
+> -	"source" - source clock (required)
+> -	"hclk" - HCLK which used for host (required)
+> -	"source_cg" - independent source clock gate (required for MT2712)
+> -	"bus_clk" - bus clock used for internal register access (required for MT2712 MSDC0/3)
+> -- pinctrl-names: should be "default", "state_uhs"
+> -- pinctrl-0: should contain default/high speed pin ctrl
+> -- pinctrl-1: should contain uhs mode pin ctrl
+> -- vmmc-supply: power to the Core
+> -- vqmmc-supply: power to the IO
+> -
+> -Optional properties:
+> -- assigned-clocks: PLL of the source clock
+> -- assigned-clock-parents: parent of source clock, used for HS400 mode to get 400Mhz source clock
+> -- hs400-ds-delay: HS400 DS delay setting
+> -- mediatek,hs200-cmd-int-delay: HS200 command internal delay setting.
+> -				This field has total 32 stages.
+> -				The value is an integer from 0 to 31.
+> -- mediatek,hs400-cmd-int-delay: HS400 command internal delay setting
+> -				This field has total 32 stages.
+> -				The value is an integer from 0 to 31.
+> -- mediatek,hs400-cmd-resp-sel-rising:  HS400 command response sample selection
+> -				       If present,HS400 command responses are sampled on rising edges.
+> -				       If not present,HS400 command responses are sampled on falling edges.
+> -- mediatek,latch-ck: Some SoCs do not support enhance_rx, need set correct latch-ck to avoid data crc
+> -		     error caused by stop clock(fifo full)
+> -		     Valid range = [0:0x7]. if not present, default value is 0.
+> -		     applied to compatible "mediatek,mt2701-mmc".
+> -- resets: Phandle and reset specifier pair to softreset line of MSDC IP.
+> -- reset-names: Should be "hrst".
+> -
+> -Examples:
+> -mmc0: mmc@11230000 {
+> -	compatible = "mediatek,mt8173-mmc", "mediatek,mt8135-mmc";
+> -	reg = <0 0x11230000 0 0x108>;
+> -	interrupts = <GIC_SPI 39 IRQ_TYPE_LEVEL_LOW>;
+> -	vmmc-supply = <&mt6397_vemc_3v3_reg>;
+> -	vqmmc-supply = <&mt6397_vio18_reg>;
+> -	clocks = <&pericfg CLK_PERI_MSDC30_0>,
+> -	         <&topckgen CLK_TOP_MSDC50_0_H_SEL>;
+> -	clock-names = "source", "hclk";
+> -	pinctrl-names = "default", "state_uhs";
+> -	pinctrl-0 = <&mmc0_pins_default>;
+> -	pinctrl-1 = <&mmc0_pins_uhs>;
+> -	assigned-clocks = <&topckgen CLK_TOP_MSDC50_0_SEL>;
+> -	assigned-clock-parents = <&topckgen CLK_TOP_MSDCPLL_D2>;
+> -	hs400-ds-delay = <0x14015>;
+> -	mediatek,hs200-cmd-int-delay = <26>;
+> -	mediatek,hs400-cmd-int-delay = <14>;
+> -	mediatek,hs400-cmd-resp-sel-rising;
+> -};
+> diff --git a/Documentation/devicetree/bindings/mmc/mtk-sd.yaml b/Documentation/devicetree/bindings/mmc/mtk-sd.yaml
+> new file mode 100644
+> index 000000000000..21a2fce5b7ba
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mmc/mtk-sd.yaml
+> @@ -0,0 +1,163 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mmc/mtk-sd.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MTK MSDC Storage Host Controller Binding
+> +
+> +maintainers:
+> +  - Chaotian Jing <chaotian.jing@mediatek.com>
+> +  - Wenbin Mei <wenbin.mei@mediatek.com>
+> +
+> +allOf:
+> +  - $ref: mmc-controller.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - enum:
+> +        - mediatek,mt2701-mmc
+> +        - mediatek,mt2712-mmc
+> +        - mediatek,mt6779-mmc
+> +        - mediatek,mt7620-mmc
+> +        - mediatek,mt7622-mmc
+> +        - mediatek,mt8135-mmc
+> +        - mediatek,mt8173-mmc
+> +        - mediatek,mt8183-mmc
+> +        - mediatek,mt8516-mmc
+> +      - items:
+> +        - const: mediatek,mt7623-mmc
+> +        - const: mediatek,mt2701-mmc
+> +
+> +  clocks:
+> +    description:
+> +      Should contain phandle for the clock feeding the MMC controller.
+> +    minItems: 2
+> +    maxItems: 4
+> +    items:
+> +      - description: source clock (required).
+> +      - description: HCLK which used for host (required).
+> +      - description: independent source clock gate (required for MT2712).
+> +      - description: bus clock used for internal register access (required for MT2712 MSDC0/3).
+> +
+> +  clock-names:
+> +    minItems: 2
+> +    maxItems: 4
+> +    items:
+> +      - const: source
+> +      - const: hclk
+> +      - const: source_cg
+> +      - const: bus_clk
+> +
+> +  pinctrl-names:
+> +    items:
+> +      - const: default
+> +      - const: state_uhs
+> +
+> +  pinctrl-0:
+> +    description:
+> +      should contain default/high speed pin ctrl.
+> +    maxItems: 1
+> +
+> +  pinctrl-1:
+> +    description:
+> +      should contain uhs mode pin ctrl.
+> +    maxItems: 1
+> +
+> +  assigned-clocks:
+> +    description:
+> +      PLL of the source clock.
+> +    maxItems: 1
+> +
+> +  assigned-clock-parents:
+> +    description:
+> +      parent of source clock, used for HS400 mode to get 400Mhz source clock.
+> +    maxItems: 1
+> +
+> +  hs400-ds-delay:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      HS400 DS delay setting.
+> +    minimum: 0
+> +    maximum: 0xffffffff
+> +
+> +  mediatek,hs200-cmd-int-delay:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      HS200 command internal delay setting.
+> +      This field has total 32 stages.
+> +      The value is an integer from 0 to 31.
+> +    minimum: 0
+> +    maximum: 31
+> +
+> +  mediatek,hs400-cmd-int-delay:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      HS400 command internal delay setting.
+> +      This field has total 32 stages.
+> +      The value is an integer from 0 to 31.
+> +    minimum: 0
+> +    maximum: 31
+> +
+> +  mediatek,hs400-cmd-resp-sel-rising:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description:
+> +      HS400 command response sample selection.
+> +      If present, HS400 command responses are sampled on rising edges.
+> +      If not present, HS400 command responses are sampled on falling edges.
+> +
+> +  mediatek,latch-ck:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      Some SoCs do not support enhance_rx, need set correct latch-ck to avoid
+> +      data crc error caused by stop clock(fifo full) Valid range = [0:0x7].
+> +      if not present, default value is 0.
+> +      applied to compatible "mediatek,mt2701-mmc".
+> +    minimum: 0
+> +    maximum: 7
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  reset-names:
+> +    const: hrst
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +  - pinctrl-names
+> +  - pinctrl-0
+> +  - pinctrl-1
+> +  - vmmc-supply
+> +  - vqmmc-supply
 
-Yes, APEI path can end up here even in the absence of AER control.
+Add:
 
-> 
-> Somewhat related question: I'm a little skeptical about the fact that
-> aer_root_reset() currently does:
-> 
->   - clear ROOT_PORT_INTR_ON_MESG_MASK
->   - do reset
->   - clear PCI_ERR_ROOT_STATUS
->   - enable ROOT_PORT_INTR_ON_MESG_MASK
+unevaluatedProperties: false
 
-It's a bit of a mix and growing with RC_END handling.
+With that,
 
-> 
-> In the APEI path all this AER register manipulation must be done by
-> firmware before passing the error record to the OS.  So in the native
-> case where the OS does own the AER registers, why can't the OS do
-> that
-> manipulation in the same order, i.e., all before doing the reset?
-
-And you're right, the mix here imposes additional complexity for native
-versus non-native. If you're not actively engaged with the code, it's
-not obvious. So, yes moving it out would make more sense.
-
-
-> 
-> > So this is rough, compiled, tested with AER injections but that's
-> > it...
-> 
-> I couldn't actually apply the patch below because it seems to be
-> whitespace-damaged, but I think I like it.
-
-Yes, it was a quick copy-paste to an existing email. Will work with
-your branch.
-
-> 
->   - It would be nice to be able to just call pcie_flr() and not have
->     to add flr_on_rc().  I can't remember why we need the
->     pcie_has_flr() / pcie_flr() dance.  It seems racy and ugly, but I
->     have a vague recollection that there actually is some reason for
->     it.
-
-I'll have a look.
-
-> 
->   - I would *rather* consolidate the AER register updates and test
-> for
->     the non-native case once instead of treating it like a completely
->     separate path with a "goto".  But maybe not possible.  Not a big
->     deal either way.
-
-Following your line of reasoning above, I think we can better
-consolidate the AER register updates.
-
-> 
->   - Getting rid of the extra "dev" argument to pci_walk_bridge() is a
->     great side-effect.  I didn't even notice that.
-> 
->   - If we can simplify that "state == pci_channel_io_frozen" case as
->     this does, that is a *big* deal because there are other patches
->     just waiting to touch that reset and it will be much simpler if
->     there's only one reset_subordinate_devices() call there.
-
-Agreed.
-
-> 
-> If you do work this up, I'd really appreciate it if you can start
-> with
-> my pci/err branch so I don't have to re-do all the tweaks I've
-> already
-> done:
-> 
->   
-> https://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git/commit/?h=pci/err
-> 
-
-Will do.
-
-Thanks,
-
-Sean
-
-
-
-> Bjorn
-
+Reviewed-by: Rob Herring <robh@kernel.org>
