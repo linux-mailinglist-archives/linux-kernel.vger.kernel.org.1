@@ -2,221 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0942E28C82C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 07:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1A7B28C838
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 07:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732317AbgJMFOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 01:14:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728980AbgJMFOv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 01:14:51 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F324C0613D0;
-        Mon, 12 Oct 2020 22:14:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=51FiGdGfPVW5r5jYwLCCPTeFRyNe5ccgJtyw7jmaElc=; b=LtAVfdiI0sZgCUR3ee5ggJxaE2
-        VdnfQcr8WeEL3ZKC/dUmMLDUMzGS1y/MJleFUoJysf5pg7z1qh7fvDykfP3j8pD3kN4+/ox3gxx2d
-        oDNOCmAYaG9aPzrLtAErzudMdKQw3tCiJDTLgmy54vNwGxmrubR5Gjt3ILOiCNxreSb4pA3jYAj4F
-        wTNnLObl3Jl+SB8Yo9aXUDfBL/OLLgVlaibqzRAN3nXXIHBQlz1Hgi3bByhnvY7KZl9GBmu6nSV4B
-        jWiivsMU8FSardwevE/+wKXUSYF5m7gvv5EM6T/HHisZ6pr6YrDLTkksrxTQbly7CXUNhJKBCYSaN
-        IrZ9aBNw==;
-Received: from [2601:1c0:6280:3f0::5d1b] (helo=dragon.site)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kSCe5-0001gf-Ck; Tue, 13 Oct 2020 05:14:45 +0000
-Subject: Re: [RFC] openprom: Fix 'opiocnextprop'; ensure integer conversions;
- use string size
-To:     Michael Witten <mfwitten@gmail.com>, sparclinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <a5515efeaad94666a87f264dbf65bdbd@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <8d8eba94-8d6d-fbad-f24a-e65282403833@infradead.org>
-Date:   Mon, 12 Oct 2020 22:14:40 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <a5515efeaad94666a87f264dbf65bdbd@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1732381AbgJMFRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 01:17:54 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:46641 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732321AbgJMFRx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 01:17:53 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602566273; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=7DJYeM79DwYCNxvdVN1/Efj/wUPrE6lX2eZDDy8scis=; b=PmqUO6No85vRbuCn1mKPAMZ6f8rMCw1OkYUSiJIrRQj4Kue205ybCbxBLgIeszydUiGIpQNa
+ kszc+NhJWPuZHF3Yw1lZw0jSj24nVaFMQlVoF1Sn+Nlkw+YBJR1YQ69/D1qXVHOPt6A/fKBg
+ o1j3EPxXTCST+XP1kyn3+8k9rlE=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5f8537fd3711fec7b141610d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 13 Oct 2020 05:15:41
+ GMT
+Sender: kathirav=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 014FFC43387; Tue, 13 Oct 2020 05:15:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from kathirav-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kathirav)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 89512C433CB;
+        Tue, 13 Oct 2020 05:15:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 89512C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kathirav@codeaurora.org
+From:   Kathiravan T <kathirav@codeaurora.org>
+To:     agross@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
+        vigneshr@ti.com, robh+dt@kernel.org, sivaprak@codeaurora.org,
+        peter.ujfalusi@ti.com, boris.brezillon@collabora.com,
+        linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kathirav@codeaurora.org
+Subject: [PATCH 0/3] Add QPIC NAND support for IPQ6018
+Date:   Tue, 13 Oct 2020 10:45:21 +0530
+Message-Id: <1602566124-13456-1-git-send-email-kathirav@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi--
+IPQ6018 has the QPIC NAND controller of version 1.5.0, which
+uses the BAM DMA. Add support for the QPIC BAM, QPIC NAND and
+enable the same in the board DTS file.
 
-Here are a few corrections for the source code.
+Kathiravan T (3):
+  dt-bindings: qcom_nandc: IPQ6018 QPIC NAND documentation
+  mtd: rawnand: qcom: Support for IPQ6018 QPIC NAND controller
+  arm64: dts: ipq6018: Add the QPIC peripheral nodes
 
-On 9/4/20 12:40 PM, Michael Witten wrote:
-> The following patch improves the quality and correctness of the openprom code.
-> 
-> I have neither a machine to test the result nor a toolchain to compile it, and
-> that is why it is listed currently as an "RFC". Nonetheless, I believe those
-
-what is your host build system?
-
-https://mirrors.edge.kernel.org/pub/tools/crosstool/
-
-> who do have these tools will find the proposed changes useful; I hope you will
-> help me iterate this patch into something worthy of merging (or use it as the
-> basis for your own changes).
-> 
-> Sincerely,
-> Michael Witten
-> 
-> --8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<--
-> 
-...
-
-> 
-> Signed-off-by: Michael Witten <mfwitten@gmail.com>
-> ---
->   arch/sparc/include/asm/prom.h   |   2 +-
->   arch/sparc/kernel/prom_common.c |  14 +--
->   drivers/sbus/char/openprom.c    | 263 ++++++++++++++++++++++++++++------------
->   3 files changed, 194 insertions(+), 85 deletions(-)
-> 
+ .../devicetree/bindings/mtd/qcom_nandc.txt    |  2 +
+ arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dts  | 16 ++++++++
+ arch/arm64/boot/dts/qcom/ipq6018.dtsi         | 41 +++++++++++++++++++
+ drivers/mtd/nand/raw/qcom_nandc.c             |  4 ++
+ 4 files changed, 63 insertions(+)
 
 
-> diff --git a/drivers/sbus/char/openprom.c b/drivers/sbus/char/openprom.c
-> index 30b9751aad30..9bc2877aa09a 100644
-> --- a/drivers/sbus/char/openprom.c
-> +++ b/drivers/sbus/char/openprom.c
-
-
-> @@ -120,69 +154,109 @@ static int getstrings(struct openpromio __user *info, struct openpromio **opp_p)
-
-> -static int opromgetprop(void __user *argp, struct device_node *dp, struct openpromio *op, int bufsize)
-> +static int opromgetprop(void __user *argp, struct device_node *dp, struct openpromio *op, const size_t bufsize)
->   {
->   	const void *pval;
-> -	int len;
-> +	int pval_size;
->   
->   	if (!dp ||
-> -	    !(pval = of_get_property(dp, op->oprom_array, &len)) ||
-> -	    len <= 0 || len > bufsize)
-> +	    !(pval = of_get_property(dp, op->oprom_array, &pval_size)) ||
-> +	    pval_size <= 0 || pval_size > bufsize) {
-> +		#ifdef CONFIG_DEBUG_KERNEL
-> +			if (WARN_ON(op->oprom_size))
-> +				op->oprom_size = 0;
-> +		#endif
->   		return copyout(argp, op, sizeof(int));
-> +	}
-> +
-> +	op->oprom_size = pval_size;
-> +	memcpy(op->oprom_array, pval, pval_size);
->   
-> -	memcpy(op->oprom_array, pval, len);
-> -	op->oprom_array[len] = '\0';
-> -	op->oprom_size = len;
-> +	#ifdef CONFIG_DEBUG_KERNEL
-> +		// If the buffer is larger than needed, then
-> +		// the contents should be nul-terminated in
-> +		// case the PROM erroneously produces a string
-> +		// that is not nul-terminated.
-> +		if (pval_size < bufsize)
-> +			char *const end = op->oprom_array + pval_size;
-> +			if (WARN_ON(*end))
-> +				*end = 0;
-
-Missing braces above?
-
-> +	#endif
->   
->   	return copyout(argp, op, sizeof(int) + bufsize);
->   }
->   
-> -static int opromnxtprop(void __user *argp, struct device_node *dp, struct openpromio *op, int bufsize)
-> +static int opromnxtprop(void __user *argp, struct device_node *dp, struct openpromio *op, const size_t bufsize)
->   {
->   	struct property *prop;
-> -	int len;
-> +	size_t name_size;
-> +	unsigned int uint_name_size;
->   
->   	if (!dp)
-> -		return copyout(argp, op, sizeof(int));
-> +		goto nothing;
-> +
->   	if (op->oprom_array[0] == '\0') {
->   		prop = dp->properties;
-> -		if (!prop)
-> -			return copyout(argp, op, sizeof(int));
-> -		len = strlen(prop->name);
->   	} else {
->   		prop = of_find_property(dp, op->oprom_array, NULL);
-> +		if (prop)
-> +			prop = prop->next;
-> +	}
->   
-> -		if (!prop ||
-> -		    !prop->next ||
-> -		    (len = strlen(prop->next->name)) + 1 > bufsize)
-> -			return copyout(argp, op, sizeof(int));
-> +	if (!prop)
-> +		goto nothing;
->   
-> -		prop = prop->next;
-> -	}
-> +	name_size = 1 + strlen(prop->name);
-> +
-> +	uint_name_size = name_size;
-> +	if (unlikely(uint_name_size != name_size))
-> +		goto nothing; // overflow
-> +
-> +	if (name_size > bufsize)
-> +		goto nothing;
->   
-> -	memcpy(op->oprom_array, prop->name, len);
-> -	op->oprom_array[len] = '\0';
-> -	op->oprom_size = ++len;
-> +	memcpy(op->oprom_array, prop->name, name_size);
-> +	op->oprom_size = uint_name_size;
->   
->   	return copyout(argp, op, sizeof(int) + bufsize);
-> +
-> +nothing:
-> +	#ifdef CONFIG_DEBUG_KERNEL
-> +		if (WARN_ON(op->oprom_size))
-> +			op-oprom_size = 0;
-
-			op->oprom_size = 0;
-
-
-> +	#endif
-> +	return copyout(argp, op, sizeof(int));
->   }
->   
-
-
-
-
-> @@ -301,6 +384,12 @@ static long openprom_sunos_ioctl(struct file * file,
->   	else
->   		bufsize = copyin(argp, &opp);
->   
-> +	#ifdef CONFIG_DEBUG_KERNEL
-> +		if (WARN_ON(bufsize == 0))
-> +			bufsize = -EFAULT;
-> +	#enif
-
-	#endif
-
-> +
-> +	static_assert(LONG_MIN <= -(SIZE_MAX/2)-1);
->   	if (bufsize < 0)
->   		return bufsize;
->   
-
-
-
-HTH.
---
-~Randy
+base-commit: bbf5c979011a099af5dc76498918ed7df445635b
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
 
