@@ -2,78 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC53928C8C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 08:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 734E528C8B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 08:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389789AbgJMGsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 02:48:04 -0400
-Received: from regular1.263xmail.com ([211.150.70.200]:48102 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389346AbgJMGsD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 02:48:03 -0400
-X-Greylist: delayed 433 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Oct 2020 02:48:02 EDT
-Received: from localhost (unknown [192.168.167.16])
-        by regular1.263xmail.com (Postfix) with ESMTP id 9CA4B11C6;
-        Tue, 13 Oct 2020 14:40:48 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-SKE-CHECKED: 1
-X-ABS-CHECKED: 1
-Received: from jianqun-pc (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P30217T139798165583616S1602571248138252_;
-        Tue, 13 Oct 2020 14:40:48 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <5ba8c1c7360008fb64b95412a085cae9>
-X-RL-SENDER: jay.xu@rock-chips.com
-X-SENDER: xjq@rock-chips.com
-X-LOGIN-NAME: jay.xu@rock-chips.com
-X-FST-TO: linus.walleij@linaro.org
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-DNS-TYPE: 0
-X-System-Flag: 0
-Date:   Tue, 13 Oct 2020 14:40:47 +0800
-From:   "jay.xu@rock-chips.com" <jay.xu@rock-chips.com>
-To:     "Linus Walleij" <linus.walleij@linaro.org>,
-        =?UTF-8?B?SGVpa28gU3TDvGJuZXI=?= <heiko@sntech.de>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
-Subject: Re: Re: [PATCH 2/2] pinctrl: rockchip: make driver be tristate module
-References: <20200907025927.9713-3-jay.xu@rock-chips.com>, 
-        <20200914003847.10341-1-jay.xu@rock-chips.com>, 
-        <5373086.oXRXx9yCqB@diego>, 
-        <7244527.mGzxE9Z0Hj@diego>, 
-        <CACRpkdYAxpyB+y88eC4iuvHRqttPSFdaMHAZdr6y8jfTr0Qong@mail.gmail.com>
-X-Priority: 3
-X-Has-Attach: no
-X-Mailer: Foxmail 7.2.18.95[cn]
-Mime-Version: 1.0
-Message-ID: <202010131440473168632@rock-chips.com>
-Content-Type: text/plain;
-        charset="UTF-8"
-Content-Transfer-Encoding: base64
+        id S2389628AbgJMGnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 02:43:15 -0400
+Received: from mga12.intel.com ([192.55.52.136]:51882 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389493AbgJMGnO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 02:43:14 -0400
+IronPort-SDR: q8eCrC4X5cOKUWA4CV97VwWNVZsrGiQV+zCIT+HepgHg3/qAiTiwvqCbv2/ZvSMy+PCulvfrk5
+ +PpqzCCazH8w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="145177398"
+X-IronPort-AV: E=Sophos;i="5.77,369,1596524400"; 
+   d="scan'208";a="145177398"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 23:43:13 -0700
+IronPort-SDR: UrQi1LWaZMKfgcFs5IclXvK2HEsLSBivZCrR3hrlP6tUsCFm0VJ6KIXL7F8Y3wrCYZnwYwQwfy
+ A6zc86KG9rmw==
+X-IronPort-AV: E=Sophos;i="5.77,369,1596524400"; 
+   d="scan'208";a="313700061"
+Received: from chenyu-office.sh.intel.com ([10.239.158.173])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 23:43:10 -0700
+Date:   Tue, 13 Oct 2020 14:44:52 +0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc:     Len Brown <lenb@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Wendy Wang <wendy.wang@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH] cpufreq: intel_pstate: Delete intel_pstate sysfs if
+ failed to register the driver
+Message-ID: <20201013064452.GA17226@chenyu-office.sh.intel.com>
+References: <20201009033038.23157-1-yu.c.chen@intel.com>
+ <ae351673692472b5ff5a482debc2de9060ffdd5e.camel@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ae351673692472b5ff5a482debc2de9060ffdd5e.camel@linux.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RGVhciBXYWxsZWlqIGFuZCBIZWlrbwoKVGhlIHBhdGNoICJbUEFUQ0hdIHBpbmN0cmw6IHJvY2tj
-aGlwOiBwb3B1bGF0ZSBwbGF0Zm9ybSBkZXZpY2UgZm9yIHJvY2tjaGlwIGdwaW8iIGhhcyBiZWVu
-IHJlbW92ZSBvdXRvZgp0aGUgcGF0Y2hlcywgc2luY2Ugd2UgaGF2ZSBhIG5ldyBwYXRjaCB0byBt
-b3ZlIGdwaW8gcmVsYXRlZCBjb2RlcyB0byBhIHNlcGFyYXRlZCBkcml2ZXIuCgpTbyBwbGVhc2Ug
-aWdub3JlIGl0IGZvciBub3cuIHRoYW5rcyB2ZXJ5IG11Y2guCgotLS0tLS0tLS0tLS0tLQpqYXku
-eHVAcm9jay1jaGlwcy5jb20KPk9uIE1vbiwgU2VwIDIxLCAyMDIwIGF0IDEyOjE4IEFNIEhlaWtv
-IFN0w7xibmVyIDxoZWlrb0BzbnRlY2guZGU+IHdyb3RlOgo+Cj4+IEl0IHNlZW1zIEkndmUgcmV2
-aWV3ZWQgYWxsIHBhdGNoZXMgb2YgdGhpcyBzZXJpZXMgbm93LCBidXQgSSB0aGluawo+PiB5b3Ug
-bWlnaHQgd2FudCB0byByZXNlbmQgdGhlIHNlcmllcyBhIGZpbmFsIHRpbWUgYXMgdjMgaW4gYSBj
-bGVhbmVkIHVwCj4+IHN0YXRlIChkcm9wIHBhdGNoMSBhbmQganVzdCBwb3N0IHBhdGNoZXMgMi01
-IGluIGEgZnVsbCBzZXJpZXMpIHNvIHRoYXQKPj4gd2UgZG9uJ3QgY29uZnVzZSBMaW51cyB0b28g
-bXVjaCB3aXRoIHRoZSByZXBvc3RlZCBwYXRjaGVzIHdlIGN1cnJlbnRseQo+PiBoYXZlLgo+Cj5Z
-ZXMgcGxlYXNlIHNlbmQgYSB2MyBsaWtlIHRoYXQgc28gSSBjYW4gYXBwbHkgaXQhCj4KPllvdXJz
-LAo+TGludXMgV2FsbGVpago+Cj4KPg==
+Hi Srinivas,
+On Mon, Oct 12, 2020 at 06:22:40AM -0700, srinivas pandruvada wrote:
+> On Fri, 2020-10-09 at 11:30 +0800, Chen Yu wrote:
+> > There is a corner case that if the intel_pstate driver failed to be
+> > registered(might be due to invalid MSR access) 
+> Do you have logs why it is not loaded? On supported platforms MSRs
+> should be invalid.
+Unfortunately we don't have the boot up log for now, as it is
+a pre-production platform and the low-level simulation(for MSR)
+might be unstable.( And there seems to be some environment issue
+on pre-production platform to reproduce this issue).
+But we can hack the code in intel_pstate to make the driver failed
+to be loaded and the issue was reproduced.
+> It may be a case when we are trying to bring up pre-production systems
+> where some instability in MSRs on certain CPUs. 
+> 
+> But the patch is correct. We can't have invalid folder when
+> intel_pstate is not used. 
+> 
+> > and with the acpi_cpufreq
+> > loaded, the intel_pstate sysfs might still be created, which makes
+> > the
+> > user confusing(turbostat for example):
+> > 
+> > grep . /sys/devices/system/cpu/cpu0/cpufreq/scaling_driver
+> > acpi-cpufreq
+> > 
+> > grep . /sys/devices/system/cpu/intel_pstate/*
+> > /sys/devices/system/cpu/intel_pstate/max_perf_pct:0
+> > /sys/devices/system/cpu/intel_pstate/min_perf_pct:0
+> > grep: /sys/devices/system/cpu/intel_pstate/no_turbo: Resource
+> > temporarily unavailable
+> > grep: /sys/devices/system/cpu/intel_pstate/num_pstates: Resource
+> > temporarily unavailable
+> > /sys/devices/system/cpu/intel_pstate/status:off
+> > grep: /sys/devices/system/cpu/intel_pstate/turbo_pct: Resource
+> > temporarily unavailable
+> > 
+> > The existing of intel_pstate sysfs does not mean that the
+> > intel_pstate driver
+> > has been successfully loaded(for example, echo off to status), but
+> > the
+> > intel_pstate sysfs should not co-exist when acpi-cpufreq is also
+> > present.
+> > Fix this issue by deleting the intel_pstate sysfs if the driver
+> > failed
+> > to be loaded during bootup.
+> > 
+> > Reported-by: Wendy Wang <wendy.wang@intel.com>
+> > Suggested-by: Zhang Rui <rui.zhang@intel.com>
+> > Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com
+Thanks!
 
 
-
+Best,
+Chenyu
