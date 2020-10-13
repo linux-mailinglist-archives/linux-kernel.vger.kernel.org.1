@@ -2,97 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F2D28DCEC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 378E828D737
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 01:55:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731095AbgJNJVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 05:21:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731064AbgJNJUn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 05:20:43 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43ED1C08EC69
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 16:54:55 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id b6so359295pju.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 16:54:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OoUJ7lX2R2U0c2LHktECeAhkCF1e5wdtf2xgBEgdwtw=;
-        b=DNZ/9V7zjzzagTKx2A67mUvfnjhrS37F0MEsqUwC5Vdim2aFAL+3kCokjEwz/BhKbz
-         zH5wPTY3bDJ+VXiRiGm5KdLhafUnlbXGhZ3S0WLKpLRV5ARq9hGIbQpVK7CNJBQB0oho
-         DJAJ5YBkaNDmkv1clj+abfmz+ceiIjQLiRBUUuKHQ/+telPHiJ/rj3LtqP8Qo/LipAGx
-         pa0ezECnTrg4jlVs27wqJ1ZclY4TEBtxanSMG+hMD7jCeSz1tsAqUWgvYOf5egkQwqMq
-         qnHEKYX9fUyUH+yVGvt5AAmPa1/+pgxrWP2jmZ13FIvwGHsn2NchGfjIGhyCZNJ4BjR1
-         J64w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OoUJ7lX2R2U0c2LHktECeAhkCF1e5wdtf2xgBEgdwtw=;
-        b=Pp+BQGXBGOMHfWkHBglMMeRWO16sp4vsLD3ZaGZVpS4UX+T13w461lV/OgpIMOxmBZ
-         kD+ZXDQ8+JRHdZXwYSYl0lX8cfOaIGXLcm/n0pt3AIPU23mOIY7lJNNuNoQQRs10T8/x
-         PF63aQJ4Oen6HYbwOaQRAy/x8kxAwkdj6M7SLsrpy9NzJRxzI1pXyvNknKzDKEGXZmES
-         ZAe6MADXZjkHNsVdPNzqYDomggktlD0mO7LsAUsv0bE3QwkCGeQ/bQN3oDdYQssCdK33
-         JAHX2S8KU6fXrCHmOC79gTxOl7311bC9TUNRTYYzom/uS7NOiPEsRv2/tOuuQgdtJU5g
-         X66g==
-X-Gm-Message-State: AOAM530Ze7SCYkc5rDquM1zNTCklYnlKj2NWpMZskLyfmRayy4zukfH/
-        hFPUTkRGTG+woi6k2Q6KIxLejOmMFBkaTfNg
-X-Google-Smtp-Source: ABdhPJws+u5VscfkfvF+d9f/ewTOW4jptZRkhRaXc1AF9uDwkxAqMc9t1EPXpRGrYy0WXKz35/n92Q==
-X-Received: by 2002:a17:90a:e00f:: with SMTP id u15mr791287pjy.87.1602633294801;
-        Tue, 13 Oct 2020 16:54:54 -0700 (PDT)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id g4sm844641pgj.15.2020.10.13.16.54.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Oct 2020 16:54:54 -0700 (PDT)
-Subject: Re: [PATCH 3/4] kernel: add support for TIF_NOTIFY_SIGNAL
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Oleg Nesterov <oleg@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-        peterz@infradead.org
-References: <20201008152752.218889-1-axboe@kernel.dk>
- <20201008152752.218889-4-axboe@kernel.dk> <20201009144328.GB14523@redhat.com>
- <e8319a4c-334a-e888-7d31-f43b4ae6822a@kernel.dk>
- <875z7dd70p.fsf@nanos.tec.linutronix.de>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <bdd8ddad-5433-8f54-fbec-20a5f6f8bec2@kernel.dk>
-Date:   Tue, 13 Oct 2020 17:54:52 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2388422AbgJMXzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 19:55:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40404 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388282AbgJMXzM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 19:55:12 -0400
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 607402222C
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 23:55:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602633311;
+        bh=LREKoBv+gheN6HVpWIeSemw6UsiAfvw9QHnU3ZJXZMs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=r0aPqPmc7HzMYRpSbW12KeZyIdZ4eoA4hUiiWz7vcHokRlXuhzadfSPBBx1O3nu42
+         mw8Ks67P9K/VuuaROaFkz3teX9eHajoeoamtyeUWQ/AEKG7IgNw/n4wz5Q4iYiSaib
+         qVTChIS/LMQDs/ZJvISYm4rktzzWndYD+72H21qg=
+Received: by mail-ej1-f41.google.com with SMTP id dt13so2175301ejb.12
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 16:55:11 -0700 (PDT)
+X-Gm-Message-State: AOAM531c1nTufF2FQek2LD3U+cpd2zbsgUh+FnB/LDpwcFo17QleTK7O
+        uV4eAPAp146gkQR4CrcMPFMRGNaO6rzh2/3gvg==
+X-Google-Smtp-Source: ABdhPJxtoNb8WOKlqzAwPLMajMBUyciAnXbyX/2Wf03lku7cnGSBfpNcKLmz0BCKWdpF+PR4tklDu8iG02n+F4XiUKM=
+X-Received: by 2002:a17:906:3716:: with SMTP id d22mr2396754ejc.267.1602633309879;
+ Tue, 13 Oct 2020 16:55:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <875z7dd70p.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201013181924.4143303-1-fparent@baylibre.com> <20201013181924.4143303-2-fparent@baylibre.com>
+In-Reply-To: <20201013181924.4143303-2-fparent@baylibre.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Wed, 14 Oct 2020 07:54:58 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__UWaOz+uQRn9i0C8k=hQT=Nzv-CkbZZKiinFL=Op6j3Q@mail.gmail.com>
+Message-ID: <CAAOTY__UWaOz+uQRn9i0C8k=hQT=Nzv-CkbZZKiinFL=Op6j3Q@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] drm/mediatek: mtk_hdmi: add MT8167 support for HDMI
+To:     Fabien Parent <fparent@baylibre.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/20 5:45 PM, Thomas Gleixner wrote:
-> On Fri, Oct 09 2020 at 09:13, Jens Axboe wrote:
->>> Hmm. I just noticed that only x86 uses arch_do_signal(), so perhaps you can
->>> add this change to this patch right now? Up to you.
->>
->> Sure, we can do that. Incremental on top then looks like the below. I don't
->> feel that strongly about it, but it is nice to avoid re-testing the
->> flags.
-> 
-> Yes it makes sense. Can you please make the signature change of
-> arch_do_signal() in a preparatory patch and only make use of it when you
-> add the TIF bit to x86?
+Hi, Fabien:
 
-Ala:
+Fabien Parent <fparent@baylibre.com> =E6=96=BC 2020=E5=B9=B410=E6=9C=8814=
+=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=882:19=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+>
+> Add support for HDMI on MT8167. HDMI on MT8167 is similar to
+> MT8173/MT2701 execpt for the two registers: SYS_CFG1C and SYS_CFG20
+>
+> Signed-off-by: Fabien Parent <fparent@baylibre.com>
+> ---
+>
+> Changelog:
+> v2: fix name of pdata structure
+>
+>  drivers/gpu/drm/mediatek/mtk_hdmi.c      | 7 +++++++
+>  drivers/gpu/drm/mediatek/mtk_hdmi_regs.h | 2 ++
+>  2 files changed, 9 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi.c b/drivers/gpu/drm/mediat=
+ek/mtk_hdmi.c
+> index 57370c036497..484ea9cd654a 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_hdmi.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_hdmi.c
+> @@ -1835,9 +1835,16 @@ static struct mtk_hdmi_data mt8173_hdmi_driver_dat=
+a =3D {
+>         .sys_cfg20 =3D HDMI_SYS_CFG20,
+>  };
+>
+> +static struct mtk_hdmi_data mt8167_hdmi_driver_data =3D {
+> +       .sys_cfg1c =3D MT8167_HDMI_SYS_CFG1C,
+> +       .sys_cfg20 =3D MT8167_HDMI_SYS_CFG20,
+> +};
+> +
+>  static const struct of_device_id mtk_drm_hdmi_of_ids[] =3D {
+>         { .compatible =3D "mediatek,mt8173-hdmi",
+>           .data =3D &mt8173_hdmi_driver_data },
+> +       { .compatible =3D "mediatek,mt8167-hdmi",
 
-https://git.kernel.dk/cgit/linux-block/commit/?h=tif-task_work&id=6a150da501727f6bdca4786a02c0a57160e13079
+I think we should add this compatible string in Mediatek HDMI binding
+document [1].
 
-with the pre generic patch being:
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
+/Documentation/devicetree/bindings/display/mediatek/mediatek,hdmi.txt?h=3Dv=
+5.9
 
-https://git.kernel.dk/cgit/linux-block/commit/?h=tif-task_work&id=add2e252ae8481350239c3cb893aed490c05c397
+Regards,
+Chun-Kuang.
 
--- 
-Jens Axboe
-
+> +         .data =3D &mt8167_hdmi_driver_data },
+>         {}
+>  };
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi_regs.h b/drivers/gpu/drm/m=
+ediatek/mtk_hdmi_regs.h
+> index 2050ba45b23a..a0f9c367d7aa 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_hdmi_regs.h
+> +++ b/drivers/gpu/drm/mediatek/mtk_hdmi_regs.h
+> @@ -195,6 +195,7 @@
+>  #define GEN_RGB                                (0 << 7)
+>
+>  #define HDMI_SYS_CFG1C         0x000
+> +#define MT8167_HDMI_SYS_CFG1C  0x800
+>  #define HDMI_ON                                BIT(0)
+>  #define HDMI_RST                       BIT(1)
+>  #define ANLG_ON                                BIT(2)
+> @@ -211,6 +212,7 @@
+>  #define HTPLG_PIN_SEL_OFF              BIT(30)
+>  #define AES_EFUSE_ENABLE               BIT(31)
+>  #define HDMI_SYS_CFG20         0x004
+> +#define MT8167_HDMI_SYS_CFG20  0x804
+>  #define DEEP_COLOR_MODE_MASK           (3 << 1)
+>  #define COLOR_8BIT_MODE                        (0 << 1)
+>  #define COLOR_10BIT_MODE               (1 << 1)
+> --
+> 2.28.0
+>
