@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2560D28CE01
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:16:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98C5628CE00
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727699AbgJMMPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 08:15:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41342 "EHLO mail.kernel.org"
+        id S1727690AbgJMMPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 08:15:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41142 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727007AbgJMMO5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727005AbgJMMO5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 13 Oct 2020 08:14:57 -0400
 Received: from mail.kernel.org (ip5f5ad5b2.dynamic.kabel-deutschland.de [95.90.213.178])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 585F122384;
+        by mail.kernel.org (Postfix) with ESMTPSA id 5739F22365;
         Tue, 13 Oct 2020 12:14:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1602591295;
-        bh=6jY6pADWd4LdcEnG1rOTq/8tMFI7N/XzmAw3LP7tTK4=;
+        bh=8xmp8qJnTJi9IoID4I9CZ1SA+GyrMHFlPwDDsnJv+pc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZLKLRGcHw+Jhgg8LShujgoam4S9h+R4TwFSFdIFJ7DcuJcnUGoQZwcgdFUtqFO9FA
-         ei5qhg5SRXErlQbzrLOrpe4SfY/9G1f7Fvo28tbrIL4yj9V5hggiCJU7K/kCDNFlLG
-         i8ncBRqdGaJjbQJRqCVohbtIl1YB9mniaOPRZRCU=
+        b=yLViJ5h+qtaNMckfglLOmqg8/OZ5nQsss5BBveVQVd3eigXtl2CziT68OLvI8rUY8
+         2dwS5lznQUO4HQeBnUqenOOziLykML1rSBR2JPPRwkRQ1vnqzA50udQAckzCTtyiVu
+         PT7UuqHQeRfn+vrNIpWFiwXU2ukhPauLj35aag/Q=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kSJCf-006Cof-9R; Tue, 13 Oct 2020 14:14:53 +0200
+        id 1kSJCf-006Cok-Al; Tue, 13 Oct 2020 14:14:53 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
-        "Jonathan Corbet" <corbet@lwn.net>, Chen-Yu Tsai <wens@csie.org>,
-        Corentin Labbe <clabbe.montjoie@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Maxime Ripard <mripard@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 21/24] crypto: sun8x-ce*: update entries to its documentation
-Date:   Tue, 13 Oct 2020 14:14:48 +0200
-Message-Id: <f8e8feef7e17cf66a2587139386d951a0265adcf.1602590106.git.mchehab+huawei@kernel.org>
+        "Jonathan Corbet" <corbet@lwn.net>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@nvidia.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH v2 22/24] ice: docs fix a devlink info that broke a table
+Date:   Tue, 13 Oct 2020 14:14:49 +0200
+Message-Id: <79d341b6be03e9ffbe489d7110348357971a5fc8.1602590106.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1602590106.git.mchehab+huawei@kernel.org>
 References: <cover.1602590106.git.mchehab+huawei@kernel.org>
@@ -49,55 +48,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The README file was converted to ReST format. Update the
-references for it accordingly.
+Changeset 410d06879c01 ("ice: add the DDP Track ID to devlink info")
+added description for a new devlink field, but forgot to add
+one of its columns, causing it to break:
 
+	.../Documentation/networking/devlink/ice.rst:15: WARNING: Error parsing content block for the "list-table" directive: uniform two-level bullet list expected, but row 11 does not contain the same number of items as row 1 (3 vs 4).
+
+	.. list-table:: devlink info versions implemented
+	    :widths: 5 5 5 90
+...
+	    * - ``fw.app.bundle_id``
+	      - 0xc0000001
+	      - Unique identifier for the DDP package loaded in the device. Also
+	        referred to as the DDP Track ID. Can be used to uniquely identify
+	        the specific DDP package.
+
+Add the type field to the ``fw.app.bundle_id`` row.
+
+Fixes: 410d06879c01 ("ice: add the DDP Track ID to devlink info")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c | 2 +-
- drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c | 2 +-
- drivers/crypto/allwinner/sun8i-ce/sun8i-ce-trng.c | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ Documentation/networking/devlink/ice.rst | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
-index fa2f1b4fad7b..a94bf28f858a 100644
---- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
-+++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
-@@ -7,7 +7,7 @@
-  *
-  * This file add support for MD5 and SHA1/SHA224/SHA256/SHA384/SHA512.
-  *
-- * You could find the datasheet in Documentation/arm/sunxi/README
-+ * You could find the datasheet in Documentation/arm/sunxi.rst
-  */
- #include <linux/dma-mapping.h>
- #include <linux/pm_runtime.h>
-diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c
-index 78503006949c..cfde9ee4356b 100644
---- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c
-+++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c
-@@ -7,7 +7,7 @@
-  *
-  * This file handle the PRNG
-  *
-- * You could find a link for the datasheet in Documentation/arm/sunxi/README
-+ * You could find a link for the datasheet in Documentation/arm/sunxi.rst
-  */
- #include "sun8i-ce.h"
- #include <linux/dma-mapping.h>
-diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-trng.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-trng.c
-index 654328160d19..5b7af4498bd5 100644
---- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-trng.c
-+++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-trng.c
-@@ -7,7 +7,7 @@
-  *
-  * This file handle the TRNG
-  *
-- * You could find a link for the datasheet in Documentation/arm/sunxi/README
-+ * You could find a link for the datasheet in Documentation/arm/sunxi.rst
-  */
- #include "sun8i-ce.h"
- #include <linux/dma-mapping.h>
+diff --git a/Documentation/networking/devlink/ice.rst b/Documentation/networking/devlink/ice.rst
+index b165181d5d4d..a432dc419fa4 100644
+--- a/Documentation/networking/devlink/ice.rst
++++ b/Documentation/networking/devlink/ice.rst
+@@ -70,6 +70,7 @@ The ``ice`` driver reports the following versions
+         that both the name (as reported by ``fw.app.name``) and version are
+         required to uniquely identify the package.
+     * - ``fw.app.bundle_id``
++      - running
+       - 0xc0000001
+       - Unique identifier for the DDP package loaded in the device. Also
+         referred to as the DDP Track ID. Can be used to uniquely identify
 -- 
 2.26.2
 
