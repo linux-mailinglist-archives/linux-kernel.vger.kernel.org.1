@@ -2,102 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0758528C853
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 07:41:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E42C28C855
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 07:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732506AbgJMFlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 01:41:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50760 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732457AbgJMFlE (ORCPT
+        id S2387950AbgJMFlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 01:41:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732457AbgJMFlo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 01:41:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602567663;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=an1gCRpqueGjFmWqkLo6oeT53oDVqi18CPdvDvMunMk=;
-        b=X3ve+OGg2MPMo+vkoCD/dib5jC633PZUlK3NfQEkMV1ZQhCZsGjDy9gTxzTd42CK4MUt7f
-        +6EbGbEofCfwBS3LBGmiQ7cYqrEeGGAa29tv5vWcA7rduYDh56cAV6S3fQvMXgIBqS/46g
-        ZwBK3p89bj4z9RsAg1rwtO41Erb+Kxc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-559-wFv5dTD3NV6L4xTTMKvdjg-1; Tue, 13 Oct 2020 01:41:01 -0400
-X-MC-Unique: wFv5dTD3NV6L4xTTMKvdjg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E71C21018F63;
-        Tue, 13 Oct 2020 05:40:59 +0000 (UTC)
-Received: from [10.72.13.59] (ovpn-13-59.pek2.redhat.com [10.72.13.59])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B11261A92A;
-        Tue, 13 Oct 2020 05:40:45 +0000 (UTC)
-Subject: Re: [RFC PATCH 10/24] vdpa: introduce config operations for
- associating ASID to a virtqueue group
-To:     Eli Cohen <elic@nvidia.com>
-Cc:     mst@redhat.com, lulu@redhat.com, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rob.miller@broadcom.com,
-        lingshan.zhu@intel.com, eperezma@redhat.com, hanand@xilinx.com,
-        mhabets@solarflare.com, amorenoz@redhat.com,
-        maxime.coquelin@redhat.com, stefanha@redhat.com,
-        sgarzare@redhat.com
-References: <20200924032125.18619-1-jasowang@redhat.com>
- <20200924032125.18619-11-jasowang@redhat.com>
- <20201001132927.GC32363@mtl-vdi-166.wap.labs.mlnx>
- <70af3ff0-74ed-e519-56f5-d61e6a48767f@redhat.com>
- <20201012065931.GA42327@mtl-vdi-166.wap.labs.mlnx>
- <b1ac150b-0845-874f-75d0-7440133a1d41@redhat.com>
- <20201012081725.GB42327@mtl-vdi-166.wap.labs.mlnx>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <3e4a8bea-f187-3843-c1d1-75d0b86a137b@redhat.com>
-Date:   Tue, 13 Oct 2020 13:40:44 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 13 Oct 2020 01:41:44 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFCB8C0613D0;
+        Mon, 12 Oct 2020 22:41:43 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id k18so20425073wmj.5;
+        Mon, 12 Oct 2020 22:41:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=d9vylN65+yzj7mksBEpuNNWYvYrmZ1UZPFWpzN8ZJnc=;
+        b=sCLwzONOmV2FgbEAOU83au8Xo+dLKC7HW9WDa6LSVfMb9V8Jl4KZPyzFI3tycA7Khb
+         sS2veNiS+XGL2ioy2cMAiCv/qr20FWJR7NpMlD42nbgcmRZdQePe/O5oOzromG/qMjoE
+         gqRdNEtLex937a3wvsxc1jwF0tBMMwDefp/2oH0Y1Zdiw/JCZtVXH0XvOXof1JzDgYNh
+         pnhtMM2uwTQpjO4oWYpG5lx1gZUF5W1Iz8uv0Rs4AZNVlnrgT+Y7bXld0EmyqEN9YsZZ
+         qKrpj1SvtscbuMFaKUbvbWvfTqhTrQ1K8QHDwKRgVYCnowgZZBvPy/oPTF6fzx1jk5ku
+         mSCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=d9vylN65+yzj7mksBEpuNNWYvYrmZ1UZPFWpzN8ZJnc=;
+        b=I9OZxsNrIgwYBX/4UBCIEwWg+Dg8QfFkzn2Tkj0mPT/KWHgVJwxvC50YsqpCfvzgMc
+         mig6nnXyXAT8eO1pEBRlM3h+yDDEqGXc4dyR5TyrUwPUw2PO0NyAdUg6XVh9QCiPD5QQ
+         jX4iaUVppWv39iaTGJY0+3GOLo9I1ifY/YEmdoulXMLzlE0a99g9OwKuD7oif9FGWfts
+         IMlb7Psy1XepoLZrykHgi4IhIRbC+nwBz0nJDxfk0Bbc9Wrd8QsrX5lXv6BNVeIEOSBE
+         31bk3s13saYDEHBxq7wfULDwd/YYygyMaBGGrXytVkacwy8UWirVfQn+qm98RY8j91Ul
+         CzZg==
+X-Gm-Message-State: AOAM530jfxb/F9nCYmqRNanx3MrEpuLTmOJT0BqG/dIB8sbyqjpVPr3z
+        A28iDkDbey+Puy6xt87lPFIFamzD2D2MD7UO
+X-Google-Smtp-Source: ABdhPJyBxStNdGGvixqD19QWg9HaFQ15lb9VjTESTLLFfAXCJouGCu18qM+gVBG2G2S97MUHX7rWPA==
+X-Received: by 2002:a7b:c183:: with SMTP id y3mr13768508wmi.84.1602567702684;
+        Mon, 12 Oct 2020 22:41:42 -0700 (PDT)
+Received: from felia ([2001:16b8:2d05:8100:95ae:bd1a:3e4e:4242])
+        by smtp.gmail.com with ESMTPSA id u2sm28834532wre.7.2020.10.12.22.41.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 22:41:42 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
+Date:   Tue, 13 Oct 2020 07:41:40 +0200 (CEST)
+X-X-Sender: lukas@felia
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-safety@lists.elisa.tech,
+        linux-usb@vger.kernel.org
+Subject: Re: [linux-safety] [PATCH] usb: host: ehci-sched: add comment about
+ find_tt() not returning error
+In-Reply-To: <20201013052150.GA330398@kroah.com>
+Message-ID: <alpine.DEB.2.21.2010130737430.14590@felia>
+References: <20201011205008.24369-1-sudipm.mukherjee@gmail.com> <alpine.DEB.2.21.2010121550300.6487@felia> <20201012145710.GA631710@rowland.harvard.edu> <alpine.DEB.2.21.2010121659040.6487@felia> <20201012160013.GA632789@rowland.harvard.edu>
+ <alpine.DEB.2.21.2010122008370.17866@felia> <20201013052150.GA330398@kroah.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <20201012081725.GB42327@mtl-vdi-166.wap.labs.mlnx>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 2020/10/12 下午4:17, Eli Cohen wrote:
-> On Mon, Oct 12, 2020 at 03:45:10PM +0800, Jason Wang wrote:
->>> So in theory we can have several asid's (for different virtqueues), each
->>> one should be followed by a specific set_map call. If this is so, how do
->>> I know if I met all the conditions run my driver? Maybe we need another
->>> callback to let the driver know it should not expect more set_maps().
->>
->> This should work similarly as in the past. Two parts of the work is expected
->> to be done by the driver:
->>
->> 1) store the mapping somewhere (e.g hardware) during set_map()
->> 2) associating mapping with a specific virtqueue
->>
->> The only difference is that more than one mapping is used now.
-> ok, so like today, I will always get DRIVER_OK after I got all the
-> set_maps(), right?
 
+On Tue, 13 Oct 2020, Greg Kroah-Hartman wrote:
 
-Yes.
-
-Thanks
-
-
+> On Mon, Oct 12, 2020 at 08:17:34PM +0200, Lukas Bulwahn wrote:
+> > > If you are suggesting some sort of special code annotation that the tool 
+> > > would understand, I am open to that.  But I'm not aware of any even 
+> > > vaguely standard way of marking up a particular function call to 
+> > > indicate it will not return an error.
+> > 
+> > I cannot yet say if some annotation would work, we, Sudip and me, need to 
+> > investigate. It could be that something like, assert(!IS_ERR(tt)), is 
+> > sufficient to let the tools know that they can safely assume that the 
+> > path they are complaining about is not possible.
+> > 
+> > We could make the assert() a nop, so it would not effect the resulting 
+> > object code in any way.
+> 
+> Things like assert() have been rejected numberous times in the past in
+> the kernel, good luck with that :)
 >
->> For the issue of more set_maps(), driver should be always ready for the new
->> set_maps() call instead of not expecting new set_maps() since guest memory
->> topology could be changed due to several reasons.
->>
->> Qemu or vhost-vDPA will try their best to avoid the frequency of set_maps()
->> for better performance (e.g through batched IOTLB updating). E.g there
->> should be at most one set_map() during one time of guest booting.
->>
->>
 
+Greg, we have been warned by you now; so, we are well aware what could 
+await us just as numerous others before.
+
+Lukas
