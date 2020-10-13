@@ -2,101 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7408A28C934
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 09:27:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12E8728C961
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 09:31:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390067AbgJMH1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 03:27:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46574 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390007AbgJMH1U (ORCPT
+        id S2390227AbgJMHa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 03:30:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390018AbgJMHa6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 03:27:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602574038;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=U29b+DpSNEK8t7VlArhSyxRK4Bdvo64dhfMqIFz57jI=;
-        b=Tikn7NUcWUEWnTzMrc/bhhgLXNogzAAMQW9NynZo0eo4WaT0xGme9aVG9tg3FYD3gGIKqm
-        ooMAxA01Ef4LRZNQh88cFO/ql8dxY84rmAIpRyJO4HzgTwqEaIu1F4k4ZiCoYJORmLKHqw
-        Fb8OrPKYIWJtbOdULSDxGXRhrmnnyqQ=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-6-6PFseH0wPoaF48q-GEqcVA-1; Tue, 13 Oct 2020 03:27:16 -0400
-X-MC-Unique: 6PFseH0wPoaF48q-GEqcVA-1
-Received: by mail-wr1-f72.google.com with SMTP id r8so3145523wrp.5
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 00:27:16 -0700 (PDT)
+        Tue, 13 Oct 2020 03:30:58 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55AFDC0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 00:30:58 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id n6so22400470wrm.13
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 00:30:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=d1itffo3X+hs/Kx12mE/CckAQ68mnKs9JtFcGt6GmGA=;
+        b=fKo8s7aGRbyQ/M1hKfql+Q8iDgL6L07G252DWiGsDX27Px293F5Ek90661OxTtJInI
+         Et8G+vGvSGKFDLSrQbZFBwno+kQhC6bvQztaaSvdMznWEWq0xuYtlahIUT4j/Qdg+NQc
+         mydgbhDVlNkcvW8DcIvoweMXXP+7NboZ8XphcCmCZLT1wyqmmxL3mu86JcTPcqSLSlLK
+         az2rhkDgmtJn4nWqPCOY8ZAJEy/p9h2SZc8/Mb8pL3Hvn8iPA3G37gnWm9kB69KV3cK5
+         hkC45e9LrAqR3B+Y9nvBUs8PvoXwiaxA1kGn68tvQxpqIzZ1+31izraYBnZ1d+dt4NPj
+         u42g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=U29b+DpSNEK8t7VlArhSyxRK4Bdvo64dhfMqIFz57jI=;
-        b=JUfb1EB9pgURF4Lg5uV6eHR5PFFUaUdzNVciVutrvA+ccGnEkXwkSdPXSfM+FyNfLz
-         8yuzX9x2Kpgk0Y1QdkElG15SxfdqbR7AMzGgRp+1Mv4gVDr/Mt0u5csNKhaqMmPZ10ok
-         e/6+bjeNYTV/3n/IPrntsVklauYh+3/OZ8NY04kRTDrjFKl9u35jvkIgVfb6lrg9rKd0
-         MaPBuuMgmoIhNkZVUz8hSLuJGA/JxkSRR3++3cD6Q+/PlCSYEDMjhmGqkbqQvYAU6WRZ
-         m1cSvOUZmsepcKyradtcieVfgnVXURcFOa1Rl6aID/jD3WbkyRNtpd6KzBUp4ySnxbEz
-         Ftsw==
-X-Gm-Message-State: AOAM532zpkEp57JOUS2OFI1JrHfJRwZdkc9GJ7AgSejQnm6hCrsdByhE
-        wN+B8p104iYMUo5xSG5j1pB1z3znVa+889UUt35MzKYVr5T1Pn5p+Xup2+qsT3C9HATARRnkYBG
-        JfwajqqbnJfKm7r3TIGjAh/V2
-X-Received: by 2002:adf:e78b:: with SMTP id n11mr35392304wrm.280.1602574035546;
-        Tue, 13 Oct 2020 00:27:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxQQxP8+9P0wsLZ02YH3DOZOSRsW9JaGdCw5AWhVTclsuWN0jiwlLQJrBd+Ygaz9BMFlz6mIg==
-X-Received: by 2002:adf:e78b:: with SMTP id n11mr35392272wrm.280.1602574035354;
-        Tue, 13 Oct 2020 00:27:15 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:61dd:85cb:23fc:fd54? ([2001:b07:6468:f312:61dd:85cb:23fc:fd54])
-        by smtp.gmail.com with ESMTPSA id t124sm27268833wmg.31.2020.10.13.00.27.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Oct 2020 00:27:14 -0700 (PDT)
-Subject: Re: [PATCH 04/35] dmem: let pat recognize dmem
-To:     yulei.kernel@gmail.com, akpm@linux-foundation.org,
-        naoya.horiguchi@nec.com, viro@zeniv.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xiaoguangrong.eric@gmail.com,
-        kernellwp@gmail.com, lihaiwei.kernel@gmail.com,
-        Yulei Zhang <yuleixzhang@tencent.com>,
-        Xiao Guangrong <gloryxiao@tencent.com>
-References: <cover.1602093760.git.yuleixzhang@tencent.com>
- <87e23dfbac6f4a68e61d91cddfdfe157163975c1.1602093760.git.yuleixzhang@tencent.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <72f4ddeb-157a-808a-2846-dd9961a9c269@redhat.com>
-Date:   Tue, 13 Oct 2020 09:27:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        bh=d1itffo3X+hs/Kx12mE/CckAQ68mnKs9JtFcGt6GmGA=;
+        b=HjxfG5EF52Tzjnbh83zV/kRsv9Fib1REGcZpOcoxGIpuYNh94lqDVvvYLutIj9sIeI
+         uHM6yqEuhDBgujDiGo9O7j5ur0VIxcJQQhXi5JFl0cFYRDB1OmJXtoo/MFuYjTgqUzQf
+         jFkfQTlvg5U+D7nrFrWeVsklTPJ2DWaNI+k6B9vvaXo6uGavefLoTIKN6JopvlPY1zih
+         fHcv4+bbnYamkqxRdBUzNwcryBpeyuq42M84xDHFLy0/1AuUkqoXYGbALhNGFXFuzsaL
+         ULZ8N62LPTX68RgHTASpzV8QTH2PMOyvlO5K4wUCNeQca2pvzlTn2KcCweqE2qySL6yo
+         1Ptw==
+X-Gm-Message-State: AOAM531ns49Q/W+jfCzX5J5K8giW6i74wltp33xivfamtlBLFIlDOc0z
+        9srcQKwuVyxvLQF1CS5SzWeRyw==
+X-Google-Smtp-Source: ABdhPJwToXjrL09HlvAznisOXzNoxKEpn+drBc0B0fY4v9mtvl2Qjr6iZLO2MIRsQNf6sU6ThGFUQw==
+X-Received: by 2002:adf:e4c4:: with SMTP id v4mr8989706wrm.79.1602574257128;
+        Tue, 13 Oct 2020 00:30:57 -0700 (PDT)
+Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
+        by smtp.gmail.com with ESMTPSA id d2sm18051159wrq.34.2020.10.13.00.30.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Oct 2020 00:30:56 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH next] iommu: intel: don't dereference iommu_device if IOMMU_API is not built
+Date:   Tue, 13 Oct 2020 09:30:55 +0200
+Message-Id: <20201013073055.11262-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <87e23dfbac6f4a68e61d91cddfdfe157163975c1.1602093760.git.yuleixzhang@tencent.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/10/20 09:53, yulei.kernel@gmail.com wrote:
-> From: Yulei Zhang <yuleixzhang@tencent.com>
-> 
-> x86 pat uses 'struct page' by only checking if it's system ram,
-> however it is not true if dmem is used, let's teach pat to
-> recognize this case if it is ram but it is !pfn_valid()
-> 
-> We always use WB for dmem and any attempt to change this
-> behavior will be rejected and WARN_ON is triggered
-> 
-> Signed-off-by: Xiao Guangrong <gloryxiao@tencent.com>
-> Signed-off-by: Yulei Zhang <yuleixzhang@tencent.com>
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Hooks like these will make it very hard to merge this series.
+Since commit c40aaaac1018 ("iommu/vt-d: Gracefully handle DMAR units
+with no supported address widths") dmar.c needs struct iommu_device to
+be selected. We can drop this dependency by not dereferencing struct
+iommu_device if IOMMU_API is not selected and by reusing the information
+stored in iommu->drhd->ignored instead.
 
-I like the idea of struct page-backed memory, but this is a lot of code
-and I wonder if it's worth adding all these complications.
+This fixes the following build error when IOMMU_API is not selected:
 
-One can already use mem= to remove the "struct page" cost for most of
-the host memory, and manage the allocation of the remaining memory in
-userspace with /dev/mem.  What is the advantage of doing this in the kernel?
+drivers/iommu/intel/dmar.c: In function ‘free_iommu’:
+drivers/iommu/intel/dmar.c:1139:41: error: ‘struct iommu_device’ has no member named ‘ops’
+ 1139 |  if (intel_iommu_enabled && iommu->iommu.ops) {
+                                                ^
 
-Paolo
+Fixes: c40aaaac1018 ("iommu/vt-d: Gracefully handle DMAR units with no supported address widths")
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+---
+ drivers/iommu/intel/dmar.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
+index 2d70d56d8e0d..404b40af31cb 100644
+--- a/drivers/iommu/intel/dmar.c
++++ b/drivers/iommu/intel/dmar.c
+@@ -1136,7 +1136,7 @@ static int alloc_iommu(struct dmar_drhd_unit *drhd)
+ 
+ static void free_iommu(struct intel_iommu *iommu)
+ {
+-	if (intel_iommu_enabled && iommu->iommu.ops) {
++	if (intel_iommu_enabled && !iommu->drhd->ignored) {
+ 		iommu_device_unregister(&iommu->iommu);
+ 		iommu_device_sysfs_remove(&iommu->iommu);
+ 	}
+-- 
+2.28.0
 
